@@ -1,0 +1,190 @@
+body {
+	padding:20px;
+	margin:0px;
+	background-color: #fff;
+}
+
+#container {
+	margin: auto;
+	padding:0px;
+	width: 560px;
+	border:1px solid #111;
+	border-top:0px;
+	background-color: #f6f6f6;
+}
+
+/* HEADER */
+#container #humo_menu {
+	padding: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	background-image: url(images/header_bg.gif);
+	background-repeat: repeat-x;
+	height: 42px;
+}
+
+#container #humo_menu #humo_menu_main {
+	float: left;
+	padding: 5px;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #FFFFFF;
+	margin-top: 5px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+}
+
+#container #humo_menu #humo_menu_left {
+	float: left;
+	background-image: url(images/header_left.gif);
+	background-repeat: no-repeat;
+	height: 42px;
+	width: 45px;
+}
+#container #humo_menu #humo_menu_right {
+	background-image: url(images/header_right.gif);
+	background-repeat: no-repeat;
+	height: 42px;
+	width: 6px;
+	float: right;
+}
+
+/* FOOTER */
+#container #footer {
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #999999;
+	text-align: right;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-top-color: #999999;
+	border-right-color: #000033;
+	border-bottom-color: #000033;
+	border-left-color: #000033;
+	padding-top: 5px;
+	padding-right: 10px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	clear:both;
+}
+#container #footer a {
+	color: #999999;
+	text-decoration: none;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+}
+
+#container #main{
+	padding:5px;
+	width:550px;
+	margin:0px;
+	text-align:center;
+}
+
+/* The sorrounding chart box */
+.chartbox {
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color:#333;
+	text-align: center;
+	margin:auto;
+	border:1px solid #333;
+	padding:5px;
+	padding-top:0px;
+	overflow:hidden;
+	background-color:#fff;
+}
+
+.chartbox h2{
+	font-size: 14px;
+	font-weight:bold;
+	padding:0px;
+	margin:5px 0px;
+}
+
+/* Vertical chart elements */
+
+.barv{
+	margin: 2px;
+	float:left;
+}
+
+.barvvalue {
+	padding:0px;
+	margin:0px;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	text-align: center;
+}
+
+.barvvalue9 {
+	padding:0px;
+	margin:0px;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	text-align: center;
+}
+
+.barvvalue10 {
+	padding:0px;
+	margin:0px;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	text-align: center;
+}
+
+.barvvalue11 {
+	padding:0px;
+	margin:0px;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	text-align: center;
+}
+
+.barvvaluevandaag {
+	padding:0px;
+	margin:0px;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: 900;
+	text-align: center;
+	color: blue;
+}
+
+/* Horizontal chart elements */
+.barh{
+	margin: 4px;
+	text-align:left;
+	clear:both;
+}
+
+.barhvalue {
+	padding:0px;
+	margin:0px 5px;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	text-align: left;
+	overflow:hidden;
+	float:left;
+}
+
+.barhcaption {
+	padding:0px;
+	margin:0px 5px;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	text-align: right;
+	overflow:hidden;
+	float:left;
+}
+
+.barhimage {
+	float:left;
+}

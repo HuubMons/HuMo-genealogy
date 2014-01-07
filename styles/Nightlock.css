@@ -1,0 +1,149 @@
+body {
+	color: #000000;
+	background-image: url('images_nightlock/background.gif');
+	background-repeat:repeat-x;
+	font: 13px Verdana, tahoma, arial, sans-serif;
+}
+#top {
+	background:url(images_nightlock/top.png) repeat left top;
+}
+#top_website_name a {
+	color: #7e3517;
+	font-family: Delicious-Boldx, Verdana, Arial;
+	font-weight: bold;
+	font-size:18px;
+}
+#top_website_name a:visited {
+	color: #7e3517;
+	font-family: Delicious-Boldx, Verdana, Arial;
+	font-weight: bold;
+}
+
+#top_familytree_name {
+	color:#689BDD;
+	font-family: Deliciousx, Verdana, Arial;
+	font-size:16px;
+	font-weight:normal;
+}
+
+#mainmenu_center{
+	float: left;
+	width: 46%;
+	text-align:left;
+	margin-left: 19px;
+}
+
+/* Links */
+a:link {color:#0058af; }
+a:visited {color:#AD5E34; }
+a:hover {color:#333366; text-decoration: underline;}
+
+/* Tables */
+table.humo { background-color: #CFB09D; }
+/* 1st table A-Z */
+table.humo td {
+	border-color: #CFB09D;
+	background-color: #fcfcfc; /* background familypage and 1st table */
+}
+table.humo tr:first-of-type td {
+	border-color: #CFB09D;
+}
+
+/* 2nd table A-Z */
+.family_page_toptext {
+	color: #000000;
+	background-color: #ccccff;
+	background-image: url('images_nightlock/ribbon.png');
+}
+td.style_tree_text { background-color: #BDD7EF; }
+
+/* familypage */
+.pers_name { color: #464646; }
+
+/* A-Z title and header text reports (Generation I, II, etc.) */
+.standard_header { 
+	font-size:110%;
+	color: #0058af; 
+	font-weight:bold;
+	text-align: center;
+	line-height: 200%;
+}
+
+/* report_ancestor.php */
+.chart_line { background-color:#AAA; border:0px; }
+
+/* table header  */
+td.table_header { background-image: url('images_nightlock/ribbon.png'); }
+
+/* Switchform */
+#switchform { color: #333399; }
+
+/* Menu */
+#top_menu {
+/* For IE: */
+	color: #+FFFFFF;
+	background-color: #aaccee;
+}
+#humo_menu {
+	background-color:#bbeeff;
+	background:url("images_nightlock/ribbon.png") repeat left top;
+	border-top: solid 0px #FFFFFF;
+	border-bottom: solid 1px #000000;
+	-moz-box-shadow:    3px 3px 6px #bbb;
+	-webkit-box-shadow: 3px 3px 6px #bbb;
+	box-shadow:        3px 3px 6px #bbb;
+}
+#humo_menu a {
+	color: #FFFFFF;
+}
+
+#humo_menu a:hover {
+	background:url("images_nightlock/ribbon_hover.png") repeat left top;
+}
+
+ul.humo_menu_item li {
+	border-left: none;
+	border-right: none;
+}
+
+ul.humo_menu_item li a{
+	/* float:left; */
+	display:block;
+	/* up, right, bottom */
+	padding:8px 5px 7px 5px;
+	text-decoration:none;
+	color:#FFFFFF;
+	border-right:1px solid #FFFFFF;
+}	
+
+/* Pop-up menu */
+ul.humo_menu_item2 li a{
+	background-color:#999;
+	background:url("images_nightlock/ribbon.png") repeat left top;*/
+}
+
+#humo_menu #current a, #humo_menu #current_top {
+	background:url("images_nightlock/ribbon_hover.png") repeat left top;
+}
+
+#humo_menu a:visited { color: #FFFFFF; }
+#humo_menu a:active {color: #FFFFFF;}
+#humo_menu a:hover {color: #FFFFFF;}
+
+/* top bar in left - content - right boxes: only in main menu */
+.mainmenu_bar{
+	background:url("images_nightlock/ribbon.png") repeat left top;
+}
+
+.help_box { background-color: #FFFFFF; }
+
+div.photobook, div.photobooktext {
+	background-color: #e5f0fa;
+}
+
+.search_bar{
+	background:url("images_nightlock/ribbon.png") repeat left top;
+}
+
+table.reltable td { border:0px;}
+table.reltable { background:none; background-image:none; }
