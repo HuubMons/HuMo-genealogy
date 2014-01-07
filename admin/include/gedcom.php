@@ -177,10 +177,17 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		}
 	}
 	// *** Order gedcom files by alfabet ***
-	if (isset($filenames)){ sort($filenames); }
+	if (isset($filenames)){ usort($filenames,'strnatcasecmp'); }
 	echo '<select size="1" name="gedcom_file">';
+
+	$result = mysql_query("SELECT `tree_gedcom` FROM `humo_trees` WHERE `tree_prefix`='".$_SESSION['tree_prefix']."'");
+	$treegedDb = mysql_fetch_array($result);
+	$gedfile = $treegedDb['tree_gedcom'];
 	for ($i=0; $i<count($filenames); $i++){
-		print '<option value="'.$filenames[$i].'">'.$filenames[$i].'</option>';
+		//print '<option value="'.$filenames[$i].'">'.$filenames[$i].'</option>';
+		$selected = '';
+		if($gedfile == $filenames[$i]) { $selected = " selected "; } // if this was last gedcom that was used for this tree - select it
+		print '<option value="'.$filenames[$i].'" '.$selected.'>'.$filenames[$i].'</option>';
 	}
 	echo '</select>';
 
@@ -606,7 +613,7 @@ if (isset($_POST['step3'])){
 
 	// *** Read file ***
 	$handle = fopen($_POST["gedcom_file"], "r");
-	
+
 	// *** CONTINUE AFTER TIME_OUT ***
 	// Set pointer if continued
 	if ($_SESSION['save_pointer']>0) {
@@ -881,6 +888,12 @@ if (isset($_POST['step3'])){
 
 			printf(__('this is an <b>%s</b> file'), $_POST["gedcom_accent"]);
 			echo '<br>';
+
+			// NEW tree<->gedcom connection - write gedcom to "tree_gedcom" in relevant tree
+			mysql_query("UPDATE humo_trees SET tree_gedcom='".$_POST["gedcom_file"]."',
+				tree_gedcom_program='".$gen_program."'
+				WHERE tree_prefix='".$_SESSION['tree_prefix']."'") or die("tree_gedcom_error ".mysql_error());
+			// END	
 			
 			// *** progress bar ***
 			/*
@@ -1002,8 +1015,8 @@ if (isset($_POST['step3'])){
 if (isset($_POST['step4'])){
 	$start_time=time();
 	$gen_program=$_POST['gen_program'];
-	
-	print '<b>'.__('STEP 4) Processing loose persons:').'</b><br>';
+
+	print '<b>'.__('STEP 4) Processing single persons:').'</b><br>';
 
 	// *** To proceed if a (30 seconds) timeout has occured ***
 	echo '<form method="post" action="'.$phpself.'">';
@@ -1019,14 +1032,14 @@ if (isset($_POST['step4'])){
 		}
 		echo '<br>'.__('ONLY use in case of a time-out, to continue click:').' <input type="Submit" name="step4" value="'.__('Step').' 4">';
 	echo '</form><br>';
-	
+
 	print '&gt;&gt;&gt; '.__('Processing single persons...');
-	
+
 	// *** Check for seperate saved texts in database (used in aldfaer program, and some other programs) ***
 	//$zoektekst=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."texts",$db);
 	//$aantal_teksten = mysql_num_rows($zoektekst);
 	//echo 'AANTAL TEKSTEN'.$aantal_teksten;
-	
+
 	// *** Process text by name etc. ***
 	//$person_qry=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person",$db);
 	$person_qry=mysql_query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname FROM ".$_SESSION['tree_prefix']."person",$db);
@@ -1058,17 +1071,17 @@ if (isset($_POST['step4'])){
 			}
 		}
 	}
-	
+
 	print '<br>&gt;&gt;&gt; '.__('Counting persons and families and enter into database...').' ';
 	// *** Calculate number of persons and families ***
 	//$person_qry=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person",$db);
 	$person_qry=mysql_query("SELECT pers_id FROM ".$_SESSION['tree_prefix']."person",$db);
 	$persons=mysql_num_rows($person_qry);
-	
+
 	//$family_qry=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."family",$db);
 	$family_qry=mysql_query("SELECT fam_id FROM ".$_SESSION['tree_prefix']."family",$db);
 	$families=mysql_num_rows($family_qry);
-	
+
 	$tree_date=date("Y-m-d H:i");
 	$sql="UPDATE humo_trees SET
 	tree_persons='".$persons."',

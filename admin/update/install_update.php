@@ -331,9 +331,10 @@ if ($update['up_to_date']=='no'){
 		echo __('Full installation and update instructions can be found at:').' <a href="http://www.humo-gen.com/genwiki" target="_blank">HuMo-gen Wiki</a>';
 	}
 }
-elseif ($update['up_to_date']=='yes'){
 
+elseif ($update['up_to_date']=='yes'){
 	// *** Show HuMo-gen version number ***
+	echo '<h2>HuMo-gen</h2>';
 	echo __('Version:').' ';
 	if (isset($humo_option["version"])){
 		echo $humo_option["version"].'.';
@@ -341,20 +342,26 @@ elseif ($update['up_to_date']=='yes'){
 	else{
 		echo __('no version number available...');
 	}
-
 	echo ' '.__('HuMo-gen is up-to-date!');
-	echo ' <a href="'.$path_tmp.'page=install_update&re_install=1&auto=1&update_check=1">'.__('If needed: re-install all or some of the HuMo-gen files').'</a><br><br>';
+	echo ' <a href="'.$path_tmp.'page=install_update&re_install=1&auto=1&update_check=1">'.__('If needed: re-install all or some of the HuMo-gen files').'</a>';
 	echo '<br><br>';
 
-	// *** Check for beta version ***
+	// *** Check for HuMo-gen beta version ***
+	echo '<h2>HuMo-gen beta version</h2>';
 	echo __('Sometimes there is a beta version available.');
 	if (strtotime ($update['beta_version_date'])-strtotime($humo_option["version_date"])>0){
-		echo ' <a href="'.$path_tmp.'page=install_update&install_beta=1&auto=1&update_check=1">'.__('HuMo-gen beta version available').' ('.$update['beta_version'].')!</a><br><br>';
+		echo ' <a href="'.$path_tmp.'page=install_update&install_beta=1&auto=1&update_check=1">'.__('HuMo-gen beta version available').' ('.$update['beta_version'].')!</a>';
 	}
 	else{
-		echo '  '.__('No beta version available.').'<br><br>';
+		echo '  '.__('No beta version available.');
 	}
+	echo '<br><br>';
+	
+	// *** Check for HuMo-gen extensions ***
+	echo '<h2>HuMo-gen extensions</h2>';
+	echo 'Under construction...';
 }
+
 else{
 	echo __('Online version check unavailable.');
 }

@@ -9,10 +9,13 @@ if (isset($_POST['change_user'])){
 	$user=mysql_query($usersql,$db);
 	while ($userDb=mysql_fetch_object($user)){
 		$username=$_POST[$userDb->user_id."username"];
+		$usermail=$_POST[$userDb->user_id."usermail"];
 		if ($_POST[$userDb->user_id."username"]==""){
 			$username='GEEN NAAM / NO NAME';
 		}
-		$sql="UPDATE humo_users SET user_name='".$username;
+		$sql="UPDATE humo_users SET
+			user_name='".$username."',
+			user_mail='".$usermail;
 		if (isset($_POST[$userDb->user_id."password"]) AND $_POST[$userDb->user_id."password"]){
 			$sql=$sql."', user_password='".MD5($_POST[$userDb->user_id."password"]);
 		}
@@ -23,9 +26,11 @@ if (isset($_POST['change_user'])){
 }
 
 if (isset($_POST['add_user'])){
-	$sql="INSERT INTO humo_users SET user_name='".$_POST["add_username"].
-	"' , user_password='".MD5($_POST["add_password"]).
-	"' , user_group_id='".$_POST["add_group_id"]."';";
+	$sql="INSERT INTO humo_users SET
+	user_name='".$_POST["add_username"]."',
+	user_mail='".$_POST["add_usermail"]."',
+	user_password='".MD5($_POST["add_password"])."',
+	user_group_id='".$_POST["add_group_id"]."';";
 	$result=mysql_query($sql) or die(mysql_error());
 }
 
@@ -61,11 +66,14 @@ else {
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<br><table class="humo standard" border="1">';
 
-echo '<tr class="table_header"><th>'.__('User').'</th>';
+echo '<tr class="table_header_large"><th>'.__('User').'</th>';
+echo '<th>'.__('E-mail address').'</th>';
 echo '<th>'.__('Change password').'</th>';
 echo '<th>'.__('User group').'</th>';
 echo '<th>'.__('Statistics').'</th>';
-echo '<th>'.__('Change').'</th></tr>';
+//echo '<th>'.__('Change').'</th></tr>';
+echo '<th><input type="Submit" name="change_user" value="'.__('Change').'"></th></tr>';
+
 $usersql="SELECT * FROM humo_users ORDER BY user_name";
 $user=mysql_query($usersql,$db);
 while ($userDb=mysql_fetch_object($user)){
@@ -80,14 +88,21 @@ while ($userDb=mysql_fetch_object($user)){
 		echo '&nbsp;&nbsp;';
 
 	echo '<input type="hidden" name="'.$userDb->user_id.'user_id" value="'.$userDb->user_id.'">';
+
 	// *** It's not allowed to change username "guest" (gast = backwards compatibility) ***
 	if ($userDb->user_name=='gast' OR $userDb->user_name=='guest') {
 		echo '<input type="hidden" name="'.$userDb->user_id.'username" value="'.$userDb->user_name.'">';
 		echo '<b>'.$userDb->user_name.'</b></td>';
+
+		echo '<input type="hidden" name="'.$userDb->user_id.'usermail" value="">';
+		echo '<td><br></td>';
 		echo '<td><b>'.__('no need to log in').'</b>';
 	}
 	else{
 		echo '<input type="text" name="'.$userDb->user_id.'username" value="'.$userDb->user_name.'" size="15"></td>';
+
+		echo '<td><input type="text" name="'.$userDb->user_id.'usermail" value="'.$userDb->user_mail.'" size="20"></td>';
+
 		echo '<td><input type="password" name="'.$userDb->user_id.'password" size="15">';
 	}
 	echo '</td>';
@@ -123,13 +138,15 @@ while ($userDb=mysql_fetch_object($user)){
 		echo '<td><br></td>';
 	}
 
-	print '<td><input type="Submit" name="change_user" value="'.__('Change').'"></td>';
-	print "</tr>\n";
+	//print '<td><input type="Submit" name="change_user" value="'.__('Change').'"></td>';
+	echo '<td><br></td>';
+	echo "</tr>\n";
 }
 
 // *** Add user ***
-print '<tr align="center" bgcolor="green"><td>';
-echo '<input type="text" name="add_username" size="15"></td>';
+print '<tr align="center" bgcolor="green">';
+echo '<td><input type="text" name="add_username" size="15"></td>';
+echo '<td><input type="text" name="add_usermail" size="20"></td>';
 print '<td><input type="password" name="add_password" size="15"></td>';
 
 // *** Select group for new user ***

@@ -69,6 +69,10 @@ if (!isset($groupDb->group_show_restricted_source)){ $user['group_show_restricte
 if (!isset($groupDb->group_source_presentation)){ $user['group_source_presentation']='title'; }
 	else{ $user['group_source_presentation']=$groupDb->group_source_presentation; }
 
+// *** User can add notes/ remarks by a person in the family tree ***
+if (!isset($groupDb->group_user_notes)){ $user['group_user_notes']='n'; }
+	else{ $user['group_user_notes']=$groupDb->group_user_notes; }
+
 $user['group_gedcomnr']=$groupDb->group_gedcomnr; // Show gedcomnumber
 $user['group_living_place']=$groupDb->group_living_place; // Show living place
 $user['group_places']=$groupDb->group_places; // Show birth, bapt, death and buried places.

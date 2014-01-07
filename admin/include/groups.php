@@ -15,7 +15,7 @@ echo '<h1 align=center>'.__('User groups').'</h1>';
  
 if (isset($_POST['group_add'])){
 	$sql="INSERT INTO humo_groups SET group_name='new groep', group_privacy='n', group_menu_places='n', group_admin='n',
-		group_sources='n', group_source_presentation='title', group_show_restricted_source='y',
+		group_sources='n', group_source_presentation='title', group_user_notes='n', group_show_restricted_source='y',
 		group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j',
 		group_religion='n', group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n',
 		group_own_code='n', group_pdf_button='y', group_work_text='n', group_texts='j',
@@ -35,6 +35,8 @@ if (isset($_POST['group_change'])){
 	if ($_POST["group_filter_pers_hide"]==''){ $_POST["group_filter_pers_hide"]='#'; }
 	if ($_POST["group_pers_hide_totally"]==''){ $_POST["group_pers_hide_totally"]='X'; }
 
+	if (!isset($_POST["group_user_notes"])){ $_POST["group_user_notes"]='n'; }
+
 	$sql="UPDATE humo_groups SET
 	group_name='".$_POST["group_name"]."',
 	group_editor='".$_POST["group_editor"]."',
@@ -45,6 +47,7 @@ if (isset($_POST['group_change'])){
 	group_sources='".$_POST["group_sources"]."',
 	group_show_restricted_source='".$_POST["group_show_restricted_source"]."',
 	group_source_presentation='".$_POST["group_source_presentation"]."',
+	group_user_notes='".$_POST["group_user_notes"]."',
 	group_birthday_rss='".$_POST["group_birthday_rss"]."',
 	group_menu_persons='".$_POST["group_menu_persons"]."',
 	group_menu_names='".$_POST["group_menu_names"]."',
@@ -229,6 +232,11 @@ Group "family" = family members or genealogists.').'<br>';
 			ADD group_pdf_button VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_own_code;";
 		$result=mysql_query($sql) or die(mysql_error());
 	}
+	if (!isset($field['group_user_notes'])){
+		$sql="ALTER TABLE humo_groups
+			ADD group_user_notes VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_own_code;";
+		$result=mysql_query($sql) or die(mysql_error());
+	}
  
 	// *** Renew data AFTER updates ***
 	$groupsql="SELECT * FROM humo_groups WHERE group_id='".$show_group_id."'";
@@ -246,8 +254,10 @@ Group "family" = family members or genealogists.').'<br>';
 
 	//print '<tr><th bgcolor=green><font color=white>'.__('Group').'</font></th><th bgcolor=green><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
-	echo '<tr><th bgcolor=green><font color=white>'.__('Group'); 
-		echo ' <input type="Submit" name="group_remove" value="'.__('REMOVE GROUP').'">';
+	echo '<tr><th bgcolor=green><font color=white>'.__('Group');
+		if ($groupDb->group_id>'3'){
+			echo ' <input type="Submit" name="group_remove" value="'.__('REMOVE GROUP').'">';
+		}
 		echo '</font></th><th bgcolor=green><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 	print '<tr><td>'.__('Group name').'</td><td><input type="text" name="group_name" value="'.$groupDb->group_name.'" size="15"></td>';
 
@@ -412,6 +422,11 @@ Group "family" = family members or genealogists.').'<br>';
 	$selected=''; if ($groupDb->group_source_presentation=='sources'){ $selected=' SELECTED'; }
 	echo '<option value="sources"'.$selected.'>'.__('Hide sources').'</option></select></td></tr>';
 
+	print '<tr><td>'.__('User is allowed to add notes/ remarks by a person in the family tree').'. '.__('Disabled in group "Guest"').'</td>';
+	$disabled=''; if ($groupDb->group_id=='3'){ $disabled=' disabled';} // *** Disable this option in "Guest" group.
+	print '<td><select size="1" name="group_user_notes"'.$disabled.'><option value="y">'.__('Yes').'</option>';
+	$selected=''; if ($groupDb->group_user_notes=='n'){ $selected=' SELECTED'; }
+	echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
 
 	// *** Sources ***
 	print '<tr><th bgcolor=green><font color=white>'.__('Sources').'</font></th><th bgcolor=green><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';

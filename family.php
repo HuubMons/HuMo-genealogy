@@ -1494,7 +1494,121 @@ if ($screen_mode!="PDF" AND isset($_SESSION['save_source_presentation']) AND $_S
 
 // *** Extra footer text in family screen ***
 if($screen_mode=='') {
-	if ($descendant_report==false) { echo $dataDb->treetext_family_footer; }
+	if ($descendant_report==false) {
+		// *** Show extra footer text in family screen ***
+		echo $dataDb->treetext_family_footer;
+
+		// *** User is allowed to add a note to a person in the family tree ***
+		if ($user['group_user_notes']=='y'){
+			// *** Find user that adds a note ***
+			$usersql='SELECT * FROM humo_users WHERE user_id="'.safe_text($_SESSION['user_id']).'"';
+			$user=mysql_query($usersql,$db);
+			$userDb=mysql_fetch_object($user);
+
+			// *** Name of selected person in family tree ***
+			if ($change_main_person==true)
+				$name = $woman_cls->person_name($person_womanDb);
+			else
+				$name = $man_cls->person_name($person_manDb);
+
+			if (isset($_POST['send_mail'])){
+				$gedcom_date=strtoupper(date("d M Y")); $gedcom_time=date("H:i:s");
+
+				//note_status show/ hide/ moderate options.
+				$user_register_date=date("Y-m-d H:i");
+				$sql="INSERT INTO humo_user_notes SET
+				note_date='".$gedcom_date."',
+				note_time='".$gedcom_time."',
+				note_user_id='".safe_text($_SESSION['user_id'])."',
+				note_note='".safe_text($_POST["user_note"])."',
+				note_fam_gedcomnumber='".safe_text($family_id)."',
+				note_pers_gedcomnumber='".safe_text($main_person)."',
+				note_tree_prefix='".safe_text($_SESSION['tree_prefix'])."',
+				note_names='".safe_text($name["standard_name"])."'				
+				;";
+//echo $sql;
+				$result=mysql_query($sql) or die(mysql_error());
+
+				// *** Mail new user note to the administrator ***
+				$register_address=$dataDb->tree_email;
+				$register_subject="HuMo-gen. ".__('New user note').": ".$userDb->user_name."\n";
+
+				// *** It's better to use plain text in the subject ***
+				$register_subject=strip_tags($register_subject,ENT_QUOTES);
+
+				$register_message =__('Message sent through HuMo-gen from the website.')."<br>\n";
+				$register_message .="<br>\n";
+				$register_message .=__('New user note')."<br>\n";
+				$register_message .=__('Name').':'.$userDb->user_name."<br>\n";
+				//$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";
+				$register_message .=$_POST['user_note']."<br>\n";
+
+				$headers  = "MIME-Version: 1.0\n";
+				//$headers .= "Content-type: text/plain; charset=utf-8\n";
+				$headers .= "Content-type: text/html; charset=utf-8\n";
+				$headers .= "X-Priority: 3\n";
+				$headers .= "X-MSMail-Priority: Normal\n";
+				$headers .= "X-Mailer: php\n";
+				$headers .= "From: \"".$userDb->user_name."\" <".$userDb->user_mail.">\n";
+
+				@$mail = mail($register_address, $register_subject, $register_message, $headers);
+				
+				echo '<table align="center" class="humo">';
+				echo '<tr><th><a name="add_info"></a>'.__('Your information is saved and will be reviewed by the webmaster.').'</th></tr>';
+				echo '</table>';
+			}
+			else{
+
+				// *** Script voor expand and collapse of items ***
+				echo '
+				<script type="text/javascript">
+				function hideShow(el_id){
+					// *** Hide or show item ***
+					var arr = document.getElementsByName(\'row\'+el_id);
+					for (i=0; i<arr.length; i++){
+						if(arr[i].style.display!="none"){
+							arr[i].style.display="none";
+						}else{
+							arr[i].style.display="";
+						}
+					}
+					// *** Change [+] into [-] or reverse ***
+					if (document.getElementById(\'hideshowlink\'+el_id).innerHTML == "[+]")
+						document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[-]";
+					else
+						document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[+]";
+				}
+				</script>';
+
+				echo '<form method="POST" action="'.$uri_path.'family.php#add_info" style="display : inline;">';
+				echo '<input type="hidden" name="id" value="'.$family_id.'">';
+				echo '<input type="hidden" name="main_person" value="'.$main_person.'">';
+
+				echo '<table align="center" class="humo" width="40%">';
+				echo '<tr><th class="fonts" colspan="2">';
+					echo '<a name="add_info"></a>';
+					echo '<a href="#add_info" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a>';
+					echo __('Add information or remarks').'</th></tr>';
+
+				echo '<tr style="display:none;" id="row1" name="row1"><td>'.__('Person').'</td><td>'.$name["standard_name"].'</td></tr>';
+
+				echo '<tr style="display:none;" id="row1" name="row1"><td>'.__('Name').'</td><td>'.$userDb->user_name.'</td></tr>';
+
+				if ($userDb->user_mail==''){
+					print '<tr style="background-color:#FF6600; display:none;" id="row1" name="row1"><td>'.__('E-mail address').'</td><td>'.__('Your e-mail address is missing. Please add you\'re mail address here: ').' <a href="user_settings.php">'.__('Settings').'</a></td></tr>';
+				}
+
+				$register_text=''; if (isset($_POST['register_text'])){ $register_text=$_POST['register_text']; }
+				print '<tr style="display:none;" id="row1" name="row1"><td>'.__('Text').'</td><td><textarea name="user_note" ROWS="5" COLS="40" class="fonts">'.$register_text.'</textarea></td></tr>';
+
+				print '<tr style="display:none;" id="row1" name="row1"><td></td><td><input class="fonts" type="submit" name="send_mail" value="'.__('Send').'"></td></tr>';
+				print '</table>';
+				print '</form>';		
+			}
+
+		}
+
+	}
 }
 
 // list appendix of sources

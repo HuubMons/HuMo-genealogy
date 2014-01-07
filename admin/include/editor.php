@@ -1112,12 +1112,25 @@ if (isset($tree_prefix)){
 	//if (isset($_SESSION['admin_search_lastname'])){ $search_lastname=$_SESSION['admin_search_lastname']; }
 
 	$search_quicksearch='';
+	$search_id='';
 	if (isset($_POST["search_quicksearch"])){
 		$search_quicksearch=safe_text($_POST['search_quicksearch']);
 		$_SESSION['admin_search_quicksearch']=$search_quicksearch;
+		$_SESSION['admin_search_id']='';
+		$search_id='';
 	}
 	if (isset($_SESSION['admin_search_quicksearch'])){
 		$search_quicksearch=$_SESSION['admin_search_quicksearch']; }
+
+	if (isset($_POST["search_id"]) AND (!isset($_POST["search_quicksearch"]) OR $_POST["search_quicksearch"]=='')){ 
+		// if both name and ID given go by name
+		$search_id=safe_text($_POST['search_id']);
+		$_SESSION['admin_search_id']=$search_id;
+		$_SESSION['admin_search_quicksearch']='';
+		$search_quicksearch='';
+	}
+	if (isset($_SESSION['admin_search_id']))
+		$search_id=$_SESSION['admin_search_id'];
 
 	if ($menu_admin=='person'){
 
@@ -1161,13 +1174,15 @@ if (isset($tree_prefix)){
 				//print __('Last name').':';
 				//print ' <input class="fonts" type="text" name="search_lastname" value="'.$search_lastname.'" size="12">';
 				print __('Person').':';
-				print ' <input class="fonts" type="text" name="search_quicksearch" value="'.$search_quicksearch.'" size="25">';
-
+				print ' <input class="fonts" type="text" name="search_quicksearch" value="'.$search_quicksearch.'" size="25"> ';
+				print __('or ID:');
+				print ' <input class="fonts" type="text" name="search_id" value="'.$search_id.'" size="10">';
 				echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
 				print ' <input class="fonts" type="submit" value="'.__('Search').'">';
 			print "</form>\n";
 			unset($person_result);
 
+			$idsearch=false; // flag for search with ID;
 			//if($search_lastname != ''  OR $search_firstname != '' ) {
 			if($search_quicksearch != '') {
 				//$person_qry= "SELECT * FROM ".$tree_prefix."person
@@ -1197,9 +1212,17 @@ if (isset($tree_prefix)){
 					//ORDER BY pers_lastname, pers_firstname";
 				$person_result = mysql_query($person_qry,$db);
 			}
+			elseif($search_id!='') {
+				if(substr($search_id,0,1)!="i" AND substr($search_id,0,1)!="I") { $search_id = "I".$search_id; } //make entry "48" into "I48"
+				$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$search_id."'";
+				$person_result = mysql_query($person_qry,$db);
+				$idsearch=true;
+			}
 
 			if (isset($person_result)){
 			//if ($person_result AND mysql_num_rows($person_result) > 0){
+				if(mysql_num_rows($person_result)==0) echo __('Person not found');
+				if($idsearch==true OR mysql_num_rows($person_result)==0) { echo '<span style="display:none">';}
 				echo '<b>'.__('Found:').'</b> ';
 				echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -1252,7 +1275,9 @@ if (isset($tree_prefix)){
 				echo '</select>';
 				echo ' <input type="Submit" name="submit" value="'.__('Select').'">';
 				echo '</form>';
+				if($idsearch==true OR mysql_num_rows($person_result)==0) { echo '</span>'; }
 			}
+
 			//echo '<br>';
 
 			// *** Add new person ***
@@ -1996,7 +2021,7 @@ if (isset($pers_gedcomnumber)){
 				echo '</td><td></td></tr>';
 			echo '</form>';
 
-			// *** NEW: show unprocessed gedcom tags ***
+			// *** Show unprocessed gedcom tags ***
 			if (isset($person->pers_unprocessed_tags)){
 				$tags_array=explode('<br>',$person->pers_unprocessed_tags);
 				echo '<tr class="humo_tags_pers humo_color"><td>';
@@ -2011,6 +2036,40 @@ if (isset($pers_gedcomnumber)){
 				echo '</td><td></td></tr>';
 				echo '<tr class="humo_color" style="display:none;" id="row61" name="row61"><td></td>';
 					echo '<td colspan="2">'.$person->pers_unprocessed_tags.'</td>';
+				echo '<td></td></tr>';
+			}
+
+			// *** NEW: show user added notes ***
+			$note_qry= "SELECT * FROM humo_user_notes
+				WHERE note_tree_prefix='".$tree_prefix."'
+				AND note_pers_gedcomnumber='".$pers_gedcomnumber."'";
+			$note_result = mysql_query($note_qry,$db);
+			$num_rows = mysql_num_rows($note_result);
+
+			echo '<tr class="humo_user_notes"><td>';
+			echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">'.__('[+]').'</span></a> ';
+			echo __('User notes').'</td><td colspan="2">';
+			if ($num_rows){
+				//printf(__('There are %d user added notes.'), count ($tags_array));
+				printf(__('There are %d user added notes.'), $num_rows);
+			}
+			else{
+				printf(__('There are %d user added notes.'), 0);
+			}
+			echo '</td><td></td></tr>';
+
+			while($noteDb=mysql_fetch_object($note_result)){
+				$user_qry = "SELECT * FROM humo_users
+					WHERE user_id='".$noteDb->note_user_id."'";
+				$user_result = mysql_query($user_qry);
+				$userDb=mysql_fetch_object($user_result);
+
+				echo '<tr style="display:none;" id="row62" name="row62"><td></td>';
+					echo '<td colspan="2">';
+					echo '<b>'.$noteDb->note_date.' '.$noteDb->note_time.' '.$userDb->user_name.'</b><br>';
+					echo '<b>'.$noteDb->note_names.'</b><br>';
+					echo nl2br($noteDb->note_note);
+					echo '</td>';
 				echo '<td></td></tr>';
 			}
 		}
@@ -2872,7 +2931,7 @@ if (isset($pers_gedcomnumber)){
 
 		// *** Show selected source ***
 		//if (isset($_POST['source_id'])){
-		if ($source_id){
+		if ($source_id OR isset($_POST['add_source'])){
 			echo '<table class="humo standard" border="1">';
 			print '<tr class="table_header"><th>'.__('Option').'</th><th colspan="2">'.__('Value').'</th></tr>';
 

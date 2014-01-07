@@ -800,46 +800,35 @@ while ($person=mysql_fetch_object($person_result)){
 	}
 
 	// *** Death data ***
-	if ($person->pers_death_date	OR $person->pers_death_place OR $person->pers_death_text OR $person->pers_death_cause OR $person->pers_cremation){
+	if ($person->pers_death_date	OR $person->pers_death_place OR $person->pers_death_text OR $person->pers_death_cause){
 		$buffer.="1 DEAT\n";
-		if ($person->pers_death_date){
+		if ($person->pers_death_date)
 			$buffer.='2 DATE '.$person->pers_death_date."\n";
-		}
-		if ($person->pers_death_place){
+		if ($person->pers_death_place)
 			$buffer.=process_place($person->pers_death_place,2);
-		}
-		if ($person->pers_death_time){
+		if ($person->pers_death_time)
 			$buffer.='2 TIME '.$person->pers_death_time."\n";
-		}
-		if ($gedcom_sources=='yes' AND $person->pers_death_source){
+		if ($gedcom_sources=='yes' AND $person->pers_death_source)
 			sources_export('person','pers_death_source',$person->pers_gedcomnumber,2);
-		}
-		if ($gedcom_texts=='yes' AND $person->pers_death_text){
-			$buffer.='2 NOTE '.process_text(3,$person->pers_death_text); }
-
-		if ($person->pers_death_cause){
+		if ($gedcom_texts=='yes' AND $person->pers_death_text)
+			$buffer.='2 NOTE '.process_text(3,$person->pers_death_text);
+		if ($person->pers_death_cause)
 			$buffer.='2 CAUS '.$person->pers_death_cause."\n";
-		}
-
-		if ($person->pers_cremation){
-			$buffer.='2 TYPE cremation'."\n";
-		}
 	}
 
 	// *** Buried data ***
-	if ($person->pers_buried_date OR $person->pers_buried_place OR $person->pers_buried_text){
+	if ($person->pers_buried_date OR $person->pers_buried_place OR $person->pers_buried_text OR $person->pers_cremation){
 		$buffer.="1 BURI\n";
-		if ($person->pers_buried_date){
+		if ($person->pers_buried_date)
 			$buffer.='2 DATE '.$person->pers_buried_date."\n";
-		}
-		if ($person->pers_buried_place){
+		if ($person->pers_buried_place)
 			$buffer.=process_place($person->pers_buried_place,2);
-		}
-		if ($gedcom_sources=='yes' AND $person->pers_buried_source){
+		if ($gedcom_sources=='yes' AND $person->pers_buried_source)
 			sources_export('person','pers_buried_source',$person->pers_gedcomnumber,2);
-		}
-		if ($gedcom_texts=='yes' AND $person->pers_buried_text){
-			$buffer.='2 NOTE '.process_text(3,$person->pers_buried_text); }
+		if ($gedcom_texts=='yes' AND $person->pers_buried_text)
+			$buffer.='2 NOTE '.process_text(3,$person->pers_buried_text);
+		if ($person->pers_cremation)
+			$buffer.='2 TYPE cremation'."\n";
 	}
 
 	// *** Living place ***

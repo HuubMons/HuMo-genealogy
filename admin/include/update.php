@@ -1866,6 +1866,47 @@ else{
 		echo '</td></tr>';
 	}
 
+	// **************************************
+	// *** Update procedure version 4.9.4 ***
+	// **************************************
+	if ($humo_option["update_status"]>'6'){
+		echo '<tr><td>HuMo-gen update V4.9.4</td><td style="background-color:#00FF00">OK</td></tr>';
+	}
+	else{
+		echo '<tr><td>HuMo-gen update V4.9.4</td><td style="background-color:#00FF00">';
+
+		// *** Save gedcom file name and gedcom program in database ***
+		// *** Test for existing column, some users allready tried a new script including a database update ***
+		$result = mysql_query("SHOW COLUMNS FROM `humo_trees` LIKE 'tree_gedcom'");
+		if(mysql_num_rows($result)==0) {
+			// create it
+			mysql_query("ALTER TABLE humo_trees ADD COLUMN tree_gedcom varchar (100)") or die("add_column_error ".mysql_error());
+		}
+
+		mysql_query("ALTER TABLE humo_trees ADD COLUMN tree_gedcom_program varchar (100)") or die("add_column_error ".mysql_error());
+
+		// *** Add new table, for user notes ***
+		$db_update = mysql_query("CREATE TABLE humo_user_notes (
+			note_id smallint(5) unsigned NOT NULL auto_increment,
+			note_date varchar(20) CHARACTER SET utf8,
+			note_time varchar(25) CHARACTER SET utf8,
+			note_user_id smallint(5),
+			note_note text CHARACTER SET utf8,
+			note_status varchar(10) CHARACTER SET utf8,
+			note_tree_prefix varchar(25) CHARACTER SET utf8,
+			note_pers_gedcomnumber varchar(20) CHARACTER SET utf8,
+			note_fam_gedcomnumber varchar(20) CHARACTER SET utf8,
+			note_names text CHARACTER SET utf8,
+			PRIMARY KEY  (`note_id`)
+			) DEFAULT CHARSET=utf8") or die(mysql_error());
+
+		// *** Update "update_status" to number 7 ***
+		$result = mysql_query("UPDATE humo_settings SET setting_value='7'
+			WHERE setting_variable='update_status'") or die(mysql_error());
+		echo ' Database updated!';
+		echo '</td></tr>';
+	}
+
 	/*	END OF UPDATE SCRIPT
 
 		*** VERY IMPORTANT REMARKS FOR PROGRAMMERS ***

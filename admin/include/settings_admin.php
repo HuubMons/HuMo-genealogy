@@ -198,7 +198,7 @@ else {
 			print '<option value="'.$groupDb->group_id.'"'.$selected.'>'.$groupDb->group_name.'</option>';
 		}
 	echo '</select> ';
-	echo __('Add you e-mail address by family tree data!');
+	echo __('Add your e-mail address by family tree data!');
 	echo '</td></tr>';
 
 	echo '<tr><td>'.__('Visitor registration: use spam question').'</td><td>';

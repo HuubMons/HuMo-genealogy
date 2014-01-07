@@ -23,6 +23,7 @@ if(!isset($_POST['install_tables2'])){
 		$check_groups=''; if (isset($_POST["table_groups"])){ $check_groups=' checked'; }
 		$check_cms_menu=''; if (isset($_POST["table_cms_menu"])){ $check_cms_menu=' checked'; }
 		$check_cms_pages=''; if (isset($_POST["table_cms_pages"])){ $check_cms_pages=' checked'; }
+		$check_user_notes=''; if (isset($_POST["table_user_notes"])){ $check_user_notes=' checked'; }
 		$check_log=''; if (isset($_POST["table_user_log"])){ $check_log=' checked'; }
 		$username_admin='admin'; if (isset($_POST["username_admin"])){ $username_admin=$_POST["username_admin"]; }
 		$password_admin='humogen'; if (isset($_POST["password_admin"])){ $password_admin=$_POST["password_admin"]; }
@@ -37,6 +38,7 @@ if(!isset($_POST['install_tables2'])){
 		$check_groups=' checked';
 		$check_cms_menu=' checked';
 		$check_cms_pages=' checked';
+		$check_user_notes=' checked';
 		$check_log=' checked';
 		$username_admin='admin';
 		$password_admin='humogen';
@@ -76,6 +78,8 @@ if(!isset($_POST['install_tables2'])){
 
 	print '<p><input type="checkbox" name="table_cms_pages" '.$check_cms_pages.'> '.__('(Re) create CMS pages table, used for own pages.').'<br>';
 
+	print '<p><input type="checkbox" name="table_user_notes" '.$check_user_notes.'> '.__('(Re) create user notes table.').'<br>';
+
 	print '<p><input type="checkbox" name="table_user_log" '.$check_log.'> '.__('Empty log table.').'<br>';
 
 	print '<p><b>'.__('Are you sure? Old settings will be deleted!').'</b><br>';
@@ -104,6 +108,7 @@ if (isset($_POST['install_tables2'])){
 	$table_user_log="1";
 	$table_cms_menu="1";
 	$table_cms_pages="1";
+	$table_user_notes="1";
 	$table_groups="1";
 
 	$query = mysql_query("SHOW TABLES");
@@ -115,6 +120,7 @@ if (isset($_POST['install_tables2'])){
 		if ($row[0]=='humo_groups'){ $table_groups=""; }
 		if ($row[0]=='humo_cms_menu'){ $table_cms_menu=""; }
 		if ($row[0]=='humo_cms_pages'){ $table_cms_pages=""; }
+		if ($row[0]=='humo_user_notes'){ $table_cms_menu=""; }
 		if ($row[0]=='humo_user_log'){ $table_user_log=""; }
 	}
 
@@ -125,6 +131,7 @@ if (isset($_POST['install_tables2'])){
 	if (isset($_POST["table_groups"])){ $table_groups='1'; }
 	if (isset($_POST["table_cms_menu"])){ $table_cms_menu='1'; }
 	if (isset($_POST["table_cms_pages"])){ $table_cms_pages='1'; }
+	if (isset($_POST["table_user_notes"])){ $table_cms_pages='1'; }
 	if (isset($_POST["table_user_log"])){ $table_user_log='1'; }
 	
 	//*********************************************************************
@@ -149,7 +156,7 @@ if (isset($_POST['install_tables2'])){
 		$db_update = mysql_query("INSERT INTO humo_settings (setting_variable,setting_value) values ('robots_option','<META NAME=\"robots\" CONTENT=\"noindex,nofollow\">')") or die(mysql_error());
 
 		// *** Update status number. Number must be: update_status+1! ***
-		$db_update = mysql_query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','6')") or die(mysql_error());
+		$db_update = mysql_query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','7')") or die(mysql_error());
 	}
 
 	if ($table_trees){
@@ -167,6 +174,8 @@ if (isset($_POST['install_tables2'])){
 			tree_owner varchar(100) CHARACTER SET utf8,
 			tree_pict_path varchar (100) CHARACTER SET utf8,
 			tree_privacy varchar (100) CHARACTER SET utf8,
+			tree_gedcom varchar (100),
+			tree_gedcom_program varchar (100),
 			PRIMARY KEY  (`tree_id`)
 			) DEFAULT CHARSET=utf8") or die(mysql_error());
 	
@@ -245,6 +254,7 @@ if (isset($_POST['install_tables2'])){
 			group_event varchar(1) CHARACTER SET utf8,
 			group_addresses varchar(1) CHARACTER SET utf8,
 			group_own_code varchar(1) CHARACTER SET utf8,
+			group_user_notes varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 			group_pdf_button varchar(1) CHARACTER SET utf8,
 			group_work_text varchar(1) CHARACTER SET utf8,
 			group_texts varchar(1) CHARACTER SET utf8,
@@ -393,7 +403,25 @@ if (isset($_POST['install_tables2'])){
 			log_user_admin varchar(5) CHARACTER SET utf8 DEFAULT ''
 			) DEFAULT CHARSET=utf8") or die(mysql_error());
 	}
-	
+
+	if ($table_user_notes){
+		$db_update = mysql_query("DROP TABLE humo_user_notes");
+		print __('creating humo_notes...').'<br>';
+		$db_update = mysql_query("CREATE TABLE humo_user_notes (
+			note_id smallint(5) unsigned NOT NULL auto_increment,
+			note_date varchar(20) CHARACTER SET utf8,
+			note_time varchar(25) CHARACTER SET utf8,
+			note_user_id smallint(5),
+			note_note text CHARACTER SET utf8,
+			note_status varchar(10) CHARACTER SET utf8,
+			note_tree_prefix varchar(25) CHARACTER SET utf8,
+			note_pers_gedcomnumber varchar(20) CHARACTER SET utf8,
+			note_fam_gedcomnumber varchar(20) CHARACTER SET utf8,
+			note_names text CHARACTER SET utf8,
+			PRIMARY KEY  (`note_id`)
+			) DEFAULT CHARSET=utf8") or die(mysql_error());
+	}
+
 	print '<b>'.__('No errors above? This means that the database has been processed!').'</b><br>';
 }
 ?>

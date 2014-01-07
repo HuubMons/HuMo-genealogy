@@ -99,7 +99,7 @@ if (isset($database_check) AND $database_check){
 	// *** Check HuMo-gen database status ***
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])){
-		if ($humo_option["update_status"]<6){ $page='update'; $show_menu_left=false; }	
+		if ($humo_option["update_status"]<7){ $page='update'; $show_menu_left=false; }	
 	}
 
 	if (isset($_GET['page']) AND $_GET['page']=='editor_sources'){
@@ -346,9 +346,9 @@ echo '<div id="humo_top" '.$top_dir.'>';
 		// *** Manual check for update ***
 		if (isset($_GET['update_check'])){
 			// *** Update settings ***
-			$result = mysql_query("UPDATE humo_settings
+			$result = @mysql_query("UPDATE humo_settings
 				SET setting_value='2012-01-01'
-				WHERE setting_variable='update_last_check'") or die(mysql_error());
+				WHERE setting_variable='update_last_check'");
 			$humo_option['update_last_check']='2012-01-01';
 		}
 
@@ -364,7 +364,6 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 			// *** Use update file directly from humo-gen website ***
 			$update_file='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
-
 
 			// *** Copy update data from humo-gen website to local website ***
 			if(function_exists('curl_exec')){
@@ -415,17 +414,14 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				// *** Check for Beta version update ***
 				elseif (strtotime ($update['beta_version_date'])-strtotime($humo_option["version_date"])>0){
 					$update['up_to_date']='yes';
-
 					$update_text= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Beta version available').' ('.$update['beta_version'].')!</a>';
 				}
 				// *** HuMo-gen up-to-date ***
 				else{
 					$update['up_to_date']='yes';
-
 					$update_text= '  '.__('HuMo-gen is up-to-date!');
 					$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
 				}
-
 
 				// *** Update settings ***
 				$update_last_check=date("Y-m-d");

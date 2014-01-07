@@ -70,7 +70,7 @@ $anc_hi = $anc_top + ((pow(2,$chosengenanc-1) * $v_distance)/2) + 100; // lowest
 $div_hi = $desc_hi > $anc_hi ? $desc_hi : $anc_hi;
 
 echo '<div class="standard_header fonts" style="align:center; text-align: center;">';
-echo '<b>'.__('Hourglass Chart').__(' of ').$genarray[0]["nam"].'</b>';
+echo '<b>'.__('Hourglass chart').__(' of ').$genarray[0]["nam"].'</b>';
 echo '</div>';
 
 echo '<script type="text/javascript" src="include/jqueryui/js/html2canvas.js"></script>';

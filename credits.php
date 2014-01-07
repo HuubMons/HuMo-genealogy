@@ -77,7 +77,7 @@ This credits screen is english only...
 <li>Ambrogio Chiotti:
 	<ul><li>Added Italian translation.
 	</ul>
-<li>Raymond:
+<li>Raymond Larche:
 	<ul><li>Improved French translation.
 	</ul>
 </ul>

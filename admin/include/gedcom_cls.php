@@ -519,8 +519,8 @@ function process_person($person_array){
 				$processed=1;
 				$name = str_replace("_", " ", $buffer);
 				$name = str_replace("~", " ", $name);
-				$position = strpos($name,"/");
 
+				// *** Second line "1 NAME" is a callname ***
 				if ($pers_firstname){
 					if ($pers_callname){ $pers_callname=$pers_callname.", ".substr($name,7); } else {
 						$pers_callname=substr($name,7); }
@@ -528,16 +528,22 @@ function process_person($person_array){
 					$pers_callname=rtrim($pers_callname);
 				}
 				else{
-					//$pers_firstname=substr($name,7,$position-7);
-					//$pers_lastname=substr($name,$position+1,-1);
-
+					$position = strpos($name,"/");
 					if($position!==false) { // there are slashes
 						$pers_firstname=substr($name,7,$position-7);
-						$pers_lastname=substr($name,$position+1,-1);
+
+						//$pers_lastname=substr($name,$position+1,-1);
+						$pers_lastname=substr($name,$position+1);
+						$pers_lastname=rtrim($pers_lastname,"/"); // *** Check for last / character, if present remove it ***
+
+						// *** Three or more (never seen that) name parts: just use this as a last name and remove the / character in these parts ***
+						// BK: 1 NAME Hubertus  /Huub/ Patronym Mons
+						// Gedcom file from LDS website (3rd item is a TITLE): 1 NAME Richard /de Plaiz/ Lord Plaiz
+						$pers_lastname = str_replace("/", "", $pers_lastname); // *** Remove / character***
 					}
 					else {
 						// *** No slashes in name (probably a bug or just a bad gedcom file) ***
-						// 1 NAME Hubertus Huub Andriessen Mons
+						// 1 NAME Hubertus [Huub] Mons
 						$pers_firstname=substr($name,7);
 					}
 
