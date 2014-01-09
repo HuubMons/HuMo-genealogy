@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-24 20:35+0100\n"
-"PO-Revision-Date: 2014-01-07 01:45+0100\n"
+"PO-Revision-Date: 2014-01-09 21:34+0100\n"
 "Last-Translator: marco.steinhaeuser\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -2457,6 +2457,13 @@ msgid ""
 "might get deleted or corrupted. You can restore from downloaded files with "
 "\"Option 2\" below."
 msgstr ""
+"Die letzte Backup-Datei wurde in den Admin-Ordner gesichert. Sie können "
+"diese Datei mit der \"Option 1\" weiter unten wiederherstellen.<br>\n"
+"Ausserdem wird Ihnen ein Download-Button angeboten. Wir empfehlen, diese "
+"Backup-Datei schnellstmöglich herunterzuladen für den Fall, dass Dateien auf "
+"dem Server (inkl. der Backup-Datei) gelöscht oder beschädigt werden. Zum "
+"Wiederherstellen von einer heruntergeladenen Datei benutzen Sie bitte "
+"\"Option 2\" weiter unten."
 
 #: humo-gen/admin/include/backup.php:29
 msgid "Restore database from backup file"
@@ -2468,14 +2475,21 @@ msgid ""
 "HuMo-gen Backup (if available) or from an .sql or .sql.zip backup file on "
 "your computer."
 msgstr ""
+"Hier können Sie die gesamte Datenbank Ihres letzten Backups mit dem HuMo-gen-"
+"Backup-Tool (falls verfügbar) oder von einer .sql oder .sql.zip Datei auf "
+"Ihrem Computer wiederherstellen."
 
 #: humo-gen/admin/include/backup.php:34
 msgid "Option 1: Restore from last backup created with HuMo-gen Backup"
 msgstr ""
+"Option 1: Wiederherstellung des letzten Backups durch das HuMo-gen-Backup-"
+"Tool"
 
 #: humo-gen/admin/include/backup.php:40
 msgid "Starting to restore database. This may take some time. Please wait..."
 msgstr ""
+"Starte Wiederherstellung der Datenbank. Das kann einige Zeit dauern. Bitte "
+"warten..."
 
 #: humo-gen/admin/include/backup.php:45
 msgid "No humo_backup file found on server."
@@ -2496,11 +2510,11 @@ msgstr "Keine Sicherungsdatei gefunden!"
 
 #: humo-gen/admin/include/backup.php:58
 msgid "Option 2: Restore from backup file on your computer"
-msgstr ""
+msgstr "Option 2: Herstellung einer Backup-Datei von Ihrem Computer"
 
 #: humo-gen/admin/include/backup.php:63
 msgid "Starting to restore database from backup file:"
-msgstr ""
+msgstr "Starte Wiederherstellung der Datenbank von einer Backup-Datei:"
 
 #: humo-gen/admin/include/backup.php:64
 msgid "This may take some time. Please wait..."
@@ -2512,6 +2526,9 @@ msgid ""
 "file in the admin/backup_tmp folder yourself with an ftp program or the "
 "control panel of your webhost)"
 msgstr ""
+"Upload fehlgeschlagen</span> (Sie können es erneut versuchen oder die Datei "
+"manuell mit einem FTP-Programm oder über den Control-Panel Ihres Hosting "
+"Providers in den Ordner admin/backup_tmp kopieren.) "
 
 #: humo-gen/admin/include/backup.php:86
 msgid ""
@@ -2547,6 +2564,16 @@ msgid ""
 "backup_tmp folder by other means, such as an ftp program or your web host's "
 "control panel.</li></ul>"
 msgstr ""
+"<li>Bitte benutzen Sie nur Dateien mit der Endung .sql oder .sql.zip "
+"(Dateien, die Sie mit dem HuMo-gen-Backup-Tool erstellt haben, enthalten "
+"bereits die Endung .sql.zip.)</li>\n"
+"<li>Das Zippen kann die Größe einer Datei drastisch reduzieren. Wir "
+"empfehlen deshalb, eine .sql-Datei, die Sie mit einem anderen Programm "
+"erstellt haben, zunächst als .zip-Datei zu packen und dann in .sql.zip "
+"umzubenennen.</li>\n"
+"<li>Falls das Hochladen fehlschlägt, können Sie die Backup-Datei manuell mit "
+"einem FTP-Programm oder über den Control-Panel Ihres Hosting-Providers in "
+"den Ordner admin/backup_tmp verschieben."
 
 #: humo-gen/admin/include/backup.php:125
 msgid "Creating backup file. This may take some time. Please wait..."
@@ -2558,6 +2585,9 @@ msgid ""
 "A backup file was saved to the server. We strongly suggest you download a "
 "copy to your computer in case you might need it later."
 msgstr ""
+"Eine Backup-Datei wurde auf dem Server gesichert. Wir empfehlen dringend, "
+"diese Datei auf Ihren Computer herunter zu laden, falls Sie diese später "
+"benötigen."
 
 #: humo-gen/admin/include/backup.php:184
 msgid "Download backup file"
@@ -2572,6 +2602,9 @@ msgid ""
 "Here you can add your own pages to HuMo-gen! It's possible to use categories "
 "in the menu (like \"Family history\", \"Family stories\")."
 msgstr ""
+"Hier können Sie eigene Seiten in HuMo-gen anlegen! Es ist möglich, "
+"Kategorien wie z.B. \"Familienhistorie\" oder \"Familien-Episoden\" im Menü "
+"zu benutzen."
 
 #: humo-gen/admin/include/cms_pages.php:22
 msgid "Pages"
@@ -2626,6 +2659,8 @@ msgid ""
 "There are still pages connected to this menu!<br>\n"
 "Please disconnect the pages from this menu first."
 msgstr ""
+"Es sind noch Seiten mit dem Menü verbunden!<br>\n"
+"Bitte trennen Sie diese Seiten zunächst vom Menü."
 
 #: humo-gen/admin/include/cms_pages.php:179
 msgid "Are you sure you want to remove this menu?"
@@ -2696,7 +2731,7 @@ msgstr "Besucherzähler"
 
 #: humo-gen/admin/include/cms_pages.php:409
 msgid "Add and edit menu/ category items:"
-msgstr ""
+msgstr "Menü- oder Kategorie-Einträge hinzufügen oder editieren:"
 
 #: humo-gen/admin/include/cms_pages.php:413
 msgid "Order"
@@ -2704,7 +2739,7 @@ msgstr "Reihenfolge"
 
 #: humo-gen/admin/include/cms_pages.php:413
 msgid "Menu item/ category"
-msgstr ""
+msgstr "Menü- oder Kategorie-Eintrag"
 
 #: humo-gen/admin/include/cms_pages.php:430
 msgid "Remove menu"
@@ -2726,7 +2761,7 @@ msgstr "Hinzufügen"
 #: humo-gen/admin/include/cms_pages.php:526
 #: humo-gen/admin/include/cms_pages.php:532
 msgid "Path for pictures in CMS pages"
-msgstr ""
+msgstr "Pfad für Bilder in CMS-Seiten"
 
 #: humo-gen/admin/include/cms_pages.php:527
 msgid ""
@@ -2734,12 +2769,18 @@ msgid ""
 "To point to a folder outside (and parallel to) the humogen folder, "
 "use ../../../../foldername"
 msgstr ""
+"Um den Hauptordner des HuMo-gen-Ordners zu zeigen, benutzen Sie "
+"bitte ../../../ordnername<br>\n"
+"Um auf einen Ordner parallel zum HuMo-gen-Ordners zu zeigen, benutzen Sie "
+"bitte ../../../../ordnername"
 
 #: humo-gen/admin/include/cms_pages.php:538
 msgid ""
 "Select main homepage (welcome page for visitors) for HuMo-gen<br>\n"
 "<b>The selected CMS page will replace the main index!</b>"
 msgstr ""
+"Startseite für Besucher von HuMo-gen festlegen<br>\n"
+"<b>Die ausgewählte CMS-Seite wird den Haupt-Index ersetzen!</b>"
 
 #: humo-gen/admin/include/cms_pages.php:555
 msgid "Use for all languages"
@@ -2748,11 +2789,11 @@ msgstr "Für alle Sprachen verwenden"
 #: humo-gen/admin/include/cms_pages.php:557
 #: humo-gen/admin/include/cms_pages.php:583
 msgid "Standard main index"
-msgstr ""
+msgstr "Standard Haupt-Index"
 
 #: humo-gen/admin/include/cms_pages.php:564
 msgid "Set per language"
-msgstr ""
+msgstr "Set pro Sprache"
 
 #: humo-gen/admin/include/editor.php:118
 #: humo-gen/admin/include/editor.php:2851
@@ -2769,10 +2810,13 @@ msgid ""
 "This will disconnect this person from parents, spouses and children <b>and "
 "delete it completely from the database.</b> Do you wish to continue?"
 msgstr ""
+"Diese Aktion wird die Verbindung der Person zu Eltern, Ehepartnern und "
+"Kindern trennen <br>und sie vollständig aus der Datenbank entfernen.</b> "
+"Wollen Sie fortfahren?"
 
 #: humo-gen/admin/include/editor.php:346 humo-gen/admin/include/editor.php:375
 msgid "Person disconnected from marriage(s)."
-msgstr ""
+msgstr "Person von der/n Ehe/n getrennt."
 
 #: humo-gen/admin/include/editor.php:401
 msgid "Person disconnected from parents."
