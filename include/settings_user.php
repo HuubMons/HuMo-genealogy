@@ -8,11 +8,23 @@ else{
 	// *** For guest account ("gast" is only used for backwards compatibility) ***
 	$account="SELECT * FROM humo_users WHERE user_name='gast' OR user_name='guest'";
 }
-$accountqry = mysql_query($account,$db);
-@$accountDb=mysql_fetch_object($accountqry) or die("No valid user/ Geen geldige gebruiker.");
+//$accountqry = mysql_query($account,$db);
+//@$accountDb=mysql_fetch_object($accountqry) or die("No valid user/ Geen geldige gebruiker.");
+$accountqry = $dbh->query($account);
+try {
+	@$accountDb = $accountqry->fetch(PDO::FETCH_OBJ);
+} catch (PDOException $e) {
+	echo "No valid user / Geen geldige gebruiker.";
+}
 
-$groupsql = mysql_query("SELECT * FROM humo_groups WHERE group_id='$accountDb->user_group_id'",$db);
-@$groupDb=mysql_fetch_object($groupsql) or die("No valid usergroup/ Geen geldige gebruikersgroup.");
+//$groupsql = mysql_query("SELECT * FROM humo_groups WHERE group_id='$accountDb->user_group_id'",$db);
+//@$groupDb=mysql_fetch_object($groupsql) or die("No valid usergroup/ Geen geldige gebruikersgroup.");
+$groupsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='$accountDb->user_group_id'");
+try {
+	@$groupDb = $groupsql->fetch(PDO::FETCH_OBJ);
+} catch (PDOException $e) {
+	echo "No valid usergroup / Geen geldige gebruikersgroup.";
+}
 
 if (!isset($groupDb->group_statistics)){ $user['group_statistics']='j'; }
 	else{ $user['group_statistics']=$groupDb->group_statistics; }

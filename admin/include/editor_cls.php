@@ -67,13 +67,16 @@ function text_process($text,$long_text=false){
 
 // *** Show texts without <br> and process Aldfaer and other @xx@ texts ***
 function text_show($find_text){
-	global $db, $tree_prefix;
+	global $db, $dbh, $tree_prefix;
 	if($find_text != '') {
 		$text=$find_text;
 		if (substr($find_text, 0, 1)=='@'){
-			$search_text=mysql_query("SELECT * FROM ".$tree_prefix."texts
-			WHERE text_gedcomnr='".$find_text."'",$db);
-			@$search_textDb=mysql_fetch_object($search_text);
+			//$search_text=mysql_query("SELECT * FROM ".$tree_prefix."texts
+			//WHERE text_gedcomnr='".$find_text."'",$db);
+			//@$search_textDb=mysql_fetch_object($search_text);
+			$search_text=$dbh->query("SELECT * FROM ".$tree_prefix."texts
+			WHERE text_gedcomnr='".$find_text."'");
+			@$search_textDb=$search_text->fetch(PDO::FETCH_OBJ);			
 			@$text=$search_textDb->text_text;
 			$text = str_replace("<br>", "<br>\n", $text);
 		}

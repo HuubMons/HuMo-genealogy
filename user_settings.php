@@ -12,10 +12,13 @@ if (!$user["user_name"]){
 @$qry = "SELECT * FROM humo_users LEFT JOIN humo_groups
 	ON humo_users.user_group_id=humo_groups.group_id
 	WHERE humo_users.user_id='".$_SESSION['user_id']."'";
-@$result = mysql_query($qry,$db);
-if (@mysql_num_rows($result) > 0){
-	@$userDb=mysql_fetch_object($result);
-//echo $userDb->user_name;
+//@$result = mysql_query($qry,$db);
+@$result = $dbh->query($qry);
+//if (@mysql_num_rows($result) > 0){
+if($result->rowCount() > 0) {
+	//@$userDb=mysql_fetch_object($result);
+	@$userDb=$result->fetch(PDO::FETCH_OBJ);
+	//echo $userDb->user_name;
 }
 else{
 	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
@@ -48,7 +51,8 @@ if (isset($_POST['send_mail'])){
 		user_mail='".safe_text($_POST["register_mail"])."',
 		user_password='".MD5($_POST["register_password"])."'
 		WHERE user_id=".$userDb->user_id;
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result = $dbh->query($sql);
 		echo '<h2>'.__('Your settings are updated!').'</h2>';
 	}
 	else{

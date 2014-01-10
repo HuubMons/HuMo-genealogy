@@ -42,10 +42,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>'."\r\n"
 .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\r\n";
 
 // *** Database ***
-$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
-$num_rows = mysql_num_rows($datasql);
-while (@$dataDb=mysql_fetch_object($datasql)){
-
+//$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
+//$num_rows = mysql_num_rows($datasql);
+$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
+$num_rows = $datasql->rowCount();
+//while (@$dataDb=mysql_fetch_object($datasql)){
+while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 	// *** Check is family tree is shown or hidden for user group ***
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
 	$hide_tree=false;
@@ -56,10 +58,16 @@ while (@$dataDb=mysql_fetch_object($datasql)){
 
 		//$person_qry=mysql_query("SELECT * FROM ".safe_text($dataDb->tree_prefix)."person
 		//	GROUP BY pers_indexnr",$db);
+		/*
 		$person_qry=mysql_query("SELECT * FROM ".safe_text($dataDb->tree_prefix)."person
 			WHERE pers_indexnr!='' GROUP BY pers_indexnr
 			UNION SELECT * FROM ".safe_text($dataDb->tree_prefix)."person WHERE pers_indexnr=''",$db);
-		while (@$personDb=mysql_fetch_object($person_qry)){
+		*/
+		$person_qry=$dbh->query("SELECT * FROM ".safe_text($dataDb->tree_prefix)."person
+			WHERE pers_indexnr!='' GROUP BY pers_indexnr
+			UNION SELECT * FROM ".safe_text($dataDb->tree_prefix)."person WHERE pers_indexnr=''");		
+		//while (@$personDb=mysql_fetch_object($person_qry)){
+		while (@$personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
 			// *** Use class for privacy filter ***
 			$person_cls = New person_cls;
 			$person_cls->construct($personDb);

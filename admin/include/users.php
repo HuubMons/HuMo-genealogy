@@ -6,8 +6,10 @@ echo '<h1 align=center>'.__('Users').'</h1>';
 
 if (isset($_POST['change_user'])){
 	$usersql="SELECT * FROM humo_users ORDER BY user_name";
-	$user=mysql_query($usersql,$db);
-	while ($userDb=mysql_fetch_object($user)){
+	//$user=mysql_query($usersql,$db);
+	$user=$dbh->query($usersql);
+	//while ($userDb=mysql_fetch_object($user)){
+	while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 		$username=$_POST[$userDb->user_id."username"];
 		$usermail=$_POST[$userDb->user_id."usermail"];
 		if ($_POST[$userDb->user_id."username"]==""){
@@ -21,7 +23,8 @@ if (isset($_POST['change_user'])){
 		}
 		$sql=$sql."', user_group_id='".$_POST[$userDb->user_id."group_id"];
 		$sql=$sql."' WHERE user_id=".$_POST[$userDb->user_id."user_id"];
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 }
 
@@ -31,7 +34,8 @@ if (isset($_POST['add_user'])){
 	user_mail='".$_POST["add_usermail"]."',
 	user_password='".MD5($_POST["add_password"])."',
 	user_group_id='".$_POST["add_group_id"]."';";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 // *** Remove user ***
@@ -49,7 +53,8 @@ if (isset($_GET['remove_user'])){
 if (isset($_POST['remove_user2'])){
 	// *** Delete source connection ***
 	$sql="DELETE FROM humo_users WHERE user_id='".safe_text($_POST['remove_user'])."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 
@@ -75,8 +80,10 @@ echo '<th>'.__('Statistics').'</th>';
 echo '<th><input type="Submit" name="change_user" value="'.__('Change').'"></th></tr>';
 
 $usersql="SELECT * FROM humo_users ORDER BY user_name";
-$user=mysql_query($usersql,$db);
-while ($userDb=mysql_fetch_object($user)){
+//$user=mysql_query($usersql,$db);
+$user=$dbh->query($usersql);
+//while ($userDb=mysql_fetch_object($user)){
+while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 
 	echo '<tr align="center"><td>';
 
@@ -113,9 +120,11 @@ while ($userDb=mysql_fetch_object($user)){
 	}
 	else{
 		$groupsql="SELECT * FROM humo_groups";
-		$groupresult=mysql_query($groupsql,$db);
+		//$groupresult=mysql_query($groupsql,$db);
+		$groupresult=$dbh->query($groupsql);
 		print '<td><select size="1" name="'.$userDb->user_id.'group_id">';
-		while ($groupDb=mysql_fetch_object($groupresult)){
+		//while ($groupDb=mysql_fetch_object($groupresult)){
+		while ($groupDb=$groupresult->fetch(PDO::FETCH_OBJ)){
 			$select=''; if ($userDb->user_group_id==$groupDb->group_id) $select=' SELECTED';
 			echo '<option value="'.$groupDb->group_id.'"'.$select.'>'.$groupDb->group_name.'</option>';
 		}
@@ -124,12 +133,16 @@ while ($userDb=mysql_fetch_object($user)){
 
 	// *** Show statistics ***
 	$logbooksql='SELECT COUNT(log_date) as nr_login FROM humo_user_log WHERE log_username="'.$userDb->user_name.'"';
-	$logbook=mysql_query($logbooksql,$db);
-	$logbookDb=mysql_fetch_object($logbook);
+	//$logbook=mysql_query($logbooksql,$db);
+	//$logbookDb=mysql_fetch_object($logbook);
+	$logbook=$dbh->query($logbooksql);
+	$logbookDb=$logbook->fetch(PDO::FETCH_OBJ);	
 
 	$logdatesql='SELECT log_date FROM humo_user_log	WHERE log_username="'.$userDb->user_name.'" ORDER BY log_date DESC LIMIT 0,1';
-	$logdate=mysql_query($logdatesql,$db);
-	$logdateDb=mysql_fetch_object($logdate);
+	//$logdate=mysql_query($logdatesql,$db);
+	//$logdateDb=mysql_fetch_object($logdate);
+	$logdate=$dbh->query($logdatesql);
+	$logdateDb=$logdate->fetch(PDO::FETCH_OBJ);	
 
 	if ($logbookDb->nr_login){
 		echo '<td>#'.$logbookDb->nr_login.', '.$logdateDb->log_date.'</td>';
@@ -151,9 +164,11 @@ print '<td><input type="password" name="add_password" size="15"></td>';
 
 // *** Select group for new user ***
 $groupsql="SELECT * FROM humo_groups";
-$groupresult=mysql_query($groupsql,$db);
+//$groupresult=mysql_query($groupsql,$db);
+$groupresult=$dbh->query($groupsql);
 print "<td><select size='1' name='add_group_id'>";
-while ($groupDb=mysql_fetch_object($groupresult)){
+//while ($groupDb=mysql_fetch_object($groupresult)){
+while ($groupDb=$groupresult->fetch(PDO::FETCH_OBJ)){
 	$select=''; if ($groupDb->group_id=='2') $select=' SELECTED';
 	//echo "<option value='".$groupDb->group_id."'>".$groupDb->group_name."</option>";
 	echo '<option value="'.$groupDb->group_id.'"'.$select.'>'.$groupDb->group_name.'</option>';

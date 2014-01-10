@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 /**
 * This is the admin web entry point for HuMo-gen.
 *
@@ -11,7 +12,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2009 Huub Mons,
+* Copyright (C) 2008-2014 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -73,7 +74,8 @@ $ADMIN=TRUE; // *** Override "no database" message for admin ***
 include_once(CMS_ROOTPATH."include/db_login.php"); // *** Database login ***
 
 // *** Use UTF-8 database connection ***
-@mysql_query("SET NAMES 'utf8'", $db);
+//@mysql_query("SET NAMES 'utf8'", $db);
+@$dbh->query("SET NAMES 'utf8'");
 
 include_once(CMS_ROOTPATH."include/safe.php"); //Variabelen
 
@@ -83,7 +85,8 @@ $popup=false;
 
 $update_message='';
 if (isset($database_check) AND $database_check){
-	$check_tables = @mysql_query("SELECT * FROM humo_settings",$db);
+	//$check_tables = @mysql_query("SELECT * FROM humo_settings",$db);
+	$check_tables = $dbh->query("SELECT * FROM humo_settings");
 	if ($check_tables){
 		include_once(CMS_ROOTPATH."include/settings_global.php");
 		$show_menu_left=true;
@@ -93,12 +96,13 @@ if (isset($database_check) AND $database_check){
 	if (isset($_POST['install_tables2'])){ $show_menu_left=true; }
 
 	// *** Update to version 4.6, in older version there is a dutch-named table: humo_instellingen ***
-	$check_update = @mysql_query("SELECT * FROM humo_instellingen",$db);
+	//$check_update = @mysql_query("SELECT * FROM humo_instellingen",$db);
+	$check_update = @$dbh->query("SELECT * FROM humo_instellingen");
 	if ($check_update){ $page='update'; $show_menu_left=false; }
 
 	// *** Check HuMo-gen database status ***
 	// *** Change this value if the database must be updated ***
-	if (isset($humo_option["update_status"])){
+	if (isset($humo_option["update_status"])){ 
 		if ($humo_option["update_status"]<7){ $page='update'; $show_menu_left=false; }	
 	}
 
@@ -187,9 +191,12 @@ if (isset($_SERVER["PHP_AUTH_USER"])){
 	@$query = "SELECT * FROM humo_users LEFT JOIN humo_groups
 		ON humo_users.user_group_id=humo_groups.group_id
 		WHERE humo_users.user_name='".$_SERVER["PHP_AUTH_USER"]."'";
-	@$result = mysql_query($query,$db);
-	if (@mysql_num_rows($result) > 0){
-		@$resultDb=mysql_fetch_object($result);
+	//@$result = mysql_query($query,$db);
+	@$result = $dbh->query($query);
+	//if (@mysql_num_rows($result) > 0){
+	if (@$result->rowCount() > 0){
+		//@$resultDb=mysql_fetch_object($result);
+		@$resultDb=$result->fetch(PDO::FETCH_OBJ);
 		$group_administrator=$resultDb->group_admin;
 
 		// *** Check if user is a editor ***
@@ -202,17 +209,20 @@ elseif($page=='update') {
 else{
 	// *** Logged in using PHP-MySQL ***
 	@$query = "SELECT * FROM humo_users";
-	@$result = mysql_query($query,$db);
-	if (@mysql_num_rows($result) > 0){
-
+	//@$result = mysql_query($query,$db);
+	@$result = $dbh->query($query);	
+	//if (@mysql_num_rows($result) > 0){
+	if (@$result->rowCount() > 0){
 		// *** humo-users table exists, check admin log in ***
 		//if (isset($_SESSION["group_id_admin"]) AND $_SESSION["group_id_admin"] == "1") {
 		if (isset($_SESSION["group_id_admin"])) {
 			// *** Logged in as admin... ***
 
 			// *** Read group settings ***
-			$groepsql = mysql_query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'",$db);
-			@$groepDb=mysql_fetch_object($groepsql) or die("Geen geldige gebruikersgroep/ No valid usergroup.");
+			//$groepsql = mysql_query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'",$db);
+			//@$groepDb=mysql_fetch_object($groepsql) or die("Geen geldige gebruikersgroep/ No valid usergroup.");
+			$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'");
+			@$groepDb=$groepsql->fetch(PDO::FETCH_OBJ);			
 
 			// *** Check if user is a administrator ***
 			$group_administrator=$groepDb->group_admin;
@@ -338,7 +348,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 	echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
 
 	// *** Check if installation is completed, before checking for an update ***
-	$check_update = @mysql_query("SELECT * FROM humo_settings",$db);
+	//$check_update = @mysql_query("SELECT * FROM humo_settings",$db);
+	$check_update = @$dbh->query("SELECT * FROM humo_settings");
 	if ($check_update AND $page!='login' AND $page!='update' AND $popup==false){
 
 		// *** Update check, once a day ***
@@ -346,9 +357,12 @@ echo '<div id="humo_top" '.$top_dir.'>';
 		// *** Manual check for update ***
 		if (isset($_GET['update_check'])){
 			// *** Update settings ***
-			$result = @mysql_query("UPDATE humo_settings
+			//$result = @mysql_query("UPDATE humo_settings
+			//	SET setting_value='2012-01-01'
+			//	WHERE setting_variable='update_last_check'");
+			$result = @$dbh->query("UPDATE humo_settings
 				SET setting_value='2012-01-01'
-				WHERE setting_variable='update_last_check'");
+				WHERE setting_variable='update_last_check'");				
 			$humo_option['update_last_check']='2012-01-01';
 		}
 
@@ -425,9 +439,12 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 				// *** Update settings ***
 				$update_last_check=date("Y-m-d");
-				$result = mysql_query("UPDATE humo_settings
+				//$result = mysql_query("UPDATE humo_settings
+				//	SET setting_value='".safe_text($update_last_check)."'
+				//	WHERE setting_variable='update_last_check'") or die(mysql_error());
+				$result = $dbh->query("UPDATE humo_settings
 					SET setting_value='".safe_text($update_last_check)."'
-					WHERE setting_variable='update_last_check'") or die(mysql_error());
+					WHERE setting_variable='update_last_check'");
 
 				// *** Remove temporary file, used for curl method ***
 				if (file_exists('update/temp_update_check.php')) unlink ('update/temp_update_check.php');
@@ -437,10 +454,13 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				$update_text= '  '.__('Online version check unavailable.');
 			}
 			
-			$result = mysql_query("UPDATE humo_settings
+			//$result = mysql_query("UPDATE humo_settings
+			//	SET setting_value='".safe_text($update_text)."'
+			//	WHERE setting_variable='update_text'") or die(mysql_error());
+			$result = $dbh->query("UPDATE humo_settings
 				SET setting_value='".safe_text($update_text)."'
-				WHERE setting_variable='update_text'") or die(mysql_error());
-
+				WHERE setting_variable='update_text'");
+				
 			$update_text.=' *';
 		}
 		else{

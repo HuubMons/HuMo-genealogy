@@ -1,5 +1,6 @@
 <?php
 // *** Safety line ***
+//error_reporting(E_ALL);
 if (!defined('ADMIN_PAGE')){ exit; }
 
 //TO DO 
@@ -7,19 +8,11 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 echo '<script type="text/javascript" src="include/popup_merge.js"></script>';
 
-if(CMS_SPECIFIC=="Joomla") {
-	$phpself2='index.php?option=com_humo-gen&amp;task=admin&amp;page=language_editor';
-}
-else {
-	//$phpself2=$_SERVER['PHP_SELF'];
-	$phpself2=CMS_ROOTPATH.'admin/index.php?page=language_editor';
-}
-
 echo '<form method="POST" action="" name="saveform" style="display : inline;">';
 echo '<div style="position:fixed;top:68px;left:0px;">';
 echo '<h1 align=center>'.__('Language editor').'</h1>';
-echo '<div style="margin:10px;padding:3px">'.__('This is the language editor of HuMo-gen. It\'s possible to change or edit language items in this editor. If you find language fault(s) in a language, please contact the programmers. They will change this in a next version!').'<br>';
-echo __('Translate into the right column. The untranslated items appear first. TIP: if you are looking for a specific term, use Ctrl+F in your browser.').'</div><br>';
+echo '<div style="margin:10px;padding:3px">'.__('This is the language editor of HuMo-gen. It\'s possible to change or edit language items in this editor. If you find language errors in a language, please contact the programmers. They will change this in a next version!').'&nbsp;';
+echo __('Translate into the right column. The untranslated items appear first.').'</div>';
 
 echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 	$language_editor='en';
@@ -59,31 +52,41 @@ echo '<td style="width:50%;text-align:center;border-left:none;">';
 	// here php will place the "saved file xx" message en javascript will put the "saving..." message
 	echo '<div id="announce" style="color:red; font-weight:bold; display:inline;">';
 
-	if (isset($_POST['language_editor'])){  
+	//if (isset($_POST['language_editor']) AND !isset($_POST['prevpage']) AND !isset($_POST['nextpage']) AND !isset($_POST['langsearch']) ){  
+	if(isset($_POST['save_button']) AND $_POST['save_button']=="pressed") {	
+		$save_array = array();
 		for($i=1; $i<count($_SESSION['line_array']); $i++) { 
-			if(isset($_POST['txt_name'.$i])) {  
+			if(isset($_POST['txt_name'.$i])) {  // displayed items
 				$content = str_replace("\\\\\\","\\",$_POST['txt_name'.$i]);
 				$content = str_replace("\\\\","\\",$content);
-				$_SESSION['line_array'][$i]['msgstr'] = $content;
+				$_SESSION['line_array'][$i]['msgstr'] = $content; 
+				// store posted lines - these will be written to the file with the msgstr_save function.
+				// the other ones will just get copied straight from the array
+				$save_array[$i] = msgstr_save($content);
+			}
+			else { // non displayed items - these will be written to the file with the msgstr_save2 function.
+				if(isset($_SESSION['line_array'][$i]['msgstr'])) {
+					$save_array[$i] = msgstr_save2($_SESSION['line_array'][$i]['msgstr']);
+				}
 			}
 		}
 
 		$handle_write = @fopen(CMS_ROOTPATH.'languages/'.$language_editor.'/'.$language_editor.".po", "w+");
 		if ($handle_write) {
 			for($i=0; $i<count($_SESSION['line_array']); $i++) {
+				// #~ remarks need \n ad end, except for last one:
+				if(isset($_SESSION['line_array'][$i]["note"]) AND $i!=(count($_SESSION['line_array'])-1) AND substr($_SESSION['line_array'][$i]["note"],0,2)=="#~") { $_SESSION['line_array'][$i]["note"] .="\n"; }
+				// write all types of notes:
 				if(isset($_SESSION['line_array'][$i]["note"])) fwrite($handle_write, $_SESSION['line_array'][$i]["note"]);
+				// write msgid line:
 				if(isset($_SESSION['line_array'][$i]["msgid"])) fwrite($handle_write, "msgid ".$_SESSION['line_array'][$i]["msgid"]);
+				// write all msgstr lines:
 				if(isset($_SESSION['line_array'][$i]["msgstr"])) {
-					$empty_brackets=""; 
-					if($_SESSION['line_array'][$i]["msgstr_empty"]==1) {
-						//$empty_brackets="\"\"\n";
-					}
 					if($i==0) { // first msgstr is the description of the po file
 						fwrite($handle_write, "msgstr ".$_SESSION['line_array'][$i]["msgstr"]."\n");				
 					} 
-					elseif(isset($_SESSION['line_array'][$i]["msgid"])) {
-						//fwrite($handle_write, "msgstr ".$empty_brackets.stripslashes(msgstr_save($_SESSION['line_array'][$i]["msgstr"])));
-						fwrite($handle_write, "msgstr ".$empty_brackets.msgstr_save($_SESSION['line_array'][$i]["msgstr"]));
+					elseif(isset($_SESSION['line_array'][$i]["msgid"])) { // regular msgstr lines
+						fwrite($handle_write, "msgstr ".$save_array[$i]);
 					}
 					else {  // no msgstr such as after #~ remarks
 						fwrite($handle_write,"\n");
@@ -111,7 +114,7 @@ echo '<td style="width:50%;text-align:center;border-left:none;">';
 
 	$handle = @fopen($file, "r");
 	if ($handle) {
-		$count=0; $msgid=0; $msgstr=0; $note=0; $line_array= Array();
+		$count=0; $msgid=0; $msgstr=0; $note=0; $line_array= Array();  
 		while (($buffer = fgets($handle, 4096)) !== false) {
 			if(substr($buffer,0,5)=="msgid") {
 				$msgid=1; $msgstr=0; $note=0;
@@ -123,7 +126,7 @@ echo '<td style="width:50%;text-align:center;border-left:none;">';
 				$line_array[$count]["msgstr"] = substr($buffer,7);  
 				$line_array[$count]["msgstr_empty"] = 0;
 			}
-			elseif(substr($buffer,0,1)=="#") {
+			elseif(substr($buffer,0,1)=="#") { 
 				if($note==0) { 
 					$note=1; $msgstr=0; $msgid=0; 
 					$line_array[$count]["note"] = $buffer;  
@@ -161,34 +164,136 @@ echo '<td style="width:50%;text-align:center;border-left:none;">';
 	echo '</div>';
 echo '</td></tr></table><br>';
 
+
+
+if(!isset($_SESSION['maxlines'])) { $_SESSION['maxlines'] = 10; } // default
+elseif (isset($_POST['maxlines'])) { $_SESSION['maxlines'] = $_POST['maxlines']; } // user input
+
+if(!isset($_SESSION['present_page'])) { $_SESSION['present_page']=0; } // default is first page
+if(isset($_POST['prevpage'])) { $_SESSION['present_page']= $_POST['to_prev_page']; } // previous page button pressed
+if(isset($_POST['nextpage'])) { $_SESSION['present_page']= $_POST['to_next_page']; } // next page button pressed
+if(isset($_POST['langsearch'])) { $_SESSION['present_page']=0; } // after search change start with first page
+
+//if(isset($_POST['maxlines']) AND !isset($_POST['prevpage']) AND !isset($_POST['nextpage']) 
+//	AND !isset($_POST['langsearch']) AND $_POST['save_button']) {  $_SESSION['present_page']=0; } // maxlines changed
+if(isset($_POST['maxlines']) AND !isset($_POST['prevpage']) AND !isset($_POST['nextpage']) 
+	AND !isset($_POST['langsearch']) AND (isset($_POST['save_button']) AND $_POST['save_button']!="pressed")) {  
+		$_SESSION['present_page']=0; } // maxlines changed
+
+if(isset($_POST['langsearchtext']) AND isset($_POST['langsearch'])) { $_SESSION['langsearchtext'] = $_POST['langsearchtext']; }
+ 
+$search_lines=0; $firstkey=0;		
+if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="") { 
+	//$search_lines=0;
+	foreach($_SESSION['line_array'] as $key => $value) {
+		if($key==0) { $firstkey=1; continue; } // description of po file
+		if((isset($value["msgid"]) AND stripos($value["msgid"],$_SESSION['langsearchtext'])!==FALSE) OR
+			(isset($value["msgstr"]) AND stripos($value["msgstr"],$_SESSION['langsearchtext'])!==FALSE))	{
+			$search_lines++;
+		}
+	}
+}	
+
+echo '<table class="humo" border="" cellspacing="0" width="98%" style="border-width:0px;margin-left:auto;margin-right:auto">';
+
+// Page nr
+echo '<tr class="table_header_large"><td style="text-align:center;color:red;font-weight:bold">';
+echo 'Page:&nbsp;';
+echo ($_SESSION['present_page']+1);
+
+// Next page button
+echo '</td><td style="width:135px;text-align:center">';
+if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="") $count_lines = $search_lines;
+else $count_lines = count($_SESSION['line_array']);
+if(($_SESSION['present_page']+1)*$_SESSION['maxlines'] < $count_lines) { // only show next page button if not last page
+	echo ' <input style="font-size:100%" type="submit" name="nextpage" value="'.__('Next page').'">';
+	echo '<input type="hidden" name="to_next_page" value="'.($_SESSION['present_page']+1).'">';
+}
+
+// Previous page button
+echo '</td><td style="width:135px;text-align:center">';
+if($_SESSION['present_page']>0) { // only show prev page button if not first page
+	echo ' <input style="font-size:100%" type="submit" name="prevpage" value="'.__('Previous page').'">';
+	echo '<input type="hidden" name="to_prev_page" value="'.($_SESSION['present_page']-1).'">';
+}
+
+// Max items per page choice
+echo '</td><td style="text-align:center">';  
+echo __('Max items per page: ');
+echo '<select size="1" name="maxlines" style="width:50px" onChange="this.form.submit();">';
+$selected=""; if($_SESSION['maxlines']==10) $selected = " SELECTED ";
+echo '<option value="10" '.$selected.'>'.'10'.'</option>';
+$selected=""; if($_SESSION['maxlines']==20) $selected = " SELECTED ";
+echo '<option value="20" '.$selected.'>'.'20'.'</option>';
+$selected=""; if($_SESSION['maxlines']==30) $selected = " SELECTED ";
+echo '<option value="30" '.$selected.'>'.'30'.'</option>';
+$selected=""; if($_SESSION['maxlines']==50) $selected = " SELECTED ";
+echo '<option value="50" '.$selected.'>'.'50'.'</option>';
+$selected=""; if($_SESSION['maxlines']==100) $selected = " SELECTED ";
+echo '<option value="100" '.$selected.'>'.'100'.'</option>';
+$selected=""; if($_SESSION['maxlines']==200) $selected = " SELECTED ";
+echo '<option value="200" '.$selected.'>'.'200'.'</option>';
+$selected=""; if($_SESSION['maxlines']==300) $selected = " SELECTED ";
+echo '<option value="300" '.$selected.'>'.'300'.'</option>';
+$selected=""; if($_SESSION['maxlines']==400) $selected = " SELECTED ";
+echo '<option value="400" '.$selected.'>'.'400'.'</option>';
+echo '</select>';
+	
+// Items found
+echo '</td><td style="text-align:center">';   
+echo __('Total items found: ').$count_lines;
+
+// Search box
+echo '</td><td style="text-align:center">';
+echo '<input style="font-size:100%" type="submit" name="langsearch" value="'.__('Search').'">';
+$langsearchtext = ""; 
+if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="") {
+	$langsearchtext = $_SESSION['langsearchtext'];
+}
+echo '<input type="text" style="width:200px;background-color:#d8f0f8" name="langsearchtext" value="'.$langsearchtext.'">';
+
+// Save  button
+echo '</td><td style="width:150px;text-align:center">';
+if (@is_writable($file)) {
+	$num = count($_SESSION['line_array']);
+	echo ' <input style="font-weight:bold;font-size:130%" type="button" onClick="doit('.$num.');" name="save_language" value="'.__('Save').'">';
+	echo ' <input type="hidden" name="save_button" value="">'; // will be set by javascript to flag save buton pressed
+}
+else{
+	echo '<b>'.__('FILE IS NOT WRITABLE!').'</b>';
+}	
+echo '</td></tr></table>';			
+
 echo '<table class="humo" border="1" cellspacing="0" width="98%" style="margin-left:auto;margin-right:auto">';
 echo '<tr class="table_header_large"><th style="border-right:none;width:50.5%">'.__('Template').'</th>';
 echo '<th style="border-left:none;width:49.5%">';
 
-if (is_writable($file)) {
-	$num = count($_SESSION['line_array']);
-	echo ' <input style="font-size:110%" type="button" onClick="doit('.$num.');" name="save_language" value="'.__('Save').'">';
-}
-else{
-	echo '<b>'.__('FILE IS NOT WRITABLE!').'</b>';
-}
 include(CMS_ROOTPATH.'languages/'.$language_editor.'/language_data.php');
 echo '&nbsp;&nbsp;&nbsp;'.__('Translation into').' '.$language["name"];
 echo '</th></tr>';
 echo '</table>';
+	
 display_po_table();
 echo '</div></form>';
 
 //******** FUNCTION display_po_table() DISPLAYS THE PO-LIKE TABLE: LEFT THE TEMPLATE VALUES AND RIGHT THE TRANSLATION *********
 //******** (this is a table within the language editor table, so it can scroll under the header **********************
 
-function display_po_table() {
-	echo '<div style="height:450px;overflow:auto">';
-	echo '<table class="humo" border="1" cellspacing="0" width="98%" style="margin-left:auto;margin-right:auto">';
+function display_po_table() {  
 
+	echo '<div style="height:450px;overflow:auto">';	 
+	echo '<table class="humo" border="1" cellspacing="0" width="98%" style="margin-left:auto;margin-right:auto">';
+	$count = 0; $loop_count=0; $found=false;
 	foreach($_SESSION['line_array'] as $key => $value) { // non-translated items
 		if($key==0) { continue; } // description of po file
 		if(isset($value["msgstr"]) AND str_replace("\n","",$value["msgstr"]) =='""') {
+		if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="" 
+			AND stripos($value["msgid"],$_SESSION['langsearchtext'])===FALSE 
+			AND stripos($value["msgstr"],$_SESSION['langsearchtext'])===FALSE) { continue; }
+		
+			if($count < $_SESSION['present_page']*$_SESSION['maxlines']) { $count++; continue; }
+			$loop_count++; if($loop_count > $_SESSION['maxlines']) break;			
+		
 			$mytext=notes($value["note"]); 
 			echo '<tr><td style="width:2%"><a onmouseover="popup(\''.popclean($mytext).'\',300);" href="#" style="border-right:none;background:none">';
 			echo '<img style="border:0px;background:none" src="'.CMS_ROOTPATH.'images/reports.gif" alt="references"></a></td>';
@@ -196,11 +301,18 @@ function display_po_table() {
 			echo '<textarea name="txt_name'.$key.'" style="display:none;visibility:none"></textarea>';
 			echo '<div contentEditable="true" id="text_msgstr'.$key.'" style="padding:2px;border:1px solid #999999;background-color:white;width:100%;height:100%;min-height:20px;font:12px Verdana, tahoma, arial, sans-serif;line-height:160%;">';
 			echo '</div></td></tr>';
+			$found=true;
 		}
 	}
-	foreach($_SESSION['line_array'] as $key => $value) { // translated items
+	foreach($_SESSION['line_array'] as $key => $value) { // translated items	
 		if($key==0) { continue; } // description of po file
 		if(isset($value["msgstr"]) AND str_replace("\n","",$value["msgstr"])!='""' AND isset($value["msgid"])) { 
+			if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="" 
+			AND stripos($value["msgid"],$_SESSION['langsearchtext'])===FALSE 
+			AND stripos($value["msgstr"],$_SESSION['langsearchtext'])===FALSE) { continue; }
+			if($count < $_SESSION['present_page']*$_SESSION['maxlines']) { $count++; continue; }
+			$loop_count++; if($loop_count > $_SESSION['maxlines']) break;	
+			
 			$mytext=notes($value["note"]); 
 			echo '<tr><td style="width:2%"><a onmouseover="popup(\''.popclean($mytext).'\',300);" href="#">';
 			echo '<img style="border:0px;background:none" src="'.CMS_ROOTPATH.'images/reports.gif" alt="references"></a></td>';
@@ -209,10 +321,14 @@ function display_po_table() {
 			echo '<div contentEditable="true" id="text_msgstr'.$key.'" style="padding:2px;border:1px solid #999999;background-color:white;width:100%;height:100%;font:12px Verdana, tahoma, arial, sans-serif;line-height:160%;">';
 			echo msgstr_display($value["msgstr"]);
 			echo '</div></td></tr>';
+			$found=true;
 		}
 	}
-
+	if($found===false) {
+		echo '<tr><td colspan="3"><span style="color:red">'.__('No results found').'</span></td></tr>';
+	}
 	echo '</table>';
+	echo '<br><br><br>';
 	echo '</div>';
 }
 
@@ -259,7 +375,7 @@ function msgstr_display($string) {
 }
 
 function msgstr_save($string) {
-	// formats the displayed msgstr text for saving in .po file
+	// formats the displayed msgstr text for saving in .po file (text that is displayed)
 	$string = strip_tags($string);
 	if($string AND $string != "<br>") {  
 		$string = htmlspecialchars_decode($string); 
@@ -273,6 +389,19 @@ function msgstr_save($string) {
 		$replace = array("\\n","\"\r\""," "," ",'\\"');		
 		if(substr($string,-4)=="<br>") $string = substr($string,0,-4);
 		$string = "\"".str_replace($find,$replace,$string)."\"\n\n";
+	}
+	else {
+		$string = "\"\"\n\n";
+	}
+	return $string;
+}
+
+function msgstr_save2($string) {
+	// formats the non displayed msgstr text for saving in .po file 
+	if($string AND $string != "<br>") {  
+		$find = array("\\n<br>","\r\n","&nbsp;","&#32;",'\\\\"');
+		$replace = array("\\n","\"\r\""," "," ",'\\"');		
+		$string = str_replace($find,$replace,$string)."\n";
 	}
 	else {
 		$string = "\"\"\n\n";
@@ -295,27 +424,28 @@ function msgstr_save($string) {
 		document.getElementById("announce").innerHTML = "<?php echo __('Saving')."...."; ?> ";
 	}
 
-	function saveLanguage(num) {
-		for(var i = 1; i<num; i++) {
+	function saveLanguage(num) { 
+		for(var i = 1; i<num; i++) { 
 			var div_content = "";
 			if(document.getElementById('text_msgstr'+i)) {
-				div_content = document.getElementById('text_msgstr'+i).innerHTML;
+				div_content = document.getElementById('text_msgstr'+i).innerHTML; 
 			}
 			var textareaname = "txt_name" + i;
-			if(eval('document.forms["saveform"].' + textareaname)) {
+			if(eval('document.forms["saveform"].' + textareaname)) { 
 			//if(document.getElementById(textareaname)) {
-				var longstring = eval('document.forms["saveform"].' + textareaname);
+				var longstring = eval('document.forms["saveform"].' + textareaname); 
 				//var longstring = document.getElementById(textareaname);
 				longstring.value = div_content; 
 			}
 		}
+		document.forms["saveform"].save_button.value = "pressed";
 		document.forms["saveform"].submit();
 	}
 	function doit(num) {
 		notice();
 		saveLanguage(num);
 	}
-
+	
 </script>
 <?php
 

@@ -71,14 +71,18 @@ include_once(CMS_ROOTPATH."include/language_event.php");
 
 // *** Calculate nr. of persons and families ***
 function family_tree_update($tree_prefix){
-	global $db;
+	global $db, $dbh;
 
-	$total = mysql_query("SELECT COUNT(*) FROM ".$tree_prefix."person",$db); 
-	$total = mysql_fetch_array($total); 
+	//$total = mysql_query("SELECT COUNT(*) FROM ".$tree_prefix."person",$db); 
+	//$total = mysql_fetch_array($total); 
+	$total = $dbh->query("SELECT COUNT(*) FROM ".$tree_prefix."person"); 
+	$total = $total->fetch(); 	
 	$nr_persons=$total[0]; 
 
-	$total1 = mysql_query("SELECT COUNT(*) FROM ".$tree_prefix."family",$db); 
-	$total1 = mysql_fetch_array($total1); 
+	//$total1 = mysql_query("SELECT COUNT(*) FROM ".$tree_prefix."family",$db); 
+	//$total1 = mysql_fetch_array($total1); 
+	$total1 = $dbh->query("SELECT COUNT(*) FROM ".$tree_prefix."family"); 
+	$total1 = $total1->fetch(); 	
 	$nr_families=$total1[0]; 
 	
 	$tree_date=date("Y-m-d H:i");
@@ -87,7 +91,8 @@ function family_tree_update($tree_prefix){
 	tree_families='".$nr_families."',
 	tree_date='".$tree_date."'
 	WHERE tree_prefix='".$tree_prefix."'";
-	mysql_query($sql,$db) or die(mysql_error());
+	//mysql_query($sql,$db) or die(mysql_error());
+	$dbh->query($sql);
 }
 
 // *** Show event options ***
@@ -98,13 +103,15 @@ function event_option($event_gedcom,$event){
 }
 
 function witness_edit($witness, $multiple_rows=''){
-	global $db, $tree_prefix, $language;
+	global $db, $dbh, $tree_prefix, $language;
 
 	// *** Witness: pull-down menu ***
-	$witnessqry=mysql_query("SELECT * FROM ".$tree_prefix."person ORDER BY pers_lastname, pers_firstname",$db);
+	//$witnessqry=mysql_query("SELECT * FROM ".$tree_prefix."person ORDER BY pers_lastname, pers_firstname",$db);
+	$witnessqry=$dbh->query("SELECT * FROM ".$tree_prefix."person ORDER BY pers_lastname, pers_firstname");
 	echo '<select size="1" name="text_event2'.$multiple_rows.'" style="width: 250px">';
 	echo '<option value=""></option>';
-	while ($witnessDb=mysql_fetch_object($witnessqry)){
+	//while ($witnessDb=mysql_fetch_object($witnessqry)){
+	while ($witnessDb=$witnessqry->fetch(PDO::FETCH_OBJ)){
 		$selected=''; if ($witnessDb->pers_gedcomnumber==substr($witness,1,-1)){ $selected=' SELECTED'; }
 		echo '<option value="@'.$witnessDb->pers_gedcomnumber.'@"'.$selected.'>'.
 			$witnessDb->pers_lastname.', '.$witnessDb->pers_firstname.' '.strtolower(str_replace("_"," ",$witnessDb->pers_prefix)).' ['.$witnessDb->pers_gedcomnumber.']</option>'."\n";
@@ -119,11 +126,14 @@ function witness_edit($witness, $multiple_rows=''){
 }
 
 function show_person($gedcomnumber, $gedcom_date=false, $show_link=true){
-	global $db, $tree_prefix, $page, $joomlastring;
+	global $db, $dbh, $tree_prefix, $page, $joomlastring;
 	if ($gedcomnumber){
-		$person_qry=mysql_query("SELECT * FROM ".$tree_prefix."person
-			WHERE pers_gedcomnumber='$gedcomnumber'",$db);
-		$personDb=mysql_fetch_object($person_qry);
+		//$person_qry=mysql_query("SELECT * FROM ".$tree_prefix."person
+		//	WHERE pers_gedcomnumber='$gedcomnumber'",$db);
+		//$personDb=mysql_fetch_object($person_qry);
+		$person_qry=$dbh->query("SELECT * FROM ".$tree_prefix."person
+			WHERE pers_gedcomnumber='$gedcomnumber'");
+		$personDb=$person_qry->fetch(PDO::FETCH_OBJ);		
 		if ($show_link==true){
 			$text='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;tree='.$tree_prefix.
 				'&amp;person='.$personDb->pers_gedcomnumber.'">'.$personDb->pers_firstname.' '.
@@ -174,16 +184,20 @@ if (isset($_POST["tree_prefix"])){
 
 	// *** Select first person to show ***
 	$new_nr_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_favorite LIKE '%_' ORDER BY pers_lastname, pers_firstname LIMIT 0,1";
-	$new_nr_result = mysql_query($new_nr_qry,$db);
-	@$new_nr=mysql_fetch_object($new_nr_result);
+	//$new_nr_result = mysql_query($new_nr_qry,$db);
+	//@$new_nr=mysql_fetch_object($new_nr_result);
+	$new_nr_result = $dbh->query($new_nr_qry);
+	@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);	
 	if (isset($new_nr->pers_gedcomnumber)){
 		$pers_gedcomnumber=$new_nr->pers_gedcomnumber;
 		$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 	}
 	else{
 		$new_nr_qry= "SELECT * FROM ".$tree_prefix."person LIMIT 0,1";
-		$new_nr_result = mysql_query($new_nr_qry,$db);
-		@$new_nr=mysql_fetch_object($new_nr_result);
+		//$new_nr_result = mysql_query($new_nr_qry,$db);
+		//@$new_nr=mysql_fetch_object($new_nr_result);
+		$new_nr_result = $dbh->query($new_nr_qry);
+		@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);		
 		if (isset($new_nr->pers_gedcomnumber)){
 			$pers_gedcomnumber=$new_nr->pers_gedcomnumber;
 			$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
@@ -214,8 +228,10 @@ if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['
 // *** NEW: Save family gedcomnumber ***
 if (isset($pers_gedcomnumber) AND $pers_gedcomnumber){
 	$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
-	$person_result = mysql_query($person_qry,$db);
-	$person=mysql_fetch_object($person_result);
+	//$person_result = mysql_query($person_qry,$db);
+	//$person=mysql_fetch_object($person_result);
+	$person_result = $dbh->query($person_qry);
+	$person=$person_result->fetch(PDO::FETCH_OBJ);	
 }
 if (isset($person->pers_fams) AND $person->pers_fams){
 	$fams1=explode(";",$person->pers_fams);
@@ -240,13 +256,15 @@ $add_person=false; if (isset($_GET['add_person'])){ $add_person=true; }
 
 // *** Select family tree ***
 $tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-$tree_prefix_result = mysql_query($tree_prefix_sql,$db);
+//$tree_prefix_result = mysql_query($tree_prefix_sql,$db);
+$tree_prefix_result = $dbh->query($tree_prefix_sql);
 echo __('Family tree').': ';
 echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
 	echo '<option value="">'.__('Select a family tree:').'</option>';
-	while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result)){
+	//while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result)){
+	while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
 		$selected='';
 		if (isset($tree_prefix)){
 			if ($tree_prefixDb->tree_prefix==$tree_prefix){ $selected=' SELECTED'; }
@@ -264,7 +282,8 @@ if (isset($tree_prefix)){
 		if ($_GET['pers_favorite']=="1"){ $pers_favorite='1'; } else{ $pers_favorite=''; }
 		$sql="UPDATE ".$tree_prefix."person SET pers_favorite='".$pers_favorite."'
 			WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 
 	$gedcom_date=strtoupper(date("d M Y"));
@@ -277,8 +296,10 @@ if (isset($tree_prefix)){
 
 	if (isset($_POST['person_remove'])){
 		$new_nr_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
-		$new_nr_result = mysql_query($new_nr_qry,$db);
-		$new_nr=mysql_fetch_object($new_nr_result);
+		//$new_nr_result = mysql_query($new_nr_qry,$db);
+		//$new_nr=mysql_fetch_object($new_nr_result);
+		$new_nr_result = $dbh->query($new_nr_qry);
+		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);		
 
 		//if ($new_nr->pers_fams OR $new_nr->pers_famc){
 		//if ($new_nr->pers_fams){
@@ -303,8 +324,10 @@ if (isset($tree_prefix)){
 		echo '<div class="confirm">';
 
 		$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
-		$person_result = mysql_query($person_qry,$db);
-		$personDb=mysql_fetch_object($person_result);
+		//$person_result = mysql_query($person_qry,$db);
+		//$personDb=mysql_fetch_object($person_result);
+		$person_result = $dbh->query($person_qry);
+		$personDb=$person_result->fetch(PDO::FETCH_OBJ);		
 
 		// *** If person is married: remove marriages from family ***
 		if ($personDb->pers_fams){
@@ -312,8 +335,10 @@ if (isset($tree_prefix)){
 			foreach ($fams_array as $key => $value) {
 				$fam_qry= "SELECT * FROM ".$tree_prefix."family
 					WHERE fam_gedcomnumber='".$fams_array[$key]."'";
-				$fam_result = mysql_query($fam_qry,$db);
-				$famDb=mysql_fetch_object($fam_result);
+				//$fam_result = mysql_query($fam_qry,$db);
+				//$famDb=mysql_fetch_object($fam_result);
+				$fam_result = $dbh->query($fam_qry);
+				$famDb=$fam_result->fetch(PDO::FETCH_OBJ);				
 
 				if ($famDb->fam_man==$pers_gedcomnumber){
 					// *** Completely remove marriage if man and woman are removed *** 
@@ -324,22 +349,26 @@ if (isset($tree_prefix)){
 						foreach ($fam_children as $key2 => $value) {
 							$sql="UPDATE ".$tree_prefix."person SET pers_famc=''
 								WHERE pers_gedcomnumber='".$fam_children[$key2]."'";
-							$result=mysql_query($sql) or die(mysql_error());
+							//$result=mysql_query($sql) or die(mysql_error());
+							$result=$dbh->query($sql);
 						}
 
 						$sql="DELETE FROM ".$tree_prefix."family
 							WHERE fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
-						$result=mysql_query($sql) or die(mysql_error());
+						//$result=mysql_query($sql) or die(mysql_error());
+						$result=$dbh->query($sql);
 
 						// *** Remove indexnr from children without own family ***
 						$sql="UPDATE ".$tree_prefix."person SET pers_indexnr=''
 							WHERE pers_indexnr='".$famDb->fam_gedcomnumber."'";
-						$result=mysql_query($sql) or die(mysql_error());
+						//$result=mysql_query($sql) or die(mysql_error());
+						$result=$dbh->query($sql);
 					}
 					else{
 						$sql="UPDATE ".$tree_prefix."family SET fam_man='0'
 							WHERE fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
-						$result=mysql_query($sql) or die(mysql_error());
+						//$result=mysql_query($sql) or die(mysql_error());
+						$result=$dbh->query($sql);
 						echo __('Person disconnected from marriage(s).').'<br>';
 					}
 				}
@@ -353,22 +382,26 @@ if (isset($tree_prefix)){
 						foreach ($fam_children as $key2 => $value) {
 							$sql="UPDATE ".$tree_prefix."person SET pers_famc=''
 								WHERE pers_gedcomnumber='".$fam_children[$key2]."'";
-							$result=mysql_query($sql) or die(mysql_error());
+							//$result=mysql_query($sql) or die(mysql_error());
+							$result=$dbh->query($sql);
 						}
 
 						$sql="DELETE FROM ".$tree_prefix."family
 							WHERE fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
-							$result=mysql_query($sql) or die(mysql_error());
+							//$result=mysql_query($sql) or die(mysql_error());
+							$result=$dbh->query($sql);
 
 						// *** Remove indexnr from children without own family ***
 						$sql="UPDATE ".$tree_prefix."person SET pers_indexnr=''
 							WHERE pers_indexnr='".$famDb->fam_gedcomnumber."'";
-						$result=mysql_query($sql) or die(mysql_error());
+						//$result=mysql_query($sql) or die(mysql_error());
+						$result=$dbh->query($sql);
 					}
 					else{
 						$sql="UPDATE ".$tree_prefix."family SET fam_woman='0'
 							WHERE fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
-						$result=mysql_query($sql) or die(mysql_error());
+						//$result=mysql_query($sql) or die(mysql_error());
+						$result=$dbh->query($sql);
 						echo __('Person disconnected from marriage(s).').'<br>';
 					}
 				}
@@ -380,8 +413,10 @@ if (isset($tree_prefix)){
 		if ($personDb->pers_famc){
 			$fam_qry= "SELECT * FROM ".$tree_prefix."family
 				WHERE fam_gedcomnumber='".$personDb->pers_famc."'";
-			$fam_result = mysql_query($fam_qry,$db);
-			$famDb=mysql_fetch_object($fam_result);
+			//$fam_result = mysql_query($fam_qry,$db);
+			//$famDb=mysql_fetch_object($fam_result);
+			$fam_result = $dbh->query($fam_qry);
+			$famDb=$fam_result->fetch(PDO::FETCH_OBJ);			
 
 			$fam_children=explode(";",$famDb->fam_children);
 			foreach ($fam_children as $key => $value) {
@@ -393,34 +428,42 @@ if (isset($tree_prefix)){
 			$sql="UPDATE ".$tree_prefix."family SET
 				fam_children='".$fam_children3."'
 				WHERE fam_gedcomnumber='".$personDb->pers_famc."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			echo __('Person disconnected from parents.').'<br>';
 		}
 
 		$sql="DELETE FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		$sql="DELETE FROM ".$tree_prefix."addresses WHERE address_person_id='".$pers_gedcomnumber."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		$sql="DELETE FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		echo __('Person is removed');
 
 		// *** Select new person ***
 		$new_nr_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_favorite LIKE '%_' ORDER BY pers_lastname, pers_firstname LIMIT 0,1";
-		$new_nr_result = mysql_query($new_nr_qry,$db);
-		$new_nr=mysql_fetch_object($new_nr_result);
+		//$new_nr_result = mysql_query($new_nr_qry,$db);
+		//$new_nr=mysql_fetch_object($new_nr_result);
+		$new_nr_result = $dbh->query($new_nr_qry);
+		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);		
 		if (isset($new_nr->pers_gedcomnumber)){
 			$pers_gedcomnumber=$new_nr->pers_gedcomnumber;
 			$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 		}
 		else{
 			$new_nr_qry= "SELECT * FROM ".$tree_prefix."person LIMIT 0,1";
-			$new_nr_result = mysql_query($new_nr_qry,$db);
-			$new_nr=mysql_fetch_object($new_nr_result);
+			//$new_nr_result = mysql_query($new_nr_qry,$db);
+			//$new_nr=mysql_fetch_object($new_nr_result);
+			$new_nr_result = $dbh->query($new_nr_qry);
+			$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);			
 			if ($new_nr->pers_gedcomnumber){
 				$pers_gedcomnumber=$new_nr->pers_gedcomnumber;
 				$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
@@ -454,7 +497,8 @@ if (isset($tree_prefix)){
 		pers_changed_date='".$gedcom_date."',
 		pers_changed_time='".$gedcom_time."'
 		WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 		//pers_favorite='".$pers_favorite."',
 		//pers_name_source='".safe_text($_POST["pers_name_source"])."',
 
@@ -481,7 +525,8 @@ if (isset($tree_prefix)){
 		pers_changed_date='".$gedcom_date."',
 		pers_changed_time='".$gedcom_time."'
 		WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 		family_tree_update($tree_prefix);
 	}
 
@@ -489,8 +534,10 @@ if (isset($tree_prefix)){
 		// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
 		$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
 			FROM ".$tree_prefix."person ORDER BY gednr DESC LIMIT 0,1";
-		$new_nr_result = mysql_query($new_nr_qry,$db);
-		$new_nr=mysql_fetch_object($new_nr_result);
+		//$new_nr_result = mysql_query($new_nr_qry,$db);
+		//$new_nr=mysql_fetch_object($new_nr_result);
+		$new_nr_result = $dbh->query($new_nr_qry);
+		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);		
 		$new_gedcomnumber='I1';
 		if (isset($new_nr->pers_gedcomnumber)){
 			$new_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+1);
@@ -542,7 +589,8 @@ if (isset($tree_prefix)){
 
 			pers_new_date='".$gedcom_date."',
 			pers_new_time='".$gedcom_time."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 		//pers_favorite='".$pers_favorite."',
 
 
@@ -575,7 +623,8 @@ if (isset($tree_prefix)){
 		pers_changed_date='".$gedcom_date."',
 		pers_changed_time='".$gedcom_time."'
 		WHERE pers_id='".safe_text($_GET["person_id"])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 
 	// *** Family move up ***
@@ -595,17 +644,21 @@ if (isset($tree_prefix)){
 		pers_changed_date='".$gedcom_date."',
 		pers_changed_time='".$gedcom_time."'
 		WHERE pers_id='".safe_text($_GET["person_id"])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 
 	// *** Some functions to add and remove a fams number from a person (if marriage is changed) ***
 	function fams_add($personnr, $familynr){
-		global $db, $tree_prefix, $gedcom_date, $gedcom_time;
+		global $db, $dbh, $tree_prefix, $gedcom_date, $gedcom_time;
 		// *** Add marriage to person records ***
 		$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".safe_text($personnr)."'";
-		$person_result = mysql_query($person_qry,$db);
+		//$person_result = mysql_query($person_qry,$db);
 		//if (isset($person_result) AND $person_result){
-		$person_db=mysql_fetch_object($person_result);
+		//$person_db=mysql_fetch_object($person_result);
+		$person_result = $dbh->query($person_qry);
+		//if (isset($person_result) AND $person_result){
+		$person_db=$person_result->fetch(PDO::FETCH_OBJ);		
 		if (@$person_db->pers_gedcomnumber){
 			$fams=$person_db->pers_fams;
 			if ($fams){
@@ -622,15 +675,18 @@ if (isset($tree_prefix)){
 				pers_changed_date='".$gedcom_date."',
 				pers_changed_time='".$gedcom_time."'
 				WHERE pers_id='".$person_db->pers_id."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 	}
 
 	function fams_remove($personnr, $familynr){
-		global $db, $tree_prefix, $gedcom_date, $gedcom_time;
+		global $db, $dbh, $tree_prefix, $gedcom_date, $gedcom_time;
 		$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$personnr."'";
-		$person_result = mysql_query($person_qry,$db);
-		$person_db=mysql_fetch_object($person_result);
+		//$person_result = mysql_query($person_qry,$db);
+		//$person_db=mysql_fetch_object($person_result);
+		$person_result = $dbh->query($person_qry);
+		$person_db=$person_result->fetch(PDO::FETCH_OBJ);		
 		if (@$person_db->pers_gedcomnumber){
 			$fams=explode(";",$person_db->pers_fams);
 			foreach ($fams as $key => $value) {
@@ -648,7 +704,8 @@ if (isset($tree_prefix)){
 				pers_changed_date='".$gedcom_date."',
 				pers_changed_time='".$gedcom_time."'
 				WHERE pers_id='".$person_db->pers_id."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 	}
 
@@ -659,8 +716,10 @@ if (isset($tree_prefix)){
 		if (isset($_POST['marriage_nr'])){ $fam_remove=safe_text($_POST['marriage_nr']); };
 
 		$new_nr_qry= "SELECT * FROM ".$tree_prefix."family WHERE fam_gedcomnumber='".$fam_remove."'";
-		$new_nr_result = mysql_query($new_nr_qry,$db);
-		$new_nr=mysql_fetch_object($new_nr_result);
+		//$new_nr_result = mysql_query($new_nr_qry,$db);
+		//$new_nr=mysql_fetch_object($new_nr_result);
+		$new_nr_result = $dbh->query($new_nr_qry);
+		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);		
 		if ($new_nr->fam_children){
 			echo '<div class="confirm">';
 				echo __('Disconnect children before removal of marriage.');
@@ -686,8 +745,10 @@ if (isset($tree_prefix)){
 
 		// *** Remove fams number from man and woman ***
 		$new_nr_qry= "SELECT * FROM ".$tree_prefix."family WHERE fam_gedcomnumber='".$fam_remove."'";
-		$new_nr_result = mysql_query($new_nr_qry,$db);
-		$new_nr=mysql_fetch_object($new_nr_result);
+		//$new_nr_result = mysql_query($new_nr_qry,$db);
+		//$new_nr=mysql_fetch_object($new_nr_result);
+		$new_nr_result = $dbh->query($new_nr_qry);
+		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);		
 
 		if (isset($new_nr->fam_man)){ fams_remove($new_nr->fam_man, $fam_remove); }
 
@@ -695,13 +756,16 @@ if (isset($tree_prefix)){
 		if (isset($new_nr->fam_woman)){ fams_remove($new_nr->fam_woman, $fam_remove); }
 
 		$sql="DELETE FROM ".$tree_prefix."events WHERE event_family_id='".$fam_remove."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		$sql="DELETE FROM ".$tree_prefix."addresses WHERE address_family_id='".$fam_remove."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		$sql="DELETE FROM ".$tree_prefix."family WHERE fam_gedcomnumber='".$fam_remove."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		family_tree_update($tree_prefix);
 			echo __('Marriage is removed!');
@@ -758,16 +822,19 @@ if (isset($tree_prefix)){
 				OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
 				LIKE '%$search_quicksearch_parent%')) ORDER BY fam_gedcomnumber";
 
-			$parents_result = mysql_query($parents,$db);
+			//$parents_result = mysql_query($parents,$db);
+			$parents_result = $dbh->query($parents);
 		}
 		else{
 			$parents= "SELECT * FROM ".$tree_prefix."family";
-			$parents_result = mysql_query($parents,$db);
+			//$parents_result = mysql_query($parents,$db);
+			$parents_result = $dbh->query($parents);
 		}
 		
 		echo __('Select parents:').' ';
 		print '<select size="1" name="add_parents" style="width: 250px">';
-		while ($parentsDb=mysql_fetch_object($parents_result)){
+		//while ($parentsDb=mysql_fetch_object($parents_result)){
+		while ($parentsDb=$parents_result->fetch(PDO::FETCH_OBJ)){
 			$parent_text='';
 			//*** Father ***
 			if ($parentsDb->fam_man){
@@ -799,8 +866,10 @@ if (isset($tree_prefix)){
 
 		$parents= "SELECT * FROM ".$tree_prefix."family
 			WHERE fam_gedcomnumber='".safe_text($_POST['add_parents'])."'";
-		$parents_result = mysql_query($parents,$db);
-		$parentsDb=mysql_fetch_object($parents_result);
+		//$parents_result = mysql_query($parents,$db);
+		//$parentsDb=mysql_fetch_object($parents_result);
+		$parents_result = $dbh->query($parents);
+		$parentsDb=$parents_result->fetch(PDO::FETCH_OBJ);		
 
 		if ($parentsDb->fam_children){
 			$fam_children=$parentsDb->fam_children.';'.$pers_gedcomnumber;
@@ -814,13 +883,16 @@ if (isset($tree_prefix)){
 		fam_changed_date='".$gedcom_date."',
 		fam_changed_time='".$gedcom_time."'
 		WHERE fam_gedcomnumber='".safe_text($_POST['add_parents'])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		// *** Check pers_indexnr, change indexnr if needed ***
 		$sql= "SELECT * FROM ".$tree_prefix."person
 			WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
-		$result = mysql_query($sql,$db);
-		$resultDb=mysql_fetch_object($result);
+		//$result = mysql_query($sql,$db);
+		//$resultDb=mysql_fetch_object($result);
+		$result = $dbh->query($sql);
+		$resultDb=$result->fetch(PDO::FETCH_OBJ);		
 		$pers_indexnr=$resultDb->pers_indexnr;
 		if ($pers_indexnr==''){ $pers_indexnr=$_POST['add_parents']; }
 
@@ -831,7 +903,8 @@ if (isset($tree_prefix)){
 		pers_changed_date='".$gedcom_date."',
 		pers_changed_time='".$gedcom_time."'
 		WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		family_tree_update($tree_prefix);
 		echo __('Parents are selected!');
@@ -855,13 +928,16 @@ if (isset($tree_prefix)){
 			fam_changed_time='".$gedcom_time."'
 			WHERE fam_gedcomnumber='".safe_text($_POST['family_id'])."'";
 		}
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		// *** Check pers_indexnr, change indexnr if needed ***
 		$sql= "SELECT * FROM ".$tree_prefix."person
 			WHERE pers_gedcomnumber='".safe_text($_POST["child_connect2"])."'";
-		$result = mysql_query($sql,$db);
-		$resultDb=mysql_fetch_object($result);
+		//$result = mysql_query($sql,$db);
+		//$resultDb=mysql_fetch_object($result);
+		$result = $dbh->query($sql);
+		$resultDb=$result->fetch(PDO::FETCH_OBJ);		
 		$pers_indexnr=$resultDb->pers_indexnr;
 		if ($pers_indexnr==''){ $pers_indexnr=$_POST['family_id']; }
 
@@ -872,7 +948,8 @@ if (isset($tree_prefix)){
 		pers_changed_date='".$gedcom_date."',
 		pers_changed_time='".$gedcom_time."'
 		WHERE pers_gedcomnumber='".safe_text($_POST["child_connect2"])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		family_tree_update($tree_prefix);
 	}
@@ -897,20 +974,25 @@ if (isset($tree_prefix)){
 		fam_changed_date='".$gedcom_date."',
 		fam_changed_time='".$gedcom_time."'
 		WHERE fam_id='".safe_text($_POST["family_id"])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 
 		// *** Check pers_indexnr, change indexnr if needed ***
 		$sql= "SELECT * FROM ".$tree_prefix."family
 			WHERE fam_id='".safe_text($_POST["family_id"])."'";
-		$result = mysql_query($sql,$db);
-		$resultDb=mysql_fetch_object($result);
+		//$result = mysql_query($sql,$db);
+		//$resultDb=mysql_fetch_object($result);
+		$result = $dbh->query($sql);
+		$resultDb=$result->fetch(PDO::FETCH_OBJ);		
 		$fam_gedcomnumber=$resultDb->fam_gedcomnumber;
 
 		$sql= "SELECT * FROM ".$tree_prefix."person
 			WHERE pers_gedcomnumber='".safe_text($_POST["child_disconnect_gedcom"])."'";
-		$result = mysql_query($sql,$db);
-		$resultDb=mysql_fetch_object($result);
+		//$result = mysql_query($sql,$db);
+		//$resultDb=mysql_fetch_object($result);
+		$result = $dbh->query($sql);
+		$resultDb=$result->fetch(PDO::FETCH_OBJ);			
 		$pers_indexnr=$resultDb->pers_indexnr;
 		if ($pers_indexnr==$fam_gedcomnumber){ $pers_indexnr=''; }
 
@@ -922,7 +1004,8 @@ if (isset($tree_prefix)){
 		pers_changed_date='".$gedcom_date."',
 		pers_changed_time='".$gedcom_time."'
 		WHERE pers_gedcomnumber='".safe_text($_POST["child_disconnect_gedcom"])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 
 	// *** Child move down ***
@@ -942,7 +1025,8 @@ if (isset($tree_prefix)){
 		fam_changed_date='".$gedcom_date."',
 		fam_changed_time='".$gedcom_time."'
 		WHERE fam_id='".safe_text($_GET["family_id"])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 
 	// *** Child move up ***
@@ -962,7 +1046,8 @@ if (isset($tree_prefix)){
 		fam_changed_date='".$gedcom_date."',
 		fam_changed_time='".$gedcom_time."'
 		WHERE fam_id='".safe_text($_GET["family_id"])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 
 
@@ -975,8 +1060,10 @@ if (isset($tree_prefix)){
 		// *** Generate new gedcomnr, find highest gedcomnumber F100: strip F and order by numeric ***
 		$new_nr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS gednr
 			FROM ".$tree_prefix."family ORDER BY gednr DESC LIMIT 0,1";
-		$new_nr_result = mysql_query($new_nr_qry,$db);
-		$new_nr=mysql_fetch_object($new_nr_result);
+		//$new_nr_result = mysql_query($new_nr_qry,$db);
+		//$new_nr=mysql_fetch_object($new_nr_result);
+		$new_nr_result = $dbh->query($new_nr_qry);
+		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);		
 		$new_gedcomnumber='F1';
 		if (isset($new_nr->fam_gedcomnumber)){
 			$new_gedcomnumber='F'.(substr($new_nr->fam_gedcomnumber,1)+1);
@@ -1011,7 +1098,8 @@ if (isset($tree_prefix)){
 		fam_text='".$editor_cls->text_process($_POST["fam_text"],true)."',
 		fam_new_date='".$gedcom_date."',
 		fam_new_time='".$gedcom_time."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		// *** Add marriage to person records MAN and WOMAN ***
 		fams_add($_POST['connect_man'], $new_gedcomnumber);
@@ -1028,8 +1116,10 @@ if (isset($tree_prefix)){
 		if (safe_text($_POST["connect_woman"])){ $pers_gedcomnumber=safe_text($_POST["connect_woman"]); }
 		if (safe_text($_POST["connect_man"])){ $pers_gedcomnumber=safe_text($_POST["connect_man"]); }
 		$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
-		$person_result = mysql_query($person_qry,$db);
-		$person=mysql_fetch_object($person_result);
+		//person_result = mysql_query($person_qry,$db);
+		//$person=mysql_fetch_object($person_result);
+		$person_result = $dbh->query($person_qry,$db);
+		$person=$person_result->fetch(PDO::FETCH_OBJ);		
 
 		family_tree_update($tree_prefix);
 	}
@@ -1041,7 +1131,8 @@ if (isset($tree_prefix)){
 			fam_man='".safe_text($_POST["connect_woman"])."',
 			fam_woman='".safe_text($_POST["connect_man"])."'
 			WHERE fam_gedcomnumber='".safe_text($_POST['marriage'])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			// *** Empty search boxes if a switch is made ***
 			$_POST['search_quicksearch_woman']='';
@@ -1090,7 +1181,8 @@ if (isset($tree_prefix)){
 			fam_changed_date='".$gedcom_date."',
 			fam_changed_time='".$gedcom_time."'
 			WHERE fam_gedcomnumber='".safe_text($_POST['marriage'])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			family_tree_update($tree_prefix);
 		}
@@ -1139,10 +1231,12 @@ if (isset($tree_prefix)){
 		echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_favorite LIKE '%_' ORDER BY pers_lastname, pers_firstname";
-			$person_result = mysql_query($person_qry,$db);
+			//$person_result = mysql_query($person_qry,$db);
+			$person_result = $dbh->query($person_qry);
 			echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
 			echo '<option value="">'.__('Favourites list:').'</option>';
-			while ($person=mysql_fetch_object($person_result)){
+			//while ($person=mysql_fetch_object($person_result)){
+			while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 				$selected='';
 				if (isset($pers_gedcomnumber)){
 					if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
@@ -1210,25 +1304,30 @@ if (isset($tree_prefix)){
 					LIKE '%$search_quicksearch%'
 					ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)";
 					//ORDER BY pers_lastname, pers_firstname";
-				$person_result = mysql_query($person_qry,$db);
+				//$person_result = mysql_query($person_qry,$db);
+				$person_result = $dbh->query($person_qry);
 			}
 			elseif($search_id!='') {
 				if(substr($search_id,0,1)!="i" AND substr($search_id,0,1)!="I") { $search_id = "I".$search_id; } //make entry "48" into "I48"
 				$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$search_id."'";
-				$person_result = mysql_query($person_qry,$db);
+				//$person_result = mysql_query($person_qry,$db);
+				$person_result = $dbh->query($person_qry);
 				$idsearch=true;
 			}
 
 			if (isset($person_result)){
 			//if ($person_result AND mysql_num_rows($person_result) > 0){
-				if(mysql_num_rows($person_result)==0) echo __('Person not found');
-				if($idsearch==true OR mysql_num_rows($person_result)==0) { echo '<span style="display:none">';}
+				//if(mysql_num_rows($person_result)==0) echo __('Person not found');
+				if($person_result->rowCount() ==0) echo __('Person not found');
+				//if($idsearch==true OR mysql_num_rows($person_result)==0) { echo '<span style="display:none">';}
+				if($idsearch==true OR $person_result->rowCount()==0) { echo '<span style="display:none">';}
 				echo '<b>'.__('Found:').'</b> ';
 				echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				print '<select size="1" name="person" style="width: 200px">';
 				$counter==0;
-				while ($person=mysql_fetch_object($person_result)){
+				//while ($person=mysql_fetch_object($person_result)){
+				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 					$selected='';
 					if (isset($pers_gedcomnumber)){
 						if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
@@ -1275,7 +1374,8 @@ if (isset($tree_prefix)){
 				echo '</select>';
 				echo ' <input type="Submit" name="submit" value="'.__('Select').'">';
 				echo '</form>';
-				if($idsearch==true OR mysql_num_rows($person_result)==0) { echo '</span>'; }
+				//if($idsearch==true OR mysql_num_rows($person_result)==0) { echo '</span>'; }
+				if($idsearch==true OR $person_result->rowCount()==0) { echo '</span>'; }
 			}
 
 			//echo '<br>';
@@ -1295,8 +1395,10 @@ if (isset($tree_prefix)){
 
 	// *** Check if this is a new family tree ***
 	$person2_qry= "SELECT * FROM ".$tree_prefix."person";
-	$person2_result = mysql_query($person2_qry,$db);
-	if ($person2_result AND mysql_num_rows($person2_result) > 0){
+	//$person2_result = mysql_query($person2_qry,$db);
+	//if ($person2_result AND mysql_num_rows($person2_result) > 0){
+	$person2_result = $dbh->query($person2_qry);
+	if ($person2_result AND $person2_result->rowCount() > 0){	
 		// *** Family tree exists and is filled with data ***
 	}
 	else{
@@ -1304,7 +1406,8 @@ if (isset($tree_prefix)){
 			echo '<h2>'.__('New family tree!').'</h2>';
 			$_SESSION['tree_prefix']=$tree_prefix;
 			$new_nr_qry= "SELECT * FROM ".$tree_prefix."person LIMIT 0,1";
-			$new_nr_result = mysql_query($new_nr_qry,$db);
+			//$new_nr_result = mysql_query($new_nr_qry,$db);
+			$new_nr_result = $dbh->query($new_nr_qry);
 			// *** Create new tables ***
 			if (!$new_nr_result){ include_once ("gedcom_tables.php"); }
 			$pers_gedcomnumber=''; $menu_admin='person'; $add_person=1;
@@ -1319,8 +1422,11 @@ if (isset($pers_gedcomnumber)){
 	// *** Get person data to show name and calculate nr. of items ***
 	$person_qry= "SELECT * FROM ".$tree_prefix."person
 		WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
-	$person_result = mysql_query($person_qry,$db);
-	$person=mysql_fetch_object($person_result);
+	//$person_result = mysql_query($person_qry,$db);
+	//$person=mysql_fetch_object($person_result);
+	$person_result = $dbh->query($person_qry);
+	$person=$person_result->fetch(PDO::FETCH_OBJ);
+	
 
 
 	// *** Align content to the left ***
@@ -1345,8 +1451,10 @@ if (isset($pers_gedcomnumber)){
 	}
 	else{
 		$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
-		$person_result = mysql_query($person_qry,$db);
-		$person=mysql_fetch_object($person_result);
+		//$person_result = mysql_query($person_qry,$db);
+		//$person=mysql_fetch_object($person_result);
+		$person_result = $dbh->query($person_qry);
+		$person=$person_result->fetch(PDO::FETCH_OBJ);		
 
 		$pers_gedcomnumber=$person->pers_gedcomnumber;
 		$pers_firstname=$person->pers_firstname; $pers_callname=$person->pers_callname;
@@ -1465,12 +1573,14 @@ if (isset($pers_gedcomnumber)){
 			else{
 				$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_famc='' ORDER BY pers_lastname, pers_firstname";
 			}
-			$person_result = mysql_query($person_qry,$db);
+			//$person_result = mysql_query($person_qry,$db);
+			$person_result = $dbh->query($person_qry);
 			//if (isset($_GET['child_connect'])){
 				echo __('Select child').' ';
 				print '<select size="1" name="child_connect2">';
 			//}
-			while ($person=mysql_fetch_object($person_result)){
+			//while ($person=mysql_fetch_object($person_result)){
+			while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 				echo '<option value="'.$person->pers_gedcomnumber.'">'.
 					$person->pers_lastname.', '.$person->pers_firstname.' '.strtolower(str_replace("_"," ",$person->pers_prefix)).' ['.$person->pers_gedcomnumber.']</option>';
 			}
@@ -1563,9 +1673,12 @@ if (isset($pers_gedcomnumber)){
 
 			if ($person->pers_famc){
 				// *** Search for parents ***
-				$family_parents=mysql_query("SELECT * FROM ".$tree_prefix."family
-					WHERE fam_gedcomnumber='$person->pers_famc'",$db);
-				$family_parentsDb=mysql_fetch_object($family_parents);
+				//$family_parents=mysql_query("SELECT * FROM ".$tree_prefix."family
+				//	WHERE fam_gedcomnumber='$person->pers_famc'",$db);
+				//$family_parentsDb=mysql_fetch_object($family_parents);
+				$family_parents=$dbh->query("SELECT * FROM ".$tree_prefix."family
+					WHERE fam_gedcomnumber='$person->pers_famc'");
+				$family_parentsDb=$family_parents->fetch(PDO::FETCH_OBJ);				
 
 				//*** Father ***
 				if ($family_parentsDb->fam_man){
@@ -1650,9 +1763,11 @@ if (isset($pers_gedcomnumber)){
 			$connect_qry="SELECT * FROM ".$tree_prefix."connections
 				WHERE connect_kind='person' AND connect_sub_kind='pers_name_source'
 				AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=mysql_query($connect_qry,$db);
+			//$connect_sql=mysql_query($connect_qry,$db);
+			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_name_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
 
@@ -1709,9 +1824,11 @@ if (isset($pers_gedcomnumber)){
 			$connect_qry="SELECT * FROM ".$tree_prefix."connections
 				WHERE connect_kind='person' AND connect_sub_kind='pers_sexe_source'
 				AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=mysql_query($connect_qry,$db);
+			//$connect_sql=mysql_query($connect_qry,$db);
+			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_sexe_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
 
@@ -1730,9 +1847,11 @@ if (isset($pers_gedcomnumber)){
 				FROM ".$tree_prefix."connections
 				WHERE connect_kind='person' AND connect_sub_kind='pers_birth_source'
 				AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=mysql_query($connect_qry,$db);
+			//$connect_sql=mysql_query($connect_qry,$db);
+			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_birth_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 
 		echo '</td></tr>';
@@ -1774,9 +1893,11 @@ if (isset($pers_gedcomnumber)){
 				FROM ".$tree_prefix."connections
 				WHERE connect_kind='person' AND connect_sub_kind='pers_bapt_source'
 				AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=mysql_query($connect_qry,$db);
+			//$connect_sql=mysql_query($connect_qry,$db);
+			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
 
@@ -1816,9 +1937,11 @@ if (isset($pers_gedcomnumber)){
 				FROM ".$tree_prefix."connections
 				WHERE connect_kind='person' AND connect_sub_kind='pers_death_source'
 				AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=mysql_query($connect_qry,$db);
+			//$connect_sql=mysql_query($connect_qry,$db);
+			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_death_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
 
@@ -1894,9 +2017,11 @@ if (isset($pers_gedcomnumber)){
 				FROM ".$tree_prefix."connections
 				WHERE connect_kind='person' AND connect_sub_kind='pers_buried_source'
 				AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=mysql_query($connect_qry,$db);
+			//$connect_sql=mysql_query($connect_qry,$db);
+			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_buried_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
 
@@ -1936,9 +2061,12 @@ if (isset($pers_gedcomnumber)){
 				echo '<td style="border-left:0px;"><input type="Submit" name="person_place_address" value="'.__('Places');
 
 				// *** Calculate and show nr. of places ***
-				$address_qry=mysql_query("SELECT * FROM ".$tree_prefix."addresses
-					WHERE address_person_id='".$pers_gedcomnumber."'",$db);
-				echo ' ['.mysql_num_rows($address_qry).'] - ';
+				//$address_qry=mysql_query("SELECT * FROM ".$tree_prefix."addresses
+				//	WHERE address_person_id='".$pers_gedcomnumber."'",$db);
+				//echo ' ['.mysql_num_rows($address_qry).'] - ';
+				$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
+					WHERE address_person_id='".$pers_gedcomnumber."'");
+				echo ' ['.$address_qry->rowCount().'] - ';				
 
 				// *** Calculate and show nr. of Addresses ***
 				echo __('Addresses');
@@ -1946,8 +2074,10 @@ if (isset($pers_gedcomnumber)){
 					FROM ".$tree_prefix."connections
 					WHERE connect_kind='person' AND connect_sub_kind='person_address'
 					AND connect_connect_id='".$pers_gedcomnumber."'";
-				$connect_sql=mysql_query($connect_qry,$db);
-				echo ' ['.mysql_num_rows($connect_sql).']';			
+				//$connect_sql=mysql_query($connect_qry,$db);
+				//echo ' ['.mysql_num_rows($connect_sql).']';	
+				$connect_sql=$dbh->query($connect_qry);
+				echo ' ['.$connect_sql->rowCount().']';		
 				echo '">';
 			echo '</td><td></td></tr>';
 		}
@@ -1965,9 +2095,11 @@ if (isset($pers_gedcomnumber)){
 				FROM ".$tree_prefix."connections
 				WHERE connect_kind='person' AND connect_sub_kind='pers_text_source'
 				AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=mysql_query($connect_qry,$db);
+			//$connect_sql=mysql_query($connect_qry,$db);
+			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_text_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
 
@@ -1980,9 +2112,11 @@ if (isset($pers_gedcomnumber)){
 					FROM ".$tree_prefix."connections
 					WHERE connect_kind='person' AND connect_sub_kind='person_source'
 					AND connect_connect_id='".$pers_gedcomnumber."'";
-				$connect_sql=mysql_query($connect_qry,$db);
+				//$connect_sql=mysql_query($connect_qry,$db);
+				$connect_sql=$dbh->query($connect_qry);
 				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=person_source', '','width=800,height=500')\">".__('source');
-				echo ' ['.mysql_num_rows($connect_sql).']</a>';
+				//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+				echo ' ['.$connect_sql->rowCount().']</a>';
 			echo '</td></tr>';
 
 			// *** End of person form ***
@@ -2000,8 +2134,9 @@ if (isset($pers_gedcomnumber)){
 						$connect_qry="SELECT *
 							FROM ".$tree_prefix."events
 							WHERE event_person_id='".$pers_gedcomnumber."'";
-						$connect_sql=mysql_query($connect_qry,$db);
-						echo ' ['.mysql_num_rows($connect_sql).']';
+						//$connect_sql=mysql_query($connect_qry,$db);
+						$connect_sql=$dbh->query($connect_qry);
+						echo ' ['.$connect_sql->rowCount().']';
 					echo '">';
 
 				echo ' '.__('For items like:').' '.__('Picture/ Media').', '.__('Profession').', '.__('Event').', '.__('etc.');
@@ -2043,8 +2178,10 @@ if (isset($pers_gedcomnumber)){
 			$note_qry= "SELECT * FROM humo_user_notes
 				WHERE note_tree_prefix='".$tree_prefix."'
 				AND note_pers_gedcomnumber='".$pers_gedcomnumber."'";
-			$note_result = mysql_query($note_qry,$db);
-			$num_rows = mysql_num_rows($note_result);
+			//$note_result = mysql_query($note_qry,$db);
+			//$num_rows = mysql_num_rows($note_result);
+			$note_result = $dbh->query($note_qry);
+			$num_rows = $note_result->rowCount();			
 
 			echo '<tr class="humo_user_notes"><td>';
 			echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">'.__('[+]').'</span></a> ';
@@ -2058,11 +2195,14 @@ if (isset($pers_gedcomnumber)){
 			}
 			echo '</td><td></td></tr>';
 
-			while($noteDb=mysql_fetch_object($note_result)){
+			//while($noteDb=mysql_fetch_object($note_result)){
+			while($noteDb=$note_result->fetch(PDO::FETCH_OBJ)){
 				$user_qry = "SELECT * FROM humo_users
 					WHERE user_id='".$noteDb->note_user_id."'";
-				$user_result = mysql_query($user_qry);
-				$userDb=mysql_fetch_object($user_result);
+				//$user_result = mysql_query($user_qry);
+				//$userDb=mysql_fetch_object($user_result);
+				$user_result = $dbh->query($user_qry);
+				$userDb=$user_result->fetch(PDO::FETCH_OBJ);				
 
 				echo '<tr style="display:none;" id="row62" name="row62"><td></td>';
 					echo '<td colspan="2">';
@@ -2071,7 +2211,7 @@ if (isset($pers_gedcomnumber)){
 					echo nl2br($noteDb->note_note);
 					echo '</td>';
 				echo '<td></td></tr>';
-			}
+			}			
 		}
 
 
@@ -2101,9 +2241,12 @@ if (isset($pers_gedcomnumber)){
 				$fams1=explode(";",$person->pers_fams);
 				$fam_count=substr_count($person->pers_fams, ";");
 				for ($i=0; $i<=$fam_count; $i++){
-					$family=mysql_query("SELECT * FROM ".$tree_prefix."family
-						WHERE fam_gedcomnumber='".$fams1[$i]."'",$db);
-					$familyDb=mysql_fetch_object($family);
+					//$family=mysql_query("SELECT * FROM ".$tree_prefix."family
+					//	WHERE fam_gedcomnumber='".$fams1[$i]."'",$db);
+					//$familyDb=mysql_fetch_object($family);
+					$family=$dbh->query("SELECT * FROM ".$tree_prefix."family
+						WHERE fam_gedcomnumber='".$fams1[$i]."'");
+					$familyDb=$family->fetch(PDO::FETCH_OBJ);					
 
 					//echo '<tr><td>'.ucfirst(__('marriage')).' '.($i+1).'</td><td valign="top">';
 					echo '<tr><td>';
@@ -2222,16 +2365,20 @@ if (isset($pers_gedcomnumber)){
 				// *** If a new wedding is added, already show the latest selected person ***
 				if (isset($pers_gedcomnumber)){
 					$qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
-					$result = mysql_query($qry,$db);
+					//$result = mysql_query($qry,$db);
+					$result = $dbh->query($qry);
 					if ($pers_sexe=='F'){ $woman_gedcomnumber=$pers_gedcomnumber;	}
 						else{ $man_gedcomnumber=$pers_gedcomnumber; }
 				}
 
 			}
 			else{
-				$family=mysql_query("SELECT * FROM ".$tree_prefix."family
-					WHERE fam_gedcomnumber='".$marriage."'",$db);
-				$familyDb=mysql_fetch_object($family);
+				//$family=mysql_query("SELECT * FROM ".$tree_prefix."family
+				//	WHERE fam_gedcomnumber='".$marriage."'",$db);
+				//$familyDb=mysql_fetch_object($family);
+				$family=$dbh->query("SELECT * FROM ".$tree_prefix."family
+					WHERE fam_gedcomnumber='".$marriage."'");
+				$familyDb=$family->fetch(PDO::FETCH_OBJ);				
 
 				$fam_kind=$familyDb->fam_kind;
 				$man_gedcomnumber=$familyDb->fam_man; $woman_gedcomnumber=$familyDb->fam_woman;
@@ -2334,8 +2481,10 @@ if (isset($pers_gedcomnumber)){
 				//$person_qry= "SELECT * FROM ".$tree_prefix."person ORDER BY pers_lastname, pers_firstname";
 				$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$man_gedcomnumber."'";
 			}
-			$person_result = mysql_query($person_qry,$db);
-			while ($person=mysql_fetch_object($person_result)){
+			//$person_result = mysql_query($person_qry,$db);
+			//while ($person=mysql_fetch_object($person_result)){
+			$person_result = $dbh->query($person_qry);
+			while ($person=$person_result->fetch(PDO::FETCH_OBJ)){			
 				$selected='';
 				if (isset($man_gedcomnumber)){
 					if ($person->pers_gedcomnumber==$man_gedcomnumber){ $selected=' SELECTED'; }
@@ -2385,8 +2534,10 @@ if (isset($pers_gedcomnumber)){
 				$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$woman_gedcomnumber."'";
 			}
 
-			$person_result = mysql_query($person_qry,$db);
-			while ($person=mysql_fetch_object($person_result)){
+			//$person_result = mysql_query($person_qry,$db);
+			//while ($person=mysql_fetch_object($person_result)){
+			$person_result = $dbh->query($person_qry);
+			while ($person=$person_result->fetch(PDO::FETCH_OBJ)){			
 				$selected='';
 				if (isset($woman_gedcomnumber)){
 					if ($person->pers_gedcomnumber==$woman_gedcomnumber){ $selected=' SELECTED'; }
@@ -2455,9 +2606,11 @@ if (isset($pers_gedcomnumber)){
 						FROM ".$tree_prefix."connections
 						WHERE connect_kind='family' AND connect_sub_kind='fam_relation_source'
 						AND connect_connect_id='".$marriage."'";
-					$connect_sql=mysql_query($connect_qry,$db);
+					//$connect_sql=mysql_query($connect_qry,$db);
+					$connect_sql=$dbh->query($connect_qry);
 					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_relation_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
 
@@ -2487,9 +2640,11 @@ if (isset($pers_gedcomnumber)){
 						FROM ".$tree_prefix."connections
 						WHERE connect_kind='family' AND connect_sub_kind='fam_marr_notice_source'
 						AND connect_connect_id='".$marriage."'";
-					$connect_sql=mysql_query($connect_qry,$db);
+					//$connect_sql=mysql_query($connect_qry,$db);
+					$connect_sql=$dbh->query($connect_qry);
 					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_marr_notice_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
 
@@ -2512,9 +2667,11 @@ if (isset($pers_gedcomnumber)){
 						FROM ".$tree_prefix."connections
 						WHERE connect_kind='family' AND connect_sub_kind='fam_marr_source'
 						AND connect_connect_id='".$marriage."'";
-					$connect_sql=mysql_query($connect_qry,$db);
+					//$connect_sql=mysql_query($connect_qry,$db);
+					$connect_sql=$dbh->query($connect_qry);
 					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_marr_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 
 			echo '</td></tr>';
@@ -2550,9 +2707,11 @@ if (isset($pers_gedcomnumber)){
 						FROM ".$tree_prefix."connections
 						WHERE connect_kind='family' AND connect_sub_kind='fam_marr_church_notice_source'
 						AND connect_connect_id='".$marriage."'";
-					$connect_sql=mysql_query($connect_qry,$db);
+					//$connect_sql=mysql_query($connect_qry,$db);
+					$connect_sql=$dbh->query($connect_qry);
 					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_marr_church_notice_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
 
@@ -2575,9 +2734,11 @@ if (isset($pers_gedcomnumber)){
 						FROM ".$tree_prefix."connections
 						WHERE connect_kind='family' AND connect_sub_kind='fam_marr_church_source'
 						AND connect_connect_id='".$marriage."'";
-					$connect_sql=mysql_query($connect_qry,$db);
+					//$connect_sql=mysql_query($connect_qry,$db);
+					$connect_sql=$dbh->query($connect_qry);
 					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_marr_church_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
 
@@ -2610,9 +2771,11 @@ if (isset($pers_gedcomnumber)){
 						FROM ".$tree_prefix."connections
 						WHERE connect_kind='family' AND connect_sub_kind='fam_div_source'
 						AND connect_connect_id='".$marriage."'";
-					$connect_sql=mysql_query($connect_qry,$db);
+					//$connect_sql=mysql_query($connect_qry,$db);
+					$connect_sql=$dbh->query($connect_qry);
 					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_div_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
 
@@ -2639,9 +2802,11 @@ if (isset($pers_gedcomnumber)){
 						FROM ".$tree_prefix."connections
 						WHERE connect_kind='family' AND connect_sub_kind='fam_text_source'
 						AND connect_connect_id='".$marriage."'";
-					$connect_sql=mysql_query($connect_qry,$db);
+					//$connect_sql=mysql_query($connect_qry,$db);
+					$connect_sql=$dbh->query($connect_qry);
 					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_text_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.mysql_num_rows($connect_sql).']</a>';			
+					//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					echo ' ['.$connect_sql->rowCount().']</a>';					
 				}
 			echo '</td></tr>';
 
@@ -2654,9 +2819,11 @@ if (isset($pers_gedcomnumber)){
 						FROM ".$tree_prefix."connections
 						WHERE connect_kind='family' AND connect_sub_kind='family_source'
 						AND connect_connect_id='".$marriage."'";
-					$connect_sql=mysql_query($connect_qry,$db);
+					//$connect_sql=mysql_query($connect_qry,$db);
+					$connect_sql=$dbh->query($connect_qry);
 					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=family_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					echo ' ['.$connect_sql->rowCount().']</a>';
 				echo '</td></tr>';
 			}
 
@@ -2675,8 +2842,10 @@ if (isset($pers_gedcomnumber)){
 							// *** Calculate and show nr. of events ***
 							$connect_qry="SELECT *
 								FROM ".$tree_prefix."events WHERE event_family_id='".$marriage."'";
-							$connect_sql=mysql_query($connect_qry,$db);
-							echo ' ['.mysql_num_rows($connect_sql).']';
+							//$connect_sql=mysql_query($connect_qry,$db);
+							$connect_sql=$dbh->query($connect_qry);
+							//echo ' ['.mysql_num_rows($connect_sql).']';
+							echo ' ['.$connect_sql->rowCount().']';
 						echo '">';
 
 						echo ' '.__('For items like:').' '.__('Event').', '.__('Marriage Witness').', '.__('Marriage Witness (church)').', '.__('etc.');
@@ -2758,8 +2927,10 @@ if (isset($pers_gedcomnumber)){
 			// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
 			$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
 				FROM ".$tree_prefix."sources ORDER BY gednr DESC LIMIT 0,1";
-			$new_nr_result = mysql_query($new_nr_qry,$db);
-			$new_nr=mysql_fetch_object($new_nr_result);
+			//$new_nr_result = mysql_query($new_nr_qry,$db);
+			//$new_nr=mysql_fetch_object($new_nr_result);
+			$new_nr_result = $dbh->query($new_nr_qry);
+			$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);			
 
 			//$new_gedcomnumber='S'.(substr($new_nr->source_gedcomnr,1)+1);
 			$new_gedcomnumber='S1';
@@ -2785,11 +2956,14 @@ if (isset($pers_gedcomnumber)){
 				source_text='".$editor_cls->text_process($_POST['source_text'])."',
 				source_new_date='".$gedcom_date."',
 				source_new_time='".$gedcom_time."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			$new_source_qry= "SELECT * FROM ".$tree_prefix."sources ORDER BY source_id DESC LIMIT 0,1";
-			$new_source_result = mysql_query($new_source_qry,$db);
-			$new_source=mysql_fetch_object($new_source_result);
+			//$new_source_result = mysql_query($new_source_qry,$db);
+			//$new_source=mysql_fetch_object($new_source_result);
+			$new_source_result = $dbh->query($new_source_qry);
+			$new_source=$new_source_result->fetch(PDO::FETCH_OBJ);			
 			$_POST['source_id']=$new_source->source_id;
 		}
 
@@ -2812,7 +2986,8 @@ if (isset($pers_gedcomnumber)){
 			source_changed_date='".$gedcom_date."',
 			source_changed_time='".$gedcom_time."'
 			WHERE source_id='".safe_text($_POST["source_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 			family_tree_update($tree_prefix);
 		}
 
@@ -2831,66 +3006,82 @@ if (isset($pers_gedcomnumber)){
 			echo '<div class="confirm">';
 
 			// *** Find gedcomnumber, needed for events query ***
-			$source_qry=mysql_query("SELECT * FROM ".$tree_prefix."sources
-			WHERE source_id='".safe_text($_POST["source_id"])."'",$db);
-			$sourceDb=mysql_fetch_object($source_qry);
+			//$source_qry=mysql_query("SELECT * FROM ".$tree_prefix."sources
+			//WHERE source_id='".safe_text($_POST["source_id"])."'",$db);
+			//$sourceDb=mysql_fetch_object($source_qry);
+			$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix."sources
+			WHERE source_id='".safe_text($_POST["source_id"])."'");
+			$sourceDb=$source_qry->fetch(PDO::FETCH_OBJ);			
 
 			// *** Delete source references ***
 			$sql="DELETE FROM ".$tree_prefix."events
 			WHERE event_kind='source' AND event_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			// *** Delete person sources ***
 			$sql="UPDATE ".$tree_prefix."person
 			SET pers_name_source='' WHERE pers_name_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."person
 			SET pers_birth_source='' WHERE pers_birth_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."person
 			SET pers_bapt_source='' WHERE pers_bapt_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."person
 			SET pers_death_source='' WHERE pers_death_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."person
 			SET pers_buried_source='' WHERE pers_buried_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			// **** Delete family sources ***
 			$sql="UPDATE ".$tree_prefix."family
 			SET fam_relation_source='' WHERE fam_relation_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."family
 			SET fam_marr_notice_source='' WHERE fam_marr_notice_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."family
 			SET fam_marr_source='' WHERE fam_marr_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."family
 			SET fam_marr_church_notice_source='' WHERE fam_marr_church_notice_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."family
 			SET fam_marr_church_source='' WHERE fam_marr_church_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."family
 			SET fam_div_source='' WHERE fam_div_source='@".$sourceDb->source_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			// *** Delete source ***
 			$sql="DELETE FROM ".$tree_prefix."sources
 			WHERE source_id='".safe_text($_POST["source_id"])."'";
-			$result=mysql_query($sql,$db);
-
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
+			
 			echo __('Source is removed!');
 
 			echo '</div>';
@@ -2903,12 +3094,14 @@ if (isset($pers_gedcomnumber)){
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 
-			$source_qry=mysql_query("SELECT * FROM ".$tree_prefix."sources ORDER BY source_title",$db);
+			//$source_qry=mysql_query("SELECT * FROM ".$tree_prefix."sources ORDER BY source_title",$db);
+			$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix."sources ORDER BY source_title");
 			echo __('Select source').': ';
 			//echo '<select size="1" name="source_id" style="width: 300px">';
 			echo '<select size="1" name="source_id" style="width: 300px" onChange="this.form.submit();">';
 			echo '<option value="">'.__('Select source').'</option>'; // *** For new source in new database... ***
-			while ($sourceDb=mysql_fetch_object($source_qry)){
+			//while ($sourceDb=mysql_fetch_object($source_qry)){
+			while ($sourceDb=$source_qry->fetch(PDO::FETCH_OBJ)){
 				$selected='';
 				if (isset($_POST['source_id'])){
 					if ($_POST['source_id']==$sourceDb->source_id){
@@ -2943,11 +3136,18 @@ if (isset($pers_gedcomnumber)){
 				$source_repo_gedcomnr='';
 			}
 			else{
-				@$source_qry=mysql_query("SELECT * FROM ".$tree_prefix."sources
-					WHERE source_id='".safe_text($source_id)."'",$db);
+				//@$source_qry=mysql_query("SELECT * FROM ".$tree_prefix."sources
+				//	WHERE source_id='".safe_text($source_id)."'",$db);
+				@$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix."sources
+					WHERE source_id='".safe_text($source_id)."'");					
 
 				$die_message=__('No valid source number.');
-				@$sourceDb=mysql_fetch_object($source_qry) or die("$die_message");
+				//@$sourceDb=mysql_fetch_object($source_qry) or die("$die_message");
+				try {
+					@$sourceDb=$source_qry->fetch(PDO::FETCH_OBJ);
+				} catch (PDOException $e) {
+					echo $die_message;
+				}
 				$source_status=$sourceDb->source_status;
 				$source_title=$sourceDb->source_title; $source_date=$sourceDb->source_date;
 				$source_place=$sourceDb->source_place; $source_publ=$sourceDb->source_publ;
@@ -2981,11 +3181,14 @@ if (isset($pers_gedcomnumber)){
 			echo '<tr><td>'.__('date').' - '.__('place').'</td><td>'.$editor_cls->date_show($source_date,"source_date").' <input type="text" name="source_place" value="'.htmlspecialchars($source_place).'" size="50"></td></tr>';
 
 			echo '<tr><td>'.__('Repository').'</td><td>';
-				$repo_qry=mysql_query("SELECT * FROM ".$tree_prefix."repositories
-					ORDER BY repo_name, repo_place",$db);
+				//$repo_qry=mysql_query("SELECT * FROM ".$tree_prefix."repositories
+				//	ORDER BY repo_name, repo_place",$db);
+				$repo_qry=$dbh->query("SELECT * FROM ".$tree_prefix."repositories
+					ORDER BY repo_name, repo_place");					
 				echo '<select size="1" name="source_repo_gedcomnr">';
 				echo '<option value=""></option>'; // *** For new repository in new database... ***
-				while($repoDb=mysql_fetch_object($repo_qry)){
+				//while($repoDb=mysql_fetch_object($repo_qry)){
+				while($repoDb=$repo_qry->fetch(PDO::FETCH_OBJ)){
 					$selected='';
 					if ($repoDb->repo_gedcomnr==$source_repo_gedcomnr){$selected=' SELECTED';}
 					echo '<option value="'.$repoDb->repo_gedcomnr.'"'.$selected.'>'.
@@ -3041,8 +3244,10 @@ if (isset($pers_gedcomnumber)){
 			// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
 			$new_nr_qry= "SELECT *, ABS(substring(repo_gedcomnr, 2)) AS gednr
 				FROM ".$tree_prefix."repositories ORDER BY gednr DESC LIMIT 0,1";
-			$new_nr_result = mysql_query($new_nr_qry,$db);
-			$new_nr=mysql_fetch_object($new_nr_result);
+			//$new_nr_result = mysql_query($new_nr_qry,$db);
+			//$new_nr=mysql_fetch_object($new_nr_result);
+			$new_nr_result = $dbh->query($new_nr_qry);
+			$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);			
 			//$new_gedcomnumber='R'.(substr($new_nr->address_gedcomnr,1)+1);
 			$new_gedcomnumber='R1';
 			if (isset($new_nr->repo_gedcomnr)){
@@ -3062,11 +3267,14 @@ if (isset($pers_gedcomnumber)){
 				repo_url='".safe_text($_POST['repo_url'])."',
 				repo_new_date='".$gedcom_date."',
 				repo_new_time='".$gedcom_time."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			$new_repo_qry= "SELECT * FROM ".$tree_prefix."repositories ORDER BY repo_id DESC LIMIT 0,1";
-			$new_repo_result = mysql_query($new_repo_qry,$db);
-			$new_repo=mysql_fetch_object($new_repo_result);
+			//$new_repo_result = mysql_query($new_repo_qry,$db);
+			//$new_repo=mysql_fetch_object($new_repo_result);
+			$new_repo_result = $dbh->query($new_repo_qry);
+			$new_repo=$new_repo_result->fetch(PDO::FETCH_OBJ);			
 			$_POST['repo_id']=$new_repo->repo_id;
 		}
 
@@ -3084,7 +3292,8 @@ if (isset($pers_gedcomnumber)){
 				repo_changed_date='".$gedcom_date."',
 				repo_changed_time='".$gedcom_time."'
 			WHERE repo_id='".safe_text($_POST["repo_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 			family_tree_update($tree_prefix);
 		}
 
@@ -3102,19 +3311,24 @@ if (isset($pers_gedcomnumber)){
 		if (isset($_POST['repo_remove2'])){
 			echo '<div class="confirm">';
 			// *** Find gedcomnumber, needed for events query ***
-			$repo_qry=mysql_query("SELECT * FROM ".$tree_prefix."repositories
-				WHERE repo_id='".safe_text($_POST["repo_id"])."'",$db);
-			$repoDb=mysql_fetch_object($repo_qry);
+			//$repo_qry=mysql_query("SELECT * FROM ".$tree_prefix."repositories
+			//	WHERE repo_id='".safe_text($_POST["repo_id"])."'",$db);
+			//$repoDb=mysql_fetch_object($repo_qry);
+			$repo_qry=$dbh->query("SELECT * FROM ".$tree_prefix."repositories
+				WHERE repo_id='".safe_text($_POST["repo_id"])."'");
+			$repoDb=$repo_qry->fetch(PDO::FETCH_OBJ);			
 
 			// *** Delete repository link ***
 			$sql="UPDATE ".$tree_prefix."sources SET source_repo_gedcomnr=''
 			WHERE source_repo_gedcomnr='".$repoDb->repo_gedcomnr."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			// *** Delete repository ***
 			$sql="DELETE FROM ".$tree_prefix."repositories
 			WHERE repo_id='".safe_text($_POST["repo_id"])."'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 			echo __('Repository is removed!');
 			echo '</div>';
 		}
@@ -3125,12 +3339,15 @@ if (isset($pers_gedcomnumber)){
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
-			$repo_qry=mysql_query("SELECT * FROM ".$tree_prefix."repositories
-				ORDER BY repo_name, repo_place",$db);
+			//$repo_qry=mysql_query("SELECT * FROM ".$tree_prefix."repositories
+			//	ORDER BY repo_name, repo_place",$db);
+			$repo_qry=$dbh->query("SELECT * FROM ".$tree_prefix."repositories
+				ORDER BY repo_name, repo_place");				
 			echo __('Select repository').' ';
 			echo '<select size="1" name="repo_id" onChange="this.form.submit();">';
 			echo '<option value="">'.__('Select repository').'</option>'; // *** For new repository in new database... ***
-			while ($repoDb=mysql_fetch_object($repo_qry)){
+			//while ($repoDb=mysql_fetch_object($repo_qry)){
+			while ($repoDb=$repo_qry->fetch(PDO::FETCH_OBJ)){
 				$selected='';
 				if (isset($_POST['repo_id'])){
 					if ($_POST['repo_id']==$repoDb->repo_id){$selected=' SELECTED';}
@@ -3158,11 +3375,18 @@ if (isset($pers_gedcomnumber)){
 				$repo_new_date=''; $repo_new_time=''; $repo_changed_date=''; $repo_changed_time='';
 			}
 			else{
-				@$repo_qry=mysql_query("SELECT * FROM ".$tree_prefix."repositories
-					WHERE repo_id='".safe_text($_POST["repo_id"])."'",$db);
+				//@$repo_qry=mysql_query("SELECT * FROM ".$tree_prefix."repositories
+				//	WHERE repo_id='".safe_text($_POST["repo_id"])."'",$db);
+				@$repo_qry=$dbh->query("SELECT * FROM ".$tree_prefix."repositories
+					WHERE repo_id='".safe_text($_POST["repo_id"])."'");					
 
 				$die_message=__('No valid repository number.');
-				@$repoDb=mysql_fetch_object($repo_qry) or die("$die_message");
+				//@$repoDb=mysql_fetch_object($repo_qry) or die("$die_message");
+				try {
+					@$repoDb=$repo_qry->fetch(PDO::FETCH_OBJ);
+				} catch(PDOException $e) {
+					echo $die_message;
+				}
 				$repo_name=$repoDb->repo_name;
 				$repo_address=$repoDb->repo_address;
 				$repo_zip=$repoDb->repo_zip;
@@ -3241,8 +3465,10 @@ if (isset($pers_gedcomnumber)){
 			// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
 			$new_nr_qry= "SELECT *, ABS(substring(address_gedcomnr, 2)) AS gednr
 				FROM ".$tree_prefix."addresses ORDER BY gednr DESC LIMIT 0,1";
-			$new_nr_result = mysql_query($new_nr_qry,$db);
-			$new_nr=mysql_fetch_object($new_nr_result);
+			//$new_nr_result = mysql_query($new_nr_qry,$db);
+			//$new_nr=mysql_fetch_object($new_nr_result);
+			$new_nr_result = $dbh->query($new_nr_qry);
+			$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);			
 			//$new_gedcomnumber='R'.(substr($new_nr->address_gedcomnr,1)+1);
 			$new_gedcomnumber='R1';
 			if (isset($new_nr->address_gedcomnr)){
@@ -3260,11 +3486,14 @@ if (isset($pers_gedcomnumber)){
 				address_text='".$editor_cls->text_process($_POST['address_text'])."',
 				address_new_date='".$gedcom_date."',
 				address_new_time='".$gedcom_time."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			$new_address_qry= "SELECT * FROM ".$tree_prefix."addresses ORDER BY address_id DESC LIMIT 0,1";
-			$new_address_result = mysql_query($new_address_qry,$db);
-			$new_address=mysql_fetch_object($new_address_result);
+			//$new_address_result = mysql_query($new_address_qry,$db);
+			//$new_address=mysql_fetch_object($new_address_result);
+			$new_address_result = $dbh->query($new_address_qry);
+			$new_address=$new_address_result->fetch(PDO::FETCH_OBJ);			
 			$_POST['address_id']=$new_address->address_id;
 		}
 
@@ -3280,7 +3509,8 @@ if (isset($pers_gedcomnumber)){
 				address_changed_date='".$gedcom_date."',
 				address_changed_time='".$gedcom_time."'
 			WHERE address_id='".safe_text($_POST["address_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			family_tree_update($tree_prefix);
 		}
@@ -3299,19 +3529,24 @@ if (isset($pers_gedcomnumber)){
 		if (isset($_POST['address_remove2'])){
 			echo '<div class="confirm">';
 			// *** Find gedcomnumber, needed for events query ***
-			$address_qry=mysql_query("SELECT * FROM ".$tree_prefix."addresses
-			WHERE address_id='".safe_text($_POST["address_id"])."'",$db);
-			$addressDb=mysql_fetch_object($address_qry);
+			//$address_qry=mysql_query("SELECT * FROM ".$tree_prefix."addresses
+			//WHERE address_id='".safe_text($_POST["address_id"])."'",$db);
+			//$addressDb=mysql_fetch_object($address_qry);
+			$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
+			WHERE address_id='".safe_text($_POST["address_id"])."'");
+			$addressDb=$address_qry->fetch(PDO::FETCH_OBJ);			
 
 			// *** Delete address references ***
 			$sql="DELETE FROM ".$tree_prefix."events
 			WHERE	event_kind='address' AND event_source='@".$addressDb->address_gedcomnr."@'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			// *** Delete address ***
 			$sql="DELETE FROM ".$tree_prefix."addresses
 			WHERE address_id='".safe_text($_POST["address_id"])."'";
-			$result=mysql_query($sql,$db);
+			//$result=mysql_query($sql,$db);
+			$result=$dbh->query($sql);
 
 			echo __('Address has been removed!');
 			echo '</div>';
@@ -3350,12 +3585,15 @@ if (isset($pers_gedcomnumber)){
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 
-			$address_qry=mysql_query("SELECT * FROM ".$tree_prefix."addresses
-				WHERE address_gedcomnr LIKE '_%' ORDER BY address_place, address_address",$db);
+			//$address_qry=mysql_query("SELECT * FROM ".$tree_prefix."addresses
+			//	WHERE address_gedcomnr LIKE '_%' ORDER BY address_place, address_address",$db);
+			$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
+				WHERE address_gedcomnr LIKE '_%' ORDER BY address_place, address_address");				
 			echo __('Select address').': ';
 			echo '<select size="1" name="address_id" onChange="this.form.submit();">';
 			echo '<option value="">'.__('Select address').'</option>'; // *** For new address in new database... ***
-			while ($addressDb=mysql_fetch_object($address_qry)){
+			//while ($addressDb=mysql_fetch_object($address_qry)){
+			while ($addressDb=$address_qry->fetch(PDO::FETCH_OBJ)){
 				$selected='';
 				if (isset($_POST['address_id'])){
 					if ($_POST['address_id']==$addressDb->address_id){$selected=' SELECTED';}
@@ -3381,10 +3619,16 @@ if (isset($pers_gedcomnumber)){
 				$address_photo=''; $address_source=''; $address_text='';
 			}
 			else{
-				@$address_qry2=mysql_query("SELECT * FROM ".$tree_prefix."addresses WHERE address_id='".safe_text($_POST["address_id"])."'",$db);
+				//@$address_qry2=mysql_query("SELECT * FROM ".$tree_prefix."addresses WHERE address_id='".safe_text($_POST["address_id"])."'",$db);
+				@$address_qry2=$dbh->query("SELECT * FROM ".$tree_prefix."addresses WHERE address_id='".safe_text($_POST["address_id"])."'");
 
 				$die_message=__('No valid address number.');
-				@$addressDb=mysql_fetch_object($address_qry2) or die("$die_message");
+				//@$addressDb=mysql_fetch_object($address_qry2) or die("$die_message");
+				try{
+					@$addressDb=$address_qry2->fetch(PDO::FETCH_OBJ);
+				} catch(PDOException $e) {
+					echo $die_message;
+				}
 				$address_address=$addressDb->address_address; $address_date=$addressDb->address_date;
 				$address_zip=$addressDb->address_zip; $address_place=$addressDb->address_place;
 				$address_phone=$addressDb->address_phone; $address_photo=$addressDb->address_photo;
@@ -3408,9 +3652,11 @@ if (isset($pers_gedcomnumber)){
 						FROM ".$tree_prefix."connections
 						WHERE connect_kind='address' AND connect_sub_kind='address_source'
 						AND connect_connect_id='".$addressDb->address_id."'";
-					$connect_sql=mysql_query($connect_qry,$db);
+					//$connect_sql=mysql_query($connect_qry,$db);
+					$connect_sql=$dbh->query($connect_qry);
 					echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=address_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
 
@@ -3457,30 +3703,37 @@ if (isset($pers_gedcomnumber)){
 			$sql="UPDATE ".$tree_prefix."person SET
 				pers_birth_place='".$editor_cls->text_process($_POST['place_new'])."'
 			WHERE pers_birth_place='".safe_text($_POST["place_old"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."person SET
 				pers_bapt_place='".$editor_cls->text_process($_POST['place_new'])."'
 			WHERE pers_bapt_place='".safe_text($_POST["place_old"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."person SET
 				pers_death_place='".$editor_cls->text_process($_POST['place_new'])."'
 			WHERE pers_death_place='".safe_text($_POST["place_old"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			$sql="UPDATE ".$tree_prefix."person SET
 				pers_buried_place='".$editor_cls->text_process($_POST['place_new'])."'
 			WHERE pers_buried_place='".safe_text($_POST["place_old"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 
 			if (isset($_POST["google_maps"])){
 				// *** Check if Google Maps table allready exist ***
-				if (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) {
+				//if (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) {
+				$tempqry = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+				if ($tempqry->rowCount()) {
 					$sql= "UPDATE humo_location
 						SET location_location ='".safe_text($_POST['place_new'])."'
 						WHERE location_location = '".safe_text($_POST['place_old'])."'";
-					$result=mysql_query($sql) or die(mysql_error());
+					//$result=mysql_query($sql) or die(mysql_error());
+					$result=$dbh->query($sql);
 				}
 			}
 
@@ -3495,14 +3748,17 @@ if (isset($pers_gedcomnumber)){
 		$person_qry.="UNION (SELECT pers_death_place as place_edit FROM ".$tree_prefix."person GROUP BY pers_death_place)";
 		$person_qry.="UNION (SELECT pers_buried_place as place_edit FROM ".$tree_prefix."person GROUP BY pers_buried_place)";
 		$person_qry.=" ORDER BY place_edit";
-		$person_result = mysql_query($person_qry,$db);
+		//$person_result = mysql_query($person_qry,$db);
+		$person_result = $dbh->query($person_qry);
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 			echo '<form method="POST" action="'.$phpself.'">';
-			echo mysql_num_rows($person_result).' '.__('Places').'. ';
+			//echo mysql_num_rows($person_result).' '.__('Places').'. ';
+			echo $person_result->rowCount().' '.__('Places').'. ';
 			echo __('Select location');
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<select size="1" name="place_select">';
-			while ($person=mysql_fetch_object($person_result)){
+			//while ($person=mysql_fetch_object($person_result)){
+			while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 				if ($person->place_edit != ''){
 					$selected='';
 					if (isset($_POST["place_select"]) AND $_POST["place_select"]==$person->place_edit){

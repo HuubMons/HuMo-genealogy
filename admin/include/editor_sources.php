@@ -45,8 +45,10 @@ if (isset($_POST['connect_add'])){
 		WHERE connect_kind='".safe_text($_POST['connect_kind'])."'
 		AND connect_sub_kind='".safe_text($_POST["connect_sub_kind"])."'
 		AND connect_connect_id='".safe_text($_POST["connect_connect_id"])."'";
-	$event_qry=mysql_query($event_sql,$db);
-	$count=mysql_num_rows($event_qry);
+	//$event_qry=mysql_query($event_sql,$db);
+	//$count=mysql_num_rows($event_qry);
+	$event_qry=$dbh->query($event_sql);
+	$count=$event_qry->rowCount();	
 	$count++;
 
 	$sql="INSERT INTO ".$tree_prefix."connections SET
@@ -56,50 +58,58 @@ if (isset($_POST['connect_add'])){
 		connect_kind='".safe_text($_POST['connect_kind'])."',
 		connect_sub_kind='".safe_text($_POST["connect_sub_kind"])."',
 		connect_connect_id='".safe_text($_POST["connect_connect_id"])."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	// *** Update source fields (only used to check if sources are available) ***
 	if ($_POST['connect_kind']=='person'){
 		if ($_POST['connect_sub_kind']=='pers_name_source'){
 			$sql="UPDATE ".$tree_prefix."person SET pers_name_source='SOURCE'
 				WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='pers_birth_source'){
 			$sql="UPDATE ".$tree_prefix."person SET pers_birth_source='SOURCE'
 				WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='pers_bapt_source'){
 			$sql="UPDATE ".$tree_prefix."person SET pers_bapt_source='SOURCE'
 				WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='pers_death_source'){
 			$sql="UPDATE ".$tree_prefix."person SET pers_death_source='SOURCE'
 				WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='pers_buried_source'){
 			$sql="UPDATE ".$tree_prefix."person SET pers_buried_source='SOURCE'
 				WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='pers_text_source'){
 			$sql="UPDATE ".$tree_prefix."person SET pers_text_source='SOURCE'
 				WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='event_source'){
 			$sql="UPDATE ".$tree_prefix."events SET event_source='SOURCE'
 				WHERE event_id='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 	} // *** End of person ***
 
@@ -107,49 +117,57 @@ if (isset($_POST['connect_add'])){
 		if ($_POST['connect_sub_kind']=='fam_relation_source'){
 			$sql="UPDATE ".$tree_prefix."family SET fam_relation_source='SOURCE'
 				WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='fam_marr_notice_source'){
 			$sql="UPDATE ".$tree_prefix."family SET fam_marr_notice_source='SOURCE'
 				WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='fam_marr_source'){
 			$sql="UPDATE ".$tree_prefix."family SET fam_marr_source='SOURCE'
 				WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='fam_marr_church_notice_source'){
 			$sql="UPDATE ".$tree_prefix."family SET fam_marr_church_notice_source='SOURCE'
 				WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='fam_marr_church_source'){
 			$sql="UPDATE ".$tree_prefix."family SET fam_marr_church_source='SOURCE'
 				WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='fam_div_source'){
 			$sql="UPDATE ".$tree_prefix."family SET fam_div_source='SOURCE'
 				WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='fam_text_source'){
 			$sql="UPDATE ".$tree_prefix."family SET fam_text_source='SOURCE'
 				WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 		if ($_POST['connect_sub_kind']=='event_source'){
 			$sql="UPDATE ".$tree_prefix."events SET event_source='SOURCE'
 				WHERE event_id='".safe_text($_POST["connect_connect_id"])."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 
 	} // *** End of family ***
@@ -173,7 +191,8 @@ if (isset($_POST['connect_change'])){
 		connect_changed_date='".$gedcom_date."', ";
 		$sql.=" connect_changed_time='".$gedcom_time."'";
 		$sql.=" WHERE connect_id='".safe_text($_POST["connect_change"][$key])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 }
 
@@ -210,7 +229,8 @@ if (isset($_POST['connect_drop2'])){
 	// *** Delete source connection ***
 	$sql="DELETE FROM ".$tree_prefix."connections
 		WHERE connect_id='".safe_text($_POST['connect_drop'])."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	// *** Re-order remaining source connections ***
 	$event_order=1;
@@ -219,59 +239,70 @@ if (isset($_POST['connect_drop2'])){
 		AND connect_sub_kind='".safe_text($_POST['connect_sub_kind'])."'
 		AND connect_connect_id='".safe_text($_POST['connect_connect_id'])."'
 		ORDER BY connect_order";
-	$event_qry=mysql_query($event_sql,$db);
-	while($eventDb=mysql_fetch_object($event_qry)){
+	//$event_qry=mysql_query($event_sql,$db);
+	//while($eventDb=mysql_fetch_object($event_qry)){
+	$event_qry=$dbh->query($event_sql);
+	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){	
 		$sql="UPDATE ".$tree_prefix."connections
 			SET connect_order='".$event_order."'
 			WHERE connect_id='".$eventDb->connect_id."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 		$event_order++;
 	}
 
-	if (mysql_num_rows($event_qry)=='0'){
+	//if (mysql_num_rows($event_qry)=='0'){
+	if ($event_qry->rowCount()=='0'){
 
 		// *** Update source fields (only used to check if sources are available) ***
 		if ($_POST['connect_kind']=='person'){
 			if ($_POST['connect_sub_kind']=='pers_name_source'){
 				$sql="UPDATE ".$tree_prefix."person SET pers_name_source=''
 					WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='pers_birth_source'){
 				$sql="UPDATE ".$tree_prefix."person SET pers_birth_source=''
 					WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='pers_bapt_source'){
 				$sql="UPDATE ".$tree_prefix."person SET pers_bapt_source=''
 					WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='pers_death_source'){
 				$sql="UPDATE ".$tree_prefix."person SET pers_death_source=''
 					WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='pers_buried_source'){
 				$sql="UPDATE ".$tree_prefix."person SET pers_buried_source=''
 					WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='pers_text_source'){
 				$sql="UPDATE ".$tree_prefix."person SET pers_text_source=''
 					WHERE pers_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='event_source'){
 				$sql="UPDATE ".$tree_prefix."events SET event_source=''
 					WHERE event_id='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 		
 		}
@@ -280,49 +311,57 @@ if (isset($_POST['connect_drop2'])){
 			if ($_POST['connect_sub_kind']=='fam_relation_source'){
 				$sql="UPDATE ".$tree_prefix."family SET fam_relation_source=''
 					WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='fam_marr_notice_source'){
 				$sql="UPDATE ".$tree_prefix."family SET fam_marr_notice_source=''
 					WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='fam_marr_source'){
 				$sql="UPDATE ".$tree_prefix."family SET fam_marr_source=''
 					WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='fam_marr_church_notice_source'){
 				$sql="UPDATE ".$tree_prefix."family SET fam_marr_church_notice_source=''
 					WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='fam_marr_church_source'){
 				$sql="UPDATE ".$tree_prefix."family SET fam_marr_church_source=''
 					WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='fam_div_source'){
 				$sql="UPDATE ".$tree_prefix."family SET fam_div_source=''
 					WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='fam_text_source'){
 				$sql="UPDATE ".$tree_prefix."family SET fam_text_source=''
 					WHERE fam_gedcomnumber='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 
 			if ($_POST['connect_sub_kind']=='event_source'){
 				$sql="UPDATE ".$tree_prefix."events SET event_source=''
 					WHERE event_id='".safe_text($_POST["connect_connect_id"])."'";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$result=$dbh->query($sql);
 			}
 		}
 
@@ -332,7 +371,8 @@ if (isset($_POST['connect_drop2'])){
 if (isset($_GET['connect_down'])){
 	$sql="UPDATE ".$tree_prefix."connections SET connect_order='99'
 	WHERE connect_id='".safe_text($_GET['connect_down'])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 	$event_order=safe_text($_GET['connect_order']);
 	$sql="UPDATE ".$tree_prefix."connections SET connect_order='".$event_order."'
@@ -340,20 +380,23 @@ if (isset($_GET['connect_down'])){
 		AND connect_sub_kind='".safe_text($_GET['connect_sub_kind'])."'
 		AND connect_connect_id='".safe_text($_GET['connect_connect_id'])."'
 		AND connect_order='".($event_order+1)."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."connections SET connect_order='".($event_order+1)."'
 		WHERE connect_kind='".safe_text($_GET['connect_kind'])."'
 		AND connect_sub_kind='".safe_text($_GET['connect_sub_kind'])."'
 		AND connect_connect_id='".safe_text($_GET['connect_connect_id'])."'
 		AND connect_order=99";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 }
 
 if (isset($_GET['connect_up'])){
 	$sql="UPDATE ".$tree_prefix."connections SET connect_order='99'
 	WHERE connect_id='".safe_text($_GET['connect_up'])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 	$event_order=safe_text($_GET['connect_order']);
 	$sql="UPDATE ".$tree_prefix."connections
@@ -362,7 +405,8 @@ if (isset($_GET['connect_up'])){
 		AND connect_sub_kind='".safe_text($_GET['connect_sub_kind'])."'
 		AND connect_connect_id='".safe_text($_GET['connect_connect_id'])."'
 		AND connect_order='".($event_order-1)."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."connections
 		SET connect_order='".($event_order-1)."'
@@ -370,7 +414,8 @@ if (isset($_GET['connect_up'])){
 		AND connect_sub_kind='".safe_text($_GET['connect_sub_kind'])."'
 		AND connect_connect_id='".safe_text($_GET['connect_connect_id'])."'
 		AND connect_order=99";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 }
 
 
@@ -500,7 +545,7 @@ if ($connect_sub_kind=='fam_event_source' OR ($connect_kind=='family' AND $conne
 
 // *** SOURCE EDIT FUNCTION ***
 function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
-	global $db, $tree_prefix, $language, $page, $phpself, $joomlastring, $marriage;
+	global $db, $dbh, $tree_prefix, $language, $page, $phpself, $joomlastring, $marriage;
 	global $editor_cls;
 
 	// *** Explanation of role and page ***
@@ -533,11 +578,14 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 		AND connect_sub_kind='".$connect_sub_kind."'
 		AND connect_connect_id='".$connect_connect_id."'
 		ORDER BY connect_order";
-	$connect_sql=mysql_query($connect_qry,$db);
-	$count=mysql_num_rows($connect_sql);
+	//$connect_sql=mysql_query($connect_qry,$db);
+	//$count=mysql_num_rows($connect_sql);
+	$connect_sql=$dbh->query($connect_qry);
+	$count=$connect_sql->rowCount();	
 
 	$change_bg_colour=false;
-	while($connectDb=mysql_fetch_object($connect_sql)){
+	//while($connectDb=mysql_fetch_object($connect_sql)){
+	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
 		$source_name=$connectDb->connect_id;
 
 		$text.='<input type="hidden" name="connect_change['.$connectDb->connect_id.']" value="'.$connectDb->connect_id.'">';
@@ -645,10 +693,12 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 			$text.='<br>';
 		$text.='</td><td style="border-left:0px;" colspan="2">';
 			// *** Source: pull-down menu ***
-			$source_qry=mysql_query("SELECT * FROM ".$tree_prefix."sources ORDER BY source_title",$db);
+			//$source_qry=mysql_query("SELECT * FROM ".$tree_prefix."sources ORDER BY source_title",$db);
+			$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix."sources ORDER BY source_title");
 			$text.='<select size="1" name="connect_source_id['.$connectDb->connect_id.']" style="width: 200px">';
 			$text.='<option value="">'.__('Select extended source').':</option>';
-			while ($sourceDb=mysql_fetch_object($source_qry)){
+			//while ($sourceDb=mysql_fetch_object($source_qry)){
+			while ($sourceDb=$source_qry->fetch(PDO::FETCH_OBJ)){
 				$selected='';
 				if($connectDb->connect_source_id != '') {
 					if ($sourceDb->source_gedcomnr==$connectDb->connect_source_id){ $selected=' SELECTED'; }

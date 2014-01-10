@@ -17,8 +17,10 @@ include_once("header.php"); // returns CMS_ROOTPATH constant
 
 if (isset($_GET['database'])){
 	// *** Check if family tree exists ***
-	$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".$_GET['database']."'",$db);
-	if (@mysql_num_rows($datasql)==1) { $_SESSION['tree_prefix']=$_GET['database']; }
+	//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".$_GET['database']."'",$db);
+	//if (@mysql_num_rows($datasql)==1) { $_SESSION['tree_prefix']=$_GET['database']; }
+	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$_GET['database']."'");
+	if ($datasql->rowCount()==1) { $_SESSION['tree_prefix']=$_GET['database']; }
 }
 
 include_once(CMS_ROOTPATH."include/language_date.php");
@@ -38,8 +40,10 @@ else {
 			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
 			AND humo_tree_texts.treetext_language='".$selected_language."'
 			WHERE tree_prefix='".$_SESSION['tree_prefix']."'";
-		@$datasql = mysql_query($dataqry,$db);
-		@$dataDb=mysql_fetch_object($datasql);
+		//@$datasql = mysql_query($dataqry,$db);
+		//@$dataDb=mysql_fetch_object($datasql);
+		@$datasql = $dbh->query($dataqry);
+		@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 	}
 }
 
@@ -75,8 +79,10 @@ if($screen_mode=='PDF') {
 	$pdfdetails=array();
 	$pdf_marriage=array();
 	$pdf=new PDF();
-	$pers=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$main_person'",$db);
-	@$persDb=mysql_fetch_object($pers);
+	//$pers=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$main_person'",$db);
+	//@$persDb=mysql_fetch_object($pers);
+	$pers=$dbh->query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$main_person'");
+	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
 	// *** Use person class ***
 	$pers_cls = New person_cls;
 	$pers_cls->construct($persDb);
@@ -224,11 +230,25 @@ $gn=0;   // generatienummer
 // *************************************
 // ****** FUNCTION OUTLINE *************  // recursive function
 // *************************************
+
+//some PDO prepared statements before function and loops are used
+$fam_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".safe_text($_SESSION['tree_prefix']).'family WHERE fam_gedcomnumber=?');
+$fam_prep->bindParam(1,$fam_prep_var);
+$pers_prep=$dbh->prepare("SELECT pers_fams FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber=?");
+$pers_prep->bindParam(1,$pers_prep_var);
+$fam_all_prep=$dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber=?");
+$fam_all_prep->bindParam(1,$fam_all_prep_var);
+$pers_all_prep=$dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber=?");
+$pers_all_prep->bindParam(1,$pers_all_prep_var);
+
 function outline($family_id,$main_person,$gn,$nr_generations) {
 
 	global $db, $show_date, $dates_behind_names, $nr_generations ;
 	global $language, $dirmark1, $dirmark1;
 	global $screen_mode, $pdf;
+	global $dbh, $fam_prep, $pers_prep, $fam_all_prep, $pers_all_prep;
+	global $fam_prep_var, $pers_prep_var, $fam_all_prep_var, $pers_all_prep_var;
+	
 	$family_nr=1; //*** Process multiple families ***
 
 	if($nr_generations<$gn) {return;}
@@ -236,10 +256,17 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 
 	// *** Count marriages of man ***
 	// *** YB: if needed show woman as main_person ***
-	$family=mysql_query("SELECT fam_man, fam_woman FROM ".$_SESSION['tree_prefix'].'family
-		WHERE fam_gedcomnumber="'.$family_id.'"',$db);
-	$die_message=__('No valid family number');
-	@$familyDb=mysql_fetch_object($family) or die("$die_message");
+	//$family=mysql_query("SELECT fam_man, fam_woman FROM ".$_SESSION['tree_prefix'].'family
+	//	WHERE fam_gedcomnumber="'.$family_id.'"',$db);
+	//$die_message=__('No valid family number');
+	//@$familyDb=mysql_fetch_object($family) or die("$die_message");
+	$fam_prep_var = $family_id;
+	$fam_prep->execute();
+	try {
+		@$familyDb = $fam_prep->fetch(PDO::FETCH_OBJ);
+	} catch(PDOException $e) {
+		echo __('No valid family number');
+	}
 
 	$parent1=''; $parent2='';	$change_main_person=false;
 
@@ -256,9 +283,12 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 	// *** Check family with parent1: N.N. ***
 	if ($parent1){
 		// *** Save man's families in array ***
-		$person_qry=mysql_query("SELECT pers_fams FROM ".$_SESSION['tree_prefix']."person
-			WHERE pers_gedcomnumber='$parent1'",$db);
-		@$personDb=mysql_fetch_object($person_qry);
+		//$person_qry=mysql_query("SELECT pers_fams FROM ".$_SESSION['tree_prefix']."person
+		//	WHERE pers_gedcomnumber='$parent1'",$db);
+		//@$personDb=mysql_fetch_object($person_qry);
+		$pers_prep_var = $parent1;
+		$pers_prep->execute();
+		@$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 		$marriage_array=explode(";",$personDb->pers_fams);
 		$nr_families=substr_count($personDb->pers_fams, ";");
 	}
@@ -270,8 +300,11 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 	// *** Loop multiple marriages of main_person ***
 	for ($parent1_marr=0; $parent1_marr<=$nr_families; $parent1_marr++){
 		$id=$marriage_array[$parent1_marr];
-		$family=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."family WHERE fam_gedcomnumber='$id'",$db);
-		@$familyDb=mysql_fetch_object($family);
+		//$family=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."family WHERE fam_gedcomnumber='$id'",$db);
+		//@$familyDb=mysql_fetch_object($family);
+		$fam_all_prep_var = $id;
+		$fam_all_prep->execute();
+		@$familyDb = $fam_all_prep->fetch(PDO::FETCH_OBJ);
 
 		// *** Raise statistics counter ***
 		// Not in use in huge reports!
@@ -280,14 +313,20 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 		//mysql_query($sql, $db) or die(mysql_error());
 
 		// *** Privacy filter man and woman ***
-		$person_man=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$familyDb->fam_man'",$db);
-		@$person_manDb=mysql_fetch_object($person_man);
+		//$person_man=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$familyDb->fam_man'",$db);
+		//@$person_manDb=mysql_fetch_object($person_man);
+		$pers_all_prep_var = $familyDb->fam_man;
+		$pers_all_prep->execute();
+		@$person_manDb = $pers_all_prep->fetch(PDO::FETCH_OBJ);
 		$man_cls = New person_cls;
 		$man_cls->construct($person_manDb);
 		$privacy_man=$man_cls->privacy;
 
-		$person_woman=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$familyDb->fam_woman'",$db);
-		@$person_womanDb=mysql_fetch_object($person_woman);
+		//$person_woman=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$familyDb->fam_woman'",$db);
+		//@$person_womanDb=mysql_fetch_object($person_woman);
+		$pers_all_prep_var = $familyDb->fam_woman;
+		$pers_all_prep->execute();
+		@$person_womanDb = $pers_all_prep->fetch(PDO::FETCH_OBJ);		
 		$woman_cls = New person_cls;
 		$woman_cls->construct($person_womanDb);
 		$privacy_woman=$woman_cls->privacy;
@@ -446,9 +485,12 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 			$child_array=explode(";",$familyDb->fam_children);
 
 			for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
-				$child=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person
-					WHERE pers_gedcomnumber='$child_array[$i]'",$db);
-				@$childDb=mysql_fetch_object($child);
+				//$child=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person
+				//	WHERE pers_gedcomnumber='$child_array[$i]'",$db);
+				//@$childDb=mysql_fetch_object($child);
+				$pers_all_prep_var = $child_array[$i];
+				$pers_all_prep->execute();
+				@$childDb = $pers_all_prep->fetch(PDO::FETCH_OBJ);
 
 				$child_privacy="";
 				$child_cls = New person_cls;

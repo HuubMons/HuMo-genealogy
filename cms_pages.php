@@ -9,19 +9,25 @@ echo '<div id="mainmenu_centerbox">';
 
 	echo '<div id="mainmenu_left">';
 
-		$page_qry=mysql_query("SELECT * FROM humo_cms_pages
-		WHERE page_menu_id='0' AND page_status!='' ORDER BY page_order",$db);
-		while($cms_pagesDb=mysql_fetch_object($page_qry)){
+		//$page_qry=mysql_query("SELECT * FROM humo_cms_pages
+		//WHERE page_menu_id='0' AND page_status!='' ORDER BY page_order",$db);
+		//while($cms_pagesDb=mysql_fetch_object($page_qry)){
+		$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='0' AND page_status!='' ORDER BY page_order");
+		while($cms_pagesDb=$page_qry->fetch(PDO::FETCH_OBJ)) {
 			echo '<a href="'.CMS_ROOTPATH.'cms_pages.php?select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
 		}
 
-		$qry=mysql_query("SELECT * FROM humo_cms_menu ORDER BY menu_order",$db);
-		while($cmsDb=mysql_fetch_object($qry)){
+		//$qry=mysql_query("SELECT * FROM humo_cms_menu ORDER BY menu_order",$db);
+		//while($cmsDb=mysql_fetch_object($qry)){
+		$qry= $dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
+		while($cmsDb = $qry->fetch(PDO::FETCH_OBJ)) {
 			echo '<p><b>'.$cmsDb->menu_name.'</b><br>';
 
-			$page_qry=mysql_query("SELECT * FROM humo_cms_pages
-			WHERE page_menu_id='".$cmsDb->menu_id."' AND page_status!='' ORDER BY page_order",$db);
-			while($cms_pagesDb=mysql_fetch_object($page_qry)){
+			//$page_qry=mysql_query("SELECT * FROM humo_cms_pages
+			//WHERE page_menu_id='".$cmsDb->menu_id."' AND page_status!='' ORDER BY page_order",$db);
+			//while($cms_pagesDb=mysql_fetch_object($page_qry)){
+			$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".$cmsDb->menu_id."' AND page_status!='' ORDER BY page_order");
+			while($cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ)) {
 				echo '<a href="'.CMS_ROOTPATH.'cms_pages.php?select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
 			}
 		}
@@ -34,17 +40,21 @@ echo '<div id="mainmenu_centerbox">';
 			$select_page=safe_text($_GET['select_page']);
 		}
 		else{
-			$page_qry=mysql_query("SELECT * FROM humo_cms_pages
-				WHERE page_status!='' ORDER BY page_menu_id, page_order ASC LIMIT 0,1",$db);
-			$cms_pagesDb=mysql_fetch_object($page_qry);
+			//$page_qry=mysql_query("SELECT * FROM humo_cms_pages
+			//	WHERE page_status!='' ORDER BY page_menu_id, page_order ASC LIMIT 0,1",$db);
+			//$cms_pagesDb=mysql_fetch_object($page_qry);
+			$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order ASC LIMIT 0,1");
+			$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
 			$select_page=$cms_pagesDb->page_id;
 		}
 		
 		//if (isset($_GET['select_page'])){
 			// *** Show page ***
-			$page_qry=mysql_query("SELECT * FROM humo_cms_pages
-			WHERE page_id='".$select_page."' AND page_status!=''",$db);
-			$cms_pagesDb=mysql_fetch_object($page_qry);
+			//$page_qry=mysql_query("SELECT * FROM humo_cms_pages
+			//WHERE page_id='".$select_page."' AND page_status!=''",$db);
+			//$cms_pagesDb=mysql_fetch_object($page_qry);
+			$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='".$select_page."' AND page_status!=''");
+			$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
 			echo $cms_pagesDb->page_text;
 
 			// *** Raise page counter ***
@@ -65,7 +75,8 @@ echo '<div id="mainmenu_centerbox">';
 				$_SESSION["opslag_sessieteller"]=$session_counter;
 				$itemteller=$cms_pagesDb->page_counter+1;
 				$sql="UPDATE humo_cms_pages SET page_counter='".$itemteller."' WHERE page_id=".$cms_pagesDb->page_id."";
-				$result=mysql_query($sql) or die(mysql_error());
+				//$result=mysql_query($sql) or die(mysql_error());
+				$dbh->query($sql);
 			}
 
 		//}

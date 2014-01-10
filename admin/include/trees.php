@@ -31,7 +31,8 @@ if (isset($_POST['change_tree_data'])){
 	tree_pict_path='".safe_text($_POST['tree_pict_path'])."',
 	tree_privacy='".safe_text($_POST['tree_privacy'])."'
 	WHERE tree_id=".safe_text($_POST['family_tree_id']);
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_POST['change_tree_text'])){
@@ -44,7 +45,8 @@ if (isset($_POST['change_tree_text'])){
 	treetext_family_top='".safe_text($_POST['treetext_family_top'])."',
 	treetext_family_footer='".safe_text($_POST['treetext_family_footer'])."'
 	WHERE treetext_id=".safe_text($_POST['treetext_id']);
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_POST['add_tree_data'])){
@@ -57,7 +59,8 @@ if (isset($_POST['add_tree_data'])){
 	tree_privacy='',
 	tree_pict_path='../plaatjes/'
 	";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_POST['add_tree_data_empty'])){
@@ -70,7 +73,8 @@ if (isset($_POST['add_tree_data_empty'])){
 	tree_privacy='EMPTY',
 	tree_pict_path='EMPTY'
 	";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_POST['add_tree_text'])){
@@ -82,7 +86,8 @@ if (isset($_POST['add_tree_text'])){
 	treetext_mainmenu_source='".safe_text($_POST['treetext_mainmenu_source'])."',
 	treetext_family_top='".safe_text($_POST['treetext_family_top'])."',
 	treetext_family_footer='".safe_text($_POST['treetext_family_footer'])."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 // *** Change collation of tree ***
@@ -90,14 +95,20 @@ if (isset($_POST['change_collation'])){
 	$collation_prefix=safe_text($_POST['collation_prefix']);
 	$tree_collation=safe_text($_POST['tree_collation']);
 
-	mysql_query("ALTER TABLE ".$collation_prefix."person
-		CHANGE `pers_lastname` `pers_lastname` VARCHAR(50) COLLATE ".$tree_collation.";");
+	//mysql_query("ALTER TABLE ".$collation_prefix."person
+	//	CHANGE `pers_lastname` `pers_lastname` VARCHAR(50) COLLATE ".$tree_collation.";");
+	$dbh->query("ALTER TABLE ".$collation_prefix."person
+		CHANGE `pers_lastname` `pers_lastname` VARCHAR(50) COLLATE ".$tree_collation.";");		
 
-	mysql_query("ALTER TABLE ".$collation_prefix."person
-		CHANGE `pers_firstname` `pers_firstname` VARCHAR(50) COLLATE ".$tree_collation.";");
+	//mysql_query("ALTER TABLE ".$collation_prefix."person
+	//	CHANGE `pers_firstname` `pers_firstname` VARCHAR(50) COLLATE ".$tree_collation.";");
+	$dbh->query("ALTER TABLE ".$collation_prefix."person
+		CHANGE `pers_firstname` `pers_firstname` VARCHAR(50) COLLATE ".$tree_collation.";");		
 
-	mysql_query("ALTER TABLE ".$collation_prefix."person
-		CHANGE `pers_prefix` `pers_prefix` VARCHAR(20) COLLATE ".$tree_collation.";");
+	//mysql_query("ALTER TABLE ".$collation_prefix."person
+	//	CHANGE `pers_prefix` `pers_prefix` VARCHAR(20) COLLATE ".$tree_collation.";");
+	$dbh->query("ALTER TABLE ".$collation_prefix."person
+		CHANGE `pers_prefix` `pers_prefix` VARCHAR(20) COLLATE ".$tree_collation.";");		
 }
 
 if (isset($_GET['remove_tree'])){
@@ -114,18 +125,23 @@ if (isset($_GET['remove_tree'])){
 }
 if (isset($_POST['remove_tree2'])){
 	$removeqry='SELECT * FROM humo_trees WHERE tree_id="'.safe_text($_POST['family_tree_id']).'"';
-	@$removesql = mysql_query($removeqry,$db);
-	@$removeDb=mysql_fetch_object($removesql);
+	//@$removesql = mysql_query($removeqry,$db);
+	//@$removeDb=mysql_fetch_object($removesql);
+	@$removesql = $dbh->query($removeqry);
+	@$removeDb=$removesql->fetch(PDO::FETCH_OBJ);	
 	$remove=$removeDb->tree_prefix;
 
 	// *** Re-order family trees ***
 	$repair_order=$removeDb->tree_order;
-	$item=mysql_query("SELECT * FROM humo_trees WHERE tree_order>".$repair_order,$db);
-	while($itemDb=mysql_fetch_object($item)){
+	//$item=mysql_query("SELECT * FROM humo_trees WHERE tree_order>".$repair_order,$db);
+	//while($itemDb=mysql_fetch_object($item)){
+	$item=$dbh->query("SELECT * FROM humo_trees WHERE tree_order>".$repair_order);
+	while($itemDb=$item->fetch(PDO::FETCH_OBJ)){	
 		$sql="UPDATE humo_trees SET tree_order='".($itemDb->tree_order-1)."' WHERE tree_id=".$itemDb->tree_id;
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
-
+/*
 	$sql="DROP TABLE ".$remove."person"; @$result=mysql_query($sql);
 	$sql="DROP TABLE ".$remove."family"; @$result=mysql_query($sql);
 	$sql="DROP TABLE ".$remove."texts"; @$result=mysql_query($sql);
@@ -134,26 +150,40 @@ if (isset($_POST['remove_tree2'])){
 	$sql="DROP TABLE ".$remove."events"; @$result=mysql_query($sql);
 	$sql="DROP TABLE ".$remove."connections"; @$result=mysql_query($sql);
 	$sql="DROP TABLE ".$remove."repositories"; @$result=mysql_query($sql);
+*/
+	$sql="DROP TABLE ".$remove."person"; @$result=$dbh->query($sql);
+	$sql="DROP TABLE ".$remove."family"; @$result=$dbh->query($sql);
+	$sql="DROP TABLE ".$remove."texts"; @$result=$dbh->query($sql);
+	$sql="DROP TABLE ".$remove."sources"; @$result=$dbh->query($sql);
+	$sql="DROP TABLE ".$remove."addresses"; @$result=$dbh->query($sql);
+	$sql="DROP TABLE ".$remove."events"; @$result=$dbh->query($sql);
+	$sql="DROP TABLE ".$remove."connections"; @$result=$dbh->query($sql);
+	$sql="DROP TABLE ".$remove."repositories"; @$result=$dbh->query($sql);
 
 	// *** Remove adjusted glider settings ***
 	$sql="DELETE FROM humo_settings WHERE setting_variable='gslider_".$remove."'";
-	@$result=mysql_query($sql);
+	//@$result=mysql_query($sql);
+	@$result=$dbh->query($sql);
 
 	$sql="DELETE FROM humo_trees WHERE tree_id='".safe_text($_POST['family_tree_id'])."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	@$result=$dbh->query($sql);
 
 	// *** Remove items from table family_tree_text ***
 	$sql="DELETE FROM humo_tree_texts WHERE treetext_tree_id='".safe_text($_POST['family_tree_id'])."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	@$result=$dbh->query($sql);
 
 	// *** Remove statistics ***
 	$sql="DELETE FROM humo_stat_date WHERE stat_tree_id='".safe_text($_POST['family_tree_id'])."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	@$result=$dbh->query($sql);
 
 	unset ($_POST['family_tree_id']);
 }
 
 if (isset($_GET['up'])){
+/*
 	// *** Search previous family tree ***
 	$item=mysql_query("SELECT * FROM humo_trees WHERE tree_order=".($_GET['tree_order']-1),$db);
 	$itemDb=mysql_fetch_object($item);
@@ -163,8 +193,20 @@ if (isset($_GET['up'])){
 	// *** Lower tree order ***
 	$sql="UPDATE humo_trees SET tree_order='".($_GET['tree_order']-1)."' WHERE tree_id=".$_GET['id'];
 	$result=mysql_query($sql) or die(mysql_error());
+*/
+	// *** Search previous family tree ***
+	$item=$dbh->query("SELECT * FROM humo_trees WHERE tree_order=".($_GET['tree_order']-1));
+	$itemDb=$item->fetch(PDO::FETCH_OBJ);
+	// *** Raise previous family trees ***
+	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order'])."' WHERE tree_id=$itemDb->tree_id";
+	$result=$dbh->query($sql);
+	// *** Lower tree order ***
+	$sql="UPDATE humo_trees SET tree_order='".($_GET['tree_order']-1)."' WHERE tree_id=".$_GET['id'];
+	$result=$dbh->query($sql);
+	
 }
 if (isset($_GET['down'])){
+/*
 	// *** Search next family tree ***
 	$item=mysql_query("SELECT * FROM humo_trees WHERE tree_order=".($_GET['tree_order']+1),$db);
 	$itemDb=mysql_fetch_object($item);
@@ -174,6 +216,16 @@ if (isset($_GET['down'])){
 	// *** Raise tree order ***
 	$sql="UPDATE humo_trees SET tree_order='".($_GET['tree_order']+1)."' WHERE tree_id=".$_GET['id'];
 	$result=mysql_query($sql) or die(mysql_error());
+*/
+	// *** Search next family tree ***
+	$item=$dbh->query("SELECT * FROM humo_trees WHERE tree_order=".($_GET['tree_order']+1));
+	$itemDb=$item->fetch(PDO::FETCH_OBJ);
+	//voorgaande database verlagen:
+	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order'])."' WHERE tree_id=$itemDb->tree_id";
+	$result=$dbh->query($sql);
+	// *** Raise tree order ***
+	$sql="UPDATE humo_trees SET tree_order='".($_GET['tree_order']+1)."' WHERE tree_id=".$_GET['id'];
+	$result=$dbh->query($sql);	
 }
 
 // ******************
@@ -192,12 +244,15 @@ $tree_cls = New tree_cls;
 //if (isset($_POST['add_tree'])){
 if (isset($_POST['add_tree_data'])){
 	// *** Select new family tree if a new family tree is added ***
-	$data2sql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order DESC LIMIT 0,1",$db);
+	//$data2sql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order DESC LIMIT 0,1",$db);
+	$data2sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order DESC LIMIT 0,1");
 }
 else{
-	$data2sql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order LIMIT 0,1",$db);
+	//$data2sql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order LIMIT 0,1",$db);
+	$data2sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order LIMIT 0,1");
 }
-$data2Db=mysql_fetch_object($data2sql);
+//$data2Db=mysql_fetch_object($data2sql);
+$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
 if ($data2Db){
 	$family_tree_id=$data2Db->tree_id;
 }
@@ -208,9 +263,12 @@ if (isset($_GET['family_tree_id'])){ $family_tree_id=$_GET['family_tree_id']; }
 // *** Show texts of selected family tree ***
 // ******************************************
 
-$data2sql = mysql_query("SELECT * FROM humo_tree_texts where
-	treetext_tree_id='".$family_tree_id."' AND treetext_language='".$language_tree."'",$db);
-$data2Db=mysql_fetch_object($data2sql);
+//$data2sql = mysql_query("SELECT * FROM humo_tree_texts where
+//	$treetext_tree_id='".$family_tree_id."' AND treetext_language='".$language_tree."'",$db);
+//$data2Db=mysql_fetch_object($data2sql);
+$data2sql = $dbh->query("SELECT * FROM humo_tree_texts WHERE
+	treetext_tree_id='".$family_tree_id."' AND treetext_language='".$language_tree."'");
+$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
 if ($data2Db){
 	$treetext_id=$data2Db->treetext_id;
 	$treetext_name=$data2Db->treetext_name;
@@ -234,13 +292,15 @@ if (isset($_GET['menu_admin'])){ $menu_admin=$_GET['menu_admin']; }
 
 // *** Select family tree ***
 $tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-$tree_prefix_result = mysql_query($tree_prefix_sql,$db);
+//$tree_prefix_result = mysql_query($tree_prefix_sql,$db);
+$tree_prefix_result = $dbh->query($tree_prefix_sql);
 echo __('Family tree').': ';
 echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 	//echo '<select size="1" name="family_tree_id">';
 	echo '<select size="1" name="family_tree_id" onChange="this.form.submit();">';
-		while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result)){
+		//while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result)){
+		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
 			$selected='';
 			if ($tree_prefixDb->tree_id==$family_tree_id){ $selected=' SELECTED'; }
 			$treetext_name2=database_name($tree_prefixDb->tree_prefix, $selected_language);
@@ -251,8 +311,10 @@ echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 echo '</form>';
 
 // *** Family trees administration menu ***
-$data2sql = mysql_query("SELECT * FROM humo_trees WHERE tree_id=".$family_tree_id,$db);
-$data2Db=mysql_fetch_object($data2sql);
+//$data2sql = mysql_query("SELECT * FROM humo_trees WHERE tree_id=".$family_tree_id,$db);
+//$data2Db=mysql_fetch_object($data2sql);
+$data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=".$family_tree_id);
+$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
 
 echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="">';
 echo '<div class="pageHeading">';
@@ -309,8 +371,10 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 	// *** Show selected family tree                                                ***
 	// ********************************************************************************
 
-	$data2sql = mysql_query("SELECT * FROM humo_trees WHERE tree_id=".$family_tree_id,$db);
-	$data2Db=mysql_fetch_object($data2sql);
+	//$data2sql = mysql_query("SELECT * FROM humo_trees WHERE tree_id=".$family_tree_id,$db);
+	//$data2Db=mysql_fetch_object($data2sql);
+	$data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=".$family_tree_id);
+	$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);	
 
 	// *** Show tree data ***
 	if ($menu_admin=='tree_data'){

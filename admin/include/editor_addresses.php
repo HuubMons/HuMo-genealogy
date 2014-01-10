@@ -25,19 +25,23 @@ if (isset($_POST['living_place_drop2'])){
 	$living_place_order=safe_text($_POST['living_place_id']);
 	$sql="DELETE FROM ".$tree_prefix."addresses WHERE address_person_id='".$pers_gedcomnumber."'
 		AND address_order='".$living_place_order."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$address_sql="SELECT * FROM ".$tree_prefix."addresses
 		WHERE address_person_id='".$pers_gedcomnumber."' AND address_order>'".$living_place_order."'
 		ORDER BY address_order";
-	$event_qry=mysql_query($address_sql,$db);
-	while($eventDb=mysql_fetch_object($event_qry)){
+	//$event_qry=mysql_query($address_sql,$db);
+	$event_qry=$dbh->query($address_sql);
+	//while($eventDb=mysql_fetch_object($event_qry)){
+	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 		$sql="UPDATE ".$tree_prefix."addresses SET
 		address_order='".($eventDb->address_order-1)."',
 		address_changed_date='".$gedcom_date."',
 		address_changed_time='".$gedcom_time."'
 		WHERE address_id='".$eventDb->address_id."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 }
 
@@ -49,7 +53,8 @@ if (isset($_POST['living_place_add'])){
 		address_order='".safe_text($_POST['address_order'])."',
 		address_new_date='".$gedcom_date."',
 		address_new_time='".$gedcom_time."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_POST['living_place_change'])){
@@ -59,41 +64,48 @@ if (isset($_POST['living_place_change'])){
 	address_changed_date='".$gedcom_date."',
 	address_changed_time='".$gedcom_time."'";
 	$sql.=" WHERE address_id='".safe_text($_POST["address_id"])."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['living_place_down'])){
 	$sql="UPDATE ".$tree_prefix."addresses SET
 	address_order='99'
 	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order='".safe_text($_GET["living_place_down"])."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."addresses SET
 	address_order='".(safe_text($_GET['living_place_down']))."'
 	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order='".(safe_text($_GET["living_place_down"])+1)."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."addresses SET
 	address_order='".(safe_text($_GET['living_place_down'])+1)."'
 	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order=99";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['living_place_up'])){
 	$sql="UPDATE ".$tree_prefix."addresses SET
 	address_order='99'
 	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order='".safe_text($_GET["living_place_up"])."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."addresses SET
 	address_order='".(safe_text($_GET['living_place_up']))."'
 	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order='".(safe_text($_GET["living_place_up"])-1)."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."addresses SET
 	address_order='".(safe_text($_GET['living_place_up'])-1)."'
 	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order=99";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 // ********************************************************
@@ -106,11 +118,15 @@ echo '<tr class="table_header">';
 	echo '<th>'.__('Date').'</th>';
 	echo '<th>'.ucfirst(__('place')).'</th>';
 echo '</tr>';
-$address_qry=mysql_query("SELECT * FROM ".$tree_prefix."addresses
-	WHERE address_person_id='".$pers_gedcomnumber."' ORDER BY address_order",$db);
-$address_count=mysql_num_rows($address_qry);
+//$address_qry=mysql_query("SELECT * FROM ".$tree_prefix."addresses
+//	WHERE address_person_id='".$pers_gedcomnumber."' ORDER BY address_order",$db);
+//$address_count=mysql_num_rows($address_qry);
+$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
+	WHERE address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
+$address_count=$address_qry->rowCount();
 $address_nr=0;
-while($addressDb=mysql_fetch_object($address_qry)){
+//while($addressDb=mysql_fetch_object($address_qry)){
+while($addressDb=$address_qry->fetch(PDO::FETCH_OBJ)){
 	$address_nr++;
 	echo '<FORM METHOD="POST" action="'.$phpself.'">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -155,7 +171,8 @@ while($addressDb=mysql_fetch_object($address_qry)){
 		$sql="UPDATE ".$tree_prefix."person SET
 		pers_place_index='".safe_text($addressDb->address_place)."'
 		WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 }
 
@@ -199,10 +216,13 @@ $connect_qry="SELECT * FROM ".$tree_prefix."connections
 	AND connect_connect_id='".safe_text($pers_gedcomnumber)."'
 	ORDER BY connect_order";
 //$text.=$connect_qry;
-$connect_sql=mysql_query($connect_qry,$db);
-$count=mysql_num_rows($connect_sql);
+//$connect_sql=mysql_query($connect_qry,$db);
+//$count=mysql_num_rows($connect_sql);
+$connect_sql=$dbh->query($connect_qry);
+$count=$connect_sql->rowCount();
 
-while($connectDb=mysql_fetch_object($connect_sql)){
+//while($connectDb=mysql_fetch_object($connect_sql)){
+while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
 	$source_name=$connectDb->connect_id;
 
 // *** For now: only use 1 value ***
@@ -287,11 +307,14 @@ $key='1';
 		$text.= '<input type="hidden" name="connect_text['.$key.']" value="">';
 
 		// *** Only show addresses if a gedcomnumber is used (= link to full adres) ***
-		$addressqry=mysql_query("SELECT * FROM ".$tree_prefix."addresses WHERE address_gedcomnr LIKE '_%'
-			ORDER BY address_place, address_address",$db);
+		//$addressqry=mysql_query("SELECT * FROM ".$tree_prefix."addresses WHERE address_gedcomnr LIKE '_%'
+		//	ORDER BY address_place, address_address",$db);
+		$addressqry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses WHERE address_gedcomnr LIKE '_%'
+			ORDER BY address_place, address_address");			
 		$text.= '<select size="1" name="connect_item_id['.$key.']" style="width: 300px">';
 		$text.= '<option value="">'.__('Select address').'</option>';
-		while ($addressDb=mysql_fetch_object($addressqry)){
+		//while ($addressDb=mysql_fetch_object($addressqry)){
+		while ($addressDb=$addressqry->fetch(PDO::FETCH_OBJ)){
 			$selected='';
 			if ($connectDb->connect_item_id==$addressDb->address_gedcomnr){ $selected=' SELECTED'; }
 			$text.= '<option value="'.$addressDb->address_gedcomnr.'"'.$selected.'>'.

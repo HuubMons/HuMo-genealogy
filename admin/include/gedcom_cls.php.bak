@@ -38,13 +38,6 @@ function text_process($text,$long_text=false){
 	$return_text = substr($return_text,1,-1); // remove quotes from beginning and end
 	return $return_text; 
 }
-function zero_date($date) {  // in case years under 1000 are given as 0945, make it 945
-	$date = str_replace(" 0"," ",$date); //gets rid of "bet 2 may 0954 AND jun 0951" and "5 may 0985"
-	if(substr($date,-4,1)=="0") { // if there is still a "0" this means we had the year by itself "0985" with nothing before it
-		$date = substr($date,-3,3); 
-	}
-	return $date;
-}
 
 // *** Merge function: text1, merge character, text2 ***
 function merge_texts($text1, $merge, $text2){
@@ -1801,17 +1794,17 @@ function process_person($person_array){
 	pers_place_index='".$this->text_process($pers_place_index)."',
 	pers_text='".$this->text_process($person["pers_text"])."',
 	pers_text_source='".$this->text_process($person["pers_text_source"])."',
-	pers_birth_date='".$this->zero_date($this->text_process($pers_birth_date))."', pers_birth_time='".$this->text_process($pers_birth_time)."',
+	pers_birth_date='".$this->text_process($pers_birth_date)."', pers_birth_time='".$this->text_process($pers_birth_time)."',
 	pers_birth_place='".$this->text_process($pers_birth_place)."',
 	pers_birth_text='".$this->text_process($pers_birth_text)."', pers_birth_source='".$this->text_process($pers_birth_source)."',
 	pers_stillborn='$pers_stillborn',
-	pers_bapt_date='".$this->zero_date($this->text_process($pers_bapt_date))."', pers_bapt_place='".$this->text_process($pers_bapt_place)."',
+	pers_bapt_date='".$this->text_process($pers_bapt_date)."', pers_bapt_place='".$this->text_process($pers_bapt_place)."',
 	pers_bapt_text='".$this->text_process($pers_bapt_text)."', pers_bapt_source='".$this->text_process($pers_bapt_source)."',
 	pers_religion='".$this->text_process($pers_religion)."',
-	pers_death_date='".$this->zero_date($this->text_process($pers_death_date))."', pers_death_time='$pers_death_time',
+	pers_death_date='".$this->text_process($pers_death_date)."', pers_death_time='$pers_death_time',
 	pers_death_place='".$this->text_process($pers_death_place)."',
 	pers_death_text='".$this->text_process($pers_death_text)."', pers_death_source='".$this->text_process($pers_death_source)."',
-	pers_buried_date='".$this->zero_date($this->text_process($pers_buried_date))."', pers_buried_place='".$this->text_process($pers_buried_place)."',
+	pers_buried_date='".$this->text_process($pers_buried_date)."', pers_buried_place='".$this->text_process($pers_buried_place)."',
 	pers_buried_text='".$this->text_process($pers_buried_text)."', pers_buried_source='$pers_buried_source',
 	pers_cremation='$pers_cremation',
 	pers_death_cause='".$this->text_process($pers_death_cause)."',
@@ -1819,9 +1812,9 @@ function process_person($person_array){
 	pers_sexe_source='".$this->text_process($pers_sexe_source)."',
 	pers_own_code='".$this->text_process($person["pers_own_code"])."',
 	pers_unprocessed_tags='".$this->text_process($person["pers_unprocessed_tags"])."',
-	pers_new_date='".$this->zero_date($person["new_date"])."',
+	pers_new_date='".$person["new_date"]."',
 	pers_new_time='".$person["new_time"]."',
-	pers_changed_date='".$this->zero_date($person["changed_date"])."',
+	pers_changed_date='".$person["changed_date"]."',
 	pers_changed_time='".$person["changed_time"]."',
 	pers_alive='".$pers_alive."'";
 
@@ -1842,7 +1835,7 @@ function process_person($person_array){
 				address_address='".$this->text_process($address_address[$i])."',
 				address_zip='".$this->text_process($address_zip[$i])."',
 				address_phone='".$this->text_process($address_phone[$i])."',
-				address_date='".$this->zero_date($this->text_process($address_date[$i]))."',
+				address_date='".$this->text_process($address_date[$i])."',
 				address_text='".$this->text_process($address_text[$i])."',
 				address_source='".$this->text_process($address_source[$i])."'";
 			//$result=mysql_query($gebeurtsql) or die(mysql_error());
@@ -1899,7 +1892,7 @@ function process_person($person_array){
 				event_event='".$this->text_process($event_event[$i])."',
 				event_event_extra='".$this->text_process($event_event_extra[$i])."',
 				event_gedcom='".$this->text_process($event_gedcom[$i])."',
-				event_date='".$this->zero_date($this->text_process($event_date[$i]))."',
+				event_date='".$event_date[$i]."',
 				event_text='".$this->text_process($event_text[$i])."',
 				event_place='".$this->text_process($event_place[$i])."',
 				event_source='".$this->text_process($event_source[$i])."'";
@@ -1930,7 +1923,7 @@ function process_person($person_array){
 				connect_text='".$this->text_process($connect['text'][$i])."',
 				connect_page='".$this->text_process($connect['page'][$i])."',
 				connect_role='".$this->text_process($connect['role'][$i])."',
-				connect_date='".$this->zero_date($this->text_process($connect['date'][$i]))."',
+				connect_date='".$this->text_process($connect['date'][$i])."',
 				connect_place='".$this->text_process($connect['place'][$i])."'
 				";
 
@@ -2872,37 +2865,37 @@ function process_family($family_array,$first_marr, $second_marr){
 	fam_kind='".$this->text_process($family["fam_kind"])."',
 	fam_text='".$this->text_process($family["fam_text"])."',
 	fam_text_source='".$this->text_process($family["fam_text_source"])."',
-	fam_marr_church_notice_date='".$this->zero_date($this->text_process($family["fam_marr_church_notice_date"]))."',
+	fam_marr_church_notice_date='".$this->text_process($family["fam_marr_church_notice_date"])."',
 	fam_marr_church_notice_place='".$this->text_process($family["fam_marr_church_notice_place"])."',
 	fam_marr_church_notice_text='".$this->text_process($family["fam_marr_church_notice_text"])."',
 	fam_marr_church_notice_source='".$this->text_process($family["fam_marr_church_notice_source"])."',
-	fam_marr_church_date='".$this->zero_date($this->text_process($family["fam_marr_church_date"]))."',
+	fam_marr_church_date='".$this->text_process($family["fam_marr_church_date"])."',
 	fam_marr_church_place='".$this->text_process($family["fam_marr_church_place"])."',
 	fam_marr_church_text='".$this->text_process($family["fam_marr_church_text"])."',
 	fam_marr_church_source='".$this->text_process($family["fam_marr_church_source"])."',
-	fam_relation_date='".$this->zero_date($this->text_process($family["fam_relation_date"]))."',
+	fam_relation_date='".$this->text_process($family["fam_relation_date"])."',
 	fam_relation_place='".$this->text_process($family["fam_relation_place"])."',
 	fam_relation_text='".$this->text_process($family["fam_relation_text"])."',
 	fam_relation_source='".$this->text_process($family["fam_relation_source"])."',
-	fam_relation_end_date='".$this->zero_date($this->text_process($family["fam_relation_end_date"]))."',
-	fam_marr_notice_date='".$this->zero_date($this->text_process($family["fam_marr_notice_date"]))."',
+	fam_relation_end_date='".$this->text_process($family["fam_relation_end_date"])."',
+	fam_marr_notice_date='".$this->text_process($family["fam_marr_notice_date"])."',
 	fam_marr_notice_place='".$this->text_process($family["fam_marr_notice_place"])."',
 	fam_marr_notice_text='".$this->text_process($family["fam_marr_notice_text"])."',
 	fam_marr_notice_source='".$this->text_process($family["fam_marr_notice_source"])."',
-	fam_marr_date='".$this->zero_date($this->text_process($family["fam_marr_date"]))."',
+	fam_marr_date='".$this->text_process($family["fam_marr_date"])."',
 	fam_marr_place='".$this->text_process($family["fam_marr_place"])."',
 	fam_marr_text='".$this->text_process($family["fam_marr_text"])."',
 	fam_marr_source='".$this->text_process($family["fam_marr_source"])."',
 	fam_marr_authority='".$this->text_process($family["fam_marr_authority"])."',
-	fam_div_date='".$this->zero_date($this->text_process($family["fam_div_date"]))."',
+	fam_div_date='".$this->text_process($family["fam_div_date"])."',
 	fam_div_place='".$this->text_process($family["fam_div_place"])."',
 	fam_div_text='".$this->text_process($family["fam_div_text"])."',
 	fam_div_source='".$this->text_process($family["fam_div_source"])."',
 	fam_div_authority='".$this->text_process($family["fam_div_authority"])."',
 	fam_unprocessed_tags='".$this->text_process($family["fam_unprocessed_tags"])."',
-	fam_new_date='".$this->zero_date($family["new_date"])."',
+	fam_new_date='".$family["new_date"]."',
 	fam_new_time='".$family["new_time"]."',
-	fam_changed_date='".$this->zero_date($family["changed_date"])."',
+	fam_changed_date='".$family["changed_date"]."',
 	fam_changed_time='".$family["changed_time"]."'";
 
 	//$result=mysql_query($sql) or die(mysql_error());
@@ -2916,7 +2909,7 @@ function process_family($family_array,$first_marr, $second_marr){
 				address_order='".$i."',
 				address_family_id='".$this->text_process($gedcomnumber)."',
 				address_place='".$this->text_process($address_place[$i])."',
-				address_date='".$this->zero_date($this->text_process($address_date[$i]))."',
+				address_date='".$this->text_process($address_date[$i])."',
 				address_text='".$this->text_process($address_text[$i])."',
 				address_source='".$this->text_process($address_source[$i])."'";
 			//$result=mysql_query($gebeurtsql) or die(mysql_error());
@@ -2975,7 +2968,7 @@ function process_family($family_array,$first_marr, $second_marr){
 				event_event='".$this->text_process($event_event[$i])."',
 				event_event_extra='".$this->text_process($event_event_extra[$i])."',
 				event_gedcom='".$this->text_process($event_gedcom[$i])."',
-				event_date='".$this->zero_date($this->text_process($event_date[$i]))."',
+				event_date='".$this->text_process($event_date[$i])."',
 				event_text='".$this->text_process($event_text[$i])."',
 				event_place='".$this->text_process($event_place[$i])."',
 				event_source='".$this->text_process($event_source[$i])."'";
@@ -3006,7 +2999,7 @@ function process_family($family_array,$first_marr, $second_marr){
 				connect_text='".$this->text_process($connect['text'][$i])."',
 				connect_page='".$this->text_process($connect['page'][$i])."',
 				connect_role='".$this->text_process($connect['role'][$i])."',
-				connect_date='".$this->zero_date($this->text_process($connect['date'][$i]))."',
+				connect_date='".$this->text_process($connect['date'][$i])."',
 				connect_place='".$this->text_process($connect['place'][$i])."'
 				";
 			//echo $check_connect.' !! '.$gebeurtsql.'<br>';
@@ -3130,9 +3123,9 @@ function process_text($text_array){
 		text_gedcomnr='".$this->text_process($text['text_gedcomnr'])."',
 		text_text='".$this->text_process($text['text_text'])."',
 		text_unprocessed_tags='".$this->text_process($text['text_unprocessed_tags'])."',
-		text_new_date='".$this->zero_date($text['new_date'])."',
+		text_new_date='".$text['new_date']."',
 		text_new_time='".$text['new_time']."',
-		text_changed_date='".$this->zero_date($text['changed_date'])."',
+		text_changed_date='".$text['changed_date']."',
 		text_changed_time='".$text['changed_time']."'
 		";
 	//$result=mysql_query($sql) or die(mysql_error());
@@ -3386,7 +3379,7 @@ function process_source($source_array){
 	source_status='".$source["source_status"]."',
 	source_title='".$this->text_process($source["source_title"])."',
 	source_abbr='".$this->text_process($source["source_abbr"])."',
-	source_date='".$this->zero_date($this->text_process($source["source_date"]))."',
+	source_date='".$this->text_process($source["source_date"])."',
 	source_publ='".$this->text_process($source["source_publ"])."',
 	source_place='".$this->text_process($source["source_place"])."',
 	source_refn='".$this->text_process($source["source_refn"])."',
@@ -3401,9 +3394,9 @@ function process_source($source_array){
 	source_repo_page='".$this->text_process($source["source_repo_page"])."',
 	source_repo_gedcomnr='".$this->text_process($source["source_repo_gedcomnr"])."',
 	source_unprocessed_tags='".$this->text_process($source["source_unprocessed_tags"])."',
-	source_new_date='".$this->zero_date($source['new_date'])."',
+	source_new_date='".$source['new_date']."',
 	source_new_time='".$source['new_time']."',
-	source_changed_date='".$this->zero_date($source['changed_date'])."',
+	source_changed_date='".$source['changed_date']."',
 	source_changed_time='".$source['changed_time']."'
 	";
 	//$result=mysql_query($sql) or die(mysql_error());
@@ -3586,16 +3579,16 @@ function process_repository($repo_array){
 	repo_zip='".$this->text_process($repo["repo_zip"])."',
 	repo_place='".$this->text_process($repo["repo_place"])."',
 	repo_phone='".$this->text_process($repo["repo_phone"])."',
-	repo_date='".$this->zero_date($this->text_process($repo["repo_date"]))."',
+	repo_date='".$this->text_process($repo["repo_date"])."',
 	repo_source='".$this->text_process($repo["repo_source"])."',
 	repo_text='".$this->text_process($repo["repo_text"])."',
 	repo_photo='".$this->text_process($repo["repo_photo"])."',
 	repo_mail='".$this->text_process($repo["repo_mail"])."',
 	repo_url='".$this->text_process($repo["repo_url"])."',
 	repo_unprocessed_tags='".$this->text_process($repo["repo_unprocessed_tags"])."',
-	repo_new_date='".$this->zero_date($repo['repo_new_date'])."',
+	repo_new_date='".$repo['repo_new_date']."',
 	repo_new_time='".$repo['repo_new_time']."',
-	repo_changed_date='".$this->zero_date($repo['repo_changed_date'])."',
+	repo_changed_date='".$repo['repo_changed_date']."',
 	repo_changed_time='".$repo['repo_changed_time']."'
 	";
 	//$result=mysql_query($sql) or die(mysql_error());
@@ -3735,9 +3728,9 @@ function process_address($address_array){
 	address_text='".$this->text_process($address["address_text"])."',
 	address_photo='".$this->text_process($address["address_photo"])."',
 	address_unprocessed_tags='".$this->text_process($address["address_unprocessed_tags"])."',
-	address_new_date='".$this->zero_date($address['new_date'])."',
+	address_new_date='".$address['new_date']."',
 	address_new_time='".$address['new_time']."',
-	address_changed_date='".$this->zero_date($address['changed_date'])."',
+	address_changed_date='".$address['changed_date']."',
 	address_changed_time='".$address['changed_time']."'
 	";
 	//$result=mysql_query($sql) or die(mysql_error());
@@ -3874,14 +3867,14 @@ function process_object($object_array){
 		event_event='".$this->text_process($event_event)."',
 		event_event_extra='".$this->text_process($event_event_extra)."',
 		event_gedcom='OBJE',
-		event_date='".$this->zero_date($this->text_process($event_date))."',
+		event_date='".$this->text_process($event_date)."',
 		event_place='".$this->text_process($event_place)."',
 		event_text='".$this->text_process($event_text)."',
 		event_source='".$this->text_process($event_source)."',
 		event_unprocessed_tags='".$this->text_process($event_unprocessed_tags)."',
-		event_new_date='".$this->zero_date($event_new_date)."',
+		event_new_date='".$event_new_date."',
 		event_new_time='".$event_new_time."',
-		event_changed_date='".$this->zero_date($event_changed_date)."',
+		event_changed_date='".$event_changed_date."',
 		event_changed_time='".$event_changed_time."'";
 //echo '<br>'.$eventsql.'<br>';
 	//$result=mysql_query($eventsql) or die(mysql_error());

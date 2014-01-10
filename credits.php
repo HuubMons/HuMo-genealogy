@@ -22,7 +22,7 @@ This credits screen is english only...
 
 <li>Yossi Beck (overall support, programmer):
 	<ul><li>Outline report, fanchart, graphical descendant chart and ancestor sheet.
-	<li>Timeline report, relationship calculator.
+	<li>Timeline report, hourglass chart and relationship calculator.
 	<li>Google maps.
 	<li>PDF export.
 	<li>Silverline and Antique theme.

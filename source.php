@@ -3,7 +3,7 @@
 
 function source_display($sourcenum) {
 
-global $db, $user, $pdf, $screen_mode, $language;
+global $db, $dbh, $user, $pdf, $screen_mode, $language;
 global $dataDb;
 
 if($screen_mode!="PDF") {
@@ -25,13 +25,20 @@ if($screen_mode!="PDF") {
 	print "<tr><td><h2>".__('Sources')."</h2>";
 }
 
+	//@$qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
+	//	WHERE source_gedcomnr='".$sourcenum."'";
 	@$qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
-		WHERE source_gedcomnr='".$sourcenum."'";
+		WHERE source_gedcomnr='".$sourcenum."'";		
 	if ($user['group_show_restricted_source']=='n'){ $qry.=" AND source_status!='restricted'"; }
-	@$source=mysql_query($qry,$db);
-
-	$die_message=__('No valid source number.');
-	@$sourceDb=mysql_fetch_object($source) or die("$die_message");
+	//@$source=mysql_query($qry,$db);
+	//$die_message=__('No valid source number.');
+	//@$sourceDb=mysql_fetch_object($source) or die("$die_message");
+	@$source=$dbh->query($qry);
+	try {
+		@$sourceDb=@$source->fetch(PDO::FETCH_OBJ);
+	} catch(PDOException $e) {
+		echo __('No valid source number.');
+	}
 
 	if ($sourceDb->source_title){
 		if($screen_mode=="PDF") {
@@ -192,9 +199,12 @@ if($screen_mode!="PDF") {
 
 
 	// *** Show repository ***
-	$repo_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."repositories
-		WHERE repo_gedcomnr='".$sourceDb->source_repo_gedcomnr."'",$db);
-	$repoDb=mysql_fetch_object($repo_qry);
+	//$repo_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."repositories
+	//	WHERE repo_gedcomnr='".$sourceDb->source_repo_gedcomnr."'",$db);
+	$repo_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."repositories
+		WHERE repo_gedcomnr='".$sourceDb->source_repo_gedcomnr."'");		
+	//$repoDb=mysql_fetch_object($repo_qry);
+	$repoDb=$repo_qry->fetch(PDO::FETCH_OBJ);
 	if ($repoDb){
 		if($screen_mode=="PDF") {
 			// NO REPOSITORIES IN PDF YET...
@@ -229,14 +239,19 @@ print '<tr><td>';
 
 	// *** Sources in address table ***
 	$address_sql="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."address_ WHERE address_source NOT LIKE ''";
-	$address_qry=mysql_query($address_sql,$db);
-	while (@$address_Db=mysql_fetch_object($address_qry)){
+	//$address_qry=mysql_query($address_sql,$db);
+	$address_qry=$dbh->query($address_sql);
+	//while (@$address_Db=mysql_fetch_object($address_qry)){
+	while (@$address_Db=$address_qry->fetch(PDO::FETCH_OBJ)){
 		$sourceid=explode(";",$address_Db->address_source);
 		for ($i=0; $i<=substr_count($address_Db->address_source, ';'); $i++){
 			if (substr($sourceid[$i],1,-1)==$sourceDb->source_gedcomnr){
-				$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-					WHERE pers_gedcomnumber='$address_Db->address_person_id'",$db);
-				$personDb=mysql_fetch_object($person);
+				//$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+				//	WHERE pers_gedcomnumber='$address_Db->address_person_id'",$db);
+				//$personDb=mysql_fetch_object($person);
+				$person=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+					WHERE pers_gedcomnumber='$address_Db->address_person_id'");
+				$personDb=$person->fetch(PDO::FETCH_OBJ);				
 				echo __('Source for address:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 				$name=$person_cls->person_name($personDb);
 				echo $name["standard_name"];
@@ -248,27 +263,38 @@ print '<tr><td>';
 	// *** Find person data ***
 	// *** This seperate function speeds up the sources page ***
 	function person_data($familyDb){
-		global $db;
+		global $db, $dbh;
 		if ($familyDb->fam_man){
-			$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-			WHERE pers_gedcomnumber='$familyDb->fam_man'",$db);
+			//$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+			//WHERE pers_gedcomnumber='$familyDb->fam_man'",$db);
+			$person=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+			WHERE pers_gedcomnumber='$familyDb->fam_man'");			
 		}
 		else{
-			$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-			WHERE pers_gedcomnumber='$familyDb->fam_woman'",$db);
+			//$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+			//WHERE pers_gedcomnumber='$familyDb->fam_woman'",$db);
+			$person=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+			WHERE pers_gedcomnumber='$familyDb->fam_woman'");			
 		}
-		@$personDb=mysql_fetch_object($person);
+		//@$personDb=mysql_fetch_object($person);
+		@$personDb=$person->fetch(PDO::FETCH_OBJ);
 		return $personDb;
 	}
 
 
 	// *** Sources in connect table ***
+	/*
 	$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
 		WHERE connect_source_id='".$sourceDb->source_gedcomnr."'
 		ORDER BY connect_kind, connect_sub_kind, connect_order";
 	$connect_sql=mysql_query($connect_qry,$db);
-	while($connectDb=mysql_fetch_object($connect_sql)){
-
+	*/
+	$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
+		WHERE connect_source_id='".$sourceDb->source_gedcomnr."'
+		ORDER BY connect_kind, connect_sub_kind, connect_order";
+	$connect_sql=$dbh->query($connect_qry);
+	//while($connectDb=mysql_fetch_object($connect_sql)){
+	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
 		// *** Person source ***
 		if ($connectDb->connect_kind=='person'){
 			if ($connectDb->connect_sub_kind=='person_source'){
@@ -298,15 +324,26 @@ print '<tr><td>';
 			if ($connectDb->connect_sub_kind=='event_source'){
 
 				// *** Sources by event ***
+				/*
 				$event_sql="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 					WHERE event_id='".$connectDb->connect_connect_id."'";
 				$event_qry=mysql_query($event_sql,$db);
 				$event_Db=mysql_fetch_object($event_qry);
+				*/
+				$event_sql="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+					WHERE event_id='".$connectDb->connect_connect_id."'";
+				$event_qry=$dbh->query($event_sql);
+				$event_Db=$event_qry->fetch(PDO::FETCH_OBJ);				
 				// *** Person source ***
 				if ($event_Db->event_person_id){
+					/*
 					$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 						WHERE pers_gedcomnumber='$event_Db->event_person_id'",$db);
 					$personDb=mysql_fetch_object($person);
+					*/
+					$person=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+						WHERE pers_gedcomnumber='$event_Db->event_person_id'");
+					$personDb=$person->fetch(PDO::FETCH_OBJ);					
 					print __('Source for:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 					$name=$person_cls->person_name($personDb);
 					echo $name["standard_name"].'</a>';
@@ -315,10 +352,14 @@ print '<tr><td>';
 
 			}
 			else{
+				/*
 				$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 					WHERE pers_gedcomnumber='$connectDb->connect_connect_id'",$db);
 				$personDb=mysql_fetch_object($person);
-
+				*/
+				$person=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+					WHERE pers_gedcomnumber='$connectDb->connect_connect_id'");
+				$personDb=$person->fetch(PDO::FETCH_OBJ);				
 				echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 				$name=$person_cls->person_name($personDb);
 				echo $name["standard_name"].'</a>';
@@ -358,18 +399,28 @@ print '<tr><td>';
 			if ($connectDb->connect_sub_kind=='event'){
 
 				// *** Sources by event ***
+				/*
 				$event_sql="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 					WHERE event_id='".$connectDb->connect_connect_id."'";
 				$event_qry=mysql_query($event_sql,$db);
 				$event_Db=mysql_fetch_object($event_qry);
+				*/
+				$event_sql="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+					WHERE event_id='".$connectDb->connect_connect_id."'";
+				$event_qry=$dbh->query($event_sql);
+				$event_Db=$event_qry->fetch(PDO::FETCH_OBJ);				
 				// *** Family source ***
 				if ($event_Db->event_family_id){					print __('Source for family:');
-
+					/*
 					$family=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
 						WHERE fam_gedcomnumber='".$event_Db->event_family_id."'",$db);
 					$familyDb=mysql_fetch_object($family);
 					$personDb=person_data($familyDb);
-
+					*/
+					$family=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
+						WHERE fam_gedcomnumber='".$event_Db->event_family_id."'");
+					$familyDb=$family->fetch(PDO::FETCH_OBJ);
+					$personDb=person_data($familyDb);					
 					echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$event_Db->event_family_id.'">';
 					$name=$person_cls->person_name($personDb);
 					echo $name["standard_name"].'</a>';
@@ -379,11 +430,16 @@ print '<tr><td>';
 
 			}
 			else{
+				/*
 				$family=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
 					WHERE fam_gedcomnumber='".$connectDb->connect_connect_id."'",$db);
 				$familyDb=mysql_fetch_object($family);
 				$personDb=person_data($familyDb);
-
+				*/
+				$family=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
+					WHERE fam_gedcomnumber='".$connectDb->connect_connect_id."'");
+				$familyDb=$family->fetch(PDO::FETCH_OBJ);
+				$personDb=person_data($familyDb);				
 				echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$connectDb->connect_connect_id.'">';
 				$name=$person_cls->person_name($personDb);
 				echo $name["standard_name"].'</a>';

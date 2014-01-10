@@ -38,9 +38,11 @@ if (isset($_POST['add_page']) OR isset($_POST['change_page'])){
 
 	if (isset($_POST['add_page'])){
 		$page_order='1';
-		$datasql = mysql_query("SELECT page_order FROM humo_cms_pages ORDER BY page_order DESC LIMIT 0,1",$db);
+		//$datasql = mysql_query("SELECT page_order FROM humo_cms_pages ORDER BY page_order DESC LIMIT 0,1",$db);
+		$datasql = $dbh->query("SELECT page_order FROM humo_cms_pages ORDER BY page_order DESC LIMIT 0,1");
 		if ($datasql){
-			$dataDb=mysql_fetch_object($datasql);
+			//$dataDb=mysql_fetch_object($datasql);
+			$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 			$page_order=$dataDb->page_order+1;
 		}
 
@@ -62,12 +64,15 @@ if (isset($_POST['add_page']) OR isset($_POST['change_page'])){
 	}
 
 	//echo $sql;
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	if (isset($_POST['add_page'])){
 		$sql="SELECT * FROM humo_cms_pages ORDER BY page_id DESC LIMIT 0,1";
-		$qry=mysql_query($sql,$db);
-		$cms_pagesDb=mysql_fetch_object($qry);
+		//$qry=mysql_query($sql,$db);
+		//$cms_pagesDb=mysql_fetch_object($qry);
+		$qry=$dbh->query($sql);
+		$cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ);
 		$_GET["select_page"]=$cms_pagesDb->page_id;
 	}
 }
@@ -78,12 +83,15 @@ if (isset($_GET['page_up'])){
 		SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
 		WHERE table1.page_id='".safe_text($_GET['page_up'])."' AND table2.page_id='".safe_text($_GET['select_page'])."'";
 	//echo $sql;
-	$result=mysql_query($sql);
+	//$result=mysql_query($sql);
+	$result=$dbh->query($sql);
 }
 if (isset($_GET['page_down'])){
-	$qry2=mysql_query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".safe_text($_GET['menu_id'])."' ORDER BY page_order",$db);
+	//$qry2=mysql_query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".safe_text($_GET['menu_id'])."' ORDER BY page_order",$db);
+	$qry2=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".safe_text($_GET['menu_id'])."' ORDER BY page_order");
 	$search_page=false;
-	while($cms_pagesDb=mysql_fetch_object($qry2)){
+	//while($cms_pagesDb=mysql_fetch_object($qry2)){
+	while($cms_pagesDb=$qry2->fetch(PDO::FETCH_OBJ)){
 		if ($search_page==true){
 			$page2=$cms_pagesDb->page_id;
 			$search_page=false;
@@ -97,7 +105,8 @@ if (isset($_GET['page_down'])){
 		SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
 		WHERE table1.page_id='".safe_text($_GET['select_page'])."' AND table2.page_id='".$page2."'";
 	//echo $sql;
-	$result=mysql_query($sql);
+	//$result=mysql_query($sql);
+	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['page_remove'])){
@@ -120,7 +129,8 @@ if (isset($_GET['page_remove'])){
 }
 if (isset($_POST['page_remove2'])){
 	$sql="DELETE FROM humo_cms_pages WHERE page_id='".safe_text($_POST['page_id'])."'";
-	@$result=mysql_query($sql);
+	//@$result=mysql_query($sql);
+	@$result=$dbh->query($sql);
 }
 
 
@@ -128,10 +138,12 @@ if (isset($_POST['page_remove2'])){
 if (isset($_POST['add_menu']) OR isset($_POST['change_menu'])){
 	if (isset($_POST['add_menu'])){
 		$menu_order='1';
-		$datasql = mysql_query("SELECT * FROM humo_cms_menu",$db);
+		//$datasql = mysql_query("SELECT * FROM humo_cms_menu",$db);
+		$datasql = $dbh->query("SELECT * FROM humo_cms_menu");
 		if ($datasql){
 			// *** Count lines in query ***
-			$menu_order=mysql_num_rows($datasql)+1;
+			//$menu_order=mysql_num_rows($datasql)+1;
+			$menu_order=$datasql->rowCount() +1;
 		}
 
 		$sql="INSERT INTO humo_cms_menu SET
@@ -147,7 +159,8 @@ if (isset($_POST['add_menu']) OR isset($_POST['change_menu'])){
 	}
 
 	//echo $sql;
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['menu_up'])){
@@ -155,21 +168,26 @@ if (isset($_GET['menu_up'])){
 		SET table1.menu_order=table2.menu_order, table2.menu_order=table1.menu_order
 		WHERE table1.menu_order='".safe_text($_GET['menu_up'])."' AND table2.menu_order='".safe_text($_GET['menu_up']-1)."'";
 	//echo $sql;
-	$result=mysql_query($sql);
+	//$result=mysql_query($sql);
+	$result=$dbh->query($sql);
 }
 if (isset($_GET['menu_down'])){
 	$sql="UPDATE humo_cms_menu as table1, humo_cms_menu as table2
 		SET table1.menu_order=table2.menu_order, table2.menu_order=table1.menu_order
 		WHERE table1.menu_order='".safe_text($_GET['menu_down'])."' AND table2.menu_order='".safe_text($_GET['menu_down']+1)."'";
 	//echo $sql;
-	$result=mysql_query($sql);
+	//$result=mysql_query($sql);
+	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['menu_remove'])){
 	echo '<div class="confirm">';
-	$qry=mysql_query("SELECT * FROM humo_cms_pages
-		WHERE page_menu_id='".safe_text($_GET['menu_remove'])."' ORDER BY page_order",$db);
-	$count=mysql_num_rows($qry);
+	//$qry=mysql_query("SELECT * FROM humo_cms_pages
+	//	WHERE page_menu_id='".safe_text($_GET['menu_remove'])."' ORDER BY page_order",$db);
+	$qry=$dbh->query("SELECT * FROM humo_cms_pages
+		WHERE page_menu_id='".$_GET['menu_remove']."' ORDER BY page_order");		
+	//$count=mysql_num_rows($qry);
+	$count=$qry->rowCount();
 	if ($count>0){
 		echo __('There are still pages connected to this menu!<br>
 Please disconnect the pages from this menu first.');
@@ -189,14 +207,18 @@ Please disconnect the pages from this menu first.');
 }
 if (isset($_POST['menu_remove2'])){
 	$sql="DELETE FROM humo_cms_menu WHERE menu_id='".safe_text($_POST['menu_id'])."'";
-	@$result=mysql_query($sql);
+	//@$result=mysql_query($sql);
+	@$result=$dbh->query($sql);
 	
 	// *** Re-order menu's ***
 	$repair_order=1;
-	$item=mysql_query("SELECT * FROM humo_cms_menu ORDER BY menu_order",$db);
-	while($itemDb=mysql_fetch_object($item)){
+	//$item=mysql_query("SELECT * FROM humo_cms_menu ORDER BY menu_order",$db);
+	$item=$dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
+	//while($itemDb=mysql_fetch_object($item)){
+	while($itemDb=$item->fetch(PDO::FETCH_OBJ)){
 		$sql="UPDATE humo_cms_menu SET menu_order='".$repair_order."' WHERE menu_id=".$itemDb->menu_id;
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 		$repair_order++;
 	}
 }
@@ -214,10 +236,13 @@ if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
 		// *** List of pages ***
 		echo __('Pages, click to edit:').'<br>';
 		echo '<table>';
-			$qry=mysql_query("SELECT * FROM humo_cms_pages WHERE page_menu_id='0' ORDER BY page_order",$db);
-			$count_pages=mysql_num_rows($qry);
+			//$qry=mysql_query("SELECT * FROM humo_cms_pages WHERE page_menu_id='0' ORDER BY page_order",$db);
+			$qry=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='0' ORDER BY page_order");
+			//$count_pages=mysql_num_rows($qry);
+			$count_pages=$qry->rowCount();
 			$page_nr=0;
-			while($cms_pagesDb=mysql_fetch_object($qry)){
+			//while($cms_pagesDb=mysql_fetch_object($qry)){
+			while($cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ)){
 				$page_nr++;
 				echo '<tr><td width="60px">';
 
@@ -240,14 +265,19 @@ if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
 			}
 
 
-			$qry=mysql_query("SELECT * FROM humo_cms_menu ORDER BY menu_order",$db);
-			while($cmsDb=mysql_fetch_object($qry)){
+			//$qry=mysql_query("SELECT * FROM humo_cms_menu ORDER BY menu_order",$db);
+			$qry=$dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
+			//while($cmsDb=mysql_fetch_object($qry)){
+			while($cmsDb=$qry->fetch(PDO::FETCH_OBJ)){
 				echo '<tr><td colspan="2"><b>'.$cmsDb->menu_name.'</b></td></tr>';
 
-				$qry2=mysql_query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".$cmsDb->menu_id."' ORDER BY page_order",$db);
-				$count_pages=mysql_num_rows($qry2);
+				//$qry2=mysql_query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".$cmsDb->menu_id."' ORDER BY page_order",$db);
+				$qry2=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".$cmsDb->menu_id."' ORDER BY page_order");
+				//$count_pages=mysql_num_rows($qry2);
+				$count_pages=$qry2->rowCount();
 				$page_nr=0;
-				while($cms_pagesDb=mysql_fetch_object($qry2)){
+				//while($cms_pagesDb=mysql_fetch_object($qry2)){
+				while($cms_pagesDb=$qry2->fetch(PDO::FETCH_OBJ)){
 					$page_nr++;
 					echo '<tr><td>';
 					
@@ -271,10 +301,13 @@ if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
 			}
 
 			echo '<tr><td colspan="2"><b>* '.__('Hide page in menu').' *</b></td></tr>';
-			$qry=mysql_query("SELECT * FROM humo_cms_pages WHERE page_menu_id='9999' ORDER BY page_order",$db);
-			$count_pages=mysql_num_rows($qry);
+			//$qry=mysql_query("SELECT * FROM humo_cms_pages WHERE page_menu_id='9999' ORDER BY page_order",$db);
+			$qry=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='9999' ORDER BY page_order");
+			//$count_pages=mysql_num_rows($qry);
+			$count_pages=$qry->rowCount();
 			$page_nr=0;
-			while($cms_pagesDb=mysql_fetch_object($qry)){
+			//while($cms_pagesDb=mysql_fetch_object($qry)){
+			while($cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ)) {
 				$page_nr++;
 				echo '<tr><td>';
 
@@ -301,8 +334,10 @@ if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
 
 		if (isset($_GET["select_page"])){
 			$sql="SELECT * FROM humo_cms_pages WHERE page_id=".safe_text($_GET["select_page"]);
-			$qry=mysql_query($sql,$db);
-			$cms_pagesDb=mysql_fetch_object($qry);
+			//$qry=mysql_query($sql,$db);
+			//$cms_pagesDb=mysql_fetch_object($qry);
+			$qry=$dbh->query($sql);
+			$cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ);			
 			//if ($memosoort2Db->website_id==$memosoortDb->menu_website_id){
 			//	echo '<a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
 			$page_id=$cms_pagesDb->page_id;
@@ -349,8 +384,10 @@ if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
 			echo "<option value=''>* ".__('No menu selected')." *</option>\n";
 			$select=''; if ($page_menu_id=='9999'){ $select=' SELECTED'; }
 			echo '<option value="9999"'.$select.'>* '.__('Hide page in menu')." *</option>\n";
-			$qry=mysql_query("SELECT * FROM humo_cms_menu ORDER BY menu_order",$db);
-			while($menuDb=mysql_fetch_object($qry)){
+			//$qry=mysql_query("SELECT * FROM humo_cms_menu ORDER BY menu_order",$db);
+			$qry=$dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
+			//while($menuDb=mysql_fetch_object($qry)){
+			while($menuDb=$qry->fetch(PDO::FETCH_OBJ)){
 				$select=''; if ($menuDb->menu_id==$page_menu_id){ $select=' SELECTED'; }
 				echo '<option value="'.$menuDb->menu_id.'"'.$select.'>'.$menuDb->menu_name.'</option>';
 			}
@@ -412,9 +449,12 @@ if (isset($_POST['cms_menu']) OR isset($_GET['select_menu'])){
 
 	echo '<tr class="table_header"><th>'.__('Order').'</th><th>'.__('Menu item/ category').'</th><th>Save</th></tr>';
 
-	$qry=mysql_query("SELECT * FROM humo_cms_menu ORDER BY menu_order",$db);
-	$count_menu=mysql_num_rows($qry);
-	while($cms_pagesDb=mysql_fetch_object($qry)){
+	//$qry=mysql_query("SELECT * FROM humo_cms_menu ORDER BY menu_order",$db);
+	//$count_menu=mysql_num_rows($qry);
+	//while($cms_pagesDb=mysql_fetch_object($qry)){
+	$qry=$dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
+	$count_menu=$qry->rowCount();
+	while($cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ)){	
 
 		echo '<form method="post" action="'.$phpself.'" style="display : inline;">';
 		echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -462,7 +502,8 @@ if (isset($_POST['cms_settings'])){
 	// *** Automatic installation or update ***
 	if (!isset($humo_option["cms_images_path"])){
 		$sql="INSERT INTO humo_settings SET setting_variable='cms_images_path', setting_value=''";
-		@$result=mysql_query($sql) or die(mysql_error());
+		//@$result=mysql_query($sql) or die(mysql_error());
+		@$result=$dbh->query($sql);		
 		$cms_images_path='';
 	}
 	else{
@@ -472,7 +513,8 @@ if (isset($_POST['cms_settings'])){
 	// *** Automatic installation or update ***
 	if (!isset($humo_option["main_page_cms_id"])){
 		$sql="INSERT INTO humo_settings SET setting_variable='main_page_cms_id', setting_value=''";
-		@$result=mysql_query($sql) or die(mysql_error());
+		//@$result=mysql_query($sql) or die(mysql_error());
+		@$result=$dbh->query($sql);
 		$main_page_cms_id='';
 	}
 	else{
@@ -482,7 +524,8 @@ if (isset($_POST['cms_settings'])){
 	if (isset($_POST['cms_images_path'])){
 		$qry="UPDATE humo_settings SET setting_value='".addslashes($_POST["cms_images_path"])."' WHERE setting_variable='cms_images_path'";
 		//echo $qry;
-		$result = mysql_query($qry) or die(mysql_error());
+		//$result = mysql_query($qry) or die(mysql_error());
+		$result = $dbh->query($qry);
 		
 		$humo_option["cms_images_path"]=$_POST["cms_images_path"];
 		$cms_images_path=$humo_option["cms_images_path"];
@@ -491,7 +534,8 @@ if (isset($_POST['cms_settings'])){
 	if (isset($_POST['main_page_cms_id'])){
 		$qry="UPDATE humo_settings SET setting_value='".addslashes($_POST["main_page_cms_id"])."' WHERE setting_variable='main_page_cms_id'";
 		//echo $qry;
-		$result = mysql_query($qry) or die(mysql_error());
+		//$result = mysql_query($qry) or die(mysql_error());
+		$result = $dbh->query($qry);
 
 		$humo_option["main_page_cms_id"]=$_POST["main_page_cms_id"];
 		$main_page_cms_id=$humo_option["main_page_cms_id"];
@@ -500,7 +544,8 @@ if (isset($_POST['cms_settings'])){
 	if (isset($_POST['languages_choice']) AND $_POST['languages_choice']=="all"){ 
 		// admin chose to use one page for all languages - delete any language_specific entries if set (format: main_page_cms_id_nl etc)
 		// note that because of the last underline before the %, the default main_page_id will not be affected!
-		mysql_query("DELETE FROM humo_settings WHERE setting_variable LIKE 'main_page_cms_id_%'",$db);
+		//mysql_query("DELETE FROM humo_settings WHERE setting_variable LIKE 'main_page_cms_id_%'",$db);
+		$dbh->query("DELETE FROM humo_settings WHERE setting_variable LIKE 'main_page_cms_id_%'");
 	}
 
 	if ($_POST['cms_settings']!='1'){
@@ -508,10 +553,12 @@ if (isset($_POST['cms_settings'])){
 			// admin chose to use different pages for specific languages
 			for ($i=0; $i<count($language_file); $i++){
 				if (!isset($humo_option["main_page_cms_id_".$language_file[$i]])) {
-					mysql_query("INSERT INTO humo_settings SET setting_variable='main_page_cms_id_".$language_file[$i]."', setting_value='".$_POST['main_page_cms_id_'.$language_file[$i]]."'",$db);
+					//mysql_query("INSERT INTO humo_settings SET setting_variable='main_page_cms_id_".$language_file[$i]."', setting_value='".$_POST['main_page_cms_id_'.$language_file[$i]]."'",$db);
+					$dbh->query("INSERT INTO humo_settings SET setting_variable='main_page_cms_id_".$language_file[$i]."', setting_value='".$_POST['main_page_cms_id_'.$language_file[$i]]."'");
 				}
 				else {
-					mysql_query("UPDATE humo_settings SET setting_value='".$_POST['main_page_cms_id_'.$language_file[$i]]."' WHERE setting_variable='main_page_cms_id_".$language_file[$i]."'",$db);
+					//mysql_query("UPDATE humo_settings SET setting_value='".$_POST['main_page_cms_id_'.$language_file[$i]]."' WHERE setting_variable='main_page_cms_id_".$language_file[$i]."'",$db);
+					$dbh->query("UPDATE humo_settings SET setting_value='".$_POST['main_page_cms_id_'.$language_file[$i]]."' WHERE setting_variable='main_page_cms_id_".$language_file[$i]."'");
 				}	
 			}		
 		}
@@ -540,8 +587,10 @@ To point to a folder outside (and parallel to) the humogen folder, use ../../../
 
 	echo '</td><td>';
 
-	$lang_qry = mysql_query("SELECT * FROM humo_settings WHERE setting_variable LIKE 'main_page_cms_id_%'",$db); // check if there are language-specific entries
-	$num = mysql_num_rows($lang_qry);
+	//$lang_qry = mysql_query("SELECT * FROM humo_settings WHERE setting_variable LIKE 'main_page_cms_id_%'",$db); // check if there are language-specific entries
+	//$num = mysql_num_rows($lang_qry);
+	$lang_qry = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable LIKE 'main_page_cms_id_%'"); // check if there are language-specific entries
+	$num = $lang_qry->rowCount();	
 	$checked1 = ' checked'; $checked2 = '';
 	if (isset($_POST['languages_choice'])){
 		if (($num >=1 AND $_POST['languages_choice']!="all") OR ($num <1 AND $_POST['languages_choice']=="specific"))
@@ -555,8 +604,10 @@ To point to a folder outside (and parallel to) the humogen folder, use ../../../
 	echo '<input type="radio" onChange="document.cms_setting_form.submit()" value="all" name="languages_choice" '.$checked1.'> '.__('Use for all languages');
 	echo ' <select size="1" name="main_page_cms_id">';
 	echo "<option value=''>* ".__('Standard main index')." *</option>\n";
-	$qry=mysql_query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order",$db);
-	while($pageDb=mysql_fetch_object($qry)){
+	//$qry=mysql_query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order",$db);
+	$qry=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
+	//while($pageDb=mysql_fetch_object($qry)){
+	while($pageDb=$qry->fetch(PDO::FETCH_OBJ)){
 		$select=''; if ($pageDb->page_id==$main_page_cms_id){ $select=' SELECTED'; }
 		echo '<option value="'.$pageDb->page_id.'"'.$select.'>'.$pageDb->page_title.'</option>';
 	}
@@ -571,8 +622,10 @@ To point to a folder outside (and parallel to) the humogen folder, use ../../../
 			echo $language["name"];
 			echo '</td><td>';
 			$select_page='dummy';
-			$qry=mysql_query("SELECT * FROM humo_settings WHERE setting_variable = 'main_page_cms_id_".$language_file[$i]."'",$db);
-			while($lang_pageDb=mysql_fetch_object($qry)){
+			//$qry=mysql_query("SELECT * FROM humo_settings WHERE setting_variable = 'main_page_cms_id_".$language_file[$i]."'",$db);
+			$qry=$dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'main_page_cms_id_".$language_file[$i]."'");
+			//while($lang_pageDb=mysql_fetch_object($qry)){
+			while($lang_pageDb=$qry->fetch(PDO::FETCH_OBJ)){
 				$select_page = $lang_pageDb->setting_value;
 			}
 			$sel='';
@@ -581,8 +634,10 @@ To point to a folder outside (and parallel to) the humogen folder, use ../../../
 			//else the value was '' which means language was set individually to "main index", so don't set "select" so "main index" will show
 			echo '<select size="1" name="main_page_cms_id_'.$language_file[$i].'">';
 			echo "<option value=''>* ".__('Standard main index')." *</option>\n";
-			$qry=mysql_query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order",$db);
-			while($pageDb=mysql_fetch_object($qry)){
+			//$qry=mysql_query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order",$db);
+			$qry=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
+			//while($pageDb=mysql_fetch_object($qry)){
+			while($pageDb=$qry->fetch(PDO::FETCH_OBJ)){
 				$select=''; 
 				if($pageDb->page_id==$sel) { $select=' SELECTED'; $special_found=1;}
 				echo '<option value="'.$pageDb->page_id.'"'.$select.'>'.$pageDb->page_title.'</option>';

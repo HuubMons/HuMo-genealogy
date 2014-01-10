@@ -57,8 +57,10 @@ if($screen_mode!='PDF' AND $screen_mode!='ASPDF') {  //we can't have a menu in p
 			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
 			AND humo_tree_texts.treetext_language='".$selected_language."'
 			WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'";
-		@$datasql = mysql_query($dataqry,$db);
-		@$dataDb=mysql_fetch_object($datasql);
+		//@$datasql = mysql_query($dataqry,$db);
+		//@$dataDb=mysql_fetch_object($datasql);
+		@$datasql = $dbh->query($dataqry);
+		@$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
 	}
 }
 if($hourglass===false) {
@@ -125,8 +127,10 @@ if($screen_mode=='PDF') {
 	$pdfdetails=array();
 	$pdf_marriage=array();
 	$pdf=new PDF();
-	$pers=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$family_id'",$db);
-	@$persDb=mysql_fetch_object($pers);
+	//$pers=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$family_id'",$db);
+	//@$persDb=mysql_fetch_object($pers);
+	$pers = $dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$family_id'");
+	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
 	// *** Use person class ***
 	$pers_cls = New person_cls;
 	$pers_cls->construct($persDb);
@@ -143,6 +147,12 @@ if($screen_mode=='PDF') {
 	$pdf->Ln(4);
 	$pdf->SetFont('Arial','',12);
 }
+
+// some PDO prepared statements before any loops are initiated
+$pers_prep=$dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber=?");
+$pers_prep->bindParam(1,$pers_prep_var);
+$fam_prep=$dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber=?");
+$fam_prep->bindParam(1,$fam_prep_var);
 
 if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $screen_mode!='ASPDF'){
 	$ancestor_array2[] = $family_id;
@@ -208,7 +218,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 	}
 
 	$listed_array=array();
-
+	
 	// *** Loop for ancestor report ***
 	while (isset($ancestor_array2[0])){
 		unset($ancestor_array);
@@ -264,9 +274,12 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 			}
 
 			if ($ancestor_array[$i]!='0'){
-				$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-					WHERE pers_gedcomnumber='".safe_text($ancestor_array[$i])."'",$db);
-				@$person_manDb=mysql_fetch_object($person_man);
+				//$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+				//	WHERE pers_gedcomnumber='".safe_text($ancestor_array[$i])."'",$db);
+				//@$person_manDb=mysql_fetch_object($person_man);
+				$pers_prep_var = $ancestor_array[$i];
+				$pers_prep->execute();
+				@$person_manDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
 				$privacy_man=$man_cls->privacy;
@@ -275,14 +288,19 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				//$sexe=$person_manDb->pers_sexe;
 				
 				if (strtolower($person_manDb->pers_sexe)=='m' AND $ancestor_number[$i]>1){
-					$family_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
-						WHERE fam_gedcomnumber='".safe_text($marriage_gedcomnumber[$i])."'",$db);
-					@$familyDb=mysql_fetch_object($family_qry);
-
+					//$family_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
+					//	WHERE fam_gedcomnumber='".safe_text($marriage_gedcomnumber[$i])."'",$db);
+					//@$familyDb=mysql_fetch_object($family_qry);
+					$fam_prep_var = $marriage_gedcomnumber[$i];
+					$fam_prep->execute();
+					@$familyDb = $fam_prep->fetch(PDO::FETCH_OBJ);
 					// *** Use privacy filter of woman ***
-					$person_woman=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-						WHERE pers_gedcomnumber='".safe_text($familyDb->fam_woman)."'",$db);
-					@$person_womanDb=mysql_fetch_object($person_woman);
+					//$person_woman=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+					//	WHERE pers_gedcomnumber='".safe_text($familyDb->fam_woman)."'",$db);
+					//@$person_womanDb=mysql_fetch_object($person_woman);
+					$pers_prep_var = $familyDb->fam_woman;
+					$pers_prep->execute();
+					@$person_womanDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 					$woman_cls = New person_cls;
 					$woman_cls->construct($person_womanDb);
 					$privacy_woman=$woman_cls->privacy;
@@ -394,9 +412,12 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 
 				// ==	Check for parents
 				if ($person_manDb->pers_famc  AND $listednr==''){
-					$family_parents_qry	= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber = '".$person_manDb->pers_famc."'";
-					$family_parents_result = mysql_query($family_parents_qry,$db);
-					@$family_parentsDb = mysql_fetch_object($family_parents_result);
+					//$family_parents_qry	= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber = '".$person_manDb->pers_famc."'";
+					//$family_parents_result = mysql_query($family_parents_qry,$db);
+					//@$family_parentsDb = mysql_fetch_object($family_parents_result);
+					$fam_prep_var = $person_manDb->pers_famc;
+					$fam_prep->execute();
+					@$family_parentsDb = $fam_prep->fetch(PDO::FETCH_OBJ);
 					if ($family_parentsDb->fam_man){
 						$ancestor_array2[] = $family_parentsDb->fam_man;
 						$ancestor_number2[]=(2*$ancestor_number[$i]);
@@ -419,9 +440,12 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 			} else{
 				
 				// *** Show N.N. person ***
-				$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-					WHERE pers_gedcomnumber='".safe_text($ancestor_array[$i])."'",$db);
-				@$person_manDb=mysql_fetch_object($person_man);
+				//$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+				//	WHERE pers_gedcomnumber='".safe_text($ancestor_array[$i])."'",$db);
+				//@$person_manDb=mysql_fetch_object($person_man);
+				$pers_prep_var = $ancestor_array[$i];
+				$pers_prep->execute();
+				@$person_manDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
 				$privacy_man=$man_cls->privacy;
@@ -476,15 +500,21 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	// The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
 
 	// person 01
-	$personDb = mysql_fetch_object(mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-		WHERE `pers_gedcomnumber`='".safe_text($family_id)."'",$db)) ;
+	//$personDb = mysql_fetch_object(mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+	//	WHERE `pers_gedcomnumber`='".safe_text($family_id)."'",$db)) ;
+	$pers_prep_var = $family_id;
+	$pers_prep->execute();
+	$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 	$gedcomnumber[1]= $personDb->pers_gedcomnumber;
 	$pers_famc[1]=$personDb->pers_famc;
 	$sexe[1]=$personDb->pers_sexe;
 	$parent_array[2]=''; $parent_array[3]='';
 	if ($pers_famc[1]){
-		$parentDb = mysql_fetch_object(mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
-			WHERE `fam_gedcomnumber`='".safe_text($pers_famc[1])."'"))   ;
+		//$parentDb = mysql_fetch_object(mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
+		//	WHERE `fam_gedcomnumber`='".safe_text($pers_famc[1])."'"))   ;
+		$fam_prep_var = $pers_famc[1];
+		$fam_prep->execute();
+		$parentDb = $fam_prep->fetch(PDO::FETCH_OBJ);
 		$parent_array[2]=$parentDb->fam_man; $parent_array[3]=$parentDb->fam_woman ;
 		$marr_date_array[2]=$parentDb->fam_marr_date ; $marr_place_array[2]=$parentDb->fam_marr_place ;
 	}
@@ -499,8 +529,11 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		$pers_famc[$counter]= '';
 		$sexe[$counter]= '';
 		if ($parent_array[$counter]){
-			$personDb = mysql_fetch_object(mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-			WHERE `pers_gedcomnumber`='".safe_text($parent_array[$counter])."'")) ;
+			//$personDb = mysql_fetch_object(mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+			//WHERE `pers_gedcomnumber`='".safe_text($parent_array[$counter])."'")) ;
+			$pers_prep_var = $parent_array[$counter];
+			$pers_prep->execute();
+			$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 			$gedcomnumber[$counter]= $personDb->pers_gedcomnumber;
 			$pers_famc[$counter]=$personDb->pers_famc;
 			$sexe[$counter]=$personDb->pers_sexe;
@@ -510,9 +543,12 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		$parent_array[$Vcounter]=''; $parent_array[$Mcounter]='';
 		$marr_date_array[$Vcounter]=''; $marr_place_array[$Vcounter]='';
 		if ($pers_famc[$counter]){  
-			$parents =  mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
-				WHERE `fam_gedcomnumber`='".safe_text($pers_famc[$counter])."'");
-			$parentDb = mysql_fetch_object($parents) ;
+			//$parents =  mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
+			//	WHERE `fam_gedcomnumber`='".safe_text($pers_famc[$counter])."'");
+			//$parentDb = mysql_fetch_object($parents) ;
+			$fam_prep_var = $pers_famc[$counter];
+			$fam_prep->execute();
+			$parentDb = $fam_prep->fetch(PDO::FETCH_OBJ);
 			$parent_array[$Vcounter]=$parentDb->fam_man; $parent_array[$Mcounter]=$parentDb->fam_woman ;
 			$marr_date_array[$Vcounter]=$parentDb->fam_marr_date ; $marr_place_array[$Vcounter]=$parentDb->fam_marr_place ;
 		}
@@ -521,10 +557,11 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	// *** Function to show data ***
 	// box_appearance (large, medium, small, and some other boxes...)
 	function ancestor_chart_person($id, $box_appearance){
-		global $humo_option, $user, $db;
+		global $humo_option, $user, $db, $dbh;
 		global $marr_date_array, $marr_place_array;
 		global $gedcomnumber, $language;
 		global $screen_mode, $dirmark1, $dirmark2;
+		global $pers_prep_var, $pers_prep;
 		
 		$hour_value=''; // if called from hourglass.php size of chart is given in box_appearance as "hour45" etc.
 		if(strpos($box_appearance,"hour")!==false) { $hour_value=substr($box_appearance,4); }
@@ -532,9 +569,12 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		$text=''; $popup='';
 
 		if ($gedcomnumber[$id]){ 
-			$person_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($gedcomnumber[$id])."'";
-			$person_result = mysql_query($person_qry,$db);
-			@$personDb = mysql_fetch_object($person_result);
+			//$person_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($gedcomnumber[$id])."'";
+			//$person_result = mysql_query($person_qry,$db);
+			//@$personDb = mysql_fetch_object($person_result);
+			$pers_prep_var = $gedcomnumber[$id];
+			$pers_prep->execute();			
+			@$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 
 			$person_cls = New person_cls;
 			$person_cls->construct($personDb);
@@ -965,10 +1005,14 @@ echo '<div>';
 
 		function data_array($id,$width,$height) {     
 			global $data_array, $db, $gedcomnumber, $dsign;   
+			global $dbh, $pers_prep, $pers_prep_var;
 			if (isset($gedcomnumber[$id]) AND $gedcomnumber[$id]!=""){ 
-				$person_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($gedcomnumber[$id])."'";
-				$person_result = mysql_query($person_qry,$db);
-				@$personDb = mysql_fetch_object($person_result);
+				//$person_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($gedcomnumber[$id])."'";
+				//$person_result = mysql_query($person_qry,$db);
+				//@$personDb = mysql_fetch_object($person_result);
+				$pers_prep_var = $gedcomnumber[$id];
+				$pers_prep->execute();
+				@$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 				$person_cls = New person_cls;
 				$person_cls->construct($personDb);
 				$pers_privacy=$person_cls->privacy;	
@@ -1103,6 +1147,7 @@ echo '<div>';
 
 		function place_cells($type,$begin,$end,$increment,$maxchar,$numrows,$cellwidth) {
 			global $pdf, $data_array,$posy,$posx,$marr_date_array, $marr_place_array, $sexe, $db, $gedcomnumber;
+			global $dbh, $pers_prep_var, $pers_prep;
 			$pdf->SetLeftMargin(16);
 			$marg = 16;
 			for($m=$begin;$m<=$end;$m+=$increment) {
@@ -1124,18 +1169,24 @@ echo '<div>';
 					$space='';
 					if($marr_date_array[$m]!='') { $space=' '; }
 					if($gedcomnumber[$m]!='') {
-						$pers_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($gedcomnumber[$m])."'";
-						$person_result = mysql_query($pers_qry,$db);
-						@$personDb = mysql_fetch_object($person_result);
+						//$pers_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($gedcomnumber[$m])."'";
+						//$person_result = mysql_query($pers_qry,$db);
+						//@$personDb = mysql_fetch_object($person_result);
+						$pers_prep_var = $gedcomnumber[$m];
+						$pers_prep->execute();
+						@$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 						$person_cls = New person_cls;
 						$person_cls->construct($personDb);
 						$pers_privacy=$person_cls->privacy;
 					}
 					else { $pers_privacy = false; }
 					if($gedcomnumber[$m+1]!='') {
-						$woman_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($gedcomnumber[$m+1])."'";
-						$woman_result = mysql_query($woman_qry,$db);
-						@$womanDb = mysql_fetch_object($woman_result);
+						//$woman_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($gedcomnumber[$m+1])."'";
+						//$woman_result = mysql_query($woman_qry,$db);
+						//@$womanDb = mysql_fetch_object($woman_result);
+						$pers_prep_var = $gedcomnumber[$m+1];
+						$pers_prep->execute();
+						@$womanDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 						$woman_cls = New person_cls;
 						$woman_cls->construct($womanDb);
 						$woman_privacy=$person_cls->privacy;
@@ -1176,8 +1227,11 @@ echo '<div>';
 
 		//initialize pdf generation
 		$pdf=new PDF();
-		$pers=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$family_id'",$db);
-		@$persDb=mysql_fetch_object($pers);
+		//$pers=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$family_id'",$db);
+		//@$persDb=mysql_fetch_object($pers);
+		$pers_prep_var = $family_id;
+		$pers_prep->execute();
+		@$persDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 		// *** Use person class ***
 		$pers_cls = New person_cls;
 		$pers_cls->construct($persDb);
@@ -1249,6 +1303,9 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 	$pdf->SetFont('Arial','',10);
 	// the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
 	$count=0;
+	//prepared statemetn before loop
+	$anc_source_prep=$dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources WHERE source_gedcomnr=?");
+	$anc_source_prep->bindParam(1,$anc_source_prep_var);
 	foreach($pdf_source as $key => $value) {
 		$count++;
 		if(isset($pdf_source[$key])) {
@@ -1259,9 +1316,16 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 				source_display($pdf_source[$key]);  // function source_display from source.php, called with source nr.
 			}
 			elseif ($user['group_sources']=='t') {
-				@$source=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
-					WHERE source_gedcomnr='".$pdf_source[$key]."'",$db);
-				@$sourceDb=mysql_fetch_object($source) or die("No valid sourcenumber.");
+				//@$source=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
+				//	WHERE source_gedcomnr='".$pdf_source[$key]."'",$db);
+				//@$sourceDb=mysql_fetch_object($source) or die("No valid sourcenumber.");
+				$anc_source_prep_var = $pdf_source[$key];
+				$anc_source_prep->execute();
+				try {
+					@$sourceDb= $anc_source_prep->fetch(PDO::FETCH_OBJ);
+				} catch(PDOException $e) {
+					echo "No valid sourcenumber.";
+				}
 				if ($sourceDb->source_title){
 					$pdf->SetFont('Arial','B',10);
 					$pdf->Write(6,__('Title:')." ");

@@ -6,7 +6,7 @@
 // Date  : 29-04-2006
 // Website: http://www.ywema.com
 
-// 18-06-2011 Huub: translated all remarks and variables into english. And do some minor updates.
+// 18-06-2011 Huub: translated all remarks and variables into English. And did some minor updates.
 
 include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."menu.php");
@@ -72,6 +72,7 @@ echo '<td align="center"><b>'.ucfirst(__('died'))."</b></td>\n";
 echo "</tr>\n";
 
 // *** Build query ***
+/*
 $query = @mysql_query ("SELECT *,
 	abs(substring( pers_birth_date,1,2 )) as birth_day,
 	substring( pers_birth_date,-4 ) as birth_year
@@ -80,8 +81,17 @@ $query = @mysql_query ("SELECT *,
 	OR  substring( pers_birth_date,  3,3) = '$month'
 	order by birth_day ")
 	or die("database-error (1): ".mysql_error());
+*/
+//while(@$record = mysql_fetch_object($query)){
+$query = $dbh->query("SELECT *,
+	abs(substring( pers_birth_date,1,2 )) as birth_day,
+	substring( pers_birth_date,-4 ) as birth_year
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE substring( pers_birth_date,  4,3) = '$month'
+	OR  substring( pers_birth_date,  3,3) = '$month'
+	order by birth_day ");
 
-while(@$record = mysql_fetch_object($query)){
+while(@$record = $query->fetch(PDO::FETCH_OBJ)) {
 	$calendar_day = $record->birth_day;
 	$birth_day =$record->birth_day.' '.$month;
 

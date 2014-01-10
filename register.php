@@ -16,8 +16,10 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 
 	$usersql='SELECT * FROM humo_users WHERE user_name="'.safe_text($_POST["register_name"]).'"';
 	//echo $usersql;
-	$user=mysql_query($usersql,$db);
-	$userDb=mysql_fetch_object($user);
+	//$user=mysql_query($usersql,$db);
+	//$userDb=mysql_fetch_object($user);
+	$user = $dbh->query($usersql);
+	$userDb=$user->fetch(PDO::FETCH_OBJ);
 	if (isset($userDb->user_id)){
 		$error=__('ERROR: username allready exists');
 	}
@@ -36,7 +38,8 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 		user_password='".MD5($_POST["register_password"])."',
 		user_group_id='".$humo_option["visitor_registration_group"]."';";
 		//echo $sql;
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result = $dbh->query($sql);
 		echo '<h2>'.__('Registration completed').'</h2>';
 		echo __('At this moment you are registered in the user-group "guest". The administrator will check your registration, and select a user-group for you.');
 	}

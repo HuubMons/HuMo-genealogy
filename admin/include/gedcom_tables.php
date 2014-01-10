@@ -7,11 +7,15 @@ if (!defined('ADMIN_PAGE')){ exit; }
 print '<p><b>'.__('creating tables:').'</b><br>';
 
 // *** Completely remove old table ***
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."persoon");
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."person");
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."persoon");
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."persoon");
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."person");
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."person");
+
 // *** Generate new table ***
 print $_SESSION['tree_prefix'].__('creating persons...').'<br>';
-$tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."person (
+//$tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."person (
+$tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."person (
 	pers_id mediumint(6) unsigned NOT NULL auto_increment,
 	pers_gedcomnumber varchar(20) CHARACTER SET utf8,
 	pers_tree_prefix varchar(10) CHARACTER SET utf8,
@@ -65,14 +69,17 @@ $tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."person (
 	KEY (pers_lastname),
 	KEY (pers_gedcomnumber),
 	KEY (pers_prefix)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8") or die(mysql_error());
-
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+//$tbldb = mysql_query($tbldbqry) or die(mysql_error());
+$tbldb = $dbh->query($tbldbqry);
 // *** Completely remove old table ***
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."gezin");
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."family");
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."gezin");
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."gezin");
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."family");
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."family");
 // *** Generate new table ***
 print $_SESSION['tree_prefix'].__('creating family...').'<br>';
-$tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."family (
+$tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."family (
 	fam_id mediumint(6) unsigned NOT NULL auto_increment,
 	fam_gedcomnumber varchar(20) CHARACTER SET utf8,
 	fam_man varchar(20) CHARACTER SET utf8,
@@ -121,13 +128,16 @@ $tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."family (
 	KEY (fam_gedcomnumber),
 	KEY (fam_man),
 	KEY (fam_woman)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8") or die(mysql_error());
-
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."teksten"); // Remove old table.
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."texts"); // Remove table.
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+//$tbldb = mysql_query($tbldbqry) or die(mysql_error());
+$tbldb = $dbh->query($tbldbqry);
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."teksten"); // Remove old table.
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."teksten"); // Remove old table.
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."texts"); // Remove table.
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."texts"); // Remove table.
 // *** Generate new table ***
 print $_SESSION['tree_prefix'].__('creating texts...').'<br>';
-$tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."texts (
+$tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."texts (
 	text_id mediumint(6) unsigned NOT NULL auto_increment,
 	text_gedcomnr varchar(20) CHARACTER SET utf8,
 	text_text text CHARACTER SET utf8,
@@ -138,13 +148,16 @@ $tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."texts (
 	text_changed_date varchar(35) CHARACTER SET utf8,
 	text_changed_time varchar(25) CHARACTER SET utf8,
 	KEY (text_id)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8") or die(mysql_error());
-
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."bronnen"); // Remove old table.
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."sources"); // Remove table.
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+//$tbldb = mysql_query($tbldbqry) or die(mysql_error());
+$tbldb = $dbh->query($tbldbqry);
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."bronnen"); // Remove old table.
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."bronnen"); // Remove old table.
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."sources"); // Remove table.
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."sources"); // Remove table.
 // *** Generate new table ***
 print $_SESSION['tree_prefix'].__('creating sources...').'<br>';
-$tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."sources (
+$tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."sources (
 	source_id mediumint(6) unsigned NOT NULL auto_increment,
 	source_status varchar(10) CHARACTER SET utf8,
 	source_gedcomnr varchar(20) CHARACTER SET utf8,
@@ -172,14 +185,18 @@ $tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."sources (
 	source_changed_date varchar(35) CHARACTER SET utf8,
 	source_changed_time varchar(25) CHARACTER SET utf8,
 	KEY (`source_id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8") or die(mysql_error());
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 	//PRIMARY KEY (`id`))") or die(mysql_error());
+//$tbldb = mysql_query($tbldbqry);
+$tbldb = $dbh->query($tbldbqry);
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."adressen"); // Remove old table.
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."adressen"); // Remove old table.
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."addresses"); // Remove table.
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."addresses"); // Remove table.
 
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."adressen"); // Remove old table.
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."addresses"); // Remove table.
 // *** Generate new table ***
 print $_SESSION['tree_prefix'].__('creating addresses...').'<br>';
-$tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."addresses (
+$tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."addresses (
 	address_id mediumint(6) unsigned NOT NULL auto_increment,
 	address_gedcomnr varchar(20) CHARACTER SET utf8,
 	address_order mediumint(6),
@@ -200,13 +217,16 @@ $tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."addresses (
 	address_changed_date varchar(35) CHARACTER SET utf8,
 	address_changed_time varchar(25) CHARACTER SET utf8,
 	PRIMARY KEY (`address_id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8") or die(mysql_error());
-
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."vermeldingen"); // Remove old table.
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."events"); // Remove table.
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+//$tbldb = mysql_query($tbldbqry); or die(mysql_error());
+$tbldb = $dbh->query($tbldbqry) or die(mysql_error());
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."vermeldingen"); // Remove old table.
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."vermeldingen"); // Remove old table.
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."events"); // Remove table.
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."events"); // Remove table.
 // *** Generate new table ***
 print $_SESSION['tree_prefix'].__('creating notes...').'<br>';
-$tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."events (
+$tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."events (
 	event_id mediumint(6) unsigned NOT NULL auto_increment,
 	event_gedcomnr varchar(20) CHARACTER SET utf8,
 	event_order mediumint(6),
@@ -230,13 +250,15 @@ $tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."events (
 	KEY (event_person_id),
 	KEY (event_family_id),
 	KEY (event_kind)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8") or die(mysql_error());
-
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+//$tbldb = mysql_query($tbldbqry) or die(mysql_error());
+$tbldb = $dbh->query($tbldbqry);
 // *** Sources connections table ***
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."connections"); // Remove table.
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."connections"); // Remove table.
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."connections"); // Remove table.
 // *** Generate new table ***
 print $_SESSION['tree_prefix'].__('creating connections...').'<br>';
-$tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."connections (
+$tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."connections (
 	connect_id mediumint(6) unsigned NOT NULL auto_increment,
 	connect_order mediumint(6),
 	connect_kind varchar(25) CHARACTER SET utf8,
@@ -259,13 +281,15 @@ $tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."connections (
 	connect_changed_time varchar(25) CHARACTER SET utf8,
 	PRIMARY KEY (`connect_id`),
 	KEY (connect_connect_id)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8") or die(mysql_error());
-
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+//$tbldb = mysql_query($tbldbqry) or die(mysql_error());
+$tbldb = $dbh->query($tbldbqry);
 // *** Repositories table ***
-$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."repositories"); // Remove table.
+//$tbldb = mysql_query("DROP TABLE ".$_SESSION['tree_prefix']."repositories"); // Remove table.
+$tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."repositories"); // Remove table.
 // *** Generate new table ***
 print $_SESSION['tree_prefix'].__('creating repositories...').'<br>';
-$tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."repositories (
+$tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."repositories (
 	repo_id mediumint(6) unsigned NOT NULL auto_increment,
 	repo_gedcomnr varchar(20) CHARACTER SET utf8,
 	repo_name text CHARACTER SET utf8,
@@ -286,7 +310,8 @@ $tbldb = mysql_query("CREATE TABLE ".$_SESSION['tree_prefix']."repositories (
 	repo_changed_date varchar(35) CHARACTER SET utf8,
 	repo_changed_time varchar(25) CHARACTER SET utf8,
 	PRIMARY KEY (`repo_id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8") or die(mysql_error());
-
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+//$tbldb = mysql_query($tbldbqry) or die(mysql_error());
+$tbldb = $dbh->query($tbldbqry);
 print '<b>'.__('No error messages above? In that case the tables have been created!').'</b><br>';
 ?>

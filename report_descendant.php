@@ -1,10 +1,10 @@
  <?php
-// ----------------------------------------------------------------------------------------------
-// |   REPORT_DESCENDANT.PHP                                                  |
+// -------------------------------------------------------------------------
+// |   REPORT_DESCENDANT.PHP                                               |
 // |   for use with the $genarray generated in Humogen                     |
 // |   Original starfield plotting code by Yossi Beck - Feb-March 2010     |
 // |   Copyright GPL_GNU licence                                           |
-// ------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------
 // meaning of $genarray members:
 // "par" = array nr of parent
 // "nrc" = nr of children (children with multiple marriages are counted as additional children for plotting's sake
@@ -356,7 +356,7 @@ function move($i) {
 //********** 3rd Part:  CODE TO PRINT THE STARFIELD CHART         *****
 //****************************************************************************
 function printchart() {
-	global $genarray, $size, $db, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
+	global $genarray, $size, $db, $dbh, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
 	global $vbasesize, $hsize, $vsize, $vdist, $hdist, $user, $direction;
 	global $dirmark1, $dirmark2, $rtlmarker, $alignmarker;
 
@@ -534,7 +534,13 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		echo '</div>';
 		
 	} // end if not hourglass
-
+	
+	// some PDO prepared statements before the loop
+	$man_prep = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber =?");
+	$man_prep->bindParam(1,$man_prep_var);
+	$fam_prep = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE `fam_gedcomnumber`=?");
+	$fam_prep->bindParam(1,$fam_prep_var);
+	
 	for($w=0; $w < count($genarray); $w++) {
 
 		$xvalue=$genarray[$w]["x"];
@@ -559,10 +565,12 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		// *** Start person class and calculate privacy ***
 		if ($genarray[$w]["gednr"]){
-			$man_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($genarray[$w]["gednr"])."'";
-			$man_result = mysql_query($man_qry,$db);
-			@$man = mysql_fetch_object($man_result);
-
+			//$man_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($genarray[$w]["gednr"])."'";
+			//$man_result = mysql_query($man_qry,$db);
+			//@$man = mysql_fetch_object($man_result);
+			$man_prep_var = $genarray[$w]["gednr"];
+			$man_prep->execute();
+			@$man = $man_prep->fetch(PDO::FETCH_OBJ);
 			$man_cls= New person_cls;
 			$man_cls->construct($man);
 			$man_privacy=$man_cls->privacy;
@@ -616,8 +624,11 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						}
 
 						if($genarray[$w]["non"]==0) { // otherwise for an unmarried child it would give the parents' marriage!
-							$ownfam = mysql_fetch_object(mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
-							WHERE `fam_gedcomnumber`='".safe_text($genarray[$w]["fams"])."'"))   ;
+							//$ownfam = mysql_fetch_object(mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
+							//WHERE `fam_gedcomnumber`='".safe_text($genarray[$w]["fams"])."'"));
+							$fam_prep_var = $genarray[$w]["fams"];
+							$fam_prep->execute();
+							$ownfam = $fam_prep->fetch(PDO::FETCH_OBJ);
 							if ($ownfam->fam_marr_date OR $ownfam->fam_marr_place){
 								$replacement_text.= '<br>'.__('X').$dirmark1.' '.
 								date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
@@ -660,10 +671,13 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			// *** Start person class and calculate privacy ***
 			$woman_cls=''; // prevent use of $woman_cls from previous wife if another wife is NN
 			if (isset($genarray[$w]["spgednr"]) AND $genarray[$w]["spgednr"]){
-				$woman_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-					WHERE pers_gedcomnumber = '".safe_text($genarray[$w]["spgednr"])."'";
-				$woman_result = mysql_query($woman_qry,$db);
-				@$woman = mysql_fetch_object($woman_result);
+				//$woman_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+				//	WHERE pers_gedcomnumber = '".safe_text($genarray[$w]["spgednr"])."'";
+				//$woman_result = mysql_query($woman_qry,$db);
+				//@$woman = mysql_fetch_object($woman_result);
+				$man_prep_var = $genarray[$w]["spgednr"];
+				$man_prep->execute();
+				@$woman = $man_prep->fetch(PDO::FETCH_OBJ);
 
 				$woman_cls= New person_cls;
 				$woman_cls->construct($woman);

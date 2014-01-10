@@ -2,14 +2,20 @@
 include_once("header.php");
 
 // get some general settings to use later on (email, owner, etc) 
-$details = mysql_query("SELECT tree_email, tree_owner FROM humo_trees WHERE tree_prefix = '".$_SESSION['tree_prefix']."'",$db);
-$details_arr=mysql_fetch_array($details);
+//$details = mysql_query("SELECT tree_email, tree_owner FROM humo_trees WHERE tree_prefix = '".$_SESSION['tree_prefix']."'",$db);
+//$details_arr=mysql_fetch_array($details);
+$details = $dbh->query("SELECT tree_email, tree_owner FROM humo_trees WHERE tree_prefix = '".$_SESSION['tree_prefix']."'");
+$details_arr=$details->fetch();
 
-$homepage= mysql_query("SELECT setting_value FROM humo_settings WHERE setting_variable='homepage'",$db) or die("OOPS");
-$homepage_arr=mysql_fetch_array($homepage);
+//$homepage= mysql_query("SELECT setting_value FROM humo_settings WHERE setting_variable='homepage'",$db) or die("OOPS");
+//$homepage_arr=mysql_fetch_array($homepage);
+$homepage= $dbh->query("SELECT setting_value FROM humo_settings WHERE setting_variable='homepage'");
+$homepage_arr=$homepage->fetch();
 
-$homepage_name= mysql_query("SELECT setting_value FROM humo_settings WHERE setting_variable='homepage_description'",$db);
-$homepage_name_arr=mysql_fetch_array($homepage_name);
+//$homepage_name= mysql_query("SELECT setting_value FROM humo_settings WHERE setting_variable='homepage_description'",$db);
+//$homepage_name_arr=mysql_fetch_array($homepage_name);
+$homepage_name= $dbh->query("SELECT setting_value FROM humo_settings WHERE setting_variable='homepage_description'");
+$homepage_name_arr=$homepage_name->fetch();
 ?>
 
 <!DOCTYPE html>
@@ -44,14 +50,17 @@ $homepage_name_arr=mysql_fetch_array($homepage_name);
 <?php
 	if (!$bot_visit){
 		$sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		$tree_prefix_result2 = mysql_query($sql,$db);
-		$num_rows = mysql_num_rows($tree_prefix_result2);
+		//$tree_prefix_result2 = mysql_query($sql,$db);
+		//$num_rows = mysql_num_rows($tree_prefix_result2);
+		$tree_prefix_result2 = $dbh->query($sql);
+		$num_rows = $tree_prefix_result2->rowCount();
 		if ($num_rows>1){
 
 			echo ' <form method="POST" action="index.php" style="display : inline;" id="top_tree_select">';	
 			echo '<select size=1 name="database" onChange="this.form.submit();" >';
 			$count=0;
-			while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result2)){
+			//while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result2)){
+			while ($tree_prefixDb=$tree_prefix_result2->fetch(PDO::FETCH_OBJ)){
 				// *** Check if family tree is shown or hidden for user group ***
 				$hide_tree_array2=explode(";",$user['group_hide_trees']);
 				$hide_tree2=false;

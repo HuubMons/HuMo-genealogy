@@ -15,8 +15,10 @@ include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
 
 // *** Get general data from family tree ***
 $sql = "SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'";
-$datasql = mysql_query($sql,$db);
-@$dataDb = mysql_fetch_object($datasql);
+//$datasql = mysql_query($sql,$db);
+//@$dataDb = mysql_fetch_object($datasql);
+$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
+@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 
 $tree_date=$dataDb->tree_date;
 $month=''; // *** empty date ***
@@ -58,8 +60,10 @@ echo '<td><br></td></tr>';
 // *** Most children in family ***
 print "<tr><td>".__('Most children in family')."</td>\n";
 $test_number="2"; // *** minimum of 2 children ***
-$res=@mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family");
-while (@$record=mysql_fetch_object($res)){
+//$res=@mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family");
+$res=@$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family");
+//while (@$record=mysql_fetch_object($res)){
+while (@$record=$res->fetch(PDO::FETCH_OBJ)){
 	$count_children=substr_count($record->fam_children, ';');
 	$count_children=$count_children + 1;
 	if ($count_children > $test_number){
@@ -70,16 +74,20 @@ while (@$record=mysql_fetch_object($res)){
 	}
 }
 print "<td align='center'><i>$test_number</i></td>\n";
-$res=@mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$man_gedcomnumber."'");
-@$record=mysql_fetch_object($res);
+//$res=@mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$man_gedcomnumber."'");
+//@$record=mysql_fetch_object($res);
+$res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$man_gedcomnumber."'");
+@$record=$res->fetch(PDO::FETCH_OBJ);
 $person_cls = New person_cls;
 $person_cls->construct($record);
 $name=$person_cls->person_name($record);
 $man=$name["standard_name"];
 $index = "$record->pers_indexnr";
 
-$res=@mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$woman_gedcomnumber."'");
-@$record=mysql_fetch_object($res);
+//$res=@mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$woman_gedcomnumber."'");
+//@$record=mysql_fetch_object($res);
+$res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$woman_gedcomnumber."'");
+@$record=$res->fetch(PDO::FETCH_OBJ);
 $person_cls = New person_cls;
 $person_cls->construct($record);
 $name=$person_cls->person_name($record);
@@ -131,16 +139,20 @@ echo '<br><table width='.$table2_width.' class="humo" align="center">';
 echo '<tr style="font-weight:bold; text-align:center;"><td width="20%">'.__('Item').'</td><td colspan="2" width="40%">'.__('Male').'</td><td colspan="2" width="40%">'.__('Female').'</td></tr>';
 
 // *** Count man ***
-$person_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_sexe='m'",$db);
-$count_persons=mysql_num_rows($person_qry);
+//$person_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_sexe='m'",$db);
+//$count_persons=mysql_num_rows($person_qry);
+$person_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_sexe='m'");
+$count_persons=$person_qry->rowCount();
 print "<tr><td>".__('No. of persons')."</td>\n";
 print "<td align='center'><i>$count_persons</i></td>\n";
 @$percent=($count_persons/$nr_persons)*100;
 echo '<td align="center">'.floor($percent).'%</td>';
 
 // *** Count woman ***
-$person_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_sexe='f'",$db);
-$count_persons=mysql_num_rows($person_qry);
+//$person_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_sexe='f'",$db);
+//$count_persons=mysql_num_rows($person_qry);
+$person_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_sexe='f'");
+$count_persons=$person_qry->rowCount();
 print "<td align='center'><i>$count_persons</i></td>\n";
 @$percent=($count_persons/$nr_persons)*100;
 echo '<td align="center">'.floor($percent).'%</td>';
@@ -149,6 +161,7 @@ echo '<tr><td colspan="5"><br></td></tr>';
 
 // *** Oldest pers_birth_date man. Check only full birth date (10 or 11 characters) ***
 print "<tr><td>".__('Oldest birth date')."</td>\n";
+/*
 $res = mysql_query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
 	FROM ".safe_text($_SESSION['tree_prefix'])."person
 	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
@@ -156,11 +169,20 @@ $res = mysql_query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
 	ORDER BY search LIMIT 0,1
 	") or die (mysql_error());
 $row=mysql_fetch_object($res);
+*/
+$res = $dbh->query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
+	AND pers_sexe='M'
+	ORDER BY search LIMIT 0,1
+	");
+$row=$res->fetch(PDO::FETCH_OBJ);
 if ($row->pers_birth_date!=NULL){
 	print "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
 	echo show_person($row);
 }
 // Oldest pers_birth_date woman
+/*
 $res = mysql_query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
 	FROM ".safe_text($_SESSION['tree_prefix'])."person
 	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
@@ -168,6 +190,14 @@ $res = mysql_query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
 	ORDER BY search LIMIT 0,1
 	") or die (mysql_error());
 $row=mysql_fetch_object($res);
+*/
+$res = $dbh->query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
+	AND pers_sexe='F'
+	ORDER BY search LIMIT 0,1
+	");	
+$row=$res->fetch(PDO::FETCH_OBJ);
 if (@$row->pers_birth_date!=NULL){
 	print "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
 	echo show_person($row);
@@ -175,12 +205,20 @@ if (@$row->pers_birth_date!=NULL){
 
 // Youngest pers_birth_date man
 print "<tr><td>".__('Youngest birth date')."</td>\n";
+/*
 $res = mysql_query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
 	FROM ".safe_text($_SESSION['tree_prefix'])."person
 	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
 	AND pers_sexe='M'
 	ORDER BY search DESC LIMIT 0,1") or die (mysql_error());
 $row=mysql_fetch_object($res);
+*/
+$res = $dbh->query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
+	AND pers_sexe='M'
+	ORDER BY search DESC LIMIT 0,1");
+$row=$res->fetch(PDO::FETCH_OBJ);
 if ($row->pers_birth_date!=NULL){
 	$person_cls = New person_cls;
 	$person_cls->construct($row);
@@ -193,12 +231,20 @@ if ($row->pers_birth_date!=NULL){
 	}
 }
 // Youngest pers_birth_date woman
+/*
 $res = mysql_query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
 	FROM ".safe_text($_SESSION['tree_prefix'])."person
 	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
 	AND pers_sexe='F'
 	ORDER BY search DESC LIMIT 0,1") or die (mysql_error());
 $row=mysql_fetch_object($res);
+*/
+$res = $dbh->query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
+	AND pers_sexe='F'
+	ORDER BY search DESC LIMIT 0,1");
+$row=$res->fetch(PDO::FETCH_OBJ);
 if ($row->pers_birth_date!=NULL){
 	$person_cls = New person_cls;
 	$person_cls->construct($row);
@@ -213,23 +259,40 @@ if ($row->pers_birth_date!=NULL){
 
 // Oldest death date man
 print "<tr><td>".__('Oldest death date')."</td>\n";
+/*
 $res = mysql_query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
 	FROM ".safe_text($_SESSION['tree_prefix'])."person
 	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
 	AND pers_sexe='M'
 	ORDER BY search LIMIT 0,1") or die (mysql_error());
 $row=mysql_fetch_object($res);
+*/
+$res = $dbh->query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
+	AND pers_sexe='M'
+	ORDER BY search LIMIT 0,1");
+$row=$res->fetch(PDO::FETCH_OBJ);
 if (@$row->pers_death_date!=NULL){
 	print "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
 	echo show_person($row);
 }
+
 // Oldest death date woman
+/*
 $res = mysql_query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
 	FROM ".safe_text($_SESSION['tree_prefix'])."person
 	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
 	AND pers_sexe='F'
 	ORDER BY search LIMIT 0,1") or die (mysql_error());
 $row=mysql_fetch_object($res);
+*/
+$res = $dbh->query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
+	AND pers_sexe='F'
+	ORDER BY search LIMIT 0,1");
+$row=$res->fetch(PDO::FETCH_OBJ);
 if (@$row->pers_death_date!=NULL){
 	print "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
 	echo show_person($row);
@@ -237,24 +300,41 @@ if (@$row->pers_death_date!=NULL){
 
 // Youngest death date man
 print "<tr><td>".__('Youngest death date')."</td>\n";
+/*
 $res = mysql_query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
 	FROM ".safe_text($_SESSION['tree_prefix'])."person
 	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
 	AND pers_sexe='M'
 	ORDER BY search DESC LIMIT 0,1") or die (mysql_error());
 $row=mysql_fetch_object($res);
+*/
+$res = $dbh->query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
+	AND pers_sexe='M'
+	ORDER BY search DESC LIMIT 0,1");
+$row=$res->fetch(PDO::FETCH_OBJ);
 if ($row->pers_death_date!=NULL){
 	print "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
 	$pers_prefix=str_replace("_", " ", $row->pers_prefix);
 	echo show_person($row);
 }
+
 // Youngest death date woman
+/*
 $res = mysql_query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
 	FROM ".safe_text($_SESSION['tree_prefix'])."person
 	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
 	AND pers_sexe='F'
 	ORDER BY search DESC LIMIT 0,1") or die (mysql_error());
 $row=mysql_fetch_object($res);
+*/
+$res = $dbh->query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
+	AND pers_sexe='F'
+	ORDER BY search DESC LIMIT 0,1");
+$row=$res->fetch(PDO::FETCH_OBJ);
 if ($row->pers_death_date!=NULL){
 	print "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
 	$pers_prefix=str_replace("_", " ", $row->pers_prefix);
@@ -270,14 +350,19 @@ $man_min_married=50;
 $man_max_married=0;
 
 print "<tr><td>".__('Longest living person')."</td>\n";
-
+/*
 $res = @mysql_query("SELECT *
 	FROM ".safe_text($_SESSION['tree_prefix'])."person
 	WHERE pers_sexe='M' AND pers_death_date LIKE '_%'
 	") or die(mysql_error());
-
+*/
+$res = @$dbh->query("SELECT *
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE pers_sexe='M' AND pers_death_date LIKE '_%'
+	");
 $test_year="10";
-while(@$record = mysql_fetch_object($res)){
+//while(@$record = mysql_fetch_object($res)){
+while(@$record = $res->fetch(PDO::FETCH_OBJ)){
 	$age = New calculate_year_cls;
 	$age_cal=$age->calculate_age($record->pers_bapt_date,$record->pers_birth_date,$record->pers_death_date,true);
 	$age_man[]=$age_cal;
@@ -309,13 +394,19 @@ $woman_min=50;
 $woman_max=0;
 $woman_min_married=50;
 $woman_max_married=0;
-
+/*
 $res = @mysql_query("SELECT *
 	FROM ".safe_text($_SESSION['tree_prefix'])."person
 	WHERE pers_sexe='F' AND pers_death_date LIKE '_%'
 	") or die(mysql_error());
+*/
+$res = @$dbh->query("SELECT *
+	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	WHERE pers_sexe='F' AND pers_death_date LIKE '_%'
+	");
 $test_year="10";
-while(@$record = mysql_fetch_object($res)){
+//while(@$record = mysql_fetch_object($res)){
+while(@$record = $res->fetch(PDO::FETCH_OBJ)){
 	$age = New calculate_year_cls;
 	$age_cal=$age->calculate_age($record->pers_bapt_date,$record->pers_birth_date,$record->pers_death_date,true);
 	$age_woman[]=$age_cal;

@@ -9,8 +9,10 @@ if (isset($_POST['marriage_event_add'])){
 	$event_sql="SELECT * FROM ".$tree_prefix."events
 		WHERE event_family_id='".$marriage."' AND event_kind='".$_POST["event_kind"]."'
 		ORDER BY event_order DESC LIMIT 0,1";
-	$event_qry=mysql_query($event_sql,$db);
-	$eventDb=mysql_fetch_object($event_qry);
+	//$event_qry=mysql_query($event_sql,$db);
+	//$eventDb=mysql_fetch_object($event_qry);
+	$event_qry=$dbh->query($event_sql);
+	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
 	$event_order=0;
 	if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
 	$event_order++;
@@ -21,7 +23,8 @@ if (isset($_POST['marriage_event_add'])){
 		event_order='".$event_order."',
 		event_new_date='".$gedcom_date."',
 		event_new_time='".$gedcom_time."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_POST['marriage_event_change'])){
@@ -38,7 +41,8 @@ if (isset($_POST['marriage_event_change'])){
 		event_changed_time='".$gedcom_time."'";
 		if (isset($_POST["event_text"][$key])){ $sql.=", event_text='".$editor_cls->text_process($_POST["event_text"][$key])."'"; }
 		$sql.=" WHERE event_id='".safe_text($_POST["marriage_event_id"][$key])."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 	family_tree_update($tree_prefix);
 }
@@ -65,19 +69,23 @@ if (isset($_POST['family_event_drop2'])){
 	$sql="DELETE FROM ".$tree_prefix."events
 		WHERE event_family_id='".$marriage."' AND event_kind='".$event_kind."'
 		AND event_order='".$event_order_id."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$event_sql="SELECT * FROM ".$tree_prefix."events
 		WHERE event_family_id='".$marriage."' AND event_kind='".$event_kind."'
 		AND event_order>'".$event_order_id."' ORDER BY event_order";
-	$event_qry=mysql_query($event_sql,$db);
-	while($eventDb=mysql_fetch_object($event_qry)){
+	//$event_qry=mysql_query($event_sql,$db);
+	$event_qry=$dbh->query($event_sql);
+	//while($eventDb=mysql_fetch_object($event_qry)){
+	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 		$sql="UPDATE ".$tree_prefix."events SET
 		event_order='".($eventDb->event_order-1)."',
 		event_changed_date='".$gedcom_date."',
 		event_changed_time='".$gedcom_time."'
 		WHERE event_id='".$eventDb->event_id."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 }
 
@@ -89,19 +97,22 @@ if (isset($_GET['family_event_down'])){
 	WHERE event_family_id='".$marriage."'
 	AND event_kind='".$event_kind."'
 	AND event_order='".$event_order."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."events SET event_order='".$event_order."'
 	WHERE event_family_id='".$marriage."'
 	AND event_kind='".$event_kind."'
 	AND event_order='".($event_order+1)."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."events SET event_order='".($event_order+1)."'
 	WHERE event_family_id='".$marriage."'
 	AND event_kind='".$event_kind."'
 	AND event_order=99";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['family_event_up'])){
@@ -113,21 +124,24 @@ if (isset($_GET['family_event_up'])){
 	WHERE event_family_id='".$marriage."'
 	AND event_kind='".$event_kind."'
 	AND event_order='".$event_order."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."events SET
 	event_order='".$event_order."'
 	WHERE event_family_id='".$marriage."'
 	AND event_kind='".$event_kind."'
 	AND event_order='".($event_order-1)."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."events SET
 	event_order='".($event_order-1)."'
 	WHERE event_family_id='".$marriage."'
 	AND event_kind='".$event_kind."'
 	AND event_order=99";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 //echo '<tr><th class="table_header_large" colspan="4">';
@@ -142,19 +156,23 @@ if (isset($_GET['family_event_up'])){
 
 //echo '</th></tr>';
 
-$data_list_qry=mysql_query("SELECT * FROM ".$tree_prefix."events
-	WHERE event_family_id='$marriage' ORDER BY event_kind, event_order",$db);
+//$data_list_qry=mysql_query("SELECT * FROM ".$tree_prefix."events
+//	WHERE event_family_id='$marriage' ORDER BY event_kind, event_order",$db);
+$data_list_qry=$dbh->query("SELECT * FROM ".$tree_prefix."events
+	WHERE event_family_id='$marriage' ORDER BY event_kind, event_order");	
 
 echo '<tr class="table_header_large"><th><a name="event_family_link">'.__('Option').'</th><th colspan="2">'.__('Value').'</th>';
 	echo '<td>';
-	if (mysql_num_rows($data_list_qry)>0){
+	//if (mysql_num_rows($data_list_qry)>0){
+	if ($data_list_qry->rowCount() >0){
 		echo '<input type="submit" name="marriage_event_change" title="submit" value="'.__('Save').'">';
 	}
 	echo '</td>';
 echo '</tr>';
 
 $change_bg_colour='';
-while($data_listDb=mysql_fetch_object($data_list_qry)){
+//while($data_listDb=mysql_fetch_object($data_list_qry)){
+while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 	echo '<input type="hidden" name="marriage_event_id['.$data_listDb->event_id.']" value="'.$data_listDb->event_id.'">';
 
 	echo '<tr'.$change_bg_colour.'><td>';
@@ -165,9 +183,12 @@ while($data_listDb=mysql_fetch_object($data_list_qry)){
 			$data_listDb->event_order.'&amp;marriage_nr='.$marriage.'#event_family_link"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" border="0" alt="down"></a>';
 
 		// *** Count number of events ***
-		$count_event=mysql_query("SELECT * FROM ".$tree_prefix."events
-			WHERE event_family_id='$marriage' AND event_kind='".$data_listDb->event_kind."'",$db);
-		$count=mysql_num_rows($count_event);
+		//$count_event=mysql_query("SELECT * FROM ".$tree_prefix."events
+		//	WHERE event_family_id='$marriage' AND event_kind='".$data_listDb->event_kind."'",$db);
+		//$count=mysql_num_rows($count_event);
+		$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
+			WHERE event_family_id='$marriage' AND event_kind='".$data_listDb->event_kind."'");
+		$count=$count_event->rowCount();		
 
 		if ($data_listDb->event_order<$count){
 			echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;event_family=1&amp;family_event_down='.$data_listDb->event_order.'&amp;event_kind='.$data_listDb->event_kind.'&amp;marriage_nr='.$marriage.'#event_family_link"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>';
@@ -241,10 +262,12 @@ while($data_listDb=mysql_fetch_object($data_list_qry)){
 			FROM ".$tree_prefix."connections
 			WHERE connect_kind='family' AND connect_sub_kind='event_source'
 			AND connect_connect_id='".$data_listDb->event_id."'";
-		$connect_sql=mysql_query($connect_qry,$db);
+		//$connect_sql=mysql_query($connect_qry,$db);
+		$connect_sql=$dbh->query($connect_qry);
 		//echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_kind=family&connect_sub_kind=fam_event_source&connect_connect_id=".$data_listDb->event_id."', '','width=800,height=500')\">".__('source');
 		echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&event_family=1&connect_kind=family&connect_sub_kind=fam_event_source&connect_connect_id=".$data_listDb->event_id."', '','width=800,height=500')\">".__('source');
-		echo ' ['.mysql_num_rows($connect_sql).']</a>';
+		//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+		echo ' ['.$connect_sql->rowCount().']</a>';
 	echo '</td>';
 
 	echo '</tr>';

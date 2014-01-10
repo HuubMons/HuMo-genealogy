@@ -16,10 +16,13 @@ include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
 include_once(CMS_ROOTPATH."include/person_cls.php");
 
 // *** Database ***
-$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
-$num_rows = mysql_num_rows($datasql);
-while (@$dataDb=mysql_fetch_object($datasql)){
+//$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
+//$num_rows = mysql_num_rows($datasql);
+$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
+$num_rows = $datasql->rowCount();
 
+//while (@$dataDb=mysql_fetch_object($datasql)){
+while(@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 	// *** Check is family tree is shown or hidden for user group ***
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
 	$hide_tree=false;
@@ -28,13 +31,13 @@ while (@$dataDb=mysql_fetch_object($datasql)){
 	}
 	if ($hide_tree==false){
 
-		$person_qry=mysql_query("SELECT * FROM ".safe_text($dataDb->tree_prefix)."person
-			ORDER BY pers_lastname",$db);
-	
+		//$person_qry=mysql_query("SELECT * FROM ".safe_text($dataDb->tree_prefix)."person ORDER BY pers_lastname",$db);
+		$person_qry = $dbh->query("SELECT * FROM ".safe_text($dataDb->tree_prefix)."person ORDER BY pers_lastname");
 		//GENDEX:
 		//person-URL|FAMILYNAME|Firstname /FAMILYNAME/|
 		//Birthdate|Birthplace|Deathdate|Deathplace|
-		while (@$personDb=mysql_fetch_object($person_qry)){
+		//while (@$personDb=mysql_fetch_object($person_qry)){
+		while (@$personDb=$person_qry->fetch(PDO::FETCH_OBJ)) {
 			// *** Use class for privacy filter ***
 			$person_cls = New person_cls;
 			$person_cls->construct($personDb);

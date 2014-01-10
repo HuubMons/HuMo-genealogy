@@ -2,7 +2,7 @@
 // *** Function to show media by person or by marriage ***
 // *** Updated feb 2013. ***
 function show_media($personDb,$marriageDb){
-	global $user, $dataDb, $db, $uri_path;
+	global $user, $dataDb, $db, $dbh, $uri_path;
 	//global $pdfstr;
 	$pdfstr = array(); // local version
 	$process_text='';
@@ -16,16 +16,27 @@ function show_media($personDb,$marriageDb){
 
 		// *** Standard connected media by person and family ***
 		if ($personDb!=''){
+			/*
 			$picture_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 				WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='picture'
 				ORDER BY event_order",$db);
+			*/
+			$picture_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+				WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='picture'
+				ORDER BY event_order");			
 		}
 		else{
+			/*
 			$picture_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 				WHERE event_family_id='".$marriageDb->fam_gedcomnumber."' AND event_kind='picture'
 				ORDER BY event_order",$db);
+			*/
+			$picture_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+				WHERE event_family_id='".$marriageDb->fam_gedcomnumber."' AND event_kind='picture'
+				ORDER BY event_order");			
 		}
-		while($pictureDb=mysql_fetch_object($picture_qry)){
+		//while($pictureDb=mysql_fetch_object($picture_qry)){
+		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
 			$media_nr++;
 			$media_event_id[$media_nr]=$pictureDb->event_id;
 			$media_event_event[$media_nr]=$pictureDb->event_event;
@@ -36,25 +47,47 @@ function show_media($personDb,$marriageDb){
 
 		// *** Search for all external connected objects by a person or a family ***
 		if ($personDb!=''){
+			/*
 			$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
 				WHERE connect_kind='person'
 				AND connect_sub_kind='pers_object'
 				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
 				ORDER BY connect_order";
+			*/
+			$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
+				WHERE connect_kind='person'
+				AND connect_sub_kind='pers_object'
+				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
+				ORDER BY connect_order";			
 		}
 		else{
+			/*
 			$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
 				WHERE connect_kind='family'
 				AND connect_sub_kind='fam_object'
 				AND connect_connect_id='".$marriageDb->fam_gedcomnumber."'
 				ORDER BY connect_order";
+			*/
+			$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
+				WHERE connect_kind='family'
+				AND connect_sub_kind='fam_object'
+				AND connect_connect_id='".$marriageDb->fam_gedcomnumber."'
+				ORDER BY connect_order";			
 		}
-		$connect_sql=mysql_query($connect_qry,$db);
-		while($connectDb=mysql_fetch_object($connect_sql)){
+		//$connect_sql=mysql_query($connect_qry,$db);
+		$connect_sql=$dbh->query($connect_qry);
+		//while($connectDb=mysql_fetch_object($connect_sql)){
+		while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+			/*
 			$picture_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 				WHERE event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
 				ORDER BY event_order",$db);
-			while($pictureDb=mysql_fetch_object($picture_qry)){
+			*/
+			$picture_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+				WHERE event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
+				ORDER BY event_order");
+			//while($pictureDb=mysql_fetch_object($picture_qry)){
+			while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
 				$media_nr++;
 				$media_event_id[$media_nr]=$pictureDb->event_id;
 				$media_event_event[$media_nr]=$pictureDb->event_event;

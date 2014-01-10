@@ -48,3 +48,5 @@ RewriteRule ^family/(.*) family.php
 # Backwards compatible lines
 RewriteRule ^gezin/(.*)/ family.php
 RewriteRule ^gezin/(.*) family.php
+
+#php_value max_input_vars 4000

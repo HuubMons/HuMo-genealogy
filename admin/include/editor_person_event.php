@@ -5,8 +5,10 @@ if (!defined('ADMIN_PAGE')){ exit; }
 $phpself.='#event_person_link';
 
 // *** Picture list for selecting pictures ***
-$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix."'",$db);
-$dataDb=mysql_fetch_object($datasql);
+//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix."'",$db);
+//$dataDb=mysql_fetch_object($datasql);
+$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix."'");
+$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 $tree_pict_path=$dataDb->tree_pict_path;
 $dir=$path_prefix.$tree_pict_path;
 if (file_exists($dir)){
@@ -26,8 +28,10 @@ if (isset($_POST['person_event_add'])){
 	$event_sql="SELECT * FROM ".$tree_prefix."events
 		WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='".$_POST["event_kind"]."'
 		ORDER BY event_order DESC LIMIT 0,1";
-	$event_qry=mysql_query($event_sql,$db);
-	$eventDb=mysql_fetch_object($event_qry);
+	//$event_qry=mysql_query($event_sql,$db);
+	//$eventDb=mysql_fetch_object($event_qry);
+	$event_qry=$dbh->query($event_sql);
+	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
 	$event_order=0;
 	if (isset($eventDb->event_order)){
 		$event_order=$eventDb->event_order;
@@ -40,7 +44,8 @@ if (isset($_POST['person_event_add'])){
 		event_order='".$event_order."',
 		event_new_date='".$gedcom_date."',
 		event_new_time='".$gedcom_time."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 
@@ -151,7 +156,8 @@ if (isset($_POST['person_event_change'])){
 		$sql.=" WHERE event_id='".safe_text($_POST["person_event_id"][$key])."'";
 
 	//echo $sql.'<br>';
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 
 		family_tree_update($tree_prefix);
 	}
@@ -177,18 +183,22 @@ if (isset($_POST['person_event_drop2'])){
 
 	$sql="DELETE FROM ".$tree_prefix."events
 		WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$event_sql="SELECT * FROM ".$tree_prefix."events
 		WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."' AND event_order>'".$event_order_id."' ORDER BY event_order";
-	$event_qry=mysql_query($event_sql,$db);
-	while($eventDb=mysql_fetch_object($event_qry)){
+	//$event_qry=mysql_query($event_sql,$db);
+	$event_qry=$dbh->query($event_sql);
+	//while($eventDb=mysql_fetch_object($event_qry)){
+	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 		$sql="UPDATE ".$tree_prefix."events SET
 		event_order='".($eventDb->event_order-1)."',
 		event_changed_date='".$gedcom_date."',
 		event_changed_time='".$gedcom_time."'
 		WHERE event_id='".$eventDb->event_id."'";
-		$result=mysql_query($sql) or die(mysql_error());
+		//$result=mysql_query($sql) or die(mysql_error());
+		$result=$dbh->query($sql);
 	}
 }
 
@@ -200,19 +210,22 @@ if (isset($_GET['person_event_down'])){
 	WHERE event_person_id='".$pers_gedcomnumber."'
 	AND event_kind='".$event_kind."'
 	AND event_order='".$event_order."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."events SET event_order='".$event_order."'
 	WHERE event_person_id='".$pers_gedcomnumber."'
 	AND event_kind='".$event_kind."'
 	AND event_order='".($event_order+1)."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."events SET event_order='".($event_order+1)."'
 	WHERE event_person_id='".$pers_gedcomnumber."'
 	AND event_kind='".$event_kind."'
 	AND event_order=99";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['person_event_up'])){
@@ -224,21 +237,24 @@ if (isset($_GET['person_event_up'])){
 	WHERE event_person_id='".$pers_gedcomnumber."'
 	AND event_kind='".$event_kind."'
 	AND event_order='".$event_order."'";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 
 	$sql="UPDATE ".$tree_prefix."events SET
 	event_order='".$event_order."'
 	WHERE event_person_id='".$pers_gedcomnumber."'
 	AND event_kind='".$event_kind."'
 	AND event_order='".($event_order-1)."'";
-	$result=mysql_query($sql) or die(mysql_error());
-
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
+	
 	$sql="UPDATE ".$tree_prefix."events SET
 	event_order='".($event_order-1)."'
 	WHERE event_person_id='".$pers_gedcomnumber."'
 	AND event_kind='".$event_kind."'
 	AND event_order=99";
-	$result=mysql_query($sql) or die(mysql_error());
+	//$result=mysql_query($sql) or die(mysql_error());
+	$result=$dbh->query($sql);
 }
 
 
@@ -289,19 +305,23 @@ echo '<form method="POST" action="'.$phpself.'" enctype="multipart/form-data">';
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<input type="hidden" name="event_person" value="event_person">';
 
-$data_list_qry=mysql_query("SELECT * FROM ".$tree_prefix."events
-	WHERE event_person_id='$pers_gedcomnumber' ORDER BY event_kind, event_order",$db);
+//$data_list_qry=mysql_query("SELECT * FROM ".$tree_prefix."events
+//	WHERE event_person_id='$pers_gedcomnumber' ORDER BY event_kind, event_order",$db);
+$data_list_qry=$dbh->query("SELECT * FROM ".$tree_prefix."events
+	WHERE event_person_id='$pers_gedcomnumber' ORDER BY event_kind, event_order");	
 
 //print '<tr class="table_header"><th>'.__('Event').'</th><th style="border-right:0px;">'.__('Option').'</th><th colspan="2" style="border-left:0px;">'.__('Value').'</th></tr>';
 print '<tr class="table_header_large"><th>'.__('Event').'</th><th style="border-right:0px;">'.__('Option').'</th><th style="border-left:0px;">'.__('Value').'</th>';
 	echo '<td>';
-	if (mysql_num_rows($data_list_qry)>0){
+	//if (mysql_num_rows($data_list_qry)>0){
+	if ($data_list_qry->rowCount() >0){
 		echo '<input type="submit" name="person_event_change" title="submit" value="'.__('Save').'">';
 	}
 	echo '</td>';
 echo '</tr>';
 
-while($data_listDb=mysql_fetch_object($data_list_qry)){
+//while($data_listDb=mysql_fetch_object($data_list_qry)){
+while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 	echo '<input type="hidden" name="person_event_id['.$data_listDb->event_id.']" value="'.$data_listDb->event_id.'">';
 
 	echo '<tr'.$change_bg_colour.'><td>';
@@ -312,9 +332,12 @@ while($data_listDb=mysql_fetch_object($data_list_qry)){
 			$data_listDb->event_order.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" border="0" alt="down"></a>';
 
 		// *** Count number of events ***
-		$count_event=mysql_query("SELECT * FROM ".$tree_prefix."events
-			WHERE event_person_id='$pers_gedcomnumber' AND event_kind='".$data_listDb->event_kind."'",$db);
-		$count=mysql_num_rows($count_event);
+		//$count_event=mysql_query("SELECT * FROM ".$tree_prefix."events
+		//	WHERE event_person_id='$pers_gedcomnumber' AND event_kind='".$data_listDb->event_kind."'",$db);
+		//$count=mysql_num_rows($count_event);
+		$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
+			WHERE event_person_id='$pers_gedcomnumber' AND event_kind='".$data_listDb->event_kind."'");
+		$count=$count_event->rowCount();		
 
 		if ($data_listDb->event_order<$count){
 			echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;event_person=1&amp;person_event_down='.$data_listDb->event_order.'&amp;event_kind='.$data_listDb->event_kind.'#event_person_link"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>';
@@ -422,8 +445,10 @@ while($data_listDb=mysql_fetch_object($data_list_qry)){
 		echo '<td style="border-left:0px;"><select size="1" name="text_event['.$data_listDb->event_id.']">';
 		echo '<option value="">'.__('* Select adoption parents *').'</option>';
 		// *** Search for adoption parents ***
-		$family_parents=mysql_query("SELECT * FROM ".$tree_prefix."family ORDER BY fam_gedcomnumber",$db);
-		while($family_parentsDb=mysql_fetch_object($family_parents)){
+		//$family_parents=mysql_query("SELECT * FROM ".$tree_prefix."family ORDER BY fam_gedcomnumber",$db);
+		//while($family_parentsDb=mysql_fetch_object($family_parents)){
+		$family_parents=$dbh->query("SELECT * FROM ".$tree_prefix."family ORDER BY fam_gedcomnumber");
+		while($family_parentsDb=$family_parents->fetch(PDO::FETCH_OBJ)){		
 			$parent_text='['.$family_parentsDb->fam_gedcomnumber.'] ';
 			//*** Father ***
 			if ($family_parentsDb->fam_man){
@@ -642,9 +667,11 @@ echo '</span>';
 			FROM ".$tree_prefix."connections
 			WHERE connect_kind='person' AND connect_sub_kind='event_source'
 			AND connect_connect_id='".$data_listDb->event_id."'";
-		$connect_sql=mysql_query($connect_qry,$db);
+		//$connect_sql=mysql_query($connect_qry,$db);
+		$connect_sql=$dbh->query($connect_qry);
 		echo "&nbsp;<a href=\"#event_person_link\" onClick=\"window.open('index.php?page=editor_sources&event_person=1&connect_kind=person&connect_sub_kind=person_event_source&connect_connect_id=".$data_listDb->event_id."', '','width=800,height=500')\">".__('source');
-		echo ' ['.mysql_num_rows($connect_sql).']</a>';
+		//echo ' ['.mysql_num_rows($connect_sql).']</a>';
+		echo ' ['.$connect_sql->rowCount().']</a>';
 	echo '</td>';
 
 	echo '</tr>';

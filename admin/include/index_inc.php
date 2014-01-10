@@ -14,13 +14,28 @@ else{
 	$path_tmp="index.php";
 }
 
-
 $result_message='';
 if (isset($_POST['save_settings_database'])){
 	$result_message='<b>'.__('Database connection status:').'</b><br>';
 
 	// *** Check MySQL connection ***
-	@$db_check=mysql_connect($_POST['db_host'],$_POST['db_username'],$_POST['db_password']);
+	//@$db_check=mysql_connect($_POST['db_host'],$_POST['db_username'],$_POST['db_password']);
+	$conn = 'mysql:host='.$_POST['db_host'];
+	try {
+		$db_check = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")); 
+		$result_message.=__('MySQL connection: OK!');
+		// *** If needed immediately install a new database ***
+		if (isset($_POST['install_database'])){
+			//$install_qry="CREATE DATABASE IF NOT EXISTS `".DATABASE_NAME."`";
+			$install_qry="CREATE DATABASE IF NOT EXISTS `".$_POST['db_name']."`";
+			$db_check->query($install_qry);
+			$database_check=$db_check->query("USE ".$_POST['db_name']); 
+		}		
+		
+	} catch (PDOException $e) { 
+		$result_message.='<b>*** '.__('There is no MySQL connection: please check host/ username and password.').' ***</b>';
+	}
+	/*
 	if ($db_check){
 		$result_message.=__('MySQL connection: OK!');
 
@@ -36,16 +51,25 @@ if (isset($_POST['save_settings_database'])){
 	else{
 		$result_message.='<b>*** '.__('There is no MySQL connection: please check host/ username and password.').' ***</b>';
 	}
+	*/
 	$result_message.='<br>';
 
 	// *** Check if database exists ***
 	//@$database_check=mysql_select_db($_POST['db_name'],$db);
+	/*
 	@$database_check=mysql_select_db($_POST['db_name'],$db_check);
 	if (!$database_check){
 		$result_message.='<b>*** '.__('No database found! Check MySQL connection and database name').' ***</b>';
 	}
 	else{
 		$result_message.=__('Database connection: OK!');
+	}
+	*/
+	try {
+		$database_check = $db_check->query("USE ".$_POST['db_name']); 
+		$result_message.=__('Database connection: OK!');
+	} catch (PDOException $e) {  
+		$result_message.='<b>*** '.__('No database found! Check MySQL connection and database name').' ***</b>';
 	}
 	
 	$result_message.='<p><br></p>';
@@ -117,12 +141,16 @@ echo '<table class="humo">';
 	}
 
 	// *** MySQL Version ***
-	$version = explode('.', mysql_get_server_info() );
+	//$version = explode('.', mysql_get_server_info() );
+	$mysqlversion = $dbh->getAttribute(PDO::ATTR_SERVER_VERSION);
+	$version = explode('.',$mysqlversion);
 	if ($version[0] > 4){
-		echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#00FF00">'.__('MySQL Version').': '.mysql_get_server_info().'</td></tr>';
+		//echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#00FF00">'.__('MySQL Version').': '.mysql_get_server_info().'</td></tr>';
+		echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#00FF00">'.__('MySQL Version').': '.$mysqlversion.'</td></tr>';
 	}
 	else{
-		echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#FF6600">'.mysql_get_server_info().' '.__('It is recommended to update MySQL!').'</td></tr>';
+		//echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#FF6600">'.mysql_get_server_info().' '.__('It is recommended to update MySQL!').'</td></tr>';
+		echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#FF6600">'.$mysqlversion.' '.__('It is recommended to update MySQL!').'</td></tr>';
 	}
 
 	// *** Check if database and tables are ok ***
@@ -317,14 +345,15 @@ The file .htpasswd will look something like this:<br>');
 	//	ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
 	//	AND humo_tree_texts.treetext_language='talen/taal-nederlands.php'
 	//	ORDER BY tree_order",$db);
-	@$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
-
+	//@$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
+	@$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
+	
 	if ($datasql){
 		echo '<tr><td>'.__('Trees table').'</td><td style="background-color:#00FF00">OK</td></tr>';
 
 		$tree_counter=0;
-		while ($dataDb=mysql_fetch_object($datasql)){
-
+		//while ($dataDb=mysql_fetch_object($datasql)){
+		while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			// *** Skip empty lines (didn't work in query...) ***
 			if ($dataDb->tree_prefix!='EMPTY'){
 				$tree_counter++;

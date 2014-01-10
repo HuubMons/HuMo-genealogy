@@ -24,10 +24,11 @@ if (isset($_POST['tree'])){ $tree=$_POST['tree']; }
 
 echo '<span class="noprint">'.__('Choose tree:');  // class "noprint" hides it when printing
 $tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-
-$tree_result = mysql_query($tree_sql,$db);
+//$tree_result = mysql_query($tree_sql,$db);
+$tree_result = $dbh->query($tree_sql);
 echo '<select size="1" name="tree">';
-while ($treeDb=mysql_fetch_object($tree_result)){
+//while ($treeDb=mysql_fetch_object($tree_result)){
+while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
 	$treetext_name=database_name($treeDb->tree_prefix, $selected_language);
 	$selected='';
 	if (isset($tree)){ if ($treeDb->tree_prefix==$tree){ $selected=' SELECTED'; } }
@@ -90,7 +91,8 @@ if (isset($_POST['tree']) AND isset($_POST['last_changes'])){
 
 	$person_qry.=	" ORDER BY datum DESC, pers_changed_time DESC LIMIT 0,50";
 
-	$person_result = mysql_query($person_qry,$db);
+	//$person_result = mysql_query($person_qry,$db);
+	$person_result = $dbh->query($person_qry);
 	echo '<h3>'.__('Latest changes').'</h3>';
 	echo '<div style="margin-left:auto;margin-right:auto;height:350px;width:60%; overflow-y: scroll;">';
 	echo '<table class="humo" style="width:100%">';
@@ -101,7 +103,8 @@ if (isset($_POST['tree']) AND isset($_POST['last_changes'])){
 	echo '<th style="font-size: 90%; text-align: left">'.__('When added').'</th>';
 	echo '</tr>';
 
-	while ($person=mysql_fetch_object($person_result)){
+	//while ($person=mysql_fetch_object($person_result)){
+	while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 		echo '<tr><td>';
 		if(CMS_SPECIFIC=="Joomla") {
 			echo '	<a href="index.php?option=com_humo-gen&amp;task=family&amp;database='.$tree.'&amp;id='.$person->pers_indexnr.'&amp;main_person='.$person->pers_gedcomnumber.'">';
@@ -125,7 +128,8 @@ if (isset($_POST['tree']) AND isset($_POST['last_changes'])){
 if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 	// *** Check tables for wrongly connected id's etc. ***
 	$person_qry= "SELECT * FROM ".$tree."person ORDER BY pers_lastname, pers_firstname";
-	$person_result = mysql_query($person_qry,$db);
+	//$person_result = mysql_query($person_qry,$db);
+	$person_result = $dbh->query($person_qry);
 	echo '<h3>'.__('Checking database tables...').'<br>Please wait till finished</h3>';
 	//echo '<div style="height: 200px; overflow-y: scroll;">';
 	//echo '<table class="humo">';
@@ -133,7 +137,8 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 	$wrong_famc=0;
 	$wrong_fams=0;
 
-	while ($person=mysql_fetch_object($person_result)){
+	//while ($person=mysql_fetch_object($person_result)){
+	while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 		$check=false;
 		$pers_indexnr='';
 		if ($person->pers_famc){ $pers_indexnr=$person->pers_famc; }
@@ -152,7 +157,8 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 			// *** Restore pers_indexnr ***
 			$sql="UPDATE ".$tree."person SET pers_indexnr='".$pers_indexnr."'
 				WHERE pers_gedcomnumber='".$person->pers_gedcomnumber."'";
-			$result=mysql_query($sql) or die(mysql_error());
+			//$result=mysql_query($sql) or die(mysql_error());
+			$result=$dbh->query($sql);
 		}
 		//else { echo ' indexnr ok.<br>'; }
 
@@ -161,8 +167,10 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 			$fams=explode(";", $person->pers_fams);
 			for ($i=0; $i<=count($fams)-1; $i++){
 				$fam_qry= "SELECT * FROM ".$tree."family WHERE fam_gedcomnumber='".$fams[$i]."'";
-				$fam_result = mysql_query($fam_qry,$db);
-				$famDb=mysql_fetch_object($fam_result);
+				//$fam_result = mysql_query($fam_qry,$db);
+				//$famDb=mysql_fetch_object($fam_result);
+				$fam_result = $dbh->query($fam_qry);
+				$famDb=$fam_result->fetch(PDO::FETCH_OBJ);				
 
 				if ($famDb->fam_man==$person->pers_gedcomnumber){ $check_fams1=true; }
 				if ($famDb->fam_woman==$person->pers_gedcomnumber){ $check_fams1=true; }
@@ -173,8 +181,10 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 
 		if ($person->pers_famc){
 			$fam_qry= "SELECT * FROM ".$tree."family WHERE fam_gedcomnumber='".$person->pers_famc."'";
-			$fam_result = mysql_query($fam_qry,$db);
-			$famDb=mysql_fetch_object($fam_result);
+			//$fam_result = mysql_query($fam_qry,$db);
+			//$famDb=mysql_fetch_object($fam_result);
+			$fam_result = $dbh->query($fam_qry);
+			$famDb=$fam_result->fetch(PDO::FETCH_OBJ);			
 
 			$check_children=false;
 			$children=explode(";", $famDb->fam_children);
@@ -193,20 +203,25 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 
 	$wrong_children=0;
 	$fam_qry= "SELECT * FROM ".$tree."family WHERE fam_children LIKE '_%'";
-	$fam_result = mysql_query($fam_qry,$db);
-	while($famDb=mysql_fetch_object($fam_result)){
+	//$fam_result = mysql_query($fam_qry,$db);
+	//while($famDb=mysql_fetch_object($fam_result)){
+	$fam_result = $dbh->query($fam_qry);
+	while($famDb=$fam_result->fetch(PDO::FETCH_OBJ)){	
 		$children=explode(";", $famDb->fam_children);
 		for ($i=0; $i<=count($children)-1; $i++){
 			$person_qry= "SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$children[$i]."'";
-			$person_result = mysql_query($person_qry,$db);
-			$person=mysql_fetch_object($person_result);
+			//$person_result = mysql_query($person_qry,$db);
+			$person_result = $dbh->query($person_qry);			
+			//$person=mysql_fetch_object($person_result);
+			$person=$person_result->fetch(PDO::FETCH_OBJ);
 			if ($person){
 				//echo ' fam: '.$famDb->fam_gedcomnumber.' children: '.$famDb->fam_children.' ';
 				//echo ' gedcom: '.$person->pers_gedcomnumber.' famc: '.$person->pers_famc;
 				if ($person->pers_famc==''){
 					$sql="UPDATE ".$tree."person SET pers_famc='".$famDb->fam_gedcomnumber."'
 						WHERE pers_gedcomnumber='".$person->pers_gedcomnumber."'";
-					$result=mysql_query($sql) or die(mysql_error());
+					//$result=mysql_query($sql) or die(mysql_error());
+					$result=$dbh->query($sql);
 					echo ' <b> Wrong parent-child connection (is restored now)!</b><br>';
 				}
 			}
@@ -236,8 +251,10 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 		'</th><th style="width:15%;border:1px solid black">'.__('Invalid date').'</th></tr>';
 	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid person dates:').'</td></tr>';
 	$found = false; // if this stays false, displays message that no problems where found
-	$person = mysql_query("SELECT * FROM ".$tree."person ORDER BY pers_lastname,pers_firstname",$db);
-	while($persdateDb=mysql_fetch_assoc($person)){ 
+	//$person = mysql_query("SELECT * FROM ".$tree."person ORDER BY pers_lastname,pers_firstname",$db);
+	//while($persdateDb=mysql_fetch_assoc($person)){ 
+	$person = $dbh->query("SELECT * FROM ".$tree."person ORDER BY pers_lastname,pers_firstname");
+	while($persdateDb=$person->fetch()){ 	
 		if(isset($persdateDb['pers_birth_date']) AND $persdateDb['pers_birth_date']!='')
 	 		$result = invalid($persdateDb['pers_birth_date'],$persdateDb['pers_gedcomnumber'],'pers_birth_date');
 			if($result===true) {$found = true; }
@@ -255,8 +272,10 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid family dates:').'</td></tr>';
 	$found = false;
-	$family = mysql_query("SELECT * FROM ".$tree."family",$db);
-	while($famdateDb=mysql_fetch_assoc($family)){ 
+	//$family = mysql_query("SELECT * FROM ".$tree."family",$db);
+	//while($famdateDb=mysql_fetch_assoc($family)){ 
+	$family = $dbh->query("SELECT * FROM ".$tree."family");
+	while($famdateDb=$family->fetch()){ 	
 		if(isset($famdateDb['fam_div_date']) AND $famdateDb['fam_div_date']!='')
  			$result = invalid($famdateDb['fam_div_date'],$famdateDb['fam_gedcomnumber'],'fam_div_date');
 			if($result===true) {$found = true; }
@@ -280,8 +299,10 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid event dates:').'</td></tr>';
 	$found = false;
-	$event = mysql_query("SELECT * FROM ".$tree."events",$db);
-	while($eventdateDb=mysql_fetch_assoc($event)){ 	
+	//$event = mysql_query("SELECT * FROM ".$tree."events",$db);
+	//while($eventdateDb=mysql_fetch_assoc($event)){ 
+	$event = $dbh->query("SELECT * FROM ".$tree."events");
+	while($eventdateDb=$event->fetch()){ 
 		if(isset($eventdateDb['event_date']) AND $eventdateDb['event_date']!='')
  	 		$result = invalid($eventdateDb['event_date'],$eventdateDb['event_id'],'event_date');
 			if($result===true) {$found = true; }
@@ -290,8 +311,10 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid connection dates:').'</td></tr>';
 	$found = false;
-	$connection = mysql_query("SELECT * FROM ".$tree."connections",$db);
-	while($connectdateDb=mysql_fetch_assoc($connection)){ 
+	//$connection = mysql_query("SELECT * FROM ".$tree."connections",$db);
+	//while($connectdateDb=mysql_fetch_assoc($connection)){ 
+	$connection = $dbh->query("SELECT * FROM ".$tree."connections");
+	while($connectdateDb=$connection->fetch()){ 	
 		if(isset($connectdateDb['connect_date']) AND $connectdateDb['connect_date']!='')
   			$result = invalid($connectdateDb['connect_date'],$connectdateDb['connect_id'],'connect_date');
 			if($result===true) {$found = true; }
@@ -300,8 +323,10 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid address dates:').'</td></tr>';
 	$found = false;
-	$address = mysql_query("SELECT * FROM ".$tree."addresses",$db);
-	while($addressdateDb=mysql_fetch_assoc($address)){ 	
+	//$address = mysql_query("SELECT * FROM ".$tree."addresses",$db);
+	//while($addressdateDb=mysql_fetch_assoc($address)){ 	
+	$address = $dbh->query("SELECT * FROM ".$tree."addresses");
+	while($addressdateDb=$address->fetch()){ 		
 		if(isset($addressdateDb['address_date']) AND $addressdateDb['address_date']!='')
   			$result = invalid($addressdateDb['address_date'],$addressdateDb['address_id'],'address_date');
 			if($result===true) {$found = true; }
@@ -310,8 +335,10 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid repository dates:').'</td></tr>';
 	$found = false;
-	$repo = mysql_query("SELECT * FROM ".$tree."repositories",$db);
-	while($repodateDb=mysql_fetch_assoc($repo)){ 	
+	//$repo = mysql_query("SELECT * FROM ".$tree."repositories",$db);
+	//while($repodateDb=mysql_fetch_assoc($repo)){ 
+	$repo = $dbh->query("SELECT * FROM ".$tree."repositories");
+	while($repodateDb=$repo->fetch()){ 
 		if(isset($repodateDb['repo_date']) AND $repodateDb['repo_date']!='')  
 			$result = invalid($repodateDb['repo_date'],$repodateDb['repo_gedcomnr'],'repo_date');
 			if($result===true) {$found = true; }
@@ -320,8 +347,10 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid source dates:').'</td></tr>';
 	$found = false;
-	$sources = mysql_query("SELECT * FROM ".$tree."sources",$db);
-	while($sourcedateDb=mysql_fetch_assoc($sources)){ 	
+	//$sources = mysql_query("SELECT * FROM ".$tree."sources",$db);
+	//while($sourcedateDb=mysql_fetch_assoc($sources)){ 	
+	$sources = $dbh->query("SELECT * FROM ".$tree."sources");
+	while($sourcedateDb=$sources->fetch()){ 		
 		if(isset($sourcedateDb['source_date']) AND $sourcedateDb['source_date']!='')
   			$result = invalid($sourcedateDb['source_date'],$sourcedateDb['source_gedcomnr'],'source_date');
 			if($result===true) {$found = true; }
@@ -433,8 +462,10 @@ if (isset($_POST['final_check'])){
 
  	$results_found=0;
 
-	$person = mysql_query("SELECT * FROM ".$tree."person ORDER BY pers_lastname,pers_firstname",$db);
-	while($personDb=mysql_fetch_assoc($person)){
+	//$person = mysql_query("SELECT * FROM ".$tree."person ORDER BY pers_lastname,pers_firstname",$db);
+	//while($personDb=mysql_fetch_assoc($person)){
+	$person = $dbh->query("SELECT * FROM ".$tree."person ORDER BY pers_lastname,pers_firstname");
+	while($personDb=$person->fetch()){	
 
 		/*	// using class slows down considerably: 10,000 persons without class 15 sec, with class for name: over 4 minutes...
 			$persclass = New person_cls;
@@ -461,22 +492,29 @@ if (isset($_POST['final_check'])){
 			$marr_array = explode(';',$personDb['pers_fams']); 
 
 			for($x=0;$x<count($marr_array);$x++) {							
-				$marriages = mysql_query("SELECT fam_marr_date, fam_marr_notice_date, fam_marr_church_date, fam_marr_church_notice_date, ".$spouse." FROM ".$tree."family WHERE fam_gedcomnumber ='".$marr_array[$x]."'",$db) or die("DEAD1");
-				$marriagesDb=mysql_fetch_object($marriages);
+				//$marriages = mysql_query("SELECT fam_marr_date, fam_marr_notice_date, fam_marr_church_date, fam_marr_church_notice_date, ".$spouse." FROM ".$tree."family WHERE fam_gedcomnumber ='".$marr_array[$x]."'",$db) or die("DEAD1");
+				//$marriagesDb=mysql_fetch_object($marriages);
+				$marriages = $dbh->query("SELECT fam_marr_date, fam_marr_notice_date, fam_marr_church_date, fam_marr_church_notice_date, ".$spouse." FROM ".$tree."family WHERE fam_gedcomnumber ='".$marr_array[$x]."'");
+				$marriagesDb=$marriages->fetch(PDO::FETCH_OBJ);				
 				if($marriagesDb !== false) { 
 					$marr_dates[$x] = $marriagesDb->fam_marr_date;  
 					$marr_notice_dates[$x] = $marriagesDb->fam_marr_notice_date; 
 					$marr_church_dates[$x] = $marriagesDb->fam_marr_church_date; 
 					$marr_church_notice_dates[$x] = $marriagesDb->fam_marr_church_notice_date; 
 					if($personDb['pers_sexe']=="F") { 
-						$spouses =  mysql_query("SELECT pers_birth_date FROM ".$tree."person 
-							WHERE pers_gedcomnumber ='".$marriagesDb->fam_man."'",$db) or die("DEAD2");
+						//$spouses =  mysql_query("SELECT pers_birth_date FROM ".$tree."person 
+						//	WHERE pers_gedcomnumber ='".$marriagesDb->fam_man."'",$db) or die("DEAD2");
+						$spouses =  $dbh->query("SELECT pers_birth_date FROM ".$tree."person 
+							WHERE pers_gedcomnumber ='".$marriagesDb->fam_man."'");							
 					}
 					else {  
-						$spouses =  mysql_query("SELECT pers_birth_date FROM ".$tree."person 
-							WHERE pers_gedcomnumber ='".$marriagesDb->fam_woman."'",$db) or die("DEAD3");
+						//$spouses =  mysql_query("SELECT pers_birth_date FROM ".$tree."person 
+						//	WHERE pers_gedcomnumber ='".$marriagesDb->fam_woman."'",$db) or die("DEAD3");
+						$spouses =  $dbh->query("SELECT pers_birth_date FROM ".$tree."person 
+							WHERE pers_gedcomnumber ='".$marriagesDb->fam_woman."'");							
 					}
-					$spousesDb = mysql_fetch_object($spouses);
+					//$spousesDb = mysql_fetch_object($spouses);
+					$spousesDb = $spouses->fetch(PDO::FETCH_OBJ);
 					if(isset($spousesDb->pers_birth_date)) $spouse_dates[] = $spousesDb->pers_birth_date; 
 				}
 			} 
@@ -491,9 +529,12 @@ if (isset($_POST['final_check'])){
 		$m_fams_arr = array(); // marriage(s) array of mother (to find previous sibling)
 		
 		if(isset($personDb['pers_famc'])) { 
-			$parents = mysql_query("SELECT fam_gedcomnumber, fam_man, fam_woman, fam_children, fam_marr_date, fam_marr_church_date, fam_marr_notice_date, fam_relation_date FROM ".$tree."family 
-					WHERE fam_gedcomnumber ='".$personDb['pers_famc']."'",$db) or die("SO DEAD");
-			$parentsDb=mysql_fetch_object($parents);
+			//$parents = mysql_query("SELECT fam_gedcomnumber, fam_man, fam_woman, fam_children, fam_marr_date, fam_marr_church_date, fam_marr_notice_date, fam_relation_date FROM ".$tree."family 
+			//		WHERE fam_gedcomnumber ='".$personDb['pers_famc']."'",$db) or die("SO DEAD");
+			//$parentsDb=mysql_fetch_object($parents);
+			$parents = $dbh->query("SELECT fam_gedcomnumber, fam_man, fam_woman, fam_children, fam_marr_date, fam_marr_church_date, fam_marr_notice_date, fam_relation_date FROM ".$tree."family 
+					WHERE fam_gedcomnumber ='".$personDb['pers_famc']."'");
+			$parentsDb=$parents->fetch(PDO::FETCH_OBJ);			
 //NEW - find parents wedding date
 			if(isset($parentsDb->fam_marr_date)) { 
 				$par_marr_date = $parentsDb->fam_marr_date;
@@ -509,8 +550,10 @@ if (isset($_POST['final_check'])){
 			} 
 //END NEW									   
 			if(isset($parentsDb->fam_woman)) {  
-				$mother = mysql_query("SELECT pers_birth_date, pers_fams FROM ".$tree."person WHERE pers_gedcomnumber = '".$parentsDb->fam_woman."'",$db);
-				$motherDb=mysql_fetch_object($mother);
+				//$mother = mysql_query("SELECT pers_birth_date, pers_fams FROM ".$tree."person WHERE pers_gedcomnumber = '".$parentsDb->fam_woman."'",$db);
+				//$motherDb=mysql_fetch_object($mother);
+				$mother = $dbh->query("SELECT pers_birth_date, pers_fams FROM ".$tree."person WHERE pers_gedcomnumber = '".$parentsDb->fam_woman."'");
+				$motherDb=$mother->fetch(PDO::FETCH_OBJ);				
 				if(isset($motherDb->pers_birth_date)) $m_b_date = $motherDb->pers_birth_date;
 				if(isset($motherDb->pers_fams)) { 
 					$m_fams = $motherDb->pers_fams; // needed for sibling search
@@ -518,9 +561,12 @@ if (isset($_POST['final_check'])){
 				}		
 			}
 			if(isset($parentsDb->fam_man)) {  
-				$father = mysql_query("SELECT pers_birth_date FROM ".$tree."person 
-					WHERE pers_gedcomnumber = '".$parentsDb->fam_man."'",$db);
-				$fatherDb=mysql_fetch_object($father);
+				//$father = mysql_query("SELECT pers_birth_date FROM ".$tree."person 
+				//	WHERE pers_gedcomnumber = '".$parentsDb->fam_man."'",$db);
+				$father = $dbh->query("SELECT pers_birth_date FROM ".$tree."person 
+					WHERE pers_gedcomnumber = '".$parentsDb->fam_man."'");					
+				//$fatherDb=mysql_fetch_object($father);
+				$fatherDb=$father->fetch(PDO::FETCH_OBJ);
 				if(isset($fatherDb->pers_birth_date)) $f_b_date = $fatherDb->pers_birth_date;
 			}
 //NEW - find previous born sibling
@@ -535,8 +581,10 @@ if (isset($_POST['final_check'])){
 					}	
 					if($count>0) {  // person is not first child
 						$prev_sib_gednr = $ch_array[$count-1]; // gedcomnumber of previous sibling
-						$sib = mysql_query("SELECT pers_birth_date FROM ".$tree."person WHERE pers_gedcomnumber ='".$prev_sib_gednr."'",$db) or die("prev sib search");
-						$sibDb = mysql_fetch_object($sib);
+						//$sib = mysql_query("SELECT pers_birth_date FROM ".$tree."person WHERE pers_gedcomnumber ='".$prev_sib_gednr."'",$db) or die("prev sib search");
+						//$sibDb = mysql_fetch_object($sib);
+						$sib = $dbh->query("SELECT pers_birth_date FROM ".$tree."person WHERE pers_gedcomnumber ='".$prev_sib_gednr."'");
+						$sibDb = $sib->fetch(PDO::FETCH_OBJ);						
 						if(isset($sibDb->pers_birth_date) AND $sibDb->pers_birth_date!='' ) {
 							$sib_b_date = $sibDb->pers_birth_date;
 						}
@@ -551,14 +599,18 @@ if (isset($_POST['final_check'])){
 							$count++;
 						}
 						$prev_marr_ged = $m_fams_arr[$count-1];
-						$prev_marr = mysql_query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber='".$prev_marr_ged."'",$db);
-						$prev_marrDb = mysql_fetch_object($prev_marr);
+						//$prev_marr = mysql_query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber='".$prev_marr_ged."'",$db);
+						//$prev_marrDb = mysql_fetch_object($prev_marr);
+						$prev_marr = $dbh->query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber='".$prev_marr_ged."'");
+						$prev_marrDb = $prev_marr->fetch(PDO::FETCH_OBJ);						;
 						if(isset($prev_marrDb->fam_children)) { 
 							$prev_ch_arr = explode(";",$prev_marrDb->fam_children);
 							$prev_ch_num = count($prev_ch_arr);
 							$prev_ch_ged = $prev_ch_arr[$prev_ch_num-1]; // last child
-							$sib = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber ='".$prev_ch_ged."'",$db) or die("prev sib search2");
-							$sibDb = mysql_fetch_object($sib);
+							//$sib = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber ='".$prev_ch_ged."'",$db) or die("prev sib search2");
+							//$sibDb = mysql_fetch_object($sib);
+							$sib = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber ='".$prev_ch_ged."'");
+							$sibDb = $sib->fetch(PDO::FETCH_OBJ);							
 							if(isset($sibDb->pers_birth_date) AND $sibDb->pers_birth_date!='' ) { 
 								$sib_b_date = $sibDb->pers_birth_date; 
 							}							
@@ -1094,7 +1146,7 @@ function write_pers ($name,$id,$first_date,$second_date,$first_text,$second_text
 }
 
 function invalid($date,$gednr,$table) {  // checks validity with validate_cls.php and displays invalid dates and their details
-	global $tree, $db;
+	global $tree, $db, $dbh;
 	include_once (CMS_ROOTPATH.'include/validate_date_cls.php'); 
 	$process_date = New validate_date_cls;
 	$compare_date=$date;
@@ -1110,12 +1162,15 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 
 	if($process_date->check_date(strtoupper($compare_date)) === null) { // invalid date
 		if(substr($table,0,3) =="per") {
-			$pers = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$gednr."'", $db);
-			$personDb=mysql_fetch_assoc($pers);
+			//$pers = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$gednr."'", $db);
+			//$personDb=mysql_fetch_assoc($pers);
+			$pers = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$gednr."'");
+			$personDb=$pers->fetch();			
 			$name = $personDb['pers_firstname'].' '.str_replace("_"," ",$personDb['pers_prefix'].' '.$personDb['pers_lastname']);
 			echo '<tr><td style="text-align:left">'.$gednr.'</td><td style="text-align:left"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$personDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$name.'</a></td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="fam") {
+			/*
 			$fam = mysql_query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$gednr."'", $db);
 			$famDb=mysql_fetch_assoc($fam);
 			$spouse1 = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_man']."'",$db);
@@ -1123,17 +1178,29 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			$name1 = $spouse1Db['pers_firstname'].' '.str_replace("_"," ",$spouse1Db['pers_prefix'].' '.$spouse1Db['pers_lastname']);
 			$spouse2 = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_woman']."'",$db);
 			$spouse2Db=mysql_fetch_assoc($spouse2);
+			*/
+			$fam = $dbh->query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$gednr."'");
+			$famDb=$fam->fetch();
+			$spouse1 = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_man']."'");
+			$spouse1Db=$spouse1->fetch();
+			$name1 = $spouse1Db['pers_firstname'].' '.str_replace("_"," ",$spouse1Db['pers_prefix'].' '.$spouse1Db['pers_lastname']);
+			$spouse2 = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_woman']."'");
+			$spouse2Db=$spouse2->fetch();
 			$name2 = $spouse2Db['pers_firstname'].' '.str_replace("_"," ",$spouse2Db['pers_prefix'].' '.$spouse2Db['pers_lastname']);
 			$spousegednr = $spouse1Db['pers_gedcomnumber']; if($spousegednr=='') $spousegednr = $spouse2Db['pers_gedcomnumber'];
 			$and = ' '.__('and').' '; if($spouse1Db['pers_gedcomnumber']=='' OR $spouse2Db['pers_gedcomnumber']=='') $and='';
-			echo '<tr><td style="text-align:left">'.$gednr.'</td><td style="text-align:left"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$spousegednr.'" target=\'_blank\'>'.$name1.$and.$name2.'</a></td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 
+			echo '<tr><td style="text-align:left">'.$gednr.'</td><td style="text-align:left"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$spousegednr.'" target=\'_blank\'>'.$name1.$and.$name2.'</a></td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 			
 		}
 		if(substr($table,0,3) =="eve") {
-			$ev = mysql_query("SELECT * FROM ".$tree."events WHERE event_id = '".$gednr."'", $db);
-			$evDb=mysql_fetch_assoc($ev);
+			//$ev = mysql_query("SELECT * FROM ".$tree."events WHERE event_id = '".$gednr."'", $db);
+			//$evDb=mysql_fetch_assoc($ev);
+			$ev = $dbh->query("SELECT * FROM ".$tree."events WHERE event_id = '".$gednr."'");
+			$evDb=$ev->fetch();			
 			if($evDb['event_person_id']!='') { 
-				$pers = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$evDb['event_person_id']."'",$db);
-				$persDb=mysql_fetch_assoc($pers);
+				//$pers = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$evDb['event_person_id']."'",$db);
+				//$persDb=mysql_fetch_assoc($pers);
+				$pers = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$evDb['event_person_id']."'");
+				$persDb=$pers->fetch();				
 				$fullname = $persDb['pers_firstname'].' '.str_replace("_"," ",$persDb['pers_prefix'].' '.$persDb['pers_lastname']);
 				$evdetail= $evDb['event_event']; 
 				if($evdetail=='') $evdetail=$evDb['event_gedcom']; 
@@ -1141,6 +1208,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				echo '<tr><td style="text-align:left">'.$persDb['pers_gedcomnumber'].'</td><td style="text-align:left"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$persDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$fullname.'</a> ('.__('Click events by person').')</td><td style="text-align:left">'.$evDb['event_kind'].$evdetail.'</td><td style="text-align:left">'.$date.'</td></tr>';  
 			}
 			elseif($evDb['event_family_id']!='') { 
+				/*
 				$fam = mysql_query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$evDb['event_family_id']."'", $db);
 				$famDb=mysql_fetch_assoc($fam);
 				$spouse1 = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_man']."'",$db);
@@ -1148,6 +1216,15 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				$name1 = $spouse1Db['pers_firstname'].' '.str_replace("_"," ",$spouse1Db['pers_prefix'].' '.$spouse1Db['pers_lastname']);
 				$spouse2 = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_woman']."'",$db);
 				$spouse2Db=mysql_fetch_assoc($spouse2);
+				*/
+				$fam = $dbh->query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$evDb['event_family_id']."'");
+				$famDb=$fam->fetch();
+				$spouse1 = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_man']."'");
+				$spouse1Db=$spouse1->fetch();
+				$name1 = $spouse1Db['pers_firstname'].' '.str_replace("_"," ",$spouse1Db['pers_prefix'].' '.$spouse1Db['pers_lastname']);
+				$spouse2 = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_woman']."'");
+				$spouse2Db=$spouse2->fetch();
+				
 				$name2 = $spouse2Db['pers_firstname'].' '.str_replace("_"," ",$spouse2Db['pers_prefix'].' '.$spouse2Db['pers_lastname']);
 				$fullname = $name1.' and '.$name2;
 				$spousegednr = $spouse1Db['pers_gedcomnumber']; if($spousegednr=='') $spousegednr = $spouse2Db['pers_gedcomnumber'];
@@ -1159,12 +1236,16 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 
 		}
 		if(substr($table,0,3) =="con") {
-			$connect = mysql_query("SELECT * FROM ".$tree."connections WHERE connect_id = '".$gednr."'", $db);
-			$connectDb=mysql_fetch_assoc($connect);
+			//$connect = mysql_query("SELECT * FROM ".$tree."connections WHERE connect_id = '".$gednr."'", $db);
+			//$connectDb=mysql_fetch_assoc($connect);
+			$connect = $dbh->query("SELECT * FROM ".$tree."connections WHERE connect_id = '".$gednr."'");
+			$connectDb=$connect->fetch();			
 			$name = '';
 			if(substr($connectDb['connect_sub_kind'],0,3)=='per') {
-				$pers = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$connectDb['connect_connect_id']."'", $db);
-				$persDb=mysql_fetch_assoc($pers);
+				//$pers = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$connectDb['connect_connect_id']."'", $db);
+				//$persDb=mysql_fetch_assoc($pers);
+				$pers = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$connectDb['connect_connect_id']."'");
+				$persDb=$pers->fetch();				
 				if(substr($connectDb['connect_sub_kind'],-6)=='source') {
 					$name = '<a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$persDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$persDb['pers_firstname'].' '.str_replace("_"," ",$persDb['pers_prefix'].' '.$persDb['pers_lastname']).'</a> ('.__('Click relevant person source').')';
 				}
@@ -1174,6 +1255,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				$gedcomnr = $persDb['pers_gedcomnumber'];
 			}
 			if(substr($connectDb['connect_sub_kind'],0,3)=='fam') {
+				/*
 				$fam = mysql_query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$connectDb['connect_connect_id']."'", $db);
 				$famDb=mysql_fetch_assoc($fam);
 				$spouse1 = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_man']."'",$db);
@@ -1181,6 +1263,15 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				$name1 = $spouse1Db['pers_firstname'].' '.str_replace("_"," ",$spouse1Db['pers_prefix'].' '.$spouse1Db['pers_lastname']);
 				$spouse2 = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_woman']."'",$db);
 				$spouse2Db=mysql_fetch_assoc($spouse2);
+				*/
+				$fam = $dbh->query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$connectDb['connect_connect_id']."'");
+				$famDb=$fam->fetch();
+				$spouse1 = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_man']."'");
+				$spouse1Db=$spouse1->fetch();
+				$name1 = $spouse1Db['pers_firstname'].' '.str_replace("_"," ",$spouse1Db['pers_prefix'].' '.$spouse1Db['pers_lastname']);
+				$spouse2 = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_woman']."'");
+				$spouse2Db=$spouse2->fetch();
+				
 				$name2 = $spouse2Db['pers_firstname'].' '.str_replace("_"," ",$spouse2Db['pers_prefix'].' '.$spouse2Db['pers_lastname']);
 				$name = $name1.' and '.$name2;
 				$spousegednr = $spouse1Db['pers_gedcomnumber']; if($spousegednr=='') $spousegednr = $spouse2Db['pers_gedcomnumber'];
@@ -1190,17 +1281,22 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				$gedcomnr = $famDb['fam_gedcomnumber'];
 			}
 			if(substr($connectDb['connect_sub_kind'],0,3)=='eve') {
-				$ev = mysql_query("SELECT * FROM ".$tree."events WHERE event_id ='".$connectDb['connect_connect_id']."'",$db);
-				$evDb=mysql_fetch_assoc($ev);
+				//$ev = mysql_query("SELECT * FROM ".$tree."events WHERE event_id ='".$connectDb['connect_connect_id']."'",$db);
+				//$evDb=mysql_fetch_assoc($ev);
+				$ev = $dbh->query("SELECT * FROM ".$tree."events WHERE event_id ='".$connectDb['connect_connect_id']."'");
+				$evDb=$ev->fetch();				
 				if($evDb['event_person_id']!='') {
-					$pers = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$evDb['event_person_id']."'",$db);
-					$persDb=mysql_fetch_assoc($pers);
+					//$pers = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$evDb['event_person_id']."'",$db);
+					//$persDb=mysql_fetch_assoc($pers);
+					$pers = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$evDb['event_person_id']."'");
+					$persDb=$pers->fetch();					
 					$gednr = $persDb['pers_gedcomnumber']; // for url string
 					$gedcomnr = $persDb['pers_gedcomnumber']; // for first column
 					$name = $persDb['pers_firstname'].' '.str_replace("_"," ",$persDb['pers_prefix']).' '.$persDb['pers_lastname'];
 
 				}
 				if($evDb['event_family_id']!='') {
+					/*
 					$fam = mysql_query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$evDb['event_family_id']."'",$db);
 					$famDb=mysql_fetch_assoc($fam);
 					$spouse1 = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_man']."'",$db);
@@ -1208,6 +1304,15 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 					$name1 = $spouse1Db['pers_firstname'].' '.str_replace("_"," ",$spouse1Db['pers_prefix'].' '.$spouse1Db['pers_lastname']);
 					$spouse2 = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_woman']."'",$db);
 					$spouse2Db=mysql_fetch_assoc($spouse2);
+					*/
+					$fam = $dbh->query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$evDb['event_family_id']."'");
+					$famDb=$fam->fetch();
+					$spouse1 = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_man']."'");
+					$spouse1Db=$spouse1->fetch();
+					$name1 = $spouse1Db['pers_firstname'].' '.str_replace("_"," ",$spouse1Db['pers_prefix'].' '.$spouse1Db['pers_lastname']);
+					$spouse2 = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$famDb['fam_woman']."'");
+					$spouse2Db=$spouse2->fetch();
+					
 					$name2 = $spouse2Db['pers_firstname'].' '.str_replace("_"," ",$spouse2Db['pers_prefix'].' '.$spouse2Db['pers_lastname']);
 					$name = $name1.' and '.$name2;
 					$gednr = $spouse1Db['pers_gedcomnumber']; if($spousegednr=='') $spousegednr = $spouse2Db['pers_gedcomnumber'];
@@ -1220,11 +1325,15 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			echo '<tr><td style="text-align:left">'.$gedcomnr.'</td><td style="text-align:left">'.$name.'</td><td style="text-align:left">'.$connectDb['connect_sub_kind'].'</td><td style="text-align:left">'.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="add") {
-			$addresses = mysql_query("SELECT * FROM ".$tree."addresses WHERE address_id = '".$gednr."'", $db);
-			$addressesDb=mysql_fetch_assoc($addresses);
+			//$addresses = mysql_query("SELECT * FROM ".$tree."addresses WHERE address_id = '".$gednr."'", $db);
+			//$addressesDb=mysql_fetch_assoc($addresses);
+			$addresses = $dbh->query("SELECT * FROM ".$tree."addresses WHERE address_id = '".$gednr."'");
+			$addressesDb=$addresses->fetch();			
 			if($addressesDb['address_person_id']!='') {
-				$pers = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$addressesDb['address_person_id']."'",$db);
-				$persDb=mysql_fetch_assoc($pers);
+				//$pers = mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$addressesDb['address_person_id']."'",$db);
+				//$persDb=mysql_fetch_assoc($pers);
+				$pers = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$addressesDb['address_person_id']."'");
+				$persDb=$pers->fetch();				
 				$name = $persDb['pers_firstname'].' '.str_replace("_"," ",$persDb['pers_prefix']).' '.$persDb['pers_lastname'];
 				echo '<tr><td style="text-align:left">'.$persDb['pers_gedcomnumber'].'</td><td style="text-align:left"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$persDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$name.'</a> ('.__('Click addresses').')</td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 
 			}
@@ -1233,13 +1342,17 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			}
 		}
 		if(substr($table,0,3) =="sou") {
-			$sources = mysql_query("SELECT * FROM ".$tree."sources WHERE source_gedcomnr = '".$gednr."'", $db);
-			$sourcesDb=mysql_fetch_assoc($sources);
+			//$sources = mysql_query("SELECT * FROM ".$tree."sources WHERE source_gedcomnr = '".$gednr."'", $db);
+			//$sourcesDb=mysql_fetch_assoc($sources);
+			$sources = $dbh->query("SELECT * FROM ".$tree."sources WHERE source_gedcomnr = '".$gednr."'");
+			$sourcesDb=$sources->fetch();			
 			echo '<tr><td style="text-align:left">'.$gednr.'</td><td style="text-align:left">'.'<a href="index.php?page=edit_sources" target=\'_blank\'>'.__('Source editor').'</a> (Search for: '.$sourcesDb['source_title'].'</td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="rep") {
-			$repos = mysql_query("SELECT * FROM ".$tree."repositories WHERE repo_gedcomnr = '".$gednr."'", $db);
-			$reposDb=mysql_fetch_assoc($repos);
+			//$repos = mysql_query("SELECT * FROM ".$tree."repositories WHERE repo_gedcomnr = '".$gednr."'", $db);
+			//$reposDb=mysql_fetch_assoc($repos);
+			$repos = $dbh->query("SELECT * FROM ".$tree."repositories WHERE repo_gedcomnr = '".$gednr."'");
+			$reposDb=$repos->fetch();			
 			echo '<tr><td style="text-align:left">'.$gednr.'</td><td style="text-align:left">'.'<a href="index.php?page=edit_repositories" target=\'_blank\'>'.__('Repository editor').'</a> (Search for: '.$reposDb['repo_name'].')</td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 
 		}
 		return true;  // found invalid date

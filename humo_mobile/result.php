@@ -36,22 +36,33 @@
 	$quicksearch=str_replace(' ', '%', $quicksearch);
 
 	// one can enter "Huub Mons", "Mons Huub", "Huub van Mons", "van Mons, Huub", "Mons, Huub van" and even "Mons van, Huub" ...
+	/*
 	$query= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person 
 		WHERE CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%' 
 		OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$quicksearch%' 
 		OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$quicksearch%' 
 		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$quicksearch%'";
 
-	$query.=" ORDER BY pers_lastname, pers_firstname ASC ";  
- 
+	$query.=" ORDER BY pers_lastname, pers_firstname ASC ";   
 	$data = mysql_query($query,$db);
-	$num_rows = mysql_num_rows($data);
+	$num_rows = mysql_num_rows($data);	
+	*/
+	$query= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person 
+		WHERE CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%' 
+		OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$quicksearch%' 
+		OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$quicksearch%' 
+		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$quicksearch%'";
 
+	$query.=" ORDER BY pers_lastname, pers_firstname ASC ";   
+	$data = $dbh->query($query);
+	$num_rows = $data->rowCount();	
+	
 	if ($num_rows==NULL){
 		print __('No results found.');
 	}
 	else{
-		while($info = mysql_fetch_array( $data )){
+		//while($info = mysql_fetch_array( $data )){
+		while($info = $data->fetch()){
 			$text=$info['pers_gedcomnumber'];
 			print popup($text);
 		}

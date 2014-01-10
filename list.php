@@ -3,13 +3,13 @@ include_once("header.php"); //returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/person_cls.php");
-//error_reporting(E_ALL);
+error_reporting(E_ALL);
 @set_time_limit(300);
 
 // *** show person ***
 function show_person($personDb){
 	global $index_list, $selected_place, $language, $user;
-	global $bot_visit, $db, $humo_option, $uri_path, $search_database, $list_expanded;
+	global $bot_visit, $db, $dbh, $humo_option, $uri_path, $search_database, $list_expanded;
 	global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
 	global $select_birth, $select_bapt, $select_place, $select_death, $select_buried;
 	global $selectsort;
@@ -217,27 +217,38 @@ function show_person($personDb){
 		//$last_relation=end($marriage_array);
 		//$qry="SELECT * FROM ".$pers_tree_prefix."family WHERE fam_gedcomnumber='".$last_relation."'";
 		$nr_marriages=count($marriage_array);
+		//NEW
+		$stmt = $dbh->prepare("SELECT * FROM ".safe_text($pers_tree_prefix)."family WHERE fam_gedcomnumber=?");
+		$stmt->bindParam(1, $marr_arr);
+		$stmt2 = $dbh->prepare("SELECT * FROM ".safe_text($pers_tree_prefix)."person WHERE pers_gedcomnumber=?");
+		$stmt2->bindParam(1, $partnid);
 		for ($x=0; $x<=$nr_marriages-1; $x++){
-			$qry="SELECT * FROM ".safe_text($pers_tree_prefix)."family WHERE fam_gedcomnumber='".safe_text($marriage_array[$x])."'";
-			$fam_partner=mysql_query($qry,$db);
-			$fam_partnerDb=mysql_fetch_object($fam_partner);
+			//$qry="SELECT * FROM ".safe_text($pers_tree_prefix)."family WHERE fam_gedcomnumber='".safe_text($marriage_array[$x])."'";
+			$marr_arr = $marriage_array[$x];
+			$stmt->execute();
+			$fam_partnerDb = $stmt->fetch();
+			//$fam_partner=mysql_query($qry,$db);
+			//$fam_partnerDb=mysql_fetch_object($fam_partner);
 
 			// *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
-			if ($personDb->pers_gedcomnumber==$fam_partnerDb->fam_man)
-				$partner_id=$fam_partnerDb->fam_woman;
+			if ($personDb->pers_gedcomnumber==$fam_partnerDb['fam_man'])
+				$partner_id=$fam_partnerDb['fam_woman'];
 			else
-				$partner_id=$fam_partnerDb->fam_man;
+				$partner_id=$fam_partnerDb['fam_man'];
 
 			$relation_short=__('&');
-			if ($fam_partnerDb->fam_marr_date OR $fam_partnerDb->fam_marr_place OR $fam_partnerDb->fam_marr_church_date OR $fam_partnerDb->fam_marr_church_place)
+			if ($fam_partnerDb['fam_marr_date'] OR $fam_partnerDb['fam_marr_place'] OR $fam_partnerDb['fam_marr_church_date'] OR $fam_partnerDb['fam_marr_church_place'])
 				$relation_short=__('X');
-			if($fam_partnerDb->fam_div_date OR $fam_partnerDb->fam_div_place)
+			if($fam_partnerDb['fam_div_date'] OR $fam_partnerDb['fam_div_place'])
 				$relation_short=__(') (');
 
 			if ($partner_id!='0' AND $partner_id!=''){
-				$qry="SELECT * FROM ".safe_text($pers_tree_prefix)."person WHERE pers_gedcomnumber='".safe_text($partner_id)."'";
-				$partner=mysql_query($qry,$db);
-				$partnerDb=mysql_fetch_object($partner);
+				//$qry="SELECT * FROM ".safe_text($pers_tree_prefix)."person WHERE pers_gedcomnumber='".safe_text($partner_id)."'";
+				$partnid = $partner_id;
+				$stmt2->execute();	
+				$partnerDb = $stmt2->fetch(PDO::FETCH_OBJ);				
+				//$partner=mysql_query($qry,$db);
+				//$partnerDb=mysql_fetch_object($partner);
 				$partner_cls = New person_cls;
 				$name=$partner_cls->person_name($partnerDb);
 			}
@@ -785,16 +796,17 @@ if ($pers_firstname OR $pers_lastname OR $birth_place OR $death_place OR $birth_
 		$query_part=$query;
 		$query='';
 		$counter=0;
-		$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
-		while (@$dataDb=mysql_fetch_object($datasql)){
-			if($search_database=="all_but_this" AND $dataDb->tree_prefix==safe_text($_SESSION['tree_prefix'])) {
+		//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
+		foreach($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") AS $datapdo) {
+		//while (@$dataDb=mysql_fetch_object($datasql)){
+			if($search_database=="all_but_this" AND $datapdo['tree_prefix']==safe_text($_SESSION['tree_prefix'])) {
 				continue;
 			}
 			// *** Check is family tree is shown or hidden for user group ***
 			$hide_tree_array=explode(";",$user['group_hide_trees']);
 			$hide_tree=false;
 			for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-				if ($hide_tree_array[$x]==$dataDb->tree_id){ $hide_tree=true; }
+				if ($hide_tree_array[$x]==$datapdo['tree_id']){ $hide_tree=true; }
 			}
 			if ($hide_tree==false){
 
@@ -857,6 +869,7 @@ if ($pers_firstname OR $pers_lastname OR $birth_place OR $death_place OR $birth_
 }
 
 // *** Menu quicksearch ***
+
 if ($index_list=='quicksearch'){
 	// *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
 	$quicksearch=str_replace(' ', '%', $quicksearch);
@@ -871,22 +884,23 @@ if ($index_list=='quicksearch'){
 		//$query_part=$query;
 		$query='';
 		$counter=0;
-		$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
-
-		while (@$dataDb=mysql_fetch_object($datasql)){
-			if($search_database=="all_but_this" AND $dataDb->tree_prefix==safe_text($_SESSION['tree_prefix'])) {
+		//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
+		
+		foreach($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {
+		//while (@$dataDb=mysql_fetch_object($datasql)){
+			if($search_database=="all_but_this" AND $pdoresult['tree_prefix']==safe_text($_SESSION['tree_prefix'])) {
 				continue;
 			}
-			// *** Check is family tree is showed or hidden for user group ***
+			// *** Check if family tree is shown or hidden for user group ***
 			$hide_tree_array=explode(";",$user['group_hide_trees']);
 			$hide_tree=false;
 			for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-				if ($hide_tree_array[$x]==$dataDb->tree_id){ $hide_tree=true; }
+				if ($hide_tree_array[$x]==$pdoresult['tree_id']){ $hide_tree=true; }
 			}
 			if ($hide_tree==false){
 
 				$counter++;
-				$tree_prefix=$dataDb->tree_prefix;
+				$tree_prefix=$pdoresult['tree_prefix'];
 
 				// *** EXAMPLE ***
 				//$qry = "(SELECT * FROM humo1_persoon ".$query.') ';
@@ -938,6 +952,7 @@ if ($index_list=='quicksearch'){
 		$query.=" ORDER BY ".$orderby;
 	}
 }
+
 
 //*** Places index ***
 if ($index_list=='places'){
@@ -1146,25 +1161,34 @@ if ($index_list=='patronym'){
 	*/
 
 	if(!$spouse_firstname AND !$spouse_lastname) {
-		$person_result=mysql_query($query." LIMIT ".safe_text($item).",".$nr_persons,$db);
-
-		if ($count_qry){
+	
+		//$person_result=mysql_query($query." LIMIT ".safe_text($item).",".$nr_persons,$db);
+		$person_result = $dbh->query($query." LIMIT ".$item.",".$nr_persons);
+		//$count_them = $dbh->query($count_qry);
+		//$count_persons = $count_them->rowCount(); echo "COUNTPERS= ".$count_persons."<br>";
+ 		
+		if ($count_qry){  
 			// *** Use MySQL COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
-			$result=@mysql_query($count_qry,$db);
-			$resultDb=@mysql_fetch_object($result);
-			$count_persons=@$resultDb->teller;
+			//$result=@mysql_query($count_qry,$db);
+			//$resultDb=@mysql_fetch_object($result);
+			$result= $dbh->query($count_qry);
+			$resultDb = $result->fetch(PDO::FETCH_OBJ);
+			$count_persons=@$resultDb->teller; 
 		}
-		else{
+		else{  
 			// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
-			$sql="SELECT FOUND_ROWS() AS 'found_rows'";
-			$rows = mysql_query($sql);
-			$rows = mysql_fetch_assoc($rows);
-			$count_persons = $rows['found_rows'];
+			//$sql="SELECT FOUND_ROWS() AS 'found_rows'";
+			//$rows = mysql_query($sql);
+			//$rows = mysql_fetch_assoc($rows);
+			$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
+			$rows = $result->fetch();
+			$count_persons = $rows['found_rows'];   
 		}
+ 		
 	}
 	else{
-		$person_result=mysql_query($query,$db);
-		$count_persons=0; // Isn't use if search is done for spouse...
+		$person_result= $dbh->query($query);
+		$count_persons=0; // Isn't used if search is done for spouse...
 	}
 
 	// *** Show error message if search in multiple trees is going wrong (nr of fields is different in some tables) ***
@@ -1241,7 +1265,7 @@ if ($index_list=='patronym'){
 		echo '<tr>';
 
 		// *** ADVANCED SEARCH BOX ***
-		if ($adv_search==true){
+		if ($adv_search==true){ 
 
 			echo '<td align="right" class="no_border" >'.__('First name').':';
 			print ' <select size="1" name="part_firstname">';
@@ -1263,6 +1287,7 @@ if ($index_list=='patronym'){
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			print '</select>';
 			print ' <input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="17"></td></tr>';
+			
 		}
 		else{
 			echo '<td class="no_border center" colspan="2">'.__('Enter name or part of name').'<br>';
@@ -1365,8 +1390,10 @@ if ($index_list=='patronym'){
 
 		// *** Check for multiple family trees ***
 		print '<tr><td colspan="2" class="no_border center">';
-		$datasql2 = mysql_query("SELECT * FROM humo_trees",$db);
-		$num_rows2 = mysql_num_rows($datasql2);
+		//$datasql2 = mysql_query("SELECT * FROM humo_trees",$db);
+		$datasql2 = $dbh->query("SELECT * FROM humo_trees");
+		$num_rows2 = $datasql2->rowCount();
+		//$num_rows2 = mysql_num_rows($datasql2);
 		if ($num_rows2>1){
 			$checked=''; if ($search_database=="tree_selected"){ $checked='CHECKED'; }
 			print '<input type="radio" name="search_database" value="tree_selected" '.$checked.'> '.
@@ -1380,6 +1407,7 @@ if ($index_list=='patronym'){
 		print '&nbsp;&nbsp; <input type="submit" value="'.__('Search').'" name="B1">';
 
 		if ($adv_search==true){
+
 			//print '&nbsp;<a href="'.CMS_ROOTPATH.'list.php?adv_search=0">'.__('Standard search').'</a>';
 			print '&nbsp;<a href="'.$list_var2.'adv_search=0">'.__('Standard search').'</a>';
 
@@ -1429,7 +1457,8 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 	else { $uri_path_string = $uri_path."list.php?"; }
 
 	// *** Check for search results ***
-	if (@mysql_num_rows($person_result)==0) {
+	if ($person_result->rowCount()==0) {
+	//if (@mysql_num_rows($person_result)==0) {
 		$line_pages='';
 		//echo '<br><div class="center">'.__('No names found.').'</div>';
 	}
@@ -1579,7 +1608,8 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 	}
 
 	// *** No results ***
-	if (@mysql_num_rows($person_result)==0) {
+	if ($person_result->rowCount()==0) {
+	//if (@mysql_num_rows($person_result)==0) {
 		echo '<br><div class="center">'.__('No names found.').'</div>';
 	}
 
@@ -1606,7 +1636,8 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 		// set header for extra column to explain to users
 		echo '<tr><td style="text-align:center">'.__('Sort order').':</td><td>&nbsp;</td></tr>';
 	}
-	while (@$personDb=mysql_fetch_object($person_result)){
+	//while (@$personDb=mysql_fetch_object($person_result)){
+	while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
 		$spouse_found='1';
 
 		// *** Search name of spouse ***
@@ -1616,9 +1647,11 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 
 			for ($marriage_loop=0; $marriage_loop<count($person_fams); $marriage_loop++){
 				// *** Search all persons with a spouse IN the same tree as the 1st person ***
-				$fam_qry = "SELECT * FROM ".safe_text($personDb->pers_tree_prefix).'family WHERE fam_gedcomnumber="'.safe_text($person_fams[$marriage_loop]).'"';
-				$fam_result=mysql_query($fam_qry,$db);
-				while($famDb=mysql_fetch_object($fam_result)){
+				//$fam_qry = "SELECT * FROM ".safe_text($personDb->pers_tree_prefix).'family WHERE fam_gedcomnumber="'.safe_text($person_fams[$marriage_loop]).'"';
+				$fam_result = $dbh->query("SELECT * FROM ".safe_text($personDb->pers_tree_prefix).'family WHERE fam_gedcomnumber="'.$person_fams[$marriage_loop].'"');
+				//$fam_result=mysql_query($fam_qry,$db);
+				//while($famDb=mysql_fetch_object($fam_result)){
+				while($famDb= $fam_result->fetch(PDO::FETCH_OBJ)) {
 
 					// *** Search all persons with a spouse IN the same tree as the 1st person ***
 					$spouse_qry = "SELECT * FROM ".safe_text($personDb->pers_tree_prefix)."person WHERE";
@@ -1651,8 +1684,8 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 					if ($spouse_firstname){
 						$spouse_qry.=" AND pers_firstname ".name_qry($spouse_firstname, $part_spouse_firstname);
 					}
-					$spouse_result=mysql_query($spouse_qry,$db);
-					$spouseDb=mysql_fetch_object($spouse_result);
+					$spouse_result= $dbh->query($spouse_qry);
+					$spouseDb= $spouse_result->fetch(PDO::FETCH_OBJ);
 					if (isset($spouseDb->pers_id)){ $spouse_found='1'; break; }
 				}
 			}

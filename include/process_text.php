@@ -1,6 +1,6 @@
 <?php
 function process_text($text_process){
-	global $user, $db;
+	global $user, $db, $dbh;
 	//1 NOTE Text by person#werktekst#
 	//2 CONT 2e line text persoon#2e werktekst#
 	//2 CONT 3e line #3e werktekst# tekst persoon
@@ -12,9 +12,12 @@ function process_text($text_process){
 	for ( $i = 0; $i <= (count($text_pieces)-1); $i++) { 
 		// *** Search for Aldfaer texts ***
 		if (substr($text_pieces[$i], 0, 1)=='@'){
-			$search_text=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."texts
-				WHERE text_gedcomnr='".safe_text($text_pieces[$i])."'",$db);
-			$search_textDb=mysql_fetch_object($search_text);
+			//$search_text=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."texts
+			//	WHERE text_gedcomnr='".safe_text($text_pieces[$i])."'",$db);
+			//$search_textDb=mysql_fetch_object($search_text);
+			$search_text=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."texts
+				WHERE text_gedcomnr='".safe_text($text_pieces[$i])."'");
+			$search_textDb=$search_text->fetch(PDO::FETCH_OBJ);			
 			if ($text_result){ $text_result.='<br>'; }
 			$text_result.=@$search_textDb->text_text;
 		}

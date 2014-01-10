@@ -292,9 +292,12 @@ if ($update['up_to_date']=='no'){
 			}
 			else{
 				// *** Update settings ***
-				$result = mysql_query("UPDATE humo_settings
+				//$result = mysql_query("UPDATE humo_settings
+				//	SET setting_value='2012-01-01'
+				//	WHERE setting_variable='update_last_check'") or die(mysql_error());
+				$result = $dbh->query("UPDATE humo_settings
 					SET setting_value='2012-01-01'
-					WHERE setting_variable='update_last_check'") or die(mysql_error());
+					WHERE setting_variable='update_last_check'");					
 				$humo_option['update_last_check']='2012-01-01';
 
 				// *** Remove installation files ***

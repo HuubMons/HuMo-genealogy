@@ -78,7 +78,7 @@ else {
 
 function create_rel_array ($gednr)  {
 	// creates array of ancestors of person with gedcom nr. $gednr
-	global $db;
+	global $db, $dbh;
 
 	$family_id=$gednr;
 	$ancestor_id2[] = $family_id;
@@ -86,7 +86,13 @@ function create_rel_array ($gednr)  {
 	$marriage_number2[] = 0;
 	$generation = 1;
 	$genarray_count = 0;
-
+	
+	// some prepared statements before loop
+	$pers_prep = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber=?");
+	$pers_prep->bindParam(1,$pers_prep_var);
+	$fam_prep = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber=?");
+	$fam_prep->bindParam(1,$fam_prep_var);
+	
 	// *** Loop ancestor report ***
 	while (isset($ancestor_id2[0])){
 		unset($ancestor_id);
@@ -106,22 +112,31 @@ function create_rel_array ($gednr)  {
 		for ($i=0; $i<$kwcount; $i++) {
 
 			if ($ancestor_id[$i]!='0'){
-				$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-					WHERE pers_gedcomnumber='".safe_text($ancestor_id[$i])."'",$db);
-				@$person_manDb=mysql_fetch_object($person_man);
+				//$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+				//	WHERE pers_gedcomnumber='".safe_text($ancestor_id[$i])."'",$db);
+				//@$person_manDb=mysql_fetch_object($person_man);
+				$pers_prep_var = $ancestor_id[$i];
+				$pers_prep->execute();
+				@$person_manDb=$pers_prep->fetch(PDO::FETCH_OBJ);
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
 				$man_privacy=$man_cls->privacy;
 
 				if (strtolower($person_manDb->pers_sexe)=='m' AND $ancestor_number[$i]>1){
-					$family=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
-						WHERE fam_gedcomnumber='".safe_text($marriage_number[$i])."'",$db);
-					@$familyDb=mysql_fetch_object($family);
+					//$family=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
+					//	WHERE fam_gedcomnumber='".safe_text($marriage_number[$i])."'",$db);
+					//@$familyDb=mysql_fetch_object($family);
+					$fam_prep_var = $marriage_number[$i];
+					$fam_prep->execute();
+					@$familyDb=$fam_prep->fetch(PDO::FETCH_OBJ);
 
 					// *** Use privacy filter of woman ***
-					$person_woman=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-						WHERE pers_gedcomnumber='".safe_text($familyDb->fam_woman)."'",$db);
-					@$person_womanDb=mysql_fetch_object($person_woman);
+					//$person_woman=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+					//	WHERE pers_gedcomnumber='".safe_text($familyDb->fam_woman)."'",$db);
+					//@$person_womanDb=mysql_fetch_object($person_woman);
+					$pers_prep_var = $familyDb->fam_woman;
+					$pers_prep->execute();
+					@$person_womanDb=$pers_prep->fetch(PDO::FETCH_OBJ);					
 					$woman_cls = New person_cls;
 					$woman_cls->construct($person_womanDb);
 					$woman_privacy=$woman_cls->privacy;
@@ -139,9 +154,12 @@ function create_rel_array ($gednr)  {
 
 				// *** Check for parents ***
 				if ($person_manDb->pers_famc){
-					$family_qry	= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber = '".$person_manDb->pers_famc."'";
-					$family_result = mysql_query($family_qry,$db);
-					@$familyDb = mysql_fetch_object($family_result);
+					//$family_qry	= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber = '".$person_manDb->pers_famc."'";
+					//$family_result = mysql_query($family_qry,$db);
+					//@$familyDb = mysql_fetch_object($family_result);
+					$fam_prep_var = $person_manDb->pers_famc;
+					$fam_prep->execute();
+					@$familyDb = $fam_prep->fetch(PDO::FETCH_OBJ);
 					if ($familyDb->fam_man){
 						$ancestor_id2[] = $familyDb->fam_man;
 						$ancestor_number2[]=(2*$ancestor_number[$i]);
@@ -1282,7 +1300,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function search_marital() {
-global $db, $famsX, $famsY, $famspouseX, $famspouseY, $rel_arrayX, $rel_arrayY, $foundX_nr, $foundY_nr, $foundX_gen, $foundY_gen;
+global $db, $dbh, $famsX, $famsY, $famspouseX, $famspouseY, $rel_arrayX, $rel_arrayY, $foundX_nr, $foundY_nr, $foundX_gen, $foundY_gen;
 global $sexe, $sexe2, $spousenameX, $spousenameY, $foundX_match, $foundY_match;
 global $rel_arrayspouseX, $rel_arrayspouseY, $spouse;
 
@@ -1290,13 +1308,20 @@ global $rel_arrayspouseX, $rel_arrayspouseY, $spouse;
 
 	$marrX = explode(";",$famsX);
 	$marrY = explode(";",$famsY);
+	
+	//prepared statement for use in loop
+	$marr_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber=?");
+	$marr_prep->bindParam(1,$marr_prep_var);
+	
 	if($famsX!='') {
 		$marrcount=count($marrX);
 		for($x=0; $x<$marrcount; $x++) {
 
-			$family=mysql_query("SELECT fam_man, fam_woman FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$marrX[$x]."'",$db);
-			@$familyDb=mysql_fetch_object($family) or die("Geen geldig marital 1a gezinsnummer.");
-
+			//$family=mysql_query("SELECT fam_man, fam_woman FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$marrX[$x]."'",$db);
+			//@$familyDb=mysql_fetch_object($family) or die("Geen geldig marital 1a gezinsnummer.");
+			$marr_prep_var = $marrX[$x];
+			$marr_prep->execute();
+			@$familyDb=$marr_prep->fetch(PDO::FETCH_OBJ);
 			if($sexe=='f') {
 				$thespouse=$familyDb->fam_man;
 			}
@@ -1329,11 +1354,12 @@ global $rel_arrayspouseX, $rel_arrayspouseY, $spouse;
 		$ymarrcount=count($marrY);
 		for($x=0; $x<$ymarrcount; $x++) {
 
-			$family=mysql_query("SELECT fam_man, fam_woman FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$marrY[$x]."'",$db);
-
-			$die_message=__('No valid marital 2a family number');
-			@$familyDb=mysql_fetch_object($family) or die("$die_message");
-
+			//$family=mysql_query("SELECT fam_man, fam_woman FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$marrY[$x]."'",$db);
+			//$die_message=__('No valid marital 2a family number');
+			//@$familyDb=mysql_fetch_object($family) or die("$die_message");
+			$marr_prep_var = $marrY[$x];
+			$marr_prep->execute();
+			@$familyDb=$marr_prep->fetch(PDO::FETCH_OBJ);
 			if($sexe2=='f') {
 				$thespouse2=$familyDb->fam_man;
 			}
@@ -1364,11 +1390,12 @@ global $rel_arrayspouseX, $rel_arrayspouseY, $spouse;
 		for($x=0; $x<$xmarrcount; $x++) {
 			for($y=0; $y<$ymarrcount; $y++) {
 
-				$family=mysql_query("SELECT fam_man, fam_woman FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$marrX[$x]."'",$db);
-
-				$die_message=__('No valid newmarital 1a family number.');
-				@$familyDb=mysql_fetch_object($family) or die("$die_message");
-
+				//$family=mysql_query("SELECT fam_man, fam_woman FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$marrX[$x]."'",$db);
+				//$die_message=__('No valid newmarital 1a family number.');
+				//@$familyDb=mysql_fetch_object($family) or die("$die_message");
+				$marr_prep_var = $marrX[$x];
+				$marr_prep->execute();
+				@$familyDb=$marr_prep->fetch(PDO::FETCH_OBJ);
 				if($sexe=='f') {
 					$thespouse=$familyDb->fam_man;
 				}
@@ -1378,13 +1405,14 @@ global $rel_arrayspouseX, $rel_arrayspouseY, $spouse;
 
 				$rel_arrayspouseX = create_rel_array($thespouse);
 
-				$family=mysql_query("SELECT fam_man, fam_woman
-					FROM ".safe_text($_SESSION['tree_prefix'])."family
-					WHERE fam_gedcomnumber='".$marrY[$y]."'",$db);
-
-				$die_message=__('No valid newmarital 2a family number.');
-				@$familyDb=mysql_fetch_object($family) or die("$die_message");
-
+				//$family=mysql_query("SELECT fam_man, fam_woman
+				//	FROM ".safe_text($_SESSION['tree_prefix'])."family
+				//	WHERE fam_gedcomnumber='".$marrY[$y]."'",$db);
+				//$die_message=__('No valid newmarital 2a family number.');
+				//@$familyDb=mysql_fetch_object($family) or die("$die_message");
+				$marr_prep_var = $marrY[$y];
+				$marr_prep->execute();
+				@$familyDb=$marr_prep->fetch(PDO::FETCH_OBJ);
 				if($sexe2=='f') {
 					$thespouse2=$familyDb->fam_man;
 				}
@@ -1457,14 +1485,20 @@ function unset_vars() {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function getperson($gednr) {
-	global $db;
-
+	global $db, $dbh;
+	/*
 	$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 		WHERE pers_gedcomnumber='".$gednr."'",$db);
-
 	$die_message=__('No valid family number');
 	@$personDb=mysql_fetch_object($person) or die("$die_message");
-
+	*/
+	$person = $dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person 
+		WHERE pers_gedcomnumber='".$gednr."'");
+	try {
+		@$personDb = $person->fetch(PDO::FETCH_OBJ);
+	} catch(PDOException $e) {
+		echo __('No valid family number');
+	}
 	return $personDb;
 }
 
@@ -1472,7 +1506,7 @@ function getperson($gednr) {
 
 function display () {
 	global $foundX_match, $reltext, $bloodreltext, $name1, $name2, $spouse, $rel_arrayspouseX;
-	global $special_spouseY, $special_spouseX, $spousenameX, $spousenameY, $table, $doublespouse, $db;
+	global $special_spouseY, $special_spouseX, $spousenameX, $spousenameY, $table, $doublespouse, $db, $dbh;
 	global $rel_arrayX, $rel_arrayY, $famX, $famY, $language, $dutchtext, $searchDb, $searchDb2;
 	global $sexe, $selected_language, $dirmark1,  $famspouseX, $famspouseY, $reltext_nor, $reltext_nor2;
 	global $fampath;  // path to family.php for Joomla and regular. Defined above all functions
@@ -1515,8 +1549,10 @@ function display () {
 			//check if this is involves a marriage or a partnership of any kind
 			$relmarriedX=0;
 			if(isset($famspouseX)) {
-				$kindrel=mysql_query("SELECT fam_kind FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$famspouseX."'",$db);
-				@$kindrelDb=mysql_fetch_object($kindrel) or die("No valid REL family id.");
+				//$kindrel=mysql_query("SELECT fam_kind FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$famspouseX."'",$db);
+				//@$kindrelDb=mysql_fetch_object($kindrel) or die("No valid REL family id.");
+				$kindrel=$dbh->query("SELECT fam_kind FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$famspouseX."'");
+				@$kindrelDb = $kindrel->fetch(PDO::FETCH_OBJ);
 				if($kindrelDb->fam_kind != 'living together' AND
 					$kindrelDb->fam_kind != 'engaged' AND
 					$kindrelDb->fam_kind != 'homosexual' AND
@@ -1532,10 +1568,16 @@ function display () {
 			}
 			$relmarriedY=0;
 			if(isset($famspouseY)) {
+				/*
 				$kindrel2=mysql_query("SELECT fam_kind
 					FROM ".safe_text($_SESSION['tree_prefix'])."family
 					WHERE fam_gedcomnumber='".$famspouseY."'",$db);
 				@$kindrel2Db=mysql_fetch_object($kindrel2) or die("No valid REL2 family id.");
+				*/
+				$kindrel2=$dbh->query("SELECT fam_kind
+					FROM ".safe_text($_SESSION['tree_prefix'])."family
+					WHERE fam_gedcomnumber='".$famspouseY."'");
+				@$kindrel2Db = $kindrel2->fetch(PDO::FETCH_OBJ);
 				if($kindrel2Db->fam_kind != 'living together' AND
 					$kindrel2Db->fam_kind != 'engaged' AND
 					$kindrel2Db->fam_kind != 'homosexual' AND
@@ -2048,11 +2090,14 @@ if(CMS_SPECIFIC == "Joomla") { $len = 180; } // for joomla keep it short....
 if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
 	$search_qry= "SELECT * FROM ".$tree_prefix."person WHERE CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)";
 	$search_qry.= " LIKE '%".$search_lastname."%' AND pers_firstname LIKE '%".$search_firstname."%' ORDER BY pers_lastname, pers_firstname";
-	$search_result = mysql_query($search_qry,$db);
+	//$search_result = mysql_query($search_qry,$db);
+	$search_result = $dbh->query($search_qry);
 	if ($search_result){
-		if(mysql_num_rows($search_result)>0) {
+		//if(mysql_num_rows($search_result)>0) {
+		if($search_result->rowCount()>0) {
 			print '<select class="fonts" size="1" name="person"  style="width:'.$len.'px">';
-				while ($searchDb=mysql_fetch_object($search_result)){
+				//while ($searchDb=mysql_fetch_object($search_result)){
+				while($searchDb=$search_result->fetch(PDO::FETCH_OBJ)) {
 					$name=$pers_cls->person_name($searchDb);
 					if ($name["show_name"]){
 						echo '<option';
@@ -2114,11 +2159,14 @@ echo '</td><td>';
 if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
 	$search_qry= "SELECT * FROM ".$tree_prefix."person WHERE CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)";
 	$search_qry.= " LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ORDER BY pers_lastname, pers_firstname";
-	$search_result2 = mysql_query($search_qry,$db);
+	//$search_result2 = mysql_query($search_qry,$db);
+	$search_result2 = $dbh->query($search_qry);
 	if ($search_result2){
-		if(mysql_num_rows($search_result2)>0) {
+		//if(mysql_num_rows($search_result2)>0) {
+		if($search_result2->rowCount()>0) {
 			print '<select class="fonts" size="1" name="person2" style="width:'.$len.'px">';
-			while ($searchDb2=mysql_fetch_object($search_result2)){
+			//while ($searchDb2=mysql_fetch_object($search_result2)){
+			while($searchDb2=$search_result2->fetch(PDO::FETCH_OBJ)) {
 				$name=$pers_cls->person_name($searchDb2);
 				if ($name["show_name"]){
 					echo '<option';

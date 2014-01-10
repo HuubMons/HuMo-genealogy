@@ -8,6 +8,7 @@ print '<p align=center>';
 
 	if (isset($_POST['save_option'])){
 		// *** Update settings ***
+		/*
 		$result = mysql_query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_skin"])."' WHERE setting_variable='default_skin'") or die(mysql_error());
 
 		$result = mysql_query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_language"])."' WHERE setting_variable='default_language'") or die(mysql_error());
@@ -40,6 +41,39 @@ print '<p align=center>';
 		$result = mysql_query("UPDATE humo_settings SET setting_value='".safe_text($_POST["url_rewrite"])."' WHERE setting_variable='url_rewrite'") or die(mysql_error());
 
 		$result = mysql_query("UPDATE humo_settings SET setting_value='".safe_text($_POST["timezone"])."' WHERE setting_variable='timezone'") or die(mysql_error());
+		*/
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_skin"])."' WHERE setting_variable='default_skin'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_language"])."' WHERE setting_variable='default_language'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_language_admin"])."' WHERE setting_variable='default_language_admin'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["database_name"])."' WHERE setting_variable='database_name'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["homepage"])."' WHERE setting_variable='homepage'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["homepage_description"])."' WHERE setting_variable='homepage_description'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["rss_link"])."' WHERE setting_variable='rss_link'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["searchengine"])."' WHERE setting_variable='searchengine'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["robots_option"])."' WHERE setting_variable='robots_option'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["searchengine_cms_only"])."' WHERE setting_variable='searchengine_cms_only'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["block_spam_question"])."' WHERE setting_variable='block_spam_question'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["block_spam_answer"])."' WHERE setting_variable='block_spam_answer'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["use_spam_question"])."' WHERE setting_variable='use_spam_question'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["visitor_registration"])."' WHERE setting_variable='visitor_registration'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["visitor_registration_group"])."' WHERE setting_variable='visitor_registration_group'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["registration_use_spam_question"])."' WHERE setting_variable='registration_use_spam_question'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["descendant_generations"])."' WHERE setting_variable='descendant_generations'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["show_persons"])."' WHERE setting_variable='show_persons'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["url_rewrite"])."' WHERE setting_variable='url_rewrite'");
+
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["timezone"])."' WHERE setting_variable='timezone'");		
 	}
 
 	// *** Re-read variables after changing them ***
@@ -191,8 +225,10 @@ else {
 	echo __('Default user-group for new users:').' ';
 	echo '<select size="1" name="visitor_registration_group">';
 		$groupsql="SELECT * FROM humo_groups";
-		$groupresult=mysql_query($groupsql,$db);
-		while ($groupDb=mysql_fetch_object($groupresult)){
+		//$groupresult=mysql_query($groupsql,$db);
+		//while ($groupDb=mysql_fetch_object($groupresult)){
+		$groupresult=$dbh->query($groupsql);
+		while ($groupDb=$groupresult->fetch(PDO::FETCH_OBJ)){		
 			$selected='';
 			if ($humo_option["visitor_registration_group"]==$groupDb->group_id){ $selected='  SELECTED'; }
 			print '<option value="'.$groupDb->group_id.'"'.$selected.'>'.$groupDb->group_name.'</option>';

@@ -51,7 +51,8 @@ if (isset($_POST["search_name"])){
 	$person_qry .=	" ORDER BY changed_date DESC, changed_time DESC LIMIT 0,100";
 }
 
-$person_result = mysql_query($person_qry,$db);
+//$person_result = mysql_query($person_qry,$db);
+$person_result = $dbh->query($person_qry);
 
 echo '<h2 class="center">'.__('Recently changed and/or new persons').'</h2>';
 
@@ -73,7 +74,8 @@ echo '<th style="font-size: 90%; text-align: left">'.__('When added').'</th>';
 echo '</tr>';
 
 $rowcounter=0;
-while ($person=mysql_fetch_object($person_result)){
+//while ($person=mysql_fetch_object($person_result)){
+while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	$rowcounter++;
 	echo '<tr>';
 	echo '<td style="font-size: 90%">';
