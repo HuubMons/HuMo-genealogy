@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-24 20:35+0100\n"
-"PO-Revision-Date: 2014-01-09 21:34+0100\n"
+"PO-Revision-Date: 2014-01-11 23:58+0100\n"
 "Last-Translator: marco.steinhaeuser\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -2820,7 +2820,7 @@ msgstr "Person von der/n Ehe/n getrennt."
 
 #: humo-gen/admin/include/editor.php:401
 msgid "Person disconnected from parents."
-msgstr ""
+msgstr "Von den Eltern getrennte Person"
 
 #: humo-gen/admin/include/editor.php:413
 msgid "Person is removed"
@@ -2919,7 +2919,7 @@ msgstr "Eltern"
 #: humo-gen/admin/include/editor.php:2646
 #: humo-gen/admin/include/editor_family_event.php:157
 msgid "[+]"
-msgstr ""
+msgstr "[+]"
 
 #: humo-gen/admin/include/editor.php:1581
 #: humo-gen/admin/include/editor.php:2208
@@ -3049,7 +3049,7 @@ msgstr "Ort"
 
 #: humo-gen/admin/include/editor.php:1714
 msgid "birth time"
-msgstr ""
+msgstr "Zeit der Geburt"
 
 #: humo-gen/admin/include/editor.php:1717
 msgid "stillborn child"
@@ -3126,25 +3126,25 @@ msgstr "eigene Markierung"
 
 #: humo-gen/admin/include/editor.php:1900
 msgid "General text for person"
-msgstr ""
+msgstr "Allgemeiner Text für die Person"
 
 #: humo-gen/admin/include/editor.php:1920
 msgid "General source for person"
-msgstr ""
+msgstr "Allgemeine Quelle für die Person"
 
 #: humo-gen/admin/include/editor.php:1933
 #: humo-gen/admin/include/editor.php:1937
 msgid "Events for person"
-msgstr ""
+msgstr "Veranstaltung für die Person"
 
 #: humo-gen/admin/include/editor.php:1946
 #: humo-gen/admin/include/editor.php:2608
 msgid "For items like:"
-msgstr ""
+msgstr "Für Einträge wie:"
 
 #: humo-gen/admin/include/editor.php:1946
 msgid "Picture/ Media"
-msgstr ""
+msgstr "Bild/Medien"
 
 #: humo-gen/admin/include/editor.php:1946
 msgid "Profession"
@@ -3160,7 +3160,7 @@ msgstr "Ereignis"
 #: humo-gen/admin/include/editor.php:1946
 #: humo-gen/admin/include/editor.php:2608
 msgid "etc."
-msgstr ""
+msgstr "etc."
 
 #: humo-gen/admin/include/editor.php:1998
 #: humo-gen/admin/include/editor.php:2617
@@ -3173,15 +3173,15 @@ msgstr "Gedcom-Tag"
 #: humo-gen/admin/include/editor.php:2622
 #, php-format
 msgid "There are %d unprocessed gedcom tags."
-msgstr ""
+msgstr "Es gibt %d nicht verarbeitete Gedcom Tags."
 
 #: humo-gen/admin/include/editor.php:2034
 msgid "Marriage(s) and children"
-msgstr ""
+msgstr "Heirate(n) und Kinder"
 
 #: humo-gen/admin/include/editor.php:2053
 msgid "Select marriage"
-msgstr ""
+msgstr "Verehelichung wählen"
 
 #: humo-gen/admin/include/editor.php:2096
 msgid "Disconnect child"
@@ -3193,7 +3193,7 @@ msgstr "Kind verbinden"
 
 #: humo-gen/admin/include/editor.php:2115
 msgid "Add child"
-msgstr ""
+msgstr "Kind hinzufügen"
 
 #: humo-gen/admin/include/editor.php:2126
 msgid "Add marriage"
@@ -3201,7 +3201,7 @@ msgstr "Ehe hinzufügen"
 
 #: humo-gen/admin/include/editor.php:2215
 msgid "Edit marriage"
-msgstr ""
+msgstr "Ehe editieren"
 
 #: humo-gen/admin/include/editor.php:2232
 #: humo-gen/admin/include/editor.php:2441
@@ -3278,14 +3278,16 @@ msgstr "Scheidung"
 #: humo-gen/admin/include/editor.php:2550
 msgid "For a divorce without further data just type \"DIVORCE\" in text field."
 msgstr ""
+"Für eine Scheidung ohne vorherige Daten, tragen Sie bitte \"SCHEIDUNG\" in "
+"das Textfeld ein."
 
 #: humo-gen/admin/include/editor.php:2554
 msgid "General text by marriage"
-msgstr ""
+msgstr "Allgemeiner Text für Heirat"
 
 #: humo-gen/admin/include/editor.php:2574
 msgid "General source by marriage"
-msgstr ""
+msgstr "Allgemeine Quelle pro Ehe"
 
 #: humo-gen/admin/include/editor.php:2596
 #: humo-gen/admin/include/editor.php:2600
@@ -3434,6 +3436,8 @@ msgid ""
 "Update all places here. At this moment these places are updated: birth, "
 "baptise, death and burial places."
 msgstr ""
+"Alle Orte hier erneuern. In diesem Moment werden folgende Orte erneuert: "
+"Geburt, Taufen, Tode und Begräbnisstätten."
 
 #: humo-gen/admin/include/editor.php:3415
 msgid "UPDATE OK!"
@@ -3450,7 +3454,7 @@ msgstr "Ort ändern"
 
 #: humo-gen/admin/include/editor.php:3454
 msgid "Also change Google Maps table."
-msgstr ""
+msgstr "Auch Google-Maps-Tabelle ändern."
 
 #: humo-gen/admin/include/editor_addresses.php:14
 msgid "Are you sure you want to delete this place? "
@@ -3490,7 +3494,7 @@ msgstr "Soll dieses Ereignis wirklich entfernt werden?"
 
 #: humo-gen/admin/include/editor_family_event.php:131
 msgid "Events by marriage"
-msgstr ""
+msgstr "Veranstaltungen nach Heirat"
 
 #: humo-gen/admin/include/editor_family_event.php:267
 msgid "Add event"
@@ -3498,7 +3502,7 @@ msgstr "Ereignis hinzufügen"
 
 #: humo-gen/admin/include/editor_person_event.php:58
 msgid "Photo too large"
-msgstr ""
+msgstr "Foto zu groß"
 
 #: humo-gen/admin/include/editor_person_event.php:63
 msgid "Photo upload failed, check folder rights"
@@ -3506,11 +3510,13 @@ msgstr "Bild hochladen fehlgeschlagen, prüfe Verzeichnisberechtigung"
 
 #: humo-gen/admin/include/editor_person_event.php:111
 msgid "Media too large"
-msgstr ""
+msgstr "Medien-Datei zu groß"
 
 #: humo-gen/admin/include/editor_person_event.php:115
 msgid "Media upload failed, check folder rights"
 msgstr ""
+"Hochladen der Medien-Datei fehlgeschlagen. Bitte prüfen Sie die Rechte der "
+"Ordner"
 
 #: humo-gen/admin/include/editor_person_event.php:133
 msgid "No valid picture, media or document file"
