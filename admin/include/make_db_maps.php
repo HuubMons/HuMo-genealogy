@@ -153,8 +153,6 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 
 else {  // main screen
 
-	include_once (CMS_ROOTPATH.'include/database_name.php');
-
 	if(isset($_POST['deletedatabase'])) {
 		//mysql_query("DROP TABLE humo_location", $db);
 		$dbh->query("DROP TABLE humo_location");
@@ -622,9 +620,8 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 				}
 			}
 
-			$treetext_name=database_name($tree_prefixDb->tree_prefix, $selected_language);
-
-			echo "<tr><td>".$treetext_name."</td>";
+			$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
+			echo "<tr><td>".$treetext['name']."</td>";
 			echo "<td><input style='text-align:center' type='text' name='".$offset."' value='${"slider_choice".$tree_prefixDb->tree_prefix}'></td>";
 			$interval = round((2010 - ${"slider_choice".$tree_prefixDb->tree_prefix})/9);
 			echo "<td style='text-align:center'>".$interval."</td></tr>";

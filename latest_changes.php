@@ -65,7 +65,8 @@ echo '</form>';
 echo '</div>';
 
 //echo '<div style="height: 400px; width: 90%; margin-left: 5%; overflow-y: scroll;">';
-echo '<div style="height:400px; width:60%; margin-left: 20%; overflow-y: scroll;">';
+if($rtlmarker=="ltr") echo '<div style="height:400px; width:60%; margin-left: 20%; overflow-y: scroll;">';
+else echo '<div style="height:400px; width:60%; margin-right: 20%; overflow-y: scroll;">';
 echo '<table class="humo" width="99%">';
 echo '<tr>';
 echo '<th style="font-size: 90%; text-align: left">'.__('Changed/ Added').'</th>';

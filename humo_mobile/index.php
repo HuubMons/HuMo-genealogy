@@ -75,8 +75,8 @@ $homepage_name_arr=$homepage_name->fetch();
 					else {
 						if($count==0) { $_SESSION['tree_prefix'] = $tree_prefixDb->tree_prefix; $selected=' SELECTED'; }
 					}
-					$treetext_name=database_name($tree_prefixDb->tree_prefix, $selected_language);  
-					echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext_name.'</option>';
+					$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
+					echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext["name"].'</option>';
 					$count++;
 				}
 			}

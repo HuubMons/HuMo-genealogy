@@ -20,7 +20,7 @@ include_once("function.php");
 include_once(CMS_ROOTPATH."include/safe.php");
 include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
 include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
-include_once(CMS_ROOTPATH."include/database_name.php");
+include_once(CMS_ROOTPATH.'include/show_tree_text.php');
 include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."include/marriage_cls.php"); 
 include_once(CMS_ROOTPATH."include/date_place.php"); 

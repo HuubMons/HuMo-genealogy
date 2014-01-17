@@ -2,8 +2,6 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-include (CMS_ROOTPATH.'include/database_name.php');
-
 echo '<h1 align=center>'.__('Administration').'</h1>';
 
 // variable $path_tmp for all urls in this file
@@ -29,7 +27,9 @@ if (isset($_POST['save_settings_database'])){
 			//$install_qry="CREATE DATABASE IF NOT EXISTS `".DATABASE_NAME."`";
 			$install_qry="CREATE DATABASE IF NOT EXISTS `".$_POST['db_name']."`";
 			$db_check->query($install_qry);
-			$database_check=$db_check->query("USE ".$_POST['db_name']); 
+			//$database_check=$db_check->query("USE ".$_POST['db_name']);
+			//$conn = 'mysql:host='.$_POST['db_host'].';dbname='.$_POST['db_name'];
+			//$database_check = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);
 		}		
 		
 	} catch (PDOException $e) { 
@@ -66,9 +66,13 @@ if (isset($_POST['save_settings_database'])){
 	}
 	*/
 	try {
-		$database_check = $db_check->query("USE ".$_POST['db_name']); 
-		$result_message.=__('Database connection: OK!');
-	} catch (PDOException $e) {  
+		//$database_check = $db_check->query("USE ".$_POST['db_name']); 
+		$conn = 'mysql:host='.$_POST['db_host'].';dbname='.$_POST['db_name'];
+		$temp_dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);	
+		if($temp_dbh!==false) { $database_check=1; $result_message.=__('Database connection: OK!'); }
+		$temp_dbh=null;
+	} catch (PDOException $e) { 
+		unset($database_check);
 		$result_message.='<b>*** '.__('No database found! Check MySQL connection and database name').' ***</b>';
 	}
 	
@@ -139,89 +143,94 @@ echo '<table class="humo">';
 	else{
 		echo '<tr><td>'.__('PHP Version').'</td><td style="background-color:#FF6600">'.phpversion().' '.__('It is recommended to update PHP!').'</td></tr>';
 	}
-
 	// *** MySQL Version ***
 	//$version = explode('.', mysql_get_server_info() );
-	$mysqlversion = $dbh->getAttribute(PDO::ATTR_SERVER_VERSION);
-	$version = explode('.',$mysqlversion);
-	if ($version[0] > 4){
-		//echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#00FF00">'.__('MySQL Version').': '.mysql_get_server_info().'</td></tr>';
-		echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#00FF00">'.__('MySQL Version').': '.$mysqlversion.'</td></tr>';
-	}
-	else{
-		//echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#FF6600">'.mysql_get_server_info().' '.__('It is recommended to update MySQL!').'</td></tr>';
-		echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#FF6600">'.$mysqlversion.' '.__('It is recommended to update MySQL!').'</td></tr>';
-	}
-
-	// *** Check if database and tables are ok ***
-	$install_status=true;
-
-	// *** Check database, if needed install local database ***
-	echo '<tr><td>';
-	if (@$database_check){
-		echo __('Database').'</td>';
-		echo '<td style="background-color:#00FF00">'.__('OK');
-	}
-	else{
-		echo __('Database').'</td><td style="background-color:#FF0000">';
-
-		echo __('<b>There is no database connection! To connect the MySQL database to HuMo-gen, fill in these settings:</b>');
-
-		$install_status=false;
-
-		// *** Get database settings ***
-		echo ' <form method="post" action="'.$path_tmp.'" style="display : inline;">';
-
-		echo '<table class="humo" border="1" cellspacing="0" bgcolor="#DDFD9B">';
-
-		echo '<tr><th>'.__('Database setting').'</th><th>'.__('Database value').'</th><th>'.__('Example website provider').'</th><th>'.__('Example for XAMPP').'</th></tr>';
-	
-		$db_host='localhost'; if (isset($_POST['db_host'])){ $db_host=$_POST['db_host']; }
-		echo '<tr><td>'.__('Database host').'</td>';
-		echo '<td><input type="text" name="db_host" value="'.$db_host.'" size="15"></td>';
-		echo '<td>localhost</td><td>localhost</td>';
-		echo '</tr>';
-
-		$db_username='root'; if (isset($_POST['db_username'])){ $db_username=$_POST['db_username']; }
-		echo '<tr><td>'.__('Database username').'</td>';
-		echo '<td><input type="text" name="db_username" value="'.$db_username.'" size="15"></td>';
-		echo '<td>database_username</td><td>root</td>';
-		echo '</tr>';
-
-		$db_password=''; if (isset($_POST['db_password'])){ $db_password=$_POST['db_password']; }
-		echo '<tr><td>'.__('Database password').'</td>';
-		echo '<td><input type="text" name="db_password" value="'.$db_password.'" size="15"></td>';
-		echo '<td>database_password</td><td><br></td>';
-		echo '</tr>';
-
-		$db_name='humo-gen'; if (isset($_POST['db_name'])){ $db_name=$_POST['db_name']; }
-		echo '<tr><td>'.__('Database name').'</td>';
-		echo '<td><input type="text" name="db_name" value="'.$db_name.'" size="15"></td>';
-		echo '<td>database_name</td><td>humo-gen</td>';
-		echo '</tr>';
-
-		$install_database=''; if (isset($_POST["install_database"])){ $install_database=' checked'; }
-		echo '<tr><td>'.__('At a local PC also install database').'</td><td><input type="checkbox" name="install_database" '.$install_database.'> '.__('YES, also install database').'</td>';
-		echo '<td>'.__('NO').'</td><td>'.__('YES').'</td>';
-		echo '</tr>';
-
-		echo '<tr><td>'.__('Save settings and connect to database').'</td>';
-		echo '<td><input type="Submit" name="save_settings_database" value="'.__('SAVE').'"></td>';
-		echo '<td><br></td><td><br></td>';
-		echo '</tr>';
-
-		echo '</table>';
-		
-		echo '</form>';
-	}
-
-	if (isset($_POST['install_database'])){
-		if (!$database_check){
-			echo '<p><b>'.__('The database has NOT been created!').'</b>';
-			$install_status=false;
+	//if(isset($_POST['save_settings_database'])) {  // no db connection yet, use test connection above
+	if(isset($dbh)) {  
+		// in PDO and MySQLi you can't get MySQL version number until connection is made 
+		// so on very first screens before saving connection parameters we do without. 
+		// as of Jan 2014 mysql_get_server_info still works but once deprecated will give errors, so better so without.
+		$mysqlversion = $dbh->getAttribute(PDO::ATTR_SERVER_VERSION);  
+		$version = explode('.',$mysqlversion);
+		if ($version[0] > 4){
+			//echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#00FF00">'.__('MySQL Version').': '.mysql_get_server_info().'</td></tr>';
+			echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#00FF00">'.__('MySQL Version').': '.$mysqlversion.'</td></tr>';
+		}
+		else{
+			//echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#FF6600">'.mysql_get_server_info().' '.__('It is recommended to update MySQL!').'</td></tr>';
+			echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#FF6600">'.$mysqlversion.' '.__('It is recommended to update MySQL!').'</td></tr>';
 		}
 	}
-	echo '</td></tr>';
+
+// *** Check if database and tables are ok ***
+$install_status=true;
+
+// *** Check database, if needed install local database ***
+echo '<tr><td>';
+if (@$database_check){
+	echo __('Database').'</td>';
+	echo '<td style="background-color:#00FF00">'.__('OK');
+}
+else{
+	echo __('Database').'</td><td style="background-color:#FF0000">';
+
+	echo __('<b>There is no database connection! To connect the MySQL database to HuMo-gen, fill in these settings:</b>');
+
+	$install_status=false;
+
+	// *** Get database settings ***
+	echo ' <form method="post" action="'.$path_tmp.'" style="display : inline;">';
+
+	echo '<table class="humo" border="1" cellspacing="0" bgcolor="#DDFD9B">';
+
+	echo '<tr><th>'.__('Database setting').'</th><th>'.__('Database value').'</th><th>'.__('Example website provider').'</th><th>'.__('Example for XAMPP').'</th></tr>';
+
+	$db_host='localhost'; if (isset($_POST['db_host'])){ $db_host=$_POST['db_host']; }
+	echo '<tr><td>'.__('Database host').'</td>';
+	echo '<td><input type="text" name="db_host" value="'.$db_host.'" size="15"></td>';
+	echo '<td>localhost</td><td>localhost</td>';
+	echo '</tr>';
+
+	$db_username='root'; if (isset($_POST['db_username'])){ $db_username=$_POST['db_username']; }
+	echo '<tr><td>'.__('Database username').'</td>';
+	echo '<td><input type="text" name="db_username" value="'.$db_username.'" size="15"></td>';
+	echo '<td>database_username</td><td>root</td>';
+	echo '</tr>';
+
+	$db_password=''; if (isset($_POST['db_password'])){ $db_password=$_POST['db_password']; }
+	echo '<tr><td>'.__('Database password').'</td>';
+	echo '<td><input type="text" name="db_password" value="'.$db_password.'" size="15"></td>';
+	echo '<td>database_password</td><td><br></td>';
+	echo '</tr>';
+
+	$db_name='humo-gen'; if (isset($_POST['db_name'])){ $db_name=$_POST['db_name']; }
+	echo '<tr><td>'.__('Database name').'</td>';
+	echo '<td><input type="text" name="db_name" value="'.$db_name.'" size="15"></td>';
+	echo '<td>database_name</td><td>humo-gen</td>';
+	echo '</tr>';
+
+	$install_database=''; if (isset($_POST["install_database"])){ $install_database=' checked'; }
+	echo '<tr><td>'.__('At a local PC also install database').'</td><td><input type="checkbox" name="install_database" '.$install_database.'> '.__('YES, also install database').'</td>';
+	echo '<td>'.__('NO').'</td><td>'.__('YES').'</td>';
+	echo '</tr>';
+
+	echo '<tr><td>'.__('Save settings and connect to database').'</td>';
+	echo '<td><input type="Submit" name="save_settings_database" value="'.__('SAVE').'"></td>';
+	echo '<td><br></td><td><br></td>';
+	echo '</tr>';
+
+	echo '</table>';
+	
+	echo '</form>';
+}
+
+if (isset($_POST['install_database'])){
+	if (!$database_check){
+		echo '<p><b>'.__('The database has NOT been created!').'</b>';
+		$install_status=false;
+	}
+}
+echo '</td></tr>';
 
 // *** Show button to continue installation (otherwise the tables are not recognised) ***
 if (isset($_POST['save_settings_database'])){
@@ -365,8 +374,8 @@ The file .htpasswd will look something like this:<br>');
 				else{
 					echo '<td style="background-color:#FF0000">';
 				}
-				echo $dirmark1.database_name($dataDb->tree_prefix, $selected_language);
-
+				$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+				echo $dirmark1.$treetext['name'];
 				if ($dataDb->tree_persons>0){
 					print $dirmark1.' <font size=-1>('.$dataDb->tree_persons.' '.__('persons').', '.$dataDb->tree_families.' '.__('families').')</font>';
 				}
@@ -387,7 +396,7 @@ The file .htpasswd will look something like this:<br>');
 	}
 
 	// *** End of check database and table status ***
-	}
+}
 
 echo '</table>';
 echo '</div>';

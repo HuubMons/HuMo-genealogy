@@ -58,7 +58,6 @@ $joomlapath=CMS_ROOTPATH_ADMIN.'include/';
 include_once ($joomlapath."editor_cls.php");
 $editor_cls = New editor_cls;
 
-include_once (CMS_ROOTPATH.'include/database_name.php');
 include_once (CMS_ROOTPATH."include/language_date.php");
 include_once (CMS_ROOTPATH."include/date_place.php");
 
@@ -269,9 +268,8 @@ echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
 		if (isset($tree_prefix)){
 			if ($tree_prefixDb->tree_prefix==$tree_prefix){ $selected=' SELECTED'; }
 		}
-		$treetext_name=database_name($tree_prefixDb->tree_prefix, $selected_language);
-		echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.
-			@$treetext_name.'</option>';
+		$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
+		echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
 	}
 echo '</select>';
 echo '</form>';

@@ -3,8 +3,6 @@
 if (!defined('ADMIN_PAGE')){ exit; }
 
 @set_time_limit(300);
-
-include_once (CMS_ROOTPATH.'include/database_name.php');
 global $selected_language;
 
 if(CMS_SPECIFIC=="Joomla") {
@@ -42,7 +40,7 @@ if ($update['up_to_date']=='no'){
 			echo '">'.__('Download and unzip new HuMo-gen version').'</a><br>';
 		}
 
-		// *** STEP 1: Download humo-gen.zip and do a unzip to humo-gen folder ***
+		// *** STEP 1: Download humo-gen.zip and unzip to update folder ***
 		if (isset($_GET['step']) AND $_GET['step']=='1'){
 			$download=false;
 

@@ -8,18 +8,6 @@ class mainindex_cls{
 		echo 'checkCookie();';
 		echo '</script>';
 
-		// *** Select family tree ***
-		/*
-		$datasql = mysql_query("SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-			AND humo_tree_texts.treetext_language='".$selected_language."' ORDER BY tree_order",$db);
-		$num_rows = mysql_num_rows($datasql);
-		*/
-		$datasql = $dbh->query("SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-			AND humo_tree_texts.treetext_language='".$selected_language."' ORDER BY tree_order");
-		$num_rows = $datasql->rowCount();		
-
 		// *** Can be used for extra box in lay-out ***
 		echo '<div id="mainmenu_centerbox">';
 
@@ -34,6 +22,7 @@ class mainindex_cls{
 			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
 			AND humo_tree_texts.treetext_language='".$selected_language."' ORDER BY tree_order");
 		$num_rows = $datasql->rowCount();		
+
 		if ($num_rows>1){
 			echo '<div id="mainmenu_left">';
 				echo '<div class="mainmenu_bar fonts">'.__('Select a family tree').':</div>';

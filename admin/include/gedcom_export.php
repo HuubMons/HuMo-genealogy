@@ -37,7 +37,6 @@ if (!defined('ADMIN_PAGE')){ exit; }
 global $selected_language;
 global $persids, $famsids; $noteids;
 $persids = array(); $famsids = array(); $noteids = array();
-include_once (CMS_ROOTPATH.'include/database_name.php');
 
 echo '<H1 align=center>'.__('Gedcom file export').'</H1>';
 
@@ -530,7 +529,7 @@ echo '<td>';
 	echo '<select '.$onchange.' size="1" name="tree">';
 		//while ($treeDb=mysql_fetch_object($tree_result)){
 		while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
-			$treetext_name=database_name($treeDb->tree_prefix, $selected_language);
+			$treetext=show_tree_text($treeDb->tree_prefix, $selected_language);
 			$selected='';
 			if (isset($tree)){
 				if ($treeDb->tree_prefix==$tree){
@@ -539,7 +538,7 @@ echo '<td>';
 					$tree_owner=$treeDb->tree_owner;
 				}
 			}
-			echo '<option value="'.$treeDb->tree_prefix.'"'.$selected.'>'.@$treetext_name.'</option>';
+			echo '<option value="'.$treeDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
 		}
 	echo '</select></td></tr><tr><td>';
 	echo __('Whole tree or part:').'</td><td>';

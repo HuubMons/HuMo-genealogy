@@ -1,15 +1,16 @@
 <?php
-
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-include_once (CMS_ROOTPATH.'include/database_name.php');
-//include_once (CMS_ROOTPATH.'include/person_cls.php');
 global $selected_language;
 
 echo '<H1 align=center>'.__('Family tree data check').'</H1>';
 
 @set_time_limit(3000);
+
+// for rtl direction in tables
+$direction="left";
+if($rtlmarker=="rtl") $direction="right";
 
 if(CMS_SPECIFIC=="Joomla") {
 	echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=check" style="display : inline;">';
@@ -23,19 +24,17 @@ echo '<input type="hidden" name="page" value="'.$page.'">';
 if (isset($_POST['tree'])){ $tree=$_POST['tree']; }
 
 echo '<span class="noprint">'.__('Choose tree:');  // class "noprint" hides it when printing
-$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-//$tree_result = mysql_query($tree_sql,$db);
-$tree_result = $dbh->query($tree_sql);
-echo '<select size="1" name="tree">';
-//while ($treeDb=mysql_fetch_object($tree_result)){
-while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
-	$treetext_name=database_name($treeDb->tree_prefix, $selected_language);
-	$selected='';
-	if (isset($tree)){ if ($treeDb->tree_prefix==$tree){ $selected=' SELECTED'; } }
-	echo '<option value="'.$treeDb->tree_prefix.'"'.$selected.'>'.
-		@$treetext_name.'</option>';
-}
-echo '</select>';
+	$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+	//$tree_result = mysql_query($tree_sql,$db);
+	$tree_result = $dbh->query($tree_sql);
+	echo '<select size="1" name="tree">';
+		//while ($treeDb=mysql_fetch_object($tree_result)){
+		while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
+			$treetext=show_tree_text($treeDb->tree_prefix, $selected_language);
+			$selected=''; if (isset($tree)){ if ($treeDb->tree_prefix==$tree){ $selected=' SELECTED'; } }
+			echo '<option value="'.$treeDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+		}
+	echo '</select>';
 echo '</span>';
 
 // menu of data check page
@@ -60,7 +59,7 @@ if(!isset($_POST['last_changes']) AND !isset($_POST['database_check']) AND !isse
 				AND !isset($_POST['final_check']) AND !isset($_POST['unmark']) 
 				AND !isset($_POST['mark_all']) AND !isset($_POST['invalid_dates'])){
 // displays explanations on entry page to data check items
-	echo '<table style="text-align:left;border:none"><tr><td style="border:none">';
+	echo '<table style="text-align:'.$direction.';border:none"><tr><td style="border:none">';
 	echo '<br><b>'.__('Check consistency of dates').'</b><br>';
 	echo __('With this option you can check the consistency of the dates in your database. For example: birth date after death date, marriage date at age 7, birth date 80 years after mother\'s birth date etc.').'<br>';
 	echo __('You can perform the check with all options, or choose only certain options.').'<br>';
@@ -98,9 +97,9 @@ if (isset($_POST['tree']) AND isset($_POST['last_changes'])){
 	echo '<table class="humo" style="width:100%">';
 
 	echo '<tr>';
-	echo '<th style="font-size: 90%; text-align: left">'.__('Changed/ Added').'</th>';
-	echo '<th style="font-size: 90%; text-align: left">'.__('When changed').'</th>';
-	echo '<th style="font-size: 90%; text-align: left">'.__('When added').'</th>';
+	echo '<th style="font-size: 90%; text-align: center">'.__('Changed/ Added').'</th>';
+	echo '<th style="font-size: 90%; text-align: center">'.__('When changed').'</th>';
+	echo '<th style="font-size: 90%; text-align: center">'.__('When added').'</th>';
 	echo '</tr>';
 
 	//while ($person=mysql_fetch_object($person_result)){
@@ -244,12 +243,13 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 
 if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){ 
 // displays results of validity check (with help of the invalid() function)
-	echo '<table  style="width:100%">';
+
+	echo '<table style="width:100%">';
 	echo '<tr><th style="width:10%;border:1px solid black">'.__('ID').
 		'</th><th style="width:55%;border:1px solid black">'.__('Edit invalid date').
 		'</th><th style="width:20%;border:1px solid black">'.__('Details').
 		'</th><th style="width:15%;border:1px solid black">'.__('Invalid date').'</th></tr>';
-	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid person dates:').'</td></tr>';
+	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid person dates:').'</td></tr>';
 	$found = false; // if this stays false, displays message that no problems where found
 	//$person = mysql_query("SELECT * FROM ".$tree."person ORDER BY pers_lastname,pers_firstname",$db);
 	//while($persdateDb=mysql_fetch_assoc($person)){ 
@@ -270,7 +270,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 
-	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid family dates:').'</td></tr>';
+	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid family dates:').'</td></tr>';
 	$found = false;
 	//$family = mysql_query("SELECT * FROM ".$tree."family",$db);
 	//while($famdateDb=mysql_fetch_assoc($family)){ 
@@ -297,7 +297,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 
-	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid event dates:').'</td></tr>';
+	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid event dates:').'</td></tr>';
 	$found = false;
 	//$event = mysql_query("SELECT * FROM ".$tree."events",$db);
 	//while($eventdateDb=mysql_fetch_assoc($event)){ 
@@ -309,7 +309,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 
-	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid connection dates:').'</td></tr>';
+	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid connection dates:').'</td></tr>';
 	$found = false;
 	//$connection = mysql_query("SELECT * FROM ".$tree."connections",$db);
 	//while($connectdateDb=mysql_fetch_assoc($connection)){ 
@@ -321,7 +321,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 
-	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid address dates:').'</td></tr>';
+	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid address dates:').'</td></tr>';
 	$found = false;
 	//$address = mysql_query("SELECT * FROM ".$tree."addresses",$db);
 	//while($addressdateDb=mysql_fetch_assoc($address)){ 	
@@ -333,7 +333,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 
-	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid repository dates:').'</td></tr>';
+	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid repository dates:').'</td></tr>';
 	$found = false;
 	//$repo = mysql_query("SELECT * FROM ".$tree."repositories",$db);
 	//while($repodateDb=mysql_fetch_assoc($repo)){ 
@@ -345,7 +345,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 
-	echo '<tr><td colspan="4" style="text-align:left;font-weight:bold">'.__('Invalid source dates:').'</td></tr>';
+	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid source dates:').'</td></tr>';
 	$found = false;
 	//$sources = mysql_query("SELECT * FROM ".$tree."sources",$db);
 	//while($sourcedateDb=mysql_fetch_assoc($sources)){ 	
@@ -384,7 +384,8 @@ if (isset($_POST['tree']) AND (isset($_POST['data_check']) OR isset($_POST['unma
 	echo __('You can mark or unmark any of the check options and change defaults. Then press ');
 	echo '<input type="Submit" style="font-size:120%" name="final_check" value="'.__('Check').'"><br>';
 	echo __('(with default settings a full check may take between 12-15 seconds per 10,000 persons)').'<br><br>';
-	echo '<table class="humo" style="width:100%;text-align:left;border:none"><tr><td style="border:none;width:50%">';
+	if($rtlmarker=="ltr") echo '<table class="humo" style="width:100%;text-align:left;border:none"><tr><td style="border:none;width:50%">';
+	else echo '<table class="humo" style="width:100%;text-align:right;border:none"><tr><td style="border:none;width:50%">';
 	echo '<input type="Submit" style="font-size:90%" name="unmark" value="'.__('Unmark all options').'">&nbsp;'; 
 	echo '<input type="Submit" style="font-size:90%" name="mark_all" value="'.__('Mark all options').'"><br>'; 
 	echo '<input type="checkbox" id="1" name="birth_date1" value="1" '.$checked.'>'.__('Birth date - after bapt/marr/death/burial date').'<br>';
@@ -454,13 +455,14 @@ if (isset($_POST['tree']) AND (isset($_POST['data_check']) OR isset($_POST['unma
 if (isset($_POST['final_check'])){
 // performs the date consistency check
 	echo '<h3>'.__('Results').'</h3>';
- 	echo '<table class="humo" style="width:100%;text-align:left">';
- 	echo '<tr><th style="width:20%;border:1px solid black;text-align:center;padding-left:5px;padding-right:5px">'.__('Person').'</th>';
- 	echo '<th style="width:10%;border:1px solid black;text-align:center;padding-left:5px;padding-right:5px">'.__('ID').'</th>';
- 	echo '<th style="width:35%;border:1px solid black;text-align:center;padding-left:5px;padding-right:5px">'.__('Possible consistency problems').'</th>';
- 	echo '<th style="width:35%;border:1px solid black;text-align:center;padding-left:5px;padding-right:5px">'.__('Details').'</th></tr>';
+	if($rtlmarker=="ltr") echo '<table class="humo" style="width:100%;text-align:left">';
+	else echo '<table class="humo" style="width:100%;text-align:right">';
+	echo '<tr><th style="width:20%;border:1px solid black;text-align:center;padding-left:5px;padding-right:5px">'.__('Person').'</th>';
+	echo '<th style="width:10%;border:1px solid black;text-align:center;padding-left:5px;padding-right:5px">'.__('ID').'</th>';
+	echo '<th style="width:35%;border:1px solid black;text-align:center;padding-left:5px;padding-right:5px">'.__('Possible consistency problems').'</th>';
+	echo '<th style="width:35%;border:1px solid black;text-align:center;padding-left:5px;padding-right:5px">'.__('Details').'</th></tr>';
 
- 	$results_found=0;
+	$results_found=0;
 
 	//$person = mysql_query("SELECT * FROM ".$tree."person ORDER BY pers_lastname,pers_firstname",$db);
 	//while($personDb=mysql_fetch_assoc($person)){
@@ -1146,7 +1148,7 @@ function write_pers ($name,$id,$first_date,$second_date,$first_text,$second_text
 }
 
 function invalid($date,$gednr,$table) {  // checks validity with validate_cls.php and displays invalid dates and their details
-	global $tree, $db, $dbh;
+	global $tree, $db, $dbh, $direction, $dirmark1, $dirmark2;
 	include_once (CMS_ROOTPATH.'include/validate_date_cls.php'); 
 	$process_date = New validate_date_cls;
 	$compare_date=$date;
@@ -1167,7 +1169,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			$pers = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$gednr."'");
 			$personDb=$pers->fetch();			
 			$name = $personDb['pers_firstname'].' '.str_replace("_"," ",$personDb['pers_prefix'].' '.$personDb['pers_lastname']);
-			echo '<tr><td style="text-align:left">'.$gednr.'</td><td style="text-align:left"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$personDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$name.'</a></td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 
+			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$personDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$name.'</a></td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="fam") {
 			/*
@@ -1189,7 +1191,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			$name2 = $spouse2Db['pers_firstname'].' '.str_replace("_"," ",$spouse2Db['pers_prefix'].' '.$spouse2Db['pers_lastname']);
 			$spousegednr = $spouse1Db['pers_gedcomnumber']; if($spousegednr=='') $spousegednr = $spouse2Db['pers_gedcomnumber'];
 			$and = ' '.__('and').' '; if($spouse1Db['pers_gedcomnumber']=='' OR $spouse2Db['pers_gedcomnumber']=='') $and='';
-			echo '<tr><td style="text-align:left">'.$gednr.'</td><td style="text-align:left"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$spousegednr.'" target=\'_blank\'>'.$name1.$and.$name2.'</a></td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 			
+			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$spousegednr.'" target=\'_blank\'>'.$name1.$and.$name2.'</a></td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 			
 		}
 		if(substr($table,0,3) =="eve") {
 			//$ev = mysql_query("SELECT * FROM ".$tree."events WHERE event_id = '".$gednr."'", $db);
@@ -1205,7 +1207,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				$evdetail= $evDb['event_event']; 
 				if($evdetail=='') $evdetail=$evDb['event_gedcom']; 
 				if($evdetail!='') $evdetail = ': '.$evdetail;
-				echo '<tr><td style="text-align:left">'.$persDb['pers_gedcomnumber'].'</td><td style="text-align:left"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$persDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$fullname.'</a> ('.__('Click events by person').')</td><td style="text-align:left">'.$evDb['event_kind'].$evdetail.'</td><td style="text-align:left">'.$date.'</td></tr>';  
+				echo '<tr><td style="text-align:'.$direction.'">'.$persDb['pers_gedcomnumber'].'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$persDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$fullname.'</a> ('.__('Click events by person').')</td><td style="text-align:'.$direction.'">'.$evDb['event_kind'].$evdetail.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>';  
 			}
 			elseif($evDb['event_family_id']!='') { 
 				/*
@@ -1231,7 +1233,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				$evdetail= $evDb['event_event']; 
 				if($evdetail=='') $evdetail=$evDb['event_gedcom']; 
 				if($evdetail!='') $evdetail = ': '.$evdetail;
-				echo '<tr><td style="text-align:left">'.$famDb['fam_gedcomnumber'].'</td><td style="text-align:left"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$spousegednr.'" target=\'_blank\'>'.$fullname.'</a> ('.__('Click events by marriage').')</td><td style="text-align:left">'.$evDb['event_kind'].$evdetail.'</td><td style="text-align:left">'.$date.'</td></tr>';
+				echo '<tr><td style="text-align:'.$direction.'">'.$famDb['fam_gedcomnumber'].'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$spousegednr.'" target=\'_blank\'>'.$fullname.'</a> ('.__('Click events by marriage').')</td><td style="text-align:'.$direction.'">'.$evDb['event_kind'].$evdetail.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>';
 			}
 
 		}
@@ -1322,7 +1324,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 					$name = '<a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$gednr.'" target=\'_blank\'>'.$name.'</a> ('.__('Click relevant event source').')';
 				}
 			}
-			echo '<tr><td style="text-align:left">'.$gedcomnr.'</td><td style="text-align:left">'.$name.'</td><td style="text-align:left">'.$connectDb['connect_sub_kind'].'</td><td style="text-align:left">'.$date.'</td></tr>'; 
+			echo '<tr><td style="text-align:'.$direction.'">'.$gedcomnr.'</td><td style="text-align:'.$direction.'">'.$name.'</td><td style="text-align:'.$direction.'">'.$connectDb['connect_sub_kind'].'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="add") {
 			//$addresses = mysql_query("SELECT * FROM ".$tree."addresses WHERE address_id = '".$gednr."'", $db);
@@ -1335,10 +1337,10 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				$pers = $dbh->query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber = '".$addressesDb['address_person_id']."'");
 				$persDb=$pers->fetch();				
 				$name = $persDb['pers_firstname'].' '.str_replace("_"," ",$persDb['pers_prefix']).' '.$persDb['pers_lastname'];
-				echo '<tr><td style="text-align:left">'.$persDb['pers_gedcomnumber'].'</td><td style="text-align:left"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$persDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$name.'</a> ('.__('Click addresses').')</td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 
+				echo '<tr><td style="text-align:'.$direction.'">'.$persDb['pers_gedcomnumber'].'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$persDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$name.'</a> ('.__('Click addresses').')</td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$date.'</td></tr>'; 
 			}
 			if($addressesDb['address_gedcomnr']!='') { $second_column = '<a href="index.php?page=edit_addresses" target=\'_blank\'>'.__('Address editor').'</a> (Search for: '.$addressesDb['address_address'].')'; 
-				echo '<tr><td style="text-align:left">'.$gednr.'</td><td style="text-align:left">'.$second_column.'</td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 
+				echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'">'.$second_column.'</td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 			}
 		}
 		if(substr($table,0,3) =="sou") {
@@ -1346,14 +1348,14 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			//$sourcesDb=mysql_fetch_assoc($sources);
 			$sources = $dbh->query("SELECT * FROM ".$tree."sources WHERE source_gedcomnr = '".$gednr."'");
 			$sourcesDb=$sources->fetch();			
-			echo '<tr><td style="text-align:left">'.$gednr.'</td><td style="text-align:left">'.'<a href="index.php?page=edit_sources" target=\'_blank\'>'.__('Source editor').'</a> (Search for: '.$sourcesDb['source_title'].'</td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 
+			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'">'.'<a href="index.php?page=edit_sources" target=\'_blank\'>'.__('Source editor').'</a> (Search for: '.$sourcesDb['source_title'].'</td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="rep") {
 			//$repos = mysql_query("SELECT * FROM ".$tree."repositories WHERE repo_gedcomnr = '".$gednr."'", $db);
 			//$reposDb=mysql_fetch_assoc($repos);
 			$repos = $dbh->query("SELECT * FROM ".$tree."repositories WHERE repo_gedcomnr = '".$gednr."'");
 			$reposDb=$repos->fetch();			
-			echo '<tr><td style="text-align:left">'.$gednr.'</td><td style="text-align:left">'.'<a href="index.php?page=edit_repositories" target=\'_blank\'>'.__('Repository editor').'</a> (Search for: '.$reposDb['repo_name'].')</td><td style="text-align:left">'.$table.'</td><td style="text-align:left">'.$date.'</td></tr>'; 
+			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'">'.'<a href="index.php?page=edit_repositories" target=\'_blank\'>'.__('Repository editor').'</a> (Search for: '.$reposDb['repo_name'].')</td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 		}
 		return true;  // found invalid date
 	}

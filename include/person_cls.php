@@ -21,7 +21,8 @@ function construct($personDb){
 function set_privacy($personDb){
 	global $user, $dataDb;
 	$privacy_person='';  // *** Standard: show all persons ***
-	if ($user["group_privacy"]=='n'){
+//echo $user['group_privacy'];
+	if ($user['group_privacy']=='n'){
 		$privacy_person="1";  // *** Standard: filter privacy data of person ***
 		// *** $personDb is empty by N.N. person ***
 		if ($personDb){

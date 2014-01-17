@@ -6,7 +6,6 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 require_once(CMS_ROOTPATH_ADMIN."statistics/maxChart.class.php"); // REQUIRED FOR STATISTICS
 include_once (CMS_ROOTPATH."include/person_cls.php");
-include_once (CMS_ROOTPATH."include/database_name.php");
 
 echo '<h1 align=center>'.__('Statistics').'</h1>';
 
@@ -21,8 +20,8 @@ function statistics_line($familyDb){
 	echo '<tr>';
 	if (isset($familyDb->count_lines)){ echo '<td>'.$familyDb->count_lines.'</td>'; }
 
-	$treetext_name=database_name($familyDb->tree_prefix, $selected_language);
-	echo '<td>'.$treetext_name.'</td>';
+	$treetext=show_tree_text($familyDb->tree_prefix, $selected_language);
+	echo '<td>'.$treetext['name'].'</td>';
 
 	if (!isset($familyDb->count_lines)){ echo '<td>'.$familyDb->stat_date_stat.'</td>'; }
 
@@ -462,8 +461,8 @@ if ($statistics_screen=='general_statistics'){
 		//statistics_line($familyDb);
 		if ($familyDb->tree_prefix){
 			// *** Show family tree name ***
-			$treetext_name=database_name($familyDb->tree_prefix, $selected_language);
-			echo '<tr><td>'.$treetext_name.'</td>';
+			$treetext=show_tree_text($familyDb->tree_prefix, $selected_language);
+			echo '<tr><td>'.$treetext['name'].'</td>';
 		}
 		else{
 			echo '<tr><td><b>'.__('FAMILY TREE ERASED').'</b></td>';
@@ -822,16 +821,16 @@ if ($statistics_screen=='statistics_old'){
 				if (substr($date,5,2)=='12'){ $month=' dec ';}
 			$date=substr($date,8,2).$month.substr($date,0,4);
 
-			$treetext_name=database_name($dataDb->tree_prefix, $selected_language);
+			$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
 			if (isset($_SESSION['tree_prefix']) AND $_SESSION['tree_prefix']==$dataDb->tree_prefix){
-				echo "<b>".$treetext_name."</b>";
+				echo '<b>'.$treetext['name'].'</b>';
 			}
 			else{
 				if(CMS_SPECIFIC == "Joomla") {
-					echo '<a href="index.php?option=com_humo-gen&amp;task=admin&amp;page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext_name.'</a>';
+					echo '<a href="index.php?option=com_humo-gen&amp;task=admin&amp;page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext['name'].'</a>';
 				}
 				else {
-					echo '<a href="'.$_SERVER['PHP_SELF'].'?page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext_name.'</a>';
+					echo '<a href="'.$_SERVER['PHP_SELF'].'?page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext['name'].'</a>';
 				}
 			}
 			print ' <font size=-1>('.$date.': '.$count_persons.' '.__('persons').", ".$count_families.' '.__('families').")</font>\n<br>";

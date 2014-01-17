@@ -1627,8 +1627,8 @@ if($screen_mode=='') {
 			//$user=mysql_query($usersql,$db);
 			//$userDb=mysql_fetch_object($user);
 			$usersql='SELECT * FROM humo_users WHERE user_id="'.$_SESSION['user_id'].'"';
-			$user=$dbh->query($usersql);
-			$userDb=$user->fetch(PDO::FETCH_OBJ);
+			$user_note=$dbh->query($usersql);
+			$userDb=$user_note->fetch(PDO::FETCH_OBJ);
 			
 			// *** Name of selected person in family tree ***
 			if ($change_main_person==true)
@@ -1639,7 +1639,7 @@ if($screen_mode=='') {
 			if (isset($_POST['send_mail'])){
 				$gedcom_date=strtoupper(date("d M Y")); $gedcom_time=date("H:i:s");
 
-				//note_status show/ hide/ moderate options.
+				// *** note_status show/ hide/ moderate options ***
 				/*
 				$user_register_date=date("Y-m-d H:i");
 				$sql="INSERT INTO humo_user_notes SET

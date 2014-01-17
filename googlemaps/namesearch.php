@@ -22,7 +22,6 @@ include_once(CMS_ROOTPATH."include/db_login.php"); //Inloggen database.
 //mysql_query("SET NAMES 'utf8'", $db);
 $dbh->query("SET NAMES 'utf8'");
 
-include_once (CMS_ROOTPATH.'include/database_name.php');
 include_once(CMS_ROOTPATH."include/safe.php");
 include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
 include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables

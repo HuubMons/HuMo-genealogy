@@ -10,8 +10,10 @@ class editor_cls{
 
 // *** $multiple_rows = addition for editing in multiple rows. Example: name = "event_date[]" ***
 function date_show($process_date, $process_name, $multiple_rows=''){
+
 	// *** Process BEF, ABT, AFT and BET in a easier pulldown menu ***
 	global $language, $field_date;
+
 	$text='<select class="fonts" size="1" name="'.$process_name.'_prefix'.$multiple_rows.'">';
 		$text.='<option value="">=</option>';
 
@@ -28,7 +30,7 @@ function date_show($process_date, $process_name, $multiple_rows=''){
 		$text.='<option value="BET "'.$selected.'>'.__('between').'</option>';
 	$text.='</select>';
 
-	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" value="';
+	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" style="direction:ltr" value="';
 		// *** BEF, ABT, AFT, etc. is shown in date_prefix ***
 		$process_date=strtolower($process_date);
 		if (substr($process_date,0,4)=='bef '){ $text.=substr($process_date,4); }

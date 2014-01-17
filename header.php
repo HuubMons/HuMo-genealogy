@@ -42,13 +42,13 @@ if (isset($_GET['log_off'])){
 }
 
 include_once(CMS_ROOTPATH."include/db_login.php"); //Inloggen database.
+include_once (CMS_ROOTPATH.'include/show_tree_text.php');
 
 // *** Use UTF-8 database connection ***
 //mysql_query("SET NAMES 'utf8'", $db);
 // *** Use UTF-8 database connection ***
-$dbh->query("SET NAMES 'utf8'");
+//$dbh->query("SET NAMES 'utf8'");
 
-include_once (CMS_ROOTPATH.'include/database_name.php');
 
 // *** Show a message at NEW installation. ***
 //$result = mysql_query("SELECT * FROM humo_settings",$db);

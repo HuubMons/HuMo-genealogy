@@ -8,17 +8,6 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		echo '<a href="'.$humo_option["homepage"].'">&nbsp;'.$humo_option["database_name"].'</a>';
 	echo '</span>';
 
-	// *** Show name of family tree (if one family tree is selected) ***
-	//echo '<span id="top_familytree_name">';
-	//	if (isset($search_database) AND $search_database=='all_databases'){
-	//		echo $dirmark1.' | '.__('All family trees');
-	//	}
-	//	else{
-	//		$treetext_name=database_name($_SESSION['tree_prefix'], $selected_language);
-	//		echo $dirmark1.' | '.$treetext_name;
-	//	}
-	//echo '</span>';
-
 	echo '&nbsp;&nbsp;';
 
 	// *** Select family tree ***
@@ -51,8 +40,8 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 					else {
 						if($count==0) { $_SESSION['tree_prefix'] = $tree_prefixDb->tree_prefix; $selected=' SELECTED'; }
 					}
-					$treetext_name=database_name($tree_prefixDb->tree_prefix, $selected_language);
-					echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext_name.'</option>';
+					$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
+					echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
 					$count++;
 				}
 			}
@@ -62,7 +51,8 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 	}
    echo '</div>';
 	// *** This code is only used to restore $dataDb reading. Used for picture etc. ***
-	$treetext_name=database_name($_SESSION['tree_prefix'], $selected_language);
+	//$treetext_name=database_name($_SESSION['tree_prefix'], $selected_language);
+	$treetext=show_tree_text($_SESSION['tree_prefix'], $selected_language);
 
 	// *** Show quicksearch field ***
 	if (!$bot_visit){

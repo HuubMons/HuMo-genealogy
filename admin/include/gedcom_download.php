@@ -5,7 +5,6 @@
 //global $selected_language;
 //global $persids, $famsids; $noteids;
 //$persids = array(); $famsids = array(); $noteids = array();
-//include_once (CMS_ROOTPATH.'include/database_name.php');
 
 //echo '<H1 align=center>'.__('Gedcom file export').'</H1>';
 

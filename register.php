@@ -47,10 +47,9 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 		echo '<h2>'.$error.'</h2>';
 	}
 
-	// *** Mail new registerd user to the administrator ***
+	// *** Mail new registered user to the administrator ***
 	$register_address=$dataDb->tree_email;
 
-	//$register_subject="HuMo-gen ".__('New registered user')." (".database_name($_SESSION['tree_prefix'], $selected_language)."): ".$_POST['register_subject']."\n";
 	$register_subject="HuMo-gen. ".__('New registered user').": ".$_POST['register_name']."\n";
 
 	// *** It's better to use plain text in the subject ***

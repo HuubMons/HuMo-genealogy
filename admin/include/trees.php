@@ -4,10 +4,9 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 echo '<h1 align=center>'.__('Family tree administration').'</h1>';
 
-//THIS FILE IS MADE BY Huub Mons
-//IT IS PART OF THE HuMo-gen program.
-
-require (CMS_ROOTPATH.'include/database_name.php');
+// THIS FILE IS MADE BY Huub Mons
+// IT IS PART OF THE HuMo-gen program.
+// jan 2014: updated family tree texts.
 
 // have to be declared global here for use in trees_cls.php
 global $phpself, $phpself2, $joomlastring;
@@ -297,17 +296,14 @@ $tree_prefix_result = $dbh->query($tree_prefix_sql);
 echo __('Family tree').': ';
 echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
-	//echo '<select size="1" name="family_tree_id">';
 	echo '<select size="1" name="family_tree_id" onChange="this.form.submit();">';
 		//while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result)){
 		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
-			$selected='';
-			if ($tree_prefixDb->tree_id==$family_tree_id){ $selected=' SELECTED'; }
-			$treetext_name2=database_name($tree_prefixDb->tree_prefix, $selected_language);
-			echo '<option value="'.$tree_prefixDb->tree_id.'"'.$selected.'>'.@$treetext_name2.'</option>';
+			$selected=''; if ($tree_prefixDb->tree_id==$family_tree_id){ $selected=' SELECTED'; }
+			$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
+			echo '<option value="'.$tree_prefixDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
 		}
 	echo '</select>';
-	//echo ' <input type="Submit" name="submit" value="'.__('Select').'">';
 echo '</form>';
 
 // *** Family trees administration menu ***

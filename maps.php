@@ -6,7 +6,6 @@ if(isset($_POST['tree_prefix'])) {
 }
 
 include_once(CMS_ROOTPATH."menu.php");
-include_once (CMS_ROOTPATH.'include/database_name.php');
 include_once (CMS_ROOTPATH.'include/person_cls.php');
 include_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/date_place.php");
@@ -29,33 +28,32 @@ else { echo '<div style="float:right">'; }
 // SELECT FAMILY TREE
 $tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 $tree_prefix_result = $dbh->query($tree_prefix_sql);
-echo '<form method="POST" action="maps.php" style="display : inline;">';
-echo '<select size="1" name="tree_prefix">';
 $count=0;
-//while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result)){
-while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
-
-	// *** Check if family tree is shown or hidden for user group ***
-	$hide_tree_array=explode(";",$user['group_hide_trees']);
-	$hide_tree=false;
-	for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-		if ($hide_tree_array[$x]==$tree_prefixDb->tree_id){ $hide_tree=true; }
-	}
-	if ($hide_tree==false){
-		$selected='';
-		if (isset($_SESSION['tree_prefix'])){
-			if ($tree_prefixDb->tree_prefix==$_SESSION['tree_prefix']){ $selected=' SELECTED'; }
+echo '<form method="POST" action="maps.php" style="display : inline;">';
+echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
+	echo '<option value="">'.__('Select a family tree:').'</option>';
+	//while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result)){
+	while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
+		// *** Check if family tree is shown or hidden for user group ***
+		$hide_tree_array=explode(";",$user['group_hide_trees']);
+		$hide_tree=false;
+		for ($x=0; $x<=count($hide_tree_array)-1; $x++){
+			if ($hide_tree_array[$x]==$tree_prefixDb->tree_id){ $hide_tree=true; }
 		}
-		else {
-			if($count==0) { $_SESSION['tree_prefix'] = $tree_prefixDb->tree_prefix; $selected=' SELECTED'; }
+		if ($hide_tree==false){
+			$selected='';
+			if (isset($_SESSION['tree_prefix'])){
+				if ($tree_prefixDb->tree_prefix==$_SESSION['tree_prefix']){ $selected=' SELECTED'; }
+			}
+			else {
+				if($count==0) { $_SESSION['tree_prefix'] = $tree_prefixDb->tree_prefix; $selected=' SELECTED'; }
+			}
+			$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
+			echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+			$count++;
 		}
-		$treetext_name=database_name($tree_prefixDb->tree_prefix, $selected_language);
-		echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext_name.'</option>';
-		$count++;
 	}
-}
 echo '</select>';
-echo ' <input type="Submit" name="submit" value="'.__('Change').'">';
 echo '</form>';
 
 // SET BIRTH OR DEATH MAP

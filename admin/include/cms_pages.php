@@ -2,34 +2,26 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-include_once (CMS_ROOTPATH.'include/database_name.php');
 global $selected_language;
 
-if(CMS_SPECIFIC=="Joomla") {
+if(CMS_SPECIFIC=="Joomla")
 	$phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=groups";
-}
-else {
+else
 	$phpself = $_SERVER['PHP_SELF'];
-}
+
 echo '<h1 align=center>'.__('CMS Own pages').'</h1>';
 
 echo __('Here you can add your own pages to HuMo-gen! It\'s possible to use categories in the menu (like "Family history", "Family stories").');
 
 echo '<p><form method="post" action="'.$phpself.'" style="display : inline;">';
-echo '<input type="hidden" name="page" value="'.$page.'">';
-
-echo '<table class="humo" style="width:95%;text-align:center;border:1px solid black;"><tr class="table_header_large"><td>';
-echo ' <input type="Submit" name="cms_pages" value="'.__('Pages').'">';
-echo '</td><td>';
-echo ' <input type="Submit" name="cms_pages" value="'.__('Add page').'">';
-echo '</td><td>';
-echo ' <input type="Submit" name="cms_menu" value="'.__('Menu').'">';
-echo '</td><td>';
-echo ' <input type="Submit" name="cms_settings" value="'.__('CMS Settings').'">';
-echo '</td><tr></table>';
-
+	echo '<input type="hidden" name="page" value="'.$page.'">';
+	echo '<table class="humo" style="width:95%;text-align:center;border:1px solid black;"><tr class="table_header_large">';
+		echo '<td><input type="Submit" name="cms_pages" value="'.__('Pages').'"></td>';
+		echo '<td><input type="Submit" name="cms_pages" value="'.__('Add page').'"></td>';
+		echo '<td><input type="Submit" name="cms_menu" value="'.__('Menu').'"></td>';
+		echo '<td><input type="Submit" name="cms_settings" value="'.__('CMS Settings').'"></td>';
+	echo '<tr></table>';
 echo '</form>';
-
 
 // *** Save or add page ***
 if (isset($_POST['add_page']) OR isset($_POST['change_page'])){

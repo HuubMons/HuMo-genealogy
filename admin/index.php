@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL);
+//error_reporting(E_ALL);
 /**
 * This is the admin web entry point for HuMo-gen.
 *
@@ -39,6 +39,7 @@ error_reporting(E_ALL);
 		- Code for one CMS: if (CMS_SPECIFIC == 'Joomla') {}
 		- Code NOT for CMS: if (!CMS_SPECIFIC) {}
 */
+
 if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
 
 if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "../");
@@ -75,26 +76,32 @@ include_once(CMS_ROOTPATH."include/db_login.php"); // *** Database login ***
 
 // *** Use UTF-8 database connection ***
 //@mysql_query("SET NAMES 'utf8'", $db);
-@$dbh->query("SET NAMES 'utf8'");
+//@$dbh->query("SET NAMES 'utf8'");
+ 
+include_once(CMS_ROOTPATH."include/safe.php"); // Variables
 
-include_once(CMS_ROOTPATH."include/safe.php"); //Variabelen
+// *** Function to show family tree texts ***
+include_once (CMS_ROOTPATH.'include/show_tree_text.php');
 
 // *** Only load settings if database and table exists ***
 $show_menu_left=false;
 $popup=false;
 
 $update_message='';
-if (isset($database_check) AND $database_check){
+
+if (isset($database_check) AND @$database_check){  // otherwise we can't make $dbh statements
 	//$check_tables = @mysql_query("SELECT * FROM humo_settings",$db);
 	$check_tables = $dbh->query("SELECT * FROM humo_settings");
 	if ($check_tables){
 		include_once(CMS_ROOTPATH."include/settings_global.php");
 		$show_menu_left=true;
 	}
+}
 
-	// *** First installation: show menu if installation of tables is started ***
-	if (isset($_POST['install_tables2'])){ $show_menu_left=true; }
+// *** First installation: show menu if installation of tables is started ***
+if (isset($_POST['install_tables2'])){ $show_menu_left=true; }
 
+if (isset($database_check) AND @$database_check){  // otherwise we can't make $dbh statements
 	// *** Update to version 4.6, in older version there is a dutch-named table: humo_instellingen ***
 	//$check_update = @mysql_query("SELECT * FROM humo_instellingen",$db);
 	$check_update = @$dbh->query("SELECT * FROM humo_instellingen");
@@ -111,7 +118,7 @@ if (isset($database_check) AND $database_check){
 		$popup=true;
 	}
 }
-
+ 
 // *** Set timezone ***
 include_once(CMS_ROOTPATH."include/timezone.php"); // set timezone
 timezone();
@@ -150,7 +157,7 @@ if (isset($_SESSION["save_language_admin"])
 
 $language = array();
 include(CMS_ROOTPATH.'languages/'.$selected_language.'/language_data.php');
-
+ 
 // *** .mo language text files ***
 include_once(CMS_ROOTPATH."languages/gettext.php");
 // *** Load ***
@@ -174,77 +181,83 @@ if($language["dir"]=="rtl") {
 // *** Login check ***
 $group_administrator='';
 $group_editor='';
-if (isset($_SERVER["PHP_AUTH_USER"])){
-	// *** Logged in using .htacess ***
+if(isset($database_check) AND $database_check) {
+	if (isset($_SERVER["PHP_AUTH_USER"])){
+		// *** Logged in using .htacess ***
+ 
+		// *** Standard group permissions ***
+		$group_administrator='j';
+		$group_editor='j';
 
-	// *** Standard group permissions ***
-	$group_administrator='j';
-	$group_editor='j';
+		// *** If username = editor then change group permissions ***
+		//if ($_SERVER["PHP_AUTH_USER"]=='editor'){
+		//	$group_administrator='n';
+		//	$group_editor='j';
+		//}
 
-	// *** If username = editor then change group permissions ***
-	//if ($_SERVER["PHP_AUTH_USER"]=='editor'){
-	//	$group_administrator='n';
-	//	$group_editor='j';
-	//}
-
-	// *** If .htaccess is used, check usergroup for admin rights ***
-	@$query = "SELECT * FROM humo_users LEFT JOIN humo_groups
-		ON humo_users.user_group_id=humo_groups.group_id
-		WHERE humo_users.user_name='".$_SERVER["PHP_AUTH_USER"]."'";
-	//@$result = mysql_query($query,$db);
-	@$result = $dbh->query($query);
-	//if (@mysql_num_rows($result) > 0){
-	if (@$result->rowCount() > 0){
-		//@$resultDb=mysql_fetch_object($result);
-		@$resultDb=$result->fetch(PDO::FETCH_OBJ);
-		$group_administrator=$resultDb->group_admin;
-
-		// *** Check if user is a editor ***
-		$group_editor='j'; if (isset($resultDb->group_editor)){ $group_editor=$resultDb->group_editor; }
-	}
-}
-elseif($page=='update') {
-	// *** No log in, update procedure (group table will be changed) ***
-}
-else{
-	// *** Logged in using PHP-MySQL ***
-	@$query = "SELECT * FROM humo_users";
-	//@$result = mysql_query($query,$db);
-	@$result = $dbh->query($query);	
-	//if (@mysql_num_rows($result) > 0){
-	if (@$result->rowCount() > 0){
-		// *** humo-users table exists, check admin log in ***
-		//if (isset($_SESSION["group_id_admin"]) AND $_SESSION["group_id_admin"] == "1") {
-		if (isset($_SESSION["group_id_admin"])) {
-			// *** Logged in as admin... ***
-
-			// *** Read group settings ***
-			//$groepsql = mysql_query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'",$db);
-			//@$groepDb=mysql_fetch_object($groepsql) or die("Geen geldige gebruikersgroep/ No valid usergroup.");
-			$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'");
-			@$groepDb=$groepsql->fetch(PDO::FETCH_OBJ);			
-
-			// *** Check if user is a administrator ***
-			$group_administrator=$groepDb->group_admin;
-			if ($group_administrator!='j'){ $page='login'; }
+		// *** If .htaccess is used, check usergroup for admin rights ***
+		@$query = "SELECT * FROM humo_users LEFT JOIN humo_groups
+			ON humo_users.user_group_id=humo_groups.group_id
+			WHERE humo_users.user_name='".$_SERVER["PHP_AUTH_USER"]."'";
+		//@$result = mysql_query($query,$db);
+		@$result = $dbh->query($query);
+		//if (@mysql_num_rows($result) > 0){
+		if (@$result->rowCount() > 0){
+			//@$resultDb=mysql_fetch_object($result);
+			@$resultDb=$result->fetch(PDO::FETCH_OBJ);
+			$group_administrator=$resultDb->group_admin;
 
 			// *** Check if user is a editor ***
-			if (isset($groepDb->group_editor)){
-				$group_editor=$groepDb->group_editor;
-				if ($group_editor=='j'){ $page=''; }
+			$group_editor='j'; if (isset($resultDb->group_editor)){ $group_editor=$resultDb->group_editor; }
+		}   
+	}
+	elseif($page=='update') {
+		// *** No log in, update procedure (group table will be changed) ***
+	}
+	else{    
+		// *** Logged in using PHP-MySQL ***
+		@$query = "SELECT * FROM humo_users";
+		//@$result = mysql_query($query,$db);
+		@$result = $dbh->query($query); 
+		//if (@mysql_num_rows($result) > 0){
+  	 
+		//if ($result->rowCount() > 0){  
+		if($result !== FALSE) {
+            if($result->rowCount() > 0) {
+			// *** humo-users table exists, check admin log in ***
+			//if (isset($_SESSION["group_id_admin"]) AND $_SESSION["group_id_admin"] == "1") {
+			if (isset($_SESSION["group_id_admin"])) {
+ 			// *** Logged in as admin... ***
+ 
+				// *** Read group settings ***
+				//$groepsql = mysql_query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'",$db);
+				//@$groepDb=mysql_fetch_object($groepsql) or die("Geen geldige gebruikersgroep/ No valid usergroup.");
+				$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'");  
+				@$groepDb=$groepsql->fetch(PDO::FETCH_OBJ);			
+ 
+				// *** Check if user is a administrator ***
+				$group_administrator=$groepDb->group_admin;
+				if ($group_administrator!='j'){ $page='login'; }
+
+				// *** Check if user is a editor ***
+				if (isset($groepDb->group_editor)){
+					$group_editor=$groepDb->group_editor;
+					if ($group_editor=='j'){ $page=''; }
+				}   
+			}
+			else{
+				// *** Show log in screen ***
+				$page='login';
+			} 
 			}
 		}
-		else{
-			// *** Show log in screen ***
-			$page='login';
-		}
 
-	}
-	else{
-		// *** No user table: probably first installation: everything will be visible! ***
+		else{
+			// *** No user table: probably first installation: everything will be visible! ***
+		}  
+		
 	}
 }
-
 // *** Save ip address in session to prevent session hijacking ***
 if( isset( $_SESSION['current_ip_address'] ) == FALSE ){
 	$_SESSION['current_ip_address'] = $_SERVER['REMOTE_ADDR'];
@@ -346,132 +359,136 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 echo '<div id="humo_top" '.$top_dir.'>';
 	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-small.gif" align="left" alt="logo">';
 	echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
+	if (isset($database_check) AND $database_check) { // oterwise we can't make $dbh statements
+		// *** Check if installation is completed, before checking for an update ***
+		//$check_update = @mysql_query("SELECT * FROM humo_settings",$db);
+		$check_update = @$dbh->query("SELECT * FROM humo_settings");
+		if ($check_update AND $page!='login' AND $page!='update' AND $popup==false){
 
-	// *** Check if installation is completed, before checking for an update ***
-	//$check_update = @mysql_query("SELECT * FROM humo_settings",$db);
-	$check_update = @$dbh->query("SELECT * FROM humo_settings");
-	if ($check_update AND $page!='login' AND $page!='update' AND $popup==false){
+			// *** Update check, once a day ***
 
-		// *** Update check, once a day ***
-
-		// *** Manual check for update ***
-		if (isset($_GET['update_check'])){
-			// *** Update settings ***
-			//$result = @mysql_query("UPDATE humo_settings
-			//	SET setting_value='2012-01-01'
-			//	WHERE setting_variable='update_last_check'");
-			$result = @$dbh->query("UPDATE humo_settings
-				SET setting_value='2012-01-01'
-				WHERE setting_variable='update_last_check'");				
-			$humo_option['update_last_check']='2012-01-01';
-		}
-
-		// *** Update file, example ***
-		// echo "version=4.8.4\r\n";
-		// echo "version_date=2012-09-02\r\n";
-		// echo "test=testline";
-
-		// 86400 = 1 day. yyyy-mm-dd
-		if (strtotime ("now") - strtotime($humo_option['update_last_check']) > 86400 ){
-			$link_name=str_replace(' ', '_', $_SERVER['SERVER_NAME']);
-			$link_versie=str_replace(' ', '_', $humo_option["version"]);
-
-			// *** Use update file directly from humo-gen website ***
-			$update_file='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
-
-			// *** Copy update data from humo-gen website to local website ***
-			if(function_exists('curl_exec')){
-				$source='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
-				$update_file='update/temp_update_check.php';
-				$resource = curl_init();
-				curl_setopt($resource, CURLOPT_URL, $source);
-				curl_setopt($resource, CURLOPT_HEADER, false);
-				curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
-				$content = curl_exec($resource);
-				curl_close($resource);
-				if($content != ''){
-					$fp = @fopen($update_file, 'w');
-					$fw = @fwrite($fp, $content);
-					@fclose($fp);
-				}
+			// *** Manual check for update ***
+			if (isset($_GET['update_check'])){
+				// *** Update settings ***
+				//$result = @mysql_query("UPDATE humo_settings
+				//	SET setting_value='2012-01-01'
+				//	WHERE setting_variable='update_last_check'");
+				$result = @$dbh->query("UPDATE humo_settings
+					SET setting_value='2012-01-01'
+					WHERE setting_variable='update_last_check'");				
+				$humo_option['update_last_check']='2012-01-01';
 			}
 
+			// *** Update file, example ***
+			// echo "version=4.8.4\r\n";
+			// echo "version_date=2012-09-02\r\n";
+			// echo "test=testline";
 
-			if ($f = @fopen($update_file, 'r')){
-				// *** Used for automatic update procedure ***
-				$update['up_to_date']='no';
+			// 86400 = 1 day. yyyy-mm-dd
+			if (strtotime ("now") - strtotime($humo_option['update_last_check']) > 86400 ){
+				$link_name=str_replace(' ', '_', $_SERVER['SERVER_NAME']);
+				$link_versie=str_replace(' ', '_', $humo_option["version"]);
 
-				$update['version']='';
-				$update['version_date']='';
-				$update['version_auto_download']='';
+				// *** Use update file directly from humo-gen website ***
+				$update_file='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 
-				while(!feof($f)) { 
-					$update_data = fgets( $f, 4096 );
-					$update_array=explode("=",$update_data);
-					if ($update_array[0]=='version'){ $update['version']=trim($update_array[1]); }
-					if ($update_array[0]=='version_date'){ $update['version_date']=trim($update_array[1]); }
-					if ($update_array[0]=='version_download'){ $update['version_download']=trim($update_array[1]); }
-					if ($update_array[0]=='version_auto_download'){ $update['version_auto_download']=trim($update_array[1]); }
-
-					if ($update_array[0]=='beta_version'){ $update['beta_version']=trim($update_array[1]); }
-					if ($update_array[0]=='beta_version_date'){ $update['beta_version_date']=trim($update_array[1]); }
-					if ($update_array[0]=='beta_version_download'){ $update['beta_version_download']=trim($update_array[1]); }
-					if ($update_array[0]=='beta_version_auto_download'){ $update['beta_version_auto_download']=trim($update_array[1]); }
+				// *** Copy update data from humo-gen website to local website ***
+				if(function_exists('curl_exec')){
+					$source='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+					$update_file='update/temp_update_check.php';
+					$resource = curl_init();
+					curl_setopt($resource, CURLOPT_URL, $source);
+					curl_setopt($resource, CURLOPT_HEADER, false);
+					curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
+					curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
+					$content = curl_exec($resource);
+					curl_close($resource);
+					if($content != ''){
+						$fp = @fopen($update_file, 'w');
+						$fw = @fwrite($fp, $content);
+						@fclose($fp);
+					}
 				}
-				fclose($f);
 
-				// *** Check for HuMo-gen update ***
-				if (strtotime ($update['version_date'])-strtotime($humo_option["version_date"])>0){
-					$update_text= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update available').' ('.$update['version'].')!</a>';
-				}
-				// *** Check for Beta version update ***
-				elseif (strtotime ($update['beta_version_date'])-strtotime($humo_option["version_date"])>0){
-					$update['up_to_date']='yes';
-					$update_text= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Beta version available').' ('.$update['beta_version'].')!</a>';
-				}
-				// *** HuMo-gen up-to-date ***
-				else{
+				if ($f = @fopen($update_file, 'r')){
+					// *** Used for automatic update procedure ***
+					$update['up_to_date']='no';
+
+					// *** HuMo-gen version ***
+					$update['version']='';
+					$update['version_date']='';
+					$update['version_auto_download']='';
+
+					// *** HuMo-gen beta version ***
+					$update['beta_version']='';
+					$update['beta_version_date']='';
+					$update['beta_version_auto_download']='';
+
+					while(!feof($f)) { 
+						$update_data = fgets( $f, 4096 );
+						$update_array=explode("=",$update_data);
+
+						// *** HuMo-gen version ***
+						if ($update_array[0]=='version'){ $update['version']=trim($update_array[1]); }
+						if ($update_array[0]=='version_date'){ $update['version_date']=trim($update_array[1]); }
+						if ($update_array[0]=='version_download'){ $update['version_download']=trim($update_array[1]); }
+						if ($update_array[0]=='version_auto_download'){ $update['version_auto_download']=trim($update_array[1]); }
+
+						// *** HuMo-gen beta version ***
+						if ($update_array[0]=='beta_version'){ $update['beta_version']=trim($update_array[1]); }
+						if ($update_array[0]=='beta_version_date'){ $update['beta_version_date']=trim($update_array[1]); }
+						if ($update_array[0]=='beta_version_download'){ $update['beta_version_download']=trim($update_array[1]); }
+						if ($update_array[0]=='beta_version_auto_download'){ $update['beta_version_auto_download']=trim($update_array[1]); }
+					}
+					fclose($f);
+
+					// *** 1) Standard text: HuMo-gen up-to-date ***
 					$update['up_to_date']='yes';
 					$update_text= '  '.__('HuMo-gen is up-to-date!');
 					$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
+
+					// *** 2) First priority: check for normal HuMo-gen update ***
+					if (strtotime ($update['version_date'])-strtotime($humo_option["version_date"])>0){
+						$update_text= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update available').' ('.$update['version'].')!</a>';
+					}
+					// *** 3) Second priority: check for Beta version update ***
+					elseif (strtotime ($update['beta_version_date'])-strtotime($humo_option["version_date"])>0){
+						$update['up_to_date']='yes';
+						$update_text= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Beta version available').' ('.$update['beta_version'].')!</a>';
+					}
+
+					// *** Update settings ***
+					$update_last_check=date("Y-m-d");
+					//$result = mysql_query("UPDATE humo_settings
+					//	SET setting_value='".safe_text($update_last_check)."'
+					//	WHERE setting_variable='update_last_check'") or die(mysql_error());
+					$result = $dbh->query("UPDATE humo_settings
+						SET setting_value='".safe_text($update_last_check)."'
+						WHERE setting_variable='update_last_check'");
+
+					// *** Remove temporary file, used for curl method ***
+					if (file_exists('update/temp_update_check.php')) unlink ('update/temp_update_check.php');
 				}
-
-				// *** Update settings ***
-				$update_last_check=date("Y-m-d");
+				else{
+					$update_text= '  '.__('Online version check unavailable.');
+				}
+				
 				//$result = mysql_query("UPDATE humo_settings
-				//	SET setting_value='".safe_text($update_last_check)."'
-				//	WHERE setting_variable='update_last_check'") or die(mysql_error());
+				//	SET setting_value='".safe_text($update_text)."'
+				//	WHERE setting_variable='update_text'") or die(mysql_error());
 				$result = $dbh->query("UPDATE humo_settings
-					SET setting_value='".safe_text($update_last_check)."'
-					WHERE setting_variable='update_last_check'");
-
-				// *** Remove temporary file, used for curl method ***
-				if (file_exists('update/temp_update_check.php')) unlink ('update/temp_update_check.php');
-
+					SET setting_value='".safe_text($update_text)."'
+					WHERE setting_variable='update_text'");
+					
+				$update_text.=' *';
 			}
 			else{
-				$update_text= '  '.__('Online version check unavailable.');
+				// No online check now, use saved text...
+				$update_text=$humo_option["update_text"];
 			}
-			
-			//$result = mysql_query("UPDATE humo_settings
-			//	SET setting_value='".safe_text($update_text)."'
-			//	WHERE setting_variable='update_text'") or die(mysql_error());
-			$result = $dbh->query("UPDATE humo_settings
-				SET setting_value='".safe_text($update_text)."'
-				WHERE setting_variable='update_text'");
-				
-			$update_text.=' *';
+			echo $update_text;
 		}
-		else{
-			// No online check now, use saved text...
-			$update_text=$humo_option["update_text"];
-		}
-		echo $update_text;
-
-		//echo ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
 	}
-
 	// ******************
 	// *** START MENU ***
 	// ******************
@@ -708,6 +725,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					//echo ' onmouseover="mopen(event,\'m5ax\',\'?\',\'?\')"';
 					//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Own pages').'</a>';
 					echo '<a href="'.$path_tmp.'page=cms_pages"'.$select_top.'>'.__('CMS Own pages').'</a>';
+
 					/*
 					echo '<div id="m5ax" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 						echo '<ul class="humo_menu_item2">';
@@ -721,6 +739,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 						echo '</ul>';
 					echo '</div>';
 					*/
+
 				echo '</div>';
 				echo '</li>';
 			}

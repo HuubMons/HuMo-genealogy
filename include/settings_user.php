@@ -5,7 +5,7 @@ if (isset($_SESSION["user_name"])){
 	$account="SELECT * FROM humo_users WHERE user_id=".safe_text($_SESSION["user_id"]);
 }
 else{
-	// *** For guest account ("gast" is only used for backwards compatibility) ***
+	// *** For guest account ("gast" is only used for backward compatibility) ***
 	$account="SELECT * FROM humo_users WHERE user_name='gast' OR user_name='guest'";
 }
 //$accountqry = mysql_query($account,$db);
@@ -19,7 +19,7 @@ try {
 
 //$groupsql = mysql_query("SELECT * FROM humo_groups WHERE group_id='$accountDb->user_group_id'",$db);
 //@$groupDb=mysql_fetch_object($groupsql) or die("No valid usergroup/ Geen geldige gebruikersgroup.");
-$groupsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='$accountDb->user_group_id'");
+$groupsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='".$accountDb->user_group_id."'");
 try {
 	@$groupDb = $groupsql->fetch(PDO::FETCH_OBJ);
 } catch (PDOException $e) {

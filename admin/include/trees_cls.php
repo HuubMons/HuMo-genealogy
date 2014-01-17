@@ -26,7 +26,10 @@ function tree_main(){
 
 	echo '<tr class="table_header">';
 	echo '<td></td>';
-	echo '<th>';
+	echo '<td>';
+
+		echo '<a href="index.php?'.$joomlastring.'page=tree&amp;language_tree=default&amp;family_tree_id='.$family_tree_id.'">'.__('Default').'</a> ';
+
 		// *** Language choice ***
 		for ($i=0; $i<count($language_select); $i++){
 			// *** Get language name ***
@@ -38,13 +41,14 @@ function tree_main(){
 				echo ' style="border:none;"';
 			}
 			else{
-				echo ' style="	border: solid 2px #999999;"';
+				//echo ' style="	border: solid 2px #999999;"';
+				echo ' style="	border: solid 2px #000000;"';
 			}
 
 			echo '></a>';
 			echo ' ';
 		}
-	echo '</th>';
+	echo '</td>';
 	echo '<td></td>';
 	echo '<td></td>';
 	echo '<td></td>';
@@ -77,12 +81,10 @@ function tree_main(){
 
 		echo '<td>';
 
-		$treetext_name=database_name($dataDb->tree_prefix, $language_tree);
-		if ($dataDb->tree_prefix=='EMPTY'){
+		$treetext=show_tree_text($dataDb->tree_prefix, $language_tree);
+		if ($dataDb->tree_prefix=='EMPTY')
 			echo '* '.__('EMPTY LINE').' *';
-		}
 		else{
-
 			// *** Change family tree name ***
 			//echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 			//	echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -91,10 +93,7 @@ function tree_main(){
 			//	echo '<input type="Submit" name="submit" value="'.__('Select').'">';
 			//echo '</form>';
 
-			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=tree_text&amp;family_tree_id='.$dataDb->tree_id.'"><img src="images/edit.jpg" title="edit" alt="edit"></a>';
-
-
-			echo ' '.$treetext_name;
+			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=tree_text&amp;family_tree_id='.$dataDb->tree_id.'"><img src="images/edit.jpg" title="edit" alt="edit"></a> '.$treetext['name'];
 		}
 
 	echo '</td>';
@@ -206,7 +205,7 @@ function tree_main(){
 	echo '</td>';
 
 	echo '<td nowrap>';
-		echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;remove_tree='.$dataDb->tree_id.'&amp;treetext_name='.$treetext_name.'">';
+		echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;remove_tree='.$dataDb->tree_id.'&amp;treetext_name='.$treetext['name'].'">';	
 		echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" alt="'.__('Remove tree').'" border="0"></a>';
 	echo '</td>';
 
@@ -320,7 +319,11 @@ function tree_text(){
 	echo '<tr class="table_header"><th colspan="2">'.__('Family tree texts (per language)').'</th></tr>';
 
 	echo '<tr><td colspan="2">';
-	echo __('Here you can add some overall texts for EVERY family tree (and for  EVERY LANGUAGE!).<br>Select language, and change text').'<br>';
+	echo __('Here you can add some overall texts for EVERY family tree (and for  EVERY LANGUAGE!).<br>Select language, and change text').'.<br>';
+	echo __('Add "Default" (e.g. english) texts  for all languages, and/ or select a language to add texts for that specific language').':<br>';
+
+	echo '<a href="index.php?'.$joomlastring.'page=tree&amp;menu_admin=tree_text&amp;language_tree=default&amp;family_tree_id='.$family_tree_id.'">'.__('Default').'</a> ';
+
 	// *** Language choice ***
 	for ($i=0; $i<count($language_select); $i++){
 		// *** Get language name ***
@@ -357,7 +360,7 @@ function tree_text(){
 	echo '</td></tr>';
 
 	print '<tr><td style="white-space:nowrap;">'.__('Lower text family page').'</td>';
-	print '<td>'.__('I.e.: For more information: &lt;a href="mailform.php"gt;contact&lt;/a&gt;').'<br>';
+	print '<td>'.__('I.e.: For more information: &lt;a href="mailform.php"&gt;contact&lt;/a&gt;').'<br>';
 	echo '<textarea cols="60" rows="1" name="treetext_family_footer">'.$treetext_family_footer.'</textarea>';
 	echo '</td></tr>';
 

@@ -112,7 +112,7 @@ function show_person($personDb){
 		}
 		$selected_place=$personDb->place_order;		
 
-		echo '<td style="white-space:nowrap;">'; 		
+		echo '<td style="white-space:nowrap;width:90px">'; 		
 
 		if ($select_birth=='1'){
 			if ($selected_place==$personDb->pers_birth_place){
@@ -269,8 +269,8 @@ function show_person($personDb){
 
 	// *** Show name of family tree, if search in multiple family trees is used ***
 	if ($search_database=='all_trees' OR $search_database=='all_but_this'){
-		$treetext_name=database_name($pers_tree_prefix, $selected_language);
-		echo ' <i><font size="-1">['.__('Family tree').': '.$treetext_name.']</font></i>';
+		$treetext=show_tree_text($pers_tree_prefix, $selected_language);
+		echo ' <i><font size="-1">['.__('Family tree').': '.$treetext['name'].']</font></i>';
 	}
  
 	echo '</td></tr>';
@@ -811,7 +811,8 @@ if ($pers_firstname OR $pers_lastname OR $birth_place OR $death_place OR $birth_
 			if ($hide_tree==false){
 
 				$counter++;
-				$tree_prefix=$dataDb->tree_prefix;
+				//$tree_prefix=$dataDb->tree_prefix;
+				$tree_prefix=$datapdo['tree_prefix'];
 
 				// *** EXAMPLE ***
 				//$qry = "(SELECT * FROM humo1_persoon ".$query.') ';
@@ -885,7 +886,6 @@ if ($index_list=='quicksearch'){
 		$query='';
 		$counter=0;
 		//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
-		
 		foreach($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {
 		//while (@$dataDb=mysql_fetch_object($datasql)){
 			if($search_database=="all_but_this" AND $pdoresult['tree_prefix']==safe_text($_SESSION['tree_prefix'])) {
@@ -903,9 +903,9 @@ if ($index_list=='quicksearch'){
 				$tree_prefix=$pdoresult['tree_prefix'];
 
 				// *** EXAMPLE ***
-				//$qry = "(SELECT * FROM humo1_persoon ".$query.') ';
-				//$qry.= " UNION (SELECT * FROM humo2_persoon ".$query.')';
-				//$qry.= " UNION (SELECT * FROM humo3_persoon ".$query.')';
+				//$qry = "(SELECT * FROM humo1_person ".$query.') ';
+				//$qry.= " UNION (SELECT * FROM humo2_person ".$query.')';
+				//$qry.= " UNION (SELECT * FROM humo3_person ".$query.')';
 				//$qry.= " ORDER BY pers_lastname, pers_firstname";
 				$union=''; if ($counter>1){ $union=' UNION '; }
 

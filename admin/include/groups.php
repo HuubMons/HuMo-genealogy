@@ -2,15 +2,13 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-include_once (CMS_ROOTPATH.'include/database_name.php');
 global $selected_language;
 
-if(CMS_SPECIFIC=="Joomla") {
+if(CMS_SPECIFIC=="Joomla")
 	$phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=groups";
-}
-else {
+else
 	$phpself = $_SERVER['PHP_SELF'];
-}
+
 echo '<h1 align=center>'.__('User groups').'</h1>';
  
 if (isset($_POST['group_add'])){
@@ -31,7 +29,6 @@ if (isset($_POST['group_add'])){
 }
  
 if (isset($_POST['group_change'])){
-
 	if ($_POST["group_filter_pers_show"]==''){ $_POST["group_filter_pers_show"]='*'; }
 	if ($_POST["group_filter_pers_hide"]==''){ $_POST["group_filter_pers_hide"]='#'; }
 	if ($_POST["group_pers_hide_totally"]==''){ $_POST["group_pers_hide_totally"]='X'; }
@@ -648,7 +645,9 @@ If possible, try to filter with that').'</i></td>';
 		$data3sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
 		while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){		
 			if ($data3Db->tree_prefix!='EMPTY'){
-				$treetext_name=database_name($data3Db->tree_prefix, $selected_language);
+				$treetext=show_tree_text($data3Db->tree_prefix, $selected_language);
+				$treetext_name=$treetext['name'];
+
 				echo '<tr><td>';
 
 				echo $data3Db->tree_prefix.'</td><td>'.$treetext_name.'</td>';
