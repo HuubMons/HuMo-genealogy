@@ -67,13 +67,13 @@ function topline(){
 	global $dataDb, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker, $family_id, $main_person;
 	global $alignmarker, $language, $uri_path, $descendant_report, $family_expanded;
 	global $user, $source_presentation, $change_main_person, $maps_presentation, $database, $man_cls, $person_manDb;
-	global $woman_cls, $person_womanDb;
+	global $woman_cls, $person_womanDb, $selected_language;
 
 	$text='<tr><td class="table_header" width="75%">';
 
 	// *** Text above family ***
-	$text.='<div class="family_page_toptext fonts">'.$dataDb->treetext_family_top.'<br></div>';
-	//$text.='</td><td class="table_header fonts">';
+	$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+	$text.='<div class="family_page_toptext fonts">'.$treetext['family_top'].'<br></div>';
 
 	$text.='</td><td class="table_header fonts" width="10%" style="text-align:center";>';
 
@@ -373,12 +373,16 @@ if (!$family_id){
 		$pdf->Cell(0,2," ",0,1);
 		$pdf->SetFont('Arial','BI',12);
 		$pdf->SetFillColor(196,242,107);
-		if($dataDb->treetext_family_top) {
-			$pdf->Cell(0,6,pdf_convert($dataDb->treetext_family_top),0,1,'L',true);
+
+		$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+		$family_top=$treetext['family_top'];
+		if($family_top!='') {
+			$pdf->Cell(0,6,pdf_convert($family_top),0,1,'L',true);
 		}
 		else {
 			$pdf->Cell(0,6,pdf_convert(__('Family group sheet')),0,1,'L',true);
 		}
+
 		$pdf->SetFont('Arial','B',12);
 		$pdf->Write(8,$man_cls->name_extended("parent1"));
 		$pdf->SetFont('Arial','',12);
@@ -710,15 +714,19 @@ else{
 					}
 					$pdf->SetFont('Arial','BI',12);
 					$pdf->SetFillColor(186,244,193);
-					if($dataDb->treetext_family_top) {
+
+					$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+					$family_top=$treetext['family_top'];
+					if($family_top!='') {
 						$pdf->SetLeftMargin(10);
-						$pdf->Cell(0,6,pdf_convert($dataDb->treetext_family_top),0,1,'L',true);
+						$pdf->Cell(0,6,pdf_convert($family_top),0,1,'L',true);
 					}
 					else {
 						$pdf->SetLeftMargin(10);
 						$pdf->Cell(0,6,pdf_convert(__('Family group sheet')),0,1,'L',true);
 					}
 					$pdf->SetFont('Arial','',12);
+
 				}
 			}  // end if not STAR
 
@@ -1618,7 +1626,8 @@ if ($screen_mode!="PDF" AND isset($_SESSION['save_source_presentation']) AND $_S
 if($screen_mode=='') {
 	if ($descendant_report==false) {
 		// *** Show extra footer text in family screen ***
-		echo $dataDb->treetext_family_footer;
+		$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+		echo $treetext['family_footer'];
 
 		// *** User is allowed to add a note to a person in the family tree ***
 		if ($user['group_user_notes']=='y'){

@@ -175,7 +175,6 @@ if($language["dir"]=="rtl") {
 	$dirmark1="&#x200F;";  //rtl marker
 	$dirmark2="&#x200E;";  //ltr marker
 	$rtlmarker="rtl";
-
 }
 
 // *** Login check ***
@@ -235,11 +234,11 @@ if(isset($database_check) AND $database_check) {
 				$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'");  
 				@$groepDb=$groepsql->fetch(PDO::FETCH_OBJ);			
  
-				// *** Check if user is a administrator ***
+				// *** Check if user is an administrator ***
 				$group_administrator=$groepDb->group_admin;
 				if ($group_administrator!='j'){ $page='login'; }
 
-				// *** Check if user is a editor ***
+				// *** Check if user is an editor ***
 				if (isset($groepDb->group_editor)){
 					$group_editor=$groepDb->group_editor;
 					if ($group_editor=='j'){ $page=''; }
@@ -449,6 +448,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 					// *** 2) First priority: check for normal HuMo-gen update ***
 					if (strtotime ($update['version_date'])-strtotime($humo_option["version_date"])>0){
+						$update['up_to_date']='no';
 						$update_text= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update available').' ('.$update['version'].')!</a>';
 					}
 					// *** 3) Second priority: check for Beta version update ***

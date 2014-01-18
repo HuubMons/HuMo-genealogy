@@ -81,20 +81,24 @@ class mainindex_cls{
 					// *** Owner genealogy ***
 					echo $this->owner();
 
-					// *** Show tekst en source genealogy ***
-					if ($dataDb->treetext_mainmenu_text!=''){
-						echo '<p>'.nl2br($dataDb->treetext_mainmenu_text); echo $dirmark2.'</p>';
-					}
-					if (isset($dataDb->treetext_mainmenu_source) AND $dataDb->treetext_mainmenu_source!=''){
-						echo '<p><i>'.nl2br($dataDb->treetext_mainmenu_source).'</i>';  echo $dirmark2.'</p>';
-					}
+					// *** Prepare mainmenu text and source ***
+					$treetext=show_tree_text($tree_prefix_selected, $selected_language);
+					// *** Show mainmenu text ***
+					$mainmenu_text=$treetext['mainmenu_text'];
+					if ($mainmenu_text!='') echo '<p>'.nl2br($mainmenu_text).$dirmark2.'</p>';
+					// *** Show mainmenu source ***
+					$mainmenu_source=$treetext['mainmenu_source'];
+					if ($mainmenu_source!='') echo '<p>'.nl2br($mainmenu_source).$dirmark2.'</p>';
+					if ($mainmenu_text=='' AND $mainmenu_source=='') echo '<br>';
 
 					//*** Most frequent names ***
-					echo $this->last_names().$dirmark2.'<br><br>';
+					echo '<br>'.$this->last_names().$dirmark2.'<br>';
 
-					echo $this->alphabet().$dirmark2.'<br><br>';
+					// *** Alphabet line ***
+					echo '<br>'.$this->alphabet().$dirmark2.'<br>';
 
-					echo $this->extra_links().$dirmark2.'<br><br>';
+					// *** Extra added links to persons ***
+					echo '<br>'.$this->extra_links().$dirmark2.'<br><br>';
 				}
 			}
 		echo '</div>';
@@ -112,7 +116,7 @@ class mainindex_cls{
 
 	// *** List family trees ***
 	function tree_list($datasql){
-		global $db, $dbh, $humo_option, $uri_path, $user, $language;
+		global $db, $dbh, $humo_option, $uri_path, $user, $language, $selected_language;
 		$text='';
 		//while (@$dataDb=mysql_fetch_object($datasql)){
 		while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
@@ -124,20 +128,8 @@ class mainindex_cls{
 				if ($hide_tree_array[$x]==$dataDb->tree_id){ $hide_tree=true; }
 			}
 			if ($hide_tree==false){	
-
-				$treetext_name=$dataDb->treetext_name;
-				if ($treetext_name==''){
-					$treetext_name=__('NO NAME');
-					$data2qry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-						ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-						AND treetext_name LIKE '_%'
-						WHERE tree_prefix='".$dataDb->tree_prefix."'";
-					//@$data2sql = mysql_query($data2qry,$db);
-					//@$data2Db=mysql_fetch_object($data2sql);	
-					@$data2sql = $dbh->query($data2qry);
-					@$data2Db = $data2sql->fetch(PDO::FETCH_OBJ);
-					if (isset($data2Db->treetext_name)){ $treetext_name=$data2Db->treetext_name; }
-				}
+				$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+				$treetext_name=$treetext['name'];
 
 				// *** Name family tree ***
 				if (isset($_SESSION['tree_prefix']) AND $_SESSION['tree_prefix']==$dataDb->tree_prefix){

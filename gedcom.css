@@ -125,10 +125,26 @@ div.rtlsddm #mft  ul  { padding-right: 0px; }
 #content div.ltrsddm div {
 	padding: 5px;
 	border-radius: 5px;
+
+	box-shadow: 6px 6px 6px #999;
+	-moz-box-shadow: 6px 6px 6px #999;
+	-webkit-box-shadow: 6px 6px 6px #999;
+
+	-moz-border-radius: 6px 6px 6px 6px;
+	-webkit-border-radius: 6px 6px 6px 6px;
+	border-radius: 6px 6px 6px 6px;
 }
 #content div.rtlsddm div {
 	padding: 5px;
 	border-radius: 5px;
+
+	box-shadow: 6px 6px 6px #999;
+	-moz-box-shadow: 6px 6px 6px #999;
+	-webkit-box-shadow: 6px 6px 6px #999;
+
+	-moz-border-radius: 6px 6px 6px 6px;
+	-webkit-border-radius: 6px 6px 6px 6px;
+	border-radius: 6px 6px 6px 6px;
 }
 /* Smaller lines in person pop-up menu */
 #content div.ltrsddm div a {
@@ -342,10 +358,9 @@ table.humo {
 	box-shadow: 6px 6px 6px #999;
 	-moz-box-shadow: 6px 6px 6px #999;
 	-webkit-box-shadow: 6px 6px 6px #999;
-
 	-moz-border-radius: 6px 6px 6px 6px;
 	-webkit-border-radius: 6px 6px 6px 6px;
-	border-radius: 6px 6px 6px 6px;  
+	border-radius: 6px 6px 6px 6px;
 }
 
 table.standard {

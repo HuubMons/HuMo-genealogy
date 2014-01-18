@@ -16,6 +16,7 @@ This credits screen is english only...
 	<li>CMS editor.
 	<li>Index places, photobook.
 	<li>Theme "Clear White".
+	<li>Dutch and English languages.
 	<li>Etc., etc.
 	</ul>
 </li>
@@ -27,6 +28,7 @@ This credits screen is english only...
 	<li>PDF export.
 	<li>Silverline and Antique theme.
 	<li>Support for RTL languages.
+	<li>Hebrew language.
 	<li>Etc., etc.
 	</ul>
 </ul>
@@ -67,6 +69,9 @@ This credits screen is english only...
 	</ul>
 <li>Johannes Prost:
 	<ul><li>Added German admin file, and better translation of German language file.
+	</ul>
+<li>Marco Steinhaeuser:
+	<ul><li>Improved German language file.
 	</ul>
 <li>Tonko Boekhoud:
 	<ul><li>Changes to use HuMo-gen into CMS Made Simple.

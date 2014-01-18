@@ -1,6 +1,6 @@
 <?php
-// *** To make HuMo-php work, fill these lines properly! ***
-// *** Om humo-php werkend te krijgen onderstaande regels GOED invullen! ***
+// *** To make HuMo-gen work, fill these lines properly! ***
+// *** Om HuMo-gen werkend te krijgen onderstaande regels GOED invullen! ***
 define("DATABASE_HOST",     "localhost");
 define("DATABASE_USERNAME", "root");
 define("DATABASE_PASSWORD", "usbw");
@@ -27,6 +27,21 @@ if (!$database_check AND !isset($ADMIN) ){
 	</b></font>');
 }
 */
+
+// *** Check if PDO driver is available ***
+if (!defined('PDO::ATTR_DRIVER_NAME')) {
+	echo '<html>
+	<header><title>ERROR</title><body>
+	<h2>ERROR: The PDO driver is unavailable!</h2>
+	Possible solutions:<br><br>
+	1) Update PHP to 5.0 or even better: 5.1 (or newer)<br>
+	2) Check if the PDO driver is enabled.<br>
+	3) Downgrade HuMo-gen to HuMo-gen version 4.9.4.
+	</body></html>
+	';
+	exit();
+}
+
 // *** Open database using PDO **
 $conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME;
 try {
@@ -36,7 +51,6 @@ try {
 	unset($database_check);
 	//echo $e->getMessage() . "<br/>";
 	if(!isset($ADMIN)) {
-		
 		echo '<br><font color=red><b>
 		Database is not yet installed! Possible problems:<br>
 		- Login file not yet configured.<br>
@@ -49,6 +63,5 @@ try {
 		</b></font>';
 		exit();
 	}
-	
 }
 ?>
