@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-01-10 20:55+0100\n"
-"PO-Revision-Date: 2014-01-18 20:09+0100\n"
+"PO-Revision-Date: 2014-01-18 20:55+0100\n"
 "Last-Translator: marco.steinhaeuser\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -3847,6 +3847,8 @@ msgid ""
 "Add new locations to geo-location database (for Google Maps locations). This "
 "will slow down reading of gedcom file!"
 msgstr ""
+"Neue Orte zur Geolocation-Datenbank hinzufügen (für Google Maps, kann "
+"Performance abhängig von der Größe der GedCom-Datei beeinflussen!)"
 
 #: humo-gen/admin/include/gedcom NEW.php:215
 #: humo-gen/admin/include/gedcom.php:216
@@ -3872,6 +3874,7 @@ msgstr ""
 #: humo-gen/admin/include/gedcom.php:223
 msgid "1 record (slow processing, but needs less server-memory)"
 msgstr ""
+"Eine Eintragung (langsame Verarbeitung, verbraucht weniger Server-Leistung)"
 
 #: humo-gen/admin/include/gedcom NEW.php:224 NEW.php:226 NEW.php:228
 #: NEW.php:230 NEW.php:232 NEW.php:234 humo-gen/admin/include/gedcom.php:225
@@ -3879,12 +3882,13 @@ msgstr ""
 #: humo-gen/admin/include/gedcom.php:231 humo-gen/admin/include/gedcom.php:233
 #: humo-gen/admin/include/gedcom.php:235
 msgid "records per batch"
-msgstr ""
+msgstr "Eintrag pro Durchlauf"
 
 #: humo-gen/admin/include/gedcom NEW.php:236
 #: humo-gen/admin/include/gedcom.php:237
 msgid "ALL records (fast processing, but needs server-memory)"
 msgstr ""
+"ALLE Eintragungen (schnelle Verarbeitung, benötigt mehr Server-Leistung)"
 
 #: humo-gen/admin/include/gedcom NEW.php:239 NEW.php:373 NEW.php:547
 #: NEW.php:1009 NEW.php:1037 humo-gen/admin/include/gedcom.php:240
@@ -3914,6 +3918,9 @@ msgid ""
 "<p>The following lines have to be processed without error messages...<br>\n"
 "<b>Processing may take a while!!</b>"
 msgstr ""
+"<b>SCHRITT 3) Verarbeitung der GedCom-Datei:</b>\n"
+"<p>Folgende Zeilen sollten ohne Fehlermeldung verarbeitet werden...<br>\n"
+"<b>Verarbeitung kann einige Zeit in Anspruch nehmen!</b>"
 
 #: humo-gen/admin/include/gedcom NEW.php:547 NEW.php:1037
 #: humo-gen/admin/include/gedcom.php:573
@@ -3937,7 +3944,7 @@ msgstr "Gedcom-Datei"
 #: humo-gen/admin/include/gedcom.php:924
 #, php-format
 msgid "this is an <b>%s</b> file"
-msgstr ""
+msgstr "das ist eine <b>%s</b>-Datei"
 
 #: humo-gen/admin/include/gedcom NEW.php:979
 #: humo-gen/admin/include/gedcom.php:1014
@@ -4002,7 +4009,7 @@ msgstr "Keine Fehlermeldungen? Dann ist die Datenbank benutzbar!"
 #: humo-gen/admin/include/gedcom.php:1325
 #, php-format
 msgid "Ready! Now click %s to watch the family tree"
-msgstr ""
+msgstr "Fertig! Klicken Sie nun auf %s, um den Familienstammbaum anzusehen"
 
 #: humo-gen/admin/include/gedcom_export.php:42
 msgid "Gedcom file export"
@@ -4019,10 +4026,14 @@ msgid ""
 "genealogical program's.\n"
 "Use \"Database backup\" for a proper backup."
 msgstr ""
+"<b>Benutzen Sie keine GedCom-Datei als Back-Up für Ihre Genealogie-Datein!</"
+"b> Eine GedCom-Datei ist nur den Austausch genealogischer Daten mit anderen "
+"Genalogie-Programmen gedacht.\n"
+"Benutzen Sie bitte das \"Datenbank Back-Up\" für eine saubere Sicherung."
 
 #: humo-gen/admin/include/gedcom_export.php:517
 msgid "Select family tree to export and click \"Start export\""
-msgstr ""
+msgstr "Stammbaum zum Export auswählen und auf \"Export starten\" klicken"
 
 #: humo-gen/admin/include/gedcom_export.php:519
 msgid "Choose family tree to export"
@@ -4078,7 +4089,7 @@ msgstr "Exportiere Quellen"
 
 #: humo-gen/admin/include/gedcom_export.php:612
 msgid "Export longitude & latitude by places"
-msgstr ""
+msgstr "Längen- und Breitengrad der Orte exportieren"
 
 #: humo-gen/admin/include/gedcom_export.php:621
 msgid "Character set"
@@ -4086,7 +4097,7 @@ msgstr "Zeichensatz"
 
 #: humo-gen/admin/include/gedcom_export.php:624
 msgid "UTF-8 (recommended character set)"
-msgstr ""
+msgstr "UTF-8 (empfohlener Zeichensatz)"
 
 #: humo-gen/admin/include/gedcom_export.php:634
 msgid "Show export status"
@@ -4158,7 +4169,7 @@ msgstr "Benutzergruppen"
 
 #: humo-gen/admin/include/groups.php:111
 msgid "It's not possible to delete this group: there is/ are"
-msgstr ""
+msgstr "Diese Gruppe kann nicht gelöscht werden: Hier gibt es"
 
 #: humo-gen/admin/include/groups.php:111
 msgid "user(s) connected to this group!"
@@ -4198,7 +4209,7 @@ msgstr "Benutzergruppe"
 
 #: humo-gen/admin/include/groups.php:285
 msgid "REMOVE GROUP"
-msgstr ""
+msgstr "GRUPPE LÖSCHEN"
 
 #: humo-gen/admin/include/groups.php:288
 msgid "Group name"
@@ -4212,6 +4223,7 @@ msgstr "Administrator"
 #: humo-gen/admin/include/groups.php:296
 msgid "Editor. Use the name \"editor\" in .htpasswd."
 msgstr ""
+"Editor. Benutzen Sie die Bezeichnung \"editor\" in der Datei .htpasswd."
 
 #: humo-gen/admin/include/groups.php:304
 msgid "Editor."
@@ -4220,6 +4232,8 @@ msgstr "Editor."
 #: humo-gen/admin/include/groups.php:304
 msgid "If an .htpasswd file is used: add username in .htpasswd file."
 msgstr ""
+"Fügen Sie einen Benutzernamen in der Datei .htpasswd hinzu, falls eine "
+"solche Datei benutzt wird."
 
 #: humo-gen/admin/include/groups.php:309
 msgid "Save statistics data"
@@ -4227,19 +4241,19 @@ msgstr "Speichere Statistiken"
 
 #: humo-gen/admin/include/groups.php:320
 msgid "Birthday RSS in main menu"
-msgstr ""
+msgstr "RSS-Feed für Geburtstage im Hauptmenü"
 
 #: humo-gen/admin/include/groups.php:325
 msgid "FAMILY TREE menu: show \"Persons\" submenu"
-msgstr ""
+msgstr "STAMMBAUM-Menü: Zeige das Untermenü \"Personen\""
 
 #: humo-gen/admin/include/groups.php:330
 msgid "FAMILY TREE menu: show \"Names\" submenu"
-msgstr ""
+msgstr "STAMMBAUM-Menü: Zeige das Untermenü \"Namen\""
 
 #: humo-gen/admin/include/groups.php:335
 msgid "FAMILY TREE menu: show \"Places\" submenu"
-msgstr ""
+msgstr "STAMMBAUM-Menü: Zeige das Untermenü \"Orte\""
 
 #: humo-gen/admin/include/groups.php:340
 msgid ""
@@ -4250,15 +4264,15 @@ msgstr ""
 
 #: humo-gen/admin/include/groups.php:345
 msgid "FAMILY TREE menu: show \"Photobook\" submenu"
-msgstr ""
+msgstr "STAMMBAUM-Menü: Zeige das Untermenü \"Fotoalbum\""
 
 #: humo-gen/admin/include/groups.php:350
 msgid "TOOLS menu: show \"Anniversary\" (birthday list) submenu"
-msgstr ""
+msgstr "TOOLS-Menü: Zeige das Untermenü \"Jahrestage\" (Geburtstagsliste)"
 
 #: humo-gen/admin/include/groups.php:355
 msgid "TOOLS menu: show \"Statistics\" submenu"
-msgstr ""
+msgstr "TOOLS-Menü: Zeige das Untermenü \"Statistiken\""
 
 #: humo-gen/admin/include/groups.php:361
 msgid "TOOLS menu: show \"Relationship Calculator\" submenu"
@@ -4269,22 +4283,28 @@ msgid ""
 "TOOLS menu: show \"Google maps\" submenu (only shown if geolocation database "
 "was created)"
 msgstr ""
+"TOOLS-Menü: Zeige das Untermenü \"Google Maps\" (wird nur angezeigt, wenn "
+"die Geolocation-Datenbank generiert wurde)"
 
 #: humo-gen/admin/include/groups.php:373
 msgid ""
 "TOOLS menu: show \"Contact\" submenu (only shown if tree owner and email "
 "were entered)"
 msgstr ""
+"TOOLS-Menü: Zeige das Untermenü \"Kontakt\" (wird nur angezeigt, wenn "
+"Stammbaum-Inhaber und E-Mail-Adresse angegeben wurden)"
 
 #: humo-gen/admin/include/groups.php:379
 msgid "TOOLS menu: show \"Latest changes\" submenu"
-msgstr ""
+msgstr "TOOLS-Menü: Zeige Untermenü \"Letzte Änderungen\""
 
 #: humo-gen/admin/include/groups.php:384
 msgid ""
 "Menu item: show \"Login\" for visitors (only change this setting for "
 "usergroup containing user \"guest\")"
 msgstr ""
+"Menüpunkt: Zeige \"Login\" für Besucher (ändert nur die Einstellungen für "
+"die Benutzergruppe mit dem Benutzer \"Gast\")"
 
 #: humo-gen/admin/include/groups.php:389
 msgid "General"
@@ -4308,7 +4328,7 @@ msgstr "Zeige Ort bei Taufe, Geburt, Tod und Beerdigung an"
 
 #: humo-gen/admin/include/groups.php:411
 msgid "Show religion (with bapt. and wedding)"
-msgstr ""
+msgstr "Religion anzeigen (mit Konfirmation und Trauung)"
 
 #: humo-gen/admin/include/groups.php:416
 msgid "Show date and place (i.e. with birth, bapt., death, cemetery.)"
@@ -4337,10 +4357,12 @@ msgstr "Standardanzeige von Quellen"
 #: humo-gen/admin/include/groups.php:451
 msgid "User is allowed to add notes/ remarks by a person in the family tree"
 msgstr ""
+"Benutzer darf Notizen/Anmerkungen für eine Person im Familienstammbaum "
+"anlegen"
 
 #: humo-gen/admin/include/groups.php:451
 msgid "Disabled in group \"Guest\""
-msgstr ""
+msgstr "In der Gruppe \"Gast\" deaktiviert"
 
 #: humo-gen/admin/include/groups.php:460
 msgid "Don't show sources"
@@ -4451,6 +4473,9 @@ msgid ""
 "<i>with these persons the privacy filter cannot calculate if they are alive</"
 "i>"
 msgstr ""
+"Personen ohne Datums-Informationen anzeigen<br>\n"
+"<i>für diese Personen kann der Datenschutzfilter nicht berechnen, ob sie "
+"noch am Leben sind</i>"
 
 #: humo-gen/admin/include/groups.php:571
 msgid "With privacy show names"
@@ -4465,6 +4490,9 @@ msgid ""
 "Genealogical copy protection<br>\n"
 "<i>family browsing disabled, no family trees</i>"
 msgstr ""
+"Genealogischer Koperschutz<br>\n"
+"<i>Das Browsen innerhalb der Familien ist deaktiviert, Stammbäume werden "
+"nicht angezeigt</i>"
 
 #: humo-gen/admin/include/groups.php:600
 msgid "Save all changes"
@@ -4472,15 +4500,15 @@ msgstr "Speichere alle Einstellungen"
 
 #: humo-gen/admin/include/groups.php:606
 msgid "Hide or show family trees per user group."
-msgstr ""
+msgstr "Stammbäume pro Benutzergruppe verstecken oder anzeigen."
 
 #: humo-gen/admin/include/groups.php:608
 msgid "Show tree?"
-msgstr ""
+msgstr "Stammbaum anzeigen?"
 
 #: humo-gen/admin/include/index_inc.php:19
 msgid "Database connection status:"
-msgstr ""
+msgstr "Status der Datenbankverbindung:"
 
 #: humo-gen/admin/include/index_inc.php:26
 msgid "MySQL connection: OK!"
@@ -4499,22 +4527,28 @@ msgstr "Datenbank-Verbindung: OK!"
 #: humo-gen/admin/include/index_inc.php:72
 msgid "No database found! Check MySQL connection and database name"
 msgstr ""
+"Keine Verbindung zur Datenbank! Bitte prüfen Sie die MySQL-Verbindung und "
+"den Datenbank-Namen"
 
 #: humo-gen/admin/include/index_inc.php:80
 msgid ""
 "The configuration file is not writable! Please change the include/db_login."
 "php file manually."
 msgstr ""
+"Konfigurationsdatei ist nicht beschreibbar! Bitte ändern Sie die Datei "
+"include/db_login.php manuell."
 
 #: humo-gen/admin/include/index_inc.php:123
 msgid ""
 "There is a problem in the db_config file, maybe an old db_config file is "
 "used."
 msgstr ""
+"Es gibt ein Problem mit der Datei db_config - ggf. wird eine älter Datei "
+"dieses Namens benutzt."
 
 #: humo-gen/admin/include/index_inc.php:132
 msgid "HuMo-gen status"
-msgstr ""
+msgstr "HuMo-gen Status"
 
 #: humo-gen/admin/include/index_inc.php:137
 #: humo-gen/admin/include/index_inc.php:140
@@ -4523,32 +4557,34 @@ msgstr "Person"
 
 #: humo-gen/admin/include/index_inc.php:140
 msgid "It is recommended to update PHP!"
-msgstr ""
+msgstr "Wir empfehlen ein Update Ihrer PHP-Version!"
 
 #: humo-gen/admin/include/index_inc.php:149
 #: humo-gen/admin/include/index_inc.php:153
 msgid "MySQL Version"
-msgstr ""
+msgstr "MySQL-Version"
 
 #: humo-gen/admin/include/index_inc.php:153
 msgid "It is recommended to update MySQL!"
-msgstr ""
+msgstr "Wir empfehlen ein Update Ihrer MySQL-Version"
 
 #: humo-gen/admin/include/index_inc.php:162
 #: humo-gen/admin/include/index_inc.php:166
 msgid "Database"
-msgstr ""
+msgstr "Datenbank"
 
 #: humo-gen/admin/include/index_inc.php:163
 #: humo-gen/admin/include/index_inc.php:239
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: humo-gen/admin/include/index_inc.php:168
 msgid ""
 "<b>There is no database connection! To connect the MySQL database to HuMo-"
 "gen, fill in these settings:</b>"
 msgstr ""
+"<b>Es gibt keine Verbindung zur Datenbank! Um die MySQL-Datenbank mit HuMo-"
+"gen zu verbinden, geben Sie bitte folgende Informationen ein:</b>"
 
 #: humo-gen/admin/include/index_inc.php:177
 msgid "Database setting"
@@ -4556,15 +4592,15 @@ msgstr "Datenbank-Einstellungen"
 
 #: humo-gen/admin/include/index_inc.php:177
 msgid "Database value"
-msgstr ""
+msgstr "Datenbankwert"
 
 #: humo-gen/admin/include/index_inc.php:177
 msgid "Example website provider"
-msgstr ""
+msgstr "Beispiel für einen Hosting-Provider"
 
 #: humo-gen/admin/include/index_inc.php:177
 msgid "Example for XAMPP"
-msgstr ""
+msgstr "Beispiel für lokale Installation"
 
 #: humo-gen/admin/include/index_inc.php:180
 msgid "Database host"
@@ -4584,11 +4620,11 @@ msgstr "Datenbankname"
 
 #: humo-gen/admin/include/index_inc.php:204
 msgid "At a local PC also install database"
-msgstr ""
+msgstr "Bitte installieren Sie auch eine Datenbank auf Ihrem lokalen Rechner"
 
 #: humo-gen/admin/include/index_inc.php:204
 msgid "YES, also install database"
-msgstr ""
+msgstr "JA, auch Datenbank installieren"
 
 #: humo-gen/admin/include/index_inc.php:205
 msgid "NO"
