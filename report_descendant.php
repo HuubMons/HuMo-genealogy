@@ -356,7 +356,7 @@ function move($i) {
 //********** 3rd Part:  CODE TO PRINT THE STARFIELD CHART         *****
 //****************************************************************************
 function printchart() {
-	global $genarray, $size, $db, $dbh, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
+	global $genarray, $size, $db, $dbh, $tree_prefix_quoted, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
 	global $vbasesize, $hsize, $vsize, $vdist, $hdist, $user, $direction;
 	global $dirmark1, $dirmark2, $rtlmarker, $alignmarker;
 
@@ -536,9 +536,9 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 	} // end if not hourglass
 	
 	// some PDO prepared statements before the loop
-	$man_prep = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber =?");
+	$man_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber =?");
 	$man_prep->bindParam(1,$man_prep_var);
-	$fam_prep = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE `fam_gedcomnumber`=?");
+	$fam_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE `fam_gedcomnumber`=?");
 	$fam_prep->bindParam(1,$fam_prep_var);
 	
 	for($w=0; $w < count($genarray); $w++) {

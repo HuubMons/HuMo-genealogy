@@ -48,15 +48,15 @@ if (file_exists($dir)){
 
 			if ($photo_name){
 				$show_photo=false;
-				$sql="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+				$sql="SELECT * FROM ".$tree_prefix_quoted."events
 					WHERE event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
 				//$afbqry=mysql_query($sql,$db);
-				$afbqry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+				$afbqry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 					WHERE event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'");
 				//while($afbDb=mysql_fetch_object($afbqry)){
 				while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
 					$quicksearch=str_replace(" ", "%", $photo_name);
-					$querie= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+					$querie= "SELECT * FROM ".$tree_prefix_quoted."person
 						WHERE pers_gedcomnumber='".$afbDb->event_person_id."'
 						AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%'";
 					//$persoon=mysql_query($querie,$db);
@@ -170,7 +170,7 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 		$picture_text='';	// Text with link to person
 		$picture_text2='';	// Text without link to person
 
-		$sql="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+		$sql="SELECT * FROM ".$tree_prefix_quoted."events
 			WHERE event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
 		//$afbqry=mysql_query($sql,$db);
 		$afbqry= $dbh->query($sql);
@@ -179,7 +179,7 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 		while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
 			$person_cls = New person_cls;
 			//$persoon=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$afbDb->event_person_id."'",$db);
-			$persoon = $dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$afbDb->event_person_id."'");
+			$persoon = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".$afbDb->event_person_id."'");
 			//while(@$personDb=mysql_fetch_object($persoon)){
 			while(@$personDb=$persoon->fetch(PDO::FETCH_OBJ)) {
 				$name=$person_cls->person_name($personDb);
@@ -198,7 +198,7 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 		// *** Show texts from connected objects ***
 		//$picture_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 		//	WHERE event_kind='object' AND LOWER(event_event)='".strtolower($filename)."'",$db);
-		$picture_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+		$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			WHERE event_kind='object' AND LOWER(event_event)='".strtolower($filename)."'");
 		//while($pictureDb=mysql_fetch_object($picture_qry)){
 		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)) {
@@ -206,7 +206,7 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 				WHERE connect_kind='person'
 				AND connect_sub_kind='pers_object'
 				AND connect_source_id='".$pictureDb->event_gedcomnr."'",$db); */
-		 	$connect_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
+		 	$connect_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."connections
 				WHERE connect_kind='person'
 				AND connect_sub_kind='pers_object'
 				AND connect_source_id='".$pictureDb->event_gedcomnr."'");  				
@@ -214,7 +214,7 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 			while($connectDb=$connect_qry->fetch(PDO::FETCH_OBJ)) {
 				$person_cls = New person_cls;
 				//$persoon=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$connectDb->connect_connect_id."'",$db);
-				$persoon=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$connectDb->connect_connect_id."'");
+				$persoon=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".$connectDb->connect_connect_id."'");
 				//while(@$personDb=mysql_fetch_object($persoon)){
 				while(@$personDb=$persoon->fetch(PDO::FETCH_OBJ)) {
 					$name=$person_cls->person_name($personDb);

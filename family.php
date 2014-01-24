@@ -33,18 +33,12 @@ if($screen_mode!='PDF' AND $menu!=1) {  //we can't have a menu in pdf... and don
 
 if($screen_mode=='PDF') {  // if PDF mode: necessary parts from menu.php
 	if (isset($_SESSION['tree_prefix'])){
-	/*
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 		ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
 		AND humo_tree_texts.treetext_language='".$selected_language."'
-		WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'";
-		@$datasql = mysql_query($dataqry,$db);
-		@$dataDb=mysql_fetch_object($datasql);
-	*/
-		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-		ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-		AND humo_tree_texts.treetext_language='".$selected_language."'
-		WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'";	
+		WHERE tree_prefix='".$tree_prefix_quoted."'";	
+		//@$datasql = mysql_query($dataqry,$db);
+		//@$dataDb=mysql_fetch_object($datasql);
 		@$datasql = $dbh->query($dataqry);
 		@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 	}
@@ -336,7 +330,7 @@ if($screen_mode=='PDF') {  //initialize pdf generation
 	//$pers=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 	//	WHERE pers_gedcomnumber='$main_person'",$db);
 	//@$persDb=mysql_fetch_object($pers);
-	$pers = $dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$main_person'");
+	$pers = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
 	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
 	// *** Use class to process person ***
 	$pers_cls = New person_cls;
@@ -362,7 +356,7 @@ if (!$family_id){
 	// *** Privacy filter ***
 	//$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($main_person)."'",$db);
 	//@$person_manDb=mysql_fetch_object($person_man);
-	$person_man = $dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
+	$person_man = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
 	@$person_manDb = $person_man->fetch(PDO::FETCH_OBJ);
 	// *** Use class to show person ***
 	$man_cls = New person_cls;
@@ -454,17 +448,17 @@ else{
 	
 	//prepare queries here that will be used in the loops.
 	//creating a prepared statement one time will save time
-	$family_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$_SESSION['tree_prefix']."family WHERE fam_gedcomnumber=?");	
+	$family_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");	
 	$family_prep->bindParam(1, $family_id_loop_var);
-	$person_prep=$dbh->prepare("SELECT pers_fams FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber=?");	
+	$person_prep=$dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");	
 	$person_prep->bindParam(1, $parent1_var);
-	$family2_prep=$dbh->prepare("SELECT * FROM ".$_SESSION['tree_prefix']."family WHERE fam_gedcomnumber=?");	
+	$family2_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");	
 	$family2_prep->bindParam(1, $id_var);	
-	$person_man_prep=$dbh->prepare("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber=?");
+	$person_man_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 	$person_man_prep->bindParam(1,$pers_man_var);
-	$address_qry_prep=$dbh->prepare("SELECT * FROM ".$_SESSION['tree_prefix']."addresses WHERE address_family_id=?");
+	$address_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_family_id=?");
 	$address_qry_prep->bindParam(1,$address_fam_var);
-	$famc_adoptive_qry_prep=$dbh->prepare("SELECT * FROM ".$_SESSION['tree_prefix']."events WHERE event_event=? AND event_kind='adoption' ORDER BY event_order");
+	$famc_adoptive_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."events WHERE event_event=? AND event_kind='adoption' ORDER BY event_order");
 	$famc_adoptive_qry_prep->bindParam(1,$famc_adopt_var);
 
 	try { // only prepare location statement if table exists otherwise PDO throws exception!
@@ -478,7 +472,7 @@ else{
 		$location_prep->bindParam(1,$location_var);
 	}
 
-	$old_stat_prep=$dbh->prepare("UPDATE ".$_SESSION['tree_prefix']."family SET fam_counter=? WHERE fam_gedcomnumber=?");
+	$old_stat_prep=$dbh->prepare("UPDATE ".$tree_prefix_quoted."family SET fam_counter=? WHERE fam_gedcomnumber=?");
 	$old_stat_prep->bindParam(1,$fam_counter_var);
 	$old_stat_prep->bindParam(2,$fam_gednr_var);
 		
@@ -614,7 +608,7 @@ else{
 
 						//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'",$db);
 						//$datasqlDb=mysql_fetch_object($datasql);
-						$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
+						$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix_quoted."'");
 						$datasqlDb = $datasql->fetch(PDO::FETCH_OBJ);
 						$stat_easy_id=$datasqlDb->tree_id.'-'.$familyDb->fam_gedcomnumber.'-'.$familyDb->fam_man.'-'.$familyDb->fam_woman;
 
@@ -1649,7 +1643,6 @@ if($screen_mode=='') {
 				$gedcom_date=strtoupper(date("d M Y")); $gedcom_time=date("H:i:s");
 
 				// *** note_status show/ hide/ moderate options ***
-				/*
 				$user_register_date=date("Y-m-d H:i");
 				$sql="INSERT INTO humo_user_notes SET
 				note_date='".$gedcom_date."',
@@ -1658,24 +1651,10 @@ if($screen_mode=='') {
 				note_note='".safe_text($_POST["user_note"])."',
 				note_fam_gedcomnumber='".safe_text($family_id)."',
 				note_pers_gedcomnumber='".safe_text($main_person)."',
-				note_tree_prefix='".safe_text($_SESSION['tree_prefix'])."',
+				note_tree_prefix='".$tree_prefix_quoted."',
 				note_names='".safe_text($name["standard_name"])."'				
 				;";
-
-				$result=mysql_query($sql) or die(mysql_error());
-				*/
-				$user_register_date=date("Y-m-d H:i");
-				$sql="INSERT INTO humo_user_notes SET
-				note_date='".$gedcom_date."',
-				note_time='".$gedcom_time."',
-				note_user_id='".safe_text($_SESSION['user_id'])."',
-				note_note='".safe_text($_POST["user_note"])."',
-				note_fam_gedcomnumber='".safe_text($family_id)."',
-				note_pers_gedcomnumber='".safe_text($main_person)."',
-				note_tree_prefix='".safe_text($_SESSION['tree_prefix'])."',
-				note_names='".safe_text($name["standard_name"])."'				
-				;";
-
+				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);				
 				
 				// *** Mail new user note to the administrator ***
@@ -1770,7 +1749,7 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 	$pdf->SetFont('Arial','',10);
 	// the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
 	$count=0;
-	$source_prep = $dbh->prepare("SELECT * FROM ".$_SESSION['tree_prefix']."sources WHERE source_gedcomnr=?");
+	$source_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."sources WHERE source_gedcomnr=?");
 	$source_prep->bindParam(1,$source_var);
 	foreach($pdf_source as $key => $value) {
 		$count++;

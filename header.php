@@ -46,7 +46,6 @@ include_once (CMS_ROOTPATH.'include/show_tree_text.php');
 
 // *** Use UTF-8 database connection ***
 //mysql_query("SET NAMES 'utf8'", $db);
-// *** Use UTF-8 database connection ***
 //$dbh->query("SET NAMES 'utf8'");
 
 
@@ -228,6 +227,8 @@ function pdf_convert($text){
 if (isset($screen_mode) AND ($screen_mode=='PDF' OR $screen_mode=="ASPDF")){
 	require(CMS_ROOTPATH.'include/fpdf16/fpdf.php');
 	require(CMS_ROOTPATH.'include/fpdf16/fpdfextend.php');
+	// *** Set variabele for queries ***
+	$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
 }
 else{
 	// *** Save family-favorite in cookie ***
@@ -430,14 +431,17 @@ else{
 	// *** Check if tree is allowed for visitor and Google etc. ***
 	//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".$_SESSION['tree_prefix']."'",$db);
 	//@$dataDb=mysql_fetch_object($datasql);
-	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
+	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
 	@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
 	$hide_tree=false;
 	for ($x=0; $x<=count($hide_tree_array)-1; $x++){
 		if ($hide_tree_array[$x]==@$dataDb->tree_id){ $hide_tree=true; }
 	}
-	if ($hide_tree){ $_SESSION['tree_prefix']=''; }
+	if ($hide_tree) $_SESSION['tree_prefix']='';
+
+	// *** Set variabele for queries ***
+	$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
 
 	/*
 	// *****************************************************************

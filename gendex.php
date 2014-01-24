@@ -18,7 +18,7 @@ include_once(CMS_ROOTPATH."include/person_cls.php");
 // *** Database ***
 //$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
 //$num_rows = mysql_num_rows($datasql);
-$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
+$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 $num_rows = $datasql->rowCount();
 
 //while (@$dataDb=mysql_fetch_object($datasql)){

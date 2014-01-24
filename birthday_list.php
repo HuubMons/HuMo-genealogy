@@ -86,7 +86,7 @@ $query = @mysql_query ("SELECT *,
 $query = $dbh->query("SELECT *,
 	abs(substring( pers_birth_date,1,2 )) as birth_day,
 	substring( pers_birth_date,-4 ) as birth_year
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE substring( pers_birth_date,  4,3) = '$month'
 	OR  substring( pers_birth_date,  3,3) = '$month'
 	order by birth_day ");

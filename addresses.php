@@ -14,7 +14,7 @@ echo '<h1 style="text-align:center;">'.__('Addresses').'</h1>';
 echo '<div class="center">';
 	//$address=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses
 	//	WHERE address_gedcomnr LIKE '_%'",$db);
-	$address = $dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses 
+	$address = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses 
 		WHERE address_gedcomnr LIKE '_%'");
 	//while (@$addressDb=mysql_fetch_object($address)){
 	while(@$addressDb=$address->fetch(PDO::FETCH_OBJ)) {

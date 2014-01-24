@@ -70,9 +70,9 @@ for ($i=0 ; $i < $maxperson; $i++) {
 }
 
 // some prepared statements so they will be initialized once
-$person_prep = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber=?");
+$person_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 $person_prep->bindParam(1,$pers_var);
-$fam_prep = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber =?");
+$fam_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber =?");
 $fam_prep->bindParam(1,$fam_var);
 
 function fillarray ($nr, $famid) {
@@ -222,7 +222,7 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 	global $fan_style, $family_id;
 	global $printing, $language;
 	global $selected_language;
-	global $db, $dbh, $person_prep, $pers_var;
+	global $db, $dbh, $person_prep, $pers_var, $tree_prefix_quoted;
 	// check for GD 2.x library
 	if (!defined("IMG_ARC_PIE")) {
 		print "ERROR: NO GD LIBRARY";
@@ -459,7 +459,7 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 					//$spouse_result = mysql_query($spouse_qr,$db) or die(mysql_error().$spouse_qr);
 					//@$spouseDb = mysql_fetch_array($spouse_result);
 					//2 reasons this is not a prepared pdo statement: 1. only used once  2. table names can't be parameters...
-					$spouse_result = $dbh->query("SELECT ".$spouse." FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$treeid[1][2]."'");
+					$spouse_result = $dbh->query("SELECT ".$spouse." FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$treeid[1][2]."'");
 					@$spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
 /*					$spouse2_qr = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$spouseDb[$spouse]."'";
 					$spouse2_result = mysql_query($spouse2_qr,$db) or die(mysql_error()."SECOND");

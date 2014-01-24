@@ -56,7 +56,7 @@ if($screen_mode!='PDF' AND $screen_mode!='ASPDF') {  //we can't have a menu in p
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
 			AND humo_tree_texts.treetext_language='".$selected_language."'
-			WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'";
+			WHERE tree_prefix='".$tree_prefix_quoted."'";
 		//@$datasql = mysql_query($dataqry,$db);
 		//@$dataDb=mysql_fetch_object($datasql);
 		@$datasql = $dbh->query($dataqry);
@@ -90,7 +90,7 @@ if($screen_mode!='PDF' AND $screen_mode!="ancestor_sheet" AND $screen_mode!='ASP
 		if ($screen_mode=='ancestor_chart'){
 			echo __('Ancestor chart');
 		}
-		else{
+		else {
 			echo __('Ancestor report');
 
 			if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
@@ -103,22 +103,6 @@ if($screen_mode!='PDF' AND $screen_mode!="ancestor_sheet" AND $screen_mode!='ASP
 				print '</form>';
 			}
 		}
-
-		// *** Select source presentation (as title/ footnote or hide sources) ***
-		/*
-		if($user['group_sources']!='n') {
-			echo ' <select size=1 name="source_presentation" onChange="window.location=this.value;" style="display:inline; width: 150px; height:20px;">';
-				echo '<option';
-				echo ' value="'.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;database='.safe_text($_SESSION['tree_prefix']).'&amp;source_presentation=title">'.__('Show source title').'</option>';
-				echo '<option';
-				if ($source_presentation=='footnote') { echo ' SELECTED';}
-				echo ' value="'.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;database='.safe_text($_SESSION['tree_prefix']).'&amp;source_presentation=footnote">'.__('Show source title as footnote').'</option>';
-				echo '<option';
-				if ($source_presentation=='hide') { echo ' SELECTED';}
-				echo ' value="'.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;database='.safe_text($_SESSION['tree_prefix']).'&amp;source_presentation=hide">'.__('Hide sources').'</option>';
-			echo '</select>';
-		}
-		*/
 	echo '</div>';
 }
 
@@ -129,7 +113,7 @@ if($screen_mode=='PDF') {
 	$pdf=new PDF();
 	//$pers=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$family_id'",$db);
 	//@$persDb=mysql_fetch_object($pers);
-	$pers = $dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$family_id'");
+	$pers = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$family_id'");
 	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
 	// *** Use person class ***
 	$pers_cls = New person_cls;
@@ -149,9 +133,9 @@ if($screen_mode=='PDF') {
 }
 
 // some PDO prepared statements before any loops are initiated
-$pers_prep=$dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber=?");
+$pers_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 $pers_prep->bindParam(1,$pers_prep_var);
-$fam_prep=$dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber=?");
+$fam_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
 $fam_prep->bindParam(1,$fam_prep_var);
 
 if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $screen_mode!='ASPDF'){
@@ -1304,7 +1288,7 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 	// the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
 	$count=0;
 	//prepared statemetn before loop
-	$anc_source_prep=$dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources WHERE source_gedcomnr=?");
+	$anc_source_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."sources WHERE source_gedcomnr=?");
 	$anc_source_prep->bindParam(1,$anc_source_prep_var);
 	foreach($pdf_source as $key => $value) {
 		$count++;

@@ -328,7 +328,7 @@ echo '<ul class="humo_menu_item">';
 						// *** Check if there are sources in the database ***
 						//$source_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources",$db);
 						//@$sourceDb=mysql_num_rows($source_qry);
-						$source_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources");
+						$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources");
 						@$sourceDb=$source_qry->rowCount();
 						if ($sourceDb>0){
 							$select_menu=''; if ($menu_choice=='sources'){ $select_menu=' id="current"'; }
@@ -346,7 +346,7 @@ echo '<ul class="humo_menu_item">';
 						// *** Check for addresses in the database ***
 						//$address_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses WHERE address_gedcomnr LIKE '_%'",$db);
 						//@$addressDb=mysql_num_rows($address_qry);
-						$address_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses WHERE address_gedcomnr LIKE '_%'");
+						$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr LIKE '_%'");
 						@$addressDb=$address_qry->rowCount();
 						if ($addressDb>0){
 							$select_menu=''; if ($menu_choice=='addresses'){ $select_menu=' id="current"'; }
