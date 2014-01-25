@@ -25,7 +25,7 @@ if (isset($_POST['order_sources']) OR isset($_GET['order_sources'])){
 	right(source_date,4) as year,
 	date_format( str_to_date( substring(source_date,4,3),'%b' ),'%m') as month,
 	date_format( str_to_date( left(source_date,2),'%d' ),'%d') as day
-	FROM ".safe_text($_SESSION['tree_prefix'])."sources";
+	FROM ".$tree_prefix_quoted."sources";
 	if ($user['group_show_restricted_source']=='n'){ $querie.=" WHERE source_status!='restricted' OR source_status IS NULL"; }
 	$querie.=" ORDER BY year, month, day";
 }
