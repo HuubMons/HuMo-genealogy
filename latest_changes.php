@@ -76,7 +76,7 @@ echo '</tr>';
 
 $rowcounter=0;
 //while ($person=mysql_fetch_object($person_result)){
-while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+while (@$person=$person_result->fetch(PDO::FETCH_OBJ)){
 	$rowcounter++;
 	echo '<tr>';
 	echo '<td style="font-size: 90%">';

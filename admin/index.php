@@ -213,48 +213,47 @@ if(isset($database_check) AND $database_check) {
 	elseif($page=='update') {
 		// *** No log in, update procedure (group table will be changed) ***
 	}
-	else{    
+	else{
 		// *** Logged in using PHP-MySQL ***
 		@$query = "SELECT * FROM humo_users";
 		//@$result = mysql_query($query,$db);
-		@$result = $dbh->query($query); 
+		@$result = $dbh->query($query);
 		//if (@mysql_num_rows($result) > 0){
-  	 
-		//if ($result->rowCount() > 0){  
+
+		//if ($result->rowCount() > 0){
 		if($result !== FALSE) {
             if($result->rowCount() > 0) {
-			// *** humo-users table exists, check admin log in ***
-			//if (isset($_SESSION["group_id_admin"]) AND $_SESSION["group_id_admin"] == "1") {
-			if (isset($_SESSION["group_id_admin"])) {
- 			// *** Logged in as admin... ***
- 
-				// *** Read group settings ***
-				//$groepsql = mysql_query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'",$db);
-				//@$groepDb=mysql_fetch_object($groepsql) or die("Geen geldige gebruikersgroep/ No valid usergroup.");
-				$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'");  
-				@$groepDb=$groepsql->fetch(PDO::FETCH_OBJ);			
- 
-				// *** Check if user is an administrator ***
-				$group_administrator=$groepDb->group_admin;
-				if ($group_administrator!='j'){ $page='login'; }
+				// *** humo-users table exists, check admin log in ***
+				//if (isset($_SESSION["group_id_admin"]) AND $_SESSION["group_id_admin"] == "1") {
+				if (isset($_SESSION["group_id_admin"])) {
+				// *** Logged in as admin... ***
 
-				// *** Check if user is an editor ***
-				if (isset($groepDb->group_editor)){
-					$group_editor=$groepDb->group_editor;
-					if ($group_editor=='j'){ $page=''; }
-				}   
-			}
-			else{
-				// *** Show log in screen ***
-				$page='login';
-			} 
+					// *** Read group settings ***
+					//$groepsql = mysql_query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'",$db);
+					//@$groepDb=mysql_fetch_object($groepsql) or die("Geen geldige gebruikersgroep/ No valid usergroup.");
+					$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='".$_SESSION["group_id_admin"]."'");
+					@$groepDb=$groepsql->fetch(PDO::FETCH_OBJ);
+
+					// *** Check if user is an administrator ***
+					$group_administrator=$groepDb->group_admin;
+					if ($group_administrator!='j'){ $page='login'; }
+
+					// *** Check if user is an editor ***
+					if (isset($groepDb->group_editor)){
+						$group_editor=$groepDb->group_editor;
+						if ($group_editor=='j'){ $page=''; }
+					}   
+				}
+				else{
+					// *** Show log in screen ***
+					$page='login';
+				} 
 			}
 		}
-
 		else{
 			// *** No user table: probably first installation: everything will be visible! ***
 		}  
-		
+
 	}
 }
 // *** Save ip address in session to prevent session hijacking ***
@@ -274,7 +273,7 @@ if (!CMS_SPECIFIC){
 	if (isset($screen_mode) AND ($screen_mode=="STAR" OR $screen_mode=="STARSIZE")){
 		$html_text="\n<html>\n";
 	}
-	echo $html_text;	
+	echo $html_text;
 	//echo "<html>\n";
 	echo "<head>\n";
 	echo '<meta http-equiv="content-type" content="text/html; charset=utf-8">'."\n";
@@ -374,7 +373,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				//	WHERE setting_variable='update_last_check'");
 				$result = @$dbh->query("UPDATE humo_settings
 					SET setting_value='2012-01-01'
-					WHERE setting_variable='update_last_check'");				
+					WHERE setting_variable='update_last_check'");
 				$humo_option['update_last_check']='2012-01-01';
 			}
 

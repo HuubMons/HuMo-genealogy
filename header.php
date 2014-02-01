@@ -111,12 +111,12 @@ if (isset($_POST["username"]) && isset($_POST["password"])){
 			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
 			log_user_admin='user'";
 		@mysql_query($sql, $db);
-*/		
+*/
 		$sql="INSERT INTO humo_user_log SET
 			log_date='".date("Y-m-d H:i")."',
 			log_username='".safe_text($_POST["username"])."',
 			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
-			log_user_admin='user'";		
+			log_user_admin='user'";
 		$dbh->query($sql);
 		
 		// *** Send to secured page ***
@@ -246,7 +246,7 @@ else{
 					setcookie ("humo_favorite[$name]", "", time() - 3600);
 				}
 			}
-		}		
+		}
 	}
 
 
@@ -255,8 +255,8 @@ else{
 	// Set default ("0" is OFF, "1" is ON):
 	$showdesc="0";
 
-	if(isset($_POST['show_desc'])){   
-		if($_POST['show_desc']=="1") {  
+	if(isset($_POST['show_desc'])){
+		if($_POST['show_desc']=="1") {
 			$showdesc="1";
 			$_SESSION['save_show_desc']="1";
 			setcookie("humogen_showdesc", "1", time()+60*60*24*365); // set cookie to "1"

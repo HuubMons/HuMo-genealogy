@@ -9,10 +9,10 @@ include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
 $process_age = New calculate_year_cls;
 
 if(isset($_GET['id'])) { $id=$_GET['id']; }
-if(isset($_GET['database'])) { $database=$_GET['database']; }
+//if(isset($_GET['database'])) { $database=$_GET['database']; }
 //$person=mysql_query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($id)."'",$db);
 //@$personDb=mysql_fetch_object($person);
-$person= $dbh->query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($id)."'");
+$person= $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($id)."'");
 @$personDb= $person->fetch(PDO::FETCH_OBJ);
 $isborn=0; $isdeath=0; $ismarr=0; $ischild=0;
 $deathtext=''; $borntext=''; $bapttext=''; $burrtext=''; $marrtext='';
@@ -80,7 +80,7 @@ if($personDb->pers_fams) {
 		$thisfam=$marriages[$i];
 		//$family=mysql_query("SELECT * FROM ".safe_text($database)."family WHERE fam_gedcomnumber='".safe_text($thisfam)."'",$db);
 		//@$familyDb=mysql_fetch_object($family);
-		$family= $dbh->query("SELECT * FROM ".safe_text($database)."family WHERE fam_gedcomnumber='".safe_text($thisfam)."'");
+		$family= $dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".safe_text($thisfam)."'");
 		@$familyDb= $family->fetch(PDO::FETCH_OBJ);
 		if ($personDb->pers_gedcomnumber==$familyDb->fam_man){
 			$spouse=$familyDb->fam_woman;
@@ -90,7 +90,7 @@ if($personDb->pers_fams) {
 		}
 		//$spouse2=mysql_query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($spouse)."'",$db);
 		//@$spouse2Db=mysql_fetch_object($spouse2);
-		$spouse2=$dbh->query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($spouse)."'");
+		$spouse2=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($spouse)."'");
 		@$spouse2Db= $spouse2->fetch(PDO::FETCH_OBJ);
 		$person_cls = New person_cls;
 		$person_cls->construct($spouse2Db);
@@ -167,7 +167,7 @@ if($personDb->pers_fams) {
 				$child=$children[$i][$m];
 				//$chld=mysql_query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($child)."'",$db);
 				//@$chldDb=mysql_fetch_object($chld);
-				$chld=$dbh->query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($child)."'");
+				$chld=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($child)."'");
 				@$chldDb= $chld->fetch(PDO::FETCH_OBJ);
 
 				if($chldDb->pers_sexe=="M") { $child=__('son'); }
@@ -217,7 +217,7 @@ if($personDb->pers_fams) {
 						$thischfam=$chmarriages[$i][$m][$p];
 						//$chfamily=mysql_query("SELECT * FROM ".safe_text($database)."family WHERE fam_gedcomnumber='".safe_text($thischfam)."'",$db);
 						//@$chfamilyDb=mysql_fetch_object($chfamily);
-						$chfamily=$dbh->query("SELECT * FROM ".safe_text($database)."family WHERE fam_gedcomnumber='".safe_text($thischfam)."'");
+						$chfamily=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".safe_text($thischfam)."'");
 						@$chfamilyDb=$chfamily->fetch(PDO::FETCH_OBJ);
 
 // CHILDREN'S MARRIAGES
@@ -230,7 +230,7 @@ if($personDb->pers_fams) {
 		}
 		//$chspouse2=mysql_query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($chspouse)."'",$db);
 		//@$chspouse2Db=mysql_fetch_object($chspouse2);
-		$chspouse2=$dbh->query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($chspouse)."'");
+		$chspouse2=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($chspouse)."'");
 		@$chspouse2Db=$chspouse2->fetch(PDO::FETCH_OBJ);
 
 		$person_cls = New person_cls;
@@ -290,7 +290,7 @@ if($personDb->pers_fams) {
 								$grchild=$grchildren[$i][$m][$p][$g];
 								//$grchld=mysql_query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($grchild)."'",$db);
 								//@$grchldDb=mysql_fetch_object($grchld);
-								$grchld=$dbh->query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($grchild)."'");
+								$grchld=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($grchild)."'");
 								@$grchldDb=$grchld->fetch(PDO::FETCH_OBJ);
 								$person3_cls = New person_cls;
 								$person3_cls->construct($grchldDb);

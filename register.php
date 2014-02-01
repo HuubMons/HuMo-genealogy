@@ -21,7 +21,7 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 	$user = $dbh->query($usersql);
 	$userDb=$user->fetch(PDO::FETCH_OBJ);
 	if (isset($userDb->user_id)){
-		$error=__('ERROR: username allready exists');
+		$error=__('ERROR: username already exists');
 	}
 
 	if ($_POST["register_password"]!=$_POST["register_repeat_password"]){
@@ -42,52 +42,57 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 		$result = $dbh->query($sql);
 		echo '<h2>'.__('Registration completed').'</h2>';
 		echo __('At this moment you are registered in the user-group "guest". The administrator will check your registration, and select a user-group for you.');
+
+		// *** Mail new registered user to the administrator ***
+		//$register_address=$dataDb->tree_email;
+		$register_address='';
+		if (isset($dataDb->tree_email)) $register_address=$dataDb->tree_email; // Used in older HuMo-gen versions. Backwards compatible...
+		if ($humo_option["general_email"]) $register_address=$humo_option["general_email"];
+
+		$register_subject="HuMo-gen. ".__('New registered user').": ".$_POST['register_name']."\n";
+
+		// *** It's better to use plain text in the subject ***
+		$register_subject=strip_tags($register_subject,ENT_QUOTES);
+
+		$register_message =__('Message sent through HuMo-gen from the website.')."<br>\n";
+		$register_message .="<br>\n";
+		$register_message .=__('New registered user')."<br>\n";
+		$register_message .=__('Name').':'.$_POST['register_name']."<br>\n";
+		$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";
+		$register_message .=$_POST['register_text']."<br>\n";
+
+		$headers  = "MIME-Version: 1.0\n";
+		//$headers .= "Content-type: text/plain; charset=utf-8\n";
+		$headers .= "Content-type: text/html; charset=utf-8\n";
+		$headers .= "X-Priority: 3\n";
+		$headers .= "X-MSMail-Priority: Normal\n";
+		$headers .= "X-Mailer: php\n";
+		$headers .= "From: \"".$_POST['register_name']."\" <".$_POST['register_mail'].">\n";
+
+		//echo '<br>'.__('You have entered the following email address: ').'<b> '.$_POST['register_sender'].'</b><br>';
+		//$position = strpos($_POST['register_sender'],"@");
+		//if ($position<1){ echo '<font color="red">'.__('The email address you entered doesn\'t seem to be a valid email address!').'</font><br>'; }
+		//echo '<b>'.__('If you do not enter a valid email address, unfortunately I cannot answer you!').'</b><br>';
+		//echo __('Message: ').'<br>'.$_POST['register_text'];
+
+		@$mail = mail($register_address, $register_subject, $register_message, $headers);
+		//if($mail){
+		//	echo ("<br>".__('E-mail sent!'));
+		//}
+		//else{
+		//	echo "<br><b>".__('Sending e-mail failed!')."</b><br>";
+		//}
 	}
 	else{
 		echo '<h2>'.$error.'</h2>';
 	}
 
-	// *** Mail new registered user to the administrator ***
-	$register_address=$dataDb->tree_email;
-
-	$register_subject="HuMo-gen. ".__('New registered user').": ".$_POST['register_name']."\n";
-
-	// *** It's better to use plain text in the subject ***
-	$register_subject=strip_tags($register_subject,ENT_QUOTES);
-
-	$register_message =__('Message sent through HuMo-gen from the website.')."<br>\n";
-	$register_message .="<br>\n";
-	$register_message .=__('New registered user')."<br>\n";
-	$register_message .=__('Name').':'.$_POST['register_name']."<br>\n";
-	$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";
-	$register_message .=$_POST['register_text']."<br>\n";
-
-	$headers  = "MIME-Version: 1.0\n";
-	//$headers .= "Content-type: text/plain; charset=utf-8\n";
-	$headers .= "Content-type: text/html; charset=utf-8\n";
-	$headers .= "X-Priority: 3\n";
-	$headers .= "X-MSMail-Priority: Normal\n";
-	$headers .= "X-Mailer: php\n";
-	$headers .= "From: \"".$_POST['register_name']."\" <".$_POST['register_mail'].">\n";
-
-	//echo '<br>'.__('You have entered the following email address: ').'<b> '.$_POST['register_sender'].'</b><br>';
-	//$position = strpos($_POST['register_sender'],"@");
-	//if ($position<1){ echo '<font color="red">'.__('The email address you entered doesn\'t seem to be a valid email address!').'</font><br>'; }
-	//echo '<b>'.__('If you do not enter a valid email address, unfortunately I cannot answer you!').'</b><br>';
-	//echo __('Message: ').'<br>'.$_POST['register_text'];
-
-	@$mail = mail($register_address, $register_subject, $register_message, $headers);
-	//if($mail){
-	//	echo ("<br>".__('E-mail sent!'));
-	//}
-	//else{
-	//	echo "<br><b>".__('Sending e-mail failed!')."</b><br>";
-	//}
 }
 else{
-
-	if ($dataDb->tree_email){
-
+	$email='';
+	if (isset($dataDb->tree_email)) $email=$dataDb->tree_email; // Used in older HuMo-gen versions. Backwards compatible...
+	if ($humo_option["general_email"]) $email=$humo_option["general_email"];
+	if ($email!=''){
 		echo '<script type="text/javascript">';
 		echo '
 		function validate(form_id,register_mail) {

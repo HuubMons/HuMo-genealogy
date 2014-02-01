@@ -14,10 +14,10 @@ include_once(CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
 
 // *** Get general data from family tree ***
-$sql = "SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'";
+//$sql = "SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'";
 //$datasql = mysql_query($sql,$db);
 //@$dataDb = mysql_fetch_object($datasql);
-$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
+$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix_quoted."'");
 @$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 
 $tree_date=$dataDb->tree_date;
@@ -61,7 +61,7 @@ echo '<td><br></td></tr>';
 print "<tr><td>".__('Most children in family')."</td>\n";
 $test_number="2"; // *** minimum of 2 children ***
 //$res=@mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family");
-$res=@$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family");
+$res=@$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family");
 //while (@$record=mysql_fetch_object($res)){
 while (@$record=$res->fetch(PDO::FETCH_OBJ)){
 	$count_children=substr_count($record->fam_children, ';');
@@ -76,7 +76,7 @@ while (@$record=$res->fetch(PDO::FETCH_OBJ)){
 print "<td align='center'><i>$test_number</i></td>\n";
 //$res=@mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$man_gedcomnumber."'");
 //@$record=mysql_fetch_object($res);
-$res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$man_gedcomnumber."'");
+$res=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".$man_gedcomnumber."'");
 @$record=$res->fetch(PDO::FETCH_OBJ);
 $person_cls = New person_cls;
 $person_cls->construct($record);
@@ -86,7 +86,7 @@ $index = "$record->pers_indexnr";
 
 //$res=@mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$woman_gedcomnumber."'");
 //@$record=mysql_fetch_object($res);
-$res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$woman_gedcomnumber."'");
+$res=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber ='".$woman_gedcomnumber."'");
 @$record=$res->fetch(PDO::FETCH_OBJ);
 $person_cls = New person_cls;
 $person_cls->construct($record);
@@ -141,7 +141,7 @@ echo '<tr style="font-weight:bold; text-align:center;"><td width="20%">'.__('Ite
 // *** Count man ***
 //$person_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_sexe='m'",$db);
 //$count_persons=mysql_num_rows($person_qry);
-$person_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_sexe='m'");
+$person_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_sexe='m'");
 $count_persons=$person_qry->rowCount();
 print "<tr><td>".__('No. of persons')."</td>\n";
 print "<td align='center'><i>$count_persons</i></td>\n";
@@ -151,7 +151,7 @@ echo '<td align="center">'.floor($percent).'%</td>';
 // *** Count woman ***
 //$person_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_sexe='f'",$db);
 //$count_persons=mysql_num_rows($person_qry);
-$person_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_sexe='f'");
+$person_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_sexe='f'");
 $count_persons=$person_qry->rowCount();
 print "<td align='center'><i>$count_persons</i></td>\n";
 @$percent=($count_persons/$nr_persons)*100;
@@ -171,7 +171,7 @@ $res = mysql_query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
 $row=mysql_fetch_object($res);
 */
 $res = $dbh->query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
 	AND pers_sexe='M'
 	ORDER BY search LIMIT 0,1
@@ -192,7 +192,7 @@ $res = mysql_query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
 $row=mysql_fetch_object($res);
 */
 $res = $dbh->query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
 	AND pers_sexe='F'
 	ORDER BY search LIMIT 0,1
@@ -214,7 +214,7 @@ $res = mysql_query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
 $row=mysql_fetch_object($res);
 */
 $res = $dbh->query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
 	AND pers_sexe='M'
 	ORDER BY search DESC LIMIT 0,1");
@@ -240,7 +240,7 @@ $res = mysql_query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
 $row=mysql_fetch_object($res);
 */
 $res = $dbh->query("SELECT *, STR_TO_DATE(pers_birth_date,'%e %b %Y') as search
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE (CHAR_LENGTH(pers_birth_date)=10 OR CHAR_LENGTH(pers_birth_date)=11)
 	AND pers_sexe='F'
 	ORDER BY search DESC LIMIT 0,1");
@@ -268,7 +268,7 @@ $res = mysql_query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
 $row=mysql_fetch_object($res);
 */
 $res = $dbh->query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
 	AND pers_sexe='M'
 	ORDER BY search LIMIT 0,1");
@@ -288,7 +288,7 @@ $res = mysql_query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
 $row=mysql_fetch_object($res);
 */
 $res = $dbh->query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
 	AND pers_sexe='F'
 	ORDER BY search LIMIT 0,1");
@@ -309,7 +309,7 @@ $res = mysql_query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
 $row=mysql_fetch_object($res);
 */
 $res = $dbh->query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
 	AND pers_sexe='M'
 	ORDER BY search DESC LIMIT 0,1");
@@ -330,7 +330,7 @@ $res = mysql_query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
 $row=mysql_fetch_object($res);
 */
 $res = $dbh->query("SELECT *, STR_TO_DATE(pers_death_date,'%e %b %Y') as search
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE (CHAR_LENGTH(pers_death_date)=10 OR CHAR_LENGTH(pers_death_date)=11)
 	AND pers_sexe='F'
 	ORDER BY search DESC LIMIT 0,1");
@@ -357,7 +357,7 @@ $res = @mysql_query("SELECT *
 	") or die(mysql_error());
 */
 $res = @$dbh->query("SELECT *
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE pers_sexe='M' AND pers_death_date LIKE '_%'
 	");
 $test_year="10";
@@ -401,7 +401,7 @@ $res = @mysql_query("SELECT *
 	") or die(mysql_error());
 */
 $res = @$dbh->query("SELECT *
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
+	FROM ".$tree_prefix_quoted."person
 	WHERE pers_sexe='F' AND pers_death_date LIKE '_%'
 	");
 $test_year="10";

@@ -10,7 +10,7 @@
 // $connect_sub_kind = birth/ baptise/ etc.
 // $connect_connect_id = id (gedcomnumber or direct table id)
 function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
-	global $user, $humo_option, $language, $db, $dbh, $family_id, $url_path, $uri_path;
+	global $user, $humo_option, $language, $db, $dbh, $tree_prefix_quoted, $family_id, $url_path, $uri_path;
 	global $main_person, $descendant_report, $pdf_source;
 	global $source_footnotes, $screen_mode, $pdf_footnotes, $pdf;
 	global $source_footnote_connect_id;
@@ -37,7 +37,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 			ORDER BY connect_order";
 		$connect_sql=mysql_query($connect_qry,$db);
 		*/
-		$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
+		$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 			WHERE connect_kind='".$connect_kind."'
 			AND connect_sub_kind='".$connect_sub_kind."'
 			AND connect_connect_id='".$connect_connect_id."'
@@ -52,7 +52,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				//$source_sql=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
 				//	WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'",$db);
 				//$sourceDb=mysql_fetch_object($source_sql);
-				$source_sql=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
+				$source_sql=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources
 					WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'");
 				$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);				
 				if ($user['group_show_restricted_source']=='n' AND $sourceDb->source_status=='restricted'){
@@ -171,9 +171,8 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 // *** Show source list if footnotes are selected ***
 // **************************************************
 function show_sources_footnotes(){
-	global $source_footnotes, $language, $db, $dbh, $user;
-	global $uri_path;
-	global $source_footnote_connect_id;
+	global $source_footnotes, $language, $db, $dbh, $tree_prefix_quoted, $user;
+	global $uri_path, $source_footnote_connect_id;
 
 	if (count($source_footnote_connect_id)>0){
 		echo '<h3>'.__('Sources').'</h3>';
@@ -186,7 +185,7 @@ function show_sources_footnotes(){
 		$connect_sql=mysql_query($connect_qry,$db);
 		$connectDb=mysql_fetch_object($connect_sql);
 		*/
-		$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
+		$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 			WHERE connect_id='".$source_footnote_connect_id[$j]."'";
 		$connect_sql=$dbh->query($connect_qry);
 		$connectDb=$connect_sql->fetch(PDO::FETCH_OBJ);		
@@ -195,7 +194,7 @@ function show_sources_footnotes(){
 			//$source_sql=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
 			//	WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'",$db);
 			//$sourceDb=mysql_fetch_object($source_sql);
-			$source_sql=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
+			$source_sql=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources
 				WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'");
 			$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);	
 			

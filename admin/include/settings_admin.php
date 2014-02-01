@@ -64,6 +64,7 @@ print '<p align=center>';
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["use_spam_question"])."' WHERE setting_variable='use_spam_question'");
 
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["visitor_registration"])."' WHERE setting_variable='visitor_registration'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["general_email"])."' WHERE setting_variable='general_email'");
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["visitor_registration_group"])."' WHERE setting_variable='visitor_registration_group'");
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["registration_use_spam_question"])."' WHERE setting_variable='registration_use_spam_question'");
 
@@ -156,7 +157,7 @@ else {
 	echo "</select>";
 	echo '</td></tr>';
 
-	echo '<tr><td valign="top">url_rewrite<br>'.__('Improve indexing of search engines (like Google)').'</td><td><select size="1" name="url_rewrite">';
+	echo '<tr class="humo_color"><td valign="top">url_rewrite<br>'.__('Improve indexing of search engines (like Google)').'</td><td><select size="1" name="url_rewrite">';
 	if ($humo_option["url_rewrite"]=='j'){
 		print '<option value="j" SELECTED>'.__('Yes').'</option>';
 		print '<option value="n">'.__('No').'</option>';
@@ -170,7 +171,7 @@ else {
 	echo __('becomes:').' http://www.website.nl/humo-php/family/F12/<br>';
 	echo '</td></tr>';
 
-	echo '<tr><td>'.__('Stop search engines').'</td><td><select size="1" name="searchengine">';
+	echo '<tr class="humo_color"><td>'.__('Stop search engines').'</td><td><select size="1" name="searchengine">';
 	if ($humo_option["searchengine"]=='j'){
 		print '<option value="j" SELECTED>'.__('Yes').'</option>';
 		print '<option value="n">'.__('No').'</option>';
@@ -183,7 +184,7 @@ else {
 	if(CMS_SPECIFIC == "Joomla") {  $cols="48"; } else { $cols="80"; }   // in joomla make sure it won't run off the screen
 	print "<textarea cols=".$cols." rows=1 name=\"robots_option\" style='height: 20px;'>".htmlentities($humo_option["robots_option"],ENT_NOQUOTES)."</TEXTAREA></td></tr>";
 
-	echo '<tr><td>'.__('Search engines:<br>Hide family tree (no indexing)<br>Show frontpage and CMS pages').'</td><td><select size="1" name="searchengine_cms_only">';
+	echo '<tr class="humo_color"><td>'.__('Search engines:<br>Hide family tree (no indexing)<br>Show frontpage and CMS pages').'</td><td><select size="1" name="searchengine_cms_only">';
 	if ($humo_option["searchengine_cms_only"]=='y'){
 		print '<option value="y" SELECTED>'.__('Yes').'</option>';
 		print '<option value="n">'.__('No').'</option>';
@@ -195,8 +196,10 @@ else {
 	echo "</select><br></td></tr>";
 
 	echo '<tr><td>'.__('Block spam question').'<br>'.__('Block spam answer').'</td><td>';
-	echo "<textarea cols=".$cols." rows=1 name=\"block_spam_question\" style='height: 20px;'>".htmlentities($humo_option["block_spam_question"],ENT_NOQUOTES).'</textarea>';
-	echo "<textarea cols=".$cols." rows=1 name=\"block_spam_answer\" style='height: 20px;'>".htmlentities($humo_option["block_spam_answer"],ENT_NOQUOTES).'</textarea>';
+	//echo "<textarea cols=".$cols." rows=1 name=\"block_spam_question\" style='height: 20px;'>".htmlentities($humo_option["block_spam_question"],ENT_NOQUOTES).'</textarea>';
+	echo '<input type="text" name="block_spam_question" value="'.htmlentities($humo_option["block_spam_question"],ENT_NOQUOTES).'" size="60"><br>';
+	//echo "<textarea cols=".$cols." rows=1 name=\"block_spam_answer\" style='height: 20px;'>".htmlentities($humo_option["block_spam_answer"],ENT_NOQUOTES).'</textarea>';
+	echo '<input type="text" name="block_spam_answer" value="'.htmlentities($humo_option["block_spam_answer"],ENT_NOQUOTES).'" size="60">';
 	echo '</td></tr>';
 
 	echo '<tr><td>'.__('Mail form: use spam question').'</td><td>';
@@ -212,7 +215,7 @@ else {
 	echo "</select>";
 	echo '</td></tr>';
 
-	echo '<tr><td>'.__('Visitors can register').'</td><td><select size="1" name="visitor_registration">';
+	echo '<tr class="humo_color"><td>'.__('Visitors can register').'</td><td><select size="1" name="visitor_registration">';
 	if ($humo_option["visitor_registration"]=='y'){
 		print '<option value="y" SELECTED>'.__('Yes').'</option>';
 		print '<option value="n">'.__('No').'</option>';
@@ -234,10 +237,12 @@ else {
 			print '<option value="'.$groupDb->group_id.'"'.$selected.'>'.$groupDb->group_name.'</option>';
 		}
 	echo '</select> ';
-	echo __('Add your e-mail address by family tree data!');
+	//echo __('Add your e-mail address by family tree data!');
 	echo '</td></tr>';
+	print '<tr class="humo_color"><td>'.__('Registration form: e-mail address').'</td>';
+	print '<td><input type="text" name="general_email" value="'.$humo_option["general_email"].'" size="40"> '.__('Send registration form to this e-mail address.').'</td></tr>';
 
-	echo '<tr><td>'.__('Visitor registration: use spam question').'</td><td>';
+	echo '<tr class="humo_color"><td>'.__('Visitor registration: use spam question').'</td><td>';
 	echo '<select size="1" name="registration_use_spam_question">';
 	if ($humo_option["registration_use_spam_question"]=='y'){
 		print '<option value="y" SELECTED>'.__('Yes').'</option>';
@@ -344,16 +349,17 @@ else {
 	print '<tr bgcolor=green><th><font color=white>'.__('Settings family page').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 	print '<tr><td style="white-space:nowrap;">'.__('Number of generations in descendant report').'</td>';
-	print '<td><textarea cols=3 rows=1 name="descendant_generations" style="height: 20px;">'.$humo_option["descendant_generations"].'</TEXTAREA> '.__('Show number of generation in descendant report (standard value=4).').'</td>';
+	//print '<td><textarea cols=3 rows=1 name="descendant_generations" style="height: 20px;">'.$humo_option["descendant_generations"].'</TEXTAREA> '.__('Show number of generation in descendant report (standard value=4).').'</td>';
+	print '<td><input type="text" name="descendant_generations" value="'.$humo_option["descendant_generations"].'" size="4"> '.__('Show number of generation in descendant report (standard value=4).').'</td>';
 	print "</tr>";
 
 	print '<tr><td style="white-space:nowrap;">'.__('Number of persons in search results').'</td>';
-	print '<td><textarea cols=3 rows=1 name="show_persons" style="height: 20px;">'.$humo_option["show_persons"].'</TEXTAREA> '.__('Show number of persons in search results (standard value=30).').'</td>';
+	//print '<td><textarea cols=3 rows=1 name="show_persons" style="height: 20px;">'.$humo_option["show_persons"].'</TEXTAREA> '.__('Show number of persons in search results (standard value=30).').'</td>';
+	print '<td><input type="text" name="show_persons" value="'.$humo_option["show_persons"].'" size="4"> '.__('Show number of persons in search results (standard value=30).').'</td>';
 	print '</tr>';
 
 	print '<tr bgcolor=green><th><font color=white>'.__('Save settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 	echo '</table>';
 	print '</form>';
-
 ?>

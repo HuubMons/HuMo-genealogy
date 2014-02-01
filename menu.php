@@ -457,7 +457,7 @@ echo '<ul class="humo_menu_item">';
 				}
 				if ($user["group_contact"]=='j' AND file_exists(CMS_ROOTPATH.'mailform.php')){
 					// *** Show link to contact form ***
-					if ($dataDb->tree_owner){
+					if (@$dataDb->tree_owner){
 						if ($dataDb->tree_email){
 							$select_menu=''; if ($menu_choice=='mailform'){ $select_menu=' id="current"'; }
 							if (CMS_SPECIFIC=='Joomla'){

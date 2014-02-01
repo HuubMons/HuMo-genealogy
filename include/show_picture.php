@@ -2,7 +2,7 @@
 // *** Function to show media by person or by marriage ***
 // *** Updated feb 2013. ***
 function show_media($personDb,$marriageDb){
-	global $user, $dataDb, $db, $dbh, $uri_path;
+	global $user, $dataDb, $db, $dbh, $tree_prefix_quoted, $uri_path;
 	//global $pdfstr;
 	$pdfstr = array(); // local version
 	$process_text='';
@@ -21,7 +21,7 @@ function show_media($personDb,$marriageDb){
 				WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='picture'
 				ORDER BY event_order",$db);
 			*/
-			$picture_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+			$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='picture'
 				ORDER BY event_order");			
 		}
@@ -31,7 +31,7 @@ function show_media($personDb,$marriageDb){
 				WHERE event_family_id='".$marriageDb->fam_gedcomnumber."' AND event_kind='picture'
 				ORDER BY event_order",$db);
 			*/
-			$picture_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+			$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_family_id='".$marriageDb->fam_gedcomnumber."' AND event_kind='picture'
 				ORDER BY event_order");			
 		}
@@ -54,7 +54,7 @@ function show_media($personDb,$marriageDb){
 				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
 				ORDER BY connect_order";
 			*/
-			$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
+			$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 				WHERE connect_kind='person'
 				AND connect_sub_kind='pers_object'
 				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
@@ -68,7 +68,7 @@ function show_media($personDb,$marriageDb){
 				AND connect_connect_id='".$marriageDb->fam_gedcomnumber."'
 				ORDER BY connect_order";
 			*/
-			$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
+			$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 				WHERE connect_kind='family'
 				AND connect_sub_kind='fam_object'
 				AND connect_connect_id='".$marriageDb->fam_gedcomnumber."'
@@ -83,7 +83,7 @@ function show_media($personDb,$marriageDb){
 				WHERE event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
 				ORDER BY event_order",$db);
 			*/
-			$picture_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+			$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
 				ORDER BY event_order");
 			//while($pictureDb=mysql_fetch_object($picture_qry)){

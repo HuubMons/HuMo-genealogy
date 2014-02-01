@@ -70,8 +70,10 @@ class mainindex_cls{
 				//
 			}
 			else{
-				if ($tree_prefix_selected==''){
-					echo '<h2><a href="'.CMS_ROOTPATH.'login.php">'.__('Please login first.').'</a></h2>';
+				//if ($tree_prefix_selected==''){
+				if ($tree_prefix_selected=='' OR $tree_prefix_selected=='EMPTY'){
+					//echo '<h2><a href="'.CMS_ROOTPATH.'login.php">'.__('Please login first.').'</a></h2>';
+					echo '<h2><a href="'.CMS_ROOTPATH.'login.php">'.__('Select another family tree, or login for the selected family tree.').'</a></h2>';
 				}
 				else{
 					// *** Date and number of persons/ families ***

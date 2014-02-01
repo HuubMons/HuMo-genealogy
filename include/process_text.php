@@ -1,6 +1,6 @@
 <?php
 function process_text($text_process){
-	global $user, $db, $dbh;
+	global $user, $db, $dbh, $tree_prefix_quoted;
 	//1 NOTE Text by person#werktekst#
 	//2 CONT 2e line text persoon#2e werktekst#
 	//2 CONT 3e line #3e werktekst# tekst persoon
@@ -15,7 +15,7 @@ function process_text($text_process){
 			//$search_text=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."texts
 			//	WHERE text_gedcomnr='".safe_text($text_pieces[$i])."'",$db);
 			//$search_textDb=mysql_fetch_object($search_text);
-			$search_text=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."texts
+			$search_text=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."texts
 				WHERE text_gedcomnr='".safe_text($text_pieces[$i])."'");
 			$search_textDb=$search_text->fetch(PDO::FETCH_OBJ);			
 			if ($text_result){ $text_result.='<br>'; }
@@ -52,9 +52,7 @@ function process_text($text_process){
 	$text_process = preg_replace("#(^|[ \n\r\t])(((http://)|(https://))([a-z0-9\-\.,\?!%\*_\#:;~\\&$@\/=\+]+))#mi", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $text_process);
 
 	if ($text_process){ $text_process=nl2br($text_process); }
-
 	if ($text_process){ $text_process='<span class="text">'.$text_process.'</span>'; }
-
 	return $text_process;
 }
 ?>
