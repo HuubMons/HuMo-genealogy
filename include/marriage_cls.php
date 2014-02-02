@@ -34,7 +34,7 @@ function set_privacy($privacy_man, $privacy_woman){
 // *** Show marriage                               ***
 // ***************************************************
 function marriage_data($marriageDb='', $number='0', $presentation='standard'){
-	global $db, $dbh, $url_path, $dataDb, $uri_path;
+	global $db, $dbh, $tree_prefix_quoted, $url_path, $dataDb, $uri_path;
 	global $language, $user, $screen_mode;
 	global $pdfstr;
 
@@ -460,7 +460,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			//$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 			//	WHERE pers_gedcomnumber='".$marriageDb->fam_man."'",$db);
 			//@$person_manDb=mysql_fetch_object($person_man);
-			$person_man=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+			$person_man=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
 				WHERE pers_gedcomnumber='".$marriageDb->fam_man."'");
 			@$person_manDb=$person_man->fetch(PDO::FETCH_OBJ);			
 			if (isset($person_manDb->pers_death_date) AND $person_manDb->pers_death_date){
@@ -470,7 +470,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			//$person_woman=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 			//	WHERE pers_gedcomnumber='".$marriageDb->fam_woman."'",$db);
 			//@$person_womanDb=mysql_fetch_object($person_woman);
-			$person_woman=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+			$person_woman=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
 				WHERE pers_gedcomnumber='".$marriageDb->fam_woman."'");
 			@$person_womanDb=$person_woman->fetch(PDO::FETCH_OBJ);			
 			if (isset($person_womanDb->pers_death_date) AND $person_womanDb->pers_death_date){
@@ -513,7 +513,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			//$event_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 			//	WHERE event_family_id='$marriageDb->fam_gedcomnumber' AND event_kind='event'",$db);
 			//$num_rows = mysql_num_rows($event_qry);
-			$event_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+			$event_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_family_id='$marriageDb->fam_gedcomnumber' AND event_kind='event'");
 			$num_rows = $event_qry->rowCount();			
 			if ($num_rows>0){ $text.= '<span class="event">'; }

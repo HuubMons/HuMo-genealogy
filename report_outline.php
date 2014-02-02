@@ -15,6 +15,7 @@ if (isset($_POST["screen_mode"]) AND ($_POST["screen_mode"]=='PDF-L' OR $_POST["
 
 include_once("header.php"); // returns CMS_ROOTPATH constant
 
+/*
 if (isset($_GET['database'])){
 	// *** Check if family tree exists ***
 	//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".$_GET['database']."'",$db);
@@ -22,6 +23,7 @@ if (isset($_GET['database'])){
 	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$_GET['database']."'");
 	if ($datasql->rowCount()==1) { $_SESSION['tree_prefix']=$_GET['database']; }
 }
+*/
 
 include_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/language_event.php");
@@ -39,7 +41,7 @@ else {
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
 			AND humo_tree_texts.treetext_language='".$selected_language."'
-			WHERE tree_prefix='".$_SESSION['tree_prefix']."'";
+			WHERE tree_prefix='".$tree_prefix_quoted."'";
 		//@$datasql = mysql_query($dataqry,$db);
 		//@$dataDb=mysql_fetch_object($datasql);
 		@$datasql = $dbh->query($dataqry);
@@ -81,7 +83,7 @@ if($screen_mode=='PDF') {
 	$pdf=new PDF();
 	//$pers=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$main_person'",$db);
 	//@$persDb=mysql_fetch_object($pers);
-	$pers=$dbh->query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$main_person'");
+	$pers=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$main_person'");
 	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
 	// *** Use person class ***
 	$pers_cls = New person_cls;
@@ -232,13 +234,13 @@ $gn=0;   // generatienummer
 // *************************************
 
 //some PDO prepared statements before function and loops are used
-$fam_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".safe_text($_SESSION['tree_prefix']).'family WHERE fam_gedcomnumber=?');
+$fam_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted.'family WHERE fam_gedcomnumber=?');
 $fam_prep->bindParam(1,$fam_prep_var);
-$pers_prep=$dbh->prepare("SELECT pers_fams FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber=?");
+$pers_prep=$dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 $pers_prep->bindParam(1,$pers_prep_var);
-$fam_all_prep=$dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber=?");
+$fam_all_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
 $fam_all_prep->bindParam(1,$fam_all_prep_var);
-$pers_all_prep=$dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber=?");
+$pers_all_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 $pers_all_prep->bindParam(1,$pers_all_prep_var);
 
 function outline($family_id,$main_person,$gn,$nr_generations) {
@@ -469,7 +471,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 						$pdf->SetLeftMargin($gn*10+4);
 						$pdf->Write(8,"\n");
 					}
-					$pdf->Write(8,' ('.language_date($person_womanDb->pers_birth_date).' - '.language_date($person_womanDb->pers_death_date).')');
+					$pdf->Write(8,' ('.@language_date($person_womanDb->pers_birth_date).' - '.@language_date($person_womanDb->pers_death_date).')');
 				}
 			}
 		}

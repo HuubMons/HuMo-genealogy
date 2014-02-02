@@ -475,7 +475,7 @@ if (isset($_POST['install_tables2'])){
 			user_remark text CHARACTER SET utf8,
 			user_password varchar(50) CHARACTER SET utf8,
 			user_status varchar(1) CHARACTER SET utf8,
-			user_group_id varchar(1),
+			user_group_id SMALLINT(5),
 			user_register_date varchar(20) CHARACTER SET utf8,
 			user_last_visit varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY  (`user_id`)
@@ -489,7 +489,7 @@ if (isset($_POST['install_tables2'])){
 			user_remark text CHARACTER SET utf8,
 			user_password varchar(50) CHARACTER SET utf8,
 			user_status varchar(1) CHARACTER SET utf8,
-			user_group_id varchar(1),
+			user_group_id smallint(5),
 			user_register_date varchar(20) CHARACTER SET utf8,
 			user_last_visit varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY  (`user_id`)

@@ -72,7 +72,6 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 		if ($hide_tree_array[$x]==$dataDb->tree_id){ $hide_tree=true; }
 	}
 	if ($hide_tree==false){	
-/*
 		$sql="SELECT *,
 			substring(pers_birth_date,1,2) as birth_day,
 			substring(pers_birth_date,8,4) as birth_year,
@@ -80,22 +79,10 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 			FROM ".safe_text($dataDb->tree_prefix)."person
 			WHERE pers_birth_date!=''
 			AND (substring(pers_birth_date,3,3) = '$month_number' AND CONCAT('0',substring(pers_birth_date,1,1)) = '$today_day') 
-			OR (substring(pers_birth_date,4,3) = '$month_number' AND substring(pers_birth_date,1,2)='$today_day') order by pers_lastname";
-			//AND (substring(pers_birth_date,3,3) = '$month_number' OR substring(pers_birth_date,4,3) = '$month_number')
-			//AND CONVERT(substring(pers_birth_date,1,2),DECIMAL)='$today_day' order by pers_lastname";
-		$query = mysql_query ($sql,$db)
-			or die("database-error (1): ".mysql_error());
-
-		while ($record=mysql_fetch_object($query)){
-*/
-		$sql="
-			substring(pers_birth_date,1,2) as birth_day,
-			substring(pers_birth_date,8,4) as birth_year,
-			substring(pers_death_date,8,4) as death_year
-			FROM ".safe_text($dataDb->tree_prefix)."person
-			WHERE pers_birth_date!=''
-			AND (substring(pers_birth_date,3,3) = '$month_number' AND CONCAT('0',substring(pers_birth_date,1,1)) = '$today_day') 
 			OR (substring(pers_birth_date,4,3) = '$month_number' AND substring(pers_birth_date,1,2)='$today_day') order by pers_lastname";	
+		//$query = mysql_query ($sql,$db)
+		//	or die("database-error (1): ".mysql_error());
+		//while ($record=mysql_fetch_object($query)){
 		$query = $dbh->query($sql);	
 		while($record = $query->fetch(PDO::FETCH_OBJ)) {
 			$person_cls1 = New person_cls;

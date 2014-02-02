@@ -153,6 +153,12 @@ if (!isset($humo_option["visitor_registration"])){
 	//@$result=mysql_query($sql) or die(mysql_error());
 	@$result=$dbh->query($sql);
 }
+if (!isset($humo_option["general_email"])){
+	$humo_option["general_email"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='general_email', setting_value=''";
+	//@$result=mysql_query($sql) or die(mysql_error());
+	@$result=$dbh->query($sql);
+}
 if (!isset($humo_option["visitor_registration_group"])){
 	$humo_option["visitor_registration_group"]='3';
 	$sql="INSERT INTO humo_settings SET setting_variable='visitor_registration_group', setting_value='3'";

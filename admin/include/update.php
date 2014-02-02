@@ -2195,14 +2195,14 @@ else{
 		echo '</td></tr>';
 	}
 
-	// **************************************
-	// *** Update procedure version 4.9.4 ***
-	// **************************************
+	// ************************************
+	// *** Update procedure version 5.0 ***
+	// ************************************
 	if ($humo_option["update_status"]>'6'){
-		echo '<tr><td>HuMo-gen update V4.9.4</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-gen update V5.0</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
-		echo '<tr><td>HuMo-gen update V4.9.4</td><td style="background-color:#00FF00">';
+		echo '<tr><td>HuMo-gen update V5.0</td><td style="background-color:#00FF00">';
 
 		// *** Save gedcom file name and gedcom program in database ***
 		// *** Test for existing column, some users allready tried a new script including a database update ***
@@ -2217,6 +2217,9 @@ else{
 
 		//mysql_query("ALTER TABLE humo_trees ADD COLUMN tree_gedcom_program varchar (100)") or die("add_column_error ".mysql_error());
 		$dbh->query("ALTER TABLE humo_trees ADD COLUMN tree_gedcom_program varchar (100)");
+
+		// *** Bug in table, change user_group_id ***
+		$dbh->query("ALTER TABLE humo_users CHANGE user_group_id user_group_id smallint(5)");
 
 		// *** Add new table, for user notes ***
 		/*

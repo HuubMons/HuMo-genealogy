@@ -1172,7 +1172,7 @@ if ($index_list=='patronym'){
 			//$result=@mysql_query($count_qry,$db);
 			//$resultDb=@mysql_fetch_object($result);
 			$result= $dbh->query($count_qry);
-			$resultDb = $result->fetch(PDO::FETCH_OBJ);
+			@$resultDb = $result->fetch(PDO::FETCH_OBJ);
 			$count_persons=@$resultDb->teller; 
 		}
 		else{  
@@ -1457,7 +1457,7 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 	else { $uri_path_string = $uri_path."list.php?"; }
 
 	// *** Check for search results ***
-	if ($person_result->rowCount()==0) {
+	if (@$person_result->rowCount()==0) {
 	//if (@mysql_num_rows($person_result)==0) {
 		$line_pages='';
 		//echo '<br><div class="center">'.__('No names found.').'</div>';

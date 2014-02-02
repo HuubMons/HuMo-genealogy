@@ -7,14 +7,11 @@ echo '<p class="fonts">';
 	//*** Find first first_character of last name ***
 
 	print '<div style="text-align:center">';
-	//$person_qry="SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM ".safe_text($_SESSION['tree_prefix'])."person GROUP BY first_character";
-	$person_qry="SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM ".$_SESSION['tree_prefix']."person GROUP BY first_character";
+	$person_qry="SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM ".$tree_prefix_quoted."person GROUP BY first_character";
 	// *** Search pers_prefix for names like: "van Mons" ***
 	if ($user['group_kindindex']=="j"){
-		//$person_qry="SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character
-		//FROM ".safe_text($_SESSION['tree_prefix'])."person GROUP BY first_character";
 		$person_qry="SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character
-		  FROM ".safe_text($_SESSION['tree_prefix'])."person GROUP BY first_character";
+		  FROM ".$tree_prefix_quoted."person GROUP BY first_character";
 	}
 	//@$person_result=mysql_query($person_qry, $db);
 	@$person_result= $dbh->query($person_qry);
@@ -70,7 +67,7 @@ if ($user['group_kindindex']=="j"){
 	*/
 	$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
 		CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_lastnames
-		FROM ".safe_text($_SESSION['tree_prefix'])."person
+		FROM ".$tree_prefix_quoted."person
 		WHERE CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
 		GROUP BY long_name");
 		
@@ -82,7 +79,7 @@ if ($user['group_kindindex']=="j"){
 		*/
 		$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_lastnames
-			FROM ".safe_text($_SESSION['tree_prefix'])."person GROUP BY long_name");		
+			FROM ".$tree_prefix_quoted."person GROUP BY long_name");		
 	}
 
 	//while (@$personDb=mysql_fetch_object($person_result)){
@@ -122,7 +119,7 @@ else{
 		*/
 		$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
 		CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_lastnames
-		FROM ".safe_text($_SESSION['tree_prefix'])."person
+		FROM ".$tree_prefix_quoted."person
 		WHERE pers_lastname LIKE '".$last_name."%'
 		GROUP BY long_name");		
 
@@ -135,7 +132,7 @@ else{
 		*/
 		$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
 		CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_lastnames
-		FROM ".safe_text($_SESSION['tree_prefix'])."person
+		FROM ".$tree_prefix_quoted."person
 		GROUP BY long_name");		
 	}
 

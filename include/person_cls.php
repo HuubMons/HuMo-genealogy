@@ -102,7 +102,7 @@ function set_privacy($personDb){
 // *************************************************************
 // *** Remark: it's necessary to use $personDb because of witnesses, parents etc. ***
 function person_name($personDb){
-	global $user, $language, $db, $dbh, $screen_mode;
+	global $user, $language, $db, $dbh, $tree_prefix_quoted, $screen_mode;
 
 	$stillborn=''; $nobility=''; $lordship='';
 	$title_before=''; $title_between=''; $title_after='';
@@ -113,7 +113,7 @@ function person_name($personDb){
 		//$name_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 		//	WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='nobility'
 		//	ORDER BY event_order",$db);
-		$name_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='nobility'
 			ORDER BY event_order");			
 		//while($nameDb=mysql_fetch_object($name_qry)){
@@ -125,7 +125,7 @@ function person_name($personDb){
 		//$name_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 		//	WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='NPFX'
 		//	ORDER BY event_order",$db);
-		$name_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='NPFX'
 			ORDER BY event_order");		
 		//while($nameDb=mysql_fetch_object($name_qry)){
@@ -136,7 +136,7 @@ function person_name($personDb){
 		// *** Gedcom 5.5 title: NSFX ***
 		//$name_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 		//	WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='NSFX' ORDER BY event_order",$db);
-		$name_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='NSFX' ORDER BY event_order");			
 		//while($nameDb=mysql_fetch_object($name_qry)){
 		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
@@ -156,7 +156,7 @@ function person_name($personDb){
 		*/
 		//$name_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 		//	WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='title' ORDER BY event_order",$db);
-		$name_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='title' ORDER BY event_order");			
 		//while($nameDb=mysql_fetch_object($name_qry)){
 		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
@@ -216,7 +216,7 @@ function person_name($personDb){
 	//$name_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 	//	WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='lordship'
 	//	ORDER BY event_order",$db);
-	$name_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+	$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 		WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='lordship'
 		ORDER BY event_order");		
 	//while($nameDb=mysql_fetch_object($name_qry)){
@@ -325,7 +325,7 @@ function person_name($personDb){
 	//$colour_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 	//	WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='person_colour_mark'
 	//	ORDER BY event_order",$db);
-	$colour_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+	$colour_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 		WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='person_colour_mark'
 		ORDER BY event_order");		
 	//while($colourDb=mysql_fetch_object($colour_qry)){
@@ -652,7 +652,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 // *** Oct. 2013: added name of parents after the name of a person.     ***
 // ************************************************************************
 function name_extended($person_kind){
-	global $db, $dbh, $humo_option, $uri_path, $user, $language;
+	global $db, $dbh, $tree_prefix_quoted, $humo_option, $uri_path, $user, $language;
 	global $screen_mode, $dirmark1, $dirmark2, $rtlmarker;
 	global $selected_language;
 	global $family_expanded;
@@ -771,14 +771,14 @@ function name_extended($person_kind){
 			// *** Find parents ID ***
 			//$parents_family=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='$personDb->pers_famc'",$db);
 			//$parents_familyDb=mysql_fetch_object($parents_family);
-			$parents_family=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='$personDb->pers_famc'");
+			$parents_family=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='$personDb->pers_famc'");
 			$parents_familyDb=$parents_family->fetch(PDO::FETCH_OBJ);			
 
 			// *** Father ***
 			if ($parents_familyDb->fam_man){
 				//$father_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$parents_familyDb->fam_man'",$db);
 				//$fatherDb=mysql_fetch_object($father_qry);
-				$father_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$parents_familyDb->fam_man'");
+				$father_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$parents_familyDb->fam_man'");
 				$fatherDb=$father_qry->fetch(PDO::FETCH_OBJ);				
 				$name=$this->person_name($fatherDb);
 				$text=$name["standard_name"];
@@ -799,7 +799,7 @@ function name_extended($person_kind){
 			if ($parents_familyDb->fam_woman){
 				//$mother_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$parents_familyDb->fam_woman'",$db);
 				//$motherDb=mysql_fetch_object($mother_qry);
-				$mother_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$parents_familyDb->fam_woman'");
+				$mother_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$parents_familyDb->fam_woman'");
 				$motherDb=$mother_qry->fetch(PDO::FETCH_OBJ);				
 				$name=$this->person_name($motherDb);
 				$text.=$name["standard_name"];
@@ -841,7 +841,7 @@ function name_extended($person_kind){
 				//$qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".safe_text($marriage_array[$x])."'";
 				//$fam_partner=mysql_query($qry,$db);
 				//$fam_partnerDb=mysql_fetch_object($fam_partner);
-				$qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$marriage_array[$x]."'";
+				$qry="SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$marriage_array[$x]."'";
 				$fam_partner=$dbh->query($qry);
 				$fam_partnerDb=$fam_partner->fetch(PDO::FETCH_OBJ);				
 
@@ -861,7 +861,7 @@ function name_extended($person_kind){
 					//$qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($partner_id)."'";
 					//$partner=mysql_query($qry,$db);
 					//$partnerDb=mysql_fetch_object($partner);
-					$qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$partner_id."'";
+					$qry="SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".$partner_id."'";
 					$partner=$dbh->query($qry);
 					$partnerDb=$partner->fetch(PDO::FETCH_OBJ);					
 					$partner_cls = New person_cls;
@@ -926,7 +926,7 @@ function name_extended($person_kind){
 // *** $privacy = privacyfilter                                                        ***
 // ***************************************************************************************
 function person_data($person_kind, $id){
-	global $db, $dbh, $dataDb, $user, $language, $humo_option, $family_id, $uri_path;
+	global $db, $dbh, $tree_prefix_quoted, $dataDb, $user, $language, $humo_option, $family_id, $uri_path;
 	global $family_expanded, $change_main_person;
 	global $childnr, $screen_mode, $dirmark1, $dirmark2;
 	global $pdfstr;
@@ -978,7 +978,7 @@ function person_data($person_kind, $id){
 			//$name_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 			//	WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='name'
 			//	ORDER BY event_order",$db);
-			$name_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+			$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='name'
 				ORDER BY event_order");				
 			//while($nameDb=mysql_fetch_object($name_qry)){
@@ -1311,7 +1311,7 @@ function person_data($person_kind, $id){
 		// *** HZ-21 ash dispersion (asverstrooiing) ***
 		//$name_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 		//	WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='ash dispersion' ORDER BY event_order",$db);
-		$name_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='ash dispersion' ORDER BY event_order");			
 		//while($nameDb=mysql_fetch_object($name_qry)){
 		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
@@ -1340,7 +1340,7 @@ function person_data($person_kind, $id){
 			//	WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='profession'
 			//	ORDER BY substring( event_date,-4 ), event_order",$db);
 			//$nr_occupations=mysql_num_rows($event_qry);
-			$event_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+			$event_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='profession'
 				ORDER BY substring( event_date,-4 ), event_order");
 			$nr_occupations=$event_qry->rowCount();			
@@ -1410,7 +1410,7 @@ function person_data($person_kind, $id){
 			//$event_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses
 			//	WHERE address_person_id='$personDb->pers_gedcomnumber' ORDER BY address_order",$db);
 			//$nr_addresses=mysql_num_rows($event_qry);
-			$event_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses
+			$event_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses
 				WHERE address_person_id='$personDb->pers_gedcomnumber' ORDER BY address_order");
 			$nr_addresses=$event_qry->rowCount();			
 			//while($eventDb=mysql_fetch_object($event_qry)){
@@ -1505,7 +1505,7 @@ function person_data($person_kind, $id){
 				ORDER BY connect_order";
 			$connect_sql=mysql_query($connect_qry,$db);
 			*/
-			$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
+			$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 				WHERE connect_kind='person'
 				AND connect_sub_kind='person_address'
 				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
@@ -1522,7 +1522,7 @@ function person_data($person_kind, $id){
 				//$address_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses WHERE address_gedcomnr='".$connectDb->connect_item_id."' ORDER BY address_order",$db);
 				//$address_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses WHERE address_gedcomnr='".$connectDb->connect_item_id."'",$db);
 				//$eventDb2=mysql_fetch_object($address_qry);
-				$address_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses WHERE address_gedcomnr='".$connectDb->connect_item_id."'");
+				$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr='".$connectDb->connect_item_id."'");
 				$eventDb2=$address_qry->fetch(PDO::FETCH_OBJ);				
 				if (isset($eventDb2->address_address) AND $eventDb2->address_address){
 					$process_text.=" ".trim($eventDb2->address_address);
@@ -1553,7 +1553,7 @@ function person_data($person_kind, $id){
 				$parent2_fam=mysql_query($sql,$db);
 				$parent2_famDb=mysql_fetch_object($parent2_fam);
 				*/
-				$sql="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
+				$sql="SELECT * FROM ".$tree_prefix_quoted."family
 					WHERE fam_gedcomnumber='$marriage_array[$i]'";
 				$parent2_fam=$dbh->query($sql);
 				$parent2_famDb=$parent2_fam->fetch(PDO::FETCH_OBJ);
@@ -1570,13 +1570,13 @@ function person_data($person_kind, $id){
 				if ($change_main_person==true){
 					//$parent2_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 					//WHERE pers_gedcomnumber='$parent2_famDb->fam_woman'",$db);
-					$parent2_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+					$parent2_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
 					WHERE pers_gedcomnumber='$parent2_famDb->fam_woman'");					
 				}
 				else{
 					//$parent2_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 					//WHERE pers_gedcomnumber='$parent2_famDb->fam_man'",$db);
-					$parent2_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+					$parent2_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
 					WHERE pers_gedcomnumber='$parent2_famDb->fam_man'");					
 				}
 				//$parent2Db=mysql_fetch_object($parent2_qry);
@@ -1658,7 +1658,7 @@ function person_data($person_kind, $id){
 			ORDER BY event_order",$db);
 		if (mysql_num_rows($url_qry)>0){ $process_text.='<br>'; }
 		*/
-		$url_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+		$url_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='URL'
 			ORDER BY event_order");
 		if ($url_qry->rowCount()>0){ $process_text.='<br>'; }		
@@ -1691,7 +1691,7 @@ function person_data($person_kind, $id){
 				//$event_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
 				//WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='event' ORDER BY event_order",$db);
 				//$num_rows = mysql_num_rows($event_qry);
-				$event_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
+				$event_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='event' ORDER BY event_order");
 				$num_rows = $event_qry->rowCount();				
 				if ($num_rows>0){ $process_text.='<span class="event">'."\n"; }

@@ -58,36 +58,36 @@ This credits screen is english only...
 	<li>Stylesheet select and multiple stylesheets.
 	<li>Latest changes screen.
 	</ul>
-<li>Dr. Maleki:
-	<ul><li>Added Persian language.
-	</ul>
-<li>Andres Maurer:
-	<ul><li>Added Spanish language.
-	</ul>
 <li>Huych Constant:
-	<ul><li>Elegant Corsiva theme.
-	</ul>
-<li>Johannes Prost:
-	<ul><li>Added German admin file, and better translation of German language file.
-	</ul>
-<li>Marco Steinhaeuser:
-	<ul><li>Improved German language file.
-	</ul>
+	<ul><li>Elegant Corsiva theme.</ul>
 <li>Tonko Boekhoud:
-	<ul><li>Changes to use HuMo-gen into CMS Made Simple.
-	</ul>
-<li>Rauno Salomäki:
-	<ul><li>Added Finish translation.
-	</ul>
-<li>Ambrogio Chiotti:
-	<ul><li>Added Italian translation.
-	</ul>
-<li>Raymond Larche:
-	<ul><li>Improved French translation.
-	</ul>
+	<ul><li>Changes to use HuMo-gen into CMS Made Simple.</ul>
 </ul>
 
-Testers: Max, Jef, Rob, Dirk...
+<h2>Languages</h2>
+
+<ul>	
+<li>Rauno Salomäki:
+	<ul><li>Added Finish translation.</ul>
+<li>Ambrogio Chiotti:
+	<ul><li>Added Italian translation.</ul>
+<li>Raymond Larche:
+	<ul><li>Improved French translation.</ul>
+<li>Carlos:
+	<ul><li>Improved French translation.</ul>
+<li>Johannes Prost:
+	<ul><li>Added German admin file, and better translation of German language file.</ul>
+<li>Marco Steinhaeuser:
+	<ul><li>Improved German language file.</ul>
+<li>Dr. Maleki:
+	<ul><li>Added Persian language.</ul>
+<li>Andres Maurer:
+	<ul><li>Added Spanish language.</ul>
+</ul>
+
+<h2>Testers</h2>
+
+Max, Jef, Rob, Dirk...
 </div>
 <?php
 include_once(CMS_ROOTPATH."footer.php");

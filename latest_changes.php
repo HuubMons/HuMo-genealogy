@@ -14,10 +14,10 @@ $person_cls = New person_cls;
 //$qry.= " ORDER BY pers_lastname, pers_firstname";
 
 $person_qry= "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-	FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_changed_date IS NOT NULL)";
+	FROM ".$tree_prefix_quoted."person WHERE pers_changed_date IS NOT NULL)";
 
 $person_qry.= " UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-	FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_changed_date IS NULL)";
+	FROM ".$tree_prefix_quoted."person WHERE pers_changed_date IS NULL)";
 
 $person_qry.= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,100";
 
@@ -32,8 +32,8 @@ if (isset($_POST["search_name"])){
 	//$qry.= " ORDER BY pers_lastname, pers_firstname";
 
 	$person_qry = "(SELECT * , STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-		FROM ".safe_text($_SESSION['tree_prefix'])."person
- 		LEFT JOIN ".safe_text($_SESSION['tree_prefix'])."events
+		FROM ".$tree_prefix_quoted."person
+ 		LEFT JOIN ".$tree_prefix_quoted."events
  			ON pers_gedcomnumber=event_person_id AND event_kind='name'
 		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
  			OR event_event LIKE '%$search_name%')
@@ -41,8 +41,8 @@ if (isset($_POST["search_name"])){
 			)";
 
 	$person_qry .= " UNION (SELECT * , STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-		FROM ".safe_text($_SESSION['tree_prefix'])."person
- 		LEFT JOIN ".safe_text($_SESSION['tree_prefix'])."events
+		FROM ".$tree_prefix_quoted."person
+ 		LEFT JOIN ".$tree_prefix_quoted."events
  			ON pers_gedcomnumber=event_person_id AND event_kind='name'
 		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
  			OR event_event LIKE '%$search_name%')
@@ -76,7 +76,7 @@ echo '</tr>';
 
 $rowcounter=0;
 //while ($person=mysql_fetch_object($person_result)){
-while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+while (@$person=$person_result->fetch(PDO::FETCH_OBJ)){
 	$rowcounter++;
 	echo '<tr>';
 	echo '<td style="font-size: 90%">';
