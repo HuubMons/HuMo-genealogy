@@ -98,6 +98,11 @@ $user['group_own_code']=$groupDb->group_own_code; // Show Own code
 if (!isset($groupDb->group_pdf_button)){ $user['group_pdf_button']='y'; }
 	else{ $user['group_pdf_button']=$groupDb->group_pdf_button; }
 
+if (!isset($groupDb->group_family_presentation)){ $user['group_family_presentation']='compact'; }
+	else{ $user['group_family_presentation']=$groupDb->group_family_presentation; }
+if (!isset($groupDb->group_maps_presentation)){ $user['group_maps_presentation']='hide'; }
+	else{ $user['group_maps_presentation']=$groupDb->group_maps_presentation; }
+
 $user['group_work_text']=$groupDb->group_work_text; // Show (Haza-data) worktexts
 $user['group_texts']=$groupDb->group_texts; // Show (marriage?) text
 $user['group_text_pers']=$groupDb->group_text_pers; // Show person text

@@ -282,16 +282,19 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 			$_SESSION['save_family_expanded']='1';
 		}
 	}
+	// *** Default setting is selected by administrator ***
 	$family_expanded=false;
+	if ($user['group_family_presentation']=='expanded') $source_presentation=true;
+	if ($user['group_family_presentation']=='compact') $source_presentation=false;
 	if (isset($_SESSION['save_family_expanded']) AND $_SESSION['save_family_expanded']=='1'){
 		$family_expanded=true;
 	}
 
 	// *** Source presentation selected by user (title/ footnote or hide sources) ***
-	// *** Default setting is selected by administrator ***
 	if (isset($_GET['source_presentation'])){
 		$_SESSION['save_source_presentation']=safe_text($_GET["source_presentation"]);
 	}
+	// *** Default setting is selected by administrator ***
 	$source_presentation=$user['group_source_presentation'];
 	if (isset($_SESSION['save_source_presentation'])){
 		$source_presentation=$_SESSION['save_source_presentation'];
@@ -302,10 +305,13 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 	}
 
 	// *** Show/ hide Google maps ***
-	$maps_presentation='false';
 	if (isset($_GET['maps_presentation'])){
 		$_SESSION['save_maps_presentation']=safe_text($_GET["maps_presentation"]);
 	}
+	$maps_presentation='false';
+	// *** Default setting is selected by administrator ***
+	if ($user['group_maps_presentation']=='show') $maps_presentation='true';
+	if ($user['group_maps_presentation']=='hide') $maps_presentation='false';
 	if (isset($_SESSION['save_maps_presentation'])){
 		$maps_presentation=$_SESSION['save_maps_presentation'];
 	}
@@ -313,7 +319,6 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 		// *** Save setting in session (if no choice is made, this is admin default setting) ***
 		$_SESSION['save_maps_presentation']=safe_text($maps_presentation);
 	}
-
 
 }
 if($screen_mode=='STAR') {

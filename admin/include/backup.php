@@ -129,7 +129,7 @@ function backup_tables()
 	//$result = mysql_query('SHOW TABLES');
 	//while($row = mysql_fetch_row($result))
 	$result = $dbh->query('SHOW TABLES');
-	while($row = $result->fetch(PDO::FETCH_NUM))	
+	while($row = $result->fetch(PDO::FETCH_NUM))
 	{
 		$tables[] = $row[0];
 	}
