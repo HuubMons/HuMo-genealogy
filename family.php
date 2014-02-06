@@ -282,16 +282,19 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 			$_SESSION['save_family_expanded']='1';
 		}
 	}
+	// *** Default setting is selected by administrator ***
 	$family_expanded=false;
+	if ($user['group_family_presentation']=='expanded') $source_presentation=true;
+	if ($user['group_family_presentation']=='compact') $source_presentation=false;
 	if (isset($_SESSION['save_family_expanded']) AND $_SESSION['save_family_expanded']=='1'){
 		$family_expanded=true;
 	}
 
 	// *** Source presentation selected by user (title/ footnote or hide sources) ***
-	// *** Default setting is selected by administrator ***
 	if (isset($_GET['source_presentation'])){
 		$_SESSION['save_source_presentation']=safe_text($_GET["source_presentation"]);
 	}
+	// *** Default setting is selected by administrator ***
 	$source_presentation=$user['group_source_presentation'];
 	if (isset($_SESSION['save_source_presentation'])){
 		$source_presentation=$_SESSION['save_source_presentation'];
@@ -302,10 +305,13 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 	}
 
 	// *** Show/ hide Google maps ***
-	$maps_presentation='false';
 	if (isset($_GET['maps_presentation'])){
 		$_SESSION['save_maps_presentation']=safe_text($_GET["maps_presentation"]);
 	}
+	$maps_presentation='false';
+	// *** Default setting is selected by administrator ***
+	if ($user['group_maps_presentation']=='show') $maps_presentation='true';
+	if ($user['group_maps_presentation']=='hide') $maps_presentation='false';
 	if (isset($_SESSION['save_maps_presentation'])){
 		$maps_presentation=$_SESSION['save_maps_presentation'];
 	}
@@ -313,7 +319,6 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 		// *** Save setting in session (if no choice is made, this is admin default setting) ***
 		$_SESSION['save_maps_presentation']=safe_text($maps_presentation);
 	}
-
 
 }
 if($screen_mode=='STAR') {
@@ -844,7 +849,7 @@ else{
 								else {
 									// PDF rendering of name
 									if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
-									else $pers_sexe = $person_womanDb->pers_sexe;									
+									else $pers_sexe = $person_womanDb->pers_sexe;
 									$pdf->writename($pers_sexe,$indent,$woman_cls->name_extended("parent1"),"kort");
 								}
 							}
@@ -855,7 +860,7 @@ else{
 								else {
 									//  PDF rendering of name
 									if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
-									else $pers_sexe = $person_manDb->pers_sexe;									
+									else $pers_sexe = $person_manDb->pers_sexe;
 									$pdf->writename($pers_sexe,$indent,$man_cls->name_extended("parent1"),"kort");
 								}
 							}
@@ -932,7 +937,7 @@ else{
 						// PDF rendering of name + details
 						$pdf->Write(8," "); // IMPORTANT - otherwise at bottom of page man/woman.gif image will print, but name may move to following page!
 						if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
-						else $pers_sexe = $person_manDb->pers_sexe;						
+						else $pers_sexe = $person_manDb->pers_sexe;
 						$pdf->writename($pers_sexe,$indent,$man_cls->name_extended("parent2"),"kort");
 						$pdfdetails= $man_cls->person_data("parent2", $id);
 						$pdf->SetLeftMargin($indent);
@@ -963,7 +968,7 @@ else{
 						// PDF rendering of name + details
 						$pdf->Write(8," ");   // IMPORTANT - otherwise at bottom of page man/woman.gif image will print, but name may move to following page!
 						if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
-						else $pers_sexe = $person_womanDb->pers_sexe;						
+						else $pers_sexe = $person_womanDb->pers_sexe;
 						$pdf->writename($pers_sexe,$indent,$woman_cls->name_extended("parent2"),"kort");
 						$pdfdetails= $woman_cls->person_data("parent2", $id);
 						$pdf->SetLeftMargin($indent);
@@ -1178,7 +1183,7 @@ else{
 							$name=$child_cls->person_name($childDb);
 							$genarray[$place]["nam"]=$name["standard_name"];
 							$genarray[$place]["init"]=$name["initials"];
-							$genarray[$place]["short"]=$name["short_firstname"];							
+							$genarray[$place]["short"]=$name["short_firstname"];
 							$genarray[$place]["gednr"]=$childDb->pers_gedcomnumber;
 							if($childDb->pers_fams) {
 								$childfam=explode(";",$childDb->pers_fams);
@@ -1205,7 +1210,7 @@ else{
 								$descendant_family_id2[]=$child_family[0];
 
 							if($screen_mode!='STAR') {
-								// *** Save all marriages of person in check array ***				
+								// *** Save all marriages of person in check array ***
 								for ($k=0; $k<count($child_family) ; $k++) {
 									$check_double[]=$child_family[$k];
 									// *** Save "Follows: " text in array, also needed for doubles... ***
@@ -1397,7 +1402,7 @@ else{
 									//$woman_birth_result = @mysql_num_rows($query);
 									$location_var = $person_womanDb->pers_birth_place;
 									$location_prep->execute();
-									$woman_birth_result = $location_prep->rowCount();	
+									$woman_birth_result = $location_prep->rowCount();
 									
 									if($woman_birth_result >0) {
 										//$info = mysql_fetch_array($query);
@@ -1652,10 +1657,10 @@ if($screen_mode=='') {
 				note_fam_gedcomnumber='".safe_text($family_id)."',
 				note_pers_gedcomnumber='".safe_text($main_person)."',
 				note_tree_prefix='".$tree_prefix_quoted."',
-				note_names='".safe_text($name["standard_name"])."'				
+				note_names='".safe_text($name["standard_name"])."'
 				;";
 				//$result=mysql_query($sql) or die(mysql_error());
-				$result=$dbh->query($sql);				
+				$result=$dbh->query($sql);
 				
 				// *** Mail new user note to the administrator ***
 				$register_address=$dataDb->tree_email;
@@ -1731,7 +1736,7 @@ if($screen_mode=='') {
 
 				print '<tr style="display:none;" id="row1" name="row1"><td></td><td><input class="fonts" type="submit" name="send_mail" value="'.__('Send').'"></td></tr>';
 				print '</table>';
-				print '</form>';		
+				print '</form>';
 			}
 
 		}

@@ -2,7 +2,7 @@
 include_once("header.php"); // returns CMS_ROOTPATH constant
 //error_reporting(E_ALL);
 //if(isset($_POST['tree_prefix'])) {
-//	$_SESSION['tree_prefix'] = $_POST['tree_prefix'];
+//	$tree_prefix_quoted = $_POST['tree_prefix'];
 //}
 
 include_once(CMS_ROOTPATH."menu.php");
@@ -20,12 +20,12 @@ echo '<div id="wait" style="background:url(images/loader.gif) no-repeat center c
 echo '<div style="position:relative"> ';  // div with table for all menu bars (2 + optional third)
 echo '<table>';
 
-// TOP MENU BAR
-echo '<tr><td style="border:1px solid #bdbdbd; width:995px; background-color:#d8d8d8">';
-if($language['dir']!="rtl") { echo '<div style="float:left">'; }  // div tree choice
-else { echo '<div style="float:right">'; }
+// 1st MENU BAR
+echo '<tr><td style="font-size:110%;border:1px solid #d8d8d8;width:995px;background-color:#f2f2f2">';
+echo '&nbsp;&nbsp;'.__('Display birth or death locations across different time periods');
 
 // SELECT FAMILY TREE
+echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 $tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 $tree_prefix_result = $dbh->query($tree_prefix_sql);
 $count=0;
@@ -62,15 +62,32 @@ if(!isset($_SESSION['type_birth']) AND !isset($_SESSION['type_death'])) { $_SESS
 if(isset($_POST['map_type']) AND $_POST['map_type']=="type_birth" ) { $_SESSION['type_birth']=1; $_SESSION['type_death']=0; }
 if(isset($_POST['map_type']) AND $_POST['map_type']=="type_death" ) { $_SESSION['type_death']=1; $_SESSION['type_birth']=0; }
 
-// BIRTH LOCATION BUTTON
-echo  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-if($_SESSION['type_birth']==1) {
-	echo  ' <input style="font-size:14px" type="button" value="'.__('Mark all birth locations').'" onclick="makeSelection(3)">  ';
-}
-elseif($_SESSION['type_death']==1) {
-	echo  ' <input style="font-size:14px" type="button" value="'.__('Mark all death locations').'" onclick="makeSelection(3)">  ';
-}
+// PULL-DOWN: births/bapt OR death/burial
+echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.__('Display:').'&nbsp;';
+echo '<form name="type_form" method="POST" action="" style="display : inline;">';
+echo '<select style="max-width:200px" size="1" onChange="document.type_form.submit()" id="map_type" name="map_type">';
+$selected=''; if(isset($_SESSION['type_birth']) AND $_SESSION['type_birth']==1 ) { $selected = ' selected '; }
+echo '<option value="type_birth" '.$selected.'>'.__('Birth locations').'</option>';
+$selected=''; if(isset($_SESSION['type_death']) AND $_SESSION['type_death']==1 )  { $selected = ' selected '; }
+echo '<option value="type_death" '.$selected.'>'.__('Death locations').'</option>';
+echo '</select>';
+//echo '<input type=submit value=Submit>';
+echo '</form>';
+
+
+
+echo '</td></tr>';
+
+// 2nd MENU BAR
+echo '<tr><td style="border:1px solid #bdbdbd; width:995px; background-color:#d8d8d8">';
+
+if($language['dir']!="rtl") { echo '<div style="margin-top:4px;font-size:110%;float:left">'; }  // div tree choice
+else { echo '<div style="font-size:110%;float:right">'; }
+echo '&nbsp;&nbsp;'.__('Filters:').'&nbsp;&nbsp;&nbsp;&nbsp;';
 echo '</div>';
+
+if($language['dir']!="rtl") {echo '<div style="float:left">'; } // div slider text + year box
+else { echo '<div style="float:right">'; }
 
 // slider defaults
 $realmin=1560;  // first year shown on slider
@@ -100,11 +117,12 @@ if($result->rowCount() > 0) {
 	//$def = mysql_fetch_array($result);
 	$def = $result->fetch(); // defaults to array
 	$slider_def = $def['setting_value'];
-	if($slider_def=="off") { $defaultyr = $minval; $default_display = "-------->"; $makesel=""; } // slider at leftmost position
+	if($slider_def=="off") { $defaultyr = $minval; $default_display = "------>"; $makesel=""; } // slider at leftmost position
 	else { $defaultyr = $yr; $default_display = $defaultyr; $makesel = " makeSelection(3); "; } // slider ar rightmost position
 }
 else {
-	$defaultyr = $minval; $default_display = "-------->"; $makesel=""; // slider at leftmost position (default)
+	//$defaultyr = $minval; $default_display = "------>"; $makesel=""; // slider at leftmost position 
+	$defaultyr = $yr; $default_display = $defaultyr; $makesel = " makeSelection(3); ";  // slider at rightmost position (default)
 }
 
 echo ' 
@@ -118,7 +136,7 @@ echo '
 			max: '.$yr.',
 			step: '.$step.',
 			slide: function( event, ui ) {
-				if(ui.value == minval) { $( "#amount" ).val("------>"); }
+				if(ui.value == minval) { $( "#amount" ).val("----->"); }
 				else if(ui.value > 2000) { $( "#amount" ).val('.$yr.'); }
 				else {	$( "#amount" ).val(ui.value ); }
 			}
@@ -133,10 +151,10 @@ echo '
 if($language['dir']!="rtl") {echo '<div style="float:left">'; } // div slider text + year box
 else { echo '<div style="float:right">'; }
 if($_SESSION['type_birth']==1) {
-	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.__('Mark births until: ').'&nbsp;';
+	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.__('Display births until: ').'&nbsp;';
 }
 elseif($_SESSION['type_death']==1) {
-	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.__('Mark deaths until: ').'&nbsp;';
+	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.__('Display deaths until: ').'&nbsp;';
 }
 
 echo '<input type="text" id="amount" disabled="disabled" size="4" style="border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
@@ -146,61 +164,36 @@ if($language['dir']!="rtl"){ echo '<div id="slider" style="float:left;width:170p
 else { echo '<div id="slider" style="float:right;direction:ltr;width:150px;margin-top:7px;margin-right:15px;">'; }
 
 echo '</div>';
-echo '</td></tr>';
-
-// SECOND MENU BAR
-echo '<tr><td style="border:1px solid #d8d8d8;width:995px;background-color:#f2f2f2">';
 
 // BUTTON: SEARCH BY SPECIFIC NAME
-echo ' <input type="Submit" style="font-size:110%;" name="anything" onclick="document.getElementById(\'namemapping\').style.display=\'block\' ;" value="'.__('Map by specific family name(s)').'">';
+echo ' <input type="Submit" style="font-size:110%;" name="anything" onclick="document.getElementById(\'namemapping\').style.display=\'block\' ;" value="'.__('Filter by specific family name(s)').'">';
 
 // BUTTON: SEARCH BY DESCENDANTS
 echo '<form method="POST" style="display:inline" name="descform" action='.$_SERVER['PHP_SELF'].'>';
 echo '<input type="hidden" name="descmap" value="1">';
-echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anything" value="'.__('Map by descendants of a person').'">';
+echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anything" value="'.__('Filter by descendants of a person').'">';
 echo '</form>';
 
-// PULL-DOWN: FIND LOCATION
+echo '</td></tr>';
+
+// 3rd MENU BAR
+echo '<tr><td style="border:1px solid #d8d8d8;width:995px;background-color:#f2f2f2">';
+
+if($language['dir']!="rtl") { echo '<div style="margin-top:4px;font-size:110%;float:left">'; }  
+else { echo '<div style="font-size:120%;float:right">'; }
+echo '&nbsp;&nbsp;'.__('Other tools:').'&nbsp;&nbsp;&nbsp;&nbsp;';
+echo '</div>';
+/*
+// BIRTH LOCATION BUTTON
 echo  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-//$result = mysql_query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-//$exists = mysql_num_rows($result);
-$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-//if($exists) {
-if($result->rowCount()>0) {
-	if($_SESSION['type_birth']==1) {
-		$loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%".$tree_prefix_quoted."birth%' OR location_status LIKE '%".$tree_prefix_quoted."bapt%' OR location_status = '' ORDER BY location_location";
-	}
-	if($_SESSION['type_death']==1) {
-		$loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%".$tree_prefix_quoted."death%' OR location_status LIKE '%".$tree_prefix_quoted."buried%' OR location_status = '' ORDER BY location_location";
-	}
+if($_SESSION['type_birth']==1) {
+	echo  ' <input style="font-size:14px" type="button" value="'.__('Mark all birth locations').'" onclick="makeSelection(3)">  ';
 }
-else { // this is for backward compatibility - if someone doesn't yet have a location_status column: show all locations as until now
-	$loc_search = "SELECT * FROM humo_location ORDER BY location_location";
+elseif($_SESSION['type_death']==1) {
+	echo  ' <input style="font-size:14px" type="button" value="'.__('Mark all death locations').'" onclick="makeSelection(3)">  ';
 }
-//$loc_search_result = mysql_query($loc_search,$db) or die(mysql_error());
-$loc_search_result = $dbh->query($loc_search);
-echo '<form method="POST" action="" style="display : inline;">';
-echo '<select style="max-width:250px" onChange="findPlace()" size="1" id="loc_search" name="loc_search">';
-echo '<option value="toptext">'.__('Find location on the map').'</option>';
-//while ($loc_searchDb=mysql_fetch_object($loc_search_result)){
-while($loc_searchDb=$loc_search_result->fetch(PDO::FETCH_OBJ)) {	
-	echo '<option value="'.$loc_searchDb->location_id.','.$loc_searchDb->location_lat.','.$loc_searchDb->location_lng.'">'.$loc_searchDb->location_location.'</option>';
-	$count++;
-}
-echo '</select>';
-echo '</form>';
-
-// PULL-DOWN: births/bapt OR death/burial
-echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-echo '<form name="type_form" method="POST" action="" style="display : inline;">';
-echo '<select style="max-width:200px" size="1" onChange="document.type_form.submit()" id="map_type" name="map_type">';
-$selected=''; if(isset($_SESSION['type_birth']) AND $_SESSION['type_birth']==1 ) { $selected = ' selected '; }
-echo '<option value="type_birth" '.$selected.'>'.__('Map by births').'</option>';
-$selected=''; if(isset($_SESSION['type_death']) AND $_SESSION['type_death']==1 )  { $selected = ' selected '; }
-echo '<option value="type_death" '.$selected.'>'.__('Map by deaths').'</option>';
-echo '</select>';
-//echo '<input type=submit value=Submit>';
-echo '</form>';
+echo '</div>';
+*/
 
 // HELP POPUP
 if(CMS_SPECIFIC=="Joomla") {
@@ -208,10 +201,10 @@ if(CMS_SPECIFIC=="Joomla") {
 	$popwidth="width:700px;";
 }
 else {
-	echo '<div class="fonts table_header '.$rtlmarker.'sddm" style="display:inline;float:right;">';
+	echo '<div class="fonts table_header '.$rtlmarker.'sddm" style="border:1px solid #d8d8d8;margin-top:2px;display:inline;float:left;">';
 	$popwidth="";
 }
-echo '<a href="#"';
+echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#"';
 echo ' style="display:inline" ';
 if(CMS_SPECIFIC=="Joomla") {
 	echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
@@ -224,18 +217,19 @@ echo '<strong>'.__('Help').'</strong>';
 echo '</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
-echo __('<b>Top menu line:</b><br>
+echo __('<b>Top menu line:</b>
 <ul><li>Choose family tree. On sites with multiple family trees here you can choose which tree to map.</li>
-<li>All birth locations". This button will place markers for all birth locations in the tree, irrespective of the dates of birth. Also people with no known birth date are included.</li>
-<li>The "births until" slider. With this slider you can mark the birthplaces of persons who where born until a certain date. The slider has ten positions.</li></ul>
+<li>Choose whether to display birth location or death locations.</li></ul>
 <b>Second menu line:</b>
-<ul><li>Map by specific family name(s)". This will open a window with all family names. Mark checkboxes next to names and press "Choose" to start mapping the locations of those families only.<br>
+<ul><li>The "births until" slider. With this slider you can mark the birthplaces of persons who where born until a certain date. The slider has ten positions.</li>
+<li>Filter by specific family name(s)". This will open a window with all family names. Mark checkboxes next to names and press "Choose" to start mapping the locations of those families only.<br>
 After pressing "Choose" you will see a yellow banner near the top of the map, informing you which family names are being filtered. Now use the slider or "mark all location" button to place the markers.</li>
-<li>Map by descendants". This will open a window with all persons that have descendants. Click the person whose descendants you want to map.<br>
-A yellow banner will appear near the top of the map, informing which persons\' descendants are filtered. Now use the slider or "mark all location" button to place the markers.</li>
-<li>Find location on the map". Here you can pick a location from all locations in the tree and zoom in to it automatically.</li></ul>
+<li>Filter by descendants". This will open a window with all persons that have descendants. Click the person whose descendants you want to map.<br>
+A yellow banner will appear near the top of the map, informing which persons\' descendants are filtered. Now use the slider or "mark all location" button to place the markers.</li></ul>
+<b>Third menu line:</b>
+<ul><li>Find location on the map". Here you can pick a location from all locations in the tree and zoom in to it automatically.</li></ul>
 <b>The map:</b>
-<ul><li>After clicking the "All locations" button or using the slider, coloured markers will be placed on the map. Inside the marker you will see the number of people born in that location.</li>
+<ul><li>Colored markers are placed on the map according to the settings made in the menu. Inside the marker you will see the number of people born in that location.</li>
 <li>There are 4 different size markers (from small to big): Red markers (over 100 people), blue markers (50-99 people), green markers (9-49 people) and yellow markers (1-9 people)</li>
 <li>When you hover with the mouse over a marker a "tooltip" will show with the name of the location.</li>
 <li>When you click on the marker you will see two links.</li>
@@ -247,9 +241,44 @@ echo '</ul>';
 echo '</div>';
 echo '</div>';
 
+// PULL-DOWN: FIND LOCATION
+echo  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+//$result = mysql_query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
+//$exists = mysql_num_rows($result);
+$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
+//if($exists) {
+if($result->rowCount()>0) { 
+	if($_SESSION['type_birth']==1) { 
+		$loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%".$tree_prefix_quoted."birth%' OR location_status LIKE '%".$tree_prefix_quoted."bapt%' OR location_status = '' ORDER BY location_location";
+	}
+	if($_SESSION['type_death']==1) { 
+		$loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%".$tree_prefix_quoted."death%' OR location_status LIKE '%".$tree_prefix_quoted."buried%' OR location_status = '' ORDER BY location_location";
+	}
+}
+else {  
+	// this is for backward compatibility - if someone doesn't yet have a location_status column: show all locations as until now
+	$loc_search = "SELECT * FROM humo_location ORDER BY location_location";
+}
+//$loc_search_result = mysql_query($loc_search,$db) or die(mysql_error());
+$loc_search_result = $dbh->query($loc_search); if($loc_search_result !== false) 
+echo '<form method="POST" action="" style="display : inline;">';
+echo '<select style="max-width:250px" onChange="findPlace()" size="1" id="loc_search" name="loc_search">';
+echo '<option value="toptext">'.__('Find location on the map').'</option>';
+//while ($loc_searchDb=mysql_fetch_object($loc_search_result)){
+while($loc_searchDb=$loc_search_result->fetch(PDO::FETCH_OBJ)) {
+	echo '<option value="'.$loc_searchDb->location_id.','.$loc_searchDb->location_lat.','.$loc_searchDb->location_lng.'">'.$loc_searchDb->location_location.'</option>';
+	$count++;
+}
+echo '</select>';
+echo '</form>';
+
+
+
+
+
 echo '</td></tr>';
 
-// OPTIONAL THIRD (YELLOW) NOTIFICATION MENU BAR
+// OPTIONAL 4th (YELLOW) NOTIFICATION MENU BAR
 echo '<tr><td style="border:1px solid #bdbdbd; width:995px; background-color:#d8d8d8">';
 
 // NOTIFICATION: SEARCHING BY SPECIFIC NAMES
@@ -281,7 +310,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	$chosenperson=	$_GET['persged'];
 	$persfams = $_GET['persfams'];
 	$persfams_arr = explode(';',$persfams);
-	//$myresult=mysql_query("SELECT pers_lastname, pers_firstname, pers_prefix FROM ".$_SESSION['tree_prefix'].'person
+	//$myresult=mysql_query("SELECT pers_lastname, pers_firstname, pers_prefix FROM ".$tree_prefix_quoted.'person
 	//WHERE pers_gedcomnumber="'.$chosenperson.'"',$db);
 	//$myresultDb=mysql_fetch_object($myresult);
 	$myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM ".$tree_prefix_quoted.'person
@@ -294,8 +323,8 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	// prepared statements for use in outline loops
 	$family_prep = $dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
 	$family_prep->bindParam(1,$fam_prep_var);
-    $person_prep = $dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");	
-	$person_prep->bindParam(1,$pers_prep_var);	
+    $person_prep = $dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
+	$person_prep->bindParam(1,$pers_prep_var);
 	$family_prep2 = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
 	$family_prep2->bindParam(1,$fam_prep_var2);
 	$person_man_prep= $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
@@ -309,7 +338,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 		global $family_prep2, $fam_prep_var2, $person_man_prep, $pers_man_prep_var;
 		$family_nr=1; //*** Process multiple families ***
 		/*
-		$family=mysql_query("SELECT fam_man, fam_woman FROM ".$_SESSION['tree_prefix'].'family
+		$family=mysql_query("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted.'family
 		WHERE fam_gedcomnumber="'.$family_id.'"',$db);
 		@$familyDb=mysql_fetch_object($family) or die("Geen geldig gezinsnummer.");
 		*/
@@ -335,7 +364,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 		// *** Check family with parent1: N.N. ***
 		if ($parent1){
 			// *** Save man's families in array ***
-			//$person_qry=mysql_query("SELECT pers_fams FROM ".$_SESSION['tree_prefix']."person
+			//$person_qry=mysql_query("SELECT pers_fams FROM ".$tree_prefix_quoted."person
 			//	WHERE pers_gedcomnumber='$parent1'",$db);
 			//@$personDb=mysql_fetch_object($person_qry);
 			$pers_prep_var = $parent1;
@@ -352,22 +381,22 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 		// *** Loop multiple marriages of main_person ***
 		for ($parent1_marr=0; $parent1_marr<=$nr_families; $parent1_marr++){
 			$id=$marriage_array[$parent1_marr];
-			//$family=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."family WHERE fam_gedcomnumber='$id'",$db);
+			//$family=mysql_query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='$id'",$db);
 			//@$familyDb=mysql_fetch_object($family);
 			$fam_prep_var2 = $id;
 			$family_prep2->execute();
 			@$familyDb = $family_prep2->fetch(PDO::FETCH_OBJ);
 
 			// *** Privacy filter man and woman ***
-			//$person_man=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$familyDb->fam_man'",$db);
+			//$person_man=mysql_query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$familyDb->fam_man'",$db);
 			//@$person_manDb=mysql_fetch_object($person_man);
 			$pers_man_prep_var=$familyDb->fam_man;
 			$person_man_prep->execute();
 			@$person_manDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
-			//$person_woman=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$familyDb->fam_woman'",$db);
+			//$person_woman=mysql_query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$familyDb->fam_woman'",$db);
 			//@$person_womanDb=mysql_fetch_object($person_woman);
 			$pers_man_prep_var=$familyDb->fam_woman;
-			$person_man_prep->execute();			
+			$person_man_prep->execute();
 			@$person_womanDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
 			
 			// *************************************************************
@@ -400,10 +429,10 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 				$child_array=explode(";",$familyDb->fam_children);
 
 				for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
-					//$child=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$child_array[$i]'",$db);
+					//$child=mysql_query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$child_array[$i]'",$db);
 					//@$childDb=mysql_fetch_object($child);
 					$pers_man_prep_var=$child_array[$i];
-					$person_man_prep->execute();			
+					$person_man_prep->execute();
 					@$childDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
 			
 					// *** Build descendant_report ***
@@ -434,7 +463,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 
 	echo '<div id="desc_search" style="border: 0px solid #bdbdbd;background-color:#f3f781;">';
 	if($desc_array!='') {
-		echo '&nbsp;'.__('Map by descendants of: ').$chosenname.'&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.'&nbsp;|&nbsp;'.__('Switch descendant filter off').'</a>' ;
+		echo '&nbsp;'.__('Filter by descendants of: ').$chosenname.'&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.'&nbsp;|&nbsp;'.__('Switch descendant filter off').'</a>' ;
 	}
 	else {
 		echo '&nbsp;'.__('No known birth places amongst descendants').'&nbsp;&nbsp;|&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.__('Close').'</a>';
@@ -508,7 +537,7 @@ if(isset($_POST['descmap'])) {
 		$fam_arr = explode(";", $desc_searchDb->pers_fams);
 		foreach ($fam_arr as $value) {
 			if($countmarr==1) { break; } //this person is already listed
-			//$chld_search = "SELECT fam_children FROM ".$_SESSION['tree_prefix']."family WHERE fam_gedcomnumber ='".$value."' AND fam_children != ''";
+			//$chld_search = "SELECT fam_children FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber ='".$value."' AND fam_children != ''";
 			//$chld_search_result = mysql_query($chld_search, $db);
 			$chld_var = $value;
 			$chld_prep->execute();

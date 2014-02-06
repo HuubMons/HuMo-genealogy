@@ -16,6 +16,7 @@ $person_cls = New person_cls;
 // *** Show 1 statistics line ***
 function statistics_line($familyDb){
 	global $db, $dbh, $language, $person_cls, $selected_language;
+	global $tree_prefix_quoted;
 
 	echo '<tr>';
 	if (isset($familyDb->count_lines)){ echo '<td>'.$familyDb->count_lines.'</td>'; }
@@ -59,9 +60,12 @@ function statistics_line($familyDb){
 			echo 'N.N.';
 		}
 		else{
-			$_SESSION['tree_prefix']=$familyDb->tree_prefix;
-				$name=$person_cls->person_name($personDb);
-				echo $name["standard_name"];
+			//$_SESSION['tree_prefix']=$familyDb->tree_prefix;
+			// *** Set variabele for queries ***
+			$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
+
+			$name=$person_cls->person_name($personDb);
+			echo $name["standard_name"];
 		}
 
 		echo " &amp; ";
@@ -72,12 +76,15 @@ function statistics_line($familyDb){
 		//$personDb=mysql_fetch_object($person_qry);
 		$person_qry=$dbh->query("SELECT * FROM ".$familyDb->tree_prefix."person
 			WHERE pers_gedcomnumber='$familyDb->stat_gedcom_woman'");
-		$personDb=$person_qry->fetch(PDO::FETCH_OBJ);	
+		$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
 		if (!$familyDb->stat_gedcom_woman){
 			echo 'N.N.';
 		}
 		else{
-			$_SESSION['tree_prefix']=$familyDb->tree_prefix;
+			//$_SESSION['tree_prefix']=$familyDb->tree_prefix;
+			// *** Set variabele for queries ***
+			$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
+
 			$name=$person_cls->person_name($personDb);
 			echo $name["standard_name"];
 		}
@@ -138,14 +145,14 @@ function calender($month, $year, $thismonth){
 			//$datasql = mysql_query("SELECT stat_ip_address FROM humo_stat_date
 			//	WHERE stat_date_linux > ".$yesterday." AND stat_date_linux < ".$today.' GROUP BY stat_ip_address',$db);
 			$datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date
-				WHERE stat_date_linux > ".$yesterday." AND stat_date_linux < ".$today.' GROUP BY stat_ip_address');				
+				WHERE stat_date_linux > ".$yesterday." AND stat_date_linux < ".$today.' GROUP BY stat_ip_address');
 		}
 		else{
 			// *** Show families ***
 			//$datasql = mysql_query("SELECT * FROM humo_stat_date
 			//	WHERE stat_date_linux > ".$yesterday." AND stat_date_linux < ".$today,$db);
 			$datasql = $dbh->query("SELECT * FROM humo_stat_date
-				WHERE stat_date_linux > ".$yesterday." AND stat_date_linux < ".$today);				
+				WHERE stat_date_linux > ".$yesterday." AND stat_date_linux < ".$today);
 		}
 
 		//if ($datasql){ $nr_statistics=mysql_num_rows($datasql); }
@@ -219,14 +226,14 @@ function year_graphics($month, $year)  {
 			//	GROUP BY stat_ip_address",$db);
 			$datasql = $dbh->query("SELECT stat_ip_address FROM humo_stat_date
 				WHERE stat_date_linux > ".$first_day." AND stat_date_linux < ".$latest_day."
-				GROUP BY stat_ip_address");				
+				GROUP BY stat_ip_address");
 		}
 		else{
 			// *** Show visited families ***
 			//$datasql = mysql_query("SELECT * FROM humo_stat_date
 			//	WHERE stat_date_linux > ".$first_day." AND stat_date_linux < ".$latest_day,$db);
 			$datasql = $dbh->query("SELECT * FROM humo_stat_date
-				WHERE stat_date_linux > ".$first_day." AND stat_date_linux < ".$latest_day);				
+				WHERE stat_date_linux > ".$first_day." AND stat_date_linux < ".$latest_day);
 		}
 
 		//if ($datasql){ $nr_statistics=mysql_num_rows($datasql); }
@@ -487,7 +494,7 @@ if ($statistics_screen=='general_statistics'){
 				WHERE humo_trees.tree_id=".$familyDb->tree_id."
 				GROUP BY stat_ip_address
 				");
-			$count_visitors=$stat->rowCount();			
+			$count_visitors=$stat->rowCount();
 		}
 		echo '<td>'.$count_visitors.'</td>';
 		echo '</tr>';
@@ -510,7 +517,7 @@ if ($statistics_screen=='general_statistics'){
 		//$datasql = mysql_query("SELECT * FROM humo_stat_date",$db);
 		//if ($datasql){ $total=mysql_num_rows($datasql); }
 		$datasql = $dbh->query("SELECT * FROM humo_stat_date");
-		if ($datasql){ $total=$datasql->rowCount(); }		
+		if ($datasql){ $total=$datasql->rowCount(); }
 		echo '<tr><td>'.__('Total number of visited families:').'</td><td>'.$total.'</td>';
 
 		// Visitors per day/ month/ year.
@@ -519,7 +526,7 @@ if ($statistics_screen=='general_statistics'){
 		//$datasql = mysql_query("SELECT * FROM humo_stat_date WHERE stat_date_linux > ".$time_period,$db);
 		//if ($datasql){ $total=mysql_num_rows($datasql); }
 		$datasql = $dbh->query("SELECT * FROM humo_stat_date WHERE stat_date_linux > ".$time_period);
-		if ($datasql){ $total=$datasql->rowCount(); }		
+		if ($datasql){ $total=$datasql->rowCount(); }
 		echo '<tr><td>'.__('Total number of families in the last hour:').'</td><td>'.$total.'</td>';
 	echo '</table>';
 
@@ -564,7 +571,7 @@ if ($statistics_screen=='general_statistics'){
 	*/
 	$family_qry=$dbh->query("SELECT * FROM humo_stat_date, humo_trees
 		WHERE humo_trees.tree_id=humo_stat_date.stat_tree_id
-		ORDER BY humo_stat_date.stat_date_stat DESC LIMIT 0,".$nr_lines);	
+		ORDER BY humo_stat_date.stat_date_stat DESC LIMIT 0,".$nr_lines);
 	echo '<table class="humo standard" border="1" cellspacing="0">';
 	echo '<tr class="table_header"><th>'.__('family tree').'</th><th>'.__('date-time').'</th><th>'.__('family').'</th></tr>';
 	//while ($familyDb=mysql_fetch_object($family_qry)){ statistics_line($familyDb); }
@@ -616,7 +623,7 @@ if ($statistics_screen=='date_statistics'){
 			//$datasql = mysql_query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1",$db);
 			//$dataDb=mysql_fetch_object($datasql);
 			$datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
-			$dataDb=$datasql->fetch(PDO::FETCH_OBJ);			
+			$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 			$first_year = date("Y",$dataDb->stat_date_linux);
 
 			$present_year = date("Y");
@@ -697,7 +704,7 @@ if ($statistics_screen=='visitors'){
 			//$datasql = mysql_query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1",$db);
 			//$dataDb=mysql_fetch_object($datasql);
 			$datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
-			$dataDb=$datasql->fetch(PDO::FETCH_OBJ);			
+			$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 			$first_year = date("Y",$dataDb->stat_date_linux);
 
 			$present_year = date("Y");
@@ -776,7 +783,7 @@ if ($statistics_screen=='statistics_old'){
 		//$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
 		//@$dataDb=mysql_fetch_object($datasql);
 		$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
-		@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);		
+		@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 		$_SESSION['tree_prefix']=$dataDb->tree_prefix;
 	}
 
@@ -797,12 +804,12 @@ if ($statistics_screen=='statistics_old'){
 			//$person_qry=mysql_query("SELECT * FROM ".$dataDb->tree_prefix."person",$db);
 			//@$count_persons=mysql_num_rows($person_qry);
 			$person_qry=$dbh->query("SELECT * FROM ".$dataDb->tree_prefix."person");
-			@$count_persons=$person_qry->rowCount();			
+			@$count_persons=$person_qry->rowCount();
 
 			//$family_qry=mysql_query("SELECT * FROM ".$dataDb->tree_prefix."family",$db);
 			//@$count_families=mysql_num_rows($family_qry);
 			$family_qry=$dbh->query("SELECT * FROM ".$dataDb->tree_prefix."family");
-			@$count_families=$family_qry->rowCount();			
+			@$count_families=$family_qry->rowCount();
 
 			// *** Update date ***
 			$date=$dataDb->tree_date;
@@ -847,7 +854,7 @@ if ($statistics_screen=='statistics_old'){
 		//while ($familyDb=mysql_fetch_object($family_qry)){
 		$family_qry=$dbh->query("SELECT * FROM ".$_SESSION['tree_prefix']."family
 			WHERE fam_counter ORDER BY fam_counter desc LIMIT 0,50");
-		while ($familyDb=$family_qry->fetch(PDO::FETCH_OBJ)){		
+		while ($familyDb=$family_qry->fetch(PDO::FETCH_OBJ)){
 			echo $familyDb->fam_counter." ";
 				if(CMS_SPECIFIC == "Joomla") {
 					print '<a href="index.php?option=com_humo-gen&amp;task=family&amp;id='.$familyDb->fam_gedcomnumber.'">'.__('Family').': </a>';
@@ -862,11 +869,13 @@ if ($statistics_screen=='statistics_old'){
 			//$personDb=mysql_fetch_object($person_qry);
 			$person_qry=$dbh->query("SELECT * FROM ".$_SESSION['tree_prefix']."person
 				WHERE pers_gedcomnumber='$familyDb->fam_man'");
-			$personDb=$person_qry->fetch(PDO::FETCH_OBJ);			
+			$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
 			if (!$familyDb->fam_man){
 				echo 'N.N.';
 			}
 			else{
+				$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
+
 				$name=$person_cls->person_name($personDb);
 				echo $name["standard_name"];
 			}
@@ -877,11 +886,13 @@ if ($statistics_screen=='statistics_old'){
 			//$person_qry=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$familyDb->fam_woman'",$db);
 			//$personDb=mysql_fetch_object($person_qry);
 			$person_qry=$dbh->query("SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='$familyDb->fam_woman'");
-			$personDb=$person_qry->fetch(PDO::FETCH_OBJ);			
+			$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
 			if (!$familyDb->fam_woman){
 				echo 'N.N.';
 			}
 			else{
+				$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
+
 				$name=$person_cls->person_name($personDb);
 				echo $name["standard_name"];
 			}

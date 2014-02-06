@@ -162,13 +162,13 @@ function generate() {
 			$distance=0;
 
 			$genarray[$i]["x"]=($genarray[$i]["gen"]*$hbasesize)+1;
-			
+
 			if($hourglass===true) {
 				// calculate left position for hourglass (depends on number of ancestor generations chosen)
 				if($size==50) $thissize = 170;
 				elseif($size==45) $thissize = 100;
 				else $thissize = $size;
-				
+
 				$left = 30 + $thissize; // default when 2 generations only
 				if($chosengenanc==3 AND $size==50 AND $genarray[1]["2nd"]==1) { 
 					// prevent parent overlap by 2nd marr of base person in 3 gen display
@@ -177,15 +177,15 @@ function generate() {
 				elseif($chosengenanc>2) { 
 					if($size==50) {
 						$left = 10 + (2*$thissize) + (($chosengenanc-3)*(($thissize/2)+20)); 
-					}	
+					}
 					elseif($size==45) {
 						$left = 10 + (2*(20 + $thissize)) + (($chosengenanc-3)*(($thissize/2)+20)); 
-					}	
+					}
 					elseif($size<45 ) {
 						$left = 10 + (($chosengenanc-1) * ($size +20));
 					}
-				}	
-						
+				}
+
 				$genarray[$i]["x"]=($genarray[$i]["gen"]*$hbasesize)+$left;  
 			}
 			$par=$genarray[$i]["par"];
@@ -362,19 +362,19 @@ function printchart() {
 
 	// YB: -- check browser type & version. we need this further on to detect IE7 with it's widely reported z-index bug
 	$browser_user_agent = ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) ? strtolower( $_SERVER['HTTP_USER_AGENT'] ) : '';
-	
+
 	global $hourglass, $divlen, $divhi;
 	if($hourglass===false) {
-		
+
 		// find rightmost and bottommost positions to calculate size of the canvas needed for png image
 		$divlen=0; $divhi=0;
 		for($i=0; $i < count($genarray); $i++) {
-		   if($genarray[$i]["x"] > $divlen) {
-			   $divlen = $genarray[$i]["x"];
-		   }
-		   if($genarray[$i]["y"] > $divhi) {
-			   $divhi = $genarray[$i]["y"];
-		   }
+			if($genarray[$i]["x"] > $divlen) {
+				$divlen = $genarray[$i]["x"];
+			}
+			if($genarray[$i]["y"] > $divhi) {
+				$divhi = $genarray[$i]["y"];
+			}
 		}
 		$divlen += 200; $divhi +=300;
 
@@ -384,7 +384,7 @@ function printchart() {
 		
 		//following only on screen (after menu box)
 		//print '<span class="table_header" style="font-size:large; color:darkgreen; position:absolute; left:600px; top:3px; height:25px">';
-	
+
 		//======== HELP POPUP ========================
 		echo '<div id="helppopup" class="'.$rtlmarker.'sddm" style="position:absolute;left:10px;top:10px;display:inline;">';
 		echo '<a href="#"';
@@ -420,13 +420,13 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		echo '</div>';
 		echo '</div>';
-	
+
 		//=================================
-	
+
 		echo '<div class="standard_header fonts" style="align:center; text-align: center;"><b>'.__('Descendant chart').__(' of ').$genarray[0]["nam"].'</b>';
 		echo '<br><input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow popup!)').'" onClick="showimg();">';
 		echo '</div>';
-	
+
 		if ($direction==0) {
 				$latter=count($genarray)-1;
 				$the_height=$genarray[$latter]["y"]+130;
@@ -502,7 +502,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
  
 
 		print '</select>';
-	
+
 		print '&nbsp;&nbsp;';
 		//NEW min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
 		echo ' 
@@ -532,15 +532,15 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		echo '<input type="text" id="amount" disabled="disabled" style="width:15px;border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
 		echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
 		echo '</div>';
-		
+
 	} // end if not hourglass
-	
+
 	// some PDO prepared statements before the loop
 	$man_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber =?");
 	$man_prep->bindParam(1,$man_prep_var);
 	$fam_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE `fam_gedcomnumber`=?");
 	$fam_prep->bindParam(1,$fam_prep_var);
-	
+
 	for($w=0; $w < count($genarray); $w++) {
 
 		$xvalue=$genarray[$w]["x"];

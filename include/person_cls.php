@@ -114,8 +114,8 @@ function person_name($personDb){
 		//	WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='nobility'
 		//	ORDER BY event_order",$db);
 		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='nobility'
-			ORDER BY event_order");			
+			WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='nobility'
+			ORDER BY event_order");
 		//while($nameDb=mysql_fetch_object($name_qry)){
 		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
 			$nobility.=$nameDb->event_event.' ';
@@ -463,7 +463,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 						//@$check_childrenDb=mysql_fetch_object($check_children_sql);
 						$check_children_sql=$dbh->query("SELECT * FROM ".$tree_prefix."family
 							WHERE fam_gedcomnumber='".$check_family[$i]."'");
-						@$check_childrenDb=$check_children_sql->fetch(PDO::FETCH_OBJ);						
+						@$check_childrenDb=$check_children_sql->fetch(PDO::FETCH_OBJ);
 						if ($check_childrenDb->fam_children){ $check_children=true; }
 					}
 					if ($check_children){
@@ -772,14 +772,14 @@ function name_extended($person_kind){
 			//$parents_family=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='$personDb->pers_famc'",$db);
 			//$parents_familyDb=mysql_fetch_object($parents_family);
 			$parents_family=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='$personDb->pers_famc'");
-			$parents_familyDb=$parents_family->fetch(PDO::FETCH_OBJ);			
+			$parents_familyDb=$parents_family->fetch(PDO::FETCH_OBJ);
 
 			// *** Father ***
 			if ($parents_familyDb->fam_man){
 				//$father_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$parents_familyDb->fam_man'",$db);
 				//$fatherDb=mysql_fetch_object($father_qry);
 				$father_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$parents_familyDb->fam_man'");
-				$fatherDb=$father_qry->fetch(PDO::FETCH_OBJ);				
+				$fatherDb=$father_qry->fetch(PDO::FETCH_OBJ);
 				$name=$this->person_name($fatherDb);
 				$text=$name["standard_name"];
 				$pdfstr["parents"]=$name["standard_name"];
@@ -800,7 +800,7 @@ function name_extended($person_kind){
 				//$mother_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='$parents_familyDb->fam_woman'",$db);
 				//$motherDb=mysql_fetch_object($mother_qry);
 				$mother_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$parents_familyDb->fam_woman'");
-				$motherDb=$mother_qry->fetch(PDO::FETCH_OBJ);				
+				$motherDb=$mother_qry->fetch(PDO::FETCH_OBJ);
 				$name=$this->person_name($motherDb);
 				$text.=$name["standard_name"];
 				$pdfstr["parents"].=$name["standard_name"];
@@ -843,7 +843,7 @@ function name_extended($person_kind){
 				//$fam_partnerDb=mysql_fetch_object($fam_partner);
 				$qry="SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$marriage_array[$x]."'";
 				$fam_partner=$dbh->query($qry);
-				$fam_partnerDb=$fam_partner->fetch(PDO::FETCH_OBJ);				
+				$fam_partnerDb=$fam_partner->fetch(PDO::FETCH_OBJ);
 
 				// *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
 				if ($personDb->pers_gedcomnumber==$fam_partnerDb->fam_man)
@@ -863,7 +863,7 @@ function name_extended($person_kind){
 					//$partnerDb=mysql_fetch_object($partner);
 					$qry="SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".$partner_id."'";
 					$partner=$dbh->query($qry);
-					$partnerDb=$partner->fetch(PDO::FETCH_OBJ);					
+					$partnerDb=$partner->fetch(PDO::FETCH_OBJ);
 					$partner_cls = New person_cls;
 					$name=$partner_cls->person_name($partnerDb);
 					$famc=$partnerDb->pers_indexnr; // *** Used for partner link ***
@@ -980,7 +980,7 @@ function person_data($person_kind, $id){
 			//	ORDER BY event_order",$db);
 			$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='name'
-				ORDER BY event_order");				
+				ORDER BY event_order");
 			//while($nameDb=mysql_fetch_object($name_qry)){
 			while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
 				$process_text.=', ';
@@ -1571,13 +1571,13 @@ function person_data($person_kind, $id){
 					//$parent2_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 					//WHERE pers_gedcomnumber='$parent2_famDb->fam_woman'",$db);
 					$parent2_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-					WHERE pers_gedcomnumber='$parent2_famDb->fam_woman'");					
+					WHERE pers_gedcomnumber='$parent2_famDb->fam_woman'");
 				}
 				else{
 					//$parent2_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 					//WHERE pers_gedcomnumber='$parent2_famDb->fam_man'",$db);
 					$parent2_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-					WHERE pers_gedcomnumber='$parent2_famDb->fam_man'");					
+					WHERE pers_gedcomnumber='$parent2_famDb->fam_man'");
 				}
 				//$parent2Db=mysql_fetch_object($parent2_qry);
 				$parent2Db=$parent2_qry->fetch(PDO::FETCH_OBJ);
@@ -1661,7 +1661,7 @@ function person_data($person_kind, $id){
 		$url_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='URL'
 			ORDER BY event_order");
-		if ($url_qry->rowCount()>0){ $process_text.='<br>'; }		
+		if ($url_qry->rowCount()>0){ $process_text.='<br>'; }
 		//while($urlDb=mysql_fetch_object($url_qry)){
 		while($urlDb=$url_qry->fetch(PDO::FETCH_OBJ)){
 			if ($urlDb->event_text){ $process_text.=$urlDb->event_text.': '; }
@@ -1693,7 +1693,7 @@ function person_data($person_kind, $id){
 				//$num_rows = mysql_num_rows($event_qry);
 				$event_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='event' ORDER BY event_order");
-				$num_rows = $event_qry->rowCount();				
+				$num_rows = $event_qry->rowCount();
 				if ($num_rows>0){ $process_text.='<span class="event">'."\n"; }
 				$eventnr=0;
 				//while($eventDb=mysql_fetch_object($event_qry)){

@@ -931,7 +931,7 @@ echo '<div>';
 		}
 		kwname(2,4,1,"kw-big",4,"medium");
 		kwname(2,4,2,"kw-small",8,"ancestor_sheet_marr");
-		kwname(1,2,1,"kw-big",8,"medium");	
+		kwname(1,2,1,"kw-big",8,"medium");
 		print '</table>';
 		print '<br><div class="ancestor_legend">';
 		print '<b>'.__('Legend').'</b><br>';
@@ -973,8 +973,8 @@ echo '<div>';
 				}    
 			}  
 			$result_array[0] = $count;
-			$result_array[1] = $str;	 
-			return $result_array;		 
+			$result_array[1] = $str;
+			return $result_array;
 		}
 
 
@@ -1272,7 +1272,7 @@ echo '<div>';
 		$pdf->SetFillColor(255,228,225); $pdf->Cell(20,3,__('female'),1,0,"C",true);
 		$pdf->Cell(5,3," ",0,0);
 		$pdf->SetFillColor(191,239,255); $pdf->Cell(20,3,__('male'),1,0,"C",true);
-		
+
 	} // end of ancestor sheet PDF code
 }
 

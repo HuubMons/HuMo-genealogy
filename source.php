@@ -3,8 +3,8 @@
 
 function source_display($sourcenum) {
 
-global $db, $dbh, $user, $pdf, $screen_mode, $language;
-global $dataDb;
+global $db, $dbh, $dataDb, $user, $pdf, $screen_mode, $language;
+global $tree_prefix_quoted;
 
 if($screen_mode!="PDF") {
 	include_once("header.php"); //returns CMS_ROOTPATH constant
@@ -28,7 +28,7 @@ if($screen_mode!="PDF") {
 	//@$qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
 	//	WHERE source_gedcomnr='".$sourcenum."'";
 	@$qry="SELECT * FROM ".$tree_prefix_quoted."sources
-		WHERE source_gedcomnr='".$sourcenum."'";		
+		WHERE source_gedcomnr='".$sourcenum."'";
 	if ($user['group_show_restricted_source']=='n'){ $qry.=" AND source_status!='restricted'"; }
 	//@$source=mysql_query($qry,$db);
 	//$die_message=__('No valid source number.');
@@ -202,7 +202,7 @@ if($screen_mode!="PDF") {
 	//$repo_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."repositories
 	//	WHERE repo_gedcomnr='".$sourceDb->source_repo_gedcomnr."'",$db);
 	$repo_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."repositories
-		WHERE repo_gedcomnr='".$sourceDb->source_repo_gedcomnr."'");		
+		WHERE repo_gedcomnr='".$sourceDb->source_repo_gedcomnr."'");
 	//$repoDb=mysql_fetch_object($repo_qry);
 	$repoDb=$repo_qry->fetch(PDO::FETCH_OBJ);
 	if ($repoDb){
@@ -228,8 +228,8 @@ if($screen_mode!="PDF") {
 	}
 
 if($screen_mode!="PDF") { // we do not want all persons in the database as given online so
-					              // in the pdf file so we'll take just the above details
-					              // and leave references to persons
+							// in the pdf file so we'll take just the above details
+							// and leave references to persons
 
 print '</td></tr>';
 print '<tr><td>';
@@ -250,7 +250,7 @@ print '<tr><td>';
 				//$personDb=mysql_fetch_object($person);
 				$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
 					WHERE pers_gedcomnumber='$address_Db->address_person_id'");
-				$personDb=$person->fetch(PDO::FETCH_OBJ);				
+				$personDb=$person->fetch(PDO::FETCH_OBJ);
 				echo __('Source for address:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 				$name=$person_cls->person_name($personDb);
 				echo $name["standard_name"];
@@ -267,13 +267,13 @@ print '<tr><td>';
 			//$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 			//WHERE pers_gedcomnumber='$familyDb->fam_man'",$db);
 			$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-			WHERE pers_gedcomnumber='$familyDb->fam_man'");			
+			WHERE pers_gedcomnumber='$familyDb->fam_man'");
 		}
 		else{
 			//$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 			//WHERE pers_gedcomnumber='$familyDb->fam_woman'",$db);
 			$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-			WHERE pers_gedcomnumber='$familyDb->fam_woman'");			
+			WHERE pers_gedcomnumber='$familyDb->fam_woman'");
 		}
 		//@$personDb=mysql_fetch_object($person);
 		@$personDb=$person->fetch(PDO::FETCH_OBJ);
@@ -324,7 +324,7 @@ print '<tr><td>';
 				//$event_qry=mysql_query($event_sql,$db);
 				//$event_Db=mysql_fetch_object($event_qry);
 				$event_qry=$dbh->query($event_sql);
-				$event_Db=$event_qry->fetch(PDO::FETCH_OBJ);				
+				$event_Db=$event_qry->fetch(PDO::FETCH_OBJ);
 				// *** Person source ***
 				if ($event_Db->event_person_id){
 					/*
@@ -334,7 +334,7 @@ print '<tr><td>';
 					*/
 					$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
 						WHERE pers_gedcomnumber='$event_Db->event_person_id'");
-					$personDb=$person->fetch(PDO::FETCH_OBJ);					
+					$personDb=$person->fetch(PDO::FETCH_OBJ);
 					print __('Source for:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 					$name=$person_cls->person_name($personDb);
 					echo $name["standard_name"].'</a>';
@@ -349,7 +349,7 @@ print '<tr><td>';
 				*/
 				$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
 					WHERE pers_gedcomnumber='$connectDb->connect_connect_id'");
-				$personDb=$person->fetch(PDO::FETCH_OBJ);				
+				$personDb=$person->fetch(PDO::FETCH_OBJ);
 				echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 				$name=$person_cls->person_name($personDb);
 				echo $name["standard_name"].'</a>';
@@ -398,7 +398,7 @@ print '<tr><td>';
 				$event_sql="SELECT * FROM ".$tree_prefix_quoted."events
 					WHERE event_id='".$connectDb->connect_connect_id."'";
 				$event_qry=$dbh->query($event_sql);
-				$event_Db=$event_qry->fetch(PDO::FETCH_OBJ);				
+				$event_Db=$event_qry->fetch(PDO::FETCH_OBJ);
 				// *** Family source ***
 				if ($event_Db->event_family_id){					print __('Source for family:');
 					/*
@@ -410,7 +410,7 @@ print '<tr><td>';
 					$family=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family
 						WHERE fam_gedcomnumber='".$event_Db->event_family_id."'");
 					$familyDb=$family->fetch(PDO::FETCH_OBJ);
-					$personDb=person_data($familyDb);					
+					$personDb=person_data($familyDb);
 					echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$event_Db->event_family_id.'">';
 					$name=$person_cls->person_name($personDb);
 					echo $name["standard_name"].'</a>';
@@ -429,7 +429,7 @@ print '<tr><td>';
 				$family=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family
 					WHERE fam_gedcomnumber='".$connectDb->connect_connect_id."'");
 				$familyDb=$family->fetch(PDO::FETCH_OBJ);
-				$personDb=person_data($familyDb);				
+				$personDb=person_data($familyDb);
 				echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$connectDb->connect_connect_id.'">';
 				$name=$person_cls->person_name($personDb);
 				echo $name["standard_name"].'</a>';

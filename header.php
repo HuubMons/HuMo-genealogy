@@ -73,7 +73,7 @@ $bot_visit=preg_match('/bot|spider|crawler|curl|Yahoo|Google|^$/i', $_SERVER['HT
 
 $language_folder=opendir(CMS_ROOTPATH.'languages/');
 while (false!==($file = readdir($language_folder))) {
-	if (strlen($file)<6 AND $file!='.' AND $file!='..'){	
+	if (strlen($file)<6 AND $file!='.' AND $file!='..'){
 		$language_file[]=$file;
 
 		// *** Save choice of language ***

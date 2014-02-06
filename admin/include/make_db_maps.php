@@ -206,8 +206,8 @@ else {  // main screen
 			}
 			// add the new location to an array for use if the user presses YES
 			if($personDb->pers_birth_place) { $add_locations[] = $personDb->pers_birth_place; }
-		}	
-	
+		}
+
 		//echo 'Calculating......<br><br>'; // with a large existing data base and large number of locations to check this can take a second or two...
 		if (!$add_locations) {
 			echo '<p>'.__('No new locations were found to add to the database').'</p>';
@@ -301,7 +301,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				$result = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
 			}
 			//$row = mysql_fetch_array($result);
-			$row = $result->fetch();			
+			$row = $result->fetch();
 			$lat = $row['location_lat'];  
 			$lng = $row['location_lng']; 
 		}
@@ -342,7 +342,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		var markers=[];
 		function initialize() {
 			geocoder = new google.maps.Geocoder();
-			<?php	
+			<?php
 			echo 'var latlng = new google.maps.LatLng('.$lat.','.$lng.');';
 			?>
 			var myOptions = {
@@ -351,12 +351,12 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			}
 			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions); 
-			<?php					
+			<?php
 			echo 'document.getElementById("latbox").innerHtml = latlng.lat().toFixed(5);'; 
 			echo 'document.getElementById("lngbox").innerHtml = latlng.lng().toFixed(5);';
 			?>
 			map.setCenter(latlng);
-					
+
 				markers[0] = new google.maps.Marker({
 				map: map,
 				position: latlng,
@@ -403,7 +403,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		}
 		</script>
 		<body onload="initialize()" >
-		<?php	
+		<?php
 
 		echo '<table style="width:100%;border:none">';
 		echo '<tr><td valign="top" colspan="2">';
@@ -482,7 +482,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				if($loc_listDb->location_location == $_POST['add_name']) {
 					$selected=" SELECTED";
 				}
-			}					
+			}
 			else {
 				if($find_default===true) { // first location on the list
 					$_POST['loc_find'] = $loc_listDb->location_id;
@@ -533,10 +533,10 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		if($leave_bottom === true) {
 			$search_name = $_POST['add_name'];
 			$search_lat =  $_POST['add_lat'];
-			$search_lng =  $_POST['add_lng'];		
+			$search_lng =  $_POST['add_lng'];
 		}
 		echo '<tr><td style="border:none;height:20px"></td></tr>';
-		echo '<tr><th colspan="2">'.__('Change or add locations').'<br>'.__('(You can also drag the marker!)').'</th></tr>';		
+		echo '<tr><th colspan="2">'.__('Change or add locations').'<br>'.__('(You can also drag the marker!)').'</th></tr>';
 		echo '<tr><td colspan="2"><input id="address" onKeyPress="return disableEnterKey(event);" onKeyDown="testForEnter();" type="textbox" value="'.$search_name.'" size="36" name="add_name">';
 		echo '<input type="button" name="loc_search" value="'.__('Search').'" onclick="codeAddress();"></td></tr>';
 		echo '<tr><td>'.__('Latitude').':</td><td><input size="20" type="text" id="latbox" name="add_lat" onKeyPress="return disableEnterKey(event);" onKeyDown="testForEnter();" value="'.$search_lat.'"></td></tr>';
@@ -657,7 +657,7 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 				$sl_def = $sl_default_pos['setting_value'];
 			}
 			else {
-				$sl_def="off";
+				$sl_def="all";
 			}
 		}
 

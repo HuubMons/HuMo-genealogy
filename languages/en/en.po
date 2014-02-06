@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-01 21:46+0100\n"
-"PO-Revision-Date: 2014-02-01 21:46+0100\n"
+"POT-Creation-Date: 2014-02-06 22:19+0100\n"
+"PO-Revision-Date: 2014-02-06 22:19+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -106,8 +106,8 @@ msgid "born"
 msgstr "born"
 
 #: humo-gen/birthday_list.php:70
-#: humo-gen/family.php:1670
-#: humo-gen/family.php:1723
+#: humo-gen/family.php:1675
+#: humo-gen/family.php:1728
 msgid "Name"
 msgstr "Name"
 
@@ -139,7 +139,7 @@ msgid "No results found."
 msgstr "No results found."
 
 #: humo-gen/family.php:84
-#: humo-gen/family.php:1726
+#: humo-gen/family.php:1731
 msgid "Settings"
 msgstr "Settings"
 
@@ -148,8 +148,8 @@ msgid "Settings family screen"
 msgstr "Settings family screen"
 
 #: humo-gen/family.php:93
-#: humo-gen/family.php:751
-#: humo-gen/family.php:791
+#: humo-gen/family.php:756
+#: humo-gen/family.php:796
 msgid "Family Page"
 msgstr "Family Page"
 
@@ -162,7 +162,7 @@ msgid "Expanded view"
 msgstr "Expanded view"
 
 #: humo-gen/family.php:107
-#: humo-gen/family.php:1748
+#: humo-gen/family.php:1753
 #: humo-gen/header.php:203
 msgid "Sources"
 msgstr "Sources"
@@ -201,147 +201,147 @@ msgstr "PDF Report"
 msgid "Add to favourite list"
 msgstr "Add to favourite list"
 
-#: humo-gen/family.php:340
-#: humo-gen/family.php:424
+#: humo-gen/family.php:345
+#: humo-gen/family.php:429
 msgid "Descendant report"
 msgstr "Descendant Report"
 
-#: humo-gen/family.php:340
-#: humo-gen/family.php:343
-#: humo-gen/family.php:424
-#: humo-gen/family.php:427
-#: humo-gen/family.php:835
+#: humo-gen/family.php:345
+#: humo-gen/family.php:348
+#: humo-gen/family.php:429
+#: humo-gen/family.php:432
+#: humo-gen/family.php:840
 #: humo-gen/hourglass.php:73
 msgid " of "
 msgstr " of "
 
-#: humo-gen/family.php:343
-#: humo-gen/family.php:377
-#: humo-gen/family.php:427
-#: humo-gen/family.php:720
+#: humo-gen/family.php:348
+#: humo-gen/family.php:382
+#: humo-gen/family.php:432
+#: humo-gen/family.php:725
 msgid "Family group sheet"
 msgstr "Family Group Sheet"
 
-#: humo-gen/family.php:396
-#: humo-gen/family.php:686
+#: humo-gen/family.php:401
+#: humo-gen/family.php:691
 #, php-format
 msgid "TIP: use %s for other (ancestor and descendant) reports."
 msgstr "TIP: hover over %s for ancestor and descendant reports and charts."
 
-#: humo-gen/family.php:508
-#: humo-gen/family.php:516
+#: humo-gen/family.php:513
+#: humo-gen/family.php:521
 msgid "generation "
 msgstr "generation "
 
-#: humo-gen/family.php:550
+#: humo-gen/family.php:555
 msgid "No valid family number."
 msgstr "No valid family number."
 
-#: humo-gen/family.php:950
-#: humo-gen/family.php:981
+#: humo-gen/family.php:955
+#: humo-gen/family.php:986
 msgid "Unknown"
 msgstr "Unknown"
 
-#: humo-gen/family.php:1029
-#: humo-gen/family.php:1054
+#: humo-gen/family.php:1034
+#: humo-gen/family.php:1059
 msgid "residence"
 msgstr "residence"
 
-#: humo-gen/family.php:1031
-#: humo-gen/family.php:1056
+#: humo-gen/family.php:1036
+#: humo-gen/family.php:1061
 msgid "residences"
 msgstr "residences"
 
-#: humo-gen/family.php:1113
+#: humo-gen/family.php:1118
 msgid "Child"
 msgstr "Child"
 
-#: humo-gen/family.php:1116
+#: humo-gen/family.php:1121
 msgid "Children"
 msgstr "Children"
 
-#: humo-gen/family.php:1238
-#: humo-gen/family.php:1244
+#: humo-gen/family.php:1243
+#: humo-gen/family.php:1249
 msgid "follows"
 msgstr "follows"
 
-#: humo-gen/family.php:1314
+#: humo-gen/family.php:1319
 msgid "Adopted child:"
 msgstr "Adopted child:"
 
-#: humo-gen/family.php:1390
-#: humo-gen/family.php:1410
-#: humo-gen/family.php:1416
-#: humo-gen/family.php:1537
-#: humo-gen/family.php:1543
+#: humo-gen/family.php:1395
+#: humo-gen/family.php:1415
+#: humo-gen/family.php:1421
+#: humo-gen/family.php:1542
+#: humo-gen/family.php:1548
 msgid "BORN_SHORT"
 msgstr "born"
 
-#: humo-gen/family.php:1438
-#: humo-gen/family.php:1444
-#: humo-gen/family.php:1464
-#: humo-gen/family.php:1470
-#: humo-gen/family.php:1562
-#: humo-gen/family.php:1568
+#: humo-gen/family.php:1443
+#: humo-gen/family.php:1449
+#: humo-gen/family.php:1469
+#: humo-gen/family.php:1475
+#: humo-gen/family.php:1567
+#: humo-gen/family.php:1573
 msgid "DIED_SHORT"
 msgstr "died"
 
-#: humo-gen/family.php:1496
-#: humo-gen/family.php:1502
+#: humo-gen/family.php:1501
+#: humo-gen/family.php:1507
 msgid "Married"
 msgstr "Married"
 
-#: humo-gen/family.php:1588
+#: humo-gen/family.php:1593
 msgid "Family events"
 msgstr "Family events"
 
-#: humo-gen/family.php:1662
-#: humo-gen/family.php:1669
+#: humo-gen/family.php:1667
+#: humo-gen/family.php:1674
 msgid "New user note"
 msgstr "New user note"
 
-#: humo-gen/family.php:1667
+#: humo-gen/family.php:1672
 msgid "Message sent through HuMo-gen from the website."
 msgstr "Message sent through HuMo-gen from the website."
 
-#: humo-gen/family.php:1685
+#: humo-gen/family.php:1690
 msgid "Your information is saved and will be reviewed by the webmaster."
 msgstr "Your information is saved and will be reviewed by the webmaster."
 
 # Buried
-#: humo-gen/family.php:1718
+#: humo-gen/family.php:1723
 msgid "[+]"
 msgstr "[+]"
 
-#: humo-gen/family.php:1719
+#: humo-gen/family.php:1724
 msgid "Add information or remarks"
 msgstr "Add information or remarks"
 
-#: humo-gen/family.php:1721
+#: humo-gen/family.php:1726
 msgid "Person"
 msgstr "Individual"
 
-#: humo-gen/family.php:1726
+#: humo-gen/family.php:1731
 msgid "E-mail address"
 msgstr "E-mail address"
 
-#: humo-gen/family.php:1726
+#: humo-gen/family.php:1731
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "Your e-mail address is missing. Please add you're mail address here: "
 
-#: humo-gen/family.php:1730
+#: humo-gen/family.php:1735
 msgid "Text"
 msgstr "Text"
 
-#: humo-gen/family.php:1732
+#: humo-gen/family.php:1737
 msgid "Send"
 msgstr "Send"
 
-#: humo-gen/family.php:1772
+#: humo-gen/family.php:1777
 msgid "No valid sourcenumber."
 msgstr "No valid sourcenumber."
 
-#: humo-gen/family.php:1776
+#: humo-gen/family.php:1781
 msgid "Title"
 msgstr "Title"
 
@@ -627,9 +627,9 @@ msgstr "Recent Changes"
 #: humo-gen/list.php:1407
 #: humo-gen/menu.php:76
 #: humo-gen/photoalbum.php:161
-#: humo-gen/relations.php:2055
-#: humo-gen/relations.php:2085
-#: humo-gen/relations.php:2157
+#: humo-gen/relations.php:2484
+#: humo-gen/relations.php:2514
+#: humo-gen/relations.php:2586
 msgid "Search"
 msgstr "Search"
 
@@ -666,8 +666,8 @@ msgstr "privacy"
 # Birth
 #: humo-gen/list.php:119
 #: humo-gen/list.php:1222
-#: humo-gen/relations.php:2116
-#: humo-gen/relations.php:2184
+#: humo-gen/relations.php:2545
+#: humo-gen/relations.php:2613
 #: humo-gen/report_ancestor.php:607
 #: humo-gen/report_ancestor.php:938
 #: humo-gen/report_ancestor.php:1026
@@ -679,8 +679,8 @@ msgstr "*"
 # Baptise
 #: humo-gen/list.php:128
 #: humo-gen/list.php:1225
-#: humo-gen/relations.php:2113
-#: humo-gen/relations.php:2181
+#: humo-gen/relations.php:2542
+#: humo-gen/relations.php:2610
 #: humo-gen/report_ancestor.php:609
 #: humo-gen/report_descendant.php:613
 msgid "~"
@@ -764,32 +764,32 @@ msgid "1st"
 msgstr "1st"
 
 #: humo-gen/list.php:261
-#: humo-gen/relations.php:446
-#: humo-gen/relations.php:646
-#: humo-gen/relations.php:724
-#: humo-gen/relations.php:794
-#: humo-gen/relations.php:1034
+#: humo-gen/relations.php:448
+#: humo-gen/relations.php:648
+#: humo-gen/relations.php:726
+#: humo-gen/relations.php:796
+#: humo-gen/relations.php:1036
 msgid "2nd"
 msgstr "2nd"
 
 #: humo-gen/list.php:262
-#: humo-gen/relations.php:447
-#: humo-gen/relations.php:647
-#: humo-gen/relations.php:725
-#: humo-gen/relations.php:795
-#: humo-gen/relations.php:1035
+#: humo-gen/relations.php:449
+#: humo-gen/relations.php:649
+#: humo-gen/relations.php:727
+#: humo-gen/relations.php:797
+#: humo-gen/relations.php:1037
 msgid "3rd"
 msgstr "3rd"
 
 #: humo-gen/list.php:263
-#: humo-gen/relations.php:320
-#: humo-gen/relations.php:449
-#: humo-gen/relations.php:649
-#: humo-gen/relations.php:968
-#: humo-gen/relations.php:999
-#: humo-gen/relations.php:1037
-#: humo-gen/relations.php:1283
-#: humo-gen/relations.php:1286
+#: humo-gen/relations.php:322
+#: humo-gen/relations.php:451
+#: humo-gen/relations.php:651
+#: humo-gen/relations.php:970
+#: humo-gen/relations.php:1001
+#: humo-gen/relations.php:1039
+#: humo-gen/relations.php:1285
+#: humo-gen/relations.php:1288
 msgid "th"
 msgstr "th"
 
@@ -863,13 +863,13 @@ msgstr "Starts with"
 
 #: humo-gen/list.php:1270
 #: humo-gen/list.php:1574
-#: humo-gen/relations.php:2051
+#: humo-gen/relations.php:2480
 msgid "First name"
 msgstr "First name"
 
 #: humo-gen/list.php:1281
 #: humo-gen/list.php:1567
-#: humo-gen/relations.php:2053
+#: humo-gen/relations.php:2482
 msgid "Last name"
 msgstr "Last name"
 
@@ -1111,61 +1111,66 @@ msgstr "Wrong answer to the block-spam question! Try again..."
 msgid "The e-mail function has been switched off!"
 msgstr "The e-mail function has been switched off!"
 
+#: humo-gen/maps.php:25
+msgid "Display birth or death locations across different time periods"
+msgstr "Display birth or death locations across different time periods"
+
 #: humo-gen/maps.php:35
 #: humo-gen/menu.php:25
 msgid "Select a family tree:"
 msgstr "Select a family tree:"
 
-#: humo-gen/maps.php:68
-msgid "Mark all birth locations"
-msgstr "Mark all birth locations"
+#: humo-gen/maps.php:66
+msgid "Display:"
+msgstr "Display:"
 
-#: humo-gen/maps.php:71
-msgid "Mark all death locations"
-msgstr "Mark all death locations"
+#: humo-gen/maps.php:70
+msgid "Birth locations"
+msgstr "Birth locations"
 
-#: humo-gen/maps.php:136
-msgid "Mark births until: "
-msgstr "Mark births until: "
+#: humo-gen/maps.php:72
+msgid "Death locations"
+msgstr "Death locations"
 
-#: humo-gen/maps.php:139
-msgid "Mark deaths until: "
-msgstr "Mark deaths until: "
+#: humo-gen/maps.php:86
+msgid "Filters:"
+msgstr "Filters:"
 
-#: humo-gen/maps.php:155
-msgid "Map by specific family name(s)"
-msgstr "Map by specific family name(s)"
+#: humo-gen/maps.php:154
+msgid "Display births until: "
+msgstr "Display births until: "
 
-#: humo-gen/maps.php:160
-msgid "Map by descendants of a person"
-msgstr "Map by descendants of a person"
+#: humo-gen/maps.php:157
+msgid "Display deaths until: "
+msgstr "Display deaths until: "
+
+#: humo-gen/maps.php:169
+msgid "Filter by specific family name(s)"
+msgstr "Filter by specific family name(s)"
+
+#: humo-gen/maps.php:174
+msgid "Filter by descendants of a person"
+msgstr "Filter by descendants of a person"
 
 #: humo-gen/maps.php:184
-msgid "Find location on the map"
-msgstr "Find location on the map"
+msgid "Other tools:"
+msgstr "Other tools:"
 
-#: humo-gen/maps.php:198
-msgid "Map by births"
-msgstr "Map by births"
-
-#: humo-gen/maps.php:200
-msgid "Map by deaths"
-msgstr "Map by deaths"
-
-#: humo-gen/maps.php:227
+#: humo-gen/maps.php:220
 msgid ""
-"<b>Top menu line:</b><br>\n"
+"<b>Top menu line:</b>\n"
 "<ul><li>Choose family tree. On sites with multiple family trees here you can choose which tree to map.</li>\n"
-"<li>All birth locations\". This button will place markers for all birth locations in the tree, irrespective of the dates of birth. Also people with no known birth date are included.</li>\n"
-"<li>The \"births until\" slider. With this slider you can mark the birthplaces of persons who where born until a certain date. The slider has ten positions.</li></ul>\n"
+"<li>Choose whether to display birth location or death locations.</li></ul>\n"
 "<b>Second menu line:</b>\n"
-"<ul><li>Map by specific family name(s)\". This will open a window with all family names. Mark checkboxes next to names and press \"Choose\" to start mapping the locations of those families only.<br>\n"
+"<ul><li>The \"births until\" slider. With this slider you can mark the birthplaces of persons who where born until a certain date. The slider has ten positions.</li>\n"
+"<li>Filter by specific family name(s)\". This will open a window with all family names. Mark checkboxes next to names and press \"Choose\" to start mapping the locations of those families only.<br>\n"
 "After pressing \"Choose\" you will see a yellow banner near the top of the map, informing you which family names are being filtered. Now use the slider or \"mark all location\" button to place the markers.</li>\n"
-"<li>Map by descendants\". This will open a window with all persons that have descendants. Click the person whose descendants you want to map.<br>\n"
-"A yellow banner will appear near the top of the map, informing which persons' descendants are filtered. Now use the slider or \"mark all location\" button to place the markers.</li>\n"
-"<li>Find location on the map\". Here you can pick a location from all locations in the tree and zoom in to it automatically.</li></ul>\n"
+"<li>Filter by descendants\". This will open a window with all persons that have descendants. Click the person whose descendants you want to map.<br>\n"
+"A yellow banner will appear near the top of the map, informing which persons' descendants are filtered. Now use the slider or \"mark all location\" button to place the markers.</li></ul>\n"
+"<b>Third menu line:</b>\n"
+"<ul><li>Find location on the map\". Here you can pick a location from all locations in the tree and zoom in to it automatically.</li></ul>\n"
 "<b>The map:</b>\n"
-"<ul><li>After clicking the \"All locations\" button or using the slider, coloured markers will be placed on the map. Inside the marker you will see the number of people born in that location.</li>\n"
+"<ul><li>Colored markers are placed on the map according to the settings made in the menu. Inside the marker you will see the number of people born in that location.</li>\n"
 "<li>There are 4 different size markers (from small to big): Red markers (over 100 people), blue markers (50-99 people), green markers (9-49 people) and yellow markers (1-9 people)</li>\n"
 "<li>When you hover with the mouse over a marker a \"tooltip\" will show with the name of the location.</li>\n"
 "<li>When you click on the marker you will see two links.</li>\n"
@@ -1173,79 +1178,84 @@ msgid ""
 "<li>The second link will present (in the Info Window itself) a list of all persons born in this location.</li>\n"
 "<li>The names in this list are clickable and will open a new browser tab with the family page of this person.</li>"
 msgstr ""
-"<b>Top menu line:</b><br>\n"
+"<b>Top menu line:</b>\n"
 "<ul><li>Choose family tree. On sites with multiple family trees here you can choose which tree to map.</li>\n"
-"<li>All birth locations\". This button will place markers for all birth locations in the tree, irrespective of the dates of birth. Also people with no known birth date are included.</li>\n"
-"<li>The \"births until\" slider. With this slider you can mark the birthplaces of individuals who where born until a certain date. The slider has ten positions.</li></ul>\n"
+"<li>Choose whether to display birth location or death locations.</li></ul>\n"
 "<b>Second menu line:</b>\n"
-"<ul><li>Map by specific family name(s)\". This will open a window with all family names. Mark checkboxes next to names and press \"Choose\" to start mapping the locations of those families only.<br>\n"
+"<ul><li>The \"births until\" slider. With this slider you can mark the birthplaces of persons who where born until a certain date. The slider has ten positions.</li>\n"
+"<li>Filter by specific family name(s)\". This will open a window with all family names. Mark checkboxes next to names and press \"Choose\" to start mapping the locations of those families only.<br>\n"
 "After pressing \"Choose\" you will see a yellow banner near the top of the map, informing you which family names are being filtered. Now use the slider or \"mark all location\" button to place the markers.</li>\n"
-"<li>Map by descendants\". This will open a window with all individuals that have descendants. Click the person whose descendants you want to map.<br>\n"
-"A yellow banner will appear near the top of the map, informing which individual's descendants are filtered. Now use the slider or \"mark all location\" button to place the markers.</li>\n"
-"<li>Find location on the map\". Here you can pick a location from all locations in the tree and zoom in to it automatically.</li></ul>\n"
+"<li>Filter by descendants\". This will open a window with all persons that have descendants. Click the person whose descendants you want to map.<br>\n"
+"A yellow banner will appear near the top of the map, informing which persons' descendants are filtered. Now use the slider or \"mark all location\" button to place the markers.</li></ul>\n"
+"<b>Third menu line:</b>\n"
+"<ul><li>Find location on the map\". Here you can pick a location from all locations in the tree and zoom in to it automatically.</li></ul>\n"
 "<b>The map:</b>\n"
-"<ul><li>After clicking the \"All locations\" button or using the slider, coloured markers will be placed on the map. Inside the marker you will see the number of people born in that location.</li>\n"
+"<ul><li>Colored markers are placed on the map according to the settings made in the menu. Inside the marker you will see the number of people born in that location.</li>\n"
 "<li>There are 4 different size markers (from small to big): Red markers (over 100 people), blue markers (50-99 people), green markers (9-49 people) and yellow markers (1-9 people)</li>\n"
 "<li>When you hover with the mouse over a marker a \"tooltip\" will show with the name of the location.</li>\n"
 "<li>When you click on the marker you will see two links.</li>\n"
 "<li>The first link will open a new browser tab with the Wikipedia entry about this location (if such an entry exists).</li>\n"
-"<li>The second link will present (in the Info Window itself) a list of all individuals born in this location.</li>\n"
+"<li>The second link will present (in the Info Window itself) a list of all persons born in this location.</li>\n"
 "<li>The names in this list are clickable and will open a new browser tab with the family page of this person.</li>"
 
-#: humo-gen/maps.php:262
+#: humo-gen/maps.php:266
+msgid "Find location on the map"
+msgstr "Find location on the map"
+
+#: humo-gen/maps.php:291
 msgid "Mapping with specific name(s): "
 msgstr "Mapping with specific name(s): "
 
-#: humo-gen/maps.php:273
+#: humo-gen/maps.php:302
 msgid "Switch name filter off"
 msgstr "Switch name filter off"
 
-#: humo-gen/maps.php:437
-msgid "Map by descendants of: "
-msgstr "Map by descendants of: "
+#: humo-gen/maps.php:466
+msgid "Filter by descendants of: "
+msgstr "Filter by descendants of: "
 
-#: humo-gen/maps.php:437
+#: humo-gen/maps.php:466
 msgid "Switch descendant filter off"
 msgstr "Switch descendant filter off"
 
-#: humo-gen/maps.php:440
+#: humo-gen/maps.php:469
 msgid "No known birth places amongst descendants"
 msgstr "No known birth places amongst descendants"
 
-#: humo-gen/maps.php:440
+#: humo-gen/maps.php:469
 msgid "Close"
 msgstr "Close"
 
-#: humo-gen/maps.php:456
+#: humo-gen/maps.php:485
 msgid "Mark checkbox next to name(s)"
 msgstr "Mark checkbox next to name(s)"
 
-#: humo-gen/maps.php:469
+#: humo-gen/maps.php:498
 msgid "Choose"
 msgstr "Choose"
 
-#: humo-gen/maps.php:471
-#: humo-gen/maps.php:582
+#: humo-gen/maps.php:500
+#: humo-gen/maps.php:611
 msgid "Cancel"
 msgstr "Cancel"
 
-#: humo-gen/maps.php:497
+#: humo-gen/maps.php:526
 msgid "Pick a name or enter ID:"
 msgstr "Pick a name or enter ID:"
 
-#: humo-gen/maps.php:500
+#: humo-gen/maps.php:529
 msgid "Pick a name from the pulldown list"
 msgstr "Pick a name from the pulldown list"
 
-#: humo-gen/maps.php:531
+#: humo-gen/maps.php:560
 msgid "baptised"
 msgstr "baptised"
 
-#: humo-gen/maps.php:537
+#: humo-gen/maps.php:566
 msgid "buried"
 msgstr "buried"
 
-#: humo-gen/maps.php:581
+#: humo-gen/maps.php:610
 msgid "Go!"
 msgstr "Go!"
 
@@ -1348,266 +1358,288 @@ msgstr "Repeat password"
 msgid "The register function has been switched off!"
 msgstr "The register function has been switched off!"
 
-#: humo-gen/relations.php:217
+#: humo-gen/relations.php:219
 msgid " identical to "
 msgstr " identical to "
 
-#: humo-gen/relations.php:235
-#: humo-gen/relations.php:1014
+#: humo-gen/relations.php:237
+#: humo-gen/relations.php:1016
 msgid "brother of "
 msgstr "brother of "
 
-#: humo-gen/relations.php:236
-#: humo-gen/relations.php:244
+#: humo-gen/relations.php:238
+#: humo-gen/relations.php:246
 msgid "sister-in-law of "
 msgstr "sister-in-law of "
 
-#: humo-gen/relations.php:237
-#: humo-gen/relations.php:243
+#: humo-gen/relations.php:239
+#: humo-gen/relations.php:245
 msgid "brother-in-law of "
 msgstr "brother-in-law of "
 
-#: humo-gen/relations.php:242
-#: humo-gen/relations.php:1017
+#: humo-gen/relations.php:244
+#: humo-gen/relations.php:1019
 msgid "sister of "
 msgstr "sister of "
 
-#: humo-gen/relations.php:300
-#: humo-gen/relations.php:309
-#: humo-gen/relations.php:325
-#: humo-gen/relations.php:337
+#: humo-gen/relations.php:302
+#: humo-gen/relations.php:311
+#: humo-gen/relations.php:327
+#: humo-gen/relations.php:339
 msgid "father"
 msgstr "father"
 
-#: humo-gen/relations.php:303
+#: humo-gen/relations.php:305
 msgid "mother"
 msgstr "mother"
 
-#: humo-gen/relations.php:309
+#: humo-gen/relations.php:311
 msgid "father-in-law"
 msgstr "father-in-law"
 
-#: humo-gen/relations.php:310
+#: humo-gen/relations.php:312
 msgid "mother-in-law"
 msgstr "mother-in-law"
 
-#: humo-gen/relations.php:320
-#: humo-gen/relations.php:337
-#: humo-gen/relations.php:338
-#: humo-gen/relations.php:357
-#: humo-gen/relations.php:445
-#: humo-gen/relations.php:446
+#: humo-gen/relations.php:322
+#: humo-gen/relations.php:339
+#: humo-gen/relations.php:340
+#: humo-gen/relations.php:359
 #: humo-gen/relations.php:447
+#: humo-gen/relations.php:448
 #: humo-gen/relations.php:449
-#: humo-gen/relations.php:558
-#: humo-gen/relations.php:645
-#: humo-gen/relations.php:646
+#: humo-gen/relations.php:451
+#: humo-gen/relations.php:560
 #: humo-gen/relations.php:647
+#: humo-gen/relations.php:648
 #: humo-gen/relations.php:649
-#: humo-gen/relations.php:707
-#: humo-gen/relations.php:793
-#: humo-gen/relations.php:794
+#: humo-gen/relations.php:651
+#: humo-gen/relations.php:709
 #: humo-gen/relations.php:795
+#: humo-gen/relations.php:796
 #: humo-gen/relations.php:797
-#: humo-gen/relations.php:968
-#: humo-gen/relations.php:1033
-#: humo-gen/relations.php:1034
+#: humo-gen/relations.php:799
+#: humo-gen/relations.php:970
 #: humo-gen/relations.php:1035
+#: humo-gen/relations.php:1036
 #: humo-gen/relations.php:1037
-#: humo-gen/relations.php:1127
-#: humo-gen/relations.php:1138
+#: humo-gen/relations.php:1039
+#: humo-gen/relations.php:1129
+#: humo-gen/relations.php:1140
 msgid "great-grand"
 msgstr "great-grand"
 
-#: humo-gen/relations.php:337
-#: humo-gen/relations.php:338
-#: humo-gen/relations.php:351
+#: humo-gen/relations.php:339
+#: humo-gen/relations.php:340
 #: humo-gen/relations.php:353
-#: humo-gen/relations.php:356
-#: humo-gen/relations.php:444
-#: humo-gen/relations.php:644
-#: humo-gen/relations.php:691
+#: humo-gen/relations.php:355
+#: humo-gen/relations.php:358
+#: humo-gen/relations.php:446
+#: humo-gen/relations.php:646
 #: humo-gen/relations.php:693
-#: humo-gen/relations.php:792
-#: humo-gen/relations.php:997
+#: humo-gen/relations.php:695
+#: humo-gen/relations.php:794
 #: humo-gen/relations.php:999
-#: humo-gen/relations.php:1032
-#: humo-gen/relations.php:1137
+#: humo-gen/relations.php:1001
+#: humo-gen/relations.php:1034
+#: humo-gen/relations.php:1139
 msgid "grand"
 msgstr "grand"
 
-#: humo-gen/relations.php:514
-#: humo-gen/relations.php:521
-#: humo-gen/relations.php:528
-#: humo-gen/relations.php:540
-#: humo-gen/relations.php:1122
+#: humo-gen/relations.php:516
+#: humo-gen/relations.php:523
+#: humo-gen/relations.php:530
+#: humo-gen/relations.php:542
+#: humo-gen/relations.php:1124
 msgid "son"
 msgstr "son"
 
-#: humo-gen/relations.php:517
-#: humo-gen/relations.php:1123
+#: humo-gen/relations.php:519
+#: humo-gen/relations.php:1125
 msgid "daughter"
 msgstr "daughter"
 
-#: humo-gen/relations.php:521
+#: humo-gen/relations.php:523
 msgid "daughter-in-law"
 msgstr "daughter-in-law"
 
-#: humo-gen/relations.php:522
+#: humo-gen/relations.php:524
 msgid "son-in-law"
 msgstr "son-in-law"
 
-#: humo-gen/relations.php:551
 #: humo-gen/relations.php:553
+#: humo-gen/relations.php:555
 msgid "grandchild"
 msgstr "grandchild"
 
-#: humo-gen/relations.php:659
-#: humo-gen/relations.php:673
-#: humo-gen/relations.php:685
-#: humo-gen/relations.php:696
-#: humo-gen/relations.php:715
-#: humo-gen/relations.php:786
-#: humo-gen/relations.php:1069
+#: humo-gen/relations.php:661
+#: humo-gen/relations.php:675
+#: humo-gen/relations.php:687
+#: humo-gen/relations.php:698
+#: humo-gen/relations.php:717
+#: humo-gen/relations.php:788
+#: humo-gen/relations.php:1071
 msgid "nephew"
 msgstr "nephew"
 
-#: humo-gen/relations.php:660
-#: humo-gen/relations.php:674
-#: humo-gen/relations.php:688
-#: humo-gen/relations.php:697
-#: humo-gen/relations.php:718
-#: humo-gen/relations.php:789
-#: humo-gen/relations.php:1070
+#: humo-gen/relations.php:662
+#: humo-gen/relations.php:676
+#: humo-gen/relations.php:690
+#: humo-gen/relations.php:699
+#: humo-gen/relations.php:720
+#: humo-gen/relations.php:791
+#: humo-gen/relations.php:1072
 msgid "niece"
 msgstr "niece"
 
-#: humo-gen/relations.php:722
-#: humo-gen/relations.php:1104
-#: humo-gen/relations.php:1271
-#: humo-gen/relations.php:1286
+#: humo-gen/relations.php:724
+#: humo-gen/relations.php:1106
+#: humo-gen/relations.php:1273
+#: humo-gen/relations.php:1288
 msgid "2nd [COUSIN]"
 msgstr "2nd"
 
-#: humo-gen/relations.php:723
-#: humo-gen/relations.php:724
 #: humo-gen/relations.php:725
+#: humo-gen/relations.php:726
 #: humo-gen/relations.php:727
-#: humo-gen/relations.php:1107
-#: humo-gen/relations.php:1272
+#: humo-gen/relations.php:729
+#: humo-gen/relations.php:1109
+#: humo-gen/relations.php:1274
 msgid "3rd [COUSIN]"
 msgstr "3rd"
 
-#: humo-gen/relations.php:727
-#: humo-gen/relations.php:797
+#: humo-gen/relations.php:729
+#: humo-gen/relations.php:799
 msgid "th "
 msgstr "th "
 
-#: humo-gen/relations.php:810
-#: humo-gen/relations.php:973
-#: humo-gen/relations.php:1013
-#: humo-gen/relations.php:1057
+#: humo-gen/relations.php:812
+#: humo-gen/relations.php:975
+#: humo-gen/relations.php:1015
+#: humo-gen/relations.php:1059
 msgid "uncle"
 msgstr "uncle"
 
-#: humo-gen/relations.php:893
-#: humo-gen/relations.php:974
-#: humo-gen/relations.php:1058
+#: humo-gen/relations.php:895
+#: humo-gen/relations.php:976
+#: humo-gen/relations.php:1060
 msgid "aunt"
 msgstr "aunt"
 
-#: humo-gen/relations.php:1051
-#: humo-gen/relations.php:1081
-#: humo-gen/relations.php:1275
+#: humo-gen/relations.php:1053
+#: humo-gen/relations.php:1083
+#: humo-gen/relations.php:1277
 msgid "COUSIN_MALE"
 msgstr "cousin"
 
-#: humo-gen/relations.php:1051
-#: humo-gen/relations.php:1101
-#: humo-gen/relations.php:1270
+#: humo-gen/relations.php:1053
+#: humo-gen/relations.php:1103
+#: humo-gen/relations.php:1272
 msgid "1st [COUSIN]"
 msgstr "1st"
 
-#: humo-gen/relations.php:1052
-#: humo-gen/relations.php:1082
-#: humo-gen/relations.php:1278
+#: humo-gen/relations.php:1054
+#: humo-gen/relations.php:1084
+#: humo-gen/relations.php:1280
 msgid "COUSIN_FEMALE"
 msgstr "cousin"
 
-#: humo-gen/relations.php:1085
-#: humo-gen/relations.php:1265
+#: humo-gen/relations.php:1087
+#: humo-gen/relations.php:1267
 msgid "once removed"
 msgstr "once removed"
 
-#: humo-gen/relations.php:1087
-#: humo-gen/relations.php:1267
+#: humo-gen/relations.php:1089
+#: humo-gen/relations.php:1269
 msgid "times removed"
 msgstr "times removed"
 
-#: humo-gen/relations.php:1110
+#: humo-gen/relations.php:1112
 msgid "4th [COUSIN]"
 msgstr "4th"
 
-#: humo-gen/relations.php:1266
+#: humo-gen/relations.php:1268
 msgid "twice removed"
 msgstr "twice removed"
 
-#: humo-gen/relations.php:1500
+#: humo-gen/relations.php:1502
 #: humo-gen/report_outline.php:270
 msgid "No valid family number"
 msgstr "No valid family number"
 
-#: humo-gen/relations.php:1518
+#: humo-gen/relations.php:1521
 msgid "is"
 msgstr "is"
 
-#: humo-gen/relations.php:1530
+#: humo-gen/relations.php:1533
 msgid "BLOOD RELATIONSHIP: "
 msgstr "BLOOD RELATIONSHIP: "
 
-#: humo-gen/relations.php:1606
+#: humo-gen/relations.php:1609
 msgid "MARITAL RELATIONSHIP: "
 msgstr "MARITAL RELATIONSHIP: "
 
-#: humo-gen/relations.php:1616
+#: humo-gen/relations.php:1619
 msgid "and"
 msgstr "and"
 
-#: humo-gen/relations.php:1619
+#: humo-gen/relations.php:1622
 msgid "are both husbands of"
 msgstr "are both husbands of"
 
-#: humo-gen/relations.php:1622
+#: humo-gen/relations.php:1625
 msgid "are both wifes of"
 msgstr "are both wifes of"
 
-#: humo-gen/relations.php:1630
-#: humo-gen/relations.php:1631
-#: humo-gen/relations.php:1646
-#: humo-gen/relations.php:1647
-#: humo-gen/relations.php:1698
+#: humo-gen/relations.php:1633
+#: humo-gen/relations.php:1634
+#: humo-gen/relations.php:1649
+#: humo-gen/relations.php:1650
+#: humo-gen/relations.php:1701
 msgid "Partner"
 msgstr "Partner"
 
-#: humo-gen/relations.php:1635
-#: humo-gen/relations.php:1656
+#: humo-gen/relations.php:1638
+#: humo-gen/relations.php:1659
 msgid "husband of"
 msgstr "husband of"
 
-#: humo-gen/relations.php:1639
-#: humo-gen/relations.php:1651
+#: humo-gen/relations.php:1642
+#: humo-gen/relations.php:1654
 msgid "wife of"
 msgstr "wife of"
 
-#: humo-gen/relations.php:1725
-msgid "No blood or marital relation found"
-msgstr "No blood or marital relation found"
+#: humo-gen/relations.php:1729
+msgid "No blood relation or direct marital relation found"
+msgstr "No blood relation or direct marital relation found"
 
-#: humo-gen/relations.php:1991
+#: humo-gen/relations.php:1730
+msgid ""
+"You may wish to try finding a connection with the <span style='font-weight:bold'>Extended Marital Calculator</span> below.<br>\t\n"
+"\t\t\t\tThis will find connections that span over many marital relations and generations.<br>\t\n"
+"\t\t\t\tComputing time will vary depending on the size of the tree and the distance between the two persons.<br>\t\n"
+"\t\t\t\tFor example, in a 10,000 person tree even the most distant persons will usually be found within 1-2 seconds.<br>\t\n"
+"\t\t\t\tIn a 75,000 person tree the most distant persons may take up to 8 sec to find.<br><br>"
+msgstr ""
+"You may wish to try finding a connection with the <span style='font-weight:bold'>Extended Marital Calculator</span> below.<br>\t\n"
+"\t\t\t\tThis will find connections that span over many marital relations and generations.<br>\t\n"
+"\t\t\t\tComputing time will vary depending on the size of the tree and the distance between the two persons.<br>\t\n"
+"\t\t\t\tFor example, in a 10,000 person tree even the most distant persons will usually be found within 1-2 seconds.<br>\t\n"
+"\t\t\t\tIn a 75,000 person tree the most distant persons may take up to 8 sec to find.<br><br>"
+
+#: humo-gen/relations.php:1735
+msgid "Perform extended marital calculation"
+msgstr "Perform extended marital calculation"
+
+#: humo-gen/relations.php:2207
+msgid "These persons are not related in any way."
+msgstr "These persons are not related in any way."
+
+#: humo-gen/relations.php:2418
 msgid "Information about the Relationship Calculator"
 msgstr "Information about the Relationship Calculator"
 
-#: humo-gen/relations.php:1996
+#: humo-gen/relations.php:2423
 msgid ""
 "This calculator will find the following relationships:<br>\n"
 "<ul><li>Any blood relationship between X and Y (\"X is great-grandfather of Y\", \"X is 3rd cousin once removed of Y\" etc.)</li>\n"
@@ -1633,33 +1665,33 @@ msgstr ""
 "<li>Now press the \"Calculate relationships\" button on the right.</li>\n"
 "<li><b>TIP: when you click \"search\" with empty first <u>and</u> last name boxes you will get a list of all individuals in the database. (May take a few seconds)</b></li></ul>"
 
-#: humo-gen/relations.php:2035
+#: humo-gen/relations.php:2464
 msgid "You can enter names or part of names in either search box, or leave a search box empty"
 msgstr "You can enter names or part of names in either search box, or leave a search box empty"
 
-#: humo-gen/relations.php:2037
+#: humo-gen/relations.php:2466
 msgid "<b>TIP: when you click \"search\" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b>"
 msgstr "<b>TIP: when you click \"search\" with empty first <u>and</u> last name boxes you will get a list of all individuals in the database. (May take a few seconds)</b>"
 
-#: humo-gen/relations.php:2056
+#: humo-gen/relations.php:2485
 msgid "Pick a name from search results"
 msgstr "Pick a name from search results"
 
-#: humo-gen/relations.php:2057
-#: humo-gen/relations.php:2131
+#: humo-gen/relations.php:2486
+#: humo-gen/relations.php:2560
 msgid "Calculate relationships"
 msgstr "Calculate relationships"
 
-#: humo-gen/relations.php:2123
-#: humo-gen/relations.php:2191
+#: humo-gen/relations.php:2552
+#: humo-gen/relations.php:2620
 msgid "Person not found"
 msgstr "Individual not found"
 
-#: humo-gen/relations.php:2129
+#: humo-gen/relations.php:2558
 msgid "Switch persons"
 msgstr "Switch individuals"
 
-#: humo-gen/relations.php:2236
+#: humo-gen/relations.php:2694
 msgid "You have to search and than choose Person 1 and Person 2 from the search result pulldown"
 msgstr "You have to search and than choose Person 1 and Person 2 from the search result pulldown"
 
@@ -4044,19 +4076,19 @@ msgstr "No error messages above? In that case the tables have been created!"
 msgid "User groups"
 msgstr "User groups"
 
-#: humo-gen/admin/include/groups.php:108
+#: humo-gen/admin/include/groups.php:111
 msgid "It's not possible to delete this group: there is/ are"
 msgstr "It's not possible to delete this group: there is/ are"
 
-#: humo-gen/admin/include/groups.php:108
+#: humo-gen/admin/include/groups.php:111
 msgid "user(s) connected to this group!"
 msgstr "user(s) connected to this group!"
 
-#: humo-gen/admin/include/groups.php:111
+#: humo-gen/admin/include/groups.php:114
 msgid "Are you sure you want to remove the group:"
 msgstr "Are you sure you want to remove the group:"
 
-#: humo-gen/admin/include/groups.php:131
+#: humo-gen/admin/include/groups.php:134
 msgid ""
 "You can have multiple users in HuMo-gen. Every user can be connected to 1 group.<br>\n"
 "Examples:<br>\n"
@@ -4070,202 +4102,210 @@ msgstr ""
 "Group \"admin\" = website administrator.<br>\n"
 "Group \"family\" = family members or genealogists."
 
-#: humo-gen/admin/include/groups.php:141
+#: humo-gen/admin/include/groups.php:144
 msgid "Choose a user group: "
 msgstr "Choose a user group: "
 
-#: humo-gen/admin/include/groups.php:158
+#: humo-gen/admin/include/groups.php:161
 msgid "ADD GROUP"
 msgstr "ADD GROUP"
 
-#: humo-gen/admin/include/groups.php:280
+#: humo-gen/admin/include/groups.php:296
 msgid "Group"
 msgstr "Group"
 
-#: humo-gen/admin/include/groups.php:282
+#: humo-gen/admin/include/groups.php:298
 msgid "REMOVE GROUP"
 msgstr "REMOVE GROUP"
 
-#: humo-gen/admin/include/groups.php:285
+#: humo-gen/admin/include/groups.php:301
 msgid "Group name"
 msgstr "Group name"
 
-#: humo-gen/admin/include/groups.php:290
-#: humo-gen/admin/include/groups.php:297
+#: humo-gen/admin/include/groups.php:306
+#: humo-gen/admin/include/groups.php:313
 #: humo-gen/admin/include/install.php:63
 msgid "Administrator"
 msgstr "Administrator"
 
-#: humo-gen/admin/include/groups.php:293
+#: humo-gen/admin/include/groups.php:309
 msgid "Editor. Use the name \"editor\" in .htpasswd."
 msgstr "Editor. Use the name \"editor\" in .htpasswd."
 
-#: humo-gen/admin/include/groups.php:301
+#: humo-gen/admin/include/groups.php:317
 msgid "Editor."
 msgstr "Editor."
 
-#: humo-gen/admin/include/groups.php:301
+#: humo-gen/admin/include/groups.php:317
 msgid "If an .htpasswd file is used: add username in .htpasswd file."
 msgstr "If an .htpasswd file is used: add username in .htpasswd file."
 
-#: humo-gen/admin/include/groups.php:306
+#: humo-gen/admin/include/groups.php:322
 msgid "Save statistics data"
 msgstr "Save statistics data"
 
-#: humo-gen/admin/include/groups.php:317
+#: humo-gen/admin/include/groups.php:333
 msgid "Birthday RSS in main menu"
 msgstr "Birthday RSS in main menu"
 
-#: humo-gen/admin/include/groups.php:322
+#: humo-gen/admin/include/groups.php:338
 msgid "FAMILY TREE menu: show \"Persons\" submenu"
 msgstr "FAMILY TREE menu: show \"Individuals\" submenu"
 
-#: humo-gen/admin/include/groups.php:327
+#: humo-gen/admin/include/groups.php:343
 msgid "FAMILY TREE menu: show \"Names\" submenu"
 msgstr "FAMILY TREE menu: show \"Names\" submenu"
 
-#: humo-gen/admin/include/groups.php:332
+#: humo-gen/admin/include/groups.php:348
 msgid "FAMILY TREE menu: show \"Places\" submenu"
 msgstr "FAMILY TREE menu: show \"Places\" submenu"
 
-#: humo-gen/admin/include/groups.php:337
+#: humo-gen/admin/include/groups.php:353
 msgid "FAMILY TREE menu: show \"Addresses\" submenu (only shown if there really are addresses)"
 msgstr "FAMILY TREE menu: show \"Addresses\" submenu (only shown if there really are addresses)"
 
-#: humo-gen/admin/include/groups.php:342
+#: humo-gen/admin/include/groups.php:358
 msgid "FAMILY TREE menu: show \"Photobook\" submenu"
 msgstr "FAMILY TREE menu: show \"Photobook\" submenu"
 
-#: humo-gen/admin/include/groups.php:347
+#: humo-gen/admin/include/groups.php:363
 msgid "TOOLS menu: show \"Anniversary\" (birthday list) submenu"
 msgstr "TOOLS menu: show \"Anniversary\" (birthday list) submenu"
 
-#: humo-gen/admin/include/groups.php:352
+#: humo-gen/admin/include/groups.php:368
 msgid "TOOLS menu: show \"Statistics\" submenu"
 msgstr "TOOLS menu: show \"Statistics\" submenu"
 
-#: humo-gen/admin/include/groups.php:358
+#: humo-gen/admin/include/groups.php:374
 msgid "TOOLS menu: show \"Relationship Calculator\" submenu"
 msgstr "TOOLS menu: show \"Relationship Calculator\" submenu"
 
-#: humo-gen/admin/include/groups.php:364
+#: humo-gen/admin/include/groups.php:380
 msgid "TOOLS menu: show \"Google maps\" submenu (only shown if geolocation database was created)"
 msgstr "TOOLS menu: show \"Google maps\" submenu (only shown if geolocation database was created)"
 
-#: humo-gen/admin/include/groups.php:370
+#: humo-gen/admin/include/groups.php:386
 msgid "TOOLS menu: show \"Contact\" submenu (only shown if tree owner and email were entered)"
 msgstr "TOOLS menu: show \"Contact\" submenu (only shown if tree owner and email were entered)"
 
-#: humo-gen/admin/include/groups.php:376
+#: humo-gen/admin/include/groups.php:392
 msgid "TOOLS menu: show \"Latest changes\" submenu"
 msgstr "TOOLS menu: show \"Latest changes\" submenu"
 
-#: humo-gen/admin/include/groups.php:381
+#: humo-gen/admin/include/groups.php:397
 msgid "Menu item: show \"Login\" for visitors (only change this setting for usergroup containing user \"guest\")"
 msgstr "Menu item: show \"Login\" for visitors (only change this setting for usergroup containing user \"guest\")"
 
-#: humo-gen/admin/include/groups.php:386
+#: humo-gen/admin/include/groups.php:402
 msgid "General"
 msgstr "General"
 
-#: humo-gen/admin/include/groups.php:388
+#: humo-gen/admin/include/groups.php:404
 msgid "Show pictures"
 msgstr "Show pictures"
 
-#: humo-gen/admin/include/groups.php:393
+#: humo-gen/admin/include/groups.php:409
 msgid "Show Gedcom number (from gedcom file)"
 msgstr "Show Gedcom number (from gedcom file)"
 
-#: humo-gen/admin/include/groups.php:398
+#: humo-gen/admin/include/groups.php:414
 msgid "Show residence"
 msgstr "Show residence"
 
-#: humo-gen/admin/include/groups.php:403
+#: humo-gen/admin/include/groups.php:419
 msgid "Show places with bapt., birth, death and cemetery."
 msgstr "Show places with bapt., birth, death and cemetery."
 
-#: humo-gen/admin/include/groups.php:408
+#: humo-gen/admin/include/groups.php:424
 msgid "Show religion (with bapt. and wedding)"
 msgstr "Show religion (with bapt. and wedding)"
 
-#: humo-gen/admin/include/groups.php:413
+#: humo-gen/admin/include/groups.php:429
 msgid "Show date and place (i.e. with birth, bapt., death, cemetery.)"
 msgstr "Show date and place (i.e. with birth, bapt., death, cemetery.)"
 
-#: humo-gen/admin/include/groups.php:418
+#: humo-gen/admin/include/groups.php:434
 msgid "Show name in indexes"
 msgstr "Show name in indexes"
 
-#: humo-gen/admin/include/groups.php:423
+#: humo-gen/admin/include/groups.php:439
 msgid "Show events"
 msgstr "Show events"
 
-#: humo-gen/admin/include/groups.php:428
+#: humo-gen/admin/include/groups.php:444
 msgid "Show own code"
 msgstr "Show own code"
 
-#: humo-gen/admin/include/groups.php:433
-msgid "Show \"PDF Report\" button in family screen and reports"
-msgstr "Show \"PDF Report\" button in family screen and reports"
+#: humo-gen/admin/include/groups.php:450
+msgid "Default presentation of family page"
+msgstr "Default presentation of family page"
 
-#: humo-gen/admin/include/groups.php:439
+#: humo-gen/admin/include/groups.php:458
 msgid "Default presentation of source"
 msgstr "Default presentation of source"
 
-#: humo-gen/admin/include/groups.php:448
+#: humo-gen/admin/include/groups.php:468
+msgid "Default presentation of Google maps in family page"
+msgstr "Default presentation of Google maps in family page"
+
+#: humo-gen/admin/include/groups.php:475
+msgid "Show \"PDF Report\" button in family screen and reports"
+msgstr "Show \"PDF Report\" button in family screen and reports"
+
+#: humo-gen/admin/include/groups.php:480
 msgid "User is allowed to add notes/ remarks by a person in the family tree"
 msgstr "User is allowed to add notes/ remarks by a person in the family tree"
 
-#: humo-gen/admin/include/groups.php:448
+#: humo-gen/admin/include/groups.php:480
 msgid "Disabled in group \"Guest\""
 msgstr "Disabled in group \"Guest\""
 
-#: humo-gen/admin/include/groups.php:457
+#: humo-gen/admin/include/groups.php:489
 msgid "Don't show sources"
 msgstr "Don't show sources"
 
-#: humo-gen/admin/include/groups.php:458
+#: humo-gen/admin/include/groups.php:490
 msgid "Only show source titles"
 msgstr "Only show source titles"
 
-#: humo-gen/admin/include/groups.php:459
+#: humo-gen/admin/include/groups.php:491
 msgid "Show sources and menu sources"
 msgstr "Show sources and menu sources"
 
-#: humo-gen/admin/include/groups.php:469
+#: humo-gen/admin/include/groups.php:501
 msgid "Show restricted source"
 msgstr "Show restricted source"
 
-#: humo-gen/admin/include/groups.php:473
+#: humo-gen/admin/include/groups.php:505
 msgid "Texts"
 msgstr "Texts"
 
-#: humo-gen/admin/include/groups.php:475
+#: humo-gen/admin/include/groups.php:507
 msgid "Show work texts (In Haza-Data: #werktekst#)"
 msgstr "Show work texts (In Haza-Data: #werktekst#)"
 
-#: humo-gen/admin/include/groups.php:489
+#: humo-gen/admin/include/groups.php:521
 msgid "Show text with person"
 msgstr "Show text with person"
 
-#: humo-gen/admin/include/groups.php:494
+#: humo-gen/admin/include/groups.php:526
 msgid "Show text with bapt., birth, death, cemetery"
 msgstr "Show text with bapt., birth, death, cemetery"
 
-#: humo-gen/admin/include/groups.php:499
+#: humo-gen/admin/include/groups.php:531
 msgid "Show text with pre-nuptial etc."
 msgstr "Show text with pre-nuptial etc."
 
-#: humo-gen/admin/include/groups.php:504
+#: humo-gen/admin/include/groups.php:536
 msgid "Privacy filter"
 msgstr "Privacy filter"
 
-#: humo-gen/admin/include/groups.php:506
-#: humo-gen/admin/include/groups.php:508
+#: humo-gen/admin/include/groups.php:538
+#: humo-gen/admin/include/groups.php:540
 msgid "Activate privacy filter"
 msgstr "Activate privacy filter"
 
-#: humo-gen/admin/include/groups.php:509
+#: humo-gen/admin/include/groups.php:541
 msgid ""
 "TIP: the best privacy filter is your genealogy program<br>\n"
 "If possible, try to filter with that"
@@ -4273,52 +4313,52 @@ msgstr ""
 "TIP: the best privacy filter is your genealogy program<br>\n"
 "If possible, try to filter with that"
 
-#: humo-gen/admin/include/groups.php:515
+#: humo-gen/admin/include/groups.php:547
 msgid "Privacy filter settings"
 msgstr "Privacy filter settings"
 
-#: humo-gen/admin/include/groups.php:518
+#: humo-gen/admin/include/groups.php:550
 msgid "HuMo-gen (alive or deceased), Aldfaer (death sign), Haza-data (filter living persons)"
 msgstr "HuMo-gen (alive or deceased), Aldfaer (death sign), Haza-data (filter living people)"
 
-#: humo-gen/admin/include/groups.php:523
+#: humo-gen/admin/include/groups.php:555
 msgid "Privacy filter, filter persons born in or after this year"
 msgstr "Privacy filter, filter individuals born in or after this year"
 
-#: humo-gen/admin/include/groups.php:527
-#: humo-gen/admin/include/groups.php:533
+#: humo-gen/admin/include/groups.php:559
+#: humo-gen/admin/include/groups.php:565
 msgid "Year"
 msgstr "Year"
 
-#: humo-gen/admin/include/groups.php:529
+#: humo-gen/admin/include/groups.php:561
 msgid "Privacy filter, filter persons deceased in or after this year"
 msgstr "Privacy filter, filter individuals deceased in or after this year"
 
-#: humo-gen/admin/include/groups.php:535
+#: humo-gen/admin/include/groups.php:567
 msgid "Also filter data of deceased persons (for filter 2)"
 msgstr "Also filter data of deceased individuals (for filter 2)"
 
-#: humo-gen/admin/include/groups.php:540
+#: humo-gen/admin/include/groups.php:572
 msgid "Privacy filter exceptions"
 msgstr "Privacy filter exceptions"
 
-#: humo-gen/admin/include/groups.php:542
+#: humo-gen/admin/include/groups.php:574
 msgid "DO show privacy data of persons (with the following text in own code)"
 msgstr "DO show privacy data of individuals (with the following text in own code)"
 
-#: humo-gen/admin/include/groups.php:548
+#: humo-gen/admin/include/groups.php:580
 msgid "HIDE privacy data of persons (with the following text in own code)"
 msgstr "HIDE privacy data of individuals (with the following text in own code)"
 
-#: humo-gen/admin/include/groups.php:554
+#: humo-gen/admin/include/groups.php:586
 msgid "TOTALLY filter persons (with the following text in own code)"
 msgstr "TOTALLY filter individuals (with the following text in own code)"
 
-#: humo-gen/admin/include/groups.php:560
+#: humo-gen/admin/include/groups.php:592
 msgid "Extra privacy filter option"
 msgstr "Extra privacy filter option"
 
-#: humo-gen/admin/include/groups.php:562
+#: humo-gen/admin/include/groups.php:594
 msgid ""
 "Show persons with no date information<br>\n"
 "<i>with these persons the privacy filter cannot calculate if they are alive</i>"
@@ -4326,15 +4366,15 @@ msgstr ""
 "Show individuals with no date information<br>\n"
 "<i>with these individuals the privacy filter cannot calculate if they are alive</i>"
 
-#: humo-gen/admin/include/groups.php:568
+#: humo-gen/admin/include/groups.php:600
 msgid "With privacy show names"
 msgstr "With privacy show names"
 
-#: humo-gen/admin/include/groups.php:573
+#: humo-gen/admin/include/groups.php:605
 msgid "Show initials: D. E. Duck"
 msgstr "Show initials: D. E. Duck"
 
-#: humo-gen/admin/include/groups.php:575
+#: humo-gen/admin/include/groups.php:607
 msgid ""
 "Genealogical copy protection<br>\n"
 "<i>family browsing disabled, no family trees</i>"
@@ -4342,15 +4382,15 @@ msgstr ""
 "Genealogical copy protection<br>\n"
 "<i>family browsing disabled, no family trees</i>"
 
-#: humo-gen/admin/include/groups.php:597
+#: humo-gen/admin/include/groups.php:629
 msgid "Save all changes"
 msgstr "Save all changes"
 
-#: humo-gen/admin/include/groups.php:603
+#: humo-gen/admin/include/groups.php:635
 msgid "Hide or show family trees per user group."
 msgstr "Hide or show family trees per user group."
 
-#: humo-gen/admin/include/groups.php:605
+#: humo-gen/admin/include/groups.php:637
 msgid "Show tree?"
 msgstr "Show tree?"
 
@@ -4698,35 +4738,35 @@ msgstr "Install statistics table..."
 msgid "creating humo_groups..."
 msgstr "creating humo_groups..."
 
-#: humo-gen/admin/include/install.php:402
+#: humo-gen/admin/include/install.php:404
 msgid "filling humo_groups..."
 msgstr "filling humo_groups..."
 
-#: humo-gen/admin/include/install.php:468
+#: humo-gen/admin/include/install.php:470
 msgid "creating humo_users..."
 msgstr "creating humo_users..."
 
-#: humo-gen/admin/include/install.php:498
+#: humo-gen/admin/include/install.php:500
 msgid "filling humo_users..."
 msgstr "filling humo_users..."
 
-#: humo-gen/admin/include/install.php:512
+#: humo-gen/admin/include/install.php:514
 msgid "creating humo_cms_menu..."
 msgstr "creating humo_cms_menu..."
 
-#: humo-gen/admin/include/install.php:534
+#: humo-gen/admin/include/install.php:536
 msgid "creating humo_cms_pages..."
 msgstr "creating humo_cms_pages..."
 
-#: humo-gen/admin/include/install.php:566
+#: humo-gen/admin/include/install.php:568
 msgid "creating humo_log..."
 msgstr "creating humo_log..."
 
-#: humo-gen/admin/include/install.php:586
+#: humo-gen/admin/include/install.php:588
 msgid "creating humo_notes..."
 msgstr "creating humo_notes..."
 
-#: humo-gen/admin/include/install.php:617
+#: humo-gen/admin/include/install.php:619
 msgid "No errors above? This means that the database has been processed!"
 msgstr "No errors above? This means that the database has been processed!"
 
@@ -5231,230 +5271,230 @@ msgstr "Show number of individuals in search results (standard value=30)."
 msgid "Save settings"
 msgstr "Save settings"
 
-#: humo-gen/admin/include/statistics.php:43
-#: humo-gen/admin/include/statistics.php:47
-#: humo-gen/admin/include/statistics.php:853
-#: humo-gen/admin/include/statistics.php:856
+#: humo-gen/admin/include/statistics.php:44
+#: humo-gen/admin/include/statistics.php:48
+#: humo-gen/admin/include/statistics.php:860
+#: humo-gen/admin/include/statistics.php:863
 msgid "Family"
 msgstr "Family"
 
-#: humo-gen/admin/include/statistics.php:86
+#: humo-gen/admin/include/statistics.php:93
 msgid "FAMILY NOT FOUND IN FAMILY TREE"
 msgstr "FAMILY NOT FOUND IN FAMILY TREE"
 
-#: humo-gen/admin/include/statistics.php:97
-#: humo-gen/admin/include/statistics.php:588
-#: humo-gen/admin/include/statistics.php:669
+#: humo-gen/admin/include/statistics.php:104
+#: humo-gen/admin/include/statistics.php:595
+#: humo-gen/admin/include/statistics.php:676
 msgid "January"
 msgstr "January"
 
-#: humo-gen/admin/include/statistics.php:98
-#: humo-gen/admin/include/statistics.php:590
-#: humo-gen/admin/include/statistics.php:671
+#: humo-gen/admin/include/statistics.php:105
+#: humo-gen/admin/include/statistics.php:597
+#: humo-gen/admin/include/statistics.php:678
 msgid "February"
 msgstr "February"
 
-#: humo-gen/admin/include/statistics.php:99
-#: humo-gen/admin/include/statistics.php:592
-#: humo-gen/admin/include/statistics.php:673
+#: humo-gen/admin/include/statistics.php:106
+#: humo-gen/admin/include/statistics.php:599
+#: humo-gen/admin/include/statistics.php:680
 msgid "March"
 msgstr "March"
 
-#: humo-gen/admin/include/statistics.php:100
-#: humo-gen/admin/include/statistics.php:594
-#: humo-gen/admin/include/statistics.php:675
+#: humo-gen/admin/include/statistics.php:107
+#: humo-gen/admin/include/statistics.php:601
+#: humo-gen/admin/include/statistics.php:682
 msgid "April"
 msgstr "April"
 
-#: humo-gen/admin/include/statistics.php:102
-#: humo-gen/admin/include/statistics.php:598
-#: humo-gen/admin/include/statistics.php:679
+#: humo-gen/admin/include/statistics.php:109
+#: humo-gen/admin/include/statistics.php:605
+#: humo-gen/admin/include/statistics.php:686
 msgid "June"
 msgstr "June"
 
-#: humo-gen/admin/include/statistics.php:103
-#: humo-gen/admin/include/statistics.php:600
-#: humo-gen/admin/include/statistics.php:681
+#: humo-gen/admin/include/statistics.php:110
+#: humo-gen/admin/include/statistics.php:607
+#: humo-gen/admin/include/statistics.php:688
 msgid "July"
 msgstr "July"
 
-#: humo-gen/admin/include/statistics.php:104
-#: humo-gen/admin/include/statistics.php:602
-#: humo-gen/admin/include/statistics.php:683
+#: humo-gen/admin/include/statistics.php:111
+#: humo-gen/admin/include/statistics.php:609
+#: humo-gen/admin/include/statistics.php:690
 msgid "August"
 msgstr "August"
 
-#: humo-gen/admin/include/statistics.php:105
-#: humo-gen/admin/include/statistics.php:604
-#: humo-gen/admin/include/statistics.php:685
+#: humo-gen/admin/include/statistics.php:112
+#: humo-gen/admin/include/statistics.php:611
+#: humo-gen/admin/include/statistics.php:692
 msgid "September"
 msgstr "September"
 
-#: humo-gen/admin/include/statistics.php:106
-#: humo-gen/admin/include/statistics.php:606
-#: humo-gen/admin/include/statistics.php:687
+#: humo-gen/admin/include/statistics.php:113
+#: humo-gen/admin/include/statistics.php:613
+#: humo-gen/admin/include/statistics.php:694
 msgid "October"
 msgstr "October"
 
-#: humo-gen/admin/include/statistics.php:107
-#: humo-gen/admin/include/statistics.php:608
-#: humo-gen/admin/include/statistics.php:689
+#: humo-gen/admin/include/statistics.php:114
+#: humo-gen/admin/include/statistics.php:615
+#: humo-gen/admin/include/statistics.php:696
 msgid "November"
 msgstr "November"
 
-#: humo-gen/admin/include/statistics.php:108
-#: humo-gen/admin/include/statistics.php:610
-#: humo-gen/admin/include/statistics.php:691
+#: humo-gen/admin/include/statistics.php:115
+#: humo-gen/admin/include/statistics.php:617
+#: humo-gen/admin/include/statistics.php:698
 msgid "December"
 msgstr "December"
 
-#: humo-gen/admin/include/statistics.php:110
+#: humo-gen/admin/include/statistics.php:117
 msgid "Monday"
 msgstr "Monday"
 
-#: humo-gen/admin/include/statistics.php:110
+#: humo-gen/admin/include/statistics.php:117
 msgid "Tuesday"
 msgstr "Tuesday"
 
-#: humo-gen/admin/include/statistics.php:110
+#: humo-gen/admin/include/statistics.php:117
 msgid "Wednesday"
 msgstr "Wednesday"
 
-#: humo-gen/admin/include/statistics.php:110
+#: humo-gen/admin/include/statistics.php:117
 msgid "Thursday"
 msgstr "Thursday"
 
-#: humo-gen/admin/include/statistics.php:110
+#: humo-gen/admin/include/statistics.php:117
 msgid "Friday"
 msgstr "Friday"
 
-#: humo-gen/admin/include/statistics.php:110
+#: humo-gen/admin/include/statistics.php:117
 msgid "Saturday"
 msgstr "Saturday"
 
-#: humo-gen/admin/include/statistics.php:110
+#: humo-gen/admin/include/statistics.php:117
 msgid "Sunday"
 msgstr "Sunday"
 
-#: humo-gen/admin/include/statistics.php:260
-#: humo-gen/admin/include/statistics.php:390
-#: humo-gen/admin/include/statistics.php:720
+#: humo-gen/admin/include/statistics.php:267
+#: humo-gen/admin/include/statistics.php:397
+#: humo-gen/admin/include/statistics.php:727
 msgid "Visitors"
 msgstr "Visitors"
 
-#: humo-gen/admin/include/statistics.php:263
+#: humo-gen/admin/include/statistics.php:270
 msgid "Visited families in the past 12 months"
 msgstr "Visited families in the past 12 months"
 
-#: humo-gen/admin/include/statistics.php:320
+#: humo-gen/admin/include/statistics.php:327
 msgid "Country of origin"
 msgstr "Country of origin"
 
-#: humo-gen/admin/include/statistics.php:320
-#: humo-gen/admin/include/statistics.php:458
+#: humo-gen/admin/include/statistics.php:327
+#: humo-gen/admin/include/statistics.php:465
 msgid "Number of unique visitors"
 msgstr "Number of unique visitors"
 
-#: humo-gen/admin/include/statistics.php:346
-#: humo-gen/admin/include/statistics.php:507
+#: humo-gen/admin/include/statistics.php:353
+#: humo-gen/admin/include/statistics.php:514
 msgid "Total number of unique visitors:"
 msgstr "Total number of unique visitors:"
 
-#: humo-gen/admin/include/statistics.php:376
+#: humo-gen/admin/include/statistics.php:383
 msgid "General statistics"
 msgstr "General statistics"
 
-#: humo-gen/admin/include/statistics.php:383
+#: humo-gen/admin/include/statistics.php:390
 msgid "Statistics by date"
 msgstr "Statistics by date"
 
-#: humo-gen/admin/include/statistics.php:397
-#: humo-gen/admin/include/statistics.php:417
+#: humo-gen/admin/include/statistics.php:404
+#: humo-gen/admin/include/statistics.php:424
 msgid "Old statistics"
 msgstr "Old statistics"
 
-#: humo-gen/admin/include/statistics.php:404
-#: humo-gen/admin/include/statistics.php:422
+#: humo-gen/admin/include/statistics.php:411
+#: humo-gen/admin/include/statistics.php:429
 msgid "Remove statistics"
 msgstr "Remove statistics"
 
-#: humo-gen/admin/include/statistics.php:417
+#: humo-gen/admin/include/statistics.php:424
 msgid "are erased"
 msgstr "are erased"
 
-#: humo-gen/admin/include/statistics.php:424
+#: humo-gen/admin/include/statistics.php:431
 msgid "Statistics will be removed PERMANENTLY. Make a backup first to save the statistics data"
 msgstr "Statistics will be removed PERMANENTLY. Make a backup first to save the statistics data"
 
-#: humo-gen/admin/include/statistics.php:428
+#: humo-gen/admin/include/statistics.php:435
 msgid "Remove ALL statistics BEFORE this date:"
 msgstr "Remove ALL statistics BEFORE this date:"
 
-#: humo-gen/admin/include/statistics.php:434
+#: humo-gen/admin/include/statistics.php:441
 msgid "d-m-yyyy"
 msgstr "d-m-yyyy"
 
-#: humo-gen/admin/include/statistics.php:436
+#: humo-gen/admin/include/statistics.php:443
 msgid "REMOVE statistic data"
 msgstr "REMOVE statistic data"
 
-#: humo-gen/admin/include/statistics.php:443
+#: humo-gen/admin/include/statistics.php:450
 msgid "Status statistics table"
 msgstr "Status statistics table"
 
-#: humo-gen/admin/include/statistics.php:458
-#: humo-gen/admin/include/statistics.php:553
-#: humo-gen/admin/include/statistics.php:569
+#: humo-gen/admin/include/statistics.php:465
+#: humo-gen/admin/include/statistics.php:560
+#: humo-gen/admin/include/statistics.php:576
 msgid "family tree"
 msgstr "family tree"
 
-#: humo-gen/admin/include/statistics.php:468
+#: humo-gen/admin/include/statistics.php:475
 msgid "FAMILY TREE ERASED"
 msgstr "FAMILY TREE ERASED"
 
-#: humo-gen/admin/include/statistics.php:498
+#: humo-gen/admin/include/statistics.php:505
 msgid "General statistics:"
 msgstr "General statistics:"
 
-#: humo-gen/admin/include/statistics.php:501
+#: humo-gen/admin/include/statistics.php:508
 msgid "Counter"
 msgstr "Counter"
 
-#: humo-gen/admin/include/statistics.php:514
-#: humo-gen/admin/include/statistics.php:639
+#: humo-gen/admin/include/statistics.php:521
+#: humo-gen/admin/include/statistics.php:646
 msgid "Total number of visited families:"
 msgstr "Total number of visited families:"
 
-#: humo-gen/admin/include/statistics.php:523
+#: humo-gen/admin/include/statistics.php:530
 msgid "Total number of families in the last hour:"
 msgstr "Total number of families in the last hour:"
 
-#: humo-gen/admin/include/statistics.php:528
+#: humo-gen/admin/include/statistics.php:535
 msgid "Unique visitors - Country of origin"
 msgstr "Unique visitors - Country of origin"
 
-#: humo-gen/admin/include/statistics.php:536
-#: humo-gen/admin/include/statistics.php:842
+#: humo-gen/admin/include/statistics.php:543
+#: humo-gen/admin/include/statistics.php:849
 msgid "Most visited families:"
 msgstr "Most visited families:"
 
-#: humo-gen/admin/include/statistics.php:559
+#: humo-gen/admin/include/statistics.php:566
 msgid "last visited families:"
 msgstr "last visited families:"
 
-#: humo-gen/admin/include/statistics.php:569
+#: humo-gen/admin/include/statistics.php:576
 msgid "date-time"
 msgstr "date-time"
 
-#: humo-gen/admin/include/statistics.php:736
+#: humo-gen/admin/include/statistics.php:743
 msgid "User agent information"
 msgstr "User agent information"
 
-#: humo-gen/admin/include/statistics.php:790
+#: humo-gen/admin/include/statistics.php:797
 msgid "Old statistics (numbers since last gedcom update)"
 msgstr "Old statistics (numbers since last gedcom update)"
 
-#: humo-gen/admin/include/statistics.php:792
+#: humo-gen/admin/include/statistics.php:799
 msgid "Select family tree"
 msgstr "Select family tree"
 
@@ -7244,6 +7284,116 @@ msgstr "Source"
 #: humo-gen/include/show_sources.php:158
 msgid "source text"
 msgstr "source text"
+
+#~ msgid "Mark all birth locations"
+#~ msgstr "Mark all birth locations"
+
+#~ msgid "Mark all death locations"
+#~ msgstr "Mark all death locations"
+
+#~ msgid "Mark births until: "
+#~ msgstr "Mark births until: "
+
+#~ msgid "Mark deaths until: "
+#~ msgstr "Mark deaths until: "
+
+#~ msgid "Map by specific family name(s)"
+#~ msgstr "Map by specific family name(s)"
+
+#~ msgid "Map by descendants of a person"
+#~ msgstr "Map by descendants of a person"
+
+#~ msgid "Map by births"
+#~ msgstr "Map by births"
+
+#~ msgid "Map by deaths"
+#~ msgstr "Map by deaths"
+
+#~ msgid ""
+#~ "<b>Top menu line:</b><br>\n"
+#~ "<ul><li>Choose family tree. On sites with multiple family trees here you "
+#~ "can choose which tree to map.</li>\n"
+#~ "<li>All birth locations\". This button will place markers for all birth "
+#~ "locations in the tree, irrespective of the dates of birth. Also people "
+#~ "with no known birth date are included.</li>\n"
+#~ "<li>The \"births until\" slider. With this slider you can mark the "
+#~ "birthplaces of persons who where born until a certain date. The slider "
+#~ "has ten positions.</li></ul>\n"
+#~ "<b>Second menu line:</b>\n"
+#~ "<ul><li>Map by specific family name(s)\". This will open a window with "
+#~ "all family names. Mark checkboxes next to names and press \"Choose\" to "
+#~ "start mapping the locations of those families only.<br>\n"
+#~ "After pressing \"Choose\" you will see a yellow banner near the top of "
+#~ "the map, informing you which family names are being filtered. Now use the "
+#~ "slider or \"mark all location\" button to place the markers.</li>\n"
+#~ "<li>Map by descendants\". This will open a window with all persons that "
+#~ "have descendants. Click the person whose descendants you want to map."
+#~ "<br>\n"
+#~ "A yellow banner will appear near the top of the map, informing which "
+#~ "persons' descendants are filtered. Now use the slider or \"mark all "
+#~ "location\" button to place the markers.</li>\n"
+#~ "<li>Find location on the map\". Here you can pick a location from all "
+#~ "locations in the tree and zoom in to it automatically.</li></ul>\n"
+#~ "<b>The map:</b>\n"
+#~ "<ul><li>After clicking the \"All locations\" button or using the slider, "
+#~ "coloured markers will be placed on the map. Inside the marker you will "
+#~ "see the number of people born in that location.</li>\n"
+#~ "<li>There are 4 different size markers (from small to big): Red markers "
+#~ "(over 100 people), blue markers (50-99 people), green markers (9-49 "
+#~ "people) and yellow markers (1-9 people)</li>\n"
+#~ "<li>When you hover with the mouse over a marker a \"tooltip\" will show "
+#~ "with the name of the location.</li>\n"
+#~ "<li>When you click on the marker you will see two links.</li>\n"
+#~ "<li>The first link will open a new browser tab with the Wikipedia entry "
+#~ "about this location (if such an entry exists).</li>\n"
+#~ "<li>The second link will present (in the Info Window itself) a list of "
+#~ "all persons born in this location.</li>\n"
+#~ "<li>The names in this list are clickable and will open a new browser tab "
+#~ "with the family page of this person.</li>"
+#~ msgstr ""
+#~ "<b>Top menu line:</b><br>\n"
+#~ "<ul><li>Choose family tree. On sites with multiple family trees here you "
+#~ "can choose which tree to map.</li>\n"
+#~ "<li>All birth locations\". This button will place markers for all birth "
+#~ "locations in the tree, irrespective of the dates of birth. Also people "
+#~ "with no known birth date are included.</li>\n"
+#~ "<li>The \"births until\" slider. With this slider you can mark the "
+#~ "birthplaces of individuals who where born until a certain date. The "
+#~ "slider has ten positions.</li></ul>\n"
+#~ "<b>Second menu line:</b>\n"
+#~ "<ul><li>Map by specific family name(s)\". This will open a window with "
+#~ "all family names. Mark checkboxes next to names and press \"Choose\" to "
+#~ "start mapping the locations of those families only.<br>\n"
+#~ "After pressing \"Choose\" you will see a yellow banner near the top of "
+#~ "the map, informing you which family names are being filtered. Now use the "
+#~ "slider or \"mark all location\" button to place the markers.</li>\n"
+#~ "<li>Map by descendants\". This will open a window with all individuals "
+#~ "that have descendants. Click the person whose descendants you want to map."
+#~ "<br>\n"
+#~ "A yellow banner will appear near the top of the map, informing which "
+#~ "individual's descendants are filtered. Now use the slider or \"mark all "
+#~ "location\" button to place the markers.</li>\n"
+#~ "<li>Find location on the map\". Here you can pick a location from all "
+#~ "locations in the tree and zoom in to it automatically.</li></ul>\n"
+#~ "<b>The map:</b>\n"
+#~ "<ul><li>After clicking the \"All locations\" button or using the slider, "
+#~ "coloured markers will be placed on the map. Inside the marker you will "
+#~ "see the number of people born in that location.</li>\n"
+#~ "<li>There are 4 different size markers (from small to big): Red markers "
+#~ "(over 100 people), blue markers (50-99 people), green markers (9-49 "
+#~ "people) and yellow markers (1-9 people)</li>\n"
+#~ "<li>When you hover with the mouse over a marker a \"tooltip\" will show "
+#~ "with the name of the location.</li>\n"
+#~ "<li>When you click on the marker you will see two links.</li>\n"
+#~ "<li>The first link will open a new browser tab with the Wikipedia entry "
+#~ "about this location (if such an entry exists).</li>\n"
+#~ "<li>The second link will present (in the Info Window itself) a list of "
+#~ "all individuals born in this location.</li>\n"
+#~ "<li>The names in this list are clickable and will open a new browser tab "
+#~ "with the family page of this person.</li>"
+
+#~ msgid "Map by descendants of: "
+#~ msgstr "Map by descendants of: "
 
 #~ msgid "Add your e-mail address by family tree data!"
 #~ msgstr "Add your e-mail address by family tree data!"
