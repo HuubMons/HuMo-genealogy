@@ -347,7 +347,7 @@ table.humo td, table.humo th, table.reltable td {
   	border: solid 1px #999999;  
 }
   
-table.humo {
+table.humo, table.ext {
 	/* border-collapse: collapse; */
 	border-collapse:separate; /* needed for rounded corners */
 	background-color:#FAF1EB;  
@@ -358,6 +358,7 @@ table.humo {
 	box-shadow: 6px 6px 6px #999;
 	-moz-box-shadow: 6px 6px 6px #999;
 	-webkit-box-shadow: 6px 6px 6px #999;
+
 	-moz-border-radius: 6px 6px 6px 6px;
 	-webkit-border-radius: 6px 6px 6px 6px;
 	border-radius: 6px 6px 6px 6px;
@@ -1129,4 +1130,26 @@ table.relmenu tr:nth-of-type(2) td:last-of-type {
    white-space: -pre-wrap;     /* Opera <7 */   
    white-space: -o-pre-wrap;   /* Opera 7 */    
    word-wrap: break-word;      /* IE */
+}
+
+td.extended2 a {
+	color:#000077;
+}
+td.extended2 {
+	border-radius: 8px;
+	-moz-border-radius: 8 px;
+	-webkit-border-radius: 8px;
+	
+	box-shadow: inset -1px -1px 1px 1px #bbbbbb;	
+	-webkit-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
+    -moz-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
+    
+	background-color: #dddddd;   
+	/* #ECFAFF */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#aaaaaa));
+	background-image: -webkit-linear-gradient(top, #ffffff, #aaaaaa);
+	background-image:    -moz-linear-gradient(top, #ffffff, #aaaaaa);
+	background-image:      -o-linear-gradient(top, #ffffff, #aaaaaa);
+	background-image:      -ms-linear-gradient(top, #ffffff, #aaaaaa);
+	background-image:         linear-gradient(to bottom, #ffffff, #aaaaaa);    
 }

@@ -3,6 +3,7 @@
 // relations.php - checks relationships between person X and person Y
 //
 // written by Yossi Beck - August 2010 for HuMo-gen
+// extended marital calculator added by Yossi Beck - February 2014
 //
 // contains the following functions:
 // create_rel_array      - creates $rel_array with gedcom nr and generation nr of ancestors of person X and Y
@@ -49,6 +50,7 @@
 // $sexe, $sexe2 - the sexe of persons X and Y
 // person, $person2 - gedcom nr of the searched persons X and Y
 //============================================================================================
+ini_set('max_execution_time', 600);
 
 //global declarations for Joomla
 global $foundX_nr, $foundY_nr, $foundX_gen, $foundY_gen, $foundX_match, $foundY_match, $spouse;
@@ -136,7 +138,7 @@ function create_rel_array ($gednr)  {
 					//@$person_womanDb=mysql_fetch_object($person_woman);
 					$pers_prep_var = $familyDb->fam_woman;
 					$pers_prep->execute();
-					@$person_womanDb=$pers_prep->fetch(PDO::FETCH_OBJ);					
+					@$person_womanDb=$pers_prep->fetch(PDO::FETCH_OBJ);
 					$woman_cls = New person_cls;
 					$woman_cls->construct($person_womanDb);
 					$woman_privacy=$woman_cls->privacy;
@@ -1510,6 +1512,7 @@ function display () {
 	global $rel_arrayX, $rel_arrayY, $famX, $famY, $language, $dutchtext, $searchDb, $searchDb2;
 	global $sexe, $selected_language, $dirmark1,  $famspouseX, $famspouseY, $reltext_nor, $reltext_nor2;
 	global $fampath;  // path to family.php for Joomla and regular. Defined above all functions
+	global $person, $person2;
 	global $tree_prefix_quoted;
 
 	// *** Use person class ***
@@ -1721,8 +1724,17 @@ function display () {
 		}
 	}
 
-	if($bloodreltext=='' AND $reltext=='') {
-		print "<br>&nbsp;&nbsp;<span style='font-size:120%'>".__('No blood or marital relation found')."</span><br>";
+	if($bloodreltext=='' AND $reltext=='') {  
+		echo '<br><table class="humo"><tr><td>';
+  		echo "<br><div style='padding:10px'><span style='font-weight:bold'>".__('No blood relation or direct marital relation found')."</span><br><br>";
+ 		echo  __("You may wish to try finding a connection with the <span style='font-weight:bold'>Extended Marital Calculator</span> below.<br>	
+				This will find connections that span over many marital relations and generations.<br>	
+				Computing time will vary depending on the size of the tree and the distance between the two persons.<br>	
+				For example, in a 10,000 person tree even the most distant persons will usually be found within 1-2 seconds.<br>	
+				In a 75,000 person tree the most distant persons may take up to 8 sec to find.<br><br>");
+		echo '<input type="submit" name="extended" value="'.__('Perform extended marital calculation').'" style="font-size:115%;">';
+		echo "</td></tr></table>";
+
 	}
 	else { print '</td></tr></table>'; }
 	print '<br><br>';
@@ -1958,6 +1970,421 @@ function display_table() {
 }
 //-----------------------------------------------------------------------------------------------------
 
+/* the extended marital calculator computation */
+
+function map_tree($pers_array, $pers_array2) {    
+	// in first loop $pers_array and $pers_array2 hold persons A and B
+	// in the next loop it will contain the parents, children and spouses of persons A and B, where they exist etc
+	// the algorithm starts simultaneously from person A and person B in expanding circles until a common person is found (= connection found)
+	// or until either person A or B runs out of persons (= no connection exists)
+
+	global $dbh, $person, $person2, $globaltrack, $globaltrack2, $persqry, $persvar, $famqry, $famvar;
+	global $count; $count++; if($count>400000) { echo "Database too large!!!!"; exit; }	
+	global $countfunc;
+	$countfunc++;
+	$tree=safe_text($_SESSION['tree_prefix']);
+
+	$work_array = array();
+	$work_array2 = array(); 
+
+	// build closest circle around person A (parents, children, spouse(s))
+	foreach($pers_array as $value) {   
+		$params = explode("@",$value);
+		$persged = $params[0];
+		$refer = $params[1];
+		$callged = $params[2];
+		$pathway = $params[3];
+		
+		if($refer=="chd"){
+			$callarray = explode(";",$callged);	
+		}
+		else { $callarray[0] = $callged; }
+		
+		$persvar = $persged; 
+ 		try{  $persqry->execute(); }
+		catch(PDOException $e) { echo "PDO Error: ".$e->getMessage(); }
+		if($persqry->rowCount()==0) { 
+			echo "NO SUCH PERSON:"."ref=".$refer."persged=".$persged."callged=".$callged."$$"; return(false); 
+		}  
+		$persDb = $persqry->fetch();	
+		
+		if($refer=="fst") { $globaltrack .= $persDb['pers_gedcomnumber']."@"; }
+
+		if(isset($persDb['pers_famc']) AND $persDb['pers_famc']!="" AND $refer!="par") {  
+			$famvar = $persDb['pers_famc'];
+			try{ $famqry->execute(); }
+			catch(PDOException $e) { echo "PDO Error: ".$e->getMessage(); }
+			if($famqry->rowCount()==0) { 
+				echo "NO SUCH FAMILY"; return; 
+			}
+			$famcDb = $famqry->fetch();
+			if(isset($famcDb['fam_man']) AND $famcDb['fam_man']!="" AND $famcDb['fam_man']!="0") { 
+				if(strpos($globaltrack,$famcDb['fam_man']."@")===false) { 
+					$work_array[] = $famcDb['fam_man']."@chd@".$persged.";".$persDb['pers_famc']."@".$pathway.";"."chd".$famcDb['fam_man']; 
+					$count++;
+					$globaltrack .= $famcDb['fam_man']."@"; 
+				}	
+			}	
+			if(isset($famcDb['fam_woman']) AND $famcDb['fam_woman']!="" AND $famcDb['fam_woman']!="0") {  
+				if(strpos($globaltrack,$famcDb['fam_woman']."@")===false) {  
+					$work_array[] = $famcDb['fam_woman']."@chd@".$persged.";".$persDb['pers_famc']."@".$pathway.";"."chd".$famcDb['fam_woman']; 	
+					$count++;
+					$globaltrack .= $famcDb['fam_woman']."@";
+				}
+			}						
+		}		
+
+		if(isset($persDb['pers_fams']) AND $persDb['pers_fams']!="") {  
+			$famsarray = explode(";",$persDb['pers_fams']); 
+			foreach($famsarray as $value) {   
+				if($refer=="spo" AND $value == $callged) continue;
+				$famvar = $value;
+				$famqry->execute();
+				$famsDb = $famqry->fetch();
+				if($refer=="chd" AND $famsDb['fam_woman']==$persDb['pers_gedcomnumber'] AND isset($famsDb['fam_man']) AND $famsDb['fam_man']!="" AND $famsDb['fam_gedcomnumber']==$callarray[1]) { continue; }
+	 			if(isset($famsDb['fam_children']) AND $famsDb['fam_children']!="")	{
+	 				$childarray = explode(";",$famsDb['fam_children']);	
+					foreach($childarray as $value) {
+						if($refer=="chd" AND $callarray[0] == $value) continue;  
+						if(strpos($globaltrack,$value."@")===false) {  
+							$work_array[] = $value."@par@".$persged."@".$pathway.";"."par".$value;			
+							$count++;
+							$globaltrack .= $value."@";
+						}
+					}		 
+				}	
+			}  
+			foreach($famsarray as $value) {  
+				if($refer=="chd" AND $value == $callarray[1]) continue;
+				if($refer=="spo" AND $value == $callged) continue;
+				$famvar = $value;
+				$famqry->execute();	
+				$famsDb = $famqry->fetch();
+	 			if($famsDb['fam_man'] == $persDb['pers_gedcomnumber']) { 
+					if(isset($famsDb['fam_woman']) AND $famsDb['fam_woman']!="" AND $famsDb['fam_woman']!="0") { 
+						if(strpos($globaltrack,$famsDb['fam_woman']."@")===false){  
+							$work_array[] = $famsDb['fam_woman']."@spo@".$value."@".$pathway.";"."spo".$famsDb['fam_woman'];
+							$count++;
+							$globaltrack .= $famsDb['fam_woman']."@";
+						}		
+					}
+				}
+				else { 
+					if(isset($famsDb['fam_man']) AND $famsDb['fam_man']!="" AND $famsDb['fam_man']!="0") { 
+						if(strpos($globaltrack,$famsDb['fam_man']."@")===false) { 
+							$work_array[] = $famsDb['fam_man']."@spo@".$value."@".$pathway.";"."spo".$famsDb['fam_man'];;
+							$count++;
+							$globaltrack .= $famsDb['fam_man']."@";
+						}
+					}
+				}
+			}
+		}
+	}
+	// build closest circle around person B (parents, children, spouse(s))
+	foreach($pers_array2 as $value) {   
+		$params = explode("@",$value);
+		$persged = $params[0];
+		$refer = $params[1];
+		$callged = $params[2];
+		$pathway = $params[3];
+		
+		if($refer=="chd"){
+			$callarray = explode(";",$callged);	
+		}
+		else { $callarray[0] = $callged; }
+		
+		$persvar = $persged; 
+ 		try{  $persqry->execute(); }
+		catch(PDOException $e) { echo "PDO Error: ".$e->getMessage(); }
+		if($persqry->rowCount()==0) { 
+			echo "NO SUCH PERSON:"."ref=".$refer."persged=".$persged."callged=".$callged."$$"; return(false); 
+		}  
+		$persDb = $persqry->fetch();	
+		
+		if($refer=="fst") { $globaltrack2 .= $persDb['pers_gedcomnumber']."@"; }
+
+		if(isset($persDb['pers_famc']) AND $persDb['pers_famc']!="" AND $refer!="par") {  
+			$famvar = $persDb['pers_famc'];
+			try{ $famqry->execute(); }
+			catch(PDOException $e) { echo "PDO Error: ".$e->getMessage(); }
+			if($famqry->rowCount()==0) { 
+				echo "NO SUCH FAMILY"; return; 
+			}
+			$famcDb = $famqry->fetch();
+			if(isset($famcDb['fam_man']) AND $famcDb['fam_man']!="" AND $famcDb['fam_man']!="0") { 
+				if(strpos($globaltrack,$famcDb['fam_man']."@")!== false) { 
+					$totalpath=join_path($work_array,$pathway,$famcDb['fam_man'],"chd"); 
+					display_result($totalpath);
+					return($famcDb['fam_man']);  
+				}
+				if(strpos($globaltrack2,$famcDb['fam_man']."@")===false) { 
+					$work_array2[] = $famcDb['fam_man']."@chd@".$persged.";".$persDb['pers_famc']."@".$pathway.";"."chd".$famcDb['fam_man']; 
+					$count++;
+					$globaltrack2 .= $famcDb['fam_man']."@"; 
+				}
+			}
+			if(isset($famcDb['fam_woman']) AND $famcDb['fam_woman']!="" AND $famcDb['fam_woman']!="0") {  
+				if(strpos($globaltrack,$famcDb['fam_woman']."@")!== false) { 
+					$totalpath=join_path($work_array,$pathway,$famcDb['fam_woman'],"chd"); 
+					display_result($totalpath);
+					return($famcDb['fam_woman']);  
+				}
+				if(strpos($globaltrack2,$famcDb['fam_woman']."@")===false) {  
+					$work_array2[] = $famcDb['fam_woman']."@chd@".$persged.";".$persDb['pers_famc']."@".$pathway.";"."chd".$famcDb['fam_woman']; 	
+					$count++;
+					$globaltrack2 .= $famcDb['fam_woman']."@";
+				}
+			}
+		}
+
+		if(isset($persDb['pers_fams']) AND $persDb['pers_fams']!="") {  
+			$famsarray = explode(";",$persDb['pers_fams']); 
+			foreach($famsarray as $value) {   
+				if($refer=="spo" AND $value == $callged) continue;
+				$famvar = $value;
+				$famqry->execute();
+				$famsDb = $famqry->fetch();
+				if($refer=="chd" AND $famsDb['fam_woman']==$persDb['pers_gedcomnumber'] AND isset($famsDb['fam_man']) AND $famsDb['fam_man']!="" AND $famsDb['fam_gedcomnumber']==$callarray[1]) { continue; }
+	 			if(isset($famsDb['fam_children']) AND $famsDb['fam_children']!="")	{
+	 				$childarray = explode(";",$famsDb['fam_children']);	
+					foreach($childarray as $value) {
+						if($refer=="chd" AND $callarray[0] == $value) continue;  
+						if(strpos($globaltrack,$value."@")!== false) { 
+							$totalpath=join_path($work_array,$pathway,$value,"par"); 
+							display_result($totalpath);
+							return($value);  
+						}
+						if(strpos($globaltrack2,$value."@")===false) {  
+							$work_array2[] = $value."@par@".$persged."@".$pathway.";"."par".$value;
+							$count++;
+							$globaltrack2 .= $value."@";
+						}
+					}		 
+				}	
+			}  
+			foreach($famsarray as $value) {  
+				if($refer=="chd" AND $value == $callarray[1]) continue;
+				if($refer=="spo" AND $value == $callged) continue;
+				$famvar = $value;
+				$famqry->execute();	
+				$famsDb = $famqry->fetch();
+	 			if($famsDb['fam_man'] == $persDb['pers_gedcomnumber']) { 
+					if(isset($famsDb['fam_woman']) AND $famsDb['fam_woman']!="" AND $famsDb['fam_woman']!="0") { 
+						if(strpos($globaltrack,$famsDb['fam_woman']."@")!== false) { 
+							$totalpath=join_path($work_array,$pathway,$famsDb['fam_woman'],"spo");
+							display_result($totalpath);
+							return($famsDb['fam_woman']);  
+						}
+						if(strpos($globaltrack2,$famsDb['fam_woman']."@")===false){  
+							$work_array2[] = $famsDb['fam_woman']."@spo@".$value."@".$pathway.";"."spo".$famsDb['fam_woman'];
+							$count++;
+							$globaltrack2 .= $famsDb['fam_woman']."@";
+						}
+					}
+				}
+				elseif($famsDb['fam_woman'] == $persDb['pers_gedcomnumber']) { 
+					if(isset($famsDb['fam_man']) AND $famsDb['fam_man']!="" AND $famsDb['fam_man']!="0") { 
+						if(strpos($globaltrack,$famsDb['fam_man']."@")!== false) { 
+							$totalpath=join_path($work_array,$pathway,$famsDb['fam_man'],"spo");
+							display_result($totalpath);
+							return($famsDb['fam_man']);  
+						}
+						if(strpos($globaltrack2,$famsDb['fam_man']."@")===false) { 
+							$work_array2[] = $famsDb['fam_man']."@spo@".$value."@".$pathway.";"."spo".$famsDb['fam_man'];;
+							$count++;
+							$globaltrack2 .= $famsDb['fam_man']."@";
+						}			
+					}									
+				}  
+			}								
+		} 				
+	}
+	if(isset($work_array[0]) AND isset($work_array2[0])) { 
+		// no common person was found but both A and B still have a wider circle to expand -> call this function again
+		map_tree($work_array,$work_array2);
+	}
+	else echo "<br><span style='font-weight:bold;font-size:120%'>&nbsp;&nbsp;".__("These persons are not related in any way.")."&nbsp;&nbsp;<br><br>";
+}
+
+function join_path($workarr,$path2,$pers2,$ref) {  
+	// we have two trails. one from person A to the common person and one from person B to the common person (A ---> common <---- B)
+	// we have to create one trail from A to B
+	// since the second trail is reverse (from B to the common person) it first has to be turned around, including changing the relation to previous and next person
+	
+	// $workarr is the array with all trails from person A 
+	// we have to find the trail that contains the common person ($pers2)
+	foreach($workarr as $value) {
+		if(strpos($value.";",$pers2.";")===false) {
+			continue;
+		}
+		$path1 = substr($value,strrpos($value,"@")+1);  // found the right trail
+	}
+	$fstcommon = substr($path1,strpos($path1.";",$pers2.";")-3,3); // find the common person as appears in the trail from person A ("parI3120")
+	
+	// now turn around the second trail and adjust par, chd, spo values accordingly
+	$secpath = explode(";",$path2);
+	$new_path2 = "";
+	$changepath = array();
+	$commonpers = ";".$fstcommon.$pers2;
+	if($ref=="par" AND $fstcommon=="par") { 
+		// the common person is a child of both sides - discard child and make right person spouse of left!
+		$changepath[count($secpath)-1] = "spo".substr($secpath[count($secpath)-1],3);
+		$commonpers = "";
+	}
+	elseif($ref=="par") $changepath[count($secpath)-1] = "chd".substr($secpath[count($secpath)-1],3);
+	elseif($ref=="chd") $changepath[count($secpath)-1] = "par".substr($secpath[count($secpath)-1],3);
+	else $changepath[count($secpath)-1] = "spo".substr($secpath[count($secpath)-1],3);
+	for($w=count($secpath)-1;$w>0;$w--) {
+		if(substr($secpath[$w],0,3)=="par") $changepath[$w-1] = "chd".substr($secpath[$w-1],3);
+		elseif(substr($secpath[$w],0,3)=="chd") $changepath[$w-1] = "par".substr($secpath[$w-1],3);
+		else $changepath[$w-1] = "spo".substr($secpath[$w-1],3);			
+	}
+	for($w=count($changepath)-1;$w>=0;$w--) {
+		$new_path2 .= ";".$changepath[$w];
+	} 
+	$result = substr($path1,0,strpos($path1,$pers2)-4).$commonpers.$new_path2;  // the entire trail from person A to B
+	return($result);
+}
+/*------------------------------------------------------------------------------------------*/
+
+/* displays result of extended marital calculator */
+
+function display_result($result) {  
+	// $result holds the entire track of persons from person A to person B
+	// this string is made up of items sperated by ";"
+	// each items starts with "par" (parent), "chd" (child) or "spo" (spouse), followed by the gedcomnumber of the person
+	// example: parI232;parI65;chdI2304;spoI212;parI304
+	// the par-chd-spo prefixes indicate if the person was called up by his parent, child or spouse so we can later create the graphical display
+
+	global $persqry, $persvar, $person, $person2;
+	
+	$fampath = CMS_ROOTPATH."family.php?";
+	$tree=safe_text($_SESSION['tree_prefix']);
+	$map = array();	// array that will hold all data needed for the graphical display
+	
+	$tracks = explode(";",$result); // $tracks is array with each person in the trail
+	
+	/* initialize  */
+	for($x=0;$x<count($tracks);$x++) {
+		$map[$x][0]="1"; /* x value in graphical display */
+		$map[$x][1]="1"; /* y value in graphical display */
+		$map[$x][2]="1"; /* colspan value (usually 1, turns 2 for two column parent) */
+		$map[$x][3]= substr($tracks[$x],0,3); /* call value (oar, chd, spo) */
+		$map[$x][4]= substr($tracks[$x],3); /* gedcomnumber value */
+	}
+
+	$xval=1; $yval=1; $miny = 1; $maxy=1;
+	$marrsign = array();
+	
+	// fill map array
+	for($x=0;$x<count($tracks);$x++) {
+		$ged = substr($tracks[$x],3);    // gedcomnumber
+		$cal = substr($tracks[$x],0,3);  // par, chd, spo
+		if($cal=="fst") { 
+			continue; 
+		}
+		if($cal=="spo") { 
+			$marrsign[$xval+1]=$yval;
+			$xval +=2;
+			$map[$x][0]=$xval; $map[$x][1]=$yval; 
+			
+		}
+		if($cal=="chd") { 
+			$yval--; 
+			if($yval<$miny) $miny=$yval;
+			$map[$x][0]=$xval; $map[$x][1]=$yval; 
+			if(isset($map[$x+1]) AND $map[$x+1][3]=="par") $map[$x][2]=2;			
+		}
+		if($cal=="par") {
+			$yval++; 
+			if($yval>$maxy) $maxy=$yval;
+			if($map[$x-1][3]=="chd") $xval++;
+			$map[$x][0]=$xval; $map[$x][1]=$yval; 
+		}
+	}
+	if($miny<1) {
+		for($x=0;$x<count($map);$x++) {
+			$map[$x][1] += (1+abs($miny));
+			if($map[$x][1] > $maxy)	$maxy=$map[$x][1];	
+		}	
+		if(isset($marrsign)) {
+			foreach($marrsign as $key => $value) {
+				$marrsign[$key] += (1+abs($miny));			
+			}		
+		}
+	}
+	// the following code displays the graphical view of the found trail
+	echo '<br><table style="border:0px;border-collapse:separate;border-spacing:30px 1px;">'; 
+	for($a=1;$a<=$maxy;$a++) { 
+		echo "<tr>";
+		$nextline="";
+		for($b=1;$b<=$xval;$b++) {			
+			$colsp=false; $marr=false;
+			for($x=0;$x<count($map);$x++) {					
+				if($map[$x][0]==$b AND $map[$x][1]==$a) {
+					$color = "#8ceffd"; $border="border:1px solid #777777;";
+					if($map[$x][4]==$person OR $map[$x][4]==$person2) {  // person A and B (first and last) get thicker border
+						$color="#72fe95";
+						$border = "border:2px solid #666666;"; 
+					}					
+					if($map[$x][2]==2) {
+						$b++;
+						echo '<td class="extended2" colspan=2 style="width:200px;text-align:center;'.$border.'padding:2px">';
+						$nextline .= "&#8593;@&#8595;@";   // up and down arrows under two column parent
+					}
+					elseif(isset($map[$x+1][3]) AND $map[$x+1][3]=="par") { 
+						$nextline .="&#8595;@";  // down arrow
+						echo '<td class="extended2"  style="width:200px;text-align:center;'.$border.'padding:2px">';
+					}
+					elseif(isset($map[$x][3]) AND $map[$x][3]=="chd") {
+						$nextline .="&#8593;@";  // up arrow
+						echo '<td class="extended2" style="width:200px;text-align:center;'.$border.'padding:2px">';	
+					}
+					else {
+						$nextline .= "&nbsp;@";  // empty box
+						echo '<td class="extended2" style="width:200px;text-align:center;'.$border.'padding:2px">';
+					}
+					$persvar = $map[$x][4];
+					$persqry->execute();
+					$ancDb = $persqry->fetch(PDO::FETCH_OBJ);
+					$pers_cls = New person_cls;
+					$name=$pers_cls->person_name($ancDb);
+					$personname=$name["name"];
+					echo "<a href='".$fampath."database=".$tree."&amp;id=".$ancDb->pers_indexnr."&amp;main_person=".$ancDb->pers_gedcomnumber."'>".$personname."</a>";
+					$colsp=true;
+				}
+
+			}	
+			if($colsp==false) {
+				if(isset($marrsign[$b]) AND $marrsign[$b]==$a) {  // display the X sign between two married people
+					echo '<td style="font-weight:bold;font-size:130%;width:10px;text-align:center;border:0px;padding:0px">X';
+				}				
+				else {
+					echo '<td style="width:10px;text-align:center;border:0px;padding:0px">';
+				}
+				$nextline .= "&nbsp;@";
+			}
+			echo "</td>";
+			
+		}
+		echo "</tr>";
+		// The following code places a row with arrows (or blanks) under a row with name boxes
+		if($a != $maxy) {
+			echo "<tr>";
+			$nextline = substr($nextline,0,-1);
+			$next = explode("@",$nextline);
+			foreach($next as $value) {
+				echo "<td style='padding:2px;color:black;width:10px;font-weight:bold;font-size:140%;text-align:center;'>".$value."</td>";
+			}
+			echo "</tr>"; 
+		}
+	}
+	echo "</table>";
+}
+
+//-----------------------------------------------------------------------------------------------------
+
 $foundX_nr=''; $foundY_nr='';
 $foundX_gen=''; $foundY_gen='';
 $foundX_match=''; $foundY_match='';
@@ -2012,7 +2439,7 @@ echo '</div>';
 
 if (isset($_SESSION['tree_prefix'])) { $tree_prefix=$_SESSION['tree_prefix'];}
 
-if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["calculator"]) AND !isset($_POST["switch"])) {
+if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["calculator"]) AND !isset($_POST["switch"]) AND !isset($_POST["extended"])) {
 	// no button pressed: this is a fresh entry from humogen's frontpage link: start clean search form
 	$_SESSION["search1"]=''; $_SESSION["search2"]='';
 	$_SESSION['rel_search_firstname']=''; $_SESSION['rel_search_lastname']='';
@@ -2032,11 +2459,13 @@ if(isset($_POST["switch"])) {
 }
 
 // ===== BEGIN SEARCH BOX SYSTEM
+
+ob_start();
 print '<span class="fonts table_header"><br><br>&nbsp;&nbsp;&nbsp;'.__('You can enter names or part of names in either search box, or leave a search box empty').'<br>';
 echo '&nbsp;&nbsp;&nbsp;';
 echo __('<b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b>');
 echo '</span><br>';
-echo '<br>';
+/* echo '<br>'; */
 
 if(CMS_SPECIFIC == "Joomla") {
 	echo '<form method="POST" action="'.'index.php?option=com_humo-gen&task=relations'.'" style="display : inline;">';
@@ -2193,12 +2622,41 @@ if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
 }
 else { print '<select size="1" name="person2" style="width:'.$len.'px"><option></option></select>'; }
 echo '</td></tr></table>';
-echo '</form>';
+/* echo '</form>'; */
 
 // ===== END SEARCH BOX SYSTEM
+ob_end_flush(); 
+
+if(isset($_POST["extended"])) {
+	
+	ob_start();
+	$count=0; $countfunc = 0;
+	
+	$globaltrack = "";
+	$firstcall = array();
+	$firstcall[0] = $person."@fst@fst@"."fst".$person;
+	
+	$globaltrack2 = "";
+	$firstcall2 = array();
+	$firstcall2[0] = $person2."@fst@fst@"."fst".$person2;
+	
+	$total_arr = array();
+	
+	$persqry = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = ?"); 
+	$persqry->bindParam(1,$persvar);
+	$famqry = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber = ?");
+	$famqry->bindParam(1,$famvar);	
+	
+	echo '<br><table class="ext"><tr><td>'; 
+	map_tree($firstcall,$firstcall2);
+	echo '</td></tr></table>';  	
+	ob_end_flush();
+}	
+
 
 if(isset($_POST["calculator"]) OR isset($_POST["switch"])) { // calculate or switch button is pressed
 	if(isset($person) AND $person!='' AND isset($person2) AND $person2!='') { // 2 persons have been selected
+	
 		$searchDb=getperson($person);
 		$searchDb2=getperson($person2);
 		if (isset($searchDb)){
@@ -2236,6 +2694,7 @@ if(isset($_POST["calculator"]) OR isset($_POST["switch"])) { // calculate or swi
 		print "<br><h3>&nbsp;&nbsp;&nbsp;".__('You have to search and than choose Person 1 and Person 2 from the search result pulldown')."</h3>";
 	}
 }
+echo '</form>';
 echo '<br><br><br><br><br><br><br><br>';
 include_once(CMS_ROOTPATH."footer.php");
 ?>

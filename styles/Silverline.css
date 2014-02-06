@@ -92,9 +92,9 @@ a:hover {color:#808080; text-decoration:underline;}
 p {line-height:150%; margin:15px 0 15px;} 
 
 /* Tables */
-table.humo {  
+table.humo, table.ext {  
 	background-color: #FFFFFF;
-	background-image: url('images_silverline/background.gif');        
+	/* background-image: url('images_silverline/background.gif');  */      
 	margin-top:10px;
 }
 table.standard {

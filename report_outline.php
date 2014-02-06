@@ -103,7 +103,7 @@ if($screen_mode=='PDF') {
 }
 
 if($screen_mode != "PDF") {
-	
+
 	echo '<div class="standard_header fonts">'.__('Outline report').'</div>';
 	echo '<div class="pers_name center">';
 
@@ -204,7 +204,7 @@ echo '&nbsp;&nbsp;&nbsp;<span>';
 		print '<input class="fonts" type="Submit" name="submit" value="PDF (Portrait)">';
 		print '</form>';
 	}
-		
+
 echo '</span>';
 
 echo '&nbsp;&nbsp;&nbsp;<span>';
@@ -250,7 +250,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 	global $screen_mode, $pdf;
 	global $dbh, $fam_prep, $pers_prep, $fam_all_prep, $pers_all_prep;
 	global $fam_prep_var, $pers_prep_var, $fam_all_prep_var, $pers_all_prep_var;
-	
+
 	$family_nr=1; //*** Process multiple families ***
 
 	if($nr_generations<$gn) {return;}

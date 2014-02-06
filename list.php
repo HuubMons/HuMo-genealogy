@@ -108,11 +108,11 @@ function show_person($personDb){
 
 		if ($selected_place!=$personDb->place_order){ 
 			//echo "<b>$personDb->place_order</b><br>"; 
-			echo "<td colspan=2><b>".$dirmark2."$personDb->place_order</b></td></tr><tr>";			
+			echo "<td colspan=2><b>".$dirmark2."$personDb->place_order</b></td></tr><tr>";
 		}
-		$selected_place=$personDb->place_order;		
+		$selected_place=$personDb->place_order;
 
-		echo '<td style="white-space:nowrap;width:90px">'; 		
+		echo '<td style="white-space:nowrap;width:90px">';
 
 		if ($select_birth=='1'){
 			if ($selected_place==$personDb->pers_birth_place){
@@ -245,8 +245,8 @@ function show_person($personDb){
 			if ($partner_id!='0' AND $partner_id!=''){
 				//$qry="SELECT * FROM ".safe_text($pers_tree_prefix)."person WHERE pers_gedcomnumber='".safe_text($partner_id)."'";
 				$partnid = $partner_id;
-				$stmt2->execute();	
-				$partnerDb = $stmt2->fetch(PDO::FETCH_OBJ);				
+				$stmt2->execute();
+				$partnerDb = $stmt2->fetch(PDO::FETCH_OBJ);
 				//$partner=mysql_query($qry,$db);
 				//$partnerDb=mysql_fetch_object($partner);
 				$partner_cls = New person_cls;
@@ -1015,7 +1015,7 @@ if ($index_list=='places'){
 			$query.=' UNION '; $calc='';
 		}
 		else{
-			$calc='SQL_CALC_FOUND_ROWS ';	
+			$calc='SQL_CALC_FOUND_ROWS ';
 		}
 		if ($user['group_kindindex']=="j"){
 			$query.= "(SELECT ".$calc."*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_place_index as place_order
@@ -1040,7 +1040,7 @@ if ($index_list=='places'){
 			$query.=' UNION '; $calc='';
 		}
 		else{
-			$calc='SQL_CALC_FOUND_ROWS ';	
+			$calc='SQL_CALC_FOUND_ROWS ';
 		}
 		if ($user['group_kindindex']=="j"){
 			$query.= "(SELECT ".$calc."*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_death_place as place_order
@@ -1065,7 +1065,7 @@ if ($index_list=='places'){
 			$query.=' UNION '; $calc='';
 		}
 		else{
-			$calc='SQL_CALC_FOUND_ROWS ';	
+			$calc='SQL_CALC_FOUND_ROWS ';
 		}
 		if ($user['group_kindindex']=="j"){
 			$query.= "(SELECT ".$calc."*,CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,pers_buried_place as place_order
@@ -1210,7 +1210,7 @@ if ($index_list=='patronym'){
 			echo '<div class="left_box">';
 		}
 		else {
-			echo '<div class="right_box">';		
+			echo '<div class="right_box">';
 		}
 
 		//************** search places **************************************
