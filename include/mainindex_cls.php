@@ -2,7 +2,7 @@
 class mainindex_cls{
 
 	function show_tree_index(){
-		global $db, $dbh, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option;
+		global $db, $dbh, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option;
 
 		echo '<script type="text/javascript">';
 		echo 'checkCookie();';
@@ -18,11 +18,11 @@ class mainindex_cls{
 			AND humo_tree_texts.treetext_language='".$selected_language."' ORDER BY tree_order",$db);
 		$num_rows = mysql_num_rows($datasql);
 		*/
-		$datasql = $dbh->query("SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-			AND humo_tree_texts.treetext_language='".$selected_language."' ORDER BY tree_order");
+//		$datasql = $dbh->query("SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
+//			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
+//			AND humo_tree_texts.treetext_language='".$selected_language."' ORDER BY tree_order");
+		$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
 		$num_rows = $datasql->rowCount();
-
 		if ($num_rows>1){
 			echo '<div id="mainmenu_left">';
 				echo '<div class="mainmenu_bar fonts">'.__('Select a family tree').':</div>';
@@ -32,10 +32,9 @@ class mainindex_cls{
 		}
 
 		$center_id="mainmenu_center";
-		if ($num_rows<=1){
-			$center_id="mainmenu_center_alt";
-		}
+		if ($num_rows<=1) $center_id="mainmenu_center_alt";
 		echo '<div id="'.$center_id.'" class="style_tree_text fonts">';
+/*
 			// *** Get genealogical data ***
 			$tree_prefix_selected=$_SESSION['tree_prefix'];
 			if (isset($_GET['tree_prefix_gegevens'])){
@@ -48,6 +47,8 @@ class mainindex_cls{
 					$tree_prefix_selected=$_GET['tree_prefix_gegevens'];
 				}
 			}
+*/
+
 			/*
 			$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 				ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
@@ -55,23 +56,29 @@ class mainindex_cls{
 			$datasql = mysql_query($sql,$db);
 			@$dataDb=mysql_fetch_object($datasql);
 			*/
-			$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-				ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-				AND treetext_language='".$selected_language."' WHERE tree_prefix='".safe_text($tree_prefix_selected)."'  ORDER BY tree_order";
+			//$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
+			//	ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
+			//	AND treetext_language='".$selected_language."' WHERE tree_prefix='".safe_text($tree_prefix_selected)."'  ORDER BY tree_order";
+			//$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
+			//	ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
+			//	AND treetext_language='".$selected_language."' WHERE tree_prefix='".$tree_prefix_quoted."'  ORDER BY tree_order";
+			$sql = "SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix_quoted."' ORDER BY tree_order";
 			$datasql = $dbh->query($sql);
 			@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 			// *** Show name of selected family tree ***
 			echo '<div class="mainmenu_bar fonts">';
-			if ($num_rows>1){ echo __('Selected family tree').': '; }
-			// *** Variable $treetext_name used from menu.php ***
-			echo $treetext_name;
+				if ($num_rows>1){ echo __('Selected family tree').': '; }
+				// *** Variable $treetext_name used from menu.php ***
+				echo $treetext_name;
 			echo '</div>';
+
 			if ($bot_visit AND $humo_option["searchengine_cms_only"]=='y'){
 				//
 			}
 			else{
 				//if ($tree_prefix_selected==''){
-				if ($tree_prefix_selected=='' OR $tree_prefix_selected=='EMPTY'){
+				//if ($tree_prefix_selected=='' OR $tree_prefix_selected=='EMPTY'){
+				if ($tree_prefix_quoted=='' OR $tree_prefix_quoted=='EMPTY'){
 					//echo '<h2><a href="'.CMS_ROOTPATH.'login.php">'.__('Please login first.').'</a></h2>';
 					echo '<h2><a href="'.CMS_ROOTPATH.'login.php">'.__('Select another family tree, or login for the selected family tree.').'</a></h2>';
 				}
@@ -84,7 +91,8 @@ class mainindex_cls{
 					echo $this->owner();
 
 					// *** Prepare mainmenu text and source ***
-					$treetext=show_tree_text($tree_prefix_selected, $selected_language);
+					//$treetext=show_tree_text($tree_prefix_selected, $selected_language);
+					$treetext=show_tree_text($tree_prefix_quoted, $selected_language);
 					// *** Show mainmenu text ***
 					$mainmenu_text=$treetext['mainmenu_text'];
 					if ($mainmenu_text!='') echo '<p>'.nl2br($mainmenu_text).$dirmark2.'</p>';

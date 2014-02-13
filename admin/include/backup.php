@@ -123,8 +123,8 @@ echo '</table>';
 function backup_tables()
 { 
 	global $dbh;
-	echo '<div style="color:red">'.__('Creating backup file. This may take some time. Please wait...').'</div>';
-
+	echo '<div id="red_text" style="color:red">'.__('Creating backup file. This may take some time. Please wait...').'</div>';
+ob_start();
 	$tables = array();
 	//$result = mysql_query('SHOW TABLES');
 	//while($row = mysql_fetch_row($result))
@@ -189,8 +189,15 @@ function backup_tables()
 	fwrite($bk_file,"<?php\nheader('Content-type: application/octet-stream');\nheader('Content-Disposition: attachment; filename=\"".$downloadname."\"');\nreadfile('".$name."');\n?>");
 	fclose($bk_file);
 	echo '<div><form style="display:inline">';
+
+echo '<script type="text/javascript">';
+echo ' document.getElementById("red_text").innerHTML = ""; ';
+echo '</script>';
+
 	echo '<input type="button" value="'.__('Download backup file').'" onClick="window.location.href=\'downloadbk.php\'">&nbsp;&nbsp;('.$downloadname.')';
 	echo '</form><div>';
+
+ob_flush();
 }
 
 // RESTORE FUNCTION

@@ -46,9 +46,11 @@ if (!defined('PDO::ATTR_DRIVER_NAME')) {
 }
 
 // *** Open database using PDO **
-$conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME;
+//$conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME;
+$conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME.';charset=utf8';
 try {
-	$dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+	//$dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+	$dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);
 	@$database_check=1; 
 } catch (PDOException $e) {
 	unset($database_check);

@@ -52,7 +52,7 @@ if (isset($humo_option["main_page_cms_id_".$selected_language])) {
 	if ($humo_option["main_page_cms_id_".$selected_language] == "") {
 		include_once(CMS_ROOTPATH."include/mainindex_cls.php");
 		$mainindex = new mainindex_cls();
-		echo $mainindex->show_tree_index();		
+		echo $mainindex->show_tree_index();
 	}
 	else {
 		echo '<div id="mainmenu_centerbox">';

@@ -74,6 +74,11 @@ elseif ($update['up_to_date']=='no'){
 		if (isset($_GET['step']) AND $_GET['step']=='1'){
 			$download=false;
 
+			// *** Check update folder permissions ***
+			if (!is_writable('update')) {
+				echo '<b>ERROR: Folder admin/update is NOT WRITABLE. Please change permissions.</b><br>';
+			}
+
 			// *** Copy HuMo-gen update to server using curl ***
 			if(function_exists('curl_exec')){
 				$source=$update['version_auto_download'];
@@ -323,7 +328,7 @@ elseif ($update['up_to_date']=='no'){
 				//	WHERE setting_variable='update_last_check'") or die(mysql_error());
 				$result = $dbh->query("UPDATE humo_settings
 					SET setting_value='2012-01-01'
-					WHERE setting_variable='update_last_check'");					
+					WHERE setting_variable='update_last_check'");
 				$humo_option['update_last_check']='2012-01-01';
 
 				// *** Remove installation files ***

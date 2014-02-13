@@ -411,7 +411,8 @@ else{
 		$_SESSION['tree_prefix']=''; // *** If all trees are blocked then session is empty ***
 
 		//$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
-		$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
+		//$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
+		$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 		// *** Find first family tree that's not blocked for this usergroup ***
 		//while(@$dataDb=mysql_fetch_object($datasql)){
 		while(@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)) {
@@ -431,7 +432,8 @@ else{
 	// *** Check if tree is allowed for visitor and Google etc. ***
 	//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".$_SESSION['tree_prefix']."'",$db);
 	//@$dataDb=mysql_fetch_object($datasql);
-	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
+	//$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
+	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' AND tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
 	@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
 	$hide_tree=false;

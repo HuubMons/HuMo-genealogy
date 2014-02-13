@@ -127,7 +127,7 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 		}
 		else{
 			print "<FONT COLOR=red>$fault</FONT>";
-		}					
+		}
 	}
 	else{
 		echo '<FONT COLOR=red>'.__('No valid picture, media or document file').'</font>';
@@ -308,7 +308,7 @@ echo '<input type="hidden" name="event_person" value="event_person">';
 //$data_list_qry=mysql_query("SELECT * FROM ".$tree_prefix."events
 //	WHERE event_person_id='$pers_gedcomnumber' ORDER BY event_kind, event_order",$db);
 $data_list_qry=$dbh->query("SELECT * FROM ".$tree_prefix."events
-	WHERE event_person_id='$pers_gedcomnumber' ORDER BY event_kind, event_order");	
+	WHERE event_person_id='$pers_gedcomnumber' ORDER BY event_kind, event_order");
 
 //print '<tr class="table_header"><th>'.__('Event').'</th><th style="border-right:0px;">'.__('Option').'</th><th colspan="2" style="border-left:0px;">'.__('Value').'</th></tr>';
 print '<tr class="table_header_large"><th>'.__('Event').'</th><th style="border-right:0px;">'.__('Option').'</th><th style="border-left:0px;">'.__('Value').'</th>';
@@ -337,7 +337,7 @@ while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 		//$count=mysql_num_rows($count_event);
 		$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
 			WHERE event_person_id='$pers_gedcomnumber' AND event_kind='".$data_listDb->event_kind."'");
-		$count=$count_event->rowCount();		
+		$count=$count_event->rowCount();
 
 		if ($data_listDb->event_order<$count){
 			echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;event_person=1&amp;person_event_down='.$data_listDb->event_order.'&amp;event_kind='.$data_listDb->event_kind.'#event_person_link"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>';
@@ -366,7 +366,7 @@ while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 			}
 			elseif(strtolower($extensions_check)=="doc" OR strtolower(substr($path_prefix.$tree_pict_path.$data_listDb->event_event,-4,4))=="docx") {   
 				echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'"><img src="'.CMS_ROOTPATH.'images/msdoc.gif"></a>';
-			}					
+			}
 			// *** Show AVI Video file ***
 			elseif($extensions_check=="avi") {
 				echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/video-file.png"></a>';
@@ -386,19 +386,19 @@ while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 			// *** Show WMA Audio file ***
 			elseif(strtolower($extensions_check)=="wma") {
 				echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
-			}	
+			}
 			// *** Show WAV Audio file ***
 			elseif(strtolower($extensions_check)=="wav") {
 				echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
-			}	
+			}
 			// *** Show MP3 Audio file ***
 			elseif(strtolower($extensions_check)=="mp3") {
 				echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
-			}	
+			}
 			// *** Show MID Audio file ***
 			elseif(strtolower($extensions_check)=="mid") {
 				echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
-			}	
+			}
 			// *** Show RAM Audio file ***
 			elseif(strtolower($extensions_check)=="ram") {
 				echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
@@ -406,7 +406,7 @@ while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 			// *** Show RA Audio file ***
 			elseif(strtolower($extensions_check)==".ra") {
 				echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
-			}						
+			}
 			else{
 				echo '<img src="'.$path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event.'" width="100px">';
 			}

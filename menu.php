@@ -324,7 +324,8 @@ echo '<ul class="humo_menu_item">';
 						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Photobook')."</a></li>\n";
 					}
 
-					if ($user['group_sources']=='j'){
+					//if ($user['group_sources']=='j'){
+					if ($user['group_sources']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check if there are sources in the database ***
 						//$source_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources",$db);
 						//@$sourceDb=mysql_num_rows($source_qry);
@@ -342,7 +343,8 @@ echo '<ul class="humo_menu_item">';
 						}
 					}
 
-					if ($user['group_addresses']=='j'){
+					//if ($user['group_addresses']=='j'){
+					if ($user['group_addresses']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check for addresses in the database ***
 						//$address_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses WHERE address_gedcomnr LIKE '_%'",$db);
 						//@$addressDb=mysql_num_rows($address_qry);
