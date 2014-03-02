@@ -45,12 +45,10 @@ include_once(CMS_ROOTPATH."include/db_login.php"); //Inloggen database.
 include_once (CMS_ROOTPATH.'include/show_tree_text.php');
 
 // *** Use UTF-8 database connection ***
-//mysql_query("SET NAMES 'utf8'", $db);
 //$dbh->query("SET NAMES 'utf8'");
 
 
 // *** Show a message at NEW installation. ***
-//$result = mysql_query("SELECT * FROM humo_settings",$db);
 $result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
 if ($result->rowCount() ==0) {
 	echo "Installation of HuMo-gen is not yet completed.<br>Installatie van HuMo-gen is nog niet voltooid.";
@@ -94,24 +92,14 @@ if (isset($_POST["username"]) && isset($_POST["password"])){
 	$query = "SELECT * FROM humo_users
 		WHERE user_name='" . safe_text($_POST["username"]) ."'
 		AND user_password='".MD5(safe_text($_POST["password"]))."'";
-	//$result = mysql_query($query) or die("ERROR : " . mysql_error());
 	$result = $dbh->query($query);
-	//if (mysql_num_rows($result) > 0){
 	if($result->rowcount() > 0) {
-		//@$resultDb=mysql_fetch_object($result);
 		@$resultDb = $result->fetch(PDO::FETCH_OBJ);
 		$_SESSION['user_name'] = safe_text($_POST["username"]);
 		$_SESSION['user_id'] = $resultDb->user_id;
 		$_SESSION['user_group_id'] = $resultDb->user_group_id;
 
 		// *** Save log! ***
-/*		$sql="INSERT INTO humo_user_log SET
-			log_date='".date("Y-m-d H:i")."',
-			log_username='".safe_text($_POST["username"])."',
-			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
-			log_user_admin='user'";
-		@mysql_query($sql, $db);
-*/
 		$sql="INSERT INTO humo_user_log SET
 			log_date='".date("Y-m-d H:i")."',
 			log_username='".safe_text($_POST["username"])."',
@@ -401,20 +389,15 @@ else{
 	if (isset($_POST["database"])){ $database=$_POST["database"]; }
 	if (isset($database) AND $database){
 		// *** Check if family tree really exists ***
-		//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($database)."'",$db);
 		$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($database)."'");
-		//if(@mysql_num_rows($datasql)==1) { $_SESSION['tree_prefix']=$database; }
 		if($datasql->rowCount()==1) { $_SESSION['tree_prefix']=$database; }
 	}
 	// *** No family tree selected yet ***
 	if (!isset($_SESSION["tree_prefix"]) OR $_SESSION['tree_prefix']=='' ){
 		$_SESSION['tree_prefix']=''; // *** If all trees are blocked then session is empty ***
 
-		//$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
-		//$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
-		$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 		// *** Find first family tree that's not blocked for this usergroup ***
-		//while(@$dataDb=mysql_fetch_object($datasql)){
+		$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 		while(@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)) {
 			// *** Check is family tree is showed or hidden for user group ***
 			$hide_tree_array=explode(";",$user['group_hide_trees']);
@@ -430,9 +413,6 @@ else{
 	}
 
 	// *** Check if tree is allowed for visitor and Google etc. ***
-	//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".$_SESSION['tree_prefix']."'",$db);
-	//@$dataDb=mysql_fetch_object($datasql);
-	//$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
 	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' AND tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
 	@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 	$hide_tree_array=explode(";",$user['group_hide_trees']);

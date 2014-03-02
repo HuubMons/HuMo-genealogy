@@ -61,8 +61,6 @@ echo "<description>".__('Whose birthday is it today?')."</description>".$newline
 echo "<language>".__('En-en')."</language>".$newline;
 
 $counter=0;
-//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
-//while ($dataDb=mysql_fetch_object($datasql)){
 $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 	// *** Check is family tree is shown or hidden for user group ***
@@ -80,10 +78,6 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 			WHERE pers_birth_date!=''
 			AND (substring(pers_birth_date,3,3) = '$month_number' AND CONCAT('0',substring(pers_birth_date,1,1)) = '$today_day') 
 			OR (substring(pers_birth_date,4,3) = '$month_number' AND substring(pers_birth_date,1,2)='$today_day') order by pers_lastname";
-
-			//$query = mysql_query ($sql,$db)
-		//	or die("database-error (1): ".mysql_error());
-		//while ($record=mysql_fetch_object($query)){
 		$query = $dbh->query($sql);
 		while($record = $query->fetch(PDO::FETCH_OBJ)) {
 			$person_cls1 = New person_cls;
@@ -104,8 +98,6 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 						$calculated_age = ' ('.($year - $record->birth_year).')';
 					}
 				}
-
-				$tree_prefix_quoted=safe_text($dataDb->tree_prefix);
 
 				$person_cls = New person_cls;
 				$name=$person_cls->person_name($record);

@@ -26,7 +26,16 @@ table.humo {
 }
 .humo_color {
 	/* background-color:#E5E5E5; */
-	background-color:#E6E6E6;
+	/* background-color:#E6E6E6; */
+	background-color:#EBEBEB;
+}
+.humo_color2 {
+	background-color:#DFFFDE;
+}
+.humo_color3 {
+	/* background-color:#F4E3FF; */
+	/* background-color:#F7CDCD; */
+	background-color:#FFFFFF;
 }
 table.standard {
 	/* width:100%; */

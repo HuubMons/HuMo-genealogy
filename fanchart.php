@@ -82,9 +82,6 @@ function fillarray ($nr, $famid) {
 	global $indexnr;
 	if ($nr >= $maxperson) { return; }
 	if ($famid) {
-		//$personmn=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-		//	WHERE pers_gedcomnumber='".$famid."'",$db);
-		//@$personmnDb=mysql_fetch_object($personmn);
 		$pers_var = $famid;
 		$person_prep->execute();
 		@$personmnDb = $person_prep->fetch(PDO::FETCH_OBJ);
@@ -118,10 +115,6 @@ function fillarray ($nr, $famid) {
 		$treeid[$nr][5]=$personmnDb->pers_sexe;
 
 		if ($personmnDb->pers_famc){
-			//$family_qry= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
-			//WHERE fam_gedcomnumber = '".$personmnDb->pers_famc."'";
-			//$family_result = mysql_query($family_qry,$db);
-			//@$record_family = mysql_fetch_object($family_result);
 			$fam_var = $personmnDb->pers_famc;
 			$fam_prep->execute();
 			@$record_family = $fam_prep->fetch(PDO::FETCH_OBJ);
@@ -455,15 +448,11 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 				$spousename=""; 
 				if($gen==0 AND $treeid[1][2] != "") { // base person and has spouse
 					if($treeid[1][5]=="F") { $spouse="fam_man";} else { $spouse="fam_woman"; }
-					//$spouse_qr = "SELECT ".$spouse." FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber='".$treeid[1][2]."'";
-					//$spouse_result = mysql_query($spouse_qr,$db) or die(mysql_error().$spouse_qr);
-					//@$spouseDb = mysql_fetch_array($spouse_result);
+
 					//2 reasons this is not a prepared pdo statement: 1. only used once  2. table names can't be parameters...
 					$spouse_result = $dbh->query("SELECT ".$spouse." FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$treeid[1][2]."'");
 					@$spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
-/*					$spouse2_qr = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".$spouseDb[$spouse]."'";
-					$spouse2_result = mysql_query($spouse2_qr,$db) or die(mysql_error()."SECOND");
-					@$spouse2Db = mysql_fetch_object($spouse2_result);  */
+
  					$pers_var = $spouseDb[$spouse];
 					$person_prep->execute();
 					@$spouse2Db = $person_prep->fetch(PDO::FETCH_OBJ);  
@@ -474,7 +463,7 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 					if($spname!="") { $spousename="\n(".__($spouse_lan).": ".$spname["standard_name"].")"; }
 				}
 
-					$imagemap .= " alt=\"".$pid."\" title=\"".$pid.$spousename."\">";
+				$imagemap .= " alt=\"".$pid."\" title=\"".$pid.$spousename."\">";
 			}
 			$deg1-=$angle;
 			$deg2-=$angle;

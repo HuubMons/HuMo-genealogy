@@ -9,25 +9,6 @@ define("DATABASE_NAME",     "humo-gen");
 // *** DON'T CHANGE ANYTHING BELOW THIS LINE! ***
 // *** HIERONDER NIETS WIJZIGEN! ***
 
-// *** Open database using deprecated mysql method ***
-// *** $db and $database_check are used for installation and to check database connection ***
-/*
-@$db=mysql_connect(DATABASE_HOST,DATABASE_USERNAME,DATABASE_PASSWORD);
-@$database_check=mysql_select_db(DATABASE_NAME,$db);
-if (!$database_check AND !isset($ADMIN) ){
-	die('<br><font color=red><b>
-	Database is not yet installed! Possible problems:<br>
-	- Login file not yet configured.<br>
-	- Database not yet installed.<br>
-	Go to the <a href="admin">administration area</a> to solve this problem.
-	<p>De database is nog niet bereikbaar! Mogelijke oorzaken:<br>
-	- Het login bestand is niet goed ingevuld.<br>
-	- De database is nog niet gemaakt.<br>
-	Ga naar het <a href="admin">administratie scherm</a> om dit probleem op te lossen.
-	</b></font>');
-}
-*/
-
 // *** Check if PDO driver is available ***
 if (!defined('PDO::ATTR_DRIVER_NAME')) {
 	echo '<html>

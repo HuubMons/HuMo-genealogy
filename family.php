@@ -36,9 +36,7 @@ if($screen_mode=='PDF') {  // if PDF mode: necessary parts from menu.php
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 		ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
 		AND humo_tree_texts.treetext_language='".$selected_language."'
-		WHERE tree_prefix='".$tree_prefix_quoted."'";	
-		//@$datasql = mysql_query($dataqry,$db);
-		//@$dataDb=mysql_fetch_object($datasql);
+		WHERE tree_prefix='".$tree_prefix_quoted."'";
 		@$datasql = $dbh->query($dataqry);
 		@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 	}
@@ -332,9 +330,6 @@ if($screen_mode=='PDF') {  //initialize pdf generation
 	$pdfdetails=array();
 	$pdf_marriage=array();
 	$pdf=new PDF();
-	//$pers=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-	//	WHERE pers_gedcomnumber='$main_person'",$db);
-	//@$persDb=mysql_fetch_object($pers);
 	$pers = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
 	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
 	// *** Use class to process person ***
@@ -359,8 +354,6 @@ if($screen_mode=='PDF') {  //initialize pdf generation
 if (!$family_id){
 	// starfieldchart is never called when there is no own fam so no need to mark this out
 	// *** Privacy filter ***
-	//$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($main_person)."'",$db);
-	//@$person_manDb=mysql_fetch_object($person_man);
 	$person_man = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
 	@$person_manDb = $person_man->fetch(PDO::FETCH_OBJ);
 	// *** Use class to show person ***
@@ -450,15 +443,15 @@ else{
 		else { $max_generation=100; } // any impossibly high number, will anyway stop at last generation
 	}
 	if($screen_mode!='STARSIZE') {
-	
+
 	//prepare queries here that will be used in the loops.
 	//creating a prepared statement one time will save time
-	$family_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");	
+	$family_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
 	$family_prep->bindParam(1, $family_id_loop_var);
-	$person_prep=$dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");	
+	$person_prep=$dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 	$person_prep->bindParam(1, $parent1_var);
-	$family2_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");	
-	$family2_prep->bindParam(1, $id_var);	
+	$family2_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
+	$family2_prep->bindParam(1, $id_var);
 	$person_man_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 	$person_man_prep->bindParam(1,$pers_man_var);
 	$address_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_family_id=?");
@@ -480,7 +473,7 @@ else{
 	$old_stat_prep=$dbh->prepare("UPDATE ".$tree_prefix_quoted."family SET fam_counter=? WHERE fam_gedcomnumber=?");
 	$old_stat_prep->bindParam(1,$fam_counter_var);
 	$old_stat_prep->bindParam(2,$fam_gednr_var);
-		
+
 	for ($descendant_loop=0; $descendant_loop<=$max_generation; $descendant_loop++){
 		$descendant_family_id2[]=0;
 		$descendant_main_person[2]=0;
@@ -540,13 +533,6 @@ else{
 			$family_nr=1;
 
 			// *** Count marriages of man ***
-			/* 
-			$family=mysql_query("SELECT fam_man, fam_woman FROM ".safe_text($_SESSION['tree_prefix'])."family
-				WHERE fam_gedcomnumber='".safe_text($family_id_loop)."'",$db);
-
-			$die_message=__('No valid family number.');
-			@$familyDb=mysql_fetch_object($family) or die("$die_message");
-			*/
 			$family_id_loop_var = $family_id_loop;
 			$family_prep->execute();
 			try { 
@@ -569,9 +555,6 @@ else{
 			// *** Check for parent1: N.N. ***
 			if ($parent1){
 				// *** Save man families in array ***
-				//$person=mysql_query("SELECT pers_fams FROM ".safe_text($_SESSION['tree_prefix'])."person
-				//	WHERE pers_gedcomnumber='".safe_text($parent1)."'",$db);
-				//@$personDb=mysql_fetch_object($person);
 				$parent1_var = $parent1;
 				$person_prep->execute();
 				@$personDb=$person_prep->fetch(PDO::FETCH_OBJ);
@@ -587,10 +570,6 @@ else{
 			// *** Loop multiple marriages of main_person ***
 			for ($parent1_marr=0; $parent1_marr<=$count_marr; $parent1_marr++){
 				$id=$marriage_array[$parent1_marr];
-				//$family=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
-				//	WHERE fam_gedcomnumber='".safe_text($id)."'",$db);
-				//@$familyDb=mysql_fetch_object($family);
-				
 				$id_var = $id;
 				$family2_prep->execute();
 				@$familyDb = $family2_prep->fetch(PDO::FETCH_OBJ);
@@ -599,20 +578,13 @@ else{
 				if (!$bot_visit){
 					// *** Update (old) statistics counter ***
 					$fam_counter=$familyDb->fam_counter+1;
-					//$sql="UPDATE ".safe_text($_SESSION['tree_prefix'])."family SET fam_counter=$fam_counter
-					//	WHERE fam_gedcomnumber='".safe_text($id)."'";
-					//mysql_query($sql, $db) or die(mysql_error());
 					$fam_counter_var = $fam_counter;
 					$fam_gednr_var = $id;
 					$old_stat_prep->execute();
 
 					// *** Extended statistics, first check if table exists ***
-					//$statistics = mysql_query("SELECT * FROM humo_stat_date LIMIT 0,1",$db);
 					@$statistics = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
 					if ($statistics AND $descendant_report==false AND $user['group_statistics']=='j'){
-
-						//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'",$db);
-						//$datasqlDb=mysql_fetch_object($datasql);
 						$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix_quoted."'");
 						$datasqlDb = $datasql->fetch(PDO::FETCH_OBJ);
 						$stat_easy_id=$datasqlDb->tree_id.'-'.$familyDb->fam_gedcomnumber.'-'.$familyDb->fam_man.'-'.$familyDb->fam_woman;
@@ -627,15 +599,11 @@ else{
 							stat_gedcom_woman='".$familyDb->fam_woman."',
 							stat_date_stat='".date("Y-m-d H:i")."',
 							stat_date_linux='".time()."'";
-						//$result=mysql_query($update_sql) or die(mysql_error());
 						$result = $dbh->query($update_sql);
 					}
 				}
 
 				// *** Privacy filter man and woman ***
-				//$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-				//	WHERE pers_gedcomnumber='$familyDb->fam_man'",$db);
-				//@$person_manDb=mysql_fetch_object($person_man);
 				$pers_man_var = $familyDb->fam_man;
 				$person_man_prep->execute();
 				@$person_manDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
@@ -644,12 +612,9 @@ else{
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
 
-				//$person_woman=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-				//	WHERE pers_gedcomnumber='$familyDb->fam_woman'",$db);
-				//@$person_womanDb=mysql_fetch_object($person_woman);
 				$pers_man_var = $familyDb->fam_woman;
 				$person_man_prep->execute();
-				@$person_womanDb=$person_man_prep->fetch(PDO::FETCH_OBJ);				
+				@$person_womanDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
 
 				// *** Proces woman using a clas ***
 				$woman_cls = New person_cls;
@@ -694,10 +659,8 @@ else{
 
 					echo '<table class="humo standard">';
 
-
 						// *** Show family top line (family top text, settings, favorite) ***
 						echo topline();
-
 
 					echo '<tr><td colspan="4">';
 				} //end  "if not pdf"
@@ -762,7 +725,7 @@ else{
 								//  PDF rendering of name + details
 								unset ($pdfstr);
 								if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
-								else $pers_sexe = $person_womanDb->pers_sexe;								
+								else $pers_sexe = $person_womanDb->pers_sexe;
 								$pdf->writename($pers_sexe,$pdf->GetX()+5,$woman_cls->name_extended("parent1"),"long");
 								$pdf->SetLeftMargin($indent);
 								$pdfdetails= $woman_cls->person_data("parent1", $id);
@@ -1021,14 +984,10 @@ else{
 				if ($user['group_living_place']=='j'){
 					if ($familyDb->fam_gedcomnumber){
 						$addressnr=0;
-						//$address_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses
-						//WHERE address_family_id='$familyDb->fam_gedcomnumber'",$db);
 						$address_fam_var = $familyDb->fam_gedcomnumber;
 						$address_qry_prep->execute();
 						if($screen_mode!='PDF') {
-							//while($addressDb=mysql_fetch_object($address_qry)){
 							while($addressDb=$address_qry_prep->fetch(PDO::FETCH_OBJ)){
-								//$nr_addresses=mysql_num_rows($event_qry);
 								$nr_addresses=$event_qry->rowCount();
 								if ($nr_addresses=='1')
 									$residence=__('residence');
@@ -1051,9 +1010,7 @@ else{
 						}
 						else {
 							//  PDF rendering of addresses
-							//while($addressDb=mysql_fetch_object($address_qry)){
 							while($addressDb=$address_qry_prep->fetch(PDO::FETCH_OBJ)){
-								//$nr_addresses=mysql_num_rows($event_qry);
 								$nr_addresses=$event_qry->rowCount();
 								if ($nr_addresses=='1')
 									$residence=__('residence');
@@ -1134,9 +1091,6 @@ else{
 					}
 
 					for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
-						//$child=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-						//WHERE pers_gedcomnumber='$child_array[$i]'",$db);
-						//@$childDb=mysql_fetch_object($child);
 						$pers_man_var = $child_array[$i];
 						$person_man_prep->execute();
 						@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
@@ -1299,17 +1253,11 @@ else{
 				// *********************************************************************************************
 				// *** Check for adoptive parents (just for sure: made it for multiple adoptive parents...) ***
 				// *********************************************************************************************
-				//$famc_adoptive_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
-				//	WHERE event_event='$familyDb->fam_gedcomnumber' AND event_kind='adoption'
-				//	ORDER BY event_order",$db);
 				$famc_adopt_var = $familyDb->fam_gedcomnumber;
 				$famc_adoptive_qry_prep->execute();
 				
 				while($famc_adoptiveDb=$famc_adoptive_qry_prep->fetch(PDO::FETCH_OBJ)){
 					echo '<tr><td colspan="4"><div class="children">';
-					//$child=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-					//WHERE pers_gedcomnumber='$famc_adoptiveDb->event_person_id'",$db);
-					//@$childDb=mysql_fetch_object($child);
 					$pers_man_var = $famc_adoptiveDb->event_person_id;
 					$person_man_prep->execute();
 					@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
@@ -1322,7 +1270,6 @@ else{
 
 				if($screen_mode=='') {
 					echo "</table><br>\n";
-
 
 					// *** Show Google map ***
 					if ($descendant_report==false AND $maps_presentation=='true') {
@@ -1377,14 +1324,10 @@ else{
 
 								// BIRTH man
 								if ($man_cls->privacy==''){
-									//$sql="SELECT * FROM humo_location where location_location = '".safe_text($person_manDb->pers_birth_place)."'";
-									//$query =  mysql_query($sql);
-									//$man_birth_result = @mysql_num_rows($query);
 									$location_var = $person_manDb->pers_birth_place;
 									$location_prep->execute();
 									$man_birth_result = $location_prep->rowCount();
 									if($man_birth_result >0) {
-										//$info = mysql_fetch_array($query);
 										$info = $location_prep->fetch();
 										$name=$man_cls->person_name($person_manDb);
 										$google_name=$name["standard_name"];
@@ -1398,14 +1341,11 @@ else{
 
 								// BIRTH woman
 								if ($woman_cls->privacy==''){
-									//$query =  mysql_query("SELECT * FROM humo_location where location_location = '".safe_text($person_womanDb->pers_birth_place)."'");
-									//$woman_birth_result = @mysql_num_rows($query);
 									$location_var = $person_womanDb->pers_birth_place;
 									$location_prep->execute();
 									$woman_birth_result = $location_prep->rowCount();
 									
 									if($woman_birth_result >0) {
-										//$info = mysql_fetch_array($query);
 										$info = $location_prep->fetch();
 										$name=$woman_cls->person_name($person_womanDb);
 										$google_name=$name["standard_name"];
@@ -1426,14 +1366,11 @@ else{
 
 								// DEATH man
 								if ($man_cls->privacy==''){
-									//$query =  mysql_query("SELECT * FROM humo_location where location_location = '".safe_text($person_manDb->pers_death_place)."'");
-									//$man_death_result = @mysql_num_rows($query);
 									$location_var = $person_manDb->pers_death_place;
 									$location_prep->execute();
 									$man_death_result = $location_prep->rowCount();
 									
 									if($man_death_result >0) {
-										//$info = mysql_fetch_array($query);
 										$info = $location_prep->fetch();
 
 										$name=$man_cls->person_name($person_manDb);
@@ -1453,13 +1390,10 @@ else{
 
 								// DEATH woman
 								if ($woman_cls->privacy==''){
-									//$query =  mysql_query("SELECT * FROM humo_location where location_location = '".safe_text($person_womanDb->pers_death_place)."'");
-									//$woman_death_result = @mysql_num_rows($query);
 									$location_var = $person_womanDb->pers_death_place;
 									$location_prep->execute();
 									$woman_death_result = $location_prep->rowCount();
 									if($woman_death_result >0) {
-										//$info = mysql_fetch_array($query);
 										$info = $location_prep->fetch();
 
 										$name=$woman_cls->person_name($person_womanDb);
@@ -1479,14 +1413,11 @@ else{
 								}
 
 								// MARRIED
-								//$query =  mysql_query("SELECT * FROM humo_location where location_location = '".safe_text($familyDb->fam_marr_place)."'");
-								//$marriage_result = @mysql_num_rows($query);
 								$location_var = $familyDb->fam_marr_place;
 								$location_prep->execute();
 								$marriage_result = $location_prep->rowCount();
 									
 								if($marriage_result >0) {
-									//$info = mysql_fetch_array($query);
 									$info = $location_prep->fetch();
 
 									$name=$man_cls->person_name($person_manDb);
@@ -1512,9 +1443,6 @@ else{
 
 								$child_array=explode(";",$familyDb->fam_children);
 								for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
-									//$child=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-									//WHERE pers_gedcomnumber='".$child_array[$i]."'",$db);
-									//$childDb=mysql_fetch_object($child);
 									$pers_man_var = $child_array[$i];
 									$person_man_prep->execute();
 									@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
@@ -1525,14 +1453,11 @@ else{
 									if ($person_cls->privacy==''){
 
 										// *** Child birth ***
-										//$query =  mysql_query("SELECT * FROM humo_location where location_location = '".safe_text($childDb->pers_birth_place)."'");
-										//$child_result = @mysql_num_rows($query);
 										$location_var = $childDb->pers_birth_place;
 										$location_prep->execute();
 										$child_result = $location_prep->rowCount();
 										
 										if($child_result >0) {
-											//$info = mysql_fetch_array($query);
 											$info = $location_prep->fetch();
 
 											$name=$person_cls->person_name($childDb);
@@ -1550,14 +1475,11 @@ else{
 										}
 
 										// *** Child death ***
-										//$query =  mysql_query("SELECT * FROM humo_location where location_location = '".safe_text($childDb->pers_death_place)."'");
-										//$child_result = @mysql_num_rows($query);
 										$location_var = $childDb->pers_death_place;
 										$location_prep->execute();
 										$child_result = $location_prep->rowCount();
 										
 										if($child_result >0) {
-											//$info = mysql_fetch_array($query);
 											$info = $location_prep->fetch();
 
 											$name=$person_cls->person_name($childDb);
@@ -1631,13 +1553,10 @@ if($screen_mode=='') {
 		// *** User is allowed to add a note to a person in the family tree ***
 		if ($user['group_user_notes']=='y'){
 			// *** Find user that adds a note ***
-			//$usersql='SELECT * FROM humo_users WHERE user_id="'.safe_text($_SESSION['user_id']).'"';
-			//$user=mysql_query($usersql,$db);
-			//$userDb=mysql_fetch_object($user);
 			$usersql='SELECT * FROM humo_users WHERE user_id="'.$_SESSION['user_id'].'"';
 			$user_note=$dbh->query($usersql);
 			$userDb=$user_note->fetch(PDO::FETCH_OBJ);
-			
+
 			// *** Name of selected person in family tree ***
 			if ($change_main_person==true)
 				$name = $woman_cls->person_name($person_womanDb);
@@ -1659,9 +1578,8 @@ if($screen_mode=='') {
 				note_tree_prefix='".$tree_prefix_quoted."',
 				note_names='".safe_text($name["standard_name"])."'
 				;";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
-				
+
 				// *** Mail new user note to the administrator ***
 				$register_address=$dataDb->tree_email;
 				$register_subject="HuMo-gen. ".__('New user note').": ".$userDb->user_name."\n";
@@ -1675,6 +1593,9 @@ if($screen_mode=='') {
 				$register_message .=__('Name').':'.$userDb->user_name."<br>\n";
 				//$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";
 				$register_message .=$_POST['user_note']."<br>\n";
+
+				$register_message.=__('User note by family').': <a href="'.$_SERVER['SERVER_NAME'].'/'.$_SERVER['PHP_SELF'].'?database='.$tree_prefix_quoted.
+				'&amp;id='.$family_id.'&amp;main_person='.$main_person.'">'.safe_text($name["standard_name"]).'</a>';
 
 				$headers  = "MIME-Version: 1.0\n";
 				//$headers .= "Content-type: text/plain; charset=utf-8\n";
@@ -1766,9 +1687,6 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 				source_display($pdf_source[$key]);  // function source_display from source.php, called with source nr.
 			}
 			elseif ($user['group_sources']=='t') {
-				//@$source=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
-				//	WHERE source_gedcomnr='".$pdf_source[$key]."'",$db);
-				//@$sourceDb=mysql_fetch_object($source) or die("No valid sourcenumber.");
 				$source_var = $pdf_source[$key];
 				$source_prep->execute();
 				try {

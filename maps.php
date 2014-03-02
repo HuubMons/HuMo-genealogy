@@ -33,7 +33,6 @@ echo '<form method="POST" action="maps.php" style="display : inline;">';
 //echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
 echo '<select size="1" name="database" onChange="this.form.submit();">';
 	echo '<option value="">'.__('Select a family tree:').'</option>';
-	//while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result)){
 	while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
 		// *** Check if family tree is shown or hidden for user group ***
 		$hide_tree_array=explode(";",$user['group_hide_trees']);
@@ -71,10 +70,7 @@ echo '<option value="type_birth" '.$selected.'>'.__('Birth locations').'</option
 $selected=''; if(isset($_SESSION['type_death']) AND $_SESSION['type_death']==1 )  { $selected = ' selected '; }
 echo '<option value="type_death" '.$selected.'>'.__('Death locations').'</option>';
 echo '</select>';
-//echo '<input type=submit value=Submit>';
 echo '</form>';
-
-
 
 echo '</td></tr>';
 
@@ -97,12 +93,10 @@ $yr = date("Y");
 
 // check for stored min value, created with google maps admin menu
 $query = "SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_".$tree_prefix_quoted."' ";
-//$result = mysql_query($query);
 $result = $dbh->query($query);
 
 //if (mysql_num_rows($result)) {
 if($result->rowCount() > 0) {
-	//$sliderDb=mysql_fetch_object($result);
 	$sliderDb=$result->fetch(PDO::FETCH_OBJ);
 	$realmin = $sliderDb->setting_value;
 	$step = floor(($yr - $realmin) / 9);
@@ -110,11 +104,8 @@ if($result->rowCount() > 0) {
 }
 
 $qry="SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_default_pos'";
-//$result=mysql_query($qry);
 $result = $dbh->query($qry);
-//if(mysql_num_rows($result)) {
 if($result->rowCount() > 0) {
-	//$def = mysql_fetch_array($result);
 	$def = $result->fetch(); // defaults to array
 	$slider_def = $def['setting_value'];
 	if($slider_def=="off") { $defaultyr = $minval; $default_display = "------>"; $makesel=""; } // slider at leftmost position
@@ -243,10 +234,7 @@ echo '</div>';
 
 // PULL-DOWN: FIND LOCATION
 echo  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-//$result = mysql_query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-//$exists = mysql_num_rows($result);
 $result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-//if($exists) {
 if($result->rowCount()>0) { 
 	if($_SESSION['type_birth']==1) { 
 		$loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%".$tree_prefix_quoted."birth%' OR location_status LIKE '%".$tree_prefix_quoted."bapt%' OR location_status = '' ORDER BY location_location";
@@ -259,22 +247,16 @@ else {
 	// this is for backward compatibility - if someone doesn't yet have a location_status column: show all locations as until now
 	$loc_search = "SELECT * FROM humo_location ORDER BY location_location";
 }
-//$loc_search_result = mysql_query($loc_search,$db) or die(mysql_error());
 $loc_search_result = $dbh->query($loc_search); if($loc_search_result !== false) 
 echo '<form method="POST" action="" style="display : inline;">';
 echo '<select style="max-width:250px" onChange="findPlace()" size="1" id="loc_search" name="loc_search">';
 echo '<option value="toptext">'.__('Find location on the map').'</option>';
-//while ($loc_searchDb=mysql_fetch_object($loc_search_result)){
 while($loc_searchDb=$loc_search_result->fetch(PDO::FETCH_OBJ)) {
 	echo '<option value="'.$loc_searchDb->location_id.','.$loc_searchDb->location_lat.','.$loc_searchDb->location_lng.'">'.$loc_searchDb->location_location.'</option>';
 	$count++;
 }
 echo '</select>';
 echo '</form>';
-
-
-
-
 
 echo '</td></tr>';
 
@@ -310,16 +292,13 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	$chosenperson=	$_GET['persged'];
 	$persfams = $_GET['persfams'];
 	$persfams_arr = explode(';',$persfams);
-	//$myresult=mysql_query("SELECT pers_lastname, pers_firstname, pers_prefix FROM ".$tree_prefix_quoted.'person
-	//WHERE pers_gedcomnumber="'.$chosenperson.'"',$db);
-	//$myresultDb=mysql_fetch_object($myresult);
 	$myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM ".$tree_prefix_quoted.'person
 		WHERE pers_gedcomnumber="'.$chosenperson.'"');
 	$myresultDb=$myresult->fetch(PDO::FETCH_OBJ);
 	$chosenname = $myresultDb->pers_firstname.' '.strtolower(str_replace('_','',$myresultDb->pers_prefix)).' '.$myresultDb->pers_lastname;
 
 	$gn=0;   // generatienummer
-	
+
 	// prepared statements for use in outline loops
 	$family_prep = $dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
 	$family_prep->bindParam(1,$fam_prep_var);
@@ -337,11 +316,6 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 		global $family_prep, $fam_prep_var, $person_prep, $pers_prep_var;
 		global $family_prep2, $fam_prep_var2, $person_man_prep, $pers_man_prep_var;
 		$family_nr=1; //*** Process multiple families ***
-		/*
-		$family=mysql_query("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted.'family
-		WHERE fam_gedcomnumber="'.$family_id.'"',$db);
-		@$familyDb=mysql_fetch_object($family) or die("Geen geldig gezinsnummer.");
-		*/
 		$fam_prep_var = $family_id;
 		$family_prep->execute(); 
 		try{
@@ -349,7 +323,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 		} catch (PDOException $e) {
 			print "No valid family number / Geen geldig gezinsnummer<br/>";
 		}	
-		$parent1=''; $parent2='';	$change_main_person=false;
+		$parent1=''; $parent2=''; $change_main_person=false;
 
 		// *** Standard main_person is the father ***
 		if ($familyDb->fam_man){
@@ -364,9 +338,6 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 		// *** Check family with parent1: N.N. ***
 		if ($parent1){
 			// *** Save man's families in array ***
-			//$person_qry=mysql_query("SELECT pers_fams FROM ".$tree_prefix_quoted."person
-			//	WHERE pers_gedcomnumber='$parent1'",$db);
-			//@$personDb=mysql_fetch_object($person_qry);
 			$pers_prep_var = $parent1;
 			$person_prep->execute();
 			@$personDb=$person_prep->fetch(PDO::FETCH_OBJ);
@@ -381,20 +352,15 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 		// *** Loop multiple marriages of main_person ***
 		for ($parent1_marr=0; $parent1_marr<=$nr_families; $parent1_marr++){
 			$id=$marriage_array[$parent1_marr];
-			//$family=mysql_query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='$id'",$db);
-			//@$familyDb=mysql_fetch_object($family);
 			$fam_prep_var2 = $id;
 			$family_prep2->execute();
 			@$familyDb = $family_prep2->fetch(PDO::FETCH_OBJ);
 
 			// *** Privacy filter man and woman ***
-			//$person_man=mysql_query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$familyDb->fam_man'",$db);
-			//@$person_manDb=mysql_fetch_object($person_man);
 			$pers_man_prep_var=$familyDb->fam_man;
 			$person_man_prep->execute();
 			@$person_manDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
-			//$person_woman=mysql_query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$familyDb->fam_woman'",$db);
-			//@$person_womanDb=mysql_fetch_object($person_woman);
+
 			$pers_man_prep_var=$familyDb->fam_woman;
 			$person_man_prep->execute();
 			@$person_womanDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
@@ -429,8 +395,6 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 				$child_array=explode(";",$familyDb->fam_children);
 
 				for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
-					//$child=mysql_query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$child_array[$i]'",$db);
-					//@$childDb=mysql_fetch_object($child);
 					$pers_man_prep_var=$child_array[$i];
 					$person_man_prep->execute();
 					@$childDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
@@ -478,14 +442,12 @@ echo '</div>';
 
 // FIXED WINDOW WITH LIST OF SPECIFIC FAMILY NAMES TO MAP BY
 $fam_search = "SELECT * , CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname FROM ".$tree_prefix_quoted."person WHERE (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
-//$fam_search_result = mysql_query($fam_search,$db);
 $fam_search_result = $dbh->query($fam_search);
 echo '<div id="namemapping" style="display:none; z-index:100; position:absolute; top:90px; margin-left:10px; height:460px; width:250px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;">';
 echo '<form method="POST" action="maps.php" name="yossi" style="display : inline;">';
 echo '<table style="z-index:200;"><tr><td style="text-align:center">'.__('Mark checkbox next to name(s)');
 echo '</td></tr><tr><td>';
 echo '<div style="z-index:110;height: 400px; width:241px; overflow: auto; border: 1px solid #000; background: #eee; color: #000; "> ';
-//while ($fam_searchDb=mysql_fetch_object($fam_search_result)){
 while($fam_searchDb=$fam_search_result->fetch(PDO::FETCH_OBJ)) {
 	$pos = strpos($fam_searchDb->totalname,'_');
 	$pref=''; $last='';
@@ -508,20 +470,19 @@ if(isset($_POST['descmap'])) {
 	//adjust pulldown for mobiles/tablets
 	$select_size = 'size="20"'; $select_height = '400px';
 	if (isset($_SERVER["HTTP_USER_AGENT"]) OR ($_SERVER["HTTP_USER_AGENT"] != "")) { //adjust pulldown for mobiles/tablets
-        	$visitor_user_agent = $_SERVER["HTTP_USER_AGENT"];
+		$visitor_user_agent = $_SERVER["HTTP_USER_AGENT"];
 		if(strstr($visitor_user_agent,"Android")!== false OR
-		   strstr($visitor_user_agent,"iOS")!== false OR
-		   strstr($visitor_user_agent,"iPad")!== false OR
-		   strstr($visitor_user_agent,"iPhone")!== false ) {
-		   	$select_size=""; $select_height= '100px';
+			strstr($visitor_user_agent,"iOS")!== false OR
+			strstr($visitor_user_agent,"iPad")!== false OR
+			strstr($visitor_user_agent,"iPhone")!== false ) {
+			$select_size=""; $select_height= '100px';
 		}
-    	}
+		}
 
 	echo '<div id="descmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:'.$select_height.'; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">';
 	if($user['group_kindindex']=="j") { $orderlast = "CONCAT(pers_prefix,pers_lastname)"; }
 	else { $orderlast = "pers_lastname"; }
 	$desc_search = "SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_fams !='' ORDER BY ".$orderlast.", pers_firstname";
-	//$desc_search_result = mysql_query($desc_search,$db) or die(mysql_error());
 	$desc_search_result = $dbh->query($desc_search);
 	echo '&nbsp;&nbsp;'.__('Pick a name or enter ID:').'<br>';
 	echo '<form method="POST" action="" style="display : inline;">';
@@ -530,18 +491,14 @@ if(isset($_POST['descmap'])) {
 	//prepared statement out of loop
 	$chld_prep = $dbh->prepare("SELECT fam_children FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber =? AND fam_children != ''");
 	$chld_prep->bindParam(1,$chld_var);
-	//while ($desc_searchDb=mysql_fetch_object($desc_search_result)){
 	while($desc_searchDb=$desc_search_result->fetch(PDO::FETCH_OBJ)) {
 		$countmarr = 0;
 		$man_cls = New person_cls;
 		$fam_arr = explode(";", $desc_searchDb->pers_fams);
 		foreach ($fam_arr as $value) {
 			if($countmarr==1) { break; } //this person is already listed
-			//$chld_search = "SELECT fam_children FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber ='".$value."' AND fam_children != ''";
-			//$chld_search_result = mysql_query($chld_search, $db);
 			$chld_var = $value;
 			$chld_prep->execute();
-			//while ($chld_search_resultDb = mysql_fetch_object($chld_search_result)) {
 			while($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
 				$countmarr = 1;
 				$selected='';

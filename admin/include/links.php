@@ -12,25 +12,19 @@ echo __('"Own code" is the code that has to be entered in your genealogy program
 
 // *** Change Link ***
 if (isset($_POST['change_link'])){
-	//$datasql = mysql_query("SELECT * FROM humo_settings WHERE setting_variable='link'",$db);
 	$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
-	//while ($dataDb=mysql_fetch_object($datasql)){
 	while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 		$setting_value=addslashes($_POST[$dataDb->setting_id.'own_code'])."|".addslashes($_POST[$dataDb->setting_id.'link_text']);
 		$sql="UPDATE humo_settings SET setting_value='".$setting_value."' WHERE setting_id=".$_POST[$dataDb->setting_id.'id'];
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 }
 
 // *** Remove link  ***
-//$datasql = mysql_query("SELECT * FROM humo_settings WHERE setting_variable='link'",$db);
 $datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
-//while ($dataDb=mysql_fetch_object($datasql)){
 while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 	if (isset($_POST[$dataDb->setting_id.'remove_link'])){
 		$sql="DELETE FROM humo_settings WHERE setting_id='".$dataDb->setting_id."'";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 }
@@ -39,7 +33,6 @@ while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 if (isset($_POST['add_link'])){
 	$setting_value=addslashes($_POST['own_code'])."|".addslashes($_POST['link_text']);
 	$sql="INSERT INTO humo_settings SET setting_variable='link', setting_value='".$setting_value."'";
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
 }
 
@@ -58,11 +51,9 @@ echo '</table><br>';
 
 echo '<table class="humo standard" border="1">';
 	print '<tr class="table_header"><th>Nr.</th><th>'.__('Own code').'</th><th>'.__('Description').'</th><th>'.__('Change / Add').'</th><th>'.__('Remove').'</th></tr>';
-	//$datasql = mysql_query("SELECT * FROM humo_settings WHERE setting_variable='link'",$db);
 	$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
 	if ($datasql){
 		$teller=1;
-		//while ($dataDb=mysql_fetch_object($datasql)){
 		while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			$lijst=explode("|",$dataDb->setting_value);
 			echo '<tr>';

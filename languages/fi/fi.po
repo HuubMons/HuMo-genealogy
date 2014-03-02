@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-13 21:44+0100\n"
-"PO-Revision-Date: 2014-02-13 21:44+0100\n"
+"POT-Creation-Date: 2014-02-22 18:37+0100\n"
+"PO-Revision-Date: 2014-02-22 18:38+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr "Oikeutesi eivät riitä tähän sivustoon."
 
 #: humo-gen/address.php:15
 #: humo-gen/address.php:22
-#: humo-gen/header.php:204
+#: humo-gen/header.php:194
 msgid "Address"
 msgstr "Osoite"
 
@@ -106,8 +106,8 @@ msgid "born"
 msgstr "syntynyt"
 
 #: humo-gen/birthday_list.php:70
-#: humo-gen/family.php:1675
-#: humo-gen/family.php:1728
+#: humo-gen/family.php:1593
+#: humo-gen/family.php:1649
 msgid "Name"
 msgstr "Nimi"
 
@@ -121,7 +121,7 @@ msgid " PRIVACY FILTER"
 msgstr " HENKILÖSUOJA-SUODATUS"
 
 #: humo-gen/birthday_rss.php:58
-#: humo-gen/header.php:205
+#: humo-gen/header.php:195
 msgid "Birthday calendar"
 msgstr "Syntymäpäiväkalenteri"
 
@@ -134,213 +134,218 @@ msgstr "Kenen syntymäpäivä on tänään?"
 msgid "En-en"
 msgstr "En-en"
 
-#: humo-gen/birthday_rss.php:135
+#: humo-gen/birthday_rss.php:127
 msgid "No results found."
 msgstr "Ei löytynyt tuloksia."
 
-#: humo-gen/family.php:84
-#: humo-gen/family.php:1731
+#: humo-gen/family.php:82
+#: humo-gen/family.php:1652
 msgid "Settings"
 msgstr "Asetukset"
 
-#: humo-gen/family.php:90
+#: humo-gen/family.php:88
 msgid "Settings family screen"
 msgstr "Perhesivun asetukset"
 
-#: humo-gen/family.php:93
-#: humo-gen/family.php:756
-#: humo-gen/family.php:796
+#: humo-gen/family.php:91
+#: humo-gen/family.php:719
+#: humo-gen/family.php:759
 msgid "Family Page"
 msgstr "Perhesivu"
 
-#: humo-gen/family.php:99
+#: humo-gen/family.php:97
 msgid "Compact view"
 msgstr "Suppea näkymä"
 
-#: humo-gen/family.php:101
+#: humo-gen/family.php:99
 msgid "Expanded view"
 msgstr "Laajennettu näkymä"
 
-#: humo-gen/family.php:107
-#: humo-gen/family.php:1753
-#: humo-gen/header.php:203
+#: humo-gen/family.php:105
+#: humo-gen/family.php:1674
+#: humo-gen/header.php:193
 msgid "Sources"
 msgstr "Lähteet"
 
-#: humo-gen/family.php:112
+#: humo-gen/family.php:110
 msgid "Show source title"
 msgstr "Näytä lähteen nimi"
 
-#: humo-gen/family.php:115
+#: humo-gen/family.php:113
 msgid "Show source title as footnote"
 msgstr "Näytä lähde alaviitteenä"
 
-#: humo-gen/family.php:118
+#: humo-gen/family.php:116
 msgid "Hide sources"
 msgstr "Piilota lähteet"
 
-#: humo-gen/family.php:125
-#: humo-gen/header.php:209
+#: humo-gen/family.php:123
+#: humo-gen/header.php:199
 msgid "Google maps"
 msgstr "Google maps"
 
-#: humo-gen/family.php:131
+#: humo-gen/family.php:129
 msgid "Show Google maps"
 msgstr "Näytä Googlekartat"
 
-#: humo-gen/family.php:133
+#: humo-gen/family.php:131
 msgid "Hide Google maps"
 msgstr "Piilota Googlekartat"
 
-#: humo-gen/family.php:151
+#: humo-gen/family.php:149
 msgid "PDF Report"
 msgstr "PDF raportti"
 
-#: humo-gen/family.php:183
-#: humo-gen/family.php:187
+#: humo-gen/family.php:181
+#: humo-gen/family.php:185
 msgid "Add to favourite list"
 msgstr "Lisää suosikkeihisi"
 
-#: humo-gen/family.php:345
-#: humo-gen/family.php:429
+#: humo-gen/family.php:340
+#: humo-gen/family.php:422
 msgid "Descendant report"
 msgstr "Jälkeläisraportti"
 
-#: humo-gen/family.php:345
-#: humo-gen/family.php:348
-#: humo-gen/family.php:429
-#: humo-gen/family.php:432
-#: humo-gen/family.php:840
+#: humo-gen/family.php:340
+#: humo-gen/family.php:343
+#: humo-gen/family.php:422
+#: humo-gen/family.php:425
+#: humo-gen/family.php:803
 #: humo-gen/hourglass.php:73
 msgid " of "
 msgstr " of "
 
-#: humo-gen/family.php:348
-#: humo-gen/family.php:382
-#: humo-gen/family.php:432
-#: humo-gen/family.php:725
+#: humo-gen/family.php:343
+#: humo-gen/family.php:375
+#: humo-gen/family.php:425
+#: humo-gen/family.php:688
 msgid "Family group sheet"
 msgstr "Perheryhmäsivu"
 
-#: humo-gen/family.php:401
-#: humo-gen/family.php:691
+#: humo-gen/family.php:394
+#: humo-gen/family.php:656
 #, php-format
 msgid "TIP: use %s for other (ancestor and descendant) reports."
 msgstr "Vihje: Käytä %s katsoaksesi muita (esipolvi- ja jälkipolvi) raportteja."
 
-#: humo-gen/family.php:513
-#: humo-gen/family.php:521
+#: humo-gen/family.php:506
+#: humo-gen/family.php:514
 msgid "generation "
 msgstr "sukupolvi "
 
-#: humo-gen/family.php:555
+#: humo-gen/family.php:541
 msgid "No valid family number."
 msgstr "Perhenumero ei kelpaa"
 
-#: humo-gen/family.php:955
-#: humo-gen/family.php:986
+#: humo-gen/family.php:918
+#: humo-gen/family.php:949
 msgid "Unknown"
 msgstr "Ei tiedossa"
 
-#: humo-gen/family.php:1034
-#: humo-gen/family.php:1059
+#: humo-gen/family.php:993
+#: humo-gen/family.php:1016
 msgid "residence"
 msgstr "asuinp."
 
-#: humo-gen/family.php:1036
-#: humo-gen/family.php:1061
+#: humo-gen/family.php:995
+#: humo-gen/family.php:1018
 msgid "residences"
 msgstr "asuinpaikat"
 
-#: humo-gen/family.php:1118
+#: humo-gen/family.php:1075
 msgid "Child"
 msgstr "Lapsi"
 
-#: humo-gen/family.php:1121
+#: humo-gen/family.php:1078
 msgid "Children"
 msgstr "Lapset"
 
-#: humo-gen/family.php:1243
-#: humo-gen/family.php:1249
+#: humo-gen/family.php:1197
+#: humo-gen/family.php:1203
 msgid "follows"
 msgstr "seuraavat"
 
-#: humo-gen/family.php:1319
+#: humo-gen/family.php:1267
 msgid "Adopted child:"
 msgstr "Adoptoitu lapsi"
 
-#: humo-gen/family.php:1395
-#: humo-gen/family.php:1415
-#: humo-gen/family.php:1421
-#: humo-gen/family.php:1542
-#: humo-gen/family.php:1548
+#: humo-gen/family.php:1338
+#: humo-gen/family.php:1355
+#: humo-gen/family.php:1361
+#: humo-gen/family.php:1467
+#: humo-gen/family.php:1473
 msgid "BORN_SHORT"
 msgstr "Syntynyt"
 
-#: humo-gen/family.php:1443
-#: humo-gen/family.php:1449
-#: humo-gen/family.php:1469
-#: humo-gen/family.php:1475
-#: humo-gen/family.php:1567
-#: humo-gen/family.php:1573
+#: humo-gen/family.php:1380
+#: humo-gen/family.php:1386
+#: humo-gen/family.php:1403
+#: humo-gen/family.php:1409
+#: humo-gen/family.php:1489
+#: humo-gen/family.php:1495
 msgid "DIED_SHORT"
 msgstr "Kuollut"
 
-#: humo-gen/family.php:1501
-#: humo-gen/family.php:1507
+#: humo-gen/family.php:1432
+#: humo-gen/family.php:1438
 msgid "Married"
 msgstr "Naimisissa"
 
-#: humo-gen/family.php:1593
+#: humo-gen/family.php:1515
 msgid "Family events"
 msgstr "Perhetapahtumat"
 
-#: humo-gen/family.php:1667
-#: humo-gen/family.php:1674
+#: humo-gen/family.php:1585
+#: humo-gen/family.php:1592
 msgid "New user note"
 msgstr "Uuden käyttäjän huomautus"
 
-#: humo-gen/family.php:1672
+#: humo-gen/family.php:1590
 msgid "Message sent through HuMo-gen from the website."
 msgstr "Viesti lähetetty HuMo-genin kautta websivulta."
 
-#: humo-gen/family.php:1690
+#: humo-gen/family.php:1597
+#, fuzzy
+msgid "User note by family"
+msgstr "Yläteksti perhesivulla"
+
+#: humo-gen/family.php:1611
 msgid "Your information is saved and will be reviewed by the webmaster."
 msgstr "Antamasi tiedot on talletettu webmasterin hyväksyttäväksi."
 
-#: humo-gen/family.php:1723
+#: humo-gen/family.php:1644
 msgid "[+]"
 msgstr "[+]"
 
-#: humo-gen/family.php:1724
+#: humo-gen/family.php:1645
 msgid "Add information or remarks"
 msgstr "Lisää tietoa tai huomautuksia"
 
-#: humo-gen/family.php:1726
+#: humo-gen/family.php:1647
 msgid "Person"
 msgstr "Henkilö"
 
-#: humo-gen/family.php:1731
+#: humo-gen/family.php:1652
 msgid "E-mail address"
 msgstr "Sähköpostiosoite"
 
-#: humo-gen/family.php:1731
+#: humo-gen/family.php:1652
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "Sähköpostiosoitteesi puuttuu. Ole hyvä ja lisää osoitteesi tähän: "
 
-#: humo-gen/family.php:1735
+#: humo-gen/family.php:1656
 msgid "Text"
 msgstr "Teksti"
 
-#: humo-gen/family.php:1737
+#: humo-gen/family.php:1658
 msgid "Send"
 msgstr "Lähetä"
 
-#: humo-gen/family.php:1777
+#: humo-gen/family.php:1695
 msgid "No valid sourcenumber."
 msgstr "Epäkelpo lähdenumero"
 
-#: humo-gen/family.php:1781
+#: humo-gen/family.php:1699
 msgid "Title"
 msgstr "Arvonimi"
 
@@ -452,64 +457,64 @@ msgstr "jälkeläiset"
 msgid "under fanchart"
 msgstr "fanchart-kaavio"
 
-#: humo-gen/header.php:198
+#: humo-gen/header.php:188
 msgid "Main index"
 msgstr "Päävalikko"
 
-#: humo-gen/header.php:199
+#: humo-gen/header.php:189
 msgid "Persons"
 msgstr "Henkilöt"
 
-#: humo-gen/header.php:200
+#: humo-gen/header.php:190
 msgid "Names"
 msgstr "Nimet"
 
-#: humo-gen/header.php:201
+#: humo-gen/header.php:191
 msgid "Places"
 msgstr "Paikat"
 
-#: humo-gen/header.php:202
+#: humo-gen/header.php:192
 msgid "Photobook"
 msgstr "Kuvakirja"
 
-#: humo-gen/header.php:206
+#: humo-gen/header.php:196
 msgid "Statistics"
 msgstr "Tilastot"
 
-#: humo-gen/header.php:207
+#: humo-gen/header.php:197
 msgid "Relationship calculator"
 msgstr "Sukulaisuuden laskija"
 
-#: humo-gen/header.php:208
+#: humo-gen/header.php:198
 msgid "Mail form"
 msgstr "Sähköpostilomake"
 
-#: humo-gen/header.php:210
+#: humo-gen/header.php:200
 msgid "Latest changes"
 msgstr "Viimeiset muutokset"
 
-#: humo-gen/header.php:211
+#: humo-gen/header.php:201
 #: humo-gen/hourglass.php:92
 msgid "Help"
 msgstr "Ohjeet"
 
-#: humo-gen/header.php:212
+#: humo-gen/header.php:202
 msgid "Information"
 msgstr "Lisätietoja"
 
-#: humo-gen/header.php:213
+#: humo-gen/header.php:203
 msgid "Credits"
 msgstr "Tekijätiedot"
 
-#: humo-gen/header.php:214
+#: humo-gen/header.php:204
 msgid "Cookie information"
 msgstr "Evästeen tiedot"
 
-#: humo-gen/header.php:215
+#: humo-gen/header.php:205
 msgid "Login"
 msgstr "Kirjautuminen"
 
-#: humo-gen/header.php:216
+#: humo-gen/header.php:206
 msgid "Register"
 msgstr "Rekisteri"
 
@@ -624,11 +629,11 @@ msgstr "Äskettäin muutetut ja/tai uudet henkilöt"
 #: humo-gen/latest_changes.php:63
 #: humo-gen/list.php:1249
 #: humo-gen/list.php:1407
-#: humo-gen/menu.php:76
+#: humo-gen/menu.php:73
 #: humo-gen/photoalbum.php:161
-#: humo-gen/relations.php:2484
-#: humo-gen/relations.php:2514
-#: humo-gen/relations.php:2586
+#: humo-gen/relations.php:2692
+#: humo-gen/relations.php:2722
+#: humo-gen/relations.php:2794
 msgid "Search"
 msgstr "Etsi"
 
@@ -665,8 +670,8 @@ msgstr "yksityisyys"
 # Birth
 #: humo-gen/list.php:119
 #: humo-gen/list.php:1222
-#: humo-gen/relations.php:2545
-#: humo-gen/relations.php:2613
+#: humo-gen/relations.php:2753
+#: humo-gen/relations.php:2821
 #: humo-gen/report_ancestor.php:607
 #: humo-gen/report_ancestor.php:938
 #: humo-gen/report_ancestor.php:1026
@@ -678,8 +683,8 @@ msgstr "*"
 # Baptise
 #: humo-gen/list.php:128
 #: humo-gen/list.php:1225
-#: humo-gen/relations.php:2542
-#: humo-gen/relations.php:2610
+#: humo-gen/relations.php:2750
+#: humo-gen/relations.php:2818
 #: humo-gen/report_ancestor.php:609
 #: humo-gen/report_descendant.php:613
 msgid "~"
@@ -793,8 +798,8 @@ msgid "th"
 msgstr "."
 
 #: humo-gen/list.php:273
-#: humo-gen/menu.php:23
-#: humo-gen/menu.php:272
+#: humo-gen/menu.php:21
+#: humo-gen/menu.php:267
 msgid "Family tree"
 msgstr "Sukupuu"
 
@@ -862,13 +867,13 @@ msgstr "Alkaa"
 
 #: humo-gen/list.php:1270
 #: humo-gen/list.php:1574
-#: humo-gen/relations.php:2480
+#: humo-gen/relations.php:2688
 msgid "First name"
 msgstr "Etunimi"
 
 #: humo-gen/list.php:1281
 #: humo-gen/list.php:1567
-#: humo-gen/relations.php:2482
+#: humo-gen/relations.php:2690
 msgid "Last name"
 msgstr "Sukunimi"
 
@@ -877,7 +882,7 @@ msgid "Enter name or part of name"
 msgstr "Kirjoita nimi tai osa nimestä"
 
 #: humo-gen/list.php:1303
-#: humo-gen/menu.php:75
+#: humo-gen/menu.php:72
 msgid "Minimum: 3 characters."
 msgstr "Minimi: 3 merkkiä."
 
@@ -1115,47 +1120,47 @@ msgid "Display birth or death locations across different time periods"
 msgstr "Näytä synnyin- ja kuolipaikat erilaisilla aikaväleillä"
 
 #: humo-gen/maps.php:35
-#: humo-gen/menu.php:25
+#: humo-gen/menu.php:23
 msgid "Select a family tree:"
 msgstr "Valitse sukupuu"
 
-#: humo-gen/maps.php:66
+#: humo-gen/maps.php:65
 msgid "Display:"
 msgstr "Näkymä:"
 
-#: humo-gen/maps.php:70
+#: humo-gen/maps.php:69
 msgid "Birth locations"
 msgstr "Syntymäpaikat"
 
-#: humo-gen/maps.php:72
+#: humo-gen/maps.php:71
 msgid "Death locations"
 msgstr "Kuolinpaikat"
 
-#: humo-gen/maps.php:86
+#: humo-gen/maps.php:82
 msgid "Filters:"
 msgstr "Suodattimet:"
 
-#: humo-gen/maps.php:154
+#: humo-gen/maps.php:145
 msgid "Display births until: "
 msgstr "Näytä syntymät asti: "
 
-#: humo-gen/maps.php:157
+#: humo-gen/maps.php:148
 msgid "Display deaths until: "
 msgstr "Näytä kuolemat asti: "
 
-#: humo-gen/maps.php:169
+#: humo-gen/maps.php:160
 msgid "Filter by specific family name(s)"
 msgstr "Suodata määrätyllä sukunimellä/-nimillä"
 
-#: humo-gen/maps.php:174
+#: humo-gen/maps.php:165
 msgid "Filter by descendants of a person"
 msgstr "Suodata henkilön jälkeläisillä"
 
-#: humo-gen/maps.php:184
+#: humo-gen/maps.php:175
 msgid "Other tools:"
 msgstr "Muut työkalut:"
 
-#: humo-gen/maps.php:220
+#: humo-gen/maps.php:211
 msgid ""
 "<b>Top menu line:</b>\n"
 "<ul><li>Choose family tree. On sites with multiple family trees here you can choose which tree to map.</li>\n"
@@ -1197,126 +1202,126 @@ msgstr ""
 "<li>Toinen linkki esittää (infotekstissä) kaikkien sijainnissa syntyneiden henkilöiden nimet.</li>\n"
 "<li>Listassa olevaa nimeä klikkaamalla avautuu uusi selainikkuna ja siihen henkilön perheteksti.</li>"
 
-#: humo-gen/maps.php:266
+#: humo-gen/maps.php:253
 msgid "Find location on the map"
 msgstr "Etsi sijainti kartalta"
 
-#: humo-gen/maps.php:291
+#: humo-gen/maps.php:273
 msgid "Mapping with specific name(s): "
 msgstr "Kartta valittu(je)n nim(i)en mukaan: "
 
-#: humo-gen/maps.php:302
+#: humo-gen/maps.php:284
 msgid "Switch name filter off"
 msgstr "Nimien suodatus pois"
 
-#: humo-gen/maps.php:466
+#: humo-gen/maps.php:430
 msgid "Filter by descendants of: "
 msgstr "Suodatettu jälkeläiset: "
 
-#: humo-gen/maps.php:466
+#: humo-gen/maps.php:430
 msgid "Switch descendant filter off"
 msgstr "Kytke jälkeläisten suodatus pois"
 
-#: humo-gen/maps.php:469
+#: humo-gen/maps.php:433
 msgid "No known birth places amongst descendants"
 msgstr "Jälkeläisten syntymäpaikkoja ei ole tiedossa"
 
-#: humo-gen/maps.php:469
+#: humo-gen/maps.php:433
 msgid "Close"
 msgstr "Kumoa"
 
-#: humo-gen/maps.php:485
+#: humo-gen/maps.php:448
 msgid "Mark checkbox next to name(s)"
 msgstr "Valitse valintaruutua nim(i)en vieressä"
 
-#: humo-gen/maps.php:498
+#: humo-gen/maps.php:460
 msgid "Choose"
 msgstr "Valitse"
 
-#: humo-gen/maps.php:500
-#: humo-gen/maps.php:611
+#: humo-gen/maps.php:462
+#: humo-gen/maps.php:568
 msgid "Cancel"
 msgstr "Kumoa"
 
-#: humo-gen/maps.php:526
+#: humo-gen/maps.php:487
 msgid "Pick a name or enter ID:"
 msgstr "Poimi nimi tai kirjoita ID:"
 
-#: humo-gen/maps.php:529
+#: humo-gen/maps.php:490
 msgid "Pick a name from the pulldown list"
 msgstr "Poimi nimi alasvetovalikosta"
 
-#: humo-gen/maps.php:560
+#: humo-gen/maps.php:517
 msgid "baptised"
 msgstr "kastettu"
 
-#: humo-gen/maps.php:566
+#: humo-gen/maps.php:523
 msgid "buried"
 msgstr "haudattu"
 
-#: humo-gen/maps.php:610
+#: humo-gen/maps.php:567
 msgid "Go!"
 msgstr "Ok!"
 
-#: humo-gen/menu.php:88
+#: humo-gen/menu.php:85
 msgid "Favourites list:"
 msgstr "Suosikkilista:"
 
-#: humo-gen/menu.php:167
+#: humo-gen/menu.php:164
 msgid "Select a colour theme (a cookie will be used to remember the theme)"
 msgstr "Valitse väriteema (teeman tallettamiseen käytetään cookieta)"
 
-#: humo-gen/menu.php:171
-#: humo-gen/menu.php:175
+#: humo-gen/menu.php:168
+#: humo-gen/menu.php:172
 msgid "Select a theme"
 msgstr "Valitse teema"
 
-#: humo-gen/menu.php:172
-#: humo-gen/menu.php:176
+#: humo-gen/menu.php:169
+#: humo-gen/menu.php:173
 msgid "Standard-colours"
 msgstr "Vakiovärit"
 
-#: humo-gen/menu.php:225
+#: humo-gen/menu.php:222
 msgid "Home"
 msgstr "Aloitussivu"
 
-#: humo-gen/menu.php:240
+#: humo-gen/menu.php:235
 msgid "TOP_MENU_GENEALOGY"
 msgstr "Genealogy"
 
-#: humo-gen/menu.php:278
+#: humo-gen/menu.php:273
 msgid "Family tree index"
 msgstr "Sukupuu indeksi"
 
-#: humo-gen/menu.php:411
+#: humo-gen/menu.php:402
 msgid "Tools"
 msgstr "Työkalut"
 
-#: humo-gen/menu.php:424
+#: humo-gen/menu.php:415
 msgid "Anniversary list"
 msgstr "Vuosipäivälista"
 
-#: humo-gen/menu.php:471
+#: humo-gen/menu.php:460
 msgid "Contact"
 msgstr "Yhteydenotto"
 
-#: humo-gen/menu.php:524
+#: humo-gen/menu.php:513
 msgid "HuMo-gen info"
 msgstr "HuMo-gen info"
 
-#: humo-gen/menu.php:533
+#: humo-gen/menu.php:522
 msgid "HuMo-gen credits"
 msgstr "HuMo-gen krediitit"
 
-#: humo-gen/menu.php:543
+#: humo-gen/menu.php:532
 msgid "HuMo-gen cookies"
 msgstr "HuMo-gen evästeet"
 
-#: humo-gen/menu.php:606
+#: humo-gen/menu.php:595
 msgid "Logoff"
 msgstr "Kirjaudu ulos"
 
-#: humo-gen/menu.php:619
+#: humo-gen/menu.php:608
 msgid "Admin"
 msgstr "Admin"
 
@@ -1570,49 +1575,60 @@ msgstr "Kelpaamaton perhenumero"
 msgid "is"
 msgstr "on"
 
-#: humo-gen/relations.php:1533
+#: humo-gen/relations.php:1534
 msgid "BLOOD RELATIONSHIP: "
 msgstr "VERISUKULAISUUS: "
 
-#: humo-gen/relations.php:1609
+#: humo-gen/relations.php:1612
+#: humo-gen/relations.php:1749
 msgid "MARITAL RELATIONSHIP: "
 msgstr "SUKULAISUUS PUOLISON KAUTTA: "
 
-#: humo-gen/relations.php:1619
+#: humo-gen/relations.php:1614
+#, fuzzy
+msgid "Use Extended Calculator"
+msgstr "Tee laajennettu haku avioliittojen kautta"
+
+#: humo-gen/relations.php:1626
 msgid "and"
 msgstr "ja"
 
-#: humo-gen/relations.php:1622
+#: humo-gen/relations.php:1629
 msgid "are both husbands of"
 msgstr "kummankin vaimo on"
 
-#: humo-gen/relations.php:1625
+#: humo-gen/relations.php:1632
 msgid "are both wifes of"
 msgstr "kummankin aviomies on"
 
-#: humo-gen/relations.php:1633
-#: humo-gen/relations.php:1634
-#: humo-gen/relations.php:1649
-#: humo-gen/relations.php:1650
-#: humo-gen/relations.php:1701
+#: humo-gen/relations.php:1640
+#: humo-gen/relations.php:1641
+#: humo-gen/relations.php:1656
+#: humo-gen/relations.php:1657
+#: humo-gen/relations.php:1708
 msgid "Partner"
 msgstr "Kumppani"
 
-#: humo-gen/relations.php:1638
-#: humo-gen/relations.php:1659
+#: humo-gen/relations.php:1645
+#: humo-gen/relations.php:1666
 msgid "husband of"
 msgstr "aviovaimo"
 
-#: humo-gen/relations.php:1642
-#: humo-gen/relations.php:1654
+#: humo-gen/relations.php:1649
+#: humo-gen/relations.php:1661
 msgid "wife of"
 msgstr "aviomies"
 
-#: humo-gen/relations.php:1729
+#: humo-gen/relations.php:1744
 msgid "No blood relation or direct marital relation found"
 msgstr "Ei löydy suoraa sukulaisuutta ja suoraa yhteyttä avioliiton kautta"
 
-#: humo-gen/relations.php:1730
+#: humo-gen/relations.php:1750
+#, fuzzy
+msgid "No direct marital relation found"
+msgstr "Ei löydy suoraa sukulaisuutta ja suoraa yhteyttä avioliiton kautta"
+
+#: humo-gen/relations.php:1754
 msgid ""
 "You may wish to try finding a connection with the <span style='font-weight:bold'>Extended Marital Calculator</span> below.<br>\t\n"
 "\t\t\t\tThis will find connections that span over many marital relations and generations.<br>\t\n"
@@ -1626,19 +1642,32 @@ msgstr ""
 "\t\t\t\tEsimerkiksi 10,000 henkilön puussa kaukaisimmat riippuvuudet löytyvät yleensä 1-2 sekunnissa.<br>\t\n"
 "\t\t\t\t75,000 henkilön sukupuussa kaukaisimmat riippuvuudet löytyminen voi kestää 8 sekuntia.<br><br>"
 
-#: humo-gen/relations.php:1735
+#: humo-gen/relations.php:1759
 msgid "Perform extended marital calculation"
 msgstr "Tee laajennettu haku avioliittojen kautta"
 
-#: humo-gen/relations.php:2207
+#: humo-gen/relations.php:2400
 msgid "These persons are not related in any way."
 msgstr "Henkilöiden välille ei löydy mitään suhdetta."
 
-#: humo-gen/relations.php:2418
+#: humo-gen/relations.php:2403
+#, fuzzy
+msgid "No further paths found."
+msgstr "Ei löytynyt tuloksia."
+
+#: humo-gen/relations.php:2462
+msgid "Try to find another path"
+msgstr ""
+
+#: humo-gen/relations.php:2463
+msgid "(With each consecutive search the path may get longer and computing time may increase!)"
+msgstr ""
+
+#: humo-gen/relations.php:2626
 msgid "Information about the Relationship Calculator"
 msgstr "Sukulaisuuden laskuri"
 
-#: humo-gen/relations.php:2423
+#: humo-gen/relations.php:2631
 msgid ""
 "This calculator will find the following relationships:<br>\n"
 "<ul><li>Any blood relationship between X and Y (\"X is great-grandfather of Y\", \"X is 3rd cousin once removed of Y\" etc.)</li>\n"
@@ -1665,33 +1694,33 @@ msgstr ""
 "<li>Voit kirjoittaa nimen tai nimen osan poimintakenttään tai jättää sen tyhjäksi</li>\n"
 "<li><b>VIHJE: kun klikkaat \"etsi\" etu- <u>ja</u> sukunimikentän ollessa tyhjä, saat listan koko tietokannasta. (Kestää muutaman sekunnin)</b></li></ul>"
 
-#: humo-gen/relations.php:2464
+#: humo-gen/relations.php:2672
 msgid "You can enter names or part of names in either search box, or leave a search box empty"
 msgstr "Voit kirjoittaa nimen tai nimen osan poimintakenttään tai jättää sen tyhjäksi"
 
-#: humo-gen/relations.php:2466
+#: humo-gen/relations.php:2674
 msgid "<b>TIP: when you click \"search\" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b>"
 msgstr "<b>VIHJE: kun klikkaat \"etsi\" etu- <u>ja</u> sukunimikentän ollessa tyhjä, saat listan koko tietokannasta. (Kestää muutaman sekunnin)</b>"
 
-#: humo-gen/relations.php:2485
+#: humo-gen/relations.php:2693
 msgid "Pick a name from search results"
 msgstr "Poimi nimi etsintätuloksista"
 
-#: humo-gen/relations.php:2486
-#: humo-gen/relations.php:2560
+#: humo-gen/relations.php:2694
+#: humo-gen/relations.php:2768
 msgid "Calculate relationships"
 msgstr "Laske sukulaisuus"
 
-#: humo-gen/relations.php:2552
-#: humo-gen/relations.php:2620
+#: humo-gen/relations.php:2760
+#: humo-gen/relations.php:2828
 msgid "Person not found"
 msgstr "Henkilöitä ei löytynyt"
 
-#: humo-gen/relations.php:2558
+#: humo-gen/relations.php:2766
 msgid "Switch persons"
 msgstr "Vaihda henkilöt"
 
-#: humo-gen/relations.php:2694
+#: humo-gen/relations.php:2904
 msgid "You have to search and than choose Person 1 and Person 2 from the search result pulldown"
 msgstr "Sinun pitää etsiä ja sitten valita Henkilö 1 ja Henkilö 2 etsintäkentän alasvetovalikosta"
 
@@ -2046,7 +2075,7 @@ msgid "Choose number of generations to display"
 msgstr "Valitse näytettävien sukupolvien lukumäärä"
 
 #: humo-gen/source.php:40
-#: humo-gen/admin/include/editor.php:3142
+#: humo-gen/admin/include/editor.php:1953
 msgid "No valid source number."
 msgstr "Kelpaamaton lähdenumero"
 
@@ -2060,42 +2089,42 @@ msgstr "Päivä"
 
 #: humo-gen/source.php:82
 #: humo-gen/source.php:94
-#: humo-gen/admin/include/editor.php:3198
+#: humo-gen/admin/include/editor.php:2004
 msgid "Publication"
 msgstr "Julkaisu"
 
 #: humo-gen/source.php:122
 #: humo-gen/source.php:127
-#: humo-gen/admin/include/editor.php:3200
+#: humo-gen/admin/include/editor.php:2006
 msgid "Author"
 msgstr "Kirjoittaja"
 
 #: humo-gen/source.php:133
 #: humo-gen/source.php:138
-#: humo-gen/admin/include/editor.php:3178
+#: humo-gen/admin/include/editor.php:1987
 msgid "Subject"
 msgstr "Aihe"
 
 #: humo-gen/source.php:144
 #: humo-gen/source.php:149
-#: humo-gen/admin/include/editor.php:3201
+#: humo-gen/admin/include/editor.php:2007
 msgid "Nr."
 msgstr "Nr."
 
 #: humo-gen/source.php:155
 #: humo-gen/source.php:160
-#: humo-gen/admin/include/editor.php:3202
+#: humo-gen/admin/include/editor.php:2008
 msgid "Kind"
 msgstr "Tyyppi"
 
 #: humo-gen/source.php:166
 #: humo-gen/source.php:171
-#: humo-gen/admin/include/editor.php:3203
+#: humo-gen/admin/include/editor.php:2009
 msgid "Archive"
 msgstr "Arkisto"
 
 #: humo-gen/source.php:215
-#: humo-gen/admin/include/editor.php:3181
+#: humo-gen/admin/include/editor.php:1990
 msgid "Repository"
 msgstr "Tietolähde"
 
@@ -2406,118 +2435,118 @@ msgstr "Käyttäjäasetukset"
 msgid "Change"
 msgstr "Muuta"
 
-#: humo-gen/admin/index.php:280
-#: humo-gen/admin/index.php:517
+#: humo-gen/admin/index.php:269
+#: humo-gen/admin/index.php:496
 msgid "Administration"
 msgstr "Ylläpito"
 
-#: humo-gen/admin/index.php:445
+#: humo-gen/admin/index.php:430
 msgid "HuMo-gen is up-to-date!"
 msgstr "HuMo-gen on ajantasalla!"
 
-#: humo-gen/admin/index.php:446
+#: humo-gen/admin/index.php:431
 msgid "Update options"
 msgstr "Päivityksen optiot"
 
-#: humo-gen/admin/index.php:451
+#: humo-gen/admin/index.php:436
 msgid "Update available"
 msgstr "Päivitys saatavissa"
 
-#: humo-gen/admin/index.php:456
+#: humo-gen/admin/index.php:441
 msgid "Beta version available"
 msgstr "Beta-versio saatavissa"
 
-#: humo-gen/admin/index.php:472
+#: humo-gen/admin/index.php:454
 msgid "Online version check unavailable."
 msgstr "Ajantasainen version tarkistus ei ole saatavilla."
 
-#: humo-gen/admin/index.php:511
-#: humo-gen/admin/index.php:517
+#: humo-gen/admin/index.php:490
+#: humo-gen/admin/index.php:496
 msgid "Main menu"
 msgstr "Päävalikko"
 
-#: humo-gen/admin/index.php:527
+#: humo-gen/admin/index.php:506
 msgid "Website"
 msgstr "Website"
 
-#: humo-gen/admin/index.php:561
+#: humo-gen/admin/index.php:540
 msgid "Close source editor"
 msgstr "Sulje lähteiden muokkaus"
 
-#: humo-gen/admin/index.php:582
+#: humo-gen/admin/index.php:561
 msgid "Control"
 msgstr "Hallinta"
 
-#: humo-gen/admin/index.php:587
+#: humo-gen/admin/index.php:566
 msgid "Install"
 msgstr "Asennus"
 
-#: humo-gen/admin/index.php:593
+#: humo-gen/admin/index.php:572
 msgid "Create thumbnails"
 msgstr "Muodosta kuvavalikoima"
 
-#: humo-gen/admin/index.php:596
+#: humo-gen/admin/index.php:575
 msgid "Extra links"
 msgstr "Lisälinkit"
 
-#: humo-gen/admin/index.php:600
+#: humo-gen/admin/index.php:579
 msgid "Language editor"
 msgstr "Kielieditori"
 
-#: humo-gen/admin/index.php:604
+#: humo-gen/admin/index.php:583
 msgid "Prefix editor"
 msgstr "Etuliitteen muokkaus"
 
-#: humo-gen/admin/index.php:625
-#: humo-gen/admin/index.php:631
+#: humo-gen/admin/index.php:604
+#: humo-gen/admin/index.php:610
 msgid "Family trees"
 msgstr "Sukupuut"
 
-#: humo-gen/admin/index.php:636
+#: humo-gen/admin/index.php:615
 msgid "Data check"
 msgstr "Tietojen tarkastus"
 
-#: humo-gen/admin/index.php:641
+#: humo-gen/admin/index.php:620
 msgid "Gedcom export"
 msgstr "Gedcom-tulostus"
 
-#: humo-gen/admin/index.php:661
+#: humo-gen/admin/index.php:640
 msgid "EDITOR"
 msgstr "MUOKKAUS"
 
-#: humo-gen/admin/index.php:676
-#: humo-gen/admin/include/editor.php:3334
+#: humo-gen/admin/index.php:655
+#: humo-gen/admin/include/editor.php:2128
 msgid "Repositories"
 msgstr "Tietolähteet"
 
-#: humo-gen/admin/index.php:684
-#: humo-gen/admin/include/editor.php:3696
+#: humo-gen/admin/index.php:663
+#: humo-gen/admin/include/editor.php:2463
 msgid "Rename places"
 msgstr "Nimeä paikat uudelleen"
 
-#: humo-gen/admin/index.php:700
-#: humo-gen/admin/index.php:705
+#: humo-gen/admin/index.php:679
+#: humo-gen/admin/index.php:684
 msgid "Users"
 msgstr "Käyttäjät"
 
-#: humo-gen/admin/index.php:708
+#: humo-gen/admin/index.php:687
 msgid "Groups"
 msgstr "Ryhmät"
 
-#: humo-gen/admin/index.php:726
+#: humo-gen/admin/index.php:705
 #: humo-gen/admin/include/cms_pages.php:12
 msgid "CMS Own pages"
 msgstr "CMS Omat sivut"
 
-#: humo-gen/admin/index.php:755
+#: humo-gen/admin/index.php:734
 msgid "Database backup"
 msgstr "Tietokannan varmuuskopio"
 
-#: humo-gen/admin/index.php:777
+#: humo-gen/admin/index.php:756
 msgid "Logs"
 msgstr "Logit"
 
-#: humo-gen/admin/index.php:782
+#: humo-gen/admin/index.php:761
 msgid "Log"
 msgstr "Log"
 
@@ -2593,7 +2622,7 @@ msgid "Invalid backup file: has to be file with extension \".sql\" or \".sql.zip
 msgstr "Viallinen varmuuskopiotiedosto: tiedoston päätteen täytyy olla \".sql\" tai \".sql.zip\""
 
 #: humo-gen/admin/include/backup.php:90
-#: humo-gen/admin/include/editor_person_event.php:272
+#: humo-gen/admin/include/editor_event_cls.php:832
 msgid "Upload"
 msgstr "Lataa"
 
@@ -2665,29 +2694,27 @@ msgstr "Oletko varma, että haluat poistaa tämän sivun?"
 
 #: humo-gen/admin/include/cms_pages.php:116
 #: humo-gen/admin/include/cms_pages.php:194
-#: humo-gen/admin/include/editor.php:315
-#: humo-gen/admin/include/editor.php:733
-#: humo-gen/admin/include/editor.php:964
-#: humo-gen/admin/include/editor.php:2998
-#: humo-gen/admin/include/editor.php:3304
-#: humo-gen/admin/include/editor.php:3522
+#: humo-gen/admin/include/editor.php:1831
+#: humo-gen/admin/include/editor.php:2103
+#: humo-gen/admin/include/editor.php:2302
 #: humo-gen/admin/include/editor_addresses.php:19
-#: humo-gen/admin/include/editor_family_event.php:59
-#: humo-gen/admin/include/editor_person_event.php:175
+#: humo-gen/admin/include/editor_inc.php:38
+#: humo-gen/admin/include/editor_inc.php:415
+#: humo-gen/admin/include/editor_inc.php:627
+#: humo-gen/admin/include/editor_inc.php:1071
 msgid "Yes"
 msgstr "Kyllä"
 
 #: humo-gen/admin/include/cms_pages.php:117
 #: humo-gen/admin/include/cms_pages.php:195
-#: humo-gen/admin/include/editor.php:316
-#: humo-gen/admin/include/editor.php:734
-#: humo-gen/admin/include/editor.php:965
-#: humo-gen/admin/include/editor.php:2999
-#: humo-gen/admin/include/editor.php:3305
-#: humo-gen/admin/include/editor.php:3523
+#: humo-gen/admin/include/editor.php:1832
+#: humo-gen/admin/include/editor.php:2104
+#: humo-gen/admin/include/editor.php:2303
 #: humo-gen/admin/include/editor_addresses.php:20
-#: humo-gen/admin/include/editor_family_event.php:61
-#: humo-gen/admin/include/editor_person_event.php:176
+#: humo-gen/admin/include/editor_inc.php:39
+#: humo-gen/admin/include/editor_inc.php:416
+#: humo-gen/admin/include/editor_inc.php:628
+#: humo-gen/admin/include/editor_inc.php:1072
 msgid "No"
 msgstr "Ei"
 
@@ -2742,16 +2769,14 @@ msgstr "Ei valikkoa valittuna"
 #: humo-gen/admin/include/cms_pages.php:395
 #: humo-gen/admin/include/cms_pages.php:473
 #: humo-gen/admin/include/cms_pages.php:645
-#: humo-gen/admin/include/editor.php:1739
-#: humo-gen/admin/include/editor.php:2432
-#: humo-gen/admin/include/editor.php:3211
-#: humo-gen/admin/include/editor.php:3431
-#: humo-gen/admin/include/editor.php:3668
-#: humo-gen/admin/include/editor.php:3784
+#: humo-gen/admin/include/editor.php:739
+#: humo-gen/admin/include/editor.php:1344
+#: humo-gen/admin/include/editor.php:2017
+#: humo-gen/admin/include/editor.php:2218
+#: humo-gen/admin/include/editor.php:2435
+#: humo-gen/admin/include/editor.php:2542
 #: humo-gen/admin/include/editor_addresses.php:163
 #: humo-gen/admin/include/editor_addresses.php:326
-#: humo-gen/admin/include/editor_family_event.php:168
-#: humo-gen/admin/include/editor_person_event.php:318
 msgid "Save"
 msgstr "Talleta"
 
@@ -2776,16 +2801,28 @@ msgid "Remove menu"
 msgstr "Poista valikko"
 
 #: humo-gen/admin/include/cms_pages.php:484
-#: humo-gen/admin/include/editor.php:1742
-#: humo-gen/admin/include/editor.php:2429
-#: humo-gen/admin/include/editor.php:3208
-#: humo-gen/admin/include/editor.php:3428
-#: humo-gen/admin/include/editor.php:3665
+#: humo-gen/admin/include/editor.php:742
+#: humo-gen/admin/include/editor.php:1341
+#: humo-gen/admin/include/editor.php:2014
+#: humo-gen/admin/include/editor.php:2215
+#: humo-gen/admin/include/editor.php:2432
 #: humo-gen/admin/include/editor_addresses.php:183
 #: humo-gen/admin/include/editor_addresses.php:189
 #: humo-gen/admin/include/editor_addresses.php:337
-#: humo-gen/admin/include/editor_family_event.php:305
-#: humo-gen/admin/include/editor_person_event.php:726
+#: humo-gen/admin/include/editor_event_cls.php:190
+#: humo-gen/admin/include/editor_event_cls.php:202
+#: humo-gen/admin/include/editor_event_cls.php:214
+#: humo-gen/admin/include/editor_event_cls.php:226
+#: humo-gen/admin/include/editor_event_cls.php:238
+#: humo-gen/admin/include/editor_event_cls.php:250
+#: humo-gen/admin/include/editor_event_cls.php:262
+#: humo-gen/admin/include/editor_event_cls.php:274
+#: humo-gen/admin/include/editor_event_cls.php:287
+#: humo-gen/admin/include/editor_event_cls.php:307
+#: humo-gen/admin/include/editor_event_cls.php:334
+#: humo-gen/admin/include/editor_event_cls.php:346
+#: humo-gen/admin/include/editor_event_cls.php:856
+#: humo-gen/admin/include/editor_event_cls.php:869
 msgid "Add"
 msgstr "Lisää"
 
@@ -2823,694 +2860,554 @@ msgstr "Vakio päävalikko"
 msgid "Set per language"
 msgstr "Aseta kielikohtaisesti"
 
-#: humo-gen/admin/include/editor.php:124
-#: humo-gen/admin/include/editor.php:3116
-#: humo-gen/admin/include/editor.php:3213
-#: humo-gen/admin/include/editor.php:3359
-#: humo-gen/admin/include/editor.php:3433
-#: humo-gen/admin/include/editor.php:3605
-#: humo-gen/admin/include/editor.php:3669
+#: humo-gen/admin/include/editor.php:119
+#: humo-gen/admin/include/editor.php:1929
+#: humo-gen/admin/include/editor.php:2019
+#: humo-gen/admin/include/editor.php:2149
+#: humo-gen/admin/include/editor.php:2220
+#: humo-gen/admin/include/editor.php:2376
+#: humo-gen/admin/include/editor.php:2436
 msgid "or"
 msgstr "tai"
 
-#: humo-gen/admin/include/editor.php:311
-msgid "This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?"
-msgstr "Tämä poistaa henkilön kytkennät vanhempiin, puolisoon ja lapsiin <b>ja poistaa hänet kokonaan tietokannasta.</b> Haluatko jatkaa?"
-
-#: humo-gen/admin/include/editor.php:370
-#: humo-gen/admin/include/editor.php:403
-msgid "Person disconnected from marriage(s)."
-msgstr "Henkilön kytkennät puolisoihin poistettu."
-
-#: humo-gen/admin/include/editor.php:432
-msgid "Person disconnected from parents."
-msgstr "Henkilön kytkennät vanhempiin poistettu."
-
-#: humo-gen/admin/include/editor.php:447
-msgid "Person is removed"
-msgstr "Henkilö on poistettu"
-
-#: humo-gen/admin/include/editor.php:723
-msgid "Disconnect children before removal of marriage."
-msgstr "Pura lapset ennen avioliiton purkamista."
-
-#: humo-gen/admin/include/editor.php:728
-msgid "Are you sure to remove this mariage?"
-msgstr "Oletko varma, että haluat purkaa tämän kumppaniyhteyden?"
-
-#: humo-gen/admin/include/editor.php:769
-msgid "Marriage is removed!"
-msgstr "Kumppaniyhteys on poistettu!"
-
-#: humo-gen/admin/include/editor.php:832
-msgid "Select parents:"
-msgstr "Valitse vanhemmat:"
-
-#: humo-gen/admin/include/editor.php:857
-#: humo-gen/admin/include/editor.php:1373
-#: humo-gen/admin/include/editor.php:1586
-#: humo-gen/admin/include/editor.php:3769
-msgid "Select"
-msgstr "Valitse"
-
-#: humo-gen/admin/include/editor.php:908
-msgid "Parents are selected!"
-msgstr "Vanhemmat on valittu!"
-
-#: humo-gen/admin/include/editor.php:958
-msgid "Are you sure you want to disconnect this child?"
-msgstr "Oletko varma, että haluat purkaa tämän lapsen yhteyden?"
-
-#: humo-gen/admin/include/editor.php:1255
+#: humo-gen/admin/include/editor.php:325
 msgid "Examples of date entries (using the English month abbreviations): jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec):"
 msgstr "Esimerkit päiväysten merkitsemiseen (englanninkielisiä kuukausilyhenteitä käyttäen): jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec):"
 
-#: humo-gen/admin/include/editor.php:1256
+#: humo-gen/admin/include/editor.php:326
 msgid "<b>13 oct 1813</b>, <b>between 1986 and 1987</b>"
 msgstr "<b>13 oct 1813</b>, <b>välillä 1986 ja 1987</b>"
 
-#: humo-gen/admin/include/editor.php:1270
+#: humo-gen/admin/include/editor.php:340
 msgid "or ID:"
 msgstr "tai ID:"
 
-#: humo-gen/admin/include/editor.php:1322
+#: humo-gen/admin/include/editor.php:381
 msgid "Found:"
 msgstr "Löytyi:"
 
-#: humo-gen/admin/include/editor.php:1383
-#: humo-gen/admin/include/editor.php:1384
+#: humo-gen/admin/include/editor.php:402
+#: humo-gen/admin/include/editor.php:593
+#: humo-gen/admin/include/editor.php:2527
+#: humo-gen/admin/include/editor_inc.php:531
+msgid "Select"
+msgstr "Valitse"
+
+#: humo-gen/admin/include/editor.php:411
+#: humo-gen/admin/include/editor.php:412
 msgid "Add person"
 msgstr "Lisää henkilö"
 
-#: humo-gen/admin/include/editor.php:1404
+#: humo-gen/admin/include/editor.php:430
 msgid "New family tree!"
 msgstr "Uusi sukupuu!"
 
-#: humo-gen/admin/include/editor.php:1577
+#: humo-gen/admin/include/editor.php:585
 msgid "Select child"
 msgstr "Valitse lapsi"
 
-#: humo-gen/admin/include/editor.php:1589
+#: humo-gen/admin/include/editor.php:596
 msgid "Or add a new child:"
 msgstr "TAI lisää uusi lapsi:"
 
-#: humo-gen/admin/include/editor.php:1667
-#: humo-gen/admin/include/editor.php:1669
+#: humo-gen/admin/include/editor.php:672
+#: humo-gen/admin/include/editor.php:674
 msgid "parents"
 msgstr "vanhemmat"
 
-#: humo-gen/admin/include/editor.php:1714
-#: humo-gen/admin/include/editor.php:2416
-#: humo-gen/admin/include/editor.php:3214
-#: humo-gen/admin/include/editor.php:3434
-#: humo-gen/admin/include/editor.php:3670
+#: humo-gen/admin/include/editor.php:715
+#: humo-gen/admin/include/editor.php:1329
+#: humo-gen/admin/include/editor.php:2020
+#: humo-gen/admin/include/editor.php:2221
+#: humo-gen/admin/include/editor.php:2437
 msgid "Remove"
 msgstr "Poista"
 
-#: humo-gen/admin/include/editor.php:1755
+#: humo-gen/admin/include/editor.php:751
 msgid "firstname"
 msgstr "etunimi"
 
 # Dutch: change into "bijnaam" for BK.
-#: humo-gen/admin/include/editor.php:1755
-#: humo-gen/admin/include/editor_person_event.php:610
-#: humo-gen/admin/include/editor_person_event.php:631
+#: humo-gen/admin/include/editor.php:751
+#: humo-gen/admin/include/editor_event_cls.php:730
+#: humo-gen/admin/include/editor_event_cls.php:751
 msgid "Nickname"
 msgstr "myöhempi sukunimi"
 
-#: humo-gen/admin/include/editor.php:1766
-#: humo-gen/admin/include/editor.php:1827
-#: humo-gen/admin/include/editor.php:1850
-#: humo-gen/admin/include/editor.php:1896
-#: humo-gen/admin/include/editor.php:1940
-#: humo-gen/admin/include/editor.php:2020
-#: humo-gen/admin/include/editor.php:2098
-#: humo-gen/admin/include/editor.php:2115
-#: humo-gen/admin/include/editor.php:2609
-#: humo-gen/admin/include/editor.php:2643
-#: humo-gen/admin/include/editor.php:2670
-#: humo-gen/admin/include/editor.php:2710
-#: humo-gen/admin/include/editor.php:2737
-#: humo-gen/admin/include/editor.php:2774
-#: humo-gen/admin/include/editor.php:2805
-#: humo-gen/admin/include/editor.php:2822
-#: humo-gen/admin/include/editor.php:3646
-#: humo-gen/admin/include/editor.php:3655
-#: humo-gen/admin/include/editor_family_event.php:268
-#: humo-gen/admin/include/editor_person_event.php:672
+#: humo-gen/admin/include/editor.php:761
+#: humo-gen/admin/include/editor.php:825
+#: humo-gen/admin/include/editor.php:846
+#: humo-gen/admin/include/editor.php:886
+#: humo-gen/admin/include/editor.php:924
+#: humo-gen/admin/include/editor.php:998
+#: humo-gen/admin/include/editor.php:1067
+#: humo-gen/admin/include/editor.php:1083
+#: humo-gen/admin/include/editor.php:1515
+#: humo-gen/admin/include/editor.php:1547
+#: humo-gen/admin/include/editor.php:1572
+#: humo-gen/admin/include/editor.php:1606
+#: humo-gen/admin/include/editor.php:1631
+#: humo-gen/admin/include/editor.php:1662
+#: humo-gen/admin/include/editor.php:1691
+#: humo-gen/admin/include/editor.php:1706
+#: humo-gen/admin/include/editor.php:2415
+#: humo-gen/admin/include/editor.php:2423
+#: humo-gen/admin/include/editor_event_cls.php:793
+#: humo-gen/admin/include/editor_event_cls.php:803
 msgid "source"
 msgstr "lähde"
 
-#: humo-gen/admin/include/editor.php:1772
+#: humo-gen/admin/include/editor.php:766
 msgid "prefix"
 msgstr "etuliite"
 
-#: humo-gen/admin/include/editor.php:1772
+#: humo-gen/admin/include/editor.php:766
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr "Esimerkiksi: d\\'  tai:  van_ (käytä _ välilyöntinä)"
 
-#: humo-gen/admin/include/editor.php:1774
+#: humo-gen/admin/include/editor.php:768
 msgid "lastname"
 msgstr "sukunimi"
 
-#: humo-gen/admin/include/editor.php:1775
+#: humo-gen/admin/include/editor.php:769
 msgid "patronymic"
 msgstr "patronyymi"
 
-#: humo-gen/admin/include/editor.php:1780
-#: humo-gen/admin/include/editor.php:1868
-#: humo-gen/admin/include/editor.php:1911
-#: humo-gen/admin/include/editor.php:1993
-#: humo-gen/admin/include/editor.php:2038
-#: humo-gen/admin/include/editor.php:2623
-#: humo-gen/admin/include/editor.php:2651
-#: humo-gen/admin/include/editor.php:2684
-#: humo-gen/admin/include/editor.php:2718
-#: humo-gen/admin/include/editor.php:2745
-#: humo-gen/admin/include/editor.php:2787
-#: humo-gen/admin/include/editor.php:3205
-#: humo-gen/admin/include/editor.php:3420
-#: humo-gen/admin/include/editor.php:3661
-#: humo-gen/admin/include/editor_family_event.php:283
-#: humo-gen/admin/include/editor_person_event.php:693
+#: humo-gen/admin/include/editor.php:774
+#: humo-gen/admin/include/editor.php:863
+#: humo-gen/admin/include/editor.php:900
+#: humo-gen/admin/include/editor.php:976
+#: humo-gen/admin/include/editor.php:1015
+#: humo-gen/admin/include/editor.php:1528
+#: humo-gen/admin/include/editor.php:1554
+#: humo-gen/admin/include/editor.php:1585
+#: humo-gen/admin/include/editor.php:1613
+#: humo-gen/admin/include/editor.php:1638
+#: humo-gen/admin/include/editor.php:1674
+#: humo-gen/admin/include/editor.php:2011
+#: humo-gen/admin/include/editor.php:2207
+#: humo-gen/admin/include/editor.php:2428
+#: humo-gen/admin/include/editor_event_cls.php:820
 msgid "text"
 msgstr "teksti"
 
-#: humo-gen/admin/include/editor.php:1786
-msgid "Special names/ titles"
-msgstr "Erityiset nimet/arvot"
-
-#: humo-gen/admin/include/editor.php:1787
-#: humo-gen/admin/include/editor.php:1877
-#: humo-gen/admin/include/editor.php:1921
-#: humo-gen/admin/include/editor.php:2001
-#: humo-gen/admin/include/editor.php:2048
-#: humo-gen/admin/include/editor.php:2126
-#: humo-gen/admin/include/editor.php:2130
-#: humo-gen/admin/include/editor_person_event.php:265
-msgid "Events for person"
-msgstr "Henkilön tapahtumat"
-
-#: humo-gen/admin/include/editor.php:1796
-#: humo-gen/admin/include/editor.php:1800
+#: humo-gen/admin/include/editor.php:795
+#: humo-gen/admin/include/editor.php:799
 msgid "alive"
 msgstr "elossa"
 
-#: humo-gen/admin/include/editor.php:1796
+#: humo-gen/admin/include/editor.php:795
 msgid "For the privacy filter"
 msgstr "Yksityisyyssuodatinta varten"
 
-#: humo-gen/admin/include/editor.php:1803
+#: humo-gen/admin/include/editor.php:802
 msgid "deceased"
 msgstr "kuollut"
 
-#: humo-gen/admin/include/editor.php:1811
+#: humo-gen/admin/include/editor.php:810
 msgid "Sexe"
 msgstr "Sukupuoli"
 
-#: humo-gen/admin/include/editor.php:1837
-#: humo-gen/admin/include/editor.php:1884
-#: humo-gen/admin/include/editor.php:1928
-#: humo-gen/admin/include/editor.php:2008
-#: humo-gen/admin/include/editor.php:2597
-#: humo-gen/admin/include/editor.php:2631
-#: humo-gen/admin/include/editor.php:2658
-#: humo-gen/admin/include/editor.php:2698
-#: humo-gen/admin/include/editor.php:2726
-#: humo-gen/admin/include/editor.php:2763
-#: humo-gen/admin/include/editor.php:3179
-#: humo-gen/admin/include/editor.php:3414
-#: humo-gen/admin/include/editor.php:3640
-#: humo-gen/admin/include/editor_family_event.php:278
-#: humo-gen/admin/include/editor_person_event.php:683
+#: humo-gen/admin/include/editor.php:834
+#: humo-gen/admin/include/editor.php:875
+#: humo-gen/admin/include/editor.php:913
+#: humo-gen/admin/include/editor.php:987
+#: humo-gen/admin/include/editor.php:1504
+#: humo-gen/admin/include/editor.php:1536
+#: humo-gen/admin/include/editor.php:1561
+#: humo-gen/admin/include/editor.php:1595
+#: humo-gen/admin/include/editor.php:1621
+#: humo-gen/admin/include/editor.php:1652
+#: humo-gen/admin/include/editor.php:1988
+#: humo-gen/admin/include/editor.php:2201
+#: humo-gen/admin/include/editor.php:2409
+#: humo-gen/admin/include/editor_event_cls.php:813
 msgid "date"
 msgstr "päiväys"
 
-#: humo-gen/admin/include/editor.php:1838
-#: humo-gen/admin/include/editor.php:1884
-#: humo-gen/admin/include/editor.php:1928
-#: humo-gen/admin/include/editor.php:2008
-#: humo-gen/admin/include/editor.php:2597
-#: humo-gen/admin/include/editor.php:2631
-#: humo-gen/admin/include/editor.php:2658
-#: humo-gen/admin/include/editor.php:2698
-#: humo-gen/admin/include/editor.php:2726
-#: humo-gen/admin/include/editor.php:2763
-#: humo-gen/admin/include/editor.php:3179
-#: humo-gen/admin/include/editor.php:3414
-#: humo-gen/admin/include/editor.php:3640
+#: humo-gen/admin/include/editor.php:835
+#: humo-gen/admin/include/editor.php:875
+#: humo-gen/admin/include/editor.php:913
+#: humo-gen/admin/include/editor.php:987
+#: humo-gen/admin/include/editor.php:1504
+#: humo-gen/admin/include/editor.php:1536
+#: humo-gen/admin/include/editor.php:1561
+#: humo-gen/admin/include/editor.php:1595
+#: humo-gen/admin/include/editor.php:1621
+#: humo-gen/admin/include/editor.php:1652
+#: humo-gen/admin/include/editor.php:1988
+#: humo-gen/admin/include/editor.php:2201
+#: humo-gen/admin/include/editor.php:2409
 #: humo-gen/admin/include/editor_addresses.php:117
 #: humo-gen/admin/include/editor_addresses.php:119
-#: humo-gen/admin/include/editor_family_event.php:278
-#: humo-gen/admin/include/editor_person_event.php:684
+#: humo-gen/admin/include/editor_event_cls.php:814
 msgid "place"
 msgstr "paikka"
 
-#: humo-gen/admin/include/editor.php:1859
+#: humo-gen/admin/include/editor.php:854
 msgid "birth time"
 msgstr "syntymäaika"
 
-#: humo-gen/admin/include/editor.php:1862
+#: humo-gen/admin/include/editor.php:857
 msgid "stillborn child"
 msgstr "kuolleena syntynyt lapsi"
 
-#: humo-gen/admin/include/editor.php:1876
-#: humo-gen/admin/include/editor_person_event.php:284
-#: humo-gen/admin/include/editor_person_event.php:714
-msgid "Birth Declaration"
-msgstr "Syntymätodistus"
-
-#: humo-gen/admin/include/editor.php:1904
+#: humo-gen/admin/include/editor.php:893
 msgid "religion"
 msgstr "uskonto"
 
-#: humo-gen/admin/include/editor.php:1920
-#: humo-gen/admin/include/editor_person_event.php:285
-#: humo-gen/admin/include/editor_person_event.php:715
-msgid "Baptism Witness"
-msgstr "Kummit"
-
-#: humo-gen/admin/include/editor.php:1948
+#: humo-gen/admin/include/editor.php:931
 msgid "death time"
 msgstr "kuolinaika"
 
-#: humo-gen/admin/include/editor.php:1950
+#: humo-gen/admin/include/editor.php:933
 msgid "cause"
 msgstr "kuolinsyy"
 
-#: humo-gen/admin/include/editor.php:1955
+#: humo-gen/admin/include/editor.php:938
 msgid "murdered"
 msgstr "murhattu"
 
-#: humo-gen/admin/include/editor.php:1958
+#: humo-gen/admin/include/editor.php:941
 msgid "drowned"
 msgstr "hukkunut"
 
-#: humo-gen/admin/include/editor.php:1961
+#: humo-gen/admin/include/editor.php:944
 msgid "perished"
 msgstr "menehtynyt"
 
-#: humo-gen/admin/include/editor.php:1964
+#: humo-gen/admin/include/editor.php:947
 msgid "killed in action"
 msgstr "kaatunut sodassa"
 
-#: humo-gen/admin/include/editor.php:1967
+#: humo-gen/admin/include/editor.php:950
 msgid "being missed"
 msgstr "kadonnut"
 
-#: humo-gen/admin/include/editor.php:1970
+#: humo-gen/admin/include/editor.php:953
 msgid "committed suicide"
 msgstr "tehnyt itsemurhan"
 
-#: humo-gen/admin/include/editor.php:1973
+#: humo-gen/admin/include/editor.php:956
 msgid "executed"
 msgstr "teloitettu"
 
-#: humo-gen/admin/include/editor.php:1976
+#: humo-gen/admin/include/editor.php:959
 msgid "died young"
 msgstr "kuollut nuorena"
 
-#: humo-gen/admin/include/editor.php:1979
+#: humo-gen/admin/include/editor.php:962
 msgid "died unmarried"
 msgstr "kuollut naimattomana"
 
-#: humo-gen/admin/include/editor.php:1982
+#: humo-gen/admin/include/editor.php:965
 msgid "registration"
 msgstr "rekisteröinti"
 
-#: humo-gen/admin/include/editor.php:1985
+#: humo-gen/admin/include/editor.php:968
 msgid "declared death"
 msgstr "julistettu kuolleeksi"
 
-#: humo-gen/admin/include/editor.php:2000
-#: humo-gen/admin/include/editor_person_event.php:286
-#: humo-gen/admin/include/editor_person_event.php:716
-msgid "Death Declaration"
-msgstr "Kuolintodistus"
-
-#: humo-gen/admin/include/editor.php:2007
+#: humo-gen/admin/include/editor.php:986
 msgid "Buried"
 msgstr "Haudattu"
 
-#: humo-gen/admin/include/editor.php:2028
-#: humo-gen/admin/include/editor.php:2032
+#: humo-gen/admin/include/editor.php:1005
+#: humo-gen/admin/include/editor.php:1009
 msgid "cremation"
 msgstr "tuhkaus"
 
-#: humo-gen/admin/include/editor.php:2047
-#: humo-gen/admin/include/editor_person_event.php:287
-#: humo-gen/admin/include/editor_person_event.php:717
-msgid "Burial Witness"
-msgstr "Hautauksen saattajat"
-
-#: humo-gen/admin/include/editor.php:2052
+#: humo-gen/admin/include/editor.php:1025
 msgid "own code"
 msgstr "oma koodi"
 
-#: humo-gen/admin/include/editor.php:2084
+#: humo-gen/admin/include/editor.php:1055
 msgid "General text for person"
 msgstr "yleinen teksti"
 
-#: humo-gen/admin/include/editor.php:2106
+#: humo-gen/admin/include/editor.php:1075
 msgid "General source for person"
 msgstr "Yleinen henkilötiedon lähde"
 
-#: humo-gen/admin/include/editor.php:2140
-#: humo-gen/admin/include/editor.php:2849
-msgid "For items like:"
-msgstr "Tapahtumat kuten:"
-
-#: humo-gen/admin/include/editor.php:2140
-#: humo-gen/admin/include/editor_person_event.php:281
-#: humo-gen/admin/include/editor_person_event.php:711
-msgid "Picture/ Media"
-msgstr "Kuva / Media"
-
-#: humo-gen/admin/include/editor.php:2140
-#: humo-gen/admin/include/editor_person_event.php:282
-#: humo-gen/admin/include/editor_person_event.php:712
-msgid "Profession"
-msgstr "Ammatti"
-
-#: humo-gen/admin/include/editor.php:2140
-#: humo-gen/admin/include/editor.php:2849
-#: humo-gen/admin/include/editor_family_event.php:211
-#: humo-gen/admin/include/editor_family_event.php:301
-#: humo-gen/admin/include/editor_person_event.php:283
-#: humo-gen/admin/include/editor_person_event.php:314
-#: humo-gen/admin/include/editor_person_event.php:713
-msgid "Event"
-msgstr "Tapahtuma"
-
-#: humo-gen/admin/include/editor.php:2140
-#: humo-gen/admin/include/editor.php:2849
-msgid "etc."
-msgstr "jne."
-
-#: humo-gen/admin/include/editor.php:2162
-#: humo-gen/admin/include/editor.php:2859
+#: humo-gen/admin/include/editor.php:1104
+#: humo-gen/admin/include/editor.php:1721
 msgid "Gedcom tags"
 msgstr "Gedcomin tagit"
 
-#: humo-gen/admin/include/editor.php:2164
-#: humo-gen/admin/include/editor.php:2167
-#: humo-gen/admin/include/editor.php:2861
-#: humo-gen/admin/include/editor.php:2864
+#: humo-gen/admin/include/editor.php:1106
+#: humo-gen/admin/include/editor.php:1109
+#: humo-gen/admin/include/editor.php:1723
+#: humo-gen/admin/include/editor.php:1726
 #, php-format
 msgid "There are %d unprocessed gedcom tags."
 msgstr "On vielä %d käsittelemätöntä gedcom tagia."
 
-#: humo-gen/admin/include/editor.php:2186
+#: humo-gen/admin/include/editor.php:1126
 msgid "User notes"
 msgstr "Käyttäjähuomautukset"
 
-#: humo-gen/admin/include/editor.php:2189
-#: humo-gen/admin/include/editor.php:2192
+#: humo-gen/admin/include/editor.php:1128
+#: humo-gen/admin/include/editor.php:1131
 #, php-format
 msgid "There are %d user added notes."
 msgstr "On %d käyttäjien lisäämää huomautusta."
 
-#: humo-gen/admin/include/editor.php:2233
+#: humo-gen/admin/include/editor.php:1160
 msgid "Marriage(s) and children"
 msgstr "Avioliitot ja lapset"
 
-#: humo-gen/admin/include/editor.php:2255
+#: humo-gen/admin/include/editor.php:1178
 msgid "Select marriage"
 msgstr "Valitse avioliitto"
 
-#: humo-gen/admin/include/editor.php:2298
+#: humo-gen/admin/include/editor.php:1220
 msgid "Disconnect child"
 msgstr "Pura lapsen yhteys"
 
-#: humo-gen/admin/include/editor.php:2317
+#: humo-gen/admin/include/editor.php:1239
 msgid "Connect child"
 msgstr "Liitä lapsi"
 
-#: humo-gen/admin/include/editor.php:2317
+#: humo-gen/admin/include/editor.php:1239
 msgid "Add child"
 msgstr "Lisää lapsi"
 
-#: humo-gen/admin/include/editor.php:2328
+#: humo-gen/admin/include/editor.php:1250
 msgid "Add marriage"
 msgstr "Lisää kumppani"
 
-#: humo-gen/admin/include/editor.php:2423
+#: humo-gen/admin/include/editor.php:1335
 msgid "Edit marriage"
 msgstr "Muokkaa avioliittoa"
 
-#: humo-gen/admin/include/editor.php:2440
-#: humo-gen/admin/include/editor.php:2657
+#: humo-gen/admin/include/editor.php:1352
+#: humo-gen/admin/include/editor.php:1560
 msgid "Marriage"
 msgstr "Vihkiminen"
 
-#: humo-gen/admin/include/editor.php:2459
-#: humo-gen/admin/include/editor.php:2511
+#: humo-gen/admin/include/editor.php:1393
+#: humo-gen/admin/include/editor.php:1443
 msgid "Select person"
 msgstr "Valitse henkilö"
 
-#: humo-gen/admin/include/editor.php:2558
+#: humo-gen/admin/include/editor.php:1465
 msgid "Relation Type"
 msgstr "Suhteen tyyppi"
 
-#: humo-gen/admin/include/editor.php:2563
-#: humo-gen/admin/include/editor.php:2596
+#: humo-gen/admin/include/editor.php:1470
+#: humo-gen/admin/include/editor.php:1503
 msgid "Living together"
 msgstr "Avoliitto"
 
-#: humo-gen/admin/include/editor.php:2566
+#: humo-gen/admin/include/editor.php:1473
 msgid "Living apart together"
 msgstr "Asuvat erillään"
 
-#: humo-gen/admin/include/editor.php:2569
+#: humo-gen/admin/include/editor.php:1476
 msgid "Intentionally unmarried mother"
 msgstr "Tarkoituksella vihkimätön äiti"
 
-#: humo-gen/admin/include/editor.php:2572
+#: humo-gen/admin/include/editor.php:1479
 msgid "Homosexual"
 msgstr "Rekisteröity parisuhde"
 
-#: humo-gen/admin/include/editor.php:2575
+#: humo-gen/admin/include/editor.php:1482
 msgid "Non_marital"
 msgstr "Lapsen isä/äiti"
 
-#: humo-gen/admin/include/editor.php:2578
+#: humo-gen/admin/include/editor.php:1485
 msgid "Extramarital"
 msgstr "Avioliiton ulkopuolinen"
 
-#: humo-gen/admin/include/editor.php:2584
+#: humo-gen/admin/include/editor.php:1491
 msgid "Registered"
 msgstr "Rekisteröity"
 
-#: humo-gen/admin/include/editor.php:2587
+#: humo-gen/admin/include/editor.php:1494
 msgid "Unknown relation"
 msgstr "Tuntematon suhde"
 
-#: humo-gen/admin/include/editor.php:2618
+#: humo-gen/admin/include/editor.php:1523
 msgid "End date"
 msgstr "Päättymispäivä"
 
-#: humo-gen/admin/include/editor.php:2630
+#: humo-gen/admin/include/editor.php:1535
 msgid "Notice of Marriage"
 msgstr "Vihkitodistus"
 
-#: humo-gen/admin/include/editor.php:2679
-#: humo-gen/admin/include/editor.php:2782
+#: humo-gen/admin/include/editor.php:1580
+#: humo-gen/admin/include/editor.php:1669
 msgid "Registrar"
 msgstr "Rekisteröity"
 
-#: humo-gen/admin/include/editor.php:2690
-#: humo-gen/admin/include/editor.php:2849
-#: humo-gen/admin/include/editor_family_event.php:212
-#: humo-gen/admin/include/editor_family_event.php:302
-msgid "Marriage Witness"
-msgstr "Vihkimisen todistajat"
-
-#: humo-gen/admin/include/editor.php:2691
-#: humo-gen/admin/include/editor.php:2752
-#: humo-gen/admin/include/editor.php:2835
-#: humo-gen/admin/include/editor.php:2839
-msgid "Events for marriage"
-msgstr "vihitty"
-
-#: humo-gen/admin/include/editor.php:2697
+#: humo-gen/admin/include/editor.php:1594
 msgid "Religious Notice of Marriage"
 msgstr "Avioliittolupa"
 
-#: humo-gen/admin/include/editor.php:2725
+#: humo-gen/admin/include/editor.php:1620
 msgid "Religious Marriage"
 msgstr "Uskonnollinen vihkiminen"
 
-#: humo-gen/admin/include/editor.php:2751
-#: humo-gen/admin/include/editor.php:2849
-#: humo-gen/admin/include/editor_family_event.php:213
-#: humo-gen/admin/include/editor_family_event.php:303
-msgid "Marriage Witness (church)"
-msgstr "Vihkimisen todistajat (kirkko)"
-
-#: humo-gen/admin/include/editor.php:2756
-#: humo-gen/admin/include/editor.php:2757
+#: humo-gen/admin/include/editor.php:1645
+#: humo-gen/admin/include/editor.php:1646
 msgid "Religion"
 msgstr "Uskonto"
 
-#: humo-gen/admin/include/editor.php:2762
+#: humo-gen/admin/include/editor.php:1651
 msgid "Divorce"
 msgstr "Ero"
 
-#: humo-gen/admin/include/editor.php:2787
+#: humo-gen/admin/include/editor.php:1674
 msgid "For a divorce without further data just type \"DIVORCE\" in text field."
 msgstr "Jos avioeroon ei ole lisätietoja, kirjoita tekstikenttään vain \"ERONNUT\"."
 
-#: humo-gen/admin/include/editor.php:2791
+#: humo-gen/admin/include/editor.php:1678
 msgid "General text by marriage"
 msgstr "Avioliittiteksti"
 
-#: humo-gen/admin/include/editor.php:2813
+#: humo-gen/admin/include/editor.php:1698
 msgid "General source by marriage"
 msgstr "Vihkitietojen lähde"
 
-#: humo-gen/admin/include/editor.php:2887
-#: humo-gen/admin/include/editor.php:3224
-#: humo-gen/admin/include/editor.php:3679
+#: humo-gen/admin/include/editor.php:1743
+#: humo-gen/admin/include/editor.php:2030
+#: humo-gen/admin/include/editor.php:2446
 msgid "Example"
 msgstr "Esimerkki"
 
-#: humo-gen/admin/include/editor.php:2994
+#: humo-gen/admin/include/editor.php:1827
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr "Oletko varma, että haluat poistaa tämän lähteen ja KAIKKI lähdeviittaukset?"
 
-#: humo-gen/admin/include/editor.php:3083
+#: humo-gen/admin/include/editor.php:1900
 msgid "Source is removed!"
 msgstr "Lähde on poistettu!"
 
-#: humo-gen/admin/include/editor.php:3088
+#: humo-gen/admin/include/editor.php:1905
 msgid "Source list, these sources can be connected to multiple items."
 msgstr "Lähdeluettelo, nämä lähteet voidaan yhdistää useampaan kohteeseen."
 
-#: humo-gen/admin/include/editor.php:3097
-#: humo-gen/admin/include/editor.php:3100
+#: humo-gen/admin/include/editor.php:1913
+#: humo-gen/admin/include/editor.php:1915
 msgid "Select source"
 msgstr "Valitse lähde"
 
-#: humo-gen/admin/include/editor.php:3118
+#: humo-gen/admin/include/editor.php:1931
 msgid "Add source"
 msgstr "Lisää lähde"
 
-#: humo-gen/admin/include/editor.php:3127
-#: humo-gen/admin/include/editor.php:3367
-#: humo-gen/admin/include/editor.php:3613
-#: humo-gen/admin/include/editor_family_event.php:164
-#: humo-gen/admin/include/editor_person_event.php:314
+#: humo-gen/admin/include/editor.php:1940
+#: humo-gen/admin/include/editor.php:2157
+#: humo-gen/admin/include/editor.php:2384
 msgid "Option"
 msgstr "Optio"
 
-#: humo-gen/admin/include/editor.php:3127
-#: humo-gen/admin/include/editor.php:3367
-#: humo-gen/admin/include/editor.php:3613
-#: humo-gen/admin/include/editor_family_event.php:164
-#: humo-gen/admin/include/editor_person_event.php:314
+#: humo-gen/admin/include/editor.php:1940
+#: humo-gen/admin/include/editor.php:2157
+#: humo-gen/admin/include/editor.php:2384
 msgid "Value"
 msgstr "Arvo"
 
-#: humo-gen/admin/include/editor.php:3164
+#: humo-gen/admin/include/editor.php:1974
 msgid "Status:"
 msgstr "Tila:"
 
-#: humo-gen/admin/include/editor.php:3168
+#: humo-gen/admin/include/editor.php:1977
 msgid "publish"
 msgstr "julkaise"
 
-#: humo-gen/admin/include/editor.php:3171
+#: humo-gen/admin/include/editor.php:1980
 msgid "restricted"
 msgstr "rajoitettu"
 
-#: humo-gen/admin/include/editor.php:3172
+#: humo-gen/admin/include/editor.php:1981
 msgid "restricted = only visible for selected user groups"
 msgstr "rajoitettu = näkyy vain osalle käyttäjäryhmistä"
 
-#: humo-gen/admin/include/editor.php:3198
+#: humo-gen/admin/include/editor.php:2004
 msgid "will be shown as a link."
 msgstr "näytetään linkkinä."
 
-#: humo-gen/admin/include/editor.php:3300
+#: humo-gen/admin/include/editor.php:2099
 msgid "Really remove repository with all repository links?"
 msgstr "Haluatko varmasti poistaa lähteen ja kaikki lähdeviittaukset?"
 
-#: humo-gen/admin/include/editor.php:3330
+#: humo-gen/admin/include/editor.php:2124
 msgid "Repository is removed!"
 msgstr "Lähde on poistettu!"
 
-#: humo-gen/admin/include/editor.php:3335
+#: humo-gen/admin/include/editor.php:2129
 msgid "A repository can be connected to an extended source. Edit an extended source to connect a repository."
 msgstr "Tietolähde voidaan yhdistää laajempaan lähteeseen. Muokkaa laajennettua lähdettä lisätäksesi tietolähteen."
 
-#: humo-gen/admin/include/editor.php:3344
-#: humo-gen/admin/include/editor.php:3346
+#: humo-gen/admin/include/editor.php:2136
+#: humo-gen/admin/include/editor.php:2138
 msgid "Select repository"
 msgstr "Valitse säilytyspaikka"
 
-#: humo-gen/admin/include/editor.php:3360
+#: humo-gen/admin/include/editor.php:2150
 msgid "Add repository"
 msgstr "Lisää tietolähde"
 
-#: humo-gen/admin/include/editor.php:3381
+#: humo-gen/admin/include/editor.php:2169
 msgid "No valid repository number."
 msgstr "Kelpaamaton lähdenumero."
 
-#: humo-gen/admin/include/editor.php:3425
-#: humo-gen/admin/include/editor_person_event.php:293
-#: humo-gen/admin/include/editor_person_event.php:723
+#: humo-gen/admin/include/editor.php:2212
+#: humo-gen/admin/include/editor_event_cls.php:19
+#: humo-gen/admin/include/editor_event_cls.php:853
 msgid "URL/ Internet link"
 msgstr "URL/ Internet link"
 
-#: humo-gen/admin/include/editor.php:3518
+#: humo-gen/admin/include/editor.php:2298
 msgid "Are you sure you want to remove this address and ALL address references?"
 msgstr "Oletko varma, että haluat poistaa tämän osoitteen ja KAIKKI osoiteviitaukset?"
 
-#: humo-gen/admin/include/editor.php:3549
+#: humo-gen/admin/include/editor.php:2324
 msgid "Address has been removed!"
 msgstr "Osoite on poistettu!"
 
-#: humo-gen/admin/include/editor.php:3577
+#: humo-gen/admin/include/editor.php:2352
 msgid "Address list, these addresses can be connected to multiple persons."
 msgstr "Osoitelista, nämä osoitteet voidaan yhdistää useaan henkilöön."
 
-#: humo-gen/admin/include/editor.php:3590
-#: humo-gen/admin/include/editor.php:3592
+#: humo-gen/admin/include/editor.php:2363
+#: humo-gen/admin/include/editor.php:2365
 #: humo-gen/admin/include/editor_addresses.php:315
 msgid "Select address"
 msgstr "Valitse osoite"
 
-#: humo-gen/admin/include/editor.php:3606
+#: humo-gen/admin/include/editor.php:2377
 #: humo-gen/admin/include/editor_addresses.php:349
 msgid "Add address"
 msgstr "Lisää osoite"
 
-#: humo-gen/admin/include/editor.php:3623
+#: humo-gen/admin/include/editor.php:2393
 msgid "No valid address number."
 msgstr "Kelpaamaton osoitenumero."
 
-#: humo-gen/admin/include/editor.php:3643
+#: humo-gen/admin/include/editor.php:2412
 msgid "Picture"
 msgstr "Kuva"
 
-#: humo-gen/admin/include/editor.php:3698
+#: humo-gen/admin/include/editor.php:2465
 msgid "Update all places here. At this moment these places are updated: birth, baptise, death and burial places."
 msgstr "Päivitä kaikki paikat tässä. Tällä hetkellä nämä paikat ylläpidetään: syntymä-, kaste-, kuolema- ja hautauspaikat"
 
-#: humo-gen/admin/include/editor.php:3741
+#: humo-gen/admin/include/editor.php:2502
 msgid "UPDATE OK!"
 msgstr "PÄIVITYS OK!"
 
-#: humo-gen/admin/include/editor.php:3755
+#: humo-gen/admin/include/editor.php:2514
 msgid "Select location"
 msgstr "Valitse paikka"
 
-#: humo-gen/admin/include/editor.php:3776
-#: humo-gen/admin/include/editor.php:3781
+#: humo-gen/admin/include/editor.php:2534
+#: humo-gen/admin/include/editor.php:2539
 msgid "Change location"
 msgstr "Muuta paikkaa"
 
-#: humo-gen/admin/include/editor.php:3783
+#: humo-gen/admin/include/editor.php:2541
 msgid "Also change Google Maps table."
 msgstr "Muuta myös paikkaa Goople Mapsissa"
 
@@ -3547,207 +3444,337 @@ msgstr "jälkeen"
 msgid "between"
 msgstr "välillä"
 
-#: humo-gen/admin/include/editor_family_event.php:53
-#: humo-gen/admin/include/editor_person_event.php:169
-msgid "Are you sure you want to remove this event?"
-msgstr "Oletko varma, että haluat poistaa tämän tapahtuman?"
+#: humo-gen/admin/include/editor_event_cls.php:7
+#: humo-gen/admin/include/editor_event_cls.php:152
+#: humo-gen/admin/include/editor_event_cls.php:304
+msgid "Picture/ Media"
+msgstr "Kuva / Media"
 
-#: humo-gen/admin/include/editor_family_event.php:149
-msgid "Events by marriage"
-msgstr "Vihkitapahtumat"
+#: humo-gen/admin/include/editor_event_cls.php:8
+#: humo-gen/admin/include/editor_event_cls.php:284
+#: humo-gen/admin/include/editor_inc.php:852
+msgid "Profession"
+msgstr "Ammatti"
 
-#: humo-gen/admin/include/editor_family_event.php:296
-#: humo-gen/admin/include/editor_person_event.php:709
-msgid "Add event"
-msgstr "Lisää tapahtuma"
+#: humo-gen/admin/include/editor_event_cls.php:9
+#: humo-gen/admin/include/editor_event_cls.php:152
+#: humo-gen/admin/include/editor_event_cls.php:171
+#: humo-gen/admin/include/editor_event_cls.php:843
+#: humo-gen/admin/include/editor_event_cls.php:865
+msgid "Event"
+msgstr "Tapahtuma"
 
-#: humo-gen/admin/include/editor_person_event.php:57
-msgid "Photo too large"
-msgstr "Valokuva liian iso"
+#: humo-gen/admin/include/editor_event_cls.php:10
+#: humo-gen/admin/include/editor_event_cls.php:236
+#: humo-gen/admin/include/editor_inc.php:848
+msgid "Birth Declaration"
+msgstr "Syntymätodistus"
 
-#: humo-gen/admin/include/editor_person_event.php:62
-msgid "Photo upload failed, check folder rights"
-msgstr "Kuvan lataaminen epäonnistui, tarkista kansion oikeudet"
+#: humo-gen/admin/include/editor_event_cls.php:11
+#: humo-gen/admin/include/editor_event_cls.php:248
+#: humo-gen/admin/include/editor_inc.php:849
+msgid "Baptism Witness"
+msgstr "Kummit"
 
-#: humo-gen/admin/include/editor_person_event.php:111
-msgid "Media too large"
-msgstr "Mediatiedosto liian iso"
+#: humo-gen/admin/include/editor_event_cls.php:12
+#: humo-gen/admin/include/editor_event_cls.php:260
+#: humo-gen/admin/include/editor_inc.php:850
+msgid "Death Declaration"
+msgstr "Kuolintodistus"
 
-#: humo-gen/admin/include/editor_person_event.php:115
-msgid "Media upload failed, check folder rights"
-msgstr "Median lataaminen epäonnistui, tarkista kansion käyttöoikeudet"
+#: humo-gen/admin/include/editor_event_cls.php:13
+#: humo-gen/admin/include/editor_event_cls.php:272
+#: humo-gen/admin/include/editor_inc.php:851
+msgid "Burial Witness"
+msgstr "Hautauksen saattajat"
 
-#: humo-gen/admin/include/editor_person_event.php:133
-msgid "No valid picture, media or document file"
-msgstr "Kuva, media tai dokumentti ei kelpaa"
-
-#: humo-gen/admin/include/editor_person_event.php:289
-#: humo-gen/admin/include/editor_person_event.php:719
+#: humo-gen/admin/include/editor_event_cls.php:15
+#: humo-gen/admin/include/editor_event_cls.php:200
+#: humo-gen/admin/include/editor_inc.php:845
 msgid "Title of Nobility"
 msgstr "Aatelisnimi"
 
-#: humo-gen/admin/include/editor_person_event.php:291
-#: humo-gen/admin/include/editor_person_event.php:721
+#: humo-gen/admin/include/editor_event_cls.php:17
+#: humo-gen/admin/include/editor_event_cls.php:851
 msgid "Adoption"
 msgstr "Adoptio"
 
-#: humo-gen/admin/include/editor_person_event.php:292
-#: humo-gen/admin/include/editor_person_event.php:722
+#: humo-gen/admin/include/editor_event_cls.php:18
+#: humo-gen/admin/include/editor_event_cls.php:224
+#: humo-gen/admin/include/editor_inc.php:847
 msgid "Title of Lordship"
 msgstr "Arvonimi"
 
-#: humo-gen/admin/include/editor_person_event.php:294
-#: humo-gen/admin/include/editor_person_event.php:724
+#: humo-gen/admin/include/editor_event_cls.php:20
+#: humo-gen/admin/include/editor_event_cls.php:854
 msgid "Colour mark by person"
 msgstr "Merkitse henkilö värillä"
 
-#: humo-gen/admin/include/editor_person_event.php:446
+#: humo-gen/admin/include/editor_event_cls.php:21
+#: humo-gen/admin/include/editor_event_cls.php:332
+#: humo-gen/admin/include/editor_event_cls.php:866
+#: humo-gen/admin/include/editor_inc.php:854
+msgid "Marriage Witness"
+msgstr "Vihkimisen todistajat"
+
+#: humo-gen/admin/include/editor_event_cls.php:22
+#: humo-gen/admin/include/editor_event_cls.php:344
+#: humo-gen/admin/include/editor_event_cls.php:867
+#: humo-gen/admin/include/editor_inc.php:855
+msgid "Marriage Witness (church)"
+msgstr "Vihkimisen todistajat (kirkko)"
+
+#: humo-gen/admin/include/editor_event_cls.php:133
+#: humo-gen/admin/include/editor_event_cls.php:151
+#: humo-gen/admin/include/editor_event_cls.php:160
+#: humo-gen/admin/include/editor_event_cls.php:170
+#, fuzzy
+msgid "Events"
+msgstr "Tapahtuma"
+
+#: humo-gen/admin/include/editor_event_cls.php:152
+#: humo-gen/admin/include/editor_event_cls.php:171
+msgid "For items like:"
+msgstr "Tapahtumat kuten:"
+
+#: humo-gen/admin/include/editor_event_cls.php:152
+msgid "baptized as child"
+msgstr "kastettu lapsena"
+
+#: humo-gen/admin/include/editor_event_cls.php:152
+msgid "depart"
+msgstr "lähtö"
+
+#: humo-gen/admin/include/editor_event_cls.php:152
+#: humo-gen/admin/include/editor_event_cls.php:171
+msgid "etc."
+msgstr "jne."
+
+#: humo-gen/admin/include/editor_event_cls.php:171
+msgid "Marriage contract"
+msgstr "Aviosopimus"
+
+#: humo-gen/admin/include/editor_event_cls.php:171
+msgid "Marriage license"
+msgstr "Aviolupa"
+
+#: humo-gen/admin/include/editor_event_cls.php:554
 msgid "* Select adoption parents *"
 msgstr "* Valitse adoptiovanhemmat *"
 
-#: humo-gen/admin/include/editor_person_event.php:481
+#: humo-gen/admin/include/editor_event_cls.php:587
 msgid "Change colour mark by person"
 msgstr "Vaihda henkilön värimerkkiä"
 
-#: humo-gen/admin/include/editor_person_event.php:483
+#: humo-gen/admin/include/editor_event_cls.php:589
 msgid "Colour 1"
 msgstr "Väri 1"
 
-#: humo-gen/admin/include/editor_person_event.php:485
+#: humo-gen/admin/include/editor_event_cls.php:591
 msgid "Colour 2"
 msgstr "Väri 2"
 
-#: humo-gen/admin/include/editor_person_event.php:487
+#: humo-gen/admin/include/editor_event_cls.php:593
 msgid "Colour 3"
 msgstr "Väri 3"
 
-#: humo-gen/admin/include/editor_person_event.php:489
+#: humo-gen/admin/include/editor_event_cls.php:595
 msgid "Colour 4"
 msgstr "Väri 4"
 
-#: humo-gen/admin/include/editor_person_event.php:491
+#: humo-gen/admin/include/editor_event_cls.php:597
 msgid "Colour 5"
 msgstr "Väri 5"
 
-#: humo-gen/admin/include/editor_person_event.php:493
+#: humo-gen/admin/include/editor_event_cls.php:599
 msgid "Colour 6"
 msgstr "Väri 6"
 
-#: humo-gen/admin/include/editor_person_event.php:495
+#: humo-gen/admin/include/editor_event_cls.php:601
 msgid "Colour 7"
 msgstr "Väri 7"
 
-#: humo-gen/admin/include/editor_person_event.php:497
+#: humo-gen/admin/include/editor_event_cls.php:603
 msgid "Colour 8"
 msgstr "Väri 8"
 
-#: humo-gen/admin/include/editor_person_event.php:499
+#: humo-gen/admin/include/editor_event_cls.php:605
 msgid "Colour 9"
 msgstr "Väri 9"
 
-#: humo-gen/admin/include/editor_person_event.php:501
+#: humo-gen/admin/include/editor_event_cls.php:607
 msgid "Colour 10"
 msgstr "Väri 10"
 
-#: humo-gen/admin/include/editor_person_event.php:503
+#: humo-gen/admin/include/editor_event_cls.php:609
 msgid "Colour 11"
 msgstr "Väri 11"
 
-#: humo-gen/admin/include/editor_person_event.php:505
+#: humo-gen/admin/include/editor_event_cls.php:611
 msgid "Colour 12"
 msgstr "Väri 12"
 
-#: humo-gen/admin/include/editor_person_event.php:507
+#: humo-gen/admin/include/editor_event_cls.php:613
 msgid "Colour 13"
 msgstr "Väri 13"
 
-#: humo-gen/admin/include/editor_person_event.php:509
+#: humo-gen/admin/include/editor_event_cls.php:615
 msgid "Colour 14"
 msgstr "Väri 14"
 
-#: humo-gen/admin/include/editor_person_event.php:515
+#: humo-gen/admin/include/editor_event_cls.php:621
 msgid "Also change:"
 msgstr "Muuta myös:"
 
-#: humo-gen/admin/include/editor_person_event.php:535
+#: humo-gen/admin/include/editor_event_cls.php:641
 msgid "Selected colour"
 msgstr "Valitse väri"
 
-#: humo-gen/admin/include/editor_person_event.php:542
+#: humo-gen/admin/include/editor_event_cls.php:648
 msgid "e.g. Jhr., Jkvr."
 msgstr "esim. vapaaherra"
 
-#: humo-gen/admin/include/editor_person_event.php:543
+#: humo-gen/admin/include/editor_event_cls.php:649
 msgid "e.g. Prof., Dr."
 msgstr "esim. Prof. Tri."
 
-#: humo-gen/admin/include/editor_person_event.php:545
+#: humo-gen/admin/include/editor_event_cls.php:650
 msgid "e.g. Lord of Amsterdam"
 msgstr "esim. Amsterdamin lordi"
 
-#: humo-gen/admin/include/editor_person_event.php:607
+#: humo-gen/admin/include/editor_event_cls.php:727
 msgid "Also known as"
 msgstr "Tunnettu myös nimellä"
 
-#: humo-gen/admin/include/editor_person_event.php:613
+#: humo-gen/admin/include/editor_event_cls.php:733
 msgid "alias name"
 msgstr "salanimi"
 
-#: humo-gen/admin/include/editor_person_event.php:616
+#: humo-gen/admin/include/editor_event_cls.php:736
 msgid "Short name (for reports)"
 msgstr "Lyhyt nimi (raportteihin)"
 
-#: humo-gen/admin/include/editor_person_event.php:619
+#: humo-gen/admin/include/editor_event_cls.php:739
 msgid "Adopted name"
 msgstr "Adoptoitu nimi"
 
-#: humo-gen/admin/include/editor_person_event.php:622
+#: humo-gen/admin/include/editor_event_cls.php:742
 msgid "Hebrew name"
 msgstr "Heprealainen nimi"
 
-#: humo-gen/admin/include/editor_person_event.php:625
+#: humo-gen/admin/include/editor_event_cls.php:745
 msgid "Census name"
 msgstr "Nimi väestölaskennassa"
 
-#: humo-gen/admin/include/editor_person_event.php:628
+#: humo-gen/admin/include/editor_event_cls.php:748
 msgid "Married name"
 msgstr "Vihitty nimi"
 
-#: humo-gen/admin/include/editor_person_event.php:634
+#: humo-gen/admin/include/editor_event_cls.php:754
 msgid "Farm name"
 msgstr "Talon nimi"
 
-#: humo-gen/admin/include/editor_person_event.php:637
+#: humo-gen/admin/include/editor_event_cls.php:757
 msgid "Birth name"
 msgstr "Syntymänimi"
 
-#: humo-gen/admin/include/editor_person_event.php:640
+#: humo-gen/admin/include/editor_event_cls.php:760
 msgid "Indian name"
 msgstr "Intialainen nimi"
 
-#: humo-gen/admin/include/editor_person_event.php:643
+#: humo-gen/admin/include/editor_event_cls.php:763
 msgid "Formal name"
 msgstr "Virallinen nimi"
 
-#: humo-gen/admin/include/editor_person_event.php:646
+#: humo-gen/admin/include/editor_event_cls.php:766
 msgid "Current name"
 msgstr "Nykyinen nimi"
 
-#: humo-gen/admin/include/editor_person_event.php:649
+#: humo-gen/admin/include/editor_event_cls.php:769
 msgid "Soldier name"
 msgstr "Sotilasnimi"
 
-#: humo-gen/admin/include/editor_person_event.php:652
+#: humo-gen/admin/include/editor_event_cls.php:772
 msgid "Religious name"
 msgstr "Luostarinimi"
 
-#: humo-gen/admin/include/editor_person_event.php:655
+#: humo-gen/admin/include/editor_event_cls.php:775
 msgid "Other name"
 msgstr "Muu nimi"
 
-#: humo-gen/admin/include/editor_person_event.php:658
+#: humo-gen/admin/include/editor_event_cls.php:778
 msgid "Formerly known as"
 msgstr "Virallisesti tunnettu nimellä"
+
+#: humo-gen/admin/include/editor_event_cls.php:839
+#: humo-gen/admin/include/editor_event_cls.php:861
+msgid "Add event"
+msgstr "Lisää tapahtuma"
+
+#: humo-gen/admin/include/editor_inc.php:34
+msgid "This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?"
+msgstr "Tämä poistaa henkilön kytkennät vanhempiin, puolisoon ja lapsiin <b>ja poistaa hänet kokonaan tietokannasta.</b> Haluatko jatkaa?"
+
+#: humo-gen/admin/include/editor_inc.php:85
+#: humo-gen/admin/include/editor_inc.php:114
+msgid "Person disconnected from marriage(s)."
+msgstr "Henkilön kytkennät puolisoihin poistettu."
+
+#: humo-gen/admin/include/editor_inc.php:140
+msgid "Person disconnected from parents."
+msgstr "Henkilön kytkennät vanhempiin poistettu."
+
+#: humo-gen/admin/include/editor_inc.php:152
+msgid "Person is removed"
+msgstr "Henkilö on poistettu"
+
+#: humo-gen/admin/include/editor_inc.php:405
+msgid "Disconnect children before removal of marriage."
+msgstr "Pura lapset ennen avioliiton purkamista."
+
+#: humo-gen/admin/include/editor_inc.php:410
+msgid "Are you sure to remove this mariage?"
+msgstr "Oletko varma, että haluat purkaa tämän kumppaniyhteyden?"
+
+#: humo-gen/admin/include/editor_inc.php:446
+msgid "Marriage is removed!"
+msgstr "Kumppaniyhteys on poistettu!"
+
+#: humo-gen/admin/include/editor_inc.php:507
+msgid "Select parents:"
+msgstr "Valitse vanhemmat:"
+
+#: humo-gen/admin/include/editor_inc.php:576
+msgid "Parents are selected!"
+msgstr "Vanhemmat on valittu!"
+
+#: humo-gen/admin/include/editor_inc.php:621
+msgid "Are you sure you want to disconnect this child?"
+msgstr "Oletko varma, että haluat purkaa tämän lapsen yhteyden?"
+
+#: humo-gen/admin/include/editor_inc.php:950
+msgid "Photo too large"
+msgstr "Valokuva liian iso"
+
+#: humo-gen/admin/include/editor_inc.php:955
+msgid "Photo upload failed, check folder rights"
+msgstr "Kuvan lataaminen epäonnistui, tarkista kansion oikeudet"
+
+#: humo-gen/admin/include/editor_inc.php:1004
+msgid "Media too large"
+msgstr "Mediatiedosto liian iso"
+
+#: humo-gen/admin/include/editor_inc.php:1008
+msgid "Media upload failed, check folder rights"
+msgstr "Median lataaminen epäonnistui, tarkista kansion käyttöoikeudet"
+
+#: humo-gen/admin/include/editor_inc.php:1026
+msgid "No valid picture, media or document file"
+msgstr "Kuva, media tai dokumentti ei kelpaa"
+
+#: humo-gen/admin/include/editor_inc.php:1060
+msgid "Are you sure you want to remove this event?"
+msgstr "Oletko varma, että haluat poistaa tämän tapahtuman?"
 
 #: humo-gen/admin/include/editor_sources.php:429
 msgid "Name source"
@@ -5302,230 +5329,230 @@ msgstr "Hakutuloksissa näytettävien henkilöiden lukumäärä (oletusarvo=30).
 msgid "Save settings"
 msgstr "Talleta asetukset"
 
+#: humo-gen/admin/include/statistics.php:40
 #: humo-gen/admin/include/statistics.php:44
-#: humo-gen/admin/include/statistics.php:48
-#: humo-gen/admin/include/statistics.php:860
-#: humo-gen/admin/include/statistics.php:863
+#: humo-gen/admin/include/statistics.php:756
+#: humo-gen/admin/include/statistics.php:759
 msgid "Family"
 msgstr "Perhe"
 
-#: humo-gen/admin/include/statistics.php:93
+#: humo-gen/admin/include/statistics.php:75
 msgid "FAMILY NOT FOUND IN FAMILY TREE"
 msgstr "PERHETTÄ EI LÖYDY SUKUPUUSTA"
 
-#: humo-gen/admin/include/statistics.php:104
+#: humo-gen/admin/include/statistics.php:85
+#: humo-gen/admin/include/statistics.php:516
 #: humo-gen/admin/include/statistics.php:595
-#: humo-gen/admin/include/statistics.php:676
 msgid "January"
 msgstr "Tammikuu"
 
-#: humo-gen/admin/include/statistics.php:105
+#: humo-gen/admin/include/statistics.php:86
+#: humo-gen/admin/include/statistics.php:518
 #: humo-gen/admin/include/statistics.php:597
-#: humo-gen/admin/include/statistics.php:678
 msgid "February"
 msgstr "Helmikuu"
 
-#: humo-gen/admin/include/statistics.php:106
+#: humo-gen/admin/include/statistics.php:87
+#: humo-gen/admin/include/statistics.php:520
 #: humo-gen/admin/include/statistics.php:599
-#: humo-gen/admin/include/statistics.php:680
 msgid "March"
 msgstr "Maaliskuu"
 
-#: humo-gen/admin/include/statistics.php:107
+#: humo-gen/admin/include/statistics.php:88
+#: humo-gen/admin/include/statistics.php:522
 #: humo-gen/admin/include/statistics.php:601
-#: humo-gen/admin/include/statistics.php:682
 msgid "April"
 msgstr "Huhtikuu"
 
-#: humo-gen/admin/include/statistics.php:109
+#: humo-gen/admin/include/statistics.php:90
+#: humo-gen/admin/include/statistics.php:526
 #: humo-gen/admin/include/statistics.php:605
-#: humo-gen/admin/include/statistics.php:686
 msgid "June"
 msgstr "Kesäkuu"
 
-#: humo-gen/admin/include/statistics.php:110
+#: humo-gen/admin/include/statistics.php:91
+#: humo-gen/admin/include/statistics.php:528
 #: humo-gen/admin/include/statistics.php:607
-#: humo-gen/admin/include/statistics.php:688
 msgid "July"
 msgstr "Heinäkuu"
 
-#: humo-gen/admin/include/statistics.php:111
+#: humo-gen/admin/include/statistics.php:92
+#: humo-gen/admin/include/statistics.php:530
 #: humo-gen/admin/include/statistics.php:609
-#: humo-gen/admin/include/statistics.php:690
 msgid "August"
 msgstr "Elokuu"
 
-#: humo-gen/admin/include/statistics.php:112
+#: humo-gen/admin/include/statistics.php:93
+#: humo-gen/admin/include/statistics.php:532
 #: humo-gen/admin/include/statistics.php:611
-#: humo-gen/admin/include/statistics.php:692
 msgid "September"
 msgstr "Syyskuu"
 
-#: humo-gen/admin/include/statistics.php:113
+#: humo-gen/admin/include/statistics.php:94
+#: humo-gen/admin/include/statistics.php:534
 #: humo-gen/admin/include/statistics.php:613
-#: humo-gen/admin/include/statistics.php:694
 msgid "October"
 msgstr "Lokakuu"
 
-#: humo-gen/admin/include/statistics.php:114
+#: humo-gen/admin/include/statistics.php:95
+#: humo-gen/admin/include/statistics.php:536
 #: humo-gen/admin/include/statistics.php:615
-#: humo-gen/admin/include/statistics.php:696
 msgid "November"
 msgstr "Marraskuu"
 
-#: humo-gen/admin/include/statistics.php:115
+#: humo-gen/admin/include/statistics.php:96
+#: humo-gen/admin/include/statistics.php:538
 #: humo-gen/admin/include/statistics.php:617
-#: humo-gen/admin/include/statistics.php:698
 msgid "December"
 msgstr "Joulukuu"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Monday"
 msgstr "Maanantai"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Tuesday"
 msgstr "Tiistai"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Wednesday"
 msgstr "Keskiviikko"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Thursday"
 msgstr "Torstai"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Friday"
 msgstr "Perjantai"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Saturday"
 msgstr "Lauantai"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Sunday"
 msgstr "Sunnuntai"
 
-#: humo-gen/admin/include/statistics.php:267
-#: humo-gen/admin/include/statistics.php:397
-#: humo-gen/admin/include/statistics.php:727
+#: humo-gen/admin/include/statistics.php:236
+#: humo-gen/admin/include/statistics.php:361
+#: humo-gen/admin/include/statistics.php:644
 msgid "Visitors"
 msgstr "Vierailijat"
 
-#: humo-gen/admin/include/statistics.php:270
+#: humo-gen/admin/include/statistics.php:239
 msgid "Visited families in the past 12 months"
 msgstr "Katsotut perheet viimeisen 12 kuukauden ajalta"
 
-#: humo-gen/admin/include/statistics.php:327
+#: humo-gen/admin/include/statistics.php:292
 msgid "Country of origin"
 msgstr "Maa"
 
-#: humo-gen/admin/include/statistics.php:327
-#: humo-gen/admin/include/statistics.php:465
+#: humo-gen/admin/include/statistics.php:292
+#: humo-gen/admin/include/statistics.php:420
 msgid "Number of unique visitors"
 msgstr "Eri vierailijoiden lukumäärä"
 
-#: humo-gen/admin/include/statistics.php:353
-#: humo-gen/admin/include/statistics.php:514
+#: humo-gen/admin/include/statistics.php:318
+#: humo-gen/admin/include/statistics.php:456
 msgid "Total number of unique visitors:"
 msgstr "Kokonaismäärä yksittäiset vierailijat:'"
 
-#: humo-gen/admin/include/statistics.php:383
+#: humo-gen/admin/include/statistics.php:347
 msgid "General statistics"
 msgstr "Yleiset tilastot"
 
-#: humo-gen/admin/include/statistics.php:390
+#: humo-gen/admin/include/statistics.php:354
 msgid "Statistics by date"
 msgstr "Päivätilastot"
 
-#: humo-gen/admin/include/statistics.php:404
-#: humo-gen/admin/include/statistics.php:424
+#: humo-gen/admin/include/statistics.php:368
+#: humo-gen/admin/include/statistics.php:388
 msgid "Old statistics"
 msgstr "Vanhat tilastot"
 
-#: humo-gen/admin/include/statistics.php:411
-#: humo-gen/admin/include/statistics.php:429
+#: humo-gen/admin/include/statistics.php:375
+#: humo-gen/admin/include/statistics.php:393
 msgid "Remove statistics"
 msgstr "Poista tilastot"
 
-#: humo-gen/admin/include/statistics.php:424
+#: humo-gen/admin/include/statistics.php:388
 msgid "are erased"
 msgstr "on poistettu"
 
-#: humo-gen/admin/include/statistics.php:431
+#: humo-gen/admin/include/statistics.php:395
 msgid "Statistics will be removed PERMANENTLY. Make a backup first to save the statistics data"
 msgstr "Tilastot poistetaan PYSYVÄSTI. Tee ensin varmistus tallettaaksesi tilastotiedot"
 
-#: humo-gen/admin/include/statistics.php:435
+#: humo-gen/admin/include/statistics.php:399
 msgid "Remove ALL statistics BEFORE this date:"
 msgstr "Poista KAIKKI tilastot ENNEN tätä päivää:"
 
-#: humo-gen/admin/include/statistics.php:441
+#: humo-gen/admin/include/statistics.php:405
 msgid "d-m-yyyy"
 msgstr "pv-kk-vvvv"
 
-#: humo-gen/admin/include/statistics.php:443
+#: humo-gen/admin/include/statistics.php:407
 msgid "REMOVE statistic data"
 msgstr "POISTA tilastotiedot"
 
-#: humo-gen/admin/include/statistics.php:450
+#: humo-gen/admin/include/statistics.php:413
 msgid "Status statistics table"
 msgstr "Tilastotaulujen tilanne"
 
-#: humo-gen/admin/include/statistics.php:465
-#: humo-gen/admin/include/statistics.php:560
-#: humo-gen/admin/include/statistics.php:576
+#: humo-gen/admin/include/statistics.php:420
+#: humo-gen/admin/include/statistics.php:489
+#: humo-gen/admin/include/statistics.php:498
 msgid "family tree"
 msgstr "sukupuu"
 
-#: humo-gen/admin/include/statistics.php:475
+#: humo-gen/admin/include/statistics.php:429
 msgid "FAMILY TREE ERASED"
 msgstr "SUKUPUU POISTETTU"
 
-#: humo-gen/admin/include/statistics.php:505
+#: humo-gen/admin/include/statistics.php:449
 msgid "General statistics:"
 msgstr "Yleiset tilastot"
 
-#: humo-gen/admin/include/statistics.php:508
+#: humo-gen/admin/include/statistics.php:452
 msgid "Counter"
 msgstr "Laskuri"
 
-#: humo-gen/admin/include/statistics.php:521
-#: humo-gen/admin/include/statistics.php:646
+#: humo-gen/admin/include/statistics.php:461
+#: humo-gen/admin/include/statistics.php:565
 msgid "Total number of visited families:"
 msgstr "Katsottujen perheiden kokonaismäärä:"
 
-#: humo-gen/admin/include/statistics.php:530
+#: humo-gen/admin/include/statistics.php:468
 msgid "Total number of families in the last hour:"
 msgstr "Perheiden kokonaismäärä viimeisen tunnin aikana:"
 
-#: humo-gen/admin/include/statistics.php:535
+#: humo-gen/admin/include/statistics.php:473
 msgid "Unique visitors - Country of origin"
 msgstr "Yksittäiset vierailijat - Maa"
 
-#: humo-gen/admin/include/statistics.php:543
-#: humo-gen/admin/include/statistics.php:849
+#: humo-gen/admin/include/statistics.php:480
+#: humo-gen/admin/include/statistics.php:748
 msgid "Most visited families:"
 msgstr "Eniten katsotut perheet:"
 
-#: humo-gen/admin/include/statistics.php:566
+#: humo-gen/admin/include/statistics.php:493
 msgid "last visited families:"
 msgstr "viimeksi katsotut perheet:"
 
-#: humo-gen/admin/include/statistics.php:576
+#: humo-gen/admin/include/statistics.php:498
 msgid "date-time"
 msgstr "päiväys-kellonaika"
 
-#: humo-gen/admin/include/statistics.php:743
+#: humo-gen/admin/include/statistics.php:660
 msgid "User agent information"
 msgstr "User agent information"
 
-#: humo-gen/admin/include/statistics.php:797
+#: humo-gen/admin/include/statistics.php:701
 msgid "Old statistics (numbers since last gedcom update)"
 msgstr "Vanhat tilastot (määrä viimeisestä gedcom-päivityksestä)"
 
-#: humo-gen/admin/include/statistics.php:799
+#: humo-gen/admin/include/statistics.php:703
 msgid "Select family tree"
 msgstr "Valitse sukupuu"
 
@@ -6762,43 +6789,43 @@ msgstr "Täydet asennus- ja päivitysohjeet löytyvät täältä:"
 msgid "HuMo-gen version history"
 msgstr "HuMo-genin päivityshistoria"
 
-#: humo-gen/googlemaps/google_initiate.php:260
+#: humo-gen/googlemaps/google_initiate.php:251
 msgid "today "
 msgstr "tänään "
 
-#: humo-gen/googlemaps/google_initiate.php:308
+#: humo-gen/googlemaps/google_initiate.php:299
 msgid "Location: "
 msgstr "Paikka: "
 
-#: humo-gen/googlemaps/google_initiate.php:310
+#: humo-gen/googlemaps/google_initiate.php:301
 msgid "For a list of persons born here until "
 msgstr "Lista henkilöistä, jotka syntyivät täällä vuoteen "
 
-#: humo-gen/googlemaps/google_initiate.php:313
+#: humo-gen/googlemaps/google_initiate.php:304
 msgid "For a list of all people that died here until "
 msgstr "Lista henkilöistä jotka kuolivat täällä ennen "
 
-#: humo-gen/googlemaps/google_initiate.php:315
+#: humo-gen/googlemaps/google_initiate.php:306
 msgid " click here"
 msgstr " klikkaa tästä"
 
-#: humo-gen/googlemaps/google_initiate.php:316
+#: humo-gen/googlemaps/google_initiate.php:307
 msgid "Read about this location in "
 msgstr "Lue lisää tästä paikasta "
 
-#: humo-gen/googlemaps/namesearch.php:114
+#: humo-gen/googlemaps/namesearch.php:112
 msgid "All persons born here: "
 msgstr "Kaikki henkilöt syntyivät täällä: "
 
-#: humo-gen/googlemaps/namesearch.php:119
+#: humo-gen/googlemaps/namesearch.php:116
 msgid "Persons born here until "
 msgstr "Henkilöt syntyivät täällä vuoteen "
 
-#: humo-gen/googlemaps/namesearch.php:138
+#: humo-gen/googlemaps/namesearch.php:127
 msgid "All persons that died here: "
 msgstr "Henkilöt, jotka kuolivat täällä: "
 
-#: humo-gen/googlemaps/namesearch.php:143
+#: humo-gen/googlemaps/namesearch.php:131
 msgid "Persons that died here until "
 msgstr "Henkilöt, jotka kuolivat täällä ennen "
 
@@ -6806,11 +6833,11 @@ msgstr "Henkilöt, jotka kuolivat täällä ennen "
 msgid "This is the mobile version of the free and open-source HuMo-gen genealogy program.<br> To learn more about the program use the following button:"
 msgstr "Tämä on ilmaisen, avoimen lähdekoodin HuMo-gen sukututkimusohjelmistaon mobiiliversio.<br> Tutustuaksesi ohjelmaan lisää klikkaa seuraavaa painiketta:"
 
-#: humo-gen/humo_mobile/function.php:50
+#: humo-gen/humo_mobile/function.php:48
 msgid "crem."
 msgstr "krematorio"
 
-#: humo-gen/humo_mobile/index.php:48
+#: humo-gen/humo_mobile/index.php:42
 msgid "Search in family tree"
 msgstr "Etsi sukupuusta"
 
@@ -6889,10 +6916,6 @@ msgstr "saapuminen"
 msgid "Baptized LDS"
 msgstr "Baptized LDS"
 
-#: humo-gen/include/language_event.php:12
-msgid "baptized as child"
-msgstr "kastettu lapsena"
-
 #: humo-gen/include/language_event.php:13
 msgid "Bar Mitzvah"
 msgstr "Bar Mitzvah"
@@ -6940,10 +6963,6 @@ msgstr "Jälkeläisten kiinnostuksen kohde"
 #: humo-gen/include/language_event.php:24
 msgid "Divorce filed"
 msgstr "Eroaminen"
-
-#: humo-gen/include/language_event.php:25
-msgid "depart"
-msgstr "lähtö"
 
 #: humo-gen/include/language_event.php:27
 msgid "Education"
@@ -7004,14 +7023,6 @@ msgstr "Interred"
 #: humo-gen/include/language_event.php:41
 msgid "justified"
 msgstr "oikeutettu"
-
-#: humo-gen/include/language_event.php:42
-msgid "Marriage contract"
-msgstr "Aviosopimus"
-
-#: humo-gen/include/language_event.php:43
-msgid "Marriage license"
-msgstr "Aviolupa"
 
 #: humo-gen/include/language_event.php:44
 msgid "Marriage settlement"
@@ -7117,35 +7128,35 @@ msgstr "Will signed"
 msgid "Yartzeit"
 msgstr "Yartzeit"
 
-#: humo-gen/include/mainindex_cls.php:28
+#: humo-gen/include/mainindex_cls.php:19
 msgid "Select a family tree"
 msgstr "Valitse sukupuu"
 
-#: humo-gen/include/mainindex_cls.php:83
+#: humo-gen/include/mainindex_cls.php:44
 msgid "Select another family tree, or login for the selected family tree."
 msgstr "Valitse toinen sukupuu tai kirjaudu avatakksesi valittu sukupuu."
 
-#: humo-gen/include/mainindex_cls.php:199
+#: humo-gen/include/mainindex_cls.php:158
 msgid "Latest update:"
 msgstr "Viimeisin päivitys"
 
-#: humo-gen/include/mainindex_cls.php:208
+#: humo-gen/include/mainindex_cls.php:167
 msgid "Owner family tree:"
 msgstr "Sukupuun ylläpitäjä (klikkaa ottaaksesi yhteyttä):"
 
-#: humo-gen/include/mainindex_cls.php:250
+#: humo-gen/include/mainindex_cls.php:200
 msgid "Most frequent surnames:"
 msgstr "Yleisimmin toistuvat sukunimet:"
 
-#: humo-gen/include/mainindex_cls.php:442
+#: humo-gen/include/mainindex_cls.php:383
 msgid "Surnames Index:"
 msgstr "Sukunimihakemisto:"
 
-#: humo-gen/include/mainindex_cls.php:474
+#: humo-gen/include/mainindex_cls.php:411
 msgid "Other"
 msgstr "Muut"
 
-#: humo-gen/include/mainindex_cls.php:482
+#: humo-gen/include/mainindex_cls.php:416
 msgid "Patronyms"
 msgstr "Patronyymi"
 
@@ -7221,80 +7232,80 @@ msgstr "puoliso/kumppani"
 msgid "marriage/ related"
 msgstr "puoliso/kumppani"
 
-#: humo-gen/include/person_cls.php:210
+#: humo-gen/include/person_cls.php:198
 msgid "stillborn boy"
 msgstr "kuolleena syntynyt poika"
 
-#: humo-gen/include/person_cls.php:211
+#: humo-gen/include/person_cls.php:199
 msgid "stillborn girl"
 msgstr "kuolleena syntynyt tyttö"
 
-#: humo-gen/include/person_cls.php:453
+#: humo-gen/include/person_cls.php:433
 msgid "Text reports"
 msgstr "Tekstiraportit"
 
-#: humo-gen/include/person_cls.php:506
+#: humo-gen/include/person_cls.php:483
 msgid "Charts"
 msgstr "Kuvaajat"
 
-#: humo-gen/include/person_cls.php:575
-#: humo-gen/include/person_cls.php:584
+#: humo-gen/include/person_cls.php:552
+#: humo-gen/include/person_cls.php:561
 msgid "Timeline"
 msgstr "Aikajana"
 
-#: humo-gen/include/person_cls.php:584
+#: humo-gen/include/person_cls.php:561
 msgid "Editor"
 msgstr "Editor"
 
-#: humo-gen/include/person_cls.php:756
+#: humo-gen/include/person_cls.php:731
 msgid "son of"
 msgstr "vanhemmat"
 
-#: humo-gen/include/person_cls.php:757
+#: humo-gen/include/person_cls.php:732
 msgid "daughter of"
 msgstr "vanhemmat"
 
-#: humo-gen/include/person_cls.php:758
+#: humo-gen/include/person_cls.php:733
 msgid "child of"
 msgstr "vanhemmat"
 
-#: humo-gen/include/person_cls.php:1056
+#: humo-gen/include/person_cls.php:1018
 msgid "at"
 msgstr ":"
 
-#: humo-gen/include/person_cls.php:1056
+#: humo-gen/include/person_cls.php:1018
 msgid "hour"
 msgstr "tunti"
 
-#: humo-gen/include/person_cls.php:1084
-#: humo-gen/include/person_cls.php:1086
+#: humo-gen/include/person_cls.php:1046
+#: humo-gen/include/person_cls.php:1048
 msgid "birth_declaration"
 msgstr "syntymätodistus"
 
-#: humo-gen/include/person_cls.php:1137
-#: humo-gen/include/person_cls.php:1139
+#: humo-gen/include/person_cls.php:1099
+#: humo-gen/include/person_cls.php:1101
 msgid "baptise witness"
 msgstr "kummit"
 
-#: humo-gen/include/person_cls.php:1235
-#: humo-gen/include/person_cls.php:1237
+#: humo-gen/include/person_cls.php:1197
+#: humo-gen/include/person_cls.php:1199
 msgid "death declaration"
 msgstr "kuolintodistus"
 
-#: humo-gen/include/person_cls.php:1283
-#: humo-gen/include/person_cls.php:1285
+#: humo-gen/include/person_cls.php:1245
+#: humo-gen/include/person_cls.php:1247
 msgid "burial witness"
 msgstr "saattajat"
 
-#: humo-gen/include/person_cls.php:1318
+#: humo-gen/include/person_cls.php:1277
 msgid "ash dispersion"
 msgstr "tuhkan sijoitus"
 
-#: humo-gen/include/person_cls.php:1352
+#: humo-gen/include/person_cls.php:1307
 msgid "occupation"
 msgstr "ammatti"
 
-#: humo-gen/include/person_cls.php:1354
+#: humo-gen/include/person_cls.php:1309
 msgid "occupations"
 msgstr "ammatit"
 
@@ -7314,3 +7325,14 @@ msgstr "Lähde"
 msgid "source text"
 msgstr "lähdeteksti"
 
+#~ msgid "Special names/ titles"
+#~ msgstr "Erityiset nimet/arvot"
+
+#~ msgid "Events for person"
+#~ msgstr "Henkilön tapahtumat"
+
+#~ msgid "Events for marriage"
+#~ msgstr "vihitty"
+
+#~ msgid "Events by marriage"
+#~ msgstr "Vihkitapahtumat"

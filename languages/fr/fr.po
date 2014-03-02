@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-13 21:40+0100\n"
-"PO-Revision-Date: 2014-02-13 21:41+0100\n"
+"POT-Creation-Date: 2014-02-22 18:38+0100\n"
+"PO-Revision-Date: 2014-02-22 18:38+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: French (http://www.transifex.com/projects/p/humo-gen/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Vous n'êtes pas autorisé à voir cette page."
 
 #: humo-gen/address.php:15
 #: humo-gen/address.php:22
-#: humo-gen/header.php:204
+#: humo-gen/header.php:194
 msgid "Address"
 msgstr "Adresse"
 
@@ -109,8 +109,8 @@ msgid "born"
 msgstr "né(e)"
 
 #: humo-gen/birthday_list.php:70
-#: humo-gen/family.php:1675
-#: humo-gen/family.php:1728
+#: humo-gen/family.php:1593
+#: humo-gen/family.php:1649
 msgid "Name"
 msgstr "Nom"
 
@@ -124,7 +124,7 @@ msgid " PRIVACY FILTER"
 msgstr " (individu vivant - protection vie privée)"
 
 #: humo-gen/birthday_rss.php:58
-#: humo-gen/header.php:205
+#: humo-gen/header.php:195
 msgid "Birthday calendar"
 msgstr "Calendrier des fêtes"
 
@@ -137,213 +137,218 @@ msgstr "A qui la fête aujourd\"'\"hui?"
 msgid "En-en"
 msgstr "En-en"
 
-#: humo-gen/birthday_rss.php:135
+#: humo-gen/birthday_rss.php:127
 msgid "No results found."
 msgstr "Aucun résultat trouvé."
 
-#: humo-gen/family.php:84
-#: humo-gen/family.php:1731
+#: humo-gen/family.php:82
+#: humo-gen/family.php:1652
 msgid "Settings"
 msgstr "Paramètres"
 
-#: humo-gen/family.php:90
+#: humo-gen/family.php:88
 msgid "Settings family screen"
 msgstr "Paramètres écran famille"
 
-#: humo-gen/family.php:93
-#: humo-gen/family.php:756
-#: humo-gen/family.php:796
+#: humo-gen/family.php:91
+#: humo-gen/family.php:719
+#: humo-gen/family.php:759
 msgid "Family Page"
 msgstr "Fiche de famille"
 
-#: humo-gen/family.php:99
+#: humo-gen/family.php:97
 msgid "Compact view"
 msgstr "Vue réduite"
 
-#: humo-gen/family.php:101
+#: humo-gen/family.php:99
 msgid "Expanded view"
 msgstr "Vue détaillée"
 
-#: humo-gen/family.php:107
-#: humo-gen/family.php:1753
-#: humo-gen/header.php:203
+#: humo-gen/family.php:105
+#: humo-gen/family.php:1674
+#: humo-gen/header.php:193
 msgid "Sources"
 msgstr "Sources"
 
-#: humo-gen/family.php:112
+#: humo-gen/family.php:110
 msgid "Show source title"
 msgstr "Afficher le titre de la source"
 
-#: humo-gen/family.php:115
+#: humo-gen/family.php:113
 msgid "Show source title as footnote"
 msgstr "Afficher le titre de la source comme note de bas de page"
 
-#: humo-gen/family.php:118
+#: humo-gen/family.php:116
 msgid "Hide sources"
 msgstr "Cacher sources"
 
-#: humo-gen/family.php:125
-#: humo-gen/header.php:209
+#: humo-gen/family.php:123
+#: humo-gen/header.php:199
 msgid "Google maps"
 msgstr "Google maps"
 
-#: humo-gen/family.php:131
+#: humo-gen/family.php:129
 msgid "Show Google maps"
 msgstr "Montrer Google maps"
 
-#: humo-gen/family.php:133
+#: humo-gen/family.php:131
 msgid "Hide Google maps"
 msgstr "Cacher Google maps"
 
-#: humo-gen/family.php:151
+#: humo-gen/family.php:149
 msgid "PDF Report"
 msgstr "Rapport PDF"
 
-#: humo-gen/family.php:183
-#: humo-gen/family.php:187
+#: humo-gen/family.php:181
+#: humo-gen/family.php:185
 msgid "Add to favourite list"
 msgstr "Ajouter à la liste de favoris"
 
-#: humo-gen/family.php:345
-#: humo-gen/family.php:429
+#: humo-gen/family.php:340
+#: humo-gen/family.php:422
 msgid "Descendant report"
 msgstr "Descendants"
 
-#: humo-gen/family.php:345
-#: humo-gen/family.php:348
-#: humo-gen/family.php:429
-#: humo-gen/family.php:432
-#: humo-gen/family.php:840
+#: humo-gen/family.php:340
+#: humo-gen/family.php:343
+#: humo-gen/family.php:422
+#: humo-gen/family.php:425
+#: humo-gen/family.php:803
 #: humo-gen/hourglass.php:73
 msgid " of "
 msgstr " de "
 
-#: humo-gen/family.php:348
-#: humo-gen/family.php:382
-#: humo-gen/family.php:432
-#: humo-gen/family.php:725
+#: humo-gen/family.php:343
+#: humo-gen/family.php:375
+#: humo-gen/family.php:425
+#: humo-gen/family.php:688
 msgid "Family group sheet"
 msgstr "Fiche de famille"
 
-#: humo-gen/family.php:401
-#: humo-gen/family.php:691
+#: humo-gen/family.php:394
+#: humo-gen/family.php:656
 #, php-format
 msgid "TIP: use %s for other (ancestor and descendant) reports."
 msgstr "CONSEIL : utilisez %s pour d'autres rapports/vues (ancêtres et descendants)."
 
-#: humo-gen/family.php:513
-#: humo-gen/family.php:521
+#: humo-gen/family.php:506
+#: humo-gen/family.php:514
 msgid "generation "
 msgstr "Génération "
 
-#: humo-gen/family.php:555
+#: humo-gen/family.php:541
 msgid "No valid family number."
 msgstr "Aucun numéro de famille valide"
 
-#: humo-gen/family.php:955
-#: humo-gen/family.php:986
+#: humo-gen/family.php:918
+#: humo-gen/family.php:949
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: humo-gen/family.php:1034
-#: humo-gen/family.php:1059
+#: humo-gen/family.php:993
+#: humo-gen/family.php:1016
 msgid "residence"
 msgstr "résidence"
 
-#: humo-gen/family.php:1036
-#: humo-gen/family.php:1061
+#: humo-gen/family.php:995
+#: humo-gen/family.php:1018
 msgid "residences"
 msgstr "résidences"
 
-#: humo-gen/family.php:1118
+#: humo-gen/family.php:1075
 msgid "Child"
 msgstr "Enfant"
 
-#: humo-gen/family.php:1121
+#: humo-gen/family.php:1078
 msgid "Children"
 msgstr "Enfants"
 
-#: humo-gen/family.php:1243
-#: humo-gen/family.php:1249
+#: humo-gen/family.php:1197
+#: humo-gen/family.php:1203
 msgid "follows"
 msgstr "suivant"
 
-#: humo-gen/family.php:1319
+#: humo-gen/family.php:1267
 msgid "Adopted child:"
 msgstr "Enfant adopté:"
 
-#: humo-gen/family.php:1395
-#: humo-gen/family.php:1415
-#: humo-gen/family.php:1421
-#: humo-gen/family.php:1542
-#: humo-gen/family.php:1548
+#: humo-gen/family.php:1338
+#: humo-gen/family.php:1355
+#: humo-gen/family.php:1361
+#: humo-gen/family.php:1467
+#: humo-gen/family.php:1473
 msgid "BORN_SHORT"
 msgstr "né(e)"
 
-#: humo-gen/family.php:1443
-#: humo-gen/family.php:1449
-#: humo-gen/family.php:1469
-#: humo-gen/family.php:1475
-#: humo-gen/family.php:1567
-#: humo-gen/family.php:1573
+#: humo-gen/family.php:1380
+#: humo-gen/family.php:1386
+#: humo-gen/family.php:1403
+#: humo-gen/family.php:1409
+#: humo-gen/family.php:1489
+#: humo-gen/family.php:1495
 msgid "DIED_SHORT"
 msgstr "décédé(e)"
 
-#: humo-gen/family.php:1501
-#: humo-gen/family.php:1507
+#: humo-gen/family.php:1432
+#: humo-gen/family.php:1438
 msgid "Married"
 msgstr "Marié"
 
-#: humo-gen/family.php:1593
+#: humo-gen/family.php:1515
 msgid "Family events"
 msgstr "Évènements familiaux"
 
-#: humo-gen/family.php:1667
-#: humo-gen/family.php:1674
+#: humo-gen/family.php:1585
+#: humo-gen/family.php:1592
 msgid "New user note"
 msgstr "Nouvelle note d'utilisateur"
 
-#: humo-gen/family.php:1672
+#: humo-gen/family.php:1590
 msgid "Message sent through HuMo-gen from the website."
 msgstr "Message envoyé par HuMo-gen depuis le site Web"
 
-#: humo-gen/family.php:1690
+#: humo-gen/family.php:1597
+#, fuzzy
+msgid "User note by family"
+msgstr "Texte de la page famille du haut"
+
+#: humo-gen/family.php:1611
 msgid "Your information is saved and will be reviewed by the webmaster."
 msgstr "Votre information a été sauvée et va être revu par le"
 
-#: humo-gen/family.php:1723
+#: humo-gen/family.php:1644
 msgid "[+]"
 msgstr "[+]"
 
-#: humo-gen/family.php:1724
+#: humo-gen/family.php:1645
 msgid "Add information or remarks"
 msgstr "Ajouter information ou remarques"
 
-#: humo-gen/family.php:1726
+#: humo-gen/family.php:1647
 msgid "Person"
 msgstr "Personne"
 
-#: humo-gen/family.php:1731
+#: humo-gen/family.php:1652
 msgid "E-mail address"
 msgstr "Adresse courriel"
 
-#: humo-gen/family.php:1731
+#: humo-gen/family.php:1652
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "Votre adresse courriel n'est pas trouvable. Ajouter votre adresse courriel ici, svp"
 
-#: humo-gen/family.php:1735
+#: humo-gen/family.php:1656
 msgid "Text"
 msgstr "Texte"
 
-#: humo-gen/family.php:1737
+#: humo-gen/family.php:1658
 msgid "Send"
 msgstr "Envoyer"
 
-#: humo-gen/family.php:1777
+#: humo-gen/family.php:1695
 msgid "No valid sourcenumber."
 msgstr "Pas de nombre de source valable."
 
-#: humo-gen/family.php:1781
+#: humo-gen/family.php:1699
 msgid "Title"
 msgstr "Titre"
 
@@ -455,64 +460,64 @@ msgstr "descendants"
 msgid "under fanchart"
 msgstr "sous l'éventail"
 
-#: humo-gen/header.php:198
+#: humo-gen/header.php:188
 msgid "Main index"
 msgstr "Index principal"
 
-#: humo-gen/header.php:199
+#: humo-gen/header.php:189
 msgid "Persons"
 msgstr "Personnes"
 
-#: humo-gen/header.php:200
+#: humo-gen/header.php:190
 msgid "Names"
 msgstr "Nom de famille"
 
-#: humo-gen/header.php:201
+#: humo-gen/header.php:191
 msgid "Places"
 msgstr "Lieux"
 
-#: humo-gen/header.php:202
+#: humo-gen/header.php:192
 msgid "Photobook"
 msgstr "Album photos"
 
-#: humo-gen/header.php:206
+#: humo-gen/header.php:196
 msgid "Statistics"
 msgstr "Statistiques"
 
-#: humo-gen/header.php:207
+#: humo-gen/header.php:197
 msgid "Relationship calculator"
 msgstr "Calculatrice de relation"
 
-#: humo-gen/header.php:208
+#: humo-gen/header.php:198
 msgid "Mail form"
 msgstr "Formulaire de courriel"
 
-#: humo-gen/header.php:210
+#: humo-gen/header.php:200
 msgid "Latest changes"
 msgstr "Derniers changements"
 
-#: humo-gen/header.php:211
+#: humo-gen/header.php:201
 #: humo-gen/hourglass.php:92
 msgid "Help"
 msgstr "Aide"
 
-#: humo-gen/header.php:212
+#: humo-gen/header.php:202
 msgid "Information"
 msgstr "Information"
 
-#: humo-gen/header.php:213
+#: humo-gen/header.php:203
 msgid "Credits"
 msgstr "Contributeurs"
 
-#: humo-gen/header.php:214
+#: humo-gen/header.php:204
 msgid "Cookie information"
 msgstr "Information sur les cookies"
 
-#: humo-gen/header.php:215
+#: humo-gen/header.php:205
 msgid "Login"
 msgstr "S'identifier"
 
-#: humo-gen/header.php:216
+#: humo-gen/header.php:206
 msgid "Register"
 msgstr "Enregistrer"
 
@@ -627,11 +632,11 @@ msgstr "Personne nouvelle ou récemment modifiée"
 #: humo-gen/latest_changes.php:63
 #: humo-gen/list.php:1249
 #: humo-gen/list.php:1407
-#: humo-gen/menu.php:76
+#: humo-gen/menu.php:73
 #: humo-gen/photoalbum.php:161
-#: humo-gen/relations.php:2484
-#: humo-gen/relations.php:2514
-#: humo-gen/relations.php:2586
+#: humo-gen/relations.php:2692
+#: humo-gen/relations.php:2722
+#: humo-gen/relations.php:2794
 msgid "Search"
 msgstr "Rechercher"
 
@@ -668,8 +673,8 @@ msgstr "privé"
 # Birth
 #: humo-gen/list.php:119
 #: humo-gen/list.php:1222
-#: humo-gen/relations.php:2545
-#: humo-gen/relations.php:2613
+#: humo-gen/relations.php:2753
+#: humo-gen/relations.php:2821
 #: humo-gen/report_ancestor.php:607
 #: humo-gen/report_ancestor.php:938
 #: humo-gen/report_ancestor.php:1026
@@ -681,8 +686,8 @@ msgstr "*"
 # Baptise
 #: humo-gen/list.php:128
 #: humo-gen/list.php:1225
-#: humo-gen/relations.php:2542
-#: humo-gen/relations.php:2610
+#: humo-gen/relations.php:2750
+#: humo-gen/relations.php:2818
 #: humo-gen/report_ancestor.php:609
 #: humo-gen/report_descendant.php:613
 msgid "~"
@@ -796,8 +801,8 @@ msgid "th"
 msgstr "e"
 
 #: humo-gen/list.php:273
-#: humo-gen/menu.php:23
-#: humo-gen/menu.php:272
+#: humo-gen/menu.php:21
+#: humo-gen/menu.php:267
 msgid "Family tree"
 msgstr "Arbre généalogique"
 
@@ -865,13 +870,13 @@ msgstr "Débute avec"
 
 #: humo-gen/list.php:1270
 #: humo-gen/list.php:1574
-#: humo-gen/relations.php:2480
+#: humo-gen/relations.php:2688
 msgid "First name"
 msgstr "Prénom"
 
 #: humo-gen/list.php:1281
 #: humo-gen/list.php:1567
-#: humo-gen/relations.php:2482
+#: humo-gen/relations.php:2690
 msgid "Last name"
 msgstr "Nom"
 
@@ -880,7 +885,7 @@ msgid "Enter name or part of name"
 msgstr "Entrer nom ou partie de nom"
 
 #: humo-gen/list.php:1303
-#: humo-gen/menu.php:75
+#: humo-gen/menu.php:72
 msgid "Minimum: 3 characters."
 msgstr "Minimum 3 caractères"
 
@@ -1118,47 +1123,47 @@ msgid "Display birth or death locations across different time periods"
 msgstr "<b>Lieux de naissance et de décès pour différentes périodes de temps.</b>"
 
 #: humo-gen/maps.php:35
-#: humo-gen/menu.php:25
+#: humo-gen/menu.php:23
 msgid "Select a family tree:"
 msgstr "Choisir un arbre généalogique:"
 
-#: humo-gen/maps.php:66
+#: humo-gen/maps.php:65
 msgid "Display:"
 msgstr "Afficher:"
 
-#: humo-gen/maps.php:70
+#: humo-gen/maps.php:69
 msgid "Birth locations"
 msgstr "Lieux de naissance"
 
-#: humo-gen/maps.php:72
+#: humo-gen/maps.php:71
 msgid "Death locations"
 msgstr "Lieux de décès"
 
-#: humo-gen/maps.php:86
+#: humo-gen/maps.php:82
 msgid "Filters:"
 msgstr "Filtres:"
 
-#: humo-gen/maps.php:154
+#: humo-gen/maps.php:145
 msgid "Display births until: "
 msgstr "Lieux  de naissance jusqu'en: "
 
-#: humo-gen/maps.php:157
+#: humo-gen/maps.php:148
 msgid "Display deaths until: "
 msgstr "Lieux de décès jusqu'en: "
 
-#: humo-gen/maps.php:169
+#: humo-gen/maps.php:160
 msgid "Filter by specific family name(s)"
 msgstr "Choisir nom(s) de famille"
 
-#: humo-gen/maps.php:174
+#: humo-gen/maps.php:165
 msgid "Filter by descendants of a person"
 msgstr "Choisir descendants d'un personne"
 
-#: humo-gen/maps.php:184
+#: humo-gen/maps.php:175
 msgid "Other tools:"
 msgstr "Autres outils:"
 
-#: humo-gen/maps.php:220
+#: humo-gen/maps.php:211
 msgid ""
 "<b>Top menu line:</b>\n"
 "<ul><li>Choose family tree. On sites with multiple family trees here you can choose which tree to map.</li>\n"
@@ -1201,126 +1206,126 @@ msgstr ""
 "<li>Le second lien affichera dans la fenêtre Info une liste de toutes les personnes nées à cet endroit.</li>\n"
 "<li>On peut cliquer sur ces noms pour ouvrir un nouveau tab dans le navigateur avec la page de famille de cette personne.</li>"
 
-#: humo-gen/maps.php:266
+#: humo-gen/maps.php:253
 msgid "Find location on the map"
 msgstr "Trouver un lieu sur la carte"
 
-#: humo-gen/maps.php:291
+#: humo-gen/maps.php:273
 msgid "Mapping with specific name(s): "
 msgstr "Lieux pour nom(s): "
 
-#: humo-gen/maps.php:302
+#: humo-gen/maps.php:284
 msgid "Switch name filter off"
 msgstr "Désactiver le filtre noms"
 
-#: humo-gen/maps.php:466
+#: humo-gen/maps.php:430
 msgid "Filter by descendants of: "
 msgstr "Sélection pour descendants de: "
 
-#: humo-gen/maps.php:466
+#: humo-gen/maps.php:430
 msgid "Switch descendant filter off"
 msgstr "Désacitver le filtre descendants"
 
-#: humo-gen/maps.php:469
+#: humo-gen/maps.php:433
 msgid "No known birth places amongst descendants"
 msgstr "Les lieux de naissance des descendants ne sont pas connus"
 
-#: humo-gen/maps.php:469
+#: humo-gen/maps.php:433
 msgid "Close"
 msgstr "Fermer"
 
-#: humo-gen/maps.php:485
+#: humo-gen/maps.php:448
 msgid "Mark checkbox next to name(s)"
 msgstr "Cocher la case a cote du(des) nom(s)"
 
-#: humo-gen/maps.php:498
+#: humo-gen/maps.php:460
 msgid "Choose"
 msgstr "Choisir"
 
-#: humo-gen/maps.php:500
-#: humo-gen/maps.php:611
+#: humo-gen/maps.php:462
+#: humo-gen/maps.php:568
 msgid "Cancel"
 msgstr "Annuler"
 
-#: humo-gen/maps.php:526
+#: humo-gen/maps.php:487
 msgid "Pick a name or enter ID:"
 msgstr "Choisir un nom ou entrer ID:"
 
-#: humo-gen/maps.php:529
+#: humo-gen/maps.php:490
 msgid "Pick a name from the pulldown list"
 msgstr "Choisir un nom dans la liste déroulante"
 
-#: humo-gen/maps.php:560
+#: humo-gen/maps.php:517
 msgid "baptised"
 msgstr "baptisé(e)"
 
-#: humo-gen/maps.php:566
+#: humo-gen/maps.php:523
 msgid "buried"
 msgstr "inhumé(e)"
 
-#: humo-gen/maps.php:610
+#: humo-gen/maps.php:567
 msgid "Go!"
 msgstr "Démarrer !"
 
-#: humo-gen/menu.php:88
+#: humo-gen/menu.php:85
 msgid "Favourites list:"
 msgstr "Liste des favoris:"
 
-#: humo-gen/menu.php:167
+#: humo-gen/menu.php:164
 msgid "Select a colour theme (a cookie will be used to remember the theme)"
 msgstr "Choisir une couleur de thème (un cookie sert à se souvenir du thème)"
 
-#: humo-gen/menu.php:171
-#: humo-gen/menu.php:175
+#: humo-gen/menu.php:168
+#: humo-gen/menu.php:172
 msgid "Select a theme"
 msgstr "Choisir un thème"
 
-#: humo-gen/menu.php:172
-#: humo-gen/menu.php:176
+#: humo-gen/menu.php:169
+#: humo-gen/menu.php:173
 msgid "Standard-colours"
 msgstr "Couleurs-standard"
 
-#: humo-gen/menu.php:225
+#: humo-gen/menu.php:222
 msgid "Home"
 msgstr "Accueil"
 
-#: humo-gen/menu.php:240
+#: humo-gen/menu.php:235
 msgid "TOP_MENU_GENEALOGY"
 msgstr "Généalogie"
 
-#: humo-gen/menu.php:278
+#: humo-gen/menu.php:273
 msgid "Family tree index"
 msgstr "Index de l'arbre généalogique"
 
-#: humo-gen/menu.php:411
+#: humo-gen/menu.php:402
 msgid "Tools"
 msgstr "Outils"
 
-#: humo-gen/menu.php:424
+#: humo-gen/menu.php:415
 msgid "Anniversary list"
 msgstr "Liste d'anniversaires"
 
-#: humo-gen/menu.php:471
+#: humo-gen/menu.php:460
 msgid "Contact"
 msgstr "Contact"
 
-#: humo-gen/menu.php:524
+#: humo-gen/menu.php:513
 msgid "HuMo-gen info"
 msgstr "HuMo-gen info"
 
-#: humo-gen/menu.php:533
+#: humo-gen/menu.php:522
 msgid "HuMo-gen credits"
 msgstr "HuMo-gen crédits"
 
-#: humo-gen/menu.php:543
+#: humo-gen/menu.php:532
 msgid "HuMo-gen cookies"
 msgstr "HuMo-gen cookies"
 
-#: humo-gen/menu.php:606
+#: humo-gen/menu.php:595
 msgid "Logoff"
 msgstr "Sortir"
 
-#: humo-gen/menu.php:619
+#: humo-gen/menu.php:608
 msgid "Admin"
 msgstr "Admin"
 
@@ -1574,49 +1579,60 @@ msgstr "Aucun numéro de famille valide."
 msgid "is"
 msgstr "est"
 
-#: humo-gen/relations.php:1533
+#: humo-gen/relations.php:1534
 msgid "BLOOD RELATIONSHIP: "
 msgstr "RELATION DE SANG: "
 
-#: humo-gen/relations.php:1609
+#: humo-gen/relations.php:1612
+#: humo-gen/relations.php:1749
 msgid "MARITAL RELATIONSHIP: "
 msgstr "RELATION MATRIMONIALE: "
 
-#: humo-gen/relations.php:1619
+#: humo-gen/relations.php:1614
+#, fuzzy
+msgid "Use Extended Calculator"
+msgstr "Exécuter calcul matrimoniale étendue"
+
+#: humo-gen/relations.php:1626
 msgid "and"
 msgstr "et"
 
-#: humo-gen/relations.php:1622
+#: humo-gen/relations.php:1629
 msgid "are both husbands of"
 msgstr "sont deux époux de"
 
-#: humo-gen/relations.php:1625
+#: humo-gen/relations.php:1632
 msgid "are both wifes of"
 msgstr "sont deux épouses de"
 
-#: humo-gen/relations.php:1633
-#: humo-gen/relations.php:1634
-#: humo-gen/relations.php:1649
-#: humo-gen/relations.php:1650
-#: humo-gen/relations.php:1701
+#: humo-gen/relations.php:1640
+#: humo-gen/relations.php:1641
+#: humo-gen/relations.php:1656
+#: humo-gen/relations.php:1657
+#: humo-gen/relations.php:1708
 msgid "Partner"
 msgstr "Partenaire"
 
-#: humo-gen/relations.php:1638
-#: humo-gen/relations.php:1659
+#: humo-gen/relations.php:1645
+#: humo-gen/relations.php:1666
 msgid "husband of"
 msgstr "époux de"
 
-#: humo-gen/relations.php:1642
-#: humo-gen/relations.php:1654
+#: humo-gen/relations.php:1649
+#: humo-gen/relations.php:1661
 msgid "wife of"
 msgstr "épouse de"
 
-#: humo-gen/relations.php:1729
+#: humo-gen/relations.php:1744
 msgid "No blood relation or direct marital relation found"
 msgstr "Pas de relation de sang ou matrimoniale directe trouvée"
 
-#: humo-gen/relations.php:1730
+#: humo-gen/relations.php:1750
+#, fuzzy
+msgid "No direct marital relation found"
+msgstr "Pas de relation de sang ou matrimoniale directe trouvée"
+
+#: humo-gen/relations.php:1754
 msgid ""
 "You may wish to try finding a connection with the <span style='font-weight:bold'>Extended Marital Calculator</span> below.<br>\t\n"
 "\t\t\t\tThis will find connections that span over many marital relations and generations.<br>\t\n"
@@ -1630,19 +1646,32 @@ msgstr ""
 "\t\t\t\tPar exemple, dans un arbre de 10.000 personnes, même les personnes les plus distantes sont d'habitude trouvées en moins de deux secondes.<br>\t\n"
 "\t\t\t\tPour un arbre de 75.000 personnes, cela peut prendre 8 secondes.<br><br>"
 
-#: humo-gen/relations.php:1735
+#: humo-gen/relations.php:1759
 msgid "Perform extended marital calculation"
 msgstr "Exécuter calcul matrimoniale étendue"
 
-#: humo-gen/relations.php:2207
+#: humo-gen/relations.php:2400
 msgid "These persons are not related in any way."
 msgstr "Il n'y a aucune relation entre ces personnes."
 
-#: humo-gen/relations.php:2418
+#: humo-gen/relations.php:2403
+#, fuzzy
+msgid "No further paths found."
+msgstr "Aucun résultat trouvé."
+
+#: humo-gen/relations.php:2462
+msgid "Try to find another path"
+msgstr ""
+
+#: humo-gen/relations.php:2463
+msgid "(With each consecutive search the path may get longer and computing time may increase!)"
+msgstr ""
+
+#: humo-gen/relations.php:2626
 msgid "Information about the Relationship Calculator"
 msgstr "Information sur la Calculatrice de Relation"
 
-#: humo-gen/relations.php:2423
+#: humo-gen/relations.php:2631
 msgid ""
 "This calculator will find the following relationships:<br>\n"
 "<ul><li>Any blood relationship between X and Y (\"X is great-grandfather of Y\", \"X is 3rd cousin once removed of Y\" etc.)</li>\n"
@@ -1668,33 +1697,33 @@ msgstr ""
 "<li> Maintenant, cliquez sur le bouton \"Calculer relations\" à la droite. </li>\n"
 "<li><b> CONSEIL: lorsque vous cliquez sur \"Recherche\" avec la case prénom <u>et</u> nom vide , vous obtiendrez une liste de toutes les personnes dans la base de données. (Cela peut prendre plusieurs secondes)</b></li></ul>"
 
-#: humo-gen/relations.php:2464
+#: humo-gen/relations.php:2672
 msgid "You can enter names or part of names in either search box, or leave a search box empty"
 msgstr "Vous pouvez entrer un nom ou une partie de nom dans la boîte de recherche ,  ou laisser la boîte vide"
 
-#: humo-gen/relations.php:2466
+#: humo-gen/relations.php:2674
 msgid "<b>TIP: when you click \"search\" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b>"
 msgstr "<b>CONSEIL: lorsque vous cliquez sur \"Recherche \" avec les cases prénom <u>et</u> nom vides, vous obtiendrez une liste de toutes les personnes dans la base de données. (Cela peut prendre plusieurs secondes)</b>"
 
-#: humo-gen/relations.php:2485
+#: humo-gen/relations.php:2693
 msgid "Pick a name from search results"
 msgstr "Choisir un nom des résultats de la recherche"
 
-#: humo-gen/relations.php:2486
-#: humo-gen/relations.php:2560
+#: humo-gen/relations.php:2694
+#: humo-gen/relations.php:2768
 msgid "Calculate relationships"
 msgstr "Calculer la relation"
 
-#: humo-gen/relations.php:2552
-#: humo-gen/relations.php:2620
+#: humo-gen/relations.php:2760
+#: humo-gen/relations.php:2828
 msgid "Person not found"
 msgstr "Personne non trouvée"
 
-#: humo-gen/relations.php:2558
+#: humo-gen/relations.php:2766
 msgid "Switch persons"
 msgstr "Changer personnes"
 
-#: humo-gen/relations.php:2694
+#: humo-gen/relations.php:2904
 msgid "You have to search and than choose Person 1 and Person 2 from the search result pulldown"
 msgstr "Vous devez faire une recherche, puis choisir la Personne 1 et la Personne 2 de la liste déroulante résultante"
 
@@ -2050,7 +2079,7 @@ msgid "Choose number of generations to display"
 msgstr "Choisir le nombre de générations à afficher"
 
 #: humo-gen/source.php:40
-#: humo-gen/admin/include/editor.php:3142
+#: humo-gen/admin/include/editor.php:1953
 msgid "No valid source number."
 msgstr "Aucun numéro de source valide"
 
@@ -2064,42 +2093,42 @@ msgstr "Date"
 
 #: humo-gen/source.php:82
 #: humo-gen/source.php:94
-#: humo-gen/admin/include/editor.php:3198
+#: humo-gen/admin/include/editor.php:2004
 msgid "Publication"
 msgstr "Publication"
 
 #: humo-gen/source.php:122
 #: humo-gen/source.php:127
-#: humo-gen/admin/include/editor.php:3200
+#: humo-gen/admin/include/editor.php:2006
 msgid "Author"
 msgstr "Auteur"
 
 #: humo-gen/source.php:133
 #: humo-gen/source.php:138
-#: humo-gen/admin/include/editor.php:3178
+#: humo-gen/admin/include/editor.php:1987
 msgid "Subject"
 msgstr "Sujet"
 
 #: humo-gen/source.php:144
 #: humo-gen/source.php:149
-#: humo-gen/admin/include/editor.php:3201
+#: humo-gen/admin/include/editor.php:2007
 msgid "Nr."
 msgstr "No."
 
 #: humo-gen/source.php:155
 #: humo-gen/source.php:160
-#: humo-gen/admin/include/editor.php:3202
+#: humo-gen/admin/include/editor.php:2008
 msgid "Kind"
 msgstr "Type"
 
 #: humo-gen/source.php:166
 #: humo-gen/source.php:171
-#: humo-gen/admin/include/editor.php:3203
+#: humo-gen/admin/include/editor.php:2009
 msgid "Archive"
 msgstr "Archive"
 
 #: humo-gen/source.php:215
-#: humo-gen/admin/include/editor.php:3181
+#: humo-gen/admin/include/editor.php:1990
 msgid "Repository"
 msgstr "Référentiel"
 
@@ -2410,118 +2439,118 @@ msgstr "Paramètres d'utilisateur"
 msgid "Change"
 msgstr "Changer"
 
-#: humo-gen/admin/index.php:280
-#: humo-gen/admin/index.php:517
+#: humo-gen/admin/index.php:269
+#: humo-gen/admin/index.php:496
 msgid "Administration"
 msgstr "Administration"
 
-#: humo-gen/admin/index.php:445
+#: humo-gen/admin/index.php:430
 msgid "HuMo-gen is up-to-date!"
 msgstr "HuMo-gen est à jour"
 
-#: humo-gen/admin/index.php:446
+#: humo-gen/admin/index.php:431
 msgid "Update options"
 msgstr "Options de mise à jour"
 
-#: humo-gen/admin/index.php:451
+#: humo-gen/admin/index.php:436
 msgid "Update available"
 msgstr "Mise à jour disponible"
 
-#: humo-gen/admin/index.php:456
+#: humo-gen/admin/index.php:441
 msgid "Beta version available"
 msgstr "Version Beta disponiblee"
 
-#: humo-gen/admin/index.php:472
+#: humo-gen/admin/index.php:454
 msgid "Online version check unavailable."
 msgstr "Vérification de la version en ligne non disponible"
 
-#: humo-gen/admin/index.php:511
-#: humo-gen/admin/index.php:517
+#: humo-gen/admin/index.php:490
+#: humo-gen/admin/index.php:496
 msgid "Main menu"
 msgstr "Menu principal"
 
-#: humo-gen/admin/index.php:527
+#: humo-gen/admin/index.php:506
 msgid "Website"
 msgstr "Site Web"
 
-#: humo-gen/admin/index.php:561
+#: humo-gen/admin/index.php:540
 msgid "Close source editor"
 msgstr "Fermer l'éditeur de la source"
 
-#: humo-gen/admin/index.php:582
+#: humo-gen/admin/index.php:561
 msgid "Control"
 msgstr "Contrôle"
 
-#: humo-gen/admin/index.php:587
+#: humo-gen/admin/index.php:566
 msgid "Install"
 msgstr "Installer"
 
-#: humo-gen/admin/index.php:593
+#: humo-gen/admin/index.php:572
 msgid "Create thumbnails"
 msgstr "Créer imagettes"
 
-#: humo-gen/admin/index.php:596
+#: humo-gen/admin/index.php:575
 msgid "Extra links"
 msgstr "Liens supplémentaires."
 
-#: humo-gen/admin/index.php:600
+#: humo-gen/admin/index.php:579
 msgid "Language editor"
 msgstr "Éditeur Langues"
 
-#: humo-gen/admin/index.php:604
+#: humo-gen/admin/index.php:583
 msgid "Prefix editor"
 msgstr "Éditeur préfixes"
 
-#: humo-gen/admin/index.php:625
-#: humo-gen/admin/index.php:631
+#: humo-gen/admin/index.php:604
+#: humo-gen/admin/index.php:610
 msgid "Family trees"
 msgstr "Arbres généalogiques"
 
-#: humo-gen/admin/index.php:636
+#: humo-gen/admin/index.php:615
 msgid "Data check"
 msgstr "Vérifier données"
 
-#: humo-gen/admin/index.php:641
+#: humo-gen/admin/index.php:620
 msgid "Gedcom export"
 msgstr "Exportation Gedcom"
 
-#: humo-gen/admin/index.php:661
+#: humo-gen/admin/index.php:640
 msgid "EDITOR"
 msgstr "ÉDITEUR"
 
-#: humo-gen/admin/index.php:676
-#: humo-gen/admin/include/editor.php:3334
+#: humo-gen/admin/index.php:655
+#: humo-gen/admin/include/editor.php:2128
 msgid "Repositories"
 msgstr "Référentiels"
 
-#: humo-gen/admin/index.php:684
-#: humo-gen/admin/include/editor.php:3696
+#: humo-gen/admin/index.php:663
+#: humo-gen/admin/include/editor.php:2463
 msgid "Rename places"
 msgstr "Renommer les lieux"
 
-#: humo-gen/admin/index.php:700
-#: humo-gen/admin/index.php:705
+#: humo-gen/admin/index.php:679
+#: humo-gen/admin/index.php:684
 msgid "Users"
 msgstr "Utilisateurs"
 
-#: humo-gen/admin/index.php:708
+#: humo-gen/admin/index.php:687
 msgid "Groups"
 msgstr "Groupes"
 
-#: humo-gen/admin/index.php:726
+#: humo-gen/admin/index.php:705
 #: humo-gen/admin/include/cms_pages.php:12
 msgid "CMS Own pages"
 msgstr "Pages CMS personnelles"
 
-#: humo-gen/admin/index.php:755
+#: humo-gen/admin/index.php:734
 msgid "Database backup"
 msgstr "Archivage bases de données"
 
-#: humo-gen/admin/index.php:777
+#: humo-gen/admin/index.php:756
 msgid "Logs"
 msgstr "Logs"
 
-#: humo-gen/admin/index.php:782
+#: humo-gen/admin/index.php:761
 msgid "Log"
 msgstr "Log"
 
@@ -2597,7 +2626,7 @@ msgid "Invalid backup file: has to be file with extension \".sql\" or \".sql.zip
 msgstr "Fichier de sauvegarde invalide: L'extension doit être \".sql\" ou \". Sql.zip \" "
 
 #: humo-gen/admin/include/backup.php:90
-#: humo-gen/admin/include/editor_person_event.php:272
+#: humo-gen/admin/include/editor_event_cls.php:832
 msgid "Upload"
 msgstr "Télécharger"
 
@@ -2669,29 +2698,27 @@ msgstr "Êtes-vous certain de vouloir supprimer cette page?"
 
 #: humo-gen/admin/include/cms_pages.php:116
 #: humo-gen/admin/include/cms_pages.php:194
-#: humo-gen/admin/include/editor.php:315
-#: humo-gen/admin/include/editor.php:733
-#: humo-gen/admin/include/editor.php:964
-#: humo-gen/admin/include/editor.php:2998
-#: humo-gen/admin/include/editor.php:3304
-#: humo-gen/admin/include/editor.php:3522
+#: humo-gen/admin/include/editor.php:1831
+#: humo-gen/admin/include/editor.php:2103
+#: humo-gen/admin/include/editor.php:2302
 #: humo-gen/admin/include/editor_addresses.php:19
-#: humo-gen/admin/include/editor_family_event.php:59
-#: humo-gen/admin/include/editor_person_event.php:175
+#: humo-gen/admin/include/editor_inc.php:38
+#: humo-gen/admin/include/editor_inc.php:415
+#: humo-gen/admin/include/editor_inc.php:627
+#: humo-gen/admin/include/editor_inc.php:1071
 msgid "Yes"
 msgstr "Oui"
 
 #: humo-gen/admin/include/cms_pages.php:117
 #: humo-gen/admin/include/cms_pages.php:195
-#: humo-gen/admin/include/editor.php:316
-#: humo-gen/admin/include/editor.php:734
-#: humo-gen/admin/include/editor.php:965
-#: humo-gen/admin/include/editor.php:2999
-#: humo-gen/admin/include/editor.php:3305
-#: humo-gen/admin/include/editor.php:3523
+#: humo-gen/admin/include/editor.php:1832
+#: humo-gen/admin/include/editor.php:2104
+#: humo-gen/admin/include/editor.php:2303
 #: humo-gen/admin/include/editor_addresses.php:20
-#: humo-gen/admin/include/editor_family_event.php:61
-#: humo-gen/admin/include/editor_person_event.php:176
+#: humo-gen/admin/include/editor_inc.php:39
+#: humo-gen/admin/include/editor_inc.php:416
+#: humo-gen/admin/include/editor_inc.php:628
+#: humo-gen/admin/include/editor_inc.php:1072
 msgid "No"
 msgstr "Non"
 
@@ -2746,16 +2773,14 @@ msgstr "Aucun menu sélectionné:"
 #: humo-gen/admin/include/cms_pages.php:395
 #: humo-gen/admin/include/cms_pages.php:473
 #: humo-gen/admin/include/cms_pages.php:645
-#: humo-gen/admin/include/editor.php:1739
-#: humo-gen/admin/include/editor.php:2432
-#: humo-gen/admin/include/editor.php:3211
-#: humo-gen/admin/include/editor.php:3431
-#: humo-gen/admin/include/editor.php:3668
-#: humo-gen/admin/include/editor.php:3784
+#: humo-gen/admin/include/editor.php:739
+#: humo-gen/admin/include/editor.php:1344
+#: humo-gen/admin/include/editor.php:2017
+#: humo-gen/admin/include/editor.php:2218
+#: humo-gen/admin/include/editor.php:2435
+#: humo-gen/admin/include/editor.php:2542
 #: humo-gen/admin/include/editor_addresses.php:163
 #: humo-gen/admin/include/editor_addresses.php:326
-#: humo-gen/admin/include/editor_family_event.php:168
-#: humo-gen/admin/include/editor_person_event.php:318
 msgid "Save"
 msgstr "Sauvegarder"
 
@@ -2780,16 +2805,28 @@ msgid "Remove menu"
 msgstr "Retirez le menu"
 
 #: humo-gen/admin/include/cms_pages.php:484
-#: humo-gen/admin/include/editor.php:1742
-#: humo-gen/admin/include/editor.php:2429
-#: humo-gen/admin/include/editor.php:3208
-#: humo-gen/admin/include/editor.php:3428
-#: humo-gen/admin/include/editor.php:3665
+#: humo-gen/admin/include/editor.php:742
+#: humo-gen/admin/include/editor.php:1341
+#: humo-gen/admin/include/editor.php:2014
+#: humo-gen/admin/include/editor.php:2215
+#: humo-gen/admin/include/editor.php:2432
 #: humo-gen/admin/include/editor_addresses.php:183
 #: humo-gen/admin/include/editor_addresses.php:189
 #: humo-gen/admin/include/editor_addresses.php:337
-#: humo-gen/admin/include/editor_family_event.php:305
-#: humo-gen/admin/include/editor_person_event.php:726
+#: humo-gen/admin/include/editor_event_cls.php:190
+#: humo-gen/admin/include/editor_event_cls.php:202
+#: humo-gen/admin/include/editor_event_cls.php:214
+#: humo-gen/admin/include/editor_event_cls.php:226
+#: humo-gen/admin/include/editor_event_cls.php:238
+#: humo-gen/admin/include/editor_event_cls.php:250
+#: humo-gen/admin/include/editor_event_cls.php:262
+#: humo-gen/admin/include/editor_event_cls.php:274
+#: humo-gen/admin/include/editor_event_cls.php:287
+#: humo-gen/admin/include/editor_event_cls.php:307
+#: humo-gen/admin/include/editor_event_cls.php:334
+#: humo-gen/admin/include/editor_event_cls.php:346
+#: humo-gen/admin/include/editor_event_cls.php:856
+#: humo-gen/admin/include/editor_event_cls.php:869
 msgid "Add"
 msgstr "Ajouter"
 
@@ -2827,694 +2864,554 @@ msgstr "Index principal standard"
 msgid "Set per language"
 msgstr "Régler par langue"
 
-#: humo-gen/admin/include/editor.php:124
-#: humo-gen/admin/include/editor.php:3116
-#: humo-gen/admin/include/editor.php:3213
-#: humo-gen/admin/include/editor.php:3359
-#: humo-gen/admin/include/editor.php:3433
-#: humo-gen/admin/include/editor.php:3605
-#: humo-gen/admin/include/editor.php:3669
+#: humo-gen/admin/include/editor.php:119
+#: humo-gen/admin/include/editor.php:1929
+#: humo-gen/admin/include/editor.php:2019
+#: humo-gen/admin/include/editor.php:2149
+#: humo-gen/admin/include/editor.php:2220
+#: humo-gen/admin/include/editor.php:2376
+#: humo-gen/admin/include/editor.php:2436
 msgid "or"
 msgstr "ou"
 
-#: humo-gen/admin/include/editor.php:311
-msgid "This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?"
-msgstr "Ceci déconnectera cette personne de parents, conjoints et enfants <b> et la supprimera complètement de la base de données.</b> Voulez-vous continuer?"
-
-#: humo-gen/admin/include/editor.php:370
-#: humo-gen/admin/include/editor.php:403
-msgid "Person disconnected from marriage(s)."
-msgstr "Personne déconnectée de mariage(s)."
-
-#: humo-gen/admin/include/editor.php:432
-msgid "Person disconnected from parents."
-msgstr "Personne déconnectée des parents(s)."
-
-#: humo-gen/admin/include/editor.php:447
-msgid "Person is removed"
-msgstr "La personne est enlevée"
-
-#: humo-gen/admin/include/editor.php:723
-msgid "Disconnect children before removal of marriage."
-msgstr "Débranchez les enfants avant l'enlèvement du mariage."
-
-#: humo-gen/admin/include/editor.php:728
-msgid "Are you sure to remove this mariage?"
-msgstr "Êtes-vous sûr de vouloir supprimer ce mariage?"
-
-#: humo-gen/admin/include/editor.php:769
-msgid "Marriage is removed!"
-msgstr "Ce mariage est supprimé!"
-
-#: humo-gen/admin/include/editor.php:832
-msgid "Select parents:"
-msgstr "Choisir les parents:"
-
-#: humo-gen/admin/include/editor.php:857
-#: humo-gen/admin/include/editor.php:1373
-#: humo-gen/admin/include/editor.php:1586
-#: humo-gen/admin/include/editor.php:3769
-msgid "Select"
-msgstr "Sélectionner"
-
-#: humo-gen/admin/include/editor.php:908
-msgid "Parents are selected!"
-msgstr "Les parents sont sélectionnés!"
-
-#: humo-gen/admin/include/editor.php:958
-msgid "Are you sure you want to disconnect this child?"
-msgstr "Êtes-vous sûr que vous voulez déconnecter cet enfant?"
-
-#: humo-gen/admin/include/editor.php:1255
+#: humo-gen/admin/include/editor.php:325
 msgid "Examples of date entries (using the English month abbreviations): jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec):"
 msgstr "Exemples d'entrées de date (en utilisant les abréviations des mois anglais): jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec):"
 
-#: humo-gen/admin/include/editor.php:1256
+#: humo-gen/admin/include/editor.php:326
 msgid "<b>13 oct 1813</b>, <b>between 1986 and 1987</b>"
 msgstr "<b>13 oct 1813</b>, <b>entre 1986 and 1987</b>"
 
-#: humo-gen/admin/include/editor.php:1270
+#: humo-gen/admin/include/editor.php:340
 msgid "or ID:"
 msgstr "ou ID"
 
-#: humo-gen/admin/include/editor.php:1322
+#: humo-gen/admin/include/editor.php:381
 msgid "Found:"
 msgstr "Trouvé:"
 
-#: humo-gen/admin/include/editor.php:1383
-#: humo-gen/admin/include/editor.php:1384
+#: humo-gen/admin/include/editor.php:402
+#: humo-gen/admin/include/editor.php:593
+#: humo-gen/admin/include/editor.php:2527
+#: humo-gen/admin/include/editor_inc.php:531
+msgid "Select"
+msgstr "Sélectionner"
+
+#: humo-gen/admin/include/editor.php:411
+#: humo-gen/admin/include/editor.php:412
 msgid "Add person"
 msgstr "Ajouter une personne"
 
-#: humo-gen/admin/include/editor.php:1404
+#: humo-gen/admin/include/editor.php:430
 msgid "New family tree!"
 msgstr "Nouvel arbre généalogique!"
 
-#: humo-gen/admin/include/editor.php:1577
+#: humo-gen/admin/include/editor.php:585
 msgid "Select child"
 msgstr "Choisir un enfant"
 
-#: humo-gen/admin/include/editor.php:1589
+#: humo-gen/admin/include/editor.php:596
 msgid "Or add a new child:"
 msgstr "Ou ajouter un nouvel enfant:"
 
-#: humo-gen/admin/include/editor.php:1667
-#: humo-gen/admin/include/editor.php:1669
+#: humo-gen/admin/include/editor.php:672
+#: humo-gen/admin/include/editor.php:674
 msgid "parents"
 msgstr "parents"
 
-#: humo-gen/admin/include/editor.php:1714
-#: humo-gen/admin/include/editor.php:2416
-#: humo-gen/admin/include/editor.php:3214
-#: humo-gen/admin/include/editor.php:3434
-#: humo-gen/admin/include/editor.php:3670
+#: humo-gen/admin/include/editor.php:715
+#: humo-gen/admin/include/editor.php:1329
+#: humo-gen/admin/include/editor.php:2020
+#: humo-gen/admin/include/editor.php:2221
+#: humo-gen/admin/include/editor.php:2437
 msgid "Remove"
 msgstr "Supprimer"
 
-#: humo-gen/admin/include/editor.php:1755
+#: humo-gen/admin/include/editor.php:751
 msgid "firstname"
 msgstr "prénom"
 
 # Dutch: change into "bijnaam" for BK.
-#: humo-gen/admin/include/editor.php:1755
-#: humo-gen/admin/include/editor_person_event.php:610
-#: humo-gen/admin/include/editor_person_event.php:631
+#: humo-gen/admin/include/editor.php:751
+#: humo-gen/admin/include/editor_event_cls.php:730
+#: humo-gen/admin/include/editor_event_cls.php:751
 msgid "Nickname"
 msgstr "Surnom"
 
-#: humo-gen/admin/include/editor.php:1766
-#: humo-gen/admin/include/editor.php:1827
-#: humo-gen/admin/include/editor.php:1850
-#: humo-gen/admin/include/editor.php:1896
-#: humo-gen/admin/include/editor.php:1940
-#: humo-gen/admin/include/editor.php:2020
-#: humo-gen/admin/include/editor.php:2098
-#: humo-gen/admin/include/editor.php:2115
-#: humo-gen/admin/include/editor.php:2609
-#: humo-gen/admin/include/editor.php:2643
-#: humo-gen/admin/include/editor.php:2670
-#: humo-gen/admin/include/editor.php:2710
-#: humo-gen/admin/include/editor.php:2737
-#: humo-gen/admin/include/editor.php:2774
-#: humo-gen/admin/include/editor.php:2805
-#: humo-gen/admin/include/editor.php:2822
-#: humo-gen/admin/include/editor.php:3646
-#: humo-gen/admin/include/editor.php:3655
-#: humo-gen/admin/include/editor_family_event.php:268
-#: humo-gen/admin/include/editor_person_event.php:672
+#: humo-gen/admin/include/editor.php:761
+#: humo-gen/admin/include/editor.php:825
+#: humo-gen/admin/include/editor.php:846
+#: humo-gen/admin/include/editor.php:886
+#: humo-gen/admin/include/editor.php:924
+#: humo-gen/admin/include/editor.php:998
+#: humo-gen/admin/include/editor.php:1067
+#: humo-gen/admin/include/editor.php:1083
+#: humo-gen/admin/include/editor.php:1515
+#: humo-gen/admin/include/editor.php:1547
+#: humo-gen/admin/include/editor.php:1572
+#: humo-gen/admin/include/editor.php:1606
+#: humo-gen/admin/include/editor.php:1631
+#: humo-gen/admin/include/editor.php:1662
+#: humo-gen/admin/include/editor.php:1691
+#: humo-gen/admin/include/editor.php:1706
+#: humo-gen/admin/include/editor.php:2415
+#: humo-gen/admin/include/editor.php:2423
+#: humo-gen/admin/include/editor_event_cls.php:793
+#: humo-gen/admin/include/editor_event_cls.php:803
 msgid "source"
 msgstr "source"
 
-#: humo-gen/admin/include/editor.php:1772
+#: humo-gen/admin/include/editor.php:766
 msgid "prefix"
 msgstr "préfixe"
 
-#: humo-gen/admin/include/editor.php:1772
+#: humo-gen/admin/include/editor.php:766
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr "Par exemple: d' ou: van_ (utiliser _ pour un espace)"
 
-#: humo-gen/admin/include/editor.php:1774
+#: humo-gen/admin/include/editor.php:768
 msgid "lastname"
 msgstr "nom"
 
-#: humo-gen/admin/include/editor.php:1775
+#: humo-gen/admin/include/editor.php:769
 msgid "patronymic"
 msgstr "patronymique"
 
-#: humo-gen/admin/include/editor.php:1780
-#: humo-gen/admin/include/editor.php:1868
-#: humo-gen/admin/include/editor.php:1911
-#: humo-gen/admin/include/editor.php:1993
-#: humo-gen/admin/include/editor.php:2038
-#: humo-gen/admin/include/editor.php:2623
-#: humo-gen/admin/include/editor.php:2651
-#: humo-gen/admin/include/editor.php:2684
-#: humo-gen/admin/include/editor.php:2718
-#: humo-gen/admin/include/editor.php:2745
-#: humo-gen/admin/include/editor.php:2787
-#: humo-gen/admin/include/editor.php:3205
-#: humo-gen/admin/include/editor.php:3420
-#: humo-gen/admin/include/editor.php:3661
-#: humo-gen/admin/include/editor_family_event.php:283
-#: humo-gen/admin/include/editor_person_event.php:693
+#: humo-gen/admin/include/editor.php:774
+#: humo-gen/admin/include/editor.php:863
+#: humo-gen/admin/include/editor.php:900
+#: humo-gen/admin/include/editor.php:976
+#: humo-gen/admin/include/editor.php:1015
+#: humo-gen/admin/include/editor.php:1528
+#: humo-gen/admin/include/editor.php:1554
+#: humo-gen/admin/include/editor.php:1585
+#: humo-gen/admin/include/editor.php:1613
+#: humo-gen/admin/include/editor.php:1638
+#: humo-gen/admin/include/editor.php:1674
+#: humo-gen/admin/include/editor.php:2011
+#: humo-gen/admin/include/editor.php:2207
+#: humo-gen/admin/include/editor.php:2428
+#: humo-gen/admin/include/editor_event_cls.php:820
 msgid "text"
 msgstr "texte"
 
-#: humo-gen/admin/include/editor.php:1786
-msgid "Special names/ titles"
-msgstr "Noms spéciaux/ titres"
-
-#: humo-gen/admin/include/editor.php:1787
-#: humo-gen/admin/include/editor.php:1877
-#: humo-gen/admin/include/editor.php:1921
-#: humo-gen/admin/include/editor.php:2001
-#: humo-gen/admin/include/editor.php:2048
-#: humo-gen/admin/include/editor.php:2126
-#: humo-gen/admin/include/editor.php:2130
-#: humo-gen/admin/include/editor_person_event.php:265
-msgid "Events for person"
-msgstr "Événements relatif à la personne"
-
-#: humo-gen/admin/include/editor.php:1796
-#: humo-gen/admin/include/editor.php:1800
+#: humo-gen/admin/include/editor.php:795
+#: humo-gen/admin/include/editor.php:799
 msgid "alive"
 msgstr "vivant"
 
-#: humo-gen/admin/include/editor.php:1796
+#: humo-gen/admin/include/editor.php:795
 msgid "For the privacy filter"
 msgstr "Pour le filtre de confidentialité"
 
-#: humo-gen/admin/include/editor.php:1803
+#: humo-gen/admin/include/editor.php:802
 msgid "deceased"
 msgstr "décédé"
 
-#: humo-gen/admin/include/editor.php:1811
+#: humo-gen/admin/include/editor.php:810
 msgid "Sexe"
 msgstr "Choisir le sexe"
 
-#: humo-gen/admin/include/editor.php:1837
-#: humo-gen/admin/include/editor.php:1884
-#: humo-gen/admin/include/editor.php:1928
-#: humo-gen/admin/include/editor.php:2008
-#: humo-gen/admin/include/editor.php:2597
-#: humo-gen/admin/include/editor.php:2631
-#: humo-gen/admin/include/editor.php:2658
-#: humo-gen/admin/include/editor.php:2698
-#: humo-gen/admin/include/editor.php:2726
-#: humo-gen/admin/include/editor.php:2763
-#: humo-gen/admin/include/editor.php:3179
-#: humo-gen/admin/include/editor.php:3414
-#: humo-gen/admin/include/editor.php:3640
-#: humo-gen/admin/include/editor_family_event.php:278
-#: humo-gen/admin/include/editor_person_event.php:683
+#: humo-gen/admin/include/editor.php:834
+#: humo-gen/admin/include/editor.php:875
+#: humo-gen/admin/include/editor.php:913
+#: humo-gen/admin/include/editor.php:987
+#: humo-gen/admin/include/editor.php:1504
+#: humo-gen/admin/include/editor.php:1536
+#: humo-gen/admin/include/editor.php:1561
+#: humo-gen/admin/include/editor.php:1595
+#: humo-gen/admin/include/editor.php:1621
+#: humo-gen/admin/include/editor.php:1652
+#: humo-gen/admin/include/editor.php:1988
+#: humo-gen/admin/include/editor.php:2201
+#: humo-gen/admin/include/editor.php:2409
+#: humo-gen/admin/include/editor_event_cls.php:813
 msgid "date"
 msgstr "date"
 
-#: humo-gen/admin/include/editor.php:1838
-#: humo-gen/admin/include/editor.php:1884
-#: humo-gen/admin/include/editor.php:1928
-#: humo-gen/admin/include/editor.php:2008
-#: humo-gen/admin/include/editor.php:2597
-#: humo-gen/admin/include/editor.php:2631
-#: humo-gen/admin/include/editor.php:2658
-#: humo-gen/admin/include/editor.php:2698
-#: humo-gen/admin/include/editor.php:2726
-#: humo-gen/admin/include/editor.php:2763
-#: humo-gen/admin/include/editor.php:3179
-#: humo-gen/admin/include/editor.php:3414
-#: humo-gen/admin/include/editor.php:3640
+#: humo-gen/admin/include/editor.php:835
+#: humo-gen/admin/include/editor.php:875
+#: humo-gen/admin/include/editor.php:913
+#: humo-gen/admin/include/editor.php:987
+#: humo-gen/admin/include/editor.php:1504
+#: humo-gen/admin/include/editor.php:1536
+#: humo-gen/admin/include/editor.php:1561
+#: humo-gen/admin/include/editor.php:1595
+#: humo-gen/admin/include/editor.php:1621
+#: humo-gen/admin/include/editor.php:1652
+#: humo-gen/admin/include/editor.php:1988
+#: humo-gen/admin/include/editor.php:2201
+#: humo-gen/admin/include/editor.php:2409
 #: humo-gen/admin/include/editor_addresses.php:117
 #: humo-gen/admin/include/editor_addresses.php:119
-#: humo-gen/admin/include/editor_family_event.php:278
-#: humo-gen/admin/include/editor_person_event.php:684
+#: humo-gen/admin/include/editor_event_cls.php:814
 msgid "place"
 msgstr "lieu"
 
-#: humo-gen/admin/include/editor.php:1859
+#: humo-gen/admin/include/editor.php:854
 msgid "birth time"
 msgstr "heure de naissance"
 
-#: humo-gen/admin/include/editor.php:1862
+#: humo-gen/admin/include/editor.php:857
 msgid "stillborn child"
 msgstr "enfant mort-né"
 
-#: humo-gen/admin/include/editor.php:1876
-#: humo-gen/admin/include/editor_person_event.php:284
-#: humo-gen/admin/include/editor_person_event.php:714
-msgid "Birth Declaration"
-msgstr "Déclaration de naissance"
-
-#: humo-gen/admin/include/editor.php:1904
+#: humo-gen/admin/include/editor.php:893
 msgid "religion"
 msgstr "religion"
 
-#: humo-gen/admin/include/editor.php:1920
-#: humo-gen/admin/include/editor_person_event.php:285
-#: humo-gen/admin/include/editor_person_event.php:715
-msgid "Baptism Witness"
-msgstr "Témoin de baptême"
-
-#: humo-gen/admin/include/editor.php:1948
+#: humo-gen/admin/include/editor.php:931
 msgid "death time"
 msgstr "heure de décès"
 
-#: humo-gen/admin/include/editor.php:1950
+#: humo-gen/admin/include/editor.php:933
 msgid "cause"
 msgstr "cause"
 
-#: humo-gen/admin/include/editor.php:1955
+#: humo-gen/admin/include/editor.php:938
 msgid "murdered"
 msgstr "assassiné(e)"
 
-#: humo-gen/admin/include/editor.php:1958
+#: humo-gen/admin/include/editor.php:941
 msgid "drowned"
 msgstr "noyé(e)"
 
-#: humo-gen/admin/include/editor.php:1961
+#: humo-gen/admin/include/editor.php:944
 msgid "perished"
 msgstr "décédé(e)"
 
-#: humo-gen/admin/include/editor.php:1964
+#: humo-gen/admin/include/editor.php:947
 msgid "killed in action"
 msgstr "mort(e) au combat"
 
-#: humo-gen/admin/include/editor.php:1967
+#: humo-gen/admin/include/editor.php:950
 msgid "being missed"
 msgstr "porté(e) manquant(e)"
 
-#: humo-gen/admin/include/editor.php:1970
+#: humo-gen/admin/include/editor.php:953
 msgid "committed suicide"
 msgstr "suicidé"
 
-#: humo-gen/admin/include/editor.php:1973
+#: humo-gen/admin/include/editor.php:956
 msgid "executed"
 msgstr "executé(e)"
 
-#: humo-gen/admin/include/editor.php:1976
+#: humo-gen/admin/include/editor.php:959
 msgid "died young"
 msgstr "décédé(e) jeune"
 
-#: humo-gen/admin/include/editor.php:1979
+#: humo-gen/admin/include/editor.php:962
 msgid "died unmarried"
 msgstr "décédé(e) célibataire"
 
-#: humo-gen/admin/include/editor.php:1982
+#: humo-gen/admin/include/editor.php:965
 msgid "registration"
 msgstr "enregistrement"
 
-#: humo-gen/admin/include/editor.php:1985
+#: humo-gen/admin/include/editor.php:968
 msgid "declared death"
 msgstr "déclaré(e) mort(e)"
 
-#: humo-gen/admin/include/editor.php:2000
-#: humo-gen/admin/include/editor_person_event.php:286
-#: humo-gen/admin/include/editor_person_event.php:716
-msgid "Death Declaration"
-msgstr "Déclaration de décès"
-
-#: humo-gen/admin/include/editor.php:2007
+#: humo-gen/admin/include/editor.php:986
 msgid "Buried"
 msgstr "Enterré(e)"
 
-#: humo-gen/admin/include/editor.php:2028
-#: humo-gen/admin/include/editor.php:2032
+#: humo-gen/admin/include/editor.php:1005
+#: humo-gen/admin/include/editor.php:1009
 msgid "cremation"
 msgstr "crémation"
 
-#: humo-gen/admin/include/editor.php:2047
-#: humo-gen/admin/include/editor_person_event.php:287
-#: humo-gen/admin/include/editor_person_event.php:717
-msgid "Burial Witness"
-msgstr "Témoin de sépulture"
-
-#: humo-gen/admin/include/editor.php:2052
+#: humo-gen/admin/include/editor.php:1025
 msgid "own code"
 msgstr "code propre"
 
-#: humo-gen/admin/include/editor.php:2084
+#: humo-gen/admin/include/editor.php:1055
 msgid "General text for person"
 msgstr "Texte/Note  général au sujet de la personne"
 
-#: humo-gen/admin/include/editor.php:2106
+#: humo-gen/admin/include/editor.php:1075
 msgid "General source for person"
 msgstr "Source générale pour personne"
 
-#: humo-gen/admin/include/editor.php:2140
-#: humo-gen/admin/include/editor.php:2849
-msgid "For items like:"
-msgstr "Pour des sujets/thèmes comme:"
-
-#: humo-gen/admin/include/editor.php:2140
-#: humo-gen/admin/include/editor_person_event.php:281
-#: humo-gen/admin/include/editor_person_event.php:711
-msgid "Picture/ Media"
-msgstr "Photo/ Médias"
-
-#: humo-gen/admin/include/editor.php:2140
-#: humo-gen/admin/include/editor_person_event.php:282
-#: humo-gen/admin/include/editor_person_event.php:712
-msgid "Profession"
-msgstr "Profession"
-
-#: humo-gen/admin/include/editor.php:2140
-#: humo-gen/admin/include/editor.php:2849
-#: humo-gen/admin/include/editor_family_event.php:211
-#: humo-gen/admin/include/editor_family_event.php:301
-#: humo-gen/admin/include/editor_person_event.php:283
-#: humo-gen/admin/include/editor_person_event.php:314
-#: humo-gen/admin/include/editor_person_event.php:713
-msgid "Event"
-msgstr "Évènement"
-
-#: humo-gen/admin/include/editor.php:2140
-#: humo-gen/admin/include/editor.php:2849
-msgid "etc."
-msgstr "etc."
-
-#: humo-gen/admin/include/editor.php:2162
-#: humo-gen/admin/include/editor.php:2859
+#: humo-gen/admin/include/editor.php:1104
+#: humo-gen/admin/include/editor.php:1721
 msgid "Gedcom tags"
 msgstr "Balises Gedcom"
 
-#: humo-gen/admin/include/editor.php:2164
-#: humo-gen/admin/include/editor.php:2167
-#: humo-gen/admin/include/editor.php:2861
-#: humo-gen/admin/include/editor.php:2864
+#: humo-gen/admin/include/editor.php:1106
+#: humo-gen/admin/include/editor.php:1109
+#: humo-gen/admin/include/editor.php:1723
+#: humo-gen/admin/include/editor.php:1726
 #, php-format
 msgid "There are %d unprocessed gedcom tags."
 msgstr "Il y a %d balise(s) Gedcom non traitée(s)."
 
-#: humo-gen/admin/include/editor.php:2186
+#: humo-gen/admin/include/editor.php:1126
 msgid "User notes"
 msgstr "Notes d'utilisateur"
 
-#: humo-gen/admin/include/editor.php:2189
-#: humo-gen/admin/include/editor.php:2192
+#: humo-gen/admin/include/editor.php:1128
+#: humo-gen/admin/include/editor.php:1131
 #, php-format
 msgid "There are %d user added notes."
 msgstr "Il y a %d  notes d'utilisateur ajoutées."
 
-#: humo-gen/admin/include/editor.php:2233
+#: humo-gen/admin/include/editor.php:1160
 msgid "Marriage(s) and children"
 msgstr "Mariage(s) et enfants"
 
-#: humo-gen/admin/include/editor.php:2255
+#: humo-gen/admin/include/editor.php:1178
 msgid "Select marriage"
 msgstr "Choisir mariage"
 
-#: humo-gen/admin/include/editor.php:2298
+#: humo-gen/admin/include/editor.php:1220
 msgid "Disconnect child"
 msgstr "Débranchez enfant"
 
-#: humo-gen/admin/include/editor.php:2317
+#: humo-gen/admin/include/editor.php:1239
 msgid "Connect child"
 msgstr "Branchez enfant"
 
-#: humo-gen/admin/include/editor.php:2317
+#: humo-gen/admin/include/editor.php:1239
 msgid "Add child"
 msgstr "Ajouter enfant"
 
-#: humo-gen/admin/include/editor.php:2328
+#: humo-gen/admin/include/editor.php:1250
 msgid "Add marriage"
 msgstr "Ajouter mariage"
 
-#: humo-gen/admin/include/editor.php:2423
+#: humo-gen/admin/include/editor.php:1335
 msgid "Edit marriage"
 msgstr "Editer mariage"
 
-#: humo-gen/admin/include/editor.php:2440
-#: humo-gen/admin/include/editor.php:2657
+#: humo-gen/admin/include/editor.php:1352
+#: humo-gen/admin/include/editor.php:1560
 msgid "Marriage"
 msgstr "Mariage"
 
-#: humo-gen/admin/include/editor.php:2459
-#: humo-gen/admin/include/editor.php:2511
+#: humo-gen/admin/include/editor.php:1393
+#: humo-gen/admin/include/editor.php:1443
 msgid "Select person"
 msgstr "Choisir la personne:"
 
-#: humo-gen/admin/include/editor.php:2558
+#: humo-gen/admin/include/editor.php:1465
 msgid "Relation Type"
 msgstr "Type de Relation"
 
-#: humo-gen/admin/include/editor.php:2563
-#: humo-gen/admin/include/editor.php:2596
+#: humo-gen/admin/include/editor.php:1470
+#: humo-gen/admin/include/editor.php:1503
 msgid "Living together"
 msgstr "Vivant ensemble"
 
-#: humo-gen/admin/include/editor.php:2566
+#: humo-gen/admin/include/editor.php:1473
 msgid "Living apart together"
 msgstr "Vivant séparé ensemble"
 
-#: humo-gen/admin/include/editor.php:2569
+#: humo-gen/admin/include/editor.php:1476
 msgid "Intentionally unmarried mother"
 msgstr "Mère célibataire volontaire"
 
-#: humo-gen/admin/include/editor.php:2572
+#: humo-gen/admin/include/editor.php:1479
 msgid "Homosexual"
 msgstr "Homosexuel(le)"
 
-#: humo-gen/admin/include/editor.php:2575
+#: humo-gen/admin/include/editor.php:1482
 msgid "Non_marital"
 msgstr "Non conjugal"
 
-#: humo-gen/admin/include/editor.php:2578
+#: humo-gen/admin/include/editor.php:1485
 msgid "Extramarital"
 msgstr "Extra-conjugal(le)"
 
-#: humo-gen/admin/include/editor.php:2584
+#: humo-gen/admin/include/editor.php:1491
 msgid "Registered"
 msgstr "Enregistrer"
 
-#: humo-gen/admin/include/editor.php:2587
+#: humo-gen/admin/include/editor.php:1494
 msgid "Unknown relation"
 msgstr "relation Inconnu"
 
-#: humo-gen/admin/include/editor.php:2618
+#: humo-gen/admin/include/editor.php:1523
 msgid "End date"
 msgstr "Date de fin"
 
-#: humo-gen/admin/include/editor.php:2630
+#: humo-gen/admin/include/editor.php:1535
 msgid "Notice of Marriage"
 msgstr "Bans/avis de Mariage"
 
-#: humo-gen/admin/include/editor.php:2679
-#: humo-gen/admin/include/editor.php:2782
+#: humo-gen/admin/include/editor.php:1580
+#: humo-gen/admin/include/editor.php:1669
 msgid "Registrar"
 msgstr "Greffier"
 
-#: humo-gen/admin/include/editor.php:2690
-#: humo-gen/admin/include/editor.php:2849
-#: humo-gen/admin/include/editor_family_event.php:212
-#: humo-gen/admin/include/editor_family_event.php:302
-msgid "Marriage Witness"
-msgstr "Témoin de mariage"
-
-#: humo-gen/admin/include/editor.php:2691
-#: humo-gen/admin/include/editor.php:2752
-#: humo-gen/admin/include/editor.php:2835
-#: humo-gen/admin/include/editor.php:2839
-msgid "Events for marriage"
-msgstr "événements de mariage"
-
-#: humo-gen/admin/include/editor.php:2697
+#: humo-gen/admin/include/editor.php:1594
 msgid "Religious Notice of Marriage"
 msgstr "bans/avis de mariage religieux"
 
-#: humo-gen/admin/include/editor.php:2725
+#: humo-gen/admin/include/editor.php:1620
 msgid "Religious Marriage"
 msgstr "Mariage religieux"
 
-#: humo-gen/admin/include/editor.php:2751
-#: humo-gen/admin/include/editor.php:2849
-#: humo-gen/admin/include/editor_family_event.php:213
-#: humo-gen/admin/include/editor_family_event.php:303
-msgid "Marriage Witness (church)"
-msgstr "Témoin de mariage (église)"
-
-#: humo-gen/admin/include/editor.php:2756
-#: humo-gen/admin/include/editor.php:2757
+#: humo-gen/admin/include/editor.php:1645
+#: humo-gen/admin/include/editor.php:1646
 msgid "Religion"
 msgstr "Religion"
 
-#: humo-gen/admin/include/editor.php:2762
+#: humo-gen/admin/include/editor.php:1651
 msgid "Divorce"
 msgstr "Divorce"
 
-#: humo-gen/admin/include/editor.php:2787
+#: humo-gen/admin/include/editor.php:1674
 msgid "For a divorce without further data just type \"DIVORCE\" in text field."
 msgstr "Pour un divorce sans autres données, écrivez \"DIVORCE \" dans le champ de texte."
 
-#: humo-gen/admin/include/editor.php:2791
+#: humo-gen/admin/include/editor.php:1678
 msgid "General text by marriage"
 msgstr "Texte général par le mariage"
 
-#: humo-gen/admin/include/editor.php:2813
+#: humo-gen/admin/include/editor.php:1698
 msgid "General source by marriage"
 msgstr "Source générale par mariage"
 
-#: humo-gen/admin/include/editor.php:2887
-#: humo-gen/admin/include/editor.php:3224
-#: humo-gen/admin/include/editor.php:3679
+#: humo-gen/admin/include/editor.php:1743
+#: humo-gen/admin/include/editor.php:2030
+#: humo-gen/admin/include/editor.php:2446
 msgid "Example"
 msgstr "Exemple"
 
-#: humo-gen/admin/include/editor.php:2994
+#: humo-gen/admin/include/editor.php:1827
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr "Êtes-vous certain de vouloir supprimer cette source et TOUTES les références à cette source?"
 
-#: humo-gen/admin/include/editor.php:3083
+#: humo-gen/admin/include/editor.php:1900
 msgid "Source is removed!"
 msgstr "La source est éliminée!"
 
-#: humo-gen/admin/include/editor.php:3088
+#: humo-gen/admin/include/editor.php:1905
 msgid "Source list, these sources can be connected to multiple items."
 msgstr "Liste des sources, ces sources peuvent être connectés à plusieurs éléments."
 
-#: humo-gen/admin/include/editor.php:3097
-#: humo-gen/admin/include/editor.php:3100
+#: humo-gen/admin/include/editor.php:1913
+#: humo-gen/admin/include/editor.php:1915
 msgid "Select source"
 msgstr "Choisir la source"
 
-#: humo-gen/admin/include/editor.php:3118
+#: humo-gen/admin/include/editor.php:1931
 msgid "Add source"
 msgstr "Ajouter source"
 
-#: humo-gen/admin/include/editor.php:3127
-#: humo-gen/admin/include/editor.php:3367
-#: humo-gen/admin/include/editor.php:3613
-#: humo-gen/admin/include/editor_family_event.php:164
-#: humo-gen/admin/include/editor_person_event.php:314
+#: humo-gen/admin/include/editor.php:1940
+#: humo-gen/admin/include/editor.php:2157
+#: humo-gen/admin/include/editor.php:2384
 msgid "Option"
 msgstr "Option"
 
-#: humo-gen/admin/include/editor.php:3127
-#: humo-gen/admin/include/editor.php:3367
-#: humo-gen/admin/include/editor.php:3613
-#: humo-gen/admin/include/editor_family_event.php:164
-#: humo-gen/admin/include/editor_person_event.php:314
+#: humo-gen/admin/include/editor.php:1940
+#: humo-gen/admin/include/editor.php:2157
+#: humo-gen/admin/include/editor.php:2384
 msgid "Value"
 msgstr "Valeur"
 
-#: humo-gen/admin/include/editor.php:3164
+#: humo-gen/admin/include/editor.php:1974
 msgid "Status:"
 msgstr "Statut:"
 
-#: humo-gen/admin/include/editor.php:3168
+#: humo-gen/admin/include/editor.php:1977
 msgid "publish"
 msgstr "publier"
 
-#: humo-gen/admin/include/editor.php:3171
+#: humo-gen/admin/include/editor.php:1980
 msgid "restricted"
 msgstr "restreint"
 
-#: humo-gen/admin/include/editor.php:3172
+#: humo-gen/admin/include/editor.php:1981
 msgid "restricted = only visible for selected user groups"
 msgstr "restreint= visible uniquement pour les groupes d'utilisateurs sélectionnés"
 
-#: humo-gen/admin/include/editor.php:3198
+#: humo-gen/admin/include/editor.php:2004
 msgid "will be shown as a link."
 msgstr "sera affiché comme un lien."
 
-#: humo-gen/admin/include/editor.php:3300
+#: humo-gen/admin/include/editor.php:2099
 msgid "Really remove repository with all repository links?"
 msgstr "Supprimer vraiment le référentiel avec tous les liens de référentiel?"
 
-#: humo-gen/admin/include/editor.php:3330
+#: humo-gen/admin/include/editor.php:2124
 msgid "Repository is removed!"
 msgstr "Le référentiel est supprimé!"
 
-#: humo-gen/admin/include/editor.php:3335
+#: humo-gen/admin/include/editor.php:2129
 msgid "A repository can be connected to an extended source. Edit an extended source to connect a repository."
 msgstr "Un référentiel peut être raccordé à une source étendue. Modifier une source étendue pour se connecter á un référentiel."
 
-#: humo-gen/admin/include/editor.php:3344
-#: humo-gen/admin/include/editor.php:3346
+#: humo-gen/admin/include/editor.php:2136
+#: humo-gen/admin/include/editor.php:2138
 msgid "Select repository"
 msgstr "Sélectionner un référentiel"
 
-#: humo-gen/admin/include/editor.php:3360
+#: humo-gen/admin/include/editor.php:2150
 msgid "Add repository"
 msgstr "Ajouter un référentiel"
 
-#: humo-gen/admin/include/editor.php:3381
+#: humo-gen/admin/include/editor.php:2169
 msgid "No valid repository number."
 msgstr "Aucun numéro référentiel valide."
 
-#: humo-gen/admin/include/editor.php:3425
-#: humo-gen/admin/include/editor_person_event.php:293
-#: humo-gen/admin/include/editor_person_event.php:723
+#: humo-gen/admin/include/editor.php:2212
+#: humo-gen/admin/include/editor_event_cls.php:19
+#: humo-gen/admin/include/editor_event_cls.php:853
 msgid "URL/ Internet link"
 msgstr "URL/ Lien Internet"
 
-#: humo-gen/admin/include/editor.php:3518
+#: humo-gen/admin/include/editor.php:2298
 msgid "Are you sure you want to remove this address and ALL address references?"
 msgstr "Êtes-vous certain de vouloir supprimer cette adresse et TOUTES les références d'adresses?"
 
-#: humo-gen/admin/include/editor.php:3549
+#: humo-gen/admin/include/editor.php:2324
 msgid "Address has been removed!"
 msgstr "L'adresse a été supprimée!"
 
-#: humo-gen/admin/include/editor.php:3577
+#: humo-gen/admin/include/editor.php:2352
 msgid "Address list, these addresses can be connected to multiple persons."
 msgstr "Liste d'adresses. Les adresses peuvent être reliées à plusieurs personnes."
 
-#: humo-gen/admin/include/editor.php:3590
-#: humo-gen/admin/include/editor.php:3592
+#: humo-gen/admin/include/editor.php:2363
+#: humo-gen/admin/include/editor.php:2365
 #: humo-gen/admin/include/editor_addresses.php:315
 msgid "Select address"
 msgstr "Choisir adresse"
 
-#: humo-gen/admin/include/editor.php:3606
+#: humo-gen/admin/include/editor.php:2377
 #: humo-gen/admin/include/editor_addresses.php:349
 msgid "Add address"
 msgstr "Ajouter adresse"
 
-#: humo-gen/admin/include/editor.php:3623
+#: humo-gen/admin/include/editor.php:2393
 msgid "No valid address number."
 msgstr "Aucun numéro d'adresse valide."
 
-#: humo-gen/admin/include/editor.php:3643
+#: humo-gen/admin/include/editor.php:2412
 msgid "Picture"
 msgstr "Image"
 
-#: humo-gen/admin/include/editor.php:3698
+#: humo-gen/admin/include/editor.php:2465
 msgid "Update all places here. At this moment these places are updated: birth, baptise, death and burial places."
 msgstr "Mettre à jour tous les lieux ici. En ce moment, les lieux qui sont mis à jour: lieux de naissance, baptême,  décès et de sépulture."
 
-#: humo-gen/admin/include/editor.php:3741
+#: humo-gen/admin/include/editor.php:2502
 msgid "UPDATE OK!"
 msgstr "MISE A JOUR OK!"
 
-#: humo-gen/admin/include/editor.php:3755
+#: humo-gen/admin/include/editor.php:2514
 msgid "Select location"
 msgstr "Choisir lieu"
 
-#: humo-gen/admin/include/editor.php:3776
-#: humo-gen/admin/include/editor.php:3781
+#: humo-gen/admin/include/editor.php:2534
+#: humo-gen/admin/include/editor.php:2539
 msgid "Change location"
 msgstr "Changer de lieu"
 
-#: humo-gen/admin/include/editor.php:3783
+#: humo-gen/admin/include/editor.php:2541
 msgid "Also change Google Maps table."
 msgstr "Changer aussi la table des cartes Google."
 
@@ -3551,207 +3448,337 @@ msgstr "après"
 msgid "between"
 msgstr "entre"
 
-#: humo-gen/admin/include/editor_family_event.php:53
-#: humo-gen/admin/include/editor_person_event.php:169
-msgid "Are you sure you want to remove this event?"
-msgstr "Êtes-vous sûr de vouloir supprimer cet événement?"
+#: humo-gen/admin/include/editor_event_cls.php:7
+#: humo-gen/admin/include/editor_event_cls.php:152
+#: humo-gen/admin/include/editor_event_cls.php:304
+msgid "Picture/ Media"
+msgstr "Photo/ Médias"
 
-#: humo-gen/admin/include/editor_family_event.php:149
-msgid "Events by marriage"
-msgstr "Événements par mariage"
+#: humo-gen/admin/include/editor_event_cls.php:8
+#: humo-gen/admin/include/editor_event_cls.php:284
+#: humo-gen/admin/include/editor_inc.php:852
+msgid "Profession"
+msgstr "Profession"
 
-#: humo-gen/admin/include/editor_family_event.php:296
-#: humo-gen/admin/include/editor_person_event.php:709
-msgid "Add event"
-msgstr "Ajouter événement"
+#: humo-gen/admin/include/editor_event_cls.php:9
+#: humo-gen/admin/include/editor_event_cls.php:152
+#: humo-gen/admin/include/editor_event_cls.php:171
+#: humo-gen/admin/include/editor_event_cls.php:843
+#: humo-gen/admin/include/editor_event_cls.php:865
+msgid "Event"
+msgstr "Évènement"
 
-#: humo-gen/admin/include/editor_person_event.php:57
-msgid "Photo too large"
-msgstr "Photo trop large"
+#: humo-gen/admin/include/editor_event_cls.php:10
+#: humo-gen/admin/include/editor_event_cls.php:236
+#: humo-gen/admin/include/editor_inc.php:848
+msgid "Birth Declaration"
+msgstr "Déclaration de naissance"
 
-#: humo-gen/admin/include/editor_person_event.php:62
-msgid "Photo upload failed, check folder rights"
-msgstr "Téléchargement photo à échoué, vérifiez les droits du dossier"
+#: humo-gen/admin/include/editor_event_cls.php:11
+#: humo-gen/admin/include/editor_event_cls.php:248
+#: humo-gen/admin/include/editor_inc.php:849
+msgid "Baptism Witness"
+msgstr "Témoin de baptême"
 
-#: humo-gen/admin/include/editor_person_event.php:111
-msgid "Media too large"
-msgstr "Médias trop large"
+#: humo-gen/admin/include/editor_event_cls.php:12
+#: humo-gen/admin/include/editor_event_cls.php:260
+#: humo-gen/admin/include/editor_inc.php:850
+msgid "Death Declaration"
+msgstr "Déclaration de décès"
 
-#: humo-gen/admin/include/editor_person_event.php:115
-msgid "Media upload failed, check folder rights"
-msgstr "Téléchargement Médias à échoué, vérifiez les droits du dossier"
+#: humo-gen/admin/include/editor_event_cls.php:13
+#: humo-gen/admin/include/editor_event_cls.php:272
+#: humo-gen/admin/include/editor_inc.php:851
+msgid "Burial Witness"
+msgstr "Témoin de sépulture"
 
-#: humo-gen/admin/include/editor_person_event.php:133
-msgid "No valid picture, media or document file"
-msgstr "Pas de fichier image, médias ou document valide"
-
-#: humo-gen/admin/include/editor_person_event.php:289
-#: humo-gen/admin/include/editor_person_event.php:719
+#: humo-gen/admin/include/editor_event_cls.php:15
+#: humo-gen/admin/include/editor_event_cls.php:200
+#: humo-gen/admin/include/editor_inc.php:845
 msgid "Title of Nobility"
 msgstr "Titre de noblesse"
 
-#: humo-gen/admin/include/editor_person_event.php:291
-#: humo-gen/admin/include/editor_person_event.php:721
+#: humo-gen/admin/include/editor_event_cls.php:17
+#: humo-gen/admin/include/editor_event_cls.php:851
 msgid "Adoption"
 msgstr "Adoption"
 
-#: humo-gen/admin/include/editor_person_event.php:292
-#: humo-gen/admin/include/editor_person_event.php:722
+#: humo-gen/admin/include/editor_event_cls.php:18
+#: humo-gen/admin/include/editor_event_cls.php:224
+#: humo-gen/admin/include/editor_inc.php:847
 msgid "Title of Lordship"
 msgstr "Titre de Seigneurie"
 
-#: humo-gen/admin/include/editor_person_event.php:294
-#: humo-gen/admin/include/editor_person_event.php:724
+#: humo-gen/admin/include/editor_event_cls.php:20
+#: humo-gen/admin/include/editor_event_cls.php:854
 msgid "Colour mark by person"
 msgstr "Marque de couleur par personne"
 
-#: humo-gen/admin/include/editor_person_event.php:446
+#: humo-gen/admin/include/editor_event_cls.php:21
+#: humo-gen/admin/include/editor_event_cls.php:332
+#: humo-gen/admin/include/editor_event_cls.php:866
+#: humo-gen/admin/include/editor_inc.php:854
+msgid "Marriage Witness"
+msgstr "Témoin de mariage"
+
+#: humo-gen/admin/include/editor_event_cls.php:22
+#: humo-gen/admin/include/editor_event_cls.php:344
+#: humo-gen/admin/include/editor_event_cls.php:867
+#: humo-gen/admin/include/editor_inc.php:855
+msgid "Marriage Witness (church)"
+msgstr "Témoin de mariage (église)"
+
+#: humo-gen/admin/include/editor_event_cls.php:133
+#: humo-gen/admin/include/editor_event_cls.php:151
+#: humo-gen/admin/include/editor_event_cls.php:160
+#: humo-gen/admin/include/editor_event_cls.php:170
+#, fuzzy
+msgid "Events"
+msgstr "Évènement"
+
+#: humo-gen/admin/include/editor_event_cls.php:152
+#: humo-gen/admin/include/editor_event_cls.php:171
+msgid "For items like:"
+msgstr "Pour des sujets/thèmes comme:"
+
+#: humo-gen/admin/include/editor_event_cls.php:152
+msgid "baptized as child"
+msgstr "baptisé(e) comme enfant"
+
+#: humo-gen/admin/include/editor_event_cls.php:152
+msgid "depart"
+msgstr "départ"
+
+#: humo-gen/admin/include/editor_event_cls.php:152
+#: humo-gen/admin/include/editor_event_cls.php:171
+msgid "etc."
+msgstr "etc."
+
+#: humo-gen/admin/include/editor_event_cls.php:171
+msgid "Marriage contract"
+msgstr "Contrat de mariage"
+
+#: humo-gen/admin/include/editor_event_cls.php:171
+msgid "Marriage license"
+msgstr "Certificat de mariage"
+
+#: humo-gen/admin/include/editor_event_cls.php:554
 msgid "* Select adoption parents *"
 msgstr "* Sélectionner parents d'adoption *"
 
-#: humo-gen/admin/include/editor_person_event.php:481
+#: humo-gen/admin/include/editor_event_cls.php:587
 msgid "Change colour mark by person"
 msgstr "Changer marque de couleur par personne"
 
-#: humo-gen/admin/include/editor_person_event.php:483
+#: humo-gen/admin/include/editor_event_cls.php:589
 msgid "Colour 1"
 msgstr "Couleur 1"
 
-#: humo-gen/admin/include/editor_person_event.php:485
+#: humo-gen/admin/include/editor_event_cls.php:591
 msgid "Colour 2"
 msgstr "Couleur 2"
 
-#: humo-gen/admin/include/editor_person_event.php:487
+#: humo-gen/admin/include/editor_event_cls.php:593
 msgid "Colour 3"
 msgstr "Couleur 3"
 
-#: humo-gen/admin/include/editor_person_event.php:489
+#: humo-gen/admin/include/editor_event_cls.php:595
 msgid "Colour 4"
 msgstr "Couleur 4"
 
-#: humo-gen/admin/include/editor_person_event.php:491
+#: humo-gen/admin/include/editor_event_cls.php:597
 msgid "Colour 5"
 msgstr "Couleur 5 "
 
-#: humo-gen/admin/include/editor_person_event.php:493
+#: humo-gen/admin/include/editor_event_cls.php:599
 msgid "Colour 6"
 msgstr "Couleur 6"
 
-#: humo-gen/admin/include/editor_person_event.php:495
+#: humo-gen/admin/include/editor_event_cls.php:601
 msgid "Colour 7"
 msgstr "Couleur 7"
 
-#: humo-gen/admin/include/editor_person_event.php:497
+#: humo-gen/admin/include/editor_event_cls.php:603
 msgid "Colour 8"
 msgstr "Couleur 8"
 
-#: humo-gen/admin/include/editor_person_event.php:499
+#: humo-gen/admin/include/editor_event_cls.php:605
 msgid "Colour 9"
 msgstr "Couleur 9"
 
-#: humo-gen/admin/include/editor_person_event.php:501
+#: humo-gen/admin/include/editor_event_cls.php:607
 msgid "Colour 10"
 msgstr "Couleur 10"
 
-#: humo-gen/admin/include/editor_person_event.php:503
+#: humo-gen/admin/include/editor_event_cls.php:609
 msgid "Colour 11"
 msgstr "Couleur 11"
 
-#: humo-gen/admin/include/editor_person_event.php:505
+#: humo-gen/admin/include/editor_event_cls.php:611
 msgid "Colour 12"
 msgstr "Couleur 12"
 
-#: humo-gen/admin/include/editor_person_event.php:507
+#: humo-gen/admin/include/editor_event_cls.php:613
 msgid "Colour 13"
 msgstr "Couleur 13"
 
-#: humo-gen/admin/include/editor_person_event.php:509
+#: humo-gen/admin/include/editor_event_cls.php:615
 msgid "Colour 14"
 msgstr "Couleur 14"
 
-#: humo-gen/admin/include/editor_person_event.php:515
+#: humo-gen/admin/include/editor_event_cls.php:621
 msgid "Also change:"
 msgstr "Changer aussi:"
 
-#: humo-gen/admin/include/editor_person_event.php:535
+#: humo-gen/admin/include/editor_event_cls.php:641
 msgid "Selected colour"
 msgstr "Couleur choisie"
 
-#: humo-gen/admin/include/editor_person_event.php:542
+#: humo-gen/admin/include/editor_event_cls.php:648
 msgid "e.g. Jhr., Jkvr."
 msgstr "e.g. Jhr., Jkvr."
 
-#: humo-gen/admin/include/editor_person_event.php:543
+#: humo-gen/admin/include/editor_event_cls.php:649
 msgid "e.g. Prof., Dr."
 msgstr "e.g. Prof., Dr."
 
-#: humo-gen/admin/include/editor_person_event.php:545
+#: humo-gen/admin/include/editor_event_cls.php:650
 msgid "e.g. Lord of Amsterdam"
 msgstr "e.g. Lord d'Amsterdam"
 
-#: humo-gen/admin/include/editor_person_event.php:607
+#: humo-gen/admin/include/editor_event_cls.php:727
 msgid "Also known as"
 msgstr "Alias"
 
-#: humo-gen/admin/include/editor_person_event.php:613
+#: humo-gen/admin/include/editor_event_cls.php:733
 msgid "alias name"
 msgstr "Nom alias"
 
-#: humo-gen/admin/include/editor_person_event.php:616
+#: humo-gen/admin/include/editor_event_cls.php:736
 msgid "Short name (for reports)"
 msgstr "Nom abrégé (pour les rapports)"
 
-#: humo-gen/admin/include/editor_person_event.php:619
+#: humo-gen/admin/include/editor_event_cls.php:739
 msgid "Adopted name"
 msgstr "Nom d'adoption"
 
-#: humo-gen/admin/include/editor_person_event.php:622
+#: humo-gen/admin/include/editor_event_cls.php:742
 msgid "Hebrew name"
 msgstr "Nom hébraïque"
 
-#: humo-gen/admin/include/editor_person_event.php:625
+#: humo-gen/admin/include/editor_event_cls.php:745
 msgid "Census name"
 msgstr "Nom au recensement"
 
-#: humo-gen/admin/include/editor_person_event.php:628
+#: humo-gen/admin/include/editor_event_cls.php:748
 msgid "Married name"
 msgstr "Nom après mariage"
 
-#: humo-gen/admin/include/editor_person_event.php:634
+#: humo-gen/admin/include/editor_event_cls.php:754
 msgid "Farm name"
 msgstr "Nom de ferme"
 
-#: humo-gen/admin/include/editor_person_event.php:637
+#: humo-gen/admin/include/editor_event_cls.php:757
 msgid "Birth name"
 msgstr "Nom à la naissance"
 
-#: humo-gen/admin/include/editor_person_event.php:640
+#: humo-gen/admin/include/editor_event_cls.php:760
 msgid "Indian name"
 msgstr "Nom indien"
 
-#: humo-gen/admin/include/editor_person_event.php:643
+#: humo-gen/admin/include/editor_event_cls.php:763
 msgid "Formal name"
 msgstr "Nom officiel"
 
-#: humo-gen/admin/include/editor_person_event.php:646
+#: humo-gen/admin/include/editor_event_cls.php:766
 msgid "Current name"
 msgstr "Nom usuel"
 
-#: humo-gen/admin/include/editor_person_event.php:649
+#: humo-gen/admin/include/editor_event_cls.php:769
 msgid "Soldier name"
 msgstr "Nom de soldat"
 
-#: humo-gen/admin/include/editor_person_event.php:652
+#: humo-gen/admin/include/editor_event_cls.php:772
 msgid "Religious name"
 msgstr "Nom religieux"
 
-#: humo-gen/admin/include/editor_person_event.php:655
+#: humo-gen/admin/include/editor_event_cls.php:775
 msgid "Other name"
 msgstr "Autre nom"
 
-#: humo-gen/admin/include/editor_person_event.php:658
+#: humo-gen/admin/include/editor_event_cls.php:778
 msgid "Formerly known as"
 msgstr "Connu jadis sous"
+
+#: humo-gen/admin/include/editor_event_cls.php:839
+#: humo-gen/admin/include/editor_event_cls.php:861
+msgid "Add event"
+msgstr "Ajouter événement"
+
+#: humo-gen/admin/include/editor_inc.php:34
+msgid "This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?"
+msgstr "Ceci déconnectera cette personne de parents, conjoints et enfants <b> et la supprimera complètement de la base de données.</b> Voulez-vous continuer?"
+
+#: humo-gen/admin/include/editor_inc.php:85
+#: humo-gen/admin/include/editor_inc.php:114
+msgid "Person disconnected from marriage(s)."
+msgstr "Personne déconnectée de mariage(s)."
+
+#: humo-gen/admin/include/editor_inc.php:140
+msgid "Person disconnected from parents."
+msgstr "Personne déconnectée des parents(s)."
+
+#: humo-gen/admin/include/editor_inc.php:152
+msgid "Person is removed"
+msgstr "La personne est enlevée"
+
+#: humo-gen/admin/include/editor_inc.php:405
+msgid "Disconnect children before removal of marriage."
+msgstr "Débranchez les enfants avant l'enlèvement du mariage."
+
+#: humo-gen/admin/include/editor_inc.php:410
+msgid "Are you sure to remove this mariage?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce mariage?"
+
+#: humo-gen/admin/include/editor_inc.php:446
+msgid "Marriage is removed!"
+msgstr "Ce mariage est supprimé!"
+
+#: humo-gen/admin/include/editor_inc.php:507
+msgid "Select parents:"
+msgstr "Choisir les parents:"
+
+#: humo-gen/admin/include/editor_inc.php:576
+msgid "Parents are selected!"
+msgstr "Les parents sont sélectionnés!"
+
+#: humo-gen/admin/include/editor_inc.php:621
+msgid "Are you sure you want to disconnect this child?"
+msgstr "Êtes-vous sûr que vous voulez déconnecter cet enfant?"
+
+#: humo-gen/admin/include/editor_inc.php:950
+msgid "Photo too large"
+msgstr "Photo trop large"
+
+#: humo-gen/admin/include/editor_inc.php:955
+msgid "Photo upload failed, check folder rights"
+msgstr "Téléchargement photo à échoué, vérifiez les droits du dossier"
+
+#: humo-gen/admin/include/editor_inc.php:1004
+msgid "Media too large"
+msgstr "Médias trop large"
+
+#: humo-gen/admin/include/editor_inc.php:1008
+msgid "Media upload failed, check folder rights"
+msgstr "Téléchargement Médias à échoué, vérifiez les droits du dossier"
+
+#: humo-gen/admin/include/editor_inc.php:1026
+msgid "No valid picture, media or document file"
+msgstr "Pas de fichier image, médias ou document valide"
+
+#: humo-gen/admin/include/editor_inc.php:1060
+msgid "Are you sure you want to remove this event?"
+msgstr "Êtes-vous sûr de vouloir supprimer cet événement?"
 
 #: humo-gen/admin/include/editor_sources.php:429
 msgid "Name source"
@@ -5307,230 +5334,230 @@ msgstr "Afficher le nombre de personnes dans les résultats de recherche (valeur
 msgid "Save settings"
 msgstr "Sauvegarder les paramètres"
 
+#: humo-gen/admin/include/statistics.php:40
 #: humo-gen/admin/include/statistics.php:44
-#: humo-gen/admin/include/statistics.php:48
-#: humo-gen/admin/include/statistics.php:860
-#: humo-gen/admin/include/statistics.php:863
+#: humo-gen/admin/include/statistics.php:756
+#: humo-gen/admin/include/statistics.php:759
 msgid "Family"
 msgstr "Famille"
 
-#: humo-gen/admin/include/statistics.php:93
+#: humo-gen/admin/include/statistics.php:75
 msgid "FAMILY NOT FOUND IN FAMILY TREE"
 msgstr "FAMILLES INTROUVABLES DANS L'ARBRE GÉNÉALOGIQUE"
 
-#: humo-gen/admin/include/statistics.php:104
+#: humo-gen/admin/include/statistics.php:85
+#: humo-gen/admin/include/statistics.php:516
 #: humo-gen/admin/include/statistics.php:595
-#: humo-gen/admin/include/statistics.php:676
 msgid "January"
 msgstr "Janvier"
 
-#: humo-gen/admin/include/statistics.php:105
+#: humo-gen/admin/include/statistics.php:86
+#: humo-gen/admin/include/statistics.php:518
 #: humo-gen/admin/include/statistics.php:597
-#: humo-gen/admin/include/statistics.php:678
 msgid "February"
 msgstr "Février"
 
-#: humo-gen/admin/include/statistics.php:106
+#: humo-gen/admin/include/statistics.php:87
+#: humo-gen/admin/include/statistics.php:520
 #: humo-gen/admin/include/statistics.php:599
-#: humo-gen/admin/include/statistics.php:680
 msgid "March"
 msgstr "Mars"
 
-#: humo-gen/admin/include/statistics.php:107
+#: humo-gen/admin/include/statistics.php:88
+#: humo-gen/admin/include/statistics.php:522
 #: humo-gen/admin/include/statistics.php:601
-#: humo-gen/admin/include/statistics.php:682
 msgid "April"
 msgstr "Avril"
 
-#: humo-gen/admin/include/statistics.php:109
+#: humo-gen/admin/include/statistics.php:90
+#: humo-gen/admin/include/statistics.php:526
 #: humo-gen/admin/include/statistics.php:605
-#: humo-gen/admin/include/statistics.php:686
 msgid "June"
 msgstr "Juin"
 
-#: humo-gen/admin/include/statistics.php:110
+#: humo-gen/admin/include/statistics.php:91
+#: humo-gen/admin/include/statistics.php:528
 #: humo-gen/admin/include/statistics.php:607
-#: humo-gen/admin/include/statistics.php:688
 msgid "July"
 msgstr "Juillet"
 
-#: humo-gen/admin/include/statistics.php:111
+#: humo-gen/admin/include/statistics.php:92
+#: humo-gen/admin/include/statistics.php:530
 #: humo-gen/admin/include/statistics.php:609
-#: humo-gen/admin/include/statistics.php:690
 msgid "August"
 msgstr "Aôut"
 
-#: humo-gen/admin/include/statistics.php:112
+#: humo-gen/admin/include/statistics.php:93
+#: humo-gen/admin/include/statistics.php:532
 #: humo-gen/admin/include/statistics.php:611
-#: humo-gen/admin/include/statistics.php:692
 msgid "September"
 msgstr "Septembre"
 
-#: humo-gen/admin/include/statistics.php:113
+#: humo-gen/admin/include/statistics.php:94
+#: humo-gen/admin/include/statistics.php:534
 #: humo-gen/admin/include/statistics.php:613
-#: humo-gen/admin/include/statistics.php:694
 msgid "October"
 msgstr "Octobre"
 
-#: humo-gen/admin/include/statistics.php:114
+#: humo-gen/admin/include/statistics.php:95
+#: humo-gen/admin/include/statistics.php:536
 #: humo-gen/admin/include/statistics.php:615
-#: humo-gen/admin/include/statistics.php:696
 msgid "November"
 msgstr "Novembre"
 
-#: humo-gen/admin/include/statistics.php:115
+#: humo-gen/admin/include/statistics.php:96
+#: humo-gen/admin/include/statistics.php:538
 #: humo-gen/admin/include/statistics.php:617
-#: humo-gen/admin/include/statistics.php:698
 msgid "December"
 msgstr "Décembre"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Monday"
 msgstr "Lundi"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Tuesday"
 msgstr "Mardi"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Wednesday"
 msgstr "Mercredi"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Thursday"
 msgstr "Jeudi"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Friday"
 msgstr "Vendredi"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Saturday"
 msgstr "Samedi"
 
-#: humo-gen/admin/include/statistics.php:117
+#: humo-gen/admin/include/statistics.php:98
 msgid "Sunday"
 msgstr "Dimanche"
 
-#: humo-gen/admin/include/statistics.php:267
-#: humo-gen/admin/include/statistics.php:397
-#: humo-gen/admin/include/statistics.php:727
+#: humo-gen/admin/include/statistics.php:236
+#: humo-gen/admin/include/statistics.php:361
+#: humo-gen/admin/include/statistics.php:644
 msgid "Visitors"
 msgstr "Visiteurs"
 
-#: humo-gen/admin/include/statistics.php:270
+#: humo-gen/admin/include/statistics.php:239
 msgid "Visited families in the past 12 months"
 msgstr "Familles visitées dans les 12 derniers mois"
 
-#: humo-gen/admin/include/statistics.php:327
+#: humo-gen/admin/include/statistics.php:292
 msgid "Country of origin"
 msgstr "Pays d'origine"
 
-#: humo-gen/admin/include/statistics.php:327
-#: humo-gen/admin/include/statistics.php:465
+#: humo-gen/admin/include/statistics.php:292
+#: humo-gen/admin/include/statistics.php:420
 msgid "Number of unique visitors"
 msgstr "Nombre de visiteurs uniques"
 
-#: humo-gen/admin/include/statistics.php:353
-#: humo-gen/admin/include/statistics.php:514
+#: humo-gen/admin/include/statistics.php:318
+#: humo-gen/admin/include/statistics.php:456
 msgid "Total number of unique visitors:"
 msgstr "Nombre total de visiteurs uniques"
 
-#: humo-gen/admin/include/statistics.php:383
+#: humo-gen/admin/include/statistics.php:347
 msgid "General statistics"
 msgstr "Statistiques générales"
 
-#: humo-gen/admin/include/statistics.php:390
+#: humo-gen/admin/include/statistics.php:354
 msgid "Statistics by date"
 msgstr "Statistiques par date"
 
-#: humo-gen/admin/include/statistics.php:404
-#: humo-gen/admin/include/statistics.php:424
+#: humo-gen/admin/include/statistics.php:368
+#: humo-gen/admin/include/statistics.php:388
 msgid "Old statistics"
 msgstr "Anciennes statistiques"
 
-#: humo-gen/admin/include/statistics.php:411
-#: humo-gen/admin/include/statistics.php:429
+#: humo-gen/admin/include/statistics.php:375
+#: humo-gen/admin/include/statistics.php:393
 msgid "Remove statistics"
 msgstr "Retirer les statistiques"
 
-#: humo-gen/admin/include/statistics.php:424
+#: humo-gen/admin/include/statistics.php:388
 msgid "are erased"
 msgstr "sont effacées"
 
-#: humo-gen/admin/include/statistics.php:431
+#: humo-gen/admin/include/statistics.php:395
 msgid "Statistics will be removed PERMANENTLY. Make a backup first to save the statistics data"
 msgstr "Les statistiques seront DÉFINITIVEMENT supprimés. Faites d'abord une sauvegarde pour enregistrer les données statistiques"
 
-#: humo-gen/admin/include/statistics.php:435
+#: humo-gen/admin/include/statistics.php:399
 msgid "Remove ALL statistics BEFORE this date:"
 msgstr "Effacer TOUTES les statistiques AVANT cette date:"
 
-#: humo-gen/admin/include/statistics.php:441
+#: humo-gen/admin/include/statistics.php:405
 msgid "d-m-yyyy"
 msgstr "jj-mm-aaaa"
 
-#: humo-gen/admin/include/statistics.php:443
+#: humo-gen/admin/include/statistics.php:407
 msgid "REMOVE statistic data"
 msgstr "Effacer données statistiques"
 
-#: humo-gen/admin/include/statistics.php:450
+#: humo-gen/admin/include/statistics.php:413
 msgid "Status statistics table"
 msgstr "État de la table de statistiques"
 
-#: humo-gen/admin/include/statistics.php:465
-#: humo-gen/admin/include/statistics.php:560
-#: humo-gen/admin/include/statistics.php:576
+#: humo-gen/admin/include/statistics.php:420
+#: humo-gen/admin/include/statistics.php:489
+#: humo-gen/admin/include/statistics.php:498
 msgid "family tree"
 msgstr "arbre généalogique"
 
-#: humo-gen/admin/include/statistics.php:475
+#: humo-gen/admin/include/statistics.php:429
 msgid "FAMILY TREE ERASED"
 msgstr "ARBRE GÉNÉALOGIQUE EFFACÉ"
 
-#: humo-gen/admin/include/statistics.php:505
+#: humo-gen/admin/include/statistics.php:449
 msgid "General statistics:"
 msgstr "Statistiques générales"
 
-#: humo-gen/admin/include/statistics.php:508
+#: humo-gen/admin/include/statistics.php:452
 msgid "Counter"
 msgstr "Compteur"
 
-#: humo-gen/admin/include/statistics.php:521
-#: humo-gen/admin/include/statistics.php:646
+#: humo-gen/admin/include/statistics.php:461
+#: humo-gen/admin/include/statistics.php:565
 msgid "Total number of visited families:"
 msgstr "Nombre total de familles visitées"
 
-#: humo-gen/admin/include/statistics.php:530
+#: humo-gen/admin/include/statistics.php:468
 msgid "Total number of families in the last hour:"
 msgstr "Nombre total de familles dans la dernière heure"
 
-#: humo-gen/admin/include/statistics.php:535
+#: humo-gen/admin/include/statistics.php:473
 msgid "Unique visitors - Country of origin"
 msgstr "Visiteurs unique - Pays d'origine"
 
-#: humo-gen/admin/include/statistics.php:543
-#: humo-gen/admin/include/statistics.php:849
+#: humo-gen/admin/include/statistics.php:480
+#: humo-gen/admin/include/statistics.php:748
 msgid "Most visited families:"
 msgstr "Familles le plus visitées"
 
-#: humo-gen/admin/include/statistics.php:566
+#: humo-gen/admin/include/statistics.php:493
 msgid "last visited families:"
 msgstr "dernières familles visitées"
 
-#: humo-gen/admin/include/statistics.php:576
+#: humo-gen/admin/include/statistics.php:498
 msgid "date-time"
 msgstr "date-heure"
 
-#: humo-gen/admin/include/statistics.php:743
+#: humo-gen/admin/include/statistics.php:660
 msgid "User agent information"
 msgstr "Informations de l'agent utilisateur"
 
-#: humo-gen/admin/include/statistics.php:797
+#: humo-gen/admin/include/statistics.php:701
 msgid "Old statistics (numbers since last gedcom update)"
 msgstr "Anciennes statistiques (données depuis la dernière mise à jour du fichier Gedcom)"
 
-#: humo-gen/admin/include/statistics.php:799
+#: humo-gen/admin/include/statistics.php:703
 msgid "Select family tree"
 msgstr "Choisir l'arbre généalogique"
 
@@ -6767,43 +6794,43 @@ msgstr "On peut trouver les instructions pour une installation complète ou une 
 msgid "HuMo-gen version history"
 msgstr "Histoire des versions Humo-gen"
 
-#: humo-gen/googlemaps/google_initiate.php:260
+#: humo-gen/googlemaps/google_initiate.php:251
 msgid "today "
 msgstr "aujourd'hui "
 
-#: humo-gen/googlemaps/google_initiate.php:308
+#: humo-gen/googlemaps/google_initiate.php:299
 msgid "Location: "
 msgstr "Lieu: "
 
-#: humo-gen/googlemaps/google_initiate.php:310
+#: humo-gen/googlemaps/google_initiate.php:301
 msgid "For a list of persons born here until "
 msgstr "Pour une liste des personnes nées ici jusqu'en"
 
-#: humo-gen/googlemaps/google_initiate.php:313
+#: humo-gen/googlemaps/google_initiate.php:304
 msgid "For a list of all people that died here until "
 msgstr "Pour une liste des personne décédées ici jusqu'à"
 
-#: humo-gen/googlemaps/google_initiate.php:315
+#: humo-gen/googlemaps/google_initiate.php:306
 msgid " click here"
 msgstr "cliquer ici"
 
-#: humo-gen/googlemaps/google_initiate.php:316
+#: humo-gen/googlemaps/google_initiate.php:307
 msgid "Read about this location in "
 msgstr "Lisez au sujet de ce lieu à "
 
-#: humo-gen/googlemaps/namesearch.php:114
+#: humo-gen/googlemaps/namesearch.php:112
 msgid "All persons born here: "
 msgstr "Toutes les personnes nées ici: "
 
-#: humo-gen/googlemaps/namesearch.php:119
+#: humo-gen/googlemaps/namesearch.php:116
 msgid "Persons born here until "
 msgstr "Personnes nées ici jusqu'en "
 
-#: humo-gen/googlemaps/namesearch.php:138
+#: humo-gen/googlemaps/namesearch.php:127
 msgid "All persons that died here: "
 msgstr "Toutes les personnes décédées ici:"
 
-#: humo-gen/googlemaps/namesearch.php:143
+#: humo-gen/googlemaps/namesearch.php:131
 msgid "Persons that died here until "
 msgstr "Personnes décédées jusqu'à"
 
@@ -6811,11 +6838,11 @@ msgstr "Personnes décédées jusqu'à"
 msgid "This is the mobile version of the free and open-source HuMo-gen genealogy program.<br> To learn more about the program use the following button:"
 msgstr "Voici la version mobile du logiciel de généalogie HuMo-Gen (code source libre) . <br> Pour en savoir plus sur ce logiciel, utiliser  le bouton suivant:"
 
-#: humo-gen/humo_mobile/function.php:50
+#: humo-gen/humo_mobile/function.php:48
 msgid "crem."
 msgstr "crem."
 
-#: humo-gen/humo_mobile/index.php:48
+#: humo-gen/humo_mobile/index.php:42
 msgid "Search in family tree"
 msgstr "Rechercher dans l'arbre généalogique"
 
@@ -6896,10 +6923,6 @@ msgstr "arriver"
 msgid "Baptized LDS"
 msgstr "Baptême SDJ"
 
-#: humo-gen/include/language_event.php:12
-msgid "baptized as child"
-msgstr "baptisé(e) comme enfant"
-
 #: humo-gen/include/language_event.php:13
 msgid "Bar Mitzvah"
 msgstr "Bar Mitzvah"
@@ -6947,10 +6970,6 @@ msgstr "Intérêt descendant"
 #: humo-gen/include/language_event.php:24
 msgid "Divorce filed"
 msgstr "Demande de divorce"
-
-#: humo-gen/include/language_event.php:25
-msgid "depart"
-msgstr "départ"
 
 #: humo-gen/include/language_event.php:27
 msgid "Education"
@@ -7011,14 +7030,6 @@ msgstr "Columbarium/Enterré"
 #: humo-gen/include/language_event.php:41
 msgid "justified"
 msgstr "justifé(e)"
-
-#: humo-gen/include/language_event.php:42
-msgid "Marriage contract"
-msgstr "Contrat de mariage"
-
-#: humo-gen/include/language_event.php:43
-msgid "Marriage license"
-msgstr "Certificat de mariage"
 
 #: humo-gen/include/language_event.php:44
 msgid "Marriage settlement"
@@ -7124,35 +7135,35 @@ msgstr "Voeux"
 msgid "Yartzeit"
 msgstr "Yartzeit(?)"
 
-#: humo-gen/include/mainindex_cls.php:28
+#: humo-gen/include/mainindex_cls.php:19
 msgid "Select a family tree"
 msgstr "Sélectionner une base de données"
 
-#: humo-gen/include/mainindex_cls.php:83
+#: humo-gen/include/mainindex_cls.php:44
 msgid "Select another family tree, or login for the selected family tree."
 msgstr "Choisir autre arbre familial ou s'identifier pour l'arbre choisi."
 
-#: humo-gen/include/mainindex_cls.php:199
+#: humo-gen/include/mainindex_cls.php:158
 msgid "Latest update:"
 msgstr "Dernière mise à jour"
 
-#: humo-gen/include/mainindex_cls.php:208
+#: humo-gen/include/mainindex_cls.php:167
 msgid "Owner family tree:"
 msgstr "Propriétaire de l'arbre familial:"
 
-#: humo-gen/include/mainindex_cls.php:250
+#: humo-gen/include/mainindex_cls.php:200
 msgid "Most frequent surnames:"
 msgstr "Les noms les plus courants:"
 
-#: humo-gen/include/mainindex_cls.php:442
+#: humo-gen/include/mainindex_cls.php:383
 msgid "Surnames Index:"
 msgstr "Indexe des noms"
 
-#: humo-gen/include/mainindex_cls.php:474
+#: humo-gen/include/mainindex_cls.php:411
 msgid "Other"
 msgstr "Autre"
 
-#: humo-gen/include/mainindex_cls.php:482
+#: humo-gen/include/mainindex_cls.php:416
 msgid "Patronyms"
 msgstr "Patronymes"
 
@@ -7232,97 +7243,97 @@ msgstr "Mariage/ En relation"
 msgid "marriage/ related"
 msgstr "Mariage/ En relation"
 
-#: humo-gen/include/person_cls.php:210
+#: humo-gen/include/person_cls.php:198
 #, fuzzy
 msgid "stillborn boy"
 msgstr "mort-né(e)"
 
-#: humo-gen/include/person_cls.php:211
+#: humo-gen/include/person_cls.php:199
 #, fuzzy
 msgid "stillborn girl"
 msgstr "enfant mort-né"
 
-#: humo-gen/include/person_cls.php:453
+#: humo-gen/include/person_cls.php:433
 #, fuzzy
 msgid "Text reports"
 msgstr "Ancêtres"
 
-#: humo-gen/include/person_cls.php:506
+#: humo-gen/include/person_cls.php:483
 #, fuzzy
 msgid "Charts"
 msgstr "Jeu de caractères"
 
-#: humo-gen/include/person_cls.php:575
-#: humo-gen/include/person_cls.php:584
+#: humo-gen/include/person_cls.php:552
+#: humo-gen/include/person_cls.php:561
 #, fuzzy
 msgid "Timeline"
 msgstr "Fuseau horaire"
 
-#: humo-gen/include/person_cls.php:584
+#: humo-gen/include/person_cls.php:561
 #, fuzzy
 msgid "Editor"
 msgstr "Éditeur."
 
-#: humo-gen/include/person_cls.php:756
+#: humo-gen/include/person_cls.php:731
 #, fuzzy
 msgid "son of"
 msgstr "fils"
 
-#: humo-gen/include/person_cls.php:757
+#: humo-gen/include/person_cls.php:732
 #, fuzzy
 msgid "daughter of"
 msgstr "fille"
 
-#: humo-gen/include/person_cls.php:758
+#: humo-gen/include/person_cls.php:733
 #, fuzzy
 msgid "child of"
 msgstr "enfant "
 
-#: humo-gen/include/person_cls.php:1056
+#: humo-gen/include/person_cls.php:1018
 #, fuzzy
 msgid "at"
 msgstr "tante"
 
-#: humo-gen/include/person_cls.php:1056
+#: humo-gen/include/person_cls.php:1018
 #, fuzzy
 msgid "hour"
 msgstr "ou"
 
-#: humo-gen/include/person_cls.php:1084
-#: humo-gen/include/person_cls.php:1086
+#: humo-gen/include/person_cls.php:1046
+#: humo-gen/include/person_cls.php:1048
 #, fuzzy
 msgid "birth_declaration"
 msgstr "Déclaration de naissance"
 
-#: humo-gen/include/person_cls.php:1137
-#: humo-gen/include/person_cls.php:1139
+#: humo-gen/include/person_cls.php:1099
+#: humo-gen/include/person_cls.php:1101
 #, fuzzy
 msgid "baptise witness"
 msgstr "Témoin de baptême"
 
-#: humo-gen/include/person_cls.php:1235
-#: humo-gen/include/person_cls.php:1237
+#: humo-gen/include/person_cls.php:1197
+#: humo-gen/include/person_cls.php:1199
 #, fuzzy
 msgid "death declaration"
 msgstr "Déclaration de décès"
 
-#: humo-gen/include/person_cls.php:1283
-#: humo-gen/include/person_cls.php:1285
+#: humo-gen/include/person_cls.php:1245
+#: humo-gen/include/person_cls.php:1247
 #, fuzzy
 msgid "burial witness"
 msgstr "Témoin de sépulture"
 
-#: humo-gen/include/person_cls.php:1318
+#: humo-gen/include/person_cls.php:1277
 #, fuzzy
 msgid "ash dispersion"
 msgstr "personne"
 
-#: humo-gen/include/person_cls.php:1352
+#: humo-gen/include/person_cls.php:1307
 #, fuzzy
 msgid "occupation"
 msgstr "Lieu"
 
-#: humo-gen/include/person_cls.php:1354
+#: humo-gen/include/person_cls.php:1309
 #, fuzzy
 msgid "occupations"
 msgstr "Lieu"
@@ -7345,3 +7356,14 @@ msgstr "Sources"
 msgid "source text"
 msgstr "Source pour texte:"
 
+#~ msgid "Special names/ titles"
+#~ msgstr "Noms spéciaux/ titres"
+
+#~ msgid "Events for person"
+#~ msgstr "Événements relatif à la personne"
+
+#~ msgid "Events for marriage"
+#~ msgstr "événements de mariage"
+
+#~ msgid "Events by marriage"
+#~ msgstr "Événements par mariage"
