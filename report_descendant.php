@@ -14,7 +14,7 @@
 // "fst" = the x position of first (lefmost) child
 // "lst" = the x position of last (rightmost) child, unless this is a second marriage of this child,
 //         in which case the first marriage of the last child is entered into "lst"
-// "chn" = the number of the child in the family (additional marriages have subsequent numbers)
+// "chd" = the number of the child in the family (additional marriages have subsequent numbers)
 // "2nd" = indicates this person is in fact a second or following instance of the previous person with additional marriage
 // "htx" = wedding text ("married on 13 mar 1930 to:")
 // "huw" = mentioning of additional marriage ("2nd marriage")
@@ -25,7 +25,9 @@
 // "gednr" = humogen gedcom number (I143)
 // "non" = person with no own family (i.e. only child status)
 // *********************************************************************************************
-  
+
+//error_reporting(E_ALL);
+
 // for png image generating
 echo '<script type="text/javascript" src="include/jqueryui/js/html2canvas.js"></script>';
 echo '<script type="text/javascript" src="include/jqueryui/js/jquery.plugin.html2canvas.js"></script>';
@@ -83,23 +85,23 @@ function generate() {
 
 			$genarray[$i]["y"]=($genarray[$i]["gen"]*($vbasesize))+40;
 			$par=$genarray[$i]["par"];
-			if($genarray[$i]["chd"]==1) {
-				if($genarray[$i]["gen"]==0) {
+			if($genarray[$i]["chd"]==1) {   // the first child in this fam
+				if($genarray[$i]["gen"]==0) {  // this is base person - put in left most position
 					$genarray[$i]["x"]=0;
 				}
-				else {
-					$exponent=$genarray[$par]["nrc"]-1;
+				else { // first child in fam in 2nd or following generation
+					$exponent=$genarray[$par]["nrc"]-1; // exponent is number of additional children
 
-					$genarray[$i]["x"] = $genarray[$par]["x"] -  (($exponent*($hsize+$inbetween))/2)      ;
+					$genarray[$i]["x"] = $genarray[$par]["x"] -  (($exponent*($hsize+$inbetween))/2); // place in proper spot under parent
 
-					if($genarray[$i]["gen"]==$genarray[$i-1]["gen"]) {
+					if($genarray[$i]["gen"]==$genarray[$i-1]["gen"]) { // is first child in fam but not in generation
 
 						if($genarray[$i]["x"] < $genarray[$i-1]["x"]+($hsize+$inbetween*2)) {
 							$genarray[$i]["x"]=$genarray[$i-1]["x"]+($hsize+$inbetween*2);
 							$movepar=1;
 						}
 					}
-					else {
+					else {  // is first child in generation. If it was set to minus 0, move it to 0 and call "move parents" function move()
 						if($genarray[$i]["x"]<0) {
 							$genarray[$i]["x"]=0;
 							$movepar=1;
@@ -121,7 +123,17 @@ function generate() {
 				}
 
 				$genarray[$par]["lst"]=$genarray[$z]["x"];
-				if($movepar==1) {
+				//NEW
+				if($genarray[$z]["gen"]>$genarray[$z-1]["gen"] AND $genarray[$par]["lst"]==$genarray[$par]["fst"]) { 
+				// this person is first in generation and is only child - move directly under parent
+					$genarray[$z]["x"]=$genarray[$par]["x"];
+					while(isset($genarray[$z+1]) AND $genarray[$z+1]["2nd"]==1) {
+						$genarray[$z+1]["x"]=$genarray[$z]["x"]+$hsize+$inbetween;
+						$z++;
+					}
+					$genarray[$par]["fst"]=$genarray[$par]["x"];
+				}
+				elseif($movepar==1) {
 					$movepar=0;
 					move($par);
 				}
@@ -227,7 +239,18 @@ function generate() {
 				}
 
 				$genarray[$par]["lst"]=$genarray[$z]["y"];
-				if($movepar==1) {
+				//NEW
+				if($genarray[$z]["gen"]>$genarray[$z-1]["gen"] AND $genarray[$par]["lst"]==$genarray[$par]["fst"]) { 
+				// this person is first in generation and is only child - move directly under parent
+					$genarray[$z]["y"]=$genarray[$par]["y"];
+					// make this into while loop
+					while(isset($genarray[$z+1]) AND $genarray[$z+1]["2nd"]==1) {
+						$genarray[$z+1]["y"]=$genarray[$z]["y"]+$vsize+$vinbetween;
+						$z++;
+					}
+					$genarray[$par]["fst"]=$genarray[$par]["y"];
+				}				
+				elseif($movepar==1) {
 					$movepar=0;
 					move($par);
 				}
@@ -357,8 +380,8 @@ function move($i) {
 //****************************************************************************
 function printchart() {
 	global $genarray, $size, $db, $dbh, $tree_prefix_quoted, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
-	global $vbasesize, $hsize, $vsize, $vdist, $hdist, $user, $direction;
-	global $dirmark1, $dirmark2, $rtlmarker, $alignmarker;
+	global $vbasesize, $hsize, $vsize, $vdist, $hdist, $user, $direction, $dna;
+	global $dirmark1, $dirmark2, $rtlmarker, $alignmarker, $base_person_gednr, $base_person_name, $base_person_sexe, $base_person_famc;
 
 	// YB: -- check browser type & version. we need this further on to detect IE7 with it's widely reported z-index bug
 	$browser_user_agent = ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) ? strtolower( $_SERVER['HTTP_USER_AGENT'] ) : '';
@@ -422,21 +445,28 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		echo '</div>';
 
 		//=================================
-
-		echo '<div class="standard_header fonts" style="align:center; text-align: center;"><b>'.__('Descendant chart').__(' of ').$genarray[0]["nam"].'</b>';
+		if($dna=="none") {
+			echo '<div class="standard_header fonts" style="align:center; text-align: center;"><b>'.__('Descendant chart').__(' of ').$genarray[0]["nam"].'</b>';
+		}
+		elseif($dna=="ydna" OR $dna=="ydnamark") {
+			echo '<div class="standard_header fonts" style="align:center; text-align: center;"><b>'.__('Same Y-DNA as ').$base_person_name.'</b>';
+		}
+		elseif($dna=="mtdna" OR $dna=="mtdnamark") {
+			echo '<div class="standard_header fonts" style="align:center; text-align: center;"><b>'.__('Same Mt-DNA as ').$base_person_name.'</b>';
+		}		
 		echo '<br><input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow popup!)').'" onClick="showimg();">';
 		echo '</div>';
 
 		if ($direction==0) {
-				$latter=count($genarray)-1;
-				$the_height=$genarray[$latter]["y"]+130;
+			$latter=count($genarray)-1;
+			$the_height=$genarray[$latter]["y"]+130;
 		}
 		else {
-				$hgt = 0;
-				for ($e = 0; $e < count($genarray); $e++) {
-						if($genarray[$e]["y"] > $hgt) { $hgt = $genarray[$e]["y"]; }
-				}
-				$the_height = $hgt + 130;
+			$hgt = 0;
+			for ($e = 0; $e < count($genarray); $e++) {
+				if($genarray[$e]["y"] > $hgt) { $hgt = $genarray[$e]["y"]; }
+			}
+			$the_height = $hgt + 130;
 		}
 
 		echo '<style type="text/css">';
@@ -451,42 +481,84 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		// generation and size choice box:
 		//echo '<div class="table_header search_bar" style="direction:ltr; z-index:80; width:500px; text-align:left;">';
 		//echo '<div class="table_header search_bar" style="direction:ltr; z-index:20; width:500px; text-align:left;">';
-		echo '<div id="menubox" class="table_header search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:510px; text-align:left;">';
+		if($dna=="none") { $boxwidth="520"; } // regular descendant chart
+		else { $boxwidth="730"; } // DNA charts
+		echo '<div id="menubox" class="table_header search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:'.$boxwidth.'px; text-align:left;">';
 
 		print '<div style="display:inline;">';
 		if(CMS_SPECIFIC=='Joomla') {
-			print '<form method="POST" action="index.php?option=com_humo-gen&task=family&chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
+			print '<form method="POST" name="desc_form" action="index.php?option=com_humo-gen&task=family&chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
 		}	else {
-			print '<form method="POST" action="'.CMS_ROOTPATH.'family.php?chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
+			print '<form method="POST" name="desc_form" action="'.CMS_ROOTPATH.'family.php?chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
 		}
 		print '<input type="hidden" name="id" value="'.$keepfamily_id.'">';
 		print '<input type="hidden" name="chosengen" value="'.$chosengen.'">';
 		print '<input type="hidden" name="main_person" value="'.$keepmain_person.'">';
 		print '<input type="hidden" name="database" value="'.$database.'">';
-
+		if($dna!="none") {
+			print '<input type="hidden" name="dnachart" value="'.$dna.'">';
+			print '<input type="hidden" name="bf" value="'.$base_person_famc.'">';
+			print '<input type="hidden" name="bs" value="'.$base_person_sexe.'">';
+			print '<input type="hidden" name="bn" value="'.$base_person_name.'">';
+			print '<input type="hidden" name="bg" value="'.$base_person_gednr.'">';
+		}
+		
+		print '<input id="dirval" type="hidden" name="direction" value="">';  // will be filled in next lines
 		if ($direction=="1"){ // horizontal
-			print '<input type="hidden" name="direction" value="0">';
-			print '<input type="Submit" name="submit" value="'.__('vertical').'">';
+			print '<input type="button" name="dummy" value="'.__('vertical').'" onClick=\'document.desc_form.direction.value="0";document.desc_form.submit();\'>';
 		}
 		else{
-			print '<input type="hidden" name="direction" value="1">';
-			print '<input type="Submit" name="submit" value="'.__('horizontal').'">';
+			print '<input type="button" name="dummy" value="'.__('horizontal').'" onClick=\'document.desc_form.direction.value="1";document.desc_form.submit();\'>';
 		}
-		print '</form>';
+		print '</form>'; 
+		$result=$dbh->query("SELECT pers_sexe FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber ='".$keepmain_person."'");	
+		$resultDb=$result->fetch(PDO::FETCH_OBJ);
+		if($dna!="none") {
+			echo "&nbsp;&nbsp;".__('DNA: '); 
+			echo '<select name="dnachart" style="width:150px" onChange="window.location=this.value">';
+	//		echo $selected="selected"; if($dna!="none") $selected="";
+	//		echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
+	//				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."none".'&amp;chosensize='.
+	//				$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('All').'</option>';
+			if($base_person_sexe=="M") {		// only show Y-DNA option if base person is male
+				echo $selected=""; if($dna=="ydna") $selected="selected";
+				echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
+						$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."ydna".'&amp;chosensize='.
+						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('Y-DNA Carriers only').'</option>';
+				echo $selected="selected"; if($dna!="ydnamark") $selected="";
+				echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
+						$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."ydnamark".'&amp;chosensize='.
+						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('Y-DNA Mark carriers').'</option>';
+			}
+		
+			if($base_person_sexe=="F" OR ($base_person_sexe=="M" AND isset($base_person_famc) AND $base_person_famc!="")) {		
+				// if base person is male, only show Mt-DNA if there are ancestors since he can't have Mt-DNA descendants...
+				echo $selected=""; if($dna=="mtdna") $selected="selected";
+				echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
+						$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."mtdna".'&amp;chosensize='.
+						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('Mt-DNA Carriers only').'</option>';
+				if($base_person_sexe=="F") { echo $selected="selected"; if($dna!="mtdnamark") $selected=""; }
+				else { echo $selected=""; if($dna=="mtdnamark") $selected="selected";  }
+				echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
+						$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."mtdnamark".'&amp;chosensize='.
+						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('Mt-DNA Mark carriers').'</option>';
+			}
+			echo '</select>';
+		}
 		print '</div>';
-
+		print '&nbsp;&nbsp;';
 		print '&nbsp;'.__('Nr. generations').': ';
 		print '<select name="chosengen" onChange="window.location=this.value">';
 	
 		for ($i=2; $i<=15; $i++) {
 			if(CMS_SPECIFIC=='Joomla') {
 				print '<option value="index.php?option=com_humo-gen&task=family&id='.$keepfamily_id.'&amp;main_person='.
-				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='.$dna.'&amp;chosensize='.
 				$size.'&amp;chosengen='.$i.'&amp;screen_mode=STAR" ';
 			}
 			else{
 				print '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
-				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='.$dna.'&amp;chosensize='.
 				$size.'&amp;chosengen='.$i.'&amp;screen_mode=STAR" ';
 			}
 			if ($i == $chosengen) print "selected=\"selected\" ";
@@ -495,15 +567,23 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		//NEW - option "All" for all generations
 		print '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
-		$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+		$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='.$dna.'&amp;chosensize='.
 		$size.'&amp;chosengen=All&amp;screen_mode=STAR" ';
 		if ($chosengen=="All") print "selected=\"selected\" ";
 		print ">"."All"."</option>";
  
 
 		print '</select>';
-
 		print '&nbsp;&nbsp;';
+		$dna_params="";
+		if($dna!="none") {
+			$dna_params = '
+					bn: "'.$base_person_name.'",
+					bs: "'.$base_person_sexe.'",
+					bf: "'.$base_person_famc.'",
+					bg: "'.$base_person_gednr.'",';
+		}
+		
 		//NEW min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
 		echo ' 
 			<script>
@@ -518,6 +598,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 					id: "'.$keepfamily_id.'",
 					chosengen: "'.$chosengen.'",
 					direction: "'.$direction.'",
+					dna: "'.$dna.'",'.
+					$dna_params.'
 					slide: function( event, ui ) {
 						$( "#amount" ).val(ui.value+1);
 					}
@@ -533,6 +615,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
 		echo '</div>';
 
+
 	} // end if not hourglass
 
 	// some PDO prepared statements before the loop
@@ -545,13 +628,6 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		$xvalue=$genarray[$w]["x"];
 		$yvalue=$genarray[$w]["y"];
-
-		//if($genarray[$w]["sex"]=="v") {
-		//	$bkcolor="#FFCCFF";
-		//}
-		//else {
-		//	$bkcolor="#99FFFF";
-		//}
 
 		$sexe_colour='';
 		if($genarray[$w]["sex"]=="v") {
@@ -578,9 +654,16 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		//echo '<div style="position:absolute; background-color:'.$bkcolor.';height:'.$vsize.'px; width:'.$hsize.'px; border:1px brown solid; left:'.$xvalue.'px; top:'.$yvalue.'px">';
 
-		$bkgr=""; 
-		if($genarray[$w]["gen"]==0 AND $hourglass===true) { $bkgr = "background-color:".$backgr_col.";"; }
-
+		$bkgr="";  
+		if(($dna=="ydnamark" OR $dna=="mtdnamark" OR $dna=="ydna" OR $dna=="mtdna") AND $genarray[$w]["dna"]==1) { 
+			$bkgr = "border:3px solid #999999;background-color:"."#ffff66".";"; 
+			if($genarray[$w]["gednr"]==$base_person_gednr) {  // base person
+				$bkgr = "border:3px solid red;background-color:"."#ff9900".";"; 
+			}
+		}
+		if($genarray[$w]["gen"]==0 AND $hourglass===true) { 
+			$bkgr = "background-color:".$backgr_col.";"; 
+		}
 		echo '<div class="ancestor_name'.$sexe_colour.'" style="'.$bkgr.'position:absolute; height:'.$vsize.'px; width:'.$hsize.'px; left:'.$xvalue.'px; top:'.$yvalue.'px;">';
  
 		$replacement_text='';
@@ -600,6 +683,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			if(strpos($browser_user_agent,"msie 7.0")===false) {
 				if($size==50) {
 					//$replacement_text.= '<strong>'.$genarray[$w]["nam"].'</strong>';
+					//$replacement_text.= '<span class="anc_box_name">'.$genarray[$w]["nam"].'</span>';
 					$replacement_text.= '<span class="anc_box_name">'.$genarray[$w]["nam"].'</span>';
 					if ($man_privacy){
 						$replacement_text.= '<br>'.__(' PRIVACY FILTER').'<br>';  //Tekst privacy weergeven
@@ -753,10 +837,10 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 					while($genarray[$z]["2nd"]==1) { //if last is 2nd (3rd etc) marriage, the line has to stop at first marriage
 						$z--;
 					}
-					$startx=$genarray[$parent]["fst"]+($hsize/2);
-					$starty=$genarray[$z]["y"]-($vdist/2);
-					$width=$genarray[$z]["x"] - $genarray[$parent]["fst"];
-					print '<div class="chart_line" style="position:absolute; height:1px; width:'.$width.'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
+						$startx=$genarray[$parent]["fst"]+($hsize/2);
+						$starty=$genarray[$z]["y"]-($vdist/2);
+						$width=$genarray[$z]["x"] - $genarray[$parent]["fst"];
+						print '<div class="chart_line" style="position:absolute; height:1px; width:'.$width.'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 				}
 			}
 		} // end if vertical

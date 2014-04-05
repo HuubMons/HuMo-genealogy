@@ -111,10 +111,8 @@ if (isset($_POST['install_tables2'])){
 	$table_user_notes="1";
 	$table_groups="1";
 
-	//$query = mysql_query("SHOW TABLES");
-	//while($row = mysql_fetch_array($query)){
 	$query = $dbh->query("SHOW TABLES");
-	while($row = $query->fetch()){	
+	while($row = $query->fetch()){
 		if ($row[0]=='humo_settings'){ $table_settings=""; }
 		if ($row[0]=='humo_trees'){ $table_trees=""; }
 		if ($row[0]=='humo_stat_date'){ $table_stat_date=""; }
@@ -140,38 +138,21 @@ if (isset($_POST['install_tables2'])){
 	print '<p><b>'.__('Creating tables:').'</b><br>';
 	
 	if ($table_settings){
-		//$db_update = mysql_query("DROP TABLE humo_settings"); // Remove table.
 		$db_update = $dbh->query("DROP TABLE humo_settings"); // Remove table.
 		print __('creating humo_settings...').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_settings (
-			setting_id smallint(5) unsigned NOT NULL auto_increment,
-			setting_variable varchar(50) CHARACTER SET utf8,
-			setting_value text CHARACTER SET utf8,
-			PRIMARY KEY (`setting_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_settings (
 			setting_id smallint(5) unsigned NOT NULL auto_increment,
 			setting_variable varchar(50) CHARACTER SET utf8,
 			setting_value text CHARACTER SET utf8,
 			PRIMARY KEY (`setting_id`)
-			) DEFAULT CHARSET=utf8");		
+			) DEFAULT CHARSET=utf8");
 		print __('fill humo_settings... <font color=red>Standard settings are saved in database!</font>').'<br>';
-		/*
-		$db_update = mysql_query("INSERT INTO humo_settings (setting_variable,setting_value) values ('database_name','Web Site')") or die(mysql_error());
-		$db_update = mysql_query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage','http://www.humo-gen.com')") or die(mysql_error());
-		$db_update = mysql_query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage_description','Website')") or die(mysql_error());
-		$db_update = mysql_query("INSERT INTO humo_settings (setting_variable,setting_value) values ('searchengine','n')") or die(mysql_error());
-		$db_update = mysql_query("INSERT INTO humo_settings (setting_variable,setting_value) values ('robots_option','<META NAME=\"robots\" CONTENT=\"noindex,nofollow\">')") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('database_name','Web Site')");
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage','http://www.humo-gen.com')");
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage_description','Website')");
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('searchengine','n')");
-		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('robots_option','<META NAME=\"robots\" CONTENT=\"noindex,nofollow\">')");		
+		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('robots_option','<META NAME=\"robots\" CONTENT=\"noindex,nofollow\">')");
 		// *** Update status number. Number must be: update_status+1! ***
-		//$db_update = mysql_query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','7')") or die(mysql_error());
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','7')");
 	}
 
@@ -179,23 +160,6 @@ if (isset($_POST['install_tables2'])){
 		//$db_update = mysql_query("DROP TABLE humo_trees");
 		$db_update = $dbh->query("DROP TABLE humo_trees");
 		print __('creating humo_trees').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_trees (
-			tree_id smallint(5) unsigned NOT NULL auto_increment,
-			tree_order smallint(5),
-			tree_prefix varchar(10) CHARACTER SET utf8,
-			tree_date varchar(20) CHARACTER SET utf8,
-			tree_persons varchar(10) CHARACTER SET utf8,
-			tree_families varchar(10) CHARACTER SET utf8,
-			tree_email varchar(100) CHARACTER SET utf8,
-			tree_owner varchar(100) CHARACTER SET utf8,
-			tree_pict_path varchar (100) CHARACTER SET utf8,
-			tree_privacy varchar (100) CHARACTER SET utf8,
-			tree_gedcom varchar (100),
-			tree_gedcom_program varchar (100),
-			PRIMARY KEY  (`tree_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_trees (
 			tree_id smallint(5) unsigned NOT NULL auto_increment,
 			tree_order smallint(5),
@@ -210,7 +174,7 @@ if (isset($_POST['install_tables2'])){
 			tree_gedcom varchar (100),
 			tree_gedcom_program varchar (100),
 			PRIMARY KEY  (`tree_id`)
-			) DEFAULT CHARSET=utf8");		
+			) DEFAULT CHARSET=utf8");
 		
 		$gedcom_date=date("Y-m-d H:i");
 		$sql="INSERT INTO humo_trees
@@ -225,25 +189,10 @@ if (isset($_POST['install_tables2'])){
 		tree_pict_path='../pictures/',
 		tree_privacy=''
 		";
-		//$db_update = mysql_query($sql) or die(mysql_error());
 		$db_update = $dbh->query($sql);
-	
-		//$db_update = mysql_query("DROP TABLE humo_tree_texts");
+
 		$db_update = $dbh->query("DROP TABLE humo_tree_texts");
 		print __('creating humo_trees').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_tree_texts (
-			treetext_id smallint(5) unsigned NOT NULL auto_increment,
-			treetext_tree_id smallint(5),
-			treetext_language varchar(100) CHARACTER SET utf8,
-			treetext_name varchar(100) CHARACTER SET utf8,
-			treetext_mainmenu_text text CHARACTER SET utf8,
-			treetext_mainmenu_source text CHARACTER SET utf8,
-			treetext_family_top text CHARACTER SET utf8,
-			treetext_family_footer text CHARACTER SET utf8,
-			PRIMARY KEY  (`treetext_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_tree_texts (
 			treetext_id smallint(5) unsigned NOT NULL auto_increment,
 			treetext_tree_id smallint(5),
@@ -254,28 +203,12 @@ if (isset($_POST['install_tables2'])){
 			treetext_family_top text CHARACTER SET utf8,
 			treetext_family_footer text CHARACTER SET utf8,
 			PRIMARY KEY  (`treetext_id`)
-			) DEFAULT CHARSET=utf8");		
+			) DEFAULT CHARSET=utf8");
 	}
 	
 	if ($table_stat_date){
-		//$db_update = mysql_query("DROP TABLE humo_stat_date");
 		$db_update = $dbh->query("DROP TABLE humo_stat_date");
 		print __('Install statistics table...').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_stat_date (
-			stat_id int(10) NOT NULL auto_increment,
-			stat_easy_id varchar(100) CHARACTER SET utf8,
-			stat_ip_address varchar(20) CHARACTER SET utf8,
-			stat_user_agent varchar(255) CHARACTER SET utf8,
-			stat_tree_id varchar(5) CHARACTER SET utf8,
-			stat_gedcom_fam varchar(20) CHARACTER SET utf8,
-			stat_gedcom_man varchar(20) CHARACTER SET utf8,
-			stat_gedcom_woman varchar(20) CHARACTER SET utf8,
-			stat_date_stat datetime NOT NULL,
-			stat_date_linux varchar(50) CHARACTER SET utf8,
-			PRIMARY KEY (`stat_id`)
-		) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_stat_date (
 			stat_id int(10) NOT NULL auto_increment,
 			stat_easy_id varchar(100) CHARACTER SET utf8,
@@ -288,65 +221,12 @@ if (isset($_POST['install_tables2'])){
 			stat_date_stat datetime NOT NULL,
 			stat_date_linux varchar(50) CHARACTER SET utf8,
 			PRIMARY KEY (`stat_id`)
-		) DEFAULT CHARSET=utf8");		
+		) DEFAULT CHARSET=utf8");
 	}
 
 	if ($table_groups){
-		//$db_update = mysql_query("DROP TABLE humo_groups");
 		$db_update = $dbh->query("DROP TABLE humo_groups");
 		print __('creating humo_groups...').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_groups (
-			group_id smallint(5) unsigned NOT NULL auto_increment,
-			group_name varchar(25) CHARACTER SET utf8,
-			group_privacy varchar(1) CHARACTER SET utf8,			group_menu_places varchar(1) CHARACTER SET utf8,
-			group_admin varchar(1) CHARACTER SET utf8,
-			group_editor varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
-			group_statistics varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j',
-			group_birthday_rss varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j',
-			group_birthday_list varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j',
-			group_sources varchar(1) CHARACTER SET utf8,
-			group_show_restricted_source varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y',
-			group_source_presentation varchar(20) CHARACTER SET utf8,
-			group_pictures varchar(1) CHARACTER SET utf8,
-			group_photobook varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
-			group_gedcomnr varchar(1) CHARACTER SET utf8,
-			group_living_place varchar(1) CHARACTER SET utf8,
-			group_places varchar(1) CHARACTER SET utf8,
-			group_religion varchar(1) CHARACTER SET utf8,
-			group_place_date varchar(1) CHARACTER SET utf8,
-			group_kindindex varchar(1) CHARACTER SET utf8,
-			group_event varchar(1) CHARACTER SET utf8,
-			group_addresses varchar(1) CHARACTER SET utf8,
-			group_own_code varchar(1) CHARACTER SET utf8,
-			group_user_notes varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
-			group_pdf_button varchar(1) CHARACTER SET utf8,
-			group_work_text varchar(1) CHARACTER SET utf8,
-			group_texts varchar(1) CHARACTER SET utf8,
-			group_text_pers varchar(1) CHARACTER SET utf8,
-			group_texts_pers varchar(1) CHARACTER SET utf8,
-			group_texts_fam varchar(1) CHARACTER SET utf8,
-			group_alive varchar(1) CHARACTER SET utf8,
-			group_alive_date_act varchar(1) CHARACTER SET utf8,
-			group_alive_date varchar(4) CHARACTER SET utf8,
-			group_death_date_act varchar(1) CHARACTER SET utf8,
-			group_death_date varchar(4) CHARACTER SET utf8,
-			group_filter_date varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',	
-			group_filter_death varchar(1) CHARACTER SET utf8,
-			group_filter_total varchar(1) CHARACTER SET utf8,
-			group_filter_name varchar(1) CHARACTER SET utf8,
-			group_filter_fam varchar(1) CHARACTER SET utf8,
-			group_filter_pers_show_act varchar(1) CHARACTER SET utf8,
-			group_filter_pers_show varchar(50) CHARACTER SET utf8,
-			group_filter_pers_hide_act varchar(1) CHARACTER SET utf8,
-			group_filter_pers_hide varchar(50) CHARACTER SET utf8,
-			group_pers_hide_totally_act VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
-			group_pers_hide_totally VARCHAR(50) CHARACTER SET utf8 NOT NULL DEFAULT 'X',
-			group_gen_protection VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
-			group_hide_trees VARCHAR(200) NOT NULL DEFAULT '',
-			PRIMARY KEY (`group_id`)
-		) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_groups (
 			group_id smallint(5) unsigned NOT NULL auto_increment,
 			group_name varchar(25) CHARACTER SET utf8,
@@ -399,7 +279,7 @@ if (isset($_POST['install_tables2'])){
 			group_gen_protection VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 			group_hide_trees VARCHAR(200) NOT NULL DEFAULT '',
 			PRIMARY KEY (`group_id`)
-		) DEFAULT CHARSET=utf8");		
+		) DEFAULT CHARSET=utf8");
 
 		print __('filling humo_groups...').'<br>';
 	
@@ -410,9 +290,8 @@ if (isset($_POST['install_tables2'])){
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
 		group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-		//$db_update = mysql_query($sql) or die(mysql_error());
 		$db_update = $dbh->query($sql);
-	
+
 		$sql="INSERT INTO humo_groups SET group_name='family', group_privacy='n', group_menu_places='n', group_admin='n',
 		group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='j', group_places='j', group_religion='n',
 		group_place_date='n', group_kindindex='n', group_event='j', group_addresses='j', group_own_code='j', group_pdf_button='y', group_work_text='j',
@@ -420,9 +299,8 @@ if (isset($_POST['install_tables2'])){
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
 		group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-		//$db_update = mysql_query($sql) or die(mysql_error());
 		$db_update = $dbh->query($sql);
-	
+
 		$sql="INSERT INTO humo_groups SET group_name='guest', group_privacy='n', group_menu_places='n', group_admin='n',
 		group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
 		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_work_text='n',
@@ -430,9 +308,8 @@ if (isset($_POST['install_tables2'])){
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
 		group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-		//$db_update = mysql_query($sql) or die(mysql_error());
 		$db_update = $dbh->query($sql);
-	
+
 		$sql="INSERT INTO humo_groups SET group_name='group 4', group_privacy='n', group_menu_places='n', group_admin='n',
 		group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
 		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_work_text='n',
@@ -440,9 +317,8 @@ if (isset($_POST['install_tables2'])){
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
 		group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-		//$db_update = mysql_query($sql) or die(mysql_error());
 		$db_update = $dbh->query($sql);
-	
+
 		$sql="INSERT INTO humo_groups SET group_name='group 5', group_privacy='j', group_menu_places='n', group_admin='n',
 		group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
 		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_work_text='n',
@@ -450,9 +326,8 @@ if (isset($_POST['install_tables2'])){
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
 		group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-		//$db_update = mysql_query($sql) or die(mysql_error());
 		$db_update = $dbh->query($sql);
-	
+
 		$sql="INSERT INTO humo_groups SET group_name='group 6', group_privacy='n', group_menu_places='n', group_admin='n',
 		group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
 		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_work_text='n',
@@ -460,29 +335,12 @@ if (isset($_POST['install_tables2'])){
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
 		group_filter_pers_show='*', group_filter_pers_hide_act='n', group_filter_pers_hide='#'";
-		//$db_update = mysql_query($sql) or die(mysql_error());
 		$db_update = $dbh->query($sql);
 	}
-	
+
 	if ($table_users){
-		//$db_update = mysql_query("DROP TABLE humo_users");
 		$db_update = $dbh->query("DROP TABLE humo_users");
 		print __('creating humo_users...').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_users (
-			user_id smallint(5) unsigned NOT NULL auto_increment,
-			user_name varchar(25) CHARACTER SET utf8,
-			user_mail varchar(100) CHARACTER SET utf8,
-			user_trees text CHARACTER SET utf8,
-			user_remark text CHARACTER SET utf8,
-			user_password varchar(50) CHARACTER SET utf8,
-			user_status varchar(1) CHARACTER SET utf8,
-			user_group_id SMALLINT(5),
-			user_register_date varchar(20) CHARACTER SET utf8,
-			user_last_visit varchar(25) CHARACTER SET utf8,
-			PRIMARY KEY  (`user_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_users (
 			user_id smallint(5) unsigned NOT NULL auto_increment,
 			user_name varchar(25) CHARACTER SET utf8,
@@ -496,58 +354,29 @@ if (isset($_POST['install_tables2'])){
 			user_last_visit varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY  (`user_id`)
 			) DEFAULT CHARSET=utf8");
-			
 		print __('filling humo_users...').'<br>';
-		//$db_update = mysql_query("INSERT INTO humo_users (user_name, user_password, user_group_id) values ('".$_POST['username_admin']."','".md5($_POST['password_admin'])."','1')") or die(mysql_error());
 		$db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password, user_group_id) values ('".$_POST['username_admin']."','".md5($_POST['password_admin'])."','1')");
 
-		//$db_update = mysql_query("INSERT INTO humo_users (user_name, user_password, user_group_id) values ('".$_POST['username_family']."','".md5($_POST['password_family'])."','2')") or die(mysql_error());
 		$db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password, user_group_id) values ('".$_POST['username_family']."','".md5($_POST['password_family'])."','2')");
 
-		//$db_update = mysql_query("INSERT INTO humo_users (user_name, user_password, user_group_id) values ('guest','".md5('guest')."','3')") or die(mysql_error());
 		$db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password, user_group_id) values ('guest','".md5('guest')."','3')");
 	}
 
 	if ($table_cms_menu){
-		//$db_update = mysql_query("DROP TABLE humo_cms_menu");
 		$db_update = $dbh->query("DROP TABLE humo_cms_menu");
 		print __('creating humo_cms_menu...').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_cms_menu (
-			menu_id int(10) NOT NULL AUTO_INCREMENT,
-			menu_parent_id int(10) NOT NULL DEFAULT '0',
-			menu_order int(5) NOT NULL DEFAULT '0',
-			menu_name varchar(25) CHARACTER SET utf8 DEFAULT '',
-			PRIMARY KEY (`menu_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_cms_menu (
 			menu_id int(10) NOT NULL AUTO_INCREMENT,
 			menu_parent_id int(10) NOT NULL DEFAULT '0',
 			menu_order int(5) NOT NULL DEFAULT '0',
 			menu_name varchar(25) CHARACTER SET utf8 DEFAULT '',
 			PRIMARY KEY (`menu_id`)
-			) DEFAULT CHARSET=utf8");		
+			) DEFAULT CHARSET=utf8");
 	}
 
 	if ($table_cms_pages){
-		//$db_update = mysql_query("DROP TABLE humo_cms_pages");
 		$db_update = $dbh->query("DROP TABLE humo_cms_pages");
 		print __('creating humo_cms_pages...').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_cms_pages (
-			page_id int(10) NOT NULL AUTO_INCREMENT,
-			page_status varchar(1) CHARACTER SET utf8 DEFAULT '',
-			page_menu_id int(10) NOT NULL DEFAULT '0',
-			page_order int(10) NOT NULL DEFAULT '0',
-			page_counter int(10) NOT NULL DEFAULT '0',
-			page_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			page_edit_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			page_title varchar(50) CHARACTER SET utf8 DEFAULT '',
-			page_text longtext CHARACTER SET utf8,
-			PRIMARY KEY (`page_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_cms_pages (
 			page_id int(10) NOT NULL AUTO_INCREMENT,
 			page_status varchar(1) CHARACTER SET utf8 DEFAULT '',
@@ -559,48 +388,23 @@ if (isset($_POST['install_tables2'])){
 			page_title varchar(50) CHARACTER SET utf8 DEFAULT '',
 			page_text longtext CHARACTER SET utf8,
 			PRIMARY KEY (`page_id`)
-			) DEFAULT CHARSET=utf8");		
+			) DEFAULT CHARSET=utf8");
 	}
 
 	if ($table_user_log){
-		//$db_update = mysql_query("DROP TABLE humo_user_log");
 		$db_update = $dbh->query("DROP TABLE humo_user_log");
 		print __('creating humo_log...').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_user_log (
-			log_username varchar(25) CHARACTER SET utf8,
-			log_date varchar(20) CHARACTER SET utf8,
-			log_ip_address varchar(20) CHARACTER SET utf8 DEFAULT '',
-			log_user_admin varchar(5) CHARACTER SET utf8 DEFAULT ''
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_user_log (
 			log_username varchar(25) CHARACTER SET utf8,
 			log_date varchar(20) CHARACTER SET utf8,
 			log_ip_address varchar(20) CHARACTER SET utf8 DEFAULT '',
 			log_user_admin varchar(5) CHARACTER SET utf8 DEFAULT ''
-			) DEFAULT CHARSET=utf8");		
+			) DEFAULT CHARSET=utf8");
 	}
 
 	if ($table_user_notes){
-		//$db_update = mysql_query("DROP TABLE humo_user_notes");
 		$db_update = $dbh->query("DROP TABLE humo_user_notes");
 		print __('creating humo_notes...').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_user_notes (
-			note_id smallint(5) unsigned NOT NULL auto_increment,
-			note_date varchar(20) CHARACTER SET utf8,
-			note_time varchar(25) CHARACTER SET utf8,
-			note_user_id smallint(5),
-			note_note text CHARACTER SET utf8,
-			note_status varchar(10) CHARACTER SET utf8,
-			note_tree_prefix varchar(25) CHARACTER SET utf8,
-			note_pers_gedcomnumber varchar(20) CHARACTER SET utf8,
-			note_fam_gedcomnumber varchar(20) CHARACTER SET utf8,
-			note_names text CHARACTER SET utf8,
-			PRIMARY KEY  (`note_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_user_notes (
 			note_id smallint(5) unsigned NOT NULL auto_increment,
 			note_date varchar(20) CHARACTER SET utf8,
@@ -613,7 +417,7 @@ if (isset($_POST['install_tables2'])){
 			note_fam_gedcomnumber varchar(20) CHARACTER SET utf8,
 			note_names text CHARACTER SET utf8,
 			PRIMARY KEY  (`note_id`)
-			) DEFAULT CHARSET=utf8");		
+			) DEFAULT CHARSET=utf8");
 	}
 
 	print '<b>'.__('No errors above? This means that the database has been processed!').'</b><br>';

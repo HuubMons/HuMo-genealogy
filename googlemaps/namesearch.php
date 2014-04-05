@@ -1,5 +1,4 @@
 <?php
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //the parts of header.php that we need:
 //error_reporting(E_ALL);
@@ -19,8 +18,7 @@ ini_set('url_rewriter.tags','');
 include_once(CMS_ROOTPATH."include/db_login.php"); //Inloggen database.
 
 // *** Use UTF-8 database connection ***
-//mysql_query("SET NAMES 'utf8'", $db);
-$dbh->query("SET NAMES 'utf8'");
+//$dbh->query("SET NAMES 'utf8'");
 
 include_once(CMS_ROOTPATH."include/safe.php");
 include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables

@@ -68,7 +68,6 @@ if (!$bot_visit){
 		WHERE fam_gedcomnumber='".safe_text($person_manDb->fam_gedcomnumber)."'";
 	$dbh->query($sql);
 	// *** Extended statistics, first check if table exists ***
-	//$statistics = mysql_query("SELECT * FROM humo_stat_date LIMIT 0,1",$db);
 	$statistics = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
 	if ($statistics AND $user['group_statistics']=='j'){
 

@@ -89,7 +89,7 @@ function topline(){
 
 				// *** Extended view button ***
 				$text.='<b>'.__('Family Page').'</b><br>';
-				
+
 				$desc_rep = ''; if($descendant_report==true) { $desc_rep = '&amp;descendant_report=1'; }
 
 				$selected=' CHECKED'; $selected2=''; if ($family_expanded==true) { $selected=''; $selected2=' CHECKED'; }
@@ -216,14 +216,17 @@ if (isset($_POST["favorite_id"])){
 
 
 if($screen_mode=='STAR' OR $screen_mode=='STARSIZE') {
-	$chosengen=4;
+	$dna = "none"; // DNA setting
+	if (isset($_GET["dnachart"])){ $dna=$_GET["dnachart"]; }
+	if (isset($_POST["dnachart"])){ $dna=$_POST["dnachart"]; } 
+	$chosengen=4; if($dna!="none") $chosengen="All"; // in DNA chart by default show all generations
 	if (isset($_GET["chosengen"])){ $chosengen=$_GET["chosengen"]; }
 	if (isset($_POST["chosengen"])){ $chosengen=$_POST["chosengen"]; }
 	$chosengenanc=4;  // for hourglass -- no. of generations of ancestors
 	if (isset($_GET["chosengenanc"])){ $chosengenanc=$_GET["chosengenanc"]; }
 	if (isset($_POST["chosengenanc"])){ $chosengenanc=$_POST["chosengenanc"]; }
 	if(isset($_SESSION['chartsize'])) { $size=$_SESSION['chartsize']; } 
-	else { $size=50; }
+	else { $size=50; if($dna!="none") $size=25;} // in DNA chart by default zoom position 4
 	if (isset($_GET["chosensize"])){ $size=$_GET["chosensize"]; }
 	if (isset($_POST["chosensize"])){ $size=$_POST["chosensize"]; }
 	$_SESSION['chartsize']=$size;
@@ -232,6 +235,17 @@ if($screen_mode=='STAR' OR $screen_mode=='STARSIZE') {
 	$direction=0; // vertical
 	if (isset($_GET["direction"])){ $direction=$_GET["direction"]; }
 	if (isset($_POST["direction"])){ $direction=$_POST["direction"]; }
+
+	if($dna!="none") {
+		if (isset($_GET["bf"])){ $base_person_famc=$_GET["bf"]; }
+		if (isset($_POST["bf"])){ $base_person_famc=$_POST["bf"]; } 
+		if (isset($_GET["bs"])){ $base_person_sexe=$_GET["bs"]; }
+		if (isset($_POST["bs"])){ $base_person_sexe=$_POST["bs"]; } 
+		if (isset($_GET["bn"])){ $base_person_name=$_GET["bn"]; }
+		if (isset($_POST["bn"])){ $base_person_name=$_POST["bn"]; } 
+		if (isset($_GET["bg"])){ $base_person_gednr=$_GET["bg"]; }
+		if (isset($_POST["bg"])){ $base_person_gednr=$_POST["bg"]; }  	
+	}
 }
 
 if($screen_mode=='STARSIZE') {
@@ -348,6 +362,48 @@ if($screen_mode=='PDF') {  //initialize pdf generation
 	$pdf->SetFont('Arial','',12);
 } // end if pdfmode
 
+if($screen_mode=='STAR') {
+// DNA chart -> change base person to earliest father-line (Y-DNA) or mother-line (Mt-DNA) ancestor
+	$max_generation=100;
+
+	$dnaqry = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
+	@$dnaDb = $dnaqry->fetch(PDO::FETCH_OBJ);
+
+	$dnapers_cls = New person_cls;
+	$dnaname=$dnapers_cls->person_name($dnaDb);
+	$base_person_name =  $dnaname["standard_name"];	// need these 4 in report_descendant.php
+	$base_person_sexe = $dnaDb->pers_sexe;
+	$base_person_famc = $dnaDb->pers_famc;
+	$base_person_gednr = $dnaDb->pers_gedcomnumber;
+
+	if($dna=="ydna" OR $dna=="ydnamark") {
+		while(isset($dnaDb->pers_famc) AND $dnaDb->pers_famc!="") {
+			$dnaparqry = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".safe_text($dnaDb->pers_famc)."'");
+			@$dnaparDb = $dnaparqry->fetch(PDO::FETCH_OBJ);
+			if($dnaparDb->fam_man=="") break;
+			else {
+				$main_person = $dnaparDb->fam_man;
+				$family_id  = $dnaDb->pers_famc;
+				$dnaqry = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($dnaparDb->fam_man)."'");
+				@$dnaDb = $dnaqry->fetch(PDO::FETCH_OBJ);
+			}
+		}
+	}
+	if($dna=="mtdna" OR $dna=="mtdnamark") {
+		while(isset($dnaDb->pers_famc) AND $dnaDb->pers_famc!="") {
+			$dnaparqry = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".safe_text($dnaDb->pers_famc)."'");
+			@$dnaparDb = $dnaparqry->fetch(PDO::FETCH_OBJ);
+			if($dnaparDb->fam_woman=="") break;
+			else {
+				$main_person = $dnaparDb->fam_woman;
+				$family_id  = $dnaDb->pers_famc;
+				$dnaqry = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($dnaparDb->fam_woman)."'");
+				@$dnaDb = $dnaqry->fetch(PDO::FETCH_OBJ);
+			}
+		}
+	}
+}
+
 // **************************
 // *** Show single person ***
 // **************************
@@ -456,8 +512,12 @@ else{
 	$person_man_prep->bindParam(1,$pers_man_var);
 	$address_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_family_id=?");
 	$address_qry_prep->bindParam(1,$address_fam_var);
+
 	$famc_adoptive_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."events WHERE event_event=? AND event_kind='adoption' ORDER BY event_order");
 	$famc_adoptive_qry_prep->bindParam(1,$famc_adopt_var);
+
+	$famc_adoptive_by_person_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."events WHERE event_event=? AND event_kind='adoption_by_person' ORDER BY event_order");
+	$famc_adoptive_by_person_qry_prep->bindParam(1,$famc_adopt_by_person_var);
 
 	try { // only prepare location statement if table exists otherwise PDO throws exception!
         $result = $dbh->query("SELECT 1 FROM humo_location LIMIT 1"); 
@@ -516,7 +576,7 @@ else{
 				}
 			}
 		}
-		// *** Aantal gezinnen in 1 generatie
+		// *** Nr of families in one generation
 		for ($descendant_loop2=0; $descendant_loop2<=count($descendant_family_id); $descendant_loop2++){
 
 			if($screen_mode=='STAR') {
@@ -539,7 +599,7 @@ else{
 				@$familyDb= $family_prep->fetch(PDO::FETCH_OBJ);
 			} catch (PDOException $e) {
 				echo __('No valid family number.');
-			}			
+			}
 			 
 			$parent1=''; $parent2=''; $change_main_person=false;
 			// *** Standard main person is the father ***
@@ -607,7 +667,7 @@ else{
 				$pers_man_var = $familyDb->fam_man;
 				$person_man_prep->execute();
 				@$person_manDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
-				
+
 				// *** Proces man using a class ***
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
@@ -744,6 +804,8 @@ else{
 									$genarray[$arraynr]["fams"]=$id;
 									$genarray[$arraynr]["gednr"]=$person_womanDb->pers_gedcomnumber;
 									$genarray[$arraynr]["2nd"]=0;
+									if($dna=="mtdnamark" OR $dna=="mtdna") { $genarray[$arraynr]["dna"]=1; }
+									else $genarray[$arraynr]["dna"]="no";
 								}
 							}
 						}
@@ -785,6 +847,8 @@ else{
 									$genarray[$arraynr]["fams"]=$id;
 									$genarray[$arraynr]["gednr"]=$person_manDb->pers_gedcomnumber;
 									$genarray[$arraynr]["2nd"]=0;
+									if($dna=="ydnamark" OR $dna=="ydna" OR $dna=="mtdnamark" OR $dna=="mtdna") { $genarray[$arraynr]["dna"]=1; }
+									else $genarray[$arraynr]["dna"]="no";
 								}
 							}
 						}
@@ -1088,13 +1152,28 @@ else{
 					}
 					if($screen_mode=='STAR') {
 						$genarray[$arraynr]["nrc"]=count($child_array);
+						
+						// dna -> count only man or women
+						if($dna=="ydna" OR $dna=="mtdna") { 
+							$countdna = 0;
+							for($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
+								$pers_man_var = $child_array[$i];
+								$person_man_prep->execute();
+								@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
+								if($dna=="ydna" AND $childDb->pers_sexe == "M" AND $genarray[$arraynr]["sex"]=="m" 
+									AND $genarray[$arraynr]["dna"]==1) $countdna++;
+								elseif($dna=="mtdna" AND $genarray[$arraynr]["sex"]=="v" AND $genarray[$arraynr]["dna"]==1) $countdna++;
+							} 
+							$genarray[$arraynr]["nrc"]=$countdna;
+						}
+
 					}
 
 					for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
 						$pers_man_var = $child_array[$i];
 						$person_man_prep->execute();
 						@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
-						
+
 						// *** Use person class ***
 						$child_cls = New person_cls;
 						$child_cls->construct($childDb);
@@ -1128,6 +1207,21 @@ else{
 						if($screen_mode=='STAR') {
 							$chdn_in_gen=$nrchldingen + $childnr;
 							$place=$lst_in_array+$chdn_in_gen;
+							
+							if(($dna=="ydnamark" OR $dna=="ydna") AND $childDb->pers_sexe=="M"  
+									AND $genarray[$arraynr]["sex"]=="m" AND $genarray[$arraynr]["dna"]==1) {
+								$genarray[$place]["dna"]=1;
+							}
+							elseif(($dna=="mtdnamark" OR $dna=="mtdna") AND $genarray[$arraynr]["sex"]=="v" AND $genarray[$arraynr]["dna"]==1) {
+								$genarray[$place]["dna"]=1;
+							}
+							elseif($dna=="ydna" OR $dna=="mtdna") {
+								continue;
+							}
+							else {
+								$genarray[$place]["dna"]="no";
+							}
+							
 							$genarray[$place]["gen"]=$descendant_loop+1;
 							$genarray[$place]["par"]=$arraynr;
 							$genarray[$place]["chd"]=$childnr;
@@ -1147,7 +1241,7 @@ else{
 								$genarray[$place]["fams"]=$childDb->pers_famc;
 							}
 							if($childDb->pers_sexe == "F") { $genarray[$place]["sex"]="v"; }
-								else { $genarray[$place]["sex"]="m"; }
+							else { $genarray[$place]["sex"]="m"; }
 						}
 
 						// *** Build descendant_report ***
@@ -1249,26 +1343,73 @@ else{
 					}
 				}
 
-
-				// *********************************************************************************************
-				// *** Check for adoptive parents (just for sure: made it for multiple adoptive parents...) ***
-				// *********************************************************************************************
-				$famc_adopt_var = $familyDb->fam_gedcomnumber;
-				$famc_adoptive_qry_prep->execute();
-				
-				while($famc_adoptiveDb=$famc_adoptive_qry_prep->fetch(PDO::FETCH_OBJ)){
-					echo '<tr><td colspan="4"><div class="children">';
-					$pers_man_var = $famc_adoptiveDb->event_person_id;
-					$person_man_prep->execute();
-					@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
-					// *** Use person class ***
-					$child_cls = New person_cls;
-					$child_cls->construct($childDb);
-					echo '<b>'.__('Adopted child:').'</b> '.$child_cls->name_extended("child");
-					echo '</div></td></tr>'."\n";
-				}
-
 				if($screen_mode=='') {
+					// *********************************************************************************************
+					// *** Check for adoptive parents (just for sure: made it for multiple adoptive parents...) ***
+					// *********************************************************************************************
+					$famc_adopt_var = $familyDb->fam_gedcomnumber;
+					$famc_adoptive_qry_prep->execute();
+					while($famc_adoptiveDb=$famc_adoptive_qry_prep->fetch(PDO::FETCH_OBJ)){
+						echo '<tr><td colspan="4"><div class="children">';
+						$pers_man_var = $famc_adoptiveDb->event_person_id;
+						$person_man_prep->execute();
+						@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
+						// *** Use person class ***
+						$child_cls = New person_cls;
+						$child_cls->construct($childDb);
+						echo '<b>'.__('Adopted child:').'</b> '.$child_cls->name_extended("child");
+						echo '</div></td></tr>'."\n";
+					}
+
+
+					// *************************************************************
+					// *** Check for adoptive parent ESPECIALLY MADE FOR ALDFAER ***
+					// *************************************************************
+					//$famc_adopt_by_person_var = $main_person;
+					$famc_adopt_by_person_var = $familyDb->fam_man; // *** Parent1 ***
+					$famc_adoptive_by_person_qry_prep->execute();
+					while($famc_adoptiveDb=$famc_adoptive_by_person_qry_prep->fetch(PDO::FETCH_OBJ)){
+						echo '<tr><td colspan="4"><div class="children">';
+						$pers_man_var = $famc_adoptiveDb->event_person_id;
+						$person_man_prep->execute();
+						@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
+						// *** Use person class ***
+						$child_cls = New person_cls;
+						$child_cls->construct($childDb);
+
+						if ($famc_adoptiveDb->event_gedcom=='steph') echo '<b>'.__('Stepchild').':</b>';
+						elseif ($famc_adoptiveDb->event_gedcom=='legal') echo '<b>'.__('Legal child').':</b>';
+						elseif ($famc_adoptiveDb->event_gedcom=='foster') echo '<b>'.__('Foster child').':</b>';
+						else echo '<b>'.__('Adopted child:').'</b>';
+
+						echo ' '.$child_cls->name_extended("child");
+						echo '</div></td></tr>'."\n";
+					}
+					// *************************************************************
+					// *** Check for adoptive parent ESPECIALLY MADE FOR ALDFAER ***
+					// *************************************************************
+					$famc_adopt_by_person_var = $familyDb->fam_woman; // *** Parent2 ***
+					$famc_adoptive_by_person_qry_prep->execute();
+					while($famc_adoptiveDb=$famc_adoptive_by_person_qry_prep->fetch(PDO::FETCH_OBJ)){
+						echo '<tr><td colspan="4"><div class="children">';
+						$pers_man_var = $famc_adoptiveDb->event_person_id;
+						$person_man_prep->execute();
+						@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
+						// *** Use person class ***
+						$child_cls = New person_cls;
+						$child_cls->construct($childDb);
+
+						if ($famc_adoptiveDb->event_gedcom=='steph') echo '<b>'.__('Stepchild').':</b>';
+						elseif ($famc_adoptiveDb->event_gedcom=='legal') echo '<b>'.__('Legal child').':</b>';
+						elseif ($famc_adoptiveDb->event_gedcom=='foster') echo '<b>'.__('Foster child').':</b>';
+						else echo '<b>'.__('Adopted child:').'</b>';
+
+						echo ' '.$child_cls->name_extended("child");
+						echo '</div></td></tr>'."\n";
+					}
+
+
+				//if($screen_mode=='') {
 					echo "</table><br>\n";
 
 					// *** Show Google map ***
@@ -1692,7 +1833,7 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 				try {
 					@$sourceDb = $source_prep->fetch(PDO::FETCH_OBJ);
 				} catch (PDOException $e) {
-					echo __("No valid sourcenumber.");
+					echo __("No valid source number.");
 				}
 				if ($sourceDb->source_title){
 					$pdf->SetFont('Arial','B',10);

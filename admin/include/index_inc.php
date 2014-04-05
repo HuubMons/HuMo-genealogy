@@ -17,69 +17,32 @@ if (isset($_POST['save_settings_database'])){
 	$result_message='<b>'.__('Database connection status:').'</b><br>';
 
 	// *** Check MySQL connection ***
-	//@$db_check=mysql_connect($_POST['db_host'],$_POST['db_username'],$_POST['db_password']);
 	$conn = 'mysql:host='.$_POST['db_host'];
 	try {
 		$db_check = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")); 
-		$result_message.=__('MySQL connection: OK!');
+		$result_message.=__('MySQL connection: OK!').'<br>';
 		// *** If needed immediately install a new database ***
 		if (isset($_POST['install_database'])){
-			//$install_qry="CREATE DATABASE IF NOT EXISTS `".DATABASE_NAME."`";
 			$install_qry="CREATE DATABASE IF NOT EXISTS `".$_POST['db_name']."`";
 			$db_check->query($install_qry);
-			//$database_check=$db_check->query("USE ".$_POST['db_name']);
-			//$conn = 'mysql:host='.$_POST['db_host'].';dbname='.$_POST['db_name'];
-			//$database_check = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);
-		}		
-		
-	} catch (PDOException $e) { 
-		$result_message.='<b>*** '.__('There is no MySQL connection: please check host/ username and password.').' ***</b>';
-	}
-	/*
-	if ($db_check){
-		$result_message.=__('MySQL connection: OK!');
-
-		// *** If needed immediately install a new database ***
-		if (isset($_POST['install_database'])){
-			//$install_qry="CREATE DATABASE IF NOT EXISTS `".DATABASE_NAME."`";
-			$install_qry="CREATE DATABASE IF NOT EXISTS `".$_POST['db_name']."`";
-			mysql_query($install_qry) or die (mysql_error());
-			$database_check=mysql_select_db($_POST['db_name'],$db_check);
 		}
-
+	} catch (PDOException $e) { 
+		$result_message.='<b>*** '.__('There is no MySQL connection: please check host/ username and password.').' ***</b><br>';
 	}
-	else{
-		$result_message.='<b>*** '.__('There is no MySQL connection: please check host/ username and password.').' ***</b>';
-	}
-	*/
-	$result_message.='<br>';
 
 	// *** Check if database exists ***
-	//@$database_check=mysql_select_db($_POST['db_name'],$db);
-	/*
-	@$database_check=mysql_select_db($_POST['db_name'],$db_check);
-	if (!$database_check){
-		$result_message.='<b>*** '.__('No database found! Check MySQL connection and database name').' ***</b>';
-	}
-	else{
-		$result_message.=__('Database connection: OK!');
-	}
-	*/
 	try {
-		//$database_check = $db_check->query("USE ".$_POST['db_name']); 
 		$conn = 'mysql:host='.$_POST['db_host'].';dbname='.$_POST['db_name'];
 		$temp_dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);	
-		if($temp_dbh!==false) { $database_check=1; $result_message.=__('Database connection: OK!'); }
+		if($temp_dbh!==false) { $database_check=1; $result_message.=__('Database connection: OK!').'<br>'; }
 		$temp_dbh=null;
 	} catch (PDOException $e) { 
 		unset($database_check);
-		$result_message.='<b>*** '.__('No database found! Check MySQL connection and database name').' ***</b>';
+		$result_message.='<b>*** '.__('No database found! Check MySQL connection and database name').' ***</b><br>';
 	}
-	
-	$result_message.='<p><br></p>';
 
+	// *** Check if db_login.php is writable, and change database lines in db_login.php file ***
 	$login_file=CMS_ROOTPATH."include/db_login.php";
-
 	if (!is_writable($login_file)) {
 		$result_message='<b> *** '.__('The configuration file is not writable! Please change the include/db_login.php file manually.').' ***</b>';
 	}
@@ -129,9 +92,14 @@ if (isset($_POST['save_settings_database'])){
 	}
 }
 
+
+// *************************************************************************
 // *** Show HuMo-gen status, use scroll bar to show lots of family trees ***
-//echo '<div style="height:400px; width:60%; margin-left: 20%; overflow-y: scroll;">';
-echo '<div style="height:400px; width:750px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
+// *************************************************************************
+
+
+//echo '<div style="height:400px; width:750px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
+echo '<div style="height:450px; width:750px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
 echo '<table class="humo">';
 	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
 
@@ -143,9 +111,8 @@ echo '<table class="humo">';
 	else{
 		echo '<tr><td>'.__('PHP Version').'</td><td style="background-color:#FF6600">'.phpversion().' '.__('It is recommended to update PHP!').'</td></tr>';
 	}
+
 	// *** MySQL Version ***
-	//$version = explode('.', mysql_get_server_info() );
-	//if(isset($_POST['save_settings_database'])) {  // no db connection yet, use test connection above
 	if(isset($dbh)) {  
 		// in PDO and MySQLi you can't get MySQL version number until connection is made 
 		// so on very first screens before saving connection parameters we do without. 
@@ -153,11 +120,9 @@ echo '<table class="humo">';
 		$mysqlversion = $dbh->getAttribute(PDO::ATTR_SERVER_VERSION);  
 		$version = explode('.',$mysqlversion);
 		if ($version[0] > 4){
-			//echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#00FF00">'.__('MySQL Version').': '.mysql_get_server_info().'</td></tr>';
 			echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#00FF00">'.__('MySQL Version').': '.$mysqlversion.'</td></tr>';
 		}
 		else{
-			//echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#FF6600">'.mysql_get_server_info().' '.__('It is recommended to update MySQL!').'</td></tr>';
 			echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#FF6600">'.$mysqlversion.' '.__('It is recommended to update MySQL!').'</td></tr>';
 		}
 	}
@@ -234,8 +199,12 @@ echo '</td></tr>';
 
 // *** Show button to continue installation (otherwise the tables are not recognised) ***
 if (isset($_POST['save_settings_database'])){
+
+	// *** Show result messages after installing settings of db_login.php ***
+	echo '<tr><td><br></td><td>'.$result_message.'</td></tr>';
+
 	$install_status=false;
-	echo '<tr><td colspan="2"><form method="post" action="'.$path_tmp.'" style="display : inline;">';
+	echo '<tr><td><br></td><td><form method="post" action="'.$path_tmp.'" style="display : inline;">';
 		echo '<input type="hidden" name="page" value="admin">';
 		echo '<input type="Submit" name="submit" value="'.__('Continue installation').'">';
 	echo '</form></td></tr>';
@@ -243,16 +212,17 @@ if (isset($_POST['save_settings_database'])){
 
 // *** Only show table status if database is checked ***
 if ($install_status==true){
-	// *** Check tables ***
+	// *** Check database tables ***
 	if (isset($check_tables) AND $check_tables){
 		echo '<tr><td>'.__('Database tables').'</td><td style="background-color:#00FF00">'.__('OK').'</td></tr>';
 	}
 	else{
-		echo '<tr><td>'.__('Database tables').'</td><td style="background-color:#FF0000">'.__('ERROR');
+		//echo '<tr><td>'.__('Database tables').'</td><td style="background-color:#FF0000">'.__('ERROR').'<br>';
+		echo '<tr><td>'.__('Database tables').'</td><td style="background-color:#FF0000">'.__('No HuMo-gen tables found in database.').'<br>';
 
 		echo ' <form method="post" action="'.$path_tmp.'" style="display : inline;">';
 		echo '<input type="hidden" name="page" value="install">';
-		echo '<input type="Submit" name="submit" value="'.__('Install').'">';
+		echo '<input type="Submit" name="submit" value="'.__('Install HuMo-gen database tables').'">';
 		echo '</form>';
 		echo '</td></tr>';
 		$install_status=false;
@@ -262,9 +232,6 @@ if ($install_status==true){
 
 // *** Only show table status if database AND tables are checked ***
 if ($install_status==true){
-
-	// *** Update script ***
-	//include_once ('update.php');
 
 	// *** Check login ***
 	$check_login='<td style="background-color:#FF0000"><b>'.__('The folder "admin" has NOT YET been secured.').'</b>';
@@ -350,18 +317,11 @@ The file .htpasswd will look something like this:<br>');
 	}
 
 	// *** Family trees ***
-	//@$datasql = mysql_query("SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-	//	ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-	//	AND humo_tree_texts.treetext_language='talen/taal-nederlands.php'
-	//	ORDER BY tree_order",$db);
-	//@$datasql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
 	@$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
-	
 	if ($datasql){
 		echo '<tr><td>'.__('Trees table').'</td><td style="background-color:#00FF00">OK</td></tr>';
 
 		$tree_counter=0;
-		//while ($dataDb=mysql_fetch_object($datasql)){
 		while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			// *** Skip empty lines (didn't work in query...) ***
 			if ($dataDb->tree_prefix!='EMPTY'){
@@ -402,7 +362,7 @@ echo '</table>';
 echo '</div>';
 
 // *** Show result messages after installing settings of db_login.php ***
-echo '<p>'.$result_message.'</p>';
+//echo '<p>'.$result_message.'</p>';
 
 // *** Only show if database AND tables are checked ***
 if ($install_status==true){

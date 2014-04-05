@@ -305,10 +305,6 @@ if (isset($tree_prefix)){
 			echo '</select>';
 		echo '</form>';
 
-		// *** Family example in popup screen ***
-		//echo "&nbsp;&nbsp;<a href=\"#\" onClick=\"window.open('../family.php?database=humo_&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\">*** ".__('Example').' ***</a>';
-		echo "&nbsp;&nbsp;<a href=\"#\" onClick=\"window.open('../family.php?database=humo_&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\">*** ".__('Example of family page').' ***</a>';
-
 		if (isset($pers_gedcomnumber)){
 			echo '<br>'.__('Examples of date entries, using English month abbreviations: jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec or month numbers:').'<br>';
 			echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, between 1986 and 1987').'</b><br>';
@@ -765,8 +761,13 @@ if (isset($pers_gedcomnumber)){
 		else{
 			echo '<td>'.$hide_show_all.'</td>';
 		}
-	
-		echo '<th colspan="2">'.__('Person');
+
+		// *** Example of family screen in popup ***
+		echo '<td style="border-right: none">'."<a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a></td>';
+
+		//echo '<th colspan="2">'.__('Person');
+		echo '<th style="border-left: none">'.__('Person');
+
 		if ($add_person==false){
 			echo ': ['.$pers_gedcomnumber.'] '.show_person($person->pers_gedcomnumber,false,false);
 
@@ -2067,21 +2068,6 @@ if (isset($pers_gedcomnumber)){
 		}
 
 		echo '</table><br>'."\n";
-
-		/*
-		// *** Example in IFRAME ***
-		if ($add_person==false){
-			echo '<a href="#marriage" onclick="hideShow(12);"><span id="hideshowlink12">'.__('[+]').'</span> '.__('Example').'</a> ';
-
-			echo '<p><span style="display:none;" id="row12" name="row12">';
-			//echo '<p>'.__('Example').'<br>';
-			$family_link='&amp;id='; if (isset($fams1[0])){ $family_link='&amp;id='.$fams1[0]; }
-			echo '<iframe src ="'.$family_string.'database='.$tree_prefix.$family_link.'&amp;main_person='.$pers_gedcomnumber.'" class="iframe">';
-			echo '  <p>Your browser does not support iframes.</p>';
-			echo '</iframe>';
-			echo '</span>';
-		}
-		*/
 	}
 
 

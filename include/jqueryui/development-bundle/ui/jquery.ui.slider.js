@@ -38,6 +38,11 @@ $.widget( "ui.slider", $.ui.mouse, {
 		chosengen: 4,
 		chosengenanc: 4,
 		direction: "ltr",
+		dna: "none",
+		bn: "",
+		bs: "",
+		bf: "",
+		bg: "",		
 		chart_type: "desc",
 	},
 
@@ -432,11 +437,15 @@ $.widget( "ui.slider", $.ui.mouse, {
 
 		if(this.options.chart_type=='hour') {  
 				// hourglass chart
-				var winpos = "hourglass.php?chosensize=" + ((this.value()+1)*5) + "&main_person=" + this.options.main_person + "&id=" + this.options.id + "&chosengen=" + this.options.chosengen + "&chosengenanc=" + this.options.chosengenanc + "&database=" + this.options.database + "&direction=" + this.options.direction + "&screen_mode=HOURSTARSIZE";
+				var winpos = "hourglass.php?chosensize=" + ((this.value()+1)*5) + "&main_person=" + this.options.main_person + "&id=" + this.options.id + "&chosengen=" + this.options.chosengen + "&chosengenanc=" + this.options.chosengenanc + "&database=" + this.options.database + "&direction=" + this.options.direction + "&dnachart=" + this.options.dna +"&screen_mode=HOURSTARSIZE";
 		}
 		else {  
-				// descendant chart 
-				var winpos = "family.php?chosensize=" + ((this.value()+1)*5) + "&main_person=" + this.options.main_person + "&id=" + this.options.id + "&chosengen=" + this.options.chosengen + "&database=" + this.options.database + "&direction=" + this.options.direction + "&screen_mode=STARSIZE";
+				// descendant chart or DNA chart
+				var dnaparams = "";
+				if(this.options.dna!="none") {
+					dnaparams = "&bn=" + this.options.bn + "&bs=" + this.options.bs + "&bf=" + this.options.bf + "&bg=" + this.options.bg ;
+				}
+				var winpos = "family.php?chosensize=" + ((this.value()+1)*5) + "&main_person=" + this.options.main_person + "&id=" + this.options.id + "&chosengen=" + this.options.chosengen + "&database=" + this.options.database + "&direction=" + this.options.direction + "&dnachart=" + this.options.dna + "&screen_mode=STARSIZE" + dnaparams;
 		}
 
 		window.location=winpos;

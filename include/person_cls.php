@@ -103,26 +103,21 @@ function set_privacy($personDb){
 // *** Remark: it's necessary to use $personDb because of witnesses, parents etc. ***
 function person_name($personDb){
 	global $user, $language, $dbh, $screen_mode;
-
-	$tree_prefix_quoted=$personDb->pers_tree_prefix;
-
+	$tree_prefix_quoted=''; if ($personDb) $tree_prefix_quoted=$personDb->pers_tree_prefix;
 	$stillborn=''; $nobility=''; $lordship='';
 	$title_before=''; $title_between=''; $title_after='';
 
-	//if ($personDb->pers_gedcomnumber){
 	if (isset($personDb->pers_gedcomnumber) AND $personDb->pers_gedcomnumber){
 		// *** Aldfaer: nobility (predikaat) by name ***
 		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='nobility'
-			ORDER BY event_order");
+			WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='nobility' ORDER BY event_order");
 		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
 			$nobility.=$nameDb->event_event.' ';
 		}
 
 		// *** Gedcom 5.5 title: NPFX ***
 		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='NPFX'
-			ORDER BY event_order");
+			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='NPFX' ORDER BY event_order");
 		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
 			$title_before.=' '.$nameDb->event_event.' ';
 		}
@@ -191,145 +186,155 @@ function person_name($personDb){
 			}
 		}
 
-	}
+		// ***Still born child ***
+		if (isset($personDb->pers_stillborn) AND $personDb->pers_stillborn=="y"){
+			if ($personDb->pers_sexe=='M'){$stillborn.=' '.__('stillborn boy');}
+			elseif ($personDb->pers_sexe=='F'){$stillborn.=' '.__('stillborn girl');}
+			else $stillborn.=' '.__('stillborn child');
+		}
 
-	// ***Still born child ***
-	if (isset($personDb->pers_stillborn) AND $personDb->pers_stillborn=="y"){
-		if ($personDb->pers_sexe=='M'){$stillborn.=' '.__('stillborn boy');}
-		elseif ($personDb->pers_sexe=='F'){$stillborn.=' '.__('stillborn girl');}
-		else $stillborn.=' '.__('stillborn child');
-	}
+		// *** Aldfaer: lordship (heerlijkheid) after name ***
+		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
+			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='lordship'
+			ORDER BY event_order");
+		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
+			$lordship.=', '.$nameDb->event_event;
+		}
 
-	// *** Aldfaer: lordship (heerlijkheid) after name ***
-	$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-		WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='lordship'
-		ORDER BY event_order");
-	while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
-		$lordship.=', '.$nameDb->event_event;
-	}
+		// *** Re-calculate privacy filter for witness names and parents ***
+		$privacy=$this->set_privacy($personDb);
 
-	// *** Re-calculate privacy filter for witness names and parents ***
-	$privacy=$this->set_privacy($personDb);
-
-	// *** Privacy filter: show only first character of firstname. Like: D. Duck ***
-	$pers_firstname=$personDb->pers_firstname;
-	if ($pers_firstname!='N.N.' AND $privacy AND $user['group_filter_name']=='i'){
- 		$names = explode(' ', $personDb->pers_firstname);
- 		$pers_firstname = "";
-		foreach($names as $character){
-			if (substr($character, 0,1)!='(' AND substr($character, 0,1)!='['){
-				$pers_firstname .= ucfirst(substr($character, 0,1)).". ";
+		// *** Privacy filter: show only first character of firstname. Like: D. Duck ***
+		$pers_firstname=$personDb->pers_firstname;
+		if ($pers_firstname!='N.N.' AND $privacy AND $user['group_filter_name']=='i'){
+			$names = explode(' ', $personDb->pers_firstname);
+			$pers_firstname = "";
+			foreach($names as $character){
+				if (substr($character, 0,1)!='(' AND substr($character, 0,1)!='['){
+					$pers_firstname .= ucfirst(substr($character, 0,1)).". ";
+				}
 			}
 		}
-	}
 
-	$privacy_name='';
-	if ($privacy AND $user['group_filter_name']=='n'){ $privacy_name=__('Name filtered'); }
+		$privacy_name=''; if ($privacy AND $user['group_filter_name']=='n'){ $privacy_name=__('Name filtered'); }
 
-	// *** Completely filter person ***
-	if ($user["group_pers_hide_totally_act"]=='j'
-		AND strpos(' '.$personDb->pers_own_code,$user["group_pers_hide_totally"])>0){ $privacy_name=__('Name filtered'); }
+		// *** Completely filter person ***
+		if ($user["group_pers_hide_totally_act"]=='j'
+			AND strpos(' '.$personDb->pers_own_code,$user["group_pers_hide_totally"])>0){ $privacy_name=__('Name filtered'); }
 
-	if ($privacy_name){
-		$name_array["show_name"]=false;
-		$name_array["firstname"]=$privacy_name;
-		$name_array["name"]=$privacy_name;
-		$name_array["short_firstname"]=$privacy_name;
-		$name_array["standard_name"]=$privacy_name;
-		$name_array["index_name"]=$privacy_name;
-		$name_array["index_name_extended"]=$privacy_name;
-		$name_array["initials"]="-.-.";
+		if ($privacy_name){
+			$name_array["show_name"]=false;
+			$name_array["firstname"]=$privacy_name;
+			$name_array["name"]=$privacy_name;
+			$name_array["short_firstname"]=$privacy_name;
+			$name_array["standard_name"]=$privacy_name;
+			$name_array["index_name"]=$privacy_name;
+			$name_array["index_name_extended"]=$privacy_name;
+			$name_array["initials"]="-.-.";
+		}
+		else{
+			// *** Hide or show name (privacy) ***
+			$name_array["show_name"]=true;
+
+			// *** Firstname only ***
+			$name_array["firstname"]=$pers_firstname;
+
+			// *** Firstname, prefix and lastname ***
+			$name_array["name"]=$pers_firstname." ";
+			$name_array["name"].=str_replace("_", " ", $personDb->pers_prefix);
+			$name_array["name"].=$personDb->pers_lastname;
+
+			// *** Short firstname, prefix and lastname ***
+			$name_array["short_firstname"]=substr ($personDb->pers_firstname, 0, 1)." ";
+			$name_array["short_firstname"].=str_replace("_", " ", $personDb->pers_prefix);
+			$name_array["short_firstname"].=$personDb->pers_lastname;
+
+			// *** $name_array["standard_name"] ***
+			// *** Example: Predikaat Hubertus [Huub] van Mons, Title, 2nd title ***
+			$name_array["standard_name"]=$nobility.$title_before.$pers_firstname." ";
+			if ($personDb->pers_patronym){ $name_array["standard_name"].=" ".$personDb->pers_patronym." "; }
+			$name_array["standard_name"].=$title_between;
+			$name_array["standard_name"].=str_replace("_", " ", $personDb->pers_prefix);
+			$name_array["standard_name"].=$personDb->pers_lastname;
+			if ($title_after){ $name_array["standard_name"].=$title_after; }
+			$name_array["standard_name"].=$stillborn;
+			$name_array["standard_name"].=$lordship;
+
+			// *** Name for indexes or search results in lastname order ***
+			// *** "index_name_extended" includes patronym and stillborn. ***
+			$prefix1=''; $prefix2='';
+			// *** Option to show "van Mons" of "Mons, van" ***
+			if($user['group_kindindex']=="j") {
+				$prefix1=str_replace("_"," ",$personDb->pers_prefix);
+			}
+			else {
+				$prefix2=" ".str_replace("_"," ",$personDb->pers_prefix);
+			}
+
+			$name_array["index_name"]=$prefix1;
+			$name_array["index_name_extended"]=$prefix1;
+			if ($personDb->pers_lastname){
+				$name_array["index_name"].=$personDb->pers_lastname.', ';
+				$name_array["index_name_extended"].=$personDb->pers_lastname.', ';
+			}
+			$name_array["index_name"].=$pers_firstname.$prefix2;
+
+			$name_array["index_name_extended"].=$pers_firstname;
+
+			if ($title_after){ $name_array["index_name_extended"].=$title_after; }
+
+			if ($personDb->pers_patronym){ $name_array["index_name_extended"].=' '.$personDb->pers_patronym;}
+			$name_array["index_name_extended"].=$stillborn;
+			// *** If a special name is found in the results (event table), show it **
+			if (isset($personDb->event_event) AND $personDb->event_event){
+				$name_array["index_name_extended"].=' ('.$personDb->event_event.')';}
+			$name_array["index_name_extended"].=$prefix2;
+
+			// *** $name["initials"] used in report_descendant.php ***
+			// *** Example: H.M. ***
+			$name_array["initials"]=substr($personDb->pers_firstname,0,1).'.'.substr($personDb->pers_lastname,0,1).'.';
+		}
+
+
+		//  *** Colour mark by person ***
+		$name_array["colour_mark"]=''; $person_colour_mark='';
+		$colour_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
+			WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='person_colour_mark'
+			ORDER BY event_order");
+		while($colourDb=$colour_qry->fetch(PDO::FETCH_OBJ)){
+			if ($colourDb AND $screen_mode!="PDF"){
+				$pers_colour='style="-moz-border-radius: 40px; border-radius: 40px;';
+				$person_colour_mark=$colourDb->event_event;
+				if ($person_colour_mark=='1'){ $pers_colour.=' background-color:#FF0000;'; }
+				if ($person_colour_mark=='2'){ $pers_colour.=' background-color:#00FF00;'; }
+				if ($person_colour_mark=='3'){ $pers_colour.=' background-color:#0000FF;'; }
+				if ($person_colour_mark=='4'){ $pers_colour.=' background-color:#FF00FF;'; }
+				if ($person_colour_mark=='5'){ $pers_colour.=' background-color:#FFFF00;'; }
+				if ($person_colour_mark=='6'){ $pers_colour.=' background-color:#00FFFF;'; }
+				if ($person_colour_mark=='7'){ $pers_colour.=' background-color:#C0C0C0;'; }
+				if ($person_colour_mark=='8'){ $pers_colour.=' background-color:#800000;'; }
+				if ($person_colour_mark=='9'){ $pers_colour.=' background-color:#008000;'; }
+				if ($person_colour_mark=='10'){ $pers_colour.=' background-color:#000080;'; }
+				if ($person_colour_mark=='11'){ $pers_colour.=' background-color:#800080;'; }
+				if ($person_colour_mark=='12'){ $pers_colour.=' background-color:#A52A2A;'; }
+				if ($person_colour_mark=='13'){ $pers_colour.=' background-color:#008080;'; }
+				if ($person_colour_mark=='14'){ $pers_colour.=' background-color:#808080;'; }
+				$pers_colour.='"';
+				$name_array["colour_mark"].=' <span '.$pers_colour.'>&nbsp;&nbsp;&nbsp;</span>';
+			}
+
+		}
+
 	}
 	else{
-		// *** Hide or show name (privacy) ***
 		$name_array["show_name"]=true;
-
-		// *** Firstname only ***
-		$name_array["firstname"]=$pers_firstname;
-
-		// *** Firstname, prefix and lastname ***
-		$name_array["name"]=$pers_firstname." ";
-		$name_array["name"].=str_replace("_", " ", $personDb->pers_prefix);
-		$name_array["name"].=$personDb->pers_lastname;
-
-		// *** Short firstname, prefix and lastname ***
-		$name_array["short_firstname"]=substr ($personDb->pers_firstname, 0, 1)." ";
-		$name_array["short_firstname"].=str_replace("_", " ", $personDb->pers_prefix);
-		$name_array["short_firstname"].=$personDb->pers_lastname;
-
-		// *** $name_array["standard_name"] ***
-		// *** Example: Predikaat Hubertus [Huub] van Mons, Title, 2nd title ***
-		$name_array["standard_name"]=$nobility.$title_before.$pers_firstname." ";
-		if ($personDb->pers_patronym){ $name_array["standard_name"].=" ".$personDb->pers_patronym." "; }
-		$name_array["standard_name"].=$title_between;
-		$name_array["standard_name"].=str_replace("_", " ", $personDb->pers_prefix);
-		$name_array["standard_name"].=$personDb->pers_lastname;
-		if ($title_after){ $name_array["standard_name"].=$title_after; }
-		$name_array["standard_name"].=$stillborn;
-		$name_array["standard_name"].=$lordship;
-
-		// *** Name for indexes or search results in lastname order ***
-		// *** "index_name_extended" includes patronym and stillborn. ***
-		$prefix1=''; $prefix2='';
-		// *** Option to show "van Mons" of "Mons, van" ***
-		if($user['group_kindindex']=="j") {
-			$prefix1=str_replace("_"," ",$personDb->pers_prefix);
-		}
-		else {
-			$prefix2=" ".str_replace("_"," ",$personDb->pers_prefix);
-		}
-
-		$name_array["index_name"]=$prefix1;
-		$name_array["index_name_extended"]=$prefix1;
-		if ($personDb->pers_lastname){
-			$name_array["index_name"].=$personDb->pers_lastname.', ';
-			$name_array["index_name_extended"].=$personDb->pers_lastname.', ';
-		}
-		$name_array["index_name"].=$pers_firstname.$prefix2;
-
-		$name_array["index_name_extended"].=$pers_firstname;
-
-		if ($title_after){ $name_array["index_name_extended"].=$title_after; }
-
-		if ($personDb->pers_patronym){ $name_array["index_name_extended"].=' '.$personDb->pers_patronym;}
-		$name_array["index_name_extended"].=$stillborn;
-		// *** If a special name is found in the results (event table), show it **
-		if (isset($personDb->event_event) AND $personDb->event_event){
-			$name_array["index_name_extended"].=' ('.$personDb->event_event.')';}
-		$name_array["index_name_extended"].=$prefix2;
-
-		// *** $name["initials"] used in report_descendant.php ***
-		// *** Example: H.M. ***
-		$name_array["initials"]=substr($personDb->pers_firstname,0,1).'.'.substr($personDb->pers_lastname,0,1).'.';
-	}
-
-
-	//  *** Colour mark by person ***
-	$name_array["colour_mark"]=''; $person_colour_mark='';
-	$colour_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-		WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='person_colour_mark'
-		ORDER BY event_order");
-	while($colourDb=$colour_qry->fetch(PDO::FETCH_OBJ)){
-		if ($colourDb AND $screen_mode!="PDF"){
-			$pers_colour='style="-moz-border-radius: 40px; border-radius: 40px;';
-			$person_colour_mark=$colourDb->event_event;
-			if ($person_colour_mark=='1'){ $pers_colour.=' background-color:#FF0000;'; }
-			if ($person_colour_mark=='2'){ $pers_colour.=' background-color:#00FF00;'; }
-			if ($person_colour_mark=='3'){ $pers_colour.=' background-color:#0000FF;'; }
-			if ($person_colour_mark=='4'){ $pers_colour.=' background-color:#FF00FF;'; }
-			if ($person_colour_mark=='5'){ $pers_colour.=' background-color:#FFFF00;'; }
-			if ($person_colour_mark=='6'){ $pers_colour.=' background-color:#00FFFF;'; }
-			if ($person_colour_mark=='7'){ $pers_colour.=' background-color:#C0C0C0;'; }
-			if ($person_colour_mark=='8'){ $pers_colour.=' background-color:#800000;'; }
-			if ($person_colour_mark=='9'){ $pers_colour.=' background-color:#008000;'; }
-			if ($person_colour_mark=='10'){ $pers_colour.=' background-color:#000080;'; }
-			if ($person_colour_mark=='11'){ $pers_colour.=' background-color:#800080;'; }
-			if ($person_colour_mark=='12'){ $pers_colour.=' background-color:#A52A2A;'; }
-			if ($person_colour_mark=='13'){ $pers_colour.=' background-color:#008080;'; }
-			if ($person_colour_mark=='14'){ $pers_colour.=' background-color:#808080;'; }
-			$pers_colour.='"';
-			$name_array["colour_mark"].=' <span '.$pers_colour.'>&nbsp;&nbsp;&nbsp;</span>';
-		}
+		$name_array["firstname"]='N.N.';
+		$name_array["name"]='';
+		$name_array["short_firstname"]='N.N.';
+		$name_array["standard_name"]='N.N.';
+		$name_array["index_name"]='N.N.';
+		$name_array["index_name_extended"]='N.N.';
+		$name_array["initials"]="-.-.";
 	}
 
 	return $name_array;
@@ -512,6 +517,21 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 						$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/descendant.gif" border="0" alt="'.__('Descendant chart').'"> '.__('Descendant chart').'</a>';
 					}
 				}
+				// DNA charts
+				if  ($user['group_gen_protection']=='n' AND ($personDb->pers_famc!="" OR ($personDb->pers_fams!="" AND $check_children))) {
+					//if ($check_children){
+					if($personDb->pers_sexe=="M") $charttype="ydnamark";
+					else $charttype="mtdnamark";
+						if (CMS_SPECIFIC=='Joomla'){
+							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
+						}
+						else{
+							$path_tmp=CMS_ROOTPATH.'family.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
+						}
+						$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/dna.png" border="0" alt="'.__('DNA Charts').'"> '.__('DNA Charts').'</a>';
+					//}
+				}
+				
 				if  ($user['group_gen_protection']=='n' AND $personDb->pers_famc!='' AND $personDb->pers_fams!='' AND $check_children) {
 				// hourglass only if there is at least one generation of ancestors and of children.
 					if (CMS_SPECIFIC=='Joomla'){
@@ -632,15 +652,17 @@ function name_extended($person_kind){
 	global $family_expanded;
 	global $bot_visit;
 
-	$personDb=$this->personDb; $privacy=$this->privacy;
-	$tree_prefix_quoted=$personDb->pers_tree_prefix;
 	$text_name=''; $text_parents=''; $child_marriage='';
 
+	$personDb=$this->personDb;
+	$privacy=$this->privacy;
 	if (!$personDb){
 		// *** Show unknown person N.N. ***
 		$text_name= __('N.N.');
 	}
 	else{
+		$tree_prefix_quoted=$personDb->pers_tree_prefix;
+
 		// *** Show pop-up menu ***
 		$text_name.= $this->person_popup_menu($personDb);
 
@@ -802,6 +824,136 @@ function name_extended($person_kind){
 			$text_parents.='<span class="parents">'.$text.$dirmark2.'.</span>';
 		}
 
+
+		// *********************************************************************************************
+		// *** Check for adoptive parents (just for shure: made it for multiple adoptive parents...) ***
+		// *********************************************************************************************
+		if ($person_kind=='parent1' OR $person_kind=='parent2'){
+			$famc_adoptive_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
+				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='adoption'
+				ORDER BY event_order");
+			while($famc_adoptiveDb=$famc_adoptive_qry->fetch(PDO::FETCH_OBJ)){
+				$text_parents.=' '.ucfirst(__('adoption parents')).': ';
+
+				// *** Just in case: empty $text ***
+				$text='';
+				// *** Find parents ID ***
+				$parents_family=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='$famc_adoptiveDb->event_event'");
+				$parents_familyDb=$parents_family->fetch(PDO::FETCH_OBJ);
+				//*** Father ***
+				if ($parents_familyDb->fam_man){
+					$father_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$parents_familyDb->fam_man'");
+					$fatherDb=$father_qry->fetch(PDO::FETCH_OBJ);
+					$name=$this->person_name($fatherDb);
+					$text=$name["standard_name"];
+					//$pdfstr["parents"]=$name["standard_name"];
+					//$temp="parents";
+				}
+				else{
+					$text=__('N.N.');
+					//$pdfstr["parents"]=__('N.N.');
+					//$temp="parents";
+				}
+
+				$text.=' '.__('and').' ';
+				//$pdfstr["parents"].=' '.__('and').' ';
+				//$temp="parents";
+
+				//*** Mother ***
+				if ($parents_familyDb->fam_woman){
+					$mother_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$parents_familyDb->fam_woman'");
+					$motherDb=$mother_qry->fetch(PDO::FETCH_OBJ);
+					$name=$this->person_name($motherDb);
+					$text.=$name["standard_name"];
+					//$pdfstr["parents"].=$name["standard_name"];
+					//$temp="parents";
+				}
+				else{ $text.=__('N.N.'); }
+
+				if(CMS_SPECIFIC=='Joomla') {
+					$text2='<a href="index.php?option=com_humo-gen&task=family&database='.$_SESSION['tree_prefix'].'&amp;id='.$famc_adoptiveDb->event_event;
+					if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
+					$text2.='">';
+				}
+				elseif ($humo_option["url_rewrite"]=="j"){
+					// *** $uri_path is gemaakt in header.php ***
+					$text2='<a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$famc_adoptiveDb->event_event;
+					// *** Dit nummer toegevoegd, anders krijgt Google heel veel te indexeren gezinnen ***
+					if (isset($fatherDb->pers_gedcomnumber)){ $text2.= '/'.$fatherDb->pers_gedcomnumber; }
+					$text2.='/">';
+				}
+				else{
+					$text2='<a href="'.$uri_path.'family.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$famc_adoptiveDb->event_event;
+					if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
+					$text2.='">';
+				}
+
+				// *** Add link ***
+				if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
+
+				//$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
+				$text_parents.='<span class="parents">'.$text.' </span>';
+			}
+		}
+
+
+		// ********************************************************
+		// *** Check for adoptive parent ESPECIALLY FOR ALDFAR  ***
+		// ********************************************************
+		if ($person_kind=='parent1' OR $person_kind=='parent2'){
+			$famc_adoptive_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
+				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='adoption_by_person'
+				ORDER BY event_order");
+			while($famc_adoptiveDb=$famc_adoptive_qry->fetch(PDO::FETCH_OBJ)){
+				if($famc_adoptiveDb->event_gedcom=='steph') $text_parents.=' '.ucfirst(__('stepparent')).': ';
+				elseif($famc_adoptiveDb->event_gedcom=='legal') $text_parents.=' '.ucfirst(__('legal parent')).': ';
+				elseif($famc_adoptiveDb->event_gedcom=='foster') $text_parents.=' '.ucfirst(__('foster parent')).': ';
+				else $text_parents.=' '.ucfirst(__('adoption parent')).': ';
+
+				//*** Father ***
+				//if ($parents_familyDb->fam_man){
+					$father_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$famc_adoptiveDb->event_event'");
+					$fatherDb=$father_qry->fetch(PDO::FETCH_OBJ);
+					$name=$this->person_name($fatherDb);
+					$text=$name["standard_name"];
+					//$pdfstr["parents"]=$name["standard_name"];
+					//$temp="parents";
+				//}
+				//else{
+				//	$text=__('N.N.');
+					//$pdfstr["parents"]=__('N.N.');
+					//$temp="parents";
+				//}
+
+				if (isset($fatherDb->pers_indexnr)){
+					if(CMS_SPECIFIC=='Joomla') {
+						$text2='<a href="index.php?option=com_humo-gen&task=family&database='.$_SESSION['tree_prefix'].'&amp;id='.$fatherDb->pers_indexnr;
+						if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
+						$text2.='">';
+					}
+					elseif ($humo_option["url_rewrite"]=="j"){
+						// *** $uri_path is gemaakt in header.php ***
+						$text2='<a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$fatherDb->pers_indexnr;
+						// *** Dit nummer toegevoegd, anders krijgt Google heel veel te indexeren gezinnen ***
+						if (isset($fatherDb->pers_gedcomnumber)){ $text2.= '/'.$fatherDb->pers_gedcomnumber; }
+						$text2.='/">';
+					}
+					else{
+						$text2='<a href="'.$uri_path.'family.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$fatherDb->pers_indexnr;
+						if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
+						$text2.='">';
+					}
+				}
+
+				// *** Add link ***
+				if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
+
+				//$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
+				$text_parents.='<span class="parents">'.$text.' </span>';
+			}
+		}
+
+
 		//*** Show spouse/ partner by child ***
 		if (!$bot_visit AND $person_kind=='child' AND $personDb->pers_fams){
 			$marriage_array=explode(";",$personDb->pers_fams);
@@ -863,7 +1015,6 @@ function name_extended($person_kind){
 					elseif ($x>2) $child_marriage.= ' '.($x+1).__('th');
 				}
 				//$child_marriage.= ' <span class="index_partner">'.$relation_short.' '.$dirmark1.$name["standard_name"].$dirmark1.'</span>';
-				//$child_marriage.= ' <span class="index_partner">'.$relation_short.' '.$dirmark1.$name["standard_name"].$dirmark1.'</span>';
 				$child_marriage.= ' '.$relation_short.' '.$dirmark1.$name["standard_name"].$dirmark1;
 			}
 		}
@@ -896,7 +1047,6 @@ function person_data($person_kind, $id){
 	unset($pdfstr);
 
 	$personDb=$this->personDb;
-	$tree_prefix_quoted=$personDb->pers_tree_prefix;
 	$privacy=$this->privacy;
 
 	// *** Settings for mobile version ***
@@ -906,6 +1056,7 @@ function person_data($person_kind, $id){
 
 	// *** $personDb is empty by N.N. person ***
 	if ($personDb){
+	$tree_prefix_quoted=$personDb->pers_tree_prefix;
 
 	$process_text='';  $temp='';
 
