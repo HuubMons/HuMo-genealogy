@@ -71,7 +71,7 @@ if(!isset($_POST['install_tables2'])){
 		echo '<tr><td colspan="3">'.__('Remark: more users can be added after installation.').'</td></tr>';
 
 		echo '</table>';
-		
+
 	print '<p><input type="checkbox" name="table_groups" '.$check_groups.'> '.__('(Re) create user group table.').'<br>';
 
 	print '<p><input type="checkbox" name="table_cms_menu" '.$check_cms_menu.'> '.__('(Re) create CMS menu table, used for menu system of own pages.').'<br>';
@@ -133,10 +133,10 @@ if (isset($_POST['install_tables2'])){
 	if (isset($_POST["table_cms_pages"])){ $table_cms_pages='1'; }
 	if (isset($_POST["table_user_notes"])){ $table_cms_pages='1'; }
 	if (isset($_POST["table_user_log"])){ $table_user_log='1'; }
-	
+
 	//*********************************************************************
 	print '<p><b>'.__('Creating tables:').'</b><br>';
-	
+
 	if ($table_settings){
 		$db_update = $dbh->query("DROP TABLE humo_settings"); // Remove table.
 		print __('creating humo_settings...').'<br>';
@@ -152,6 +152,9 @@ if (isset($_POST['install_tables2'])){
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage_description','Website')");
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('searchengine','n')");
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('robots_option','<META NAME=\"robots\" CONTENT=\"noindex,nofollow\">')");
+
+		// *** Other settings are saved in the table in file: settings_global.php ***
+
 		// *** Update status number. Number must be: update_status+1! ***
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','7')");
 	}
@@ -175,7 +178,7 @@ if (isset($_POST['install_tables2'])){
 			tree_gedcom_program varchar (100),
 			PRIMARY KEY  (`tree_id`)
 			) DEFAULT CHARSET=utf8");
-		
+
 		$gedcom_date=date("Y-m-d H:i");
 		$sql="INSERT INTO humo_trees
 		SET
@@ -205,7 +208,7 @@ if (isset($_POST['install_tables2'])){
 			PRIMARY KEY  (`treetext_id`)
 			) DEFAULT CHARSET=utf8");
 	}
-	
+
 	if ($table_stat_date){
 		$db_update = $dbh->query("DROP TABLE humo_stat_date");
 		print __('Install statistics table...').'<br>';
@@ -282,7 +285,7 @@ if (isset($_POST['install_tables2'])){
 		) DEFAULT CHARSET=utf8");
 
 		print __('filling humo_groups...').'<br>';
-	
+
 		$sql="INSERT INTO humo_groups SET group_name='admin', group_privacy='j', group_menu_places='j', group_admin='j',
 		group_sources='j', group_pictures='j', group_gedcomnr='j', group_living_place='j', group_places='j', group_religion='j',
 		group_place_date='n', group_kindindex='n', group_event='j', group_addresses='j', group_own_code='j', group_pdf_button='y' ,group_work_text='j',

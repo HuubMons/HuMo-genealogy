@@ -379,7 +379,7 @@ function move($i) {
 //********** 3rd Part:  CODE TO PRINT THE STARFIELD CHART         *****
 //****************************************************************************
 function printchart() {
-	global $genarray, $size, $db, $dbh, $tree_prefix_quoted, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
+	global $genarray, $size, $dbh, $tree_prefix_quoted, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
 	global $vbasesize, $hsize, $vsize, $vdist, $hdist, $user, $direction, $dna;
 	global $dirmark1, $dirmark2, $rtlmarker, $alignmarker, $base_person_gednr, $base_person_name, $base_person_sexe, $base_person_famc;
 
@@ -475,9 +475,9 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 	
 		//print '<div class="wrapper" style="position:relative; direction:'.$rtlmarker.';">';
 		//print '<div id="doublescroll" class="wrapper" style="direction:'.$rtlmarker.';"><br style="line-height:50%">';
-	
+
 		print '<div id="doublescroll" class="wrapper" style="direction:'.$rtlmarker.';">';
-	
+
 		// generation and size choice box:
 		//echo '<div class="table_header search_bar" style="direction:ltr; z-index:80; width:500px; text-align:left;">';
 		//echo '<div class="table_header search_bar" style="direction:ltr; z-index:20; width:500px; text-align:left;">';
@@ -641,9 +641,6 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		// *** Start person class and calculate privacy ***
 		if ($genarray[$w]["gednr"]){
-			//$man_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = '".safe_text($genarray[$w]["gednr"])."'";
-			//$man_result = mysql_query($man_qry,$db);
-			//@$man = mysql_fetch_object($man_result);
 			$man_prep_var = $genarray[$w]["gednr"];
 			$man_prep->execute();
 			@$man = $man_prep->fetch(PDO::FETCH_OBJ);
@@ -708,8 +705,6 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						}
 
 						if($genarray[$w]["non"]==0) { // otherwise for an unmarried child it would give the parents' marriage!
-							//$ownfam = mysql_fetch_object(mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
-							//WHERE `fam_gedcomnumber`='".safe_text($genarray[$w]["fams"])."'"));
 							$fam_prep_var = $genarray[$w]["fams"];
 							$fam_prep->execute();
 							$ownfam = $fam_prep->fetch(PDO::FETCH_OBJ);
@@ -755,10 +750,6 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			// *** Start person class and calculate privacy ***
 			$woman_cls=''; // prevent use of $woman_cls from previous wife if another wife is NN
 			if (isset($genarray[$w]["spgednr"]) AND $genarray[$w]["spgednr"]){
-				//$woman_qry = "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-				//	WHERE pers_gedcomnumber = '".safe_text($genarray[$w]["spgednr"])."'";
-				//$woman_result = mysql_query($woman_qry,$db);
-				//@$woman = mysql_fetch_object($woman_result);
 				$man_prep_var = $genarray[$w]["spgednr"];
 				$man_prep->execute();
 				@$woman = $man_prep->fetch(PDO::FETCH_OBJ);

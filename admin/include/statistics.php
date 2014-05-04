@@ -381,7 +381,6 @@ if (isset($_POST['remove2'])){
 	$timestamp=mktime(0, 0, 0, $_POST['stat_month'], $_POST['stat_day'], $_POST['stat_year']);
 
 	$sql='DELETE FROM humo_stat_date WHERE stat_date_linux < "'.$timestamp.'"';
-	//$result = mysql_query($sql);
 	$result = $dbh->query($sql);
 
 	echo '<div class="confirm">';
@@ -695,7 +694,6 @@ if ($statistics_screen=='statistics_old'){
 	// *** Select database ***
 	@$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
 
-	//$num_rows = mysql_num_rows($datasql);
 	$num_rows = $datasql->rowCount();
 	if ($num_rows>1){
 		print '<h2>'.__('Old statistics (numbers since last gedcom update)').'</h2>';

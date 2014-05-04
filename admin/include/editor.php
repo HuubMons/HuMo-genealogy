@@ -11,7 +11,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2012 Huub Mons,
+* Copyright (C) 2008-2014 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -199,6 +199,12 @@ if (isset($_GET["tree"])){
 }
 if (isset($_SESSION['admin_tree_prefix'])){ $tree_prefix=$_SESSION['admin_tree_prefix']; }
 
+
+// *** Delete session id's for new person ***
+if (isset($_POST['person_add'])){
+	unset($_SESSION['admin_pers_gedcomnumber']);
+	unset($_SESSION['admin_fam_gedcomnumber']);
+}
 // *** Save person gedcomnumber ***
 if (isset($_POST["person"]) AND $_POST["person"]){
 	$pers_gedcomnumber=$_POST['person'];
@@ -209,7 +215,6 @@ if (isset($_GET["person"])){
 	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 }
 if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['admin_pers_gedcomnumber']; }
-
 
 
 // *** Save family gedcomnumber ***
@@ -233,7 +238,6 @@ if (isset($person->pers_fams) AND $person->pers_fams){
 	}
 	if (isset($_SESSION['admin_fam_gedcomnumber'])){ $marriage=$_SESSION['admin_fam_gedcomnumber']; }
 }
-
 
 
 // *** Check for new person ***
@@ -308,6 +312,7 @@ if (isset($tree_prefix)){
 		if (isset($pers_gedcomnumber)){
 			echo '<br>'.__('Examples of date entries, using English month abbreviations: jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec or month numbers:').'<br>';
 			echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, between 1986 and 1987').'</b><br>';
+			echo __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#').'<br>';
 		}
 
 		// *** Show delete message ***
@@ -377,6 +382,11 @@ if (isset($tree_prefix)){
 					if ($counter==1 AND isset($_POST["search_quicksearch"])){
 						$pers_gedcomnumber=$person->pers_gedcomnumber;
 						$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
+
+						// *** Reset marriage number ***
+						$fams1=explode(";",$person->pers_fams);
+						$marriage=$fams1[0];
+						$_SESSION['admin_fam_gedcomnumber']=$marriage;
 					}
 					echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
 						$editor_cls->show_selected_person($person).'</option>';
@@ -386,8 +396,6 @@ if (isset($tree_prefix)){
 				echo '</form>';
 				if($idsearch==true OR $person_result->rowCount()==0) { echo '</span>'; }
 			}
-
-			//echo '<br>';
 
 			// *** Add new person ***
 			echo '&nbsp;&nbsp;&nbsp; <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1">
@@ -635,7 +643,6 @@ if (isset($pers_gedcomnumber)){
 		// *** Start of editor table ***
 		echo '<br><table class="humo standard" border="1">';
 
-		//echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 		echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data">';
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 
@@ -672,15 +679,12 @@ if (isset($pers_gedcomnumber)){
 			}
 			else{
 				// *** Add existing or new parents ***
-
-				//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_parents=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" alt="fam_connect"></a>';
-
 				echo '<b>'.__('There are no parents.').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_parents=1">';
 				echo __('Add new parents (N.N. & N.N.)').'</a></b> '.__('or select an existing family as parents.').'<br>';
 
 				$search_quicksearch_parent='';
 				if (isset($_POST['search_quicksearch_parent'])){ $search_quicksearch_parent=$_POST['search_quicksearch_parent']; }
-				//echo __('Search').' <input class="fonts" type="text" name="search_quicksearch_parent" value="'.$search_quicksearch_parent.'" size="25">';
+
 				echo '<input class="fonts" type="text" name="search_quicksearch_parent" value="'.$search_quicksearch_parent.'" size="25">';
 				echo ' <input class="fonts" type="submit" value="'.__('Search').'">';
 				if($search_quicksearch_parent != '') {
@@ -1162,7 +1166,6 @@ if (isset($pers_gedcomnumber)){
 				echo __('Adresses').'</td>';
 			echo '<td style="border-right:0px;"></td>';
 			echo '<td style="border-left:0px;">';
-				//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;pers_address=1&amp;address_add=1#addresses">['.__('Add').']</a> ';
 				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;person_place_address=1&amp;address_add=1#addresses">['.__('Add').']</a> ';
 				$text='';
 				// *** Search for all connected sources ***
@@ -1503,8 +1506,6 @@ if (isset($pers_gedcomnumber)){
 				echo '<form method="POST" action="'.$phpself.'#marriage">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 
-				//echo '<b>'.__('Add marriage').'. <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_parents=1">';
-				//echo __('Add new marriage with new partner (N.N.)').'</a></b> '.__('or select an existing person as partner.').'<br>';
 				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;relation_add=1#marriage"><b>';
 				echo __('Add relation with new partner (N.N.)').'</b></a> '.__('or add relation with existing person as partner.').'<br>';
 
@@ -1554,7 +1555,6 @@ if (isset($pers_gedcomnumber)){
 					echo '<option value="">*** '.__('Results are limited, use search to find more persons.').' ***</option>';
 				echo '</select>';
 
-				//echo ' <input type="Submit" name="submit" value="'.__('Add person to new relation').'">';
 				echo ' <input type="Submit" name="submit" value="'.__('Select').'">';
 				echo '</form>';
 
@@ -1564,62 +1564,31 @@ if (isset($pers_gedcomnumber)){
 		// *** Marriage editor ***
 		// ***********************
 
-		// *** If person search box is used bij a new marriage, adjust variable... ***
-		//if (isset($_POST['quicksearch_add']) OR isset($_POST['add_marriage_start'])){
-		//	$_GET['add_marriage']='1';
-		//}
-
 		// *** Select marriage ***
-		//if ($person->pers_fams OR isset($_GET['add_marriage'])){
 		if ($person->pers_fams){
 
-			//if (isset($_GET['add_marriage'])){
-				/*
-				$man_gedcomnumber=''; $woman_gedcomnumber=''; $fam_gedcomnumber='';
-				$fam_kind='';
-				$fam_relation_date=''; $fam_relation_end_date=''; $fam_relation_place=''; $fam_relation_source=''; $fam_relation_text='';
-				$fam_marr_notice_date=''; $fam_marr_notice_place=''; $fam_marr_notice_source=''; $fam_marr_notice_text='';
-				$fam_marr_date=''; $fam_marr_place=''; $fam_marr_source=''; $fam_marr_text=''; $fam_marr_authority='';
-				$fam_marr_church_notice_date=''; $fam_marr_church_notice_place=''; $fam_marr_church_notice_source='';
-				$fam_marr_church_notice_text='';
-				$fam_marr_church_date=''; $fam_marr_church_place=''; $fam_marr_church_source=''; $fam_marr_church_text='';
-				$fam_religion='';
-				$fam_div_date=''; $fam_div_place=''; $fam_div_source=''; $fam_div_text=''; $fam_div_authority='';
-				$fam_text='';
+			$family=$dbh->query("SELECT * FROM ".$tree_prefix."family
+				WHERE fam_gedcomnumber='".$marriage."'");
+			$familyDb=$family->fetch(PDO::FETCH_OBJ);
 
-				// *** If a new wedding is added, already show the latest selected person ***
-				if (isset($pers_gedcomnumber)){
-					$qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
-					$result = $dbh->query($qry);
-					if ($pers_sexe=='F'){ $woman_gedcomnumber=$pers_gedcomnumber;	}
-						else{ $man_gedcomnumber=$pers_gedcomnumber; }
-				}
-				*/
-			//}
-			//else{
-				$family=$dbh->query("SELECT * FROM ".$tree_prefix."family
-					WHERE fam_gedcomnumber='".$marriage."'");
-				$familyDb=$family->fetch(PDO::FETCH_OBJ);
-
-				$fam_kind=$familyDb->fam_kind;
-				$man_gedcomnumber=$familyDb->fam_man; $woman_gedcomnumber=$familyDb->fam_woman;
-				$fam_gedcomnumber=$familyDb->fam_gedcomnumber;
-				$fam_relation_date=$familyDb->fam_relation_date; $fam_relation_end_date=$familyDb->fam_relation_end_date;
-				$fam_relation_place=$familyDb->fam_relation_place; $fam_relation_source=$familyDb->fam_relation_source; $fam_relation_text=$editor_cls->text_show($familyDb->fam_relation_text);
-				$fam_marr_notice_date=$familyDb->fam_marr_notice_date; $fam_marr_notice_place=$familyDb->fam_marr_notice_place; $fam_marr_notice_source=$familyDb->fam_marr_notice_source;
-				$fam_marr_notice_text=$editor_cls->text_show($familyDb->fam_marr_notice_text);
-				$fam_marr_date=$familyDb->fam_marr_date; $fam_marr_place=$familyDb->fam_marr_place; $fam_marr_source=$familyDb->fam_marr_source;
-				$fam_marr_text=$editor_cls->text_show($familyDb->fam_marr_text); $fam_marr_authority=$editor_cls->text_show($familyDb->fam_marr_authority);
-				$fam_marr_church_notice_date=$familyDb->fam_marr_church_notice_date; $fam_marr_church_notice_place=$familyDb->fam_marr_church_notice_place;
-				$fam_marr_church_notice_source=$familyDb->fam_marr_church_notice_source; $fam_marr_church_notice_text=$editor_cls->text_show($familyDb->fam_marr_church_notice_text);
-				$fam_marr_church_date=$familyDb->fam_marr_church_date; $fam_marr_church_place=$familyDb->fam_marr_church_place; $fam_marr_church_source=$familyDb->fam_marr_church_source;
-				$fam_marr_church_text=$editor_cls->text_show($familyDb->fam_marr_church_text);
-				$fam_religion=$familyDb->fam_religion;
-				$fam_div_date=$familyDb->fam_div_date; $fam_div_place=$familyDb->fam_div_place;
-				$fam_div_source=$familyDb->fam_div_source; $fam_div_text=$editor_cls->text_show($familyDb->fam_div_text);
-				$fam_div_authority=$editor_cls->text_show($familyDb->fam_div_authority);
-				$fam_text=$editor_cls->text_show($familyDb->fam_text);
-			//}
+			$fam_kind=$familyDb->fam_kind;
+			$man_gedcomnumber=$familyDb->fam_man; $woman_gedcomnumber=$familyDb->fam_woman;
+			$fam_gedcomnumber=$familyDb->fam_gedcomnumber;
+			$fam_relation_date=$familyDb->fam_relation_date; $fam_relation_end_date=$familyDb->fam_relation_end_date;
+			$fam_relation_place=$familyDb->fam_relation_place; $fam_relation_source=$familyDb->fam_relation_source; $fam_relation_text=$editor_cls->text_show($familyDb->fam_relation_text);
+			$fam_marr_notice_date=$familyDb->fam_marr_notice_date; $fam_marr_notice_place=$familyDb->fam_marr_notice_place; $fam_marr_notice_source=$familyDb->fam_marr_notice_source;
+			$fam_marr_notice_text=$editor_cls->text_show($familyDb->fam_marr_notice_text);
+			$fam_marr_date=$familyDb->fam_marr_date; $fam_marr_place=$familyDb->fam_marr_place; $fam_marr_source=$familyDb->fam_marr_source;
+			$fam_marr_text=$editor_cls->text_show($familyDb->fam_marr_text); $fam_marr_authority=$editor_cls->text_show($familyDb->fam_marr_authority);
+			$fam_marr_church_notice_date=$familyDb->fam_marr_church_notice_date; $fam_marr_church_notice_place=$familyDb->fam_marr_church_notice_place;
+			$fam_marr_church_notice_source=$familyDb->fam_marr_church_notice_source; $fam_marr_church_notice_text=$editor_cls->text_show($familyDb->fam_marr_church_notice_text);
+			$fam_marr_church_date=$familyDb->fam_marr_church_date; $fam_marr_church_place=$familyDb->fam_marr_church_place; $fam_marr_church_source=$familyDb->fam_marr_church_source;
+			$fam_marr_church_text=$editor_cls->text_show($familyDb->fam_marr_church_text);
+			$fam_religion=$familyDb->fam_religion;
+			$fam_div_date=$familyDb->fam_div_date; $fam_div_place=$familyDb->fam_div_place;
+			$fam_div_source=$familyDb->fam_div_source; $fam_div_text=$editor_cls->text_show($familyDb->fam_div_text);
+			$fam_div_authority=$editor_cls->text_show($familyDb->fam_div_authority);
+			$fam_text=$editor_cls->text_show($familyDb->fam_text);
 
 			// *** Show delete message ***
 			if ($confirm_relation){
@@ -1636,8 +1605,8 @@ if (isset($pers_gedcomnumber)){
 
 			// *** Hide or show all hide-show items ***
 			$hide_show_all='<a href="#marriage" onclick="hideShowAll();"><span id="hideshowlinkall2">'.__('[+]').'</span> '.__('All').'</a> ';
+
 			// *** Remove marriage ***
-			//if (isset($marriage) AND !isset($_GET['add_marriage']) ){
 			if (isset($marriage)){
 				echo '<td>'.$hide_show_all.'<a name="marriage"></a><input type="Submit" name="fam_remove" value="'.__('Delete relation').'"></td>';
 			}
@@ -1646,16 +1615,9 @@ if (isset($pers_gedcomnumber)){
 			}
 
 			echo '<th colspan="2">'.__('Edit marriage');
-			//if (!isset($_GET['add_marriage'])){
 				echo ': ['.$fam_gedcomnumber.'] '.show_person($man_gedcomnumber).' '.__('and').' '.show_person($woman_gedcomnumber).'<br>';
-			//}
 			echo '<td>';
-				//if (isset($_GET['add_marriage'])){
-				//	echo '<input type="Submit" name="marriage_add" value="'.__('Add').'">';
-				//}
-				//else{
-					echo '<input type="Submit" name="marriage_change" value="'.__('Save').'">';
-				//}
+				echo '<input type="Submit" name="marriage_change" value="'.__('Save').'">';
 			echo '</td></tr>';
 
 			if (isset($marriage)){
@@ -1674,12 +1636,7 @@ if (isset($pers_gedcomnumber)){
 			if (isset($_POST['search_man_id'])) $search_man_id=safe_text($_POST['search_man_id']);
 			echo __('or ID:').' <input class="fonts" type="text" name="search_man_id" value="'.$search_man_id.'" size="5">';
 
-			//if (isset($_GET['add_marriage'])){
-			//	print ' <input class="fonts" type="submit" name="quicksearch_add" value="'.__('Search').'">';
-			//}
-			//else{
-				print ' <input class="fonts" type="submit" name="submit" value="'.__('Search').'">';
-			//}
+			echo ' <input class="fonts" type="submit" name="submit" value="'.__('Search').'">';
 
 			// *** Use old value to detect change of man in marriage ***
 			echo '<input type="hidden" name="connect_man_old" value="'.$man_gedcomnumber.'">';
@@ -1734,12 +1691,7 @@ if (isset($pers_gedcomnumber)){
 			if (isset($_POST['search_woman_id'])) $search_woman_id=safe_text($_POST['search_woman_id']);
 			echo __('or ID:').' <input class="fonts" type="text" name="search_woman_id" value="'.$search_woman_id.'" size="5">';
 
-			//if (isset($_GET['add_marriage'])){
-			//	print ' <input class="fonts" type="submit" name="quicksearch_add" value="'.__('Search').'">';
-			//}
-			//else{
-				echo ' <input class="fonts" type="submit" name="submit" value="'.__('Search').'">';
-			//}
+			echo ' <input class="fonts" type="submit" name="submit" value="'.__('Search').'">';
 
 			// *** Use old value to detect change of woman in marriage ***
 			echo '<input type="hidden" name="connect_woman_old" value="'.$woman_gedcomnumber.'">';
@@ -2251,7 +2203,6 @@ if (isset($pers_gedcomnumber)){
 		echo '</td></tr></table><br>';
 
 		// *** Show selected source ***
-		//if (isset($_POST['source_id'])){
 		if ($source_id OR isset($_POST['add_source'])){
 			echo '<table class="humo standard" border="1">';
 			print '<tr class="table_header"><th>'.__('Option').'</th><th colspan="2">'.__('Value').'</th></tr>';

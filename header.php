@@ -53,7 +53,7 @@ $result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
 if ($result->rowCount() ==0) {
 	echo "Installation of HuMo-gen is not yet completed.<br>Installatie van HuMo-gen is nog niet voltooid.";
 	exit();
-}		
+}
 include_once(CMS_ROOTPATH."include/safe.php");
 include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
 include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
@@ -438,27 +438,27 @@ else{
 	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/sliderbar/slider.js"></script>';
 
 	if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR 
-	   strpos($_SERVER['REQUEST_URI'],"maps")!== false OR
-	   strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR 	    
-	   $user['group_pictures']=='j') { 
+		strpos($_SERVER['REQUEST_URI'],"maps")!== false OR
+		strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR    
+		$user['group_pictures']=='j') { 
 		// if lightbox activated or descendant chart or hourglass chart or google maps is used --> load jquery
 		echo '	<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script> ';
 	}
 	if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR 
-	   strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR 
-	   strpos($_SERVER['REQUEST_URI'],"maps")!== false) { 
+		strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR 
+		strpos($_SERVER['REQUEST_URI'],"maps")!== false) { 
 		// if descendant chart or hourglass chart or google maps used --> load additional jquery modules for slider
-		echo '	<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/jqueryui/css/hot-sneaks/jquery-ui-1.8.23.custom.css"> ';
-		echo '	<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script> ';
-		echo '	<script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/minified/jquery.ui.widget.min.js"></script> ';
-		echo '	<script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/minified/jquery.ui.mouse.min.js"></script> ';
+		echo ' <link rel="stylesheet" href="'.CMS_ROOTPATH.'include/jqueryui/css/hot-sneaks/jquery-ui-1.8.23.custom.css"> ';
+		echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script> ';
+		echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/minified/jquery.ui.widget.min.js"></script> ';
+		echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/minified/jquery.ui.mouse.min.js"></script> ';
 		if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR strpos($_SERVER['REQUEST_URI'],"HOUR")!== false) { // load slider for desc./hourglass chart
-			echo '	<script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/jquery.ui.slider.js"></script> ';
+			echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/jquery.ui.slider.js"></script> ';
 		}
 		if(strpos($_SERVER['REQUEST_URI'],"maps")!== false) { // load slider for google maps
-			echo '	<script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/jquery.ui.gslider.js"></script> ';
+			echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/jquery.ui.gslider.js"></script> ';
 		}
-		echo '	<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery.ui.touch-punch.min.js"></script> ';
+		echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery.ui.touch-punch.min.js"></script> ';
 	}
  
 	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'fontsize.js"></script>';

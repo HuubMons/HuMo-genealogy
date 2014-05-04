@@ -94,8 +94,6 @@ $yr = date("Y");
 // check for stored min value, created with google maps admin menu
 $query = "SELECT setting_value FROM humo_settings WHERE setting_variable='gslider_".$tree_prefix_quoted."' ";
 $result = $dbh->query($query);
-
-//if (mysql_num_rows($result)) {
 if($result->rowCount() > 0) {
 	$sliderDb=$result->fetch(PDO::FETCH_OBJ);
 	$realmin = $sliderDb->setting_value;
@@ -308,7 +306,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	$family_prep2->bindParam(1,$fam_prep_var2);
 	$person_man_prep= $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 	$person_man_prep->bindParam(1,$pers_man_prep_var);
-	
+
 	function outline($family_id,$main_person,$gn) {
 
 		global $db, $desc_array, $dbh;
@@ -322,7 +320,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 			@$familyDb=$family_prep->fetch(PDO::FETCH_OBJ);
 		} catch (PDOException $e) {
 			print "No valid family number / Geen geldig gezinsnummer<br/>";
-		}	
+		}
 		$parent1=''; $parent2=''; $change_main_person=false;
 
 		// *** Standard main_person is the father ***
@@ -364,7 +362,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 			$pers_man_prep_var=$familyDb->fam_woman;
 			$person_man_prep->execute();
 			@$person_womanDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
-			
+
 			// *************************************************************
 			// *** Parent1 (normally the father)                         ***
 			// *************************************************************
@@ -398,7 +396,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 					$pers_man_prep_var=$child_array[$i];
 					$person_man_prep->execute();
 					@$childDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
-			
+
 					// *** Build descendant_report ***
 					if ($childDb->pers_fams){
 						// *** 1e family of child ***

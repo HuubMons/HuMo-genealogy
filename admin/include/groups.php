@@ -475,7 +475,7 @@ Group "family" = family members or genealogists.').'<br>';
 
 	print '<tr><th bgcolor=green><font color=white>'.__('Texts').'</font></th><th bgcolor=green><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
-	print '<tr><td>'.__('Show work texts (In Haza-Data: #werktekst#)').'</td>';
+	print '<tr><td>'.__('Show hidden text/ own remarks (text between # characters in text fields, example: #check birthday#)').'</td>';
 	print '<td><select size="1" name="group_work_text"><option value="j">'.__('Yes').'</option>';
 	$selected=''; if ($groupDb->group_work_text=='n'){ $selected=' SELECTED'; }
 	echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';

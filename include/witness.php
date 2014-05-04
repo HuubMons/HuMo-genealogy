@@ -28,8 +28,6 @@ function witness($gedcomnr,$event, $field='person'){
 					WHERE pers_gedcomnumber='".substr($witnessDb->event_event,1,-1)."'");
 					$witness_nameDb=$witness_name->fetch(PDO::FETCH_OBJ);
 					$name=$witness_cls->person_name($witness_nameDb);
-					//$text.='<a href="'.$_SERVER['PHP_SELF'].'?id='.$witness_nameDb->pers_indexnr.'">'.
-					//rtrim($name["standard_name"]).'</a>';
 					$text.='<a href="'.$_SERVER['PHP_SELF'].'?id='.$witness_nameDb->pers_indexnr.'&amp;main_person='.$witness_nameDb->pers_gedcomnumber.'">'.rtrim($name["standard_name"]).'</a>';
 				}
 				else{

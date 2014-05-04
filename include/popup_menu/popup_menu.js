@@ -1,115 +1,105 @@
 // Original: Copyright 2006-2007 javascript-array.com
 // Updates: 2010 Huub Mons.
+//          2014 Ian Roxburgh, fix operation on android touch devices, simplify getting mouse position
 
 // x    y    explanation:
-// 0    0    standard popup
+// 0    0    standard popup (near mouse click)
 // 10   150  show pop-up at position 10,150
 // ?    ?    no position calculations.
 
-var posx;var posy; // Mouse coordinates
 var timeout	= 500;
 var closetimer	= 0;
 var ddmenuitem	= 0;
+var target = null;
  
+
+function getTarget(e){
+	var tgt;
+	var ev=(!e)?window.event:e;
+	if (ev.target) {tgt = ev.target;}
+	else{
+		if (ev.srcElement){
+			tgt = ev.srcElement;
+		}
+		else{
+			return null;
+		}
+	}
+	if (tgt.nodeType == 3) // if text node, we want its parent, the element containing the text node
+		tgt = tgt.parentNode;
+	return tgt;
+}
+
+
+function clickFunc(e){
+	var ev=(!e)?window.event:e;
+	//Prevent default action ie going to link etc
+	if (ev.stopPropagation)    ev.stopPropagation();
+	if (ev.cancelBubble!=null) ev.cancelBubble = true;
+	if (ev.preventDefault) ev.preventDefault();
+	ev.returnValue = false;
+	mcancelclosetime();     //if clicked or touched, don't close after a timeout
+	getTarget().onclick = null;   /////// !!! uncapture click or Android Chrome acts strangely next time link is clicked
+	return false;
+}
+
 // open hidden layer Huub: e=for FF mouse position.
 function mopen(e,id,x,y){
 	// cancel close timer
 	mcancelclosetime();
-
+    
 	// close old layer
 	if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
 
 	// get new layer and show it
 	ddmenuitem = document.getElementById(id);
 	ddmenuitem.style.visibility = 'visible';
+	target = getTarget(e);
+	target.onclick = clickFunc;   //temporarily capture click
+
+	var ev=(!e)?window.event:e;//OldIE:Moz
+
 	if(x==0  && y==0) {
-		//function getMouse(e){
-		posx=0;posy=0;
-		var ev=(!e)?window.event:e;//IE:Moz
-		if (ev.screenX && ev.screenY){
+		var posx = 0;
+		var posy = 0;
+		if (ev.clientX && ev.clientY) 	{
+			posx = ev.clientX;
+			posy = ev.clientY;
+		}
+		// calculate height of the popup menu
+		var divHeight;
+		if(ddmenuitem.offsetHeight) {divHeight=ddmenuitem.offsetHeight;}
+		else if(ddmenuitem.style.pixelHeight){divHeight=ddmenuitem.style.pixelHeight;}
+    
+		var divWidth;
+		if(ddmenuitem.offsetWidth) {divWidth=ddmenuitem.offsetWidth;}
+		else if(ddmenuitem.style.pixelWidth){divWidth=ddmenuitem.style.pixelWidth;}
+		if(posx != 0 || posy != 0)
+		{
+			var win_width = (window.innerWidth != null) ? window.innerWidth : document.body.clientWidth;       //clientWidth for old IE
+			var win_height = (window.innerHeight != null) ? window.innerHeight : document.body.clientHeight - 20;  //-20, allow for status bar
 
-			// calculate height of the popup menu
-			var divHeight;
-			if(ddmenuitem.offsetHeight) {divHeight=ddmenuitem.offsetHeight;}
-			else if(ddmenuitem.style.pixelHeight){divHeight=ddmenuitem.style.pixelHeight;}
-		
-			var divWidth;
-			if(ddmenuitem.offsetWidth) {divWidth=ddmenuitem.offsetWidth;}
-			else if(ddmenuitem.style.pixelWidth){divWidth=ddmenuitem.style.pixelWidth;}
-
-			var ua = navigator.userAgent.toLowerCase(); //detect browser
-
-			// calculate X/Y position relative to browser window on the screen
-			if(window.location == window.parent.location) { // not in iframe
-				posx=ev.screenX;
-				//posx=ev.pageX;
-				if(ua.indexOf( "msie" ) == -1) { // NOT IE
-					posx-=window.screenX;
-				}
-				else { //IE
-					posx-=window.screenLeft;
-				}
-			}
-			else { // in iframe
-				//posx = window.event.clientX + document.body.scrollLeft;
-				posx = window.event.clientX;				
-			}
-			posx+=15;		
-			if(posx>600) {
+			posx+=15;
+			if(posx>600)    //if towards right of screen, show to left of mouse (600 is a bit arbitrary !!!)
 				posx-=(divWidth+30);
+                
+				if((posx + divWidth) > win_width) {
+				//menu would fall off the screen...	
+				posx=win_width - divWidth;
+				if(posx < 0)
+					posx = 0;
 			}
-			posx+='px';
-
-			if(window.location == window.parent.location) { // not in iframe
-				posy=ev.screenY;
-				//posy=ev.pageY;
-				if(ua.indexOf( "msie" ) == -1) { //NOT IE
-					var diff; 			 
-					diff=window.outerHeight-window.innerHeight;	// diff = the menu bar area above (and below!) the viewport	
-		
-					if(diff>5) { // we are not in fullscreen mode			     
-						posy-=(window.screenY+diff); //window.screenY (top of total browser window)  +  menubar area = top of viewport
-						if(ua.indexOf( "chrome" ) == -1) { posy+=30} // if not chrome, make up for bottom bar (chrome doesn't have one...)
-					}  // else - we're in fullscreen mode so posy doen't have to change
-					if((posy + divHeight) > window.innerHeight) {
-						//menu would fall off the screen...	
-						posy=window.innerHeight - divHeight;
-						if(ua.indexOf( "chrome" ) != -1) { posy-=20;}  //chrome's popup url bar blocks view....
-					}
-				}
-				else { //IE			
-					posy-=window.screenTop; // screenTop = top of viewport			
-					if((posy + divHeight) > (document.documentElement.clientHeight)) { 
-						//menu would fall off the screen...				
-						posy=document.documentElement.clientHeight - divHeight;
-					}
-				}                 
+			if((posy + divHeight) > win_height) {
+				//menu would fall off the screen...	
+				posy=win_height - divHeight;
+				if(posy < 0)
+					posy = 0;
 			}
-			else { // in iframe
-				posy = window.event.clientY;
-				if(ua.indexOf( "msie" ) == -1) { //NOT IE
-					if((posy + divHeight) > window.innerHeight) {
-						//menu would fall off the screen...	
-						posy=window.innerHeight - divHeight;
-						if(ua.indexOf( "chrome" ) != -1) { posy-=20;}  //chrome's popup url bar blocks view....
-					}
-				}
-				else { // IE
-					if((posy + divHeight) > (document.documentElement.clientHeight)) { 
-						//menu would fall off the screen...				
-						posy=document.documentElement.clientHeight - divHeight;
-					}
-				}
-			}
-			posy+='px';
+            
+			ddmenuitem.style.left=posx + 'px';
+			ddmenuitem.style.top=posy + 'px';
 		}
-	
-		ddmenuitem.style.left=posx;
-		ddmenuitem.style.top=posy; 
-		if(ua.indexOf( "opera" ) != -1) { // Opera doesn't handle screenX/Y so it misses out...
-			ddmenuitem.style.left="400px";
-			ddmenuitem.style.top="200px";
-		}
+		//else don't do anything leave it to css, the position should be not bad
 	}
 	else if (x=='?' && y=='?') {
 		// don't do anything CSS will take care...
@@ -124,7 +114,11 @@ function mopen(e,id,x,y){
 
 // close showed layer
 function mclose(){
-	if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+	if(ddmenuitem){
+		ddmenuitem.style.visibility = 'hidden';
+		ddmenuitem = null;
+		target = null;
+	}
 }
 
 // go close timer
@@ -140,5 +134,14 @@ function mcancelclosetime(){
 	}
 }
 
-// close layer when click-out
-document.onclick = mclose;
+function docClick(e)
+{
+	// close layer when click-out
+	var targ = getTarget();
+	if(targ == target)
+		return;   //ignore unwanted docClick on link
+	if(targ != ddmenuitem)   //ignore click on the menu outside active elements
+		mclose();    //otherwise close the menu
+}
+//##### Note this ....
+document.onclick = docClick;

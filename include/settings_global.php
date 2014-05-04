@@ -2,14 +2,9 @@
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
 $humo_option["version"]='5.0.2';  // Version line, DO NOT CHANGE THIS LINE
-// *** RC release candidate. Numbering like: RC2, RC3. ***
-//$humo_option["version"]='RC1 20 oct 2009';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 9 mrt. 2014';  // Version line, DO NOT CHANGE THIS LINE
-// *** Alpha version not stable enough for production***
-//$humo_option["version"]='ALPHA version 27 nov 2009';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 19 jul 2011';  // Version line, DO NOT CHANGE THIS LINE
-//$humo_option["version"]='EXPERIMENTAL VERSION 13 nov 2009';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 $humo_option["version_date"]='2014-03-11';  // Version date mm-dd-yyyy, DO NOT CHANGE THIS LINE
@@ -19,15 +14,17 @@ $humo_option["version_date"]='2014-03-11';  // Version date mm-dd-yyyy, DO NOT C
 //$humo_option["version_date"]='2012-11-30';  // Version date mm-dd-yyyy, DO NOT CHANGE THIS LINE
 
 // *** If needed: translate setting_variabele into setting variable ***
+/*
 $update_setting_qry = $dbh->query("SELECT * FROM humo_settings");
 $update_settingDb = $update_setting_qry->fetch(PDO::FETCH_OBJ);
-
 if (isset($update_settingDb->setting_variabele)){
 	$sql="ALTER TABLE humo_settings CHANGE setting_variabele setting_variable VARCHAR( 50 ) CHARACTER SET utf8 NULL DEFAULT NULL";
 	$dbh->query($sql);
 }
+*/
 
 // *** Update table humo_settings: translate dutch variables into english... ***
+/*
 $update_setting_qry = $dbh->query("SELECT * FROM humo_settings");
 while($update_settingDb = $update_setting_qry->fetch(PDO::FETCH_OBJ)){
 	$setting='';
@@ -44,6 +41,7 @@ while($update_settingDb = $update_setting_qry->fetch(PDO::FETCH_OBJ)){
 		$update_Db = $dbh->query($sql);
 	}
 }
+*/
 
 // *** Read settings from database ***
 @$result = $dbh->query("SELECT * FROM humo_settings");
@@ -124,6 +122,11 @@ if (!isset($humo_option["use_spam_question"])){
 	$sql="INSERT INTO humo_settings SET setting_variable='use_spam_question', setting_value='n'";
 	@$result=$dbh->query($sql);
 }
+if (!isset($humo_option["use_newsletter_question"])){
+	$humo_option["use_newsletter_question"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='use_newsletter_question', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
 
 if (!isset($humo_option["visitor_registration"])){
 	$humo_option["visitor_registration"]='n';
@@ -185,6 +188,24 @@ if (!isset($humo_option["gedcom_read_process_geo_location"])){
 if (!isset($humo_option["gedcom_read_commit_records"])){
 	$humo_option["gedcom_read_commit_records"]='500';
 	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_read_commit_records', setting_value='500'";
+	@$result=$dbh->query($sql);	
+}
+
+// *** Watermark text and color in PDF file ***
+if (!isset($humo_option["watermark_text"])){
+	$humo_option["watermark_text"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_text', setting_value=''";
+	@$result=$dbh->query($sql);	
+}
+if (!isset($humo_option["watermark_color_r"])){
+	$humo_option["watermark_color_r"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_color_r', setting_value='224'";
+	@$result=$dbh->query($sql);	
+}
+if (!isset($humo_option["watermark_color_g"])){
+	$humo_option["watermark_color_g"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_color_g', setting_value='224'";
+	@$result=$dbh->query($sql);	
+}
+if (!isset($humo_option["watermark_color_b"])){
+	$humo_option["watermark_color_b"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_color_b', setting_value='224'";
 	@$result=$dbh->query($sql);	
 }
 ?>

@@ -171,7 +171,7 @@ function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$sta
 
 function descendants($family_id,$main_person,$gn,$max_generations) {
 	global $persids, $famsids;
-	global $db, $dbh, $tree;
+	global $dbh, $tree;
 	global $language;
 	$family_nr=1; //*** Process multiple families ***
 	if($max_generations<$gn) { return; }
