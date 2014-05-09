@@ -2,7 +2,7 @@
 class mainindex_cls{
 
 	function show_tree_index(){
-		global $db, $dbh, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option;
+		global $dbh, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option;
 
 		echo '<script type="text/javascript">';
 		echo 'checkCookie();';
@@ -12,17 +12,8 @@ class mainindex_cls{
 		echo '<div id="mainmenu_centerbox">';
 
 		// *** Select family tree ***
-		/*
-		$datasql = mysql_query("SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-			AND humo_tree_texts.treetext_language='".$selected_language."' ORDER BY tree_order",$db);
-		$num_rows = mysql_num_rows($datasql);
-		*/
-		$datasql = $dbh->query("SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-			AND humo_tree_texts.treetext_language='".$selected_language."' ORDER BY tree_order");
+		$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
 		$num_rows = $datasql->rowCount();
-
 		if ($num_rows>1){
 			echo '<div id="mainmenu_left">';
 				echo '<div class="mainmenu_bar fonts">'.__('Select a family tree').':</div>';
@@ -32,46 +23,23 @@ class mainindex_cls{
 		}
 
 		$center_id="mainmenu_center";
-		if ($num_rows<=1){
-			$center_id="mainmenu_center_alt";
-		}
+		if ($num_rows<=1) $center_id="mainmenu_center_alt";
 		echo '<div id="'.$center_id.'" class="style_tree_text fonts">';
-			// *** Get genealogical data ***
-			$tree_prefix_selected=$_SESSION['tree_prefix'];
-			if (isset($_GET['tree_prefix_gegevens'])){
-				// *** Check if genealogy exists ***
-				//$datasql = mysql_query("SELECT * FROM humo_trees
-				//	WHERE tree_prefix='".safe_text($_GET['tree_prefix_gegevens'])."'",$db);
-				$datasql = $dbh->query("SELECT * FROM humo_trees
-					WHERE tree_prefix='".safe_text($_GET['tree_prefix_gegevens'])."'");
-				if ($datasql->rowCount()==1){
-					$tree_prefix_selected=$_GET['tree_prefix_gegevens'];
-				}
-			}
-			/*
-			$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-				ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-				AND treetext_language='".$selected_language."' WHERE tree_prefix='".safe_text($tree_prefix_selected)."'  ORDER BY tree_order";
-			$datasql = mysql_query($sql,$db);
-			@$dataDb=mysql_fetch_object($datasql);
-			*/
-			$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
-				ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-				AND treetext_language='".$selected_language."' WHERE tree_prefix='".safe_text($tree_prefix_selected)."'  ORDER BY tree_order";
+			$sql = "SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix_quoted."' ORDER BY tree_order";
 			$datasql = $dbh->query($sql);
 			@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 			// *** Show name of selected family tree ***
 			echo '<div class="mainmenu_bar fonts">';
-			if ($num_rows>1){ echo __('Selected family tree').': '; }
-			// *** Variable $treetext_name used from menu.php ***
-			echo $treetext_name;
+				if ($num_rows>1){ echo __('Selected family tree').': '; }
+				// *** Variable $treetext_name used from menu.php ***
+				echo $treetext_name;
 			echo '</div>';
+
 			if ($bot_visit AND $humo_option["searchengine_cms_only"]=='y'){
 				//
 			}
 			else{
-				//if ($tree_prefix_selected==''){
-				if ($tree_prefix_selected=='' OR $tree_prefix_selected=='EMPTY'){
+				if ($tree_prefix_quoted=='' OR $tree_prefix_quoted=='EMPTY'){
 					//echo '<h2><a href="'.CMS_ROOTPATH.'login.php">'.__('Please login first.').'</a></h2>';
 					echo '<h2><a href="'.CMS_ROOTPATH.'login.php">'.__('Select another family tree, or login for the selected family tree.').'</a></h2>';
 				}
@@ -84,7 +52,7 @@ class mainindex_cls{
 					echo $this->owner();
 
 					// *** Prepare mainmenu text and source ***
-					$treetext=show_tree_text($tree_prefix_selected, $selected_language);
+					$treetext=show_tree_text($tree_prefix_quoted, $selected_language);
 					// *** Show mainmenu text ***
 					$mainmenu_text=$treetext['mainmenu_text'];
 					if ($mainmenu_text!='') echo '<p>'.nl2br($mainmenu_text).$dirmark2.'</p>';
@@ -118,9 +86,8 @@ class mainindex_cls{
 
 	// *** List family trees ***
 	function tree_list($datasql){
-		global $db, $dbh, $humo_option, $uri_path, $user, $language, $selected_language;
+		global $dbh, $humo_option, $uri_path, $user, $language, $selected_language;
 		$text='';
-		//while (@$dataDb=mysql_fetch_object($datasql)){
 		while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 
 			// *** Check is family tree is shown or hidden for user group ***
@@ -217,22 +184,13 @@ class mainindex_cls{
 
 	//*** Most frequent names ***
 	function last_names(){
-		global $db, $dbh, $language, $user, $humo_option, $uri_path;
-		/*
-		$personqry="SELECT pers_lastname, pers_prefix,
-			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
-			FROM ".safe_text($_SESSION['tree_prefix'])."person
-			WHERE pers_lastname NOT LIKE ''
-			GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,5";
-		$person=mysql_query($personqry, $db);
-		*/
+		global $dbh, $language, $user, $humo_option, $uri_path;
 		$personqry="SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
 			FROM ".safe_text($_SESSION['tree_prefix'])."person
 			WHERE pers_lastname NOT LIKE ''
 			GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,5";
 		$person=$dbh->query($personqry);
-		//while (@$personDb=mysql_fetch_object($person)){
 		while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 			// *** No & character in $_GET, replace to: | !!!
 			$last_names[]=$personDb->pers_lastname;
@@ -280,7 +238,7 @@ class mainindex_cls{
 
 	// *** Search field ***
 	function search_box(){
-		global $language, $db, $dbh;
+		global $language, $dbh;
 
 		// *** Reset search field if a new genealogy is selected ***
 		$reset_search=false;
@@ -352,8 +310,6 @@ class mainindex_cls{
 		print '<p><input type="text" name="quicksearch" value="'.$quicksearch.'" size="30" pattern=".{3,}" title="'.__('Minimum: 3 characters.').'"></p>';
 
 		// Check if there are multiple family trees.
-		//$datasql2 = mysql_query("SELECT * FROM humo_trees",$db);
-		//$num_rows2 = mysql_num_rows($datasql2);
 		$datasql2 = $dbh->query("SELECT * FROM humo_trees");
 		$num_rows2 = $datasql2->rowCount();
 		if ($num_rows2>1){
@@ -382,24 +338,17 @@ class mainindex_cls{
 
 	// *** Extra links ***
 	function extra_links(){
-		global $db, $dbh, $humo_option, $uri_path;
+		global $dbh, $humo_option, $uri_path;
 
 		// *** Check if there are extra links ***
-		//$datasql = mysql_query("SELECT * FROM humo_settings WHERE setting_variable='link'",$db);
-		//@$num_rows = mysql_num_rows($datasql);
 		$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
 		@$num_rows = $datasql->rowCount();
 		if ($num_rows>0){
 			include_once(CMS_ROOTPATH.'include/person_cls.php');
-			//$person=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-			//	WHERE pers_own_code NOT LIKE ''",$db);
 			$person=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 				WHERE pers_own_code NOT LIKE ''");
-			//while(@$personDb=mysql_fetch_object($person)){
 			while(@$personDb=$person->fetch(PDO::FETCH_OBJ)){
-				//$datasql = mysql_query("SELECT * FROM humo_settings WHERE setting_variable='link'",$db);
 				$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
-				//while (@$dataDb=mysql_fetch_object($datasql)){
 				while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 					$item=explode("|",$dataDb->setting_value);
 					if ($personDb->pers_own_code==$item[0]){
@@ -428,20 +377,16 @@ class mainindex_cls{
 
 	// *** Alphabet line ***
 	function alphabet(){
-		global $language, $user, $db, $dbh, $humo_option, $uri_path;
+		global $language, $user, $dbh, $humo_option, $uri_path;
 
 		//*** Find first first_character of last name ***
 		print __('Surnames Index:')."<br>\n";
-		//$personqry="SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM ".safe_text($_SESSION['tree_prefix'])."person GROUP BY first_character";
 		$personqry="SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM ".$_SESSION['tree_prefix']."person GROUP BY first_character";
 		// *** If "van Mons" is selected, also check pers_prefix ***
 		if ($user['group_kindindex']=="j"){
-			//$personqry="SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character FROM ".safe_text($_SESSION['tree_prefix'])."person GROUP BY first_character";
 			$personqry="SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character FROM ".safe_text($_SESSION['tree_prefix'])."person GROUP BY first_character";
 		}
-		//@$person=mysql_query($personqry, $db);
 		@$person=$dbh->query($personqry);
-		//while (@$personDb=mysql_fetch_object($person)){
 		while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 			if (CMS_SPECIFIC=='Joomla'){
 				$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;database='.
@@ -465,11 +410,8 @@ class mainindex_cls{
 		}
 		echo ' <a href="'.$path_tmp. '">'.__('Other')."</a>\n";
 	
-		//$person="SELECT pers_patronym FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_patronym LIKE '_%' AND pers_lastname =''";
-		//@$personDb=mysql_query($person,$db);
 		$person="SELECT pers_patronym FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_patronym LIKE '_%' AND pers_lastname =''";
 		@$personDb=$dbh->query($person);
-		//if (@mysql_num_rows($personDb)>0) {
 		if ($personDb->rowCount()>0) {
 			print ' <a href="'.CMS_ROOTPATH.'list.php?index_list=patronym">'.__('Patronyms').'</a>';
 		}

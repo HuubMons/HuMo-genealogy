@@ -10,8 +10,6 @@ $process_age = New calculate_year_cls;
 
 if(isset($_GET['id'])) { $id=$_GET['id']; }
 //if(isset($_GET['database'])) { $database=$_GET['database']; }
-//$person=mysql_query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($id)."'",$db);
-//@$personDb=mysql_fetch_object($person);
 $person= $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($id)."'");
 @$personDb= $person->fetch(PDO::FETCH_OBJ);
 $isborn=0; $isdeath=0; $ismarr=0; $ischild=0;
@@ -78,8 +76,6 @@ if($personDb->pers_fams) {
 		$children[$i]='';
 		$marryear[$i]=''; $marrdate[$i]=''; $temp='';
 		$thisfam=$marriages[$i];
-		//$family=mysql_query("SELECT * FROM ".safe_text($database)."family WHERE fam_gedcomnumber='".safe_text($thisfam)."'",$db);
-		//@$familyDb=mysql_fetch_object($family);
 		$family= $dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".safe_text($thisfam)."'");
 		@$familyDb= $family->fetch(PDO::FETCH_OBJ);
 		if ($personDb->pers_gedcomnumber==$familyDb->fam_man){
@@ -88,8 +84,6 @@ if($personDb->pers_fams) {
 		else{
 			$spouse=$familyDb->fam_man;
 		}
-		//$spouse2=mysql_query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($spouse)."'",$db);
-		//@$spouse2Db=mysql_fetch_object($spouse2);
 		$spouse2=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($spouse)."'");
 		@$spouse2Db= $spouse2->fetch(PDO::FETCH_OBJ);
 		$person_cls = New person_cls;
@@ -165,8 +159,6 @@ if($personDb->pers_fams) {
 			for($m=0; $m<count($children[$i]); $m++) {
 				$chmarriages[$i][$m]=''; // enter value so we wont get error messages in usbwserver
 				$child=$children[$i][$m];
-				//$chld=mysql_query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($child)."'",$db);
-				//@$chldDb=mysql_fetch_object($chld);
 				$chld=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($child)."'");
 				@$chldDb= $chld->fetch(PDO::FETCH_OBJ);
 
@@ -215,8 +207,6 @@ if($personDb->pers_fams) {
 						$grchildren[$i][$m][$p]=''; // enter value so usbwebserver wont throw error messages
 						$chmarryear[$i][$m][$p]=''; $chmarrdate[$i][$m][$p]=''; $temp='';
 						$thischfam=$chmarriages[$i][$m][$p];
-						//$chfamily=mysql_query("SELECT * FROM ".safe_text($database)."family WHERE fam_gedcomnumber='".safe_text($thischfam)."'",$db);
-						//@$chfamilyDb=mysql_fetch_object($chfamily);
 						$chfamily=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".safe_text($thischfam)."'");
 						@$chfamilyDb=$chfamily->fetch(PDO::FETCH_OBJ);
 
@@ -228,8 +218,6 @@ if($personDb->pers_fams) {
 		else{
 			$chspouse=$chfamilyDb->fam_man;
 		}
-		//$chspouse2=mysql_query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($chspouse)."'",$db);
-		//@$chspouse2Db=mysql_fetch_object($chspouse2);
 		$chspouse2=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($chspouse)."'");
 		@$chspouse2Db=$chspouse2->fetch(PDO::FETCH_OBJ);
 
@@ -288,8 +276,6 @@ if($personDb->pers_fams) {
 							$grchildren[$i][$m][$p]=explode(";",$chfamilyDb->fam_children);
 							for($g=0; $g<count($grchildren[$i][$m][$p]); $g++) {
 								$grchild=$grchildren[$i][$m][$p][$g];
-								//$grchld=mysql_query("SELECT * FROM ".safe_text($database)."person WHERE pers_gedcomnumber='".safe_text($grchild)."'",$db);
-								//@$grchldDb=mysql_fetch_object($grchld);
 								$grchld=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($grchild)."'");
 								@$grchldDb=$grchld->fetch(PDO::FETCH_OBJ);
 								$person3_cls = New person_cls;
@@ -431,7 +417,7 @@ print '<div class="left_box">';
 	else {
 		print '<form name="tmlstep" method="post" action="timelines.php?id='.$id.'&amp;database='.$database.'" style="display:inline;">';
 	}
-	
+
 	//======== HELP POPUP ========================
 	if(CMS_SPECIFIC=="Joomla") {
 		echo '<div class="fonts table_header '.$rtlmarker.'sddm" style="postion:absolute;top:32;left:7;">';

@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 // *** show person ***
 function show_person($personDb){
 	global $index_list, $selected_place, $language, $user;
-	global $bot_visit, $db, $dbh, $humo_option, $uri_path, $search_database, $list_expanded;
+	global $bot_visit, $dbh, $humo_option, $uri_path, $search_database, $list_expanded;
 	global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
 	global $select_birth, $select_bapt, $select_place, $select_death, $select_buried;
 	global $selectsort;
@@ -223,12 +223,9 @@ function show_person($personDb){
 		$stmt2 = $dbh->prepare("SELECT * FROM ".safe_text($pers_tree_prefix)."person WHERE pers_gedcomnumber=?");
 		$stmt2->bindParam(1, $partnid);
 		for ($x=0; $x<=$nr_marriages-1; $x++){
-			//$qry="SELECT * FROM ".safe_text($pers_tree_prefix)."family WHERE fam_gedcomnumber='".safe_text($marriage_array[$x])."'";
 			$marr_arr = $marriage_array[$x];
 			$stmt->execute();
 			$fam_partnerDb = $stmt->fetch();
-			//$fam_partner=mysql_query($qry,$db);
-			//$fam_partnerDb=mysql_fetch_object($fam_partner);
 
 			// *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
 			if ($personDb->pers_gedcomnumber==$fam_partnerDb['fam_man'])
@@ -243,12 +240,10 @@ function show_person($personDb){
 				$relation_short=__(') (');
 
 			if ($partner_id!='0' AND $partner_id!=''){
-				//$qry="SELECT * FROM ".safe_text($pers_tree_prefix)."person WHERE pers_gedcomnumber='".safe_text($partner_id)."'";
 				$partnid = $partner_id;
 				$stmt2->execute();
 				$partnerDb = $stmt2->fetch(PDO::FETCH_OBJ);
-				//$partner=mysql_query($qry,$db);
-				//$partnerDb=mysql_fetch_object($partner);
+
 				$partner_cls = New person_cls;
 				$name=$partner_cls->person_name($partnerDb);
 			}
@@ -796,9 +791,7 @@ if ($pers_firstname OR $pers_lastname OR $birth_place OR $death_place OR $birth_
 		$query_part=$query;
 		$query='';
 		$counter=0;
-		//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
 		foreach($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") AS $datapdo) {
-		//while (@$dataDb=mysql_fetch_object($datasql)){
 			if($search_database=="all_but_this" AND $datapdo['tree_prefix']==safe_text($_SESSION['tree_prefix'])) {
 				continue;
 			}
@@ -811,7 +804,6 @@ if ($pers_firstname OR $pers_lastname OR $birth_place OR $death_place OR $birth_
 			if ($hide_tree==false){
 
 				$counter++;
-				//$tree_prefix=$dataDb->tree_prefix;
 				$tree_prefix=$datapdo['tree_prefix'];
 
 				// *** EXAMPLE ***
@@ -885,9 +877,7 @@ if ($index_list=='quicksearch'){
 		//$query_part=$query;
 		$query='';
 		$counter=0;
-		//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
 		foreach($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {
-		//while (@$dataDb=mysql_fetch_object($datasql)){
 			if($search_database=="all_but_this" AND $pdoresult['tree_prefix']==safe_text($_SESSION['tree_prefix'])) {
 				continue;
 			}
@@ -990,7 +980,7 @@ if ($index_list=='places'){
 			$query.=' UNION '; $calc='';
 		}
 		else{
-			$calc='SQL_CALC_FOUND_ROWS ';	
+			$calc='SQL_CALC_FOUND_ROWS ';
 		}
 		if ($user['group_kindindex']=="j"){
 			$query.= "(SELECT ".$calc."*,CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_bapt_place as place_order
@@ -1107,18 +1097,11 @@ if ($index_list=='patronym'){
 
 	// *** Standard index ***
 	if ($query=='' OR $index_list=='standard'){
-		//$query = "SELECT SQL_CALC_FOUND_ROWS * ".$make_date." FROM ".safe_text($_SESSION['tree_prefix'])."person ORDER BY ".$orderby;
-		//$count_qry = "SELECT *, COUNT(*) as teller ".$make_date." FROM ".safe_text($_SESSION['tree_prefix'])."person";
-
 		$query = "SELECT * ".$make_date." FROM ".safe_text($_SESSION['tree_prefix'])."person ORDER BY ".$orderby;
 		$count_qry = "SELECT COUNT(*) as teller ".$make_date." FROM ".safe_text($_SESSION['tree_prefix'])."person";
 
 		// Mons, van or: van Mons
 		if ($user['group_kindindex']=="j"){
-			//$query= "SELECT SQL_CALC_FOUND_ROWS *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ".$make_date."
-			//	FROM ".safe_text($_SESSION['tree_prefix'])."person ORDER BY ".$orderby;
-			//$count_qry = "SELECT *, COUNT(*) as teller ".$make_date." FROM ".safe_text($_SESSION['tree_prefix'])."person";
-
 			$query= "SELECT *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ".$make_date."
 			FROM ".safe_text($_SESSION['tree_prefix'])."person ORDER BY ".$orderby;
 			$count_qry = "SELECT COUNT(*) as teller ".$make_date." FROM ".safe_text($_SESSION['tree_prefix'])."person";
@@ -1132,54 +1115,18 @@ if ($index_list=='patronym'){
 	$start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
 	$nr_persons=$humo_option['show_persons'];
 
-	/*
-	// *** Total number of persons (results), needed to calculate pages ***
-	if(!$spouse_firstname AND !$spouse_lastname) {
-		if ($count_qry){
-			// *** Use MySQL COUNT command to calculate nr. of persons (VERY FAST) ***
-			$result=@mysql_query($count_qry,$db);
-			$resultDb=@mysql_fetch_object($result);
-			$count_persons=@$resultDb->teller;
-		}
-		else{
-			// *** Use mysql_num rows for more difficult queries (SLOW!) ***
-			$person_result2=mysql_query($query,$db);
-			$count_persons=@mysql_num_rows($person_result2);
-		}
-	}
-	else{
-		$count_persons=0; // Isn't use if search is done for spouse...
-	}
-
-	// *** No LIMIT if search is done for spouse ***
-	if(!$spouse_firstname AND !$spouse_lastname) {
-		$person_result=mysql_query($query." LIMIT ".safe_text($item).",".$nr_persons,$db);
-	}
-	else{
-		$person_result=mysql_query($query,$db);
-	}
-	*/
-
 	if(!$spouse_firstname AND !$spouse_lastname) {
 	
-		//$person_result=mysql_query($query." LIMIT ".safe_text($item).",".$nr_persons,$db);
 		$person_result = $dbh->query($query." LIMIT ".$item.",".$nr_persons);
-		//$count_them = $dbh->query($count_qry);
-		//$count_persons = $count_them->rowCount(); echo "COUNTPERS= ".$count_persons."<br>";
  		
 		if ($count_qry){  
 			// *** Use MySQL COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
-			//$result=@mysql_query($count_qry,$db);
-			//$resultDb=@mysql_fetch_object($result);
 			$result= $dbh->query($count_qry);
 			@$resultDb = $result->fetch(PDO::FETCH_OBJ);
 			$count_persons=@$resultDb->teller; 
 		}
 		else{  
 			// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
-			//$sql="SELECT FOUND_ROWS() AS 'found_rows'";
-			//$rows = mysql_query($sql);
-			//$rows = mysql_fetch_assoc($rows);
 			$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
 			$rows = $result->fetch();
 			$count_persons = $rows['found_rows'];   
@@ -1390,10 +1337,8 @@ if ($index_list=='patronym'){
 
 		// *** Check for multiple family trees ***
 		print '<tr><td colspan="2" class="no_border center">';
-		//$datasql2 = mysql_query("SELECT * FROM humo_trees",$db);
 		$datasql2 = $dbh->query("SELECT * FROM humo_trees");
 		$num_rows2 = $datasql2->rowCount();
-		//$num_rows2 = mysql_num_rows($datasql2);
 		if ($num_rows2>1){
 			$checked=''; if ($search_database=="tree_selected"){ $checked='CHECKED'; }
 			print '<input type="radio" name="search_database" value="tree_selected" '.$checked.'> '.
@@ -1458,7 +1403,6 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 
 	// *** Check for search results ***
 	if (@$person_result->rowCount()==0) {
-	//if (@mysql_num_rows($person_result)==0) {
 		$line_pages='';
 		//echo '<br><div class="center">'.__('No names found.').'</div>';
 	}
@@ -1609,7 +1553,6 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 
 	// *** No results ***
 	if ($person_result->rowCount()==0) {
-	//if (@mysql_num_rows($person_result)==0) {
 		echo '<br><div class="center">'.__('No names found.').'</div>';
 	}
 
@@ -1636,7 +1579,6 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 		// set header for extra column to explain to users
 		echo '<tr><td style="text-align:center">'.__('Sort order').':</td><td>&nbsp;</td></tr>';
 	}
-	//while (@$personDb=mysql_fetch_object($person_result)){
 	while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
 		$spouse_found='1';
 
@@ -1647,10 +1589,7 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 
 			for ($marriage_loop=0; $marriage_loop<count($person_fams); $marriage_loop++){
 				// *** Search all persons with a spouse IN the same tree as the 1st person ***
-				//$fam_qry = "SELECT * FROM ".safe_text($personDb->pers_tree_prefix).'family WHERE fam_gedcomnumber="'.safe_text($person_fams[$marriage_loop]).'"';
 				$fam_result = $dbh->query("SELECT * FROM ".safe_text($personDb->pers_tree_prefix).'family WHERE fam_gedcomnumber="'.$person_fams[$marriage_loop].'"');
-				//$fam_result=mysql_query($fam_qry,$db);
-				//while($famDb=mysql_fetch_object($fam_result)){
 				while($famDb= $fam_result->fetch(PDO::FETCH_OBJ)) {
 
 					// *** Search all persons with a spouse IN the same tree as the 1st person ***

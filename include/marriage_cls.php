@@ -12,7 +12,6 @@ var $privacy='';  // Privacy van persoon
 // *** Simple constructor, will work in all PHP versions, I hope :-)) ***
 function construct($familyDb, $privacy_man, $privacy_woman){
 	$this->cls_marriage_Db=$familyDb;           // Database record
-	//$this->privacy=$this->set_privacy($familyDb, $privacy_man, $privacy_woman); // Set privacy
 	$this->privacy=$this->set_privacy($privacy_man, $privacy_woman); // Set privacy
 }
 
@@ -457,22 +456,16 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$end_date='';
 
 			// *** Check death date of husband ***
-			//$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-			//	WHERE pers_gedcomnumber='".$marriageDb->fam_man."'",$db);
-			//@$person_manDb=mysql_fetch_object($person_man);
 			$person_man=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
 				WHERE pers_gedcomnumber='".$marriageDb->fam_man."'");
-			@$person_manDb=$person_man->fetch(PDO::FETCH_OBJ);			
+			@$person_manDb=$person_man->fetch(PDO::FETCH_OBJ);
 			if (isset($person_manDb->pers_death_date) AND $person_manDb->pers_death_date){
 				$end_date=$person_manDb->pers_death_date; }
 
 			// *** Check death date of wife ***
-			//$person_woman=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-			//	WHERE pers_gedcomnumber='".$marriageDb->fam_woman."'",$db);
-			//@$person_womanDb=mysql_fetch_object($person_woman);
 			$person_woman=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
 				WHERE pers_gedcomnumber='".$marriageDb->fam_woman."'");
-			@$person_womanDb=$person_woman->fetch(PDO::FETCH_OBJ);			
+			@$person_womanDb=$person_woman->fetch(PDO::FETCH_OBJ);
 			if (isset($person_womanDb->pers_death_date) AND $person_womanDb->pers_death_date){
 				// *** Check if men died earlier then woman (AT THIS MOMENT ONLY CHECK YEAR) ***
 				if ($end_date AND substr($end_date,-4) > substr($person_womanDb->pers_death_date,-4)){
@@ -510,12 +503,9 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Show events ***
 	if ($user['group_event']=='j'){
 		if ($marriageDb->fam_gedcomnumber){
-			//$event_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
-			//	WHERE event_family_id='$marriageDb->fam_gedcomnumber' AND event_kind='event'",$db);
-			//$num_rows = mysql_num_rows($event_qry);
 			$event_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_family_id='$marriageDb->fam_gedcomnumber' AND event_kind='event'");
-			$num_rows = $event_qry->rowCount();			
+			$num_rows = $event_qry->rowCount();
 			if ($num_rows>0){ $text.= '<span class="event">'; }
 			$i=0;
 			//while($eventDb=mysql_fetch_object($event_qry)){

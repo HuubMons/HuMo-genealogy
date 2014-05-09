@@ -8,9 +8,16 @@
 	<title>HuMo-gen mobile</title>
 	<link rel="stylesheet" href="themes/rene.min.css" />
 	<?php
+if($language["dir"]=="rtl") { 
+	echo '<link rel="stylesheet" href="jquery_mobile/rtl.jquery.mobile-1.2.0.min.css" />';
+	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>';
+	echo '<script type="text/javascript" src="jquery_mobile/rtl.jquery.mobile-1.2.0.min.js"></script>';
+}
+else {  
 	echo '<link rel="stylesheet" href="jquery_mobile/jquery.mobile.structure-1.2.0.min.css" />';
 	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>';
 	echo '<script type="text/javascript" src="jquery_mobile/jquery.mobile-1.2.0.min.js"></script>';
+}
 	?>
 	<style type="text/css"></style>
 </head>
@@ -36,23 +43,11 @@
 	$quicksearch=str_replace(' ', '%', $quicksearch);
 
 	// one can enter "Huub Mons", "Mons Huub", "Huub van Mons", "van Mons, Huub", "Mons, Huub van" and even "Mons van, Huub" ...
-	/*
 	$query= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person 
 		WHERE CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%' 
 		OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$quicksearch%' 
 		OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$quicksearch%' 
 		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$quicksearch%'";
-
-	$query.=" ORDER BY pers_lastname, pers_firstname ASC ";   
-	$data = mysql_query($query,$db);
-	$num_rows = mysql_num_rows($data);	
-	*/
-	$query= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person 
-		WHERE CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%' 
-		OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$quicksearch%' 
-		OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$quicksearch%' 
-		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$quicksearch%'";
-
 	$query.=" ORDER BY pers_lastname, pers_firstname ASC ";   
 	$data = $dbh->query($query);
 	$num_rows = $data->rowCount();	

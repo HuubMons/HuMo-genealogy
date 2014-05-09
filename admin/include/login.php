@@ -2,13 +2,9 @@
 $fault='';
 
 if (isset($_POST['username'])){
-	//$query = "SELECT * FROM humo_users WHERE user_name='" . safe_text($_POST["username"]) ."' AND user_password='".MD5(safe_text($_POST["paswoord"]))."'";
-	//$result = mysql_query($query) or die("FAULT : " . mysql_error());
 	$query = "SELECT * FROM humo_users WHERE user_name='" .$_POST["username"] ."' AND user_password='".MD5($_POST["paswoord"])."'";
 	$result = $dbh->query($query);	
-	//if (mysql_num_rows($result) > 0){
 	if ($result->rowCount() > 0){
-		//@$resultDb=mysql_fetch_object($result);
 		@$resultDb=$result->fetch(PDO::FETCH_OBJ);
 		$_SESSION['user_name_admin'] = safe_text($_POST["username"]);
 		$_SESSION['user_id_admin'] = $resultDb->user_id;
@@ -16,14 +12,6 @@ if (isset($_POST['username'])){
 
 		// *** Add login in logbook ***
 		$log_date=date("Y-m-d H:i");
-		/*
-		$sql="INSERT INTO humo_user_log SET
-			log_date='$log_date',
-			log_username='".safe_text($_POST["username"])."',
-			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
-			log_user_admin='admin'";
-		@mysql_query($sql, $db);
-		*/
 		$sql="INSERT INTO humo_user_log SET
 			log_date='$log_date',
 			log_username='".safe_text($_POST["username"])."',

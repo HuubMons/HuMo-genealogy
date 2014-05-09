@@ -74,16 +74,30 @@ echo '<td style="width:50%;text-align:center;border-left:none;">';
 		$handle_write = @fopen(CMS_ROOTPATH.'languages/'.$language_editor.'/'.$language_editor.".po", "w+");
 		if ($handle_write) {
 			for($i=0; $i<count($_SESSION['line_array']); $i++) {
-				// #~ remarks need \n ad end, except for last one:
+				// #~ remarks need \n at end, except for last one:
 				if(isset($_SESSION['line_array'][$i]["note"]) AND $i!=(count($_SESSION['line_array'])-1) AND substr($_SESSION['line_array'][$i]["note"],0,2)=="#~") { $_SESSION['line_array'][$i]["note"] .="\n"; }
 				// write all types of notes:
-				if(isset($_SESSION['line_array'][$i]["note"])) fwrite($handle_write, $_SESSION['line_array'][$i]["note"]);
+				if(isset($_SESSION['line_array'][$i]["note"])) {
+					if(strpos($_SESSION['line_array'][$i]["note"],"fuzzy")!==false AND isset($_POST['txt_name'.$i]) AND !isset($_POST['fuz'.$i])) {
+						// we have to find: "#, fuzzy" as well as: "#, fuzzy, php-format" as well as: "#, php-format, fuzzy"
+						$_SESSION['line_array'][$i]["note"] = str_replace(array("#, fuzzy\n","fuzzy, ",", fuzzy"),array("","",""),$_SESSION['line_array'][$i]["note"]);
+					}
+					if(strpos($_SESSION['line_array'][$i]["note"],"fuzzy")===false AND isset($_POST['txt_name'.$i]) AND isset($_POST['fuz'.$i])) {
+						if(strpos($_SESSION['line_array'][$i]["note"],"#,")!=false) { // there already is another #. entry --> add fuzzy
+							$_SESSION['line_array'][$i]["note"] = str_replace("#,","#, fuzzy,",$_SESSION['line_array'][$i]["note"]);
+						}
+						else {
+							$_SESSION['line_array'][$i]["note"] .= "#, fuzzy\n";
+						}
+					}
+					fwrite($handle_write, $_SESSION['line_array'][$i]["note"]);
+				}
 				// write msgid line:
 				if(isset($_SESSION['line_array'][$i]["msgid"])) fwrite($handle_write, "msgid ".$_SESSION['line_array'][$i]["msgid"]);
 				// write all msgstr lines:
 				if(isset($_SESSION['line_array'][$i]["msgstr"])) {
 					if($i==0) { // first msgstr is the description of the po file
-						fwrite($handle_write, "msgstr ".$_SESSION['line_array'][$i]["msgstr"]."\n");				
+						fwrite($handle_write, "msgstr ".$_SESSION['line_array'][$i]["msgstr"]."\n");
 					} 
 					elseif(isset($_SESSION['line_array'][$i]["msgid"])) { // regular msgstr lines
 						fwrite($handle_write, "msgstr ".$save_array[$i]);
@@ -134,6 +148,13 @@ echo '<td style="width:50%;text-align:center;border-left:none;">';
 				else { 
 					$line_array[$count]["note"] .= $buffer;  
 				}
+/*				if(strpos("fuzzy",$buffer)!==false) {
+					$line_array[$count]["fuzzy"] = 1;
+				}
+				else {
+					$line_array[$count]["fuzzy"] = 0;
+				}
+*/				
 			}
 			elseif(substr($buffer,0,1)=='"') {
 				if($msgid==1) { 
@@ -149,6 +170,7 @@ echo '<td style="width:50%;text-align:center;border-left:none;">';
 				$count++;
 				$note=0; $msgstr=0; $msgid=0;
 			}
+			$line_array[$count]["nr"] = $count;
 		}
 		$_SESSION['line_array']=$line_array;
 	}
@@ -182,7 +204,7 @@ if(isset($_POST['maxlines']) AND !isset($_POST['prevpage']) AND !isset($_POST['n
 
 if(isset($_POST['langsearchtext']) AND isset($_POST['langsearch'])) { $_SESSION['langsearchtext'] = $_POST['langsearchtext']; }
  
-$search_lines=0; $firstkey=0;		
+$search_lines=0; $firstkey=0;
 if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="") { 
 	//$search_lines=0;
 	foreach($_SESSION['line_array'] as $key => $value) {
@@ -238,7 +260,7 @@ echo '<option value="300" '.$selected.'>'.'300'.'</option>';
 $selected=""; if($_SESSION['maxlines']==400) $selected = " SELECTED ";
 echo '<option value="400" '.$selected.'>'.'400'.'</option>';
 echo '</select>';
-	
+
 // Items found
 echo '</td><td style="text-align:center">';   
 echo __('Total items found: ').$count_lines;
@@ -261,12 +283,13 @@ if (@is_writable($file)) {
 }
 else{
 	echo '<b>'.__('FILE IS NOT WRITABLE!').'</b>';
-}	
-echo '</td></tr></table>';			
+}
+echo '</td></tr></table>';
 
 echo '<table class="humo" border="1" cellspacing="0" width="98%" style="margin-left:auto;margin-right:auto">';
-echo '<tr class="table_header_large"><th style="border-right:none;width:50.5%">'.__('Template').'</th>';
-echo '<th style="border-left:none;width:49.5%">';
+echo '<tr class="table_header_large"><th style="border-right:none;width:48.5%">'.__('Template').'</th>';
+echo '<th style="font-size:85%;width:4%">'.__('Fuzzy').'</th>';
+echo '<th style="border-left:none;width:47.5%">';
 
 include(CMS_ROOTPATH.'languages/'.$language_editor.'/language_data.php');
 echo '&nbsp;&nbsp;&nbsp;'.__('Translation into').' '.$language["name"];
@@ -281,7 +304,7 @@ echo '</div></form>';
 
 function display_po_table() {  
 
-	echo '<div style="height:450px;overflow:auto">';	 
+	echo '<div style="height:450px;overflow:auto">';
 	echo '<table class="humo" border="1" cellspacing="0" width="98%" style="margin-left:auto;margin-right:auto">';
 	$count = 0; $loop_count=0; $found=false;
 	foreach($_SESSION['line_array'] as $key => $value) { // non-translated items
@@ -290,23 +313,48 @@ function display_po_table() {
 		if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="" 
 			AND stripos($value["msgid"],$_SESSION['langsearchtext'])===FALSE 
 			AND stripos($value["msgstr"],$_SESSION['langsearchtext'])===FALSE) { continue; }
-		
+
 			if($count < $_SESSION['present_page']*$_SESSION['maxlines']) { $count++; continue; }
-			$loop_count++; if($loop_count > $_SESSION['maxlines']) break;			
-		
+			$loop_count++; if($loop_count > $_SESSION['maxlines']) break;
+
 			$mytext=notes($value["note"]); 
 			echo '<tr><td style="width:2%"><a onmouseover="popup(\''.popclean($mytext).'\',300);" href="#" style="border-right:none;background:none">';
 			echo '<img style="border:0px;background:none" src="'.CMS_ROOTPATH.'images/reports.gif" alt="references"></a></td>';
-			echo '<td style="vertical-align:top;padding:2px;width:48.5%">'.msgid_display($value["msgid"]).'</td><td style="width:49.5%;">';
+			echo '<td style="vertical-align:top;padding:2px;width:47%">'.msgid_display($value["msgid"]).'</td>';
+			echo '<td style="width:4%"></td>';
+			echo '<td style="width:47%;">';
 			echo '<textarea name="txt_name'.$key.'" style="display:none;visibility:none"></textarea>';
 			echo '<div contentEditable="true" id="text_msgstr'.$key.'" style="padding:2px;border:1px solid #999999;background-color:white;width:100%;height:100%;min-height:20px;font:12px Verdana, tahoma, arial, sans-serif;line-height:160%;">';
 			echo '</div></td></tr>';
 			$found=true;
 		}
 	}
-	foreach($_SESSION['line_array'] as $key => $value) { // translated items	
+	foreach($_SESSION['line_array'] as $key => $value) { // translated items
 		if($key==0) { continue; } // description of po file
-		if(isset($value["msgstr"]) AND str_replace("\n","",$value["msgstr"])!='""' AND isset($value["msgid"])) { 
+		if(strpos($value["note"],"fuzzy")!==false AND isset($value["msgstr"]) AND str_replace("\n","",$value["msgstr"])!='""' AND isset($value["msgid"])) { 
+			if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="" 
+			AND stripos($value["msgid"],$_SESSION['langsearchtext'])===FALSE 
+			AND stripos($value["msgstr"],$_SESSION['langsearchtext'])===FALSE) { continue; }
+			if($count < $_SESSION['present_page']*$_SESSION['maxlines']) { $count++; continue; }
+			$loop_count++; if($loop_count > $_SESSION['maxlines']) break;
+			
+			$mytext=notes($value["note"]); 
+			echo '<tr><td style="width:2%"><a onmouseover="popup(\''.popclean($mytext).'\',300);" href="#">';
+			echo '<img style="border:0px;background:none" src="'.CMS_ROOTPATH.'images/reports.gif" alt="references"></a></td>';
+			echo '<td style="padding:2px;width:47%">'.msgid_display($value["msgid"]).'</td>';
+			echo '<td style="text-align:center;width:4%"><input type="checkbox" value="fuzzie" name="fuz'.$value["nr"].'" checked></td>';
+			echo '<td style="background-color:white;width:47%;">';
+			echo '<textarea name="txt_name'.$key.'" style="display:none;visibility:none"></textarea>';
+			if(strpos($mytext,"fuzzy")!==false) { $bkcolor = "background-color:yellow;"; } else { $bkcolor=""; }
+			echo '<div contentEditable="true" id="text_msgstr'.$key.'" style="'.$bkcolor.'padding:2px;border:1px solid #999999;width:100%;height:100%;font:12px Verdana, tahoma, arial, sans-serif;line-height:160%;">';
+			echo msgstr_display($value["msgstr"]);
+			echo '</div></td></tr>';
+			$found=true;
+		}
+	}	
+	foreach($_SESSION['line_array'] as $key => $value) { // translated items
+		if($key==0) { continue; } // description of po file
+		if(strpos($value["note"],"fuzzy")===false AND isset($value["msgstr"]) AND str_replace("\n","",$value["msgstr"])!='""' AND isset($value["msgid"])) { 
 			if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="" 
 			AND stripos($value["msgid"],$_SESSION['langsearchtext'])===FALSE 
 			AND stripos($value["msgstr"],$_SESSION['langsearchtext'])===FALSE) { continue; }
@@ -316,9 +364,12 @@ function display_po_table() {
 			$mytext=notes($value["note"]); 
 			echo '<tr><td style="width:2%"><a onmouseover="popup(\''.popclean($mytext).'\',300);" href="#">';
 			echo '<img style="border:0px;background:none" src="'.CMS_ROOTPATH.'images/reports.gif" alt="references"></a></td>';
-			echo '<td style="padding:2px;width:48.5%">'.msgid_display($value["msgid"]).'</td><td style="background-color:white;width:49.5%;">';
+			echo '<td style="padding:2px;width:47%">'.msgid_display($value["msgid"]).'</td>';
+			echo '<td style="text-align:center;width:4%"><input type="checkbox" value="fuzzie" name="fuz'.$value["nr"].'"></td>';
+			echo '<td style="background-color:white;width:47%;">';
 			echo '<textarea name="txt_name'.$key.'" style="display:none;visibility:none"></textarea>';
-			echo '<div contentEditable="true" id="text_msgstr'.$key.'" style="padding:2px;border:1px solid #999999;background-color:white;width:100%;height:100%;font:12px Verdana, tahoma, arial, sans-serif;line-height:160%;">';
+			if(strpos($mytext,"fuzzy")!==false) { $bkcolor = "background-color:yellow;"; } else { $bkcolor=""; }
+			echo '<div contentEditable="true" id="text_msgstr'.$key.'" style="'.$bkcolor.'padding:2px;border:1px solid #999999;width:100%;height:100%;font:12px Verdana, tahoma, arial, sans-serif;line-height:160%;">';
 			echo msgstr_display($value["msgstr"]);
 			echo '</div></td></tr>';
 			$found=true;
@@ -386,7 +437,7 @@ function msgstr_save($string) {
 		}		
 		else $string = str_replace('"','\"',$string);  // we want the " with backslash since msgstr afterwards gets " around it!
 		$find = array("\\n<br>","\r\n","&nbsp;","&#32;",'\\\\"');
-		$replace = array("\\n","\"\r\""," "," ",'\\"');		
+		$replace = array("\\n","\"\r\""," "," ",'\\"');
 		if(substr($string,-4)=="<br>") $string = substr($string,0,-4);
 		$string = "\"".str_replace($find,$replace,$string)."\"\n\n";
 	}
@@ -400,7 +451,7 @@ function msgstr_save2($string) {
 	// formats the non displayed msgstr text for saving in .po file 
 	if($string AND $string != "<br>") {  
 		$find = array("\\n<br>","\r\n","&nbsp;","&#32;",'\\\\"');
-		$replace = array("\\n","\"\r\""," "," ",'\\"');		
+		$replace = array("\\n","\"\r\""," "," ",'\\"');
 		$string = str_replace($find,$replace,$string)."\n";
 	}
 	else {

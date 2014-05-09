@@ -2,9 +2,6 @@
 include_once("header.php");
 include_once (CMS_ROOTPATH."menu.php");
 
-// *** Extra: change this value to "true" if you want the question "newsletter" added in the mailform. ***
-$newsletter_question=false;
-
 // *** Check block_spam_answer ***
 $mail_allowed=false;
 if (isset($_POST['send_mail'])){
@@ -30,13 +27,12 @@ if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	if (isset($_SESSION['save_last_visitid'])){
 		$mail_message.=__('Last visited family:')." <a href='http://".$_SESSION['save_last_visitid']."'>".$_SESSION['save_last_visitid']."</a><br>\n";
 	}
-	if ($newsletter_question){
+	if (isset($_POST['newsletter'])){
 		$mail_message.=__('Receive newsletter').': '.$_POST['newsletter']."<br>\n";
 	}
 	$mail_message .=$_POST['mail_text']."<br>\n";
 
 	$headers  = "MIME-Version: 1.0\n";
-	//$headers .= "Content-type: text/plain; charset=utf-8\n";
 	$headers .= "Content-type: text/html; charset=utf-8\n";
 	$headers .= "X-Priority: 3\n";
 	$headers .= "X-MSMail-Priority: Normal\n";
@@ -93,7 +89,7 @@ else{
 		$mail_text=''; if (isset($_POST['mail_text'])){ $mail_text=$_POST['mail_text']; }
 		print '<tr><td>'.__('Message: ').'</td><td><textarea name="mail_text" ROWS="10" COLS="40" class="fonts">'.$mail_text.'</textarea></td></tr>';
 
-		if ($newsletter_question){
+		if ($humo_option["use_newsletter_question"]=='y'){
 			print '<tr><td>'.__('Receive newsletter').'</td><td>
 			<input type="radio" name="newsletter" value="Yes"> Ja<br>
 			<input type="radio" name="newsletter" value="No" checked> Nee</td></tr>';

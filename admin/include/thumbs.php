@@ -23,11 +23,9 @@ echo '<input type="hidden" name="page" value="'.$page.'">';
 
 // *** Select folder ***
 $dataqry='SELECT * FROM humo_trees GROUP BY tree_pict_path';
-//@$datasql = mysql_query($dataqry,$db);
 @$datasql = $dbh->query($dataqry);
 echo __('Path to pictures:');
 echo ' <select size="1" name="picture_path">';
-//while ($dataDb=mysql_fetch_object($datasql)){
 while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 	$pict_path=$dataDb->tree_pict_path;
 	if (file_exists($prefx.$pict_path)){

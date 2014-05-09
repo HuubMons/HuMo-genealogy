@@ -62,7 +62,6 @@ echo " ]\n";
 echo "<div class='standard_header'>".ucfirst(language_date($month))." ".$year."</div>";
 
 // *** Build page ***
-//echo '<table class="humo" border="0" cellspacing="1" cellpadding="0" align="center"><tr>'.$newline;
 echo '<table class="humo" align="center"><tr>'.$newline;
 // *** Show headers ***
 echo "<td><b>".__('Day')."</b></td>\n";
@@ -72,17 +71,6 @@ echo '<td align="center"><b>'.ucfirst(__('died'))."</b></td>\n";
 echo "</tr>\n";
 
 // *** Build query ***
-/*
-$query = @mysql_query ("SELECT *,
-	abs(substring( pers_birth_date,1,2 )) as birth_day,
-	substring( pers_birth_date,-4 ) as birth_year
-	FROM ".safe_text($_SESSION['tree_prefix'])."person
-	WHERE substring( pers_birth_date,  4,3) = '$month'
-	OR  substring( pers_birth_date,  3,3) = '$month'
-	order by birth_day ")
-	or die("database-error (1): ".mysql_error());
-*/
-//while(@$record = mysql_fetch_object($query)){
 $query = $dbh->query("SELECT *,
 	abs(substring( pers_birth_date,1,2 )) as birth_day,
 	substring( pers_birth_date,-4 ) as birth_year
@@ -90,7 +78,6 @@ $query = $dbh->query("SELECT *,
 	WHERE substring( pers_birth_date,  4,3) = '$month'
 	OR  substring( pers_birth_date,  3,3) = '$month'
 	order by birth_day ");
-
 while(@$record = $query->fetch(PDO::FETCH_OBJ)) {
 	$calendar_day = $record->birth_day;
 	$birth_day =$record->birth_day.' '.$month;
@@ -129,7 +116,6 @@ while(@$record = $query->fetch(PDO::FETCH_OBJ)) {
 		//echo "<td>$calendar_day</td>";
 	$last_cal_day=$calendar_day;
 
-	//if (!$person_cls->privacy)
 	//	echo "<td>".language_date($record->pers_birth_date)."</td>";
 	if (!$person_cls->privacy)
 		echo "<td>".$record->birth_year."</td>";
@@ -138,7 +124,6 @@ while(@$record = $query->fetch(PDO::FETCH_OBJ)) {
 
 	echo '<td align="left">'.$person_name.'</td>';
 
-	//if (!$person_cls->privacy)
 	//	echo "<td>$died</td>";
 	if (!$person_cls->privacy)
 		echo '<td><div class="pale">'.$died.'</div></td>';

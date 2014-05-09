@@ -364,6 +364,11 @@ table.humo, table.ext {
 	border-radius: 6px 6px 6px 6px;
 }
 
+table.ext {
+	padding:10px;
+	text-align:center;
+}
+
 table.standard {
 	width:98%;
 	border-spacing: 0;
@@ -992,9 +997,21 @@ table.container td{
 	vertical-align:top;
 	text-align:center;
  	border: 1px outset #999999;
-	white-space:nowrap;
+	white-space:nowrap; 
 	padding:15px;
 }
+
+table.newrel {
+	margin-left:auto;
+	margin-right: auto;
+}
+
+table.newrel td{
+	padding:0px;
+	position: relative;
+	border:1px solid #666666;
+}
+
 table.container{
 	text-align:center;
 	border-collapse:separate; 
@@ -1012,7 +1029,7 @@ table.reltable td {
 	padding-top:0px;
 	padding-bottom:0px;
 	font-size:100%;
-	white-space:nowrap;
+/*	white-space:nowrap; */
 }
 
 table.reltable tr:nth-of-type(1n+1) td  {
@@ -1108,13 +1125,14 @@ table.relmenu {
 	background-image:none;
 	background-color:#FFEEFF;
 }
+/*
 table.relmenu tr:last-of-type td:last-of-type {
 	border-radius: 0px;
 }
 table.relmenu tr:nth-of-type(2) td:last-of-type {
 	border-radius: 0px 0px 6px 0px;
 }
-
+*/
 .relboxes {
 /* makes name search boxes same height as pulldown menus */
 	height:17px;
@@ -1132,10 +1150,10 @@ table.relmenu tr:nth-of-type(2) td:last-of-type {
    word-wrap: break-word;      /* IE */
 }
 
-td.extended2 a {
+td.extended_man a, td.extended_woman a {
 	color:#000077;
 }
-td.extended2 {
+td.extended_man {
 	border-radius: 8px;
 	-moz-border-radius: 8 px;
 	-webkit-border-radius: 8px;
@@ -1146,10 +1164,28 @@ td.extended2 {
     
 	background-color: #dddddd;   
 	/* #ECFAFF */
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#aaaaaa));
-	background-image: -webkit-linear-gradient(top, #ffffff, #aaaaaa);
-	background-image:    -moz-linear-gradient(top, #ffffff, #aaaaaa);
-	background-image:      -o-linear-gradient(top, #ffffff, #aaaaaa);
-	background-image:      -ms-linear-gradient(top, #ffffff, #aaaaaa);
-	background-image:         linear-gradient(to bottom, #ffffff, #aaaaaa);    
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#C2C1FF));
+	background-image: -webkit-linear-gradient(top, #ffffff, #C2C1FF);
+	background-image:    -moz-linear-gradient(top, #ffffff, #C2C1FF);
+	background-image:      -o-linear-gradient(top, #ffffff, #C2C1FF);
+	background-image:      -ms-linear-gradient(top, #ffffff, #C2C1FF);
+	background-image:         linear-gradient(to bottom, #ffffff, #C2C1FF);    
+}
+td.extended_woman {
+	border-radius: 8px;
+	-moz-border-radius: 8 px;
+	-webkit-border-radius: 8px;
+	
+	box-shadow: inset -1px -1px 1px 1px #bbbbbb;	
+	-webkit-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
+    -moz-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
+    
+	background-color: #dddddd;   
+	/* #ECFAFF */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#FFB1B1));
+	background-image: -webkit-linear-gradient(top, #ffffff, #FFB1B1);
+	background-image:    -moz-linear-gradient(top, #ffffff, #FFB1B1);
+	background-image:      -o-linear-gradient(top, #ffffff, #FFB1B1);
+	background-image:      -ms-linear-gradient(top, #ffffff, #FFB1B1);
+	background-image:         linear-gradient(to bottom, #ffffff, #FFB1B1);    
 }

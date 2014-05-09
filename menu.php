@@ -13,9 +13,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 	// *** Select family tree ***
 	if (!$bot_visit){
 		$sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		//$tree_prefix_result2 = mysql_query($sql,$db);
 		$tree_prefix_result2 = $dbh->query($sql);
-		//$num_rows = mysql_num_rows($tree_prefix_result2);
 		$num_rows = $tree_prefix_result2->rowCount();
 		if ($num_rows>1){
 
@@ -24,7 +22,6 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			echo ': <select size=1 name="database" onChange="this.form.submit();" style="width: 150px; height:20px;">';
 			echo '<option value="">'.__('Select a family tree:').'</option>';
 			$count=0;
-			//while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result2)){
 			while($tree_prefixDb=$tree_prefix_result2->fetch(PDO::FETCH_OBJ)) {
 				// *** Check if family tree is shown or hidden for user group ***
 				$hide_tree_array2=explode(";",$user['group_hide_trees']);
@@ -225,9 +222,7 @@ echo '<ul class="humo_menu_item">';
 	echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Home')."</a></li>\n";
 
 	// *** Menu genealogy (for CMS pages) ***
-	//$cms_qry=mysql_query("SELECT * FROM humo_cms_pages WHERE page_status!=''",$db);
 	$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!=''");
-	//if (@$sourceDb=mysql_num_rows($cms_qry)){
 	if($cms_qry->rowCount() > 0) {
 		$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
 
@@ -324,10 +319,9 @@ echo '<ul class="humo_menu_item">';
 						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Photobook')."</a></li>\n";
 					}
 
-					if ($user['group_sources']=='j'){
+					//if ($user['group_sources']=='j'){
+					if ($user['group_sources']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check if there are sources in the database ***
-						//$source_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources",$db);
-						//@$sourceDb=mysql_num_rows($source_qry);
 						$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources");
 						@$sourceDb=$source_qry->rowCount();
 						if ($sourceDb>0){
@@ -342,10 +336,9 @@ echo '<ul class="humo_menu_item">';
 						}
 					}
 
-					if ($user['group_addresses']=='j'){
+					//if ($user['group_addresses']=='j'){
+					if ($user['group_addresses']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check for addresses in the database ***
-						//$address_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses WHERE address_gedcomnr LIKE '_%'",$db);
-						//@$addressDb=mysql_num_rows($address_qry);
 						$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr LIKE '_%'");
 						@$addressDb=$address_qry->rowCount();
 						if ($addressDb>0){
@@ -442,8 +435,6 @@ echo '<ul class="humo_menu_item">';
 					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Relationship calculator')."</a></li>\n";
 				}
 				if ($user["group_googlemaps"]=='j' AND file_exists(CMS_ROOTPATH.'maps.php')){
-					//if (!$bot_visit){
-					//if (!$bot_visit AND mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db)) ){
 					if(!$bot_visit AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0) {
 						$select_menu=''; if ($menu_choice=='maps'){ $select_menu=' id="current"'; }
 						if (CMS_SPECIFIC=='Joomla'){

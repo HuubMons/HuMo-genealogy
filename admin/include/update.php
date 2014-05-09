@@ -27,28 +27,14 @@ else{
 	// ********************************
 	// *** HuMo-gen update 1 (V3.1) ***
 	// ********************************
-	//$update_check = @mysql_query("SELECT * FROM humo_tree_texts",$db);
-	//$update_check2 = @mysql_query("SELECT * FROM humo_stambomen_tekst",$db);
+	/*
 	$update_check = @$dbh->query("SELECT * FROM humo_tree_texts");
-	$update_check2 = @$dbh->query("SELECT * FROM humo_stambomen_tekst");	
+	$update_check2 = @$dbh->query("SELECT * FROM humo_stambomen_tekst");
 	if ($update_check OR $update_check2){
 		echo '<tr><td>Check table humo_tree_texts</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		echo '<tr><td>Check table humo_tree_texts</td><td style="background-color:#00FF00">'.__('AUTOMATIC UPDATE PROCESS STARTED!').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_tree_texts (
-			treetext_id smallint(5) unsigned NOT NULL auto_increment,
-			treetext_tree_id smallint(5),
-			treetext_language varchar(100) CHARACTER SET utf8,
-			treetext_name varchar(100) CHARACTER SET utf8,
-			treetext_mainmenu_text text CHARACTER SET utf8,
-			treetext_mainmenu_source text CHARACTER SET utf8,
-			treetext_family_top text CHARACTER SET utf8,
-			treetext_family_footer text CHARACTER SET utf8,
-			PRIMARY KEY  (`treetext_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_tree_texts (
 			treetext_id smallint(5) unsigned NOT NULL auto_increment,
 			treetext_tree_id smallint(5),
@@ -59,9 +45,8 @@ else{
 			treetext_family_top text CHARACTER SET utf8,
 			treetext_family_footer text CHARACTER SET utf8,
 			PRIMARY KEY  (`treetext_id`)
-			) DEFAULT CHARSET=utf8");		
+			) DEFAULT CHARSET=utf8");
 		// *** Re-check ***
-		//$update_check2 = mysql_query("SELECT * FROM humo_tree_texts",$db);
 		$update_check2 = $dbh->query("SELECT * FROM humo_tree_texts");
 		if ($update_check2){
 			echo __('UPDATE OK!');
@@ -70,10 +55,8 @@ else{
 			echo __('UPDATE FAILED!');
 		}
 
-		//$datasql = mysql_query("SELECT * FROM humo_stambomen ORDER BY volgorde",$db);
 		$datasql = $dbh->query("SELECT * FROM humo_stambomen ORDER BY volgorde");
 		if ($datasql){
-			//while ($dataDb=mysql_fetch_object($datasql)){
 			while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 				$sql="INSERT INTO humo_tree_texts SET
 				treetext_tree_id='".$dataDb->id."',
@@ -83,19 +66,17 @@ else{
 				treetext_mainmenu_source='".$dataDb->bron."',
 				treetext_family_top='Familypage'
 				";
-				//$db_update = mysql_query($sql) or die(mysql_error());
 				$db_update = $dbh->query($sql);
 			}
 		}
 
 		echo '</td></tr>';
 	}
-
+	*/
 
 	// ********************************
 	// *** HuMo-gen update 4 (V4.6) ***
 	// ********************************
-	//$update_check_sql = mysql_query("SELECT * FROM humo_tree_texts");
 	$update_check_sql = $dbh->query("SELECT * FROM humo_tree_texts");
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_tree_texts 2</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -104,7 +85,6 @@ else{
 		echo '<tr><td>Check table humo_tree_texts 2</td><td style="background-color:#00FF00">'.__('AUTOMATIC UPDATE PROCESS STARTED!').'<br>';
 		// *** Translate dutch table name into english ***
 		$sql='ALTER TABLE humo_stambomen_tekst RENAME humo_tree_texts';
-		//$update_Db = mysql_query($sql);
 		$update_Db = $dbh->query($sql);
 
 		$sql='ALTER TABLE humo_tree_texts
@@ -117,11 +97,9 @@ else{
 			CHANGE gezin_kop treetext_family_top text CHARACTER SET utf8,
 			CHANGE gezin_voet treetext_family_footer text CHARACTER SET utf8
 			';
-		//$update_Db = mysql_query($sql) or die(mysql_error());
 		$update_Db = $dbh->query($sql);
 
 		// *** New check ***
-		//$update_check2 = mysql_query("SELECT * FROM humo_tree_texts",$db);
 		$update_check2 = $dbh->query("SELECT * FROM humo_tree_texts");
 		if ($update_check2){
 			echo __('UPDATE OK!');
@@ -137,56 +115,37 @@ else{
 	// *********************************
 	// *** HuMo-gen update 3 (V 4.2) ***
 	// *********************************
+	/*
 	// *** Change names of languages in table humo_tree_texts ***
 	$sql='UPDATE humo_tree_texts SET treetext_language="nl"
 		WHERE treetext_language="talen/taal-nederlands.php"';
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
-	
+
 	$sql='UPDATE humo_tree_texts SET treetext_language="de"
 		WHERE treetext_language="talen/taal-deutsch.php"';
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
-	
+
 	$sql='UPDATE humo_tree_texts SET treetext_language="en"
 		WHERE treetext_language="talen/taal-english.php"';
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);	
 
 	$sql='UPDATE humo_tree_texts SET treetext_language="fr"
 		WHERE treetext_language="talen/taal-francais.php"';
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
-
+	*/
 
 
 	// ********************************
 	// *** HuMo-gen update 2 (V3.2) ***
 	// ********************************
-	//$update_check = mysql_query("SELECT * FROM humo_stat_date",$db);
-	//$update_check2 = mysql_query("SELECT * FROM humo_stat_datum",$db);
+	/*
 	$update_check = $dbh->query("SELECT * FROM humo_stat_date");
-	$update_check2 = $dbh->query("SELECT * FROM humo_stat_datum");	
+	$update_check2 = $dbh->query("SELECT * FROM humo_stat_datum");
 	if ($update_check OR $update_check2) {
 		echo '<tr><td>Check table humo_stat_date</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		echo '<tr><td>Check table humo_stat_date</td><td style="background-color:#00FF00">'.__('AUTOMATIC UPDATE PROCESS STARTED!').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_stat_date (
-			stat_id int(10) NOT NULL auto_increment,
-			stat_easy_id varchar(100) CHARACTER SET utf8,
-			stat_ip_address varchar(20) CHARACTER SET utf8,
-			stat_user_agent varchar(255) CHARACTER SET utf8,
-			stat_tree_id varchar(5) CHARACTER SET utf8,
-			stat_gedcom_fam varchar(20) CHARACTER SET utf8,
-			stat_gedcom_man varchar(20) CHARACTER SET utf8,
-			stat_gedcom_woman varchar(20) CHARACTER SET utf8,
-			stat_date_stat datetime NOT NULL,
-			stat_date_linux varchar(50) CHARACTER SET utf8,
-			PRIMARY KEY (`stat_id`)
-		) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_stat_date (
 			stat_id int(10) NOT NULL auto_increment,
 			stat_easy_id varchar(100) CHARACTER SET utf8,
@@ -199,9 +158,8 @@ else{
 			stat_date_stat datetime NOT NULL,
 			stat_date_linux varchar(50) CHARACTER SET utf8,
 			PRIMARY KEY (`stat_id`)
-		) DEFAULT CHARSET=utf8");		
+		) DEFAULT CHARSET=utf8");
 		// *** New check ***
-		//$update_check2 = mysql_query("SELECT * FROM humo_stat_date",$db);
 		$update_check2 = $dbh->query("SELECT * FROM humo_stat_date");
 		if ($update_check2){
 			echo __('UPDATE OK!');
@@ -211,9 +169,9 @@ else{
 		}
 		echo '</td></tr>';
 	}
+	*/
 
-
-	//$update_check_sql = mysql_query("SELECT * FROM humo_stat_date",$db);
+	/*
 	$update_check_sql = $dbh->query("SELECT * FROM humo_stat_date");
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_stat_date 2</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -223,7 +181,6 @@ else{
 
 		// *** Translate dutch table name into english ***
 		$sql='ALTER TABLE humo_stat_datum RENAME humo_stat_date';
-		//$update_Db = mysql_query($sql);
 		$update_Db = $dbh->query($sql);
 
 		$sql='ALTER TABLE humo_stat_date
@@ -237,11 +194,9 @@ else{
 			CHANGE datum_stat stat_date_stat datetime NOT NULL,
 			CHANGE datum_linux stat_date_linux varchar(50) CHARACTER SET utf8
 			';
-		//$update_Db = mysql_query($sql) or die(mysql_error());
 		$update_Db = $dbh->query($sql);
 
 		// *** New check ***
-		//$update_check2 = mysql_query("SELECT * FROM humo_stat_date",$db);
 		$update_check2 = $dbh->query("SELECT * FROM humo_stat_date");
 		if ($update_check2){
 			echo __('UPDATE OK!');
@@ -251,12 +206,12 @@ else{
 		}
 		echo '</td></tr>';
 	}
+	*/
 
 	// *** Automatic installation or update ***
+	/*
 	if (isset($field)){ unset ($field); }
-	//$column_qry = mysql_query('SHOW COLUMNS FROM humo_stat_date');
 	$column_qry = $dbh->query('SHOW COLUMNS FROM humo_stat_date');
-	//while ($columnDb = mysql_fetch_assoc($column_qry)) {
 	while ($columnDb = $column_qry->fetch()) {
 		$field_value=$columnDb['Field'];
 		$field[$field_value]=$field_value;
@@ -266,21 +221,19 @@ else{
 	if (isset($field['stat_user_agent'])){
 		$sql="ALTER TABLE humo_stat_date
 			CHANGE stat_user_agent stat_user_agent varchar(255) CHARACTER SET utf8";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['stat_user_agent'])){
 		$sql="ALTER TABLE humo_stat_date
 			ADD stat_user_agent VARCHAR(255) CHARACTER SET utf8";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
+	*/
 
 
 	// ********************************
 	// *** HuMo-gen update 4 (V4.6) ***
 	// ********************************
-	//$update_check_sql = mysql_query("SELECT * FROM humo_settings",$db);
 	$update_check_sql = $dbh->query("SELECT * FROM humo_settings");
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_settings</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -290,7 +243,6 @@ else{
 
 		// *** Translate dutch table name into english ***
 		$sql='ALTER TABLE humo_instellingen RENAME humo_settings';
-		//$update_Db = mysql_query($sql);
 		$update_Db = $dbh->query($sql);
 
 		$sql='ALTER TABLE humo_settings
@@ -298,11 +250,9 @@ else{
 			CHANGE variabele setting_variable varchar(50) CHARACTER SET utf8,
 			CHANGE waarde setting_value text CHARACTER SET utf8
 			';
-		//$update_Db = mysql_query($sql) or die(mysql_error());
 		$update_Db = $dbh->query($sql);
 
 		// *** New check ***
-		//$update_check2 = mysql_query("SELECT * FROM humo_settings",$db);
 		$update_check2 = $dbh->query("SELECT * FROM humo_settings");
 		if ($update_check2){
 			echo __('UPDATE OK!');
@@ -315,30 +265,23 @@ else{
 
 	// *** Change default languages in table humo_settings ***
 	$sql='UPDATE humo_settings SET setting_value="nl" WHERE setting_value="languages/nederlands.php"';
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
 	
 	$sql='UPDATE humo_settings SET setting_value="nl" WHERE setting_value="talen/taal-nederlands.php"';
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
 	
 	$sql='UPDATE humo_settings SET setting_value="en" WHERE setting_value="languages/english.php"';
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
 	
 	$sql='UPDATE humo_settings SET setting_value="en" WHERE setting_value="talen/taal-english.php"';
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
 	
 	$sql='UPDATE humo_settings SET setting_value="de" WHERE setting_value="talen/taal-deutsch.php"';
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
 	
 	$sql='UPDATE humo_settings SET setting_value="fr" WHERE setting_value="talen/taal-francais.php"';
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
-	
-	//$update_check_sql = mysql_query("SELECT * FROM humo_trees",$db);
+
 	$update_check_sql = $dbh->query("SELECT * FROM humo_trees");
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_trees</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -347,7 +290,6 @@ else{
 		echo '<tr><td>Check table humo_trees</td><td style="background-color:#00FF00">'.__('AUTOMATIC UPDATE PROCESS STARTED!').'<br>';
 		// *** Translate dutch table name into english ***
 		$sql='ALTER TABLE humo_stambomen RENAME humo_trees';
-		//$update_Db = mysql_query($sql);
 		$update_Db = $dbh->query($sql);
 
 		$sql='ALTER TABLE humo_trees
@@ -358,11 +300,9 @@ else{
 			CHANGE personen tree_persons varchar(10) CHARACTER SET utf8,
 			CHANGE gezinnen tree_families varchar(10) CHARACTER SET utf8
 			';
-		//$update_Db = mysql_query($sql) or die(mysql_error());
 		$update_Db = $dbh->query($sql);
 
 		// *** New check ***
-		//$update_check2 = mysql_query("SELECT * FROM humo_trees",$db);
 		$update_check2 = $dbh->query("SELECT * FROM humo_trees");
 		if ($update_check2){
 			echo __('UPDATE OK!');
@@ -376,9 +316,7 @@ else{
 
 	// *** Automatic installation or update ***
 	if (isset($field)){ unset ($field); }
-	//$column_qry = mysql_query('SHOW COLUMNS FROM humo_trees');
 	$column_qry = $dbh->query('SHOW COLUMNS FROM humo_trees');
-	//while ($columnDb = mysql_fetch_assoc($column_qry)) {
 	while ($columnDb = $column_qry->fetch()) {
 		$field_value=$columnDb['Field'];
 		$field[$field_value]=$field_value;
@@ -390,13 +328,11 @@ else{
 	if (isset($field['email'])){
 		$sql="ALTER TABLE humo_trees
 			CHANGE email tree_email varchar(100) CHARACTER SET utf8";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['tree_email'])){
 		$sql="ALTER TABLE humo_trees
 			ADD tree_email VARCHAR(100) CHARACTER SET utf8";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -404,13 +340,11 @@ else{
 	if (isset($field['eigenaar'])){
 		$sql="ALTER TABLE humo_trees
 			CHANGE eigenaar tree_owner varchar(100) CHARACTER SET utf8";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['tree_owner'])){
 		$sql="ALTER TABLE humo_trees
 			ADD tree_owner VARCHAR(100) CHARACTER SET utf8";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -418,13 +352,11 @@ else{
 	if (isset($field['afbpad'])){
 		$sql="ALTER TABLE humo_trees
 			CHANGE afbpad tree_pict_path varchar(100) CHARACTER SET utf8";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['tree_pict_path'])){
 		$sql="ALTER TABLE humo_trees
 			ADD tree_pict_path VARCHAR(100) CHARACTER SET utf8";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -432,43 +364,36 @@ else{
 	if (isset($field['privacy_stamboom'])){
 		$sql="ALTER TABLE humo_trees
 			CHANGE privacy_stamboom tree_privacy varchar(100) CHARACTER SET utf8";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['tree_privacy'])){
 		$sql="ALTER TABLE humo_trees
 			ADD tree_privacy VARCHAR(100) CHARACTER SET utf8";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
 
 	echo '<tr><td>Check table humo_user_log</td>';
-	//$update_check_sql = mysql_query("SELECT * FROM humo_user_log",$db);
 	$update_check_sql = $dbh->query("SELECT * FROM humo_user_log");
 	if ($update_check_sql){
 		echo '<td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		// *** Check if there is an old humo_logboek table ***
-		//$update_check2_sql = mysql_query("SELECT * FROM humo_logboek",$db);
 		$update_check2_sql = $dbh->query("SELECT * FROM humo_logboek");
 		if ($update_check2_sql){
 			echo '<td style="background-color:#00FF00">'.__('AUTOMATIC UPDATE PROCESS STARTED!').'<br>';
 			// *** Translate dutch table name into english ***
 			$sql='ALTER TABLE humo_logboek RENAME humo_user_log';
-			//$update_Db = mysql_query($sql);
 			$update_Db = $dbh->query($sql);
 
 			$sql='ALTER TABLE humo_user_log
 				CHANGE username log_username varchar(25) CHARACTER SET utf8,
 				CHANGE datum log_date varchar(20) CHARACTER SET utf8
 				';
-			//$update_Db = mysql_query($sql) or die(mysql_error());
 			$update_Db = $dbh->query($sql);
 
 			// *** New check ***
-			//$update_check2 = mysql_query("SELECT * FROM humo_user_log",$db);
 			$update_check2 = $dbh->query("SELECT * FROM humo_user_log");
 			if ($update_check2){
 				echo __('UPDATE OK!');
@@ -487,8 +412,6 @@ else{
 
 
 	// *** Update users ***
-	//$update_check_sql = mysql_query("SELECT * FROM humo_users",$db);
-	//$tabel_controleDb=mysql_fetch_object($update_check_sql);
 	$update_check_sql = $dbh->query("SELECT * FROM humo_users");
 	$tabel_controleDb=$update_check_sql->fetch(PDO::FETCH_OBJ);	
 	if (!isset($tabel_controleDb->id)){
@@ -503,11 +426,9 @@ else{
 			CHANGE paswoord user_password varchar(50) CHARACTER SET utf8,
 			CHANGE groeps_id user_group_id varchar(1) CHARACTER SET utf8
 			';
-		//$update_Db = mysql_query($sql) or die(mysql_error());
 		$update_Db = $dbh->query($sql);
 
 		// *** New check ***
-		//$update_check2 = mysql_query("SELECT * FROM humo_users",$db);
 		$update_check2 = $dbh->query("SELECT * FROM humo_users");
 		if ($update_check2){
 			echo __('UPDATE OK!');
@@ -522,8 +443,6 @@ else{
 
 	// *** Update groups ***
 	$groupsql="SELECT * FROM humo_groups";
-	//$groupresult=mysql_query($groupsql,$db);
-	//$groupDb=mysql_fetch_object($groupresult);
 	$groupresult=$dbh->query($groupsql);
 	$groupDb=$groupresult->fetch(PDO::FETCH_OBJ);	
 
@@ -566,11 +485,9 @@ else{
 			CHANGE persoonfilter2 group_filter_pers_hide_act varchar(1) CHARACTER SET utf8,
 			CHANGE filterkarakter2 group_filter_pers_hide varchar(50) CHARACTER SET utf8
 		';
-		//$update_Db = mysql_query($sql) or die(mysql_error());
 		$update_Db = $dbh->query($sql);
 
 		// *** New check ***
-		//$update_check2 = mysql_query("SELECT * FROM humo_groups",$db);
 		$update_check2 = $dbh->query("SELECT * FROM humo_groups");
 		if ($update_check2){
 			echo __('UPDATE OK!');
@@ -584,9 +501,7 @@ else{
 
 	// *** Automatic installation or update ***
 	if (isset($field)){ unset ($field); }
-	//$column_qry = mysql_query('SHOW COLUMNS FROM humo_groups');
 	$column_qry = $dbh->query('SHOW COLUMNS FROM humo_groups');
-	//while ($columnDb = mysql_fetch_assoc($column_qry)) {
 	while ($columnDb = $column_qry->fetch()) {
 		$field_value=$columnDb['Field'];
 		$field[$field_value]=$field_value;
@@ -598,13 +513,11 @@ else{
 	if (isset($field['group_editor'])){
 		$sql="ALTER TABLE humo_groups
 			CHANGE group_editor group_editor varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['group_editor'])){
 		$sql_update="ALTER TABLE humo_groups
 			ADD group_editor VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
-		//$result=mysql_query($sql_update) or die(mysql_error());
 		$result=$dbh->query($sql_update);
 	}
 
@@ -612,13 +525,11 @@ else{
 	if (isset($field['group_statistics'])){
 		$sql="ALTER TABLE humo_groups
 			CHANGE group_statistics group_statistics varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j'";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['group_statistics'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_statistics VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j';";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -626,13 +537,11 @@ else{
 	if (isset($field['verjaardagen_rss'])){
 		$sql="ALTER TABLE humo_groups
 			CHANGE verjaardagen_rss group_birthday_rss varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j'";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['group_birthday_rss'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_birthday_rss VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j';";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -640,13 +549,11 @@ else{
 	if (isset($field['verjaardagen_lijst'])){
 		$sql="ALTER TABLE humo_groups
 			CHANGE verjaardagen_lijst group_birthday_list varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j'";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['group_birthday_list'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_birthday_list VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j';";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -654,13 +561,11 @@ else{
 	if (isset($field['filterdatum'])){
 		$sql="ALTER TABLE humo_groups
 			CHANGE filterdatum group_filter_date varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['group_filter_date'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_filter_date VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -668,12 +573,10 @@ else{
 	if (isset($field['gen_protection'])){
 		$sql="ALTER TABLE humo_groups
 			CHANGE gen_protection group_gen_protection VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['group_gen_protection'])){
 		$sql="ALTER TABLE humo_groups ADD group_gen_protection VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -681,13 +584,11 @@ else{
 	if (isset($field['persoonfilter3'])){
 		$sql="ALTER TABLE humo_groups
 			CHANGE persoonfilter3 group_pers_hide_totally_act VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['group_pers_hide_totally_act'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_pers_hide_totally_act VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -695,12 +596,10 @@ else{
 	if (isset($field['filterkarakter3'])){
 		$sql="ALTER TABLE humo_groups
 			CHANGE filterkarakter3 group_pers_hide_totally varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT 'X'";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['group_pers_hide_totally'])){
 		$sql="ALTER TABLE humo_groups ADD group_pers_hide_totally VARCHAR(50) CHARACTER SET utf8 NOT NULL DEFAULT 'X';";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -708,12 +607,10 @@ else{
 	if (isset($field['photobook'])){
 		$sql="ALTER TABLE humo_groups
 			CHANGE photobook group_photobook varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['group_photobook'])){
 		$sql="ALTER TABLE humo_groups ADD group_photobook VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -721,12 +618,10 @@ else{
 	if (isset($field['hide_trees'])){
 		$sql="ALTER TABLE humo_groups
 			CHANGE hide_trees group_hide_trees varchar(200) CHARACTER SET utf8 NOT NULL DEFAULT ''";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	elseif (!isset($field['group_hide_trees'])){
 		$sql="ALTER TABLE humo_groups ADD group_hide_trees VARCHAR( 200 ) NOT NULL DEFAULT '';";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
@@ -734,11 +629,8 @@ else{
 	// *** Check for update version 4.6 ***
 	echo '<tr><td>HuMo-gen update V4.6</td><td style="background-color:#00FF00">';
 	// *** Read all family trees from database ***
-	//$update_sql = mysql_query("SELECT * FROM humo_trees
-	//	WHERE tree_prefix!='LEEG' AND tree_prefix!='EMPTY' ORDER BY tree_order",$db);
 	$update_sql = $dbh->query("SELECT * FROM humo_trees
-		WHERE tree_prefix!='LEEG' AND tree_prefix!='EMPTY' ORDER BY tree_order");		
-	//while ($updateDb=mysql_fetch_object($update_sql)){
+		WHERE tree_prefix!='LEEG' AND tree_prefix!='EMPTY' ORDER BY tree_order");
 	while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
 
 		echo '<b>Check '.$updateDb->tree_prefix.'</b>';
@@ -746,21 +638,17 @@ else{
 		$translate_tables=false;
 
 		// *** Rename old tables, rename fields, convert html to utf-8 ***
-		//$update_check_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."persoon",$db);
 		$update_check_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."persoon");		// *** Translate table names, update tables ***
 		if ($update_check_sql){
 
 			$translate_tables=true;
 
 			// *** Convert tables into utf-8 ***
-			//$get_tables = mysql_query("SHOW TABLES");
 			$get_tables = $dbh->query("SHOW TABLES");
-			//while($x = mysql_fetch_array($get_tables)) {
 			while($x = $get_tables->fetch()) {
 				if (substr($x[0],0,strlen($updateDb->tree_prefix))==$updateDb->tree_prefix){
 					// *** Change table into UTF-8 ***
 					$update_char='ALTER TABLE '.$x[0].' DEFAULT CHARACTER SET utf8';
-					//$update_charDb = mysql_query($update_char) or die(mysql_error());
 					$update_charDb = $dbh->query($update_char);
 				}
 			}
@@ -768,7 +656,6 @@ else{
 			// *** Translate dutch table name into english ***
 			$sql='ALTER TABLE '.$updateDb->tree_prefix.'persoon
 				RENAME '.$updateDb->tree_prefix.'person';
-			//$update_Db = mysql_query($sql) or die(mysql_error());
 			$update_Db = $dbh->query($sql);
 
 			$sql='ALTER TABLE '.$updateDb->tree_prefix.'person
@@ -811,7 +698,6 @@ else{
 				CHANGE tekst pers_text text CHARACTER SET utf8,
 				CHANGE levend pers_alive varchar(20) CHARACTER SET utf8
 				';
-			//$update_Db = mysql_query($sql) or die(mysql_error());
 			$update_Db = $dbh->query($sql);
 			//$update.=$sql.'<br>';
 
@@ -819,11 +705,10 @@ else{
 			// *** Translate dutch table name into english ***
 			$sql='ALTER TABLE '.$updateDb->tree_prefix.'gezin
 				RENAME '.$updateDb->tree_prefix.'family';
-			//$update_Db = mysql_query($sql) or die(mysql_error());
 			$update_Db = $dbh->query($sql);
 
 			$sql='ALTER TABLE '.$updateDb->tree_prefix. 'family
-				CHANGE id fam_id	mediumint(6) unsigned NOT NULL auto_increment,
+				CHANGE id fam_id mediumint(6) unsigned NOT NULL auto_increment,
 				CHANGE gedcomnummer fam_gedcomnumber varchar(20) CHARACTER SET utf8,
 				CHANGE man fam_man varchar(20) CHARACTER SET utf8,
 				CHANGE vrouw fam_woman varchar(20) CHARACTER SET utf8,
@@ -859,7 +744,6 @@ else{
 				CHANGE levend fam_alive int(1),
 				CHANGE teller fam_counter mediumint(8)
 				';
-			//$update_Db = mysql_query($sql) or die(mysql_error());
 			$update_Db = $dbh->query($sql);
 			//$update.=$sql.'<br>';
 
@@ -872,7 +756,6 @@ else{
 				CHANGE text_changed_date text_changed_date varchar(35) CHARACTER SET utf8,
 				CHANGE text_changed_time text_changed_time varchar(25) CHARACTER SET utf8
 				';
-			//$update_Db = mysql_query($sql) or die(mysql_error());
 			$update_Db = $dbh->query($sql);
 			//$update.=$sql.'<br>';
 			$sql='ALTER TABLE '.$updateDb->tree_prefix. 'sources
@@ -897,7 +780,6 @@ else{
 				CHANGE source_changed_date source_changed_date varchar(35) CHARACTER SET utf8,
 				CHANGE source_changed_time source_changed_time varchar(25) CHARACTER SET utf8
 				';
-			//$update_Db = mysql_query($sql) or die(mysql_error());
 			$update_Db = $dbh->query($sql);
 			//$update.=$sql.'<br>';
 
@@ -919,7 +801,6 @@ else{
 				CHANGE address_changed_date address_changed_date varchar(35) CHARACTER SET utf8,
 				CHANGE address_changed_time address_changed_time varchar(25) CHARACTER SET utf8
 					';
-			//$update_Db = mysql_query($sql) or die(mysql_error());
 			$update_Db = $dbh->query($sql);
 
 			$sql='ALTER TABLE '.$updateDb->tree_prefix. 'events
@@ -937,7 +818,6 @@ else{
 				CHANGE event_changed_date event_changed_date varchar(35) CHARACTER SET utf8,
 				CHANGE event_changed_time event_changed_time varchar(25) CHARACTER SET utf8
 				';
-			//$update_Db = mysql_query($sql) or die(mysql_error());
 			$update_Db = $dbh->query($sql);
 
 			echo ' Tree updated!';
@@ -951,9 +831,7 @@ else{
 
 		// *** Automatic installation or update ***
 		if (isset($field)){ unset ($field); }
-		//$column_qry = mysql_query("SHOW COLUMNS FROM ".$updateDb->tree_prefix."person");
 		$column_qry = $dbh->query("SHOW COLUMNS FROM ".$updateDb->tree_prefix."person");
-		//while ($columnDb = mysql_fetch_assoc($column_qry)) {
 		while ($columnDb = $column_qry->fetch()) {
 			$field_value=$columnDb['Field'];
 			$field[$field_value]=$field_value;
@@ -965,13 +843,11 @@ else{
 		if (isset($field['voorvoegsel'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				CHANGE voorvoegsel pers_tree_prefix	varchar(10) CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['pers_tree_prefix'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				ADD pers_tree_prefix varchar(10) CHARACTER SET utf8 AFTER pers_gedcomnumber";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -979,13 +855,11 @@ else{
 		if (isset($field['person_text_source'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				CHANGE person_text_source pers_text_source text CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['pers_text_source'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				ADD pers_text_source text CHARACTER SET utf8 AFTER pers_text";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -993,13 +867,11 @@ else{
 		if (isset($field['person_favorite'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				CHANGE person_favorite pers_favorite varchar(1) CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['pers_favorite'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				ADD pers_favorite varchar(1) CHARACTER SET utf8 AFTER pers_alive";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -1007,13 +879,11 @@ else{
 		if (isset($field['person_new_date'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				CHANGE person_new_date pers_new_date varchar(35) CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['pers_new_date'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				ADD pers_new_date varchar(35) CHARACTER SET utf8 AFTER pers_favorite";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -1021,13 +891,11 @@ else{
 		if (isset($field['person_new_time'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				CHANGE person_new_time pers_new_time varchar(25) CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['pers_new_time'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				ADD pers_new_time varchar(25) CHARACTER SET utf8 AFTER pers_new_date";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -1035,13 +903,11 @@ else{
 		if (isset($field['person_changed_date'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				CHANGE person_changed_date pers_changed_date varchar(35) CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['pers_changed_date'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				ADD pers_changed_date varchar(35) CHARACTER SET utf8 AFTER pers_new_time";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -1049,13 +915,11 @@ else{
 		if (isset($field['person_changed_time'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				CHANGE person_changed_time pers_changed_time varchar(25) CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['pers_changed_time'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				ADD pers_changed_time varchar(25) CHARACTER SET utf8 AFTER pers_changed_time";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -1066,31 +930,26 @@ else{
 		if (!isset($field['pers_stillborn'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				ADD pers_stillborn VARCHAR(1) CHARACTER SET utf8  DEFAULT 'n' AFTER pers_birth_source;";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
 		// *** UPDATE 2: remove pers_index_bapt in ALL person tables ***
 		if (isset($field['indexdoop'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP indexdoop";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		if (isset($field['pers_index_bapt'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP pers_index_bapt";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
 		// *** UPDATE 3: remove pers_index_death in ALL person tables ***
 		if (isset($field['indexovl'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP indexovl";
-			//result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		if (isset($field['pers_index_death'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP pers_index_death";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -1100,9 +959,7 @@ else{
 		// Add family items
 		// *** Automatic installation or update ***
 		if (isset($field)){ unset ($field); }
-		//$column_qry = mysql_query("SHOW COLUMNS FROM ".$updateDb->tree_prefix."family");
 		$column_qry = $dbh->query("SHOW COLUMNS FROM ".$updateDb->tree_prefix."family");
-		//while ($columnDb = mysql_fetch_assoc($column_qry)) {
 		while ($columnDb = $column_qry->fetch()) {
 			$field_value=$columnDb['Field'];
 			$field[$field_value]=$field_value;
@@ -1113,91 +970,77 @@ else{
 		if (isset($field['family_text_source'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				CHANGE family_text_source fam_text_source text CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['fam_text_source'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				ADD fam_text_source text CHARACTER SET utf8 AFTER fam_text";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
 		if (isset($field['trinstantie'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				CHANGE trinstantie fam_marr_authority text CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['fam_marr_authority'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				ADD fam_marr_authority text CHARACTER SET utf8 AFTER fam_marr_source";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
 		if (isset($field['scheidingsinstantie'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				CHANGE scheidingsinstantie fam_div_authority text CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['fam_div_authority'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				ADD fam_div_authority text CHARACTER SET utf8 AFTER fam_div_source";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
 		if (isset($field['family_new_date'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				CHANGE family_new_date fam_new_date varchar(35) CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['fam_new_date'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				ADD fam_new_date varchar(35) CHARACTER SET utf8 AFTER fam_counter";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
 		if (isset($field['family_new_time'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				CHANGE family_new_time fam_new_time varchar(25) CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['fam_new_time'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				ADD fam_new_time varchar(35) CHARACTER SET utf8 AFTER fam_new_date";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
 		if (isset($field['family_changed_date'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				CHANGE family_changed_date fam_changed_date varchar(35) CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['fam_changed_date'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				ADD fam_changed_date varchar(35) CHARACTER SET utf8 AFTER fam_new_time";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
 		if (isset($field['family_changed_time'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				CHANGE family_changed_time fam_changed_time varchar(25) CHARACTER SET utf8";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		elseif (!isset($field['fam_changed_time'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				ADD fam_changed_time varchar(35) CHARACTER SET utf8 AFTER fam_changed_date";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -1208,9 +1051,7 @@ else{
 		if ($translate_tables==true){
 
 			// *** Update person table (html to utf-8) ***
-			//$read_pers_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."person",$db);
 			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."person");
-			//while ($read_persDb=mysql_fetch_object($read_pers_sql)){
 			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 				$sql='UPDATE '.$updateDb->tree_prefix.'person SET
 					pers_firstname="'.safe_text($read_persDb->pers_firstname).'",
@@ -1243,14 +1084,11 @@ else{
 				$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
 				//$sql = str_replace("<br>\n", "\n", $sql);
 				$sql = str_replace("<br>", "", $sql);
-				//$update_Db = mysql_query($sql,$db) or die(mysql_error());
 				$update_Db = $dbh->query($sql);
 			}
 
 			// *** Update family table (html to utf-8) ***
-			//$read_pers_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."family",$db);
 			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."family");
-			//while ($read_persDb=mysql_fetch_object($read_pers_sql)){
 			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 				$sql='UPDATE '.$updateDb->tree_prefix.'family SET
 					fam_id="'.$read_persDb->fam_id.'",
@@ -1283,14 +1121,11 @@ else{
 				//$sql = str_replace("<br>\n", "\n", $sql);
 				$sql = str_replace("<br>", "", $sql);
 				//$update.=$sql.'<br>';
-				//$update_Db = mysql_query($sql,$db) or die(mysql_error());
 				$update_Db = $dbh->query($sql);
 			}
 
 			// *** Update text table (html to utf-8) ***
-			//$read_pers_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."texts",$db);
 			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."texts");
-			//while ($read_persDb=mysql_fetch_object($read_pers_sql)){
 			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 				$sql='UPDATE '.$updateDb->tree_prefix.'texts SET
 					text_text="'.safe_text($read_persDb->text_text).'"
@@ -1300,14 +1135,11 @@ else{
 				//$sql = str_replace("<br>\n", "\n", $sql);
 				$sql = str_replace("<br>", "", $sql);
 				//$update.=$sql.'<br>';
-				//$update_Db = mysql_query($sql,$db) or die(mysql_error());
 				$update_Db = $dbh->query($sql);
 			}
 
 			// *** Update source table (html to utf-8) ***
-			//$read_pers_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."sources",$db);
 			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."sources");
-			//while ($read_persDb=mysql_fetch_object($read_pers_sql)){
 			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 				$sql='UPDATE '.$updateDb->tree_prefix.'sources SET
 					source_title="'.safe_text($read_persDb->source_title).'",
@@ -1329,14 +1161,11 @@ else{
 				//$sql = str_replace("<br>\n", "\n", $sql);
 				$sql = str_replace("<br>", "", $sql);
 				//$update.=$sql.'<br>';
-				//$update_Db = mysql_query($sql,$db) or die(mysql_error());
 				$update_Db = $dbh->query($sql);
 			}
 
 			// *** Update address table (html to utf-8) ***
-			//$read_pers_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."addresses",$db);
 			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."addresses");
-			//while ($read_persDb=mysql_fetch_object($read_pers_sql)){
 			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 				$sql='UPDATE '.$updateDb->tree_prefix.'addresses SET
 					address_address="'.safe_text($read_persDb->address_address).'",
@@ -1353,14 +1182,11 @@ else{
 				//$sql = str_replace("<br>\n", "\n", $sql);
 				$sql = str_replace("<br>", "", $sql);
 				//$update.=$sql.'<br>';
-				//$update_Db = mysql_query($sql,$db) or die(mysql_error());
 				$update_Db = $dbh->query($sql);
 			}
 
 			// *** Update event table (html to utf-8) ***
-			//$read_pers_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."events",$db);
 			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."events");
-			//while ($read_persDb=mysql_fetch_object($read_pers_sql)){
 			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 				$sql='UPDATE '.$updateDb->tree_prefix.'events SET
 					event_person_id="'.safe_text($read_persDb->event_person_id).'",
@@ -1378,7 +1204,6 @@ else{
 				//$sql = str_replace("<br>\n", "\n", $sql);
 				$sql = str_replace("<br>", "", $sql);
 				//$update.=$sql.'<br>';
-				//$update_Db = mysql_query($sql,$db) or die(mysql_error());
 				$update_Db = $dbh->query($sql);
 			}
 
@@ -1401,7 +1226,6 @@ else{
 	if (!isset($humo_option["update_status"])){
 		$humo_option["update_status"]='0';
 		$sql="INSERT INTO humo_settings SET setting_variable='update_status', setting_value='0'";
-		//@$result=mysql_query($sql) or die(mysql_error());
 		@$result=$dbh->query($sql);
 	}
 
@@ -1413,13 +1237,10 @@ else{
 		echo '<tr><td>HuMo-gen update V4.7</td><td style="background-color:#00FF00">';
 
 		// *** Automatic installation or update ***
-		//$update_check_sql = mysql_query("SELECT * FROM humo_user_log",$db);
 		$update_check_sql = $dbh->query("SELECT * FROM humo_user_log");
 		if ($update_check_sql){
 			if (isset($field)){ unset ($field); }
-			//$column_qry = mysql_query("SHOW COLUMNS FROM humo_user_log");
 			$column_qry = $dbh->query("SHOW COLUMNS FROM humo_user_log");
-			//while ($columnDb = mysql_fetch_assoc($column_qry)) {
 			while ($columnDb = $column_qry->fetch()) {
 				$field_value=$columnDb['Field'];
 				$field[$field_value]=$field_value;
@@ -1429,22 +1250,18 @@ else{
 			if (!isset($field['log_ip_address'])){
 				$sql="ALTER TABLE humo_user_log
 					ADD log_ip_address varchar(20) CHARACTER SET utf8 DEFAULT ''";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 			}
 			if (!isset($field['log_user_admin'])){
 				$sql="ALTER TABLE humo_user_log
 					ADD log_user_admin varchar(5) CHARACTER SET utf8 DEFAULT ''";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 			}
 		}
 
 
 		// *** Update 'Empty' line if used in tree table ***
-		//$update_tree_sql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix='LEEG'",$db);
 		$update_tree_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='LEEG'");
-		//while ($update_treeDb=mysql_fetch_object($update_tree_sql)){
 		while ($update_treeDb=$update_tree_sql->fetch(PDO::FETCH_OBJ)){
 			$update_tree_sql2="UPDATE humo_trees SET
 				tree_prefix='EMPTY',
@@ -1454,14 +1271,11 @@ else{
 				tree_pict_path='EMPTY',
 				tree_privacy='EMPTY'
 				WHERE tree_id=".$update_treeDb->tree_id;
-			//mysql_query($update_tree_sql2,$db);
 			$dbh->query($update_tree_sql2);
 		}
 
 		// *** Read all family trees from tree table ***
-		//$update_sql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY'",$db);
 		$update_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY'");
-		//while ($updateDb=mysql_fetch_object($update_sql)){
 		while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
 			echo '<b>Check '.$updateDb->tree_prefix.'</b>';
 
@@ -1473,16 +1287,12 @@ else{
 			if ($tree_privacy){
 				$sql="UPDATE humo_trees
 					SET tree_privacy='".$tree_privacy."' WHERE tree_id='".$updateDb->tree_id."'";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 			}
 
 			// *** Update person table ***
-			//$privacy_sql = mysql_query("SELECT pers_id, pers_alive FROM ".$updateDb->tree_prefix."person
-			//	WHERE pers_alive!=''",$db);
 			$privacy_sql = $dbh->query("SELECT pers_id, pers_alive FROM ".$updateDb->tree_prefix."person
-				WHERE pers_alive!=''");				
-			//while ($privacyDb=mysql_fetch_object($privacy_sql)){
+				WHERE pers_alive!=''");
 			while ($privacyDb=$privacy_sql->fetch(PDO::FETCH_OBJ)){
 				$pers_alive=$privacyDb->pers_alive;
 				if ($privacyDb->pers_alive=='HZ_levend') { $pers_alive='alive'; }
@@ -1490,29 +1300,22 @@ else{
 				if ($privacyDb->pers_alive=='Aldfaer_ovl') { $pers_alive='deceased'; }
 				$sql='UPDATE '.$updateDb->tree_prefix.'person SET pers_alive="'.$pers_alive.'"
 					WHERE pers_id="'.$privacyDb->pers_id.'"';
-				//$update_Db = mysql_query($sql,$db) or die(mysql_error());
 				$update_Db = $dbh->query($sql);
 			}
 
 			// *** Update person table ***
-			//$pers_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."person
-			//	WHERE pers_lastname='doodgeboren kind'",$db);
 			$pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."person
-				WHERE pers_lastname='doodgeboren kind'");			
-			//while ($persDb=mysql_fetch_object($pers_sql)){
+				WHERE pers_lastname='doodgeboren kind'");
 			while ($persDb=$pers_sql->fetch(PDO::FETCH_OBJ)){
 				$sql='UPDATE '.$updateDb->tree_prefix.'person
 					SET pers_lastname="N.N",
 					pers_stillborn="y"
 					WHERE pers_id="'.$persDb->pers_id.'"';
-				//$update_Db = mysql_query($sql,$db) or die(mysql_error());
 				$update_Db = $dbh->query($sql);
 			}
 
 			// *** Update event table: translate all event_kind items to english ***
-			//$read_pers_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."events",$db);
 			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."events");
-			//while ($read_persDb=mysql_fetch_object($read_pers_sql)){
 			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 				if ($read_persDb->event_kind=='adres') { $event_kind='address'; }
 				if ($read_persDb->event_kind=='afbeelding') { $event_kind='picture'; }
@@ -1533,7 +1336,6 @@ else{
 				if (isset($event_kind)){
 					$sql='UPDATE '.$updateDb->tree_prefix.'events SET event_kind="'.$event_kind.'"
 						WHERE event_id="'.$read_persDb->event_id.'"';
-						//$update_Db = mysql_query($sql,$db) or die(mysql_error());
 						$update_Db = $dbh->query($sql);
 				}
 
@@ -1543,8 +1345,6 @@ else{
 		}
 
 		// *** Update "update_status" to number 1 ***
-		//$result = mysql_query("UPDATE humo_settings SET setting_value='1'
-		//	WHERE setting_variable='update_status'") or die(mysql_error());
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='1'
 			WHERE setting_variable='update_status'");
 
@@ -1577,18 +1377,14 @@ else{
 					$gebeurtsql.=" connect_text='".$source_array[$i]."'";
 				}
 //echo $gebeurtsql.'<br>';
-				//$result=mysql_query($gebeurtsql) or die(mysql_error());
 				$result=$dbh->query($gebeurtsql);
 			}
 		}
 
 		// *** Read all family trees from database ***
-		//$update_sql = mysql_query("SELECT * FROM humo_trees
-		//	WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
-		//while ($updateDb=mysql_fetch_object($update_sql)){
 		$update_sql = $dbh->query("SELECT * FROM humo_trees
 			WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-		while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){		
+		while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
 
 			echo '<b>Check '.$updateDb->tree_prefix.'</b>';
 
@@ -1596,34 +1392,11 @@ else{
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."sources
 				ADD source_status VARCHAR(10) CHARACTER SET utf8 DEFAULT '' AFTER source_id,
 				ADD source_repo_gedcomnr VARCHAR(20) CHARACTER SET utf8 DEFAULT '' AFTER source_repo_page";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 			// *** Repositories table ***
-			//$tbldb = mysql_query("DROP TABLE ".$updateDb->tree_prefix."repositories"); // Remove table.
 			$tbldb = $dbh->query("DROP TABLE ".$updateDb->tree_prefix."repositories"); // Remove table.
 			// *** Generate new table ***
 			print '<br>'.__('creating repositories...').'<br>';
-			/*
-			$tbldb = mysql_query("CREATE TABLE ".$updateDb->tree_prefix."repositories (
-				repo_id mediumint(6) unsigned NOT NULL auto_increment,
-				repo_gedcomnr varchar(20) CHARACTER SET utf8,
-				repo_name text CHARACTER SET utf8,
-				repo_address text CHARACTER SET utf8,
-				repo_zip varchar(20) CHARACTER SET utf8,
-				repo_place varchar(75) CHARACTER SET utf8,
-				repo_phone varchar(20) CHARACTER SET utf8,
-				repo_date varchar(35) CHARACTER SET utf8,
-				repo_source text CHARACTER SET utf8,
-				repo_text text CHARACTER SET utf8,
-				repo_photo text CHARACTER SET utf8,
-				repo_mail varchar(100) CHARACTER SET utf8,
-				repo_url varchar(150) CHARACTER SET utf8,
-				repo_new_date varchar(35) CHARACTER SET utf8,
-				repo_new_time varchar(25) CHARACTER SET utf8,
-				repo_changed_date varchar(35) CHARACTER SET utf8,
-				repo_changed_time varchar(25) CHARACTER SET utf8,
-				PRIMARY KEY (`repo_id`)) DEFAULT CHARSET=utf8") or die(mysql_error());
-			*/
 			$tbldb = $dbh->query("CREATE TABLE ".$updateDb->tree_prefix."repositories (
 				repo_id mediumint(6) unsigned NOT NULL auto_increment,
 				repo_gedcomnr varchar(20) CHARACTER SET utf8,
@@ -1642,36 +1415,11 @@ else{
 				repo_new_time varchar(25) CHARACTER SET utf8,
 				repo_changed_date varchar(35) CHARACTER SET utf8,
 				repo_changed_time varchar(25) CHARACTER SET utf8,
-				PRIMARY KEY (`repo_id`)) DEFAULT CHARSET=utf8");			
+				PRIMARY KEY (`repo_id`)) DEFAULT CHARSET=utf8");
 			// *** Sources connections table ***
-			//$tbldb = mysql_query("DROP TABLE ".$updateDb->tree_prefix."connections"); // Remove table.
 			$tbldb = $dbh->query("DROP TABLE ".$updateDb->tree_prefix."connections"); // Remove table.
 			// *** Generate new table ***
 			print ' '.__('creating connections...');
-			/*
-			$tbldb = mysql_query("CREATE TABLE ".$updateDb->tree_prefix."connections (
-				connect_id mediumint(6) unsigned NOT NULL auto_increment,
-				connect_order mediumint(6),
-				connect_kind varchar(25) CHARACTER SET utf8,
-				connect_sub_kind varchar(30) CHARACTER SET utf8,
-				connect_connect_id varchar(20) CHARACTER SET utf8,
-				connect_date varchar(35) CHARACTER SET utf8,
-				connect_place varchar(75) CHARACTER SET utf8,
-				connect_time varchar(25) CHARACTER SET utf8,
-				connect_page text CHARACTER SET utf8,
-				connect_role varchar(75) CHARACTER SET utf8,
-				connect_text text CHARACTER SET utf8,
-				connect_source_id varchar(20) CHARACTER SET utf8,
-				connect_item_id varchar(20) CHARACTER SET utf8,
-				connect_status varchar(10) CHARACTER SET utf8,
-				connect_new_date varchar(35) CHARACTER SET utf8,
-				connect_new_time varchar(25) CHARACTER SET utf8,
-				connect_changed_date varchar(35) CHARACTER SET utf8,
-				connect_changed_time varchar(25) CHARACTER SET utf8,
-				PRIMARY KEY (`connect_id`),
-				KEY (connect_connect_id)
-				) DEFAULT CHARSET=utf8") or die(mysql_error());
-			*/
 			$tbldb = $dbh->query("CREATE TABLE ".$updateDb->tree_prefix."connections (
 				connect_id mediumint(6) unsigned NOT NULL auto_increment,
 				connect_order mediumint(6),
@@ -1695,12 +1443,9 @@ else{
 				KEY (connect_connect_id)
 				) DEFAULT CHARSET=utf8");
 			// *** Move extended addresses from event to connect table ***
-			//$event_qry=mysql_query("SELECT * FROM ".$updateDb->tree_prefix."events
-			//	WHERE event_kind='address'",$db);
 			$event_qry=$dbh->query("SELECT * FROM ".$updateDb->tree_prefix."events
-				WHERE event_kind='address'");			
+				WHERE event_kind='address'");
 			$eventnr=0;
-			//while($eventDb=mysql_fetch_object($event_qry)){
 			while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 				$gebeurtsql="INSERT INTO ".$updateDb->tree_prefix."connections SET
 					connect_order='".$eventDb->event_order."',
@@ -1717,22 +1462,16 @@ else{
 					connect_changed_date='".$eventDb->event_changed_date."',
 					connect_changed_time='".$eventDb->event_changed_time."'
 					";
-				//$result=mysql_query($gebeurtsql) or die(mysql_error());
 				$result=$dbh->query($gebeurtsql);
 			}
 			// *** Remove old addresses from connect table ***
 			$sql="DELETE FROM ".$updateDb->tree_prefix."events WHERE event_kind='address'";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 
 			// *** Copy extended sources to new connect table ***
-			//$event_qry=mysql_query("SELECT * FROM ".$updateDb->tree_prefix."events
-			//	WHERE event_source LIKE '_%'
-			//	ORDER BY event_person_id,event_family_id,event_order",$db);
 			$event_qry=$dbh->query("SELECT * FROM ".$updateDb->tree_prefix."events
 				WHERE event_source LIKE '_%'
-				ORDER BY event_person_id,event_family_id,event_order");				
-			//while($eventDb=mysql_fetch_object($event_qry)){
+				ORDER BY event_person_id,event_family_id,event_order");
 			while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 				unset($source_array);
 				$source_array=explode(";",$eventDb->event_source);
@@ -1781,7 +1520,6 @@ else{
 							connect_date='".$eventDb->event_date."',
 							connect_place='".$eventDb->event_place."'";
 						}
-					//$result=mysql_query($gebeurtsql) or die(mysql_error());
 					$result=$dbh->query($gebeurtsql);
 				}
 
@@ -1789,21 +1527,17 @@ else{
 				if ($eventDb->event_kind!='source'){
 					$sql="UPDATE ".$updateDb->tree_prefix."events SET event_source='SOURCE'
 						WHERE event_id='".$eventDb->event_id."'";
-					//$result=mysql_query($sql) or die(mysql_error());
 					$result=$dbh->query($sql);
 				}
 				else{
 					$sql="DELETE FROM ".$updateDb->tree_prefix."events WHERE event_id='".$eventDb->event_id."'";
-					//$result=mysql_query($sql) or die(mysql_error());
 					$result=$dbh->query($sql);
 				}
 			}
 
 
 			// *** Update sources in person table ***
-			//$read_pers_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."person",$db);
 			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."person");
-			//while ($read_persDb=mysql_fetch_object($read_pers_sql)){
 			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 				$update=false;
 				$sql="UPDATE ".$updateDb->tree_prefix."person SET";
@@ -1846,16 +1580,13 @@ else{
 				$sql.=" WHERE pers_id='".$read_persDb->pers_id."'";
 
 				if ($update==true){
-					//$result=mysql_query($sql) or die(mysql_error());
 					$result=$dbh->query($sql);
 				}
 			}
 
 
 			// *** Update sources in family table ***
-			//$read_fam_sql = mysql_query("SELECT * FROM ".$updateDb->tree_prefix."family",$db);
 			$read_fam_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."family");
-			//while ($read_famDb=mysql_fetch_object($read_fam_sql)){
 			while ($read_famDb=$read_fam_sql->fetch(PDO::FETCH_OBJ)){
 				$update=false;
 				$sql="UPDATE ".$updateDb->tree_prefix."family SET";
@@ -1905,7 +1636,6 @@ else{
 				$sql.=" WHERE fam_id='".$read_famDb->fam_id."'";
 
 				if ($update==true){
-					//$result=mysql_query($sql) or die(mysql_error());
 					$result=$dbh->query($sql);
 				}
 			}
@@ -1914,8 +1644,6 @@ else{
 		}
 
 		// *** Update "update_status" to number 2 ***
-		//$result = mysql_query("UPDATE humo_settings SET setting_value='2'
-		//	WHERE setting_variable='update_status'") or die(mysql_error());
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='2'
 			WHERE setting_variable='update_status'");
 		echo '</td></tr>';
@@ -1931,18 +1659,8 @@ else{
 	else{
 		echo '<tr><td>HuMo-gen update V4.8.2</td><td style="background-color:#00FF00">';
 
-		//$db_update = mysql_query("DROP TABLE humo_cms_menu");
 		$db_update = $dbh->query("DROP TABLE humo_cms_menu");
 		print __('creating humo_cms_menu...').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_cms_menu (
-			menu_id int(10) NOT NULL AUTO_INCREMENT,
-			menu_parent_id int(10) NOT NULL DEFAULT '0',
-			menu_order int(5) NOT NULL DEFAULT '0',
-			menu_name varchar(25) CHARACTER SET utf8 DEFAULT '',
-			PRIMARY KEY (`menu_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_cms_menu (
 			menu_id int(10) NOT NULL AUTO_INCREMENT,
 			menu_parent_id int(10) NOT NULL DEFAULT '0',
@@ -1950,23 +1668,8 @@ else{
 			menu_name varchar(25) CHARACTER SET utf8 DEFAULT '',
 			PRIMARY KEY (`menu_id`)
 			) DEFAULT CHARSET=utf8");	
-		//$db_update = mysql_query("DROP TABLE humo_cms_pages");
 		$db_update = $dbh->query("DROP TABLE humo_cms_pages");
 		print __('creating humo_cms_pages...').'<br>';
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_cms_pages (
-			page_id int(10) NOT NULL AUTO_INCREMENT,
-			page_status varchar(1) CHARACTER SET utf8 DEFAULT '',
-			page_menu_id int(10) NOT NULL DEFAULT '0',
-			page_order int(10) NOT NULL DEFAULT '0',
-			page_counter int(10) NOT NULL DEFAULT '0',
-			page_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			page_edit_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			page_title varchar(50) CHARACTER SET utf8 DEFAULT '',
-			page_text longtext CHARACTER SET utf8 DEFAULT '',
-			PRIMARY KEY (`page_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_cms_pages (
 			page_id int(10) NOT NULL AUTO_INCREMENT,
 			page_status varchar(1) CHARACTER SET utf8 DEFAULT '',
@@ -1978,12 +1681,10 @@ else{
 			page_title varchar(50) CHARACTER SET utf8 DEFAULT '',
 			page_text longtext CHARACTER SET utf8 DEFAULT '',
 			PRIMARY KEY (`page_id`)
-			) DEFAULT CHARSET=utf8");		
+			) DEFAULT CHARSET=utf8");
 		// *** Update "update_status" to number 3 ***
-		//$result = mysql_query("UPDATE humo_settings SET setting_value='3'
-		//	WHERE setting_variable='update_status'") or die(mysql_error());
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='3'
-			WHERE setting_variable='update_status'");			
+			WHERE setting_variable='update_status'");
 
 		echo '</td></tr>';
 	}
@@ -1998,32 +1699,25 @@ else{
 		echo '<tr><td>HuMo-gen update V4.8.8</td><td style="background-color:#00FF00">';
 
 		// *** Read all family trees from database ***
-		//$update_sql = mysql_query("SELECT * FROM humo_trees
-		//	WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
 		$update_sql = $dbh->query("SELECT * FROM humo_trees
-			WHERE tree_prefix!='EMPTY' ORDER BY tree_order");			
-		//while ($updateDb=mysql_fetch_object($update_sql)){
+			WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 		while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
 			echo '<b>Check '.$updateDb->tree_prefix.'</b><br>';
 
 			// *** Update events table ***
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."events
 				ADD event_gedcomnr varchar(20) CHARACTER SET utf8 AFTER event_id";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 
 			// *** Update person table ***
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				ADD pers_sexe_source text CHARACTER SET utf8 AFTER pers_sexe";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
 		// *** Update "update_status" to number 4 ***
-		//$result = mysql_query("UPDATE humo_settings SET setting_value='4'
-		//	WHERE setting_variable='update_status'") or die(mysql_error());
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='4'
-			WHERE setting_variable='update_status'");		
+			WHERE setting_variable='update_status'");
 
 		echo '</td></tr>';
 	}
@@ -2039,19 +1733,14 @@ else{
 		echo '<tr><td>HuMo-gen update V4.8.9</td><td style="background-color:#00FF00">';
 
 		// *** Read all family trees from database ***
-		//$update_sql = mysql_query("SELECT * FROM humo_trees
-		//	WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
 		$update_sql = $dbh->query("SELECT * FROM humo_trees
 			WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-		//while ($updateDb=mysql_fetch_object($update_sql)){
 		while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
 			//echo '<b>Check '.$updateDb->tree_prefix.'</b><br>';
 
 			// *** Automatic installation or update ***
 			if (isset($field)){ unset ($field); }
-			//$column_qry = mysql_query("SHOW COLUMNS FROM ".$updateDb->tree_prefix."person");
 			$column_qry = $dbh->query("SHOW COLUMNS FROM ".$updateDb->tree_prefix."person");
-			//while ($columnDb = mysql_fetch_assoc($column_qry)) {
 			while ($columnDb = $column_qry->fetch()) {
 				$field_value=$columnDb['Field'];
 				$field[$field_value]=$field_value;
@@ -2063,85 +1752,69 @@ else{
 				// *** Update person table ***
 				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 					ADD pers_unprocessed_tags text CHARACTER SET utf8 AFTER pers_favorite";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 
 				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 					ADD fam_unprocessed_tags text CHARACTER SET utf8 AFTER fam_counter";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 
 				$sql="ALTER TABLE ".$updateDb->tree_prefix."texts
 					ADD text_unprocessed_tags text CHARACTER SET utf8 AFTER text_text";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 
 				$sql="ALTER TABLE ".$updateDb->tree_prefix."sources
 					ADD source_unprocessed_tags text CHARACTER SET utf8 AFTER source_repo_gedcomnr";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 
 				$sql="ALTER TABLE ".$updateDb->tree_prefix."addresses
 					ADD address_unprocessed_tags text CHARACTER SET utf8 AFTER address_photo";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 
 				$sql="ALTER TABLE ".$updateDb->tree_prefix."events
 					ADD event_unprocessed_tags text CHARACTER SET utf8 AFTER event_text";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 
 				$sql="ALTER TABLE ".$updateDb->tree_prefix."connections
 					ADD connect_unprocessed_tags text CHARACTER SET utf8 AFTER connect_status";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 
 				$sql="ALTER TABLE ".$updateDb->tree_prefix."repositories
 					ADD repo_unprocessed_tags text CHARACTER SET utf8 AFTER repo_url";
-				//$result=mysql_query($sql) or die(mysql_error());
 				$result=$dbh->query($sql);
 			}
 			
 			// *** Update tree tables ***
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
 				ADD pers_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER pers_alive";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
 				ADD fam_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER fam_alive";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."texts
 				ADD text_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER text_text";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."sources
 				ADD source_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER source_repo_gedcomnr";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."addresses
 				ADD address_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER address_photo";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."events
 				ADD event_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER event_text,
 				ADD event_event_extra text CHARACTER SET utf8 AFTER event_event";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."connections
 				ADD connect_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER connect_status";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."repositories
 				ADD repo_quality varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER repo_url";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -2152,12 +1825,9 @@ else{
 			ADD user_status varchar(1) CHARACTER SET utf8 AFTER user_remark,
 			ADD user_register_date varchar(20) CHARACTER SET utf8 AFTER user_group_id,
 			ADD user_last_visit varchar(25) CHARACTER SET utf8 AFTER user_register_date";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 
 		// *** Update "update_status" to number 5 ***
-		//$result = mysql_query("UPDATE humo_settings SET setting_value='5'
-		//	WHERE setting_variable='update_status'") or die(mysql_error());
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='5'
 			WHERE setting_variable='update_status'");
 		echo ' Tree updated!';
@@ -2175,22 +1845,17 @@ else{
 	else{
 		echo '<tr><td>HuMo-gen update V4.9.1</td><td style="background-color:#00FF00">';
 		// *** Read all family trees from database ***
-		//$update_sql = mysql_query("SELECT * FROM humo_trees
-		//	WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
 		$update_sql = $dbh->query("SELECT * FROM humo_trees
-			WHERE tree_prefix!='EMPTY' ORDER BY tree_order");			
+			WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 		//while ($updateDb=mysql_fetch_object($update_sql)){
 		while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
 			// *** Update family table ***
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family ADD INDEX (fam_man), ADD INDEX (fam_woman)";
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 		// *** Update "update_status" to number 6 ***
-		//$result = mysql_query("UPDATE humo_settings SET setting_value='6'
-		//	WHERE setting_variable='update_status'") or die(mysql_error());
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='6'
-			WHERE setting_variable='update_status'");			
+			WHERE setting_variable='update_status'");
 		echo ' Tree updated!';
 		echo '</td></tr>';
 	}
@@ -2206,37 +1871,18 @@ else{
 
 		// *** Save gedcom file name and gedcom program in database ***
 		// *** Test for existing column, some users allready tried a new script including a database update ***
-		//$result = mysql_query("SHOW COLUMNS FROM `humo_trees` LIKE 'tree_gedcom'");
 		$result = $dbh->query("SHOW COLUMNS FROM `humo_trees` LIKE 'tree_gedcom'");
-		//if(mysql_num_rows($result)==0) {
 		if($result->rowCount() ==0) {
 			// create it
-			//mysql_query("ALTER TABLE humo_trees ADD COLUMN tree_gedcom varchar (100)") or die("add_column_error ".mysql_error());
 			$dbh->query("ALTER TABLE humo_trees ADD COLUMN tree_gedcom varchar (100)");
 		}
 
-		//mysql_query("ALTER TABLE humo_trees ADD COLUMN tree_gedcom_program varchar (100)") or die("add_column_error ".mysql_error());
 		$dbh->query("ALTER TABLE humo_trees ADD COLUMN tree_gedcom_program varchar (100)");
 
 		// *** Bug in table, change user_group_id ***
 		$dbh->query("ALTER TABLE humo_users CHANGE user_group_id user_group_id smallint(5)");
 
 		// *** Add new table, for user notes ***
-		/*
-		$db_update = mysql_query("CREATE TABLE humo_user_notes (
-			note_id smallint(5) unsigned NOT NULL auto_increment,
-			note_date varchar(20) CHARACTER SET utf8,
-			note_time varchar(25) CHARACTER SET utf8,
-			note_user_id smallint(5),
-			note_note text CHARACTER SET utf8,
-			note_status varchar(10) CHARACTER SET utf8,
-			note_tree_prefix varchar(25) CHARACTER SET utf8,
-			note_pers_gedcomnumber varchar(20) CHARACTER SET utf8,
-			note_fam_gedcomnumber varchar(20) CHARACTER SET utf8,
-			note_names text CHARACTER SET utf8,
-			PRIMARY KEY  (`note_id`)
-			) DEFAULT CHARSET=utf8") or die(mysql_error());
-		*/
 		$db_update = $dbh->query("CREATE TABLE humo_user_notes (
 			note_id smallint(5) unsigned NOT NULL auto_increment,
 			note_date varchar(20) CHARACTER SET utf8,
@@ -2251,10 +1897,8 @@ else{
 			PRIMARY KEY  (`note_id`)
 			) DEFAULT CHARSET=utf8");
 		// *** Update "update_status" to number 7 ***
-		//$result = mysql_query("UPDATE humo_settings SET setting_value='7'
-		//	WHERE setting_variable='update_status'") or die(mysql_error());
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='7'
-			WHERE setting_variable='update_status'");			
+			WHERE setting_variable='update_status'");
 		echo ' Database updated!';
 		echo '</td></tr>';
 	}

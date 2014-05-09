@@ -25,7 +25,6 @@ if (isset($_POST['group_add'])){
 		group_filter_death='n', group_filter_total='n', group_filter_name='j',
 		group_filter_fam='j', group_filter_pers_show_act='j', group_filter_pers_show='*', group_filter_pers_hide_act='n',
 		group_filter_pers_hide='#'";
-	//$db_update = mysql_query($sql) or die(mysql_error());
 	$db_update = $dbh->query($sql);
 }
  
@@ -95,17 +94,14 @@ if (isset($_POST['group_change'])){
 	group_gen_protection='".$_POST["group_gen_protection"]."'
 	WHERE group_id=".$_POST["id"];
 	//echo $sql;
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
 }
 
 if (isset($_POST['group_remove'])){
 	echo '<div class="confirm">';
 	$usersql="SELECT * FROM humo_users WHERE user_group_id=".$_POST["id"];
-	//$user=mysql_query($usersql,$db);
-	//$nr_users=mysql_num_rows($user);
 	$user=$dbh->query($usersql);
-	$nr_users=$user->rowCount();	
+	$nr_users=$user->rowCount();
 	if ($nr_users>0){
 		// *** There are still users connected to this group ***
 		echo '<b>'.__('It\'s not possible to delete this group: there is/ are').' '.$nr_users.' '.__('user(s) connected to this group!').'</b>';
@@ -123,7 +119,6 @@ if (isset($_POST['group_remove'])){
 }
 if (isset($_POST['group_remove2'])){
 	$sql="DELETE FROM humo_groups WHERE group_id='".$_POST["id"]."'";
-	//$db_update = mysql_query($sql) or die(mysql_error());
 	$db_update = $dbh->query($sql);
 }
 
@@ -138,12 +133,10 @@ Group "admin" = website administrator.<br>
 Group "family" = family members or genealogists.').'<br>';
 
 	$groupsql="SELECT * FROM humo_groups";
-	//$groupresult=mysql_query($groupsql,$db);
 	$groupresult=$dbh->query($groupsql);
 	echo '<br><table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 		print '<b>'.__('Choose a user group: ').'</b> ';
 		if(CMS_SPECIFIC=="Joomla") { echo "<br>"; }  // not enough space for text and buttons
-		//while ($groupDb=mysql_fetch_object($groupresult)){
 		while ($groupDb=$groupresult->fetch(PDO::FETCH_OBJ)){
 			$selected='';
 			if ($show_group_id==$groupDb->group_id){ $selected=' class="selected_item"'; }
@@ -164,15 +157,11 @@ Group "family" = family members or genealogists.').'<br>';
 
 	// *** Show usergroup ***
 	$groupsql="SELECT * FROM humo_groups WHERE group_id='".$show_group_id."'";
-	//$groupresult=mysql_query($groupsql,$db);
-	//$groupDb=mysql_fetch_object($groupresult);
 	$groupresult=$dbh->query($groupsql);
 	$groupDb=$groupresult->fetch(PDO::FETCH_OBJ);	
 
 	// *** Automatic installation or update ***
-	//$column_qry = mysql_query('SHOW COLUMNS FROM humo_groups');
 	$column_qry = $dbh->query('SHOW COLUMNS FROM humo_groups');
-	//while ($columnDb = mysql_fetch_assoc($column_qry)) {
 	while ($columnDb = $column_qry->fetch()) {
 		$field_value=$columnDb['Field'];
 		$field[$field_value]=$field_value;
@@ -180,107 +169,89 @@ Group "family" = family members or genealogists.').'<br>';
 	if (!isset($field['group_source_presentation'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_source_presentation VARCHAR(20) NOT NULL DEFAULT 'title' AFTER group_sources;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_show_restricted_source'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_show_restricted_source VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_sources;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_death_date_act'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_death_date_act VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_alive_date;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_death_date'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_death_date VARCHAR(4) NOT NULL DEFAULT '1980' AFTER group_death_date_act;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_menu_persons'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_menu_persons VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_statistics;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_menu_names'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_menu_names VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_statistics;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_menu_login'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_menu_login VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_menu_names;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_showstatistics'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_showstatistics VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_relcalc'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_relcalc VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_googlemaps'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_googlemaps VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_contact'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_contact VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_latestchanges'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_latestchanges VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_pdf_button'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_pdf_button VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_own_code;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_user_notes'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_user_notes VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_own_code;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
  
 	if (!isset($field['group_family_presentation'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_family_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'compact' AFTER group_pdf_button;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_maps_presentation'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_maps_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'hide' AFTER group_family_presentation;";
-		//$result=mysql_query($sql) or die(mysql_error());
 		$result=$dbh->query($sql);
 	}
 
 	// *** Renew data AFTER updates ***
 	$groupsql="SELECT * FROM humo_groups WHERE group_id='".$show_group_id."'";
-	//$groupresult=mysql_query($groupsql,$db);
-	//$groupDb=mysql_fetch_object($groupresult);
 	$groupresult=$dbh->query($groupsql);
-	$groupDb=$groupresult->fetch(PDO::FETCH_OBJ);	
+	$groupDb=$groupresult->fetch(PDO::FETCH_OBJ);
 
 
 	echo '<form method="POST" action="'.$phpself.'">';
@@ -504,7 +475,7 @@ Group "family" = family members or genealogists.').'<br>';
 
 	print '<tr><th bgcolor=green><font color=white>'.__('Texts').'</font></th><th bgcolor=green><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
-	print '<tr><td>'.__('Show work texts (In Haza-Data: #werktekst#)').'</td>';
+	print '<tr><td>'.__('Show hidden text/ own remarks (text between # characters in text fields, example: #check birthday#)').'</td>';
 	print '<td><select size="1" name="group_work_text"><option value="j">'.__('Yes').'</option>';
 	$selected=''; if ($groupDb->group_work_text=='n'){ $selected=' SELECTED'; }
 	echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
@@ -645,7 +616,6 @@ If possible, try to filter with that').'</i></td>';
 			$group_hide_trees.=safe_text($_POST['hide_tree']);
 			$sql="UPDATE humo_groups SET group_hide_trees='".$groupDb->group_hide_trees.$group_hide_trees."'
 			WHERE group_id=".$_POST["id"];
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
@@ -660,22 +630,17 @@ If possible, try to filter with that').'</i></td>';
 			}
 			$sql="UPDATE humo_groups SET group_hide_trees='".$group_hide_trees."'
 			WHERE group_id=".$_POST["id"];
-			//$result=mysql_query($sql) or die(mysql_error());
 			$result=$dbh->query($sql);
 		}
 
 		// *** Renew data after update ***
 		$groupsql="SELECT * FROM humo_groups WHERE group_id='".$show_group_id."'";
-		//$groupresult=mysql_query($groupsql,$db);
-		//$groupDb=mysql_fetch_object($groupresult);
 		$groupresult=$dbh->query($groupsql);
-		$groupDb=$groupresult->fetch(PDO::FETCH_OBJ);		
+		$groupDb=$groupresult->fetch(PDO::FETCH_OBJ);
 		$hide_tree_array=explode(";",$groupDb->group_hide_trees);
 
-		//$data3sql = mysql_query("SELECT * FROM humo_trees ORDER BY tree_order",$db);
-		//while($data3Db=mysql_fetch_object($data3sql)){
 		$data3sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
-		while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){		
+		while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){
 			if ($data3Db->tree_prefix!='EMPTY'){
 				$treetext=show_tree_text($data3Db->tree_prefix, $selected_language);
 				$treetext_name=$treetext['name'];
@@ -708,7 +673,5 @@ If possible, try to filter with that').'</i></td>';
 			}
 		}
 	echo '</table>';
-
-//}
 
 ?>

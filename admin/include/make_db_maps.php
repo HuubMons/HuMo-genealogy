@@ -1,5 +1,4 @@
 <?php
-
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 //error_reporting(E_ALL);
@@ -10,12 +9,10 @@ echo '<h1 align=center>'.__('Google maps administration').'</h1>';
 echo '<table class="humo standard" border="1" style="width:800px;">';
 
 if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the location database
-
 	//echo '<tr bgcolor="green"><th><font color="white">'.__('Creating/ updating database').'</font></th></tr>';
 	echo '<tr class="table_header"><th>'.__('Creating/ updating database').'</th>';
 
 	echo '<tr><td>';
-	//if (!mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) {
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 		if(!$temp->rowCount()) {
 		// no database exists - so create it
@@ -36,7 +33,6 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 			location_lng FLOAT(10,6),
 			location_status TEXT DEFAULT ''
 		)";
-		//mysql_query($locationtbl, $db);
 		$dbh->query($locationtbl);
 	}
 	$count_parsed = 0;
@@ -50,7 +46,6 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 	sleep(1); // make sure this gets printed before the next is executed
 
 	foreach($_SESSION['add_locations'] as $value) {
-
 		$count_parsed++;
 
 		$loc=urlencode($value);
@@ -83,8 +78,6 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 
 			$lat=$json_output['results'][0]['geometry']['location']['lat'];
 			$lng=$json_output['results'][0]['geometry']['location']['lng'];
-
-			//mysql_query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".safe_text($value)."', '".$lat."', '".$lng."') ") or die(mysql_error());
 			$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".safe_text($value)."', '".$lat."', '".$lng."') ");
 
 			sleep(1);  // crucial, otherwise google kicks you out after a few queries
@@ -134,7 +127,6 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 	}
 
 	// refresh the location_status column
-	//if (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) {  // there is a database
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 	if($temp->rowCount() > 0) {
 		refresh_status();  // see function at end of script
@@ -154,7 +146,6 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 else {  // main screen
 
 	if(isset($_POST['deletedatabase'])) {
-		//mysql_query("DROP TABLE humo_location", $db);
 		$dbh->query("DROP TABLE humo_location");
 	}
 
@@ -168,10 +159,8 @@ else {  // main screen
 	
 		$unionstring='';
 		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		//$tree_prefix_result = mysql_query($tree_prefix_sql,$db);
 		$tree_prefix_result = $dbh->query($tree_prefix_sql);
 
-		//while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result)){
 		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
 			$unionstring .= "SELECT pers_birth_place FROM ".$tree_prefixDb->tree_prefix."person UNION ";
 			$unionstring .= "SELECT pers_bapt_place  FROM ".$tree_prefixDb->tree_prefix."person WHERE pers_birth_place = '' UNION ";
@@ -183,21 +172,15 @@ else {  // main screen
 		$unionstring = substr($unionstring,0,-7); // take off last " UNION "
 
 		// from here on we can use only "pers_birth_place", since the UNION puts also all other locations under pers_birth_place
-		//$map_person=mysql_query("SELECT pers_birth_place, count(*) AS quantity FROM (".$unionstring.") AS x GROUP BY pers_birth_place ",$db);
 		$map_person=$dbh->query("SELECT pers_birth_place, count(*) AS quantity FROM (".$unionstring.") AS x GROUP BY pers_birth_place ");
 
 		$add_locations = array();
 
-		//while (@$personDb=mysql_fetch_object($map_person)){
 		while (@$personDb=$map_person->fetch(PDO::FETCH_OBJ)){
-
-			//if (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) {
 			$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 			if($temp->rowCount() > 0) {
 				// there is a database - see if the location already exists and if so - continue with a next loop
-				//$location=mysql_query("SELECT location_location FROM humo_location");
 				$location=$dbh->query("SELECT location_location FROM humo_location");
-				//while (@$locationDb=mysql_fetch_object($location)){
 				while (@$locationDb=$location->fetch(PDO::FETCH_OBJ)){
 					if($locationDb->location_location == $personDb->pers_birth_place) {
 						continue 2;  //continue the outer while loop
@@ -230,7 +213,6 @@ else {  // main screen
 		}
 	}
 	else {
-		//if (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) {
 		$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 		if($temp->rowCount() > 0) {
 			echo '<br>'.__('A geolocation database exists.').'<br>';
@@ -246,7 +228,6 @@ else {  // main screen
 	
 	echo '</td></tr>';
 
-	//if (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) { // there is a location database
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 	if($temp->rowCount() > 0) {
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~ REFRESH BIRTH/DEATH STATUS ~~~~~~~~~~~~~~~~~~~~~~
@@ -285,22 +266,17 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		else {
 			if(isset($_POST['flag_form'])) {  
 				// the pulldown was used -- so show the place that was chosen
-				//$result = mysql_query("SELECT * FROM humo_location WHERE location_id = ".safe_text($_POST['loc_find']),$db);
 				$result = $dbh->query("SELECT * FROM humo_location WHERE location_id = ".safe_text($_POST['loc_find']));
 			}
 			elseif (isset($_POST['loc_delete'])) { 
 				// "delete" was used -- so show map+marker for first on list
-				//mysql_query("DELETE FROM humo_location WHERE location_id = ".$_POST['loc_del_id']);
 				$dbh->query("DELETE FROM humo_location WHERE location_id = ".$_POST['loc_del_id']);
-				//$result = mysql_query("SELECT * FROM humo_location ORDER BY location_location",$db);
 				$result = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
 			}
 			else { 
 				// page was newly entered -- so show map+marker for first on list
-				//$result = mysql_query("SELECT * FROM humo_location ORDER BY location_location",$db);
 				$result = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
 			}
-			//$row = mysql_fetch_array($result);
 			$row = $result->fetch();
 			$lat = $row['location_lat'];  
 			$lng = $row['location_lng']; 
@@ -384,7 +360,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				document.getElementById("latbox").value = results[0].geometry.location.lat().toFixed(5);
 				document.getElementById("lngbox").value = results[0].geometry.location.lng().toFixed(5);
 				map.setCenter(results[0].geometry.location);
-			
+
 					markers[1] = new google.maps.Marker({
 					map: map,
 					position: results[0].geometry.location,
@@ -417,7 +393,6 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			$pos = strpos($_POST['add_name'],$_POST['loc_del_name']);
 
 			if(!isset($_POST['cancel_change']) AND ($pos !== false OR isset($_POST['yes_change']))) {  // the name in pulldown appears in the name in the search box
-				//mysql_query("UPDATE humo_location SET location_location ='".safe_text($_POST['loc_del_name'])."', location_lat =".floatval($_POST['add_lat']).", location_lng = ".floatval($_POST['add_lng'])." WHERE location_location = '".safe_text($_POST['loc_del_name'])."'") or die(mysql_error());
 				$dbh->query("UPDATE humo_location SET location_location ='".safe_text($_POST['loc_del_name'])."', location_lat =".floatval($_POST['add_lat']).", location_lng = ".floatval($_POST['add_lng'])." WHERE location_location = '".safe_text($_POST['loc_del_name'])."'");
 				echo '<span style="color:red;font-weight:bold;">'.__('Changed location:').' '.str_replace("\'","'",safe_text($_POST['loc_del_name'])).'</span><br>';
 			}
@@ -444,28 +419,22 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			//  we added new location
 			//  make sure this location doesn't exist yet! otherwise we get doubles
 			//  if the location already exists do as if "change" was pressed.
-			//$result = mysql_query("SELECT location_location FROM humo_location WHERE location_location = '".safe_text($_POST['add_name'])."'",$db);
 			@$result = $dbh->query("SELECT location_location FROM humo_location WHERE location_location = '".$_POST['add_name']."'");
-			//if(mysql_num_rows($result)==0) { // doesn't exist yet
 			if($result->rowCount()==0) { // doesn't exist yet
-				//mysql_query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".safe_text($_POST['add_name'])."','".floatval($_POST['add_lat'])."','".floatval($_POST['add_lng'])."') ") or die(mysql_error());
 				$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".$_POST['add_name']."','".floatval($_POST['add_lat'])."','".floatval($_POST['add_lng'])."') ");
 				echo '<span style="color:red;font-weight:bold;">'.__('Added location:').' '.str_replace("\'","'",safe_text($_POST['add_name'])).'</span><br>';
 			}
 			else { // location already exists, just update the lat/lng
-				//mysql_query("UPDATE humo_location SET location_location ='".safe_text($_POST['add_name'])."', location_lat =".floatval($_POST['add_lat']).", location_lng = ".floatval($_POST['add_lng'])." WHERE location_location = '".safe_text($_POST['add_name'])."'") or die(mysql_error());
 				$dbh->query("UPDATE humo_location SET location_location ='".$_POST['add_name']."', location_lat =".floatval($_POST['add_lat']).", location_lng = ".floatval($_POST['add_lng'])." WHERE location_location = '".safe_text($_POST['add_name'])."'");
 				echo '<span style="color:red;font-weight:bold;"> '.str_replace("\'","'",safe_text($_POST['add_name'])).': Location already exists.<br>Updated lat/lng.</span><br>';
 			}
 		}
 
 		echo '<form method="POST" name="dbform" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
-		//$loc_list = mysql_query("SELECT * FROM humo_location ORDER BY location_location",$db);
 		$loc_list = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
 		echo '<input type="hidden" name="flag_form" value="dummy">';
 		echo '<select size="1" onChange="document.dbform.submit();" name="loc_find" id="loc_find">';
 		$find_default=true;
-		//while ($loc_listDb=mysql_fetch_object($loc_list)){
 		while ($loc_listDb=$loc_list->fetch(PDO::FETCH_OBJ)){
 			$selected='';
 			if(isset($_POST['loc_find'])) {
@@ -495,26 +464,22 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 
 		echo '</form></td>';
 		echo '<td style="width:360px" rowspan="12"><div id="map_canvas" style="height:360px; width:360px;" ></td></tr>';
-		
+
 		if(isset($_POST['loc_add'])) {
 			// we have added or changed a location - so show that location after page load
-			//$result = mysql_query("SELECT * FROM humo_location WHERE location_location = '".$_POST['add_name']."'", $db);
 			$result = $dbh->query("SELECT * FROM humo_location WHERE location_location = '".$_POST['add_name']."'");
 		}
 		elseif(isset($_POST['loc_change']) OR isset($_POST['yes_change']) OR isset($_POST['cancel_change'])) {
 			// we have changed a location by "Change" or by "YES" - so show that location after page load
 			// or we pushed the "NO" button and want to leave the situation as it was
-			//$result = mysql_query("SELECT * FROM humo_location WHERE location_id = ".$_POST['loc_del_id'], $db);
 			$result = $dbh->query("SELECT * FROM humo_location WHERE location_id = ".$_POST['loc_del_id']);
 		}
 		else {
 			// default: show the location that was selected with the pull down box
-			//$result = mysql_query("SELECT * FROM humo_location WHERE location_id = ".$_POST['loc_find'], $db);
 			$result = $dbh->query("SELECT * FROM humo_location WHERE location_id = ".$_POST['loc_find']);
 		}
-		//$resultDb=mysql_fetch_object($result);
 		$resultDb=$result->fetch(PDO::FETCH_OBJ);
-		
+
 		echo '<form method="POST" name="delform" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
 		echo '<tr><th colspan="2">'.__('Details from the database').'</th></tr>';
 		echo '<tr><td>'.__('Location').':</td><td><input type="text" id="loc_name" name="loc_name" value="'.$resultDb->location_location.'" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
@@ -525,7 +490,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		echo '<input type="hidden" name="loc_del_name" value="'.$resultDb->location_location.'">';
 		echo '<input type="Submit" style="color:red;font-weight:bold" name="loc_delete" value="'.__('Delete this location').'"></td></tr>';
 		//echo '</form>';
-		
+
 		//echo '<form method="POST" name="searchform" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
 		$search_name = $resultDb->location_location;
 		$search_lat = $resultDb->location_lat;
@@ -544,9 +509,9 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		echo '<tr><td colspan="2">';
 		echo '<input type="Submit" name="loc_change" value="'.__('Change this location').'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		echo '<input type="Submit" name="loc_add" value="'.__('Add this location').'"></td></tr>';
-		echo '</form>';		
+		echo '</form>';
 		echo '</table>';
-		
+
 		echo '</td></tr>';
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~DELETE GEOLOCATION DATABASE~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -558,10 +523,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		if(isset($_POST['deletedatabase'])) {
 			echo '<p style="color:red;font-weight:bold;">'.__('Database was deleted!').'<p>';
 		}
-		//elseif (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) {  // there is a database
 		else {  // there is a database
-			//$size = mysql_query("SELECT location_id FROM humo_location", $db);
-			//$num_rows = mysql_num_rows($loc_list);
 			$num_rows = $loc_list->rowCount();
 			printf(__('Here you can delete your entire geolocation database (%d entries).<br>
 If you are absolutely sure, press the button below.'), $num_rows);
@@ -583,30 +545,22 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 
 		// *** Select family tree ***
 		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		//$tree_prefix_result = mysql_query($tree_prefix_sql,$db);
 		$tree_prefix_result = $dbh->query($tree_prefix_sql);
 		echo '<table><tr><th>'.__('Name of tree').'</th><th style="text-align:center">'.__('Starting year').'</th>';
 		echo '<th style="text-align:center">'.__('Interval').'</th>';
-		//$rowspan = mysql_num_rows($tree_prefix_result) + 1;
 		$rowspan = $tree_prefix_result->rowCount() + 1;
 		echo '<th rowspan='.$rowspan.'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="Submit" name="submit" value="'.__('Change').'"></th></tr>';
 		echo '<form method="POST" action="maps.php" style="display : inline;">';
-		//while ($tree_prefixDb=mysql_fetch_object($tree_prefix_result)){
 		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
-
-		   ${"slider_choice".$tree_prefixDb->tree_prefix}="1560"; // default
+			${"slider_choice".$tree_prefixDb->tree_prefix}="1560"; // default
 			$query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_".$tree_prefixDb->tree_prefix."' ";
-			//$result = mysql_query($query);
 			$result = $dbh->query($query);
 			$offset="slider_choice_".$tree_prefixDb->tree_prefix;
-			//if (mysql_num_rows($result)) {
 			if ($result->rowCount() >0) {
-				//$slider_choiceDb = mysql_fetch_object($result);
 				$slider_choiceDb = $result->fetch(PDO::FETCH_OBJ);
 				${"slider_choice".$tree_prefixDb->tree_prefix} = $slider_choiceDb->setting_value;
 				if(isset($_POST[$offset])) {
 					$sql="UPDATE humo_settings SET setting_value='".$_POST[$offset]."' WHERE setting_variable='gslider_".$tree_prefixDb->tree_prefix."'";
-					//mysql_query($sql);
 					$dbh->query($sql);
 					${"slider_choice".$tree_prefixDb->tree_prefix}=$_POST[$offset];
 				}
@@ -614,7 +568,6 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 			else {
 				if(isset($_POST[$offset])) {
 					$sql="INSERT INTO humo_settings SET setting_variable='gslider_".$tree_prefixDb->tree_prefix."', setting_value='".$_POST[$offset]."'";
-					//mysql_query($sql);
 					$dbh->query($sql);
 					${"slider_choice".$tree_prefixDb->tree_prefix}=$_POST[$offset];
 				}
@@ -631,28 +584,22 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 		echo '</table>';  // end list of trees and starting years
 		echo '<br>'.__('Default slider position').": ";
 		$query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_default_pos' ";
-		//$result = mysql_query($query);
 		$result = $dbh->query($query);
 
 		if(isset($_POST['slider_default'])) {
-			//if (mysql_num_rows($result)) { 
 			if ($result->rowCount >0) { 
 				$sql="UPDATE humo_settings SET setting_value ='".$_POST['slider_default']."' WHERE setting_variable='gslider_default_pos'";
-				//mysql_query($sql);
 				$dbh->query($sql);
 				$sl_def=$_POST['slider_default'];
 			}
 			else {
 				$sql="INSERT INTO humo_settings SET setting_variable='gslider_default_pos', setting_value='".$_POST['slider_default']."'";
-				//mysql_query($sql);
 				$dbh->query($sql);
 				$sl_def=$_POST['slider_default'];
 			}
 		}
 		else {
-			//if (mysql_num_rows($result)) {
 			if ($result->rowCount() >0) {
-				//$sl_default_pos=mysql_fetch_array($result);
 				$sl_default_pos=$result->fetch();
 				$sl_def = $sl_default_pos['setting_value'];
 			}
@@ -681,32 +628,21 @@ echo '</table>';  // end google maps admin
 function refresh_status() {
 	global $db, $dbh;
 	// make sure the location_status column exists. If not create it
-	//$result = mysql_query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
 	$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-	//$exists = mysql_num_rows($result);
 	$exists = $result->rowCount();
 	if(!$exists) {
-		//mysql_query("ALTER TABLE humo_location ADD location_status TEXT DEFAULT '' AFTER location_lng");
 		$dbh->query("ALTER TABLE humo_location ADD location_status TEXT DEFAULT '' AFTER location_lng");
 	}
-	//$all_loc = mysql_query("SELECT location_location FROM humo_location");
 	$all_loc = $dbh->query("SELECT location_location FROM humo_location");
-	//while($all_locDb = mysql_fetch_object($all_loc)) {
 	while($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {
 		$loca_array[$all_locDb->location_location] = "";
 	}
 	$status_string = "";
 
 	$tree_pref_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-	//$tree_pref_result = mysql_query($tree_pref_sql,$db);
 	$tree_pref_result = $dbh->query($tree_pref_sql);
-	//while ($tree_prefDb=mysql_fetch_object($tree_pref_result)){
 	while ($tree_prefDb=$tree_pref_result->fetch(PDO::FETCH_OBJ)){
-
-		//$result=mysql_query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM ".$tree_prefDb->tree_prefix."person",$db);
 		$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM ".$tree_prefDb->tree_prefix."person");
-
-		//while($resultDb = mysql_fetch_object($result)) {
 		while($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
 			if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$tree_prefDb->tree_prefix."birth ")===false) {
 				$loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix."birth ";
@@ -724,11 +660,9 @@ function refresh_status() {
 	}
 	foreach($loca_array as $key => $value) {
 		if(isset($_POST['purge']) AND $value == "") {
-			//mysql_query("DELETE FROM humo_location WHERE location_location = '".addslashes($key)."'");
 			$dbh->query("DELETE FROM humo_location WHERE location_location = '".addslashes($key)."'");
 		}
 		else {
-			//mysql_query("UPDATE humo_location SET location_status = '".$value."' WHERE location_location = '".addslashes($key)."'");
 			$dbh->query("UPDATE humo_location SET location_status = '".$value."' WHERE location_location = '".addslashes($key)."'");
 		}
 	}

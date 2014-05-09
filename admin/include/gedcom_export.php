@@ -43,10 +43,8 @@ echo '<H1 align=center>'.__('Gedcom file export').'</H1>';
 function decode($buffer){
 	//$buffer = html_entity_decode($buffer, ENT_NOQUOTES, 'ISO-8859-15');
 	//$buffer = html_entity_decode($buffer, ENT_QUOTES, 'ISO-8859-15');
-
 	if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='ANSI')
 		$buffer=iconv("UTF-8","windows-1252",$buffer);
-
 	return $buffer;
 }
 
@@ -103,14 +101,11 @@ function process_place($place, $number){
 	// 4 LONG W81.66687
 	$text=$number.' PLAC '.$place."\n";
 	if (isset($_POST['gedcom_geocode']) AND $_POST['gedcom_geocode']=='yes'){
-		//if (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) {
 		$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 		if($temp->rowCount() >0) {
 			$geo_location_sql="SELECT * FROM humo_location
 				WHERE location_location='".addslashes($place)."'";
-			//$geo_location_qry=mysql_query($geo_location_sql,$db);
 			$geo_location_qry=$dbh->query($geo_location_sql);
-			//$geo_locationDb=mysql_fetch_object($geo_location_qry);
 			$geo_locationDb=$geo_location_qry->fetch(PDO::FETCH_OBJ);
 			if ($geo_locationDb){
 				$text.=($number+1).' MAP'."\n";
@@ -119,7 +114,7 @@ function process_place($place, $number){
 				if(substr($geocode,0,1) == '-') { $geocode = 'S'.substr($geocode,1); }
 					else { $geocode = 'N'.$geocode; }
 				$text.=($number+2).' LATI '.$geocode."\n";
-			
+
 				$geocode=$geo_locationDb->location_lng;
 				if(substr($geocode,0,1) == '-') { $geocode = 'W'.substr($geocode,1); }
 					else { $geocode = 'E'.$geocode; }
@@ -139,9 +134,7 @@ function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$sta
 		AND connect_sub_kind='".$connect_sub_kind."'
 		AND connect_connect_id='".$connect_connect_id."'
 		ORDER BY connect_order";
-	//$connect_sql=mysql_query($connect_qry,$db);
 	$connect_sql=$dbh->query($connect_qry);
-	//while($connectDb=mysql_fetch_object($connect_sql)){
 	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
 		$buffer.=$start_number.' SOUR';
 		if ($connectDb->connect_source_id){
@@ -178,7 +171,7 @@ function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$sta
 
 function descendants($family_id,$main_person,$gn,$max_generations) {
 	global $persids, $famsids;
-	global $db, $dbh, $tree;
+	global $dbh, $tree;
 	global $language;
 	$family_nr=1; //*** Process multiple families ***
 	if($max_generations<$gn) { return; }
@@ -189,12 +182,8 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 		$persids[] = $main_person;
 		return;
 	}
-	//$family=mysql_query("SELECT fam_man, fam_woman FROM ".$tree.'family
-	//	WHERE fam_gedcomnumber="'.$family_id.'"',$db);
 	$family=$dbh->query("SELECT fam_man, fam_woman FROM ".$tree.'family
-		WHERE fam_gedcomnumber="'.$family_id.'"');		
-	//@$familyDb=mysql_fetch_object($family) or die("'.__('No valid family number.').'");
-	//@$familyDb=mysql_fetch_object($family) or die(__('No valid family number.'));
+		WHERE fam_gedcomnumber="'.$family_id.'"');
 	try {
 		@$familyDb=$family->fetch(PDO::FETCH_OBJ);
 	} catch(PDOException $e) {
@@ -216,11 +205,8 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 	// *** Check family with parent1: N.N. ***
 	if ($parent1){
 		// *** Save man's families in array ***
-		//$person_qry=mysql_query("SELECT pers_fams FROM ".$tree."person
-		//	WHERE pers_gedcomnumber='$parent1'",$db);
 		$person_qry=$dbh->query("SELECT pers_fams FROM ".$tree."person
 			WHERE pers_gedcomnumber='$parent1'");
-		//@$personDb=mysql_fetch_object($person_qry);
 		@$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
 		$marriage_array=explode(";",$personDb->pers_fams);
 		$nr_families=substr_count($personDb->pers_fams, ";");
@@ -233,8 +219,6 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 	// *** Loop multiple marriages of main_person ***
 	for ($parent1_marr=0; $parent1_marr<=$nr_families; $parent1_marr++){
 		$id=$marriage_array[$parent1_marr];
-		//$family=mysql_query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber='$id'",$db);
-		//@$familyDb=mysql_fetch_object($family);
 		$family=$dbh->query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber='$id'");
 		@$familyDb=$family->fetch(PDO::FETCH_OBJ);
 
@@ -279,18 +263,14 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 			}
 		}
 		if(isset($_POST['desc_sp_parents'])) { // if set, add parents of spouse
-			//$spqry = mysql_query("SELECT pers_famc FROM ".$tree."person WHERE pers_gedcomnumber = '".$desc_sp."'");
-			//$spqryDb = mysql_fetch_object($spqry,$db);
 			$spqry = $dbh->query("SELECT pers_famc FROM ".$tree."person WHERE pers_gedcomnumber = '".$desc_sp."'");
 			$spqryDb = $spqry->fetch(PDO::FETCH_OBJ);
 			if($qryDb->pers_famc) {
-					//$famqry = mysql_query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$qryDb->pers_famc."'");
-					//$famqryDb = mysql_fetch_object($famqry,$db);
-					$famqry = $dbh->query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$qryDb->pers_famc."'");
-					$famqryDb = $famqry->fetch(PDO::FETCH_OBJ);
-					if($famqryDb->fam_man)   { $persids[] = $famqryDb->fam_man; }
-					if($famqryDb->fam_woman) { $persids[] = $famqryDb->fam_woman; }
-					$famsids[] = $qryDb->pers_famc;
+				$famqry = $dbh->query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$qryDb->pers_famc."'");
+				$famqryDb = $famqry->fetch(PDO::FETCH_OBJ);
+				if($famqryDb->fam_man)   { $persids[] = $famqryDb->fam_man; }
+				if($famqryDb->fam_woman) { $persids[] = $famqryDb->fam_woman; }
+				$famsids[] = $qryDb->pers_famc;
 			}
 		}
 		// *************************************************************
@@ -301,13 +281,9 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 			$child_array=explode(";",$familyDb->fam_children);
 
 			for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
-				//$child=mysql_query("SELECT * FROM ".$tree."person
-				//	WHERE pers_gedcomnumber='$child_array[$i]'",$db);
-				//@$childDb=mysql_fetch_object($child);
 				$child=$dbh->query("SELECT * FROM ".$tree."person
 					WHERE pers_gedcomnumber='$child_array[$i]'");
 				@$childDb=$child->fetch(PDO::FETCH_OBJ);
-				//if(mysql_num_rows($child)>0) {
 				if($child->rowCount()>0) {
 					// *** Build descendant_report ***
 					if ($childDb->pers_fams){
@@ -330,20 +306,19 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 } // End of descendant function
 
 function ancestors($person_id,$max_generations) {
-
-	global $tree, $db, $dbh, $persids, $famsids;
+	global $tree, $dbh, $persids, $famsids;
 	$ancestor_array2[] = $person_id;
 	$ancestor_number2[]=1;
 	$marriage_gedcomnumber2[]=0;
 	$generation = 1;
 	$listed_array=array();
-	
+
 	// some prepared statements before loops
 	$pers_prep = $dbh->prepare("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber=?");
 	$pers_prep->bindParam(1,$pers_prep_var);
 	$fam_prep = ("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber='?");
 	$fam_prep->bindParam(1,$fam_prep_var);
-	
+
 	// *** Loop for ancestor report ***
 	while (isset($ancestor_array2[0])){
 
@@ -372,21 +347,14 @@ function ancestors($person_id,$max_generations) {
 				$listed_array[$ancestor_number[$i]]=$ancestor_array[$i];
 			}
 			if ($ancestor_array[$i]!='0'){
-				//$person_man=mysql_query("SELECT * FROM ".$tree."person WHERE pers_gedcomnumber='".$ancestor_array[$i]."'",$db);
-				//@$person_manDb=mysql_fetch_object($person_man);
 				$pers_prep_var = $ancestor_array[$i];
 				$pers_prep->execute();
 				@$person_manDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 				if (strtolower($person_manDb->pers_sexe)=='m' AND $ancestor_number[$i]>1){
-					//$family_qry=mysql_query("SELECT * FROM ".$tree."family
-					//	WHERE fam_gedcomnumber='".safe_text($marriage_gedcomnumber[$i])."'",$db);
-					//@$familyDb=mysql_fetch_object($family_qry);
 					$fam_prep_var = $marriage_gedcomnumber[$i];
 					$fam_prep->execute();
 					@$familyDb = $fam_prep->fetch(PDO::FETCH_OBJ);
-					//$person_woman=mysql_query("SELECT * FROM ".$tree."person
-					//	WHERE pers_gedcomnumber='".safe_text($familyDb->fam_woman)."'",$db);
-					//@$person_womanDb=mysql_fetch_object($person_woman);
+
 					$pers_prep_var = $familyDb->fam_woman;
 					$pers_prep->execute();
 					@$person_womanDb = $pers_prep->fetch(PDO::FETCH_OBJ);
@@ -400,8 +368,6 @@ function ancestors($person_id,$max_generations) {
 								if($person_manDb->pers_sexe=='M') { $spouse = "fam_woman"; }
 								else { $spouse = "fam_man"; }
 								foreach($families as $value) {
-									//$sp_main = mysql_query("SELECT ".$spouse." FROM ".$tree."family WHERE fam_gedcomnumber = '".$value."'");
-									//$sp_mainDb = mysql_fetch_object($sp_main);
 									$sp_main = $dbh->query("SELECT ".$spouse." FROM ".$tree."family WHERE fam_gedcomnumber = '".$value."'");
 									$sp_mainDb = $sp_main->fetch(PDO::FETCH_OBJ);
 									if(isset($_POST['ances_spouses'])) { // we also include spouses of base person
@@ -417,8 +383,6 @@ function ancestors($person_id,$max_generations) {
 						if($person_manDb->pers_famc AND $generation+1 < $max_generations) {  // if this is the last generation (max gen) we don't want the famc!
 							$famsids[]=$person_manDb->pers_famc;
 							if(isset($_POST['ances_sibbl'])) { // also get I numbers of sibblings
-								//$sibbqry = mysql_query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$person_manDb->pers_famc."'",$db);
-								//$sibbqryDb = mysql_fetch_object($sibbqry);
 								$fam_prep_var = $person_manDb->pers_famc;
 								$fam_prep->execute();
 								$sibbqryDb = $fam_prep->fetch(PDO::FETCH_OBJ);
@@ -437,9 +401,6 @@ function ancestors($person_id,$max_generations) {
 
 				// ==	Check for parents
 				if ($person_manDb->pers_famc  AND $listednr==''){
-					//$family_parents_qry	= "SELECT * FROM ".$tree."family WHERE fam_gedcomnumber = '".$person_manDb->pers_famc."'";
-					//$family_parents_result = mysql_query($family_parents_qry,$db);
-					//@$family_parentsDb = mysql_fetch_object($family_parents_result);
 					$fam_prep_var = $person_manDb->pers_famc;
 					$fam_prep->execute();
 					@$family_parentsDb = $fam_prep->fetch(PDO::FETCH_OBJ);
@@ -463,9 +424,6 @@ function ancestors($person_id,$max_generations) {
 			}
 			else{
 				// *** Show N.N. person ***
-				//$person_man=mysql_query("SELECT * FROM ".$tree."person 
-				//	WHERE pers_gedcomnumber='".safe_text($ancestor_array[$i])."'",$db);
-				//@$person_manDb=mysql_fetch_object($person_man);
 				$pers_prep_var = $ancestor_array[$i];
 				$pers_prep->execute();
 				@$person_manDb = $pers_prep->fetch(PDO::FETCH_OBJ);
@@ -551,10 +509,8 @@ echo '<td>';
 		echo '<tr><td>'.__('Choose person:').'</td><td>';
 		$pers_gedcomnumber='';
 		if(isset($_POST['person']) AND $_POST['flag_newtree']!='1') { $pers_gedcomnumber = $_POST['person']; }
-		//$pers_search = mysql_query("SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM ".$tree."person ORDER BY pers_lastname, pers_firstname",$db);
 		$pers_search = $dbh->query("SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM ".$tree."person ORDER BY pers_lastname, pers_firstname");
 		print '<select size="1" name="person" style="width: 300px">';
-		//while ($person=mysql_fetch_object($pers_search)){
 		while ($person=$pers_search->fetch(PDO::FETCH_OBJ)){
 			$selected='';
 			if (isset($pers_gedcomnumber)){
@@ -605,7 +561,6 @@ echo '</select>';
 echo '</td></tr>';
 
 // *** Check if geo_location table exists ***
-//if (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) {
 $temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 if($temp->rowCount() > 0) {
 	echo '<tr><td>'.__('Export longitude & latitude by places').'</td><td>';
@@ -652,8 +607,6 @@ if (isset($_POST["tree"]) AND isset($_POST['submit_button'])){
 		$desc_fams='';
 		$desc_pers = $_POST['person'];
 		$max_gens = $_POST['generations'];
-		//$fam_search = mysql_query("SELECT pers_fams, pers_indexnr FROM ".$tree."person WHERE pers_gedcomnumber ='".$desc_pers."'", $db);
-		//$fam_searchDb = mysql_fetch_object($fam_search);
 		$fam_search = $dbh->query("SELECT pers_fams, pers_indexnr FROM ".$tree."person WHERE pers_gedcomnumber ='".$desc_pers."'");
 		$fam_searchDb = $fam_search->fetch(PDO::FETCH_OBJ);		
 		if($fam_searchDb->pers_fams != '') { $desc_fams = $fam_searchDb->pers_fams; }
@@ -743,8 +696,6 @@ fwrite($fh, $buffer);
 */
 
 $person_qry= "SELECT * FROM ".$tree."person";
-//$person_result = mysql_query($person_qry,$db);
-//while ($person=mysql_fetch_object($person_result)){
 $person_result = $dbh->query($person_qry);
 while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 
@@ -788,9 +739,6 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 		$buffer.='2 NOTE '.process_text(3,$person->pers_name_text); }
 
 	// *** Export all name items, like 2 _AKAN etc. ***
-	//$nameqry=mysql_query("SELECT * FROM ".$tree."events
-	//	WHERE event_person_id='$person->pers_gedcomnumber' AND event_kind='name'",$db);
-	//while($nameDb=mysql_fetch_object($nameqry)){
 	$nameqry=$dbh->query("SELECT * FROM ".$tree."events
 		WHERE event_person_id='$person->pers_gedcomnumber' AND event_kind='name'");
 	while($nameDb=$nameqry->fetch(PDO::FETCH_OBJ)){	
@@ -851,12 +799,9 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 			$buffer.='2 NOTE '.process_text(3,$person->pers_bapt_text); }
 
 		// *** Baptise witness ***
-		//$witness_qry=mysql_query("SELECT * FROM ".$tree."events
-		//	WHERE event_person_id='".$person->pers_gedcomnumber."' AND event_kind='baptism_witness'",$db);
-		//while($witnessDb=mysql_fetch_object($witness_qry)){
 		$witness_qry=$dbh->query("SELECT * FROM ".$tree."events
 			WHERE event_person_id='".$person->pers_gedcomnumber."' AND event_kind='baptism_witness'");
-		while($witnessDb=$witness_qry->fetch(PDO::FETCH_OBJ)){		
+		while($witnessDb=$witness_qry->fetch(PDO::FETCH_OBJ)){
 			$buffer.='2 WITN '.$witnessDb->event_event."\n";
 		}
 	}
@@ -903,9 +848,6 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	// 2 ADDR Ridderkerk
 	// 1 RESI
 	// 2 ADDR Slikkerveer
-	//$addressqry=mysql_query("SELECT * FROM ".$tree."addresses
-	//	WHERE address_person_id='$person->pers_gedcomnumber'",$db);
-	//while($addressDb=mysql_fetch_object($addressqry)){
 	$addressqry=$dbh->query("SELECT * FROM ".$tree."addresses
 		WHERE address_person_id='$person->pers_gedcomnumber'");
 	while($addressDb=$addressqry->fetch(PDO::FETCH_OBJ)){
@@ -934,9 +876,6 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	}
 
 	// *** Occupation ***
-	//$professionqry=mysql_query("SELECT * FROM ".$tree."events
-	//	WHERE event_person_id='$person->pers_gedcomnumber' AND event_kind='profession'",$db);
-	//while($professionDb=mysql_fetch_object($professionqry)){
 	$professionqry=$dbh->query("SELECT * FROM ".$tree."events
 		WHERE event_person_id='$person->pers_gedcomnumber' AND event_kind='profession'");
 	while($professionDb=$professionqry->fetch(PDO::FETCH_OBJ)){
@@ -953,9 +892,6 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	}
 
 	// *** Person pictures ***
-	//$sourceqry=mysql_query("SELECT * FROM ".$tree."events
-	//	WHERE event_person_id='$person->pers_gedcomnumber' AND event_kind='picture'",$db);
-	//while($sourceDb=mysql_fetch_object($sourceqry)){
 	$sourceqry=$dbh->query("SELECT * FROM ".$tree."events
 		WHERE event_person_id='$person->pers_gedcomnumber' AND event_kind='picture'");
 	while($sourceDb=$sourceqry->fetch(PDO::FETCH_OBJ)){	
@@ -1058,8 +994,6 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 */
 
 // *** FAMILY DATA ***
-//$family_qry=mysql_query("SELECT * FROM ".$tree."family",$db);
-//while($family=mysql_fetch_object($family_qry)){
 $family_qry=$dbh->query("SELECT * FROM ".$tree."family");
 while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 
@@ -1257,13 +1191,8 @@ while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 if($_POST['part_tree']=='part') {  // only include sources that are used by the people in this partial tree
 	$source_array= array();
 	// find all sources referred to by persons (I233) or families (F233)
-	//$qry = mysql_query("SELECT connect_connect_id, connect_source_id FROM ".$tree."connections
-	//						WHERE connect_sub_kind LIKE 'pers_%' OR connect_sub_kind LIKE 'fam_%'",$db);
-	//$qry = mysql_query("SELECT connect_connect_id, connect_source_id FROM ".$tree."connections
-	//						WHERE connect_source_id != ''",$db);
-	//while($qryDb=mysql_fetch_object($qry)){
 	$qry = $dbh->query("SELECT connect_connect_id, connect_source_id FROM ".$tree."connections
-							WHERE connect_source_id != ''");
+		WHERE connect_source_id != ''");
 	while($qryDb=$qry->fetch(PDO::FETCH_OBJ)){
 		if(in_array($qryDb->connect_connect_id,$persids) OR in_array($qryDb->connect_connect_id,$famsids)) {
 			$source_array[]=$qryDb->connect_source_id;
@@ -1272,39 +1201,31 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 	// find all sources referred to by addresses (233)
 	// extended addresses: we need a three-fold procedure....
 	// First: in the connections table search for exported persons/families that have an RESI number connection (R34)
-	//$address_connect_qry = mysql_query("SELECT connect_connect_id, connect_item_id FROM ".$tree."connections WHERE connect_sub_kind LIKE '%_address'",$db) or die("momo");
 	$address_connect_qry = $dbh->query("SELECT connect_connect_id, connect_item_id FROM ".$tree."connections WHERE connect_sub_kind LIKE '%_address'");
 	$resi_array = array();
-	//while($address_connect_qryDb=mysql_fetch_object($address_connect_qry)){
 	while($address_connect_qryDb=$address_connect_qry->fetch(PDO::FETCH_OBJ)){
 		if(in_array($address_connect_qryDb->connect_connect_id,$persids) or in_array($address_connect_qryDb->connect_connect_id,$famsids)) {
 			$resi_array[] = $address_connect_qryDb->connect_item_id;
 		}
 	}
 	// Second: in the address table search for the previously found R numbers and get their id number (33)
-	//$address_address_qry = mysql_query("SELECT address_gedcomnr, address_id FROM ".$tree."addresses WHERE address_gedcomnr !='' ",$db);
 	$address_address_qry = $dbh->query("SELECT address_gedcomnr, address_id FROM ".$tree."addresses WHERE address_gedcomnr !='' ");
 	$resi_id_array = array();
-	//while($address_address_qryDb=mysql_fetch_object($address_address_qry)){
 	while($address_address_qryDb=$address_address_qry->fetch(PDO::FETCH_OBJ)){
 		if(in_array($address_address_qryDb->address_gedcomnr,$resi_array)) {
 			$resi_id_array[] = $address_address_qryDb->address_id;
 		}
 	}
 	// Third: back in the connections table, find the previously found address id numbers and get the associated source ged number ($23)
-	//$address_connect2_qry = mysql_query("SELECT connect_connect_id, connect_source_id FROM ".$tree."connections WHERE connect_sub_kind = 'address_source'",$db);
 	$address_connect2_qry = $dbh->query("SELECT connect_connect_id, connect_source_id FROM ".$tree."connections WHERE connect_sub_kind = 'address_source'");
-	//while($address_connect2_qry_qryDb=mysql_fetch_object($address_connect2_qry)){
 	while($address_connect2_qry_qryDb=$address_connect2_qry->fetch(PDO::FETCH_OBJ)){
 		if(in_array($address_connect2_qry_qryDb->connect_connect_id,$resi_id_array)) {
 			$source_array[] = $address_connect2_qry_qryDb->connect_source_id;
 		}
 	}
 	// "direct" addresses
-	//$addressqry = mysql_query("SELECT address_id, address_person_id, address_family_id FROM ".$tree."addresses",$db);
 	$addressqry = $dbh->query("SELECT address_id, address_person_id, address_family_id FROM ".$tree."addresses");
 	$source_address_array=array();
-	//while($addressqryDb=mysql_fetch_object($addressqry)){
 	while($addressqryDb=$addressqry->fetch(PDO::FETCH_OBJ)){
 		if($addressqryDb->address_person_id!='' AND in_array($addressqryDb->address_person_id,$persids)) {
 			$source_address_array[] = $addressqryDb->address_id;
@@ -1313,9 +1234,7 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 			$source_address_array[] = $addressqryDb->address_id;
 		}
 	}
-	//$addresssourceqry = mysql_query("SELECT connect_source_id, connect_connect_id FROM ".$tree."connections WHERE connect_sub_kind LIKE 'address_%'",$db);
 	$addresssourceqry = $dbh->query("SELECT connect_source_id, connect_connect_id FROM ".$tree."connections WHERE connect_sub_kind LIKE 'address_%'");
-	//while($addresssourceqryDb=mysql_fetch_object($addresssourceqry)){
 	while($addresssourceqryDb=$addresssourceqry->fetch(PDO::FETCH_OBJ)){
 		if(in_array($addresssourceqryDb->connect_connect_id,$source_address_array)) {
 			$source_array[] = $addresssourceqryDb->connect_source_id;
@@ -1323,10 +1242,8 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 	}
 
 	// find all sources referred to by events (233)
-	//$eventqry = mysql_query("SELECT event_id, event_person_id, event_family_id FROM ".$tree."events",$db);
 	$eventqry = $dbh->query("SELECT event_id, event_person_id, event_family_id FROM ".$tree."events");
 	$source_event_array = array();
-	//while($eventqryDb=mysql_fetch_object($eventqry)){
 	while($eventqryDb=$eventqry->fetch(PDO::FETCH_OBJ)){
 		if($eventqryDb->event_person_id!='' AND in_array($eventqryDb->event_person_id,$persids)) {
 			$source_event_array[] = $eventqryDb->event_id;
@@ -1335,9 +1252,7 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 			$source_event_array[] = $eventqryDb->event_id;
 		}
 	}
-	//$eventsourceqry = mysql_query("SELECT connect_source_id, connect_connect_id FROM ".$tree."connections WHERE connect_sub_kind LIKE 'event_%'",$db);
 	$eventsourceqry = $dbh->query("SELECT connect_source_id, connect_connect_id FROM ".$tree."connections WHERE connect_sub_kind LIKE 'event_%'");
-	//while($eventsourceqryDb=mysql_fetch_object($eventsourceqry)){
 	while($eventsourceqryDb=$eventsourceqry->fetch(PDO::FETCH_OBJ)){
 		if(in_array($eventsourceqryDb->connect_connect_id,$source_event_array)) {
 			$source_array[] = $eventsourceqryDb->connect_source_id;
@@ -1351,10 +1266,8 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 }
 
 if ($gedcom_sources=='yes'){
-	//$family_qry=mysql_query("SELECT * FROM ".$tree."sources",$db);
-	//while($family=mysql_fetch_object($family_qry)){
 	$family_qry=$dbh->query("SELECT * FROM ".$tree."sources");
-	while($family=$family_qry->fetch(PDO::FETCH_OBJ)){	
+	while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 
 		if($_POST['part_tree']=='part'  AND !in_array($family->source_gedcomnr,$source_array)) { continue; }
 
@@ -1437,9 +1350,7 @@ if ($gedcom_texts=='yes'){
 	natsort($noteids);
 	foreach ($noteids as $s){
 		$text_query = "SELECT * FROM ".$tree."texts WHERE text_gedcomnr='" . $s . "'";
-		//$text_sql=mysql_query($text_query,$db);
 		$text_sql=$dbh->query($text_query);
-		//while($textDb=mysql_fetch_object($text_sql)){
 		while($textDb=$text_sql->fetch(PDO::FETCH_OBJ)){
 			$linecount=0;
 			$textlines = process_text(1, $textDb->text_text, false);

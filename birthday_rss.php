@@ -61,8 +61,6 @@ echo "<description>".__('Whose birthday is it today?')."</description>".$newline
 echo "<language>".__('En-en')."</language>".$newline;
 
 $counter=0;
-//$datasql = mysql_query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order",$db);
-//while ($dataDb=mysql_fetch_object($datasql)){
 $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 	// *** Check is family tree is shown or hidden for user group ***
@@ -71,7 +69,7 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 	for ($x=0; $x<=count($hide_tree_array)-1; $x++){
 		if ($hide_tree_array[$x]==$dataDb->tree_id){ $hide_tree=true; }
 	}
-	if ($hide_tree==false){	
+	if ($hide_tree==false){
 		$sql="SELECT *,
 			substring(pers_birth_date,1,2) as birth_day,
 			substring(pers_birth_date,8,4) as birth_year,
@@ -79,11 +77,8 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 			FROM ".safe_text($dataDb->tree_prefix)."person
 			WHERE pers_birth_date!=''
 			AND (substring(pers_birth_date,3,3) = '$month_number' AND CONCAT('0',substring(pers_birth_date,1,1)) = '$today_day') 
-			OR (substring(pers_birth_date,4,3) = '$month_number' AND substring(pers_birth_date,1,2)='$today_day') order by pers_lastname";	
-		//$query = mysql_query ($sql,$db)
-		//	or die("database-error (1): ".mysql_error());
-		//while ($record=mysql_fetch_object($query)){
-		$query = $dbh->query($sql);	
+			OR (substring(pers_birth_date,4,3) = '$month_number' AND substring(pers_birth_date,1,2)='$today_day') order by pers_lastname";
+		$query = $dbh->query($sql);
 		while($record = $query->fetch(PDO::FETCH_OBJ)) {
 			$person_cls1 = New person_cls;
 			$person_cls1->construct($record);

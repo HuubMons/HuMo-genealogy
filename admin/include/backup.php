@@ -123,35 +123,27 @@ echo '</table>';
 function backup_tables()
 { 
 	global $dbh;
-	echo '<div style="color:red">'.__('Creating backup file. This may take some time. Please wait...').'</div>';
-
+	echo '<div id="red_text" style="color:red">'.__('Creating backup file. This may take some time. Please wait...').'</div>';
+ob_start();
 	$tables = array();
-	//$result = mysql_query('SHOW TABLES');
-	//while($row = mysql_fetch_row($result))
 	$result = $dbh->query('SHOW TABLES');
-	while($row = $result->fetch(PDO::FETCH_NUM))
-	{
+	while($row = $result->fetch(PDO::FETCH_NUM)){
 		$tables[] = $row[0];
 	}
-	
+
 	//cycle through
 	$return = "";
 	foreach($tables as $table)
 	{
-		//$result = mysql_query('SELECT * FROM '.$table);
 		$result = $dbh->query('SELECT * FROM '.$table);
-		//$num_fields = mysql_num_fields($result);
 		$num_fields = $result->columnCount();
-		
-		//$return.= 'DROP TABLE '.$table.';';
-		//$row2 = mysql_fetch_row(mysql_query('SHOW CREATE TABLE '.$table));
+
 		$row_result = $dbh->query('SHOW CREATE TABLE '.$table);
 		$row2 = $row_result->fetch(PDO::FETCH_NUM);
 		$return.= "\n\n".$row2[1].";\n\n";
 		
 		for ($i = 0; $i < $num_fields; $i++) 
 		{
-			//while($row = mysql_fetch_row($result))
 			while($row = $result->fetch(PDO::FETCH_NUM))
 			{
 				$return.= 'INSERT INTO '.$table.' VALUES(';
@@ -189,8 +181,15 @@ function backup_tables()
 	fwrite($bk_file,"<?php\nheader('Content-type: application/octet-stream');\nheader('Content-Disposition: attachment; filename=\"".$downloadname."\"');\nreadfile('".$name."');\n?>");
 	fclose($bk_file);
 	echo '<div><form style="display:inline">';
+
+echo '<script type="text/javascript">';
+echo ' document.getElementById("red_text").innerHTML = ""; ';
+echo '</script>';
+
 	echo '<input type="button" value="'.__('Download backup file').'" onClick="window.location.href=\'downloadbk.php\'">&nbsp;&nbsp;('.$downloadname.')';
 	echo '</form><div>';
+
+ob_flush();
 }
 
 // RESTORE FUNCTION
@@ -207,8 +206,8 @@ function restore_tables($filename) {
 		if ($zip->open($filename) === TRUE) {
 			$content = $zip->statIndex(0); // content of first (and only) entry in the zip file
 			$filename = $tmp_path.$content['name']; // name of the unzipped file
-	    		$zip->extractTo('./'.$tmp_path);
-	    		$zip->close();
+				$zip->extractTo('./'.$tmp_path);
+				$zip->close();
 		}
 		else {
 			$zip_success=0;
@@ -218,13 +217,10 @@ function restore_tables($filename) {
 	// Read in entire file
 	if($zip_success==1 AND is_file($filename) AND substr($filename,-4)==".sql") { 
 		// wipe contents of database (we don't do this until we know we've got a proper backup file to work with...
-		//$result = mysql_query("show tables"); // run the query and assign the result to $result
 		$result = $dbh->query("show tables"); // run the query and assign the result to $result
-		//while($table = mysql_fetch_array($result)) { // go through each row that was returned in $result
 		while($table = $result->fetch()) { // go through each row that was returned in $result
-	   		//mysql_query("DROP TABLE ".$table[0]);
 			$dbh->query("DROP TABLE ".$table[0]);
-		}	  
+		}
 		$lines = file($filename);
 		// Loop through each line
 		foreach ($lines as $line) {
@@ -237,7 +233,6 @@ function restore_tables($filename) {
 			// If it has a semicolon at the end, it's the end of the query
 			if (substr(trim($line), -1, 1) == ';') {
 				// Perform the query
-				//mysql_query($templine) or print('Error performing query \'<strong>' . $templine . '\': ' . mysql_error() . '<br /><br />');
 				try {
 					$dbh->query($templine);
 				} catch (PDOException $e){
@@ -264,5 +259,4 @@ function restore_tables($filename) {
 		if(is_file($filename) AND substr($filename,-4)!=".sql" ) { echo "This is not a valid back up file (no .sql extension)"; }
 	}
 }
-
 ?>

@@ -1,12 +1,4 @@
 <?php
- 
-// If you want a diagonal watermark text adjust the following 4 variables:
-$watermark = '';   // enter your text between ''  Add extra spaces to the left to center the text on page, if needed
-// RGB Color code of watermark text (default is light grey). You can find an RGB color chart at http://www.rapidtables.com/web/color/RGB_Color.htm 
-$R = 224;
-$G = 224;
-$B = 224;
-  
 class PDF extends FPDF{
 
 //***********************************************************************************************
@@ -583,7 +575,7 @@ function _endpage(){
 } 
 
 function Header(){
-	global $title, $watermark, $R, $G, $B;
+	global $title, $humo_option;
 	if($this->PageNo()!=1) {
 		//Position at 1.0 cm from top;
 		$this->SetY(10);
@@ -598,8 +590,8 @@ function Header(){
 
 	//Put watermark
 	$this->SetFont('Arial', 'B', 50);
-	$this->SetTextColor($R, $G, $B);  // original was 255 192 203, changed default to 229 229 229
-	$this->RotatedText(30, 190, $watermark, 45);
+	$this->SetTextColor($humo_option["watermark_color_r"], $humo_option["watermark_color_g"], $humo_option["watermark_color_b"]);  // original was 255 192 203, changed default to 229 229 229
+	$this->RotatedText(30, 190, $humo_option["watermark_text"], 45);
 }
 
 function RotatedText($x, $y, $txt, $angle){

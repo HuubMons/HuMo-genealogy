@@ -16,26 +16,18 @@ function show_media($personDb,$marriageDb){
 
 		// *** Standard connected media by person and family ***
 		if ($personDb!=''){
-			/*
-			$picture_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
-				WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='picture'
-				ORDER BY event_order",$db);
-			*/
+			//$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
+			//	WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='picture'
+			//	ORDER BY event_order");
 			$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-				WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='picture'
-				ORDER BY event_order");			
+				WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND LEFT(event_kind,7)='picture'
+				ORDER BY event_kind, event_order");
 		}
 		else{
-			/*
-			$picture_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
-				WHERE event_family_id='".$marriageDb->fam_gedcomnumber."' AND event_kind='picture'
-				ORDER BY event_order",$db);
-			*/
 			$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_family_id='".$marriageDb->fam_gedcomnumber."' AND event_kind='picture'
-				ORDER BY event_order");			
+				ORDER BY event_order");
 		}
-		//while($pictureDb=mysql_fetch_object($picture_qry)){
 		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
 			$media_nr++;
 			$media_event_id[$media_nr]=$pictureDb->event_id;
@@ -47,46 +39,24 @@ function show_media($personDb,$marriageDb){
 
 		// *** Search for all external connected objects by a person or a family ***
 		if ($personDb!=''){
-			/*
-			$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
-				WHERE connect_kind='person'
-				AND connect_sub_kind='pers_object'
-				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
-				ORDER BY connect_order";
-			*/
 			$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 				WHERE connect_kind='person'
 				AND connect_sub_kind='pers_object'
 				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
-				ORDER BY connect_order";			
+				ORDER BY connect_order";
 		}
 		else{
-			/*
-			$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
-				WHERE connect_kind='family'
-				AND connect_sub_kind='fam_object'
-				AND connect_connect_id='".$marriageDb->fam_gedcomnumber."'
-				ORDER BY connect_order";
-			*/
 			$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 				WHERE connect_kind='family'
 				AND connect_sub_kind='fam_object'
 				AND connect_connect_id='".$marriageDb->fam_gedcomnumber."'
-				ORDER BY connect_order";			
+				ORDER BY connect_order";
 		}
-		//$connect_sql=mysql_query($connect_qry,$db);
 		$connect_sql=$dbh->query($connect_qry);
-		//while($connectDb=mysql_fetch_object($connect_sql)){
 		while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-			/*
-			$picture_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
-				WHERE event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
-				ORDER BY event_order",$db);
-			*/
 			$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
 				ORDER BY event_order");
-			//while($pictureDb=mysql_fetch_object($picture_qry)){
 			while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
 				$media_nr++;
 				$media_event_id[$media_nr]=$pictureDb->event_id;
@@ -127,7 +97,7 @@ function show_media($personDb,$marriageDb){
 			// *** Show DOC file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="doc" OR substr($tree_pict_path.$event_event,-4,4)=="docx") {
 				$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'/images/msdoc.gif" alt="DOC"></a>';
-			}				
+			}
 			// *** Show AVI Video file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="avi") {
 				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="AVI"></a>';

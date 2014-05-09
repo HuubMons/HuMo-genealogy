@@ -45,12 +45,10 @@ $start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
 $item=0; if (isset($_GET['item'])){ $item=$_GET['item']; }
 $count_sources=$humo_option['show_persons'];
 // *** All sources query ***
-//$all_sources=mysql_query($querie,$db);
 $all_sources=$dbh->query($querie);
-//$source=mysql_query($querie." LIMIT ".safe_text($item).",".$count_sources,$db);
 $source=$dbh->query($querie." LIMIT ".safe_text($item).",".$count_sources);
 $line_pages=__('Page');
-		
+
 // "<="
 if ($start>1){
 	$start2=$start-20;
@@ -65,7 +63,6 @@ if ($start<=0){$start=1;}
 // 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
 for ($i=$start; $i<=$start+19; $i++) {
 	$calculated=($i-1)*$count_sources;
-	//if ($calculated<@mysql_num_rows($all_sources)){
 	if ($calculated<$all_sources->rowCount()){
 		if ($item==$calculated){
 			$line_pages.=  " <b>$i</B>";

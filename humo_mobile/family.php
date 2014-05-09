@@ -13,15 +13,26 @@ include_once(CMS_ROOTPATH."include/show_picture.php");
 $screen_mode='mobile';
 
 echo '<!DOCTYPE html>';
+//if("rtl"=="rtl") { echo '<html dir="rtl">'; }
+//else { echo '<html>'; }
+//echo '<html dir="rtl">';
 echo '<html>';
 echo '<head>';
 	echo '<meta charset="utf-8">';
 	echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
 	echo '<title>HuMo-gen mobile</title>';
 	echo '<link rel="stylesheet" href="themes/rene.min.css" />';
+if($language["dir"]=="rtl") { 
+	echo '<link rel="stylesheet" href="jquery_mobile/rtl.jquery.mobile-1.2.0.min.css" />';
+	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>';
+	echo '<script type="text/javascript" src="jquery_mobile/rtl.jquery.mobile-1.2.0.min.js"></script>';
+}
+else {  
 	echo '<link rel="stylesheet" href="jquery_mobile/jquery.mobile.structure-1.2.0.min.css" />';
 	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>';
 	echo '<script type="text/javascript" src="jquery_mobile/jquery.mobile-1.2.0.min.js"></script>';
+}
+
 echo '</head>';
 
 echo '<body>';
@@ -52,14 +63,6 @@ echo '<div data-role="page" data-theme="b">';
 
 if (isset($_POST['id'])){ $id=$_POST['id']; }
 if (isset($_GET['id'])){ $id=$_GET['id']; }
-/*
-$res=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-	LEFT JOIN ".safe_text($_SESSION['tree_prefix'])."family
-	ON ".safe_text($_SESSION['tree_prefix'])."person.pers_famc=".safe_text($_SESSION['tree_prefix'])."family.fam_gedcomnumber
-	WHERE ".safe_text($_SESSION['tree_prefix'])."person.pers_gedcomnumber
-	LIKE '".safe_text($id)."'",$db) or die(mysql_error());
-@$person_manDb=mysql_fetch_object($res);  
-*/
 $res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 	LEFT JOIN ".safe_text($_SESSION['tree_prefix'])."family
 	ON ".safe_text($_SESSION['tree_prefix'])."person.pers_famc=".safe_text($_SESSION['tree_prefix'])."family.fam_gedcomnumber
@@ -72,9 +75,6 @@ $res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 if (!$bot_visit){
 	// *** Update (old) statistics counter ***
 	$fam_counter=$person_manDb->fam_counter+1;
-	//$sql="UPDATE ".safe_text($_SESSION['tree_prefix'])."family SET fam_counter=$fam_counter
-	//	WHERE fam_gedcomnumber='".safe_text($person_manDb->fam_gedcomnumber)."'";
-	//mysql_query($sql, $db) or die(mysql_error());
 	$sql="UPDATE ".safe_text($_SESSION['tree_prefix'])."family SET fam_counter=$fam_counter
 		WHERE fam_gedcomnumber='".safe_text($person_manDb->fam_gedcomnumber)."'";
 	$dbh->query($sql);
@@ -83,9 +83,6 @@ if (!$bot_visit){
 	$statistics = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
 	if ($statistics AND $user['group_statistics']=='j'){
 
-		//$datasql = mysql_query("SELECT * FROM humo_trees
-		//	WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'",$db);
-		//$datasqlDb=mysql_fetch_object($datasql);
 		$datasql = $dbh->query("SELECT * FROM humo_trees
 			WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
 		$datasqlDb=$datasql->fetch(PDO::FETCH_OBJ);		
@@ -101,13 +98,14 @@ if (!$bot_visit){
 			stat_gedcom_woman='".$person_manDb->fam_woman."',
 			stat_date_stat='".date("Y-m-d H:i")."',
 			stat_date_linux='".time()."'";
-		//$result=mysql_query($update_sql) or die(mysql_error());
 		$result=$dbh->query($update_sql);
 	}
 }
 
 
 // *** Use class to show person ***
+$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
+
 $man_cls = New person_cls;
 $man_cls->construct($person_manDb);  
 //$man_privacy=$man_cls->privacy;
@@ -124,10 +122,8 @@ echo '<li data-role="list-divider">'.__('Parents').'</li>';
 if ($person_manDb->fam_man!=NULL){
 	echo popup($person_manDb->fam_man,false); // father
 	// *** Show person details using standard HuMo-gen function ***
-	//$parent1=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person_manDb->fam_man)."'",$db);
-	//@$parent1Db=mysql_fetch_object($parent1);
 	$parent1=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person_manDb->fam_man)."'");
-	@$parent1Db=$parent1->fetch(PDO::FETCH_OBJ);	
+	@$parent1Db=$parent1->fetch(PDO::FETCH_OBJ);
 	$parent1_cls = New person_cls;
 	$parent1_cls->construct($parent1Db);  
 	//$parent1_privacy=$parent1_cls->privacy;
@@ -137,10 +133,8 @@ if ($person_manDb->fam_man!=NULL){
 if ($person_manDb->fam_woman!=NULL){
 	echo popup($person_manDb->fam_woman,false); // father
 	// *** Show person details using standard HuMo-gen function ***
-	//$parent2=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person_manDb->fam_woman)."'",$db);
-	//@$parent2Db=mysql_fetch_object($parent2);
 	$parent2=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person_manDb->fam_woman)."'");
-	@$parent2Db=$parent2->fetch(PDO::FETCH_OBJ);	
+	@$parent2Db=$parent2->fetch(PDO::FETCH_OBJ);
 	$parent2_cls = New person_cls;
 	$parent2_cls->construct($parent2Db);  
 	//$parent2_privacy=$parent2_cls->privacy;
@@ -155,13 +149,10 @@ elseif(($person_manDb->fam_man==NULL) AND ($person_manDb->fam_woman==NULL)){
 if ($person_manDb->pers_fams!=NULL){
 	$marr=explode(";", $person_manDb->pers_fams);
 	for ($i=0; $i<=count($marr)-1; $i++){
-		//$res=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
-		//	WHERE fam_gedcomnumber LIKE '".safe_text($marr[$i])."'",$db) or die(mysql_error());
-		//$marrDb=mysql_fetch_object($res);  
 		$res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
 			WHERE fam_gedcomnumber LIKE '".safe_text($marr[$i])."'");
 		$marrDb=$res->fetch(PDO::FETCH_OBJ); 
-		
+
 		if ($id==$marrDb->fam_man){
 			$partner=$marrDb->fam_woman;
 		}
@@ -173,9 +164,6 @@ if ($person_manDb->pers_fams!=NULL){
 		// *** Privacy filter main person and spouse ***
 		// privacy filter main person is already set above
 		// check privacy of partner
-		//$person_partner=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-		//	WHERE pers_gedcomnumber='$partner'",$db);
-		//@$person_partnerDb=mysql_fetch_object($person_partner);
 		$person_partner=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 			WHERE pers_gedcomnumber='$partner'");
 		@$person_partnerDb=$person_partner->fetch(PDO::FETCH_OBJ);
@@ -204,14 +192,11 @@ if ($person_manDb->pers_fams!=NULL){
 		// *** Show partner ***
 		echo popup($partner,false);
 		// *** Show person details using standard HuMo-gen function ***
-		//$partner_sql=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($partner)."'",$db);
-		//@$partnerDb=mysql_fetch_object($partner_sql);
 		$partner_sql=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($partner)."'");
 		@$partnerDb=$partner_sql->fetch(PDO::FETCH_OBJ);
 		
 		$partner_cls = New person_cls;
 		$partner_cls->construct($partnerDb);  
-		//$partner_privacy=$partner_cls->privacy;
 		echo $partner_cls->person_data("mobile", 0);
 		echo '</li>';
 
@@ -222,22 +207,16 @@ if ($person_manDb->pers_fams!=NULL){
 			//$nopict=1;
 			$number=1; // 1 = show child number.
 			for ($c=0; $c<=count($child)-1; $c++){
-				//$res2=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-				//	WHERE pers_gedcomnumber LIKE '".safe_text($child[$c])."'",$db) or die(mysql_error());
-				//$info2=mysql_fetch_array($res2);
 				$res2=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 					WHERE pers_gedcomnumber LIKE '".safe_text($child[$c])."'");
-				$info2=$res2->fetch();				
+				$info2=$res2->fetch();
 				$text=$info2['pers_gedcomnumber'];
 				echo popup($text,false); // father
 				// *** Show person details using standard HuMo-gen function ***
-				//$child_sql=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($text)."'",$db);
-				//@$childDb=mysql_fetch_object($child_sql);
 				$child_sql=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($text)."'");
-				@$childDb=$child_sql->fetch(PDO::FETCH_OBJ);		
+				@$childDb=$child_sql->fetch(PDO::FETCH_OBJ);
 				$child_cls = New person_cls;
 				$child_cls->construct($childDb);  
-				//$child_privacy=$child_cls->privacy;
 				echo $child_cls->person_data("mobile", 0);
 				echo '</li>';
 			}

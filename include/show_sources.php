@@ -29,32 +29,20 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 	if ($user['group_sources']!='n' AND $source_presentation!='hide' AND $screen_mode!='STAR'){
 
 		// *** Search for all connected sources ***
-		/*
-		$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
-			WHERE connect_kind='".$connect_kind."'
-			AND connect_sub_kind='".$connect_sub_kind."'
-			AND connect_connect_id='".$connect_connect_id."'
-			ORDER BY connect_order";
-		$connect_sql=mysql_query($connect_qry,$db);
-		*/
 		$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 			WHERE connect_kind='".$connect_kind."'
 			AND connect_sub_kind='".$connect_sub_kind."'
 			AND connect_connect_id='".$connect_connect_id."'
 			ORDER BY connect_order";
 		$connect_sql=$dbh->query($connect_qry);
-	
-		//while($connectDb=mysql_fetch_object($connect_sql)){
+
 		while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
 			// *** Get extended source, and check for restriction (in source and user group) ***
 			$source_status='publish';
 			if ($connectDb->connect_source_id){
-				//$source_sql=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
-				//	WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'",$db);
-				//$sourceDb=mysql_fetch_object($source_sql);
 				$source_sql=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources
 					WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'");
-				$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);				
+				$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);
 				if ($user['group_show_restricted_source']=='n' AND $sourceDb->source_status=='restricted'){
 					$source_status='restricted';
 				}
@@ -179,25 +167,16 @@ function show_sources_footnotes(){
 	}
 
 	for ($j=0; $j<=(count($source_footnote_connect_id)-1); $j++){
-		/*
-		$connect_qry="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
-			WHERE connect_id='".$source_footnote_connect_id[$j]."'";
-		$connect_sql=mysql_query($connect_qry,$db);
-		$connectDb=mysql_fetch_object($connect_sql);
-		*/
 		$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 			WHERE connect_id='".$source_footnote_connect_id[$j]."'";
 		$connect_sql=$dbh->query($connect_qry);
-		$connectDb=$connect_sql->fetch(PDO::FETCH_OBJ);		
+		$connectDb=$connect_sql->fetch(PDO::FETCH_OBJ);
 		// *** Show extended source data ***
 		if ($connectDb->connect_source_id){
-			//$source_sql=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources
-			//	WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'",$db);
-			//$sourceDb=mysql_fetch_object($source_sql);
 			$source_sql=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources
 				WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'");
-			$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);	
-			
+			$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);
+
 			// *** Always show title of source, show link only after permission check ***
 			echo '<a name="source_ref'.($j+1).'"><b>'.($j+1).')</b></a>';
 			if ($user['group_sources']=='j'){

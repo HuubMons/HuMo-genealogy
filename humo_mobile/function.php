@@ -1,17 +1,15 @@
 <?php
 function popup($text,$show_data=true){
-	global $lang, $number, $c, $db, $dbh;
+	global $lang, $number, $c, $dbh, $tree_prefix_quoted;
 	$person=$text;
 	$text='';
 
 	include_once("../include/person_cls.php");
 	include_once("../include/marriage_cls.php"); 
 
-	//$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person)."'",$db);
-	//@$person_manDb=mysql_fetch_object($person_man);
 	$person_man=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person)."'");
 	@$person_manDb=$person_man->fetch(PDO::FETCH_OBJ);
-	
+
 	//*** Use class to show person ***
 	$man_cls = New person_cls;
 	$man_cls->construct($person_manDb);  

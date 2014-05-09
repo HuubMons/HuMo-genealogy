@@ -48,7 +48,7 @@ if ($update['up_to_date']=='yes'){
 		echo '  '.__('No beta version available.');
 	}
 	echo '<br><br>';
-	
+
 	// *** Check for HuMo-gen extensions ***
 	//echo '<h2>HuMo-gen extensions</h2>';
 	//echo 'Under construction...';
@@ -68,11 +68,19 @@ elseif ($update['up_to_date']=='no'){
 			if (isset($_GET['install_beta'])){ echo '&install_beta=1'; }
 			if (isset($_GET['re_install'])){ echo '&re_install=1'; }
 			echo '">'.__('Download and unzip new HuMo-gen version').'</a><br>';
+
+			echo '<h2>'.__('HuMo-gen version history').'</h2>';
+			echo '<p><iframe height="300" width="80%" src="http://www.humo-gen.com/genforum/viewforum.php?f=19"></iframe>';
 		}
 
 		// *** STEP 1: Download humo-gen.zip and unzip to update folder ***
 		if (isset($_GET['step']) AND $_GET['step']=='1'){
 			$download=false;
+
+			// *** Check update folder permissions ***
+			if (!is_writable('update')) {
+				echo '<b>ERROR: Folder admin/update is NOT WRITABLE. Please change permissions.</b><br>';
+			}
 
 			// *** Copy HuMo-gen update to server using curl ***
 			if(function_exists('curl_exec')){
@@ -318,12 +326,9 @@ elseif ($update['up_to_date']=='no'){
 			}
 			else{
 				// *** Update settings ***
-				//$result = mysql_query("UPDATE humo_settings
-				//	SET setting_value='2012-01-01'
-				//	WHERE setting_variable='update_last_check'") or die(mysql_error());
 				$result = $dbh->query("UPDATE humo_settings
 					SET setting_value='2012-01-01'
-					WHERE setting_variable='update_last_check'");					
+					WHERE setting_variable='update_last_check'");
 				$humo_option['update_last_check']='2012-01-01';
 
 				// *** Remove installation files ***
@@ -360,8 +365,6 @@ elseif ($update['up_to_date']=='no'){
 		echo __('Full installation and update instructions can be found at:').' <a href="http://www.humo-gen.com/genwiki" target="_blank">HuMo-gen Wiki</a>';
 	}
 
-	echo '<h2>'.__('HuMo-gen version history').'</h2>';
-	echo '<p><iframe height="300" width="80%" src="http://www.humo-gen.com/genforum/viewforum.php?f=19"></iframe>';
 }
 
 else{

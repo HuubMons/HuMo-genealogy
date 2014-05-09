@@ -52,16 +52,11 @@ if (isset($humo_option["main_page_cms_id_".$selected_language])) {
 	if ($humo_option["main_page_cms_id_".$selected_language] == "") {
 		include_once(CMS_ROOTPATH."include/mainindex_cls.php");
 		$mainindex = new mainindex_cls();
-		echo $mainindex->show_tree_index();		
+		echo $mainindex->show_tree_index();
 	}
 	else {
 		echo '<div id="mainmenu_centerbox">';
 			// *** Show page ***
-			/*
-			$page_qry=mysql_query("SELECT * FROM humo_cms_pages
-				WHERE page_id='".$humo_option["main_page_cms_id_".$selected_language]."' AND page_status!=''",$db);
-			$cms_pagesDb=mysql_fetch_object($page_qry);
-			*/
 			$page_qry = $dbh->query("SELECT * FROM humo_cms_pages
 				WHERE page_id='".$humo_option["main_page_cms_id_".$selected_language]."' AND page_status!=''");
 			$cms_pagesDb=$page_qry->fetch(PDO::FETCH_OBJ);
@@ -73,11 +68,6 @@ elseif (isset($humo_option["main_page_cms_id"]) AND $humo_option["main_page_cms_
 	echo '<div id="mainmenu_centerbox">';
 
 		// *** Show page ***
-		/*
-		$page_qry=mysql_query("SELECT * FROM humo_cms_pages
-			WHERE page_id='".$humo_option["main_page_cms_id"]."' AND page_status!=''",$db);
-		$cms_pagesDb=mysql_fetch_object($page_qry);
-		*/
 		$page_qry = $dbh->query("SELECT * FROM humo_cms_pages
 			WHERE page_id='".$humo_option["main_page_cms_id"]."' AND page_status!=''");
 		$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);

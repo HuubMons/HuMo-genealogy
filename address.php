@@ -14,8 +14,6 @@ include_once(CMS_ROOTPATH."include/person_cls.php");
 print '<table class="humo standard">';
 print "<tr><td><h2>".__('Address')."</h2>";
 
-//@$address_qry=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."addresses WHERE address_gedcomnr='".safe_text($_GET['gedcomnumber'])."'",$db);
-//$addressDb=mysql_fetch_object($address_qry);
 $result = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr='".safe_text($_GET['gedcomnumber'])."'");
 $addressDb = $result->fetch(PDO::FETCH_OBJ);
 
@@ -32,10 +30,6 @@ $person_cls = New person_cls;
 print "</td></tr><tr><td>";
 
 	// *** Search address in connections table ***
-	//$eventsql="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."connections
-	//	WHERE connect_sub_kind='person_address'
-	//	AND connect_item_id='".safe_text($_GET['gedcomnumber'])."'";
-	//$eventqry=mysql_query($eventsql,$db);
 	$eventsql="SELECT * FROM ".$tree_prefix_quoted."connections
 		WHERE connect_sub_kind='person_address'
 		AND connect_item_id='".safe_text($_GET['gedcomnumber'])."'";
@@ -43,9 +37,6 @@ print "</td></tr><tr><td>";
 	while (@$eventDb=$eventqry->fetch(PDO::FETCH_OBJ)){
 		// *** Person address ***
 		if ($eventDb->connect_connect_id){
-			//$persoon=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-			//	WHERE pers_gedcomnumber='$eventDb->connect_connect_id'",$db);
-			//$personDb=mysql_fetch_object($persoon);
 			$result = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$eventDb->connect_connect_id'");
 			$personDb = $result->fetch(PDO::FETCH_OBJ);
 			print __('Address by person').': <a href="family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
