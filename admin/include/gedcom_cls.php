@@ -1,6 +1,10 @@
 <?php
 class gedcom_cls {
 
+//public function __destruct(){
+//	echo 'DESTRUCTION';
+//}
+
 // ************************************************************************************************
 // *** Process persons ***
 // ************************************************************************************************
@@ -104,6 +108,12 @@ function process_person($person_array){
 		$processed=0;
 		$buffer=$line2[$z];
 		$buffer=rtrim($buffer,"\n\r");  // strip newline
+
+// TEST: show memory usage
+//if (!isset($memory)){ $memory=memory_get_usage(); }
+//$calc_memory=(memory_get_usage()-$memory);
+//echo '<br>&nbsp;&nbsp;&nbsp;'.memory_get_usage().' '.$calc_memory.'# '.$buffer;
+//$memory=memory_get_usage();
 
 		// *** Strip starting spaces, for Pro-gen ***
 		if ($gen_program=='PRO-GEN'){ $buffer=ltrim($buffer," "); }
@@ -505,6 +515,14 @@ function process_person($person_array){
 			$address_date[$nraddress2]="";
 			$address_text[$nraddress2]="";
 			$address_source[$nraddress2]="";
+
+			//$address_array["place"][$nraddress2]="";
+			//$address_array["address"][$nraddress2]="";
+			//$address_array["zip"][$nraddress2]="";
+			//$address_array["phone"][$nraddress2]="";
+			//$address_array["date"][$nraddress2]="";
+			//$address_array["text"][$nraddress2]="";
+			//$address_array["source"][$nraddress2]="";
 
 			$processed=1;
 			$address_place[$nraddress2]= substr($buffer,7);
@@ -1432,29 +1450,28 @@ function process_person($person_array){
 		// ********************************************************************************************
 		// *** Save non processed gedcom items ***
 		// ********************************************************************************************
-		//if (isset($_POST['check_processed'])){
-			$buffer=trim($buffer);
-			// Skip these lines
-			if ($buffer=='0 TRLR'){ $processed=1; }
+		$buffer=trim($buffer);
+		// Skip these lines
+		if ($buffer=='0 TRLR'){ $processed=1; }
 
-			// Aldfaer picture info
-			if (strtolower($buffer)=='2 form jpg'){ $processed=1; }
+		// Aldfaer picture info
+		if (strtolower($buffer)=='2 form jpg'){ $processed=1; }
 
-			if ($buffer6=='1 RIN '){ $processed=1; }
-			if ($buffer5=='1 RFN'){ $processed=1; }
+		if ($buffer6=='1 RIN '){ $processed=1; }
+		if ($buffer5=='1 RFN'){ $processed=1; }
 
-			if ($processed==0){
+		if ($processed==0){
+			if (isset($_POST['check_processed'])){
 				$not_processed[]="0 $level0</td><td>1 $level1<br></td><td>2 $level2<br></td><td>3 $level3<br></td><td>$buffer";
 				//$this->non_processed_items($buffer);
-
-				if ($person["pers_unprocessed_tags"]){ 	$person["pers_unprocessed_tags"].="<br>\n"; }
-				if ($level1){ $person["pers_unprocessed_tags"].='0 '.$level0; }
-				if ($level2){ $person["pers_unprocessed_tags"].='|1 '.$level1; }
-				if ($level3){ $person["pers_unprocessed_tags"].='|2 '.$level2; }
-				if ($level4){ $person["pers_unprocessed_tags"].='|3 '.$level3; }
-				$person["pers_unprocessed_tags"].='|'.$buffer;
 			}
-		//}
+			if ($person["pers_unprocessed_tags"]){ 	$person["pers_unprocessed_tags"].="<br>\n"; }
+			if ($level1){ $person["pers_unprocessed_tags"].='0 '.$level0; }
+			if ($level2){ $person["pers_unprocessed_tags"].='|1 '.$level1; }
+			if ($level3){ $person["pers_unprocessed_tags"].='|2 '.$level2; }
+			if ($level4){ $person["pers_unprocessed_tags"].='|3 '.$level3; }
+			$person["pers_unprocessed_tags"].='|'.$buffer;
+		}
 
 		// *** TEST LINE for debugging only ***
 		//if ($processed==0){ echo "$level0</td><td>$level1<br></td><td>$level2<br></td><td>$buffer"; }
@@ -1509,6 +1526,10 @@ function process_person($person_array){
 	pers_changed_time='".$person["changed_time"]."',
 	pers_alive='".$pers_alive."'";
 
+	// *** Empty variable to free memory ***
+	//$person=null;
+	unset($person);
+
 	// *** Process SQL ***
 	$result=$dbh->query($sql);
 
@@ -1525,8 +1546,26 @@ function process_person($person_array){
 				address_date='".$this->zero_date($this->text_process($address_date[$i]))."',
 				address_text='".$this->text_process($address_text[$i])."',
 				address_source='".$this->text_process($address_source[$i])."'";
-			$result=$dbh->query($gebeurtsql);
+
+				$result=$dbh->query($gebeurtsql);
 		}
+		/*
+		$address_place=null;
+		$address_address=null;
+		$address_zip=null;
+		$address_phone=null;
+		$address_date=null;
+		$address_text=null;
+		$address_source=null;
+		*/
+
+		unset($address_place);
+		unset($address_address);
+		unset($address_zip);
+		unset($address_phone);
+		unset($address_date);
+		unset($address_text);
+		unset($address_source);
 	}
 
 	// *** Store geolocations in humo_locations table ***
@@ -1575,7 +1614,27 @@ function process_person($person_array){
 				event_source='".$this->text_process($event['source'][$i])."'";
 			$result=$dbh->query($gebeurtsql);
 		}
+
+		// *** Reset array to free memory ***
+		//echo '<br>====>>>>'.memory_get_usage().' RESET ';
+		/*
+		unset ($event['person_id']);
+		unset ($event['family_id']);
+		unset($event['kind']);
+		unset($event['event']);
+		unset($event['event_extra']);
+		unset($event['gedcom']);
+		unset($event['date']);
+		unset($event['text']);
+		unset($event['place']);
+		unset($event['source']);
+		*/
+		unset ($event);
+		//$event=null;
+		//echo ' '.memory_get_usage().'@ ';
 	}
+
+
 
 	// *** Save events CONNECTED TO EVENTS (e.g. picture by event) in seperate table ***
 	if ($event2_nr>0){
@@ -1597,6 +1656,8 @@ function process_person($person_array){
 				event_source='".$this->text_process($event2['source'][$i])."'";
 			$result=$dbh->query($gebeurtsql);
 		}
+		//$event2=null;
+		unset($event2);
 	}
 
 	// *** Save connections in seperate table ***
@@ -1627,8 +1688,13 @@ function process_person($person_array){
 //echo $check_connect.' !! '.$gebeurtsql.'<br>';
 			$result=$dbh->query($gebeurtsql);
 		}
-	}
 
+		// *** Reset array to free memory ***
+		//echo '<br>====>>>>'.memory_get_usage().' RESET ';
+		unset ($connect);
+		//$connect=null;
+		//echo ' '.memory_get_usage().'@ ';
+	}
 
 	// *** TEST ONLY: show processed time per person ***
 	//global $start_time;
@@ -1636,7 +1702,6 @@ function process_person($person_array){
 
 	//$process_time=time()-$person_time;
 	//echo ':'.$process_time.'<br>';
-
 
 } //end person
 
@@ -2430,27 +2495,27 @@ function process_family($family_array,$first_marr, $second_marr){
 		//*******************************************************************************************
 		// *** Save non-processed items ***
 		// ******************************************************************************************
-		//if (isset($_POST['check_processed'])){
-			// Skip these lines
-			if ($buffer=='2 ADDR'){ $processed=1; }
-			//if ($buffer=='1 RESI'){ $processed=1; }
-			if ($buffer=='1 REPO'){ $processed=1; }
-			if ($buffer=='0 TRLR'){ $processed=1; }
+		// Skip these lines
+		if ($buffer=='2 ADDR'){ $processed=1; }
+		//if ($buffer=='1 RESI'){ $processed=1; }
+		if ($buffer=='1 REPO'){ $processed=1; }
+		if ($buffer=='0 TRLR'){ $processed=1; }
 
-			if ($buffer5=='1 RFN'){ $processed=1; }
+		if ($buffer5=='1 RFN'){ $processed=1; }
 
-			if ($processed==0){
+		if ($processed==0){
+			if (isset($_POST['check_processed'])){
 				$not_processed[]="0 $level0</td><td>1 $level1<br></td><td>2 $level2<br></td><td>3 $level3<br></td><td>$buffer";
 				//$this->non_processed_items($buffer);
-
-				if ($family["fam_unprocessed_tags"]){ $family["fam_unprocessed_tags"].="<br>\n"; }
-				if ($level1){ $family["fam_unprocessed_tags"].='0 '.$level0; }
-				if ($level2){ $family["fam_unprocessed_tags"].='|1 '.$level1; }
-				if ($level3){ $family["fam_unprocessed_tags"].='|2 '.$level2; }
-				if ($level4){ $family["fam_unprocessed_tags"].='|3 '.$level3; }
-				$family["fam_unprocessed_tags"].='|'.$buffer;
 			}
-		//}
+
+			if ($family["fam_unprocessed_tags"]){ $family["fam_unprocessed_tags"].="<br>\n"; }
+			if ($level1){ $family["fam_unprocessed_tags"].='0 '.$level0; }
+			if ($level2){ $family["fam_unprocessed_tags"].='|1 '.$level1; }
+			if ($level3){ $family["fam_unprocessed_tags"].='|2 '.$level2; }
+			if ($level4){ $family["fam_unprocessed_tags"].='|3 '.$level3; }
+			$family["fam_unprocessed_tags"].='|'.$buffer;
+		}
 
 	}  //end explode
 
@@ -2586,6 +2651,12 @@ function process_family($family_array,$first_marr, $second_marr){
 				event_source='".$this->text_process($event['source'][$i])."'";
 			$result=$dbh->query($gebeurtsql);
 		}
+
+		// *** Reset array to free memory ***
+		//echo '<br>====>>>>'.memory_get_usage().' RESET ';
+		unset ($event);
+		//$event=null;
+		//echo ' '.memory_get_usage().'@ ';
 	}
 
 
@@ -2616,6 +2687,12 @@ function process_family($family_array,$first_marr, $second_marr){
 			//echo $check_connect.' !! '.$gebeurtsql.'<br>';
 			$result=$dbh->query($gebeurtsql);
 		}
+
+		// *** Reset array to free memory ***
+		//echo '<br>====>>>>'.memory_get_usage().' RESET ';
+		unset ($event);
+		//$connect=null;
+		//echo ' '.memory_get_usage().'@ ';
 	}
 
 }
@@ -2707,21 +2784,21 @@ function process_text($text_array){
 		//*******************************************************************************************
 		// *** Save non-processed items ***
 		// ******************************************************************************************
-		//if (isset($_POST['check_processed'])){
-			// *** Skip these lines ***
-			if ($buffer=='0 TRLR'){ $processed=1; }
-			if ($processed==0){
+		// *** Skip these lines ***
+		if ($buffer=='0 TRLR'){ $processed=1; }
+		if ($processed==0){
+			if (isset($_POST['check_processed'])){
 				$not_processed[]="0 $level0</td><td>1 $level1<br></td><td>2 $level2<br></td><td>3 $level3<br></td><td>$buffer";
 				//$this->non_processed_items($buffer);
-
-				if ($text["text_unprocessed_tags"]){ $text["text_unprocessed_tags"].="<br>\n"; }
-				if ($level1){ $text["text_unprocessed_tags"].='0 '.$level0; }
-				if ($level2){ $text["text_unprocessed_tags"].='|1 '.$level1; }
-				if ($level3){ $text["text_unprocessed_tags"].='|2 '.$level2; }
-				if ($level4){ $text["text_unprocessed_tags"].='|3 '.$level3; }
-				$text["text_unprocessed_tags"].='|'.$buffer;
 			}
-		//}
+
+			if ($text["text_unprocessed_tags"]){ $text["text_unprocessed_tags"].="<br>\n"; }
+			if ($level1){ $text["text_unprocessed_tags"].='0 '.$level0; }
+			if ($level2){ $text["text_unprocessed_tags"].='|1 '.$level1; }
+			if ($level3){ $text["text_unprocessed_tags"].='|2 '.$level2; }
+			if ($level4){ $text["text_unprocessed_tags"].='|3 '.$level3; }
+			$text["text_unprocessed_tags"].='|'.$buffer;
+		}
 
 	} //end explode
 
@@ -2941,22 +3018,22 @@ function process_source($source_array){
 		//********************************************************************************************
 		// *** Save non-processed items ***
 		// *******************************************************************************************
-		//if (isset($_POST['check_processed'])){
-			//Skip these lines
-			if ($buffer=='0 TRLR'){ $processed=1; }
-			//if ($buffer=='1 REPO'){ $processed=1; }
-			if ($processed==0){
+		//Skip these lines
+		if ($buffer=='0 TRLR'){ $processed=1; }
+		//if ($buffer=='1 REPO'){ $processed=1; }
+		if ($processed==0){
+			if (isset($_POST['check_processed'])){
 				$not_processed[]="0 $level0</td><td>1 $level1<br></td><td>2 $level2<br></td><td>3 $level3<br></td><td>$buffer";
 				//$this->non_processed_items($buffer);
-
-				if ($source["source_unprocessed_tags"]){ $source["source_unprocessed_tags"].="<br>\n"; }
-				if ($level1){ $source["source_unprocessed_tags"].='0 '.$level0; }
-				if ($level2){ $source["source_unprocessed_tags"].='|1 '.$level1; }
-				if ($level3){ $source["source_unprocessed_tags"].='|2 '.$level2; }
-				if ($level4){ $source["source_unprocessed_tags"].='|3 '.$level3; }
-				$source["source_unprocessed_tags"].='|'.$buffer;
 			}
-		//}
+
+			if ($source["source_unprocessed_tags"]){ $source["source_unprocessed_tags"].="<br>\n"; }
+			if ($level1){ $source["source_unprocessed_tags"].='0 '.$level0; }
+			if ($level2){ $source["source_unprocessed_tags"].='|1 '.$level1; }
+			if ($level3){ $source["source_unprocessed_tags"].='|2 '.$level2; }
+			if ($level4){ $source["source_unprocessed_tags"].='|3 '.$level3; }
+			$source["source_unprocessed_tags"].='|'.$buffer;
+		}
 
 	} //end explode
 
@@ -3158,21 +3235,21 @@ function process_repository($repo_array){
 		//********************************************************************************************
 		// *** Save non-processed items ***
 		// *******************************************************************************************
-		//if (isset($_POST['check_processed'])){
-			//Skip these lines
-			if ($buffer=='0 TRLR'){ $processed=1; }
-			if ($processed==0){
+		//Skip these lines
+		if ($buffer=='0 TRLR'){ $processed=1; }
+		if ($processed==0){
+			if (isset($_POST['check_processed'])){
 				$not_processed[]="0 $level0</td><td>1 $level1<br></td><td>2 $level2<br></td><td>3 $level3<br></td><td>$buffer";
 				//$this->non_processed_items($buffer);
-
-				if ($repo["repo_unprocessed_tags"]){ $repo["repo_unprocessed_tags"].="<br>\n"; }
-				if ($level1){ $repo["repo_unprocessed_tags"].='0 '.$level0; }
-				if ($level2){ $repo["repo_unprocessed_tags"].='|1 '.$level1; }
-				if ($level3){ $repo["repo_unprocessed_tags"].='|2 '.$level2; }
-				if ($level4){ $repo["repo_unprocessed_tags"].='|3 '.$level3; }
-				$repo["repo_unprocessed_tags"].='|'.$buffer;
 			}
-		//}
+
+			if ($repo["repo_unprocessed_tags"]){ $repo["repo_unprocessed_tags"].="<br>\n"; }
+			if ($level1){ $repo["repo_unprocessed_tags"].='0 '.$level0; }
+			if ($level2){ $repo["repo_unprocessed_tags"].='|1 '.$level1; }
+			if ($level3){ $repo["repo_unprocessed_tags"].='|2 '.$level2; }
+			if ($level4){ $repo["repo_unprocessed_tags"].='|3 '.$level3; }
+			$repo["repo_unprocessed_tags"].='|'.$buffer;
+		}
 
 	} //end explode
 
@@ -3303,22 +3380,22 @@ function process_address($address_array){
 		//********************************************************************************************
 		// *** Save non-processed items ***
 		// *******************************************************************************************
-		//if (isset($_POST['check_processed'])){
-			//Skip these lines
-			if ($buffer=='0 TRLR'){ $processed=1; }
+		//Skip these lines
+		if ($buffer=='0 TRLR'){ $processed=1; }
 
-			if ($processed==0){
+		if ($processed==0){
+			if (isset($_POST['check_processed'])){
 				$not_processed[]="0 $level0</td><td>1 $level1<br></td><td>2 $level2<br></td><td>3 $level3<br></td><td>$buffer";
 				//$this->non_processed_items($buffer);
-
-				if ($address["address_unprocessed_tags"]){ $address["address_unprocessed_tags"].="<br>\n"; }
-				if ($level1){ $address["address_unprocessed_tags"].='0 '.$level0; }
-				if ($level2){ $address["address_unprocessed_tags"].='|1 '.$level1; }
-				if ($level3){ $address["address_unprocessed_tags"].='|2 '.$level2; }
-				if ($level4){ $address["address_unprocessed_tags"].='|3 '.$level3; }
-				$address["address_unprocessed_tags"].='|'.$buffer;
 			}
-		//}
+
+			if ($address["address_unprocessed_tags"]){ $address["address_unprocessed_tags"].="<br>\n"; }
+			if ($level1){ $address["address_unprocessed_tags"].='0 '.$level0; }
+			if ($level2){ $address["address_unprocessed_tags"].='|1 '.$level1; }
+			if ($level3){ $address["address_unprocessed_tags"].='|2 '.$level2; }
+			if ($level4){ $address["address_unprocessed_tags"].='|3 '.$level3; }
+			$address["address_unprocessed_tags"].='|'.$buffer;
+		}
 
 	} //end explode
 
@@ -3437,22 +3514,22 @@ function process_object($object_array){
 		//********************************************************************************************
 		// *** Save non-processed items ***
 		// *******************************************************************************************
-		//if (isset($_POST['check_processed'])){
-			//Skip these lines
-			if ($buffer=='0 TRLR'){ $processed=1; }
+		//Skip these lines
+		if ($buffer=='0 TRLR'){ $processed=1; }
 
-			if ($processed==0){
+		if ($processed==0){
+			if (isset($_POST['check_processed'])){
 				$not_processed[]="0 $level0</td><td>1 $level1<br></td><td>2 $level2<br></td><td>3 $level3<br></td><td>$buffer";
 				//$this->non_processed_items($buffer);
-
-				if ($event_unprocessed_tags){ $event_unprocessed_tags.="<br>\n"; }
-				if ($level1){ $event_unprocessed_tags.='0 '.$level0; }
-				if ($level2){ $event_unprocessed_tags.='|1 '.$level1; }
-				if ($level3){ $event_unprocessed_tags.='|2 '.$level2; }
-				if ($level4){ $event_unprocessed_tags.='|3 '.$level3; }
-				$event_unprocessed_tags.='|'.$buffer;
 			}
-		//}
+
+			if ($event_unprocessed_tags){ $event_unprocessed_tags.="<br>\n"; }
+			if ($level1){ $event_unprocessed_tags.='0 '.$level0; }
+			if ($level2){ $event_unprocessed_tags.='|1 '.$level1; }
+			if ($level3){ $event_unprocessed_tags.='|2 '.$level2; }
+			if ($level4){ $event_unprocessed_tags.='|3 '.$level3; }
+			$event_unprocessed_tags.='|'.$buffer;
+		}
 
 	} //end explode
 
@@ -3763,6 +3840,7 @@ function process_sources($connect_kind2,$connect_sub_kind2,$connect_connect_id2,
 function process_picture($person_id, $family_id, $picture, $buffer){
 	global $level2, $level3, $processed;
 	global $event, $event_nr, $event2, $event2_nr;
+	global $event_items;
 
 	$event_picture=false;
 	$buffer6=substr($buffer,0,6);

@@ -182,7 +182,7 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 
 	$result = $dbh->query("SELECT `tree_gedcom` FROM `humo_trees` WHERE `tree_prefix`='".$_SESSION['tree_prefix']."'");
 	$treegedDb = $result->fetch();
-	
+
 	$gedfile = $treegedDb['tree_gedcom'];
 	for ($i=0; $i<count($filenames); $i++){
 		//print '<option value="'.$filenames[$i].'">'.$filenames[$i].'</option>';
@@ -202,14 +202,14 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 	$res = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 	if ($res->rowCount()) {
 		$check=''; if ($humo_option["gedcom_read_process_geo_location"]=='y'){ $check=' checked'; }
-		echo "<input type='checkbox' name='process_geo_location'".$check."> ".__('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of gedcom file!')."\n";	
+		echo "<input type='checkbox' name='process_geo_location'".$check."> ".__('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of gedcom file!')."\n";
 	}
-	
+
 	$result = $dbh->query("SELECT tree_persons FROM humo_trees WHERE tree_prefix ='".$_SESSION['tree_prefix']."'");
-	$resultDb=$result->fetch(PDO::FETCH_OBJ);	
+	$resultDb=$result->fetch(PDO::FETCH_OBJ);
 	if ($resultDb->tree_persons != 0) {  // don't show if there is nothing in the database yet: this can't be a second gedcom!
-		echo "<p><INPUT type='checkbox' name='add_tree'> ".__('Add this tree to the existing tree')."<br>\n";	
-	}	
+		echo "<p><INPUT type='checkbox' name='add_tree'> ".__('Add this tree to the existing tree')."<br>\n";
+	}
 
 	echo '<p><input type="checkbox" name="check_processed"> '.__('Show non-processed items when processing gedcom (can be a long list!')."<br>\n";
 	echo '<input type="checkbox" name="show_gedcomnumbers"> '.__('Show all numbers when processing gedcom (useful when a time-out occurs!)')."<br>\n";
@@ -284,10 +284,10 @@ if (isset($_POST['step2'])){
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST['commit_records'])."' WHERE setting_variable='gedcom_read_commit_records'");
 	}
 
-	// *** PREPARE PROGRESS BAR ***
-	// *** person-family-source-address-text ***
 	//$progress_counter=0;
 	$handle = fopen($_POST["gedcom_file"], "r");
+
+	// *** Get character set from gedcom file ***
 	$accent='';
 	while (!feof($handle)) {
 		$buffer = fgets($handle, 4096);
@@ -295,9 +295,14 @@ if (isset($_POST['step2'])){
 		//$buffer=ltrim($buffer," ");  // *** Strip starting spaces, for Pro-gen ***
 		$buffer=trim($buffer); // *** Strip starting spaces for Pro-gen and ending spaces for Ancestry.
 		// Save accent kind (ASCII, ANSI, ANSEL or UTF-8)
-		if (substr($buffer, 0, 6)=='1 CHAR'){ $accent=substr($buffer,7); }
+		//if (substr($buffer, 0, 6)=='1 CHAR'){ $accent=substr($buffer,7); }
+		if (substr($buffer, 0, 6)=='1 CHAR'){
+			$accent=substr($buffer,7);
+			break;
+		}
 	}
 
+	// *** PREPARE PROGRESS BAR ***
 	$_SESSION['save_progress2']='0';
 	$_SESSION['save_perc']='0';
 	$_SESSION['save_total']='0';
@@ -306,10 +311,9 @@ if (isset($_POST['step2'])){
 
 	// Reset variables (needed to proceed after time out)
 	$_SESSION['save_pointer']='0';
-	
+
 	// *** Reset gen_program ***
-	$gen_program='';
-	$_SESSION['save_gen_program']=$gen_program;
+	$gen_program=''; $_SESSION['save_gen_program']=$gen_program;
 
 	print '<br><table><tr><td>';
 	print '<form method="post" action="'.$phpself.'">';
@@ -374,10 +378,10 @@ if (isset($_POST['step3'])){
 		$add_tree = true;
 		unset($_SESSION['add_tree']); // we don't want the session variable to persist - can cause problems!
 	}
-	
+
 	$reassign = false;
 	if ($humo_option["gedcom_read_reassign_gedcomnumbers"]=='y'){ $reassign = true; }
-	
+
 	if($add_tree==true) {
 		// if we add a tree we have to change the gedcomnumbers of pers, fam, source, addresses and notes
 		// so that they will be different from the existing ones.
@@ -533,7 +537,6 @@ if (isset($_POST['step3'])){
 		$percent=$perc."%"; if($perc==0) { $percent="0.5%"; } // show at least some green 
 		echo '<script language="javascript">';
 		echo 'document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#00CC00;\">&nbsp;</div>";';
-		//echo 'document.getElementById("information").innerHTML="'.$i.' / '.$total.' lines processed ('.$perc.'%).";';
 		echo 'document.getElementById("information").innerHTML="'.$i.' / '.$total.' '.__('lines processed').' ('.$perc.'%).";';
 		echo '</script>';
 		// This is for the buffer achieve the minimum size in order to flush data
@@ -552,6 +555,7 @@ if (isset($_POST['step3'])){
 			$_SESSION['save_total']=$total;
 			fclose($handle);
 		}
+
 		$total = $_SESSION['save_total'];
 
 		$devider=50; // determines the steps in percentages - regular: 2%
@@ -562,19 +566,6 @@ if (isset($_POST['step3'])){
 	}
 	// *** END preparation of progress bar ***
 
-	// *** Read file ***
-	$handle = fopen($_POST["gedcom_file"], "r");
-
-	// *** CONTINUE AFTER TIME_OUT ***
-	// Set pointer if continued
-	if ($_SESSION['save_pointer']>0) {
-		fseek($handle, $_SESSION['save_pointer']);
-	}
-	if (isset($_SESSION['save_gen_program'])) {
-		$gen_program=$_SESSION['save_gen_program'];
-	}
-	$level0='';
-	//************************************
 
 	require_once(CMS_ROOTPATH_ADMIN."include/ansel2unicode/ansel2unicode.php");
 	global $a2u;
@@ -636,19 +627,45 @@ if (isset($_POST['step3'])){
 	*/
 	// *** Batch processing for InnoDB tables ***
 	$commit_counter=0;
-	//$commit_records=$_POST['commit_records'];
 	$commit_records=$humo_option["gedcom_read_commit_records"];
 	if ($commit_records>1){ $dbh->beginTransaction(); }
 
+
+	// *****************
+	// *** Read file ***
+	// *****************
+
+
+	$handle = fopen($_POST["gedcom_file"], "r");
+
+	// *** CONTINUE AFTER TIME_OUT ***
+	// Set pointer if continued
+	if ($_SESSION['save_pointer']>0) {
+		fseek($handle, $_SESSION['save_pointer']);
+	}
+	if (isset($_SESSION['save_gen_program'])) {
+		$gen_program=$_SESSION['save_gen_program'];
+	}
+
+	$level0='';
+
 	while (!feof($handle)) {
-		$buffer = fgets($handle, 4096);
+		//$buffer = fgets($handle, 4096);
+		$buffer = fgets($handle);
 		$buffer=rtrim($buffer,"\n\r");  // *** strip newline ***
 		$buffer=ltrim($buffer," ");  // *** Strip starting spaces, for Pro-gen ***
 
-		// *** Commit genealogical data every 100 records. CAN ONLY BE USED WITH InnoDB TABLES!! ***
+// TEST: show memory usage
+//$calc_memory=(memory_get_usage()-$memory);
+//if ($calc_memory>100){ echo '<b>'; }
+//	echo '<br>'.memory_get_usage().' '.$calc_memory.'@ ';
+//	$memory=memory_get_usage();
+//	echo ' '.$buffer;
+//if ($calc_memory>100){ echo '!!</b>'; }
+
+		// *** Commit genealogical data every x records. CAN ONLY BE USED WITH InnoDB TABLES!! ***
 		if ($commit_records>1){
 			$commit_counter++;
-			//if ($commit_counter>$_POST['commit_records']){
 			if ($commit_counter>$humo_option["gedcom_read_commit_records"]){
 				$commit_counter=0;
 				// *** Save data in database ***
@@ -660,7 +677,7 @@ if (isset($_POST['step3'])){
 				$_SESSION['save_pointer']=$pointer;
 			}
 		}
-		
+
 		// *** Strip all spaces for Ancestry gedcom ***
 		if ( isset($gen_program) AND $gen_program=='Ancestry.com Family Trees'){
 			$buffer=rtrim($buffer," ");
@@ -681,6 +698,7 @@ if (isset($_POST['step3'])){
 			if ($process_gedcom=="person"){
 				$buffer2=encode($buffer2, $_POST["gedcom_accent"]);
 				$gedcom_cls -> process_person($buffer2);
+
 				//save pointer value, so reading can be continued after timeout
 				if ($commit_records==1){
 					$pointer=ftell($handle); $_SESSION['save_pointer']=$pointer;
@@ -728,7 +746,7 @@ if (isset($_POST['step3'])){
 				}
 				$process_gedcom=""; $buffer2="";
 			}
-	
+
 			elseif ($process_gedcom=="address"){
 				$buffer2=encode($buffer2, $_POST["gedcom_accent"]);
 				$gedcom_cls -> process_address($buffer2);
@@ -753,35 +771,28 @@ if (isset($_POST['step3'])){
 
 		// *** CHECK ***
 		if (substr($buffer, -6, 6)=='@ INDI'){
-			$process_gedcom="person";
-			$buffer2="";
+			$process_gedcom="person"; $buffer2="";
 		}
 		elseif (substr($buffer, -5, 5)=='@ FAM'){
-			$process_gedcom="family";
-			$buffer2="";
+			$process_gedcom="family"; $buffer2="";
 		}
 		elseif (substr($buffer, 0, 3)=='0 @'){
 			// *** Aldfaer text: 0 @N954@ NOTE ***
 			if (strpos($buffer,'@ NOTE')>1){
-				$process_gedcom="text";
-				$buffer2="";
+				$process_gedcom="text"; $buffer2="";
 			}
 
 			if (substr($buffer, -6, 6)=='@ SOUR'){
-				$process_gedcom="source";
-				$buffer2="";
+				$process_gedcom="source"; $buffer2="";
 			}
 			elseif (substr($buffer, -6, 6)=='@ REPO'){
-				$process_gedcom="repository";
-				$buffer2="";
+				$process_gedcom="repository"; $buffer2="";
 			}
 			elseif (substr($buffer, -6, 6)=='@ RESI'){
-				$process_gedcom="address";
-				$buffer2="";
+				$process_gedcom="address"; $buffer2="";
 			}
 			elseif (substr($buffer, -6, 6)=='@ OBJE'){
-				$process_gedcom="object";
-				$buffer2="";
+				$process_gedcom="object"; $buffer2="";
 			}
 		}
 
@@ -798,7 +809,7 @@ if (isset($_POST['step3'])){
 			printf(__('this is an <b>%s</b> file'), $_POST["gedcom_accent"]);
 			echo '<br>';
 
-			// NEW tree<->gedcom connection - write gedcom to "tree_gedcom" in relevant tree
+			// NEW tree <-> gedcom connection - write gedcom to "tree_gedcom" in relevant tree
 			$dbh->query("UPDATE humo_trees SET tree_gedcom='".$_POST["gedcom_file"]."',
 				tree_gedcom_program='".$gen_program."'
 				WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
@@ -808,8 +819,7 @@ if (isset($_POST['step3'])){
 		// *** progress bar ***
 		//if (!isset($_POST['show_gedcomnumbers']) AND $progress>($progress_counter/500)){
 		if (!isset($_POST['show_gedcomnumbers'])) {
-			$i++;
-			$_SESSION['save_progress2']=$i;
+			$i++; $_SESSION['save_progress2']=$i;
 
 			// Calculate the percentage
 			if($i%$step==0) {
@@ -839,6 +849,7 @@ if (isset($_POST['step3'])){
 	}
 	fclose($handle);
 
+
 	// *** End of MyISAM batch processing ***
 	// mysql_query("UNLOCK TABLES;");
 	// *** End of InnoDB batch processing ***
@@ -846,7 +857,6 @@ if (isset($_POST['step3'])){
 
 	// *** Show endtime ***
 	$end_time=time();
-
 	printf('<br>'.__('Reading in the file took: %d seconds').'<br>', $end_time-$_SESSION['save_starttime']);
 
 	//*** Show "non-processed gedcom items" ***

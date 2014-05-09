@@ -10,8 +10,8 @@ $homepage_arr=$homepage->fetch();
 
 $homepage_name= $dbh->query("SELECT setting_value FROM humo_settings WHERE setting_variable='homepage_description'");
 $homepage_name_arr=$homepage_name->fetch();
-?>
 
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,9 +20,16 @@ $homepage_name_arr=$homepage_name->fetch();
 	<title><?php echo $homepage_name_arr['setting_value']; ?></title>
 	<link rel="stylesheet" href="themes/rene.min.css" />
 	<?php
+if($language["dir"]=="rtl") { 
+	echo '<link rel="stylesheet" href="jquery_mobile/rtl.jquery.mobile-1.2.0.min.css" />';
+	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>';
+	echo '<script type="text/javascript" src="jquery_mobile/rtl.jquery.mobile-1.2.0.min.js"></script>';
+}
+else {  
 	echo '<link rel="stylesheet" href="jquery_mobile/jquery.mobile.structure-1.2.0.min.css" />';
 	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>';
 	echo '<script type="text/javascript" src="jquery_mobile/jquery.mobile-1.2.0.min.js"></script>';
+}
 	?>
 	<style type="text/css">
 		.img {
@@ -99,8 +106,8 @@ $homepage_name_arr=$homepage_name->fetch();
 		for ($i=0; $i<count($language_file); $i++){
 			// *** Get language name *** 
 			$selected=""; if ($language_file[$i] == $selected_language) { $selected = " selected "; }
-			include('../languages/'.$language_file[$i].'/language_data.php');			  	 
-			echo '<option value="'.$language_file[$i].'"'.$selected.'>'.$language["name"].'</option>';				  
+			include('../languages/'.$language_file[$i].'/language_data.php');
+			echo '<option value="'.$language_file[$i].'"'.$selected.'>'.$language["name"].'</option>';
 		}  
 		echo '</select></form>';
 		include('../languages/'.$selected_language.'/language_data.php');

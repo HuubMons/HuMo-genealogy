@@ -12,8 +12,7 @@ if (isset($_GET['log_off'])){
 
 include_once(CMS_ROOTPATH."include/db_login.php"); //Login database.
 
-//mysql_query("SET NAMES 'utf8'", $db) or die(mysql_error());
-$dbh->query("SET NAMES 'utf8'"); 
+//$dbh->query("SET NAMES 'utf8'"); 
 
 include_once("function.php");
 

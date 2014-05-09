@@ -410,7 +410,7 @@ if (isset($tree_prefix)){
 	}
 
 	// *** Check if this is a new family tree ***
-	$person2_qry= "SELECT * FROM ".$tree_prefix."person";
+	$person2_qry= "SELECT pers_id FROM ".$tree_prefix."person LIMIT 0,10";
 	$person2_result = $dbh->query($person2_qry);
 	if ($person2_result AND $person2_result->rowCount() > 0){
 		// *** Family tree exists and is filled with data ***

@@ -47,7 +47,6 @@ include_once (CMS_ROOTPATH.'include/show_tree_text.php');
 // *** Use UTF-8 database connection ***
 //$dbh->query("SET NAMES 'utf8'");
 
-
 // *** Show a message at NEW installation. ***
 $result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
 if ($result->rowCount() ==0) {

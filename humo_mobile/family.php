@@ -13,15 +13,26 @@ include_once(CMS_ROOTPATH."include/show_picture.php");
 $screen_mode='mobile';
 
 echo '<!DOCTYPE html>';
+//if("rtl"=="rtl") { echo '<html dir="rtl">'; }
+//else { echo '<html>'; }
+//echo '<html dir="rtl">';
 echo '<html>';
 echo '<head>';
 	echo '<meta charset="utf-8">';
 	echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
 	echo '<title>HuMo-gen mobile</title>';
 	echo '<link rel="stylesheet" href="themes/rene.min.css" />';
+if($language["dir"]=="rtl") { 
+	echo '<link rel="stylesheet" href="jquery_mobile/rtl.jquery.mobile-1.2.0.min.css" />';
+	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>';
+	echo '<script type="text/javascript" src="jquery_mobile/rtl.jquery.mobile-1.2.0.min.js"></script>';
+}
+else {  
 	echo '<link rel="stylesheet" href="jquery_mobile/jquery.mobile.structure-1.2.0.min.css" />';
 	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>';
 	echo '<script type="text/javascript" src="jquery_mobile/jquery.mobile-1.2.0.min.js"></script>';
+}
+
 echo '</head>';
 
 echo '<body>';
@@ -68,6 +79,7 @@ if (!$bot_visit){
 		WHERE fam_gedcomnumber='".safe_text($person_manDb->fam_gedcomnumber)."'";
 	$dbh->query($sql);
 	// *** Extended statistics, first check if table exists ***
+	//$statistics = mysql_query("SELECT * FROM humo_stat_date LIMIT 0,1",$db);
 	$statistics = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
 	if ($statistics AND $user['group_statistics']=='j'){
 
@@ -140,7 +152,7 @@ if ($person_manDb->pers_fams!=NULL){
 		$res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
 			WHERE fam_gedcomnumber LIKE '".safe_text($marr[$i])."'");
 		$marrDb=$res->fetch(PDO::FETCH_OBJ); 
-		
+
 		if ($id==$marrDb->fam_man){
 			$partner=$marrDb->fam_woman;
 		}

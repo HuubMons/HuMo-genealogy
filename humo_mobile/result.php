@@ -8,9 +8,16 @@
 	<title>HuMo-gen mobile</title>
 	<link rel="stylesheet" href="themes/rene.min.css" />
 	<?php
+if($language["dir"]=="rtl") { 
+	echo '<link rel="stylesheet" href="jquery_mobile/rtl.jquery.mobile-1.2.0.min.css" />';
+	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>';
+	echo '<script type="text/javascript" src="jquery_mobile/rtl.jquery.mobile-1.2.0.min.js"></script>';
+}
+else {  
 	echo '<link rel="stylesheet" href="jquery_mobile/jquery.mobile.structure-1.2.0.min.css" />';
 	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>';
 	echo '<script type="text/javascript" src="jquery_mobile/jquery.mobile-1.2.0.min.js"></script>';
+}
 	?>
 	<style type="text/css"></style>
 </head>
@@ -43,19 +50,20 @@
 		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$quicksearch%'";
 	$query.=" ORDER BY pers_lastname, pers_firstname ASC ";   
 	$data = $dbh->query($query);
-	$num_rows = $data->rowCount();
-
+	$num_rows = $data->rowCount();	
+	
 	if ($num_rows==NULL){
 		print __('No results found.');
 	}
 	else{
+		//while($info = mysql_fetch_array( $data )){
 		while($info = $data->fetch()){
 			$text=$info['pers_gedcomnumber'];
 			print popup($text);
 		}
 		print '<li data-role="list-divider">  </li>';
 	}
-	print '</ul>';
+    print '</ul>';
  
 include_once("footer.php");
 ?>
