@@ -94,6 +94,9 @@ $user['group_own_code']=$groupDb->group_own_code; // Show Own code
 if (!isset($groupDb->group_pdf_button)){ $user['group_pdf_button']='y'; }
 	else{ $user['group_pdf_button']=$groupDb->group_pdf_button; }
 
+if (!isset($groupDb->group_rtf_button)){ $user['group_rtf_button']='n'; }
+	else{ $user['group_rtf_button']=$groupDb->group_rtf_button; }
+
 if (!isset($groupDb->group_family_presentation)){ $user['group_family_presentation']='compact'; }
 	else{ $user['group_family_presentation']=$groupDb->group_family_presentation; }
 if (!isset($groupDb->group_maps_presentation)){ $user['group_maps_presentation']='hide'; }

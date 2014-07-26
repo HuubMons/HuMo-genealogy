@@ -1,7 +1,7 @@
 <?php
 // *** Script by Yossi Beck ***
 // *** Function calculate_marriage added by Huub Mons ***
-// *** Translated all variables and remarks by Huub Mos ***
+// *** Translated all variables and remarks by Huub Mons ***
 
 class calculate_year_cls{
 

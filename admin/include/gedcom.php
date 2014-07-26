@@ -252,6 +252,8 @@ if (isset($_POST['step2'])){
 		else {
 			$rootpathinclude = '';
 		}
+
+		$show_gedcom_status=true;
 		include_once($rootpathinclude."gedcom_tables.php");
 	}
 	else {
@@ -605,6 +607,9 @@ if (isset($_POST['step3'])){
 		if ($gedcom_accent=="UTF-8") {
 			// *** No conversion needed ***
 		}
+
+//echo mb_detect_encoding($buffer); // *** Show character set: doesn't seem to work properly... ***
+//echo '<br>';
 
 		//$buffer=addslashes($buffer);
 		return $buffer;

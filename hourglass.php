@@ -26,7 +26,7 @@ include_once("report_descendant.php");
 $family_id = $_GET['main_person']; 
 include_once("report_ancestor.php");
 
-// GENERATE DATA FOR DESCENDANTS ^^^^^	
+// GENERATE DATA FOR DESCENDANTS ^^^^^
 
 //$size=45; 
 $direction=1;
@@ -50,7 +50,7 @@ if($genarray[0]["y"] < $anc_top) { // if desc base pers higher on screen than ba
 	}
 }
 if($genarray[0]["y"] > $anc_top)  { // if desc base person lower, we have to lower base person of anc chart.
-	$anc_top = $genarray[0]["y"] ;	
+	$anc_top = $genarray[0]["y"] ;
 }
 //Set height of chart, both for screen and img-to-print
 //Descendant chart bottom coordinates
@@ -123,88 +123,88 @@ echo '</div>';
 
 // MENU BAR - no. of generations, zoom
 
-		echo '<div id="menubox" class="table_header search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:520px; text-align:left;">';
+	echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:600px; text-align:left;">';
 
-		print '&nbsp;'.__('Nr. generations').': '.__('Anc.').'&nbsp;';	
-		print '<select name="chosengenanc" onChange="window.location=this.value">';
-	
-		for ($i=2; $i<=12; $i++) {
-			if(CMS_SPECIFIC=='Joomla') {  
-				print '<option value="index.php?option=com_humo-gen&task=hourglass&id='.$keepfamily_id.'&amp;main_person='.
-				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
-				$size.'&amp;chosengen='.$chosengen.'&amp;chosengenanc='.$i.'&amp;screen_mode=HOUR" ';
-			}
-			else{
-				print '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
-				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
-				$size.'&amp;chosengen='.$chosengen.'&amp;chosengenanc='.$i.'&amp;screen_mode=HOUR" ';
-			}
-			if ($i == $chosengenanc) print "selected=\"selected\" ";
-			print ">".$i."</option>";
+	print '&nbsp;'.__('Nr. generations').': '.__('Anc.').'&nbsp;';
+	print '<select name="chosengenanc" onChange="window.location=this.value">';
+
+	for ($i=2; $i<=12; $i++) {
+		if(CMS_SPECIFIC=='Joomla') {  
+			print '<option value="index.php?option=com_humo-gen&task=hourglass&id='.$keepfamily_id.'&amp;main_person='.
+			$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+			$size.'&amp;chosengen='.$chosengen.'&amp;chosengenanc='.$i.'&amp;screen_mode=HOUR" ';
 		}
- 
-		print '</select>';
-
-		print '&nbsp;&nbsp;'.__('Desc.').'&nbsp;';				
-		print '<select name="chosengen" onChange="window.location=this.value">';
-	
-		for ($i=2; $i<=15; $i++) {
-			if(CMS_SPECIFIC=='Joomla') {  
-				print '<option value="index.php?option=com_humo-gen&task=hourglass&id='.$keepfamily_id.'&amp;main_person='.
-				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
-				$size.'&amp;chosengen='.$i.'&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
-			}
-			else{
-				print '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
-				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
-				$size.'&amp;chosengen='.$i.'&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
-			}
-			if ($i == $chosengen) print "selected=\"selected\" ";
-			print ">".$i."</option>";
+		else{
+			print '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
+			$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+			$size.'&amp;chosengen='.$chosengen.'&amp;chosengenanc='.$i.'&amp;screen_mode=HOUR" ';
 		}
+		if ($i == $chosengenanc) print "selected=\"selected\" ";
+		print ">".$i."</option>";
+	}
 
-		//NEW - option "All" for all generations
-		print '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
-		$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
-		$size.'&amp;chosengen=All&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
-		if ($chosengen=="All") print "selected=\"selected\" ";
-		print ">"."All"."</option>";
- 
+	print '</select>';
 
-		print '</select>';
+	print '&nbsp;&nbsp;'.__('Desc.').'&nbsp;';
+	print '<select name="chosengen" onChange="window.location=this.value">';
 
-	
-		print '&nbsp;&nbsp;';
-		//NEW min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
-		echo ' 
-			<script>
-			$(function() {
-				$( "#slider" ).slider({
-					value: '.(($size/5)-1).',
-					min: 0,
-					max: 9,
-					step: 1,
-					database: "'.$database.'",
-					main_person: "'.$keepmain_person.'",
-					id: "'.$keepfamily_id.'",
-					chosengen: "'.$chosengen.'",
-					chosengenanc: "'.$chosengenanc.'",					
-					direction: "'.$direction.'",
-					chart_type: "hour",
-					slide: function( event, ui ) {
-						$( "#amount" ).val(ui.value+1);
-					}
-				});
-				$( "#amount" ).val($( "#slider" ).slider( "value" )+1 );
+	for ($i=2; $i<=15; $i++) {
+		if(CMS_SPECIFIC=='Joomla') {  
+			print '<option value="index.php?option=com_humo-gen&task=hourglass&id='.$keepfamily_id.'&amp;main_person='.
+			$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+			$size.'&amp;chosengen='.$i.'&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
+		}
+		else{
+			print '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
+			$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+			$size.'&amp;chosengen='.$i.'&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
+		}
+		if ($i == $chosengen) print "selected=\"selected\" ";
+		print ">".$i."</option>";
+	}
+
+	//NEW - option "All" for all generations
+	print '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
+	$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+	$size.'&amp;chosengen=All&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
+	if ($chosengen=="All") print "selected=\"selected\" ";
+	print ">"."All"."</option>";
+
+
+	print '</select>';
+
+
+	print '&nbsp;&nbsp;';
+	//NEW min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
+	echo ' 
+		<script>
+		$(function() {
+			$( "#slider" ).slider({
+				value: '.(($size/5)-1).',
+				min: 0,
+				max: 9,
+				step: 1,
+				database: "'.$database.'",
+				main_person: "'.$keepmain_person.'",
+				id: "'.$keepfamily_id.'",
+				chosengen: "'.$chosengen.'",
+				chosengenanc: "'.$chosengenanc.'",
+				direction: "'.$direction.'",
+				chart_type: "hour",
+				slide: function( event, ui ) {
+					$( "#amount" ).val(ui.value+1);
+				}
 			});
-			</script>
-		';
+			$( "#amount" ).val($( "#slider" ).slider( "value" )+1 );
+		});
+		</script>
+	';
 
-		//echo '<label for="amount">Zoom in/out:</label>';
-		echo '<label for="amount">'.__('Zoom level:').'</label> ';
-		echo '<input type="text" id="amount" disabled="disabled" style="width:18px;border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
-		echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
-		echo '</div>';
+	//echo '<label for="amount">Zoom in/out:</label>';
+	echo '<label for="amount">'.__('Zoom level:').'</label> ';
+	echo '<input type="text" id="amount" disabled="disabled" style="width:18px;border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
+	echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
+	echo '</div>';
 
 // START DIV FOR IMAGE (to print image of chart with plotter) ^^^^^
 
@@ -297,9 +297,9 @@ for($x=$chosengenanc;$x>1;$x--) {
 	$hi *= 2;
 	$gap *= 2;
 	$incr *= 2;
-	$blocks = $blocks/2;	
+	$blocks = $blocks/2;
 	if($x> $chosengenanc-1 OR $size <45) { // maybe just: if($x==$chosengenanc)     ;-)
-		$left += $width +20;	
+		$left += $width +20;
 	}
 	else {
 		$left += $width/2 +20;

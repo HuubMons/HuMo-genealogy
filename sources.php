@@ -13,14 +13,28 @@ include_once(CMS_ROOTPATH."include/date_place.php");
 
 @set_time_limit(300);
 
-echo '<div class=index_list1>';
+$desc_asc=" ASC "; $sort_desc=0;
+if(isset($_GET['sort_desc'])) {
+	$desc_asc=" ASC "; $sort_desc=0;
+	if($_GET['sort_desc'] == 1) { $desc_asc=" DESC "; $sort_desc=1; }
+}
 
-if (isset($_POST['order_sources']) OR isset($_GET['order_sources'])){
-	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'" style="display : inline">';
-	print '<input type="Submit" name="geenorder_sources" value="'.__('Order by title').'">';
-	print '</form>';
-
+$order_sources='title';
+if(isset($_GET['order_sources'])) {
+	if ($_GET['order_sources']=='title') $order_sources='title';
+	if ($_GET['order_sources']=='date') $order_sources='date';
+	if ($_GET['order_sources']=='place') $order_sources='place';
+}
+if($order_sources=="title") {
+	// *** Default querie: order by title ***
+	$querie="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources";
 	// *** Check user group is restricted sources can be shown ***
+	if ($user['group_show_restricted_source']=='n'){ $querie.=" WHERE source_status!='restricted' OR source_status IS NULL"; }
+	$querie.=" ORDER BY source_title".$desc_asc;
+}
+if($order_sources=="date") {
+	// *** Check user group is restricted sources can be shown ***
+	/*
 	$querie="SELECT source_status, source_id, source_gedcomnr, source_title, source_date, source_place,
 	right(source_date,4) as year,
 	date_format( str_to_date( substring(source_date,4,3),'%b' ),'%m') as month,
@@ -28,16 +42,21 @@ if (isset($_POST['order_sources']) OR isset($_GET['order_sources'])){
 	FROM ".$tree_prefix_quoted."sources";
 	if ($user['group_show_restricted_source']=='n'){ $querie.=" WHERE source_status!='restricted' OR source_status IS NULL"; }
 	$querie.=" ORDER BY year, month, day";
-}
-else{
-	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'" style="display : inline">';
-	print '<input type="Submit" name="order_sources" value="'.__('Order by date').'">';
-	print '</form>';
-
-	// *** Check user group is restricted sources can be shown ***
-	$querie="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources";
+	*/
+	$querie="SELECT source_status, source_id, source_gedcomnr, source_title, source_date, source_place,
+	CONCAT(right(source_date,4),
+		date_format( str_to_date( substring(source_date,4,3),'%b' ),'%m'),
+		date_format( str_to_date( left(source_date,2),'%d' ),'%d') )
+		as year
+	FROM ".$tree_prefix_quoted."sources";
 	if ($user['group_show_restricted_source']=='n'){ $querie.=" WHERE source_status!='restricted' OR source_status IS NULL"; }
-	$querie.=" ORDER BY source_title";
+	$querie.=" ORDER BY year".$desc_asc;
+}
+if($order_sources=="place") {
+	$querie="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources";
+	// *** Check user group is restricted sources can be shown ***
+	if ($user['group_show_restricted_source']=='n'){ $querie.=" WHERE source_status!='restricted' OR source_status IS NULL"; }
+	$querie.=" ORDER BY source_place".$desc_asc;
 }
 
 // *** Pages ***
@@ -54,8 +73,7 @@ if ($start>1){
 	$start2=$start-20;
 	$calculated=($start-2)*$count_sources;
 	$line_pages.= "<a href=\"".$_SERVER['PHP_SELF']."?start=$start2&amp;item=$calculated";
-	if (isset($_GET['order_sources'])){ $line_pages.=  "&amp;order_sources=".$_GET['order_sources']; }
-	if (isset($_POST['order_sources'])){ $line_pages.=  "&amp;order_sources=".$_POST['order_sources']; }
+	if (isset($_GET['order_sources'])){ $line_pages.=  "&amp;order_sources=".$_GET['order_sources'].'&sort_desc='.$sort_desc; }
 	$line_pages.=  "\">&lt;= </a>";
 }
 if ($start<=0){$start=1;}
@@ -69,8 +87,7 @@ for ($i=$start; $i<=$start+19; $i++) {
 		}
 		else {
 			$line_pages.=  "<a href=\"".$_SERVER['PHP_SELF']."?item=$calculated&amp;start=$start";
-			if (isset($_GET['order_sources'])){ $line_pages.= "&amp;order_sources=".$_GET['order_sources']; }
-			if (isset($_POST['order_sources'])){ $line_pages.= "&amp;order_sources=".$_POST['order_sources']; }
+			if (isset($_GET['order_sources'])){ $line_pages.= "&amp;order_sources=".$_GET['order_sources'].'&sort_desc='.$sort_desc; }
 			$line_pages.=  "\"> $i</a>";
 		}
 	}
@@ -80,26 +97,56 @@ for ($i=$start; $i<=$start+19; $i++) {
 $calculated=($i-1)*$count_sources;
 if ($calculated<$all_sources->rowCount()){
 	$line_pages.=  "<a href=\"".$_SERVER['PHP_SELF']."?start=$i&amp;item=$calculated";
-	if (isset($_GET['order_sources'])){ $line_pages.=  "&amp;order_sources=".$_GET['order_sources']; }
-	if (isset($_POST['order_sources'])){ $line_pages.=  "&amp;order_sources=".$_POST['order_sources']; }
+	if (isset($_GET['order_sources'])){ $line_pages.=  "&amp;order_sources=".$_GET['order_sources'].'&sort_desc='.$sort_desc; }
 	$line_pages.=  "\"> =&gt;</a>";
 }
 
-echo ' '.$line_pages."<br>\n";
+echo '<div class=index_list1>'.$line_pages.'</div><br>';
 
-	echo '<div class=index_list2>';
-		//while (@$sourceDb=mysql_fetch_object($source)){
+	echo '<table class="humo index_table" align="center">';
+		echo '<tr class=table_headline>';
+			echo '<th colspan="3">'.__('Source').'</th>';
+		echo '</tr>';
+
+		echo '<tr class=table_headline>';
+			$style=''; $sort_reverse=$sort_desc; $img='';
+			if ($order_sources=="title"){
+				$style=' style="background-color:#ffffa0"';
+				$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
+			}
+			echo '<th><a href="sources.php?database='.$_SESSION['tree_prefix'].'&start=1&item=0&order_sources=title&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Title').' <img src="images/button3'.$img.'.png"></a></th>';
+
+			$style=''; $sort_reverse=$sort_desc; $img='';
+			if ($order_sources=="date"){
+				$style=' style="background-color:#ffffa0"';
+				$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
+			}
+			echo '<th><a href="sources.php?database='.$_SESSION['tree_prefix'].'&start=1&item=0&order_sources=date&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Date').' <img src="images/button3'.$img.'.png"></a></th>';
+
+			$style=''; $sort_reverse=$sort_desc; $img='';
+			if ($order_sources=="place"){
+				$style=' style="background-color:#ffffa0"';
+				$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
+			}
+			echo '<th><a href="sources.php?database='.$_SESSION['tree_prefix'].'&start=1&item=0&order_sources=place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Place').' <img src="images/button3'.$img.'.png"></a></th>';
+		echo '</tr>';
+
 		while (@$sourceDb=$source->fetch(PDO::FETCH_OBJ)){
-			print '<a href="'.CMS_ROOTPATH.'source.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$sourceDb->source_gedcomnr.'">';
+			echo '<tr><td><a href="'.CMS_ROOTPATH.'source.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$sourceDb->source_gedcomnr.'">';
 			// *** Aldfaer sources don't have a title! ***
 			if ($sourceDb->source_title){ echo $sourceDb->source_title; } else { echo $sourceDb->source_text; }
-			echo '</a> '.date_place($sourceDb->source_date, $sourceDb->source_place).'<br>';
-		}
-	echo '</div>';
-	
-echo '<br>'.$line_pages;
+			echo '</a></td>'; 
 
-echo '</div>';
+			echo '<td>'.date_place($sourceDb->source_date, '').'</td>';
+			echo '<td>'.$sourceDb->source_place.'</td>';
+			echo '</tr>';
+		}
+
+	echo '</table>';
+
+echo '<br><div class=index_list1>'.$line_pages.'</div>';
+
+//echo '</div>';
 
 include_once(CMS_ROOTPATH."footer.php");
 ?>

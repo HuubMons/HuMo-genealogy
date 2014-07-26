@@ -102,7 +102,7 @@ function set_privacy($personDb){
 // *************************************************************
 // *** Remark: it's necessary to use $personDb because of witnesses, parents etc. ***
 function person_name($personDb){
-	global $user, $language, $dbh, $screen_mode;
+	global $user, $language, $dbh, $screen_mode, $selection;
 	$tree_prefix_quoted=''; if ($personDb) $tree_prefix_quoted=$personDb->pers_tree_prefix;
 	$stillborn=''; $nobility=''; $lordship='';
 	$title_before=''; $title_between=''; $title_after='';
@@ -286,9 +286,36 @@ function person_name($personDb){
 			if ($personDb->pers_patronym){ $name_array["index_name_extended"].=' '.$personDb->pers_patronym;}
 			$name_array["index_name_extended"].=$stillborn;
 			// *** If a special name is found in the results (event table), show it **
-			if (isset($personDb->event_event) AND $personDb->event_event){
+			if (isset($personDb->event_event) AND $personDb->event_event AND $personDb->event_kind=='name'){
 				$name_array["index_name_extended"].=' ('.$personDb->event_event.')';}
 			$name_array["index_name_extended"].=$prefix2;
+
+			// *** Is search is done for profession, show profession **
+			if ($selection['pers_profession']){
+				if (isset($personDb->event_event) AND $personDb->event_event AND $personDb->event_kind=='profession'){
+					$name_array["index_name_extended"].=' ('.$personDb->event_event.')';}
+			}
+
+			// *** Is search is done for places, show place **
+			if ($selection['pers_place']){
+				if (isset($personDb->address_place)){
+					$name_array["index_name_extended"].=' ('.$personDb->address_place.')';
+				}
+			}
+
+			// *** Is search is done for places, show place **
+			if ($selection['zip_code']){
+				if (isset($personDb->address_zip)){
+					$name_array["index_name_extended"].=' ('.$personDb->address_zip.')';
+				}
+			}
+
+			// *** Is search is done for places, show place **
+			if ($selection['witness']){
+				if (isset($personDb->event_event)){
+					$name_array["index_name_extended"].=' ('.$personDb->event_event.')';
+				}
+			}
 
 			// *** $name["initials"] used in report_descendant.php ***
 			// *** Example: H.M. ***
@@ -302,7 +329,7 @@ function person_name($personDb){
 			WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='person_colour_mark'
 			ORDER BY event_order");
 		while($colourDb=$colour_qry->fetch(PDO::FETCH_OBJ)){
-			if ($colourDb AND $screen_mode!="PDF"){
+			if ($colourDb AND $screen_mode!="PDF" AND $screen_mode!="RTF"){
 				$pers_colour='style="-moz-border-radius: 40px; border-radius: 40px;';
 				$person_colour_mark=$colourDb->event_event;
 				if ($person_colour_mark=='1'){ $pers_colour.=' background-color:#FF0000;'; }
@@ -356,7 +383,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 	$privacy=$this->privacy;
 
 	// *** Show pop-up menu ***
-	if (!$bot_visit AND $screen_mode!="PDF") {
+	if (!$bot_visit AND $screen_mode!="PDF" AND $screen_mode!="RTF") {
 
 		// *** Family tree for search in multiple family trees ***
 		$tree_prefix=safe_text($personDb->pers_tree_prefix);
@@ -651,8 +678,9 @@ function name_extended($person_kind){
 	global $selected_language;
 	global $family_expanded;
 	global $bot_visit;
+	global $sect; // *** RTF Export ***
 
-	$text_name=''; $text_parents=''; $child_marriage='';
+	$text_name=''; $text_name2=''; $text_colour=''; $text_parents=''; $child_marriage='';
 
 	$personDb=$this->personDb;
 	$privacy=$this->privacy;
@@ -673,13 +701,24 @@ function name_extended($person_kind){
 		else{
 			// *** Show man or woman picture ***
 			if($screen_mode!="PDF") {  //  pdf does this elsewhere
-				$text_name.= $dirmark1;
-				if ($personDb->pers_sexe=="M")
-					$text_name.='<img src="'.CMS_ROOTPATH.'images/man.gif" alt="man">';
-				elseif ($personDb->pers_sexe=="F")
-					$text_name.='<img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman">';
-				else
-					$text_name.='<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
+
+				if($screen_mode=="RTF") {  //  rtf does this elsewhere
+					//if ($personDb->pers_sexe=="M")
+					//	$sect->addImage(CMS_ROOTPATH.'images/man.gif', null);
+					//elseif ($personDb->pers_sexe=="F")
+					//	$sect->addImage(CMS_ROOTPATH.'images/woman.gif', null);
+					//else
+					//	$sect->addImage(CMS_ROOTPATH.'images/unknown.gif', null);
+				}
+				else{
+					$text_name.= $dirmark1;
+					if ($personDb->pers_sexe=="M")
+						$text_name.='<img src="'.CMS_ROOTPATH.'images/man.gif" alt="man">';
+					elseif ($personDb->pers_sexe=="F")
+						$text_name.='<img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman">';
+					else
+						$text_name.='<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
+				}
 
 				// *** Source by sexe ***
 				if ($personDb->pers_sexe_source){
@@ -691,7 +730,6 @@ function name_extended($person_kind){
 						$text_name.=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber).' ';
 					//}
 				}
-
 			}
 		}
 
@@ -706,6 +744,8 @@ function name_extended($person_kind){
 			$standard_name.= $dirmark1." #".$show_gedcomnumber;
 		}
 
+
+
 		// *** Check privacy filter for callname ***
 		if (($privacy AND $user['group_filter_name']=='n')
 			OR ($user["group_pers_hide_totally_act"]=='j' AND strpos($personDb->pers_own_code,$user["group_pers_hide_totally"])>0)){
@@ -717,7 +757,6 @@ function name_extended($person_kind){
 
 		// *** No links if gen_protection is enabled ***
 		if ($user["group_gen_protection"]=='j'){ $person_kind=''; }
-		//if ($person_kind=='child' AND $personDb->pers_fams){
 		if (($person_kind=='child' OR $person_kind=='outline') AND $personDb->pers_fams){
 			$child_link=explode(";",$personDb->pers_fams);
 			// *** Link to 1st family of person ***
@@ -742,9 +781,35 @@ function name_extended($person_kind){
 		else
 			$text_name.=$standard_name; // *** Show name without link **
 
-		// *** Add colour marks to person ***
-		$text_name.=$name["colour_mark"];
+		// *** Check privacy filter ***
+		$text_name2='';
+		if ($privacy){
+			//dummy
+		}
+		else{
+			// *** Text by name ***
+			if ($user["group_texts_pers"]=='j'){
+				$work_text=process_text($personDb->pers_name_text);
+				if ($work_text){
+					$text_name2.=', '.$work_text;
+					$pdfstr["name_text"]=", ".$work_text;
+				}
+			}
 
+			// *** Source by name ***
+			if ($personDb->pers_name_source){
+				if($screen_mode=='PDF') {
+					$pdfstr["name_source"]=show_sources2("person","pers_name_source",$personDb->pers_gedcomnumber);
+					if($pdfstr["name_source"]!='') $temp="name_source";
+				}
+				else{
+					$text_name2.=show_sources2("person","pers_name_source",$personDb->pers_gedcomnumber);
+				}
+			}
+		}
+
+		// *** Add colour marks to person ***
+		$text_colour=$name["colour_mark"];
 
 		// *********************************************************************
 		// *** Show: son of/ daughter of/ child of name-father & name-mother ***
@@ -1007,15 +1072,17 @@ function name_extended($person_kind){
 				}
 				$name["standard_name"]=$text_link.$name["standard_name"].'</a>';
 
-				$child_marriage.= ' &nbsp;';
+				//$child_marriage.=' <span class="index_partner" style="font-size:10px;">';
 				if ($nr_marriages>1){
 					if ($x==0) $child_marriage.= ' '.__('1st');
-					elseif ($x==1) $child_marriage.= ' '.__('2nd');
-					elseif ($x==2) $child_marriage.= ' '.__('3rd');
-					elseif ($x>2) $child_marriage.= ' '.($x+1).__('th');
+					elseif ($x==1) $child_marriage.= ', '.__('2nd');
+					elseif ($x==2) $child_marriage.= ', '.__('3rd');
+					elseif ($x>2) $child_marriage.= ', '.($x+1).__('th');
 				}
-				//$child_marriage.= ' <span class="index_partner">'.$relation_short.' '.$dirmark1.$name["standard_name"].$dirmark1.'</span>';
+				else
+					$child_marriage.= ' ';
 				$child_marriage.= ' '.$relation_short.' '.$dirmark1.$name["standard_name"].$dirmark1;
+				//$child_marriage.='</span>';
 			}
 		}
 		// *** End spouse/ partner ***
@@ -1027,8 +1094,11 @@ function name_extended($person_kind){
 		$child_marriage='<div class="margin_child">'.$child_marriage.'</div>';
 	}
 
-	//return '<span class="pers_name">'.$text_name.$dirmark1.'</span>'.$text_parents;
-	return '<span class="pers_name">'.$text_name.$dirmark1.'</span>'.$text_parents.$child_marriage;
+	//return '<span class="pers_name">'.$text_name.$dirmark1.'</span>'.$text_name2.$text_colour.$text_parents.$child_marriage;
+	if ($screen_mode=='RTF')
+		return '<b>'.$text_name.$dirmark1.'</b>'.$text_name2.$text_colour.$text_parents.$child_marriage;
+	else
+		return '<span class="pers_name">'.$text_name.$dirmark1.'</span>'.$text_name2.$text_colour.$text_parents.$child_marriage;
 }
 
 
@@ -1044,15 +1114,14 @@ function person_data($person_kind, $id){
 	global $family_expanded, $change_main_person;
 	global $childnr, $screen_mode, $dirmark1, $dirmark2;
 	global $pdfstr;
+	global $sect, $arial12; // *** RTF export ***
 	unset($pdfstr);
 
 	$personDb=$this->personDb;
 	$privacy=$this->privacy;
 
-	// *** Settings for mobile version ***
-	if ($person_kind=="mobile"){
-		$family_expanded=true; // *** Show details in multiple lines ***
-	}
+	// *** Settings for mobile version, show details in multiple lines ***
+	if ($person_kind=="mobile") $family_expanded=true;
 
 	// *** $personDb is empty by N.N. person ***
 	if ($personDb){
@@ -1071,23 +1140,12 @@ function person_data($person_kind, $id){
 			return;  // makes no sense to ask for login in a pdf report.....
 	}
 	else{
-		if ($user["group_texts_pers"]=='j'){
-			$work_text=process_text($personDb->pers_name_text);
-			if ($work_text){
-				$process_text.=", ".$work_text;
-				$pdfstr["name_text"]=", ".$work_text;
-			}
-		}
-
-		if ($personDb->pers_name_source){
-			if($screen_mode=='PDF') {
-				$pdfstr["name_source"]=show_sources2("person","pers_name_source",$personDb->pers_gedcomnumber);
-				if($pdfstr["name_source"]!='') $temp="name_source";
-			}
-			else{
-				$process_text.=show_sources2("person","pers_name_source",$personDb->pers_gedcomnumber);
-			}
-		}
+		// *** Quality (function show_quality can be found in script: family.php) ***
+		// Disabled because normally quality belongs to a source.
+		//if ($personDb->pers_quality=='0' or $personDb->pers_quality){
+		//	$quality_text=show_quality($personDb->pers_quality);
+		//	$process_text.= ' <i>'.ucfirst($quality_text).'</i>';
+		//}
 
 		// *** Show extra names of BK ***
 		if ($personDb->pers_gedcomnumber){
@@ -1185,6 +1243,11 @@ function person_data($person_kind, $id){
 				$pdfstr["born_source"]=show_sources2("person","pers_birth_source",$personDb->pers_gedcomnumber);
 				if($pdfstr["born_source"]!='') $temp="born_source";
 			}
+			elseif($screen_mode=='RTF') {
+				$rtf_text=show_sources2("person","pers_birth_source",$personDb->pers_gedcomnumber);
+				$rtf_text=strip_tags($rtf_text,"<b><i>");
+				$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+			}
 			else{
 				$text.=$dirmark1.show_sources2("person","pers_birth_source",$personDb->pers_gedcomnumber);
 			}
@@ -1194,16 +1257,18 @@ function person_data($person_kind, $id){
 		if ($personDb->pers_gedcomnumber){
 			$temp_text=witness($personDb->pers_gedcomnumber, 'birth_declaration');
 			if ($temp_text){
-				$text.= ', '.__('birth_declaration').' '.$temp_text;
-				if($temp) { $pdfstr[$temp].=", "; }
-				$pdfstr["born_witn"]= ' '.__('birth_declaration').' '.$temp_text;
+				$text.= ' ('.__('birth declaration').' '.$temp_text.')';
+				if($temp) { $pdfstr[$temp].=" ("; }
+				$pdfstr["born_witn"]= __('birth declaration').' '.$temp_text.')';
 				$temp="born_witn";
 			}
 		}
 		// *** Check for birth items, if needed use a new line ***
 		if ($text){
-			if ($family_expanded==true){ $process_text.='<br>'.ucfirst(__('BORN_SHORT')).' '.$text; }
-				else{ $process_text.=', '.__('BORN_SHORT').' '.$text; }
+			//if ($family_expanded==true){ $process_text.='<br><b>'.ucfirst(__('BORN_SHORT')).'</b> '.$text; }
+			//	else{ $process_text.=', <b>'.__('BORN_SHORT').'</b> '.$text; }
+			if ($family_expanded==true){ $process_text.='<br><b>'.ucfirst(__('born')).'</b> '.$text; }
+				else{ $process_text.=', <b>'.__('born').'</b> '.$text; }
 		}
 
 		// ***************
@@ -1227,8 +1292,8 @@ function person_data($person_kind, $id){
 		}
 
 		if ($user['group_religion']=='j' AND $personDb->pers_religion){
-			$text.= ' <span class="religion">'.__('religion').': '.$personDb->pers_religion.'</span>';
-			$pdfstr["bapt_reli"]=" ".__('religion').': '.$personDb->pers_religion;
+			$text.= ' <span class="religion">('.__('religion').': '.$personDb->pers_religion.')</span>';
+			$pdfstr["bapt_reli"]=" (".__('religion').': '.$personDb->pers_religion.')';
 			$temp="bapt_reli";
 		}
 
@@ -1247,17 +1312,17 @@ function person_data($person_kind, $id){
 		if ($personDb->pers_gedcomnumber){
 			$temp_text=witness($personDb->pers_gedcomnumber, 'baptism_witness');
 			if ($temp_text){
-				$text.= ', '.__('baptise witness').' '.$temp_text;
-				if($temp) { $pdfstr[$temp].=", "; }
-				$pdfstr["bapt_witn"]=__('baptise witness').' '.$temp_text;
+				$text.= ' ('.__('baptism witness').' '.$temp_text.')';
+				if($temp) { $pdfstr[$temp].=" ("; }
+				$pdfstr["bapt_witn"]=__('baptism witness').' '.$temp_text.')';
 				$temp="bapt_witn";
 			}
 		}
 
 		// *** check for baptise items, if needed use a new line ***
 		if ($text){
-			if ($family_expanded==true){ $process_text.='<br>'.ucfirst(__('baptised')).' '.$text; }
-				else{ $process_text.=', '.__('baptised').' '.$text; }
+			if ($family_expanded==true){ $process_text.='<br><b>'.ucfirst(__('baptised')).'</b> '.$text; }
+				else{ $process_text.=', <b>'.__('baptised').'</b> '.$text; }
 		}
 
 		// *** Show age of living person ***
@@ -1345,17 +1410,19 @@ function person_data($person_kind, $id){
 		if ($personDb->pers_gedcomnumber){
 			$temp_text=witness($personDb->pers_gedcomnumber, 'death_declaration');
 			if ($temp_text){
-				$text.= ', '.__('death declaration').' '.$temp_text;
-				if ($temp) { $pdfstr[$temp].=", "; }
-				$pdfstr["dead_witn"]= __('death declaration').' '.$temp_text;
+				$text.= ' ('.__('death declaration').' '.$temp_text.')';
+				if ($temp) { $pdfstr[$temp].=" ("; }
+				$pdfstr["dead_witn"]= __('death declaration').' '.$temp_text.')';
 				$temp="dead_witn";
 			}
 		}
 
 		// *** Check for death items, if needed use a new line ***
 		if ($text){
-			if ($family_expanded==true){ $process_text.='<br>'.ucfirst(__('DIED_SHORT')).' '.$text; }
-				else{ $process_text.=', '.__('DIED_SHORT').' '.$text; }
+			//if ($family_expanded==true){ $process_text.='<br><b>'.ucfirst(__('DIED_SHORT')).'</b> '.$text; }
+			//	else{ $process_text.=', <b>'.__('DIED_SHORT').'</b> '.$text; }
+			if ($family_expanded==true){ $process_text.='<br><b>'.ucfirst(__('died')).'</b> '.$text; }
+				else{ $process_text.=', <b>'.__('died').'</b> '.$text; }
 		}
 
 		// ****************
@@ -1393,9 +1460,9 @@ function person_data($person_kind, $id){
 		if ($personDb->pers_gedcomnumber){
 			$temp_text=witness($personDb->pers_gedcomnumber, 'burial_witness');
 			if ($temp_text){
-				$text.= ', '.__('burial witness').' '.$temp_text;
-				$pdfstr[$temp].=", ";
-				$pdfstr["buri_witn"]= __('burial witness').' '.$temp_text;
+				$text.= ' ('.__('burial witness').' '.$temp_text.')';
+				$pdfstr[$temp].=" (";
+				$pdfstr["buri_witn"]= __('burial witness').' '.$temp_text.')';
 				$temp="buri_witn";
 			}
 		}
@@ -1404,17 +1471,21 @@ function person_data($person_kind, $id){
 		if ($text){
 			if ($family_expanded==true){
 				$process_text.='<br>';
-				if ($personDb->pers_cremation){ $process_text.=ucfirst(__('crem.')).' '; }
-				else{ $process_text.=ucfirst(__('BURIED_SHORT')).' '; }
+				//if ($personDb->pers_cremation){ $process_text.='<b>'.ucfirst(__('crem.')).'</b> '; }
+				//else{ $process_text.='<b>'.ucfirst(__('BURIED_SHORT')).'</b> '; }
+				if ($personDb->pers_cremation){ $process_text.='<b>'.ucfirst(__('cremation')).'</b> '; }
+				else{ $process_text.='<b>'.ucfirst(__('buried')).'</b> '; }
 			}
 			else{
 				$process_text.=', ';
 				if ($personDb->pers_cremation){
-					$process_text.=__('crem.').' ';
+					//$process_text.='<b>'.__('crem.').'</b> ';
+					$process_text.='<b>'.__('cremation').'</b> ';
 					$pdfstr["flag_buri"]=1;
 				}
 				else {
-					$process_text.=__('BURIED_SHORT').' ';
+					//$process_text.='<b>'.__('BURIED_SHORT').'</b> ';
+					$process_text.='<b>'.__('buried').'</b> ';
 					$pdfstr["flag_buri"]=0;
 				}
 			}
@@ -1475,8 +1546,8 @@ function person_data($person_kind, $id){
 					if($temp) { $pdfstr[$temp].=", "; }
 				}
 				if ($eventDb->event_date OR $eventDb->event_place){
-					$process_text.=date_place($eventDb->event_date,$eventDb->event_place).' ';
-					$pdfstr["prof_date".$eventnr]=date_place($eventDb->event_date,$eventDb->event_place).' ';
+					$process_text.=date_place($eventDb->event_date,$eventDb->event_place).'; ';
+					$pdfstr["prof_date".$eventnr]=date_place($eventDb->event_date,$eventDb->event_place).'; ';
 					$temp="prof_date".$eventnr;
 				}
 
@@ -1660,11 +1731,13 @@ function person_data($person_kind, $id){
 					WHERE pers_gedcomnumber='$parent2_famDb->fam_man'");
 				}
 				$parent2Db=$parent2_qry->fetch(PDO::FETCH_OBJ);
-				
-				if ($id==$marriage_array[$i]){
-					$process_text.=',';
 
-					if(isset($parent2_marr_data)) {$process_text.=' <b>'.$dirmark1.$parent2_marr_data.' ';}
+				if ($id==$marriage_array[$i]){
+//					$process_text.=',';
+//					if(isset($parent2_marr_data)) {$process_text.=' <b>'.$dirmark1.$parent2_marr_data.' ';}
+					$process_text.=',';
+					if(isset($parent2_marr_data)) {$process_text.=' '.$dirmark1.$parent2_marr_data.' ';}
+
 					// *** $parent2Db is empty if it is a N.N. person ***
 					if ($parent2Db){
 						$name=$this->person_name($parent2Db);
@@ -1673,10 +1746,11 @@ function person_data($person_kind, $id){
 					else{
 						$process_text.=__('N.N.');
 					}
-					$process_text.='</b>';
+//					$process_text.='</b>';
 				}
 				else{
-					$process_text.=', <b>';
+//					$process_text.=', <b>';
+					$process_text.=', ';
 					// *** url_rewrite ***
 					if ($humo_option["url_rewrite"]=="j"){
 						// *** $uri_path is made header.php ***
@@ -1695,7 +1769,8 @@ function person_data($person_kind, $id){
 					else{
 						$process_text.=__('N.N.');
 					}
-					$process_text.='</a></b>';
+//					$process_text.='</a></b>';
+					$process_text.='</a>';
 				}
 				if($screen_mode=="PDF") {
 					if ($parent2Db){
@@ -1752,7 +1827,7 @@ function person_data($person_kind, $id){
 			}
 
 			if ($work_text){
-				$process_text.='<br>'.$work_text;
+				$process_text.='<br>'.$work_text."\n";
 				$pdfstr["pers_text"]="\n".$work_text;
 				$temp="pers_text";
 			}
@@ -1839,8 +1914,9 @@ function person_data($person_kind, $id){
 
 			$div='';
 			if ($person_kind=='child'){
-				if ($childnr<10){ $div.='<div class="margin_child">'; }
-				else{ $div.='<div class="margin_child2">'; }
+				//if ($childnr<10){ $div.='<div class="margin_child">'; }
+				//else{ $div.='<div class="margin_child2">'; }
+				$div.='<div class="margin_child">';
 			}
 			else{
 				$div.='<div class="margin_person">';

@@ -186,11 +186,11 @@ echo '</div>';
 
 // HELP POPUP
 if(CMS_SPECIFIC=="Joomla") {
-	echo '<div class="fonts table_header '.$rtlmarker.'sddm" style="z-index:400;position:absolute;top:20px;left:10px;">';
+	echo '<div class="fonts '.$rtlmarker.'sddm" style="z-index:400; position:absolute; top:20px; left:10px;">';
 	$popwidth="width:700px;";
 }
 else {
-	echo '<div class="fonts table_header '.$rtlmarker.'sddm" style="border:1px solid #d8d8d8;margin-top:2px;display:inline;float:left;">';
+	echo '<div class="fonts '.$rtlmarker.'sddm" style="border:1px solid #d8d8d8; margin-top:2px; display:inline; float:left;">';
 	$popwidth="";
 }
 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#"';

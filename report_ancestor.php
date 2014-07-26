@@ -1288,7 +1288,7 @@ if($screen_mode=='') {
 	echo '</table>';
 	// *** If source footnotes are selected, show them here ***
 	if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_presentation']=='footnote'){
-		show_sources_footnotes();
+		echo show_sources_footnotes();
 	}
 }
 

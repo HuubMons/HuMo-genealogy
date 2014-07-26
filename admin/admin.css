@@ -1,7 +1,9 @@
 body.humo {
 	background-color:white;
 
-	background-image: url('../images/background.gif');
+	/* background-image: url('../images/background.gif'); */
+	background-image: url('style_admin/background.gif');
+
 	background-repeat: no-repeat;
 
 	font: 12px Verdana, tahoma, arial, sans-serif;
@@ -17,9 +19,9 @@ a:hover {text-decoration:underline; color:red;}
 table.humo {
 	border: solid 1px #999999;
 	border-collapse: collapse;
-
-	background-color:#FFFFCC;
 	/* background-color:#F2F2F2; */
+	/* background-color:#FFFFCC; */
+	background-color:#F8F8F8;
 
 	font-size: 13px;
 	margin-left:auto; margin-right:auto;
@@ -45,13 +47,15 @@ table.standard {
 table.humo th { font-size: 15px; }
 table.humo td { border: solid 1px #999999; }
 .table_header {
-	background-color: #FFFFFF;
-	background-image: url('../images/default_trans.png');
+	/* background-color: #FFFFFF; */
+	/* background-image: url('../images/default_trans.png'); */
+	background-image: url('style_admin/button.png');
 	/* font-size:120%; text-align: center; */
 }
 .table_header_large {
-	background-color: #FFFFFF;
-	background-image: url('../images/default_trans_large.png');
+	/* background-color: #FFFFFF; */
+	/* background-image: url('../images/default_trans_large.png'); */
+	background-image: url('style_admin/button_large.png');
 	/* font-size:120%; text-align: center; */
 }
 .table_empty_line {
@@ -90,7 +94,9 @@ table.humo td { border: solid 1px #999999; }
 	top:40px;
 	display:block;
 	width:100%;
-	background:url("../images/default_trans_large.png") repeat left top;
+	/* background:url("../images/default_trans_large.png") repeat left top; */
+	background-image: url('style_admin/button_large.png');
+
 	font-size: 13px;
 
 	/* border-top: solid 1px #999999; */
@@ -108,7 +114,8 @@ table.humo td { border: solid 1px #999999; }
 
 	display:block;
 	width:99%;
-	background:url("../images/default_trans_large.png") repeat left top;
+	/* background:url("../images/default_trans_large.png") repeat left top; */
+	background-image: url('style_admin/button_large.png');
 	font-size: 13px;
 
 	/* border-top: solid 1px #999999; */
@@ -184,7 +191,8 @@ ul.humo_menu_item2 li a{
 	text-decoration:none;
 	color:#333;
 	border-right: none;
-	background:url("../images/default_trans_large.png") repeat left top;
+	/*background:url("../images/default_trans_large.png") repeat left top; */
+	background-image: url('style_admin/button_large.png');
 	display:block;
 }
 
@@ -285,7 +293,7 @@ div.confirm{
 }
 
 
-/* Tab Menu (in use in family tree administration) */
+/* Tab Menu (in use in family tree administration and person/ marriages editor) */
 .pageHeadingContainer-lineVisible {
 	margin-bottom: 15px;
 	border-bottom: 1px solid #d9d9d9;

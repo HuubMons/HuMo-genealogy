@@ -5,29 +5,31 @@ body {
 }
 
 #top_website_name a {
-color:#848484;
+	color:#848484;
 }
 
 /* Links */
-	a:link {color:#bb99ff; }
-	a:visited {color:#ddccee; }
-	a:hover {color:#880088; text-decoration: underline;}
+a:link {color:#bb99ff; }
+a:visited {color:#ddccee; }
+a:hover {color:#880088; text-decoration: underline;}
 
 /* 1st tabble A-Z and table family page */
 table.humo {
 	background-color: #000000;
 	color: #eeeeff; 
 	letter-spacing: 1px;
-	-moz-box-shadow:    0px 0px 0px;
+	/*
+	-moz-box-shadow: 0px 0px 0px;
 	-webkit-box-shadow: 0px 0px 0px;
-	box-shadow:         0px 0px 0px;
+	box-shadow: 0px 0px 0px;
+	*/
+	background-image: url('images_sky/sky_dark.gif');
 }
 table.humo td {
-	/* border: ridge 2px #ffdd55; */
 	border-color: #ffdd55;
 	color: #ffdd55;
-	background-color: #111111;
-	background-image: url('images_sky/sky_dark.gif');
+	/* background-color: #111111; */
+	/* background-image: url('images_sky/sky_dark.gif'); */
 }
 table.humo tr:first-of-type td, table.humo tr:first-of-type th {
 	border-color: #ffdd55;
@@ -35,14 +37,18 @@ table.humo tr:first-of-type td, table.humo tr:first-of-type th {
 /* 2nd table A-Z */
 .family_page_toptext {
 	color: #ffffff;/* Kop 2e tabel */
-	background-image: url('images_sky/default_trans.png');
+	/* background-image: url('images_sky/default_trans.png'); */
 }
 td.style_tree_text {
 	color: #330000;
 	background-color: #222222;
 	background-image: url('images_sky/sky.gif');
 }
-td.style_tree_text a {color: #6600cc;}	
+td.style_tree_text a {color: #6600cc;}
+
+.table_headline{
+	background: url('images_sky/default_trans.png') repeat left top;
+}
 
 /* familypage */
 .pers_name { color: #eeddff; }
@@ -53,7 +59,7 @@ td.style_tree_text a {color: #6600cc;}
 /* Ancestor graphical */
 div.ancestor_name { 
 	border-color: #ddddff;
-	color: #5555bb; font-family: "arial narrow"; font-size: 75%; } /* Tekst */
+	color: #5555bb; font-family: "arial narrow"; font-size: 75%; }
 div.ancestor_name a {
 	color: #222222;
 	font-weight: bold; } /* Link */
@@ -112,9 +118,12 @@ ul.humo_menu_item li {
 /* Center box */
 #mainmenu_centerbox{
 	background: #000000;
+	/*
 	box-shadow: 0px 0px 0px #999;
 	-moz-box-shadow: 0px 0px 0px #999;
 	-webkit-box-shadow: 0px 0px 0px #999;
+	*/
+	background-image: url('images_sky/sky_dark.gif');
 }
 
 input {
@@ -139,19 +148,18 @@ input:hover {
 	color: #ffffff;
 }
 
-div.photobook, div.photobooktext {
-	background-color: #ffffff;
-}
+div.photobook, div.photobooktext { background-color: #ffffff; }
 
 table.reltable td { border:0px; background-image:none; background-color:transparent;}
 table.reltable { background:none; background-image:none; }
 
 .left_box, .right_box {
-	/* background-color: #000000; */
 	background-image: url('images_sky/sky_dark.gif');
 	color: #eeeeff; 
 	letter-spacing: 1px;
+	/*
 	-moz-box-shadow:    0px 0px 0px;
 	-webkit-box-shadow: 0px 0px 0px;
 	box-shadow:         0px 0px 0px;
+	*/
 }

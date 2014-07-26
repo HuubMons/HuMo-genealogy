@@ -33,11 +33,17 @@ function date_show($process_date, $process_name, $multiple_rows=''){
 	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" placeholder="'.__('date').'" style="direction:ltr" value="';
 		// *** BEF, ABT, AFT, etc. is shown in date_prefix ***
 		$process_date=strtolower($process_date);
+
+		// *** Show BC with uppercase ***
+		if (substr($process_date,-3)==' bc') $process_date=str_replace(' bc',' BC',$process_date);
+		if (substr($process_date,-5)==' b.c.') $process_date=str_replace(' b.c.',' B.C.',$process_date);
+
 		if (substr($process_date,0,4)=='bef '){ $text.=substr($process_date,4); }
 		elseif (substr($process_date,0,4)=='abt '){ $text.=substr($process_date,4); }
 		elseif (substr($process_date,0,4)=='aft '){ $text.=substr($process_date,4); }
 		elseif (substr($process_date,0,4)=='bet '){ $text.=substr($process_date,4); }
 		else { $text.=$process_date; }
+
 	$text.='" size="'.$field_date.'">';
 
 	return $text;
@@ -89,6 +95,8 @@ function date_process($process_name, $multiple_rows=''){
 		else $this_date = __('Invalid date'); 
 	}
 
+	//if ($this_date == __('Invalid date')) $this_date.=': '.$post_date;
+
 	if ($multiple_rows!='')
 		//$process_date=$_POST["$process_name_prefix"][$multiple_rows].$_POST["$process_name"][$multiple_rows];
 		$process_date=$pref.$this_date;
@@ -104,7 +112,8 @@ function date_process($process_name, $multiple_rows=''){
 function valid_date($date) {
 	include_once(CMS_ROOTPATH."include/validate_date_cls.php");
 	$check = New validate_date_cls;
-	if(strpos($date,"-")!==false OR strpos($date,"/")!==false) { // date entered as 01-04-2013 or 01/04/2013
+	// date entered as 01-04-2013 or 01/04/2013
+	if(strpos($date,"-")!==false OR strpos($date,"/")!==false) {
 		if(strpos($date,"-")!==false) { $delimiter = "-"; }
 		else { $delimiter = "/"; }
 		$date_dash = explode($delimiter,$date); 

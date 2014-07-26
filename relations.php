@@ -1566,9 +1566,9 @@ function display () {
 			else { echo '<table class="ext"<tr><td>'; }
 
 			print __('MARITAL RELATIONSHIP: ');
-		
-			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input style="font-size:110%" type="submit" name="extended" value="'.__('Use Extended Calculator').'">';		
-				
+
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input style="font-size:110%" type="submit" name="extended" value="'.__('Use Extended Calculator').'">';
+
 			echo "<br><br>";
 			$spousetext1=''; $spousetext2='';  $finnish_spouse1=''; $finnish_spouse2='';
 
@@ -2561,11 +2561,11 @@ $pers_cls = New person_cls;
 
 //======== HELP POPUP ========================
 if(CMS_SPECIFIC=="Joomla") {
-	echo '<div class="fonts table_header '.$rtlmarker.'sddm" style="z-index:400;position:absolute;top:20px;left:10px;">';
+	echo '<div class="fonts '.$rtlmarker.'sddm" style="z-index:400; position:absolute; top:20px; left:10px;">';
 	$popwidth="width:700px;";
 }
 else {
-	echo '<div class="fonts table_header '.$rtlmarker.'sddm" style="margin-right:10px;float:right;display:inline">';
+	echo '<div class="fonts '.$rtlmarker.'sddm" style="margin-right:10px; float:right; display:inline">';
 	$popwidth="";
 }
 
@@ -2624,7 +2624,7 @@ if(isset($_POST["switch"])) {
 // ===== BEGIN SEARCH BOX SYSTEM
 
 ob_start();
-print '<span class="fonts table_header"><br><br>&nbsp;&nbsp;&nbsp;'.__('You can enter names or part of names in either search box, or leave a search box empty').'<br>';
+print '<span class="fonts"><br><br>&nbsp;&nbsp;&nbsp;'.__('You can enter names or part of names in either search box, or leave a search box empty').'<br>';
 echo '&nbsp;&nbsp;&nbsp;';
 echo __('<b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b>');
 echo '</span><br>';
@@ -2636,19 +2636,16 @@ if(CMS_SPECIFIC == "Joomla") {
 else {
 	echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'" style="display : inline;">';
 }
-echo '<table class="humo relmenu table_header">';
-echo '<tr><td>';
-echo '&nbsp;';
-echo '</td><td>';
-print __('First name').':';
-echo '</td><td>';
-print __('Last name').':';
-echo '</td><td>';
-echo __('Search');
-echo '</td><td colspan=2>'.__('Pick a name from search results').'</td><td>';
-echo __('Calculate relationships');
 
-echo '</td></tr><tr><td>';
+echo '<br><table class="humo relmenu">';
+echo '<tr class=table_headline><th>&nbsp;</th>';
+	print '<th>'.__('First name').'</th>';
+	print '<th>'.__('Last name').'</th>';
+	echo '<th>'.__('Search').'</th>';
+	echo '<th colspan=2>'.__('Pick a name from search results').'</th>';
+	echo '<th>'.__('Calculate relationships').'</th></tr>';
+
+echo '<tr><td>';
 $language_person=__('Person').' ';
 if(CMS_SPECIFIC == "Joomla") { $language_person=''; }  // for joomla keep it short....
 echo $language_person.'1:';

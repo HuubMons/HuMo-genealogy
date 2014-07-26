@@ -609,11 +609,10 @@ if(CMS_SPECIFIC == "Joomla") {
 }
 
 // Semi-transparant MENU BOX on the left
-echo '<div class="table_header fanmenu1">';
-echo '<div class="table_header fanmenu2">';
-echo '<div class="table_header fanmenu3">';
-echo '</div>';
-echo '<div class=table_header style="position:absolute; left:0; top:0; color: #000000">';
+echo '<div class="fanmenu1">';
+echo '<div class="fanmenu2">';
+echo '<div class="fanmenu3"></div>';
+echo '<div style="position:absolute; left:0; top:0; color: #000000">';
 
 //echo '<div style="border: 2px solid #000077; padding:10px">';
 

@@ -1,6 +1,8 @@
 <?php
 function process_text($text_process){
 	global $user, $db, $dbh, $tree_prefix_quoted;
+	global $screen_mode;
+
 	//1 NOTE Text by person#werktekst#
 	//2 CONT 2e line text persoon#2e werktekst#
 	//2 CONT 3e line #3e werktekst# tekst persoon
@@ -49,7 +51,14 @@ function process_text($text_process){
 	$text_process = preg_replace("#(^|[ \n\r\t])(((http://)|(https://))([a-z0-9\-\.,\?!%\*_\#:;~\\&$@\/=\+]+))#mi", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $text_process);
 
 	if ($text_process){ $text_process=nl2br($text_process); }
-	if ($text_process){ $text_process='<span class="text">'.$text_process.'</span>'; }
+
+	if ($text_process){
+		if ($screen_mode=='RTF')
+			$text_process='<i>'.$text_process.'</i>';
+		else
+			$text_process='<span class="text">'.$text_process.'</span>';
+	}
+
 	return $text_process;
 }
 ?>

@@ -17,10 +17,7 @@ function tree_main(){
 	echo '<tr class="table_header"><th>'.__('Order').'</th>';
 	echo '<th>'.__('Name of family tree').'</th>';
 	echo '<th>'.__('Family tree data').'</th>';
-	//echo '<th>'.__('Select').'</th>';
-
 	echo '<th>'.__('Collation').'</th>';
-
 	echo '<th>'.__('Remove').'</th>';
 	echo '</tr>';
 
@@ -41,8 +38,8 @@ function tree_main(){
 				echo ' style="border:none;"';
 			}
 			else{
-				//echo ' style="	border: solid 2px #999999;"';
-				echo ' style="	border: solid 2px #000000;"';
+				//echo ' style=" border: solid 2px #999999;"';
+				echo ' style="border: solid 2px #000000;"';
 			}
 
 			echo '></a>';
@@ -63,7 +60,7 @@ function tree_main(){
 	while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 		$style=''; if ($family_tree_id==$dataDb->tree_id){ $style=' bgcolor="#99CCFF"'; }
 		echo '<tr'.$style.'>';
-		print '<td nowrap>';
+		echo '<td nowrap>';
 		if ($dataDb->tree_order<10){ echo '0'; }
 		echo $dataDb->tree_order;
 		// *** Number for new family tree ***
@@ -150,7 +147,7 @@ function tree_main(){
 			if (substr($tree_date,5,2)=='11'){ $month=' '.strtolower(__('nov')).' ';}
 			if (substr($tree_date,5,2)=='12'){ $month=' '.strtolower(__('oct')).' ';}
 			$tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4);
-			print ' <font size=-1>'.$tree_date.': '.$dataDb->tree_persons.' '.
+			echo ' <font size=-1>'.$tree_date.': '.$dataDb->tree_persons.' '.
 			__('persons').', '.$dataDb->tree_families.' '.__('families').'</font>';
 		}
 		else{
@@ -170,7 +167,7 @@ function tree_main(){
 			$collationDb=$collation_sql->fetch(PDO::FETCH_OBJ);
 			$collation=$collationDb->Collation;
 
-			print '<form method="post" action="'.$phpself.'" style="display : inline;">';
+			echo '<form method="post" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="collation_prefix" value="'.$dataDb->tree_prefix.'">';
 
@@ -185,7 +182,7 @@ function tree_main(){
 					// *** Danish collation ***
 					$select=''; if ($collation=='utf8_danish_ci'){ $select='selected'; }
 					echo '<option value="utf8_danish_ci"'.$select.'>utf8_danish_ci</option>';
-				print '</select>';
+				echo '</select>';
 
 				echo ' <input type="Submit" name="change_collation" value="OK">';
 			echo '</form>';
@@ -194,8 +191,11 @@ function tree_main(){
 	echo '</td>';
 
 	echo '<td nowrap>';
-		echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;remove_tree='.$dataDb->tree_id.'&amp;treetext_name='.$treetext['name'].'">';	
-		echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" alt="'.__('Remove tree').'" border="0"></a>';
+		// *** If there is only one family tree, prevent it can be removed ***
+		if ($count_trees>1){
+			echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;remove_tree='.$dataDb->tree_id.'&amp;treetext_name='.$treetext['name'].'">';
+			echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" alt="'.__('Remove tree').'" border="0"></a>';
+		}
 	echo '</td>';
 
 	}
@@ -221,7 +221,7 @@ function tree_main(){
 		if ($new_number<10){ echo '0'; }
 		echo $new_number.'</td>';
 		echo '<td colspan="4">';
-			print '<form method="post" action="'.$phpself.'" style="display : inline;">';
+			echo '<form method="post" action="'.$phpself.'" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="tree_order" value="'.$new_number.'">';
 			//echo '<b>'.__('Name of family tree').':</b> <input type="text" name="naam" value="'.__('Name of family tree').'" size="25">';
@@ -232,61 +232,59 @@ function tree_main(){
 
 	echo '<tr><td colspan="5"><br></td></tr>';
 
-	echo '<tr>';
-	echo '<td>';
+	echo '<tr><td>';
 	if ($new_number<10){ echo '0'; }
 	echo $new_number.'</td>';
 	echo '<td colspan="4">';
-	print '<form method="post" action="'.$phpself.'" style="display : inline;">';
+	echo '<form method="post" action="'.$phpself.'" style="display : inline;">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 	echo '<input type="hidden" name="tree_order" value="'.$new_number.'">';
 	echo ' <input type="Submit" name="add_tree_data_empty" value="'.__('Add empty line').'"> ';
 	echo __('Add empty line in list of family trees');
 	echo '</form>';
-	echo '</td>';
-	echo '</tr>';
+	echo '</td></tr>';
 
-	print "</table>";
+	echo "</table>";
 }
 
 function tree_data(){
 	global $language, $data2Db, $page, $menu_admin;
 	global $phpself, $phpself2, $joomlastring;
 
-	print '<form method="post" action="'.$phpself.'">';
+	echo '<form method="post" action="'.$phpself.'">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 	echo '<input type="hidden" name="family_tree_id" value="'.$data2Db->tree_id.'">';
 	echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 
-	print '<br><table class="humo" cellspacing="0" width="100%" style="background-color : #CCFFFF;">';
+	echo '<br><table class="humo" cellspacing="0" width="100%" style="background-color : #CCFFFF;">';
 		echo '<tr class="table_header"><th colspan="2">'.__('Family tree data').'</th></tr>';
 
 		echo '<tr><td>'.__('Table prefix').'</td><td>'.$data2Db->tree_prefix.'</td></tr>';
 
-		print  '<tr><td>'.__('E-mail address').'<br>'.__('Owner of tree').'</td>';
-		print '<td>'.__('E-mail address will not be shown on the site: an e-mail form will be generated!').'<br><input type="text" name="tree_email" value="'.$data2Db->tree_email.'" size="40"><br>';
-		print '<input type="text" name="tree_owner" value="'.$data2Db->tree_owner.'" size="40"></td></tr>';
-		print '<tr><td>'.__('Path to the pictures').'</td>';
+		echo  '<tr><td>'.__('E-mail address').'<br>'.__('Owner of tree').'</td>';
+		echo '<td>'.__('E-mail address will not be shown on the site: an e-mail form will be generated!').'<br><input type="text" name="tree_email" value="'.$data2Db->tree_email.'" size="40"><br>';
+		echo '<input type="text" name="tree_owner" value="'.$data2Db->tree_owner.'" size="40"></td></tr>';
+		echo '<tr><td>'.__('Path to the pictures').'</td>';
 			$data2Db->tree_pict_path.'</textarea></td></tr>';
-		print '<td>'.__('example: ../pictures/').'<br><textarea rows="1" cols="20" name="tree_pict_path" style="height: 20px; width:500px">'.
+		echo '<td>'.__('example: ../pictures/').'<br><textarea rows="1" cols="20" name="tree_pict_path" style="height: 20px; width:500px">'.
 			$data2Db->tree_pict_path.'</textarea></td></tr>';
 
 		// *** Family tree privacy ***
-		print '<tr><td>'.__('Tree privacy').':</td>';
-		print '<td>'.__('This option is valid for ALL persons in this tree!').'<br><select size="1" name="tree_privacy">';
+		echo '<tr><td>'.__('Tree privacy').':</td>';
+		echo '<td>'.__('This option is valid for ALL persons in this tree!').'<br><select size="1" name="tree_privacy">';
 		echo '<option value="standard">'.__('Standard').'</option>';
 		$select=''; if ($data2Db->tree_privacy=='filter_persons'){ $select='selected'; }
 		echo '<option value="filter_persons"'.$select.'>'.__('FILTER ALL persons').'</option>';
 		$select=''; if ($data2Db->tree_privacy=='show_persons'){ $select='selected'; }
 		echo '<option value="show_persons"'.$select.'>'.__('DISPLAY ALL persons').'</option>';
-		print '</select>';
-		print '</td></tr>';
+		echo '</select>';
+		echo '</td></tr>';
 
 		echo '<tr><td>'.__('Change').'</td><td><input type="Submit" name="change_tree_data" value="'.__('Change').'">';
 
 		echo '</td></tr>';
-	print '</table>';
-	print '</form>';
+	echo '</table>';
+	echo '</form>';
 }
 
 function tree_text(){
@@ -294,14 +292,14 @@ function tree_text(){
 	global $treetext_mainmenu_text, $treetext_mainmenu_source, $treetext_family_top, $treetext_family_footer, $treetext_id, $menu_admin;
 	global $phpself, $phpself2, $joomlastring;
 
-	print '<form method="post" action="'.$phpself.'" style="display : inline;">';
+	echo '<form method="post" action="'.$phpself.'" style="display : inline;">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 	echo '<input type="hidden" name="family_tree_id" value="'.$family_tree_id.'">';
 	echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 	echo '<input type="hidden" name="language_tree" value="'.$language_tree.'">';
 	if (isset($treetext_id)){ echo '<input type="hidden" name="treetext_id" value="'.$treetext_id.'">'; }
 
-	print '<br><table class="humo" cellspacing="0" width="100%" style="background-color : #CCFFFF;">';
+	echo '<br><table class="humo" cellspacing="0" width="100%" style="background-color : #CCFFFF;">';
 	echo '<tr class="table_header"><th colspan="2">'.__('Family tree texts (per language)').'</th></tr>';
 
 	echo '<tr><td colspan="2">';
@@ -328,25 +326,25 @@ function tree_text(){
 
 	echo '<tr><td style="white-space:nowrap;"><b>'.__('Name of family tree').'</b></td><td><input type="text" name="treetext_name" value="'.$treetext_name.'" size="60"></td></tr>';
 
-	print '<tr><td style="white-space:nowrap;">'.__('Extra text in main menu').'</td>';
+	echo '<tr><td style="white-space:nowrap;">'.__('Extra text in main menu').'</td>';
 	echo '<td>';
-	print __('I.e. a website').': &lt;a href="http://www.website.com"&gt;www.website.com&lt;/a&gt;<br>';
+	echo __('I.e. a website').': &lt;a href="http://www.website.com"&gt;www.website.com&lt;/a&gt;<br>';
 	echo '<textarea cols="60" rows="2" name="treetext_mainmenu_text">'.$treetext_mainmenu_text.'</textarea>';
 	echo '</td>';
 
-	print '<tr><td style="white-space:nowrap;">'.__('Extra source in main menu').'</td>';
+	echo '<tr><td style="white-space:nowrap;">'.__('Extra source in main menu').'</td>';
 	echo '<td>';
-	print __(' I.e. a website').': &lt;a href="http://www.website.com"&gt;www.website.com&lt;/a&gt;<br>';
+	echo __(' I.e. a website').': &lt;a href="http://www.website.com"&gt;www.website.com&lt;/a&gt;<br>';
 	echo '<textarea cols="60" rows="2" name="treetext_mainmenu_source">'.$treetext_mainmenu_source.'</textarea>';
 	echo '</td></tr>';
 
-	print '<tr><td style="white-space:nowrap;">'.__('Upper text family page').'</td>';
-	print '<td>'.__('I.e. Familypage').'<br>';
+	echo '<tr><td style="white-space:nowrap;">'.__('Upper text family page').'</td>';
+	echo '<td>'.__('I.e. Familypage').'<br>';
 	echo '<textarea cols="60" rows="1" name="treetext_family_top">'.$treetext_family_top.'</textarea>';
 	echo '</td></tr>';
 
-	print '<tr><td style="white-space:nowrap;">'.__('Lower text family page').'</td>';
-	print '<td>'.__('I.e.: For more information: &lt;a href="mailform.php"&gt;contact&lt;/a&gt;').'<br>';
+	echo '<tr><td style="white-space:nowrap;">'.__('Lower text family page').'</td>';
+	echo '<td>'.__('I.e.: For more information: &lt;a href="mailform.php"&gt;contact&lt;/a&gt;').'<br>';
 	echo '<textarea cols="60" rows="1" name="treetext_family_footer">'.$treetext_family_footer.'</textarea>';
 	echo '</td></tr>';
 
@@ -358,7 +356,7 @@ function tree_text(){
 	}
 
 	echo '</table>';
-	print '</form>';
+	echo '</form>';
 }
 
 //**************************************************************************************
@@ -603,8 +601,8 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
 
 		// merge
 		if(isset($_POST['rela'])) {  // the merge button was used
-		   $left = $_POST['left'];
-		   $right = $_POST['right'];
+			$left = $_POST['left'];
+			$right = $_POST['right'];
 			$this->merge_them($left,$right,"relatives");
 		}
 
@@ -612,7 +610,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
 		$relcompDb = $relcomp->fetch(PDO::FETCH_OBJ);		// database row: I23@I300;I54@I304;I34@I430;
 
 		if($relcompDb->setting_value != '') {
-			if(!isset($_POST['swap']))	{
+			if(!isset($_POST['swap'])) {
 				$allpairs = explode(';',$relcompDb->setting_value);  // $allpairs[0]:  I23@I300
 				$pair = explode('@',$allpairs[0]); // $pair[0]:  I23;
 				$lft = $pair[0];  // I23
@@ -638,7 +636,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
 			echo '</form>';
 
 			// button skip
-			print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<form method="post" action="'.$phpself.'" style="display : inline;">';
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<form method="post" action="'.$phpself.'" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="family_tree_id" value="'.$family_tree_id.'">';
 			echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
@@ -687,7 +685,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
 	elseif(isset($_POST['merge'])) { // do merge and allow to continue with comparing duplicates
 
 		if(isset($_POST['manu'])) {
-     		$left = $_POST['left'];
+			$left = $_POST['left'];
 			$right = $_POST['right'];
 			$this->merge_them($left,$right,"man_dupl"); // merge_them is called in manual/duplicate mode
 		}
@@ -764,7 +762,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 			else {
 				$qry2 .= " AND pers_firstname != '' AND SUBSTR(pers_firstname,1,".$merge_chars.") = SUBSTR('".$persDb->pers_firstname."',1,".$merge_chars.")";
 			}
-		   if($merge_lastname == 'YES') {
+			if($merge_lastname == 'YES') {
 				$qry2 .= " AND pers_lastname ='".$persDb->pers_lastname."' ";
 			}
 			else {
@@ -818,7 +816,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 	// this is the page where one can choose two people from all persons in the tree for manual merging
 	// the pairs will be presented by the show_pair function
 	elseif(isset($_POST['manual']) OR isset($_POST["search1"]) OR isset($_POST["search2"]) OR isset($_POST["switch"])) {
-	
+
 		echo '<br>'.__('Pick the two persons you want to check for merging').'.';
 		echo ' '.__('You can enter names (or part of names) or gedcom no. (INDI), or leave boxes empty').'<br>';
 		echo __('<b>TIP: when you click "search" with all boxes left empty you will get a list with all persons in the database. (May take a few seconds)</b>').'<br><br>';
@@ -857,11 +855,11 @@ this page will also show a "Continue duplicate merge" button so you can continue
 		echo '<tr><td>';
 		echo '&nbsp;';
 		echo '</td><td>';
-		print __('First name').':';
+		echo __('First name').':';
 		echo '</td><td>';
-		print __('Last name').':';
+		echo __('Last name').':';
 		echo '</td><td>';
-		print __('gedcom no. ("I43")').':';
+		echo __('gedcom no. ("I43")').':';
 		echo '</td><td>';
 		echo __('Search');
 		echo '</td><td colspan=2>'.__('Pick a name from search results').'</td><td>';
@@ -894,14 +892,14 @@ this page will also show a "Continue duplicate merge" button so you can continue
 		}
 		if (isset($_SESSION['search_indi'])){ $search_indi=$_SESSION['search_indi']; }
 
-		print ' <input type="text" class="fonts relboxes" name="search_firstname" value="'.$search_firstname.'" size="15"> ';
+		echo ' <input type="text" class="fonts relboxes" name="search_firstname" value="'.$search_firstname.'" size="15"> ';
 		echo '</td><td>';
 
-		print '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname" value="'.$search_lastname.'" size="15">';
+		echo '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname" value="'.$search_lastname.'" size="15">';
 		echo '</td><td>';
-		print ' <input type="text" class="fonts relboxes" name="search_indi" value="'.$search_indi.'" size="10"> ';
+		echo ' <input type="text" class="fonts relboxes" name="search_indi" value="'.$search_indi.'" size="10"> ';
 		echo '</td><td>';
-		print '&nbsp; <input class="fonts" type="submit" name="search1" value="'.__('Search').'">';
+		echo '&nbsp; <input class="fonts" type="submit" name="search1" value="'.__('Search').'">';
 		echo '</td><td>';
 
 		$len=230;  // length of name pulldown box
@@ -919,7 +917,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 			$search_result = $dbh->query($search_qry);
 			if ($search_result){ 
 				if($search_result->rowCount() >0) {
-					print '<select class="fonts" size="1" name="left"  style="width:'.$len.'px">';
+					echo '<select class="fonts" size="1" name="left"  style="width:'.$len.'px">';
 						while ($searchDb=$search_result->fetch(PDO::FETCH_OBJ)){
 							$name=$pers_cls->person_name($searchDb);
 							if ($name["show_name"]){
@@ -934,10 +932,10 @@ this page will also show a "Continue duplicate merge" button so you can continue
 						}
 						echo '</select>';
 				}
-				else {print '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>'; }
+				else {echo '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>'; }
 			}
 		}
-		else {  print '<select size="1" name="left" style="width:'.$len.'px"><option></option></select>'; }
+		else {  echo '<select size="1" name="left" style="width:'.$len.'px"><option></option></select>'; }
 		echo '</td><td rowspan=2>';
 		echo '<input type="submit" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value=" " name="switch" style="background: #fff url(\''.CMS_ROOTPATH.'images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
 		echo '</td><td rowspan=2>';
@@ -969,13 +967,13 @@ this page will also show a "Continue duplicate merge" button so you can continue
 		}
 		if (isset($_SESSION['search_indi2'])){ $search_indi2=$_SESSION['search_indi2']; }
 
-		print ' <input type="text" class="fonts relboxes" name="search_firstname2" value="'.$search_firstname2.'" size="15"> ';
+		echo ' <input type="text" class="fonts relboxes" name="search_firstname2" value="'.$search_firstname2.'" size="15"> ';
 		echo '</td><td>';
-		print '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname2" value="'.$search_lastname2.'" size="15">';
+		echo '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname2" value="'.$search_lastname2.'" size="15">';
 		echo '</td><td>';
-		print ' <input type="text" class="fonts relboxes" name="search_indi2" value="'.$search_indi2.'" size="10"> ';
+		echo ' <input type="text" class="fonts relboxes" name="search_indi2" value="'.$search_indi2.'" size="10"> ';
 		echo '</td><td>';
-		print '&nbsp; <input class="fonts" type="submit" name="search2" value="'.__('Search').'">';
+		echo '&nbsp; <input class="fonts" type="submit" name="search2" value="'.__('Search').'">';
 		echo '</td><td>';
 
 		if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
@@ -990,7 +988,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 			$search_result2 = $dbh->query($search_qry);
 			if ($search_result2){
 				if($search_result2->rowCount() >0) {
-					print '<select class="fonts" size="1" name="right" style="width:'.$len.'px">';
+					echo '<select class="fonts" size="1" name="right" style="width:'.$len.'px">';
 					while ($searchDb2=$search_result2->fetch(PDO::FETCH_OBJ)){
 						$name=$pers_cls->person_name($searchDb2);
 						if ($name["show_name"]){
@@ -1005,10 +1003,10 @@ this page will also show a "Continue duplicate merge" button so you can continue
 					}
 					echo '</select>';
 				}
-				else { print '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>'; }
+				else { echo '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>'; }
 			}
 		}
-		else { print '<select size="1" name="right" style="width:'.$len.'px"><option></option></select>'; }
+		else { echo '<select size="1" name="right" style="width:'.$len.'px"><option></option></select>'; }
 		echo '</td></tr></table>';
 		echo '</form>';
 
@@ -1687,40 +1685,40 @@ function show_events ($left_ged,$right_ged) {
 	if($right_events->rowCount() > 0) {  // no use doing this if right has no events at all...
 
 		while($l_eventsDb = $left_events->fetch(PDO::FETCH_OBJ))	{
-			if($l_eventsDb->event_kind=="address") { $l_address[$l_eventsDb->event_id] = $l_eventsDb->event_event;  }
-			elseif($l_eventsDb->event_kind=="picture") { $l_picture[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
-			elseif($l_eventsDb->event_kind=="profession") { $l_profession[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
-			//elseif($l_eventsDb->event_kind=="source") { $l_source[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
-			elseif($l_eventsDb->event_kind=="event") { $l_event[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
+			if($l_eventsDb->event_kind=="address") { $l_address[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
+			elseif($l_eventsDb->event_kind=="picture") { $l_picture[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
+			elseif($l_eventsDb->event_kind=="profession") { $l_profession[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
+			//elseif($l_eventsDb->event_kind=="source") { $l_source[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
+			elseif($l_eventsDb->event_kind=="event") { $l_event[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
 			elseif($l_eventsDb->event_kind=="birth_declaration") { $l_birth_declaration[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
 			elseif($l_eventsDb->event_kind=="baptism_witness") { $l_baptism_witness[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
-			elseif($l_eventsDb->event_kind=="death_declaration") { $l_death_declaration[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
-			elseif($l_eventsDb->event_kind=="burial_witness") { $l_burial_witness[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
+			elseif($l_eventsDb->event_kind=="death_declaration") { $l_death_declaration[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
+			elseif($l_eventsDb->event_kind=="burial_witness") { $l_burial_witness[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
 			elseif($l_eventsDb->event_kind=="name") { $l_name[$l_eventsDb->event_id] = '('.$l_eventsDb->event_gedcom.') '.$l_eventsDb->event_event;	}
-			elseif($l_eventsDb->event_kind=="nobility") { $l_nobility[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
-			elseif($l_eventsDb->event_kind=="title") { $l_title[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
-			elseif($l_eventsDb->event_kind=="lordship") { $l_lordship[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
-			elseif($l_eventsDb->event_kind=="URL") { $l_URL[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
-			else { 	$l_else[$l_eventsDb->event_id] = $l_eventsDb->event_event;	}
+			elseif($l_eventsDb->event_kind=="nobility") { $l_nobility[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
+			elseif($l_eventsDb->event_kind=="title") { $l_title[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
+			elseif($l_eventsDb->event_kind=="lordship") { $l_lordship[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
+			elseif($l_eventsDb->event_kind=="URL") { $l_URL[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
+			else { 	$l_else[$l_eventsDb->event_id] = $l_eventsDb->event_event; }
 		}
 
-		//while($r_eventsDb = mysql_fetch_object($right_events))	{
-		while($r_eventsDb = $right_events->fetch(PDO::FETCH_OBJ))	{
-			if($r_eventsDb->event_kind=="address") { $r_address[$r_eventsDb->event_id] = $r_eventsDb->event_event;  }
-			elseif($r_eventsDb->event_kind=="picture") { $r_picture[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
-			elseif($r_eventsDb->event_kind=="profession") { $r_profession[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
-			//elseif($r_eventsDb->event_kind=="source") { $r_source[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
-			elseif($r_eventsDb->event_kind=="event") { $r_event[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
+		//while($r_eventsDb = mysql_fetch_object($right_events)) {
+		while($r_eventsDb = $right_events->fetch(PDO::FETCH_OBJ)) {
+			if($r_eventsDb->event_kind=="address") { $r_address[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
+			elseif($r_eventsDb->event_kind=="picture") { $r_picture[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
+			elseif($r_eventsDb->event_kind=="profession") { $r_profession[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
+			//elseif($r_eventsDb->event_kind=="source") { $r_source[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
+			elseif($r_eventsDb->event_kind=="event") { $r_event[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
 			elseif($r_eventsDb->event_kind=="birth_declaration") { $r_birth_declaration[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
 			elseif($r_eventsDb->event_kind=="baptism_witness") { $r_baptism_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
 			elseif($r_eventsDb->event_kind=="death_declaration") { $r_death_declaration[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
-			elseif($r_eventsDb->event_kind=="burial_witness") { $r_burial_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
+			elseif($r_eventsDb->event_kind=="burial_witness") { $r_burial_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
 			elseif($r_eventsDb->event_kind=="name") { $r_name[$r_eventsDb->event_id] = '('.$r_eventsDb->event_gedcom.') '.$r_eventsDb->event_event;	}
-			elseif($r_eventsDb->event_kind=="nobility") { $r_nobility[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
-			elseif($r_eventsDb->event_kind=="title") { $r_title[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
-			elseif($r_eventsDb->event_kind=="lordship") { $r_lordship[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
-			elseif($r_eventsDb->event_kind=="URL") { $r_URL[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
-			else { 	$r_else[] = $l_eventsDb->event_event;	}
+			elseif($r_eventsDb->event_kind=="nobility") { $r_nobility[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
+			elseif($r_eventsDb->event_kind=="title") { $r_title[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
+			elseif($r_eventsDb->event_kind=="lordship") { $r_lordship[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
+			elseif($r_eventsDb->event_kind=="URL") { $r_URL[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
+			else { 	$r_else[] = $l_eventsDb->event_event; }
 		}
 		// before calling put_event function check if right has a value otherwise there is no need to show
 		if(isset($r_address)) { $this->put_event('address',__('Address'),$l_address,$r_address); }
@@ -1728,10 +1726,10 @@ function show_events ($left_ged,$right_ged) {
 		if(isset($r_profession)) { $this->put_event('profession',__('Profession'),$l_profession,$r_profession); }
 		//if(isset($r_source)) { $this->put_event('source','Sources',$l_source,$r_source); }
 		if(isset($r_event)) { $this->put_event('event',__('Event'),$l_event,$r_event); }
-		if(isset($r_birth_declaration)) { $this->put_event('birth_declaration',__('Birth Declaration'),$l_birth_declaration,$r_birth_declaration); }
-		if(isset($r_baptism_witness)) { $this->put_event('baptism_witness',__('Baptism Witness'),$l_baptism_witness,$r_baptism_witness); }
-		if(isset($r_death_declaration)) { $this->put_event('death_declaration',__('Death Declaration'),$l_death_declaration,$r_death_declaration); }
-		if(isset($r_burial_witness)) { $this->put_event('burial_witness',__('Burial Witness'),$l_burial_witness,$r_burial_witness); }
+		if(isset($r_birth_declaration)) { $this->put_event('birth_declaration',__('birth declaration'),$l_birth_declaration,$r_birth_declaration); }
+		if(isset($r_baptism_witness)) { $this->put_event('baptism_witness',__('baptism witness'),$l_baptism_witness,$r_baptism_witness); }
+		if(isset($r_death_declaration)) { $this->put_event('death_declaration',__('death declaration'),$l_death_declaration,$r_death_declaration); }
+		if(isset($r_burial_witness)) { $this->put_event('burial_witness',__('burial witness'),$l_burial_witness,$r_burial_witness); }
 		if(isset($r_name)) { $this->put_event('name',__('Other names'),$l_name,$r_name); }
 		if(isset($r_nobility)) { $this->put_event('nobility',__('Title of Nobility'),$l_nobility,$r_nobility); }
 		if(isset($r_title)) { $this->put_event('title',__('Title'),$l_title,$r_title); }
@@ -1881,15 +1879,15 @@ function merge_them($left,$right,$mode) {
 	global $relatives_merge, $merge_chars;
 	global $result1Db, $result2Db;
 	// merge algorithm - merge right into left
-   // 1. if right has pers_fams with different wife - this Fxx is added to left's pers_fams (in humo_person)
-   //    and in humo_family the Ixx of right is replaced with the Ixx of left
-   //    Right's Ixx is deleted
-   // 2. if right has pers_fams with identical wife - children are added to left's Fxx (in humo_family)
-   //    and with each child the famc is changed to left's fams
-   //    Right's Fxx is deleted
-   //    Right's Ixx is deleted
-   // 3. In either case whether right has family or not, if right has famc then in
-   //    humo_family in right's parents Fxx, the child's Ixx is changed from right's to left's
+	// 1. if right has pers_fams with different wife - this Fxx is added to left's pers_fams (in humo_person)
+	//    and in humo_family the Ixx of right is replaced with the Ixx of left
+	//    Right's Ixx is deleted
+	// 2. if right has pers_fams with identical wife - children are added to left's Fxx (in humo_family)
+	//    and with each child the famc is changed to left's fams
+	//    Right's Fxx is deleted
+	//    Right's Ixx is deleted
+	// 3. In either case whether right has family or not, if right has famc then in
+	//    humo_family in right's parents Fxx, the child's Ixx is changed from right's to left's
 
 	$qry1= "SELECT * FROM ".$data2Db->tree_prefix."person WHERE pers_id ='".$left."'";  // left person
 	$result1 = $dbh->query($qry1);
@@ -2268,7 +2266,7 @@ function merge_them($left,$right,$mode) {
 					$dbh->query("UPDATE ".$data2Db->tree_prefix."family SET fam_woman = '".$par2Db->fam_woman."' WHERE fam_gedcomnumber ='".$result1Db->pers_famc."'");
 				}
 				$dbh->query("UPDATE humo_settings SET setting_value ='".$relatives_merge."'
-								WHERE setting_variable = 'rel_merge_".$data2Db->tree_prefix."'");
+					WHERE setting_variable = 'rel_merge_".$data2Db->tree_prefix."'");
 			}
 			if(!$result1Db->pers_famc) {
 				// give left the famc of right
@@ -2426,7 +2424,7 @@ function merge_them($left,$right,$mode) {
 			// one array piece is I354@I54. We DONT want to match "I35" or "I5" 
 			// so to make sure we find the complete number we look for I354@ or for I345;
 			if(strstr($temp_rel_arr[$x],$result2Db->pers_gedcomnumber."@")=== false AND 
-			   strstr($temp_rel_arr[$x].";",$result2Db->pers_gedcomnumber.";")=== false) {
+				strstr($temp_rel_arr[$x].";",$result2Db->pers_gedcomnumber.";")=== false) {
 					$new_rel_string .= $temp_rel_arr[$x].";";
 			}
 		}
@@ -2578,7 +2576,7 @@ function check_events($left_ged,$right_ged) {
 function check_addresses($left_ged,$right_ged) {
 	global $db, $dbh, $language, $data2Db;
 	$left_address = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE LOCATE('address',connect_sub_kind)!=0 AND connect_connect_id ='".$left_ged."'");
-	$right_address = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE LOCATE('address',connect_sub_kind)!=0 AND connect_connect_id ='".$right_ged."'");	
+	$right_address = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE LOCATE('address',connect_sub_kind)!=0 AND connect_connect_id ='".$right_ged."'");
 	if($right_address->rowCount() > 0) { //if right has no addresses it did not appear in the comparison table, so the whole thing is unnecessary
 		while($left_addressDb = $left_address->fetch(PDO::FETCH_OBJ)) {
 			if(!isset($_POST['l_address_'.$left_addressDb->connect_id])) {

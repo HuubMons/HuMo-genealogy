@@ -5,6 +5,7 @@
 //error_reporting(E_ALL);
 $screen_mode='';
 if (isset($_POST["screen_mode"]) AND $_POST["screen_mode"]=='PDF'){ $screen_mode='PDF'; }
+if (isset($_POST["screen_mode"]) AND $_POST["screen_mode"]=='RTF'){ $screen_mode='RTF'; }
 if (isset($_GET["screen_mode"]) AND $_GET["screen_mode"]=='STAR'){ $screen_mode='STAR'; }
 if (isset($_GET["screen_mode"]) AND $_GET["screen_mode"]=='STARSIZE'){ $screen_mode='STARSIZE'; }
 $hourglass=false;
@@ -31,7 +32,7 @@ if($screen_mode!='PDF' AND $menu!=1) {  //we can't have a menu in pdf... and don
 	include_once(CMS_ROOTPATH."menu.php");
 }
 
-if($screen_mode=='PDF') {  // if PDF mode: necessary parts from menu.php
+if($screen_mode=='PDF') {  // if PDF: necessary parts from menu.php
 	if (isset($_SESSION['tree_prefix'])){
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 		ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
@@ -61,7 +62,8 @@ function topline(){
 	global $user, $source_presentation, $change_main_person, $maps_presentation, $database, $man_cls, $person_manDb;
 	global $woman_cls, $person_womanDb, $selected_language;
 
-	$text='<tr><td class="table_header" width="75%">';
+	//$text='<tr><td class="table_header" width="75%">';
+	$text='<tr class=table_headline><td class=table_header width="70%">';
 
 	// *** Text above family ***
 	$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
@@ -123,18 +125,18 @@ function topline(){
 					$text.='<b>'.__('Google maps').'</b><br>';
 
 					$selected=''; $selected2='';
-					if ($maps_presentation=='false'){ $selected2=' CHECKED'; }
+					if ($maps_presentation=='hide'){ $selected2=' CHECKED'; }
 						else{ $selected=' CHECKED'; }
 					
-					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=true&xx=\'+this.value"'.$selected.'>'.__('Show Google maps')."<br>\n";
+					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show Google maps')."<br>\n";
 
-					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=false&xx=\'+this.value"'.$selected2.'>'.__('Hide Google maps')."<br>\n";
+					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide Google maps')."<br>\n";
 				}
 
 			$text.='</div>';
 		$text.='</div>';
 
-	$text.='</td><td class="table_header fonts" width="10%" style="text-align:center";>';
+	$text.='</td><td class="table_header fonts" width="15%" style="text-align:center";>';
 
 		// *** PDF button ***
 		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
@@ -148,6 +150,20 @@ function topline(){
 			}
 			$text.='<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
 			//$text.='<input type="image" src="images/pdf.jpeg" width="20" border="0" alt="PDF">';
+			$text.='</form> ';
+		}
+
+		// *** RTF button ***
+		if($user["group_rtf_button"]=='y' AND $language["dir"]!="rtl") {
+			$text.='<form method="POST" action="'.$uri_path.'family.php?show_sources=1" style="display : inline;">';
+			$text.='<input type="hidden" name="id" value="'.$family_id.'">';
+			$text.='<input type="hidden" name="main_person" value="'.$main_person.'">';
+			$text.='<input type="hidden" name="database" value="'.$database.'">';
+			$text.='<input type="hidden" name="screen_mode" value="RTF">';
+			if($descendant_report==true) {
+				$text.='<input type="hidden" name="descendant_report" value="'.$descendant_report.'">';
+			}
+			$text.='<input class="fonts" type="Submit" name="submit" value="'.__('RTF Report').'">';
 			$text.='</form> ';
 		}
 
@@ -287,51 +303,34 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 
 	// *** Compact or expanded view ***
 	if (isset($_GET['family_expanded'])){
-		if ($_GET['family_expanded']=='0'){
-			$_SESSION['save_family_expanded']='0';
-		}
-		else{
-			$_SESSION['save_family_expanded']='1';
-		}
+		if ($_GET['family_expanded']=='0') $_SESSION['save_family_expanded']='0';
+			else $_SESSION['save_family_expanded']='1';
 	}
 	// *** Default setting is selected by administrator ***
-	$family_expanded=false;
-	if ($user['group_family_presentation']=='expanded') $source_presentation=true;
-	if ($user['group_family_presentation']=='compact') $source_presentation=false;
-	if (isset($_SESSION['save_family_expanded']) AND $_SESSION['save_family_expanded']=='1'){
+	if ($user['group_family_presentation']=='expanded')
 		$family_expanded=true;
-	}
+	else
+		$family_expanded=false;
+	if (isset($_SESSION['save_family_expanded'])) $family_expanded=$_SESSION['save_family_expanded'];
 
-	// *** Source presentation selected by user (title/ footnote or hide sources) ***
+	// *** Source presentation selected by user (title/ footnote/ hide) ***
 	if (isset($_GET['source_presentation'])){
 		$_SESSION['save_source_presentation']=safe_text($_GET["source_presentation"]);
 	}
 	// *** Default setting is selected by administrator ***
 	$source_presentation=$user['group_source_presentation'];
-	if (isset($_SESSION['save_source_presentation'])){
-		$source_presentation=$_SESSION['save_source_presentation'];
-	}
+	if (isset($_SESSION['save_source_presentation'])) $source_presentation=$_SESSION['save_source_presentation'];
 	else{
-		// *** Save setting in session (if no choice is made, this is admin default setting) ***
+		// *** Extra saving of setting in session (if no choice is made, this is admin default setting, needed for show_sources.php!!!) ***
 		$_SESSION['save_source_presentation']=safe_text($source_presentation);
 	}
 
 	// *** Show/ hide Google maps ***
-	if (isset($_GET['maps_presentation'])){
-		$_SESSION['save_maps_presentation']=safe_text($_GET["maps_presentation"]);
-	}
-	$maps_presentation='false';
+	if (isset($_GET['maps_presentation'])) $_SESSION['save_maps_presentation']=safe_text($_GET["maps_presentation"]);
 	// *** Default setting is selected by administrator ***
-	if ($user['group_maps_presentation']=='show') $maps_presentation='true';
-	if ($user['group_maps_presentation']=='hide') $maps_presentation='false';
-	if (isset($_SESSION['save_maps_presentation'])){
-		$maps_presentation=$_SESSION['save_maps_presentation'];
-	}
-	else{
-		// *** Save setting in session (if no choice is made, this is admin default setting) ***
-		$_SESSION['save_maps_presentation']=safe_text($maps_presentation);
-	}
-
+	$maps_presentation=$user['group_maps_presentation'];
+	//if ($user['group_maps_presentation']=='sources') $maps_presentation='hide'; // *** sources = backwards compatible!! *** 
+	if (isset($_SESSION['save_maps_presentation'])) $maps_presentation=$_SESSION['save_maps_presentation'];
 }
 if($screen_mode=='STAR') {
 	$descendant_report=true;
@@ -344,6 +343,8 @@ if($screen_mode=='PDF') {  //initialize pdf generation
 	$pdfdetails=array();
 	$pdf_marriage=array();
 	$pdf=new PDF();
+
+	// *** Generate title of PDF file ***
 	$pers = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
 	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
 	// *** Use class to process person ***
@@ -357,10 +358,86 @@ if($screen_mode=='PDF') {  //initialize pdf generation
 		$title=pdf_convert(__('Family group sheet').__(' of ').$name["standard_name"]);
 	}
 	$pdf->SetTitle($title);
+
 	$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 	$pdf->AddPage();
 	$pdf->SetFont('Arial','',12);
 } // end if pdfmode
+
+if($screen_mode=='RTF') {  // initialize rtf generation
+	require_once 'include/phprtflite/lib/PHPRtfLite.php';
+	$family_expanded=false;
+
+	// *** registers PHPRtfLite autoloader (spl) ***
+	PHPRtfLite::registerAutoloader();
+	// *** rtf document instance ***
+	$rtf = new PHPRtfLite();
+
+	// *** Add section ***
+	$sect = $rtf->addSection();
+
+	// *** RTF Settings ***
+	$arial12 = new PHPRtfLite_Font(12, 'Arial');
+	$arial14 = new PHPRtfLite_Font(14, 'Arial', '#000066');
+	//Fonts
+	$fontHead = new PHPRtfLite_Font(12, 'Arial');
+	$fontSmall = new PHPRtfLite_Font(3);
+	$fontAnimated = new PHPRtfLite_Font(10);
+	$fontLink = new PHPRtfLite_Font(10, 'Helvetica', '#0000cc');
+
+	$parBlack = new PHPRtfLite_ParFormat();
+	$parBlack->setIndentRight(12.5);
+	//$parBlack->setBackgroundColor('#000000');
+	$parBlack->setSpaceBefore(12);
+
+	$parHead = new PHPRtfLite_ParFormat();
+	$parHead->setSpaceBefore(3);
+	$parHead->setSpaceAfter(8);
+	$parHead->setBackgroundColor('#baf4c1');
+
+	$parSimple = new PHPRtfLite_ParFormat();
+	$parSimple->setIndentLeft(1);
+	$parSimple->setIndentRight(0.5);
+
+	$par_child_text = new PHPRtfLite_ParFormat();
+	$par_child_text->setIndentLeft(0.5);
+	$par_child_text->setIndentRight(0.5);
+
+	//$rtf->setMargins(3, 1, 1 ,2);
+
+	// *** Generate title of RTF file ***
+	$pers = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
+	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
+	// *** Use class to process person ***
+	$pers_cls = New person_cls;
+	$pers_cls->construct($persDb);
+	$name=$pers_cls->person_name($persDb);
+	if(!$descendant_report==false) {
+		$title=__('Descendant report').__(' of ').$name["standard_name"];
+	}
+	else {
+		$title=__('Family group sheet').__(' of ').$name["standard_name"];
+	}
+	//$sect->writeText($title, $arial14, new PHPRtfLite_ParFormat());
+	$sect->writeText($title, $arial14, $parHead);
+
+	$file_name=date("Y_m_d_H_i_s").'.rtf';
+	// *** FOR TESTING PURPOSES ONLY ***
+	if (@file_exists("../gedcom-bestanden")) $file_name='../gedcom-bestanden/'.$file_name;
+		else $file_name='tmp_files/'.$file_name;
+
+	// *** Automatically remove old RTF files ***
+	$dh  = opendir('tmp_files');
+	while (false !== ($filename = readdir($dh))) {
+		if (substr($filename, -3) == "rtf"){
+			//echo 'tmp_files/'.$filename.'<br>';
+			// *** Remove files older then today ***
+			if (substr($filename,0,10)!=date("Y_m_d")) unlink('tmp_files/'.$filename);
+		}
+	}
+
+	//echo $file_name;
+}
 
 if($screen_mode=='STAR') {
 // DNA chart -> change base person to earliest father-line (Y-DNA) or mother-line (Mt-DNA) ancestor
@@ -438,17 +515,23 @@ if (!$family_id){
 		$id='';
 		//$pdfdetails= pdf_convert($man_cls->person_data("parent1", $id));
 		$pdfdetails= $man_cls->person_data("parent1", $id);
-		if($pdfdetails) {
-			$pdf->pdfdisplay($pdfdetails,"parent");
-		}
+		if($pdfdetails) $pdf->pdfdisplay($pdfdetails,"parent");
 	}
+
+	elseif($screen_mode=='RTF') {
+		$rtf_text=strip_tags($man_cls->name_extended("parent1"),"<b><i>");
+		$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+		$id='';
+		$rtf_text=strip_tags($man_cls->person_data("parent1", $id),"<b><i>");
+		$sect->writeText($rtf_text, $arial12, $parSimple);
+	}
+
 	else {
-	
 		// *** Add tip in person screen ***
 		if (!$bot_visit){
-			echo '<b>';
+			echo '<div class="print_version"><b>';
 			printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">');
-			echo '</b><br><br>';
+			echo '</b><br><br></div>';
 		}
 
 		echo '<table class="humo standard">';
@@ -494,7 +577,6 @@ else{
 
 	// *** Nr. of generations ***
 	if($screen_mode=='STAR') {
-//NEW
 		if($chosengen != "All") { $max_generation=$chosengen-2; }
 		else { $max_generation=100; } // any impossibly high number, will anyway stop at last generation
 	}
@@ -562,10 +644,7 @@ else{
 		}
 		else {
 			if ($descendant_report==true){
-				if($screen_mode!='PDF') {
-					echo '<div class="standard_header fonts">'.__('generation ').$number_roman[$descendant_loop+1].'</div>';
-				}
-				else {
+				if($screen_mode=='PDF') {
 					$pdf->SetLeftMargin(10);
 					$pdf->Cell(0,2,"",0,1);
 					$pdf->SetFont('Arial','BI',14);
@@ -574,8 +653,16 @@ else{
 					$pdf->Cell(0,8,pdf_convert(__('generation ')).$number_roman[$descendant_loop+1],0,1,'C',true);
 					$pdf->SetFont('Arial','',12);
 				}
+				elseif($screen_mode=='RTF') {
+					$rtf_text=__('generation ').$number_roman[$descendant_loop+1];
+					$sect->writeText($rtf_text, $arial14, $parHead);
+				}
+				else {
+					echo '<div class="standard_header fonts">'.__('generation ').$number_roman[$descendant_loop+1].'</div>';
+				}
 			}
 		}
+
 		// *** Nr of families in one generation
 		for ($descendant_loop2=0; $descendant_loop2<=count($descendant_family_id); $descendant_loop2++){
 
@@ -688,69 +775,81 @@ else{
 				// *******************************************************************
 				// *** Show family                                                 ***
 				// *******************************************************************
-			if($screen_mode!='STAR') {
-				// *** Interne link voor descendant_report ***
-				if ($descendant_report==true){
-					// *** Interne link (Romeins number_generation) ***
-					if($screen_mode!='PDF') {
-						echo '<a name="'.$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1].'">';
-						echo '&nbsp;</a>';
-					}
-					else {
-						// put internal PDF link to family
-						$pdf->Cell(0,1," ",0,1);
-						$romannr=$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1];
-						if(isset($link[$romannr])) {
-							$pdf->SetLink($link[$romannr],-1); //link to this family from child with "volgt"
+				if($screen_mode!='STAR') {
+					// *** Interne link voor descendant_report ***
+					if ($descendant_report==true){
+						// *** Interne link (Romeins number_generation) ***
+						if($screen_mode=='PDF') {
+							// put internal PDF link to family
+							$pdf->Cell(0,1," ",0,1);
+							$romannr=$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1];
+							if(isset($link[$romannr])) {
+								$pdf->SetLink($link[$romannr],-1); //link to this family from child with "volgt"
+							}
+							$parlink[$id]=$pdf->Addlink();
+							$pdf->SetLink($parlink[$id],-1);   // link to this family from parents
 						}
-						$parlink[$id]=$pdf->Addlink();
-						$pdf->SetLink($parlink[$id],-1);   // link to this family from parents
-					}
-				}
-
-				if($screen_mode!='PDF') {
-
-					// *** Add tip in family screen ***
-					if (!$bot_visit AND $descendant_loop==0 AND $parent1_marr==0){
-						echo '<b>';
-						printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">');
-						echo '</b><br><br>';
+						elseif($screen_mode=='RTF') {
+							//$rtf_text=$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1].' ';
+							//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+						}
+						else {
+							echo '<a name="'.$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1].'">';
+							echo '&nbsp;</a>';
+						}
 					}
 
-					echo '<table class="humo standard">';
-
-						// *** Show family top line (family top text, settings, favorite) ***
-						echo topline();
-
-					echo '<tr><td colspan="4">';
-				} //end  "if not pdf"
-				else {
-					// Show "Family Page", user's choice or default
-					$pdf->SetLeftMargin(10);
-					$pdf->Cell(0,2," ",0,1);
-					if($pdf->GetY() > 260 AND $descendant_loop2!=0) {
-						// move to next page so family sheet banner won't be last on page
-						// but if we are in first family in generation, the gen banner
-						// is already checked so no need here
-						$pdf->AddPage(); $pdf->SetY(20);
-					}
-					$pdf->SetFont('Arial','BI',12);
-					$pdf->SetFillColor(186,244,193);
-
-					$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
-					$family_top=$treetext['family_top'];
-					if($family_top!='') {
+					if($screen_mode=='PDF') {
+						// Show "Family Page", user's choice or default
 						$pdf->SetLeftMargin(10);
-						$pdf->Cell(0,6,pdf_convert($family_top),0,1,'L',true);
+						$pdf->Cell(0,2," ",0,1);
+						if($pdf->GetY() > 260 AND $descendant_loop2!=0) {
+							// move to next page so family sheet banner won't be last on page
+							// but if we are in first family in generation, the gen banner
+							// is already checked so no need here
+							$pdf->AddPage(); $pdf->SetY(20);
+						}
+						$pdf->SetFont('Arial','BI',12);
+						$pdf->SetFillColor(186,244,193);
+
+						$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+						$family_top=$treetext['family_top'];
+						if($family_top!='') {
+							$pdf->SetLeftMargin(10);
+							$pdf->Cell(0,6,pdf_convert($family_top),0,1,'L',true);
+						}
+						else {
+							$pdf->SetLeftMargin(10);
+							$pdf->Cell(0,6,pdf_convert(__('Family group sheet')),0,1,'L',true);
+						}
+						$pdf->SetFont('Arial','',12);
+					}
+					elseif($screen_mode=='RTF') {
+						$sect->addEmptyParagraph($fontSmall, $parBlack);
+
+						$rtf_text=$treetext['family_top'];
+						if($rtf_text!='')
+							$sect->writeText($rtf_text, $arial14, $parHead);
+						else
+							$sect->writeText(__('Family group sheet'), $arial14, $parHead);
 					}
 					else {
-						$pdf->SetLeftMargin(10);
-						$pdf->Cell(0,6,pdf_convert(__('Family group sheet')),0,1,'L',true);
-					}
-					$pdf->SetFont('Arial','',12);
+						// *** Add tip in family screen ***
+						if (!$bot_visit AND $descendant_loop==0 AND $parent1_marr==0){
+							echo '<div class="print_version"><b>';
+							printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">');
+							echo '</b><br><br></div>';
+						}
 
-				}
-			}  // end if not STAR
+						echo '<table class="humo standard">';
+
+							// *** Show family top line (family top text, settings, favorite) ***
+							echo topline();
+
+						echo '<tr><td colspan="4">';
+					} //end  "if not pdf"
+
+				}  // end if not STAR
 
 				// *************************************************************
 				// *** Parent1 (normally the father)                         ***
@@ -761,10 +860,17 @@ else{
 						if($screen_mode=='') {
 							echo '<div class="parent1 fonts">';
 							// *** Show roman number in descendant_report ***
-							if ($descendant_report==true){ echo '<b>'.$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1].'</b> '; }
+							if ($descendant_report==true){
+								echo '<b>'.$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1].'</b> '; }
 						}
 						if($screen_mode=='PDF') {
-							if ($descendant_report==true) { $pdf->Write(8,$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1]." "); }
+							if ($descendant_report==true) {
+								$pdf->Write(8,$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1]." "); }
+						}
+						if($screen_mode=='RTF') {
+							$rtf_text=' <b>'.$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1].'</b> ';
+							//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+							$sect->writeText($rtf_text, $arial12);
 						}
 
 						if ($change_main_person==true){
@@ -785,7 +891,7 @@ else{
 								//  PDF rendering of name + details
 								unset ($pdfstr);
 								if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
-								else $pers_sexe = $person_womanDb->pers_sexe;
+									else $pers_sexe = $person_womanDb->pers_sexe;
 								$pdf->writename($pers_sexe,$pdf->GetX()+5,$woman_cls->name_extended("parent1"),"long");
 								$pdf->SetLeftMargin($indent);
 								$pdfdetails= $woman_cls->person_data("parent1", $id);
@@ -794,6 +900,61 @@ else{
 								}
 								$pdf->SetLeftMargin($indent-5);
 							}
+
+							if($screen_mode=='RTF') {
+								// *** Start new line ***
+								$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
+
+								// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
+								if ($person_womanDb->pers_sexe=="M")
+									$sect->addImage('images/man.jpg', null);
+								elseif ($person_womanDb->pers_sexe=="F")
+									$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
+								else
+									$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
+
+								$rtf_text=strip_tags($woman_cls->name_extended("parent1"),"<b><i>");
+								//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+								$sect->writeText($rtf_text, $arial12);
+								$id='';
+								$rtf_text=strip_tags($woman_cls->person_data("parent1", $id),"<b><i>");
+								$sect->writeText($rtf_text, $arial12, $parSimple);
+
+								$result = show_media($person_womanDb,''); 
+								if(isset($result[1]) AND count($result[1])>0) { 
+									$table = $sect->addTable();
+									$table->addRow(1);
+									$table->addRow(0.2);
+									$table->addColumnsList(array(5,5,5));
+
+									$break=0; $textarr = Array();
+									foreach($result[1] as $key => $value) {
+										if (strpos($key,"path")!==FALSE) {
+											$break++;
+											$cell = $table->getCell(1, $break);
+											$imageFile = $value;
+											$image = $cell->addImage($imageFile);
+											//$sect->writeText('<tab>');
+											$txtkey = str_replace("pic_path","pic_text",$key); 
+											if(isset($result[1][$txtkey])) {
+												$textarr[]=$result[1][$txtkey];
+											}
+											else { $textarr[]="&nbsp;"; }
+										}
+										if($break==3) break; // max 3 pics
+									}
+									$sect->writeText("\n");
+									$break1=0;
+									if(count($textarr)>0) {
+										foreach($textarr as $value) {
+											$break1++;
+											$cell = $table->getCell(2, $break1);
+											$cell->writeText($value);
+										}
+									}
+								}
+							}
+
 							if($screen_mode=='STAR') {
 								if($descendant_loop==0) {
 									$name=$woman_cls->person_name($person_womanDb);
@@ -837,6 +998,60 @@ else{
 								$pdf->SetLeftMargin($indent-5);
 							}
 
+							if($screen_mode=='RTF') {
+								// *** Start new line ***
+								$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
+
+								// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
+								if ($person_manDb->pers_sexe=="M")
+									$sect->addImage('images/man.jpg', null);
+								elseif ($person_manDb->pers_sexe=="F")
+									$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
+								else
+									$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
+
+								$rtf_text=strip_tags($man_cls->name_extended("parent1"),"<b><i>");
+								//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+								$sect->writeText($rtf_text, $arial12);
+								$id='';
+								$rtf_text=strip_tags($man_cls->person_data("parent1", $id),"<b><i>");
+								$sect->writeText($rtf_text, $arial12, $parSimple);
+
+								$result = show_media($person_manDb,''); 
+								if(isset($result[1]) AND count($result[1])>0) { 
+									$table = $sect->addTable();
+									$table->addRow(1);
+									$table->addRow(0.2);
+									$table->addColumnsList(array(5,5,5));
+
+									$break=0; $textarr = Array();
+									foreach($result[1] as $key => $value) {
+										if (strpos($key,"path")!==FALSE) {
+											$break++;
+											$cell = $table->getCell(1, $break);
+											$imageFile = $value;
+											$image = $cell->addImage($imageFile);
+											//$sect->writeText('<tab>');
+											$txtkey = str_replace("pic_path","pic_text",$key); 
+											if(isset($result[1][$txtkey])) {
+												$textarr[]=$result[1][$txtkey];
+											}
+											else { $textarr[]="&nbsp;"; }
+										}
+										if($break==3) break; // max 3 pics
+									}
+									$sect->writeText("\n");
+									$break1=0;
+									if(count($textarr)>0) {
+										foreach($textarr as $value) {
+											$break1++;
+											$cell = $table->getCell(2, $break1);
+											$cell->writeText($value);
+										}
+									}
+								}
+							}
+
 							if($screen_mode=='STAR') {
 								if($descendant_loop==0) {
 									$name=$man_cls->person_name($person_manDb);
@@ -866,10 +1081,15 @@ else{
 							$pdf_marriage=$marriage_cls->marriage_data($familyDb,$family_nr,'shorter');
 							$pdf->Write(8,$pdf_marriage["relnr_rel"].__(' of ')."\n");
 						}
+						if($screen_mode=='RTF') {
+							$rtf_text=strip_tags($marriage_cls->marriage_data($familyDb,$family_nr,'shorter'),"<b><i>");
+							$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+						}
 
 						// *** Only show name in 2nd, 3rd, etc. marriage ***
 						if($screen_mode!='STAR') {
 							if ($change_main_person==true){
+								/*
 								if($screen_mode!='PDF') {
 									echo '<br>'.$woman_cls->name_extended("parent1").'<br>';
 								}
@@ -879,8 +1099,23 @@ else{
 									else $pers_sexe = $person_womanDb->pers_sexe;
 									$pdf->writename($pers_sexe,$indent,$woman_cls->name_extended("parent1"),"kort");
 								}
+								*/
+								if($screen_mode=='PDF') {
+									// PDF rendering of name
+									if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
+									else $pers_sexe = $person_womanDb->pers_sexe;
+									$pdf->writename($pers_sexe,$indent,$woman_cls->name_extended("parent1"),"kort");
+								}
+								elseif($screen_mode=='RTF') {
+									$rtf_text=strip_tags($woman_cls->name_extended("parent1"),"<b><i>");
+									$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+								}
+								else {
+									echo '<br>'.$woman_cls->name_extended("parent1").'<br>';
+								}
 							}
 							else{
+								/*
 								if($screen_mode!='PDF') {
 									echo '<br>'.$man_cls->name_extended("parent1").'<br>';
 								}
@@ -889,6 +1124,20 @@ else{
 									if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
 									else $pers_sexe = $person_manDb->pers_sexe;
 									$pdf->writename($pers_sexe,$indent,$man_cls->name_extended("parent1"),"kort");
+								}
+								*/
+								if($screen_mode=='PDF') {
+									//  PDF rendering of name
+									if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
+									else $pers_sexe = $person_manDb->pers_sexe;
+									$pdf->writename($pers_sexe,$indent,$man_cls->name_extended("parent1"),"kort");
+								}
+								elseif($screen_mode=='RTF') {
+									$rtf_text=strip_tags($man_cls->name_extended("parent1"),"<b><i>");
+									$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+								}
+								else {
+									echo '<br>'.$man_cls->name_extended("parent1").'<br>';
 								}
 							}
 						}
@@ -910,7 +1159,7 @@ else{
 				// *************************************************************
 				if ($familyDb->fam_kind!='PRO-GEN'){  //onecht kind, wife without man
 					if($screen_mode=='') {
-						echo '<br><span class="marriage fonts">';
+						echo '<br><div class="marriage fonts">';
 						// *** $family_privacy='1' = filter ***
 						if ($family_privacy){
 							// *** Show standard marriage data ***
@@ -919,7 +1168,7 @@ else{
 						else{
 							echo $marriage_cls->marriage_data();
 						}
-						echo '</span><br><br>';
+						echo '</div><br>';
 					}
 					if($screen_mode=='PDF') {
 						//unset ($pdfstr);
@@ -938,6 +1187,19 @@ else{
 							}
 						}
 					}
+
+					if($screen_mode=='RTF') {
+						if ($family_privacy){
+							// *** Show standard marriage data ***
+							$rtf_text=strip_tags($marriage_cls->marriage_data($familyDb,'','short'),"<b><i>");
+							$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+						}
+						else{
+							$rtf_text=strip_tags($marriage_cls->marriage_data(),"<b><i>");
+							$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+						}
+					}
+
 					if($screen_mode=='STAR') {
 						if($family_privacy) {
 							$genarray[$arraynr]["htx"]=$marriage_cls->marriage_data($familyDb,'','short');
@@ -972,6 +1234,60 @@ else{
 							$pdf->pdfdisplay($pdfdetails,"parent2");
 						}
 					}
+					if($screen_mode=='RTF') {
+						$sect->addEmptyParagraph($fontSmall, $parBlack);
+
+						// *** Start new line ***
+						$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
+
+						// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
+						if ($person_manDb->pers_sexe=="M")
+							$sect->addImage('images/man.jpg', null);
+						elseif ($person_manDb->pers_sexe=="F")
+							$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
+						else
+							$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
+
+						$rtf_text=strip_tags($man_cls->name_extended("parent2"),"<b><i>");
+						//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+						$sect->writeText($rtf_text, $arial12);
+						$rtf_text=strip_tags($man_cls->person_data("parent2",$id),"<b><i>");
+						$sect->writeText($rtf_text, $arial12, $parSimple);
+
+						$result = show_media($person_manDb,''); 
+						if(isset($result[1]) AND count($result[1])>0) { 
+							$table = $sect->addTable();
+							$table->addRow(1);
+							$table->addRow(0.2);
+							$table->addColumnsList(array(5,5,5));
+
+							$break=0; $textarr = Array();
+							foreach($result[1] as $key => $value) {
+								if (strpos($key,"path")!==FALSE) {
+									$break++;
+									$cell = $table->getCell(1, $break);
+									$imageFile = $value;
+									$image = $cell->addImage($imageFile);
+									//$sect->writeText('<tab>');
+									$txtkey = str_replace("pic_path","pic_text",$key); 
+									if(isset($result[1][$txtkey])) {
+										$textarr[]=$result[1][$txtkey];
+									}
+									else { $textarr[]="&nbsp;"; }
+								}
+								if($break==3) break; // max 3 pics
+							}
+							$sect->writeText("\n");
+							$break1=0;
+							if(count($textarr)>0) {
+								foreach($textarr as $value) {
+									$break1++;
+									$cell = $table->getCell(2, $break1);
+									$cell->writeText($value);
+								}
+							}
+						}
+					}
 					if($screen_mode=='STAR') {
 						if($person_manDb) {
 							$name=$man_cls->person_name($person_manDb);
@@ -1003,6 +1319,60 @@ else{
 						$pdf->pdfdisplay($pdfdetails,"parent2");
 						}
 					}
+					if($screen_mode=='RTF') {
+						$sect->addEmptyParagraph($fontSmall, $parBlack);
+
+						// *** Start new line ***
+						$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
+
+						// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
+						if ($person_womanDb->pers_sexe=="M")
+							$sect->addImage('images/man.jpg', null);
+						elseif ($person_womanDb->pers_sexe=="F")
+							$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
+						else
+							$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
+
+						$rtf_text=strip_tags($woman_cls->name_extended("parent2"),"<b><i>");
+						//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+						$sect->writeText($rtf_text, $arial12);
+						$rtf_text=strip_tags($woman_cls->person_data("parent2",$id),"<b><i>");
+						$sect->writeText($rtf_text, $arial12, $parSimple);
+
+						$result = show_media($person_womanDb,'');
+						if(isset($result[1]) AND count($result[1])>0) { 
+							$table = $sect->addTable();
+							$table->addRow(1);
+							$table->addRow(0.2);
+							$table->addColumnsList(array(5,5,5));
+
+							$break=0; $textarr = Array();
+							foreach($result[1] as $key => $value) {
+								if (strpos($key,"path")!==FALSE) {
+									$break++;
+									$cell = $table->getCell(1, $break);
+									$imageFile = $value;
+									$image = $cell->addImage($imageFile);
+									//$sect->writeText('<tab>');
+									$txtkey = str_replace("pic_path","pic_text",$key); 
+									if(isset($result[1][$txtkey])) {
+										$textarr[]=$result[1][$txtkey];
+									}
+									else { $textarr[]="&nbsp;"; }
+								}
+								if($break==3) break; // max 3 pics
+							}
+							$sect->writeText("\n");
+							$break1=0;
+							if(count($textarr)>0) {
+								foreach($textarr as $value) {
+									$break1++;
+									$cell = $table->getCell(2, $break1);
+									$cell->writeText($value);
+								}
+							}
+						}
+					}
 					if($screen_mode=='STAR') {
 						if($person_womanDb) {
 							$name=$woman_cls->person_name($person_womanDb);
@@ -1023,101 +1393,123 @@ else{
 				// *************************************************************
 				// *** Marriagetext                                          ***
 				// *************************************************************
-			if($screen_mode!='STAR') {
-				if ($family_privacy){
-					// No marriage data
-				}
-				else{
-					if ($user["group_texts_fam"]=='j' AND process_text($familyDb->fam_text)){
-						if($screen_mode!='PDF') {
-							echo '<br>'.process_text($familyDb->fam_text);
-							// *** BK: source by family text ***
-							echo show_sources2("family","fam_text",$familyDb->fam_gedcomnumber);
-						}
-						else {
-							// PDF rendering of marriage notes
-							$pdf->SetFont('Arial','I',11);
-							$pdf->Write(6,process_text($familyDb->fam_text)."\n");
-							$pdf->Write(6,show_sources2("family","fam_text",$familyDb->fam_gedcomnumber)."\n");
-							$pdf->SetFont('Arial','',12);
+				if($screen_mode!='STAR') {
+					if ($family_privacy){
+						// No marriage data
+					}
+					else{
+						if ($user["group_texts_fam"]=='j' AND process_text($familyDb->fam_text)){
+							/*
+							if($screen_mode!='PDF') {
+								echo '<br>'.process_text($familyDb->fam_text);
+								// *** BK: source by family text ***
+								echo show_sources2("family","fam_text",$familyDb->fam_gedcomnumber);
+							}
+							else {
+								// PDF rendering of marriage notes
+								$pdf->SetFont('Arial','I',11);
+								$pdf->Write(6,process_text($familyDb->fam_text)."\n");
+								$pdf->Write(6,show_sources2("family","fam_text",$familyDb->fam_gedcomnumber)."\n");
+								$pdf->SetFont('Arial','',12);
+							}
+							*/
+							if($screen_mode=='PDF') {
+								// PDF rendering of marriage notes
+								$pdf->SetFont('Arial','I',11);
+								$pdf->Write(6,process_text($familyDb->fam_text)."\n");
+								$pdf->Write(6,show_sources2("family","fam_text",$familyDb->fam_gedcomnumber)."\n");
+								$pdf->SetFont('Arial','',12);
+							}
+							elseif($screen_mode=='RTF') {
+								$sect->addEmptyParagraph($fontSmall, $parBlack);
+
+								$rtf_text=strip_tags(process_text($familyDb->fam_text),"<b><i>");
+								$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+								$rtf_text=strip_tags(show_sources2("family","fam_text",$familyDb->fam_gedcomnumber),"<b><i>");
+								$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+							}
+							else {
+								echo '<br>'.process_text($familyDb->fam_text);
+								// *** BK: source by family text ***
+								echo show_sources2("family","fam_text",$familyDb->fam_gedcomnumber);
+							}
 						}
 					}
-				}
 
-				// *** Show addresses ***
-				if ($user['group_living_place']=='j'){
-					if ($familyDb->fam_gedcomnumber){
-						$addressnr=0;
-						$address_fam_var = $familyDb->fam_gedcomnumber;
-						$address_qry_prep->execute();
-						if($screen_mode!='PDF') {
-							while($addressDb=$address_qry_prep->fetch(PDO::FETCH_OBJ)){
-								$nr_addresses=$event_qry->rowCount();
-								if ($nr_addresses=='1')
-									$residence=__('residence');
-								else
-									$residence=__('residences');
+					// *** Show addresses ***
+					if ($user['group_living_place']=='j'){
+						if ($familyDb->fam_gedcomnumber){
+							$addressnr=0;
+							$address_fam_var = $familyDb->fam_gedcomnumber;
+							$address_qry_prep->execute();
+							if($screen_mode!='PDF') {
+								while($addressDb=$address_qry_prep->fetch(PDO::FETCH_OBJ)){
+									$nr_addresses=$event_qry->rowCount();
+									if ($nr_addresses=='1')
+										$residence=__('residence');
+									else
+										$residence=__('residences');
 
-								$addressnr++;
-								if ($addressnr=='1'){ echo '<span class="pers_living_place fonts">'.$residence.': '; }
-								if ($addressnr>1){ echo ', '; }
-								if ($addressDb->address_date){ echo date_place($addressDb->address_date,'').' '; } //use default function, there is no place...
-								echo $addressDb->address_place;
+									$addressnr++;
+									if ($addressnr=='1'){ echo '<span class="pers_living_place fonts">'.$residence.': '; }
+									if ($addressnr>1){ echo ', '; }
+									if ($addressDb->address_date){ echo date_place($addressDb->address_date,'').' '; } //use default function, there is no place...
+									echo $addressDb->address_place;
 
-								// *** Show address source ***
-								if ($addressDb->address_source){
-									echo show_sources2("family","address_source",$addressDb->address_id);
+									// *** Show address source ***
+									if ($addressDb->address_source){
+										echo show_sources2("family","address_source",$addressDb->address_id);
+									}
+									if ($addressDb->address_text) { echo ' '.$addressDb->address_text; }
 								}
-								if ($addressDb->address_text) { echo ' '.$addressDb->address_text; }
+								if ($addressnr>0){ echo '</span>'; }
 							}
-							if ($addressnr>0){ echo '</span>'; }
-						}
-						else {
-							//  PDF rendering of addresses
-							while($addressDb=$address_qry_prep->fetch(PDO::FETCH_OBJ)){
-								$nr_addresses=$event_qry->rowCount();
-								if ($nr_addresses=='1')
-									$residence=__('residence');
-								else
-									$residence=__('residences');
+							else {
+								//  PDF rendering of addresses
+								while($addressDb=$address_qry_prep->fetch(PDO::FETCH_OBJ)){
+									$nr_addresses=$event_qry->rowCount();
+									if ($nr_addresses=='1')
+										$residence=__('residence');
+									else
+										$residence=__('residences');
 
-								$addressnr++;
-								$pdf->SetFont('Arial','',12);
-								if ($addressnr=='1'){ $pdf->Write(6,$residence.': '); }
-								if ($addressnr>1){ $pdf->Write(6,', '); }
-								if ($addressDb->address_date){$pdf->Write(6,date_place($addressDb->address_date,'').' '); }
-								$pdf->Write(6,$addressDb->address_place);
-								// *** Show address source ***
-								if ($addressDb->address_source){
-									$pdf->SetFont('Times','',12);  $pdf->Write(6,show_sources2("family","address_source",$addressDb->address_id));
-								}
-								if ($addressDb->address_text) {$pdf->SetFont('Arial','I',11);  $pdf->Write(6,' '.$addressDb->address_text); }
-							} // end while
-							if($addressnr>0) {$pdf->Ln(6); }
-						}  // end else (pdf)
-					}   // end if gedcomnumber
-				}   // end if group_living_place
+									$addressnr++;
+									$pdf->SetFont('Arial','',12);
+									if ($addressnr=='1'){ $pdf->Write(6,$residence.': '); }
+									if ($addressnr>1){ $pdf->Write(6,', '); }
+									if ($addressDb->address_date){$pdf->Write(6,date_place($addressDb->address_date,'').' '); }
+									$pdf->Write(6,$addressDb->address_place);
+									// *** Show address source ***
+									if ($addressDb->address_source){
+										$pdf->SetFont('Times','',12);  $pdf->Write(6,show_sources2("family","address_source",$addressDb->address_id));
+									}
+									if ($addressDb->address_text) {$pdf->SetFont('Arial','I',11);  $pdf->Write(6,' '.$addressDb->address_text); }
+								} // end while
+								if($addressnr>0) {$pdf->Ln(6); }
+							}  // end else (pdf)
+						}   // end if gedcomnumber
+					}   // end if group_living_place
 
-				// *** Family source ***
-				if($screen_mode=='PDF') {
-					// PDF rendering of sources
-					$pdf->Write(6,show_sources2("family","family",$familyDb->fam_gedcomnumber)."\n");
+					// *** Family source ***
+					if($screen_mode=='PDF') {
+						// PDF rendering of sources
+						$pdf->Write(6,show_sources2("family","family",$familyDb->fam_gedcomnumber)."\n");
+					}
+					else {
+						echo show_sources2("family","family",$familyDb->fam_gedcomnumber);
+					}
+
+				} //end "if not STAR"
+
+				if($screen_mode=='STAR') {
+						if($descendant_loop==0) {
+						$lst_in_array=$count_marr;
+						$genarray[$arraynr]["gen"]=0;
+						$genarray[$arraynr]["par"]=-1;
+						$genarray[$arraynr]["chd"]=$arraynr + 1;
+						$genarray[$arraynr]["non"]=0;
+					}
 				}
-				else {
-					echo show_sources2("family","family",$familyDb->fam_gedcomnumber);
-				}
-
-			} //end "if not STAR"
-
-			if($screen_mode=='STAR') {
-					if($descendant_loop==0) {
-					$lst_in_array=$count_marr;
-					$genarray[$arraynr]["gen"]=0;
-					$genarray[$arraynr]["par"]=-1;
-					$genarray[$arraynr]["chd"]=$arraynr + 1;
-					$genarray[$arraynr]["non"]=0;
-				}
-			}
 
 				// *************************************************************
 				// *** Children                                              ***
@@ -1141,8 +1533,7 @@ else{
 						else{
 							echo '<p><b>'.__('Children').':</b></p>';
 						}
-
-						echo "</td></tr>\n";
+						//echo "</td></tr>\n";
 					}
 					if($screen_mode=='PDF') {
 						unset ($pdfstr);
@@ -1150,9 +1541,19 @@ else{
 						$pdf->SetDrawColor(200);  // grey line
 						$pdf->Cell(0,2," ",'B',1);
 					}
+					if($screen_mode=='RTF') {
+						// *** Show "Child(ren):" ***
+						if (count($child_array)=='1'){
+							$rtf_text='<b>'.__('Child').':</b>';
+							$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+						}
+						else{
+							$rtf_text='<b>'.__('Children').':</b>';
+							$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+						}
+					}
 					if($screen_mode=='STAR') {
 						$genarray[$arraynr]["nrc"]=count($child_array);
-						
 						// dna -> count only man or women
 						if($dna=="ydna" OR $dna=="mtdna") { 
 							$countdna = 0;
@@ -1166,7 +1567,6 @@ else{
 							} 
 							$genarray[$arraynr]["nrc"]=$countdna;
 						}
-
 					}
 
 					for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
@@ -1179,15 +1579,18 @@ else{
 						$child_cls->construct($childDb);
 
 						if($screen_mode=='') {
-							echo '<tr><td colspan="4"><div class="children">';
-							echo '<div class="child_nr">'.$childnr.')</div> ';
+							//echo '<tr><td colspan="4">';
+							echo '<div class="children">';
+							//echo '<div class="child_nr">'.$childnr.')</div> ';
+							echo '<div class="child_nr">'.$childnr.'.</div> ';
 							echo $child_cls->name_extended("child");
 						}
 						if($screen_mode=='PDF') {
 							//  PDF rendering of name + details
 							$pdf->SetFont('Arial','B',11);
 							$pdf->SetLeftMargin($indent);
-							$pdf->Write(6,$childnr.') ');
+							//$pdf->Write(6,$childnr.') ');
+							$pdf->Write(6,$childnr.'. ');
 							if($childDb->pers_sexe=='M') {
 								$pdf->Image("images/man.gif",$pdf->GetX()+1,$pdf->GetY()+1,3.5,3.5);
 								$pdf->SetX($pdf->GetX()+5);
@@ -1204,10 +1607,25 @@ else{
 							$pdf->Write(6,$child_cls->name_extended("child"));
 							$pdf->SetFont('Arial','',12);
 						}
+						if($screen_mode=='RTF') {
+							$rtf_text=$childnr.'. ';
+							$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+
+							// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
+							if ($childDb->pers_sexe=="M")
+								$sect->addImage('images/man.jpg', null);
+							elseif ($childDb->pers_sexe=="F")
+								$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
+							else
+								$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
+
+							$rtf_text=strip_tags($child_cls->name_extended("child"),'<b><i>');
+							$sect->writeText($rtf_text, $arial12);
+						}
 						if($screen_mode=='STAR') {
 							$chdn_in_gen=$nrchldingen + $childnr;
 							$place=$lst_in_array+$chdn_in_gen;
-							
+
 							if(($dna=="ydnamark" OR $dna=="ydna") AND $childDb->pers_sexe=="M"  
 									AND $genarray[$arraynr]["sex"]=="m" AND $genarray[$arraynr]["dna"]==1) {
 								$genarray[$place]["dna"]=1;
@@ -1221,7 +1639,7 @@ else{
 							else {
 								$genarray[$place]["dna"]="no";
 							}
-							
+
 							$genarray[$place]["gen"]=$descendant_loop+1;
 							$genarray[$place]["par"]=$arraynr;
 							$genarray[$place]["chd"]=$childnr;
@@ -1288,8 +1706,8 @@ else{
 								//$number_roman[$descendant_loop+2].'-'.$number_generation[count($descendant_family_id2)].'</a>';
 
 								$search_nr=array_search($child_family[0], $check_double);
-								echo '<b><i>, '.__('follows').': </i></b>
-								<a href="'.str_replace("&","&amp;",$_SERVER['REQUEST_URI']).'#'.$follows_array[$search_nr].'">'.$follows_array[$search_nr].'</a>';
+								echo '<b><i>, '.__('follows').': </i></b>';
+								echo '<a href="'.str_replace("&","&amp;",$_SERVER['REQUEST_URI']).'#'.$follows_array[$search_nr].'">'.$follows_array[$search_nr].'</a>';
 							}
 
 							if($screen_mode=='PDF') {
@@ -1306,9 +1724,13 @@ else{
 								$parentchild[$romnr]=$id;
 							}
 
-							//echo '<b><i>'.__(', follows: ').'</i></b>
-							//  <a href="'.$_SERVER['PHP_SELF'].'#'.$number_roman[$descendant_loop+2].'-'.$number_generation[count($descendant_family_id2)].'">'.
-							//  $number_roman[$descendant_loop+2].'-'.$number_generation[count($descendant_family_id2)].'</a>';
+							if($screen_mode=='RTF') {
+								$search_nr=array_search($child_family[0], $check_double);
+								$rtf_text='<b><i>, '.__('follows').': </i></b>'.$follows_array[$search_nr];
+								//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+								$sect->writeText($rtf_text, $arial12);
+							}
+
 						}
 						else{
 							if($screen_mode=='') {
@@ -1325,13 +1747,52 @@ else{
 									$pdf->SetLeftMargin($indent);
 								}
 							}
+							if($screen_mode=='RTF' AND $child_cls->person_data("child", $id)) {
+								$rtf_text=strip_tags($child_cls->person_data("child", $id),'<b><i>');
+								$sect->writeText($rtf_text, $arial12, $par_child_text);
+
+								$result = show_media($childDb,''); 
+								if(isset($result[1]) AND count($result[1])>0) { 
+									$table = $sect->addTable();
+									$table->addRow(1);
+									$table->addRow(0.2);
+									$table->addColumnsList(array(5,5,5));
+
+									$break=0; $textarr = Array();
+									foreach($result[1] as $key => $value) {
+										if (strpos($key,"path")!==FALSE) {
+											$break++;
+											$cell = $table->getCell(1, $break);
+											$imageFile = $value;
+											$image = $cell->addImage($imageFile);
+											//$sect->writeText('<tab>');
+											$txtkey = str_replace("pic_path","pic_text",$key); 
+											if(isset($result[1][$txtkey])) {
+												$textarr[]=$result[1][$txtkey];
+											}
+											else { $textarr[]="&nbsp;"; }
+										}
+										if($break==3) break; // max 3 pics
+									}
+									$sect->writeText("\n");
+									$break1=0;
+									if(count($textarr)>0) {
+										foreach($textarr as $value) {
+											$break1++;
+											$cell = $table->getCell(2, $break1);
+											$cell->writeText($value);
+										}
+									}
+								}
+							}
 							if($screen_mode=='STAR') {
 								$genarray[$place]["non"]=1;
 							}
 						}
 
 						if($screen_mode=='') {
-							echo '</div></td></tr>'."\n";
+							echo "</div>\n";
+							//echo '</td></tr>'."\n";
 						}
 						$childnr++;
 					}
@@ -1413,7 +1874,7 @@ else{
 					echo "</table><br>\n";
 
 					// *** Show Google map ***
-					if ($descendant_report==false AND $maps_presentation=='true') {
+					if ($descendant_report==false AND $maps_presentation=='show') {
 						$show_google_map=false;
 						// *** Only show main javascript once ***
 						if ($family_nr==2){
@@ -1680,8 +2141,17 @@ else{
 } // End of single person
 
 // *** If source footnotes are selected, show them here ***
-if ($screen_mode!="PDF" AND isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_presentation']=='footnote'){
-	show_sources_footnotes();
+if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_presentation']=='footnote' AND $screen_mode!="PDF"){
+	if ($screen_mode=="RTF"){
+		//$rtf_text=strip_tags(show_sources_footnotes(),'<b>');
+		//$sect->writeText($rtf_text, $arial12);
+
+		$rtf_text=strip_tags(show_sources_footnotes());
+		$sect->addEndnote($rtf_text);
+	}
+	else{
+		echo show_sources_footnotes();
+	}
 }
 
 // *** Extra footer text in family screen ***
@@ -1860,11 +2330,46 @@ if($hourglass===false) { // in hourglass there's more code after family.php is i
 		printchart();
 	}
 
-	if($screen_mode!='PDF') {
+	if($screen_mode=='RTF') {  // initialize rtf generation
+		// *** Save rtf document to file ***
+		$rtf->save($file_name);
+
+		echo '<br><br><a href="'.$file_name.'">'.__('Download RTF report.').'</a>';
+		echo '<br><br>'.__('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.');
+
+		$text='<br><br><form method="POST" action="'.$uri_path.'family.php?show_sources=1" style="display : inline;">';
+		$text.='<input type="hidden" name="id" value="'.$family_id.'">';
+		$text.='<input type="hidden" name="main_person" value="'.$main_person.'">';
+		$text.='<input type="hidden" name="database" value="'.$database.'">';
+		$text.='<input type="hidden" name="screen_mode" value="">';
+		if($descendant_report==true) {
+			$text.='<input type="hidden" name="descendant_report" value="'.$descendant_report.'">';
+		}
+		$text.='<input class="fonts" type="Submit" name="submit" value="'.__('Back').'">';
+		$text.='</form> ';
+		echo $text;
+	}
+	elseif($screen_mode!='PDF') {
 		include_once(CMS_ROOTPATH."footer.php");
 	}
 	else {
 		$pdf->Output($title.".pdf","I");
 	}
 }
+
+
+// *********************************************************
+// *** General functions to show specific pieces of data ***
+// *********************************************************
+
+// *** Quality ***
+function show_quality($quality){
+	$quality_text='';
+	if ($quality=='0') $quality_text=__('quality: unreliable evidence or estimated data'); 
+	if ($quality=='1') $quality_text=__('quality: questionable reliability of evidence'); 
+	if ($quality=='2') $quality_text=__('quality: data from secondary evidence'); 
+	if ($quality=='3') $quality_text=__('quality: data from direct source'); 
+	return $quality_text;
+}
+
 ?>

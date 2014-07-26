@@ -407,9 +407,6 @@ $tml=3;  // default timeline file
 if(isset($_POST['tml'])) { $tml=$_POST['tml']; }
 
 // **** SHOW MENU ****
-
-//print "<div style='position:absolute;top:30px;left:5px;padding:15px'>";
-//print "<table class='humo'><tr><td>";
 print '<div class="left_box">';
 	if(CMS_SPECIFIC=="Joomla") {
 		print '<form name="tmlstep" method="post" action="index.php?option=com_humo-gen&task=timelines&id='.$id.'&amp;database='.$database.'" style="display:inline;">';
@@ -420,27 +417,27 @@ print '<div class="left_box">';
 
 	//======== HELP POPUP ========================
 	if(CMS_SPECIFIC=="Joomla") {
-		echo '<div class="fonts table_header '.$rtlmarker.'sddm" style="postion:absolute;top:32;left:7;">';
+		echo '<div class="fonts '.$rtlmarker.'sddm" style="postion:absolute; top:32; left:7;">';
 		$popwidth="width:700px;";
 	}
 	else {
-		echo '<div class="fonts table_header '.$rtlmarker.'sddm" style="display:inline">';
+		echo '<div class="fonts '.$rtlmarker.'sddm" style="display:inline">';
 		$popwidth="";
 	}
-		echo '<a href="#"';
-		echo ' style="display:inline" ';
-		if(CMS_SPECIFIC=="Joomla") {
-			echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
-		}
-		else {
-			echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
-		}
-		echo 'onmouseout="mclosetime()">';
-		echo '&nbsp;&nbsp;&nbsp;<strong>'.__('Help').'</strong>';
-		echo '</a>&nbsp;';
-		echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:40; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+	echo '<a href="#"';
+	echo ' style="display:inline" ';
+	if(CMS_SPECIFIC=="Joomla") {
+		echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
+	}
+	else {
+		echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
+	}
+	echo 'onmouseout="mclosetime()">';
+	echo '&nbsp;&nbsp;&nbsp;<strong>'.__('Help').'</strong>';
+	echo '</a>&nbsp;';
+	echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:40; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
-			echo __('Explanation of the timeline chart:<br>
+		echo __('Explanation of the timeline chart:<br>
 <ul><li>The middle column displays the years of the timeline. The starting point will be just before birth and the end year will be just after death.</li>
 <li>The left column displays the events in the person\'s life.<br>
 Events listed are: birth, death and marriage(s) of main person, death of spouse, birth, marriage and death of children and birth and death of grandchildren.<br>
@@ -469,11 +466,11 @@ The timeline menu:<br>
 	print '<br><input type="radio" name="step" value="10"';
 	if ($step==10) print ' checked="checked"';
 	print ' >10 '.__('years');
-	
+
 	// Choice of timeline files available
-	
+
 	if(count($filenames) > 1) { // only show timelines menu if there are more than 1 timeline files
-	
+
 		print '<br><br>'.__('Choose timeline');
 		print '<div style="direction:ltr">';
 		for ($i=0; $i<count($filenames); $i++){
@@ -510,15 +507,17 @@ if ($privacy_filtered==true){
 }
 
 print "<table id='timetable' class='humo' style='border:1px'>";
+
 $name=$person_cls->person_name($personDb);
-print "<tr><th class='family_page_toptext' style='border:1px solid blue;' colspan='3'>".$name["name"]."</th></tr>";
-print "<tr><td style='text-align:center;font-weight:bold'>".__('LIFE EVENTS')."</td>";
-print "<td style='text-align:center;font-weight:bold'>".__('YEAR')."</td>";
+print "<tr class=table_headline><th colspan='3'>".$name["name"]."</th></tr>";
+
+print "<tr class=table_headline><th>".__('LIFE EVENTS')."</th>";
+print "<th>".__('YEAR')."</th>";
 $nofiles='';
-if(!file_exists($filenames[0][0])) {
+if(!file_exists($filenames[0][0]))
 	$nofiles="<br>".__('There are no timeline files available for this language.');
-}
-print "<td style='text-align:center;font-weight:bold'>".__('HISTORIC EVENTS').$nofiles."</td></tr>";
+print "<th>".__('HISTORIC EVENTS').$nofiles."</th></tr>";
+
 $step==1?$yearwidth=60:$yearwidth=120; // when step is 1 the column can be much shorter
 $flag_isbuffer=0;
 $eventdir="ltr"; // default direction of timeline file is ltr (set to rtl later in the script if necessary

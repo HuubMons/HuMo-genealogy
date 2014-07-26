@@ -45,6 +45,7 @@ function process_person($person_array){
 	$pers_death_cause="";
 	$pers_sexe=""; $pers_sexe_source="";
 	$person["pers_text_source"]='';
+	$person["pers_quality"]='';
 	$person["pers_unprocessed_tags"]='';
 	$person["new_date"]=""; $person["new_time"]=""; $person["changed_date"]=""; $person["changed_time"]="";
 
@@ -454,7 +455,10 @@ function process_person($person_array){
 			}
 		}
 
+		// *** Quality ***
+		// BELONGS TO A 1 xxxx ITEM????
 		if ($buffer8=='2 QUAY 0'){ $processed=1; $pers_firstname='(?) '.$pers_firstname; } //Certain/ uncertain person (onzeker persoon) HZ
+		//if ($buffer6=='2 QUAY'){ $processed=1; $person["pers_quality"]=$this->process_quality($buffer); }
 
 		// *** Pro-gen: 1 _PATR Jans ***
 		if ($buffer7=='1 _PATR'){ $processed=1; $person["pers_patronym"]=substr($buffer,8); }
@@ -748,6 +752,24 @@ function process_person($person_array){
 				$pers_birth_source='SOURCE';
 			}
 
+			// *** Birth witness Pro-Gen ***
+			if (substr($buffer,2,5)=='_WITN'){
+				$processed=1;
+				$buffer = str_replace("/", " ", $buffer);
+				$buffer = trim($buffer);
+				$event_nr++;
+				$event['person_id'][$event_nr]=$pers_gedcomnumber;
+				$event['family_id'][$event_nr]='';
+				$event['kind'][$event_nr]='birth_declaration';
+				$event['event'][$event_nr]=substr($buffer,7);
+				$event['event_extra'][$event_nr]='';
+				$event['gedcom'][$event_nr]='WITN';
+				$event['date'][$event_nr]='';
+				$event['source'][$event_nr]='';
+				$event['text'][$event_nr]='';
+				$event['place'][$event_nr]='';
+			}
+
 			// *** Stillborn child ***
 			// 1 BIRT
 			// 2 TYPE stillborn
@@ -880,6 +902,24 @@ function process_person($person_array){
 			if ($level2=='SOUR'){
 				$this->process_sources('person','pers_death_source',$pers_gedcomnumber,$buffer,'2');
 				$pers_death_source='SOURCE';
+			}
+
+			// *** Death witness Pro-Gen ***
+			if (substr($buffer,2,5)=='_WITN'){
+				$processed=1;
+				$buffer = str_replace("/", " ", $buffer);
+				$buffer = trim($buffer);
+				$event_nr++;
+				$event['person_id'][$event_nr]=$pers_gedcomnumber;
+				$event['family_id'][$event_nr]='';
+				$event['kind'][$event_nr]='death_declaration';
+				$event['event'][$event_nr]=substr($buffer,7);
+				$event['event_extra'][$event_nr]='';
+				$event['gedcom'][$event_nr]='WITN';
+				$event['date'][$event_nr]='';
+				$event['source'][$event_nr]='';
+				$event['text'][$event_nr]='';
+				$event['place'][$event_nr]='';
 			}
 
 			// *** Pers_death_cause ***
@@ -1519,6 +1559,7 @@ function process_person($person_array){
 	pers_sexe='$pers_sexe',
 	pers_sexe_source='".$this->text_process($pers_sexe_source)."',
 	pers_own_code='".$this->text_process($person["pers_own_code"])."',
+	pers_quality='".$this->text_process($person["pers_quality"])."',
 	pers_unprocessed_tags='".$this->text_process($person["pers_unprocessed_tags"])."',
 	pers_new_date='".$this->zero_date($this->text_process($person["new_date"]))."',
 	pers_new_time='".$person["new_time"]."',
@@ -2535,7 +2576,7 @@ function process_family($family_array,$first_marr, $second_marr){
 		if(isset($family["fam_div_text"])) { $family["fam_div_text"] = $this->reassign_ged($family["fam_div_text"],'N');  }
 	}   
 
-	// *** Save temporary text "DIVORSE" for a divorse without further data ***
+	// *** Save temporary text "DIVORCE" for a divorce without further data ***
 	if ($family["fam_div"]){
 		if (!$family["fam_div_date"] AND !$family["fam_div_place"] AND !$family["fam_div_text"]
 		AND !$family["fam_div_source"] AND !$family["fam_div_authority"]){
@@ -3058,7 +3099,7 @@ function process_source($source_array){
 	if ($source["source_title"]==''){ $source["source_title"]="..."; }
 
 	if($add_tree==true OR $reassign==true) { $source["source_text"] = $this->reassign_ged($source["source_text"],'N');  }
-	
+
 	// *** Save sources ***
 	$sql="INSERT INTO ".$_SESSION['tree_prefix']."sources SET
 	source_gedcomnr='".$this->text_process($source["id"])."',
@@ -3254,7 +3295,7 @@ function process_repository($repo_array){
 	} //end explode
 
 	if($add_tree==true OR $reassign==true) { $repo["repo_text"] = $this->reassign_ged($repo["repo_text"],'N');  }
-	
+
 	// *** Save repository ***
 	$sql="INSERT INTO ".$_SESSION['tree_prefix']."repositories SET
 	repo_gedcomnr='".$this->text_process($repo["repo_gedcomnr"])."',
@@ -3632,7 +3673,7 @@ function conc($text1){
 	return $text;
 }
 
-// *** NEW: Process texts ***
+// *** Process texts ***
 // 1 NOTE Information, text, etc.
 // 2 CONT 2nd line.
 // 2 CONT 3rd line
@@ -3660,6 +3701,21 @@ function humo_basename($photo){
 		$photo=substr(strrchr(' '.$photo, "\\"), 1 );
 	}
 	return $photo;
+}
+
+// *** Quality ***
+// 0 = Unreliable evidence or estimated data 
+// 1 = Questionable reliability of evidence (interviews, census, oral genealogies, or potential for bias for example, an autobiography) 
+// 2 = Secondary evidence, data officially recorded sometime after event 
+// 3 = Direct and primary evidence used, or by dominance of the evidence
+// Example:
+// 2 QUAY 0
+function process_quality($buffer){
+	global $gen_program;
+	$text=substr($buffer,-1);
+	// Ancestry uses 1 - 4 in stead of 0 - 3, adjust numbers:
+	if ($gen_program=="Ancestry.com Family Trees")$text--;
+	return $text;
 }
 
 function reassign_ged($gednr,$letter) {
@@ -3830,9 +3886,9 @@ function process_sources($connect_kind2,$connect_sub_kind2,$connect_connect_id2,
 	//	if (nrbron>0) then BronDate[nrbron]:=copy(buf,8,length(buf));
 	//}
 
-	// *** NEW: Source quality ***
+	// *** Source quality ***
 	if ($buffer6==($number+1).' QUAY'){
-		$processed=1; $connect['quality'][$connect_nr]=substr($buffer, 7);
+		$processed=1; $connect['quality'][$connect_nr]=$this->process_quality($buffer);
 	}
 }
 

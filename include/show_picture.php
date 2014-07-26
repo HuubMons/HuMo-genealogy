@@ -4,6 +4,9 @@
 function show_media($personDb,$marriageDb){
 	global $user, $dataDb, $db, $dbh, $tree_prefix_quoted, $uri_path;
 	//global $pdfstr;
+	global $sect, $screen_mode; // *** RTF Export ***
+
+
 	$pdfstr = array(); // local version
 	$process_text='';
 	$media_nr=0;
@@ -79,6 +82,9 @@ function show_media($personDb,$marriageDb){
 		else {
 			$picpath=$uri_path;
 		}
+
+		if($screen_mode=="RTF") { $process_text .= "\n"; }
+
 		for ($i=1; $i<($media_nr+1); $i++) {
 			// *** If possible show a thumb ***
 
@@ -133,11 +139,11 @@ function show_media($personDb,$marriageDb){
 			// *** Show RAM Audio file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="ram") {
 				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="RAM"></a>';
-			}	
+			}
 			// *** Show RA Audio file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-2,2))=="ra") {
 				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="RA"></a>';
-			}				
+			}
 			else{
 				// *** Show photo using the lightbox effect ***
 				$picture='<a href="'.$tree_pict_path.$event_event.'" rel="lightbox" title="'.str_replace("&", "&amp;", $media_event_text[$i]).'">';
@@ -153,26 +159,28 @@ function show_media($personDb,$marriageDb){
 			// *** Show picture date ***
 			$picture_date='';
 			if ($media_event_date[$i]){
-				$picture_date=' '.date_place($media_event_date[$i],'').' '; // default, there is no place
+				if ($screen_mode!='RTF'){ $picture_date=' '.date_place($media_event_date[$i],'').' '; } // default, there is no place
 				$pdfstr["pic_text".$i]=date_place($media_event_date[$i],'');
 			}
 
 			// *** Show text by picture of little space ***
 			$picture_text='';
 			if (isset($media_event_text[$i]) AND $media_event_text[$i]){
-				$picture_text=$picture_date.' '.str_replace("&", "&amp;", $media_event_text[$i]);
+				if ($screen_mode!='RTF'){$picture_text=$picture_date.' '.str_replace("&", "&amp;", $media_event_text[$i]);}
 				if(isset($pdfstr["pic_text".$i])){ $pdfstr["pic_text".$i].=' '.$media_event_text[$i];}
 					else {$pdfstr["pic_text".$i]=' '.$media_event_text[$i];}
 			}
 
 			if ($media_event_source[$i]){
-				$picture_text.=show_sources2("person","event_source",$media_event_id[$i]);
+				if ($screen_mode!='RTF') { $picture_text.=show_sources2("person","event_source",$media_event_id[$i]); }
+			}
+			if ($screen_mode!='RTF'){
+				$process_text.='<div class="photo">';
+				$process_text.=$picture;
+				if(isset($picture_text)) {$process_text.='<div class="phototext">'.$picture_text.'</div>';}
+				$process_text.= '</div>'."\n";
 			}
 
-			$process_text.='<div class="photo">';
-			$process_text.=$picture;
-			if(isset($picture_text)) {$process_text.='<div class="phototext">'.$picture_text.'</div>';}
-			$process_text.= '</div>'."\n";
 		}
 		if ($media_nr > 0){
 			$process_text.='<br clear="All">';
@@ -202,7 +210,7 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 	if (file_exists($picture_path.'thumb_'.strtolower($picture['picture']))){
 		$picture['thumb']='thumb_';
 		$picture['picture']=strtolower($picture['picture']);
-	}		
+	}
 	if (file_exists($picture_path.'thumb_'.$picture['picture'])){ $picture['thumb']='thumb_'; }
 
 	// *** If photo is too wide, correct the size ***

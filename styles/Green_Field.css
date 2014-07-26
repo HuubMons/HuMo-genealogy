@@ -1,0 +1,74 @@
+body {
+	/* color: #006600; */
+	background-image: url('images_green_field/background.gif');
+	background-repeat: no-repeat;
+}
+
+/* Tables */
+table.humo { background-color: #ffffff; }
+/* 1st table A-Z */
+table.humo td { border-color: #99cc33; }
+table.humo tr:first-of-type td { border-color: #99cc33; }
+/* 2nd table A-Z */
+/* .family_page_toptext { color: #ddffbb; } */
+td.style_tree_text { background-color: #eeeebb; }
+
+.table_headline{
+	color: #FFFFFF;
+	background: url('images_green_field/default_trans.png') repeat left top;
+}
+/* table header  */
+td.table_header { background-image: url('images_green_field/default_trans.png'); }
+
+/* A-Z title and header text reports (Generation I, II, etc.) */
+.standard_header { color: #006600; }
+
+/* Ancestor graphical */
+/*
+div.ancestor_name {
+	border-color: #006600;
+	color: #000000; font-family: "arial narrow"; font-size: 75%; }
+div.ancestor_name a { font-weight: bold; }
+div.ancestor_line{ border-bottom-color: #006600; border-top-color: #006600;}
+div.ancestor_split{ border-left-color: #006600; border-bottom-color: #006600; border-top-color: #006600; }
+*/
+
+/* Switchform */
+#switchform { color: #ffcc33; }
+
+/* Menu */
+#top_menu {
+	/* For IE - Voor IE: */
+	color: #666666;
+	/* background-color: #cccc99; */
+}
+#humo_menu {
+	/* background-color:#cccc99; */
+	background:url("images_green_field/green.png") repeat left top;
+}
+#humo_menu a { color: #FFFFFF; }
+#humo_menu a:hover { background:url("images_green_field/menuhover.jpg") repeat left top; }
+#humo_menu ul.humo_menu_item2 li a:hover { background:url("images_green_field/menuhover.jpg") repeat left top; }
+#humo_menu a#current_top { background:url("images_gree_fieldn/menuhover.jpg") repeat left top; }
+#humo_menu #current a { background:url("images_green_field/menuhover.jpg") repeat left top; }
+#humo_menu ul.humo_menu_item2 li { background:url("images_green_field/menuhover.jpg") repeat left top; }
+#humo_menu ul.humo_menu_item2 li a { background:url("images_green_field/menuhover.jpg") repeat left top; }
+#humo_menu ul.humo_menu_item li a {}
+
+/* Pop-up menu */
+/* #humo_menu ul.humo_menu_item2 li a{ background:url("images_green_field/green.png") repeat left top; } */
+
+#humo_menu a:visited { color: #FFFFFF; }
+#humo_menu a:active {color: #FFFFFF;}
+#humo_menu a:hover {color: #000000;}
+
+/* top bar in left - content - right boxes: only in main menu */
+.mainmenu_bar{ background:url("images_green_field/green.png") repeat left top; }
+
+.help_box { background-color: #f5fffa; }
+
+div.photobook, div.photobooktext { background-color: #f5fffa; }
+
+.search_bar{ background:url("images_green_field/green.png") repeat left top; }
+
+table.reltable td { border:0px; }

@@ -7,10 +7,10 @@ function event_text($event_kind){
 	if ($event_kind=='picture'){ $event_text=__('Picture/ Media'); }
 	elseif ($event_kind=='profession'){ $event_text=__('Profession'); }
 	elseif ($event_kind=='event'){ $event_text=__('Event'); }
-	elseif ($event_kind=='birth_declaration'){ $event_text=__('Birth Declaration'); }
-	elseif ($event_kind=='baptism_witness'){ $event_text=__('Baptism Witness'); }
-	elseif ($event_kind=='death_declaration'){ $event_text=__('Death Declaration'); }
-	elseif ($event_kind=='burial_witness'){ $event_text=__('Burial Witness'); }
+	elseif ($event_kind=='birth_declaration'){ $event_text=__('birth declaration'); }
+	elseif ($event_kind=='baptism_witness'){ $event_text=__('baptism witness'); }
+	elseif ($event_kind=='death_declaration'){ $event_text=__('death declaration'); }
+	elseif ($event_kind=='burial_witness'){ $event_text=__('burial witness'); }
 	elseif ($event_kind=='name'){ $event_text=__('Name'); }
 	elseif ($event_kind=='nobility'){ $event_text=__('Title of Nobility'); }
 	elseif ($event_kind=='title'){ $event_text=__('Title'); }
@@ -18,8 +18,8 @@ function event_text($event_kind){
 	elseif ($event_kind=='lordship'){ $event_text=__('Title of Lordship'); }
 	elseif ($event_kind=='URL'){ $event_text=__('URL/ Internet link'); }
 	elseif ($event_kind=='person_colour_mark'){ $event_text=__('Colour mark by person'); }
-	elseif ($event_kind=='marriage_witness'){ $event_text= __('Marriage Witness'); }
-	elseif ($event_kind=='marriage_witness_rel'){ $event_text= __('Marriage Witness (church)'); }
+	elseif ($event_kind=='marriage_witness'){ $event_text= __('marriage witness'); }
+	elseif ($event_kind=='marriage_witness_rel'){ $event_text= __('marriage witness (church)'); }
 	else { $event_text=ucfirst($event_kind); }
 	return $event_text;
 }
@@ -130,7 +130,7 @@ function show_event($selected_events=''){
 
 	// *** Show events by person ***
 	if ($selected_events=='person'){
-		echo '<tr class="table_header"><td style="border-right:0px;"><a name="event_person_link"><a href="#event_person_link" onclick="hideShow(51);"><span id="hideshowlink51">'.__('[+]').'</span></a> '.__('Events').'</td>';
+		echo '<tr><td style="border-right:0px;"><a name="event_person_link"><a href="#event_person_link" onclick="hideShow(51);"><span id="hideshowlink51">'.__('[+]').'</span></a> '.__('Events').'</td>';
 		echo '<td style="border-right:0px;">';
 			//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
 		echo '</td><td style="border-left:0px;">';
@@ -157,7 +157,8 @@ function show_event($selected_events=''){
 
 	// *** Show events by family ***
 	if ($selected_events=='family'){
-		echo '<tr class="table_header"><td style="border-right:0px;"><a name="event_family_link"><a href="#event_family_link" onclick="hideShow(52);"><span id="hideshowlink52">'.__('[+]').'</span></a> '.__('Events').'</td>';
+		//echo '<tr class="table_header"><td style="border-right:0px;"><a name="event_family_link"><a href="#event_family_link" onclick="hideShow(52);"><span id="hideshowlink52">'.__('[+]').'</span></a> '.__('Events').'</td>';
+		echo '<tr class="humo_color"><td style="border-right:0px;"><a name="event_family_link"><a href="#event_family_link" onclick="hideShow(52);"><span id="hideshowlink52">'.__('[+]').'</span></a> '.__('Events').'</td>';
 		echo '<td style="border-right:0px;">';
 			//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
 		echo '</td><td style="border-left:0px;">';
@@ -182,11 +183,10 @@ function show_event($selected_events=''){
 
 	// *** Show name by person ***
 	if ($selected_events=='name'){
-		echo '<tr class="humo_color" style="display:none;" id="row1" name="row1">';
-		//echo '<tr class="table_header" style="display:none;" id="row1" name="row1">';
+		echo '<tr style="display:none;" id="row1" name="row1">';
 		echo '<td></td>';
-		echo '<td class="table_header" style="border-right:0px;">'.__('Name').'</td>';
-		echo '<td class="table_header" style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('Name').'</td>';
+		echo '<td style="border-left:0px;">';
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_name">['.__('Add').']</a> ';
 			echo __('Nickname').', '.__('alias name').', '.__('Adopted name').', '.__('Hebrew name').', '.__('etc.');
 			echo '</td>';
@@ -196,11 +196,10 @@ function show_event($selected_events=''){
 
 	// *** Show nobility by person ***
 	if ($selected_events=='nobility'){
-		echo '<tr class="humo_color" style="display:none;" id="row1" name="row1">';
-		//echo '<tr class="table_header" style="display:none;" id="row1" name="row1">';
+		echo '<tr style="display:none;" id="row1" name="row1">';
 		echo '<td></td>';
-		echo '<td class="table_header" style="border-right:0px;">'.__('Title of Nobility').'</td>';
-		echo '<td class="table_header" style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('Title of Nobility').'</td>';
+		echo '<td style="border-left:0px;">';
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_nobility">['.__('Add').']</a> '.__('e.g. Jhr., Jkvr.').'</td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -208,11 +207,11 @@ function show_event($selected_events=''){
 
 	// *** Show title by person ***
 	if ($selected_events=='title'){
-		echo '<tr class="humo_color" style="display:none;" id="row1" name="row1">';
+		echo '<tr style="display:none;" id="row1" name="row1">';
 		//echo '<tr class="table_header" style="display:none;" id="row1" name="row1">';
 		echo '<td></td>';
-		echo '<td class="table_header" style="border-right:0px;">'.__('Title').'</td>';
-		echo '<td class="table_header" style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('Title').'</td>';
+		echo '<td style="border-left:0px;">';
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_title">['.__('Add').']</a> '.__('e.g. Prof., Dr.').'</td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -220,11 +219,10 @@ function show_event($selected_events=''){
 
 	// *** Show lordship by person ***
 	if ($selected_events=='lordship'){
-		echo '<tr class="humo_color" style="display:none;" id="row1" name="row1">';
-		//echo '<tr class="table_header" style="display:none;" id="row1" name="row1">';
+		echo '<tr style="display:none;" id="row1" name="row1">';
 		echo '<td></td>';
-		echo '<td class="table_header" style="border-right:0px;">'.__('Title of Lordship').'</td>';
-		echo '<td class="table_header" style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('Title of Lordship').'</td>';
+		echo '<td style="border-left:0px;">';
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_lordship">['.__('Add').']</a> '.__('e.g. Lord of Amsterdam').'</td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -232,11 +230,11 @@ function show_event($selected_events=''){
 
 	// *** Show birth declaration by person ***
 	if ($selected_events=='birth_declaration'){
-		echo '<tr style="display:none;" id="row2" name="row2">';
+		echo '<tr class="humo_color" style="display:none;" id="row2" name="row2">';
 		//echo '<tr class="table_header" style="display:none;" id="row2" name="row2">';
 		echo '<td></td>';
-		echo '<td class="table_header" style="border-right:0px;">'.__('Birth Declaration').'</td>';
-		echo '<td class="table_header" style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('birth declaration').'</td>';
+		echo '<td style="border-left:0px;">';
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_birth_declaration">['.__('Add').']</a></td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -244,11 +242,11 @@ function show_event($selected_events=''){
 
 	// *** Show baptism witness by person ***
 	if ($selected_events=='baptism_witness'){
-		echo '<tr class="humo_color" style="display:none;" id="row3" name="row3">';
+		echo '<tr style="display:none;" id="row3" name="row3">';
 		//echo '<tr class="table_header" style="display:none;" id="row3" name="row3">';
 		echo '<td></td>';
-		echo '<td class="table_header" style="border-right:0px;">'.__('Baptism Witness').'</td>';
-		echo '<td class="table_header" style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('baptism witness').'</td>';
+		echo '<td style="border-left:0px;">';
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_baptism_witness">['.__('Add').']</a></td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -256,11 +254,11 @@ function show_event($selected_events=''){
 
 	// *** Show death declaration by person ***
 	if ($selected_events=='death_declaration'){
-		echo '<tr style="display:none;" id="row4" name="row4">';
+		echo '<tr class="humo_color" style="display:none;" id="row4" name="row4">';
 		//echo '<tr class="table_header" style="display:none;" id="row4" name="row4">';
 		echo '<td></td>';
-		echo '<td class="table_header" style="border-right:0px;">'.__('Death Declaration').'</td>';
-		echo '<td class="table_header" style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('death declaration').'</td>';
+		echo '<td style="border-left:0px;">';
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_death_declaration">['.__('Add').']</a></td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -268,11 +266,11 @@ function show_event($selected_events=''){
 
 	// *** Show burial witness by person ***
 	if ($selected_events=='burial_witness'){
-		echo '<tr class="humo_color" style="display:none;" id="row5" name="row5">';
+		echo '<tr style="display:none;" id="row5" name="row5">';
 		//echo '<tr class="table_header" style="display:none;" id="row5" name="row5">';
 		echo '<td></td>';
-		echo '<td class="table_header" style="border-right:0px;">'.__('Burial Witness').'</td>';
-		echo '<td class="table_header" style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('burial witness').'</td>';
+		echo '<td style="border-left:0px;">';
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_burial_witness">['.__('Add').']</a></td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -280,7 +278,8 @@ function show_event($selected_events=''){
 
 	// *** Show profession by person ***
 	if ($selected_events=='profession'){
-		echo '<tr class="humo_color">';
+		//echo '<tr class="humo_color">';
+		echo '<tr>';
 		echo '<td style="border-right:0px;">';
 			echo '<a name="profession"></a>';
 
@@ -303,9 +302,9 @@ function show_event($selected_events=''){
 		echo '</tr>';
 	}
 
-	// *** Show picures by person ***
+	// *** Show pictures by person ***
 	if ($selected_events=='picture'){
-		echo '<tr>';
+		echo '<tr class="humo_color">';
 		echo '<td style="border-right:0px;">';
 			echo '<a name="picture"></a>';
 
@@ -339,11 +338,11 @@ function show_event($selected_events=''){
 
 	// *** Show marriage witness by family ***
 	if ($selected_events=='marriage_witness'){
-		echo '<tr class="humo_color" style="display:none;" id="row8" name="row8">';
+		echo '<tr style="display:none;" id="row8" name="row8">';
 		//echo '<tr class="table_header" style="display:none;" id="row8" name="row8">';
 		echo '<td></td>';
-		echo '<td class="table_header" style="border-right:0px;">'.__('Marriage Witness').'</td>';
-		echo '<td class="table_header" style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('marriage witness').'</td>';
+		echo '<td style="border-left:0px;">';
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_marriage_witness#event_family_link">['.__('Add').']</a></td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -351,11 +350,11 @@ function show_event($selected_events=''){
 
 	// *** Show marriage witness (church) by family ***
 	if ($selected_events=='marriage_witness_rel'){
-		echo '<tr class="humo_color" style="display:none;" id="row10" name="row10">';
+		echo '<tr style="display:none;" id="row10" name="row10">';
 		//echo '<tr class="table_header" style="display:none;" id="row10" name="row10">';
 		echo '<td></td>';
-		echo '<td class="table_header" style="border-right:0px;">'.__('Marriage Witness (church)').'</td>';
-		echo '<td class="table_header" style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('marriage witness (religious)').'</td>';
+		echo '<td style="border-left:0px;">';
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_marriage_witness_rel#event_family_link">['.__('Add').']</a></td>';
 		echo '<td style="border-left:0px;"></td>';
 		echo '</tr>';
@@ -378,56 +377,67 @@ function show_event($selected_events=''){
 			$internal_link='#event_family_link';
 		}
 		if ($selected_events=='name'){
-			//$change_bg_colour=' class="humo_color"'; $internal_link=' style="display:none; border-top: solid 2px #999999;" id="row1" name="row1"'; }
-			$change_bg_colour=' class="humo_color"';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
 			$expand_link=' style="display:none;" id="row1" name="row1"';
 			$internal_link='#';
 		}
 		if ($selected_events=='nobility'){
-			$change_bg_colour=' class="humo_color"';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
 			$expand_link=' style="display:none;" id="row1" name="row1"';
 		}
 		if ($selected_events=='title'){
-			$change_bg_colour=' class="humo_color"';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
 			$expand_link=' style="display:none;" id="row1" name="row1"';
 		}
 		if ($selected_events=='lordship'){
-			$change_bg_colour=' class="humo_color"';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
 			$expand_link=' style="display:none;" id="row1" name="row1"';
 		}
 		if ($selected_events=='birth_declaration'){
-			$change_bg_colour='';
+			//$change_bg_colour='';
+			$change_bg_colour=' class="humo_color"';
 			$expand_link=' style="display:none;" id="row2" name="row2"';
 		}
 		if ($selected_events=='baptism_witness'){
-			$change_bg_colour=' class="humo_color"';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
 			$expand_link=' style="display:none;" id="row3" name="row3"';
 		}
 		if ($selected_events=='death_declaration'){
-			$change_bg_colour='';
+			//$change_bg_colour='';
+			$change_bg_colour=' class="humo_color"';
 			$expand_link=' style="display:none;" id="row4" name="row4"';
 		}
 		if ($selected_events=='burial_witness'){
-			$change_bg_colour=' class="humo_color"';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
 			$expand_link=' style="display:none;" id="row5" name="row5"';
 		}
 		if ($selected_events=='profession'){
-			$change_bg_colour=' class="humo_color"';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
 			$expand_link=' style="display:none;" id="row50" name="row50"';
 			$internal_link='#profession';
 		}
 		if ($selected_events=='picture'){
-			$change_bg_colour='';
+			//$change_bg_colour='';
+			$change_bg_colour=' class="humo_color"';
 			$expand_link=' style="display:none;" id="row53" name="row53"';
 			$internal_link='#picture';
 		}
 		if ($selected_events=='marriage_witness'){
-			$change_bg_colour=' class="humo_color"';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
 			$expand_link=' style="display:none;" id="row8" name="row8"';
 			$internal_link='#event_family_link';
 		}
 		if ($selected_events=='marriage_witness_rel'){
-			$change_bg_colour=' class="humo_color"';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
 			$expand_link=' style="display:none;" id="row10" name="row10"';
 			$internal_link='#event_family_link';
 		}

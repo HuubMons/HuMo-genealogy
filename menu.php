@@ -17,7 +17,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		$num_rows = $tree_prefix_result2->rowCount();
 		if ($num_rows>1){
 
-			echo ' <form method="POST" action="tree_index.php" style="display : inline;" id="top_tree_select">';	
+			echo ' <form method="POST" action="tree_index.php" style="display : inline;" id="top_tree_select">';
 			echo __('Family tree');
 			echo ': <select size=1 name="database" onChange="this.form.submit();" style="width: 150px; height:20px;">';
 			echo '<option value="">'.__('Select a family tree:').'</option>';

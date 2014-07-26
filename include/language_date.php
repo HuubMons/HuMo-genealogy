@@ -29,8 +29,8 @@ function language_date($date_text){
 	$date_text=str_replace("AND", __('and'), $date_text);
 
 	// *** Aldfaer items ***
-	$date_text=str_replace("FROM", __('between'), $date_text);
-	$date_text=str_replace("TO", __('and'), $date_text);
+	$date_text=str_replace("FROM", __('from'), $date_text);
+	$date_text=str_replace("TO", __('to'), $date_text);
 
 	return $date_text;
 }

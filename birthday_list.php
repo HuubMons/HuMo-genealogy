@@ -62,12 +62,14 @@ echo " ]\n";
 echo "<div class='standard_header'>".ucfirst(language_date($month))." ".$year."</div>";
 
 // *** Build page ***
-echo '<table class="humo" align="center"><tr>'.$newline;
+echo '<table class="humo" align="center">';
+
+echo '<tr class=table_headline>'.$newline;
 // *** Show headers ***
-echo "<td><b>".__('Day')."</b></td>\n";
-echo '<td align="center"><b>'.ucfirst(__('born'))."</b></td>\n";
-echo '<td align="center"><b>'.__('Name')."</b></td>\n";
-echo '<td align="center"><b>'.ucfirst(__('died'))."</b></td>\n";
+echo '<th>'.__('Day')."</h></td>\n";
+echo '<th>'.ucfirst(__('born'))."</th>\n";
+echo '<th>'.__('Name')."</th>\n";
+echo '<th>'.ucfirst(__('died'))."</th>\n";
 echo "</tr>\n";
 
 // *** Build query ***

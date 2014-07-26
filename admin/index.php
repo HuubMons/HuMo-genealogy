@@ -455,17 +455,20 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					$update_text= '  '.__('Online version check unavailable.');
 					//$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
 
+				if(!function_exists('curl_exec')) $update_text.=' Extension php_curl.dll is disabled.';
+				elseif (!is_writable('update')) $update_text.=' Folder admin/update/ is read only.';
+
 					// *** Update settings, only check for update once a day ***
 					$update_last_check=date("Y-m-d");
 					$result = $dbh->query("UPDATE humo_settings
 						SET setting_value='".safe_text($update_last_check)."'
 						WHERE setting_variable='update_last_check'");
 				}
-				
+
 				$result = $dbh->query("UPDATE humo_settings
 					SET setting_value='".safe_text($update_text)."'
 					WHERE setting_variable='update_text'");
-					
+
 				$update_text.=' *';
 			}
 			else{

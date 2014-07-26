@@ -50,28 +50,34 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 
 	if ($marriageDb->fam_kind=='living together'){
 		$relation_check=true;
+		//$relation_kind='<b>'.__('Living together').'</b>';
 		$relation_kind=__('Living together');
 	}
 	if ($marriageDb->fam_kind=='living apart together'){
+		//$relation_kind='<b>'.__('Living apart together').'</b>';
 		$relation_kind=__('Living apart together');
 		$relation_check=true;
 	}
 	if ($marriageDb->fam_kind=='intentionally unmarried mother'){
+		//$relation_kind='<b>'.__('Intentionally unmarried mother').'</b>';
 		$relation_kind=__('Intentionally unmarried mother');
 		$relation_check=true;
 		$addition='';
 	}
 	if ($marriageDb->fam_kind=='homosexual'){
 		$relation_check=true;
+		//$relation_kind='<b>'.__('Homosexual').'</b>';
 		$relation_kind=__('Homosexual');
 	}
 	if ($marriageDb->fam_kind=='non-marital'){
 		$relation_check=true;
+		//$relation_kind= '<b>'.__('Non_marital').'</b>';
 		$relation_kind= __('Non_marital');
 		$addition='';
 	}
 	if ($marriageDb->fam_kind=='extramarital'){
 		$relation_check=true;
+		//$relation_kind= '<b>'.__('Extramarital').'</b>';
 		$relation_kind= __('Extramarital');
 		$addition='';
 	}
@@ -79,6 +85,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// NOT TESTED
 	if ($marriageDb->fam_kind=="PRO-GEN"){
 		$relation_check=true;
+		//$relation_kind= '<b>'.__('Extramarital').'</b>';
 		$relation_kind= __('Extramarital');
 		$addition='';
 	}
@@ -86,14 +93,17 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Aldfaer relations ***
 	if ($marriageDb->fam_kind=='partners'){
 		$relation_check=true;
+		//$relation_kind= '<b>'.__('Partner').'</b> ';
 		$relation_kind= __('Partner').' ';
 	}
 	if ($marriageDb->fam_kind=='registered'){
 		$relation_check=true;
+		$//relation_kind= '<b>'.__('Registered').'</b> ';
 		$relation_kind= __('Registered').' ';
 	}
 	if ($marriageDb->fam_kind=='unknown'){
 		$relation_check=true;
+		//$relation_kind= '<b>'.__('Unknown relation').'</b> ';
 		$relation_kind= __('Unknown relation').' ';
 	}
 
@@ -131,13 +141,11 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($temp_text){
 		$relation_check=true;
 		$addition=__(' to: ');
-		if ($text!=''){
-			$text.='<br>';
-			$pdfrel["marriage_exist"]="\n";
-		}
+		if ($text!=''){ $text.="<br>\n"; $pdfrel["marriage_exist"]="\n"; }
 		// *** Text "living together" already shown in "kind" ***
 		// *** Just in case made an extra text "living together" here ***
 		if (!$relation_kind){
+			//$text.='<b>'.__('Living together').'</b>';
 			$text.=__('Living together');
 			if(isset($pdfrel["marriage_exist"])) {$pdfrel["marriage_exist"].=__('Living together')." "; }
 			else {$pdfrel["marriage_exist"]=__('Living together')." ";  }
@@ -173,11 +181,11 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	//	//$temp="marriage_source";
 	//}
 	if ($temp_text){
-		if ($text!=''){
-			$text.='<br>';
-			//$pdfrel["marriage_exist"]="\n";
+		$marriage_check=true;
+		if ($text!='' or $relation_kind){
+			$text.="<br>\n"; //$pdfrel["marriage_exist"]="\n";
 		}
-		$text.=__('End living together');
+		$text.='<b>'.__('End living together').'</b>';
 		//if(isset($pdfrel["marriage_exist"])) {$pdfrel["marriage_exist"].=__('End living together')." "; }
 		//else {$pdfrel["marriage_exist"]=__('End living together')." ";  }
 		$text.=' '.$temp_text;
@@ -216,11 +224,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($temp_text){
 		$marriage_check=true;
 		$addition=__(' to: ');
-		if ($text!=''){
-			$text.='<br>';
-			$pdfrel["prew_exist"]="\n";
-		}
-		$text.=__('Marriage notice').' '.$temp_text;
+		//if ($text!=''){ $text.='<br>'; $pdfrel["prew_exist"]="\n"; }
+		if ($text!=''){ $text.="<br>\n"; $pdfrel["prew_exist"]="\n"; }
+		//$text.=__('Marriage notice').' '.$temp_text;
+		$text.='<b>'.__('Marriage notice').'</b> '.$temp_text;
 		if(isset($pdfrel["prew_exist"])) {$pdfrel["prew_exist"].=__('Marriage notice').' ';}
 		else { $pdfrel["prew_exist"]=__('Marriage notice').' '; }
 	}
@@ -251,9 +258,9 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($marriageDb->fam_gedcomnumber){
 		$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness','family');
 		if ($temp_text2){
-			$temp_text.= ', '.__('marr. witness ').' '.$temp_text2;
-			if($temp) { $pdfrel[$temp].=", "; }
-			$pdfrel["wedd_witn"]= __('marr. witness ').' '.$temp_text2;
+			$temp_text.= ' ('.__('marriage witness').' '.$temp_text2.')';
+			if($temp) { $pdfrel[$temp].=" ("; }
+			$pdfrel["wedd_witn"]= __('marriage witness').' '.$temp_text2.')';
 			$temp="wedd_witn";
 		}
 	}
@@ -273,11 +280,9 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($temp_text){
 		$marriage_check=true;
 		$addition=__(' to: ');
-		if ($text!=''){
-			$text.='<br>';
-			$pdfrel["wedd_exist"]="\n";
-		}
-		$text.=__('Married').' '.$temp_text;
+		if ($text!=''){ $text.="<br>\n"; $pdfrel["wedd_exist"]="\n"; }
+		//$text.=__('Married').' '.$temp_text;
+		$text.='<b>'.__('Married').'</b> '.$temp_text;
 		if(isset($pdfrel["wedd_exist"])) {$pdfrel["wedd_exist"].=__('Married').' ';}
 		else {$pdfrel["wedd_exist"]=__('Married').' ';}
 	}
@@ -315,11 +320,9 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($temp_text){
 		$marriage_check=true;
 		$addition=__(' to: ');
-		if ($text!=''){
-			$text.='<br>';
-			$pdfrel["prec_exist"]="\n";
-		}
-		$text.=__('Married notice (religious)').' '.$temp_text;
+		if ($text!=''){ $text.="<br>\n"; $pdfrel["prec_exist"]="\n"; }
+		//$text.=__('Married notice (religious)').' '.$temp_text;
+		$text.='<b>'.__('Married notice (religious)').'</b> '.$temp_text;
 		if(isset($pdfrel["prec_exist"])) {$pdfrel["prec_exist"].=__('Married notice (religious)').' ';}
 		else {$pdfrel["prec_exist"]=__('Married notice (religious)').' ';}
 	}
@@ -345,9 +348,9 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($marriageDb->fam_gedcomnumber){
 		$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness_rel','family');
 		if ($temp_text2){
-			$temp_text.= ', '.__('religious marr. witness').' '.$temp_text2;
-			if($temp) { $pdfrel[$temp].=", "; }
-			$pdfrel["chur_witn"]=__('religious marr. witness').' '.$temp_text2;
+			$temp_text.= ' ('.__('marriage witness (religious)').' '.$temp_text2.')';
+			if($temp) { $pdfrel[$temp].=" ("; }
+			$pdfrel["chur_witn"]=__('marriage witness (religious)').' '.$temp_text2.')';
 			$temp="chur_witn";
 		}
 	}
@@ -367,26 +370,23 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($temp_text){
 		$marriage_check=true;
 		$addition=__(' to: ');
-		if ($text!=''){
-			$text.='<br>';
-			$pdfrel["chur_exist"]="\n";
-		}
-		$text.=__('Married (religious)').' '.$temp_text;
+		if ($text!=''){ $text.="<br>\n"; $pdfrel["chur_exist"]="\n"; }
+		//$text.=__('Married (religious)').' '.$temp_text;
+		$text.='<b>'.__('Married (religious)').'</b> '.$temp_text;
 		if(isset($pdfrel["chur_exist"])) {$pdfrel["chur_exist"].=__('Married (religious)').' ';}
 		else {$pdfrel["chur_exist"]=__('Married (religious)').' ';}
 	}
 
 	// *** Religion ***
 	if ($user['group_religion']=='j' AND $marriageDb->fam_religion){
-		if ($temp_text){
-			$text.=',';
-			if($temp) { $pdfrel[$temp].=", "; }
-		}
-		else {
-			if($temp) { $pdfrel[$temp].=", "; }
-		}
-		$text.= ' <span class="religion">'.__('religion: ').$marriageDb->fam_religion.'</span>';
-		$pdfrel["reli_reli"]=__('religion: ').$marriageDb->fam_religion;
+		//if ($temp_text){
+		//	$text.=', '; if($temp) { $pdfrel[$temp].=", "; }
+		//}
+		//else {
+		//	if($temp) { $pdfrel[$temp].=", "; }
+		//}
+		$text.= ' <span class="religion">('.__('religion: ').$marriageDb->fam_religion.')</span>';
+		$pdfrel["reli_reli"]=' ('.__('religion: ').$marriageDb->fam_religion.')';
 	}
 
 	// *** Divorse ***
@@ -429,11 +429,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($temp_text OR $marriageDb->fam_div_text=='DIVORCE'){
 		$marriage_check=true;
 		$addition=' '.__('from:').' ';
-		if ($text!=''){
-			$text.='<br>';
-			$pdfrel["devr_exist"]="\n";
-		}
-		$text.='<span class="divorse">'.ucfirst(__('divorced')).' '.$temp_text.'</span>';
+		if ($text!=''){ $text.="<br>\n"; $pdfrel["devr_exist"]="\n"; }
+		$text.='<span class="divorse"><b>'.ucfirst(__('divorced')).'</b> '.$temp_text.'</span>';
 		if(isset($pdfrel["devr_exist"])) {$pdfrel["devr_exist"].=ucfirst(__('divorced')).' ';}
 		else {$pdfrel["devr_exist"]=ucfirst(__('divorced')).' ';}
 	}
@@ -441,13 +438,12 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** No relation data (marriage without date), show standard text ***
 	if ($relation_check==false AND $marriage_check==false){
 		// *** Show standard marriage text ***
-		$text.=__('Marriage/ Related').' ';
+		$text.='<b>'.__('Marriage/ Related').'</b> ';
 		$pdfrel["unkn_rel"]=__('Marriage/ Related').' ';
 	}
 
 	else{
 		// *** Years of marriage ***
-		//if (($marriageDb->fam_marr_church_date OR $marriageDb->fam_marr_date) AND $marriageDb->fam_marr_text!='DIVORCE') {
 		if (($marriageDb->fam_marr_church_date OR $marriageDb->fam_marr_date)
 			AND $marriageDb->fam_div_text!='DIVORCE'
 			AND !($temp_text AND $marriageDb->fam_div_date=='')
@@ -513,7 +509,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 				$i++;
 				//echo '<br>'.__('Event (family)');
 				if ($text!=''){
-					$text.='<br>';
+					$text.="<br>\n";
 				}
 				if($i >1) {
 					$pdfrel["event".$i."_ged"]="\n";
@@ -558,7 +554,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 
 			}
 			if ($num_rows>0){
-				$text.='</span><br>'; // if there are events, the word "with" should be on a new line to make the text clearer
+				$text.="</span><br>\n"; // if there are events, the word "with" should be on a new line to make the text clearer
 				$pdfrel["event_lastline"]="\n";
 				//$addition=ltrim(__(' to: '));
 				$addition=ltrim($addition);
@@ -614,7 +610,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 				else{
 					$relation_number.=' '.__('marriage/ related');   // relation
 				}
-				$relation_kind='';
+					$relation_kind='';
 				$addition=__(' to: ');
 			}
 			else{
@@ -627,10 +623,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	}
 
 	if ($presentation=='short' OR $presentation=='shorter'){
-		$text=$relation_number.$relation_kind;
+		$text='<b>'.$relation_number.$relation_kind.'</b>';
 		$pdfrel = array();  //reset array - don't need it
 		// *** Show divorse if privacy filter is set ***
-		if ($marriageDb->fam_div_date OR $marriageDb->fam_div_place){
+		if ($marriageDb->fam_div_date OR $marriageDb->fam_div_place OR $marriageDb->fam_div_text){
 			$text.= ' <span class="divorse">('.__('divorced').')</span>';
 		}
 		// Show end of relation here?
@@ -639,10 +635,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		if ($presentation=='shorter'){ $addition=''; }
 	}
 	else{
-		$text=$relation_number.$relation_kind.$text;
+		$text='<b>'.$relation_number.$relation_kind.'</b>'.$text;
 	}
+	if ($addition) $text.='<b>'.$addition.'</b>';
 
-	$text.=$addition;
 	$pdfrel["relnr_rel"]=$relation_number.$relation_kind;
 	$pdfrel["rel_add"]=$addition;
 	if($screen_mode!="PDF") {

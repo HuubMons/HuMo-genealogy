@@ -16,13 +16,11 @@ body {
 	float:none;
 }
 
-div#top_menu {
-	display:none;
-}
+.print_version { display:none; }
 
-#top_menu {
-	display:none;
-}
+div#top_menu { display:none; }
+
+#top_menu { display:none; }
 
 #content {
 	display:block;
@@ -43,6 +41,12 @@ A:link {text-decoration: none; color:black;}
 A:visited {text-decoration: none; color:black;}
 A:active {text-decoration: none; color:black;}
 A:hover {text-decoration: none; color:black;}
+
+table.humo {
+	-moz-box-shadow: 0px 0px 0px;
+	-webkit-box-shadow: 0px 0px 0px;
+	box-shadow: 0px 0px 0px;
+}
 
 table.ancestor_sheet {
 	width:100%;

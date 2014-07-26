@@ -11,7 +11,7 @@ echo '<p class="fonts">';
 	// *** Search pers_prefix for names like: "van Mons" ***
 	if ($user['group_kindindex']=="j"){
 		$person_qry="SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character
-		  FROM ".$tree_prefix_quoted."person GROUP BY first_character";
+			FROM ".$tree_prefix_quoted."person GROUP BY first_character";
 	}
 	@$person_result= $dbh->query($person_qry);
 	while(@$personDb=$person_result->fetch(PDO::FETCH_OBJ)) {

@@ -160,7 +160,6 @@ if (isset($_POST['install_tables2'])){
 	}
 
 	if ($table_trees){
-		//$db_update = mysql_query("DROP TABLE humo_trees");
 		$db_update = $dbh->query("DROP TABLE humo_trees");
 		print __('creating humo_trees').'<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_trees (
@@ -194,6 +193,11 @@ if (isset($_POST['install_tables2'])){
 		";
 		$db_update = $dbh->query($sql);
 
+		// *** Immediately add new tables in tree ***
+		$_SESSION['tree_prefix']='humo_';
+		//$show_gedcom_status=true;
+		include_once ("gedcom_tables.php");
+
 		$db_update = $dbh->query("DROP TABLE humo_tree_texts");
 		print __('creating humo_trees').'<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_tree_texts (
@@ -207,6 +211,9 @@ if (isset($_POST['install_tables2'])){
 			treetext_family_footer text CHARACTER SET utf8,
 			PRIMARY KEY  (`treetext_id`)
 			) DEFAULT CHARSET=utf8");
+
+		// *** Reset session vaules for editor ***
+		unset($_SESSION['admin_pers_gedcomnumber']); unset($_SESSION['admin_fam_gedcomnumber']);
 	}
 
 	if ($table_stat_date){
@@ -258,6 +265,7 @@ if (isset($_POST['install_tables2'])){
 			group_family_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'compact',
 			group_maps_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'hide',
 			group_pdf_button varchar(1) CHARACTER SET utf8,
+			group_rtf_button varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 			group_work_text varchar(1) CHARACTER SET utf8,
 			group_texts varchar(1) CHARACTER SET utf8,
 			group_text_pers varchar(1) CHARACTER SET utf8,
@@ -288,7 +296,7 @@ if (isset($_POST['install_tables2'])){
 
 		$sql="INSERT INTO humo_groups SET group_name='admin', group_privacy='j', group_menu_places='j', group_admin='j',
 		group_sources='j', group_pictures='j', group_gedcomnr='j', group_living_place='j', group_places='j', group_religion='j',
-		group_place_date='n', group_kindindex='n', group_event='j', group_addresses='j', group_own_code='j', group_pdf_button='y' ,group_work_text='j',
+		group_place_date='n', group_kindindex='n', group_event='j', group_addresses='j', group_own_code='j', group_pdf_button='y', group_rtf_button='y', group_work_text='j',
 		group_texts='j', group_text_pers='j', group_texts_pers='j', group_texts_fam='j', group_alive='n', group_alive_date_act='n',
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
@@ -297,7 +305,7 @@ if (isset($_POST['install_tables2'])){
 
 		$sql="INSERT INTO humo_groups SET group_name='family', group_privacy='n', group_menu_places='n', group_admin='n',
 		group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='j', group_places='j', group_religion='n',
-		group_place_date='n', group_kindindex='n', group_event='j', group_addresses='j', group_own_code='j', group_pdf_button='y', group_work_text='j',
+		group_place_date='n', group_kindindex='n', group_event='j', group_addresses='j', group_own_code='j', group_pdf_button='y', group_rtf_button='n', group_work_text='j',
 		group_texts='j', group_text_pers='j', group_texts_pers='j', group_texts_fam='j', group_alive='n', group_alive_date_act='n',
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
@@ -306,7 +314,7 @@ if (isset($_POST['install_tables2'])){
 
 		$sql="INSERT INTO humo_groups SET group_name='guest', group_privacy='n', group_menu_places='n', group_admin='n',
 		group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
-		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_work_text='n',
+		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_rtf_button='n', group_work_text='n',
 		group_texts='j', group_text_pers='j', group_texts_pers='j', group_texts_fam='j', group_alive='n', group_alive_date_act='j',
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
@@ -315,7 +323,7 @@ if (isset($_POST['install_tables2'])){
 
 		$sql="INSERT INTO humo_groups SET group_name='group 4', group_privacy='n', group_menu_places='n', group_admin='n',
 		group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
-		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_work_text='n',
+		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_rtf_button='n', group_work_text='n',
 		group_texts='j', group_text_pers='j', group_texts_pers='j', group_texts_fam='j', group_alive='n', group_alive_date_act='j',
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
@@ -324,7 +332,7 @@ if (isset($_POST['install_tables2'])){
 
 		$sql="INSERT INTO humo_groups SET group_name='group 5', group_privacy='j', group_menu_places='n', group_admin='n',
 		group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
-		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_work_text='n',
+		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_rtf_button='n', group_work_text='n',
 		group_texts='j', group_text_pers='j', group_texts_pers='j', group_texts_fam='j', group_alive='n', group_alive_date_act='j',
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
@@ -333,7 +341,7 @@ if (isset($_POST['install_tables2'])){
 
 		$sql="INSERT INTO humo_groups SET group_name='group 6', group_privacy='n', group_menu_places='n', group_admin='n',
 		group_sources='n', group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j', group_religion='n',
-		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_work_text='n',
+		group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n', group_own_code='n', group_pdf_button='y', group_rtf_button='n', group_work_text='n',
 		group_texts='j', group_text_pers='j', group_texts_pers='j', group_texts_fam='j', group_alive='n', group_alive_date_act='j',
 		group_alive_date='1920', group_death_date_act='n',
 		group_death_date='1980', group_filter_death='n', group_filter_total='n', group_filter_name='j', group_filter_fam='j', group_filter_pers_show_act='j',
