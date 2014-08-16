@@ -83,38 +83,63 @@ function pdfdisplay($pdfstring,$person_kind) {
 
 		if(!$born) {
 			if(strpos($key,"born")!==false) {
-				$value=", ".__('born').' '.$value;
+				//$value=", ".__('born').' '.$value;
+				$pdf->SetFont('Arial','B',$font);
+				if(!$first) { $temp=ucfirst(__('born')).' '; }
+					else $temp=', '.__('born').' '; $first=1;
+				$pdf->Write(6,$temp);
+				$pdf->SetFont('Arial','',$font);
 				$born=1;
 			}
 		}
 		if(!$bapt) {
 			if(strpos($key,"bapt")!==false) {
-				$value=", ".__('baptised').' '.$value;
+				//$value=", ".__('baptised').' '.$value;
+				$pdf->SetFont('Arial','B',$font);
+				if(!$first) { $temp=ucfirst(__('baptised')).' '; }
+					else $temp=', '.__('baptised').' '; $first=1;
+				$pdf->Write(6,$temp);
+				$pdf->SetFont('Arial','',$font);
 				$bapt=1;
 			}
 		}
 		if(!$dead) {
 			if(strpos($key,"dead")!==false) {
-				$value=", ".__('died').' '.$value;
+				//$value=", ".__('died').' '.$value;
+				$pdf->SetFont('Arial','B',$font);
+				if(!$first) { $temp=ucfirst(__('died')).' '; }
+					else $temp=', '.__('died').' '; $first=1;
+				$pdf->Write(6,$temp);
+				$pdf->SetFont('Arial','',$font);
 				$dead=1;
 			}
 		}
 		if(!$buri) {
 			if(strpos($key,"buri")!==false) {
 				if($pdfstring["flag_buri"]==1) {
-					$value=", ".__('crem.').' '.$value;
+					//$value=", ".__('crem.').' '.$value;
+					$pdf->SetFont('Arial','B',$font);
+					if(!$first) { $temp=ucfirst(__('crem.')).' '; }
+						else $temp=', '.__('crem.').' '; $first=1;
+					$pdf->Write(6,$temp);
+					$pdf->SetFont('Arial','',$font);
 				}
 				else {
-					$value=", ".__('buried').' '.$value;
+					//$value=", ".__('buried').' '.$value;
+					$pdf->SetFont('Arial','B',$font);
+					if(!$first) { $temp=ucfirst(__('buried')).' '; }
+						else $temp=', '.__('buried').' '; $first=1;
+					$pdf->Write(6,$temp);
+					$pdf->SetFont('Arial','',$font);
 				}
 			$buri=1;
 			}
 		}
-		if(!$first AND $value!='') {  
-			if (substr($value,0,2)==', '){ $value=ucfirst(substr($value,2)); }
-			else {ucfirst($value); }
-			$first=1;
-		}
+		//if(!$first AND $value!='') {  
+		//	if (substr($value,0,2)==', '){ $value=ucfirst(substr($value,2)); }
+		//	else {ucfirst($value); }
+		//	$first=1;
+		//}
 
 		$value=html_entity_decode($value);
 
@@ -122,7 +147,6 @@ function pdfdisplay($pdfstring,$person_kind) {
 
 		if(strpos($key,"source")!==false OR strpos($key,"witn")!==false) {
 			$pdf->SetFont('Times','',$font);
-
 		}
 
 		if(strpos($key,"parent")!==false) {
@@ -363,7 +387,7 @@ function pdfdisplay($pdfstring,$person_kind) {
 							$pdf->Write(6,$multitext[$i]);
 						}
 					}
-					if($pos) {$pdf->Write(6,'. ');	}
+					if($pos) {$pdf->Write(6,'. '); }
 				}
 				/*
 				else {  // manual source title as plain text
@@ -406,18 +430,41 @@ function displayrel ($pdfrel,$ancestor_report) {
 
 		if(strpos($key,"exist")!==false) { continue; }
 
-		if($ancestor_report=="ancestor") {
-			$pdf->SetLeftMargin(38);
+		if($ancestor_report=="ancestor") { $pdf->SetLeftMargin(38); }
+
+		if(strpos($key,"samw")!==false AND $samw==0) {
+			$pdf->SetFont('Arial','B',$font);
+			$pdf->Write(6,html_entity_decode($pdfrel["marriage_exist"])); $samw=1;
+			$pdf->SetFont('Arial','',$font);
+		}
+		if(strpos($key,"prew")!==false AND $prew==0) {
+			$pdf->SetFont('Arial','B',$font);
+			$pdf->Write(6,html_entity_decode($pdfrel["prew_exist"])); $prew=1;
+			$pdf->SetFont('Arial','',$font);
+		}
+		if(strpos($key,"wedd")!==false AND $wedd==0) {
+			$pdf->SetFont('Arial','B',$font);
+			$pdf->Write(6,html_entity_decode($pdfrel["wedd_exist"])); $wedd=1;
+			$pdf->SetFont('Arial','',$font);
+		}
+		if(strpos($key,"prec")!==false AND $prec==0) {
+			$pdf->SetFont('Arial','B',$font);
+			$pdf->Write(6,html_entity_decode($pdfrel["prec_exist"])); $prec=1;
+			$pdf->SetFont('Arial','',$font);
+		}
+		if(strpos($key,"chur")!==false AND $chur==0) {
+			$pdf->SetFont('Arial','B',$font);
+			$pdf->Write(6,html_entity_decode($pdfrel["chur_exist"])); $chur=1;
+			$pdf->SetFont('Arial','',$font);
+		}
+		if (isset($pdfrel["devr_exist"])){
+			if(strpos($key,"devr")!==false AND $devr==0) {
+				$pdf->SetFont('Arial','B',$font);
+				$pdf->Write(6,html_entity_decode($pdfrel["devr_exist"])); $devr=1;
+				$pdf->SetFont('Arial','',$font);
+			}
 		}
 
-		if(strpos($key,"samw")!==false AND $samw==0) { $pdf->Write(6,html_entity_decode($pdfrel["marriage_exist"])); $samw=1; }
-		if(strpos($key,"prew")!==false AND $prew==0) { $pdf->Write(6,html_entity_decode($pdfrel["prew_exist"])); $prew=1; }
-		if(strpos($key,"wedd")!==false AND $wedd==0) { $pdf->Write(6,html_entity_decode($pdfrel["wedd_exist"])); $wedd=1;}
-		if(strpos($key,"prec")!==false AND $prec==0) { $pdf->Write(6,html_entity_decode($pdfrel["prec_exist"])); $prec=1; }
-		if(strpos($key,"chur")!==false AND $chur==0) { $pdf->Write(6,html_entity_decode($pdfrel["chur_exist"])); $chur=1; }
-if (isset($pdfrel["devr_exist"])){
-		if(strpos($key,"devr")!==false AND $devr==0) { $pdf->Write(6,html_entity_decode($pdfrel["devr_exist"])); $devr=1; }
-}
 		if(strpos($key,"text")!==false) {  $pdf->SetFont('Arial','I',$font-1); }
 		if(strpos($key,"witn")!==false) {  $pdf->SetFont('Times','',$font); }
 		if(strpos($key,"source")!==false){ $pdf->SetFont('Times','',$font); }
@@ -458,16 +505,14 @@ if (isset($pdfrel["devr_exist"])){
 						$pdf->Write(6,$multitext[$i]);
 					}
 				}
-				if($pos) {$pdf->Write(6,'. ');	}
+				if($pos) {$pdf->Write(6,'. '); }
 			}
 			$pdf->SetTextColor(0);
 		}
 		else {
 			$pdf->Write(6,$value);
 		}
-		if($ancestor_report=="ancestor") {
-			$pdf->SetLeftMargin(10);
-		}
+		if($ancestor_report=="ancestor") { $pdf->SetLeftMargin(10); }
 	}
 	//$pdf_count_notes=0;
 	$pdf->Write(8,"\n");
@@ -478,25 +523,25 @@ if (isset($pdfrel["devr_exist"])){
 //*******************************************************************
 
 function writename($sexe,$indentation,$name,$length) {
-		global $pdf, $language, $indent;
-		if($sexe=="M") {
-			$pic="images/man.gif";
-		}
-		elseif ($sexe=='F') {
-			$pic="images/woman.gif";
-		}
-		else{
-			$pic="images/unknown.gif";
-		}
-		$pdf->Image($pic,$indentation-4,$pdf->GetY()+2,3.5,3.5);
-		$pdf->SetX($indentation);
-		if($length=="long") {
-			$indent=$pdf->GetX();
-		}
-		$pdf->SetFont('Arial','B',12);
+	global $pdf, $language, $indent;
+	if($sexe=="M") {
+		$pic="images/man.gif";
+	}
+	elseif ($sexe=='F') {
+		$pic="images/woman.gif";
+	}
+	else{
+		$pic="images/unknown.gif";
+	}
+	$pdf->Image($pic,$indentation-4,$pdf->GetY()+2,3.5,3.5);
+	$pdf->SetX($indentation);
+	if($length=="long") {
+		$indent=$pdf->GetX();
+	}
+	$pdf->SetFont('Arial','B',12);
 //    $pdf->Write(8,$name);
-		$pdf->MultiCell(0,8,$name,0,"L");
-		$pdf->SetFont('Arial','',12);
+	$pdf->MultiCell(0,8,$name,0,"L");
+	$pdf->SetFont('Arial','',12);
 //    $pdf->Write(8,"\n");
 }
 
@@ -637,26 +682,26 @@ function Footer(){
 
 // function to make super- or subscript
 function subWrite($h, $txt, $link='', $subFontSize=12, $subOffset=0){
-		// resize font
-		$subFontSizeold = $this->FontSizePt;
-		$this->SetFontSize($subFontSize);
+	// resize font
+	$subFontSizeold = $this->FontSizePt;
+	$this->SetFontSize($subFontSize);
 
-		// reposition y
-		$subOffset = ((($subFontSize - $subFontSizeold) / $this->k) * 0.3) + ($subOffset / $this->k);
-		$subX        = $this->x;
-		$subY        = $this->y;
-		$this->SetXY($subX, $subY - $subOffset);
+	// reposition y
+	$subOffset = ((($subFontSize - $subFontSizeold) / $this->k) * 0.3) + ($subOffset / $this->k);
+	$subX        = $this->x;
+	$subY        = $this->y;
+	$this->SetXY($subX, $subY - $subOffset);
 
-		//Output text
-		$this->Write($h, $txt, $link);
+	//Output text
+	$this->Write($h, $txt, $link);
 
-		// restore y position
-		$subX        = $this->x;
-		$subY        = $this->y;
-		$this->SetXY($subX,   $subY + $subOffset);
+	// restore y position
+	$subX        = $this->x;
+	$subY        = $this->y;
+	$this->SetXY($subX,   $subY + $subOffset);
 
-		// restore font size
-		$this->SetFontSize($subFontSizeold);
+	// restore font size
+	$this->SetFontSize($subFontSizeold);
 }
 
 } // end class that extends the pdf class

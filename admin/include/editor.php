@@ -158,6 +158,7 @@ function show_person($gedcomnumber, $gedcom_date=false, $show_link=true){
 // *** HuMo-gen Editor ***
 // ***********************
 
+$new_tree=false;
 
 // *** Use sessions for some parameters ***
 $menu_admin='person';
@@ -205,7 +206,9 @@ if (isset($_POST['person_add'])){
 	unset($_SESSION['admin_pers_gedcomnumber']);
 	unset($_SESSION['admin_fam_gedcomnumber']);
 }
+
 // *** Save person gedcomnumber ***
+$pers_gedcomnumber='';
 if (isset($_POST["person"]) AND $_POST["person"]){
 	$pers_gedcomnumber=$_POST['person'];
 	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
@@ -221,7 +224,7 @@ if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['
 if (isset($pers_gedcomnumber) AND $pers_gedcomnumber){
 	$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
 	$person_result = $dbh->query($person_qry);
-	$person=$person_result->fetch(PDO::FETCH_OBJ);
+	if ($person_result) $person=$person_result->fetch(PDO::FETCH_OBJ);
 }
 if (isset($person->pers_fams) AND $person->pers_fams){
 	$fams1=explode(";",$person->pers_fams);
@@ -267,6 +270,12 @@ if (isset($tree_prefix)){
 	// *** Process queries ***
 	include_once ($joomlapath."editor_inc.php");
 
+	// *** New family tree: no default or selected pers_gedcomnumer, add new person ***
+	if ($pers_gedcomnumber==''){
+		$add_person=true; $_GET['add_person']='1';
+		$new_tree=true;
+	}
+
 	// *** Select person ***
 	$search_quicksearch='';
 	$search_id='';
@@ -279,7 +288,7 @@ if (isset($tree_prefix)){
 	if (isset($_SESSION['admin_search_quicksearch'])){
 		$search_quicksearch=$_SESSION['admin_search_quicksearch']; }
 
-	if (isset($_POST["search_id"]) AND (!isset($_POST["search_quicksearch"]) OR $_POST["search_quicksearch"]=='')){ 
+	if (isset($_POST["search_id"]) AND (!isset($_POST["search_quicksearch"]) OR $_POST["search_quicksearch"]=='')){
 		// if both name and ID given go by name
 		$search_id=safe_text($_POST['search_id']);
 		$_SESSION['admin_search_id']=$search_id;
@@ -290,35 +299,41 @@ if (isset($tree_prefix)){
 		$search_id=$_SESSION['admin_search_id'];
 
 	if ($menu_admin=='person'){
-		// *** Favorites ***
-		echo '&nbsp;&nbsp;&nbsp; <img src="'.CMS_ROOTPATH.'images/favorite_blue.png"> ';
-		echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
-			echo '<input type="hidden" name="page" value="'.$page.'">';
-			$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_favorite LIKE '%_' ORDER BY pers_lastname, pers_firstname";
-			$person_result = $dbh->query($person_qry);
-			echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
-			echo '<option value="">'.__('Favourites list:').'</option>';
-			while ($person_fav=$person_result->fetch(PDO::FETCH_OBJ)){
-				$selected='';
-				if (isset($pers_gedcomnumber)){
-					if ($person_fav->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
+		if ($new_tree==false){
+			// *** Favorites ***
+			echo '&nbsp;&nbsp;&nbsp; <img src="'.CMS_ROOTPATH.'images/favorite_blue.png"> ';
+			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+				echo '<input type="hidden" name="page" value="'.$page.'">';
+				$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_favorite LIKE '%_' ORDER BY pers_lastname, pers_firstname";
+				$person_result = $dbh->query($person_qry);
+				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
+				echo '<option value="">'.__('Favourites list:').'</option>';
+				while ($person_fav=$person_result->fetch(PDO::FETCH_OBJ)){
+					$selected='';
+					if (isset($pers_gedcomnumber)){
+						if ($person_fav->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
+					}
+					echo '<option value="'.$person_fav->pers_gedcomnumber.'"'.$selected.'>'.
+						$editor_cls->show_selected_person($person_fav).'</option>';
 				}
-				echo '<option value="'.$person_fav->pers_gedcomnumber.'"'.$selected.'>'.
-					$editor_cls->show_selected_person($person_fav).'</option>';
-			}
-			echo '</select>';
-		echo '</form>';
+				echo '</select>';
+			echo '</form>';
+		}
 
 		if (isset($pers_gedcomnumber)){
-			echo '<br>'.__('Examples of date entries, using English month abbreviations: jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec or month numbers:').'<br>';
-			echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, between 1986 and 1987').'</b><br>';
-			echo __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#').'<br>';
+			echo '<span style="font-size:11px;">';
+				echo '<br>'.__('Examples of date entries, using English month abbreviations: jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec or month numbers:').'<br>';
+				echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, between 1986 and 1987').', 13 oct 1100 BC.</b><br>';
+				echo __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#');
+			echo '</span>';
 		}
 
 		// *** Show delete message ***
 		if ($confirm) echo $confirm;
 
-		echo '<br><table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
+		if ($new_tree==false){
+		//echo '<br><table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
+		echo '<br><table class="humo" style="text-align:center; width:1100px; margin-left:50px;"><tr class="table_header_large"><td>';
 
 			// *** Search persons firstname/ lastname ***
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
@@ -403,28 +418,11 @@ if (isset($tree_prefix)){
 			__('Add person').'</a>';
 
 		echo '</td></tr></table>';
+		} // *** end of check for new tree ***
 
 	}
 	else{
 		echo '<br>';
-	}
-
-	// *** Check if this is a new family tree ***
-	$person2_qry= "SELECT pers_id FROM ".$tree_prefix."person LIMIT 0,10";
-	$person2_result = $dbh->query($person2_qry);
-	if ($person2_result AND $person2_result->rowCount() > 0){
-		// *** Family tree exists and is filled with data ***
-	}
-	else{
-		if ($tree_prefix!=''){
-			echo '<h2>'.__('New family tree!').'</h2>';
-			$_SESSION['tree_prefix']=$tree_prefix;
-			$new_nr_qry= "SELECT * FROM ".$tree_prefix."person LIMIT 0,1";
-			$new_nr_result = $dbh->query($new_nr_qry);
-			// *** Create new tables ***
-			if (!$new_nr_result){ include_once ("gedcom_tables.php"); }
-			$pers_gedcomnumber=''; $menu_admin='person'; $add_person=1;
-		}
 	}
 
 }
@@ -432,10 +430,48 @@ if (isset($tree_prefix)){
 
 if (isset($pers_gedcomnumber)){
 
+
+	// *** Tab menu ***
+	$menu_tab='person';
+	if (isset($_GET['menu_tab'])){
+		$menu_tab=$_GET['menu_tab'];
+		$_SESSION['admin_menu_tab']=$menu_tab;
+	}
+	if (isset($_SESSION['admin_menu_tab'])) $menu_tab=$_SESSION['admin_menu_tab'];
+	if (isset($_GET['add_person'])) $menu_tab='person';
+
+	if ($menu_admin=='person' AND isset($tree_prefix)){
+		echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="margin-left:210px; width:970px;">';
+		echo '<div class="pageHeading">';
+			echo '<div class="pageTabsContainer" aria-hidden="false" style="">';
+				echo '<ul class="pageTabs">';
+					//echo '<li class="pageTabItem"><div tabindex="0" class="pageTab pageTab-active">Details</div></li>';
+
+					$select_item=''; if ($menu_tab=='person'){ $select_item=' pageTab-active'; }
+					echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=person">'.__('Person')."</a></div></li>";
+
+					if (!isset($_GET['add_person'])){
+						// *** Family tree data ***
+						$select_item=''; if ($menu_tab=='marriage'){ $select_item=' pageTab-active'; }
+						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage">'.__('Marriage(s) and children');
+						if (isset($marriage)) echo ' *';
+						echo "</a></div></li>";
+					}
+
+				echo '</ul>';
+			echo '</div>';
+		echo '</div>';
+		echo '</div>';
+
+		// *** Align content to the left ***
+		//echo '<div style="float: left; background-color:white; height:500px; padding:10px;">';
+		echo '<div style="float: left; background-color:white; height:500px; margin-left:205px; padding-top:10px;">';
+	}
+
 	// *** Get person data to show name and calculate nr. of items ***
 	$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
 	$person_result = $dbh->query($person_qry);
-	$person=$person_result->fetch(PDO::FETCH_OBJ);
+	@$person=$person_result->fetch(PDO::FETCH_OBJ);
 
 
 	// *** Align content to the left ***
@@ -457,6 +493,7 @@ if (isset($pers_gedcomnumber)){
 		$pers_bapt_date=''; $pers_bapt_place=''; $pers_religion=''; $pers_bapt_text='';
 		$pers_death_date=''; $pers_death_place=''; $pers_death_time=''; $pers_death_cause=''; $pers_death_text='';
 		$pers_buried_date=''; $pers_buried_place=''; $pers_cremation=''; $pers_buried_text='';
+		$pers_quality='';
 	}
 	else{
 		$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
@@ -481,6 +518,7 @@ if (isset($pers_gedcomnumber)){
 		$pers_death_text=$person->pers_death_text;
 		$pers_buried_date=$person->pers_buried_date; $pers_buried_place=$person->pers_buried_place;
 		$pers_cremation=$person->pers_cremation; $pers_buried_text=$person->pers_buried_text;
+		$pers_quality=$person->pers_quality;
 	}
 
 	// *** Text area size ***
@@ -633,16 +671,107 @@ if (isset($pers_gedcomnumber)){
 			}
 
 			// *** MARRIAGE: Change [+] into [-] or reverse ***
+			//if (document.getElementById(\'hideshowlinkall2\').innerHTML == "[+]")
+			//	document.getElementById(\'hideshowlinkall2\').innerHTML = "[-]";
+			//else
+			//	document.getElementById(\'hideshowlinkall2\').innerHTML = "[+]";
+		}
+
+		function hideShowAll2(){
+			// *** MARRIAGE: Change [+] into [-] or reverse ***
 			if (document.getElementById(\'hideshowlinkall2\').innerHTML == "[+]")
 				document.getElementById(\'hideshowlinkall2\').innerHTML = "[-]";
 			else
 				document.getElementById(\'hideshowlinkall2\').innerHTML = "[+]";
+
+			for (j=6; j<12; j++){
+				// *** Hide or show item ***
+				var arr = document.getElementsByName(\'row\'+j);
+				for (i=0; i<arr.length; i++){
+					if(arr[i].style.display!="none"){
+						arr[i].style.display="none";
+					}else{
+						arr[i].style.display="";
+					}
+				}
+
+				// *** Change [+] into [-] or reverse ***
+				if (document.getElementById(\'hideshowlink\'+j).innerHTML == "[+]")
+					document.getElementById(\'hideshowlink\'+j).innerHTML = "[-]";
+				else
+					document.getElementById(\'hideshowlink\'+j).innerHTML = "[+]";
+			}
+
 		}
+
 		</script>';
 
-		// *** Start of editor table ***
-		echo '<br><table class="humo standard" border="1">';
+		// *** Show box with list of parents, person, marriages etc. ***
+		echo '<div style="position:absolute;
+			top:170px; left:10px;
+			padding:8px;
+			background-color:#F8F8F8;
+			border:solid 1px #999999;
+			width:180px;
+			font-size:9px;
+			";>';
+		if ($add_person==false){
 
+			echo '<b>'.__('Parents').'</b><br>';
+			if ($person->pers_famc){
+				// *** Search for parents ***
+				$family_parents=$dbh->query("SELECT * FROM ".$tree_prefix."family
+					WHERE fam_gedcomnumber='$person->pers_famc'");
+				$family_parentsDb=$family_parents->fetch(PDO::FETCH_OBJ);
+
+				//*** Father ***
+				if ($family_parentsDb->fam_man) echo show_person($family_parentsDb->fam_man).'<br>';
+					else echo __('N.N.').'<br>';
+				//echo ' '.__('and').' ';
+
+				//*** Mother ***
+				if ($family_parentsDb->fam_woman) echo show_person($family_parentsDb->fam_woman).'<br>';
+					else echo __('N.N.').'<br>';
+			}
+
+			// *** Show person ***
+			echo '<br><b>'.__('Person').'</b><br>';
+			echo show_person($person->pers_gedcomnumber).'<br>';
+
+			// *** Show marriages and children ***
+			if ($person->pers_fams){
+				// *** Search for own family ***
+				$fams1=explode(";",$person->pers_fams);
+				$fam_count=substr_count($person->pers_fams, ";");
+				for ($i=0; $i<=$fam_count; $i++){
+					$family=$dbh->query("SELECT * FROM ".$tree_prefix."family
+						WHERE fam_gedcomnumber='".$fams1[$i]."'");
+					$familyDb=$family->fetch(PDO::FETCH_OBJ);
+					//$fam_count++;
+					echo '<br><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b><br>';
+					if ($person->pers_gedcomnumber==$familyDb->fam_man)
+						echo show_person($familyDb->fam_woman).'<br>';
+					else
+						echo show_person($familyDb->fam_man).'<br>';
+
+					if ($familyDb->fam_children){
+						echo '<b>'.__('Children').'</b><br>';
+						$fam_children_array=explode(";",$familyDb->fam_children);
+						$child_count=substr_count($familyDb->fam_children, ";");
+						for ($j=0; $j<=$child_count; $j++){
+							echo show_person($fam_children_array[$j]).'<br>';
+						}
+					}
+
+				}
+			}
+		}
+		echo '</div>';
+
+
+		// *** Start of editor table ***
+		//echo '<br><table class="humo standard" border="1">';
+		echo '<table class="humo" border="1">';
 		echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data">';
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 
@@ -654,6 +783,8 @@ if (isset($pers_gedcomnumber)){
 			}
 			echo '<input type="hidden" name="family_id" value="'.$_GET['family_id'].'">';
 		}
+
+		if ($menu_tab=='person'){
 
 		// *** Show mother and father with a link ***
 		if ($add_person==false){
@@ -754,20 +885,24 @@ if (isset($pers_gedcomnumber)){
 			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
 		}
 
-	echo '<tr class="table_header" style="background-image: url(\'../images/default_trans_large.png\');">';
+	//echo '<tr class="table_header" style="background-image: url(\'../images/default_trans_large.png\');">';
+	echo '<tr class="table_header_large">';
 
 		// *** Hide or show all hide-show items ***
 		$hide_show_all='<a href="#" onclick="hideShowAll();"><span id="hideshowlinkall">'.__('[+]').'</span> '.__('All').'</a> ';
 
 		if ($add_person==false){
 			echo '<td>'.$hide_show_all.' <input type="Submit" name="person_remove" value="'.__('Delete person').'"></td>';
+
+			// *** Example of family screen in popup ***
+			echo '<td style="border-right: none">'."<a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a></td>';
 		}
 		else{
+			// *** New person: no delete example link ***
 			echo '<td>'.$hide_show_all.'</td>';
-		}
 
-		// *** Example of family screen in popup ***
-		echo '<td style="border-right: none">'."<a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a></td>';
+			echo '<td style="border-right: none"><br></td>';
+		}
 
 		//echo '<th colspan="2">'.__('Person');
 		echo '<th style="border-left: none">'.__('Person');
@@ -797,7 +932,7 @@ if (isset($pers_gedcomnumber)){
 	echo '</td></tr>';
 
 		// *** Name ***
-		echo '<tr class="humo_color"><td rowspan="3">';
+		echo '<tr><td rowspan="3">';
 		echo '<a href="#" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a> ';
 		echo __('Name').'</td>';
 
@@ -816,13 +951,13 @@ if (isset($pers_gedcomnumber)){
 		}
 		echo '</td></tr>';
 
-		echo '<tr class="humo_color"><td style="border-right:0px;">'.__('prefix').'</td><td style="border-left:0px;"><input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10">'.__("For example: d\' or:  van_ (use _ for a space)").'</td></tr>';
+		echo '<tr><td style="border-right:0px;">'.__('prefix').'</td><td style="border-left:0px;"><input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10">'.__("For example: d\' or:  van_ (use _ for a space)").'</td></tr>';
 
-		echo '<tr class="humo_color"><td style="border-right:0px;"><b>'.__('lastname').'</b></td><td style="border-left:0px;"><input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="40"> ';
+		echo '<tr><td style="border-right:0px;"><b>'.__('lastname').'</b></td><td style="border-left:0px;"><input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="40"> ';
 		echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="30"></td></tr>';
 
 		// *** Person text by name ***
-		echo '<tr class="humo_color" style="display:none;" id="row1" name="row1">';
+		echo '<tr style="display:none;" id="row1" name="row1">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="pers_name_text" '.$field_text.'>'.$editor_cls->text_show($pers_name_text).'</textarea></td>';
 		echo '<td></td></tr>';
@@ -847,7 +982,7 @@ if (isset($pers_gedcomnumber)){
 		$disabled='';
 		if ($pers_death_date OR $pers_death_place OR $pers_buried_date OR $pers_buried_place){ $disabled=' DISABLED'; }
 
-		echo '<tr><td>'.ucfirst(__('alive')).'</td><td style="border-right:0px;">'.__('For the privacy filter').'</td><td style="border-left:0px;">';
+		echo '<tr class="humo_color"><td>'.ucfirst(__('alive')).'</td><td style="border-right:0px;">'.__('For the privacy filter').'</td><td style="border-left:0px;">';
 			$selected_alive='alive'; if ($pers_alive=='deceased'){ $selected_alive='deceased'; }
 
 			$selected=''; if ($selected_alive=='alive'){ $selected=' CHECKED'; }
@@ -862,7 +997,7 @@ if (isset($pers_gedcomnumber)){
 		// *** If sexe = unknown then show a red line (new person = other colour). ***
 		if ($pers_sexe==''){ $colour=' bgcolor="#FF0000"'; }
 		if ($add_person==true AND $pers_sexe==''){ $colour=' bgcolor="#CCFFFF"'; }
-		echo '<tr class="humo_color"><td>'.__('Sexe').'</td><td style="border-right:0px;"></td><td'.$colour.' style="border-left:0px;">';
+		echo '<tr><td>'.__('Sexe').'</td><td style="border-right:0px;"></td><td'.$colour.' style="border-left:0px;">';
 			$selected=''; if ($pers_sexe=='M'){ $selected=' CHECKED'; }
 			echo '<input type="radio" name="pers_sexe" value="M"'.$selected.'> '.__('male');
 			$selected=''; if ($pers_sexe=='F'){ $selected=' CHECKED'; }
@@ -883,7 +1018,7 @@ if (isset($pers_gedcomnumber)){
 		echo '</td></tr>';
 
 		// *** Birth ***
-		echo '<tr><td><a href="#" onclick="hideShow(2);"><span id="hideshowlink2">'.__('[+]').'</span></a> ';
+		echo '<tr class="humo_color"><td><a href="#" onclick="hideShow(2);"><span id="hideshowlink2">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('born')).'</td>';
 
 		echo '<td style="border-right:0px;">'.__('date').'</td>';
@@ -904,7 +1039,7 @@ if (isset($pers_gedcomnumber)){
 
 		echo '</td></tr>';
 
-		echo '<tr style="display:none;" id="row2" name="row2">';
+		echo '<tr class="humo_color" style="display:none;" id="row2" name="row2">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('birth time').'</td><td style="border-left:0px;"><input type="text" name="pers_birth_time" value="'.$pers_birth_time.'" size="'.$field_date.'">';
 			// *** Stillborn child ***
@@ -913,7 +1048,7 @@ if (isset($pers_gedcomnumber)){
 		echo '</td><td>';
 		echo '</td></tr>';
 
-		echo '<tr style="display:none;" id="row2" name="row2">';
+		echo '<tr class="humo_color" style="display:none;" id="row2" name="row2">';
 		echo '</td><td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_birth_text" '.$field_text.'>'.
@@ -924,7 +1059,7 @@ if (isset($pers_gedcomnumber)){
 		if ($add_person==false) $event_cls->show_event('birth_declaration');
 
 		// *** Baptise ***
-		echo '<tr class="humo_color">';
+		echo '<tr>';
 		echo '<td><a href="#" onclick="hideShow(3);"><span id="hideshowlink3">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('baptised')).'</td>';
 		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_bapt_date,'pers_bapt_date').' '.__('place').'  <input type="text" name="pers_bapt_place" placeholder="'.__('place').'" value="'.htmlspecialchars($pers_bapt_place).'" size="'.$field_place.'"></td>';
@@ -943,14 +1078,14 @@ if (isset($pers_gedcomnumber)){
 		}
 		echo '</td></tr>';
 
-		echo '<tr class="humo_color" style="display:none;" id="row3" name="row3">';
+		echo '<tr style="display:none;" id="row3" name="row3">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('religion').'</td><td style="border-left:0px;"><input type="text" 
 		name="pers_religion" value="'.htmlspecialchars($pers_religion).'" size="20"></td>';
 		echo '<td></td>';
 		echo '</tr>';
 
-		echo '<tr class="humo_color" style="display:none;" id="row3" name="row3">';
+		echo '<tr style="display:none;" id="row3" name="row3">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_bapt_text" '.$field_text.'>'.
@@ -962,7 +1097,7 @@ if (isset($pers_gedcomnumber)){
 		if ($add_person==false) $event_cls->show_event('baptism_witness');
 
 		// *** Death ***
-		echo '<tr><td>';
+		echo '<tr class="humo_color"><td>';
 		echo '<a href="#" onclick="hideShow(4);"><span id="hideshowlink4">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('died')).'</td>';
 		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_death_date,'pers_death_date').' '.__('place').'  <input type="text" name="pers_death_place" placeholder="'.__('place').'" value="'.htmlspecialchars($pers_death_place).'" size="'.$field_place.'">';
@@ -981,52 +1116,58 @@ if (isset($pers_gedcomnumber)){
 		}
 		echo '</td></tr>';
 
-		echo '<tr style="display:none;" id="row4" name="row4">';
+		echo '<tr class="humo_color" style="display:none;" id="row4" name="row4">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('death time').'</td><td style="border-left:0px;"><input type="text" name="pers_death_time" value="'.$pers_death_time.'" size="'.$field_date.'"> ';
 
 		echo __('cause').' ';
+		$cause=false;
 		echo '<select size="1" name="pers_death_cause">';
 			echo '<option value=""></option>';
 
-			$selected=''; if ($pers_death_cause=='murdered'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='murdered'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="murdered"'.$selected.'>'.__('murdered').'</option>';
 
-			$selected=''; if ($pers_death_cause=='drowned'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='drowned'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="drowned"'.$selected.'>'.__('drowned').'</option>';
 
-			$selected=''; if ($pers_death_cause=='perished'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='perished'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="perished"'.$selected.'>'.__('perished').'</option>';
 
-			$selected=''; if ($pers_death_cause=='killed in action'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='killed in action'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="killed in action"'.$selected.'>'.__('killed in action').'</option>';
 
-			$selected=''; if ($pers_death_cause=='being missed'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='being missed'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="being missed"'.$selected.'>'.__('being missed').'</option>';
 
-			$selected=''; if ($pers_death_cause=='committed suicide'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='committed suicide'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="committed suicide"'.$selected.'>'.__('committed suicide').'</option>';
 
-			$selected=''; if ($pers_death_cause=='executed'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='executed'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="executed"'.$selected.'>'.__('executed').'</option>';
 
-			$selected=''; if ($pers_death_cause=='died young'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='died young'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="died young"'.$selected.'>'.__('died young').'</option>';
 
-			$selected=''; if ($pers_death_cause=='died unmarried'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='died unmarried'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="died unmarried"'.$selected.'>'.__('died unmarried').'</option>';
 
-			$selected=''; if ($pers_death_cause=='registration'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='registration'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="registration"'.$selected.'>'.__('registration').'</option>';
 
-			$selected=''; if ($pers_death_cause=='declared death'){ $selected=' SELECTED'; }
+			$selected=''; if ($pers_death_cause=='declared death'){ $cause=true; $selected=' SELECTED'; }
 			echo '<option value="declared death"'.$selected.'>'.__('declared death').'</option>';
 
 		echo '</select>';
-		echo '<td></td>';
-		echo '</td></tr>';
 
-		echo '<tr style="display:none;" id="row4" name="row4">';
+			echo '<b>'.__('or').':</b>';
+			$pers_death_cause2=''; if ($pers_death_cause AND $cause==false) $pers_death_cause2=$pers_death_cause;
+			echo '<input type="text" name="pers_death_cause2" value="'.$pers_death_cause2.'" size="'.$field_date.'">';
+
+		echo '</td><td></td>';
+		echo '</tr>';
+
+		echo '<tr class="humo_color" style="display:none;" id="row4" name="row4">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="pers_death_text" '.$field_text.'>'.$editor_cls->text_show($pers_death_text).'</textarea></td>';
 		echo '<td></td>';
@@ -1036,7 +1177,7 @@ if (isset($pers_gedcomnumber)){
 		if ($add_person==false) $event_cls->show_event('death_declaration');
 
 		// *** Burial ***
-		echo '<tr class="humo_color">';
+		echo '<tr>';
 		echo '<td><a href="#" onclick="hideShow(5);"><span id="hideshowlink5">'.__('[+]').'</span></a> ';
 		echo __('Buried').'</td>';
 		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_buried_date,'pers_buried_date').' '.__('place').' <input type="text" name="pers_buried_place" placeholder="'.__('place').'" value="'.htmlspecialchars($pers_buried_place).'" size="'.$field_place.'">';
@@ -1055,7 +1196,7 @@ if (isset($pers_gedcomnumber)){
 		}
 		echo '</td></tr>';
 
-		echo '<tr class="humo_color" style="display:none;" id="row5" name="row5">';
+		echo '<tr style="display:none;" id="row5" name="row5">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('buried').'/ '.__('cremation').'</td><td style="border-left:0px;">';
 			$selected=''; if ($pers_cremation==''){ $selected=' CHECKED'; }
@@ -1065,7 +1206,7 @@ if (isset($pers_gedcomnumber)){
 		echo '<td></td>';
 		echo '</td></tr>';
 
-		echo '<tr class="humo_color" style="display:none;" id="row5" name="row5">';
+		echo '<tr style="display:none;" id="row5" name="row5">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_buried_text" '.$field_text.'>'.
@@ -1077,7 +1218,7 @@ if (isset($pers_gedcomnumber)){
 		if ($add_person==false) $event_cls->show_event('burial_witness');
 
 		// *** Own code ***
-		echo '<tr><td>'.ucfirst(__('own code')).'</td><td style="border-right:0px;"></td>';
+		echo '<tr class="humo_color"><td>'.ucfirst(__('own code')).'</td><td style="border-right:0px;"></td>';
 		echo '<td style="border-left:0px;"><input type="text" name="pers_own_code" value="'.htmlspecialchars($pers_own_code).'" size="60"></td><td></td></tr>';
 
 		if (!isset($_GET['add_person'])){
@@ -1086,7 +1227,7 @@ if (isset($pers_gedcomnumber)){
 			$event_cls->show_event('profession');
 
 			// *** Show and edit places by person ***
-			echo '<tr>';
+			echo '<tr class="humo_color">';
 			echo '<td style="border-right:0px;">';
 				echo '<a name="places"></a>';
 
@@ -1120,7 +1261,7 @@ if (isset($pers_gedcomnumber)){
 				$address_nr++;
 				echo '<input type="hidden" name="person_address_id['.$addressDb->address_id.']" value="'.$addressDb->address_id.'">';
 
-				echo '<tr style="display:none;" id="row54" name="row54">';
+				echo '<tr class="humo_color" style="display:none;" id="row54" name="row54">';
 				echo '<td style="border-right:0px;">&nbsp;&nbsp;&nbsp;';
 				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;pers_place=1&amp;living_place_drop='.
 					$addressDb->address_order.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" border="0"></a>';
@@ -1151,7 +1292,7 @@ if (isset($pers_gedcomnumber)){
 			// *** Also include sources script for queries to save, edit and remove addresses in connect table ***
 			include ('editor_sources.php');
 
-			echo '<tr class="humo_color">';
+			echo '<tr>';
 			echo '<td style="border-right:0px;">';
 				echo '<a name="addresses"></a>';
 
@@ -1204,7 +1345,7 @@ if (isset($pers_gedcomnumber)){
 				echo '<input type="hidden" name="connect_page['.$key.']" value="">';
 				echo '<input type="hidden" name="connect_place['.$key.']" value="">';
 
-				echo '<tr class="humo_color" style="display:none;" id="row55" name="row55">';
+				echo '<tr style="display:none;" id="row55" name="row55">';
 				echo '<td style="border-right:0px;">&nbsp;&nbsp;&nbsp;';
 
 					$text.=' <a href="index.php?'.$joomlastring.'page='.$page.
@@ -1268,7 +1409,7 @@ if (isset($pers_gedcomnumber)){
 				echo '<td></td>';
 				echo '</tr>';
 
-				echo '<tr class="humo_color" style="display:none;" id="row55" name="row55">';
+				echo '<tr style="display:none;" id="row55" name="row55">';
 				echo '<td></td>';
 				echo '<td style="border-right:0px;">'.__('Addressrole').'</td>';
 				echo '<td style="border-left:0px;">';
@@ -1306,7 +1447,7 @@ if (isset($pers_gedcomnumber)){
 
 
 		// *** General text by person ***
-		echo '<tr><td>'.__('General text for person').'</td>';
+		echo '<tr class="humo_color"><td>'.__('General text for person').'</td>';
 		echo '<td style="border-right:0px;"></td>';
 		echo '<td style="border-left:0px;"><textarea rows="1" name="person_text"'.$field_text_large.'>'.$editor_cls->text_show($person_text).'</textarea>';
 		echo '</td><td>';
@@ -1326,7 +1467,7 @@ if (isset($pers_gedcomnumber)){
 		if (!isset($_GET['add_person'])){
 
 			// *** Person sources in new person editor screen ***
-			echo '<tr class="humo_color"><td>'.__('General source for person').'</td><td colspan="2">';
+			echo '<tr><td>'.__('General source for person').'</td><td colspan="2">';
 			echo '</td><td>';
 				// *** Calculate and show nr. of sources ***
 				$connect_qry="SELECT *
@@ -1344,6 +1485,25 @@ if (isset($pers_gedcomnumber)){
 			// *** Person event editor ***
 			$event_cls->show_event('person');
 
+			// *** Quality ***
+			// Disabled quality by person. Quality officially belongs to a source...
+			/*
+			echo '<tr><td>'.__('Quality of data').'</td>';
+			echo '<td style="border-right:0px;"></td>';
+				echo '<td style="border-left:0px;"><select size="1" name="pers_quality" style="width: 400px">';
+				echo '<option value="">'.ucfirst(__('quality: default')).'</option>';
+				$selected=''; if ($pers_quality=='0'){ $selected=' SELECTED'; }
+				echo '<option value="0"'.$selected.'>'.ucfirst(__('quality: unreliable evidence or estimated data')).'</option>';
+				$selected=''; if ($pers_quality=='1'){ $selected=' SELECTED'; }
+				echo '<option value="1"'.$selected.'>'.ucfirst(__('quality: questionable reliability of evidence')).'</option>';
+				$selected=''; if ($pers_quality=='2'){ $selected=' SELECTED'; }
+				echo '<option value="2"'.$selected.'>'.ucfirst(__('quality: data from secondary evidence')).'</option>';
+				$selected=''; if ($pers_quality=='3'){ $selected=' SELECTED'; }
+				echo '<option value="3"'.$selected.'>'.ucfirst(__('quality: data from direct source')).'</option>';
+				echo '</select></td>';
+			echo '<td></td>';
+			echo '</tr>';
+			*/
 
 			// *** End of person form ***
 			echo '</form>';
@@ -1352,8 +1512,8 @@ if (isset($pers_gedcomnumber)){
 			// *** Show unprocessed gedcom tags ***
 			if (isset($person->pers_unprocessed_tags)){
 				$tags_array=explode('<br>',$person->pers_unprocessed_tags);
-				//echo '<tr class="humo_tags_pers humo_color"><td>';
-				echo '<tr class="humo_tags_pers"><td>';
+				echo '<tr class="humo_tags_pers humo_color"><td>';
+				//echo '<tr class="humo_tags_pers"><td>';
 
 				echo '<a href="#humo_tags_pers" onclick="hideShow(61);"><span id="hideshowlink61">'.__('[+]').'</span></a> ';
 
@@ -1377,16 +1537,15 @@ if (isset($pers_gedcomnumber)){
 			$note_result = $dbh->query($note_qry);
 			$num_rows = $note_result->rowCount();
 
-			echo '<tr class="humo_user_notes humo_color"><td>';
-			if ($num_rows)
-			echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">'.__('[+]').'</span></a> ';
-			echo __('User notes').'</td><td colspan="2">';
-			if ($num_rows){
-				printf(__('There are %d user added notes.'), $num_rows);
-			}
-			else{
-				printf(__('There are %d user added notes.'), 0);
-			}
+			//echo '<tr class="humo_user_notes humo_color"><td>';
+			echo '<tr class="humo_user_notes"><td>';
+				if ($num_rows)
+					echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">'.__('[+]').'</span></a> ';
+				echo __('User notes').'</td><td colspan="2">';
+				if ($num_rows)
+					printf(__('There are %d user added notes.'), $num_rows);
+				else
+					printf(__('There are %d user added notes.'), 0);
 			echo '</td><td></td></tr>';
 
 			while($noteDb=$note_result->fetch(PDO::FETCH_OBJ)){
@@ -1405,6 +1564,8 @@ if (isset($pers_gedcomnumber)){
 			}
 		}
 
+		} // *** end of menu_tab ***
+		if ($menu_tab=='marriage'){
 
 		// ***********************************
 		// *** Marriages and children list ***
@@ -1412,7 +1573,7 @@ if (isset($pers_gedcomnumber)){
 
 		if (!isset($_GET['add_person'])){
 			// *** Empty line in table ***
-			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
+//			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
 
 			echo '<tr><th class="table_header" colspan="4">'.__('Marriage(s) and children').'</tr>';
 		}
@@ -1429,7 +1590,8 @@ if (isset($pers_gedcomnumber)){
 
 					echo '<tr><td>';
 						if ($fam_count>0){
-							echo '<form method="POST" action="'.$phpself.'#marriage">';
+							//echo '<form method="POST" action="'.$phpself.'#marriage">';
+							echo '<form method="POST" action="'.$phpself.'">';
 							echo '<input type="hidden" name="page" value="'.$page.'">';
 							echo '<input type="hidden" name="marriage_nr" value="'.$familyDb->fam_gedcomnumber.'">';
 							echo ' <input type="Submit" name="submit" value="'.__('Select marriage').' '.($i+1).'">';
@@ -1475,25 +1637,28 @@ if (isset($pers_gedcomnumber)){
 							echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_disconnect='.$fam_children.
 								'&amp;child_disconnect_gedcom='.$fam_children_array[$j].'">
 								<img src="'.CMS_ROOTPATH_ADMIN.'images/person_disconnect.gif" border="0" title="'.__('Disconnect child').'" alt="'.__('Disconnect child').'"></a>';
-							if ($j<$child_count){
+
+								if ($j<$child_count){
 								echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_down='.$j.'&amp;child_array='.
 									$familyDb->fam_children.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="child_down"></a>';
-
 							}
-							else{ echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'; }
+							else{ echo '<span style="margin-left:21px;"></span>'; }
+
 							if ($j>0){
 								echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_up='.$j.'&amp;child_array='.
 									$familyDb->fam_children.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="child_up"></a> ';
 							}
-							else{ echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'; }
-							if ($j<9){ echo '0'; }
-							echo ($j+1).') '.show_person($fam_children_array[$j],true).'<br>';
+							else{ echo '<span style="margin-left:26px;"></span>'; }
+
+//							if ($j<9){ echo '0'; }
+							if ($j<9){ echo '<span style="margin-left:8px;"></span>'; }
+							echo ($j+1).'. '.show_person($fam_children_array[$j],true).'<br>';
 						}
 					}
 
 					echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
 					if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
-					echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"> '.__('Add child').'</a><br>';
+					echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"><span style="margin-left:73px;">'.__('Add child').'</span></a><br>';
 
 					echo '</td></tr>';
 				}
@@ -1588,6 +1753,8 @@ if (isset($pers_gedcomnumber)){
 			$fam_div_date=$familyDb->fam_div_date; $fam_div_place=$familyDb->fam_div_place;
 			$fam_div_source=$familyDb->fam_div_source; $fam_div_text=$editor_cls->text_show($familyDb->fam_div_text);
 			$fam_div_authority=$editor_cls->text_show($familyDb->fam_div_authority);
+			// *** Checkbox for no data by divorce ***
+			$fam_div_no_data=false; if ($fam_div_date OR $fam_div_place OR $fam_div_text) $fam_div_no_data=true;
 			$fam_text=$editor_cls->text_show($familyDb->fam_text);
 
 			// *** Show delete message ***
@@ -1601,10 +1768,12 @@ if (isset($pers_gedcomnumber)){
 			// *** Empty line in table ***
 			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
 
-			echo '<tr class="table_header" style="background-image: url(\'../images/default_trans_large.png\');">';
+			//echo '<tr class="table_header" style="background-image: url(\'../images/default_trans_large.png\');">';
+			echo '<tr class="table_header_large">';
 
 			// *** Hide or show all hide-show items ***
-			$hide_show_all='<a href="#marriage" onclick="hideShowAll();"><span id="hideshowlinkall2">'.__('[+]').'</span> '.__('All').'</a> ';
+			//$hide_show_all='<a href="#marriage" onclick="hideShowAll();"><span id="hideshowlinkall2">'.__('[+]').'</span> '.__('All').'</a> ';
+			$hide_show_all='<a href="#marriage" onclick="hideShowAll2();"><span id="hideshowlinkall2">'.__('[+]').'</span> '.__('All').'</a> ';
 
 			// *** Remove marriage ***
 			if (isset($marriage)){
@@ -1624,7 +1793,7 @@ if (isset($pers_gedcomnumber)){
 				echo '<input type="hidden" name="marriage_nr" value="'.$marriage.'">';
 			}
 
-			echo '<tr class="humo_color"><td>'.__('Marriage').'</td>';
+			echo '<tr><td>'.__('Marriage').'</td>';
 			echo '<td style="border-right:0px;"></td>';
 			echo '<td style="border-left:0px;">';
 
@@ -1745,7 +1914,7 @@ if (isset($pers_gedcomnumber)){
 			if (isset($marriage)){
 				echo '<input type="hidden" name="marriage" value="'.$marriage.'">';
 			}
-			echo '<tr><td>'.__('Relation Type').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
+			echo '<tr class="humo_color"><td>'.__('Relation Type').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
 			echo '<select size="1" name="fam_kind">';
 				echo '<option value="">'.__('Married').' </option>';
 
@@ -1780,7 +1949,7 @@ if (isset($pers_gedcomnumber)){
 			echo '</td><td></td></tr>';
 
 			// *** Living together ***
-			echo '<tr class="humo_color">';
+			echo '<tr>';
 			echo '<td><a href="#marriage" onclick="hideShow(6);"><span id="hideshowlink6">'.__('[+]').'</span></a> ';
 
 			echo __('Living together').'</td>';
@@ -1801,19 +1970,19 @@ if (isset($pers_gedcomnumber)){
 			echo '</td></tr>';
 
 			// *** End of living together ***
-			echo '<tr class="humo_color" style="display:none;" id="row6" name="row6">';
+			echo '<tr style="display:none;" id="row6" name="row6">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('End date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_relation_end_date,"fam_relation_end_date").'</td>';
 			echo '<td></td></tr>';
 
-			echo '<tr class="humo_color" style="display:none;" id="row6" name="row6">';
+			echo '<tr style="display:none;" id="row6" name="row6">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_relation_text" '.$field_text.'>'.$fam_relation_text.'</textarea>';
 			echo '<td></td>';
 			echo '</td></tr>';
 
 			// *** Marriage notice ***
-			echo '<tr><td>';
+			echo '<tr class="humo_color"><td>';
 			echo '<a href="#marriage" onclick="hideShow(7);"><span id="hideshowlink7">'.__('[+]').'</span></a> ';
 			echo __('Notice of Marriage').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_notice_date,"fam_marr_notice_date").' '.__('place').' <input type="text" name="fam_marr_notice_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_marr_notice_place).'" size="'.$field_place.'">';
@@ -1832,13 +2001,13 @@ if (isset($pers_gedcomnumber)){
 				}
 			echo '</td></tr>';
 
-			echo '<tr style="display:none;" id="row7" name="row7">';
+			echo '<tr class="humo_color" style="display:none;" id="row7" name="row7">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_notice_text" '.$field_text.'>'.$fam_marr_notice_text.'</textarea></td>';
 			echo '<td></td></tr>';
 
 			// *** Marriage ***
-			echo '<tr class="humo_color"><td>';
+			echo '<tr><td>';
 			echo '<a href="#marriage" onclick="hideShow(8);"><span id="hideshowlink8">'.__('[+]').'</span></a> ';
 			echo __('Marriage').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_date,"fam_marr_date").' '.__('place').' <input type="text" name="fam_marr_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_marr_place).'" size="'.$field_place.'">';
@@ -1858,12 +2027,12 @@ if (isset($pers_gedcomnumber)){
 
 			echo '</td></tr>';
 
-			echo '<tr class="humo_color" style="display:none;" id="row8" name="row8">';
+			echo '<tr style="display:none;" id="row8" name="row8">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('Registrar').'</td><td style="border-left:0px;"><input type="text" name="fam_marr_authority" value="'.$fam_marr_authority.'" size="60"></td>';
 			echo '<td></td></tr>';
 
-			echo '<tr class="humo_color" style="display:none;" id="row8" name="row8">';
+			echo '<tr style="display:none;" id="row8" name="row8">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_text" '.$field_text.'>'.$fam_marr_text.'</textarea></td>';
 			echo '<td></td></tr>';
@@ -1872,7 +2041,7 @@ if (isset($pers_gedcomnumber)){
 			$event_cls->show_event('marriage_witness');
 
 			// *** Religious marriage notice ***
-			echo '<tr><td>';
+			echo '<tr class="humo_color"><td>';
 			echo '<a href="#marriage" onclick="hideShow(9);"><span id="hideshowlink9">'.__('[+]').'</span></a> ';
 			echo __('Religious Notice of Marriage').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_notice_date,"fam_marr_church_notice_date").' '.__('place').' <input type="text" name="fam_marr_church_notice_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_marr_church_notice_place).'" size="'.$field_place.'">';
@@ -1891,14 +2060,14 @@ if (isset($pers_gedcomnumber)){
 				}
 			echo '</td></tr>';
 
-			echo '<tr style="display:none;" id="row9" name="row9">';
+			echo '<tr class="humo_color" style="display:none;" id="row9" name="row9">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_church_notice_text" '.$field_text.'>'.$fam_marr_church_notice_text.'</textarea></td>';
 			echo '<td></td></tr>';
 
 
 			// *** Church marriage ***
-			echo '<tr class="humo_color"><td>';
+			echo '<tr><td>';
 			echo '<a href="#marriage" onclick="hideShow(10);"><span id="hideshowlink10">'.__('[+]').'</span></a> ';
 			echo __('Religious Marriage').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_date,"fam_marr_church_date").' '.__('place').' <input type="text" name="fam_marr_church_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_marr_church_place).'" size="'.$field_place.'">';
@@ -1916,7 +2085,7 @@ if (isset($pers_gedcomnumber)){
 				}
 			echo '</td></tr>';
 
-			echo '<tr class="humo_color" style="display:none;" id="row10" name="row10">';
+			echo '<tr style="display:none;" id="row10" name="row10">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_church_text" '.$field_text.'>'.$fam_marr_church_text.'</textarea></td>';
 			echo '<td></td></tr>';
@@ -1925,17 +2094,18 @@ if (isset($pers_gedcomnumber)){
 			$event_cls->show_event('marriage_witness_rel');
 
 			// *** Religion ***
-			echo '<tr><td rowspan="1">'.__('Religion').'</td>';
+			echo '<tr class="humo_color"><td rowspan="1">'.__('Religion').'</td>';
 			echo '<td style="border-right:0px;">'.__('Religion').'</td><td style="border-left:0px;"><input type="text" name="fam_religion" value="'.htmlspecialchars($fam_religion).'" size="60"></td><td></td></tr>';
 
 			// *** divorce ***
-			echo '<tr class="humo_color"><td>';
+			echo '<tr><td>';
 			echo '<a href="#marriage" onclick="hideShow(11);"><span id="hideshowlink11">'.__('[+]').'</span></a> ';
 			echo __('Divorce').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_div_date,"fam_div_date").' '.__('place').' <input type="text" name="fam_div_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_div_place).'" size="'.$field_place.'">';
+
 			echo '</td><td>';
 				// *** Source by fam_div ***
-				if (isset($marriage) AND !isset($_GET['add_marriage'])){
+					if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					// *** Calculate and show nr. of sources ***
 					$connect_qry="SELECT *
 						FROM ".$tree_prefix."connections
@@ -1947,18 +2117,28 @@ if (isset($pers_gedcomnumber)){
 				}
 			echo '</td></tr>';
 
-			echo '<tr class="humo_color" style="display:none;" id="row11" name="row11">';
+			// *** Use checkbox for divorse without further data ***
+			echo '<tr><td></td>';
+			echo '<td style="border-right:0px;"></td>';
+			echo '<td style="border-left:0px;">';
+				$checked=''; if ($fam_div_no_data) $checked=' checked';
+				echo '<input type="checkbox" name="fam_div_no_data" value="no_data"'.$checked.'> '.__('Divorce (use this checkbox for a divorce without further data).');
+			echo '</td><td></td></tr>';
+
+			echo '<tr style="display:none;" id="row11" name="row11">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('Registrar').'</td><td style="border-left:0px;"><input type="text" name="fam_div_authority" value="'.htmlspecialchars($fam_div_authority).'" size="60"></td>';
 			echo '<td></td></tr>';
 
-			echo '<tr class="humo_color" style="display:none;" id="row11" name="row11">';
+			echo '<tr style="display:none;" id="row11" name="row11">';
 			echo '<td></td>';
-			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;">'.__('For a divorce without further data just type "DIVORCE" in text field.').'<br><textarea rows="1" name="fam_div_text" '.$field_text.'>'.$fam_div_text.'</textarea></td>';
+			if ($fam_div_text=='DIVORCE') $fam_div_text=''; // *** Hide this text, it's a hidden value for a divorce without data ***
+			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;">
+				<textarea rows="1" name="fam_div_text" '.$field_text.'>'.$fam_div_text.'</textarea></td>';
 			echo '<td></td></tr>';
 
 			// *** General text by marriage ***
-			echo '<tr><td>'.__('General text by marriage').'</td>';
+			echo '<tr class="humo_color"><td>'.__('General text by marriage').'</td>';
 			echo '<td style="border-right:0px;"></td>';
 			echo '<td style="border-left:0px;">';
 			echo '<textarea rows="1" name="fam_text"'.$field_text_large.'>'.$fam_text.'</textarea>';
@@ -1978,7 +2158,7 @@ if (isset($pers_gedcomnumber)){
 
 			// *** Family sources in new person editor screen ***
 			if (isset($marriage) AND !isset($_GET['add_marriage'])){
-				echo '<tr class="humo_color"><td>'.__('General source by marriage').'</td><td colspan="2">';
+				echo '<tr><td>'.__('General source by marriage').'</td><td colspan="2">';
 				echo '</td><td>';
 					// *** Calculate and show nr. of sources ***
 					$connect_qry="SELECT *
@@ -1999,7 +2179,7 @@ if (isset($pers_gedcomnumber)){
 			// *** NEW: show unprocessed gedcom tags ***
 			if (isset($familyDb->fam_unprocessed_tags)){
 				$tags_array=explode('<br>',$familyDb->fam_unprocessed_tags);
-				echo '<tr class="humo_tags_fam humo_color"><td>';
+				echo '<tr class="humo_tags_fam"><td>';
 				echo '<a href="#humo_tags_fam" onclick="hideShow(110);"><span id="hideshowlink110">'.__('[+]').'</span></a> ';
 				echo __('Gedcom tags').'</td><td colspan="2">';
 				if ($familyDb->fam_unprocessed_tags){
@@ -2009,7 +2189,7 @@ if (isset($pers_gedcomnumber)){
 					printf(__('There are %d unprocessed gedcom tags.'), 0);
 				}
 				echo '</td><td></td></tr>';
-				echo '<tr class="humo_color" style="display:none;" id="row110" name="row110"><td></td>';
+				echo '<tr style="display:none;" id="row110" name="row110"><td></td>';
 					echo '<td colspan="2">'.$familyDb->fam_unprocessed_tags.'</td>';
 				echo '<td></td></tr>';
 			}
@@ -2018,6 +2198,9 @@ if (isset($pers_gedcomnumber)){
 
 
 		}
+
+		}	// End of menu_tab
+		if ($menu_admin=='person') echo '</div>';
 
 		echo '</table><br>'."\n";
 	}

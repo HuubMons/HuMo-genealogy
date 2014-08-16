@@ -29,7 +29,8 @@ body {
 	margin:0 auto;
 }
 #humo_menu a {
-	color: #2266bb;
+	/* color: #2266bb; */
+	color:#000000;
 }
 
 /* Pop-up menu */
@@ -38,9 +39,9 @@ body {
 	background:url(../images/gray_down.png) repeat left top;
 }
 
-#humo_menu a:visited { color: #2266bb; }
-#humo_menu a:active {color: #2288dd;}
-#humo_menu a:hover {color: #001155; }
+#humo_menu a:visited { color: #000000; }
+#humo_menu a:active {color: #2288dd; }
+#humo_menu a:hover {color: #2288dd; }
 
 /* #humo_menu a:hover { */
 #humo_menu a:hover, #humo_menu ul.humo_menu_item2 li a:hover {
@@ -96,9 +97,12 @@ body {
 	/* overflow:auto; */
 	max-height:95%;
 	top:35px;
-
 	width:1024px;
 	margin:0 auto;
+}
+
+table.index_table{
+	width:1000px;
 }
 
 /* Tables */
@@ -113,19 +117,15 @@ table.humo {
 	-webkit-box-shadow: 0px 0px 0px;
 	box-shadow:         0px 0px 0px;
 }
+
 table.humo td {
 	/* border: ridge 1px #3355cc; */
 	border:none;
 	/* background-color: #cceeff; */ /* achtergrond gezinsblad en 1e tabel */
 	border-bottom: 2px solid #dadada;
 }
-table.humo tr:first-of-type td {
-	border:none;
-	border-bottom: 2px solid #dadada;
-}
-table.humo tr:first-of-type th {
-	border:none;
-}
+table.humo tr:first-of-type td { border:none; border-bottom: 2px solid #dadada; }
+table.humo tr:first-of-type th { border:none; }
 /* 2nd table A-Z */
 .family_page_toptext {
 	color: #ffffff;
@@ -136,20 +136,18 @@ table.humo tr:first-of-type th {
 }
 td.style_tree_text { background-color: #eeeeff; }
 
-table.standard td.table_header {
-	background-image: none; 
+.table_headline{
+	/* background-image: none; */
+	background:url("images_white/gray_white.png") repeat left top;
+	/* border-bottom:4px solid #dadada; color:#4088b8; */
 }
 
-div.photobook{
-	background-color:#FFFFFF;
-}
+table.standard td.table_header { background-image: none; }
 
-.help_box {
-	background-color:#FFFFFF;
-}
+div.photobook{ background-color:#FFFFFF; }
 
-table.container{
-	background-color:#FFFFFF;
-}
+.help_box { background-color:#FFFFFF; }
+
+table.container{ background-color:#FFFFFF; }
 
 table.reltable td { border:0px; }

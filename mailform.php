@@ -10,7 +10,7 @@ if (isset($_POST['send_mail'])){
 if ($humo_option["use_spam_question"]!='y'){
 	$mail_allowed=true;
 }
-		
+
 if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	$mail_address=$dataDb->tree_email;
 
@@ -75,7 +75,7 @@ else{
 		print '<br><form id="form_id" method="post" action="'.$_SERVER['PHP_SELF'].'" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'mail_sender\');">';
 
 		print '<table align="center" class="humo">';
-		print '<tr><th class="fonts" colspan="2">'.__('Mail form').'</th></tr>';
+		print '<tr class=table_headline><th class="fonts" colspan="2">'.__('Mail form').'</th></tr>';
 
 		$mail_name=''; if (isset($_POST['mail_name'])){ $mail_name=$_POST['mail_name']; }
 		print '<tr><td>'.__('Name').':</td><td><input type="text" class="fonts" name="mail_name" size="40" style="background-color:#FFFFFF" value="'.$mail_name.'"></td></tr>';

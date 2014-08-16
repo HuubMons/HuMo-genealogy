@@ -20,6 +20,9 @@ body {
 	/* overflow: hidden; */
 }
 
+.print_version {
+}
+
 #top_menu {
 	width:100%;
 	margin:0;
@@ -36,7 +39,7 @@ body {
 	height:35px;
 	padding:5px 10px 0;
 }
-#top_website_name	{
+#top_website_name{
 	font-weight:bold;
 	font-size:18px;
 }
@@ -161,7 +164,6 @@ ul.humo_menu_item {
 	/* padding:8px 10px 0; */
 	list-style:none;
 	padding-left: 0px; /* was 15 px */
-	
 	/* margin: auto; */
 }
 /* Pop-up menu */
@@ -175,18 +177,8 @@ ul.humo_menu_item2 {
 ul.humo_menu_item li {
 	float:left;
 	margin:0;
-	/*
-	border-right:1px;
-	border-left: 1px solid rgba(255,255,255,0.2);
-	border-right: 1px solid rgba(255,255,255,0.2);
-	*/
 	border-left: 1px solid rgba(255,255,255,0.4);
 	border-right: 1px solid rgba(255,255,255,1);
-	/*
-	-webkit-box-shadow: 1px 0 0 rgba(0,0,0,0.4);
-	-moz-box-shadow: 1px 0 0 rgba(0,0,0,0.4);
-	box-shadow: 1px 0 0 rgba(0,0,0,0.4);
-	*/
 }
 /* Pop-up menu */
 ul.humo_menu_item2 li {
@@ -241,7 +233,7 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 	float:right;
 	display:block;
 	padding:8px 85px 6px 5px;
- 	text-decoration:none;
+	text-decoration:none;
 	color:#333;
 	border-right:none;
 }
@@ -344,13 +336,13 @@ hr { text-align: center; width:70%; }
 /* tables - tabellen */
 
 table.humo td, table.humo th, table.reltable td {
-  	border: solid 1px #999999;  
+	border: solid 1px #999999;
 }
-  
+
 table.humo, table.ext {
 	/* border-collapse: collapse; */
 	border-collapse:separate; /* needed for rounded corners */
-	background-color:#FAF1EB;  
+	background-color:#FAF1EB;
 	border-spacing: 0;
 	border-width: 1px; 
 	/*margin-top:10px;*/
@@ -384,8 +376,6 @@ table.standard {
 
 table.humo td, table.relmenu td {
 	border-top:none;
-
-	/* padding-left:5px; */
 	padding-left: 5px;
 	padding-top: 3px;
 	padding-bottom: 3px;
@@ -402,27 +392,27 @@ table.humo td:nth-of-type(1n+2), table.relmenu td:nth-of-type(1n+2), table.humo 
 	border-left:0px; 
 	padding-left: 5px;
 	padding-right: 5px;
-}  
+}
 
 /*~~~~~~~~~ set rounded corners at bottom ~~~~~~~~~~~~~~~~~~~~~~ */
 
 table.humo tr:last-of-type td:first-of-type {    
 	-moz-border-radius: 0 0 0 6px;
- 	-webkit-border-radius: 0 0 0 6px;
+	-webkit-border-radius: 0 0 0 6px;
 	border-radius: 0 0 0 6px;
-}  
+}
 
 table.humo tr:last-of-type td:last-of-type {    
 	-moz-border-radius: 0 0 6px 0;
 	-webkit-border-radius: 0 0 6px 0;
 	border-radius: 0 0 6px 0;
-}   
+}
 
 table.humo tr:last-of-type td:only-of-type, table.humo tr:only-of-type td:only-of-type {    
 	-moz-border-radius: 0 0 6px 6px;
 	-webkit-border-radius: 0 0 6px 6px;
 	border-radius: 0 0 6px 6px;
-}  
+}
 
 /*~~~~~~~~~ set rounded corners at top (whether td or th) ~~~~~~~ */
 
@@ -430,19 +420,19 @@ table.humo tr:first-of-type td:first-of-type, table.humo tr:first-of-type th:fir
 	-moz-border-radius: 6px 0 0 0;
 	-webkit-border-radius: 6px 0 0 0;
 	border-radius: 6px 0 0 0;
-}  
+}
 
 table.humo tr:first-of-type td:last-of-type, table.humo tr:first-of-type th:last-of-type{ 
 	-moz-border-radius: 0 6px 0 0;
 	-webkit-border-radius: 0 6px 0 0;
 	border-radius: 0 6px 0 0;
-}   
-    
+}
+
 table.humo tr:first-of-type td:only-of-type, table.humo tr:first-of-type th:only-of-type{ 
 	-moz-border-radius: 6px 6px 0 0;
 	-webkit-border-radius: 6px 6px 0 0;
 	border-radius: 6px 6px 0 0;
-}   
+}
 
 /*~~~~ set rounded corners at top and bottom if one line table~~ */
 table.humo tr:only-of-type td:first-of-type {  
@@ -467,19 +457,21 @@ table.humo tr:only-of-type td:only-of-type {
 	border: solid 1px #999999;
 	border-collapse: collapse;
 }
- 
-td.table_header {
-	background-color: transparent;
-	background-image: url('images/default_trans.png');
-}
-table.humo td.table_header {
-	padding-left:1px;
-
-	padding-top:0px; padding-bottom:0px;
-} 
 .no_border {
 	border: 0px;
 }
+
+/* NEW Headline in table */
+.table_headline{
+	background-color: transparent;
+	background-image: url('images/default_trans.png');
+}
+/* Smaller headline in family screen etc. */
+table.humo td.table_header {
+	padding-left:1px;
+	padding-top:0px; padding-bottom:0px;
+} 
+
 table.humo th {
 	font-size: 15px;
 }
@@ -494,8 +486,6 @@ a:visited { color:brown; }
 
 /* family page top text - tekst bij gezinsblad */
 .family_page_toptext {
-	background-color: transparent;
-	background-image: url('images/default_trans.png');
 	font-size: 14px;
 	text-align: center;
 	font-weight:bold;
@@ -503,12 +493,12 @@ a:visited { color:brown; }
 
 /* person margin */
 /* .margin_person { margin-left: 15px; } */
-.margin_person { margin-left: 35px; }
+.margin_person { margin-left: 37px; }
 /* .margin_child { margin-left: 30px; } */
-.margin_child { margin-left: 55px; }
+.margin_child { margin-left: 65px; }
 /* more than 9 kids: extra margin - bij meer dan 9 kinderen extra inspringen */
 /* .margin_child2 { margin-left: 40px; } */
-.margin_child2 { margin-left: 65px; }
+/* .margin_child2 { margin-left: 65px; } */
 
 /* parent 1 (normally the father) */
 .parent1 { }
@@ -520,7 +510,7 @@ a:visited { color:brown; }
 .parents { font-weight:bold; }
 
 /* marriage - overzicht huwelijk */
-.marriage { }
+.marriage { margin-left: 37px; }
 
 /* divorse - scheiding */
 .divorse { }
@@ -528,17 +518,24 @@ a:visited { color:brown; }
 /* child number - overzicht child_nr */
 .child_nr {
 	font-weight:bold; font-style:italic;
-	display: inline;
+	/* display: inline; */
+	display: inline-block;
+	width:25px;
 }
 
 /* children - overzicht kinderen */
 .children {
 	/* font-size:90%; */
-	display: inline;
+	/*	display: inline; */
+	/* min-height:25px; */
+	margin:2px;
 }
 
 /* name - naam */
-.pers_name { font-weight:bold;}
+.pers_name {
+	/* font-weight:bold; font-size:larger; */
+	font-weight:bold;
+}
 
 /* text - tekst */
 .text { font-style:italic; }
@@ -580,6 +577,10 @@ input { font-size: 10px; }
 	height:20px;
 	width:23px;
 	padding:0px;
+}
+
+table.index_table{
+	width:1050px;
 }
 
 /* Center index list */
@@ -642,9 +643,9 @@ input { font-size: 10px; }
 	margin: 0px auto;
 	width: 990px;
 	text-align: center;
-	/* background-color:#FAF1EB; */
-	border: 1px solid #999999;;
-	background:url("images/default_trans.png") repeat left top;
+	border: 1px solid #999999;
+	/* background:url("images/default_trans.png") repeat left top; */
+	background:url("images/default_trans_large.png") repeat left top;
 	padding:1px;
 }
 
@@ -971,6 +972,7 @@ table.ancestor_sheet td.ancestor_devider{
 }
 .onlyprint {display:none; }
 
+/* Fanchart menu */
 .fanmenu1 {
 	position:absolute;
 	top:40px;
@@ -1143,11 +1145,11 @@ table.relmenu tr:nth-of-type(2) td:last-of-type {
 }
 .wordwrap { 
 /* breaks string to fit in fixed size div even if contains no spaces */
-   white-space: pre-wrap;      /* CSS3 */   
-   white-space: -moz-pre-wrap; /* Firefox */    
-   white-space: -pre-wrap;     /* Opera <7 */   
-   white-space: -o-pre-wrap;   /* Opera 7 */    
-   word-wrap: break-word;      /* IE */
+	white-space: pre-wrap;		/* CSS3 */   
+	white-space: -moz-pre-wrap;	/* Firefox */    
+	white-space: -pre-wrap;		/* Opera <7 */   
+	white-space: -o-pre-wrap;	/* Opera 7 */    
+	word-wrap: break-word;		/* IE */
 }
 
 td.extended_man a, td.extended_woman a {
@@ -1158,10 +1160,10 @@ td.extended_man {
 	-moz-border-radius: 8 px;
 	-webkit-border-radius: 8px;
 	
-	box-shadow: inset -1px -1px 1px 1px #bbbbbb;	
+	box-shadow: inset -1px -1px 1px 1px #bbbbbb;
 	-webkit-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
-    -moz-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
-    
+	-moz-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
+
 	background-color: #dddddd;   
 	/* #ECFAFF */
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#C2C1FF));
@@ -1175,11 +1177,11 @@ td.extended_woman {
 	border-radius: 8px;
 	-moz-border-radius: 8 px;
 	-webkit-border-radius: 8px;
-	
-	box-shadow: inset -1px -1px 1px 1px #bbbbbb;	
+
+	box-shadow: inset -1px -1px 1px 1px #bbbbbb;
 	-webkit-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
     -moz-box-shadow: inset -1px -1px 1px 1px #bbbbbb;
-    
+
 	background-color: #dddddd;   
 	/* #ECFAFF */
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#FFB1B1));

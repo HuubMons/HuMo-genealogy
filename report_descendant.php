@@ -404,9 +404,6 @@ function printchart() {
 		// the width and length of following div are set with $divlen en $divhi in java function "showimg" 
 		// (at bottom of this file) otherwise double scrollbars won't work.
 		echo '<div id="png">';
-		
-		//following only on screen (after menu box)
-		//print '<span class="table_header" style="font-size:large; color:darkgreen; position:absolute; left:600px; top:3px; height:25px">';
 
 		//======== HELP POPUP ========================
 		echo '<div id="helppopup" class="'.$rtlmarker.'sddm" style="position:absolute;left:10px;top:10px;display:inline;">';
@@ -452,7 +449,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			echo '<div class="standard_header fonts" style="align:center; text-align: center;"><b>'.__('Same Y-DNA as ').$base_person_name.'</b>';
 		}
 		elseif($dna=="mtdna" OR $dna=="mtdnamark") {
-			echo '<div class="standard_header fonts" style="align:center; text-align: center;"><b>'.__('Same Mt-DNA as ').$base_person_name.'</b>';
+			echo '<div class="standard_header fonts" style="align:center; text-align: center;"><b>'.__('Same mtDNA as ').$base_person_name.'</b>';
 		}		
 		echo '<br><input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow popup!)').'" onClick="showimg();">';
 		echo '</div>';
@@ -472,18 +469,16 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		echo '<style type="text/css">';
 		echo '#doublescroll { position:relative; width:auto; height:'.$the_height.'px; overflow: auto; overflow-y: hidden;z-index:10; }';
 		echo '</style>';
-	
+
 		//print '<div class="wrapper" style="position:relative; direction:'.$rtlmarker.';">';
 		//print '<div id="doublescroll" class="wrapper" style="direction:'.$rtlmarker.';"><br style="line-height:50%">';
 
 		print '<div id="doublescroll" class="wrapper" style="direction:'.$rtlmarker.';">';
 
 		// generation and size choice box:
-		//echo '<div class="table_header search_bar" style="direction:ltr; z-index:80; width:500px; text-align:left;">';
-		//echo '<div class="table_header search_bar" style="direction:ltr; z-index:20; width:500px; text-align:left;">';
 		if($dna=="none") { $boxwidth="520"; } // regular descendant chart
 		else { $boxwidth="730"; } // DNA charts
-		echo '<div id="menubox" class="table_header search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:'.$boxwidth.'px; text-align:left;">';
+		echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:'.$boxwidth.'px; text-align:left;">';
 
 		print '<div style="display:inline;">';
 		if(CMS_SPECIFIC=='Joomla') {
@@ -530,18 +525,18 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."ydnamark".'&amp;chosensize='.
 						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('Y-DNA Mark carriers').'</option>';
 			}
-		
-			if($base_person_sexe=="F" OR ($base_person_sexe=="M" AND isset($base_person_famc) AND $base_person_famc!="")) {		
-				// if base person is male, only show Mt-DNA if there are ancestors since he can't have Mt-DNA descendants...
+
+			if($base_person_sexe=="F" OR ($base_person_sexe=="M" AND isset($base_person_famc) AND $base_person_famc!="")) {
+				// if base person is male, only show mtDNA if there are ancestors since he can't have mtDNA descendants...
 				echo $selected=""; if($dna=="mtdna") $selected="selected";
 				echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
 						$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."mtdna".'&amp;chosensize='.
-						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('Mt-DNA Carriers only').'</option>';
+						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('mtDNA Carriers only').'</option>';
 				if($base_person_sexe=="F") { echo $selected="selected"; if($dna!="mtdnamark") $selected=""; }
 				else { echo $selected=""; if($dna=="mtdnamark") $selected="selected";  }
 				echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
 						$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."mtdnamark".'&amp;chosensize='.
-						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('Mt-DNA Mark carriers').'</option>';
+						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('mtDNA Mark carriers').'</option>';
 			}
 			echo '</select>';
 		}
@@ -549,7 +544,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		print '&nbsp;&nbsp;';
 		print '&nbsp;'.__('Nr. generations').': ';
 		print '<select name="chosengen" onChange="window.location=this.value">';
-	
+
 		for ($i=2; $i<=15; $i++) {
 			if(CMS_SPECIFIC=='Joomla') {
 				print '<option value="index.php?option=com_humo-gen&task=family&id='.$keepfamily_id.'&amp;main_person='.
@@ -888,44 +883,44 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 	if($hourglass===false) { 
 		echo "
 		function showimg() { 
-		   document.getElementById('helppopup').style.visibility = 'hidden';
-		   document.getElementById('menubox').style.visibility = 'hidden';
-		   document.getElementById('imgbutton').style.visibility = 'hidden';
-		   document.getElementById('png').style.width = '".$divlen."px';
-		   document.getElementById('png').style.height= '".$divhi."px';
-		   html2canvas( [ document.getElementById('png') ], {  
-		      onrendered: function( canvas ) {
-		         document.getElementById('helppopup').style.visibility = 'visible';
-		         document.getElementById('menubox').style.visibility = 'visible';
-		         document.getElementById('imgbutton').style.visibility = 'visible';      	
-		         var img = canvas.toDataURL();
-		         document.getElementById('png').style.width = 'auto';
-		         document.getElementById('png').style.height= 'auto';
-		         var newWin = window.open();
+			document.getElementById('helppopup').style.visibility = 'hidden';
+			document.getElementById('menubox').style.visibility = 'hidden';
+			document.getElementById('imgbutton').style.visibility = 'hidden';
+			document.getElementById('png').style.width = '".$divlen."px';
+			document.getElementById('png').style.height= '".$divhi."px';
+			html2canvas( [ document.getElementById('png') ], {  
+				onrendered: function( canvas ) {
+					document.getElementById('helppopup').style.visibility = 'visible';
+					document.getElementById('menubox').style.visibility = 'visible';
+					document.getElementById('imgbutton').style.visibility = 'visible';
+					var img = canvas.toDataURL();
+					document.getElementById('png').style.width = 'auto';
+					document.getElementById('png').style.height= 'auto';
+					var newWin = window.open();
 		newWin.document.open();
 		newWin.document.write('<!DOCTYPE html><head></head><body>".__('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ')."<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>".__('If you have a plotter you can use its software to print the image on one large sheet.')."<br><br><img src=\"' + img + '\"></body></html>');
 		newWin.document.close();
-		      }
-		   });
+				}
+			});
 		}
 		";
 	}
 	else { 
 		echo "
 		function showimg() { 
-		   document.getElementById('png').style.width = '".$divlen."px';
-		   document.getElementById('png').style.height= '".$divhi."px';
-		   html2canvas( [ document.getElementById('png') ], {  
-		      onrendered: function( canvas ) {
-		         var img = canvas.toDataURL();
-		         document.getElementById('png').style.width = 'auto';
-		         document.getElementById('png').style.height= 'auto';
-		         var newWin = window.open();
+			document.getElementById('png').style.width = '".$divlen."px';
+			document.getElementById('png').style.height= '".$divhi."px';
+			html2canvas( [ document.getElementById('png') ], {  
+				onrendered: function( canvas ) {
+				var img = canvas.toDataURL();
+				document.getElementById('png').style.width = 'auto';
+				document.getElementById('png').style.height= 'auto';
+				var newWin = window.open();
 		newWin.document.open();
 		newWin.document.write('<!DOCTYPE html><head></head><body>".__('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ')."<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>".__('If you have a plotter you can use its software to print the image on one large sheet.')."<br><br><img src=\"' + img + '\"></body></html>');
 		newWin.document.close();
-		      }
-		   });
+				}
+			});
 		}
 		";
 	}

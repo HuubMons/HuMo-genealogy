@@ -16,7 +16,7 @@ if (isset($_POST['group_add'])){
 		group_sources='n', group_source_presentation='title', group_user_notes='n', group_show_restricted_source='y',
 		group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j',
 		group_religion='n', group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n',
-		group_own_code='n', group_pdf_button='y', group_work_text='n', group_texts='j',
+		group_own_code='n', group_pdf_button='y', group_rtf_button='n', group_work_text='n', group_texts='j',
 		group_family_presentation='compact', group_maps_presentation='hide',
 		group_menu_persons='j', group_menu_names='j', group_menu_login='j',
 		group_showstatistics='j', group_relcalc='j', group_googlemaps='j', group_contact='j', group_latestchanges='j',
@@ -68,6 +68,7 @@ if (isset($_POST['group_change'])){
 	group_addresses='".$_POST["group_addresses"]."',
 	group_own_code='".$_POST["group_own_code"]."',
 	group_pdf_button='".$_POST["group_pdf_button"]."',
+	group_rtf_button='".$_POST["group_rtf_button"]."',
 	group_family_presentation='".$_POST["group_family_presentation"]."',
 	group_maps_presentation='".$_POST["group_maps_presentation"]."',
 	group_work_text='".$_POST["group_work_text"]."',
@@ -229,6 +230,14 @@ Group "family" = family members or genealogists.').'<br>';
 	if (!isset($field['group_pdf_button'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_pdf_button VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_own_code;";
+		$result=$dbh->query($sql);
+	}
+	if (!isset($field['group_rtf_button'])){
+		$sql="ALTER TABLE humo_groups ADD group_rtf_button VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_pdf_button;";
+		$result=$dbh->query($sql);
+
+		// *** Show RTF button in usergroup "Admin" ***
+		$sql="UPDATE humo_groups SET group_rtf_button='y' WHERE group_id=1";
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_user_notes'])){
@@ -417,7 +426,7 @@ Group "family" = family members or genealogists.').'<br>';
 	$selected=''; if ($groupDb->group_own_code=='n'){ $selected=' SELECTED'; }
 	echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
 
-	// *** NEW: First default presentation of a family page (visitor can override value) ***
+	// *** First default presentation of a family page (visitor can override value) ***
 	print '<tr><td>'.__('Default presentation of family page').'</td>';
 	print '<td><select size="1" name="group_family_presentation">';
 	$selected=''; if ($groupDb->group_family_presentation=='compact'){ $selected=' SELECTED'; }
@@ -425,17 +434,7 @@ Group "family" = family members or genealogists.').'<br>';
 	$selected=''; if ($groupDb->group_family_presentation=='expanded'){ $selected=' SELECTED'; }
 	echo '<option value="expanded"'.$selected.'>'.__('Expanded view').'</option></select></td></tr>';
 
-	// *** First default presentation of sources, by administrator (visitor can override value) ***
-	print '<tr><td>'.__('Default presentation of source').'</td>';
-	print '<td><select size="1" name="group_source_presentation">';
-	$selected=''; if ($groupDb->group_source_presentation=='title'){ $selected=' SELECTED'; }
-	echo '<option value="title"'.$selected.'>'.__('Show source title').'</option>';
-	$selected=''; if ($groupDb->group_source_presentation=='footnote'){ $selected=' SELECTED'; }
-	echo '<option value="footnote"'.$selected.'>'.__('Show source title as footnote').'</option>';
-	$selected=''; if ($groupDb->group_source_presentation=='sources'){ $selected=' SELECTED'; }
-	echo '<option value="sources"'.$selected.'>'.__('Hide sources').'</option></select></td></tr>';
-
-	// *** NEW: First default presentation of Google maps in family page (visitor can override value) ***
+	// *** First default presentation of Google maps in family page (visitor can override value) ***
 	print '<tr><td>'.__('Default presentation of Google maps in family page').'</td>';
 	print '<td><select size="1" name="group_maps_presentation">';
 	$selected=''; if ($groupDb->group_maps_presentation=='show'){ $selected=' SELECTED'; }
@@ -443,9 +442,16 @@ Group "family" = family members or genealogists.').'<br>';
 	$selected=''; if ($groupDb->group_maps_presentation=='hide'){ $selected=' SELECTED'; }
 	echo '<option value="hide"'.$selected.'>'.__('Hide Google maps').'</option></select></td></tr>';
 
+	// *** Show PDF report button ***
 	print '<tr><td>'.__('Show "PDF Report" button in family screen and reports').'</td>';
 	print '<td><select size="1" name="group_pdf_button"><option value="y">'.__('Yes').'</option>';
 	$selected=''; if ($groupDb->group_pdf_button=='n'){ $selected=' SELECTED'; }
+	echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
+
+	// *** Show RTF report button ***
+	print '<tr><td>'.__('Show "RTF Report" button in family screen and reports').'</td>';
+	print '<td><select size="1" name="group_rtf_button"><option value="y">'.__('Yes').'</option>';
+	$selected=''; if ($groupDb->group_rtf_button=='n'){ $selected=' SELECTED'; }
 	echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
 
 	print '<tr><td>'.__('User is allowed to add notes/ remarks by a person in the family tree').'. '.__('Disabled in group "Guest"').'</td>';
@@ -468,6 +474,16 @@ Group "family" = family members or genealogists.').'<br>';
 	$selected=''; if ($groupDb->group_sources=='j'){ $selected=' CHECKED'; }
 	echo '<input type="radio" name="group_sources" value="j"'.$selected.'><br>';
 	echo '</td></tr>';
+
+	// *** First default presentation of sources, by administrator (visitor can override value) ***
+	print '<tr><td>'.__('Default presentation of source').'</td>';
+	print '<td><select size="1" name="group_source_presentation">';
+	$selected=''; if ($groupDb->group_source_presentation=='title'){ $selected=' SELECTED'; }
+	echo '<option value="title"'.$selected.'>'.__('Show source title').'</option>';
+	$selected=''; if ($groupDb->group_source_presentation=='footnote'){ $selected=' SELECTED'; }
+	echo '<option value="footnote"'.$selected.'>'.__('Show source title as footnote').'</option>';
+	$selected=''; if ($groupDb->group_source_presentation=='hide'){ $selected=' SELECTED'; }
+	echo '<option value="hide"'.$selected.'>'.__('Hide sources').'</option></select></td></tr>';
 
 	print '<tr><td>'.__('Show restricted source').'</td><td><select size="1" name="group_show_restricted_source"><option value="y">'.__('Yes').'</option>';
 	$selected=''; if ($groupDb->group_show_restricted_source=='n'){ $selected=' SELECTED'; }

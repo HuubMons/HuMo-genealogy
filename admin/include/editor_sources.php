@@ -190,8 +190,10 @@ if (isset($_POST['connect_change'])){
 		connect_role='".$editor_cls->text_process($_POST["connect_role"][$key])."',
 		connect_source_id='".safe_text($_POST['connect_source_id'][$key])."',
 		connect_item_id='".safe_text($_POST['connect_item_id'][$key])."',
-		connect_text='".safe_text($_POST['connect_text'][$key])."',
-		connect_changed_date='".$gedcom_date."', ";
+		connect_text='".safe_text($_POST['connect_text'][$key])."',";
+		if (isset($_POST['connect_quality'][$key]) AND ($_POST['connect_quality'][$key] OR $_POST['connect_quality'][$key]=='0'))
+			$sql.=" connect_quality='".safe_text($_POST['connect_quality'][$key])."',";
+		$sql.=" connect_changed_date='".$gedcom_date."', ";
 		$sql.=" connect_changed_time='".$gedcom_time."'";
 		$sql.=" WHERE connect_id='".safe_text($_POST["connect_change"][$key])."'";
 //echo $sql;
@@ -640,7 +642,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 		$text.='</td><td style="border-right:0px;">';
 
 		$text.=__('source');
-		
+
 		$text.='</td><td style="border-left:0px;" colspan="2">';
 			$field_text='style="height: 60px; width:500px"';
 			$text.= '<textarea rows="2" name="connect_text['.$connectDb->connect_id.']" '.$field_text.'>'.$editor_cls->text_show($connectDb->connect_text).'</textarea>';
@@ -683,6 +685,22 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 			$text.=__('Page').' <input type="text" name="connect_page['.$connectDb->connect_id.']" value="'.$connectDb->connect_page.'" size="6">';
 		$text.='</td></tr>';
 
+		// *** Quality ***
+		//$text.='<tr><td>'.__('Quality of data').'</td>';
+		$text.='<tr'.$color.'><td></td>';
+		$text.='<td style="border-right:0px;"></td>';
+			$text.='<td style="border-left:0px;" colspan="2"><select size="1" name="connect_quality['.$connectDb->connect_id.']" style="width: 400px">';
+			$text.='<option value="">'.ucfirst(__('quality: default')).'</option>';
+			$selected=''; if ($connectDb->connect_quality=='0'){ $selected=' SELECTED'; }
+			$text.='<option value="0"'.$selected.'>'.ucfirst(__('quality: unreliable evidence or estimated data')).'</option>';
+			$selected=''; if ($connectDb->connect_quality=='1'){ $selected=' SELECTED'; }
+			$text.='<option value="1"'.$selected.'>'.ucfirst(__('quality: questionable reliability of evidence')).'</option>';
+			$selected=''; if ($connectDb->connect_quality=='2'){ $selected=' SELECTED'; }
+			$text.='<option value="2"'.$selected.'>'.ucfirst(__('quality: data from secondary evidence')).'</option>';
+			$selected=''; if ($connectDb->connect_quality=='3'){ $selected=' SELECTED'; }
+			$text.='<option value="3"'.$selected.'>'.ucfirst(__('quality: data from direct source')).'</option>';
+			$text.='</select></td>';
+		$text.='</tr>';
 
  		if ($change_bg_colour==true){ $change_bg_colour=false; }
 			else{ $change_bg_colour=true; }
@@ -704,7 +722,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 			if (isset($_POST['event_family']) OR isset($_GET['event_family'])){
 				$text.='<input type="hidden" name="event_family" value="1">';
 			}
-			
+
 			$text.='<input type="hidden" name="connect_kind" value="'.$connect_kind.'">';
 			$text.='<input type="hidden" name="connect_sub_kind" value="'.$connect_sub_kind.'">';
 			$text.='<input type="hidden" name="connect_connect_id" value="'.$connect_connect_id.'">';

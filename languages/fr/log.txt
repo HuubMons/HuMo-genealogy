@@ -1,0 +1,4 @@
+22:25:21: C:\Users\Huub\AppData\Local\Temp\poeEAC2.tmp\input.po:5734:353: invalid control sequence
+22:25:21: msgmerge: found 1 fatal error
+22:25:21: Ingangen in de catalogus zijn waarschijnlijk foutief.
+22:25:21: Bijwerken van catalogus mislukt. Klik op 'Meer>>' voor details.

@@ -229,7 +229,7 @@ print '<tr><td>';
 	$person_cls = New person_cls;
 
 	// *** Sources in address table ***
-	$address_sql="SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_source NOT LIKE ''";
+	$address_sql="SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_source NOT LIKE '' AND address_source NOT LIKE 'SOURCE'";
 	@$address_qry=$dbh->query($address_sql);
 	while (@$address_Db=$address_qry->fetch(PDO::FETCH_OBJ)){
 		$sourceid=explode(";",$address_Db->address_source);
@@ -271,30 +271,14 @@ print '<tr><td>';
 	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
 		// *** Person source ***
 		if ($connectDb->connect_kind=='person'){
-			if ($connectDb->connect_sub_kind=='person_source'){
-				echo __('Source for:');
-			}
-			if ($connectDb->connect_sub_kind=='pers_name_source'){
-				echo __('Source for name:');
-			}
-			if ($connectDb->connect_sub_kind=='pers_birth_source'){
-				echo __('Source for birth:');
-			}
-			if ($connectDb->connect_sub_kind=='pers_bapt_source'){
-				echo __('Source for baptism:');
-			}
-			if ($connectDb->connect_sub_kind=='pers_death_source'){
-				echo __('Source for death:');
-			}
-			if ($connectDb->connect_sub_kind=='pers_buried_source'){
-				echo __('Source for burial:');
-			}
-			if ($connectDb->connect_sub_kind=='pers_text_source'){
-				echo __('Source for text:');
-			}
-			if ($connectDb->connect_sub_kind=='pers_sexe_source'){
-				echo __('Source for sexe:');
-			}
+			if ($connectDb->connect_sub_kind=='person_source'){ echo __('Source for:'); }
+			if ($connectDb->connect_sub_kind=='pers_name_source'){ echo __('Source for name:'); }
+			if ($connectDb->connect_sub_kind=='pers_birth_source'){ echo __('Source for birth:'); }
+			if ($connectDb->connect_sub_kind=='pers_bapt_source'){ echo __('Source for baptism:'); }
+			if ($connectDb->connect_sub_kind=='pers_death_source'){ echo __('Source for death:'); }
+			if ($connectDb->connect_sub_kind=='pers_buried_source'){ echo __('Source for burial:'); }
+			if ($connectDb->connect_sub_kind=='pers_text_source'){ echo __('Source for text:'); }
+			if ($connectDb->connect_sub_kind=='pers_sexe_source'){ echo __('Source for sexe:'); }
 			//else { echo 'TEST'; }
 
 			if ($connectDb->connect_sub_kind=='event_source'){
@@ -308,10 +292,24 @@ print '<tr><td>';
 					$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
 						WHERE pers_gedcomnumber='$event_Db->event_person_id'");
 					$personDb=$person->fetch(PDO::FETCH_OBJ);
-					print __('Source for:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 					$name=$person_cls->person_name($personDb);
+					print __('Source for:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 					echo $name["standard_name"].'</a>';
 					if ($event_Db->event_event){ echo ' '.$event_Db->event_event; }
+				}
+			}
+			elseif ($connectDb->connect_sub_kind=='address_source'){
+				// *** Sources in address table ***
+				$address_sql="SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_id='".$connectDb->connect_connect_id."'";
+				@$address_qry=$dbh->query($address_sql);
+				$address_Db=$address_qry->fetch(PDO::FETCH_OBJ);
+				if ($address_Db->address_person_id){
+					$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
+						WHERE pers_gedcomnumber='$address_Db->address_person_id'");
+					$personDb=$person->fetch(PDO::FETCH_OBJ);
+					$name=$person_cls->person_name($personDb);
+					echo __('Source for address:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
+					echo $name["standard_name"].'</a>';
 				}
 			}
 			else{

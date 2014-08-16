@@ -15,13 +15,23 @@
 class validate_date_cls{
 
 function check_date($date) {
+
+	// *** Remove B.C. (before christ) addition, for further tests of date ***
+	if (substr($date,-3)==' BC' OR substr($date,-5)==' B.C.') return "finished";
+	if (substr($date,-3)==' BC' OR substr($date,-5)==' B.C.'){
+		$date = str_replace(" BC", "", $date);
+		$date = str_replace(" B.C.", "", $date);
+	}
+
 	$year = $this->check_year($date);
 	if($year === null) { return null; }
 
 	if($year > 999) { $strlen=4; }
 	elseif($year >99) { $strlen=3; }
+	elseif($year >9) { $strlen=2; }
+	elseif($year >0) { $strlen=1; }
 	else return null;
-	
+
 	if(strlen($date) == $strlen) return "finished"; // date contains just the year, no sense checking a month
 	elseif ($this->check_month($date) === null) { return null; }
 
@@ -42,30 +52,28 @@ function check_month($date) {
 		$strlen=3;
 	}
  
- 	if( $month=="JAN" OR $month=="FEB" OR $month=="MAR" OR $month=="APR" OR $month=="MAY" OR $month=="JUN"
+	if( $month=="JAN" OR $month=="FEB" OR $month=="MAR" OR $month=="APR" OR $month=="MAY" OR $month=="JUN"
 	 	OR $month=="JUL" OR $month=="AUG" OR $month=="SEP" OR $month=="OCT" OR $month=="NOV" OR $month=="DEC") {
- 	 	 	return "month".$month; // flags valid month
- 	 	}
- 	elseif ($month=="EST" OR $month=="CAL") { 
+	 	 	return "month".$month; // flags valid month
+	 	}
+	elseif ($month=="EST" OR $month=="CAL") { 
 			if(strlen($date) > ($strlen + 4)) return null; // EST and CAL should not have anything in front of them!
- 	 	 	else {return $month; } // flags valid EST or CAL with nothing in front
- 	 	}
- 	elseif ($month=="BEF" OR $month=="AFT" OR $month=="ABT" OR $month=="INT") { 			
+	 	 	else {return $month; } // flags valid EST or CAL with nothing in front
+	 	}
+	elseif ($month=="BEF" OR $month=="AFT" OR $month=="ABT" OR $month=="INT") {
 			if(strlen($date)== $strlen+8 AND (substr($date,0,3) == "EST" OR substr($date,0,3)=="CAL")) return $month; //valid "EST ABT" etc.
 			elseif(strlen($date) > ($strlen + 4)) return null; // these texts should not have anything in front of them except EST or CAL!
- 	 	 	else {return $month; } // flags valid 3 letter text with nothing in front
- 	 	}
- 	elseif ($month==" TO") { 
+	 	 	else {return $month; } // flags valid 3 letter text with nothing in front
+	 	}
+	elseif ($month==" TO") { 
 			if(substr($date,0,4) != "FROM") return null; // TO must have FROM up front!
 			else { return " TO"; } 
 	}
- 	elseif ($month=="AND") { 
+	elseif ($month=="AND") { 
 			if(substr($date,0,3) != "BET") return null; // AND must have BET up front
 			else {return "AND"; }  
 	}
 	else { return null; } // if we found "BET" or "FROM" that is also invalid - they can't occur before the last date!
- 		 
-
 }
 
 function check_day($date) {
@@ -157,7 +165,8 @@ function check_day($date) {
 
 function check_year($date) {
 	$year=substr($date,-4, 4);  
-	if (!is_numeric($year) OR $year > date("Y") OR $year<100) { return null; }
+	//if (!is_numeric($year) OR $year > date("Y") OR $year<100) { return null; }
+	if (!is_numeric($year) OR $year > date("Y")) { return null; }
 	else { return $year;}
 }
 

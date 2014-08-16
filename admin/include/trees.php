@@ -57,6 +57,10 @@ if (isset($_POST['add_tree_data'])){
 	tree_pict_path='../plaatjes/'
 	";
 	$result=$dbh->query($sql);
+
+	// *** Immediately add new tables in tree ***
+	$_SESSION['tree_prefix']=safe_text($_POST['tree_prefix']);
+	include_once ("gedcom_tables.php");
 }
 
 if (isset($_POST['add_tree_data_empty'])){
@@ -149,6 +153,11 @@ if (isset($_POST['remove_tree2'])){
 	@$result=$dbh->query($sql);
 
 	unset ($_POST['family_tree_id']);
+
+	// *** Next lines to reset session items for editor pages ***
+	if (isset($_SESSION['admin_tree_prefix'])){ unset($_SESSION['admin_tree_prefix']); }
+	unset($_SESSION['admin_pers_gedcomnumber']);
+	unset($_SESSION['admin_fam_gedcomnumber']);
 }
 
 if (isset($_GET['up'])){
@@ -167,7 +176,7 @@ if (isset($_GET['down'])){
 	// *** Search next family tree ***
 	$item=$dbh->query("SELECT * FROM humo_trees WHERE tree_order=".($_GET['tree_order']+1));
 	$itemDb=$item->fetch(PDO::FETCH_OBJ);
-	//voorgaande database verlagen:
+	// *** Lower previous family tree ***
 	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order'])."' WHERE tree_id=$itemDb->tree_id";
 	$result=$dbh->query($sql);
 	// *** Raise tree order ***
@@ -179,7 +188,6 @@ if (isset($_GET['down'])){
 // *** Start page ***
 // ******************
 
-//$language_tree='en'; // Default language
 $language_tree=$selected_language; // Default language
 if (isset($_GET['language_tree'])){ $language_tree=$_GET['language_tree']; }
 if (isset($_POST['language_tree'])){ $language_tree=$_POST['language_tree']; }
@@ -188,7 +196,6 @@ include_once ("trees_cls.php");
 $tree_cls = New tree_cls;
 
 // *** Selected family tree ***
-//if (isset($_POST['add_tree'])){
 if (isset($_POST['add_tree_data'])){
 	// *** Select new family tree if a new family tree is added ***
 	$data2sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order DESC LIMIT 0,1");

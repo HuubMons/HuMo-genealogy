@@ -1,4 +1,4 @@
-#top_website_name	{
+#top_website_name {
 	font-weight:bold;
 	font-family:Baskerville Old Face;
 	font-style:italic;
@@ -14,9 +14,9 @@
 }
 
 #switchform {
-	font-family: Rockwell, Verdana, Arial, Sans-Serif;	color: #000000;
-	font-weight:bold;	font-style:italic;	
-	font-family:Old Century;	font-size:16px;
+	font-family: Rockwell, Verdana, Arial, Sans-Serif; color: #000000;
+	font-weight:bold; font-style:italic;
+	font-family:Old Century; font-size:16px;
 }
 
 #humo_menu {

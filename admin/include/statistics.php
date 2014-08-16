@@ -449,9 +449,9 @@ if ($statistics_screen=='general_statistics'){
 
 	echo '<table class="humo standard" border="1" cellspacing="0">';
 	echo '<tr class="table_header"><th>'.__('Item').'</th><th>'.__('Counter').'</th></tr>';
-		// *** Total number uniaue visitors ***
+		// *** Total number unique visitors ***
 		$stat=$dbh->query("SELECT * FROM humo_stat_date GROUP BY stat_ip_address");
-		$count_visitors=$stat->rowCount();		
+		$count_visitors=$stat->rowCount();
 		echo '<tr><td>'.__('Total number of unique visitors:').'</td><td>'.$count_visitors.'</td>';
 
 		// *** Total number visited families ***
@@ -510,32 +510,32 @@ if ($statistics_screen=='date_statistics'){
 		echo '<br><form method="POST" action="'.$phpself.'" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo ' <input type="hidden" name="statistics_screen" value="date_statistics">';
-			print "<select size='1' name='month'>";
+			echo "<select size='1' name='month'>";
 				$select=''; if ($month=='1'){ $select=' SELECTED'; }
-				print '<option value="1"'.$select.'>'.__('January').'</option>';
+				echo '<option value="1"'.$select.'>'.__('January').'</option>';
 				$select=''; if ($month=='2'){ $select=' SELECTED'; }
-				print '<option value="2"'.$select.'>'.__('February').'</option>';
+				echo '<option value="2"'.$select.'>'.__('February').'</option>';
 				$select=''; if ($month=='3'){ $select=' SELECTED'; }
-				print '<option value="3"'.$select.'>'.__('March').'</option>';
+				echo '<option value="3"'.$select.'>'.__('March').'</option>';
 				$select=''; if ($month=='4'){ $select=' SELECTED'; }
-				print '<option value="4"'.$select.'>'.__('April').'</option>';
+				echo '<option value="4"'.$select.'>'.__('April').'</option>';
 				$select=''; if ($month=='5'){ $select=' SELECTED'; }
-				print '<option value="5"'.$select.'>'.__('may').'</option>';
+				echo '<option value="5"'.$select.'>'.__('may').'</option>';
 				$select=''; if ($month=='6'){ $select=' SELECTED'; }
-				print '<option value="6"'.$select.'>'.__('June').'</option>';
+				echo '<option value="6"'.$select.'>'.__('June').'</option>';
 				$select=''; if ($month=='7'){ $select=' SELECTED'; }
-				print '<option value="7"'.$select.'>'.__('July').'</option>';
+				echo '<option value="7"'.$select.'>'.__('July').'</option>';
 				$select=''; if ($month=='8'){ $select=' SELECTED'; }
-				print '<option value="8"'.$select.'>'.__('August').'</option>';
+				echo '<option value="8"'.$select.'>'.__('August').'</option>';
 				$select=''; if ($month=='9'){ $select=' SELECTED'; }
-				print '<option value="9"'.$select.'>'.__('September').'</option>';
+				echo '<option value="9"'.$select.'>'.__('September').'</option>';
 				$select=''; if ($month=='10'){ $select=' SELECTED'; }
-				print '<option value="10"'.$select.'>'.__('October').'</option>';
+				echo '<option value="10"'.$select.'>'.__('October').'</option>';
 				$select=''; if ($month=='11'){ $select=' SELECTED'; }
-				print '<option value="11"'.$select.'>'.__('November').'</option>';
+				echo '<option value="11"'.$select.'>'.__('November').'</option>';
 				$select=''; if ($month=='12'){ $select=' SELECTED'; }
-				print '<option value="12"'.$select.'>'.__('December').'</option>';
-			print "</select>";
+				echo '<option value="12"'.$select.'>'.__('December').'</option>';
+			echo "</select>";
 
 			// *** Selection of year ***
 
@@ -548,13 +548,13 @@ if ($statistics_screen=='date_statistics'){
 			$year=$present_year;
 			if (isset($_POST['year'])){ $year=$_POST['year']; }
 
-			print " <select size='1' name='year'>";
+			echo " <select size='1' name='year'>";
 			for ($year_select=$first_year; $year_select<=$present_year; $year_select++) {
 				$select='';
 				if ($year==$year_select){ $select=' SELECTED'; }
-				print '<option value="'.$year_select.'"'.$select.'>'.$year_select.'</option>';
+				echo '<option value="'.$year_select.'"'.$select.'>'.$year_select.'</option>';
 			}
-			print "</select>";
+			echo "</select>";
 
 			echo ' <input type="Submit" name="submit" value="Select">';
 
@@ -589,32 +589,32 @@ if ($statistics_screen=='visitors'){
 		echo '<br><form method="POST" action="'.$phpself.'" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo ' <input type="hidden" name="statistics_screen" value="visitors">';
-			print "<select size='1' name='month'>";
+			echo "<select size='1' name='month'>";
 				$select=''; if ($month=='1'){ $select=' SELECTED'; }
-				print '<option value="1"'.$select.'>'.__('January').'</option>';
+				echo '<option value="1"'.$select.'>'.__('January').'</option>';
 				$select=''; if ($month=='2'){ $select=' SELECTED'; }
-				print '<option value="2"'.$select.'>'.__('February').'</option>';
+				echo '<option value="2"'.$select.'>'.__('February').'</option>';
 				$select=''; if ($month=='3'){ $select=' SELECTED'; }
-				print '<option value="3"'.$select.'>'.__('March').'</option>';
+				echo '<option value="3"'.$select.'>'.__('March').'</option>';
 				$select=''; if ($month=='4'){ $select=' SELECTED'; }
-				print '<option value="4"'.$select.'>'.__('April').'</option>';
+				echo '<option value="4"'.$select.'>'.__('April').'</option>';
 				$select=''; if ($month=='5'){ $select=' SELECTED'; }
-				print '<option value="5"'.$select.'>'.__('may').'</option>';
+				echo '<option value="5"'.$select.'>'.__('may').'</option>';
 				$select=''; if ($month=='6'){ $select=' SELECTED'; }
-				print '<option value="6"'.$select.'>'.__('June').'</option>';
+				echo '<option value="6"'.$select.'>'.__('June').'</option>';
 				$select=''; if ($month=='7'){ $select=' SELECTED'; }
-				print '<option value="7"'.$select.'>'.__('July').'</option>';
+				echo '<option value="7"'.$select.'>'.__('July').'</option>';
 				$select=''; if ($month=='8'){ $select=' SELECTED'; }
-				print '<option value="8"'.$select.'>'.__('August').'</option>';
+				echo '<option value="8"'.$select.'>'.__('August').'</option>';
 				$select=''; if ($month=='9'){ $select=' SELECTED'; }
-				print '<option value="9"'.$select.'>'.__('September').'</option>';
+				echo '<option value="9"'.$select.'>'.__('September').'</option>';
 				$select=''; if ($month=='10'){ $select=' SELECTED'; }
-				print '<option value="10"'.$select.'>'.__('October').'</option>';
+				echo '<option value="10"'.$select.'>'.__('October').'</option>';
 				$select=''; if ($month=='11'){ $select=' SELECTED'; }
-				print '<option value="11"'.$select.'>'.__('November').'</option>';
+				echo '<option value="11"'.$select.'>'.__('November').'</option>';
 				$select=''; if ($month=='12'){ $select=' SELECTED'; }
-				print '<option value="12"'.$select.'>'.__('December').'</option>';
-			print "</select>";
+				echo '<option value="12"'.$select.'>'.__('December').'</option>';
+			echo "</select>";
 
 			// *** Selection of year ***
 
@@ -627,13 +627,13 @@ if ($statistics_screen=='visitors'){
 			$year=$present_year;
 			if (isset($_POST['year'])){ $year=$_POST['year']; }
 
-			print " <select size='1' name='year'>";
+			echo " <select size='1' name='year'>";
 			for ($year_select=$first_year; $year_select<=$present_year; $year_select++) {
 				$select='';
 				if ($year==$year_select){ $select=' SELECTED'; }
-				print '<option value="'.$year_select.'"'.$select.'>'.$year_select.'</option>';
+				echo '<option value="'.$year_select.'"'.$select.'>'.$year_select.'</option>';
 			}
-			print "</select>";
+			echo "</select>";
 
 			echo ' <input type="Submit" name="submit" value="Select">';
 
@@ -696,9 +696,9 @@ if ($statistics_screen=='statistics_old'){
 
 	$num_rows = $datasql->rowCount();
 	if ($num_rows>1){
-		print '<h2>'.__('Old statistics (numbers since last gedcom update)').'</h2>';
+		echo '<h2>'.__('Old statistics (numbers since last gedcom update)').'</h2>';
 
-		print '<b>'.__('Select family tree').'</b><br>';
+		echo '<b>'.__('Select family tree').'</b><br>';
 		while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			if ($dataDb->tree_prefix!='EMPTY'){
 			//Count persons and families
@@ -737,7 +737,7 @@ if ($statistics_screen=='statistics_old'){
 					echo '<a href="'.$_SERVER['PHP_SELF'].'?page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext['name'].'</a>';
 				}
 			}
-			print ' <font size=-1>('.$date.': '.$count_persons.' '.__('persons').", ".$count_families.' '.__('families').")</font>\n<br>";
+			echo ' <font size=-1>('.$date.': '.$count_persons.' '.__('persons').", ".$count_families.' '.__('families').")</font>\n<br>";
 			}
 		}
 	}
@@ -751,10 +751,10 @@ if ($statistics_screen=='statistics_old'){
 		while ($familyDb=$family_qry->fetch(PDO::FETCH_OBJ)){
 			echo $familyDb->fam_counter." ";
 				if(CMS_SPECIFIC == "Joomla") {
-					print '<a href="index.php?option=com_humo-gen&amp;task=family&amp;id='.$familyDb->fam_gedcomnumber.'">'.__('Family').': </a>';
+					echo '<a href="index.php?option=com_humo-gen&amp;task=family&amp;id='.$familyDb->fam_gedcomnumber.'">'.__('Family').': </a>';
 				}
 				else {
-					print '<a href="../family.php?id='.$familyDb->fam_gedcomnumber.'">'.__('Family').': </a>';
+					echo '<a href="../family.php?id='.$familyDb->fam_gedcomnumber.'">'.__('Family').': </a>';
 				}
 
 			//*** Man ***

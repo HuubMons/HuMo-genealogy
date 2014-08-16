@@ -24,8 +24,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 	// *** Hide sources in mobile version ***
 	if ($screen_mode=='mobile') $source_presentation='hide';
-	
-	//if ($user['group_sources']!='n' AND $source_presentation!='hide'){
+
 	if ($user['group_sources']!='n' AND $source_presentation!='hide' AND $screen_mode!='STAR'){
 
 		// *** Search for all connected sources ***
@@ -94,7 +93,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				}
 			}
 			elseif ($source_presentation=='footnote' AND $source_status=='publish'){
-				// *** Combine footnotes with the same source including the same source role and source page... ***	//$combiner_check=$connectDb->connect_source_id.'_'.$connectDb->connect_role.'_'.$connectDb->connect_page;
+				// *** Combine footnotes with the same source including the same source role and source page... ***
 				$combiner_check=$connectDb->connect_source_id.'_'.$connectDb->connect_role.'_'.$connectDb->connect_page.'_'.$connectDb->connect_date.' '.$connectDb->connect_place.' '.$connectDb->connect_text;
 				$check=false;
 				// *** Check if the source (including role and page) is allready used ***
@@ -118,20 +117,25 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 			else{
 				// *** Link to extended source ***
 				if ($connectDb->connect_source_id AND $source_status=='publish'){
-
 					// *** Always show title of source, show link only after permission check ***
 					if ($user['group_sources']=='j'){
 						$text.= ', <a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].
-						'&amp;id='.$sourceDb->source_gedcomnr.'">'.strtolower(__('Source')).': ';
-						if ($sourceDb->source_title){ $text.= " ".trim($sourceDb->source_title); }
-						if ($sourceDb->source_date or $sourceDb->source_place) { $text.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
-						$text.= '</a>';
+						'&amp;id='.$sourceDb->source_gedcomnr.'">'.strtolower(__('Source'));
 					}
 					else{
-						$text.= ', '.__('Source').': ';
-						if ($sourceDb->source_title){ $text.= ' '.trim($sourceDb->source_title); }
-						if ($sourceDb->source_date or $sourceDb->source_place){ $text.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
+						$text.= ', '.__('Source');
 					}
+
+					// *** Quality (function show_quality can be found in script: family.php) ***
+					if ($connectDb->connect_quality=='0' or $connectDb->connect_quality){
+						$quality_text=show_quality($connectDb->connect_quality);
+						$text.= ' <i>('.$quality_text.')</i>';
+					}
+
+					$text.= ': ';
+					if ($sourceDb->source_title){ $text.= ' '.trim($sourceDb->source_title); }
+					if ($sourceDb->source_date or $sourceDb->source_place){ $text.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
+					if ($user['group_sources']=='j') $text.= '</a>'; // *** End of link ***
 				} // *** End of extended source ***
 
 				//else{
@@ -161,9 +165,10 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 function show_sources_footnotes(){
 	global $source_footnotes, $language, $db, $dbh, $tree_prefix_quoted, $user;
 	global $uri_path, $source_footnote_connect_id;
+	$text='';
 
 	if (count($source_footnote_connect_id)>0){
-		echo '<h3>'.__('Sources').'</h3>';
+		$text.='<h3>'.__('Sources')."</h3>\n";
 	}
 
 	for ($j=0; $j<=(count($source_footnote_connect_id)-1); $j++){
@@ -178,50 +183,50 @@ function show_sources_footnotes(){
 			$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);
 
 			// *** Always show title of source, show link only after permission check ***
-			echo '<a name="source_ref'.($j+1).'"><b>'.($j+1).')</b></a>';
+			$text.='<a name="source_ref'.($j+1).'"><b>'.($j+1).')</b></a>';
 			if ($user['group_sources']=='j'){
-				echo ' <a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].
+				$text.=' <a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].
 				'&amp;id='.$sourceDb->source_gedcomnr.'">'.strtolower(__('Source')).': ';
-				if ($sourceDb->source_title){ echo " ".trim($sourceDb->source_title); }
-				echo '</a>';
+				if ($sourceDb->source_title){ $text.=" ".trim($sourceDb->source_title); }
+				$text.='</a>';
 			}
 			else{
-				if ($sourceDb->source_title){ echo ' '.trim($sourceDb->source_title); }
+				if ($sourceDb->source_title){ $text.=' '.trim($sourceDb->source_title); }
 			}
 			if ($connectDb->connect_date or $connectDb->connect_place){
-				//if ($connectDb->source_title){ echo ', '; }
-				echo " ".date_place($connectDb->connect_date, $connectDb->connect_place);
+				//if ($connectDb->source_title){ $text.=', '; }
+				$text.=" ".date_place($connectDb->connect_date, $connectDb->connect_place);
 			}
 
 			// *** Show extra source text ***
 			if ($connectDb->connect_text){
-				echo ' '.nl2br($connectDb->connect_text);
+				$text.=' '.nl2br($connectDb->connect_text);
 			}
 		}
 
 		else{
 			// *** No extended source connected ***
-			echo '<a name="source_ref'.($j+1).'">'.($j+1).')</a>';
+			$text.='<a name="source_ref'.($j+1).'">'.($j+1).')</a>';
 
 			// *** Source text ***
-			echo ' '.nl2br($connectDb->connect_text);
+			$text.=' '.nl2br($connectDb->connect_text);
 		}
 
 		// *** Show rest of source items ***
 
 		// *** Source role ***
 		if ($connectDb->connect_role){
-			echo ', '.__('role').': '.$connectDb->connect_role;
+			$text.=', '.__('role').': '.$connectDb->connect_role;
 		}
 
 		// *** Source page ***
 		if ($connectDb->connect_page){
-			echo ', '.strtolower(__('Page')).': '.$connectDb->connect_page;
+			$text.=', '.strtolower(__('Page')).': '.$connectDb->connect_page;
 		}
 
-		echo '<br>';
+		$text.="<br>\n";
 
 	} // *** End of loop source footnotes ***
-
+	return $text;
 }
 ?>

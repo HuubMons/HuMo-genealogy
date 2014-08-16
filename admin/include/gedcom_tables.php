@@ -4,13 +4,14 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-print '<p><b>'.__('creating tables:').'</b><br>';
+//print '<p><b>'.__('creating tables:').'</b><br>';
+if (isset($show_gedcom_status)) print '<p><b>'.__('creating tables:').'</b><br>';
 
 // *** Completely remove old table ***
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."persoon");
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."person");
 // *** Generate new table ***
-print $_SESSION['tree_prefix'].__('creating persons...').'<br>';
+if (isset($show_gedcom_status)) print $_SESSION['tree_prefix'].__('creating persons...').'<br>';
 $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."person (
 	pers_id mediumint(6) unsigned NOT NULL auto_increment,
 	pers_gedcomnumber varchar(20) CHARACTER SET utf8,
@@ -72,7 +73,7 @@ $tbldb = $dbh->query($tbldbqry);
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."gezin");
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."family");
 // *** Generate new table ***
-print $_SESSION['tree_prefix'].__('creating family...').'<br>';
+if (isset($show_gedcom_status)) print $_SESSION['tree_prefix'].__('creating family...').'<br>';
 $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."family (
 	fam_id mediumint(6) unsigned NOT NULL auto_increment,
 	fam_gedcomnumber varchar(20) CHARACTER SET utf8,
@@ -128,7 +129,7 @@ $tbldb = $dbh->query($tbldbqry);
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."teksten"); // Remove old table.
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."texts"); // Remove table.
 // *** Generate new table ***
-print $_SESSION['tree_prefix'].__('creating texts...').'<br>';
+if (isset($show_gedcom_status)) print $_SESSION['tree_prefix'].__('creating texts...').'<br>';
 $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."texts (
 	text_id mediumint(6) unsigned NOT NULL auto_increment,
 	text_gedcomnr varchar(20) CHARACTER SET utf8,
@@ -146,7 +147,7 @@ $tbldb = $dbh->query($tbldbqry);
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."bronnen"); // Remove old table.
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."sources"); // Remove table.
 // *** Generate new table ***
-print $_SESSION['tree_prefix'].__('creating sources...').'<br>';
+if (isset($show_gedcom_status)) print $_SESSION['tree_prefix'].__('creating sources...').'<br>';
 $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."sources (
 	source_id mediumint(6) unsigned NOT NULL auto_increment,
 	source_status varchar(10) CHARACTER SET utf8,
@@ -181,7 +182,7 @@ $tbldb = $dbh->query($tbldbqry);
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."adressen"); // Remove old table.
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."addresses"); // Remove table.
 // *** Generate new table ***
-print $_SESSION['tree_prefix'].__('creating addresses...').'<br>';
+if (isset($show_gedcom_status)) print $_SESSION['tree_prefix'].__('creating addresses...').'<br>';
 $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."addresses (
 	address_id mediumint(6) unsigned NOT NULL auto_increment,
 	address_gedcomnr varchar(20) CHARACTER SET utf8,
@@ -209,7 +210,7 @@ $tbldb = $dbh->query($tbldbqry) or die(mysql_error());
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."vermeldingen"); // Remove old table.
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."events"); // Remove table.
 // *** Generate new table ***
-print $_SESSION['tree_prefix'].__('creating notes...').'<br>';
+if (isset($show_gedcom_status)) print $_SESSION['tree_prefix'].__('creating notes...').'<br>';
 $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."events (
 	event_id mediumint(6) unsigned NOT NULL auto_increment,
 	event_gedcomnr varchar(20) CHARACTER SET utf8,
@@ -240,7 +241,7 @@ $tbldb = $dbh->query($tbldbqry);
 // *** Sources connections table ***
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."connections"); // Remove table.
 // *** Generate new table ***
-print $_SESSION['tree_prefix'].__('creating connections...').'<br>';
+if (isset($show_gedcom_status)) print $_SESSION['tree_prefix'].__('creating connections...').'<br>';
 $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."connections (
 	connect_id mediumint(6) unsigned NOT NULL auto_increment,
 	connect_order mediumint(6),
@@ -270,7 +271,7 @@ $tbldb = $dbh->query($tbldbqry);
 // *** Repositories table ***
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."repositories"); // Remove table.
 // *** Generate new table ***
-print $_SESSION['tree_prefix'].__('creating repositories...').'<br>';
+if (isset($show_gedcom_status)) print $_SESSION['tree_prefix'].__('creating repositories...').'<br>';
 $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."repositories (
 	repo_id mediumint(6) unsigned NOT NULL auto_increment,
 	repo_gedcomnr varchar(20) CHARACTER SET utf8,
@@ -294,5 +295,5 @@ $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."repositories (
 	PRIMARY KEY (`repo_id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $tbldb = $dbh->query($tbldbqry);
-print '<b>'.__('No error messages above? In that case the tables have been created!').'</b><br>';
+if (isset($show_gedcom_status)) print '<b>'.__('No error messages above? In that case the tables have been created!').'</b><br>';
 ?>

@@ -26,6 +26,7 @@ $rom_nr = array( 1=>'I',    2=>'II',    3=>'III',    4=>'IV',    5=>'V',    6=>'
 
 $screen_mode=''; 
 if (isset($_POST["screen_mode"]) AND $_POST["screen_mode"]=='PDF'){ $screen_mode='PDF'; }
+if (isset($_POST["screen_mode"]) AND $_POST["screen_mode"]=='RTF'){ $screen_mode='RTF'; }
 if (isset($_POST["screen_mode"]) AND $_POST["screen_mode"]=='ASPDF'){ $screen_mode='ASPDF'; }
 if (isset($_GET["screen_mode"]) AND $_GET["screen_mode"]=='ancestor_sheet'){ $screen_mode='ancestor_sheet'; }
 if (isset($_GET["screen_mode"]) AND $_GET["screen_mode"]=='ancestor_chart'){ $screen_mode='ancestor_chart'; }
@@ -82,7 +83,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 	}
 }
 
-if($screen_mode!='PDF' AND $screen_mode!="ancestor_sheet" AND $screen_mode!='ASPDF' AND $hourglass===false) {
+if($screen_mode!='PDF' AND $screen_mode!='RTF' AND $screen_mode!="ancestor_sheet" AND $screen_mode!='ASPDF' AND $hourglass===false) {
 
 	echo '<div class="standard_header fonts">';
 		if ($screen_mode=='ancestor_chart'){
@@ -98,6 +99,16 @@ if($screen_mode!='PDF' AND $screen_mode!="ancestor_sheet" AND $screen_mode!='ASP
 				print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
 				print '<input type="hidden" name="screen_mode" value="PDF">';
 				print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
+				print '</form>';
+			}
+$user["group_rtf_button"]='y';
+			if($user["group_rtf_button"]=='y' AND $language["dir"]!="rtl") {
+				// Show rtf button
+				print ' <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
+				print '<input type="hidden" name="id" value="'.$family_id.'">';
+				print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
+				print '<input type="hidden" name="screen_mode" value="RTF">';
+				print '<input class="fonts" type="Submit" name="submit" value="'.__('RTF Report').'">';
 				print '</form>';
 			}
 		}
@@ -127,7 +138,76 @@ if($screen_mode=='PDF') {
 	$pdf->Ln(4);
 	$pdf->SetFont('Arial','',12);
 }
+if($screen_mode=='RTF') {  // initialize rtf generation
+	require_once 'include/phprtflite/lib/PHPRtfLite.php';
 
+	// *** registers PHPRtfLite autoloader (spl) ***
+	PHPRtfLite::registerAutoloader();
+	// *** rtf document instance ***
+	$rtf = new PHPRtfLite();
+
+	// *** Add section ***
+	$sect = $rtf->addSection();
+
+	// *** RTF Settings ***
+	$arial10 = new PHPRtfLite_Font(10, 'Arial');	
+	$arial12 = new PHPRtfLite_Font(12, 'Arial');
+	$arial14 = new PHPRtfLite_Font(14, 'Arial', '#000066');
+	//Fonts
+	$fontHead = new PHPRtfLite_Font(12, 'Arial');
+	$fontSmall = new PHPRtfLite_Font(3);
+	$fontAnimated = new PHPRtfLite_Font(10);
+	$fontLink = new PHPRtfLite_Font(10, 'Helvetica', '#0000cc');
+
+	$parNames = new PHPRtfLite_ParFormat();
+	$parNames->setBackgroundColor('#FFFFFF');
+	$parNames->setIndentLeft(0);
+	$parNames->setSpaceBefore(0);
+	$parNames->setSpaceAfter(0);
+
+	$parHead = new PHPRtfLite_ParFormat(PHPRtfLite_ParFormat::TEXT_ALIGN_CENTER);
+	$parHead->setSpaceBefore(3);
+	$parHead->setSpaceAfter(8);
+	$parHead->setBackgroundColor('#baf4c1');
+
+	$parGen = new PHPRtfLite_ParFormat(PHPRtfLite_ParFormat::TEXT_ALIGN_CENTER);
+	$parGen->setSpaceBefore(0);
+	$parGen->setSpaceAfter(8);
+	$parGen->setBackgroundColor('#baf4c1');
+
+	$parSimple = new PHPRtfLite_ParFormat();
+	$parSimple->setIndentLeft(2.5);
+	$parSimple->setIndentRight(0.5);
+
+	// *** Generate title of RTF file ***
+	$pers = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$family_id'");
+	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
+	// *** Use person class ***
+	$pers_cls = New person_cls;
+	$pers_cls->construct($persDb);
+	$name=$pers_cls->person_name($persDb);
+		$title=__('Ancestor report').__(' of ').$name["standard_name"];
+
+	//$sect->writeText($title, $arial14, new PHPRtfLite_ParFormat());
+	$sect->writeText($title, $arial14, $parHead);
+
+	$file_name=date("Y_m_d_H_i_s").'.rtf';
+	// *** FOR TESTING PURPOSES ONLY ***
+	if (@file_exists("../gedcom-bestanden")) $file_name='../gedcom-bestanden/'.$file_name;
+		else $file_name='tmp_files/'.$file_name;
+
+	// *** Automatically remove old RTF files ***
+	$dh  = opendir('tmp_files');
+	while (false !== ($filename = readdir($dh))) {
+		if (substr($filename, -3) == "rtf"){
+			//echo 'tmp_files/'.$filename.'<br>';
+			// *** Remove files older then today ***
+			if (substr($filename,0,10)!=date("Y_m_d")) unlink('tmp_files/'.$filename);
+		}
+	}
+
+	//echo $file_name;
+}
 // some PDO prepared statements before any loops are initiated
 $pers_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 $pers_prep->bindParam(1,$pers_prep_var);
@@ -193,7 +273,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 	$language["gen49"]=__('46th Great-Grandparents');
 	$language["gen50"]=__('47th Great-Grandparents');
 
-	if($screen_mode!='PDF') {
+	if($screen_mode!='PDF' AND $screen_mode!='RTF') {
 		echo '<table style="border-style:none" align="center"><tr><td></td></tr>';
 	}
 
@@ -213,7 +293,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 		$marriage_gedcomnumber=$marriage_gedcomnumber2;
 		unset($marriage_gedcomnumber2);
 
-		if($screen_mode!='PDF') {
+		if($screen_mode!='PDF' AND $screen_mode!='RTF') {
 			echo '</table>';
 
 				echo '<div class="standard_header fonts">'.__('generation ').$rom_nr[$generation];
@@ -223,6 +303,10 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				echo '</div><br>';
 
 			echo '<table class="humo standard" align="center">';
+		}
+		elseif($screen_mode=="RTF") {
+			$rtf_text=__('generation ').$rom_nr[$generation];
+			$sect->writeText($rtf_text, $arial14, $parGen);
 		}
 		else {
 			//echo 'pdf generation<br>';
@@ -281,7 +365,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					$marriage_cls->construct($familyDb, $privacy_man, $privacy_woman);
 					$family_privacy=$marriage_cls->privacy;
 				}
-				if($screen_mode!='PDF') {
+				if($screen_mode!='PDF' AND $screen_mode!='RTF') {
 					echo '<tr><td valign="top" width="80" nowrap><b>'.$ancestor_number[$i].
 						'</b> ('.floor($ancestor_number[$i]/2).')</td>';
 
@@ -300,6 +384,73 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 
 					echo '</div>';
 					echo '</td></tr>';
+				}
+				elseif($screen_mode == "RTF") {
+					$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
+					$table = $sect->addTable();
+					$table->addRow(1);
+					$table->addColumnsList(array(2,0.5,14));
+
+					$rtf_text = $ancestor_number[$i]."(".floor($ancestor_number[$i]/2).")";
+					$cell = $table->getCell(1, 1);
+					$cell->writeText($rtf_text, $arial10, $parNames);
+					$rtf_text = strip_tags($man_cls->name_extended("child"));
+					$cell = $table->getCell(1, 2);
+					if ($person_manDb->pers_sexe=="M")
+						$cell->addImage('images/man.jpg', null);
+					elseif ($person_manDb->pers_sexe=="F")
+						$cell->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
+					else
+						$cell->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
+					$cell = $table->getCell(1, 3);
+					$cell->writeText($rtf_text, $arial12, $parNames);
+					if ($listednr=='') {
+						$rtf_text=strip_tags($man_cls->person_data("standard", $ancestor_array[$i]));
+						$rtf_text = substr($rtf_text,0,-1); // take off newline
+					}
+					else { // person was already listed
+						$rtf_text=strip_tags('('.__('Allready listed above as number ').$listednr.') ');
+					}
+					$cell->writeText($rtf_text, $arial12, $parNames);
+
+					$result = show_media($person_manDb,''); 
+					if(isset($result[1]) AND count($result[1])>0) { 
+						$break=1; $textarr = Array(); $goodpics=FALSE;
+						foreach($result[1] as $key => $value) {  
+							if (strpos($key,"path")!==FALSE) {
+								$type = substr($result[1][$key],-3); 
+								if($type=="jpg" OR $type=="png") {
+									if($goodpics==FALSE) { //found 1st pic - make table
+										$table2 = $sect->addTable();
+										$table2->addRow(0.1);
+										$table2->addColumnsList(array(2.5,5,5));
+										$goodpics=TRUE;
+									}
+									$break++;
+									$cell = $table2->getCell(1, $break);
+									$imageFile = $value;
+									$image = $cell->addImage($imageFile);
+									$txtkey = str_replace("pic_path","pic_text",$key); 
+									if(isset($result[1][$txtkey])) {
+										$textarr[]=$result[1][$txtkey];
+									}
+									else { $textarr[]="&nbsp;"; }
+								}
+
+							}
+							if($break==3) break; // max 2 pics
+						} 
+						$break1=1;
+						if(count($textarr)>0) {
+							$table2->addRow(0.1); //add row only if there is photo text
+							foreach($textarr as $value) {
+								$break1++;
+								$cell = $table2->getCell(2, $break1);
+								$cell->writeText($value);
+							}
+						}  
+					}
+
 				}
 				else {
 					// pdf NUMBER + MAN NAME + DATA
@@ -335,14 +486,18 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 
 				// Show own marriage (new line, after man)
 				if (strtolower($person_manDb->pers_sexe)=='m' AND $ancestor_number[$i]>1){
-					if($screen_mode!='PDF') {
+					if($screen_mode!='PDF' AND $screen_mode!='RTF') {
 						echo '<tr><td>&nbsp;</td><td>';
 						echo '<span class="marriage">';
 					}
 					// *** $family_privacy='1' betekent filteren ***
 					if ($family_privacy){
-						if($screen_mode!='PDF') {
+						if($screen_mode!='PDF' AND $screen_mode!='RTF') {
 							echo __(' to: ');
+						}
+						elseif($screen_mode=="RTF") {
+							$rtf_text = __(' to: ');
+							$sect->writeText($rtf_text, $arial12, $parSimple);
 						}
 						else {
 							$pdf->SetX(37);
@@ -351,8 +506,12 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 
 						// If privacy filter is activated, show divorce
 						if ($familyDb->fam_div_date OR $familyDb->fam_div_place){
-							if($screen_mode!='PDF') {
+							if($screen_mode!='PDF' AND $screen_mode!='RTF') {
 								echo ' <span class="divorse">('.trim(__('divorced ')).')</span>';
+							}
+							elseif($screen_mode=="RTF") {
+								$rtf_text = trim(__('divorced '));
+								$sect->writeText($rtf_text, $arial12, $parSimple);
 							}
 							else {
 								$pdf->Write(6,' ('.trim(__('divorced ')).')');
@@ -364,8 +523,12 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 						//}
 					}
 					else{
-						if($screen_mode!='PDF') {
+						if($screen_mode!='PDF' AND $screen_mode!='RTF' ) {
 							echo $marriage_cls->marriage_data();
+						}
+						elseif($screen_mode=="RTF") {
+							$rtf_text = strip_tags($marriage_cls->marriage_data());
+							$sect->writeText($rtf_text, $arial12, $parSimple);
 						}
 						else {
 							//show pdf MARRIAGE DATA
@@ -375,7 +538,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 							}
 						}
 					}
-					if($screen_mode!='PDF') {
+					if($screen_mode!='PDF' AND $screen_mode!='RTF') {
 						echo '</span>';
 						echo '</td></tr>';
 					}
@@ -415,7 +578,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				$man_cls->construct($person_manDb);
 				$privacy_man=$man_cls->privacy;
 
-				if($screen_mode!='PDF') {  
+				if($screen_mode!='PDF' AND $screen_mode!='RTF') {  
 					echo '<tr><td valign="top" width="80" nowrap><b>'.$ancestor_number[$i].
 						'</b> ('.floor($ancestor_number[$i]/2).')</td>';
 
@@ -427,6 +590,29 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 						echo $man_cls->person_data("standard", $ancestor_array[$i]);
 					echo '</div>';
 					echo '</td></tr>';  
+				}
+				elseif($screen_mode == "RTF") {
+					$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
+					$table = $sect->addTable();
+					$table->addRow(1);
+					$table->addColumnsList(array(2,0.5,14));
+
+					$rtf_text = $ancestor_number[$i]."(".floor($ancestor_number[$i]/2).")";
+					$cell = $table->getCell(1, 1);
+					$cell->writeText($rtf_text, $arial10, $parNames);
+					$cell = $table->getCell(1, 2);
+					if ($person_manDb AND $person_manDb->pers_sexe=="M")
+						$cell->addImage('images/man.jpg', null);
+					elseif ($person_manDb AND $person_manDb->pers_sexe=="F")
+						$cell->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
+					else
+						$cell->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
+					$rtf_text = strip_tags($man_cls->name_extended("child"));
+					$cell = $table->getCell(1, 3);
+					$cell->writeText($rtf_text, $arial12, $parNames);
+					$rtf_text=strip_tags($man_cls->person_data("standard", $ancestor_array[$i]));
+					$rtf_text = substr($rtf_text,0,-1); // take off newline
+					$cell->writeText($rtf_text, $arial12, $parNames);
 				}
 				else {
 					// pdf NUMBER + NAME + DATA  NN PERSON
@@ -1288,14 +1474,30 @@ if($screen_mode=='') {
 	echo '</table>';
 	// *** If source footnotes are selected, show them here ***
 	if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_presentation']=='footnote'){
-		show_sources_footnotes();
+		echo show_sources_footnotes();
 	}
 }
 
-if($hourglass===false) {
+if($hourglass===false) { 
 	// Finishing code for ancestor chart and ancestor report
-	if($screen_mode != 'PDF' AND $screen_mode != "ASPDF") {
+	if($screen_mode != 'PDF' AND $screen_mode != "ASPDF" AND $screen_mode != 'RTF') {
 		include_once(CMS_ROOTPATH."footer.php");
+	}
+
+	elseif($screen_mode=='RTF') { // initialize rtf generation
+		// *** Save rtf document to file ***
+		$rtf->save($file_name);
+
+		echo '<br><br><a href="'.$file_name.'">'.__('Download RTF report.').'</a>';
+		echo '<br><br>'.__('TIP: Don\'t use Wordpad to open this file (the lay-out will be wrong!). It\'s better to use a text processor like Word or OpenOffice Writer.');
+
+		$text='<br><br><form method="POST" action="'.$uri_path.'report_ancestor.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$family_id.'" style="display : inline;">';
+
+		print '<input type="hidden" name="screen_mode" value="">';
+
+		$text.='<input class="fonts" type="Submit" name="submit" value="'.__('Back').'">';
+		$text.='</form> ';
+		echo $text;
 	}
 	
 	// Finishing code for ancestor report PDF and ancestor sheet PDF (ASPDF)
