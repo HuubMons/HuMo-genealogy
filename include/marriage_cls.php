@@ -523,7 +523,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 					$event_text='';
 				}
 
-				$text.= language_event($event_gedcom);
+				//$text.= language_event($event_gedcom);
+				$text.= '<b>'.language_event($event_gedcom).'</b>';
 				if(isset($pdfrel["event".$i."_ged"])) {$pdfrel["event".$i."_ged"].=language_event($event_gedcom); }
 				else { $pdfrel["event".$i."_ged"]=language_event($event_gedcom); }
 

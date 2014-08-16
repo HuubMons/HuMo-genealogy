@@ -258,122 +258,95 @@ if(isset($_GET['sort_desc'])) {
 		else { $desc_asc=" ASC "; $sort_desc=0; $_SESSION['sort_desc']=0; }
 }
 
-// SOME DEFAULTS
+// *** SOME DEFAULTS ***
 $last_or_patronym=" pers_lastname ";
 if ($index_list=='patronym') $last_or_patronym = " pers_patronym ";
 
 $orderby = $last_or_patronym.$desc_asc.", pers_firstname ".$desc_asc;
 if ($user['group_kindindex']=="j" AND $index_list!='patronym'){ $orderby = " concat_name ".$desc_asc; }
-$selectsort = '';
 
-if(isset($_SESSION['sort']) AND !isset($_GET['sort'])) {
-	$selectsort = $_SESSION['sort'];
-	if($_SESSION['sort']=="sort_lastname")  {
+$selectsort = ''; if(isset($_SESSION['sort']) AND !isset($_GET['sort'])) { $selectsort = $_SESSION['sort']; }
+
+if(isset($_GET['sort'])) {
+	if($_GET['sort']=="sort_lastname") { $selectsort="sort_lastname"; $_SESSION['sort']=$selectsort; }
+	if($_GET['sort']=="sort_firstname") { $selectsort="sort_firstname"; $_SESSION['sort']=$selectsort; }
+	if($_GET['sort']=="sort_birthdate") { $selectsort="sort_birthdate"; $_SESSION['sort']=$selectsort; }
+	if($_GET['sort']=="sort_birthplace") { $selectsort="sort_birthplace"; $_SESSION['sort']=$selectsort; }
+	//if($_GET['sort']=="sort_baptdate") { $selectsort="sort_baptdate"; $_SESSION['sort']=$selectsort; }
+	if($_GET['sort']=="sort_deathdate") { $selectsort="sort_deathdate"; $_SESSION['sort']=$selectsort; }
+	if($_GET['sort']=="sort_deathplace") { $selectsort="sort_deathplace"; $_SESSION['sort']=$selectsort; }
+	//if($_GET['sort']=="sort_burieddate") { $selectsort="sort_burieddate"; $_SESSION['sort']=$selectsort; }
+}
+
+if ($selectsort){
+	if($selectsort=="sort_lastname")  {
 		$orderby = $last_or_patronym.$desc_asc.", pers_firstname ".$desc_asc;
 		if ($user['group_kindindex']=="j" AND $index_list!='patronym'){ $orderby = " concat_name ".$desc_asc; }
 	}
-	if($_SESSION['sort']=="sort_firstname") {
+	if($selectsort=="sort_firstname") {
 		$orderby = " pers_firstname ".$desc_asc.",".$last_or_patronym.$desc_asc;
 	}
-	if($_SESSION['sort']=="sort_birthdate") {
+
+	if($selectsort=="sort_birthdate") {
 		//$make_date = ", right(pers_birth_date,4) as year,
 		//date_format( str_to_date( substring(pers_birth_date,-8,3),'%b' ),'%m') as month,
 		//date_format( str_to_date( left(pers_birth_date,2),'%d' ),'%d') as day";
 		//$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
-		$make_date = ", CONCAT(right(pers_birth_date,4), substring(pers_birth_date,-8,3), left(pers_birth_date,2)) as year";
-		$make_date.= ", CONCAT(right(pers_bapt_date,4), substring(pers_bapt_date,-8,3), left(pers_bapt_date,2)) as year2";
-		$orderby = " year".$desc_asc.", year2".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
+
+		// *** Replace ABT, AFT, BEF items and sort by birth or baptise date ***
+		$make_date= ", CASE
+			WHEN pers_birth_date = '' THEN replace(replace(replace(pers_bapt_date,'ABT ',''),'AFT ',''),'BEF ','')
+			ELSE replace(replace(replace(pers_birth_date,'ABT ',''),'AFT ',''),'BEF ','')
+			END AS year";
+		$orderby = " CONCAT( right(year,4),
+			date_format( str_to_date( substring(year,-8,3),'%b' ) ,'%m'),
+			date_format( str_to_date( substring(year,-11,2),'%d' ),'%d')
+			)".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
 	}
-	if($_SESSION['sort']=="sort_birthplace") {
+	if($selectsort=="sort_birthplace") {
 		//$orderby = " pers_birth_place ".$desc_asc.",".$last_or_patronym.$desc_asc;
-		$orderby = " pers_birth_place ".$desc_asc.", pers_bapt_place ".$desc_asc.", ".$last_or_patronym.$desc_asc;
+		$make_date= ", CASE
+			WHEN pers_birth_place = '' THEN pers_bapt_place ELSE pers_birth_place
+			END AS place";
+		$orderby = " place".$desc_asc.", ".$last_or_patronym.$desc_asc;
 	}
-	if($_SESSION['sort']=="sort_deathdate") {
+
+	if($selectsort=="sort_deathdate") {
 		//$make_date = ", right(pers_death_date,4) as year,
 		//date_format( str_to_date( substring(pers_death_date,-8,3),'%b' ),'%m') as month,
 		//date_format( str_to_date( left(pers_death_date,2),'%d' ),'%d') as day";
 		//$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
-		$make_date = ", CONCAT(right(pers_death_date,4), substring(pers_death_date,-8,3), left(pers_death_date,2)) as year";
-		$make_date.= ", CONCAT(right(pers_buried_date,4), substring(pers_buried_date,-8,3), left(pers_buried_date,2)) as year2";
-		$orderby = " year".$desc_asc.", year2".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
+
+		// *** Replace ABT, AFT, BEF items and sort by death or buried date ***
+		$make_date= ", CASE
+			WHEN pers_death_date = '' THEN replace(replace(replace(pers_buried_date,'ABT ',''),'AFT ',''),'BEF ','')
+			ELSE replace(replace(replace(pers_death_date,'ABT ',''),'AFT ',''),'BEF ','')
+			END AS year";
+		$orderby = " CONCAT( right(year,4),
+			date_format( str_to_date( substring(year,-8,3),'%b' ) ,'%m'),
+			date_format( str_to_date( substring(year,-11,2),'%d' ),'%d')
+			)".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
 	}
-	if($_SESSION['sort']=="sort_deathplace") {
+	if($selectsort=="sort_deathplace") {
 		//$orderby = " pers_death_place ".$desc_asc.",".$last_or_patronym.$desc_asc;
-		$orderby = " pers_death_place ".$desc_asc.", pers_buried_place ".$desc_asc.",  ".$last_or_patronym.$desc_asc;
+		$make_date= ", CASE
+			WHEN pers_death_place = '' THEN pers_buried_place ELSE pers_death_place
+			END AS place";
+		$orderby = " place".$desc_asc.", ".$last_or_patronym.$desc_asc;
 	}
 	/*
-	if($_SESSION['sort']=="sort_baptdate") {
+	// *** Old code for seperate columns baptise and buried dates ***
+	if($selectsort=="sort_baptdate") {
 		$make_date = ", right(pers_bapt_date,4) as year,
 		date_format( str_to_date( substring(pers_bapt_date,-8,3),'%b' ),'%m') as month,
 		date_format( str_to_date( left(pers_bapt_date,2),'%d' ),'%d') as day";
 		$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
 	}
-	if($_SESSION['sort']=="sort_burieddate") {
+	if($selectsort=="sort_burieddate") {
 		$make_date = ", right(pers_buried_date,4) as year,
 		date_format( str_to_date( substring(pers_buried_date,-8,3),'%b' ),'%m') as month,
 		date_format( str_to_date( left(pers_buried_date,2),'%d' ),'%d') as day";
 		$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
-	}
-	*/
-}
-if(isset($_GET['sort']))  {
-	if($_GET['sort']=="sort_lastname") {
-		$orderby = $last_or_patronym.$desc_asc.", pers_firstname ".$desc_asc;
-		if ($user['group_kindindex']=="j" AND $index_list!='patronym'){ $orderby = " concat_name ".$desc_asc; }
-		$selectsort="sort_lastname"; $_SESSION['sort']=$selectsort;
-	}
-
-	if($_GET['sort']=="sort_firstname") {
-		$orderby = " pers_firstname ".$desc_asc.", ".$last_or_patronym.$desc_asc;
-		$selectsort="sort_firstname"; $_SESSION['sort']=$selectsort;
-	}
-
-	if($_GET['sort']=="sort_birthdate") {
-		//$make_date = ", right(pers_birth_date,4) as year,
-		//date_format( str_to_date( substring(pers_birth_date,-8,3),'%b' ),'%m') as month,
-		//date_format( str_to_date( left(pers_birth_date,2),'%d' ),'%d') as day";
-		//$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
-		$make_date = ", CONCAT(right(pers_birth_date,4), substring(pers_birth_date,-8,3), left(pers_birth_date,2)) as year";
-		$make_date.= ", CONCAT(right(pers_bapt_date,4), substring(pers_bapt_date,-8,3), left(pers_bapt_date,2)) as year2";
-		$orderby = " year".$desc_asc.", year2".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
-		$selectsort="sort_birthdate"; $_SESSION['sort']=$selectsort;
-	}
-	if($_GET['sort']=="sort_birthplace") {
-		//$orderby = " pers_birth_place ".$desc_asc.", ".$last_or_patronym.$desc_asc;
-		$orderby = " pers_birth_place ".$desc_asc.", pers_bapt_place ".$desc_asc.", ".$last_or_patronym.$desc_asc;
-		$selectsort="sort_birthplace"; $_SESSION['sort']=$selectsort;
-	}
-
-	if($_GET['sort']=="sort_deathdate") {
-		//$make_date = ", right(pers_death_date,4) as year,
-		//date_format( str_to_date( substring(pers_death_date,-8,3),'%b' ),'%m') as month,
-		//date_format( str_to_date( left(pers_death_date,2),'%d' ),'%d') as day";
-		//$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
-		$make_date = ", CONCAT(right(pers_death_date,4), substring(pers_death_date,-8,3), left(pers_death_date,2)) as year";
-		$make_date.= ", CONCAT(right(pers_buried_date,4), substring(pers_buried_date,-8,3), left(pers_buried_date,2)) as year2";
-		$orderby = " year".$desc_asc.", year2".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
-		$selectsort="sort_deathdate"; $_SESSION['sort']=$selectsort;
-	}
-	if($_GET['sort']=="sort_deathplace") {
-		//$orderby = " pers_death_place ".$desc_asc.", ".$last_or_patronym.$desc_asc;
-		$orderby = " pers_death_place ".$desc_asc.", pers_buried_place ".$desc_asc.",  ".$last_or_patronym.$desc_asc;
-		$selectsort="sort_deathplace"; $_SESSION['sort']=$selectsort;
-	}
-
-	/*
-	if($_GET['sort']=="sort_baptdate") {
-		$make_date = ", right(pers_bapt_date,4) as year,
-		date_format( str_to_date( substring(pers_bapt_date,-8,3),'%b' ),'%m') as month,
-		date_format( str_to_date( left(pers_bapt_date,2),'%d' ),'%d') as day";
-		$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
-		$selectsort="sort_baptdate"; $_SESSION['sort']=$selectsort;
-	}
-	if($_GET['sort']=="sort_burieddate") {
-		$make_date = ", right(pers_buried_date,4) as year,
-		date_format( str_to_date( substring(pers_buried_date,-8,3),'%b' ),'%m') as month,
-		date_format( str_to_date( left(pers_buried_date,2),'%d' ),'%d') as day";
-		$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
-		$selectsort="sort_burieddate"; $_SESSION['sort']=$selectsort;
 	}
 	*/
 }
@@ -434,25 +407,17 @@ if (isset($_GET['part_lastname'])){
 }
 
 // ***  ADVANCED SEARCH added by Yossi Beck, translated and integrated in person search screen by Huub. *** //
-$selection['birth_place']='';
-if (isset($_POST['birth_place'])){ $selection['birth_place']=$_POST['birth_place']; }
-$selection['part_birth_place']='';
-if (isset($_POST['part_birth_place'])){ $selection['part_birth_place']=$_POST['part_birth_place']; }
+$selection['birth_place']=''; if (isset($_POST['birth_place'])){ $selection['birth_place']=$_POST['birth_place']; }
+$selection['part_birth_place']=''; if (isset($_POST['part_birth_place'])){ $selection['part_birth_place']=$_POST['part_birth_place']; }
 
-$selection['death_place']='';
-if (isset($_POST['death_place'])){ $selection['death_place']=$_POST['death_place']; }
-$selection['part_death_place']='';
-if (isset($_POST['part_death_place'])){ $selection['part_death_place']=$_POST['part_death_place']; }
+$selection['death_place']=''; if (isset($_POST['death_place'])){ $selection['death_place']=$_POST['death_place']; }
+$selection['part_death_place']=''; if (isset($_POST['part_death_place'])){ $selection['part_death_place']=$_POST['part_death_place']; }
 
-$selection['birth_year']='';
-if (isset($_POST['birth_year'])){ $selection['birth_year']=$_POST['birth_year']; }
-$selection['birth_year_end']='';
-if (isset($_POST['birth_year_end'])){ $selection['birth_year_end']=$_POST['birth_year_end']; }
+$selection['birth_year']=''; if (isset($_POST['birth_year'])){ $selection['birth_year']=$_POST['birth_year']; }
+$selection['birth_year_end']=''; if (isset($_POST['birth_year_end'])){ $selection['birth_year_end']=$_POST['birth_year_end']; }
 
-$selection['death_year']='';
-if (isset($_POST['death_year'])){ $selection['death_year']=$_POST['death_year']; }
-$selection['death_year_end']='';
-if (isset($_POST['death_year_end'])){ $selection['death_year_end']=$_POST['death_year_end']; }
+$selection['death_year']=''; if (isset($_POST['death_year'])){ $selection['death_year']=$_POST['death_year']; }
+$selection['death_year_end']=''; if (isset($_POST['death_year_end'])){ $selection['death_year_end']=$_POST['death_year_end']; }
 
 $selection['spouse_firstname']='';
 if (isset($_POST['spouse_firstname'])){
@@ -471,41 +436,29 @@ if (isset($_POST['spouse_lastname'])){
 $selection['part_spouse_lastname']='';
 if (isset($_POST['part_spouse_lastname'])){ $selection['part_spouse_lastname']=$_POST['part_spouse_lastname']; }
 
-$selection['sexe']='';
-if (isset($_POST['sexe'])){ $selection['sexe']=$_POST['sexe']; }
+$selection['sexe']=''; if (isset($_POST['sexe'])){ $selection['sexe']=$_POST['sexe']; }
 
-$selection['own_code']='';
-if (isset($_POST['own_code'])){ $selection['own_code']=$_POST['own_code']; }
-$selection['part_own_code']='';
-if (isset($_POST['part_own_code'])){ $selection['part_own_code']=$_POST['part_own_code']; }
+$selection['own_code']=''; if (isset($_POST['own_code'])){ $selection['own_code']=$_POST['own_code']; }
+$selection['part_own_code']=''; if (isset($_POST['part_own_code'])){ $selection['part_own_code']=$_POST['part_own_code']; }
 
 // *** Profession ***
-$selection['pers_profession']='';
-if (isset($_POST['pers_profession'])){ $selection['pers_profession']=$_POST['pers_profession']; }
-$selection['part_profession']='';
-if (isset($_POST['part_profession'])){ $selection['part_profession']=$_POST['part_profession']; }
+$selection['pers_profession']=''; if (isset($_POST['pers_profession'])){ $selection['pers_profession']=$_POST['pers_profession']; }
+$selection['part_profession']=''; if (isset($_POST['part_profession'])){ $selection['part_profession']=$_POST['part_profession']; }
 
 // *** Text ***
-$selection['text']='';
-if (isset($_POST['text'])){ $selection['text']=$_POST['text']; }
-$selection['part_text']='';
-if (isset($_POST['part_text'])){ $selection['part_text']=$_POST['part_text']; }
+$selection['text']=''; if (isset($_POST['text'])){ $selection['text']=$_POST['text']; }
+$selection['part_text']=''; if (isset($_POST['part_text'])){ $selection['part_text']=$_POST['part_text']; }
 
 // *** Place ***
-$selection['pers_place']='';
-if (isset($_POST['pers_place'])){ $selection['pers_place']=$_POST['pers_place']; }
-$selection['part_place']='';
-if (isset($_POST['part_place'])){ $selection['part_place']=$_POST['part_place']; }
+$selection['pers_place']=''; if (isset($_POST['pers_place'])){ $selection['pers_place']=$_POST['pers_place']; }
+$selection['part_place']=''; if (isset($_POST['part_place'])){ $selection['part_place']=$_POST['part_place']; }
 
 // *** Zip code ***
-$selection['zip_code']='';
-if (isset($_POST['zip_code'])){ $selection['zip_code']=$_POST['zip_code']; }
-$selection['part_zip_code']='';
-if (isset($_POST['part_zip_code'])){ $selection['part_zip_code']=$_POST['part_zip_code']; }
+$selection['zip_code']=''; if (isset($_POST['zip_code'])){ $selection['zip_code']=$_POST['zip_code']; }
+$selection['part_zip_code']=''; if (isset($_POST['part_zip_code'])){ $selection['part_zip_code']=$_POST['part_zip_code']; }
 
 // *** Witness ***
-$selection['witness']='';
-if (isset($_POST['witness'])){ $selection['witness']=$_POST['witness']; }
+$selection['witness']=''; if (isset($_POST['witness'])){ $selection['witness']=$_POST['witness']; }
 $selection['part_witness']='';
 if (isset($_POST['part_witness'])){
 	$selection['part_witness']=$_POST['part_witness'];
@@ -656,26 +609,50 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$and=" AND ";
 	}
 
+	// *** Search for born AND baptised place ***
 	if ($selection['birth_place']){
-		$query.=$and."pers_birth_place ".name_qry($selection['birth_place'], $selection['part_birth_place']); $and=" AND ";
+		//$query.=$and."pers_birth_place ".name_qry($selection['birth_place'], $selection['part_birth_place']); $and=" AND ";
+		$query.=$and."(pers_birth_place ".name_qry($selection['birth_place'], $selection['part_birth_place']); $and=" AND ";
+		$query.=" OR pers_bapt_place ".name_qry($selection['birth_place'], $selection['part_birth_place']).')'; $and=" AND ";
 	}
 
+	// *** Search for death AND buried place ***
 	if ($selection['death_place']){
-		$query.=$and."pers_death_place ".name_qry($selection['death_place'], $selection['part_death_place']); $and=" AND ";
+		//$query.=$and."pers_death_place ".name_qry($selection['death_place'], $selection['part_death_place']); $and=" AND ";
+		$query.=$and."(pers_death_place ".name_qry($selection['death_place'], $selection['part_death_place']); $and=" AND ";
+		$query.=" OR pers_buried_place ".name_qry($selection['death_place'], $selection['part_death_place']).')'; $and=" AND ";
 	}
 
-	if ($selection['birth_year'] AND !$selection['birth_year_end']){   // filled in one year: exact date
-		$query.=$and."pers_birth_date LIKE '%".safe_text($selection['birth_year'])."%'"; $and=" AND ";
-	}
-	if ($selection['birth_year'] AND $selection['birth_year_end']){     //filled in two years: check period
-		$query.=$and."RIGHT(pers_birth_date, 4)>='".safe_text($selection['birth_year'])."' AND RIGHT(pers_birth_date, 4)<='".safe_text($selection['birth_year_end'])."'"; $and=" AND ";
+	if ($selection['birth_year']){
+		if (!$selection['birth_year_end']){   // filled in one year: exact date
+			//$query.=$and."pers_birth_date LIKE '%".safe_text($selection['birth_year'])."%'"; $and=" AND ";
+
+			// *** Also search for baptise ***
+			$query.=$and."(pers_birth_date LIKE '%".safe_text($selection['birth_year'])."%'"; $and=" AND ";
+			$query.=" OR pers_bapt_date LIKE '%".safe_text($selection['birth_year'])."%')"; $and=" AND ";
+		} else{
+			//$query.=$and."RIGHT(pers_birth_date, 4)>='".safe_text($selection['birth_year'])."' AND RIGHT(pers_birth_date, 4)<='".safe_text($selection['birth_year_end'])."'"; $and=" AND ";
+
+			// *** Also search for baptise ***
+			$query.=$and."(RIGHT(pers_birth_date, 4)>='".safe_text($selection['birth_year'])."' AND RIGHT(pers_birth_date, 4)<='".safe_text($selection['birth_year_end'])."'"; $and=" AND ";
+			$query.=" OR RIGHT(pers_bapt_date, 4)>='".safe_text($selection['birth_year'])."' AND RIGHT(pers_bapt_date, 4)<='".safe_text($selection['birth_year_end'])."')"; $and=" AND ";
+		}
 	}
 
-	if ($selection['death_year'] AND !$selection['death_year_end']){      // filled in one year: exact date
-		$query.=$and."pers_death_date LIKE '%".safe_text($selection['death_year'])."%'"; $and=" AND ";
-	}
-	if ($selection['death_year'] AND $selection['death_year_end']){     // filled in two years: check period
-		$query.=$and."RIGHT(pers_death_date, 4)>='".safe_text($selection['death_year'])."' AND RIGHT(pers_death_date, 4)<='".safe_text($selection['death_year_end'])."'"; $and=" AND ";
+	if ($selection['death_year']){
+		if (!$selection['death_year_end']){      // filled in one year: exact date
+			//$query.=$and."pers_death_date LIKE '%".safe_text($selection['death_year'])."%'"; $and=" AND ";
+
+			// ** Also search for buried date ***
+			$query.=$and."(pers_death_date LIKE '%".safe_text($selection['death_year'])."%'"; $and=" AND ";
+			$query.="OR pers_buried_date LIKE '%".safe_text($selection['death_year'])."%')"; $and=" AND ";
+		} else {
+			//$query.=$and."RIGHT(pers_death_date, 4)>='".safe_text($selection['death_year'])."' AND RIGHT(pers_death_date, 4)<='".safe_text($selection['death_year_end'])."'"; $and=" AND ";
+
+			// ** Also search for buried date ***
+			$query.=$and."(RIGHT(pers_death_date, 4)>='".safe_text($selection['death_year'])."' AND RIGHT(pers_death_date, 4)<='".safe_text($selection['death_year_end'])."'"; $and=" AND ";
+			$query.=" OR RIGHT(pers_buried_date, 4)>='".safe_text($selection['death_year'])."' AND RIGHT(pers_buried_date, 4)<='".safe_text($selection['death_year_end'])."')"; $and=" AND ";
+		}
 	}
 
 	if ($selection['sexe']=="M" OR $selection['sexe']=="F"){
@@ -1245,13 +1222,14 @@ if ($index_list=='patronym'){
 
 		// *** ADVANCED SEARCH BOX ***
 		if ($adv_search==true){
-
-			echo '<tr><td align="right" class="no_border">'.__('Year (or period) of birth:');
-			echo '<input type="text" name="birth_year" value="'.$selection['birth_year'].'" size="4">';
+			//echo '<tr><td align="right" class="no_border">'.__('Year (or period) of birth:');
+			echo '<tr><td align="right" class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':';
+			echo ' <input type="text" name="birth_year" value="'.$selection['birth_year'].'" size="4" placeholder="'.__('Date').'">';
 			echo '&nbsp;&nbsp;('.__('till:').'&nbsp;';
-			echo '<input type="text" name="birth_year_end" value="'.$selection['birth_year_end'].'" size="4">&nbsp;)</td>';
+			echo '<input type="text" name="birth_year_end" value="'.$selection['birth_year_end'].'" size="4" placeholder="'.__('Date').'">&nbsp;)</td>';
 
-			echo '<td align="right" class="no_border">'.__('Place of birth').':';
+			//echo '<td align="right" class="no_border">'.__('Place of birth').':';
+			echo '<td align="right" class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':';
 			echo ' <select size="1" name="part_birth_place">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_birth_place']=='equals'){ $select_item=' selected'; }
@@ -1259,7 +1237,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_birth_place']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="birth_place" value="'.$selection['birth_place'].'" size="17" placeholder="'.__('Place of birth').'"></td>';
+			echo ' <input type="text" name="birth_place" value="'.$selection['birth_place'].'" size="17" placeholder="'.__('Place').'"></td>';
 
 			echo '<td align="right" class="no_border">'.__('Own code').':';
 			echo ' <select size="1" name="part_own_code">';
@@ -1273,13 +1251,14 @@ if ($index_list=='patronym'){
 			echo '</td>';
 
 			echo '</tr>';
-
-			echo '<tr><td align="right" class="no_border">'.__('Year (or period) of death:');
-			echo '<input type="text" name="death_year" value="'.$selection['death_year'].'" size="4">';
+			//echo '<tr><td align="right" class="no_border">'.__('Year (or period) of death:');
+			echo '<tr><td align="right" class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':';
+			echo ' <input type="text" name="death_year" value="'.$selection['death_year'].'" size="4" placeholder="'.__('Date').'">';
 			echo '&nbsp;&nbsp;('.__('till:').'&nbsp;';
-			echo '<input type="text" name="death_year_end" value="'.$selection['death_year_end'].'" size="4">&nbsp;)</td>';
+			echo '<input type="text" name="death_year_end" value="'.$selection['death_year_end'].'" size="4" placeholder="'.__('Date').'">&nbsp;)</td>';
 
-			echo '<td align="right" class="no_border">'.__('Place of death').':';
+			//echo '<td align="right" class="no_border">'.__('Place of death').':';
+			echo '<td align="right" class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':';
 			echo ' <select size="1" name="part_death_place">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_death_place']=='equals'){ $select_item=' selected'; }
@@ -1287,7 +1266,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_death_place']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="death_place" value="'.$selection['death_place'].'" size="17" placeholder="'.__('Place of death').'"></td>';
+			echo ' <input type="text" name="death_place" value="'.$selection['death_place'].'" size="17" placeholder="'.__('Place').'"></td>';
 
 			// *** Text ***
 			echo '<td align="right" class="no_border">'.__('Text').':';

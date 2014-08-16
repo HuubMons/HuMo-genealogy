@@ -175,15 +175,9 @@ function person_name($personDb){
 			if ($nameDb->event_event=='barones'){ $title_position='between'; }
 			if ($nameDb->event_event=='ridder'){ $title_position='between'; }
 
-			if ($title_position=='before'){
-				$title_before.=' '.$nameDb->event_event.' ';
-			}
-			if ($title_position=='between'){
-				$title_between.=' '.$nameDb->event_event.' ';
-			}
-			if ($title_position=='after'){
-				$title_after.=', '.$nameDb->event_event;
-			}
+			if ($title_position=='before') $title_before.=' '.$nameDb->event_event.' ';
+			if ($title_position=='between') $title_between.=' '.$nameDb->event_event.' ';
+			if ($title_position=='after') $title_after.=', '.$nameDb->event_event;
 		}
 
 		// ***Still born child ***
@@ -702,13 +696,8 @@ function name_extended($person_kind){
 			// *** Show man or woman picture ***
 			if($screen_mode!="PDF") {  //  pdf does this elsewhere
 
-				if($screen_mode=="RTF") {  //  rtf does this elsewhere
-					//if ($personDb->pers_sexe=="M")
-					//	$sect->addImage(CMS_ROOTPATH.'images/man.gif', null);
-					//elseif ($personDb->pers_sexe=="F")
-					//	$sect->addImage(CMS_ROOTPATH.'images/woman.gif', null);
-					//else
-					//	$sect->addImage(CMS_ROOTPATH.'images/unknown.gif', null);
+				if($screen_mode=="RTF") {  //  rtf does this in family.php
+					//
 				}
 				else{
 					$text_name.= $dirmark1;
@@ -1531,12 +1520,12 @@ function person_data($person_kind, $id){
 						$occupation=__('occupations');
 
 					if ($family_expanded==true){
-						$process_text.='<br><span class="profession">'.ucfirst($occupation).': ';
+						$process_text.='<br><span class="profession"><b>'.ucfirst($occupation).':</b> ';
 					}
 					else{
 						if ($process_text){ $process_text.='. <span class="profession">'; }
 						if($temp) { $pdfstr[$temp].=". "; }
-						$process_text.=ucfirst($occupation).': ';
+						$process_text.='<b>'.ucfirst($occupation).':</b> ';
 						$pdfstr["prof_exist"]=ucfirst($occupation).': ';
 						$temp="prof_exist";
 					}
@@ -1598,7 +1587,7 @@ function person_data($person_kind, $id){
 					else
 						$residence=__('residences');
 					if($temp) {$pdfstr[$temp].=". "; }
-					$text.=ucfirst($residence).': ';
+					$text.='<b>'.ucfirst($residence).':</b> ';
 					$pdfstr["adres_exist"]=ucfirst($residence).': ';
 					$temp="adres_exist";
 				}
@@ -1854,7 +1843,8 @@ function person_data($person_kind, $id){
 						//$event_text='';
 					}
 
-					$process_text.=language_event($event_gedcom);
+					//$process_text.=language_event($event_gedcom);
+					$process_text.='<b>'.language_event($event_gedcom).'</b>';
 					$pdfstr["event_ged".$eventnr]=language_event($event_gedcom);
 					$temp="event_ged".$eventnr;
 

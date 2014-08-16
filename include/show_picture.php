@@ -3,16 +3,16 @@
 // *** Updated feb 2013. ***
 function show_media($personDb,$marriageDb){
 	global $user, $dataDb, $db, $dbh, $tree_prefix_quoted, $uri_path;
-	//global $pdfstr;
 	global $sect, $screen_mode; // *** RTF Export ***
-
+	global $picture_presentation;
 
 	$pdfstr = array(); // local version
 	$process_text='';
 	$media_nr=0;
 
 	// *** Pictures/ media ***
-	if ($user['group_pictures']=='j'){
+	//if ($user['group_pictures']=='j'){
+	if ($user['group_pictures']=='j' AND $picture_presentation!='hide'){
 		//$tree_pict_path=CMS_ROOTPATH.$dataDb->tree_pict_path;
 		$tree_pict_path=$dataDb->tree_pict_path;
 		// in joomla relative path is relative to joomla main folder, NOT HuMo-gen main folder. Therefore use the path entered as-is, without ROOTPATH.

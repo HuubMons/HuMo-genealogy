@@ -59,7 +59,7 @@ include_once(CMS_ROOTPATH."include/show_picture.php");
 function topline(){
 	global $dataDb, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker, $family_id, $main_person;
 	global $alignmarker, $language, $uri_path, $descendant_report, $family_expanded;
-	global $user, $source_presentation, $change_main_person, $maps_presentation, $database, $man_cls, $person_manDb;
+	global $user, $source_presentation, $change_main_person, $maps_presentation, $picture_presentation, $text_presentation, $database, $man_cls, $person_manDb;
 	global $woman_cls, $person_womanDb, $selected_language;
 
 	//$text='<tr><td class="table_header" width="75%">';
@@ -89,23 +89,21 @@ function topline(){
 
 			$text.='<span style="color:blue">=====</span>&nbsp;<b>'.__('Settings family screen').'</b> <span style="color:blue">=====</span><br><br>';
 
+			$text.='<table><tr><td>';
+
 				// *** Extended view button ***
 				$text.='<b>'.__('Family Page').'</b><br>';
 
 				$desc_rep = ''; if($descendant_report==true) { $desc_rep = '&amp;descendant_report=1'; }
 
 				$selected=' CHECKED'; $selected2=''; if ($family_expanded==true) { $selected=''; $selected2=' CHECKED'; }
-
 				$text.='<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;family_expanded=0&xx=\'+this.value"'.$selected.'>'.__('Compact view')."<br>\n";
-
 				$text.='<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;family_expanded=1&xx=\'+this.value"'.$selected2.'>'.__('Expanded view')."<br>\n";
 
 				// *** Select source presentation (as title/ footnote or hide sources) ***
 				if($user['group_sources']!='n') {
 					$text.='<hr>';
-
 					$text.='<b>'.__('Sources').'</b><br>';
-
 					$desc_rep = ''; if($descendant_report==true) { $desc_rep = '&amp;descendant_report=1'; }
 
 					$selected=''; if ($source_presentation=='title') { $selected=' CHECKED'; }
@@ -121,17 +119,31 @@ function topline(){
 				// *** Show/ hide Google maps ***
 				if($descendant_report==false) {
 					$text.='<hr>';
-
 					$text.='<b>'.__('Google maps').'</b><br>';
-
-					$selected=''; $selected2='';
-					if ($maps_presentation=='hide'){ $selected2=' CHECKED'; }
-						else{ $selected=' CHECKED'; }
-					
+					$selected=''; $selected2=''; if ($maps_presentation=='hide') $selected2=' CHECKED'; else $selected=' CHECKED';
 					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show Google maps')."<br>\n";
-
 					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide Google maps')."<br>\n";
 				}
+
+			$text.='</td><td valign="top">';
+
+				if ($user['group_pictures']=='j'){
+					$text.='<b>'.__('Pictures').'</b><br>';
+					$selected=''; $selected2=''; if ($picture_presentation=='hide') $selected2=' CHECKED'; else $selected=' CHECKED';
+					$text.='<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;picture_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show pictures')."<br>\n";
+					$text.='<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;picture_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide pictures')."<br>\n";
+					$text.='<hr>';
+				}
+
+				$text.='<b>'.__('Texts').'</b><br>';
+				$selected=''; if ($text_presentation=='show') $selected=' CHECKED';
+				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show texts')."<br>\n";
+				$selected=''; if ($text_presentation=='popup') $selected=' CHECKED';
+				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=popup&xx=\'+this.value"'.$selected.'>'.__('Show texts in popup screen')."<br>\n";
+				$selected=''; if ($text_presentation=='hide') $selected=' CHECKED';
+				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=hide&xx=\'+this.value"'.$selected.'>'.__('Hide texts')."<br>\n";
+
+			$text.='</td></tr></table>';
 
 			$text.='</div>';
 		$text.='</div>';
@@ -331,6 +343,19 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 	$maps_presentation=$user['group_maps_presentation'];
 	//if ($user['group_maps_presentation']=='sources') $maps_presentation='hide'; // *** sources = backwards compatible!! *** 
 	if (isset($_SESSION['save_maps_presentation'])) $maps_presentation=$_SESSION['save_maps_presentation'];
+
+	// *** Show/ hide pictures ***
+	if (isset($_GET['picture_presentation'])) $_SESSION['save_picture_presentation']=safe_text($_GET["picture_presentation"]);
+	// *** Default setting is selected by administrator ***
+	//$picture_presentation=$user['group_picture_presentation'];
+	if (isset($_SESSION['save_picture_presentation'])) $picture_presentation=$_SESSION['save_picture_presentation'];
+
+	// *** Show/ hide texts ***
+	if (isset($_GET['text_presentation'])) $_SESSION['save_text_presentation']=safe_text($_GET["text_presentation"]);
+	$text_presentation='show';
+	// *** Default setting is selected by administrator ***
+	//$text_presentation=$user['group_text_presentation'];
+	if (isset($_SESSION['save_text_presentation'])) $text_presentation=$_SESSION['save_text_presentation'];
 }
 if($screen_mode=='STAR') {
 	$descendant_report=true;
@@ -922,36 +947,40 @@ else{
 
 								$result = show_media($person_womanDb,''); 
 								if(isset($result[1]) AND count($result[1])>0) { 
-									$table = $sect->addTable();
-									$table->addRow(1);
-									$table->addRow(0.2);
-									$table->addColumnsList(array(5,5,5));
-
-									$break=0; $textarr = Array();
+									$break=0; $textarr = Array(); $goodpics=FALSE;
 									foreach($result[1] as $key => $value) {
 										if (strpos($key,"path")!==FALSE) {
-											$break++;
-											$cell = $table->getCell(1, $break);
-											$imageFile = $value;
-											$image = $cell->addImage($imageFile);
-											//$sect->writeText('<tab>');
-											$txtkey = str_replace("pic_path","pic_text",$key); 
-											if(isset($result[1][$txtkey])) {
-												$textarr[]=$result[1][$txtkey];
+											$type = substr($result[1][$key],-3); 
+											if($type=="jpg" OR $type=="png") {
+												if($goodpics==FALSE) { //found 1st pic - make table
+													$table = $sect->addTable();
+													$table->addRow(0.1);
+													$table->addColumnsList(array(5,5,5));
+													$goodpics=TRUE;
+												}
+												$break++;
+												$cell = $table->getCell(1,$break);
+												$imageFile = $value;
+												$image = $cell->addImage($imageFile);
+												$txtkey = str_replace("pic_path","pic_text",$key); 
+												if(isset($result[1][$txtkey])) 			{
+													$textarr[]=$result[1][$txtkey];
+												}
+												else { $textarr[]="&nbsp;"; }
 											}
-											else { $textarr[]="&nbsp;"; }
+			
 										}
 										if($break==3) break; // max 3 pics
-									}
-									$sect->writeText("\n");
+									} 
 									$break1=0;
 									if(count($textarr)>0) {
+										$table->addRow(0.1); //add row only if there is photo text
 										foreach($textarr as $value) {
 											$break1++;
 											$cell = $table->getCell(2, $break1);
 											$cell->writeText($value);
 										}
-									}
+									}  
 								}
 							}
 
@@ -1019,36 +1048,40 @@ else{
 
 								$result = show_media($person_manDb,''); 
 								if(isset($result[1]) AND count($result[1])>0) { 
-									$table = $sect->addTable();
-									$table->addRow(1);
-									$table->addRow(0.2);
-									$table->addColumnsList(array(5,5,5));
-
-									$break=0; $textarr = Array();
+									$break=0; $textarr = Array(); $goodpics=FALSE;
 									foreach($result[1] as $key => $value) {
 										if (strpos($key,"path")!==FALSE) {
-											$break++;
-											$cell = $table->getCell(1, $break);
-											$imageFile = $value;
-											$image = $cell->addImage($imageFile);
-											//$sect->writeText('<tab>');
-											$txtkey = str_replace("pic_path","pic_text",$key); 
-											if(isset($result[1][$txtkey])) {
-												$textarr[]=$result[1][$txtkey];
+											$type = substr($result[1][$key],-3); 
+											if($type=="jpg" OR $type=="png") {
+												if($goodpics==FALSE) { //found 1st pic - make table
+													$table = $sect->addTable();
+													$table->addRow(0.1);
+													$table->addColumnsList(array(5,5,5));
+													$goodpics=TRUE;
+												}
+												$break++;
+												$cell = $table->getCell(1,$break);
+												$imageFile = $value;
+												$image = $cell->addImage($imageFile);
+												$txtkey = str_replace("pic_path","pic_text",$key); 
+												if(isset($result[1][$txtkey])) {
+													$textarr[]=$result[1][$txtkey];
+												}
+												else { $textarr[]="&nbsp;"; }
 											}
-											else { $textarr[]="&nbsp;"; }
+			
 										}
 										if($break==3) break; // max 3 pics
-									}
-									$sect->writeText("\n");
+									} 
 									$break1=0;
 									if(count($textarr)>0) {
+										$table->addRow(0.1); //add row only if there is photo text
 										foreach($textarr as $value) {
 											$break1++;
 											$cell = $table->getCell(2, $break1);
 											$cell->writeText($value);
 										}
-									}
+									}  
 								}
 							}
 
@@ -1241,9 +1274,9 @@ else{
 						$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
 
 						// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
-						if ($person_manDb->pers_sexe=="M")
+						if (isset($person_manDb->pers_sexe) AND $person_manDb->pers_sexe=="M")
 							$sect->addImage('images/man.jpg', null);
-						elseif ($person_manDb->pers_sexe=="F")
+						elseif (isset($person_manDb->pers_sexe) AND $person_manDb->pers_sexe=="F")
 							$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
 						else
 							$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
@@ -1256,36 +1289,40 @@ else{
 
 						$result = show_media($person_manDb,''); 
 						if(isset($result[1]) AND count($result[1])>0) { 
-							$table = $sect->addTable();
-							$table->addRow(1);
-							$table->addRow(0.2);
-							$table->addColumnsList(array(5,5,5));
-
-							$break=0; $textarr = Array();
+							$break=0; $textarr = Array(); $goodpics=FALSE;
 							foreach($result[1] as $key => $value) {
 								if (strpos($key,"path")!==FALSE) {
-									$break++;
-									$cell = $table->getCell(1, $break);
-									$imageFile = $value;
-									$image = $cell->addImage($imageFile);
-									//$sect->writeText('<tab>');
-									$txtkey = str_replace("pic_path","pic_text",$key); 
-									if(isset($result[1][$txtkey])) {
-										$textarr[]=$result[1][$txtkey];
+									$type = substr($result[1][$key],-3); 
+									if($type=="jpg" OR $type=="png") {
+										if($goodpics==FALSE) { //found 1st pic - make table
+											$table = $sect->addTable();
+											$table->addRow(0.1);
+											$table->addColumnsList(array(5,5,5));
+											$goodpics=TRUE;
+										}
+										$break++;
+										$cell = $table->getCell(1,$break);
+										$imageFile = $value;
+										$image = $cell->addImage($imageFile);
+										$txtkey = str_replace("pic_path","pic_text",$key); 
+										if(isset($result[1][$txtkey])) {
+											$textarr[]=$result[1][$txtkey];
+										}
+										else { $textarr[]="&nbsp;"; }
 									}
-									else { $textarr[]="&nbsp;"; }
+	
 								}
 								if($break==3) break; // max 3 pics
-							}
-							$sect->writeText("\n");
+							} 
 							$break1=0;
 							if(count($textarr)>0) {
+								$table->addRow(0.1); //add row only if there is photo text
 								foreach($textarr as $value) {
 									$break1++;
 									$cell = $table->getCell(2, $break1);
 									$cell->writeText($value);
 								}
-							}
+							}  
 						}
 					}
 					if($screen_mode=='STAR') {
@@ -1326,9 +1363,9 @@ else{
 						$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
 
 						// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
-						if ($person_womanDb->pers_sexe=="M")
+						if (isset($person_womanDb->pers_sexe) AND $person_womanDb->pers_sexe=="M")
 							$sect->addImage('images/man.jpg', null);
-						elseif ($person_womanDb->pers_sexe=="F")
+						elseif (isset($person_womanDb->pers_sexe) AND $person_womanDb->pers_sexe=="F")
 							$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
 						else
 							$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
@@ -1341,36 +1378,40 @@ else{
 
 						$result = show_media($person_womanDb,'');
 						if(isset($result[1]) AND count($result[1])>0) { 
-							$table = $sect->addTable();
-							$table->addRow(1);
-							$table->addRow(0.2);
-							$table->addColumnsList(array(5,5,5));
-
-							$break=0; $textarr = Array();
+							$break=0; $textarr = Array(); $goodpics=FALSE;
 							foreach($result[1] as $key => $value) {
 								if (strpos($key,"path")!==FALSE) {
-									$break++;
-									$cell = $table->getCell(1, $break);
-									$imageFile = $value;
-									$image = $cell->addImage($imageFile);
-									//$sect->writeText('<tab>');
-									$txtkey = str_replace("pic_path","pic_text",$key); 
-									if(isset($result[1][$txtkey])) {
-										$textarr[]=$result[1][$txtkey];
+									$type = substr($result[1][$key],-3); 
+									if($type=="jpg" OR $type=="png") {
+										if($goodpics==FALSE) { //found 1st pic - make table
+											$table = $sect->addTable();
+											$table->addRow(0.1);
+											$table->addColumnsList(array(5,5,5));
+											$goodpics=TRUE;
+										}
+										$break++;
+										$cell = $table->getCell(1,$break);
+										$imageFile = $value;
+										$image = $cell->addImage($imageFile);
+										$txtkey = str_replace("pic_path","pic_text",$key); 
+										if(isset($result[1][$txtkey])) {
+											$textarr[]=$result[1][$txtkey];
+										}
+										else { $textarr[]="&nbsp;"; }
 									}
-									else { $textarr[]="&nbsp;"; }
+	
 								}
 								if($break==3) break; // max 3 pics
-							}
-							$sect->writeText("\n");
+							} 
 							$break1=0;
 							if(count($textarr)>0) {
+								$table->addRow(0.1); //add row only if there is photo text
 								foreach($textarr as $value) {
 									$break1++;
 									$cell = $table->getCell(2, $break1);
 									$cell->writeText($value);
 								}
-							}
+							}  
 						}
 					}
 					if($screen_mode=='STAR') {
@@ -1753,36 +1794,40 @@ else{
 
 								$result = show_media($childDb,''); 
 								if(isset($result[1]) AND count($result[1])>0) { 
-									$table = $sect->addTable();
-									$table->addRow(1);
-									$table->addRow(0.2);
-									$table->addColumnsList(array(5,5,5));
-
-									$break=0; $textarr = Array();
+									$break=0; $textarr = Array(); $goodpics=FALSE;
 									foreach($result[1] as $key => $value) {
 										if (strpos($key,"path")!==FALSE) {
-											$break++;
-											$cell = $table->getCell(1, $break);
-											$imageFile = $value;
-											$image = $cell->addImage($imageFile);
-											//$sect->writeText('<tab>');
-											$txtkey = str_replace("pic_path","pic_text",$key); 
-											if(isset($result[1][$txtkey])) {
-												$textarr[]=$result[1][$txtkey];
+											$type = substr($result[1][$key],-3); 
+											if($type=="jpg" OR $type=="png") {
+												if($goodpics==FALSE) { //found 1st pic - make table
+													$table = $sect->addTable();
+													$table->addRow(0.1);
+													$table->addColumnsList(array(5,5,5));
+													$goodpics=TRUE;
+												}
+												$break++;
+												$cell = $table->getCell(1,$break);
+												$imageFile = $value;
+												$image = $cell->addImage($imageFile);
+												$txtkey = str_replace("pic_path","pic_text",$key); 
+												if(isset($result[1][$txtkey])) {
+													$textarr[]=$result[1][$txtkey];
+												}
+												else { $textarr[]="&nbsp;"; }
 											}
-											else { $textarr[]="&nbsp;"; }
+			
 										}
 										if($break==3) break; // max 3 pics
-									}
-									$sect->writeText("\n");
+									} 
 									$break1=0;
 									if(count($textarr)>0) {
+										$table->addRow(0.1); //add row only if there is photo text
 										foreach($textarr as $value) {
 											$break1++;
 											$cell = $table->getCell(2, $break1);
 											$cell->writeText($value);
 										}
-									}
+									}  
 								}
 							}
 							if($screen_mode=='STAR') {

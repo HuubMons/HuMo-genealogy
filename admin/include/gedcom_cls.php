@@ -263,6 +263,9 @@ function process_person($person_array){
 		//1 NAME Firstname/Lastname/
 		//2 NICK Alias3
 
+		// Some programs uses an extra space after firstname:
+		// 1 NAME Firstname /Lastname/
+
 		// *** ALL BK names. It's possible to have text, soource or date by these names ***
 		//1 NAME Hubertus  /Huub/ Andriessen Mons   OK
 		//2 SOUR @S3@                               OK
@@ -307,9 +310,9 @@ function process_person($person_array){
 				else{
 					$position = strpos($name,"/");
 					if($position!==false) { // there are slashes
-						$pers_firstname=substr($name,7,$position-7);
+						//$pers_firstname=substr($name,7,$position-7);
+						$pers_firstname=rtrim(substr($name,7,$position-7));
 
-						//$pers_lastname=substr($name,$position+1,-1);
 						$pers_lastname=substr($name,$position+1);
 						$pers_lastname=rtrim($pers_lastname,"/"); // *** Check for last / character, if present remove it ***
 
@@ -321,7 +324,8 @@ function process_person($person_array){
 					else {
 						// *** No slashes in name (probably a bug or just a bad gedcom file) ***
 						// 1 NAME Hubertus [Huub] Mons
-						$pers_firstname=substr($name,7);
+						//$pers_firstname=substr($name,7);
+						$pers_firstname=rtrim(substr($name,7));
 					}
 
 					// Lastname prefixes, THIS PART SLOWS DOWN READING A BIT!!!
