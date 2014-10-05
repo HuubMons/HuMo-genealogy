@@ -32,7 +32,9 @@ class mainindex_cls{
 			echo '<div class="mainmenu_bar fonts">';
 				if ($num_rows>1){ echo __('Selected family tree').': '; }
 				// *** Variable $treetext_name used from menu.php ***
-				echo $treetext_name;
+				//echo $treetext_name;
+				$treetext=show_tree_text($_SESSION['tree_prefix'], $selected_language);
+				echo $treetext['name'];
 			echo '</div>';
 
 			if ($bot_visit AND $humo_option["searchengine_cms_only"]=='y'){
@@ -189,7 +191,7 @@ class mainindex_cls{
 			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
 			FROM ".safe_text($_SESSION['tree_prefix'])."person
 			WHERE pers_lastname NOT LIKE ''
-			GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,5";
+			GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,10";
 		$person=$dbh->query($personqry);
 		while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 			// *** No & character in $_GET, replace to: | !!!
@@ -197,7 +199,8 @@ class mainindex_cls{
 			$pers_prefix[]=$personDb->pers_prefix;
 			$count_last_names[]=$personDb->count_last_names;
 		}
-		print __('Most frequent surnames:')."<br>";
+		//echo __('Most frequent surnames:')."<br>";
+		echo '<div style="width:500px; margin-left:auto; margin-right:auto;">'.__('Most frequent surnames:')."<br>";
 		for ($i=0; $i<@count($last_names); $i++){
 			$top_pers_lastname='';
 			if ($pers_prefix[$i]){ $top_pers_lastname=str_replace("_", " ", $pers_prefix[$i]); }
@@ -228,12 +231,12 @@ class mainindex_cls{
 				}
 			}
 			echo '&amp;part_lastname=equals">'.$top_pers_lastname."</a>";
-			
+
 			echo " (".$count_last_names[$i].")";
 
 			if ($i<count($last_names)-1){ echo ' / '; }
 		}
-
+		echo '</div>';
 	}
 
 	// *** Search field ***
@@ -274,55 +277,55 @@ class mainindex_cls{
 		else{
 			$path_tmp=CMS_ROOTPATH.'list.php';
 		}
-		print '<form method="post" action="'.$path_tmp.'">';
+		echo '<form method="post" action="'.$path_tmp.'">';
 		/*
-		print __('First name').':<br>';
-		print ' <select name="part_firstname" style="width: 90px">';
+		echo __('First name').':<br>';
+		echo ' <select name="part_firstname" style="width: 90px">';
 		echo '<option value="contains">'.__('Contains').'</option>';
 		$select_item=''; if ($part_firstname=='equals'){ $select_item=' selected'; }
 		echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
 		$select_item=''; if ($part_firstname=='starts_with'){ $select_item=' selected'; }
 		echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
-		print '</select>';
-		print ' <input type="text" name="pers_firstname" value="'.$pers_firstname.'" size="15"><br>';
+		echo '</select>';
+		echo ' <input type="text" name="pers_firstname" value="'.$pers_firstname.'" size="15"><br>';
 
-		print '<p>'.__('Last name').':<br>';
-		print ' <select name="part_lastname" style="width: 90px">';
+		echo '<p>'.__('Last name').':<br>';
+		echo ' <select name="part_lastname" style="width: 90px">';
 		echo '<option value="contains">'.__('Contains').'</option>';
 		$select_item=''; if ($part_lastname=='equals'){ $select_item=' selected'; }
 		echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
 		$select_item=''; if ($part_lastname=='starts_with'){ $select_item=' selected'; }
 		echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
-		print '</select>';
-		print ' <input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="15"></p>';
+		echo '</select>';
+		echo ' <input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="15"></p>';
 		*/
 
 		echo __('Enter name or part of name').'<br>';
 		//echo '<span style="font-size:10px;">"John Jones", "Jones John", "John of Jones", "of Jones, John", "Jones, John of", "Jones of, John"</span>';
 		
-		print '<input type="hidden" name="index_list" value="quicksearch">';
+		echo '<input type="hidden" name="index_list" value="quicksearch">';
 		$quicksearch='';
 		if (isset($_POST['quicksearch'])){
 			$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
 			$_SESSION["save_quicksearch"]=$quicksearch;
 		}
 		if (isset($_SESSION["save_quicksearch"])){ $quicksearch=$_SESSION["save_quicksearch"]; }
-		print '<p><input type="text" name="quicksearch" value="'.$quicksearch.'" size="30" pattern=".{3,}" title="'.__('Minimum: 3 characters.').'"></p>';
+		echo '<p><input type="text" name="quicksearch" value="'.$quicksearch.'" size="30" pattern=".{3,}" title="'.__('Minimum: 3 characters.').'"></p>';
 
 		// Check if there are multiple family trees.
 		$datasql2 = $dbh->query("SELECT * FROM humo_trees");
 		$num_rows2 = $datasql2->rowCount();
 		if ($num_rows2>1){
 			$checked=''; if ($search_database=="tree_selected"){ $checked='checked'; }
-			print '<p><input type="radio" name="search_database" value="tree_selected" '.$checked.'> '.__('Selected family tree').'<br>';
+			echo '<p><input type="radio" name="search_database" value="tree_selected" '.$checked.'> '.__('Selected family tree').'<br>';
 			//$checked=''; if ($search_database=="all_databases"){ $checked='checked'; }
 			$checked=''; if ($search_database=="all_trees"){ $checked='checked'; }
-			print '<input type="radio" name="search_database" value="all_trees" '.$checked.'> '.__('All family trees').'<br>';
+			echo '<input type="radio" name="search_database" value="all_trees" '.$checked.'> '.__('All family trees').'<br>';
 			$checked=''; if ($search_database=="all_but_this"){ $checked='checked'; }
-			print '<input type="radio" name="search_database" value="all_but_this" '.$checked.'> '.__('All but selected tree').'</p>';
+			echo '<input type="radio" name="search_database" value="all_but_this" '.$checked.'> '.__('All but selected tree').'</p>';
 		}
 
-		print '<p><input type="submit" value="'.__('Search').'"></p>';
+		echo '<p><input type="submit" value="'.__('Search').'"></p>';
 		if (CMS_SPECIFIC=='Joomla'){
 			//$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;adv_search=1';
 			$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;adv_search=1&index_list=search';
@@ -331,9 +334,9 @@ class mainindex_cls{
 			//$path_tmp=CMS_ROOTPATH.'list.php?adv_search=1';
 			$path_tmp=CMS_ROOTPATH.'list.php?adv_search=1&index_list=search';
 		}
-		print '<p><a href="'.$path_tmp.'">'.__('Advanced search').'</a></p>';
+		echo '<p><a href="'.$path_tmp.'">'.__('Advanced search').'</a></p>';
 
-		print "</form>\n";
+		echo "</form>\n";
 	}
 
 	// *** Extra links ***
@@ -380,7 +383,7 @@ class mainindex_cls{
 		global $language, $user, $dbh, $humo_option, $uri_path;
 
 		//*** Find first first_character of last name ***
-		print __('Surnames Index:')."<br>\n";
+		echo __('Surnames Index:')."<br>\n";
 		$personqry="SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM ".$_SESSION['tree_prefix']."person GROUP BY first_character";
 		// *** If "van Mons" is selected, also check pers_prefix ***
 		if ($user['group_kindindex']=="j"){
@@ -400,7 +403,7 @@ class mainindex_cls{
 			else{
 				$path_tmp=CMS_ROOTPATH.'list_names.php?database='.$_SESSION['tree_prefix'].'&amp;last_name='.$personDb->first_character;
 			}
-			print ' <a href="'.$path_tmp.'">'.$personDb->first_character.'</a>';
+			echo ' <a href="'.$path_tmp.'">'.$personDb->first_character.'</a>';
 		}
 
 		if (CMS_SPECIFIC=='Joomla'){
@@ -413,7 +416,7 @@ class mainindex_cls{
 		$person="SELECT pers_patronym FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_patronym LIKE '_%' AND pers_lastname =''";
 		@$personDb=$dbh->query($person);
 		if ($personDb->rowCount()>0) {
-			print ' <a href="'.CMS_ROOTPATH.'list.php?index_list=patronym">'.__('Patronyms').'</a>';
+			echo ' <a href="'.CMS_ROOTPATH.'list.php?index_list=patronym">'.__('Patronyms').'</a>';
 		}
 
 	}

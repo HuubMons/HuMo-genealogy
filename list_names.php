@@ -15,7 +15,6 @@ echo '<p class="fonts">';
 	}
 	@$person_result= $dbh->query($person_qry);
 	while(@$personDb=$person_result->fetch(PDO::FETCH_OBJ)) {
-
 		if (CMS_SPECIFIC=='Joomla'){
 			$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;database='.
 			$_SESSION['tree_prefix'].'&amp;last_name='.$personDb->first_character;
@@ -61,14 +60,13 @@ if ($user['group_kindindex']=="j"){
 		FROM ".$tree_prefix_quoted."person
 		WHERE CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
 		GROUP BY long_name");
-		
+
 	if ($last_name=='all'){
 		$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_lastnames
 			FROM ".$tree_prefix_quoted."person GROUP BY long_name");
 	}
 
-	//while (@$personDb=mysql_fetch_object($person_result)){
 	while(@$personDb=$person_result->fetch(PDO::FETCH_OBJ)) {
 		// *** No & character in a link, replace to: | !!!
 		$long_name=str_replace("_", " ", $personDb->long_name);
@@ -90,7 +88,7 @@ if ($user['group_kindindex']=="j"){
 			$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'].'&amp;pers_lastname='.$link.'&amp;part_lastname=equals';
 		}
 
-		echo '<a href="'.$path_tmp.'">'.$person_name.'</a> ('.$personDb->count_lastnames.')'.$dirmark2.' / '.$dirmark2.' ';
+		echo '<a href="'.$path_tmp.'">'.$person_name.'</a> ('.$personDb->count_lastnames.')'.$dirmark2.' / '.$dirmark2;
 	}
 }
 else{
@@ -140,9 +138,10 @@ else{
 		else {
 			$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'].'&amp;pers_lastname='.$link;
 		}
+
 		if ($pers_prefix){ $path_tmp .= '&amp;pers_prefix='.$pers_prefix; }
 		$path_tmp .= '&amp;part_lastname=equals';
-		echo '<a href="'.$path_tmp.'">'.$person_name.'</a> ('.$personDb->count_lastnames.')'.$dirmark2.' / '.$dirmark2.' ';
+		echo '<a href="'.$path_tmp.'">'.$person_name.'</a> ('.$personDb->count_lastnames.')'.$dirmark2.' / '.$dirmark2;
 
 	}
 }

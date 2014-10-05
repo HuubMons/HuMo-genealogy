@@ -25,7 +25,8 @@ body {
 }
 
 #humo_menu {
-	background:url(../images/gray_down.png) repeat left top;
+	/* background:url(../images/gray_down.png) repeat left top; */
+	background:url(../images/gray_white.png) repeat left top;
 	margin:0 auto;
 }
 #humo_menu a {
@@ -36,7 +37,8 @@ body {
 /* Pop-up menu */
 /* ul.humo_menu_item2 li a{ */
 #humo_menu ul.humo_menu_item2 li a{
-	background:url(../images/gray_down.png) repeat left top;
+	/* background:url(../images/gray_down.png) repeat left top; */
+	background:url(../images/gray_white.png) repeat left top;
 }
 
 #humo_menu a:visited { color: #000000; }

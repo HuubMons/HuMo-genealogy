@@ -325,8 +325,10 @@ function show_event($selected_events=''){
 				if (file_exists($path_prefix.$tree_pict_path.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
 				$extensions_check=substr($path_prefix.$tree_pict_path.$data_listDb->event_event,-3,3);
 				if($extensions_check=="jpg") {
-					//echo '&nbsp;<img src="'.$path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event.'" width="100px">';
-					echo '&nbsp;<img src="'.$path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event.'" height="80px">';
+					if (file_exists($path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event))
+						echo '&nbsp;<img src="'.$path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event.'" height="80px">';
+					else
+						echo '&nbsp;<img src="../images/thumb_missing-image.jpg" height="80px">';
 				}
 
 			}
@@ -541,9 +543,10 @@ function show_event($selected_events=''){
 					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
 				}
 				else{
-//if (file_exists($path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event)){
-					echo '<img src="'.$path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event.'" width="100px">';
-//}
+					if (file_exists($path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event))
+						echo '<img src="'.$path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event.'" width="100px">';
+					else
+						echo '<img src="../images/thumb_missing-image.jpg" height="100px">';
 				}
 			}
 

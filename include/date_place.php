@@ -3,6 +3,7 @@
 function date_place($process_date, $process_place){
 	global $language, $user, $screen_mode, $dirmark1;
 	if ($process_place==" "){$process_place="";} // *** If there is no place ***
+
 	if ($user['group_place_date']=='j'){
 		$text="";
 		if ($user['group_places']=='j' AND $process_place){

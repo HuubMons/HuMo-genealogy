@@ -31,6 +31,15 @@ if (isset($_POST['person_remove'])){
 	$confirm.='<div class="confirm">';
 	$confirm.=__('This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?');
 
+	// GRAYED-OUT and DISABLED!!!! UNDER CONSTRUCTION!!!!
+	$confirm.='<br>';
+	//$disabled='';
+	$disabled=' DISABLED';
+	$confirm.='<span style="color:#6D7B8D;">';
+		$selected=''; //if ($selected_alive=='alive'){ $selected=' CHECKED'; }
+		$confirm.=' <input type="checkbox" name="pers_alive" value="alive"'.$selected.$disabled.'> '.__('Also remove ALL RELATED PERSONS (including all items)').'<br>';
+	$confirm.='</span>';
+
 	$confirm.=' <form method="post" action="'.$phpself.'" style="display : inline;">';
 	$confirm.='<input type="hidden" name="page" value="'.$page.'">';
 	$confirm.=' <input type="Submit" name="person_remove2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';

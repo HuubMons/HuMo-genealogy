@@ -63,7 +63,7 @@ function topline(){
 	global $woman_cls, $person_womanDb, $selected_language;
 
 	//$text='<tr><td class="table_header" width="75%">';
-	$text='<tr class=table_headline><td class=table_header width="70%">';
+	$text='<tr class=table_headline><td class=table_header width="65%">';
 
 	// *** Text above family ***
 	$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
@@ -148,7 +148,7 @@ function topline(){
 			$text.='</div>';
 		$text.='</div>';
 
-	$text.='</td><td class="table_header fonts" width="15%" style="text-align:center";>';
+	$text.='</td><td class="table_header fonts" width="20%" style="text-align:center";>';
 
 		// *** PDF button ***
 		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
@@ -352,9 +352,8 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 
 	// *** Show/ hide texts ***
 	if (isset($_GET['text_presentation'])) $_SESSION['save_text_presentation']=safe_text($_GET["text_presentation"]);
-	$text_presentation='show';
 	// *** Default setting is selected by administrator ***
-	//$text_presentation=$user['group_text_presentation'];
+	$text_presentation=$user['group_text_presentation'];
 	if (isset($_SESSION['save_text_presentation'])) $text_presentation=$_SESSION['save_text_presentation'];
 }
 if($screen_mode=='STAR') {
@@ -914,7 +913,7 @@ else{
 							}
 							if($screen_mode=='PDF') {
 								//  PDF rendering of name + details
-								unset ($pdfstr);
+								unset ($templ_person);
 								if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
 									else $pers_sexe = $person_womanDb->pers_sexe;
 								$pdf->writename($pers_sexe,$pdf->GetX()+5,$woman_cls->name_extended("parent1"),"long");
@@ -963,7 +962,7 @@ else{
 												$imageFile = $value;
 												$image = $cell->addImage($imageFile);
 												$txtkey = str_replace("pic_path","pic_text",$key); 
-												if(isset($result[1][$txtkey])) 			{
+												if(isset($result[1][$txtkey])) {
 													$textarr[]=$result[1][$txtkey];
 												}
 												else { $textarr[]="&nbsp;"; }
@@ -1015,7 +1014,7 @@ else{
 							}
 							if($screen_mode=='PDF') {
 								//  PDF rendering of name + details
-								unset ($pdfstr);
+								unset ($templ_person);
 								if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
 									else $pers_sexe = $person_manDb->pers_sexe;
 								$pdf->writename($pers_sexe,$pdf->GetX()+5,$man_cls->name_extended("parent1"),"long");
@@ -1204,7 +1203,7 @@ else{
 						echo '</div><br>';
 					}
 					if($screen_mode=='PDF') {
-						//unset ($pdfstr);
+						//unset ($templ_person);
 						if($family_privacy) {
 							$pdf_marriage=$marriage_cls->marriage_data($familyDb,'','short');
 							$pdf->SetLeftMargin($indent);
@@ -1255,7 +1254,7 @@ else{
 						echo $man_cls->person_data("parent2", $id);
 					}
 					if($screen_mode=='PDF') {
-						unset ($pdfstr);
+						unset ($templ_person);
 						// PDF rendering of name + details
 						$pdf->Write(8," "); // IMPORTANT - otherwise at bottom of page man/woman.gif image will print, but name may move to following page!
 						if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
@@ -1344,7 +1343,7 @@ else{
 						echo $woman_cls->person_data("parent2", $id);
 					}
 					if($screen_mode=='PDF'){
-						unset ($pdfstr);
+						unset ($templ_person);
 						// PDF rendering of name + details
 						$pdf->Write(8," ");   // IMPORTANT - otherwise at bottom of page man/woman.gif image will print, but name may move to following page!
 						if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
@@ -1440,20 +1439,6 @@ else{
 					}
 					else{
 						if ($user["group_texts_fam"]=='j' AND process_text($familyDb->fam_text)){
-							/*
-							if($screen_mode!='PDF') {
-								echo '<br>'.process_text($familyDb->fam_text);
-								// *** BK: source by family text ***
-								echo show_sources2("family","fam_text",$familyDb->fam_gedcomnumber);
-							}
-							else {
-								// PDF rendering of marriage notes
-								$pdf->SetFont('Arial','I',11);
-								$pdf->Write(6,process_text($familyDb->fam_text)."\n");
-								$pdf->Write(6,show_sources2("family","fam_text",$familyDb->fam_gedcomnumber)."\n");
-								$pdf->SetFont('Arial','',12);
-							}
-							*/
 							if($screen_mode=='PDF') {
 								// PDF rendering of marriage notes
 								$pdf->SetFont('Arial','I',11);
@@ -1470,7 +1455,7 @@ else{
 								$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
 							}
 							else {
-								echo '<br>'.process_text($familyDb->fam_text);
+								echo '<br>'.process_text($familyDb->fam_text, 'family');
 								// *** BK: source by family text ***
 								echo show_sources2("family","fam_text",$familyDb->fam_gedcomnumber);
 							}
@@ -1577,7 +1562,7 @@ else{
 						//echo "</td></tr>\n";
 					}
 					if($screen_mode=='PDF') {
-						unset ($pdfstr);
+						unset ($templ_person);
 						$pdf->SetLeftMargin(10);
 						$pdf->SetDrawColor(200);  // grey line
 						$pdf->Cell(0,2," ",'B',1);
@@ -1780,7 +1765,7 @@ else{
 							if($screen_mode=='PDF') {
 								//  PDF rendering of child details
 								$pdf->Write(6,"\n");
-								unset ($pdfstr);
+								unset ($templ_person);
 								$pdf_child=$child_cls->person_data("child", $id);
 								if($pdf_child) {
 									$pdf->SetLeftMargin($child_indent);

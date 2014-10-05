@@ -200,24 +200,30 @@ ul.humo_menu_item li a{
 }
 /* Pop-up menu */
 ul.humo_menu_item2 li a{
-	float:none;
+	/* float:none; */
+	display:block;
 	font-size: 13px;
 	padding:8px 5px 6px 5px;
 	text-decoration:none;
 	color:#333;
 	border-right: none;
 	background:url("images/default_trans_large.png") repeat left top;
-	display:block;
 }
 
 #humo_menu a:hover {
-	background:url(images/gray_down.png) repeat left top;
+	/* background:url(images/gray_down.png) repeat left top;
+	color:#FFFFFF; */
+	background:url("images/gray_down.jpg") repeat left top;
+	color:#333;
 }
+
 #humo_menu #current {
 
 }
 #humo_menu #current a, #humo_menu #current_top {
-	background:url(images/gray_down.png) repeat left top;
+	/* background:url(images/gray_down.png) repeat left top;
+	color:#FFFFFF; */
+	background:url("images/gray_down.jpg") repeat left top;
 	color:#333;
 }
 
@@ -264,6 +270,7 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 /* Center box */
 #mainmenu_centerbox{
 	/* background: #ffffff url(images_antique/tree_background_450lc.jpg) repeat left top; */
+
 	background: #ffffff;
 	border: solid 1px #999999;
 	margin:10px 15px 0px 15px;
@@ -651,7 +658,10 @@ table.index_table{
 
 
 .left_box{
-	position:absolute;
+	/* position:absolute; */
+	width:110px;
+	float:left;
+
 	top:30px; left:10px;
 	padding:8px;
 	background-color:#FAF1EB;
@@ -666,7 +676,10 @@ table.index_table{
 	border-radius: 6px 6px 6px 6px;  
 }
 .right_box{ /* for rtl */
-	position:absolute;
+	/* position:absolute; */
+	width:110px;
+	float:right;
+
 	top:30px; right-margin:10px;
 	padding:8px;
 	background-color:#FAF1EB;

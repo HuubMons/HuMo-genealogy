@@ -13,7 +13,7 @@ echo '<h1 align=center>'.__('User groups').'</h1>';
 
 if (isset($_POST['group_add'])){
 	$sql="INSERT INTO humo_groups SET group_name='new groep', group_privacy='n', group_menu_places='n', group_admin='n',
-		group_sources='n', group_source_presentation='title', group_user_notes='n', group_show_restricted_source='y',
+		group_sources='n', group_source_presentation='title', group_text_presentation='show', group_user_notes='n', group_show_restricted_source='y',
 		group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j',
 		group_religion='n', group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n',
 		group_own_code='n', group_pdf_button='y', group_rtf_button='n', group_work_text='n', group_texts='j',
@@ -45,6 +45,7 @@ if (isset($_POST['group_change'])){
 	group_sources='".$_POST["group_sources"]."',
 	group_show_restricted_source='".$_POST["group_show_restricted_source"]."',
 	group_source_presentation='".$_POST["group_source_presentation"]."',
+	group_text_presentation='".$_POST["group_text_presentation"]."',
 	group_user_notes='".$_POST["group_user_notes"]."',
 	group_birthday_rss='".$_POST["group_birthday_rss"]."',
 	group_menu_persons='".$_POST["group_menu_persons"]."',
@@ -170,6 +171,11 @@ Group "family" = family members or genealogists.').'<br>';
 	if (!isset($field['group_source_presentation'])){
 		$sql="ALTER TABLE humo_groups
 			ADD group_source_presentation VARCHAR(20) NOT NULL DEFAULT 'title' AFTER group_sources;";
+		$result=$dbh->query($sql);
+	}
+	if (!isset($field['group_text_presentation'])){
+		$sql="ALTER TABLE humo_groups
+			ADD group_text_presentation VARCHAR(20) NOT NULL DEFAULT 'show' AFTER group_source_presentation;";
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['group_show_restricted_source'])){
@@ -490,6 +496,16 @@ Group "family" = family members or genealogists.').'<br>';
 	echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
 
 	print '<tr><th bgcolor=green><font color=white>'.__('Texts').'</font></th><th bgcolor=green><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+
+	// *** First default presentation of texts, by administrator (visitor can override value) ***
+	print '<tr><td>'.__('Default presentation of text').'</td>';
+	print '<td><select size="1" name="group_text_presentation">';
+	$selected=''; if ($groupDb->group_text_presentation=='show'){ $selected=' SELECTED'; }
+	echo '<option value="show"'.$selected.'>'.__('Show texts').'</option>';
+	$selected=''; if ($groupDb->group_text_presentation=='popup'){ $selected=' SELECTED'; }
+	echo '<option value="popup"'.$selected.'>'.__('Show texts in popup screen').'</option>';
+	$selected=''; if ($groupDb->group_text_presentation=='hide'){ $selected=' SELECTED'; }
+	echo '<option value="hide"'.$selected.'>'.__('Hide texts').'</option></select></td></tr>';
 
 	print '<tr><td>'.__('Show hidden text/ own remarks (text between # characters in text fields, example: #check birthday#)').'</td>';
 	print '<td><select size="1" name="group_work_text"><option value="j">'.__('Yes').'</option>';

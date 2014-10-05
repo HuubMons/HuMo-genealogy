@@ -101,7 +101,7 @@ if($screen_mode!='PDF' AND $screen_mode!='RTF' AND $screen_mode!="ancestor_sheet
 				print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
 				print '</form>';
 			}
-$user["group_rtf_button"]='y';
+
 			if($user["group_rtf_button"]=='y' AND $language["dir"]!="rtl") {
 				// Show rtf button
 				print ' <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
@@ -150,7 +150,7 @@ if($screen_mode=='RTF') {  // initialize rtf generation
 	$sect = $rtf->addSection();
 
 	// *** RTF Settings ***
-	$arial10 = new PHPRtfLite_Font(10, 'Arial');	
+	$arial10 = new PHPRtfLite_Font(10, 'Arial');
 	$arial12 = new PHPRtfLite_Font(12, 'Arial');
 	$arial14 = new PHPRtfLite_Font(14, 'Arial', '#000066');
 	//Fonts
@@ -278,7 +278,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 	}
 
 	$listed_array=array();
-	
+
 	// *** Loop for ancestor report ***
 	while (isset($ancestor_array2[0])){
 		unset($ancestor_array);
@@ -344,10 +344,10 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
 				$privacy_man=$man_cls->privacy;
-				
+
 				// for pdf function pdf_ancestor_name() further along
 				//$sexe=$person_manDb->pers_sexe;
-				
+
 				if (strtolower($person_manDb->pers_sexe)=='m' AND $ancestor_number[$i]>1){
 					$fam_prep_var = $marriage_gedcomnumber[$i];
 					$fam_prep->execute();
@@ -372,16 +372,14 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					echo '<td>';
 					//*** Show data man ***
 					echo '<div class="parent1">';
-					// ***  Use "child", to show a link for own family. ***
-					echo $man_cls->name_extended("child");
-
-					if ($listednr=='') {
-						echo $man_cls->person_data("standard", $ancestor_array[$i]);
-					}
-					else { // person was already listed
-						echo ' <strong> ('.__('Allready listed above as number ').$listednr.') </strong>';
-					}
-
+						// ***  Use "child", to show a link for own family. ***
+						echo $man_cls->name_extended("child");
+						if ($listednr=='') {
+							echo $man_cls->person_data("standard", $ancestor_array[$i]);
+						}
+						else { // person was already listed
+							echo ' <strong> ('.__('Allready listed above as number ').$listednr.') </strong>';
+						}
 					echo '</div>';
 					echo '</td></tr>';
 				}
@@ -394,7 +392,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					$rtf_text = $ancestor_number[$i]."(".floor($ancestor_number[$i]/2).")";
 					$cell = $table->getCell(1, 1);
 					$cell->writeText($rtf_text, $arial10, $parNames);
-					$rtf_text = strip_tags($man_cls->name_extended("child"));
+					$rtf_text = strip_tags($man_cls->name_extended("child"),"<b><i>");
 					$cell = $table->getCell(1, 2);
 					if ($person_manDb->pers_sexe=="M")
 						$cell->addImage('images/man.jpg', null);
@@ -405,11 +403,11 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					$cell = $table->getCell(1, 3);
 					$cell->writeText($rtf_text, $arial12, $parNames);
 					if ($listednr=='') {
-						$rtf_text=strip_tags($man_cls->person_data("standard", $ancestor_array[$i]));
+						$rtf_text=strip_tags($man_cls->person_data("standard", $ancestor_array[$i]),"<b><i>");
 						$rtf_text = substr($rtf_text,0,-1); // take off newline
 					}
 					else { // person was already listed
-						$rtf_text=strip_tags('('.__('Allready listed above as number ').$listednr.') ');
+						$rtf_text=strip_tags('('.__('Allready listed above as number ').$listednr.') ',"<b><i>");
 					}
 					$cell->writeText($rtf_text, $arial12, $parNames);
 
@@ -527,7 +525,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 							echo $marriage_cls->marriage_data();
 						}
 						elseif($screen_mode=="RTF") {
-							$rtf_text = strip_tags($marriage_cls->marriage_data());
+							$rtf_text = strip_tags($marriage_cls->marriage_data(),"<b><i>");
 							$sect->writeText($rtf_text, $arial12, $parSimple);
 						}
 						else {
@@ -569,7 +567,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				}
 
 			} else{
-				
+
 				// *** Show N.N. person ***
 				$pers_prep_var = $ancestor_array[$i];
 				$pers_prep->execute();
@@ -607,10 +605,10 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 						$cell->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
 					else
 						$cell->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
-					$rtf_text = strip_tags($man_cls->name_extended("child"));
+					$rtf_text = strip_tags($man_cls->name_extended("child"),"<b><i>");
 					$cell = $table->getCell(1, 3);
 					$cell->writeText($rtf_text, $arial12, $parNames);
-					$rtf_text=strip_tags($man_cls->person_data("standard", $ancestor_array[$i]));
+					$rtf_text=strip_tags($man_cls->person_data("standard", $ancestor_array[$i]),"<b><i>");
 					$rtf_text = substr($rtf_text,0,-1); // take off newline
 					$cell->writeText($rtf_text, $arial12, $parNames);
 				}
@@ -669,8 +667,8 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 
 	// Loop to find person data
 	$count_max = 64;
-	if($hourglass===true) { $count_max = pow(2,$chosengenanc); }		
-	
+	if($hourglass===true) { $count_max = pow(2,$chosengenanc); }
+
 	for ($counter = 2; $counter < $count_max; $counter++){
 		$gedcomnumber[$counter]= '';
 		$pers_famc[$counter]= '';
@@ -704,7 +702,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		global $gedcomnumber, $language;
 		global $screen_mode, $dirmark1, $dirmark2;
 		global $pers_prep_var, $pers_prep;
-		
+
 		$hour_value=''; // if called from hourglass.php size of chart is given in box_appearance as "hour45" etc.
 		if(strpos($box_appearance,"hour")!==false) { $hour_value=substr($box_appearance,4); }
 
@@ -712,7 +710,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 
 		if ($gedcomnumber[$id]){ 
 			$pers_prep_var = $gedcomnumber[$id];
-			$pers_prep->execute();			
+			$pers_prep->execute();
 			@$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
 
 			$person_cls = New person_cls;
@@ -793,12 +791,12 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 					}
 				}
 			}
-		
+
 			if($hour_value != '') { // called from hourglass
-				if($hour_value == '45') { $replacement_text = $name['name']; }	
-				elseif($hour_value == '40') { $replacement_text = '<span class="wordwrap" style="font-size:75%">'.$name['short_firstname'].'</span>'; }					
-				elseif($hour_value >20 AND $hour_value <40) { $replacement_text = $name['initials'];}	
-				elseif($hour_value <25) { $replacement_text = "&nbsp;";}	
+				if($hour_value == '45') { $replacement_text = $name['name']; }
+				elseif($hour_value == '40') { $replacement_text = '<span class="wordwrap" style="font-size:75%">'.$name['short_firstname'].'</span>'; }
+				elseif($hour_value >20 AND $hour_value <40) { $replacement_text = $name['initials'];}
+				elseif($hour_value <25) { $replacement_text = "&nbsp;";}
 				// if full scale (50) then the default of this function will be used: name with details
 			}
 
@@ -821,7 +819,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		}
 		return $text."\n";
 	}
-	// *** End of function ancestor_chart_person ***	
+	// *** End of function ancestor_chart_person ***
 
 	// Specific code for ancestor chart:
 
@@ -836,7 +834,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		// width of the chart. for 6 generations 1000px is right
 		// if we ever make the anc chart have optionally more generations, the width and length will have to be generated
 		// as in dreport_descendant.php
-		
+
 		//following div gets width and length in imaging java function showimg() (at bottom) otherwise double scrollbars won't work.
 		echo '<div id="png">';
 
@@ -983,8 +981,8 @@ echo '<div>';
 				newWin.document.open();
 				newWin.document.write('<!DOCTYPE html><head></head><body>".__('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ')."<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>".__('If you have a plotter you can use its software to print the image on one large sheet.')."<br><br><img src=\"' + img + '\"></body></html>');
 				newWin.document.close();
-      			}
-   		});
+				}
+		});
 	}
 	";
 	echo "</script>";
@@ -1014,7 +1012,7 @@ echo '<div>';
 <?php
 
 	}   // end of ancestor CHART code
-	
+
 	// Specific code for ancestor SHEET:
 
 	if($screen_mode=="ancestor_sheet" AND $screen_mode != "ASPDF") {
@@ -1057,7 +1055,7 @@ echo '<div>';
 		print '<table class="humo ancestor_sheet">';
 		print '<tr><th class="ancestor_head" colspan="8">';  // adjusted for IE7
 		print __('Ancestor sheet').__(' of ').ancestor_chart_person(1,"ancestor_header");  
-		
+
 			if($language["dir"]!="rtl") {
 				// Show pdf button
 				print '&nbsp;&nbsp; <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
@@ -1066,7 +1064,7 @@ echo '<div>';
 				print '<input type="hidden" name="screen_mode" value="ASPDF">';
 				print '<input class="fonts" type="Submit" name="submit" value="PDF Report">';
 				print '</form>';
-			}		
+			}
 		
 		print '</th></tr>';
 
@@ -1098,12 +1096,12 @@ echo '<div>';
 	// Specific code for ancestor sheet PDF:
 
 	if($screen_mode=="ASPDF") {  
-	
+
 		// this function parses the input string to see how many lines it would take in the ancestor sheet box
 		// it forces linebreaks when max nr of chars is encountered
 		// if given a value for $trunc (the max nr of lines) it will truncate the string when max lines are reached
 		// $str = the input string
-		// $width = width of box (in characters)	
+		// $width = width of box (in characters)
 
 		function parse_line($str,$width,$trunc,$bold="") {  
 			global $pdf;
@@ -1174,7 +1172,7 @@ echo '<div>';
 						$birth_len = 1;
 					}
 					else{
-						if($personDb->pers_birth_date != '') { $space=' '; }		
+						if($personDb->pers_birth_date != '') { $space=' '; }
 						$birth = __('*').' '.$personDb->pers_birth_date.$space.$personDb->pers_birth_place;
 						$result = parse_line($birth,$width,0);
 						$birth_len = $result[0];
@@ -1203,10 +1201,10 @@ echo '<div>';
 						$death = $result[1];
 					}
 				}
-				else {		
+				else {
 					$death_len = 0;
 				}
-		  
+  
 				// now start adjusting the strings to make sure no more than $height lines will be displayed in box
 				// name gets priority if extra space is available (= if birth or death take up less than 2 lines)
 				if($name_len < 3) {
@@ -1252,7 +1250,7 @@ echo '<div>';
 						$data_array[$id][4]=$result[0];
 					}
 				}  
-				
+
 				if($death_len < 3) {
 					$data_array[$id][2]= $death;
 					$data_array[$id][5]= $death_len;
@@ -1269,7 +1267,7 @@ echo '<div>';
 						$data_array[$id][5]=$result[0];
 					}
 				}  
-				
+
 			}
 			else {
 				$data_array[$id][0] = __('N.N.');
@@ -1298,7 +1296,7 @@ echo '<div>';
 					}
 					$pdf->MultiCell($cellwidth,4,$data_array[$m][0],"LTR","C",true);
 					$marg += $cellwidth; 
-					$pdf->SetFont('Arial','',8);	
+					$pdf->SetFont('Arial','',8);
 					$nstring=''; $used = $data_array[$m][3]+$data_array[$m][4]+$data_array[$m][5];
 				}
 				else {  // marr date & place
@@ -1340,8 +1338,8 @@ echo '<div>';
 					$breakln=''; if($data_array[$m][1]!='' AND $data_array[$m][2]!='') { $breakln = "\n"; }
 					if($data_array[$m][4]==0 AND $data_array[$m][5]==0) { $nstring=substr($nstring,0,strlen($nstring)-1); }
 					$pdf->SetFont('Arial','',8);
-					$pdf->MultiCell($cellwidth,4,$data_array[$m][1].$breakln.$data_array[$m][2].$nstring,"LRB","C",true);	
-				}	
+					$pdf->MultiCell($cellwidth,4,$data_array[$m][1].$breakln.$data_array[$m][2].$nstring,"LRB","C",true);
+				}
 				else {
 					$pdf->SetFont('Arial','I',8);
 					$pdf->MultiCell($cellwidth,4,$result[1].$nstring,"LR","C",false);
@@ -1393,7 +1391,7 @@ echo '<div>';
 			place_cells("marr",16,30,2,32,3,33);
 			place_cells("pers",17,31,2,32,8,33);
 			$pdf->MultiCell(264,3," ",0,"C"); $pdf->SetLeftMargin(16); $pdf->SetX(16); $posy+=4; $pdf->SetY($posy);
-			$place=33; for($x=1;$x<9;$x++) { $pdf->Image("images/arrowdown.jpg",$place,94.5,2); $place+=33;}	
+			$place=33; for($x=1;$x<9;$x++) { $pdf->Image("images/arrowdown.jpg",$place,94.5,2); $place+=33;}
 		}
 		$exist1=false; for($x=8; $x<16; $x++) { if ($gedcomnumber[$x]!='') $exist1=true; }
 		if($exist==true OR $exist1==true) {
@@ -1499,7 +1497,7 @@ if($hourglass===false) {
 		$text.='</form> ';
 		echo $text;
 	}
-	
+
 	// Finishing code for ancestor report PDF and ancestor sheet PDF (ASPDF)
 	else {
 		$pdf->Output($title.".pdf","I");

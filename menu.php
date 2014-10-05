@@ -46,7 +46,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			echo '</form>';
 		}
 	}
-   echo '</div>';
+	echo '</div>';
 	// *** This code is only used to restore $dataDb reading. Used for picture etc. ***
 	//$treetext_name=database_name($_SESSION['tree_prefix'], $selected_language);
 	$treetext=show_tree_text($_SESSION['tree_prefix'], $selected_language);
@@ -246,6 +246,7 @@ echo '<ul class="humo_menu_item">';
 		if ($menu_choice=='names'){ $select_top=' id="current_top"'; }
 		if ($menu_choice=='sources'){ $select_top=' id="current_top"'; }
 		if ($menu_choice=='places'){ $select_top=' id="current_top"'; }
+		if ($menu_choice=='places_families'){ $select_top=' id="current_top"'; }
 		if ($menu_choice=='pictures'){ $select_top=' id="current_top"'; }
 		if ($menu_choice=='addresses'){ $select_top=' id="current_top"'; }
 
@@ -305,7 +306,16 @@ echo '<ul class="humo_menu_item">';
 						else{
 							$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'].'&amp;index_list=places&amp;reset=1';
 						}
-						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Places')."</a></li>\n";
+						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Places (by persons)')."</a></li>\n";
+
+						$select_menu=''; if ($menu_choice=='places_families'){ $select_menu=' id="current"'; }
+						//if (CMS_SPECIFIC=='Joomla'){
+						//	$path_tmp='index.php?option=com_humo-gen&amp;database='.$_SESSION['tree_prefix'].'&amp;task=list&amp;index_list=places&amp;reset=1';
+						//}
+						//else{
+							$path_tmp=CMS_ROOTPATH.'list_places_families.php?database='.$_SESSION['tree_prefix'].'&amp;index_list=places&amp;reset=1';
+						//}
+						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Places (by families)')."</a></li>\n";
 					}
 
 					if ($user['group_photobook']=='j'){
@@ -376,7 +386,7 @@ echo '<ul class="humo_menu_item">';
 	if($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j' OR
 	($user["group_googlemaps"]=='j' AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0) OR 
 	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
-	$user["group_latestchanges"]=='j' ) {	
+	$user["group_latestchanges"]=='j' ) {
 		// *** Javascript pull-down menu ***
 		echo '<li>';
 		echo '<div class="'.$rtlmarker.'sddm">';
@@ -546,13 +556,16 @@ echo '<ul class="humo_menu_item">';
 			echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
 			$select_top='';
 			echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
-			echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+			//echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+			echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:200px;">';
 				echo '<ul class="humo_menu_item2">';
 					for ($i=0; $i<count($language_file); $i++){
-							// *** Get language name ***
+						// *** Get language name ***
 						if ($language_file[$i] != $selected_language) {
 							include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
-							echo '<li><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
+							//echo '<li><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
+							echo '<li style="float:left; width:99px;"><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
+
 							echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
 							echo $language["name"];
 							echo '</a>';
@@ -584,7 +597,8 @@ echo '<ul class="humo_menu_item">';
 			} else{
 				$path_tmp=CMS_ROOTPATH.'user_settings.php';
 			}
-			print '<li><a href="'.$path_tmp.'">'.__('Settings')."</a></li>\n";
+			$select_menu=''; if ($menu_choice=='settings'){ $select_menu=' id="current"'; }
+			print '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Settings')."</a></li>\n";
 
 			// *** Log off ***
 			if (CMS_SPECIFIC=='Joomla'){

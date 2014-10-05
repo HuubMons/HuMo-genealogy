@@ -55,7 +55,7 @@ ul.humo_menu_item li { border-right: none; }
 	margin-left:12px;
 	margin-right:12px;
 }
-mainmenu_center_alt{
+#mainmenu_center_alt {
 	margin-left:20px;
 }
 
@@ -71,18 +71,9 @@ table.standard { margin-left:auto; margin-right:auto; }
 /* 1st table A-Z */
 table.humo td { border-color: #3355cc; }
 table.humo tr:first-of-type td { border-color:  #3355cc; }
-table.humo th {
-	/*
-	background-image:none;
-	background-color: #FFFFFF;
-	*/
-}
+table.humo th { }
 /* 2nd table A-Z */
-.family_page_toptext {          
-	/* color: #000066; */
-	/* background-color: #ccccff; */  
-	/* background:url("images_silverline/menuhover.jpg") repeat left top; */
-}
+.family_page_toptext { }
 td.style_tree_text { background-color: #eeeeff; }
 
 /* familypage */
@@ -108,20 +99,13 @@ div.hour_ancestor_split{
 
 /* table header  */
 .table_headline{ background:url("images_silverline/menuhover.jpg") repeat left top; }
-td.table_header { 
-	/* background-image: url('images_silverline/default_trans.png'); */
-	/* background:url("images_silverline/menuhover.jpg") repeat left top; */
-}
+td.table_header { }
 
 /* Switchform */
 #switchform { color: #333399; }
 
 /* Menu */
-#top_menu {
-/* For IE - Voor IE: */
-	/* color: #6666aa; */
-	/* background-color: #aaccee; */
-}
+#top_menu { }
 #country_flags { padding:11px 85px 6px 5px; }
 .help_box { background-color: #eeeeff; }
 

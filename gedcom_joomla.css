@@ -131,28 +131,21 @@ span.rtlsddm #m1x  ul  {
 
 /* #humo_menu a:hover { */
 #humo_menu a:hover, #humo_menu ul.humo_menu_item2 li a:hover{
-	background:url(images/gray_down.png) repeat left top;
+	/* background:url(images/gray_down.png) repeat left top; */
+	background:url("images/gray_down.jpg") repeat left top;
 }
 #humo_menu #current {
 }
-/* #humo_menu #current a { */
 #humo_menu #current a, #humo_menu #current_top {
-	background:url(images/gray_down.png) repeat left top;
+	/* background:url(images/gray_down.png) repeat left top; */
+	background:url("images/gray_down.jpg") repeat left top;
 	color:#333;
 }
-/*
-#humo_menu span {
-	margin:0;
-	padding:0 0 0 9px;
-}
-*/
 
 #country_flags{
 	float:right;
-
 	display:block;
 	padding:8px 85px 6px 5px;
-
 	text-decoration:none;
 	color:#333;
 	border-right:none;
@@ -241,7 +234,6 @@ span.rtlsddm #m1x  ul  {
 
 /* heads - koppen */
 h1 { text-align: center; }
-/* table { background-color:#FFFFCC; font-size: 14px;} */
 
 hr { text-align: center; width:70%; }
 
@@ -615,13 +607,6 @@ div.photobooktext{
 	border: solid 1px #999999;
 	background-color:#FAF1EB;
 }
-/*
-.helptable {
-width: 100%;
-text-align: left;
-margin: 0 0 20px 0;
-}
-*/
 .help_header {
 	margin: 0 0 -10px 0;
 	text-align: center;

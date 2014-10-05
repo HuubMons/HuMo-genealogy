@@ -6,7 +6,7 @@ function show_media($personDb,$marriageDb){
 	global $sect, $screen_mode; // *** RTF Export ***
 	global $picture_presentation;
 
-	$pdfstr = array(); // local version
+	$templ_person = array(); // local version
 	$process_text='';
 	$media_nr=0;
 
@@ -19,9 +19,6 @@ function show_media($personDb,$marriageDb){
 
 		// *** Standard connected media by person and family ***
 		if ($personDb!=''){
-			//$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			//	WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='picture'
-			//	ORDER BY event_order");
 			$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 				WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND LEFT(event_kind,7)='picture'
 				ORDER BY event_kind, event_order");
@@ -146,29 +143,29 @@ function show_media($personDb,$marriageDb){
 			}
 			else{
 				// *** Show photo using the lightbox effect ***
-				$picture='<a href="'.$tree_pict_path.$event_event.'" rel="lightbox" title="'.str_replace("&", "&amp;", $media_event_text[$i]).'">';
-
 				$picture_array=show_picture($tree_pict_path,$event_event,'',120);
-				$picture.='<img src="'.$tree_pict_path.$picture_array['thumb'].$picture_array['picture'].'" height="'.$picture_array['height'].'" alt="'.$event_event.'"></a>';
+				$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $media_event_text[$i]).'">';
+				$picture.='<img src="'.$picture_array['path'].$picture_array['thumb'].$picture_array['picture'].'" height="'.$picture_array['height'].'" alt="'.$event_event.'"></a>';
 
-				$pdfstr["pic_path".$i]=$tree_pict_path."thumb_".$event_event; //for the time being pdf only with thumbs
+				//$templ_person["pic_path".$i]=$tree_pict_path."thumb_".$event_event; //for the time being pdf only with thumbs
+				$templ_person["pic_path".$i]=$picture_array['path']."thumb_".$picture_array['picture']; //for the time being pdf only with thumbs
 				// *** Remove spaces ***
-				$pdfstr["pic_path".$i]=trim($pdfstr["pic_path".$i]);
+				$templ_person["pic_path".$i]=trim($templ_person["pic_path".$i]);
 			}
 
 			// *** Show picture date ***
 			$picture_date='';
 			if ($media_event_date[$i]){
 				if ($screen_mode!='RTF'){ $picture_date=' '.date_place($media_event_date[$i],'').' '; } // default, there is no place
-				$pdfstr["pic_text".$i]=date_place($media_event_date[$i],'');
+				$templ_person["pic_text".$i]=date_place($media_event_date[$i],'');
 			}
 
 			// *** Show text by picture of little space ***
 			$picture_text='';
 			if (isset($media_event_text[$i]) AND $media_event_text[$i]){
 				if ($screen_mode!='RTF'){$picture_text=$picture_date.' '.str_replace("&", "&amp;", $media_event_text[$i]);}
-				if(isset($pdfstr["pic_text".$i])){ $pdfstr["pic_text".$i].=' '.$media_event_text[$i];}
-					else {$pdfstr["pic_text".$i]=' '.$media_event_text[$i];}
+				if(isset($templ_person["pic_text".$i])){ $templ_person["pic_text".$i].=' '.$media_event_text[$i];}
+					else {$templ_person["pic_text".$i]=' '.$media_event_text[$i];}
 			}
 
 			if ($media_event_source[$i]){
@@ -184,37 +181,53 @@ function show_media($personDb,$marriageDb){
 		}
 		if ($media_nr > 0){
 			$process_text.='<br clear="All">';
-			$pdfstr["got_pics"]=1;
+			$templ_person["got_pics"]=1;
 		}
 	}
 	//return $process_text;
 	$result[0] = $process_text;
-	$result[1] = $pdfstr; // local version with pic data
+	$result[1] = $templ_person; // local version with pic data
 	return $result;
 }
 
 // *** Function to show a picture in several places ***
-// *** Made by Huub Mons sept. 2011 ***
+// *** Made by Huub Mons sept. 2011/ update aug. 2014 ***
 // Example:
 // $picture=show_picture($tree_pict_path,$pictureDb->event_event,'',120);
-// $popup.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="margin-left:50px; margin-top:5px;" alt="'.$pictureDb->event_text.'" height="'.$picture['height'].'">';
+// $popup.='<img src="'.$picture['path'].$picture['thumb'].$picture['picture'].'" style="margin-left:50px; margin-top:5px;" alt="'.$pictureDb->event_text.'" height="'.$picture['height'].'">';
 
 function show_picture($picture_path,$picture_org,$pict_width='',$pict_height=''){
 	$picture["picture"]=$picture_org;
+	$picture["path"]=$picture_path; // *** Standard picture path. Will be overwritten if picture is removed ***
+	$found_picture=false; // *** Check if picture still exists ***
 
 	// *** In some cases the picture name must be converted to lower case ***
-	if (file_exists($picture_path.strtolower($picture['picture']))){
-		$picture['picture']=strtolower($picture['picture']); }
+	if (file_exists($picture["path"].strtolower($picture['picture']))){
+		$found_picture=true;
+		$picture['picture']=strtolower($picture['picture']);
+	}
 
 	$picture['thumb']='';
-	if (file_exists($picture_path.'thumb_'.strtolower($picture['picture']))){
+	// *** Lowercase thumbnail ***
+	if (file_exists($picture["path"].'thumb_'.strtolower($picture['picture']))){
+		$found_picture=true;
 		$picture['thumb']='thumb_';
 		$picture['picture']=strtolower($picture['picture']);
 	}
-	if (file_exists($picture_path.'thumb_'.$picture['picture'])){ $picture['thumb']='thumb_'; }
+	// *** Thumbnail ***
+	if (file_exists($picture["path"].'thumb_'.$picture['picture'])){
+		$found_picture=true;
+		$picture['thumb']='thumb_';
+	}
+
+	if (!$found_picture){
+		$picture['path']='images/';
+		$picture['thumb']='thumb_';
+		$picture['picture']='missing-image.jpg';
+	}
 
 	// *** If photo is too wide, correct the size ***
-	@list($width, $height) = getimagesize($picture_path.$picture['thumb'].$picture['picture']);
+	@list($width, $height) = getimagesize($picture["path"].$picture['thumb'].$picture['picture']);
 
 	if ($pict_width>0 AND $pict_height>0){
 		// *** Change width and height ***
