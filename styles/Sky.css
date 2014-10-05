@@ -104,6 +104,7 @@ td.table_header { background-image: url('images_sky/default_trans.png'); }
 /* #humo_menu a:hover { */
 #humo_menu a:hover, #humo_menu ul.humo_menu_item2 li a:hover {
 	/* background:url("images_sky/sky.gif") repeat left top; */
+	background:url("images_white/white.jpg") repeat left top;
 }
 
 #humo_menu #current a, #humo_menu #current_top {

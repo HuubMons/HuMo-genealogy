@@ -1,5 +1,5 @@
 <?php
-function process_text($text_process){
+function process_text($text_process, $text_sort='standard'){
 	global $user, $db, $dbh, $tree_prefix_quoted;
 	global $screen_mode, $text_presentation;
 
@@ -70,7 +70,10 @@ function process_text($text_process){
 				$text.= ' style="display:inline" ';
 				$text.= 'onmouseover="mopen(event,\'show_text'.$text_nr.'\',0,0)"';
 				$text.= 'onmouseout="mclosetime()">';
-				$text.= '<b>['.__('Text').']</b>';
+				if ($text_sort=='standard')
+					$text.= '['.lcfirst(__('Text')).']';
+				else
+					$text.= '<b>['.(__('Text')).']</b>';
 				$text.= '</a>';
 				$text.='<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:'.$alignmarker.'; direction:'.$rtlmarker.';" id="show_text'.$text_nr.'" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				$text.=$text_process;

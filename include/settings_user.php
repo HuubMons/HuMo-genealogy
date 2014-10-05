@@ -77,6 +77,9 @@ if (!isset($groupDb->group_show_restricted_source)){ $user['group_show_restricte
 if (!isset($groupDb->group_source_presentation)){ $user['group_source_presentation']='title'; }
 	else{ $user['group_source_presentation']=$groupDb->group_source_presentation; }
 
+if (!isset($groupDb->group_text_presentation)){ $user['group_text_presentation']='show'; }
+	else{ $user['group_text_presentation']=$groupDb->group_text_presentation; }
+
 // *** User can add notes/ remarks by a person in the family tree ***
 if (!isset($groupDb->group_user_notes)){ $user['group_user_notes']='n'; }
 	else{ $user['group_user_notes']=$groupDb->group_user_notes; }

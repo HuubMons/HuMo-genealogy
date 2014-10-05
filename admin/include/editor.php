@@ -701,9 +701,7 @@ if (isset($pers_gedcomnumber)){
 				else
 					document.getElementById(\'hideshowlink\'+j).innerHTML = "[+]";
 			}
-
 		}
-
 		</script>';
 
 		// *** Show box with list of parents, person, marriages etc. ***
@@ -747,7 +745,6 @@ if (isset($pers_gedcomnumber)){
 					$family=$dbh->query("SELECT * FROM ".$tree_prefix."family
 						WHERE fam_gedcomnumber='".$fams1[$i]."'");
 					$familyDb=$family->fetch(PDO::FETCH_OBJ);
-					//$fam_count++;
 					echo '<br><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b><br>';
 					if ($person->pers_gedcomnumber==$familyDb->fam_man)
 						echo show_person($familyDb->fam_woman).'<br>';

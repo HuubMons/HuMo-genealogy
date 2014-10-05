@@ -599,7 +599,8 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$query.=$and."pers_prefix=''"; $and=" AND ";
 	}
 	elseif ($selection['pers_prefix']){
-		$query.=$and."pers_prefix='".$selection['pers_prefix']."'"; $and=" AND ";
+		//$query.=$and."pers_prefix='".$selection['pers_prefix']."'"; $and=" AND ";
+		$query.=$and."pers_prefix='".safe_text( str_replace(' ', '_', $selection['pers_prefix']) )."'"; $and=" AND ";
 	}
 
 	if ($selection['pers_firstname']){
@@ -1145,7 +1146,7 @@ if ($index_list=='patronym'){
 		echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 		echo '</select>';
 
-		echo '<p><input type="text" name="place_name" value="'.$place_name.'" size="17"><br>';
+		echo '<p><input type="text" name="place_name" value="'.$place_name.'" size="15"><br>';
 
 		echo '<input type="hidden" name="index_list" value="'.$index_list.'">';
 		echo '<p><input type="submit" value="'.__('Search').'" name="B1">';
@@ -1176,7 +1177,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_firstname']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="pers_firstname" value="'.$selection['pers_firstname'].'" size="17" placeholder="'.__('First name').'"></td>';
+			echo ' <input type="text" name="pers_firstname" value="'.$selection['pers_firstname'].'" size="15" placeholder="'.__('First name').'"></td>';
 
 			echo '<td align="right" class="no_border">'.__('Last name').':';
 			// *** Lastname prefix ***
@@ -1190,7 +1191,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_lastname']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="pers_lastname" value="'.$selection['pers_lastname'].'" size="17" placeholder="'.__('Last name').'"></td>';
+			echo ' <input type="text" name="pers_lastname" value="'.$selection['pers_lastname'].'" size="15" placeholder="'.__('Last name').'"></td>';
 
 			// *** Profession ***
 			echo '<td align="right" class="no_border">'.__('Profession').':';
@@ -1201,7 +1202,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_profession']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="pers_profession" value="'.$selection['pers_profession'].'" size="17" placeholder="'.__('Profession').'"></td>';
+			echo ' <input type="text" name="pers_profession" value="'.$selection['pers_profession'].'" size="15" placeholder="'.__('Profession').'"></td>';
 
 			echo '</tr>';
 
@@ -1237,7 +1238,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_birth_place']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="birth_place" value="'.$selection['birth_place'].'" size="17" placeholder="'.__('Place').'"></td>';
+			echo ' <input type="text" name="birth_place" value="'.$selection['birth_place'].'" size="15" placeholder="'.__('Place').'"></td>';
 
 			echo '<td align="right" class="no_border">'.__('Own code').':';
 			echo ' <select size="1" name="part_own_code">';
@@ -1247,7 +1248,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_own_code']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="own_code" value="'.$selection['own_code'].'" size="17" placeholder="'.__('Own code').'">';
+			echo ' <input type="text" name="own_code" value="'.$selection['own_code'].'" size="15" placeholder="'.__('Own code').'">';
 			echo '</td>';
 
 			echo '</tr>';
@@ -1266,7 +1267,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_death_place']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="death_place" value="'.$selection['death_place'].'" size="17" placeholder="'.__('Place').'"></td>';
+			echo ' <input type="text" name="death_place" value="'.$selection['death_place'].'" size="15" placeholder="'.__('Place').'"></td>';
 
 			// *** Text ***
 			echo '<td align="right" class="no_border">'.__('Text').':';
@@ -1277,7 +1278,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_text']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="text" value="'.$selection['text'].'" size="17" placeholder="'.__('Text by person').'">';
+			echo ' <input type="text" name="text" value="'.$selection['text'].'" size="15" placeholder="'.__('Text by person').'">';
 			echo '</td>';
 
 			echo '</tr>';
@@ -1302,7 +1303,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_place']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="pers_place" value="'.$selection['pers_place'].'" size="17" placeholder="'.__('Place').'"></td>';
+			echo ' <input type="text" name="pers_place" value="'.$selection['pers_place'].'" size="15" placeholder="'.__('Place').'"></td>';
 
 			// *** Zip code ***
 			echo '<td align="right" class="no_border">'.__('Zip code').':';
@@ -1313,7 +1314,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_zip_code']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="zip_code" value="'.$selection['zip_code'].'" size="17" placeholder="'.__('Zip code').'">';
+			echo ' <input type="text" name="zip_code" value="'.$selection['zip_code'].'" size="15" placeholder="'.__('Zip code').'">';
 			echo '</td>';
 
 			echo '</tr>';
@@ -1326,7 +1327,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_spouse_firstname']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="spouse_firstname" value="'.$selection['spouse_firstname'].'" size="17" placeholder="'.__('First name').'"></td>';
+			echo ' <input type="text" name="spouse_firstname" value="'.$selection['spouse_firstname'].'" size="15" placeholder="'.__('First name').'"></td>';
 
 			echo '<td align="right" class="no_border">'.__('Partner lastname').':';
 			echo ' <select size="1" name="part_spouse_lastname">';
@@ -1336,7 +1337,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_spouse_lastname']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="spouse_lastname" value="'.$selection['spouse_lastname'].'" size="17" placeholder="'.__('Last name').'"></td>';
+			echo ' <input type="text" name="spouse_lastname" value="'.$selection['spouse_lastname'].'" size="15" placeholder="'.__('Last name').'"></td>';
 
 			// *** Witness ***
 			echo '<td align="right" class="no_border">'.ucfirst(__('witness')).':';
@@ -1347,7 +1348,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_witness']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="witness" value="'.$selection['witness'].'" size="17" placeholder="'.ucfirst(__('witness')).'">';
+			echo ' <input type="text" name="witness" value="'.$selection['witness'].'" size="15" placeholder="'.ucfirst(__('witness')).'">';
 			echo '</td>';
 
 			echo '</tr>';

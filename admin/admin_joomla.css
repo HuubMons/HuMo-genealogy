@@ -13,7 +13,6 @@ table.humo td { border: solid 1px #999999; }
 .table_header {
 	background-color: #FFFFFF;
 	background-image: url('../images/default_trans.png');
-	/* font-size:120%; text-align: center; */
 }
 
 #security_remark {
@@ -105,13 +104,15 @@ ul.humo_menu_item2 li a{
 }
 
 #humo_menu a:hover {
-	background:url(../images/gray_down.png) repeat left top;
+	/* background:url(../images/gray_down.png) repeat left top; */
+	background:url("../images/gray_down.jpg") repeat left top;
 }
 #humo_menu #current {
 
 }
 #humo_menu #current a, #humo_menu #current_top {
-	background:url(../images/gray_down.png) repeat left top;
+	/* background:url(../images/gray_down.png) repeat left top; */
+	background:url("../images/gray_down.jpg") repeat left top;
 	color:#333;
 }
 
@@ -138,7 +139,6 @@ ul.humo_menu_item2 li a{
 }
 
 /* Buttons */
-/* input { font-size: 10px; } */
 input.selected_item { color:blue; font-weight:bold; }
 
 /* O.a. center buttons etc. */
@@ -152,6 +152,5 @@ div.confirm{
 	margin: 5px;
 	border: 2px solid #FF0000;
 	width : 100%;
-	/* float: left; */
 	text-align: center;
 }

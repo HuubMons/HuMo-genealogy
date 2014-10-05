@@ -12,7 +12,7 @@ class PDF extends FPDF{
 // it also places  "Born:"  "Died:" etc before their text (even though in the array they come after the text)
 //**********************************************************************************************
 
-function pdfdisplay($pdfstring,$person_kind) {
+function pdfdisplay($templ_personing,$person_kind) {
 	global $pdf, $language, $gen_lus;
 	global $romnr, $romannr, $parentchild, $parlink;
 	global $indent, $child_indent;
@@ -37,9 +37,10 @@ function pdfdisplay($pdfstring,$person_kind) {
 		$source_presentation=$_SESSION['save_source_presentation'];
 	}
 
-	$first=0; $born=0; $bapt=0; $dead=0; $buri=0;  // check if we have first occurance of birth, death etc. data, so we add "Born", "Died", etc.
+	// check if we have first occurance of birth, death etc. data, so we add "Born", "Died", etc.
+	$first=0; $own_code=0; $born=0; $bapt=0; $dead=0; $buri=0; $prof=0; $address=0;
 
-	foreach ($pdfstring as $key => $value) {
+	foreach ($templ_personing as $key => $value) {
 		$pdf->SetFont('Arial',$type,$font);
 
 		if(strpos($key,"pic_path")!==false) {
@@ -77,8 +78,20 @@ function pdfdisplay($pdfstring,$person_kind) {
 			continue;
 		}
 
-		if(strpos($key,"flag_buri")!==false) {
-			continue;
+		// *** Skip showing of special flags ***
+		if(strpos($key,"flag_buri")!==false) continue;
+		if(strpos($key,"flag_prof")!==false) continue;
+		if(strpos($key,"flag_address")!==false) continue;
+
+		if(!$own_code) {
+			if(strpos($key,"own_code")!==false) {
+				$pdf->SetFont('Arial','B',$font);
+				if(!$first) { $temp=__('Own code').': '; }
+					else $temp=', '.lcfirst(__('Own code')).': '; $first=1;
+				$pdf->Write(6,$temp);
+				$pdf->SetFont('Arial','',$font);
+				$own_code=1;
+			}
 		}
 
 		if(!$born) {
@@ -116,11 +129,11 @@ function pdfdisplay($pdfstring,$person_kind) {
 		}
 		if(!$buri) {
 			if(strpos($key,"buri")!==false) {
-				if($pdfstring["flag_buri"]==1) {
+				if($templ_personing["flag_buri"]==1) {
 					//$value=", ".__('crem.').' '.$value;
 					$pdf->SetFont('Arial','B',$font);
-					if(!$first) { $temp=ucfirst(__('crem.')).' '; }
-						else $temp=', '.__('crem.').' '; $first=1;
+					if(!$first) { $temp=ucfirst(__('cremation')).' '; }
+						else $temp=', '.__('cremation').' '; $first=1;
 					$pdf->Write(6,$temp);
 					$pdf->SetFont('Arial','',$font);
 				}
@@ -140,6 +153,34 @@ function pdfdisplay($pdfstring,$person_kind) {
 		//	else {ucfirst($value); }
 		//	$first=1;
 		//}
+
+		if(!$prof){
+			if(strpos($key,"prof")!==false) {
+				if ($templ_personing["flag_prof"]==1)
+					$occupation=ucfirst(__('occupations'));
+				else
+					$occupation=ucfirst(__('occupation'));
+				$pdf->SetFont('Arial','B',$font);
+				$temp=$occupation.': ';
+				$pdf->Write(6,$temp);
+				$pdf->SetFont('Arial','',$font);
+				$prof=1;
+			}
+		}
+
+		if(!$address){
+			if(strpos($key,"address")!==false) {
+				if ($templ_personing["flag_prof"]==1)
+					$residence=ucfirst(__('residences'));
+				else
+					$residence=ucfirst(__('residence'));
+				$pdf->SetFont('Arial','B',$font);
+				$temp=$residence.': ';
+				$pdf->Write(6,$temp);
+				$pdf->SetFont('Arial','',$font);
+				$address=1;
+			}
+		}
 
 		$value=html_entity_decode($value);
 
@@ -414,7 +455,7 @@ function pdfdisplay($pdfstring,$person_kind) {
 // ***********************************************************************************
 //  function displayrel()  to display wedding/relation details from marriage_cls.php
 // ***********************************************************************************
-function displayrel ($pdfrel,$ancestor_report) {
+function displayrel ($templ_relation,$ancestor_report) {
 	global $pdf, $language, $user, $pdf_footnotes, $pdf_count_notes;
 	$font=12;
 	$samw=0;  $prew=0; $wedd=0; $prec=0; $chur=0; $devr=0;
@@ -424,7 +465,7 @@ function displayrel ($pdfrel,$ancestor_report) {
 		$source_presentation=$_SESSION['save_source_presentation'];
 	}
 
-	foreach($pdfrel as $key => $value) {
+	foreach($templ_relation as $key => $value) {
 		$value=html_entity_decode($value);
 		$pdf->SetFont('Arial','',$font);
 
@@ -434,33 +475,33 @@ function displayrel ($pdfrel,$ancestor_report) {
 
 		if(strpos($key,"samw")!==false AND $samw==0) {
 			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,html_entity_decode($pdfrel["marriage_exist"])); $samw=1;
+			$pdf->Write(6,html_entity_decode($templ_relation["marriage_exist"])); $samw=1;
 			$pdf->SetFont('Arial','',$font);
 		}
 		if(strpos($key,"prew")!==false AND $prew==0) {
 			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,html_entity_decode($pdfrel["prew_exist"])); $prew=1;
+			$pdf->Write(6,html_entity_decode($templ_relation["prew_exist"])); $prew=1;
 			$pdf->SetFont('Arial','',$font);
 		}
 		if(strpos($key,"wedd")!==false AND $wedd==0) {
 			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,html_entity_decode($pdfrel["wedd_exist"])); $wedd=1;
+			$pdf->Write(6,html_entity_decode($templ_relation["wedd_exist"])); $wedd=1;
 			$pdf->SetFont('Arial','',$font);
 		}
 		if(strpos($key,"prec")!==false AND $prec==0) {
 			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,html_entity_decode($pdfrel["prec_exist"])); $prec=1;
+			$pdf->Write(6,html_entity_decode($templ_relation["prec_exist"])); $prec=1;
 			$pdf->SetFont('Arial','',$font);
 		}
 		if(strpos($key,"chur")!==false AND $chur==0) {
 			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,html_entity_decode($pdfrel["chur_exist"])); $chur=1;
+			$pdf->Write(6,html_entity_decode($templ_relation["chur_exist"])); $chur=1;
 			$pdf->SetFont('Arial','',$font);
 		}
-		if (isset($pdfrel["devr_exist"])){
+		if (isset($templ_relation["devr_exist"])){
 			if(strpos($key,"devr")!==false AND $devr==0) {
 				$pdf->SetFont('Arial','B',$font);
-				$pdf->Write(6,html_entity_decode($pdfrel["devr_exist"])); $devr=1;
+				$pdf->Write(6,html_entity_decode($templ_relation["devr_exist"])); $devr=1;
 				$pdf->SetFont('Arial','',$font);
 			}
 		}
@@ -524,25 +565,19 @@ function displayrel ($pdfrel,$ancestor_report) {
 
 function writename($sexe,$indentation,$name,$length) {
 	global $pdf, $language, $indent;
-	if($sexe=="M") {
-		$pic="images/man.gif";
-	}
-	elseif ($sexe=='F') {
-		$pic="images/woman.gif";
-	}
-	else{
-		$pic="images/unknown.gif";
-	}
+	if($sexe=="M") $pic="images/man.gif";
+		elseif ($sexe=='F') $pic="images/woman.gif";
+		else $pic="images/unknown.gif";
 	$pdf->Image($pic,$indentation-4,$pdf->GetY()+2,3.5,3.5);
 	$pdf->SetX($indentation);
 	if($length=="long") {
 		$indent=$pdf->GetX();
 	}
 	$pdf->SetFont('Arial','B',12);
-//    $pdf->Write(8,$name);
+	//$pdf->Write(8,$name);
 	$pdf->MultiCell(0,8,$name,0,"L");
 	$pdf->SetFont('Arial','',12);
-//    $pdf->Write(8,"\n");
+	//$pdf->Write(8,"\n");
 }
 
 //*******************************************************************

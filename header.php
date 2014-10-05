@@ -154,6 +154,7 @@ if (strpos($auto_menu,'tree_index')>0){ $save_menu_choice='tree_index'; }
 if (strpos($auto_menu,'list')>0){ $save_menu_choice='persons'; }
 if (strpos($auto_menu,'list_names')>0){ $save_menu_choice='names'; }
 if (strpos($auto_menu,'places')>0){ $save_menu_choice='places'; }
+if (strpos($auto_menu,'places_families')>0){ $save_menu_choice='places_families'; }
 if (isset($_POST['index_list'])
 	AND $_POST['index_list']=="places"){ $save_menu_choice='places'; }
 if (strpos($auto_menu,'photoalbum')>0){ $save_menu_choice='pictures'; }
@@ -173,6 +174,7 @@ if (strpos($auto_menu,'login')>0){ $save_menu_choice='login'; }
 if (strpos($auto_menu,'family')>0){ $save_menu_choice='persons'; }
 if (strpos($auto_menu,'cms_pages')>0){ $save_menu_choice='cms_pages'; }
 if (strpos($auto_menu,'register')>0){ $save_menu_choice='register'; }
+if (strpos($auto_menu,'user_settings')>0){ $save_menu_choice='settings'; }
 
 if ($save_menu_choice){ $_SESSION['save_menu_choice']=$save_menu_choice; }
 
@@ -201,6 +203,7 @@ if ($menu_choice=='credits'){ $head_text.=' - '.__('Credits'); }
 if ($menu_choice=='info'){ $head_text.=' - '.__('Cookie information'); }
 if ($menu_choice=='login'){ $head_text.=' - '.__('Login'); }
 if ($menu_choice=='register'){ $head_text.=' - '.__('Register'); }
+if ($menu_choice=='settings'){ $head_text.=' - '.__('Settings'); }
 
 // *** For PDF reports: remove html tags en decode ' characters ***
 function pdf_convert($text){

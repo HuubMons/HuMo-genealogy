@@ -742,7 +742,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					//echo '<a href="'.$path_tmp.'page=backup"';
 					//echo ' onmouseover="mopen(event,\'m5x\',\'?\',\'?\')"';
 					//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Database backup').'</a>';
-					echo '<a href="'.$path_tmp.'page=backup">'.__('Database backup').'</a>';
+					echo '<a href="'.$path_tmp.'page=backup"'.$select_top.'>'.__('Database backup').'</a>';
 					//echo '<div id="m5x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					//	echo '<ul class="humo_menu_item2">';
 
@@ -790,14 +790,16 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				echo '<a href="index.php?option=com_humo-gen"';
 				echo ' onmouseover="mopen(event,\'m40x\',\'?\',\'?\')"';
 				echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'</a>';
-				echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				//echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:200px;">';
 					echo '<ul class="humo_menu_item2">';
 						for ($i=0; $i<count($language_file); $i++){
 							// *** Get language name ***
 							if ($language_file[$i] != $selected_language) {
 								include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
-								//echo '<li><a href="index.php?language_choice='.$language_file[$i].'">';
-								echo '<li><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
+								//echo '<li><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
+								echo '<li style="float:left; width:99px;"><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
+
 								echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
 								echo $language["name"];
 								echo '</a>';

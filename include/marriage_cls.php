@@ -35,7 +35,7 @@ function set_privacy($privacy_man, $privacy_woman){
 function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	global $db, $dbh, $tree_prefix_quoted, $url_path, $dataDb, $uri_path;
 	global $language, $user, $screen_mode;
-	global $pdfstr;
+	global $templ_person;
 
 	if ($marriageDb==''){ $marriageDb=$this->cls_marriage_Db; }
 
@@ -49,106 +49,79 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	$text='';
 
 	if ($marriageDb->fam_kind=='living together'){
-		$relation_check=true;
-		//$relation_kind='<b>'.__('Living together').'</b>';
-		$relation_kind=__('Living together');
+		$relation_check=true; $relation_kind=__('Living together');
 	}
 	if ($marriageDb->fam_kind=='living apart together'){
-		//$relation_kind='<b>'.__('Living apart together').'</b>';
-		$relation_kind=__('Living apart together');
-		$relation_check=true;
+		$relation_kind=__('Living apart together'); $relation_check=true;
 	}
 	if ($marriageDb->fam_kind=='intentionally unmarried mother'){
-		//$relation_kind='<b>'.__('Intentionally unmarried mother').'</b>';
-		$relation_kind=__('Intentionally unmarried mother');
-		$relation_check=true;
+		$relation_kind=__('Intentionally unmarried mother'); $relation_check=true;
 		$addition='';
 	}
 	if ($marriageDb->fam_kind=='homosexual'){
-		$relation_check=true;
-		//$relation_kind='<b>'.__('Homosexual').'</b>';
-		$relation_kind=__('Homosexual');
+		$relation_check=true; $relation_kind=__('Homosexual');
 	}
 	if ($marriageDb->fam_kind=='non-marital'){
-		$relation_check=true;
-		//$relation_kind= '<b>'.__('Non_marital').'</b>';
-		$relation_kind= __('Non_marital');
+		$relation_check=true; $relation_kind= __('Non marital');
 		$addition='';
 	}
 	if ($marriageDb->fam_kind=='extramarital'){
-		$relation_check=true;
-		//$relation_kind= '<b>'.__('Extramarital').'</b>';
-		$relation_kind= __('Extramarital');
+		$relation_check=true; $relation_kind= __('Extramarital');
 		$addition='';
 	}
 
 	// NOT TESTED
 	if ($marriageDb->fam_kind=="PRO-GEN"){
-		$relation_check=true;
-		//$relation_kind= '<b>'.__('Extramarital').'</b>';
-		$relation_kind= __('Extramarital');
+		$relation_check=true; $relation_kind= __('Extramarital');
 		$addition='';
 	}
 
 	// *** Aldfaer relations ***
 	if ($marriageDb->fam_kind=='partners'){
-		$relation_check=true;
-		//$relation_kind= '<b>'.__('Partner').'</b> ';
-		$relation_kind= __('Partner').' ';
+		$relation_check=true; $relation_kind= __('Partner').' ';
 	}
 	if ($marriageDb->fam_kind=='registered'){
-		$relation_check=true;
-		$//relation_kind= '<b>'.__('Registered').'</b> ';
-		$relation_kind= __('Registered').' ';
+		$relation_check=true; $relation_kind= __('Registered').' ';
 	}
 	if ($marriageDb->fam_kind=='unknown'){
-		$relation_check=true;
-		//$relation_kind= '<b>'.__('Unknown relation').'</b> ';
-		$relation_kind= __('Unknown relation').' ';
+		$relation_check=true; $relation_kind= __('Unknown relation').' ';
 	}
 
 	// *** Living together ***
 	$temp_text='';
 	$temp='';
 	if ($marriageDb->fam_relation_date OR $marriageDb->fam_relation_place){
-		$temp_text.= date_place($marriageDb->fam_relation_date,$marriageDb->fam_relation_place);
-		$pdfrel["marriage_date"]=date_place($marriageDb->fam_relation_date,$marriageDb->fam_relation_place);
+		$templ_relation["marriage_date"]=date_place($marriageDb->fam_relation_date,$marriageDb->fam_relation_place);
 		$temp="marriage_date";
+		$temp_text.= $templ_relation["marriage_date"];
 	}
 	if ($user["group_texts_fam"]=='j' AND process_text($marriageDb->fam_relation_text)){
 		if ($temp_text){
 			$temp_text.= ', ';
-			if($temp) { $pdfrel[$temp].=", "; }
+			if($temp) { $templ_relation[$temp].=", "; }
 		}
-		$temp_text.= process_text($marriageDb->fam_relation_text);
-		$pdfrel["marriage_text"]=process_text($marriageDb->fam_relation_text);
+		$templ_relation["marriage_text"]=process_text($marriageDb->fam_relation_text);
 		$temp="marriage_text";
+		$temp_text.= $templ_relation["marriage_text"];
 	}
 
 	// *** Living together source ***
 	if ($marriageDb->fam_relation_source){
-		if($screen_mode=='PDF') {
-			// PDF rendering of sources
-			//$pdf->Write(6,show_sources2("family","fam_relation",$marriageDb->fam_gedcomnumber)."\n");
-			$pdfrel["marriage_source"]=show_sources2("family","fam_relation_source",$marriageDb->fam_gedcomnumber);
-			$temp="marriage_source";
-		}
-		else {
-			$temp_text.=show_sources2("family","fam_relation_source",$marriageDb->fam_gedcomnumber);
-		}
+		$templ_relation["marriage_source"]=show_sources2("family","fam_relation_source",$marriageDb->fam_gedcomnumber);
+		$temp="marriage_source";
+		$temp_text.=$templ_relation["marriage_source"];
 	}
 
 	if ($temp_text){
 		$relation_check=true;
 		$addition=__(' to: ');
-		if ($text!=''){ $text.="<br>\n"; $pdfrel["marriage_exist"]="\n"; }
+		if ($text!=''){ $text.="<br>\n"; $templ_relation["marriage_exist"]="\n"; }
 		// *** Text "living together" already shown in "kind" ***
 		// *** Just in case made an extra text "living together" here ***
 		if (!$relation_kind){
-			//$text.='<b>'.__('Living together').'</b>';
 			$text.=__('Living together');
-			if(isset($pdfrel["marriage_exist"])) {$pdfrel["marriage_exist"].=__('Living together')." "; }
-			else {$pdfrel["marriage_exist"]=__('Living together')." ";  }
+			if(isset($templ_relation["marriage_exist"])) {$templ_relation["marriage_exist"].=__('Living together')." "; }
+				else {$templ_relation["marriage_exist"]=__('Living together')." ";  }
 		}
 		$text.=' '.$temp_text;
 	}
@@ -159,35 +132,35 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	$fam_relation_end_place='';
 	if ($marriageDb->fam_relation_end_date OR $fam_relation_end_place){
 		$temp_text.= date_place($marriageDb->fam_relation_end_date,$fam_relation_end_place);
-		$pdfrel["marriage_end"]='';
-		if(isset($pdfrel["marriage_exist"])) { $pdfrel["marriage_end"]='. '; }
-		$pdfrel["marriage_end"].=__('End living together').' '.date_place($marriageDb->fam_relation_end_date,$fam_relation_end_place);
+		$templ_relation["marriage_end"]='';
+		if(isset($templ_relation["marriage_exist"])) { $templ_relation["marriage_end"]='. '; }
+		$templ_relation["marriage_end"].=__('End living together').' '.date_place($marriageDb->fam_relation_end_date,$fam_relation_end_place);
 		$temp="marriage_end";
 	}
 	//if ($user["group_texts_fam"]=='j' AND isset($marriageDb->fam_relation_end_text) AND process_text($marriageDb->fam_relation_end_text)){
 	//	if ($temp_text){
 	//		$temp_text.= ', ';
-	//		if($temp) { $pdfrel[$temp].=", "; }
+	//		if($temp) { $templ_relation[$temp].=", "; }
 	//	}
 	//	$temp_text.= process_text($marriageDb->fam_relation_end_text);
-	//	//$pdfrel["marriage_text"]=process_text($marriageDb->fam_relation_end_text);
+	//	//$templ_relation["marriage_text"]=process_text($marriageDb->fam_relation_end_text);
 	//	//$temp="marriage_text";
 	//}
 	//// *** Living together source ***
 	//if (isset($marriageDb->fam_relation_end_source) AND $marriageDb->fam_relation_end_source){
 	//	unset($source_array); $source_array[]=explode(';',$marriageDb->fam_relation_end_source);
 	//	$temp_text.=show_sources($source_array);
-	//	//$pdfrel["marriage_source"]=show_sources($source_array);
+	//	//$templ_relation["marriage_source"]=show_sources($source_array);
 	//	//$temp="marriage_source";
 	//}
 	if ($temp_text){
 		$marriage_check=true;
 		if ($text!='' or $relation_kind){
-			$text.="<br>\n"; //$pdfrel["marriage_exist"]="\n";
+			$text.="<br>\n"; //$templ_relation["marriage_exist"]="\n";
 		}
 		$text.='<b>'.__('End living together').'</b>';
-		//if(isset($pdfrel["marriage_exist"])) {$pdfrel["marriage_exist"].=__('End living together')." "; }
-		//else {$pdfrel["marriage_exist"]=__('End living together')." ";  }
+		//if(isset($templ_relation["marriage_exist"])) {$templ_relation["marriage_exist"].=__('End living together')." "; }
+		//else {$templ_relation["marriage_exist"]=__('End living together')." ";  }
 		$text.=' '.$temp_text;
 	}
 
@@ -196,16 +169,16 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	$temp='';
 	if ($marriageDb->fam_marr_notice_date OR $marriageDb->fam_marr_notice_place){
 		$temp_text.= date_place($marriageDb->fam_marr_notice_date,$marriageDb->fam_marr_notice_place);
-		$pdfrel["prew_date"]=date_place($marriageDb->fam_marr_notice_date,$marriageDb->fam_marr_notice_place);
+		$templ_relation["prew_date"]=date_place($marriageDb->fam_marr_notice_date,$marriageDb->fam_marr_notice_place);
 		$temp="prew_date";
 	}
 	if ($user["group_texts_fam"]=='j' AND process_text($marriageDb->fam_marr_notice_text)){
 		if ($temp_text){
 			$temp_text.= ', ';
-			if($temp) { $pdfrel[$temp].=", "; }
+			if($temp) { $templ_relation[$temp].=", "; }
 		}
 		$temp_text.=process_text($marriageDb->fam_marr_notice_text);
-		$pdfrel["prew_text"]=process_text($marriageDb->fam_marr_notice_text);
+		$templ_relation["prew_text"]=process_text($marriageDb->fam_marr_notice_text);
 		$temp="prew_text";
 	}
 
@@ -213,7 +186,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($marriageDb->fam_marr_notice_source){
 		if($screen_mode=='PDF') {
 			// PDF rendering of sources
-			$pdfrel["prew_source"]=show_sources2("family","fam_marr_notice_source",$marriageDb->fam_gedcomnumber);
+			$templ_relation["prew_source"]=show_sources2("family","fam_marr_notice_source",$marriageDb->fam_gedcomnumber);
 			$temp="pre_source";
 		}
 		else {
@@ -224,43 +197,42 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($temp_text){
 		$marriage_check=true;
 		$addition=__(' to: ');
-		//if ($text!=''){ $text.='<br>'; $pdfrel["prew_exist"]="\n"; }
-		if ($text!=''){ $text.="<br>\n"; $pdfrel["prew_exist"]="\n"; }
-		//$text.=__('Marriage notice').' '.$temp_text;
+		if ($text!=''){ $text.="<br>\n"; $templ_relation["prew_exist"]="\n"; }
 		$text.='<b>'.__('Marriage notice').'</b> '.$temp_text;
-		if(isset($pdfrel["prew_exist"])) {$pdfrel["prew_exist"].=__('Marriage notice').' ';}
-		else { $pdfrel["prew_exist"]=__('Marriage notice').' '; }
+		if(isset($templ_relation["prew_exist"])) {$templ_relation["prew_exist"].=__('Marriage notice').' ';}
+		else { $templ_relation["prew_exist"]=__('Marriage notice').' '; }
 	}
 
 	// *** Marriage ***
 	$temp_text='';
 	$temp='';
 	if ($marriageDb->fam_marr_date OR $marriageDb->fam_marr_place){
-		$temp_text.= date_place($marriageDb->fam_marr_date,$marriageDb->fam_marr_place);
-		$pdfrel["wedd_date"]=date_place($marriageDb->fam_marr_date,$marriageDb->fam_marr_place);
+		$templ_relation["wedd_date"]=date_place($marriageDb->fam_marr_date,$marriageDb->fam_marr_place);
 		$temp="wedd_date";
+		$temp_text.= $templ_relation["wedd_date"];
 	}
 	if ($marriageDb->fam_marr_authority){
-		$temp_text.=' ['.$marriageDb->fam_marr_authority.']';
-		$pdfrel["wedd_authority"]=" [".$marriageDb->fam_marr_authority."]";
+		$templ_relation["wedd_authority"]=" [".$marriageDb->fam_marr_authority."]";
 		$temp="wedd_authority";
+		$temp_text.=$templ_relation["wedd_authority"];
 	}
 	if ($user["group_texts_fam"]=='j' AND process_text($marriageDb->fam_marr_text)){
 		if ($temp_text){
 			$temp_text.= ', ';
-			if($temp) { $pdfrel[$temp].=", "; }
+			if($temp) { $templ_relation[$temp].=", "; }
 		}
-		$temp_text.= process_text($marriageDb->fam_marr_text);
-		$pdfrel["wedd_text"]=process_text($marriageDb->fam_marr_text);
+		$templ_relation["wedd_text"]=process_text($marriageDb->fam_marr_text);
 		$temp="wedd_text";
+		$temp_text.= $templ_relation["wedd_text"];
 	}
 	// *** Aldfaer/ HuMo-gen: show witnesses ***
 	if ($marriageDb->fam_gedcomnumber){
 		$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness','family');
 		if ($temp_text2){
 			$temp_text.= ' ('.__('marriage witness').' '.$temp_text2.')';
-			if($temp) { $pdfrel[$temp].=" ("; }
-			$pdfrel["wedd_witn"]= __('marriage witness').' '.$temp_text2.')';
+
+			if($temp) { $templ_relation[$temp].=" ("; }
+			$templ_relation["wedd_witn"]= __('marriage witness').' '.$temp_text2.')';
 			$temp="wedd_witn";
 		}
 	}
@@ -268,8 +240,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Marriage source ***
 	if ($marriageDb->fam_marr_source){
 		if($screen_mode=='PDF') {
-			// PDF rendering of sources
-			$pdfrel["wedd_source"]=show_sources2("family","fam_marr_source",$marriageDb->fam_gedcomnumber);
+			$templ_relation["wedd_source"]=show_sources2("family","fam_marr_source",$marriageDb->fam_gedcomnumber);
 			$temp="wedd_source";
 		}
 		else {
@@ -280,148 +251,136 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($temp_text){
 		$marriage_check=true;
 		$addition=__(' to: ');
-		if ($text!=''){ $text.="<br>\n"; $pdfrel["wedd_exist"]="\n"; }
-		//$text.=__('Married').' '.$temp_text;
+		if ($text!=''){ $text.="<br>\n"; $templ_relation["wedd_exist"]="\n"; }
 		$text.='<b>'.__('Married').'</b> '.$temp_text;
-		if(isset($pdfrel["wedd_exist"])) {$pdfrel["wedd_exist"].=__('Married').' ';}
-		else {$pdfrel["wedd_exist"]=__('Married').' ';}
+		if(isset($templ_relation["wedd_exist"])) {$templ_relation["wedd_exist"].=__('Married').' ';}
+		else {$templ_relation["wedd_exist"]=__('Married').' ';}
 	}
 
 	// *** Married church notice ***
 	$temp_text='';
 	$temp='';
 	if ($marriageDb->fam_marr_church_notice_date OR $marriageDb->fam_marr_church_notice_place){
-		$temp_text.= date_place($marriageDb->fam_marr_church_notice_date,$marriageDb->fam_marr_church_notice_place);
-		$pdfrel["prec_date"]=date_place($marriageDb->fam_marr_church_notice_date,$marriageDb->fam_marr_church_notice_place);
+		$templ_relation["prec_date"]=date_place($marriageDb->fam_marr_church_notice_date,$marriageDb->fam_marr_church_notice_place);
 		$temp="prec_date";
+		$temp_text.= $templ_relation["prec_date"];
 	}
 	if ($user["group_texts_fam"]=='j' AND process_text($marriageDb->fam_marr_church_notice_text)){
 		if ($temp_text){
 			$temp_text.= ', ';
-			if($temp) { $pdfrel[$temp].=", "; }
+			if($temp) { $templ_relation[$temp].=", "; }
 		}
-		$temp_text.= process_text($marriageDb->fam_marr_church_notice_text);
-		$pdfrel["prec_text"]= process_text($marriageDb->fam_marr_church_notice_text);
+		$templ_relation["prec_text"]= process_text($marriageDb->fam_marr_church_notice_text);
 		$temp="prec_text";
+		$temp_text.= $templ_relation["prec_text"];
 	}
 
 	// *** Married church notice source ***
 	if ($marriageDb->fam_marr_church_notice_source){
-		if($screen_mode=='PDF') {
-			// PDF rendering of sources
-			$pdfrel["prec_source"]=show_sources2("family","fam_marr_church_notice_source",$marriageDb->fam_gedcomnumber);
+		//if($screen_mode=='PDF') {
+			$templ_relation["prec_source"]=show_sources2("family","fam_marr_church_notice_source",$marriageDb->fam_gedcomnumber);
 			$temp="prec_source";
-		}
-		else {
-			$temp_text.=show_sources2("family","fam_marr_church_notice_source",$marriageDb->fam_gedcomnumber);
-		}
+		//}
+		//else {
+			$temp_text.=$templ_relation["prec_source"];
+		//}
 	}
 
 	if ($temp_text){
 		$marriage_check=true;
 		$addition=__(' to: ');
-		if ($text!=''){ $text.="<br>\n"; $pdfrel["prec_exist"]="\n"; }
-		//$text.=__('Married notice (religious)').' '.$temp_text;
+		if ($text!=''){ $text.="<br>\n"; $templ_relation["prec_exist"]="\n"; }
 		$text.='<b>'.__('Married notice (religious)').'</b> '.$temp_text;
-		if(isset($pdfrel["prec_exist"])) {$pdfrel["prec_exist"].=__('Married notice (religious)').' ';}
-		else {$pdfrel["prec_exist"]=__('Married notice (religious)').' ';}
+		if(isset($templ_relation["prec_exist"])) {$templ_relation["prec_exist"].=__('Married notice (religious)').' ';}
+		else {$templ_relation["prec_exist"]=__('Married notice (religious)').' ';}
 	}
 
 	// *** Married church ***
 	$temp_text='';
 	$temp='';
 	if ($marriageDb->fam_marr_church_date OR $marriageDb->fam_marr_church_place){
-		$temp_text.= date_place($marriageDb->fam_marr_church_date,$marriageDb->fam_marr_church_place);
-		$pdfrel["chur_date"]=date_place($marriageDb->fam_marr_church_date,$marriageDb->fam_marr_church_place);
+		$templ_relation["chur_date"]=date_place($marriageDb->fam_marr_church_date,$marriageDb->fam_marr_church_place);
 		$temp="chur_date";
+		$temp_text.= $templ_relation["chur_date"];
 	}
 	if ($user["group_texts_fam"]=='j' AND process_text($marriageDb->fam_marr_church_text)){
 		if ($temp_text){
 			$temp_text.= ', ';
-			if($temp) { $pdfrel[$temp].=", "; }
+			if($temp) { $templ_relation[$temp].=", "; }
 		}
-		$temp_text.= process_text($marriageDb->fam_marr_church_text);
-		$pdfrel["chur_text"]=process_text($marriageDb->fam_marr_church_text);
+		$templ_relation["chur_text"]=process_text($marriageDb->fam_marr_church_text);
 		$temp="chur_text";
+		$temp_text.= $templ_relation["chur_text"];
 	}
 	// *** Aldfaer/ HuMo-gen show witnesses ***
 	if ($marriageDb->fam_gedcomnumber){
 		$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness_rel','family');
 		if ($temp_text2){
 			$temp_text.= ' ('.__('marriage witness (religious)').' '.$temp_text2.')';
-			if($temp) { $pdfrel[$temp].=" ("; }
-			$pdfrel["chur_witn"]=__('marriage witness (religious)').' '.$temp_text2.')';
+			if($temp) { $templ_relation[$temp].=" ("; }
+			$templ_relation["chur_witn"]=__('marriage witness (religious)').' '.$temp_text2.')';
 			$temp="chur_witn";
 		}
 	}
 
 	// *** Married church source ***
 	if ($marriageDb->fam_marr_church_source){
-		if($screen_mode=='PDF') {
-			// PDF rendering of sources
-			$pdfrel["chur_source"]=show_sources2("family","fam_marr_church_source",$marriageDb->fam_gedcomnumber);
+		//if($screen_mode=='PDF') {
+			$templ_relation["chur_source"]=show_sources2("family","fam_marr_church_source",$marriageDb->fam_gedcomnumber);
 			$temp="chur_source";
-		}
-		else {
-			$temp_text.=show_sources2("family","fam_marr_church_source",$marriageDb->fam_gedcomnumber);
-		}
+		//}
+		//else {
+			$temp_text.=$templ_relation["chur_source"];
+		//}
 	}
 
 	if ($temp_text){
 		$marriage_check=true;
 		$addition=__(' to: ');
-		if ($text!=''){ $text.="<br>\n"; $pdfrel["chur_exist"]="\n"; }
-		//$text.=__('Married (religious)').' '.$temp_text;
+		if ($text!=''){ $text.="<br>\n"; $templ_relation["chur_exist"]="\n"; }
 		$text.='<b>'.__('Married (religious)').'</b> '.$temp_text;
-		if(isset($pdfrel["chur_exist"])) {$pdfrel["chur_exist"].=__('Married (religious)').' ';}
-		else {$pdfrel["chur_exist"]=__('Married (religious)').' ';}
+		if(isset($templ_relation["chur_exist"])) {$templ_relation["chur_exist"].=__('Married (religious)').' ';}
+		else {$templ_relation["chur_exist"]=__('Married (religious)').' ';}
 	}
 
 	// *** Religion ***
 	if ($user['group_religion']=='j' AND $marriageDb->fam_religion){
-		//if ($temp_text){
-		//	$text.=', '; if($temp) { $pdfrel[$temp].=", "; }
-		//}
-		//else {
-		//	if($temp) { $pdfrel[$temp].=", "; }
-		//}
+		$templ_relation["reli_reli"]=' ('.__('religion: ').$marriageDb->fam_religion.')';
 		$text.= ' <span class="religion">('.__('religion: ').$marriageDb->fam_religion.')</span>';
-		$pdfrel["reli_reli"]=' ('.__('religion: ').$marriageDb->fam_religion.')';
 	}
 
 	// *** Divorse ***
 	$temp_text='';
 	$temp='';
 	if ($marriageDb->fam_div_date OR $marriageDb->fam_div_place){
-		$temp_text.= date_place($marriageDb->fam_div_date,$marriageDb->fam_div_place);
-		$pdfrel["devr_date"]=date_place($marriageDb->fam_div_date,$marriageDb->fam_div_place);
+		$templ_relation["devr_date"]=date_place($marriageDb->fam_div_date,$marriageDb->fam_div_place);
 		$temp="devr_date";
+		$temp_text.= $templ_relation["devr_date"];
 	}
 	if ($marriageDb->fam_div_authority){
-		$temp_text.=' ['.$marriageDb->fam_div_authority.']';
-		$pdfrel["devr_authority"]=" [".$marriageDb->fam_div_authority."]";
+		$templ_relation["devr_authority"]=" [".$marriageDb->fam_div_authority."]";
 		$temp="devr_authority";
+		$temp_text.=$templ_relation["devr_authority"];
 	}
 	if ($user["group_texts_fam"]=='j' AND $marriageDb->fam_div_text!='DIVORCE' AND process_text($marriageDb->fam_div_text)){
 		if ($temp_text){
 			$temp_text.= ', ';
-			if($temp) { $pdfrel[$temp].=", "; }
+			if($temp) { $templ_relation[$temp].=", "; }
 		}
-		$temp_text.= process_text($marriageDb->fam_div_text);
-		$pdfrel["devr_text"]=process_text($marriageDb->fam_div_text);
+		$templ_relation["devr_text"]=process_text($marriageDb->fam_div_text);
 		$temp="devr_text";
+		$temp_text.= $templ_relation["devr_text"];
 	}
 
 	// *** Divorse source ***
 	if ($marriageDb->fam_div_source){
-		if($screen_mode=='PDF') {
-			// PDF rendering of sources
-			$pdfrel["devr_source"]=show_sources2("family","fam_div_source",$marriageDb->fam_gedcomnumber);
+		//if($screen_mode=='PDF') {
+			$templ_relation["devr_source"]=show_sources2("family","fam_div_source",$marriageDb->fam_gedcomnumber);
 			$temp="devr_source";
-		}
-		else {
-			$temp_text.=show_sources2("family","fam_div_source",$marriageDb->fam_gedcomnumber);
-		}
+		//}
+		//else {
+			$temp_text.=$templ_relation["devr_source"];
+		//}
 	}
 
 	//if ($temp_text){
@@ -429,17 +388,17 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($temp_text OR $marriageDb->fam_div_text=='DIVORCE'){
 		$marriage_check=true;
 		$addition=' '.__('from:').' ';
-		if ($text!=''){ $text.="<br>\n"; $pdfrel["devr_exist"]="\n"; }
+		if ($text!=''){ $text.="<br>\n"; $templ_relation["devr_exist"]="\n"; }
 		$text.='<span class="divorse"><b>'.ucfirst(__('divorced')).'</b> '.$temp_text.'</span>';
-		if(isset($pdfrel["devr_exist"])) {$pdfrel["devr_exist"].=ucfirst(__('divorced')).' ';}
-		else {$pdfrel["devr_exist"]=ucfirst(__('divorced')).' ';}
+		if(isset($templ_relation["devr_exist"])) {$templ_relation["devr_exist"].=ucfirst(__('divorced')).' ';}
+		else {$templ_relation["devr_exist"]=ucfirst(__('divorced')).' ';}
 	}
 
 	// *** No relation data (marriage without date), show standard text ***
 	if ($relation_check==false AND $marriage_check==false){
 		// *** Show standard marriage text ***
+		$templ_relation["unkn_rel"]=__('Marriage/ Related').' ';
 		$text.='<b>'.__('Marriage/ Related').'</b> ';
-		$pdfrel["unkn_rel"]=__('Marriage/ Related').' ';
 	}
 
 	else{
@@ -489,10 +448,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	//$text.=show_media('',$marriageDb); // *** This function can be found in file: show_picture.php! ***
 	$result = show_media('',$marriageDb); // *** This function can be found in file: show_picture.php! ***
 	$text.= $result[0];
-	//if (isset($pdfstr))
-	//	$pdfstr = array_merge((array)$pdfstr,(array)$result[1]);
+	//if (isset($templ_person))
+	//	$templ_person = array_merge((array)$templ_person,(array)$result[1]);
 	//else
-	//	$pdfstr=$result[1];
+	//	$templ_person=$result[1];
 
 	// *** Show objecs ***
 
@@ -504,7 +463,6 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$num_rows = $event_qry->rowCount();
 			if ($num_rows>0){ $text.= '<span class="event">'; }
 			$i=0;
-			//while($eventDb=mysql_fetch_object($event_qry)){
 			while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 				$i++;
 				//echo '<br>'.__('Event (family)');
@@ -512,7 +470,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 					$text.="<br>\n";
 				}
 				if($i >1) {
-					$pdfrel["event".$i."_ged"]="\n";
+					$templ_relation["event".$i."_ged"]="\n";
 				}
 
 				// *** Check if NCHI is 0 or higher ***
@@ -523,29 +481,28 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 					$event_text='';
 				}
 
-				//$text.= language_event($event_gedcom);
 				$text.= '<b>'.language_event($event_gedcom).'</b>';
-				if(isset($pdfrel["event".$i."_ged"])) {$pdfrel["event".$i."_ged"].=language_event($event_gedcom); }
-				else { $pdfrel["event".$i."_ged"]=language_event($event_gedcom); }
+				if(isset($templ_relation["event".$i."_ged"])) {$templ_relation["event".$i."_ged"].=language_event($event_gedcom); }
+				else { $templ_relation["event".$i."_ged"]=language_event($event_gedcom); }
 
 				// *** Show event kind ***
 				if ($eventDb->event_event){
-					$text.= ' ('.$eventDb->event_event.')';
-					$pdfrel["event".$i."_event"]=' ('.$eventDb->event_event.')';
+					$templ_relation["event".$i."_event"]=' ('.$eventDb->event_event.')';
+					$text.= $templ_relation["event".$i."_event"];
 				}
 				if($eventDb->event_date OR $eventDb->event_place) {
-					$text.= ' '.date_place($eventDb->event_date, $eventDb->event_place);
-					$pdfrel["event".$i."_date"]=' '.date_place($eventDb->event_date, $eventDb->event_place);
+					$templ_relation["event".$i."_date"]=' '.date_place($eventDb->event_date, $eventDb->event_place);
+					$text.= $templ_relation["event".$i."_date"];
 				}
 				if($event_text) {
-					$text.= ' '.$eventDb->event_text;
-					$pdfrel["event".$i."_text"]=' '.$eventDb->event_text;
+					$templ_relation["event".$i."_text"]=' '.$eventDb->event_text;
+					$text.= $templ_relation["event".$i."_text"];
 				}
 
 				// *** Sources by a family event ***
 				if ($eventDb->event_source){
 					//if($screen_mode=='PDF') {
-					//	$pdfrel["event_source"]=show_sources2("family","event_source",$eventDb->event_id);
+					//	$templ_relation["event_source"]=show_sources2("family","event_source",$eventDb->event_id);
 					//	$temp="event_source";
 					//}
 					//else{
@@ -556,8 +513,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			}
 			if ($num_rows>0){
 				$text.="</span><br>\n"; // if there are events, the word "with" should be on a new line to make the text clearer
-				$pdfrel["event_lastline"]="\n";
-				//$addition=ltrim(__(' to: '));
+				$templ_relation["event_lastline"]="\n";
 				$addition=ltrim($addition);
 			}
 		}
@@ -611,7 +567,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 				else{
 					$relation_number.=' '.__('marriage/ related');   // relation
 				}
-					$relation_kind='';
+				$relation_kind='';
 				$addition=__(' to: ');
 			}
 			else{
@@ -625,7 +581,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 
 	if ($presentation=='short' OR $presentation=='shorter'){
 		$text='<b>'.$relation_number.$relation_kind.'</b>';
-		$pdfrel = array();  //reset array - don't need it
+		$templ_relation = array();  //reset array - don't need it
 		// *** Show divorse if privacy filter is set ***
 		if ($marriageDb->fam_div_date OR $marriageDb->fam_div_place OR $marriageDb->fam_div_text){
 			$text.= ' <span class="divorse">('.__('divorced').')</span>';
@@ -640,13 +596,13 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	}
 	if ($addition) $text.='<b>'.$addition.'</b>';
 
-	$pdfrel["relnr_rel"]=$relation_number.$relation_kind;
-	$pdfrel["rel_add"]=$addition;
+	$templ_relation["relnr_rel"]=$relation_number.$relation_kind;
+	$templ_relation["rel_add"]=$addition;
 	if($screen_mode!="PDF") {
 		return $text;
 	}
 	else {
-		return $pdfrel;
+		return $templ_relation;
 	}
 
 } // *** End of marriage ***

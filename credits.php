@@ -66,7 +66,7 @@ This credits screen is english only...
 
 <h2>Languages</h2>
 
-<ul>	
+<ul>
 <li>Rauno Salomäki:
 	<ul><li>Added Finish translation.</ul>
 <li>Ambrogio Chiotti:
@@ -83,6 +83,8 @@ This credits screen is english only...
 	<ul><li>Added Persian language.</ul>
 <li>Andres Maurer:
 	<ul><li>Added Spanish language.</ul>
+<li>António Duarte:
+	<ul><li>Added Portuguese language.</ul>
 </ul>
 
 <h2>Testers</h2>

@@ -336,7 +336,8 @@ function process_person($person_array){
 							$check_prefix=substr($pers_lastname,0,$prefix_length[$i]);
 							if (strtolower($check_prefix)==$prefix[$i]){
 								// *** Show prefixes with a capital letter ***
-								$person["pers_prefix"]=$check_prefix;
+								//$person["pers_prefix"]=$check_prefix;
+								$person["pers_prefix"]=str_replace(" ", "_", $check_prefix);
 								$pers_lastname=substr($pers_lastname,$prefix_length[$i]);
 							}
 						}
@@ -455,7 +456,16 @@ function process_person($person_array){
 			}
 
 			if ($level3=='NOTE'){
-				$event['text'][$event_nr]=$this->process_texts($event['text'][$event_nr],$buffer,'3');
+				// *** GensDataPro uses 3 NOTE, there's no event (because 2 GIVN and 2 SURN are skipped)! ***
+				// 0 @I428@ INDI
+				// 1 NAME Wilhelmina/Brink/
+				// 2 GIVN Wilhelmina
+				// 2 SURN Brink
+				// 3 NOTE Naam kan ook zijn: Brink
+				if (isset($event['text'][$event_nr]))
+					$event['text'][$event_nr]=$this->process_texts($event['text'][$event_nr],$buffer,'3');
+				else
+					$pers_name_text=$this->process_texts($pers_name_text,$buffer,'3');
 			}
 		}
 
