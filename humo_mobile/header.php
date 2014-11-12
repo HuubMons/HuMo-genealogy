@@ -21,9 +21,12 @@ include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
 include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
 include_once(CMS_ROOTPATH.'include/show_tree_text.php');
 include_once(CMS_ROOTPATH."include/person_cls.php");
-include_once(CMS_ROOTPATH."include/marriage_cls.php"); 
-include_once(CMS_ROOTPATH."include/date_place.php"); 
-include_once(CMS_ROOTPATH."include/language_date.php"); 
+include_once(CMS_ROOTPATH."include/marriage_cls.php");
+include_once(CMS_ROOTPATH."include/date_place.php");
+include_once(CMS_ROOTPATH."include/language_date.php");
+
+include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+$db_functions = New db_functions;
 
 $bot_visit=preg_match('/bot|spider|crawler|curl|Yahoo|Google|^$/i', $_SERVER['HTTP_USER_AGENT']);
 
@@ -48,10 +51,11 @@ closedir($language_folder);
 include_once("../languages/language.php");
 
 // *** Log in ***
+$fault=false;
 if (isset($_POST["username"]) && isset($_POST["password"])){
 	$query = "SELECT * FROM humo_users
 		WHERE user_name='" .safe_text($_POST["username"])."'
-		AND user_password='".MD5safe_text(($_POST["password"]))."'";
+		AND user_password='".MD5(safe_text(($_POST["password"])))."'";
 	$result = $dbh->query($query);
 
 	if ($result->rowCount() > 0){

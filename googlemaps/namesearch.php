@@ -27,6 +27,9 @@ include_once(CMS_ROOTPATH."include/person_cls.php"); // for privacy
 include_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/date_place.php");
 
+include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+$db_functions = New db_functions;
+
 $language_folder=opendir(CMS_ROOTPATH.'languages/');
 while (false!==($file = readdir($language_folder))) {
 	if (strlen($file)<5 AND $file!='.' AND $file!='..'){

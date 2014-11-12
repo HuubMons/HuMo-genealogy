@@ -14,8 +14,7 @@ include_once(CMS_ROOTPATH."include/person_cls.php");
 print '<table class="humo standard">';
 print "<tr><td><h2>".__('Address')."</h2>";
 
-$result = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr='".safe_text($_GET['gedcomnumber'])."'");
-$addressDb = $result->fetch(PDO::FETCH_OBJ);
+$addressDb = $db_functions->get_address($_GET['gedcomnumber']);
 
 if (@$addressDb->address_address){ print "<b>".__('Address').":</b> $addressDb->address_address<br>"; }
 if (@$addressDb->address_zip){ print "<b>".__('Zip code').":</b> $addressDb->address_zip<br>"; }
@@ -30,22 +29,19 @@ $person_cls = New person_cls;
 print "</td></tr><tr><td>";
 
 	// *** Search address in connections table ***
-	$eventsql="SELECT * FROM ".$tree_prefix_quoted."connections
-		WHERE connect_sub_kind='person_address'
-		AND connect_item_id='".safe_text($_GET['gedcomnumber'])."'";
-	$eventqry = $dbh->query($eventsql);
-	while (@$eventDb=$eventqry->fetch(PDO::FETCH_OBJ)){
+	$event_qry = $db_functions->get_connections('person_address',$_GET['gedcomnumber']);
+	foreach($event_qry as $eventDb){
 		// *** Person address ***
 		if ($eventDb->connect_connect_id){
-			$result = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$eventDb->connect_connect_id'");
-			$personDb = $result->fetch(PDO::FETCH_OBJ);
-			print __('Address by person').': <a href="family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
+			$personDb=$db_functions->get_person($eventDb->connect_connect_id);
 			$name=$person_cls->person_name($personDb);
+			print __('Address by person').': <a href="family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 			echo $name["standard_name"].'</a>';
 			if ($eventDb->connect_role){ echo ' '.$eventDb->connect_role; }
 			print '<br>';
 		}
 	}
+	unset($event_qry); // *** If finished, remove data from memory ***
 
 print "</td></tr></table>";
 include_once(CMS_ROOTPATH."footer.php");

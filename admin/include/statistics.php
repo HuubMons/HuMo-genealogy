@@ -15,7 +15,7 @@ $person_cls = New person_cls;
 
 // *** Show 1 statistics line ***
 function statistics_line($familyDb){
-	global $db, $dbh, $language, $person_cls, $selected_language;
+	global $dbh, $language, $person_cls, $selected_language;
 
 	echo '<tr>';
 	if (isset($familyDb->count_lines)){ echo '<td>'.$familyDb->count_lines.'</td>'; }
@@ -28,7 +28,7 @@ function statistics_line($familyDb){
 	// *** Check if family is still in the genealogy! ***
 	$check_sql=$dbh->query("SELECT * FROM ".$familyDb->tree_prefix."family
 		WHERE fam_gedcomnumber='$familyDb->stat_gedcom_fam'");
-	$checkDb=$check_sql->fetch(PDO::FETCH_OBJ);	
+	$checkDb=$check_sql->fetch(PDO::FETCH_OBJ);
 	$check=false;
 	if ($checkDb AND $checkDb->fam_man==$familyDb->stat_gedcom_man AND $checkDb->fam_woman==$familyDb->stat_gedcom_woman){
 		$check=true;
@@ -79,7 +79,7 @@ function statistics_line($familyDb){
 // *** Show 1 month, statistics calender ***
 // *** calender($month, $year, true/false); ***
 function calender($month, $year, $thismonth){
-	global $db, $dbh, $language, $statistics_screen;
+	global $dbh, $language, $statistics_screen;
 
 	echo '<table class="humo standard" border="1" cellspacing="0">';
 	if ($month=='1'){ $calender_head=__('January'); }
@@ -179,7 +179,7 @@ function calender($month, $year, $thismonth){
 
 // *** Function to show year statistics ***
 function year_graphics($month, $year)  {
-	global $db, $dbh, $language, $statistics_screen;
+	global $dbh, $language, $statistics_screen;
 	$start_month=$month + 1;
 	$start_year=$year - 1;
 	if($month==12) {
@@ -269,7 +269,7 @@ function iptocountry($ip, $path) {
 }
 
 function country(){
-	global $db, $dbh, $language;
+	global $dbh, $language;
 
 	// *** For test purposes ***
 	$path=CMS_ROOTPATH_ADMIN.'ip_files/';

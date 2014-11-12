@@ -61,8 +61,8 @@ $user["group_privacy"]=$groupDb->group_privacy;
 
 $user['group_admin']=$groupDb->group_admin;
 
-if (!isset($groupDb->group_editor)){ $user['group_editor']='n'; }
-	else{ $user['group_editor']=$groupDb->group_editor; }
+//if (!isset($groupDb->group_editor)){ $user['group_editor']='n'; }
+//	else{ $user['group_editor']=$groupDb->group_editor; }
 
 $user['group_pictures']=$groupDb->group_pictures;
 
@@ -149,4 +149,13 @@ if (!isset($groupDb->group_gen_protection)){ $user['group_gen_protection']='n'; 
 // *** Show or hide family trees, saved as ; separated id numbers ***
 if (!isset($groupDb->group_hide_trees)){ $user['group_hide_trees']=''; }
 	else{ $user['group_hide_trees']=$groupDb->group_hide_trees; }
+
+// *** Edit family trees [GROUP SETTING], saved as ; separated id numbers (NOT USED FOR ADMINISTRATOR) ***
+if (!isset($groupDb->group_edit_trees)){ $user['group_edit_trees']=''; }
+	else{ $user['group_edit_trees']=$groupDb->group_edit_trees; }
+// *** Edit family trees [USER SETTING] ***
+if (isset($accountDb->user_edit_trees) AND $accountDb->user_edit_trees){
+	if ($user['group_edit_trees']) $user['group_edit_trees'].=';'.$accountDb->user_edit_trees;
+		else $user['group_edit_trees']=$accountDb->user_edit_trees;
+}
 ?>

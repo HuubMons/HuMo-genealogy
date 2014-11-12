@@ -403,10 +403,7 @@ else{
 		while(@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)) {
 			// *** Check is family tree is showed or hidden for user group ***
 			$hide_tree_array=explode(";",$user['group_hide_trees']);
-			$hide_tree=false;
-			for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-				if ($hide_tree_array[$x]==$dataDb->tree_id){ $hide_tree=true; }
-			}
+			$hide_tree=false; if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
 			if ($hide_tree==false){	
 				$_SESSION['tree_prefix']=$dataDb->tree_prefix;
 				break;
@@ -418,11 +415,16 @@ else{
 	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' AND tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
 	@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
-	$hide_tree=false;
-	for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-		if ($hide_tree_array[$x]==@$dataDb->tree_id){ $hide_tree=true; }
+	$hide_tree=false; if (in_array(@$dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
+
+	$_SESSION['tree_id']=''; // tree_id is used for editing check.
+	if ($hide_tree){
+		$_SESSION['tree_prefix']='';
+		$_SESSION['tree_id']='';
 	}
-	if ($hide_tree) $_SESSION['tree_prefix']='';
+	elseif (isset($dataDb->tree_id)){
+		$_SESSION['tree_id']=$dataDb->tree_id;
+	}
 
 	// *** Set variabele for queries ***
 	$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
@@ -489,6 +491,9 @@ else{
 		print "</head>\n";
 		print "<body onload='checkCookie()'>\n";
 	}
+
+	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+	$db_functions = New db_functions;
 
 	echo '<div class="silverbody">'; 
 } // *** End of PDF export check ***

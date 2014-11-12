@@ -523,7 +523,7 @@ if ($connect_sub_kind=='fam_event_source' OR ($connect_kind=='family' AND $conne
 
 // *** SOURCE EDIT FUNCTION ***
 function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
-	global $db, $dbh, $tree_prefix, $language, $page, $phpself2, $joomlastring, $marriage;
+	global $dbh, $tree_prefix, $language, $page, $phpself2, $joomlastring, $marriage;
 	global $editor_cls;
 
 	// *** Explanation of role and page ***

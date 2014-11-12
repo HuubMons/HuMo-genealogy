@@ -205,7 +205,7 @@ $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."addresses (
 	address_changed_time varchar(25) CHARACTER SET utf8,
 	PRIMARY KEY (`address_id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$tbldb = $dbh->query($tbldbqry) or die(mysql_error());
+$tbldb = $dbh->query($tbldbqry);
 
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."vermeldingen"); // Remove old table.
 $tbldb = $dbh->query("DROP TABLE ".$_SESSION['tree_prefix']."events"); // Remove table.

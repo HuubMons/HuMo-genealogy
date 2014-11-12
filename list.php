@@ -3,7 +3,7 @@ include_once("header.php"); //returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/person_cls.php");
-error_reporting(E_ALL);
+//error_reporting(E_ALL);
 @set_time_limit(300);
 
 // *** show person ***
@@ -600,7 +600,12 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	}
 	elseif ($selection['pers_prefix']){
 		//$query.=$and."pers_prefix='".$selection['pers_prefix']."'"; $and=" AND ";
-		$query.=$and."pers_prefix='".safe_text( str_replace(' ', '_', $selection['pers_prefix']) )."'"; $and=" AND ";
+		//$query.=$and."pers_prefix='".safe_text( str_replace(' ', '_', $selection['pers_prefix']) )."'"; $and=" AND ";
+
+		// *** Search results for: "van", "van " and "van_" ***
+		$pers_prefix=safe_text( str_replace(' ', '_', $selection['pers_prefix']));
+		//$query.=$and."(pers_prefix='".$pers_prefix."' OR SUBSTRING(pers_prefix,-1) ='".$pers_prefix."')"; $and=" AND ";
+		$query.=$and."(pers_prefix='".$pers_prefix."' OR pers_prefix ='".$pers_prefix.'_'."')"; $and=" AND ";
 	}
 
 	if ($selection['pers_firstname']){
@@ -836,7 +841,6 @@ if ($index_list=='quicksearch'){
 
 	// *** Build SELECT part of query. Search in ALL family trees ***
 	if ($search_database=='all_trees' OR $search_database=='all_but_this') {
-		//$query_part=$query;
 		$query='';
 		$counter=0;
 		foreach($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {

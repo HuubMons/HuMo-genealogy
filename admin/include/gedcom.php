@@ -935,25 +935,24 @@ if (isset($_POST['step4'])){
 	while ($personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
 		//*** Haza-data option: text IN name where "*" is. ***
 		if ($personDb->pers_name_text){
+			// *** Check * in firstname ***
 			$position=strpos($personDb->pers_firstname, '*');
-			//if ( $position!== false AND $personDb->pers_name_text ){
 			if ($position!== false){
 				// pers_name_text change into: process_text(pers_name_text)
 				$pers_firstname=substr($personDb->pers_firstname,0,$position).
 					$personDb->pers_name_text.substr($personDb->pers_firstname,$position+1);
-				$pers_name_text='';
 				$sql="UPDATE ".$_SESSION['tree_prefix']."person
-					SET pers_firstname='$pers_firstname', pers_name_text=''
-					WHERE pers_id=$personDb->pers_id";
+					SET pers_firstname='".safe_text($pers_firstname)."', pers_name_text=''
+					WHERE pers_id='".$personDb->pers_id."'";
 				$dbh->query($sql);
 			}
+
+			// ***Check * in lastname ***
 			$position=strpos($personDb->pers_lastname, '*');
-			//if ( $position!== false AND $personDb->pers_name_text ){
 			if ($position!== false){
 				//pers_name_text change into: process_text(pers_name_text)
 				$pers_lastname=substr( $personDb->pers_lastname,0,$position).
 					$personDb->pers_name_text.substr( $personDb->pers_lastname,$position+1);
-				$pers_name_text='';
 				$sql="UPDATE ".$_SESSION['tree_prefix']."person SET pers_lastname='$pers_lastname', pers_name_text=''
 					WHERE pers_id=$personDb->pers_id";
 				$dbh->query($sql);

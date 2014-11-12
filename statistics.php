@@ -14,8 +14,7 @@ include_once(CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
 
 // *** Get general data from family tree ***
-$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix_quoted."'");
-@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+$db_functions->get_tree();
 
 $tree_date=$dataDb->tree_date;
 $month=''; // *** empty date ***
@@ -70,16 +69,14 @@ while (@$record=$res->fetch(PDO::FETCH_OBJ)){
 	}
 }
 echo "<td align='center'><i>$test_number</i></td>\n";
-$res=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".$man_gedcomnumber."'");
-@$record=$res->fetch(PDO::FETCH_OBJ);
+@$record=$db_functions->get_person($man_gedcomnumber);
 $person_cls = New person_cls;
 $person_cls->construct($record);
 $name=$person_cls->person_name($record);
 $man=$name["standard_name"];
 $index = "$record->pers_indexnr";
 
-$res=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber ='".$woman_gedcomnumber."'");
-@$record=$res->fetch(PDO::FETCH_OBJ);
+@$record=$db_functions->get_person($woman_gedcomnumber);
 $person_cls = New person_cls;
 $person_cls->construct($record);
 $name=$person_cls->person_name($record);
@@ -166,11 +163,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -193,11 +186,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -222,10 +211,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 
 	echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
 	echo show_person($row);
@@ -249,11 +235,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -279,11 +261,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -306,11 +284,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -336,11 +310,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -363,11 +333,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -392,11 +358,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -418,12 +380,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 	}
 }
 if ($person_found){
-	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -448,11 +405,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -475,11 +428,7 @@ while($row=$qry->fetch(PDO::FETCH_OBJ)){
 }
 if ($person_found){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$person_found->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($person_found->pers_gedcomnumber);
 	echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
 	echo show_person($row);
 }
@@ -524,11 +473,7 @@ while(@$record = $res->fetch(PDO::FETCH_OBJ)){
 }
 if (isset($oldest_person)){
 	// *** Now get full person data (quicker in large family trees) ***
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$oldest_person->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($oldest_person->pers_gedcomnumber);
 	echo '<td align="center"><i>'.$test_year.' '.__('years')."</i></td>\n";
 	echo show_person($row);
 }
@@ -567,11 +512,7 @@ while(@$record = $res->fetch(PDO::FETCH_OBJ)){
 	}
 }
 if (isset($oldest_person)){
-	$qry='SELECT * FROM '.$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$oldest_person->pers_gedcomnumber.'"';
-	$result = $dbh->query($qry);
-	$row=$result->fetchObject();
-
+	$row=$db_functions->get_person($oldest_person->pers_gedcomnumber);
 	echo '<td align="center"><i>'.$test_year.' '.__('years')."</i></td>\n";
 	echo show_person($row);
 }

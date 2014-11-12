@@ -510,16 +510,16 @@ else{
 	}
 
 	// *** Automatic installation or update ***
-	if (isset($field['group_editor'])){
-		$sql="ALTER TABLE humo_groups
-			CHANGE group_editor group_editor varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
-		$result=$dbh->query($sql);
-	}
-	elseif (!isset($field['group_editor'])){
-		$sql_update="ALTER TABLE humo_groups
-			ADD group_editor VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
-		$result=$dbh->query($sql_update);
-	}
+	//if (isset($field['group_editor'])){
+	//	$sql="ALTER TABLE humo_groups
+	//		CHANGE group_editor group_editor varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n'";
+	//	$result=$dbh->query($sql);
+	//}
+	//elseif (!isset($field['group_editor'])){
+	//	$sql_update="ALTER TABLE humo_groups
+	//		ADD group_editor VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n';";
+	//	$result=$dbh->query($sql_update);
+	//}
 
 	// *** Automatic installation or update ***
 	if (isset($field['group_statistics'])){
@@ -1361,7 +1361,7 @@ else{
 
 		// *** Update sources by persons and families ***
 		function update_source($read_dB,$source_value,$connect_kind, $connect_sub_kind, $connect_connect_id) {
-			global $db, $dbh, $updateDb;
+			global $dbh, $updateDb;
 			unset($source_array); $source_array=explode(";",$source_value);
 			for ($i=0; $i<=(count($source_array)-1); $i++) {
 				$gebeurtsql="INSERT INTO ".$updateDb->tree_prefix."connections SET
@@ -1847,7 +1847,6 @@ else{
 		// *** Read all family trees from database ***
 		$update_sql = $dbh->query("SELECT * FROM humo_trees
 			WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-		//while ($updateDb=mysql_fetch_object($update_sql)){
 		while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
 			// *** Update family table ***
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."family ADD INDEX (fam_man), ADD INDEX (fam_woman)";
@@ -1899,12 +1898,206 @@ else{
 		// *** Update "update_status" to number 7 ***
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='7'
 			WHERE setting_variable='update_status'");
+
 		echo ' Database updated!';
 		echo '</td></tr>';
 	}
 
-	/*	END OF UPDATE SCRIPT
 
+/*
+	// ************************************
+	// *** Update procedure version 5.x ***
+	// ************************************
+	if ($humo_option["update_status"]>'7'){
+		echo '<tr><td>HuMo-gen update V5.x</td><td style="background-color:#00FF00">OK</td></tr>';
+	}
+	else{
+		echo '<tr><td>HuMo-gen update V5.x</td><td style="background-color:#00FF00">';
+
+		$tbldbqry = "CREATE TABLE humo_persons (
+			pers_id mediumint(7) unsigned NOT NULL auto_increment,
+			pers_gedcomnr varchar(20) CHARACTER SET utf8,
+			pers_tree_id mediumint(7),
+			pers_firstname varchar(60) CHARACTER SET utf8,
+			pers_prefix varchar(20) CHARACTER SET utf8,
+			pers_lastname varchar(60) CHARACTER SET utf8,
+			pers_sexe varchar(1) CHARACTER SET utf8,
+			pers_own_code varchar(100) CHARACTER SET utf8,
+			pers_alive varchar(20) CHARACTER SET utf8,
+			pers_cal_date varchar(35) CHARACTER SET utf8,
+			pers_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
+			pers_favorite varchar(1) CHARACTER SET utf8,
+			PRIMARY KEY (`pers_id`),
+			KEY (pers_lastname),
+			KEY (pers_gedcomnr),
+			KEY (pers_prefix)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+		$tbldb = $dbh->query($tbldbqry);
+
+		$tbldbqry = "CREATE TABLE humo_relations (
+			rel_id mediumint(7) unsigned NOT NULL auto_increment,
+			rel_gedcomnr varchar(20) CHARACTER SET utf8,
+			rel_tree_id mediumint(7),
+			rel_man varchar(20) CHARACTER SET utf8,
+			rel_woman varchar(20) CHARACTER SET utf8,
+			rel_kind varchar(50) CHARACTER SET utf8,
+			rel_religion varchar(50) CHARACTER SET utf8,
+			rel_alive int(1),
+			rel_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
+			rel_counter mediumint(7),
+			PRIMARY KEY (`rel_id`),
+			KEY (rel_gedcomnr),
+			KEY (rel_man),
+			KEY (rel_woman)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+		$tbldb = $dbh->query($tbldbqry);
+
+		// *** NEW table: humo_children ***
+		$tbldbqry = "CREATE TABLE humo_children (
+			child_id mediumint(7) unsigned NOT NULL auto_increment,
+			child_tree_id mediumint(7),
+			child_order mediumint(7),
+			child_rel_id mediumint(7),
+			child_pers_id mediumint(7),
+			PRIMARY KEY (`child_id`),
+			KEY (child_rel_id),
+			KEY (child_pers_id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+		$tbldb = $dbh->query($tbldbqry);
+
+		//texts
+		
+		//sources
+		
+		//addresses
+		
+		//humo_locations
+		
+		//events
+		
+		//connections
+		
+		//repositories
+
+		// *** NEW table: humo_unprocessed_tags ***
+		$tbldbqry = "CREATE TABLE humo_unprocessed_tags (
+			tag_id mediumint(7) unsigned NOT NULL auto_increment,
+			tag_tree_id mediumint(7),
+			tag_pers_id mediumint(7),
+			tag_rel_id mediumint(7),
+			tag_event_id mediumint(7),
+			tag_source_id mediumint(7),
+			tag_place_id mediumint(7),
+			tag_address_id mediumint(7),
+			tag_unprocessed_tags text CHARACTER SET utf8,
+			PRIMARY KEY (`tag_id`),
+			KEY (tag_pers_id),
+			KEY (tag_rel_id),
+			KEY (tag_event_id),
+			KEY (tag_source_id),
+			KEY (tag_place_id),
+			KEY (tag_address_id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+		$tbldb = $dbh->query($tbldbqry);
+
+		// *** NEW table: humo_meta_data ***
+		$tbldbqry = "CREATE TABLE humo_meta_data (
+			meta_id mediumint(7) unsigned NOT NULL auto_increment,
+			meta_tree_id mediumint(7),
+			meta_pers_id mediumint(7),
+			meta_rel_id mediumint(7),
+			meta_event_id mediumint(7),
+			meta_source_id mediumint(7),
+			meta_place_id mediumint(7),
+			meta_address_id mediumint(7),
+			meta_new_date varchar(35) CHARACTER SET utf8,
+			meta_new_time varchar(25) CHARACTER SET utf8,
+			meta_changed_date varchar(35) CHARACTER SET utf8,
+			meta_changed_time varchar(25) CHARACTER SET utf8,
+			PRIMARY KEY (`meta_id`),
+			KEY (meta_pers_id),
+			KEY (meta_rel_id),
+			KEY (meta_event_id),
+			KEY (meta_source_id),
+			KEY (meta_place_id),
+			KEY (meta_address_id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+		$tbldb = $dbh->query($tbldbqry);
+
+		// *** Batch processing ***
+		$dbh->beginTransaction();
+
+		//DO A COMMIT EVERY 1000 RECORDS?
+
+		// *** Read all family trees from database ***
+		$update_sql = $dbh->query("SELECT * FROM humo_trees
+			WHERE tree_prefix!='EMPTY' AND tree_prefix!='humo_' ORDER BY tree_order");
+		while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
+
+			// *** Combine multiple humo[nr]_person tables into 1 humo_person table ***
+			$sql_get=$dbh->query("SELECT * FROM ".$updateDb->tree_prefix."person");
+			while ($getDb=$sql_get->fetch(PDO::FETCH_OBJ)){
+				$sql_put="INSERT INTO humo_persons SET
+				pers_gedcomnr='".$getDb->pers_gedcomnumber."',
+				pers_tree_id='".$updateDb->tree_id."',
+				pers_firstname='".$getDb->pers_firstname."',
+				pers_prefix='".$getDb->pers_prefix."',
+				pers_lastname='".$getDb->pers_lastname."'";
+				$dbh->query($sql_put);
+			}
+
+			// *** Combine multiple humo[nr]_family tables into 1 humo_relation table ***
+			$sql_get=$dbh->query("SELECT * FROM ".$updateDb->tree_prefix."family");
+			while ($getDb=$sql_get->fetch(PDO::FETCH_OBJ)){
+				// *** Add data to new relation table ***
+				$sql_put="INSERT INTO humo_relations SET
+				rel_gedcomnr='".$getDb->fam_gedcomnumber."',
+				rel_tree_id='".$updateDb->tree_id."',
+				rel_man='".$getDb->fam_man."',
+				rel_woman='".$getDb->fam_woman."',
+				rel_kind='".$getDb->fam_kind."'";
+				$dbh->query($sql_put);
+				// *** Get id number of last inserted record ***
+				$child_rel_id=$dbh->lastInsertId();
+
+				// *** Move children to new children table ***
+				if ($getDb->fam_children){
+					$child_array=explode(";",$getDb->fam_children);
+					for($i=1; $i<=substr_count($getDb->fam_children, ";"); $i++){
+						// *** Get child id from table ***
+						$sql_child=$dbh->query("SELECT pers_id FROM humo_persons
+							WHERE pers_tree_id='".$updateDb->tree_id."' AND pers_gedcomnr='".$child_array[$i]."'");
+						$childDb=$sql_child->fetch(PDO::FETCH_OBJ);
+						// *** N.N. child could be without record ***
+						$child_pers_id=''; if (isset($childDb->pers_id)) $child_pers_id=$childDb->pers_id;
+						// *** Save child in table children ***
+						$sql_put="INSERT INTO humo_children SET
+						child_tree_id='".$updateDb->tree_id."',
+						child_order='".$i."',
+						child_rel_id='".$child_rel_id."',
+						child_pers_id='".$child_pers_id."'";
+						$dbh->query($sql_put);
+					}
+				}
+			}
+
+		}
+
+		// *** Commit data in database ***
+		$dbh->commit();
+
+		// *** Update "update_status" to number 8 ***
+		//$result = $dbh->query("UPDATE humo_settings SET setting_value='8'
+		//	WHERE setting_variable='update_status'");
+
+		echo ' Database updated!';
+		echo '</td></tr>';
+	}
+*/
+
+
+
+	/*	END OF UPDATE SCRIPT
 		*** VERY IMPORTANT REMARKS FOR PROGRAMMERS ***
 		* Change update_status in install.php
 		* Change version check in admin/index.php
@@ -1915,7 +2108,7 @@ else{
 		* Change database fields: check if database changes can be made in
 			global parts of this update script.
 	*/
-	
+
 	// *** END OF UPDATES ***
 	echo '<table><br>';
 	echo __('All updates completed, click at "Mainmenu"');

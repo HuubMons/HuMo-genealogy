@@ -1,6 +1,6 @@
 <?php
 function process_text($text_process, $text_sort='standard'){
-	global $user, $db, $dbh, $tree_prefix_quoted;
+	global $user, $dbh, $tree_prefix_quoted;
 	global $screen_mode, $text_presentation;
 
 	if ($text_presentation!='hide'){
@@ -60,7 +60,6 @@ function process_text($text_process, $text_sort='standard'){
 				$text_process='<span class="text">'.$text_process.'</span>';
 		}
 
-
 		// *** Show tekst in popup screen ***
 		if ($text_presentation=='popup' AND $screen_mode!='PDF' AND $screen_mode!='RTF' AND $text_process){
 			global $rtlmarker, $family_id, $main_person, $alignmarker, $text_nr;
@@ -75,13 +74,20 @@ function process_text($text_process, $text_sort='standard'){
 				else
 					$text.= '<b>['.(__('Text')).']</b>';
 				$text.= '</a>';
-				$text.='<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:'.$alignmarker.'; direction:'.$rtlmarker.';" id="show_text'.$text_nr.'" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+
+				if (substr_count($text_process,'<br>')>10 OR substr_count($text_process,'<br />')>10)
+					$text.='<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:'.$alignmarker.'; direction:'.$rtlmarker.'; height:300px; width:80%; overflow-y: scroll;" id="show_text'.$text_nr.'" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				else
+					$text.='<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:'.$alignmarker.'; direction:'.$rtlmarker.';" id="show_text'.$text_nr.'" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+
+				// *** Show a correct website link in text ***
+				$text_process = str_ireplace('<a href', '<a style="display:inline" href', $text_process);
+
 				$text.=$text_process;
 				$text.='</div>';
 			$text.='</div>';
 			$text_process=$text;
 		}
-
 
 	}
 	else $text_process='';

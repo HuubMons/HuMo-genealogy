@@ -37,7 +37,9 @@ if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	$headers .= "X-Priority: 3\n";
 	$headers .= "X-MSMail-Priority: Normal\n";
 	$headers .= "X-Mailer: php\n";
-	$headers .= "From: \"".$_POST['mail_name']."\" <".$_POST['mail_sender'].">\n";
+	//$headers .= "From: \"".$_POST['mail_name']."\" <".$_POST['mail_sender'].">\n";
+	$headers .= "From: \"".$_POST['mail_name']."\"\n";
+	$headers .= "Reply-To: \"".$_POST['mail_name']."\" <".$_POST['mail_sender'].">\n";
 
 	echo '<br>'.__('You have entered the following email address: ').'<b> '.$_POST['mail_sender'].'</b><br>';
 	$position = strpos($_POST['mail_sender'],"@");

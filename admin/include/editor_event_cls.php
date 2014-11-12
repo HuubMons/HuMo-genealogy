@@ -47,7 +47,6 @@ function show_event($selected_events=''){
 	@sort($picture_array);
 	$nr_pictures=count($picture_array);
 
-
 	// *** Change line colour ***
 	$change_bg_colour=' class="humo_color3"';
 
@@ -116,6 +115,7 @@ function show_event($selected_events=''){
 			WHERE event_family_id='".$marriage."'
 			AND event_kind!='marriage_witness'
 			AND event_kind!='marriage_witness_rel'
+			AND event_kind!='picture'
 			ORDER BY event_kind, event_order";
 	}
 	elseif ($selected_events=='marriage_witness'){
@@ -125,6 +125,10 @@ function show_event($selected_events=''){
 	elseif ($selected_events=='marriage_witness_rel'){
 		$event_group='event_family=1';
 		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_family_id='".$marriage."' AND event_kind='marriage_witness_rel' ORDER BY event_kind, event_order";
+	}
+	elseif ($selected_events=='marriage_picture'){
+		$event_group='event_family=1';
+		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_family_id='".$marriage."' AND event_kind='picture' ORDER BY event_order";
 	}
 	$data_list_qry=$dbh->query($qry);
 
@@ -166,6 +170,7 @@ function show_event($selected_events=''){
 				WHERE event_family_id='".$marriage."'
 				AND event_kind!='marriage_witness'
 				AND event_kind!='marriage_witness_rel'
+				AND event_kind!='picture'
 				ORDER BY event_kind, event_order");
 			$count=$count_event->rowCount();
 			echo $count.' x '.__('Events');
@@ -302,8 +307,8 @@ function show_event($selected_events=''){
 		echo '</tr>';
 	}
 
-	// *** Show pictures by person ***
-	if ($selected_events=='picture'){
+	// *** Show pictures by person and family ***
+	if ($selected_events=='picture' OR $selected_events=='marriage_picture'){
 		echo '<tr class="humo_color">';
 		echo '<td style="border-right:0px;">';
 			echo '<a name="picture"></a>';
@@ -316,7 +321,8 @@ function show_event($selected_events=''){
 			echo __('Picture/ Media').'</td>';
 		echo '<td style="border-right:0px;"></td>';
 		echo '<td style="border-left:0px;">';
-			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_picture#picture">['.__('Add').']</a> ';
+			$event_add='add_picture'; if ($selected_events=='marriage_picture') $event_add='add_marriage_picture';
+			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add='.$event_add.'#picture">['.__('Add').']</a> ';
 			//$text='';
 			while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 				//if ($text) $text.=', ';
@@ -570,7 +576,6 @@ function show_event($selected_events=''){
 				echo '<option value="'.$picture_array[$picture_nr].'"'.$selected.'>'.$picture_array[$picture_nr].'</option>';
 			}
 			echo '</select>';
-
 			//echo ' <b>'.__('or').' upload (max: pic 2MB, media 49 MB):</b>';
 			//echo ' <input type="file" name="photo_upload['.$data_listDb->event_id.']">';
 		}
@@ -851,7 +856,7 @@ function show_event($selected_events=''){
 			else{ $change_bg_colour=' class="humo_color2"'; }
 	}
 
-	if ($selected_events=='picture'){
+	if ($selected_events=='picture' OR $selected_events=='marriage_picture'){
 		// *** Upload image ***
 		echo '<tr style="display:none;" id="row51" name="row53"><td class="table_header_large" colspan="4">';
 			echo 'Upload new image (max: pic 2MB) or media (max: 49 MB):'.' <input type="file" name="photo_upload">';

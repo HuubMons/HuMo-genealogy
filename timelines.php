@@ -4,14 +4,12 @@ include_once(CMS_ROOTPATH."menu.php");
 require_once(CMS_ROOTPATH."include/person_cls.php");
 //require_once(CMS_ROOTPATH."include/date_place.php");
 require_once(CMS_ROOTPATH."include/language_date.php");
-
 include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
 $process_age = New calculate_year_cls;
 
 if(isset($_GET['id'])) { $id=$_GET['id']; }
-//if(isset($_GET['database'])) { $database=$_GET['database']; }
-$person= $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($id)."'");
-@$personDb= $person->fetch(PDO::FETCH_OBJ);
+@$personDb = $db_functions->get_person($id);
+
 $isborn=0; $isdeath=0; $ismarr=0; $ischild=0;
 $deathtext=''; $borntext=''; $bapttext=''; $burrtext=''; $marrtext='';
 $privacy_filtered=false;
@@ -73,19 +71,15 @@ if($personDb->pers_buried_date) {
 if($personDb->pers_fams) {
 	$marriages=explode(";",$personDb->pers_fams);
 	for($i=0; $i<count($marriages);$i++) {
-		$children[$i]='';
-		$marryear[$i]=''; $marrdate[$i]=''; $temp='';
-		$thisfam=$marriages[$i];
-		$family= $dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".safe_text($thisfam)."'");
-		@$familyDb= $family->fetch(PDO::FETCH_OBJ);
+		$children[$i]=''; $marryear[$i]=''; $marrdate[$i]=''; $temp='';
+		@$familyDb = $db_functions->get_family($marriages[$i]);
 		if ($personDb->pers_gedcomnumber==$familyDb->fam_man){
 			$spouse=$familyDb->fam_woman;
 		}
 		else{
 			$spouse=$familyDb->fam_man;
 		}
-		$spouse2=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($spouse)."'");
-		@$spouse2Db= $spouse2->fetch(PDO::FETCH_OBJ);
+		@$spouse2Db = $db_functions->get_person($spouse);
 		$person_cls = New person_cls;
 		$person_cls->construct($spouse2Db);
 		$privacy=$person_cls->privacy;
@@ -100,9 +94,7 @@ if($personDb->pers_fams) {
 					if($spouse2Db->pers_sexe=="M") { $spouse=__('SPOUSE_MALE'); }
 					else { $spouse=__('SPOUSE_FEMALE'); }
 						$spousedeathyear[$i]=$temp;
-						if($name["firstname"]) {
-							$spousedeathname[$i]=$name["firstname"];
-						}
+						if($name["firstname"]) { $spousedeathname[$i]=$name["firstname"]; }
 						$spousedeathtext[$i]= ucfirst(__('death')).' '.$spouse." ".$spousedeathname[$i]." ".$dirmark1.str_replace(" ","&nbsp;",language_date($spousedeathdate[$i]));
 
 						$age=$process_age->calculate_age($personDb->pers_bapt_date,$personDb->pers_birth_date,$spouse2Db->pers_death_date, true);
@@ -157,10 +149,8 @@ if($personDb->pers_fams) {
 		if($familyDb->fam_children) {
 			$children[$i]=explode(";",$familyDb->fam_children);
 			for($m=0; $m<count($children[$i]); $m++) {
-				$chmarriages[$i][$m]=''; // enter value so we wont get error messages in usbwserver
-				$child=$children[$i][$m];
-				$chld=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($child)."'");
-				@$chldDb= $chld->fetch(PDO::FETCH_OBJ);
+				$chmarriages[$i][$m]=''; // enter value so we wont get error messages
+				@$chldDb = $db_functions->get_person($children[$i][$m]);
 
 				if($chldDb->pers_sexe=="M") { $child=__('son'); }
 				else if ($chldDb->pers_sexe=="F") { $child=__('daughter'); }
@@ -206,21 +196,16 @@ if($personDb->pers_fams) {
 					for($p=0; $p<count($chmarriages[$i][$m]);$p++) {
 						$grchildren[$i][$m][$p]=''; // enter value so usbwebserver wont throw error messages
 						$chmarryear[$i][$m][$p]=''; $chmarrdate[$i][$m][$p]=''; $temp='';
-						$thischfam=$chmarriages[$i][$m][$p];
-						$chfamily=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".safe_text($thischfam)."'");
-						@$chfamilyDb=$chfamily->fetch(PDO::FETCH_OBJ);
+						@$chfamilyDb = $db_functions->get_family($chmarriages[$i][$m][$p]);
 
-// CHILDREN'S MARRIAGES
-
+		// CHILDREN'S MARRIAGES
 		if ($chldDb->pers_gedcomnumber==$chfamilyDb->fam_man){
 			$chspouse=$chfamilyDb->fam_woman;
 		}
 		else{
 			$chspouse=$chfamilyDb->fam_man;
 		}
-		$chspouse2=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($chspouse)."'");
-		@$chspouse2Db=$chspouse2->fetch(PDO::FETCH_OBJ);
-
+		@$chspouse2Db = $db_functions->get_person($chspouse);
 		$person_cls = New person_cls;
 		$person_cls->construct($chspouse2Db);
 		$privacy=$person_cls->privacy;
@@ -268,16 +253,13 @@ if($personDb->pers_fams) {
 			// *** Privacy filter activated ***
 			$privacy_filtered=true;
 		}
-
-// END CHILDREN'S MARRIAGES
+		// END CHILDREN'S MARRIAGES
 
 						if($chfamilyDb->fam_children) {
 
 							$grchildren[$i][$m][$p]=explode(";",$chfamilyDb->fam_children);
 							for($g=0; $g<count($grchildren[$i][$m][$p]); $g++) {
-								$grchild=$grchildren[$i][$m][$p][$g];
-								$grchld=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($grchild)."'");
-								@$grchldDb=$grchld->fetch(PDO::FETCH_OBJ);
+								@$grchldDb = $db_functions->get_person($grchildren[$i][$m][$p][$g]);
 								$person3_cls = New person_cls;
 								$person3_cls->construct($grchldDb);
 								$privacy=$person3_cls->privacy;

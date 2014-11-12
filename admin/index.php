@@ -1,5 +1,6 @@
 <?php
 //error_reporting(E_ALL);
+
 /**
 * This is the admin web entry point for HuMo-gen.
 *
@@ -41,12 +42,9 @@
 */
 
 if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
-
 if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "../");
-
 // *** When run from CMS, the path to the parent-map that contains this file should be given ***
 if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "");
-
 if (!CMS_SPECIFIC){ session_start(); }
 
 $page='index';
@@ -83,6 +81,9 @@ include_once(CMS_ROOTPATH."include/safe.php"); // Variables
 // *** Function to show family tree texts ***
 include_once (CMS_ROOTPATH.'include/show_tree_text.php');
 
+include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+$db_functions = New db_functions;
+
 // *** Only load settings if database and table exists ***
 $show_menu_left=false;
 $popup=false;
@@ -109,9 +110,10 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])){ 
 		if ($humo_option["update_status"]<7){ $page='update'; $show_menu_left=false; }
+//		if ($humo_option["update_status"]<8){ $page='update'; $show_menu_left=false; }
 	}
 
-	if (isset($_GET['page']) AND $_GET['page']=='editor_sources'){
+	if (isset($_GET['page']) AND ($_GET['page']=='editor_sources' OR $_GET['page']=='editor_place_select' OR $_GET['page']=='editor_person_select' OR $_GET['page']=='editor_user_settings')){
 		$show_menu_left=false;
 		$popup=true;
 	}
@@ -176,15 +178,14 @@ if($language["dir"]=="rtl") {
 }
 
 // *** Login check ***
-$group_administrator='';
-$group_editor='';
+$group_administrator=''; $group_edit_trees=''; //$group_editor='';
 if(isset($database_check) AND $database_check) {
 	if (isset($_SERVER["PHP_AUTH_USER"])){
 		// *** Logged in using .htacess ***
  
 		// *** Standard group permissions ***
-		$group_administrator='j';
-		$group_editor='j';
+		$group_administrator='j'; $group_edit_trees='';
+		//$group_editor='j';
 
 		// *** If username = editor then change group permissions ***
 		//if ($_SERVER["PHP_AUTH_USER"]=='editor'){
@@ -202,7 +203,15 @@ if(isset($database_check) AND $database_check) {
 			$group_administrator=$resultDb->group_admin;
 
 			// *** Check if user is a editor ***
-			$group_editor='j'; if (isset($resultDb->group_editor)){ $group_editor=$resultDb->group_editor; }
+			//$group_editor='j'; if (isset($resultDb->group_editor)){ $group_editor=$resultDb->group_editor; }
+			$group_edit_trees=''; if (isset($resultDb->group_edit_trees)){ $group_edit_trees=$resultDb->group_edit_trees; }
+
+			// *** Edit family trees [USER SETTING] ***
+			if (isset($resultDb->user_edit_trees) AND $resultDb->user_edit_trees){
+				if ($group_edit_trees) $group_edit_trees.=';'.$resultDb->user_edit_trees;
+					else $group_edit_trees=$resultDb->user_edit_trees;
+			}
+
 		}   
 	}
 	elseif($page=='update') {
@@ -225,13 +234,25 @@ if(isset($database_check) AND $database_check) {
 
 					// *** Check if user is an administrator ***
 					$group_administrator=$groepDb->group_admin;
-					if ($group_administrator!='j'){ $page='login'; }
+					if ($group_administrator!='j') $page='login';
 
 					// *** Check if user is an editor ***
-					if (isset($groepDb->group_editor)){
-						$group_editor=$groepDb->group_editor;
-						if ($group_editor=='j'){ $page=''; }
-					}   
+					//if (isset($groepDb->group_editor)){
+					//	$group_editor=$groepDb->group_editor;
+					//	if ($group_editor=='j'){ $page=''; }
+					//}
+
+					// *** Edit family trees [GROUP SETTING] ***
+					if (isset($groepDb->group_edit_trees)){ $group_edit_trees=$groepDb->group_edit_trees; $page=''; }
+					// *** Edit family trees [USER SETTING] ***
+					$user_result2=$dbh->query("SELECT * FROM humo_users WHERE user_id=".$_SESSION['user_id_admin']);
+					$resultDb=$user_result2->fetch(PDO::FETCH_OBJ);
+					// *** Edit family trees [USER SETTING] ***
+					if (isset($resultDb->user_edit_trees) AND $resultDb->user_edit_trees){
+						if ($group_edit_trees) $group_edit_trees.=';'.$resultDb->user_edit_trees;
+							else $group_edit_trees=$resultDb->user_edit_trees;
+					}
+
 				}
 				else{
 					// *** Show log in screen ***
@@ -245,6 +266,7 @@ if(isset($database_check) AND $database_check) {
 
 	}
 }
+
 // *** Save ip address in session to prevent session hijacking ***
 if( isset( $_SESSION['current_ip_address'] ) == FALSE ){
 	$_SESSION['current_ip_address'] = $_SERVER['REMOTE_ADDR'];
@@ -531,7 +553,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			echo '</div>';
 			echo '</li>';
 		}
-		else{
+		elseif ($page=='editor_sources'){
 			// *** Pop-up screen is shown, show button to close pop-up screen ***
 			$select_top='';
 			if ($page=='backup'){ $select_top=' id="current_top"'; }
@@ -791,14 +813,14 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				echo ' onmouseover="mopen(event,\'m40x\',\'?\',\'?\')"';
 				echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'</a>';
 				//echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-				echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:200px;">';
+				echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
 					echo '<ul class="humo_menu_item2">';
 						for ($i=0; $i<count($language_file); $i++){
 							// *** Get language name ***
 							if ($language_file[$i] != $selected_language) {
 								include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
 								//echo '<li><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
-								echo '<li style="float:left; width:99px;"><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
+								echo '<li style="float:left; width:124px;"><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
 
 								echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
 								echo $language["name"];
@@ -845,6 +867,8 @@ echo '<div id="content_admin">';
 	elseif ($page=='edit_repositories'){ $_GET['menu_admin']='repositories'; include_once ("include/editor.php"); }
 	elseif ($page=='edit_addresses'){ $_GET['menu_admin']='addresses'; include_once ("include/editor.php"); }
 	elseif ($page=='edit_places'){ $_GET['menu_admin']='places'; include_once ("include/editor.php"); }
+	elseif ($page=='editor_place_select'){ $_GET['menu_admin']='places'; include_once ("include/editor_place_select.php"); }
+	elseif ($page=='editor_person_select'){ $_GET['menu_admin']='marriage'; include_once ("include/editor_person_select.php"); }
 
 	elseif ($page=='check'){ include_once ("include/tree_check.php"); }
 	elseif ($page=='gedcom'){ include_once ("include/gedcom.php"); }
@@ -852,6 +876,8 @@ echo '<div id="content_admin">';
 	elseif ($page=='thumbs'){ include_once ("include/thumbs.php"); }
 	elseif ($page=='links'){ include_once ("include/links.php"); }
 	elseif ($page=='users'){ include_once ("include/users.php"); }
+	elseif ($page=='editor_user_settings'){ $_GET['menu_admin']='users'; include_once ("include/editor_user_settings.php"); }
+
 	elseif ($page=='groups'){ include_once ("include/groups.php"); }
 	elseif ($page=='cms_pages'){ include_once ("include/cms_pages.php"); }
 	elseif ($page=='backup'){ include_once ("include/backup.php"); }
@@ -868,7 +894,8 @@ echo '<div id="content_admin">';
 	//elseif ($page=='editor_person_event'){ include_once ("include/editor_person_event.php"); }
 
 	// *** Default page for editor ***
-	elseif ($group_administrator!='j' AND $group_editor=='j'){ $_GET['menu_admin']='person'; include_once ("include/editor.php"); }
+	//elseif ($group_administrator!='j' AND $group_editor=='j'){ $_GET['menu_admin']='person'; include_once ("include/editor.php"); }
+	elseif ($group_administrator!='j' AND $group_edit_trees){ $_GET['menu_admin']='person'; include_once ("include/editor.php"); }
 
 	// *** Default page for administrator ***
 	else{ include_once ("include/index_inc.php"); }

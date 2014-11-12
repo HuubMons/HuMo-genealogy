@@ -73,14 +73,21 @@ echo '<th>'.ucfirst(__('died'))."</th>\n";
 echo "</tr>\n";
 
 // *** Build query ***
-$query = $dbh->query("SELECT *,
+$sql = "SELECT *,
 	abs(substring( pers_birth_date,1,2 )) as birth_day,
 	substring( pers_birth_date,-4 ) as birth_year
 	FROM ".$tree_prefix_quoted."person
-	WHERE substring( pers_birth_date,  4,3) = '$month'
-	OR  substring( pers_birth_date,  3,3) = '$month'
-	order by birth_day ");
-while(@$record = $query->fetch(PDO::FETCH_OBJ)) {
+	WHERE substring( pers_birth_date,  4,3) = :month
+	OR  substring( pers_birth_date,  3,3) = :month
+	order by birth_day ";
+try {
+	$qry = $dbh->prepare( $sql );
+	$qry->bindValue(':month', $month, PDO::PARAM_STR);
+	$qry->execute();
+}catch (PDOException $e) {
+	echo $e->getMessage() . "<br/>";
+}
+while ($record=$qry->fetch(PDO::FETCH_OBJ)){
 	$calendar_day = $record->birth_day;
 	$birth_day =$record->birth_day.' '.$month;
 
@@ -115,10 +122,8 @@ while(@$record = $query->fetch(PDO::FETCH_OBJ)) {
 		echo "<td><br></td>";
 	else
 		echo "<td>$calendar_day $month</td>";
-		//echo "<td>$calendar_day</td>";
 	$last_cal_day=$calendar_day;
 
-	//	echo "<td>".language_date($record->pers_birth_date)."</td>";
 	if (!$person_cls->privacy)
 		echo "<td>".$record->birth_year."</td>";
 	else
@@ -126,7 +131,6 @@ while(@$record = $query->fetch(PDO::FETCH_OBJ)) {
 
 	echo '<td align="left">'.$person_name.'</td>';
 
-	//	echo "<td>$died</td>";
 	if (!$person_cls->privacy)
 		echo '<td><div class="pale">'.$died.'</div></td>';
 	else

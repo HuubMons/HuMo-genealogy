@@ -17,8 +17,8 @@ if (isset($_POST['username'])){
 			log_username='".safe_text($_POST["username"])."',
 			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
 			log_user_admin='admin'";
-		@$dbh->query($sql);		
-		
+		@$dbh->query($sql);
+
 		// *** Go to secured page ***
 		//header("Location: index.php");
 		if (CMS_SPECIFIC=='Joomla'){

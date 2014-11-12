@@ -15,6 +15,8 @@ include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
 include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
 include_once(CMS_ROOTPATH."include/person_cls.php");
 
+include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+$db_functions = New db_functions;
 
 // *** Example, see: http://www.sitemaps.org/protocol.html ***
 /*
@@ -42,9 +44,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>'."\r\n"
 .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\r\n";
 
 // *** Database ***
-$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
-$num_rows = $datasql->rowCount();
-while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
+@$datasql=$db_functions->get_trees();
+foreach($datasql as $dataDb){
 	// *** Check is family tree is shown or hidden for user group ***
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
 	$hide_tree=false;
@@ -54,7 +55,7 @@ while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 	if ($hide_tree==false){
 		$person_qry=$dbh->query("SELECT * FROM ".safe_text($dataDb->tree_prefix)."person
 			WHERE pers_indexnr!='' GROUP BY pers_indexnr
-			UNION SELECT * FROM ".safe_text($dataDb->tree_prefix)."person WHERE pers_indexnr=''");		
+			UNION SELECT * FROM ".safe_text($dataDb->tree_prefix)."person WHERE pers_indexnr=''");
 		while (@$personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
 			// *** Use class for privacy filter ***
 			$person_cls = New person_cls;
@@ -88,6 +89,7 @@ while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 		}
 	} // *** End of hidden family tree ***
 } // *** End of multiple family trees ***
+unset ($datasql);
 
 echo '</urlset>';
 ?>

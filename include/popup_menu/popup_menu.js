@@ -11,7 +11,6 @@ var timeout	= 500;
 var closetimer	= 0;
 var ddmenuitem	= 0;
 var target = null;
- 
 
 function getTarget(e){
 	var tgt;

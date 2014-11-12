@@ -48,9 +48,6 @@ if (file_exists($dir)){
 
 			if ($photo_name){
 				$show_photo=false;
-				//$sql="SELECT * FROM ".$tree_prefix_quoted."events
-				//	WHERE event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
-				//$afbqry=mysql_query($sql,$db);
 				$afbqry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 					WHERE event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'");
 				while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
@@ -169,21 +166,18 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 
 		$sql="SELECT * FROM ".$tree_prefix_quoted."events
 			WHERE event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
-		//$afbqry=mysql_query($sql,$db);
 		$afbqry= $dbh->query($sql);
 		$picture_privacy=false;
 		while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
 			$person_cls = New person_cls;
-			$persoon = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".$afbDb->event_person_id."'");
-			while(@$personDb=$persoon->fetch(PDO::FETCH_OBJ)) {
-				$name=$person_cls->person_name($personDb);
-				$picture_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
-					'&amp;id='.$personDb->pers_indexnr.
-					'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
-				$picture_text2.=$name["standard_name"].'<br>';
-				$privacy=$person_cls->set_privacy($personDb);
-				if ($privacy){ $picture_privacy=true; }
-			}
+			@$personDb=$db_functions->get_person($afbDb->event_person_id);
+			$name=$person_cls->person_name($personDb);
+			$picture_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
+				'&amp;id='.$personDb->pers_indexnr.
+				'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
+			$picture_text2.=$name["standard_name"].'<br>';
+			$privacy=$person_cls->set_privacy($personDb);
+			if ($privacy){ $picture_privacy=true; }
 			$picture_text.=$afbDb->event_text.'<br>';
 			$picture_text2.=$afbDb->event_text.'<br>';
 		}
@@ -199,15 +193,13 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 				AND connect_source_id='".$pictureDb->event_gedcomnr."'");
 			while($connectDb=$connect_qry->fetch(PDO::FETCH_OBJ)) {
 				$person_cls = New person_cls;
-				$persoon=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".$connectDb->connect_connect_id."'");
-				while(@$personDb=$persoon->fetch(PDO::FETCH_OBJ)) {
-					$name=$person_cls->person_name($personDb);
-					$picture_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
-					'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
-					$picture_text2.=$name["standard_name"].'<br>';
-					$privacy=$person_cls->set_privacy($personDb);
-					if ($privacy){ $picture_privacy=true; }
-				}
+				@$personDb=$db_functions->get_person($connectDb->connect_connect_id);
+				$name=$person_cls->person_name($personDb);
+				$picture_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
+				'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
+				$picture_text2.=$name["standard_name"].'<br>';
+				$privacy=$person_cls->set_privacy($personDb);
+				if ($privacy){ $picture_privacy=true; }
 				$picture_text.=$pictureDb->event_text.'<br>';
 				$picture_text2.=$pictureDb->event_text.'<br>';
 			}

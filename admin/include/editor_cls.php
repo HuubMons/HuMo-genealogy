@@ -158,7 +158,7 @@ function text_process($text,$long_text=false){
 
 // *** Show texts without <br> and process Aldfaer and other @xx@ texts ***
 function text_show($find_text){
-	global $db, $dbh, $tree_prefix;
+	global $dbh, $tree_prefix;
 	if($find_text != '') {
 		$text=$find_text;
 		if (substr($find_text, 0, 1)=='@'){

@@ -626,7 +626,7 @@ echo '</table>';  // end google maps admin
 
 // function to refresh location_status column
 function refresh_status() {
-	global $db, $dbh;
+	global $dbh;
 	// make sure the location_status column exists. If not create it
 	$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
 	$exists = $result->rowCount();

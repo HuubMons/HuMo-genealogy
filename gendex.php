@@ -15,11 +15,13 @@ include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
 include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
 include_once(CMS_ROOTPATH."include/person_cls.php");
 
-// *** Database ***
-$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
-$num_rows = $datasql->rowCount();
+include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+$db_functions = New db_functions;
 
-while(@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
+// *** Database ***
+$datasql=$db_functions->get_trees();
+//$num_rows=count($datasql);
+foreach($datasql as $dataDb){
 	// *** Check is family tree is shown or hidden for user group ***
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
 	$hide_tree=false;
@@ -44,7 +46,7 @@ while(@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 				// *** Don't show person ***
 			}
 			else{
-	
+
 				$person_url=$personDb->pers_indexnr;
 				if ($person_url==''){
 					if($personDb->pers_famc){
@@ -72,17 +74,17 @@ while(@$dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 					if ($personDb->pers_bapt_date){ $birth_bapt_date=$personDb->pers_bapt_date; }
 					if ($personDb->pers_birth_date){ $birth_bapt_date=$personDb->pers_birth_date; }
 					$text.=$birth_bapt_date.'|';
-		
+
 					$birth_bapt_place="";
 					if ($personDb->pers_bapt_place){ $birth_bapt_place=$personDb->pers_bapt_place; }
 					if ($personDb->pers_birth_place){ $birth_bapt_place=$personDb->pers_birth_place; }
 					$text.=$birth_bapt_place.'|';
-		
+
 					$died_bur_date="";
 					if ($personDb->pers_death_date){ $died_bur_date=$personDb->pers_death_date; }
 					if ($personDb->pers_buried_date){ $died_bur_date=$personDb->pers_buried_date; }
 					$text.=$died_bur_date.'|';
-		
+
 					$died_bur_place="";
 					if ($personDb->pers_death_place){ $died_bur_place=$personDb->pers_death_place; }
 					if ($personDb->pers_buried_place){ $died_bur_place=$personDb->pers_buried_place; }

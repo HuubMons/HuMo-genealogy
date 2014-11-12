@@ -1093,7 +1093,7 @@ function write_pers ($name,$id,$first_date,$second_date,$first_text,$second_text
 }
 
 function invalid($date,$gednr,$table) {  // checks validity with validate_cls.php and displays invalid dates and their details
-	global $tree, $db, $dbh, $direction, $dirmark1, $dirmark2;
+	global $tree, $dbh, $direction, $dirmark1, $dirmark2;
 	include_once (CMS_ROOTPATH.'include/validate_date_cls.php'); 
 	$process_date = New validate_date_cls;
 	$compare_date=$date;

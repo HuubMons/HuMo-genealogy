@@ -2,6 +2,24 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
+// *** Automatic installation or update ***
+$column_qry = $dbh->query('SHOW COLUMNS FROM humo_users');
+while ($columnDb = $column_qry->fetch()) {
+	$field_value=$columnDb['Field'];
+	$field[$field_value]=$field_value;
+}
+
+if (!isset($field['user_hide_trees'])){
+	$sql="ALTER TABLE humo_users
+		ADD user_hide_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER user_group_id;";
+	$result=$dbh->query($sql);
+}
+if (!isset($field['user_edit_trees'])){
+	$sql="ALTER TABLE humo_users
+		ADD user_edit_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER user_hide_trees;";
+	$result=$dbh->query($sql);
+}
+
 echo '<h1 align=center>'.__('Users').'</h1>';
 
 if (isset($_POST['change_user'])){
@@ -64,12 +82,13 @@ else {
 	echo "<form method=\"POST\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 }
 echo '<input type="hidden" name="page" value="'.$page.'">';
-echo '<br><table class="humo standard" border="1">';
+echo '<br><table class="humo standard" border="1" style="width:95%;">';
 
 echo '<tr class="table_header_large"><th>'.__('User').'</th>';
 echo '<th>'.__('E-mail address').'</th>';
 echo '<th>'.__('Change password').'</th>';
 echo '<th>'.__('User group').'</th>';
+echo '<th>'.__('Extra settings').'</th>';
 echo '<th>'.__('Statistics').'</th>';
 //echo '<th>'.__('Change').'</th></tr>';
 echo '<th><input type="Submit" name="change_user" value="'.__('Change').'"></th></tr>';
@@ -121,6 +140,10 @@ while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 		print "</select></td>";
 	}
 
+	echo '<td>';
+	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_user_settings&user='.$userDb->user_id.'","","width=900,height=500,top=100,left=100");><img src="../images/search.png" border="0"></a>';
+	echo '</td>';
+
 	// *** Show statistics ***
 	$logbooksql='SELECT COUNT(log_date) as nr_login FROM humo_user_log WHERE log_username="'.$userDb->user_name.'"';
 	$logbook=$dbh->query($logbooksql);
@@ -158,7 +181,7 @@ while ($groupDb=$groupresult->fetch(PDO::FETCH_OBJ)){
 }
 print "</select></td>";
 
-print '<td></td><td><input type="Submit" name="add_user" value="'.__('Add').'"></td>';
+print '<td></td><td></td><td><input type="Submit" name="add_user" value="'.__('Add').'"></td>';
 print '</tr>';
 echo '</table>';
 print '</form>';
