@@ -93,7 +93,6 @@ function set_privacy($personDb){
 		if ($dataDb->tree_privacy=='filter_persons'){ $privacy_person="1"; }
 		if ($dataDb->tree_privacy=='show_persons'){ $privacy_person=""; }
 	}
-
 	return $privacy_person;
 }
 
@@ -102,32 +101,28 @@ function set_privacy($personDb){
 // *************************************************************
 // *** Remark: it's necessary to use $personDb because of witnesses, parents etc. ***
 function person_name($personDb){
-	global $user, $language, $dbh, $screen_mode, $selection;
+	global $dbh, $user, $language, $screen_mode, $selection;
+	global $db_functions;
+
 	$tree_prefix_quoted=''; if ($personDb) $tree_prefix_quoted=$personDb->pers_tree_prefix;
 	$stillborn=''; $nobility=''; $lordship='';
 	$title_before=''; $title_between=''; $title_after='';
 
 	if (isset($personDb->pers_gedcomnumber) AND $personDb->pers_gedcomnumber){
 		// *** Aldfaer: nobility (predikaat) by name ***
-		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='nobility' ORDER BY event_order");
-		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
-			$nobility.=$nameDb->event_event.' ';
-		}
+		$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'nobility');
+		foreach($name_qry as $nameDb) $nobility.=$nameDb->event_event.' ';
+		unset($name_qry);
 
 		// *** Gedcom 5.5 title: NPFX ***
-		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='NPFX' ORDER BY event_order");
-		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
-			$title_before.=' '.$nameDb->event_event.' ';
-		}
+		$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'NPFX');
+		foreach($name_qry as $nameDb) $title_before.=' '.$nameDb->event_event.' ';
+		unset($name_qry);
 
 		// *** Gedcom 5.5 title: NSFX ***
-		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='NSFX' ORDER BY event_order");
-		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
-			$title_after.=', '.$nameDb->event_event;
-		}
+		$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'NSFX');
+		foreach($name_qry as $nameDb) $title_after.=' '.$nameDb->event_event.' ';
+		unset($name_qry);
 
 		// *** Aldfaer: title by name ***
 		/*
@@ -140,9 +135,8 @@ function person_name($personDb){
 		Title AFTER name:
 			All other titles.
 		*/
-		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='title' ORDER BY event_order");
-		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
+		$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'title');
+		foreach($name_qry as $nameDb){
 			$title_position='after';
 			if ($nameDb->event_event=='Prof.'){ $title_position='before'; }
 			if ($nameDb->event_event=='Dr.'){ $title_position='before'; }
@@ -179,6 +173,7 @@ function person_name($personDb){
 			if ($title_position=='between') $title_between.=' '.$nameDb->event_event.' ';
 			if ($title_position=='after') $title_after.=', '.$nameDb->event_event;
 		}
+		unset($name_qry);
 
 		// ***Still born child ***
 		if (isset($personDb->pers_stillborn) AND $personDb->pers_stillborn=="y"){
@@ -188,12 +183,9 @@ function person_name($personDb){
 		}
 
 		// *** Aldfaer: lordship (heerlijkheid) after name ***
-		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='lordship'
-			ORDER BY event_order");
-		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
-			$lordship.=', '.$nameDb->event_event;
-		}
+		$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'lordship');
+		foreach($name_qry as $nameDb) $lordship.=', '.$nameDb->event_event;
+		unset($name_qry);
 
 		// *** Re-calculate privacy filter for witness names and parents ***
 		$privacy=$this->set_privacy($personDb);
@@ -317,13 +309,10 @@ function person_name($personDb){
 			$name_array["initials"]=substr($personDb->pers_firstname,0,1).'.'.substr($personDb->pers_lastname,0,1).'.';
 		}
 
-
-		//  *** Colour mark by person ***
+		// *** Colour mark by person ***
 		$name_array["colour_mark"]=''; $person_colour_mark='';
-		$colour_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='person_colour_mark'
-			ORDER BY event_order");
-		while($colourDb=$colour_qry->fetch(PDO::FETCH_OBJ)){
+		$colour=$db_functions->get_events_person($personDb->pers_gedcomnumber,'person_colour_mark');
+		foreach($colour as $colourDb){
 			if ($colourDb AND $screen_mode!="PDF" AND $screen_mode!="RTF"){
 				$pers_colour='style="-moz-border-radius: 40px; border-radius: 40px;';
 				$person_colour_mark=$colourDb->event_event;
@@ -345,6 +334,7 @@ function person_name($personDb){
 				$name_array["colour_mark"].=' <span '.$pers_colour.'>&nbsp;&nbsp;&nbsp;</span>';
 			}
 		}
+		unset($colour);
 
 	}
 	else{
@@ -371,8 +361,7 @@ function person_name($personDb){
 function person_popup_menu($personDb, $extended=false, $replacement_text='',$extra_popup_text=''){
 	global $bot_visit, $dbh, $humo_option, $uri_path, $user, $language;
 	global $screen_mode, $dirmark1, $dirmark2, $rtlmarker;
-	global $selected_language;
-	global $hourglass;
+	global $selected_language, $hourglass, $db_functions;
 	$text='';
 	$privacy=$this->privacy;
 
@@ -446,6 +435,13 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 			}
 			$text.= '</a>';
 
+			// *** Remove standard background color from links ***
+			//echo '
+			//<style>
+			//.ltrsddm div a{ background:none; }
+			//</style>
+			//';
+
 			// *** Added style="z-index:40;" for ancestor and descendant report ***
 			$text.= '<div style="z-index:40; border:1px solid #999999;" id="m1'.$random_nr.$personDb->pers_gedcomnumber.
 				'" class="sddm_fixed person_popup" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -464,9 +460,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					$check_children=false;
 					$check_family=explode(";",$personDb->pers_fams);
 					for ($i=0; $i<=substr_count($personDb->pers_fams, ";"); $i++){
-						$check_children_sql=$dbh->query("SELECT * FROM ".$tree_prefix."family
-							WHERE fam_gedcomnumber='".$check_family[$i]."'");
-						@$check_childrenDb=$check_children_sql->fetch(PDO::FETCH_OBJ);
+						@$check_childrenDb=$db_functions->get_family($check_family[$i]);
 						if ($check_childrenDb->fam_children){ $check_children=true; }
 					}
 					if ($check_children){
@@ -595,11 +589,16 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 				}
 
 				// *** Editor link ***
-				if  ($user['group_editor']=='j' OR $user['group_admin']=='j') {
-					$text.= '<b>'.__('Admin').':</b>';
-					$path_tmp=CMS_ROOTPATH.'admin/index.php?page=editor&amp;tree='.$tree_prefix.'&amp;person='.$personDb->pers_gedcomnumber;
-					$text.= '<a href="'.$path_tmp.'" target="_blank">';
-					$text.= '<img src="'.CMS_ROOTPATH.'images/person_edit.gif" border="0" alt="'.__('Timeline').'"> '.__('Editor').'</a>';
+				//if  ($user['group_editor']=='j' OR $user['group_admin']=='j') {
+				if  ($user['group_edit_trees'] OR $user['group_admin']=='j') {
+					$edit_tree_array=explode(";",$user['group_edit_trees']);
+					// *** Administrator can always edit in all family trees ***
+					if ($user['group_admin']=='j' OR in_array($_SESSION['tree_id'], $edit_tree_array)) {
+						$text.= '<b>'.__('Admin').':</b>';
+						$path_tmp=CMS_ROOTPATH.'admin/index.php?page=editor&amp;tree='.$tree_prefix.'&amp;person='.$personDb->pers_gedcomnumber;
+						$text.= '<a href="'.$path_tmp.'" target="_blank">';
+						$text.= '<img src="'.CMS_ROOTPATH.'images/person_edit.gif" border="0" alt="'.__('Timeline').'"> '.__('Editor').'</a>';
+					}
 				}
 
 				// *** Show person picture and person data at right side of the pop-up box ***
@@ -611,10 +610,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 						//  *** Path can be changed per family tree ***
 						global $dataDb;
 						$tree_pict_path=$dataDb->tree_pict_path;
-						$picture_qry=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."events
-							WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='picture'");
-						$pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ);
-						if (isset($pictureDb->event_event)){
+						$picture_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'picture');
+						// *** Only show 1st picture ***
+						if (isset($picture_qry[0])){
+							$pictureDb=$picture_qry[0];
 							$picture=show_picture($tree_pict_path,$pictureDb->event_event,'',120);
 							$text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="margin-left:10px; margin-top:5px;" alt="'.$pictureDb->event_text.'" height="'.$picture['height'].'">';
 							$text.='<br>';
@@ -669,10 +668,9 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 function name_extended($person_kind){
 	global $dbh, $humo_option, $uri_path, $user, $language;
 	global $screen_mode, $dirmark1, $dirmark2, $rtlmarker;
-	global $selected_language;
-	global $family_expanded;
-	global $bot_visit;
+	global $selected_language, $family_expanded, $bot_visit;
 	global $sect; // *** RTF Export ***
+	global $db_functions;
 
 	$text_name=''; $text_name2=''; $text_colour=''; $text_parents=''; $child_marriage='';
 
@@ -811,13 +809,11 @@ function name_extended($person_kind){
 			}
 
 			// *** Find parents ID ***
-			$parents_family=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='$personDb->pers_famc'");
-			$parents_familyDb=$parents_family->fetch(PDO::FETCH_OBJ);
+			$parents_familyDb=$db_functions->get_family($personDb->pers_famc);
 
 			// *** Father ***
 			if ($parents_familyDb->fam_man){
-				$father_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$parents_familyDb->fam_man'");
-				$fatherDb=$father_qry->fetch(PDO::FETCH_OBJ);
+				$fatherDb=$db_functions->get_person($parents_familyDb->fam_man);
 				$name=$this->person_name($fatherDb);
 				$templ_person["parents"]=$name["standard_name"];
 			}
@@ -831,8 +827,7 @@ function name_extended($person_kind){
 
 			// *** Mother ***
 			if ($parents_familyDb->fam_woman){
-				$mother_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$parents_familyDb->fam_woman'");
-				$motherDb=$mother_qry->fetch(PDO::FETCH_OBJ);
+				$motherDb=$db_functions->get_person($parents_familyDb->fam_woman);
 				$name=$this->person_name($motherDb);
 				$templ_person["parents"].=$name["standard_name"];
 				$text.=$name["standard_name"];
@@ -869,21 +864,18 @@ function name_extended($person_kind){
 		// *** Check for adoptive parents (just for shure: made it for multiple adoptive parents...) ***
 		// *********************************************************************************************
 		if ($person_kind=='parent1' OR $person_kind=='parent2'){
-			$famc_adoptive_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='adoption'
-				ORDER BY event_order");
-			while($famc_adoptiveDb=$famc_adoptive_qry->fetch(PDO::FETCH_OBJ)){
+			$famc_adoptive_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'adoption');
+			foreach ($famc_adoptive_qry as $famc_adoptiveDb){
 				$text_parents.=' '.ucfirst(__('adoption parents')).': ';
 
 				// *** Just in case: empty $text ***
 				$text='';
 				// *** Find parents ID ***
-				$parents_family=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='$famc_adoptiveDb->event_event'");
-				$parents_familyDb=$parents_family->fetch(PDO::FETCH_OBJ);
+				$parents_familyDb=$db_functions->get_family($famc_adoptiveDb->event_event);
+
 				//*** Father ***
 				if ($parents_familyDb->fam_man){
-					$father_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$parents_familyDb->fam_man'");
-					$fatherDb=$father_qry->fetch(PDO::FETCH_OBJ);
+					$fatherDb=$db_functions->get_person($parents_familyDb->fam_man);
 					$name=$this->person_name($fatherDb);
 					$text=$name["standard_name"];
 					//$templ_person["parents"]=$name["standard_name"];
@@ -901,8 +893,7 @@ function name_extended($person_kind){
 
 				//*** Mother ***
 				if ($parents_familyDb->fam_woman){
-					$mother_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$parents_familyDb->fam_woman'");
-					$motherDb=$mother_qry->fetch(PDO::FETCH_OBJ);
+					$motherDb=$db_functions->get_person($parents_familyDb->fam_woman);
 					$name=$this->person_name($motherDb);
 					$text.=$name["standard_name"];
 					//$templ_person["parents"].=$name["standard_name"];
@@ -941,10 +932,8 @@ function name_extended($person_kind){
 		// *** Check for adoptive parent ESPECIALLY FOR ALDFAER ***
 		// ********************************************************
 		if ($person_kind=='parent1' OR $person_kind=='parent2'){
-			$famc_adoptive_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='adoption_by_person'
-				ORDER BY event_order");
-			while($famc_adoptiveDb=$famc_adoptive_qry->fetch(PDO::FETCH_OBJ)){
+			$famc_adoptive_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'adoption_by_person');
+			foreach ($famc_adoptive_qry as $famc_adoptiveDb){
 				if($famc_adoptiveDb->event_gedcom=='steph') $text_parents.=' '.ucfirst(__('stepparent')).': ';
 				elseif($famc_adoptiveDb->event_gedcom=='legal') $text_parents.=' '.ucfirst(__('legal parent')).': ';
 				elseif($famc_adoptiveDb->event_gedcom=='foster') $text_parents.=' '.ucfirst(__('foster parent')).': ';
@@ -952,8 +941,7 @@ function name_extended($person_kind){
 
 				//*** Father ***
 				//if ($parents_familyDb->fam_man){
-					$father_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$famc_adoptiveDb->event_event'");
-					$fatherDb=$father_qry->fetch(PDO::FETCH_OBJ);
+					$fatherDb=$db_functions->get_person($famc_adoptiveDb->event_event);
 					$name=$this->person_name($fatherDb);
 					$text=$name["standard_name"];
 					//$templ_person["parents"]=$name["standard_name"];
@@ -999,9 +987,7 @@ function name_extended($person_kind){
 			$marriage_array=explode(";",$personDb->pers_fams);
 			$nr_marriages=count($marriage_array);
 			for ($x=0; $x<=$nr_marriages-1; $x++){
-				$qry="SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$marriage_array[$x]."'";
-				$fam_partner=$dbh->query($qry);
-				$fam_partnerDb=$fam_partner->fetch(PDO::FETCH_OBJ);
+				$fam_partnerDb=$db_functions->get_family($marriage_array[$x]);
 
 				// *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
 				if ($personDb->pers_gedcomnumber==$fam_partnerDb->fam_man)
@@ -1097,6 +1083,8 @@ function person_data($person_kind, $id){
 	global $childnr, $screen_mode, $dirmark1, $dirmark2;
 	global $templ_person;
 	global $sect, $arial12; // *** RTF export ***
+	global $db_functions;
+
 	unset($templ_person);
 
 	$personDb=$this->personDb;
@@ -1131,18 +1119,16 @@ function person_data($person_kind, $id){
 
 		// *** Show extra names of BK ***
 		if ($personDb->pers_gedcomnumber){
-			$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='name'
-				ORDER BY event_order");
 			$eventnr=0;
-			while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
+			$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'name');
+			foreach ($name_qry as $nameDb){
 				$eventnr++;
 				$text='';
 				if ($nameDb->event_gedcom=='_AKAN') $text.=__('Also known as').': ';
 				// *** MyHeritage Family Tree Builder ***
 				if ($nameDb->event_gedcom=='_AKA') $text.=__('Also known as').': ';
 				if ($nameDb->event_gedcom=='NICK') $text.=__('Nickname').': ';
-				if ($nameDb->event_gedcom=='_ALIA') $text.=__('alias name').': ';	// Voor Pro-Gen
+				if ($nameDb->event_gedcom=='_ALIA') $text.=__('alias name').': ';	// For Pro-Gen
 				if ($nameDb->event_gedcom=='_SHON') $text.=__('Short name (for reports)').': ';
 				if ($nameDb->event_gedcom=='_ADPN') $text.=__('Adopted name').': ';
 				if ($nameDb->event_gedcom=='_HEBN') $text.=__('Hebrew name').': ';
@@ -1194,6 +1180,7 @@ function person_data($person_kind, $id){
 					$process_text.=$templ_person["bk_text".$eventnr];
 				}
 			}
+			unset ($name_qry);
 		}
 
 		// *** Own code ***
@@ -1824,7 +1811,7 @@ function person_data($person_kind, $id){
 		if ($user['group_event']=='j'){
 			if ($personDb->pers_gedcomnumber){
 				$event_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-				WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='event' ORDER BY event_order");
+					WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='event' ORDER BY event_order");
 				$num_rows = $event_qry->rowCount();
 				if ($num_rows>0){ $process_text.='<span class="event">'."\n"; }
 				$eventnr=0;

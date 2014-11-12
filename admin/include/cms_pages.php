@@ -54,13 +54,10 @@ if (isset($_POST['add_page']) OR isset($_POST['change_page'])){
 	}
 
 	//echo $sql;
-	//$result=mysql_query($sql) or die(mysql_error());
 	$result=$dbh->query($sql);
 
 	if (isset($_POST['add_page'])){
 		$sql="SELECT * FROM humo_cms_pages ORDER BY page_id DESC LIMIT 0,1";
-		//$qry=mysql_query($sql,$db);
-		//$cms_pagesDb=mysql_fetch_object($qry);
 		$qry=$dbh->query($sql);
 		$cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ);
 		$_GET["select_page"]=$cms_pagesDb->page_id;
@@ -115,7 +112,6 @@ if (isset($_GET['page_remove'])){
 }
 if (isset($_POST['page_remove2'])){
 	$sql="DELETE FROM humo_cms_pages WHERE page_id='".safe_text($_POST['page_id'])."'";
-	//@$result=mysql_query($sql);
 	@$result=$dbh->query($sql);
 }
 

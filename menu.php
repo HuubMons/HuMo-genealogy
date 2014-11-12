@@ -16,7 +16,6 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		$tree_prefix_result2 = $dbh->query($sql);
 		$num_rows = $tree_prefix_result2->rowCount();
 		if ($num_rows>1){
-
 			echo ' <form method="POST" action="tree_index.php" style="display : inline;" id="top_tree_select">';
 			echo __('Family tree');
 			echo ': <select size=1 name="database" onChange="this.form.submit();" style="width: 150px; height:20px;">';
@@ -25,10 +24,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			while($tree_prefixDb=$tree_prefix_result2->fetch(PDO::FETCH_OBJ)) {
 				// *** Check if family tree is shown or hidden for user group ***
 				$hide_tree_array2=explode(";",$user['group_hide_trees']);
-				$hide_tree2=false;
-				for ($x=0; $x<=count($hide_tree_array2)-1; $x++){
-					if ($hide_tree_array2[$x]==$tree_prefixDb->tree_id){ $hide_tree2=true; }
-				}
+				$hide_tree2=false; if (in_array($tree_prefixDb->tree_id, $hide_tree_array2)) $hide_tree2=true;
 				if ($hide_tree2==false){
 					$selected='';
 					if (isset($_SESSION['tree_prefix'])){
@@ -232,7 +228,8 @@ echo '<ul class="humo_menu_item">';
 		else{
 			$path_tmp=CMS_ROOTPATH.'cms_pages.php?database='.$_SESSION['tree_prefix'];
 		}
-		echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('TOP_MENU_GENEALOGY')."</a></li>\n";
+		//echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('TOP_MENU_GENEALOGY')."</a></li>\n";
+		echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
 	}
 
 	// *** Menu: Family tree ***
@@ -557,14 +554,14 @@ echo '<ul class="humo_menu_item">';
 			$select_top='';
 			echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
 			//echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-			echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:200px;">';
+			echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
 				echo '<ul class="humo_menu_item2">';
 					for ($i=0; $i<count($language_file); $i++){
 						// *** Get language name ***
 						if ($language_file[$i] != $selected_language) {
 							include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
 							//echo '<li><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
-							echo '<li style="float:left; width:99px;"><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
+							echo '<li style="float:left; width:124px;"><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
 
 							echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
 							echo $language["name"];
@@ -611,7 +608,8 @@ echo '<ul class="humo_menu_item">';
 	}
 
 	// *** Link to administration ***
-	if  ($user['group_editor']=='j' OR $user['group_admin']=='j') {
+	//if  ($user['group_editor']=='j' OR $user['group_admin']=='j') {
+	if  ($user['group_edit_trees'] OR $user['group_admin']=='j') {
 		$select_menu='';
 		if (CMS_SPECIFIC=='Joomla'){
 			$path_tmp='index.php?option=com_humo-gen&amp;task=admin';

@@ -2,7 +2,7 @@
 // *** Function to show media by person or by marriage ***
 // *** Updated feb 2013. ***
 function show_media($personDb,$marriageDb){
-	global $user, $dataDb, $db, $dbh, $tree_prefix_quoted, $uri_path;
+	global $user, $dataDb, $dbh, $tree_prefix_quoted, $uri_path;
 	global $sect, $screen_mode; // *** RTF Export ***
 	global $picture_presentation;
 

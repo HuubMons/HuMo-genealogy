@@ -1,5 +1,6 @@
 <?php
 @set_time_limit(3000);
+@ini_set('memory_limit','-1');
 error_reporting(E_ALL);
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
@@ -81,10 +82,10 @@ else {
 			else {
 				echo '<span style="color:red;font-weight:bold">'.__('Upload has failed</span> (you may wish to try again or choose to place the file in the admin/backup_tmp folder yourself with an ftp program or the control panel of your webhost)').'<br>';
 			}
-		}	
+		}
 		else {
 			echo '<span style="color:red;font-weight:bold">'.__('Invalid backup file: has to be file with extension ".sql" or ".sql.zip"').'</span><br>';
-		}		
+		}
 	} 
 	echo "1.&nbsp;<input type='file' name='upload_file'>";
 	echo "<input type='submit' name='upload_the_file' value='".__('Upload')."'>&nbsp;&nbsp;(".__('File will be deleted after successful restore').")<br>";
@@ -119,6 +120,7 @@ echo '</td></tr></table><br>';
 echo '</td></tr>';
 echo '</table>';
 
+
 // BACKUP FUNCTION 
 function backup_tables()
 { 
@@ -132,20 +134,26 @@ ob_start();
 	}
 
 	//cycle through
-	$return = "";
+	//$return = "";
+	$name = 'humo_backup.sql';
+	$handle = fopen($name,'w+');
+
 	foreach($tables as $table)
 	{
+		$return = "";
 		$result = $dbh->query('SELECT * FROM '.$table);
 		$num_fields = $result->columnCount();
 
 		$row_result = $dbh->query('SHOW CREATE TABLE '.$table);
 		$row2 = $row_result->fetch(PDO::FETCH_NUM);
 		$return.= "\n\n".$row2[1].";\n\n";
-		
+		fwrite($handle,$return);
+		unset($return); 
 		for ($i = 0; $i < $num_fields; $i++) 
 		{
 			while($row = $result->fetch(PDO::FETCH_NUM))
 			{
+				$return = "";
 				$return.= 'INSERT INTO '.$table.' VALUES(';
 				for($j=0; $j<$num_fields; $j++) 
 				{
@@ -155,21 +163,24 @@ ob_start();
 					if ($j<($num_fields-1)) { $return.= ','; }
 				}
 				$return.= ");\n";
+				fwrite($handle,$return);
+				unset($return); 
 			}
 		}
+		$return = "";
 		$return.="\n\n\n";
+		fwrite($handle,$return);
+		unset($return);
 	}
-	
-	$name = 'humo_backup.sql';
-	$handle = fopen($name,'w+');
-	fwrite($handle,$return);
+
+	//fwrite($handle,$return);
 	fclose($handle);
 	$zip = new ZipArchive;
 	if ($zip->open($name.'.zip',ZIPARCHIVE::CREATE) === TRUE) {
 		$zip->addFile($name);
-   		$zip->close();
-   		unlink($name);
-    	$name = $name.'.zip'; // last backup file is always stored in /admin as: humo_backup.sql.zip
+		$zip->close();
+		unlink($name);
+		$name = $name.'.zip'; // last backup file is always stored in /admin as: humo_backup.sql.zip
 	}
 	echo '<div>'.__('A backup file was saved to the server. We strongly suggest you download a copy to your computer in case you might need it later.').'</div>';
 
@@ -221,13 +232,23 @@ function restore_tables($filename) {
 		while($table = $result->fetch()) { // go through each row that was returned in $result
 			$dbh->query("DROP TABLE ".$table[0]);
 		}
-		$lines = file($filename);
+		//$lines = file($filename);
 		// Loop through each line
-		foreach ($lines as $line) {
+
+		// *** Show processed lines ***
+		$line_nr=0;
+		echo '<div id="information" style="display: inline;"></div> '.__('Processed lines...').' ';
+
+		// *** Batch processing ***
+		$commit_data=0; $dbh->beginTransaction();
+
+		//foreach ($lines as $line) {
+		$handle = fopen($filename, "r");
+		while(!feof($handle)){
+			$line = fgets($handle);
+
 			// Skip it if it's a comment
-			if (substr($line, 0, 2) == '--' || $line == '') {
-				continue;
-			}
+			if (substr($line, 0, 2) == '--' || $line == '') { continue; }
 			// Add this line to the current segment
 			$templine .= $line;
 			// If it has a semicolon at the end, it's the end of the query
@@ -241,7 +262,29 @@ function restore_tables($filename) {
 				// Reset temp variable to empty
 				$templine = '';
 			}
+
+			// *** Update processed lines ***
+			echo '<script language="javascript">';
+			$percent=$line_nr;
+			echo 'document.getElementById("information").innerHTML="'.$line_nr.'";';
+			$line_nr++;
+			echo '</script>';
+			// This is for the buffer achieve the minimum size in order to flush data
+			//echo str_repeat(' ',1024*64);
+			// Send output to browser immediately
+			ob_flush(); 
+			flush(); // IE
+
+			// *** Commit data every x lines in database ***
+			if ($commit_data>500){
+				$dbh->commit(); $dbh->beginTransaction();
+				$commit_data=0;
+			}
+			$commit_data++;
 		}
+		$dbh->commit();
+		fclose($handle);
+
 		if($original_name != 'humo_backup.sql.zip') { 
 			// if a file was uploaded to backup_tmp in order to restore, delete it now. 
 			// if however the restore was made from the last humogen backup (humo_backup.sql.zip) it should always stay in /admin, until replaced by next backup

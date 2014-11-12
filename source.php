@@ -1,10 +1,21 @@
 <?php
 @set_time_limit(300);
 
-function source_display($sourcenum) {
+if(isset($_GET["id"])) { // source.php is called from show_sources.php, sources.php
+	$sourcenumber=$_GET["id"];
+	source_display($sourcenumber);
+}
 
-global $db, $dbh, $dataDb, $user, $pdf, $screen_mode, $language;
+/*--------------------[source_display]----------------------------
+ * Show a single source.
+ * RETURNS: shows a single source.
+ *    NOTE: function can be called from sources.php and show_sources.php.
+ *----------------------------------------------------------------
+ */
+function source_display($sourcenum) {
+global $dbh, $dataDb, $user, $pdf, $screen_mode, $language;
 global $tree_prefix_quoted;
+global $db_functions;
 
 if($screen_mode!="PDF") {
 	include_once("header.php"); //returns CMS_ROOTPATH constant
@@ -21,19 +32,14 @@ if ($user['group_sources']!='j'){
 if($screen_mode!="PDF") {
 	include_once(CMS_ROOTPATH."include/language_date.php");
 	include_once(CMS_ROOTPATH."include/person_cls.php");
-	print '<table class="humo standard">';
-	print "<tr><td><h2>".__('Sources')."</h2>";
+	echo '<table class="humo standard">';
+	echo "<tr><td><h2>".__('Sources')."</h2>";
 }
 
-	@$qry="SELECT * FROM ".$tree_prefix_quoted."sources
-		WHERE source_gedcomnr='".$sourcenum."'";
-	if ($user['group_show_restricted_source']=='n'){ $qry.=" AND source_status!='restricted'"; }
-	@$source=$dbh->query($qry);
-	try {
-		@$sourceDb=@$source->fetch(PDO::FETCH_OBJ);
-	} catch(PDOException $e) {
-		echo __('No valid source number.');
-	}
+	$sourceDb=$db_functions->get_source ($sourcenum);
+
+	// *** If an unknown source ID is choosen, exit function ***
+	if (!isset($sourceDb->source_id)) exit(__('No valid source number.'));
 
 	if ($sourceDb->source_title){
 		if($screen_mode=="PDF") {
@@ -43,7 +49,7 @@ if($screen_mode!="PDF") {
 			$pdf->Write(6,$sourceDb->source_title."\n");
 		}
 		else {
-			print '<b>'.__('Title').":</b> $sourceDb->source_title<br>";
+			echo '<b>'.__('Title').":</b> $sourceDb->source_title<br>";
 		}
 	}
 	if ($sourceDb->source_date){
@@ -54,7 +60,7 @@ if($screen_mode!="PDF") {
 			$pdf->Write(6,language_date(strtolower($sourceDb->source_date))."\n");
 		}
 		else {
-			print '<b>'.__('Date').":</b> ".language_date(strtolower($sourceDb->source_date))."<br>";
+			echo '<b>'.__('Date').":</b> ".language_date(strtolower($sourceDb->source_date))."<br>";
 		}
 	}
 	if ($sourceDb->source_publ){
@@ -192,11 +198,8 @@ if($screen_mode!="PDF") {
 
 	// *** Source pictures not in use yet... ***
 
-
 	// *** Show repository ***
-	$repo_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."repositories
-		WHERE repo_gedcomnr='".$sourceDb->source_repo_gedcomnr."'");
-	$repoDb=$repo_qry->fetch(PDO::FETCH_OBJ);
+	$repoDb=$db_functions->get_repository ($sourceDb->source_repo_gedcomnr);
 	if ($repoDb){
 		if($screen_mode=="PDF") {
 			// NO REPOSITORIES IN PDF YET...
@@ -235,9 +238,7 @@ print '<tr><td>';
 		$sourceid=explode(";",$address_Db->address_source);
 		for ($i=0; $i<=substr_count($address_Db->address_source, ';'); $i++){
 			if (substr($sourceid[$i],1,-1)==$sourceDb->source_gedcomnr){
-				$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-					WHERE pers_gedcomnumber='$address_Db->address_person_id'");
-				$personDb=$person->fetch(PDO::FETCH_OBJ);
+				$personDb=$db_functions->get_person ($address_Db->address_person_id);
 				echo __('Source for address:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 				$name=$person_cls->person_name($personDb);
 				echo $name["standard_name"];
@@ -246,19 +247,14 @@ print '<tr><td>';
 		}
 	}
 
-	// *** Find person data ***
+	// *** Find person data if source is connected to a family item ***
 	// *** This seperate function speeds up the sources page ***
 	function person_data($familyDb){
-		global $db, $dbh, $tree_prefix_quoted;
-		if ($familyDb->fam_man){
-			$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-			WHERE pers_gedcomnumber='$familyDb->fam_man'");
-		}
-		else{
-			$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-			WHERE pers_gedcomnumber='$familyDb->fam_woman'");
-		}
-		@$personDb=$person->fetch(PDO::FETCH_OBJ);
+		global $dbh, $tree_prefix_quoted, $db_functions;
+		if ($familyDb->fam_man)
+			$personDb=$db_functions->get_person ($familyDb->fam_man);
+		else
+			$personDb=$db_functions->get_person ($familyDb->fam_woman);
 		return $personDb;
 	}
 
@@ -283,15 +279,10 @@ print '<tr><td>';
 
 			if ($connectDb->connect_sub_kind=='event_source'){
 				// *** Sources by event ***
-				$event_sql="SELECT * FROM ".$tree_prefix_quoted."events
-					WHERE event_id='".$connectDb->connect_connect_id."'";
-				$event_qry=$dbh->query($event_sql);
-				$event_Db=$event_qry->fetch(PDO::FETCH_OBJ);
+				$event_Db=$db_functions->get_event ($connectDb->connect_connect_id);
 				// *** Person source ***
 				if ($event_Db->event_person_id){
-					$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-						WHERE pers_gedcomnumber='$event_Db->event_person_id'");
-					$personDb=$person->fetch(PDO::FETCH_OBJ);
+					$personDb=$db_functions->get_person ($event_Db->event_person_id);
 					$name=$person_cls->person_name($personDb);
 					print __('Source for:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 					echo $name["standard_name"].'</a>';
@@ -304,18 +295,14 @@ print '<tr><td>';
 				@$address_qry=$dbh->query($address_sql);
 				$address_Db=$address_qry->fetch(PDO::FETCH_OBJ);
 				if ($address_Db->address_person_id){
-					$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-						WHERE pers_gedcomnumber='$address_Db->address_person_id'");
-					$personDb=$person->fetch(PDO::FETCH_OBJ);
+					$personDb=$db_functions->get_person ($address_Db->address_person_id);
 					$name=$person_cls->person_name($personDb);
 					echo __('Source for address:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 					echo $name["standard_name"].'</a>';
 				}
 			}
 			else{
-				$person=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-					WHERE pers_gedcomnumber='$connectDb->connect_connect_id'");
-				$personDb=$person->fetch(PDO::FETCH_OBJ);
+				$personDb=$db_functions->get_person ($connectDb->connect_connect_id);
 				echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 				$name=$person_cls->person_name($personDb);
 				echo $name["standard_name"].'</a>';
@@ -352,31 +339,22 @@ print '<tr><td>';
 			//	echo 'TEST2';
 			//}
 
-			if ($connectDb->connect_sub_kind=='event'){
-
+			//if ($connectDb->connect_sub_kind=='event'){
+			if ($connectDb->connect_sub_kind=='event_source'){
 				// *** Sources by event ***
-				$event_sql="SELECT * FROM ".$tree_prefix_quoted."events
-					WHERE event_id='".$connectDb->connect_connect_id."'";
-				$event_qry=$dbh->query($event_sql);
-				$event_Db=$event_qry->fetch(PDO::FETCH_OBJ);
+				$event_Db=$db_functions->get_event ($connectDb->connect_connect_id);
 				// *** Family source ***
 				if ($event_Db->event_family_id){					print __('Source for family:');
-					$family=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family
-						WHERE fam_gedcomnumber='".$event_Db->event_family_id."'");
-					$familyDb=$family->fetch(PDO::FETCH_OBJ);
+					$familyDb=$db_functions->get_family ($event_Db->event_family_id);
 					$personDb=person_data($familyDb);
 					echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$event_Db->event_family_id.'">';
 					$name=$person_cls->person_name($personDb);
 					echo $name["standard_name"].'</a>';
-
 					if ($event_Db->event_event){ echo ' '.$event_Db->event_event; }
 				}
-
 			}
 			else{
-				$family=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."family
-					WHERE fam_gedcomnumber='".$connectDb->connect_connect_id."'");
-				$familyDb=$family->fetch(PDO::FETCH_OBJ);
+				$familyDb=$db_functions->get_family ($connectDb->connect_connect_id);
 				$personDb=person_data($familyDb);
 				echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$connectDb->connect_connect_id.'">';
 				$name=$person_cls->person_name($personDb);
@@ -409,10 +387,5 @@ include_once(CMS_ROOTPATH."footer.php");
 } // end if not PDF
 
 } // end function source_display
-
-if(isset($_GET["id"])) { // source.php is called from show_sources.php, sources.php
-	$sourcenumber=$_GET["id"];
-	source_display($sourcenumber);
-}
 
 ?>

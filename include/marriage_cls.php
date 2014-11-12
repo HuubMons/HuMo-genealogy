@@ -33,7 +33,7 @@ function set_privacy($privacy_man, $privacy_woman){
 // *** Show marriage                               ***
 // ***************************************************
 function marriage_data($marriageDb='', $number='0', $presentation='standard'){
-	global $db, $dbh, $tree_prefix_quoted, $url_path, $dataDb, $uri_path;
+	global $dbh, $db_functions, $tree_prefix_quoted, $url_path, $dataDb, $uri_path;
 	global $language, $user, $screen_mode;
 	global $templ_person;
 
@@ -400,36 +400,27 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		$templ_relation["unkn_rel"]=__('Marriage/ Related').' ';
 		$text.='<b>'.__('Marriage/ Related').'</b> ';
 	}
-
 	else{
 		// *** Years of marriage ***
 		if (($marriageDb->fam_marr_church_date OR $marriageDb->fam_marr_date)
 			AND $marriageDb->fam_div_text!='DIVORCE'
-			AND !($temp_text AND $marriageDb->fam_div_date=='')
-			) {
-
+			AND !($temp_text AND $marriageDb->fam_div_date==''))
+		{
 			$end_date='';
 
 			// *** Check death date of husband ***
-			$person_man=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-				WHERE pers_gedcomnumber='".$marriageDb->fam_man."'");
-			@$person_manDb=$person_man->fetch(PDO::FETCH_OBJ);
-			if (isset($person_manDb->pers_death_date) AND $person_manDb->pers_death_date){
-				$end_date=$person_manDb->pers_death_date; }
+			@$person_manDb=$db_functions->get_person($marriageDb->fam_man);
+			if (isset($person_manDb->pers_death_date) AND $person_manDb->pers_death_date) $end_date=$person_manDb->pers_death_date;
 
 			// *** Check death date of wife ***
-			$person_woman=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-				WHERE pers_gedcomnumber='".$marriageDb->fam_woman."'");
-			@$person_womanDb=$person_woman->fetch(PDO::FETCH_OBJ);
+			@$person_womanDb=$db_functions->get_person($marriageDb->fam_woman);
 			if (isset($person_womanDb->pers_death_date) AND $person_womanDb->pers_death_date){
 				// *** Check if men died earlier then woman (AT THIS MOMENT ONLY CHECK YEAR) ***
 				if ($end_date AND substr($end_date,-4) > substr($person_womanDb->pers_death_date,-4)){
 					$end_date=$person_womanDb->pers_death_date;
 				}
 				// *** Man still living or no date available  ***
-				if ($end_date==''){
-					$end_date=$person_womanDb->pers_death_date;
-				}
+				if ($end_date=='') $end_date=$person_womanDb->pers_death_date;
 			}
 
 			// *** End of marriage by divorse ***
@@ -458,12 +449,11 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Show events ***
 	if ($user['group_event']=='j'){
 		if ($marriageDb->fam_gedcomnumber){
-			$event_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-				WHERE event_family_id='$marriageDb->fam_gedcomnumber' AND event_kind='event'");
-			$num_rows = $event_qry->rowCount();
+			$event_qry=$db_functions->get_events_family($marriageDb->fam_gedcomnumber,'event');
+			$num_rows=count($event_qry);
 			if ($num_rows>0){ $text.= '<span class="event">'; }
 			$i=0;
-			while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+			foreach($event_qry as $eventDb){
 				$i++;
 				//echo '<br>'.__('Event (family)');
 				if ($text!=''){

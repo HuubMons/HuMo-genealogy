@@ -30,15 +30,13 @@ td.table_header { background-image: url('images_green_field/default_trans.png');
 	/* For IE - Voor IE: */
 	color: #666666;
 }
-#humo_menu {
-	background:url("images_green_field/green.png") repeat left top;
-}
+#humo_menu { background:url("images_green_field/green.png") repeat left top; }
 #humo_menu a { color: #FFFFFF; }
 #humo_menu a:hover { background:url("images_green_field/menuhover.png") repeat left top; }
-#humo_menu ul.humo_menu_item2 li a:hover { background:url("images_green_field/menuhover.png") repeat left top; }
 
-#humo_menu ul.humo_menu_item2 li { background:url("images_green_field/menuhover.jpg") repeat left top; }
+#humo_menu ul.humo_menu_item2 li { background:url("images_green_field/green.png") repeat left top; }
 #humo_menu ul.humo_menu_item2 li a { background:url("images_green_field/menuhover.jpg") repeat left top; }
+#humo_menu ul.humo_menu_item2 li a:hover { background:url("images_green_field/menuhover.png") repeat left top; }
 
 #humo_menu #current a, #humo_menu #current_top {
 	background:url("images_green_field/menuhover.png") repeat left top;

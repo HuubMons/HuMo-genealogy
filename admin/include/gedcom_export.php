@@ -48,7 +48,8 @@ function decode($buffer){
 	return $buffer;
 }
 
-// NOTE line max. 80 characters long (Aldfaer about 60 char., BK about 230)
+// Official gedcom 5.5.1: 255 characters total (including tags).
+// Character other programs: Aldfaer about 60 char., BK about 230.
 // ALDFAER:
 // 1 CONC Bla, bla text.
 // 1 CONT
@@ -59,12 +60,11 @@ function process_text($level,$text,$extractnoteids=true){
 	global $noteids;
 
 	$text = str_replace("<br>", "", $text);
+	$text = str_replace("\r", "", $text);
 
 	// *** Export referenced texts ***
 	if ($extractnoteids==true){
-		if (substr($text, 0, 1)=='@'){
-			$noteids[]=$text;
-		}
+		if (substr($text, 0, 1)=='@') $noteids[]=$text;
 	}
 
 	$regel=explode("\n",$text);
@@ -72,14 +72,14 @@ function process_text($level,$text,$extractnoteids=true){
 	$text=''; $text_processed='';
 	for ($j=0; $j<=(count($regel)-1); $j++){
 		$text=$regel[$j]."\r\n";
-		if (strlen($regel[$j])>80){
+		if (strlen($regel[$j])>150){
 			$words = explode(" ", $regel[$j]);
 			$new_line=''; $new_line2=''; $characters=0;
 			for ($x=0; $x<=(count($words)-1); $x++){
 				if($x>0){ $new_line.=' '; $new_line2.=' '; }
 				$new_line.=$words[$x]; $new_line2.=$words[$x];
 				$characters=(strlen($new_line2));
-					if ($characters>75){
+				if ($characters>145){
 					$new_line.="\r\n".$level." CONC"; $new_line2='';
 				}
 			}
@@ -94,7 +94,7 @@ function process_text($level,$text,$extractnoteids=true){
 }
 
 function process_place($place, $number){
-	global $db,$dbh, $tree;
+	global $dbh, $tree;
 	// 2 PLAC Cleveland, Ohio, USA
 	// 3 MAP
 	// 4 LATI N41.500347
@@ -127,7 +127,7 @@ function process_place($place, $number){
 
 // *** Function to export all kind of sources including role, pages etc. ***
 function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$start_number){
-	global $db, $dbh, $buffer,$tree;
+	global $dbh, $buffer,$tree;
 	// *** Search for all connected sources ***
 	$connect_qry="SELECT * FROM ".$tree."connections
 		WHERE connect_kind='".$connect_kind."'
@@ -178,7 +178,7 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 		echo __('No valid family number.');
 	}
 
-	$parent1=''; $parent2='';	$change_main_person=false;
+	$parent1=''; $parent2=''; $change_main_person=false;
 
 	// *** Standard main_person is the father ***
 	if ($familyDb->fam_man){ $parent1=$familyDb->fam_man; }
@@ -569,6 +569,15 @@ echo '</td></tr>';
 
 echo '<tr><td>'.__('Gedcom export').'</td><td>';
 echo ' <input type="Submit" name="submit_button" value="'.__('Start export').'">';
+
+
+// *** Show processed lines ***
+if (isset($_POST["tree"]) AND isset($_POST['submit_button'])){
+	$line_nr=0;
+	echo '<div id="information" style="display: inline;"></div> '.__('Processed lines...');
+}
+
+
 echo '</td></tr>';
 
 echo '</table>';
@@ -610,19 +619,23 @@ $buffer.="2 VERS ".$humo_option["version"]."\r\n";
 $buffer.="2 NAME HuMo-gen\r\n";
 $buffer.="2 CORP HuMo-gen genealogical software\r\n";
 $buffer.="3 ADDR http://www.humo-gen.com\r\n";
-
-if ($tree_owner)
-	$buffer.="1 SUBM ".$tree_owner."\r\n";
-else
-	$buffer.="1 SUBM Unknown\r\n";
-
+$buffer.="1 SUBM @S1@\r\n";
 $buffer.="1 GEDC\r\n";
-$buffer.="2 VERS 5.5\r\n";
+$buffer.="2 VERS 5.5.1\r\n";
 $buffer.="2 FORM Lineage-Linked\r\n";
 
 if ($gedcom_char_set=='UTF-8') $buffer.="1 CHAR UTF-8\r\n";
 elseif ($gedcom_char_set=='ANSI') $buffer.="1 CHAR ANSI\r\n";
 else $buffer.="1 CHAR ASCII\r\n";
+
+// 0 @S1@ SUBM
+// 1 NAME Huub Mons
+// 1 ADDR adres
+$buffer.="0 @S1@ SUBM\r\n";
+if ($tree_owner)
+	$buffer.="1 NAME ".$tree_owner."\r\n";
+else
+	$buffer.="1 NAME Unknown\r\n";
 
 fwrite($fh, $buffer);
 //$buffer = str_replace("\n", "<br>", $buffer);
@@ -666,31 +679,24 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	// 0 @I1181@ INDI *** Gedcomnumber ***
 	$buffer='0 @'.$person->pers_gedcomnumber."@ INDI\r\n";
 
-	if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes'){
-		echo $person->pers_gedcomnumber . ' ';
-	}
+	if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes') echo $person->pers_gedcomnumber . ' ';
 
 	// 1 RIN 1181
-	$buffer.='1 RIN '.substr($person->pers_gedcomnumber,1)."\r\n";
+	// Not really necessary, so disabled this line...
+	//$buffer.='1 RIN '.substr($person->pers_gedcomnumber,1)."\r\n";
 
 	// 1 REFN Code *** Own code ***
-	if ($person->pers_own_code){
-		$buffer.='1 REFN '.$person->pers_own_code."\r\n";
-	}
+	if ($person->pers_own_code) $buffer.='1 REFN '.$person->pers_own_code."\r\n";
 
 	// 1 NAME Firstname/Lastname/ *** Name ***
 	$buffer.='1 NAME '.$person->pers_firstname.'/';
 	$buffer.=str_replace("_", " ", $person->pers_prefix);
 	$buffer.=$person->pers_lastname."/\r\n";
 
-	if ($person->pers_callname){
-		$buffer.='2 NICK '.$person->pers_callname."\r\n";
-	}
+	if ($person->pers_callname) $buffer.='2 NICK '.$person->pers_callname."\r\n";
 
 	// Prefix is exported by name!
-	//if ($person->pers_prefix){
-	//	$buffer.='2 SPFX '.$person->pers_prefix."\r\n";
-	//}
+	//if ($person->pers_prefix) $buffer.='2 SPFX '.$person->pers_prefix."\r\n";
 
 	// *** Text and source by name ***
 	if ($gedcom_sources=='yes' AND $person->pers_name_source){
@@ -705,7 +711,7 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 		WHERE event_person_id='$person->pers_gedcomnumber' AND event_kind='name'");
 	while($nameDb=$nameqry->fetch(PDO::FETCH_OBJ)){	
 		$buffer.='2 '.$nameDb->event_gedcom.' '.$nameDb->event_event."\r\n";
-		if ($nameDb->event_date){	$buffer.='3 DATE '.$nameDb->event_date."\r\n"; }
+		if ($nameDb->event_date) $buffer.='3 DATE '.$nameDb->event_date."\r\n";
 		if ($gedcom_sources=='yes' AND $nameDb->event_source){
 			sources_export('person','event_source',$nameDb->event_id,3);
 		}
@@ -713,9 +719,7 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 			$buffer.='3 NOTE '.process_text(4,$nameDb->event_text); }
 	}
 
-	if ($person->pers_patronym){
-		$buffer.='1 _PATR '.$person->pers_patronym."\r\n";
-	}
+	if ($person->pers_patronym) $buffer.='1 _PATR '.$person->pers_patronym."\r\n";
 
 	// *** Sexe ***
 	$buffer.='1 SEX '.$person->pers_sexe."\r\n";
@@ -759,9 +763,7 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	}
 
 	// *** Person religion ***
-	if ($person->pers_religion){
-		$buffer.='1 RELI '.$person->pers_religion."\r\n";
-	}
+	if ($person->pers_religion) $buffer.='1 RELI '.$person->pers_religion."\r\n";
 
 	// *** Death data ***
 	if ($person->pers_death_date OR $person->pers_death_place OR $person->pers_death_text OR $person->pers_death_cause){
@@ -804,10 +806,10 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 		if ($addressDb->address_zip){ $buffer.='3 POST '.$addressDb->address_zip."\r\n"; }
 		if ($addressDb->address_phone){ $buffer.='2 PHON '.$addressDb->address_phone."\r\n"; }
 		if ($addressDb->address_date){ $buffer.='2 DATE '.$addressDb->address_date."\r\n"; }
-		if ($addressDb->address_text){ $buffer.='2 NOTE '.process_text(3,$addressDb->address_text)."\r\n"; }
+		if ($addressDb->address_text){ $buffer.='2 NOTE '.process_text(3,$addressDb->address_text); }
 //SOURCE
 		if ($addressDb->address_source){
-			$buffer.='2 SOUR '.process_text(3,$addressDb->address_source)."\r\n";
+			$buffer.='2 SOUR '.process_text(3,$addressDb->address_source);
 			//sources_export('person','address_source',$nameDb->event_id,3);
 		}
 	}
@@ -851,8 +853,62 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 		sources_export('person','pers_text_source',$person->pers_gedcomnumber,2);
 	}
 
+	// *** Person color marks ***
+	$sourceqry=$dbh->query("SELECT * FROM ".$tree."events
+		WHERE event_person_id='$person->pers_gedcomnumber' AND event_kind='person_colour_mark'");
+	while($sourceDb=$sourceqry->fetch(PDO::FETCH_OBJ)){	
+		$buffer.='1 _COLOR '.$sourceDb->event_event."\r\n";
+		//if ($gedcom_sources=='yes' AND $sourceDb->event_source){
+		//	sources_export('person','event_source',$sourceDb->event_id,2);
+		//}
+	}
 
 	// *** Person events ***
+	$event_qry=$dbh->query("SELECT * FROM ".$tree."events
+		WHERE event_person_id='$person->pers_gedcomnumber' AND event_kind='event' ORDER BY event_order");
+	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+		$process_event=false; $process_event2=false;
+		if ($eventDb->event_gedcom=='ADOP'){ $process_event2=true; $event_gedcom='1 ADOP'; }
+		if ($eventDb->event_gedcom=='BAPM'){ $process_event2=true; $event_gedcom='1 BAPM'; }
+		if ($eventDb->event_gedcom=='BAPL'){ $process_event2=true; $event_gedcom='1 BAPL'; }
+		if ($eventDb->event_gedcom=='BARM'){ $process_event2=true; $event_gedcom='1 BARM'; }
+		if ($eventDb->event_gedcom=='BASM'){ $process_event2=true; $event_gedcom='1 BASM'; }
+		if ($eventDb->event_gedcom=='BLES'){ $process_event2=true; $event_gedcom='1 BLES'; }
+		if ($eventDb->event_gedcom=='CENS'){ $process_event2=true; $event_gedcom='1 CENS'; }
+		if ($eventDb->event_gedcom=='CHRA'){ $process_event2=true; $event_gedcom='1 CHRA'; }
+		if ($eventDb->event_gedcom=='CONF'){ $process_event2=true; $event_gedcom='1 CONF'; }
+		if ($eventDb->event_gedcom=='CONL'){ $process_event2=true; $event_gedcom='1 CONL'; }
+		if ($eventDb->event_gedcom=='EMIG'){ $process_event2=true; $event_gedcom='1 EMIG'; }
+		if ($eventDb->event_gedcom=='ENDL'){ $process_event2=true; $event_gedcom='1 ENDL'; }
+		if ($eventDb->event_gedcom=='EVEN'){ $process_event2=true; $event_gedcom='1 EVEN'; }
+		if ($eventDb->event_gedcom=='FCOM'){ $process_event2=true; $event_gedcom='1 FCOM'; }
+		if ($eventDb->event_gedcom=='GRAD'){ $process_event2=true; $event_gedcom='1 GRAD'; }
+		if ($eventDb->event_gedcom=='IMMI'){ $process_event2=true; $event_gedcom='1 IMMI'; }
+		if ($eventDb->event_gedcom=='MILI'){ $process_event=true; $event_gedcom='1 _MILT'; }
+		if ($eventDb->event_gedcom=='NATU'){ $process_event2=true; $event_gedcom='1 NATU'; }
+		if ($eventDb->event_gedcom=='ORDN'){ $process_event2=true; $event_gedcom='1 ORDN'; }
+		if ($eventDb->event_gedcom=='PROB'){ $process_event2=true; $event_gedcom='1 PROB'; }
+		if ($eventDb->event_gedcom=='RETI'){ $process_event2=true; $event_gedcom='1 RETI'; }
+		if ($eventDb->event_gedcom=='SLGC'){ $process_event2=true; $event_gedcom='1 SLGC'; }
+		if ($eventDb->event_gedcom=='WILL'){ $process_event2=true; $event_gedcom='1 WILL'; }
+
+		// *** Text is added in the first line: 1 _MILT militaire items. ***
+		if ($process_event){
+			if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
+			if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
+			if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
+		}
+
+		// *** No text behind first line, add text at second NOTE line ***
+		if ($process_event2){
+			$buffer.=$event_gedcom;
+				if ($eventDb->event_event) $buffer.=' '.$eventDb->event_event;
+				$buffer.="\r\n";
+			if ($eventDb->event_text) $buffer.='2 NOTE '.process_text(3,$eventDb->event_text);
+			if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
+			if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
+		}
+	}
 
 	// *** Quality ***
 	// Disabled because normally quality belongs to a source.
@@ -893,9 +949,7 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	if ($person->pers_new_date){
 		$buffer.="1 _NEW\r\n";
 		$buffer.="2 DATE ".$person->pers_new_date."\r\n";
-		if ($person->pers_new_time){
-			$buffer.="3 TIME ".$person->pers_new_time."\r\n";
-		}
+		if ($person->pers_new_time) $buffer.="3 TIME ".$person->pers_new_time."\r\n";
 	}
 
 	// *** Date and time changed in database ***
@@ -905,14 +959,27 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	if ($person->pers_changed_date){
 		$buffer.="1 CHAN\r\n";
 		$buffer.="2 DATE ".$person->pers_changed_date."\r\n";
-		if ($person->pers_changed_time){
-			$buffer.="3 TIME ".$person->pers_changed_time."\r\n";
-		}
+		if ($person->pers_changed_time) $buffer.="3 TIME ".$person->pers_changed_time."\r\n";
 	}
 
 	// *** Write person data ***
 	$buffer=decode($buffer);
 	fwrite($fh, $buffer);
+
+
+	// *** Update processed lines ***
+	echo '<script language="javascript">';
+	echo 'document.getElementById("information").innerHTML="'.$line_nr.'";';
+	$line_nr++;
+	echo '</script>';
+	// This is for the buffer achieve the minimum size in order to flush data
+	//echo str_repeat(' ',1024*64);
+	// Send output to browser immediately
+	ob_flush(); 
+	flush(); // IE
+
+
+
 	// *** Show person data on screen ***
 	//$buffer = str_replace("\r\n", "<br>", $buffer);
 	//echo $buffer;
@@ -944,9 +1011,7 @@ while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 	// 0 @I1181@ INDI *** Gedcomnumber ***
 	$buffer='0 @'.$family->fam_gedcomnumber."@ FAM\r\n";
 
-	if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes'){
-		echo $family->fam_gedcomnumber. ' ';
-	}
+	if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes') echo $family->fam_gedcomnumber. ' ';
 
 	if ($family->fam_man){
 		if($_POST['part_tree']=='part' AND !in_array($family->fam_man,$persids)) {}
@@ -964,9 +1029,7 @@ while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 		$buffer.="1 NMR\r\n";
 
 		// *** Relation start date ***
-		if ($family->fam_relation_date){
-			$buffer.='2 DATE '.$family->fam_relation_date."\r\n";
-		}
+		if ($family->fam_relation_date) $buffer.='2 DATE '.$family->fam_relation_date."\r\n";
 
 		// *** Relation end date ***
 		// How to export this date?
@@ -1073,6 +1136,39 @@ while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 		sources_export('family','fam_text_source',$family->fam_gedcomnumber,2);
 	}
 
+	// *** Family events ***
+	$event_qry=$dbh->query("SELECT * FROM ".$tree."events
+		WHERE event_family_id='$family->fam_gedcomnumber' AND event_kind='event' ORDER BY event_order");
+	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+		$process_event=false; $process_event2=false;
+		if ($eventDb->event_gedcom=='ANUL'){ $process_event2=true; $event_gedcom='1 ANUL'; }
+		if ($eventDb->event_gedcom=='CENS'){ $process_event2=true; $event_gedcom='1 CENS'; }
+		if ($eventDb->event_gedcom=='DIVF'){ $process_event2=true; $event_gedcom='1 DIVF'; }
+		if ($eventDb->event_gedcom=='ENGA'){ $process_event2=true; $event_gedcom='1 ENGA'; }
+		if ($eventDb->event_gedcom=='EVEN'){ $process_event2=true; $event_gedcom='1 EVEN'; }
+		if ($eventDb->event_gedcom=='MARC'){ $process_event2=true; $event_gedcom='1 MARC'; }
+		if ($eventDb->event_gedcom=='MARL'){ $process_event2=true; $event_gedcom='1 MARL'; }
+		if ($eventDb->event_gedcom=='MARS'){ $process_event2=true; $event_gedcom='1 MARS'; }
+		if ($eventDb->event_gedcom=='SLGS'){ $process_event2=true; $event_gedcom='1 SLGS'; }
+
+		// *** Text is added in the first line: 1 _MILT militaire items. ***
+		//if ($process_event){
+		//	if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
+		//	if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
+		//	if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
+		//}
+
+		// *** No text behind first line, add text at second NOTE line ***
+		if ($process_event2){
+			$buffer.=$event_gedcom;
+				if ($eventDb->event_event) $buffer.=' '.$eventDb->event_event;
+				$buffer.="\r\n";
+			if ($eventDb->event_text) $buffer.='2 NOTE '.process_text(3,$eventDb->event_text);
+			if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
+			if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
+		}
+	}
+
 	// *** Date and time new in database ***
 	// 1_NEW
 	// 2 DATE 04 AUG 2004
@@ -1080,9 +1176,7 @@ while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 	if ($family->fam_new_date){
 		$buffer.="1 _NEW\r\n";
 		$buffer.="2 DATE ".$family->fam_new_date."\r\n";
-		if ($family->fam_new_time){
-			$buffer.="3 TIME ".$family->fam_new_time."\r\n";
-		}
+		if ($family->fam_new_time) $buffer.="3 TIME ".$family->fam_new_time."\r\n";
 	}
 
 	// *** Date and time changed in database ***
@@ -1092,14 +1186,24 @@ while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 	if ($family->fam_changed_date){
 		$buffer.="1 CHAN\r\n";
 		$buffer.="2 DATE ".$family->fam_changed_date."\r\n";
-		if ($family->fam_changed_time){
-			$buffer.="3 TIME ".$family->fam_changed_time."\r\n";
-		}
+		if ($family->fam_changed_time) $buffer.="3 TIME ".$family->fam_changed_time."\r\n";
 	}
 
 	// *** Write family data ***
 	$buffer=decode($buffer);
 	fwrite($fh, $buffer);
+
+	// *** Update processed lines ***
+	echo '<script language="javascript">';
+	echo 'document.getElementById("information").innerHTML="'.$line_nr.'";';
+	$line_nr++;
+	echo '</script>';
+	// This is for the buffer achieve the minimum size in order to flush data
+	//echo str_repeat(' ',1024*64);
+	// Send output to browser immediately
+	ob_flush(); 
+	flush(); // IE
+
 	// *** Show family data on screen ***
 	//$buffer = str_replace("\r\n", "<br>", $buffer);
 	//echo $buffer;
@@ -1198,15 +1302,12 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 if ($gedcom_sources=='yes'){
 	$family_qry=$dbh->query("SELECT * FROM ".$tree."sources");
 	while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
-
 		if($_POST['part_tree']=='part'  AND !in_array($family->source_gedcomnr,$source_array)) { continue; }
 
 		// 0 @I1181@ INDI *** Gedcomnumber ***
 		$buffer='0 @'.$family->source_gedcomnr."@ SOUR\r\n";
 
-		if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes'){
-			echo $family->source_gedcomnr. ' ';
-		}
+		if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes') echo $family->source_gedcomnr. ' ';
 
 		if ($family->source_title){ $buffer.='1 TITLE '.$family->source_title."\r\n"; }
 		if ($family->source_abbr){ $buffer.='1 ABBR '.$family->source_abbr."\r\n"; }
@@ -1226,15 +1327,105 @@ if ($gedcom_sources=='yes'){
 
 		// source_repo_name, source_repo_caln, source_repo_page.
 
+		// *** Date and time new in database ***
+		// 1_NEW
+		// 2 DATE 04 AUG 2004
+		// 3 TIME 13:39:58
+		if ($family->source_new_date){
+			$buffer.="1 _NEW\r\n";
+			$buffer.="2 DATE ".$family->source_new_date."\r\n";
+			if ($family->source_new_time) $buffer.="3 TIME ".$family->source_new_time."\r\n";
+		}
+
+		// *** Date and time changed in database ***
+		// 1_CHAN
+		// 2 DATE 04 AUG 2004
+		// 3 TIME 13:39:58
+		if ($family->source_changed_date){
+			$buffer.="1 CHAN\r\n";
+			$buffer.="2 DATE ".$family->source_changed_date."\r\n";
+			if ($family->source_changed_time) $buffer.="3 TIME ".$family->source_changed_time."\r\n";
+		}
+
 		// *** Write source data ***
 		$buffer=decode($buffer);
 		fwrite($fh, $buffer);
+
+		// *** Update processed lines ***
+		echo '<script language="javascript">';
+		echo 'document.getElementById("information").innerHTML="'.$line_nr.'";';
+		$line_nr++;
+		echo '</script>';
+		// This is for the buffer achieve the minimum size in order to flush data
+		//echo str_repeat(' ',1024*64);
+		// Send output to browser immediately
+		ob_flush(); 
+		flush(); // IE
+
 		// *** Show source data on screen ***
 		//$buffer = str_replace("\n", "<br>", $buffer);
 		//echo $buffer;
 	}
+
+	/*
+	repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
+	repo_date='".$editor_cls->date_process('repo_date')."',
+	repo_mail='".safe_text($_POST['repo_mail'])."',
+	repo_url='".safe_text($_POST['repo_url'])."',
+	*/
+	// *** Repository data ***
+	$repo_qry=$dbh->query("SELECT * FROM ".$tree."repositories
+		ORDER BY repo_name, repo_place");
+	while($repoDb=$repo_qry->fetch(PDO::FETCH_OBJ)){
+		$buffer='0 @'.$repoDb->repo_gedcomnr."@ REPO\r\n";
+		if ($repoDb->repo_name){ $buffer.='1 NAME '.$repoDb->repo_name."\r\n"; }
+		if ($repoDb->repo_text){ $buffer.='1 NOTE '.process_text(2,$repoDb->repo_text); }
+		if ($repoDb->repo_address){ $buffer.='1 ADDR '.process_text(2,$repoDb->repo_address); }
+		if ($repoDb->repo_zip){ $buffer.='2 POST '.$repoDb->repo_zip."\r\n"; }
+		if ($repoDb->repo_phone){ $buffer.='1 PHON '.$repoDb->repo_phone."\r\n"; }
+		if ($repoDb->repo_mail){ $buffer.='1 EMAIL '.$repoDb->repo_mail."\r\n"; }
+		if ($repoDb->repo_url){ $buffer.='1 WWW '.$repoDb->repo_url."\r\n"; }
+
+		// *** Date and time new in database ***
+		// 1_NEW
+		// 2 DATE 04 AUG 2004
+		// 3 TIME 13:39:58
+		if ($repoDb->repo_new_date){
+			$buffer.="1 _NEW\r\n";
+			$buffer.="2 DATE ".$repoDb->repo_new_date."\r\n";
+			if ($repoDb->repo_new_time) $buffer.="3 TIME ".$repoDb->repo_new_time."\r\n";
+		}
+
+		// *** Date and time changed in database ***
+		// 1_CHAN
+		// 2 DATE 04 AUG 2004
+		// 3 TIME 13:39:58
+		if ($repoDb->repo_changed_date){
+			$buffer.="1 CHAN\r\n";
+			$buffer.="2 DATE ".$repoDb->repo_changed_date."\r\n";
+			if ($repoDb->repo_changed_time) $buffer.="3 TIME ".$repoDb->repo_changed_time."\r\n";
+		}
+
+		// *** Write repoitory data ***
+		$buffer=decode($buffer);
+		fwrite($fh, $buffer);
+
+		// *** Update processed lines ***
+		echo '<script language="javascript">';
+		echo 'document.getElementById("information").innerHTML="'.$line_nr.'";';
+		$line_nr++;
+		echo '</script>';
+		// This is for the buffer achieve the minimum size in order to flush data
+		//echo str_repeat(' ',1024*64);
+		// Send output to browser immediately
+		ob_flush(); 
+		flush(); // IE
+
+	}
+
 }
 
+// THIS PART ISN'T VALID GEDCOM 5.5.1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // *** Addresses ***
 // 0 @R155@ RESI
 // 1 ADDR Straat
@@ -1277,42 +1468,77 @@ while($family=mysql_fetch_object($family_qry)){
 
 // This adds seperate note records for all the note refs in table texts captured in $noteids
 if ($gedcom_texts=='yes'){
+	$buffer='';
 	natsort($noteids);
 	foreach ($noteids as $s){
-		$text_query = "SELECT * FROM ".$tree."texts WHERE text_gedcomnr='" . $s . "'";
+		$text_query = "SELECT * FROM ".$tree."texts WHERE text_gedcomnr='".$s."'";
 		$text_sql=$dbh->query($text_query);
 		while($textDb=$text_sql->fetch(PDO::FETCH_OBJ)){
+			/*
 			$linecount=0;
 			$textlines = process_text(1, $textDb->text_text, false);
 			$textarray = explode("\n", $textlines);
 			foreach ($textarray as $line) {
 				if (strlen($line) > 0){
 					if ($linecount==0) {
-						//fwrite($fh, "0 " . $s . " NOTE " . $line . "\r\n");
-						fwrite($fh, "0 " . $s . " NOTE\r\n");
-						fwrite($fh, "1 CONC " . $line . "\r\n");
-						if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes'){
-							echo $s . ' '; 
-						}
+						fwrite($fh, "0 ".$s." NOTE\r\n");
+						fwrite($fh, "1 CONC ".$line."\r\n");
+						if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes'){ echo $s.' '; }
 					} else {
 						fwrite($fh, $line . "\r\n");
 					}
 					$linecount++;
 				}
 			}
+			*/
+			$buffer.="0 ".$s." NOTE\r\n";
+			$buffer.='1 CONC '.process_text(1,$textDb->text_text);
+
+			// *** Date and time new in database ***
+			// 1_NEW
+			// 2 DATE 04 AUG 2004
+			// 3 TIME 13:39:58
+			if ($textDb->text_new_date){
+				$buffer.="1 _NEW\r\n";
+				$buffer.="2 DATE ".$textDb->text_new_date."\r\n";
+				if ($textDb->text_new_time) $buffer.="3 TIME ".$textDb->text_new_time."\r\n";
+			}
+
+			// *** Date and time changed in database ***
+			// 1_CHAN
+			// 2 DATE 04 AUG 2004
+			// 3 TIME 13:39:58
+			if ($textDb->text_changed_date){
+				$buffer.="1 CHAN\r\n";
+				$buffer.="2 DATE ".$textDb->text_changed_date."\r\n";
+				if ($textDb->text_changed_time) $buffer.="3 TIME ".$textDb->text_changed_time."\r\n";
+			}
+
 		}
 	}
+
+	// *** Write note data ***
+	$buffer=decode($buffer);
+	fwrite($fh, $buffer);
+
+	// *** Update processed lines ***
+	echo '<script language="javascript">';
+	echo 'document.getElementById("information").innerHTML="'.$line_nr.'";';
+	$line_nr++;
+	echo '</script>';
+	// This is for the buffer achieve the minimum size in order to flush data
+	//echo str_repeat(' ',1024*64);
+	// Send output to browser immediately
+	ob_flush(); 
+	flush(); // IE
+
 }
 
 fwrite($fh, '0 TRLR');
-
 fclose($fh);
 
 echo '<p>'.__('Gedcom file is generated').'<br>';
 
-//echo '<p><a href="'.$myFile.'" target="_blank">Download gedcom file</a>';
-
-//echo '<form method="POST" action="'.$myFile.'" target="_blank">';
 echo '<form method="POST" action="include/gedcom_download.php" target="_blank">';
 echo ' <input type="Submit" name="something" value="'.__('Download gedcom file').'">';
 echo '<input type="hidden" name="page" value="'.$page.'">';

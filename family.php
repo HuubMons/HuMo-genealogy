@@ -53,7 +53,7 @@ include_once(CMS_ROOTPATH."include/marriage_cls.php");
 include_once(CMS_ROOTPATH."include/show_sources.php");
 include_once(CMS_ROOTPATH."include/witness.php");
 include_once(CMS_ROOTPATH."include/show_picture.php");
-
+include_once(CMS_ROOTPATH."include/db_functions_cls.php"); // *** Extra db_functions include, needed for PDF report ***
 
 // *** Show person/ family topline: family top text, pop-up settings, PDF export, favorite ***
 function topline(){
@@ -218,7 +218,7 @@ function topline(){
 	} // End of bot visit
 
 	$text.='</td></tr>';
-	
+
 	return $text;
 }
 
@@ -369,8 +369,7 @@ if($screen_mode=='PDF') {  //initialize pdf generation
 	$pdf=new PDF();
 
 	// *** Generate title of PDF file ***
-	$pers = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
-	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
+	@$persDb = $db_functions->get_person($main_person);
 	// *** Use class to process person ***
 	$pers_cls = New person_cls;
 	$pers_cls->construct($persDb);
@@ -430,8 +429,7 @@ if($screen_mode=='RTF') {  // initialize rtf generation
 	//$rtf->setMargins(3, 1, 1 ,2);
 
 	// *** Generate title of RTF file ***
-	$pers = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
-	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
+	@$persDb = $db_functions->get_person($main_person);
 	// *** Use class to process person ***
 	$pers_cls = New person_cls;
 	$pers_cls->construct($persDb);
@@ -466,9 +464,7 @@ if($screen_mode=='RTF') {  // initialize rtf generation
 if($screen_mode=='STAR') {
 // DNA chart -> change base person to earliest father-line (Y-DNA) or mother-line (Mt-DNA) ancestor
 	$max_generation=100;
-
-	$dnaqry = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
-	@$dnaDb = $dnaqry->fetch(PDO::FETCH_OBJ);
+	@$dnaDb = $db_functions->get_person($main_person);
 
 	$dnapers_cls = New person_cls;
 	$dnaname=$dnapers_cls->person_name($dnaDb);
@@ -479,27 +475,23 @@ if($screen_mode=='STAR') {
 
 	if($dna=="ydna" OR $dna=="ydnamark") {
 		while(isset($dnaDb->pers_famc) AND $dnaDb->pers_famc!="") {
-			$dnaparqry = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".safe_text($dnaDb->pers_famc)."'");
-			@$dnaparDb = $dnaparqry->fetch(PDO::FETCH_OBJ);
+			@$dnaparDb = $db_functions->get_family($dnaDb->pers_famc);
 			if($dnaparDb->fam_man=="") break;
 			else {
 				$main_person = $dnaparDb->fam_man;
 				$family_id  = $dnaDb->pers_famc;
-				$dnaqry = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($dnaparDb->fam_man)."'");
-				@$dnaDb = $dnaqry->fetch(PDO::FETCH_OBJ);
+				@$dnaDb = $db_functions->get_person($dnaparDb->fam_man);
 			}
 		}
 	}
 	if($dna=="mtdna" OR $dna=="mtdnamark") {
 		while(isset($dnaDb->pers_famc) AND $dnaDb->pers_famc!="") {
-			$dnaparqry = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".safe_text($dnaDb->pers_famc)."'");
-			@$dnaparDb = $dnaparqry->fetch(PDO::FETCH_OBJ);
+			@$dnaparDb = $db_functions->get_family($dnaDb->pers_famc);
 			if($dnaparDb->fam_woman=="") break;
 			else {
 				$main_person = $dnaparDb->fam_woman;
 				$family_id  = $dnaDb->pers_famc;
-				$dnaqry = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($dnaparDb->fam_woman)."'");
-				@$dnaDb = $dnaqry->fetch(PDO::FETCH_OBJ);
+				@$dnaDb = $db_functions->get_person($dnaparDb->fam_woman);
 			}
 		}
 	}
@@ -511,8 +503,7 @@ if($screen_mode=='STAR') {
 if (!$family_id){
 	// starfieldchart is never called when there is no own fam so no need to mark this out
 	// *** Privacy filter ***
-	$person_man = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".safe_text($main_person)."'");
-	@$person_manDb = $person_man->fetch(PDO::FETCH_OBJ);
+	@$person_manDb = $db_functions->get_person($main_person);
 	// *** Use class to show person ***
 	$man_cls = New person_cls;
 	$man_cls->construct($person_manDb);
@@ -610,12 +601,10 @@ else{
 	//creating a prepared statement one time will save time
 	$family_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
 	$family_prep->bindParam(1, $family_id_loop_var);
+
 	$person_prep=$dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 	$person_prep->bindParam(1, $parent1_var);
-	$family2_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
-	$family2_prep->bindParam(1, $id_var);
-	$person_man_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
-	$person_man_prep->bindParam(1,$pers_man_var);
+
 	$address_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_family_id=?");
 	$address_qry_prep->bindParam(1,$address_fam_var);
 
@@ -741,10 +730,8 @@ else{
 			// *** Loop multiple marriages of main_person ***
 			for ($parent1_marr=0; $parent1_marr<=$count_marr; $parent1_marr++){
 				$id=$marriage_array[$parent1_marr];
-				$id_var = $id;
-				$family2_prep->execute();
-				@$familyDb = $family2_prep->fetch(PDO::FETCH_OBJ);
-				
+				@$familyDb = $db_functions->get_family($id);
+
 				// *** Don't count search bots, crawlers etc. ***
 				if (!$bot_visit){
 					// *** Update (old) statistics counter ***
@@ -775,17 +762,13 @@ else{
 				}
 
 				// *** Privacy filter man and woman ***
-				$pers_man_var = $familyDb->fam_man;
-				$person_man_prep->execute();
-				@$person_manDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
+				@$person_manDb = $db_functions->get_person($familyDb->fam_man);
 
 				// *** Proces man using a class ***
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
 
-				$pers_man_var = $familyDb->fam_woman;
-				$person_man_prep->execute();
-				@$person_womanDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
+				@$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
 
 				// *** Proces woman using a clas ***
 				$woman_cls = New person_cls;
@@ -1584,9 +1567,7 @@ else{
 						if($dna=="ydna" OR $dna=="mtdna") { 
 							$countdna = 0;
 							for($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
-								$pers_man_var = $child_array[$i];
-								$person_man_prep->execute();
-								@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
+								@$childDb = $db_functions->get_person($child_array[$i]);
 								if($dna=="ydna" AND $childDb->pers_sexe == "M" AND $genarray[$arraynr]["sex"]=="m" 
 									AND $genarray[$arraynr]["dna"]==1) $countdna++;
 								elseif($dna=="mtdna" AND $genarray[$arraynr]["sex"]=="v" AND $genarray[$arraynr]["dna"]==1) $countdna++;
@@ -1596,9 +1577,7 @@ else{
 					}
 
 					for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
-						$pers_man_var = $child_array[$i];
-						$person_man_prep->execute();
-						@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
+						@$childDb = $db_functions->get_person($child_array[$i]);
 
 						// *** Use person class ***
 						$child_cls = New person_cls;
@@ -1842,9 +1821,7 @@ else{
 					$famc_adoptive_qry_prep->execute();
 					while($famc_adoptiveDb=$famc_adoptive_qry_prep->fetch(PDO::FETCH_OBJ)){
 						echo '<tr><td colspan="4"><div class="children">';
-						$pers_man_var = $famc_adoptiveDb->event_person_id;
-						$person_man_prep->execute();
-						@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
+						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_person_id);
 						// *** Use person class ***
 						$child_cls = New person_cls;
 						$child_cls->construct($childDb);
@@ -1861,9 +1838,7 @@ else{
 					$famc_adoptive_by_person_qry_prep->execute();
 					while($famc_adoptiveDb=$famc_adoptive_by_person_qry_prep->fetch(PDO::FETCH_OBJ)){
 						echo '<tr><td colspan="4"><div class="children">';
-						$pers_man_var = $famc_adoptiveDb->event_person_id;
-						$person_man_prep->execute();
-						@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
+						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_person_id);
 						// *** Use person class ***
 						$child_cls = New person_cls;
 						$child_cls->construct($childDb);
@@ -1883,9 +1858,7 @@ else{
 					$famc_adoptive_by_person_qry_prep->execute();
 					while($famc_adoptiveDb=$famc_adoptive_by_person_qry_prep->fetch(PDO::FETCH_OBJ)){
 						echo '<tr><td colspan="4"><div class="children">';
-						$pers_man_var = $famc_adoptiveDb->event_person_id;
-						$person_man_prep->execute();
-						@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
+						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_person_id);
 						// *** Use person class ***
 						$child_cls = New person_cls;
 						$child_cls->construct($childDb);
@@ -2075,9 +2048,7 @@ else{
 
 								$child_array=explode(";",$familyDb->fam_children);
 								for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
-									$pers_man_var = $child_array[$i];
-									$person_man_prep->execute();
-									@$childDb = $person_man_prep->fetch(PDO::FETCH_OBJ);
+									@$childDb = $db_functions->get_person($child_array[$i]);
 
 									// *** Use person class ***
 									$person_cls = New person_cls;
@@ -2088,7 +2059,7 @@ else{
 										$location_var = $childDb->pers_birth_place;
 										$location_prep->execute();
 										$child_result = $location_prep->rowCount();
-										
+
 										if($child_result >0) {
 											$info = $location_prep->fetch();
 
@@ -2247,7 +2218,7 @@ if($screen_mode=='') {
 				$headers .= "From: \"".$userDb->user_name."\" <".$userDb->user_mail.">\n";
 
 				@$mail = mail($register_address, $register_subject, $register_message, $headers);
-				
+
 				echo '<table align="center" class="humo">';
 				echo '<tr><th><a name="add_info"></a>'.__('Your information is saved and will be reviewed by the webmaster.').'</th></tr>';
 				echo '</table>';
@@ -2282,8 +2253,17 @@ if($screen_mode=='') {
 				echo '<table align="center" class="humo" width="40%">';
 				echo '<tr><th class="fonts" colspan="2">';
 					echo '<a name="add_info"></a>';
-					echo '<a href="#add_info" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a>';
-					echo __('Add information or remarks').'</th></tr>';
+					//echo '<a href="#add_info" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a>';
+					if ($humo_option["url_rewrite"]=="j"){
+						// *** $uri_path made in header.php ***
+						$start_url=$uri_path.'family/'.$dataDb->tree_prefix.'/'.$family_id.'/'.$main_person.'/#add_info';
+					}
+					else{
+						$start_url='#add_info';
+					}
+					echo '<a href="'.$start_url.'" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a>';
+
+					echo ' '.__('Add information or remarks').'</th></tr>';
 
 				echo '<tr style="display:none;" id="row1" name="row1"><td>'.__('Person').'</td><td>'.$name["standard_name"].'</td></tr>';
 

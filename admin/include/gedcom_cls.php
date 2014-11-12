@@ -745,7 +745,7 @@ function process_person($person_array){
 
 			// *** Place ***
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $pers_birth_place=substr($buffer, 7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $pers_birth_place=$this->process_place( substr($buffer, 7)); }
 				$this->process_places($pers_birth_place,$buffer);
 			}
 
@@ -824,7 +824,7 @@ function process_person($person_array){
 
 			// *** Place ***
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $pers_bapt_place=substr($buffer, 7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $pers_bapt_place=$this->process_place( substr($buffer, 7) ); }
 				$this->process_places($pers_bapt_place,$buffer);
 			}
 
@@ -898,7 +898,7 @@ function process_person($person_array){
 
 			// *** Place ***
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $pers_death_place=substr($buffer, 7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $pers_death_place=$this->process_place( substr($buffer, 7) ); }
 				$this->process_places($pers_death_place,$buffer);
 			}
 
@@ -966,7 +966,7 @@ function process_person($person_array){
 
 			// *** Place ***
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $pers_buried_place=substr($buffer, 7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $pers_buried_place=$this->process_place( substr($buffer, 7) ); }
 				$this->process_places($pers_buried_place,$buffer);
 			}
 
@@ -1222,12 +1222,13 @@ function process_person($person_array){
 		// 2 TYPE Hebrew Name
 		if ($buffer6=='1 FACT'){
 			$buffer='1 EVEN '.substr($buffer, 7);
+			$buffer6='1 EVEN';
 			$level1='EVEN';
 			$fact=true;
 		}
 
 		// *** Aldfaer not married ***
-		if ($buffer=='1 _NOPARTNER'){ $buffer='1 _NMAR'; $level1='_NMAR'; }
+		if ($buffer=='1 _NOPARTNER'){ $buffer='1 _NMAR'; $buffer7='1 _NMAR'; $level1='_NMAR'; }
 
 		if ($buffer6=='1 ADOP'){ $processed=1; $event_status='1';} // Adopted
 		if ($buffer7=='1 _ADPF'){ $processed=1; $event_status='1';} // Adopted by father
@@ -1239,7 +1240,7 @@ function process_person($person_array){
 		if ($buffer6=='1 CENS'){ $processed=1; $event_status="1";}
 		if ($buffer6=='1 CHRA'){ $processed=1; $event_status="1";}
 		if ($buffer6=='1 CONF'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 CONL'){ $processed=1; $event_status="1";}
+		if ($buffer6=='1 CONL'){ $processed=1; $event_status="1"; if (substr($buffer, 7)) $event_temp=substr($buffer, 7);}
 		if ($buffer6=='1 EMIG'){ $processed=1; $event_status="1";}
 		if ($buffer6=='1 ENDL'){ $processed=1; $event_status="1";}
 		if ($buffer6=='1 FCOM'){ $processed=1; $event_status="1";}
@@ -1265,11 +1266,12 @@ function process_person($person_array){
 		//3 CONT 2nd line gebeurtenis bij persoon.
 		//3 CONT 3rd line.
 		if ($buffer7=='1 _MILT'){
-			$buffer = str_replace("_MILT", "MILI", $buffer); //Aldfaer numbers
+			$buffer = str_replace("_MILT", "MILI", $buffer);
+			$buffer6='1 MILI';
 			$level1='MILI';
 		}
 		if ($buffer6=='1 MILI'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
 			$processed=1; $event_status='1';
 		}
 		//RELI Religion
@@ -1485,7 +1487,6 @@ function process_person($person_array){
 			// 3 _TYPE PHOTO
 			$calculate_event_nr=$event_items+$event_nr;
 			if ($level2=='OBJE') $this->process_picture($pers_gedcomnumber,'','picture_event_'.$calculate_event_nr, $buffer);
-
 
 		}
 
@@ -1765,7 +1766,7 @@ function process_person($person_array){
 // *** Process families ***
 // ************************************************************************************************
 function process_family($family_array,$first_marr, $second_marr){ 
-	global $db, $dbh, $gen_program, $not_processed;
+	global $dbh, $gen_program, $not_processed;
 	global $connect_nr, $connect;
 	global $processed, $level1, $level2, $level3;
 	global $largest_pers_ged, $largest_fam_ged, $largest_source_ged, $largest_text_ged, $largest_repo_ged, $largest_address_ged;
@@ -1992,7 +1993,7 @@ function process_family($family_array,$first_marr, $second_marr){
 			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_marr_church_notice_date"]= substr($buffer,7); }
 
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_church_notice_place"]= substr($buffer,7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_church_notice_place"]= $this->process_place( substr($buffer,7) ); }
 				$this->process_places($family["fam_marr_church_notice_place"],$buffer);
 			}
 
@@ -2016,7 +2017,7 @@ function process_family($family_array,$first_marr, $second_marr){
 			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_marr_notice_date"]= substr($buffer,7); }
 
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_notice_place"]= substr($buffer,7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_notice_place"]= $this->process_place( substr($buffer,7) ); }
 				$this->process_places($family["fam_marr_notice_place"],$buffer);
 			}
 
@@ -2104,7 +2105,7 @@ function process_family($family_array,$first_marr, $second_marr){
 			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_marr_church_date"]= substr($buffer,7); }
 
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_church_place"]= substr($buffer,7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_church_place"]= $this->process_place( substr($buffer,7) ); }
 				$this->process_places($family["fam_marr_church_place"],$buffer);
 			}
 
@@ -2127,7 +2128,7 @@ function process_family($family_array,$first_marr, $second_marr){
 			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_marr_date"]= substr($buffer,7); }
 
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_place"]= substr($buffer,7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_place"]= $this->process_place( substr($buffer,7) ); }
 				$this->process_places($family["fam_marr_place"],$buffer);
 			}
 
@@ -2182,7 +2183,7 @@ function process_family($family_array,$first_marr, $second_marr){
 			}
 
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_".$finrelation."_place"]= substr($buffer,7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_".$finrelation."_place"]= $this->process_place( substr($buffer,7) ); }
 				$this->process_places($family["fam_".$finrelation."_place"],$buffer);
 			}
 
@@ -2302,7 +2303,7 @@ function process_family($family_array,$first_marr, $second_marr){
 			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_relation_date"]= substr($buffer,7); }
 
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_relation_place"]= substr($buffer,7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_relation_place"]= $this->process_place( substr($buffer,7) ); }
 				$this->process_places($family["fam_relation_place"],$buffer);
 			}
 
@@ -2337,7 +2338,7 @@ function process_family($family_array,$first_marr, $second_marr){
 			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_div_date"]= substr($buffer,7); }
 
 			if ($level2=='PLAC'){
-				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_div_place"]= substr($buffer,7); }
+				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_div_place"]= $this->process_place( substr($buffer,7) ); }
 				$this->process_places($family["fam_div_place"],$buffer);
 			}
 
@@ -2466,7 +2467,9 @@ function process_family($family_array,$first_marr, $second_marr){
 				$event['place'][$event_nr]='';
 
 				if (isset($event_temp)){
-					$event['text'][$event_nr]=$this->merge_texts ($event['text'][$event_nr],', ',$event_temp);
+					//$event['text'][$event_nr]=$this->merge_texts ($event['text'][$event_nr],', ',$event_temp);
+					$event['event'][$event_nr]=$this->merge_texts ($event['text'][$event_nr],', ',$event_temp);
+
 					$event_temp='';
 				}
 
@@ -3248,6 +3251,9 @@ function process_repository($repo_array){
 			$processed=1; $repo["repo_place"].=substr($buffer,7);
 		}
 
+		// 1 PHON +1-801-240-2331 (information)
+		// 1 PHON +1-801-240-1278 (gifts & donations)
+		// 1 PHON +1-801-240-2584 (support)
 		if (substr($buffer,2,4)=='PHON'){ $processed=1; $repo["repo_phone"]=substr($buffer,7); }
 
 		if (substr($buffer,2,4)=='DATE'){ $processed=1; $repo["repo_date"]=substr($buffer,7); }
@@ -3259,6 +3265,9 @@ function process_repository($repo_array){
 		//3 CONC rds from January 1, 1968.
 		if ($level2=='NOTE'){
 			$repo["repo_text"]=$this->process_texts($repo["repo_text"],$buffer,'2');
+		}
+		if ($level1=='NOTE'){
+			$repo["repo_text"]=$this->process_texts($repo["repo_text"],$buffer,'1');
 		}
 
 		//$repo["repo_photo"]="";
@@ -3750,6 +3759,13 @@ function reassign_ged($gednr,$letter) {
 	else {
 		return $gednr;
 	}
+}
+
+// *** Process place ***
+function process_place($place) {
+	// *** Solve bug in Haza-data gedcom export, replace: Adelaide ,Australië by: Adelaide, Australië ***
+	$place = str_replace(" ,", ", ", $place);
+	return $place;
 }
 
 // *** Process places ***

@@ -3,7 +3,7 @@ class tree_cls{
 
 // *** List of trees ***
 function tree_main(){
-	global $language, $db, $dbh, $page, $language_tree, $language_select, $menu_admin, $family_tree_id;
+	global $language, $dbh, $page, $language_tree, $language_select, $menu_admin, $family_tree_id;
 	global $phpself, $phpself2, $joomlastring;
 
 	echo '<br>';
@@ -363,7 +363,7 @@ function tree_text(){
 //******  tree_merge is the function that navigates all merge screens and options  *****
 //**************************************************************************************
 function tree_merge() {
-	global $db, $dbh, $data2Db, $phpself;
+	global $dbh, $data2Db, $phpself;
 	global $page, $language, $family_tree_id, $menu_admin, $relatives_merge, $merge_chars;
 
 	// check for stored settings and if not present set them
@@ -1413,7 +1413,7 @@ After a merge you can switch to "relatives merge" and after that return to dupli
 //******  with the possibility to determine what information is passed from left to right *****
 //*********************************************************************************************
 function show_pair($left_id,$right_id,$mode) {
-	global $db, $dbh, $data2Db, $phpself;
+	global $dbh, $data2Db, $phpself;
 	global $page, $family_tree_id, $menu_admin, $relatives_merge, $language;
 
 	// get data for left person
@@ -1619,7 +1619,7 @@ function show_pair($left_id,$right_id,$mode) {
 //****** show_regular is a function that places the regular items from humoX_person in the comparison table **
 //*************************************************************************************************************
 function show_regular ($left_item,$right_item,$title,$name) {
-	global $db, $dbh, $language, $color;
+	global $dbh, $language, $color;
 	if($left_item OR $right_item) {
 		if($color=='#e6e6e6') { $color='#f2f2f2'; } else { $color='#e6e6e6'; }
 		echo '<tr style="background-color:'.$color.'"><td style="font-weight:bold">'.ucfirst($title).':</td>';
@@ -1643,7 +1643,7 @@ function show_regular ($left_item,$right_item,$title,$name) {
 //****** show_regular_text is a function that places the regular text items from humoX_person in the comparison table **
 //***********************************************************************************************************************
 function show_regular_text ($left_item,$right_item,$title,$name) {
-	global $db, $dbh, $language, $data2Db, $color;
+	global $dbh, $language, $data2Db, $color;
 	if($right_item) {
 		if($color=='#e6e6e6') { $color='#f2f2f2'; } else { $color='#e6e6e6'; }
 		echo '<tr style="background-color:'.$color.'"><td style="font-weight:bold">'.$title.':</td><td>';
@@ -1676,7 +1676,7 @@ function show_regular_text ($left_item,$right_item,$title,$name) {
 //****** show_events is a function that places the events in the comparison table **
 //***********************************************************************************
 function show_events ($left_ged,$right_ged) {
-	global $db, $dbh, $language, $data2Db, $color;
+	global $dbh, $language, $data2Db, $color;
 	$l_address = $l_picture = $l_profession = $l_source = $l_event = $l_birth_declaration = $l_baptism_witness = $l_death_declaration = $l_burial_witness = $l_name = $l_nobility = $l_title = $l_lordship = $l_URL = $l_else = '';
 	$r_address = $r_picture = $r_profession = $r_source = $r_event = $r_birth_declaration = $r_baptism_witness = $r_death_declaration = $r_burial_witness = $r_name = $r_nobility = $r_title = $r_lordship = $r_URL = $r_else = '';
 	$left_events = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."events WHERE event_person_id ='".$left_ged."' ORDER BY event_kind ");
@@ -1742,7 +1742,7 @@ function show_events ($left_ged,$right_ged) {
 //******  "put_event" is a function to create the checkboxes for the event items          *****
 //*********************************************************************************************
 function put_event($this_event,$name_event,$l_ev,$r_ev) {
-	global $color, $db, $dbh, $data2Db, $language;
+	global $color, $dbh, $data2Db, $language;
 
 	if($r_ev!='') { // if right has no event all stays as it is
 		if($color=='#e6e6e6') { $color='#f2f2f2'; } else { $color='#e6e6e6'; }
@@ -1800,7 +1800,7 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 //******  "show_sources" is the function that places the sources in the comparison table (if right has a value)     *****
 //**********************************************************************************************************************
 function show_sources ($left_ged,$right_ged) {
-	global $db, $dbh, $language, $data2Db, $color;
+	global $dbh, $language, $data2Db, $color;
 	$left_sources = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE connect_connect_id ='".$left_ged."' AND LOCATE('source',connect_sub_kind)!=0 ORDER BY connect_sub_kind ");
 	$right_sources = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE connect_connect_id ='".$right_ged."' AND LOCATE('source',connect_sub_kind)!=0 ORDER BY connect_sub_kind ");	
 
@@ -1837,7 +1837,7 @@ function show_sources ($left_ged,$right_ged) {
 //******  "show_addresses" is the function that places the addresses in the comparison table (if right has a value) *****
 //**********************************************************************************************************************
 function show_addresses ($left_ged,$right_ged) {
-	global $db, $dbh, $language, $data2Db, $color;
+	global $dbh, $language, $data2Db, $color;
 	$left_addresses = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE connect_connect_id ='".$left_ged."' AND LOCATE('address',connect_sub_kind)!=0 ORDER BY connect_sub_kind ");
 	$right_addresses = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE connect_connect_id ='".$right_ged."' AND LOCATE('address',connect_sub_kind)!=0 ORDER BY connect_sub_kind ");
 
@@ -1874,7 +1874,7 @@ function show_addresses ($left_ged,$right_ged) {
 //******  "merge_them" is the function that does the actual job of merging the data of two persons (left and right)*****
 //**********************************************************************************************************************
 function merge_them($left,$right,$mode) {
-	global $db, $dbh, $data2Db, $phpself, $language;
+	global $dbh, $data2Db, $phpself, $language;
 	global $page, $family_tree_id, $menu_admin;
 	global $relatives_merge, $merge_chars;
 	global $result1Db, $result2Db;
@@ -2505,7 +2505,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
 //*********  function check_regular checks if data from the humoX_person table was marked (checked) in the comparison table  *****
 //*********************************************************************************************************************************
 function check_regular ($post_var,$auto_var,$mysql_var) {
-	global $db, $dbh, $language, $data2Db, $result1Db, $result2Db;
+	global $dbh, $language, $data2Db, $result1Db, $result2Db;
 	if((isset($_POST[$post_var]) AND $_POST[$post_var]=='2') OR $auto_var=='2') {
 		$qry = "UPDATE ".$data2Db->tree_prefix."person SET ".$mysql_var." = '".$result2Db->$mysql_var."' WHERE pers_id ='".$result1Db->pers_id."'";
 		$dbh->query($qry);
@@ -2515,7 +2515,7 @@ function check_regular ($post_var,$auto_var,$mysql_var) {
 //*********  function check_regular_text checks if text data from the humoX_person table was marked (checked) in the comparison table  *****
 //*********************************************************************************************************************************
 function check_regular_text ($post_var,$auto_var,$mysql_var) {
-	global $db, $dbh, $language, $data2Db, $result1Db, $result2Db;
+	global $dbh, $language, $data2Db, $result1Db, $result2Db;
 	if(isset($_POST[$post_var.'_r']) OR $auto_var=='2') {
 		if(isset($_POST[$post_var.'_l'])) { // when not in automatic mode, this means we have to join the notes of left and right
 			// If left or right has a @N34@ text entry we join the text as regular text.
@@ -2549,7 +2549,7 @@ function check_regular_text ($post_var,$auto_var,$mysql_var) {
 //*********  function check_event checks if event were marked (checked) in the comparison table  *****
 //****************************************************************************************************
 function check_events($left_ged,$right_ged) {
-	global $db, $dbh, $language, $data2Db;
+	global $dbh, $language, $data2Db;
 	$right_event_array='';
 	$left_events = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."events WHERE event_person_id ='".$left_ged."' ORDER BY event_kind ");
 	$right_events = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."events WHERE event_person_id ='".$right_ged."' ORDER BY event_kind ");	
@@ -2574,7 +2574,7 @@ function check_events($left_ged,$right_ged) {
 //** function check_addresses checks if addresses were marked (checked) in the comparison table  *****
 //****************************************************************************************************
 function check_addresses($left_ged,$right_ged) {
-	global $db, $dbh, $language, $data2Db;
+	global $dbh, $language, $data2Db;
 	$left_address = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE LOCATE('address',connect_sub_kind)!=0 AND connect_connect_id ='".$left_ged."'");
 	$right_address = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE LOCATE('address',connect_sub_kind)!=0 AND connect_connect_id ='".$right_ged."'");
 	if($right_address->rowCount() > 0) { //if right has no addresses it did not appear in the comparison table, so the whole thing is unnecessary
@@ -2598,7 +2598,7 @@ function check_addresses($left_ged,$right_ged) {
 //****************************************************************************************************
 
 function check_sources($left_ged,$right_ged) {
-	global $db, $dbh, $language, $data2Db;
+	global $dbh, $language, $data2Db;
 	$left_source = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE LOCATE('source',connect_sub_kind)!=0 AND connect_connect_id ='".$left_ged."'");
 	$right_source = $dbh->query("SELECT * FROM ".$data2Db->tree_prefix."connections WHERE LOCATE('source',connect_sub_kind)!=0 AND connect_connect_id ='".$right_ged."'");
 	if($right_source->rowCount() > 0) { //if right has no sources it did not appear in the comparison table, so the whole thing is unnecessary

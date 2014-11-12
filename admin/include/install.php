@@ -243,7 +243,6 @@ if (isset($_POST['install_tables2'])){
 			group_privacy varchar(1) CHARACTER SET utf8,
 			group_menu_places varchar(1) CHARACTER SET utf8,
 			group_admin varchar(1) CHARACTER SET utf8,
-			group_editor varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 			group_statistics varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j',
 			group_birthday_rss varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j',
 			group_birthday_list varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j',
@@ -289,8 +288,10 @@ if (isset($_POST['install_tables2'])){
 			group_pers_hide_totally VARCHAR(50) CHARACTER SET utf8 NOT NULL DEFAULT 'X',
 			group_gen_protection VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 			group_hide_trees VARCHAR(200) NOT NULL DEFAULT '',
+			group_edit_trees VARCHAR(200) NOT NULL DEFAULT '',
 			PRIMARY KEY (`group_id`)
 		) DEFAULT CHARSET=utf8");
+		//group_editor varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 
 		print __('filling humo_groups...').'<br>';
 
@@ -361,6 +362,8 @@ if (isset($_POST['install_tables2'])){
 			user_password varchar(50) CHARACTER SET utf8,
 			user_status varchar(1) CHARACTER SET utf8,
 			user_group_id smallint(5),
+			user_hide_trees VARCHAR(200) NOT NULL DEFAULT '',
+			user_edit_trees VARCHAR(200) NOT NULL DEFAULT '',
 			user_register_date varchar(20) CHARACTER SET utf8,
 			user_last_visit varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY  (`user_id`)

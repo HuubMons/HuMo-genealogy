@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /****************************************************************************
 * fanchart.php                                                              *
 * Original fan plotting code from PhpGedView (GNU/GPL licence)              *
@@ -72,19 +72,19 @@ for ($i=0 ; $i < $maxperson; $i++) {
 // some prepared statements so they will be initialized once
 $person_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 $person_prep->bindParam(1,$pers_var);
+
 $fam_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber =?");
 $fam_prep->bindParam(1,$fam_var);
 
 function fillarray ($nr, $famid) {
-	global $maxperson;
-	global $treeid;
-	global $db, $dbh, $person_prep, $fam_prep, $pers_var, $fam_var;
-	global $indexnr;
+	global $dbh, $maxperson;
+	global $treeid, $person_prep, $fam_prep, $pers_var, $fam_var, $indexnr;
 	if ($nr >= $maxperson) { return; }
 	if ($famid) {
 		$pers_var = $famid;
 		$person_prep->execute();
 		@$personmnDb = $person_prep->fetch(PDO::FETCH_OBJ);
+
 		$man_cls = New person_cls;
 		$man_cls->construct($personmnDb);
 		$man_privacy=$man_cls->privacy;
@@ -211,11 +211,10 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr) {
 * @param int $fandeg fan size in deg (default=270)
 */
 function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
-	global $fontsize, $date_display;
+	global $dbh, $fontsize, $date_display;
 	global $fan_style, $family_id;
-	global $printing, $language;
-	global $selected_language;
-	global $db, $dbh, $person_prep, $pers_var, $tree_prefix_quoted;
+	global $printing, $language, $selected_language;
+	global $person_prep, $pers_var, $tree_prefix_quoted;
 	// check for GD 2.x library
 	if (!defined("IMG_ARC_PIE")) {
 		print "ERROR: NO GD LIBRARY";
@@ -455,7 +454,8 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 
  					$pers_var = $spouseDb[$spouse];
 					$person_prep->execute();
-					@$spouse2Db = $person_prep->fetch(PDO::FETCH_OBJ);  
+					@$spouse2Db = $person_prep->fetch(PDO::FETCH_OBJ);
+
 					$spouse_cls = New person_cls;
 					$spouse_cls->construct($spouse2Db);
 					$spname=$spouse_cls->person_name($spouse2Db);
@@ -500,6 +500,24 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 	echo "</p>\n";
 	ImageDestroy($image);
 }
+
+
+
+//TEST in image using CSS
+//echo '
+//<STYLE>
+//#rotate {
+//	position: absolute; z-index:2;
+//	top: 420px; left: 420px;
+//	-ms-transform: rotate(-65deg); /* IE 9 */
+//	-webkit-transform: rotate(-65deg); /* Chrome, Safari, Opera */
+//	transform: rotate(-65deg);
+//}
+//</STYLE>
+//<div id="rotate">Rotate<br>漢字<br>טבלאות בסיס</div>
+//';
+
+
 
 $fan_style=3;
 $maxgens=7;

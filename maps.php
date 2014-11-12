@@ -6,7 +6,7 @@ include_once("header.php"); // returns CMS_ROOTPATH constant
 //}
 
 include_once(CMS_ROOTPATH."menu.php");
-include_once (CMS_ROOTPATH.'include/person_cls.php');
+include_once(CMS_ROOTPATH.'include/person_cls.php');
 include_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/date_place.php");
 
@@ -287,7 +287,7 @@ if(isset($_POST['items'])) {
 $flag_desc_search=0; $chosenperson=''; $persfams = '';
 if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	$flag_desc_search=1;
-	$chosenperson=	$_GET['persged'];
+	$chosenperson= $_GET['persged'];
 	$persfams = $_GET['persfams'];
 	$persfams_arr = explode(';',$persfams);
 	$myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM ".$tree_prefix_quoted.'person
@@ -308,8 +308,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	$person_man_prep->bindParam(1,$pers_man_prep_var);
 
 	function outline($family_id,$main_person,$gn) {
-
-		global $db, $desc_array, $dbh;
+		global $desc_array, $dbh;
 		global $language, $dirmark1, $dirmark1;
 		global $family_prep, $fam_prep_var, $person_prep, $pers_prep_var;
 		global $family_prep2, $fam_prep_var2, $person_man_prep, $pers_man_prep_var;

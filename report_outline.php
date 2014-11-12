@@ -7,7 +7,7 @@
 @set_time_limit(300);
 
 global $show_date, $dates_behind_names, $nr_generations;
-global $screen_mode, $language, $db, $humo_option, $user, $selected_language;
+global $screen_mode, $language, $humo_option, $user, $selected_language;
 
 // Check for PDF screen mode
 $screen_mode=''; 
@@ -230,7 +230,7 @@ $pers_all_prep->bindParam(1,$pers_all_prep_var);
 
 function outline($family_id,$main_person,$gn,$nr_generations) {
 
-	global $db, $show_date, $dates_behind_names, $nr_generations ;
+	global $show_date, $dates_behind_names, $nr_generations;
 	global $language, $dirmark1, $dirmark1;
 	global $screen_mode, $pdf;
 	global $dbh, $fam_prep, $pers_prep, $fam_all_prep, $pers_all_prep;

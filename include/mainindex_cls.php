@@ -94,11 +94,8 @@ class mainindex_cls{
 
 			// *** Check is family tree is shown or hidden for user group ***
 			$hide_tree_array=explode(";",$user['group_hide_trees']);
-			$hide_tree=false;
-			for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-				if ($hide_tree_array[$x]==$dataDb->tree_id){ $hide_tree=true; }
-			}
-			if ($hide_tree==false){	
+			$hide_tree=false; if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
+			if ($hide_tree==false){
 				$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
 				$treetext_name=$treetext['name'];
 
