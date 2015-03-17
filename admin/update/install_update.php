@@ -24,7 +24,7 @@ if (isset($_GET['re_install'])){
 	$update['up_to_date']='no';
 }
 
-if ($update['up_to_date']=='yes'){
+if (isset($update['up_to_date']) AND $update['up_to_date']=='yes'){
 	// *** Show HuMo-gen version number ***
 	echo '<h2>HuMo-gen</h2>';
 	echo __('Version:').' ';
@@ -49,12 +49,31 @@ if ($update['up_to_date']=='yes'){
 	}
 	echo '<br><br>';
 
+	// *** Check for HuMo-gen beta version SAME CODE AS CODE BELOW... ***
+	$check=' checked'; if ($humo_option['update_last_check']=='DISABLED') $check='';
+	echo '<h2>'.__('Enable/ disable HuMo-gen update check.').'</h2>';
+	echo '<form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">';
+	echo '<input type="checkbox" name="enable_update_check"'.$check.' onChange="this.form.submit();"> '.__('Check regularly for HuMo-gen updates.').'<br>';
+	//print '<input type="Submit" name="enable_update_check_change" value="'.__('Change').'">';
+	echo '<input type="hidden" name="enable_update_check_change" value="1">';
+	echo '</form>';
+
+	//echo __('Sometimes there is a beta version available.');
+	//if (strtotime ($update['beta_version_date'])-strtotime($humo_option["version_date"])>0){
+	//	echo ' <a href="'.$path_tmp.'page=install_update&install_beta=1&auto=1&update_check=1">'.__('HuMo-gen beta version available').' ('.$update['beta_version'].')!</a>';
+	//}
+	//else{
+	//	echo '  '.__('No beta version available.');
+	//}
+
+	echo '<br><br>';
+
 	// *** Check for HuMo-gen extensions ***
 	//echo '<h2>HuMo-gen extensions</h2>';
 	//echo 'Under construction...';
 }
 
-elseif ($update['up_to_date']=='no'){
+elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 
 	if (isset($_GET['auto'])){
 		echo '<h2>'.__('Automatic update').'</h2>';
@@ -350,6 +369,12 @@ elseif ($update['up_to_date']=='no'){
 
 	}
 	else{
+
+	if (isset($humo_option["version"])){
+		echo __('Current HuMo-gen version:').' '.$humo_option["version"].'.<br>';
+		echo __('Available HuMo-gen version:').' '.$update['version'].'.<br><br>';
+	}
+
 		echo __('There are 2 update methods: automatic and manually.');
 
 		echo '<h2>'.__('1) Automatic update of HuMo-gen').'</h2>';
@@ -369,5 +394,15 @@ elseif ($update['up_to_date']=='no'){
 
 else{
 	echo __('Online version check unavailable.');
+
+	// *** Check for HuMo-gen beta version SAME CODE AS CODE ABOVE ***
+	$check=' checked'; if ($humo_option['update_last_check']=='DISABLED') $check='';
+	echo '<h2>'.__('Enable/ disable HuMo-gen update check.').'</h2>';
+	echo '<form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">';
+	echo '<input type="checkbox" name="enable_update_check"'.$check.' onChange="this.form.submit();"> '.__('Check regularly for HuMo-gen updates.').'<br>';
+	//print '<input type="Submit" name="enable_update_check_change" value="'.__('Change').'">';
+	print '<input type="hidden" name="enable_update_check_change" value="1">';
+	echo '</form>';
+
 }
 ?>

@@ -64,11 +64,18 @@ if($flag_desc_search==1 AND $desc_array != '') {
 	//for($i=0; $i<count($desc_array); $i++) {
 	foreach($desc_array as $value) {
 		if($_SESSION['type_birth']==1) {
-			$persoon=$dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$value."' AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
+			$persoon=$dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND pers_gedcomnumber ='".$value."'
+				AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
 			@$personDb=$persoon->fetch(PDO::FETCH_OBJ);
 		}
 		elseif($_SESSION['type_death']==1) {
-			$persoon=$dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$value."' AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
+			//$persoon=$dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$value."' AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
+			$persoon=$dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND pers_gedcomnumber ='".$value."'
+				AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
 			@$personDb=$persoon->fetch(PDO::FETCH_OBJ);
 		}
 		if($personDb) {
@@ -117,10 +124,16 @@ if($flag_desc_search==1 AND $desc_array != '') {
 }
 else {
 	if($_SESSION['type_birth']==1) {
-		$persoon=$dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
+		//$persoon=$dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
+		$persoon=$dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
 	}
 	elseif($_SESSION['type_death']==1) {
-		$persoon=$dbh->query("SELECT pers_death_place, pers_death_date, pers_buried_place, pers_buried_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
+		//$persoon=$dbh->query("SELECT pers_death_place, pers_death_date, pers_buried_place, pers_buried_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
+		$persoon=$dbh->query("SELECT pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
 	}
 	while (@$personDb=$persoon->fetch(PDO::FETCH_OBJ)){
 

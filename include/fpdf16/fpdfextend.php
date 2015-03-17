@@ -170,7 +170,7 @@ function pdfdisplay($templ_personing,$person_kind) {
 
 		if(!$address){
 			if(strpos($key,"address")!==false) {
-				if ($templ_personing["flag_prof"]==1)
+				if ($templ_personing["flag_address"]==1)
 					$residence=ucfirst(__('residences'));
 				else
 					$residence=ucfirst(__('residence'));

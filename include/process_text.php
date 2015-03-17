@@ -1,6 +1,6 @@
 <?php
 function process_text($text_process, $text_sort='standard'){
-	global $user, $dbh, $tree_prefix_quoted;
+	global $dbh, $tree_id, $user, $tree_prefix_quoted;
 	global $screen_mode, $text_presentation;
 
 	if ($text_presentation!='hide'){
@@ -15,8 +15,11 @@ function process_text($text_process, $text_sort='standard'){
 		for ( $i = 0; $i <= (count($text_pieces)-1); $i++) { 
 			// *** Search for Aldfaer texts ***
 			if (substr($text_pieces[$i], 0, 1)=='@'){
-				$search_text=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."texts
-					WHERE text_gedcomnr='".safe_text($text_pieces[$i])."'");
+				$text_check=substr($text_pieces[$i],1,-1);
+				//$search_text=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."texts
+				//	WHERE text_gedcomnr='".safe_text($text_check)."'");
+				$search_text=$dbh->query("SELECT * FROM humo_texts
+					WHERE text_tree_id='".$tree_id."' AND text_gedcomnr='".safe_text($text_check)."'");
 				$search_textDb=$search_text->fetch(PDO::FETCH_OBJ);
 				if ($text_result){ $text_result.='<br>'; }
 				$text_result.=@$search_textDb->text_text;

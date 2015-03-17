@@ -73,13 +73,35 @@ echo '<th>'.ucfirst(__('died'))."</th>\n";
 echo "</tr>\n";
 
 // *** Build query ***
+
 $sql = "SELECT *,
 	abs(substring( pers_birth_date,1,2 )) as birth_day,
 	substring( pers_birth_date,-4 ) as birth_year
-	FROM ".$tree_prefix_quoted."person
-	WHERE substring( pers_birth_date,  4,3) = :month
-	OR  substring( pers_birth_date,  3,3) = :month
+	FROM humo_persons
+	WHERE pers_tree_id='".$tree_id."' AND (substring( pers_birth_date,  4,3) = :month
+	OR substring( pers_birth_date,  3,3) = :month)
 	order by birth_day ";
+
+
+/* WORKS IF BIRT IS SAVED AS EVENT:
+$sql = "SELECT humo_persons.*,
+	abs(substring( birth_events.event_date,1,2 )) as birth_day,
+	substring( birth_events.event_date,-4 ) as birth_year,
+	death_events.event_date as pers_death_date
+
+	FROM humo_persons
+
+	JOIN humo_events as birth_events
+	ON (birth_events.event_person_id = humo_persons.pers_id AND birth_events.event_kind='birth')
+
+	LEFT JOIN humo_events as death_events
+	ON (death_events.event_person_id = humo_persons.pers_id AND death_events.event_kind='death')
+
+	WHERE humo_persons.pers_tree_id='".$tree_id."'
+	AND substring( birth_events.event_date, 4,3) = :month
+	OR substring( birth_events.event_date, 3,3) = :month
+	order by birth_day ";
+*/
 try {
 	$qry = $dbh->prepare( $sql );
 	$qry->bindValue(':month', $month, PDO::PARAM_STR);

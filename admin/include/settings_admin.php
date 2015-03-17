@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
@@ -47,6 +47,9 @@ if (isset($_POST['save_option'])){
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["watermark_color_r"])."' WHERE setting_variable='watermark_color_r'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["watermark_color_g"])."' WHERE setting_variable='watermark_color_g'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["watermark_color_b"])."' WHERE setting_variable='watermark_color_b'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["min_search_chars"])."' WHERE setting_variable='min_search_chars'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["date_display"])."' WHERE setting_variable='date_display'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["name_order"])."' WHERE setting_variable='name_order'");
 }
 
 // *** Re-read variables after changing them ***
@@ -119,16 +122,16 @@ echo "</select>";
 echo '</td></tr>';
 
 echo '<tr><td>'.__('Standard language admin menu').'</td><td><select size="1" name="default_language_admin">';
-
 	if($langs_admin) {
 		for($i=0; $i<count($langs_admin); $i++) {
 			$select=''; if ($humo_option['default_language_admin']==$langs_admin[$i][1]){ $select=' SELECTED'; }
 			echo '<option value="'.$langs_admin[$i][1].'"'.$select.'>'.$langs_admin[$i][0].'</option>';
 		}
 	}
-
 echo "</select>";
 echo '</td></tr>';
+
+echo '<tr bgcolor="green"><th><font color="white">'.__('Search engine settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr class="humo_color"><td valign="top">url_rewrite<br>'.__('Improve indexing of search engines (like Google)').'</td><td><select size="1" name="url_rewrite">';
 $selected=''; if ($humo_option["url_rewrite"]!='j') $selected=' SELECTED';
@@ -153,6 +156,8 @@ $selected=''; if ($humo_option["searchengine_cms_only"]!='y') $selected=' SELECT
 echo '<option value="y">'.__('Yes').'</option>';
 echo '<option value="n"'.$selected.'>'.__('No').'</option>';
 echo "</select><br></td></tr>";
+
+echo '<tr bgcolor="green"><th><font color="white">'.__('Contact & registration form settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Block spam question').'<br>'.__('Block spam answer').'</td><td>';
 echo '<input type="text" name="block_spam_question" value="'.htmlentities($humo_option["block_spam_question"],ENT_NOQUOTES).'" size="60"><br>';
@@ -203,6 +208,8 @@ echo '<option value="y">'.__('Yes').'</option>';
 echo '<option value="n"'.$selected.'>'.__('No').'</option>';
 echo "</select>";
 echo '</td></tr>';
+
+echo '<tr bgcolor="green"><th><font color="white">'.__('International settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td valign="top">'.__('Timezone').'</td><td><select size="1" name="timezone">';
 
@@ -277,6 +284,33 @@ echo '<option value="Pacific/Tongatapu"'.$selected.'>13:00 (Pacific/Tongatapu)</
 
 echo '</select>';
 echo '</td></tr>';
+
+echo '<tr><td style="white-space:nowrap;">'.__('Minimum characters in search box').'</td>';
+echo '<td><input type="text" name="min_search_chars" value="'.$humo_option["min_search_chars"].'" size="4"> '.__('Minimum characters in search boxes (standard value=3. For Chinese set to 1).').'</td>';
+echo "</tr>";
+
+echo '<tr><td style="white-space:nowrap;">'.__('Date display').'</td>';  
+echo '<td><select size="1" name="date_display">';
+$selected=''; if ($humo_option["date_display"]== 'eu') $selected=' SELECTED';
+echo '<option value="eu"'.$selected.'>'.__('Europe/Global - 5 Jan 1787').'</option>';
+$selected=''; if ($humo_option["date_display"]== 'us') $selected=' SELECTED';
+echo '<option value="us"'.$selected.'>'.__('USA - Jan 5, 1787').'</option>';
+$selected=''; if ($humo_option["date_display"]== 'ch') $selected=' SELECTED';
+echo '<option value="ch"'.$selected.'>'.__('China - 1787-01-05').'</option>';
+$selected=''; if ($humo_option["date_display"]== 'is') $selected=' SELECTED';
+echo '<option value="is"'.$selected.'>'.__('Israel - 5 Jan 1787 (15 Tevet 5547)').'</option>';
+echo "</select>"; 
+echo "</td></tr>";
+
+echo '<tr><td style="white-space:nowrap;">'.__('Order of names in reports').'</td>';  
+echo '<td><select size="1" name="name_order">';
+$selected=''; if ($humo_option["name_order"]== 'western') $selected=' SELECTED';
+echo '<option value="western"'.$selected.'>'.__('Western').'</option>';
+$selected=''; if ($humo_option["name_order"]== 'chinese') $selected=' SELECTED';
+echo '<option value="chinese"'.$selected.'>'.__('Chinese').'</option>';
+echo "</select>";
+echo "&nbsp;".__('Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports and lists: 刘 理想');
+echo "</td></tr>";
 
 echo '<tr bgcolor=green><th><font color=white>'.__('Settings Main Menu').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 

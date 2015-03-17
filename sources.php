@@ -27,9 +27,10 @@ if(isset($_GET['order_sources'])) {
 }
 if($order_sources=="title") {
 	// *** Default querie: order by title ***
-	$querie="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources";
+	//$querie="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources";
+	$querie="SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'";
 	// *** Check user group is restricted sources can be shown ***
-	if ($user['group_show_restricted_source']=='n'){ $querie.=" WHERE source_status!='restricted' OR source_status IS NULL"; }
+	if ($user['group_show_restricted_source']=='n'){ $querie.=" AND (source_status!='restricted' OR source_status IS NULL)"; }
 	$querie.=" ORDER BY source_title".$desc_asc;
 }
 if($order_sources=="date") {
@@ -48,14 +49,16 @@ if($order_sources=="date") {
 		date_format( str_to_date( substring(source_date,4,3),'%b' ),'%m'),
 		date_format( str_to_date( left(source_date,2),'%d' ),'%d') )
 		as year
-	FROM ".$tree_prefix_quoted."sources";
-	if ($user['group_show_restricted_source']=='n'){ $querie.=" WHERE source_status!='restricted' OR source_status IS NULL"; }
+	FROM humo_sources WHERE source_tree_id='".$tree_id."'";
+	//FROM ".$tree_prefix_quoted."sources";
+	if ($user['group_show_restricted_source']=='n'){ $querie.=" AND (source_status!='restricted' OR source_status IS NULL)"; }
 	$querie.=" ORDER BY year".$desc_asc;
 }
 if($order_sources=="place") {
-	$querie="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources";
+	//$querie="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources";
+	$querie="SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'";
 	// *** Check user group is restricted sources can be shown ***
-	if ($user['group_show_restricted_source']=='n'){ $querie.=" WHERE source_status!='restricted' OR source_status IS NULL"; }
+	if ($user['group_show_restricted_source']=='n'){ $querie.=" AND (source_status!='restricted' OR source_status IS NULL)"; }
 	$querie.=" ORDER BY source_place".$desc_asc;
 }
 

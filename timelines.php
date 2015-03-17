@@ -80,13 +80,15 @@ if($personDb->pers_fams) {
 			$spouse=$familyDb->fam_man;
 		}
 		@$spouse2Db = $db_functions->get_person($spouse);
-		$person_cls = New person_cls;
-		$person_cls->construct($spouse2Db);
-		$privacy=$person_cls->privacy;
-		$name=$person_cls->person_name($spouse2Db);
+		$privacy='1';
+		if ($spouse2Db){
+			$person_cls = New person_cls;
+			$person_cls->construct($spouse2Db);
+			$privacy=$person_cls->privacy;
+			$name=$person_cls->person_name($spouse2Db);
+		}
 		if ($privacy==''){
-
-			if($spouse2Db->pers_death_date) {
+			if(isset($spouse2Db->pers_death_date) AND $spouse2Db->pers_death_date) {
 				$spousedeathname[$i]=''; $spousedeathyear[$i]=''; $spousedeathtext[$i]='';
 				$spousedeathdate[$i]=julgreg($spouse2Db->pers_death_date);
 				$temp=substr($spousedeathdate[$i],-4);

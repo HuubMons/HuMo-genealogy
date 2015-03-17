@@ -141,7 +141,7 @@ while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 	}
 
 	echo '<td>';
-	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_user_settings&user='.$userDb->user_id.'","","width=900,height=500,top=100,left=100");><img src="../images/search.png" border="0"></a>';
+	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_user_settings&user='.$userDb->user_id.'","","scrollbars=1,width=900,height=500,top=100,left=100");><img src="../images/search.png" border="0"></a>';
 	echo '</td>';
 
 	// *** Show statistics ***

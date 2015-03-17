@@ -1,0 +1,1 @@
+Directory for chinese TTF file.

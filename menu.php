@@ -65,7 +65,9 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 				$_SESSION["save_quicksearch"]=$quicksearch;
 			}
 			if (isset($_SESSION["save_quicksearch"])){ $quicksearch=$_SESSION["save_quicksearch"]; }
-			print '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="15" pattern=".{3,}" title="'.__('Minimum: 3 characters.').'">';
+			if($humo_option['min_search_chars']==1) { $pattern=""; $min_chars =" 1 ";}
+			else { $pattern='pattern=".{'.$humo_option['min_search_chars'].',}"'; $min_chars = " ".$humo_option['min_search_chars']." ";}
+			print '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="15" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
 			print ' <input type="submit" value="'.__('Search').'">';
 		print "</form>";
 	}
@@ -218,7 +220,8 @@ echo '<ul class="humo_menu_item">';
 	echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Home')."</a></li>\n";
 
 	// *** Menu genealogy (for CMS pages) ***
-	$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!=''");
+	//$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!=''");
+	$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
 	if($cms_qry->rowCount() > 0) {
 		$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
 
@@ -329,7 +332,8 @@ echo '<ul class="humo_menu_item">';
 					//if ($user['group_sources']=='j'){
 					if ($user['group_sources']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check if there are sources in the database ***
-						$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources");
+						//$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources");
+						$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$_SESSION['tree_id']."'");
 						@$sourceDb=$source_qry->rowCount();
 						if ($sourceDb>0){
 							$select_menu=''; if ($menu_choice=='sources'){ $select_menu=' id="current"'; }
@@ -346,7 +350,9 @@ echo '<ul class="humo_menu_item">';
 					//if ($user['group_addresses']=='j'){
 					if ($user['group_addresses']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check for addresses in the database ***
-						$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr LIKE '_%'");
+						//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr LIKE '_%'");
+						$address_qry=$dbh->query("SELECT * FROM humo_addresses
+							WHERE address_tree_id='".$tree_id."' AND address_gedcomnr LIKE '_%'");
 						@$addressDb=$address_qry->rowCount();
 						if ($addressDb>0){
 							$select_menu=''; if ($menu_choice=='addresses'){ $select_menu=' id="current"'; }

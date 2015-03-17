@@ -63,11 +63,10 @@ echo '<div data-role="page" data-theme="b">';
 
 if (isset($_POST['id'])){ $id=$_POST['id']; }
 if (isset($_GET['id'])){ $id=$_GET['id']; }
-$res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-	LEFT JOIN ".safe_text($_SESSION['tree_prefix'])."family
-	ON ".safe_text($_SESSION['tree_prefix'])."person.pers_famc=".safe_text($_SESSION['tree_prefix'])."family.fam_gedcomnumber
-	WHERE ".safe_text($_SESSION['tree_prefix'])."person.pers_gedcomnumber
-	LIKE '".safe_text($id)."'");
+$res=$dbh->query("SELECT * FROM humo_persons
+	LEFT JOIN humo_families
+	ON fam_gedcomnumber=pers_famc
+	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber LIKE '".safe_text($id)."'");
 @$person_manDb=$res->fetch(PDO::FETCH_OBJ);  
 
 // *** Family statistics ***
@@ -75,8 +74,10 @@ $res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
 if (!$bot_visit){
 	// *** Update (old) statistics counter ***
 	$fam_counter=$person_manDb->fam_counter+1;
-	$sql="UPDATE ".safe_text($_SESSION['tree_prefix'])."family SET fam_counter=$fam_counter
-		WHERE fam_gedcomnumber='".safe_text($person_manDb->fam_gedcomnumber)."'";
+	//$sql="UPDATE ".safe_text($_SESSION['tree_prefix'])."family SET fam_counter=$fam_counter
+	//	WHERE fam_gedcomnumber='".safe_text($person_manDb->fam_gedcomnumber)."'";
+	$sql="UPDATE humo_families SET fam_counter=$fam_counter
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($person_manDb->fam_gedcomnumber)."'";
 	$dbh->query($sql);
 	// *** Extended statistics, first check if table exists ***
 	//$statistics = mysql_query("SELECT * FROM humo_stat_date LIMIT 0,1",$db);
@@ -85,7 +86,7 @@ if (!$bot_visit){
 
 		$datasql = $dbh->query("SELECT * FROM humo_trees
 			WHERE tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
-		$datasqlDb=$datasql->fetch(PDO::FETCH_OBJ);		
+		$datasqlDb=$datasql->fetch(PDO::FETCH_OBJ);
 		$stat_easy_id=$datasqlDb->tree_id.'-'.$person_manDb->fam_gedcomnumber.'-'.$person_manDb->fam_man.'-'.$person_manDb->fam_woman;
 
 		$update_sql="INSERT INTO humo_stat_date SET
@@ -122,7 +123,9 @@ echo '<li data-role="list-divider">'.__('Parents').'</li>';
 if ($person_manDb->fam_man!=NULL){
 	echo popup($person_manDb->fam_man,false); // father
 	// *** Show person details using standard HuMo-gen function ***
-	$parent1=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person_manDb->fam_man)."'");
+	//$parent1=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person_manDb->fam_man)."'");
+	$parent1=$dbh->query("SELECT * FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($person_manDb->fam_man)."'");
 	@$parent1Db=$parent1->fetch(PDO::FETCH_OBJ);
 	$parent1_cls = New person_cls;
 	$parent1_cls->construct($parent1Db);  
@@ -133,7 +136,9 @@ if ($person_manDb->fam_man!=NULL){
 if ($person_manDb->fam_woman!=NULL){
 	echo popup($person_manDb->fam_woman,false); // father
 	// *** Show person details using standard HuMo-gen function ***
-	$parent2=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person_manDb->fam_woman)."'");
+	//$parent2=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person_manDb->fam_woman)."'");
+	$parent2=$dbh->query("SELECT * FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($person_manDb->fam_woman)."'");
 	@$parent2Db=$parent2->fetch(PDO::FETCH_OBJ);
 	$parent2_cls = New person_cls;
 	$parent2_cls->construct($parent2Db);  
@@ -149,8 +154,8 @@ elseif(($person_manDb->fam_man==NULL) AND ($person_manDb->fam_woman==NULL)){
 if ($person_manDb->pers_fams!=NULL){
 	$marr=explode(";", $person_manDb->pers_fams);
 	for ($i=0; $i<=count($marr)-1; $i++){
-		$res=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family
-			WHERE fam_gedcomnumber LIKE '".safe_text($marr[$i])."'");
+		$res=$dbh->query("SELECT * FROM humo_families
+			WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber LIKE '".safe_text($marr[$i])."'");
 		$marrDb=$res->fetch(PDO::FETCH_OBJ); 
 
 		if ($id==$marrDb->fam_man){
@@ -164,8 +169,8 @@ if ($person_manDb->pers_fams!=NULL){
 		// *** Privacy filter main person and spouse ***
 		// privacy filter main person is already set above
 		// check privacy of partner
-		$person_partner=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-			WHERE pers_gedcomnumber='$partner'");
+		$person_partner=$dbh->query("SELECT * FROM humo_persons
+			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='$partner'");
 		@$person_partnerDb=$person_partner->fetch(PDO::FETCH_OBJ);
 		
 		// *** Proces spouse using a clas ***
@@ -192,7 +197,9 @@ if ($person_manDb->pers_fams!=NULL){
 		// *** Show partner ***
 		echo popup($partner,false);
 		// *** Show person details using standard HuMo-gen function ***
-		$partner_sql=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($partner)."'");
+		//$partner_sql=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($partner)."'");
+		$partner_sql=$dbh->query("SELECT * FROM humo_persons
+			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($partner)."'");
 		@$partnerDb=$partner_sql->fetch(PDO::FETCH_OBJ);
 		
 		$partner_cls = New person_cls;
@@ -207,13 +214,15 @@ if ($person_manDb->pers_fams!=NULL){
 			//$nopict=1;
 			$number=1; // 1 = show child number.
 			for ($c=0; $c<=count($child)-1; $c++){
-				$res2=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-					WHERE pers_gedcomnumber LIKE '".safe_text($child[$c])."'");
+				$res2=$dbh->query("SELECT * FROM humo_persons
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber LIKE '".safe_text($child[$c])."'");
 				$info2=$res2->fetch();
 				$text=$info2['pers_gedcomnumber'];
 				echo popup($text,false); // father
 				// *** Show person details using standard HuMo-gen function ***
-				$child_sql=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($text)."'");
+				//$child_sql=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($text)."'");
+				$child_sql=$dbh->query("SELECT * FROM humo_persons
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($text)."'");
 				@$childDb=$child_sql->fetch(PDO::FETCH_OBJ);
 				$child_cls = New person_cls;
 				$child_cls->construct($childDb);  

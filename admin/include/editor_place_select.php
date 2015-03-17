@@ -11,7 +11,7 @@ if (isset($_GET['place_item'])){
 	if ($_GET['place_item']=='baptise'){ $place_item='pers_bapt_place'; $form='form1'; }
 	if ($_GET['place_item']=='death'){ $place_item='pers_death_place'; $form='form1'; }
 	if ($_GET['place_item']=='buried'){ $place_item='pers_buried_place'; $form='form1'; }
-	//if ($_GET['place_item']=='place'){ $place_item='address_place['.$_GET['address_place'].']'; $form='form1'; }
+	if ($_GET['place_item']=='place'){ $place_item='address_place_'.$_GET['address_place']; $form='form1'; }
 
 	// *** Places by family ***
 	if ($_GET['place_item']=='relation'){ $place_item='fam_relation_place'; $form='form2'; }
@@ -24,7 +24,7 @@ if (isset($_GET['place_item'])){
 echo'
 	<script type="text/javascript">
 	function select_item(item){
-		/* window.opener.document.form1.pers_birth_place.value=item; */
+		/* EXAMPLE: window.opener.document.form1.pers_birth_place.value=item; */
 		window.opener.document.'.$form.'.'.$place_item.'.value=item;
 		top.close();
 		return false;
@@ -32,25 +32,26 @@ echo'
 	</script>
 ';
 
+$tree_id=$_SESSION['admin_tree_id'];
 $query = "(SELECT pers_birth_place as place_order
-	FROM ".$_SESSION['admin_tree_prefix']."person
-	WHERE pers_birth_place LIKE '_%' GROUP BY place_order)";
+	FROM humo_persons
+	WHERE pers_tree_id='".$tree_id."' AND pers_birth_place LIKE '_%' GROUP BY place_order)";
 
 $query.= " UNION (SELECT pers_bapt_place as place_order
-	FROM ".$_SESSION['admin_tree_prefix']."person
-	WHERE pers_bapt_place LIKE '_%' GROUP BY place_order)";
+	FROM humo_persons
+	WHERE pers_tree_id='".$tree_id."' AND pers_bapt_place LIKE '_%' GROUP BY place_order)";
 
 //$query.= " UNION (SELECT pers_place_index as place_order
-//	FROM ".$_SESSION['admin_tree_prefix']."person
-//	WHERE pers_place_index LIKE '_%' GROUP BY place_order)";
+//	FROM humo_persons
+//	WHERE pers_tree_id='".$tree_id."' AND pers_place_index LIKE '_%' GROUP BY place_order)";
 
 $query.= " UNION (SELECT pers_death_place as place_order
-	FROM ".$_SESSION['admin_tree_prefix']."person
-	WHERE pers_death_place LIKE '_%' GROUP BY place_order)";
+	FROM humo_persons
+	WHERE pers_tree_id='".$tree_id."' AND pers_death_place LIKE '_%' GROUP BY place_order)";
 
 $query.= " UNION (SELECT pers_buried_place as place_order
-	FROM ".$_SESSION['admin_tree_prefix']."person
-	WHERE pers_buried_place LIKE '_%' GROUP BY place_order)";
+	FROM humo_persons
+	WHERE pers_tree_id='".$tree_id."' AND pers_buried_place LIKE '_%' GROUP BY place_order)";
 
 $query.=' ORDER BY place_order';
 

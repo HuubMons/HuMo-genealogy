@@ -49,7 +49,7 @@ include_once (CMS_ROOTPATH.'include/show_tree_text.php');
 
 // *** Show a message at NEW installation. ***
 $result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
-if ($result->rowCount() ==0) {
+if (!$result OR $result->rowCount() ==0) {
 	echo "Installation of HuMo-gen is not yet completed.<br>Installatie van HuMo-gen is nog niet voltooid.";
 	exit();
 }
@@ -417,13 +417,15 @@ else{
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
 	$hide_tree=false; if (in_array(@$dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
 
-	$_SESSION['tree_id']=''; // tree_id is used for editing check.
+	$_SESSION['tree_id']=''; $tree_id='';
 	if ($hide_tree){
 		$_SESSION['tree_prefix']='';
 		$_SESSION['tree_id']='';
+		$tree_id='';
 	}
 	elseif (isset($dataDb->tree_id)){
 		$_SESSION['tree_id']=$dataDb->tree_id;
+		$tree_id=$dataDb->tree_id;
 	}
 
 	// *** Set variabele for queries ***
@@ -494,6 +496,8 @@ else{
 
 	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
 	$db_functions = New db_functions;
+	$db_functions->set_tree_prefix($tree_prefix_quoted);
+	$db_functions->set_tree_id($_SESSION['tree_id']);
 
 	echo '<div class="silverbody">'; 
 } // *** End of PDF export check ***
