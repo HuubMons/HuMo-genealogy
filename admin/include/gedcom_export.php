@@ -169,8 +169,8 @@ function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$sta
 }
 
 function descendants($family_id,$main_person,$gn,$max_generations) {
+	global $dbh, $tree_id, $db_functions;
 	global $persids, $famsids;
-	global $dbh, $tree_id;
 	global $language;
 	$family_nr=1; //*** Process multiple families ***
 	if($max_generations<$gn) { return; }
@@ -181,6 +181,7 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 		$persids[] = $main_person;
 		return;
 	}
+
 	$family=$dbh->query("SELECT fam_man, fam_woman FROM humo_families
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$family_id."'");
 	try {
@@ -202,9 +203,11 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 	// *** Check family with parent1: N.N. ***
 	if ($parent1){
 		// *** Save man's families in array ***
-		$person_qry=$dbh->query("SELECT pers_fams FROM humo_persons
-			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$parent1."'");
-		@$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
+		//$person_qry=$dbh->query("SELECT pers_fams FROM humo_persons
+		//	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$parent1."'");
+		//@$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
+		$personDb=$db_functions->get_person($parent1);
+
 		$marriage_array=explode(";",$personDb->pers_fams);
 		$nr_families=substr_count($personDb->pers_fams, ";");
 	}
@@ -216,10 +219,7 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 	// *** Loop multiple marriages of main_person ***
 	for ($parent1_marr=0; $parent1_marr<=$nr_families; $parent1_marr++){
 		$id=$marriage_array[$parent1_marr];
-		//$family=$dbh->query("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber='$id'");
-		$family=$dbh->query("SELECT * FROM humo_families
-			WHERE pers_tree_id='".$tree_id."' AND fam_gedcomnumber='".$id."'");
-		@$familyDb=$family->fetch(PDO::FETCH_OBJ);
+		$familyDb=$db_functions->get_family($id);
 
 		// *************************************************************
 		// *** Parent1 (normally the father)                         ***
@@ -265,13 +265,11 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 			$spqry = $dbh->query("SELECT pers_famc FROM humo_persons
 				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber = '".$desc_sp."'");
 			$spqryDb = $spqry->fetch(PDO::FETCH_OBJ);
-			if($qryDb->pers_famc) {
-				$famqry = $dbh->query("SELECT * FROM humo_families
-					WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$qryDb->pers_famc."'");
-				$famqryDb = $famqry->fetch(PDO::FETCH_OBJ);
+			if(isset($spqryDb->pers_famc) AND $spqryDb->pers_famc) {
+				$famqryDb = $db_functions->get_family($spqryDb->pers_famc);
 				if($famqryDb->fam_man)   { $persids[] = $famqryDb->fam_man; }
 				if($famqryDb->fam_woman) { $persids[] = $famqryDb->fam_woman; }
-				$famsids[] = $qryDb->pers_famc;
+				$famsids[] = $spqryDb->pers_famc;
 			}
 		}
 		// *************************************************************
@@ -307,24 +305,15 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 } // End of descendant function
 
 function ancestors($person_id,$max_generations) {
-	global $tree, $dbh, $persids, $famsids;
+	global $tree, $tree_id, $dbh, $db_functions, $persids, $famsids;
 	$ancestor_array2[] = $person_id;
 	$ancestor_number2[]=1;
 	$marriage_gedcomnumber2[]=0;
 	$generation = 1;
 	$listed_array=array();
 
-	// some prepared statements before loops
-	$pers_prep = $dbh->prepare("SELECT * FROM humo_persons
-		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
-	$pers_prep->bindParam(1,$pers_prep_var);
-	//$fam_prep = ("SELECT * FROM ".$tree."family WHERE fam_gedcomnumber='?");
-	$fam_prep = ("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='?");
-	$fam_prep->bindParam(1,$fam_prep_var);
-
 	// *** Loop for ancestor report ***
 	while (isset($ancestor_array2[0])){
-
 		if($max_generations <= $generation) { return; }
 
 		unset($ancestor_array);
@@ -350,17 +339,10 @@ function ancestors($person_id,$max_generations) {
 				$listed_array[$ancestor_number[$i]]=$ancestor_array[$i];
 			}
 			if ($ancestor_array[$i]!='0'){
-				$pers_prep_var = $ancestor_array[$i];
-				$pers_prep->execute();
-				@$person_manDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+				$person_manDb=$db_functions->get_person($ancestor_array[$i]);
 				if (strtolower($person_manDb->pers_sexe)=='m' AND $ancestor_number[$i]>1){
-					$fam_prep_var = $marriage_gedcomnumber[$i];
-					$fam_prep->execute();
-					@$familyDb = $fam_prep->fetch(PDO::FETCH_OBJ);
-
-					$pers_prep_var = $familyDb->fam_woman;
-					$pers_prep->execute();
-					@$person_womanDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+					$familyDb=$db_functions->get_family($marriage_gedcomnumber[$i]);
+					$person_womanDb=$db_functions->get_person($familyDb->fam_woman);
 				}
 				if ($listednr=='') {
 					//take I and F
@@ -387,9 +369,7 @@ function ancestors($person_id,$max_generations) {
 					if($person_manDb->pers_famc AND $generation+1 < $max_generations) {  // if this is the last generation (max gen) we don't want the famc!
 						$famsids[]=$person_manDb->pers_famc;
 						if(isset($_POST['ances_sibbl'])) { // also get I numbers of sibblings
-							$fam_prep_var = $person_manDb->pers_famc;
-							$fam_prep->execute();
-							$sibbqryDb = $fam_prep->fetch(PDO::FETCH_OBJ);
+							$sibbqryDb=$db_functions->get_family($person_manDb->pers_famc);
 							$sibs = explode(';',$sibbqryDb->fam_children);
 							foreach($sibs as $value) {
 								if($value != $person_manDb->pers_gedcomnumber) {
@@ -405,9 +385,7 @@ function ancestors($person_id,$max_generations) {
 
 				// == Check for parents
 				if ($person_manDb->pers_famc  AND $listednr==''){
-					$fam_prep_var = $person_manDb->pers_famc;
-					$fam_prep->execute();
-					@$family_parentsDb = $fam_prep->fetch(PDO::FETCH_OBJ);
+					$family_parentsDb=$db_functions->get_family($person_manDb->pers_famc);
 					if ($family_parentsDb->fam_man){
 						$ancestor_array2[] = $family_parentsDb->fam_man;
 						$ancestor_number2[]=(2*$ancestor_number[$i]);
@@ -428,9 +406,7 @@ function ancestors($person_id,$max_generations) {
 			}
 			else{
 				// *** Show N.N. person ***
-				$pers_prep_var = $ancestor_array[$i];
-				$pers_prep->execute();
-				@$person_manDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+				$person_manDb=$db_functions->get_person($ancestor_array[$i]);
 				// take I (and F?)
 			}
 		}	// loop per generation
@@ -487,6 +463,7 @@ echo '<td>';
 					// *** Needed for submitter ***
 					$tree_owner=$treeDb->tree_owner;
 					$tree_id=$treeDb->tree_id;
+					$db_functions->set_tree_id($tree_id);
 				}
 			}
 			echo '<option value="'.$treeDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
@@ -689,7 +666,6 @@ fwrite($fh, $buffer);
 3 TIME 20:31:24
 */
 
-//$person_qry= "SELECT * FROM ".$tree."person";
 $person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 $person_result = $dbh->query($person_qry);
 while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
@@ -798,6 +774,8 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 			$buffer.='2 NOTE '.process_text(3,$person->pers_death_text);
 		if ($person->pers_death_cause)
 			$buffer.='2 CAUS '.$person->pers_death_cause."\r\n";
+		if ($person->pers_death_age)
+			$buffer.='2 AGE '.$person->pers_death_age."\r\n";
 	}
 
 	// *** Buried data ***
@@ -835,6 +813,14 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 		//	$buffer.='2 SOUR '.process_text(3,$addressDb->address_source);
 		//	//sources_export('person','address_source',$nameDb->event_id,3);
 		}
+	}
+
+	// *** Extended address (no valid gedcom 5.5.1) ***
+	$eventnr=0;
+	$connect_sql = $db_functions->get_connections_person('person_address',$person->pers_gedcomnumber);
+	foreach ($connect_sql as $connectDb){
+		//1 RESI @R210@
+		$buffer.='1 RESI @'.$connectDb->connect_item_id."@\r\n";
 	}
 
 	// *** Occupation ***
@@ -1474,16 +1460,15 @@ if ($gedcom_sources=='yes'){
 
 }
 
-// THIS PART ISN'T VALID GEDCOM 5.5.1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// *** THIS PART ISN'T VALID GEDCOM 5.5.1!!!!!!!! ***
 // *** Addresses ***
 // 0 @R155@ RESI
 // 1 ADDR Straat
 // 1 PLAC Plaats
-/*
 // *** ADDRESS IS ADDED BY PERSON! ***
-$family_qry=mysql_query("SELECT * FROM humo_addresses
-	WHERE address_tree_id='".$tree_id."' AND address_gedcomnr LIKE '_%'",$db);
-while($family=mysql_fetch_object($family_qry)){
+$family_qry=$dbh->query("SELECT * FROM humo_addresses
+	WHERE address_tree_id='".$tree_id."' AND address_gedcomnr LIKE '_%'");
+while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 	// 0 @I1181@ INDI *** Gedcomnumber ***
 	$buffer='0 @'.$family->address_gedcomnr."@ RESI\r\n";
 
@@ -1492,10 +1477,12 @@ while($family=mysql_fetch_object($family_qry)){
 	if ($family->address_date){ $buffer.='1 DATE '.$family->address_date."\r\n"; }
 	if ($family->address_place){ $buffer.='1 PLAC '.$family->address_place."\r\n"; }
 	if ($family->address_phone){ $buffer.='1 PHON '.$family->address_phone."\r\n"; }
-	if ($gedcom_sources=='yes'){ //SOURCE }
+	if ($gedcom_sources=='yes'){
+		//SOURCE
+	}
 	if ($family->address_text){ $buffer.='1 NOTE '.process_text(2,$family->address_text); }
 
-// photo
+	// photo
 
 	// *** Write source data ***
 	$buffer=decode($buffer);
@@ -1504,8 +1491,6 @@ while($family=mysql_fetch_object($family_qry)){
 	//$buffer = str_replace("\r\n", "<br>", $buffer);
 	//echo $buffer;
 }
-*/
-
 
 // *** Notes ***
 // 0 @N1@ NOTE

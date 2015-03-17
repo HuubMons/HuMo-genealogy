@@ -42,6 +42,10 @@ function set_privacy($personDb){
 					if (substr($personDb->pers_bapt_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }
 						else $privacy_person='1'; // *** overwrite pers_alive status ***
 				}
+				if ($personDb->pers_cal_date){
+					if (substr($personDb->pers_cal_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }
+						else $privacy_person='1'; // *** overwrite pers_alive status ***
+				}
 
 				// *** Check if deceased persons should be filtered ***
 				if ($user["group_filter_death"]=='n'){
@@ -63,12 +67,18 @@ function set_privacy($personDb){
 					if (substr($personDb->pers_buried_date,-4) < $user["group_death_date"]){ $privacy_person=''; }
 						else $privacy_person='1'; // *** overwrite pers_alive status ***
 				}
+				if ($personDb->pers_cal_date){
+					if (substr($personDb->pers_cal_date,-4) < $user["group_death_date"]){ $privacy_person=''; }
+						else $privacy_person='1'; // *** overwrite pers_alive status ***
+				}
 			}
 
 			// *** Filter person's WITHOUT any date's ***
 			if ($user["group_filter_date"]=='j'){
 				if ($personDb->pers_birth_date=='' AND $personDb->pers_bapt_date==''
-				AND $personDb->pers_death_date=='' AND $personDb->pers_buried_date==''){
+				AND $personDb->pers_death_date=='' AND $personDb->pers_buried_date==''
+				AND $personDb->pers_cal_date=='' AND $personDb->pers_cal_date==''
+				){
 					$privacy_person='';
 				}
 			}
@@ -880,9 +890,9 @@ function name_extended($person_kind){
 		}
 
 
-		// *********************************************************************************************
-		// *** Check for adoptive parents (just for shure: made it for multiple adoptive parents...) ***
-		// *********************************************************************************************
+		// ********************************************************************************************
+		// *** Check for adoptive parents (just for sure: made it for multiple adoptive parents...) ***
+		// ********************************************************************************************
 		if ($person_kind=='parent1' OR $person_kind=='parent2'){
 			$famc_adoptive_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'adoption');
 			foreach ($famc_adoptive_qry as $famc_adoptiveDb){
@@ -980,9 +990,9 @@ function name_extended($person_kind){
 						$text2.='">';
 					}
 					elseif ($humo_option["url_rewrite"]=="j"){
-						// *** $uri_path is gemaakt in header.php ***
+						// *** $uri_path is made in header.php ***
 						$text2='<a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$fatherDb->pers_indexnr;
-						// *** Dit nummer toegevoegd, anders krijgt Google heel veel te indexeren gezinnen ***
+						// *** Added number to prevent too much search engine index links ***
 						if (isset($fatherDb->pers_gedcomnumber)){ $text2.= '/'.$fatherDb->pers_gedcomnumber; }
 						$text2.='/">';
 					}
@@ -1360,7 +1370,8 @@ function person_data($person_kind, $id){
 		}
 		// *** Death time ***
 		if (isset($personDb->pers_death_time) AND $personDb->pers_death_time){
-			$templ_person["dead_dateplacetime"]=' '.$personDb->pers_death_time;
+			//$templ_person["dead_dateplacetime"]=' '.$personDb->pers_death_time;
+			$templ_person["dead_dateplacetime"]=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
 			$temp="dead_dateplacetime";
 			$text.=$templ_person["dead_dateplacetime"];
 		}
@@ -1371,7 +1382,7 @@ function person_data($person_kind, $id){
 				//if($temp) { $templ_person[$temp].=", "; }
 				$templ_person["dead_text"]=' '.$work_text;
 				$temp="dead_text";
-				$text=$templ_person["dead_text"];
+				$text.=$templ_person["dead_text"];
 			}
 		}
 
@@ -1457,7 +1468,7 @@ function person_data($person_kind, $id){
 				$templ_person["buri_text"]=' '.$work_text;
 				$temp="buri_text";
 				//$text.=", ".$work_text;
-				$text=$templ_person["buri_text"];
+				$text.=$templ_person["buri_text"];
 			}
 		}
 

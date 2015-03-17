@@ -56,27 +56,31 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 		$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";
 		$register_message .=$_POST['register_text']."<br>\n";
 
-		$headers  = "MIME-Version: 1.0\n";
-		//$headers .= "Content-type: text/plain; charset=utf-8\n";
-		$headers .= "Content-type: text/html; charset=utf-8\n";
-		$headers .= "X-Priority: 3\n";
-		$headers .= "X-MSMail-Priority: Normal\n";
-		$headers .= "X-Mailer: php\n";
-		$headers .= "From: \"".$_POST['register_name']."\" <".$_POST['register_mail'].">\n";
+		//$headers  = "MIME-Version: 1.0\n";
+		//$headers .= "Content-type: text/html; charset=utf-8\n";
+		//$headers .= "X-Priority: 3\n";
+		//$headers .= "X-MSMail-Priority: Normal\n";
+		//$headers .= "X-Mailer: php\n";
+		//$headers .= "From: \"".$_POST['register_name']."\" <".$_POST['register_mail'].">\n";
 
-		//echo '<br>'.__('You have entered the following email address: ').'<b> '.$_POST['register_sender'].'</b><br>';
-		//$position = strpos($_POST['register_sender'],"@");
-		//if ($position<1){ echo '<font color="red">'.__('The email address you entered doesn\'t seem to be a valid email address!').'</font><br>'; }
-		//echo '<b>'.__('If you do not enter a valid email address, unfortunately I cannot answer you!').'</b><br>';
-		//echo __('Message: ').'<br>'.$_POST['register_text'];
+		//@$mail = mail($register_address, $register_subject, $register_message, $headers);
 
-		@$mail = mail($register_address, $register_subject, $register_message, $headers);
-		//if($mail){
-		//	echo ("<br>".__('E-mail sent!'));
-		//}
-		//else{
-		//	echo "<br><b>".__('Sending e-mail failed!')."</b><br>";
-		//}
+		include_once ('include/mail.php');
+		// *** Set who the message is to be sent from ***
+		$mail->setFrom($_POST['register_mail'], $_POST['register_name']);
+		// *** Set who the message is to be sent to ***
+		$mail->addAddress($register_address, $register_address);
+		// *** Set the subject line ***
+		$mail->Subject = $register_subject;
+		$mail->msgHTML($register_message);
+		// *** Replace the plain text body with one created manually ***
+		//$mail->AltBody = 'This is a plain-text message body';
+		if (!$mail->send()) {
+		//	echo '<br><b>'.__('Sending e-mail failed!').' '. $mail->ErrorInfo.'</b>';
+		//} else {
+		//	echo '<br><b>'.__('E-mail sent!').'</b><br>';
+		}
+
 	}
 	else{
 		echo '<h2>'.$error.'</h2>';
@@ -104,7 +108,7 @@ else{
 		print '<br><form id="form_id" method="post" action="'.$_SERVER['PHP_SELF'].'" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
 
 		print '<table align="center" class="humo">';
-		print '<tr><th class="fonts" colspan="2">'.__('User registration form').'</th></tr>';
+		echo '<tr class="table_headline"><th class=fonts" colspan="2">'.__('User registration form').'</th></tr>';
 
 		$register_name=''; if (isset($_POST['register_name'])){ $register_name=$_POST['register_name']; }
 		print '<tr><td>'.__('Username').':</td><td><input type="text" class="fonts" name="register_name" size="40" style="background-color:#FFFFFF" value="'.$register_name.'"></td></tr>';

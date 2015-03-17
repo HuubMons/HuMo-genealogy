@@ -2,7 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<html><head><title>'.__('Select place').'</title></head><body>';
+//echo '<html><head><title>'.__('Select place').'</title></head><body>';
 echo '<h1 align=center>'.__('Select place').'</h1>';
 
 $place_item='pers_birth_place'; $form='form1';
@@ -54,9 +54,11 @@ $query.= " UNION (SELECT pers_buried_place as place_order
 	WHERE pers_tree_id='".$tree_id."' AND pers_buried_place LIKE '_%' GROUP BY place_order)";
 
 $query.=' ORDER BY place_order';
-
 $result= $dbh->query($query);
+
 while (@$resultDb = $result->fetch(PDO::FETCH_OBJ)){
-	echo '<a href="" onClick=\'return select_item("'.$resultDb->place_order.'")\'>'.$resultDb->place_order.'</a><br>';
+	//echo '<a href="" onClick=\'return select_item("'.$resultDb->place_order.'")\'>'.$resultDb->place_order.'</a><br>';
+	// *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
+	echo '<a href="" onClick=\'return select_item("'.str_replace("'","&prime;",$resultDb->place_order).'")\'>'.$resultDb->place_order.'</a><br>';
 }
 ?>

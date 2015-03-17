@@ -115,7 +115,6 @@ function witness_edit($witness, $multiple_rows=''){
 	// *** Witness: text field ***
 	$witness_value=$witness;
 	if (substr($witness,0,1)=='@'){ $witness_value=''; }
-	//echo ' <b>'.__('or').':</b> <input type="text" name="text_event" value="'.htmlspecialchars($witness_value).'" size="40">';
 	echo ' <b>'.__('or').':</b> <input type="text" name="text_event'.$multiple_rows.'" value="'.htmlspecialchars($witness_value).'" size="40">';
 }
 
@@ -340,11 +339,6 @@ if (isset($tree_prefix)){
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 
-				//$fav_qry = "SELECT * FROM humo_settings, ".$tree_prefix."person
-				//	WHERE setting_variable='admin_favourite'
-				//	AND setting_tree_id='".safe_text($tree_id)."'
-				//	AND pers_gedcomnumber=setting_value
-				//	ORDER BY pers_lastname, pers_firstname";
 				$fav_qry = "SELECT * FROM humo_settings, humo_persons
 					WHERE setting_variable='admin_favourite'
 					AND setting_tree_id='".safe_text($tree_id)."'
@@ -363,20 +357,11 @@ if (isset($tree_prefix)){
 			echo '</form>';
 		}
 
-		if (isset($pers_gedcomnumber)){
-			echo '<span style="font-size:11px;">';
-				echo '<br>'.__('Examples of date entries, using English month abbreviations: jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec or month numbers:').'<br>';
-				echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, between 1986 and 1987').', 13 oct 1100 BC.</b><br>';
-				echo __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#').'<br>';
-			echo '</span>';
-		}
-
 		// *** Show delete message ***
 		if ($confirm) echo $confirm;
 
 		if ($new_tree==false){
-		//echo '<br><table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
-		echo '<br><table class="humo" style="text-align:center; width:1100px; margin-left:50px;"><tr class="table_header_large"><td>';
+		echo '<br><br><table class="humo" style="text-align:center; width:90%; margin-left: auto; margin-right:auto;"><tr class="table_header_large"><td>';
 
 			// *** Search persons firstname/ lastname ***
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
@@ -457,6 +442,26 @@ if (isset($tree_prefix)){
 			<img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Add person').'" alt="'.__('Add person').'"> '.
 			__('Add person').'</a>';
 
+			// HELP POPUP
+			//echo '<div class="fonts '.$rtlmarker.'sddm" style="border:1px solid #d8d8d8; margin-top:2px; display:inline;">';
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+				echo '<a href="#" style="display:inline" ';
+				echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
+				echo 'onmouseout="mclosetime()">';
+				echo '<img src="../images/help.png" height="16" width="16">';
+				echo '</a>';
+				//echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+					echo __('Examples of date entries, using English month abbreviations: jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec or month numbers:').'<br>';
+					echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, between 1986 and 1987').', 13 oct 1100 BC.</b><br>';
+					echo __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#').'<br>';
+
+					echo '<img src="../images/search.png" border="0"> '.__('= click to open selection popup screen.').'<br>';
+					echo ' <b>[+]</b> '.__('= click to open extended editor items.');
+
+				echo '</div>';
+			echo '</div>';
+
 		echo '</td></tr></table>';
 		} // *** end of check for new tree ***
 
@@ -469,6 +474,9 @@ if (isset($tree_prefix)){
 
 
 if (isset($pers_gedcomnumber)){
+
+	// *** Get person data to show name and calculate nr. of items ***
+	$person = $db_functions->get_person($pers_gedcomnumber);
 
 	// *** Tab menu ***
 	$menu_tab='person';
@@ -497,8 +505,9 @@ if (isset($pers_gedcomnumber)){
 						echo "</a></div></li>";
 					}
 
-					echo '<img src="../images/search.png" border="0"> '.__('= click to open selection popup screen.');
-					echo ' <b>[+]</b> '.__('= click to open extended editor items.');
+					// *** Example of family screen in popup ***
+					If ($person)
+						echo "<a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a>';
 
 				echo '</ul>';
 			echo '</div>';
@@ -518,11 +527,10 @@ if (isset($pers_gedcomnumber)){
 
 	// *** Text area size ***
 	$field_date=15;
-	$field_place=40;
+	$field_place=30;
 	//$field_text='style="height: 40px; width:500px"';
-	//$field_text='style="height: 18px; width:400px;"';
 	$field_text='style="height: 18px; width:550px;"';
-	$field_text_large='style="height: 200px; width:500px"';
+	$field_text_large='style="height: 100px; width:550px"';
 
 
 	// *******************
@@ -530,20 +538,19 @@ if (isset($pers_gedcomnumber)){
 	// *******************
 
 	if ($menu_admin=='person'){
-
 		// *** Get person data to show name and calculate nr. of items ***
-		$person = $db_functions->get_person($pers_gedcomnumber);
+		//$person = $db_functions->get_person($pers_gedcomnumber);
 
 		if ($add_person==true){
 			$pers_gedcomnumber='';
 			$pers_firstname=''; $pers_callname='';
 			$pers_prefix=''; $pers_lastname=''; $pers_patronym='';
-			$pers_name_text=''; //$pers_name_source='';
-			$pers_alive=''; $pers_sexe=''; $pers_own_code=''; $person_text='';
+			$pers_name_text='';
+			$pers_alive=''; $pers_cal_date=''; $pers_sexe=''; $pers_own_code=''; $person_text='';
 
 			$pers_birth_date=''; $pers_birth_place=''; $pers_birth_time=''; $pers_stillborn=''; $pers_birth_text='';
 			$pers_bapt_date=''; $pers_bapt_place=''; $pers_religion=''; $pers_bapt_text='';
-			$pers_death_date=''; $pers_death_place=''; $pers_death_time=''; $pers_death_cause=''; $pers_death_text='';
+			$pers_death_date=''; $pers_death_place=''; $pers_death_time=''; $pers_death_cause=''; $pers_death_text=''; $pers_death_age='';
 			$pers_buried_date=''; $pers_buried_place=''; $pers_cremation=''; $pers_buried_text='';
 			$pers_quality='';
 		}
@@ -551,8 +558,8 @@ if (isset($pers_gedcomnumber)){
 			$pers_gedcomnumber=$person->pers_gedcomnumber;
 			$pers_firstname=$person->pers_firstname; $pers_callname=$person->pers_callname;
 			$pers_prefix=$person->pers_prefix; $pers_lastname=$person->pers_lastname; $pers_patronym=$person->pers_patronym;
-			$pers_name_text=$person->pers_name_text; //$pers_name_source=$person->pers_name_source;
-			$pers_alive=$person->pers_alive; $pers_sexe=$person->pers_sexe;
+			$pers_name_text=$person->pers_name_text;
+			$pers_alive=$person->pers_alive; $pers_cal_date=$person->pers_cal_date; $pers_sexe=$person->pers_sexe;
 			$pers_own_code=$person->pers_own_code; $person_text=$person->pers_text;
 
 			$pers_birth_date=$person->pers_birth_date; $pers_birth_place=$person->pers_birth_place;
@@ -562,7 +569,7 @@ if (isset($pers_gedcomnumber)){
 			$pers_religion=$person->pers_religion; $pers_bapt_text=$person->pers_bapt_text;
 			$pers_death_date=$person->pers_death_date; $pers_death_place=$person->pers_death_place;
 			$pers_death_time=$person->pers_death_time; $pers_death_cause=$person->pers_death_cause;
-			$pers_death_text=$person->pers_death_text;
+			$pers_death_text=$person->pers_death_text; $pers_death_age=$person->pers_death_age;
 			$pers_buried_date=$person->pers_buried_date; $pers_buried_place=$person->pers_buried_place;
 			$pers_cremation=$person->pers_cremation; $pers_buried_text=$person->pers_buried_text;
 			$pers_quality=$person->pers_quality;
@@ -736,7 +743,7 @@ if (isset($pers_gedcomnumber)){
 
 		// *** Show box with list of parents, person, marriages etc. ***
 		echo '<div style="position:absolute;
-			top:170px; left:10px;
+			top:125px; left:10px;
 			padding:8px;
 			background-color:#F8F8F8;
 			border:solid 1px #999999;
@@ -759,9 +766,15 @@ if (isset($pers_gedcomnumber)){
 				if ($family_parentsDb->fam_woman) echo show_person($family_parentsDb->fam_woman).'<br>';
 					else echo __('N.N.').'<br>';
 			}
+			else{
+				// *** Add parents ***
+				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;add_parents2=1">';
+				echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Add parents').'" alt="'.__('Add parents').'"> '.__('Add parents').'</a><br>';
+			}
 
 			// *** Show person ***
-			echo '<br><b>'.__('Person').'</b><br>';
+			//echo '<br><b>'.__('Person').'</b><br>';
+			echo '<br><span style="font-weight:bold; font-size:13px">'.__('Person').'</span><br>';
 			echo show_person($person->pers_gedcomnumber).'<br>';
 
 			// *** Show marriages and children ***
@@ -786,15 +799,23 @@ if (isset($pers_gedcomnumber)){
 						}
 					}
 
+					// *** Add child ***
+					echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
+					if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
+					echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"> '.__('Add child').'</a><br>';
+
 				}
 			}
+
+			// *** Add Marriage/ relation ***
+			echo '<br><br><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage&amp;add_marriage2=1">';
+			echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Add marriage/ relation').'" alt="'.__('Add marriage/ relation').'"> '.__('Add marriage/ relation').'</a><br>';
+
 		}
 		echo '</div>';
 
 
 		// *** Start of editor table ***
-		//echo '<br><table class="humo standard" border="1">';
-		//echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data">';
 		echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">';
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 		echo '<table class="humo" border="1">';
@@ -810,27 +831,28 @@ if (isset($pers_gedcomnumber)){
 		if ($menu_tab=='person'){
 
 		// *** Show mother and father with a link ***
-		if ($add_person==false){
+		//if ($add_person==false){
+		if (isset($_GET['add_parents2']) AND $add_person==false){
 			print '<tr><th class="table_header" colspan="4">'.ucfirst(__('parents')).'</tr>';
 
 			echo '<tr><td>'.ucfirst(__('parents')).'</td><td colspan="3">';
 			$parent_text='';
 
-			if ($person->pers_famc){
+			//if ($person->pers_famc){
 				// *** Search for parents ***
-				$family_parentsDb = $db_functions->get_family($person->pers_famc,'man-woman');
+				//$family_parentsDb = $db_functions->get_family($person->pers_famc,'man-woman');
 
 				//*** Father ***
-				if ($family_parentsDb->fam_man) $parent_text.=show_person($family_parentsDb->fam_man);
-					else $parent_text=__('N.N.');
+				//if ($family_parentsDb->fam_man) $parent_text.=show_person($family_parentsDb->fam_man);
+				//	else $parent_text=__('N.N.');
 
-				$parent_text.=' '.__('and').' ';
+				//$parent_text.=' '.__('and').' ';
 
 				//*** Mother ***
-				if ($family_parentsDb->fam_woman) $parent_text.=show_person($family_parentsDb->fam_woman);
-					else $parent_text.=__('N.N.');
-			}
-			else{
+				//if ($family_parentsDb->fam_woman) $parent_text.=show_person($family_parentsDb->fam_woman);
+				//	else $parent_text.=__('N.N.');
+			//}
+			//else{
 				// *** Add existing or new parents ***
 				echo '<b>'.__('There are no parents.').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_parents=1">';
 				echo __('Add new parents (N.N. & N.N.)').'</a></b> '.__('or select an existing family as parents.').'<br>';
@@ -851,52 +873,21 @@ if (isset($pers_gedcomnumber)){
 					//$qry.= " UNION (SELECT * FROM humo2_persoon ".$query.')';
 
 					// *** Search for man ***
-					/*
-					$parents= "(SELECT * FROM ".$tree_prefix."family, ".$tree_prefix."person
-						WHERE fam_man=pers_gedcomnumber
-						AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
-						LIKE '%$search_quicksearch_parent%'
-						OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname)
-						LIKE '%$search_quicksearch_parent%' 
-						OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' '))
-						LIKE '%$search_quicksearch_parent%' 
-						OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
-						LIKE '%$search_quicksearch_parent%'))";
-					*/
 					$parents= "(SELECT * FROM humo_families, humo_persons
 						WHERE fam_man=pers_gedcomnumber AND pers_tree_id='".$tree_id."' AND fam_tree_id='".$tree_id."'
-						AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
-						LIKE '%$search_quicksearch_parent%'
-						OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname)
-						LIKE '%$search_quicksearch_parent%' 
-						OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' '))
-						LIKE '%$search_quicksearch_parent%' 
-						OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
-						LIKE '%$search_quicksearch_parent%'))";
+						AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch_parent%'
+						OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch_parent%' 
+						OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch_parent%' 
+						OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch_parent%'))";
 
 					// *** Search for woman ***
-					/*
-					$parents.= " UNION (SELECT * FROM ".$tree_prefix."family, ".$tree_prefix."person
-						WHERE fam_woman=pers_gedcomnumber
-						AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
-						LIKE '%$search_quicksearch_parent%'
-						OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname)
-						LIKE '%$search_quicksearch_parent%' 
-						OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' '))
-						LIKE '%$search_quicksearch_parent%' 
-						OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
-						LIKE '%$search_quicksearch_parent%')) ORDER BY fam_gedcomnumber";
-					*/
 					$parents.= " UNION (SELECT * FROM humo_families, humo_persons
 						WHERE fam_woman=pers_gedcomnumber AND pers_tree_id='".$tree_id."' AND fam_tree_id='".$tree_id."'
-						AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
-						LIKE '%$search_quicksearch_parent%'
-						OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname)
-						LIKE '%$search_quicksearch_parent%' 
-						OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' '))
-						LIKE '%$search_quicksearch_parent%' 
-						OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
-						LIKE '%$search_quicksearch_parent%')) ORDER BY fam_gedcomnumber";
+						AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch_parent%'
+						OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch_parent%' 
+						OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch_parent%' 
+						OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch_parent%'))
+						ORDER BY fam_gedcomnumber";
 
 					$parents_result = $dbh->query($parents);
 				}
@@ -924,7 +915,7 @@ if (isset($pers_gedcomnumber)){
 					echo '<option value="">*** '.__('Results are limited, use search to find more parents.').' ***</option>';
 				echo '</select>';
 				echo ' <input type="Submit" name="submit" value="'.__('Select').'">';
-			}
+			//}
 			echo $parent_text.'</td></tr>';
 
 			// *** Empty line in table ***
@@ -941,7 +932,8 @@ if (isset($pers_gedcomnumber)){
 			echo '<td>'.$hide_show_all.' <input type="Submit" name="person_remove" value="'.__('Delete person').'"></td>';
 
 			// *** Example of family screen in popup ***
-			echo '<td style="border-right: none">'."<a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a></td>';
+			//echo '<td style="border-right: none">'."<a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a></td>';
+			echo '<td style="border-right: none"></td>';
 		}
 		else{
 			// *** New person: no delete example link ***
@@ -950,8 +942,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<td style="border-right: none"><br></td>';
 		}
 
-		//echo '<th colspan="2">'.__('Person');
-		echo '<th style="border-left: none">'.__('Person');
+		echo '<th style="border-left: none; text-align:left;">'.__('Person');
 
 		if ($add_person==false){
 			echo ': ['.$pers_gedcomnumber.'] '.show_person($person->pers_gedcomnumber,false,false);
@@ -1035,7 +1026,8 @@ if (isset($pers_gedcomnumber)){
 		$disabled='';
 		if ($pers_death_date OR $pers_death_place OR $pers_buried_date OR $pers_buried_place){ $disabled=' DISABLED'; }
 
-		echo '<tr class="humo_color"><td>'.ucfirst(__('alive')).'</td><td style="border-right:0px;">'.__('For the privacy filter').'</td><td style="border-left:0px;">';
+		//echo '<tr class="humo_color"><td>'.ucfirst(__('alive')).'</td><td style="border-right:0px;">'.__('For the privacy filter').'</td><td style="border-left:0px;">';
+		echo '<tr class="humo_color"><td>'.__('Privacy filter').'</td><td style="border-right:0px;"><br></td><td style="border-left:0px;">';
 			$selected_alive='alive'; if ($pers_alive=='deceased'){ $selected_alive='deceased'; }
 
 			$selected=''; if ($selected_alive=='alive'){ $selected=' CHECKED'; }
@@ -1043,6 +1035,13 @@ if (isset($pers_gedcomnumber)){
 
 			$selected=''; if ($selected_alive=='deceased'){ $selected=' CHECKED'; }
 			echo ' <input type="radio" name="pers_alive" value="deceased"'.$selected.$disabled.'> '.__('deceased');
+
+			// *** Estimated/ calculated (birth) date, can be used for privacy filter ***
+			if (!$pers_cal_date) $pers_cal_date='dd mmm yyyy';
+			echo '<span style="color:#6D7B8D;">';
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date">'.__('Calculated birth date').':</a> '.$pers_cal_date;
+			echo '</span>';
+
 		echo '</td><td></td></tr>';
 
 		// *** Sexe ***
@@ -1078,11 +1077,17 @@ if (isset($pers_gedcomnumber)){
 		echo ucfirst(__('born')).'</td>';
 
 		echo '<td style="border-right:0px;">'.__('date').'</td>';
-		echo '<td style="border-left:0px;">'.$editor_cls->date_show($pers_birth_date,'pers_birth_date').' '.__('place').' <input type="text" name="pers_birth_place" placeholder="'.__('place').'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
-		//WERKT:
+		echo '<td style="border-left:0px;">'.$editor_cls->date_show($pers_birth_date,'pers_birth_date').' ';
+		echo __('place').' <input type="text" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
+
+		// *** Auto complete doesn't work properly yet... ***
+		//echo __('place').' <input list="place_auto_complete" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
+
+		//WORKS:
 		//echo '<input type="button" onClick=window.open("index.php?page=editor_place_select","","width=400,height=500,top=100,left=100,scrollbars=yes");
 		//	value="'.__('Search').'">';
 		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=birth","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+
 		echo '</td>';
 
 		// *** Source by birth ***
@@ -1094,8 +1099,7 @@ if (isset($pers_gedcomnumber)){
 			//	WHERE connect_kind='person' AND connect_sub_kind='pers_birth_source'
 			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT *
-				FROM humo_connections
-				WHERE connect_tree_id='".$tree_id."'
+				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_birth_source' AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_birth_source', '','width=800,height=500')\">".__('source');
@@ -1129,7 +1133,7 @@ if (isset($pers_gedcomnumber)){
 		echo '<tr>';
 		echo '<td><a href="#" onclick="hideShow(3);"><span id="hideshowlink3">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('baptised')).'</td>';
-		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_bapt_date,'pers_bapt_date').' '.__('place').'  <input type="text" name="pers_bapt_place" placeholder="'.__('place').'" value="'.htmlspecialchars($pers_bapt_place).'" size="'.$field_place.'">';
+		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_bapt_date,'pers_bapt_date').' '.__('place').'  <input type="text" name="pers_bapt_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_bapt_place).'" size="'.$field_place.'">';
 		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=baptise","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 		echo '</td>';
 
@@ -1142,8 +1146,7 @@ if (isset($pers_gedcomnumber)){
 			//	WHERE connect_kind='person' AND connect_sub_kind='pers_bapt_source'
 			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT *
-				FROM humo_connections
-				WHERE connect_tree_id='".$tree_id."'
+				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_bapt_source' AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
@@ -1175,8 +1178,22 @@ if (isset($pers_gedcomnumber)){
 		echo '<tr class="humo_color"><td>';
 		echo '<a href="#" onclick="hideShow(4);"><span id="hideshowlink4">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('died')).'</td>';
-		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_death_date,'pers_death_date').' '.__('place').'  <input type="text" name="pers_death_place" placeholder="'.__('place').'" value="'.htmlspecialchars($pers_death_place).'" size="'.$field_place.'">';
+		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_death_date,'pers_death_date').' '.__('place').'  <input type="text" name="pers_death_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_death_place).'" size="'.$field_place.'">';
 		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=death","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+
+		// *** Age by death ***
+		echo ' <input type="text" name="pers_death_age" placeholder="'.__('Age').'" value="'.$pers_death_age.'" size="3">';
+		// *** HELP POPUP for age by death ***
+		echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+			echo '<a href="#" style="display:inline" ';
+			echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
+			echo 'onmouseout="mclosetime()">';
+				echo '<img src="../images/help.png" height="16" width="16">';
+			echo '</a>';
+			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				echo '<b>'.__('If death year and age are used, then birth year is calculated automatically (when empty).').'</b><br>';
+			echo '</div>';
+		echo '</div>';
 
 		// *** Source by death ***
 		echo '</td><td>';
@@ -1187,8 +1204,7 @@ if (isset($pers_gedcomnumber)){
 			//	WHERE connect_kind='person' AND connect_sub_kind='pers_death_source'
 			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT *
-				FROM humo_connections
-				WHERE connect_tree_id='".$tree_id."'
+				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_death_source' AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_death_source', '','width=800,height=500')\">".__('source');
@@ -1262,7 +1278,7 @@ if (isset($pers_gedcomnumber)){
 		echo '<tr>';
 		echo '<td><a href="#" onclick="hideShow(5);"><span id="hideshowlink5">'.__('[+]').'</span></a> ';
 		echo __('Buried').'</td>';
-		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_buried_date,'pers_buried_date').' '.__('place').' <input type="text" name="pers_buried_place" placeholder="'.__('place').'" value="'.htmlspecialchars($pers_buried_place).'" size="'.$field_place.'">';
+		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_buried_date,'pers_buried_date').' '.__('place').' <input type="text" name="pers_buried_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_buried_place).'" size="'.$field_place.'">';
 		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=buried","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 		// *** Source by burial ***
@@ -1274,8 +1290,8 @@ if (isset($pers_gedcomnumber)){
 			//	WHERE connect_kind='person' AND connect_sub_kind='pers_buried_source'
 			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT *
-				FROM humo_connections
-				WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='pers_buried_source'
+				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
+				AND connect_sub_kind='pers_buried_source'
 				AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_sql=$dbh->query($connect_qry);
 			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_buried_source', '','width=800,height=500')\">".__('source');
@@ -1323,7 +1339,8 @@ if (isset($pers_gedcomnumber)){
 				//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
 				//	WHERE address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
 				$address_qry=$dbh->query("SELECT * FROM humo_addresses
-					WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
+					WHERE address_tree_id='".$tree_id."'
+					AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
 				$count=$address_qry->rowCount();
 				if ($count>0)
 				echo '<a href="#places" onclick="hideShow(54);"><span id="hideshowlink54">'.__('[+]').'</span></a> ';
@@ -1336,7 +1353,8 @@ if (isset($pers_gedcomnumber)){
 				//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
 				//	WHERE address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
 				$address_qry=$dbh->query("SELECT * FROM humo_addresses
-					WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
+					WHERE address_tree_id='".$tree_id."'
+					AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
 				while($addressDb=$address_qry->fetch(PDO::FETCH_OBJ)){
 					if ($text) $text.=', ';
 					$text.=htmlspecialchars($addressDb->address_place);
@@ -1378,8 +1396,8 @@ if (isset($pers_gedcomnumber)){
 				echo '</td>';
 				echo '<td style="border-right:0px;">'.__('date').'</td>';
 				echo '<td style="border-left:0px;">';
-					//echo $editor_cls->date_show($addressDb->address_date,'address_date',"[$addressDb->address_id]").' '.__('place').' <input type="text" name="address_place['.$addressDb->address_id.']" placeholder="'.__('place').'" value="'.$addressDb->address_place.'" size="'.$field_place.'">';
-					echo $editor_cls->date_show($addressDb->address_date,'address_date',"[$addressDb->address_id]").' '.__('place').' <input type="text" name="address_place_'.$addressDb->address_id.'" placeholder="'.__('place').'" value="'.$addressDb->address_place.'" size="'.$field_place.'">';
+					//echo $editor_cls->date_show($addressDb->address_date,'address_date',"[$addressDb->address_id]").' '.__('place').' <input type="text" name="address_place['.$addressDb->address_id.']" placeholder="'.ucfirst(__('place')).'" value="'.$addressDb->address_place.'" size="'.$field_place.'">';
+					echo $editor_cls->date_show($addressDb->address_date,'address_date',"[$addressDb->address_id]").' '.__('place').' <input type="text" name="address_place_'.$addressDb->address_id.'" placeholder="'.ucfirst(__('place')).'" value="'.$addressDb->address_place.'" size="'.$field_place.'">';
 					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=place&address_place='.$addressDb->address_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 				echo '</td>';
 				echo '<td>';
@@ -1681,7 +1699,7 @@ if (isset($pers_gedcomnumber)){
 				echo '<td></td></tr>';
 			}
 
-			// *** NEW: show user added notes ***
+			// *** Show user added notes ***
 			$note_qry= "SELECT * FROM humo_user_notes
 				WHERE note_tree_prefix='".$tree_prefix."'
 				AND note_pers_gedcomnumber='".$pers_gedcomnumber."'";
@@ -1788,7 +1806,7 @@ if (isset($pers_gedcomnumber)){
 						$child_count=substr_count($familyDb->fam_children, ";");
 						echo '<ul id="sortable'.$i.'" class="sortable">';
 						for ($j=0; $j<=$child_count; $j++){
-						 
+						
 							// *** Create new children variabele, for disconnect child ***
 							$fam_children='';
 							for ($k=0; $k<=substr_count($familyDb->fam_children, ";"); $k++){
@@ -1801,7 +1819,7 @@ if (isset($pers_gedcomnumber)){
 							echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_disconnect='.$fam_children.
 								'&amp;child_disconnect_gedcom='.$fam_children_array[$j].'">
 								<img src="'.CMS_ROOTPATH_ADMIN.'images/person_disconnect.gif" border="0" title="'.__('Disconnect child').'" alt="'.__('Disconnect child').'"></a>';
-			 
+			
 							echo '&nbsp;&nbsp;<span id="chldnum'.$fam_children_array[$j].'">'.($j+1).'</span>. '.show_person($fam_children_array[$j],true).'</li>';
 						} 
 						echo '</ul>';
@@ -1811,54 +1829,56 @@ if (isset($pers_gedcomnumber)){
 					//to index.php - echo '<script src="../include/jqueryui/js/jquery.sortable.min.js"></script>';
 					?>
 					<script>
-						$('#sortable'+'<?php echo $i; ?>').sortable({handle: '.handle'+'<?php echo $i; ?>'}).bind('sortupdate', function() {
-							var childstring = "";
-							var chld_arr = document.getElementsByClassName("handle"+"<?php echo $i; ?>");
-							
-							for (var z = 0; z < chld_arr.length; z++) {
-							  childstring = childstring + chld_arr[z].id + ";";
-							  document.getElementById('chldnum'+chld_arr[z].id).innerHTML = (z+1);
+					$('#sortable'+'<?php echo $i; ?>').sortable({handle: '.handle'+'<?php echo $i; ?>'}).bind('sortupdate', function() {
+						var childstring = "";
+						var chld_arr = document.getElementsByClassName("handle"+"<?php echo $i; ?>");
+						for (var z = 0; z < chld_arr.length; z++) {
+							childstring = childstring + chld_arr[z].id + ";";
+							document.getElementById('chldnum'+chld_arr[z].id).innerHTML = (z+1);
+						}
+						childstring = childstring.substring(0, childstring.length-1);
+						$.ajax({ 
+							url: "include/drag.php?drag_kind=children&chldstring=" + childstring + "&family_id=" + "<?php echo $familyDb->fam_id; ?>" ,
+							success: function(data){
+							} ,
+							error: function (xhr, ajaxOptions, thrownError) {
+								alert(xhr.status);
+								alert(thrownError);
 							}
-							childstring = childstring.substring(0, childstring.length-1);
-							$.ajax({ 
-								url: "include/drag.php?drag_kind=children&chldstring=" + childstring + "&family_id=" + "<?php echo $familyDb->fam_id; ?>" ,
-								success: function(data){
-								} ,
-								error: function (xhr, ajaxOptions, thrownError) {
-									alert(xhr.status);
-									alert(thrownError);
-								}
-							});
-				
 						});
+					});
 					</script>
 					<?php
-					echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
-					if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
-					echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"><span style="margin-left:73px;">'.__('Add child').'</span></a><br>';
+
+					// *** Add child ***
+					//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
+					//if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
+					//echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"><span style="margin-left:73px;">'.__('Add child').'</span></a><br>';
 
 					echo '</td></tr>';
 				}
 			}
 
 			// *** Add new marriage ***
-			echo '<tr><td>'.__('Add relation').'</td>';
-			echo '<td>';
-			echo '</td><td colspan="2">';
-				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;relation_add=1#marriage"><b>';
-				echo __('Add relation with new partner (N.N.)').'</b></a><br>'.__('or add relation with existing person as partner.').'<br>';
+			if (isset($_GET['add_marriage2'])){
+				echo '<tr><td>'.__('Add relation').'</td>';
+				echo '<td>';
+				echo '</td><td colspan="2">';
+					echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;relation_add=1#marriage"><b>';
+					echo __('Add relation with new partner (N.N.)').'</b></a><br>'.__('or add relation with existing person as partner.').'<br>';
 
-				echo '<form method="POST" action="'.$phpself.'#marriage" name="form4" id="form4">';
-					echo '<input type="hidden" name="page" value="'.$page.'">';
+					echo '<form method="POST" action="'.$phpself.'#marriage" name="form4" id="form4">';
+						echo '<input type="hidden" name="page" value="'.$page.'">';
 
-					echo __('Select person').': <input class="fonts" type="text" name="relation_add2" value="" size="5">';
+						echo __('Select person').': <input class="fonts" type="text" name="relation_add2" value="" size="5">';
 
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+						echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
-					echo ' <input type="Submit" name="submit" value="'.__('Add relation').'">';
-				echo '</form>';
+						echo ' <input type="Submit" name="submit" value="'.__('Add relation').'">';
+					echo '</form>';
+				echo '</td></tr>';
+			}
 
-			echo '</td></tr>';
 		echo '</table>';
 
 		// ***********************
@@ -1876,18 +1896,19 @@ if (isset($pers_gedcomnumber)){
 			$man_gedcomnumber=$familyDb->fam_man; $woman_gedcomnumber=$familyDb->fam_woman;
 			$fam_gedcomnumber=$familyDb->fam_gedcomnumber;
 			$fam_relation_date=$familyDb->fam_relation_date; $fam_relation_end_date=$familyDb->fam_relation_end_date;
-			$fam_relation_place=$familyDb->fam_relation_place; $fam_relation_text=$editor_cls->text_show($familyDb->fam_relation_text); //$fam_relation_source=$familyDb->fam_relation_source;
-			$fam_marr_notice_date=$familyDb->fam_marr_notice_date; $fam_marr_notice_place=$familyDb->fam_marr_notice_place; //$fam_marr_notice_source=$familyDb->fam_marr_notice_source;
+			$fam_relation_place=$familyDb->fam_relation_place; $fam_relation_text=$editor_cls->text_show($familyDb->fam_relation_text); 
+			$fam_marr_notice_date=$familyDb->fam_marr_notice_date; $fam_marr_notice_place=$familyDb->fam_marr_notice_place; 
 			$fam_marr_notice_text=$editor_cls->text_show($familyDb->fam_marr_notice_text);
-			$fam_marr_date=$familyDb->fam_marr_date; $fam_marr_place=$familyDb->fam_marr_place; //$fam_marr_source=$familyDb->fam_marr_source;
+			$fam_marr_date=$familyDb->fam_marr_date; $fam_marr_place=$familyDb->fam_marr_place;
 			$fam_marr_text=$editor_cls->text_show($familyDb->fam_marr_text); $fam_marr_authority=$editor_cls->text_show($familyDb->fam_marr_authority);
+			$fam_man_age=$familyDb->fam_man_age; $fam_woman_age=$familyDb->fam_woman_age;
 			$fam_marr_church_notice_date=$familyDb->fam_marr_church_notice_date; $fam_marr_church_notice_place=$familyDb->fam_marr_church_notice_place;
-			$fam_marr_church_notice_text=$editor_cls->text_show($familyDb->fam_marr_church_notice_text); //$fam_marr_church_notice_source=$familyDb->fam_marr_church_notice_source;
-			$fam_marr_church_date=$familyDb->fam_marr_church_date; $fam_marr_church_place=$familyDb->fam_marr_church_place; //$fam_marr_church_source=$familyDb->fam_marr_church_source;
+			$fam_marr_church_notice_text=$editor_cls->text_show($familyDb->fam_marr_church_notice_text); 
+			$fam_marr_church_date=$familyDb->fam_marr_church_date; $fam_marr_church_place=$familyDb->fam_marr_church_place; 
 			$fam_marr_church_text=$editor_cls->text_show($familyDb->fam_marr_church_text);
 			$fam_religion=$familyDb->fam_religion;
 			$fam_div_date=$familyDb->fam_div_date; $fam_div_place=$familyDb->fam_div_place;
-			$fam_div_text=$editor_cls->text_show($familyDb->fam_div_text); //$fam_div_source=$familyDb->fam_div_source;
+			$fam_div_text=$editor_cls->text_show($familyDb->fam_div_text);
 			$fam_div_authority=$editor_cls->text_show($familyDb->fam_div_authority);
 			// *** Checkbox for no data by divorce ***
 			$fam_div_no_data=false; if ($fam_div_date OR $fam_div_place OR $fam_div_text) $fam_div_no_data=true;
@@ -1895,15 +1916,21 @@ if (isset($pers_gedcomnumber)){
 
 			echo '<form method="POST" action="'.$phpself.'#marriage" name="form2" id="form2">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
-			
-			echo '<table  class="humo" border="1">';
+
+			echo '<br>' ;
 			// *** Show delete message ***
 			if ($confirm_relation){
-				echo '<tr><td colspan="4" class="table_empty_line" style="border: solid 1px white;"><br>'.$confirm_relation.'</td><tr>';
+				echo $confirm_relation;
 			}
 
+			echo '<table  class="humo" border="1">';
+			// *** Show delete message ***
+			//if ($confirm_relation){
+			//	echo '<tr><td colspan="4" class="table_empty_line" style="border: solid 1px white;"><br>'.$confirm_relation.'</td><tr>';
+			//}
+
 			// *** Empty line in table ***
-			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
+			//echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
 
 			//echo '<tr class="table_header" style="background-image: url(\'../images/default_trans_large.png\');">';
 			echo '<tr class="table_header_large">';
@@ -1941,6 +1968,16 @@ if (isset($pers_gedcomnumber)){
 			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$man_gedcomnumber."'";
 			$person_result = $dbh->query($person_qry);
 			$person=$person_result->fetch(PDO::FETCH_OBJ);
+
+			// *** Automatically calculate birth date if marriage date and marriage age by man is used ***
+			if (isset($_POST["fam_man_age"]) AND $_POST["fam_man_age"]!=''
+				AND $fam_marr_date!='' AND $person->pers_birth_date=='' AND $person->pers_bapt_date==''){
+					$pers_birth_date= 'ABT '.(substr($fam_marr_date,-4) - $_POST["fam_man_age"]);
+					$sql="UPDATE humo_persons SET pers_birth_date='".safe_text($pers_birth_date)."'
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($man_gedcomnumber)."'";
+					$result=$dbh->query($sql);
+			}
+
 			echo ' <b>'.$editor_cls->show_selected_person($person).'</b>';
 
 			// *** Use old value to detect change of man in marriage ***
@@ -1960,6 +1997,16 @@ if (isset($pers_gedcomnumber)){
 			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$woman_gedcomnumber."'";
 			$person_result = $dbh->query($person_qry);
 			$person=$person_result->fetch(PDO::FETCH_OBJ);
+
+			// *** Automatically calculate birth date if marriage date and marriage age by woman is used ***
+			if (isset($_POST["fam_woman_age"]) AND $_POST["fam_woman_age"]!=''
+				AND $fam_marr_date!='' AND $person->pers_birth_date=='' AND $person->pers_bapt_date==''){
+					$pers_birth_date= 'ABT '.(substr($fam_marr_date,-4) - $_POST["fam_woman_age"]);
+					$sql="UPDATE humo_persons SET pers_birth_date='".safe_text($pers_birth_date)."'
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($woman_gedcomnumber)."'";
+					$result=$dbh->query($sql);
+			}
+
 			echo ' <b>'.$editor_cls->show_selected_person($person).'</b>';
 
 			// *** Use old value to detect change of woman in marriage ***
@@ -2016,7 +2063,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<td><a href="#marriage" onclick="hideShow(6);"><span id="hideshowlink6">'.__('[+]').'</span></a> ';
 
 			echo __('Living together').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_relation_date,'fam_relation_date').' '.__('place').' <input type="text" name="fam_relation_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_relation_place).'" size="'.$field_place.'">';
+			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_relation_date,'fam_relation_date').' '.__('place').' <input type="text" name="fam_relation_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_relation_place).'" size="'.$field_place.'">';
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=relation","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			echo '</td><td>';
@@ -2055,7 +2102,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<tr class="humo_color"><td>';
 			echo '<a href="#marriage" onclick="hideShow(7);"><span id="hideshowlink7">'.__('[+]').'</span></a> ';
 			echo __('Notice of Marriage').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_notice_date,"fam_marr_notice_date").' '.__('place').' <input type="text" name="fam_marr_notice_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_marr_notice_place).'" size="'.$field_place.'">';
+			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_notice_date,"fam_marr_notice_date").' '.__('place').' <input type="text" name="fam_marr_notice_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_notice_place).'" size="'.$field_place.'">';
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=marr_notice","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			echo '</td><td>';
@@ -2086,7 +2133,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<tr><td>';
 			echo '<a href="#marriage" onclick="hideShow(8);"><span id="hideshowlink8">'.__('[+]').'</span></a> ';
 			echo __('Marriage').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_date,"fam_marr_date").' '.__('place').' <input type="text" name="fam_marr_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_marr_place).'" size="'.$field_place.'">';
+			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_date,"fam_marr_date").' '.__('place').' <input type="text" name="fam_marr_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_place).'" size="'.$field_place.'">';
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=marr","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 				echo '</td><td>';
@@ -2108,6 +2155,31 @@ if (isset($pers_gedcomnumber)){
 
 			echo '</td></tr>';
 
+			echo '<tr><td>';
+			echo '<td style="border-right:0px;"><br></td><td style="border-left:0px;">';
+				// *** Age of man by marriage ***
+				echo __('Age').' '.__('male').' <input type="text" name="fam_man_age" placeholder="'.__('Age').'" value="'.$fam_man_age.'" size="3">';
+				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp';
+
+				// *** Age of woman by marriage ***
+				echo __('Age').' '.__('female').' <input type="text" name="fam_woman_age" placeholder="'.__('Age').'" value="'.$fam_woman_age.'" size="3">';
+
+				// *** HELP POPUP for age by marriage ***
+				echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+					echo '<a href="#" style="display:inline" ';
+					echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
+					echo 'onmouseout="mclosetime()">';
+						echo '<img src="../images/help.png" height="16" width="16">';
+					echo '</a>';
+					echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+						echo '<b>'.__('If birth year of man or woman is empty it will be calculated automatically using age by marriage.').'</b><br>';
+					echo '</div>';
+				echo '</div>';
+
+			echo '</td><td>';
+			echo '</td></tr>';
+
+
 			//echo '<tr style="display:none;" class="row8" name="row8">';
 			echo '<tr style="display:none;" class="row8">';
 			echo '<td></td>';
@@ -2127,7 +2199,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<tr class="humo_color"><td>';
 			echo '<a href="#marriage" onclick="hideShow(9);"><span id="hideshowlink9">'.__('[+]').'</span></a> ';
 			echo __('Religious Notice of Marriage').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_notice_date,"fam_marr_church_notice_date").' '.__('place').' <input type="text" name="fam_marr_church_notice_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_marr_church_notice_place).'" size="'.$field_place.'">';
+			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_notice_date,"fam_marr_church_notice_date").' '.__('place').' <input type="text" name="fam_marr_church_notice_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_church_notice_place).'" size="'.$field_place.'">';
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=fam_marr_church_notice","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 				echo '</td><td>';
@@ -2159,7 +2231,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<tr><td>';
 			echo '<a href="#marriage" onclick="hideShow(10);"><span id="hideshowlink10">'.__('[+]').'</span></a> ';
 			echo __('Religious Marriage').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_date,"fam_marr_church_date").' '.__('place').' <input type="text" name="fam_marr_church_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_marr_church_place).'" size="'.$field_place.'">';
+			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_date,"fam_marr_church_date").' '.__('place').' <input type="text" name="fam_marr_church_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_church_place).'" size="'.$field_place.'">';
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=fam_marr_church","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			echo '</td><td>';
@@ -2198,7 +2270,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<tr><td>';
 			echo '<a href="#marriage" onclick="hideShow(11);"><span id="hideshowlink11">'.__('[+]').'</span></a> ';
 			echo __('Divorce').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_div_date,"fam_div_date").' '.__('place').' <input type="text" name="fam_div_place" placeholder="'.__('place').'" value="'.htmlspecialchars($fam_div_place).'" size="'.$field_place.'">';
+			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_div_date,"fam_div_date").' '.__('place').' <input type="text" name="fam_div_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_div_place).'" size="'.$field_place.'">';
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=fam_div","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			echo '</td><td>';
@@ -2936,8 +3008,10 @@ if (isset($pers_gedcomnumber)){
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 
-			$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
-				WHERE address_gedcomnr LIKE '_%' ORDER BY address_place, address_address");
+			//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
+			//	WHERE address_gedcomnr LIKE '_%' ORDER BY address_place, address_address");
+			$address_qry=$dbh->query("SELECT * FROM humo_addresses
+				WHERE address_tree_id='".$tree_id."' AND address_gedcomnr LIKE '_%' ORDER BY address_place, address_address");
 			echo __('Select address').': ';
 			echo '<select size="1" name="address_id" onChange="this.form.submit();">';
 			echo '<option value="">'.__('Select address').'</option>'; // *** For new address in new database... ***
@@ -2966,7 +3040,9 @@ if (isset($pers_gedcomnumber)){
 				$address_photo=''; $address_text=''; //$address_source=''; 
 			}
 			else{
-				@$address_qry2=$dbh->query("SELECT * FROM ".$tree_prefix."addresses WHERE address_id='".safe_text($_POST["address_id"])."'");
+				//@$address_qry2=$dbh->query("SELECT * FROM ".$tree_prefix."addresses WHERE address_id='".safe_text($_POST["address_id"])."'");
+				@$address_qry2=$dbh->query("SELECT * FROM humo_addresses
+					WHERE address_tree_id='".$tree_id."' AND address_id='".safe_text($_POST["address_id"])."'");
 
 				$die_message=__('No valid address number.');
 				try{

@@ -1568,7 +1568,6 @@ global $rel_arrayspouseX, $rel_arrayspouseY, $spouse, $tree_prefix_quoted, $tree
 	$marrY = explode(";",$famsY);
 
 	//prepared statement for use in loop
-	//$marr_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
 	$marr_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM humo_families
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
 	$marr_prep->bindParam(1,$marr_prep_var);

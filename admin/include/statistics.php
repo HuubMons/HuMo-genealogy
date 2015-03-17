@@ -418,7 +418,7 @@ if ($statistics_screen=='general_statistics'){
 		GROUP BY humo_stat_date.stat_tree_id
 		ORDER BY tree_order desc");
 	echo '<table class="humo standard" border="1" cellspacing="0">';
-	echo '<tr class="table_header"><th>'.__('family tree').'</th><th>Records</th><th>'.__('Number of unique visitors').'</th></tr>';
+	echo '<tr class="table_header"><th>'.ucfirst(__('family tree')).'</th><th>'.__('Records').'</th><th>'.__('Number of unique visitors').'</th></tr>';
 	while ($familyDb=$family_qry->fetch(PDO::FETCH_OBJ)){
 		//statistics_line($familyDb);
 		if ($familyDb->tree_prefix){

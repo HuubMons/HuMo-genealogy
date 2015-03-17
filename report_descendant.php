@@ -423,8 +423,8 @@ function printchart() {
 <b>Click on spouse\'s name in popup menu:</b> Go to spouse\'s family page<br><br>
 <b>LEGEND:</b>');
 
-		echo '<p><span style="background-color:cyan; border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Male').'<br>';
-		echo '<span style="background-color:pink; border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Female').'<br>';
+		echo '<p><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Male').'<br>';
+		echo '<span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Female').'<br>';
 
 		echo '<span style="color:blue">=====</span>&nbsp;'.__('Additional marriage of same person').'<br><br>';
 
@@ -497,7 +497,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			print '<input type="hidden" name="bn" value="'.$base_person_name.'">';
 			print '<input type="hidden" name="bg" value="'.$base_person_gednr.'">';
 		}
-		
+
 		print '<input id="dirval" type="hidden" name="direction" value="">';  // will be filled in next lines
 		if ($direction=="1"){ // horizontal
 			print '<input type="button" name="dummy" value="'.__('vertical').'" onClick=\'document.desc_form.direction.value="0";document.desc_form.submit();\'>';

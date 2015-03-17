@@ -13,7 +13,8 @@ echo '<h1 align="center">'.__('User groups').'</h1>';
 
 if (isset($_POST['group_add'])){
 	$sql="INSERT INTO humo_groups SET group_name='new groep', group_privacy='n', group_menu_places='n', group_admin='n',
-		group_sources='n', group_source_presentation='title', group_text_presentation='show', group_user_notes='n', group_show_restricted_source='y',
+		group_sources='n', group_source_presentation='title', group_text_presentation='show', group_user_notes='n',
+		group_user_notes_show='n', group_show_restricted_source='y',
 		group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j',
 		group_religion='n', group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n',
 		group_own_code='n', group_pdf_button='y', group_rtf_button='n', group_work_text='n', group_texts='j',
@@ -61,6 +62,7 @@ if (isset($_POST['group_change'])){
 
 	//if (!isset($_POST["group_user_notes"])){ $_POST["group_user_notes"]='n'; }
 	$group_user_notes='n'; if (isset($_POST["group_user_notes"])){ $group_user_notes='y'; }
+	$group_user_notes_show='n'; if (isset($_POST["group_user_notes_show"])){ $group_user_notes_show='y'; }
 
 	$group_show_restricted_source='n'; if (isset($_POST["group_show_restricted_source"])){ $group_show_restricted_source='y'; }
 	$group_work_text='n'; if (isset($_POST["group_work_text"])){ $group_work_text='j'; }
@@ -91,6 +93,7 @@ if (isset($_POST['group_change'])){
 	group_source_presentation='".$_POST["group_source_presentation"]."',
 	group_text_presentation='".$_POST["group_text_presentation"]."',
 	group_user_notes='".$group_user_notes."',
+	group_user_notes_show='".$group_user_notes_show."',
 	group_birthday_rss='".$group_birthday_rss."',
 	group_menu_persons='".$group_menu_persons."',
 	group_menu_names='".$group_menu_names."',
@@ -294,6 +297,11 @@ if (!isset($field['group_user_notes'])){
 		ADD group_user_notes VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_own_code;";
 	$result=$dbh->query($sql);
 }
+if (!isset($field['group_user_notes_show'])){
+	$sql="ALTER TABLE humo_groups
+		ADD group_user_notes_show VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_user_notes;";
+	$result=$dbh->query($sql);
+}
 
 if (!isset($field['group_family_presentation'])){
 	$sql="ALTER TABLE humo_groups
@@ -356,7 +364,7 @@ echo '<tr><td>'.__('Save statistics data').'</td>';
 $check=''; if ($groupDb->group_statistics!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_statistics"'.$check.'></td></tr>';
 
-echo '<tr style="background-color:green; color:white"><th>Menu</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+echo '<tr style="background-color:green; color:white"><th>'.__('Menu').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
 //echo '<tr><td>OLD!!! '.__('Show sources and menu sources').'</td>';
 //echo '<td><select size="1" name="group_sources"><option value="j">'.__('Yes').'</option>';
@@ -423,7 +431,9 @@ echo '<td><input type="checkbox" name="group_menu_login"'.$check.$disabled.'></t
 
 echo '<tr style="background-color:green; color:white"><th>'.__('General').'</font></th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
-echo '<tr><td>'.__('Show pictures').'</td>';
+echo '<tr><td>'.__('Show pictures');
+echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
+echo '</td>';
 $check=''; if ($groupDb->group_pictures!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_pictures"'.$check.'></td></tr>';
 
@@ -491,6 +501,11 @@ echo '<tr><td>'.__('User is allowed to add notes/ remarks by a person in the fam
 $disabled=''; if ($groupDb->group_id=='3'){ $disabled=' disabled';} // *** Disable this option in "Guest" group.
 $check=''; if ($groupDb->group_user_notes!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_user_notes"'.$check.$disabled.'></td></tr>';
+
+echo '<tr><td>'.__('User can see notes/ remarks added by other users in the family tree').'.</td>';
+$disabled=''; //if ($groupDb->group_id=='3'){ $disabled=' disabled';} // *** Disable this option in "Guest" group.
+$check=''; if ($groupDb->group_user_notes_show!='n') $check=' checked';
+echo '<td><input type="checkbox" name="group_user_notes_show"'.$check.$disabled.'></td></tr>';
 
 // *** Sources ***
 echo '<tr style="background-color:green; color:white"><th>'.__('Sources').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';

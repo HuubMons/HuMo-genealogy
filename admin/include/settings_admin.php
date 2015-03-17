@@ -60,7 +60,7 @@ include(CMS_ROOTPATH."include/settings_global.php"); //variables
 $arr_count=0; $arr_count_admin=0;
 $folder=opendir(CMS_ROOTPATH.'languages/');
 while (false!==($file = readdir($folder))) {
-	if (strlen($file)<5 AND $file!='.' AND $file!='..'){
+	if (strlen($file)<6 AND $file!='.' AND $file!='..'){
 		// *** Get language name ***
 		include(CMS_ROOTPATH."languages/".$file."/language_data.php");
 		$langs[$arr_count][0]=$language["name"];
@@ -209,6 +209,10 @@ echo '<option value="n"'.$selected.'>'.__('No').'</option>';
 echo "</select>";
 echo '</td></tr>';
 
+echo '<tr class="humo_color"><td>'.__('SMTP mails').'</td><td>';
+echo '<b>'.__('Sometimes it\'s necessary to use SMTP to send mails. These settings can be changed in file: include/mail.php').'</b>';
+echo '</td></tr>';
+
 echo '<tr bgcolor="green"><th><font color="white">'.__('International settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td valign="top">'.__('Timezone').'</td><td><select size="1" name="timezone">';
@@ -307,9 +311,9 @@ echo '<td><select size="1" name="name_order">';
 $selected=''; if ($humo_option["name_order"]== 'western') $selected=' SELECTED';
 echo '<option value="western"'.$selected.'>'.__('Western').'</option>';
 $selected=''; if ($humo_option["name_order"]== 'chinese') $selected=' SELECTED';
-echo '<option value="chinese"'.$selected.'>'.__('Chinese').'</option>';
+echo '<option value="chinese"'.$selected.'>'.__('Chinese')."/ ".__('Hungarian').'</option>';
 echo "</select>";
-echo "&nbsp;".__('Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports and lists: 刘 理想');
+echo "&nbsp;".__('Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports and lists: 刘 理想').". ".__('Hungarian - reports and lists: Smith John');
 echo "</td></tr>";
 
 echo '<tr bgcolor=green><th><font color=white>'.__('Settings Main Menu').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';

@@ -272,7 +272,8 @@ print '<tr><td>';
 					if ($event_Db->event_event){ echo ' '.$event_Db->event_event; }
 				}
 			}
-			elseif ($connectDb->connect_sub_kind=='address_source'){
+			//elseif ($connectDb->connect_sub_kind=='address_source'){
+			elseif (substr($connectDb->connect_sub_kind,-14)=='address_source'){
 				// *** Sources in address table ***
 				//$address_sql="SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_id='".$connectDb->connect_connect_id."'";
 				$address_sql="SELECT * FROM humo_addresses WHERE address_id='".$connectDb->connect_connect_id."'";
