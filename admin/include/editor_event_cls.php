@@ -62,7 +62,7 @@ function show_event($selected_events=''){
 			AND event_kind!='nobility'
 			AND event_kind!='title'
 			AND event_kind!='lordship'
-			AND event_kind!='birth_declarationshow'
+			AND event_kind!='birth_declaration'
 			AND event_kind!='baptism_witness'
 			AND event_kind!='death_declaration'
 			AND event_kind!='burial_witness'
@@ -265,7 +265,7 @@ function show_event($selected_events=''){
 
 	// *** Show birth declaration by person ***
 	if ($selected_events=='birth_declaration'){
-		echo '<tr class="humo_color" style="display:none;" class="row2" name="row2">';
+		echo '<tr class="humo_color row2" style="display:none;" name="row2">';
 		//echo '<tr class="table_header" style="display:none;" id="row2" name="row2">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('birth declaration').'</td>';
@@ -289,7 +289,7 @@ function show_event($selected_events=''){
 
 	// *** Show death declaration by person ***
 	if ($selected_events=='death_declaration'){
-		echo '<tr class="humo_color" style="display:none;" class="row4" name="row4">';
+		echo '<tr class="humo_color row4" style="display:none;" name="row4">';
 		//echo '<tr class="table_header" style="display:none;" id="row4" name="row4">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('death declaration').'</td>';
@@ -356,7 +356,9 @@ function show_event($selected_events=''){
 			if ($selected_events=='marriage_picture') $event_add='add_marriage_picture&marriage_nr='.$marriage;
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add='.$event_add.'#picture">['.__('Add').']</a> ';
 			//$text='';
-			if ($count>1) { echo "&nbsp;&nbsp;".__('(Drag pictures to change display order)');}
+			if ($count>1) { echo "&nbsp;&nbsp;".__('(Drag pictures to change display order)'); }
+			echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
+
 			echo '<ul id="sortable_pic" class="sortable_pic handle_pic" style="width:auto">';
 			while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 				//if ($text) $text.=', ';
@@ -407,43 +409,42 @@ function show_event($selected_events=''){
 			$data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ);
 
 			?>
-				<script>
-					$('#sortable_pic').sortable().bind('sortupdate', function() {
-						var mediastring = ""; 
-						var media_arr = document.getElementsByClassName("mediamove"); 
-						for (var z = 0; z < media_arr.length; z++) { 
-							// create the new order after dragging to store in database with ajax
-							mediastring = mediastring + media_arr[z].id + ";"; 
-							// change the order numbers of the pics in the pulldown (that was generated before the drag
-							// so that if one presses on delete before refresh the right pic will be deleted !!
-						}
-						mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
-						
-						var parnode = document.getElementById('pic_main_' + media_arr[0].id).parentNode; 
-						var picdomclass = document.getElementsByClassName("pic_row2");
-						var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
+			<script>
+				$('#sortable_pic').sortable().bind('sortupdate', function() {
+					var mediastring = ""; 
+					var media_arr = document.getElementsByClassName("mediamove"); 
+					for (var z = 0; z < media_arr.length; z++) { 
+						// create the new order after dragging to store in database with ajax
+						mediastring = mediastring + media_arr[z].id + ";"; 
+						// change the order numbers of the pics in the pulldown (that was generated before the drag
+						// so that if one presses on delete before refresh the right pic will be deleted !!
+					}
+					mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
+					
+					var parnode = document.getElementById('pic_main_' + media_arr[0].id).parentNode; 
+					var picdomclass = document.getElementsByClassName("pic_row2");
+					var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
 
-						for(var d=media_arr.length-1; d >=0 ; d--) {
-							parnode.insertBefore(document.getElementById('pic_row2_' + media_arr[d].id),nextnode);
-							nextnode = document.getElementById('pic_row2_' + media_arr[d].id);
-							parnode.insertBefore(document.getElementById('pic_row1_' + media_arr[d].id),nextnode);
-							nextnode = document.getElementById('pic_row1_' + media_arr[d].id);
-							parnode.insertBefore(document.getElementById('pic_main_' + media_arr[d].id),nextnode);
-							nextnode = document.getElementById('pic_main_' + media_arr[d].id);  
+					for(var d=media_arr.length-1; d >=0 ; d--) {
+						parnode.insertBefore(document.getElementById('pic_row2_' + media_arr[d].id),nextnode);
+						nextnode = document.getElementById('pic_row2_' + media_arr[d].id);
+						parnode.insertBefore(document.getElementById('pic_row1_' + media_arr[d].id),nextnode);
+						nextnode = document.getElementById('pic_row1_' + media_arr[d].id);
+						parnode.insertBefore(document.getElementById('pic_main_' + media_arr[d].id),nextnode);
+						nextnode = document.getElementById('pic_main_' + media_arr[d].id);  
+					}
+		
+					$.ajax({ 
+						url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
+						success: function(data){
+						} ,
+						error: function (xhr, ajaxOptions, thrownError) {
+							alert(xhr.status);
+							alert(thrownError);
 						}
-			
-						$.ajax({ 
-							url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
-							success: function(data){
-							} ,
-							error: function (xhr, ajaxOptions, thrownError) {
-								alert(xhr.status);
-								alert(thrownError);
-							}
-						});
 					});
-				</script>
-			
+				});
+			</script>
 			<?php
 			
 		echo '</td>';
@@ -941,7 +942,8 @@ function show_event($selected_events=''){
 					AND connect_connect_id='".$data_listDb->event_id."'";
 				$connect_sql=$dbh->query($connect_qry);
 
-				echo "&nbsp;<a href=\"".$internal_link."\" onClick=\"window.open('index.php?page=editor_sources&".$event_group."&connect_kind=person&connect_sub_kind=person_event_source&connect_connect_id=".$data_listDb->event_id."', '','width=800,height=500')\">".__('source');
+				//echo "&nbsp;<a href=\"".$internal_link."\" onClick=\"window.open('index.php?page=editor_sources&".$event_group."&connect_kind=person&connect_sub_kind=person_event_source&connect_connect_id=".$data_listDb->event_id."', '','width=800,height=500')\">".__('source');
+				echo "&nbsp;<a href=\"".$internal_link."\" onClick=\"window.open('index.php?page=editor_sources&".$event_group."&connect_kind=person&connect_sub_kind=pers_event_source&connect_connect_id=".$data_listDb->event_id."', '','width=800,height=500')\">".__('source');
 			}
 			else{
 				// *** Calculate and show nr. of sources ***

@@ -686,7 +686,6 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		global $dbh, $db_functions, $tree_prefix_quoted, $humo_option, $user;
 		global $marr_date_array, $marr_place_array;
 		global $gedcomnumber, $language, $screen_mode, $dirmark1, $dirmark2;
-		global $pers_prep;
 
 		$hour_value=''; // if called from hourglass.php size of chart is given in box_appearance as "hour45" etc.
 		if(strpos($box_appearance,"hour")!==false) { $hour_value=substr($box_appearance,4); }
@@ -1126,7 +1125,6 @@ echo '<div>';
 
 		function data_array($id,$width,$height) {     
 			global $dbh, $db_functions, $tree_prefix_quoted, $data_array, $gedcomnumber, $dsign;   
-			global $pers_prep;
 
 			if (isset($gedcomnumber[$id]) AND $gedcomnumber[$id]!=""){
 				@$personDb = $db_functions->get_person($gedcomnumber[$id]);
@@ -1264,7 +1262,7 @@ echo '<div>';
 
 		function place_cells($type,$begin,$end,$increment,$maxchar,$numrows,$cellwidth) {
 			global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $data_array,$posy,$posx,$marr_date_array, $marr_place_array, $sexe, $gedcomnumber;
-			global $pers_prep;
+
 			$pdf->SetLeftMargin(16);
 			$marg = 16;
 			for($m=$begin;$m<=$end;$m+=$increment) {
@@ -1408,11 +1406,6 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 	// the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
 	$count=0;
 
-	//prepared statemetn before loop
-	//$anc_source_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."sources WHERE source_gedcomnr=?");
-	//$anc_source_prep=$dbh->prepare("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_prefix."' AND source_gedcomnr=?");
-	//$anc_source_prep->bindParam(1,$anc_source_prep_var);
-
 	foreach($pdf_source as $key => $value) {
 		$count++;
 		if(isset($pdf_source[$key])) {
@@ -1423,13 +1416,6 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 				source_display($pdf_source[$key]);  // function source_display from source.php, called with source nr.
 			}
 			elseif ($user['group_sources']=='t') {
-				//$anc_source_prep_var = $pdf_source[$key];
-				//$anc_source_prep->execute();
-				//try {
-				//	@$sourceDb= $anc_source_prep->fetch(PDO::FETCH_OBJ);
-				//} catch(PDOException $e) {
-				//	echo "No valid sourcenumber.";
-				//}
 				$db_functions->get_source($pdf_source[$key]);
 				if ($sourceDb->source_title){
 					$pdf->SetFont('Arial','B',10);

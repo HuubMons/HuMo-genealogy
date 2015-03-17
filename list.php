@@ -1656,17 +1656,13 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 
 			// *** Search all persons with a spouse IN the same tree as the 1st person ***
 			for ($marriage_loop=0; $marriage_loop<count($person_fams); $marriage_loop++){
-				//$fam_result = $dbh->query("SELECT * FROM ".safe_text($personDb->pers_tree_prefix).'family WHERE fam_gedcomnumber="'.$person_fams[$marriage_loop].'"');
 				$fam_result = $dbh->query("SELECT * FROM humo_families
 					WHERE fam_tree_id='".$personDb->pers_tree_id."' AND fam_gedcomnumber='".$person_fams[$marriage_loop]."'");
 				while($famDb= $fam_result->fetch(PDO::FETCH_OBJ)) {
 
 					// *** Search all persons with a spouse IN the same tree as the 1st person ***
-					//$spouse_qry = "SELECT * FROM ".safe_text($personDb->pers_tree_prefix)."person WHERE";
 					$spouse_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$personDb->pers_tree_id."' AND";
 					if ($user['group_kindindex']=="j"){
-						//$spouse_qry= "SELECT *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name
-						//	FROM ".safe_text($personDb->pers_tree_prefix)."person WHERE";
 						$spouse_qry= "SELECT *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name
 							FROM humo_persons WHERE pers_tree_id='".$personDb->pers_tree_id."' AND";
 					}

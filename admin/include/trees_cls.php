@@ -3,7 +3,8 @@ class tree_cls{
 
 // *** List of trees ***
 function tree_main(){
-	global $language, $dbh, $page, $language_tree, $language_select, $menu_admin, $tree_id;
+	global $language, $language_tree, $language_file, $selected_language;
+	global $dbh, $page, $menu_admin, $tree_id;
 	global $phpself, $phpself2, $joomlastring;
 
 	echo '<br>';
@@ -28,6 +29,7 @@ function tree_main(){
 		echo '<a href="index.php?'.$joomlastring.'page=tree&amp;language_tree=default&amp;tree_id='.$tree_id.'">'.__('Default').'</a> ';
 
 		// *** Language choice ***
+		/*
 		for ($i=0; $i<count($language_select); $i++){
 			// *** Get language name ***
 			include(CMS_ROOTPATH.'languages/'.$language_select[$i].'/language_data.php'); //tb NOT INCLUDE_ONCE, DOES NOT CHECK PATH!
@@ -45,6 +47,33 @@ function tree_main(){
 			echo '></a>';
 			echo ' ';
 		}
+		*/
+		// *** Language choice ***
+		$language_tree2=$language_tree; if ($language_tree=='default') $language_tree2=$selected_language;
+		echo '&nbsp;&nbsp;&nbsp;<div class="ltrsddm" style="display : inline;">';
+			echo '<a href="index.php?option=com_humo-gen"';
+				include(CMS_ROOTPATH.'languages/'.$language_tree2.'/language_data.php');
+				echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
+				$select_top='';
+				echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$language_tree2.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].' <img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+			echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
+				echo '<ul class="humo_menu_item2">';
+					for ($i=0; $i<count($language_file); $i++){
+						// *** Get language name ***
+						if ($language_file[$i] != $language_tree2) {
+							include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
+							echo '<li style="float:left; width:124px;">';
+								echo '<a href="index.php?'.$joomlastring.'page=tree&amp;language_tree='.$language_file[$i].'&amp;tree_id='.$tree_id.'">';
+								echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
+								echo $language["name"];
+								echo '</a>';
+							echo '</li>';
+						}
+					}
+				echo '</ul>';
+			echo '</div>';
+		echo '</div>';
+
 	echo '</td>';
 	echo '<td></td>';
 	//echo '<td></td>';
@@ -227,36 +256,28 @@ function tree_main(){
 
 	echo "</table>";
 
-	// *** Only show collation if family tree is made ***
-	//if ($dataDb->tree_prefix!='EMPTY' AND $dataDb->tree_persons>0){
-		// ** Change collation of family tree (needed for Swedish etc.) ***
-		$collation_sql = $dbh->query("SHOW FULL COLUMNS
-			FROM humo_persons
-			WHERE Field = 'pers_firstname'");
-		$collationDb=$collation_sql->fetch(PDO::FETCH_OBJ);
-		$collation=$collationDb->Collation;
+	// ** Change collation of family tree (needed for Swedish etc.) ***
+	$collation_sql = $dbh->query("SHOW FULL COLUMNS
+		FROM humo_persons
+		WHERE Field = 'pers_firstname'");
+	$collationDb=$collation_sql->fetch(PDO::FETCH_OBJ);
+	$collation=$collationDb->Collation;
+	echo '<form method="post" action="'.$phpself.'" style="display : inline;">';
+		echo '<input type="hidden" name="page" value="'.$page.'">';
+		echo '<br>'.__('Collation').' ';
+		echo '<select size="1" name="tree_collation" style="width:250px;">';
+			// *** Default collation ***
+			echo '<option value="utf8_general_ci">utf8_general_ci (default)</option>';
+			// *** Swedish collation ***
+			$select=''; if ($collation=='utf8_swedish_ci'){ $select='selected'; }
+			echo '<option value="utf8_swedish_ci"'.$select.'>utf8_swedish_ci</option>';
+			// *** Danish collation ***
+			$select=''; if ($collation=='utf8_danish_ci'){ $select='selected'; }
+			echo '<option value="utf8_danish_ci"'.$select.'>utf8_danish_ci</option>';
+		echo '</select>';
+		echo ' <input type="Submit" name="change_collation" value="OK">';
+	echo '</form>';
 
-		echo '<form method="post" action="'.$phpself.'" style="display : inline;">';
-			echo '<input type="hidden" name="page" value="'.$page.'">';
-			//echo '<input type="hidden" name="collation_prefix" value="'.$dataDb->tree_prefix.'">';
-			echo '<br>'.__('Collation').' ';
-			//echo '<select size="1" name="tree_collation" style="width:150px;">';
-			echo '<select size="1" name="tree_collation" style="width:250px;">';
-				// *** Default collation ***
-				echo '<option value="utf8_general_ci">utf8_general_ci (default)</option>';
-
-				// *** Swedish collation ***
-				$select=''; if ($collation=='utf8_swedish_ci'){ $select='selected'; }
-				echo '<option value="utf8_swedish_ci"'.$select.'>utf8_swedish_ci</option>';
-
-				// *** Danish collation ***
-				$select=''; if ($collation=='utf8_danish_ci'){ $select='selected'; }
-				echo '<option value="utf8_danish_ci"'.$select.'>utf8_danish_ci</option>';
-			echo '</select>';
-
-			echo ' <input type="Submit" name="change_collation" value="OK">';
-		echo '</form>';
-	//}
 }
 
 function tree_data(){
@@ -271,14 +292,14 @@ function tree_data(){
 	echo '<br><table class="humo" cellspacing="0" width="100%" style="background-color : #CCFFFF;">';
 		echo '<tr class="table_header"><th colspan="2">'.__('Family tree data').'</th></tr>';
 
-		//echo '<tr><td>'.__('Table prefix').'</td><td>'.$data2Db->tree_prefix.'</td></tr>';
-
 		echo  '<tr><td>'.__('E-mail address').'<br>'.__('Owner of tree').'</td>';
 		echo '<td>'.__('E-mail address will not be shown on the site: an e-mail form will be generated!').'<br><input type="text" name="tree_email" value="'.$data2Db->tree_email.'" size="40"><br>';
 		echo '<input type="text" name="tree_owner" value="'.$data2Db->tree_owner.'" size="40"></td></tr>';
 		echo '<tr><td>'.__('Path to the pictures').'</td>';
 			$data2Db->tree_pict_path.'</textarea></td></tr>';
-		echo '<td>'.__('example: ../pictures/').'<br><textarea rows="1" cols="20" name="tree_pict_path" style="height: 20px; width:500px">'.
+		echo '<td>'.__('example: ../pictures/');
+		echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
+		echo '<br><textarea rows="1" cols="20" name="tree_pict_path" style="height: 20px; width:500px">'.
 			$data2Db->tree_pict_path.'</textarea></td></tr>';
 
 		// *** Family tree privacy ***
@@ -300,7 +321,9 @@ function tree_data(){
 }
 
 function tree_text(){
-	global $language, $page, $tree_id, $language_tree, $treetext_name, $language_select, $data2Db;
+	global $language, $language_tree, $selected_language;
+	//$language_select
+	global $page, $tree_id, $treetext_name, $language_file, $data2Db;
 	global $treetext_mainmenu_text, $treetext_mainmenu_source, $treetext_family_top, $treetext_family_footer, $treetext_id, $menu_admin;
 	global $phpself, $phpself2, $joomlastring;
 
@@ -321,6 +344,7 @@ function tree_text(){
 	echo '<a href="index.php?'.$joomlastring.'page=tree&amp;menu_admin=tree_text&amp;language_tree=default&amp;tree_id='.$tree_id.'">'.__('Default').'</a> ';
 
 	// *** Language choice ***
+	/*
 	for ($i=0; $i<count($language_select); $i++){
 		// *** Get language name ***
 		include(CMS_ROOTPATH.'languages/'.$language_select[$i].'/language_data.php');
@@ -334,6 +358,34 @@ function tree_text(){
 		}
 		echo '></a> ';
 	}
+	*/
+	// *** Language choice ***
+	$language_tree2=$language_tree; if ($language_tree=='default') $language_tree2=$selected_language;
+	echo '&nbsp;&nbsp;&nbsp;<div class="ltrsddm" style="display : inline;">';
+		echo '<a href="index.php?option=com_humo-gen"';
+			include(CMS_ROOTPATH.'languages/'.$language_tree2.'/language_data.php');
+			echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
+			$select_top='';
+			echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$language_tree2.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].' <img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+		echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
+			echo '<ul class="humo_menu_item2">';
+				for ($i=0; $i<count($language_file); $i++){
+					// *** Get language name ***
+					if ($language_file[$i] != $language_tree2) {
+						include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
+						echo '<li style="float:left; width:124px;">';
+							echo '<a href="index.php?'.$joomlastring.'page=tree&amp;menu_admin=tree_text&amp;language_tree='.$language_file[$i].'&amp;tree_id='.$tree_id.'">';
+							echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
+							echo $language["name"];
+							echo '</a>';
+						echo '</li>';
+					}
+				}
+			echo '</ul>';
+		echo '</div>';
+	echo '</div>';
+
+
 	echo '</td></tr>';
 
 	echo '<tr><td style="white-space:nowrap;"><b>'.__('Name of family tree').'</b></td><td><input type="text" name="treetext_name" value="'.$treetext_name.'" size="60"></td></tr>';

@@ -26,7 +26,16 @@ echo '&nbsp;&nbsp;'.__('Display birth or death locations across different time p
 
 // SELECT FAMILY TREE
 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+
+$tree_id_string = " AND ( ";
+$id_arr = explode(";",substr($humo_option['geo_trees'],0,-1)); // substr to remove trailing ";"
+foreach($id_arr as $value) {
+	$tree_id_string .= "tree_id='".substr($value,1)."' OR ";  // substr removes leading "@" in geo_trees setting string
+}
+$tree_id_string = substr($tree_id_string,0,-4).")"; // take off last " ON " and add ")"
+
+$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ".$tree_id_string." ORDER BY tree_order";
+//$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 $tree_prefix_result = $dbh->query($tree_prefix_sql);
 $count=0;
 echo '<form method="POST" action="maps.php" style="display : inline;">';
@@ -308,15 +317,13 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	$myresultDb=$myresult->fetch(PDO::FETCH_OBJ);
 	$chosenname = $myresultDb->pers_firstname.' '.strtolower(str_replace('_','',$myresultDb->pers_prefix)).' '.$myresultDb->pers_lastname;
 
-	$gn=0; // generatienummer
+	$gn=0; // generation number
 
 	// prepared statements for use in outline loops
-	//$family_prep = $dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
 	$family_prep = $dbh->prepare("SELECT fam_man, fam_woman FROM humo_families
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
 	$family_prep->bindParam(1,$fam_prep_var);
 
-	//$person_prep = $dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 	$person_prep = $dbh->prepare("SELECT pers_fams FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
 	$person_prep->bindParam(1,$pers_prep_var);
@@ -484,7 +491,6 @@ if(isset($_POST['descmap'])) {
 	echo '<div id="descmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:'.$select_height.'; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">';
 	if($user['group_kindindex']=="j") { $orderlast = "CONCAT(pers_prefix,pers_lastname)"; }
 	else { $orderlast = "pers_lastname"; }
-	//$desc_search = "SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_fams !='' ORDER BY ".$orderlast.", pers_firstname";
 	$desc_search = "SELECT * FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_fams !='' ORDER BY ".$orderlast.", pers_firstname";
 	$desc_search_result = $dbh->query($desc_search);
@@ -493,7 +499,6 @@ if(isset($_POST['descmap'])) {
 	echo '<select style="max-width:396px;background:#eee" '.$select_size.' onChange="window.location=this.value;" id="desc_map" name="desc_map">';
 	echo '<option value="toptext">'.__('Pick a name from the pulldown list').'</option>';
 	//prepared statement out of loop
-	//$chld_prep = $dbh->prepare("SELECT fam_children FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber =? AND fam_children != ''");
 	$chld_prep = $dbh->prepare("SELECT fam_children FROM humo_families
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber =? AND fam_children != ''");
 	$chld_prep->bindParam(1,$chld_var);
@@ -595,9 +600,14 @@ function findPlace () {
 }
 </script>
 
-<script type="text/javascript"
-		src="http://maps.googleapis.com/maps/api/js?sensor=false">
-</script>
+<?php
+if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+	echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>';
+}
+else {
+	echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>';
+}
+?>
 
 <script type="text/javascript">
 	var map;

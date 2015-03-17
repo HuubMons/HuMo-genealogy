@@ -73,6 +73,26 @@ while (false!==($file = readdir($language_folder))) {
 	if (strlen($file)<6 AND $file!='.' AND $file!='..'){
 		$language_file[]=$file;
 
+		// *** Order of languages ***
+		if ($file=='cn') $language_order[]='Chinese';
+		elseif ($file=='de') $language_order[]='Deutsch';
+		elseif ($file=='en') $language_order[]='English';
+		elseif ($file=='en_us') $language_order[]='English_us';
+		elseif ($file=='es') $language_order[]='Espanol';
+		elseif ($file=='fa') $language_order[]='Persian';
+		elseif ($file=='fi') $language_order[]='Suomi';
+		elseif ($file=='fr') $language_order[]='French';
+		elseif ($file=='he') $language_order[]='Hebrew';
+		elseif ($file=='hu') $language_order[]='Magyar';
+		elseif ($file=='it') $language_order[]='Italiano';
+		elseif ($file=='nl') $language_order[]='Nederlands';
+		elseif ($file=='no') $language_order[]='Norsk';
+		elseif ($file=='pt') $language_order[]='Portuguese';
+		elseif ($file=='ru') $language_order[]='Russian';
+		elseif ($file=='sv') $language_order[]='Swedish';
+		elseif ($file=='zh') $language_order[]='Chinese_traditional';
+		else $language_order[]=$file;
+
 		// *** Save choice of language ***
 		$language_choice='';
 		if (isset($_GET["language"])){ $language_choice=$_GET["language"]; }
@@ -85,6 +105,9 @@ while (false!==($file = readdir($language_folder))) {
 	}
 }
 closedir($language_folder);
+// *** Order language array by name of language ***
+array_multisort($language_order, $language_file);
+
 
 // *** Log in ***
 if (isset($_POST["username"]) && isset($_POST["password"])){
