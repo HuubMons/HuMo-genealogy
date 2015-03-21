@@ -73,13 +73,15 @@ echo '<th>'.ucfirst(__('died'))."</th>\n";
 echo "</tr>\n";
 
 // *** Build query ***
+
 $sql = "SELECT *,
 	abs(substring( pers_birth_date,1,2 )) as birth_day,
 	substring( pers_birth_date,-4 ) as birth_year
-	FROM ".$tree_prefix_quoted."person
-	WHERE substring( pers_birth_date,  4,3) = :month
-	OR  substring( pers_birth_date,  3,3) = :month
+	FROM humo_persons
+	WHERE pers_tree_id='".$tree_id."' AND (substring( pers_birth_date,  4,3) = :month
+	OR substring( pers_birth_date,  3,3) = :month)
 	order by birth_day ";
+
 try {
 	$qry = $dbh->prepare( $sql );
 	$qry->bindValue(':month', $month, PDO::PARAM_STR);

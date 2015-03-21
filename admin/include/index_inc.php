@@ -103,6 +103,10 @@ echo '<div style="height:450px; width:750px; overflow-y: auto; margin-left:auto;
 echo '<table class="humo">';
 	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
 
+	// *** HuMo-gen version ***
+	if (isset($humo_option["version"]))
+		echo '<tr><td>'.__('HuMo-gen Version').'</td><td style="background-color:#00FF00">'.__('HuMo-gen Version').': '.$humo_option["version"].'</td></tr>';
+
 	// *** PHP Version ***
 	$version = explode('.', phpversion() );
 	if ($version[0] > 4){
@@ -319,6 +323,26 @@ The file .htpasswd will look something like this:<br>');
 	// *** Family trees ***
 	@$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
 	if ($datasql){
+
+		// *** Show size of statistics table ***
+		$size = $dbh->query('SHOW TABLE STATUS WHERE Name="humo_stat_date"');
+		$sizeDb=$size->fetch(PDO::FETCH_OBJ);
+		$size=$sizeDb->Data_length;
+		$bytes = array( ' kB', ' MB', ' GB', ' TB' );
+		$size = $size / 1024;
+		foreach ($bytes as $val) {
+			if (1024 <= $size) {
+				$size = $size / 1024;
+				continue;
+			}
+			break;
+		}
+		$size= round( $size, 1 ) . $val;
+
+		echo '<tr><td>'.__('Size of statistics table').'</td><td style="background-color:#00FF00">'.$size;
+			echo ' <a href="index.php?page=statistics">'.__('If needed remove old statistics.').'</a>';
+		echo '</td></tr>';
+
 		echo '<tr><td>'.__('Trees table').'</td><td style="background-color:#00FF00">OK</td></tr>';
 
 		$tree_counter=0;
@@ -342,7 +366,8 @@ The file .htpasswd will look something like this:<br>');
 				else{
 					echo ' <b>'.__('This tree does not yet contain any data or has not been imported properly!').'</b><br>';
 						echo ' <form method="post" action="'.$path_tmp.'" style="display : inline;">';
-						echo '<input type="hidden" name="page" value="gedcom">';
+						//echo '<input type="hidden" name="page" value="gedcom">';
+						echo '<input type="hidden" name="page" value="tree">';
 						echo '<input type="hidden" name="tree_prefix" value="'.$dataDb->tree_prefix.'">';
 						echo '<input type="Submit" name="step1" value="'.__('Import Gedcom file').'">';
 						echo '</form>';

@@ -65,7 +65,9 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 				$_SESSION["save_quicksearch"]=$quicksearch;
 			}
 			if (isset($_SESSION["save_quicksearch"])){ $quicksearch=$_SESSION["save_quicksearch"]; }
-			print '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="15" pattern=".{3,}" title="'.__('Minimum: 3 characters.').'">';
+			if($humo_option['min_search_chars']==1) { $pattern=""; $min_chars =" 1 ";}
+			else { $pattern='pattern=".{'.$humo_option['min_search_chars'].',}"'; $min_chars = " ".$humo_option['min_search_chars']." ";}
+			print '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="15" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
 			print ' <input type="submit" value="'.__('Search').'">';
 		print "</form>";
 	}
@@ -144,9 +146,8 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 	}
 
 	// *** Theme select ***
-	//echo '<span id="switchform">';
-
 	// *** Hide theme select if there is only one theme, AND it is the default theme ***
+	/*
 	$show_theme_select=true;
 	if (count($theme_folder)==1){
 		if (isset($humo_option['default_skin']) AND $humo_option['default_skin'].'.css'==$theme_folder[0]) {
@@ -177,10 +178,11 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		}
 		echo '</select></form>';
 	}
-	//echo '</span>';
+	*/
 
 
 	// *** Show "A+ A- Reset" ***
+	/*
 	echo '<span id="top_font_size">';
 		echo '&nbsp;&nbsp;&nbsp;<a href="javascript:decreaseFontSize(0);" title="decrease font size">'.$dirmark1.'A-&nbsp;</a>';
 		echo ' <a href="javascript:increaseFontSize(0);" title="increase font size">A+</a>';
@@ -193,6 +195,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			echo ' <a href="javascript:delCookie();" title="reset font size">Reset</a>';
 		}
 	echo '</span>';
+	*/
 
 echo '</div>'; // End of Top
 
@@ -218,7 +221,7 @@ echo '<ul class="humo_menu_item">';
 	echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Home')."</a></li>\n";
 
 	// *** Menu genealogy (for CMS pages) ***
-	$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!=''");
+	$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
 	if($cms_qry->rowCount() > 0) {
 		$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
 
@@ -228,17 +231,32 @@ echo '<ul class="humo_menu_item">';
 		else{
 			$path_tmp=CMS_ROOTPATH.'cms_pages.php?database='.$_SESSION['tree_prefix'];
 		}
-		//echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('TOP_MENU_GENEALOGY')."</a></li>\n";
 		echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
 	}
 
 	// *** Menu: Family tree ***
 	if ($bot_visit AND $humo_option["searchengine_cms_only"]=='y'){
-		//
+
+		// *** Show CMS link for search bots ***
+		// *** Menu genealogy (for CMS pages) ***
+		$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
+		if($cms_qry->rowCount() > 0) {
+			$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
+
+			if (CMS_SPECIFIC=='Joomla'){
+				$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages&amp;database='.$_SESSION['tree_prefix'];
+			}
+			else{
+				$path_tmp=CMS_ROOTPATH.'cms_pages.php?database='.$_SESSION['tree_prefix'];
+			}
+			echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
+		}
+
 	}
 	else{
 		$select_top='';
 		if ($menu_choice=='tree_index'){ $select_top=' id="current_top"'; }
+		//if ($menu_choice=='cms_pages'){ $select_top=' id="current_top"'; }
 		if ($menu_choice=='persons'){ $select_top=' id="current_top"'; }
 		if ($menu_choice=='names'){ $select_top=' id="current_top"'; }
 		if ($menu_choice=='sources'){ $select_top=' id="current_top"'; }
@@ -269,6 +287,22 @@ echo '<ul class="humo_menu_item">';
 
 					$select_menu=''; if ($menu_choice=='tree_index'){ $select_menu=' id="current"'; }
 					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Family tree index').'</a></li>';
+
+					// *** Menu genealogy (for CMS pages) ***
+					/*
+					$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
+					if($cms_qry->rowCount() > 0) {
+						$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
+
+						if (CMS_SPECIFIC=='Joomla'){
+							$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages&amp;database='.$_SESSION['tree_prefix'];
+						}
+						else{
+							$path_tmp=CMS_ROOTPATH.'cms_pages.php?database='.$_SESSION['tree_prefix'];
+						}
+						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
+					}
+					*/
 
 					// *** Persons ***
 					if ($user['group_menu_persons']=="j"){
@@ -329,7 +363,8 @@ echo '<ul class="humo_menu_item">';
 					//if ($user['group_sources']=='j'){
 					if ($user['group_sources']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check if there are sources in the database ***
-						$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources");
+						//$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources");
+						$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$_SESSION['tree_id']."'");
 						@$sourceDb=$source_qry->rowCount();
 						if ($sourceDb>0){
 							$select_menu=''; if ($menu_choice=='sources'){ $select_menu=' id="current"'; }
@@ -346,7 +381,9 @@ echo '<ul class="humo_menu_item">';
 					//if ($user['group_addresses']=='j'){
 					if ($user['group_addresses']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check for addresses in the database ***
-						$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr LIKE '_%'");
+						//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr LIKE '_%'");
+						$address_qry=$dbh->query("SELECT * FROM humo_addresses
+							WHERE address_tree_id='".$tree_id."' AND address_gedcomnr LIKE '_%'");
 						@$addressDb=$address_qry->rowCount();
 						if ($addressDb>0){
 							$select_menu=''; if ($menu_choice=='addresses'){ $select_menu=' id="current"'; }
@@ -380,8 +417,14 @@ echo '<ul class="humo_menu_item">';
 	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
 	$user["group_latestchanges"]=='j' ) {
 	*/
+/*
 	if($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j' OR
 	($user["group_googlemaps"]=='j' AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0) OR 
+	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
+	$user["group_latestchanges"]=='j' ) {
+*/
+	if($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j' OR
+	($user["group_googlemaps"]=='j' AND 1==2 AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0 AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees' AND setting_value LIKE '%@".$_SESSION['tree_id'].";%' ")->rowCount() > 0) OR 
 	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
 	$user["group_latestchanges"]=='j' ) {
 		// *** Javascript pull-down menu ***
@@ -440,9 +483,10 @@ echo '<ul class="humo_menu_item">';
 						$path_tmp=CMS_ROOTPATH.'relations.php';
 					}
 					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Relationship calculator')."</a></li>\n";
-				}
+				}  
 				if ($user["group_googlemaps"]=='j' AND file_exists(CMS_ROOTPATH.'maps.php')){
-					if(!$bot_visit AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0) {
+					//if(!$bot_visit AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0) {
+					if(!$bot_visit AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0 AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees' AND setting_value LIKE '%@".$_SESSION['tree_id'].";%' ")->rowCount() > 0) {  // this tree has been indexed
 						$select_menu=''; if ($menu_choice=='maps'){ $select_menu=' id="current"'; }
 						if (CMS_SPECIFIC=='Joomla'){
 							$path_tmp='index.php?option=com_humo-gen&amp;task=maps';
@@ -486,6 +530,17 @@ echo '<ul class="humo_menu_item">';
 		echo '</li>';
 	} // *** End of menu check ***
 	} // *** End of bot check
+
+	if (!$bot_visit){
+		// *** User settings ***
+		if (CMS_SPECIFIC=='Joomla'){
+			$path_tmp='index.php?option=com_humo-gen&amp;task=user_settings';
+		} else{
+			$path_tmp=CMS_ROOTPATH.'user_settings.php';
+		}
+		$select_menu=''; if ($menu_choice=='settings'){ $select_menu=' id="current"'; }
+		print '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Settings')."</a></li>\n";
+	}
 
 	$select_top='';
 	if ($menu_choice=='help'){ $select_top=' id="current_top"'; }
@@ -545,37 +600,6 @@ echo '<ul class="humo_menu_item">';
 	echo '</div>';
 	echo '</li>';
 
-	// *** Country flags ***
-	if (!$bot_visit){
-		echo '<li>';
-		echo '<div class="'.$rtlmarker.'sddm">';
-			echo '<a href="index.php?option=com_humo-gen"';
-			echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
-			$select_top='';
-			echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
-			//echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-			echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
-				echo '<ul class="humo_menu_item2">';
-					for ($i=0; $i<count($language_file); $i++){
-						// *** Get language name ***
-						if ($language_file[$i] != $selected_language) {
-							include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
-							//echo '<li><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
-							echo '<li style="float:left; width:124px;"><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
-
-							echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
-							echo $language["name"];
-							echo '</a>';
-							echo '</li>';
-						}
-					}
-				echo '</ul>';
-			echo '</div>';
-		echo '</div>';
-		echo '</li>';
-		include('languages/'.$selected_language.'/language_data.php');
-	}
-
 	if ($user['group_menu_login']=='j'){
 		// *** Login - Logoff ***
 		if (!$user["user_name"]){
@@ -587,16 +611,6 @@ echo '<ul class="humo_menu_item">';
 			}
 			print '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Login')."</a></li>\n";
 		} else{
-
-			// *** User settings ***
-			if (CMS_SPECIFIC=='Joomla'){
-				$path_tmp='index.php?option=com_humo-gen&amp;task=user_settings';
-			} else{
-				$path_tmp=CMS_ROOTPATH.'user_settings.php';
-			}
-			$select_menu=''; if ($menu_choice=='settings'){ $select_menu=' id="current"'; }
-			print '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Settings')."</a></li>\n";
-
 			// *** Log off ***
 			if (CMS_SPECIFIC=='Joomla'){
 				$path_tmp='index.php?option=com_humo-gen&amp;task=index&amp;log_off=1';
@@ -630,6 +644,50 @@ echo '<ul class="humo_menu_item">';
 			$path_tmp=CMS_ROOTPATH.'register.php';
 		}
 		echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Register').'</a></li>';
+	}
+
+	// *** Country flags ***
+	if (!$bot_visit){
+		echo '<li>';
+		echo '<div class="'.$rtlmarker.'sddm">';
+			echo '<a href="index.php?option=com_humo-gen"';
+			echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
+			$select_top='';
+			//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+
+			echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> &nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+
+			//echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+			echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
+				echo '<ul class="humo_menu_item2">';
+					for ($i=0; $i<count($language_file); $i++){
+						// *** Get language name ***
+						if ($language_file[$i] != $selected_language) {
+							include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
+							//echo '<li><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
+							echo '<li style="float:left; width:124px;">';
+								echo '<a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
+								echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
+								echo $language["name"];
+								echo '</a>';
+							echo '</li>';
+						}
+					}
+
+					// *** Odd number of languages in menu ***
+					/*
+					if ($i % 2 == 0){
+						echo '<li style="float:left; width:124px;">';
+							echo '<a href="'.CMS_ROOTPATH.'index.php" style="height:18px;">&nbsp;<br></a>';
+						echo '</li>';
+					}
+					*/
+
+				echo '</ul>';
+			echo '</div>';
+		echo '</div>';
+		echo '</li>';
+		include('languages/'.$selected_language.'/language_data.php');
 	}
 
 echo '</ul>';

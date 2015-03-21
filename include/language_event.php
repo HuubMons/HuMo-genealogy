@@ -44,7 +44,7 @@ function language_event($text_event){
 	$text_event=str_replace("MARS", __('Marriage settlement'), $text_event);
 	$text_event=str_replace("_MBON", __('Marriage bond'), $text_event);
 	$text_event=str_replace("_MEDC", __('Medical condition'), $text_event);
-	$text_event=str_replace("MILI", __('militairy service'), $text_event);
+	$text_event=str_replace("MILI", __('Military service'), $text_event);
 	$text_event=str_replace("NATI", __('Nationality'), $text_event);
 	$text_event=str_replace("NATU", __('Naturalized'), $text_event);
 	$text_event=str_replace("NCHI0", __('No children'), $text_event); // Extra event...

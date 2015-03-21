@@ -31,6 +31,7 @@ function clearOverlays() {
 
 <?php
 //error_reporting(E_ALL);
+global $selected_language;
 $location=$dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location");
 while (@$locationDb=$location->fetch(PDO::FETCH_OBJ)){
 	//$locarray[$locationDb->location_location][0] = $locationDb->location_location;
@@ -64,11 +65,18 @@ if($flag_desc_search==1 AND $desc_array != '') {
 	//for($i=0; $i<count($desc_array); $i++) {
 	foreach($desc_array as $value) {
 		if($_SESSION['type_birth']==1) {
-			$persoon=$dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$value."' AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
+			$persoon=$dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND pers_gedcomnumber ='".$value."'
+				AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
 			@$personDb=$persoon->fetch(PDO::FETCH_OBJ);
 		}
 		elseif($_SESSION['type_death']==1) {
-			$persoon=$dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$value."' AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
+			//$persoon=$dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber ='".$value."' AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
+			$persoon=$dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND pers_gedcomnumber ='".$value."'
+				AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
 			@$personDb=$persoon->fetch(PDO::FETCH_OBJ);
 		}
 		if($personDb) {
@@ -117,10 +125,16 @@ if($flag_desc_search==1 AND $desc_array != '') {
 }
 else {
 	if($_SESSION['type_birth']==1) {
-		$persoon=$dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
+		//$persoon=$dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
+		$persoon=$dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
 	}
 	elseif($_SESSION['type_death']==1) {
-		$persoon=$dbh->query("SELECT pers_death_place, pers_death_date, pers_buried_place, pers_buried_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
+		//$persoon=$dbh->query("SELECT pers_death_place, pers_death_date, pers_buried_place, pers_buried_date FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
+		$persoon=$dbh->query("SELECT pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
 	}
 	while (@$personDb=$persoon->fetch(PDO::FETCH_OBJ)){
 
@@ -305,9 +319,43 @@ function makeSelection(sel) {
 			}
 			echo 'var click ="'.__(' click here').'";';
 			echo 'var readabout ="'.__('Read about this location in ').'";';
+
+			if($selected_language=="hu") {
+				echo 'var wikilang="hu";';
+			}
+			elseif($selected_language=="nl") {
+				echo 'var wikilang="nl";';
+			}
+			elseif($selected_language=="fr") {
+				echo 'var wikilang="fr";';
+			}
+			elseif($selected_language=="de") {
+				echo 'var wikilang="de";';
+			}
+			elseif($selected_language=="fi") {
+				echo 'var wikilang="fi";';
+			}
+			elseif($selected_language=="es") {
+				echo 'var wikilang="es";';
+			}
+			elseif($selected_language=="pt") {
+				echo 'var wikilang="pt";';
+			}
+			elseif($selected_language=="it") {
+				echo 'var wikilang="it";';
+			}
+			elseif($selected_language=="no") {
+				echo 'var wikilang="no";';
+			}
+			elseif($selected_language=="sv") {
+				echo 'var wikilang="sv";';
+			}
+			else {
+				echo 'var wikilang="en";';
+			}
 			?>
 
-			google.maps.event.addListener(styleMaker1, 'click', handleMarkerClick(styleMaker1, "<div>" + location + j[i][0] + "<br>" + readabout + "<a href=\"http://en.wikipedia.org/wiki/" + place + "\" target=\"blank\"> Wikipedia </a><br><div style=\"display:inline;\" id=\"ajaxlink\" onclick=\"loadurl('googlemaps/namesearch.php?thisplace=" + thisplace + "&amp;" + what + "&amp;" + namestring + "')\">" + list + until + ", <span style=\"color:blue;font-weight:bold\"><a href=\"javascript:void(0)\">" + click + "</a></span><br><br><br><br><div style=\"min-width:370px\"></div></div></div>"));
+			google.maps.event.addListener(styleMaker1, 'click', handleMarkerClick(styleMaker1, "<div>" + location + j[i][0] + "<br>" + readabout + "<a href=\"http://" + wikilang + ".wikipedia.org/wiki/" + place + "\" target=\"blank\"> Wikipedia </a><br><div style=\"display:inline;\" id=\"ajaxlink\" onclick=\"loadurl('googlemaps/namesearch.php?thisplace=" + thisplace + "&amp;" + what + "&amp;" + namestring + "')\">" + list + until + ", <span style=\"color:blue;font-weight:bold\"><a href=\"javascript:void(0)\">" + click + "</a></span><br><br><br><br><div style=\"min-width:370px\"></div></div></div>"));
 
 		}
 	}

@@ -53,17 +53,18 @@ body {
 	top:8px;
 	/* right: 440px; */
 }
+
 #top_quicksearch {
 	position: absolute;
 	top:8px;
-	/* right: 300px; */
-	right:410px;
+	/* right:410px; */
+	right:200px;
 }
 #top_favorites_select {
 	position: absolute;
 	top:8px;
-	/* right: 300px; */
-	right:255px;
+	/* right:255px; */
+	right:20px;
 }
 
 /* Style-skin sheet select form */
@@ -270,7 +271,6 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 /* Center box */
 #mainmenu_centerbox{
 	/* background: #ffffff url(images_antique/tree_background_450lc.jpg) repeat left top; */
-
 	background: #ffffff;
 	border: solid 1px #999999;
 	margin:10px 15px 0px 15px;
@@ -468,7 +468,7 @@ table.humo tr:only-of-type td:only-of-type {
 	border: 0px;
 }
 
-/* NEW Headline in table */
+/* Headline in table */
 .table_headline{
 	background-color: transparent;
 	background-image: url('images/default_trans.png');
@@ -560,7 +560,8 @@ a:visited { color:brown; }
 .pers_own_code { }
 
 /* event - gebeurtenis */
-.event { font-style:italic; }
+/* .event { font-style:italic; } */
+.event { }
 
 /* head genealogy - koptekst parenteel (Generatie I, II, etc.) */
 .standard_header {

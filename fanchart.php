@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /****************************************************************************
 * fanchart.php                                                              *
 * Original fan plotting code from PhpGedView (GNU/GPL licence)              *
@@ -36,7 +36,7 @@ $chosengen=5;
 if (isset($_GET["chosengen"])){ $chosengen=$_GET["chosengen"]; }
 if (isset($_POST["chosengen"])){ $chosengen=$_POST["chosengen"]; }
 
-$fontsize=7;
+$fontsize=8;
 if (isset($_GET["fontsize"])){ $fontsize=$_GET["fontsize"]; }
 if (isset($_POST["fontsize"])){ $fontsize=$_POST["fontsize"]; }
 
@@ -70,10 +70,10 @@ for ($i=0 ; $i < $maxperson; $i++) {
 }
 
 // some prepared statements so they will be initialized once
-$person_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
+$person_prep = $dbh->prepare("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
 $person_prep->bindParam(1,$pers_var);
 
-$fam_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber =?");
+$fam_prep = $dbh->prepare("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber =?");
 $fam_prep->bindParam(1,$fam_var);
 
 function fillarray ($nr, $famid) {
@@ -211,10 +211,11 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr) {
 * @param int $fandeg fan size in deg (default=270)
 */
 function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
-	global $dbh, $fontsize, $date_display;
+	global $dbh, $tree_id, $fontsize, $date_display;
 	global $fan_style, $family_id;
 	global $printing, $language, $selected_language;
 	global $person_prep, $pers_var, $tree_prefix_quoted;
+	global $china_message;
 	// check for GD 2.x library
 	if (!defined("IMG_ARC_PIE")) {
 		print "ERROR: NO GD LIBRARY";
@@ -224,8 +225,6 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 		print "ERROR: NO GD LIBRARY";
 		return false;
 	}
-
-	$fontfile=CMS_ROOTPATH."include/fanchart/dejavusans.ttf";
 
 	if (intval($fontsize)<2) $fontsize = 7;
 
@@ -334,17 +333,31 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 
 				$name=$pid;
 
-				// check if string is rtl by checking first or second char (second in case first is " or parentheses)
+				// check if string is RTL language- if it is, it has to be reversed later on by persian_log2vis()
 				$rtlstr=0;
-				$tempname=htmlentities($name);
-
-				if((substr($tempname,0,1)=="&" OR substr($tempname,1,1) == "&") AND preg_match("/[a-zA-Z]/",$tempname)==0) {
-				// if it contains a multibyte letter, but no regular alphabetic letters: it is Persian, Hebrew, Arabic etc	
-				// we need the preg_match because otherwise also names with Nordic characters would be included!
-					$persian_log2vis($name); 
-					$rtlstr=1;
+				//if(preg_match('/(*UTF8)[א-ת]/',$name)!==0 OR preg_match('/(*UTF8)[أ-ى]/',$name)!==0) {
+				if(preg_match('/(*UTF8)[א-ת]/',$name)===1 OR preg_match('/(*UTF8)[أ-ى]/',$name)===1) {
+					// this is either Hebrew, Arabic or Persian -> we have to reverse the text!
+					$rtlstr=1; 
 				}
- 
+				$fontfile=CMS_ROOTPATH."include/fanchart/dejavusans.ttf"; // this default font serves: Latin,Hebrew,Arabic,Persian,Russian
+				
+				//if(preg_match('/(*UTF8)\p{Han}/',$name)!==0) {	// String is Chinese so use a Chinese ttf font if present in the folder
+				if(preg_match('/(*UTF8)\p{Han}/',$name)===1) {	// String is Chinese so use a Chinese ttf font if present in the folder
+					if(is_dir(CMS_ROOTPATH."include/fanchart/chinese")) {
+						$dh=opendir(CMS_ROOTPATH."include/fanchart/chinese"); 
+						while (false !== ($filename = readdir($dh))) {
+							//if (strtolower(substr($filename, -3)) == "ttf"){
+							if (strtolower(substr($filename, -3)) == "otf" OR strtolower(substr($filename, -3)) == "ttf"){
+								$fontfile = CMS_ROOTPATH."include/fanchart/chinese/".$filename;
+							}
+						}
+					}
+					if($fontfile==CMS_ROOTPATH."include/fanchart/dejavusans.ttf") { //no Chinese ttf file found
+						$china_message=1;
+					}
+				}
+				
 				$text = $name; // names
 				$text2=""; // dates
 				if($date_display==1) {  // don't show dates
@@ -374,10 +387,10 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 				$text = split_align_text($text, $wmax, $rtlstr, 1, $gen);
 				$text2 = split_align_text($text2, $wmax, $rtlstr, 0, $gen);
 
-				if($rtlstr==1) {
-					persian_log2vis($text);
+				if($rtlstr==1) {  
+					persian_log2vis($text); // converts persian, arab and hebrew text from logical to visual and reverses it
 				}
-
+			
 				$text.="\n".$text2;
 
 				// text angle
@@ -449,7 +462,9 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 					if($treeid[1][5]=="F") { $spouse="fam_man";} else { $spouse="fam_woman"; }
 
 					//2 reasons this is not a prepared pdo statement: 1. only used once  2. table names can't be parameters...
-					$spouse_result = $dbh->query("SELECT ".$spouse." FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$treeid[1][2]."'");
+					//$spouse_result = $dbh->query("SELECT ".$spouse." FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$treeid[1][2]."'");
+					$spouse_result = $dbh->query("SELECT ".$spouse." FROM humo_families
+						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$treeid[1][2]."'");
 					@$spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
 
  					$pers_var = $spouseDb[$spouse];
@@ -675,7 +690,7 @@ print "</select>";
 print '<br><hr style="width:110px">';
 print __('Font size').":<br>";
 print "<select name=\"fontsize\">";
-for ($i=5; $i<=10; $i++) {
+for ($i=5; $i<=12; $i++) {
 	print "<option value=\"".$i."\"" ;
 	if ($i == $fontsize) print "selected=\"selected\" ";
 	print ">".$i."</option>";
@@ -737,7 +752,7 @@ echo '<div style="position:absolute; top:60px; left:135px; width:'.$fan_width.'"
 if(CMS_SPECIFIC != "Joomla") {
 	echo '<div style="padding:5px">';
 }
-
+$china_message=0;
 print_fan_chart($treeid, 840*$fan_width/100, $fan_style*90);
 
 echo '</div></div>';
@@ -746,7 +761,15 @@ echo '</div></div>';
 if(CMS_SPECIFIC == "Joomla") {
 	echo '</div>'; // end of horizontal scrollbar div
 }
-
+if($china_message==1) {
+	echo '<div style="border:2px solid red;background-color:white;padding:5px;position:relative;
+	length:300px;margin-left:30%;margin-right:30%;top:90px;font-weight:bold;color:red;
+	font-size:120%;text-align:center;">'.
+	__('No Chinese ttf font file found').
+	"<br>".__('Download link').': <a href="http://humogen.com/download.php?file=simplified-wts47.zip">Simplified 简体中文 </a>'.__('or').
+	' <a href="http://humogen.com/download.php?file=traditional-wt011.zip">Traditional 繁體中文</a><br>'.
+	__('Unzip and place in "include/fanchart/chinese/" folder').'</div>';
+}
 //NEW
 
 if($showdesc=="1" ) {

@@ -7,11 +7,12 @@ echo '<p class="fonts">';
 	//*** Find first first_character of last name ***
 
 	print '<div style="text-align:center">';
-	$person_qry="SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM ".$tree_prefix_quoted."person GROUP BY first_character";
+	$person_qry="SELECT UPPER(substring(pers_lastname,1,1)) as first_character
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY first_character";
 	// *** Search pers_prefix for names like: "van Mons" ***
 	if ($user['group_kindindex']=="j"){
 		$person_qry="SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character
-			FROM ".$tree_prefix_quoted."person GROUP BY first_character";
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY first_character";
 	}
 	@$person_result= $dbh->query($person_qry);
 	while(@$personDb=$person_result->fetch(PDO::FETCH_OBJ)) {
@@ -57,14 +58,14 @@ echo '<div class="index_lastname">';
 if ($user['group_kindindex']=="j"){
 	$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
 		CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_lastnames
-		FROM ".$tree_prefix_quoted."person
-		WHERE CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
+		FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
 		GROUP BY long_name");
 
 	if ($last_name=='all'){
 		$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_lastnames
-			FROM ".$tree_prefix_quoted."person GROUP BY long_name");
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY long_name");
 	}
 
 	while(@$personDb=$person_result->fetch(PDO::FETCH_OBJ)) {
@@ -95,14 +96,14 @@ else{
 	// *** Select alphabet first_character ***
 		$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
 		CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_lastnames
-		FROM ".$tree_prefix_quoted."person
-		WHERE pers_lastname LIKE '".$last_name."%'
+		FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_lastname LIKE '".$last_name."%'
 		GROUP BY long_name");
 
 	if ($last_name=='all'){ 
 		$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
 		CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_lastnames
-		FROM ".$tree_prefix_quoted."person
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."'
 		GROUP BY long_name");
 	}
 

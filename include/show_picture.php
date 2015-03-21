@@ -2,7 +2,7 @@
 // *** Function to show media by person or by marriage ***
 // *** Updated feb 2013. ***
 function show_media($personDb,$marriageDb){
-	global $user, $dataDb, $dbh, $tree_prefix_quoted, $uri_path;
+	global $dbh, $tree_id, $user, $dataDb, $tree_prefix_quoted, $uri_path;
 	global $sect, $screen_mode; // *** RTF Export ***
 	global $picture_presentation;
 
@@ -19,13 +19,15 @@ function show_media($personDb,$marriageDb){
 
 		// *** Standard connected media by person and family ***
 		if ($personDb!=''){
-			$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-				WHERE event_person_id='".$personDb->pers_gedcomnumber."' AND LEFT(event_kind,7)='picture'
+			//$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
+			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+				AND event_person_id='".$personDb->pers_gedcomnumber."' AND LEFT(event_kind,7)='picture'
 				ORDER BY event_kind, event_order");
 		}
 		else{
-			$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-				WHERE event_family_id='".$marriageDb->fam_gedcomnumber."' AND event_kind='picture'
+			//$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
+			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+				AND event_family_id='".$marriageDb->fam_gedcomnumber."' AND event_kind='picture'
 				ORDER BY event_order");
 		}
 		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
@@ -34,28 +36,31 @@ function show_media($personDb,$marriageDb){
 			$media_event_event[$media_nr]=$pictureDb->event_event;
 			$media_event_date[$media_nr]=$pictureDb->event_date;
 			$media_event_text[$media_nr]=$pictureDb->event_text;
-			$media_event_source[$media_nr]=$pictureDb->event_source;
+			//$media_event_source[$media_nr]=$pictureDb->event_source;
 		}
 
 		// *** Search for all external connected objects by a person or a family ***
 		if ($personDb!=''){
-			$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
-				WHERE connect_kind='person'
+			//$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
+			$connect_qry="SELECT * FROM humo_connections
+				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_object'
 				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
 				ORDER BY connect_order";
 		}
 		else{
-			$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
-				WHERE connect_kind='family'
+			//$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
+			$connect_qry="SELECT * FROM humo_connections
+				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='fam_object'
 				AND connect_connect_id='".$marriageDb->fam_gedcomnumber."'
 				ORDER BY connect_order";
 		}
 		$connect_sql=$dbh->query($connect_qry);
 		while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-			$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-				WHERE event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
+			//$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
+			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+				AND event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
 				ORDER BY event_order");
 			while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
 				$media_nr++;
@@ -63,7 +68,7 @@ function show_media($personDb,$marriageDb){
 				$media_event_event[$media_nr]=$pictureDb->event_event;
 				$media_event_date[$media_nr]=$pictureDb->event_date;
 				$media_event_text[$media_nr]=$pictureDb->event_text;
-				$media_event_source[$media_nr]=$pictureDb->event_source;
+				//$media_event_source[$media_nr]=$pictureDb->event_source;
 			}
 		}
 
@@ -168,13 +173,13 @@ function show_media($personDb,$marriageDb){
 					else {$templ_person["pic_text".$i]=' '.$media_event_text[$i];}
 			}
 
-			if ($media_event_source[$i]){
-				if ($screen_mode!='RTF') { $picture_text.=show_sources2("person","event_source",$media_event_id[$i]); }
-			}
 			if ($screen_mode!='RTF'){
+				$source=show_sources2("person","pers_event_source",$media_event_id[$i]);
+				if ($source) $picture_text.=$source;
+
 				$process_text.='<div class="photo">';
-				$process_text.=$picture;
-				if(isset($picture_text)) {$process_text.='<div class="phototext">'.$picture_text.'</div>';}
+					$process_text.=$picture;
+					if(isset($picture_text)) {$process_text.='<div class="phototext">'.$picture_text.'</div>';}
 				$process_text.= '</div>'."\n";
 			}
 
@@ -218,6 +223,13 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 	if (file_exists($picture["path"].'thumb_'.$picture['picture'])){
 		$found_picture=true;
 		$picture['thumb']='thumb_';
+	}
+
+	// *** No picture selected yet (in editor) ***
+	if (!$picture['picture']){
+		$picture['path']='images/';
+		$picture['thumb']='thumb_';
+		$picture['picture']='missing-image.jpg';
 	}
 
 	if (!$found_picture){

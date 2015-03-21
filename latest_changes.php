@@ -13,11 +13,13 @@ $person_cls = New person_cls;
 //$qry.= " UNION (SELECT * FROM humo3_person ".$query.')';
 //$qry.= " ORDER BY pers_lastname, pers_firstname";
 
+//$person_qry= "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
+//	FROM ".$tree_prefix_quoted."person WHERE pers_changed_date IS NOT NULL)";
 $person_qry= "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-	FROM ".$tree_prefix_quoted."person WHERE pers_changed_date IS NOT NULL)";
+	FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NOT NULL)";
 
 $person_qry.= " UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-	FROM ".$tree_prefix_quoted."person WHERE pers_changed_date IS NULL)";
+	FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NULL)";
 
 $person_qry.= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,100";
 
@@ -31,24 +33,41 @@ if (isset($_POST["search_name"])){
 	//$qry.= " UNION (SELECT * FROM humo3_person ".$query.')';
 	//$qry.= " ORDER BY pers_lastname, pers_firstname";
 
+	//$person_qry = "(SELECT * , STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
+	//	FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+ 	//	LEFT JOIN humo_events WHERE event_tree_id='".$tree_id."'
+ 	//		ON pers_gedcomnumber=event_person_id AND event_kind='name'
+	//	WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
+ 	//		OR event_event LIKE '%$search_name%')
+	//		AND pers_changed_date IS NOT NULL
+	//		)";
+
 	$person_qry = "(SELECT * , STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-		FROM ".$tree_prefix_quoted."person
- 		LEFT JOIN ".$tree_prefix_quoted."events
- 			ON pers_gedcomnumber=event_person_id AND event_kind='name'
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+ 		LEFT JOIN humo_events
+ 			ON pers_gedcomnumber=event_person_id AND event_kind='name' AND event_tree_id='".$tree_id."' 
 		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
  			OR event_event LIKE '%$search_name%')
 			AND pers_changed_date IS NOT NULL
 			)";
 
+	//$person_qry .= " UNION (SELECT * , STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
+	//	FROM ".$tree_prefix_quoted."person
+ 	//	LEFT JOIN ".$tree_prefix_quoted."events
+ 	//		ON pers_gedcomnumber=event_person_id AND event_kind='name'
+	//	WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
+ 	//		OR event_event LIKE '%$search_name%')
+	//		AND pers_changed_date IS NULL)";
+
 	$person_qry .= " UNION (SELECT * , STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-		FROM ".$tree_prefix_quoted."person
- 		LEFT JOIN ".$tree_prefix_quoted."events
- 			ON pers_gedcomnumber=event_person_id AND event_kind='name'
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+ 		LEFT JOIN humo_events
+ 			ON pers_gedcomnumber=event_person_id AND event_kind='name' AND event_tree_id='".$tree_id."'
 		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
  			OR event_event LIKE '%$search_name%')
 			AND pers_changed_date IS NULL)";
 
-	$person_qry .=	" ORDER BY changed_date DESC, changed_time DESC LIMIT 0,100";
+	$person_qry .= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,100";
 }
 
 $person_result = $dbh->query($person_qry);

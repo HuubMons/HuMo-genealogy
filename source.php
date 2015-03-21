@@ -13,9 +13,7 @@ if(isset($_GET["id"])) { // source.php is called from show_sources.php, sources.
  *----------------------------------------------------------------
  */
 function source_display($sourcenum) {
-global $dbh, $dataDb, $user, $pdf, $screen_mode, $language;
-global $tree_prefix_quoted;
-global $db_functions;
+global $dbh, $db_functions, $tree_prefix_quoted, $dataDb, $user, $pdf, $screen_mode, $language;
 
 if($screen_mode!="PDF") {
 	include_once("header.php"); //returns CMS_ROOTPATH constant
@@ -231,22 +229,6 @@ print '<tr><td>';
 
 	$person_cls = New person_cls;
 
-	// *** Sources in address table ***
-	$address_sql="SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_source NOT LIKE '' AND address_source NOT LIKE 'SOURCE'";
-	@$address_qry=$dbh->query($address_sql);
-	while (@$address_Db=$address_qry->fetch(PDO::FETCH_OBJ)){
-		$sourceid=explode(";",$address_Db->address_source);
-		for ($i=0; $i<=substr_count($address_Db->address_source, ';'); $i++){
-			if (substr($sourceid[$i],1,-1)==$sourceDb->source_gedcomnr){
-				$personDb=$db_functions->get_person ($address_Db->address_person_id);
-				echo __('Source for address:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
-				$name=$person_cls->person_name($personDb);
-				echo $name["standard_name"];
-				echo '</a><br>';
-			}
-		}
-	}
-
 	// *** Find person data if source is connected to a family item ***
 	// *** This seperate function speeds up the sources page ***
 	function person_data($familyDb){
@@ -260,8 +242,9 @@ print '<tr><td>';
 
 
 	// *** Sources in connect table ***
-	$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
-		WHERE connect_source_id='".$sourceDb->source_gedcomnr."'
+	//$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
+	$connect_qry="SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'
+		AND connect_source_id='".$sourceDb->source_gedcomnr."'
 		ORDER BY connect_kind, connect_sub_kind, connect_order";
 	$connect_sql=$dbh->query($connect_qry);
 	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
@@ -277,7 +260,7 @@ print '<tr><td>';
 			if ($connectDb->connect_sub_kind=='pers_sexe_source'){ echo __('Source for sexe:'); }
 			//else { echo 'TEST'; }
 
-			if ($connectDb->connect_sub_kind=='event_source'){
+			if ($connectDb->connect_sub_kind=='pers_event_source'){
 				// *** Sources by event ***
 				$event_Db=$db_functions->get_event ($connectDb->connect_connect_id);
 				// *** Person source ***
@@ -289,9 +272,11 @@ print '<tr><td>';
 					if ($event_Db->event_event){ echo ' '.$event_Db->event_event; }
 				}
 			}
-			elseif ($connectDb->connect_sub_kind=='address_source'){
+			//elseif ($connectDb->connect_sub_kind=='address_source'){
+			elseif (substr($connectDb->connect_sub_kind,-14)=='address_source'){
 				// *** Sources in address table ***
-				$address_sql="SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_id='".$connectDb->connect_connect_id."'";
+				//$address_sql="SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_id='".$connectDb->connect_connect_id."'";
+				$address_sql="SELECT * FROM humo_addresses WHERE address_id='".$connectDb->connect_connect_id."'";
 				@$address_qry=$dbh->query($address_sql);
 				$address_Db=$address_qry->fetch(PDO::FETCH_OBJ);
 				if ($address_Db->address_person_id){
@@ -302,6 +287,10 @@ print '<tr><td>';
 				}
 			}
 			else{
+
+//$db_functions->set_tree_prefix($tree_prefix_quoted);
+//echo 'TEST: '.$tree_id.' '.$connectDb->connect_sub_kind.' '.$connectDb->connect_connect_id.'<br>';
+
 				$personDb=$db_functions->get_person ($connectDb->connect_connect_id);
 				echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 				$name=$person_cls->person_name($personDb);
@@ -340,7 +329,7 @@ print '<tr><td>';
 			//}
 
 			//if ($connectDb->connect_sub_kind=='event'){
-			if ($connectDb->connect_sub_kind=='event_source'){
+			if ($connectDb->connect_sub_kind=='fam_event_source'){
 				// *** Sources by event ***
 				$event_Db=$db_functions->get_event ($connectDb->connect_connect_id);
 				// *** Family source ***
@@ -361,6 +350,18 @@ print '<tr><td>';
 				echo $name["standard_name"].'</a>';
 			}
 
+		}
+
+		// *** Source by address ***
+		if ($connectDb->connect_kind=='address' AND $connectDb->connect_sub_kind=='address_source'){
+			//$sql="SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_id='".$connectDb->connect_connect_id."'";
+			$sql="SELECT * FROM humo_addresses WHERE address_id='".$connectDb->connect_connect_id."'";
+			$address_sql=$dbh->query($sql); $addressDb=$address_sql->fetch(PDO::FETCH_OBJ);
+			if ($addressDb->address_address) $text=$addressDb->address_address;
+			if ($addressDb->address_place) $text.=' '.$addressDb->address_place;
+
+			echo __('Source for address:');
+			echo ' <a href="address.php?gedcomnumber='.$addressDb->address_gedcomnr.'">'.$text.'</a>';
 		}
 
 		// *** Extra source connect information by every source ***

@@ -22,7 +22,7 @@ include_once(CMS_ROOTPATH."include/process_text.php");
 include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."include/marriage_cls.php");
 include_once(CMS_ROOTPATH."include/show_sources.php");
- 
+
 if($screen_mode!='PDF') {  //we can't have a menu in pdf...
 	include_once(CMS_ROOTPATH."menu.php");
 } 
@@ -34,7 +34,12 @@ else {
 			WHERE tree_prefix='".$tree_prefix_quoted."'";
 		@$datasql = $dbh->query($dataqry);
 		@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+		$tree_id=$dataDb->tree_id;
 	}
+
+	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+	$db_functions = New db_functions;
+	$db_functions->set_tree_id($tree_id);
 }
 
 // *** Family gedcomnumber ***
@@ -68,21 +73,20 @@ if($screen_mode=='PDF') {
 	//initialize pdf generation
 	$pdfdetails=array();
 	$pdf_marriage=array();
-	$pdf=new PDF();
-	$pers=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$main_person'");
-	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
+	@$persDb = $db_functions->get_person($main_person);
 	// *** Use person class ***
 	$pers_cls = New person_cls;
 	$pers_cls->construct($persDb);
 	$name=$pers_cls->person_name($persDb);
 	$title=pdf_convert(__('Outline report').__(' of ').$name["standard_name"]);
+
+	$pdf=new PDF();
 	$pdf->SetTitle($title);
 	$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 	if(isset($_POST["screen_mode"]) AND $_POST["screen_mode"]=="PDF-L") { $pdf->AddPage("L"); } 
 	else { $pdf->AddPage("P"); }
 	$pdf->SetFont('Arial','B',15);
 	$pdf->Ln(4);
-	$name=$pers_cls->person_name($persDb);
 	$pdf->MultiCell(0,10,__('Outline report').__(' of ').$name["standard_name"],0,'C');
 	$pdf->Ln(4);
 	$pdf->SetFont('Arial','',12);
@@ -176,7 +180,8 @@ echo '</select>';
 echo '</span>';
 
 echo '&nbsp;&nbsp;&nbsp;<span>';
-	if($language["dir"]!="rtl") {
+	//if($language["dir"]!="rtl") {
+	if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 		//Show pdf button
 		print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
 		print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
@@ -193,7 +198,8 @@ echo '&nbsp;&nbsp;&nbsp;<span>';
 echo '</span>';
 
 echo '&nbsp;&nbsp;&nbsp;<span>';
-	if($language["dir"]!="rtl") {
+	//if($language["dir"]!="rtl") {
+	if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 		//Show pdf button
 		print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
 		print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
@@ -219,22 +225,15 @@ $gn=0;   // generatienummer
 // *************************************
 
 //some PDO prepared statements before function and loops are used
-$fam_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted.'family WHERE fam_gedcomnumber=?');
+$fam_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
 $fam_prep->bindParam(1,$fam_prep_var);
-$pers_prep=$dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
+$pers_prep=$dbh->prepare("SELECT pers_fams FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
 $pers_prep->bindParam(1,$pers_prep_var);
-$fam_all_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
-$fam_all_prep->bindParam(1,$fam_all_prep_var);
-$pers_all_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
-$pers_all_prep->bindParam(1,$pers_all_prep_var);
 
 function outline($family_id,$main_person,$gn,$nr_generations) {
-
-	global $show_date, $dates_behind_names, $nr_generations;
-	global $language, $dirmark1, $dirmark1;
-	global $screen_mode, $pdf;
-	global $dbh, $fam_prep, $pers_prep, $fam_all_prep, $pers_all_prep;
-	global $fam_prep_var, $pers_prep_var, $fam_all_prep_var, $pers_all_prep_var;
+	global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $show_date, $dates_behind_names, $nr_generations;
+	global $language, $dirmark1, $dirmark1, $screen_mode;
+	global $fam_prep, $pers_prep, $fam_prep_var, $pers_prep_var;
 
 	$family_nr=1; //*** Process multiple families ***
 
@@ -279,22 +278,15 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 
 	// *** Loop multiple marriages of main_person ***
 	for ($parent1_marr=0; $parent1_marr<=$nr_families; $parent1_marr++){
-		$id=$marriage_array[$parent1_marr];
-		$fam_all_prep_var = $id;
-		$fam_all_prep->execute();
-		@$familyDb = $fam_all_prep->fetch(PDO::FETCH_OBJ);
+		@$familyDb = $db_functions->get_family($marriage_array[$parent1_marr]);
 
 		// *** Privacy filter man and woman ***
-		$pers_all_prep_var = $familyDb->fam_man;
-		$pers_all_prep->execute();
-		@$person_manDb = $pers_all_prep->fetch(PDO::FETCH_OBJ);
+		@$person_manDb = $db_functions->get_person($familyDb->fam_man);
 		$man_cls = New person_cls;
 		$man_cls->construct($person_manDb);
 		$privacy_man=$man_cls->privacy;
 
-		$pers_all_prep_var = $familyDb->fam_woman;
-		$pers_all_prep->execute();
-		@$person_womanDb = $pers_all_prep->fetch(PDO::FETCH_OBJ);		
+		@$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
 		$woman_cls = New person_cls;
 		$woman_cls->construct($person_womanDb);
 		$privacy_woman=$woman_cls->privacy;
@@ -413,7 +405,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 						$pdf->SetLeftMargin($gn*10+4);
 						$pdf->Write(8,"\n");
 					}
-					$pdf->Write(8,' ('.language_date($person_manDb->pers_birth_date).' - '.language_date($person_manDb->pers_death_date).')');
+					$pdf->Write(8,' ('.@language_date($person_manDb->pers_birth_date).' - '.@language_date($person_manDb->pers_death_date).')');
 				}
 			}
 		}
@@ -453,10 +445,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 			$child_array=explode(";",$familyDb->fam_children);
 
 			for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
-				$pers_all_prep_var = $child_array[$i];
-				$pers_all_prep->execute();
-				@$childDb = $pers_all_prep->fetch(PDO::FETCH_OBJ);
-
+				@$childDb = $db_functions->get_person($child_array[$i]);
 				$child_privacy="";
 				$child_cls = New person_cls;
 				$child_cls->construct($childDb);
