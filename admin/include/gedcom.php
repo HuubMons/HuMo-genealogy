@@ -265,9 +265,9 @@ if (isset($_POST['step2'])){
 			$rootpathinclude = '';
 		}
 
-		//$show_gedcom_status=true;
-		//include_once($rootpathinclude."gedcom_tables.php");
+		$limit=2500;
 
+		/*
 		// *** Batch processing ***
 		$dbh->beginTransaction();
 			// *** Remove unprocessed tags ***
@@ -279,7 +279,32 @@ if (isset($_POST['step2'])){
 			flush(); // IE
 		// *** Commit data in database ***
 		$dbh->commit();
+		*/
+		// *** Remove records in chunks because of InnoDb database... ***
+		printf(__('Remove old family tree items from %s table...'), 'humo_persons');
+		echo ' ';
+		ob_flush(); flush(); // IE
+		$total = $dbh->query("SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id='".$tree_id."'"); 
+		$total = $total->fetch();
+		$nr_records=$total[0];
 
+		$loop=$nr_records/$limit;
+		for ($i=0; $i<=$loop; $i++){
+			$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+			@$result=$dbh->query($sql);
+			echo '*';
+			ob_flush(); flush(); // IE
+		}
+		$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."'";
+		@$result=$dbh->query($sql);
+
+		echo ' '.__('Optimize table...');
+		ob_flush(); flush(); // IE
+		$sql="OPTIMIZE TABLE humo_persons";
+		@$result=$dbh->query($sql);
+		echo '<br>';
+
+		/*
 		// *** Batch processing ***
 		$dbh->beginTransaction();
 			// *** Remove unprocessed tags ***
@@ -291,49 +316,142 @@ if (isset($_POST['step2'])){
 			flush(); // IE
 		// *** Commit data in database ***
 		$dbh->commit();
+		*/
+		// *** Remove records in chunks because of InnoDb database... ***
+		printf(__('Remove old family tree items from %s table...'), 'humo_families');
+		echo ' ';
+		$total = $dbh->query("SELECT COUNT(*) FROM humo_families WHERE fam_tree_id='".$tree_id."'"); 
+		$total = $total->fetch();
+		$nr_records=$total[0];
+
+		$loop=$nr_records/$limit;
+		for ($i=0; $i<=$loop; $i++){
+			$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+			@$result=$dbh->query($sql);
+			echo '*';
+			ob_flush(); flush(); // IE
+		}
+		$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($tree_id)."'";
+		@$result=$dbh->query($sql);
+
+		echo ' '.__('Optimize table...').' ';
+		ob_flush(); flush(); // IE
+		$sql="OPTIMIZE TABLE humo_families";
+		@$result=$dbh->query($sql);
+		echo '<br>';
 
 		// *** Batch processing ***
-		$dbh->beginTransaction();
+		/*
+		//$dbh->beginTransaction();
 			// *** Remove unprocessed tags ***
 			printf(__('Remove old family tree items from %s table...'), 'humo_unprocessed_tags');
-			echo '<br>';
+			echo ' ';
+			ob_flush(); flush(); // IE
 			$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			ob_flush();
-			flush(); // IE
+
+			echo ' '.__('Optimize table...');
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_unprocessed_tags";
+			@$result=$dbh->query($sql);
 		// *** Commit data in database ***
-		$dbh->commit();
+		//$dbh->commit();
+		echo '<br>';
+		*/
+		// *** Remove records in chunks because of InnoDb database... ***
+		printf(__('Remove old family tree items from %s table...'), 'humo_unprocessed_tags');
+		echo ' ';
+		ob_flush(); flush(); // IE
+		$total = $dbh->query("SELECT COUNT(*) FROM humo_unprocessed_tags WHERE tag_tree_id='".$tree_id."'"); 
+		$total = $total->fetch();
+		$nr_records=$total[0];
+
+		$loop=$nr_records/$limit;
+		for ($i=0; $i<=$loop; $i++){
+			$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+			@$result=$dbh->query($sql);
+			echo '*';
+			ob_flush(); flush(); // IE
+		}
+		$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."'";
+		@$result=$dbh->query($sql);
+
+		echo ' '.__('Optimize table...');
+		ob_flush(); flush(); // IE
+		$sql="OPTIMIZE TABLE humo_unprocessed_tags";
+		@$result=$dbh->query($sql);
+		echo '<br>';
+
 
 		// *** Remove admin favorites ***
 		printf(__('Remove old family tree items from %s table...'), 'humo_settings');
-		echo '<br>';
+		ob_flush(); flush(); // IE
 		$sql="DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='".safe_text($tree_id)."'";
 		@$result=$dbh->query($sql);
-		ob_flush();
-		flush(); // IE
+
+		echo ' '.__('Optimize table...');
+		ob_flush(); flush(); // IE
+		$sql="OPTIMIZE TABLE humo_settings";
+		@$result=$dbh->query($sql);
+		echo '<br>';
 
 		// *** Remove repositories ***
 		printf(__('Remove old family tree items from %s table...'), 'humo_repositories');
-		echo '<br>';
+		ob_flush(); flush(); // IE
 		$sql="DELETE FROM humo_repositories WHERE repo_tree_id='".safe_text($tree_id)."'";
 		@$result=$dbh->query($sql);
-		ob_flush();
-		flush(); // IE
+
+		echo ' '.__('Optimize table...');
+		ob_flush(); flush(); // IE
+		$sql="OPTIMIZE TABLE humo_repositories";
+		@$result=$dbh->query($sql);
+		echo '<br>';
 
 		// *** Batch processing ***
-		$dbh->beginTransaction();
+		/*
+		//$dbh->beginTransaction();
 			// *** Remove sources ***
 			printf(__('Remove old family tree items from %s table...'), 'humo_sources');
-			echo '<br>';
+			ob_flush(); flush(); // IE
 			$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			ob_flush();
-			flush(); // IE
+
+			echo ' '.__('Optimize table...');
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_sources";
+			@$result=$dbh->query($sql);
 		// *** Commit data in database ***
-		$dbh->commit();
+		//$dbh->commit();
+		echo '<br>';
+		*/
+		// *** Remove records in chunks because of InnoDb database... ***
+		printf(__('Remove old family tree items from %s table...'), 'humo_sources');
+		echo ' ';
+		ob_flush(); flush(); // IE
+		$total = $dbh->query("SELECT COUNT(*) FROM humo_sources WHERE source_tree_id='".$tree_id."'"); 
+		$total = $total->fetch();
+		$nr_records=$total[0];
+
+		$loop=$nr_records/$limit;
+		for ($i=0; $i<=$loop; $i++){
+			$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+			@$result=$dbh->query($sql);
+			echo '*';
+			ob_flush(); flush(); // IE
+		}
+		$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."'";
+		@$result=$dbh->query($sql);
+
+		echo ' '.__('Optimize table...');
+		ob_flush(); flush(); // IE
+		$sql="OPTIMIZE TABLE humo_sources";
+		@$result=$dbh->query($sql);
+		echo '<br>';
+
 
 		// *** Batch processing ***
-		$dbh->beginTransaction();
+		//$dbh->beginTransaction();
+		/*
 			// *** Remove texts ***
 			printf(__('Remove old family tree items from %s table...'), 'humo_texts');
 			echo '<br>';
@@ -341,44 +459,154 @@ if (isset($_POST['step2'])){
 			@$result=$dbh->query($sql);
 			ob_flush();
 			flush(); // IE
+		*/
 		// *** Commit data in database ***
-		$dbh->commit();
+		//$dbh->commit();
+		// *** Remove records in chunks because of InnoDb database... ***
+		printf(__('Remove old family tree items from %s table...'), 'humo_texts');
+		echo ' ';
+		ob_flush(); flush(); // IE
+		$total = $dbh->query("SELECT COUNT(*) FROM humo_texts WHERE text_tree_id='".$tree_id."'"); 
+		$total = $total->fetch();
+		$nr_records=$total[0];
+
+		$loop=$nr_records/$limit;
+		for ($i=0; $i<=$loop; $i++){
+			$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+			@$result=$dbh->query($sql);
+			echo '*';
+			ob_flush(); flush(); // IE
+		}
+		$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($tree_id)."'";
+		@$result=$dbh->query($sql);
+
+		echo ' '.__('Optimize table...');
+		$sql="OPTIMIZE TABLE humo_texts";
+		@$result=$dbh->query($sql);
+		echo '<br>';
+
 
 		// *** Batch processing ***
-		$dbh->beginTransaction();
+		//$dbh->beginTransaction();
+		/*
 			// *** Remove connections ***
 			printf(__('Remove old family tree items from %s table...'), 'humo_connections');
-			echo '<br>';
+			ob_flush(); flush(); // IE
 			$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			ob_flush();
-			flush(); // IE
+
+			echo ' '.__('Optimize table...');
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_connections";
+			@$result=$dbh->query($sql);
 		// *** Commit data in database ***
-		$dbh->commit();
+		//$dbh->commit();
+		echo '<br>';
+		*/
+		// *** Remove records in chunks because of InnoDb database... ***
+		printf(__('Remove old family tree items from %s table...'), 'humo_connections');
+		echo ' ';
+		ob_flush(); flush(); // IE
+		$total = $dbh->query("SELECT COUNT(*) FROM humo_connections WHERE connect_tree_id='".$tree_id."'"); 
+		$total = $total->fetch();
+		$nr_records=$total[0];
+
+		$loop=$nr_records/$limit;
+		for ($i=0; $i<=$loop; $i++){
+			$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+			@$result=$dbh->query($sql);
+			echo '*';
+			ob_flush(); flush(); // IE
+		}
+		$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."'";
+		@$result=$dbh->query($sql);
+
+		echo ' '.__('Optimize table...');
+		ob_flush(); flush(); // IE
+		$sql="OPTIMIZE TABLE humo_connections";
+		@$result=$dbh->query($sql);
+		echo '<br>';
+
 
 		// *** Batch processing ***
-		$dbh->beginTransaction();
+		//$dbh->beginTransaction();
 			// *** Remove addresses ***
+			/*
 			printf(__('Remove old family tree items from %s table...'), 'humo_addresses');
 			echo '<br>';
 			$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
 			ob_flush();
 			flush(); // IE
+			*/
 		// *** Commit data in database ***
-		$dbh->commit();
+		//$dbh->commit();
+		// *** Remove records in chunks because of InnoDb database... ***
+		printf(__('Remove old family tree items from %s table...'), 'humo_addresses');
+		echo ' ';
+		ob_flush(); flush(); // IE
+		$total = $dbh->query("SELECT COUNT(*) FROM humo_addresses WHERE address_tree_id='".$tree_id."'"); 
+		$total = $total->fetch();
+		$nr_records=$total[0];
 
-		// *** Batch processing ***
-		$dbh->beginTransaction();
-			// *** Remove events ***
-			printf(__('Remove old family tree items from %s table...'), 'humo_events');
-			echo '<br>';
-			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."'";
+		$loop=$nr_records/$limit;
+		for ($i=0; $i<=$loop; $i++){
+			$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
 			@$result=$dbh->query($sql);
+			echo '*';
 			ob_flush();
 			flush(); // IE
+		}
+		$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."'";
+		@$result=$dbh->query($sql);
+
+		echo ' '.__('Optimize table...');
+		ob_flush(); flush(); // IE
+		$sql="OPTIMIZE TABLE humo_address";
+		@$result=$dbh->query($sql);
+		echo '<br>';
+
+		// *** Batch processing ***
+		//$dbh->beginTransaction();
+		/*
+			// *** Remove events ***
+			printf(__('Remove old family tree items from %s table...'), 'humo_events');
+			ob_flush(); flush(); // IE
+			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."'";
+			@$result=$dbh->query($sql);
+
+			echo ' '.__('Optimize table...');
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_events";
+			@$result=$dbh->query($sql);
 		// *** Commit data in database ***
-		$dbh->commit();
+		//$dbh->commit();
+		echo '<br>';
+		*/
+		// *** Remove records in chunks because of InnoDb database... ***
+		printf(__('Remove old family tree items from %s table...'), 'humo_events');
+		echo ' ';
+		ob_flush(); flush(); // IE
+		$total = $dbh->query("SELECT COUNT(*) FROM humo_events WHERE event_tree_id='".$tree_id."'"); 
+		$total = $total->fetch();
+		$nr_records=$total[0];
+
+		$loop=$nr_records/$limit;
+		for ($i=0; $i<=$loop; $i++){
+			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+			@$result=$dbh->query($sql);
+			echo '*';
+			ob_flush(); flush(); // IE
+		}
+		$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."'";
+		@$result=$dbh->query($sql);
+
+		echo ' '.__('Optimize table...');
+		ob_flush(); flush(); // IE
+		$sql="OPTIMIZE TABLE humo_events";
+		@$result=$dbh->query($sql);
+		echo '<br>';
+
 
 		if (isset($show_gedcom_status)) echo '<b>'.__('No error messages above? In that case the tables have been created!').'</b><br>';
 	}
@@ -1185,7 +1413,14 @@ if (isset($_POST['step4'])){
 		}
 		$status_string = ""; 
 
-		$tree_pref_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+		$tree_id_string = " AND ( ";
+		$id_arr = explode(";",substr($humo_option['geo_trees'],0,-1)); // substr to remove trailing ;
+		foreach($id_arr as $value) {
+			$tree_id_string .= "tree_id='".substr($value,1)."' OR ";  // substr removes leading "@" in geo_trees setting string
+		}
+		$tree_id_string = substr($tree_id_string,0,-4).")"; // take off last " ON " and add ")"
+
+		$tree_pref_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ".$tree_id_string." ORDER BY tree_order";
 		$tree_pref_result = $dbh->query($tree_pref_sql);
 		while ($tree_prefDb=$tree_pref_result->fetch(PDO::FETCH_OBJ)){
 
@@ -1210,6 +1445,10 @@ if (isset($_POST['step4'])){
 		foreach($loca_array as $key => $value) {
 			$dbh->query("UPDATE humo_location SET location_status = '".$value."' WHERE location_location = '".addslashes($key)."'");
 		}
+		if(strpos($humo_option['geo_trees'],"@".$tree_id.";")===false) {  
+			$dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@".$tree_id.";') WHERE setting_variable = 'geo_trees'");
+			$humo_option['geo_trees'] .= "@".$tree_id.";";
+		} 
 	} // end refresh location_status column
 
 
@@ -1408,6 +1647,7 @@ if (isset($_POST['step4'])){
 	}
 	else {
 		printf('<p><b>'.__('Ready! Now click %s to watch the family tree').'</b><br>', ' <a href="'.CMS_ROOTPATH.'index.php">index.php</a> ');
+		echo '<a href="index.php?page=cal_date">'.__('TIP: Use "Calculated birth dates" for a better privacy filter.').'</a>';
 	}
 
 } // end of read gedcom (step 4)

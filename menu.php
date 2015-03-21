@@ -221,7 +221,6 @@ echo '<ul class="humo_menu_item">';
 	echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Home')."</a></li>\n";
 
 	// *** Menu genealogy (for CMS pages) ***
-	/*
 	$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
 	if($cms_qry->rowCount() > 0) {
 		$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
@@ -234,7 +233,6 @@ echo '<ul class="humo_menu_item">';
 		}
 		echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
 	}
-	*/
 
 	// *** Menu: Family tree ***
 	if ($bot_visit AND $humo_option["searchengine_cms_only"]=='y'){
@@ -258,7 +256,7 @@ echo '<ul class="humo_menu_item">';
 	else{
 		$select_top='';
 		if ($menu_choice=='tree_index'){ $select_top=' id="current_top"'; }
-		if ($menu_choice=='cms_pages'){ $select_top=' id="current_top"'; }
+		//if ($menu_choice=='cms_pages'){ $select_top=' id="current_top"'; }
 		if ($menu_choice=='persons'){ $select_top=' id="current_top"'; }
 		if ($menu_choice=='names'){ $select_top=' id="current_top"'; }
 		if ($menu_choice=='sources'){ $select_top=' id="current_top"'; }
@@ -291,6 +289,7 @@ echo '<ul class="humo_menu_item">';
 					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Family tree index').'</a></li>';
 
 					// *** Menu genealogy (for CMS pages) ***
+					/*
 					$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
 					if($cms_qry->rowCount() > 0) {
 						$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
@@ -303,6 +302,7 @@ echo '<ul class="humo_menu_item">';
 						}
 						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
 					}
+					*/
 
 					// *** Persons ***
 					if ($user['group_menu_persons']=="j"){
@@ -417,8 +417,14 @@ echo '<ul class="humo_menu_item">';
 	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
 	$user["group_latestchanges"]=='j' ) {
 	*/
+/*
 	if($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j' OR
 	($user["group_googlemaps"]=='j' AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0) OR 
+	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
+	$user["group_latestchanges"]=='j' ) {
+*/
+	if($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j' OR
+	($user["group_googlemaps"]=='j' AND 1==2 AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0 AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees' AND setting_value LIKE '%@".$_SESSION['tree_id'].";%' ")->rowCount() > 0) OR 
 	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
 	$user["group_latestchanges"]=='j' ) {
 		// *** Javascript pull-down menu ***
@@ -477,9 +483,10 @@ echo '<ul class="humo_menu_item">';
 						$path_tmp=CMS_ROOTPATH.'relations.php';
 					}
 					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Relationship calculator')."</a></li>\n";
-				}
+				}  
 				if ($user["group_googlemaps"]=='j' AND file_exists(CMS_ROOTPATH.'maps.php')){
-					if(!$bot_visit AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0) {
+					//if(!$bot_visit AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0) {
+					if(!$bot_visit AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0 AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees' AND setting_value LIKE '%@".$_SESSION['tree_id'].";%' ")->rowCount() > 0) {  // this tree has been indexed
 						$select_menu=''; if ($menu_choice=='maps'){ $select_menu=' id="current"'; }
 						if (CMS_SPECIFIC=='Joomla'){
 							$path_tmp='index.php?option=com_humo-gen&amp;task=maps';

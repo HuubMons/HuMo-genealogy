@@ -132,6 +132,26 @@ while (false!==($file = readdir($map))) {
 		$language_select[]=$file;
 		if (file_exists(CMS_ROOTPATH.'languages/'.$file.'/'.$file.'.mo')){
 			$language_file[]=$file;
+
+			// *** Order of languages ***
+			if ($file=='cn') $language_order[]='Chinese';
+			elseif ($file=='de') $language_order[]='Deutsch';
+			elseif ($file=='en') $language_order[]='English';
+			elseif ($file=='en_us') $language_order[]='English_us';
+			elseif ($file=='es') $language_order[]='Espanol';
+			elseif ($file=='fa') $language_order[]='Persian';
+			elseif ($file=='fi') $language_order[]='Suomi';
+			elseif ($file=='fr') $language_order[]='French';
+			elseif ($file=='he') $language_order[]='Hebrew';
+			elseif ($file=='hu') $language_order[]='Magyar';
+			elseif ($file=='it') $language_order[]='Italiano';
+			elseif ($file=='nl') $language_order[]='Nederlands';
+			elseif ($file=='no') $language_order[]='Norsk';
+			elseif ($file=='pt') $language_order[]='Portuguese';
+			elseif ($file=='ru') $language_order[]='Russian';
+			elseif ($file=='sv') $language_order[]='Swedish';
+			elseif ($file=='zh') $language_order[]='Chinese_traditional';
+			else $language_order[]=$file;
 		}
 		// *** Save language choice ***
 		if (isset($_GET["language_choice"])){
@@ -141,6 +161,8 @@ while (false!==($file = readdir($map))) {
 	}
 }
 closedir($map);
+// *** Order language array by name of language ***
+array_multisort($language_order, $language_file);
 
 // *** Select admin language ***
 $selected_language="en";
@@ -181,7 +203,7 @@ if($language["dir"]=="rtl") {
 // *** Process login form ***
 $fault='';
 if (isset($_POST['username'])){
-	$query = "SELECT * FROM humo_users WHERE user_name='" .$_POST["username"] ."' AND user_password='".MD5($_POST["paswoord"])."'";
+	$query = "SELECT * FROM humo_users WHERE user_name='" .$_POST["username"] ."' AND user_password='".MD5($_POST["password"])."'";
 	$result = $dbh->query($query);
 	if ($result->rowCount() > 0){
 		@$resultDb=$result->fetch(PDO::FETCH_OBJ);
@@ -639,7 +661,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				$select_top='';
 				if ($page=='install'){ $select_top=' id="current_top"'; }
 				if ($page=='settings'){ $select_top=' id="current_top"'; }
-				if ($page=='thumbs'){ $select_top=' id="current_top"'; }
+				//if ($page=='thumbs'){ $select_top=' id="current_top"'; }
 				if ($page=='links'){ $select_top=' id="current_top"'; }
 				if ($page=='language_editor'){ $select_top=' id="current_top"'; }
 				if ($page=='prefix_editor'){ $select_top=' id="current_top"'; }
@@ -658,8 +680,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 						$menu_item=''; if ($page=='settings'){ $menu_item=' id="current"'; }
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=settings">'.__('Settings').'</a>';
 
-						$menu_item=''; if ($page=='thumbs'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=thumbs">'.__('Create thumbnails').'</a>';
+						//$menu_item=''; if ($page=='thumbs'){ $menu_item=' id="current"'; }
+						//echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=thumbs">'.__('Create thumbnails').'</a>';
 
 						$menu_item=''; if ($page=='links'){ $menu_item=' id="current"'; }
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=links">'.__('Extra links').'</a>';
@@ -685,8 +707,10 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			// POP-UP MENU family tree
 			$select_top='';
 			if ($page=='tree'){ $select_top=' id="current_top"'; }
+			if ($page=='thumbs'){ $select_top=' id="current_top"'; }
 			if ($page=='user_notes'){ $select_top=' id="current_top"'; }
 			if ($page=='check'){ $select_top=' id="current_top"'; }
+			if ($page=='cal_date'){ $select_top=' id="current_top"'; }
 			if ($page=='export'){ $select_top=' id="current_top"'; }
 			echo '<li>';
 			echo '<div class="'.$rtlmarker.'sddm">';
@@ -700,11 +724,18 @@ echo '<div id="humo_top" '.$top_dir.'>';
 							$menu_item=''; if ($page=='tree'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=tree">'.__('Family trees').'</a>';
 
+							$menu_item=''; if ($page=='thumbs'){ $menu_item=' id="current"'; }
+							//echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=thumbs">'.__('Create thumbnails').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=thumbs">'.__('Pictures/ create thumbnails').'</a>';
+
 							$menu_item=''; if ($page=='user_notes'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=user_notes">'.__('User notes').'</a>';
 
 							$menu_item=''; if ($page=='check'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=check">'.__('Data check').'</a>';
+
+							$menu_item=''; if ($page=='cal_date'){ $menu_item=' id="current"'; }
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cal_date">'.__('Calculated birth date').'</a>';
 
 							$menu_item=''; if ($page=='export'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=export">'.__('Gedcom export').'</a>';
@@ -940,6 +971,7 @@ echo '<div id="content_admin">';
 	elseif ($page=='cms_pages'){ include_once ("include/cms_pages.php"); }
 	elseif ($page=='backup'){ include_once ("include/backup.php"); }
 	elseif ($page=='user_notes'){ include_once ("include/user_notes.php"); }
+	elseif ($page=='cal_date'){ include_once ("include/cal_date.php"); }
 	elseif ($page=='export'){ include_once ("include/gedcom_export.php"); }
 	elseif ($page=='log'){ include_once ("include/log.php"); }
 	elseif ($page=='language_editor'){ include_once ("include/language_editor.php"); }

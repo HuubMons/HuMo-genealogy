@@ -335,13 +335,15 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 
 				// check if string is RTL language- if it is, it has to be reversed later on by persian_log2vis()
 				$rtlstr=0;
-				if(preg_match('/(*UTF8)[א-ת]/',$name)!==0 OR preg_match('/(*UTF8)[أ-ى]/',$name)!==0) {
+				//if(preg_match('/(*UTF8)[א-ת]/',$name)!==0 OR preg_match('/(*UTF8)[أ-ى]/',$name)!==0) {
+				if(preg_match('/(*UTF8)[א-ת]/',$name)===1 OR preg_match('/(*UTF8)[أ-ى]/',$name)===1) {
 					// this is either Hebrew, Arabic or Persian -> we have to reverse the text!
 					$rtlstr=1; 
 				}
 				$fontfile=CMS_ROOTPATH."include/fanchart/dejavusans.ttf"; // this default font serves: Latin,Hebrew,Arabic,Persian,Russian
 				
-				if(preg_match('/(*UTF8)\p{Han}/',$name)!==0) {	// String is Chinese so use a Chinese ttf font if present in the folder
+				//if(preg_match('/(*UTF8)\p{Han}/',$name)!==0) {	// String is Chinese so use a Chinese ttf font if present in the folder
+				if(preg_match('/(*UTF8)\p{Han}/',$name)===1) {	// String is Chinese so use a Chinese ttf font if present in the folder
 					if(is_dir(CMS_ROOTPATH."include/fanchart/chinese")) {
 						$dh=opendir(CMS_ROOTPATH."include/fanchart/chinese"); 
 						while (false !== ($filename = readdir($dh))) {
