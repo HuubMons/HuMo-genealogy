@@ -615,6 +615,18 @@ function process_person($person_array){
 				//$address_source[$nraddress2]="";
 			}
 
+			// *** Street Aldfaer/ Pro-gen ***
+			//1 RESI
+			//2 ADDR Citystreet 18
+			//3 CITY Wellen
+			if ($level2=='ADDR'){
+				if ($buffer6=='2 ADDR'){
+					$address_address[$nraddress2]= substr($buffer,7);
+					$processed=1;
+				}
+				$address_address[$nraddress2]=$this->process_texts($address_address[$nraddress2],$buffer,'2');
+			}
+
 			// *** Living place for Aldfaer ***
 			//1 RESI
 			//2 ADDR Oosteind 44
@@ -622,7 +634,8 @@ function process_person($person_array){
 			//3 CITY Zwaag
 			if ($buffer6=='3 CITY'){
 				$processed=1;
-				$address_place[$nraddress2]= substr($buffer,7);
+				if ($address_place[$nraddress2]) $address_place[$nraddress2].= ', ';
+				$address_place[$nraddress2].= substr($buffer,7);
 				$pers_place_index=substr($buffer,7);
 			}
 
@@ -636,12 +649,12 @@ function process_person($person_array){
 			// 2 PHON 52 (55) 1234-5xxx
 			if ($buffer6=='3 STAE'){
 				$processed=1;
-				if ($address_place[$nraddress2]){ $address_place[$nraddress2].= ', '; }
+				if ($address_place[$nraddress2]) $address_place[$nraddress2].= ', ';
 				$address_place[$nraddress2].= substr($buffer,7);
 			}
 			if ($buffer6=='3 CTRY'){
 				$processed=1;
-				if ($address_place[$nraddress2]){ $address_place[$nraddress2].= ', '; }
+				if ($address_place[$nraddress2]) $address_place[$nraddress2].= ', ';
 				$address_place[$nraddress2].= substr($buffer,7);
 			}
 
@@ -658,7 +671,8 @@ function process_person($person_array){
 			// *** Living place for BK ***
 			if ($buffer6=='2 PLAC'){
 				$processed=1;
-				$address_place[$nraddress2]= substr($buffer,7);
+				if ($address_place[$nraddress2]) $address_place[$nraddress2].= ', ';
+				$address_place[$nraddress2].= substr($buffer,7);
 				$pers_place_index=substr($buffer,7);
 			}
 
@@ -670,18 +684,6 @@ function process_person($person_array){
 			// *** Texts by living place for SukuJutut ***
 			if($gen_program == "SukuJutut") {
 				$address_text[$nraddress2]=$this->process_texts($address_text[$nraddress2],$buffer,'3');
-			}
-
-			// *** Street Aldfaer/ Pro-gen ***
-			//1 RESI
-			//2 ADDR Citystreet 18
-			//3 CITY Wellen
-			if ($level2=='ADDR'){
-				if ($buffer6=='2 ADDR'){
-					$address_address[$nraddress2]= substr($buffer,7);
-					$processed=1;
-				}
-				$address_address[$nraddress2]=$this->process_texts($address_address[$nraddress2],$buffer,'2');
 			}
 
 			// *** Date by living place for BK etc. ***
@@ -3370,7 +3372,7 @@ function process_repository($repo_array){
 // *** Process addresses ***
 // ************************************************************************************************
 function process_address($address_array){
-	global $not_processed, $gen_program;
+	global $tree_id, $not_processed, $gen_program;
 	global $largest_text_ged, $largest_address_ged, $add_tree, $reassign;
 	global $processed, $dbh;
 
@@ -3509,7 +3511,7 @@ function process_address($address_array){
 	$address_id=$dbh->lastInsertId();
 
 	// *** Save unprocessed items ***
-	if ($text["address_unprocessed_tags"]){
+	if ($address["address_unprocessed_tags"]){
 		$sql="INSERT INTO humo_unprocessed_tags SET
 			tag_address_id='".$address_id."',
 			tag_tree_id='".$tree_id."',

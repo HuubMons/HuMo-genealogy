@@ -1371,7 +1371,7 @@ function person_data($person_kind, $id){
 				//if($temp) { $templ_person[$temp].=", "; }
 				$templ_person["dead_text"]=' '.$work_text;
 				$temp="dead_text";
-				$text=$templ_person["dead_text"];
+				$text.=$templ_person["dead_text"];
 			}
 		}
 
@@ -1457,7 +1457,7 @@ function person_data($person_kind, $id){
 				$templ_person["buri_text"]=' '.$work_text;
 				$temp="buri_text";
 				//$text.=", ".$work_text;
-				$text=$templ_person["buri_text"];
+				$text.=$templ_person["buri_text"];
 			}
 		}
 

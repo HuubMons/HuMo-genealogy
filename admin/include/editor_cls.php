@@ -30,7 +30,7 @@ function date_show($process_date, $process_name, $multiple_rows=''){
 		$text.='<option value="BET "'.$selected.'>'.__('between').'</option>';
 	$text.='</select>';
 
-	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" placeholder="'.__('date').'" style="direction:ltr" value="';
+	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" placeholder="'.ucfirst(__('date')).'" style="direction:ltr" value="';
 		// *** BEF, ABT, AFT, etc. is shown in date_prefix ***
 		$process_date=strtolower($process_date);
 

@@ -605,41 +605,26 @@ else{
 	}
 	if($screen_mode!='STARSIZE') {
 
-	//prepare queries here that will be used in the loops.
-	//creating a prepared statement one time will save time
-	//$family_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
-	//	$family_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM humo_families
-	//		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
-	//	$family_prep->bindParam(1, $family_id_loop_var);
-
-	//$person_prep=$dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
-	//$person_prep=$dbh->prepare("SELECT pers_fams FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
-	//$person_prep->bindParam(1, $parent1_var);
-
-	//$address_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_family_id=?");
 	$address_qry_prep=$dbh->prepare("SELECT * FROM addresses WHERE address_tree_id='".$tree_id."' AND address_family_id=?");
 	$address_qry_prep->bindParam(1,$address_fam_var);
 
-	//$famc_adoptive_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."events WHERE event_event=? AND event_kind='adoption' ORDER BY event_order");
 	$famc_adoptive_qry_prep=$dbh->prepare("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_event=? AND event_kind='adoption' ORDER BY event_order");
 	$famc_adoptive_qry_prep->bindParam(1,$famc_adopt_var);
 
-	//$famc_adoptive_by_person_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."events WHERE event_event=? AND event_kind='adoption_by_person' ORDER BY event_order");
 	$famc_adoptive_by_person_qry_prep=$dbh->prepare("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_event=? AND event_kind='adoption_by_person' ORDER BY event_order");
 	$famc_adoptive_by_person_qry_prep->bindParam(1,$famc_adopt_by_person_var);
 
 	try { // only prepare location statement if table exists otherwise PDO throws exception!
-        $result = $dbh->query("SELECT 1 FROM humo_location LIMIT 1"); 
-    } catch (Exception $e) {  
-        // We got an exception == table not found
-        $result = FALSE;
-    }
+		$result = $dbh->query("SELECT 1 FROM humo_location LIMIT 1"); 
+	} catch (Exception $e) {  
+		// We got an exception == table not found
+		$result = FALSE;
+	}
 	if($result !== FALSE) { 
 		$location_prep=$dbh->prepare("SELECT * FROM humo_location where location_location =?");
 		$location_prep->bindParam(1,$location_var);
 	}
 
-	//$old_stat_prep=$dbh->prepare("UPDATE ".$tree_prefix_quoted."family SET fam_counter=? WHERE fam_gedcomnumber=?");
 	$old_stat_prep=$dbh->prepare("UPDATE humo_families SET fam_counter=? WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
 	$old_stat_prep->bindParam(1,$fam_counter_var);
 	$old_stat_prep->bindParam(2,$fam_gednr_var);
@@ -730,9 +715,6 @@ else{
 			// *** Check for parent1: N.N. ***
 			if ($parent1){
 				// *** Save man families in array ***
-				//$parent1_var = $parent1;
-				//$person_prep->execute();
-				//@$personDb=$person_prep->fetch(PDO::FETCH_OBJ);
 				$personDb = $db_functions->get_person($parent1);
 
 				$marriage_array=explode(";",$personDb->pers_fams);
@@ -1120,17 +1102,6 @@ else{
 						// *** Only show name in 2nd, 3rd, etc. marriage ***
 						if($screen_mode!='STAR') {
 							if ($change_main_person==true){
-								/*
-								if($screen_mode!='PDF') {
-									echo '<br>'.$woman_cls->name_extended("parent1").'<br>';
-								}
-								else {
-									// PDF rendering of name
-									if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
-									else $pers_sexe = $person_womanDb->pers_sexe;
-									$pdf->writename($pers_sexe,$indent,$woman_cls->name_extended("parent1"),"kort");
-								}
-								*/
 								if($screen_mode=='PDF') {
 									// PDF rendering of name
 									if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
@@ -1146,17 +1117,6 @@ else{
 								}
 							}
 							else{
-								/*
-								if($screen_mode!='PDF') {
-									echo '<br>'.$man_cls->name_extended("parent1").'<br>';
-								}
-								else {
-									//  PDF rendering of name
-									if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
-									else $pers_sexe = $person_manDb->pers_sexe;
-									$pdf->writename($pers_sexe,$indent,$man_cls->name_extended("parent1"),"kort");
-								}
-								*/
 								if($screen_mode=='PDF') {
 									//  PDF rendering of name
 									if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 

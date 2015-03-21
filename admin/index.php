@@ -685,6 +685,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			// POP-UP MENU family tree
 			$select_top='';
 			if ($page=='tree'){ $select_top=' id="current_top"'; }
+			if ($page=='user_notes'){ $select_top=' id="current_top"'; }
 			if ($page=='check'){ $select_top=' id="current_top"'; }
 			if ($page=='export'){ $select_top=' id="current_top"'; }
 			echo '<li>';
@@ -698,14 +699,13 @@ echo '<div id="humo_top" '.$top_dir.'>';
 						if ($group_administrator=='j'){
 							$menu_item=''; if ($page=='tree'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=tree">'.__('Family trees').'</a>';
-						}
 
-						if ($group_administrator=='j'){
+							$menu_item=''; if ($page=='user_notes'){ $menu_item=' id="current"'; }
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=user_notes">'.__('User notes').'</a>';
+
 							$menu_item=''; if ($page=='check'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=check">'.__('Data check').'</a>';
-						}
 
-						if ($group_administrator=='j'){
 							$menu_item=''; if ($page=='export'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=export">'.__('Gedcom export').'</a>';
 						}
@@ -868,7 +868,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				include(CMS_ROOTPATH.'languages/'.$selected_language.'/language_data.php');
 				echo '<a href="index.php?option=com_humo-gen"';
 				echo ' onmouseover="mopen(event,\'m40x\',\'?\',\'?\')"';
-				echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'</a>';
+				//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'</a>';
+				echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> </a>';
 				//echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
 					echo '<ul class="humo_menu_item2">';
@@ -938,6 +939,7 @@ echo '<div id="content_admin">';
 	elseif ($page=='groups'){ include_once ("include/groups.php"); }
 	elseif ($page=='cms_pages'){ include_once ("include/cms_pages.php"); }
 	elseif ($page=='backup'){ include_once ("include/backup.php"); }
+	elseif ($page=='user_notes'){ include_once ("include/user_notes.php"); }
 	elseif ($page=='export'){ include_once ("include/gedcom_export.php"); }
 	elseif ($page=='log'){ include_once ("include/log.php"); }
 	elseif ($page=='language_editor'){ include_once ("include/language_editor.php"); }
