@@ -27,7 +27,7 @@ function event_text($event_kind){
 // *** Show events ***
 // *** REMARK: queries can be found in editor_inc.php! ***
 function show_event($selected_events=''){
-	global $dbh, $page, $tree_prefix, $pers_gedcomnumber, $marriage, $field_date, $field_text, $joomlastring;
+	global $dbh, $tree_id, $page, $tree_prefix, $pers_gedcomnumber, $marriage, $field_date, $field_text, $joomlastring;
 	global $editor_cls, $path_prefix, $tree_pict_path;
 
 	// *** Picture list for selecting pictures ***
@@ -55,8 +55,9 @@ function show_event($selected_events=''){
 	// *** Show all events EXCEPT for events allready processed by person data (profession etc.) ***
 	if ($selected_events=='person'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events
-			WHERE event_person_id='".$pers_gedcomnumber."'
+		//$qry="SELECT * FROM ".$tree_prefix."events
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
 			AND event_kind!='name'
 			AND event_kind!='nobility'
 			AND event_kind!='title'
@@ -71,48 +72,67 @@ function show_event($selected_events=''){
 	}
 	elseif ($selected_events=='name'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='name' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='name' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='name' ORDER BY event_order";
 	}
 	elseif ($selected_events=='nobility'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='nobility' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='nobility' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='nobility' ORDER BY event_order";
 	}
 	elseif ($selected_events=='title'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='title' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='title' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='title' ORDER BY event_order";
 	}
 	elseif ($selected_events=='lordship'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='lordship' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='lordship' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='lordship' ORDER BY event_order";
 	}
 	elseif ($selected_events=='birth_declaration'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='birth_declaration' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='birth_declaration' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='birth_declaration' ORDER BY event_order";
 	}
 	elseif ($selected_events=='baptism_witness'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='baptism_witness' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='baptism_witness' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='baptism_witness' ORDER BY event_order";
 	}
 	elseif ($selected_events=='death_declaration'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='death_declaration' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='death_declaration' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='death_declaration' ORDER BY event_order";
 	}
 	elseif ($selected_events=='burial_witness'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='burial_witness' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='burial_witness' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='burial_witness' ORDER BY event_order";
 	}
 	elseif ($selected_events=='profession'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='profession' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='profession' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='profession' ORDER BY event_order";
 	}
 	elseif ($selected_events=='picture'){
 		$event_group='event_person=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='picture' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='picture' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='picture' ORDER BY event_order";
 	}
 	elseif ($selected_events=='family'){
 		$event_group='event_family=1';
-		$qry="SELECT * FROM ".$tree_prefix."events 
-			WHERE event_family_id='".$marriage."'
+		//$qry="SELECT * FROM ".$tree_prefix."events 
+		$qry="SELECT * FROM humo_events 
+			WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
 			AND event_kind!='marriage_witness'
 			AND event_kind!='marriage_witness_rel'
 			AND event_kind!='picture'
@@ -120,15 +140,21 @@ function show_event($selected_events=''){
 	}
 	elseif ($selected_events=='marriage_witness'){
 		$event_group='event_family=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_family_id='".$marriage."' AND event_kind='marriage_witness' ORDER BY event_kind, event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_family_id='".$marriage."' AND event_kind='marriage_witness' ORDER BY event_kind, event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."' AND event_kind='marriage_witness' ORDER BY event_kind, event_order";
 	}
 	elseif ($selected_events=='marriage_witness_rel'){
 		$event_group='event_family=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_family_id='".$marriage."' AND event_kind='marriage_witness_rel' ORDER BY event_kind, event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_family_id='".$marriage."' AND event_kind='marriage_witness_rel' ORDER BY event_kind, event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."' AND event_kind='marriage_witness_rel' ORDER BY event_kind, event_order";
 	}
 	elseif ($selected_events=='marriage_picture'){
 		$event_group='event_family=1';
-		$qry="SELECT * FROM ".$tree_prefix."events WHERE event_family_id='".$marriage."' AND event_kind='picture' ORDER BY event_order";
+		//$qry="SELECT * FROM ".$tree_prefix."events WHERE event_family_id='".$marriage."' AND event_kind='picture' ORDER BY event_order";
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."' AND event_kind='picture' ORDER BY event_order";
 	}
 	$data_list_qry=$dbh->query($qry);
 
@@ -138,8 +164,9 @@ function show_event($selected_events=''){
 		echo '<td style="border-right:0px;">';
 			//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
 		echo '</td><td style="border-left:0px;">';
-			$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
-				WHERE event_person_id='".$pers_gedcomnumber."'
+			//$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
+			$count_event=$dbh->query("SELECT * FROM humo_events
+				WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
 				AND event_kind!='name'
 				AND event_kind!='nobility'
 				AND event_kind!='title'
@@ -166,8 +193,9 @@ function show_event($selected_events=''){
 		echo '<td style="border-right:0px;">';
 			//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
 		echo '</td><td style="border-left:0px;">';
-			$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
-				WHERE event_family_id='".$marriage."'
+			//$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
+			$count_event=$dbh->query("SELECT * FROM humo_events
+				WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
 				AND event_kind!='marriage_witness'
 				AND event_kind!='marriage_witness_rel'
 				AND event_kind!='picture'
@@ -188,7 +216,8 @@ function show_event($selected_events=''){
 
 	// *** Show name by person ***
 	if ($selected_events=='name'){
-		echo '<tr style="display:none;" class="row1" name="row1">';
+		//echo '<tr style="display:none;" class="row1" name="row1">';
+		echo '<tr style="display:none;" class="row1">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('Name').'</td>';
 		echo '<td style="border-left:0px;">';
@@ -201,7 +230,8 @@ function show_event($selected_events=''){
 
 	// *** Show nobility by person ***
 	if ($selected_events=='nobility'){
-		echo '<tr style="display:none;" class="row1" name="row1">';
+		//echo '<tr style="display:none;" class="row1" name="row1">';
+		echo '<tr style="display:none;" class="row1">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('Title of Nobility').'</td>';
 		echo '<td style="border-left:0px;">';
@@ -357,9 +387,9 @@ function show_event($selected_events=''){
 					elseif($ext=="doc") { echo '<img src="../images/msdoc.gif" style="width:30px;height:30px;">';}
 					elseif($ext=="avi" OR $ext=="wmv" OR $ext=="mpg" OR $ext=="mov") { echo '<img src="../images/video-file.png" style="width:30px;height:30px;">'; }
 					elseif($ext=="wma" OR $ext=="wav" OR $ext=="mp3" OR $ext=="mid" OR $ext=="ram" OR $ext==".ra" ) { echo '<img src="../images/audio.gif" style="width:30px;height:30px;">';}
-			
+
 					echo '<br><span style="font-size:85%">'.$data_listDb->event_event.'</span>';
-					
+				
 				}
 				// *** No picture selected yet, show dummy picture ***
 				if (!$data_listDb->event_event) echo '<img src="../images/thumb_missing-image.jpg" height="60px">';
@@ -377,44 +407,44 @@ function show_event($selected_events=''){
 			$data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ);
 
 			?>
-					<script>
-						$('#sortable_pic').sortable().bind('sortupdate', function() {
-							var mediastring = ""; 
-							var media_arr = document.getElementsByClassName("mediamove"); 
-							for (var z = 0; z < media_arr.length; z++) { 
-								// create the new order after dragging to store in database with ajax
-								mediastring = mediastring + media_arr[z].id + ";"; 
-								// change the order numbers of the pics in the pulldown (that was generated before the drag
-								// so that if one presses on delete before refresh the right pic will be deleted !!
-							}
-							mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
-							
-							var parnode = document.getElementById('pic_main_' + media_arr[0].id).parentNode; 
-							var picdomclass = document.getElementsByClassName("pic_row2");
-							var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
+				<script>
+					$('#sortable_pic').sortable().bind('sortupdate', function() {
+						var mediastring = ""; 
+						var media_arr = document.getElementsByClassName("mediamove"); 
+						for (var z = 0; z < media_arr.length; z++) { 
+							// create the new order after dragging to store in database with ajax
+							mediastring = mediastring + media_arr[z].id + ";"; 
+							// change the order numbers of the pics in the pulldown (that was generated before the drag
+							// so that if one presses on delete before refresh the right pic will be deleted !!
+						}
+						mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
+						
+						var parnode = document.getElementById('pic_main_' + media_arr[0].id).parentNode; 
+						var picdomclass = document.getElementsByClassName("pic_row2");
+						var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
 
-							for(var d=media_arr.length-1; d >=0 ; d--) {
-								parnode.insertBefore(document.getElementById('pic_row2_' + media_arr[d].id),nextnode);
-								nextnode = document.getElementById('pic_row2_' + media_arr[d].id);
-							 	parnode.insertBefore(document.getElementById('pic_row1_' + media_arr[d].id),nextnode);
-								nextnode = document.getElementById('pic_row1_' + media_arr[d].id);
-								parnode.insertBefore(document.getElementById('pic_main_' + media_arr[d].id),nextnode);
-								nextnode = document.getElementById('pic_main_' + media_arr[d].id);  
-							}
-				
-							$.ajax({ 
-								url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
-								success: function(data){
-								} ,
-								error: function (xhr, ajaxOptions, thrownError) {
-									alert(xhr.status);
-									alert(thrownError);
-								}								
-							});							
-						});
-					</script>			
+						for(var d=media_arr.length-1; d >=0 ; d--) {
+							parnode.insertBefore(document.getElementById('pic_row2_' + media_arr[d].id),nextnode);
+							nextnode = document.getElementById('pic_row2_' + media_arr[d].id);
+							parnode.insertBefore(document.getElementById('pic_row1_' + media_arr[d].id),nextnode);
+							nextnode = document.getElementById('pic_row1_' + media_arr[d].id);
+							parnode.insertBefore(document.getElementById('pic_main_' + media_arr[d].id),nextnode);
+							nextnode = document.getElementById('pic_main_' + media_arr[d].id);  
+						}
 			
-			<?php			
+						$.ajax({ 
+							url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
+							success: function(data){
+							} ,
+							error: function (xhr, ajaxOptions, thrownError) {
+								alert(xhr.status);
+								alert(thrownError);
+							}
+						});
+					});
+				</script>
+			
+			<?php
 			
 		echo '</td>';
 		echo '<td></td>';
@@ -544,12 +574,14 @@ function show_event($selected_events=''){
 			if ($data_listDb->event_kind !='picture'){
 				// *** Count number of events ***
 				if ($event_group=='event_person=1'){
-					$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
-						WHERE event_person_id='$pers_gedcomnumber' AND event_kind='".$data_listDb->event_kind."'");
+					//$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
+					$count_event=$dbh->query("SELECT * FROM humo_events
+						WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='".$data_listDb->event_kind."'");
 				}
 				elseif ($event_group=='event_family=1'){
-					$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
-						WHERE event_family_id='$marriage' AND event_kind='".$data_listDb->event_kind."'");
+					//$count_event=$dbh->query("SELECT * FROM ".$tree_prefix."events
+					$count_event=$dbh->query("SELECT * FROM humo_events
+						WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."' AND event_kind='".$data_listDb->event_kind."'");
 				}
 				$count=$count_event->rowCount();
 
@@ -571,7 +603,7 @@ function show_event($selected_events=''){
 			}
 			echo '</td>';
 
-			echo '<td style="border-right:0px;">';	
+			echo '<td style="border-right:0px;">';
 			echo $this->event_text($data_listDb->event_kind);
 
 			echo '<br>';
@@ -668,7 +700,7 @@ function show_event($selected_events=''){
 			echo '<td style="border-left:0px;"><select size="1" name="text_event['.$data_listDb->event_id.']">';
 			echo '<option value="">'.__('* Select adoption parents *').'</option>';
 			// *** Search for adoption parents ***
-			$family_parents=$dbh->query("SELECT * FROM ".$tree_prefix."family ORDER BY fam_gedcomnumber");
+			$family_parents=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY fam_gedcomnumber");
 			while($family_parentsDb=$family_parents->fetch(PDO::FETCH_OBJ)){
 				$parent_text='['.$family_parentsDb->fam_gedcomnumber.'] ';
 				//*** Father ***
@@ -899,9 +931,13 @@ function show_event($selected_events=''){
 			// *** Source by event ***
 			if ($event_group=='event_person=1'){
 				// *** Calculate and show nr. of sources ***
+				//$connect_qry="SELECT *
+				//	FROM ".$tree_prefix."connections
+				//	WHERE connect_kind='person' AND connect_sub_kind='event_source'
+				//	AND connect_connect_id='".$data_listDb->event_id."'";
 				$connect_qry="SELECT *
-					FROM ".$tree_prefix."connections
-					WHERE connect_kind='person' AND connect_sub_kind='event_source'
+					FROM humo_connections
+					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='pers_event_source'
 					AND connect_connect_id='".$data_listDb->event_id."'";
 				$connect_sql=$dbh->query($connect_qry);
 
@@ -909,9 +945,13 @@ function show_event($selected_events=''){
 			}
 			else{
 				// *** Calculate and show nr. of sources ***
+				//$connect_qry="SELECT *
+				//	FROM ".$tree_prefix."connections
+				//	WHERE connect_kind='family' AND connect_sub_kind='event_source'
+				//	AND connect_connect_id='".$data_listDb->event_id."'";
 				$connect_qry="SELECT *
-					FROM ".$tree_prefix."connections
-					WHERE connect_kind='family' AND connect_sub_kind='event_source'
+					FROM humo_connections
+					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_event_source'
 					AND connect_connect_id='".$data_listDb->event_id."'";
 				$connect_sql=$dbh->query($connect_qry);
 
@@ -924,10 +964,15 @@ function show_event($selected_events=''){
 
 		// *** Date and place line ***
 		//$internal_link1='style="display:none;" id="row'.$data_listDb->event_id.'00" name="row'.$data_listDb->event_id.'00"';
-		$pic_row1 =  ""; 
+		$pic_row1 = ""; 
 		if ($selected_events=='picture' OR $selected_events=='marriage_picture'){ 
 			$pic_row1 = ' id="pic_row1_'.$data_listDb->event_id.'"'; 
 			$change_bg_colour = ' class="humo_color pic_row1 row'.$data_listDb->event_id.'00"';
+		}
+		else{
+			// *** Date and place line for other events like profession and witnesses etc. ***
+			if($change_bg_colour != '') { $change_bg_colour = substr($change_bg_colour,0,-1).' row'.$data_listDb->event_id.'00"'; }
+			else { $change_bg_colour = ' class="row'.$data_listDb->event_id.'00"';}	
 		}
 		$internal_link1='style="display:none;" '.$pic_row1.' name="row'.$data_listDb->event_id.'00"';
 		echo '<tr'.$change_bg_colour.' '.$internal_link1.'><td></td>';
@@ -937,10 +982,15 @@ function show_event($selected_events=''){
 		echo '</td></tr>';
 
 		// *** Text by event ***
-		$pic_row2 =  ""; 
+		$pic_row2 = ""; 
 		if ($selected_events=='picture' OR $selected_events=='marriage_picture'){ 
 			$pic_row2 = ' id="pic_row2_'.$data_listDb->event_id.'"'; 
 			$change_bg_colour = ' class="humo_color pic_row2 row'.$data_listDb->event_id.'00"';
+		}
+		else{
+			// *** Date and place line for other events like profession and witnesses etc. ***
+			if($change_bg_colour != '') { $change_bg_colour = substr($change_bg_colour,0,-1).' row'.$data_listDb->event_id.'00"'; }
+			else { $change_bg_colour = ' class="row'.$data_listDb->event_id.'00"'; }
 		}
 		$internal_link2='style="display:none;" '.$pic_row2.' name="row'.$data_listDb->event_id.'00"';
 		echo '<tr'.$change_bg_colour.' '.$internal_link2.'><td></td>';
@@ -954,7 +1004,8 @@ function show_event($selected_events=''){
 
 	if ($selected_events=='picture'){
 		// *** Upload image ***
-		echo '<tr style="display:none;" id="row51" name="row51"><td class="table_header_large" colspan="4">';
+		//echo '<tr style="display:none;" id="row51" name="row51"><td class="table_header_large" colspan="4">';
+		echo '<tr style="display:none;" class="row53" name="row53"><td class="table_header_large" colspan="4">';
 			echo 'Upload new image (max: pic 2MB) or media (max: 49 MB):'.' <input type="file" name="photo_upload">';
 			echo '<input type="submit" name="person_event_change" title="submit" value="'.__('Upload').'">';
 		echo '</td></tr>';

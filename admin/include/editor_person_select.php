@@ -11,6 +11,8 @@ if ($_GET['person_item']=='relation_add2'){ $place_item='relation_add2'; $form='
 $man_gedcomnumber=$_GET['person'];
 $tree_prefix=$_GET['tree_prefix'];
 
+$tree_id=$_SESSION['admin_tree_id'];
+
 echo'
 	<script type="text/javascript">
 	function select_item(item){
@@ -39,23 +41,24 @@ if($search_quicksearch_man != '') {
 	$search_quicksearch_man = str_replace(',','',$search_quicksearch_man);
 	//$person_qry= "SELECT *, CONCAT(pers_firstname,pers_prefix,pers_lastname) as concat_name
 	$person_qry= "SELECT *
-	FROM ".$tree_prefix."person
-	WHERE CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
-		LIKE '%$search_quicksearch_man%'
+	FROM humo_persons
+	WHERE pers_tree_id='".$tree_id."'
+		AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
+		LIKE '%".$search_quicksearch_man."%'
 		OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname)
-		LIKE '%$search_quicksearch_man%' 
+		LIKE '%".$search_quicksearch_man."%' 
 		OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' '))
-		LIKE '%$search_quicksearch_man%' 
+		LIKE '%".$search_quicksearch_man."%' 
 		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
-		LIKE '%$search_quicksearch_man%'
+		LIKE '%".$search_quicksearch_man."%')
 		ORDER BY pers_lastname, pers_firstname";
 }
 elseif($search_man_id!='') {
 	if(substr($search_man_id,0,1)!="i" AND substr($search_man_id,0,1)!="I") { $search_man_id = "I".$search_man_id; } //make entry "48" into "I48"
-	$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$search_man_id."'";
+	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$search_man_id."'";
 }
 else{
-	$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$man_gedcomnumber."'";
+	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$man_gedcomnumber."'";
 }
 $person_result = $dbh->query($person_qry);
 

@@ -560,7 +560,8 @@ a:visited { color:brown; }
 .pers_own_code { }
 
 /* event - gebeurtenis */
-.event { font-style:italic; }
+/* .event { font-style:italic; } */
+.event { }
 
 /* head genealogy - koptekst parenteel (Generatie I, II, etc.) */
 .standard_header {

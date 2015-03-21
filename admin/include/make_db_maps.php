@@ -158,21 +158,27 @@ else {  // main screen
 	if(isset($_POST['check_new'])) { // the "Check" button was pressed
 	
 		$unionstring='';
-		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		$tree_prefix_result = $dbh->query($tree_prefix_sql);
+		//$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+		//$tree_prefix_result = $dbh->query($tree_prefix_sql);
 
-		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
-			$unionstring .= "SELECT pers_birth_place FROM ".$tree_prefixDb->tree_prefix."person UNION ";
-			$unionstring .= "SELECT pers_bapt_place  FROM ".$tree_prefixDb->tree_prefix."person WHERE pers_birth_place = '' UNION ";
-			$unionstring .= "SELECT pers_death_place FROM ".$tree_prefixDb->tree_prefix."person UNION ";
-			$unionstring .= "SELECT pers_buried_place  FROM ".$tree_prefixDb->tree_prefix."person WHERE pers_death_place = '' UNION ";
-					// (only take bapt place if no birth place and only take burial place if no death place)
-		}
+		//while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
+			//$unionstring .= "SELECT pers_birth_place FROM humo_persons WHERE pers_tree_id='".$tree_id."' UNION
+			//SELECT pers_bapt_place  FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_birth_place = '' UNION
+			//SELECT pers_death_place FROM humo_persons WHERE pers_tree_id='".$tree_id."' UNION
+			//SELECT pers_buried_place  FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_death_place = '' UNION ";
+			//	// (only take bapt place if no birth place and only take burial place if no death place)
+			$unionstring .= "SELECT pers_birth_place FROM humo_persons
+				UNION SELECT pers_bapt_place FROM humo_persons WHERE pers_birth_place = ''
+				UNION SELECT pers_death_place FROM humo_persons
+				UNION SELECT pers_buried_place FROM humo_persons WHERE pers_death_place = ''";
+				// (only take bapt place if no birth place and only take burial place if no death place)
+		//}
 
-		$unionstring = substr($unionstring,0,-7); // take off last " UNION "
+		//$unionstring = substr($unionstring,0,-7); // take off last " UNION "
 
 		// from here on we can use only "pers_birth_place", since the UNION puts also all other locations under pers_birth_place
-		$map_person=$dbh->query("SELECT pers_birth_place, count(*) AS quantity FROM (".$unionstring.") AS x GROUP BY pers_birth_place ");
+		$map_person=$dbh->query("SELECT pers_birth_place, count(*) AS quantity
+			FROM (".$unionstring.") AS x GROUP BY pers_birth_place ");
 
 		$add_locations = array();
 
@@ -639,25 +645,36 @@ function refresh_status() {
 	}
 	$status_string = "";
 
-	$tree_pref_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-	$tree_pref_result = $dbh->query($tree_pref_sql);
-	while ($tree_prefDb=$tree_pref_result->fetch(PDO::FETCH_OBJ)){
-		$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM ".$tree_prefDb->tree_prefix."person");
+	//$tree_pref_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+	//$tree_pref_result = $dbh->query($tree_pref_sql);
+	//while ($tree_prefDb=$tree_pref_result->fetch(PDO::FETCH_OBJ)){
+		//$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place
+		//	FROM ".$tree_prefDb->tree_prefix."person");
+		$result=$dbh->query("SELECT pers_tree_prefix, pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place
+			FROM humo_persons");
 		while($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
-			if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$tree_prefDb->tree_prefix."birth ")===false) {
-				$loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix."birth ";
+			//if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$tree_prefDb->tree_prefix."birth ")===false) {
+			if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$resultDb->pers_tree_prefix."birth ")===false) {
+				//$loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix."birth ";
+				$loca_array[$resultDb->pers_birth_place] .= $resultDb->pers_tree_prefix."birth ";
 			}
-			if (isset($loca_array[$resultDb->pers_bapt_place]) AND strpos($loca_array[$resultDb->pers_bapt_place],$tree_prefDb->tree_prefix."bapt ")===false) {
-				$loca_array[$resultDb->pers_bapt_place] .= $tree_prefDb->tree_prefix."bapt ";
+			//if (isset($loca_array[$resultDb->pers_bapt_place]) AND strpos($loca_array[$resultDb->pers_bapt_place],$tree_prefDb->tree_prefix."bapt ")===false) {
+			if (isset($loca_array[$resultDb->pers_bapt_place]) AND strpos($loca_array[$resultDb->pers_bapt_place],$resultDb->pers_tree_prefix."bapt ")===false) {
+				//$loca_array[$resultDb->pers_bapt_place] .= $tree_prefDb->tree_prefix."bapt ";
+				$loca_array[$resultDb->pers_bapt_place] .= $resultDb->pers_tree_prefix."bapt ";
 			}
-			if (isset($loca_array[$resultDb->pers_death_place]) AND strpos($loca_array[$resultDb->pers_death_place],$tree_prefDb->tree_prefix."death ")===false) {
-				$loca_array[$resultDb->pers_death_place] .= $tree_prefDb->tree_prefix."death ";
+			//if (isset($loca_array[$resultDb->pers_death_place]) AND strpos($loca_array[$resultDb->pers_death_place],$tree_prefDb->tree_prefix."death ")===false) {
+			if (isset($loca_array[$resultDb->pers_death_place]) AND strpos($loca_array[$resultDb->pers_death_place],$resultDb->pers_tree_prefix."death ")===false) {
+				//$loca_array[$resultDb->pers_death_place] .= $tree_prefDb->tree_prefix."death ";
+				$loca_array[$resultDb->pers_death_place] .= $resultDb->pers_tree_prefix."death ";
 			}
-			if (isset($loca_array[$resultDb->pers_buried_place]) AND strpos($loca_array[$resultDb->pers_buried_place],$tree_prefDb->tree_prefix."buried ")===false) {
-				$loca_array[$resultDb->pers_buried_place] .= $tree_prefDb->tree_prefix."buried ";
+			//if (isset($loca_array[$resultDb->pers_buried_place]) AND strpos($loca_array[$resultDb->pers_buried_place],$tree_prefDb->tree_prefix."buried ")===false) {
+			if (isset($loca_array[$resultDb->pers_buried_place]) AND strpos($loca_array[$resultDb->pers_buried_place],$resultDb->pers_tree_prefix."buried ")===false) {
+				//$loca_array[$resultDb->pers_buried_place] .= $tree_prefDb->tree_prefix."buried ";
+				$loca_array[$resultDb->pers_buried_place] .= $resultDb->pers_tree_prefix."buried ";
 			}
 		}
-	}
+	//}
 	foreach($loca_array as $key => $value) {
 		if(isset($_POST['purge']) AND $value == "") {
 			$dbh->query("DELETE FROM humo_location WHERE location_location = '".addslashes($key)."'");

@@ -50,7 +50,7 @@ if (!CMS_SPECIFIC){ session_start(); }
 $page='index';
 
 // *** Globals needed for Joomla ***
-global $menu_admin, $family_tree_id, $language_file, $page, $language_tree, $data2Db;
+global $menu_admin, $tree_id, $language_file, $page, $language_tree, $data2Db;
 global $treetext_name, $treetext_mainmenu_text, $treetext_mainmenu_source, $treetext_family_top, $treetext_family_footer, $treetext_id;
 
 // *** Prevent Session hijacking ***
@@ -82,7 +82,7 @@ include_once(CMS_ROOTPATH."include/safe.php"); // Variables
 include_once (CMS_ROOTPATH.'include/show_tree_text.php');
 
 include_once(CMS_ROOTPATH."include/db_functions_cls.php");
-$db_functions = New db_functions;
+$db_functions = New db_functions();
 
 // *** Only load settings if database and table exists ***
 $show_menu_left=false;
@@ -109,8 +109,8 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	// *** Check HuMo-gen database status ***
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])){ 
-		if ($humo_option["update_status"]<7){ $page='update'; $show_menu_left=false; }
-//		if ($humo_option["update_status"]<8){ $page='update'; $show_menu_left=false; }
+		if ($humo_option["update_status"]<8){ $page='update'; $show_menu_left=false; }
+//		if ($humo_option["update_status"]<9){ $page='update'; $show_menu_left=false; }
 	}
 
 	if (isset($_GET['page']) AND ($_GET['page']=='editor_sources' OR $_GET['page']=='editor_place_select' OR $_GET['page']=='editor_person_select' OR $_GET['page']=='editor_user_settings')){
@@ -128,7 +128,7 @@ timezone();
 // *** Language selection for admin ***
 $map=opendir(CMS_ROOTPATH.'languages/');
 while (false!==($file = readdir($map))) {
-	if (strlen($file)<5 AND $file!='.' AND $file!='..'){
+	if (strlen($file)<6 AND $file!='.' AND $file!='..'){
 		$language_select[]=$file;
 		if (file_exists(CMS_ROOTPATH.'languages/'.$file.'/'.$file.'.mo')){
 			$language_file[]=$file;
@@ -176,6 +176,34 @@ if($language["dir"]=="rtl") {
 	$dirmark2="&#x200E;";  //ltr marker
 	$rtlmarker="rtl";
 }
+
+
+// *** Process login form ***
+$fault='';
+if (isset($_POST['username'])){
+	$query = "SELECT * FROM humo_users WHERE user_name='" .$_POST["username"] ."' AND user_password='".MD5($_POST["paswoord"])."'";
+	$result = $dbh->query($query);
+	if ($result->rowCount() > 0){
+		@$resultDb=$result->fetch(PDO::FETCH_OBJ);
+		$_SESSION['user_name_admin'] = safe_text($_POST["username"]);
+		$_SESSION['user_id_admin'] = $resultDb->user_id;
+		$_SESSION['group_id_admin'] = $resultDb->user_group_id;
+
+		// *** Add login in logbook ***
+		$log_date=date("Y-m-d H:i");
+		$sql="INSERT INTO humo_user_log SET
+			log_date='$log_date',
+			log_username='".safe_text($_POST["username"])."',
+			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
+			log_user_admin='admin'";
+		@$dbh->query($sql);
+	}
+	else{
+		// *** No valid user or password ***
+		$fault='<p align="center"><font color="red">'.__('Please enter a valid username or password. ').'</font>';
+	}
+}
+
 
 // *** Login check ***
 $group_administrator=''; $group_edit_trees=''; //$group_editor='';
@@ -320,7 +348,9 @@ if (!CMS_SPECIFIC){
 		// *** Also add these links in "Close source screen" link ***
 		if (isset($_GET['connect_sub_kind'])){
 			if ($_GET['connect_sub_kind']=='address_source') $page_link='edit_addresses';
-			if ($_GET['connect_sub_kind']=='person_event_source') $page_link='editor&event_person=1';
+			//if ($_GET['connect_sub_kind']=='pers_address_source') $page_link='edit_addresses';
+			//if ($_GET['connect_sub_kind']=='fam_address_source') $page_link='edit_addresses';
+			if ($_GET['connect_sub_kind']=='pers_event_source') $page_link='editor&event_person=1';
 			if ($_GET['connect_sub_kind']=='fam_event_source') $page_link='editor&event_family=1';
 		}
 		if (isset($_GET['event_person']) AND $_GET['event_person']=='1') $page_link='editor&event_person=1#event_person_link';
@@ -369,7 +399,31 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 echo '<div id="humo_top" '.$top_dir.'>';
 	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-small.gif" align="left" alt="logo">';
 	echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
-	if (isset($database_check) AND $database_check) { // oterwise we can't make $dbh statements
+	if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
+
+		// *** Enable/ disable HuMo-gen update check ***
+		if (isset($_POST['enable_update_check_change'])){
+			if (isset($_POST['enable_update_check'])){
+				$update_last_check='2012-01-01';
+				$update_text='';
+				$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
+			}
+			else{
+				$update_last_check='DISABLED';
+				$update_text= '  '.__('HuMo-gen update check is disabled.');
+				$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
+			}
+
+			$result = $dbh->query("UPDATE humo_settings
+				SET setting_value='".$update_text."'
+				WHERE setting_variable='update_text'");
+			$result = $dbh->query("UPDATE humo_settings
+				SET setting_value='".$update_last_check."'
+				WHERE setting_variable='update_last_check'");
+			$humo_option['update_last_check']=$update_last_check;
+			//$humo_option['update_text']=$update_text;
+		}
+
 		// *** Check if installation is completed, before checking for an update ***
 		$check_update = @$dbh->query("SELECT * FROM humo_settings");
 		if ($check_update AND $page!='login' AND $page!='update' AND $popup==false){
@@ -377,7 +431,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			// *** Update check, once a day ***
 
 			// *** Manual check for update ***
-			if (isset($_GET['update_check'])){
+			//if (isset($_GET['update_check'])){
+			if (isset($_GET['update_check']) AND $humo_option['update_last_check']!='DISABLED'){
 				// *** Update settings ***
 				$result = @$dbh->query("UPDATE humo_settings
 					SET setting_value='2012-01-01'
@@ -391,7 +446,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			// echo "test=testline";
 
 			// 86400 = 1 day. yyyy-mm-dd
-			if (strtotime ("now") - strtotime($humo_option['update_last_check']) > 86400 ){
+			//if (strtotime ("now") - strtotime($humo_option['update_last_check']) > 86400 ){
+			if ($humo_option['update_last_check']!='DISABLED' AND strtotime ("now") - strtotime($humo_option['update_last_check']) > 86400 ){
 				$link_name=str_replace(' ', '_', $_SERVER['SERVER_NAME']);
 				$link_versie=str_replace(' ', '_', $humo_option["version"]);
 

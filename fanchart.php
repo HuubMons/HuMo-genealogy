@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /****************************************************************************
 * fanchart.php                                                              *
 * Original fan plotting code from PhpGedView (GNU/GPL licence)              *
@@ -70,10 +70,10 @@ for ($i=0 ; $i < $maxperson; $i++) {
 }
 
 // some prepared statements so they will be initialized once
-$person_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
+$person_prep = $dbh->prepare("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
 $person_prep->bindParam(1,$pers_var);
 
-$fam_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber =?");
+$fam_prep = $dbh->prepare("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber =?");
 $fam_prep->bindParam(1,$fam_var);
 
 function fillarray ($nr, $famid) {
@@ -211,7 +211,7 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr) {
 * @param int $fandeg fan size in deg (default=270)
 */
 function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
-	global $dbh, $fontsize, $date_display;
+	global $dbh, $tree_id, $fontsize, $date_display;
 	global $fan_style, $family_id;
 	global $printing, $language, $selected_language;
 	global $person_prep, $pers_var, $tree_prefix_quoted;
@@ -339,16 +339,17 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 					// this is either Hebrew, Arabic or Persian -> we have to reverse the text!
 					$rtlstr=1; 
 				}
-				$fontfile=CMS_ROOTPATH."include/fanchart/dejavusans.ttf"; // this default font serves: Latin,Hebrew,Arabic,Persian,Russian			
+				$fontfile=CMS_ROOTPATH."include/fanchart/dejavusans.ttf"; // this default font serves: Latin,Hebrew,Arabic,Persian,Russian
 				
-				if(preg_match('/(*UTF8)\p{Han}/',$name)!==0) {	// String is Chinese so use a Chinese ttf font if present in the folder				
+				if(preg_match('/(*UTF8)\p{Han}/',$name)!==0) {	// String is Chinese so use a Chinese ttf font if present in the folder
 					if(is_dir(CMS_ROOTPATH."include/fanchart/chinese")) {
 						$dh=opendir(CMS_ROOTPATH."include/fanchart/chinese"); 
 						while (false !== ($filename = readdir($dh))) {
-							if (strtolower(substr($filename, -3)) == "ttf"){
+							//if (strtolower(substr($filename, -3)) == "ttf"){
+							if (strtolower(substr($filename, -3)) == "otf" OR strtolower(substr($filename, -3)) == "ttf"){
 								$fontfile = CMS_ROOTPATH."include/fanchart/chinese/".$filename;
 							}
-						}				
+						}
 					}
 					if($fontfile==CMS_ROOTPATH."include/fanchart/dejavusans.ttf") { //no Chinese ttf file found
 						$china_message=1;
@@ -459,7 +460,9 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 					if($treeid[1][5]=="F") { $spouse="fam_man";} else { $spouse="fam_woman"; }
 
 					//2 reasons this is not a prepared pdo statement: 1. only used once  2. table names can't be parameters...
-					$spouse_result = $dbh->query("SELECT ".$spouse." FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$treeid[1][2]."'");
+					//$spouse_result = $dbh->query("SELECT ".$spouse." FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$treeid[1][2]."'");
+					$spouse_result = $dbh->query("SELECT ".$spouse." FROM humo_families
+						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$treeid[1][2]."'");
 					@$spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
 
  					$pers_var = $spouseDb[$spouse];

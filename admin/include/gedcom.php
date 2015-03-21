@@ -42,7 +42,7 @@ include_once(CMS_ROOTPATH_ADMIN."include/gedcom_asciihtml.php");
 include_once(CMS_ROOTPATH_ADMIN."include/gedcom_anselhtml.php");
 include_once(CMS_ROOTPATH_ADMIN."include/gedcom_ansihtml.php");
 
-@set_time_limit(3000);
+@set_time_limit(4000);
 
 //*** TEST TIME LIMIT ***
 //set_time_limit(10);
@@ -87,7 +87,7 @@ This can be done in two ways:<br>
 2) With the following upload form.');
 
 	// *** Upload gedcom file ***
-	print '<table class="humo" border="1" cellspacing="0" width="100%" bgcolor="#DDFD9B"><tr><td>';
+	echo '<table class="humo" border="1" cellspacing="0" width="100%" bgcolor="#DDFD9B"><tr><td>';
 
 	echo __('Here you can upload a Gedcom file (or zipped Gedcom file).<br>
 ATTENTION: the privileges of the file map may have to be adjusted!');
@@ -132,13 +132,13 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		echo "<form name='uploadform' enctype='multipart/form-data' action='".$phpself."' method='post'>";
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
-			echo '<input type="hidden" name="family_tree_id" value="'.$family_tree_id.'">';
+			echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 			echo "<input type='file' name='upload_file' >";
 			echo "<input type='hidden' name='upload' value='Upload'>";
-			echo "<input type='submit' name='step1' value='Upload'>";
+			echo " <input type='submit' name='step1' value='Upload'>";
 		echo "</form>";
 	}
-	print '</td></tr></table>';
+	echo '</td></tr></table>';
 
 	if (isset($_POST['tree_prefix'])){
 		$tree_prefix=$_POST['tree_prefix'];
@@ -149,11 +149,11 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		$_SESSION['tree_prefix']=$tree_prefix;
 	}
 
-	print '<br>'.__('Select Gedcom file:').'<br>';
-	print '<form method="post" action="'.$phpself.'" style="display : inline">';
+	echo '<br>'.__('Select Gedcom file:').'<br>';
+	echo '<form method="post" action="'.$phpself.'" style="display : inline">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 	echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
-	echo '<input type="hidden" name="family_tree_id" value="'.$family_tree_id.'">';
+	echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 
 	if(CMS_SPECIFIC=="Joomla") {
 		$gedcom_directory=substr(CMS_ROOTPATH_ADMIN, 0, -1); // take away the / at the end
@@ -180,15 +180,17 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 	if (isset($filenames)){ usort($filenames,'strnatcasecmp'); }
 	echo '<select size="1" name="gedcom_file">';
 
-	$result = $dbh->query("SELECT `tree_gedcom` FROM `humo_trees` WHERE `tree_prefix`='".$_SESSION['tree_prefix']."'");
+	$result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
 	$treegedDb = $result->fetch();
 
 	$gedfile = $treegedDb['tree_gedcom'];
 	for ($i=0; $i<count($filenames); $i++){
-		//print '<option value="'.$filenames[$i].'">'.$filenames[$i].'</option>';
+		//echo '<option value="'.$filenames[$i].'">'.$filenames[$i].'</option>';
 		$selected = '';
-		if($gedfile == $filenames[$i]) { $selected = " selected "; } // if this was last gedcom that was used for this tree - select it
-		print '<option value="'.$filenames[$i].'" '.$selected.'>'.$filenames[$i].'</option>';
+		if($gedfile == $filenames[$i]) {
+			$selected = " selected ";
+		} // if this was last gedcom that was used for this tree - select it
+		echo '<option value="'.$filenames[$i].'" '.$selected.'>'.$filenames[$i].'</option>';
 	}
 	echo '</select>';
 
@@ -232,8 +234,18 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		echo '<option value="9000000"'.$selected.'>'.__('ALL records (fast processing, but needs server-memory)').'</option>';
 	echo '</select>';
 
-	print '<p><input type="Submit" name="step2" value="'.__('Step').' 2">';
-	print '</form>';
+	// *** Controlled time-out ***
+	$time_out=0; if ($humo_option["gedcom_read_time_out"]) $time_out= $humo_option["gedcom_read_time_out"];
+	echo '<p>';
+	if (isset($_POST['timeout_restart'])){
+		if (isset($_SESSION['save_process_time']) and $_SESSION['save_process_time']) $time_out=($_SESSION['save_process_time']-3);
+		echo '<b>'.__('Time-out detected! Controlled time-out setting is adjusted. Retry reading of gedcom with new setting.').'</b><br>';
+	}
+	echo '<input type="text" name="time_out" value="'.$time_out.'" size="2"> ';
+	echo __('seconds. Controlled time-out. Use this if the server has a time-out setting (set less seconds then server time-out). 0 = disable controlled time-out.');
+
+	echo '<p><input type="Submit" name="step2" value="'.__('Step').' 2">';
+	echo '</form>';
 
 	if(CMS_SPECIFIC=="Joomla") {
 		echo '<br><br><br><br><br><br><br><br><br>'; //make sure left menu won't run off bottom of screen if content is not long enough
@@ -245,7 +257,7 @@ if (isset($_POST['step2'])){
 
 	if(!isset($_POST['add_tree'])) {
 		$_SESSION['add_tree']=false; 
-		print '<b>'.__('STEP 2) Creating or deleting tables:').'</b><br>';
+		echo '<b>'.__('STEP 2) Remove old family tree:').'</b><br>';
 		if(CMS_SPECIFIC=="Joomla") {
 			$rootpathinclude = CMS_ROOTPATH_ADMIN."include/";
 		}
@@ -253,12 +265,126 @@ if (isset($_POST['step2'])){
 			$rootpathinclude = '';
 		}
 
-		$show_gedcom_status=true;
-		include_once($rootpathinclude."gedcom_tables.php");
+		//$show_gedcom_status=true;
+		//include_once($rootpathinclude."gedcom_tables.php");
+
+		// *** Batch processing ***
+		$dbh->beginTransaction();
+			// *** Remove unprocessed tags ***
+			printf(__('Remove old family tree items from %s table...'), 'humo_persons');
+			echo '<br>';
+			$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."'";
+			@$result=$dbh->query($sql);
+			ob_flush();
+			flush(); // IE
+		// *** Commit data in database ***
+		$dbh->commit();
+
+		// *** Batch processing ***
+		$dbh->beginTransaction();
+			// *** Remove unprocessed tags ***
+			printf(__('Remove old family tree items from %s table...'), 'humo_families');
+			echo '<br>';
+			$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($tree_id)."'";
+			@$result=$dbh->query($sql);
+			ob_flush();
+			flush(); // IE
+		// *** Commit data in database ***
+		$dbh->commit();
+
+		// *** Batch processing ***
+		$dbh->beginTransaction();
+			// *** Remove unprocessed tags ***
+			printf(__('Remove old family tree items from %s table...'), 'humo_unprocessed_tags');
+			echo '<br>';
+			$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."'";
+			@$result=$dbh->query($sql);
+			ob_flush();
+			flush(); // IE
+		// *** Commit data in database ***
+		$dbh->commit();
+
+		// *** Remove admin favorites ***
+		printf(__('Remove old family tree items from %s table...'), 'humo_settings');
+		echo '<br>';
+		$sql="DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='".safe_text($tree_id)."'";
+		@$result=$dbh->query($sql);
+		ob_flush();
+		flush(); // IE
+
+		// *** Remove repositories ***
+		printf(__('Remove old family tree items from %s table...'), 'humo_repositories');
+		echo '<br>';
+		$sql="DELETE FROM humo_repositories WHERE repo_tree_id='".safe_text($tree_id)."'";
+		@$result=$dbh->query($sql);
+		ob_flush();
+		flush(); // IE
+
+		// *** Batch processing ***
+		$dbh->beginTransaction();
+			// *** Remove sources ***
+			printf(__('Remove old family tree items from %s table...'), 'humo_sources');
+			echo '<br>';
+			$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."'";
+			@$result=$dbh->query($sql);
+			ob_flush();
+			flush(); // IE
+		// *** Commit data in database ***
+		$dbh->commit();
+
+		// *** Batch processing ***
+		$dbh->beginTransaction();
+			// *** Remove texts ***
+			printf(__('Remove old family tree items from %s table...'), 'humo_texts');
+			echo '<br>';
+			$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($tree_id)."'";
+			@$result=$dbh->query($sql);
+			ob_flush();
+			flush(); // IE
+		// *** Commit data in database ***
+		$dbh->commit();
+
+		// *** Batch processing ***
+		$dbh->beginTransaction();
+			// *** Remove connections ***
+			printf(__('Remove old family tree items from %s table...'), 'humo_connections');
+			echo '<br>';
+			$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."'";
+			@$result=$dbh->query($sql);
+			ob_flush();
+			flush(); // IE
+		// *** Commit data in database ***
+		$dbh->commit();
+
+		// *** Batch processing ***
+		$dbh->beginTransaction();
+			// *** Remove addresses ***
+			printf(__('Remove old family tree items from %s table...'), 'humo_addresses');
+			echo '<br>';
+			$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."'";
+			@$result=$dbh->query($sql);
+			ob_flush();
+			flush(); // IE
+		// *** Commit data in database ***
+		$dbh->commit();
+
+		// *** Batch processing ***
+		$dbh->beginTransaction();
+			// *** Remove events ***
+			printf(__('Remove old family tree items from %s table...'), 'humo_events');
+			echo '<br>';
+			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."'";
+			@$result=$dbh->query($sql);
+			ob_flush();
+			flush(); // IE
+		// *** Commit data in database ***
+		$dbh->commit();
+
+		if (isset($show_gedcom_status)) echo '<b>'.__('No error messages above? In that case the tables have been created!').'</b><br>';
 	}
 	else {
 		$_SESSION['add_tree']=true;
-		print __('The data in this gedcom will be appended to the existing data in this tree!').'<br>';
+		echo __('The data in this gedcom will be appended to the existing data in this tree!').'<br>';
 	}
 
 	if(!isset($_POST['reassign_gedcomnumbers'])) {
@@ -284,6 +410,10 @@ if (isset($_POST['step2'])){
 
 	if (isset($_POST['commit_records'])){
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST['commit_records'])."' WHERE setting_variable='gedcom_read_commit_records'");
+	}
+
+	if (isset($_POST['time_out'])){
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST['time_out'])."' WHERE setting_variable='gedcom_read_time_out'");
 	}
 
 	//$progress_counter=0;
@@ -317,20 +447,20 @@ if (isset($_POST['step2'])){
 	// *** Reset gen_program ***
 	$gen_program=''; $_SESSION['save_gen_program']=$gen_program;
 
-	print '<br><table><tr><td>';
-	print '<form method="post" action="'.$phpself.'">';
+	echo '<br><table><tr><td>';
+	echo '<form method="post" action="'.$phpself.'">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 	echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
-	echo '<input type="hidden" name="family_tree_id" value="'.$family_tree_id.'">';
+	echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 
-	print '<input type="hidden" name="gedcom_accent" value="'.$accent.'">';
+	echo '<input type="hidden" name="gedcom_accent" value="'.$accent.'">';
 
-	if (isset($_POST['check_processed'])){
-		print '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
-	}
-	if (isset($_POST['show_gedcomnumbers'])){
-		print '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
-	}
+	if (isset($_POST['check_processed']))
+		echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
+	if (isset($_POST['show_gedcomnumbers']))
+		echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
+	if (isset($_POST['time_out']))
+		echo '<input type="hidden" name="time_out" value="'.$_POST['time_out'].'">';
 
 	if(!isset($_POST['add_tree'])) {
 		// *** Reset nr of persons and families ***
@@ -339,28 +469,28 @@ if (isset($_POST['step2'])){
 			WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
 	}
 	if(isset($_POST['add_tree'])) {
-		print '<input type="hidden" name="add_tree" value="1">';
+		echo '<input type="hidden" name="add_tree" value="1">';
 	}
 	else {
-		print '<input type="hidden" name="add_tree" value="">';
+		echo '<input type="hidden" name="add_tree" value="">';
 	}
 
-	print '<input type="hidden" name="gedcom_file" value="'.$_POST['gedcom_file'].'">';
+	echo '<input type="hidden" name="gedcom_file" value="'.$_POST['gedcom_file'].'">';
 
-	print '<input type="Submit" name="step3" value="'.__('Step').' 3">';
-	print '</form>';
-	print '</td>';
+	echo '<input type="Submit" name="step3" value="'.__('Step').' 3">';
+	echo '</form>';
+	echo '</td>';
 	if(isset($_POST['add_tree'])) { 
-		print '<td>';
-		print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		print '<form method="post" style="display:inline" action="'.$phpself.'">';
+		echo '<td>';
+		echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		echo '<form method="post" style="display:inline" action="'.$phpself.'">';
 		echo '<input type="hidden" name="page" value="tree">';
-		echo '<input type="hidden" name="family_tree_id" value="'.$family_tree_id.'">';
-		print '<input type="Submit" name="back" value="'.__('Cancel').'">';
-		print '</form>';
-		print '</td>';
+		echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+		echo '<input type="Submit" name="back" value="'.__('Cancel').'">';
+		echo '</form>';
+		echo '</td>';
 	}
-	print '</tr></table>';
+	echo '</tr></table>';
 
 	if(CMS_SPECIFIC=="Joomla") {
 		echo '<br><br><br><br><br><br><br><br><br>'; //make sure left menu won't run off bottom of screen if content is not long enough
@@ -372,7 +502,9 @@ if (isset($_POST['step2'])){
 // ************************************************************************************************
 if (isset($_POST['step3'])){
 
-	if($_SESSION['save_starttime']==0) {$_SESSION['save_starttime']=time();}
+	// *** Processing time ***
+	if($_SESSION['save_starttime']==0) { $_SESSION['save_starttime']=time(); }
+	$_SESSION['save_start_timeout']=time(); // *** Start controlled time-out ***
 
 	// begin step 3 merge additions
 	$add_tree = false;
@@ -392,7 +524,7 @@ if (isset($_POST['step3'])){
 		// this way they will never be the same as the existing ones
 
 		// I40
-		$test_qry = "SELECT `pers_gedcomnumber` FROM ".$_SESSION['tree_prefix']."person";
+		$test_qry = "SELECT `pers_gedcomnumber` FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_pers_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -400,7 +532,7 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_pers_ged) { $largest_pers_ged = $gednum; }
 		}
 		// F40
-		$test_qry = "SELECT `fam_gedcomnumber` FROM ".$_SESSION['tree_prefix']."family";
+		$test_qry = "SELECT `fam_gedcomnumber` FROM humo_families WHERE fam_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_fam_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -408,7 +540,8 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_fam_ged) { $largest_fam_ged = $gednum; }
 		}
 		// S40
-		$test_qry = "SELECT `source_gedcomnr` FROM ".$_SESSION['tree_prefix']."sources";
+		//$test_qry = "SELECT `source_gedcomnr` FROM ".$_SESSION['tree_prefix']."sources";
+		$test_qry = "SELECT `source_gedcomnr` FROM humo_sources WHERE source_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_source_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -416,7 +549,8 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_source_ged) { $largest_source_ged = $gednum; }
 		}
 		//  R40 (RESI)
-		$test_qry = "SELECT `address_gedcomnr` FROM ".$_SESSION['tree_prefix']."addresses";
+		//$test_qry = "SELECT `address_gedcomnr` FROM ".$_SESSION['tree_prefix']."addresses";
+		$test_qry = "SELECT `address_gedcomnr` FROM humo_addresses WHERE address_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_address_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -424,15 +558,17 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_address_ged) { $largest_address_ged = $gednum; }
 		}
 		//  R40 (REPO)
-		$test_qry = "SELECT `repo_gedcomnr` FROM ".$_SESSION['tree_prefix']."repositories";
+		//$test_qry = "SELECT `repo_gedcomnr` FROM ".$_SESSION['tree_prefix']."repositories";
+		$test_qry = "SELECT `repo_gedcomnr` FROM humo_repositories WHERE repo_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_repo_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
 			$gednum = (int)(preg_replace('/\D/','',$gedsDb->repo_gedcomnr));
 			if ($gednum > $largest_repo_ged) { $largest_repo_ged = $gednum; }
 		}
-		// @N40@
-		$test_qry = "SELECT `text_gedcomnr` FROM ".$_SESSION['tree_prefix']."texts";
+		// N40 (texts)
+		//$test_qry = "SELECT `text_gedcomnr` FROM ".$_SESSION['tree_prefix']."texts";
+		$test_qry = "SELECT `text_gedcomnr` FROM humo_texts WHERE text_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_text_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -441,7 +577,7 @@ if (isset($_POST['step3'])){
 		}
 
 		// @O40@ object table
-		$test_qry = "SELECT `event_gedcomnr` FROM ".$_SESSION['tree_prefix']."events";
+		$test_qry = "SELECT `event_gedcomnr` FROM humo_events WHERE event_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_object_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -459,7 +595,7 @@ if (isset($_POST['step3'])){
 		unset($_SESSION['dupl_arr_'.$_SESSION['tree_prefix']]);
 	// we have to make sure the present_compare session is unset, if exists
 	}
-	if(isset($_SESSION['present_compare_'.$_SESSION['tree_prefix']]))	 {
+	if(isset($_SESSION['present_compare_'.$_SESSION['tree_prefix']])) {
 		unset($_SESSION['present_compare_'.$_SESSION['tree_prefix']]);
 	}
 	// End step 3 merge additions 
@@ -502,10 +638,11 @@ if (isset($_POST['step3'])){
 <b>Processing may take a while!!</b>').'<br>';
 
 	// *** some providers use a timeout of 30 seconden, continue button needed. ***
+	/*
 	echo '<form method="post" action="'.$phpself.'" style="display : inline">';
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 		echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
-		echo '<input type="hidden" name="family_tree_id" value="'.$family_tree_id.'">';
+		echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 
 		echo '<input type="hidden" name="gedcom_accent" value="'.$_POST['gedcom_accent'].'">';
 		if (isset($_POST['check_processed'])){
@@ -519,8 +656,29 @@ if (isset($_POST['step3'])){
 		echo '<input type="hidden" name="timeout" value="1">';
 		echo __('ONLY use in case of a time-out, to continue click:').' <input type="Submit" name="step3" value="'.__('Step').' 3">';
 	echo '</form><br><br>';
+	*/
 
-	//$start_time=time();
+	// *** some providers use a timeout of 30 seconden, continue button needed. ***
+	if ($_POST['time_out']=='0'){
+		echo '<form method="post" action="'.$phpself.'" style="display : inline">';
+			echo '<input type="hidden" name="page" value="'.$page.'">';
+			echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
+			echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+
+			echo '<input type="hidden" name="gedcom_accent" value="'.$_POST['gedcom_accent'].'">';
+			if (isset($_POST['check_processed']))
+				echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
+			if (isset($_POST['show_gedcomnumbers']))
+				echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
+
+			echo '<input type="hidden" name="timeout_restart" value="1">';
+			echo '<input type="hidden" name="step1" value="'.$_POST['gedcom_file'].'">';
+
+			echo __('ONLY use in case of a time-out, to continue click:').' <input type="Submit" name="timeout" value="'.__('Restart').' ">';
+			echo ' '.__('Restarts reading of gedcom using a controlled time-out.');
+		echo '</form><br><br>';
+	}
+
 	$process_gedcom="";
 	$buffer2="";
 
@@ -636,10 +794,28 @@ if (isset($_POST['step3'])){
 	if ($commit_records>1){ $dbh->beginTransaction(); }
 
 
+	/* Insert a temporary line into data base to get latest id.
+	*  Must be done because table can be empty when reloading gedcom file...
+	*  Even in a empty table, latest id can be a high number...
+	*/
+	$sql="INSERT INTO humo_events SET event_tree_id='".$tree_id."'";
+	$result=$dbh->query($sql);
+	$event_items = $dbh->lastInsertId();
+	$sql="DELETE FROM humo_events WHERE event_id='".$event_items."'";
+//echo $sql.'!!<br>';
+	$result=$dbh->query($sql);
+
+	$sql="INSERT INTO humo_addresses SET address_tree_id='".$tree_id."'";
+	$result=$dbh->query($sql);
+	$address_items = $dbh->lastInsertId();
+	$sql="DELETE FROM humo_addresses WHERE address_id='".$address_items."'";
+//echo $sql.' '.$address_items.'<br>';
+	$result=$dbh->query($sql);
+
+
 	// *****************
 	// *** Read file ***
 	// *****************
-
 
 	$handle = fopen($_POST["gedcom_file"], "r");
 
@@ -648,17 +824,29 @@ if (isset($_POST['step3'])){
 	if ($_SESSION['save_pointer']>0) {
 		fseek($handle, $_SESSION['save_pointer']);
 	}
+
 	if (isset($_SESSION['save_gen_program'])) {
 		$gen_program=$_SESSION['save_gen_program'];
 	}
 
 	$level0='';
+	$last_pointer=0;
 
 	while (!feof($handle)) {
 		//$buffer = fgets($handle, 4096);
 		$buffer = fgets($handle);
 		$buffer=rtrim($buffer,"\n\r");  // *** strip newline ***
 		$buffer=ltrim($buffer," ");  // *** Strip starting spaces, for Pro-gen ***
+
+//TEST, show line after controlled time-out:
+//if ($last_pointer==0) echo 'New line: '.$buffer.'<br>';
+
+		// *** Controlled timeout pointers, save last pointer before a "0 @" line ***
+		$previous_pointer=$last_pointer;
+		$last_pointer=ftell($handle);
+		if (substr($buffer,0,3)=='0 @'){
+			$save_pointer=$previous_pointer;
+		}
 
 // TEST: show memory usage
 //$calc_memory=(memory_get_usage()-$memory);
@@ -677,9 +865,6 @@ if (isset($_POST['step3'])){
 				$dbh->commit();
 				// *** Start next process batch ***
 				$dbh->beginTransaction();
-
-				$pointer=ftell($handle);
-				$_SESSION['save_pointer']=$pointer;
 			}
 		}
 
@@ -703,41 +888,24 @@ if (isset($_POST['step3'])){
 			if ($process_gedcom=="person"){
 				$buffer2=encode($buffer2, $_POST["gedcom_accent"]);
 				$gedcom_cls -> process_person($buffer2);
-
-				//save pointer value, so reading can be continued after timeout
-				if ($commit_records==1){
-					$pointer=ftell($handle); $_SESSION['save_pointer']=$pointer;
-				}
 				$process_gedcom=""; $buffer2="";
 			}
 
 			elseif ($process_gedcom=="family"){
 				$buffer2=encode($buffer2, $_POST["gedcom_accent"]);
 				$gedcom_cls -> process_family($buffer2,0,0);
-				//save pointer value, so reading can be continued after timeout
-				if ($commit_records==1){
-					$pointer=ftell($handle); $_SESSION['save_pointer']=$pointer;
-				}
 				$process_gedcom=""; $buffer2="";
 			}
 
 			elseif ($process_gedcom=="text"){
 				$buffer2=encode($buffer2, $_POST["gedcom_accent"]);
 				$gedcom_cls -> process_text($buffer2);
-				//save pointer value, so reading can be continued after timeout
-				if ($commit_records==1){
-					$pointer=ftell($handle); $_SESSION['save_pointer']=$pointer;
-				}
 				$process_gedcom=""; $buffer2="";
 			}
 
 			elseif ($process_gedcom=="source"){
 				$buffer2=encode($buffer2, $_POST["gedcom_accent"]);
 				$gedcom_cls -> process_source($buffer2);
-				//save pointer value, so reading can be continued after timeout
-				if ($commit_records==1){
-					$pointer=ftell($handle); $_SESSION['save_pointer']=$pointer;
-				}
 				$process_gedcom=""; $buffer2="";
 			}
 
@@ -745,30 +913,18 @@ if (isset($_POST['step3'])){
 			elseif ($process_gedcom=="repository"){
 				$buffer2=encode($buffer2, $_POST["gedcom_accent"]);
 				$gedcom_cls -> process_repository($buffer2);
-				//save pointer value, so reading can be continued after timeout
-				if ($commit_records==1){
-					$pointer=ftell($handle); $_SESSION['save_pointer']=$pointer;
-				}
 				$process_gedcom=""; $buffer2="";
 			}
 
 			elseif ($process_gedcom=="address"){
 				$buffer2=encode($buffer2, $_POST["gedcom_accent"]);
 				$gedcom_cls -> process_address($buffer2);
-				//save pointer value, so reading can be continued after timeout
-				if ($commit_records==1){
-					$pointer=ftell($handle); $_SESSION['save_pointer']=$pointer;
-				}
 				$process_gedcom=""; $buffer2="";
 			}
 
 			elseif ($process_gedcom=="object"){
 				$buffer2=encode($buffer2, $_POST["gedcom_accent"]);
 				$gedcom_cls -> process_object($buffer2);
-				//save pointer value, so reading can be continued after timeout
-				if ($commit_records==1){
-					$pointer=ftell($handle); $_SESSION['save_pointer']=$pointer;
-				}
 				$process_gedcom=""; $buffer2="";
 			}
 
@@ -809,7 +965,7 @@ if (isset($_POST['step3'])){
 		if ($level0=='HEAD' AND substr($buffer,2,4)=='SOUR'){
 			$gen_program=substr($buffer,7);
 			$_SESSION['save_gen_program']=$gen_program;
-			print "<br><br>".__('Gedcom file').": <b>$gen_program</b>, ";
+			echo '<br><br>'.__('Gedcom file').': <b>'.$gen_program.'</b>, ';
 
 			printf(__('this is an <b>%s</b> file'), $_POST["gedcom_accent"]);
 			echo '<br>';
@@ -846,9 +1002,57 @@ if (isset($_POST['step3'])){
 				// Send output to browser immediately
 				ob_flush();
 				flush(); // for IE
-
 			}
+		}
 
+		// *** Save process time every cycle (time-out) ***
+		$process_time=time();
+		$_SESSION['save_process_time']=$process_time-$_SESSION['save_starttime'];
+
+		// *** Controlled time-out ***
+		$time_out=0; if (is_numeric($_POST['time_out'])) $time_out=$_POST['time_out'];
+		if ($time_out>0){
+			if (($process_time-$_SESSION['save_start_timeout']) > $time_out){
+
+				// *** Save data in database ***
+				$dbh->commit();
+
+				// *** Save pointer of gedcom file ***
+				$_SESSION['save_pointer']=$save_pointer;
+
+				// *** Set time for next cycle ***
+				$_SESSION['save_start_timeout']=time();
+
+				// *** Restart after controlled time-out. ***
+				echo '<form method="post" action="'.$phpself.'" style="display : inline">';
+					echo '<input type="hidden" name="page" value="'.$page.'">';
+					echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
+					echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+
+					echo '<input type="hidden" name="gedcom_accent" value="'.$_POST['gedcom_accent'].'">';
+					if (isset($_POST['check_processed'])){
+						echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
+					}
+					if (isset($_POST['show_gedcomnumbers'])){
+						echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
+					}
+
+					echo '<input type="hidden" name="gedcom_file" value="'.$_POST['gedcom_file'].'">';
+					echo '<input type="hidden" name="time_out" value="'.$time_out.'">';
+					echo '<b>'.__('Controlled time-out to continue reading of gedcom file, click:').'</b> <input type="Submit" name="step3" value="'.__('Step').' 3"><br>';
+					printf(' <b>'.__('Or wait %s seconds for automatic continuation. Some browsers will give a reload message...').'</b>', '5');
+
+				echo '</form><br><br>';
+
+				// *** Automatic reload after 5 seconds ***
+				echo '
+				<script type="text/javascript">
+					setTimeout(function () { location.reload(true); }, 5000);
+				</script>
+				';
+
+				exit();
+			}
 		}
 
 	}
@@ -890,7 +1094,7 @@ if (isset($_POST['step3'])){
 	echo '<br><form method="post" action="'.$phpself.'">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 	echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
-	echo '<input type="hidden" name="family_tree_id" value="'.$family_tree_id.'">';
+	echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 	echo '<input type="hidden" name="gen_program" value="'.$gen_program.'">';
 	echo '<input type="Submit" name="step4" value="'.__('Step').' 4">';
 	echo '</form>';
@@ -906,13 +1110,14 @@ if (isset($_POST['step4'])){
 	$start_time=time();
 	$gen_program=$_POST['gen_program'];
 
-	print '<b>'.__('STEP 4) Processing single persons:').'</b><br>';
+	echo '<b>'.__('STEP 4) Processing single persons:').'</b><br>';
 
 	// *** To proceed if a (30 seconds) timeout has occured ***
+	/*
 	echo '<form method="post" action="'.$phpself.'">';
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 		echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
-		echo '<input type="hidden" name="family_tree_id" value="'.$family_tree_id.'">';
+		echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 		echo '<input type="hidden" name="gen_program" value="'.$_POST['gen_program'].'">';
 		if (isset($_POST['check_processed'])){
 			echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
@@ -922,8 +1127,9 @@ if (isset($_POST['step4'])){
 		}
 		echo '<br>'.__('ONLY use in case of a time-out, to continue click:').' <input type="Submit" name="step4" value="'.__('Step').' 4">';
 	echo '</form><br>';
+	*/
 
-	print '&gt;&gt;&gt; '.__('Processing single persons...');
+	echo '&gt;&gt;&gt; '.__('Processing single persons...');
 
 	// *** Check for seperate saved texts in database (used in aldfaer program, and some other programs) ***
 	//$zoektekst=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."texts",$db);
@@ -931,7 +1137,9 @@ if (isset($_POST['step4'])){
 	//echo 'AANTAL TEKSTEN'.$aantal_teksten;
 
 	// *** Process text by name etc. ***
-	$person_qry=$dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname FROM ".$_SESSION['tree_prefix']."person");
+	//$person_qry=$dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname FROM ".$_SESSION['tree_prefix']."person");
+	$person_qry=$dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
 	while ($personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
 		//*** Haza-data option: text IN name where "*" is. ***
 		if ($personDb->pers_name_text){
@@ -941,7 +1149,7 @@ if (isset($_POST['step4'])){
 				// pers_name_text change into: process_text(pers_name_text)
 				$pers_firstname=substr($personDb->pers_firstname,0,$position).
 					$personDb->pers_name_text.substr($personDb->pers_firstname,$position+1);
-				$sql="UPDATE ".$_SESSION['tree_prefix']."person
+				$sql="UPDATE humo_persons
 					SET pers_firstname='".safe_text($pers_firstname)."', pers_name_text=''
 					WHERE pers_id='".$personDb->pers_id."'";
 				$dbh->query($sql);
@@ -953,8 +1161,8 @@ if (isset($_POST['step4'])){
 				//pers_name_text change into: process_text(pers_name_text)
 				$pers_lastname=substr( $personDb->pers_lastname,0,$position).
 					$personDb->pers_name_text.substr( $personDb->pers_lastname,$position+1);
-				$sql="UPDATE ".$_SESSION['tree_prefix']."person SET pers_lastname='$pers_lastname', pers_name_text=''
-					WHERE pers_id=$personDb->pers_id";
+				$sql="UPDATE humo_persons SET pers_lastname='".$pers_lastname."', pers_name_text=''
+					WHERE pers_id='".$personDb->pers_id."'";
 				$dbh->query($sql);
 			}
 		}
@@ -981,7 +1189,8 @@ if (isset($_POST['step4'])){
 		$tree_pref_result = $dbh->query($tree_pref_sql);
 		while ($tree_prefDb=$tree_pref_result->fetch(PDO::FETCH_OBJ)){
 
-			$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM ".$tree_prefDb->tree_prefix."person");
+			//$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM ".$tree_prefDb->tree_prefix."person");
+			$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
 
 			while($resultDb = $result->fetch(PDO::FETCH_OBJ)) { 
 				if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$tree_prefDb->tree_prefix."birth ")===false) { 
@@ -1024,17 +1233,20 @@ if (isset($_POST['step4'])){
 			// Solve maybe later: date_string 2 mei is smaller then 10 may (2 birth in 1 month is rare...).
 		}
 
-		print '<br>&gt;&gt;&gt; '.__('Order children...');
+		echo '<br>&gt;&gt;&gt; '.__('Order children...');
 
-		$fam_qry=$dbh->query("SELECT * FROM ".$_SESSION['tree_prefix']."family WHERE fam_children!=''");
+		//$fam_qry=$dbh->query("SELECT * FROM ".$_SESSION['tree_prefix']."family WHERE fam_children!=''");
+		$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children!=''");
 		while ($famDb=$fam_qry->fetch()){
 			$child_array=explode(";",$famDb->fam_children);
 			$nr_children = count($child_array);
 			if ($nr_children > 1) {
 				unset ($children_array);
 				for ($i=0; $i<$nr_children; $i++){
-					$child=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-						WHERE pers_gedcomnumber='".$child_array[$i]."'");
+					//$child=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
+					//	WHERE pers_gedcomnumber='".$child_array[$i]."'");
+					$child=$dbh->query("SELECT * FROM humo_persons
+						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$child_array[$i]."'");
 					@$childDb=$child->fetch(PDO::FETCH_OBJ);
 
 					$child_array_nr=$child_array[$i];
@@ -1058,7 +1270,8 @@ if (isset($_POST['step4'])){
 				}
 
 				if ($famDb->fam_children!=$fam_children){
-					$sql = "UPDATE ".$_SESSION['tree_prefix']."family SET fam_children='".$fam_children."' WHERE fam_id='".$famDb->fam_id."'";
+					//$sql = "UPDATE ".$_SESSION['tree_prefix']."family SET fam_children='".$fam_children."' WHERE fam_id='".$famDb->fam_id."'";
+					$sql = "UPDATE humo_families SET fam_children='".$fam_children."' WHERE fam_id='".$famDb->fam_id."'";
 					$dbh->query($sql);
 				}
 			}
@@ -1072,10 +1285,10 @@ if (isset($_POST['step4'])){
 		if (substr_count($persoonDb2->fams, ";")>0) {
 			for ($j=0; $j<substr_count($persoonDb2->fams, ";"); $j++){
 				for ($i=0; $i<$max; $i++){
-					$fams1=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."gezin WHERE gedcomnummer=$family_array2[$i]",$db);
+					$fams1=mysql_query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND gedcomnummer=$family_array2[$i]",$db);
 					$famsDb1=mysql_fetch_object($fams1);
 					$ii = $i+1;
-					$fams2=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."gezin WHERE gedcomnummer=$family_array2[$ii]",$db);
+					$fams2=mysql_query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND gedcomnummer=$family_array2[$ii]",$db);
 					$famsDb2=mysql_fetch_object($fams2);
 					if (date_string($famsDb1->trdatum) > date_string($famsDb2->trdatum)) {
 						$tempfams = $family_array2[$i];
@@ -1091,7 +1304,7 @@ if (isset($_POST['step4'])){
 
 	// *** Order families ***
 	echo "<P><B>Huwelijken sorteren:</B>";
-	$persoon=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."persoon",$db);
+	$persoon=mysql_query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'",$db);
 	while ($persoonDb=mysql_fetch_object($persoon)) {
 		$family_array=explode(";",$persoonDb->fams);
 		if (substr_count($persoonDb->fams, ";") > 0) {
@@ -1105,7 +1318,7 @@ if (isset($_POST['step4'])){
 				echo " Van: ".$persoonDb->fams;
 				echo "<BR>Gezin: ".$persoonDb->gedcomnummer;
 				echo " Naar: ".$s;
-				$Sql = "UPDATE ".$_SESSION['tree_prefix']."persoon SET fams='".$s."' WHERE id =".$persoonDb->id;
+				$Sql = "UPDATE humo_persons SET fams='".$s."' WHERE id =".$persoonDb->id;
 				mysql_query($Sql); 
 				mysql_query("COMMIT"); 
 			}
@@ -1117,8 +1330,9 @@ if (isset($_POST['step4'])){
 	// *** Process Aldfaer adoption children: remove unecesary added relations ***
 	if ($gen_program=='ALDFAER') {
 		function fams_remove($personnr, $familynr){
-			global $dbh, $tree_prefix;
-			$person_qry= "SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='".$personnr."'";
+			global $dbh, $tree_id, $tree_prefix;
+			//$person_qry= "SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='".$personnr."'";
+			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$personnr."'";
 			$person_result = $dbh->query($person_qry);
 			$person_db=$person_result->fetch(PDO::FETCH_OBJ);
 			if (@$person_db->pers_gedcomnumber){
@@ -1128,53 +1342,49 @@ if (isset($_POST['step4'])){
 				}
 				$pers_indexnr=''; if ($person_db->pers_famc){ $pers_indexnr=$person_db->pers_famc; }
 				$fams3=''; if (isset($fams2[0])){ $fams3 = implode(";", $fams2); $pers_indexnr=$fams2[0]; }
-				$sql="UPDATE ".$_SESSION['tree_prefix']."person SET
+				$sql="UPDATE humo_persons SET
 					pers_fams='".$fams3."', pers_indexnr='".$pers_indexnr."'
 					WHERE pers_id='".$person_db->pers_id."'";
-//echo $sql.'<br>';
 				$result=$dbh->query($sql);
 			}
 		}
 
-		$famc_adoptive_qry=$dbh->query("SELECT * FROM ".$_SESSION['tree_prefix']."events WHERE event_kind='adoption_by_person'");
+		$famc_adoptive_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_kind='adoption_by_person'");
 		while($famc_adoptiveDb=$famc_adoptive_qry->fetch(PDO::FETCH_OBJ)){
 			$fam=$famc_adoptiveDb->event_event;
 
 			// *** Remove fams number from man and woman ***
-			$new_nr_qry= "SELECT * FROM ".$_SESSION['tree_prefix']."family WHERE fam_gedcomnumber='".$fam."'";
-//echo $new_nr_qry.'<br>';
+			$new_nr_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fam."'";
 			$new_nr_result = $dbh->query($new_nr_qry);
 			$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 
 			if ($new_nr->fam_man){
-				$sql="UPDATE ".$_SESSION['tree_prefix']."events SET
+				$sql="UPDATE humo_events SET
 					event_event='".$new_nr->fam_man."' WHERE event_id='".$famc_adoptiveDb->event_id."'";
 				$dbh->query($sql);
-//echo $sql.'<br>';
 				fams_remove($new_nr->fam_man, $fam);
 			}
 			unset ($fams2);
 			if ($new_nr->fam_woman){
-				$sql="UPDATE ".$_SESSION['tree_prefix']."events SET
+				$sql="UPDATE humo_events SET
 					event_event='".$new_nr->fam_woman."' WHERE event_id='".$famc_adoptiveDb->event_id."'";
 				$dbh->query($sql);
 				fams_remove($new_nr->fam_woman, $fam);
 			}
 
-			$sql="DELETE FROM ".$_SESSION['tree_prefix']."family WHERE fam_gedcomnumber='".$fam."'";
-//echo $sql.'<br><br>';
+			$sql="DELETE FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fam."'";
 			$result=$dbh->query($sql);
 		}
 	}
 
 
 	// *** Count persons and families ***
-	print '<br>&gt;&gt;&gt; '.__('Counting persons and families and enter into database...').' ';
+	echo '<br>&gt;&gt;&gt; '.__('Counting persons and families and enter into database...').' ';
 	// *** Calculate number of persons and families ***
-	$person_qry=$dbh->query("SELECT pers_id FROM ".$_SESSION['tree_prefix']."person");
+	$person_qry=$dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
 	$persons=$person_qry->rowCount();
 
-	$family_qry=$dbh->query("SELECT fam_id FROM ".$_SESSION['tree_prefix']."family");
+	$family_qry=$dbh->query("SELECT fam_id FROM humo_families WHERE fam_tree_id='".$tree_id."'");
 	$families=$family_qry->rowCount();
 
 	$tree_date=date("Y-m-d H:i");
@@ -1189,8 +1399,8 @@ if (isset($_POST['step4'])){
 	// Show process time:
 	$end_time=time();
 	printf('<p>'.__('Processing took: %d seconds').'<br>', $end_time-$start_time);
-	print __('No error messages? In this case the database is ready for use!');
-	
+	echo __('No error messages? In this case the database is ready for use!');
+
 	if(CMS_SPECIFIC=="Joomla") {
 		printf('<p><b>'.__('Ready! Now click %s to watch the family tree').'</b><br>', ' <a href="index.php?option=com_humo-gen&task=index">index.php</a> ');
 

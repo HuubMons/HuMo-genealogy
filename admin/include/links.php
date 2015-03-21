@@ -32,7 +32,36 @@ while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 // *** Add link ***
 if (isset($_POST['add_link'])){
 	$setting_value=addslashes($_POST['own_code'])."|".addslashes($_POST['link_text']);
-	$sql="INSERT INTO humo_settings SET setting_variable='link', setting_value='".$setting_value."'";
+	$sql="INSERT INTO humo_settings SET setting_variable='link', setting_value='".$setting_value."', setting_order='".$_POST['link_order']."'";
+	$result=$dbh->query($sql);
+}
+
+if (isset($_GET['up'])){
+	// *** Search previous link ***
+	$item=$dbh->query("SELECT * FROM humo_settings WHERE setting_order=".($_GET['link_order']-1));
+	$itemDb=$item->fetch(PDO::FETCH_OBJ);
+
+	// *** Raise previous link ***
+	$sql="UPDATE humo_settings SET setting_order='".($_GET['link_order'])."' WHERE setting_id='".$itemDb->setting_id."'";
+
+	$result=$dbh->query($sql);
+	// *** Lower link order ***
+	$sql="UPDATE humo_settings SET setting_order='".($_GET['link_order']-1)."' WHERE setting_id=".$_GET['id'];
+
+	$result=$dbh->query($sql);
+}
+if (isset($_GET['down'])){
+	// *** Search next link ***
+	$item=$dbh->query("SELECT * FROM humo_settings WHERE setting_order=".($_GET['link_order']+1));
+	$itemDb=$item->fetch(PDO::FETCH_OBJ);
+
+	// *** Lower previous link ***
+	$sql="UPDATE humo_settings SET setting_order='".($_GET['link_order'])."' WHERE setting_id='".$itemDb->setting_id."'";
+
+	$result=$dbh->query($sql);
+	// *** Raise link order ***
+	$sql="UPDATE humo_settings SET setting_order='".($_GET['link_order']+1)."' WHERE setting_id=".$_GET['id'];
+
 	$result=$dbh->query($sql);
 }
 
@@ -51,14 +80,25 @@ echo '</table><br>';
 
 echo '<table class="humo standard" border="1">';
 	print '<tr class="table_header"><th>Nr.</th><th>'.__('Own code').'</th><th>'.__('Description').'</th><th>'.__('Change / Add').'</th><th>'.__('Remove').'</th></tr>';
-	$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
+	$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' ORDER BY setting_order");
+	// *** Number for new link ***
+	$count_links=0; if ($datasql->rowCount()) $count_links=$datasql->rowCount();
+	$new_number=1; if ($count_links) $new_number=$count_links+1;
 	if ($datasql){
 		$teller=1;
 		while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			$lijst=explode("|",$dataDb->setting_value);
 			echo '<tr>';
-			echo '<td><input type="hidden" name="'.$dataDb->setting_id.'id" value="'.$dataDb->setting_id.'">';
-			echo 'Link '.$teller."</td>";
+			echo '<td>';
+				echo '<input type="hidden" name="'.$dataDb->setting_id.'id" value="'.$dataDb->setting_id.'">'.__('Link').' '.$teller;
+
+				if ($dataDb->setting_order!='1'){
+					echo ' <a href="index.php?page=links&amp;up=1&amp;link_order='.$dataDb->setting_order.
+					'&amp;id='.$dataDb->setting_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="up"></a>'; }
+				if ($dataDb->setting_order!=$count_links){
+					echo ' <a href="index.php?page=links&amp;down=1&amp;link_order='.$dataDb->setting_order.'&amp;id='.
+					$dataDb->setting_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>'; }
+			echo '</td>';
 			echo '<td><input type="text" name="'.$dataDb->setting_id.'own_code" value="'.$lijst[0].'" size="20"></td>';
 			echo '<td><input type="text" name="'.$dataDb->setting_id.'link_text" value="'.$lijst[1].'" size="30"></td>';
 			echo '<td><input type="Submit" name="change_link" value="'.__('Change').'"></td>';
@@ -70,6 +110,7 @@ echo '<table class="humo standard" border="1">';
 		// *** Add new link ***
 		echo "<tr>";
 			echo "<td><br></td>";
+			echo '<input type="hidden" name="link_order" value="'.$new_number.'">';
 			echo '<td><input type="text" name="own_code" value="Code" size="20"></td>';
 			echo '<td><input type="text" name="link_text" value="'.__('Owner of tree').'" size="30"></td>';
 			echo '<td><input type="Submit" name="add_link" value="'.__('Add').'"></td>';

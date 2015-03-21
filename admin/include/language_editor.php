@@ -310,14 +310,15 @@ function display_po_table() {
 	foreach($_SESSION['line_array'] as $key => $value) { // non-translated items
 		if($key==0) { continue; } // description of po file
 		if(isset($value["msgstr"]) AND str_replace("\n","",$value["msgstr"]) =='""') {
-		if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="" 
+			if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="" 
 			AND stripos($value["msgid"],$_SESSION['langsearchtext'])===FALSE 
 			AND stripos($value["msgstr"],$_SESSION['langsearchtext'])===FALSE) { continue; }
 
 			if($count < $_SESSION['present_page']*$_SESSION['maxlines']) { $count++; continue; }
 			$loop_count++; if($loop_count > $_SESSION['maxlines']) break;
 
-			$mytext=notes($value["note"]); 
+			if(isset($value["note"])) {$mytext=notes($value["note"]); }
+			else $mytext="";
 			echo '<tr><td style="width:2%"><a onmouseover="popup(\''.popclean($mytext).'\',300);" href="#" style="border-right:none;background:none">';
 			echo '<img style="border:0px;background:none" src="'.CMS_ROOTPATH.'images/reports.gif" alt="references"></a></td>';
 			echo '<td style="vertical-align:top;padding:2px;width:47%">'.msgid_display($value["msgid"]).'</td>';
@@ -331,13 +332,13 @@ function display_po_table() {
 	}
 	foreach($_SESSION['line_array'] as $key => $value) { // translated items
 		if($key==0) { continue; } // description of po file
-		if(strpos($value["note"],"fuzzy")!==false AND isset($value["msgstr"]) AND str_replace("\n","",$value["msgstr"])!='""' AND isset($value["msgid"])) { 
+		if(isset($value["note"]) AND strpos($value["note"],"fuzzy")!==false AND isset($value["msgstr"]) AND str_replace("\n","",$value["msgstr"])!='""' AND isset($value["msgid"])) { 
 			if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="" 
 			AND stripos($value["msgid"],$_SESSION['langsearchtext'])===FALSE 
 			AND stripos($value["msgstr"],$_SESSION['langsearchtext'])===FALSE) { continue; }
 			if($count < $_SESSION['present_page']*$_SESSION['maxlines']) { $count++; continue; }
 			$loop_count++; if($loop_count > $_SESSION['maxlines']) break;
-			
+
 			$mytext=notes($value["note"]); 
 			echo '<tr><td style="width:2%"><a onmouseover="popup(\''.popclean($mytext).'\',300);" href="#">';
 			echo '<img style="border:0px;background:none" src="'.CMS_ROOTPATH.'images/reports.gif" alt="references"></a></td>';
@@ -354,14 +355,15 @@ function display_po_table() {
 	}	
 	foreach($_SESSION['line_array'] as $key => $value) { // translated items
 		if($key==0) { continue; } // description of po file
-		if(strpos($value["note"],"fuzzy")===false AND isset($value["msgstr"]) AND str_replace("\n","",$value["msgstr"])!='""' AND isset($value["msgid"])) { 
+		if((!isset($value["note"]) OR strpos($value["note"],"fuzzy")===false) AND isset($value["msgstr"]) AND str_replace("\n","",$value["msgstr"])!='""' AND isset($value["msgid"])) { 
 			if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="" 
 			AND stripos($value["msgid"],$_SESSION['langsearchtext'])===FALSE 
 			AND stripos($value["msgstr"],$_SESSION['langsearchtext'])===FALSE) { continue; }
 			if($count < $_SESSION['present_page']*$_SESSION['maxlines']) { $count++; continue; }
 			$loop_count++; if($loop_count > $_SESSION['maxlines']) break;	
 			
-			$mytext=notes($value["note"]); 
+			if(isset($value["note"])) {$mytext=notes($value["note"]); }
+			else $mytext="";
 			echo '<tr><td style="width:2%"><a onmouseover="popup(\''.popclean($mytext).'\',300);" href="#">';
 			echo '<img style="border:0px;background:none" src="'.CMS_ROOTPATH.'images/reports.gif" alt="references"></a></td>';
 			echo '<td style="padding:2px;width:47%">'.msgid_display($value["msgid"]).'</td>';
