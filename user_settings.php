@@ -2,12 +2,14 @@
 include_once("header.php");
 include_once (CMS_ROOTPATH."menu.php");
 
+/*
 if (!$user["user_name"]){
 	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
 	session_unset();
 	session_destroy();
 	die();
 }
+*/
 
 @$qry = "SELECT * FROM humo_users LEFT JOIN humo_groups
 	ON humo_users.user_group_id=humo_groups.group_id
@@ -17,12 +19,14 @@ if($result->rowCount() > 0) {
 	@$userDb=$result->fetch(PDO::FETCH_OBJ);
 	//echo $userDb->user_name;
 }
+/*
 else{
 	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
 	session_unset();
 	session_destroy();
 	die();
 }
+*/
 
 if (isset($_POST['send_mail'])){
 	$error='';
@@ -87,7 +91,7 @@ if (isset($_POST['send_mail'])){
 		//}
 	}
 }
-else{
+elseif (isset($userDb->user_name)){
 
 	echo '<script type="text/javascript">';
 	echo '
@@ -104,7 +108,7 @@ else{
 
 	print '<br><form id="form_id" method="post" action="'.$_SERVER['PHP_SELF'].'" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
 
-	print '<table align="center" class="humo">';
+	print '<table align="center" class="humo" style="width:500px;">';
 	print '<tr class=table_headline><th class="fonts" colspan="2">'.__('User settings').'</th></tr>';
 
 	$register_name=$userDb->user_name; if (isset($_POST['register_name'])){ $register_name=$_POST['register_name']; }
@@ -128,5 +132,45 @@ else{
 	print '</table>';
 	print '</form>';
 }
+
+
+// *** Theme select ***
+// *** Hide theme select if there is only one theme, AND it is the default theme ***
+$show_theme_select=true;
+if (count($theme_folder)==1){
+	if (isset($humo_option['default_skin']) AND $humo_option['default_skin'].'.css'==$theme_folder[0]) {
+		$show_theme_select=false;
+	}
+}
+
+if ($bot_visit){ $show_theme_select=false; }
+
+if ($show_theme_select==true){
+	print '<br><table align="center" class="humo" style="width:500px;">';
+	print '<tr class=table_headline><th class="fonts">'.__('Select a theme').'</th></tr>';
+		echo '<td align="center">';
+		echo '<form title="'.__('Select a colour theme (a cookie will be used to remember the theme)').'" action="">';
+		echo '<select name="switchcontrol" size="1" onchange="chooseStyle(this.options[this.selectedIndex].value, 365)">';
+
+		if (isset($humo_option['default_skin'])){
+			print '<option value="'.$humo_option['default_skin'].'" selected="selected">'.__('Select a theme').':</option>';
+			echo '<option value="'.$humo_option['default_skin'].'">'.__('Standard-colours').'</option>';
+		}
+		else{
+			print '<option value="none" selected="selected">'.__('Select a theme').':</option>';
+			echo '<option value="none">'.__('Standard-colours').'</option>';
+		}
+
+		sort($theme_folder);
+		for ($i=0; $i<count($theme_folder); $i++){
+			$theme=$theme_folder[$i];
+			$theme=str_replace(".css","", $theme);
+			print '<option value="'.$theme.'">'.$theme.'</option>';
+		}
+		echo '</select></form>';
+		echo '</td>';
+	echo '</table>';
+}
+
 include_once(CMS_ROOTPATH."footer.php");
 ?>

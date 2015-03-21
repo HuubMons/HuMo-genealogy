@@ -307,9 +307,9 @@ echo '<td><select size="1" name="name_order">';
 $selected=''; if ($humo_option["name_order"]== 'western') $selected=' SELECTED';
 echo '<option value="western"'.$selected.'>'.__('Western').'</option>';
 $selected=''; if ($humo_option["name_order"]== 'chinese') $selected=' SELECTED';
-echo '<option value="chinese"'.$selected.'>'.__('Chinese').'</option>';
+echo '<option value="chinese"'.$selected.'>'.__('Chinese')."/ ".__('Hungarian').'</option>';
 echo "</select>";
-echo "&nbsp;".__('Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports and lists: 刘 理想');
+echo "&nbsp;".__('Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports and lists: 刘 理想').". ".__('Hungarian - reports and lists: Smith John');
 echo "</td></tr>";
 
 echo '<tr bgcolor=green><th><font color=white>'.__('Settings Main Menu').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';

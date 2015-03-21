@@ -214,8 +214,7 @@ if (isset($_GET['connect_up'])){
 
 	$event_order=safe_text($_GET['connect_order']);
 	//$sql="UPDATE ".$tree_prefix."connections
-	$sql="UPDATE humo_connections
-		SET connect_order='".$event_order."'
+	$sql="UPDATE humo_connections SET connect_order='".$event_order."'
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_kind='".safe_text($_GET['connect_kind'])."'
 		AND connect_sub_kind='".safe_text($_GET['connect_sub_kind'])."'
@@ -224,8 +223,7 @@ if (isset($_GET['connect_up'])){
 		$result=$dbh->query($sql);
 
 	//$sql="UPDATE ".$tree_prefix."connections
-	$sql="UPDATE humo_connections
-		SET connect_order='".($event_order-1)."'
+	$sql="UPDATE humo_connections SET connect_order='".($event_order-1)."'
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_kind='".safe_text($_GET['connect_kind'])."'
 		AND connect_sub_kind='".safe_text($_GET['connect_sub_kind'])."'
@@ -352,7 +350,8 @@ if ($connect_sub_kind=='address_source'){
 
 // *** Edit source by person event ***
 //if ($connect_sub_kind=='person_event_source' OR ($connect_kind=='person' AND $connect_sub_kind=='event_source')){
-if ($connect_sub_kind=='person_event_source'){
+//if ($connect_sub_kind=='person_event_source'){
+if ($connect_sub_kind=='pers_event_source'){
 	echo '<h2>'.__('source').' - '.__('Event').'</h2>';
 	echo source_edit("person","pers_event_source",$connect_connect_id);
 	echo '<p>';
@@ -369,13 +368,14 @@ if ($connect_sub_kind=='fam_event_source'){
 // *** SOURCE EDIT FUNCTION ***
 function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 	global $dbh, $tree_id, $tree_prefix, $language, $page, $phpself2, $joomlastring, $marriage;
-	global $editor_cls;
+	global $editor_cls, $field_date;
 
 	// *** Explanation of role and page ***
 	$text='<p>'.__('Sourcerole').': '.__('e.g. Writer, Brother, Sister, Father').'<br>';
 	$text.=__('Page').': '.__('page in source');
 
-	$text.= '<table class="humo standard" border="1">';
+	//$text.= '<table class="humo standard" border="1">';
+	$text.= '<table class="humo" border="1">';
 
 	$text.='<form method="POST" action="'.$phpself2.'">';
 	$text.='<input type="hidden" name="page" value="'.$page.'">';
@@ -491,7 +491,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 		$text.=__('source');
 
 		$text.='</td><td style="border-left:0px;" colspan="2">';
-			$field_text='style="height: 60px; width:500px"';
+			$field_text='style="height: 60px; width:600px"';
 			$text.= '<textarea rows="2" name="connect_text['.$connectDb->connect_id.']" '.$field_text.'>'.$editor_cls->text_show($connectDb->connect_text).'</textarea>';
 		$text.='</td></tr>';
 
@@ -500,11 +500,23 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 		$text.= '<tr'.$color.'>';
 		$text.='<td><br></td>';	
 		$text.='<td style="border-right:0px;">';
-			$text.=__('date');
+
+			$text.=ucfirst(__('date'));
+
 		$text.='</td><td style="border-left:0px; border-right:0px;">';
+
+			$field_date=12; // Size of date field.
 			$text.= $editor_cls->date_show($connectDb->connect_date,'connect_date',"[$connectDb->connect_id]");
+
+			$text.=' '.__('place').' <input type="text" name="connect_place['.$connectDb->connect_id.']" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($connectDb->connect_place).'" size="15">';
+
 		$text.='</td><td style="border-left:0px;">';
-			$text.=' '.__('place').' <input type="text" name="connect_place['.$connectDb->connect_id.']" placeholder="'.__('place').'" value="'.htmlspecialchars($connectDb->connect_place).'" size="25">';
+
+			//$text.=__('Sourcerole').' <input type="text" name="connect_role['.$connectDb->connect_id.']" placeholder="'.__('Sourcerole').'" value="'.htmlspecialchars($connectDb->connect_role).'" size="6"> ';
+			$text.=' <input type="text" name="connect_role['.$connectDb->connect_id.']" placeholder="'.__('Sourcerole').'" value="'.htmlspecialchars($connectDb->connect_role).'" size="6"> ';
+			//$text.=__('Page').' <input type="text" name="connect_page['.$connectDb->connect_id.']" placeholder="'.__('Page').'" value="'.$connectDb->connect_page.'" size="6">';
+			$text.=' <input type="text" name="connect_page['.$connectDb->connect_id.']" placeholder="'.__('Page').'" value="'.$connectDb->connect_page.'" size="6">';
+
 		$text.='</td></tr>';
 
 		// *** Extended source, source role and source page ***
@@ -513,12 +525,12 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 		$text.='<td><br></td>';	
 		$text.='<td style="border-right:0px;">';
 			$text.='<br>';
-		$text.='</td><td style="border-left:0px; border-right:0px;">';
+		$text.='</td><td style="border-left:0px; border-right:0px;" colspan="2">';
 			// *** Source: pull-down menu ***
 			//$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix."sources ORDER BY source_title");
 			$source_qry=$dbh->query("SELECT * FROM humo_sources
 				WHERE source_tree_id='".safe_text($tree_id)."' ORDER BY source_title");
-			$text.='<select size="1" name="connect_source_id['.$connectDb->connect_id.']" style="width: 200px">';
+			$text.='<select size="1" name="connect_source_id['.$connectDb->connect_id.']" style="width: 300px">';
 			$text.='<option value="">'.__('Select extended source').':</option>';
 			while ($sourceDb=$source_qry->fetch(PDO::FETCH_OBJ)){
 				$selected='';
@@ -529,16 +541,9 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 					@$sourceDb->source_title.' ['.@$sourceDb->source_gedcomnr.']</option>'."\n";
 			}
 			$text.='</select> ';
-		$text.='</td><td style="border-left:0px;">';
-			$text.=__('Sourcerole').' <input type="text" name="connect_role['.$connectDb->connect_id.']" value="'.htmlspecialchars($connectDb->connect_role).'" size="6"> ';
-			$text.=__('Page').' <input type="text" name="connect_page['.$connectDb->connect_id.']" value="'.$connectDb->connect_page.'" size="6">';
-		$text.='</td></tr>';
 
-		// *** Quality ***
-		//$text.='<tr><td>'.__('Quality of data').'</td>';
-		$text.='<tr'.$color.'><td></td>';
-		$text.='<td style="border-right:0px;"></td>';
-			$text.='<td style="border-left:0px;" colspan="2"><select size="1" name="connect_quality['.$connectDb->connect_id.']" style="width: 500px">';
+			// *** Quality ***
+			$text.=' <select size="1" name="connect_quality['.$connectDb->connect_id.']" style="width: 300px">';
 			$text.='<option value="">'.ucfirst(__('quality: default')).'</option>';
 			$selected=''; if ($connectDb->connect_quality=='0'){ $selected=' SELECTED'; }
 			$text.='<option value="0"'.$selected.'>'.ucfirst(__('quality: unreliable evidence or estimated data')).'</option>';
@@ -548,10 +553,10 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 			$text.='<option value="2"'.$selected.'>'.ucfirst(__('quality: data from secondary evidence')).'</option>';
 			$selected=''; if ($connectDb->connect_quality=='3'){ $selected=' SELECTED'; }
 			$text.='<option value="3"'.$selected.'>'.ucfirst(__('quality: data from direct source')).'</option>';
-			$text.='</select></td>';
-		$text.='</tr>';
+			$text.='</select>';
 
-		//$text.='<tr><td colspan="4"><br></td></tr>';
+		$text.='</td></tr>';
+
 		$text.='<tr class="table_header_large" style="border-top:solid 2px #000000;"><td colspan="4"><br></td></tr>';
  
  		if ($change_bg_colour==true){ $change_bg_colour=false; }

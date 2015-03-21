@@ -104,7 +104,7 @@ else{
 		print '<br><form id="form_id" method="post" action="'.$_SERVER['PHP_SELF'].'" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
 
 		print '<table align="center" class="humo">';
-		print '<tr><th class="fonts" colspan="2">'.__('User registration form').'</th></tr>';
+		echo '<tr class="table_headline"><th class=fonts" colspan="2">'.__('User registration form').'</th></tr>';
 
 		$register_name=''; if (isset($_POST['register_name'])){ $register_name=$_POST['register_name']; }
 		print '<tr><td>'.__('Username').':</td><td><input type="text" class="fonts" name="register_name" size="40" style="background-color:#FFFFFF" value="'.$register_name.'"></td></tr>';

@@ -17,6 +17,10 @@ if (!defined('PDO::ATTR_DRIVER_NAME')) {
 	Possible solutions:<br><br>
 	1) Update PHP to 5.0 or even better: 5.1 (or newer)<br>
 	2) Check if the PDO driver is enabled.<br>
+	3) If the PDO driver is enabled but you receive this message from the Admin screen, try adding these three lines to the admin/php.ini file:<br>
+	extension=pdo.so<br>
+	extension=pdo_sqlite.so<br>
+	extension=pdo_mysql.so<br>
 
 	<p>If it\'s not possible to use PDO, you have to downgrade to HuMo-gen 4.9.4!<br>
 	1) Download HuMo-gen 4.9.4 at: <a href="https://sourceforge.net/projects/humo-gen/files">Sourceforge</a><br>

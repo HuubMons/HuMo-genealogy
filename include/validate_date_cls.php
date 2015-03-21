@@ -186,7 +186,7 @@ function check_year($date) {
 	else {
 		//if (!is_numeric($year) OR $year > date("Y") OR $year<100) { return null; }
 		if (!is_numeric($year) OR $year > date("Y")) { return null; }
-		else { return $year;}
+		else { return (int)$year; }
 	}
 }
 

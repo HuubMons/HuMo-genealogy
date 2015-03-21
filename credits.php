@@ -74,6 +74,7 @@ This credits screen is english only...
 <li>Finnish by: Rauno Salomäki.</li>
 <li>French by: Raymond Larche, Carlos.</li>
 <li>German by: Johannes Prost, Marco Steinhaeuser.</li>
+<li>Hungarian by: Nagy-Vajda Domokos.</li>
 <li>Italian by: Ambrogio Chiotti.</li>
 <li>Persian by: Dr. Maleki</li>
 <li>Portugese: António Duarte</li>

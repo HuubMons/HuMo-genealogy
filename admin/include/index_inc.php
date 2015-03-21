@@ -103,6 +103,10 @@ echo '<div style="height:450px; width:750px; overflow-y: auto; margin-left:auto;
 echo '<table class="humo">';
 	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
 
+	// *** HuMo-gen version ***
+	if (isset($humo_option["version"]))
+		echo '<tr><td>'.__('HuMo-gen Version').'</td><td style="background-color:#00FF00">'.__('HuMo-gen Version').': '.$humo_option["version"].'</td></tr>';
+
 	// *** PHP Version ***
 	$version = explode('.', phpversion() );
 	if ($version[0] > 4){
