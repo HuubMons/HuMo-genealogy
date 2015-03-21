@@ -47,6 +47,7 @@ if (isset($_POST['save_option'])){
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["watermark_color_r"])."' WHERE setting_variable='watermark_color_r'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["watermark_color_g"])."' WHERE setting_variable='watermark_color_g'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["watermark_color_b"])."' WHERE setting_variable='watermark_color_b'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["min_search_chars"])."' WHERE setting_variable='min_search_chars'");
 }
 
 // *** Re-read variables after changing them ***
@@ -277,6 +278,10 @@ echo '<option value="Pacific/Tongatapu"'.$selected.'>13:00 (Pacific/Tongatapu)</
 
 echo '</select>';
 echo '</td></tr>';
+
+echo '<tr><td style="white-space:nowrap;">'.__('Minimum characters in search box').'</td>';
+echo '<td><input type="text" name="min_search_chars" value="'.$humo_option["min_search_chars"].'" size="4"> '.__('Minimum characters in search boxes (standard value=3. For Chinese set to 1).').'</td>';
+echo "</tr>";
 
 echo '<tr bgcolor=green><th><font color=white>'.__('Settings Main Menu').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 

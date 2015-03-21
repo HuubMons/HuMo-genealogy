@@ -1435,8 +1435,8 @@ function unset_vars() {
 
 
 function display () {
-	global $db_functions, $foundX_match, $reltext, $bloodreltext, $name1, $name2, $spouse, $rel_arrayspouseX;
-	global $special_spouseY, $special_spouseX, $spousenameX, $spousenameY, $table, $doublespouse, $dbh;
+	global $dbh, $db_functions, $foundX_match, $reltext, $bloodreltext, $name1, $name2, $spouse, $rel_arrayspouseX;
+	global $special_spouseY, $special_spouseX, $spousenameX, $spousenameY, $table, $doublespouse;
 	global $rel_arrayX, $rel_arrayY, $famX, $famY, $language, $dutchtext, $searchDb, $searchDb2;
 	global $sexe, $selected_language, $dirmark1,  $famspouseX, $famspouseY, $reltext_nor, $reltext_nor2;
 	global $fampath;  // path to family.php for Joomla and regular. Defined above all functions
@@ -2067,10 +2067,9 @@ function map_tree($pers_array, $pers_array2) {
 	// the algorithm starts simultaneously from person A and person B in expanding circles until a common person is found (= connection found)
 	// or until either person A or B runs out of persons (= no connection exists)
 
-	global $dbh, $db_functions, $person, $person2, $globaltrack, $globaltrack2, $persqry, $persvar, $famqry, $famvar;
-	global $count; $count++; if($count>400000) { echo "Database too large!!!!"; exit; }	
-	global $countfunc;
-	global $global_array;
+	global $dbh, $db_functions, $person, $person2, $globaltrack, $globaltrack2, $count;
+	global $countfunc, $global_array;
+	$count++; if($count>400000) { echo "Database too large!!!!"; exit; }
 	$countfunc++;
 	$tree=safe_text($_SESSION['tree_prefix']);
 
@@ -2090,54 +2089,42 @@ function map_tree($pers_array, $pers_array2) {
 		}
 		else { $callarray[0] = $callged; }
 
-		$persvar = $persged;
- 		try{  $persqry->execute(); }
-		catch(PDOException $e) { echo "PDO Error: ".$e->getMessage(); }
-		if($persqry->rowCount()==0) { 
-			echo "NO SUCH PERSON:"."ref=".$refer."persged=".$persged."callged=".$callged."$$"; return(false); 
-		}  
-		$persDb = $persqry->fetch();
+		$persDb=$db_functions->get_person($persged);
+		if ($persDb==false){ echo "NO SUCH PERSON:"."ref=".$refer."persged=".$persged."callged=".$callged."$$"; return(false); }
 
-		if($refer=="fst") { $globaltrack .= $persDb['pers_gedcomnumber']."@"; }
+		if($refer=="fst") { $globaltrack .= $persDb->pers_gedcomnumber."@"; }
 
-		if(isset($persDb['pers_famc']) AND $persDb['pers_famc']!="" AND $refer!="par") {  
-			$famvar = $persDb['pers_famc'];
-			try{ $famqry->execute(); }
-			catch(PDOException $e) { echo "PDO Error: ".$e->getMessage(); }
-			if($famqry->rowCount()==0) { 
-				echo "NO SUCH FAMILY"; return; 
-			}
-			$famcDb = $famqry->fetch();
-			if(isset($famcDb['fam_man']) AND $famcDb['fam_man']!="" AND $famcDb['fam_man']!="0" AND strpos($globaltrack,$famcDb['fam_man']."@")===false) { 
-					if(strpos($_SESSION['next_path'],$famcDb['fam_man']."@")===false) {
-						$work_array[] = $famcDb['fam_man']."@chd@".$persged.";".$persDb['pers_famc']."@".$pathway.";"."chd".$famcDb['fam_man']; 
-						$global_array[] = $famcDb['fam_man']."@chd@".$persged.";".$persDb['pers_famc']."@".$pathway.";"."chd".$famcDb['fam_man'];
+		if(isset($persDb->pers_famc) AND $persDb->pers_famc!="" AND $refer!="par") {  
+			$famcDb=$db_functions->get_family($persDb->pers_famc);
+			if ($famcDb==false){ echo "NO SUCH FAMILY"; return; }
+
+			if(isset($famcDb->fam_man) AND $famcDb->fam_man!="" AND $famcDb->fam_man!="0" AND strpos($globaltrack,$famcDb->fam_man."@")===false) { 
+					if(strpos($_SESSION['next_path'],$famcDb->fam_man."@")===false) {
+						$work_array[] = $famcDb->fam_man."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_man; 
+						$global_array[] = $famcDb->fam_man."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_man;
 					}
 					$count++;
-					$globaltrack .= $famcDb['fam_man']."@";  
-			}	
-			if(isset($famcDb['fam_woman']) AND $famcDb['fam_woman']!="" AND $famcDb['fam_woman']!="0" AND strpos($globaltrack,$famcDb['fam_woman']."@")===false) {  
-				if(strpos($_SESSION['next_path'],$famcDb['fam_woman']."@")===false) { 
-					$work_array[] = $famcDb['fam_woman']."@chd@".$persged.";".$persDb['pers_famc']."@".$pathway.";"."chd".$famcDb['fam_woman'];
-					$global_array[] = $famcDb['fam_woman']."@chd@".$persged.";".$persDb['pers_famc']."@".$pathway.";"."chd".$famcDb['fam_woman'];
+					$globaltrack .= $famcDb->fam_man."@";  
+			}
+			if(isset($famcDb->fam_woman) AND $famcDb->fam_woman!="" AND $famcDb->fam_woman!="0" AND strpos($globaltrack,$famcDb->fam_woman."@")===false) {  
+				if(strpos($_SESSION['next_path'],$famcDb->fam_woman."@")===false) { 
+					$work_array[] = $famcDb->fam_woman."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_woman;
+					$global_array[] = $famcDb->fam_woman."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_woman;
 				}
 				$count++;
-				$globaltrack .= $famcDb['fam_woman']."@";
+				$globaltrack .= $famcDb->fam_woman."@";
 			}
 		}
 
-		if(isset($persDb['pers_fams']) AND $persDb['pers_fams']!="") {  
-			$famsarray = explode(";",$persDb['pers_fams']); 
+		if(isset($persDb->pers_fams) AND $persDb->pers_fams!="") {  
+			$famsarray = explode(";",$persDb->pers_fams); 
 			foreach($famsarray as $value) {   
 				if($refer=="spo" AND $value == $callged) continue;
 				if($refer=="fst" AND $_SESSION['couple']==$value) continue;
-			
-				$famvar = $value;
-				$famqry->execute();
-				$famsDb = $famqry->fetch();
-				if($refer=="chd" AND $famsDb['fam_woman']==$persDb['pers_gedcomnumber'] AND isset($famsDb['fam_man']) AND $famsDb['fam_man']!="" AND $famsDb['fam_gedcomnumber']==$callarray[1]) { continue; }
-	 			if(isset($famsDb['fam_children']) AND $famsDb['fam_children']!="")	{
-	 				$childarray = explode(";",$famsDb['fam_children']);	
+				$famsDb = $db_functions->get_family($value);
+				if($refer=="chd" AND $famsDb->fam_woman==$persDb->pers_gedcomnumber AND isset($famsDb->fam_man) AND $famsDb->fam_man!="" AND $famsDb->fam_gedcomnumber==$callarray[1]) { continue; }
+	 			if(isset($famsDb->fam_children) AND $famsDb->fam_children!="") {
+	 				$childarray = explode(";",$famsDb->fam_children);
 					foreach($childarray as $value) {
 						if($refer=="chd" AND $callarray[0] == $value) continue;  
 						if(strpos($globaltrack,$value."@")===false) {  
@@ -2155,28 +2142,25 @@ function map_tree($pers_array, $pers_array2) {
 				if($refer=="chd" AND $value == $callarray[1]) continue;
 				if($refer=="spo" AND $value == $callged) continue;
 				if($refer=="fst" AND $_SESSION['couple']==$value) continue;
-			
-				$famvar = $value;
-				$famqry->execute();	
-				$famsDb = $famqry->fetch();
-	 			if($famsDb['fam_man'] == $persDb['pers_gedcomnumber']) { 
-					if(isset($famsDb['fam_woman']) AND $famsDb['fam_woman']!="" AND $famsDb['fam_woman']!="0" AND strpos($globaltrack,$famsDb['fam_woman']."@")===false) { 
-							if(strpos($_SESSION['next_path'],$famsDb['fam_woman']."@")===false) {
-								$work_array[] = $famsDb['fam_woman']."@spo@".$value."@".$pathway.";"."spo".$famsDb['fam_woman'];
-								$global_array[] = $famsDb['fam_woman']."@spo@".$value."@".$pathway.";"."spo".$famsDb['fam_woman'];
+				$famsDb = $db_functions->get_family($value);
+	 			if($famsDb->fam_man == $persDb->pers_gedcomnumber) { 
+					if(isset($famsDb->fam_woman) AND $famsDb->fam_woman!="" AND $famsDb->fam_woman!="0" AND strpos($globaltrack,$famsDb->fam_woman."@")===false) { 
+							if(strpos($_SESSION['next_path'],$famsDb->fam_woman."@")===false) {
+								$work_array[] = $famsDb->fam_woman."@spo@".$value."@".$pathway.";"."spo".$famsDb->fam_woman;
+								$global_array[] = $famsDb->fam_woman."@spo@".$value."@".$pathway.";"."spo".$famsDb->fam_woman;
 							}
 							$count++;
-							$globaltrack .= $famsDb['fam_woman']."@";
+							$globaltrack .= $famsDb->fam_woman."@";
 					}
 				}
 				else { 
-					if(isset($famsDb['fam_man']) AND $famsDb['fam_man']!="" AND $famsDb['fam_man']!="0" AND strpos($globaltrack,$famsDb['fam_man']."@")===false) { 
-							if(strpos($_SESSION['next_path'],$famsDb['fam_man']."@")===false) { 
-								$work_array[] = $famsDb['fam_man']."@spo@".$value."@".$pathway.";"."spo".$famsDb['fam_man'];
-								$global_array[] = $famsDb['fam_man']."@spo@".$value."@".$pathway.";"."spo".$famsDb['fam_man'];
+					if(isset($famsDb->fam_man) AND $famsDb->fam_man!="" AND $famsDb->fam_man!="0" AND strpos($globaltrack,$famsDb->fam_man."@")===false) { 
+							if(strpos($_SESSION['next_path'],$famsDb->fam_man."@")===false) { 
+								$work_array[] = $famsDb->fam_man."@spo@".$value."@".$pathway.";"."spo".$famsDb->fam_man;
+								$global_array[] = $famsDb->fam_man."@spo@".$value."@".$pathway.";"."spo".$famsDb->fam_man;
 							}
 							$count++;
-							$globaltrack .= $famsDb['fam_man']."@";
+							$globaltrack .= $famsDb->fam_man."@";
 					}
 				}
 			}
@@ -2195,70 +2179,59 @@ function map_tree($pers_array, $pers_array2) {
 		}
 		else { $callarray[0] = $callged; }
 
-		$persvar = $persged; 
- 		try{  $persqry->execute(); }
-		catch(PDOException $e) { echo "PDO Error: ".$e->getMessage(); }
-		if($persqry->rowCount()==0) { 
-			echo "NO SUCH PERSON:"."ref=".$refer."persged=".$persged."callged=".$callged."$$"; return(false); 
-		}  
-		$persDb = $persqry->fetch();
+		$persDb = $db_functions->get_person($persged);
+		if($persDb == false){
+			echo "NO SUCH PERSON:"."ref=".$refer."persged=".$persged."callged=".$callged."$$"; return(false);
+		}
 
-		if($refer=="fst") { $globaltrack2 .= $persDb['pers_gedcomnumber']."@"; }
+		if($refer=="fst") { $globaltrack2 .= $persDb->pers_gedcomnumber."@"; }
 
-		if(isset($persDb['pers_famc']) AND $persDb['pers_famc']!="" AND $refer!="par") {  
-			$famvar = $persDb['pers_famc'];
-			try{ $famqry->execute(); }
-			catch(PDOException $e) { echo "PDO Error: ".$e->getMessage(); }
-			if($famqry->rowCount()==0) { 
-				echo "NO SUCH FAMILY"; return; 
-			}
-			$famcDb = $famqry->fetch();
-			if(isset($famcDb['fam_man']) AND $famcDb['fam_man']!="" AND $famcDb['fam_man']!="0") { 
-				$var1=strpos($_SESSION['next_path'],$famcDb['fam_man']."@");
-				if(strpos($globaltrack,$famcDb['fam_man']."@")!== false  AND $var1===false) {  
-					$totalpath=join_path($global_array,$pathway,$famcDb['fam_man'],"chd"); 
-					$_SESSION['next_path'] .= $famcDb['fam_man']."@"; 
+		if(isset($persDb->pers_famc) AND $persDb->pers_famc!="" AND $refer!="par") {  
+			$famcDb = $db_functions->get_family($persDb->pers_famc);
+			if ($famcDb==false){ echo "NO SUCH FAMILY"; return; }
+			if(isset($famcDb->fam_man) AND $famcDb->fam_man!="" AND $famcDb->fam_man!="0") { 
+				$var1=strpos($_SESSION['next_path'],$famcDb->fam_man."@");
+				if(strpos($globaltrack,$famcDb->fam_man."@")!== false  AND $var1===false) {  
+					$totalpath=join_path($global_array,$pathway,$famcDb->fam_man,"chd"); 
+					$_SESSION['next_path'] .= $famcDb->fam_man."@"; 
 					display_result($totalpath);
-					return($famcDb['fam_man']);  
+					return($famcDb->fam_man);  
 				}
-				if(strpos($globaltrack2,$famcDb['fam_man']."@")===false) { 
+				if(strpos($globaltrack2,$famcDb->fam_man."@")===false) { 
 					if($var1===false) {
-						$work_array2[] = $famcDb['fam_man']."@chd@".$persged.";".$persDb['pers_famc']."@".$pathway.";"."chd".$famcDb['fam_man']; 
+						$work_array2[] = $famcDb->fam_man."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_man; 
 					}
 					$count++;
-					$globaltrack2 .= $famcDb['fam_man']."@"; 
+					$globaltrack2 .= $famcDb->fam_man."@"; 
 				}
 			}
-			if(isset($famcDb['fam_woman']) AND $famcDb['fam_woman']!="" AND $famcDb['fam_woman']!="0") {  
-				$var2 = strpos($_SESSION['next_path'],$famcDb['fam_woman']."@");
-				if(strpos($globaltrack,$famcDb['fam_woman']."@")!== false AND $var2===false) {  
-					$totalpath=join_path($global_array,$pathway,$famcDb['fam_woman'],"chd"); 
-					$_SESSION['next_path'] .= $famcDb['fam_woman']."@";  
+			if(isset($famcDb->fam_woman) AND $famcDb->fam_woman!="" AND $famcDb->fam_woman!="0") {  
+				$var2 = strpos($_SESSION['next_path'],$famcDb->fam_woman."@");
+				if(strpos($globaltrack,$famcDb->fam_woman."@")!== false AND $var2===false) {  
+					$totalpath=join_path($global_array,$pathway,$famcDb->fam_woman,"chd"); 
+					$_SESSION['next_path'] .= $famcDb->fam_woman."@";  
 					display_result($totalpath);
-					return($famcDb['fam_woman']);  
+					return($famcDb->fam_woman);  
 				}
-				if(strpos($globaltrack2,$famcDb['fam_woman']."@")===false) {  
+				if(strpos($globaltrack2,$famcDb->fam_woman."@")===false) {  
 					if($var2===false) {
-						$work_array2[] = $famcDb['fam_woman']."@chd@".$persged.";".$persDb['pers_famc']."@".$pathway.";"."chd".$famcDb['fam_woman']; 	
+						$work_array2[] = $famcDb->fam_woman."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_woman; 	
 					}
 					$count++;
-					$globaltrack2 .= $famcDb['fam_woman']."@";
+					$globaltrack2 .= $famcDb->fam_woman."@";
 				}
 			}
 		}
 
-		if(isset($persDb['pers_fams']) AND $persDb['pers_fams']!="") {  
-			$famsarray = explode(";",$persDb['pers_fams']); 
+		if(isset($persDb->pers_fams) AND $persDb->pers_fams!="") {  
+			$famsarray = explode(";",$persDb->pers_fams); 
 			foreach($famsarray as $value) {   
 				if($refer=="spo" AND $value == $callged) continue;
 				if($refer=="fst" AND $_SESSION['couple']==$value) continue;
-				
-				$famvar = $value;
-				$famqry->execute();
-				$famsDb = $famqry->fetch();
-				if($refer=="chd" AND $famsDb['fam_woman']==$persDb['pers_gedcomnumber'] AND isset($famsDb['fam_man']) AND $famsDb['fam_man']!="" AND $famsDb['fam_gedcomnumber']==$callarray[1]) { continue; }
-	 			if(isset($famsDb['fam_children']) AND $famsDb['fam_children']!="")	{
-	 				$childarray = explode(";",$famsDb['fam_children']);	
+				$famsDb = $db_functions->get_family($value);
+				if($refer=="chd" AND $famsDb->fam_woman==$persDb->pers_gedcomnumber AND isset($famsDb->fam_man) AND $famsDb->fam_man!="" AND $famsDb->fam_gedcomnumber==$callarray[1]) { continue; }
+	 			if(isset($famsDb->fam_children) AND $famsDb->fam_children!="")	{
+	 				$childarray = explode(";",$famsDb->fam_children);	
 					foreach($childarray as $value) {
 						if($refer=="chd" AND $callarray[0] == $value) continue;  
 						$var3 = strpos($_SESSION['next_path'],$value."@");
@@ -2282,43 +2255,40 @@ function map_tree($pers_array, $pers_array2) {
 				if($refer=="chd" AND $value == $callarray[1]) continue;
 				if($refer=="spo" AND $value == $callged) continue;
 				if($refer=="fst" AND $_SESSION['couple']==$value) { continue; }
-	
-				$famvar = $value;
-				$famqry->execute();	
-				$famsDb = $famqry->fetch();
-	 			if($famsDb['fam_man'] == $persDb['pers_gedcomnumber']) { 
-					if(isset($famsDb['fam_woman']) AND $famsDb['fam_woman']!="" AND $famsDb['fam_woman']!="0") { 
-						$var4 = strpos($_SESSION['next_path'],$famsDb['fam_woman']."@");
-						if(strpos($globaltrack,$famsDb['fam_woman']."@")!== false AND $var4===false) {   
-							$totalpath=join_path($global_array,$pathway,$famsDb['fam_woman'],"spo");
-							$_SESSION['next_path'] .= $famsDb['fam_woman']."@"; 
+				$famsDb = $db_functions->get_family($value);
+	 			if($famsDb->fam_man == $persDb->pers_gedcomnumber) { 
+					if(isset($famsDb->fam_woman) AND $famsDb->fam_woman!="" AND $famsDb->fam_woman!="0") { 
+						$var4 = strpos($_SESSION['next_path'],$famsDb->fam_woman."@");
+						if(strpos($globaltrack,$famsDb->fam_woman."@")!== false AND $var4===false) {   
+							$totalpath=join_path($global_array,$pathway,$famsDb->fam_woman,"spo");
+							$_SESSION['next_path'] .= $famsDb->fam_woman."@"; 
 							display_result($totalpath);
-							return($famsDb['fam_woman']);
+							return($famsDb->fam_woman);
 						}
-						if(strpos($globaltrack2,$famsDb['fam_woman']."@")===false){ 
+						if(strpos($globaltrack2,$famsDb->fam_woman."@")===false){ 
 							if($var4===false) {
-								$work_array2[] = $famsDb['fam_woman']."@spo@".$value."@".$pathway.";"."spo".$famsDb['fam_woman'];
+								$work_array2[] = $famsDb->fam_woman."@spo@".$value."@".$pathway.";"."spo".$famsDb->fam_woman;
 							}
 							$count++;
-							$globaltrack2 .= $famsDb['fam_woman']."@";
+							$globaltrack2 .= $famsDb->fam_woman."@";
 						}
 					}
 				}
-				elseif($famsDb['fam_woman'] == $persDb['pers_gedcomnumber']) { 
-					if(isset($famsDb['fam_man']) AND $famsDb['fam_man']!="" AND $famsDb['fam_man']!="0") { 
-						$var5 = strpos($_SESSION['next_path'],$famsDb['fam_man']."@");
-						if(strpos($globaltrack,$famsDb['fam_man']."@")!== false AND $var5===false) {  
-							$totalpath=join_path($global_array,$pathway,$famsDb['fam_man'],"spo");
-							$_SESSION['next_path'] .= $famsDb['fam_man']."@"; 
+				elseif($famsDb->fam_woman == $persDb->pers_gedcomnumber) { 
+					if(isset($famsDb->fam_man) AND $famsDb->fam_man!="" AND $famsDb->fam_man!="0") { 
+						$var5 = strpos($_SESSION['next_path'],$famsDb->fam_man."@");
+						if(strpos($globaltrack,$famsDb->fam_man."@")!== false AND $var5===false) {  
+							$totalpath=join_path($global_array,$pathway,$famsDb->fam_man,"spo");
+							$_SESSION['next_path'] .= $famsDb->fam_man."@"; 
 							display_result($totalpath);
-							return($famsDb['fam_man']);  
+							return($famsDb->fam_man);  
 						}
-						if(strpos($globaltrack2,$famsDb['fam_man']."@")===false) { 
+						if(strpos($globaltrack2,$famsDb->fam_man."@")===false) { 
 							if($var5===false) {
-								$work_array2[] = $famsDb['fam_man']."@spo@".$value."@".$pathway.";"."spo".$famsDb['fam_man'];;
+								$work_array2[] = $famsDb->fam_man."@spo@".$value."@".$pathway.";"."spo".$famsDb->fam_man;;
 							}
 							$count++;
-							$globaltrack2 .= $famsDb['fam_man']."@";
+							$globaltrack2 .= $famsDb->fam_man."@";
 						}
 					}
 				}  
@@ -2390,7 +2360,7 @@ function display_result($result) {
 	// example: parI232;parI65;chdI2304;spoI212;parI304
 	// the par-chd-spo prefixes indicate if the person was called up by his parent, child or spouse so we can later create the graphical display
 
-	global $persqry, $persvar, $person, $person2;
+	global $person, $person2, $db_functions;
 
 	echo '<div style="padding:3px;width:auto;background-color:#eeeeee"><input type="submit" name="next_path" value="'.__('Try to find another path').'" style="font-size:115%;">';
 	echo '&nbsp;&nbsp;'.__('(With each consecutive search the path may get longer and computing time may increase!)').'</div>';
@@ -2451,8 +2421,8 @@ function display_result($result) {
 		}
 	}
 	// the following code displays the graphical view of the found trail
-	echo '<br><table style="border:0px;border-collapse:separate;border-spacing:30px 1px;">'; 
-	for($a=1;$a<=$maxy;$a++) { 
+	echo '<br><table style="border:0px;border-collapse:separate;border-spacing:30px 1px;">';
+	for($a=1;$a<=$maxy;$a++) {
 		echo "<tr>";
 		$nextline="";
 		for($b=1;$b<=$xval;$b++) {
@@ -2461,22 +2431,20 @@ function display_result($result) {
 				if($map[$x][0]==$b AND $map[$x][1]==$a) {
 					$color = "#8ceffd"; $border="border:1px solid #777777;";
 					
-					$persvar = $map[$x][4];
-					$persqry->execute();
-					$ancDb = $persqry->fetch(PDO::FETCH_OBJ);
+					$ancDb = $db_functions->get_person($map[$x][4]);
 					if($ancDb->pers_sexe == "M") $ext_cls = "extended_man ";
 					else $ext_cls = "extended_woman ";
 					
 					if($map[$x][4]==$person OR $map[$x][4]==$person2) {  // person A and B (first and last) get thicker border
 						$color="#72fe95";
-						$border = "border:2px solid #666666;"; 
+						$border = "border:2px solid #666666;";
 					}
 					if($map[$x][2]==2) {
 						$b++;
 						echo '<td class="'.$ext_cls.'" colspan=2 style="width:200px;text-align:center;'.$border.'padding:2px">';
 						$nextline .= "&#8593;@&#8595;@";   // up and down arrows under two column parent
 					}
-					elseif(isset($map[$x+1][3]) AND $map[$x+1][3]=="par") { 
+					elseif(isset($map[$x+1][3]) AND $map[$x+1][3]=="par") {
 						$nextline .="&#8595;@";  // down arrow
 						echo '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px">';
 					}
@@ -2775,27 +2743,16 @@ if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
 
 	$total_arr = array();
 
-	$persqry = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber = ?"); 
-	$persqry->bindParam(1,$persvar);
-	$famqry = $dbh->prepare("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."family WHERE fam_gedcomnumber = ?");
-	$famqry->bindParam(1,$famvar);
-
 	if(isset($_POST["extended"]) AND !isset($_POST["next_path"])) {  
 		$_SESSION["couple"]="";  
 		// session[couple] flags that persons A & B are a couple. consequences: 
 		// 1. don't display that (has already been done in regular calculator)
 		// 2. in the map_tree function don't search thru the fam of the couple, since this gives errors.
-		$persvar = $person; 
-		$persqry->execute();
-		$persDb = $persqry->fetch();
-
-		$persvar = $person2; 
-		$persqry->execute(); 
-		$pers2Db = $persqry->fetch();
-
-		if(isset($persDb['pers_fams']) AND isset($pers2Db['pers_fams'])) {
-			$fam1=explode(";",$persDb['pers_fams']);
-			$fam2=explode(";",$pers2Db['pers_fams']);
+		$persDb = $db_functions->get_person($person);
+		$pers2Db = $db_functions->get_person($person2);
+		if(isset($persDb->pers_fams) AND isset($pers2Db->pers_fams)) {
+			$fam1=explode(";",$persDb->pers_fams);
+			$fam2=explode(";",$pers2Db->pers_fams);
 			foreach($fam1 as $value1) {
 				foreach($fam2 as $value2) {
 					if($value1==$value2) {
@@ -2805,12 +2762,12 @@ if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
 			}
 		}
 	}
-	
+
 	echo '<br><table class="ext"><tr><td>'; 
-	
+
 	$global_array = array();
 	$global_array2 = array(); 
-	
+
 	map_tree($firstcall,$firstcall2);
 	echo '</td></tr></table>';
 	ob_end_flush();
@@ -2835,6 +2792,7 @@ if(isset($_POST["calculator"]) OR isset($_POST["switch"])) { // calculate or swi
 		else {
 			$famX=$searchDb->pers_famc;
 		}
+
 		if (isset($searchDb2)){
 			$gednr2=$searchDb2->pers_gedcomnumber;
 			$name=$pers_cls->person_name($searchDb2);

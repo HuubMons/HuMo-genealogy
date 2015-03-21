@@ -633,7 +633,7 @@ if (isset($pers_gedcomnumber)){
 		<script type="text/javascript">
 		function hideShow(el_id){
 			// *** Hide or show item ***
-			var arr = document.getElementsByName(\'row\'+el_id);
+			var arr = document.getElementsByClassName(\'row\'+el_id);
 			for (i=0; i<arr.length; i++){
 				if(arr[i].style.display!="none"){
 					arr[i].style.display="none";
@@ -658,7 +658,7 @@ if (isset($pers_gedcomnumber)){
 
 			for (j=1; j<12; j++){
 				// *** Hide or show item ***
-				var arr = document.getElementsByName(\'row\'+j);
+				var arr = document.getElementsByClassName(\'row\'+j);
 				for (i=0; i<arr.length; i++){
 					if(arr[i].style.display!="none"){
 						arr[i].style.display="none";
@@ -690,7 +690,7 @@ if (isset($pers_gedcomnumber)){
 
 			for (j=6; j<12; j++){
 				// *** Hide or show item ***
-				var arr = document.getElementsByName(\'row\'+j);
+				var arr = document.getElementsByClassName(\'row\'+j);
 				for (i=0; i<arr.length; i++){
 					if(arr[i].style.display!="none"){
 						arr[i].style.display="none";
@@ -771,11 +771,10 @@ if (isset($pers_gedcomnumber)){
 
 		// *** Start of editor table ***
 		//echo '<br><table class="humo standard" border="1">';
-		echo '<table class="humo" border="1">';
 		//echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data">';
 		echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">';
 		echo '<input type="hidden" name="page" value="'.$page.'">';
-
+		echo '<table class="humo" border="1">';
 		// *** Add child to family, 2nd option: add a new child ***
 		if (isset($_GET['child_connect'])){
 			echo '<input type="hidden" name="child_connect" value="'.$_GET['child_connect'].'">';
@@ -958,7 +957,7 @@ if (isset($pers_gedcomnumber)){
 		echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="30"></td></tr>';
 
 		// *** Person text by name ***
-		echo '<tr style="display:none;" id="row1" name="row1">';
+		echo '<tr style="display:none;" class="row1" name="row1">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="pers_name_text" '.$field_text.'>'.$editor_cls->text_show($pers_name_text).'</textarea></td>';
 		echo '<td></td></tr>';
@@ -1045,7 +1044,7 @@ if (isset($pers_gedcomnumber)){
 
 		echo '</td></tr>';
 
-		echo '<tr class="humo_color" style="display:none;" id="row2" name="row2">';
+		echo '<tr class="humo_color row2" style="display:none;" name="row2">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('birth time').'</td><td style="border-left:0px;"><input type="text" name="pers_birth_time" value="'.$pers_birth_time.'" size="'.$field_date.'">';
 			// *** Stillborn child ***
@@ -1054,7 +1053,7 @@ if (isset($pers_gedcomnumber)){
 		echo '</td><td>';
 		echo '</td></tr>';
 
-		echo '<tr class="humo_color" style="display:none;" id="row2" name="row2">';
+		echo '<tr class="humo_color row2" style="display:none;" name="row2">';
 		echo '</td><td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_birth_text" '.$field_text.'>'.
@@ -1086,14 +1085,14 @@ if (isset($pers_gedcomnumber)){
 		}
 		echo '</td></tr>';
 
-		echo '<tr style="display:none;" id="row3" name="row3">';
+		echo '<tr style="display:none;" class="row3" name="row3">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('religion').'</td><td style="border-left:0px;"><input type="text" 
 		name="pers_religion" value="'.htmlspecialchars($pers_religion).'" size="20"></td>';
 		echo '<td></td>';
 		echo '</tr>';
 
-		echo '<tr style="display:none;" id="row3" name="row3">';
+		echo '<tr style="display:none;" class="row3" name="row3">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_bapt_text" '.$field_text.'>'.
@@ -1125,7 +1124,7 @@ if (isset($pers_gedcomnumber)){
 		}
 		echo '</td></tr>';
 
-		echo '<tr class="humo_color" style="display:none;" id="row4" name="row4">';
+		echo '<tr class="humo_color row4" style="display:none;" name="row4">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('death time').'</td><td style="border-left:0px;"><input type="text" name="pers_death_time" value="'.$pers_death_time.'" size="'.$field_date.'"> ';
 
@@ -1176,7 +1175,7 @@ if (isset($pers_gedcomnumber)){
 		echo '</td><td></td>';
 		echo '</tr>';
 
-		echo '<tr class="humo_color" style="display:none;" id="row4" name="row4">';
+		echo '<tr class="humo_color row4" style="display:none;" name="row4">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="pers_death_text" '.$field_text.'>'.$editor_cls->text_show($pers_death_text).'</textarea></td>';
 		echo '<td></td>';
@@ -1206,7 +1205,7 @@ if (isset($pers_gedcomnumber)){
 		}
 		echo '</td></tr>';
 
-		echo '<tr style="display:none;" id="row5" name="row5">';
+		echo '<tr style="display:none;" class="row5" name="row5">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('buried').'/ '.__('cremation').'</td><td style="border-left:0px;">';
 			$selected=''; if ($pers_cremation==''){ $selected=' CHECKED'; }
@@ -1216,7 +1215,7 @@ if (isset($pers_gedcomnumber)){
 		echo '<td></td>';
 		echo '</td></tr>';
 
-		echo '<tr style="display:none;" id="row5" name="row5">';
+		echo '<tr style="display:none;" class="row5" name="row5">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_buried_text" '.$field_text.'>'.
@@ -1271,7 +1270,7 @@ if (isset($pers_gedcomnumber)){
 				$address_nr++;
 				echo '<input type="hidden" name="person_address_id['.$addressDb->address_id.']" value="'.$addressDb->address_id.'">';
 
-				echo '<tr class="humo_color" style="display:none;" id="row54" name="row54">';
+				echo '<tr class="humo_color row54" style="display:none;" name="row54">';
 				echo '<td style="border-right:0px;">&nbsp;&nbsp;&nbsp;';
 				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;pers_place=1&amp;living_place_drop='.
 					$addressDb->address_order.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" border="0"></a>';
@@ -1357,7 +1356,7 @@ if (isset($pers_gedcomnumber)){
 				echo '<input type="hidden" name="connect_page['.$key.']" value="">';
 				echo '<input type="hidden" name="connect_place['.$key.']" value="">';
 
-				echo '<tr style="display:none;" id="row55" name="row55">';
+				echo '<tr style="display:none;" class="row55" name="row55">';
 				echo '<td style="border-right:0px;">&nbsp;&nbsp;&nbsp;';
 
 					$text.=' <a href="index.php?'.$joomlastring.'page='.$page.
@@ -1421,7 +1420,7 @@ if (isset($pers_gedcomnumber)){
 				echo '<td></td>';
 				echo '</tr>';
 
-				echo '<tr style="display:none;" id="row55" name="row55">';
+				echo '<tr style="display:none;" class="row55" name="row55">';
 				echo '<td></td>';
 				echo '<td style="border-right:0px;">'.__('Addressrole').'</td>';
 				echo '<td style="border-left:0px;">';
@@ -1441,7 +1440,7 @@ if (isset($pers_gedcomnumber)){
 				<script type="text/javascript">
 				function Show(el_id){
 					// *** Hide or show item ***
-					var arr = document.getElementsByName(\'row\'+el_id);
+					var arr = document.getElementsByClassName(\'row\'+el_id);
 					for (i=0; i<arr.length; i++){
 						arr[i].style.display="";
 					}
@@ -1480,6 +1479,7 @@ if (isset($pers_gedcomnumber)){
 
 			// *** Person sources in new person editor screen ***
 			echo '<tr><td>'.__('General source for person').'</td><td colspan="2">';
+
 			echo '</td><td>';
 				// *** Calculate and show nr. of sources ***
 				$connect_qry="SELECT *
@@ -1537,7 +1537,7 @@ if (isset($pers_gedcomnumber)){
 					printf(__('There are %d unprocessed gedcom tags.'), 0);
 				}
 				echo '</td><td></td></tr>';
-				echo '<tr style="display:none;" id="row61" name="row61"><td></td>';
+				echo '<tr style="display:none;" class="row61" name="row61"><td></td>';
 					echo '<td colspan="2">'.$person->pers_unprocessed_tags.'</td>';
 				echo '<td></td></tr>';
 			}
@@ -1566,7 +1566,7 @@ if (isset($pers_gedcomnumber)){
 				$user_result = $dbh->query($user_qry);
 				$userDb=$user_result->fetch(PDO::FETCH_OBJ);
 
-				echo '<tr class="humo_color" style="display:none;" id="row62" name="row62"><td></td>';
+				echo '<tr class="humo_color row62" style="display:none;" name="row62"><td></td>';
 					echo '<td colspan="2">';
 					echo '<b>'.$noteDb->note_date.' '.$noteDb->note_time.' '.$userDb->user_name.'</b><br>';
 					echo '<b>'.$noteDb->note_names.'</b><br>';
@@ -1586,10 +1586,10 @@ if (isset($pers_gedcomnumber)){
 		// ***********************************
 		// *** Marriages and children list ***
 		// ***********************************
-
+		echo '</table><table class="humo" border="1">';
 		if (!isset($_GET['add_person'])){
 			// *** Empty line in table ***
-//			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
+			//echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
 
 			echo '<tr><th class="table_header" colspan="4">'.__('Marriage(s) and children').'</tr>';
 		}
@@ -1599,12 +1599,13 @@ if (isset($pers_gedcomnumber)){
 				// *** Search for own family ***
 				$fams1=explode(";",$person->pers_fams);
 				$fam_count=substr_count($person->pers_fams, ";");
+				
 				for ($i=0; $i<=$fam_count; $i++){
 					$family=$dbh->query("SELECT * FROM ".$tree_prefix."family
 						WHERE fam_gedcomnumber='".$fams1[$i]."'");
 					$familyDb=$family->fetch(PDO::FETCH_OBJ);
 
-					echo '<tr><td>';
+					echo '<tr><td id="chtd1">';
 						if ($fam_count>0){
 							//echo '<form method="POST" action="'.$phpself.'#marriage">';
 							echo '<form method="POST" action="'.$phpself.'">';
@@ -1616,7 +1617,7 @@ if (isset($pers_gedcomnumber)){
 						else{
 							echo ucfirst(__('marriage')).' '.($i+1);
 						}
-					echo '</td><td valign="top">';
+					echo '</td><td id="chtd2" valign="top">';
 
 					if ($i<$fam_count){
 						echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;person_id='.$person->pers_id.'&amp;fam_down='.$i.'&amp;fam_array='.$person->pers_fams.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="fam_down"></a> ';
@@ -1631,7 +1632,7 @@ if (isset($pers_gedcomnumber)){
 						//echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 					}
 
-					echo '</td><td colspan="2"><b>';
+					echo '</td><td id="chtd3" colspan="2"><b>';
 					echo show_person($familyDb->fam_man).' '.__('and').' '.show_person($familyDb->fam_woman);
 					echo '</b>';
 
@@ -1639,37 +1640,57 @@ if (isset($pers_gedcomnumber)){
 					echo '<br>';
 
 					if ($familyDb->fam_children){
+					
 						echo __('Children').':<br>';
 						$fam_children_array=explode(";",$familyDb->fam_children);
 						$child_count=substr_count($familyDb->fam_children, ";");
+						echo '<ul id="sortable'.$i.'" class="sortable">';
 						for ($j=0; $j<=$child_count; $j++){
-								// *** Create new children variabele, for disconnect child ***
+						 
+							// *** Create new children variabele, for disconnect child ***
 							$fam_children='';
 							for ($k=0; $k<=substr_count($familyDb->fam_children, ";"); $k++){
 								if ($k!=$j){ $fam_children.=$fam_children_array[$k].';'; }
 							}
 							$fam_children=substr($fam_children,0,-1); // *** strip last ; character ***
+							
+							echo '<li><span style="cursor:move;" id="'.$fam_children_array[$j].'" class="handle'.$i.'" ><img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0" title="'.__('Drag to change order (saves automatically)').'" alt="'.__('Drag to change order').'"></span>&nbsp;&nbsp;';
+							
 							echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_disconnect='.$fam_children.
 								'&amp;child_disconnect_gedcom='.$fam_children_array[$j].'">
 								<img src="'.CMS_ROOTPATH_ADMIN.'images/person_disconnect.gif" border="0" title="'.__('Disconnect child').'" alt="'.__('Disconnect child').'"></a>';
-
-							if ($j<$child_count){
-								echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_down='.$j.'&amp;child_array='.
-									$familyDb->fam_children.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="child_down"></a>';
-							}
-							else{ echo '<span style="margin-left:21px;"></span>'; }
-
-							if ($j>0){
-								echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_up='.$j.'&amp;child_array='.
-									$familyDb->fam_children.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="child_up"></a> ';
-							}
-							else{ echo '<span style="margin-left:26px;"></span>'; }
-
-							if ($j<9){ echo '<span style="margin-left:8px;"></span>'; }
-							echo ($j+1).'. '.show_person($fam_children_array[$j],true).'<br>';
-						}
+			 
+							echo '&nbsp;&nbsp;<span id="chldnum'.$fam_children_array[$j].'">'.($j+1).'</span>. '.show_person($fam_children_array[$j],true).'</li>';
+						} 
+						echo '</ul>';
 					}
 
+					//already in index.php echo '<script src="../include/jqueryui/js/jquery-1.8.0.min.js"></script>';
+					//to index.php - echo '<script src="../include/jqueryui/js/jquery.sortable.min.js"></script>';
+					?>
+					<script>
+						$('#sortable'+'<?php echo $i; ?>').sortable({handle: '.handle'+'<?php echo $i; ?>'}).bind('sortupdate', function() {
+							var childstring = "";
+							var chld_arr = document.getElementsByClassName("handle"+"<?php echo $i; ?>");
+							
+							for (var z = 0; z < chld_arr.length; z++) {
+							  childstring = childstring + chld_arr[z].id + ";";
+							  document.getElementById('chldnum'+chld_arr[z].id).innerHTML = (z+1);
+							}
+							childstring = childstring.substring(0, childstring.length-1);
+							$.ajax({ 
+								url: "include/drag.php?drag_kind=children&chldstring=" + childstring + "&family_id=" + "<?php echo $familyDb->fam_id; ?>" ,
+								success: function(data){
+								} ,
+								error: function (xhr, ajaxOptions, thrownError) {
+									alert(xhr.status);
+									alert(thrownError);
+								}
+							});
+				
+						});
+					</script>
+					<?php
 					echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
 					if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
 					echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"><span style="margin-left:73px;">'.__('Add child').'</span></a><br>';
@@ -1683,7 +1704,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<td>';
 			echo '</td><td colspan="2">';
 				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;relation_add=1#marriage"><b>';
-				echo __('Add relation with new partner (N.N.)').'</b></a> '.__('or add relation with existing person as partner.').'<br>';
+				echo __('Add relation with new partner (N.N.)').'</b></a><br>'.__('or add relation with existing person as partner.').'<br>';
 
 				echo '<form method="POST" action="'.$phpself.'#marriage" name="form4" id="form4">';
 					echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -1696,7 +1717,7 @@ if (isset($pers_gedcomnumber)){
 				echo '</form>';
 
 			echo '</td></tr>';
-
+		echo '</table>';
 		// ***********************
 		// *** Marriage editor ***
 		// ***********************
@@ -1729,13 +1750,14 @@ if (isset($pers_gedcomnumber)){
 			$fam_div_no_data=false; if ($fam_div_date OR $fam_div_place OR $fam_div_text) $fam_div_no_data=true;
 			$fam_text=$editor_cls->text_show($familyDb->fam_text);
 
+			echo '<form method="POST" action="'.$phpself.'#marriage" name="form2" id="form2">';
+			echo '<input type="hidden" name="page" value="'.$page.'">';
+			
+			echo '<table  class="humo" border="1">';
 			// *** Show delete message ***
 			if ($confirm_relation){
 				echo '<tr><td colspan="4" class="table_empty_line" style="border: solid 1px white;"><br>'.$confirm_relation.'</td><tr>';
 			}
-
-			echo '<form method="POST" action="'.$phpself.'#marriage" name="form2" id="form2">';
-			echo '<input type="hidden" name="page" value="'.$page.'">';
 
 			// *** Empty line in table ***
 			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
@@ -1749,15 +1771,15 @@ if (isset($pers_gedcomnumber)){
 
 			// *** Remove marriage ***
 			if (isset($marriage)){
-				echo '<td>'.$hide_show_all.'<a name="marriage"></a><input type="Submit" name="fam_remove" value="'.__('Delete relation').'"></td>';
+				echo '<td id="target1">'.$hide_show_all.'<a name="marriage"></a><input type="Submit" name="fam_remove" value="'.__('Delete relation').'"></td>';
 			}
 			else{
-				echo '<td>'.$hide_show_all.'<a name="marriage"></a><br></td>';
+				echo '<td id="target1">'.$hide_show_all.'<a name="marriage"></a><br></td>';
 			}
 
-			echo '<th colspan="2">'.__('Edit marriage');
+			echo '<th  id="target2" colspan="2">'.__('Edit marriage');
 				echo ': ['.$fam_gedcomnumber.'] '.show_person($man_gedcomnumber).' '.__('and').' '.show_person($woman_gedcomnumber).'<br>';
-			echo '<td>';
+			echo '<td id="target3">';
 				echo '<input type="Submit" name="marriage_change" value="'.__('Save').'">';
 			echo '</td></tr>';
 
@@ -1863,12 +1885,12 @@ if (isset($pers_gedcomnumber)){
 			echo '</td></tr>';
 
 			// *** End of living together ***
-			echo '<tr style="display:none;" id="row6" name="row6">';
+			echo '<tr style="display:none;" class="row6" name="row6">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('End date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_relation_end_date,"fam_relation_end_date").'</td>';
 			echo '<td></td></tr>';
 
-			echo '<tr style="display:none;" id="row6" name="row6">';
+			echo '<tr style="display:none;" class="row6" name="row6">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_relation_text" '.$field_text.'>'.$fam_relation_text.'</textarea>';
 			echo '<td></td>';
@@ -1895,7 +1917,7 @@ if (isset($pers_gedcomnumber)){
 				}
 			echo '</td></tr>';
 
-			echo '<tr class="humo_color" style="display:none;" id="row7" name="row7">';
+			echo '<tr class="humo_color row7" style="display:none;" name="row7">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_notice_text" '.$field_text.'>'.$fam_marr_notice_text.'</textarea></td>';
 			echo '<td></td></tr>';
@@ -1922,12 +1944,12 @@ if (isset($pers_gedcomnumber)){
 
 			echo '</td></tr>';
 
-			echo '<tr style="display:none;" id="row8" name="row8">';
+			echo '<tr style="display:none;" class="row8" name="row8">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('Registrar').'</td><td style="border-left:0px;"><input type="text" name="fam_marr_authority" value="'.$fam_marr_authority.'" size="60"></td>';
 			echo '<td></td></tr>';
 
-			echo '<tr style="display:none;" id="row8" name="row8">';
+			echo '<tr style="display:none;" class="row8" name="row8">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_text" '.$field_text.'>'.$fam_marr_text.'</textarea></td>';
 			echo '<td></td></tr>';
@@ -1956,7 +1978,7 @@ if (isset($pers_gedcomnumber)){
 				}
 			echo '</td></tr>';
 
-			echo '<tr class="humo_color" style="display:none;" id="row9" name="row9">';
+			echo '<tr class="humo_color row9" style="display:none;" name="row9">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_church_notice_text" '.$field_text.'>'.$fam_marr_church_notice_text.'</textarea></td>';
 			echo '<td></td></tr>';
@@ -1984,7 +2006,7 @@ if (isset($pers_gedcomnumber)){
 
 			echo '</td></tr>';
 
-			echo '<tr style="display:none;" id="row10" name="row10">';
+			echo '<tr style="display:none;" class="row10" name="row10">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_church_text" '.$field_text.'>'.$fam_marr_church_text.'</textarea></td>';
 			echo '<td></td></tr>';
@@ -2025,12 +2047,12 @@ if (isset($pers_gedcomnumber)){
 				echo '<input type="checkbox" name="fam_div_no_data" value="no_data"'.$checked.'> '.__('Divorce (use this checkbox for a divorce without further data).');
 			echo '</td><td></td></tr>';
 
-			echo '<tr style="display:none;" id="row11" name="row11">';
+			echo '<tr style="display:none;" class="row11" name="row11">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('Registrar').'</td><td style="border-left:0px;"><input type="text" name="fam_div_authority" value="'.htmlspecialchars($fam_div_authority).'" size="60"></td>';
 			echo '<td></td></tr>';
 
-			echo '<tr style="display:none;" id="row11" name="row11">';
+			echo '<tr style="display:none;" class="row11" name="row11">';
 			echo '<td></td>';
 			if ($fam_div_text=='DIVORCE') $fam_div_text=''; // *** Hide this text, it's a hidden value for a divorce without data ***
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;">
@@ -2092,7 +2114,7 @@ if (isset($pers_gedcomnumber)){
 					printf(__('There are %d unprocessed gedcom tags.'), 0);
 				}
 				echo '</td><td></td></tr>';
-				echo '<tr style="display:none;" id="row110" name="row110"><td></td>';
+				echo '<tr style="display:none;" class="row110" name="row110"><td></td>';
 					echo '<td colspan="2">'.$familyDb->fam_unprocessed_tags.'</td>';
 				echo '<td></td></tr>';
 			}
@@ -2903,4 +2925,11 @@ if (isset($pers_gedcomnumber)){
 	}
 
 }
+ 
+echo '
+<script> 
+$("#chtd1").width($("#target1").width()); 
+$("#chtd2").width($("#target3").width());
+$("#chtd3").width($("#target2").width());
+</script> ';   
 ?>

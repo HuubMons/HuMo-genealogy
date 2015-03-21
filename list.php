@@ -8,8 +8,8 @@ include_once(CMS_ROOTPATH."include/person_cls.php");
 
 // *** show person ***
 function show_person($personDb){
-	global $index_list, $selected_place, $language, $user;
-	global $bot_visit, $dbh, $humo_option, $uri_path, $search_database, $list_expanded;
+	global $dbh, $db_functions, $index_list, $selected_place, $language, $user;
+	global $bot_visit, $humo_option, $uri_path, $search_database, $list_expanded;
 	global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
 	global $select_birth, $select_bapt, $select_place, $select_death, $select_buried;
 	global $selectsort;
@@ -119,33 +119,24 @@ function show_person($personDb){
 		//$qry="SELECT * FROM ".$pers_tree_prefix."family WHERE fam_gedcomnumber='".$last_relation."'";
 		$nr_marriages=count($marriage_array);
 
-		$stmt = $dbh->prepare("SELECT * FROM ".safe_text($pers_tree_prefix)."family WHERE fam_gedcomnumber=?");
-		$stmt->bindParam(1, $marr_arr);
-		$stmt2 = $dbh->prepare("SELECT * FROM ".safe_text($pers_tree_prefix)."person WHERE pers_gedcomnumber=?");
-		$stmt2->bindParam(1, $partnid);
 		for ($x=0; $x<=$nr_marriages-1; $x++){
-			$marr_arr = $marriage_array[$x];
-			$stmt->execute();
-			$fam_partnerDb = $stmt->fetch();
+			$fam_partnerDb = $db_functions->get_family($marriage_array[$x]);
 
 			// *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
-			if ($personDb->pers_gedcomnumber==$fam_partnerDb['fam_man'])
-				$partner_id=$fam_partnerDb['fam_woman'];
+			if ($personDb->pers_gedcomnumber==$fam_partnerDb->fam_man)
+				$partner_id=$fam_partnerDb->fam_woman;
 			else
-				$partner_id=$fam_partnerDb['fam_man'];
+				$partner_id=$fam_partnerDb->fam_man;
 
 			//$relation_short=__('&');
 			$relation_short=__('&amp;');
-			if ($fam_partnerDb['fam_marr_date'] OR $fam_partnerDb['fam_marr_place'] OR $fam_partnerDb['fam_marr_church_date'] OR $fam_partnerDb['fam_marr_church_place'])
+			if ($fam_partnerDb->fam_marr_date OR $fam_partnerDb->fam_marr_place OR $fam_partnerDb->fam_marr_church_date OR $fam_partnerDb->fam_marr_church_place)
 				$relation_short=__('X');
-			if($fam_partnerDb['fam_div_date'] OR $fam_partnerDb['fam_div_place'])
+			if($fam_partnerDb->fam_div_date OR $fam_partnerDb->fam_div_place)
 				$relation_short=__(') (');
 
 			if ($partner_id!='0' AND $partner_id!=''){
-				$partnid = $partner_id;
-				$stmt2->execute();
-				$partnerDb = $stmt2->fetch(PDO::FETCH_OBJ);
-
+				$partnerDb = $db_functions->get_person($partner_id);
 				$partner_cls = New person_cls;
 				$name=$partner_cls->person_name($partnerDb);
 			}
@@ -1222,7 +1213,9 @@ if ($index_list=='patronym'){
 				$_SESSION["save_quicksearch"]=$quicksearch;
 			}
 			if (isset($_SESSION["save_quicksearch"])){ $quicksearch=$_SESSION["save_quicksearch"]; }
-			echo '<p><input type="text" name="quicksearch" value="'.$quicksearch.'" size="30" pattern=".{3,}" title="'.__('Minimum: 3 characters.').'"></p></td>';
+			if($humo_option['min_search_chars']==1) { $pattern=""; $min_chars =" 1 ";}
+			else { $pattern='pattern=".{'.$humo_option['min_search_chars'].',}"'; $min_chars = " ".$humo_option['min_search_chars']." ";}
+			echo '<p><input type="text" name="quicksearch" value="'.$quicksearch.'" size="30" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'"></p></td>';
 		}
 
 		// *** ADVANCED SEARCH BOX ***
@@ -1611,8 +1604,8 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 			$spouse_found='0';
 			$person_fams=explode(";",$personDb->pers_fams);
 
+			// *** Search all persons with a spouse IN the same tree as the 1st person ***
 			for ($marriage_loop=0; $marriage_loop<count($person_fams); $marriage_loop++){
-				// *** Search all persons with a spouse IN the same tree as the 1st person ***
 				$fam_result = $dbh->query("SELECT * FROM ".safe_text($personDb->pers_tree_prefix).'family WHERE fam_gedcomnumber="'.$person_fams[$marriage_loop].'"');
 				while($famDb= $fam_result->fetch(PDO::FETCH_OBJ)) {
 

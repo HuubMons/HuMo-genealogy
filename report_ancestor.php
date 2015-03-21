@@ -9,12 +9,9 @@
 @set_time_limit(3000);
 
 //==========================
-global $humo_option, $user;
-global $marr_date_array, $marr_place_array;
-global $gedcomnumber;
-global $language;
-global $screen_mode, $dirmark1, $dirmark2;
-global $pdf_footnotes;
+global $humo_option, $user, $marr_date_array, $marr_place_array;
+global $gedcomnumber, $language;
+global $screen_mode, $dirmark1, $dirmark2, $pdf_footnotes;
 
 // == define roman numbers (max. 60 generations)
 $rom_nr = array( 1=>'I',    2=>'II',    3=>'III',    4=>'IV',    5=>'V',    6=>'VI',     7=>'VII',    8=>'VIII',    9=>'IX',   10=>'X',
@@ -53,6 +50,9 @@ include_once(CMS_ROOTPATH."include/show_picture.php");
 if($screen_mode!='PDF' AND $screen_mode!='ASPDF') {  //we can't have a menu in pdf...
 	include_once(CMS_ROOTPATH."menu.php");
 } else {
+	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+	$db_functions = New db_functions;
+
 	if (isset($_SESSION['tree_prefix'])){
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
@@ -127,6 +127,7 @@ if($screen_mode=='PDF') {
 	$pers_cls->construct($persDb);
 	$name=$pers_cls->person_name($persDb);
 	$title=pdf_convert(__('Ancestor report').__(' of ').$name["standard_name"]);
+
 	$pdf->SetTitle($title);
 	$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 	$pdf->AddPage();
@@ -208,11 +209,6 @@ if($screen_mode=='RTF') {  // initialize rtf generation
 
 	//echo $file_name;
 }
-// some PDO prepared statements before any loops are initiated
-$pers_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
-$pers_prep->bindParam(1,$pers_prep_var);
-$fam_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
-$fam_prep->bindParam(1,$fam_prep_var);
 
 if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $screen_mode!='ASPDF'){
 	$ancestor_array2[] = $family_id;
@@ -338,9 +334,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 			}
 
 			if ($ancestor_array[$i]!='0'){
-				$pers_prep_var = $ancestor_array[$i];
-				$pers_prep->execute();
-				@$person_manDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+				@$person_manDb = $db_functions->get_person($ancestor_array[$i]);
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
 				$privacy_man=$man_cls->privacy;
@@ -349,13 +343,10 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				//$sexe=$person_manDb->pers_sexe;
 
 				if (strtolower($person_manDb->pers_sexe)=='m' AND $ancestor_number[$i]>1){
-					$fam_prep_var = $marriage_gedcomnumber[$i];
-					$fam_prep->execute();
-					@$familyDb = $fam_prep->fetch(PDO::FETCH_OBJ);
+					@$familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
+
 					// *** Use privacy filter of woman ***
-					$pers_prep_var = $familyDb->fam_woman;
-					$pers_prep->execute();
-					@$person_womanDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+					@$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
 					$woman_cls = New person_cls;
 					$woman_cls->construct($person_womanDb);
 					$privacy_woman=$woman_cls->privacy;
@@ -544,9 +535,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 
 				// ==	Check for parents
 				if ($person_manDb->pers_famc  AND $listednr==''){
-					$fam_prep_var = $person_manDb->pers_famc;
-					$fam_prep->execute();
-					@$family_parentsDb = $fam_prep->fetch(PDO::FETCH_OBJ);
+					@$family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
 					if ($family_parentsDb->fam_man){
 						$ancestor_array2[] = $family_parentsDb->fam_man;
 						$ancestor_number2[]=(2*$ancestor_number[$i]);
@@ -569,9 +558,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 			} else{
 
 				// *** Show N.N. person ***
-				$pers_prep_var = $ancestor_array[$i];
-				$pers_prep->execute();
-				@$person_manDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+				@$person_manDb = $db_functions->get_person($ancestor_array[$i]);
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
 				$privacy_man=$man_cls->privacy;
@@ -649,17 +636,13 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	// The following is used for ancestor chart, ancestor sheet and ancestor sheet PDF (ASPDF)
 
 	// person 01
-	$pers_prep_var = $family_id;
-	$pers_prep->execute();
-	$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+	$personDb = $db_functions->get_person($family_id);
 	$gedcomnumber[1]= $personDb->pers_gedcomnumber;
 	$pers_famc[1]=$personDb->pers_famc;
 	$sexe[1]=$personDb->pers_sexe;
 	$parent_array[2]=''; $parent_array[3]='';
 	if ($pers_famc[1]){
-		$fam_prep_var = $pers_famc[1];
-		$fam_prep->execute();
-		$parentDb = $fam_prep->fetch(PDO::FETCH_OBJ);
+		$parentDb = $db_functions->get_family($pers_famc[1]);
 		$parent_array[2]=$parentDb->fam_man; $parent_array[3]=$parentDb->fam_woman ;
 		$marr_date_array[2]=$parentDb->fam_marr_date ; $marr_place_array[2]=$parentDb->fam_marr_place ;
 	}
@@ -674,9 +657,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		$pers_famc[$counter]= '';
 		$sexe[$counter]= '';
 		if ($parent_array[$counter]){
-			$pers_prep_var = $parent_array[$counter];
-			$pers_prep->execute();
-			$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+			$personDb = $db_functions->get_person($parent_array[$counter]);
 			$gedcomnumber[$counter]= $personDb->pers_gedcomnumber;
 			$pers_famc[$counter]=$personDb->pers_famc;
 			$sexe[$counter]=$personDb->pers_sexe;
@@ -686,9 +667,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		$parent_array[$Vcounter]=''; $parent_array[$Mcounter]='';
 		$marr_date_array[$Vcounter]=''; $marr_place_array[$Vcounter]='';
 		if ($pers_famc[$counter]){  
-			$fam_prep_var = $pers_famc[$counter];
-			$fam_prep->execute();
-			$parentDb = $fam_prep->fetch(PDO::FETCH_OBJ);
+			$parentDb = $db_functions->get_family($pers_famc[$counter]);
 			$parent_array[$Vcounter]=$parentDb->fam_man; $parent_array[$Mcounter]=$parentDb->fam_woman ;
 			$marr_date_array[$Vcounter]=$parentDb->fam_marr_date ; $marr_place_array[$Vcounter]=$parentDb->fam_marr_place ;
 		}
@@ -697,11 +676,10 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	// *** Function to show data ***
 	// box_appearance (large, medium, small, and some other boxes...)
 	function ancestor_chart_person($id, $box_appearance){
-		global $humo_option, $user, $dbh;
+		global $dbh, $db_functions, $humo_option, $user;
 		global $marr_date_array, $marr_place_array;
-		global $gedcomnumber, $language;
-		global $screen_mode, $dirmark1, $dirmark2;
-		global $pers_prep_var, $pers_prep;
+		global $gedcomnumber, $language, $screen_mode, $dirmark1, $dirmark2;
+		global $pers_prep;
 
 		$hour_value=''; // if called from hourglass.php size of chart is given in box_appearance as "hour45" etc.
 		if(strpos($box_appearance,"hour")!==false) { $hour_value=substr($box_appearance,4); }
@@ -709,10 +687,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		$text=''; $popup='';
 
 		if ($gedcomnumber[$id]){ 
-			$pers_prep_var = $gedcomnumber[$id];
-			$pers_prep->execute();
-			@$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
-
+			@$personDb = $db_functions->get_person($gedcomnumber[$id]);
 			$person_cls = New person_cls;
 			$person_cls->construct($personDb);
 			$pers_privacy=$person_cls->privacy;
@@ -1141,12 +1116,11 @@ echo '<div>';
 		else $dsign = "~";
 
 		function data_array($id,$width,$height) {     
-			global $data_array, $gedcomnumber, $dsign;   
-			global $dbh, $pers_prep, $pers_prep_var;
-			if (isset($gedcomnumber[$id]) AND $gedcomnumber[$id]!=""){ 
-				$pers_prep_var = $gedcomnumber[$id];
-				$pers_prep->execute();
-				@$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+			global $dbh, $data_array, $gedcomnumber, $dsign;   
+			global $pers_prep;
+
+			if (isset($gedcomnumber[$id]) AND $gedcomnumber[$id]!=""){
+				@$personDb = $db_functions->get_person($gedcomnumber[$id]);
 				$person_cls = New person_cls;
 				$person_cls->construct($personDb);
 				$pers_privacy=$person_cls->privacy;	
@@ -1280,8 +1254,8 @@ echo '<div>';
 		}
 
 		function place_cells($type,$begin,$end,$increment,$maxchar,$numrows,$cellwidth) {
-			global $pdf, $data_array,$posy,$posx,$marr_date_array, $marr_place_array, $sexe, $gedcomnumber;
-			global $dbh, $pers_prep_var, $pers_prep;
+			global $dbh, $db_functions, $pdf, $data_array,$posy,$posx,$marr_date_array, $marr_place_array, $sexe, $gedcomnumber;
+			global $pers_prep;
 			$pdf->SetLeftMargin(16);
 			$marg = 16;
 			for($m=$begin;$m<=$end;$m+=$increment) {
@@ -1303,18 +1277,14 @@ echo '<div>';
 					$space='';
 					if($marr_date_array[$m]!='') { $space=' '; }
 					if($gedcomnumber[$m]!='') {
-						$pers_prep_var = $gedcomnumber[$m];
-						$pers_prep->execute();
-						@$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+						@$personDb = $db_functions->get_person($gedcomnumber[$m]);
 						$person_cls = New person_cls;
 						$person_cls->construct($personDb);
 						$pers_privacy=$person_cls->privacy;
 					}
 					else { $pers_privacy = false; }
 					if($gedcomnumber[$m+1]!='') {
-						$pers_prep_var = $gedcomnumber[$m+1];
-						$pers_prep->execute();
-						@$womanDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+						@$womanDb = $db_functions->get_person($gedcomnumber[$m+1]);
 						$woman_cls = New person_cls;
 						$woman_cls->construct($womanDb);
 						$woman_privacy=$person_cls->privacy;
@@ -1354,15 +1324,14 @@ echo '<div>';
 		}
 
 		//initialize pdf generation
-		$pdf=new PDF();
-		$pers_prep_var = $family_id;
-		$pers_prep->execute();
-		@$persDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+		@$persDb = $db_functions->get_person($family_id);
 		// *** Use person class ***
 		$pers_cls = New person_cls;
 		$pers_cls->construct($persDb);
 		$name=$pers_cls->person_name($persDb);
 		$title=pdf_convert(__('Ancestor sheet').__(' of ').$name["standard_name"]);
+
+		$pdf=new PDF();
 		$pdf->SetTitle($title);
 		$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 		$pdf->SetTopMargin(4);

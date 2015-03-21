@@ -45,7 +45,7 @@ $tbldbqry = "CREATE TABLE ".$_SESSION['tree_prefix']."person (
 	pers_death_time varchar(25) CHARACTER SET utf8,
 	pers_death_text text CHARACTER SET utf8,
 	pers_death_source text CHARACTER SET utf8,
-	pers_death_cause varchar(50) CHARACTER SET utf8,
+	pers_death_cause varchar(255) CHARACTER SET utf8,
 	pers_buried_place varchar(75) CHARACTER SET utf8,
 	pers_buried_date varchar(35) CHARACTER SET utf8,
 	pers_buried_text text CHARACTER SET utf8,

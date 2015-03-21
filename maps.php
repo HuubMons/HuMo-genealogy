@@ -295,23 +295,19 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	$myresultDb=$myresult->fetch(PDO::FETCH_OBJ);
 	$chosenname = $myresultDb->pers_firstname.' '.strtolower(str_replace('_','',$myresultDb->pers_prefix)).' '.$myresultDb->pers_lastname;
 
-	$gn=0;   // generatienummer
+	$gn=0; // generatienummer
 
 	// prepared statements for use in outline loops
 	$family_prep = $dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
 	$family_prep->bindParam(1,$fam_prep_var);
-    $person_prep = $dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
+
+	$person_prep = $dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
 	$person_prep->bindParam(1,$pers_prep_var);
-	$family_prep2 = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
-	$family_prep2->bindParam(1,$fam_prep_var2);
-	$person_man_prep= $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
-	$person_man_prep->bindParam(1,$pers_man_prep_var);
 
 	function outline($family_id,$main_person,$gn) {
-		global $desc_array, $dbh;
+		global $dbh, $db_functions, $desc_array;
 		global $language, $dirmark1, $dirmark1;
 		global $family_prep, $fam_prep_var, $person_prep, $pers_prep_var;
-		global $family_prep2, $fam_prep_var2, $person_man_prep, $pers_man_prep_var;
 		$family_nr=1; //*** Process multiple families ***
 		$fam_prep_var = $family_id;
 		$family_prep->execute(); 
@@ -348,19 +344,11 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 
 		// *** Loop multiple marriages of main_person ***
 		for ($parent1_marr=0; $parent1_marr<=$nr_families; $parent1_marr++){
-			$id=$marriage_array[$parent1_marr];
-			$fam_prep_var2 = $id;
-			$family_prep2->execute();
-			@$familyDb = $family_prep2->fetch(PDO::FETCH_OBJ);
+			@$familyDb = $db_functions->get_family($marriage_array[$parent1_marr]);
 
 			// *** Privacy filter man and woman ***
-			$pers_man_prep_var=$familyDb->fam_man;
-			$person_man_prep->execute();
-			@$person_manDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
-
-			$pers_man_prep_var=$familyDb->fam_woman;
-			$person_man_prep->execute();
-			@$person_womanDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
+			@$person_manDb = $db_functions->get_person($familyDb->fam_man);
+			@$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
 
 			// *************************************************************
 			// *** Parent1 (normally the father)                         ***
@@ -392,9 +380,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 				$child_array=explode(";",$familyDb->fam_children);
 
 				for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
-					$pers_man_prep_var=$child_array[$i];
-					$person_man_prep->execute();
-					@$childDb=$person_man_prep->fetch(PDO::FETCH_OBJ);
+					@$childDb = $db_functions->get_person($child_array[$i]);
 
 					// *** Build descendant_report ***
 					if ($childDb->pers_fams){

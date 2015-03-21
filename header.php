@@ -49,7 +49,7 @@ include_once (CMS_ROOTPATH.'include/show_tree_text.php');
 
 // *** Show a message at NEW installation. ***
 $result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
-if ($result->rowCount() ==0) {
+if (!$result OR $result->rowCount() ==0) {
 	echo "Installation of HuMo-gen is not yet completed.<br>Installatie van HuMo-gen is nog niet voltooid.";
 	exit();
 }

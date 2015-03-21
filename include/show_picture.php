@@ -220,6 +220,13 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 		$picture['thumb']='thumb_';
 	}
 
+	// *** No picture selected yet (in editor) ***
+	if (!$picture['picture']){
+		$picture['path']='images/';
+		$picture['thumb']='thumb_';
+		$picture['picture']='missing-image.jpg';
+	}
+
 	if (!$found_picture){
 		$picture['path']='images/';
 		$picture['thumb']='thumb_';
