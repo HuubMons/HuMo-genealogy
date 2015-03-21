@@ -1009,9 +1009,7 @@ function name_extended($person_kind){
 				}
 
 				if ($partner_id!='0' AND $partner_id!=''){
-					$qry="SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='".$partner_id."'";
-					$partner=$dbh->query($qry);
-					$partnerDb=$partner->fetch(PDO::FETCH_OBJ);
+					$partnerDb=$db_functions->get_person($partner_id);
 					$partner_cls = New person_cls;
 					$name=$partner_cls->person_name($partnerDb);
 					$famc=$partnerDb->pers_indexnr; // *** Used for partner link ***
@@ -1467,9 +1465,8 @@ function person_data($person_kind, $id){
 		}
 
 		// *** HZ-21 ash dispersion (asverstrooiing) ***
-		$name_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='ash dispersion' ORDER BY event_order");
-		while($nameDb=$name_qry->fetch(PDO::FETCH_OBJ)){
+		$name_qry = $db_functions->get_events_person($personDb->pers_gedcomnumber,'ash dispersion');
+		foreach ($name_qry as $nameDb){
 			$process_text.=', '.__('ash dispersion').' ';
 			if ($nameDb->event_date){ $process_text.=date_place($nameDb->event_date,'').' '; }
 			$process_text.=$nameDb->event_event.' ';
@@ -1556,16 +1553,15 @@ function person_data($person_kind, $id){
 			if ($eventnr>0){ $process_text.='</span>'; }
 		}
 
-		// **********************
-		// *** Show addresses ***
-		// **********************
+		// ***********************
+		// *** Show residences ***
+		// ***********************
 		if ($personDb->pers_gedcomnumber AND $user['group_living_place']=='j'){
 			$text='';
 			$eventnr=0;
-			$event_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses
-				WHERE address_person_id='$personDb->pers_gedcomnumber' ORDER BY address_order");
-			$nr_addresses=$event_qry->rowCount();
-			while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+			$event_qry = $db_functions->get_addresses_person($personDb->pers_gedcomnumber);
+			$nr_addresses=count($event_qry);
+			foreach($event_qry as $eventDb){
 				$eventnr++;
 				if ($eventnr=='1'){
 					if ($process_text){
@@ -1597,12 +1593,12 @@ function person_data($person_kind, $id){
 
 				if ($user['group_addresses']=='j' AND $eventDb->address_address){
 					$text.=' '.$eventDb->address_address.' ';
-// PDF Export?
+					// PDF Export?
 				}
 
 				if ($eventDb->address_zip){
 					$text.=' '.$eventDb->address_zip.' ';
-// PDF Export?
+					// PDF Export?
 				}
 
 				$text.=$eventDb->address_place;
@@ -1652,21 +1648,15 @@ function person_data($person_kind, $id){
 		// *** Extended addresses for HuMo-gen and dutch Haza-data program (Haza-data plus version) ***
 		if ($user['group_addresses']=='j'){
 			// *** Search for all connected addresses ***
-			$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
-				WHERE connect_kind='person'
-				AND connect_sub_kind='person_address'
-				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
-				ORDER BY connect_order";
-			$connect_sql=$dbh->query($connect_qry);
 			$eventnr=0;
-			while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+			$connect_sql = $db_functions->get_connections_person('person_address',$personDb->pers_gedcomnumber);
+			foreach ($connect_sql as $connectDb){
 				$eventnr++;
 				$process_text.=', <a href="'.$uri_path.'address.php?gedcomnumber='.$connectDb->connect_item_id.'">'.__('Address').': ';
 				if($temp) { $templ_person[$temp].=", "; }
 				$templ_person["HDadres_exist".$eventnr]=__('Address').': ';
 				$temp="HDadres_exist".$eventnr;
-				$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr='".$connectDb->connect_item_id."'");
-				$eventDb2=$address_qry->fetch(PDO::FETCH_OBJ);
+				$eventDb2 = $db_functions->get_address($connectDb->connect_item_id);
 				if (isset($eventDb2->address_address) AND $eventDb2->address_address){
 					$templ_person["HDadres_adres".$eventnr]=" ".trim($eventDb2->address_address);
 					$temp="HDadres_adres".$eventnr;
@@ -1690,10 +1680,7 @@ function person_data($person_kind, $id){
 		if (isset($marriage_array[1])){
 			for ($i=0; $i<=substr_count($personDb->pers_fams, ";"); $i++){
 				$marriagenr=$i+1;
-				$sql="SELECT * FROM ".$tree_prefix_quoted."family
-					WHERE fam_gedcomnumber='$marriage_array[$i]'";
-				$parent2_fam=$dbh->query($sql);
-				$parent2_famDb=$parent2_fam->fetch(PDO::FETCH_OBJ);
+				$parent2_famDb = $db_functions->get_family($marriage_array[$i]);
 				// *** Use a class for marriage ***
 				$parent2_marr_cls = New marriage_cls;
 
@@ -1706,14 +1693,11 @@ function person_data($person_kind, $id){
 				}
 
 				if ($change_main_person==true){
-					$parent2_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-					WHERE pers_gedcomnumber='$parent2_famDb->fam_woman'");
+					$parent2Db = $db_functions->get_person($parent2_famDb->fam_woman);
 				}
 				else{
-					$parent2_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."person
-					WHERE pers_gedcomnumber='$parent2_famDb->fam_man'");
+					$parent2Db = $db_functions->get_person($parent2_famDb->fam_man);
 				}
-				$parent2Db=$parent2_qry->fetch(PDO::FETCH_OBJ);
 
 				if ($id==$marriage_array[$i]){
 					if ($process_text) $process_text.=',';
@@ -1781,11 +1765,9 @@ function person_data($person_kind, $id){
 			$templ_person=$result[1];
 
 		// *** Internet links (URL) ***
-		$url_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='URL'
-			ORDER BY event_order");
-		if ($url_qry->rowCount()>0){ $process_text.='<br>'; }
-		while($urlDb=$url_qry->fetch(PDO::FETCH_OBJ)){
+		$url_qry = $db_functions->get_events_person($personDb->pers_gedcomnumber,'URL');
+		if (count($url_qry)>0){ $process_text.='<br>'; }
+		foreach($url_qry as $urlDb){
 			if ($urlDb->event_text){ $process_text.=$urlDb->event_text.': '; }
 			$process_text.='<a href="'.$urlDb->event_event.'" target="_blank">'.$urlDb->event_event.'</a>';
 			$process_text.='<br>';
@@ -1810,12 +1792,11 @@ function person_data($person_kind, $id){
 		// *** Show events ***
 		if ($user['group_event']=='j'){
 			if ($personDb->pers_gedcomnumber){
-				$event_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-					WHERE event_person_id='$personDb->pers_gedcomnumber' AND event_kind='event' ORDER BY event_order");
-				$num_rows = $event_qry->rowCount();
+				$event_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'event');
+				$num_rows = count($event_qry);
 				if ($num_rows>0){ $process_text.='<span class="event">'."\n"; }
 				$eventnr=0;
-				while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+				foreach ($event_qry as $eventDb){
 					$eventnr++;
 					$process_text.="<br>\n";
 					$templ_person["event_start".$eventnr]="\n";
@@ -1864,6 +1845,7 @@ function person_data($person_kind, $id){
 
 				}
 				if ($num_rows>0){ $process_text.="</span>\n"; }
+				unset ($event_qry);
 			}
 		}
 

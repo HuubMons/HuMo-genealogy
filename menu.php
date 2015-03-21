@@ -65,7 +65,9 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 				$_SESSION["save_quicksearch"]=$quicksearch;
 			}
 			if (isset($_SESSION["save_quicksearch"])){ $quicksearch=$_SESSION["save_quicksearch"]; }
-			print '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="15" pattern=".{3,}" title="'.__('Minimum: 3 characters.').'">';
+			if($humo_option['min_search_chars']==1) { $pattern=""; $min_chars =" 1 ";}
+			else { $pattern='pattern=".{'.$humo_option['min_search_chars'].',}"'; $min_chars = " ".$humo_option['min_search_chars']." ";}
+			print '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="15" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
 			print ' <input type="submit" value="'.__('Search').'">';
 		print "</form>";
 	}

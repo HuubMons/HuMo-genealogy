@@ -33,6 +33,9 @@ if($screen_mode!='PDF' AND $menu!=1) {  //we can't have a menu in pdf... and don
 }
 
 if($screen_mode=='PDF') {  // if PDF: necessary parts from menu.php
+	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+	$db_functions = New db_functions;
+
 	if (isset($_SESSION['tree_prefix'])){
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 		ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id

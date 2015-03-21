@@ -47,7 +47,7 @@ if (isset($_POST['send_mail'])){
 		echo '<h2>'.$error.'</h2>';
 	}
 
-	
+
 	if ($dataDb->tree_email){
 		// *** Mail new registered user to the administrator ***
 		$register_address=$dataDb->tree_email;

@@ -15,11 +15,14 @@
  *		get_events_family		Get multiple events of a family selecting one event_kind from database.
  *		get_source				Get a single source from database.
  *		get_address				Get a single address from database.
+ *		get_addressses_person	Get a all adresses (places) by a person.
  *		get_connections			Get multiple connections (used for sources and addresses).
+ *		get_connections_person	Get multiple connections of a person.
  *		get_repository			Get a single repository from database.
  *
  * EXAMPLE get single item from database:
  *		$person_manDb = $db_functions->get_person($familyDb->fam_man);
+ *		if ($person_manDb==false){ }
  *
  * EXAMPLE get multiple items from database:
  *		$colour = $db_functions->get_events_person($personDb->pers_gedcomnumber,'person_colour_mark');
@@ -70,8 +73,10 @@ function __construct() {
 	//define ("SQL_DESC", " DESC");
 
 	define ("SQL_GET_ADDRESS", "SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr=:address_gedcomnr");
+	define ("SQL_GET_ADDRESSES_PERSON", "SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_person_id=:address_person_id ORDER BY address_order");
 
 	define ("SQL_GET_CONNECTIONS", "SELECT * FROM ".$tree_prefix_quoted."connections WHERE connect_sub_kind=:connect_sub_kind AND connect_item_id=:connect_item_id");
+	define ("SQL_GET_CONNECTIONS_PERSON", "SELECT * FROM ".$tree_prefix_quoted."connections WHERE connect_kind='person' AND connect_sub_kind=:connect_sub_kind AND connect_connect_id=:connect_connect_id ORDER BY connect_order");
 
 	define ("SQL_GET_REPOSITORY", "SELECT * FROM ".$tree_prefix_quoted."repositories WHERE repo_gedcomnr=:repo_gedcomnr");
 }
@@ -102,8 +107,7 @@ function get_trees(){
 	global $dbh; $result_array = array();
 	try {
 		$qry = $dbh->prepare( SQL_GET_TREES );
-		$qry->execute();
-		$result_array=$qry->fetchAll(PDO::FETCH_OBJ);
+		$qry->execute(); $result_array=$qry->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}
@@ -122,7 +126,7 @@ function count_persons($pers_gedcomnumber){
 		//$qry = $dbh->prepare( SQL_COUNT_PERSONS );
 		//$qry->bindValue(':pers_gedcomnumber', $pers_gedcomnumber, PDO::PARAM_STR);
 		//$qry->execute(); $qryDb=$qry->fetch(PDO::FETCH_OBJ);
-		$total = $dbh->query( SQL_COUNT_PERSONS ); 
+		$total = $dbh->query( SQL_COUNT_PERSONS );
 		$total = $total->fetch();
 		$nr_persons=$total[0]; 
 	}catch (PDOException $e) {
@@ -195,8 +199,7 @@ function get_events_kind($event_id,$event_kind){
 		$qry = $dbh->prepare( SQL_GET_EVENTS_KIND );
 		$qry->bindValue(':event_id', $event_id, PDO::PARAM_INT);
 		$qry->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
-		$qry->execute();
-		$result_array=$qry->fetchAll(PDO::FETCH_OBJ);
+		$qry->execute(); $result_array=$qry->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}
@@ -215,8 +218,7 @@ function get_events_person($event_person_id,$event_kind){
 		$qry = $dbh->prepare( SQL_GET_EVENTS_PERSON );
 		$qry->bindValue(':event_person_id', $event_person_id, PDO::PARAM_STR);
 		$qry->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
-		$qry->execute();
-		$result_array=$qry->fetchAll(PDO::FETCH_OBJ);
+		$qry->execute(); $result_array=$qry->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}
@@ -234,8 +236,7 @@ function get_events_family($event_family_id,$event_kind){
 		$qry = $dbh->prepare( SQL_GET_EVENTS_FAMILY );
 		$qry->bindValue(':event_family_id', $event_family_id, PDO::PARAM_STR);
 		$qry->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
-		$qry->execute();
-		$result_array=$qry->fetchAll(PDO::FETCH_OBJ);
+		$qry->execute(); $result_array=$qry->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}
@@ -281,6 +282,23 @@ function get_address($address_gedcomnr){
 	return $qryDb;
 }
 
+/*--------------------[get addresses (places) from person ]-------
+ * Get all places by a person from database.
+ * RETURNS: all places by a person.
+ *----------------------------------------------------------------
+ */
+function get_addresses_person($address_person_id){
+	global $dbh; $result_array = array();
+	try {
+		$qry = $dbh->prepare( SQL_GET_ADDRESSES_PERSON );
+		$qry->bindValue(':address_person_id', $address_person_id, PDO::PARAM_STR);
+		$qry->execute(); $result_array=$qry->fetchAll(PDO::FETCH_OBJ);
+	}catch (PDOException $e) {
+		echo $e->getMessage() . "<br/>";
+	}
+	return $result_array;
+}
+
 /*--------------------[get connections]---------------------------
  * Get a single connection (source or address) from database.
  * RETURNS: multiple connections.
@@ -292,8 +310,25 @@ function get_connections($connect_sub_kind, $connect_item_id){
 		$qry = $dbh->prepare( SQL_GET_CONNECTIONS );
 		$qry->bindValue(':connect_sub_kind', $connect_sub_kind, PDO::PARAM_STR);
 		$qry->bindValue(':connect_item_id', $connect_item_id, PDO::PARAM_STR);
-		$qry->execute();
-		$result_array=$qry->fetchAll(PDO::FETCH_OBJ);
+		$qry->execute(); $result_array=$qry->fetchAll(PDO::FETCH_OBJ);
+	}catch (PDOException $e) {
+		echo $e->getMessage() . "<br/>";
+	}
+	return $result_array;
+}
+
+/*--------------------[get connections_persons]-------------------
+ * Get a multiple connections from database.
+ * RETURNS: multiple connections.
+ *----------------------------------------------------------------
+ */
+function get_connections_person($connect_sub_kind, $connect_connect_id){
+	global $dbh; $result_array = array();
+	try {
+		$qry = $dbh->prepare( SQL_GET_CONNECTIONS_PERSON );
+		$qry->bindValue(':connect_sub_kind', $connect_sub_kind, PDO::PARAM_STR);
+		$qry->bindValue(':connect_connect_id', $connect_connect_id, PDO::PARAM_STR);
+		$qry->execute(); $result_array=$qry->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}
