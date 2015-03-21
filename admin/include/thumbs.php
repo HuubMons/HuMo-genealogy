@@ -2,51 +2,122 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('Thumbnails').'</h1>';
+echo '<h1 align=center>'.__('Pictures/ create thumbnails').'</h1>';
+
+echo '- '.__('To show pictures, also check the user-group settings: ');
+echo ' <a href="index.php?page=groups">'.__('User groups').'</a><br><br>';
 
 echo __('- Creating thumbnails<br>
 - ATTENTION: it may be necessary to (temporarily) change access to the folder with the pictures (rwxrwxrwx)<br>
 - Sometimes the php.ini has to be changed slightly, remove the ; before the line with:');
-
 echo ' <i>extension=php.gd2.dll</i>';
 
+if (isset($_POST['tree'])){ $tree=safe_text($_POST["tree"]); }
+
 if(CMS_SPECIFIC=="Joomla") {
-	print "<p><form method='post' action='index.php?option=com_humo-gen&amp;task=admin&amp;page=thumbs'>";
+	//print "<p><form method='post' action='index.php?option=com_humo-gen&amp;task=admin&amp;page=thumbs'>";
 	$prefx = ''; // in joomla the base folder is the main joomla map - not the HuMo-gen admin map
 }
 else {
-	print "<p><form method='post' action='".$_SERVER['PHP_SELF']."'>";
+	//print "<p><form method='post' action='".$_SERVER['PHP_SELF']."'>";
 	$prefx = '../'; // to get out of the admin map
 }
 
-echo '<input type="hidden" name="page" value="'.$page.'">';
+echo '<br><br><table class="humo standard" style="width:800px;" border="1">';
 
-// *** Select folder ***
-$dataqry='SELECT * FROM humo_trees GROUP BY tree_pict_path';
-@$datasql = $dbh->query($dataqry);
-echo __('Path to pictures:');
-echo ' <select size="1" name="picture_path">';
-while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
-	$pict_path=$dataDb->tree_pict_path;
-	if (file_exists($prefx.$pict_path)){
-		$selected='';
-		if (isset($_POST['picture_path'])){ if ($_POST['picture_path']==$pict_path){ $selected=' SELECTED'; } }
-		echo '<option value="'.$pict_path.'"'.$selected.'>'.
-		@$pict_path.'</option>';
+echo '<tr class="table_header"><th colspan="2">'.__('Pictures/ create thumbnails').'</th></tr>';
+
+	echo '<tr><td>'.__('Choose family').'</td>';
+	echo '<td>';
+		$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+		$tree_result = $dbh->query($tree_sql);
+		echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+		echo '<input type="hidden" name="page" value="thumbs">';
+		echo '<select size="1" name="tree">';
+			while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
+				$treetext=show_tree_text($treeDb->tree_prefix, $selected_language);
+				$selected='';
+				if (isset($tree)){
+					if ($treeDb->tree_prefix==$tree){
+						$selected=' SELECTED';
+						// *** Needed for submitter ***
+						//$tree_owner=$treeDb->tree_owner;
+						$tree_id=$treeDb->tree_id;
+						$tree_prefix=$treeDb->tree_prefix;
+						$db_functions->set_tree_id($tree_id);
+					}
+				}
+				echo '<option value="'.$treeDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+			}
+		echo '</select>';
+
+		echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';
+		echo '</form>';
+
+	echo '</td></tr>';
+
+
+	// *** Set path to pictures ***
+	if (isset($tree_prefix)){
+		// *** Save new/ changed picture path ***
+		if (isset($_POST['change_tree_data'])){
+			$sql="UPDATE humo_trees SET
+			tree_pict_path='".safe_text($_POST['tree_pict_path'])."' WHERE tree_id=".safe_text($_POST['tree_id']);
+			$result=$dbh->query($sql);
+		}
+
+		$data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=".$tree_id);
+		$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
+
+		echo '<tr><td>';
+			echo __('Path to the pictures');
+		echo '</td><td>';
+			echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+			echo '<input type="hidden" name="page" value="thumbs">';
+			echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
+			echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+			echo '<input type="text" name="tree_pict_path" value="'.$data2Db->tree_pict_path.'" size="40">';
+			echo ' <input type="Submit" name="change_tree_data" value="'.__('Change').'">';
+			echo ' '.__('example: ../pictures/');
+			echo '</form>';
+		echo '</td></tr>';
+
+		$path_status='';
+		if ($data2Db->tree_pict_path!='' AND file_exists($prefx.$data2Db->tree_pict_path))
+			$path_status = __('Picture path exists.');
+		else
+			$path_status = '<b>'.__('Picture path doesn\'t exist!').'</b>';
+
+		echo '<tr><td>';
+			echo __('Status of picture path');
+		echo '</td><td>';
+			echo $path_status;
+		echo '</td></tr>';
+
+		// *** Thumb height ***
+		$thumb_height=120; // *** Standard thumb height ***
+		if (isset($_POST['pict_height']) AND is_numeric($_POST['pict_height'])){ $thumb_height=$_POST['pict_height']; }
+		echo '<tr><td>';
+			echo ucfirst (strtolower(__('CREATE THUMBNAILS')));
+		echo '</td><td>';
+			echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+			echo '<input type="hidden" name="page" value="thumbs">';
+			echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
+			echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+			echo __('Thumbnail height: ').' <input type="text" name="pict_height" value="'.$thumb_height.'" size="4"> pixels';
+			echo ' <input type="Submit" name="thumbnail" value="'.__('CREATE THUMBNAILS').'">';
+			echo '</form>';
+		echo '</td></tr>';
+
 	}
-}
-echo '</select><br>';
 
-// *** Thumb height ***
-$thumb_height=120; // *** Standard thumb height ***
-if (isset($_POST['pict_height']) AND is_numeric($_POST['pict_height'])){ $thumb_height=$_POST['pict_height']; }
-echo __('Thumbnail height: ').' <input type="text" name="pict_height" value="'.$thumb_height.'" size="4"> pixels <br>';
-print '<input type="Submit" name="thumbnail" value="'.__('CREATE THUMBNAILS').'">';
-print "</form>";
+echo '</table><br>';
+
 
 $counter=0;
 if (isset($_POST["thumbnail"])){
-	$pict_path=$_POST['picture_path'];
+	//$pict_path=$_POST['picture_path'];
+	$pict_path=$data2Db->tree_pict_path;
 
 	@set_time_limit(3000);
 	$selected_picture_folder=$prefx.$pict_path;
@@ -100,7 +171,7 @@ if (isset($_POST["thumbnail"])){
 	}
 	else{
 		// *** Normally this is not used ***
-		echo 'Deze map bestaat niet - this folder does not exists!';
+		echo '<b>'.__('This folder does not exists!').'</b>';
 	}
 
 }

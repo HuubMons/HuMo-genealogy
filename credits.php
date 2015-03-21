@@ -78,6 +78,7 @@ This credits screen is english only...
 <li>Italian by: Ambrogio Chiotti.</li>
 <li>Persian by: Dr. Maleki</li>
 <li>Portugese: António Duarte</li>
+<li>Russian: Demian Nikonorov</li>
 <li>Spanish: Andres Maurer</li>
 </ul>
 

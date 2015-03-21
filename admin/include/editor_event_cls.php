@@ -356,7 +356,9 @@ function show_event($selected_events=''){
 			if ($selected_events=='marriage_picture') $event_add='add_marriage_picture&marriage_nr='.$marriage;
 			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add='.$event_add.'#picture">['.__('Add').']</a> ';
 			//$text='';
-			if ($count>1) { echo "&nbsp;&nbsp;".__('(Drag pictures to change display order)');}
+			if ($count>1) { echo "&nbsp;&nbsp;".__('(Drag pictures to change display order)'); }
+			echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
+
 			echo '<ul id="sortable_pic" class="sortable_pic handle_pic" style="width:auto">';
 			while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 				//if ($text) $text.=', ';

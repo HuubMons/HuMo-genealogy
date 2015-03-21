@@ -9,8 +9,6 @@ if (isset($_POST['tree'])){ $tree=safe_text($_POST["tree"]); }
 
 echo '<h1 align=center>'.__('User notes').'</h1>';
 
-echo 'User notes page is under construction and will be completed in new versions...<br>';
-
 echo '<table class="humo standard" style="width:800px;" border="1">';
 
 echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
@@ -20,11 +18,11 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 		$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 		$tree_result = $dbh->query($tree_sql);
 		$onchange='';
-		if(isset($_POST['part_tree']) AND $_POST['part_tree']=='part') {
-			// we have to refresh so that the persons to choose from will belong to this tree!
-			echo '<input type="hidden" name="flag_newtree" value=\'0\'>';
-			$onchange = ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ';
-		}
+		//if(isset($_POST['part_tree']) AND $_POST['part_tree']=='part') {
+		//	// we have to refresh so that the persons to choose from will belong to this tree!
+		//	echo '<input type="hidden" name="flag_newtree" value=\'0\'>';
+		//	$onchange = ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ';
+		//}
 		echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
 		echo '<input type="hidden" name="page" value="user_notes">';
 		echo '<select '.$onchange.' size="1" name="tree">';
@@ -55,6 +53,18 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 
 	echo '</td></tr>';
 
+	if (isset($_POST['note_status'])){
+		// *** For safety reasons: only save valid values ***
+		$note_status='';
+		if ($_POST['note_status']=='new'){ $note_status='new'; }
+		if ($_POST['note_status']=='approved'){ $note_status='approved'; }
+		if ($note_status){
+			$sql="UPDATE humo_user_notes SET
+			note_status='".$note_status."'
+			WHERE note_id='".$_POST['note_id']."'";
+			$result=$dbh->query($sql);
+		}
+	}
 
 	// *** Show user added notes ***
 	if (isset($tree_prefix)){
@@ -83,10 +93,13 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 				echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
 				echo '<input type="hidden" name="page" value="user_notes">';
 				echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
-				echo '<select '.$onchange.' size="1" name="tree" disabled>';
+				echo '<input type="hidden" name="note_id" value="'.$noteDb->note_id.'">';
+				$note_status=''; if ($noteDb->note_status) $note_status=$noteDb->note_status;
+				echo '<select '.$onchange.' size="1" name="note_status">';
 					$selected='';
 					echo '<option value="new"'.$selected.'>'.__('New').'</option>';
-					echo '<option value="new"'.$selected.'>'.__('Approved').'</option>';
+					if ($note_status=='approved') $selected=' SELECTED';
+					echo '<option value="approved"'.$selected.'>'.__('Approved').'</option>';
 				echo '</select>';
 
 				echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';

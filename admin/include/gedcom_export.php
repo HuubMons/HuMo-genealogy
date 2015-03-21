@@ -774,6 +774,8 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 			$buffer.='2 NOTE '.process_text(3,$person->pers_death_text);
 		if ($person->pers_death_cause)
 			$buffer.='2 CAUS '.$person->pers_death_cause."\r\n";
+		if ($person->pers_death_age)
+			$buffer.='2 AGE '.$person->pers_death_age."\r\n";
 	}
 
 	// *** Buried data ***

@@ -47,10 +47,6 @@ private $query = array();
 var $tree_id='';
 var $tree_prefix='';
 
-/* Because of "$tree_prefix_quoted" it's not possible to use all queries as a real prepared query...
- * Some scripts need to search in multiple family trees...
- * If database normalisation is done, it's possible to use fully prepared queries!
- */
 function __construct($tree_prefix='') {
 	global $dbh;
 
@@ -91,8 +87,12 @@ function __construct($tree_prefix='') {
 		$this->query['get_event'] = $dbh->prepare( $sql );
 
 		$sql = "SELECT * FROM humo_events
+		WHERE event_tree_id=:event_tree_id AND event_event=:event_event AND event_kind=:event_kind ORDER BY event_order";
+		$this->query['get_events_kind'] = $dbh->prepare( $sql );
+
+		$sql = "SELECT * FROM humo_events
 		WHERE event_tree_id=:event_tree_id AND event_person_id=:event_person_id AND event_kind=:event_kind ORDER BY event_order";
-		$this->query['get_events'] = $dbh->prepare( $sql );
+		$this->query['get_events_person'] = $dbh->prepare( $sql );
 
 		$sql = "SELECT * FROM humo_events
 		WHERE event_tree_id=:event_tree_id AND event_family_id=:event_family_id AND event_kind=:event_kind ORDER BY event_order";
@@ -103,6 +103,9 @@ function __construct($tree_prefix='') {
 
 		$sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_person_id=:address_person_id ORDER BY address_order";
 		$this->query['get_addresses_person'] = $dbh->prepare( $sql );
+
+		$sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_family_id=:address_family_id ORDER BY address_order";
+		$this->query['get_addresses_family'] = $dbh->prepare( $sql );
 
 		$sql = "SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_sub_kind=:connect_sub_kind AND connect_item_id=:connect_item_id";
 		$this->query['get_connections'] = $dbh->prepare( $sql );
@@ -247,6 +250,7 @@ function get_family($fam_gedcomnumber,$item=''){
 function get_event($event_id){
 	$qryDb=false;
 	try {
+		// *** Don't need tree_id, it's a direct event_id ***
 		$this->query['get_event']->bindValue(':event_id', $event_id, PDO::PARAM_INT);
 		$this->query['get_event']->execute();
 		$qryDb=$this->query['get_event']->fetch(PDO::FETCH_OBJ);
@@ -258,26 +262,24 @@ function get_event($event_id){
 
 /*--------------------[get events]--------------------------------
  * FUNCTION	: Get all selected events from database.
+ * QUERY	: SELECT * FROM humo_events WHERE event_tree_id=:event_tree_id
+ *				 AND event_event=:event_event AND event_kind=:event_kind ORDER BY event_order
  * RETURNS	: multiple selected events.
  *----------------------------------------------------------------
  */
- /*
-function get_events_kind($event_id,$event_kind){
-	global $dbh;
+function get_events_kind($event_event,$event_kind){
 	$result_array = array();
 	try {
-		$qry = $dbh->prepare( SQL_GET_EVENTS_KIND );
-
-		$qry->bindValue(':event_id', $event_id, PDO::PARAM_INT);
-		$qry->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
-		$qry->execute();
-		$result_array=$qry->fetchAll(PDO::FETCH_OBJ);
+		$this->query['get_events_kind']->bindValue(':event_tree_id', $this->tree_id, PDO::PARAM_STR);
+		$this->query['get_events_kind']->bindValue(':event_event', $event_event, PDO::PARAM_INT);
+		$this->query['get_events_kind']->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+		$this->query['get_events_kind']->execute();
+		$result_array=$this->query['get_events_kind']->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}
 	return $result_array;
 }
-*/
 
 /*--------------------[get events from person ]-------------------
  * FUNCTION	: Get all selected events by a person from database.
@@ -290,11 +292,11 @@ function get_events_kind($event_id,$event_kind){
 function get_events_person($event_person_id,$event_kind){
 	$result_array = array();
 	try {
-		$this->query['get_events']->bindValue(':event_tree_id', $this->tree_id, PDO::PARAM_STR);
-		$this->query['get_events']->bindValue(':event_person_id', $event_person_id, PDO::PARAM_STR);
-		$this->query['get_events']->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
-		$this->query['get_events']->execute();
-		$result_array=$this->query['get_events']->fetchAll(PDO::FETCH_OBJ);
+		$this->query['get_events_person']->bindValue(':event_tree_id', $this->tree_id, PDO::PARAM_STR);
+		$this->query['get_events_person']->bindValue(':event_person_id', $event_person_id, PDO::PARAM_STR);
+		$this->query['get_events_person']->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+		$this->query['get_events_person']->execute();
+		$result_array=$this->query['get_events_person']->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}
@@ -392,6 +394,27 @@ function get_addresses_person($address_person_id){
 		$this->query['get_addresses_person']->bindValue(':address_person_id', $address_person_id, PDO::PARAM_STR);
 		$this->query['get_addresses_person']->execute();
 		$result_array=$this->query['get_addresses_person']->fetchAll(PDO::FETCH_OBJ);
+	}catch (PDOException $e) {
+		echo $e->getMessage() . "<br/>";
+	}
+	return $result_array;
+}
+
+/*--------------------[get addresses (places) from family ]-------
+ * FUNCTION	: Get all places by a family from database.
+ * QUERY	: SELECT * FROM humo_addresses
+ *				WHERE address_tree_id=:address_tree_id
+ *				AND address_family_id=:address_family_id ORDER BY address_order
+ * RETURNS	: all places by a family.
+ *----------------------------------------------------------------
+ */
+function get_addresses_family($address_family_id){
+	$result_array = array();
+	try {
+		$this->query['get_addresses_family']->bindValue(':address_tree_id', $this->tree_id, PDO::PARAM_STR);
+		$this->query['get_addresses_family']->bindValue(':address_family_id', $address_family_id, PDO::PARAM_STR);
+		$this->query['get_addresses_family']->execute();
+		$result_array=$this->query['get_addresses_family']->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}
