@@ -27,8 +27,11 @@ include_once(CMS_ROOTPATH."include/person_cls.php"); // for privacy
 include_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/date_place.php");
 
+$tree_id=$_SESSION['tree_id'];
+
 include_once(CMS_ROOTPATH."include/db_functions_cls.php");
 $db_functions = New db_functions;
+$db_functions->set_tree_id($tree_id);
 
 $language_folder=opendir(CMS_ROOTPATH.'languages/');
 while (false!==($file = readdir($language_folder))) {
@@ -83,7 +86,7 @@ else { // Logically we can never get here because this file is always called wit
 }
 
 function mapbirthplace ($place) {
-	global $dbh, $language, $map_max;
+	global $dbh, $tree_id, $language, $map_max;
 
 	if (isset($_GET['namestring'])) {
 		$temparray = explode("@",$_GET['namestring']);
@@ -97,47 +100,66 @@ function mapbirthplace ($place) {
 	else {
 		$namestring = '';
 	}
-$desc_arr=''; $idstring='';
-if(isset($_SESSION['desc_array'])) {
-	$desc_arr = $_SESSION['desc_array'];
-	$idstring = ' (';
-	foreach($desc_arr as $value) {
-		$idstring.= " pers_gedcomnumber = '".$value."' OR ";
+
+	$desc_arr=''; $idstring='';
+	if(isset($_SESSION['desc_array'])) {
+		$desc_arr = $_SESSION['desc_array'];
+		$idstring = ' (';
+		foreach($desc_arr as $value) {
+			$idstring.= " pers_gedcomnumber = '".$value."' OR ";
+		}
+		$idstring = substr($idstring,0,-3).') AND ';
 	}
-	$idstring = substr($idstring,0,-3).') AND ';
-}
+
 	$min = 1;
 	if($place != "NONFOUND") {
 		if($_SESSION['type_birth']==1) {
 			if(isset($_GET['all'])) { // the 'All birth locations' button
 				echo '<b><u>'.__('All persons born here: ').'</u></b><br>';
-				$maplist=$dbh->query("SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE ".$idstring.$namestring." (pers_birth_place = '".$place."' OR (pers_birth_place = '' AND pers_bapt_place = '".$place."')) ORDER BY wholename");
+				//$maplist=$dbh->query("SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE ".$idstring.$namestring." (pers_birth_place = '".$place."' OR (pers_birth_place = '' AND pers_bapt_place = '".$place."')) ORDER BY wholename");
+				$sql="SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename
+					FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+					AND ".$idstring.$namestring." (pers_birth_place = '".$place."' OR (pers_birth_place = '' AND pers_bapt_place = '".$place."')) ORDER BY wholename";
+				$maplist=$dbh->query($sql);
 			}
 			else { // the slider
 				echo '<b><u>'.__('Persons born here until ').$map_max.':</u></b><br>';
-				$maplist=$dbh->query("SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM ".safe_text($_SESSION['tree_prefix'])."person
-					WHERE ".$idstring.$namestring."
-					(pers_birth_place = '".$place."' OR (pers_birth_place = '' AND pers_bapt_place = '".$place."')) AND
-					((SUBSTR(pers_birth_date,-LEAST(4,CHAR_LENGTH(pers_birth_date))) < ".$map_max." AND SUBSTR(pers_birth_date,-LEAST(4,CHAR_LENGTH(pers_birth_date))) > ".$min.") OR
-					(pers_birth_date='' AND SUBSTR(pers_bapt_date,-LEAST(4,CHAR_LENGTH(pers_bapt_date))) < ".$map_max." AND SUBSTR(pers_bapt_date,-LEAST(4,CHAR_LENGTH(pers_bapt_date))) > ".$min."))
-					ORDER BY wholename");
+				$sql="SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM humo_persons
+					WHERE pers_tree_id='".$tree_id."'
+					AND ".$idstring.$namestring." (pers_birth_place = '".$place."' OR (pers_birth_place = '' AND pers_bapt_place = '".$place."'))
+					AND ((SUBSTR(pers_birth_date,-LEAST(4,CHAR_LENGTH(pers_birth_date))) < ".$map_max."
+					AND SUBSTR(pers_birth_date,-LEAST(4,CHAR_LENGTH(pers_birth_date))) > ".$min.")
+					OR (pers_birth_date='' AND SUBSTR(pers_bapt_date,-LEAST(4,CHAR_LENGTH(pers_bapt_date))) < ".$map_max."
+						AND SUBSTR(pers_bapt_date,-LEAST(4,CHAR_LENGTH(pers_bapt_date))) > ".$min."))
+					ORDER BY wholename";
+				$maplist=$dbh->query($sql);
 			}
 		}
 		elseif($_SESSION['type_death']==1) {
 			if(isset($_GET['all'])) { // the 'All birth locations' button
 				echo '<b><u>'.__('All persons that died here: ').'</u></b><br>';
-				$maplist=$dbh->query("SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE ".$idstring.$namestring." (pers_death_place = '".$place."' OR (pers_death_place = '' AND pers_buried_place = '".$place."')) ORDER BY wholename");
+				//$maplist=$dbh->query("SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE ".$idstring.$namestring." (pers_death_place = '".$place."' OR (pers_death_place = '' AND pers_buried_place = '".$place."')) ORDER BY wholename");
+				$sql="SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename
+					FROM humo_persons
+					WHERE pers_tree_id='".$tree_id."'
+					AND ".$idstring.$namestring."
+					(pers_death_place = '".$place."' OR (pers_death_place = '' AND pers_buried_place = '".$place."'))
+					ORDER BY wholename";
+				$maplist=$dbh->query($sql);
 			}
 			else { // the slider
 				echo '<b><u>'.__('Persons that died here until ').$map_max.':</u></b><br>';
-				$maplist=$dbh->query("SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM ".safe_text($_SESSION['tree_prefix'])."person
-					WHERE ".$idstring.$namestring."
+				$sql="SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM humo_persons
+					WHERE pers_tree_id='".$tree_id."' AND ".$idstring.$namestring."
 					(pers_death_place = '".$place."' OR (pers_death_place = '' AND pers_buried_place = '".$place."')) AND
 					((SUBSTR(pers_death_date,-LEAST(4,CHAR_LENGTH(pers_death_date))) < ".$map_max." AND SUBSTR(pers_death_date,-LEAST(4,CHAR_LENGTH(pers_death_date))) > ".$min.") OR
 					(pers_death_date='' AND SUBSTR(pers_buried_date,-LEAST(4,CHAR_LENGTH(pers_buried_date))) < ".$map_max." AND SUBSTR(pers_buried_date,-LEAST(4,CHAR_LENGTH(pers_buried_date))) > ".$min."))
-					ORDER BY wholename");
+					ORDER BY wholename";
+				$maplist=$dbh->query($sql);
 			}
 		}
+//echo 'TEST: '.$sql;
+
 		$man_cls = New person_cls;
 		echo '<div style="direction:ltr">';
 		while (@$maplistDb=$maplist->fetch(PDO::FETCH_OBJ)){
@@ -164,7 +186,7 @@ if(isset($_SESSION['desc_array'])) {
 					$date = $maplistDb->pers_buried_date;
 					$sign = __('buried').' ';
 				}
-			}			
+			}
 			if (!$privacy_man AND $date AND $name["show_name"]==true) {
 				echo ' ('.$sign.date_place($date,'').')'; }
 			if ($name["show_name"]==true){ echo '</a>'; }

@@ -379,7 +379,7 @@ function move($i) {
 //********** 3rd Part:  CODE TO PRINT THE STARFIELD CHART         *****
 //****************************************************************************
 function printchart() {
-	global $dbh, $db_functions, $genarray, $size, $tree_prefix_quoted, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
+	global $dbh, $tree_id, $db_functions, $genarray, $size, $tree_prefix_quoted, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
 	global $vbasesize, $hsize, $vsize, $vdist, $hdist, $user, $direction, $dna;
 	global $dirmark1, $dirmark2, $rtlmarker, $alignmarker, $base_person_gednr, $base_person_name, $base_person_sexe, $base_person_famc;
 
@@ -506,7 +506,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			print '<input type="button" name="dummy" value="'.__('horizontal').'" onClick=\'document.desc_form.direction.value="1";document.desc_form.submit();\'>';
 		}
 		print '</form>'; 
-		$result=$dbh->query("SELECT pers_sexe FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber ='".$keepmain_person."'");
+		$result=$dbh->query("SELECT pers_sexe FROM humo_persons
+			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$keepmain_person."'");
 		$resultDb=$result->fetch(PDO::FETCH_OBJ);
 		if($dna!="none") {
 			echo "&nbsp;&nbsp;".__('DNA: '); 

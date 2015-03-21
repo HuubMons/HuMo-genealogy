@@ -183,11 +183,11 @@ class mainindex_cls{
 
 	//*** Most frequent names ***
 	function last_names(){
-		global $dbh, $language, $user, $humo_option, $uri_path;
+		global $dbh, $tree_id, $language, $user, $humo_option, $uri_path;
 		$personqry="SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
-			FROM ".safe_text($_SESSION['tree_prefix'])."person
-			WHERE pers_lastname NOT LIKE ''
+			FROM humo_persons
+			WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
 			GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,10";
 		$person=$dbh->query($personqry);
 		while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
@@ -221,7 +221,8 @@ class mainindex_cls{
 				echo '<a href="'.$path_tmp.'&amp;pers_lastname='.
 					str_replace("&", "|", $last_names[$i]);
 				if ($pers_prefix[$i]){
-					echo '&amp;pers_prefix='.addslashes($pers_prefix[$i]);
+					//echo '&amp;pers_prefix='.addslashes($pers_prefix[$i]);
+					echo '&amp;pers_prefix='.$pers_prefix[$i];
 				}
 				else{
 					echo '&amp;pers_prefix=EMPTY';
@@ -338,53 +339,70 @@ class mainindex_cls{
 
 	// *** Extra links ***
 	function extra_links(){
-		global $dbh, $humo_option, $uri_path;
+		global $dbh, $tree_id, $humo_option, $uri_path;
 
 		// *** Check if there are extra links ***
 		$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
 		@$num_rows = $datasql->rowCount();
 		if ($num_rows>0){
+			while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
+				$item = explode("|",$dataDb->setting_value);
+				$pers_own_code[] = $item[0];
+				$link_text[] = $item[1];
+				$link_order[] = $dataDb->setting_order;
+			}
 			include_once(CMS_ROOTPATH.'include/person_cls.php');
-			$person=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-				WHERE pers_own_code NOT LIKE ''");
+			$person=$dbh->query("SELECT * FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."' AND pers_own_code NOT LIKE ''");
 			while(@$personDb=$person->fetch(PDO::FETCH_OBJ)){
-				$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
-				while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
-					$item=explode("|",$dataDb->setting_value);
-					if ($personDb->pers_own_code==$item[0]){
-						$person_cls = New person_cls;
-						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;database='.$_SESSION['tree_prefix'].
-								'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-						}
-						elseif ($humo_option["url_rewrite"]=="j"){
-							// *** $uri_path is generated in header.php ***
-							$path_tmp=$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$personDb->pers_indexnr.
-								'/'.$personDb->pers_gedcomnumber.'/';
-						}
-						else{
-							$path_tmp= CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
-								'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-						}
-						$name=$person_cls->person_name($personDb);
-						echo '<a href="'.$path_tmp.'">'.$name["standard_name"].'</a>';
-						echo " $item[1]<br>\n";
+				if (in_array ($personDb->pers_own_code,$pers_own_code) ){
+					if (CMS_SPECIFIC=='Joomla'){
+						$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;database='.$_SESSION['tree_prefix'].
+							'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
 					}
+					elseif ($humo_option["url_rewrite"]=="j"){
+						// *** $uri_path is generated in header.php ***
+						$path_tmp=$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$personDb->pers_indexnr.
+							'/'.$personDb->pers_gedcomnumber.'/';
+					}
+					else{
+						$path_tmp= CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
+							'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
+					}
+					$person_cls = New person_cls;
+					$name=$person_cls->person_name($personDb);
+					$text_nr=array_search ($personDb->pers_own_code,$pers_own_code);
+
+					$link_order2=$link_order[$text_nr];
+					$link_text2[$link_order2]='<a href="'.$path_tmp.'">'.$name["standard_name"].'</a> '.$link_text[$text_nr];
 				}
 			}
+
+			// *** Show links ***
+			if (isset($link_text2)){
+				for($i=1; $i<=count($link_text2); $i++){
+					if (isset($link_text2[$i])) echo $link_text2[$i]."<br>\n";
+				}
+			}
+
 		}
 	}
 
 	// *** Alphabet line ***
 	function alphabet(){
-		global $language, $user, $dbh, $humo_option, $uri_path;
+		global $dbh, $tree_id, $language, $user, $humo_option, $uri_path;
 
 		//*** Find first first_character of last name ***
 		echo __('Surnames Index:')."<br>\n";
-		$personqry="SELECT UPPER(substring(pers_lastname,1,1)) as first_character FROM ".$_SESSION['tree_prefix']."person GROUP BY first_character";
+		//$personqry="SELECT UPPER(LEFT(pers_lastname,1)) as first_character FROM ".$_SESSION['tree_prefix']."person GROUP BY first_character";
+		$personqry="SELECT UPPER(LEFT(pers_lastname,1)) as first_character FROM humo_persons
+			WHERE pers_tree_id='".$tree_id."' GROUP BY first_character";
+
 		// *** If "van Mons" is selected, also check pers_prefix ***
 		if ($user['group_kindindex']=="j"){
-			$personqry="SELECT UPPER(substring(CONCAT(pers_prefix,pers_lastname),1,1)) as first_character FROM ".safe_text($_SESSION['tree_prefix'])."person GROUP BY first_character";
+			//$personqry="SELECT UPPER(LEFT(CONCAT(pers_prefix,pers_lastname),1)) as first_character FROM ".safe_text($_SESSION['tree_prefix'])."person GROUP BY first_character";
+			$personqry="SELECT UPPER(LEFT(CONCAT(pers_prefix,pers_lastname),1)) as first_character FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."' GROUP BY first_character";
 		}
 		@$person=$dbh->query($personqry);
 		while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
@@ -409,8 +427,10 @@ class mainindex_cls{
 			$path_tmp=CMS_ROOTPATH.'list.php?pers_lastname=...';
 		}
 		echo ' <a href="'.$path_tmp. '">'.__('Other')."</a>\n";
-	
-		$person="SELECT pers_patronym FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_patronym LIKE '_%' AND pers_lastname =''";
+
+		//$person="SELECT pers_patronym FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_patronym LIKE '_%' AND pers_lastname =''";
+		$person="SELECT pers_patronym FROM humo_persons
+			WHERE pers_tree_id='".$tree_id."' AND pers_patronym LIKE '_%' AND pers_lastname =''";
 		@$personDb=$dbh->query($person);
 		if ($personDb->rowCount()>0) {
 			echo ' <a href="'.CMS_ROOTPATH.'list.php?index_list=patronym">'.__('Patronyms').'</a>';

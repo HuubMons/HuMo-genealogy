@@ -1,13 +1,13 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.0.9';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.1';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 9 mrt. 2014';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
-$humo_option["version_date"]='2014-12-04';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2015-01-24';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -191,6 +191,12 @@ if (!isset($humo_option["gedcom_read_commit_records"])){
 	@$result=$dbh->query($sql);	
 }
 
+if (!isset($humo_option["gedcom_read_time_out"])){
+	$humo_option["gedcom_read_time_out"]='0';
+	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_read_time_out', setting_value='0'";
+	@$result=$dbh->query($sql);	
+}
+
 // *** Watermark text and color in PDF file ***
 if (!isset($humo_option["watermark_text"])){
 	$humo_option["watermark_text"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_text', setting_value=''";
@@ -212,6 +218,14 @@ if (!isset($humo_option["watermark_color_b"])){
 // *** Minimum characters in search boxes
 if (!isset($humo_option["min_search_chars"])){
 	$humo_option["min_search_chars"]='3'; $sql="INSERT INTO humo_settings SET setting_variable='min_search_chars', setting_value='3'";
+	@$result=$dbh->query($sql);	
+}
+if (!isset($humo_option["date_display"])){
+	$humo_option["date_display"]='eu'; $sql="INSERT INTO humo_settings SET setting_variable='date_display', setting_value='eu'";
+	@$result=$dbh->query($sql);	
+}
+if (!isset($humo_option["name_order"])){
+	$humo_option["name_order"]='western'; $sql="INSERT INTO humo_settings SET setting_variable='name_order', setting_value='western'";
 	@$result=$dbh->query($sql);	
 }
 ?>

@@ -43,10 +43,21 @@ echo '<select size="1" name="database" onChange="this.form.submit();">';
 		if ($hide_tree==false){
 			$selected='';
 			if (isset($_SESSION['tree_prefix'])){
-				if ($tree_prefixDb->tree_prefix==$_SESSION['tree_prefix']){ $selected=' SELECTED'; }
+				if ($tree_prefixDb->tree_prefix==$_SESSION['tree_prefix']){
+					$selected=' SELECTED';
+					$tree_id=$tree_prefixDb->tree_id;
+					$_SESSION['tree_id']=$tree_id;
+					$db_functions->set_tree_id($tree_id);
+				}
 			}
 			else {
-				if($count==0) { $_SESSION['tree_prefix'] = $tree_prefixDb->tree_prefix; $selected=' SELECTED'; }
+				if($count==0) {
+					$_SESSION['tree_prefix'] = $tree_prefixDb->tree_prefix;
+					$selected=' SELECTED';
+					$tree_id=$tree_prefixDb->tree_id;
+					$_SESSION['tree_id']=$tree_id;
+					$db_functions->set_tree_id($tree_id);
+				}
 			}
 			$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
 			echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
@@ -290,18 +301,24 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	$chosenperson= $_GET['persged'];
 	$persfams = $_GET['persfams'];
 	$persfams_arr = explode(';',$persfams);
-	$myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM ".$tree_prefix_quoted.'person
-		WHERE pers_gedcomnumber="'.$chosenperson.'"');
+	//$myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM ".$tree_prefix_quoted.'person
+	//	WHERE pers_gedcomnumber="'.$chosenperson.'"');
+	$myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$chosenperson."'");
 	$myresultDb=$myresult->fetch(PDO::FETCH_OBJ);
 	$chosenname = $myresultDb->pers_firstname.' '.strtolower(str_replace('_','',$myresultDb->pers_prefix)).' '.$myresultDb->pers_lastname;
 
 	$gn=0; // generatienummer
 
 	// prepared statements for use in outline loops
-	$family_prep = $dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
+	//$family_prep = $dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
+	$family_prep = $dbh->prepare("SELECT fam_man, fam_woman FROM humo_families
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
 	$family_prep->bindParam(1,$fam_prep_var);
 
-	$person_prep = $dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
+	//$person_prep = $dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
+	$person_prep = $dbh->prepare("SELECT pers_fams FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
 	$person_prep->bindParam(1,$pers_prep_var);
 
 	function outline($family_id,$main_person,$gn) {
@@ -424,7 +441,9 @@ echo '</div>';
 // END MENU
 
 // FIXED WINDOW WITH LIST OF SPECIFIC FAMILY NAMES TO MAP BY
-$fam_search = "SELECT * , CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname FROM ".$tree_prefix_quoted."person WHERE (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
+//$fam_search = "SELECT * , CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname FROM ".$tree_prefix_quoted."person WHERE (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
+$fam_search = "SELECT * , CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
+	FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
 $fam_search_result = $dbh->query($fam_search);
 echo '<div id="namemapping" style="display:none; z-index:100; position:absolute; top:90px; margin-left:10px; height:460px; width:250px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;">';
 echo '<form method="POST" action="maps.php" name="yossi" style="display : inline;">';
@@ -465,14 +484,18 @@ if(isset($_POST['descmap'])) {
 	echo '<div id="descmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:'.$select_height.'; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">';
 	if($user['group_kindindex']=="j") { $orderlast = "CONCAT(pers_prefix,pers_lastname)"; }
 	else { $orderlast = "pers_lastname"; }
-	$desc_search = "SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_fams !='' ORDER BY ".$orderlast.", pers_firstname";
+	//$desc_search = "SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_fams !='' ORDER BY ".$orderlast.", pers_firstname";
+	$desc_search = "SELECT * FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_fams !='' ORDER BY ".$orderlast.", pers_firstname";
 	$desc_search_result = $dbh->query($desc_search);
 	echo '&nbsp;&nbsp;'.__('Pick a name or enter ID:').'<br>';
 	echo '<form method="POST" action="" style="display : inline;">';
 	echo '<select style="max-width:396px;background:#eee" '.$select_size.' onChange="window.location=this.value;" id="desc_map" name="desc_map">';
 	echo '<option value="toptext">'.__('Pick a name from the pulldown list').'</option>';
 	//prepared statement out of loop
-	$chld_prep = $dbh->prepare("SELECT fam_children FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber =? AND fam_children != ''");
+	//$chld_prep = $dbh->prepare("SELECT fam_children FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber =? AND fam_children != ''");
+	$chld_prep = $dbh->prepare("SELECT fam_children FROM humo_families
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber =? AND fam_children != ''");
 	$chld_prep->bindParam(1,$chld_var);
 	while($desc_searchDb=$desc_search_result->fetch(PDO::FETCH_OBJ)) {
 		$countmarr = 0;
@@ -600,8 +623,8 @@ function findPlace () {
 </script>
 
 <?php
-
 include_once(CMS_ROOTPATH."googlemaps/google_initiate.php");
+//$db_functions->set_tree_id($tree_id);
 ?>
 
 <script type="text/javascript">

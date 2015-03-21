@@ -122,5 +122,10 @@ $hide_tree=false;
 for ($x=0; $x<=count($hide_tree_array)-1; $x++){
 	if ($hide_tree_array[$x]==@$dataDb->tree_id){ $hide_tree=true; }
 }
-if ($hide_tree){ $_SESSION['tree_prefix']=''; }
+if ($hide_tree){
+	$_SESSION['tree_prefix']='';
+}
+else{
+	$tree_id=$dataDb->tree_id;
+}
 ?>

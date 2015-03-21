@@ -17,7 +17,7 @@
 // * function witness (person gedcomnumber, $event item, database field);
 // **********************************************************************
 function witness($gedcomnr,$event, $field='person'){
-	global $dbh, $db_functions, $tree_prefix_quoted;
+	global $dbh, $db_functions;
 	$counter=0; $text='';
 	if ($gedcomnr){
 		$witness_cls = New person_cls;
@@ -40,9 +40,9 @@ function witness($gedcomnr,$event, $field='person'){
 				}
 			}
 			if ($witnessDb->event_date){ $text.=' '.date_place($witnessDb->event_date,''); } // *** Use date_place function, there is no place here... ***
-			if ($witnessDb->event_source){
-				$text.=show_sources2($field,"event_source",$witnessDb->event_id);
-			}
+
+			$source=show_sources2($field,"pers_event_source",$witnessDb->event_id);
+			if ($source) $text.=$source;
 		}
 	}
 	return $text;

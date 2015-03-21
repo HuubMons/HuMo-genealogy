@@ -27,9 +27,6 @@ if($screen_mode!='PDF') {  //we can't have a menu in pdf...
 	include_once(CMS_ROOTPATH."menu.php");
 } 
 else {
-	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
-	$db_functions = New db_functions;
-
 	if (isset($_SESSION['tree_prefix'])){
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
@@ -37,7 +34,12 @@ else {
 			WHERE tree_prefix='".$tree_prefix_quoted."'";
 		@$datasql = $dbh->query($dataqry);
 		@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+		$tree_id=$dataDb->tree_id;
 	}
+
+	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+	$db_functions = New db_functions;
+	$db_functions->set_tree_id($tree_id);
 }
 
 // *** Family gedcomnumber ***
@@ -178,7 +180,8 @@ echo '</select>';
 echo '</span>';
 
 echo '&nbsp;&nbsp;&nbsp;<span>';
-	if($language["dir"]!="rtl") {
+	//if($language["dir"]!="rtl") {
+	if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 		//Show pdf button
 		print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
 		print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
@@ -195,7 +198,8 @@ echo '&nbsp;&nbsp;&nbsp;<span>';
 echo '</span>';
 
 echo '&nbsp;&nbsp;&nbsp;<span>';
-	if($language["dir"]!="rtl") {
+	//if($language["dir"]!="rtl") {
+	if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 		//Show pdf button
 		print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
 		print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
@@ -221,15 +225,15 @@ $gn=0;   // generatienummer
 // *************************************
 
 //some PDO prepared statements before function and loops are used
-$fam_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted.'family WHERE fam_gedcomnumber=?');
+$fam_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
 $fam_prep->bindParam(1,$fam_prep_var);
-$pers_prep=$dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
+$pers_prep=$dbh->prepare("SELECT pers_fams FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
 $pers_prep->bindParam(1,$pers_prep_var);
 
 function outline($family_id,$main_person,$gn,$nr_generations) {
-	global $pdf, $db_functions, $show_date, $dates_behind_names, $nr_generations;
+	global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $show_date, $dates_behind_names, $nr_generations;
 	global $language, $dirmark1, $dirmark1, $screen_mode;
-	global $dbh, $fam_prep, $pers_prep, $fam_prep_var, $pers_prep_var;
+	global $fam_prep, $pers_prep, $fam_prep_var, $pers_prep_var;
 
 	$family_nr=1; //*** Process multiple families ***
 

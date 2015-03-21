@@ -18,6 +18,9 @@ include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."include/safe.php");
 include_once(CMS_ROOTPATH."include/settings_user.php");
 
+include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+$db_functions = New db_functions;
+
 // *** Set timezone ***
 include_once(CMS_ROOTPATH."include/timezone.php");
 timezone();
@@ -74,10 +77,12 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 			substring(pers_birth_date,1,2) as birth_day,
 			substring(pers_birth_date,8,4) as birth_year,
 			substring(pers_death_date,8,4) as death_year
-			FROM ".safe_text($dataDb->tree_prefix)."person
-			WHERE pers_birth_date!=''
+			FROM humo_persons
+			WHERE pers_tree_id='".$dataDb->tree_id."'
+			AND (pers_birth_date!=''
 			AND (substring(pers_birth_date,3,3) = '$month_number' AND CONCAT('0',substring(pers_birth_date,1,1)) = '$today_day') 
-			OR (substring(pers_birth_date,4,3) = '$month_number' AND substring(pers_birth_date,1,2)='$today_day') order by pers_lastname";
+			OR (substring(pers_birth_date,4,3) = '$month_number' AND substring(pers_birth_date,1,2)='$today_day')
+			) order by pers_lastname";
 		$query = $dbh->query($sql);
 		while($record = $query->fetch(PDO::FETCH_OBJ)) {
 			$person_cls1 = New person_cls;

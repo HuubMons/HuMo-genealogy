@@ -10,12 +10,12 @@
 // $connect_sub_kind = birth/ baptise/ etc.
 // $connect_connect_id = id (gedcomnumber or direct table id)
 function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
-	global $user, $humo_option, $language, $dbh, $tree_prefix_quoted, $family_id, $url_path, $uri_path;
+	global $dbh, $db_functions, $tree_id, $user, $humo_option, $language, $tree_prefix_quoted, $family_id, $url_path, $uri_path;
 	global $main_person, $descendant_report, $pdf_source;
 	global $source_footnotes, $screen_mode, $pdf_footnotes, $pdf;
 	global $source_footnote_connect_id;
 	global $source_combiner;
-	$text='';
+	$text=false;
 
 	$source_presentation='title';
 	if (isset($_SESSION['save_source_presentation'])){
@@ -28,20 +28,21 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 	if ($user['group_sources']!='n' AND $source_presentation!='hide' AND $screen_mode!='STAR'){
 
 		// *** Search for all connected sources ***
-		$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
-			WHERE connect_kind='".$connect_kind."'
+		//$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
+		$connect_qry="SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'
+			AND connect_kind='".$connect_kind."'
 			AND connect_sub_kind='".$connect_sub_kind."'
 			AND connect_connect_id='".$connect_connect_id."'
 			ORDER BY connect_order";
 		$connect_sql=$dbh->query($connect_qry);
-
 		while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
 			// *** Get extended source, and check for restriction (in source and user group) ***
 			$source_status='publish';
 			if ($connectDb->connect_source_id){
-				$source_sql=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources
-					WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'");
-				$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);
+				//$source_sql=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources
+				//	WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'");
+				//$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);
+				$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
 				if ($user['group_show_restricted_source']=='n' AND $sourceDb->source_status=='restricted'){
 					$source_status='restricted';
 				}
@@ -118,9 +119,13 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				// *** Link to extended source ***
 				if ($connectDb->connect_source_id AND $source_status=='publish'){
 					// *** Always show title of source, show link only after permission check ***
-					if ($user['group_sources']=='j'){
+					if ($user['group_sources']=='j' AND $connect_sub_kind!='person_source'){
 						$text.= ', <a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].
 						'&amp;id='.$sourceDb->source_gedcomnr.'">'.strtolower(__('Source'));
+					}
+					elseif ($connect_sub_kind=='person_source'){
+						$text.= '. <b>'.__('Source for person').'</b>';
+						$text.= '<a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$sourceDb->source_gedcomnr.'">';
 					}
 					else{
 						$text.= ', '.__('Source');
@@ -163,7 +168,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 // *** Show source list if footnotes are selected ***
 // **************************************************
 function show_sources_footnotes(){
-	global $source_footnotes, $language, $dbh, $tree_prefix_quoted, $user;
+	global $dbh, $db_functions, $tree_id, $source_footnotes, $language, $tree_prefix_quoted, $user;
 	global $uri_path, $source_footnote_connect_id;
 	$text='';
 
@@ -172,15 +177,18 @@ function show_sources_footnotes(){
 	}
 
 	for ($j=0; $j<=(count($source_footnote_connect_id)-1); $j++){
-		$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
+		//$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
+		//	WHERE connect_id='".$source_footnote_connect_id[$j]."'";
+		$connect_qry="SELECT * FROM humo_connections
 			WHERE connect_id='".$source_footnote_connect_id[$j]."'";
 		$connect_sql=$dbh->query($connect_qry);
 		$connectDb=$connect_sql->fetch(PDO::FETCH_OBJ);
 		// *** Show extended source data ***
 		if ($connectDb->connect_source_id){
-			$source_sql=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources
-				WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'");
-			$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);
+			//$source_sql=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources
+			//	WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'");
+			//$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);
+			$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
 
 			// *** Always show title of source, show link only after permission check ***
 			$text.='<a name="source_ref'.($j+1).'"><b>'.($j+1).')</b></a>';

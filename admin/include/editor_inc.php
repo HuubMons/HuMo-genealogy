@@ -11,10 +11,25 @@ $confirm_relation='';
 
 $pers_favorite='';
 if (isset($_GET['pers_favorite'])){
-	if ($_GET['pers_favorite']=="1"){ $pers_favorite='1'; } else{ $pers_favorite=''; }
-	$sql="UPDATE ".$tree_prefix."person SET pers_favorite='".$pers_favorite."'
-		WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
-	$result=$dbh->query($sql);
+	//if ($_GET['pers_favorite']=="1"){ $pers_favorite='1'; } else{ $pers_favorite=''; }
+	//$sql="UPDATE ".$tree_prefix."person SET pers_favorite='".$pers_favorite."'
+	//	WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
+	//$result=$dbh->query($sql);
+
+	if ($_GET['pers_favorite']=="1"){
+		$sql = "INSERT INTO humo_settings SET
+			setting_variable='admin_favourite',
+			setting_value='".safe_text($pers_gedcomnumber)."',
+			setting_tree_id='".safe_text($tree_id)."'";
+		$result = $dbh->query($sql);
+	}
+	else{
+		$sql = "DELETE FROM humo_settings
+			WHERE setting_variable='admin_favourite'
+			AND setting_value='".safe_text($pers_gedcomnumber)."'
+			AND setting_tree_id='".safe_text($tree_id)."'";
+		$result = $dbh->query($sql);
+	}
 }
 
 
@@ -24,7 +39,7 @@ if (isset($_GET['pers_favorite'])){
 
 
 if (isset($_POST['person_remove'])){
-	$new_nr_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
+	$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
 	$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 
@@ -50,7 +65,7 @@ if (isset($_POST['person_remove'])){
 if (isset($_POST['person_remove2'])){
 	$confirm.='<div class="confirm">';
 
-	$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
+	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
 	$person_result = $dbh->query($person_qry);
 	$personDb=$person_result->fetch(PDO::FETCH_OBJ);
 
@@ -58,8 +73,8 @@ if (isset($_POST['person_remove2'])){
 	if ($personDb->pers_fams){
 		$fams_array=explode(";",$personDb->pers_fams);
 		foreach ($fams_array as $key => $value) {
-			$fam_qry= "SELECT * FROM ".$tree_prefix."family
-				WHERE fam_gedcomnumber='".$fams_array[$key]."'";
+			$fam_qry= "SELECT * FROM humo_families
+				WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fams_array[$key]."'";
 			$fam_result = $dbh->query($fam_qry);
 			$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
 
@@ -70,23 +85,23 @@ if (isset($_POST['person_remove2'])){
 					// *** Remove parents by children ***
 					$fam_children=explode(";",$famDb->fam_children);
 					foreach ($fam_children as $key2 => $value) {
-						$sql="UPDATE ".$tree_prefix."person SET pers_famc=''
-							WHERE pers_gedcomnumber='".$fam_children[$key2]."'";
+						$sql="UPDATE humo_persons SET pers_famc=''
+							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$fam_children[$key2]."'";
 						$result=$dbh->query($sql);
 					}
 
-					$sql="DELETE FROM ".$tree_prefix."family
-						WHERE fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
+					$sql="DELETE FROM humo_families
+						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
 					$result=$dbh->query($sql);
 
 					// *** Remove indexnr from children without own family ***
-					$sql="UPDATE ".$tree_prefix."person SET pers_indexnr=''
-						WHERE pers_indexnr='".$famDb->fam_gedcomnumber."'";
+					$sql="UPDATE humo_persons SET pers_indexnr=''
+						WHERE pers_tree_id='".$tree_id."' AND pers_indexnr='".$famDb->fam_gedcomnumber."'";
 					$result=$dbh->query($sql);
 				}
 				else{
-					$sql="UPDATE ".$tree_prefix."family SET fam_man='0'
-						WHERE fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
+					$sql="UPDATE humo_families SET fam_man='0'
+						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
 					$result=$dbh->query($sql);
 					$confirm.=__('Person disconnected from marriage(s).').'<br>';
 				}
@@ -99,23 +114,23 @@ if (isset($_POST['person_remove2'])){
 					// *** Remove parents by children ***
 					$fam_children=explode(";",$famDb->fam_children);
 					foreach ($fam_children as $key2 => $value) {
-						$sql="UPDATE ".$tree_prefix."person SET pers_famc=''
-							WHERE pers_gedcomnumber='".$fam_children[$key2]."'";
+						$sql="UPDATE humo_persons SET pers_famc=''
+							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$fam_children[$key2]."'";
 						$result=$dbh->query($sql);
 					}
 
-					$sql="DELETE FROM ".$tree_prefix."family
-						WHERE fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
+					$sql="DELETE FROM humo_families
+						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
 						$result=$dbh->query($sql);
 
 					// *** Remove indexnr from children without own family ***
-					$sql="UPDATE ".$tree_prefix."person SET pers_indexnr=''
-						WHERE pers_indexnr='".$famDb->fam_gedcomnumber."'";
+					$sql="UPDATE humo_persons SET pers_indexnr=''
+						WHERE pers_tree_id='".$tree_id."' AND pers_indexnr='".$famDb->fam_gedcomnumber."'";
 					$result=$dbh->query($sql);
 				}
 				else{
-					$sql="UPDATE ".$tree_prefix."family SET fam_woman='0'
-						WHERE fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
+					$sql="UPDATE humo_families SET fam_woman='0'
+						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
 					$result=$dbh->query($sql);
 					$confirm.=__('Person disconnected from marriage(s).').'<br>';
 				}
@@ -126,8 +141,8 @@ if (isset($_POST['person_remove2'])){
 	// *** If person is a child: remove child number from parents family ***
 	//if (!$personDb->pers_fams AND $personDb->pers_famc){
 	if ($personDb->pers_famc){
-		$fam_qry= "SELECT * FROM ".$tree_prefix."family
-			WHERE fam_gedcomnumber='".$personDb->pers_famc."'";
+		$fam_qry= "SELECT * FROM humo_families
+			WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$personDb->pers_famc."'";
 		$fam_result = $dbh->query($fam_qry);
 		$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
 
@@ -138,27 +153,27 @@ if (isset($_POST['person_remove2'])){
 		$fam_children3='';
 		if (isset($fam_children2[0])){ $fam_children3 = implode(";", $fam_children2); }
 
-		$sql="UPDATE ".$tree_prefix."family SET
+		$sql="UPDATE humo_families SET
 			fam_children='".$fam_children3."'
-			WHERE fam_gedcomnumber='".$personDb->pers_famc."'";
+			WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$personDb->pers_famc."'";
 		$result=$dbh->query($sql);
 
 		$confirm.=__('Person disconnected from parents.').'<br>';
 	}
 
-	$sql="DELETE FROM ".$tree_prefix."events WHERE event_person_id='".$pers_gedcomnumber."'";
+	$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'";
 	$result=$dbh->query($sql);
 
-	$sql="DELETE FROM ".$tree_prefix."addresses WHERE address_person_id='".$pers_gedcomnumber."'";
+	$sql="DELETE FROM humo_addresses WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."'";
 	$result=$dbh->query($sql);
 
-	$sql="DELETE FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
+	$sql="DELETE FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
 	$result=$dbh->query($sql);
 
 	$confirm.=__('Person is removed');
 
 	// *** Select new person ***
-	$new_nr_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_favorite LIKE '%_' ORDER BY pers_lastname, pers_firstname LIMIT 0,1";
+	$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_favorite LIKE '%_' ORDER BY pers_lastname, pers_firstname LIMIT 0,1";
 	$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 	if (isset($new_nr->pers_gedcomnumber)){
@@ -166,7 +181,7 @@ if (isset($_POST['person_remove2'])){
 		$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 	}
 	else{
-		$new_nr_qry= "SELECT * FROM ".$tree_prefix."person LIMIT 0,1";
+		$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' LIMIT 0,1";
 		$new_nr_result = $dbh->query($new_nr_qry);
 		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 		if ($new_nr->pers_gedcomnumber){
@@ -187,7 +202,7 @@ if (isset($_POST['person_change'])){
 		$pers_alive='deceased';
 	}
 
-	$sql="UPDATE ".$tree_prefix."person SET
+	$sql="UPDATE humo_persons SET
 	pers_firstname='".$editor_cls->text_process($_POST["pers_firstname"])."',
 	pers_callname='".$editor_cls->text_process($_POST["pers_callname"])."',
 	pers_prefix='".$editor_cls->text_process($_POST["pers_prefix"])."',
@@ -200,10 +215,9 @@ if (isset($_POST['person_change'])){
 	pers_text='".$editor_cls->text_process($_POST["person_text"],true)."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
-	WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
+	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
 	$result=$dbh->query($sql);
 	//pers_favorite='".$pers_favorite."',
-	//pers_name_source='".safe_text($_POST["pers_name_source"])."',
 	//pers_quality='".$_POST["pers_quality"]."',
 
 	$pers_stillborn=''; if (isset($_POST["pers_stillborn"])) $pers_stillborn='y';
@@ -211,7 +225,7 @@ if (isset($_POST['person_change'])){
 	$pers_death_cause=$_POST["pers_death_cause"];
 	if (isset($_POST["pers_death_cause2"]) AND $_POST["pers_death_cause2"]) $pers_death_cause=$_POST["pers_death_cause2"];
 
-	$sql="UPDATE ".$tree_prefix."person SET
+	$sql="UPDATE humo_persons SET
 	pers_birth_date='".$editor_cls->date_process("pers_birth_date")."',
 	pers_birth_place='".$editor_cls->text_process($_POST["pers_birth_place"])."',
 	pers_birth_time='".$editor_cls->text_process($_POST["pers_birth_time"])."',
@@ -232,7 +246,7 @@ if (isset($_POST['person_change'])){
 	pers_cremation='".safe_text($_POST["pers_cremation"])."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
-	WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
+	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
 	$result=$dbh->query($sql);
 	family_tree_update($tree_prefix);
 }
@@ -240,7 +254,7 @@ if (isset($_POST['person_change'])){
 if (isset($_POST['person_add'])){
 	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
 	$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
-		FROM ".$tree_prefix."person ORDER BY gednr DESC LIMIT 0,1";
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
 	$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 	$new_gedcomnumber='I1';
@@ -255,7 +269,8 @@ if (isset($_POST['person_add'])){
 	}
 
 	$pers_stillborn=''; if (isset($_POST["pers_stillborn"])){ $pers_stillborn='y'; }
-	$sql="INSERT INTO ".$tree_prefix."person SET
+	$sql="INSERT INTO humo_persons SET
+		pers_tree_id='".$tree_id."',
 		pers_tree_prefix='".$tree_prefix."',
 		pers_famc='',
 		pers_fams='',
@@ -321,7 +336,7 @@ if (isset($_GET['fam_down'])){
 		if ($k>0){ $fams.=';'; }
 		$fams.=$child_array[$k];
 	}
-	$sql="UPDATE ".$tree_prefix."person SET
+	$sql="UPDATE humo_persons SET
 	pers_fams='".$fams."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
@@ -341,7 +356,7 @@ if (isset($_GET['fam_up'])){
 		if ($k>0){ $fams.=';'; }
 		$fams.=$child_array[$k];
 	}
-	$sql="UPDATE ".$tree_prefix."person SET
+	$sql="UPDATE humo_persons SET
 	pers_fams='".$fams."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
@@ -351,9 +366,9 @@ if (isset($_GET['fam_up'])){
 
 // *** Some functions to add and remove a fams number from a person (if marriage is changed) ***
 function fams_add($personnr, $familynr){
-	global $dbh, $tree_prefix, $gedcom_date, $gedcom_time;
+	global $dbh, $tree_id, $tree_prefix, $gedcom_date, $gedcom_time;
 	// *** Add marriage to person records ***
-	$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".safe_text($personnr)."'";
+	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($personnr)."'";
 	$person_result = $dbh->query($person_qry);
 	$person_db=$person_result->fetch(PDO::FETCH_OBJ);
 	if (@$person_db->pers_gedcomnumber){
@@ -366,7 +381,7 @@ function fams_add($personnr, $familynr){
 			$pers_indexnr=$familynr;
 			$fams=$familynr;
 		}
-		$sql="UPDATE ".$tree_prefix."person SET
+		$sql="UPDATE humo_persons SET
 			pers_fams='".$fams."',
 			pers_indexnr='".$pers_indexnr."',
 			pers_changed_date='".$gedcom_date."',
@@ -377,8 +392,8 @@ function fams_add($personnr, $familynr){
 }
 
 function fams_remove($personnr, $familynr){
-	global $dbh, $tree_prefix, $gedcom_date, $gedcom_time;
-	$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$personnr."'";
+	global $dbh, $tree_id, $tree_prefix, $gedcom_date, $gedcom_time;
+	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$personnr."'";
 	$person_result = $dbh->query($person_qry);
 	$person_db=$person_result->fetch(PDO::FETCH_OBJ);
 	if (@$person_db->pers_gedcomnumber){
@@ -392,7 +407,7 @@ function fams_remove($personnr, $familynr){
 			$fams3 = implode(";", $fams2);
 			$pers_indexnr=$fams2[0];
 		}
-		$sql="UPDATE ".$tree_prefix."person SET
+		$sql="UPDATE humo_persons SET
 			pers_fams='".$fams3."',
 			pers_indexnr='".$pers_indexnr."',
 			pers_changed_date='".$gedcom_date."',
@@ -407,7 +422,7 @@ if (isset($_GET['fam_remove']) OR isset($_POST['fam_remove']) ){
 	if (isset($_GET['fam_remove'])){ $fam_remove=safe_text($_GET['fam_remove']); };
 	if (isset($_POST['marriage_nr'])){ $fam_remove=safe_text($_POST['marriage_nr']); };
 
-	$new_nr_qry= "SELECT * FROM ".$tree_prefix."family WHERE fam_gedcomnumber='".$fam_remove."'";
+	$new_nr_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fam_remove."'";
 	$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 	$confirm_relation.='<div class="confirm">';
@@ -426,7 +441,7 @@ if (isset($_POST['fam_remove2'])){
 	$fam_remove=safe_text($_POST['fam_remove3']);
 
 	// *** Remove fams number from man and woman ***
-	$new_nr_qry= "SELECT * FROM ".$tree_prefix."family WHERE fam_gedcomnumber='".$fam_remove."'";
+	$new_nr_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fam_remove."'";
 	$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 
@@ -435,20 +450,20 @@ if (isset($_POST['fam_remove2'])){
 		$child_gedcomnumber=explode(";",$new_nr->fam_children);
 		for($i=0; $i<=substr_count($new_nr->fam_children, ";"); $i++){
 			// *** Find child data ***
-			$sql= "SELECT * FROM ".$tree_prefix."person
-				WHERE pers_gedcomnumber='".safe_text($child_gedcomnumber[$i])."'";
+			$sql= "SELECT * FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($child_gedcomnumber[$i])."'";
 			$result = $dbh->query($sql);
 			$resultDb=$result->fetch(PDO::FETCH_OBJ);
 			$pers_indexnr=$resultDb->pers_indexnr;
 			if ($pers_indexnr==$fam_remove){ $pers_indexnr=''; }
 
 			// *** Remove parents from child record ***
-			$sql="UPDATE ".$tree_prefix."person SET
+			$sql="UPDATE humo_persons SET
 			pers_famc='',
 			pers_indexnr='".safe_text($pers_indexnr)."',
 			pers_changed_date='".$gedcom_date."',
 			pers_changed_time='".$gedcom_time."'
-			WHERE pers_gedcomnumber='".safe_text($child_gedcomnumber[$i])."'";
+			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($child_gedcomnumber[$i])."'";
 			$result=$dbh->query($sql);
 		}
 	}
@@ -458,13 +473,15 @@ if (isset($_POST['fam_remove2'])){
 	unset ($fams2);
 	if (isset($new_nr->fam_woman)){ fams_remove($new_nr->fam_woman, $fam_remove); }
 
-	$sql="DELETE FROM ".$tree_prefix."events WHERE event_family_id='".$fam_remove."'";
+	//$sql="DELETE FROM ".$tree_prefix."events WHERE event_family_id='".$fam_remove."'";
+	$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_family_id='".$fam_remove."'";
 	$result=$dbh->query($sql);
 
-	$sql="DELETE FROM ".$tree_prefix."addresses WHERE address_family_id='".$fam_remove."'";
+	//$sql="DELETE FROM ".$tree_prefix."addresses WHERE address_family_id='".$fam_remove."'";
+	$sql="DELETE FROM humo_addresses WHERE address_tree_id='".$tree_id."' AND address_family_id='".$fam_remove."'";
 	$result=$dbh->query($sql);
 
-	$sql="DELETE FROM ".$tree_prefix."family WHERE fam_gedcomnumber='".$fam_remove."'";
+	$sql="DELETE FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fam_remove."'";
 	$result=$dbh->query($sql);
 
 	family_tree_update($tree_prefix);
@@ -472,13 +489,22 @@ if (isset($_POST['fam_remove2'])){
 	$confirm_relation.='<div class="confirm">';
 	$confirm_relation.=__('Marriage is removed!');
 	$confirm_relation.='</div>';
+
+	// *** If this relation is removed, show 1st relation of person, or link to new relation ***
+	$marriage='';
+	if (isset($person->pers_fams) AND $person->pers_fams){
+		$fams1=explode(";",$person->pers_fams);
+		$marriage=$fams1[0];
+	}
+	$_POST["marriage_nr"]=$marriage;
+	$_SESSION['admin_fam_gedcomnumber']=$marriage;
 }
 
 // *** Add NEW N.N. parents to a child ***
 if (isset($_GET['add_parents'])){
 	// *** Generate new gedcomnr, find highest gedcomnumber F100: strip F and order by numeric ***
 	$new_nr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS gednr
-		FROM ".$tree_prefix."family ORDER BY gednr DESC LIMIT 0,1";
+		FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
 	$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 	//$new_gedcomnumber='F1';
@@ -487,7 +513,7 @@ if (isset($_GET['add_parents'])){
 
 	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
 	$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
-		FROM ".$tree_prefix."person ORDER BY gednr DESC LIMIT 0,1";
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
 	$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 	//$new_gedcomnumber='I1';
@@ -498,8 +524,9 @@ if (isset($_GET['add_parents'])){
 		$woman_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+2);
 	}
 
-	$sql="INSERT INTO ".$tree_prefix."family SET
+	$sql="INSERT INTO humo_families SET
 	fam_gedcomnumber='".$fam_gedcomnumber."',
+	fam_tree_id='".$tree_id."',
 	fam_kind='',
 	fam_man='".safe_text($man_gedcomnumber)."',
 	fam_woman='".safe_text($woman_gedcomnumber)."',
@@ -517,11 +544,12 @@ if (isset($_GET['add_parents'])){
 	$result=$dbh->query($sql);
 
 	// *** Add N.N. father ***
-	$sql="INSERT INTO ".$tree_prefix."person SET
+	$sql="INSERT INTO humo_persons SET
 		pers_gedcomnumber='".$man_gedcomnumber."',
+		pers_tree_id='".$tree_id."',
 		pers_tree_prefix='".$tree_prefix."',
 		pers_famc='', pers_fams='".safe_text($fam_gedcomnumber)."', pers_indexnr='".safe_text($fam_gedcomnumber)."',
-		pers_firstname='N.N.', pers_callname='', pers_prefix='', pers_lastname='', pers_patronym='', pers_name_text='',
+		pers_firstname='".__('N.N.')."', pers_callname='', pers_prefix='', pers_lastname='', pers_patronym='', pers_name_text='',
 		pers_alive='alive', pers_sexe='M', pers_own_code='', pers_place_index='', pers_text='',
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
@@ -532,11 +560,12 @@ if (isset($_GET['add_parents'])){
 	$result=$dbh->query($sql);
 
 	// *** Add N.N. mother ***
-	$sql="INSERT INTO ".$tree_prefix."person SET
+	$sql="INSERT INTO humo_persons SET
 		pers_gedcomnumber='".$woman_gedcomnumber."',
+		pers_tree_id='".$tree_id."',
 		pers_tree_prefix='".$tree_prefix."',
 		pers_famc='', pers_fams='".safe_text($fam_gedcomnumber)."', pers_indexnr='".safe_text($fam_gedcomnumber)."',
-		pers_firstname='N.N.', pers_callname='', pers_prefix='', pers_lastname='', pers_patronym='', pers_name_text='',
+		pers_firstname='".__('N.N.')."', pers_callname='', pers_prefix='', pers_lastname='', pers_patronym='', pers_name_text='',
 		pers_alive='alive', pers_sexe='F', pers_own_code='', pers_place_index='', pers_text='',
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
@@ -547,11 +576,11 @@ if (isset($_GET['add_parents'])){
 	$result=$dbh->query($sql);
 
 	// *** Add parents to child record ***
-	$sql="UPDATE ".$tree_prefix."person SET
+	$sql="UPDATE humo_persons SET
 	pers_famc='".safe_text($fam_gedcomnumber)."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
-	WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
+	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
 	//echo $sql.'<br>';
 	$result=$dbh->query($sql);
 	//	pers_indexnr='".safe_text($pers_indexnr)."',
@@ -561,8 +590,8 @@ if (isset($_GET['add_parents'])){
 
 // *** Add EXISTING parents to a child ***
 if (isset($_POST['add_parents']) AND $_POST['add_parents']!=''){
-	$parents= "SELECT * FROM ".$tree_prefix."family
-		WHERE fam_gedcomnumber='".safe_text($_POST['add_parents'])."'";
+	$parents= "SELECT * FROM humo_families
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['add_parents'])."'";
 	$parents_result = $dbh->query($parents);
 	$parentsDb=$parents_result->fetch(PDO::FETCH_OBJ);
 
@@ -573,28 +602,28 @@ if (isset($_POST['add_parents']) AND $_POST['add_parents']!=''){
 		$fam_children=$pers_gedcomnumber;
 	}
 
-	$sql="UPDATE ".$tree_prefix."family SET
+	$sql="UPDATE humo_families SET
 	fam_children='".$fam_children."',
 	fam_changed_date='".$gedcom_date."',
 	fam_changed_time='".$gedcom_time."'
-	WHERE fam_gedcomnumber='".safe_text($_POST['add_parents'])."'";
+	WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['add_parents'])."'";
 	$result=$dbh->query($sql);
 
 	// *** Check pers_indexnr, change indexnr if needed ***
-	$sql= "SELECT * FROM ".$tree_prefix."person
-		WHERE pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
+	$sql= "SELECT * FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
 	$result = $dbh->query($sql);
 	$resultDb=$result->fetch(PDO::FETCH_OBJ);
 	$pers_indexnr=$resultDb->pers_indexnr;
 	if ($pers_indexnr==''){ $pers_indexnr=$_POST['add_parents']; }
 
 	// *** Add parents to child record ***
-	$sql="UPDATE ".$tree_prefix."person SET
+	$sql="UPDATE humo_persons SET
 	pers_famc='".safe_text($_POST['add_parents'])."',
 	pers_indexnr='".safe_text($pers_indexnr)."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
-	WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
+	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
 	$result=$dbh->query($sql);
 
 	family_tree_update($tree_prefix);
@@ -607,36 +636,36 @@ if (isset($_POST['add_parents']) AND $_POST['add_parents']!=''){
 // *** Add child to family ***
 if (isset($_POST['child_connect2'])){
 	if (isset($_POST["children"])){
-		$sql="UPDATE ".$tree_prefix."family SET
+		$sql="UPDATE humo_families SET
 		fam_children='".safe_text($_POST["children"]).';'.safe_text($_POST["child_connect2"])."',
 		fam_changed_date='".$gedcom_date."',
 		fam_changed_time='".$gedcom_time."'
-		WHERE fam_gedcomnumber='".safe_text($_POST['family_id'])."'";
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['family_id'])."'";
 	}
 	else{
-		$sql="UPDATE ".$tree_prefix."family SET
+		$sql="UPDATE humo_families SET
 		fam_children='".safe_text($_POST["child_connect2"])."',
 		fam_changed_date='".$gedcom_date."',
 		fam_changed_time='".$gedcom_time."'
-		WHERE fam_gedcomnumber='".safe_text($_POST['family_id'])."'";
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['family_id'])."'";
 	}
 	$result=$dbh->query($sql);
 
 	// *** Check pers_indexnr, change indexnr if needed ***
-	$sql= "SELECT * FROM ".$tree_prefix."person
-		WHERE pers_gedcomnumber='".safe_text($_POST["child_connect2"])."'";
+	$sql= "SELECT * FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($_POST["child_connect2"])."'";
 	$result = $dbh->query($sql);
 	$resultDb=$result->fetch(PDO::FETCH_OBJ);
 	$pers_indexnr=$resultDb->pers_indexnr;
 	if ($pers_indexnr==''){ $pers_indexnr=$_POST['family_id']; }
 
 	// *** Add parents to child record ***
-	$sql="UPDATE ".$tree_prefix."person SET
+	$sql="UPDATE humo_persons SET
 	pers_famc='".safe_text($_POST['family_id'])."',
 	pers_indexnr='".safe_text($pers_indexnr)."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
-	WHERE pers_gedcomnumber='".safe_text($_POST["child_connect2"])."'";
+	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($_POST["child_connect2"])."'";
 	$result=$dbh->query($sql);
 
 	family_tree_update($tree_prefix);
@@ -657,7 +686,7 @@ if (isset($_GET['child_disconnect'])){
 	$confirm.='</div>';
 }
 if (isset($_POST['child_disconnecting'])){
-	$sql="UPDATE ".$tree_prefix."family SET
+	$sql="UPDATE humo_families SET
 	fam_children='".safe_text($_POST["child_disconnect2"])."',
 	fam_changed_date='".$gedcom_date."',
 	fam_changed_time='".$gedcom_time."'
@@ -665,27 +694,27 @@ if (isset($_POST['child_disconnecting'])){
 	$result=$dbh->query($sql);
 
 	// *** Check pers_indexnr, change indexnr if needed ***
-	$sql= "SELECT * FROM ".$tree_prefix."family
+	$sql= "SELECT * FROM humo_families
 		WHERE fam_id='".safe_text($_POST["family_id"])."'";
 	$result = $dbh->query($sql);
 	$resultDb=$result->fetch(PDO::FETCH_OBJ);
 	$fam_gedcomnumber=$resultDb->fam_gedcomnumber;
 
 	// *** Find child data ***
-	$sql= "SELECT * FROM ".$tree_prefix."person
-		WHERE pers_gedcomnumber='".safe_text($_POST["child_disconnect_gedcom"])."'";
+	$sql= "SELECT * FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($_POST["child_disconnect_gedcom"])."'";
 	$result = $dbh->query($sql);
 	$resultDb=$result->fetch(PDO::FETCH_OBJ);
 	$pers_indexnr=$resultDb->pers_indexnr;
 	if ($pers_indexnr==$fam_gedcomnumber){ $pers_indexnr=''; }
 
 	// *** Remove parents from child record ***
-	$sql="UPDATE ".$tree_prefix."person SET
+	$sql="UPDATE humo_persons SET
 	pers_famc='',
 	pers_indexnr='".safe_text($pers_indexnr)."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
-	WHERE pers_gedcomnumber='".safe_text($_POST["child_disconnect_gedcom"])."'";
+	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($_POST["child_disconnect_gedcom"])."'";
 	$result=$dbh->query($sql);
 }
 
@@ -701,7 +730,7 @@ if (isset($_GET['child_down'])){
 		if ($k>0){ $fam_children.=';'; }
 		$fam_children.=$child_array[$k];
 	}
-	$sql="UPDATE ".$tree_prefix."family SET
+	$sql="UPDATE humo_families SET
 	fam_children='".$fam_children."',
 	fam_changed_date='".$gedcom_date."',
 	fam_changed_time='".$gedcom_time."'
@@ -721,7 +750,7 @@ if (isset($_GET['child_up'])){
 		if ($k>0){ $fam_children.=';'; }
 		$fam_children.=$child_array[$k];
 	}
-	$sql="UPDATE ".$tree_prefix."family SET
+	$sql="UPDATE humo_families SET
 	fam_children='".$fam_children."',
 	fam_changed_date='".$gedcom_date."',
 	fam_changed_time='".$gedcom_time."'
@@ -739,22 +768,27 @@ if (isset($_GET['child_up'])){
 if (isset($_GET['relation_add'])){
 	// *** Generate new gedcomnr, find highest gedcomnumber F100: strip F and order by numeric ***
 	$new_nr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS gednr
-		FROM ".$tree_prefix."family ORDER BY gednr DESC LIMIT 0,1";
+		FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
 	$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 	$fam_gedcomnumber='F1';
 	if (isset($new_nr->fam_gedcomnumber)) $fam_gedcomnumber='F'.(substr($new_nr->fam_gedcomnumber,1)+1);
 
+	// *** Directly show new marriage on screen ***
+	$_POST["marriage_nr"]=$fam_gedcomnumber;
+	$marriage=$fam_gedcomnumber;
+	$_SESSION['admin_fam_gedcomnumber']=$marriage;
+
 	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
 	$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
-		FROM ".$tree_prefix."person ORDER BY gednr DESC LIMIT 0,1";
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
 	$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 	//$new_gedcomnumber='I1';
 	$partner_gedcomnumber='I1';
 	if (isset($new_nr->pers_gedcomnumber)) $partner_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+1);
 
-	$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
+	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
 	$person_result = $dbh->query($person_qry);
 	$person_db=$person_result->fetch(PDO::FETCH_OBJ);
 	if ($person_db->pers_sexe=='M'){
@@ -764,7 +798,8 @@ if (isset($_GET['relation_add'])){
 		$man_gedcomnumber=$partner_gedcomnumber; $woman_gedcomnumber=$pers_gedcomnumber; $sexe='M';
 	}
 
-	$sql="INSERT INTO ".$tree_prefix."family SET
+	$sql="INSERT INTO humo_families SET
+	fam_tree_id='".$tree_id."',
 	fam_gedcomnumber='".$fam_gedcomnumber."', fam_kind='',
 	fam_man='".safe_text($man_gedcomnumber)."', fam_woman='".safe_text($woman_gedcomnumber)."',
 	fam_children='';
@@ -781,11 +816,12 @@ if (isset($_GET['relation_add'])){
 	$result=$dbh->query($sql);
 
 	// *** Add N.N. partner ***
-	$sql="INSERT INTO ".$tree_prefix."person SET
+	$sql="INSERT INTO humo_persons SET
 		pers_gedcomnumber='".$partner_gedcomnumber."',
+		pers_tree_id='".$tree_id."',
 		pers_tree_prefix='".$tree_prefix."',
 		pers_famc='', pers_fams='".safe_text($fam_gedcomnumber)."', pers_indexnr='".safe_text($fam_gedcomnumber)."',
-		pers_firstname='N.N.', pers_callname='', pers_prefix='', pers_lastname='', pers_patronym='', pers_name_text='',
+		pers_firstname='".__('N.N.')."', pers_callname='', pers_prefix='', pers_lastname='', pers_patronym='', pers_name_text='',
 		pers_alive='alive', pers_sexe='".$sexe."', pers_own_code='', pers_place_index='', pers_text='',
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
@@ -803,15 +839,23 @@ if (isset($_GET['relation_add'])){
 
 // *** Add new family with selected partner ***
 if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
+	// *** Change i10 into I10 ***
+	$_POST['relation_add2']=ucfirst($_POST['relation_add2']);
+
 	// *** Generate new gedcomnr, find highest gedcomnumber F100: strip F and order by numeric ***
 	$new_nr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS gednr
-		FROM ".$tree_prefix."family ORDER BY gednr DESC LIMIT 0,1";
+		FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
 	$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 	$fam_gedcomnumber='F1';
 	if (isset($new_nr->fam_gedcomnumber)) $fam_gedcomnumber='F'.(substr($new_nr->fam_gedcomnumber,1)+1);
 
-	$person_qry= "SELECT * FROM ".$tree_prefix."person WHERE pers_gedcomnumber='".$pers_gedcomnumber."'";
+	// *** Directly show new marriage on screen ***
+	$_POST["marriage_nr"]=$fam_gedcomnumber;
+	$marriage=$fam_gedcomnumber;
+	$_SESSION['admin_fam_gedcomnumber']=$marriage;
+
+	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
 	$person_result = $dbh->query($person_qry);
 	$person_db=$person_result->fetch(PDO::FETCH_OBJ);
 	if ($person_db->pers_sexe=='M'){
@@ -821,7 +865,8 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 		$man_gedcomnumber=$_POST['relation_add2']; $woman_gedcomnumber=$pers_gedcomnumber; $sexe='M';
 	}
 
-	$sql="INSERT INTO ".$tree_prefix."family SET
+	$sql="INSERT INTO humo_families SET
+	fam_tree_id='".$tree_id."',
 	fam_gedcomnumber='".$fam_gedcomnumber."', fam_kind='',
 	fam_man='".safe_text($man_gedcomnumber)."', fam_woman='".safe_text($woman_gedcomnumber)."',
 	fam_children='';
@@ -848,10 +893,10 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 //if ($menu_admin=='marriage' AND $person->pers_fams){
 	// *** Switch parents ***
 	if (isset($_POST['parents_switch'])){
-		$sql="UPDATE ".$tree_prefix."family SET
+		$sql="UPDATE humo_families SET
 		fam_man='".safe_text($_POST["connect_woman"])."',
 		fam_woman='".safe_text($_POST["connect_man"])."'
-		WHERE fam_gedcomnumber='".safe_text($_POST['marriage'])."'";
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['marriage'])."'";
 		$result=$dbh->query($sql);
 
 		// *** Empty search boxes if a switch is made ***
@@ -859,7 +904,12 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 		$_POST['search_quicksearch_man']='';
 	}
 
+	// ** Change marriage ***
 	if (isset($_POST['marriage_change'])){
+		// *** Change i10 into I10 ***
+		$_POST["connect_man"]=ucfirst($_POST["connect_man"]);
+		$_POST["connect_woman"]=ucfirst($_POST["connect_woman"]);
+
 		// *** Man is changed in marriage ***
 		if ($_POST["connect_man"]!=$_POST["connect_man_old"]){
 			fams_remove($_POST['connect_man_old'], $_POST['marriage']);	
@@ -875,7 +925,7 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 		if (isset($_POST['fam_div_no_data'])) $fam_div_text='DIVORCE';
 		if ($_POST["fam_div_text"]) $fam_div_text=$_POST["fam_div_text"];
 
-		$sql="UPDATE ".$tree_prefix."family SET
+		$sql="UPDATE humo_families SET
 		fam_kind='".safe_text($_POST["fam_kind"])."',
 		fam_man='".safe_text($_POST["connect_man"])."',
 		fam_woman='".safe_text($_POST["connect_woman"])."',
@@ -904,7 +954,7 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 		fam_text='".$editor_cls->text_process($_POST["fam_text"],true)."',
 		fam_changed_date='".$gedcom_date."',
 		fam_changed_time='".$gedcom_time."'
-		WHERE fam_gedcomnumber='".safe_text($_POST['marriage'])."'";
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['marriage'])."'";
 		$result=$dbh->query($sql);
 
 		family_tree_update($tree_prefix);
@@ -937,14 +987,16 @@ if (isset($_GET['event_add'])){
 
 	if ($section=='person'){
 		// *** Generate new order number ***
-		$event_sql="SELECT * FROM ".$tree_prefix."events
-			WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."'
+		//$event_sql="SELECT * FROM ".$tree_prefix."events
+		$event_sql="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."'
 			ORDER BY event_order DESC LIMIT 0,1";
 	}
 	if ($section=='family'){
 		// *** Generate new order number ***
-		$event_sql="SELECT * FROM ".$tree_prefix."events
-			WHERE event_family_id='".$marriage."' AND event_kind='".$event_kind."'
+		//$event_sql="SELECT * FROM ".$tree_prefix."events
+		$event_sql="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."' AND event_kind='".$event_kind."'
 			ORDER BY event_order DESC LIMIT 0,1";
 	}
 	$event_qry=$dbh->query($event_sql);
@@ -954,7 +1006,8 @@ if (isset($_GET['event_add'])){
 	$event_order++;
 
 	if ($section=='person'){
-		$sql="INSERT INTO ".$tree_prefix."events SET
+		$sql="INSERT INTO humo_events SET
+			event_tree_id='".$tree_id."',
 			event_person_id='".$pers_gedcomnumber."',
 			event_kind='".$event_kind."',
 			event_event='".$event_event."',
@@ -963,7 +1016,8 @@ if (isset($_GET['event_add'])){
 			event_new_time='".$gedcom_time."'";
 	}
 	if ($section=='family'){
-		$sql="INSERT INTO ".$tree_prefix."events SET
+		$sql="INSERT INTO humo_events SET
+			event_tree_id='".$tree_id."',
 			event_family_id='".$marriage."',
 			event_kind='".$event_kind."',
 			event_order='".$event_order."',
@@ -976,8 +1030,10 @@ if (isset($_GET['event_add'])){
 // *** Add person event ***
 if (isset($_POST['person_event_add'])){
 	// *** Generate new order number ***
-	$event_sql="SELECT * FROM ".$tree_prefix."events
-		WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='".$_POST["event_kind"]."'
+	//$event_sql="SELECT * FROM ".$tree_prefix."events
+	$event_sql="SELECT * FROM humo_events
+		WHERE event_tree_id='".$tree_id."'
+		AND event_person_id='".$pers_gedcomnumber."' AND event_kind='".$_POST["event_kind"]."'
 		ORDER BY event_order DESC LIMIT 0,1";
 	$event_qry=$dbh->query($event_sql);
 	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
@@ -985,7 +1041,9 @@ if (isset($_POST['person_event_add'])){
 	if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
 	$event_order++;
 
-	$sql="INSERT INTO ".$tree_prefix."events SET
+	//$sql="INSERT INTO ".$tree_prefix."events SET
+	$sql="INSERT INTO humo_events SET
+		event_tree_id='".$tree_id."',
 		event_person_id='".$pers_gedcomnumber."',
 		event_kind='".$_POST["event_kind"]."',
 		event_order='".$event_order."',
@@ -997,8 +1055,9 @@ if (isset($_POST['person_event_add'])){
 // *** Add marriage event ***
 if (isset($_POST['marriage_event_add'])){
 	// *** Generate new order number ***
-	$event_sql="SELECT * FROM ".$tree_prefix."events
-		WHERE event_family_id='".$marriage."' AND event_kind='".$_POST["event_kind"]."'
+	$event_sql="SELECT * FROM humo_events
+		WHERE event_tree_id='".$tree_id."'
+		AND event_family_id='".$marriage."' AND event_kind='".$_POST["event_kind"]."'
 		ORDER BY event_order DESC LIMIT 0,1";
 	$event_qry=$dbh->query($event_sql);
 	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
@@ -1006,7 +1065,9 @@ if (isset($_POST['marriage_event_add'])){
 	if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
 	$event_order++;
 
-	$sql="INSERT INTO ".$tree_prefix."events SET
+	//$sql="INSERT INTO ".$tree_prefix."events SET
+	$sql="INSERT INTO humo_events SET
+		event_tree_id='".$tree_id."',
 		event_family_id='".$marriage."',
 		event_kind='".$_POST["event_kind"]."',
 		event_order='".$event_order."',
@@ -1115,7 +1176,8 @@ if (isset($_POST['event_id'])){
 		$event_event=$editor_cls->text_process($_POST["text_event"][$key]);
 		if (isset($_POST["text_event2"][$key]) AND $_POST["text_event2"][$key]!=''){ $event_event=$editor_cls->text_process($_POST["text_event2"][$key]); }
 
-		$sql="UPDATE ".$tree_prefix."events SET
+		//$sql="UPDATE ".$tree_prefix."events SET
+		$sql="UPDATE humo_events SET
 			event_event='".$event_event."',
 			event_date='".$editor_cls->date_process("event_date",$key)."',
 			event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
@@ -1158,15 +1220,18 @@ if (isset($_POST['event_drop2'])){
 	$event_order_id=safe_text($_POST['event_drop']);
 
 	if (isset($_POST['event_person'])){
-		$sql="DELETE FROM ".$tree_prefix."events
-			WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
+		//$sql="DELETE FROM ".$tree_prefix."events
+		$sql="DELETE FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
 		$result=$dbh->query($sql);
 
-		$event_sql="SELECT * FROM ".$tree_prefix."events
-			WHERE event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."' AND event_order>'".$event_order_id."' ORDER BY event_order";
+		//$event_sql="SELECT * FROM ".$tree_prefix."events
+		$event_sql="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."' AND event_order>'".$event_order_id."' ORDER BY event_order";
 		$event_qry=$dbh->query($event_sql);
 		while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
-			$sql="UPDATE ".$tree_prefix."events SET
+			//$sql="UPDATE ".$tree_prefix."events SET
+			$sql="UPDATE humo_events SET
 			event_order='".($eventDb->event_order-1)."',
 			event_changed_date='".$gedcom_date."',
 			event_changed_time='".$gedcom_time."'
@@ -1176,15 +1241,17 @@ if (isset($_POST['event_drop2'])){
 	}
 
 	if (isset($_POST['event_family'])){
-		$sql="DELETE FROM ".$tree_prefix."events
-			WHERE event_family_id='".$marriage."' AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
+		//$sql="DELETE FROM ".$tree_prefix."events
+		$sql="DELETE FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."' AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
 		$result=$dbh->query($sql);
 
-		$event_sql="SELECT * FROM ".$tree_prefix."events
-			WHERE event_family_id='".$marriage."' AND event_kind='".$event_kind."' AND event_order>'".$event_order_id."' ORDER BY event_order";
+		//$event_sql="SELECT * FROM ".$tree_prefix."events
+		$event_sql="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."' AND event_kind='".$event_kind."' AND event_order>'".$event_order_id."' ORDER BY event_order";
 		$event_qry=$dbh->query($event_sql);
 		while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
-			$sql="UPDATE ".$tree_prefix."events SET
+			$sql="UPDATE humo_events SET
 			event_order='".($eventDb->event_order-1)."',
 			event_changed_date='".$gedcom_date."',
 			event_changed_time='".$gedcom_time."'
@@ -1199,40 +1266,40 @@ if (isset($_GET['event_down'])){
 	$event_order=safe_text($_GET["event_down"]);
 
 	if (isset($_GET['event_person'])){
-		$sql="UPDATE ".$tree_prefix."events SET event_order='99'
-		WHERE event_person_id='".$pers_gedcomnumber."'
+		$sql="UPDATE humo_events SET event_order='99'
+		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".$event_order."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE ".$tree_prefix."events SET event_order='".$event_order."'
-		WHERE event_person_id='".$pers_gedcomnumber."'
+		$sql="UPDATE humo_events SET event_order='".$event_order."'
+		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".($event_order+1)."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE ".$tree_prefix."events SET event_order='".($event_order+1)."'
-		WHERE event_person_id='".$pers_gedcomnumber."'
+		$sql="UPDATE humo_events SET event_order='".($event_order+1)."'
+		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
 		AND event_kind='".$event_kind."'
 		AND event_order=99";
 		$result=$dbh->query($sql);
 	}
 
 	if (isset($_GET['event_family'])){
-		$sql="UPDATE ".$tree_prefix."events SET event_order='99'
-		WHERE event_family_id='".$marriage."'
+		$sql="UPDATE humo_events SET event_order='99'
+		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".$event_order."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE ".$tree_prefix."events SET event_order='".$event_order."'
-		WHERE event_family_id='".$marriage."'
+		$sql="UPDATE humo_events SET event_order='".$event_order."'
+		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".($event_order+1)."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE ".$tree_prefix."events SET event_order='".($event_order+1)."'
-		WHERE event_family_id='".$marriage."'
+		$sql="UPDATE humo_events SET event_order='".($event_order+1)."'
+		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order=99";
 		$result=$dbh->query($sql);
@@ -1244,46 +1311,46 @@ if (isset($_GET['event_up'])){
 	$event_order=safe_text($_GET['event_up']);
 
 	if (isset($_GET['event_person'])){
-		$sql="UPDATE ".$tree_prefix."events SET
+		$sql="UPDATE humo_events SET
 		event_order='99'
-		WHERE event_person_id='".$pers_gedcomnumber."'
+		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".$event_order."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE ".$tree_prefix."events SET
+		$sql="UPDATE humo_events SET
 		event_order='".$event_order."'
-		WHERE event_person_id='".$pers_gedcomnumber."'
+		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".($event_order-1)."'";
 		$result=$dbh->query($sql);
 		
-		$sql="UPDATE ".$tree_prefix."events SET
+		$sql="UPDATE humo_events SET
 		event_order='".($event_order-1)."'
-		WHERE event_person_id='".$pers_gedcomnumber."'
+		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
 		AND event_kind='".$event_kind."'
 		AND event_order=99";
 		$result=$dbh->query($sql);
 	}
 
 	if (isset($_GET['event_family'])){
-		$sql="UPDATE ".$tree_prefix."events SET
+		$sql="UPDATE humo_events SET
 		event_order='99'
-		WHERE event_family_id='".$marriage."'
+		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".$event_order."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE ".$tree_prefix."events SET
+		$sql="UPDATE humo_events SET
 		event_order='".$event_order."'
-		WHERE event_family_id='".$marriage."'
+		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".($event_order-1)."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE ".$tree_prefix."events SET
+		$sql="UPDATE humo_events SET
 		event_order='".($event_order-1)."'
-		WHERE event_family_id='".$marriage."'
+		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order=99";
 		$result=$dbh->query($sql);
@@ -1311,16 +1378,20 @@ if (isset($_GET['living_place_drop'])){
 }
 if (isset($_POST['living_place_drop2'])){
 	$living_place_order=safe_text($_POST['living_place_id']);
-	$sql="DELETE FROM ".$tree_prefix."addresses WHERE address_person_id='".$pers_gedcomnumber."'
+	//$sql="DELETE FROM ".$tree_prefix."addresses WHERE address_person_id='".$pers_gedcomnumber."'
+	//	AND address_order='".$living_place_order."'";
+	$sql="DELETE FROM humo_addresses WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."'
 		AND address_order='".$living_place_order."'";
 	$result=$dbh->query($sql);
 
-	$address_sql="SELECT * FROM ".$tree_prefix."addresses
-		WHERE address_person_id='".$pers_gedcomnumber."' AND address_order>'".$living_place_order."'
+	//$address_sql="SELECT * FROM ".$tree_prefix."addresses
+	$address_sql="SELECT * FROM humo_addresses
+		WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' AND address_order>'".$living_place_order."'
 		ORDER BY address_order";
 	$event_qry=$dbh->query($address_sql);
 	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
-		$sql="UPDATE ".$tree_prefix."addresses SET
+		//$sql="UPDATE ".$tree_prefix."addresses SET
+		$sql="UPDATE humo_addresses SET
 		address_order='".($eventDb->address_order-1)."',
 		address_changed_date='".$gedcom_date."',
 		address_changed_time='".$gedcom_time."'
@@ -1331,14 +1402,17 @@ if (isset($_POST['living_place_drop2'])){
 
 if (isset($_GET['living_place_add'])){
 	// *** Generate new order number ***
-	$address_sql="SELECT * FROM ".$tree_prefix."addresses
-		WHERE address_person_id='".$pers_gedcomnumber."' ORDER BY address_order DESC LIMIT 0,1";
+	//$address_sql="SELECT * FROM ".$tree_prefix."addresses
+	$address_sql="SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."'
+		AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order DESC LIMIT 0,1";
 	$address_qry=$dbh->query($address_sql);
 	$addressDb=$address_qry->fetch(PDO::FETCH_OBJ);	
 	$address_order=0; if (isset($addressDb->address_order)){ $address_order=$addressDb->address_order; }
 	$address_order++;
 
-	$sql="INSERT INTO ".$tree_prefix."addresses SET
+	//$sql="INSERT INTO ".$tree_prefix."addresses SET
+	$sql="INSERT INTO humo_addresses SET
+		address_tree_id='".$tree_id."',
 		address_person_id='".$pers_gedcomnumber."',
 		address_date='',
 		address_place='',
@@ -1352,9 +1426,11 @@ if (isset($_GET['living_place_add'])){
 // *** Change address ***
 if (isset($_POST['person_address_id'])){
 	foreach($_POST['person_address_id'] as $key=>$value){  
-		$sql="UPDATE ".$tree_prefix."addresses SET
+		//$sql="UPDATE ".$tree_prefix."addresses SET
+		//address_place='".$editor_cls->text_process($_POST["address_place"][$key])."',
+		$sql="UPDATE humo_addresses SET
 			address_date='".$editor_cls->date_process("address_date",$key)."',
-			address_place='".$editor_cls->text_process($_POST["address_place"][$key])."',
+			address_place='".$editor_cls->text_process($_POST["address_place_".$key])."',
 			address_changed_date='".$gedcom_date."', ";
 		//if (isset($_POST["address_text"][$key])){
 			//$sql.="address_text='".$editor_cls->text_process($_POST["address_text"][$key])."',";
@@ -1369,36 +1445,42 @@ if (isset($_POST['person_address_id'])){
 }
 
 if (isset($_GET['living_place_down'])){
-	$sql="UPDATE ".$tree_prefix."addresses SET
+	//$sql="UPDATE ".$tree_prefix."addresses SET
+	$sql="UPDATE humo_addresses SET
 	address_order='99'
-	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order='".safe_text($_GET["living_place_down"])."'";
+	WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' AND address_order='".safe_text($_GET["living_place_down"])."'";
 	$result=$dbh->query($sql);
 
-	$sql="UPDATE ".$tree_prefix."addresses SET
+	//$sql="UPDATE ".$tree_prefix."addresses SET
+	$sql="UPDATE humo_addresses SET
 	address_order='".(safe_text($_GET['living_place_down']))."'
-	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order='".(safe_text($_GET["living_place_down"])+1)."'";
+	WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' AND address_order='".(safe_text($_GET["living_place_down"])+1)."'";
 	$result=$dbh->query($sql);
 
-	$sql="UPDATE ".$tree_prefix."addresses SET
+	//$sql="UPDATE ".$tree_prefix."addresses SET
+	$sql="UPDATE humo_addresses SET
 	address_order='".(safe_text($_GET['living_place_down'])+1)."'
-	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order=99";
+	WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' AND address_order=99";
 	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['living_place_up'])){
-	$sql="UPDATE ".$tree_prefix."addresses SET
+	//$sql="UPDATE ".$tree_prefix."addresses SET
+	$sql="UPDATE humo_addresses SET
 	address_order='99'
-	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order='".safe_text($_GET["living_place_up"])."'";
+	WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' AND address_order='".safe_text($_GET["living_place_up"])."'";
 	$result=$dbh->query($sql);
 
-	$sql="UPDATE ".$tree_prefix."addresses SET
+	//$sql="UPDATE ".$tree_prefix."addresses SET
+	$sql="UPDATE humo_addresses SET
 	address_order='".(safe_text($_GET['living_place_up']))."'
-	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order='".(safe_text($_GET["living_place_up"])-1)."'";
+	WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' AND address_order='".(safe_text($_GET["living_place_up"])-1)."'";
 	$result=$dbh->query($sql);
 
-	$sql="UPDATE ".$tree_prefix."addresses SET
+	//$sql="UPDATE ".$tree_prefix."addresses SET
+	$sql="UPDATE humo_addresses SET
 	address_order='".(safe_text($_GET['living_place_up'])-1)."'
-	WHERE address_person_id='".$pers_gedcomnumber."' AND address_order=99";
+	WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' AND address_order=99";
 	$result=$dbh->query($sql);
 }
 ?>

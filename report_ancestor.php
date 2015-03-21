@@ -61,6 +61,12 @@ if($screen_mode!='PDF' AND $screen_mode!='ASPDF') {  //we can't have a menu in p
 		@$datasql = $dbh->query($dataqry);
 		@$dataDb = @$datasql->fetch(PDO::FETCH_OBJ);
 	}
+
+	$tree_prefix=$dataDb->tree_prefix;
+	$db_functions->set_tree_prefix($tree_prefix);
+
+	$tree_id=$dataDb->tree_id;
+	$db_functions->set_tree_id($tree_id);
 }
 if($hourglass===false) {
 	$family_id=1; // *** Default value, normally not used... ***
@@ -92,7 +98,8 @@ if($screen_mode!='PDF' AND $screen_mode!='RTF' AND $screen_mode!="ancestor_sheet
 		else {
 			echo __('Ancestor report');
 
-			if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
+			//if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
+			if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 				// Show pdf button
 				print ' <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
 				print '<input type="hidden" name="id" value="'.$family_id.'">';
@@ -120,7 +127,7 @@ if($screen_mode=='PDF') {
 	$pdfdetails=array();
 	$pdf_marriage=array();
 	$pdf=new PDF();
-	$pers = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$family_id'");
+	$pers = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$family_id."'");
 	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
 	// *** Use person class ***
 	$pers_cls = New person_cls;
@@ -181,7 +188,7 @@ if($screen_mode=='RTF') {  // initialize rtf generation
 	$parSimple->setIndentRight(0.5);
 
 	// *** Generate title of RTF file ***
-	$pers = $dbh->query("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber='$family_id'");
+	$pers = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='$family_id'");
 	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
 	// *** Use person class ***
 	$pers_cls = New person_cls;
@@ -676,7 +683,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	// *** Function to show data ***
 	// box_appearance (large, medium, small, and some other boxes...)
 	function ancestor_chart_person($id, $box_appearance){
-		global $dbh, $db_functions, $humo_option, $user;
+		global $dbh, $db_functions, $tree_prefix_quoted, $humo_option, $user;
 		global $marr_date_array, $marr_place_array;
 		global $gedcomnumber, $language, $screen_mode, $dirmark1, $dirmark2;
 		global $pers_prep;
@@ -1015,6 +1022,7 @@ echo '<div>';
 			}
 			print '</tr>';
 		}
+
 		// check if there is anyone in a generation so no empty and collapsed rows will be shown
 		function check_gen($start,$end) {
 			global $gedcomnumber;
@@ -1031,7 +1039,8 @@ echo '<div>';
 		print '<tr><th class="ancestor_head" colspan="8">';  // adjusted for IE7
 		print __('Ancestor sheet').__(' of ').ancestor_chart_person(1,"ancestor_header");  
 
-			if($language["dir"]!="rtl") {
+			//if($language["dir"]!="rtl") {
+			if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 				// Show pdf button
 				print '&nbsp;&nbsp; <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
 				print '<input type="hidden" name="id" value="'.$family_id.'">';
@@ -1116,7 +1125,7 @@ echo '<div>';
 		else $dsign = "~";
 
 		function data_array($id,$width,$height) {     
-			global $dbh, $data_array, $gedcomnumber, $dsign;   
+			global $dbh, $db_functions, $tree_prefix_quoted, $data_array, $gedcomnumber, $dsign;   
 			global $pers_prep;
 
 			if (isset($gedcomnumber[$id]) AND $gedcomnumber[$id]!=""){
@@ -1254,7 +1263,7 @@ echo '<div>';
 		}
 
 		function place_cells($type,$begin,$end,$increment,$maxchar,$numrows,$cellwidth) {
-			global $dbh, $db_functions, $pdf, $data_array,$posy,$posx,$marr_date_array, $marr_place_array, $sexe, $gedcomnumber;
+			global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $data_array,$posy,$posx,$marr_date_array, $marr_place_array, $sexe, $gedcomnumber;
 			global $pers_prep;
 			$pdf->SetLeftMargin(16);
 			$marg = 16;
@@ -1398,9 +1407,12 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 	$pdf->SetFont('Arial','',10);
 	// the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
 	$count=0;
+
 	//prepared statemetn before loop
-	$anc_source_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."sources WHERE source_gedcomnr=?");
-	$anc_source_prep->bindParam(1,$anc_source_prep_var);
+	//$anc_source_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."sources WHERE source_gedcomnr=?");
+	//$anc_source_prep=$dbh->prepare("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_prefix."' AND source_gedcomnr=?");
+	//$anc_source_prep->bindParam(1,$anc_source_prep_var);
+
 	foreach($pdf_source as $key => $value) {
 		$count++;
 		if(isset($pdf_source[$key])) {
@@ -1411,13 +1423,14 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 				source_display($pdf_source[$key]);  // function source_display from source.php, called with source nr.
 			}
 			elseif ($user['group_sources']=='t') {
-				$anc_source_prep_var = $pdf_source[$key];
-				$anc_source_prep->execute();
-				try {
-					@$sourceDb= $anc_source_prep->fetch(PDO::FETCH_OBJ);
-				} catch(PDOException $e) {
-					echo "No valid sourcenumber.";
-				}
+				//$anc_source_prep_var = $pdf_source[$key];
+				//$anc_source_prep->execute();
+				//try {
+				//	@$sourceDb= $anc_source_prep->fetch(PDO::FETCH_OBJ);
+				//} catch(PDOException $e) {
+				//	echo "No valid sourcenumber.";
+				//}
+				$db_functions->get_source($pdf_source[$key]);
 				if ($sourceDb->source_title){
 					$pdf->SetFont('Arial','B',10);
 					$pdf->Write(6,__('Title:')." ");
