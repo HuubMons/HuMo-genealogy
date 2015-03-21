@@ -17,7 +17,7 @@ class validate_date_cls{
 function check_date($date) {
 
 	// *** Remove B.C. (before christ) addition, for further tests of date ***
-	if (substr($date,-3)==' BC' OR substr($date,-5)==' B.C.') return "finished";
+	//if (substr($date,-3)==' BC' OR substr($date,-5)==' B.C.') return "finished";
 	if (substr($date,-3)==' BC' OR substr($date,-5)==' B.C.'){
 		$date = str_replace(" BC", "", $date);
 		$date = str_replace(" B.C.", "", $date);
@@ -25,13 +25,16 @@ function check_date($date) {
 
 	$year = $this->check_year($date);
 	if($year === null) { return null; }
-
-	if($year > 999) { $strlen=4; }
-	elseif($year >99) { $strlen=3; }
-	elseif($year >9) { $strlen=2; }
-	elseif($year >0) { $strlen=1; }
-	else return null;
-
+	elseif(strpos($year,"/")===false) {
+		if($year > 999) { $strlen=4; }
+		elseif($year >99) { $strlen=3; }
+		elseif($year >9) { $strlen=2; }
+		elseif($year >0) { $strlen=1; }
+		else return null;
+	}
+	else { // we've got a 1741/42 case
+		$strlen = strlen($year);
+	}
 	if(strlen($date) == $strlen) return "finished"; // date contains just the year, no sense checking a month
 	elseif ($this->check_month($date) === null) { return null; }
 
@@ -41,17 +44,11 @@ function check_date($date) {
 	return 1; 
 }
 
-function check_month($date) {
+function check_month($date) {  
 	$year = $this->check_year($date);
-	if($year > 999) {
-		$month=substr($date, -8, 3);   // FEB 1950
-		$strlen=4;
-	}
-	elseif($year >99) {
-		$month=substr($date, -7, 3);   // FEB 834
-		$strlen=3;
-	}
- 
+	$strlen = strlen($year);
+	$month = substr($date, -($strlen+4),3); 
+
 	if( $month=="JAN" OR $month=="FEB" OR $month=="MAR" OR $month=="APR" OR $month=="MAY" OR $month=="JUN"
 	 	OR $month=="JUL" OR $month=="AUG" OR $month=="SEP" OR $month=="OCT" OR $month=="NOV" OR $month=="DEC") {
 	 	 	return "month".$month; // flags valid month
@@ -79,9 +76,11 @@ function check_month($date) {
 function check_day($date) {
 	$year = $this->check_year($date);
 	$month = $this->check_month($date);
+	$strlen = strlen($year)+6;
+/*
 	if($year >999) { $strlen=10; }
 	elseif($year >99) { $strlen=9; }
- 
+*/ 
 	$day_len=1; // to be added to strlen later. if day is "8" (and not "12" or "08") $day_len will be set to 0
 
 		if(substr($month,0,5) == "month") {
@@ -96,7 +95,7 @@ function check_day($date) {
 				}
 			}
 			elseif (strlen($date)==$strlen) {    // 8 aug 2002
-			 	$day=substr($date, -($strlen), 1); // gets "8"
+			 	$day=substr($date, -($strlen), 1); // gets "8"  maybe just: $day=substr($date, 0, 1);
 				$day_len=0;
 			}
 
@@ -165,9 +164,30 @@ function check_day($date) {
 
 function check_year($date) {
 	$year=substr($date,-4, 4);  
-	//if (!is_numeric($year) OR $year > date("Y") OR $year<100) { return null; }
-	if (!is_numeric($year) OR $year > date("Y")) { return null; }
-	else { return $year;}
+	// If only year is given, this will work with any year from 0 till today.
+	// If year >= 100 and month is given this will also work.
+	// HOWEVER, if year is <100 and month is given this will go wrong: "2 mar 24" will give substr "r 24" and "2 mar 6" will give: "ar 6".
+	// Therefore:
+	if(substr($year,-2,1)==" " OR substr($year,-3,1)==" ") {  
+		$temp = explode(" ",$year);
+		$year = $temp[1]; 
+	}
+	
+	// Now take care of 1741/42 cases (= valid GEDCOM)
+	// This can only happen with dates after 1500 so we don't have to check for years <1000
+	if(strpos($year,"/")!==false) {  
+		// date is "4 mar 1741/42", so substr became "1/42" or date is "4 mar 1741/2" so substr became "41/2"
+		$year_string = str_replace(" ","",substr($date,-7)); // "1741/42" or if " 1741/2" becomes "1741/2"
+		$year_arr = explode("/",$year_string);
+		$year_part = $year_arr[0]; // 1741
+		if (!is_numeric($year_part) OR $year_part > date("Y")) { return null; }
+		else { return $year_string;}
+	}
+	else {
+		//if (!is_numeric($year) OR $year > date("Y") OR $year<100) { return null; }
+		if (!is_numeric($year) OR $year > date("Y")) { return null; }
+		else { return (int)$year; }
+	}
 }
 
 

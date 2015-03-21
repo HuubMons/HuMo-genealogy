@@ -33,6 +33,10 @@ if($screen_mode!='PDF' AND $menu!=1) {  //we can't have a menu in pdf... and don
 }
 
 if($screen_mode=='PDF') {  // if PDF: necessary parts from menu.php
+	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+	$db_functions = New db_functions;
+	$db_functions->set_tree_prefix($tree_prefix_quoted);
+
 	if (isset($_SESSION['tree_prefix'])){
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 		ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
@@ -41,6 +45,9 @@ if($screen_mode=='PDF') {  // if PDF: necessary parts from menu.php
 		@$datasql = $dbh->query($dataqry);
 		@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
 	}
+
+	$tree_id=$dataDb->tree_id;
+	$db_functions->set_tree_id($tree_id);
 }
 
 include_once(CMS_ROOTPATH."include/language_date.php");
@@ -53,7 +60,7 @@ include_once(CMS_ROOTPATH."include/marriage_cls.php");
 include_once(CMS_ROOTPATH."include/show_sources.php");
 include_once(CMS_ROOTPATH."include/witness.php");
 include_once(CMS_ROOTPATH."include/show_picture.php");
-include_once(CMS_ROOTPATH."include/db_functions_cls.php"); // *** Extra db_functions include, needed for PDF report ***
+//include_once(CMS_ROOTPATH."include/db_functions_cls.php"); // *** Extra db_functions include, needed for PDF report ***
 
 // *** Show person/ family topline: family top text, pop-up settings, PDF export, favorite ***
 function topline(){
@@ -151,7 +158,8 @@ function topline(){
 	$text.='</td><td class="table_header fonts" width="20%" style="text-align:center";>';
 
 		// *** PDF button ***
-		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
+		//if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
+		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 			$text.='<form method="POST" action="'.$uri_path.'family.php?show_sources=1" style="display : inline;">';
 			$text.='<input type="hidden" name="id" value="'.$family_id.'">';
 			$text.='<input type="hidden" name="main_person" value="'.$main_person.'">';
@@ -597,35 +605,18 @@ else{
 	}
 	if($screen_mode!='STARSIZE') {
 
-	//prepare queries here that will be used in the loops.
-	//creating a prepared statement one time will save time
-	$family_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber=?");
-	$family_prep->bindParam(1, $family_id_loop_var);
-
-	$person_prep=$dbh->prepare("SELECT pers_fams FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber=?");
-	$person_prep->bindParam(1, $parent1_var);
-
-	$address_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_family_id=?");
-	$address_qry_prep->bindParam(1,$address_fam_var);
-
-	$famc_adoptive_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."events WHERE event_event=? AND event_kind='adoption' ORDER BY event_order");
-	$famc_adoptive_qry_prep->bindParam(1,$famc_adopt_var);
-
-	$famc_adoptive_by_person_qry_prep=$dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."events WHERE event_event=? AND event_kind='adoption_by_person' ORDER BY event_order");
-	$famc_adoptive_by_person_qry_prep->bindParam(1,$famc_adopt_by_person_var);
-
 	try { // only prepare location statement if table exists otherwise PDO throws exception!
-        $result = $dbh->query("SELECT 1 FROM humo_location LIMIT 1"); 
-    } catch (Exception $e) {  
-        // We got an exception == table not found
-        $result = FALSE;
-    }
+		$result = $dbh->query("SELECT 1 FROM humo_location LIMIT 1"); 
+	} catch (Exception $e) {  
+		// We got an exception == table not found
+		$result = FALSE;
+	}
 	if($result !== FALSE) { 
 		$location_prep=$dbh->prepare("SELECT * FROM humo_location where location_location =?");
 		$location_prep->bindParam(1,$location_var);
 	}
 
-	$old_stat_prep=$dbh->prepare("UPDATE ".$tree_prefix_quoted."family SET fam_counter=? WHERE fam_gedcomnumber=?");
+	$old_stat_prep=$dbh->prepare("UPDATE humo_families SET fam_counter=? WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
 	$old_stat_prep->bindParam(1,$fam_counter_var);
 	$old_stat_prep->bindParam(2,$fam_gednr_var);
 
@@ -693,14 +684,14 @@ else{
 			$family_nr=1;
 
 			// *** Count marriages of man ***
-			$family_id_loop_var = $family_id_loop;
-			$family_prep->execute();
-			try { 
-				@$familyDb= $family_prep->fetch(PDO::FETCH_OBJ);
-			} catch (PDOException $e) {
-				echo __('No valid family number.');
-			}
-			 
+			//$family_id_loop_var = $family_id_loop;
+			//$family_prep->execute();
+			//try { 
+			//	@$familyDb= $family_prep->fetch(PDO::FETCH_OBJ);
+			//} catch (PDOException $e) {
+			//	echo __('No valid family number.');
+			//}
+			$familyDb = $db_functions->get_family($family_id_loop);
 			$parent1=''; $parent2=''; $change_main_person=false;
 			// *** Standard main person is the father ***
 			if ($familyDb->fam_man){
@@ -715,9 +706,7 @@ else{
 			// *** Check for parent1: N.N. ***
 			if ($parent1){
 				// *** Save man families in array ***
-				$parent1_var = $parent1;
-				$person_prep->execute();
-				@$personDb=$person_prep->fetch(PDO::FETCH_OBJ);
+				$personDb = $db_functions->get_person($parent1);
 
 				$marriage_array=explode(";",$personDb->pers_fams);
 				$count_marr=substr_count($personDb->pers_fams, ";");
@@ -1104,17 +1093,6 @@ else{
 						// *** Only show name in 2nd, 3rd, etc. marriage ***
 						if($screen_mode!='STAR') {
 							if ($change_main_person==true){
-								/*
-								if($screen_mode!='PDF') {
-									echo '<br>'.$woman_cls->name_extended("parent1").'<br>';
-								}
-								else {
-									// PDF rendering of name
-									if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
-									else $pers_sexe = $person_womanDb->pers_sexe;
-									$pdf->writename($pers_sexe,$indent,$woman_cls->name_extended("parent1"),"kort");
-								}
-								*/
 								if($screen_mode=='PDF') {
 									// PDF rendering of name
 									if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
@@ -1130,17 +1108,6 @@ else{
 								}
 							}
 							else{
-								/*
-								if($screen_mode!='PDF') {
-									echo '<br>'.$man_cls->name_extended("parent1").'<br>';
-								}
-								else {
-									//  PDF rendering of name
-									if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
-									else $pers_sexe = $person_manDb->pers_sexe;
-									$pdf->writename($pers_sexe,$indent,$man_cls->name_extended("parent1"),"kort");
-								}
-								*/
 								if($screen_mode=='PDF') {
 									//  PDF rendering of name
 									if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
@@ -1445,53 +1412,57 @@ else{
 						}
 					}
 
-					// *** Show addresses ***
+					// *** Show addresses by family ***
 					if ($user['group_living_place']=='j'){
 						if ($familyDb->fam_gedcomnumber){
 							$addressnr=0;
-							$address_fam_var = $familyDb->fam_gedcomnumber;
-							$address_qry_prep->execute();
+							$address_qry_prep = $db_functions->get_addresses_family($familyDb->fam_gedcomnumber);
 							if($screen_mode!='PDF') {
-								while($addressDb=$address_qry_prep->fetch(PDO::FETCH_OBJ)){
-									$nr_addresses=$event_qry->rowCount();
-									if ($nr_addresses=='1')
-										$residence=__('residence');
-									else
-										$residence=__('residences');
-
+								foreach($address_qry_prep as $addressDb){
 									$addressnr++;
-									if ($addressnr=='1'){ echo '<span class="pers_living_place fonts">'.$residence.': '; }
+									if ($addressnr=='1'){
+										$nr_addresses=count($address_qry_prep);
+										if ($nr_addresses=='1')
+											$residence=__('Residence (family)');
+										else
+											$residence=__('Residences (family)');
+
+										echo '<br><b>'.$residence.':</b> ';
+										echo '<span class="pers_living_place fonts">';
+									}
 									if ($addressnr>1){ echo ', '; }
 									if ($addressDb->address_date){ echo date_place($addressDb->address_date,'').' '; } //use default function, there is no place...
 									echo $addressDb->address_place;
 
 									// *** Show address source ***
-									if ($addressDb->address_source){
-										echo show_sources2("family","address_source",$addressDb->address_id);
-									}
+									$source=show_sources2("family","fam_address_source",$addressDb->address_id);
+									if ($source) echo $source;
+
 									if ($addressDb->address_text) { echo ' '.$addressDb->address_text; }
 								}
 								if ($addressnr>0){ echo '</span>'; }
 							}
 							else {
 								//  PDF rendering of addresses
-								while($addressDb=$address_qry_prep->fetch(PDO::FETCH_OBJ)){
-									$nr_addresses=$event_qry->rowCount();
-									if ($nr_addresses=='1')
-										$residence=__('residence');
-									else
-										$residence=__('residences');
-
+								foreach($address_qry_prep as $addressDb){
 									$addressnr++;
 									$pdf->SetFont('Arial','',12);
-									if ($addressnr=='1'){ $pdf->Write(6,$residence.': '); }
+									if ($addressnr=='1'){
+										$nr_addresses=count($address_qry_prep);
+										if ($nr_addresses=='1')
+											$residence=__('Residence (family)');
+										else
+											$residence=__('Residences (family)');
+										$pdf->SetFont('Arial','B',12);
+										$pdf->Write(6,$residence.': ');
+										$pdf->SetFont('Arial','',12);
+									}
 									if ($addressnr>1){ $pdf->Write(6,', '); }
 									if ($addressDb->address_date){$pdf->Write(6,date_place($addressDb->address_date,'').' '); }
 									$pdf->Write(6,$addressDb->address_place);
 									// *** Show address source ***
-									if ($addressDb->address_source){
-										$pdf->SetFont('Times','',12);  $pdf->Write(6,show_sources2("family","address_source",$addressDb->address_id));
-									}
+									$source = show_sources2("family","fam_address_source",$addressDb->address_id);
+									if ($source){ $pdf->SetFont('Times','',12);  $pdf->Write(6,$source); }
 									if ($addressDb->address_text) {$pdf->SetFont('Arial','I',11);  $pdf->Write(6,' '.$addressDb->address_text); }
 								} // end while
 								if($addressnr>0) {$pdf->Ln(6); }
@@ -1578,7 +1549,7 @@ else{
 
 					for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
 						@$childDb = $db_functions->get_person($child_array[$i]);
-
+//echo $db_functions->tree_id.' '.$child_array[$i].'!!!';
 						// *** Use person class ***
 						$child_cls = New person_cls;
 						$child_cls->construct($childDb);
@@ -1817,9 +1788,8 @@ else{
 					// *********************************************************************************************
 					// *** Check for adoptive parents (just for sure: made it for multiple adoptive parents...) ***
 					// *********************************************************************************************
-					$famc_adopt_var = $familyDb->fam_gedcomnumber;
-					$famc_adoptive_qry_prep->execute();
-					while($famc_adoptiveDb=$famc_adoptive_qry_prep->fetch(PDO::FETCH_OBJ)){
+					$famc_adoptive_qry_prep = $db_functions->get_events_kind($familyDb->fam_gedcomnumber,'adoption');
+					foreach($famc_adoptive_qry_prep as $famc_adoptiveDb){
 						echo '<tr><td colspan="4"><div class="children">';
 						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_person_id);
 						// *** Use person class ***
@@ -1829,14 +1799,11 @@ else{
 						echo '</div></td></tr>'."\n";
 					}
 
-
 					// *************************************************************
 					// *** Check for adoptive parent ESPECIALLY MADE FOR ALDFAER ***
 					// *************************************************************
-					//$famc_adopt_by_person_var = $main_person;
-					$famc_adopt_by_person_var = $familyDb->fam_man; // *** Parent1 ***
-					$famc_adoptive_by_person_qry_prep->execute();
-					while($famc_adoptiveDb=$famc_adoptive_by_person_qry_prep->fetch(PDO::FETCH_OBJ)){
+					$famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_man,'adoption_by_person');
+					foreach($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb){
 						echo '<tr><td colspan="4"><div class="children">';
 						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_person_id);
 						// *** Use person class ***
@@ -1854,9 +1821,8 @@ else{
 					// *************************************************************
 					// *** Check for adoptive parent ESPECIALLY MADE FOR ALDFAER ***
 					// *************************************************************
-					$famc_adopt_by_person_var = $familyDb->fam_woman; // *** Parent2 ***
-					$famc_adoptive_by_person_qry_prep->execute();
-					while($famc_adoptiveDb=$famc_adoptive_by_person_qry_prep->fetch(PDO::FETCH_OBJ)){
+					$famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_woman,'adoption_by_person');
+					foreach($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb){
 						echo '<tr><td colspan="4"><div class="children">';
 						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_person_id);
 						// *** Use person class ***
@@ -1881,7 +1847,12 @@ else{
 						$show_google_map=false;
 						// *** Only show main javascript once ***
 						if ($family_nr==2){
-							echo '<script src="http://maps.google.com/maps/api/js?v=3&sensor=false" type="text/javascript"></script>';
+							if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+								echo '<script src="https://maps.google.com/maps/api/js?v=3&sensor=false" type="text/javascript"></script>';
+							}
+							else {
+								echo '<script src="http://maps.google.com/maps/api/js?v=3&sensor=false" type="text/javascript"></script>';							
+							}
 
 							echo '<script type="text/javascript">
 								var center = null;
@@ -2106,7 +2077,13 @@ else{
 								// *** Add all markers from array ***
 								for ($i=1; $i<count($location_array); $i++){
 									$show_google_map=true;
-									echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'http://chart.apis.google.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|');\n");
+
+									if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'https://chart.apis.google.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|');\n");
+									}
+									else {
+										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'http://chart.apis.google.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|');\n");
+									}
 								}
 
 								echo 'center = bounds.getCenter();';
@@ -2162,6 +2139,41 @@ if($screen_mode=='') {
 		$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
 		echo $treetext['family_footer'];
 
+
+		if ($user['group_user_notes_show']=='y'){
+			$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_prefix='".$tree_prefix_quoted."'
+			AND note_fam_gedcomnumber='".$family_id."' AND note_pers_gedcomnumber='".$main_person."'";
+			$note_result = $dbh->query($note_qry);
+			$num_rows = $note_result->rowCount();
+
+			echo '<table align="center" class="humo">';
+			echo '<tr class="humo_user_notes"><th>';
+				if ($num_rows)
+					echo '<a href="#humo_user_notes"></a> ';
+				echo __('User notes').'</th><th colspan="2">';
+				if ($num_rows)
+					printf(__('There are %d user added notes.'), $num_rows);
+				else
+					printf(__('There are %d user added notes.'), 0);
+			echo '</th></tr>';
+
+			while($noteDb=$note_result->fetch(PDO::FETCH_OBJ)){
+				$user_qry = "SELECT * FROM humo_users
+					WHERE user_id='".$noteDb->note_user_id."'";
+				$user_result = $dbh->query($user_qry);
+				$userDb=$user_result->fetch(PDO::FETCH_OBJ);
+
+				echo '<tr class="humo_color"><td valign="top">';
+					echo $noteDb->note_date.' '.$noteDb->note_time.' '.$userDb->user_name.'<br>';
+					//echo $noteDb->note_names;
+				echo '</td><td>';
+					echo nl2br($noteDb->note_note);
+				echo '</td></tr>';
+			}
+			echo '</table><br>';
+		}
+
+
 		// *** User is allowed to add a note to a person in the family tree ***
 		if ($user['group_user_notes']=='y'){
 			// *** Find user that adds a note ***
@@ -2209,15 +2221,30 @@ if($screen_mode=='') {
 				$register_message.=__('User note by family').': <a href="'.$_SERVER['SERVER_NAME'].'/'.$_SERVER['PHP_SELF'].'?database='.$tree_prefix_quoted.
 				'&amp;id='.$family_id.'&amp;main_person='.$main_person.'">'.safe_text($name["standard_name"]).'</a>';
 
-				$headers  = "MIME-Version: 1.0\n";
-				//$headers .= "Content-type: text/plain; charset=utf-8\n";
-				$headers .= "Content-type: text/html; charset=utf-8\n";
-				$headers .= "X-Priority: 3\n";
-				$headers .= "X-MSMail-Priority: Normal\n";
-				$headers .= "X-Mailer: php\n";
-				$headers .= "From: \"".$userDb->user_name."\" <".$userDb->user_mail.">\n";
+				//$headers  = "MIME-Version: 1.0\n";
+				//$headers .= "Content-type: text/html; charset=utf-8\n";
+				//$headers .= "X-Priority: 3\n";
+				//$headers .= "X-MSMail-Priority: Normal\n";
+				//$headers .= "X-Mailer: php\n";
+				//$headers .= "From: \"".$userDb->user_name."\" <".$userDb->user_mail.">\n";
 
-				@$mail = mail($register_address, $register_subject, $register_message, $headers);
+				//@$mail = mail($register_address, $register_subject, $register_message, $headers);
+
+				include_once ('include/mail.php');
+				// *** Set who the message is to be sent from ***
+				$mail->setFrom($userDb->user_mail, $userDb->user_name);
+				// *** Set who the message is to be sent to ***
+				$mail->addAddress($register_address, $register_address);
+				// *** Set the subject line ***
+				$mail->Subject = $register_subject;
+				$mail->msgHTML($register_message);
+				// *** Replace the plain text body with one created manually ***
+				//$mail->AltBody = 'This is a plain-text message body';
+				if (!$mail->send()) {
+				//	echo '<br><b>'.__('Sending e-mail failed!').' '. $mail->ErrorInfo.'</b>';
+				//} else {
+				//	echo '<br><b>'.__('E-mail sent!').'</b><br>';
+				}
 
 				echo '<table align="center" class="humo">';
 				echo '<tr><th><a name="add_info"></a>'.__('Your information is saved and will be reviewed by the webmaster.').'</th></tr>';
@@ -2296,8 +2323,7 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 	$pdf->SetFont('Arial','',10);
 	// the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
 	$count=0;
-	$source_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."sources WHERE source_gedcomnr=?");
-	$source_prep->bindParam(1,$source_var);
+
 	foreach($pdf_source as $key => $value) {
 		$count++;
 		if(isset($pdf_source[$key])) {
@@ -2308,13 +2334,7 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 				source_display($pdf_source[$key]);  // function source_display from source.php, called with source nr.
 			}
 			elseif ($user['group_sources']=='t') {
-				$source_var = $pdf_source[$key];
-				$source_prep->execute();
-				try {
-					@$sourceDb = $source_prep->fetch(PDO::FETCH_OBJ);
-				} catch (PDOException $e) {
-					echo __("No valid source number.");
-				}
+				$sourceDb = $db_functions->get_source($pdf_source[$key]);
 				if ($sourceDb->source_title){
 					$pdf->SetFont('Arial','B',10);
 					$pdf->Write(6,__('Title').": ");

@@ -1,13 +1,13 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.0.8';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.1.1';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 9 mrt. 2014';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
-$humo_option["version_date"]='2014-11-12';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2015-03-03';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -191,6 +191,12 @@ if (!isset($humo_option["gedcom_read_commit_records"])){
 	@$result=$dbh->query($sql);	
 }
 
+if (!isset($humo_option["gedcom_read_time_out"])){
+	$humo_option["gedcom_read_time_out"]='0';
+	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_read_time_out', setting_value='0'";
+	@$result=$dbh->query($sql);	
+}
+
 // *** Watermark text and color in PDF file ***
 if (!isset($humo_option["watermark_text"])){
 	$humo_option["watermark_text"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_text', setting_value=''";
@@ -207,5 +213,56 @@ if (!isset($humo_option["watermark_color_g"])){
 if (!isset($humo_option["watermark_color_b"])){
 	$humo_option["watermark_color_b"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_color_b', setting_value='224'";
 	@$result=$dbh->query($sql);	
+}
+
+// *** Minimum characters in search boxes
+if (!isset($humo_option["min_search_chars"])){
+	$humo_option["min_search_chars"]='3'; $sql="INSERT INTO humo_settings SET setting_variable='min_search_chars', setting_value='3'";
+	@$result=$dbh->query($sql);	
+}
+if (!isset($humo_option["date_display"])){
+	$humo_option["date_display"]='eu'; $sql="INSERT INTO humo_settings SET setting_variable='date_display', setting_value='eu'";
+	@$result=$dbh->query($sql);	
+}
+if (!isset($humo_option["name_order"])){
+	$humo_option["name_order"]='western'; $sql="INSERT INTO humo_settings SET setting_variable='name_order', setting_value='western'";
+	@$result=$dbh->query($sql);	
+}
+if (!isset($humo_option["geo_trees"])){  
+	$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+	if(!$temp->rowCount()) { 
+		// no humo_location table was created yet. just enter the geo_trees setting with empty value to be ready if needed in future
+		$humo_option["geo_trees"]=''; $sql="INSERT INTO humo_settings SET setting_variable='geo_trees', setting_value=''";
+		@$result=$dbh->query($sql);	
+	} 
+	else {
+		// A humo_location table already exists. A situation where there is a location table but no geo_trees setting can only happen one time
+		// when upgrading to the first version that introduces this option. We'll check and enter the required tree_ids of trees that have been indexed.
+		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY'";
+		$tree_prefix_result = $dbh->query($tree_prefix_sql);
+		$geo_string=""; // string to hold the tree_ids of the trees that have been indexed in the location table
+		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){  // for each tree...
+
+			// make sure the location_status column exists. If not create it
+			$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
+			$exists = $result->rowCount();
+			if(!$exists) {
+				$dbh->query("ALTER TABLE humo_location ADD location_status TEXT DEFAULT '' AFTER location_lng");
+			}
+
+			$found=false; 
+			$loc_sql = "SELECT location_status FROM humo_location";
+			$loc_result = $dbh->query($loc_sql); 
+			while($loc_resultDb = $loc_result->fetch(PDO::FETCH_OBJ)) {
+				if(strpos($loc_resultDb->location_status,$tree_prefixDb->tree_prefix)!==false) {  // the tree prefix is listed
+					$found=true; // this tree should be included in the geo_trees setting
+				}
+			} 
+			if($found===true) { $geo_string .= "@".$tree_prefixDb->tree_id.";"; } // we create string: @4;@12;@13; which can also be searched by strpos
+		}
+		$humo_option["geo_trees"]=$geo_string; 
+		$sql="INSERT INTO humo_settings SET setting_variable='geo_trees', setting_value='".$geo_string."'";
+		@$result=$dbh->query($sql);	
+	}
 }
 ?>

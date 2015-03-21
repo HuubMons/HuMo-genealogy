@@ -36,35 +36,52 @@ $photo_name='';
 if (isset($_POST['photo_name'])){ $photo_name=safe_text($_POST['photo_name']); }
 if (isset($_GET['photo_name'])){ $photo_name=safe_text($_GET['photo_name']); }
 
+// Create one-time an array of all pics with person_id's
+$qry="SELECT event_event, event_kind, event_person_id FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_kind='picture'";	
+$picqry=$dbh->query($qry); 
+$my_array=Array(); 
+while($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
+	if($picqryDb->event_person_id != '') { // we only want to include pics with a person_id
+		$picname = str_replace(" ","_",$picqryDb->event_event);
+		if(!isset($my_array[$picname])) { // this pic does not appear in the array yet
+			$my_array[$picname]=$picqryDb->event_person_id; 
+			// example: $my_array['an_example.jpg']="I354"
+		}
+		else { // pic already exists in array with other person_id. Append this one.
+			$my_array[$picname] .= '@@'.$picqryDb->event_person_id;
+			// example: $my_array['an_example.jpg']="I354@@I653"
+		}
+	}
+}
 // *** Read all photos from directory ***
 $dir=$dataDb->tree_pict_path;
 if (file_exists($dir)){
 	$dh  = opendir($dir);
 	while (false !== ($filename = readdir($dh))) {
-		if (strtolower(substr($filename, -3)) == "jpg" OR strtolower(substr($filename, -3)) == "gif"){
+		if ((strtolower(substr($filename, -3)) == "jpg" OR strtolower(substr($filename, -3)) == "gif") AND substr($filename,0,6)!='thumb_'){
 
 			// *** Use search field (search for person) to show pictures ***
 			$show_photo=true;
 
-			if ($photo_name){
+			if ($photo_name){ 
 				$show_photo=false;
-				$afbqry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-					WHERE event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'");
-				while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
-					$quicksearch=str_replace(" ", "%", $photo_name);
-					$querie= "SELECT * FROM ".$tree_prefix_quoted."person
-						WHERE pers_gedcomnumber='".$afbDb->event_person_id."'
-						AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%'";
-					$persoon = $dbh->query($querie);
-					$personDb = $persoon->fetch(PDO::FETCH_OBJ);
-					if ($personDb){ $show_photo=true; }
+				$quicksearch=str_replace(" ", "%", $photo_name);
+				if(isset($my_array[str_replace(" ","_",$filename)])) { // pic appears somewhere in the event table with one or more person_id's
+					$id_arr = explode("@@",$my_array[str_replace(" ","_",$filename)]);
+					foreach($id_arr AS $value) {
+						$querie= "SELECT pers_firstname, pers_prefix, pers_lastname FROM humo_persons
+							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$value."'
+							AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%'";
+						$persoon = $dbh->query($querie);
+						$personDb = $persoon->fetch(PDO::FETCH_OBJ);
+						if ($personDb){ $show_photo=true; }
+					}
 				}
+				if(stripos($filename,$quicksearch)!==false){ $show_photo=true; }
 			}
-
-			if ($show_photo AND substr($filename,0,6)!='thumb_'){
+			if ($show_photo){
 				$picture_array[]=$filename;
 			}
-
 		}
 	}
 }
@@ -90,7 +107,7 @@ $start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
 	if ($start>1){
 		$start2=$start-20;
 		$calculated=($start-2)*$show_pictures;
-		$line_pages.= ' <a href="'.
+		$line_pages.= ' <a href="'.$albumpath.
 		"start=".$start2.
 		"&amp;item=".$calculated.
 		"&amp;show_pictures=".$show_pictures.
@@ -164,8 +181,8 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 		$picture_text='';	// Text with link to person
 		$picture_text2='';	// Text without link to person
 
-		$sql="SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
+		$sql="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
 		$afbqry= $dbh->query($sql);
 		$picture_privacy=false;
 		while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
@@ -178,17 +195,20 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 			$picture_text2.=$name["standard_name"].'<br>';
 			$privacy=$person_cls->set_privacy($personDb);
 			if ($privacy){ $picture_privacy=true; }
-			$picture_text.=$afbDb->event_text.'<br>';
-			$picture_text2.=$afbDb->event_text.'<br>';
+			if($afbDb->event_text!='') {
+				$picture_text.=$afbDb->event_text.'<br>';
+				$picture_text2.=$afbDb->event_text.'<br>';
+			}
 		}
 
 
 		// *** Show texts from connected objects ***
-		$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
-			WHERE event_kind='object' AND LOWER(event_event)='".strtolower($filename)."'");
+		$picture_qry=$dbh->query("SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_kind='object' AND LOWER(event_event)='".strtolower($filename)."'");
 		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)) {
-		 	$connect_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."connections
-				WHERE connect_kind='person'
+		 	//$connect_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."connections
+		 	$connect_qry=$dbh->query("SELECT * FROM humo_connections
+				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_object'
 				AND connect_source_id='".$pictureDb->event_gedcomnr."'");
 			while($connectDb=$connect_qry->fetch(PDO::FETCH_OBJ)) {

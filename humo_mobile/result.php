@@ -43,14 +43,17 @@ else {
 	$quicksearch=str_replace(' ', '%', $quicksearch);
 
 	// one can enter "Huub Mons", "Mons Huub", "Huub van Mons", "van Mons, Huub", "Mons, Huub van" and even "Mons van, Huub" ...
-	$query= "SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person 
-		WHERE CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%' 
+	$query= "SELECT * FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."'
+		AND(
+		CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%' 
 		OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$quicksearch%' 
 		OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$quicksearch%' 
-		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$quicksearch%'";
+		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$quicksearch%'
+		)";
 	$query.=" ORDER BY pers_lastname, pers_firstname ASC ";   
 	$data = $dbh->query($query);
-	$num_rows = $data->rowCount();	
+	$num_rows = $data->rowCount();
 	
 	if ($num_rows==NULL){
 		print __('No results found.');

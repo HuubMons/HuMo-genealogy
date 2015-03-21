@@ -379,7 +379,7 @@ function move($i) {
 //********** 3rd Part:  CODE TO PRINT THE STARFIELD CHART         *****
 //****************************************************************************
 function printchart() {
-	global $genarray, $size, $dbh, $tree_prefix_quoted, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
+	global $dbh, $tree_id, $db_functions, $genarray, $size, $tree_prefix_quoted, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
 	global $vbasesize, $hsize, $vsize, $vdist, $hdist, $user, $direction, $dna;
 	global $dirmark1, $dirmark2, $rtlmarker, $alignmarker, $base_person_gednr, $base_person_name, $base_person_sexe, $base_person_famc;
 
@@ -423,8 +423,8 @@ function printchart() {
 <b>Click on spouse\'s name in popup menu:</b> Go to spouse\'s family page<br><br>
 <b>LEGEND:</b>');
 
-		echo '<p><span style="background-color:cyan; border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Male').'<br>';
-		echo '<span style="background-color:pink; border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Female').'<br>';
+		echo '<p><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Male').'<br>';
+		echo '<span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Female').'<br>';
 
 		echo '<span style="color:blue">=====</span>&nbsp;'.__('Additional marriage of same person').'<br><br>';
 
@@ -497,7 +497,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			print '<input type="hidden" name="bn" value="'.$base_person_name.'">';
 			print '<input type="hidden" name="bg" value="'.$base_person_gednr.'">';
 		}
-		
+
 		print '<input id="dirval" type="hidden" name="direction" value="">';  // will be filled in next lines
 		if ($direction=="1"){ // horizontal
 			print '<input type="button" name="dummy" value="'.__('vertical').'" onClick=\'document.desc_form.direction.value="0";document.desc_form.submit();\'>';
@@ -506,7 +506,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			print '<input type="button" name="dummy" value="'.__('horizontal').'" onClick=\'document.desc_form.direction.value="1";document.desc_form.submit();\'>';
 		}
 		print '</form>'; 
-		$result=$dbh->query("SELECT pers_sexe FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber ='".$keepmain_person."'");	
+		$result=$dbh->query("SELECT pers_sexe FROM humo_persons
+			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$keepmain_person."'");
 		$resultDb=$result->fetch(PDO::FETCH_OBJ);
 		if($dna!="none") {
 			echo "&nbsp;&nbsp;".__('DNA: '); 
@@ -613,14 +614,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 	} // end if not hourglass
 
-	// some PDO prepared statements before the loop
-	$man_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."person WHERE pers_gedcomnumber =?");
-	$man_prep->bindParam(1,$man_prep_var);
-	$fam_prep = $dbh->prepare("SELECT * FROM ".$tree_prefix_quoted."family WHERE `fam_gedcomnumber`=?");
-	$fam_prep->bindParam(1,$fam_prep_var);
-
 	for($w=0; $w < count($genarray); $w++) {
-
 		$xvalue=$genarray[$w]["x"];
 		$yvalue=$genarray[$w]["y"];
 
@@ -636,9 +630,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		// *** Start person class and calculate privacy ***
 		if ($genarray[$w]["gednr"]){
-			$man_prep_var = $genarray[$w]["gednr"];
-			$man_prep->execute();
-			@$man = $man_prep->fetch(PDO::FETCH_OBJ);
+			$man = $db_functions->get_person($genarray[$w]["gednr"]);
 			$man_cls= New person_cls;
 			$man_cls->construct($man);
 			$man_privacy=$man_cls->privacy;
@@ -700,9 +692,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						}
 
 						if($genarray[$w]["non"]==0) { // otherwise for an unmarried child it would give the parents' marriage!
-							$fam_prep_var = $genarray[$w]["fams"];
-							$fam_prep->execute();
-							$ownfam = $fam_prep->fetch(PDO::FETCH_OBJ);
+							$ownfam = $db_functions->get_family($genarray[$w]["fams"]);
 							if ($ownfam->fam_marr_date OR $ownfam->fam_marr_place){
 								$replacement_text.= '<br>'.__('X').$dirmark1.' '.
 								date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
@@ -745,10 +735,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			// *** Start person class and calculate privacy ***
 			$woman_cls=''; // prevent use of $woman_cls from previous wife if another wife is NN
 			if (isset($genarray[$w]["spgednr"]) AND $genarray[$w]["spgednr"]){
-				$man_prep_var = $genarray[$w]["spgednr"];
-				$man_prep->execute();
-				@$woman = $man_prep->fetch(PDO::FETCH_OBJ);
-
+				@$woman = $db_functions->get_person($genarray[$w]["spgednr"]);
 				$woman_cls= New person_cls;
 				$woman_cls->construct($woman);
 				$woman_privacy=$woman_cls->privacy;

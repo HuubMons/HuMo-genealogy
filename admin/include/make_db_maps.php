@@ -45,11 +45,36 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 	echo __('Starting time').': '.date('G:i:s').'<br><br>';
 	sleep(1); // make sure this gets printed before the next is executed
 
+	// If the locations are taken from one tree, add the id of this tree to humo_settings "geo_trees", if not already there
+	// so we can update correctly with the "REFRESH BIRTH/DEATH STATUS" option further on.
+	if($_SESSION['geo_tree']  != "all_geo_trees") {  // we add locations from one tree
+		if(strpos($humo_option['geo_trees'],"@".$_SESSION['geo_tree'].";")===false) { // this tree_id does not appear already
+				$dbh->query("UPDATE humo_settings SET setting_value = '".$humo_option['geo_trees']."@".$_SESSION['geo_tree'] .";' WHERE setting_variable ='geo_trees'"); 
+			// add tree_prefix if not already present
+			$humo_option['geo_trees'] .= "@".$_SESSION['geo_tree'].';'; // humo_option is used further on before page is refreshed so we have to update it manually
+		}
+	}
+	else {
+		$str="";
+		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+		$tree_prefix_result = $dbh->query($tree_prefix_sql);
+		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){ 
+			$str .= "@".$tree_prefixDb->tree_id.";";
+		}
+			$dbh->query("UPDATE humo_settings SET setting_value = '".$str."' WHERE setting_variable ='geo_trees'"); 
+		$humo_option['geo_trees'] = $str; // humo_option is used further on before page is refreshed so we have to update it manually
+	}
+
 	foreach($_SESSION['add_locations'] as $value) {
 		$count_parsed++;
 
 		$loc=urlencode($value);
-		$jsonurl = "http://maps.googleapis.com/maps/api/geocode/json?address=".$loc."&sensor=false";
+		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+			$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc."&sensor=false";
+		}
+		else {
+			$jsonurl = "http://maps.googleapis.com/maps/api/geocode/json?address=".$loc."&sensor=false";						
+		}
 		@$json = file_get_contents($jsonurl,0,null,null);
 		// file_get_contents won't work if "allow_url_fopen" is disabled by host for security considerations.
 		// in that case try the PHP "curl" extension that is installed on most hosts (but we still check...)
@@ -147,6 +172,7 @@ else {  // main screen
 
 	if(isset($_POST['deletedatabase'])) {
 		$dbh->query("DROP TABLE humo_location");
+		$dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable = 'geo_trees'");
 	}
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CREATE/UPDATE GEOLOCATION DATABASE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -158,21 +184,27 @@ else {  // main screen
 	if(isset($_POST['check_new'])) { // the "Check" button was pressed
 	
 		$unionstring='';
-		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		$tree_prefix_result = $dbh->query($tree_prefix_sql);
 
-		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
-			$unionstring .= "SELECT pers_birth_place FROM ".$tree_prefixDb->tree_prefix."person UNION ";
-			$unionstring .= "SELECT pers_bapt_place  FROM ".$tree_prefixDb->tree_prefix."person WHERE pers_birth_place = '' UNION ";
-			$unionstring .= "SELECT pers_death_place FROM ".$tree_prefixDb->tree_prefix."person UNION ";
-			$unionstring .= "SELECT pers_buried_place  FROM ".$tree_prefixDb->tree_prefix."person WHERE pers_death_place = '' UNION ";
-					// (only take bapt place if no birth place and only take burial place if no death place)
+		if(isset($_SESSION['geo_tree']) AND $_SESSION['geo_tree'] != "all_geo_trees") {   
+			$unionstring .= "SELECT pers_birth_place FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' UNION
+			SELECT pers_bapt_place  FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' AND pers_birth_place = '' UNION
+			SELECT pers_death_place FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' UNION
+			SELECT pers_buried_place  FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' AND pers_death_place = ''";
+				// (only take bapt place if no birth place and only take burial place if no death place)
+		}
+		else { 
+			$unionstring .= "SELECT pers_birth_place FROM humo_persons
+				UNION SELECT pers_bapt_place FROM humo_persons WHERE pers_birth_place = ''
+				UNION SELECT pers_death_place FROM humo_persons
+				UNION SELECT pers_buried_place FROM humo_persons WHERE pers_death_place = ''";
+				// (only take bapt place if no birth place and only take burial place if no death place)
 		}
 
-		$unionstring = substr($unionstring,0,-7); // take off last " UNION "
+		//$unionstring = substr($unionstring,0,-7); // take off last " UNION "
 
 		// from here on we can use only "pers_birth_place", since the UNION puts also all other locations under pers_birth_place
-		$map_person=$dbh->query("SELECT pers_birth_place, count(*) AS quantity FROM (".$unionstring.") AS x GROUP BY pers_birth_place ");
+		$map_person=$dbh->query("SELECT pers_birth_place, count(*) AS quantity
+			FROM (".$unionstring.") AS x GROUP BY pers_birth_place ");
 
 		$add_locations = array();
 
@@ -202,6 +234,15 @@ else {  // main screen
 			$map_totalsecs = $new_locations * 1.25;
 			$map_mins = floor($map_totalsecs / 60);
 			$map_secs = $map_totalsecs % 60;
+			$one_tree="";
+			if(isset($_SESSION['geo_tree']) AND $_SESSION['geo_tree'] != "all_geo_trees") {
+				$tree_prefix_sql2 = "SELECT * FROM humo_trees WHERE tree_id='".$_SESSION['geo_tree']."'";
+				$tree_prefix_result2 = $dbh->query($tree_prefix_sql2);
+				$tree_prefixDb2=$tree_prefix_result2->fetch(PDO::FETCH_OBJ);
+				$treetext2=show_tree_text($tree_prefixDb2->tree_prefix, $selected_language);
+				$one_tree= "<b>".__('Family tree')." ".@$treetext2['name'].": </b>";
+			}
+			echo $one_tree;
 			printf(__('There are %s new unique birth/ death locations to add to the database.'), $new_locations);
 			echo '<br>';
 			printf(__('This will take approximately <b>%1$d minutes and %2$d seconds.</b>'), $map_mins, $map_secs);
@@ -221,6 +262,43 @@ else {  // main screen
 			echo '<br><b>'.__('No geolocation database found.').'</b><br>';
 		}
 		echo __('Check how many new locations have to be indexed and how long the indexing may take (approximately).');
+
+		// SELECT FAMILY TREE
+		echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+		$tree_prefix_result = $dbh->query($tree_prefix_sql);
+		$count=0;
+		echo '<br><form method="POST" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
+		//echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
+		echo '<select size="1" name="database" onChange="this.form.submit();">';
+			//echo '<option value="">'.__('Select a family tree:').'</option>';
+			$selected=''; 	
+			if (!isset($_SESSION['geo_tree']) OR (isset($_POST['database']) AND $_POST['database']=="all_geo_trees") )  { 
+				$selected=' SELECTED';  
+				$_SESSION['geo_tree']="all_geo_trees";
+			}
+			echo '<option value="all_geo_trees"'.$selected.'>'.__('All family trees').'</option>';
+			while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){ 
+
+				$selected='';
+				if (isset($_POST['database'])){   
+					if ($tree_prefixDb->tree_prefix==$_POST['database']){ 
+						$selected=' SELECTED';
+						$_SESSION['geo_tree']=$tree_prefixDb->tree_id;
+					}
+				}
+				else { 
+					if(isset($_SESSION['geo_tree']) AND $_SESSION['geo_tree'] ==$tree_prefixDb->tree_id) { 
+						$selected=' SELECTED';
+					}
+				}
+				$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
+				echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+				$count++;
+			}
+		echo '</select>';
+		echo '</form><br>';
+
 		echo '<form method="POST" name="checkform" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
 		echo '<br><input type="submit" name="check_new" value="'.__('Check').'"><br><br>';
 		echo '</form>';
@@ -281,8 +359,15 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			$lat = $row['location_lat'];  
 			$lng = $row['location_lng']; 
 		}
-		?> 
-		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+			echo '<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>';
+		}
+		else {
+			echo '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>';
+		}
+		?>
+
 		<script type="text/javascript"> 
 		function disableEnterKey(e){ 
 		// works for FF and Chrome
@@ -544,13 +629,21 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 1110 (intv. 100), 1560 (intv. 50), 1695 (intv. 35),1740 (intv. 30), 1785 (intv. 25), 1830 (intv. 20)').'<br><br>';
 
 		// *** Select family tree ***
-		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+		$tree_id_string = " AND ( ";
+		$id_arr = explode(";",substr($humo_option['geo_trees'],0,-1)); // substr to remove trailing ;
+		foreach($id_arr as $value) {
+			$tree_id_string .= "tree_id='".substr($value,1)."' OR ";  // substr removes leading "@" in geo_trees setting string
+		}
+		$tree_id_string = substr($tree_id_string,0,-4).")"; // take off last " ON " and add ")"
+
+		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ".$tree_id_string." ORDER BY tree_order"; 
 		$tree_prefix_result = $dbh->query($tree_prefix_sql);
 		echo '<table><tr><th>'.__('Name of tree').'</th><th style="text-align:center">'.__('Starting year').'</th>';
 		echo '<th style="text-align:center">'.__('Interval').'</th>';
 		$rowspan = $tree_prefix_result->rowCount() + 1;
 		echo '<th rowspan='.$rowspan.'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="Submit" name="submit" value="'.__('Change').'"></th></tr>';
 		echo '<form method="POST" action="maps.php" style="display : inline;">';
+
 		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
 			${"slider_choice".$tree_prefixDb->tree_prefix}="1560"; // default
 			$query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_".$tree_prefixDb->tree_prefix."' ";
@@ -626,7 +719,7 @@ echo '</table>';  // end google maps admin
 
 // function to refresh location_status column
 function refresh_status() {
-	global $dbh;
+	global $dbh, $humo_option;
 	// make sure the location_status column exists. If not create it
 	$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
 	$exists = $result->rowCount();
@@ -639,27 +732,45 @@ function refresh_status() {
 	}
 	$status_string = "";
 
-	$tree_pref_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-	$tree_pref_result = $dbh->query($tree_pref_sql);
-	while ($tree_prefDb=$tree_pref_result->fetch(PDO::FETCH_OBJ)){
-		$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM ".$tree_prefDb->tree_prefix."person");
-		while($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
-			if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$tree_prefDb->tree_prefix."birth ")===false) {
-				$loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix."birth ";
-			}
-			if (isset($loca_array[$resultDb->pers_bapt_place]) AND strpos($loca_array[$resultDb->pers_bapt_place],$tree_prefDb->tree_prefix."bapt ")===false) {
-				$loca_array[$resultDb->pers_bapt_place] .= $tree_prefDb->tree_prefix."bapt ";
-			}
-			if (isset($loca_array[$resultDb->pers_death_place]) AND strpos($loca_array[$resultDb->pers_death_place],$tree_prefDb->tree_prefix."death ")===false) {
-				$loca_array[$resultDb->pers_death_place] .= $tree_prefDb->tree_prefix."death ";
-			}
-			if (isset($loca_array[$resultDb->pers_buried_place]) AND strpos($loca_array[$resultDb->pers_buried_place],$tree_prefDb->tree_prefix."buried ")===false) {
-				$loca_array[$resultDb->pers_buried_place] .= $tree_prefDb->tree_prefix."buried ";
-			}
+	$tree_id_string = " WHERE ";
+	$id_arr = explode(";",substr($humo_option['geo_trees'],0,-1)); // substr to take off last ;
+	foreach($id_arr as $value) {
+		$tree_id_string .= "pers_tree_id='".substr($value,1)."' OR ";   // substr removes leading "@" in geo_trees setting string
+	}
+	$tree_id_string = substr($tree_id_string,0,-4); // take off last " OR"
+
+	//$tree_pref_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+	//$tree_pref_result = $dbh->query($tree_pref_sql);
+	//while ($tree_prefDb=$tree_pref_result->fetch(PDO::FETCH_OBJ)){
+		//$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place
+		//	FROM ".$tree_prefDb->tree_prefix."person");
+	$result=$dbh->query("SELECT pers_tree_id, pers_tree_prefix, pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place
+		FROM humo_persons".$tree_id_string);
+	while($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
+		//if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$tree_prefDb->tree_prefix."birth ")===false) {
+		if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$resultDb->pers_tree_prefix."birth ")===false) {
+			//$loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix."birth ";
+			$loca_array[$resultDb->pers_birth_place] .= $resultDb->pers_tree_prefix."birth ";
+		}
+		//if (isset($loca_array[$resultDb->pers_bapt_place]) AND strpos($loca_array[$resultDb->pers_bapt_place],$tree_prefDb->tree_prefix."bapt ")===false) {
+		if (isset($loca_array[$resultDb->pers_bapt_place]) AND strpos($loca_array[$resultDb->pers_bapt_place],$resultDb->pers_tree_prefix."bapt ")===false) {
+			//$loca_array[$resultDb->pers_bapt_place] .= $tree_prefDb->tree_prefix."bapt ";
+			$loca_array[$resultDb->pers_bapt_place] .= $resultDb->pers_tree_prefix."bapt ";
+		}
+		//if (isset($loca_array[$resultDb->pers_death_place]) AND strpos($loca_array[$resultDb->pers_death_place],$tree_prefDb->tree_prefix."death ")===false) {
+		if (isset($loca_array[$resultDb->pers_death_place]) AND strpos($loca_array[$resultDb->pers_death_place],$resultDb->pers_tree_prefix."death ")===false) {
+			//$loca_array[$resultDb->pers_death_place] .= $tree_prefDb->tree_prefix."death ";
+			$loca_array[$resultDb->pers_death_place] .= $resultDb->pers_tree_prefix."death ";
+		}
+		//if (isset($loca_array[$resultDb->pers_buried_place]) AND strpos($loca_array[$resultDb->pers_buried_place],$tree_prefDb->tree_prefix."buried ")===false) {
+		if (isset($loca_array[$resultDb->pers_buried_place]) AND strpos($loca_array[$resultDb->pers_buried_place],$resultDb->pers_tree_prefix."buried ")===false) {
+			//$loca_array[$resultDb->pers_buried_place] .= $tree_prefDb->tree_prefix."buried ";
+			$loca_array[$resultDb->pers_buried_place] .= $resultDb->pers_tree_prefix."buried ";
 		}
 	}
+ 
 	foreach($loca_array as $key => $value) {
-		if(isset($_POST['purge']) AND $value == "") {
+		if(isset($_POST['purge']) AND ($value == "" OR $value == NULL)) {
 			$dbh->query("DELETE FROM humo_location WHERE location_location = '".addslashes($key)."'");
 		}
 		else {

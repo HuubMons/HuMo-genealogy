@@ -30,7 +30,7 @@ function date_show($process_date, $process_name, $multiple_rows=''){
 		$text.='<option value="BET "'.$selected.'>'.__('between').'</option>';
 	$text.='</select>';
 
-	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" placeholder="'.__('date').'" style="direction:ltr" value="';
+	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" placeholder="'.ucfirst(__('date')).'" style="direction:ltr" value="';
 		// *** BEF, ABT, AFT, etc. is shown in date_prefix ***
 		$process_date=strtolower($process_date);
 
@@ -113,30 +113,38 @@ function valid_date($date) {
 	include_once(CMS_ROOTPATH."include/validate_date_cls.php");
 	$check = New validate_date_cls;
 	// date entered as 01-04-2013 or 01/04/2013
-	if(strpos($date,"-")!==false OR strpos($date,"/")!==false) {
+	if((strpos($date,"-")!==false OR strpos($date,"/")!==false)AND strpos($date," ")===false) { // skips "2 mar 1741/42" and "mar 1741/42"
 		if(strpos($date,"-")!==false) { $delimiter = "-"; }
 		else { $delimiter = "/"; }
 		$date_dash = explode($delimiter,$date); 
-		if(count($date_dash)==2) { // date was entered as month and year: 4-2011 or 4/2011
-			$member = 0; // first member of array is month
+		if(count($date_dash)==2) { // date was entered as month and year: 4-2011 or 4/2011 or we have case of "1741/42" (just year no day/month)
+			if($date_dash[0] > $date_dash[1]) {
+				$member = "none"; // "1741/42" so don't perform transformation
+				$this_date = $date;
+			}
+			else {
+				$member = 0; // first member of array is month
+			}
 		}
 		else {
 			$member = 1; // second member of array is month
 		}
-		if ($date_dash[$member]=="1" OR $data_dash[$member]=="01") { $date_dash[$member] = "JAN"; } 
-		else if($date_dash[$member]=="2" OR $data_dash[$member]=="02") { $date_dash[$member] = "FEB"; }
-		else if($date_dash[$member]=="3" OR $data_dash[$member]=="03") { $date_dash[$member] = "MAR"; }
-		else if($date_dash[$member]=="4" OR $data_dash[$member]=="04") { $date_dash[$member] = "APR"; }
-		else if($date_dash[$member]=="5" OR $data_dash[$member]=="05") { $date_dash[$member] = "MAY"; }
-		else if($date_dash[$member]=="6" OR $data_dash[$member]=="06") { $date_dash[$member] = "JUN"; }
-		else if($date_dash[$member]=="7" OR $data_dash[$member]=="07") { $date_dash[$member] = "JUL"; }
-		else if($date_dash[$member]=="8" OR $data_dash[$member]=="08") { $date_dash[$member] = "AUG"; }
-		else if($date_dash[$member]=="9" OR $data_dash[$member]=="09") { $date_dash[$member] = "SEP"; }
-		else if($date_dash[$member]=="10") { $date_dash[$member] = "OCT"; }
-		else if($date_dash[$member]=="11") { $date_dash[$member] = "NOV"; }
-		else if($date_dash[$member]=="12") { $date_dash[$member] = "DEC"; }
+		if($member!="none") {
+			if ($date_dash[$member]=="1" OR $date_dash[$member]=="01") { $date_dash[$member] = "JAN"; } 
+			else if($date_dash[$member]=="2" OR $date_dash[$member]=="02") { $date_dash[$member] = "FEB"; }
+			else if($date_dash[$member]=="3" OR $date_dash[$member]=="03") { $date_dash[$member] = "MAR"; }
+			else if($date_dash[$member]=="4" OR $date_dash[$member]=="04") { $date_dash[$member] = "APR"; }
+			else if($date_dash[$member]=="5" OR $date_dash[$member]=="05") { $date_dash[$member] = "MAY"; }
+			else if($date_dash[$member]=="6" OR $date_dash[$member]=="06") { $date_dash[$member] = "JUN"; }
+			else if($date_dash[$member]=="7" OR $date_dash[$member]=="07") { $date_dash[$member] = "JUL"; }
+			else if($date_dash[$member]=="8" OR $date_dash[$member]=="08") { $date_dash[$member] = "AUG"; }
+			else if($date_dash[$member]=="9" OR $date_dash[$member]=="09") { $date_dash[$member] = "SEP"; }
+			else if($date_dash[$member]=="10") { $date_dash[$member] = "OCT"; }
+			else if($date_dash[$member]=="11") { $date_dash[$member] = "NOV"; }
+			else if($date_dash[$member]=="12") { $date_dash[$member] = "DEC"; }
 
-		$this_date = implode(" ",$date_dash); 
+			$this_date = implode(" ",$date_dash);
+		}
 	}
 	else {
 		$this_date = $date;
@@ -158,12 +166,18 @@ function text_process($text,$long_text=false){
 
 // *** Show texts without <br> and process Aldfaer and other @xx@ texts ***
 function text_show($find_text){
-	global $dbh, $tree_prefix;
+	global $dbh, $tree_id; 
+	//$tree_prefix;
 	if($find_text != '') {
 		$text=$find_text;
 		if (substr($find_text, 0, 1)=='@'){
-			$search_text=$dbh->query("SELECT * FROM ".$tree_prefix."texts
-			WHERE text_gedcomnr='".$find_text."'");
+			//$text_check=substr($find_text,1,-1);
+			//$search_text=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."texts
+			//	WHERE text_gedcomnr='".safe_text($text_check)."'");
+			//$search_text=$dbh->query("SELECT * FROM ".$tree_prefix."texts
+			//WHERE text_gedcomnr='".substr($find_text,1,-1)."'");
+			$search_text=$dbh->query("SELECT * FROM humo_texts
+			WHERE text_tree_id='".$tree_id."' AND text_gedcomnr='".substr($find_text,1,-1)."'");
 			@$search_textDb=$search_text->fetch(PDO::FETCH_OBJ);
 			@$text=$search_textDb->text_text;
 			$text = str_replace("<br>", "<br>\n", $text);

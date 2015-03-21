@@ -67,24 +67,19 @@ This credits screen is english only...
 <h2>Languages</h2>
 
 <ul>
-<li>Rauno Salomäki:
-	<ul><li>Added Finish translation.</ul>
-<li>Ambrogio Chiotti:
-	<ul><li>Added Italian translation.</ul>
-<li>Raymond Larche:
-	<ul><li>Improved French translation.</ul>
-<li>Carlos:
-	<ul><li>Improved French translation.</ul>
-<li>Johannes Prost:
-	<ul><li>Added German admin file, and better translation of German language file.</ul>
-<li>Marco Steinhaeuser:
-	<ul><li>Improved German language file.</ul>
-<li>Dr. Maleki:
-	<ul><li>Added Persian language.</ul>
-<li>Andres Maurer:
-	<ul><li>Added Spanish language.</ul>
-<li>António Duarte:
-	<ul><li>Added Portuguese language.</ul>
+<li>Chinese by: Dongshan.</li>
+<li>Dutch by: Huub, Yossi.</li>
+<li>English by: Huub, Yossi.</li>
+<li>English (US) by: Yossi, Brian.</li>
+<li>Finnish by: Rauno Salomäki.</li>
+<li>French by: Raymond Larche, Carlos.</li>
+<li>German by: Johannes Prost, Marco Steinhaeuser.</li>
+<li>Hungarian by: Nagy-Vajda Domokos.</li>
+<li>Italian by: Ambrogio Chiotti.</li>
+<li>Persian by: Dr. Maleki</li>
+<li>Portugese: António Duarte</li>
+<li>Russian: Demian Nikonorov</li>
+<li>Spanish: Andres Maurer</li>
 </ul>
 
 <h2>Testers</h2>

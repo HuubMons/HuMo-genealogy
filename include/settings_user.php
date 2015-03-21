@@ -84,6 +84,9 @@ if (!isset($groupDb->group_text_presentation)){ $user['group_text_presentation']
 if (!isset($groupDb->group_user_notes)){ $user['group_user_notes']='n'; }
 	else{ $user['group_user_notes']=$groupDb->group_user_notes; }
 
+if (!isset($groupDb->group_user_notes_show)){ $user['group_user_notes_show']='n'; }
+	else{ $user['group_user_notes_show']=$groupDb->group_user_notes_show; }
+
 $user['group_gedcomnr']=$groupDb->group_gedcomnr; // Show gedcomnumber
 $user['group_living_place']=$groupDb->group_living_place; // Show living place
 $user['group_places']=$groupDb->group_places; // Show birth, bapt, death and buried places.
