@@ -737,23 +737,33 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 			}
 			else{
 				if ($box_appearance!='small'){
-					if ($personDb->pers_birth_date OR $personDb->pers_birth_place){
-						$replacement_text.='<br>'.__('*').$dirmark1.' '.date_place($personDb->pers_birth_date,$personDb->pers_birth_place); }
-					elseif ($personDb->pers_bapt_date OR $personDb->pers_bapt_place){
-						$replacement_text.='<br>'.__('~').$dirmark1.' '.date_place($personDb->pers_bapt_date,$personDb->pers_bapt_place); }
+					//if ($personDb->pers_birth_date OR $personDb->pers_birth_place){
+					if ($personDb->pers_birth_date){
+						//$replacement_text.='<br>'.__('*').$dirmark1.' '.date_place($personDb->pers_birth_date,$personDb->pers_birth_place); }
+						$replacement_text.='<br>'.__('*').$dirmark1.' '.date_place($personDb->pers_birth_date,''); }
+					//elseif ($personDb->pers_bapt_date OR $personDb->pers_bapt_place){
+					elseif ($personDb->pers_bapt_date){
+						//$replacement_text.='<br>'.__('~').$dirmark1.' '.date_place($personDb->pers_bapt_date,$personDb->pers_bapt_place); }
+						$replacement_text.='<br>'.__('~').$dirmark1.' '.date_place($personDb->pers_bapt_date,''); }
 
-					if ($personDb->pers_death_date OR $personDb->pers_death_place){
-						$replacement_text.='<br>'.__('&#134;').$dirmark1.' '.date_place($personDb->pers_death_date,$personDb->pers_death_place); }
-					elseif ($personDb->pers_buried_date OR $personDb->pers_buried_place){
-						$replacement_text.='<br>'.__('[]').$dirmark1.' '.date_place($personDb->pers_buried_date,$personDb->pers_buried_place); }
+					//if ($personDb->pers_death_date OR $personDb->pers_death_place){
+					if ($personDb->pers_death_date){
+						//$replacement_text.='<br>'.__('&#134;').$dirmark1.' '.date_place($personDb->pers_death_date,$personDb->pers_death_place); }
+						$replacement_text.='<br>'.__('&#134;').$dirmark1.' '.date_place($personDb->pers_death_date,''); }
+					//elseif ($personDb->pers_buried_date OR $personDb->pers_buried_place){
+					elseif ($personDb->pers_buried_date){
+						//$replacement_text.='<br>'.__('[]').$dirmark1.' '.date_place($personDb->pers_buried_date,$personDb->pers_buried_place); }
+						$replacement_text.='<br>'.__('[]').$dirmark1.' '.date_place($personDb->pers_buried_date,''); }
 
 					if ($box_appearance!='medium'){
 						$marr_date=''; if (isset($marr_date_array[$id]) AND ($marr_date_array[$id]!='')){
 							$marr_date=$marr_date_array[$id]; }
 						$marr_place=''; if (isset($marr_place_array[$id]) AND ($marr_place_array[$id]!='')){
 						$marr_place=$marr_place_array[$id]; }
-						if ($marr_date OR $marr_place){
-							$replacement_text.='<br>'.__('X').$dirmark1.' '.date_place($marr_date,$marr_place); }
+						//if ($marr_date OR $marr_place){
+						if ($marr_date){
+							//$replacement_text.='<br>'.__('X').$dirmark1.' '.date_place($marr_date,$marr_place); }
+							$replacement_text.='<br>'.__('X').$dirmark1.' '.date_place($marr_date,''); }
 					}
 					if ($box_appearance=='ancestor_sheet_marr'){
 						$replacement_text='';
@@ -761,8 +771,10 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 							$marr_date=$marr_date_array[$id]; }
 						$marr_place=''; if (isset($marr_place_array[$id]) AND ($marr_place_array[$id]!='')){
 							$marr_place=$marr_place_array[$id]; }
-						if ($marr_date OR $marr_place){
-							$replacement_text=__('X').$dirmark1.' '.date_place($marr_date,$marr_place); }
+						//if ($marr_date OR $marr_place){
+						if ($marr_date){
+							//$replacement_text=__('X').$dirmark1.' '.date_place($marr_date,$marr_place); }
+							$replacement_text=__('X').$dirmark1.' '.date_place($marr_date,''); }
 							else $replacement_text=__('X'); // if no details in the row we don't want the row to collapse         
 					}
 					if ($box_appearance=='ancestor_header'){
@@ -790,6 +802,23 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 				$extra_popup_text.='<br>'.__('X').$dirmark1.' '.date_place($marr_date,$marr_place);
 			}
 
+			// *** Show picture by person ***
+			if ($box_appearance!='small' AND $box_appearance!='medium'){
+				// *** Show picture ***
+				if (!$pers_privacy AND $user['group_pictures']=='j'){
+					//  *** Path can be changed per family tree ***
+					global $dataDb;
+					$tree_pict_path=$dataDb->tree_pict_path;
+					$picture_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'picture');
+					// *** Only show 1st picture ***
+					if (isset($picture_qry[0])){
+						$pictureDb=$picture_qry[0];
+						$picture=show_picture($tree_pict_path,$pictureDb->event_event,80,70);
+						$text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'">';
+					}
+				}
+			}
+
 			if ($box_appearance=='ancestor_sheet_marr' OR $box_appearance=='ancestor_header' ){ // cause in that case there is no link
 				$text.= $replacement_text;
 			}
@@ -798,6 +827,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 			}
 
 		}
+
 		return $text."\n";
 	}
 	// *** End of function ancestor_chart_person ***
@@ -830,11 +860,14 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 
 	// *** First column name ***
 	$left=10;
-	$sexe_colour='';
-	if ($sexe[1] == 'F'){ $sexe_colour=' ancestor_woman'; }
-	if ($sexe[1] == 'M'){ $sexe_colour=' ancestor_man'; }
+	$sexe_colour=''; $backgr_col = "#FFFFFF";
+	//if ($sexe[1] == 'F'){ $sexe_colour=' ancestor_woman'; }
+	//if ($sexe[1] == 'M'){ $sexe_colour=' ancestor_man'; }
+	if ($sexe[1] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0"; }
+	if ($sexe[1] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
 	//echo '<div class="ancestor_name'.$sexe_colour.'" style="top: 520px; left: '.$left.'px; height: 80px; width:180px;';
-	echo '<div class="ancestor_name'.$sexe_colour.'" align="left" style="top: 520px; left: '.$left.'px; height: 80px; width:200px;';
+	//echo '<div class="ancestor_name'.$sexe_colour.'" align="left" style="top: 520px; left: '.$left.'px; height: 80px; width:200px;';
+	echo '<div class="ancestor_name'.$sexe_colour.'" align="left" style="background-color:'.$backgr_col.'; top: 520px; left: '.$left.'px; height: 80px; width:200px;';
 	echo '">';
 	echo ancestor_chart_person('1', 'large');
 	echo '</div>';
@@ -846,10 +879,12 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	echo '<div class="ancestor_split" style="top: '.($top+281).'px; left: '.$left.'px; height: 199px"></div>';
 	// *** Second column names ***
 	for ($i=1; $i<3; $i++){
-		$sexe_colour='';
-		if ($sexe[$i+1] == 'F'){ $sexe_colour=' ancestor_woman'; }
-		if ($sexe[$i+1] == 'M'){ $sexe_colour=' ancestor_man'; }
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="top: '.(($top-520)+($i*480)).'px; left: '.($left+8).'px; height: 80px; width:200px;';
+		$sexe_colour=''; $backgr_col = "#FFFFFF";
+		//if ($sexe[$i+1] == 'F'){ $sexe_colour=' ancestor_woman';  }
+		//if ($sexe[$i+1] == 'M'){ $sexe_colour=' ancestor_man'; }
+		if ($sexe[$i+1] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0"; }
+		if ($sexe[$i+1] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
+		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top-520)+($i*480)).'px; left: '.($left+8).'px; height: 80px; width:200px;';
 		echo '">';
 		echo ancestor_chart_person($i+1, 'large');
 		echo '</div>';
@@ -864,10 +899,12 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	echo '<div class="ancestor_split" style="top: '.($top+642).'px; left: '.($left+32).'px; height: 80px;"></div>';
 	// *** Third column names ***
 	for ($i=1; $i<5; $i++){
-		$sexe_colour='';
-		if ($sexe[$i+3] == 'F'){ $sexe_colour=' ancestor_woman'; }
-		if ($sexe[$i+3] == 'M'){ $sexe_colour=' ancestor_man'; }
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="top: '.(($top-279)+($i*240)).'px; left: '.($left+40).'px; height: 80px; width:200px;';
+		$sexe_colour=''; $backgr_col = "#FFFFFF";
+		//if ($sexe[$i+3] == 'F'){ $sexe_colour=' ancestor_woman'; }
+		//if ($sexe[$i+3] == 'M'){ $sexe_colour=' ancestor_man'; }
+		if ($sexe[$i+3] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0";}
+		if ($sexe[$i+3] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
+		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top-279)+($i*240)).'px; left: '.($left+40).'px; height: 80px; width:200px;';
 		echo '">';
 		echo ancestor_chart_person($i+3, 'large');
 		echo '</div>';
@@ -885,10 +922,12 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	}
 	// *** Fourth column names ***
 	for ($i=1; $i<9; $i++){
-		$sexe_colour='';
-		if ($sexe[$i+7] == 'F'){ $sexe_colour=' ancestor_woman'; }
-		if ($sexe[$i+7] == 'M'){ $sexe_colour=' ancestor_man'; }
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="top: '.(($top+265)+($i*120)).'px; left: '.($left+40).'px; height: 80px; width:200px;';
+		$sexe_colour=''; $backgr_col = "#FFFFFF";
+		//if ($sexe[$i+7] == 'F'){ $sexe_colour=' ancestor_woman'; }
+		//if ($sexe[$i+7] == 'M'){ $sexe_colour=' ancestor_man'; }
+		if ($sexe[$i+7] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0";}
+		if ($sexe[$i+7] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
+		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top+265)+($i*120)).'px; left: '.($left+40).'px; height: 80px; width:200px;';
 		echo '">';
 		echo ancestor_chart_person($i+7, 'large');
 		echo '</div>';
@@ -906,10 +945,12 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	}
 	// *** Fifth column names ***
 	for ($i=1; $i<17; $i++){
-		$sexe_colour='';
-		if ($sexe[$i+15] == 'F'){ $sexe_colour=' ancestor_woman'; }
-		if ($sexe[$i+15] == 'M'){ $sexe_colour=' ancestor_man'; }
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="top: '.(($top+125)+($i*60)).'px; left: '.($left+40).'px; height: 50px; width:200px;';
+		$sexe_colour=''; $backgr_col = "#FFFFFF";
+		//if ($sexe[$i+15] == 'F'){ $sexe_colour=' ancestor_woman'; }
+		//if ($sexe[$i+15] == 'M'){ $sexe_colour=' ancestor_man'; }
+		if ($sexe[$i+15] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0";}
+		if ($sexe[$i+15] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
+		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top+125)+($i*60)).'px; left: '.($left+40).'px; height: 50px; width:200px;';
 		echo '">';
 		echo ancestor_chart_person($i+15, 'medium');
 		echo '</div>';
@@ -927,10 +968,12 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	}
 	// *** Last column names ***
 	for ($i=1; $i<33; $i++){
-		$sexe_colour='';
-		if ($sexe[$i+31] == 'F'){ $sexe_colour=' ancestor_woman'; }
-		if ($sexe[$i+31] == 'M'){ $sexe_colour=' ancestor_man'; }
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="top: '.(($top+66)+($i*30)).'px; left: '.($left+40).'px; height:16px; width:200px;';
+		$sexe_colour=''; $backgr_col = "#FFFFFF";
+		//if ($sexe[$i+31] == 'F'){ $sexe_colour=' ancestor_woman'; }
+		//if ($sexe[$i+31] == 'M'){ $sexe_colour=' ancestor_man'; }
+		if ($sexe[$i+31] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0"; }
+		if ($sexe[$i+31] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
+		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top+66)+($i*30)).'px; left: '.($left+40).'px; height:16px; width:200px;';
 		echo '">';
 		echo ancestor_chart_person($i+31, 'small');
 		echo '</div>';

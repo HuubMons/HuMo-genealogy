@@ -1,11 +1,11 @@
 <?php
 /*
-This index list for places by families was a copy of index list by persons.
-Maybe it's possible to combine these two lists later, but processing is different.
-At this moment it's easier to just make a second index list...
-
-sep. 2014 Huub: added this script to HuMo-gen.
-*/
+ * This index list for places by families was a copy of index list by persons.
+ * Maybe it's possible to combine these two lists later, but processing is different.
+ * At this moment it's easier to just make a second index list...
+ *
+ * sep. 2014 Huub: added this script to HuMo-gen.
+ */
 
 include_once("header.php"); //returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."include/language_date.php");
@@ -18,27 +18,16 @@ error_reporting(E_ALL);
 
 // *** show person ***
 function show_person($familyDb){
-	global $dbh, $tree_id, $selected_place, $language, $user;
+	global $dbh, $db_functions, $tree_id, $selected_place, $language, $user;
 	global $bot_visit, $humo_option, $uri_path, $search_database, $list_expanded;
 	global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
 	global $select_marriage_notice, $select_marriage, $select_marriage_notice_religious, $select_marriage_religious;
-
-	//if ($user['group_kindindex']=="j"){
-	//	$query = "(SELECT SQL_CALC_FOUND_ROWS *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_birth_place as place_order
-	//		FROM ".safe_text($_SESSION['tree_prefix'])."person";
-	//}
-	//else{
-	//	$query = "(SELECT SQL_CALC_FOUND_ROWS *, pers_birth_place as place_order FROM ".safe_text($_SESSION['tree_prefix'])."person";
-	//}
 
 	if ($familyDb->fam_man)
 		$selected_person1=$familyDb->fam_man;
 	else
 		$selected_person1=$familyDb->fam_woman;
-	//$query = 'SELECT * FROM '.safe_text($_SESSION['tree_prefix']).'person WHERE pers_gedcomnumber="'.$selected_person1.'"';
-	$query = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$selected_person1."'";
-	$personqry=$dbh->query($query);
-	$personDb=@$personqry->fetchObject();
+	$personDb = $db_functions->get_person($selected_person1);
 
 	$pers_tree_prefix=$personDb->pers_tree_prefix;
 
@@ -127,7 +116,7 @@ function show_person($familyDb){
 	echo '</td><td style="border-left:0px;">';
 
 	// *** Show name of person ***
-	echo ' <a href="'.$start_url.'">'.$index_name.'</a>';
+	echo ' <a href="'.$start_url.'">'.rtrim($index_name).'</a>';
 
 	//*** Show spouse/ partner ***
 	if ($list_expanded==true AND $personDb->pers_fams){
@@ -135,33 +124,23 @@ function show_person($familyDb){
 		// *** Code to show only last marriage ***
 		$nr_marriages=count($marriage_array);
 
-		//$stmt = $dbh->prepare("SELECT * FROM ".safe_text($pers_tree_prefix)."family WHERE fam_gedcomnumber=?");
-		$stmt = $dbh->prepare("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
-		$stmt->bindParam(1, $marr_arr);
-		//$stmt2 = $dbh->prepare("SELECT * FROM ".safe_text($pers_tree_prefix)."person WHERE pers_gedcomnumber=?");
-		$stmt2 = $dbh->prepare("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
-		$stmt2->bindParam(1, $partnid);
 		for ($x=0; $x<=$nr_marriages-1; $x++){
-			$marr_arr = $marriage_array[$x];
-			$stmt->execute();
-			$fam_partnerDb = $stmt->fetch();
+			$fam_partnerDb = $db_functions->get_family($marriage_array[$x]);
 
 			// *** This check is better then a check like: $personDb->pers_sexe=='F', because of unknown sexe or homosexual relations. ***
-			if ($personDb->pers_gedcomnumber==$fam_partnerDb['fam_man'])
-				$partner_id=$fam_partnerDb['fam_woman'];
+			if ($personDb->pers_gedcomnumber==$fam_partnerDb->fam_man)
+				$partner_id=$fam_partnerDb->fam_woman;
 			else
-				$partner_id=$fam_partnerDb['fam_man'];
+				$partner_id=$fam_partnerDb->fam_man;
 
 			$relation_short=__('&amp;');
-			if ($fam_partnerDb['fam_marr_date'] OR $fam_partnerDb['fam_marr_place'] OR $fam_partnerDb['fam_marr_church_date'] OR $fam_partnerDb['fam_marr_church_place'])
+			if ($fam_partnerDb->fam_marr_date OR $fam_partnerDb->fam_marr_place OR $fam_partnerDb->fam_marr_church_date OR $fam_partnerDb->fam_marr_church_place)
 				$relation_short=__('X');
-			if($fam_partnerDb['fam_div_date'] OR $fam_partnerDb['fam_div_place'])
+			if($fam_partnerDb->fam_div_date OR $fam_partnerDb->fam_div_place)
 				$relation_short=__(') (');
 
 			if ($partner_id!='0' AND $partner_id!=''){
-				$partnid = $partner_id;
-				$stmt2->execute();
-				$partnerDb = $stmt2->fetch(PDO::FETCH_OBJ);
+				$partnerDb = $db_functions->get_person($partner_id);
 
 				$partner_cls = New person_cls;
 				$privacy2=$person_cls->privacy;
@@ -172,13 +151,16 @@ function show_person($familyDb){
 			}
 
 			if ($nr_marriages>1) echo ',';
-			if (@$partnerDb->pers_gedcomnumber!=$familyDb->fam_woman)
+			if (@$partnerDb->pers_gedcomnumber!=$familyDb->fam_woman){
+				// *** Show actual relation/ marriage in special font ***
 				echo ' <span class="index_partner" style="font-size:10px;">';
+			}
+			else echo ' ';
 			if ($nr_marriages>1){
 				if ($x==0) echo __('1st');
-				elseif ($x==1) echo __('2nd');
-				elseif ($x==2) echo __('3rd');
-				elseif ($x>2) echo ($x+1).__('th');
+				elseif ($x==1) echo ' '.__('2nd');
+				elseif ($x==2) echo ' '.__('3rd');
+				elseif ($x>2) echo ' '.($x+1).__('th');
 			}
 			echo ' '.$relation_short.' '.rtrim($name["standard_name"]);
 			if (@$partnerDb->pers_gedcomnumber!=$familyDb->fam_woman)
@@ -204,7 +186,6 @@ function show_person($familyDb){
 			$info=__('o').' '.$familyDb->fam_marr_church_notice_place;
 		if ($familyDb->fam_marr_notice_place)
 			$info=__('&infin;').' '.$familyDb->fam_marr_notice_place;
-		//echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
 		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
@@ -214,7 +195,6 @@ function show_person($familyDb){
 			$info=__('x').' '.date_place($familyDb->fam_marr_church_date, '');
 		if ($familyDb->fam_marr_date)
 			$info=__('X').' '.date_place($familyDb->fam_marr_date, '');
-		//echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
 		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
@@ -224,7 +204,6 @@ function show_person($familyDb){
 			$info=__('x').' '.$familyDb->fam_marr_church_place;
 		if ($familyDb->fam_marr_place)
 			$info=__('X').' '.$familyDb->fam_marr_place;
-		//echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
 		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
  
@@ -310,7 +289,6 @@ $count_qry='';
 // *** EXAMPLE of a UNION querie ***
 //$qry = "(SELECT * FROM humo1_person ".$query.') ';
 //$qry.= " UNION (SELECT * FROM humo2_person ".$query.')';
-//$qry.= " UNION (SELECT * FROM humo3_person ".$query.')';
 //$qry.= " ORDER BY pers_lastname, pers_firstname";
 
 $query='';
@@ -318,7 +296,6 @@ $start=false;
 
 // *** Search marriage place ***
 if ($select_marriage=='1'){
-	//$query = "(SELECT SQL_CALC_FOUND_ROWS *, fam_marr_place as place_order FROM ".safe_text($_SESSION['tree_prefix'])."family";
 	$query = "(SELECT SQL_CALC_FOUND_ROWS *, fam_marr_place as place_order
 		FROM humo_families";
 	if($place_name)
@@ -337,7 +314,6 @@ if ($select_marriage_religious=='1'){
 	else{
 		$calc='SQL_CALC_FOUND_ROWS ';
 	}
-	//$query.= "(SELECT ".$calc."*, fam_marr_church_place as place_order FROM ".safe_text($_SESSION['tree_prefix'])."family";
 	$query.= "(SELECT ".$calc."*, fam_marr_church_place as place_order
 		FROM humo_families";
 	if($place_name)
@@ -356,7 +332,6 @@ if ($select_marriage_notice=='1'){
 	else{
 		$calc='SQL_CALC_FOUND_ROWS ';
 	}
-	//$query.= "(SELECT ".$calc."*, fam_marr_notice_place as place_order FROM ".safe_text($_SESSION['tree_prefix'])."family";
 	$query.= "(SELECT ".$calc."*, fam_marr_notice_place as place_order 
 		FROM humo_families";
 	if($place_name)
@@ -375,7 +350,6 @@ if ($select_marriage_notice_religious=='1'){
 	else{
 		$calc='SQL_CALC_FOUND_ROWS ';
 	}
-	//$query.= "(SELECT ".$calc."*, fam_marr_church_notice_place as place_order FROM ".safe_text($_SESSION['tree_prefix'])."family";
 	$query.= "(SELECT ".$calc."*, fam_marr_church_notice_place as place_order
 		FROM humo_families";
 	if($place_name)
@@ -404,7 +378,7 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 	$person_result = $dbh->query($query." LIMIT ".$item.",".$nr_persons);
 
 	if ($count_qry){  
-		// *** Use MySQL COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
+		// *** Use COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
 		$result= $dbh->query($count_qry);
 		@$resultDb = $result->fetch(PDO::FETCH_OBJ);
 		$count_persons=@$resultDb->teller; 
@@ -601,21 +575,13 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 
 	while (@$familyDb = $person_result->fetch(PDO::FETCH_OBJ)) {
 		// *** Man privacy filter ***
-		//$query = 'SELECT * FROM '.safe_text($_SESSION['tree_prefix']).'person WHERE pers_gedcomnumber="'.$familyDb->fam_man.'"';
-		$query = "SELECT * FROM humo_persons
-			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$familyDb->fam_man."'";
-		$personqry=$dbh->query($query);
-		$personDb=@$personqry->fetchObject();
+		$personDb=$db_functions->get_person($familyDb->fam_man);
 		// *** Person class used for name and person pop-up data ***
 		$man_cls = New person_cls;
 		$man_cls->construct($personDb);
 
 		// *** Woman privacy filter ***
-		//$query = 'SELECT * FROM '.safe_text($_SESSION['tree_prefix']).'person WHERE pers_gedcomnumber="'.$familyDb->fam_woman.'"';
-		$query = "SELECT * FROM humo_persons
-			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$familyDb->fam_woman."'";
-		$personqry=$dbh->query($query);
-		$personDb=@$personqry->fetchObject();
+		$personDb=$db_functions->get_person($familyDb->fam_woman);
 		// *** Person class used for name and person pop-up data ***
 		$woman_cls = New person_cls;
 		$woman_cls->construct($personDb);

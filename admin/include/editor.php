@@ -384,7 +384,6 @@ if (isset($tree_prefix)){
 				// *** In case someone entered "Mons, Huub" using a comma ***
 				$search_quicksearch = str_replace(',','',$search_quicksearch);
 
-				//$person_qry= "SELECT *, CONCAT(pers_firstname,pers_prefix,pers_lastname) as concat_name
 				$person_qry= "SELECT * FROM humo_persons
 					WHERE pers_tree_id='".$tree_id."'
 					AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch%'
@@ -392,7 +391,6 @@ if (isset($tree_prefix)){
 					OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch%' 
 					OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch%')
 					ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)";
-					//ORDER BY pers_lastname, pers_firstname";
 				$person_result = $dbh->query($person_qry);
 			}
 			elseif($search_id!='') {
@@ -501,13 +499,38 @@ if (isset($pers_gedcomnumber)){
 						// *** Family tree data ***
 						$select_item=''; if ($menu_tab=='marriage'){ $select_item=' pageTab-active'; }
 						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage">'.__('Marriage(s) and children');
-						if (isset($marriage)) echo ' *';
+						//if (isset($marriage)) echo ' *';
 						echo "</a></div></li>";
+					}
+
+					// *** Browser through persons: previous button ***
+					$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+						AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."' ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
+					$previous_result = $dbh->query($previous_qry);
+					$previousDb=$previous_result->fetch(PDO::FETCH_OBJ);
+					if ($previousDb){
+						echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+							echo '<input type="hidden" name="page" value="'.$page.'">';
+							echo '<input type="hidden" name="person" value="'.$previousDb->pers_gedcomnumber.'">';
+							echo ' <input type="submit" value="<">';
+						echo '</form>';
+					}
+					// *** Next button ***
+					$next_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+						AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) > '".substr($person->pers_gedcomnumber,1)."' ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0,1";
+					$next_result = $dbh->query($next_qry);
+					$nextDb=$next_result->fetch(PDO::FETCH_OBJ);
+					if ($nextDb){
+						echo ' <form method="POST" action="'.$phpself.'" style="display : inline;">';
+							echo '<input type="hidden" name="page" value="'.$page.'">';
+							echo '<input type="hidden" name="person" value="'.$nextDb->pers_gedcomnumber.'">';
+							echo ' <input type="submit" value=">">';
+						echo '</form>';
 					}
 
 					// *** Example of family screen in popup ***
 					If ($person)
-						echo "<a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a>';
+						echo " <a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a>';
 
 				echo '</ul>';
 			echo '</div>';
@@ -528,7 +551,6 @@ if (isset($pers_gedcomnumber)){
 	// *** Text area size ***
 	$field_date=15;
 	$field_place=30;
-	//$field_text='style="height: 40px; width:500px"';
 	$field_text='style="height: 18px; width:550px;"';
 	$field_text_large='style="height: 100px; width:550px"';
 
@@ -538,8 +560,6 @@ if (isset($pers_gedcomnumber)){
 	// *******************
 
 	if ($menu_admin=='person'){
-		// *** Get person data to show name and calculate nr. of items ***
-		//$person = $db_functions->get_person($pers_gedcomnumber);
 
 		if ($add_person==true){
 			$pers_gedcomnumber='';
@@ -630,7 +650,6 @@ if (isset($pers_gedcomnumber)){
 				$search_quicksearch_child=str_replace(' ', '%', $search_quicksearch_child);
 				// *** In case someone entered "Mons, Huub" using a comma ***
 				$search_quicksearch_child = str_replace(',','',$search_quicksearch_child);
-				//$person_qry= "SELECT *, CONCAT(pers_firstname,pers_prefix,pers_lastname) as concat_name
 				$person_qry= "SELECT * FROM humo_persons
 					WHERE pers_tree_id='".$tree_id."'
 					AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
@@ -768,12 +787,11 @@ if (isset($pers_gedcomnumber)){
 			}
 			else{
 				// *** Add parents ***
-				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;add_parents2=1">';
+				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;add_parents2=1&menu_tab=person">';
 				echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Add parents').'" alt="'.__('Add parents').'"> '.__('Add parents').'</a><br>';
 			}
 
 			// *** Show person ***
-			//echo '<br><b>'.__('Person').'</b><br>';
 			echo '<br><span style="font-weight:bold; font-size:13px">'.__('Person').'</span><br>';
 			echo show_person($person->pers_gedcomnumber).'<br>';
 
@@ -867,10 +885,6 @@ if (isset($pers_gedcomnumber)){
 					$search_quicksearch_parent=str_replace(' ', '%', $search_quicksearch_parent);
 					// *** In case someone entered "Mons, Huub" using a comma ***
 					$search_quicksearch_parent = str_replace(',','',$search_quicksearch_parent);
-
-					// *** EXAMPLE ***
-					//$qry = "(SELECT * FROM humo1_persoon ".$query.') ';
-					//$qry.= " UNION (SELECT * FROM humo2_persoon ".$query.')';
 
 					// *** Search for man ***
 					$parents= "(SELECT * FROM humo_families, humo_persons
@@ -982,9 +996,6 @@ if (isset($pers_gedcomnumber)){
 		if (!isset($_GET['add_person'])){
 			// *** Source by name ***
 			// *** Calculate and show nr. of sources ***
-			//$connect_qry="SELECT * FROM ".$tree_prefix."connections
-			//	WHERE connect_kind='person' AND connect_sub_kind='pers_name_source'
-			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_name_source' AND connect_connect_id='".$pers_gedcomnumber."'";
@@ -1000,7 +1011,6 @@ if (isset($pers_gedcomnumber)){
 		echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="30"></td></tr>';
 
 		// *** Person text by name ***
-		//echo '<tr style="display:none;" class="row1" name="row1">';
 		echo '<tr style="display:none;" class="row1">';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="pers_name_text" '.$field_text.'>'.$editor_cls->text_show($pers_name_text).'</textarea></td>';
@@ -1026,7 +1036,6 @@ if (isset($pers_gedcomnumber)){
 		$disabled='';
 		if ($pers_death_date OR $pers_death_place OR $pers_buried_date OR $pers_buried_place){ $disabled=' DISABLED'; }
 
-		//echo '<tr class="humo_color"><td>'.ucfirst(__('alive')).'</td><td style="border-right:0px;">'.__('For the privacy filter').'</td><td style="border-left:0px;">';
 		echo '<tr class="humo_color"><td>'.__('Privacy filter').'</td><td style="border-right:0px;"><br></td><td style="border-left:0px;">';
 			$selected_alive='alive'; if ($pers_alive=='deceased'){ $selected_alive='deceased'; }
 
@@ -1060,9 +1069,6 @@ if (isset($pers_gedcomnumber)){
 
 		if (!isset($_GET['add_person'])){
 			// *** Calculate and show nr. of sources ***
-			//$connect_qry="SELECT * FROM ".$tree_prefix."connections
-			//	WHERE connect_kind='person' AND connect_sub_kind='pers_sexe_source'
-			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_sexe_source' AND connect_connect_id='".$pers_gedcomnumber."'";
@@ -1094,10 +1100,6 @@ if (isset($pers_gedcomnumber)){
 		echo '<td>';
 		if (!isset($_GET['add_person'])){
 			// *** Calculate and show nr. of sources ***
-			//$connect_qry="SELECT *
-			//	FROM ".$tree_prefix."connections
-			//	WHERE connect_kind='person' AND connect_sub_kind='pers_birth_source'
-			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT *
 				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_birth_source' AND connect_connect_id='".$pers_gedcomnumber."'";
@@ -1141,10 +1143,6 @@ if (isset($pers_gedcomnumber)){
 		echo '<td>';
 		if (!isset($_GET['add_person'])){
 			// *** Calculate and show nr. of sources ***
-			//$connect_qry="SELECT *
-			//	FROM ".$tree_prefix."connections
-			//	WHERE connect_kind='person' AND connect_sub_kind='pers_bapt_source'
-			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT *
 				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_bapt_source' AND connect_connect_id='".$pers_gedcomnumber."'";
@@ -1199,10 +1197,6 @@ if (isset($pers_gedcomnumber)){
 		echo '</td><td>';
 		if (!isset($_GET['add_person'])){
 			// *** Calculate and show nr. of sources ***
-			//$connect_qry="SELECT *
-			//	FROM ".$tree_prefix."connections
-			//	WHERE connect_kind='person' AND connect_sub_kind='pers_death_source'
-			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT *
 				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_death_source' AND connect_connect_id='".$pers_gedcomnumber."'";
@@ -1285,10 +1279,6 @@ if (isset($pers_gedcomnumber)){
 		echo '</td><td>';
 		if (!isset($_GET['add_person'])){
 			// *** Calculate and show nr. of sources ***
-			//$connect_qry="SELECT *
-			//	FROM ".$tree_prefix."connections
-			//	WHERE connect_kind='person' AND connect_sub_kind='pers_buried_source'
-			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT *
 				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_buried_source'
@@ -1336,8 +1326,6 @@ if (isset($pers_gedcomnumber)){
 			echo '<td style="border-right:0px;">';
 				echo '<a name="places"></a>';
 
-				//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
-				//	WHERE address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
 				$address_qry=$dbh->query("SELECT * FROM humo_addresses
 					WHERE address_tree_id='".$tree_id."'
 					AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
@@ -1350,8 +1338,6 @@ if (isset($pers_gedcomnumber)){
 			echo '<td style="border-left:0px;">';
 				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;pers_place=1&amp;living_place_add=1#places">['.__('Add').']</a> ';
 				$text='';
-				//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
-				//	WHERE address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
 				$address_qry=$dbh->query("SELECT * FROM humo_addresses
 					WHERE address_tree_id='".$tree_id."'
 					AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
@@ -1365,8 +1351,6 @@ if (isset($pers_gedcomnumber)){
 			echo '</tr>';
 
 			// *** Residences ***
-			//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
-			//	WHERE address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
 			$address_qry=$dbh->query("SELECT * FROM humo_addresses
 				WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
 			$address_count=$address_qry->rowCount();
@@ -1396,7 +1380,6 @@ if (isset($pers_gedcomnumber)){
 				echo '</td>';
 				echo '<td style="border-right:0px;">'.__('date').'</td>';
 				echo '<td style="border-left:0px;">';
-					//echo $editor_cls->date_show($addressDb->address_date,'address_date',"[$addressDb->address_id]").' '.__('place').' <input type="text" name="address_place['.$addressDb->address_id.']" placeholder="'.ucfirst(__('place')).'" value="'.$addressDb->address_place.'" size="'.$field_place.'">';
 					echo $editor_cls->date_show($addressDb->address_date,'address_date',"[$addressDb->address_id]").' '.__('place').' <input type="text" name="address_place_'.$addressDb->address_id.'" placeholder="'.ucfirst(__('place')).'" value="'.$addressDb->address_place.'" size="'.$field_place.'">';
 					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=place&address_place='.$addressDb->address_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 				echo '</td>';
@@ -1421,9 +1404,6 @@ if (isset($pers_gedcomnumber)){
 			echo '<td style="border-right:0px;">';
 				echo '<a name="addresses"></a>';
 
-				//$connect_sql="SELECT * FROM ".$tree_prefix."connections
-				//	WHERE connect_kind='person' AND connect_sub_kind='person_address'
-				//	AND connect_connect_id='".safe_text($pers_gedcomnumber)."'";
 				$connect_sql="SELECT * FROM humo_connections
 					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='person_address'
 					AND connect_connect_id='".safe_text($pers_gedcomnumber)."'";
@@ -1438,12 +1418,6 @@ if (isset($pers_gedcomnumber)){
 				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;person_place_address=1&amp;address_add=1#addresses">['.__('Add').']</a> ';
 				$text='';
 				// *** Search for all connected sources ***
-				//$connect_qry="SELECT * FROM ".$tree_prefix."connections, ".$tree_prefix."addresses
-				///	WHERE connect_kind='person'
-				//	AND connect_sub_kind='person_address'
-				//	AND connect_item_id=address_gedcomnr
-				//	AND connect_connect_id='".safe_text($pers_gedcomnumber)."'
-				//	ORDER BY connect_order";
 				//$connect_qry="SELECT * FROM humo_connections, humo_addresses
 				//	WHERE connect_tree_id='".$tree_id."'
 				//	AND address_tree_id='".$tree_id."'
@@ -1468,11 +1442,6 @@ if (isset($pers_gedcomnumber)){
 			echo '<td></td>';
 			echo '</tr>';
 
-			//$connect_qry=$dbh->query("SELECT * FROM ".$tree_prefix."connections
-			//	WHERE connect_kind='person'
-			//	AND connect_sub_kind='person_address'
-			//	AND connect_connect_id='".safe_text($pers_gedcomnumber)."'
-			//	ORDER BY connect_order");
 			$connect_qry=$dbh->query("SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='person_address'
@@ -1539,8 +1508,6 @@ if (isset($pers_gedcomnumber)){
 					echo '<input type="hidden" name="connect_source_id['.$key.']" value="">';
 					echo '<input type="hidden" name="connect_text['.$key.']" value="">';
 					// *** Only show addresses if a gedcomnumber is used (= link to full adres) ***
-					//$addressqry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses WHERE address_gedcomnr LIKE '_%'
-					//	ORDER BY address_place, address_address");
 					$addressqry=$dbh->query("SELECT * FROM humo_addresses
 						WHERE address_tree_id='".$tree_id."' AND address_gedcomnr LIKE '_%'
 						ORDER BY address_place, address_address");
@@ -1604,10 +1571,6 @@ if (isset($pers_gedcomnumber)){
 		// *** Source by text ***
 		if (!isset($_GET['add_person'])){
 			// *** Calculate and show nr. of sources ***
-			//$connect_qry="SELECT *
-			//	FROM ".$tree_prefix."connections
-			//	WHERE connect_kind='person' AND connect_sub_kind='pers_text_source'
-			//	AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_qry="SELECT *
 				FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='pers_text_source'
@@ -1625,10 +1588,6 @@ if (isset($pers_gedcomnumber)){
 
 			echo '</td><td>';
 				// *** Calculate and show nr. of sources ***
-				//$connect_qry="SELECT *
-				//	FROM ".$tree_prefix."connections
-				//	WHERE connect_kind='person' AND connect_sub_kind='person_source'
-				//	AND connect_connect_id='".$pers_gedcomnumber."'";
 				$connect_qry="SELECT *
 					FROM humo_connections
 					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='person_source'
@@ -1668,9 +1627,6 @@ if (isset($pers_gedcomnumber)){
 //			echo '</form>';
 
 			// *** Show unprocessed gedcom tags ***
-			//$tag_qry= "SELECT * FROM humo_unprocessed_tags
-			//	WHERE tag_tree_id='".$tree_id."'
-			//	AND tag_pers_id='".$pers_gedcomnumber."'";
 			$tag_qry= "SELECT * FROM humo_unprocessed_tags
 				WHERE tag_tree_id='".$tree_id."'
 				AND tag_pers_id='".$person->pers_id."'";
@@ -1759,15 +1715,12 @@ if (isset($pers_gedcomnumber)){
 				$fam_count=substr_count($person->pers_fams, ";");
 				
 				for ($i=0; $i<=$fam_count; $i++){
-					//$family=$dbh->query("SELECT * FROM ".$tree_prefix."family
-					//	WHERE fam_gedcomnumber='".$fams1[$i]."'");
 					$family=$dbh->query("SELECT * FROM humo_families
 						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fams1[$i]."'");
 					$familyDb=$family->fetch(PDO::FETCH_OBJ);
 
 					echo '<tr><td id="chtd1">';
 						if ($fam_count>0){
-							//echo '<form method="POST" action="'.$phpself.'#marriage">';
 							echo '<form method="POST" action="'.$phpself.'">';
 							echo '<input type="hidden" name="page" value="'.$page.'">';
 							echo '<input type="hidden" name="marriage_nr" value="'.$familyDb->fam_gedcomnumber.'">';
@@ -1965,9 +1918,7 @@ if (isset($pers_gedcomnumber)){
 
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=man&person='.$man_gedcomnumber.'&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
-			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$man_gedcomnumber."'";
-			$person_result = $dbh->query($person_qry);
-			$person=$person_result->fetch(PDO::FETCH_OBJ);
+			$person=$db_functions->get_person($man_gedcomnumber);
 
 			// *** Automatically calculate birth date if marriage date and marriage age by man is used ***
 			if (isset($_POST["fam_man_age"]) AND $_POST["fam_man_age"]!=''
@@ -1994,9 +1945,7 @@ if (isset($pers_gedcomnumber)){
 
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=woman&person='.$woman_gedcomnumber.'&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
-			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$woman_gedcomnumber."'";
-			$person_result = $dbh->query($person_qry);
-			$person=$person_result->fetch(PDO::FETCH_OBJ);
+			$person=$db_functions->get_person($woman_gedcomnumber);
 
 			// *** Automatically calculate birth date if marriage date and marriage age by woman is used ***
 			if (isset($_POST["fam_woman_age"]) AND $_POST["fam_woman_age"]!=''
@@ -2070,10 +2019,6 @@ if (isset($pers_gedcomnumber)){
 				// *** Source by relation ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					// *** Calculate and show nr. of sources ***
-					//$connect_qry="SELECT *
-					//	FROM ".$tree_prefix."connections
-					//	WHERE connect_kind='family' AND connect_sub_kind='fam_relation_source'
-					//	AND connect_connect_id='".$marriage."'";
 					$connect_qry="SELECT *
 						FROM humo_connections
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_relation_source'
@@ -2109,10 +2054,6 @@ if (isset($pers_gedcomnumber)){
 				// *** Source by fam_marr_notice ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					// *** Calculate and show nr. of sources ***
-					//$connect_qry="SELECT *
-					//	FROM ".$tree_prefix."connections
-					//	WHERE connect_kind='family' AND connect_sub_kind='fam_marr_notice_source'
-					//	AND connect_connect_id='".$marriage."'";
 					$connect_qry="SELECT *
 						FROM humo_connections
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_notice_source'
@@ -2140,10 +2081,6 @@ if (isset($pers_gedcomnumber)){
 				// *** Source by fam_marr ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					// *** Calculate and show nr. of sources ***
-					//$connect_qry="SELECT *
-					//	FROM ".$tree_prefix."connections
-					//	WHERE connect_kind='family' AND connect_sub_kind='fam_marr_source'
-					//	AND connect_connect_id='".$marriage."'";
 					$connect_qry="SELECT *
 						FROM humo_connections
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_source'
@@ -2206,10 +2143,6 @@ if (isset($pers_gedcomnumber)){
 				// *** Source by fam_marr_church_notice ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					// *** Calculate and show nr. of sources ***
-					//$connect_qry="SELECT *
-					//	FROM ".$tree_prefix."connections
-					//	WHERE connect_kind='family' AND connect_sub_kind='fam_marr_church_notice_source'
-					//	AND connect_connect_id='".$marriage."'";
 					$connect_qry="SELECT *
 						FROM humo_connections
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_church_notice_source'
@@ -2238,10 +2171,6 @@ if (isset($pers_gedcomnumber)){
 			// *** Source by fam_marr_church ***
 			if (isset($marriage) AND !isset($_GET['add_marriage'])){
 				// *** Calculate and show nr. of sources ***
-				//$connect_qry="SELECT *
-				//	FROM ".$tree_prefix."connections
-				//	WHERE connect_kind='family' AND connect_sub_kind='fam_marr_church_source'
-				//	AND connect_connect_id='".$marriage."'";
 				$connect_qry="SELECT *
 					FROM humo_connections
 					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_church_source'
@@ -2277,10 +2206,6 @@ if (isset($pers_gedcomnumber)){
 				// *** Source by fam_div ***
 					if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					// *** Calculate and show nr. of sources ***
-					//$connect_qry="SELECT *
-					//	FROM ".$tree_prefix."connections
-					//	WHERE connect_kind='family' AND connect_sub_kind='fam_div_source'
-					//	AND connect_connect_id='".$marriage."'";
 					$connect_qry="SELECT *
 						FROM humo_connections
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_div_source'
@@ -2322,10 +2247,6 @@ if (isset($pers_gedcomnumber)){
 				// *** Source by text ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					// *** Calculate and show nr. of sources ***
-					//$connect_qry="SELECT *
-					//	FROM ".$tree_prefix."connections
-					//	WHERE connect_kind='family' AND connect_sub_kind='fam_text_source'
-					//	AND connect_connect_id='".$marriage."'";
 					$connect_qry="SELECT *
 						FROM humo_connections
 						WHERE connect_kind='".$tree_id."' AND connect_sub_kind='fam_text_source'
@@ -2341,10 +2262,6 @@ if (isset($pers_gedcomnumber)){
 				echo '<tr><td>'.__('Source by marriage').'</td><td colspan="2">';
 				echo '</td><td>';
 					// *** Calculate and show nr. of sources ***
-					//$connect_qry="SELECT *
-					//	FROM ".$tree_prefix."connections
-					//	WHERE connect_kind='family' AND connect_sub_kind='family_source'
-					//	AND connect_connect_id='".$marriage."'";
 					$connect_qry="SELECT *
 						FROM humo_connections
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='family_source'
@@ -2364,9 +2281,6 @@ if (isset($pers_gedcomnumber)){
 			echo '</form>';
 
 			// *** Show unprocessed gedcom tags ***
-			//$tag_qry= "SELECT * FROM humo_unprocessed_tags
-			//	WHERE tag_tree_id='".$tree_id."'
-			//	AND tag_rel_id='".$marriage."'";
 			$tag_qry= "SELECT * FROM humo_unprocessed_tags
 				WHERE tag_tree_id='".$tree_id."'
 				AND tag_rel_id='".$familyDb->fam_id."'";
@@ -2412,8 +2326,6 @@ if (isset($pers_gedcomnumber)){
 	if ($menu_admin=='sources'){
 		if (isset($_POST['source_add'])){
 			// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-			//$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
-			//	FROM ".$tree_prefix."sources ORDER BY gednr DESC LIMIT 0,1";
 			$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
 				FROM humo_sources WHERE source_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
 			$new_nr_result = $dbh->query($new_nr_qry);
@@ -2424,7 +2336,6 @@ if (isset($pers_gedcomnumber)){
 				$new_gedcomnumber='S'.(substr($new_nr->source_gedcomnr,1)+1);
 			}
 
-			//$sql="INSERT INTO ".$tree_prefix."sources SET
 			$sql="INSERT INTO humo_sources SET
 				source_tree_id='".$tree_id."',
 				source_gedcomnr='".$new_gedcomnumber."',
@@ -2446,7 +2357,6 @@ if (isset($pers_gedcomnumber)){
 				source_new_time='".$gedcom_time."'";
 			$result=$dbh->query($sql);
 
-			//$new_source_qry= "SELECT * FROM ".$tree_prefix."sources ORDER BY source_id DESC LIMIT 0,1";
 			//$new_source_qry= "SELECT * FROM humo_sources
 			//	WHERE source_tree_id='".$tree_id."' ORDER BY source_id DESC LIMIT 0,1";
 			//$new_source_result = $dbh->query($new_source_qry);
@@ -2456,7 +2366,6 @@ if (isset($pers_gedcomnumber)){
 		}
 
 		if (isset($_POST['source_change'])){
-			//$sql="UPDATE ".$tree_prefix."sources SET
 			$sql="UPDATE humo_sources SET
 			source_status='".$editor_cls->text_process($_POST['source_status'])."',
 			source_title='".$editor_cls->text_process($_POST['source_title'])."',
@@ -2507,7 +2416,6 @@ if (isset($pers_gedcomnumber)){
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 
-			//$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix."sources ORDER BY source_title");
 			$source_qry=$dbh->query("SELECT * FROM humo_sources
 				WHERE source_tree_id='".$tree_id."' ORDER BY source_title");
 			echo __('Select source').': ';
@@ -2546,8 +2454,6 @@ if (isset($pers_gedcomnumber)){
 				$source_repo_gedcomnr='';
 			}
 			else{
-				//@$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix."sources
-				//	WHERE source_id='".safe_text($source_id)."'");
 				@$source_qry=$dbh->query("SELECT * FROM humo_sources
 					WHERE source_tree_id='".$tree_id."' AND source_id='".safe_text($source_id)."'");
 
@@ -2589,8 +2495,6 @@ if (isset($pers_gedcomnumber)){
 			echo '<tr><td>'.__('date').' - '.__('place').'</td><td>'.$editor_cls->date_show($source_date,"source_date").' <input type="text" name="source_place" value="'.htmlspecialchars($source_place).'" size="50"></td></tr>';
 
 			echo '<tr><td>'.__('Repository').'</td><td>';
-				//$repo_qry=$dbh->query("SELECT * FROM ".$tree_prefix."repositories
-				//	ORDER BY repo_name, repo_place");
 				$repo_qry=$dbh->query("SELECT * FROM humo_repositories
 					WHERE repo_tree_id='".$tree_id."' 
 					ORDER BY repo_name, repo_place");
@@ -2650,8 +2554,6 @@ if (isset($pers_gedcomnumber)){
 	if ($menu_admin=='repositories'){
 		if (isset($_POST['repo_add'])){
 			// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-			//$new_nr_qry= "SELECT *, ABS(substring(repo_gedcomnr, 2)) AS gednr
-			//	FROM ".$tree_prefix."repositories ORDER BY gednr DESC LIMIT 0,1";
 			$new_nr_qry= "SELECT *, ABS(substring(repo_gedcomnr, 2)) AS gednr FROM humo_repositories
 				WHERE repo_tree_id='".$tree_id."'
 				ORDER BY gednr DESC LIMIT 0,1";
@@ -2662,7 +2564,6 @@ if (isset($pers_gedcomnumber)){
 				$new_gedcomnumber='R'.(substr($new_nr->repo_gedcomnr,1)+1);
 			}
 
-			//$sql="INSERT INTO ".$tree_prefix."repositories SET
 			$sql="INSERT INTO humo_repositories SET
 				repo_tree_id='".$tree_id."',
 				repo_gedcomnr='".$new_gedcomnumber."',
@@ -2679,7 +2580,6 @@ if (isset($pers_gedcomnumber)){
 				repo_new_time='".$gedcom_time."'";
 			$result=$dbh->query($sql);
 
-			//$new_repo_qry= "SELECT * FROM ".$tree_prefix."repositories ORDER BY repo_id DESC LIMIT 0,1";
 			//$new_repo_qry= "SELECT * FROM humo_repositories
 			//	WHERE repo_tree_id='".$tree_id."'
 			//	ORDER BY repo_id DESC LIMIT 0,1";
@@ -2690,7 +2590,6 @@ if (isset($pers_gedcomnumber)){
 		}
 
 		if (isset($_POST['repo_change'])){
-			//$sql="UPDATE ".$tree_prefix."repositories SET
 			$sql="UPDATE humo_repositories SET
 				repo_name='".$editor_cls->text_process($_POST['repo_name'])."',
 				repo_address='".$editor_cls->text_process($_POST['repo_address'])."',
@@ -2722,22 +2621,16 @@ if (isset($pers_gedcomnumber)){
 		if (isset($_POST['repo_remove2'])){
 			echo '<div class="confirm">';
 				// *** Find gedcomnumber, needed for events query ***
-				//$repo_qry=$dbh->query("SELECT * FROM ".$tree_prefix."repositories
-				//	WHERE repo_id='".safe_text($_POST["repo_id"])."'");
 				$repo_qry=$dbh->query("SELECT * FROM humo_repositories
 					WHERE repo_id='".safe_text($_POST["repo_id"])."'");
 				$repoDb=$repo_qry->fetch(PDO::FETCH_OBJ);
 
 				// *** Delete repository link ***
-				//$sql="UPDATE ".$tree_prefix."sources SET source_repo_gedcomnr=''
-				//WHERE source_repo_gedcomnr='".$repoDb->repo_gedcomnr."'";
 				$sql="UPDATE humo_sources SET source_repo_gedcomnr=''
 				WHERE source_tree_id='".$tree_id."' AND source_repo_gedcomnr='".$repoDb->repo_gedcomnr."'";
 				$result=$dbh->query($sql);
 
 				// *** Delete repository ***
-				//$sql="DELETE FROM ".$tree_prefix."repositories
-					//WHERE repo_id='".safe_text($_POST["repo_id"])."'";
 				$sql="DELETE FROM humo_repositories
 					WHERE repo_id='".safe_text($_POST["repo_id"])."'";
 
@@ -2755,8 +2648,6 @@ if (isset($pers_gedcomnumber)){
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
-			//$repo_qry=$dbh->query("SELECT * FROM ".$tree_prefix."repositories
-			//	ORDER BY repo_name, repo_place");
 			$repo_qry=$dbh->query("SELECT * FROM humo_repositories
 				WHERE repo_tree_id='".$tree_id."'
 				ORDER BY repo_name, repo_place");
@@ -2790,8 +2681,6 @@ if (isset($pers_gedcomnumber)){
 				$repo_new_date=''; $repo_new_time=''; $repo_changed_date=''; $repo_changed_time='';
 			}
 			else{
-				//@$repo_qry=$dbh->query("SELECT * FROM ".$tree_prefix."repositories
-				//	WHERE repo_id='".safe_text($_POST["repo_id"])."'");
 				@$repo_qry=$dbh->query("SELECT * FROM humo_repositories
 					WHERE repo_id='".safe_text($_POST["repo_id"])."'");
 				$die_message=__('No valid repository number.');
@@ -2876,8 +2765,6 @@ if (isset($pers_gedcomnumber)){
 	if ($menu_admin=='addresses'){
 		if (isset($_POST['address_add'])){
 			// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-			//$new_nr_qry= "SELECT *, ABS(substring(address_gedcomnr, 2)) AS gednr
-			//	FROM ".$tree_prefix."addresses ORDER BY gednr DESC LIMIT 0,1";
 			$new_nr_qry= "SELECT *, ABS(substring(address_gedcomnr, 2)) AS gednr
 				FROM humo_addresses WHERE address_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
 			$new_nr_result = $dbh->query($new_nr_qry);
@@ -2886,7 +2773,6 @@ if (isset($pers_gedcomnumber)){
 			if (isset($new_nr->address_gedcomnr)){
 				$new_gedcomnumber='R'.(substr($new_nr->address_gedcomnr,1)+1);
 			}
-			//$sql="INSERT INTO ".$tree_prefix."addresses SET
 			$sql="INSERT INTO humo_addresses SET
 				address_tree_id='".$tree_id."',
 				address_gedcomnr='".$new_gedcomnumber."',
@@ -2901,7 +2787,6 @@ if (isset($pers_gedcomnumber)){
 				address_new_time='".$gedcom_time."'";
 			$result=$dbh->query($sql);
 
-			//$new_address_qry= "SELECT * FROM ".$tree_prefix."addresses ORDER BY address_id DESC LIMIT 0,1";
 			//$new_address_qry= "SELECT * FROM humo_addresses
 			//	WHERE address_tree_id='".$tree_id."' ORDER BY address_id DESC LIMIT 0,1";
 			//$new_address_result = $dbh->query($new_address_qry);
@@ -2911,7 +2796,6 @@ if (isset($pers_gedcomnumber)){
 		}
 
 		if (isset($_POST['address_change'])){
-			//$sql="UPDATE ".$tree_prefix."addresses SET
 			$sql="UPDATE humo_addresses SET
 				address_address='".$editor_cls->text_process($_POST['address_address'])."',
 				address_date='".$editor_cls->date_process('address_date')."',
@@ -2942,31 +2826,23 @@ if (isset($pers_gedcomnumber)){
 		if (isset($_POST['address_remove2'])){
 			echo '<div class="confirm">';
 			// *** Find gedcomnumber, needed for events query ***
-			//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
-			//	WHERE address_id='".safe_text($_POST["address_id"])."'");
 			$address_qry=$dbh->query("SELECT * FROM humo_addresses
 				WHERE address_tree_id='".$tree_id."' AND address_id='".safe_text($_POST["address_id"])."'");
 			$addressDb=$address_qry->fetch(PDO::FETCH_OBJ);
 
 			// *** Remove added sources from connection table ***
-			//$sql="DELETE FROM ".$tree_prefix."connections
-			//	WHERE connect_kind='address' AND connect_connect_id='".$addressDb->address_id."'";
 			$sql="DELETE FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_kind='address' AND connect_connect_id='".$addressDb->address_id."'";
 			$result=$dbh->query($sql);
 
 			// *** Remove connected persons ***
-			//$sql="DELETE FROM ".$tree_prefix."connections
-			//	WHERE connect_kind='person' AND connect_sub_kind='person_address' AND connect_item_id='".$addressDb->address_gedcomnr."'";
 			$sql="DELETE FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				connect_sub_kind='person_address' AND connect_item_id='".$addressDb->address_gedcomnr."'";
 			$result=$dbh->query($sql);
 
 			// *** Delete address ***
-			//$sql="DELETE FROM ".$tree_prefix."addresses
-			//	WHERE address_id='".safe_text($_POST["address_id"])."'";
 			$sql="DELETE FROM humo_addresses
 				WHERE address_id='".safe_text($_POST["address_id"])."'";
 			$result=$dbh->query($sql);
@@ -3008,8 +2884,6 @@ if (isset($pers_gedcomnumber)){
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 
-			//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix."addresses
-			//	WHERE address_gedcomnr LIKE '_%' ORDER BY address_place, address_address");
 			$address_qry=$dbh->query("SELECT * FROM humo_addresses
 				WHERE address_tree_id='".$tree_id."' AND address_gedcomnr LIKE '_%' ORDER BY address_place, address_address");
 			echo __('Select address').': ';
@@ -3040,7 +2914,6 @@ if (isset($pers_gedcomnumber)){
 				$address_photo=''; $address_text=''; //$address_source=''; 
 			}
 			else{
-				//@$address_qry2=$dbh->query("SELECT * FROM ".$tree_prefix."addresses WHERE address_id='".safe_text($_POST["address_id"])."'");
 				@$address_qry2=$dbh->query("SELECT * FROM humo_addresses
 					WHERE address_tree_id='".$tree_id."' AND address_id='".safe_text($_POST["address_id"])."'");
 
@@ -3069,12 +2942,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<tr><td>'.__('source').'</td><td>';
 				if (isset($addressDb->address_id)){
 					// *** Calculate and show nr. of sources ***
-					//$connect_qry="SELECT *
-					//	FROM ".$tree_prefix."connections
-					//	WHERE connect_kind='address' AND connect_sub_kind='address_source'
-					//	AND connect_connect_id='".$addressDb->address_id."'";
-					$connect_qry="SELECT *
-						FROM humo_connections
+					$connect_qry="SELECT * FROM humo_connections
 						WHERE connect_tree_id='".$tree_id."'
 						AND connect_kind='address' AND connect_sub_kind='address_source'
 						AND connect_connect_id='".$addressDb->address_id."'";
@@ -3161,11 +3029,6 @@ if (isset($pers_gedcomnumber)){
 			echo '<b>'.__('UPDATE OK!').'</b> ';
 		}
 
-		//$person_qry= "(SELECT pers_birth_place as place_edit FROM ".$tree_prefix."person GROUP BY pers_birth_place)
-		//	UNION (SELECT pers_bapt_place as place_edit FROM ".$tree_prefix."person GROUP BY pers_bapt_place)
-		//	UNION (SELECT pers_death_place as place_edit FROM ".$tree_prefix."person GROUP BY pers_death_place)
-		//	UNION (SELECT pers_buried_place as place_edit FROM ".$tree_prefix."person GROUP BY pers_buried_place)
-		//	ORDER BY place_edit";
 		$person_qry= "(SELECT pers_birth_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_birth_place)
 			UNION (SELECT pers_bapt_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_bapt_place)
 			UNION (SELECT pers_death_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_death_place)

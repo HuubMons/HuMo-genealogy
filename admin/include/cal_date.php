@@ -56,11 +56,9 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 	if (isset($tree_prefix)){
 
 		function calculate_person($gedcomnumber){
-			global $dbh, $tree_id;
+			global $db_functions;
 			$pers_cal_date='';
-			$person2_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$gedcomnumber."'";
-			$person2_result = $dbh->query($person2_qry);
-			$person2_db=$person2_result->fetch(PDO::FETCH_OBJ);
+			$person2_db=$db_functions->get_person($gedcomnumber);
 			if ($person2_db){
 				if ($person2_db->pers_cal_date) $pers_cal_date=$person2_db->pers_cal_date;
 				elseif ($person2_db->pers_birth_date) $pers_cal_date=$person2_db->pers_birth_date;
@@ -69,7 +67,6 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 			}
 			return $pers_cal_date;
 		}
-
 
 		echo '<tr><td colspan="2">';
 		// *** Process estimates/ calculated date for privacy filter ***

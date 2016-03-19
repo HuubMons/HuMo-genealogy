@@ -135,6 +135,7 @@ while (false!==($file = readdir($map))) {
 
 			// *** Order of languages ***
 			if ($file=='cn') $language_order[]='Chinese';
+			elseif ($file=='da') $language_order[]='Dansk';
 			elseif ($file=='de') $language_order[]='Deutsch';
 			elseif ($file=='en') $language_order[]='English';
 			elseif ($file=='en_us') $language_order[]='English_us';
@@ -285,12 +286,6 @@ if(isset($database_check) AND $database_check) {
 					// *** Check if user is an administrator ***
 					$group_administrator=$groepDb->group_admin;
 					if ($group_administrator!='j') $page='login';
-
-					// *** Check if user is an editor ***
-					//if (isset($groepDb->group_editor)){
-					//	$group_editor=$groepDb->group_editor;
-					//	if ($group_editor=='j'){ $page=''; }
-					//}
 
 					// *** Edit family trees [GROUP SETTING] ***
 					if (isset($groepDb->group_edit_trees)){ $group_edit_trees=$groepDb->group_edit_trees; $page=''; }
@@ -937,7 +932,6 @@ echo '<div id="humo_top" '.$top_dir.'>';
 	// *** END OF MENU ***
 
 echo '</div>'; // *** End of humo_top ***
-
 
 // *** Show selected page, default page = admin homepage ***
 echo '<div id="content_admin">';

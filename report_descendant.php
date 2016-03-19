@@ -423,11 +423,13 @@ function printchart() {
 <b>Click on spouse\'s name in popup menu:</b> Go to spouse\'s family page<br><br>
 <b>LEGEND:</b>');
 
-		echo '<p><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Male').'<br>';
-		echo '<span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Female').'<br>';
-
-		echo '<span style="color:blue">=====</span>&nbsp;'.__('Additional marriage of same person').'<br><br>';
-
+		echo '<p><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Male').'</br>';
+		echo '<span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Female').'</br>';
+		if($dna=="ydna" OR $dna=="ydnamark" OR $dna=="mtdna" OR $dna=="mtdnamark") {
+		echo '<p style="line-height:3px"><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:3px solid #999999;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Male Y-DNA or mtDNA carrier (Base person has red border)').'</p>';
+		echo '<p style="line-height:10px"><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #f5bca9 100%); border:3px solid #999999;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Female MtDNA carrier (Base person has red border)').'</p>';
+		}
+		echo '<p><span style="color:blue">=====</span>&nbsp;'.__('Additional marriage of same person').'<br><br>';
 		echo __('<b>SETTINGS:</b>
 <p>Horizontal/Vertical button: toggle direction of the chart from top-down to left-right<br>
 <b>Nr. Generations:</b> choose between 2 - 15 generations<br>
@@ -517,11 +519,13 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 	//				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."none".'&amp;chosensize='.
 	//				$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('All').'</option>';
 			if($base_person_sexe=="M") {		// only show Y-DNA option if base person is male
-				echo $selected=""; if($dna=="ydna") $selected="selected";
+				//echo $selected=""; if($dna=="ydna") $selected="selected";
+				echo $selected="selected"; if($dna!="ydna")  $selected=""; 
 				echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
 						$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."ydna".'&amp;chosensize='.
 						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('Y-DNA Carriers only').'</option>';
-				echo $selected="selected"; if($dna!="ydnamark") $selected="";
+				//echo $selected="selected"; if($dna!="ydnamark") $selected="";
+				echo $selected=""; if($dna=="ydnamark") $selected="selected";
 				echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
 						$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."ydnamark".'&amp;chosensize='.
 						$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('Y-DNA Mark carriers').'</option>';
@@ -618,14 +622,14 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		$xvalue=$genarray[$w]["x"];
 		$yvalue=$genarray[$w]["y"];
 
-		$sexe_colour='';
+		$sexe_colour=''; $backgr_col = "#FFFFFF"; 
 		if($genarray[$w]["sex"]=="v") {
 			$sexe_colour=' ancestor_woman';
-			$backgr_col = "#f8bdf1";
+			$backgr_col = "#FBDEC0";     //"#f8bdf1";
 		}
 		else{
 			$sexe_colour=' ancestor_man';
-			$backgr_col = "#bbf0ff";
+			$backgr_col =  "#C0F9FC";      //"#bbf0ff";
 		}
 
 		// *** Start person class and calculate privacy ***
@@ -640,16 +644,19 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		$bkgr="";  
 		if(($dna=="ydnamark" OR $dna=="mtdnamark" OR $dna=="ydna" OR $dna=="mtdna") AND $genarray[$w]["dna"]==1) { 
-			$bkgr = "border:3px solid #999999;background-color:"."#ffff66".";"; 
+			$bkgr = "border:3px solid #999999;background-color:".$backgr_col.";"; 
 			if($genarray[$w]["gednr"]==$base_person_gednr) {  // base person
-				$bkgr = "border:3px solid red;background-color:"."#ff9900".";"; 
+				$bkgr = "border:3px solid red;background-color:".$backgr_col.";"; 
 			}
+		}
+		else {
+			$bkgr = "border:1px solid #8C8C8C;background-color:".$backgr_col.";"; 
 		}
 		if($genarray[$w]["gen"]==0 AND $hourglass===true) { 
 			$bkgr = "background-color:".$backgr_col.";"; 
 		}
 		echo '<div class="ancestor_name'.$sexe_colour.'" style="'.$bkgr.'position:absolute; height:'.$vsize.'px; width:'.$hsize.'px; left:'.$xvalue.'px; top:'.$yvalue.'px;">';
- 
+
 		$replacement_text='';
 		if($size>=25) {
 			/*
@@ -666,6 +673,24 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			*/
 			if(strpos($browser_user_agent,"msie 7.0")===false) {
 				if($size==50) {
+
+					// *** Show picture ***
+					if (!$man_privacy AND $user['group_pictures']=='j'){
+						//  *** Path can be changed per family tree ***
+						global $dataDb;
+						$tree_pict_path=$dataDb->tree_pict_path;
+						$picture_qry=$db_functions->get_events_person($man->pers_gedcomnumber,'picture');
+						// *** Only show 1st picture ***
+						if (isset($picture_qry[0])){
+							$pictureDb=$picture_qry[0];
+							$picture=show_picture($tree_pict_path,$pictureDb->event_event,60,65);
+							//$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" height="65px">';
+							$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'"';
+							//if (isset($picture['height'])) $replacement_text.=' height="'.$picture['height'].'"';
+							$replacement_text.='>';
+						}
+					}
+
 					//$replacement_text.= '<strong>'.$genarray[$w]["nam"].'</strong>';
 					//$replacement_text.= '<span class="anc_box_name">'.$genarray[$w]["nam"].'</span>';
 					$replacement_text.= '<span class="anc_box_name">'.$genarray[$w]["nam"].'</span>';
@@ -673,29 +698,34 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						$replacement_text.= '<br>'.__(' PRIVACY FILTER').'<br>';  //Tekst privacy weergeven
 					}
 					else{
-						if ($man->pers_birth_date OR $man->pers_birth_place){
-							$replacement_text.= '<br>'.__('*').$dirmark1.' '.
-							date_place($man->pers_birth_date,$man->pers_birth_place);
+						//if ($man->pers_birth_date OR $man->pers_birth_place){
+						if ($man->pers_birth_date){
+							//$replacement_text.= '<br>'.__('*').$dirmark1.' '.date_place($man->pers_birth_date,$man->pers_birth_place);
+							$replacement_text.= '<br>'.__('*').$dirmark1.' '.date_place($man->pers_birth_date,'');
 						}
-						elseif ($man->pers_bapt_date OR $man->pers_bapt_place){
-							$replacement_text.= '<br>'.__('~').$dirmark1.' '.
-							date_place($man->pers_bapt_date,$man->pers_bapt_place);
+						//elseif ($man->pers_bapt_date OR $man->pers_bapt_place){
+						elseif ($man->pers_bapt_date){
+							//$replacement_text.= '<br>'.__('~').$dirmark1.' '.date_place($man->pers_bapt_date,$man->pers_bapt_place);
+							$replacement_text.= '<br>'.__('~').$dirmark1.' '.date_place($man->pers_bapt_date,'');
 						}
 
-						if ($man->pers_death_date OR $man->pers_death_place){
-							$replacement_text.= '<br>'.__('&#134;').$dirmark1.' '.
-							date_place($man->pers_death_date,$man->pers_death_place);
+						//if ($man->pers_death_date OR $man->pers_death_place){
+						if ($man->pers_death_date){
+							//$replacement_text.= '<br>'.__('&#134;').$dirmark1.' '.date_place($man->pers_death_date,$man->pers_death_place);
+							$replacement_text.= '<br>'.__('&#134;').$dirmark1.' '.date_place($man->pers_death_date,'');
 						}
-						elseif ($man->pers_buried_date OR $man->pers_buried_place){
-							$replacement_text.= '<br>'.__('[]').$dirmark1.' '.
-							date_place($man->pers_buried_date,$man->pers_buried_place);
+						//elseif ($man->pers_buried_date OR $man->pers_buried_place){
+						elseif ($man->pers_buried_date){
+							//$replacement_text.= '<br>'.__('[]').$dirmark1.' '.date_place($man->pers_buried_date,$man->pers_buried_place);
+							$replacement_text.= '<br>'.__('[]').$dirmark1.' '.date_place($man->pers_buried_date,'');
 						}
 
 						if($genarray[$w]["non"]==0) { // otherwise for an unmarried child it would give the parents' marriage!
 							$ownfam = $db_functions->get_family($genarray[$w]["fams"]);
-							if ($ownfam->fam_marr_date OR $ownfam->fam_marr_place){
-								$replacement_text.= '<br>'.__('X').$dirmark1.' '.
-								date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
+							//if ($ownfam->fam_marr_date OR $ownfam->fam_marr_place){
+							if ($ownfam->fam_marr_date){
+								//$replacement_text.= '<br>'.__('X').$dirmark1.' '.date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
+								$replacement_text.= '<br>'.__('X').$dirmark1.' '.date_place($ownfam->fam_marr_date,'');
 							}
 						}
 					}

@@ -772,10 +772,8 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 			sources_export('person','pers_death_source',$person->pers_gedcomnumber,2);
 		if ($gedcom_texts=='yes' AND $person->pers_death_text)
 			$buffer.='2 NOTE '.process_text(3,$person->pers_death_text);
-		if ($person->pers_death_cause)
-			$buffer.='2 CAUS '.$person->pers_death_cause."\r\n";
-		if ($person->pers_death_age)
-			$buffer.='2 AGE '.$person->pers_death_age."\r\n";
+		if ($person->pers_death_cause) $buffer.='2 CAUS '.$person->pers_death_cause."\r\n";
+		if ($person->pers_death_age) $buffer.='2 AGE '.$person->pers_death_age."\r\n";
 	}
 
 	// *** Buried data ***
@@ -787,8 +785,7 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 			sources_export('person','pers_buried_source',$person->pers_gedcomnumber,2);
 		if ($gedcom_texts=='yes' AND $person->pers_buried_text)
 			$buffer.='2 NOTE '.process_text(3,$person->pers_buried_text);
-		if ($person->pers_cremation)
-			$buffer.='2 TYPE cremation'."\r\n";
+		if ($person->pers_cremation) $buffer.='2 TYPE cremation'."\r\n";
 	}
 
 	// *** Living place ***
@@ -1101,6 +1098,8 @@ while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 		if ($gedcom_sources=='yes'){
 			sources_export('family','fam_marr_source',$family->fam_gedcomnumber,2);
 		}
+		if ($family->fam_man_age) $buffer.="2 HUSB\r\n3 AGE ".$family->fam_man_age."\r\n";
+		if ($family->fam_woman_age) $buffer.="2 WIFE\r\n3 AGE ".$family->fam_woman_age."\r\n";
 		if ($gedcom_texts=='yes' AND $family->fam_marr_text){
 			$buffer.='2 NOTE '.process_text(3,$family->fam_marr_text); }
 	}

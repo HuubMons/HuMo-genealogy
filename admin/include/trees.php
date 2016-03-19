@@ -62,7 +62,6 @@ if (isset($_POST['add_tree_data'])){
 
 	// *** Immediately add new tables in tree ***
 	$_SESSION['tree_prefix']=safe_text($_POST['tree_prefix']);
-	//include_once ("gedcom_tables.php");
 }
 
 if (isset($_POST['add_tree_data_empty'])){
@@ -91,25 +90,13 @@ if (isset($_POST['add_tree_text'])){
 }
 
 // *** Change collation of tree ***
-//if (isset($_POST['change_collation'])){
 if (isset($_POST['tree_collation'])){
-	//$collation_prefix=safe_text($_POST['collation_prefix']);
 	$tree_collation=safe_text($_POST['tree_collation']);
-
-	$dbh->query("ALTER TABLE humo_persons
-		CHANGE `pers_lastname` `pers_lastname` VARCHAR(50) COLLATE ".$tree_collation.";");
-
-	$dbh->query("ALTER TABLE humo_persons
-		CHANGE `pers_firstname` `pers_firstname` VARCHAR(50) COLLATE ".$tree_collation.";");
-
-	$dbh->query("ALTER TABLE humo_persons
-		CHANGE `pers_prefix` `pers_prefix` VARCHAR(20) COLLATE ".$tree_collation.";");
-
-	$dbh->query("ALTER TABLE humo_persons
-		CHANGE `pers_callname` `pers_callname` VARCHAR(20) COLLATE ".$tree_collation.";");
-
-	$dbh->query("ALTER TABLE humo_events
-		CHANGE `event_event` `event_event` TEXT COLLATE ".$tree_collation.";");
+	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_lastname` `pers_lastname` VARCHAR(50) COLLATE ".$tree_collation.";");
+	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_firstname` `pers_firstname` VARCHAR(50) COLLATE ".$tree_collation.";");
+	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_prefix` `pers_prefix` VARCHAR(20) COLLATE ".$tree_collation.";");
+	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_callname` `pers_callname` VARCHAR(20) COLLATE ".$tree_collation.";");
+	$dbh->query("ALTER TABLE humo_events CHANGE `event_event` `event_event` TEXT COLLATE ".$tree_collation.";");
 }
 
 if (isset($_GET['remove_tree'])){
@@ -137,14 +124,6 @@ if (isset($_POST['remove_tree2'])){
 		$sql="UPDATE humo_trees SET tree_order='".($itemDb->tree_order-1)."' WHERE tree_id=".$itemDb->tree_id;
 		$result=$dbh->query($sql);
 	}
-	//$sql="DROP TABLE ".$remove."person"; @$result=$dbh->query($sql);
-	//$sql="DROP TABLE ".$remove."family"; @$result=$dbh->query($sql);
-	//$sql="DROP TABLE ".$remove."texts"; @$result=$dbh->query($sql);
-	//$sql="DROP TABLE ".$remove."sources"; @$result=$dbh->query($sql);
-	//$sql="DROP TABLE ".$remove."addresses"; @$result=$dbh->query($sql);
-	//$sql="DROP TABLE ".$remove."events"; @$result=$dbh->query($sql);
-	//$sql="DROP TABLE ".$remove."connections"; @$result=$dbh->query($sql);
-	//$sql="DROP TABLE ".$remove."repositories"; @$result=$dbh->query($sql);
 
 	$sql="DELETE FROM humo_trees WHERE tree_id='".safe_text($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);

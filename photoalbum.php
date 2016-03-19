@@ -206,7 +206,6 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 		$picture_qry=$dbh->query("SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_kind='object' AND LOWER(event_event)='".strtolower($filename)."'");
 		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)) {
-		 	//$connect_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."connections
 		 	$connect_qry=$dbh->query("SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_object'
@@ -225,7 +224,7 @@ for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
 			}
 		}
 
-		$picture2=show_picture($dir,$filename,180,120);
+		$picture2=show_picture($dir,$filename,175,120);
 		$picture='<img src="'.$dir.$picture2['thumb'].$picture2['picture'].'" width="'.$picture2['width'].'" alt="'.$filename.'"></a>';
 
 		echo '<div class="photobook">';

@@ -331,16 +331,15 @@ echo "<input type='hidden' name='show_group_id' value='".$show_group_id."'>";
 echo '<input type="hidden" name="id" value="'.$groupDb->group_id.'">';
 
 echo '<table class="humo standard" border="1">';
-echo '<tr class="table_header"><th>'.__('Option').'</th><th>'.__('Value').'</th></tr>';
+//echo '<tr class="table_header"><th>'.__('Option').'</th><th>'.__('Value').'</th></tr>';
 
-echo '<tr style="background-color:green; color:white"><th>'.__('Group');
+//echo '<tr style="background-color:green; color:white"><th>'.__('Group');
+echo '<tr class="table_header"><th>'.__('Group');
 	if ($groupDb->group_id>'3'){
 		echo ' <input type="Submit" name="group_remove" value="'.__('REMOVE GROUP').'">';
 	}
 	echo '</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 echo '<tr><td>'.__('Group name').'</td><td><input type="text" name="group_name" value="'.$groupDb->group_name.'" size="15"></td>';
-
-//$group_editor=$groupDb->group_editor; if ($groupDb->group_admin=='j'){ $group_editor='j'; }
 
 echo '<tr><td>'.__('Administrator').'</td>';
 $check=''; if ($groupDb->group_admin!='n') $check=' checked';
@@ -355,21 +354,12 @@ if ($groupDb->group_id=='1'){
 
 echo '<td><input type="checkbox" name="group_admin"'.$check.$disabled.'></td></tr>';
 
-//echo '<tr><td>'.__('Editor').'. '.__('Also select a family tree at the bottom of this page to edit.').'<br>';
-//echo __('If an .htpasswd file is used: add username in .htpasswd file.').'</td>';
-//$check=''; if ($groupDb->group_editor!='n') $check=' checked';
-//echo '<td><input type="checkbox" name="group_editor"'.$check.$disabled.'></td></tr>';
-
 echo '<tr><td>'.__('Save statistics data').'</td>';
 $check=''; if ($groupDb->group_statistics!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_statistics"'.$check.'></td></tr>';
 
-echo '<tr style="background-color:green; color:white"><th>'.__('Menu').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
-
-//echo '<tr><td>OLD!!! '.__('Show sources and menu sources').'</td>';
-//echo '<td><select size="1" name="group_sources"><option value="j">'.__('Yes').'</option>';
-//$selected=''; if ($groupDb->group_sources=='n'){ $selected=' SELECTED'; }
-//echo '<option value="n"'.$selected.'>'.__('No').'</option></select></td></tr>';
+//echo '<tr style="background-color:green; color:white"><th>'.__('Menu').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th>'.__('Menu').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Birthday RSS in main menu').'</td>';
 $check=''; if ($groupDb->group_birthday_rss!='n') $check=' checked';
@@ -429,7 +419,8 @@ if ($groupDb->group_id!='3'){
 $check=''; if ($groupDb->group_menu_login!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_menu_login"'.$check.$disabled.'></td></tr>';
 
-echo '<tr style="background-color:green; color:white"><th>'.__('General').'</font></th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+//echo '<tr style="background-color:green; color:white"><th>'.__('General').'</font></th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th>'.__('General').'</font></th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Show pictures');
 echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
@@ -508,7 +499,8 @@ $check=''; if ($groupDb->group_user_notes_show!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_user_notes_show"'.$check.$disabled.'></td></tr>';
 
 // *** Sources ***
-echo '<tr style="background-color:green; color:white"><th>'.__('Sources').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+//echo '<tr style="background-color:green; color:white"><th>'.__('Sources').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th>'.__('Sources').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Don\'t show sources').'<br>';
 echo __('Only show source titles').'<br>';
@@ -536,7 +528,8 @@ echo '<tr><td>'.__('Show restricted source').'</td>';
 $check=''; if ($groupDb->group_show_restricted_source!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_show_restricted_source"'.$check.'></td></tr>';
 
-echo '<tr style="background-color:green; color:white"><th>'.__('Texts').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+//echo '<tr style="background-color:green; color:white"><th>'.__('Texts').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th>'.__('Texts').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
 // *** First default presentation of texts, by administrator (visitor can override value) ***
 echo '<tr><td>'.__('Default presentation of text').'</td>';
@@ -573,7 +566,8 @@ echo '<tr><td>'.__('Show text with pre-nuptial etc.').'</td>';
 $check=''; if ($groupDb->group_texts_fam!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_texts_fam"'.$check.'></td></tr>';
 
-echo '<tr style="background-color:green; color:white"><th>'.__('Privacy filter').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+//echo '<tr style="background-color:green; color:white"><th>'.__('Privacy filter').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th>'.__('Privacy filter').'</th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><th>'.__('Activate privacy filter').'</th><td></td></tr>';
 
@@ -640,7 +634,8 @@ echo '<tr><td>'.__('Genealogical copy protection<br>
 $check=''; if ($groupDb->group_gen_protection!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_gen_protection"'.$check.'></td></tr>';
 
-echo '<tr style="background-color:green; color:white"><th bgcolor=green>';
+//echo '<tr style="background-color:green; color:white"><th bgcolor=green>';
+echo '<tr class="table_header"><th>';
 
 // *** SPARE ITEM ***
 echo '<input type="hidden" name="group_filter_fam" value="n">';
@@ -698,7 +693,8 @@ echo __('Editor').': '.__('If an .htpasswd file is used: add username in .htpass
 echo __('These settings can also be set per user!');
 
 echo '<table class="humo standard" border="1">';
-	echo '<tr style="background-color:green; color:white"><th>'.__('Table prefix').'</th><th>'.__('Family tree').'</th><th>'.__('Show tree?').'</th><th>'.__('Edit tree?').' <input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+	//echo '<tr style="background-color:green; color:white"><th>'.__('Table prefix').'</th><th>'.__('Family tree').'</th><th>'.__('Show tree?').'</th><th>'.__('Edit tree?').' <input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+	echo '<tr class="table_header"><th>'.__('Table prefix').'</th><th>'.__('Family tree').'</th><th>'.__('Show tree?').'</th><th>'.__('Edit tree?').' <input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
 	$data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 	while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){

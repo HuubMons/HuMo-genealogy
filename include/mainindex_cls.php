@@ -197,7 +197,7 @@ class mainindex_cls{
 			$count_last_names[]=$personDb->count_last_names;
 		}
 		//echo __('Most frequent surnames:')."<br>";
-		echo '<div style="width:500px; margin-left:auto; margin-right:auto;">'.__('Most frequent surnames:')."<br>";
+		echo '<div id="most_frequent_names">'.__('Most frequent surnames:')."<br>";
 		for ($i=0; $i<@count($last_names); $i++){
 			$top_pers_lastname='';
 			if ($pers_prefix[$i]){ $top_pers_lastname=str_replace("_", " ", $pers_prefix[$i]); }

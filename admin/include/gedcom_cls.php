@@ -53,24 +53,11 @@ function process_person($person_array){
 
 	$event_status="";
 
-
 	// *** For event table ***
-	$event_nr=0;
-	$event2_nr=0;
-	// *** Find latest event id in table, needed for source_connect table ***
-	//$event_items=0;
-	//$event_qry=$dbh->query("SELECT event_id FROM humo_events ORDER BY event_id DESC LIMIT 0,1");
-	//$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
-	//if ($eventDb){ $event_items=$eventDb->event_id; }
+	$event_nr=0; $event2_nr=0;
 
 	// *** Save addresses in a seperate table ***
 	$nraddress2=0;
-	// *** Find latest event id in table, needed for source_connect table ***
-	//$address_items=0;
-	//$event_qry=$dbh->query("SELECT address_id FROM humo_addresses ORDER BY address_id DESC LIMIT 0,1");
-	//$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
-	//if ($eventDb){ $address_items=$eventDb->address_id; }
-
 
 	// *** Location data for Google maps ***
 	$geocode_nr=0;
@@ -182,7 +169,6 @@ function process_person($person_array){
 						$event['event_extra'][$event_nr]='';
 						$event['gedcom'][$event_nr]='FAMC';
 						$event['date'][$event_nr]='';
-						//$event['source'][$event_nr]='';
 						$event['text'][$event_nr]='';
 						$event['place'][$event_nr]='';
 					}
@@ -214,7 +200,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]=substr($buffer,7); // *** adopted, steph, legal or foster. ***
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 
@@ -356,7 +341,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]='NPFX';
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 			}
@@ -371,7 +355,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]=$level1;
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 			}
@@ -388,7 +371,6 @@ function process_person($person_array){
 			// *** Source by pers_name ***
 			if ($level2=='SOUR'){
 				$this->process_sources('person','pers_name_source',$pers_gedcomnumber,$buffer,'2');
-				//$pers_name_source='SOURCE';
 			}
 
 			$process_event=false;
@@ -433,7 +415,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]=trim(substr($buffer, 2, 5));
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 			}
@@ -497,7 +478,6 @@ function process_person($person_array){
 			// BK: source by text
 			if ($level2=='SOUR'){
 				$this->process_sources('person','pers_text_source',$pers_gedcomnumber,$buffer,'2');
-				//$person["pers_text_source"]='SOURCE';
 			}
 		}
 
@@ -528,7 +508,6 @@ function process_person($person_array){
 			$address_phone[$nraddress2]="";
 			$address_date[$nraddress2]="";
 			$address_text[$nraddress2]="";
-			//$address_source[$nraddress2]="";
 
 			//$address_array["place"][$nraddress2]="";
 			//$address_array["address"][$nraddress2]="";
@@ -776,7 +755,6 @@ function process_person($person_array){
 			// *** Source by person birth ***
 			if ($level2=='SOUR'){
 				$this->process_sources('person','pers_birth_source',$pers_gedcomnumber,$buffer,'2');
-				//$pers_birth_source='SOURCE';
 			}
 
 			// *** Birth witness Pro-Gen ***
@@ -792,7 +770,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]='WITN';
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 			}
@@ -853,7 +830,6 @@ function process_person($person_array){
 			// *** Process sources for Pro-gen and Aldfaer etc. ***
 			if ($level2=='SOUR'){
 				$this->process_sources('person','pers_bapt_source',$pers_gedcomnumber,$buffer,'2');
-				//$pers_bapt_source='SOURCE';
 			}
 
 			// *** Baptise witnesses ***
@@ -875,7 +851,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]='WITN';
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 			}
@@ -928,7 +903,6 @@ function process_person($person_array){
 			// *** Process source for Pro-gen, Aldfaer, etc. ***
 			if ($level2=='SOUR'){
 				$this->process_sources('person','pers_death_source',$pers_gedcomnumber,$buffer,'2');
-				//$pers_death_source='SOURCE';
 			}
 
 			// *** Death witness Pro-Gen ***
@@ -944,7 +918,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]='WITN';
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 			}
@@ -999,7 +972,6 @@ function process_person($person_array){
 			// *** Process sources for Pro-gen, Aldfaer etc. ***
 			if ($level2=='SOUR'){
 				$this->process_sources('person','pers_buried_source',$pers_gedcomnumber,$buffer,'2');
-				//$pers_buried_source='SOURCE';
 			}
 
 			// *** Cremation ***
@@ -1053,7 +1025,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]='ASSO';
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 			}
@@ -1092,7 +1063,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]='OCCU';
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 			}
@@ -1163,7 +1133,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]='PHOTO';
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 			}
@@ -1179,7 +1148,6 @@ function process_person($person_array){
 			// *** Source by person sexe ***
 			if ($level2=='SOUR'){
 				$this->process_sources('person','pers_sexe_source',$pers_gedcomnumber,$buffer,'2');
-				//$pers_sexe_source='SOURCE';
 			}
 		}
 
@@ -1194,7 +1162,6 @@ function process_person($person_array){
 			$event['event_extra'][$event_nr]='';
 			$event['gedcom'][$event_nr]='_COLOR';
 			$event['date'][$event_nr]='';
-			//$event['source'][$event_nr]='';
 			$event['text'][$event_nr]='';
 			$event['place'][$event_nr]='';
 		}
@@ -1388,7 +1355,6 @@ function process_person($person_array){
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]=$level1;
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 
 				// *** Aldfaer, title by name: 1 TITL Ir. ***
@@ -1594,8 +1560,6 @@ function process_person($person_array){
 	// *** Save standard addressses in separate table ***
 	if ($nraddress2>0){
 		for ($i=1; $i<=$nraddress2; $i++){
-			//address_source='".$this->text_process($address_source[$i])."'";
-			//$gebeurtsql="INSERT INTO ".$_SESSION['tree_prefix']."addresses SET
 			$gebeurtsql="INSERT INTO humo_addresses SET
 				address_tree_id='".$tree_id."',
 				address_order='".$i."',
@@ -1719,7 +1683,6 @@ function process_person($person_array){
 				$connect_order=1;
 				$check_connect=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i];
 			}
-			//$gebeurtsql="INSERT INTO ".$_SESSION['tree_prefix']."connections SET
 			$gebeurtsql="INSERT INTO humo_connections SET
 				connect_tree_id='".$tree_id."',
 				connect_order='".$connect_order."',
@@ -1791,6 +1754,7 @@ function process_family($family_array,$first_marr, $second_marr){
 	// *** Living together ***
 	$family["fam_relation_date"]=""; $family["fam_relation_place"]="";
 	$family["fam_relation_text"]=""; $family["fam_relation_end_date"]="";
+	$family["fam_man_age"]=''; $family["fam_woman_age"]='';
 	$family["fam_marr_notice_date"]=""; $family["fam_marr_notice_place"]=""; $family["fam_marr_notice_text"]="";
 	$family["fam_marr_date"]=""; $family["fam_marr_place"]=""; $family["fam_marr_text"]=""; $family["fam_marr_authority"]="";
 	$family["fam_div"]=false; $family["fam_div_date"]=""; $family["fam_div_place"]="";
@@ -1803,18 +1767,8 @@ function process_family($family_array,$first_marr, $second_marr){
 
 	$event_status="";
 	$event_nr=0;
-	// *** Find latest event id in table, needed for connect table ***
-	//$event_items=0;
-	//$event_qry=$dbh->query("SELECT event_id FROM humo_events ORDER BY event_id DESC LIMIT 0,1");
-	//$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
-	//if ($eventDb){ $event_items=$eventDb->event_id; }
 
 	$nraddress=0;
-	// *** Find latest event id in table, needed for source _connect table ***
-	//$address_items=0;
-	//$event_qry=$dbh->query("SELECT address_id FROM humo_addresses ORDER BY address_id DESC LIMIT 0,1");
-	//$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
-	//if ($eventDb){ $address_items=$eventDb->address_id; }
 
 	$geocode_nr=0;
 
@@ -1921,7 +1875,6 @@ function process_family($family_array,$first_marr, $second_marr){
 			$event['event_extra'][$event_nr]='';
 			$event['gedcom'][$event_nr]='WITN';
 			$event['date'][$event_nr]='';
-			//$event['source'][$event_nr]='';
 			$event['text'][$event_nr]='';
 			$event['place'][$event_nr]='';
 		}
@@ -2024,6 +1977,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 
 		// ******************************************************************************************
 		// *** Marriage license ***
+		// ******************************************************************************************
 		if ($level1=='MARB' AND $temp_kind!='religious'){
 			// *** Type marriage / relation (civil or religious) ***
 			if ($buffer6=='2 TYPE'){ $processed=1; $temp_kind=strtolower(substr($buffer,7)); }
@@ -2043,10 +1997,26 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 			if ($level2=='SOUR'){
 				$this->process_sources('family','fam_marr_notice_source',$gedcomnumber,$buffer,'2');
 			}
+
+			// *** SAME CODE IS USED FOR AGE BY MARRIAGE_NOTICE AND MARRIAGE! ***
+			// *** Man age ***
+			// 2 HUSB
+			// 3 AGE 42y
+			if ($level2=='HUSB'){
+				if ($buffer5=='3 AGE'){ $processed=1; $family["fam_man_age"]=substr($buffer,6); }
+			}
+			// *** Woman age ***
+			// 2 WIFE
+			// 3 AGE 42y 6m
+			if ($level2=='WIFE'){
+				if ($buffer5=='3 AGE'){ $processed=1; $family["fam_woman_age"]=substr($buffer,6); }
+			}
+
 		}
 
 		// *******************************************************************************************
 		// *** Marriage church ***
+		// *******************************************************************************************
 
 		if ($level1=='MARR'){
 			// *** Witnesses Pro-gen ***
@@ -2067,7 +2037,6 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 					$event['event_extra'][$event_nr]='';
 					$event['gedcom'][$event_nr]='WITN';
 					$event['date'][$event_nr]='';
-					//$event['source'][$event_nr]='';
 					$event['text'][$event_nr]='';
 					$event['place'][$event_nr]='';
 				}
@@ -2153,6 +2122,20 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 			// *** Process sources for Pro-gen, Aldfaer etc. ***
 			if ($level2=='SOUR'){
 				$this->process_sources('family','fam_marr_source',$gedcomnumber,$buffer,'2');
+			}
+
+			// *** SAME CODE IS USED FOR AGE BY MARRIAGE_NOTICE AND MARRIAGE! ***
+			// *** Man age ***
+			// 2 HUSB
+			// 3 AGE 42y
+			if ($level2=='HUSB'){
+				if ($buffer5=='3 AGE'){ $processed=1; $family["fam_man_age"]=substr($buffer,6); }
+			}
+			// *** Woman age ***
+			// 2 WIFE
+			// 3 AGE 42y 6m
+			if ($level2=='WIFE'){
+				if ($buffer5=='3 AGE'){ $processed=1; $family["fam_woman_age"]=substr($buffer,6); }
 			}
 		}
 
@@ -2471,9 +2454,8 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 				$event['kind'][$event_nr]='event';
 				$event['event'][$event_nr]='';
 				$event['event_extra'][$event_nr]='';
-				$event['gedcom'][$event_nr]=$level1;;
+				$event['gedcom'][$event_nr]=$level1;
 				$event['date'][$event_nr]='';
-				//$event['source'][$event_nr]='';
 				$event['text'][$event_nr]='';
 				$event['place'][$event_nr]='';
 
@@ -2548,11 +2530,6 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 			// *** Date by living place BK etc. ***
 			if ($buffer6=='2 DATE'){ $processed=1; $address_date[$nraddress]=substr($buffer,7); }
 
-			//if ($buffer6=='2 SOUR'){
-			//	$processed=1;
-			//	$address_source[$nraddress]=$this->merge_texts($address_source[$nraddress],';',substr($buffer, 7));
-			//}
-
 			// *** Source by family event ***
 			if ($level2=='SOUR'){
 				//$this->process_sources('family','fam_address_source',($address_items+$nraddress),$buffer,'2');
@@ -2618,7 +2595,11 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 	$sql="INSERT INTO humo_families SET
 	fam_tree_id='".$tree_id."',
 	fam_gedcomnumber='$gedcomnumber',
-	fam_man='$fam_man', fam_woman='$fam_woman', fam_children='$fam_children',
+	fam_man='$fam_man',
+	fam_man_age='".$family["fam_man_age"]."',
+	fam_woman='$fam_woman',
+	fam_woman_age='".$family["fam_woman_age"]."',
+	fam_children='$fam_children',
 	fam_religion='".$this->text_process($family["fam_religion"])."',
 	fam_kind='".$this->text_process($family["fam_kind"])."',
 	fam_text='".$this->text_process($family["fam_text"])."',
@@ -2898,8 +2879,6 @@ function process_text($text_array){
 	$text['text_text'] = str_replace('@@', '@', $text['text_text']);
 
 	// *** Save text ***
-	//$sql="INSERT INTO ".$_SESSION['tree_prefix']."texts SET
-	//text_unprocessed_tags='".$this->text_process($text['text_unprocessed_tags'])."',
 	$sql="INSERT INTO humo_texts SET
 		text_tree_id='".$tree_id."',
 		text_gedcomnr='".$this->text_process($text['text_gedcomnr'])."',
@@ -3169,8 +3148,6 @@ function process_source($source_array){
 	if($add_tree==true OR $reassign==true) { $source["source_text"] = $this->reassign_ged($source["source_text"],'N');  }
 
 	// *** Save sources ***
-	//$sql="INSERT INTO ".$_SESSION['tree_prefix']."sources SET
-	//source_unprocessed_tags='".$this->text_process($source["source_unprocessed_tags"])."',
 	$sql="INSERT INTO humo_sources SET
 	source_tree_id='".$tree_id."',
 	source_gedcomnr='".$this->text_process($source["id"])."',
@@ -3383,9 +3360,6 @@ function process_repository($repo_array){
 	if($add_tree==true OR $reassign==true) { $repo["repo_text"] = $this->reassign_ged($repo["repo_text"],'N');  }
 
 	// *** Save repository ***
-	//repo_source='".$this->text_process($repo["repo_source"])."',
-	//$sql="INSERT INTO ".$_SESSION['tree_prefix']."repositories SET
-	//repo_unprocessed_tags='".$this->text_process($repo["repo_unprocessed_tags"])."',
 	$sql="INSERT INTO humo_repositories SET
 	repo_tree_id='".$tree_id."',
 	repo_gedcomnr='".$this->text_process($repo["repo_gedcomnr"])."',
@@ -3541,8 +3515,6 @@ function process_address($address_array){
 
 	if($add_tree==true OR $reassign==true) { $address["address_text"] = $this->reassign_ged($address["address_text"],'N');  }
 	// *** Save addressses ***
-	//$sql="INSERT INTO ".$_SESSION['tree_prefix']."addresses SET
-	//address_unprocessed_tags='".$this->text_process($address["address_unprocessed_tags"])."',
 	$sql="INSERT INTO humo_addresses SET
 	address_tree_id='".$tree_id."',
 	address_gedcomnr='".$this->text_process($address["address_gedcomnr"])."',
@@ -3687,7 +3659,6 @@ function process_object($object_array){
 
 	if($add_tree==true OR $reassign==true) { $event['text'] = $this->reassign_ged($event['text'],'O');  }
 	// *** Save object ***
-	//event_unprocessed_tags='".$this->text_process($event_unprocessed_tags)."',
 	$eventsql="INSERT INTO humo_events SET
 		event_tree_id='".$tree_id."',
 		event_gedcomnr='".$event['gedcomnr']."',
@@ -4095,7 +4066,6 @@ function process_picture($person_id, $family_id, $picture, $buffer){
 			$event2['event_extra'][$event2_nr]='';
 			$event2['gedcom'][$event2_nr]='OBJE';
 			$event2['date'][$event2_nr]='';
-			//$event2['source'][$event2_nr]='';
 			$event2['text'][$event2_nr]='';
 			$event2['place'][$event2_nr]='';
 		}
@@ -4107,7 +4077,6 @@ function process_picture($person_id, $family_id, $picture, $buffer){
 			$event['event_extra'][$event_nr]='';
 			$event['gedcom'][$event_nr]='OBJE';
 			$event['date'][$event_nr]='';
-			//$event['source'][$event_nr]='';
 			$event['text'][$event_nr]='';
 			$event['place'][$event_nr]='';
 		}

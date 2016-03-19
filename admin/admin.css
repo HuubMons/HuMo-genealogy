@@ -45,6 +45,15 @@ table.humo td { border: solid 1px #999999; }
 	background-color: white;
 }
 
+/* Special table items (used in Admin - Main menu table) */
+.line_item { font-weight:bold; background-color:#BDBDBD; }
+/* .line_ok { background-color:#00FF00; } */
+/* .line_ok { background-color:#66FF33; } */
+.line_ok { background-color:#9CFF7B; }
+.line_ok { background-color:#FFFFFF; }
+/* .line_nok { background-color:#FF6600; } */
+.line_nok { background-color:#FF8000; }
+
 .iframe {
 	width:90%;
 	height:500px;

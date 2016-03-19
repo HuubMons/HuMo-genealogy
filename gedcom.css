@@ -1,10 +1,9 @@
-/* Central Style file - Centraal style bestand */
+/* Central Style file - Centraal stijl bestand */
 
 /* Basic page styles */
 html {
 	height:100%; max-height:100%;
 	padding:0; margin:0; border:0;
-	/* overflow: hidden; */
 }
 
 body {
@@ -12,12 +11,10 @@ body {
 	color:black;
 	background-image: url('images/background.gif');
 	background-repeat: no-repeat;
-	/* background-position: center; */
 	height:100%; max-height:100%;
 	padding:0; margin:0; border:0;
 	font: 12px Verdana, tahoma, arial, sans-serif;
 	line-height:150%;
-	/* overflow: hidden; */
 }
 
 .print_version {
@@ -51,19 +48,16 @@ body {
 #top_tree_select{
 	position: absolute;
 	top:8px;
-	/* right: 440px; */
 }
 
 #top_quicksearch {
 	position: absolute;
 	top:8px;
-	/* right:410px; */
 	right:200px;
 }
 #top_favorites_select {
 	position: absolute;
 	top:8px;
-	/* right:255px; */
 	right:20px;
 }
 
@@ -72,7 +66,6 @@ body {
 	/* float:right; DOES NOT WORK IN IE7 */
 	position: absolute;
 	top:5px;
-	/* right: 100px; */
 	right:90px;
 	z-index: 101;
 	font-family: Rockwell, Verdana, Arial, Sans-Serif;
@@ -98,25 +91,18 @@ body {
 	top:40px;
 	display:block;
 	width:100%;
-	/* background:#DAE0D2 url("bg.gif") repeat-x bottom; */
 	background:url("images/default_trans_large.png") repeat left top;
 	font-size: 13px;
-	/* border-top: solid 1px #999999; */
 	border-top: solid 1px #EED4D4;
-	/* border-bottom: solid 1px #999999; */
 	border-bottom: solid 1px #EED4D4;
 	z-index:100;
-
-	/* margin: auto; */
 }
 
 /* Border pop-up menu */
 div.ltrsddm div {
-	/* border:1px solid #999999; */
 	border:1px solid #EED4D4;
 }
 div.rtlsddm div {
-	/* border:1px solid #999999; */
 	border:1px solid #EED4D4;
 }
 div.rtlsddm #m1x  ul  { padding-right: 0px; }
@@ -161,11 +147,8 @@ div.rtlsddm #mft  ul  { padding-right: 0px; }
 /* Main menu */
 ul.humo_menu_item {
 	margin:0;
-	/* up, left */
-	/* padding:8px 10px 0; */
 	list-style:none;
 	padding-left: 0px; /* was 15 px */
-	/* margin: auto; */
 }
 /* Pop-up menu */
 ul.humo_menu_item2 {
@@ -191,7 +174,6 @@ ul.humo_menu_item2 li {
 
 /* Main menu */
 ul.humo_menu_item li a{
-	/* float:left; */
 	display:block;
 	/* up, right, bottom */
 	padding:8px 5px 7px 5px;
@@ -201,7 +183,6 @@ ul.humo_menu_item li a{
 }
 /* Pop-up menu */
 ul.humo_menu_item2 li a{
-	/* float:none; */
 	display:block;
 	font-size: 13px;
 	padding:8px 5px 6px 5px;
@@ -212,8 +193,6 @@ ul.humo_menu_item2 li a{
 }
 
 #humo_menu a:hover {
-	/* background:url(images/gray_down.png) repeat left top;
-	color:#FFFFFF; */
 	background:url("images/gray_down.jpg") repeat left top;
 	color:#333;
 }
@@ -222,8 +201,6 @@ ul.humo_menu_item2 li a{
 
 }
 #humo_menu #current a, #humo_menu #current_top {
-	/* background:url(images/gray_down.png) repeat left top;
-	color:#FFFFFF; */
 	background:url("images/gray_down.jpg") repeat left top;
 	color:#333;
 }
@@ -270,7 +247,6 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 
 /* Center box */
 #mainmenu_centerbox{
-	/* background: #ffffff url(images_antique/tree_background_450lc.jpg) repeat left top; */
 	background: #ffffff;
 	border: solid 1px #999999;
 	margin:10px 15px 0px 15px;
@@ -316,6 +292,10 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 	margin-left:12px;
 }
 
+#most_frequent_names{
+	width:500px; margin-left:auto; margin-right:auto;
+}
+
 /* Mainmenu link and text family tree - Link en tekst bij stamboom in hoofdmenu */
 .tree_link {
 	font-size: 14px;
@@ -347,12 +327,10 @@ table.humo td, table.humo th, table.reltable td {
 }
 
 table.humo, table.ext {
-	/* border-collapse: collapse; */
 	border-collapse:separate; /* needed for rounded corners */
 	background-color:#FAF1EB;
 	border-spacing: 0;
 	border-width: 1px; 
-	/*margin-top:10px;*/
 
 	box-shadow: 6px 6px 6px #999;
 	-moz-box-shadow: 6px 6px 6px #999;
@@ -373,10 +351,6 @@ table.standard {
 	border-spacing: 0;
 	border-collapse:separate;
 	border-width: 1px;
-	/*
-	margin-left:auto;
-	margin-right:auto;
-	*/
 }
 
 /*~~~~~~~~~ prevent double lines (horizontal) ~~~~~~~~~~~~~~~~~~ */
@@ -499,12 +473,9 @@ a:visited { color:brown; }
 }
 
 /* person margin */
-/* .margin_person { margin-left: 15px; } */
 .margin_person { margin-left: 37px; }
-/* .margin_child { margin-left: 30px; } */
 .margin_child { margin-left: 65px; }
 /* more than 9 kids: extra margin - bij meer dan 9 kinderen extra inspringen */
-/* .margin_child2 { margin-left: 40px; } */
 /* .margin_child2 { margin-left: 65px; } */
 
 /* parent 1 (normally the father) */
@@ -525,22 +496,17 @@ a:visited { color:brown; }
 /* child number - overzicht child_nr */
 .child_nr {
 	font-weight:bold; font-style:italic;
-	/* display: inline; */
 	display: inline-block;
 	width:25px;
 }
 
 /* children - overzicht kinderen */
 .children {
-	/* font-size:90%; */
-	/*	display: inline; */
-	/* min-height:25px; */
 	margin:2px;
 }
 
 /* name - naam */
 .pers_name {
-	/* font-weight:bold; font-size:larger; */
 	font-weight:bold;
 }
 
@@ -652,7 +618,6 @@ table.index_table{
 	width: 990px;
 	text-align: center;
 	border: 1px solid #999999;
-	/* background:url("images/default_trans.png") repeat left top; */
 	background:url("images/default_trans_large.png") repeat left top;
 	padding:1px;
 }
@@ -788,7 +753,6 @@ table.outlinetable {
 /* Photo's */
 div.photo{
 	margin: 2px;
-	/* height: auto; */
 	height: 170px;
 	width : 200px;
 	float: left;
@@ -806,7 +770,6 @@ div.photo a:hover img {
 div.phototext{
 	font-style:italic;
 	margin: 2px;
-/*	height : 40px; */
 }
 
 /* Photobook */
@@ -938,7 +901,6 @@ div.photobooktext{
 .help_box {
 	padding-left: 20px;
 	padding-right: 20px;
-	/* width: 80%; */
 	border: solid 1px #999999;
 	background-color:#FAF1EB;
 }
@@ -1057,7 +1019,6 @@ table.newrel td{
 table.container{
 	text-align:center;
 	border-collapse:separate; 
-/*	border:1px outset black; */
 	background-color:#FFEEFF;
 	background-image:none;
 }
@@ -1071,11 +1032,10 @@ table.reltable td {
 	padding-top:0px;
 	padding-bottom:0px;
 	font-size:100%;
-/*	white-space:nowrap; */
 }
 
 table.reltable tr:nth-of-type(1n+1) td  {
-border-top:0px;
+	border-top:0px;
 }
 
 table.reltable {
@@ -1154,14 +1114,12 @@ span.relresult {
 }
 table.relmenu td{
 /* menu of relationship calculator */
-/*	border:1px outset black; */
 	padding-top:5px;
 	padding-bottom:5px;
 	padding-left:10px;
 	padding-right:10px;
 }
 table.relmenu {
-/*	border:1px outset black; */
 	border-collapse:separate;
 	text-align:center;
 	background-image:none;

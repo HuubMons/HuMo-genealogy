@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 echo '<h1 align=center>'.__('Settings').'</h1>';
 
-echo '<p align=center>';
+//echo '<p align=center>';
 
 if (isset($_POST['save_option'])){
 	// *** Update settings ***
@@ -85,9 +85,10 @@ else {
 
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<table class="humo standard" border="1">';
-echo '<tr class="table_header"><th>'.__('Option').'</th><th>'.__('Setting').'</th></tr>';
+//echo '<tr class="table_header"><th>'.__('Option').'</th><th>'.__('Setting').'</th></tr>';
 
-echo '<tr bgcolor="green"><th><font color="white">'.__('General settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+//echo '<tr bgcolor="green"><th><font color="white">'.__('General settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th colspan="2">'.__('General settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Default skin').'</td><td><select size="1" name="default_skin">';
 	echo '<option value="">Standard</option>';
@@ -131,7 +132,9 @@ echo '<tr><td>'.__('Standard language admin menu').'</td><td><select size="1" na
 echo "</select>";
 echo '</td></tr>';
 
-echo '<tr bgcolor="green"><th><font color="white">'.__('Search engine settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+//echo '<tr bgcolor="green"><th><font color="white">'.__('Search engine settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+
+echo '<tr class="table_header"><th colspan="2">'.__('Search engine settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr class="humo_color"><td valign="top">url_rewrite<br>'.__('Improve indexing of search engines (like Google)').'</td><td><select size="1" name="url_rewrite">';
 $selected=''; if ($humo_option["url_rewrite"]!='j') $selected=' SELECTED';
@@ -157,7 +160,8 @@ echo '<option value="y">'.__('Yes').'</option>';
 echo '<option value="n"'.$selected.'>'.__('No').'</option>';
 echo "</select><br></td></tr>";
 
-echo '<tr bgcolor="green"><th><font color="white">'.__('Contact & registration form settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+//echo '<tr bgcolor="green"><th><font color="white">'.__('Contact & registration form settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th colspan="2">'.__('Contact & registration form settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Block spam question').'<br>'.__('Block spam answer').'</td><td>';
 echo '<input type="text" name="block_spam_question" value="'.htmlentities($humo_option["block_spam_question"],ENT_NOQUOTES).'" size="60"><br>';
@@ -213,7 +217,8 @@ echo '<tr class="humo_color"><td>'.__('SMTP mails').'</td><td>';
 echo '<b>'.__('Sometimes it\'s necessary to use SMTP to send mails. These settings can be changed in file: include/mail.php').'</b>';
 echo '</td></tr>';
 
-echo '<tr bgcolor="green"><th><font color="white">'.__('International settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+//echo '<tr bgcolor="green"><th><font color="white">'.__('International settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th colspan="2">'.__('International settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td valign="top">'.__('Timezone').'</td><td><select size="1" name="timezone">';
 
@@ -316,7 +321,8 @@ echo "</select>";
 echo "&nbsp;".__('Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports and lists: 刘 理想').". ".__('Hungarian - reports and lists: Smith John');
 echo "</td></tr>";
 
-echo '<tr bgcolor=green><th><font color=white>'.__('Settings Main Menu').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+//echo '<tr bgcolor=green><th><font color=white>'.__('Settings Main Menu').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th colspan="2">'.__('Settings Main Menu').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Website name').'</td>';
 echo '<td><input type="text" name="database_name" value="'.$humo_option["database_name"].'" size="40"></td></tr>';
@@ -333,7 +339,8 @@ echo '<input type="text" name="rss_link" value="'.$humo_option["rss_link"].'" si
 echo '<i>'.__('This option can be turned on or off in the user groups.').'</i>';
 
 // *** FAMILY ***
-echo '<tr bgcolor=green><th><font color=white>'.__('Settings family page').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+//echo '<tr bgcolor=green><th><font color=white>'.__('Settings family page').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th colspan="2">'.__('Settings family page').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td style="white-space:nowrap;">'.__('Number of generations in descendant report').'</td>';
 echo '<td><input type="text" name="descendant_generations" value="'.$humo_option["descendant_generations"].'" size="4"> '.__('Show number of generation in descendant report (standard value=4).').'</td>';
@@ -345,7 +352,8 @@ echo '</tr>';
 
 
 // *** Watermark text and color in PDF file ***
-echo '<tr bgcolor=green><th><font color=white>'.__('Watermark text in PDF file').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+//echo '<tr bgcolor=green><th><font color=white>'.__('Watermark text in PDF file').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th colspan="2">'.__('Watermark text in PDF file').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 echo '<tr><td style="white-space:nowrap;">'.__('Watermark text in PDF file').'</td>';
 echo '<td><input type="text" name="watermark_text" value="'.$humo_option["watermark_text"].'" size="40"> '.__('Watermark text (clear to remove watermark)').'</td>';
 echo "</tr>";
@@ -359,7 +367,8 @@ echo '</td>';
 echo "</tr>";
 
 
-echo '<tr bgcolor=green><th><font color=white>'.__('Save settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+//echo '<tr bgcolor=green><th><font color=white>'.__('Save settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr class="table_header"><th colspan="2">'.__('Save settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '</table>';
 echo '</form>';
@@ -368,8 +377,9 @@ echo '</form>';
 echo '<h1 align=center>'.__('Special settings').'</h1>';
 
 echo '<table class="humo standard" border="1">';
-	echo '<tr class="table_header"><th>'.__('Option').'</th><th>'.__('Setting').'</th></tr>';
-	echo '<tr bgcolor="green"><th><font color="white">'.__('Special settings').'</font></th><th><br></th></tr>';
+	//echo '<tr class="table_header"><th>'.__('Option').'</th><th>'.__('Setting').'</th></tr>';
+	//echo '<tr bgcolor="green"><th><font color="white">'.__('Special settings').'</font></th><th><br></th></tr>';
+	echo '<tr class="table_header"><th colspan="2">'.__('Special settings').'</th></tr>';
 
 	echo '<tr><td>'.__('&#134 => &infin;').'</td><td>';
 		echo '<b>'.__('Change all &#134; characters into &infin; characters in all language files.').'</b> <br>';

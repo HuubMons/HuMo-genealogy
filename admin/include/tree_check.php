@@ -301,7 +301,6 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid connection dates:').'</td></tr>';
 	$found = false;
-	//$connection = $dbh->query("SELECT * FROM ".$tree."connections");
 	$connection = $dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'");
 	while($connectdateDb=$connection->fetch()){
 		if(isset($connectdateDb['connect_date']) AND $connectdateDb['connect_date']!='')
@@ -312,7 +311,6 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid address dates:').'</td></tr>';
 	$found = false;
-	//$address = $dbh->query("SELECT * FROM ".$tree."addresses");
 	$address = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."'");
 	while($addressdateDb=$address->fetch()){
 		if(isset($addressdateDb['address_date']) AND $addressdateDb['address_date']!='')
@@ -323,7 +321,6 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid repository dates:').'</td></tr>';
 	$found = false;
-	//$repo = $dbh->query("SELECT * FROM ".$tree."repositories");
 	$repo = $dbh->query("SELECT * FROM humo_repositories
 		WHERE repo_tree_id='".$tree_id."'");
 	while($repodateDb=$repo->fetch()){ 
@@ -335,7 +332,6 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid source dates:').'</td></tr>';
 	$found = false;
-	//$sources = $dbh->query("SELECT * FROM ".$tree."sources");
 	$sources = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'");
 	while($sourcedateDb=$sources->fetch()){
 		if(isset($sourcedateDb['source_date']) AND $sourcedateDb['source_date']!='')
@@ -451,7 +447,6 @@ if (isset($_POST['final_check'])){
 
 	$results_found=0;
 
-	//$person = $dbh->query("SELECT * FROM ".$tree."person ORDER BY pers_lastname,pers_firstname");
 	$person = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname,pers_firstname");
 	while($personDb=$person->fetch()){
 
@@ -480,7 +475,6 @@ if (isset($_POST['final_check'])){
 			$marr_array = explode(';',$personDb['pers_fams']); 
 
 			for($x=0;$x<count($marr_array);$x++) {
-				//$marriages = $dbh->query("SELECT fam_marr_date, fam_marr_notice_date, fam_marr_church_date, fam_marr_church_notice_date, ".$spouse." FROM ".$tree."family WHERE fam_gedcomnumber ='".$marr_array[$x]."'");
 				$marriages = $dbh->query("SELECT fam_marr_date, fam_marr_notice_date, fam_marr_church_date, fam_marr_church_notice_date, ".$spouse." 
 					FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber ='".$marr_array[$x]."'");
 				$marriagesDb=$marriages->fetch(PDO::FETCH_OBJ);
@@ -554,7 +548,7 @@ if (isset($_POST['final_check'])){
 					$count=0;   
 					while($ch_array[$count]!=$personDb['pers_gedcomnumber']) {
 						$count++;
-					}	
+					}
 					if($count>0) {  // person is not first child
 						$prev_sib_gednr = $ch_array[$count-1]; // gedcomnumber of previous sibling
 						$sib = $dbh->query("SELECT pers_birth_date FROM humo_persons
@@ -591,7 +585,7 @@ if (isset($_POST['final_check'])){
 					}
 				}
 			}
-//END NEW		
+//END NEW
 		}
 
 		if($b_date=='' AND $bp_date=='' AND $d_date=='' AND $bu_date=='' 
@@ -603,8 +597,7 @@ if (isset($_POST['final_check'])){
 			 
 			// ID 1 -  Birth date - after bapt/marr/death/burial date
 
-			if(isset($_POST["birth_date1"]) AND $_POST["birth_date1"]=="1") {		
-				   
+			if(isset($_POST["birth_date1"]) AND $_POST["birth_date1"]=="1") {
 				if($bp_date!='' AND compare_seq($b_date,$bp_date)=="2") {
 					write_pers($name, "1",$b_date,$bp_date,__("birth date"),__("baptism date"),0);
 					$results_found++;
@@ -689,9 +682,9 @@ if (isset($_POST['final_check'])){
 			// ID 24 - Birth date before parents' wedding date
 
 			if(isset($_POST["birth_date8"]) AND $_POST["birth_date8"]=="1") {  
-				if($par_marr_date!='' AND compare_seq($par_marr_date,$b_date)=="2") { 
-						write_pers($name, "24",$b_date,$par_marr_date,__("birth date"),__("parents wedding date"),0);
-						$results_found++;
+				if($par_marr_date!='' AND compare_seq($par_marr_date,$b_date)=="2") {
+					write_pers($name, "24",$b_date,$par_marr_date,__("birth date"),__("parents wedding date"),0);
+					$results_found++;
 				}
 			}  
 			
@@ -715,7 +708,7 @@ if (isset($_POST['final_check'])){
 			  
 			// ID 7 - Baptism date - after death/burial date
 
-			if(isset($_POST["baptism_date1"]) AND $_POST["baptism_date1"]=="1") {	
+			if(isset($_POST["baptism_date1"]) AND $_POST["baptism_date1"]=="1") {
 				if($d_date!='' AND compare_seq($bp_date,$d_date)=="2") {  
 					write_pers($name, "7",$bp_date,$d_date,__("baptism date"),__("death date"),0);
 					$results_found++;
@@ -783,7 +776,7 @@ if (isset($_POST['final_check'])){
 
 			if(isset($_POST["marriage_date1"]) AND $_POST["marriage_date1"]=="1") {	
 				for($i=0;$i<count($marr_dates);$i++) {
-					if($marr_dates[$i]!='') {  	
+					if($marr_dates[$i]!='') {
 						if($d_date!='' AND compare_seq($marr_dates[$i],$d_date)=="2") {  
 							write_pers($name, "13",$marr_dates[$i],$d_date,__("marriage"),__("death date"),0);
 							$results_found++;
@@ -882,7 +875,7 @@ if (isset($_POST['final_check'])){
 
 			// ID 16 - Death date after burial date
 
-			if(isset($_POST["death_date1"]) AND $_POST["death_date1"]=="1") {	
+			if(isset($_POST["death_date1"]) AND $_POST["death_date1"]=="1") {
 				if($bu_date!='' AND compare_seq($d_date,$bu_date)=="2") {  
 					write_pers($name,"16",$d_date,$bu_date,__("death date"),__("burial date"),0);
 					$results_found++;
@@ -891,7 +884,7 @@ if (isset($_POST['final_check'])){
  
 			// ID 17 - Death date before mother's birth date
 
-			if(isset($_POST["death_date2"]) AND $_POST["death_date2"]=="1") {	
+			if(isset($_POST["death_date2"]) AND $_POST["death_date2"]=="1") {
 				if($m_b_date!='' AND compare_seq($d_date,$m_b_date)=="1") {  
 					write_pers($name,"17",$d_date,$m_b_date,__("death date"),__("mother"),0);
 					$results_found++;
@@ -900,7 +893,7 @@ if (isset($_POST['final_check'])){
   
 			// ID 18 - Death date before father's birth date
 
-			if(isset($_POST["death_date3"]) AND $_POST["death_date3"]=="1") {	
+			if(isset($_POST["death_date3"]) AND $_POST["death_date3"]=="1") {
 				if($f_b_date!='' AND compare_seq($d_date,$f_b_date)=="1") {  
 					write_pers($name,"18",$d_date,$f_b_date,__("death date"),__("father"),0);
 					$results_found++;
@@ -912,7 +905,7 @@ if (isset($_POST['final_check'])){
 		if($bu_date!='') {
 			// ID 19 - Burial date before mother's birth date
 
-			if(isset($_POST["burial_date1"]) AND $_POST["burial_date1"]=="1") {	
+			if(isset($_POST["burial_date1"]) AND $_POST["burial_date1"]=="1") {
 				if($m_b_date!='' AND compare_seq($bu_date,$m_b_date)=="1") {  
 					write_pers($name,"19",$bu_date,$m_b_date,__("burial date"),__("mother"),0);
 					$results_found++;
@@ -921,7 +914,7 @@ if (isset($_POST['final_check'])){
  
 			// ID 20 - Burial date before father's birth date
 
-			if(isset($_POST["burial_date2"]) AND $_POST["burial_date2"]=="1") {	
+			if(isset($_POST["burial_date2"]) AND $_POST["burial_date2"]=="1") {
 				if($f_b_date!='' AND compare_seq($bu_date,$f_b_date)=="1") {  
 					write_pers($name,"20",$bu_date,$f_b_date,__("burial date"),__("father"),0);
 					$results_found++;
@@ -1188,7 +1181,6 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 
 		}
 		if(substr($table,0,3) =="con") {
-			//$connect = $dbh->query("SELECT * FROM ".$tree."connections WHERE connect_id = '".$gednr."'");
 			$connect = $dbh->query("SELECT * FROM humo_connections WHERE connect_id = '".$gednr."'");
 			$connectDb=$connect->fetch();
 			$name = '';
@@ -1260,7 +1252,6 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			echo '<tr><td style="text-align:'.$direction.'">'.$gedcomnr.'</td><td style="text-align:'.$direction.'">'.$name.'</td><td style="text-align:'.$direction.'">'.$connectDb['connect_sub_kind'].'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="add") {
-			//$addresses = $dbh->query("SELECT * FROM ".$tree."addresses WHERE address_id = '".$gednr."'");
 			$addresses = $dbh->query("SELECT * FROM humo_addresses WHERE address_id = '".$gednr."'");
 			$addressesDb=$addresses->fetch();
 			if($addressesDb['address_person_id']!='') {
@@ -1275,14 +1266,10 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			}
 		}
 		if(substr($table,0,3) =="sou") {
-			//$sources = $dbh->query("SELECT * FROM ".$tree."sources WHERE source_gedcomnr = '".$gednr."'");
-			//$sourcesDb=$sources->fetch();
 			$sourcesDb = $db_functions->get_source($gednr);
 			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'">'.'<a href="index.php?page=edit_sources" target=\'_blank\'>'.__('Source editor').'</a> (Search for: '.$sourcesDb->source_title.')</td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="rep") {
-			//$repos = $dbh->query("SELECT * FROM ".$tree."repositories WHERE repo_gedcomnr = '".$gednr."'");
-			//$reposDb=$repos->fetch();
 			$reposDb = $db_functions->get_repository($gednr);
 			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'">'.'<a href="index.php?page=edit_repositories" target=\'_blank\'>'.__('Repository editor').'</a> (Search for: '.$reposDb->repo_name.')</td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 		}

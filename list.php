@@ -116,11 +116,7 @@ function show_person($personDb){
 	//*** Show spouse/ partner ***
 	if ($list_expanded==true AND $personDb->pers_fams){
 		$marriage_array=explode(";",$personDb->pers_fams);
-		// *** Code to show only last marriage ***
-		//$last_relation=end($marriage_array);
-		//$qry="SELECT * FROM ".$pers_tree_prefix."family WHERE fam_gedcomnumber='".$last_relation."'";
 		$nr_marriages=count($marriage_array);
-
 		for ($x=0; $x<=$nr_marriages-1; $x++){
 			$fam_partnerDb = $db_functions->get_family($marriage_array[$x]);
 
@@ -130,7 +126,6 @@ function show_person($personDb){
 			else
 				$partner_id=$fam_partnerDb->fam_man;
 
-			//$relation_short=__('&');
 			$relation_short=__('&amp;');
 			if ($fam_partnerDb->fam_marr_date OR $fam_partnerDb->fam_marr_place OR $fam_partnerDb->fam_marr_church_date OR $fam_partnerDb->fam_marr_church_place OR $fam_partnerDb->fam_kind=='civil')
 				$relation_short=__('X');
@@ -154,7 +149,6 @@ function show_person($personDb){
 				elseif ($x==2) echo __('3rd');
 				elseif ($x>2) echo ($x+1).__('th');
 			}
-			//echo ' '.$relation_short.' '.$name["standard_name"].'</span> ';
 			echo ' '.$relation_short.' '.rtrim($name["standard_name"]).'</span>';
 		}
 	}
@@ -167,7 +161,6 @@ function show_person($personDb){
 			$info=__('~').' '.date_place($personDb->pers_bapt_date, '');
 		if ($personDb->pers_birth_date)
 			$info=__('*').' '.date_place($personDb->pers_birth_date, '');
-		//echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
 		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
@@ -177,7 +170,6 @@ function show_person($personDb){
 			$info=__('~').' '.$personDb->pers_bapt_place;
 		if ($personDb->pers_birth_place)
 			$info=__('*').' '.$personDb->pers_birth_place;
-		//echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
 		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
@@ -187,7 +179,6 @@ function show_person($personDb){
 			$info=__('[]').' '.date_place($personDb->pers_buried_date, '');
 		if ($personDb->pers_death_date)
 			$info=__('&#134;').' '.date_place($personDb->pers_death_date, '');
-		//echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
 		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
@@ -197,7 +188,6 @@ function show_person($personDb){
 			$info=__('[]').' '.$personDb->pers_buried_place;
 		if ($personDb->pers_death_place)
 			$info=__('&#134;').' '.$personDb->pers_death_place;
-		//echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
 		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
@@ -708,7 +698,6 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	if ($search_database=='all_trees' OR $search_database=='all_but_this') {
 		$query_part=$query;
 
-		//$query='';
 		$counter=0;
 		$multi_tree='';
 		foreach($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") AS $datapdo) {
@@ -726,39 +715,6 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 				if ($counter > 0) $multi_tree.=' OR ';
 				$multi_tree.='pers_tree_id='.$datapdo['tree_id'];
 				$counter++;
-				//$tree_prefix=$datapdo['tree_prefix'];
-
-				// *** EXAMPLE ***
-				//$qry = "(SELECT * FROM humo1_persoon ".$query.') ';
-				//$qry.= " UNION (SELECT * FROM humo2_persoon ".$query.')';
-				//$qry.= " UNION (SELECT * FROM humo3_persoon ".$query.')';
-				//$qry.= " ORDER BY pers_lastname, pers_firstname";
-
-				//$union=''; if ($counter>1){ $union=' UNION '; }
-
-				/*
-				if ($user['group_kindindex']=="j"){
-					if ($counter>1) $query.=$union.'(SELECT ';
-						else $query.=$union.'(SELECT SQL_CALC_FOUND_ROWS ';
-					//$query.=safe_text($tree_prefix)."person.*, event_person_id, event_kind, event_event, address_place, address_zip ";
-					//$query.='CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name '.$make_date.'
-					//FROM '.safe_text($tree_prefix).'person
-					//LEFT JOIN '.safe_text($tree_prefix).'events ON pers_gedcomnumber=event_person_id
-					//LEFT JOIN '.safe_text($tree_prefix).'addresses ON pers_gedcomnumber=address_person_id
-					//WHERE'.$query_part.' GROUP BY pers_gedcomnumber)';
-				}
-				else{
-					if ($counter>1) $query.=$union.'(SELECT ';
-						else $query.=$union.'(SELECT SQL_CALC_FOUND_ROWS ';
-					//$query.=safe_text($tree_prefix)."person.*, event_kind, event_event, address_place, address_zip ";
-					//$query.=$make_date.'
-					//FROM '.safe_text($tree_prefix).'person
-					//LEFT JOIN '.safe_text($tree_prefix).'events ON pers_gedcomnumber=event_person_id
-					//LEFT JOIN '.safe_text($tree_prefix).'addresses ON pers_gedcomnumber=address_person_id
-					//WHERE'.$query_part.' GROUP BY pers_gedcomnumber)';
-				}
-				*/
-
 			}
 
 		}
@@ -766,18 +722,6 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	else{
 		// *** Start building query, search in 1 database ***
 		$multi_tree=" pers_tree_id='".$tree_id."'";
-
-		/*
-		$query_select= "SELECT SQL_CALC_FOUND_ROWS ".safe_text($_SESSION['tree_prefix'])."person.*,
-		event_kind, event_event, address_place, address_zip,
-		CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ".$make_date."
-		FROM ".safe_text($_SESSION['tree_prefix'])."person
-		LEFT JOIN ".safe_text($_SESSION['tree_prefix'])."events ON pers_gedcomnumber=event_person_id
-		LEFT JOIN ".safe_text($_SESSION['tree_prefix'])."addresses ON pers_gedcomnumber=address_person_id
-		WHERE";
-		$query=$query_select.' ('.$query.')';
-		$query.=" GROUP BY pers_gedcomnumber";
-		*/
 	}
 
 
@@ -835,55 +779,12 @@ if ($index_list=='quicksearch'){
 				if ($counter > 0) $multi_tree.=' OR ';
 				$multi_tree.='pers_tree_id='.$pdoresult['tree_id'];
 				$counter++;
-				//$tree_prefix=$pdoresult['tree_prefix'];
-
-				// *** EXAMPLE ***
-				//$qry = "(SELECT * FROM humo1_person ".$query.') ';
-				//$qry.= " UNION (SELECT * FROM humo2_person ".$query.')';
-				//$qry.= " UNION (SELECT * FROM humo3_person ".$query.')';
-				//$qry.= " ORDER BY pers_lastname, pers_firstname";
-
-				//$union=''; if ($counter>1){ $union=' UNION '; }
-
-				/*
-				if ($counter>1) $query.=$union.'(SELECT';
-					else $query.=$union.'(SELECT SQL_CALC_FOUND_ROWS';
-				$query.=" *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ".$make_date."
-				FROM ".safe_text($tree_prefix)."person
-				LEFT JOIN ".safe_text($tree_prefix)."events
-				ON pers_gedcomnumber=event_person_id AND event_kind='name'
-				WHERE CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($quicksearch)."%'
-					OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text($quicksearch)."%' 
-					OR CONCAT(pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
-					OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text($quicksearch)."%'
-					OR CONCAT(event_event,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($quicksearch)."%'
-					OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text($quicksearch)."%' 
-					OR CONCAT(pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
-					OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text($quicksearch)."%'
-				GROUP BY pers_gedcomnumber)";
-				*/
 			}
 		}
 	}
 	else{
 		// *** Start building query, search in 1 database ***
 		$multi_tree="pers_tree_id='".$tree_id."'";
-
-		/*
-		$query= "SELECT SQL_CALC_FOUND_ROWS *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ".$make_date."
-		FROM ".safe_text($_SESSION['tree_prefix'])."person
-		LEFT JOIN ".safe_text($_SESSION['tree_prefix'])."events
-		ON pers_gedcomnumber=event_person_id AND event_kind='name'
-		WHERE CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($quicksearch)."%'
-			OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text($quicksearch)."%'
-			OR CONCAT(event_event,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($quicksearch)."%'
-			OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text($quicksearch)."%'
-		GROUP BY pers_gedcomnumber";
-		*/
 	}
 
 	$query.="SELECT SQL_CALC_FOUND_ROWS *,
@@ -920,23 +821,18 @@ if ($index_list=='places'){
 	// *** Search birth place ***
 	if ($select_birth=='1'){
 		if ($user['group_kindindex']=="j"){
-			//$query = "(SELECT SQL_CALC_FOUND_ROWS *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_birth_place as place_order
-			//	FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$query = "(SELECT SQL_CALC_FOUND_ROWS *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_birth_place as place_order
 				FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 		else{
-			//$query = "(SELECT SQL_CALC_FOUND_ROWS *, pers_birth_place as place_order FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$query = "(SELECT SQL_CALC_FOUND_ROWS *, pers_birth_place as place_order 
 				FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 
 		if($place_name) {
-			//$query.= " WHERE pers_birth_place ".name_qry($place_name,$part_place_name);
 			$query.= " AND pers_birth_place ".name_qry($place_name,$part_place_name);
 		}
 		else {
-			//$query.= " WHERE pers_birth_place LIKE '_%'";
 			$query.= " AND pers_birth_place LIKE '_%'";
 		}
 		$query.=')';
@@ -952,21 +848,16 @@ if ($index_list=='places'){
 			$calc='SQL_CALC_FOUND_ROWS ';
 		}
 		if ($user['group_kindindex']=="j"){
-			//$query.= "(SELECT ".$calc."*,CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_bapt_place as place_order
-			//FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$query.= "(SELECT ".$calc."*,CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_bapt_place as place_order
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 		else{
-			//$query.= "(SELECT ".$calc."*, pers_bapt_place as place_order FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$query.= "(SELECT ".$calc."*, pers_bapt_place as place_order FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 		if ($place_name) {
-			//$query.= " WHERE pers_bapt_place ".name_qry($place_name,$part_place_name);
 			$query.= " AND pers_bapt_place ".name_qry($place_name,$part_place_name);
 		}
 		else {
-			//$query.= " WHERE pers_bapt_place LIKE '_%'";
 			$query.= " AND pers_bapt_place LIKE '_%'";
 		}
 		$query.=')';
@@ -982,22 +873,17 @@ if ($index_list=='places'){
 			$calc='SQL_CALC_FOUND_ROWS ';
 		}
 		if ($user['group_kindindex']=="j"){
-			//$query.= "(SELECT ".$calc."*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_place_index as place_order
-			//FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$query.= "(SELECT ".$calc."*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_place_index as place_order
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 		else{
-			//$query.= "(SELECT ".$calc."*, pers_place_index as place_order FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$query.= "(SELECT ".$calc."*, pers_place_index as place_order 
 				FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 		if($place_name) {
-			//$query.= " WHERE pers_place_index ".name_qry($place_name,$part_place_name);
 			$query.= " AND pers_place_index ".name_qry($place_name,$part_place_name);
 		}
 		else {
-			//$query .= " WHERE pers_place_index LIKE '_%'";
 			$query .= " AND pers_place_index LIKE '_%'";
 		}
 		$query.=')';
@@ -1013,22 +899,17 @@ if ($index_list=='places'){
 			$calc='SQL_CALC_FOUND_ROWS ';
 		}
 		if ($user['group_kindindex']=="j"){
-			//$query.= "(SELECT ".$calc."*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_death_place as place_order
-			//FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$query.= "(SELECT ".$calc."*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_death_place as place_order
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 		else{
-			//$query.= "(SELECT ".$calc."*, pers_death_place as place_order FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$query.= "(SELECT ".$calc."*, pers_death_place as place_order
 				FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 		if($place_name) {
-			//$query.= " WHERE pers_death_place ".name_qry($place_name,$part_place_name);
 			$query.= " AND pers_death_place ".name_qry($place_name,$part_place_name);
 		}
 		else {
-			//$query.= " WHERE pers_death_place LIKE '_%'";
 			$query.= " AND pers_death_place LIKE '_%'";
 		}
 		$query.=')';
@@ -1044,22 +925,17 @@ if ($index_list=='places'){
 			$calc='SQL_CALC_FOUND_ROWS ';
 		}
 		if ($user['group_kindindex']=="j"){
-			//$query.= "(SELECT ".$calc."*,CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,pers_buried_place as place_order
-			//FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$query.= "(SELECT ".$calc."*,CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,pers_buried_place as place_order
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 		else{
-			//$query.= "(SELECT ".$calc."*, pers_buried_place as place_order FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$query.= "(SELECT ".$calc."*, pers_buried_place as place_order
 				FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 		if($place_name) {
-			//$query.= " WHERE pers_buried_place ".name_qry($place_name,$part_place_name);
 			$query.= " AND pers_buried_place ".name_qry($place_name,$part_place_name);
 		}
 		else {
-			//$query.= " WHERE pers_buried_place LIKE '_%'";
 			$query.= " AND pers_buried_place LIKE '_%'";
 		}
 		$query.=')';
@@ -1079,8 +955,6 @@ if ($index_list=='places'){
 //*** Patronym list ***
 if ($index_list=='patronym'){
 	//Only in pers_patronym index if there is no pers_lastname!
-	//$query = "SELECT SQL_CALC_FOUND_ROWS * ".$make_date." FROM ".safe_text($_SESSION['tree_prefix'])."person
-	//	WHERE pers_patronym LIKE '_%' AND pers_lastname=''  ORDER BY ".$orderby;
 	$query = "SELECT SQL_CALC_FOUND_ROWS * ".$make_date." FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_patronym LIKE '_%' AND pers_lastname='' ORDER BY ".$orderby;
 }
@@ -1091,18 +965,13 @@ if ($index_list=='patronym'){
 
 	// *** Standard index ***
 	if ($query=='' OR $index_list=='standard'){
-		//$query = "SELECT * ".$make_date." FROM ".safe_text($_SESSION['tree_prefix'])."person ORDER BY ".$orderby;
 		$query = "SELECT * ".$make_date." FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY ".$orderby;
-		//$count_qry = "SELECT COUNT(*) as teller ".$make_date." FROM ".safe_text($_SESSION['tree_prefix'])."person";
 		$count_qry = "SELECT COUNT(*) as teller ".$make_date." FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 
 		// Mons, van or: van Mons
 		if ($user['group_kindindex']=="j"){
-			//$query= "SELECT *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ".$make_date."
-			//	FROM ".safe_text($_SESSION['tree_prefix'])."person ORDER BY ".$orderby;
 			$query= "SELECT *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ".$make_date."
 				FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY ".$orderby;
-			//$count_qry = "SELECT COUNT(*) as teller ".$make_date." FROM ".safe_text($_SESSION['tree_prefix'])."person";
 			$count_qry = "SELECT COUNT(*) as teller ".$make_date."
 				FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}

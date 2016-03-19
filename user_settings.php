@@ -40,10 +40,11 @@ if (isset($_POST['send_mail'])){
 		//user_remark='".safe_text($_POST["register_text"])."',
 		//user_register_date='".safe_text($user_register_date)."',
 		//user_group_id='".$humo_option["visitor_registration_group"]."'
-		$sql="UPDATE humo_users SET
-		user_mail='".safe_text($_POST["register_mail"])."',
-		user_password='".MD5($_POST["register_password"])."'
-		WHERE user_id=".$userDb->user_id;
+		$sql="UPDATE humo_users SET";
+		$sql.=" user_mail='".safe_text($_POST["register_mail"])."'";
+		if ($_POST["register_password"]!='')
+			$sql.=", user_password='".MD5($_POST["register_password"])."'";
+		$sql.=" WHERE user_id=".$userDb->user_id;
 		$result = $dbh->query($sql);
 		echo '<h2>'.__('Your settings are updated!').'</h2>';
 	}

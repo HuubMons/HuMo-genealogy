@@ -352,6 +352,9 @@ global $rel_arrayspouseY;
 			}
 		}
 		$reltext = $parent.__(' of ');
+		if($selected_language=="da") {  
+			$reltext = $parent.' til ';
+		}
 		if($selected_language=="cn") {
 			$reltext = $parent.'是';
 		}
@@ -406,6 +409,37 @@ global $rel_arrayspouseY;
 			if ($pers >  5) { $reltext = $gennr."x ".'tippolde'.$parent.__(' of '); }
 		}
 
+		elseif($selected_language=="da"){
+
+			if($spouse=="2" OR $spouse=="3") { // right person is spouse of Y, not Y
+				$relarr = $rel_arrayspouseY;
+			}
+			else {
+				$relarr = $rel_arrayY;
+			}
+			if ($pers == 2) {
+				// grandfather
+ 				$arrnum=0; 
+				$ancsarr = array();
+				$count=$foundY_nr;
+				while($count!=0) {
+					$parnumber=$count;
+					$ancsarr[$arrnum]=$parnumber; $arrnum++;
+					$count=$relarr[$count][2];
+				}
+				$persidDb=$db_functions->get_person($relarr[$parnumber][0]);
+				$parsexe = $persidDb->pers_sexe;
+				if($parsexe=='M') { $reltext = 'far'.$parent.' til '; }
+				else { $reltext = 'mor'.$parent.' til '; }
+			}
+ 			if ($pers == 3) { $reltext = "olde".$parent.' til '; }
+			if ($pers == 4) { $reltext = "tip olde".$parent.' til '; }
+			if ($pers == 5) { $reltext = "tip tip olde".$parent.' til '; }
+			if ($pers == 6) { $reltext = "tip tip tip olde".$parent.' til '; }
+			$gennr=$pers-3;
+			if ($pers >  6) { $reltext = $gennr.' gange tip olde'.$parent.' til '; } 
+		}		
+		
 		// Swedish needs to know if grandparent is related through mother or father - different names there
 		// also for great-grandparent and 2nd great-grandparent!!!
 		elseif($selected_language=="sv"){
@@ -641,6 +675,38 @@ global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseX, $langu
 		$gennr=$pers-3;
 		if ($pers >  5) { $reltext = $gennr.'x tipp-tippolde'.$child.__(' of '); }
 	}
+	elseif($selected_language=="da") {
+
+		if($spouse=="1" OR $spouse=="3") { // right person is spouse of Y, not Y
+			$relarr = $rel_arrayspouseX;
+		}
+		else {
+			$relarr = $rel_arrayX;
+		}
+
+		if ($pers ==2) {
+			// grandchild
+			$arrnum=0; 
+			$ancsarr = array();
+			$count=$foundX_nr;
+			while($count!=0) {
+				$parnumber=$count;
+				$ancsarr[$arrnum]=$parnumber; $arrnum++;
+				$count=$relarr[$count][2];
+			}
+			$persidDb=$db_functions->get_person($relarr[$foundX_nr][0]);
+			$parsexe = $persidDb->pers_sexe;
+			if($parsexe=='M') { $reltext = 'sønne'.$child.__(' of '); }
+			else { $reltext = 'datter'.$child.__(' of '); }
+		}	
+	
+		if ($pers == 3) { $reltext = 'olde'.$child.__(' of '); } // oldeson oldedatter
+		if ($pers == 4) { $reltext = 'tip olde'.$child.__(' of '); } // tip oldeson
+		if ($pers == 5) { $reltext = 'tip tip olde'.$child.__(' of '); } // tip tip oldeson
+		if ($pers == 6) { $reltext = 'tip tip tip olde'.$child.__(' of '); } // tip tip tip oldeson
+		$gennr=$pers-3;
+		if ($pers >  6) { $reltext = $gennr.' gange tip olde'.$child.__(' of '); }
+	}	
 	// Swedish needs to know if grandchild is related through son or daughter - different names there
 	// also for great-grandchild and 2nd great-grandchild!!!
 	elseif($selected_language=="sv"){
@@ -745,7 +811,8 @@ global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseX, $langu
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function calculate_nephews($generX) { // handed generations x is removed from common ancestor
-global $db_functions, $reltext, $sexe, $sexe2, $language, $spantext, $selected_language, $reltext_nor, $reltext_nor2, $foundX_nr, $rel_arrayX, $rel_arrayspouseX, $spouse;
+global $db_functions, $reltext, $sexe, $sexe2, $language, $spantext, $selected_language, $foundX_nr, $rel_arrayX, $rel_arrayspouseX, $spouse;
+global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 
 	if($selected_language=="es"){
 		if($sexe=="m") { $neph=__('nephew'); $span_postfix="o "; $grson='nieto'; }
@@ -802,6 +869,25 @@ global $db_functions, $reltext, $sexe, $sexe2, $language, $spantext, $selected_l
 		$gennr=$generX-4;
 		if ($generX >  6) { $reltext = $gennr.'x tippolde barnet'.__(' of '); }
 	}
+	elseif ($selected_language=="da"){
+		if($sexe=='m') { $nephniece = __('nephew'); }
+		else { $nephniece = __('niece'); }
+		$reltext_nor=''; $reltext_nor2='';
+		if ($generX > 3) {
+			$reltext_nor = "s søskende";  // for: A er oldebarn af Bs søskende
+
+			$reltext_nor2 = 'søskende'.
+			__(' of '); // for: A er oldebarn af søskende af ..... til B
+		}
+		if ($generX == 2) { $reltext = $nephniece.__(' of '); }
+		if ($generX == 3) { $reltext = 'grand'.$nephniece.__(' of '); }
+		if ($generX == 4) { $reltext = 'oldebarn'.__(' of '); }
+		if ($generX == 5) { $reltext = 'tip oldebarn'.__(' of '); }
+		if ($generX == 6) { $reltext = 'tip tip oldebarn'.__(' of '); }		
+		if ($generX == 7) { $reltext = 'tip tip tip oldebarn'.__(' of '); }				
+		$gennr=$generX-4;
+		if ($generX >  7) { $reltext = $gennr.' gange tip oldebarn'.__(' of '); }
+	}	
 	elseif ($selected_language=="nl"){
 		if($sexe=='m') {
 			$nephniece = __('nephew');
@@ -942,7 +1028,7 @@ global $db_functions, $reltext, $sexe, $sexe2, $language, $spantext, $selected_l
 function calculate_uncles($generY) { // handed generations y is removed from common ancestor
 global $db_functions, $reltext,  $sexe, $sexe2, $language, $ancestortext, $dutchtext, $selected_language, $spantext, $rel_arrayspouseY, $spouse;
 global $foundY_nr, $rel_arrayY, $fampath;  // only for Finnish paragraph
-global $reltext_nor, $reltext_nor2; // for Norwegian
+global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 global  $rel_arrayspouseX, $rel_arrayX, $foundX_nr; // for Chinese
 
 	$ancestortext='';
@@ -1207,6 +1293,29 @@ global  $rel_arrayspouseX, $rel_arrayX, $foundX_nr; // for Chinese
 			$reltext_nor2 = $temptext.__(' of ');
 		}
 	}
+	elseif($selected_language=="da"){
+		$temptext=''; $reltext_nor=''; $reltext_nor2='';
+		if ($generY == 2) { $reltext = $uncleaunt.' til '; }
+		if ($generY == 3) { $reltext = 'grand'.$uncleaunt.' til '; }
+		if ($generY >3) {
+			if($uncleaunt == __('uncle')) {
+				$reltext = __('brother of ');
+			}
+			else {
+				$reltext = __('sister of ');
+			}
+		}
+		if ($generY == 4) { $temptext = 'oldeforældre'; }
+		if ($generY == 5) { $temptext = 'tip oldeforældre'; }
+		if ($generY == 6) { $temptext = 'tip tip oldeforældre'; }
+		if ($generY == 7) { $temptext = 'tip tip tip oldeforældre'; }		
+		$gennr=$generY-4;
+		if ($generY >  7) { $temptext = $gennr.' gange tip oldeforældre'; }
+		if($temptext != '') {
+			$reltext_nor = "s ".$temptext;
+			$reltext_nor2 = $temptext.' til ';
+		}
+	}	
 	elseif($selected_language=="cn"){
 		if ($generY == 2) { $reltext = $uncleaunt; }
 		if ($generY > 2) { $reltext = "notext"; }
@@ -1517,6 +1626,60 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 		else { $reltext = "notext"; }
 	
 	}
+	elseif($selected_language=="da") 	{
+		$gendiff = abs($generX - $generY);	
+		$degreediff = min($generX,$generY);	
+		
+		if ($degreediff == 2) {
+			$nor_cousin = 'kusine'; // 1st cousin
+		}
+		elseif ($degreediff == 3) {
+			$nor_cousin = 'halvkusine'; // 2nd cousin
+		}
+		elseif ($degreediff > 3) {
+			$gennr=$degreediff-1;
+			$nor_cousin = $gennr.". kusine";  // 3. kusine
+		}		
+		
+		if($degreediff ==2 AND $gendiff == 0) { $reltext = __('COUSIN_MALE').__(' of '); }  // first cousins
+		elseif($degreediff ==2 AND $gendiff == 1 AND $generX < $generY) {   // first cousins once removed - X older
+			if($sexe=="m") { $reltext =  'halvonkel'.__(' of '); }
+			else { $reltext =  'halvtante'.__(' of '); }
+		}	
+		elseif($degreediff ==2 AND $gendiff == 1 AND $generX > $generY) {   // first cousins once removed - Y older
+			if($sexe=="m") { $reltext =  'halvnevø'.__(' of '); }
+			else { $reltext =  'halvniece'.__(' of '); }
+		}
+		elseif($degreediff ==3 AND $gendiff == 0) { $reltext = 'halvkusine'.__(' of '); }  // second cousins
+		
+		elseif ( $generX > $generY ) {  // A is the "younger" cousin  (A er barnebarn af Bs tremenning)
+			if($sexe=='m') { $child = __('son');}  // only for 1st generation
+			else { $child = __('daughter');}
+			if ($gendiff == 1) { $reltext = $child.__(' of '); }   // søn/datter af
+			if ($gendiff == 2) { $reltext = 'barnebarn '.__(' of '); } // barnebarn af
+			if ($gendiff == 3) { $reltext = 'oldebarn'.__(' of '); } 
+			if ($gendiff == 4) { $reltext = 'tip oldebarn'.__(' of '); }
+			if ($gendiff == 5) { $reltext = 'tip tip oldebarn'.__(' of '); }
+			if ($gendiff == 6) { $reltext = 'tip tip tip oldebarn'.__(' of '); }
+			$gennr=$gendiff-3;
+			if ($gendiff >  6) { $reltext = $gennr.' gange tip oldebarn'.__(' of '); }
+			$reltext_nor = "s ".$nor_cousin;
+			$reltext_nor2 = $nor_cousin.__(' of ');
+		}
+		elseif ( $generX < $generY ) {  // A is the "older" cousin (A er timenning af Bs tiptipoldeforældre)
+			if ($gendiff == 1) { $temptext = 'forældre'; }
+			if ($gendiff == 2) { $temptext = 'bedsteforældre'; }
+			if ($gendiff == 3) { $temptext = 'oldeforældre'; }
+			if ($gendiff == 4) { $temptext = 'tip oldeforældre'; }
+			if ($gendiff == 5) { $temptext = 'tip tip oldeforældre'; }
+			if ($gendiff == 6) { $temptext = 'tip tip tip oldeforældre'; }
+			$gennr=$gendiff-3;
+			if ($gendiff >  7) { $temptext = $gennr.' gange tip oldeforældre'; }
+			$reltext = $nor_cousin.__(' til ');
+			$reltext_nor = "s ".$temptext;
+			$reltext_nor2 = $temptext.__(' til ');		
+		}
+	}
 	else {
 		$gendiff = abs($generX - $generY);
 		if ($gendiff == 0) { $removenr = ""; }
@@ -1563,21 +1726,13 @@ global $sexe, $sexe2, $spousenameX, $spousenameY, $foundX_match, $foundY_match;
 global $rel_arrayspouseX, $rel_arrayspouseY, $spouse, $tree_prefix_quoted, $tree_id;
 
 	$pers_cls = New person_cls;
-
 	$marrX = explode(";",$famsX);
 	$marrY = explode(";",$famsY);
-
-	//prepared statement for use in loop
-	$marr_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM humo_families
-		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
-	$marr_prep->bindParam(1,$marr_prep_var);
 
 	if($famsX!='') {
 		$marrcount=count($marrX);
 		for($x=0; $x<$marrcount; $x++) {
-			$marr_prep_var = $marrX[$x];
-			$marr_prep->execute();
-			@$familyDb=$marr_prep->fetch(PDO::FETCH_OBJ);
+			@$familyDb=$db_functions->get_family($marrX[$x],'man-woman');
 			if($sexe=='f') {
 				$thespouse=$familyDb->fam_man;
 			}
@@ -1609,9 +1764,7 @@ global $rel_arrayspouseX, $rel_arrayspouseY, $spouse, $tree_prefix_quoted, $tree
 	if($foundX_match==='' AND $famsY!='') {  // no match found between "spouse of X" and "Y", let's try "X" with "spouse of "Y"
 		$ymarrcount=count($marrY);
 		for($x=0; $x<$ymarrcount; $x++) {
-			$marr_prep_var = $marrY[$x];
-			$marr_prep->execute();
-			@$familyDb=$marr_prep->fetch(PDO::FETCH_OBJ);
+			@$familyDb=$db_functions->get_family($marrY[$x],'man-woman');
 			if($sexe2=='f') {
 				$thespouse2=$familyDb->fam_man;
 			}
@@ -1640,9 +1793,7 @@ global $rel_arrayspouseX, $rel_arrayspouseY, $spouse, $tree_prefix_quoted, $tree
 		$ymarrcount=count($marrY);
 		for($x=0; $x<$xmarrcount; $x++) {
 			for($y=0; $y<$ymarrcount; $y++) {
-				$marr_prep_var = $marrX[$x];
-				$marr_prep->execute();
-				@$familyDb=$marr_prep->fetch(PDO::FETCH_OBJ);
+				@$familyDb=$db_functions->get_family($marrX[$x],'man-woman');
 				if($sexe=='f') {
 					$thespouse=$familyDb->fam_man;
 				}
@@ -1651,9 +1802,7 @@ global $rel_arrayspouseX, $rel_arrayspouseY, $spouse, $tree_prefix_quoted, $tree
 				}
 
 				$rel_arrayspouseX = create_rel_array($thespouse);
-				$marr_prep_var = $marrY[$y];
-				$marr_prep->execute();
-				@$familyDb=$marr_prep->fetch(PDO::FETCH_OBJ);
+				@$familyDb=$db_functions->get_family($marrY[$y],'man-woman');
 				if($sexe2=='f') {
 					$thespouse2=$familyDb->fam_man;
 				}
@@ -1780,7 +1929,6 @@ function display () {
 			//check if this is involves a marriage or a partnership of any kind
 			$relmarriedX=0;
 			if(isset($famspouseX)) {
-				//$kindrel=$dbh->query("SELECT fam_kind FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$famspouseX."'");
 				$kindrel=$dbh->query("SELECT fam_kind FROM humo_families
 					WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$famspouseX."'");
 				@$kindrelDb = $kindrel->fetch(PDO::FETCH_OBJ);
@@ -2938,7 +3086,6 @@ $len=230;  // length of name pulldown box
 if(CMS_SPECIFIC == "Joomla") { $len = 180; } // for joomla keep it short....
 
 if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
-	//$search_qry= "SELECT * FROM ".$tree_prefix_quoted."person WHERE CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)";
 	$search_qry= "SELECT * FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)";
 	$search_qry.= " LIKE '%".$search_lastname."%' AND pers_firstname LIKE '%".$search_firstname."%' ORDER BY pers_lastname, pers_firstname";
@@ -3006,8 +3153,6 @@ print '&nbsp; <input class="fonts" type="submit" name="search2" value="'.__('Sea
 echo '</td><td>';
 
 if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
-	//$search_qry= "SELECT * FROM ".$tree_prefix_quoted."person WHERE CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
-	//	LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ORDER BY pers_lastname, pers_firstname";
 	$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
 		LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ORDER BY pers_lastname, pers_firstname";
 	$search_result2 = $dbh->query($search_qry);

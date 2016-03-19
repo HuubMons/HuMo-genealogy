@@ -255,15 +255,17 @@ $top = $anc_top - ((($blocks*$hi) - $incr)/2);
 for($x=$chosengenanc;$x>1;$x--) {
 	$this_top = $top;
 	for ($i=0; $i<$blocks; $i++){
-		$sexe_colour=''; 
+		$sexe_colour='';  $backgr_col = "#FFFFFF";
 		if(isset($sexe[$i+$blocks]) AND $sexe[$i+$blocks]!="") { 
-			if ($sexe[$i+$blocks] == 'F'){ $sexe_colour=' ancestor_woman'; }
-			if ($sexe[$i+$blocks] == 'M'){ $sexe_colour=' ancestor_man'; }
+			//if ($sexe[$i+$blocks] == 'F'){ $sexe_colour=' ancestor_woman'; }
+			//if ($sexe[$i+$blocks] == 'M'){ $sexe_colour=' ancestor_man'; }
+			if ($sexe[$i+$blocks] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0";}
+			if ($sexe[$i+$blocks] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
 		}
 		else { // empty square - give it background so lines won't show through
-			$sexe_colour=' ancestor_none';
+			$sexe_colour=' ancestor_none'; 
 		}
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="top: '.$this_top.'px; left: '.$left.'px; height: '.$height.'px; width:'.$width.'px;';
+		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.$this_top.'px; left: '.$left.'px; height: '.$height.'px; width:'.$width.'px;';
 		echo '">';
 		if(isset($sexe[$i+$blocks]) AND $sexe[$i+$blocks]!="" ) { 
 			echo ancestor_chart_person($i+$blocks,'hour'.$size);

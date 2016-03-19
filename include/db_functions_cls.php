@@ -71,45 +71,46 @@ function __construct($tree_prefix='') {
 			AND source_status!='restricted'";
 		$this->query['get_source_restricted'] = $dbh->prepare( $sql );
 
+		// *** Person queries ***
 		$sql = "SELECT * FROM humo_persons
 			WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber";
 		$this->query['get_person'] = $dbh->prepare( $sql );
+		$sql = "SELECT pers_famc, pers_fams FROM humo_persons
+			WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber";
+		$this->query['get_person_fams'] = $dbh->prepare( $sql );
 
+		// *** Family queries ***
+		$sql = "SELECT * FROM humo_families
+			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
+		$this->query['get_family'] = $dbh->prepare( $sql );
 		$sql = "SELECT fam_man, fam_woman FROM humo_families
 			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
 		$this->query['get_family_man_woman'] = $dbh->prepare( $sql );
 
-		$sql = "SELECT * FROM humo_families
-			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
-		$this->query['get_family'] = $dbh->prepare( $sql );
-
+		// *** Event queries ***
 		$sql = "SELECT * FROM humo_events WHERE event_id=:event_id";
 		$this->query['get_event'] = $dbh->prepare( $sql );
-
 		$sql = "SELECT * FROM humo_events
 		WHERE event_tree_id=:event_tree_id AND event_event=:event_event AND event_kind=:event_kind ORDER BY event_order";
 		$this->query['get_events_kind'] = $dbh->prepare( $sql );
-
 		$sql = "SELECT * FROM humo_events
 		WHERE event_tree_id=:event_tree_id AND event_person_id=:event_person_id AND event_kind=:event_kind ORDER BY event_order";
 		$this->query['get_events_person'] = $dbh->prepare( $sql );
-
 		$sql = "SELECT * FROM humo_events
 		WHERE event_tree_id=:event_tree_id AND event_family_id=:event_family_id AND event_kind=:event_kind ORDER BY event_order";
 		$this->query['get_events_family'] = $dbh->prepare( $sql );
 
+		// *** Address queries ***
 		$sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_gedcomnr=:address_gedcomnr";
 		$this->query['get_address'] = $dbh->prepare( $sql );
-
 		$sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_person_id=:address_person_id ORDER BY address_order";
 		$this->query['get_addresses_person'] = $dbh->prepare( $sql );
-
 		$sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_family_id=:address_family_id ORDER BY address_order";
 		$this->query['get_addresses_family'] = $dbh->prepare( $sql );
 
+		// *** Connection queries ***
 		$sql = "SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_sub_kind=:connect_sub_kind AND connect_item_id=:connect_item_id";
 		$this->query['get_connections'] = $dbh->prepare( $sql );
-
 		$sql = "SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_kind='person' AND connect_sub_kind=:connect_sub_kind AND connect_connect_id=:connect_connect_id ORDER BY connect_order";
 		$this->query['get_connections_person'] = $dbh->prepare( $sql );
 
@@ -148,7 +149,7 @@ function get_tree($tree_prefix){
 /*--------------------[get data from all trees ]------------------
  * FUNCTION	: Get all data from family trees.
  * QUERY	: SELECT * FROM humo_trees
- *				 WHERE tree_prefix!='EMPTY' ORDER BY tree_order
+ *				WHERE tree_prefix!='EMPTY' ORDER BY tree_order
  * RETURNS	: all data from family trees.
  *----------------------------------------------------------------
  */
@@ -191,18 +192,28 @@ function count_persons($tree_prefix,$pers_gedcomnumber){
 
 /*--------------------[get person]--------------------------------
  * FUNCTION	: Get a single person from database.
- * QUERY	: SELECT * FROM humo_persons
+ * QUERY 1	: SELECT * FROM humo_persons
+ *				WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
+ * QUERY 2	: SELECT pers_famc, pers_fams FROM humo_persons
  *				WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
  * RETURNS	: a single person.
  *----------------------------------------------------------------
  */
-function get_person($pers_gedcomnumber){
+function get_person($pers_gedcomnumber,$item=''){
 	$qryDb=false;
 	try {
-		$this->query['get_person']->bindValue(':pers_tree_id', $this->tree_id, PDO::PARAM_INT);
-		$this->query['get_person']->bindValue(':pers_gedcomnumber', $pers_gedcomnumber, PDO::PARAM_STR);
-		$this->query['get_person']->execute();
-		$qryDb=$this->query['get_person']->fetch(PDO::FETCH_OBJ);
+		if ($item=='famc-fams'){
+			$this->query['get_person_fams']->bindValue(':pers_tree_id', $this->tree_id, PDO::PARAM_INT);
+			$this->query['get_person_fams']->bindValue(':pers_gedcomnumber', $pers_gedcomnumber, PDO::PARAM_STR);
+			$this->query['get_person_fams']->execute();
+			$qryDb=$this->query['get_person_fams']->fetch(PDO::FETCH_OBJ);
+		}
+		else{
+			$this->query['get_person']->bindValue(':pers_tree_id', $this->tree_id, PDO::PARAM_INT);
+			$this->query['get_person']->bindValue(':pers_gedcomnumber', $pers_gedcomnumber, PDO::PARAM_STR);
+			$this->query['get_person']->execute();
+			$qryDb=$this->query['get_person']->fetch(PDO::FETCH_OBJ);
+		}
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}

@@ -1,0 +1,61 @@
+/* CSS file to show standard HuMo-gen pages at mobile devices */
+
+body{
+	/* font: 10px Verdana, tahoma, arial, sans-serif; */
+}
+
+/* Hide some items in mobile version */
+.mobile_hidden{
+	visibility:hidden;
+	width:0px; height:0px;
+}
+
+#top_website_name{
+	visibility:hidden;
+}
+
+#top_quicksearch {
+	right:150px;
+}
+#top_favorites_select {
+	right:5px;
+}
+
+#mainmenu_left{
+	visibility:hidden;
+	width:1%;
+}
+#mainmenu_center {
+	width:90%;
+	text-align: left;
+	margin-left: 5px;
+}
+#mainmenu_right{
+	visibility:hidden;
+	width:1%;
+	width:0px; height:0px;
+}
+
+#mainmenu_centerbox {
+	/* up, right, down */
+	margin: 10px 15px 0px 5px;
+}
+
+#most_frequent_names{
+	text-align: center;
+	width:90%;
+}
+
+#humo_menu {
+	font-size: 10px;
+}
+
+.index_lastname {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+div.photobook {
+	width: 300px;
+	height:170px;
+}

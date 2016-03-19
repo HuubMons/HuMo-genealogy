@@ -27,7 +27,6 @@ if (isset($_SESSION['admin_tree_prefix'])){
 		$mediastring = safe_text($_GET['mediastring']);	
 		$media_arr = explode(";",$mediastring);
 		for($x = 0 ; $x<count($media_arr); $x++) {
-			//$sql="UPDATE ".$tree_prefix."events SET 
 			$sql="UPDATE humo_events SET 
 			event_order='".($x+1)."', 
 			event_changed_date='".$gedcom_date."', 

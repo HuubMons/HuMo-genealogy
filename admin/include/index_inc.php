@@ -97,23 +97,21 @@ if (isset($_POST['save_settings_database'])){
 // *** Show HuMo-gen status, use scroll bar to show lots of family trees ***
 // *************************************************************************
 
-
-//echo '<div style="height:400px; width:750px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
-echo '<div style="height:450px; width:750px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
-echo '<table class="humo">';
+echo '<div style="height:400px; width:830px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
+echo '<table class="humo" width="800px">';
 	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
 
 	// *** HuMo-gen version ***
 	if (isset($humo_option["version"]))
-		echo '<tr><td>'.__('HuMo-gen Version').'</td><td style="background-color:#00FF00">'.__('HuMo-gen Version').': '.$humo_option["version"].'</td></tr>';
+		echo '<tr><td class="line_item">'.__('HuMo-gen Version').'</td><td class="line_ok">'.__('HuMo-gen Version').': '.$humo_option["version"].'</td></tr>';
 
 	// *** PHP Version ***
 	$version = explode('.', phpversion() );
 	if ($version[0] > 4){
-		echo '<tr><td>'.__('PHP Version').'</td><td style="background-color:#00FF00">'.__('PHP Version').': '.phpversion().'</td></tr>';
+		echo '<tr><td class="line_item">'.__('PHP Version').'</td><td class="line_ok">'.__('PHP Version').': '.phpversion().'</td></tr>';
 	}
 	else{
-		echo '<tr><td>'.__('PHP Version').'</td><td style="background-color:#FF6600">'.phpversion().' '.__('It is recommended to update PHP!').'</td></tr>';
+		echo '<tr><td class="line_item">'.__('PHP Version').'</td><td class="line_nok">'.phpversion().' '.__('It is recommended to update PHP!').'</td></tr>';
 	}
 
 	// *** MySQL Version ***
@@ -124,10 +122,10 @@ echo '<table class="humo">';
 		$mysqlversion = $dbh->getAttribute(PDO::ATTR_SERVER_VERSION);  
 		$version = explode('.',$mysqlversion);
 		if ($version[0] > 4){
-			echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#00FF00">'.__('MySQL Version').': '.$mysqlversion.'</td></tr>';
+			echo '<tr><td class="line_item">'.__('MySQL Version').'</td><td class="line_ok">'.__('MySQL Version').': '.$mysqlversion.'</td></tr>';
 		}
 		else{
-			echo '<tr><td>'.__('MySQL Version').'</td><td style="background-color:#FF6600">'.$mysqlversion.' '.__('It is recommended to update MySQL!').'</td></tr>';
+			echo '<tr><td class="line_item">'.__('MySQL Version').'</td><td class="line_nok">'.$mysqlversion.' '.__('It is recommended to update MySQL!').'</td></tr>';
 		}
 	}
 
@@ -135,14 +133,13 @@ echo '<table class="humo">';
 $install_status=true;
 
 // *** Check database, if needed install local database ***
-echo '<tr><td>';
+echo '<tr><td class="line_item">';
 if (@$database_check){
 	echo __('Database').'</td>';
-	echo '<td style="background-color:#00FF00">'.__('OK');
+	echo '<td class="line_ok">'.__('OK');
 }
 else{
-	echo __('Database').'</td><td style="background-color:#FF0000">';
-
+	echo __('Database').'</td><td class="line_nok">';
 	echo __('<b>There is no database connection! To connect the MySQL database to HuMo-gen, fill in these settings:</b>');
 
 	$install_status=false;
@@ -218,11 +215,10 @@ if (isset($_POST['save_settings_database'])){
 if ($install_status==true){
 	// *** Check database tables ***
 	if (isset($check_tables) AND $check_tables){
-		echo '<tr><td>'.__('Database tables').'</td><td style="background-color:#00FF00">'.__('OK').'</td></tr>';
+		echo '<tr><td class="line_item">'.__('Database tables').'</td><td class="line_ok">'.__('OK').'</td></tr>';
 	}
 	else{
-		//echo '<tr><td>'.__('Database tables').'</td><td style="background-color:#FF0000">'.__('ERROR').'<br>';
-		echo '<tr><td>'.__('Database tables').'</td><td style="background-color:#FF0000">'.__('No HuMo-gen tables found in database.').'<br>';
+		echo '<tr><td class="line_item">'.__('Database tables').'</td><td class="line_nok">'.__('No HuMo-gen tables found in database.').'<br>';
 
 		echo ' <form method="post" action="'.$path_tmp.'" style="display : inline;">';
 		echo '<input type="hidden" name="page" value="install">';
@@ -238,15 +234,15 @@ if ($install_status==true){
 if ($install_status==true){
 
 	// *** Check login ***
-	$check_login='<td style="background-color:#FF0000"><b>'.__('The folder "admin" has NOT YET been secured.').'</b>';
+	$check_login='<td class="line_nok"><b>'.__('The folder "admin" has NOT YET been secured.').'</b>';
 	if (isset($_SERVER["PHP_AUTH_USER"])){
-		$check_login='<td style="background-color:#00FF00">'.__('At the moment you are logged in through an .htacces file.');
+		$check_login='<td class="line_ok">'.__('At the moment you are logged in through an .htacces file.');
 	}
 	//if (isset($_SESSION["user_name_admin"]) AND $_SESSION["user_name_admin"]=="beheer") {
 	if (isset($_SESSION["user_name_admin"])) {
-		$check_login='<td style="background-color:#FF6600">'.__('At the moment you are logged in through PHP-MySQL.');
+		$check_login='<td class="line_nok">'.__('At the moment you are logged in through PHP-MySQL.');
 	}
-	echo '<tr><td>'.__('Login control').'</td>'.$check_login;
+	echo '<tr><td class="line_item">'.__('Login control').'</td>'.$check_login;
 
 	print '<form method="POST" action="'.$path_tmp.'" style="display : inline;">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -295,29 +291,29 @@ The file .htpasswd will look something like this:<br>');
 
 	// *** Register global. Not nessecary in PHP 6.0! ***
 	if (!ini_get('register_globals')){
-		echo '<tr><td>register_globals</td><td style="background-color:#00FF00">'.__('OK (option is OFF)').'</td></tr>';
+		echo '<tr><td class="line_item">register_globals</td><td class="line_ok">'.__('OK (option is OFF)').'</td></tr>';
 	}
 	else{
-		echo '<tr><td>register_globals</td><td style="background-color:#FF6600">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file or put: "register_globals = Off" in the php.ini file.').'</td></tr>';
+		echo '<tr><td class="line_item">register_globals</td><td class="line_nok">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file or put: "register_globals = Off" in the php.ini file.').'</td></tr>';
 	}
 
 	// *** Magic_quotes_gpc. Deprecated in PHP 5.3.0! ***
 	$version = explode('.', phpversion() );
 	if ($version[0] < 6 AND $version[1] < 3){
 		if (ini_get('magic_quotes_gpc')){
-			echo '<tr><td>magic_quotes_gpc</td><td style="background-color:#00FF00">'.__('OK (option is ON)').'</td></tr>';
+			echo '<tr><td class="line_item">magic_quotes_gpc</td><td class="line_ok">'.__('OK (option is ON)').'</td></tr>';
 		}
 		else{
-			echo '<tr><td>magic_quotes_gpc</td><td style="background-color:#FF6600">'.__('UNSAFE (option is OFF)<br>change this option in .htaccess file or put: "magic_quotes_gpc = On" in the php.ini file.').'</td></tr>';
+			echo '<tr><td class="line_item">magic_quotes_gpc</td><td class="line_nok">'.__('UNSAFE (option is OFF)<br>change this option in .htaccess file or put: "magic_quotes_gpc = On" in the php.ini file.').'</td></tr>';
 		}
 	}
 
 	// *** display_errors ***
 	if (!ini_get('display_errors')){
-		echo '<tr><td>display_errors</td><td style="background-color:#00FF00">'.__('OK (option is OFF)').'</td></tr>';
+		echo '<tr><td class="line_item">display_errors</td><td class="line_ok">'.__('OK (option is OFF)').'</td></tr>';
 	}
 	else{
-		echo '<tr><td>display_errors</td><td style="background-color:#FF6600">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file.').'</td></tr>';
+		echo '<tr><td class="line_item">display_errors</td><td class="line_nok">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file.').'</td></tr>';
 	}
 
 	// *** Family trees ***
@@ -339,24 +335,26 @@ The file .htpasswd will look something like this:<br>');
 		}
 		$size= round( $size, 1 ) . $val;
 
-		echo '<tr><td>'.__('Size of statistics table').'</td><td style="background-color:#00FF00">'.$size;
+		echo '<tr><td class="line_item">'.__('Size of statistics table').'</td><td class="line_ok">'.$size;
 			echo ' <a href="index.php?page=statistics">'.__('If needed remove old statistics.').'</a>';
 		echo '</td></tr>';
 
-		echo '<tr><td>'.__('Trees table').'</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td class="line_item">'.__('Trees table').'</td><td class="line_ok">OK</td></tr>';
 
 		$tree_counter=0;
+		//echo '<tr><td colspan="2"><br></td></tr>'; // *** Show empty line ***
+		echo '<tr class="table_header"><th colspan="2">'.__('Family trees').'</th></tr>';
 		while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			// *** Skip empty lines (didn't work in query...) ***
 			if ($dataDb->tree_prefix!='EMPTY'){
 				$tree_counter++;
-				echo '<tr><td><b>'.__('Status tree').' '.$tree_counter.'</b></td>';
+				echo '<tr><td class="line_item">'.__('Status tree').' '.$tree_counter.'</td>';
 
 				if ($dataDb->tree_persons){
-					echo '<td style="background-color:#00FF00">';
+					echo '<td class="line_ok">';
 				}
 				else{
-					echo '<td style="background-color:#FF0000">';
+					echo '<td class="line_nok">';
 				}
 				$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
 				echo $dirmark1.$treetext['name'];
@@ -377,7 +375,7 @@ The file .htpasswd will look something like this:<br>');
 		}
 	}
 	else{
-		echo '<tr><td>'.__('Trees table').'</td><td style="background-color:#FF0000">FOUT</td></tr>';
+		echo '<tr><td>'.__('Trees table').'</td><td class="line_nok">ERROR</td></tr>';
 	}
 
 	// *** End of check database and table status ***

@@ -36,7 +36,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('Import Gedcom file').'</h1>';
+//echo '<h1 align=center>'.__('Import Gedcom file').'</h1>';
 
 include_once(CMS_ROOTPATH_ADMIN."include/gedcom_asciihtml.php");
 include_once(CMS_ROOTPATH_ADMIN."include/gedcom_anselhtml.php");
@@ -768,7 +768,6 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_fam_ged) { $largest_fam_ged = $gednum; }
 		}
 		// S40
-		//$test_qry = "SELECT `source_gedcomnr` FROM ".$_SESSION['tree_prefix']."sources";
 		$test_qry = "SELECT `source_gedcomnr` FROM humo_sources WHERE source_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_source_ged = 0;
@@ -777,7 +776,6 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_source_ged) { $largest_source_ged = $gednum; }
 		}
 		//  R40 (RESI)
-		//$test_qry = "SELECT `address_gedcomnr` FROM ".$_SESSION['tree_prefix']."addresses";
 		$test_qry = "SELECT `address_gedcomnr` FROM humo_addresses WHERE address_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_address_ged = 0;
@@ -786,7 +784,6 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_address_ged) { $largest_address_ged = $gednum; }
 		}
 		//  R40 (REPO)
-		//$test_qry = "SELECT `repo_gedcomnr` FROM ".$_SESSION['tree_prefix']."repositories";
 		$test_qry = "SELECT `repo_gedcomnr` FROM humo_repositories WHERE repo_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_repo_ged = 0;
@@ -795,7 +792,6 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_repo_ged) { $largest_repo_ged = $gednum; }
 		}
 		// N40 (texts)
-		//$test_qry = "SELECT `text_gedcomnr` FROM ".$_SESSION['tree_prefix']."texts";
 		$test_qry = "SELECT `text_gedcomnr` FROM humo_texts WHERE text_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_text_ged = 0;
@@ -1024,7 +1020,7 @@ if (isset($_POST['step3'])){
 
 	/* Insert a temporary line into data base to get latest id.
 	*  Must be done because table can be empty when reloading gedcom file...
-	*  Even in a empty table, latest id can be a high number...
+	*  Even in an empty table, latest id can be a high number...
 	*/
 	$sql="INSERT INTO humo_events SET event_tree_id='".$tree_id."'";
 	$result=$dbh->query($sql);
@@ -1365,7 +1361,6 @@ if (isset($_POST['step4'])){
 	//echo 'AANTAL TEKSTEN'.$aantal_teksten;
 
 	// *** Process text by name etc. ***
-	//$person_qry=$dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname FROM ".$_SESSION['tree_prefix']."person");
 	$person_qry=$dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname
 		FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
 	while ($personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
@@ -1424,7 +1419,6 @@ if (isset($_POST['step4'])){
 		$tree_pref_result = $dbh->query($tree_pref_sql);
 		while ($tree_prefDb=$tree_pref_result->fetch(PDO::FETCH_OBJ)){
 
-			//$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM ".$tree_prefDb->tree_prefix."person");
 			$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
 
 			while($resultDb = $result->fetch(PDO::FETCH_OBJ)) { 
@@ -1474,16 +1468,14 @@ if (isset($_POST['step4'])){
 
 		echo '<br>&gt;&gt;&gt; '.__('Order children...');
 
-		//$fam_qry=$dbh->query("SELECT * FROM ".$_SESSION['tree_prefix']."family WHERE fam_children!=''");
 		$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children!=''");
-		while ($famDb=$fam_qry->fetch()){
+		//while ($famDb=$fam_qry->fetch()){
+		while ($famDb=$fam_qry->fetch(PDO::FETCH_OBJ)){  
 			$child_array=explode(";",$famDb->fam_children);
 			$nr_children = count($child_array);
 			if ($nr_children > 1) {
 				unset ($children_array);
 				for ($i=0; $i<$nr_children; $i++){
-					//$child=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-					//	WHERE pers_gedcomnumber='".$child_array[$i]."'");
 					$child=$dbh->query("SELECT * FROM humo_persons
 						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$child_array[$i]."'");
 					@$childDb=$child->fetch(PDO::FETCH_OBJ);
@@ -1509,7 +1501,6 @@ if (isset($_POST['step4'])){
 				}
 
 				if ($famDb->fam_children!=$fam_children){
-					//$sql = "UPDATE ".$_SESSION['tree_prefix']."family SET fam_children='".$fam_children."' WHERE fam_id='".$famDb->fam_id."'";
 					$sql = "UPDATE humo_families SET fam_children='".$fam_children."' WHERE fam_id='".$famDb->fam_id."'";
 					$dbh->query($sql);
 				}
@@ -1570,7 +1561,6 @@ if (isset($_POST['step4'])){
 	if ($gen_program=='ALDFAER') {
 		function fams_remove($personnr, $familynr){
 			global $dbh, $tree_id, $tree_prefix;
-			//$person_qry= "SELECT * FROM ".$_SESSION['tree_prefix']."person WHERE pers_gedcomnumber='".$personnr."'";
 			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$personnr."'";
 			$person_result = $dbh->query($person_qry);
 			$person_db=$person_result->fetch(PDO::FETCH_OBJ);

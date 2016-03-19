@@ -24,7 +24,7 @@ body {
 #mainmenu_center{
 	float: left;
 	width: 46%;
-	text-align:left;
+	/* text-align:left; */
 	margin-left: 19px;
 }
 
@@ -42,7 +42,6 @@ table.humo tr:first-of-type td { border-color: #3355cc; }
 td.style_tree_text { background-color: #BDD7EF; }
 
 .table_headline{
-	/* background: url('images_sky_blue/default_trans.png') repeat left top; */
 	background: url('images_sky_blue/blue.png') repeat left top;
 }
 
@@ -60,9 +59,6 @@ td.style_tree_text { background-color: #BDD7EF; }
 
 /* report_ancestor.php */
 .chart_line { background-color:#AAA; border:0px; }
-
-/* table header  */
-/* td.table_header { background-image: url('images_sky_blue/blue.png'); } */
 
 /* Switchform */
 #switchform { color: #333399; }

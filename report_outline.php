@@ -224,16 +224,9 @@ $gn=0;   // generatienummer
 // ****** FUNCTION OUTLINE *************  // recursive function
 // *************************************
 
-//some PDO prepared statements before function and loops are used
-$fam_prep=$dbh->prepare("SELECT fam_man, fam_woman FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
-$fam_prep->bindParam(1,$fam_prep_var);
-$pers_prep=$dbh->prepare("SELECT pers_fams FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
-$pers_prep->bindParam(1,$pers_prep_var);
-
 function outline($family_id,$main_person,$gn,$nr_generations) {
 	global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $show_date, $dates_behind_names, $nr_generations;
 	global $language, $dirmark1, $dirmark1, $screen_mode;
-	global $fam_prep, $pers_prep, $fam_prep_var, $pers_prep_var;
 
 	$family_nr=1; //*** Process multiple families ***
 
@@ -242,14 +235,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 
 	// *** Count marriages of man ***
 	// *** YB: if needed show woman as main_person ***
-	$fam_prep_var = $family_id;
-	$fam_prep->execute();
-	try {
-		@$familyDb = $fam_prep->fetch(PDO::FETCH_OBJ);
-	} catch(PDOException $e) {
-		echo __('No valid family number');
-	}
-
+	@$familyDb = $db_functions->get_family($family_id,'man-woman');
 	$parent1=''; $parent2='';	$change_main_person=false;
 
 	// *** Standard main_person is the father ***
@@ -265,9 +251,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 	// *** Check family with parent1: N.N. ***
 	if ($parent1){
 		// *** Save man's families in array ***
-		$pers_prep_var = $parent1;
-		$pers_prep->execute();
-		@$personDb = $pers_prep->fetch(PDO::FETCH_OBJ);
+		@$personDb = $db_functions->get_person($parent1,'famc-fams');
 		$marriage_array=explode(";",$personDb->pers_fams);
 		$nr_families=substr_count($personDb->pers_fams, ";");
 	}
@@ -514,8 +498,6 @@ echo '<table class="humo outlinetable"><tr><td>';
 if($screen_mode != 'PDF') {
 echo '</td></tr></table>';
 }
-
-//include_once(CMS_ROOTPATH."footer.php");
 
 if($screen_mode != 'PDF') {
 	include_once(CMS_ROOTPATH."footer.php");

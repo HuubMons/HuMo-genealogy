@@ -242,7 +242,6 @@ print '<tr><td>';
 
 
 	// *** Sources in connect table ***
-	//$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 	$connect_qry="SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 		AND connect_source_id='".$sourceDb->source_gedcomnr."'
 		ORDER BY connect_kind, connect_sub_kind, connect_order";
@@ -275,7 +274,6 @@ print '<tr><td>';
 			//elseif ($connectDb->connect_sub_kind=='address_source'){
 			elseif (substr($connectDb->connect_sub_kind,-14)=='address_source'){
 				// *** Sources in address table ***
-				//$address_sql="SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_id='".$connectDb->connect_connect_id."'";
 				$address_sql="SELECT * FROM humo_addresses WHERE address_id='".$connectDb->connect_connect_id."'";
 				@$address_qry=$dbh->query($address_sql);
 				$address_Db=$address_qry->fetch(PDO::FETCH_OBJ);
@@ -354,7 +352,6 @@ print '<tr><td>';
 
 		// *** Source by address ***
 		if ($connectDb->connect_kind=='address' AND $connectDb->connect_sub_kind=='address_source'){
-			//$sql="SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_id='".$connectDb->connect_connect_id."'";
 			$sql="SELECT * FROM humo_addresses WHERE address_id='".$connectDb->connect_connect_id."'";
 			$address_sql=$dbh->query($sql); $addressDb=$address_sql->fetch(PDO::FETCH_OBJ);
 			if ($addressDb->address_address) $text=$addressDb->address_address;

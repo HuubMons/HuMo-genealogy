@@ -40,6 +40,8 @@ echo '<div data-role="page" data-theme="b">';
 	echo '<div data-role="header" data-theme="b">';
 		echo '<h1>'.__('Family').'</h1>';
 		echo '<a href="./" data-direction="reverse" class="ui-btn-left jqm-home">'.__('Home').'</a>';
+
+		//echo '<div style="margin-right:17px;float:right"; class="ui-block-a"><a data-role="button" rel="external" href="index.php?mobile=1">'.__('Website').'</a></div>';
 	echo '</div>';
 
 	/*

@@ -67,10 +67,6 @@ function set_privacy($personDb){
 					if (substr($personDb->pers_buried_date,-4) < $user["group_death_date"]){ $privacy_person=''; }
 						else $privacy_person='1'; // *** overwrite pers_alive status ***
 				}
-				if ($personDb->pers_cal_date){
-					if (substr($personDb->pers_cal_date,-4) < $user["group_death_date"]){ $privacy_person=''; }
-						else $privacy_person='1'; // *** overwrite pers_alive status ***
-				}
 			}
 
 			// *** Filter person's WITHOUT any date's ***
@@ -563,8 +559,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 				// DNA charts
 				if  ($user['group_gen_protection']=='n' AND ($personDb->pers_famc!="" OR ($personDb->pers_fams!="" AND $check_children))) {
 					//if ($check_children){
-					if($personDb->pers_sexe=="M") $charttype="ydnamark";
-					else $charttype="mtdnamark";
+					//if($personDb->pers_sexe=="M") $charttype="ydnamark";
+					//else $charttype="mtdnamark";
+					if($personDb->pers_sexe=="M") $charttype="ydna";
+					else $charttype="mtdna";
 						if (CMS_SPECIFIC=='Joomla'){
 							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
 						}

@@ -33,10 +33,6 @@ if (isset($_GET['pers_favorite'])){
 
 
 if (isset($_POST['person_remove'])){
-	//$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
-	//$new_nr_result = $dbh->query($new_nr_qry);
-	//$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-
 	$confirm.='<div class="confirm">';
 	$confirm.=__('This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?');
 
@@ -59,18 +55,12 @@ if (isset($_POST['person_remove'])){
 if (isset($_POST['person_remove2'])){
 	$confirm.='<div class="confirm">';
 
-	//$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
-	//$person_result = $dbh->query($person_qry);
-	//$personDb=$person_result->fetch(PDO::FETCH_OBJ);
 	$personDb = $db_functions->get_person($pers_gedcomnumber);
 
 	// *** If person is married: remove marriages from family ***
 	if ($personDb->pers_fams){
 		$fams_array=explode(";",$personDb->pers_fams);
 		foreach ($fams_array as $key => $value) {
-			//$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fams_array[$key]."'";
-			//$fam_result = $dbh->query($fam_qry);
-			//$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
 			$famDb=$db_functions->get_family($fams_array[$key]);
 
 			if ($famDb->fam_man==$pers_gedcomnumber){
@@ -134,11 +124,7 @@ if (isset($_POST['person_remove2'])){
 	}
 
 	// *** If person is a child: remove child number from parents family ***
-	//if (!$personDb->pers_fams AND $personDb->pers_famc){
 	if ($personDb->pers_famc){
-		//$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$personDb->pers_famc."'";
-		//$fam_result = $dbh->query($fam_qry);
-		//$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
 		$famDb=$db_functions->get_family($personDb->pers_famc);
 
 		$fam_children=explode(";",$famDb->fam_children);
@@ -168,18 +154,11 @@ if (isset($_POST['person_remove2'])){
 	$confirm.=__('Person is removed');
 
 	// *** Select new person ***
-	//$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_favorite LIKE '%_' ORDER BY pers_lastname, pers_firstname LIMIT 0,1";
-	//$new_nr_result = $dbh->query($new_nr_qry);
 	$new_nr_qry = "SELECT * FROM humo_settings
 		WHERE setting_variable='admin_favourite'
 		AND setting_tree_id='".$tree_id."' LIMIT 0,1";
 	$new_nr_result = $dbh->query($new_nr_qry);
 
-	//$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-	//if (isset($new_nr->pers_gedcomnumber)){
-	//	$pers_gedcomnumber=$new_nr->pers_gedcomnumber;
-	//	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
-	//}
 	if ($new_nr_result AND $new_nr_result->rowCount()){
 		@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 		$pers_gedcomnumber=$new_nr->setting_value;
@@ -455,9 +434,6 @@ if (isset($_GET['fam_remove']) OR isset($_POST['fam_remove']) ){
 	if (isset($_GET['fam_remove'])){ $fam_remove=safe_text($_GET['fam_remove']); };
 	if (isset($_POST['marriage_nr'])){ $fam_remove=safe_text($_POST['marriage_nr']); };
 
-	//$new_nr_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fam_remove."'";
-	//$new_nr_result = $dbh->query($new_nr_qry);
-	//$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 	$new_nr=$db_functions->get_family($fam_remove);
 
 	$confirm_relation.='<div class="confirm">';
@@ -465,7 +441,6 @@ if (isset($_GET['fam_remove']) OR isset($_POST['fam_remove']) ){
 		$confirm_relation.=__('Are you sure to remove this mariage?');
 	$confirm_relation.=' <form method="post" action="'.$phpself.'#marriage" style="display : inline;">';
 	$confirm_relation.='<input type="hidden" name="page" value="'.$page.'">';
-	//$confirm_relation.='<input type="hidden" name="fam_remove" value="'.safe_text($_GET['fam_remove']).'">';
 	$confirm_relation.='<input type="hidden" name="fam_remove3" value="'.$fam_remove.'">';
 	$confirm_relation.=' <input type="Submit" name="fam_remove2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
 	$confirm_relation.=' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
@@ -476,9 +451,6 @@ if (isset($_POST['fam_remove2'])){
 	$fam_remove=safe_text($_POST['fam_remove3']);
 
 	// *** Remove fams number from man and woman ***
-	//$new_nr_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fam_remove."'";
-	//$new_nr_result = $dbh->query($new_nr_qry);
-	//$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 	$new_nr=$db_functions->get_family($fam_remove);
 
 	// *** Disconnect ALL children from marriage ***
@@ -486,9 +458,6 @@ if (isset($_POST['fam_remove2'])){
 		$child_gedcomnumber=explode(";",$new_nr->fam_children);
 		for($i=0; $i<=substr_count($new_nr->fam_children, ";"); $i++){
 			// *** Find child data ***
-			//$sql= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($child_gedcomnumber[$i])."'";
-			//$result = $dbh->query($sql);
-			//$resultDb=$result->fetch(PDO::FETCH_OBJ);
 			$resultDb=$db_functions->get_person($child_gedcomnumber[$i]);
 			$pers_indexnr=$resultDb->pers_indexnr;
 			if ($pers_indexnr==$fam_remove){ $pers_indexnr=''; }
@@ -620,9 +589,6 @@ if (isset($_GET['add_parents'])){
 
 // *** Add EXISTING parents to a child ***
 if (isset($_POST['add_parents']) AND $_POST['add_parents']!=''){
-	//$parents= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['add_parents'])."'";
-	//$parents_result = $dbh->query($parents);
-	//$parentsDb=$parents_result->fetch(PDO::FETCH_OBJ);
 	$parentsDb=$db_functions->get_family($_POST['add_parents']);
 
 	if ($parentsDb->fam_children){
@@ -640,9 +606,6 @@ if (isset($_POST['add_parents']) AND $_POST['add_parents']!=''){
 	$result=$dbh->query($sql);
 
 	// *** Check pers_indexnr, change indexnr if needed ***
-	//$sql= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
-	//$result = $dbh->query($sql);
-	//$resultDb=$result->fetch(PDO::FETCH_OBJ);
 	$resultDb=$db_functions->get_person($pers_gedcomnumber);
 	$pers_indexnr=$resultDb->pers_indexnr;
 	if ($pers_indexnr==''){ $pers_indexnr=$_POST['add_parents']; }
@@ -682,9 +645,6 @@ if (isset($_POST['child_connect2'])){
 	$result=$dbh->query($sql);
 
 	// *** Check pers_indexnr, change indexnr if needed ***
-	//$sql= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($_POST["child_connect2"])."'";
-	//$result = $dbh->query($sql);
-	//$resultDb=$result->fetch(PDO::FETCH_OBJ);
 	$resultDb=$db_functions->get_person($_POST["child_connect2"]);
 	$pers_indexnr=$resultDb->pers_indexnr;
 	if ($pers_indexnr==''){ $pers_indexnr=$_POST['family_id']; }
@@ -731,9 +691,6 @@ if (isset($_POST['child_disconnecting'])){
 	$fam_gedcomnumber=$resultDb->fam_gedcomnumber;
 
 	// *** Find child data ***
-	//$sql= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($_POST["child_disconnect_gedcom"])."'";
-	//$result = $dbh->query($sql);
-	//$resultDb=$result->fetch(PDO::FETCH_OBJ);
 	$resultDb=$db_functions->get_person($_POST["child_disconnect_gedcom"]);
 	$pers_indexnr=$resultDb->pers_indexnr;
 	if ($pers_indexnr==$fam_gedcomnumber){ $pers_indexnr=''; }
@@ -818,9 +775,6 @@ if (isset($_GET['relation_add'])){
 	$partner_gedcomnumber='I1';
 	if (isset($new_nr->pers_gedcomnumber)) $partner_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+1);
 
-	//$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
-	//$person_result = $dbh->query($person_qry);
-	//$person_db=$person_result->fetch(PDO::FETCH_OBJ);
 	$person_db=$db_functions->get_person($pers_gedcomnumber);
 	if ($person_db->pers_sexe=='M'){
 		$man_gedcomnumber=$pers_gedcomnumber; $woman_gedcomnumber=$partner_gedcomnumber; $sexe='F';
@@ -885,9 +839,6 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 	$marriage=$fam_gedcomnumber;
 	$_SESSION['admin_fam_gedcomnumber']=$marriage;
 
-	//$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
-	//$person_result = $dbh->query($person_qry);
-	//$person_db=$person_result->fetch(PDO::FETCH_OBJ);
 	$person_db=$db_functions->get_person($pers_gedcomnumber);
 	if ($person_db->pers_sexe=='M'){
 		$man_gedcomnumber=$pers_gedcomnumber; $woman_gedcomnumber=$_POST['relation_add2']; $sexe='F';

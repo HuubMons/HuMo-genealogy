@@ -171,11 +171,6 @@ function text_show($find_text){
 	if($find_text != '') {
 		$text=$find_text;
 		if (substr($find_text, 0, 1)=='@'){
-			//$text_check=substr($find_text,1,-1);
-			//$search_text=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."texts
-			//	WHERE text_gedcomnr='".safe_text($text_check)."'");
-			//$search_text=$dbh->query("SELECT * FROM ".$tree_prefix."texts
-			//WHERE text_gedcomnr='".substr($find_text,1,-1)."'");
 			$search_text=$dbh->query("SELECT * FROM humo_texts
 			WHERE text_tree_id='".$tree_id."' AND text_gedcomnr='".substr($find_text,1,-1)."'");
 			@$search_textDb=$search_text->fetch(PDO::FETCH_OBJ);

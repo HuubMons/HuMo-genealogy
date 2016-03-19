@@ -75,6 +75,7 @@ while (false!==($file = readdir($language_folder))) {
 
 		// *** Order of languages ***
 		if ($file=='cn') $language_order[]='Chinese';
+		elseif ($file=='da') $language_order[]='Dansk';
 		elseif ($file=='de') $language_order[]='Deutsch';
 		elseif ($file=='en') $language_order[]='English';
 		elseif ($file=='en_us') $language_order[]='English_us';
@@ -308,6 +309,9 @@ else{
 		echo '<meta http-equiv="content-type" content="text/html; charset=utf-8">'; //to support all of the unicode scripts.
 		// --------------------------------------------------- end
 
+		// *** Rescale standard HuMo-gen pages for mobile devices ***
+		echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+
 		print "<title>".$head_text."</title>\n";
 
 		if ($humo_option["searchengine"]=="j"){ print $humo_option["robots_option"]; }
@@ -511,6 +515,9 @@ else{
 		echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/slimbox2.js"></script>';
 		echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/lightbox/css/slimbox2.css" type="text/css" media="screen">';
 	}
+
+	// *** CSS changes for mobile devices ***
+	echo '<link rel="stylesheet" media="(max-width: 640px)" href="gedcom_mobile.css">';
 
 	if (!CMS_SPECIFIC){
 		print "</head>\n";

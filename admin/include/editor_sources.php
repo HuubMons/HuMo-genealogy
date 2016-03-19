@@ -42,10 +42,6 @@ $phpself2.=$event_link;
 // *** Add new address connection ***
 if (isset($_GET['person_place_address']) AND isset($_GET['address_add'])){
 	// *** Generate new order number ***
-	//$event_sql="SELECT * FROM ".$tree_prefix."connections
-	//	WHERE connect_kind='person'
-	//	AND connect_sub_kind='person_address'
-	//	AND connect_connect_id='".safe_text($pers_gedcomnumber)."'";
 	$event_sql="SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_sub_kind='person_address'
@@ -54,13 +50,6 @@ if (isset($_GET['person_place_address']) AND isset($_GET['address_add'])){
 	$count=$event_qry->rowCount();
 	$count++;
 
-	//$sql="INSERT INTO ".$tree_prefix."connections SET
-	//	connect_order='".$count."',
-	//	connect_new_date='".$gedcom_date."',
-	//	connect_new_time='".$gedcom_time."',
-	//	connect_kind='person',
-	//	connect_sub_kind='person_address',
-	//	connect_connect_id='".safe_text($pers_gedcomnumber)."'";
 	$sql="INSERT INTO humo_connections SET
 		connect_tree_id='".$tree_id."',
 		connect_order='".$count."',
@@ -75,10 +64,6 @@ if (isset($_GET['person_place_address']) AND isset($_GET['address_add'])){
 // *** Add new source connection ***
 if (isset($_POST['connect_add'])){
 	// *** Generate new order number ***
-	//$event_sql="SELECT * FROM ".$tree_prefix."connections
-	//	WHERE connect_kind='".safe_text($_POST['connect_kind'])."'
-	//	AND connect_sub_kind='".safe_text($_POST["connect_sub_kind"])."'
-	//	AND connect_connect_id='".safe_text($_POST["connect_connect_id"])."'";
 	$event_sql="SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_kind='".safe_text($_POST['connect_kind'])."'
@@ -88,7 +73,6 @@ if (isset($_POST['connect_add'])){
 	$count=$event_qry->rowCount();
 	$count++;
 
-	//$sql="INSERT INTO ".$tree_prefix."connections SET
 	$sql="INSERT INTO humo_connections SET
 		connect_tree_id='".$tree_id."',
 		connect_order='".$count."',
@@ -103,7 +87,6 @@ if (isset($_POST['connect_add'])){
 // *** Change source connection ***
 if (isset($_POST['connect_change'])){
 	foreach($_POST['connect_change'] as $key=>$value){
-		//$sql="UPDATE ".$tree_prefix."connections SET
 		$sql="UPDATE humo_connections SET
 		connect_kind='".safe_text($_POST['connect_kind'][$key])."',
 		connect_sub_kind='".safe_text($_POST['connect_sub_kind'][$key])."',
@@ -154,14 +137,12 @@ if (isset($_GET['connect_drop'])){
 }
 if (isset($_POST['connect_drop2'])){
 	// *** Delete source connection ***
-	//$sql="DELETE FROM ".$tree_prefix."connections
 	$sql="DELETE FROM humo_connections
 		WHERE connect_id='".safe_text($_POST['connect_drop'])."'";
 	$result=$dbh->query($sql);
 
 	// *** Re-order remaining source connections ***
 	$event_order=1;
-	//$event_sql="SELECT * FROM ".$tree_prefix."connections
 	$event_sql="SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_kind='".safe_text($_POST['connect_kind'])."'
@@ -170,7 +151,6 @@ if (isset($_POST['connect_drop2'])){
 		ORDER BY connect_order";
 	$event_qry=$dbh->query($event_sql);
 	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){	
-		//$sql="UPDATE ".$tree_prefix."connections
 		$sql="UPDATE humo_connections
 			SET connect_order='".$event_order."'
 			WHERE connect_id='".$eventDb->connect_id."'";
@@ -181,13 +161,11 @@ if (isset($_POST['connect_drop2'])){
 }
 
 if (isset($_GET['connect_down'])){
-	//$sql="UPDATE ".$tree_prefix."connections SET connect_order='99'
 	$sql="UPDATE humo_connections SET connect_order='99'
-	WHERE connect_id='".safe_text($_GET['connect_down'])."'";
-		$result=$dbh->query($sql);
+		WHERE connect_id='".safe_text($_GET['connect_down'])."'";
+	$result=$dbh->query($sql);
 
 	$event_order=safe_text($_GET['connect_order']);
-	//$sql="UPDATE ".$tree_prefix."connections SET connect_order='".$event_order."'
 	$sql="UPDATE humo_connections SET connect_order='".$event_order."'
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_kind='".safe_text($_GET['connect_kind'])."'
@@ -196,7 +174,6 @@ if (isset($_GET['connect_down'])){
 		AND connect_order='".($event_order+1)."'";
 		$result=$dbh->query($sql);
 
-	//$sql="UPDATE ".$tree_prefix."connections SET connect_order='".($event_order+1)."'
 	$sql="UPDATE humo_connections SET connect_order='".($event_order+1)."'
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_kind='".safe_text($_GET['connect_kind'])."'
@@ -207,13 +184,11 @@ if (isset($_GET['connect_down'])){
 }
 
 if (isset($_GET['connect_up'])){
-	//$sql="UPDATE ".$tree_prefix."connections SET connect_order='99'
 	$sql="UPDATE humo_connections SET connect_order='99'
 	WHERE connect_id='".safe_text($_GET['connect_up'])."'";
 		$result=$dbh->query($sql);
 
 	$event_order=safe_text($_GET['connect_order']);
-	//$sql="UPDATE ".$tree_prefix."connections
 	$sql="UPDATE humo_connections SET connect_order='".$event_order."'
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_kind='".safe_text($_GET['connect_kind'])."'
@@ -222,7 +197,6 @@ if (isset($_GET['connect_up'])){
 		AND connect_order='".($event_order-1)."'";
 		$result=$dbh->query($sql);
 
-	//$sql="UPDATE ".$tree_prefix."connections
 	$sql="UPDATE humo_connections SET connect_order='".($event_order-1)."'
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_kind='".safe_text($_GET['connect_kind'])."'
@@ -236,8 +210,6 @@ if (isset($_GET['connect_up'])){
 // **************************
 // *** Show source editor ***
 // **************************
-
-//echo '<h1 align=center>'.__('Sources').'</h1>';
 
 if ($connect_sub_kind=='pers_name_source'){
 	echo '<h2>'.__('Name source').'</h2>';
@@ -396,7 +368,6 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 	$text.= '</tr>';
 
 	// *** Search for all connected sources ***
-	//$connect_qry="SELECT * FROM ".$tree_prefix."connections
 	$connect_qry="SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_kind='".$connect_kind."'
@@ -512,9 +483,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 
 		$text.='</td><td style="border-left:0px;">';
 
-			//$text.=__('Sourcerole').' <input type="text" name="connect_role['.$connectDb->connect_id.']" placeholder="'.__('Sourcerole').'" value="'.htmlspecialchars($connectDb->connect_role).'" size="6"> ';
 			$text.=' <input type="text" name="connect_role['.$connectDb->connect_id.']" placeholder="'.__('Sourcerole').'" value="'.htmlspecialchars($connectDb->connect_role).'" size="6"> ';
-			//$text.=__('Page').' <input type="text" name="connect_page['.$connectDb->connect_id.']" placeholder="'.__('Page').'" value="'.$connectDb->connect_page.'" size="6">';
 			$text.=' <input type="text" name="connect_page['.$connectDb->connect_id.']" placeholder="'.__('Page').'" value="'.$connectDb->connect_page.'" size="6">';
 
 		$text.='</td></tr>';
@@ -527,7 +496,6 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 			$text.='<br>';
 		$text.='</td><td style="border-left:0px; border-right:0px;" colspan="2">';
 			// *** Source: pull-down menu ***
-			//$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix."sources ORDER BY source_title");
 			$source_qry=$dbh->query("SELECT * FROM humo_sources
 				WHERE source_tree_id='".safe_text($tree_id)."' ORDER BY source_title");
 			$text.='<select size="1" name="connect_source_id['.$connectDb->connect_id.']" style="width: 300px">';

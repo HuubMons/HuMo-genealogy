@@ -66,8 +66,10 @@ This credits screen is english only...
 
 <h2>Languages</h2>
 
+HuMo-gen uses <a href="https://www.transifex.com/organization/humo-gen" target="_blank">Transifex</a> for translations.
 <ul>
 <li>Chinese by: Dongshan.</li>
+<li>Danish by: Erik Jensen.</li>
 <li>Dutch by: Huub, Yossi.</li>
 <li>English by: Huub, Yossi.</li>
 <li>English (US) by: Yossi, Brian.</li>

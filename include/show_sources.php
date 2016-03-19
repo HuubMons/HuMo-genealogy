@@ -28,7 +28,6 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 	if ($user['group_sources']!='n' AND $source_presentation!='hide' AND $screen_mode!='STAR'){
 
 		// *** Search for all connected sources ***
-		//$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 		$connect_qry="SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 			AND connect_kind='".$connect_kind."'
 			AND connect_sub_kind='".$connect_sub_kind."'
@@ -39,9 +38,6 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 			// *** Get extended source, and check for restriction (in source and user group) ***
 			$source_status='publish';
 			if ($connectDb->connect_source_id){
-				//$source_sql=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources
-				//	WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'");
-				//$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);
 				$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
 				if ($user['group_show_restricted_source']=='n' AND $sourceDb->source_status=='restricted'){
 					$source_status='restricted';
@@ -177,17 +173,12 @@ function show_sources_footnotes(){
 	}
 
 	for ($j=0; $j<=(count($source_footnote_connect_id)-1); $j++){
-		//$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
-		//	WHERE connect_id='".$source_footnote_connect_id[$j]."'";
 		$connect_qry="SELECT * FROM humo_connections
 			WHERE connect_id='".$source_footnote_connect_id[$j]."'";
 		$connect_sql=$dbh->query($connect_qry);
 		$connectDb=$connect_sql->fetch(PDO::FETCH_OBJ);
 		// *** Show extended source data ***
 		if ($connectDb->connect_source_id){
-			//$source_sql=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources
-			//	WHERE source_gedcomnr='".safe_text($connectDb->connect_source_id)."'");
-			//$sourceDb=$source_sql->fetch(PDO::FETCH_OBJ);
 			$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
 
 			// *** Always show title of source, show link only after permission check ***

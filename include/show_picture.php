@@ -11,7 +11,6 @@ function show_media($personDb,$marriageDb){
 	$media_nr=0;
 
 	// *** Pictures/ media ***
-	//if ($user['group_pictures']=='j'){
 	if ($user['group_pictures']=='j' AND $picture_presentation!='hide'){
 		//$tree_pict_path=CMS_ROOTPATH.$dataDb->tree_pict_path;
 		$tree_pict_path=$dataDb->tree_pict_path;
@@ -19,13 +18,11 @@ function show_media($personDb,$marriageDb){
 
 		// *** Standard connected media by person and family ***
 		if ($personDb!=''){
-			//$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 				AND event_person_id='".$personDb->pers_gedcomnumber."' AND LEFT(event_kind,7)='picture'
 				ORDER BY event_kind, event_order");
 		}
 		else{
-			//$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 				AND event_family_id='".$marriageDb->fam_gedcomnumber."' AND event_kind='picture'
 				ORDER BY event_order");
@@ -41,7 +38,6 @@ function show_media($personDb,$marriageDb){
 
 		// *** Search for all external connected objects by a person or a family ***
 		if ($personDb!=''){
-			//$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 			$connect_qry="SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_object'
@@ -49,7 +45,6 @@ function show_media($personDb,$marriageDb){
 				ORDER BY connect_order";
 		}
 		else{
-			//$connect_qry="SELECT * FROM ".$tree_prefix_quoted."connections
 			$connect_qry="SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='fam_object'
@@ -58,7 +53,6 @@ function show_media($personDb,$marriageDb){
 		}
 		$connect_sql=$dbh->query($connect_qry);
 		while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-			//$picture_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."events
 			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 				AND event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
 				ORDER BY event_order");
@@ -242,14 +236,26 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 	@list($width, $height) = getimagesize($picture["path"].$picture['thumb'].$picture['picture']);
 
 	if ($pict_width>0 AND $pict_height>0){
+		/*
 		// *** Change width and height ***
 		$factor=$height/$pict_height;
-		$picture['width']=$width/$factor;
+		$picture['width']=floor($width/$factor);
 
 		// *** If picture is too width, resize it ***
 		if ($picture['width']>$pict_width){
 			$factor=$width/$pict_width;
-			$picture['height']=$height/$factor;
+			$picture['height']=floor($height/$factor);
+		}
+		*/
+		if ($width > $height){
+			// *** Width picture: change width and height ***
+			$factor=$width/$pict_width;
+			$picture['width']=floor($width/$factor);
+		}
+		else{
+			// *** High picture ***
+			$factor=$height/$pict_height;
+			$picture['width']=floor($width/$factor);
 		}
 	}
 	elseif ($pict_width>0){

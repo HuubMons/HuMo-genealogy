@@ -16,7 +16,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		$tree_prefix_result2 = $dbh->query($sql);
 		$num_rows = $tree_prefix_result2->rowCount();
 		if ($num_rows>1){
-			echo ' <form method="POST" action="tree_index.php" style="display : inline;" id="top_tree_select">';
+			echo ' <form method="POST" action="tree_index.php" style="display : inline;" id="top_tree_select" class="mobile_hidden">';
 			echo __('Family tree');
 			echo ': <select size=1 name="database" onChange="this.form.submit();" style="width: 150px; height:20px;">';
 			echo '<option value="">'.__('Select a family tree:').'</option>';
@@ -67,7 +67,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			if (isset($_SESSION["save_quicksearch"])){ $quicksearch=$_SESSION["save_quicksearch"]; }
 			if($humo_option['min_search_chars']==1) { $pattern=""; $min_chars =" 1 ";}
 			else { $pattern='pattern=".{'.$humo_option['min_search_chars'].',}"'; $min_chars = " ".$humo_option['min_search_chars']." ";}
-			print '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="15" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
+			print '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="10" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
 			print ' <input type="submit" value="'.__('Search').'">';
 		print "</form>";
 	}
@@ -363,7 +363,6 @@ echo '<ul class="humo_menu_item">';
 					//if ($user['group_sources']=='j'){
 					if ($user['group_sources']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check if there are sources in the database ***
-						//$source_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."sources");
 						$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$_SESSION['tree_id']."'");
 						@$sourceDb=$source_qry->rowCount();
 						if ($sourceDb>0){
@@ -381,7 +380,6 @@ echo '<ul class="humo_menu_item">';
 					//if ($user['group_addresses']=='j'){
 					if ($user['group_addresses']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check for addresses in the database ***
-						//$address_qry=$dbh->query("SELECT * FROM ".$tree_prefix_quoted."addresses WHERE address_gedcomnr LIKE '_%'");
 						$address_qry=$dbh->query("SELECT * FROM humo_addresses
 							WHERE address_tree_id='".$tree_id."' AND address_gedcomnr LIKE '_%'");
 						@$addressDb=$address_qry->rowCount();
@@ -413,16 +411,10 @@ echo '<ul class="humo_menu_item">';
 	// make sure at least one of the submenus is activated, otherwise don't show TOOLS menu
 	/*
 	if($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j' OR
-	($user["group_googlemaps"]=='j' AND mysql_num_rows( mysql_query("SHOW TABLES LIKE 'humo_location'", $db))) OR 
-	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
-	$user["group_latestchanges"]=='j' ) {
-	*/
-/*
-	if($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j' OR
 	($user["group_googlemaps"]=='j' AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0) OR 
 	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
 	$user["group_latestchanges"]=='j' ) {
-*/
+	*/
 	if($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j' OR
 	($user["group_googlemaps"]=='j' AND 1==2 AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0 AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees' AND setting_value LIKE '%@".$_SESSION['tree_id'].";%' ")->rowCount() > 0) OR 
 	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
@@ -448,7 +440,6 @@ echo '<ul class="humo_menu_item">';
 
 			echo '<a href="'.$path_tmp.'"';
 			echo ' onmouseover="mopen(event,\'m1x\',\'?\',\'?\')"';
-
 			echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Tools').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
 
 			echo '<div id="m1x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -547,7 +538,7 @@ echo '<ul class="humo_menu_item">';
 	if ($menu_choice=='info'){ $select_top=' id="current_top"'; }
 	if ($menu_choice=='credits'){ $select_top=' id="current_top"'; }
 	if ($menu_choice=='info_cookies'){ $select_top=' id="current_top"'; }
-	echo '<li>';
+	echo '<li class="mobile_hidden">';
 	echo '<div class="'.$rtlmarker.'sddm">';
 
 		if (CMS_SPECIFIC=='Joomla'){
@@ -609,7 +600,7 @@ echo '<ul class="humo_menu_item">';
 			} else{
 				$path_tmp=CMS_ROOTPATH.'login.php';
 			}
-			print '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Login')."</a></li>\n";
+			print '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'">'.__('Login')."</a></li>\n";
 		} else{
 			// *** Log off ***
 			if (CMS_SPECIFIC=='Joomla'){
@@ -617,7 +608,7 @@ echo '<ul class="humo_menu_item">';
 			} else{
 				$path_tmp=CMS_ROOTPATH.'index.php?log_off=1';
 			}
-			print '<li><a href="'.$path_tmp.'">'.__('Logoff')." [".$_SESSION["user_name"]."]</a></li>\n";
+			print '<li class="mobile_hidden"><a href="'.$path_tmp.'">'.__('Logoff')." [".$_SESSION["user_name"]."]</a></li>\n";
 		}
 	}
 
@@ -631,7 +622,7 @@ echo '<ul class="humo_menu_item">';
 		else{
 			$path_tmp=CMS_ROOTPATH_ADMIN.'index.php';
 		}
-		echo '<li'.$select_menu.'><a href="'.$path_tmp.'" target="_blank">'.__('Admin').'</a></li>';
+		echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'" target="_blank">'.__('Admin').'</a></li>';
 	}
 
 	// *** Link to registration form ***
@@ -648,7 +639,7 @@ echo '<ul class="humo_menu_item">';
 
 	// *** Country flags ***
 	if (!$bot_visit){
-		echo '<li>';
+		echo '<li class="mobile_hidden">';
 		echo '<div class="'.$rtlmarker.'sddm">';
 			echo '<a href="index.php?option=com_humo-gen"';
 			echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';

@@ -69,21 +69,12 @@ for ($i=0 ; $i < $maxperson; $i++) {
 	}
 }
 
-// some prepared statements so they will be initialized once
-$person_prep = $dbh->prepare("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
-$person_prep->bindParam(1,$pers_var);
-
-$fam_prep = $dbh->prepare("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber =?");
-$fam_prep->bindParam(1,$fam_var);
-
 function fillarray ($nr, $famid) {
-	global $dbh, $maxperson;
-	global $treeid, $person_prep, $fam_prep, $pers_var, $fam_var, $indexnr;
+	global $dbh, $db_functions, $maxperson;
+	global $treeid, $pers_var, $fam_var, $indexnr;
 	if ($nr >= $maxperson) { return; }
 	if ($famid) {
-		$pers_var = $famid;
-		$person_prep->execute();
-		@$personmnDb = $person_prep->fetch(PDO::FETCH_OBJ);
+		@$personmnDb = $db_functions->get_person($famid);
 
 		$man_cls = New person_cls;
 		$man_cls->construct($personmnDb);
@@ -115,9 +106,7 @@ function fillarray ($nr, $famid) {
 		$treeid[$nr][5]=$personmnDb->pers_sexe;
 
 		if ($personmnDb->pers_famc){
-			$fam_var = $personmnDb->pers_famc;
-			$fam_prep->execute();
-			@$record_family = $fam_prep->fetch(PDO::FETCH_OBJ);
+			@$record_family = $db_functions->get_family($personmnDb->pers_famc);
 			if ($record_family->fam_man){
 				fillarray ($nr*2, $record_family->fam_man);
 			}
@@ -211,10 +200,10 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr) {
 * @param int $fandeg fan size in deg (default=270)
 */
 function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
-	global $dbh, $tree_id, $fontsize, $date_display;
+	global $dbh, $tree_id, $db_functions, $fontsize, $date_display;
 	global $fan_style, $family_id;
 	global $printing, $language, $selected_language;
-	global $person_prep, $pers_var, $tree_prefix_quoted;
+	global $pers_var, $tree_prefix_quoted;
 	global $china_message;
 	// check for GD 2.x library
 	if (!defined("IMG_ARC_PIE")) {
@@ -461,15 +450,11 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 				if($gen==0 AND $treeid[1][2] != "") { // base person and has spouse
 					if($treeid[1][5]=="F") { $spouse="fam_man";} else { $spouse="fam_woman"; }
 
-					//2 reasons this is not a prepared pdo statement: 1. only used once  2. table names can't be parameters...
-					//$spouse_result = $dbh->query("SELECT ".$spouse." FROM ".$tree_prefix_quoted."family WHERE fam_gedcomnumber='".$treeid[1][2]."'");
 					$spouse_result = $dbh->query("SELECT ".$spouse." FROM humo_families
 						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$treeid[1][2]."'");
 					@$spouseDb = $spouse_result->fetch(); // fetch() with no parameter deaults to array which is what we want here
 
- 					$pers_var = $spouseDb[$spouse];
-					$person_prep->execute();
-					@$spouse2Db = $person_prep->fetch(PDO::FETCH_OBJ);
+					@$spouse2Db = $db_functions->get_person($spouseDb[$spouse]);
 
 					$spouse_cls = New person_cls;
 					$spouse_cls->construct($spouse2Db);
@@ -517,8 +502,7 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 }
 
 
-
-//TEST in image using CSS
+// *** Huub: TEXT in image using CSS... ***
 //echo '
 //<STYLE>
 //#rotate {
@@ -531,7 +515,6 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 //</STYLE>
 //<div id="rotate">Rotate<br>漢字<br>טבלאות בסיס</div>
 //';
-
 
 
 $fan_style=3;

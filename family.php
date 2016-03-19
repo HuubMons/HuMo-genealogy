@@ -69,8 +69,7 @@ function topline(){
 	global $user, $source_presentation, $change_main_person, $maps_presentation, $picture_presentation, $text_presentation, $database, $man_cls, $person_manDb;
 	global $woman_cls, $person_womanDb, $selected_language;
 
-	//$text='<tr><td class="table_header" width="75%">';
-	$text='<tr class=table_headline><td class=table_header width="65%">';
+	$text='<tr class="table_headline"><td class="table_header" width="65%">';
 
 	// *** Text above family ***
 	$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
@@ -82,7 +81,6 @@ function topline(){
 	if (!$bot_visit AND $descendant_loop==0 AND $parent1_marr==0){
 
 		// *** Settings in pop-up screen ***
-		//$text.= '<div class="'.$rtlmarker.'sddm" style="position:absolute;left:10px;top:10px;display:inline;">';
 		$text.= '<div class="'.$rtlmarker.'sddm" style="left:10px;top:10px;display:inline;">';
 			$text.= '<a href="'.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'"';
 			$text.= ' style="display:inline" ';
@@ -684,13 +682,6 @@ else{
 			$family_nr=1;
 
 			// *** Count marriages of man ***
-			//$family_id_loop_var = $family_id_loop;
-			//$family_prep->execute();
-			//try { 
-			//	@$familyDb= $family_prep->fetch(PDO::FETCH_OBJ);
-			//} catch (PDOException $e) {
-			//	echo __('No valid family number.');
-			//}
 			$familyDb = $db_functions->get_family($family_id_loop);
 			$parent1=''; $parent2=''; $change_main_person=false;
 			// *** Standard main person is the father ***
@@ -1473,10 +1464,11 @@ else{
 					// *** Family source ***
 					if($screen_mode=='PDF') {
 						// PDF rendering of sources
-						$pdf->Write(6,show_sources2("family","family",$familyDb->fam_gedcomnumber)."\n");
+						$pdf->Write(6,show_sources2("family","family_source",$familyDb->fam_gedcomnumber)."\n");
 					}
 					else {
-						echo show_sources2("family","family",$familyDb->fam_gedcomnumber);
+						//echo show_sources2("family","family",$familyDb->fam_gedcomnumber);
+						echo show_sources2("family","family_source",$familyDb->fam_gedcomnumber);
 					}
 
 				} //end "if not STAR"
@@ -1549,15 +1541,12 @@ else{
 
 					for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
 						@$childDb = $db_functions->get_person($child_array[$i]);
-//echo $db_functions->tree_id.' '.$child_array[$i].'!!!';
 						// *** Use person class ***
 						$child_cls = New person_cls;
 						$child_cls->construct($childDb);
 
 						if($screen_mode=='') {
-							//echo '<tr><td colspan="4">';
 							echo '<div class="children">';
-							//echo '<div class="child_nr">'.$childnr.')</div> ';
 							echo '<div class="child_nr">'.$childnr.'.</div> ';
 							echo $child_cls->name_extended("child");
 						}
@@ -1565,7 +1554,6 @@ else{
 							//  PDF rendering of name + details
 							$pdf->SetFont('Arial','B',11);
 							$pdf->SetLeftMargin($indent);
-							//$pdf->Write(6,$childnr.') ');
 							$pdf->Write(6,$childnr.'. ');
 							if($childDb->pers_sexe=='M') {
 								$pdf->Image("images/man.gif",$pdf->GetX()+1,$pdf->GetY()+1,3.5,3.5);
@@ -1676,11 +1664,6 @@ else{
 							// *** YB: show children first in descendant_report ***
 							$descendant_main_person2[]=$childDb->pers_gedcomnumber;
 							if($screen_mode=='') {
-								//echo '<b><i>, '.__('follows').': </i></b>
-								//<a href="'.str_replace("&","&amp;",$_SERVER['REQUEST_URI']).'#'.
-								//$number_roman[$descendant_loop+2].'-'.$number_generation[count($descendant_family_id2)].'">'.
-								//$number_roman[$descendant_loop+2].'-'.$number_generation[count($descendant_family_id2)].'</a>';
-
 								$search_nr=array_search($child_family[0], $check_double);
 								echo '<b><i>, '.__('follows').': </i></b>';
 								echo '<a href="'.str_replace("&","&amp;",$_SERVER['REQUEST_URI']).'#'.$follows_array[$search_nr].'">'.$follows_array[$search_nr].'</a>';
@@ -1689,12 +1672,10 @@ else{
 							if($screen_mode=='PDF') {
 								// PDF rendering of link to own family
 								$pdf->Write(6,', '.__('follows').': ');
-								//$romnr=$number_roman[$descendant_loop+2].'-'.$number_generation[count($descendant_family_id2)];
 								$search_nr=array_search($child_family[0], $check_double);
 								$romnr=$follows_array[$search_nr];
 								$link[$romnr]=$pdf->AddLink();
 								$pdf->SetFont('Arial','U',11);  $pdf->SetTextColor(28,28,255);
-								//$pdf->Write(6,$number_roman[$descendant_loop+2].'-'.$number_generation[count($descendant_family_id2)]."\n",$link[$romnr]);
 								$pdf->Write(6,$romnr."\n",$link[$romnr]);
 								$pdf->SetFont('Arial','',12); $pdf->SetTextColor(0);
 								$parentchild[$romnr]=$id;
@@ -1703,7 +1684,6 @@ else{
 							if($screen_mode=='RTF') {
 								$search_nr=array_search($child_family[0], $check_double);
 								$rtf_text='<b><i>, '.__('follows').': </i></b>'.$follows_array[$search_nr];
-								//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
 								$sect->writeText($rtf_text, $arial12);
 							}
 
@@ -2220,15 +2200,6 @@ if($screen_mode=='') {
 
 				$register_message.=__('User note by family').': <a href="'.$_SERVER['SERVER_NAME'].'/'.$_SERVER['PHP_SELF'].'?database='.$tree_prefix_quoted.
 				'&amp;id='.$family_id.'&amp;main_person='.$main_person.'">'.safe_text($name["standard_name"]).'</a>';
-
-				//$headers  = "MIME-Version: 1.0\n";
-				//$headers .= "Content-type: text/html; charset=utf-8\n";
-				//$headers .= "X-Priority: 3\n";
-				//$headers .= "X-MSMail-Priority: Normal\n";
-				//$headers .= "X-Mailer: php\n";
-				//$headers .= "From: \"".$userDb->user_name."\" <".$userDb->user_mail.">\n";
-
-				//@$mail = mail($register_address, $register_subject, $register_message, $headers);
 
 				include_once ('include/mail.php');
 				// *** Set who the message is to be sent from ***

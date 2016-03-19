@@ -27,7 +27,7 @@ echo '<br><br><table class="humo standard" style="width:800px;" border="1">';
 
 echo '<tr class="table_header"><th colspan="2">'.__('Pictures/ create thumbnails').'</th></tr>';
 
-	echo '<tr><td>'.__('Choose family').'</td>';
+	echo '<tr><td class="line_item">'.__('Choose family').'</td>';
 	echo '<td>';
 		$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 		$tree_result = $dbh->query($tree_sql);
@@ -69,7 +69,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('Pictures/ create thumbnails
 		$data2sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id=".$tree_id);
 		$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
 
-		echo '<tr><td>';
+		echo '<tr><td class="line_item">';
 			echo __('Path to the pictures');
 		echo '</td><td>';
 			echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
@@ -86,9 +86,9 @@ echo '<tr class="table_header"><th colspan="2">'.__('Pictures/ create thumbnails
 		if ($data2Db->tree_pict_path!='' AND file_exists($prefx.$data2Db->tree_pict_path))
 			$path_status = __('Picture path exists.');
 		else
-			$path_status = '<b>'.__('Picture path doesn\'t exist!').'</b>';
+			$path_status = '<span class="line_nok"><b>'.__('Picture path doesn\'t exist!').'</b></span>';
 
-		echo '<tr><td>';
+		echo '<tr><td class="line_item">';
 			echo __('Status of picture path');
 		echo '</td><td>';
 			echo $path_status;
@@ -97,7 +97,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('Pictures/ create thumbnails
 		// *** Thumb height ***
 		$thumb_height=120; // *** Standard thumb height ***
 		if (isset($_POST['pict_height']) AND is_numeric($_POST['pict_height'])){ $thumb_height=$_POST['pict_height']; }
-		echo '<tr><td>';
+		echo '<tr><td class="line_item">';
 			echo ucfirst (strtolower(__('CREATE THUMBNAILS')));
 		echo '</td><td>';
 			echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
@@ -116,7 +116,6 @@ echo '</table><br>';
 
 $counter=0;
 if (isset($_POST["thumbnail"])){
-	//$pict_path=$_POST['picture_path'];
 	$pict_path=$data2Db->tree_pict_path;
 
 	@set_time_limit(3000);

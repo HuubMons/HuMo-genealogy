@@ -1,9 +1,6 @@
 <?php
 include_once("header.php"); // returns CMS_ROOTPATH constant
 //error_reporting(E_ALL);
-//if(isset($_POST['tree_prefix'])) {
-//	$tree_prefix_quoted = $_POST['tree_prefix'];
-//}
 
 include_once(CMS_ROOTPATH."menu.php");
 include_once(CMS_ROOTPATH.'include/person_cls.php');
@@ -310,8 +307,6 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	$chosenperson= $_GET['persged'];
 	$persfams = $_GET['persfams'];
 	$persfams_arr = explode(';',$persfams);
-	//$myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM ".$tree_prefix_quoted.'person
-	//	WHERE pers_gedcomnumber="'.$chosenperson.'"');
 	$myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$chosenperson."'");
 	$myresultDb=$myresult->fetch(PDO::FETCH_OBJ);
@@ -319,27 +314,12 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 
 	$gn=0; // generation number
 
-	// prepared statements for use in outline loops
-	$family_prep = $dbh->prepare("SELECT fam_man, fam_woman FROM humo_families
-		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber=?");
-	$family_prep->bindParam(1,$fam_prep_var);
-
-	$person_prep = $dbh->prepare("SELECT pers_fams FROM humo_persons
-		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber=?");
-	$person_prep->bindParam(1,$pers_prep_var);
-
 	function outline($family_id,$main_person,$gn) {
 		global $dbh, $db_functions, $desc_array;
 		global $language, $dirmark1, $dirmark1;
-		global $family_prep, $fam_prep_var, $person_prep, $pers_prep_var;
 		$family_nr=1; //*** Process multiple families ***
-		$fam_prep_var = $family_id;
-		$family_prep->execute(); 
-		try{
-			@$familyDb=$family_prep->fetch(PDO::FETCH_OBJ);
-		} catch (PDOException $e) {
-			print "No valid family number / Geen geldig gezinsnummer<br/>";
-		}
+
+		$familyDb = $db_functions->get_family($family_id,'man-woman');
 		$parent1=''; $parent2=''; $change_main_person=false;
 
 		// *** Standard main_person is the father ***
@@ -355,9 +335,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 		// *** Check family with parent1: N.N. ***
 		if ($parent1){
 			// *** Save man's families in array ***
-			$pers_prep_var = $parent1;
-			$person_prep->execute();
-			@$personDb=$person_prep->fetch(PDO::FETCH_OBJ);
+			@$personDb=$db_functions->get_person($parent1,'famc-fams');
 			$marriage_array=explode(";",$personDb->pers_fams);
 			$nr_families=substr_count($personDb->pers_fams, ";");
 		}
@@ -448,7 +426,6 @@ echo '</div>';
 // END MENU
 
 // FIXED WINDOW WITH LIST OF SPECIFIC FAMILY NAMES TO MAP BY
-//$fam_search = "SELECT * , CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname FROM ".$tree_prefix_quoted."person WHERE (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
 $fam_search = "SELECT * , CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
 	FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
 $fam_search_result = $dbh->query($fam_search);

@@ -361,13 +361,17 @@ if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
 		echo ' '.__('Visitors counter').': '.$page_counter;
 
 		echo '<br>';
-		echo '<textarea cols="50" rows="5" name="page_text">'.$page_text.'</textarea><br>';
+		//echo '<textarea cols="50" rows="5" name="page_text">'.$page_text.'</textarea><br>';
+		echo '<textarea class="ckeditor" name="page_text">'.$page_text.'</textarea>';
 
 		echo '</form>';
 
 	echo '</td></tr></table>';
 
-	// *** Override KCfinder upload url ***
+	// *** Updated CKEditor ***
+	echo '<script src="include/ckeditor/ckeditor.js"></script>';
+
+	// *** KCfinder settings ***
 	$_SESSION['KCFINDER'] = array();
 	$_SESSION['KCFINDER']['disabled'] = false;
 	if (isset($humo_option["cms_images_path"])){
@@ -379,19 +383,21 @@ if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
 		//$_SESSION['KCuploadURL']='upload';
 		//$_SESSION['KCFINDER']['uploadDir'] = "";
 	}
-	
-	// *** CK Editor replaces the existing textarea by an CK editor... ***
-	include_once "include/ckeditor/ckeditor.php";
-	// Create a class instance.
-	$CKEditor = new CKEditor();
 
-	// Path to the CKEditor directory, ideally use an absolute path instead of a relative dir.
-	// If not set, CKEditor will try to detect the correct path.
-	//$CKEditor->basePath = '../../';
-	$CKEditor->basePath = 'include/ckeditor/';
-
-	// Replace a textarea element with an id (or name) of "editor1".
-	$CKEditor->replace("page_text");
+	// *** Roxy File Manager: File browser for CKEditor ***
+	/*
+	if (isset($humo_option["cms_images_path"]))
+		$_SESSION['fileman_files_root'] = $humo_option["cms_images_path"];
+	else $_SESSION['fileman_files_root'] = '';
+	echo "<script>
+		var roxyFileman = 'include/fileman/index.html?integration=ckeditor';
+		$(function(){
+			CKEDITOR.replace( 'page_text',{filebrowserBrowseUrl:roxyFileman, 
+				filebrowserImageBrowseUrl:roxyFileman+'&type=image',
+				removeDialogTabs: 'link:upload;image:upload'});
+		});
+	</script>";
+	*/
 }
 
 // *** Show and edit menu's ***
@@ -504,40 +510,43 @@ if (isset($_POST['cms_settings'])){
 				}
 				else {
 					$dbh->query("UPDATE humo_settings SET setting_value='".$_POST['main_page_cms_id_'.$language_file[$i]]."' WHERE setting_variable='main_page_cms_id_".$language_file[$i]."'");
-				}	
-			}		
+				}
+			}
 		}
 	}
 
 	echo '<p><form method="post" name="cms_setting_form" action="'.$phpself.'" style="display : inline;">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 	echo '<input type="hidden" name="cms_settings" value="1">'; // if Save button is not pressed but checkboxes changed!
-	echo '<table class="humo" border="1" cellspacing="0" width="98%">';
+	echo '<table class="humo" border="1" cellspacing="0" width="80%">';
+
+	echo '<tr class="table_header"><th>'.__('CMS Settings').'</th><th><input type="Submit" name="cms_settings" value="'.__('Change').'"></th></tr>';
+
 	echo '<tr><td>';
-	
+
 		echo __('Path for pictures in CMS pages').':<br>';
 		echo __('To point the main humogen folder, use ../../../foldername<br>
 To point to a folder outside (and parallel to) the humogen folder, use ../../../../foldername');
 
 	echo '</td><td>';
 
-		echo __('Path for pictures in CMS pages').': <input type="text" name="cms_images_path" value="'.$cms_images_path.'" size=25>';
-	
+		echo '<input type="text" name="cms_images_path" value="'.$cms_images_path.'" size=25>';
+
 	echo '</td></tr>';
 
 	echo '<tr><td>';
-	
+
 		echo __('Select main homepage (welcome page for visitors) for HuMo-gen<br>
 <b>The selected CMS page will replace the main index!</b>');
 
 	echo '</td><td>';
 
 	$lang_qry = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable LIKE 'main_page_cms_id_%'"); // check if there are language-specific entries
-	$num = $lang_qry->rowCount();	
+	$num = $lang_qry->rowCount();
 	$checked1 = ' checked'; $checked2 = '';
 	if (isset($_POST['languages_choice'])){
 		if (($num >=1 AND $_POST['languages_choice']!="all") OR ($num <1 AND $_POST['languages_choice']=="specific"))
-		{ 	// there are language specific entries so don't check the radiobox "Use for all languages"
+		{	// there are language specific entries so don't check the radiobox "Use for all languages"
 			$checked1 = ''; $checked2 = ' checked';
 		}
 	}
@@ -582,20 +591,17 @@ To point to a folder outside (and parallel to) the humogen folder, use ../../../
 			echo "</select>";
 			echo '</td></tr>';
 		}
+		echo '</table>'; // end table with language flags and pages
 	}
-	echo '</table>'; // end table with language flags and pages
-	
-	echo '</td></tr>';
-	echo '<tr><td colspan="2">';
-	echo ' <input type="Submit" name="cms_settings" value="'.__('Save').'">';
 
 	echo '</td></tr></table>';
+
 	echo '</form>';
 
 	echo '<h2>In some cases the picture-path setting doesn\'t work...</h2>';
 	echo '<b>If you need this setting, you can manual set this picture path in this file: admin/include/kcfinder/config.php<br>';
 	echo 'Change "upload" into your picture path: \'uploadURL\' => "upload",<br>';
 	echo 'Change "true" into "false": \'disabled\' => true,</b>';
-}
 
+}
 ?>
