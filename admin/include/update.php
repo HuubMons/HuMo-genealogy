@@ -124,7 +124,7 @@ else{
 
 	$sql='UPDATE humo_tree_texts SET treetext_language="en"
 		WHERE treetext_language="talen/taal-english.php"';
-	$result=$dbh->query($sql);	
+	$result=$dbh->query($sql);
 
 	$sql='UPDATE humo_tree_texts SET treetext_language="fr"
 		WHERE treetext_language="talen/taal-francais.php"';

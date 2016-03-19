@@ -414,7 +414,7 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 			echo __('Find place').':';
 
 			$checked=''; if ($select_marriage_notice=='1'){$checked='checked';}
-			echo '<p><input type="Checkbox" name="select_marriage_notice" value="1" '.$checked.'> '.__('&infin;').' '.lcfirst(__('Marriage notice')).'<br>';
+			echo '<br><br><input type="Checkbox" name="select_marriage_notice" value="1" '.$checked.'> '.__('&infin;').' '.lcfirst(__('Marriage notice')).'<br>';
 
 			$checked=''; if ($select_marriage_notice_religious=='1'){$checked='checked';}
 			echo '<input type="Checkbox" name="select_marriage_notice_religious" value="1" '.$checked.'> '.__('o').' '.lcfirst(__('Married notice (religious)')).'<br>';
@@ -425,7 +425,7 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 			$checked=''; if ($select_marriage_religious=='1'){$checked='checked';}
 			echo '<input type="Checkbox" name="select_marriage_religious" value="1" '.$checked.'> '.__('x').' '.lcfirst(__('Married (religious)'));
 
-			echo '<p><select name="part_place_name">';
+			echo '<p><select name="part_place_name">';   // leave <p> tag here so it will break nicely - line too long anyway
 			echo '<option value="contains">'.__('Contains').'</option>';
 
 			$select_item=''; if ($part_place_name=='equals'){ $select_item=' selected'; }
@@ -435,13 +435,13 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
 
-			echo '<p><input type="text" name="place_name" value="'.$place_name.'" size="15"><br>';
+			echo '<br><br><input type="text" name="place_name" value="'.$place_name.'" size="15"><br>';
 
-			echo '<p><input type="submit" value="'.__('Search').'" name="B1">';
-		echo '</form>';
+			echo '<br><input type="submit" value="'.__('Search').'" name="B1">';echo '</div>';
+			echo '</form>';
 		//***************** end search of places **********************************
 
-		echo '</div>';
+		
 	//}
 
 	if (CMS_SPECIFIC=='Joomla'){ $uri_path_string = "index.php?option=com_humo-gen&amp;task=list&amp;"; }
@@ -604,6 +604,27 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 
 	echo '<br><div class="index_list1">'.$line_pages.'</div>';
 
+echo '<script type="text/javascript"> 
+	if(window.self != window.top) {
+		var framew = window.frameElement.offsetWidth; 
+		document.getElementById("content").style.width = framew-40+"px";
+		var indexes = document.getElementsByClassName("index_table");
+		for (var i = 0; i < indexes.length; i++) {
+			indexes[i].style.width = framew-40+"px";
+		}
+		var lists = document.getElementsByClassName("index_list1");
+		for (var i = 0; i < lists.length; i++) {
+    		   	lists[i].style.width = framew-40+"px";
+   	   	}
+   		var boxes = document.getElementsByClassName("left_box"); 
+		if(boxes.length > 0) {
+			boxes[0].style.width=framew-60+"px";
+			boxes[0].style.marginBottom="10px";
+			boxes[0].innerHTML= boxes[0].innerHTML.replace(/<br>/g,"&nbsp;&nbsp;");  
+			boxes[0].style.textAlign="center"; 
+		}
+   	}
+</script>';
 //for testing only:
 //echo 'Query: '.$query." LIMIT ".safe_text($item).",".$nr_persons.'<br>';
 //echo 'Count qry: '.$count_qry.'<br>';

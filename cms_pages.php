@@ -18,7 +18,12 @@ echo '<div id="mainmenu_centerbox">';
 			$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".$cmsDb->menu_id."' AND page_status!='' ORDER BY page_order");
 			while($cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ))
 			{
-				echo '<a href="'.CMS_ROOTPATH.'cms_pages.php?select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
+				if ($humo_option["url_rewrite"]=="j"){
+					echo '<a href="'.CMS_ROOTPATH.'cms_pages/'.$cms_pagesDb->page_id.'/">'.$cms_pagesDb->page_title.'</a><br>';
+				}
+				else{
+					echo '<a href="'.CMS_ROOTPATH.'cms_pages.php?select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
+				}
 			}
 		}
 	echo '</div>';
@@ -27,6 +32,9 @@ echo '<div id="mainmenu_centerbox">';
 		if (isset($_GET['select_page']))
 		{
 			$select_page=safe_text($_GET['select_page']);
+		}
+		elseif(isset($urlpart[0])){
+			$select_page=safe_text($urlpart[0]);
 		}
 		else{
 			$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order ASC LIMIT 0,1");

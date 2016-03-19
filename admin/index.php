@@ -692,6 +692,10 @@ echo '<div id="humo_top" '.$top_dir.'>';
 						// *** Language Editor ***
 						$menu_item=''; if ($page=='google_maps'){ $menu_item=' id="current"'; }
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=google_maps">'.__('Google maps').'</a>';
+						
+						// ***Photobook categories ***
+						//$menu_item=''; if ($page=='photoalbum'){ $menu_item=' id="current"'; }
+						//echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=photoalbum">'.__('Photo album categories').'</a>';
 
 					echo '</ul>';
 					echo '</div>';
@@ -974,6 +978,7 @@ echo '<div id="content_admin">';
 	elseif ($page=='statistics'){ include_once ("include/statistics.php"); }
 	elseif ($page=='install_update'){ include_once ("update/install_update.php"); }
 	elseif ($page=='update'){ include_once ("include/update.php"); }
+	//elseif ($page=='photoalbum'){ include_once ("include/photoalbum_categories.php"); }
 
 	// *** Edit event by person ***
 	//elseif ($page=='editor_person_event'){ include_once ("include/editor_person_event.php"); }

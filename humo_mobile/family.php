@@ -136,7 +136,7 @@ if ($person_manDb->fam_man!=NULL){
 	echo '</li>';
 }
 if ($person_manDb->fam_woman!=NULL){
-	echo popup($person_manDb->fam_woman,false); // father
+	echo popup($person_manDb->fam_woman,false); // mother
 	// *** Show person details using standard HuMo-gen function ***
 	//$parent2=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($person_manDb->fam_woman)."'");
 	$parent2=$dbh->query("SELECT * FROM humo_persons
@@ -150,7 +150,7 @@ if ($person_manDb->fam_woman!=NULL){
 }
 elseif(($person_manDb->fam_man==NULL) AND ($person_manDb->fam_woman==NULL)){
 	echo '<li><p>'.__('Parents').' '.strtolower(__('Unknown')).'</p></li>';	
-}	
+}
 
 // *** Partners and children ***
 if ($person_manDb->pers_fams!=NULL){
@@ -165,7 +165,7 @@ if ($person_manDb->pers_fams!=NULL){
 		}
 		else{
 			$partner=$marrDb->fam_man;
-		}	
+		}
 		$children=$marrDb->fam_children;
 
 		// *** Privacy filter main person and spouse ***
@@ -198,6 +198,7 @@ if ($person_manDb->pers_fams!=NULL){
 
 		// *** Show partner ***
 		echo popup($partner,false);
+
 		// *** Show person details using standard HuMo-gen function ***
 		//$partner_sql=$dbh->query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_gedcomnumber='".safe_text($partner)."'");
 		$partner_sql=$dbh->query("SELECT * FROM humo_persons

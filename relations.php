@@ -883,8 +883,8 @@ global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 		if ($generX == 3) { $reltext = 'grand'.$nephniece.__(' of '); }
 		if ($generX == 4) { $reltext = 'oldebarn'.__(' of '); }
 		if ($generX == 5) { $reltext = 'tip oldebarn'.__(' of '); }
-		if ($generX == 6) { $reltext = 'tip tip oldebarn'.__(' of '); }		
-		if ($generX == 7) { $reltext = 'tip tip tip oldebarn'.__(' of '); }				
+		if ($generX == 6) { $reltext = 'tip tip oldebarn'.__(' of '); }
+		if ($generX == 7) { $reltext = 'tip tip tip oldebarn'.__(' of '); }
 		$gennr=$generX-4;
 		if ($generX >  7) { $reltext = $gennr.' gange tip oldebarn'.__(' of '); }
 	}	
@@ -903,8 +903,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 		if ($generX == 6) { $reltext = __('3rd').' '.__('3rd [COUSIN]').$nephniece.__(' of '); }
 		$gennr=$generX-3;
 		if ($generX >  6) { $reltext = $gennr.__('th ').__('3rd [COUSIN]').$nephniece.__(' of '); }
-	}	
- 	elseif ($selected_language=="sv"){
+	} 	elseif ($selected_language=="sv"){
 		// Swedish needs to know if nephew/niece is related through brother or sister - different names there
 		// also for grandnephew!!!
 
@@ -960,16 +959,13 @@ global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 		}
 	}  
 	elseif ($selected_language=="cn"){
-	
 		// Used: http://www.kwanfamily.info/culture/familytitles_table.php
-	
 		if($spouse=="1") { // left person is spouse of X, not X
 			$relarrX = $rel_arrayspouseX;
 		}
 		else {
 			$relarrX = $rel_arrayX;
-		}			
-		$arrnumX=0; if(isset($ancsarrX)) reset($ancsarrX);
+		}				$arrnumX=0; if(isset($ancsarrX)) reset($ancsarrX);
 		$count=$foundX_nr;
 		while($count!=0) {
 			$parnumberX=$count;
@@ -985,7 +981,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 			else { 
 				$reltext = '姑母是';  // aunt - sister of father
 			}
-		}	
+		}
 		else { // uncle/aunt from mother's side
 			if(($sexe2=="m" AND $spouse!=2 AND $spouse!=3) OR ($sexe2=="f" AND ($spouse==2 OR $spouse==3))) { 
 				$reltext = '舅父是';  // uncle - brother of mother
@@ -993,7 +989,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 			else { 
 				$reltext = '姨母(姨)是';  // aunt - sister of mother
 			}
-		}	
+		}
 
 /*		
 		if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) {  
@@ -1051,7 +1047,7 @@ global  $rel_arrayspouseX, $rel_arrayX, $foundX_nr; // for Chinese
 				$count=$relarrY[$count][2];
 			}
 			$persidDbY=$db_functions->get_person($relarrY[$parnumberY][0]);
-			$parsexeY = $persidDbY->pers_sexe;	
+			$parsexeY = $persidDbY->pers_sexe;
 			if($parsexeY=="M") { // is child of brother
 				if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) { 
 					$uncleaunt = '姪子是';
@@ -1069,7 +1065,7 @@ global  $rel_arrayspouseX, $rel_arrayX, $foundX_nr; // for Chinese
 					if($sexe=="m") $uncleaunt = '外甥女是'; // daughter of sister (A is male)
 					else $uncleaunt = '姨甥女是';	// daughter of sister (A is female)		
 				}
-			}		
+			}
 		}
 
 		// Finnish needs to know if uncle is related through mother or father - different names there
@@ -1568,7 +1564,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 	// 表亲 cousin qin
 
 	
-		$gendiff = abs($generX - $generY);	
+		$gendiff = abs($generX - $generY);
 		$degreediff = min($generX,$generY);
 		if($gendiff == 0 AND $degreediff == 2) { 
 			// deals with first cousins not removed only. 
@@ -1578,7 +1574,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 			}
 			else {
 				$relarrX = $rel_arrayX;
-			}			
+			}
 			$arrnumX=0; if(isset($ancsarrX)) reset($ancsarrX);
 			$count=$foundX_nr;
 			while($count!=0) {
@@ -1603,7 +1599,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 				}
 				else {
 					$relarrY = $rel_arrayY;
-				}			
+				}
 				$arrnumY=0; if(isset($ancsarrY)) reset($ancsarrY);
 				$count=$foundY_nr;
 				while($count!=0) {
@@ -1627,8 +1623,8 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 	
 	}
 	elseif($selected_language=="da") 	{
-		$gendiff = abs($generX - $generY);	
-		$degreediff = min($generX,$generY);	
+		$gendiff = abs($generX - $generY);
+		$degreediff = min($generX,$generY);
 		
 		if ($degreediff == 2) {
 			$nor_cousin = 'kusine'; // 1st cousin
@@ -1639,7 +1635,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 		elseif ($degreediff > 3) {
 			$gennr=$degreediff-1;
 			$nor_cousin = $gennr.". kusine";  // 3. kusine
-		}		
+		}
 		
 		if($degreediff ==2 AND $gendiff == 0) { $reltext = __('COUSIN_MALE').__(' of '); }  // first cousins
 		elseif($degreediff ==2 AND $gendiff == 1 AND $generX < $generY) {   // first cousins once removed - X older
@@ -1675,9 +1671,11 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 			if ($gendiff == 6) { $temptext = 'tip tip tip oldeforældre'; }
 			$gennr=$gendiff-3;
 			if ($gendiff >  7) { $temptext = $gennr.' gange tip oldeforældre'; }
-			$reltext = $nor_cousin.__(' til ');
+			//$reltext = $nor_cousin.__(' til ');
+			$reltext = $nor_cousin.' til ';
 			$reltext_nor = "s ".$temptext;
-			$reltext_nor2 = $temptext.__(' til ');		
+			//$reltext_nor2 = $temptext.__(' til ');
+			$reltext_nor2 = $temptext.' til ';
 		}
 	}
 	else {
@@ -3010,21 +3008,30 @@ echo '</div>';
 
 if (isset($_SESSION['tree_prefix'])) { $tree_prefix=$_SESSION['tree_prefix'];}
 
-if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["calculator"]) AND !isset($_POST["switch"]) AND !isset($_POST["extended"]) AND !isset($_POST["next_path"])) {
+if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["calculator"]) AND !isset($_POST["switch"]) AND !isset($_POST["extended"]) AND !isset($_POST["next_path"]) AND !isset($_GET['pers_id'])) {
 	// no button pressed: this is a fresh entry from humogen's frontpage link: start clean search form
 	$_SESSION["search1"]=''; $_SESSION["search2"]='';
 	$_SESSION['rel_search_firstname']=''; $_SESSION['rel_search_lastname']='';
 	$_SESSION['rel_search_firstname2']=''; $_SESSION['rel_search_lastname2']='';
+	$_SESSION['rel_search_gednr']=''; $_SESSION['rel_search_gednr2']='';
+	unset($_SESSION["search_pers_id"]);
 }
 
 $person=''; if (isset($_POST["person"])){	$person=$_POST['person']; }
 $person2=''; if (isset($_POST["person2"])){ $person2=$_POST['person2']; }
 if (isset($_POST["search1"])){ $_SESSION["search1"]=1; }
 if (isset($_POST["search2"])){ $_SESSION["search2"]=1; }
+// *** Link from person pop-up menu ***
+if (isset($_GET['pers_id'])){
+	$_SESSION["search1"]=1;
+	$_SESSION["search_pers_id"]=safe_text($_GET['pers_id']);
+	$_SESSION['rel_search_firstname']=''; $_SESSION['rel_search_lastname']='';
+}
 
 if(isset($_POST["switch"])) {
 	$temp=$_SESSION['rel_search_firstname']; $_SESSION['rel_search_firstname']=$_SESSION['rel_search_firstname2']; $_SESSION['rel_search_firstname2']=$temp;
 	$temp=$_SESSION['rel_search_lastname'];  $_SESSION['rel_search_lastname']=$_SESSION['rel_search_lastname2'];   $_SESSION['rel_search_lastname2']=$temp;
+	$temp=$_SESSION['rel_search_gednr'];  $_SESSION['rel_search_gednr']=$_SESSION['rel_search_gednr2'];   $_SESSION['rel_search_gednr2']=$temp;	
 	$temp=$person; $person=$person2; $person2=$temp;
 	$temp=$_SESSION["search1"]; $_SESSION["search1"]=$_SESSION["search2"]; $_SESSION["search2"]=$temp;
 }
@@ -3049,6 +3056,7 @@ echo '<br><table class="humo relmenu">';
 echo '<tr class=table_headline><th>&nbsp;</th>';
 	print '<th>'.__('First name').'</th>';
 	print '<th>'.__('Last name').'</th>';
+	echo '<th>'._('or: ID').'</th>';
 	echo '<th>'.__('Search').'</th>';
 	echo '<th colspan=2>'.__('Pick a name from search results').'</th>';
 	echo '<th>'.__('Calculate relationships').'</th></tr>';
@@ -3073,11 +3081,20 @@ if (isset($_POST["search_lastname"]) AND !isset($_POST["switch"])){
 }
 if (isset($_SESSION['rel_search_lastname'])){ $search_lastname=$_SESSION['rel_search_lastname']; }
 
+$search_gednr='';
+if (isset($_POST["search_gednr"]) AND !isset($_POST["switch"])){
+	$search_gednr=safe_text($_POST['search_gednr']);
+	$_SESSION['rel_search_gednr']=$search_gednr;
+}
+if (isset($_SESSION['rel_search_gednr'])){ $search_gednr=$_SESSION['rel_search_gednr']; }
+
 print ' <input type="text" class="fonts relboxes" name="search_firstname" value="'.$search_firstname.'" size="15"> ';
 echo '</td><td>';
 
 print '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname" value="'.$search_lastname.'" size="15">';
 echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
+echo '</td><td>';
+print '&nbsp; <input class="fonts relboxes" type="text" name="search_gednr" value="'.$search_gednr.'" size="8">';
 echo '</td><td>';
 print '&nbsp; <input class="fonts" type="submit" name="search1" value="'.__('Search').'">';
 echo '</td><td>';
@@ -3086,9 +3103,18 @@ $len=230;  // length of name pulldown box
 if(CMS_SPECIFIC == "Joomla") { $len = 180; } // for joomla keep it short....
 
 if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
-	$search_qry= "SELECT * FROM humo_persons
-		WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)";
-	$search_qry.= " LIKE '%".$search_lastname."%' AND pers_firstname LIKE '%".$search_firstname."%' ORDER BY pers_lastname, pers_firstname";
+	if($search_lastname!='' OR $search_firstname!='') {
+		$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
+			LIKE '%".$search_lastname."%' AND pers_firstname LIKE '%".$search_firstname."%' ORDER BY pers_lastname, pers_firstname";
+	}
+	elseif($search_gednr!='') {
+		$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND (pers_gedcomnumber = '".$search_gednr."' OR pers_gedcomnumber = 'I".strtoupper($search_gednr)."') ORDER BY pers_lastname, pers_firstname";
+	}
+
+	// *** Link from person pop-up menu ***
+	if (isset($_SESSION["search_pers_id"]))
+		$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_id='".$_SESSION["search_pers_id"]."'";
+
 	$search_result = $dbh->query($search_qry);
 	if ($search_result){
 		if($search_result->rowCount()>0) {
@@ -3098,7 +3124,7 @@ if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
 					if ($name["show_name"]){
 						echo '<option';
 						if(isset($person)) {
-							if ($searchDb->pers_gedcomnumber==$person AND !(isset($_POST["search1"]) AND $search_lastname=='' AND $search_firstname=='')){
+							if ($searchDb->pers_gedcomnumber==$person AND !(isset($_POST["search1"]) AND $search_lastname=='' AND $search_firstname=='' AND $search_gednr=='')){
 								echo ' SELECTED';
 							}
 						}
@@ -3144,17 +3170,31 @@ if (isset($_POST["search_lastname2"]) AND !isset($_POST["switch"])){
 }
 if (isset($_SESSION['rel_search_lastname2'])){ $search_lastname2=$_SESSION['rel_search_lastname2']; }
 
+$search_gednr2='';
+if (isset($_POST["search_gednr2"]) AND !isset($_POST["switch"])){
+	$search_gednr2=safe_text($_POST['search_gednr2']);
+	$_SESSION['rel_search_gednr2']=$search_gednr2;
+}
+if (isset($_SESSION['rel_search_gednr2'])){ $search_gednr2=$_SESSION['rel_search_gednr2']; }
+
 print ' <input type="text" class="fonts relboxes" name="search_firstname2" value="'.$search_firstname2.'" size="15"> ';
 echo '</td><td>';
 print '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname2" value="'.$search_lastname2.'" size="15">';
 echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
 echo '</td><td>';
+print '&nbsp; <input class="fonts relboxes" type="text" name="search_gednr2" value="'.$search_gednr2.'" size="8">';
+echo '</td><td>';
 print '&nbsp; <input class="fonts" type="submit" name="search2" value="'.__('Search').'">';
 echo '</td><td>';
 
 if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
-	$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
-		LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ORDER BY pers_lastname, pers_firstname";
+	if($search_lastname2!='' OR $search_firstname2!='') {
+		$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
+			LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ORDER BY pers_lastname, pers_firstname";
+	}
+	elseif($search_gednr2!='') {
+		$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND (pers_gedcomnumber = '".$search_gednr2."' OR pers_gedcomnumber = 'I".strtoupper($search_gednr2)."') ORDER BY pers_lastname, pers_firstname";
+	}
 	$search_result2 = $dbh->query($search_qry);
 	if ($search_result2){
 		if($search_result2->rowCount()>0) {
@@ -3164,7 +3204,7 @@ if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
 				if ($name["show_name"]){
 					echo '<option';
 					if(isset($person2)) {
-						if ($searchDb2->pers_gedcomnumber==$person2 AND !(isset($_POST["search2"]) AND $search_lastname2=='' AND $search_firstname2=='')){
+						if ($searchDb2->pers_gedcomnumber==$person2 AND !(isset($_POST["search2"]) AND $search_lastname2=='' AND $search_firstname2=='' AND $search_gednr2=='')){
 							echo ' SELECTED';
 						}
 					}

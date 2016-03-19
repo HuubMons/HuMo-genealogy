@@ -151,6 +151,9 @@ if (isset($_POST['person_remove2'])){
 	$sql="DELETE FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
 	$result=$dbh->query($sql);
 
+	$sql="DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_connect_id='".$pers_gedcomnumber."'";
+	$result=$dbh->query($sql);
+
 	$confirm.=__('Person is removed');
 
 	// *** Select new person ***
@@ -485,6 +488,9 @@ if (isset($_POST['fam_remove2'])){
 	$result=$dbh->query($sql);
 
 	$sql="DELETE FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fam_remove."'";
+	$result=$dbh->query($sql);
+
+	$sql="DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_connect_id='".$fam_remove."'";
 	$result=$dbh->query($sql);
 
 	family_tree_update($tree_prefix);
@@ -1059,18 +1065,33 @@ if (isset($_POST['marriage_event_add'])){
 // *** Upload images ***
 if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 
-	// *** Picture list for selecting pictures ***
+	// *** get path of pictures folder 
 	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix."'");
 	$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 	$tree_pict_path=$dataDb->tree_pict_path;
 	$dir=$path_prefix.$tree_pict_path;
+	
+	// check if this is a category file (file with existing category prefix) and if a subfolder for this category exists, place it there.
+	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
+	if($temp->rowCount()) {  // there is a category table
+		$catgry = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+		if($catgry->rowCount()) {
+			while($catDb = $catgry->fetch(PDO::FETCH_OBJ)) {
+				//if(is_dir($dir.substr($dir.$_FILES['photo_upload']['name'],0,2))  AND substr($_FILES['photo_upload']['name'],0,3)==$catDb->photocat_prefix)  {   // there is a subfolder of this prefix
+				if(is_dir($dir.substr($_FILES['photo_upload']['name'],0,2)) AND
+				substr($_FILES['photo_upload']['name'],0,3)==$catDb->photocat_prefix)  {   // there is a subfolder of this prefix
+					$dir = $dir.substr($_FILES['photo_upload']['name'],0,2).'/';  // place uploaded file in that subfolder
+				}
+			}
+		}
+	}
 
 	if ( $_FILES['photo_upload']['type']=="image/pjpeg" || $_FILES['photo_upload']['type']=="image/jpeg"){
 		$fault="";
 		// 100000=100kb.
 		if($_FILES['photo_upload']['size']>2000000){ $fault=__('Photo too large'); }
 		if (!$fault){
-			$picture_original=$dir.$_FILES['photo_upload']['name'];
+			$picture_original=$dir.$_FILES['photo_upload']['name']; 
 			$picture_thumb=$dir.'thumb_'.$_FILES['photo_upload']['name'];
 			if (!move_uploaded_file($_FILES['photo_upload']['tmp_name'],$picture_original)){
 				echo __('Photo upload failed, check folder rights');

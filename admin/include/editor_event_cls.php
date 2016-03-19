@@ -30,6 +30,7 @@ function show_event($selected_events=''){
 	global $dbh, $tree_id, $page, $tree_prefix, $pers_gedcomnumber, $marriage, $field_date, $field_text, $joomlastring;
 	global $editor_cls, $path_prefix, $tree_pict_path;
 
+	$picture_array = Array();
 	// *** Picture list for selecting pictures ***
 	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix."'");
 	$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
@@ -38,13 +39,41 @@ function show_event($selected_events=''){
 	if (file_exists($dir)){
 		$dh  = opendir($dir);
 		while (false !== ($filename = readdir($dh))) {
-			if (substr($filename,0,6)!='thumb_' AND $filename!='.' AND $filename!='..'){
+			if (substr($filename,0,6)!='thumb_' AND $filename!='.' AND $filename!='..' AND !is_dir($dir.$filename)){
 				$picture_array[]=$filename;
 			}
 		}
+		closedir($dh);
 	}
+	@usort($picture_array,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
+	
+	$is_cat=false; // flags there are category files (for use later on)
+	$picture_array2 = Array(); // declare, otherwise if not used gives error
+	// if subfolders exist for category files, list those too
+	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");  
+	if($temp->rowCount()) {    // there is a category table
+		$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+		if($catg->rowCount()) {
+			while($catDb = $catg->fetch(PDO::FETCH_OBJ)) { 
+				if(is_dir($dir.substr($catDb->photocat_prefix,0,2)))  {  // there is a subfolder for this prefix
+					$dh  = opendir($dir.substr($catDb->photocat_prefix,0,2));
+					while (false !== ($filename = readdir($dh))) {
+						if (substr($filename,0,6)!='thumb_' AND $filename!='.' AND $filename!='..'){
+							$picture_array2[]=$filename;
+							$is_cat=true;
+						}
+					}
+					closedir($dh);				
+				}
+			}
+		}
+	}	
+	@usort($picture_array2,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
+	$picture_array = array_merge($picture_array,$picture_array2);
+	
 	// *** Order pictures by alphabet ***
-	@sort($picture_array);
+	//@sort($picture_array);  
+	//@usort($picture_array,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
 	$nr_pictures=count($picture_array);
 
 	// *** Change line colour ***
@@ -323,14 +352,14 @@ function show_event($selected_events=''){
 	if ($selected_events=='picture' OR $selected_events=='marriage_picture'){
 		echo '<tr class="humo_color">';
 		echo '<td style="border-right:0px;">';
-			echo '<a name="picture"></a>';
+		echo '<a name="picture"></a>';
 
-			$count_qry=$dbh->query($qry);
-			$count=$count_qry->rowCount();
-			if ($count>0)
-			echo '<a href="#picture" onclick="hideShow(53);"><span id="hideshowlink53">'.__('[+]').'</span></a> ';
+		$count_qry=$dbh->query($qry);
+		$count=$count_qry->rowCount();
+		if ($count>0)
+		echo '<a href="#picture" onclick="hideShow(53);"><span id="hideshowlink53">'.__('[+]').'</span></a> ';
 
-			echo __('Picture/ Media').'</td>';
+		echo __('Picture/ Media').'</td>';
 		echo '<td style="border-right:0px;"></td>';
 		echo '<td style="border-left:0px;">';
 			$event_add='add_picture';
@@ -350,12 +379,25 @@ function show_event($selected_events=''){
 					echo '</div>';
 				}
 				echo '<div style="overflow:hidden">';
+				$tree_pict_path2 = $tree_pict_path;  // we change it only if category subfolders exist
+				$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
+				if($temp->rowCount()) {  // there is a category table 
+					$catgr = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+					if($catgr->rowCount()) { 
+						while($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {  
+							if(substr($data_listDb->event_event,0,3)==$catDb->photocat_prefix AND is_dir($path_prefix.$tree_pict_path2.substr($data_listDb->event_event,0,2)))  {   // there is a subfolder of this prefix
+								$tree_pict_path2 = $tree_pict_path2.substr($data_listDb->event_event,0,2).'/';  // look in that subfolder
+							}
+						}
+					}
+				}				
+				
 				$thumb_prefix='';
-				if (file_exists($path_prefix.$tree_pict_path.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
-				$extensions_check=substr($path_prefix.$tree_pict_path.$data_listDb->event_event,-3,3);
+				if (file_exists($path_prefix.$tree_pict_path2.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
+				$extensions_check=substr($path_prefix.$tree_pict_path2.$data_listDb->event_event,-3,3);
 				if($extensions_check=="jpg" OR $extensions_check=="gif" OR $extensions_check=="png" OR $extensions_check=="bmp") {
-					if (file_exists($path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event))
-						$show_image= '<img src="'.$path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event.'" style="height:80px;">';
+					if (file_exists($path_prefix.$tree_pict_path2.$thumb_prefix.$data_listDb->event_event))
+						$show_image= '<img src="'.$path_prefix.$tree_pict_path2.$thumb_prefix.$data_listDb->event_event.'" style="height:80px;">';
 					else
 						$show_image= '<img src="../images/thumb_missing-image.jpg" height="60px">';
 					if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../images/thumb_missing-image.jpg" height="60px">';
@@ -365,8 +407,8 @@ function show_event($selected_events=''){
 					$ext = substr($data_listDb->event_event,-3,3);
 					if($ext=="tif" OR $ext=="iff") { echo '<span style="font-size:80%">['.__('Format not supported')."]</span>"; }
 					elseif($ext=="pdf") { echo '<img src="../images/pdf.jpeg" style="width:30px;height:30px;">';}
-					elseif($ext=="doc") { echo '<img src="../images/msdoc.gif" style="width:30px;height:30px;">';}
-					elseif($ext=="avi" OR $ext=="wmv" OR $ext=="mpg" OR $ext=="mov") { echo '<img src="../images/video-file.png" style="width:30px;height:30px;">'; }
+					elseif($ext=="doc" OR $ext=="ocx") { echo '<img src="../images/msdoc.gif" style="width:30px;height:30px;">';}
+					elseif($ext=="avi" OR $ext=="wmv" OR $ext=="mpg" OR $ext=="mp4" OR $ext=="mov") { echo '<img src="../images/video-file.png" style="width:30px;height:30px;">'; }
 					elseif($ext=="wma" OR $ext=="wav" OR $ext=="mp3" OR $ext=="mid" OR $ext=="ram" OR $ext==".ra" ) { echo '<img src="../images/audio.gif" style="width:30px;height:30px;">';}
 
 					echo '<br><span style="font-size:85%">'.$data_listDb->event_event.'</span>';
@@ -581,59 +623,77 @@ function show_event($selected_events=''){
 
 			if ($data_listDb->event_kind=='picture'){
 				$thumb_prefix='';
-				if (file_exists($path_prefix.$tree_pict_path.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
+				
+				$tree_pict_path3 = $tree_pict_path;  // we change it only if category subfolders exist
+				$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
+				if($temp->rowCount()) {  // there is a category table 
+					$catgr = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+					if($catgr->rowCount()) { 
+						while($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {  
+							if(substr($data_listDb->event_event,0,3)==$catDb->photocat_prefix AND is_dir($path_prefix.$tree_pict_path3.substr($data_listDb->event_event,0,2)))  {   // there is a subfolder of this prefix
+								$tree_pict_path3 = $tree_pict_path3.substr($data_listDb->event_event,0,2).'/';  // look in that subfolder
+							}
+						}
+					}
+				}								
+				
+				if (file_exists($path_prefix.$tree_pict_path3.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
 
-				$extensions_check=substr($path_prefix.$tree_pict_path.$data_listDb->event_event,-3,3);
+				$extensions_check=substr($path_prefix.$tree_pict_path3.$data_listDb->event_event,-3,3);
 				if(strtolower($extensions_check)=="pdf") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'"><img src="'.CMS_ROOTPATH.'images/pdf.jpeg"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'"><img src="'.CMS_ROOTPATH.'images/pdf.jpeg"></a>';
 				}
-				elseif(strtolower($extensions_check)=="doc" OR strtolower(substr($path_prefix.$tree_pict_path.$data_listDb->event_event,-4,4))=="docx") {   
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'"><img src="'.CMS_ROOTPATH.'images/msdoc.gif"></a>';
+				elseif(strtolower($extensions_check)=="doc" OR strtolower(substr($path_prefix.$tree_pict_path3.$data_listDb->event_event,-4,4))=="docx") {   
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'"><img src="'.CMS_ROOTPATH.'images/msdoc.gif"></a>';
 				}
 				// *** Show AVI Video file ***
 				elseif($extensions_check=="avi") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/video-file.png"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/video-file.png"></a>';
 				}
 				// *** Show WMV Video file ***
 				elseif($extensions_check=="wmv") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/video-file.png"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/video-file.png"></a>';
 				}
 				// *** Show MPG Video file ***
 				elseif(strtolower($extensions_check)=="mpg") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/video-file.png"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/video-file.png"></a>';
 				}
+				// *** Show MP4 Video file ***
+				elseif(strtolower($extensions_check)=="mp4") {
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/video-file.png"></a>';
+				}				
 				// *** Show MOV Video file ***
 				elseif(strtolower($extensions_check)=="mov") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/video-file.png"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/video-file.png"></a>';
 				}
 				// *** Show WMA Audio file ***
 				elseif(strtolower($extensions_check)=="wma") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
 				}
 				// *** Show WAV Audio file ***
 				elseif(strtolower($extensions_check)=="wav") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
 				}
 				// *** Show MP3 Audio file ***
 				elseif(strtolower($extensions_check)=="mp3") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
 				}
 				// *** Show MID Audio file ***
 				elseif(strtolower($extensions_check)=="mid") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
 				}
 				// *** Show RAM Audio file ***
 				elseif(strtolower($extensions_check)=="ram") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
 				}
 				// *** Show RA Audio file ***
 				elseif(strtolower($extensions_check)==".ra") {
-					echo '<a href="'.$path_prefix.$tree_pict_path.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
+					echo '<a href="'.$path_prefix.$tree_pict_path3.$data_listDb->event_event.'" target="_blank"><img src="'.CMS_ROOTPATH.'images/audio.gif"></a>';
 				}
 				else{
 					$show_image='';
-					if (file_exists($path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event))
-						$show_image= '<img src="'.$path_prefix.$tree_pict_path.$thumb_prefix.$data_listDb->event_event.'" width="100px">';
+					if (file_exists($path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event))
+						$show_image= '<img src="'.$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event.'" width="100px">';
 					else
 						$show_image= '<img src="../images/thumb_missing-image.jpg" height="100px">';
 
@@ -662,6 +722,7 @@ function show_event($selected_events=''){
 				echo '<option value="'.$picture_array[$picture_nr].'"'.$selected.'>'.$picture_array[$picture_nr].'</option>';
 			}
 			echo '</select>';
+			if($is_cat==true) { echo '<br>'.__('Category files are displayed at bottom of list'); }
 		}
 
 		elseif ($data_listDb->event_kind=='adoption'){
@@ -970,6 +1031,15 @@ function show_event($selected_events=''){
 		echo '</td></tr>';
 	}
 
+	if ($selected_events=='marriage_picture'){ 
+		// *** Upload image ***
+		//echo '<tr style="display:none;" id="row51" name="row51"><td class="table_header_large" colspan="4">';
+		echo '<tr style="display:none;" class="row53" name="row53"><td class="table_header_large" colspan="4">';
+			echo 'Upload new image (max: pic 2MB) or media (max: 49 MB):'.' <input type="file" name="photo_upload">';
+			echo '<input type="submit" name="marriage_event_change" title="submit" value="'.__('Upload').'">';
+		echo '</td></tr>';
+	}
+
 	// *** Add person event ***
 	if ($selected_events=='person'){
 		// *** Add person event ***
@@ -1041,6 +1111,7 @@ function show_event($selected_events=''){
 			if ($_GET['event_add']=='add_burial_witness') $link_id='5';
 			if ($_GET['event_add']=='add_profession') $link_id='50';
 			if ($_GET['event_add']=='add_picture') $link_id='53';
+			if ($_GET['event_add']=='add_marriage_picture') $link_id='53';
 			if ($_GET['event_add']=='add_marriage_witness') $link_id='8';
 			if ($_GET['event_add']=='add_marriage_witness_rel') $link_id='10';
 		}

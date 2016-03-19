@@ -356,6 +356,11 @@ else{
 			$url_path='family.php';  // *** Needed for show_sources ***
 		}
 
+		if (substr_count($uri_path, 'cms_pages')>0){
+			$uri_path = str_replace("cms_pages", "!", $uri_path);
+			$url_path='cms_pages';
+		}
+
 		if (substr_count($uri_path, 'report_ancestor')>0){
 			$uri_path = str_replace("report_ancestor", "!", $uri_path);
 			$url_path='report_ancestor.php';  // *** needed for show_sources ***
@@ -403,6 +408,7 @@ else{
 		$url_path2 = str_replace("/index/", "~!", $url_path2);
 		$url_path2 = str_replace("/list/", "~!", $url_path2);
 		$url_path2 = str_replace("/list_names/", "~!", $url_path2);
+		$url_path2 = str_replace("/cms_pages/", "~!", $url_path2);
 		$url_position=strpos($url_path2,'!');
 		if ($url_position){
 			$urlpart1=substr($url_path2,$url_position+1,-1);   //    humo2_/F100/I10

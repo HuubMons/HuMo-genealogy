@@ -4,6 +4,10 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 echo '<h1 align=center>'.__('Settings').'</h1>';
 
+if(isset($_POST['timeline_language']) ) {  $time_lang = $_POST['timeline_language']; }
+elseif(isset($_GET['timeline_language']) ) {  $time_lang = $_GET['timeline_language'];  }
+else { $time_lang = $humo_option['default_language'];   }
+
 if (isset($_POST['save_option'])){
 	// *** Update settings ***
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_skin"])."' WHERE setting_variable='default_skin'");
@@ -50,6 +54,21 @@ if (isset($_POST['save_option'])){
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["min_search_chars"])."' WHERE setting_variable='min_search_chars'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["date_display"])."' WHERE setting_variable='date_display'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["name_order"])."' WHERE setting_variable='name_order'");
+
+	if(strpos($humo_option['default_timeline'],$time_lang."!")===false) {  
+		// no entry for this language yet - append it
+		$result = $dbh->query("UPDATE humo_settings SET setting_value=CONCAT(setting_value,'".safe_text($_POST["default_timeline"])."') WHERE setting_variable='default_timeline'");
+	}
+	else {
+		$time_arr = explode("@",substr($humo_option['default_timeline'],0,-1));
+		foreach($time_arr AS $key => $value) { 
+			if(strpos($value,$time_lang."!")!==false) {  
+				$time_arr[$key] = substr(safe_text($_POST["default_timeline"]),0,-1);
+			}
+		}
+		$time_str = implode("@",$time_arr)."@";  
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".$time_str."' WHERE setting_variable='default_timeline'");
+	}  
 }
 
 // *** Re-read variables after changing them ***
@@ -130,7 +149,7 @@ echo '</td></tr>';
 echo '<tr><td>'.__('Text in footer for all pages').'</td><td>';
 	if(CMS_SPECIFIC == "Joomla") {  $cols="48"; } else { $cols="80"; }   // in joomla make sure it won't run off the screen
 	echo "<textarea cols=".$cols." rows=1 name=\"text_footer\" style='height: 20px;'>".htmlentities($humo_option["text_footer"],ENT_NOQUOTES)."</textarea><br>";
-	echo __('Can be used for statistics, couter, etc. It\'s possible to use HTML codes!');
+	echo __('Can be used for statistics, counter, etc. It\'s possible to use HTML codes!');
 echo '</td></tr>';
 
 echo '<tr class="table_header"><th colspan="2">'.__('Search engine settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
@@ -175,6 +194,7 @@ echo "</select>";
 echo '</td></tr>';
 
 echo '<tr><td>'.__('Mail form: use newsletter question').'</td><td>';
+echo '<a name="timeline_anchor">'; // this belongs to the timeline settings - placed here it makes the page reload with timeline line in middle of page
 echo '<select size="1" name="use_newsletter_question">';
 $selected=''; if ($humo_option["use_newsletter_question"]!='y') $selected=' SELECTED';
 echo '<option value="y">'.__('Yes').'</option>';
@@ -317,6 +337,39 @@ echo '<option value="chinese"'.$selected.'>'.__('Chinese')."/ ".__('Hungarian').
 echo "</select>";
 echo "&nbsp;".__('Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports and lists: 刘 理想').". ".__('Hungarian - reports and lists: Smith John');
 echo "</td></tr>";
+
+// timeline default
+echo '<tr><td>'.__('Default timeline file (per language)').'</td><td>';
+$folder=@opendir(CMS_ROOTPATH.'languages/'.$time_lang.'/timelines/');
+if($folder !== false) {  // no use showing the option if we can't access the timeline folder
+	while (false!==($file = readdir($folder))) {
+		if (substr($file,-4,4)=='.txt') {
+			$timeline_files[]=$file;
+		}
+	}
+	echo '<select size="1" name="default_timeline">';
+	for ($i=0; $i<count($timeline_files); $i++){
+		$timeline=$timeline_files[$i];
+		$timeline=str_replace(".txt","", $timeline);
+		$select=""; if(strpos($humo_option['default_timeline'],$time_lang."!".$timeline) !== false) { $select=' SELECTED'; }
+		echo '<option value="'.$time_lang.'!'.$timeline.'@"'.$select.'>'.$timeline.'</option>';
+	}
+	echo "</select>";
+}
+@closedir($folder);
+echo "&nbsp;&nbsp;";
+
+if($langs) {
+	echo '<select onChange="window.location =\''.$_SERVER['PHP_SELF'].'?page=settings&timeline_language=\' + this.value + \'#timeline_anchor\'; "  size="1" name="timeline_language">';
+	for($i=0; $i<count($langs); $i++) { 
+		if(is_dir(CMS_ROOTPATH.'languages/'.$langs[$i][1].'/timelines/')) {
+			$select=''; if ($time_lang==$langs[$i][1]){ $select=' SELECTED'; }
+			echo '<option value="'.$langs[$i][1].'"'.$select.'>'.$langs[$i][0].'</option>';
+		}
+	}
+	echo "</select>";	
+}
+echo '</td></tr>';
 
 echo '<tr class="table_header"><th colspan="2">'.__('Settings Main Menu').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 

@@ -385,10 +385,22 @@ while (false !== ($filename = readdir($dh))) {
 	}
 }
 sort($filenames);
+
 $step=5; // default step - user can choose 1 or 10 instead
 if(isset($_POST['step'])) { $step=$_POST['step']; }
-$tml=3;  // default timeline file
+//$tml=3;  // default timeline file
+$tml = $filenames[0][1]; // if default is not set the first file will be checked
 if(isset($_POST['tml'])) { $tml=$_POST['tml']; }
+elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timeline']!="") {
+	$str = explode("@",substr($humo_option['default_timeline'],0,-1));  // humo_option is: nl!europa@de!Sweitz@en!british  etc.
+	$val_arr = Array();
+	foreach($str AS $value) {
+		$str2 = explode("!",$value);   //  $value = nl!europa
+		$val_arr[$str2[0]] = $str2[1];   //  $val_arr[nl]='europa'
+	}	
+	if(isset($val_arr[$selected_language])  AND is_file(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$val_arr[$selected_language].".txt")) {  $tml= $val_arr[$selected_language]; }
+}
+$default=false; if($tml==$filenames[0][1]) $default=true;
 
 // **** SHOW MENU ****
 print '<div class="left_box">';
@@ -457,9 +469,18 @@ The timeline menu:<br>
 
 		print '<br><br>'.__('Choose timeline');
 		print '<div style="direction:ltr">';
+		$checked=false;
 		for ($i=0; $i<count($filenames); $i++){
-			print '<input type="radio" name="tml" value="'.$i.'"';
-			if ($tml==$i) {
+			//print '<input type="radio" name="tml" value="'.$i.'"';
+			print '<input type="radio" name="tml" value="'.$filenames[$i][1].'"';
+			
+			if($i==0 AND $default == true) {
+				print ' checked="checked"';    $checked=true;
+			}
+			elseif($checked==false AND isset($_POST['tml'])  AND $_POST['tml']==$filenames[$i][1]) {
+				print ' checked="checked"';      $checked=true;
+			}
+			elseif($checked==false AND isset($humo_option['default_timeline']) AND strpos($humo_option['default_timeline'],$selected_language."!".$filenames[$i][1]."@") !== false) {
 				print ' checked="checked"';
 			}
 			print ' >'.$filenames[$i][1].'<br>';
@@ -473,7 +494,7 @@ print '</div>';
 
 // **** END MENU ****
 if(file_exists($filenames[0][0])) {
-	$handle = fopen($filenames[$tml][0], "r");
+	$handle = fopen(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$tml.'.txt',"r");
 }
 ($isborn==1 AND $bornyear == '') ? $byear = $baptyear : $byear = $bornyear; // if only bapt date available use that
 $beginyear=$byear-(($byear % $step) + $step);    // if beginyear=1923 and step is 5 this makes it 1915
@@ -484,7 +505,7 @@ $flag=0; // flags a first entry of timeline event in a specific year. is set to 
 
 // ****** DISPLAY
 
-print "<div style='position:absolute;top:30px;left:150px;right:10px'>";
+print "<div style='position:absolute;top:30px;left:150px;right:10px'>";  //echo CMS_ROOTPATH."languages/".$selected_language."/timelines/".$tml.'.txt';
 
 if ($privacy_filtered==true){
 	echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***').'<br>';

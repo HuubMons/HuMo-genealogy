@@ -87,6 +87,21 @@ function show_media($personDb,$marriageDb){
 			// *** Don't use entities in a picture ***
 			//$event_event = html_entity_decode($pictureDb->event_event, ENT_NOQUOTES, 'ISO-8859-15');
 			$event_event=$media_event_event[$i];
+			
+			// in case subfolders are made for photobook categories and this was not already set in $picture_path,  look there
+			// (if the $picture_path is already set with subfolder this anyway gives false and so the $picture_path given will work)
+			$temp_path = $tree_pict_path; // store original so we can reset after using for subfolder path for this picture.
+			$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
+			if($temp->rowCount()) {   // there is a category table 
+				$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+				if($catg->rowCount()) {
+					while($catDb = $catg->fetch(PDO::FETCH_OBJ)) {  
+						if(substr($event_event,0,3)==$catDb->photocat_prefix AND is_dir($tree_pict_path.'/'.substr($event_event,0,2)))  {  // there is a subfolder of this prefix
+							$tree_pict_path .= substr($event_event,0,2).'/';  // look in that subfolder
+						}
+					}
+				}
+			}
 
 			// *** In some cases the picture name must be converted to lower case ***
 			if (file_exists($tree_pict_path.strtolower($event_event))){
@@ -111,6 +126,10 @@ function show_media($personDb,$marriageDb){
 			// *** Show MPG Video file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="mpg") {
 				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MPG"></a>';
+			}
+			// *** Show MP4 Video file ***
+			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="mp4") {
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MP4"></a>';
 			}
 			// *** Show MOV Video file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="mov") {
@@ -143,6 +162,8 @@ function show_media($personDb,$marriageDb){
 			else{
 				// *** Show photo using the lightbox effect ***
 				$picture_array=show_picture($tree_pict_path,$event_event,'',120);
+				// lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
+				$picture_array['picture'] = rawurlencode($picture_array['picture']);
 				$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $media_event_text[$i]).'">';
 				$picture.='<img src="'.$picture_array['path'].$picture_array['thumb'].$picture_array['picture'].'" height="'.$picture_array['height'].'" alt="'.$event_event.'"></a>';
 
@@ -173,11 +194,14 @@ function show_media($personDb,$marriageDb){
 
 				$process_text.='<div class="photo">';
 					$process_text.=$picture;
+					if ($picture_array['picture']=='missing-image.jpg') $picture_text.='<br><b>'.__('Missing image').':<br>'.$tree_pict_path.$event_event.'</b>';
 					if(isset($picture_text)) {$process_text.='<div class="phototext">'.$picture_text.'</div>';}
 				$process_text.= '</div>'."\n";
 			}
-
+			// reset path back to original in case was used for subfolder
+			$tree_pict_path = $temp_path;
 		}
+
 		if ($media_nr > 0){
 			$process_text.='<br clear="All">';
 			$templ_person["got_pics"]=1;
@@ -196,6 +220,21 @@ function show_media($personDb,$marriageDb){
 // $popup.='<img src="'.$picture['path'].$picture['thumb'].$picture['picture'].'" style="margin-left:50px; margin-top:5px;" alt="'.$pictureDb->event_text.'" height="'.$picture['height'].'">';
 
 function show_picture($picture_path,$picture_org,$pict_width='',$pict_height=''){
+	global $dbh;
+	// in case subfolders are made for photobook categories and this was not already set in $picture_path,  look there
+	// in cases where the $picture_path is already set with subfolder this anyway gives false and so the $picture_path gives will work
+	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
+	if($temp->rowCount()) {  // there is a category table 
+		$cat1 = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+		if($cat1->rowCount()) { 
+			while($catDb = $cat1->fetch(PDO::FETCH_OBJ)) {  
+				if(substr($picture_org,0,3)==$catDb->photocat_prefix AND is_dir($picture_path.'/'.substr($picture_org,0,2)))  {  // there is a subfolder of this prefix
+					$picture_path .= substr($picture_org,0,2).'/';  // look in that subfolder
+				}
+			}
+		}
+	}	
+	
 	$picture["path"]=$picture_path; // *** Standard picture path. Will be overwritten if picture is removed ***
 	$picture["picture"]=$picture_org;
 	$found_picture=false; // *** Check if picture still exists ***

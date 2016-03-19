@@ -36,13 +36,14 @@ $photo_name='';
 if (isset($_POST['photo_name'])){ $photo_name=safe_text($_POST['photo_name']); }
 if (isset($_GET['photo_name'])){ $photo_name=safe_text($_GET['photo_name']); }
 
+
 // Create one-time an array of all pics with person_id's
-$qry="SELECT event_event, event_kind, event_person_id FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_kind='picture'";	
-$picqry=$dbh->query($qry); 
-$my_array=Array(); 
+$qry="SELECT event_event, event_kind, event_person_id FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_kind='picture'";
+$picqry=$dbh->query($qry);
+$my_array=Array();
 while($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
 	if($picqryDb->event_person_id != '') { // we only want to include pics with a person_id
-		$picname = str_replace(" ","_",$picqryDb->event_event);
+		$picname = str_replace(" ","_",$picqryDb->event_event);  
 		if(!isset($my_array[$picname])) { // this pic does not appear in the array yet
 			$my_array[$picname]=$picqryDb->event_person_id; 
 			// example: $my_array['an_example.jpg']="I354"
@@ -53,53 +54,163 @@ while($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
 		}
 	}
 }
-// *** Read all photos from directory ***
-$dir=$dataDb->tree_pict_path;
-if (file_exists($dir)){
-	$dh  = opendir($dir);
-	while (false !== ($filename = readdir($dh))) {
-		if ((strtolower(substr($filename, -3)) == "jpg" OR strtolower(substr($filename, -3)) == "gif") AND substr($filename,0,6)!='thumb_'){
 
-			// *** Use search field (search for person) to show pictures ***
-			$show_photo=true;
+$categories = false; // is set true by following code if necessary
+$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");  
+if($temp->rowCount()) {   // a humo_photocat table exists
+	$temp2 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none'");
+	if($temp2->rowCount() >= 1) { //  the table contains more than the default category (otherwise display regular photoalbum)
+		$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
+		$result = $dbh->query($qry);
+		$result_arr = $result->fetchAll(); // PDO has a problem with resetting pointer in MySQL and the fastest workaround is to use an array instead
+		$catpics=0; // checks if any of the user-created categories have pics at all, otherwise don't show the tabbed menu, just regular photo album
 
-			if ($photo_name){ 
-				$show_photo=false;
-				$quicksearch=str_replace(" ", "%", $photo_name);
-				if(isset($my_array[str_replace(" ","_",$filename)])) { // pic appears somewhere in the event table with one or more person_id's
-					$id_arr = explode("@@",$my_array[str_replace(" ","_",$filename)]);
-					foreach($id_arr AS $value) {
-						$querie= "SELECT pers_firstname, pers_prefix, pers_lastname FROM humo_persons
-							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$value."'
-							AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%'";
-						$persoon = $dbh->query($querie);
-						$personDb = $persoon->fetch(PDO::FETCH_OBJ);
-						if ($personDb){ $show_photo=true; }
-					}
+		foreach($result_arr as $row) {
+			if($row['photocat_prefix'] != 'none')   {  
+				$check = glob($dataDb->tree_pict_path.'/'.$row['photocat_prefix'].'*');
+				if($check!==false AND count($check) >= 1) {  // found at least one pic for this category
+					$catpics++;
 				}
-				if(stripos($filename,$quicksearch)!==false){ $show_photo=true; }
+				elseif(is_dir($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2))) {
+					$check = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.$row['photocat_prefix'].'*');
+					if($check!==false AND count($check) >= 1) {  // found at least one pic for this category
+						$catpics++;
+					}
+				} 
 			}
-			if ($show_photo){
-				$picture_array[]=$filename;
-			}
+		}  
+		if($catpics>0) { // at least one of the user-created categories has at least one picture
+			$categories = true;  
+			$menu_admin='none';  // by default display the default category
+			if(isset($_GET['menu_photoalbum'])) $menu_admin = $_GET['menu_photoalbum'];
+			echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="">';
+			echo '<div class="pageHeading">';
+
+				echo '<div class="pageTabsContainer" aria-hidden="false" style="">';
+					echo '<ul class="pageTabs">';
+						$cat_string=""; // will hold the string of user-created prefixes for use in the showthem function below
+
+						foreach($result_arr as $row) {
+							if($row['photocat_prefix'] != 'none')   {  
+								$cat_string .= $row['photocat_prefix']."@"; 
+								// now check if there are pics for this category, otherwise don't show it
+								$check2 = glob($dataDb->tree_pict_path.'/'.$row['photocat_prefix'].'*');
+								if($check2===false OR count($check2)==0) {  // if there are no pics for this category, try subfolder
+									if(is_dir($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2))) {  // check for subfolder of the prefix name (without underscore)
+										$check3 = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.$row['photocat_prefix'].'*');
+										if($check3===false OR count($check3) == 0) {  // no pics in subfolder too
+											continue; 
+										}
+										else { $catpics++; }
+									} 
+									else { continue; }
+								}
+								//if($check2===false OR count($check2)==0) { continue; }   // if there are no pics for this category, don't show the category tab
+							}
+							// check if name for this category exists for this language
+							$qry2= "SELECT * FROM humo_photocat WHERE photocat_prefix ='".$row['photocat_prefix']."' AND photocat_language ='".$selected_language."'";
+							$result2 = $dbh->query($qry2);
+							if($result2->rowCount()!=0) {  
+								$catnameDb = $result2->fetch(PDO::FETCH_OBJ);
+								$menutab_name = $catnameDb->photocat_name;
+							}
+							else {
+								// check if default name exists for this category
+								$qry3= "SELECT * FROM humo_photocat WHERE photocat_prefix ='".$row['photocat_prefix']."' AND photocat_language ='default'";
+								$result3 = $dbh->query($qry3);	
+								if($result3->rowCount()!=0) {  
+									$catnameDb = $result3->fetch(PDO::FETCH_OBJ);
+									$menutab_name = $catnameDb->photocat_name;
+								}
+								else {
+									// no name at all (neither default nor specific)
+									$menutab_name = __('NO NAME');
+								}
+							}
+							$select_item=''; if ($menu_admin==$row['photocat_prefix']){ $select_item=' pageTab-active'; }
+							echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="photoalbum.php?menu_photoalbum='.$row['photocat_prefix'].'&amp;tree_id='.$tree_id.'">'.$menutab_name."</a></div></li>";
+						}
+						
+					echo '</ul>';
+				echo '</div>';
+			echo '</div>';
+			echo '</div>';
 		}
 	}
 }
-// *** Order pictures by alphabet ***
-@sort($picture_array);
 
-// *** Calculate pages ***
-$nr_pictures=count($picture_array);
-
-if(CMS_SPECIFIC=="Joomla") {
-	$albumpath='index.php?option=com_humo-gen&amp;task=photoalbum&amp;';
+if($categories == false) {  //show regular photo album with no categories
+	showthem("none");  // show all
 }
-else {
-	$albumpath=$uri_path."photoalbum.php?";
+else {  // show album with category tabs
+	$chosen_tab = 'none';
+	if(isset($_GET['menu_photoalbum'])) { $chosen_tab = $_GET['menu_photoalbum']; }
+	$result = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
+	while($prefixDb = $result->fetch(PDO::FETCH_OBJ)) {
+		if($chosen_tab==$prefixDb->photocat_prefix) {
+			showthem($chosen_tab);  // show only pics that match this category
+		}
+	}
 }
 
-$item=0; if (isset($_GET['item'])){ $item=$_GET['item']; }
-$start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
+function showthem ($pref) {
+	global $dataDb, $photo_name, $dbh, $show_pictures, $uri_path, $tree_id, $db_functions, $my_array, $cat_string, $categories, $chosen_tab;
+	//include_once(CMS_ROOTPATH."include/person_cls.php");
+	//if($pref=='none' OR $pref=="dummy")  { $subfolder=""; }
+	//else { $subfolder= substr($pref,0,2).'/'; }
+	$subfolder="";
+	if($pref!='none'  AND $pref!="dummy" AND is_dir($dataDb->tree_pict_path.substr($pref,0,2).'/')) { $subfolder= substr($pref,0,2).'/'; }
+	// *** Read all photos from directory ***
+	$dir=$dataDb->tree_pict_path.$subfolder;  
+	$picture_array = Array();
+	if (file_exists($dir)){  
+		$dh  = opendir($dir);
+		while (false !== ($filename = readdir($dh))) {
+			if ((strtolower(substr($filename, -3)) == "jpg" OR strtolower(substr($filename, -3)) == "gif" OR strtolower(substr($filename, -3)) == "png") AND substr($filename,0,6)!='thumb_'){
+				if(($pref != 'none' AND $pref != 'dummy' AND substr($filename,0,3)==$pref) OR ($pref == 'none' AND strpos($cat_string,substr($filename,0,3)."@")===false) OR $pref=='dummy') {
+					// *** Use search field (search for person) to show pictures ***
+					$show_photo=true; 
+					if ($photo_name){ 
+						$show_photo=false;
+						$quicksearch=str_replace(" ", "%", $photo_name);
+						if(isset($my_array[str_replace(" ","_",$filename)])) { // pic appears somewhere in the event table with one or more person_id's
+							$id_arr = explode("@@",$my_array[str_replace(" ","_",$filename)]);
+							foreach($id_arr AS $value) {
+								$querie= "SELECT pers_firstname, pers_prefix, pers_lastname FROM humo_persons
+									WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$value."'
+									AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$quicksearch%'";
+								$persoon = $dbh->query($querie);
+								$personDb = $persoon->fetch(PDO::FETCH_OBJ);
+								if ($personDb){ $show_photo=true; }
+							}
+						}
+						if(stripos($filename,$quicksearch)!==false){ $show_photo=true; }
+					}
+					if ($show_photo){
+						$picture_array[]=$filename;
+					}
+				}
+			}
+		}
+	}  
+
+
+	// *** Order pictures by alphabet ***
+	//@sort($picture_array);
+	@usort($picture_array,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
+	
+	// *** Calculate pages ***
+	$nr_pictures=count($picture_array);
+
+	if(CMS_SPECIFIC=="Joomla") {
+		$albumpath='index.php?option=com_humo-gen&amp;task=photoalbum&amp;';
+	}
+	else {
+		$albumpath=$uri_path."photoalbum.php?";
+	}
+
+	$item=0; if (isset($_GET['item'])){ $item=$_GET['item']; }
+	$start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
 
 	$line_pages=__('Page');
 
@@ -112,6 +223,7 @@ $start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
 		"&amp;item=".$calculated.
 		"&amp;show_pictures=".$show_pictures.
 		"&amp;photo_name=".$photo_name.
+		"&amp;menu_photoalbum=".$chosen_tab.
 		'">&lt;= </a>';
 	}
 	if ($start<=0){$start=1;}
@@ -129,6 +241,7 @@ $start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
 				"&amp;item=".$calculated.
 				"&amp;show_pictures=".$show_pictures.
 				"&amp;photo_name=".$photo_name.
+				"&amp;menu_photoalbum=".$chosen_tab.
 				'"> '.$i.'</a>';
 			}
 		}
@@ -142,107 +255,126 @@ $start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
 		"&amp;item=".$calculated.
 		"&amp;show_pictures=".$show_pictures.
 		"&amp;photo_name=".$photo_name.
+		"&amp;menu_photoalbum=".$chosen_tab.
 		'"> =&gt;</a>';
 	}
 
-
-echo '<div class="center">';
-	echo __('Photo\'s per page');
-	print '<select name="show_pictures" onChange="window.location=this.value">';
-	for ($i=4; $i<=60; $i++) {
-		print '<option value="'.$albumpath.
-			'show_pictures='.$i.'
-			&amp;start=0&amp;item=0"';
-		if ($i == $show_pictures) print ' selected="selected"';
-		print ">".$i."</option>\n";
-	}
-	print '</select> ';
-
-	echo $line_pages;
-
-	// *** Search by photo name ***
-	//echo ' <form method="post" action="photoalbum.php" style="display:inline">';
-	if(CMS_SPECIFIC=="Joomla") {   // cant use $albumpath here cause we don't need the &amp; for joomla or the ? for humogen
-		echo ' <form method="post" action="index.php?option=com_humo-gen&amp;task=photoalbum" style="display:inline">';
+	//echo '<div style="float: left; background-color:white; height:auto; padding:5px;">';
+	if($categories===true) {
+		echo '<div style="float: left; background-color:white; height:auto; padding:5px;">';
 	}
 	else {
-		echo ' <form method="post" action="photoalbum.php" style="display:inline">';
+		echo '<div>';
 	}
-	print ' <input type="text" class="fonts" name="photo_name" value="'.$photo_name.'" size="20">';
-	print ' <input class="fonts" type="submit" value="'.__('Search').'">';
-	print ' </form>';
-
-echo '</div><br>';
-
-// *** Show photos ***
-for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){
-	if (isset($picture_array[$picture_nr])){
-		$filename=$picture_array[$picture_nr];
-		$picture_text='';	// Text with link to person
-		$picture_text2='';	// Text without link to person
-
-		$sql="SELECT * FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
-		$afbqry= $dbh->query($sql);
-		$picture_privacy=false;
-		while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
-			$person_cls = New person_cls;
-			@$personDb=$db_functions->get_person($afbDb->event_person_id);
-			$name=$person_cls->person_name($personDb);
-			$picture_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
-				'&amp;id='.$personDb->pers_indexnr.
-				'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
-			$picture_text2.=$name["standard_name"].'<br>';
-			$privacy=$person_cls->set_privacy($personDb);
-			if ($privacy){ $picture_privacy=true; }
-			if($afbDb->event_text!='') {
-				$picture_text.=$afbDb->event_text.'<br>';
-				$picture_text2.=$afbDb->event_text.'<br>';
-			}
+	echo '<div style="padding:5px" class="center">';
+		echo __('Photo\'s per page');
+		print ' <select name="show_pictures" onChange="window.location=this.value">';
+		for ($i=4; $i<=60; $i++) {
+			print '<option value="'.$albumpath.
+				'show_pictures='.$i.'
+				&amp;start=0&amp;item=0&amp;menu_photoalbum='.$chosen_tab.'"';
+			if ($i == $show_pictures) print ' selected="selected"';
+			print ">".$i."</option>\n";
 		}
+		print '</select> ';
 
+		echo $line_pages;
 
-		// *** Show texts from connected objects ***
-		$picture_qry=$dbh->query("SELECT * FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_kind='object' AND LOWER(event_event)='".strtolower($filename)."'");
-		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)) {
-		 	$connect_qry=$dbh->query("SELECT * FROM humo_connections
-				WHERE connect_tree_id='".$tree_id."'
-				AND connect_sub_kind='pers_object'
-				AND connect_source_id='".$pictureDb->event_gedcomnr."'");
-			while($connectDb=$connect_qry->fetch(PDO::FETCH_OBJ)) {
+		// *** Search by photo name ***
+		//echo ' <form method="post" action="photoalbum.php" style="display:inline">';
+		$menu="";
+		if($categories===true) {
+			$menu = "?menu_photoalbum=".$pref;
+		}
+		if(CMS_SPECIFIC=="Joomla") {   // cant use $albumpath here cause we don't need the &amp; for joomla or the ? for humogen
+			echo ' <form method="post" action="index.php?option=com_humo-gen&amp;task=photoalbum'.$menu.'" style="display:inline">';
+		}
+		else {
+			echo ' <form method="post" action="photoalbum.php'.$menu.'" style="display:inline">';
+		}
+		print ' <input type="text" class="fonts" name="photo_name" value="'.$photo_name.'" size="20">';
+		print ' <input class="fonts" type="submit" value="'.__('Search').'">';
+		print ' </form>';
+
+	echo '</div>';
+
+	// *** Show photos ***
+
+	for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){   
+		if (isset($picture_array[$picture_nr])){   
+			$filename=$picture_array[$picture_nr]; 
+			$picture_text='';	// Text with link to person
+			$picture_text2='';	// Text without link to person
+
+			$sql="SELECT * FROM humo_events
+				WHERE event_tree_id='".$tree_id."' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
+			$afbqry= $dbh->query($sql);
+			$picture_privacy=false;
+			if(!$afbqry->rowCount()) {  $picture_text = substr($picture_array[$picture_nr],0,-4); }
+			while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
 				$person_cls = New person_cls;
-				@$personDb=$db_functions->get_person($connectDb->connect_connect_id);
+				$personDb=$db_functions->get_person($afbDb->event_person_id);
 				$name=$person_cls->person_name($personDb);
 				$picture_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
-				'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
-				$picture_text2.=$name["standard_name"].'<br>';
+					'&amp;id='.$personDb->pers_indexnr.
+					'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
+				$picture_text2.=$name["standard_name"];
 				$privacy=$person_cls->set_privacy($personDb);
 				if ($privacy){ $picture_privacy=true; }
-				$picture_text.=$pictureDb->event_text.'<br>';
-				$picture_text2.=$pictureDb->event_text.'<br>';
+				if($afbDb->event_text!='') {
+					$picture_text.=$afbDb->event_text.'<br>';
+					$picture_text2.=$afbDb->event_text;
+				}
 			}
-		}
 
-		$picture2=show_picture($dir,$filename,175,120);
-		$picture='<img src="'.$dir.$picture2['thumb'].$picture2['picture'].'" width="'.$picture2['width'].'" alt="'.$filename.'"></a>';
+			// *** Show texts from connected objects ***
+			$picture_qry=$dbh->query("SELECT * FROM humo_events
+				WHERE event_tree_id='".$tree_id."' AND event_kind='object' AND LOWER(event_event)='".strtolower($filename)."'");
+			while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)) {
+				$connect_qry=$dbh->query("SELECT * FROM humo_connections
+					WHERE connect_tree_id='".$tree_id."'
+					AND connect_sub_kind='pers_object'
+					AND connect_source_id='".$pictureDb->event_gedcomnr."'");
+				while($connectDb=$connect_qry->fetch(PDO::FETCH_OBJ)) {
+					$person_cls = New person_cls;
+					@$personDb=$db_functions->get_person($connectDb->connect_connect_id);
+					$name=$person_cls->person_name($personDb);
+					$picture_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
+					'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
+					$picture_text2.=$name["standard_name"];
+					$privacy=$person_cls->set_privacy($personDb);
+					if ($privacy){ $picture_privacy=true; }
+					if($afbDb->event_text!='') {
+						$picture_text.=$pictureDb->event_text.'<br>';
+						$picture_text2.=$pictureDb->event_text;
+					}
+				}
+			}
 
-		echo '<div class="photobook">';
-			if ($picture_privacy==false){
-				// *** Show photo using the lightbox effect ***
-				echo '<a href="'.$dir.$filename.'" rel="lightbox" title="'.$picture_text2.'">';
-				echo $picture;
-				echo '<div class="photobooktext">'.$picture_text.'</div>';
-			}
-			else{
-				echo __('PRIVACY FILTER');
-			}
-		echo '</div>';
+			$picture2=show_picture($dir,$filename,175,120);
+			$picture='<img src="'.$dir.$picture2['thumb'].$picture2['picture'].'" width="'.$picture2['width'].'" alt="'.$filename.'"></a>';
+			// lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
+			$filename = rawurlencode($filename);
+			
+			echo '<div class="photobook">';
+				if ($picture_privacy==false){
+					// *** Show photo using the lightbox effect ***
+					echo '<a href="'.$dir.$filename.'" rel="lightbox" title="'.$picture_text2.'">';
+					echo $picture;
+					echo '<div class="photobooktext">'.$picture_text.'</div>';
+				}
+				else{
+					echo __('PRIVACY FILTER');
+				}
+			echo '</div>';  
+		}  
 	}
-}
 
-echo '<br clear="all"><br>';
-echo '<div class="center">'.$line_pages.'</div>';
+	echo '</div>'; // end of white menu page
+	echo '<br clear="all"><br>';
+	echo '<div class="center">'.$line_pages.'</div>';
+
+} // end of function showthem()
 
 include_once(CMS_ROOTPATH."footer.php");
 ?>

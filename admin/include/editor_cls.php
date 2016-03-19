@@ -183,29 +183,31 @@ function text_show($find_text){
 }
 
 function show_selected_person($person){
-	$prefix1=''; $prefix2='';
-	//if($user['group_kindindex']=="j") {
-	//	$prefix1=strtolower(str_replace("_"," ",$person->pers_prefix));
-	//}
-	//else {
-		$prefix2=" ".strtolower(str_replace("_"," ",$person->pers_prefix));
-	//}
+	$text=__('N.N.');
+	if ($person){
+		$prefix1=''; $prefix2='';
+		//if($user['group_kindindex']=="j") {
+		//	$prefix1=strtolower(str_replace("_"," ",$person->pers_prefix));
+		//}
+		//else {
+			$prefix2=" ".strtolower(str_replace("_"," ",$person->pers_prefix));
+		//}
 
-	$text='['.$person->pers_gedcomnumber.'] '.
-		$prefix1.$person->pers_lastname.', '.$person->pers_firstname.$prefix2.' ';
+		$text='['.$person->pers_gedcomnumber.'] '.
+			$prefix1.$person->pers_lastname.', '.$person->pers_firstname.$prefix2.' ';
 
-	if ($person->pers_birth_date){$text.=__('*').' '.strtolower($person->pers_birth_date); }
-	if (!$person->pers_birth_date AND $person->pers_bapt_date){
-		$text.=__('~').' '.strtolower($person->pers_bapt_date); }
-	if ($person->pers_death_date){
-		if ($text){ $text.=' '; }
-		$text.=__('&#134;').' '.strtolower($person->pers_death_date);
+		if ($person->pers_birth_date){$text.=__('*').' '.strtolower($person->pers_birth_date); }
+		if (!$person->pers_birth_date AND $person->pers_bapt_date){
+			$text.=__('~').' '.strtolower($person->pers_bapt_date); }
+		if ($person->pers_death_date){
+			if ($text){ $text.=' '; }
+			$text.=__('&#134;').' '.strtolower($person->pers_death_date);
+		}
+		if (!$person->pers_death_date AND $person->pers_buried_date){
+			if ($text){ $text.=' '; }
+			$text.=__('[]').' '.strtolower($person->pers_buried_date);
+		}
 	}
-	if (!$person->pers_death_date AND $person->pers_buried_date){
-		if ($text){ $text.=' '; }
-		$text.=__('[]').' '.strtolower($person->pers_buried_date);
-	}
-
 	return($text);
 }
 

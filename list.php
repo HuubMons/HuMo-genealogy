@@ -1044,7 +1044,7 @@ if ($index_list=='patronym'){
 	if ($index_list=='places'){
 		//echo '<div class="index_list1">';
 		if($language['dir']=="ltr") {
-			echo '<div class="left_box">';
+			echo '<div class="left_box" style="display:inline">';
 		}
 		else {
 			echo '<div class="right_box">';
@@ -1056,7 +1056,7 @@ if ($index_list=='patronym'){
 			echo __('Find place').':';
 
 			$checked=''; if ($select_birth=='1'){$checked='checked';}
-			echo '<p><input type="Checkbox" name="select_birth" value="1" '.$checked.'> '.__('*').' '.__('birth pl.').'<br>';
+			echo '<br><br><input type="Checkbox" name="select_birth" value="1" '.$checked.'> '.__('*').' '.__('birth pl.').'<br>';
 
 			$checked=''; if ($select_bapt=='1'){$checked='checked';}
 			echo ' <input type="Checkbox" name="select_bapt" value="1" '.$checked.'> '.__('~').' '.__('bapt pl.').'<br>';
@@ -1070,7 +1070,7 @@ if ($index_list=='patronym'){
 			$checked=''; if ($select_buried=='1'){$checked='checked';}
 			echo '<input type="Checkbox" name="select_buried" value="1" '.$checked.'> '.__('[]').' '.__('bur pl.');
 
-		echo '<p><select name="part_place_name">';
+		echo '<br><br><select name="part_place_name">';
 		echo '<option value="contains">'.__('Contains').'</option>';
 
 		$select_item=''; if ($part_place_name=='equals'){ $select_item=' selected'; }
@@ -1080,14 +1080,13 @@ if ($index_list=='patronym'){
 		echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 		echo '</select>';
 
-		echo '<p><input type="text" name="place_name" value="'.$place_name.'" size="15"><br>';
+		echo '<br><br><input type="text" name="place_name" value="'.$place_name.'" size="15"><br>';
 
 		echo '<input type="hidden" name="index_list" value="'.$index_list.'">';
-		echo '<p><input type="submit" value="'.__('Search').'" name="B1">';
+		echo '<br><input type="submit" value="'.__('Search').'" name="B1">';echo '</div>';
 		echo '</form>';
-		//***************** end search of places **********************************
 
-		echo '</div>';
+		//***************** end search of places **********************************		
 	}
 
 	// *** Search fields ***
@@ -1309,7 +1308,7 @@ if ($index_list=='patronym'){
 		if ($adv_search==true){
 
 			//echo '&nbsp;<a href="'.CMS_ROOTPATH.'list.php?adv_search=0">'.__('Standard search').'</a>';
-			echo '&nbsp;<a href="'.$list_var2.'adv_search=0">'.__('Standard search').'</a>';
+			echo '&nbsp;<a href="'.$list_var2.'adv_search=0&reset=1">'.__('Standard search').'</a>';
 
 			//echo '<input type="hidden" name="adv_search2" value="1">';
 			echo '<input type="hidden" name="adv_search" value="1">';
@@ -1641,6 +1640,28 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 	}
 
 	//echo '</div>';
+
+echo '<script type="text/javascript"> 
+	if(window.self != window.top) {
+		var framew = window.frameElement.offsetWidth; 
+		document.getElementById("content").style.width = framew-40+"px";
+		var indexes = document.getElementsByClassName("index_table");
+		for (var i = 0; i < indexes.length; i++) {
+			indexes[i].style.width = framew-40+"px";
+		}
+		var lists = document.getElementsByClassName("index_list1");
+		for (var i = 0; i < lists.length; i++) {
+			lists[i].style.width = framew-40+"px";
+		}
+		var boxes = document.getElementsByClassName("left_box"); 
+		if(boxes.length > 0) {
+			boxes[0].style.width=framew-60+"px";
+			boxes[0].style.marginBottom="10px";
+			boxes[0].innerHTML= boxes[0].innerHTML.replace(/<br>/g,"&nbsp;&nbsp;");  
+			boxes[0].style.textAlign="center";
+		}
+	}
+</script>';
 
 //for testing only:
 //echo 'Query: '.$query." LIMIT ".safe_text($item).",".$nr_persons.'<br>';

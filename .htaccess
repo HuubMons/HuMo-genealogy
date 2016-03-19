@@ -30,6 +30,10 @@ RewriteRule ^list_names/(.*) list_names.php
 RewriteRule ^lijst_namen/(.*)/ list_names.php
 RewriteRule ^lijst_namen/(.*) list_names.php
 
+RewriteRule ^cms_pages/(.*)/ cms_pages.php
+RewriteRule ^cms_pages/(.*) cms_pages.php
+RewriteRule ^cms_pages cms_pages.php
+
 # TEST LINES
 # RewriteRule ^lijst_namen/(.*)/(.*)/ list_names.php?database=$1&last_name=$2
 # RewriteRule ^lijst_namen/(.*)/(.*) list_names.php?database=$1&last_name=$2

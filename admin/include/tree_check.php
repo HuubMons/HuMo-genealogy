@@ -128,16 +128,33 @@ if (isset($_POST['tree']) AND isset($_POST['last_changes'])){
 }
 if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 	// *** Check tables for wrongly connected id's etc. ***
-	//$person_qry= "SELECT * FROM ".$tree."person ORDER BY pers_lastname, pers_firstname";
-	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname, pers_firstname";
-	$person_result = $dbh->query($person_qry);
 	echo '<h3>'.__('Checking database tables...').'<br>Please wait till finished</h3>';
-	//echo '<div style="height: 200px; overflow-y: scroll;">';
-	//echo '<table class="humo">';
+
+	// *** Option to remove wrong database connections ***
+	if(CMS_SPECIFIC=="Joomla") {
+		echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=check" style="display : inline;">';
+	}
+	else {
+		echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'" style="display : inline;">';
+	}
+		echo '<input type="hidden" name="page" value="'.$page.'">';
+	$checked=''; if (isset($_POST['remove'])) $checked = " checked";
+	echo '<input type="checkbox" name="remove"'.$checked.'> Remove links to missing items from database (first make a database backup!) ';
+		echo ' <input type="Submit" name="database_check" value="'.__('REMOVE').'">';
+	echo '</form>';
+
+	echo '<div style="height: 200px; overflow-y: scroll;">';
+	echo '<table class="humo" style="text-align:left;">';
+	echo '<tr><td><b>Check item</b></td><td><b>Item</b></td><td><b>Result</b></td>';
+
 	$wrong_indexnr=0;
 	$wrong_famc=0;
 	$wrong_fams=0;
+	$removed=''; if (isset($_POST['remove'])) $removed=' <b>Link is removed.</b>';
 
+	// *** Check person table ***
+	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname, pers_firstname";
+	$person_result = $dbh->query($person_qry);
 	while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 		$check=false;
 		$pers_indexnr='';
@@ -150,17 +167,18 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 
 		if ($check==false){
 			$wrong_indexnr++;
-			echo $person->pers_gedcomnumber.' famc: '.$person->pers_famc.' fams: '.$person->pers_fams.
-			' index:'.$person->pers_indexnr;
-			echo ' <b>Wrong person indexnumber (is restored now)!!</b><br>';
+
+			echo '<tr><td><b>Wrong person indexnumber</b></td>';
+			echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber.'</td>';
+			echo '<td>famc: '.$person->pers_famc.', fams: '.$person->pers_fams.'. <b>Is restored!</b></td>';
 
 			// *** Restore pers_indexnr ***
 			$sql="UPDATE humo_persons SET pers_indexnr='".$pers_indexnr."'
 				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'";
 			$result=$dbh->query($sql);
 		}
-		//else { echo ' indexnr ok.<br>'; }
 
+		// *** Relations/ marriages ***
 		if ($person->pers_fams){
 			$check_fams1=false;
 			$fams=explode(";", $person->pers_fams);
@@ -172,69 +190,280 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 					if ($famDb->fam_man==$person->pers_gedcomnumber){ $check_fams1=true; }
 					if ($famDb->fam_woman==$person->pers_gedcomnumber){ $check_fams1=true; }
 				}
-				// NO RESTORE YET (maybe not possible to do a restore?).
-			}
-			if ($check_fams1==false){
-				$wrong_fams++; echo ' <b>person-relation problem!</b> Please check:';
-				echo ' Person gedcomnumber: '.$person->pers_gedcomnumber;
-				echo ', connected relation: '.$person->pers_fams.'<br>';
+
+				if ($check_fams1==false){
+					if (isset($_POST['remove'])){
+						$new_fams='';
+						for ($j=0; $j<=count($fams)-1; $j++){
+							if ($fams[$j]!=$fams[$i]){
+								if ($new_fams!='') $new_fams.=';';
+								$new_fams.=$fams[$j];
+							}
+						}
+						$sql="UPDATE humo_persons SET pers_fams='".$new_fams."'
+							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'";
+						$result=$dbh->query($sql);
+					}
+					$wrong_fams++;
+					echo '<tr><td><b>Missing marriage/ relation record</b></td>';
+					echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber;
+					echo '</td><td>Missing marriage/ relation gedcomnr: '.$fams[$i].$removed.'</td>';
+				}
+
 			}
 		}
 
+		// *** Parents ***
 		if ($person->pers_famc){
 			$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$person->pers_famc."'";
 			$fam_result = $dbh->query($fam_qry);
 			$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
 
 			$check_children=false;
-			$children=explode(";", $famDb->fam_children);
-				for ($i=0; $i<=count($children)-1; $i++){
-				if ($children[$i]==$person->pers_gedcomnumber){ $check_children=true; }
+			if (isset($famDb->fam_children)){
+				$children=explode(";", $famDb->fam_children);
+				if (in_array($person->pers_gedcomnumber,$children)) $check_children=true;
 			}
+
 			if ($check_children==false) {
-				echo ' fam: '.$famDb->fam_gedcomnumber.' children: '.$famDb->fam_children;
-				echo ' child: '.$person->pers_gedcomnumber;
-				echo ' <b> Wrong child-parent connection!!</b><br>';
-				$wrong_famc++;
-// NO RESTORE YET
+				if ($famDb){
+					// *** Restore child number ***
+					if ($famDb->fam_children) $fam_children=$famDb->fam_children.';'.$person->pers_gedcomnumber;
+						else $fam_children=$person->pers_gedcomnumber;
+					$sql="UPDATE humo_families SET fam_children='".$fam_children."'
+						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$person->pers_famc."'";
+					$result=$dbh->query($sql);
+					$check_children=true;
+					echo '<tr><td><b>Missing child nr.</b></td>';
+					echo '<td>Fam gedcomnr: '.$person->pers_famc.'</td>';
+					echo '<td>Missing child gedcomnr: '.$person->pers_gedcomnumber.'. <b>Is restored.</b></td>';
+				}
+				else{
+					if (isset($_POST['remove'])){
+						$sql="UPDATE humo_persons SET pers_famc=''
+							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'";
+						$result=$dbh->query($sql);
+					}
+
+					// *** Missing parent record, no restore possible? ***
+					echo '<tr><td><b>Missing parents record</b></td>';
+					echo '<td>Child gedcomnr: '.$person->pers_gedcomnumber.'</td>';
+					echo '<td>missing parents gedcomnr: '.$person->pers_famc.$removed.'</td>';
+					$wrong_famc++;
+				}
 			}
+
 		}
 	}
 
+	// *** Check family table ***
 	$wrong_children=0;
 	$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children LIKE '_%'";
 	$fam_result = $dbh->query($fam_qry);
 	while($famDb=$fam_result->fetch(PDO::FETCH_OBJ)){
-		$children=explode(";", $famDb->fam_children);
-		for ($i=0; $i<=count($children)-1; $i++){
-			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$children[$i]."'";
+
+		// *** Check man ***
+		if ($famDb->fam_man){
+			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$famDb->fam_man."'";
 			$person_result = $dbh->query($person_qry);
 			$person=$person_result->fetch(PDO::FETCH_OBJ);
-			if ($person){
-				//echo ' fam: '.$famDb->fam_gedcomnumber.' children: '.$famDb->fam_children.' ';
-				//echo ' gedcom: '.$person->pers_gedcomnumber.' famc: '.$person->pers_famc;
-				if ($person->pers_famc==''){
-					$sql="UPDATE humo_persons SET pers_famc='".$famDb->fam_gedcomnumber."'
+			$check_item=false;
+			//if ($person){
+			if (isset($person) AND $person){
+				$fams_array=explode(";", $person->pers_fams);
+				if (in_array($famDb->fam_gedcomnumber,$fams_array)) $check_item=true;
+				if ($check_item==false){
+					// *** Restore pers_fams ***
+					if ($person->pers_fams) $pers_fams.=$person->pers_fams.';'.$famDb->fam_gedcomnumber;
+						else $pers_fams=$famDb->fam_gedcomnumber;
+					$sql="UPDATE humo_persons SET pers_fams='".$pers_fams."'
 						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'";
 					$result=$dbh->query($sql);
-					echo ' <b> Wrong parent-child connection (is restored now)!</b><br>';
+
+					echo '<tr><td><b>Missing marriage/ relation nr. in person record</b></td>';
+					echo '<td>Man gedcomnr: '.$famDb->fam_man.'</td>';
+					echo '<td>Missing marriage/ relation gedcomnr: '.$famDb->fam_gedcomnumber.'. <b>Is restored.</b></td></tr>';
 				}
 			}
 			else{
-				$wrong_children++;
-				echo ' fam: '.$famDb->fam_gedcomnumber.' children: '.$famDb->fam_children.' ';
-				echo ' gedcom: '.$person->pers_gedcomnumber.' famc: '.$person->pers_famc;
-				echo ' <b> Wrong parent-child connection!</b><br>';
-// NO RESTORE YET
+				if (isset($_POST['remove'])){
+					$sql="UPDATE humo_families SET fam_man='0'
+						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
+					$result=$dbh->query($sql);
+				}
+
+				echo '<tr><td><b>Missing man record in family</b></td>';
+				echo '<td>Family gedcomnr: '.$famDb->fam_gedcomnumber.'</td>';
+				echo '<td>Missing man gedcomnr: '.$famDb->fam_man.$removed.'</td></tr>';
+			}
+		}
+
+		// *** Check woman ***
+		if ($famDb->fam_woman){
+			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$famDb->fam_woman."'";
+			$person_result = $dbh->query($person_qry);
+			$person=$person_result->fetch(PDO::FETCH_OBJ);
+			$check_item=false;
+			//if ($person){
+			if (isset($person) AND $person){
+				$fams_array=explode(";", $person->pers_fams);
+				if (in_array($famDb->fam_gedcomnumber,$fams_array)) $check_item=true;
+				if ($check_item==false){
+					// *** Restore pers_fams ***
+					if ($person->pers_fams) $pers_fams.=$person->pers_fams.';'.$famDb->fam_gedcomnumber;
+						else $pers_fams=$famDb->fam_gedcomnumber;
+					$sql="UPDATE humo_persons SET pers_fams='".$pers_fams."'
+						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'";
+					$result=$dbh->query($sql);
+
+					echo '<tr><td><b>Missing marriage/ relation nr. in person record</b></td>';
+					echo '<td>Woman gedcomnr: '.$famDb->fam_woman.'</td>';
+					echo '<td>Missing marriage/ relation gedcomnr: '.$famDb->fam_gedcomnumber.'. <b>Is restored.</b></td></tr>';
+				}
+			}
+			else{
+				if (isset($_POST['remove'])){
+					$sql="UPDATE humo_families SET fam_woman='0'
+						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
+					$result=$dbh->query($sql);
+				}
+
+				echo '<tr><td><b>Missing woman record in family</b></td>';
+				echo '<td>Family gedcomnr: '.$famDb->fam_gedcomnumber.'</td>';
+				echo '<td>Missing woman gedcomnr: '.$famDb->fam_woman.$removed.'</td></tr>';
+			}
+		}
+
+		// *** Check children ***
+		if ($famDb->fam_children){
+			$children=explode(";", $famDb->fam_children);
+			for ($i=0; $i<=count($children)-1; $i++){
+				$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$children[$i]."'";
+				$person_result = $dbh->query($person_qry);
+				$person=$person_result->fetch(PDO::FETCH_OBJ);
+				if ($person){
+					if ($person->pers_famc==''){
+						$sql="UPDATE humo_persons SET pers_famc='".$famDb->fam_gedcomnumber."'
+							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'";
+						$result=$dbh->query($sql);
+						echo '<tr><td><b>Missing parent connection</b></td>';
+						echo '<td>Child gedcomnr: '.$children[$i].'</td>';
+						echo '<td>Missing parent gedcomnr: '.$famDb->fam_gedcomnumber.'. <b>Is restored.</b></td></tr>';
+					}
+				}
+				else{
+					if (isset($_POST['remove'])){
+						$new_children='';
+						for ($j=0; $j<=count($children)-1; $j++){
+							if ($children[$j]!=$children[$i]){
+								if ($new_children!='') $new_children.=';';
+								$new_children.=$children[$j];
+							}
+						}
+						$sql="UPDATE humo_families SET fam_children='".$new_children."'
+							WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$famDb->fam_gedcomnumber."'";
+						$result=$dbh->query($sql);
+					}
+
+					$wrong_children++;
+					echo '<tr><td><b>Missing child record</b></td>';
+					echo '<td>Fam gedcomnr: '.$famDb->fam_gedcomnumber.'</td>';
+					echo '<td>Missing child gedcomnr: '.$children[$i].$removed.'</td></tr>';
+					// NO RESTORE YET (not possible?)
+				}
+			}
+		}
+
+	}
+
+	// *** Check connections table ***
+	$connect_qry= "SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'";
+	$connect_result = $dbh->query($connect_qry);
+	while ($connect=$connect_result->fetch(PDO::FETCH_OBJ)){
+		// *** Check person ***
+		if ($connect->connect_kind=='person' AND $connect->connect_sub_kind!='pers_event_source'){
+			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$connect->connect_connect_id."'";
+			$person_result = $dbh->query($person_qry);
+			$person=$person_result->fetch(PDO::FETCH_OBJ);
+			if (!$person){
+				if (isset($_POST['remove'])){
+					$sql="DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_id='".$connect->connect_id."'";
+					$result=$dbh->query($sql);
+				}
+
+				echo '<tr><td><b>Missing person record</b></td>';
+				echo '<td>Connection record: '.$connect->connect_id.'/ '.$connect->connect_sub_kind.'</td>';
+				echo '<td>Missing person gedcomnr: '.$connect->connect_connect_id.$removed.'</td></tr>';
+			}
+		}
+
+		// *** Check family ***
+		if ($connect->connect_kind=='family' AND $connect->connect_sub_kind!='fam_event_source'){
+			$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$connect->connect_connect_id."'";
+			$fam_result = $dbh->query($fam_qry);
+			$fam=$fam_result->fetch(PDO::FETCH_OBJ);
+			if (!$fam){
+				if (isset($_POST['remove'])){
+					$sql="DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_id='".$connect->connect_id."'";
+					$result=$dbh->query($sql);
+				}
+
+				echo '<tr><td><b>Missing family record</b></td>';
+				echo '<td>Connection record: '.$connect->connect_id.'/ '.$connect->connect_sub_kind.'</td>';
+				echo '<td>Missing family gedcomnr: '.$connect->connect_connect_id.$removed.'</td></tr>';
+				// NO RESTORE YET (not possible?)
+			}
+		}
+
+	}
+
+	// *** Check events table ***
+	$connect_qry= "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'";
+	$connect_result = $dbh->query($connect_qry);
+	while ($connect=$connect_result->fetch(PDO::FETCH_OBJ)){
+		// *** Check person ***
+		if ($connect->event_person_id){
+			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$connect->event_person_id."'";
+			$person_result = $dbh->query($person_qry);
+			$person=$person_result->fetch(PDO::FETCH_OBJ);
+			if (!$person){
+				if (isset($_POST['remove'])){
+					$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_id='".$connect->event_id."'";
+					$result=$dbh->query($sql);
+				}
+
+				echo '<tr><td><b>Missing person record</b></td>';
+				echo '<td>Event record: '.$connect->event_id.'/ '.$connect->event_kind.'</td>';
+				echo '<td>Missing person gedcomnr: '.$connect->event_person_id.$removed.'</td></tr>';
+			}
+		}
+
+		// *** Check family ***
+		if ($connect->event_family_id){
+			$person_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$connect->event_family_id."'";
+			$person_result = $dbh->query($person_qry);
+			$person=$person_result->fetch(PDO::FETCH_OBJ);
+			if (!$person){
+				if (isset($_POST['remove'])){
+					$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_id='".$connect->event_id."'";
+					$result=$dbh->query($sql);
+				}
+
+				echo '<tr><td><b>Missing family record</b></td>';
+				echo '<td>Event record: '.$connect->event_id.'/ '.$connect->event_kind.'</td>';
+				echo '<td>Missing family gedcomnr: '.$connect->event_family_id.'</td></tr>';
+				// NO RESTORE YET (not possible?)
 			}
 		}
 	}
 
-	if ($wrong_indexnr==0){ echo '<p>'.__('Checked all person index numbers:').' ok.'; }
-	if ($wrong_fams==0){ echo '<p>'.__('Checked all person-relation connections:').' ok.'; }
-	if ($wrong_famc==0){ echo '<p>'.__('Checked all child-parent connections:').' ok.'; }
-	if ($wrong_children==0){ echo '<p>'.__('Checked all parent-child connections:').' ok.'; }
+	if ($wrong_indexnr==0){ echo '<tr><td>'.__('Checked all person index numbers').'</td><td></td><td>ok</td></tr>'; }
+	if ($wrong_fams==0){ echo '<tr><td>'.__('Checked all person - relation connections').'</td><td></td><td>ok</td></tr>'; }
+	if ($wrong_famc==0){ echo '<tr><td>'.__('Checked all child - parent connections').'</td><td></td><td>ok</td></tr>'; }
+	if ($wrong_children==0){ echo '<tr><td>'.__('Checked all parent - child connections').'</td><td></td><td>ok</td></tr>'; }
 
+	echo '</table>';
+	echo '</div>';
 }
 
 if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){ 
@@ -1109,7 +1338,7 @@ function write_pers ($name,$id,$first_date,$second_date,$first_text,$second_text
 }
 
 function invalid($date,$gednr,$table) {  // checks validity with validate_cls.php and displays invalid dates and their details
-	global $dbh, $db_functions, $tree, $direction, $dirmark1, $dirmark2;
+	global $dbh, $db_functions, $tree, $tree_id, $direction, $dirmark1, $dirmark2;
 	include_once (CMS_ROOTPATH.'include/validate_date_cls.php'); 
 	$process_date = New validate_date_cls;
 	$compare_date=$date;
@@ -1120,7 +1349,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 		// then "$compare_date" will become 30/jun or 12/3 which is still invalid and will be found and listed.
 		// For the list of invalid dates, we use "$date" so that the full invalid date (30/Jun/1980 or 12/3/90 etc.) is displayed.
 		// Also, if a jul/greg date itself is invalid (3 january 1680/1, 31 FEB 1678/9) then the mistake will be found
-		// in the first part and will be listed, while the list will display the original invalid full jul/greg date as we want.	
+		// in the first part and will be listed, while the list will display the original invalid full jul/greg date as we want.
 	}
 
 	if($process_date->check_date(strtoupper($compare_date)) === null) { // invalid date
@@ -1131,13 +1360,13 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$personDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$name.'</a></td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="fam") {
-			$fam = $dbh->query("SELECT * FROM humo_families WHERE pers_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$gednr."'");
+			$fam = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$gednr."'");
 			$famDb=$fam->fetch();
 			$spouse1 = $dbh->query("SELECT * FROM humo_persons
 				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$famDb['fam_man']."'");
 			$spouse1Db=$spouse1->fetch();
 			$name1 = $spouse1Db['pers_firstname'].' '.str_replace("_"," ",$spouse1Db['pers_prefix'].' '.$spouse1Db['pers_lastname']);
-			$spouse2 = $dbh->query("SELECT * FROM humo_person
+			$spouse2 = $dbh->query("SELECT * FROM humo_persons
 				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$famDb['fam_woman']."'");
 			$spouse2Db=$spouse2->fetch();
 			$name2 = $spouse2Db['pers_firstname'].' '.str_replace("_"," ",$spouse2Db['pers_prefix'].' '.$spouse2Db['pers_lastname']);

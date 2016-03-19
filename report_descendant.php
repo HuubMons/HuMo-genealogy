@@ -685,7 +685,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 							$pictureDb=$picture_qry[0];
 							$picture=show_picture($tree_pict_path,$pictureDb->event_event,60,65);
 							//$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" height="65px">';
-							$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'"';
+							//$replacement_text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'"';
+							$replacement_text.='<img src="'.$picture['path'].$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'"';
 							//if (isset($picture['height'])) $replacement_text.=' height="'.$picture['height'].'"';
 							$replacement_text.='>';
 						}

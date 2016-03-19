@@ -1931,8 +1931,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			$fam_div_no_data=false; if ($fam_div_date OR $fam_div_place OR $fam_div_text) $fam_div_no_data=true;
 			$fam_text=$editor_cls->text_show($familyDb->fam_text);
 
-			//echo '<form method="POST" action="'.$phpself.'#marriage" name="form2" id="form2">';
-			echo '<form method="POST" action="'.$phpself.'" name="form2" id="form2">';
+			//echo '<form method="POST" action="'.$phpself.'#marriage"  name="form2" id="form2">';
+			echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data"  name="form2" id="form2">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 
 			// *** Only add <br> if there are multiple marriages ***

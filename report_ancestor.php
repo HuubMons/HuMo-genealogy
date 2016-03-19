@@ -815,7 +815,8 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 					if (isset($picture_qry[0])){
 						$pictureDb=$picture_qry[0];
 						$picture=show_picture($tree_pict_path,$pictureDb->event_event,80,70);
-						$text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'">';
+						//$text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'">';
+						$text.='<img src="'.$picture['path'].$picture['thumb'].$picture['picture'].'" style="float:left; margin:5px;" alt="'.$pictureDb->event_text.'" width="'.$picture['width'].'">';
 					}
 				}
 			}

@@ -226,10 +226,12 @@ echo '<ul class="humo_menu_item">';
 		$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
 
 		if (CMS_SPECIFIC=='Joomla'){
-			$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages&amp;database='.$_SESSION['tree_prefix'];
+			//$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages&amp;database='.$_SESSION['tree_prefix'];
+			$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages';
 		}
 		else{
-			$path_tmp=CMS_ROOTPATH.'cms_pages.php?database='.$_SESSION['tree_prefix'];
+			//$path_tmp=CMS_ROOTPATH.'cms_pages.php?database='.$_SESSION['tree_prefix'];
+			$path_tmp=CMS_ROOTPATH.'cms_pages.php';
 		}
 		echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
 	}

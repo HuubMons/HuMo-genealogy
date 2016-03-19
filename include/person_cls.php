@@ -523,6 +523,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					$text.= '<a href="'.$path_tmp.'&amp;screen_mode=ancestor_sheet"><img src="'.CMS_ROOTPATH.'images/ancestor_chart.gif" border="0" alt="'.__('Ancestor sheet').'"> '.__('Ancestor sheet').'</a>';
 				}
 
+				if ($user["group_relcalc"]=='j'){
+					$text.= '<a href="'.CMS_ROOTPATH.'relations.php?pers_id='.$personDb->pers_id.'"><img src="'.CMS_ROOTPATH.'images/relcalc.gif" border="0" alt="'.__('Relationship calculator').'"> '.__('Relationship calculator').'</a>';
+				}
+
 				if  ($user['group_gen_protection']=='n' AND ($personDb->pers_famc!='' OR $personDb->pers_fams!='')) {
 					$text.= '<b>'.__('Charts').':</b>';
 				}
@@ -641,7 +645,8 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 						if (isset($picture_qry[0])){
 							$pictureDb=$picture_qry[0];
 							$picture=show_picture($tree_pict_path,$pictureDb->event_event,'',120);
-							$text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="margin-left:10px; margin-top:5px;" alt="'.$pictureDb->event_text.'" height="'.$picture['height'].'">';
+							//$text.='<img src="'.$tree_pict_path.$picture['thumb'].$picture['picture'].'" style="margin-left:10px; margin-top:5px;" alt="'.$pictureDb->event_text.'" height="'.$picture['height'].'">';
+							$text.='<img src="'.$picture['path'].$picture['thumb'].$picture['picture'].'" style="margin-left:10px; margin-top:5px;" alt="'.$pictureDb->event_text.'" height="'.$picture['height'].'">';
 							$text.='<br>';
 						}
 					}
