@@ -251,19 +251,19 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 	if (isset($_GET['language_tree'])){ $language_tree=$_GET['language_tree']; }
 	if (isset($_POST['language_tree'])){ $language_tree=$_POST['language_tree']; }
 
-	if(isset($_GET['cat_drop2']) AND $_GET['cat_drop2']==1) {
+	if(isset($_GET['cat_drop2']) AND $_GET['cat_drop2']==1 AND !isset($_POST['save_cat'])) {
 		// delete category and make sure that the order sequence is restored
 		$dbh->query("UPDATE humo_photocat SET photocat_order = (photocat_order-1) WHERE photocat_order > '".$_GET['cat_order']."'");
 		$dbh->query("DELETE FROM humo_photocat WHERE photocat_prefix = '".$_GET['cat_prefix']."'");
 	}
-	if(isset($_GET['cat_up'])) {
+	if(isset($_GET['cat_up']) AND !isset($_POST['save_cat'])) { 
 		// move category up
 		$dbh->query("UPDATE humo_photocat SET photocat_order = 'temp' WHERE photocat_order ='".$_GET['cat_up']."'");  // set present one to temp
 		$dbh->query("UPDATE humo_photocat SET photocat_order = '".$_GET['cat_up']."' WHERE photocat_order ='".($_GET['cat_up'] - 1)."'");  // move the one above down
 		$dbh->query("UPDATE humo_photocat SET photocat_order = '".($_GET['cat_up'] - 1)."' WHERE photocat_order = 'temp'");  // move this one up
 		
 	}
-	if(isset($_GET['cat_down'])) {
+	if(isset($_GET['cat_down']) AND !isset($_POST['save_cat'])) {
 		// move category down
 		$dbh->query("UPDATE humo_photocat SET photocat_order = 'temp' WHERE photocat_order ='".$_GET['cat_down']."'");  // set present one to temp
 		$dbh->query("UPDATE humo_photocat SET photocat_order = '".$_GET['cat_down']."' WHERE photocat_order ='".($_GET['cat_down'] + 1)."'");  // move the one under it up
@@ -460,13 +460,14 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 						// *** Show name of connected persons ***
 						include_once('../include/person_cls.php');
 						$picture_text='';
-						$sql="SELECT * FROM humo_events
-							WHERE event_tree_id='".$tree_id."' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
+						$sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+							AND event_connect_kind='person' AND event_kind='picture'
+							AND LOWER(event_event)='".strtolower($filename)."'";
 						$afbqry= $dbh->query($sql);
 						$picture_privacy=false;
 						while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
 							$person_cls = New person_cls;
-							$personDb=$db_functions->get_person($afbDb->event_person_id);
+							$personDb=$db_functions->get_person($afbDb->event_connect_id);
 							$name=$person_cls->person_name($personDb);
 							$picture_text.='<br><a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
 								'&amp;id='.$personDb->pers_indexnr.

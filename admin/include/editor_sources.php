@@ -6,7 +6,7 @@ if (!defined('ADMIN_PAGE')){ exit; }
 include_once ("editor_cls.php");
 $editor_cls = New editor_cls;
 
-if (isset($_SESSION['admin_tree_prefix'])){ $tree_prefix=$_SESSION['admin_tree_prefix']; }
+//if (isset($_SESSION['admin_tree_prefix'])){ $tree_prefix=$_SESSION['admin_tree_prefix']; }
 if (isset($_SESSION['admin_tree_id'])){ $tree_id=$_SESSION['admin_tree_id']; }
 if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['admin_pers_gedcomnumber']; }
 if (isset($_SESSION['admin_fam_gedcomnumber'])){ $marriage=$_SESSION['admin_fam_gedcomnumber']; }
@@ -34,34 +34,25 @@ if (isset($_POST['event_family']) OR isset($_GET['event_family']))
 
 $gedcom_date=strtoupper(date("d M Y"));
 $gedcom_time=date("H:i:s");
-//$phpself2=$_SERVER['PHP_SELF'];
-//$phpself2='index.php?page=editor_sources&connect_sub_kind='.$connect_sub_kind;
+
 $phpself2='index.php?page=editor_sources&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id;
 $phpself2.=$event_link;
 
+// *** Process queries ***
+include_once ("editor_inc.php");
+
+/*
+MOVED TO EDITOR_INC.PHP
+
 // *** Add new address connection ***
 if (isset($_GET['person_place_address']) AND isset($_GET['address_add'])){
-	// *** Generate new order number ***
-	$event_sql="SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."'
-		AND connect_sub_kind='person_address'
-		AND connect_connect_id='".safe_text($pers_gedcomnumber)."'";
-	$event_qry=$dbh->query($event_sql);
-	$count=$event_qry->rowCount();
-	$count++;
-
-	$sql="INSERT INTO humo_connections SET
-		connect_tree_id='".$tree_id."',
-		connect_order='".$count."',
-		connect_new_date='".$gedcom_date."',
-		connect_new_time='".$gedcom_time."',
-		connect_kind='person',
-		connect_sub_kind='person_address',
-		connect_connect_id='".safe_text($pers_gedcomnumber)."'";
-	$result=$dbh->query($sql);
+	$_POST['connect_add']='add_address';
+	$_POST['connect_kind']='person';
+	$_POST["connect_sub_kind"]='person_address';
+	$_POST["connect_connect_id"]=$pers_gedcomnumber;
 }
 
-// *** Add new source connection ***
+// *** Add new source or address connection ***
 if (isset($_POST['connect_add'])){
 	// *** Generate new order number ***
 	$event_sql="SELECT * FROM humo_connections
@@ -107,7 +98,7 @@ if (isset($_POST['connect_change'])){
 	}
 }
 
-// *** Remove source/ event connection ***
+// *** Remove source/ address connection ***
 if (isset($_GET['connect_drop'])){
 	echo '<div class="confirm">';
 	echo __('Are you sure you want to remove this event?');
@@ -205,7 +196,7 @@ if (isset($_GET['connect_up'])){
 		AND connect_order=99";
 		$result=$dbh->query($sql);
 }
-
+*/
 
 // **************************
 // *** Show source editor ***
@@ -339,8 +330,9 @@ if ($connect_sub_kind=='fam_event_source'){
 
 // *** SOURCE EDIT FUNCTION ***
 function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
-	global $dbh, $tree_id, $tree_prefix, $language, $page, $phpself2, $joomlastring, $marriage;
+	global $dbh, $tree_id, $language, $page, $phpself2, $joomlastring, $marriage;
 	global $editor_cls, $field_date;
+	//global $tree_prefix;
 
 	// *** Explanation of role and page ***
 	$text='<p>'.__('Sourcerole').': '.__('e.g. Writer, Brother, Sister, Father').'<br>';
@@ -524,6 +516,13 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 			$text.='</select>';
 
 		$text.='</td></tr>';
+
+
+
+// *** Picture by source ***
+
+
+
 
 		$text.='<tr class="table_header_large" style="border-top:solid 2px #000000;"><td colspan="4"><br></td></tr>';
  

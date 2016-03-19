@@ -11,8 +11,7 @@
  *		get_family				Get a single family from database.
  *		get_event				Get a single event from database.
  *		get_events_kind			Get multiple events of one event_kind from database. Example:
- *		get_events_person		Get multiple events of a person selecting one event_kind from database.
- *		get_events_family		Get multiple events of a family selecting one event_kind from database.
+ *		get_events_connect		Get multiple events of a connected person, family etc. selecting one event_kind from database.
  *		get_source				Get a single source from database.
  *		get_address				Get a single address from database.
  *		get_addressses_person	Get a all adresses (places) by a person.
@@ -28,7 +27,7 @@
  *		if ($person_manDb==false){ }
  *
  * EXAMPLE get multiple items from database:
- *		$colour = $db_functions->get_events_person($personDb->pers_gedcomnumber,'person_colour_mark');
+ *		$colour = $db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'person_colour_mark');
  *		foreach($colour as $colourDb){
  *			echo $colourDb->event_event;
  *		}
@@ -36,7 +35,7 @@
  *		unset($colour); // *** If finished, remove data from memory ***
  *
  * Some remarks:
- * event_person_id = reference to person gedcomnumber.
+ * event_connect_id = reference to person, family or source gedcomnumber.
  *
  *----------------------------------------------------------------
  */
@@ -90,15 +89,14 @@ function __construct($tree_prefix='') {
 		// *** Event queries ***
 		$sql = "SELECT * FROM humo_events WHERE event_id=:event_id";
 		$this->query['get_event'] = $dbh->prepare( $sql );
+
 		$sql = "SELECT * FROM humo_events
 		WHERE event_tree_id=:event_tree_id AND event_event=:event_event AND event_kind=:event_kind ORDER BY event_order";
 		$this->query['get_events_kind'] = $dbh->prepare( $sql );
+
 		$sql = "SELECT * FROM humo_events
-		WHERE event_tree_id=:event_tree_id AND event_person_id=:event_person_id AND event_kind=:event_kind ORDER BY event_order";
-		$this->query['get_events_person'] = $dbh->prepare( $sql );
-		$sql = "SELECT * FROM humo_events
-		WHERE event_tree_id=:event_tree_id AND event_family_id=:event_family_id AND event_kind=:event_kind ORDER BY event_order";
-		$this->query['get_events_family'] = $dbh->prepare( $sql );
+		WHERE event_tree_id=:event_tree_id AND event_connect_kind=:event_connect_kind AND event_connect_id=:event_connect_id AND event_kind=:event_kind ORDER BY event_order";
+		$this->query['get_events_connect'] = $dbh->prepare( $sql );
 
 		// *** Address queries ***
 		$sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_gedcomnr=:address_gedcomnr";
@@ -292,44 +290,23 @@ function get_events_kind($event_event,$event_kind){
 	return $result_array;
 }
 
-/*--------------------[get events from person ]-------------------
- * FUNCTION	: Get all selected events by a person from database.
+/*--------------------[get events from a connection: person or family etc. ]----------------
+ * FUNCTION	: Get all selected events by a person, family etc. from database.
  * QUERY	: SELECT * FROM humo_events
- *				WHERE event_tree_id=:event_tree_id
- *				AND event_person_id=:event_person_id AND event_kind=:event_kind ORDER BY event_order
+ *				WHERE event_tree_id=:event_tree_id AND event_connect_kind=:event_connect_kind
+ *				AND event_connect_id=:event_connect_id AND event_kind=:event_kind ORDER BY event_order
  * RETURNS	: all selected events by a person.
- *----------------------------------------------------------------
+ *------------------------------------------------------------------------------------------
  */
-function get_events_person($event_person_id,$event_kind){
+function get_events_connect($event_connect_kind,$event_connect_id,$event_kind){
 	$result_array = array();
 	try {
-		$this->query['get_events_person']->bindValue(':event_tree_id', $this->tree_id, PDO::PARAM_STR);
-		$this->query['get_events_person']->bindValue(':event_person_id', $event_person_id, PDO::PARAM_STR);
-		$this->query['get_events_person']->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
-		$this->query['get_events_person']->execute();
-		$result_array=$this->query['get_events_person']->fetchAll(PDO::FETCH_OBJ);
-	}catch (PDOException $e) {
-		echo $e->getMessage() . "<br/>";
-	}
-	return $result_array;
-}
-
-/*--------------------[get events from family ]-------------------
- * FUNCTION	: Get all selected events by a family from database.
- * QUERY	: SELECT * FROM humo_events
- *				WHERE event_tree_id=:event_tree_id
- *				AND event_family_id=:event_family_id AND event_kind=:event_kind ORDER BY event_order
- * RETURNS	: all selected events by a family.
- *----------------------------------------------------------------
- */
-function get_events_family($event_family_id,$event_kind){
-	$result_array = array();
-	try {
-		$this->query['get_events_family']->bindValue(':event_tree_id', $this->tree_id, PDO::PARAM_STR);
-		$this->query['get_events_family']->bindValue(':event_family_id', $event_family_id, PDO::PARAM_STR);
-		$this->query['get_events_family']->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
-		$this->query['get_events_family']->execute();
-		$result_array=$this->query['get_events_family']->fetchAll(PDO::FETCH_OBJ);
+		$this->query['get_events_connect']->bindValue(':event_tree_id', $this->tree_id, PDO::PARAM_STR);
+		$this->query['get_events_connect']->bindValue(':event_connect_kind', $event_connect_kind, PDO::PARAM_STR);
+		$this->query['get_events_connect']->bindValue(':event_connect_id', $event_connect_id, PDO::PARAM_STR);
+		$this->query['get_events_connect']->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
+		$this->query['get_events_connect']->execute();
+		$result_array=$this->query['get_events_connect']->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}

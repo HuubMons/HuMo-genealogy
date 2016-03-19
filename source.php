@@ -13,13 +13,16 @@ if(isset($_GET["id"])) { // source.php is called from show_sources.php, sources.
  *----------------------------------------------------------------
  */
 function source_display($sourcenum) {
-global $dbh, $db_functions, $tree_prefix_quoted, $dataDb, $user, $pdf, $screen_mode, $language;
+global $dbh, $db_functions, $tree_id, $tree_prefix_quoted, $dataDb, $user, $pdf, $screen_mode, $language;
 
 if($screen_mode!="PDF") {
 	include_once("header.php"); //returns CMS_ROOTPATH constant
 	include_once(CMS_ROOTPATH."menu.php");
 	include_once(CMS_ROOTPATH."include/date_place.php");
 	include_once(CMS_ROOTPATH."include/process_text.php");
+	// *** Needed for pictures by a source ***
+	include_once(CMS_ROOTPATH."include/show_picture.php");
+	include_once(CMS_ROOTPATH."include/show_sources.php");
 }
 
 // *** Check user authority ***
@@ -194,7 +197,14 @@ if($screen_mode!="PDF") {
 	}
 
 
-	// *** Source pictures not in use yet... ***
+	// *** Pictures by source ***
+	if($screen_mode=="PDF") {
+		//
+	}
+	else{
+		$result = show_media('source',$sourceDb->source_gedcomnr); // *** This function can be found in file: show_picture.php! ***
+		echo $result[0];
+	}
 
 	// *** Show repository ***
 	$repoDb=$db_functions->get_repository ($sourceDb->source_repo_gedcomnr);
@@ -263,8 +273,8 @@ print '<tr><td>';
 				// *** Sources by event ***
 				$event_Db=$db_functions->get_event ($connectDb->connect_connect_id);
 				// *** Person source ***
-				if ($event_Db->event_person_id){
-					$personDb=$db_functions->get_person ($event_Db->event_person_id);
+				if ($event_Db->event_connect_kind=='person' AND $event_Db->event_connect_id){
+					$personDb=$db_functions->get_person ($event_Db->event_connect_id);
 					$name=$person_cls->person_name($personDb);
 					print __('Source for:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 					echo $name["standard_name"].'</a>';
@@ -331,10 +341,10 @@ print '<tr><td>';
 				// *** Sources by event ***
 				$event_Db=$db_functions->get_event ($connectDb->connect_connect_id);
 				// *** Family source ***
-				if ($event_Db->event_family_id){					print __('Source for family:');
-					$familyDb=$db_functions->get_family ($event_Db->event_family_id);
+				if ($event_Db->event_connect_kind=='family' AND $event_Db->event_connect_id){					print __('Source for family:');
+					$familyDb=$db_functions->get_family ($event_Db->event_connect_id);
 					$personDb=person_data($familyDb);
-					echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$event_Db->event_family_id.'">';
+					echo ' <a href="'.CMS_ROOTPATH.'family.php?id='.$event_Db->event_connect_id.'">';
 					$name=$person_cls->person_name($personDb);
 					echo $name["standard_name"].'</a>';
 					if ($event_Db->event_event){ echo ' '.$event_Db->event_event; }

@@ -78,6 +78,7 @@ while (false!==($file = readdir($language_folder))) {
 		elseif ($file=='da') $language_order[]='Dansk';
 		elseif ($file=='de') $language_order[]='Deutsch';
 		elseif ($file=='en') $language_order[]='English';
+		elseif ($file=='en_ca') $language_order[]='English_ca';
 		elseif ($file=='en_us') $language_order[]='English_us';
 		elseif ($file=='es') $language_order[]='Espanol';
 		elseif ($file=='fa') $language_order[]='Persian';

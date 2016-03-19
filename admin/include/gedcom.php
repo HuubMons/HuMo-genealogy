@@ -1060,18 +1060,22 @@ if (isset($_POST['step3'])){
 	*/
 	$sql="INSERT INTO humo_events SET event_tree_id='".$tree_id."'";
 	$result=$dbh->query($sql);
-	$event_items = $dbh->lastInsertId();
-	$sql="DELETE FROM humo_events WHERE event_id='".$event_items."'";
-//echo $sql.'!!<br>';
+	$calculated_event_id = $dbh->lastInsertId();
+	$sql="DELETE FROM humo_events WHERE event_id='".$calculated_event_id."'";
 	$result=$dbh->query($sql);
 
 	$sql="INSERT INTO humo_addresses SET address_tree_id='".$tree_id."'";
 	$result=$dbh->query($sql);
-	$address_items = $dbh->lastInsertId();
-	$sql="DELETE FROM humo_addresses WHERE address_id='".$address_items."'";
-//echo $sql.' '.$address_items.'<br>';
+	$calculated_address_id = $dbh->lastInsertId();
+	$sql="DELETE FROM humo_addresses WHERE address_id='".$calculated_address_id."'";
 	$result=$dbh->query($sql);
 
+	$sql="INSERT INTO humo_connections SET connect_tree_id='".$tree_id."'";
+	$result=$dbh->query($sql);
+	$calculated_connect_id = $dbh->lastInsertId();
+	$sql="DELETE FROM humo_connections WHERE connect_id='".$calculated_connect_id."'";
+//echo $sql.' '.$calculated_connect_id.'<br>';
+	$result=$dbh->query($sql);
 
 	// *****************
 	// *** Read file ***

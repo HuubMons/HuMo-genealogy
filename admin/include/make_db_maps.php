@@ -73,7 +73,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 			$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc."&sensor=false";
 		}
 		else {
-			$jsonurl = "http://maps.googleapis.com/maps/api/geocode/json?address=".$loc."&sensor=false";						
+			$jsonurl = "http://maps.googleapis.com/maps/api/geocode/json?address=".$loc."&sensor=false";
 		}
 		@$json = file_get_contents($jsonurl,0,null,null);
 		// file_get_contents won't work if "allow_url_fopen" is disabled by host for security considerations.

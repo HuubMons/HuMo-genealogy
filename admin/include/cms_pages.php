@@ -384,6 +384,12 @@ if ($cms_item=='pages'){
 	echo '<script src="include/ckeditor/ckeditor.js"></script>';
 
 	// *** KCfinder settings ***
+	//$_SESSION['KCFINDER'] = array(
+	//	'disabled' => false,
+	//	'uploadURL' => "/users/" . $user['username'] . "/upload",
+	//	'uploadDir' = ""
+	//);
+
 	$_SESSION['KCFINDER'] = array();
 	$_SESSION['KCFINDER']['disabled'] = false;
 	if (isset($humo_option["cms_images_path"])){
@@ -611,6 +617,7 @@ To point to a folder outside (and parallel to) the humogen folder, use ../../../
 	echo '</form>';
 
 	echo '<h2>In some cases the picture-path setting doesn\'t work...</h2>';
+	echo '<b>First try renaming or removing file: admin\php.ini.</b><br><br>';
 	echo '<b>If you need this setting, you can manual set this picture path in this file: admin/include/kcfinder/config.php<br>';
 	echo 'Change "upload" into your picture path: \'uploadURL\' => "upload",<br>';
 	echo 'Change "true" into "false": \'disabled\' => true,</b>';

@@ -142,7 +142,7 @@ if (isset($_POST['person_remove2'])){
 		$confirm.=__('Person disconnected from parents.').'<br>';
 	}
 
-	$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'";
+	$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'";
 	$result=$dbh->query($sql);
 
 	$sql="DELETE FROM humo_addresses WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."'";
@@ -481,7 +481,8 @@ if (isset($_POST['fam_remove2'])){
 	unset ($fams2);
 	if (isset($new_nr->fam_woman)){ fams_remove($new_nr->fam_woman, $fam_remove); }
 
-	$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_family_id='".$fam_remove."'";
+	$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='family' AND event_connect_id='".$fam_remove."'";
 	$result=$dbh->query($sql);
 
 	$sql="DELETE FROM humo_addresses WHERE address_tree_id='".$tree_id."' AND address_family_id='".$fam_remove."'";
@@ -959,68 +960,39 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 
 // *** Add new event ***
 if (isset($_GET['event_add'])){
-	$section='person';
-	if ($_GET['event_add']=='add_name'){ $event_kind='name'; $event_event=__('Name'); }
-	if ($_GET['event_add']=='add_nobility'){ $event_kind='nobility'; $event_event=__('Title of Nobility'); }
-	if ($_GET['event_add']=='add_title'){ $event_kind='title'; $event_event=__('Title'); }
-	if ($_GET['event_add']=='add_lordship'){ $event_kind='lordship'; $event_event=__('Title of Lordship'); }
-	if ($_GET['event_add']=='add_birth_declaration'){ $event_kind='birth_declaration'; $event_event=__('birth declaration'); }
-	if ($_GET['event_add']=='add_baptism_witness'){ $event_kind='baptism_witness'; $event_event=__('baptism witness'); }
-	if ($_GET['event_add']=='add_death_declaration'){ $event_kind='death_declaration'; $event_event=__('death declaration'); }
-	if ($_GET['event_add']=='add_burial_witness'){ $event_kind='burial_witness'; $event_event=__('burial witness'); }
-	if ($_GET['event_add']=='add_profession'){ $event_kind='profession'; $event_event=__('Profession'); }
-	if ($_GET['event_add']=='add_picture'){ $event_kind='picture'; $event_event=''; }
+	if ($_GET['event_add']=='add_name'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='name'; $event_event=__('Name'); }
+	if ($_GET['event_add']=='add_nobility'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='nobility'; $event_event=__('Title of Nobility'); }
+	if ($_GET['event_add']=='add_title'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='title'; $event_event=__('Title'); }
+	if ($_GET['event_add']=='add_lordship'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='lordship'; $event_event=__('Title of Lordship'); }
+	if ($_GET['event_add']=='add_birth_declaration'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='birth_declaration'; $event_event=__('birth declaration'); }
+	if ($_GET['event_add']=='add_baptism_witness'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='baptism_witness'; $event_event=__('baptism witness'); }
+	if ($_GET['event_add']=='add_death_declaration'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='death_declaration'; $event_event=__('death declaration'); }
+	if ($_GET['event_add']=='add_burial_witness'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='burial_witness'; $event_event=__('burial witness'); }
+	if ($_GET['event_add']=='add_profession'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='profession'; $event_event=__('Profession'); }
+	if ($_GET['event_add']=='add_picture'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='picture'; $event_event=''; }
+	if ($_GET['event_add']=='add_marriage_witness'){
+		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='marriage_witness'; $event_event=__('marriage witness'); }
+	if ($_GET['event_add']=='add_marriage_witness_rel'){
+		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='marriage_witness_rel'; $event_event=__('marriage witness (religious)'); }
+	if ($_GET['event_add']=='add_marriage_picture'){
+		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='picture'; $event_event=''; }
+	if ($_GET['event_add']=='add_source_picture'){
+		$event_connect_kind='source'; $event_connect_id=$_GET['source_id']; $event_kind='picture'; $event_event=''; }
 
-	if ($_GET['event_add']=='add_marriage_witness'){ $section='family'; $event_kind='marriage_witness'; $event_event=__('marriage witness'); }
-	if ($_GET['event_add']=='add_marriage_witness_rel'){ $section='family'; $event_kind='marriage_witness_rel'; $event_event=__('marriage witness (church)'); }
-	if ($_GET['event_add']=='add_marriage_picture'){ $section='family'; $event_kind='picture'; $event_event=''; }
-
-	if ($section=='person'){
-		// *** Generate new order number ***
-		$event_sql="SELECT * FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."'
-			ORDER BY event_order DESC LIMIT 0,1";
-	}
-	if ($section=='family'){
-		// *** Generate new order number ***
-		$event_sql="SELECT * FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."' AND event_kind='".$event_kind."'
-			ORDER BY event_order DESC LIMIT 0,1";
-	}
-	$event_qry=$dbh->query($event_sql);
-	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
-	$event_order=0;
-	if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
-	$event_order++;
-
-	if ($section=='person'){
-		$sql="INSERT INTO humo_events SET
-			event_tree_id='".$tree_id."',
-			event_person_id='".$pers_gedcomnumber."',
-			event_kind='".$event_kind."',
-			event_event='".$event_event."',
-			event_order='".$event_order."',
-			event_new_date='".$gedcom_date."',
-			event_new_time='".$gedcom_time."'";
-	}
-	if ($section=='family'){
-		$sql="INSERT INTO humo_events SET
-			event_tree_id='".$tree_id."',
-			event_family_id='".$marriage."',
-			event_kind='".$event_kind."',
-			event_order='".$event_order."',
-			event_new_date='".$gedcom_date."',
-			event_new_time='".$gedcom_time."'";
-	}
-	$result=$dbh->query($sql);
-}
-
-// *** Add person event ***
-if (isset($_POST['person_event_add'])){
 	// *** Generate new order number ***
-	$event_sql="SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."'
-		AND event_person_id='".$pers_gedcomnumber."' AND event_kind='".$_POST["event_kind"]."'
+	$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='".$event_connect_kind."' AND event_connect_id='".$event_connect_id."'
+		AND event_kind='".$event_kind."'
 		ORDER BY event_order DESC LIMIT 0,1";
 	$event_qry=$dbh->query($event_sql);
 	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
@@ -1030,7 +1002,34 @@ if (isset($_POST['person_event_add'])){
 
 	$sql="INSERT INTO humo_events SET
 		event_tree_id='".$tree_id."',
-		event_person_id='".$pers_gedcomnumber."',
+		event_connect_kind='".$event_connect_kind."',
+		event_connect_id='".safe_text($event_connect_id)."',
+		event_kind='".$event_kind."',
+		event_event='".$event_event."',
+		event_order='".$event_order."',
+		event_new_date='".$gedcom_date."',
+		event_new_time='".$gedcom_time."'";
+	$result=$dbh->query($sql);
+}
+
+// *** Add person event ***
+if (isset($_POST['person_event_add'])){
+	// *** Generate new order number ***
+	$event_sql="SELECT * FROM humo_events
+		WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
+		AND event_kind='".$_POST["event_kind"]."'
+		ORDER BY event_order DESC LIMIT 0,1";
+	$event_qry=$dbh->query($event_sql);
+	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
+	$event_order=0;
+	if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
+	$event_order++;
+
+	$sql="INSERT INTO humo_events SET
+		event_tree_id='".$tree_id."',
+		event_connect_kind='person',
+		event_connect_id='".$pers_gedcomnumber."',
 		event_kind='".$_POST["event_kind"]."',
 		event_order='".$event_order."',
 		event_new_date='".$gedcom_date."',
@@ -1043,7 +1042,8 @@ if (isset($_POST['marriage_event_add'])){
 	// *** Generate new order number ***
 	$event_sql="SELECT * FROM humo_events
 		WHERE event_tree_id='".$tree_id."'
-		AND event_family_id='".$marriage."' AND event_kind='".$_POST["event_kind"]."'
+		AND event_connect_kind='family' AND event_connect_id='".$marriage."'
+		AND event_kind='".$_POST["event_kind"]."'
 		ORDER BY event_order DESC LIMIT 0,1";
 	$event_qry=$dbh->query($event_sql);
 	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
@@ -1053,7 +1053,8 @@ if (isset($_POST['marriage_event_add'])){
 
 	$sql="INSERT INTO humo_events SET
 		event_tree_id='".$tree_id."',
-		event_family_id='".$marriage."',
+		event_connect_kind='family',
+		event_connect_id='".$marriage."',
 		event_kind='".$_POST["event_kind"]."',
 		event_order='".$event_order."',
 		event_new_date='".$gedcom_date."',
@@ -1201,7 +1202,8 @@ if (isset($_POST['event_id'])){
 				// *** Check if descendant allready has this colour ***
 				$event_sql="SELECT * FROM humo_events
 					WHERE event_tree_id='".$tree_id."'
-					AND event_person_id='".$descendant_array[$i]."'
+					AND event_connect_kind='person' 
+					AND event_connect_id='".$descendant_array[$i]."'
 					AND event_kind='person_colour_mark'
 					AND event_event='".safe_text($_POST["event_event_old"][$key])."'";
 				$event_qry=$dbh->query($event_sql);
@@ -1229,7 +1231,9 @@ if (isset($_POST['event_id'])){
 					// *** Generate new order number ***
 					$event_sql="SELECT * FROM humo_events
 						WHERE event_tree_id='".$tree_id."'
-						AND event_person_id='".$descendant_array[$i]."' AND event_kind='person_colour_mark'
+						AND event_connect_kind='person'
+						AND event_connect_id='".$descendant_array[$i]."'
+						AND event_kind='person_colour_mark'
 						ORDER BY event_order DESC LIMIT 0,1";
 					$event_qry=$dbh->query($event_sql);
 					$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
@@ -1238,7 +1242,8 @@ if (isset($_POST['event_id'])){
 					$event_order++;
 					$sql="INSERT INTO humo_events SET
 						event_tree_id='".$tree_id."',
-						event_person_id='".$descendant_array[$i]."',
+						event_connect_kind='person',
+						event_connect_id='".$descendant_array[$i]."',
 						event_kind='person_colour_mark',
 						event_event='".$event_event."',
 						event_order='".$event_order."',
@@ -1260,7 +1265,8 @@ if (isset($_POST['event_id'])){
 				// *** Check if ancestor allready has this colour ***
 				$event_sql="SELECT * FROM humo_events
 					WHERE event_tree_id='".$tree_id."'
-					AND event_person_id='".$selected_ancestor."'
+					AND event_connect_kind='person'
+					AND event_connect_id='".$selected_ancestor."'
 					AND event_kind='person_colour_mark'
 					AND event_event='".safe_text($_POST["event_event_old"][$key])."'";
 				$event_qry=$dbh->query($event_sql);
@@ -1288,7 +1294,8 @@ if (isset($_POST['event_id'])){
 					// *** Generate new order number ***
 					$event_sql="SELECT * FROM humo_events
 						WHERE event_tree_id='".$tree_id."'
-						AND event_person_id='".$selected_ancestor."' AND event_kind='person_colour_mark'
+						AND event_connect_kind='person' AND event_connect_id='".$selected_ancestor."'
+						AND event_kind='person_colour_mark'
 						ORDER BY event_order DESC LIMIT 0,1";
 					$event_qry=$dbh->query($event_sql);
 					$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
@@ -1297,7 +1304,8 @@ if (isset($_POST['event_id'])){
 					$event_order++;
 					$sql="INSERT INTO humo_events SET
 						event_tree_id='".$tree_id."',
-						event_person_id='".$selected_ancestor."',
+						event_connect_kind='person',
+						event_connect_id='".$selected_ancestor."',
 						event_kind='person_colour_mark',
 						event_event='".$event_event."',
 						event_order='".$event_order."',
@@ -1317,10 +1325,13 @@ if (isset($_POST['event_id'])){
 if (isset($_GET['event_drop'])){
 	$confirm.='<div class="confirm">';
 		$confirm.=__('Are you sure you want to remove this event?');
-		$confirm.=' <form method="post" action="'.$phpself.'" style="display : inline;">';
+		$confirm.=' <form method="post" action="'.$phpself;
+		if (isset($_GET['source_id'])) $confirm.='?source_id='.$_GET['source_id'];
+		$confirm.='" style="display : inline;">';
 			$confirm.='<input type="hidden" name="page" value="'.$_GET['page'].'">';
 			if (isset($_GET['event_person'])) $confirm.='<input type="hidden" name="event_person" value="event_person">';
 			if (isset($_GET['event_family'])) $confirm.='<input type="hidden" name="event_family" value="event_family">';
+			if (isset($_GET['event_source'])) $confirm.='<input type="hidden" name="event_source" value="event_source">';
 			$confirm.='<input type="hidden" name="event_kind" value="'.$_GET['event_kind'].'">';
 			$confirm.='<input type="hidden" name="event_drop" value="'.$_GET['event_drop'].'">';
 
@@ -1344,7 +1355,9 @@ if (isset($_POST['event_drop2'])){
 
 		if (isset($_POST['event_descendants']) OR isset($_POST['event_ancestors'])){
 			// *** Get event_event from selected person, needed to remove colour from descendant and/ or ancestors ***
-			$event_sql="SELECT event_event FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
+			$event_sql="SELECT event_event FROM humo_events
+				WHERE event_tree_id='".$tree_id."'
+				AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
 				AND event_kind='person_colour_mark' AND event_order='".$event_order_id."'";
 			$event_qry=$dbh->query($event_sql);
 			$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
@@ -1352,11 +1365,15 @@ if (isset($_POST['event_drop2'])){
 		}
 
 		$sql="DELETE FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
+			WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
+			AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
 		$result=$dbh->query($sql);
 
 		$event_sql="SELECT * FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."' AND event_order>'".$event_order_id."' ORDER BY event_order";
+			WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
+			AND event_kind='".$event_kind."' AND event_order>'".$event_order_id."' ORDER BY event_order";
 		$event_qry=$dbh->query($event_sql);
 		while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 			$sql="UPDATE humo_events SET
@@ -1374,20 +1391,24 @@ if (isset($_POST['event_drop2'])){
 			// *** Starts with 2nd descendant, skip main person (that's allready processed above this code)! ***
 			for ($i=2; $i<=$descendant_id; $i++){
 				// *** Get event_order from selected person ***
-				$event_sql="SELECT event_order FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$descendant_array[$i]."'
+				$event_sql="SELECT event_order FROM humo_events WHERE event_tree_id='".$tree_id."'
+					AND event_connect_kind='person' AND event_connect_id='".$descendant_array[$i]."'
 					AND event_kind='person_colour_mark' AND event_event='".$event_event."'";
 				$event_qry=$dbh->query($event_sql);
 				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
 				$event_order=$eventDb->event_order;
 
 				// *** Remove colour from descendant ***
-				$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$descendant_array[$i]."'
+				$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
+					AND event_connect_kind='person' AND event_connect_id='".$descendant_array[$i]."'
 					AND event_kind='person_colour_mark' AND event_event='".$event_event."'";
 				$result=$dbh->query($sql);
 
 				// *** Restore order of colour marks ***
 				$event_sql="SELECT * FROM humo_events
-					WHERE event_tree_id='".$tree_id."' AND event_person_id='".$descendant_array[$i]."' AND event_kind='".$event_kind."' AND event_order>'".$event_order."' ORDER BY event_order";
+					WHERE event_tree_id='".$tree_id."'
+					AND event_connect_kind='person' AND event_connect_id='".$descendant_array[$i]."'
+					AND event_kind='".$event_kind."' AND event_order>'".$event_order."' ORDER BY event_order";
 				$event_qry=$dbh->query($event_sql);
 				while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 					$sql="UPDATE humo_events SET
@@ -1409,20 +1430,23 @@ if (isset($_POST['event_drop2'])){
 				$selected_ancestor=$value;
 
 				// *** Get event_order from selected person ***
-				$event_sql="SELECT event_order FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$selected_ancestor."'
+				$event_sql="SELECT event_order FROM humo_events WHERE event_tree_id='".$tree_id."'
+					AND event_connect_kind='person' AND event_connect_id='".$selected_ancestor."'
 					AND event_kind='person_colour_mark' AND event_event='".$event_event."'";
 				$event_qry=$dbh->query($event_sql);
 				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
 				$event_order=$eventDb->event_order;
 
 				// *** Check if ancestor allready has this colour ***
-				$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$selected_ancestor."'
+				$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
+					AND event_connect_kind='person' AND event_connect_id='".$selected_ancestor."'
 					AND event_kind='person_colour_mark' AND event_event='".$event_event."'";
 				$result=$dbh->query($sql);
 
 				// *** Restore order of colour marks ***
-				$event_sql="SELECT * FROM humo_events
-					WHERE event_tree_id='".$tree_id."' AND event_person_id='".$selected_ancestor."' AND event_kind='".$event_kind."' AND event_order>'".$event_order."' ORDER BY event_order";
+				$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+					AND event_connect_kind='person' AND event_connect_id='".$selected_ancestor."'
+					AND event_kind='".$event_kind."' AND event_order>'".$event_order."' ORDER BY event_order";
 				$event_qry=$dbh->query($event_sql);
 				while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 					$sql="UPDATE humo_events SET
@@ -1439,22 +1463,45 @@ if (isset($_POST['event_drop2'])){
 	}
 
 	if (isset($_POST['event_family'])){
-		$sql="DELETE FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."' AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
+		$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='family' AND event_connect_id='".$marriage."'
+			AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
 		$result=$dbh->query($sql);
 
-		$event_sql="SELECT * FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."' AND event_kind='".$event_kind."' AND event_order>'".$event_order_id."' ORDER BY event_order";
+		$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='family' AND event_connect_id='".$marriage."'
+			AND event_kind='".$event_kind."' AND event_order>'".$event_order_id."' ORDER BY event_order";
 		$event_qry=$dbh->query($event_sql);
 		while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 			$sql="UPDATE humo_events SET
-			event_order='".($eventDb->event_order-1)."',
-			event_changed_date='".$gedcom_date."',
-			event_changed_time='".$gedcom_time."'
-			WHERE event_id='".$eventDb->event_id."'";
+				event_order='".($eventDb->event_order-1)."',
+				event_changed_date='".$gedcom_date."',
+				event_changed_time='".$gedcom_time."'
+				WHERE event_id='".$eventDb->event_id."'";
 			$result=$dbh->query($sql);
 		}
 	}
+
+	if (isset($_POST['event_source'])){
+		$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='source' AND event_connect_id='".safe_text($_GET['source_id'])."'
+			AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
+		$result=$dbh->query($sql);
+
+		$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='source' AND event_connect_id='".safe_text($_GET['source_id'])."'
+			AND event_kind='".$event_kind."' AND event_order>'".$event_order_id."' ORDER BY event_order";
+		$event_qry=$dbh->query($event_sql);
+		while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+			$sql="UPDATE humo_events SET
+				event_order='".($eventDb->event_order-1)."',
+				event_changed_date='".$gedcom_date."',
+				event_changed_time='".$gedcom_time."'
+				WHERE event_id='".$eventDb->event_id."'";
+			$result=$dbh->query($sql);
+		}
+	}
+
 }
 
 if (isset($_GET['event_down'])){
@@ -1462,40 +1509,40 @@ if (isset($_GET['event_down'])){
 	$event_order=safe_text($_GET["event_down"]);
 
 	if (isset($_GET['event_person'])){
-		$sql="UPDATE humo_events SET event_order='99'
-		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
-		AND event_kind='".$event_kind."'
-		AND event_order='".$event_order."'";
+		$sql="UPDATE humo_events SET event_order='99' WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
+			AND event_kind='".$event_kind."'
+			AND event_order='".$event_order."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE humo_events SET event_order='".$event_order."'
-		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
-		AND event_kind='".$event_kind."'
-		AND event_order='".($event_order+1)."'";
+		$sql="UPDATE humo_events SET event_order='".$event_order."' WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
+			AND event_kind='".$event_kind."'
+			AND event_order='".($event_order+1)."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE humo_events SET event_order='".($event_order+1)."'
-		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
+		$sql="UPDATE humo_events SET event_order='".($event_order+1)."' WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
 		AND event_kind='".$event_kind."'
 		AND event_order=99";
 		$result=$dbh->query($sql);
 	}
 
 	if (isset($_GET['event_family'])){
-		$sql="UPDATE humo_events SET event_order='99'
-		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
+		$sql="UPDATE humo_events SET event_order='99' WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='family' AND event_connect_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".$event_order."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE humo_events SET event_order='".$event_order."'
-		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
+		$sql="UPDATE humo_events SET event_order='".$event_order."' WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='family' AND event_connect_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".($event_order+1)."'";
 		$result=$dbh->query($sql);
 
-		$sql="UPDATE humo_events SET event_order='".($event_order+1)."'
-		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
+		$sql="UPDATE humo_events SET event_order='".($event_order+1)."' WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='family' AND event_connect_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order=99";
 		$result=$dbh->query($sql);
@@ -1509,21 +1556,24 @@ if (isset($_GET['event_up'])){
 	if (isset($_GET['event_person'])){
 		$sql="UPDATE humo_events SET
 		event_order='99'
-		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
+		WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".$event_order."'";
 		$result=$dbh->query($sql);
 
 		$sql="UPDATE humo_events SET
 		event_order='".$event_order."'
-		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
+		WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".($event_order-1)."'";
 		$result=$dbh->query($sql);
 		
 		$sql="UPDATE humo_events SET
 		event_order='".($event_order-1)."'
-		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
+		WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
 		AND event_kind='".$event_kind."'
 		AND event_order=99";
 		$result=$dbh->query($sql);
@@ -1532,25 +1582,208 @@ if (isset($_GET['event_up'])){
 	if (isset($_GET['event_family'])){
 		$sql="UPDATE humo_events SET
 		event_order='99'
-		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
+		WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='family' AND event_connect_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".$event_order."'";
 		$result=$dbh->query($sql);
 
 		$sql="UPDATE humo_events SET
 		event_order='".$event_order."'
-		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
+		WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='family' AND event_connect_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order='".($event_order-1)."'";
 		$result=$dbh->query($sql);
 
 		$sql="UPDATE humo_events SET
 		event_order='".($event_order-1)."'
-		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$marriage."'
+		WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='family' AND event_connect_id='".$marriage."'
 		AND event_kind='".$event_kind."'
 		AND event_order=99";
 		$result=$dbh->query($sql);
 	}
+}
+
+
+// ************************
+// *** Save connections ***
+// ************************
+
+// *** Add new address connection ***
+if (isset($_GET['person_place_address']) AND isset($_GET['address_add'])){
+	$_POST['connect_add']='add_address';
+	$_POST['connect_kind']='person';
+	$_POST["connect_sub_kind"]='person_address';
+	$_POST["connect_connect_id"]=$pers_gedcomnumber;
+}
+
+// *** Add new source or address connection ***
+if (isset($_POST['connect_add'])){
+	// *** Generate new order number ***
+	$event_sql="SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."'
+		AND connect_kind='".safe_text($_POST['connect_kind'])."'
+		AND connect_sub_kind='".safe_text($_POST["connect_sub_kind"])."'
+		AND connect_connect_id='".safe_text($_POST["connect_connect_id"])."'";
+	$event_qry=$dbh->query($event_sql);
+	$count=$event_qry->rowCount();
+	$count++;
+
+	$sql="INSERT INTO humo_connections SET
+		connect_tree_id='".$tree_id."',
+		connect_order='".$count."',
+		connect_new_date='".$gedcom_date."',
+		connect_new_time='".$gedcom_time."',
+		connect_kind='".safe_text($_POST['connect_kind'])."',
+		connect_sub_kind='".safe_text($_POST["connect_sub_kind"])."',
+		connect_connect_id='".safe_text($_POST["connect_connect_id"])."'";
+	$result=$dbh->query($sql);
+} // *** End of update sources ***
+
+// *** Change source connection ***
+if (isset($_POST['connect_change'])){
+	foreach($_POST['connect_change'] as $key=>$value){
+		$sql="UPDATE humo_connections SET
+		connect_kind='".safe_text($_POST['connect_kind'][$key])."',
+		connect_sub_kind='".safe_text($_POST['connect_sub_kind'][$key])."',
+		connect_date='".$editor_cls->date_process("connect_date",$key)."',
+		connect_place='".$editor_cls->text_process($_POST["connect_place"][$key])."',
+		connect_page='".$editor_cls->text_process($_POST["connect_page"][$key])."',
+		connect_role='".$editor_cls->text_process($_POST["connect_role"][$key])."',
+		connect_source_id='".safe_text($_POST['connect_source_id'][$key])."',
+		connect_item_id='".safe_text($_POST['connect_item_id'][$key])."',
+		connect_text='".safe_text($_POST['connect_text'][$key])."',";
+		if (isset($_POST['connect_quality'][$key]) AND ($_POST['connect_quality'][$key] OR $_POST['connect_quality'][$key]=='0'))
+			$sql.=" connect_quality='".safe_text($_POST['connect_quality'][$key])."',";
+		$sql.=" connect_changed_date='".$gedcom_date."', ";
+		$sql.=" connect_changed_time='".$gedcom_time."'";
+		$sql.=" WHERE connect_id='".safe_text($_POST["connect_change"][$key])."'";
+//echo $sql;
+		$result=$dbh->query($sql);
+	}
+}
+
+// *** Remove source/ address connection ***
+if (isset($_GET['connect_drop'])){
+	// *** Needed for event sources ***
+	$connect_kind='';
+	if (isset($_GET['connect_kind'])) $connect_kind=$_GET['connect_kind'];
+	//if (isset($_POST['connect_kind'])) $connect_kind=$_POST['connect_kind'];
+
+	$connect_sub_kind='';
+	//if (isset($_POST['connect_sub_kind'])) $connect_sub_kind=$_POST['connect_sub_kind'];
+	if (isset($_GET['connect_sub_kind'])) $connect_sub_kind=$_GET['connect_sub_kind'];
+
+	// *** Needed for event sources ***
+	$connect_connect_id='';
+	if (isset($_GET['connect_connect_id']) AND $_GET['connect_connect_id']) $connect_connect_id=$_GET['connect_connect_id'];
+	//if (isset($_POST['connect_connect_id']) AND $_POST['connect_connect_id']) $connect_connect_id=$_POST['connect_connect_id'];
+
+	$event_link='';
+	if (isset($_POST['event_person']) OR isset($_GET['event_person']))
+		$event_link='&event_person=1';
+	if (isset($_POST['event_family']) OR isset($_GET['event_family']))
+		$event_link='&event_family=1';
+	$phpself2='index.php?page=editor_sources&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id;
+	$phpself2.=$event_link;
+
+	echo '<div class="confirm">';
+	echo __('Are you sure you want to remove this event?');
+	echo ' <form method="post" action="'.$phpself2.'" style="display : inline;">';
+	echo '<input type="hidden" name="page" value="'.$_GET['page'].'">';
+	echo '<input type="hidden" name="connect_drop" value="'.$_GET['connect_drop'].'">';
+	echo '<input type="hidden" name="connect_kind" value="'.$_GET['connect_kind'].'">';
+	echo '<input type="hidden" name="connect_sub_kind" value="'.$_GET['connect_sub_kind'].'">';
+	echo '<input type="hidden" name="connect_connect_id" value="'.$_GET['connect_connect_id'].'">';
+
+	if (isset($_POST['event_person']) OR isset($_GET['event_person']))
+		echo '<input type="hidden" name="event_person" value="1">';
+	if (isset($_POST['event_family']) OR isset($_GET['event_family']))
+		echo '<input type="hidden" name="event_family" value="1">';
+
+	// *** Remove adress event ***
+	if (isset($_GET['person_place_address']))
+		echo '<input type="hidden" name="person_place_address" value="person_place_address">';
+
+	if (isset($_GET['marriage_nr']))
+		echo '<input type="hidden" name="marriage_nr" value="'.safe_text($_GET['marriage_nr']).'">';
+
+	echo ' <input type="Submit" name="connect_drop2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
+	echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
+	echo '</form>';
+	echo '</div>';
+}
+if (isset($_POST['connect_drop2'])){
+	// *** Delete source connection ***
+	$sql="DELETE FROM humo_connections
+		WHERE connect_id='".safe_text($_POST['connect_drop'])."'";
+	$result=$dbh->query($sql);
+
+	// *** Re-order remaining source connections ***
+	$event_order=1;
+	$event_sql="SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."'
+		AND connect_kind='".safe_text($_POST['connect_kind'])."'
+		AND connect_sub_kind='".safe_text($_POST['connect_sub_kind'])."'
+		AND connect_connect_id='".safe_text($_POST['connect_connect_id'])."'
+		ORDER BY connect_order";
+	$event_qry=$dbh->query($event_sql);
+	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){	
+		$sql="UPDATE humo_connections
+			SET connect_order='".$event_order."'
+			WHERE connect_id='".$eventDb->connect_id."'";
+		$result=$dbh->query($sql);
+		$event_order++;
+	}
+
+}
+
+if (isset($_GET['connect_down'])){
+	$sql="UPDATE humo_connections SET connect_order='99'
+		WHERE connect_id='".safe_text($_GET['connect_down'])."'";
+	$result=$dbh->query($sql);
+
+	$event_order=safe_text($_GET['connect_order']);
+	$sql="UPDATE humo_connections SET connect_order='".$event_order."'
+		WHERE connect_tree_id='".$tree_id."'
+		AND connect_kind='".safe_text($_GET['connect_kind'])."'
+		AND connect_sub_kind='".safe_text($_GET['connect_sub_kind'])."'
+		AND connect_connect_id='".safe_text($_GET['connect_connect_id'])."'
+		AND connect_order='".($event_order+1)."'";
+		$result=$dbh->query($sql);
+
+	$sql="UPDATE humo_connections SET connect_order='".($event_order+1)."'
+		WHERE connect_tree_id='".$tree_id."'
+		AND connect_kind='".safe_text($_GET['connect_kind'])."'
+		AND connect_sub_kind='".safe_text($_GET['connect_sub_kind'])."'
+		AND connect_connect_id='".safe_text($_GET['connect_connect_id'])."'
+		AND connect_order=99";
+		$result=$dbh->query($sql);
+}
+
+if (isset($_GET['connect_up'])){
+	$sql="UPDATE humo_connections SET connect_order='99'
+	WHERE connect_id='".safe_text($_GET['connect_up'])."'";
+		$result=$dbh->query($sql);
+
+	$event_order=safe_text($_GET['connect_order']);
+	$sql="UPDATE humo_connections SET connect_order='".$event_order."'
+		WHERE connect_tree_id='".$tree_id."'
+		AND connect_kind='".safe_text($_GET['connect_kind'])."'
+		AND connect_sub_kind='".safe_text($_GET['connect_sub_kind'])."'
+		AND connect_connect_id='".safe_text($_GET['connect_connect_id'])."'
+		AND connect_order='".($event_order-1)."'";
+		$result=$dbh->query($sql);
+
+	$sql="UPDATE humo_connections SET connect_order='".($event_order-1)."'
+		WHERE connect_tree_id='".$tree_id."'
+		AND connect_kind='".safe_text($_GET['connect_kind'])."'
+		AND connect_sub_kind='".safe_text($_GET['connect_sub_kind'])."'
+		AND connect_connect_id='".safe_text($_GET['connect_connect_id'])."'
+		AND connect_order=99";
+		$result=$dbh->query($sql);
 }
 
 

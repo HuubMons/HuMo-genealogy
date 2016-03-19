@@ -119,17 +119,17 @@ function person_name($personDb){
 
 	if (isset($personDb->pers_gedcomnumber) AND $personDb->pers_gedcomnumber){
 		// *** Aldfaer: nobility (predikaat) by name ***
-		$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'nobility');
+		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'nobility');
 		foreach($name_qry as $nameDb) $nobility.=$nameDb->event_event.' ';
 		unset($name_qry);
 
 		// *** Gedcom 5.5 title: NPFX ***
-		$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'NPFX');
+		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'NPFX');
 		foreach($name_qry as $nameDb) $title_before.=' '.$nameDb->event_event.' ';
 		unset($name_qry);
 
 		// *** Gedcom 5.5 title: NSFX ***
-		$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'NSFX');
+		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'NSFX');
 		foreach($name_qry as $nameDb) $title_after.=' '.$nameDb->event_event.' ';
 		unset($name_qry);
 
@@ -144,7 +144,7 @@ function person_name($personDb){
 		Title AFTER name:
 			All other titles.
 		*/
-		$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'title');
+		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'title');
 		foreach($name_qry as $nameDb){
 			$title_position='after';
 			if ($nameDb->event_event=='Prof.'){ $title_position='before'; }
@@ -192,7 +192,7 @@ function person_name($personDb){
 		}
 
 		// *** Aldfaer: lordship (heerlijkheid) after name ***
-		$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'lordship');
+		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'lordship');
 		foreach($name_qry as $nameDb) $lordship.=', '.$nameDb->event_event;
 		unset($name_qry);
 
@@ -333,7 +333,7 @@ function person_name($personDb){
 
 		// *** Colour mark by person ***
 		$name_array["colour_mark"]=''; $person_colour_mark='';
-		$colour=$db_functions->get_events_person($personDb->pers_gedcomnumber,'person_colour_mark');
+		$colour=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'person_colour_mark');
 		foreach($colour as $colourDb){
 			if ($colourDb AND $screen_mode!="PDF" AND $screen_mode!="RTF"){
 				$pers_colour='style="-moz-border-radius: 40px; border-radius: 40px;';
@@ -640,7 +640,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 						//  *** Path can be changed per family tree ***
 						global $dataDb;
 						$tree_pict_path=$dataDb->tree_pict_path;
-						$picture_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'picture');
+						$picture_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'picture');
 						// *** Only show 1st picture ***
 						if (isset($picture_qry[0])){
 							$pictureDb=$picture_qry[0];
@@ -901,7 +901,7 @@ function name_extended($person_kind){
 		// *** Check for adoptive parents (just for sure: made it for multiple adoptive parents...) ***
 		// ********************************************************************************************
 		if ($person_kind=='parent1' OR $person_kind=='parent2'){
-			$famc_adoptive_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'adoption');
+			$famc_adoptive_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'adoption');
 			foreach ($famc_adoptive_qry as $famc_adoptiveDb){
 				$text_parents.=' '.ucfirst(__('adoption parents')).': ';
 
@@ -969,12 +969,12 @@ function name_extended($person_kind){
 		// *** Check for adoptive parent ESPECIALLY FOR ALDFAER ***
 		// ********************************************************
 		if ($person_kind=='parent1' OR $person_kind=='parent2'){
-			$famc_adoptive_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'adoption_by_person');
+			$famc_adoptive_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'adoption_by_person');
 			foreach ($famc_adoptive_qry as $famc_adoptiveDb){
 				if($famc_adoptiveDb->event_gedcom=='steph') $text_parents.=' '.ucfirst(__('stepparent')).': ';
 				elseif($famc_adoptiveDb->event_gedcom=='legal') $text_parents.=' '.ucfirst(__('legal parent')).': ';
 				elseif($famc_adoptiveDb->event_gedcom=='foster') $text_parents.=' '.ucfirst(__('foster parent')).': ';
-				else $text_parents.=' '.ucfirst(__('adoption parent')).': ';
+				else $text_parents.=' '.ucfirst(__('adoptive parent')).': ';
 
 				//*** Father ***
 				//if ($parents_familyDb->fam_man){
@@ -1156,7 +1156,7 @@ function person_data($person_kind, $id){
 		// *** Show extra names of BK ***
 		if ($personDb->pers_gedcomnumber){
 			$eventnr=0;
-			$name_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'name');
+			$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'name');
 			foreach ($name_qry as $nameDb){
 				$eventnr++;
 				$text='';
@@ -1519,7 +1519,7 @@ function person_data($person_kind, $id){
 		}
 
 		// *** HZ-21 ash dispersion (asverstrooiing) ***
-		$name_qry = $db_functions->get_events_person($personDb->pers_gedcomnumber,'ash dispersion');
+		$name_qry = $db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'ash dispersion');
 		foreach ($name_qry as $nameDb){
 			$process_text.=', '.__('ash dispersion').' ';
 			if ($nameDb->event_date){ $process_text.=date_place($nameDb->event_date,'').' '; }
@@ -1534,7 +1534,7 @@ function person_data($person_kind, $id){
 		if ($personDb->pers_gedcomnumber){
 			$eventnr=0;
 			$event_qry=$dbh->query("SELECT * FROM humo_events
-				WHERE event_tree_id='".$tree_id."' AND event_person_id='".$personDb->pers_gedcomnumber."' AND event_kind='profession'
+				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$personDb->pers_gedcomnumber."' AND event_kind='profession'
 				ORDER BY substring( event_date,-4 ), event_order");
 			$nr_occupations=$event_qry->rowCount();
 			while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
@@ -1811,7 +1811,7 @@ function person_data($person_kind, $id){
 	else{
 
 		// *** Show media/ pictures ***
-		$result = show_media($personDb,''); // *** This function can be found in file: show_picture.php! ***
+		$result = show_media('person',$personDb->pers_gedcomnumber); // *** This function can be found in file: show_picture.php! ***
 		$process_text.= $result[0];
 		if (isset($templ_person))
 			$templ_person = array_merge((array)$templ_person,(array)$result[1]);
@@ -1819,7 +1819,7 @@ function person_data($person_kind, $id){
 			$templ_person=$result[1];
 
 		// *** Internet links (URL) ***
-		$url_qry = $db_functions->get_events_person($personDb->pers_gedcomnumber,'URL');
+		$url_qry = $db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'URL');
 		if (count($url_qry)>0){ $process_text.='<br>'; }
 		foreach($url_qry as $urlDb){
 			if ($urlDb->event_text){ $process_text.=$urlDb->event_text.': '; }
@@ -1852,7 +1852,7 @@ function person_data($person_kind, $id){
 		// *** Show events ***
 		if ($user['group_event']=='j'){
 			if ($personDb->pers_gedcomnumber){
-				$event_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'event');
+				$event_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'event');
 				$num_rows = count($event_qry);
 				if ($num_rows>0){ $process_text.='<span class="event">'."\n"; }
 				$eventnr=0;

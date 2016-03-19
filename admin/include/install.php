@@ -225,7 +225,7 @@ if (isset($_POST['install_tables2'])){
 		// *** Other settings are saved in the table in file: settings_global.php ***
 
 		// *** Update status number. Number must be: update_status+1! ***
-		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','8')");
+		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','9')");
 	}
 
 	if (!$table_stat_date){
@@ -451,6 +451,8 @@ if (isset($_POST['install_tables2'])){
 			note_date varchar(20) CHARACTER SET utf8,
 			note_time varchar(25) CHARACTER SET utf8,
 			note_user_id smallint(5),
+			note_guest_name varchar(25) CHARACTER SET utf8 DEFAULT NULL,
+			note_guest_mail varchar(25) CHARACTER SET utf8 DEFAULT NULL,
 			note_note text CHARACTER SET utf8,
 			note_status varchar(10) CHARACTER SET utf8,
 			note_tree_prefix varchar(25) CHARACTER SET utf8,
@@ -678,7 +680,6 @@ if (isset($_POST['install_tables2'])){
 			repo_phone varchar(20) CHARACTER SET utf8,
 			repo_date varchar(35) CHARACTER SET utf8,
 			repo_text text CHARACTER SET utf8,
-			repo_photo text CHARACTER SET utf8,
 			repo_mail varchar(100) CHARACTER SET utf8,
 			repo_url varchar(150) CHARACTER SET utf8,
 			repo_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
@@ -712,7 +713,6 @@ if (isset($_POST['install_tables2'])){
 			source_item varchar(30) CHARACTER SET utf8,
 			source_kind varchar(50) CHARACTER SET utf8,
 			source_text text CHARACTER SET utf8,
-			source_photo text CHARACTER SET utf8,
 			source_repo_name varchar(50) CHARACTER SET utf8,
 			source_repo_caln varchar(50) CHARACTER SET utf8,
 			source_repo_page varchar(50) CHARACTER SET utf8,
@@ -791,7 +791,6 @@ if (isset($_POST['install_tables2'])){
 			address_phone varchar(20) CHARACTER SET utf8,
 			address_date varchar(35) CHARACTER SET utf8,
 			address_text text CHARACTER SET utf8,
-			address_photo text CHARACTER SET utf8,
 			address_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
 			address_new_date varchar(35) CHARACTER SET utf8,
 			address_new_time varchar(25) CHARACTER SET utf8,
@@ -810,9 +809,9 @@ if (isset($_POST['install_tables2'])){
 			event_tree_id smallint(5),
 			event_gedcomnr varchar(20) CHARACTER SET utf8,
 			event_order mediumint(6),
-			event_person_id varchar(20) CHARACTER SET utf8,
+			event_connect_kind varchar(25) CHARACTER SET utf8,
+			event_connect_id varchar(20) DEFAULT NULL,
 			event_pers_age varchar(15) CHARACTER SET utf8,
-			event_family_id varchar(20) CHARACTER SET utf8,
 			event_kind varchar(20) CHARACTER SET utf8,
 			event_event text CHARACTER SET utf8,
 			event_event_extra text CHARACTER SET utf8,
@@ -827,8 +826,7 @@ if (isset($_POST['install_tables2'])){
 			event_changed_time varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY (`event_id`),
 			KEY (event_tree_id),
-			KEY (event_person_id),
-			KEY (event_family_id),
+			KEY (event_connect_id),
 			KEY (event_kind)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 

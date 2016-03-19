@@ -150,6 +150,11 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				if ($connectDb->connect_text AND $source_status=='publish'){
 					$text.=', '.__('source text').': '.nl2br($connectDb->connect_text);
 				}
+
+				// *** Show picture by source ***
+				$result = show_media('connect',$connectDb->connect_id); // *** This function can be found in file: show_picture.php! ***
+				$text.= $result[0];
+
 			}
 
 
@@ -180,7 +185,6 @@ function show_sources_footnotes(){
 		// *** Show extended source data ***
 		if ($connectDb->connect_source_id){
 			$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-
 			// *** Always show title of source, show link only after permission check ***
 			$text.='<a name="source_ref'.($j+1).'"><b>'.($j+1).')</b></a>';
 			if ($user['group_sources']=='j'){
@@ -222,6 +226,10 @@ function show_sources_footnotes(){
 		if ($connectDb->connect_page){
 			$text.=', '.strtolower(__('Page')).': '.$connectDb->connect_page;
 		}
+
+		// *** Show picture by source ***
+		$result = show_media('connect',$connectDb->connect_id); // *** This function can be found in file: show_picture.php! ***
+		$text.= $result[0];
 
 		$text.="<br>\n";
 

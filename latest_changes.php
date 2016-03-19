@@ -34,7 +34,7 @@ if (isset($_POST["search_name"])){
 	$person_qry = "(SELECT * , STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
 		FROM humo_persons WHERE pers_tree_id='".$tree_id."'
  		LEFT JOIN humo_events
- 			ON pers_gedcomnumber=event_person_id AND event_kind='name' AND event_tree_id='".$tree_id."' 
+ 			ON pers_gedcomnumber=event_connect_id AND event_kind='name' AND event_tree_id='".$tree_id."' 
 		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
  			OR event_event LIKE '%$search_name%')
 			AND pers_changed_date IS NOT NULL
@@ -43,7 +43,7 @@ if (isset($_POST["search_name"])){
 	$person_qry .= " UNION (SELECT * , STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
 		FROM humo_persons WHERE pers_tree_id='".$tree_id."'
  		LEFT JOIN humo_events
- 			ON pers_gedcomnumber=event_person_id AND event_kind='name' AND event_tree_id='".$tree_id."'
+ 			ON pers_gedcomnumber=event_connect_id AND event_kind='name' AND event_tree_id='".$tree_id."'
 		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
  			OR event_event LIKE '%$search_name%')
 			AND pers_changed_date IS NULL)";

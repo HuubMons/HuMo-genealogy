@@ -16,7 +16,7 @@ function language_event($text_event){
 	$text_event=str_replace("_BRTM", __('Brit Mila'), $text_event);
 	$text_event=str_replace("CAST", __('Caste'), $text_event);
 	$text_event=str_replace("CENS", __('Census'), $text_event);
-	$text_event=str_replace("CHRA", __('Cristened (adult)'), $text_event);
+	$text_event=str_replace("CHRA", __('Christened (adult)'), $text_event);
 	$text_event=str_replace("CONF", __('Confirmation'), $text_event);
 	$text_event=str_replace("CONL", __('Confirmation LDS'), $text_event);
 	$text_event=str_replace("_COML", __('Common law'), $text_event);

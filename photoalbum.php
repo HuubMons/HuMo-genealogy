@@ -38,18 +38,19 @@ if (isset($_GET['photo_name'])){ $photo_name=safe_text($_GET['photo_name']); }
 
 
 // Create one-time an array of all pics with person_id's
-$qry="SELECT event_event, event_kind, event_person_id FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_kind='picture'";
+$qry="SELECT event_event, event_kind, event_connect_kind, event_connect_id FROM humo_events
+	WHERE event_tree_id='".$tree_id."' AND event_kind='picture'";
 $picqry=$dbh->query($qry);
 $my_array=Array();
 while($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
-	if($picqryDb->event_person_id != '') { // we only want to include pics with a person_id
+	if($picqryDb->event_connect_kind=='person' AND $picqryDb->event_connect_id != '') { // we only want to include pics with a person_id
 		$picname = str_replace(" ","_",$picqryDb->event_event);  
 		if(!isset($my_array[$picname])) { // this pic does not appear in the array yet
-			$my_array[$picname]=$picqryDb->event_person_id; 
+			$my_array[$picname]=$picqryDb->event_connect_id; 
 			// example: $my_array['an_example.jpg']="I354"
 		}
 		else { // pic already exists in array with other person_id. Append this one.
-			$my_array[$picname] .= '@@'.$picqryDb->event_person_id;
+			$my_array[$picname] .= '@@'.$picqryDb->event_connect_id;
 			// example: $my_array['an_example.jpg']="I354@@I653"
 		}
 	}
@@ -76,6 +77,13 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 					if($check!==false AND count($check) >= 1) {  // found at least one pic for this category
 						$catpics++;
 					}
+					// check for sub-sub cat
+					else{
+						$check2 = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.'*');
+						if($check2!==false AND count($check2) >= 1) {  // found at least one sub-sub for this category
+							$catpics++;
+						}
+					}
 				} 
 			}
 		}  
@@ -98,12 +106,20 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 								if($check2===false OR count($check2)==0) {  // if there are no pics for this category, try subfolder
 									if(is_dir($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2))) {  // check for subfolder of the prefix name (without underscore)
 										$check3 = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.$row['photocat_prefix'].'*');
-										if($check3===false OR count($check3) == 0) {  // no pics in subfolder too
-											continue; 
+										if($check3===false OR count($check3) == 0) {  // no pics in subfolder  - maybe sub-subs									
+											$check4 = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.'*');
+											if($check4!==false AND count($check4) >= 1) {  // found at least one sub-sub for this category
+												$catpics++;   
+											}
+											else {
+												continue; 
+											}
 										}
 										else { $catpics++; }
 									} 
-									else { continue; }
+									else { 
+										continue; 
+									}
 								}
 								//if($check2===false OR count($check2)==0) { continue; }   // if there are no pics for this category, don't show the category tab
 							}
@@ -155,17 +171,18 @@ else {  // show album with category tabs
 
 function showthem ($pref) {
 	global $dataDb, $photo_name, $dbh, $show_pictures, $uri_path, $tree_id, $db_functions, $my_array, $cat_string, $categories, $chosen_tab;
-	//include_once(CMS_ROOTPATH."include/person_cls.php");
-	//if($pref=='none' OR $pref=="dummy")  { $subfolder=""; }
-	//else { $subfolder= substr($pref,0,2).'/'; }
+	
 	$subfolder="";
 	if($pref!='none'  AND $pref!="dummy" AND is_dir($dataDb->tree_pict_path.substr($pref,0,2).'/')) { $subfolder= substr($pref,0,2).'/'; }
 	// *** Read all photos from directory ***
 	$dir=$dataDb->tree_pict_path.$subfolder;  
+	
 	$picture_array = Array();
-	if (file_exists($dir)){  
+	if (file_exists($dir)){   //echo $dir."<br>";
 		$dh  = opendir($dir);
-		while (false !== ($filename = readdir($dh))) {
+		$subsub=false;
+		$sub_arr = array();
+		while (false !== ($filename = readdir($dh))) {  //echo $filename."<br>";
 			if ((strtolower(substr($filename, -3)) == "jpg" OR strtolower(substr($filename, -3)) == "gif" OR strtolower(substr($filename, -3)) == "png") AND substr($filename,0,6)!='thumb_'){
 				if(($pref != 'none' AND $pref != 'dummy' AND substr($filename,0,3)==$pref) OR ($pref == 'none' AND strpos($cat_string,substr($filename,0,3)."@")===false) OR $pref=='dummy') {
 					// *** Use search field (search for person) to show pictures ***
@@ -191,16 +208,50 @@ function showthem ($pref) {
 					}
 				}
 			}
+			elseif($pref!='none' AND $pref!='dummy' AND is_dir($dir.$filename) AND $filename != "." AND $filename != ".." AND substr($filename,0,6)!='thumb_') {
+				$subsub=true;
+				$dh2  = opendir($dir.$filename);
+				while (false !== ($subfilename = readdir($dh2))) {
+					if((substr($subfilename,-4)=='.jpg'  OR substr($subfilename,-4)=='.png' OR substr($subfilename,-4)=='.gif')  AND substr($subfilename,0,6)!='thumb_') { 
+						if ($photo_name){
+							$quicksearch=str_replace(" ", "%", $photo_name);
+							if(stripos($subfilename,$quicksearch)!==false){ $sub_arr[$filename][]=$subfilename; }
+						}
+						else {
+							$sub_arr[$filename][]=$subfilename;
+						}
+					}
+				}
+				closedir($dh2);
+			}  
 		}
+		closedir($dh);
 	}  
-
-
+	$subpage="";		
+	if($subsub==true) {
+		if(isset($_GET['sub'])) {
+			$subpage = $_GET['sub'];
+		}
+		else {
+			reset($sub_arr);
+			$subpage = key($sub_arr);
+		}
+	}	
+	
 	// *** Order pictures by alphabet ***
 	//@sort($picture_array);
-	@usort($picture_array,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
+	
 	
 	// *** Calculate pages ***
-	$nr_pictures=count($picture_array);
+	
+	if($subsub==true) {
+		@usort($sub_arr[$subpage],'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
+		$nr_pictures = count($sub_arr[$subpage]);
+	}
+	else {
+		@usort($picture_array,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
+		$nr_pictures=count($picture_array);	
+	}
 
 	if(CMS_SPECIFIC=="Joomla") {
 		$albumpath='index.php?option=com_humo-gen&amp;task=photoalbum&amp;';
@@ -224,6 +275,7 @@ function showthem ($pref) {
 		"&amp;show_pictures=".$show_pictures.
 		"&amp;photo_name=".$photo_name.
 		"&amp;menu_photoalbum=".$chosen_tab.
+		"&amp;sub=".$subpage.
 		'">&lt;= </a>';
 	}
 	if ($start<=0){$start=1;}
@@ -242,6 +294,7 @@ function showthem ($pref) {
 				"&amp;show_pictures=".$show_pictures.
 				"&amp;photo_name=".$photo_name.
 				"&amp;menu_photoalbum=".$chosen_tab.
+				"&amp;sub=".$subpage.
 				'"> '.$i.'</a>';
 			}
 		}
@@ -256,12 +309,13 @@ function showthem ($pref) {
 		"&amp;show_pictures=".$show_pictures.
 		"&amp;photo_name=".$photo_name.
 		"&amp;menu_photoalbum=".$chosen_tab.
+		"&amp;sub=".$subpage.
 		'"> =&gt;</a>';
 	}
 
 	//echo '<div style="float: left; background-color:white; height:auto; padding:5px;">';
 	if($categories===true) {
-		echo '<div style="float: left; background-color:white; height:auto; padding:5px;">';
+		echo '<div style="float: left; background-color:white; height:auto; width:98%;padding:5px;">';
 	}
 	else {
 		echo '<div>';
@@ -272,7 +326,7 @@ function showthem ($pref) {
 		for ($i=4; $i<=60; $i++) {
 			print '<option value="'.$albumpath.
 				'show_pictures='.$i.'
-				&amp;start=0&amp;item=0&amp;menu_photoalbum='.$chosen_tab.'"';
+				&amp;start=0&amp;item=0&amp;sub='.$subpage.'&amp;menu_photoalbum='.$chosen_tab.'"';
 			if ($i == $show_pictures) print ' selected="selected"';
 			print ">".$i."</option>\n";
 		}
@@ -299,21 +353,41 @@ function showthem ($pref) {
 	echo '</div>';
 
 	// *** Show photos ***
+if($subsub==true) {
 
-	for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){   
-		if (isset($picture_array[$picture_nr])){   
-			$filename=$picture_array[$picture_nr]; 
+	$dir .= $subpage."/";
+	
+	echo '<div class="outersub">';
+	echo '<div class="leftsub" style="width:15%;float:left">';
+	echo '<table style="border-spacing: 10px;border-collapse: separate">';
+	foreach($sub_arr AS $key => $value) {
+		$selected= 'style="text-align:left"';
+		if($key == $subpage) { $selected= 'style="font-weight:bold;text-align:left;background-color:#D7EBFF"';  }
+		echo '<tr><td '.$selected.' ><a href="photoalbum.php?menu_photoalbum='.$pref.'&amp;tree_id='.$tree_id.'&amp;photo_name='.$photo_name.'&amp;sub='.$key.'">'.$key.'</a></td></tr>';
+	}
+	echo '</table>';
+	echo '</div>';
+	echo '<div class="rightsub" style="width:83%;float:left">';
+}
+	for ($picture_nr=$item; $picture_nr<($item+$show_pictures); $picture_nr++){  
+		$thepic="";
+		$pic_isset = false;
+		if($subsub==true AND isset($sub_arr[$subpage][$picture_nr])) {   $pic_isset = true; $thepic = $sub_arr[$subpage][$picture_nr]; }
+		elseif(isset($picture_array[$picture_nr])) { $pic_isset = true; $thepic = $picture_array[$picture_nr]; }
+  
+		if($pic_isset==true) {
+			$filename=$thepic; 
 			$picture_text='';	// Text with link to person
 			$picture_text2='';	// Text without link to person
 
 			$sql="SELECT * FROM humo_events
-				WHERE event_tree_id='".$tree_id."' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
+				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
 			$afbqry= $dbh->query($sql);
 			$picture_privacy=false;
-			if(!$afbqry->rowCount()) {  $picture_text = substr($picture_array[$picture_nr],0,-4); }
+			if(!$afbqry->rowCount()) {  $picture_text = substr($thepic,0,-4); }
 			while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
 				$person_cls = New person_cls;
-				$personDb=$db_functions->get_person($afbDb->event_person_id);
+				$personDb=$db_functions->get_person($afbDb->event_connect_id);
 				$name=$person_cls->person_name($personDb);
 				$picture_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
 					'&amp;id='.$personDb->pers_indexnr.
@@ -367,9 +441,13 @@ function showthem ($pref) {
 					echo __('PRIVACY FILTER');
 				}
 			echo '</div>';  
+	
 		}  
 	}
-
+if($subsub==true) { 
+	echo '</div>'; // rightsub	
+	echo '</div>'; // outersub		
+}
 	echo '</div>'; // end of white menu page
 	echo '<br clear="all"><br>';
 	echo '<div class="center">'.$line_pages.'</div>';

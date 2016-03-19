@@ -561,7 +561,7 @@ echo __('<u>Internet Explorer:</u><br>
 
 echo __('<p><u>All other browsers:</u><br>
 Just print the page .... ;-)<br>
-Print the chart in "Landscape" outlay, use "Print Preview"<br>
+Print the chart in "Landscape" layout, use "Print Preview"<br>
 and adjust printing size to fit the page<br>
 (for regular charts 85%-90% of screen size)');
 

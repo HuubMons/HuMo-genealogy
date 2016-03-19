@@ -232,7 +232,7 @@ echo "</select>";
 echo '</td></tr>';
 
 echo '<tr class="humo_color"><td>'.__('SMTP mails').'</td><td>';
-echo '<b>'.__('Sometimes it\'s necessary to use SMTP to send mails. These settings can be changed in file: include/mail.php').'</b>';
+echo '<b>'.__('Sometimes it\'s necessary to use SMTP to send e-mails. These settings can be changed in file: include/mail.php').'</b>';
 echo '</td></tr>';
 
 echo '<tr class="table_header"><th colspan="2">'.__('International settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';

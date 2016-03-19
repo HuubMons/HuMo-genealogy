@@ -618,593 +618,597 @@ else{
 
 	// *** Check for update version 4.6 ***
 	echo '<tr><td>HuMo-gen update V4.6</td><td style="background-color:#00FF00">';
-	// *** Read all family trees from database ***
-	$update_sql = $dbh->query("SELECT * FROM humo_trees
-		WHERE tree_prefix!='LEEG' AND tree_prefix!='EMPTY' ORDER BY tree_order");
-	while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
+	// *** Update status < 4.7.1 ***
+	if (!isset($humo_option["update_status"])){
 
-		echo '<b>Check '.$updateDb->tree_prefix.'</b>';
+		// *** Read all family trees from database ***
+		$update_sql = $dbh->query("SELECT * FROM humo_trees
+			WHERE tree_prefix!='LEEG' AND tree_prefix!='EMPTY' ORDER BY tree_order");
+		while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
 
-		$translate_tables=false;
+			echo '<b>Check '.$updateDb->tree_prefix.'</b>';
 
-		// *** Rename old tables, rename fields, convert html to utf-8 ***
-		$update_check_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."persoon");		// *** Translate table names, update tables ***
-		if ($update_check_sql){
+			$translate_tables=false;
 
-			$translate_tables=true;
+			// *** Rename old tables, rename fields, convert html to utf-8 ***
+			$update_check_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."persoon");			// *** Translate table names, update tables ***
+			if ($update_check_sql){
 
-			// *** Convert tables into utf-8 ***
-			$get_tables = $dbh->query("SHOW TABLES");
-			while($x = $get_tables->fetch()) {
-				if (substr($x[0],0,strlen($updateDb->tree_prefix))==$updateDb->tree_prefix){
-					// *** Change table into UTF-8 ***
-					$update_char='ALTER TABLE '.$x[0].' DEFAULT CHARACTER SET utf8';
-					$update_charDb = $dbh->query($update_char);
+				$translate_tables=true;
+
+				// *** Convert tables into utf-8 ***
+				$get_tables = $dbh->query("SHOW TABLES");
+				while($x = $get_tables->fetch()) {
+					if (substr($x[0],0,strlen($updateDb->tree_prefix))==$updateDb->tree_prefix){
+						// *** Change table into UTF-8 ***
+						$update_char='ALTER TABLE '.$x[0].' DEFAULT CHARACTER SET utf8';
+						$update_charDb = $dbh->query($update_char);
+					}
 				}
-			}
 
-			// *** Translate dutch table name into english ***
-			$sql='ALTER TABLE '.$updateDb->tree_prefix.'persoon
-				RENAME '.$updateDb->tree_prefix.'person';
-			$update_Db = $dbh->query($sql);
-
-			$sql='ALTER TABLE '.$updateDb->tree_prefix.'person
-				CHANGE id pers_id	mediumint(6) unsigned NOT NULL auto_increment,
-				CHANGE gedcomnummer pers_gedcomnumber	varchar(20) CHARACTER SET utf8,
-				CHANGE famc pers_famc varchar(50) CHARACTER SET utf8,
-				CHANGE fams pers_fams varchar(150) CHARACTER SET utf8,
-				CHANGE indexnr pers_indexnr varchar(20) CHARACTER SET utf8,
-				CHANGE voornaam pers_firstname varchar(50) CHARACTER SET utf8,
-				CHANGE roepnaam pers_callname varchar(50) CHARACTER SET utf8,
-				CHANGE voorzetsel pers_prefix varchar(20) CHARACTER SET utf8,
-				CHANGE achternaam pers_lastname varchar(50) CHARACTER SET utf8,
-				CHANGE patroniem pers_patronym varchar(50) CHARACTER SET utf8,
-				CHANGE naamtekst pers_name_text text CHARACTER SET utf8,
-				CHANGE naambron pers_name_source text CHARACTER SET utf8,
-				CHANGE sexe pers_sexe varchar(1) CHARACTER SET utf8,
-				CHANGE eigencode pers_own_code varchar(100) CHARACTER SET utf8,
-				CHANGE geboorteplaats pers_birth_place varchar(50) CHARACTER SET utf8,
-				CHANGE geboortedatum pers_birth_date varchar(35) CHARACTER SET utf8,
-				CHANGE geboortetijd pers_birth_time varchar(25) CHARACTER SET utf8,
-				CHANGE geboortetekst pers_birth_text text CHARACTER SET utf8,
-				CHANGE geboortebron pers_birth_source text CHARACTER SET utf8,
-				CHANGE doopplaats pers_bapt_place varchar(50) CHARACTER SET utf8,
-				CHANGE doopdatum pers_bapt_date varchar(35) CHARACTER SET utf8,
-				CHANGE dooptekst pers_bapt_text text CHARACTER SET utf8,
-				CHANGE doopbron pers_bapt_source text CHARACTER SET utf8,
-				CHANGE religie pers_religion varchar(50) CHARACTER SET utf8,
-				CHANGE overlijdensplaats pers_death_place varchar(50) CHARACTER SET utf8,
-				CHANGE overlijdensdatum pers_death_date varchar(35) CHARACTER SET utf8,
-				CHANGE overlijdenstijd pers_death_time varchar(25) CHARACTER SET utf8,
-				CHANGE overlijdenstekst pers_death_text text CHARACTER SET utf8,
-				CHANGE overlijdensbron pers_death_source text CHARACTER SET utf8,
-				CHANGE oorzaak pers_death_cause varchar(50) CHARACTER SET utf8,
-				CHANGE begrafenisplaats pers_buried_place varchar(50) CHARACTER SET utf8,
-				CHANGE begrafenisdatum pers_buried_date varchar(35) CHARACTER SET utf8,
-				CHANGE begrafenistekst pers_buried_text text CHARACTER SET utf8,
-				CHANGE begrafenisbron pers_buried_source text CHARACTER SET utf8,
-				CHANGE crematie pers_cremation varchar(1) CHARACTER SET utf8,
-				CHANGE plaatsindex pers_place_index text CHARACTER SET utf8,
-				CHANGE tekst pers_text text CHARACTER SET utf8,
-				CHANGE levend pers_alive varchar(20) CHARACTER SET utf8
-				';
-			$update_Db = $dbh->query($sql);
-			//$update.=$sql.'<br>';
-
-
-			// *** Translate dutch table name into english ***
-			$sql='ALTER TABLE '.$updateDb->tree_prefix.'gezin
-				RENAME '.$updateDb->tree_prefix.'family';
-			$update_Db = $dbh->query($sql);
-
-			$sql='ALTER TABLE '.$updateDb->tree_prefix. 'family
-				CHANGE id fam_id mediumint(6) unsigned NOT NULL auto_increment,
-				CHANGE gedcomnummer fam_gedcomnumber varchar(20) CHARACTER SET utf8,
-				CHANGE man fam_man varchar(20) CHARACTER SET utf8,
-				CHANGE vrouw fam_woman varchar(20) CHARACTER SET utf8,
-				CHANGE kinderen fam_children text CHARACTER SET utf8,
-				CHANGE soort fam_kind varchar(50) CHARACTER SET utf8,
-				CHANGE samendatum fam_relation_date varchar(35) CHARACTER SET utf8,
-				CHANGE samenplaats fam_relation_place varchar(50) CHARACTER SET utf8,
-				CHANGE samentekst fam_relation_text text CHARACTER SET utf8,
-				CHANGE samenbron fam_relation_source text CHARACTER SET utf8,
-				CHANGE einddatum fam_relation_end_date varchar(35) CHARACTER SET utf8,
-				CHANGE ondertrdatum fam_marr_notice_date varchar(35) CHARACTER SET utf8,
-				CHANGE ondertrplaats fam_marr_notice_place varchar(50) CHARACTER SET utf8,
-				CHANGE ondertrtekst fam_marr_notice_text text CHARACTER SET utf8,
-				CHANGE ondertrbron fam_marr_notice_source text CHARACTER SET utf8,
-				CHANGE trdatum fam_marr_date varchar(35) CHARACTER SET utf8,
-				CHANGE trplaats fam_marr_place varchar(50) CHARACTER SET utf8,
-				CHANGE trtekst fam_marr_text text CHARACTER SET utf8,
-				CHANGE trbron fam_marr_source text CHARACTER SET utf8,
-				CHANGE kerkondertrdatum fam_marr_church_notice_date varchar(35) CHARACTER SET utf8,
-				CHANGE kerkondertrplaats fam_marr_church_notice_place varchar(50) CHARACTER SET utf8,
-				CHANGE kerkondertrtekst fam_marr_church_notice_text text CHARACTER SET utf8,
-				CHANGE kerkondertrbron fam_marr_church_notice_source text CHARACTER SET utf8,
-				CHANGE kerktrdatum fam_marr_church_date varchar(35) CHARACTER SET utf8,
-				CHANGE kerktrplaats fam_marr_church_place varchar(50) CHARACTER SET utf8,
-				CHANGE kerktrtekst fam_marr_church_text text CHARACTER SET utf8,
-				CHANGE kerktrbron fam_marr_church_source text CHARACTER SET utf8,
-				CHANGE religie fam_religion varchar(50) CHARACTER SET utf8,
-				CHANGE scheidingsdatum fam_div_date varchar(35) CHARACTER SET utf8,
-				CHANGE scheidingsplaats fam_div_place varchar(50) CHARACTER SET utf8,
-				CHANGE scheidingstekst fam_div_text text CHARACTER SET utf8,
-				CHANGE scheidingsbron fam_div_source text CHARACTER SET utf8,
-				CHANGE huwtekst fam_text text CHARACTER SET utf8,
-				CHANGE levend fam_alive int(1),
-				CHANGE teller fam_counter mediumint(8)
-				';
-			$update_Db = $dbh->query($sql);
-			//$update.=$sql.'<br>';
-
-
-			$sql='ALTER TABLE '.$updateDb->tree_prefix. 'texts
-				CHANGE text_gedcomnr text_gedcomnr varchar(20) CHARACTER SET utf8,
-				CHANGE text_text text_text text CHARACTER SET utf8,
-				CHANGE text_new_date text_new_date varchar(35) CHARACTER SET utf8,
-				CHANGE text_new_time text_new_time varchar(25) CHARACTER SET utf8,
-				CHANGE text_changed_date text_changed_date varchar(35) CHARACTER SET utf8,
-				CHANGE text_changed_time text_changed_time varchar(25) CHARACTER SET utf8
-				';
-			$update_Db = $dbh->query($sql);
-			//$update.=$sql.'<br>';
-			$sql='ALTER TABLE '.$updateDb->tree_prefix. 'sources
-				CHANGE source_gedcomnr source_gedcomnr varchar(20) CHARACTER SET utf8,
-				CHANGE source_title source_title text CHARACTER SET utf8,
-				CHANGE source_abbr source_abbr varchar(50) CHARACTER SET utf8,
-				CHANGE source_date source_date varchar(35) CHARACTER SET utf8,
-				CHANGE source_publ source_publ varchar(150) CHARACTER SET utf8,
-				CHANGE source_place source_place varchar(50) CHARACTER SET utf8,
-				CHANGE source_refn source_refn varchar(50) CHARACTER SET utf8,
-				CHANGE source_auth source_auth varchar(50) CHARACTER SET utf8,
-				CHANGE source_subj source_subj varchar(50) CHARACTER SET utf8,
-				CHANGE source_item source_item varchar(30) CHARACTER SET utf8,
-				CHANGE source_kind source_kind varchar(50) CHARACTER SET utf8,
-				CHANGE source_text source_text text CHARACTER SET utf8,
-				CHANGE source_photo source_photo text CHARACTER SET utf8,
-				CHANGE source_repo_name source_repo_name varchar(50) CHARACTER SET utf8,
-				CHANGE source_repo_caln source_repo_caln varchar(50) CHARACTER SET utf8,
-				CHANGE source_repo_page source_repo_page varchar(50) CHARACTER SET utf8,
-				CHANGE source_new_date source_new_date varchar(35) CHARACTER SET utf8,
-				CHANGE source_new_time source_new_time varchar(25) CHARACTER SET utf8,
-				CHANGE source_changed_date source_changed_date varchar(35) CHARACTER SET utf8,
-				CHANGE source_changed_time source_changed_time varchar(25) CHARACTER SET utf8
-				';
-			$update_Db = $dbh->query($sql);
-			//$update.=$sql.'<br>';
-
-
-			$sql='ALTER TABLE '.$updateDb->tree_prefix. 'addresses
-				CHANGE address_gedcomnr address_gedcomnr varchar(20) CHARACTER SET utf8,
-				CHANGE address_person_id address_person_id varchar(20) CHARACTER SET utf8,
-				CHANGE address_family_id address_family_id varchar(20) CHARACTER SET utf8,
-				CHANGE address_address address_address text CHARACTER SET utf8,
-				CHANGE address_zip address_zip varchar(20) CHARACTER SET utf8,
-				CHANGE address_place address_place varchar(50) CHARACTER SET utf8,
-				CHANGE address_phone address_phone varchar(20) CHARACTER SET utf8,
-				CHANGE address_date address_date varchar(35) CHARACTER SET utf8,
-				CHANGE address_source address_source text CHARACTER SET utf8,
-				CHANGE address_text address_text text CHARACTER SET utf8,
-				CHANGE address_photo address_photo text CHARACTER SET utf8,
-				CHANGE address_new_date address_new_date varchar(35) CHARACTER SET utf8,
-				CHANGE address_new_time address_new_time varchar(25) CHARACTER SET utf8,
-				CHANGE address_changed_date address_changed_date varchar(35) CHARACTER SET utf8,
-				CHANGE address_changed_time address_changed_time varchar(25) CHARACTER SET utf8
-				';
-			$update_Db = $dbh->query($sql);
-
-			$sql='ALTER TABLE '.$updateDb->tree_prefix. 'events
-				CHANGE event_person_id event_person_id varchar(20) CHARACTER SET utf8,
-				CHANGE event_family_id event_family_id varchar(20) CHARACTER SET utf8,
-				CHANGE event_kind event_kind varchar(20) CHARACTER SET utf8,
-				CHANGE event_event event_event text CHARACTER SET utf8,
-				CHANGE event_gedcom event_gedcom varchar(10) CHARACTER SET utf8,
-				CHANGE event_date event_date varchar(35) CHARACTER SET utf8,
-				CHANGE event_place event_place varchar(50) CHARACTER SET utf8,
-				CHANGE event_source event_source text CHARACTER SET utf8,
-				CHANGE event_text event_text text CHARACTER SET utf8,
-				CHANGE event_new_date event_new_date varchar(35) CHARACTER SET utf8,
-				CHANGE event_new_time event_new_time varchar(25) CHARACTER SET utf8,
-				CHANGE event_changed_date event_changed_date varchar(35) CHARACTER SET utf8,
-				CHANGE event_changed_time event_changed_time varchar(25) CHARACTER SET utf8
-				';
-			$update_Db = $dbh->query($sql);
-
-			echo ' Tree updated!';
-		} // *** End of tabel check ***
-
-
-
-		// ******************************
-		// *** AUTOMATIC UPDATES HERE ***
-		// ******************************
-
-		// *** Automatic installation or update ***
-		if (isset($field)){ unset ($field); }
-		$column_qry = $dbh->query("SHOW COLUMNS FROM ".$updateDb->tree_prefix."person");
-		while ($columnDb = $column_qry->fetch()) {
-			$field_value=$columnDb['Field'];
-			$field[$field_value]=$field_value;
-			// *** test line ***
-			//print '<span>'.$field[$field_value].'</span><br />';
-		}
-
-		// *** Automatic installation or update ***
-		if (isset($field['voorvoegsel'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				CHANGE voorvoegsel pers_tree_prefix	varchar(10) CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['pers_tree_prefix'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				ADD pers_tree_prefix varchar(10) CHARACTER SET utf8 AFTER pers_gedcomnumber";
-			$result=$dbh->query($sql);
-		}
-
-		// *** Automatic installation or update ***
-		if (isset($field['person_text_source'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				CHANGE person_text_source pers_text_source text CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['pers_text_source'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				ADD pers_text_source text CHARACTER SET utf8 AFTER pers_text";
-			$result=$dbh->query($sql);
-		}
-
-		// *** Automatic installation or update ***
-		if (isset($field['person_favorite'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				CHANGE person_favorite pers_favorite varchar(1) CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['pers_favorite'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				ADD pers_favorite varchar(1) CHARACTER SET utf8 AFTER pers_alive";
-			$result=$dbh->query($sql);
-		}
-
-		// *** Automatic installation or update ***
-		if (isset($field['person_new_date'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				CHANGE person_new_date pers_new_date varchar(35) CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['pers_new_date'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				ADD pers_new_date varchar(35) CHARACTER SET utf8 AFTER pers_favorite";
-			$result=$dbh->query($sql);
-		}
-
-		// *** Automatic installation or update ***
-		if (isset($field['person_new_time'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				CHANGE person_new_time pers_new_time varchar(25) CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['pers_new_time'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				ADD pers_new_time varchar(25) CHARACTER SET utf8 AFTER pers_new_date";
-			$result=$dbh->query($sql);
-		}
-
-		// *** Automatic installation or update ***
-		if (isset($field['person_changed_date'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				CHANGE person_changed_date pers_changed_date varchar(35) CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['pers_changed_date'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				ADD pers_changed_date varchar(35) CHARACTER SET utf8 AFTER pers_new_time";
-			$result=$dbh->query($sql);
-		}
-
-		// *** Automatic installation or update ***
-		if (isset($field['person_changed_time'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				CHANGE person_changed_time pers_changed_time varchar(25) CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['pers_changed_time'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				ADD pers_changed_time varchar(25) CHARACTER SET utf8 AFTER pers_changed_time";
-			$result=$dbh->query($sql);
-		}
-
-
-
-		// *** HuMo-gen 4.7 updates ***
-		// *** UPDATE 1: Add pers_stillborn in ALL person tables ***
-		if (!isset($field['pers_stillborn'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
-				ADD pers_stillborn VARCHAR(1) CHARACTER SET utf8  DEFAULT 'n' AFTER pers_birth_source;";
-			$result=$dbh->query($sql);
-		}
-
-		// *** UPDATE 2: remove pers_index_bapt in ALL person tables ***
-		if (isset($field['indexdoop'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP indexdoop";
-			$result=$dbh->query($sql);
-		}
-		if (isset($field['pers_index_bapt'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP pers_index_bapt";
-			$result=$dbh->query($sql);
-		}
-
-		// *** UPDATE 3: remove pers_index_death in ALL person tables ***
-		if (isset($field['indexovl'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP indexovl";
-			$result=$dbh->query($sql);
-		}
-		if (isset($field['pers_index_death'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP pers_index_death";
-			$result=$dbh->query($sql);
-		}
-
-		// *** Show number of fields in table ***
-		echo ' fields: '.count($field);
-
-		// Add family items
-		// *** Automatic installation or update ***
-		if (isset($field)){ unset ($field); }
-		$column_qry = $dbh->query("SHOW COLUMNS FROM ".$updateDb->tree_prefix."family");
-		while ($columnDb = $column_qry->fetch()) {
-			$field_value=$columnDb['Field'];
-			$field[$field_value]=$field_value;
-			// *** test line ***
-			//print '<span>'.$field[$field_value].'</span><br />';
-		}
-
-		if (isset($field['family_text_source'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				CHANGE family_text_source fam_text_source text CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['fam_text_source'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				ADD fam_text_source text CHARACTER SET utf8 AFTER fam_text";
-			$result=$dbh->query($sql);
-		}
-
-		if (isset($field['trinstantie'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				CHANGE trinstantie fam_marr_authority text CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['fam_marr_authority'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				ADD fam_marr_authority text CHARACTER SET utf8 AFTER fam_marr_source";
-			$result=$dbh->query($sql);
-		}
-
-		if (isset($field['scheidingsinstantie'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				CHANGE scheidingsinstantie fam_div_authority text CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['fam_div_authority'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				ADD fam_div_authority text CHARACTER SET utf8 AFTER fam_div_source";
-			$result=$dbh->query($sql);
-		}
-
-		if (isset($field['family_new_date'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				CHANGE family_new_date fam_new_date varchar(35) CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['fam_new_date'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				ADD fam_new_date varchar(35) CHARACTER SET utf8 AFTER fam_counter";
-			$result=$dbh->query($sql);
-		}
-
-		if (isset($field['family_new_time'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				CHANGE family_new_time fam_new_time varchar(25) CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['fam_new_time'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				ADD fam_new_time varchar(35) CHARACTER SET utf8 AFTER fam_new_date";
-			$result=$dbh->query($sql);
-		}
-
-		if (isset($field['family_changed_date'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				CHANGE family_changed_date fam_changed_date varchar(35) CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['fam_changed_date'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				ADD fam_changed_date varchar(35) CHARACTER SET utf8 AFTER fam_new_time";
-			$result=$dbh->query($sql);
-		}
-
-		if (isset($field['family_changed_time'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				CHANGE family_changed_time fam_changed_time varchar(25) CHARACTER SET utf8";
-			$result=$dbh->query($sql);
-		}
-		elseif (!isset($field['fam_changed_time'])){
-			$sql="ALTER TABLE ".$updateDb->tree_prefix."family
-				ADD fam_changed_time varchar(35) CHARACTER SET utf8 AFTER fam_changed_date";
-			$result=$dbh->query($sql);
-		}
-
-
-		// *****************************
-		// *** CHANGE OF TABLES HERE ***
-		// *****************************
-		if ($translate_tables==true){
-
-			// *** Update person table (html to utf-8) ***
-			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."person");
-			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
-				$sql='UPDATE '.$updateDb->tree_prefix.'person SET
-					pers_firstname="'.safe_text($read_persDb->pers_firstname).'",
-					pers_callname="'.safe_text($read_persDb->pers_callname).'",
-					pers_prefix="'.safe_text($read_persDb->pers_prefix).'",
-					pers_lastname="'.safe_text($read_persDb->pers_lastname).'",
-					pers_patronym="'.safe_text($read_persDb->pers_patronym).'",
-					pers_name_text="'.safe_text($read_persDb->pers_name_text).'",
-					pers_name_source="'.safe_text($read_persDb->pers_name_source).'",
-					pers_own_code="'.safe_text($read_persDb->pers_own_code).'",
-					pers_birth_place="'.safe_text($read_persDb->pers_birth_place).'",
-					pers_birth_text="'.safe_text($read_persDb->pers_birth_text).'",
-					pers_birth_source="'.safe_text($read_persDb->pers_birth_source).'",
-					pers_bapt_place="'.safe_text($read_persDb->pers_bapt_place).'",
-					pers_bapt_text="'.safe_text($read_persDb->pers_bapt_text).'",
-					pers_bapt_source="'.safe_text($read_persDb->pers_bapt_source).'",
-					pers_religion="'.safe_text($read_persDb->pers_religion).'",
-					pers_death_place="'.safe_text($read_persDb->pers_death_place).'",
-					pers_death_text="'.safe_text($read_persDb->pers_death_text).'",
-					pers_death_source="'.safe_text($read_persDb->pers_death_source).'",
-					pers_death_cause="'.safe_text($read_persDb->pers_death_cause).'",
-					pers_buried_place="'.safe_text($read_persDb->pers_buried_place).'",
-					pers_buried_text="'.safe_text($read_persDb->pers_buried_text).'",
-					pers_buried_source="'.safe_text($read_persDb->pers_buried_source).'",
-					pers_place_index="'.safe_text($read_persDb->pers_place_index).'",
-					pers_text="'.safe_text($read_persDb->pers_text).'",
-					pers_text_source="'.safe_text($read_persDb->pers_text_source).'"
-					WHERE pers_id="'.$read_persDb->pers_id.'"';
-				//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
-				$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-				//$sql = str_replace("<br>\n", "\n", $sql);
-				$sql = str_replace("<br>", "", $sql);
+				// *** Translate dutch table name into english ***
+				$sql='ALTER TABLE '.$updateDb->tree_prefix.'persoon
+					RENAME '.$updateDb->tree_prefix.'person';
 				$update_Db = $dbh->query($sql);
-			}
 
-			// *** Update family table (html to utf-8) ***
-			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."family");
-			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
-				$sql='UPDATE '.$updateDb->tree_prefix.'family SET
-					fam_id="'.$read_persDb->fam_id.'",
-					fam_relation_place="'.safe_text($read_persDb->fam_relation_place).'",
-					fam_relation_text="'.safe_text($read_persDb->fam_relation_text).'",
-					fam_relation_source="'.safe_text($read_persDb->fam_relation_source).'",
-					fam_marr_notice_place="'.safe_text($read_persDb->fam_marr_notice_place).'",
-					fam_marr_notice_text="'.safe_text($read_persDb->fam_marr_notice_text).'",
-					fam_marr_notice_source="'.safe_text($read_persDb->fam_marr_notice_source).'",
-					fam_marr_place="'.safe_text($read_persDb->fam_marr_place).'",
-					fam_marr_text="'.safe_text($read_persDb->fam_marr_text).'",
-					fam_marr_source="'.safe_text($read_persDb->fam_marr_source).'",
-					fam_marr_authority="'.safe_text($read_persDb->fam_marr_authority).'",
-					fam_marr_church_notice_place="'.safe_text($read_persDb->fam_marr_church_notice_place).'",
-					fam_marr_church_notice_text="'.safe_text($read_persDb->fam_marr_church_notice_text).'",
-					fam_marr_church_notice_source="'.safe_text($read_persDb->fam_marr_church_notice_source).'",
-					fam_marr_church_place="'.safe_text($read_persDb->fam_marr_church_place).'",
-					fam_marr_church_text="'.safe_text($read_persDb->fam_marr_church_text).'",
-					fam_marr_church_source="'.safe_text($read_persDb->fam_marr_church_source).'",
-					fam_religion="'.safe_text($read_persDb->fam_religion).'",
-					fam_div_place="'.safe_text($read_persDb->fam_div_place).'",
-					fam_div_text="'.safe_text($read_persDb->fam_div_text).'",
-					fam_div_source="'.safe_text($read_persDb->fam_div_source).'",
-					fam_div_authority="'.safe_text($read_persDb->fam_div_authority).'",
-					fam_text="'.safe_text($read_persDb->fam_text).'",
-					fam_text_source="'.safe_text($read_persDb->fam_text_source).'"
-					WHERE fam_id="'.$read_persDb->fam_id.'"';
-				//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
-				$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-				//$sql = str_replace("<br>\n", "\n", $sql);
-				$sql = str_replace("<br>", "", $sql);
+				$sql='ALTER TABLE '.$updateDb->tree_prefix.'person
+					CHANGE id pers_id	mediumint(6) unsigned NOT NULL auto_increment,
+					CHANGE gedcomnummer pers_gedcomnumber	varchar(20) CHARACTER SET utf8,
+					CHANGE famc pers_famc varchar(50) CHARACTER SET utf8,
+					CHANGE fams pers_fams varchar(150) CHARACTER SET utf8,
+					CHANGE indexnr pers_indexnr varchar(20) CHARACTER SET utf8,
+					CHANGE voornaam pers_firstname varchar(50) CHARACTER SET utf8,
+					CHANGE roepnaam pers_callname varchar(50) CHARACTER SET utf8,
+					CHANGE voorzetsel pers_prefix varchar(20) CHARACTER SET utf8,
+					CHANGE achternaam pers_lastname varchar(50) CHARACTER SET utf8,
+					CHANGE patroniem pers_patronym varchar(50) CHARACTER SET utf8,
+					CHANGE naamtekst pers_name_text text CHARACTER SET utf8,
+					CHANGE naambron pers_name_source text CHARACTER SET utf8,
+					CHANGE sexe pers_sexe varchar(1) CHARACTER SET utf8,
+					CHANGE eigencode pers_own_code varchar(100) CHARACTER SET utf8,
+					CHANGE geboorteplaats pers_birth_place varchar(50) CHARACTER SET utf8,
+					CHANGE geboortedatum pers_birth_date varchar(35) CHARACTER SET utf8,
+					CHANGE geboortetijd pers_birth_time varchar(25) CHARACTER SET utf8,
+					CHANGE geboortetekst pers_birth_text text CHARACTER SET utf8,
+					CHANGE geboortebron pers_birth_source text CHARACTER SET utf8,
+					CHANGE doopplaats pers_bapt_place varchar(50) CHARACTER SET utf8,
+					CHANGE doopdatum pers_bapt_date varchar(35) CHARACTER SET utf8,
+					CHANGE dooptekst pers_bapt_text text CHARACTER SET utf8,
+					CHANGE doopbron pers_bapt_source text CHARACTER SET utf8,
+					CHANGE religie pers_religion varchar(50) CHARACTER SET utf8,
+					CHANGE overlijdensplaats pers_death_place varchar(50) CHARACTER SET utf8,
+					CHANGE overlijdensdatum pers_death_date varchar(35) CHARACTER SET utf8,
+					CHANGE overlijdenstijd pers_death_time varchar(25) CHARACTER SET utf8,
+					CHANGE overlijdenstekst pers_death_text text CHARACTER SET utf8,
+					CHANGE overlijdensbron pers_death_source text CHARACTER SET utf8,
+					CHANGE oorzaak pers_death_cause varchar(50) CHARACTER SET utf8,
+					CHANGE begrafenisplaats pers_buried_place varchar(50) CHARACTER SET utf8,
+					CHANGE begrafenisdatum pers_buried_date varchar(35) CHARACTER SET utf8,
+					CHANGE begrafenistekst pers_buried_text text CHARACTER SET utf8,
+					CHANGE begrafenisbron pers_buried_source text CHARACTER SET utf8,
+					CHANGE crematie pers_cremation varchar(1) CHARACTER SET utf8,
+					CHANGE plaatsindex pers_place_index text CHARACTER SET utf8,
+					CHANGE tekst pers_text text CHARACTER SET utf8,
+					CHANGE levend pers_alive varchar(20) CHARACTER SET utf8
+					';
+				$update_Db = $dbh->query($sql);
 				//$update.=$sql.'<br>';
-				$update_Db = $dbh->query($sql);
-			}
 
-			// *** Update text table (html to utf-8) ***
-			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."texts");
-			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
-				$sql='UPDATE '.$updateDb->tree_prefix.'texts SET
-					text_text="'.safe_text($read_persDb->text_text).'"
-					WHERE text_id="'.$read_persDb->text_id.'"';
-				//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
-				$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-				//$sql = str_replace("<br>\n", "\n", $sql);
-				$sql = str_replace("<br>", "", $sql);
+
+				// *** Translate dutch table name into english ***
+				$sql='ALTER TABLE '.$updateDb->tree_prefix.'gezin
+					RENAME '.$updateDb->tree_prefix.'family';
+				$update_Db = $dbh->query($sql);
+
+				$sql='ALTER TABLE '.$updateDb->tree_prefix. 'family
+					CHANGE id fam_id mediumint(6) unsigned NOT NULL auto_increment,
+					CHANGE gedcomnummer fam_gedcomnumber varchar(20) CHARACTER SET utf8,
+					CHANGE man fam_man varchar(20) CHARACTER SET utf8,
+					CHANGE vrouw fam_woman varchar(20) CHARACTER SET utf8,
+					CHANGE kinderen fam_children text CHARACTER SET utf8,
+					CHANGE soort fam_kind varchar(50) CHARACTER SET utf8,
+					CHANGE samendatum fam_relation_date varchar(35) CHARACTER SET utf8,
+					CHANGE samenplaats fam_relation_place varchar(50) CHARACTER SET utf8,
+					CHANGE samentekst fam_relation_text text CHARACTER SET utf8,
+					CHANGE samenbron fam_relation_source text CHARACTER SET utf8,
+					CHANGE einddatum fam_relation_end_date varchar(35) CHARACTER SET utf8,
+					CHANGE ondertrdatum fam_marr_notice_date varchar(35) CHARACTER SET utf8,
+					CHANGE ondertrplaats fam_marr_notice_place varchar(50) CHARACTER SET utf8,
+					CHANGE ondertrtekst fam_marr_notice_text text CHARACTER SET utf8,
+					CHANGE ondertrbron fam_marr_notice_source text CHARACTER SET utf8,
+					CHANGE trdatum fam_marr_date varchar(35) CHARACTER SET utf8,
+					CHANGE trplaats fam_marr_place varchar(50) CHARACTER SET utf8,
+					CHANGE trtekst fam_marr_text text CHARACTER SET utf8,
+					CHANGE trbron fam_marr_source text CHARACTER SET utf8,
+					CHANGE kerkondertrdatum fam_marr_church_notice_date varchar(35) CHARACTER SET utf8,
+					CHANGE kerkondertrplaats fam_marr_church_notice_place varchar(50) CHARACTER SET utf8,
+					CHANGE kerkondertrtekst fam_marr_church_notice_text text CHARACTER SET utf8,
+					CHANGE kerkondertrbron fam_marr_church_notice_source text CHARACTER SET utf8,
+					CHANGE kerktrdatum fam_marr_church_date varchar(35) CHARACTER SET utf8,
+					CHANGE kerktrplaats fam_marr_church_place varchar(50) CHARACTER SET utf8,
+					CHANGE kerktrtekst fam_marr_church_text text CHARACTER SET utf8,
+					CHANGE kerktrbron fam_marr_church_source text CHARACTER SET utf8,
+					CHANGE religie fam_religion varchar(50) CHARACTER SET utf8,
+					CHANGE scheidingsdatum fam_div_date varchar(35) CHARACTER SET utf8,
+					CHANGE scheidingsplaats fam_div_place varchar(50) CHARACTER SET utf8,
+					CHANGE scheidingstekst fam_div_text text CHARACTER SET utf8,
+					CHANGE scheidingsbron fam_div_source text CHARACTER SET utf8,
+					CHANGE huwtekst fam_text text CHARACTER SET utf8,
+					CHANGE levend fam_alive int(1),
+					CHANGE teller fam_counter mediumint(8)
+					';
+				$update_Db = $dbh->query($sql);
 				//$update.=$sql.'<br>';
-				$update_Db = $dbh->query($sql);
-			}
 
-			// *** Update source table (html to utf-8) ***
-			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."sources");
-			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
-				$sql='UPDATE '.$updateDb->tree_prefix.'sources SET
-					source_title="'.safe_text($read_persDb->source_title).'",
-					source_abbr="'.safe_text($read_persDb->source_abbr).'",
-					source_publ="'.safe_text($read_persDb->source_publ).'",
-					source_place="'.safe_text($read_persDb->source_place).'",
-					source_refn="'.safe_text($read_persDb->source_refn).'",
-					source_auth="'.safe_text($read_persDb->source_auth).'",
-					source_subj="'.safe_text($read_persDb->source_subj).'",
-					source_item="'.safe_text($read_persDb->source_item).'",
-					source_kind="'.safe_text($read_persDb->source_kind).'",
-					source_text="'.safe_text($read_persDb->source_text).'",
-					source_repo_name="'.safe_text($read_persDb->source_repo_name).'",
-					source_repo_caln="'.safe_text($read_persDb->source_repo_caln).'",
-					source_repo_page="'.safe_text($read_persDb->source_repo_page).'"
-					WHERE source_id="'.$read_persDb->source_id.'"';
-				//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
-				$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-				//$sql = str_replace("<br>\n", "\n", $sql);
-				$sql = str_replace("<br>", "", $sql);
+
+				$sql='ALTER TABLE '.$updateDb->tree_prefix. 'texts
+					CHANGE text_gedcomnr text_gedcomnr varchar(20) CHARACTER SET utf8,
+					CHANGE text_text text_text text CHARACTER SET utf8,
+					CHANGE text_new_date text_new_date varchar(35) CHARACTER SET utf8,
+					CHANGE text_new_time text_new_time varchar(25) CHARACTER SET utf8,
+					CHANGE text_changed_date text_changed_date varchar(35) CHARACTER SET utf8,
+					CHANGE text_changed_time text_changed_time varchar(25) CHARACTER SET utf8
+					';
+				$update_Db = $dbh->query($sql);
 				//$update.=$sql.'<br>';
+				$sql='ALTER TABLE '.$updateDb->tree_prefix. 'sources
+					CHANGE source_gedcomnr source_gedcomnr varchar(20) CHARACTER SET utf8,
+					CHANGE source_title source_title text CHARACTER SET utf8,
+					CHANGE source_abbr source_abbr varchar(50) CHARACTER SET utf8,
+					CHANGE source_date source_date varchar(35) CHARACTER SET utf8,
+					CHANGE source_publ source_publ varchar(150) CHARACTER SET utf8,
+					CHANGE source_place source_place varchar(50) CHARACTER SET utf8,
+					CHANGE source_refn source_refn varchar(50) CHARACTER SET utf8,
+					CHANGE source_auth source_auth varchar(50) CHARACTER SET utf8,
+					CHANGE source_subj source_subj varchar(50) CHARACTER SET utf8,
+					CHANGE source_item source_item varchar(30) CHARACTER SET utf8,
+					CHANGE source_kind source_kind varchar(50) CHARACTER SET utf8,
+					CHANGE source_text source_text text CHARACTER SET utf8,
+					CHANGE source_photo source_photo text CHARACTER SET utf8,
+					CHANGE source_repo_name source_repo_name varchar(50) CHARACTER SET utf8,
+					CHANGE source_repo_caln source_repo_caln varchar(50) CHARACTER SET utf8,
+					CHANGE source_repo_page source_repo_page varchar(50) CHARACTER SET utf8,
+					CHANGE source_new_date source_new_date varchar(35) CHARACTER SET utf8,
+					CHANGE source_new_time source_new_time varchar(25) CHARACTER SET utf8,
+					CHANGE source_changed_date source_changed_date varchar(35) CHARACTER SET utf8,
+					CHANGE source_changed_time source_changed_time varchar(25) CHARACTER SET utf8
+					';
 				$update_Db = $dbh->query($sql);
-			}
-
-			// *** Update address table (html to utf-8) ***
-			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."addresses");
-			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
-				$sql='UPDATE '.$updateDb->tree_prefix.'addresses SET
-					address_address="'.safe_text($read_persDb->address_address).'",
-					address_zip="'.safe_text($read_persDb->address_zip).'",
-					address_place="'.safe_text($read_persDb->address_place).'",
-					address_phone="'.safe_text($read_persDb->address_phone).'",
-					address_date="'.safe_text($read_persDb->address_date).'",
-					address_source="'.safe_text($read_persDb->address_source).'",
-					address_text="'.safe_text($read_persDb->address_text).'",
-					address_photo="'.safe_text($read_persDb->address_photo).'"
-					WHERE address_id="'.$read_persDb->address_id.'"';
-				//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
-				$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-				//$sql = str_replace("<br>\n", "\n", $sql);
-				$sql = str_replace("<br>", "", $sql);
 				//$update.=$sql.'<br>';
+
+
+				$sql='ALTER TABLE '.$updateDb->tree_prefix. 'addresses
+					CHANGE address_gedcomnr address_gedcomnr varchar(20) CHARACTER SET utf8,
+					CHANGE address_person_id address_person_id varchar(20) CHARACTER SET utf8,
+					CHANGE address_family_id address_family_id varchar(20) CHARACTER SET utf8,
+					CHANGE address_address address_address text CHARACTER SET utf8,
+					CHANGE address_zip address_zip varchar(20) CHARACTER SET utf8,
+					CHANGE address_place address_place varchar(50) CHARACTER SET utf8,
+					CHANGE address_phone address_phone varchar(20) CHARACTER SET utf8,
+					CHANGE address_date address_date varchar(35) CHARACTER SET utf8,
+					CHANGE address_source address_source text CHARACTER SET utf8,
+					CHANGE address_text address_text text CHARACTER SET utf8,
+					CHANGE address_photo address_photo text CHARACTER SET utf8,
+					CHANGE address_new_date address_new_date varchar(35) CHARACTER SET utf8,
+					CHANGE address_new_time address_new_time varchar(25) CHARACTER SET utf8,
+					CHANGE address_changed_date address_changed_date varchar(35) CHARACTER SET utf8,
+					CHANGE address_changed_time address_changed_time varchar(25) CHARACTER SET utf8
+					';
 				$update_Db = $dbh->query($sql);
+
+				$sql='ALTER TABLE '.$updateDb->tree_prefix. 'events
+					CHANGE event_person_id event_person_id varchar(20) CHARACTER SET utf8,
+					CHANGE event_family_id event_family_id varchar(20) CHARACTER SET utf8,
+					CHANGE event_kind event_kind varchar(20) CHARACTER SET utf8,
+					CHANGE event_event event_event text CHARACTER SET utf8,
+					CHANGE event_gedcom event_gedcom varchar(10) CHARACTER SET utf8,
+					CHANGE event_date event_date varchar(35) CHARACTER SET utf8,
+					CHANGE event_place event_place varchar(50) CHARACTER SET utf8,
+					CHANGE event_source event_source text CHARACTER SET utf8,
+					CHANGE event_text event_text text CHARACTER SET utf8,
+					CHANGE event_new_date event_new_date varchar(35) CHARACTER SET utf8,
+					CHANGE event_new_time event_new_time varchar(25) CHARACTER SET utf8,
+					CHANGE event_changed_date event_changed_date varchar(35) CHARACTER SET utf8,
+					CHANGE event_changed_time event_changed_time varchar(25) CHARACTER SET utf8
+					';
+				$update_Db = $dbh->query($sql);
+
+				echo ' Tree updated!';
+			} // *** End of tabel check ***
+
+
+
+			// ******************************
+			// *** AUTOMATIC UPDATES HERE ***
+			// ******************************
+
+			// *** Automatic installation or update ***
+			if (isset($field)){ unset ($field); }
+			$column_qry = $dbh->query("SHOW COLUMNS FROM ".$updateDb->tree_prefix."person");
+			while ($columnDb = $column_qry->fetch()) {
+				$field_value=$columnDb['Field'];
+				$field[$field_value]=$field_value;
+				// *** test line ***
+				//print '<span>'.$field[$field_value].'</span><br />';
 			}
 
-			// *** Update event table (html to utf-8) ***
-			$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."events");
-			while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
-				$sql='UPDATE '.$updateDb->tree_prefix.'events SET
-					event_person_id="'.safe_text($read_persDb->event_person_id).'",
-					event_family_id="'.safe_text($read_persDb->event_family_id).'",
-					event_kind="'.safe_text($read_persDb->event_kind).'",
-					event_event="'.safe_text($read_persDb->event_event).'",
-					event_gedcom="'.safe_text($read_persDb->event_gedcom).'",
-					event_date="'.safe_text($read_persDb->event_date).'",
-					event_place="'.safe_text($read_persDb->event_place).'",
-					event_source="'.safe_text($read_persDb->event_source).'",
-					event_text="'.safe_text($read_persDb->event_text).'"
-					WHERE event_id="'.$read_persDb->event_id.'"';
-				//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
-				$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
-				//$sql = str_replace("<br>\n", "\n", $sql);
-				$sql = str_replace("<br>", "", $sql);
-				//$update.=$sql.'<br>';
-				$update_Db = $dbh->query($sql);
+			// *** Automatic installation or update ***
+			if (isset($field['voorvoegsel'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					CHANGE voorvoegsel pers_tree_prefix	varchar(10) CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['pers_tree_prefix'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					ADD pers_tree_prefix varchar(10) CHARACTER SET utf8 AFTER pers_gedcomnumber";
+				$result=$dbh->query($sql);
 			}
 
-		} // end translate of tables
+			// *** Automatic installation or update ***
+			if (isset($field['person_text_source'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					CHANGE person_text_source pers_text_source text CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['pers_text_source'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					ADD pers_text_source text CHARACTER SET utf8 AFTER pers_text";
+				$result=$dbh->query($sql);
+			}
 
-		echo '<br>';
-	} // End of reading family trees ***
+			// *** Automatic installation or update ***
+			if (isset($field['person_favorite'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					CHANGE person_favorite pers_favorite varchar(1) CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['pers_favorite'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					ADD pers_favorite varchar(1) CHARACTER SET utf8 AFTER pers_alive";
+				$result=$dbh->query($sql);
+			}
 
-	echo '</td></tr>';
-	// *** End of update version 4.6 ***
+			// *** Automatic installation or update ***
+			if (isset($field['person_new_date'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					CHANGE person_new_date pers_new_date varchar(35) CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['pers_new_date'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					ADD pers_new_date varchar(35) CHARACTER SET utf8 AFTER pers_favorite";
+				$result=$dbh->query($sql);
+			}
 
+			// *** Automatic installation or update ***
+			if (isset($field['person_new_time'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					CHANGE person_new_time pers_new_time varchar(25) CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['pers_new_time'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					ADD pers_new_time varchar(25) CHARACTER SET utf8 AFTER pers_new_date";
+				$result=$dbh->query($sql);
+			}
+
+			// *** Automatic installation or update ***
+			if (isset($field['person_changed_date'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					CHANGE person_changed_date pers_changed_date varchar(35) CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['pers_changed_date'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					ADD pers_changed_date varchar(35) CHARACTER SET utf8 AFTER pers_new_time";
+				$result=$dbh->query($sql);
+			}
+
+			// *** Automatic installation or update ***
+			if (isset($field['person_changed_time'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					CHANGE person_changed_time pers_changed_time varchar(25) CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['pers_changed_time'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					ADD pers_changed_time varchar(25) CHARACTER SET utf8 AFTER pers_changed_time";
+				$result=$dbh->query($sql);
+			}
+
+
+
+			// *** HuMo-gen 4.7 updates ***
+			// *** UPDATE 1: Add pers_stillborn in ALL person tables ***
+			if (!isset($field['pers_stillborn'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person
+					ADD pers_stillborn VARCHAR(1) CHARACTER SET utf8  DEFAULT 'n' AFTER pers_birth_source;";
+				$result=$dbh->query($sql);
+			}
+
+			// *** UPDATE 2: remove pers_index_bapt in ALL person tables ***
+			if (isset($field['indexdoop'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP indexdoop";
+				$result=$dbh->query($sql);
+			}
+			if (isset($field['pers_index_bapt'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP pers_index_bapt";
+				$result=$dbh->query($sql);
+			}
+
+			// *** UPDATE 3: remove pers_index_death in ALL person tables ***
+			if (isset($field['indexovl'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP indexovl";
+				$result=$dbh->query($sql);
+			}
+			if (isset($field['pers_index_death'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."person DROP pers_index_death";
+				$result=$dbh->query($sql);
+			}
+
+			// *** Show number of fields in table ***
+			echo ' fields: '.count($field);
+
+			// Add family items
+			// *** Automatic installation or update ***
+			if (isset($field)){ unset ($field); }
+			$column_qry = $dbh->query("SHOW COLUMNS FROM ".$updateDb->tree_prefix."family");
+			while ($columnDb = $column_qry->fetch()) {
+				$field_value=$columnDb['Field'];
+				$field[$field_value]=$field_value;
+				// *** test line ***
+				//print '<span>'.$field[$field_value].'</span><br />';
+			}
+
+			if (isset($field['family_text_source'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					CHANGE family_text_source fam_text_source text CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['fam_text_source'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					ADD fam_text_source text CHARACTER SET utf8 AFTER fam_text";
+				$result=$dbh->query($sql);
+			}
+
+			if (isset($field['trinstantie'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					CHANGE trinstantie fam_marr_authority text CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['fam_marr_authority'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					ADD fam_marr_authority text CHARACTER SET utf8 AFTER fam_marr_source";
+				$result=$dbh->query($sql);
+			}
+
+			if (isset($field['scheidingsinstantie'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					CHANGE scheidingsinstantie fam_div_authority text CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['fam_div_authority'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					ADD fam_div_authority text CHARACTER SET utf8 AFTER fam_div_source";
+				$result=$dbh->query($sql);
+			}
+
+			if (isset($field['family_new_date'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					CHANGE family_new_date fam_new_date varchar(35) CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['fam_new_date'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					ADD fam_new_date varchar(35) CHARACTER SET utf8 AFTER fam_counter";
+				$result=$dbh->query($sql);
+			}
+
+			if (isset($field['family_new_time'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					CHANGE family_new_time fam_new_time varchar(25) CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['fam_new_time'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					ADD fam_new_time varchar(35) CHARACTER SET utf8 AFTER fam_new_date";
+				$result=$dbh->query($sql);
+			}
+
+			if (isset($field['family_changed_date'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					CHANGE family_changed_date fam_changed_date varchar(35) CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['fam_changed_date'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					ADD fam_changed_date varchar(35) CHARACTER SET utf8 AFTER fam_new_time";
+				$result=$dbh->query($sql);
+			}
+
+			if (isset($field['family_changed_time'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					CHANGE family_changed_time fam_changed_time varchar(25) CHARACTER SET utf8";
+				$result=$dbh->query($sql);
+			}
+			elseif (!isset($field['fam_changed_time'])){
+				$sql="ALTER TABLE ".$updateDb->tree_prefix."family
+					ADD fam_changed_time varchar(35) CHARACTER SET utf8 AFTER fam_changed_date";
+				$result=$dbh->query($sql);
+			}
+
+
+			// *****************************
+			// *** CHANGE OF TABLES HERE ***
+			// *****************************
+			if ($translate_tables==true){
+
+				// *** Update person table (html to utf-8) ***
+				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."person");
+				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
+					$sql='UPDATE '.$updateDb->tree_prefix.'person SET
+						pers_firstname="'.safe_text($read_persDb->pers_firstname).'",
+						pers_callname="'.safe_text($read_persDb->pers_callname).'",
+						pers_prefix="'.safe_text($read_persDb->pers_prefix).'",
+						pers_lastname="'.safe_text($read_persDb->pers_lastname).'",
+						pers_patronym="'.safe_text($read_persDb->pers_patronym).'",
+						pers_name_text="'.safe_text($read_persDb->pers_name_text).'",
+						pers_name_source="'.safe_text($read_persDb->pers_name_source).'",
+						pers_own_code="'.safe_text($read_persDb->pers_own_code).'",
+						pers_birth_place="'.safe_text($read_persDb->pers_birth_place).'",
+						pers_birth_text="'.safe_text($read_persDb->pers_birth_text).'",
+						pers_birth_source="'.safe_text($read_persDb->pers_birth_source).'",
+						pers_bapt_place="'.safe_text($read_persDb->pers_bapt_place).'",
+						pers_bapt_text="'.safe_text($read_persDb->pers_bapt_text).'",
+						pers_bapt_source="'.safe_text($read_persDb->pers_bapt_source).'",
+						pers_religion="'.safe_text($read_persDb->pers_religion).'",
+						pers_death_place="'.safe_text($read_persDb->pers_death_place).'",
+						pers_death_text="'.safe_text($read_persDb->pers_death_text).'",
+						pers_death_source="'.safe_text($read_persDb->pers_death_source).'",
+						pers_death_cause="'.safe_text($read_persDb->pers_death_cause).'",
+						pers_buried_place="'.safe_text($read_persDb->pers_buried_place).'",
+						pers_buried_text="'.safe_text($read_persDb->pers_buried_text).'",
+						pers_buried_source="'.safe_text($read_persDb->pers_buried_source).'",
+						pers_place_index="'.safe_text($read_persDb->pers_place_index).'",
+						pers_text="'.safe_text($read_persDb->pers_text).'",
+						pers_text_source="'.safe_text($read_persDb->pers_text_source).'"
+						WHERE pers_id="'.$read_persDb->pers_id.'"';
+					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
+					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
+					//$sql = str_replace("<br>\n", "\n", $sql);
+					$sql = str_replace("<br>", "", $sql);
+					$update_Db = $dbh->query($sql);
+				}
+
+				// *** Update family table (html to utf-8) ***
+				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."family");
+				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
+					$sql='UPDATE '.$updateDb->tree_prefix.'family SET
+						fam_id="'.$read_persDb->fam_id.'",
+						fam_relation_place="'.safe_text($read_persDb->fam_relation_place).'",
+						fam_relation_text="'.safe_text($read_persDb->fam_relation_text).'",
+						fam_relation_source="'.safe_text($read_persDb->fam_relation_source).'",
+						fam_marr_notice_place="'.safe_text($read_persDb->fam_marr_notice_place).'",
+						fam_marr_notice_text="'.safe_text($read_persDb->fam_marr_notice_text).'",
+						fam_marr_notice_source="'.safe_text($read_persDb->fam_marr_notice_source).'",
+						fam_marr_place="'.safe_text($read_persDb->fam_marr_place).'",
+						fam_marr_text="'.safe_text($read_persDb->fam_marr_text).'",
+						fam_marr_source="'.safe_text($read_persDb->fam_marr_source).'",
+						fam_marr_authority="'.safe_text($read_persDb->fam_marr_authority).'",
+						fam_marr_church_notice_place="'.safe_text($read_persDb->fam_marr_church_notice_place).'",
+						fam_marr_church_notice_text="'.safe_text($read_persDb->fam_marr_church_notice_text).'",
+						fam_marr_church_notice_source="'.safe_text($read_persDb->fam_marr_church_notice_source).'",
+						fam_marr_church_place="'.safe_text($read_persDb->fam_marr_church_place).'",
+						fam_marr_church_text="'.safe_text($read_persDb->fam_marr_church_text).'",
+						fam_marr_church_source="'.safe_text($read_persDb->fam_marr_church_source).'",
+						fam_religion="'.safe_text($read_persDb->fam_religion).'",
+						fam_div_place="'.safe_text($read_persDb->fam_div_place).'",
+						fam_div_text="'.safe_text($read_persDb->fam_div_text).'",
+						fam_div_source="'.safe_text($read_persDb->fam_div_source).'",
+						fam_div_authority="'.safe_text($read_persDb->fam_div_authority).'",
+						fam_text="'.safe_text($read_persDb->fam_text).'",
+						fam_text_source="'.safe_text($read_persDb->fam_text_source).'"
+						WHERE fam_id="'.$read_persDb->fam_id.'"';
+					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
+					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
+					//$sql = str_replace("<br>\n", "\n", $sql);
+					$sql = str_replace("<br>", "", $sql);
+					//$update.=$sql.'<br>';
+					$update_Db = $dbh->query($sql);
+				}
+
+				// *** Update text table (html to utf-8) ***
+				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."texts");
+				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
+					$sql='UPDATE '.$updateDb->tree_prefix.'texts SET
+						text_text="'.safe_text($read_persDb->text_text).'"
+						WHERE text_id="'.$read_persDb->text_id.'"';
+					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
+					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
+					//$sql = str_replace("<br>\n", "\n", $sql);
+					$sql = str_replace("<br>", "", $sql);
+					//$update.=$sql.'<br>';
+					$update_Db = $dbh->query($sql);
+				}
+
+				// *** Update source table (html to utf-8) ***
+				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."sources");
+				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
+					$sql='UPDATE '.$updateDb->tree_prefix.'sources SET
+						source_title="'.safe_text($read_persDb->source_title).'",
+						source_abbr="'.safe_text($read_persDb->source_abbr).'",
+						source_publ="'.safe_text($read_persDb->source_publ).'",
+						source_place="'.safe_text($read_persDb->source_place).'",
+						source_refn="'.safe_text($read_persDb->source_refn).'",
+						source_auth="'.safe_text($read_persDb->source_auth).'",
+						source_subj="'.safe_text($read_persDb->source_subj).'",
+						source_item="'.safe_text($read_persDb->source_item).'",
+						source_kind="'.safe_text($read_persDb->source_kind).'",
+						source_text="'.safe_text($read_persDb->source_text).'",
+						source_repo_name="'.safe_text($read_persDb->source_repo_name).'",
+						source_repo_caln="'.safe_text($read_persDb->source_repo_caln).'",
+						source_repo_page="'.safe_text($read_persDb->source_repo_page).'"
+						WHERE source_id="'.$read_persDb->source_id.'"';
+					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
+					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
+					//$sql = str_replace("<br>\n", "\n", $sql);
+					$sql = str_replace("<br>", "", $sql);
+					//$update.=$sql.'<br>';
+					$update_Db = $dbh->query($sql);
+				}
+
+				// *** Update address table (html to utf-8) ***
+				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."addresses");
+				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
+					$sql='UPDATE '.$updateDb->tree_prefix.'addresses SET
+						address_address="'.safe_text($read_persDb->address_address).'",
+						address_zip="'.safe_text($read_persDb->address_zip).'",
+						address_place="'.safe_text($read_persDb->address_place).'",
+						address_phone="'.safe_text($read_persDb->address_phone).'",
+						address_date="'.safe_text($read_persDb->address_date).'",
+						address_source="'.safe_text($read_persDb->address_source).'",
+						address_text="'.safe_text($read_persDb->address_text).'",
+						address_photo="'.safe_text($read_persDb->address_photo).'"
+						WHERE address_id="'.$read_persDb->address_id.'"';
+					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
+					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
+					//$sql = str_replace("<br>\n", "\n", $sql);
+					$sql = str_replace("<br>", "", $sql);
+					//$update.=$sql.'<br>';
+					$update_Db = $dbh->query($sql);
+				}
+
+				// *** Update event table (html to utf-8) ***
+				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."events");
+				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
+					$sql='UPDATE '.$updateDb->tree_prefix.'events SET
+						event_person_id="'.safe_text($read_persDb->event_person_id).'",
+						event_family_id="'.safe_text($read_persDb->event_family_id).'",
+						event_kind="'.safe_text($read_persDb->event_kind).'",
+						event_event="'.safe_text($read_persDb->event_event).'",
+						event_gedcom="'.safe_text($read_persDb->event_gedcom).'",
+						event_date="'.safe_text($read_persDb->event_date).'",
+						event_place="'.safe_text($read_persDb->event_place).'",
+						event_source="'.safe_text($read_persDb->event_source).'",
+						event_text="'.safe_text($read_persDb->event_text).'"
+						WHERE event_id="'.$read_persDb->event_id.'"';
+					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
+					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
+					//$sql = str_replace("<br>\n", "\n", $sql);
+					$sql = str_replace("<br>", "", $sql);
+					//$update.=$sql.'<br>';
+					$update_Db = $dbh->query($sql);
+				}
+
+			} // end translate of tables
+		} // *** End of < 4.7.1 check ***
+
+			echo '<br>';
+		} // End of reading family trees ***
+		else echo 'OK';
+
+		echo '</td></tr>';
+		// *** End of update version 4.6 ***
 
 
 	// ************************************
@@ -2885,11 +2889,82 @@ else{
 
 
 
+	// ************************************
+	// *** Update procedure version 5.1.6 ***
+	// ************************************
+	if ($humo_option["update_status"]>'8'){
+		echo '<tr><td>HuMo-gen update V5.1.6</td><td style="background-color:#00FF00">OK</td></tr>';
+	}
+	else{
+		echo '<tr><td>HuMo-gen update V5.1.6</td><td style="background-color:#00FF00">';
+
+		// *** Show update status ***
+		echo __('Update in progress...').' <div id="information" style="display: inline; font-weight:bold;"></div><br>';
+
+		// *** Update event table ***
+		$sql="ALTER TABLE humo_events ADD event_connect_kind varchar(25) DEFAULT NULL AFTER event_order";
+		$result=$dbh->query($sql);
+
+		$sql='UPDATE humo_events SET event_connect_kind="person" WHERE event_person_id!=""';
+		$update_Db = $dbh->query($sql);
+
+		$sql='UPDATE humo_events SET event_connect_kind="family", event_person_id=event_family_id WHERE event_family_id!=""';
+		$update_Db = $dbh->query($sql);
+
+		$sql="ALTER TABLE humo_events CHANGE event_person_id event_connect_id VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci";
+		$result=$dbh->query($sql);
+
+		// *** Move photo's from source to event table ***
+		$sql="SELECT source_id, source_gedcomnr, source_tree_id, source_photo
+			FROM humo_sources WHERE source_photo LIKE '_%'";
+		$qry = $dbh->query($sql);
+		while ($qryDb=$qry->fetch(PDO::FETCH_OBJ)){
+			$source_photo=explode(";",$qryDb->source_photo);
+			for ($i=0; $i<=count($source_photo)-1; $i++){
+				$gebeurtsql='INSERT INTO humo_events SET
+					event_tree_id="'.$qryDb->source_tree_id.'",
+					event_order="'.($i+1).'",
+					event_connect_kind="source",
+					event_connect_id="'.$qryDb->source_gedcomnr.'",
+					event_kind="picture",
+					event_event="'.trim($source_photo[$i]).'"';
+				$result=$dbh->query($gebeurtsql);
+			}
+		}
+
+		$qry="ALTER TABLE humo_events DROP event_family_id;";
+		$result=$dbh->query($qry);
+
+		$qry="ALTER TABLE humo_sources DROP source_photo;";
+		$result=$dbh->query($qry);
+
+		$qry="ALTER TABLE humo_repositories DROP repo_photo;";
+		$result=$dbh->query($qry);
+
+		$qry="ALTER TABLE humo_addresses DROP address_photo;";
+		$result=$dbh->query($qry);
+
+		// *** Update user table ***
+		$sql="ALTER TABLE humo_user_notes ADD note_guest_name varchar(25) DEFAULT NULL AFTER note_user_id";
+		$result=$dbh->query($sql);
+
+		// *** Update user table ***
+		$sql="ALTER TABLE humo_user_notes ADD note_guest_mail varchar(100) DEFAULT NULL AFTER note_guest_name";
+		$result=$dbh->query($sql);
+
+		// *** Update "update_status" to number 9 ***
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='9'
+			WHERE setting_variable='update_status'");
+
+		echo ' Database updated!';
+		echo '</td></tr>';
+	}
+
 	/*	END OF UPDATE SCRIPT
 		*** VERY IMPORTANT REMARKS FOR PROGRAMMERS ***
 		* Change update_status in install.php
 		* Change version check in admin/index.php
-		* Don't forget to add new database fields in the tables of install.php and gedcom_tables.php!
+		* Don't forget to add new database fields in the tables of install.php!
 		* Change database fields: check if database changes can be made in global parts of this update script.
 	*/
 

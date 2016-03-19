@@ -22,9 +22,9 @@ function witness($gedcomnr,$event, $field='person'){
 	if ($gedcomnr){
 		$witness_cls = New person_cls;
 		if ($field=='person')
-			$witness_qry = $db_functions->get_events_person($gedcomnr,$event);
+			$witness_qry = $db_functions->get_events_connect('person',$gedcomnr,$event);
 		else
-			$witness_qry = $db_functions->get_events_family($gedcomnr,$event);
+			$witness_qry = $db_functions->get_events_connect('family',$gedcomnr,$event);
 		foreach ($witness_qry as $witnessDb){
 			$counter++; if ($counter>1){ $text.=', '; }
 			if ($witnessDb->event_event){

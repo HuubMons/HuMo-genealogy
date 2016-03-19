@@ -679,7 +679,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						//  *** Path can be changed per family tree ***
 						global $dataDb;
 						$tree_pict_path=$dataDb->tree_pict_path;
-						$picture_qry=$db_functions->get_events_person($man->pers_gedcomnumber,'picture');
+						$picture_qry=$db_functions->get_events_connect('person',$man->pers_gedcomnumber,'picture');
 						// *** Only show 1st picture ***
 						if (isset($picture_qry[0])){
 							$pictureDb=$picture_qry[0];

@@ -410,7 +410,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					}
 					$cell->writeText($rtf_text, $arial12, $parNames);
 
-					$result = show_media($person_manDb,''); 
+					$result = show_media('person',$person_manDb->pers_gedcomnumber); 
 					if(isset($result[1]) AND count($result[1])>0) { 
 						$break=1; $textarr = Array(); $goodpics=FALSE;
 						foreach($result[1] as $key => $value) {  
@@ -810,7 +810,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 					//  *** Path can be changed per family tree ***
 					global $dataDb;
 					$tree_pict_path=$dataDb->tree_pict_path;
-					$picture_qry=$db_functions->get_events_person($personDb->pers_gedcomnumber,'picture');
+					$picture_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'picture');
 					// *** Only show 1st picture ***
 					if (isset($picture_qry[0])){
 						$pictureDb=$picture_qry[0];

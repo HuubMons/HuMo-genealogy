@@ -40,10 +40,10 @@ if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	//$headers .= "From: \"".$_POST['mail_name']."\"\n";
 	//$headers .= "Reply-To: \"".$_POST['mail_name']."\" <".$_POST['mail_sender'].">\n";
 
-	echo '<br>'.__('You have entered the following email address: ').'<b> '.$_POST['mail_sender'].'</b><br>';
+	echo '<br>'.__('You have entered the following e-mail address: ').'<b> '.$_POST['mail_sender'].'</b><br>';
 	$position = strpos($_POST['mail_sender'],"@");
-	if ($position<1){ echo '<font color="red">'.__('The email address you entered doesn\'t seem to be a valid email address!').'</font><br>'; }
-	echo '<b>'.__('If you do not enter a valid email address, unfortunately I cannot answer you!').'</b><br>';
+	if ($position<1){ echo '<font color="red">'.__('The e-mail address you entered doesn\'t seem to be a valid e-mail address!').'</font><br>'; }
+	echo '<b>'.__('If you do not enter a valid e-mail address, unfortunately I cannot answer you!').'</b><br>';
 	echo __('Message: ').'<br>'.$_POST['mail_text'];
 
 	//@$mail = mail($mail_address, $mail_subject, $mail_message, $headers);

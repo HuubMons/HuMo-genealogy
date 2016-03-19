@@ -422,8 +422,8 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 	$connect_result = $dbh->query($connect_qry);
 	while ($connect=$connect_result->fetch(PDO::FETCH_OBJ)){
 		// *** Check person ***
-		if ($connect->event_person_id){
-			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$connect->event_person_id."'";
+		if ($connect->event_connect_kind=='person' AND $connect->event_connect_id){
+			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$connect->event_connect_id."'";
 			$person_result = $dbh->query($person_qry);
 			$person=$person_result->fetch(PDO::FETCH_OBJ);
 			if (!$person){
@@ -434,13 +434,14 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 
 				echo '<tr><td><b>Missing person record</b></td>';
 				echo '<td>Event record: '.$connect->event_id.'/ '.$connect->event_kind.'</td>';
-				echo '<td>Missing person gedcomnr: '.$connect->event_person_id.$removed.'</td></tr>';
+				echo '<td>Missing person gedcomnr: '.$connect->event_connect_id.$removed.'</td></tr>';
 			}
 		}
 
 		// *** Check family ***
-		if ($connect->event_family_id){
-			$person_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$connect->event_family_id."'";
+		if ($connect->event_connect_kind=='family' AND $connect->event_connect_id){
+			$person_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."'
+				AND fam_gedcomnumber='".$connect->event_connect_id."'";
 			$person_result = $dbh->query($person_qry);
 			$person=$person_result->fetch(PDO::FETCH_OBJ);
 			if (!$person){
@@ -451,8 +452,7 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 
 				echo '<tr><td><b>Missing family record</b></td>';
 				echo '<td>Event record: '.$connect->event_id.'/ '.$connect->event_kind.'</td>';
-				echo '<td>Missing family gedcomnr: '.$connect->event_family_id.'</td></tr>';
-				// NO RESTORE YET (not possible?)
+				echo '<td>Missing family gedcomnr: '.$connect->event_connect_id.'</td></tr>';
 			}
 		}
 	}
@@ -1372,14 +1372,14 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			$name2 = $spouse2Db['pers_firstname'].' '.str_replace("_"," ",$spouse2Db['pers_prefix'].' '.$spouse2Db['pers_lastname']);
 			$spousegednr = $spouse1Db['pers_gedcomnumber']; if($spousegednr=='') $spousegednr = $spouse2Db['pers_gedcomnumber'];
 			$and = ' '.__('and').' '; if($spouse1Db['pers_gedcomnumber']=='' OR $spouse2Db['pers_gedcomnumber']=='') $and='';
-			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$spousegednr.'" target=\'_blank\'>'.$name1.$and.$name2.'</a></td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 			
+			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$spousegednr.'" target=\'_blank\'>'.$name1.$and.$name2.'</a></td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>';
 		}
 		if(substr($table,0,3) =="eve") {
 			$ev = $dbh->query("SELECT * FROM humo_events WHERE event_id = '".$gednr."'");
 			$evDb=$ev->fetch();
-			if($evDb['event_person_id']!='') { 
+			if($evDb['event_connect_kind']=='person' AND $evDb['event_connect_id']!='') { 
 				$pers = $dbh->query("SELECT * FROM humo_person
-					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$evDb['event_person_id']."'");
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$evDb['event_connect_id']."'");
 				$persDb=$pers->fetch();
 				$fullname = $persDb['pers_firstname'].' '.str_replace("_"," ",$persDb['pers_prefix'].' '.$persDb['pers_lastname']);
 				$evdetail= $evDb['event_event']; 
@@ -1387,9 +1387,9 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				if($evdetail!='') $evdetail = ': '.$evdetail;
 				echo '<tr><td style="text-align:'.$direction.'">'.$persDb['pers_gedcomnumber'].'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$persDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$fullname.'</a> ('.__('Click events by person').')</td><td style="text-align:'.$direction.'">'.$evDb['event_kind'].$evdetail.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>';  
 			}
-			elseif($evDb['event_family_id']!='') { 
+			elseif($evDb['event_connect_kind']=='family' AND $evDb['event_connect_id']!='') { 
 				$fam = $dbh->query("SELECT * FROM humo_families
-					WHERE pers_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$evDb['event_family_id']."'");
+					WHERE pers_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$evDb['event_connect_id']."'");
 				$famDb=$fam->fetch();
 				$spouse1 = $dbh->query("SELECT * FROM humo_persons
 					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$famDb['fam_man']."'");
@@ -1448,18 +1448,18 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			if(substr($connectDb['connect_sub_kind'],0,3)=='eve') {
 				$ev = $dbh->query("SELECT * FROM humo_events WHERE event_id ='".$connectDb['connect_connect_id']."'");
 				$evDb=$ev->fetch();
-				if($evDb['event_person_id']!='') {
+				if($evDb['event_connect_kind']=='person' AND $evDb['event_connect_id']!='') {
 					$pers = $dbh->query("SELECT * FROM humo_persons
-						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber = '".$evDb['event_person_id']."'");
+						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber = '".$evDb['event_connect_id']."'");
 					$persDb=$pers->fetch();
 					$gednr = $persDb['pers_gedcomnumber']; // for url string
 					$gedcomnr = $persDb['pers_gedcomnumber']; // for first column
 					$name = $persDb['pers_firstname'].' '.str_replace("_"," ",$persDb['pers_prefix']).' '.$persDb['pers_lastname'];
 
 				}
-				if($evDb['event_family_id']!='') {
+				if($evDb['event_connect_kind']=='family' AND $evDb['event_connect_id']!='') {
 					$fam = $dbh->query("SELECT * FROM humo_families
-						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$evDb['event_family_id']."'");
+						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$evDb['event_connect_id']."'");
 					$famDb=$fam->fetch();
 					$spouse1 = $dbh->query("SELECT * FROM humo_persons
 						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$famDb['fam_man']."'");

@@ -457,8 +457,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	}
 
 	// *** Show media/ pictures ***
-	//$text.=show_media('',$marriageDb); // *** This function can be found in file: show_picture.php! ***
-	$result = show_media('',$marriageDb); // *** This function can be found in file: show_picture.php! ***
+	//$text.=show_media('family',$marriageDb->fam_gedcomnumber); // *** This function can be found in file: show_picture.php! ***
+	$result = show_media('family',$marriageDb->fam_gedcomnumber); // *** This function can be found in file: show_picture.php! ***
 	$text.= $result[0];
 	//if (isset($templ_person))
 	//	$templ_person = array_merge((array)$templ_person,(array)$result[1]);
@@ -470,7 +470,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Show events ***
 	if ($user['group_event']=='j'){
 		if ($marriageDb->fam_gedcomnumber){
-			$event_qry=$db_functions->get_events_family($marriageDb->fam_gedcomnumber,'event');
+			$event_qry=$db_functions->get_events_connect('family',$marriageDb->fam_gedcomnumber,'event');
 			$num_rows=count($event_qry);
 			if ($num_rows>0){ $text.= '<span class="event">'; }
 			$i=0;

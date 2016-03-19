@@ -703,8 +703,8 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 		$buffer.='2 NOTE '.process_text(3,$person->pers_name_text); }
 
 	// *** Export all name items, like 2 _AKAN etc. ***
-	$nameqry=$dbh->query("SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$person->pers_gedcomnumber."'
+	$nameqry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id='".$person->pers_gedcomnumber."'
 		AND event_kind='name' ORDER BY event_order");
 	while($nameDb=$nameqry->fetch(PDO::FETCH_OBJ)){	
 		$buffer.='2 '.$nameDb->event_gedcom.' '.$nameDb->event_event."\r\n";
@@ -751,8 +751,8 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 			$buffer.='2 NOTE '.process_text(3,$person->pers_bapt_text); }
 
 		// *** Baptise witness ***
-		$witness_qry=$dbh->query("SELECT * FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$person->pers_gedcomnumber."'
+		$witness_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='person' AND event_connect_id='".$person->pers_gedcomnumber."'
 			AND event_kind='baptism_witness' ORDER BY event_order");
 		while($witnessDb=$witness_qry->fetch(PDO::FETCH_OBJ)){
 			$buffer.='2 WITN '.$witnessDb->event_event."\r\n";
@@ -821,9 +821,9 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	}
 
 	// *** Occupation ***
-	$professionqry=$dbh->query("SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."'
-		AND event_person_id='$person->pers_gedcomnumber' AND event_kind='profession' ORDER BY event_order");
+	$professionqry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber'
+		AND event_kind='profession' ORDER BY event_order");
 	while($professionDb=$professionqry->fetch(PDO::FETCH_OBJ)){
 		$buffer.='1 OCCU '.$professionDb->event_event."\r\n";
 		// *** Source by occupation ***
@@ -838,8 +838,8 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	}
 
 	// *** Person pictures ***
-	$sourceqry=$dbh->query("SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$person->pers_gedcomnumber."'
+	$sourceqry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id='".$person->pers_gedcomnumber."'
 		AND event_kind='picture' ORDER BY event_order");
 	while($sourceDb=$sourceqry->fetch(PDO::FETCH_OBJ)){	
 		$buffer.="1 OBJE\r\n";
@@ -862,8 +862,8 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	}
 
 	// *** Person color marks ***
-	$sourceqry=$dbh->query("SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$person->pers_gedcomnumber."'
+	$sourceqry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id='".$person->pers_gedcomnumber."'
 		AND event_kind='person_colour_mark' ORDER BY event_order");
 	while($sourceDb=$sourceqry->fetch(PDO::FETCH_OBJ)){	
 		$buffer.='1 _COLOR '.$sourceDb->event_event."\r\n";
@@ -873,8 +873,9 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	}
 
 	// *** Person events ***
-	$event_qry=$dbh->query("SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."' AND event_person_id='".$person->pers_gedcomnumber."' AND event_kind='event' ORDER BY event_order");
+	$event_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id='".$person->pers_gedcomnumber."'
+		AND event_kind='event' ORDER BY event_order");
 	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 		$process_event=false; $process_event2=false;
 		if ($eventDb->event_gedcom=='ADOP'){ $process_event2=true; $event_gedcom='1 ADOP'; }
@@ -1034,9 +1035,9 @@ while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 		else { $buffer.='1 WIFE @'.$family->fam_woman."@\r\n"; }
 	}
 
-	// *** Living together ***
+	// *** Pro-gen & HuMo-gen: Living together ***
 	if ($family->fam_relation_date OR $family->fam_relation_place OR $family->fam_relation_text){
-		$buffer.="1 NMR\r\n";
+		$buffer.="1 _LIV\r\n";
 
 		// *** Relation start date ***
 		if ($family->fam_relation_date) $buffer.='2 DATE '.$family->fam_relation_date."\r\n";
@@ -1149,8 +1150,8 @@ while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 	}
 
 	// *** Family events ***
-	$event_qry=$dbh->query("SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."' AND event_family_id='".$family->fam_gedcomnumber."'
+	$event_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='family' AND event_connect_id='".$family->fam_gedcomnumber."'
 		AND event_kind='event' ORDER BY event_order");
 	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 		$process_event=false; $process_event2=false;
@@ -1304,13 +1305,15 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 	}
 
 	// find all sources referred to by events (233)
-	$eventqry = $dbh->query("SELECT event_id, event_person_id, event_family_id FROM humo_events");
+	$eventqry = $dbh->query("SELECT event_id, event_connect_kind, event_connect_id FROM humo_events");
 	$source_event_array = array();
 	while($eventqryDb=$eventqry->fetch(PDO::FETCH_OBJ)){
-		if($eventqryDb->event_person_id!='' AND in_array($eventqryDb->event_person_id,$persids)) {
+		if($eventqryDb->event_connect_kind=='person'
+			AND $eventqryDb->event_connect_id!='' AND in_array($eventqryDb->event_connect_id,$persids)) {
 			$source_event_array[] = $eventqryDb->event_id;
 		}
-		if($eventqryDb->event_family_id!='' AND in_array($eventqryDb->event_family_id,$famsids)) {
+		if($eventqryDb->event_connect_kind=='family' AND
+			$eventqryDb->event_connect_id!='' AND in_array($eventqryDb->event_connect_id,$famsids)) {
 			$source_event_array[] = $eventqryDb->event_id;
 		}
 	}
@@ -1353,8 +1356,24 @@ if ($gedcom_sources=='yes'){
 		if ($family->source_text){ $buffer.='1 NOTE '.process_text(2,$family->source_text); }
 		if (isset($family->source_status) AND $family->source_status=='restricted'){ $buffer.='1 RESN privacy'."\r\n"; }
 
-		// photo = old gedcom tag?
-		if ($family->source_photo){ $buffer.='1 PHOT '.$family->source_photo."\r\n"; }
+		// *** Source pictures ***
+		$sourceqry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='source' AND event_connect_id='".$family->source_gedcomnr."'
+			AND event_kind='picture' ORDER BY event_order");
+		while($sourceDb=$sourceqry->fetch(PDO::FETCH_OBJ)){	
+			$buffer.="1 OBJE\r\n";
+			$buffer.="2 FORM jpg\r\n";
+			$buffer.='2 FILE '.$sourceDb->event_event."\r\n";
+			$buffer.='2 DATE '.$sourceDb->event_date."\r\n";
+
+			if ($gedcom_texts=='yes' AND $sourceDb->event_text){
+				$buffer.='2 NOTE '.process_text(3,$sourceDb->event_text);
+			}
+
+			//if ($gedcom_sources=='yes'){
+			//	sources_export('source','source_event_source',$sourceDb->event_id,2);
+			//}
+		}
 
 		// source_repo_name, source_repo_caln, source_repo_page.
 

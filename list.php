@@ -759,7 +759,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	$query_select .= $make_date." FROM humo_persons";
 
 	if ($add_event_qry)
-		$query_select .= " LEFT JOIN humo_events ON event_person_id=pers_gedcomnumber AND event_tree_id=pers_tree_id";
+		$query_select .= " LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_tree_id=pers_tree_id";
 	if ($add_address_qry)
 		$query_select .= " LEFT JOIN humo_addresses ON address_person_id=pers_gedcomnumber AND address_tree_id=pers_tree_id";
 
@@ -811,7 +811,7 @@ if ($index_list=='quicksearch'){
 	CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name
 	".$make_date."
 	FROM humo_persons
-	LEFT JOIN humo_events ON event_person_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
+	LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
 	WHERE (".$multi_tree.")
 		AND 
 		( CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($quicksearch)."%'

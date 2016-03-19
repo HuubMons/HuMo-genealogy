@@ -29,28 +29,22 @@ $_CONFIG = array(
     'types' => array(
 
     // (F)CKEditor types
-    //    'files'   =>  "",
-    //    'flash'   =>  "swf",
-    //    'images'  =>  "*img",
+        'files'   =>  "",
+        'flash'   =>  "swf",
+        'images'  =>  "*img",
 
     // TinyMCE types
-    //    'file'    =>  "",
-    //    'media'   =>  "swf flv avi mpg mpeg qt mov wmv asf rm",
-    //    'image'   =>  "*img",
-
-	// Huub: no subfolder images:
-	'' =>  "*img swf flv avi mpg mpeg qt mov wmv asf rm",
-
+        'file'    =>  "",
+        'media'   =>  "swf flv avi mpg mpeg qt mov wmv asf rm",
+        'image'   =>  "*img",
     ),
 
 
 // IMAGE SETTINGS
-    //'thumbsDir' => ".thumbs",
-    //'thumbsDir' => false,
 
     'imageDriversPriority' => "imagick gmagick gd",
     'jpegQuality' => 90,
-    'thumbsDir' => false,
+    'thumbsDir' => ".thumbs",
 
     'maxImageWidth' => 0,
     'maxImageHeight' => 0,
@@ -115,8 +109,7 @@ $_CONFIG = array(
 // THE FOLLOWING SETTINGS CANNOT BE OVERRIDED WITH SESSION SETTINGS
 
     '_normalizeFilenames' => false,
-    //'_check4htaccess' => true,
-    '_check4htaccess' => false,
+    '_check4htaccess' => true,
     //'_tinyMCEPath' => "/tiny_mce",
 
     '_sessionVar' => "KCFINDER",

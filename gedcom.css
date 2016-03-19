@@ -1208,7 +1208,7 @@ td.extended_woman {
 .pageTabsContainer {
 	display: table-cell;
 	vertical-align: bottom;
-	white-space: nowrap;
+	/* white-space: nowrap; */
 }
 .pageTabs {
 	margin: 0;

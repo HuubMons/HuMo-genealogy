@@ -907,7 +907,7 @@ else{
 								$rtf_text=strip_tags($woman_cls->person_data("parent1", $id),"<b><i>");
 								$sect->writeText($rtf_text, $arial12, $parSimple);
 
-								$result = show_media($person_womanDb,''); 
+								$result = show_media('person',$person_womanDb->pers_gedcomnumber); 
 								if(isset($result[1]) AND count($result[1])>0) { 
 									$break=0; $textarr = Array(); $goodpics=FALSE;
 									foreach($result[1] as $key => $value) {
@@ -1008,7 +1008,7 @@ else{
 								$rtf_text=strip_tags($man_cls->person_data("parent1", $id),"<b><i>");
 								$sect->writeText($rtf_text, $arial12, $parSimple);
 
-								$result = show_media($person_manDb,''); 
+								$result = show_media('person',$person_manDb->pers_gedcomnumber); 
 								if(isset($result[1]) AND count($result[1])>0) { 
 									$break=0; $textarr = Array(); $goodpics=FALSE;
 									foreach($result[1] as $key => $value) {
@@ -1227,7 +1227,7 @@ else{
 						$rtf_text=strip_tags($man_cls->person_data("parent2",$id),"<b><i>");
 						$sect->writeText($rtf_text, $arial12, $parSimple);
 
-						$result = show_media($person_manDb,''); 
+						$result = show_media('person',$person_manDb->pers_gedcomnumber); 
 						if(isset($result[1]) AND count($result[1])>0) { 
 							$break=0; $textarr = Array(); $goodpics=FALSE;
 							foreach($result[1] as $key => $value) {
@@ -1316,7 +1316,7 @@ else{
 						$rtf_text=strip_tags($woman_cls->person_data("parent2",$id),"<b><i>");
 						$sect->writeText($rtf_text, $arial12, $parSimple);
 
-						$result = show_media($person_womanDb,'');
+						$result = show_media('person',$person_womanDb->pers_gedcomnumber);
 						if(isset($result[1]) AND count($result[1])>0) { 
 							$break=0; $textarr = Array(); $goodpics=FALSE;
 							foreach($result[1] as $key => $value) {
@@ -1707,7 +1707,7 @@ else{
 								$rtf_text=strip_tags($child_cls->person_data("child", $id),'<b><i>');
 								$sect->writeText($rtf_text, $arial12, $par_child_text);
 
-								$result = show_media($childDb,''); 
+								$result = show_media('person',$childDb->pers_gedcomnumber); 
 								if(isset($result[1]) AND count($result[1])>0) { 
 									$break=0; $textarr = Array(); $goodpics=FALSE;
 									foreach($result[1] as $key => $value) {
@@ -1771,7 +1771,7 @@ else{
 					$famc_adoptive_qry_prep = $db_functions->get_events_kind($familyDb->fam_gedcomnumber,'adoption');
 					foreach($famc_adoptive_qry_prep as $famc_adoptiveDb){
 						echo '<tr><td colspan="4"><div class="children">';
-						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_person_id);
+						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
 						// *** Use person class ***
 						$child_cls = New person_cls;
 						$child_cls->construct($childDb);
@@ -1785,7 +1785,7 @@ else{
 					$famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_man,'adoption_by_person');
 					foreach($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb){
 						echo '<tr><td colspan="4"><div class="children">';
-						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_person_id);
+						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
 						// *** Use person class ***
 						$child_cls = New person_cls;
 						$child_cls->construct($childDb);
@@ -1804,7 +1804,7 @@ else{
 					$famc_adoptive_by_person_qry_prep = $db_functions->get_events_kind($familyDb->fam_woman,'adoption_by_person');
 					foreach($famc_adoptive_by_person_qry_prep as $famc_adoptiveDb){
 						echo '<tr><td colspan="4"><div class="children">';
-						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_person_id);
+						@$childDb = $db_functions->get_person($famc_adoptiveDb->event_connect_id);
 						// *** Use person class ***
 						$child_cls = New person_cls;
 						$child_cls->construct($childDb);
@@ -1831,7 +1831,7 @@ else{
 								echo '<script src="https://maps.google.com/maps/api/js?v=3&sensor=false" type="text/javascript"></script>';
 							}
 							else {
-								echo '<script src="http://maps.google.com/maps/api/js?v=3&sensor=false" type="text/javascript"></script>';							
+								echo '<script src="http://maps.google.com/maps/api/js?v=3&sensor=false" type="text/javascript"></script>';
 							}
 
 							echo '<script type="text/javascript">

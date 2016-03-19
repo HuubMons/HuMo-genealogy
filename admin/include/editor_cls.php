@@ -30,7 +30,13 @@ function date_show($process_date, $process_name, $multiple_rows=''){
 		$text.='<option value="BET "'.$selected.'>'.__('between').'</option>';
 	$text.='</select>';
 
-	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" placeholder="'.ucfirst(__('date')).'" style="direction:ltr" value="';
+	// *** '!' is added after an invalid date, change background color if date is invalid ***
+	$style=''; if (substr($process_date,-1)=='!'){
+		$process_date=substr($process_date,0,-1);
+		$style='; background-color:red"';
+	}
+	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" placeholder="'.ucfirst(__('date')).'" style="direction:ltr'.$style.'" value="';
+
 		// *** BEF, ABT, AFT, etc. is shown in date_prefix ***
 		$process_date=strtolower($process_date);
 
@@ -80,22 +86,24 @@ function date_process($process_name, $multiple_rows=''){
 			if($date1!=null AND $date2!=null) {
 				$this_date = $date1." AND ".$date2;
 			}
-			else $this_date = __('Invalid date'); // one or both dates are invalid
+			//else $this_date = __('Invalid date'); // one or both dates are invalid
+			else $this_date = '!'; // one or both dates are invalid
 		}
-		else $this_date = __('Invalid date'); // "AND" appears but not with "BET"
+		//else $this_date = __('Invalid date'); // "AND" appears but not with "BET"
+		else $this_date = '!'; // "AND" appears but not with "BET"
 	}
 	elseif($pref == "BET " and $pos===false) {
-		$this_date = __('Invalid date'); // "BET" appears but not with "AND"
+		//$this_date = __('Invalid date'); // "BET" appears but not with "AND"
+		$this_date = '!'; // "BET" appears but not with "AND"
 	}
 	elseif($post_date!="") {
 		$date = $this->valid_date($post_date);
 		if($date != null) {
 			$this_date = $date;
 		}
-		else $this_date = __('Invalid date'); 
+		//else $this_date = __('Invalid date'); 
+		else $this_date = '!'; 
 	}
-
-	//if ($this_date == __('Invalid date')) $this_date.=': '.$post_date;
 
 	if ($multiple_rows!='')
 		//$process_date=$_POST["$process_name_prefix"][$multiple_rows].$_POST["$process_name"][$multiple_rows];
@@ -103,6 +111,10 @@ function date_process($process_name, $multiple_rows=''){
 	else
 		//$process_date=$_POST["$process_name_prefix"].$_POST["$process_name"];
 		$process_date=$pref.$this_date; 
+
+	// *** Invalid date, add a ! character after the date. Don't remove original date... ***
+	if (substr($post_date,-1)=='!') $process_date=$post_date;
+	elseif ($this_date == '!') $process_date=$post_date.'!';
 
 	$process_date=strtoupper($process_date);
 	$process_date=safe_text($process_date);

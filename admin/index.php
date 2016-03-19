@@ -109,8 +109,7 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	// *** Check HuMo-gen database status ***
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])){ 
-		if ($humo_option["update_status"]<8){ $page='update'; $show_menu_left=false; }
-//		if ($humo_option["update_status"]<9){ $page='update'; $show_menu_left=false; }
+		if ($humo_option["update_status"]<9){ $page='update'; $show_menu_left=false; }
 	}
 
 	if (isset($_GET['page']) AND ($_GET['page']=='editor_sources' OR $_GET['page']=='editor_place_select' OR $_GET['page']=='editor_person_select' OR $_GET['page']=='editor_user_settings')){
@@ -138,6 +137,7 @@ while (false!==($file = readdir($map))) {
 			elseif ($file=='da') $language_order[]='Dansk';
 			elseif ($file=='de') $language_order[]='Deutsch';
 			elseif ($file=='en') $language_order[]='English';
+			elseif ($file=='en_ca') $language_order[]='English_ca';
 			elseif ($file=='en_us') $language_order[]='English_us';
 			elseif ($file=='es') $language_order[]='Espanol';
 			elseif ($file=='fa') $language_order[]='Persian';

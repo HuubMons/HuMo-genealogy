@@ -227,7 +227,7 @@ echo __('<b>Top menu line:</b>
 <ul><li>Choose family tree. On sites with multiple family trees here you can choose which tree to map.</li>
 <li>Choose whether to display birth location or death locations.</li></ul>
 <b>Second menu line:</b>
-<ul><li>The "births until" slider. With this slider you can mark the birthplaces of persons who where born until a certain date. The slider has ten positions.</li>
+<ul><li>The "births until" slider. With this slider you can mark the birthplaces of persons who were born until a certain date. The slider has ten positions.</li>
 <li>Filter by specific family name(s)". This will open a window with all family names. Mark checkboxes next to names and press "Choose" to start mapping the locations of those families only.<br>
 After pressing "Choose" you will see a yellow banner near the top of the map, informing you which family names are being filtered. Now use the slider or "mark all location" button to place the markers.</li>
 <li>Filter by descendants". This will open a window with all persons that have descendants. Click the person whose descendants you want to map.<br>

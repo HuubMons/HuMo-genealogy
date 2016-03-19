@@ -243,7 +243,8 @@ if (isset($_POST['add_tree_data'])){
 else{
 	$data2sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order LIMIT 0,1");
 }
-$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
+//$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
+$data2Db = $data2sql->fetchObject();
 if ($data2Db){
 	$tree_id=$data2Db->tree_id;
 }

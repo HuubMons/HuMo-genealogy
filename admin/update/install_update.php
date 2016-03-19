@@ -250,7 +250,7 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 			}
 
 			// *** Compare new files with old files, show list of old system files ***
-			echo '<br>'.__('The following files are no part of the HuMo-gen system files (anymore). If you want, they can be removed.').'<br>';
+			echo '<br>'.__('The following files are not part of the HuMo-gen system files (anymore). If you want, they can be removed.').'<br>';
 			//for ($i=0; $i<=count($existing_files)-1; $i++){
 			// *** Skip first file (.htaccess) because of comparison problems ***
 			for ($i=1; $i<=count($existing_files)-1; $i++){
@@ -298,31 +298,40 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 					$bestand_config = fopen($login_file,"w");
 					for ($i=0; $i<=(count($buffer)-1); $i++) {
 
-						//define("DATABASE_HOST",     "localhost");
-						//define("DATABASE_USERNAME", "root");
-						//define("DATABASE_PASSWORD", "usbw");
-						//define("DATABASE_NAME",     "humo-gen");
+						// *** Use ' character to prevent problems with $ character in password ***
+						//define("DATABASE_HOST",     'localhost');
+						//define("DATABASE_USERNAME", 'root');
+						//define("DATABASE_PASSWORD", 'usbw');
+						//define("DATABASE_NAME",     'humo-gen');
 
-						if (substr($buffer[$i],0,21)=='define("DATABASE_HOST'){
-							$buffer[$i]='define("DATABASE_HOST",     "'.DATABASE_HOST.'");'."\n";
+						//if (substr($buffer[$i],0,21)=='define("DATABASE_HOST'){
+						if (substr($buffer[$i],8,13)=='DATABASE_HOST'){
+							//$buffer[$i]='define("DATABASE_HOST",     "'.DATABASE_HOST.'");'."\n";
+							$buffer[$i]='define("DATABASE_HOST",     '."'".DATABASE_HOST."');\n";
 							$check_config=true;
 						}
 
-						if (substr($buffer[$i],0,25)=='define("DATABASE_USERNAME'){
-							$buffer[$i]='define("DATABASE_USERNAME", "'.DATABASE_USERNAME.'");'."\n";
+						//if (substr($buffer[$i],0,25)=='define("DATABASE_USERNAME'){
+						if (substr($buffer[$i],8,17)=='DATABASE_USERNAME'){
+							//$buffer[$i]='define("DATABASE_USERNAME", "'.DATABASE_USERNAME.'");'."\n";
+							$buffer[$i]='define("DATABASE_USERNAME", '."'".DATABASE_USERNAME."');\n";
 							$check_config=true;
 						}
 
-						if (substr($buffer[$i],0,25)=='define("DATABASE_PASSWORD'){
-							$buffer[$i]='define("DATABASE_PASSWORD", "'.DATABASE_PASSWORD.'");'."\n";
+						//if (substr($buffer[$i],0,25)=='define("DATABASE_PASSWORD'){
+						if (substr($buffer[$i],8,17)=='DATABASE_PASSWORD'){
+							//$buffer[$i]='define("DATABASE_PASSWORD", "'.DATABASE_PASSWORD.'");'."\n";
+							$buffer[$i]='define("DATABASE_PASSWORD", '."'".DATABASE_PASSWORD."');\n";
 							$check_config=true;
 						}
 
-						if (substr($buffer[$i],0,21)=='define("DATABASE_NAME'){
-							$buffer[$i]='define("DATABASE_NAME",     "'.DATABASE_NAME.'");'."\n";
+						//if (substr($buffer[$i],0,21)=='define("DATABASE_NAME'){
+						if (substr($buffer[$i],8,13)=='DATABASE_NAME'){
+							//$buffer[$i]='define("DATABASE_NAME",     "'.DATABASE_NAME.'");'."\n";
+							$buffer[$i]='define("DATABASE_NAME",     '."'".DATABASE_NAME."');\n";
 							$check_config=true;
 						}
-				
+
 						fwrite($bestand_config,$buffer[$i]);
 					}
 					fclose($bestand_config);

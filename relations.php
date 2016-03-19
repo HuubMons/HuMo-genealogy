@@ -2131,12 +2131,12 @@ function display () {
 		}
 
 		print '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;" >';
- 		echo  __("You may wish to try finding a connection with the <span style='font-weight:bold'>Extended Marital Calculator</span> below.<br>	
-				This will find connections that span over many marital relations and generations.<br>	
-				Computing time will vary depending on the size of the tree and the distance between the two persons.<br>	
-				For example, in a 10,000 person tree even the most distant persons will usually be found within 1-2 seconds.<br>	
-				In a 75,000 person tree the most distant persons may take up to 8 sec to find.<br><br>");
-		echo '<input type="submit" name="extended" value="'.__('Perform extended marital calculation').'" style="font-size:115%;">';
+ 		echo  __("You may wish to try finding a connection with the <span style='font-weight:bold'>Extended Marital Calculator</span> below.<br>
+This will find connections that span over many marital relations and generations.<br>
+Computing time will vary depending on the size of the tree and the distance between the two persons.<br>
+For example, in a 10,000 person tree even the most distant persons will usually be found within 1-2 seconds.<br>
+In a 75,000 person tree the most distant persons may take up to 8 sec to find.");
+		echo '<br><br><input type="submit" name="extended" value="'.__('Perform extended marital calculation').'" style="font-size:115%;">';
 		echo "</td></tr></table>";
 
 	}

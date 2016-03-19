@@ -1666,10 +1666,10 @@ function show_events ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
 	$l_address = $l_picture = $l_profession = $l_source = $l_event = $l_birth_declaration = $l_baptism_witness = $l_death_declaration = $l_burial_witness = $l_name = $l_nobility = $l_title = $l_lordship = $l_URL = $l_else = '';
 	$r_address = $r_picture = $r_profession = $r_source = $r_event = $r_birth_declaration = $r_baptism_witness = $r_death_declaration = $r_burial_witness = $r_name = $r_nobility = $r_title = $r_lordship = $r_URL = $r_else = '';
-	$left_events = $dbh->query("SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."' AND event_person_id ='".$left_ged."' ORDER BY event_kind ");
-	$right_events = $dbh->query("SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."' AND event_person_id ='".$right_ged."' ORDER BY event_kind ");
+	$left_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id ='".$left_ged."' ORDER BY event_kind ");
+	$right_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id ='".$right_ged."' ORDER BY event_kind ");
 
 	if($right_events->rowCount() > 0) {  // no use doing this if right has no events at all...
 
@@ -2172,8 +2172,8 @@ for($i=0; $i<count($f1); $i++) {
 					$qry = "DELETE FROM humo_addresses
 						WHERE address_tree_id='".$tree_id."' AND address_family_id ='".$f2[$i]->fam_gedcomnumber."'";
 					$dbh->query($qry);
-					$qry = "DELETE FROM humo_events
-						WHERE event_tree_id='".$tree_id."' AND event_family_id ='".$f2[$i]->fam_gedcomnumber."'";
+					$qry = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
+						AND event_connect_kind='family' AND event_connect_id ='".$f2[$i]->fam_gedcomnumber."'";
 					$dbh->query($qry);
 					$qry = "DELETE FROM humo_connections
 						WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$f2[$i]->fam_gedcomnumber."'";
@@ -2454,11 +2454,11 @@ for($i=0; $i<count($f1); $i++) {
 	}
 	else { // for automatic mode check for situation where right has event/source/address data and left not. In that case use right's.
 
-		$right_result=$dbh->query("SELECT * FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_person_id ='".$result2Db->pers_gedcomnumber."'");
+		$right_result=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='person' AND event_connect_id ='".$result2Db->pers_gedcomnumber."'");
 		while($right_resultDb=$right_result->fetch(PDO::FETCH_OBJ)) {
-			$left_result=$dbh->query("SELECT * FROM humo_events
-				WHERE event_tree_id='".$tree_id."' AND event_person_id ='".$result1Db->pers_gedcomnumber."'");
+			$left_result=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+				AND event_connect_id ='".$result1Db->pers_gedcomnumber."'");
 			$foundleft=false;
 			while($left_resultDb=$left_result->fetch(PDO::FETCH_OBJ)) {
 				if($left_resultDb->event_kind == $right_resultDb->event_kind AND $left_resultDb->event_gedcom == $right_resultDb->event_gedcom) {
@@ -2471,7 +2471,8 @@ for($i=0; $i<count($f1); $i++) {
 			}
 			if($foundleft==false) { // left has no such type of event, so change right's I for left I at this event
 				$dbh->query("UPDATE humo_events
-					SET event_person_id ='".$result1Db->pers_gedcomnumber."' WHERE event_id ='".$right_resultDb->event_id."'");
+					SET event_connect_kind='person', event_connect_id ='".$result1Db->pers_gedcomnumber."'
+					WHERE event_id ='".$right_resultDb->event_id."'");
 			}
 		}
 
@@ -2504,7 +2505,8 @@ for($i=0; $i<count($f1); $i++) {
 	$dbh->query($qry);
 	$qry = "DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$result2Db->pers_gedcomnumber."'";
 	$dbh->query($qry);
-	$qry = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id ='".$result2Db->pers_gedcomnumber."'";
+	$qry = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id ='".$result2Db->pers_gedcomnumber."'";
 	$dbh->query($qry);
 	// CLEANUP: This person's I may still exist in the humo_events table under "event_event",
 	// in case of birth/death declaration or bapt/burial witness. If so, change the gedcom to the left person's I:
@@ -2652,15 +2654,15 @@ function check_regular_text ($post_var,$auto_var,$mysql_var) {
 function check_events($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db;
 	$right_event_array='';
-	$left_events = $dbh->query("SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."' AND event_person_id ='".$left_ged."' ORDER BY event_kind ");
-	$right_events = $dbh->query("SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."' AND event_person_id ='".$right_ged."' ORDER BY event_kind ");
+	$left_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id ='".$left_ged."' ORDER BY event_kind ");
+	$right_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person' AND event_connect_id ='".$right_ged."' ORDER BY event_kind ");
 	if($right_events->rowCount() > 0) { //if right has no events it did not appear in the comparison table, so the whole thing is unnecessary
 		while($right_eventsDb = $right_events->fetch(PDO::FETCH_OBJ)) {
 			$right_event_array[$right_eventsDb->event_kind]="1"; // we need this to know whether to handle left
 			if(isset($_POST['r_'.$right_eventsDb->event_kind.'_'.$right_eventsDb->event_id])) { // change right's I to left's I
-				$dbh->query("UPDATE humo_events SET event_person_id ='".$left_ged."'
+				$dbh->query("UPDATE humo_events SET event_connect_kind='person', event_connect_id ='".$left_ged."'
 					WHERE event_id ='".$right_eventsDb->event_id."'");
 			}
 			else { // clean up database -> remove this entry altogether (IF IT EXISTS...)

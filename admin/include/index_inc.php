@@ -17,9 +17,12 @@ if (isset($_POST['save_settings_database'])){
 	$result_message='<b>'.__('Database connection status:').'</b><br>';
 
 	// *** Check MySQL connection ***
-	$conn = 'mysql:host='.$_POST['db_host'];
 	try {
-		$db_check = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")); 
+		//$conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME.';charset=utf8';
+		$conn = 'mysql:host='.$_POST['db_host'];
+		//$db_check = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")); 
+		$db_check = new PDO($conn,$_POST['db_username'],$_POST['db_password']);
+
 		$result_message.=__('MySQL connection: OK!').'<br>';
 		// *** If needed immediately install a new database ***
 		if (isset($_POST['install_database'])){
@@ -33,7 +36,8 @@ if (isset($_POST['save_settings_database'])){
 	// *** Check if database exists ***
 	try {
 		$conn = 'mysql:host='.$_POST['db_host'].';dbname='.$_POST['db_name'];
-		$temp_dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);	
+		//$temp_dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);
+		$temp_dbh = new PDO($conn,$_POST['db_username'],$_POST['db_password']);	
 		if($temp_dbh!==false) { $database_check=1; $result_message.=__('Database connection: OK!').'<br>'; }
 		$temp_dbh=null;
 	} catch (PDOException $e) { 
@@ -58,28 +62,33 @@ if (isset($_POST['save_settings_database'])){
 		$bestand_config = fopen($login_file,"w");
 		for ($i=0; $i<=(count($buffer)-1); $i++) {
 
-			//define("DATABASE_HOST",     "localhost");
-			//define("DATABASE_USERNAME", "root");
-			//define("DATABASE_PASSWORD", "usbw");
-			//define("DATABASE_NAME",     "humo-gen");
+			// *** Use ' character to prevent problems with $ character in password ***
+			//define("DATABASE_HOST",     'localhost');
+			//define("DATABASE_USERNAME", 'root');
+			//define("DATABASE_PASSWORD", 'usbw');
+			//define("DATABASE_NAME",     'humo-gen');
 
 			if (substr($buffer[$i],0,21)=='define("DATABASE_HOST'){
-				$buffer[$i]='define("DATABASE_HOST",     "'.$_POST['db_host'].'");'."\n";
+				//$buffer[$i]='define("DATABASE_HOST",     "'.$_POST['db_host'].'");'."\n";
+				$buffer[$i]='define("DATABASE_HOST",     '."'".$_POST['db_host']."');\n";
 				$check_config=true;
 			}
 
 			if (substr($buffer[$i],0,25)=='define("DATABASE_USERNAME'){
-				$buffer[$i]='define("DATABASE_USERNAME", "'.$_POST['db_username'].'");'."\n";
+				//$buffer[$i]='define("DATABASE_USERNAME", "'.$_POST['db_username'].'");'."\n";
+				$buffer[$i]='define("DATABASE_USERNAME", '."'".$_POST['db_username']."');\n";
 				$check_config=true;
 			}
 
 			if (substr($buffer[$i],0,25)=='define("DATABASE_PASSWORD'){
-				$buffer[$i]='define("DATABASE_PASSWORD", "'.$_POST['db_password'].'");'."\n";
+				//$buffer[$i]='define("DATABASE_PASSWORD", "'.$_POST['db_password'].'");'."\n";
+				$buffer[$i]='define("DATABASE_PASSWORD", '."'".$_POST['db_password']."');\n";
 				$check_config=true;
 			}
 
 			if (substr($buffer[$i],0,21)=='define("DATABASE_NAME'){
-				$buffer[$i]='define("DATABASE_NAME",     "'.$_POST['db_name'].'");'."\n";
+				//$buffer[$i]='define("DATABASE_NAME",     "'.$_POST['db_name'].'");'."\n";
+				$buffer[$i]='define("DATABASE_NAME",     '."'".$_POST['db_name']."');\n";
 				$check_config=true;
 			}
 	

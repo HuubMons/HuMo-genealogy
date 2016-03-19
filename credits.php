@@ -72,6 +72,7 @@ HuMo-gen uses <a href="https://www.transifex.com/organization/humo-gen" target="
 <li>Danish by: Erik Jensen.</li>
 <li>Dutch by: Huub, Yossi.</li>
 <li>English by: Huub, Yossi.</li>
+<li>English (CA) by: nerdykit.</li>
 <li>English (US) by: Yossi, Brian.</li>
 <li>Finnish by: Rauno Salomäki.</li>
 <li>French by: Raymond Larche, Carlos.</li>

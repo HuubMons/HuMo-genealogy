@@ -64,6 +64,30 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 			WHERE note_id='".$_POST['note_id']."'";
 			$result=$dbh->query($sql);
 		}
+
+		if ($_POST['note_status']=='remove'){
+			echo '<div class="confirm">';
+				echo __('Are you sure you want to remove this user note?');
+			echo ' <form method="post" action="'.$_SERVER['PHP_SELF'].'" style="display : inline;">';
+			echo '<input type="hidden" name="page" value="user_notes">';
+			echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
+			echo '<input type="hidden" name="note_id" value="'.$_POST['note_id'].'">';
+			echo ' <input type="Submit" name="note_remove" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
+			echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
+			echo '</form>';
+			echo '</div>';
+		}
+
+	}
+
+	if (isset($_POST['note_remove'])){
+		echo '<div class="confirm">';
+			// *** Delete source ***
+			$sql="DELETE FROM humo_user_notes WHERE note_id='".safe_text($_POST["note_id"])."'";
+			$result=$dbh->query($sql);
+
+			echo __('User note is removed.');
+		echo '</div>';
 	}
 
 	// *** Show user added notes ***
@@ -100,6 +124,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 					echo '<option value="new"'.$selected.'>'.__('New').'</option>';
 					if ($note_status=='approved') $selected=' SELECTED';
 					echo '<option value="approved"'.$selected.'>'.__('Approved').'</option>';
+					echo '<option value="remove"'.$selected.'>'.__('Remove').'</option>';
 				echo '</select>';
 
 				echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';

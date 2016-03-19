@@ -1,7 +1,7 @@
 <?php
 // *** Function to show media by person or by marriage ***
-// *** Updated feb 2013. ***
-function show_media($personDb,$marriageDb){
+// *** Updated feb 2013, aug 2015. ***
+function show_media($event_connect_kind,$event_connect_id){
 	global $dbh, $tree_id, $user, $dataDb, $tree_prefix_quoted, $uri_path;
 	global $sect, $screen_mode; // *** RTF Export ***
 	global $picture_presentation;
@@ -17,16 +17,21 @@ function show_media($personDb,$marriageDb){
 		// in joomla relative path is relative to joomla main folder, NOT HuMo-gen main folder. Therefore use the path entered as-is, without ROOTPATH.
 
 		// *** Standard connected media by person and family ***
-		if ($personDb!=''){
+		/*
+		if ($event_connect_kind=='person'){
 			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-				AND event_person_id='".$personDb->pers_gedcomnumber."' AND LEFT(event_kind,7)='picture'
+				AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND LEFT(event_kind,7)='picture'
 				ORDER BY event_kind, event_order");
 		}
-		else{
+		elseif ($event_connect_kind=='family'){
 			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-				AND event_family_id='".$marriageDb->fam_gedcomnumber."' AND event_kind='picture'
+				AND event_connect_kind='family' AND event_connect_id='".$event_connect_id."' AND event_kind='picture'
 				ORDER BY event_order");
 		}
+		*/
+		$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='".$event_connect_kind."' AND event_connect_id='".$event_connect_id."' AND LEFT(event_kind,7)='picture'
+			ORDER BY event_kind, event_order");
 		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
 			$media_nr++;
 			$media_event_id[$media_nr]=$pictureDb->event_id;
@@ -37,35 +42,37 @@ function show_media($personDb,$marriageDb){
 		}
 
 		// *** Search for all external connected objects by a person or a family ***
-		if ($personDb!=''){
+		//if ($personDb!=''){
+		if ($event_connect_kind=='person'){
 			$connect_qry="SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_object'
-				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
+				AND connect_connect_id='".$event_connect_id."'
 				ORDER BY connect_order";
 		}
-		else{
+		elseif ($event_connect_kind=='family'){
 			$connect_qry="SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='fam_object'
-				AND connect_connect_id='".$marriageDb->fam_gedcomnumber."'
+				AND connect_connect_id='".$event_connect_id."'
 				ORDER BY connect_order";
 		}
-		$connect_sql=$dbh->query($connect_qry);
-		while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-				AND event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
-				ORDER BY event_order");
-			while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
-				$media_nr++;
-				$media_event_id[$media_nr]=$pictureDb->event_id;
-				$media_event_event[$media_nr]=$pictureDb->event_event;
-				$media_event_date[$media_nr]=$pictureDb->event_date;
-				$media_event_text[$media_nr]=$pictureDb->event_text;
-				//$media_event_source[$media_nr]=$pictureDb->event_source;
+		if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
+			$connect_sql=$dbh->query($connect_qry);
+			while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+				$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+					AND event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
+					ORDER BY event_order");
+				while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
+					$media_nr++;
+					$media_event_id[$media_nr]=$pictureDb->event_id;
+					$media_event_event[$media_nr]=$pictureDb->event_event;
+					$media_event_date[$media_nr]=$pictureDb->event_date;
+					$media_event_text[$media_nr]=$pictureDb->event_text;
+					//$media_event_source[$media_nr]=$pictureDb->event_source;
+				}
 			}
 		}
-
 
 		// ******************
 		// *** Show media ***
@@ -162,8 +169,10 @@ function show_media($personDb,$marriageDb){
 			else{
 				// *** Show photo using the lightbox effect ***
 				$picture_array=show_picture($tree_pict_path,$event_event,'',120);
-				// lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
-				$picture_array['picture'] = rawurlencode($picture_array['picture']);
+				// *** lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
+				// *** But: reverse change of / character (if a sub folders are used) ***
+				//$picture_array['picture'] = rawurlencode($picture_array['picture']);
+				$picture_array['picture'] = str_ireplace("%2F","/",rawurlencode($picture_array['picture']));
 				$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $media_event_text[$i]).'">';
 				$picture.='<img src="'.$picture_array['path'].$picture_array['thumb'].$picture_array['picture'].'" height="'.$picture_array['height'].'" alt="'.$event_event.'"></a>';
 
