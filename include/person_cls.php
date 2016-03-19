@@ -738,10 +738,9 @@ function name_extended($person_kind){
 				}
 
 				// *** Source by sexe ***
-				$source=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber).' ';
-				if ($source){
-					$text_name.=$source;
-				}
+				$source='';
+				if ($person_kind != 'outline') $source=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber).' ';
+				if ($source) $text_name.=$source;
 			}
 		}
 
@@ -808,7 +807,8 @@ function name_extended($person_kind){
 			}
 
 			// *** Source by name ***
-			$source=show_sources2("person","pers_name_source",$personDb->pers_gedcomnumber);
+			$source='';
+			if ($person_kind != 'outline') $source=show_sources2("person","pers_name_source",$personDb->pers_gedcomnumber);
 			if ($source){
 // PDF doesn't work...
 				if($screen_mode=='PDF') {

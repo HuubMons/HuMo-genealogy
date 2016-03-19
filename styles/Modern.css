@@ -120,6 +120,7 @@ table.humo tr:first-of-type td, table.relmenu tr:first-of-type td, table.humo tr
 
 table.humo, table.ext {
 	background-color:#FAF1EB;
+	color:#000000;
 	border-spacing: 0;
 	border-width: 0px; 
 
@@ -134,6 +135,7 @@ table.humo, table.ext {
 
 /* Headline in table */
 .table_headline{
+	color:#000000;
 	background-color: transparent;
 	background-image: none;
 }

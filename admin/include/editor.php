@@ -36,7 +36,8 @@ if (!defined('ADMIN_PAGE')){ exit; }
 //globals for joomla
 global $tree_prefix, $gedcom_date, $gedcom_time, $pers_gedcomnumber;
 
-if(CMS_SPECIFIC=="Joomla") {
+if(CMS_SPECIFIC=="Joomla")
+{
 	$phpself='index.php?option=com_humo-gen&amp;task=admin&amp;page=editor';
 	$joomlastring='option=com_humo-gen&amp;task=admin&amp;';  // can be placed after existing index?
 	$family_string='index.php?option=com_humo-gen&task=family&amp;';
@@ -44,7 +45,8 @@ if(CMS_SPECIFIC=="Joomla") {
 	$addresstring='index.php?option=com_humo-gen&task=address&amp;';
 	$path_prefix=''; // in joomla we are already in main joomla map and do not have to "get out of admin"
 }
-else {
+else
+{
 	$phpself=$_SERVER['PHP_SELF'];
 	$joomlastring='';
 	$family_string='../family.php?';
@@ -74,7 +76,8 @@ $event_cls = New editor_event_cls;
 // *****************
 
 // *** Calculate nr. of persons and families ***
-function family_tree_update($tree_prefix){
+function family_tree_update($tree_prefix)
+{
 	global $dbh, $tree_id;
 
 	$total = $dbh->query("SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id='".$tree_id."'"); 
@@ -95,7 +98,8 @@ function family_tree_update($tree_prefix){
 }
 
 // *** Show event options ***
-function event_option($event_gedcom,$event){
+function event_option($event_gedcom,$event)
+{
 	global $language;
 	$selected=''; if ($event_gedcom==$event){ $selected=' SELECTED'; }
 	echo '<option value="'.$event.'"'.$selected.'>'.language_event($event).'</option>';
@@ -126,7 +130,8 @@ function show_person($gedcomnumber, $gedcom_date=false, $show_link=true){
 	if ($gedcomnumber){
 		$personDb = $db_functions->get_person($gedcomnumber);
 		if ($show_link==true){
-			$text='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;tree='.$tree_prefix.
+			//$text='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;tree='.$tree_prefix.
+			$text='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=person&amp;tree='.$tree_prefix.
 				'&amp;person='.$personDb->pers_gedcomnumber.'">'.$personDb->pers_firstname.' '.
 				strtolower(str_replace("_"," ",$personDb->pers_prefix)).$personDb->pers_lastname.'</a>'."\n";
 		}
@@ -489,7 +494,7 @@ if (isset($pers_gedcomnumber)){
 	if (isset($_GET['add_person'])) $menu_tab='person';
 
 	if ($menu_admin=='person' AND isset($tree_prefix)){
-		echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="margin-left:210px; width:970px;">';
+		echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="margin-left:210px; width:700px;">';
 		echo '<div class="pageHeading">';
 			echo '<div class="pageTabsContainer" aria-hidden="false" style="">';
 				echo '<ul class="pageTabs">';
@@ -554,10 +559,10 @@ if (isset($pers_gedcomnumber)){
 	// *****************
 
 	// *** Text area size ***
-	$field_date=15;
-	$field_place=30;
-	$field_text='style="height: 18px; width:550px;"';
-	$field_text_large='style="height: 100px; width:550px"';
+	$field_date=10;
+	$field_place=25;
+	$field_text='style="height: 18px; width:500px;"';
+	$field_text_large='style="height: 100px; width:500px"';
 
 
 	// *******************
@@ -768,11 +773,11 @@ if (isset($pers_gedcomnumber)){
 		// *** Show box with list of parents, person, marriages etc. ***
 		echo '<div style="position:absolute;
 			top:125px; left:10px;
-			padding:8px;
+			padding:3px;
 			background-color:#F8F8F8;
 			border:solid 1px #999999;
-			width:180px;
-			font-size:9px;
+			width:186px;
+			font-size:10px;
 			";>';
 		if ($add_person==false){
 
@@ -797,18 +802,47 @@ if (isset($pers_gedcomnumber)){
 			}
 
 			// *** Show person ***
-			echo '<br><span style="font-weight:bold; font-size:13px">'.__('Person').'</span><br>';
-			echo show_person($person->pers_gedcomnumber).'<br>';
+			//echo '<br><span style="font-weight:bold; font-size:13px">'.__('Person').'</span><br>';
+			echo '<br><b>'.__('Person').'</b><br>';
+			//echo show_person($person->pers_gedcomnumber).'<br>';
+			echo '<span style="font-weight:bold; font-size:12px">'.show_person($person->pers_gedcomnumber).'</span><br>';
 
 			// *** Show marriages and children ***
 			if ($person->pers_fams){
 				// *** Search for own family ***
 				$fams1=explode(";",$person->pers_fams);
-				$fam_count=substr_count($person->pers_fams, ";");
+				//$fam_count=substr_count($person->pers_fams, ";");
+				$fam_count=count($fams1)-1;
 				for ($i=0; $i<=$fam_count; $i++){
+
+					echo '<div style="
+						margin-top:5px;
+						padding:2px;
+						background-color:#F8F8F8;
+						border:solid 1px #0000FF;
+						width:180px;
+						";>';
 					$familyDb = $db_functions->get_family($fams1[$i]);
 
-					echo '<br><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b><br>';
+					//echo '<br><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b><br>';
+					//echo '<br><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b>';
+					//echo '<br><a href="index.php?'.$joomlastring.'page=editor&amp;menu_tab=marriage&amp;marriage_nr='.$familyDb->fam_gedcomnumber.'"><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b></a>';
+					echo '<a href="index.php?'.$joomlastring.'page=editor&amp;menu_tab=marriage&amp;marriage_nr='.$familyDb->fam_gedcomnumber.'"><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b></a>';
+
+					if ($i<$fam_count){
+						echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;person_id='.$person->pers_id.'&amp;fam_down='.$i.'&amp;fam_array='.$person->pers_fams.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="fam_down"></a> ';
+					}
+					else{
+						//echo '&nbsp;&nbsp;&nbsp;';
+					}
+					if ($i>0){
+						echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;person_id='.$person->pers_id.'&amp;fam_up='.$i.'&amp;fam_array='.$person->pers_fams.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="fam_up"></a> ';
+					}
+					else{
+						//echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+					}
+					echo '<br>';
+
 					if ($person->pers_gedcomnumber==$familyDb->fam_man)
 						echo show_person($familyDb->fam_woman).'<br>';
 					else
@@ -818,6 +852,7 @@ if (isset($pers_gedcomnumber)){
 						$fam_children_array=explode(";",$familyDb->fam_children);
 						$child_count=substr_count($familyDb->fam_children, ";");
 						for ($j=0; $j<=$child_count; $j++){
+							echo ($j+1).'. ';
 							echo show_person($fam_children_array[$j]).'<br>';
 						}
 					}
@@ -827,11 +862,12 @@ if (isset($pers_gedcomnumber)){
 					if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
 					echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"> '.__('Add child').'</a><br>';
 
+					echo '</div>';
 				}
 			}
 
 			// *** Add Marriage/ relation ***
-			echo '<br><br><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage&amp;add_marriage2=1">';
+			echo '<br><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage&amp;add_marriage2=1">';
 			echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Add marriage/ relation').'" alt="'.__('Add marriage/ relation').'"> '.__('Add marriage/ relation').'</a><br>';
 
 		}
@@ -855,7 +891,8 @@ if (isset($pers_gedcomnumber)){
 
 		// *** Show mother and father with a link ***
 		//if ($add_person==false){
-		if (isset($_GET['add_parents2']) AND $add_person==false){
+		//if (isset($_GET['add_parents2']) AND $add_person==false){
+		if (isset($_GET['add_parents2']) OR isset($_POST['search_quicksearch_parent']) AND $add_person==false){
 			print '<tr><th class="table_header" colspan="4">'.ucfirst(__('parents')).'</tr>';
 
 			echo '<tr><td>'.ucfirst(__('parents')).'</td><td colspan="3">';
@@ -961,10 +998,12 @@ if (isset($pers_gedcomnumber)){
 			echo '<td style="border-right: none"><br></td>';
 		}
 
-		echo '<th style="border-left: none; text-align:left;">'.__('Person');
+		//echo '<th style="border-left: none; text-align:left;">'.__('Person');
+		echo '<th style="border-left: none; text-align:left;">';
 
 		if ($add_person==false){
-			echo ': ['.$pers_gedcomnumber.'] '.show_person($person->pers_gedcomnumber,false,false);
+			//echo ': ['.$pers_gedcomnumber.'] '.show_person($person->pers_gedcomnumber,false,false);
+			echo '['.$pers_gedcomnumber.'] '.show_person($person->pers_gedcomnumber,false,false);
 
 			// *** Add person to admin favorite list ***
 			$fav_qry = "SELECT * FROM humo_settings
@@ -995,7 +1034,7 @@ if (isset($pers_gedcomnumber)){
 		echo '<a href="#" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a> ';
 		echo __('Name').'</td>';
 
-		echo '<td style="border-right:0px;"><b>'.__('firstname').'</b></td><td style="border-left:0px;"><input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="40"> '.strtolower(__('Nickname')).' <input type="text" name="pers_callname" value="'.$pers_callname.'" size="30">';
+		echo '<td style="border-right:0px;"><b>'.__('firstname').'</b></td><td style="border-left:0px;"><input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="35" placeholder="'.ucfirst(__('firstname')).'"> '.strtolower(__('Nickname')).' <input type="text" name="pers_callname" value="'.$pers_callname.'" size="20" placeholder="'.__('Nickname').'">';
 
 		echo '</td><td rowspan="3">';
 		if (!isset($_GET['add_person'])){
@@ -1010,10 +1049,10 @@ if (isset($pers_gedcomnumber)){
 		}
 		echo '</td></tr>';
 
-		echo '<tr><td style="border-right:0px;">'.__('prefix').'</td><td style="border-left:0px;"><input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10">'.__("For example: d\' or:  van_ (use _ for a space)").'</td></tr>';
+		echo '<tr><td style="border-right:0px;">'.__('prefix').'</td><td style="border-left:0px;"><input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10" placeholder="'.ucfirst(__('prefix')).'">'.__("For example: d\' or:  van_ (use _ for a space)").'</td></tr>';
 
-		echo '<tr><td style="border-right:0px;"><b>'.__('lastname').'</b></td><td style="border-left:0px;"><input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="40"> ';
-		echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="30"></td></tr>';
+		echo '<tr><td style="border-right:0px;"><b>'.__('lastname').'</b></td><td style="border-left:0px;"><input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'"> ';
+		echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20" placeholder="'.ucfirst(__('patronymic')).'"></td></tr>';
 
 		// *** Person text by name ***
 		echo '<tr style="display:none;" class="row1">';
@@ -1725,7 +1764,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Empty line in table ***
 			//echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
 
-			echo '<tr><th class="table_header" colspan="4">'.__('Marriage(s) and children').'</tr>';
+			//echo '<tr><th class="table_header" colspan="4">'.__('Marriage(s) and children').'</tr>';
+//			echo '<tr><th class="table_header" colspan="4">'.ucfirst(__('marriage/ relation')).'</tr>';
 		}
 
 		if ($add_person==false){
@@ -1733,107 +1773,111 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				// *** Search for own family ***
 				$fams1=explode(";",$person->pers_fams);
 				$fam_count=substr_count($person->pers_fams, ";");
-				
-				for ($i=0; $i<=$fam_count; $i++){
-					$family=$dbh->query("SELECT * FROM humo_families
-						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fams1[$i]."'");
-					$familyDb=$family->fetch(PDO::FETCH_OBJ);
+				if ($fam_count>0){
+					echo '<tr><th class="table_header" colspan="4">'.ucfirst(__('marriage/ relation')).'</th></tr>';
+					for ($i=0; $i<=$fam_count; $i++){
+						$family=$dbh->query("SELECT * FROM humo_families
+							WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fams1[$i]."'");
+						$familyDb=$family->fetch(PDO::FETCH_OBJ);
 
-					echo '<tr><td id="chtd1">';
-						if ($fam_count>0){
-							echo '<form method="POST" action="'.$phpself.'">';
-							echo '<input type="hidden" name="page" value="'.$page.'">';
-							echo '<input type="hidden" name="marriage_nr" value="'.$familyDb->fam_gedcomnumber.'">';
-							echo ' <input type="Submit" name="submit" value="'.__('Select marriage').' '.($i+1).'">';
-							echo '</form>';
+						echo '<tr><td id="chtd1">';
+							if ($fam_count>0){
+								echo '<form method="POST" action="'.$phpself.'">';
+								echo '<input type="hidden" name="page" value="'.$page.'">';
+								echo '<input type="hidden" name="marriage_nr" value="'.$familyDb->fam_gedcomnumber.'">';
+								echo ' <input type="Submit" name="submit" value="'.__('Select marriage').' '.($i+1).'">';
+								echo '</form>';
+							}
+							else{
+								echo ucfirst(__('marriage')).' '.($i+1);
+							}
+						echo '</td><td id="chtd2" valign="top">';
+
+						if ($i<$fam_count){
+							echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;person_id='.$person->pers_id.'&amp;fam_down='.$i.'&amp;fam_array='.$person->pers_fams.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="fam_down"></a> ';
 						}
 						else{
-							echo ucfirst(__('marriage')).' '.($i+1);
+							echo '&nbsp;&nbsp;&nbsp;';
 						}
-					echo '</td><td id="chtd2" valign="top">';
-
-					if ($i<$fam_count){
-						echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;person_id='.$person->pers_id.'&amp;fam_down='.$i.'&amp;fam_array='.$person->pers_fams.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="fam_down"></a> ';
-					}
-					else{
-						echo '&nbsp;&nbsp;&nbsp;';
-					}
-					if ($i>0){
-						echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;person_id='.$person->pers_id.'&amp;fam_up='.$i.'&amp;fam_array='.$person->pers_fams.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="fam_up"></a> ';
-					}
-					else{
-						//echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-					}
-
-					echo '</td><td id="chtd3" colspan="2"><b>';
-					echo show_person($familyDb->fam_man).' '.__('and').' '.show_person($familyDb->fam_woman);
-					echo '</b>';
-
-					if ($familyDb->fam_marr_date){ echo ' X '.date_place($familyDb->fam_marr_date,''); }
-					echo '<br>';
-
-					if ($familyDb->fam_children){
-					
-						echo __('Children').':<br>';
-						$fam_children_array=explode(";",$familyDb->fam_children);
-						$child_count=substr_count($familyDb->fam_children, ";");
-						echo '<ul id="sortable'.$i.'" class="sortable">';
-						for ($j=0; $j<=$child_count; $j++){
-						
-							// *** Create new children variabele, for disconnect child ***
-							$fam_children='';
-							for ($k=0; $k<=substr_count($familyDb->fam_children, ";"); $k++){
-								if ($k!=$j){ $fam_children.=$fam_children_array[$k].';'; }
-							}
-							$fam_children=substr($fam_children,0,-1); // *** strip last ; character ***
-							
-							echo '<li><span style="cursor:move;" id="'.$fam_children_array[$j].'" class="handle'.$i.'" ><img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0" title="'.__('Drag to change order (saves automatically)').'" alt="'.__('Drag to change order').'"></span>&nbsp;&nbsp;';
-							
-							echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_disconnect='.$fam_children.
-								'&amp;child_disconnect_gedcom='.$fam_children_array[$j].'">
-								<img src="'.CMS_ROOTPATH_ADMIN.'images/person_disconnect.gif" border="0" title="'.__('Disconnect child').'" alt="'.__('Disconnect child').'"></a>';
-			
-							echo '&nbsp;&nbsp;<span id="chldnum'.$fam_children_array[$j].'">'.($j+1).'</span>. '.show_person($fam_children_array[$j],true).'</li>';
-						} 
-						echo '</ul>';
-					}
-
-					//already in index.php echo '<script src="../include/jqueryui/js/jquery-1.8.0.min.js"></script>';
-					//to index.php - echo '<script src="../include/jqueryui/js/jquery.sortable.min.js"></script>';
-					?>
-					<script>
-					$('#sortable'+'<?php echo $i; ?>').sortable({handle: '.handle'+'<?php echo $i; ?>'}).bind('sortupdate', function() {
-						var childstring = "";
-						var chld_arr = document.getElementsByClassName("handle"+"<?php echo $i; ?>");
-						for (var z = 0; z < chld_arr.length; z++) {
-							childstring = childstring + chld_arr[z].id + ";";
-							document.getElementById('chldnum'+chld_arr[z].id).innerHTML = (z+1);
+						if ($i>0){
+							echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;person_id='.$person->pers_id.'&amp;fam_up='.$i.'&amp;fam_array='.$person->pers_fams.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="fam_up"></a> ';
 						}
-						childstring = childstring.substring(0, childstring.length-1);
-						$.ajax({ 
-							url: "include/drag.php?drag_kind=children&chldstring=" + childstring + "&family_id=" + "<?php echo $familyDb->fam_id; ?>" ,
-							success: function(data){
-							} ,
-							error: function (xhr, ajaxOptions, thrownError) {
-								alert(xhr.status);
-								alert(thrownError);
+						else{
+							//echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+						}
+
+						echo '</td><td id="chtd3" colspan="2"><b>';
+						echo show_person($familyDb->fam_man).' '.__('and').' '.show_person($familyDb->fam_woman);
+						echo '</b>';
+
+						if ($familyDb->fam_marr_date){ echo ' X '.date_place($familyDb->fam_marr_date,''); }
+						echo '<br>';
+
+						/*
+						// MOVED TO BOTTOM OF MARRIAGE PAGE
+						if ($familyDb->fam_children){
+							echo __('Children').':<br>';
+							$fam_children_array=explode(";",$familyDb->fam_children);
+							$child_count=substr_count($familyDb->fam_children, ";");
+							echo '<ul id="sortable'.$i.'" class="sortable">';
+							for ($j=0; $j<=$child_count; $j++){
+							
+								// *** Create new children variabele, for disconnect child ***
+								$fam_children='';
+								for ($k=0; $k<=substr_count($familyDb->fam_children, ";"); $k++){
+									if ($k!=$j){ $fam_children.=$fam_children_array[$k].';'; }
+								}
+								$fam_children=substr($fam_children,0,-1); // *** strip last ; character ***
+								
+								echo '<li><span style="cursor:move;" id="'.$fam_children_array[$j].'" class="handle'.$i.'" ><img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0" title="'.__('Drag to change order (saves automatically)').'" alt="'.__('Drag to change order').'"></span>&nbsp;&nbsp;';
+								
+								echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_disconnect='.$fam_children.
+									'&amp;child_disconnect_gedcom='.$fam_children_array[$j].'">
+									<img src="'.CMS_ROOTPATH_ADMIN.'images/person_disconnect.gif" border="0" title="'.__('Disconnect child').'" alt="'.__('Disconnect child').'"></a>';
+								echo '&nbsp;&nbsp;<span id="chldnum'.$fam_children_array[$j].'">'.($j+1).'</span>. '.show_person($fam_children_array[$j],true).'</li>';
+							} 
+							echo '</ul>';
+						}
+
+						//already in index.php echo '<script src="../include/jqueryui/js/jquery-1.8.0.min.js"></script>';
+						//to index.php - echo '<script src="../include/jqueryui/js/jquery.sortable.min.js"></script>';
+						?>
+						<script>
+						$('#sortable'+'<?php echo $i; ?>').sortable({handle: '.handle'+'<?php echo $i; ?>'}).bind('sortupdate', function() {
+							var childstring = "";
+							var chld_arr = document.getElementsByClassName("handle"+"<?php echo $i; ?>");
+							for (var z = 0; z < chld_arr.length; z++) {
+								childstring = childstring + chld_arr[z].id + ";";
+								document.getElementById('chldnum'+chld_arr[z].id).innerHTML = (z+1);
 							}
+							childstring = childstring.substring(0, childstring.length-1);
+							$.ajax({ 
+								url: "include/drag.php?drag_kind=children&chldstring=" + childstring + "&family_id=" + "<?php echo $familyDb->fam_id; ?>" ,
+								success: function(data){
+								} ,
+								error: function (xhr, ajaxOptions, thrownError) {
+									alert(xhr.status);
+									alert(thrownError);
+								}
+							});
 						});
-					});
-					</script>
-					<?php
+						</script>
+						<?php
+						*/
 
-					// *** Add child ***
-					//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
-					//if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
-					//echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"><span style="margin-left:73px;">'.__('Add child').'</span></a><br>';
+						// *** Add child ***
+						//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
+						//if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
+						//echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"><span style="margin-left:73px;">'.__('Add child').'</span></a><br>';
 
-					echo '</td></tr>';
+						echo '</td></tr>';
+					}
 				}
 			}
 
 			// *** Add new marriage ***
-			if (isset($_GET['add_marriage2'])){
+			//if (isset($_GET['add_marriage2'])){
+			if (!$person->pers_fams OR isset($_GET['add_marriage2'])){
 				echo '<tr><td>'.__('Add relation').'</td>';
 				echo '<td>';
 				echo '</td><td colspan="2">';
@@ -1887,10 +1931,17 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			$fam_div_no_data=false; if ($fam_div_date OR $fam_div_place OR $fam_div_text) $fam_div_no_data=true;
 			$fam_text=$editor_cls->text_show($familyDb->fam_text);
 
-			echo '<form method="POST" action="'.$phpself.'#marriage" name="form2" id="form2">';
+			//echo '<form method="POST" action="'.$phpself.'#marriage" name="form2" id="form2">';
+			echo '<form method="POST" action="'.$phpself.'" name="form2" id="form2">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 
-			echo '<br>' ;
+			// *** Only add <br> if there are multiple marriages ***
+			$fams1=explode(";",$person->pers_fams);
+			$fam_count=substr_count($person->pers_fams, ";");
+			if ($fam_count>0){
+				echo '<br>' ;
+			}
+
 			// *** Show delete message ***
 			if ($confirm_relation){
 				echo $confirm_relation;
@@ -1920,8 +1971,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '<td id="target1">'.$hide_show_all.'<a name="marriage"></a><br></td>';
 			}
 
-			echo '<th  id="target2" colspan="2">'.__('Edit marriage');
-				echo ': ['.$fam_gedcomnumber.'] '.show_person($man_gedcomnumber).' '.__('and').' '.show_person($woman_gedcomnumber).'<br>';
+			//echo '<th id="target2" colspan="2">'.__('Edit marriage');
+			echo '<th id="target2" colspan="2">';
+				//echo ': ['.$fam_gedcomnumber.'] '.show_person($man_gedcomnumber).' '.__('and').' '.show_person($woman_gedcomnumber).'<br>';
+				echo '['.$fam_gedcomnumber.'] '.show_person($man_gedcomnumber).' '.__('and').' '.show_person($woman_gedcomnumber).'<br>';
 			echo '<td id="target3">';
 				echo '<input type="Submit" name="marriage_change" value="'.__('Save').'">';
 			echo '</td></tr>';
@@ -2097,8 +2150,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_date,"fam_marr_date").' '.__('place').' <input type="text" name="fam_marr_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_place).'" size="'.$field_place.'">';
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=marr","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
-				echo '</td><td>';
-				// *** Source by fam_marr ***
+			echo '</td><td>';
+
+			// *** Source by fam_marr ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					// *** Calculate and show nr. of sources ***
 					$connect_qry="SELECT *
@@ -2335,8 +2389,62 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		if ($menu_admin=='person') echo '</div>';
 
 		echo '</table><br>'."\n";
-	}
 
+
+		if ($menu_tab=='marriage' and isset($familyDb)){
+			// *** Show children ***
+			if ($familyDb->fam_children){
+				echo __('Children').':<br>';
+				$fam_children_array=explode(";",$familyDb->fam_children);
+				$child_count=substr_count($familyDb->fam_children, ";");
+				echo '<ul id="sortable'.$i.'" class="sortable">';
+				for ($j=0; $j<=$child_count; $j++){
+				
+					// *** Create new children variabele, for disconnect child ***
+					$fam_children='';
+					for ($k=0; $k<=substr_count($familyDb->fam_children, ";"); $k++){
+						if ($k!=$j){ $fam_children.=$fam_children_array[$k].';'; }
+					}
+					$fam_children=substr($fam_children,0,-1); // *** strip last ; character ***
+					
+					echo '<li><span style="cursor:move;" id="'.$fam_children_array[$j].'" class="handle'.$i.'" ><img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0" title="'.__('Drag to change order (saves automatically)').'" alt="'.__('Drag to change order').'"></span>&nbsp;&nbsp;';
+					
+					echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_disconnect='.$fam_children.
+						'&amp;child_disconnect_gedcom='.$fam_children_array[$j].'">
+						<img src="'.CMS_ROOTPATH_ADMIN.'images/person_disconnect.gif" border="0" title="'.__('Disconnect child').'" alt="'.__('Disconnect child').'"></a>';
+					echo '&nbsp;&nbsp;<span id="chldnum'.$fam_children_array[$j].'">'.($j+1).'</span>. '.show_person($fam_children_array[$j],true).'</li>';
+				} 
+				echo '</ul>';
+			}
+
+			//already in index.php echo '<script src="../include/jqueryui/js/jquery-1.8.0.min.js"></script>';
+			//to index.php - echo '<script src="../include/jqueryui/js/jquery.sortable.min.js"></script>';
+			?>
+			<script>
+			$('#sortable'+'<?php echo $i; ?>').sortable({handle: '.handle'+'<?php echo $i; ?>'}).bind('sortupdate', function() {
+				var childstring = "";
+				var chld_arr = document.getElementsByClassName("handle"+"<?php echo $i; ?>");
+				for (var z = 0; z < chld_arr.length; z++) {
+					childstring = childstring + chld_arr[z].id + ";";
+					document.getElementById('chldnum'+chld_arr[z].id).innerHTML = (z+1);
+				}
+				childstring = childstring.substring(0, childstring.length-1);
+				$.ajax({ 
+					url: "include/drag.php?drag_kind=children&chldstring=" + childstring + "&family_id=" + "<?php echo $familyDb->fam_id; ?>" ,
+					success: function(data){
+					} ,
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert(xhr.status);
+						alert(thrownError);
+					}
+				});
+			});
+			</script>
+			<?php
+		}
+
+
+	}
 
 
 	// ********************

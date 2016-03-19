@@ -1673,6 +1673,27 @@ function process_person($person_array){
 		unset($event2);
 	}
 
+	// *** Add a general source to all persons in this gedcom file (source_id is temporary number!) ***
+	if ($humo_option["gedcom_read_add_source"]=='y'){
+		// *** Used for general numbering of connections ***
+		$connect_nr++;
+
+		// *** Seperate numbering, because there can be sources by a address ***
+		$address_connect_nr=$connect_nr;
+
+		$connect['kind'][$connect_nr]='person';
+		$connect['sub_kind'][$connect_nr]='person_source';
+		$connect['connect_id'][$connect_nr]=$pers_gedcomnumber;
+		$connect['source_id'][$connect_nr]='Stemporary';
+		$connect['text'][$connect_nr]='';
+		$connect['item_id'][$connect_nr]='';
+		$connect['quality'][$connect_nr]='';
+		$connect['place'][$connect_nr]='';
+		$connect['page'][$connect_nr]='';
+		$connect['role'][$connect_nr]='';
+		$connect['date'][$connect_nr]='';
+	}
+
 	// *** Save connections in seperate table ***
 	if ($connect_nr>0){
 		$connect_order=0;

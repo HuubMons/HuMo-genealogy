@@ -266,27 +266,27 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 /* For main menu: left - center - right */
 #mainmenu_left{
 	float: left;
-	width:21%;
+	width:20%;
 	padding: 0px;
 }
 #mainmenu_center{
 	float: left;
-	width: 46%;
+	width: 58%;
 	text-align:center;
-	margin-left: 20px;
+	margin-left: 2%;
 }
 #mainmenu_center_alt{
 	float:left;
-	width:70%;
+	width:80%;
 	text-align:center;
 	margin-left:0px;
-	padding:0px 0px 0px 10px;
+	/* padding:0px 0px 0px 10px; */
 }
 #mainmenu_right{
 	float:right;
-	width: 20%;
-	margin-left: 20px;
-	width:210px;
+	width: 18%;
+	margin-left: 2%;
+	/* width:210px; */
 }
 #mainmenu_right form {
 	margin-left:12px;
@@ -1188,4 +1188,77 @@ td.extended_woman {
 	background-image:      -o-linear-gradient(top, #ffffff, #FFB1B1);
 	background-image:      -ms-linear-gradient(top, #ffffff, #FFB1B1);
 	background-image:         linear-gradient(to bottom, #ffffff, #FFB1B1);    
+}
+
+
+/* Tab Menu */
+.pageHeadingContainer-lineVisible {
+	margin-bottom: 15px;
+	border-bottom: 1px solid #d9d9d9;
+}
+.pageHeadingContainer {
+	clear: both;
+	display: table;
+	width: 100%;
+	margin-bottom: 0px;
+}
+.pageHeading {
+	display: table-cell;
+}
+.pageTabsContainer {
+	display: table-cell;
+	vertical-align: bottom;
+	white-space: nowrap;
+}
+.pageTabs {
+	margin: 0;
+	padding: 0;
+	float: right;
+	margin-left:10px;
+}
+.pageTabItem {
+	display: inline-block;
+	zoom: 1;
+	list-style: none;
+	margin: 0 4px -1px 0;
+}
+.pageTab {
+	display: inline-block;
+	white-space: nowrap;
+	color: #333;
+	cursor: pointer;
+	border: 1px solid #d9d9d9;
+	background-color: #eaf4fa;
+	-webkit-border-top-right-radius: 3px;
+	-webkit-border-bottom-right-radius: 0;
+	-webkit-border-bottom-left-radius: 0;
+	-webkit-border-top-left-radius: 3px;
+	-moz-border-radius-topright: 3px;
+	-moz-border-radius-bottomright: 0;
+	-moz-border-radius-bottomleft: 0;
+	-moz-border-radius-topleft: 3px;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+	border-top-left-radius: 3px;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	-webkit-box-shadow: 1px 1px 1px #fff inset;
+	-moz-box-shadow: 1px 1px 1px #fff inset;
+	box-shadow: 1px 1px 1px #fff inset;
+}
+.pageTab a {
+	text-decoration:none;
+	color: #765;
+	display: inline-block;
+	padding: 6px 8px 4px;
+}
+.pageTab-active {
+	background-color: #fff;
+	border-bottom: 1px solid #fff;
+	color: #2f63a3;
+}
+.pageTab-active a {
+	font-weight: bold;
 }

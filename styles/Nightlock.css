@@ -27,10 +27,10 @@ body {
 }
 
 #mainmenu_center{
-	float: left;
+/*	float: left;
 	width: 46%;
 	text-align:left;
-	margin-left: 19px;
+	margin-left: 19px; */
 }
 
 /* Links */
@@ -43,7 +43,8 @@ table.humo { background-color: #CFB09D; }
 /* 1st table A-Z */
 table.humo td {
 	border-color: #CFB09D;
-	background-color: #fcfcfc; /* background familypage and 1st table */
+	/* background familypage and 1st table */
+	/* background-color: #fcfcfc; */
 }
 table.humo tr:first-of-type td {
 	border-color: #CFB09D;
@@ -55,9 +56,15 @@ table.humo tr:first-of-type td {
 td.style_tree_text { background-color: #BDD7EF; }
 
 .table_headline{
-	background: url('images_nightlock/ribbon.png') repeat left top;
+	/* background-image: url('images_nightlock/ribbon.png') repeat left top; */
+	background-image: url('images_nightlock/ribbon.png');
 	color: #FFFFFF;
 }
+.table_headline a:visited { color: #FFFFFF; }
+.table_headline a:active {color: #FFFFFF;}
+.table_headline a:hover {color: #FFFFFF;}
+/* table header  */
+td.table_header { background-image: url('images_nightlock/ribbon.png'); }
 
 /* familypage */
 .pers_name { color: #464646; }
@@ -73,9 +80,6 @@ td.style_tree_text { background-color: #BDD7EF; }
 
 /* report_ancestor.php */
 .chart_line { background-color:#AAA; border:0px; }
-
-/* table header  */
-td.table_header { background-image: url('images_nightlock/ribbon.png'); }
 
 /* Switchform */
 #switchform { color: #333399; }

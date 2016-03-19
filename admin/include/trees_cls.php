@@ -221,7 +221,7 @@ function tree_data(){
 	echo '<input type="hidden" name="tree_id" value="'.$data2Db->tree_id.'">';
 	echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 
-	echo '<br><table class="humo" cellspacing="0" width="100%" style="background-color : #CCFFFF;">';
+	echo '<br><table class="humo" cellspacing="0" width="100%">';
 		echo '<tr class="table_header"><th colspan="2">'.__('Family tree data').'</th></tr>';
 
 		echo '<tr><td>'.__('E-mail address').'<br>'.__('Owner of tree').'</td>';
@@ -265,7 +265,7 @@ function tree_text(){
 	echo '<input type="hidden" name="language_tree" value="'.$language_tree.'">';
 	if (isset($treetext_id)){ echo '<input type="hidden" name="treetext_id" value="'.$treetext_id.'">'; }
 
-	echo '<br><table class="humo" cellspacing="0" width="100%" style="background-color : #CCFFFF;">';
+	echo '<br><table class="humo" cellspacing="0" width="100%">';
 
 	echo '<tr class="table_header"><th colspan="2">'.__('Family tree texts (per language)').'</th></tr>';
 
@@ -831,8 +831,8 @@ this page will also show a "Continue duplicate merge" button so you can continue
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 		echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 		echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
-		echo '<table class="humo" style="text-align:center; width:100%; background-color:#CCFFFF;">';
-		echo '<tr><td>';
+		echo '<table class="humo" style="text-align:center; width:100%;">';
+		echo '<tr class="table_header"><td>';
 		echo '&nbsp;';
 		echo '</td><td>';
 		echo __('First name').':';
@@ -1216,7 +1216,7 @@ You will be notified of results as the action is completed');
 		$pard = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_parentsdate'");
 		$pardDb = $pard->fetch(PDO::FETCH_OBJ);
 
-		echo '<table class="humo" style="width:900px; background-color:#CCFFFF;">';
+		echo '<table class="humo" style="width:900px;">';
 		echo '<tr class="table_header"><th colspan="3">'.__('Merge filter settings').'</th></tr>';
 		echo '<tr><th style="width:300px" colspan="2">'.__('Settings').'</th><th style="width:600px">'.__('Explanation').'</th></tr>';
 		echo '<tr><td style="font-weight:bold;text-align:left;vertical-align:top" colspan="3">';
@@ -1310,7 +1310,7 @@ You will be notified of results as the action is completed');
 	// The default entry to the merge feature (the main screen) with the merge modes and settings
 	else {
 		echo '<br>';
-		echo '<table class="humo" style="width:98%;background-color : #CCFFFF;">';
+		echo '<table class="humo" style="width:98%;">';
 		echo '<tr class="table_header"><th colspan="2">'.__('Merge Options').'</th></tr>';
 		echo '<tr><td colspan="2" style="padding:10px">';
 

@@ -42,7 +42,6 @@ class mainindex_cls{
 			}
 			else{
 				if ($tree_prefix_quoted=='' OR $tree_prefix_quoted=='EMPTY'){
-					//echo '<h2><a href="'.CMS_ROOTPATH.'login.php">'.__('Please login first.').'</a></h2>';
 					echo '<h2><a href="'.CMS_ROOTPATH.'login.php">'.__('Select another family tree, or login for the selected family tree.').'</a></h2>';
 				}
 				else{
@@ -110,14 +109,11 @@ class mainindex_cls{
 					// *** url_rewrite ***
 					elseif ($humo_option["url_rewrite"]=="j"){
 						// *** $uri_path is made in header.php ***
-						//$path_tmp=$uri_path.'index/'.$dataDb->tree_prefix.'/';
 						$path_tmp=$uri_path.'tree_index/'.$dataDb->tree_prefix.'/';
 					}
 					else{
 						$path_tmp=$_SERVER['PHP_SELF'].'?database='.$dataDb->tree_prefix;
 					}
-					//$tree_name='<a href="'.$path_tmp.'">';
-					//$tree_name.='<span class="tree_link fonts">'.$treetext_name.'</span></a><br>';
 
 					$tree_name='<span class="tree_link fonts">';
 					$tree_name.='<a href="'.$path_tmp.'">'.$treetext_name.'</a>';
@@ -238,7 +234,6 @@ class mainindex_cls{
 		}
 		echo '</div>';
 		*/
-
 
 		global $maxcols;
 		// MAIN SETTINGS
@@ -448,11 +443,9 @@ class mainindex_cls{
 
 		echo '<p><input type="submit" value="'.__('Search').'"></p>';
 		if (CMS_SPECIFIC=='Joomla'){
-			//$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;adv_search=1';
 			$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;adv_search=1&index_list=search';
 		}
 		else{
-			//$path_tmp=CMS_ROOTPATH.'list.php?adv_search=1';
 			$path_tmp=CMS_ROOTPATH.'list.php?adv_search=1&index_list=search';
 		}
 		echo '<p><a href="'.$path_tmp.'">'.__('Advanced search').'</a></p>';
@@ -517,13 +510,11 @@ class mainindex_cls{
 
 		//*** Find first first_character of last name ***
 		echo __('Surnames Index:')."<br>\n";
-		//$personqry="SELECT UPPER(LEFT(pers_lastname,1)) as first_character FROM ".$_SESSION['tree_prefix']."person GROUP BY first_character";
 		$personqry="SELECT UPPER(LEFT(pers_lastname,1)) as first_character FROM humo_persons
 			WHERE pers_tree_id='".$tree_id."' GROUP BY first_character";
 
 		// *** If "van Mons" is selected, also check pers_prefix ***
 		if ($user['group_kindindex']=="j"){
-			//$personqry="SELECT UPPER(LEFT(CONCAT(pers_prefix,pers_lastname),1)) as first_character FROM ".safe_text($_SESSION['tree_prefix'])."person GROUP BY first_character";
 			$personqry="SELECT UPPER(LEFT(CONCAT(pers_prefix,pers_lastname),1)) as first_character FROM humo_persons
 				WHERE pers_tree_id='".$tree_id."' GROUP BY first_character";
 		}
@@ -551,7 +542,6 @@ class mainindex_cls{
 		}
 		echo ' <a href="'.$path_tmp. '">'.__('Other')."</a>\n";
 
-		//$person="SELECT pers_patronym FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE pers_patronym LIKE '_%' AND pers_lastname =''";
 		$person="SELECT pers_patronym FROM humo_persons
 			WHERE pers_tree_id='".$tree_id."' AND pers_patronym LIKE '_%' AND pers_lastname =''";
 		@$personDb=$dbh->query($person);

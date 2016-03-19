@@ -149,7 +149,6 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		$_SESSION['tree_prefix']=$tree_prefix;
 	}
 
-	echo '<br>'.__('Select Gedcom file:').'<br>';
 	echo '<form method="post" action="'.$phpself.'" style="display : inline">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 	echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
@@ -161,7 +160,6 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 	else {
 		$gedcom_directory="gedcom_files";
 	}
-
 	// *** Only needed for Huub's test server ***
 	if (@file_exists("../../gedcom-bestanden")){
 		$gedcom_directory="../../gedcom-bestanden";
@@ -178,71 +176,77 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 	}
 	// *** Order gedcom files by alfabet ***
 	if (isset($filenames)){ usort($filenames,'strnatcasecmp'); }
+
+	echo '<br>'.__('Select Gedcom file:').'<br>';
 	echo '<select size="1" name="gedcom_file">';
-
-	$result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
-	$treegedDb = $result->fetch();
-
-	$gedfile = $treegedDb['tree_gedcom'];
-	for ($i=0; $i<count($filenames); $i++){
-		//echo '<option value="'.$filenames[$i].'">'.$filenames[$i].'</option>';
-		$selected = '';
-		if($gedfile == $filenames[$i]) {
-			$selected = " selected ";
-		} // if this was last gedcom that was used for this tree - select it
-		echo '<option value="'.$filenames[$i].'" '.$selected.'>'.$filenames[$i].'</option>';
-	}
+		$result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
+		$treegedDb = $result->fetch();
+		$gedfile = $treegedDb['tree_gedcom'];
+		for ($i=0; $i<count($filenames); $i++){
+			// *** if this was last gedcom that was used for this tree - select it ***
+			$selected = ''; if($gedfile == $filenames[$i]) $selected = " selected ";
+			echo '<option value="'.$filenames[$i].'" '.$selected.'>'.$filenames[$i].'</option>';
+		}
 	echo '</select>';
 
-	$check=''; if ($humo_option["gedcom_read_reassign_gedcomnumbers"]=='y'){ $check=' checked'; }
-	echo '<p><input type="checkbox" name="reassign_gedcomnumbers"'.$check.'> '.__('Reassign new ID numbers for persons, fams etc. (don\'t use IDs from gedcom)')."<br>\n";
+	echo '<p><table class="humo" style="width:100%;">';
+	echo '<tr class="table_header"><th>'.__('Settings').'</th></tr>';
+	echo '</tr><td>';
 
-	$check=''; if ($humo_option["gedcom_read_order_by_date"]=='y'){ $check=' checked'; }
-	echo '<input type="checkbox" name="order_by_date"'.$check.'> '.__('Order children by date (only needed if children are in wrong order)')."<br>\n";
+		$check=''; if ($humo_option["gedcom_read_add_source"]=='y'){ $check=' checked'; }
+		echo '<input type="checkbox" name="add_source"'.$check.'> '.__('Add a general source connected to all persons in this gedcom file.')."<br>\n";
 
-	// if a humo_location table exists, refresh the location_status column
-	$res = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-	if ($res->rowCount()) {
-		$check=''; if ($humo_option["gedcom_read_process_geo_location"]=='y'){ $check=' checked'; }
-		echo "<input type='checkbox' name='process_geo_location'".$check."> ".__('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of gedcom file!')."\n";
-	}
+		$check=''; if ($humo_option["gedcom_read_reassign_gedcomnumbers"]=='y'){ $check=' checked'; }
+		echo '<input type="checkbox" name="reassign_gedcomnumbers"'.$check.'> '.__('Reassign new ID numbers for persons, fams etc. (don\'t use IDs from gedcom)')."<br>\n";
 
-	$result = $dbh->query("SELECT tree_persons FROM humo_trees WHERE tree_prefix ='".$_SESSION['tree_prefix']."'");
-	$resultDb=$result->fetch(PDO::FETCH_OBJ);
-	if ($resultDb->tree_persons != 0) {  // don't show if there is nothing in the database yet: this can't be a second gedcom!
-		echo "<p><INPUT type='checkbox' name='add_tree'> ".__('Add this tree to the existing tree')."<br>\n";
-	}
+		$check=''; if ($humo_option["gedcom_read_order_by_date"]=='y'){ $check=' checked'; }
+		echo '<input type="checkbox" name="order_by_date"'.$check.'> '.__('Order children by date (only needed if children are in wrong order)')."<br>\n";
 
-	echo '<p><input type="checkbox" name="check_processed"> '.__('Show non-processed items when processing gedcom (can be a long list!')."<br>\n";
-	echo '<input type="checkbox" name="show_gedcomnumbers"> '.__('Show all numbers when processing gedcom (useful when a time-out occurs!)')."<br>\n";
+		// if a humo_location table exists, refresh the location_status column
+		$res = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+		if ($res->rowCount()) {
+			$check=''; if ($humo_option["gedcom_read_process_geo_location"]=='y'){ $check=' checked'; }
+			echo "<input type='checkbox' name='process_geo_location'".$check."> ".__('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of gedcom file!')."\n";
+		}
 
-	echo '<input type="checkbox" name="commit_checkbox" checked disabled> Batch processing: <select class="fonts" size="1" name="commit_records" style="width: 200px">';
-		echo '<option value="1">'.__('1 record (slow processing, but needs less server-memory)').'</option>';
-		$selected=''; if ($humo_option["gedcom_read_commit_records"]=='10'){ $selected=' selected'; }
-		echo '<option value="10"'.$selected.'>10 '.__('records per batch').'</option>';
-		$selected=''; if ($humo_option["gedcom_read_commit_records"]=='100'){ $selected=' selected'; }
-		echo '<option value="100"'.$selected.'>100 '.__('records per batch').'</option>';
-		$selected=''; if ($humo_option["gedcom_read_commit_records"]=='500'){ $selected=' selected'; }
-		echo '<option value="500"'.$selected.'>500 '.__('records per batch').'</option>';
-		$selected=''; if ($humo_option["gedcom_read_commit_records"]=='1000'){ $selected=' selected'; }
-		echo '<option value="1000"'.$selected.'>1000 '.__('records per batch').'</option>';
-		$selected=''; if ($humo_option["gedcom_read_commit_records"]=='5000'){ $selected=' selected'; }
-		echo '<option value="5000"'.$selected.'>5000 '.__('records per batch').'</option>';
-		$selected=''; if ($humo_option["gedcom_read_commit_records"]=='10000'){ $selected=' selected'; }
-		echo '<option value="10000"'.$selected.'>10000 '.__('records per batch').'</option>';
-		$selected=''; if ($humo_option["gedcom_read_commit_records"]=='9000000'){ $selected=' selected'; }
-		echo '<option value="9000000"'.$selected.'>'.__('ALL records (fast processing, but needs server-memory)').'</option>';
-	echo '</select>';
+		$result = $dbh->query("SELECT tree_persons FROM humo_trees WHERE tree_prefix ='".$_SESSION['tree_prefix']."'");
+		$resultDb=$result->fetch(PDO::FETCH_OBJ);
+		if ($resultDb->tree_persons != 0) {  // don't show if there is nothing in the database yet: this can't be a second gedcom!
+			echo "<p><INPUT type='checkbox' name='add_tree'> ".__('Add this tree to the existing tree')."<br>\n";
+		}
 
-	// *** Controlled time-out ***
-	$time_out=0; if ($humo_option["gedcom_read_time_out"]) $time_out= $humo_option["gedcom_read_time_out"];
-	echo '<p>';
-	if (isset($_POST['timeout_restart'])){
-		if (isset($_SESSION['save_process_time']) and $_SESSION['save_process_time']) $time_out=($_SESSION['save_process_time']-3);
-		echo '<b>'.__('Time-out detected! Controlled time-out setting is adjusted. Retry reading of gedcom with new setting.').'</b><br>';
-	}
-	echo '<input type="text" name="time_out" value="'.$time_out.'" size="2"> ';
-	echo __('seconds. Controlled time-out. Use this if the server has a time-out setting (set less seconds then server time-out). 0 = disable controlled time-out.');
+		echo '<p><input type="checkbox" name="check_processed"> '.__('Show non-processed items when processing gedcom (can be a long list!')."<br>\n";
+		echo '<input type="checkbox" name="show_gedcomnumbers"> '.__('Show all numbers when processing gedcom (useful when a time-out occurs!)')."<br>\n";
+
+		echo '<input type="checkbox" name="commit_checkbox" checked disabled> Batch processing: <select class="fonts" size="1" name="commit_records" style="width: 200px">';
+			echo '<option value="1">'.__('1 record (slow processing, but needs less server-memory)').'</option>';
+			$selected=''; if ($humo_option["gedcom_read_commit_records"]=='10'){ $selected=' selected'; }
+			echo '<option value="10"'.$selected.'>10 '.__('records per batch').'</option>';
+			$selected=''; if ($humo_option["gedcom_read_commit_records"]=='100'){ $selected=' selected'; }
+			echo '<option value="100"'.$selected.'>100 '.__('records per batch').'</option>';
+			$selected=''; if ($humo_option["gedcom_read_commit_records"]=='500'){ $selected=' selected'; }
+			echo '<option value="500"'.$selected.'>500 '.__('records per batch').'</option>';
+			$selected=''; if ($humo_option["gedcom_read_commit_records"]=='1000'){ $selected=' selected'; }
+			echo '<option value="1000"'.$selected.'>1000 '.__('records per batch').'</option>';
+			$selected=''; if ($humo_option["gedcom_read_commit_records"]=='5000'){ $selected=' selected'; }
+			echo '<option value="5000"'.$selected.'>5000 '.__('records per batch').'</option>';
+			$selected=''; if ($humo_option["gedcom_read_commit_records"]=='10000'){ $selected=' selected'; }
+			echo '<option value="10000"'.$selected.'>10000 '.__('records per batch').'</option>';
+			$selected=''; if ($humo_option["gedcom_read_commit_records"]=='9000000'){ $selected=' selected'; }
+			echo '<option value="9000000"'.$selected.'>'.__('ALL records (fast processing, but needs server-memory)').'</option>';
+		echo '</select>';
+
+		// *** Controlled time-out ***
+		$time_out=0; if ($humo_option["gedcom_read_time_out"]) $time_out= $humo_option["gedcom_read_time_out"];
+		echo '<p>';
+		if (isset($_POST['timeout_restart'])){
+			if (isset($_SESSION['save_process_time']) and $_SESSION['save_process_time']) $time_out=($_SESSION['save_process_time']-3);
+			echo '<b>'.__('Time-out detected! Controlled time-out setting is adjusted. Retry reading of gedcom with new setting.').'</b><br>';
+		}
+		echo '&nbsp;<input type="text" name="time_out" value="'.$time_out.'" size="2"> ';
+		echo __('seconds. Controlled time-out. Use this if the server has a time-out setting (set less seconds then server time-out). 0 = disable controlled time-out.');
+
+	echo '</table>';
 
 	echo '<p><input type="Submit" name="step2" value="'.__('Step').' 2">';
 	echo '</form>';
@@ -257,7 +261,7 @@ if (isset($_POST['step2'])){
 
 	if(!isset($_POST['add_tree'])) {
 		$_SESSION['add_tree']=false; 
-		echo '<b>'.__('STEP 2) Remove old family tree:').'</b><br>';
+		$limit=2500;
 		if(CMS_SPECIFIC=="Joomla") {
 			$rootpathinclude = CMS_ROOTPATH_ADMIN."include/";
 		}
@@ -265,7 +269,25 @@ if (isset($_POST['step2'])){
 			$rootpathinclude = '';
 		}
 
-		$limit=2500;
+		echo '<b>'.__('STEP 2) Remove old family tree:').'</b><br>';
+
+		// *** Time out button ***
+		echo '<br><form method="post" action="'.$phpself.'">';
+			echo '<input type="hidden" name="page" value="'.$page.'">';
+			echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
+			echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+			if (isset($_POST['check_processed']))
+				echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
+			if (isset($_POST['show_gedcomnumbers']))
+				echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
+			if (isset($_POST['time_out']))
+				echo '<input type="hidden" name="time_out" value="'.$_POST['time_out'].'">';
+			if(isset($_POST['add_tree']))
+				echo '<input type="hidden" name="add_tree" value="1">';
+			echo '<input type="hidden" name="gedcom_file" value="'.$_POST['gedcom_file'].'">';
+			echo __('ONLY use in case of a time-out, to continue click:');
+			echo ' <input type="Submit" name="step2" value="'.__('Step').' 2">';
+		echo '</form><br>';
 
 		/*
 		// *** Batch processing ***
@@ -287,21 +309,22 @@ if (isset($_POST['step2'])){
 		$total = $dbh->query("SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id='".$tree_id."'"); 
 		$total = $total->fetch();
 		$nr_records=$total[0];
-
-		$loop=$nr_records/$limit;
-		for ($i=0; $i<=$loop; $i++){
-			$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+		if ($nr_records>0){
+			$loop=$nr_records/$limit;
+			for ($i=0; $i<=$loop; $i++){
+				$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				@$result=$dbh->query($sql);
+				echo '*';
+				ob_flush(); flush(); // IE
+			}
+			$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			echo '*';
-			ob_flush(); flush(); // IE
-		}
-		$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."'";
-		@$result=$dbh->query($sql);
 
-		echo ' '.__('Optimize table...');
-		ob_flush(); flush(); // IE
-		$sql="OPTIMIZE TABLE humo_persons";
-		@$result=$dbh->query($sql);
+			echo ' '.__('Optimize table...');
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_persons";
+			@$result=$dbh->query($sql);
+		}
 		echo '<br>';
 
 		/*
@@ -323,21 +346,22 @@ if (isset($_POST['step2'])){
 		$total = $dbh->query("SELECT COUNT(*) FROM humo_families WHERE fam_tree_id='".$tree_id."'"); 
 		$total = $total->fetch();
 		$nr_records=$total[0];
-
-		$loop=$nr_records/$limit;
-		for ($i=0; $i<=$loop; $i++){
-			$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+		if ($nr_records>0){
+			$loop=$nr_records/$limit;
+			for ($i=0; $i<=$loop; $i++){
+				$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				@$result=$dbh->query($sql);
+				echo '*';
+				ob_flush(); flush(); // IE
+			}
+			$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			echo '*';
-			ob_flush(); flush(); // IE
-		}
-		$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($tree_id)."'";
-		@$result=$dbh->query($sql);
 
-		echo ' '.__('Optimize table...').' ';
-		ob_flush(); flush(); // IE
-		$sql="OPTIMIZE TABLE humo_families";
-		@$result=$dbh->query($sql);
+			echo ' '.__('Optimize table...').' ';
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_families";
+			@$result=$dbh->query($sql);
+			}
 		echo '<br>';
 
 		// *** Batch processing ***
@@ -365,21 +389,22 @@ if (isset($_POST['step2'])){
 		$total = $dbh->query("SELECT COUNT(*) FROM humo_unprocessed_tags WHERE tag_tree_id='".$tree_id."'"); 
 		$total = $total->fetch();
 		$nr_records=$total[0];
-
-		$loop=$nr_records/$limit;
-		for ($i=0; $i<=$loop; $i++){
-			$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+		if ($nr_records>0){
+			$loop=$nr_records/$limit;
+			for ($i=0; $i<=$loop; $i++){
+				$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				@$result=$dbh->query($sql);
+				echo '*';
+				ob_flush(); flush(); // IE
+			}
+			$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			echo '*';
-			ob_flush(); flush(); // IE
-		}
-		$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."'";
-		@$result=$dbh->query($sql);
 
-		echo ' '.__('Optimize table...');
-		ob_flush(); flush(); // IE
-		$sql="OPTIMIZE TABLE humo_unprocessed_tags";
-		@$result=$dbh->query($sql);
+			echo ' '.__('Optimize table...');
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_unprocessed_tags";
+			@$result=$dbh->query($sql);
+		}
 		echo '<br>';
 
 
@@ -431,21 +456,22 @@ if (isset($_POST['step2'])){
 		$total = $dbh->query("SELECT COUNT(*) FROM humo_sources WHERE source_tree_id='".$tree_id."'"); 
 		$total = $total->fetch();
 		$nr_records=$total[0];
-
-		$loop=$nr_records/$limit;
-		for ($i=0; $i<=$loop; $i++){
-			$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+		if ($nr_records>0){
+			$loop=$nr_records/$limit;
+			for ($i=0; $i<=$loop; $i++){
+				$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				@$result=$dbh->query($sql);
+				echo '*';
+				ob_flush(); flush(); // IE
+			}
+			$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			echo '*';
-			ob_flush(); flush(); // IE
-		}
-		$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."'";
-		@$result=$dbh->query($sql);
 
-		echo ' '.__('Optimize table...');
-		ob_flush(); flush(); // IE
-		$sql="OPTIMIZE TABLE humo_sources";
-		@$result=$dbh->query($sql);
+			echo ' '.__('Optimize table...');
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_sources";
+			@$result=$dbh->query($sql);
+		}
 		echo '<br>';
 
 
@@ -469,20 +495,21 @@ if (isset($_POST['step2'])){
 		$total = $dbh->query("SELECT COUNT(*) FROM humo_texts WHERE text_tree_id='".$tree_id."'"); 
 		$total = $total->fetch();
 		$nr_records=$total[0];
-
-		$loop=$nr_records/$limit;
-		for ($i=0; $i<=$loop; $i++){
-			$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+		if ($nr_records>0){
+			$loop=$nr_records/$limit;
+			for ($i=0; $i<=$loop; $i++){
+				$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				@$result=$dbh->query($sql);
+				echo '*';
+				ob_flush(); flush(); // IE
+			}
+			$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			echo '*';
-			ob_flush(); flush(); // IE
-		}
-		$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($tree_id)."'";
-		@$result=$dbh->query($sql);
 
-		echo ' '.__('Optimize table...');
-		$sql="OPTIMIZE TABLE humo_texts";
-		@$result=$dbh->query($sql);
+			echo ' '.__('Optimize table...');
+			$sql="OPTIMIZE TABLE humo_texts";
+			@$result=$dbh->query($sql);
+		}
 		echo '<br>';
 
 
@@ -510,21 +537,22 @@ if (isset($_POST['step2'])){
 		$total = $dbh->query("SELECT COUNT(*) FROM humo_connections WHERE connect_tree_id='".$tree_id."'"); 
 		$total = $total->fetch();
 		$nr_records=$total[0];
-
-		$loop=$nr_records/$limit;
-		for ($i=0; $i<=$loop; $i++){
-			$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+		if ($nr_records>0){
+			$loop=$nr_records/$limit;
+			for ($i=0; $i<=$loop; $i++){
+				$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				@$result=$dbh->query($sql);
+				echo '*';
+				ob_flush(); flush(); // IE
+			}
+			$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			echo '*';
-			ob_flush(); flush(); // IE
-		}
-		$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."'";
-		@$result=$dbh->query($sql);
 
-		echo ' '.__('Optimize table...');
-		ob_flush(); flush(); // IE
-		$sql="OPTIMIZE TABLE humo_connections";
-		@$result=$dbh->query($sql);
+			echo ' '.__('Optimize table...');
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_connections";
+			@$result=$dbh->query($sql);
+		}
 		echo '<br>';
 
 
@@ -548,22 +576,23 @@ if (isset($_POST['step2'])){
 		$total = $dbh->query("SELECT COUNT(*) FROM humo_addresses WHERE address_tree_id='".$tree_id."'"); 
 		$total = $total->fetch();
 		$nr_records=$total[0];
-
-		$loop=$nr_records/$limit;
-		for ($i=0; $i<=$loop; $i++){
-			$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+		if ($nr_records>0){
+			$loop=$nr_records/$limit;
+			for ($i=0; $i<=$loop; $i++){
+				$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				@$result=$dbh->query($sql);
+				echo '*';
+				ob_flush();
+				flush(); // IE
+			}
+			$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			echo '*';
-			ob_flush();
-			flush(); // IE
-		}
-		$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."'";
-		@$result=$dbh->query($sql);
 
-		echo ' '.__('Optimize table...');
-		ob_flush(); flush(); // IE
-		$sql="OPTIMIZE TABLE humo_address";
-		@$result=$dbh->query($sql);
+			echo ' '.__('Optimize table...');
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_address";
+			@$result=$dbh->query($sql);
+		}
 		echo '<br>';
 
 		// *** Batch processing ***
@@ -590,21 +619,22 @@ if (isset($_POST['step2'])){
 		$total = $dbh->query("SELECT COUNT(*) FROM humo_events WHERE event_tree_id='".$tree_id."'"); 
 		$total = $total->fetch();
 		$nr_records=$total[0];
-
-		$loop=$nr_records/$limit;
-		for ($i=0; $i<=$loop; $i++){
-			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+		if ($nr_records>0){
+			$loop=$nr_records/$limit;
+			for ($i=0; $i<=$loop; $i++){
+				$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				@$result=$dbh->query($sql);
+				echo '*';
+				ob_flush(); flush(); // IE
+			}
+			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."'";
 			@$result=$dbh->query($sql);
-			echo '*';
-			ob_flush(); flush(); // IE
-		}
-		$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."'";
-		@$result=$dbh->query($sql);
 
-		echo ' '.__('Optimize table...');
-		ob_flush(); flush(); // IE
-		$sql="OPTIMIZE TABLE humo_events";
-		@$result=$dbh->query($sql);
+			echo ' '.__('Optimize table...');
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_events";
+			@$result=$dbh->query($sql);
+		}
 		echo '<br>';
 
 
@@ -613,6 +643,13 @@ if (isset($_POST['step2'])){
 	else {
 		$_SESSION['add_tree']=true;
 		echo __('The data in this gedcom will be appended to the existing data in this tree!').'<br>';
+	}
+
+	if(!isset($_POST['add_source'])) {
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='gedcom_read_add_source'");
+	}
+	else {
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='gedcom_read_add_source'");
 	}
 
 	if(!isset($_POST['reassign_gedcomnumbers'])) {
@@ -676,37 +713,36 @@ if (isset($_POST['step2'])){
 	$gen_program=''; $_SESSION['save_gen_program']=$gen_program;
 
 	echo '<br><table><tr><td>';
-	echo '<form method="post" action="'.$phpself.'">';
-	echo '<input type="hidden" name="page" value="'.$page.'">';
-	echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
-	echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+		echo '<form method="post" action="'.$phpself.'">';
+		echo '<input type="hidden" name="page" value="'.$page.'">';
+		echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
+		echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+		echo '<input type="hidden" name="gedcom_accent" value="'.$accent.'">';
 
-	echo '<input type="hidden" name="gedcom_accent" value="'.$accent.'">';
+		if (isset($_POST['check_processed']))
+			echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
+		if (isset($_POST['show_gedcomnumbers']))
+			echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
+		if (isset($_POST['time_out']))
+			echo '<input type="hidden" name="time_out" value="'.$_POST['time_out'].'">';
 
-	if (isset($_POST['check_processed']))
-		echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
-	if (isset($_POST['show_gedcomnumbers']))
-		echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
-	if (isset($_POST['time_out']))
-		echo '<input type="hidden" name="time_out" value="'.$_POST['time_out'].'">';
+		if(!isset($_POST['add_tree'])) {
+			// *** Reset nr of persons and families ***
+			$sql = $dbh->query("UPDATE humo_trees
+				SET tree_persons='', tree_families=''
+				WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
+		}
+		if(isset($_POST['add_tree'])) {
+			echo '<input type="hidden" name="add_tree" value="1">';
+		}
+		else {
+			echo '<input type="hidden" name="add_tree" value="">';
+		}
 
-	if(!isset($_POST['add_tree'])) {
-		// *** Reset nr of persons and families ***
-		$sql = $dbh->query("UPDATE humo_trees
-			SET tree_persons='', tree_families=''
-			WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
-	}
-	if(isset($_POST['add_tree'])) {
-		echo '<input type="hidden" name="add_tree" value="1">';
-	}
-	else {
-		echo '<input type="hidden" name="add_tree" value="">';
-	}
+		echo '<input type="hidden" name="gedcom_file" value="'.$_POST['gedcom_file'].'">';
 
-	echo '<input type="hidden" name="gedcom_file" value="'.$_POST['gedcom_file'].'">';
-
-	echo '<input type="Submit" name="step3" value="'.__('Step').' 3">';
-	echo '</form>';
+		echo '<input type="Submit" name="step3" value="'.__('Step').' 3">';
+		echo '</form>';
 	echo '</td>';
 	if(isset($_POST['add_tree'])) { 
 		echo '<td>';
@@ -1283,6 +1319,48 @@ if (isset($_POST['step3'])){
 	fclose($handle);
 
 
+	// *** Add a general source to all persons in this gedcom file ***
+	if ($humo_option["gedcom_read_add_source"]=='y'){
+		// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
+		$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
+			FROM humo_sources WHERE source_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
+		$new_nr_result = $dbh->query($new_nr_qry);
+		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
+
+		$new_gedcomnumber='S1';
+		if (isset($new_nr->source_gedcomnr)) $new_gedcomnumber='S'.(substr($new_nr->source_gedcomnr,1)+1);
+
+		$gedcom_date=strtoupper(date("d M Y"));
+		$gedcom_time=date("H:i:s");
+		$sql="INSERT INTO humo_sources SET
+			source_tree_id='".$tree_id."',
+			source_gedcomnr='".$new_gedcomnumber."',
+			source_status='',
+			source_title='".__('Persons added by gedcom import.').' '.$gedcom_date.' '.$gedcom_time."',
+			source_date='".$gedcom_date."',
+			source_place='',
+			source_publ='',
+			source_refn='',
+			source_auth='',
+			source_subj='',
+			source_item='',
+			source_kind='',
+			source_repo_caln='',
+			source_repo_page='',
+			source_repo_gedcomnr='',
+			source_text='".__('Persons added by gedcom import.')."',
+			source_new_date='".$gedcom_date."',
+			source_new_time='".$gedcom_time."'";
+		$result=$dbh->query($sql);
+
+		// *** Replace temporary source number by all persons by a final source number ***
+		$gebeurtsql="UPDATE humo_connections SET
+			connect_source_id='".$new_gedcomnumber."'
+			WHERE connect_tree_id='".$tree_id."' AND connect_source_id='Stemporary'";
+		$result=$dbh->query($gebeurtsql);
+	}
+
+
 	// *** End of MyISAM batch processing ***
 	// mysql_query("UNLOCK TABLES;");
 	// *** End of InnoDB batch processing ***
@@ -1637,7 +1715,7 @@ if (isset($_POST['step4'])){
 	}
 	else {
 		printf('<p><b>'.__('Ready! Now click %s to watch the family tree').'</b><br>', ' <a href="'.CMS_ROOTPATH.'index.php">index.php</a> ');
-		echo '<a href="index.php?page=cal_date">'.__('TIP: Use "Calculated birth dates" for a better privacy filter.').'</a>';
+		echo __('TIP: Use <a href="index.php?page=cal_date">"Calculated birth dates"</a> for a better privacy filter.');
 	}
 
 } // end of read gedcom (step 4)

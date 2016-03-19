@@ -21,7 +21,7 @@ include_once(CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/process_text.php");
 include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."include/marriage_cls.php");
-include_once(CMS_ROOTPATH."include/show_sources.php");
+//include_once(CMS_ROOTPATH."include/show_sources.php"); // *** No sources in use in outline report ***
 
 if($screen_mode!='PDF') {  //we can't have a menu in pdf...
 	include_once(CMS_ROOTPATH."menu.php");

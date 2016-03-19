@@ -18,18 +18,11 @@ table.humo {
 	background-color: #000000;
 	color: #eeeeff; 
 	letter-spacing: 1px;
-	/*
-	-moz-box-shadow: 0px 0px 0px;
-	-webkit-box-shadow: 0px 0px 0px;
-	box-shadow: 0px 0px 0px;
-	*/
 	background-image: url('images_sky/sky_dark.gif');
 }
 table.humo td {
 	border-color: #ffdd55;
 	color: #ffdd55;
-	/* background-color: #111111; */
-	/* background-image: url('images_sky/sky_dark.gif'); */
 }
 table.humo tr:first-of-type td, table.humo tr:first-of-type th {
 	border-color: #ffdd55;
@@ -37,7 +30,6 @@ table.humo tr:first-of-type td, table.humo tr:first-of-type th {
 /* 2nd table A-Z */
 .family_page_toptext {
 	color: #ffffff;/* Kop 2e tabel */
-	/* background-image: url('images_sky/default_trans.png'); */
 }
 td.style_tree_text {
 	color: #330000;
@@ -47,7 +39,7 @@ td.style_tree_text {
 td.style_tree_text a {color: #6600cc;}
 
 .table_headline{
-	background: url('images_sky/default_trans.png') repeat left top;
+	background-image: url('images_sky/default_trans.png') repeat left top;
 }
 
 /* familypage */

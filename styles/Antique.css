@@ -64,8 +64,6 @@ ul.humo_menu_item li { border-right: none; }
 #mainmenu_centerbox  { background: #ffffff url(images_antique/tree_background_450lc.jpg) repeat left top; }
 #mainmenu_right {
 	background-color: #f2f2f2;
-	margin-right: 15px;
-	width:22%;
 }
 #mainmenu_centerbox .mainmenu_bar {
 	background:url("images_antique/header2.jpg") repeat left top;
@@ -78,7 +76,9 @@ ul.humo_menu_item li { border-right: none; }
 	margin-left:12px;
 	margin-right:12px;
 }
-mainmenu_center_alt{ margin-left:20px; }
+#mainmenu_center_alt{
+
+}
 
 /* Links */
 a {color:#505050; text-decoration:none;}
@@ -95,7 +95,7 @@ table.standard { margin-left:auto; margin-right:auto; }
 /* 1st table A-Z */
 table.humo td {
 	border-color: #3355cc;
-	background: url(images_antique/tree_background_450lcbr.jpg) repeat left top;
+	/* background: url(images_antique/tree_background_450lcbr.jpg) repeat left top; */
 }
 table.humo tr:first-of-type td { border-color: #3355cc; }
 
@@ -107,7 +107,12 @@ table.humo tr:first-of-type td { border-color: #3355cc; }
 }
 table.humo td.style_tree_text { background-color: #eeeeff; }
 
-.table_headline{ background: url('images_antique/header2.jpg') repeat left top; }
+/* Headline in table */
+tr.table_headline{
+	background-image: url('images_antique/header2.jpg');
+}
+/* table header  */
+table.humo td.table_header { background:url("images_antique/header2.jpg") repeat left top; }
 
 /* familypage */
 .pers_name { color: #000000; }
@@ -121,9 +126,6 @@ div.ancestor_name a { color: #222222; font-weight: bold; }
 div.ancestor_line{ border-bottom-color: #000066; border-top-color: #000066;}
 div.ancestor_split{ border-left-color: #000066; border-bottom-color: #000066; border-top-color: #000066; }
 .ancestor_name { line-height:100%; }
-
-/* table header  */
-table.humo td.table_header { background:url("images_antique/header2.jpg") repeat left top; }
 
 /* Switchform */
 #switchform { color: #333399; }

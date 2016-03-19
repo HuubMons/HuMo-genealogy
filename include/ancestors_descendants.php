@@ -20,10 +20,11 @@
  *	child1					descendant[4]
  *	child2					descendant[5]
  */
+
 $gn=0;	// *** Generation number ***
 $descendant_id=0;
 function descendants($family_id,$main_person,$gn,$nr_generations) {
-	//global $dbh, $db_functions, $nr_generations;
+	//global $nr_generations;
 	global $dbh, $db_functions;
 	global $descendant_id, $descendant_array;
 
@@ -106,6 +107,7 @@ function descendants($family_id,$main_person,$gn,$nr_generations) {
  * person									ancestor[1]
  *
 */
+
 function ancestors($main_person){
 	global $dbh, $db_functions;
 	global $ancestor_array;
@@ -120,9 +122,7 @@ function ancestors($main_person){
 	// end of person 1
 
 	// Loop to find person data
-	//$count_max = 64;
-	//if($hourglass===true) { $count_max = pow(2,$chosengenanc); }
-	$count_max = 64;
+	$count_max = 4; // *** Start with value 4, can be raised in loop ***
 
 	for ($counter = 2; $counter < $count_max; $counter++){
 		if (isset($ancestor_array[$counter])){
@@ -133,6 +133,9 @@ function ancestors($main_person){
 //check query (only need man/ woman?):
 				$parentDb = $db_functions->get_family($personDb->pers_famc);
 				$ancestor_array[$father_counter]=$parentDb->fam_man; $ancestor_array[$mother_counter]=$parentDb->fam_woman;
+				// *** Raise counter ***
+				if ($father_counter>$count_max) $count_max=$father_counter;
+				if ($mother_counter>$count_max) $mother_max=$father_counter;
 			}
 		}
 	}

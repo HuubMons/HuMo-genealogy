@@ -196,14 +196,18 @@ function show_media($personDb,$marriageDb){
 // $popup.='<img src="'.$picture['path'].$picture['thumb'].$picture['picture'].'" style="margin-left:50px; margin-top:5px;" alt="'.$pictureDb->event_text.'" height="'.$picture['height'].'">';
 
 function show_picture($picture_path,$picture_org,$pict_width='',$pict_height=''){
-	$picture["picture"]=$picture_org;
 	$picture["path"]=$picture_path; // *** Standard picture path. Will be overwritten if picture is removed ***
+	$picture["picture"]=$picture_org;
 	$found_picture=false; // *** Check if picture still exists ***
 
 	// *** In some cases the picture name must be converted to lower case ***
 	if (file_exists($picture["path"].strtolower($picture['picture']))){
 		$found_picture=true;
 		$picture['picture']=strtolower($picture['picture']);
+	}
+	// *** Picture ***
+	if (file_exists($picture["path"].$picture['picture'])){
+		$found_picture=true;
 	}
 
 	$picture['thumb']='';

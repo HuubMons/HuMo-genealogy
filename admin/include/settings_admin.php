@@ -4,14 +4,14 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 echo '<h1 align=center>'.__('Settings').'</h1>';
 
-//echo '<p align=center>';
-
 if (isset($_POST['save_option'])){
 	// *** Update settings ***
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_skin"])."' WHERE setting_variable='default_skin'");
 
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_language"])."' WHERE setting_variable='default_language'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_language_admin"])."' WHERE setting_variable='default_language_admin'");
+
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["text_footer"])."' WHERE setting_variable='text_footer'");
 
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["database_name"])."' WHERE setting_variable='database_name'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["homepage"])."' WHERE setting_variable='homepage'");
@@ -66,7 +66,6 @@ while (false!==($file = readdir($folder))) {
 		$langs[$arr_count][0]=$language["name"];
 		$langs[$arr_count][1]=$file;
 		$arr_count++;
-		//if (file_exists(CMS_ROOTPATH.'languages/'.$file.'/language_admin.php')){
 		if (file_exists(CMS_ROOTPATH.'languages/'.$file.'/'.$file.'.mo')){
 		$langs_admin[$arr_count_admin][0]=$language["name"];
 			$langs_admin[$arr_count_admin][1]=$file;
@@ -85,9 +84,7 @@ else {
 
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<table class="humo standard" border="1">';
-//echo '<tr class="table_header"><th>'.__('Option').'</th><th>'.__('Setting').'</th></tr>';
 
-//echo '<tr bgcolor="green"><th><font color="white">'.__('General settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 echo '<tr class="table_header"><th colspan="2">'.__('General settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Default skin').'</td><td><select size="1" name="default_skin">';
@@ -111,14 +108,12 @@ echo "</select>";
 echo '</td></tr>';
 
 echo '<tr><td>'.__('Standard language HuMo-gen').'</td><td><select size="1" name="default_language">';
-
 	if($langs) {
 		for($i=0; $i<count($langs); $i++) {
 			$select=''; if ($humo_option['default_language']==$langs[$i][1]){ $select=' SELECTED'; }
 			echo '<option value="'.$langs[$i][1].'"'.$select.'>'.$langs[$i][0].'</option>';
 		}
 	}
-
 echo "</select>";
 echo '</td></tr>';
 
@@ -132,7 +127,11 @@ echo '<tr><td>'.__('Standard language admin menu').'</td><td><select size="1" na
 echo "</select>";
 echo '</td></tr>';
 
-//echo '<tr bgcolor="green"><th><font color="white">'.__('Search engine settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr><td>'.__('Text in footer for all pages').'</td><td>';
+	if(CMS_SPECIFIC == "Joomla") {  $cols="48"; } else { $cols="80"; }   // in joomla make sure it won't run off the screen
+	echo "<textarea cols=".$cols." rows=1 name=\"text_footer\" style='height: 20px;'>".htmlentities($humo_option["text_footer"],ENT_NOQUOTES)."</textarea><br>";
+	echo __('Can be used for statistics, couter, etc. It\'s possible to use HTML codes!');
+echo '</td></tr>';
 
 echo '<tr class="table_header"><th colspan="2">'.__('Search engine settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
@@ -152,7 +151,7 @@ echo '<option value="j">'.__('Yes').'</option>';
 echo '<option value="n"'.$selected.'>'.__('No').'</option>';
 echo "</select><br>";
 if(CMS_SPECIFIC == "Joomla") {  $cols="48"; } else { $cols="80"; }   // in joomla make sure it won't run off the screen
-echo "<textarea cols=".$cols." rows=1 name=\"robots_option\" style='height: 20px;'>".htmlentities($humo_option["robots_option"],ENT_NOQUOTES)."</TEXTAREA></td></tr>";
+echo "<textarea cols=".$cols." rows=1 name=\"robots_option\" style='height: 20px;'>".htmlentities($humo_option["robots_option"],ENT_NOQUOTES)."</textarea></td></tr>";
 
 echo '<tr class="humo_color"><td>'.__('Search engines:<br>Hide family tree (no indexing)<br>Show frontpage and CMS pages').'</td><td><select size="1" name="searchengine_cms_only">';
 $selected=''; if ($humo_option["searchengine_cms_only"]!='y') $selected=' SELECTED';
@@ -160,7 +159,6 @@ echo '<option value="y">'.__('Yes').'</option>';
 echo '<option value="n"'.$selected.'>'.__('No').'</option>';
 echo "</select><br></td></tr>";
 
-//echo '<tr bgcolor="green"><th><font color="white">'.__('Contact & registration form settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 echo '<tr class="table_header"><th colspan="2">'.__('Contact & registration form settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Block spam question').'<br>'.__('Block spam answer').'</td><td>';
@@ -217,7 +215,6 @@ echo '<tr class="humo_color"><td>'.__('SMTP mails').'</td><td>';
 echo '<b>'.__('Sometimes it\'s necessary to use SMTP to send mails. These settings can be changed in file: include/mail.php').'</b>';
 echo '</td></tr>';
 
-//echo '<tr bgcolor="green"><th><font color="white">'.__('International settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 echo '<tr class="table_header"><th colspan="2">'.__('International settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td valign="top">'.__('Timezone').'</td><td><select size="1" name="timezone">';
@@ -321,7 +318,6 @@ echo "</select>";
 echo "&nbsp;".__('Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports and lists: 刘 理想').". ".__('Hungarian - reports and lists: Smith John');
 echo "</td></tr>";
 
-//echo '<tr bgcolor=green><th><font color=white>'.__('Settings Main Menu').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 echo '<tr class="table_header"><th colspan="2">'.__('Settings Main Menu').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Website name').'</td>';
@@ -339,7 +335,6 @@ echo '<input type="text" name="rss_link" value="'.$humo_option["rss_link"].'" si
 echo '<i>'.__('This option can be turned on or off in the user groups.').'</i>';
 
 // *** FAMILY ***
-//echo '<tr bgcolor=green><th><font color=white>'.__('Settings family page').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 echo '<tr class="table_header"><th colspan="2">'.__('Settings family page').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td style="white-space:nowrap;">'.__('Number of generations in descendant report').'</td>';
@@ -352,7 +347,6 @@ echo '</tr>';
 
 
 // *** Watermark text and color in PDF file ***
-//echo '<tr bgcolor=green><th><font color=white>'.__('Watermark text in PDF file').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 echo '<tr class="table_header"><th colspan="2">'.__('Watermark text in PDF file').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 echo '<tr><td style="white-space:nowrap;">'.__('Watermark text in PDF file').'</td>';
 echo '<td><input type="text" name="watermark_text" value="'.$humo_option["watermark_text"].'" size="40"> '.__('Watermark text (clear to remove watermark)').'</td>';
@@ -367,7 +361,6 @@ echo '</td>';
 echo "</tr>";
 
 
-//echo '<tr bgcolor=green><th><font color=white>'.__('Save settings').'</font></th><th><input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 echo '<tr class="table_header"><th colspan="2">'.__('Save settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '</table>';
@@ -377,8 +370,6 @@ echo '</form>';
 echo '<h1 align=center>'.__('Special settings').'</h1>';
 
 echo '<table class="humo standard" border="1">';
-	//echo '<tr class="table_header"><th>'.__('Option').'</th><th>'.__('Setting').'</th></tr>';
-	//echo '<tr bgcolor="green"><th><font color="white">'.__('Special settings').'</font></th><th><br></th></tr>';
 	echo '<tr class="table_header"><th colspan="2">'.__('Special settings').'</th></tr>';
 
 	echo '<tr><td>'.__('&#134 => &infin;').'</td><td>';

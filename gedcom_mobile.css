@@ -22,8 +22,9 @@ body{
 }
 
 #mainmenu_left{
-	visibility:hidden;
-	width:1%;
+	/* visibility:hidden; */
+	/* width:1%; */
+	width:90%;
 }
 #mainmenu_center {
 	width:90%;

@@ -949,7 +949,7 @@ else{
 							if($screen_mode=='STAR') {
 								if($descendant_loop==0) {
 									$name=$woman_cls->person_name($person_womanDb);
-									$genarray[$arraynr]["nam"]=$name["standard_name"];
+									$genarray[$arraynr]["nam"]=$name["standard_name"].$name["colour_mark"];
 									$genarray[$arraynr]["init"]=$name["initials"];
 									$genarray[$arraynr]["short"]=$name["short_firstname"];
 									$genarray[$arraynr]["sex"]="v";
@@ -1050,7 +1050,7 @@ else{
 							if($screen_mode=='STAR') {
 								if($descendant_loop==0) {
 									$name=$man_cls->person_name($person_manDb);
-									$genarray[$arraynr]["nam"]=$name["standard_name"];
+									$genarray[$arraynr]["nam"]=$name["standard_name"].$name["colour_mark"];
 									$genarray[$arraynr]["init"]=$name["initials"];
 									$genarray[$arraynr]["short"]=$name["short_firstname"];
 									$genarray[$arraynr]["sex"]="m";
@@ -1611,7 +1611,7 @@ else{
 							$genarray[$place]["nrc"]=0;
 							$genarray[$place]["2nd"]=0;
 							$name=$child_cls->person_name($childDb);
-							$genarray[$place]["nam"]=$name["standard_name"];
+							$genarray[$place]["nam"]=$name["standard_name"].$name["colour_mark"];
 							$genarray[$place]["init"]=$name["initials"];
 							$genarray[$place]["short"]=$name["short_firstname"];
 							$genarray[$place]["gednr"]=$childDb->pers_gedcomnumber;

@@ -973,7 +973,8 @@ function show_event($selected_events=''){
 	// *** Add person event ***
 	if ($selected_events=='person'){
 		// *** Add person event ***
-		echo '<tr bgcolor="#CCFFFF" style="display:none;" class="row51" name="row51"><td>'.__('Add event').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
+		//echo '<tr bgcolor="#CCFFFF" style="display:none;" class="row51" name="row51"><td>'.__('Add event').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
+		echo '<tr bgcolor="#CCFFFF"><td>'.__('Add event').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
 			echo '<select size="1" name="event_kind">';
 				//echo '<option value="profession">'.__('Profession').'</option>';
 				//echo '<option value="picture">'.__('Picture/ Media').'</option>';
@@ -995,7 +996,8 @@ function show_event($selected_events=''){
 
 	// *** Add event ***
 	if ($selected_events=='family'){
-		echo '<tr bgcolor="#CCFFFF" style="display:none;" class="row52" name="row52"></td><td>'.__('Add event').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
+		//echo '<tr bgcolor="#CCFFFF" style="display:none;" class="row52" name="row52"></td><td>'.__('Add event').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
+		echo '<tr bgcolor="#CCFFFF"></td><td>'.__('Add event').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
 			echo '<select size="1" name="event_kind">';
 				//echo '<option value="address">Address</option>';
 				//echo '<option value="picture">Picture</option>';

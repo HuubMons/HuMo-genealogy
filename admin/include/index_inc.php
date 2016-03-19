@@ -343,7 +343,9 @@ The file .htpasswd will look something like this:<br>');
 
 		$tree_counter=0;
 		//echo '<tr><td colspan="2"><br></td></tr>'; // *** Show empty line ***
-		echo '<tr class="table_header"><th colspan="2">'.__('Family trees').'</th></tr>';
+		//echo '<tr class="table_header"><th colspan="2">'.__('Family trees').'</th></tr>';
+		echo '<tr class="table_header"><th colspan="2"><a href="index.php?page=tree">'.__('Family trees').'</a></th></tr>';
+
 		while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			// *** Skip empty lines (didn't work in query...) ***
 			if ($dataDb->tree_prefix!='EMPTY'){
@@ -395,6 +397,7 @@ echo '</div>';
 //echo '<p>'.$result_message.'</p>';
 
 // *** Only show if database AND tables are checked ***
+/*
 if ($install_status==true){
 	echo '<p>'.__('TIPS:<br>
 - Administrate one or more trees: go to "Family Trees"<br>
@@ -404,4 +407,5 @@ if ($install_status==true){
 - Prefixes for family names can be changed in: prefixes.php');
 	echo '</p>';
 }
+*/
 ?>

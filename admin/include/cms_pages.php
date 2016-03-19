@@ -195,11 +195,23 @@ if (isset($_POST['menu_remove2'])){
 
 echo '<p>';
 
-// ** Show editor if page is choosen for first time ***
-if (!isset($_POST['cms_menu']) AND !isset($_POST['cms_settings'])){ $_POST['cms_pages']='Pages'; }
+
+$cms_item='pages';
+// *** Show editor if page is choosen for first time ***
+//if (!isset($_POST['cms_menu']) AND !isset($_POST['cms_settings'])) $cms_item='pages';
 
 // *** Show and edit pages ***
-if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
+if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])) $cms_item='pages';
+
+// *** Show and edit menu's ***
+if (isset($_POST['cms_menu']) OR isset($_GET['select_menu'])) $cms_item='menu';
+
+// *** CMS Settings ***
+if (isset($_POST['cms_settings'])) $cms_item='settings';
+
+// *** Show and edit pages ***
+//if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
+if ($cms_item=='pages'){
 
 	echo '<table style="border-top: solid 1px #999999;"><tr><td valign="top" style="border-right: solid 1px #999999;">';
 
@@ -401,8 +413,8 @@ if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
 }
 
 // *** Show and edit menu's ***
-if (isset($_POST['cms_menu']) OR isset($_GET['select_menu'])){
-
+//if (isset($_POST['cms_menu']) OR isset($_GET['select_menu'])){
+if ($cms_item=='menu'){
 	// *** List of categories ***
 	echo __('Add and edit menu/ category items:').'<br>';
 
@@ -455,8 +467,8 @@ if (isset($_POST['cms_menu']) OR isset($_GET['select_menu'])){
 	echo '</table>';
 }
 
-if (isset($_POST['cms_settings'])){
-
+//if (isset($_POST['cms_settings'])){
+if ($cms_item=='settings'){
 	// *** Automatic installation or update ***
 	if (!isset($humo_option["cms_images_path"])){
 		$sql="INSERT INTO humo_settings SET setting_variable='cms_images_path', setting_value=''";

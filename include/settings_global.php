@@ -1,30 +1,27 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.1.3';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.1.4';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 9 mrt. 2014';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
-$humo_option["version_date"]='2015-05-12';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2015-06-06';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 //$humo_option["version_date"]='2012-11-30';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** If needed: translate setting_variabele into setting variable ***
-/*
 $update_setting_qry = $dbh->query("SELECT * FROM humo_settings");
 $update_settingDb = $update_setting_qry->fetch(PDO::FETCH_OBJ);
 if (isset($update_settingDb->setting_variabele)){
 	$sql="ALTER TABLE humo_settings CHANGE setting_variabele setting_variable VARCHAR( 50 ) CHARACTER SET utf8 NULL DEFAULT NULL";
 	$dbh->query($sql);
 }
-*/
 
 // *** Update table humo_settings: translate dutch variables into english... ***
-/*
 $update_setting_qry = $dbh->query("SELECT * FROM humo_settings");
 while($update_settingDb = $update_setting_qry->fetch(PDO::FETCH_OBJ)){
 	$setting='';
@@ -41,7 +38,7 @@ while($update_settingDb = $update_setting_qry->fetch(PDO::FETCH_OBJ)){
 		$update_Db = $dbh->query($sql);
 	}
 }
-*/
+
 
 // *** Read settings from database ***
 @$result = $dbh->query("SELECT * FROM humo_settings");
@@ -92,6 +89,12 @@ if (!isset($humo_option["default_language_admin"])){
 	@$result=$dbh->query($sql);
 }
 
+if (!isset($humo_option["text_footer"])){
+	$humo_option["text_footer"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='text_footer', setting_value=''";
+	@$result=$dbh->query($sql);
+}
+
 if (!isset($humo_option["timezone"])){
 	$humo_option["timezone"]='Europe/Amsterdam';
 	$sql="INSERT INTO humo_settings SET setting_variable='timezone', setting_value='Europe/Amsterdam'";
@@ -99,7 +102,7 @@ if (!isset($humo_option["timezone"])){
 }
 
 // *** Automatic installation or update ***
-if (!isset($humo_option["update_status"])){	
+if (!isset($humo_option["update_status"])){
 	$humo_option["update_status"]='0';
 	$sql="INSERT INTO humo_settings SET setting_variable='update_status', setting_value='0'";
 	@$result=$dbh->query($sql);
@@ -166,7 +169,13 @@ if (!isset($humo_option["searchengine_cms_only"])){
 	@$result=$dbh->query($sql);
 }
 
-// *** Gedcom reading settings 18-aug-2013 ***
+// *** Gedcom reading settings 18 aug 2013, updated 30 may 2015. ***
+if (!isset($humo_option["gedcom_read_add_source"])){
+	$humo_option["gedcom_read_add_source"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_read_add_source', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+
 if (!isset($humo_option["gedcom_read_reassign_gedcomnumbers"])){
 	$humo_option["gedcom_read_reassign_gedcomnumbers"]='n';
 	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_read_reassign_gedcomnumbers', setting_value='n'";

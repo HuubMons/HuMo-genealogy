@@ -35,81 +35,6 @@ if (substr($tree_date,5,2)=='12'){ $month=' '.__('dec').' ';}
 $tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4);
 
 // *** Tab menu ***
-// *** Inline style, because these menu tabs are only used in the statistics page at this moment ***
-echo '<style>
-/* Tab Menu (in use in family tree administration and person/ marriages editor) */
-.pageHeadingContainer-lineVisible {
-	margin-bottom: 15px;
-	border-bottom: 1px solid #d9d9d9;
-}
-.pageHeadingContainer {
-	clear: both;
-	display: table;
-	width: 100%;
-	margin-bottom: 0px;
-}
-.pageHeading {
-	display: table-cell;
-}
-.pageTabsContainer {
-	display: table-cell;
-	vertical-align: bottom;
-	white-space: nowrap;
-}
-.pageTabs {
-	margin: 0;
-	padding: 0;
-	float: right;
-	margin-left:10px;
-}
-.pageTabItem {
-	display: inline-block;
-	zoom: 1;
-	list-style: none;
-	margin: 0 4px -1px 0;
-}
-.pageTab {
-	display: inline-block;
-	white-space: nowrap;
-	color: #333;
-	cursor: pointer;
-	border: 1px solid #d9d9d9;
-	background-color: #eaf4fa;
-	-webkit-border-top-right-radius: 3px;
-	-webkit-border-bottom-right-radius: 0;
-	-webkit-border-bottom-left-radius: 0;
-	-webkit-border-top-left-radius: 3px;
-	-moz-border-radius-topright: 3px;
-	-moz-border-radius-bottomright: 0;
-	-moz-border-radius-bottomleft: 0;
-	-moz-border-radius-topleft: 3px;
-	border-top-right-radius: 3px;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
-	border-top-left-radius: 3px;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
-	background-clip: padding-box;
-	-webkit-box-shadow: 1px 1px 1px #fff inset;
-	-moz-box-shadow: 1px 1px 1px #fff inset;
-	box-shadow: 1px 1px 1px #fff inset;
-}
-.pageTab a {
-	text-decoration:none;
-	color: #765;
-	display: inline-block;
-	padding: 6px 8px 4px;
-}
-.pageTab-active {
-	background-color: #fff;
-	border-bottom: 1px solid #fff;
-	color: #2f63a3;
-}
-.pageTab-active a {
-	font-weight: bold;
-}
-</style>';
-
 $menu_tab='stats_tree';
 if (isset($_GET['menu_tab']) and $_GET['menu_tab']=='stats_tree') $menu_tab='stats_tree';
 if (isset($_GET['menu_tab']) and $_GET['menu_tab']=='stats_persons') $menu_tab='stats_persons';
@@ -123,8 +48,6 @@ echo '<div class="pageHeading">';
 
 	echo '<div class="pageTabsContainer" aria-hidden="false" style="">';
 		echo '<ul class="pageTabs">';
-			//echo '<li class="pageTabItem"><div tabindex="0" class="pageTab pageTab-active">Details</div></li>';
-
 			$select_item=''; if ($menu_tab=='stats_tree'){ $select_item=' pageTab-active'; }
 			echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="'.CMS_ROOTPATH.'statistics.php?'.'tree_id='.$tree_id.'">'.__('Family tree')."</a></div></li>";
 
@@ -153,7 +76,8 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			$table1_width="100%";
 		}
 		else {
-			$table1_width="800";
+			// $table1_width="800";
+			$table1_width="80%";
 		}
 		echo '<br><table width='.$table1_width.' class="humo" align="center">';
 
@@ -292,7 +216,8 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			$table2_width="100%";
 		}
 		else {
-			$table2_width="900";
+			// $table2_width="900";
+			$table2_width="80%";
 		}
 		echo '<br><table width='.$table2_width.' class="humo" align="center">';
 
@@ -825,7 +750,8 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			$table2_width="100%";
 		}
 		else {
-			$table2_width="900";
+			// $table2_width="900";
+			$table2_width="90%";
 		}
 
 		echo '<br><table width='.$table2_width.' class="humo nametbl" align="center">';
@@ -1001,7 +927,8 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			$table2_width="100%";
 		}
 		else {
-			$table2_width="1000";
+			// $table2_width="1000";
+			$table2_width="90%";
 		}
 
 		echo '<br><table width='.$table2_width.' class="humo nametbl" align="center">';

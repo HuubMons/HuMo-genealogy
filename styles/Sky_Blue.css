@@ -22,10 +22,9 @@ body {
 }
 
 #mainmenu_center{
-	float: left;
+/*	float: left;
 	width: 46%;
-	/* text-align:left; */
-	margin-left: 19px;
+	margin-left: 19px; */
 }
 
 /* Links */

@@ -27,7 +27,6 @@ else{
 	// ********************************
 	// *** HuMo-gen update 1 (V3.1) ***
 	// ********************************
-	/*
 	$update_check = @$dbh->query("SELECT * FROM humo_tree_texts");
 	$update_check2 = @$dbh->query("SELECT * FROM humo_stambomen_tekst");
 	if ($update_check OR $update_check2){
@@ -72,7 +71,6 @@ else{
 
 		echo '</td></tr>';
 	}
-	*/
 
 	// ********************************
 	// *** HuMo-gen update 4 (V4.6) ***
@@ -115,7 +113,6 @@ else{
 	// *********************************
 	// *** HuMo-gen update 3 (V 4.2) ***
 	// *********************************
-	/*
 	// *** Change names of languages in table humo_tree_texts ***
 	$sql='UPDATE humo_tree_texts SET treetext_language="nl"
 		WHERE treetext_language="talen/taal-nederlands.php"';
@@ -132,13 +129,11 @@ else{
 	$sql='UPDATE humo_tree_texts SET treetext_language="fr"
 		WHERE treetext_language="talen/taal-francais.php"';
 	$result=$dbh->query($sql);
-	*/
 
 
 	// ********************************
 	// *** HuMo-gen update 2 (V3.2) ***
 	// ********************************
-	/*
 	$update_check = $dbh->query("SELECT * FROM humo_stat_date");
 	$update_check2 = $dbh->query("SELECT * FROM humo_stat_datum");
 	if ($update_check OR $update_check2) {
@@ -169,9 +164,7 @@ else{
 		}
 		echo '</td></tr>';
 	}
-	*/
 
-	/*
 	$update_check_sql = $dbh->query("SELECT * FROM humo_stat_date");
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_stat_date 2</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -206,10 +199,8 @@ else{
 		}
 		echo '</td></tr>';
 	}
-	*/
 
 	// *** Automatic installation or update ***
-	/*
 	if (isset($field)){ unset ($field); }
 	$column_qry = $dbh->query('SHOW COLUMNS FROM humo_stat_date');
 	while ($columnDb = $column_qry->fetch()) {
@@ -228,7 +219,6 @@ else{
 			ADD stat_user_agent VARCHAR(255) CHARACTER SET utf8";
 		$result=$dbh->query($sql);
 	}
-	*/
 
 
 	// ********************************

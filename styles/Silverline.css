@@ -43,7 +43,7 @@ ul.humo_menu_item li { border-right: none; }
 #content { background:url("images_silverline/silverbg1.jpg") repeat-x left top; }
 #rtlcontent { background:url("images_silverline/silverbg1.jpg") repeat-x left top; }
 #mainmenu_centerbox  { background: #FFFFFF url("images_silverline/background.gif") no-repeat; }
-#mainmenu_right { background-color: #f2f2f2; margin-right: 15px; width:22%; }
+#mainmenu_right { background-color: #f2f2f2; }
 #mainmenu_centerbox .mainmenu_bar {  
 	background:url("images_silverline/menuhover1.png") repeat left top;
 	font-size:13px;
@@ -56,7 +56,7 @@ ul.humo_menu_item li { border-right: none; }
 	margin-right:12px;
 }
 #mainmenu_center_alt {
-	margin-left:20px;
+
 }
 
 /* Links */
