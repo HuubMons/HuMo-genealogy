@@ -64,7 +64,7 @@ class mainindex_cls{
 					if ($mainmenu_text=='' AND $mainmenu_source=='') echo '<br>';
 
 					//*** Most frequent names ***
-					echo '<br>'.$this->last_names().$dirmark2.'<br>';
+					echo '<br>'.$this->last_names().$dirmark2;
 
 					// *** Alphabet line ***
 					echo '<br>'.$this->alphabet().$dirmark2.'<br>';
@@ -184,6 +184,8 @@ class mainindex_cls{
 	//*** Most frequent names ***
 	function last_names(){
 		global $dbh, $tree_id, $language, $user, $humo_option, $uri_path;
+
+		/*
 		$personqry="SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
 			FROM humo_persons
@@ -235,6 +237,127 @@ class mainindex_cls{
 			if ($i<count($last_names)-1){ echo ' / '; }
 		}
 		echo '</div>';
+		*/
+
+
+		global $maxcols;
+		// MAIN SETTINGS
+		$maxcols = 3; // number of name&nr colums in table. For example 3 means 3x name col + nr col
+		$maxnames = 9;
+		//$table2_width="500";
+
+		function tablerow($nr,$lastcol=false) {    
+			// displays one set of name & nr column items in the row
+			// $nr is the array number of the name set created in function last_names
+			// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
+			global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names;
+			if (CMS_SPECIFIC=='Joomla'){
+				$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
+			}
+			else{
+				$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
+			}
+			echo '<td class="namelst">';
+			if(isset($freq_last_names[$nr])) { 
+				$top_pers_lastname=''; 	if ($freq_pers_prefix[$nr]){
+					$top_pers_lastname=str_replace("_", " ", $freq_pers_prefix[$nr]); }
+				$top_pers_lastname.=$freq_last_names[$nr];
+				if ($user['group_kindindex']=="j"){
+					echo '<a href="'.$path_tmp.'&amp;pers_lastname='.str_replace("_", " ", $freq_pers_prefix[$nr]).str_replace("&", "|", $freq_last_names[$nr]); 
+				}
+				else{
+					$top_pers_lastname=$freq_last_names[$nr];
+					if ($freq_pers_prefix[$nr]){ $top_pers_lastname.=', '.str_replace("_", " ", $freq_pers_prefix[$nr]); }
+					echo '<a href="'.$path_tmp.'&amp;pers_lastname='.str_replace("&", "|", $freq_last_names[$nr]);
+					if ($freq_pers_prefix[$nr]){ echo '&amp;pers_prefix='.$freq_pers_prefix[$nr]; }
+					else{ echo '&amp;pers_prefix=EMPTY'; }
+				}
+				echo '&amp;part_lastname=equals">'.$top_pers_lastname."</a>";
+			}
+			else echo '~';
+			echo '</td>';
+			
+			if($lastcol==false)  echo '<td class="namenr" style="text-align:center;border-right-width:3px">'; // not last column numbers
+			else echo '</td><td class="namenr" style="text-align:center">'; // no thick border
+			
+			if(isset($freq_last_names[$nr])) echo $freq_count_last_names[$nr];
+			else echo '~';
+			echo '</td>';
+		}
+
+		function last_names($max) {
+			global $dbh, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols;
+			$personqry="SELECT pers_lastname, pers_prefix,
+				CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
+				FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
+				GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,".$max;
+			$person=$dbh->query($personqry);
+			while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){ 
+				$freq_last_names[]=$personDb->pers_lastname;  
+				$freq_pers_prefix[]=$personDb->pers_prefix;
+				$freq_count_last_names[]=$personDb->count_last_names;
+			}
+			$row = round(count($freq_last_names)/$maxcols);
+
+			for ($i=0; $i<$row; $i++){
+				echo '<tr>';
+				for($n=0;$n<$maxcols;$n++) {
+					if($n == $maxcols-1) {
+						tablerow($i+($row*$n),true); // last col
+					}
+					else {
+						tablerow($i+($row*$n)); // other cols
+					}
+				}
+				echo '</tr>';
+			}
+			return $freq_count_last_names[0];
+		}
+
+		echo __('Most frequent surnames:')."<br>";
+
+		//echo '<table width=500 class="humo nametbl" align="center">';
+		echo '<table width="90%" class="humo nametbl" align="center">';
+
+		echo '<tr class=table_headline>';
+		$col_width = ((round(100/$maxcols))-6)."%";
+		for($x=1; $x<$maxcols;$x++) {
+			echo '<td width="'.$col_width.'"><b>'.__('Name').'</b></td><td style="border-right-width:3px;width:6%"><b>'.__('Total').'</b></td>';  
+		}
+		echo '<td width="'.$col_width.'"><b>'.__('Name').'</b></td><td width:6%"><b>'.__('Total').'</b></td>';
+		echo '</tr>';
+
+		$baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
+		//echo '<tr><td colspan="2" style="border-right-width:3px;"><a href="javascript:;" onClick=window.open("frequent_surnames.php","","width=970,height=600,top=40,left=60,scrollbars=yes");>'.__('More frequent surnames').'</a></td>';
+		echo '<tr class=table_headline><td colspan="2" style="border-right-width:3px;"><a href="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_surnames">'.__('More frequent surnames').'</a></td>';
+		//echo '<td colspan="2" style="border-right-width:3px;"><a href="javascript:;" onClick=window.open("frequent_firstnames.php","","width=1050,height=600,top=50,left=60,scrollbars=yes");>'.
+		//__('Frequent first names').'</a></td>';
+		echo '<td colspan="2" style="border-right-width:3px;"><a href="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_firstnames">'.__('Frequent first names').'</a></td>';
+		echo '<td colspan="2"><a href="'.CMS_ROOTPATH.'statistics.php">'.__('Statistics').'</a></td></tr>';
+
+		echo '</table>';
+
+		echo '
+		<script>
+		var tbl = document.getElementsByClassName("nametbl")[0];
+		var rws = tbl.rows; var baseperc = '.$baseperc.';
+		for(var i = 0; i < rws.length; i ++) {
+			var tbs =  rws[i].getElementsByClassName("namenr");
+			var nms = rws[i].getElementsByClassName("namelst");
+		  for(var x = 0; x < tbs.length; x ++) {
+			var percentage = parseInt(tbs[x].innerHTML, 10);
+			percentage = (percentage * 100)/baseperc;  
+			if(percentage > 0.1) {
+			   nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
+			   nms[x].style.backgroundSize = percentage + "%" + " 100%";
+			   nms[x].style.backgroundRepeat = "no-repeat";
+			   nms[x].style.color = "rgb(0, 140, 200)";
+			}
+		  }
+		}
+		</script>';
+
 	}
 
 	// *** Search field ***

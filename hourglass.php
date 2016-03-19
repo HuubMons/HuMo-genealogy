@@ -257,8 +257,6 @@ for($x=$chosengenanc;$x>1;$x--) {
 	for ($i=0; $i<$blocks; $i++){
 		$sexe_colour='';  $backgr_col = "#FFFFFF";
 		if(isset($sexe[$i+$blocks]) AND $sexe[$i+$blocks]!="") { 
-			//if ($sexe[$i+$blocks] == 'F'){ $sexe_colour=' ancestor_woman'; }
-			//if ($sexe[$i+$blocks] == 'M'){ $sexe_colour=' ancestor_man'; }
 			if ($sexe[$i+$blocks] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0";}
 			if ($sexe[$i+$blocks] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
 		}
@@ -275,21 +273,21 @@ for($x=$chosengenanc;$x>1;$x--) {
 		}
 		echo '</div>';
 		$this_top += $incr;
-	}	
+	}
 	
 	// *** long vertical line ***
 	$this_top = $top+$line_drop; 
 	for ($i=0; $i <$blocks/2; $i++){
 		echo '<div class="hour_ancestor_split" style="top: '.$this_top.'px; left: '.($left+$width+3).'px; height: '.$hi.'px;"></div>';
 		$this_top += $gap;
-	}	
+	}
 	// *** little horizontal line ***
 	$this_top = $top+$line_drop;
 	if($i>1) {
 		for ($i=0; $i<$blocks/4; $i++){ 
 			echo '<div class="ancestor_line" style="top: '.($this_top + $hi/2).'px; left: '.($left+$width+12).'px; height: '.($hi*2).'px;"></div>';
 			$this_top += $gap*2;
-		}	
+		}
 	}
 	else {
 		echo '<div class="ancestor_line" style="border-bottom:none;top: '.($this_top + $hi/2).'px; left: '.($left+$width+12).'px; height:1px;"></div>';

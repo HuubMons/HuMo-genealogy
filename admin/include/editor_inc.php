@@ -36,7 +36,7 @@ if (isset($_POST['person_remove'])){
 	$confirm.='<div class="confirm">';
 	$confirm.=__('This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?');
 
-	// GRAYED-OUT and DISABLED!!!! UNDER CONSTRUCTION!!!!
+	// GRAYED-OUT and DISABLED! UNDER CONSTRUCTION!
 	$confirm.='<br>';
 	//$disabled='';
 	$disabled=' DISABLED';
@@ -1151,7 +1151,7 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 
 // *** Change event ***
 if (isset($_POST['event_id'])){
-	foreach($_POST['event_id'] as $key=>$value){  
+	foreach($_POST['event_id'] as $key=>$value){
 		$event_event=$editor_cls->text_process($_POST["text_event"][$key]);
 		if (isset($_POST["text_event2"][$key]) AND $_POST["text_event2"][$key]!=''){ $event_event=$editor_cls->text_process($_POST["text_event2"][$key]); }
 
@@ -1170,6 +1170,124 @@ if (isset($_POST['event_id'])){
 		$sql.=" WHERE event_id='".safe_text($_POST["event_id"][$key])."'";
 		$result=$dbh->query($sql);
 
+		// *** Also change person colors by descendants of selected person ***
+		if (isset($_POST["pers_colour_desc"][$key])){
+			// EXAMPLE: descendants($family_id,$main_person,$gn,$nr_generations);
+			descendants($marriage,$pers_gedcomnumber,0,20);
+			// *** Starts with 2nd descendant, skip main person (that's allready processed above this code)! ***
+			for ($i=2; $i<=$descendant_id; $i++){
+
+				// *** Check if descendant allready has this colour ***
+				$event_sql="SELECT * FROM humo_events
+					WHERE event_tree_id='".$tree_id."'
+					AND event_person_id='".$descendant_array[$i]."'
+					AND event_kind='person_colour_mark'
+					AND event_event='".safe_text($_POST["event_event_old"][$key])."'";
+				$event_qry=$dbh->query($event_sql);
+				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
+
+				// *** Descendant allready has this color, change it ***
+				if (isset($eventDb->event_event)){
+					$sql="UPDATE humo_events SET
+						event_event='".$event_event."',
+						event_date='".$editor_cls->date_process("event_date",$key)."',
+						event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
+						event_changed_date='".$gedcom_date."', ";
+					if (isset($_POST["event_gedcom"][$key])){
+						$sql.="event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."',";
+					}
+					if (isset($_POST["event_text"][$key])){
+						$sql.="event_text='".$editor_cls->text_process($_POST["event_text"][$key])."',";
+					}
+					$sql.=" event_changed_time='".$gedcom_time."'";
+					$sql.=" WHERE event_id='".$eventDb->event_id."'";
+					$result=$dbh->query($sql);
+				}
+				else{
+					// *** Add person event for descendants ***
+					// *** Generate new order number ***
+					$event_sql="SELECT * FROM humo_events
+						WHERE event_tree_id='".$tree_id."'
+						AND event_person_id='".$descendant_array[$i]."' AND event_kind='person_colour_mark'
+						ORDER BY event_order DESC LIMIT 0,1";
+					$event_qry=$dbh->query($event_sql);
+					$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
+					$event_order=0;
+					if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
+					$event_order++;
+					$sql="INSERT INTO humo_events SET
+						event_tree_id='".$tree_id."',
+						event_person_id='".$descendant_array[$i]."',
+						event_kind='person_colour_mark',
+						event_event='".$event_event."',
+						event_order='".$event_order."',
+						event_new_date='".$gedcom_date."',
+						event_new_time='".$gedcom_time."'";
+					$result=$dbh->query($sql);
+				}
+
+			}
+		}
+
+		// *** Also change person colors by ancestors of selected person ***
+		if (isset($_POST["pers_colour_anc"][$key])){
+			ancestors($pers_gedcomnumber);
+			foreach ($ancestor_array as $key2 => $value) {
+				//echo $key2.'-'.$value.', ';
+				$selected_ancestor=$value;
+
+				// *** Check if ancestor allready has this colour ***
+				$event_sql="SELECT * FROM humo_events
+					WHERE event_tree_id='".$tree_id."'
+					AND event_person_id='".$selected_ancestor."'
+					AND event_kind='person_colour_mark'
+					AND event_event='".safe_text($_POST["event_event_old"][$key])."'";
+				$event_qry=$dbh->query($event_sql);
+				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
+
+				// *** Ancestor allready has this color, change it ***
+				if (isset($eventDb->event_event)){
+					$sql="UPDATE humo_events SET
+						event_event='".$event_event."',
+						event_date='".$editor_cls->date_process("event_date",$key)."',
+						event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
+						event_changed_date='".$gedcom_date."', ";
+					if (isset($_POST["event_gedcom"][$key])){
+						$sql.="event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."',";
+					}
+					if (isset($_POST["event_text"][$key])){
+						$sql.="event_text='".$editor_cls->text_process($_POST["event_text"][$key])."',";
+					}
+					$sql.=" event_changed_time='".$gedcom_time."'";
+					$sql.=" WHERE event_id='".$eventDb->event_id."'";
+					$result=$dbh->query($sql);
+				}
+				else{
+					// *** Add person event for descendants ***
+					// *** Generate new order number ***
+					$event_sql="SELECT * FROM humo_events
+						WHERE event_tree_id='".$tree_id."'
+						AND event_person_id='".$selected_ancestor."' AND event_kind='person_colour_mark'
+						ORDER BY event_order DESC LIMIT 0,1";
+					$event_qry=$dbh->query($event_sql);
+					$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
+					$event_order=0;
+					if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
+					$event_order++;
+					$sql="INSERT INTO humo_events SET
+						event_tree_id='".$tree_id."',
+						event_person_id='".$selected_ancestor."',
+						event_kind='person_colour_mark',
+						event_event='".$event_event."',
+						event_order='".$event_order."',
+						event_new_date='".$gedcom_date."',
+						event_new_time='".$gedcom_time."'";
+					$result=$dbh->query($sql);
+				}
+
+			}
+		}
+
 		family_tree_update($tree_prefix);
 	}
 }
@@ -1180,14 +1298,18 @@ if (isset($_GET['event_drop'])){
 		$confirm.=__('Are you sure you want to remove this event?');
 		$confirm.=' <form method="post" action="'.$phpself.'" style="display : inline;">';
 			$confirm.='<input type="hidden" name="page" value="'.$_GET['page'].'">';
-			if (isset($_GET['event_person'])){
-				$confirm.='<input type="hidden" name="event_person" value="event_person">';
-			}
-			if (isset($_GET['event_family'])){
-				$confirm.='<input type="hidden" name="event_family" value="event_family">';
-			}
+			if (isset($_GET['event_person'])) $confirm.='<input type="hidden" name="event_person" value="event_person">';
+			if (isset($_GET['event_family'])) $confirm.='<input type="hidden" name="event_family" value="event_family">';
 			$confirm.='<input type="hidden" name="event_kind" value="'.$_GET['event_kind'].'">';
 			$confirm.='<input type="hidden" name="event_drop" value="'.$_GET['event_drop'].'">';
+
+			if (isset($_GET['event_kind']) AND $_GET['event_kind']=='person_colour_mark'){
+				$selected=''; //if ($selected_alive=='alive'){ $selected=' CHECKED'; }
+				$confirm.='<br>'.__('Also remove colour marks of');
+				$confirm.=' <input type="checkbox" name="event_descendants" value="alive"'.$selected.'> '.__('Descendants');
+				$confirm.=' <input type="checkbox" name="event_ancestors" value="alive"'.$selected.'> '.__('Ancestors').'<br>';
+			}
+
 			$confirm.=' <input type="Submit" name="event_drop2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
 			$confirm.=' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
 		$confirm.='</form>';
@@ -1198,6 +1320,16 @@ if (isset($_POST['event_drop2'])){
 	$event_order_id=safe_text($_POST['event_drop']);
 
 	if (isset($_POST['event_person'])){
+
+		if (isset($_POST['event_descendants']) OR isset($_POST['event_ancestors'])){
+			// *** Get event_event from selected person, needed to remove colour from descendant and/ or ancestors ***
+			$event_sql="SELECT event_event FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."'
+				AND event_kind='person_colour_mark' AND event_order='".$event_order_id."'";
+			$event_qry=$dbh->query($event_sql);
+			$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
+			$event_event=$eventDb->event_event;
+		}
+
 		$sql="DELETE FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_person_id='".$pers_gedcomnumber."' AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
 		$result=$dbh->query($sql);
@@ -1213,6 +1345,76 @@ if (isset($_POST['event_drop2'])){
 			WHERE event_id='".$eventDb->event_id."'";
 			$result=$dbh->query($sql);
 		}
+
+		// *** Also remove colour mark from descendants and/ or ancestors ***
+		if (isset($_POST['event_descendants'])){
+			// EXAMPLE: descendants($family_id,$main_person,$gn,$nr_generations);
+			descendants($marriage,$pers_gedcomnumber,0,20);
+			// *** Starts with 2nd descendant, skip main person (that's allready processed above this code)! ***
+			for ($i=2; $i<=$descendant_id; $i++){
+				// *** Get event_order from selected person ***
+				$event_sql="SELECT event_order FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$descendant_array[$i]."'
+					AND event_kind='person_colour_mark' AND event_event='".$event_event."'";
+				$event_qry=$dbh->query($event_sql);
+				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
+				$event_order=$eventDb->event_order;
+
+				// *** Remove colour from descendant ***
+				$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$descendant_array[$i]."'
+					AND event_kind='person_colour_mark' AND event_event='".$event_event."'";
+				$result=$dbh->query($sql);
+
+				// *** Restore order of colour marks ***
+				$event_sql="SELECT * FROM humo_events
+					WHERE event_tree_id='".$tree_id."' AND event_person_id='".$descendant_array[$i]."' AND event_kind='".$event_kind."' AND event_order>'".$event_order."' ORDER BY event_order";
+				$event_qry=$dbh->query($event_sql);
+				while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+					$sql="UPDATE humo_events SET
+					event_order='".($eventDb->event_order-1)."',
+					event_changed_date='".$gedcom_date."',
+					event_changed_time='".$gedcom_time."'
+					WHERE event_id='".$eventDb->event_id."'";
+					$result=$dbh->query($sql);
+				}
+
+
+			}
+		}
+
+		if (isset($_POST['event_ancestors'])){
+			ancestors($pers_gedcomnumber);
+			foreach ($ancestor_array as $key2 => $value) {
+				//echo $key2.'-'.$value.', ';
+				$selected_ancestor=$value;
+
+				// *** Get event_order from selected person ***
+				$event_sql="SELECT event_order FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$selected_ancestor."'
+					AND event_kind='person_colour_mark' AND event_event='".$event_event."'";
+				$event_qry=$dbh->query($event_sql);
+				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
+				$event_order=$eventDb->event_order;
+
+				// *** Check if ancestor allready has this colour ***
+				$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_person_id='".$selected_ancestor."'
+					AND event_kind='person_colour_mark' AND event_event='".$event_event."'";
+				$result=$dbh->query($sql);
+
+				// *** Restore order of colour marks ***
+				$event_sql="SELECT * FROM humo_events
+					WHERE event_tree_id='".$tree_id."' AND event_person_id='".$selected_ancestor."' AND event_kind='".$event_kind."' AND event_order>'".$event_order."' ORDER BY event_order";
+				$event_qry=$dbh->query($event_sql);
+				while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+					$sql="UPDATE humo_events SET
+					event_order='".($eventDb->event_order-1)."',
+					event_changed_date='".$gedcom_date."',
+					event_changed_time='".$gedcom_time."'
+					WHERE event_id='".$eventDb->event_id."'";
+					$result=$dbh->query($sql);
+				}
+
+			}
+		}
+
 	}
 
 	if (isset($_POST['event_family'])){

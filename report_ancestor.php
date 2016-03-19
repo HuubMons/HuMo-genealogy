@@ -330,6 +330,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 		for ($i=0; $i<count($ancestor_array); $i++) {
 
 			$listednr='';
+// Check this code, can be improved?
 			foreach ($listed_array as $key => $value) {
 				if($value==$ancestor_array[$i]) {$listednr=$key;}
 				// if person was already listed, $listednr gets kwartier number for reference in report:
@@ -630,11 +631,11 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 						$pdf->Ln(1);
 					}
 				}   
-			}  
+			}
 		}	// loop per generation
 		$generation++;
 	}	// loop ancestor report
-	
+
 
 } // *** End of ancestor report
 

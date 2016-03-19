@@ -62,6 +62,9 @@ include_once (CMS_ROOTPATH."include/language_date.php");
 include_once (CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/language_event.php");
 
+// *** Used for person color selectection for descendants and ancestors, etc. ***
+include_once(CMS_ROOTPATH."include/ancestors_descendants.php");
+
 include ('editor_event_cls.php');
 $event_cls = New editor_event_cls;
 
@@ -503,33 +506,35 @@ if (isset($pers_gedcomnumber)){
 						echo "</a></div></li>";
 					}
 
-					// *** Browser through persons: previous button ***
-					$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-						AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."' ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
-					$previous_result = $dbh->query($previous_qry);
-					$previousDb=$previous_result->fetch(PDO::FETCH_OBJ);
-					if ($previousDb){
-						echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
-							echo '<input type="hidden" name="page" value="'.$page.'">';
-							echo '<input type="hidden" name="person" value="'.$previousDb->pers_gedcomnumber.'">';
-							echo ' <input type="submit" value="<">';
-						echo '</form>';
-					}
-					// *** Next button ***
-					$next_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-						AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) > '".substr($person->pers_gedcomnumber,1)."' ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0,1";
-					$next_result = $dbh->query($next_qry);
-					$nextDb=$next_result->fetch(PDO::FETCH_OBJ);
-					if ($nextDb){
-						echo ' <form method="POST" action="'.$phpself.'" style="display : inline;">';
-							echo '<input type="hidden" name="page" value="'.$page.'">';
-							echo '<input type="hidden" name="person" value="'.$nextDb->pers_gedcomnumber.'">';
-							echo ' <input type="submit" value=">">';
-						echo '</form>';
+					if ($person){
+						// *** Browser through persons: previous button ***
+						$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+							AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."' ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
+						$previous_result = $dbh->query($previous_qry);
+						$previousDb=$previous_result->fetch(PDO::FETCH_OBJ);
+						if ($previousDb){
+							echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+								echo '<input type="hidden" name="page" value="'.$page.'">';
+								echo '<input type="hidden" name="person" value="'.$previousDb->pers_gedcomnumber.'">';
+								echo ' <input type="submit" value="<">';
+							echo '</form>';
+						}
+						// *** Next button ***
+						$next_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+							AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) > '".substr($person->pers_gedcomnumber,1)."' ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0,1";
+						$next_result = $dbh->query($next_qry);
+						$nextDb=$next_result->fetch(PDO::FETCH_OBJ);
+						if ($nextDb){
+							echo ' <form method="POST" action="'.$phpself.'" style="display : inline;">';
+								echo '<input type="hidden" name="page" value="'.$page.'">';
+								echo '<input type="hidden" name="person" value="'.$nextDb->pers_gedcomnumber.'">';
+								echo ' <input type="submit" value=">">';
+							echo '</form>';
+						}
 					}
 
 					// *** Example of family screen in popup ***
-					If ($person)
+					if ($person)
 						echo " <a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a>';
 
 				echo '</ul>';
@@ -1314,7 +1319,22 @@ if (isset($pers_gedcomnumber)){
 
 		// *** Own code ***
 		echo '<tr class="humo_color"><td>'.ucfirst(__('own code')).'</td><td style="border-right:0px;"></td>';
-		echo '<td style="border-left:0px;"><input type="text" name="pers_own_code" value="'.htmlspecialchars($pers_own_code).'" size="60"></td><td></td></tr>';
+		//echo '<td style="border-left:0px;"><input type="text" name="pers_own_code" value="'.htmlspecialchars($pers_own_code).'" size="60"></td><td></td></tr>';
+		echo '<td style="border-left:0px;"><input type="text" name="pers_own_code" value="'.htmlspecialchars($pers_own_code).'" style="width: 500px">';
+		// *** HELP POPUP for own code ***
+		echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+			echo '<a href="#" style="display:inline" ';
+			echo 'onmouseover="mopen(event,\'help_menu3\',100,400)"';
+			echo 'onmouseout="mclosetime()">';
+				echo '<img src="../images/help.png" height="16" width="16">';
+			echo '</a>';
+			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_menu3" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				echo '<b>'.__('Use own code for your own remarks.<br>
+It\'s possible to use own code for special privacy options, see Admin > Users > Groups.<br>
+It\'s also possible to add your own icons by a person! Add the icon in the images folder e.g. \'person.gif\', and add \'person\' in the own code field.').'</b><br>';
+			echo '</div>';
+		echo '</div>';
+		echo '</td><td></td></tr>';
 
 		if (!isset($_GET['add_person'])){
 
@@ -1630,12 +1650,12 @@ if (isset($pers_gedcomnumber)){
 			$tag_qry= "SELECT * FROM humo_unprocessed_tags
 				WHERE tag_tree_id='".$tree_id."'
 				AND tag_pers_id='".$person->pers_id."'";
-
 			$tag_result = $dbh->query($tag_qry);
-			$num_rows = $tag_result->rowCount();
+			//$num_rows = $tag_result->rowCount();
 			$tagDb=$tag_result->fetch(PDO::FETCH_OBJ);
 			if (isset($tagDb->tag_tag)){
 				$tags_array=explode('<br>',$tagDb->tag_tag);
+				$num_rows=count($tags_array);
 				echo '<tr class="humo_tags_pers humo_color"><td>';
 				//echo '<tr class="humo_tags_pers"><td>';
 
@@ -2285,10 +2305,11 @@ if (isset($pers_gedcomnumber)){
 				WHERE tag_tree_id='".$tree_id."'
 				AND tag_rel_id='".$familyDb->fam_id."'";
 			$tag_result = $dbh->query($tag_qry);
-			$num_rows = $tag_result->rowCount();
+			//$num_rows = $tag_result->rowCount();
 			$tagDb=$tag_result->fetch(PDO::FETCH_OBJ);
 			if (isset($tagDb->tag_tag)){
 				$tags_array=explode('<br>',$tagDb->tag_tag);
+				$num_rows=count($tags_array);
 				echo '<tr class="humo_tags_fam"><td>';
 				echo '<a href="#humo_tags_fam" onclick="hideShow(110);"><span id="hideshowlink110">'.__('[+]').'</span></a> ';
 				echo __('Gedcom tags').'</td><td colspan="2">';

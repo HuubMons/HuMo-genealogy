@@ -108,6 +108,10 @@ function show_person($personDb){
 	else
 		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown" style="vertical-align:top">';
 
+	// *** Add own icon by person, using a file name in own code ***
+	if($personDb->pers_own_code !='' AND is_file("images/".$personDb->pers_own_code.".gif"))
+		echo  $dirmark1.'<img src="'.CMS_ROOTPATH.'images/'.$personDb->pers_own_code.'.gif" alt="'.$personDb->pers_own_code.'">&nbsp;';
+
 	echo '</td><td style="border-left:0px;">';
 
 	// *** Show name of person ***
@@ -206,7 +210,8 @@ function show_person($personDb){
 $index_list='quicksearch';
 
 // *** Reset search fields if necessary ***
-if (isset($_POST['pers_firstname']) OR isset($_GET['pers_lastname']) OR isset($_GET['reset']) OR isset($_POST['quicksearch'])){
+//if (isset($_POST['pers_firstname']) OR isset($_GET['pers_lastname']) OR isset($_GET['reset']) OR isset($_POST['quicksearch'])){
+if (isset($_POST['pers_firstname']) OR isset($_GET['pers_lastname']) OR isset($_GET['pers_firstname']) OR isset($_GET['reset']) OR isset($_POST['quicksearch'])){
 	unset ($_SESSION["save_search_tree_prefix"]);
 	unset ($_SESSION["save_search_database"]);
 	unset ($_SESSION["save_adv_search"]);
@@ -351,9 +356,18 @@ if (isset($_POST['pers_firstname'])){
 	$selection['pers_firstname']=$_POST['pers_firstname'];
 	//$selection['pers_firstname']=htmlentities($_POST['pers_firstname'],ENT_QUOTES,'UTF-8');
 }
+// *** Used for frequent firstnames in statistics page ***
+if (isset($_GET['pers_firstname'])){
+	$selection['pers_firstname']=$_GET['pers_firstname'];
+	$_GET['adv_search']='1';
+}
 $selection['part_firstname']='';
 if (isset($_POST['part_firstname'])){
 	$selection['part_firstname']=$_POST['part_firstname'];
+}
+if (isset($_GET['part_firstname'])){
+	$selection['part_firstname']=$_GET['part_firstname'];
+	$_SESSION["save_selection"]=$selection;
 }
 
 // *** Pre-fix (names list and most frequent names in main menu.) ***
@@ -420,6 +434,7 @@ $selection['part_spouse_lastname']='';
 if (isset($_POST['part_spouse_lastname'])){ $selection['part_spouse_lastname']=$_POST['part_spouse_lastname']; }
 
 $selection['sexe']=''; if (isset($_POST['sexe'])){ $selection['sexe']=$_POST['sexe']; }
+	elseif (isset($_GET['sexe'])){ $selection['sexe']=$_GET['sexe']; }
 
 $selection['own_code']=''; if (isset($_POST['own_code'])){ $selection['own_code']=$_POST['own_code']; }
 $selection['part_own_code']=''; if (isset($_POST['part_own_code'])){ $selection['part_own_code']=$_POST['part_own_code']; }
@@ -449,6 +464,11 @@ if (isset($_POST['part_witness'])){
 	// ******************************************************
 	// *** THIS LAST LINE WILL SAVE ALL $selection VALUES ***
 	// ******************************************************
+	$_SESSION["save_selection"]=$selection;
+}
+
+// *** Store selection if search for most frequent firstnames is used from statistics page ***
+if (isset($_GET['pers_firstname'])){
 	$_SESSION["save_selection"]=$selection;
 }
 

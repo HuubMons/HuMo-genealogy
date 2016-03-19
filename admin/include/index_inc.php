@@ -363,11 +363,18 @@ The file .htpasswd will look something like this:<br>');
 				}
 				else{
 					echo ' <b>'.__('This tree does not yet contain any data or has not been imported properly!').'</b><br>';
+						// *** Read gedcom file ***
 						echo ' <form method="post" action="'.$path_tmp.'" style="display : inline;">';
 						//echo '<input type="hidden" name="page" value="gedcom">';
 						echo '<input type="hidden" name="page" value="tree">';
 						echo '<input type="hidden" name="tree_prefix" value="'.$dataDb->tree_prefix.'">';
 						echo '<input type="Submit" name="step1" value="'.__('Import Gedcom file').'">';
+						echo '</form>';
+
+						// *** Editor ***
+						echo ' '.__('or').' <form method="post" action="index.php?page=editor" style="display : inline;">';
+						echo '<input type="hidden" name="tree_prefix" value="'.$dataDb->tree_prefix.'">';
+						echo '<input type="Submit" name="submit" value="'.__('Editor').'">';
 						echo '</form>';
 				}
 				echo '</td></tr>';

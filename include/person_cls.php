@@ -731,6 +731,10 @@ function name_extended($person_kind){
 						$text_name.='<img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman">';
 					else
 						$text_name.='<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
+
+					// *** Add own icon by person, using a file name in own code ***
+					if($personDb->pers_own_code !='' AND is_file("images/".$personDb->pers_own_code.".gif"))
+						$text_name .= '<img src="'.CMS_ROOTPATH.'images/'.$personDb->pers_own_code.'.gif" alt="'.$personDb->pers_own_code.'">&nbsp;';
 				}
 
 				// *** Source by sexe ***

@@ -693,8 +693,10 @@ function show_event($selected_events=''){
 			echo '</select>';
 		}
 
-		//person_colour_mark
+		// *** person_colour_mark ***
 		elseif ($data_listDb->event_kind=='person_colour_mark'){
+			// *** Needed for descendants/ ascendants color ***
+			echo '<input type="hidden" name="event_event_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_event.'">';
 
 			$person_colour_mark=$data_listDb->event_event;
 			echo '<td style="border-left:0px;">';
@@ -730,30 +732,27 @@ function show_event($selected_events=''){
 				echo '<option value="14" style="color:#808080;"'.$selected.'>'.__('Colour 14').'</option>';
 			echo '</select>';
 
-	// GRAYED-OUT and DISABLED!!!! UNDER CONSTRUCTION!!!!
-	echo '<span style="color:#6D7B8D;">';
-			$check=''; //if (isset($pers_stillborn) AND $pers_stillborn=='y'){ $check=' checked'; }
-			echo ' '.__('Also change:').' <input type="checkbox" name="pers_colour_desc['.$data_listDb->event_id.']" '.$check.' DISABLED> '.__('Descendants');
-			echo '<input type="checkbox" name="pers_colour_anc" '.$check.' DISABLED> '.__('Ancestors');
-			//echo ' <span style="color:#FF0000;">'.$pers_firstname.' '.$pers_prefix.' '.$pers_lastname.'</span>';
-	echo '</span>';
-
 			$pers_colour='';
-			if ($person_colour_mark=='1'){ $pers_colour='style="color:#FF0000;"'; }
-			if ($person_colour_mark=='2'){ $pers_colour='style="color:#00FF00;"'; }
-			if ($person_colour_mark=='3'){ $pers_colour='style="color:#0000FF;"'; }
-			if ($person_colour_mark=='4'){ $pers_colour='style="color:#FF00FF;"'; }
-			if ($person_colour_mark=='5'){ $pers_colour='style="color:#FFFF00;"'; }
-			if ($person_colour_mark=='6'){ $pers_colour='style="color:#00FFFF;"'; }
-			if ($person_colour_mark=='7'){ $pers_colour='style="color:#C0C0C0;"'; }
-			if ($person_colour_mark=='8'){ $pers_colour='style="color:#800000;"'; }
-			if ($person_colour_mark=='9'){ $pers_colour='style="color:#008000;"'; }
-			if ($person_colour_mark=='10'){ $pers_colour='style="color:#000080;"'; }
-			if ($person_colour_mark=='11'){ $pers_colour='style="color:#800080;"'; }
-			if ($person_colour_mark=='12'){ $pers_colour='style="color:#A52A2A;"'; }
-			if ($person_colour_mark=='13'){ $pers_colour='style="color:#008080;"'; }
-			if ($person_colour_mark=='14'){ $pers_colour='style="color:#808080;"'; }
+			if ($person_colour_mark=='1') $pers_colour='style="color:#FF0000;"';
+			if ($person_colour_mark=='2') $pers_colour='style="color:#00FF00;"';
+			if ($person_colour_mark=='3') $pers_colour='style="color:#0000FF;"';
+			if ($person_colour_mark=='4') $pers_colour='style="color:#FF00FF;"';
+			if ($person_colour_mark=='5') $pers_colour='style="color:#FFFF00;"';
+			if ($person_colour_mark=='6') $pers_colour='style="color:#00FFFF;"';
+			if ($person_colour_mark=='7') $pers_colour='style="color:#C0C0C0;"';
+			if ($person_colour_mark=='8') $pers_colour='style="color:#800000;"';
+			if ($person_colour_mark=='9') $pers_colour='style="color:#008000;"';
+			if ($person_colour_mark=='10') $pers_colour='style="color:#000080;"';
+			if ($person_colour_mark=='11') $pers_colour='style="color:#800080;"';
+			if ($person_colour_mark=='12') $pers_colour='style="color:#A52A2A;"';
+			if ($person_colour_mark=='13') $pers_colour='style="color:#008080;"';
+			if ($person_colour_mark=='14') $pers_colour='style="color:#808080;"';
 			echo ' <span '.$pers_colour.'>'.__('Selected colour').'</span>';
+
+			// *** Also change color of ascendants and/ or descendants ***
+			$check=''; //if (isset($xx) AND $xx=='y'){ $check=' checked'; }
+			echo '<br>'.__('Also change').' <input type="checkbox" name="pers_colour_desc['.$data_listDb->event_id.']" '.$check.'> '.__('Descendants');
+			echo '<input type="checkbox" name="pers_colour_anc['.$data_listDb->event_id.']" '.$check.'> '.__('Ancestors');
 		}
 
 		else{
