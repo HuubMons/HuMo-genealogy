@@ -227,7 +227,7 @@ function showthem ($pref) {
 		}
 		closedir($dh);
 	}  
-	$subpage="";		
+	$subpage="";
 	if($subsub==true) {
 		if(isset($_GET['sub'])) {
 			$subpage = $_GET['sub'];

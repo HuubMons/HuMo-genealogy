@@ -333,11 +333,19 @@ if (!CMS_SPECIFIC){
 	//echo "<html>\n";
 	echo "<head>\n";
 	echo '<meta http-equiv="content-type" content="text/html; charset=utf-8">'."\n";
+
+	// *** Rescale standard HuMo-gen pages for mobile devices ***
+	echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+
 	echo '<title>'.__('Administration').'</title>'."\n";
-	echo '<link href="'.CMS_ROOTPATH.'images/favicon.ico" rel="shortcut icon" type="image/x-icon">';
+	//echo '<link href="'.CMS_ROOTPATH.'images/favicon.ico" rel="shortcut icon" type="image/x-icon">';
+	echo '<link href="'.CMS_ROOTPATH.'favicon.ico" rel="shortcut icon" type="image/x-icon">';
 	echo '<link href="admin.css" rel="stylesheet" type="text/css">';
 	echo '<link href="statistics/style.css" rel="stylesheet" type="text/css">'; // STYLE SHEET VOOR GRAFIEK
 	echo '<link href="admin_print.css" rel="stylesheet" type="text/css" media="print">';
+
+	// *** CSS changes for mobile devices ***
+	echo '<link rel="stylesheet" media="(max-width: 640px)" href="admin_mobile.css">';
 
 	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/jquery.min.js"></script>';
 
@@ -592,9 +600,14 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			if ($page=='admin'){ $select_top=' id="current_top"'; }
 			echo '<li>';
 				echo '<div class="'.$rtlmarker.'sddm">';
+					//echo '<a href="'.$path_tmp.'page=admin"';
+					//echo ' onmouseover="mopen(event,\'m1x\',\'?\',\'?\')"';
+					//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Main menu').'</a>';
+
 					echo '<a href="'.$path_tmp.'page=admin"';
 					echo ' onmouseover="mopen(event,\'m1x\',\'?\',\'?\')"';
-					echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Main menu').'</a>';
+					echo ' onmouseout="mclosetime()"'.$select_top.'><img src="..\images\menu_mobile.png" width="18"></a>';
+
 					echo '<div id="m1x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<ul class="humo_menu_item2">';
 
@@ -622,6 +635,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 							$menu_item=''; if ($page=='check'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp2.'">'.__('Logoff').'</a>';
 						}
+
 					echo '</ul>';
 				echo '</div>';
 			echo '</div>';
@@ -656,7 +670,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				$select_top='';
 				if ($page=='install'){ $select_top=' id="current_top"'; }
 				if ($page=='settings'){ $select_top=' id="current_top"'; }
-				//if ($page=='thumbs'){ $select_top=' id="current_top"'; }
+				if ($page=='cms_pages'){ $select_top=' id="current_top"'; }
 				if ($page=='links'){ $select_top=' id="current_top"'; }
 				if ($page=='language_editor'){ $select_top=' id="current_top"'; }
 				if ($page=='prefix_editor'){ $select_top=' id="current_top"'; }
@@ -673,29 +687,25 @@ echo '<div id="humo_top" '.$top_dir.'>';
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=install">'.__('Install').'</a></li>';
 
 						$menu_item=''; if ($page=='settings'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=settings">'.__('Settings').'</a>';
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=settings">'.__('Settings').'</a></li>';
 
-						//$menu_item=''; if ($page=='thumbs'){ $menu_item=' id="current"'; }
-						//echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=thumbs">'.__('Create thumbnails').'</a>';
+						$menu_item=''; if ($page=='cms_pages'){ $menu_item=' id="current"'; }
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cms_pages">'.__('CMS Own pages').'</a></li>';
 
 						$menu_item=''; if ($page=='links'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=links">'.__('Extra links').'</a>';
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=links">'.__('Extra links').'</a></li>';
 
 						// *** Language Editor ***
 						$menu_item=''; if ($page=='language_editor'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=language_editor">'.__('Language editor').'</a>';
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=language_editor">'.__('Language editor').'</a></li>';
 
 						// *** Prefix Editor ***
 						$menu_item=''; if ($page=='prefix_editor'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=prefix_editor">'.__('Prefix editor').'</a>';
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=prefix_editor">'.__('Prefix editor').'</a></li>';
 
 						// *** Language Editor ***
 						$menu_item=''; if ($page=='google_maps'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=google_maps">'.__('Google maps').'</a>';
-						
-						// ***Photobook categories ***
-						//$menu_item=''; if ($page=='photoalbum'){ $menu_item=' id="current"'; }
-						//echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=photoalbum">'.__('Photo album categories').'</a>';
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=google_maps">'.__('Google maps').'</a></li>';
 
 					echo '</ul>';
 					echo '</div>';
@@ -711,6 +721,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			if ($page=='check'){ $select_top=' id="current_top"'; }
 			if ($page=='cal_date'){ $select_top=' id="current_top"'; }
 			if ($page=='export'){ $select_top=' id="current_top"'; }
+			if ($page=='backup'){ $select_top=' id="current_top"'; }
+			if ($page=='statistics'){ $select_top=' id="current_top"'; }
 			echo '<li>';
 			echo '<div class="'.$rtlmarker.'sddm">';
 				echo '<a href="'.$path_tmp.'page=tree"';
@@ -738,6 +750,12 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 							$menu_item=''; if ($page=='export'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=export">'.__('Gedcom export').'</a>';
+
+							$menu_item=''; if ($page=='backup'){ $menu_item=' id="current"'; }
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=backup">'.__('Database backup').'</a>';
+
+							$menu_item=''; if ($page=='statistics'){ $menu_item=' id="current"'; }
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=statistics">'.__('Statistics').'</a>';
 						}
 
 					echo '</ul>';
@@ -792,6 +810,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				$select_top='';
 				if ($page=='users'){ $select_top=' id="current_top"'; }
 				if ($page=='groups'){ $select_top=' id="current_top"'; }
+				if ($page=='log'){ $select_top=' id="current_top"'; }
 				echo '<li>';
 				echo '<div class="'.$rtlmarker.'sddm">';
 					echo '<a href="'.$path_tmp.'page=users"';
@@ -806,65 +825,17 @@ echo '<div id="humo_top" '.$top_dir.'>';
 							$menu_item=''; if ($page=='groups'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=groups">'.__('Groups').'</a>';
 
-						echo '</ul>';
-					echo '</div>';
-				echo '</div>';
-				echo '</li>';
-			}
-
-			// POP-UP MENU for CMS categories and pages
-			if ($group_administrator=='j'){
-				$select_top='';
-				//if ($page=='cms_categories'){ $select_top=' id="current_top"'; }
-				if ($page=='cms_pages'){ $select_top=' id="current_top"'; }
-				echo '<li>';
-				echo '<div class="'.$rtlmarker.'sddm">';
-					//echo '<a href="'.$path_tmp.'page=cms_pages"';
-					//echo ' onmouseover="mopen(event,\'m5ax\',\'?\',\'?\')"';
-					//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Own pages').'</a>';
-					echo '<a href="'.$path_tmp.'page=cms_pages"'.$select_top.'>'.__('CMS Own pages').'</a>';
-
-					/*
-					echo '<div id="m5ax" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-						echo '<ul class="humo_menu_item2">';
-
-							$menu_item=''; if ($page=='cms_categories'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cms_categories">'.__('Categories').'</a>';
-
-							$menu_item=''; if ($page=='cms_pages'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cms_pages">'.__('Pages').'</a>';
+							$menu_item=''; if ($page=='log'){ $menu_item=' id="current"'; }
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=log">'.__('Log').'</a>';
 
 						echo '</ul>';
 					echo '</div>';
-					*/
-
-				echo '</div>';
-				echo '</li>';
-			}
-
-			// POP-UP MENU for database backup
-			if ($group_administrator=='j'){
-				$select_top='';
-				if ($page=='backup'){ $select_top=' id="current_top"'; }
-				echo '<li>';
-				echo '<div class="'.$rtlmarker.'sddm">';
-					//echo '<a href="'.$path_tmp.'page=backup"';
-					//echo ' onmouseover="mopen(event,\'m5x\',\'?\',\'?\')"';
-					//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Database backup').'</a>';
-					echo '<a href="'.$path_tmp.'page=backup"'.$select_top.'>'.__('Database backup').'</a>';
-					//echo '<div id="m5x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-					//	echo '<ul class="humo_menu_item2">';
-
-					//		$menu_item=''; if ($page=='backup'){ $menu_item=' id="current"'; }
-					//		echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=backup">'.__('Database backup').'</a>';
-
-					//	echo '</ul>';
-					//echo '</div>';
 				echo '</div>';
 				echo '</li>';
 			}
 
 			// POP-UP MENU for logs
+			/*
 			if ($group_administrator=='j'){
 				$select_top='';
 				if ($page=='log'){ $select_top=' id="current_top"'; }
@@ -887,6 +858,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				echo '</div>';
 				echo '</li>';
 			}
+			*/
 
 		}
 
@@ -901,17 +873,17 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'</a>';
 				echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> </a>';
 				//echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-				echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
+				echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<ul class="humo_menu_item2">';
 						for ($i=0; $i<count($language_file); $i++){
 							// *** Get language name ***
 							if ($language_file[$i] != $selected_language) {
 								include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
 								//echo '<li><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
-								echo '<li style="float:left; width:124px;"><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
+								echo '<li><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
 
 								echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
-								echo $language["name"];
+								echo '<span class="mobile_hidden">'.$language["name"].'</span>';
 								echo '</a>';
 								echo '</li>';
 							}

@@ -63,10 +63,10 @@ echo ' <input type="submit" value="'.__('Search').'">';
 echo '</form>';
 echo '</div>';
 
-//echo '<div style="height: 400px; width: 90%; margin-left: 5%; overflow-y: scroll;">';
-if($rtlmarker=="ltr") echo '<div style="height:400px; width:60%; margin-left: 20%; overflow-y: scroll;">';
-else echo '<div style="height:400px; width:60%; margin-right: 20%; overflow-y: scroll;">';
-echo '<table class="humo" width="99%">';
+//if($rtlmarker=="ltr") echo '<div style="height:400px; width:60%; margin-left: 20%; overflow-y: scroll;">';
+//else echo '<div style="height:400px; width:60%; margin-right: 20%; overflow-y: scroll;">';
+//echo '<table class="humo" width="99%">';
+echo '<table class="humo small">';
 echo '<tr class=table_headline>';
 echo '<th style="font-size: 90%; text-align: left">'.__('Changed/ Added').'</th>';
 echo '<th style="font-size: 90%; text-align: left">'.__('When changed').'</th>';
@@ -106,7 +106,7 @@ while (@$person=$person_result->fetch(PDO::FETCH_OBJ)){
 }
 echo '</table>';
 
-echo '</div>';
+//echo '</div>';
 
 include_once(CMS_ROOTPATH."footer.php");
 ?>

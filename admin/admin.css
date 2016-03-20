@@ -10,6 +10,11 @@ body.humo {
 	padding:0; margin:0; border:0;
 }
 
+.mobile_visible{
+	visibility:hidden;
+	width:0px; height:0px;
+}
+
 a {text-decoration:none; }
 a:hover {text-decoration:underline; color:red;}
 
@@ -161,6 +166,14 @@ ul.humo_menu_item2 li a{
 	display:block;
 }
 
+/* Double column for country flags in full version */
+#m40x{
+	width:250px;
+}
+#m40x{
+	float:left; width:124px;
+}
+
 #humo_menu a:hover {
 	/* background:url(../images/gray_down.png) repeat left top; */
 	/* color:#FFFFFF; */
@@ -264,7 +277,7 @@ div.confirm{
 .pageTabsContainer {
 	display: table-cell;
 	vertical-align: bottom;
-	white-space: nowrap;
+	/* white-space: nowrap; */
 }
 .pageTabs {
 	margin: 0;

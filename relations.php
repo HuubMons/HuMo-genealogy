@@ -1975,7 +1975,7 @@ function display () {
 
 			print __('MARITAL RELATIONSHIP: ');
 
-			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input style="font-size:110%" type="submit" name="extended" value="'.__('Use Extended Calculator').'">';
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="print_version"><input style="font-size:110%" type="submit" name="extended" value="'.__('Use Extended Calculator').'"></span>';
 
 			echo "<br><br>";
 			$spousetext1=''; $spousetext2='';  $finnish_spouse1=''; $finnish_spouse2='';
@@ -2123,9 +2123,9 @@ function display () {
 			echo '<td style="text-align:left;border-left:0px;padding10px;vertical-align:text-top;width:800px">';
 			echo "<div style='font-weight:bold'>".__('No blood relation or direct marital relation found')."</div>";
 		}
-		else { 
+		else {
 			echo '<td style="width:60px">&nbsp;</td>'; 
-			echo '<td style="padding-left:50px;padding-right:10px;vertical-align:text-top;border-left:2px solid #bbbbbb;width:350px">';
+			echo '<td class="print_version" style="padding-left:50px;padding-right:10px;vertical-align:text-top;border-left:2px solid #bbbbbb;width:350px">';
 			print __('MARITAL RELATIONSHIP: ');
 			echo "<br><br><div style='font-weight:bold;margin-bottom:10px'>".__('No direct marital relation found')."</div>";
 		}
@@ -2822,7 +2822,7 @@ function display_result($result) {
 
 	global $person, $person2, $db_functions;
 
-	echo '<div style="padding:3px;width:auto;background-color:#eeeeee"><input type="submit" name="next_path" value="'.__('Try to find another path').'" style="font-size:115%;">';
+	echo '<div class="print_version" style="padding:3px;width:auto;background-color:#eeeeee"><input type="submit" name="next_path" value="'.__('Try to find another path').'" style="font-size:115%;">';
 	echo '&nbsp;&nbsp;'.__('(With each consecutive search the path may get longer and computing time may increase!)').'</div>';
 
 	$fampath = CMS_ROOTPATH."family.php?";
@@ -2984,7 +2984,7 @@ else {
 	echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
 }
 echo 'onmouseout="mclosetime()">';
-echo '&nbsp;&nbsp;&nbsp;<strong>'.__('Information about the Relationship Calculator').'</strong>';
+echo '&nbsp;&nbsp;&nbsp;<strong><span class="print_version">'.__('Information about the Relationship Calculator').'</span></strong>';
 echo '</a>&nbsp;';
 echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 print '<br>';
@@ -3017,7 +3017,7 @@ if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["ca
 	unset($_SESSION["search_pers_id"]);
 }
 
-$person=''; if (isset($_POST["person"])){	$person=$_POST['person']; }
+$person=''; if (isset($_POST["person"])){ $person=$_POST['person']; }
 $person2=''; if (isset($_POST["person2"])){ $person2=$_POST['person2']; }
 if (isset($_POST["search1"])){ $_SESSION["search1"]=1; }
 if (isset($_POST["search2"])){ $_SESSION["search2"]=1; }
@@ -3039,6 +3039,7 @@ if(isset($_POST["switch"])) {
 // ===== BEGIN SEARCH BOX SYSTEM
 
 ob_start();
+echo "<div class='print_version'>";
 print '<span class="fonts"><br><br>&nbsp;&nbsp;&nbsp;'.__('You can enter names or part of names in either search box, or leave a search box empty').'<br>';
 echo '&nbsp;&nbsp;&nbsp;';
 echo __('<b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b>');
@@ -3226,7 +3227,7 @@ if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
 else { print '<select size="1" name="person2" style="width:'.$len.'px"><option></option></select>'; }
 echo '</td></tr></table>';
 /* echo '</form>'; */
-
+echo "</div>";
 // ===== END SEARCH BOX SYSTEM
 ob_end_flush(); 
 

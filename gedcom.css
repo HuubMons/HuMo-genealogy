@@ -17,6 +17,11 @@ body {
 	line-height:150%;
 }
 
+.mobile_visible{
+	visibility:hidden;
+	width:0px; height:0px;
+}
+
 .print_version {
 }
 
@@ -170,6 +175,14 @@ ul.humo_menu_item2 li {
 	display:block;
 	border-right:none;
 	margin:0;
+}
+
+/* Double column for country flags in full version */
+#m4x{
+	width:250px;
+}
+#m4x{
+	float:left; width:124px;
 }
 
 /* Main menu */
@@ -344,6 +357,16 @@ table.humo, table.ext {
 table.ext {
 	padding:10px;
 	text-align:center;
+}
+
+table.small {
+	width:50%;
+	border-spacing: 0;
+	border-collapse:separate;
+	border-width: 1px;
+
+	margin-left:auto; 
+	margin-right:auto;
 }
 
 table.standard {
@@ -891,7 +914,6 @@ div.photobooktext{
 	position: relative;
 	left: 10%;
 }
-
 .rtlhelp_div {
 	width: 80%;
 	position: relative;
@@ -1123,7 +1145,7 @@ table.relmenu {
 	border-collapse:separate;
 	text-align:center;
 	background-image:none;
-	background-color:#FFEEFF;
+	/* background-color:#FFEEFF; */
 }
 /*
 table.relmenu tr:last-of-type td:last-of-type {

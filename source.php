@@ -266,7 +266,7 @@ print '<tr><td>';
 			if ($connectDb->connect_sub_kind=='pers_death_source'){ echo __('Source for death:'); }
 			if ($connectDb->connect_sub_kind=='pers_buried_source'){ echo __('Source for burial:'); }
 			if ($connectDb->connect_sub_kind=='pers_text_source'){ echo __('Source for text:'); }
-			if ($connectDb->connect_sub_kind=='pers_sexe_source'){ echo __('Source for sexe:'); }
+			if ($connectDb->connect_sub_kind=='pers_sexe_source'){ echo __('Source for sex:'); }
 			//else { echo 'TEST'; }
 
 			if ($connectDb->connect_sub_kind=='pers_event_source'){

@@ -69,25 +69,29 @@ function topline(){
 	global $user, $source_presentation, $change_main_person, $maps_presentation, $picture_presentation, $text_presentation, $database, $man_cls, $person_manDb;
 	global $woman_cls, $person_womanDb, $selected_language;
 
-	$text='<tr class="table_headline"><td class="table_header" width="65%">';
+	//$text='<tr class="table_headline"><td class="table_header" width="65%">';
+	$text='<tr class="table_headline"><td class="table_header">';
 
 	// *** Text above family ***
 	$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
 	$text.='<div class="family_page_toptext fonts">'.$treetext['family_top'].'<br></div>';
 
-	$text.='</td><td class="table_header fonts" width="10%" style="text-align:center";>';
+	//$text.='</td><td class="table_header fonts" width="12%" style="text-align:center";>';
+	$text.='</td><td class="table_header fonts" width="130" style="text-align:right";>';
 
 	// *** Hide selections for bots, and second family screen (descendant report etc.) ***
 	if (!$bot_visit AND $descendant_loop==0 AND $parent1_marr==0){
 
 		// *** Settings in pop-up screen ***
-		$text.= '<div class="'.$rtlmarker.'sddm" style="left:10px;top:10px;display:inline;">';
+		//$text.= '<div class="'.$rtlmarker.'sddm" style="left:10px;top:10px;display:inline;">';
+		$text.= '<div class="'.$rtlmarker.'sddm" style="left:10px; top:10px; display:inline-block; vertical-align:middle;">';
 			$text.= '<a href="'.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'"';
 			$text.= ' style="display:inline" ';
 			$text.= 'onmouseover="mopen(event,\'help_menu\',0,0)"';
 			$text.= 'onmouseout="mclosetime()">';
-			$text.= '<b>'.__('Settings').'</b>';
-			$text.= '</a>';
+			//$text.= '<b>'.__('Settings').'</b>';
+			$text.= '<img src="images\settings.png" alt="'.__('Settings').'">';
+			$text.= '</a> ';
 
 			//$text='<div style="z-index:40; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			$text.='<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:'.$alignmarker.';  direction:'.$rtlmarker.';" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -153,39 +157,41 @@ function topline(){
 			$text.='</div>';
 		$text.='</div>';
 
-	$text.='</td><td class="table_header fonts" width="20%" style="text-align:center";>';
+	//$text.='</td><td class="table_header fonts" width="20%" style="text-align:center";>';
 
 		// *** PDF button ***
 		//if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
 		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
-			$text.='<form method="POST" action="'.$uri_path.'family.php?show_sources=1" style="display : inline;">';
-			$text.='<input type="hidden" name="id" value="'.$family_id.'">';
-			$text.='<input type="hidden" name="main_person" value="'.$main_person.'">';
-			$text.='<input type="hidden" name="database" value="'.$database.'">';
-			$text.='<input type="hidden" name="screen_mode" value="PDF">';
-			if($descendant_report==true) {
-				$text.='<input type="hidden" name="descendant_report" value="'.$descendant_report.'">';
-			}
-			$text.='<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
-			//$text.='<input type="image" src="images/pdf.jpeg" width="20" border="0" alt="PDF">';
+			$text.=' <form method="POST" action="'.$uri_path.'family.php?show_sources=1" style="display:inline-block; vertical-align:middle;">';
+				$text.='<input type="hidden" name="id" value="'.$family_id.'">';
+				$text.='<input type="hidden" name="main_person" value="'.$main_person.'">';
+				$text.='<input type="hidden" name="database" value="'.$database.'">';
+				$text.='<input type="hidden" name="screen_mode" value="PDF">';
+				if($descendant_report==true) {
+					$text.='<input type="hidden" name="descendant_report" value="'.$descendant_report.'">';
+				}
+				//$text.='<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
+				//$text.='<input type="image" src="images/pdf.jpeg" width="20" border="0" alt="PDF Report">';
+				$text.='<input class="fonts" style="background-color:#FF0000; color:white; font-weight:bold;" type="Submit" name="submit" value="'.__('PDF').'">';
 			$text.='</form> ';
 		}
 
 		// *** RTF button ***
 		if($user["group_rtf_button"]=='y' AND $language["dir"]!="rtl") {
-			$text.='<form method="POST" action="'.$uri_path.'family.php?show_sources=1" style="display : inline;">';
-			$text.='<input type="hidden" name="id" value="'.$family_id.'">';
-			$text.='<input type="hidden" name="main_person" value="'.$main_person.'">';
-			$text.='<input type="hidden" name="database" value="'.$database.'">';
-			$text.='<input type="hidden" name="screen_mode" value="RTF">';
-			if($descendant_report==true) {
-				$text.='<input type="hidden" name="descendant_report" value="'.$descendant_report.'">';
-			}
-			$text.='<input class="fonts" type="Submit" name="submit" value="'.__('RTF Report').'">';
+			$text.='<form method="POST" action="'.$uri_path.'family.php?show_sources=1" style="display:inline-block; vertical-align:middle;">';
+				$text.='<input type="hidden" name="id" value="'.$family_id.'">';
+				$text.='<input type="hidden" name="main_person" value="'.$main_person.'">';
+				$text.='<input type="hidden" name="database" value="'.$database.'">';
+				$text.='<input type="hidden" name="screen_mode" value="RTF">';
+				if($descendant_report==true) {
+					$text.='<input type="hidden" name="descendant_report" value="'.$descendant_report.'">';
+				}
+				//$text.='<input class="fonts" type="Submit" name="submit" value="'.__('RTF Report').'">';
+				$text.='<input class="fonts" style="background-color:#0040FF; color:white; font-weight:bold;" type="Submit" name="submit" value="'.__('RTF').'">';
 			$text.='</form> ';
 		}
 
-	$text.='</td><td class="table_header fonts" width="5%" style="text-align:center";>';
+	//$text.='</td><td class="table_header fonts" width="5%" style="text-align:center";>';
 
 		// *** Add family to favorite list ***
 		// If there is a N.N. father, then use mother in favorite icon.
@@ -205,7 +211,7 @@ function topline(){
 					if ($value==$favorite_values){ $check=true; }
 				}
 			}
-			$text.='<form method="POST" action="'.$uri_path.'family.php" style="display : inline;">';
+			$text.='<form method="POST" action="'.$uri_path.'family.php" style="display:inline-block; vertical-align:middle;">';
 			$text.='<input type="hidden" name="id" value="'.$family_id.'">';
 			$text.='<input type="hidden" name="main_person" value="'.$main_person.'">';
 

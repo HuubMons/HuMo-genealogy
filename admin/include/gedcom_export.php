@@ -717,7 +717,7 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 
 	if ($person->pers_patronym) $buffer.='1 _PATR '.$person->pers_patronym."\r\n";
 
-	// *** Sexe ***
+	// *** Sex ***
 	$buffer.='1 SEX '.$person->pers_sexe."\r\n";
 
 	// *** Birth data ***

@@ -1104,9 +1104,9 @@ if (isset($pers_gedcomnumber)){
 
 		echo '</td><td></td></tr>';
 
-		// *** Sexe ***
+		// *** Sex ***
 		$colour='';
-		// *** If sexe = unknown then show a red line (new person = other colour). ***
+		// *** If sex = unknown then show a red line (new person = other colour). ***
 		if ($pers_sexe==''){ $colour=' bgcolor="#FF0000"'; }
 		if ($add_person==true AND $pers_sexe==''){ $colour=' bgcolor="#CCFFFF"'; }
 		echo '<tr><td>'.__('Sex').'</td><td style="border-right:0px;"></td><td'.$colour.' style="border-left:0px;">';

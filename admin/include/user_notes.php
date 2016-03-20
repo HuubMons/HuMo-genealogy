@@ -9,7 +9,7 @@ if (isset($_POST['tree'])){ $tree=safe_text($_POST["tree"]); }
 
 echo '<h1 align=center>'.__('User notes').'</h1>';
 
-echo '<table class="humo standard" style="width:800px;" border="1">';
+echo '<table class="humo standard"  border="1">';
 
 echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 

@@ -110,7 +110,8 @@ if (isset($menu_admin) AND $menu_admin=='picture_show'){
 echo $start_text;
 
 if ($show_table){
-	echo '<table class="humo standard" style="width:800px;" border="1">';
+	//echo '<table class="humo standard" style="width:800px;" border="1">';
+	echo '<table class="humo standard" style="margin-left:0px;" border="1">';
 
 	echo '<tr class="table_header"><th colspan="2">'.__('Picture settings').'</th></tr>';
 

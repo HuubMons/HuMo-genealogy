@@ -107,7 +107,7 @@ if (isset($_POST['save_settings_database'])){
 // *************************************************************************
 
 echo '<div style="height:400px; width:830px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
-echo '<table class="humo" width="800px">';
+echo '<table class="humo" width="100%">';
 	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
 
 	// *** HuMo-gen version ***

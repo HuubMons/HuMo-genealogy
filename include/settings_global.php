@@ -1,13 +1,13 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.1.6';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.1.7';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 9 mrt. 2014';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
-$humo_option["version_date"]='2015-09-23';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2015-11-20';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -239,6 +239,16 @@ if (!isset($humo_option["name_order"])){
 }
 if (!isset($humo_option["default_timeline"])){
 	$humo_option["default_timeline"]=''; $sql="INSERT INTO humo_settings SET setting_variable='default_timeline', setting_value=''";
+	@$result=$dbh->query($sql);	
+}
+// one name study display
+if (!isset($humo_option["one_name_study"])){
+	$humo_option["one_name_study"]='n'; $sql="INSERT INTO humo_settings SET setting_variable='one_name_study', setting_value='n'";
+	@$result=$dbh->query($sql);	
+}
+// one name study setting of the name
+if (!isset($humo_option["one_name_thename"])){
+	$humo_option["one_name_thename"]=''; $sql="INSERT INTO humo_settings SET setting_variable='one_name_thename', setting_value=''";
 	@$result=$dbh->query($sql);	
 }
 if (!isset($humo_option["geo_trees"])){  

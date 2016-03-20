@@ -49,7 +49,9 @@ function show_person($personDb){
 		$index_name.=$name["index_name_extended"].$name["colour_mark"];
 	}
 
-	// *** Show extra colums before a person in index places ***
+	echo '<tr>';
+
+	// *** Show extra columns before a person in index places ***
 	if ($index_list=='places'){
 
 		if ($selected_place!=$personDb->place_order)
@@ -211,7 +213,7 @@ $index_list='quicksearch';
 
 // *** Reset search fields if necessary ***
 //if (isset($_POST['pers_firstname']) OR isset($_GET['pers_lastname']) OR isset($_GET['reset']) OR isset($_POST['quicksearch'])){
-if (isset($_POST['pers_firstname']) OR isset($_GET['pers_lastname']) OR isset($_GET['pers_firstname']) OR isset($_GET['reset']) OR isset($_POST['quicksearch'])){
+if (isset($_POST['pers_firstname']) OR isset($_GET['pers_lastname']) OR isset($_GET['pers_firstname']) OR isset($_GET['reset']) OR isset($_POST['quicksearch'])) {
 	unset ($_SESSION["save_search_tree_prefix"]);
 	unset ($_SESSION["save_search_database"]);
 	unset ($_SESSION["save_adv_search"]);
@@ -350,6 +352,9 @@ if (isset($_POST['search_database'])){
 if (isset($_GET["search_database"])){
 	$search_database=$_GET['search_database']; $_SESSION["save_search_database"]=$search_database;
 }
+if(isset($humo_option['one_name_study']) AND $humo_option['one_name_study']=='y') {
+	$search_database = "all_trees"; $_SESSION["save_search_database"]=$search_database;
+}
 
 $selection['pers_firstname']='';
 if (isset($_POST['pers_firstname'])){
@@ -379,11 +384,17 @@ if (isset($_GET['pers_prefix'])){
 }
 
 // *** Lastname ***
+
 $selection['pers_lastname']='';
 if (isset($_POST['pers_lastname'])){
 	$selection['pers_lastname']=$_POST['pers_lastname'];
 	//$selection['pers_lastname']=htmlentities($_POST['pers_lastname'],ENT_QUOTES,'UTF-8');
 	$_SESSION["save_selection"]=$selection;
+}
+if(isset($humo_option['one_name_study']) AND $humo_option['one_name_study']=='y') {
+	if((isset($_GET['adv_search']) AND $_GET['adv_search']==1) OR (isset($_GET['index_list']) AND $_GET['index_list']=='search') OR (isset($_GET['reset']) AND $_GET['reset']==1)) {
+		$selection['pers_lastname']= $humo_option['one_name_thename'];
+	}
 }
 if (isset($_GET["pers_lastname"])){
 	$selection['pers_lastname']=$_GET['pers_lastname'];
@@ -528,13 +539,13 @@ if (isset($_POST['part_place_name'])){
 }
 
 // *** Read session for multiple pages ***
-if (isset($_GET['item'])){
+if (isset($_GET['item'])){ 
 	if (isset($_SESSION["save_search_database"])){ $search_database=$_SESSION["save_search_database"]; }
 	if (isset($_SESSION["save_quicksearch"])) $quicksearch=$_SESSION["save_quicksearch"];
 	if (isset($_SESSION["save_adv_search"])) $adv_search=$_SESSION["save_adv_search"];
 
 	// *** Multiple search values ***
-	if (isset($_SESSION["save_selection"])) $selection=$_SESSION["save_selection"];
+	if (isset($_SESSION["save_selection"])) $selection=$_SESSION["save_selection"]; 
 }
 
 // *** Search for places in birth-baptise-died places etc. ***
@@ -577,6 +588,7 @@ $count_qry='';
 
 //*** Results of searchform in mainmenu ***
 //*** Or: search in lastnames ***
+
 if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['pers_lastname'] OR $selection['birth_place'] OR $selection['death_place']
 	OR $selection['birth_year'] OR $selection['death_year'] OR ($selection['sexe'] AND $selection['sexe']!='both')
 	OR $selection['own_code'] OR $selection['pers_profession'] OR $selection['pers_place'] OR $selection['text']
@@ -708,7 +720,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$add_event_qry=true;
 	}
 
-	// *** Change querie if searched for spouse ***
+	// *** Change query if searched for spouse ***
 	if($selection['spouse_firstname'] OR $selection['spouse_lastname']) {
 		$query.=$and."pers_fams!=''"; $and=" AND ";
 	}
@@ -759,11 +771,15 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	$query_select .= $make_date." FROM humo_persons";
 
 	if ($add_event_qry)
-		$query_select .= " LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_tree_id=pers_tree_id";
+		$query_select .= " LEFT JOIN humo_events ON event_tree_id=pers_tree_id AND event_connect_id=pers_gedcomnumber";
 	if ($add_address_qry)
-		$query_select .= " LEFT JOIN humo_addresses ON address_person_id=pers_gedcomnumber AND address_tree_id=pers_tree_id";
+		//$query_select .= " LEFT JOIN humo_addresses ON address_person_id=pers_gedcomnumber AND address_tree_id=pers_tree_id";
+		$query_select .= " LEFT JOIN humo_connections ON connect_tree_id=pers_tree_id AND connect_connect_id=pers_gedcomnumber
+							AND connect_sub_kind='person_address'
+							LEFT JOIN humo_addresses ON address_person_id=pers_gedcomnumber AND address_tree_id=pers_tree_id
+							OR address_gedcomnr=connect_item_id AND address_tree_id=connect_tree_id AND connect_connect_id=pers_gedcomnumber";
 
-	$query_select .= " WHERE (".$multi_tree.") ".$query;
+	$query_select.=" WHERE (".$multi_tree.") ".$query;
 	$query_select.=" GROUP BY pers_gedcomnumber";
 	$query_select.=" ORDER BY ".$orderby;
 	$query=$query_select;
@@ -774,7 +790,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 if ($index_list=='quicksearch'){
 	// *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
 	$quicksearch=str_replace(' ', '%', $quicksearch);
-
+	if($humo_option['one_name_study']=='y') { $quicksearch .= '%'.$humo_option['one_name_thename']; }
 	// *** In case someone entered "Mons, Huub" using a comma ***
 	$quicksearch = str_replace(',','',$quicksearch);
 
@@ -1111,21 +1127,27 @@ if ($index_list=='patronym'){
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
 			echo ' <input type="text" name="pers_firstname" value="'.$selection['pers_firstname'].'" size="15" placeholder="'.__('First name').'"></td>';
-
-			echo '<td align="right" class="no_border">'.__('Last name').':';
-			// *** Lastname prefix ***
-			$pers_prefix=$selection['pers_prefix']; if ($pers_prefix=='EMPTY') $pers_prefix='';
-			echo ' <input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="8" placeholder="'.ucfirst(__('prefix')).'">';
-			// *** Lastname ***
-			echo ' <select size="1" name="part_lastname">';
-			echo '<option value="contains">'.__('Contains').'</option>';
-			$select_item=''; if ($selection['part_lastname']=='equals'){ $select_item=' selected'; }
-			echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
-			$select_item=''; if ($selection['part_lastname']=='starts_with'){ $select_item=' selected'; }
-			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
-			echo '</select>';
-			echo ' <input type="text" name="pers_lastname" value="'.$selection['pers_lastname'].'" size="15" placeholder="'.__('Last name').'"></td>';
-
+			if($humo_option['one_name_study']!='y') {
+				echo '<td align="right" class="no_border">'.__('Last name').':';
+				// *** Lastname prefix ***
+				$pers_prefix=$selection['pers_prefix']; if ($pers_prefix=='EMPTY') $pers_prefix='';
+				echo ' <input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="8" placeholder="'.ucfirst(__('prefix')).'">';
+				// *** Lastname ***
+				echo ' <select size="1" name="part_lastname">';
+				echo '<option value="contains">'.__('Contains').'</option>';
+				$select_item=''; if ($selection['part_lastname']=='equals'){ $select_item=' selected'; }
+				echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
+				$select_item=''; if ($selection['part_lastname']=='starts_with'){ $select_item=' selected'; }
+				echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
+				echo '</select>';
+				echo ' <input type="text" name="pers_lastname" value="'.$selection['pers_lastname'].'" size="15" placeholder="'.__('Last name').'"></td>';
+			}
+			else {
+				echo '<td align="center" class="no_border">'.__('Last name').':';
+				echo '<span style="text-align:center;font-weight:bold">'.$humo_option['one_name_thename'].'</span>';
+				echo '<input type="hidden" name="pers_lastname" value="'.$humo_option['one_name_thename'].'">';
+				echo '<input type="hidden" name="part_lastname" value="equals">';					
+			}
 			// *** Profession ***
 			echo '<td align="right" class="no_border">'.__('Profession').':';
 			echo ' <select size="1" name="part_profession">';
@@ -1141,9 +1163,13 @@ if ($index_list=='patronym'){
 
 		}
 		else{
-			echo '<td class="no_border center" colspan="2">'.__('Enter name or part of name').'<br>';
-			echo '<span style="font-size:10px;">"John Jones", "Jones John", "John of Jones", "of Jones, John", "Jones, John of", "Jones of, John"</span>';
-
+			if($humo_option['one_name_study']!='y') {
+				echo '<td class="no_border center" colspan="2">'.__('Enter name or part of name').'<br>';
+				echo '<span style="font-size:10px;">"John Jones", "Jones John", "John of Jones", "of Jones, John", "Jones, John of", "Jones of, John"</span>';
+			}
+			else {
+				echo '<td class="no_border center" colspan="2">'.__('Enter private name');
+			}
 			echo '<input type="hidden" name="index_list" value="quicksearch">';
 			$quicksearch='';
 			if (isset($_POST['quicksearch'])){
@@ -1294,7 +1320,7 @@ if ($index_list=='patronym'){
 		echo '<tr><td colspan="3" class="no_border center">';
 		$datasql2 = $dbh->query("SELECT * FROM humo_trees");
 		$num_rows2 = $datasql2->rowCount();
-		if ($num_rows2>1){
+		if ($num_rows2>1 AND $humo_option['one_name_study']=='n'){
 			$checked=''; if ($search_database=="tree_selected"){ $checked='CHECKED'; }
 			echo '<input type="radio" name="search_database" value="tree_selected" '.$checked.'> '.__('Selected family tree');
 			$checked=''; if ($search_database=="all_trees"){ $checked='checked'; }
@@ -1302,7 +1328,9 @@ if ($index_list=='patronym'){
 			$checked=''; if ($search_database=="all_but_this"){ $checked='checked'; }
 			echo '<input type="radio" name="search_database" value="all_but_this" '.$checked.'> '.__('All but selected tree');
 		}
-
+		if ($num_rows2>1 AND $humo_option['one_name_study']=='y'){
+			echo '<input type="hidden" name="search_database" value="all_trees">';
+		}
 		echo '&nbsp;&nbsp; <input type="submit" value="'.__('Search').'" name="B1">';
 
 		if ($adv_search==true){

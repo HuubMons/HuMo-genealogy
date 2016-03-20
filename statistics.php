@@ -79,7 +79,8 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			// $table1_width="800";
 			$table1_width="80%";
 		}
-		echo '<br><table width='.$table1_width.' class="humo" align="center">';
+		//echo '<br><table width='.$table1_width.' class="humo" align="center">';
+		echo '<br><table class="humo small" align="center">';
 
 		echo '<tr class=table_headline><th>'.__('Item').'</th><th><br></th><th><br></th></tr>';
 
@@ -222,22 +223,43 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo '<br><table width='.$table2_width.' class="humo" align="center">';
 
 		echo '<tr class=table_headline><th width="20%">'.__('Item').'</th><th colspan="2" width="40%">'.__('Male').'</th><th colspan="2" width="40%">'.__('Female').'</th></tr>';
-
+/*
 		// *** Count man ***
 		$person_qry=$dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='m'");
 		$count_persons=$person_qry->rowCount();
 		echo "<tr><td>".__('No. of persons')."</td>\n";
 		echo "<td align='center'><i>$count_persons</i></td>\n";
+		$nr_persons = $dataDb->tree_persons;
 		@$percent=($count_persons/$nr_persons)*100;
-		echo '<td align="center">'.floor($percent).'%</td>';
+		//echo '<td align="center">'.floor($percent).'%</td>';
+		echo '<td align="center">'.round($percent,1).'%</td>';
 
 		// *** Count woman ***
 		$person_qry=$dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='f'");
 		$count_persons=$person_qry->rowCount();
 		echo "<td align='center'><i>$count_persons</i></td>\n";
+		$nr_persons = $dataDb->tree_persons;
 		@$percent=($count_persons/$nr_persons)*100;
-		echo '<td align="center">'.floor($percent).'%</td>';
+		//echo '<td align="center">'.floor($percent).'%</td>';
+		echo '<td align="center">'.round($percent,1).'%</td>';
+*/
+		// *** Count man ***
+		$man_qry=$dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='m'");
+		$count_man=$man_qry->rowCount();
 
+		// *** Count woman ***
+		$woman_qry=$dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='f'");
+		$count_woman=$woman_qry->rowCount();
+
+		$both = $count_man + $count_woman;
+
+		echo "<tr><td>".__('No. of persons')."</td>\n";
+		echo "<td align='center'><i>$count_man</i></td>\n";
+		@$percent=($count_man/$both)*100;
+		echo '<td align="center">'.round($percent,1).'%</td>';
+		echo "<td align='center'><i>$count_woman</i></td>\n";
+		@$percent=($count_woman/$both)*100;
+		echo '<td align="center">'.round($percent,1).'%</td>';
 		echo '<tr><td colspan="5"><br></td></tr>';
 
 		// *** Oldest pers_birth_date man.
@@ -336,7 +358,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 
 
 		// *** Oldest pers_bapt_date man.
-		echo "<tr><td>".__('Oldest baptise date')."</td>\n";
+		echo "<tr><td>".__('Oldest baptism date')."</td>\n";
 		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_bapt_date, substring(pers_bapt_date,-4) as search
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
 			AND pers_bapt_date LIKE '_%' AND pers_sexe='M' AND substring(pers_bapt_date,-3)!=' BC'
@@ -383,7 +405,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 
 
 		// Youngest pers_bapt_date man
-		echo "<tr><td>".__('Youngest baptise date')."</td>\n";
+		echo "<tr><td>".__('Youngest baptism date')."</td>\n";
 		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_bapt_date, substring(pers_bapt_date,-4) as search
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
 			AND pers_bapt_date LIKE '_%' AND pers_sexe='M' AND substring(pers_bapt_date,-3)!=' BC'
@@ -609,14 +631,23 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo round($average,1);
 		echo ' '.__('years').'</td>';
 		if ($man_min==0){ $man_min='0'; }
-		echo '<td align="center">'.$man_min.' '.__('years').' - '.$man_max.' '.__('years').'</td>';
+		//echo '<td align="center">'.$man_min.' '.__('years').' - '.$man_max.' '.__('years').'</td>';
+		echo '<td align="center">&nbsp;</td>';
 
 		echo '<td align="center">';
 		@$average=array_sum($age_woman) / count($age_woman);
 		echo round($average,1);
 		echo ' '.__('years').'</td>';
 		if ($woman_min==0){ $woman_min='0'; }
-		echo '<td align="center">'.$woman_min.' '.__('years').' - '.$woman_max.' '.__('years').'</td>';
+		//echo '<td align="center">'.$woman_min.' '.__('years').' - '.$woman_max.' '.__('years').'</td>';
+		echo '<td align="center">&nbsp;</td>';
+		echo '</tr>';
+
+		echo "<tr><td>".__('Lifespan range')."</td>\n";
+		echo '<td align="center">'.$man_min.' - '.$man_max.' '.__('years').'</td>';
+		echo '<td align="center">&nbsp;</td>';
+		echo '<td align="center">'.$woman_min.' - '.$woman_max.' '.__('years').'</td>';
+		echo '<td align="center">&nbsp;</td>';
 		echo '</tr>';
 
 		// *** Average age married ***
@@ -627,16 +658,24 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo round($average,1);
 		echo ' '.__('years').'</td>';
 		if ($man_min_married==0){ $man_min_married='0'; }
-		echo '<td align="center">'.$man_min_married.' '.__('years').' - '.$man_max_married.' '.__('years').'</td>';
+		//echo '<td align="center">'.$man_min_married.' '.__('years').' - '.$man_max_married.' '.__('years').'</td>';
+		echo '<td align="center">&nbsp;</td>';
 
 		echo '<td align="center">';
 		@$average=array_sum($age_woman_married) / count($age_woman_married);
 		echo round($average,1);
 		echo ' '.__('years').'</td>';
 		if ($woman_min_married==0){ $woman_min_married='0'; }
-		echo '<td align="center">'.$woman_min_married.' '.__('years').' - '.$woman_max_married.' '.__('years').'</td>';
+		//echo '<td align="center">'.$woman_min_married.' '.__('years').' - '.$woman_max_married.' '.__('years').'</td>';
+		echo '<td align="center">&nbsp;</td>';
 		echo '</tr>';
 
+		echo "<tr><td>".__('Lifespan range of married individuals')."</td>\n";
+		echo '<td align="center">'.$man_min_married.' - '.$man_max_married.' '.__('years').'</td>';
+		echo '<td align="center">&nbsp;</td>';
+		echo '<td align="center">'.$woman_min_married.' - '.$woman_max_married.' '.__('years').'</td>';
+		echo '<td align="center">&nbsp;</td>';
+		echo '</tr>';
 		echo '</table>';
 
 	}

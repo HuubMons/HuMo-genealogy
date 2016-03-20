@@ -430,6 +430,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$data_list_qry=$dbh->query($qry);
 			$data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ);
 
+			/*
 			?>
 			<script>
 			$('#sortable_pic').sortable().bind('sortupdate', function() {
@@ -468,7 +469,46 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			});
 			</script>
 			<?php
-			
+			*/
+
+			$text.= '
+			<script>
+			$(\'#sortable_pic\').sortable().bind(\'sortupdate\', function() {
+				var mediastring = ""; 
+				var media_arr = document.getElementsByClassName("mediamove"); 
+				for (var z = 0; z < media_arr.length; z++) { 
+					// create the new order after dragging to store in database with ajax
+					mediastring = mediastring + media_arr[z].id + ";"; 
+					// change the order numbers of the pics in the pulldown (that was generated before the drag
+					// so that if one presses on delete before refresh the right pic will be deleted !!
+				}
+				mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
+				
+				var parnode = document.getElementById(\'pic_main_\' + media_arr[0].id).parentNode; 
+				var picdomclass = document.getElementsByClassName("pic_row2");
+				var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
+
+				for(var d=media_arr.length-1; d >=0 ; d--) {
+					parnode.insertBefore(document.getElementById(\'pic_row2_\' + media_arr[d].id),nextnode);
+					nextnode = document.getElementById(\'pic_row2_\' + media_arr[d].id);
+					parnode.insertBefore(document.getElementById(\'pic_row1_\' + media_arr[d].id),nextnode);
+					nextnode = document.getElementById(\'pic_row1_\' + media_arr[d].id);
+					parnode.insertBefore(document.getElementById(\'pic_main_\' + media_arr[d].id),nextnode);
+					nextnode = document.getElementById(\'pic_main_\' + media_arr[d].id);  
+				}
+
+				$.ajax({ 
+					url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
+					success: function(data){
+					} ,
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert(xhr.status);
+						alert(thrownError);
+					}
+				});
+			});
+			</script>';
+
 		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';

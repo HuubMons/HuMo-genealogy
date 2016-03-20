@@ -418,8 +418,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** No relation data (marriage without date), show standard text ***
 	if ($relation_check==false AND $marriage_check==false){
 		// *** Show standard marriage text ***
-		$templ_relation["unkn_rel"]=__('Marriage/ Related').' ';
-		$text.='<b>'.__('Marriage/ Related').'</b> ';
+		$templ_relation["unkn_rel"]=__('Married/ Related').' ';
+		$text.='<b>'.__('Married/ Related').'</b> ';
 	}
 	else{
 		// *** Years of marriage ***
@@ -576,13 +576,13 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 					$relation_number.=' '.__('marriage/ relation');   // relation
 				}
 				else{
-					$relation_number.=' '.__('marriage/ related');   // relation
+					$relation_number.=' '.__('married/ related');   // relation
 				}
 				$relation_kind='';
 				$addition=__(' to: ');
 			}
 			else{
-				$relation_number.=__('Marriage/ Related');      // Relation
+				$relation_number.=__('Married/ Related');      // Relation
 				$relation_kind='';
 				$addition=__(' to: ');
 			}

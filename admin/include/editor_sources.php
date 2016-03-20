@@ -207,9 +207,9 @@ if ($connect_sub_kind=='pers_name_source'){
 	echo source_edit("person","pers_name_source",$pers_gedcomnumber);
 }
 
-// *** Edit source by sexe ***
+// *** Edit source by sex ***
 if ($connect_sub_kind=='pers_sexe_source'){
-	echo '<h2>'.__('source').' - '.__('Sexe').'</h2>';
+	echo '<h2>'.__('source').' - '.__('Sex').'</h2>';
 	echo source_edit("person","pers_sexe_source",$pers_gedcomnumber);
 }
 

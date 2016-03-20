@@ -723,8 +723,8 @@ function process_person($person_array){
 			// *** Date ***
 			if ($buffer6=='2 DATE'){
 				$processed=1;
-				//FTM programm can have multiple birth dates, only first one is saved:
-				if (!$pers_birth_date){ $pers_birth_date=substr($buffer, 7); }
+				//FTM and dorotree programs can have multiple birth dates, only first one is saved:
+				if (!$pers_birth_date){ $pers_birth_date=trim(substr($buffer, 7)); }
 			}
 
 			// *** Aldfaer time ***
@@ -814,7 +814,12 @@ function process_person($person_array){
 				$processed=1; $pers_religion=substr($buffer,7); }
 
 			// *** Date ***
-			if ($buffer6=='2 DATE'){ $processed=1; $pers_bapt_date=substr($buffer, 7); }
+			//if ($buffer6=='2 DATE'){ $processed=1; $pers_bapt_date=substr($buffer, 7); }
+			if ($buffer6=='2 DATE'){
+				$processed=1;
+				//dorotree programm can have multiple bapt dates, only first one is saved:
+				if (!$pers_bapt_date){ $pers_bapt_date=trim(substr($buffer, 7)); }
+			}
 
 			// *** Place ***
 			if ($level2=='PLAC'){
@@ -879,7 +884,12 @@ function process_person($person_array){
 			$pers_alive='deceased';
 
 			// *** Date ***
-			if ($buffer6=='2 DATE'){ $processed=1; $pers_death_date=substr($buffer, 7); }
+			//if ($buffer6=='2 DATE'){ $processed=1; $pers_death_date=substr($buffer, 7); }
+			if ($buffer6=='2 DATE'){
+				$processed=1;
+				//dorotree programm can have multiple death dates, only first one is saved:
+				if (!$pers_death_date){ $pers_death_date=trim(substr($buffer, 7)); }
+			}
 
 			// *** Aldfaer time ***
 			// 2 _ALDFAER_TIME 08:00:00
@@ -955,7 +965,12 @@ function process_person($person_array){
 			$pers_alive='deceased';
 
 			// *** Date ***
-			if ($buffer6=='2 DATE'){ $processed=1; $pers_buried_date=substr($buffer, 7); }
+			//if ($buffer6=='2 DATE'){ $processed=1; $pers_buried_date=substr($buffer, 7); }
+			if ($buffer6=='2 DATE'){
+				$processed=1;
+				//dorotree programm can have multiple burial dates, only first one is saved:
+				if (!$pers_buried_date){ $pers_buried_date=trim(substr($buffer, 7)); }
+			}
 
 			// *** Place ***
 			if ($level2=='PLAC'){
@@ -1147,10 +1162,10 @@ function process_person($person_array){
 			if ($buffer6=='2 DATE'){ $processed=1; $event['date'][$event_nr]=substr($buffer, 7); }
 		}
 
-		// *** Sexe: F or M ***
+		// *** Sex: F or M ***
 		if (substr($level1,0,3)=='SEX'){ // *** 1 SEX F/ 1 SEX M ***
 			if ($buffer5=='1 SEX'){ $processed=1; $pers_sexe=substr($buffer, 6); }
-			// *** Source by person sexe ***
+			// *** Source by person sex ***
 			if ($level2=='SOUR'){
 				$this->process_sources('person','pers_sexe_source',$pers_gedcomnumber,$buffer,'2');
 			}
@@ -1980,7 +1995,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 
 		if ($level1=='MARB' AND $temp_kind=='religious'){
 			if ($buffer6=='1 MARB'){ $processed=1; }
-			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_marr_church_notice_date"]= substr($buffer,7); }
+			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_marr_church_notice_date"])   $family["fam_marr_church_notice_date"]= trim(substr($buffer,7)); }
 
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_church_notice_place"]= $this->process_place( substr($buffer,7) ); }
@@ -2004,7 +2019,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 			// *** Type marriage / relation (civil or religious) ***
 			if ($buffer6=='2 TYPE'){ $processed=1; $temp_kind=strtolower(substr($buffer,7)); }
 			if ($buffer6=='1 MARB'){ $processed=1; }
-			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_marr_notice_date"]= substr($buffer,7); }
+			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_marr_notice_date"])    $family["fam_marr_notice_date"]= trim(substr($buffer,7)); }
 
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_notice_place"]= $this->process_place( substr($buffer,7) ); }
@@ -2132,7 +2147,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 
 		if ($level1=='MARR' AND $temp_kind=='religious'){
 			if ($buffer6=='1 MARR'){ $processed=1; }
-			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_marr_church_date"]= substr($buffer,7); }
+			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_marr_church_date"])   $family["fam_marr_church_date"]= trim(substr($buffer,7)); }
 
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_church_place"]= $this->process_place( substr($buffer,7) ); }
@@ -2154,7 +2169,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		if ($level1=='MARR' AND $temp_kind!='religious' AND $gen_program!='SukuJutut'){
 
 			if ($buffer6=='1 MARR'){ $processed=1; }
-			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_marr_date"]= substr($buffer,7); }
+			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_marr_date"])  $family["fam_marr_date"]= trim(substr($buffer,7)); }
 
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_place"]= $this->process_place( substr($buffer,7) ); }
@@ -2301,18 +2316,18 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		// 2 DATE 2006
 		if ($level1=='_STRT'){
 			if ($buffer7=='1 _STRT'){ $processed=1; }
-			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_relation_date"]= substr($buffer,7); }
+			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_relation_date"])  $family["fam_relation_date"]= trim(substr($buffer,7)); }
 		}
 		if ($level1=='_END'){
 			if ($buffer6=='1 _END'){ $processed=1; }
-			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_relation_end_date"]= substr($buffer,7); }
+			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_relation_end_date"])  $family["fam_relation_end_date"]= trim(substr($buffer,7)); }
 		}
 
 		// *** Pro-gen & HuMo-gen living together: 1 _LIV ***
 		//if ($buffer6=='1 _LIV'){ $processed=1; $family["fam_kind"]="living together"; }
 		if ($level1=='_LIV'){
 			if ($buffer6=='1 _LIV'){ $processed=1; }
-			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_relation_date"]= substr($buffer,7); }
+			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_relation_date"])  $family["fam_relation_date"]= substr($buffer,7); }
 
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_relation_place"]= $this->process_place( substr($buffer,7) ); }
@@ -2346,7 +2361,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		if (substr($level1,0,3)=='DIV'){
 			if (substr($buffer,0,5)=='1 DIV'){ $processed=1; $family["fam_div"]=true; }
 
-			if ($buffer6=='2 DATE'){ $processed=1; $family["fam_div_date"]= substr($buffer,7); }
+			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_div_date"])  $family["fam_div_date"]= trim(substr($buffer,7)); }
 
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_div_place"]= $this->process_place( substr($buffer,7) ); }

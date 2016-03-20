@@ -391,7 +391,8 @@ else{
 
 	if (CMS_SPECIFIC!='CMSMS') {
 		echo '<link href="'.CMS_ROOTPATH.'print.css" rel="stylesheet" type="text/css" media="print">';
-		echo '<link rel="shortcut icon" href="'.CMS_ROOTPATH.'images/favicon.ico" type="image/x-icon">';
+		//echo '<link rel="shortcut icon" href="'.CMS_ROOTPATH.'images/favicon.ico" type="image/x-icon">';
+		echo '<link rel="shortcut icon" href="'.CMS_ROOTPATH.'favicon.ico" type="image/x-icon">';
 	}
 	
 	if (isset($user["group_birthday_rss"]) AND $user["group_birthday_rss"]=="j"){

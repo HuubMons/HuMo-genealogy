@@ -99,8 +99,8 @@ echo '<table class="humo standard" border="1">';
 					echo ' <a href="index.php?page=links&amp;down=1&amp;link_order='.$dataDb->setting_order.'&amp;id='.
 					$dataDb->setting_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>'; }
 			echo '</td>';
-			echo '<td><input type="text" name="'.$dataDb->setting_id.'own_code" value="'.$lijst[0].'" size="20"></td>';
-			echo '<td><input type="text" name="'.$dataDb->setting_id.'link_text" value="'.$lijst[1].'" size="30"></td>';
+			echo '<td><input type="text" name="'.$dataDb->setting_id.'own_code" value="'.$lijst[0].'" size="5"></td>';
+			echo '<td><input type="text" name="'.$dataDb->setting_id.'link_text" value="'.$lijst[1].'" size="20"></td>';
 			echo '<td><input type="Submit" name="change_link" value="'.__('Change').'"></td>';
 			echo '<td bgcolor="red"><input type="Submit" name="'.$dataDb->setting_id.'remove_link" value="'.__('Remove').'"></td>';
 			echo "</tr>";
@@ -111,8 +111,8 @@ echo '<table class="humo standard" border="1">';
 		echo "<tr>";
 			echo "<td><br></td>";
 			echo '<input type="hidden" name="link_order" value="'.$new_number.'">';
-			echo '<td><input type="text" name="own_code" value="Code" size="20"></td>';
-			echo '<td><input type="text" name="link_text" value="'.__('Owner of tree').'" size="30"></td>';
+			echo '<td><input type="text" name="own_code" value="Code" size="5"></td>';
+			echo '<td><input type="text" name="link_text" value="'.__('Owner of tree').'" size="20"></td>';
 			echo '<td><input type="Submit" name="add_link" value="'.__('Add').'"></td>';
 			echo '<td bgcolor="red"><br></td>';
 		echo "</tr>";

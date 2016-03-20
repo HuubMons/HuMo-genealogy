@@ -14,7 +14,8 @@ class mainindex_cls{
 		// *** Select family tree ***
 		$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
 		$num_rows = $datasql->rowCount();
-		if ($num_rows>1){
+		//if ($num_rows>1){
+		if ($num_rows>1 AND $humo_option["one_name_study"]=='n'){
 			echo '<div id="mainmenu_left">';
 				echo '<div class="mainmenu_bar fonts">'.__('Select a family tree').':</div>';
 				// *** List of family trees ***
@@ -23,8 +24,9 @@ class mainindex_cls{
 		}
 
 		$center_id="mainmenu_center";
-		if ($num_rows<=1) $center_id="mainmenu_center_alt";
-		echo '<div id="'.$center_id.'" class="style_tree_text fonts">';
+		if ($num_rows<=1 OR $humo_option["one_name_study"]=='y') $center_id="mainmenu_center_alt";
+		if($humo_option["one_name_study"]=='n') {
+			echo '<div id="'.$center_id.'" class="style_tree_text fonts">';
 			$sql = "SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix_quoted."' ORDER BY tree_order";
 			$datasql = $dbh->query($sql);
 			@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
@@ -73,7 +75,13 @@ class mainindex_cls{
 				}
 			}
 		echo '</div>';
+		}
 
+		else {
+			echo '<div id="'.$center_id.'" class="style_tree_text fonts">';
+			echo '<br><br><br><br><span style="font-size:200%">'.__('One Name Study of the name').': </span><span style="font-weight:bold;font-size:250%">'.$humo_option["one_name_thename"].'</span>';;
+			echo '</div>';
+		}
 		echo '<div id="mainmenu_right" class="fonts">';
 			echo '<div class="mainmenu_bar fonts">'.__('Search').'</div>';
 			// *** search ***
@@ -357,7 +365,7 @@ class mainindex_cls{
 
 	// *** Search field ***
 	function search_box(){
-		global $language, $dbh;
+		global $language, $dbh, $humo_option;
 
 		// *** Reset search field if a new genealogy is selected ***
 		$reset_search=false;
@@ -416,7 +424,8 @@ class mainindex_cls{
 		echo ' <input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="15"></p>';
 		*/
 
-		echo __('Enter name or part of name').'<br>';
+		if($humo_option['one_name_study']=='n') { echo __('Enter name or part of name').'<br>'; }
+		else { echo __('Enter private name').'<br>'; }
 		//echo '<span style="font-size:10px;">"John Jones", "Jones John", "John of Jones", "of Jones, John", "Jones, John of", "Jones of, John"</span>';
 		
 		echo '<input type="hidden" name="index_list" value="quicksearch">';
@@ -431,7 +440,7 @@ class mainindex_cls{
 		// Check if there are multiple family trees.
 		$datasql2 = $dbh->query("SELECT * FROM humo_trees");
 		$num_rows2 = $datasql2->rowCount();
-		if ($num_rows2>1){
+		if ($num_rows2>1 AND $humo_option['one_name_study']=='n'){
 			$checked=''; if ($search_database=="tree_selected"){ $checked='checked'; }
 			echo '<p><input type="radio" name="search_database" value="tree_selected" '.$checked.'> '.__('Selected family tree').'<br>';
 			//$checked=''; if ($search_database=="all_databases"){ $checked='checked'; }
@@ -440,7 +449,9 @@ class mainindex_cls{
 			$checked=''; if ($search_database=="all_but_this"){ $checked='checked'; }
 			echo '<input type="radio" name="search_database" value="all_but_this" '.$checked.'> '.__('All but selected tree').'</p>';
 		}
-
+		if ($num_rows2>1 AND $humo_option['one_name_study']=='y'){
+			echo '<input type="hidden" name="search_database" value="all_trees">';
+		}
 		echo '<p><input type="submit" value="'.__('Search').'"></p>';
 		if (CMS_SPECIFIC=='Joomla'){
 			$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;adv_search=1&index_list=search';

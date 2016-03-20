@@ -54,7 +54,8 @@ if (isset($_POST['save_option'])){
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["min_search_chars"])."' WHERE setting_variable='min_search_chars'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["date_display"])."' WHERE setting_variable='date_display'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["name_order"])."' WHERE setting_variable='name_order'");
-
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["one_name_study"])."' WHERE setting_variable='one_name_study'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["one_name_thename"])."' WHERE setting_variable='one_name_thename'");
 	if(strpos($humo_option['default_timeline'],$time_lang."!")===false) {  
 		// no entry for this language yet - append it
 		$result = $dbh->query("UPDATE humo_settings SET setting_value=CONCAT(setting_value,'".safe_text($_POST["default_timeline"])."') WHERE setting_variable='default_timeline'");
@@ -413,6 +414,19 @@ echo '<td>';
 echo '</td>';
 echo "</tr>";
 
+// *** Display for One Name Study web sites ***
+echo '<tr class="table_header"><th colspan="2">'.__('Display for One Name Study web sites').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr><td style="white-space:nowrap;">'.__('One Name Study display').'?</td>';
+echo '<td><select size="1" name="one_name_study">';
+$selected=''; if ($humo_option["one_name_study"]!='y') $selected=' SELECTED';
+echo '<option value="y">'.__('Yes').'</option>';
+echo '<option value="n"'.$selected.'>'.__('No').'</option>';
+echo '</select>';
+echo '</td></tr>';
+echo '<tr><td style="white-space:nowrap;">'.__('Enter the One Name of this site').'</td>';
+echo '<td>';
+echo '<input type="text" name="one_name_thename" value="'.$humo_option["one_name_thename"].'" size="40">';
+echo '</td></tr>';
 
 echo '<tr class="table_header"><th colspan="2">'.__('Save settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 

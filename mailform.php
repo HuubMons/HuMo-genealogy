@@ -97,13 +97,13 @@ else{
 		print '<tr><td>'.__('Name').':</td><td><input type="text" class="fonts" name="mail_name" size="40" style="background-color:#FFFFFF" value="'.$mail_name.'"></td></tr>';
 
 		$mail_sender=''; if (isset($_POST['mail_sender'])){ $mail_sender=$_POST['mail_sender']; }
-		print '<tr><td>'.__('FULL e-mail address: ').'</td><td><input type="text" class="fonts" id="mail_sender" name="mail_sender" value="'.$mail_sender.'" size="40" style="background-color:#FFFFFF"> '.__('My response will be sent to this e-mail address!').'</td></tr>';
+		print '<tr><td>'.__('FULL e-mail address: ').'</td><td><input type="text" class="fonts" id="mail_sender" name="mail_sender" value="'.$mail_sender.'" size="40" style="background-color:#FFFFFF"><br>'.__('My response will be sent to this e-mail address!').'</td></tr>';
 
 		$mail_subject=''; if (isset($_POST['mail_subject'])){ $mail_subject=$_POST['mail_subject']; }
-		print '<tr><td>'.__('Subject:').'</td><td><input type="text" class="fonts" name="mail_subject" size="80" style="background-color:#FFFFFF" value="'.$mail_subject.'"></td></tr>';
+		print '<tr><td>'.__('Subject:').'</td><td><input type="text" class="fonts" name="mail_subject" size="40" style="background-color:#FFFFFF" value="'.$mail_subject.'"></td></tr>';
 
 		$mail_text=''; if (isset($_POST['mail_text'])){ $mail_text=$_POST['mail_text']; }
-		print '<tr><td>'.__('Message: ').'</td><td><textarea name="mail_text" ROWS="10" COLS="40" class="fonts">'.$mail_text.'</textarea></td></tr>';
+		print '<tr><td>'.__('Message: ').'</td><td><textarea name="mail_text" ROWS="10" COLS="29" class="fonts">'.$mail_text.'</textarea></td></tr>';
 
 		if ($humo_option["use_newsletter_question"]=='y'){
 			print '<tr><td>'.__('Receive newsletter').'</td><td>

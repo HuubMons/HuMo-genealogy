@@ -2,6 +2,9 @@
 
 body{
 	/* font: 10px Verdana, tahoma, arial, sans-serif; */
+
+	/* Rescale background image based on the container's size */
+	background-size: cover;
 }
 
 /* Hide some items in mobile version */
@@ -9,37 +12,75 @@ body{
 	visibility:hidden;
 	width:0px; height:0px;
 }
+.mobile_visible{
+	visibility:visible;
+	width:initial; height:initial;
+}
+
+#top {
+	height:70px;
+	padding:5px 5px 0px;
+}
 
 #top_website_name{
-	visibility:hidden;
+	/* visibility:hidden; */
+	font-size:14px;
+}
+
+#top_tree_select{
+	position: relative;
+	float:right;
 }
 
 #top_quicksearch {
 	right:150px;
+	top:40px;
 }
 #top_favorites_select {
 	right:5px;
+	top:40px;
+}
+
+/* #humo_menu = menu bar */
+#humo_menu {
+	top:70px;
+}
+
+/* Pop-up menu */
+ul.humo_menu_item2 li a{
+	display:block;
+	font-size: 11px;
+	padding:5px 4px 5px 4px;
+}
+
+#content {
+	/* up, right, down */
+	padding:5px 5px 5px 2px;
+}
+#rtlcontent {
+	/* up, right, down */
+	padding:5px 5px 5px 2px;
+}
+
+#mainmenu_centerbox {
+	/* up, right, down */
+	margin: 10px 5px 0px 5px;
 }
 
 #mainmenu_left{
 	/* visibility:hidden; */
 	/* width:1%; */
-	width:90%;
+	width:100%;
 }
 #mainmenu_center {
-	width:90%;
+	width:100%;
 	text-align: left;
-	margin-left: 5px;
+	margin-left: 0px;
 }
 #mainmenu_right{
 	visibility:hidden;
 	width:1%;
 	width:0px; height:0px;
-}
-
-#mainmenu_centerbox {
-	/* up, right, down */
-	margin: 10px 15px 0px 5px;
 }
 
 #most_frequent_names{
@@ -51,6 +92,25 @@ body{
 	font-size: 10px;
 }
 
+/* Double column for country flags in full version */
+#m4x{
+	width:100px;
+}
+#m4x{
+	width:100px;
+}
+
+
+table.index_table{
+	width:100%;
+}
+table.small {
+	width:100%;
+}
+table.standard {
+	width:100%;
+}
+
 .index_lastname {
 	margin-left: 10px;
 	margin-right: 10px;
@@ -59,4 +119,19 @@ body{
 div.photobook {
 	width: 300px;
 	height:170px;
+}
+
+/* Hulppagina */
+.help_div {
+	width: 100%;
+	left: 0%;
+}
+.rtlhelp_div {
+	width: 100%;
+	right: 0%;
+}
+
+/* Tab menu */
+.pageTab a {
+	padding: 2px 2px 2px;
 }

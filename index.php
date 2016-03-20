@@ -30,20 +30,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-// *** Version line moved to settings_global.php ***
-
-include_once("include/mobile_detect.php");
-$detect = new Mobile_Detect();
-$mob_redirect="0"; if(isset($_GET['mobile']) AND $_GET['mobile']=="1") $mob_redirect=1;
-if ($detect->isMobile() AND !$detect->isTablet() AND $mob_redirect=="0") {
-//if ($detect->isMobile() AND $detect->isTablet() AND $mob_redirect=="0") {
-	// refer to mobile site
-	$position=strrpos($_SERVER['PHP_SELF'],'/');
-	$uri_path= substr($_SERVER['PHP_SELF'],0,$position);
-	//header("Location: http://www.humo-gen.com/humo-gen-test/humo_mobile");
-	header("Location: ".$uri_path."/humo_mobile");
-}
-
 include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."menu.php");
 
