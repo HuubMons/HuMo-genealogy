@@ -191,7 +191,7 @@ echo '&nbsp;&nbsp;&nbsp;<span>';
 		print '<input type="hidden" name="dates_behind_names" value="'.$dates_behind_names.'">';
 		print '<input type="hidden" name="show_date" value="'.$show_date.'">';
 		print '<input type="hidden" name="main_person" value="'.$main_person.'">';
-		print '<input class="fonts" type="Submit" name="submit" value="PDF (Portrait)">';
+		print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF (Portrait)').'">';
 		print '</form>';
 	}
 
@@ -209,7 +209,7 @@ echo '&nbsp;&nbsp;&nbsp;<span>';
 		print '<input type="hidden" name="dates_behind_names" value="'.$dates_behind_names.'">';
 		print '<input type="hidden" name="show_date" value="'.$show_date.'">';
 		print '<input type="hidden" name="main_person" value="'.$main_person.'">';
-		print '<input class="fonts" type="Submit" name="submit" value="PDF (Landscape)">';
+		print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF (Landscape)').'">';
 		print '</form>';
 	}
 echo '</span>';

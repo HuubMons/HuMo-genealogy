@@ -54,7 +54,7 @@ table.humo td { border: solid 1px #999999; }
 .line_item { font-weight:bold; background-color:#BDBDBD; }
 /* .line_ok { background-color:#00FF00; } */
 /* .line_ok { background-color:#66FF33; } */
-.line_ok { background-color:#9CFF7B; }
+/* .line_ok { background-color:#9CFF7B; } */
 .line_ok { background-color:#FFFFFF; }
 /* .line_nok { background-color:#FF6600; } */
 .line_nok { background-color:#FF8000; }
@@ -170,7 +170,7 @@ ul.humo_menu_item2 li a{
 #m40x{
 	width:250px;
 }
-#m40x{
+#m40x ul li {
 	float:left; width:124px;
 }
 

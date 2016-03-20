@@ -43,6 +43,8 @@ if (isset($_GET['log_off'])){
 
 include_once(CMS_ROOTPATH."include/db_login.php"); //Inloggen database.
 include_once (CMS_ROOTPATH.'include/show_tree_text.php');
+include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+$db_functions = New db_functions;
 
 // *** Use UTF-8 database connection ***
 //$dbh->query("SET NAMES 'utf8'");
@@ -91,6 +93,7 @@ while (false!==($file = readdir($language_folder))) {
 		elseif ($file=='no') $language_order[]='Norsk';
 		elseif ($file=='pt') $language_order[]='Portuguese';
 		elseif ($file=='ru') $language_order[]='Russian';
+		elseif ($file=='sk') $language_order[]='Slovensky';
 		elseif ($file=='sv') $language_order[]='Swedish';
 		elseif ($file=='zh') $language_order[]='Chinese_traditional';
 		else $language_order[]=$file;
@@ -113,20 +116,24 @@ array_multisort($language_order, $language_file);
 
 // *** Log in ***
 if (isset($_POST["username"]) && isset($_POST["password"])){
-	$query = "SELECT * FROM humo_users
-		WHERE user_name='" . safe_text($_POST["username"]) ."'
-		AND user_password='".MD5(safe_text($_POST["password"]))."'";
-	$result = $dbh->query($query);
-	if($result->rowcount() > 0) {
-		@$resultDb = $result->fetch(PDO::FETCH_OBJ);
-		$_SESSION['user_name'] = safe_text($_POST["username"]);
+	//$query = "SELECT * FROM humo_users
+	//	WHERE user_name='" . safe_text($_POST["username"]) ."'
+	//	AND user_password='".MD5(safe_text($_POST["password"]))."'";
+	//$result = $dbh->query($query);
+	$resultDb = $db_functions->get_user($_POST["username"],$_POST["password"]);
+
+	//if($result->rowcount() > 0) {
+	if ($resultDb){
+		//@$resultDb = $result->fetch(PDO::FETCH_OBJ);
+		//$_SESSION['user_name'] = safe_text($_POST["username"]);
+		$_SESSION['user_name'] = $resultDb->user_name;
 		$_SESSION['user_id'] = $resultDb->user_id;
 		$_SESSION['user_group_id'] = $resultDb->user_group_id;
 
 		// *** Save log! ***
 		$sql="INSERT INTO humo_user_log SET
 			log_date='".date("Y-m-d H:i")."',
-			log_username='".safe_text($_POST["username"])."',
+			log_username='".$resultDb->user_name."',
 			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
 			log_user_admin='user'";
 		$dbh->query($sql);
@@ -532,8 +539,6 @@ else{
 		print "<body onload='checkCookie()'>\n";
 	}
 
-	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
-	$db_functions = New db_functions;
 	$db_functions->set_tree_prefix($tree_prefix_quoted);
 	$db_functions->set_tree_id($_SESSION['tree_id']);
 

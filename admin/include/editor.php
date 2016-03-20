@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
 * This is the editor file for HuMo-gen.
 *
@@ -508,9 +508,13 @@ if (isset($pers_gedcomnumber)){
 					if (!isset($_GET['add_person'])){
 						// *** Family tree data ***
 						$select_item=''; if ($menu_tab=='marriage'){ $select_item=' pageTab-active'; }
-						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage">'.__('Marriage(s) and children');
+						//echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage">'.__('Marriage(s) and children');
+						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage">'.ucfirst(__('marriage/ relation'));
 						//if (isset($marriage)) echo ' *';
 						echo "</a></div></li>";
+
+						$select_item=''; if ($menu_tab=='children'){ $select_item=' pageTab-active'; }
+						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=children">'.__('Children')."</a></div></li>";
 					}
 
 					if ($person){
@@ -818,10 +822,8 @@ if (isset($pers_gedcomnumber)){
 			if ($person->pers_fams){
 				// *** Search for own family ***
 				$fams1=explode(";",$person->pers_fams);
-				//$fam_count=substr_count($person->pers_fams, ";");
-				$fam_count=count($fams1)-1;
-				for ($i=0; $i<=$fam_count; $i++){
-
+				$fam_count=count($fams1);
+				for ($i=0; $i<$fam_count; $i++){
 					echo '<div style="
 						margin-top:5px;
 						padding:2px;
@@ -867,7 +869,7 @@ if (isset($pers_gedcomnumber)){
 					// *** Add child ***
 					echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
 					if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
-					echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"> '.__('Add child').'</a><br>';
+					echo '&amp;child_connect=1&amp;add_person=1&amp;menu_tab=person"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"> '.__('Add child').'</a><br>';
 
 					echo '</div>';
 				}
@@ -1343,7 +1345,7 @@ if (isset($pers_gedcomnumber)){
 		//echo '<tr style="display:none;" class="row5" name="row5">';
 		echo '<tr style="display:none;" class="row5">';
 		echo '<td></td>';
-		echo '<td style="border-right:0px;">'.__('buried').'/ '.__('cremation').'</td><td style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('Buried').'/ '.__('cremation').'</td><td style="border-left:0px;">';
 			$selected=''; if ($pers_cremation==''){ $selected=' CHECKED'; }
 			echo '<input type="radio" name="pers_cremation" value=""'.$selected.'> '.__('buried');
 			$selected=''; if ($pers_cremation=='1'){ $selected=' CHECKED'; }
@@ -1762,19 +1764,20 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		// *** End of person form ***
 		echo '</form>';
 
-		if ($menu_tab=='marriage'){
+		//if ($menu_tab=='marriage'){
+		if ($menu_tab=='marriage' OR $menu_tab=='children'){
 
 		// ***********************************
 		// *** Marriages and children list ***
 		// ***********************************
 		echo '</table><table class="humo" border="1">';
-		if (!isset($_GET['add_person'])){
+		//if (!isset($_GET['add_person'])){
 			// *** Empty line in table ***
 			//echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
 
 			//echo '<tr><th class="table_header" colspan="4">'.__('Marriage(s) and children').'</tr>';
-//			echo '<tr><th class="table_header" colspan="4">'.ucfirst(__('marriage/ relation')).'</tr>';
-		}
+			//echo '<tr><th class="table_header" colspan="4">'.ucfirst(__('marriage/ relation')).'</tr>';
+		//}
 
 		if ($add_person==false){
 			if ($person->pers_fams){
@@ -1821,63 +1824,6 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						if ($familyDb->fam_marr_date){ echo ' X '.date_place($familyDb->fam_marr_date,''); }
 						echo '<br>';
 
-						/*
-						// MOVED TO BOTTOM OF MARRIAGE PAGE
-						if ($familyDb->fam_children){
-							echo __('Children').':<br>';
-							$fam_children_array=explode(";",$familyDb->fam_children);
-							$child_count=substr_count($familyDb->fam_children, ";");
-							echo '<ul id="sortable'.$i.'" class="sortable">';
-							for ($j=0; $j<=$child_count; $j++){
-							
-								// *** Create new children variabele, for disconnect child ***
-								$fam_children='';
-								for ($k=0; $k<=substr_count($familyDb->fam_children, ";"); $k++){
-									if ($k!=$j){ $fam_children.=$fam_children_array[$k].';'; }
-								}
-								$fam_children=substr($fam_children,0,-1); // *** strip last ; character ***
-								
-								echo '<li><span style="cursor:move;" id="'.$fam_children_array[$j].'" class="handle'.$i.'" ><img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0" title="'.__('Drag to change order (saves automatically)').'" alt="'.__('Drag to change order').'"></span>&nbsp;&nbsp;';
-								
-								echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_disconnect='.$fam_children.
-									'&amp;child_disconnect_gedcom='.$fam_children_array[$j].'">
-									<img src="'.CMS_ROOTPATH_ADMIN.'images/person_disconnect.gif" border="0" title="'.__('Disconnect child').'" alt="'.__('Disconnect child').'"></a>';
-								echo '&nbsp;&nbsp;<span id="chldnum'.$fam_children_array[$j].'">'.($j+1).'</span>. '.show_person($fam_children_array[$j],true).'</li>';
-							} 
-							echo '</ul>';
-						}
-
-						//already in index.php echo '<script src="../include/jqueryui/js/jquery-1.8.0.min.js"></script>';
-						//to index.php - echo '<script src="../include/jqueryui/js/jquery.sortable.min.js"></script>';
-						?>
-						<script>
-						$('#sortable'+'<?php echo $i; ?>').sortable({handle: '.handle'+'<?php echo $i; ?>'}).bind('sortupdate', function() {
-							var childstring = "";
-							var chld_arr = document.getElementsByClassName("handle"+"<?php echo $i; ?>");
-							for (var z = 0; z < chld_arr.length; z++) {
-								childstring = childstring + chld_arr[z].id + ";";
-								document.getElementById('chldnum'+chld_arr[z].id).innerHTML = (z+1);
-							}
-							childstring = childstring.substring(0, childstring.length-1);
-							$.ajax({ 
-								url: "include/drag.php?drag_kind=children&chldstring=" + childstring + "&family_id=" + "<?php echo $familyDb->fam_id; ?>" ,
-								success: function(data){
-								} ,
-								error: function (xhr, ajaxOptions, thrownError) {
-									alert(xhr.status);
-									alert(thrownError);
-								}
-							});
-						});
-						</script>
-						<?php
-						*/
-
-						// *** Add child ***
-						//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
-						//if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
-						//echo '&amp;child_connect=1&amp;add_person=1"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"><span style="margin-left:73px;">'.__('Add child').'</span></a><br>';
-
 						echo '</td></tr>';
 					}
 				}
@@ -1911,8 +1857,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		// ***********************
 
 		// *** Select marriage ***
-		if ($person->pers_fams){
-
+		//if ($person->pers_fams){
+		if ($menu_tab=='marriage' AND $person->pers_fams){
 			$family=$dbh->query("SELECT * FROM humo_families
 				WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$marriage."'");
 			$familyDb=$family->fetch(PDO::FETCH_OBJ);
@@ -2049,48 +1995,6 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			if (isset($marriage)){
 				echo '<input type="hidden" name="marriage" value="'.$marriage.'">';
 			}
-
-			/*
-			$colour=''; if ($fam_kind==''){ $colour=' bgcolor="#FF0000"'; }
-			//echo '<tr class="humo_color"><td>'.__('Relation Type').'</td><td style="border-right:0px;"></td><td'.$colour.' style="border-left:0px;">';
-			echo '<tr class="humo_color"><td></td><td style="border-right:0px;">'.__('Relation Type').'</td><td'.$colour.' style="border-left:0px;">';
-			echo '<select size="1" name="fam_kind">';
-				//echo '<option value="civil">'.__('Married').' </option>';
-				echo '<option value="">'.__('Marriage/ Related').' </option>';
-
-				$selected=''; if ($fam_kind=='civil'){ $selected=' SELECTED'; }
-				echo '<option value="civil"'.$selected.'>'.__('Married').'</option>';
-
-				$selected=''; if ($fam_kind=='living together'){ $selected=' SELECTED'; }
-				echo '<option value="living together"'.$selected.'>'.__('Living together').'</option>';
-
-				$selected=''; if ($fam_kind=='living apart together'){ $selected=' SELECTED'; }
-				echo '<option value="living apart together"'.$selected.'>'.__('Living apart together').'</option>';
-
-				$selected=''; if ($fam_kind=='intentionally unmarried mother'){ $selected=' SELECTED'; }
-				echo '<option value="intentionally unmarried mother"'.$selected.'>'.__('Intentionally unmarried mother').'</option>';
-
-				$selected=''; if ($fam_kind=='homosexual'){ $selected=' SELECTED'; }
-				echo '<option value="homosexual"'.$selected.'>'.__('Homosexual').'</option>';
-
-				$selected=''; if ($fam_kind=='non-marital'){ $selected=' SELECTED'; }
-				echo '<option value="non-marital"'.$selected.'>'.__('Non_marital').'</option>';
-
-				$selected=''; if ($fam_kind=='extramarital'){ $selected=' SELECTED'; }
-				echo '<option value="extramarital"'.$selected.'>'.__('Extramarital').'</option>';
-
-				$selected=''; if ($fam_kind=='partners'){ $selected=' SELECTED'; }
-				echo '<option value="partners"'.$selected.'>'.__('Partner').'</option>';
-
-				$selected=''; if ($fam_kind=='registered'){ $selected=' SELECTED'; }
-				echo '<option value="registered"'.$selected.'>'.__('Registered').'</option>';
-
-				$selected=''; if ($fam_kind=='unknown'){ $selected=' SELECTED'; }
-				echo '<option value="unknown"'.$selected.'>'.__('Unknown relation').'</option>';
-
-			echo '</select>';
-			echo '</td><td></td></tr>';
-			*/
 
 			// *** Living together ***
 			echo '<tr class="humo_color">';
@@ -2438,15 +2342,89 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		}
 
 		}	// End of menu_tab
-		if ($menu_admin=='person') echo '</div>';
+		if ($menu_admin=='person' AND $menu_tab!='children') echo '</div>';
 
 		echo '</table><br>'."\n";
 
+		// *** List of children of shown in seperate TAB menu ***
+		//if ($menu_tab=='marriage' and isset($familyDb)){
+		if ($menu_tab=='children' and $person->pers_fams){
 
-		if ($menu_tab=='marriage' and isset($familyDb)){
+			// *** Automatic order of children ***
+			if (isset($_GET['order_children'])) {
+				function date_string($text) {
+					$text=str_replace("JAN", "01", $text);
+					$text=str_replace("FEB", "02", $text);
+					$text=str_replace("MAR", "03", $text);
+					$text=str_replace("APR", "04", $text);
+					$text=str_replace("MAY", "05", $text);
+					$text=str_replace("JUN", "06", $text);
+					$text=str_replace("JUL", "07", $text);
+					$text=str_replace("AUG", "08", $text);
+					$text=str_replace("SEP", "09", $text);
+					$text=str_replace("OCT", "10", $text);
+					$text=str_replace("NOV", "11", $text);
+					$text=str_replace("DEC", "12", $text);
+					$returnstring = substr($text,-4).substr(substr($text,-7),0,2).substr($text,0,2);
+					return $returnstring;
+					// Solve maybe later: date_string 2 mei is smaller then 10 may (2 birth in 1 month is rare...).
+				}
+
+				//echo '<br>&gt;&gt;&gt; '.__('Order children...');
+
+				$fam_qry=$dbh->query("SELECT * FROM humo_families
+					WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$marriage."'");
+				$famDb=$fam_qry->fetch(PDO::FETCH_OBJ); 
+				$child_array=explode(";",$famDb->fam_children);
+				$nr_children = count($child_array);
+				if ($nr_children > 1) {
+					unset ($children_array);
+					for ($i=0; $i<$nr_children; $i++){
+						$child=$dbh->query("SELECT * FROM humo_persons
+							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$child_array[$i]."'");
+						@$childDb=$child->fetch(PDO::FETCH_OBJ);
+
+						$child_array_nr=$child_array[$i];
+						if ($childDb->pers_birth_date){
+							$children_array[$child_array_nr]=date_string($childDb->pers_birth_date);
+						}
+						elseif ($childDb->pers_bapt_date){
+							$children_array[$child_array_nr]=date_string($childDb->pers_bapt_date);
+						}
+						else{
+							$children_array[$child_array_nr]='';
+						}
+					}
+
+					asort ($children_array);
+
+					$fam_children='';
+					foreach ($children_array as $key => $val) {
+						if ($fam_children!=''){ $fam_children.=';'; }
+						$fam_children.=$key;
+					}
+
+					if ($famDb->fam_children!=$fam_children){
+						$sql = "UPDATE humo_families SET fam_children='".$fam_children."'
+							WHERE fam_id='".$famDb->fam_id."'";
+						$dbh->query($sql);
+					}
+				}
+			}
+
 			// *** Show children ***
+			$family=$dbh->query("SELECT * FROM humo_families
+				WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$marriage."'");
+			$familyDb=$family->fetch(PDO::FETCH_OBJ);
 			if ($familyDb->fam_children){
-				echo __('Children').':<br>';
+				
+				echo __('Use this icon to order children (drag and drop)').': <img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0">';
+				
+				echo '<br>'.__('Or automatically order children:').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=children&amp;marriage_nr='.$marriage.'&amp;order_children=1">'.__('Automatic order children').'</a>';
+
+				if (isset($_GET['order_children'])) echo ' <b>'.__('Children are re-ordered.').'</b>';
+
+				//echo __('Children').':<br>';
 				$fam_children_array=explode(";",$familyDb->fam_children);
 				$child_count=substr_count($familyDb->fam_children, ";");
 				echo '<ul id="sortable'.$i.'" class="sortable">';
@@ -2575,6 +2553,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo ' <form method="post" action="'.$phpself.'" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="source_id" value="'.$_POST['source_id'].'">';
+			echo '<input type="hidden" name="source_gedcomnr" value="'.$_POST['source_gedcomnr'].'">';
 			echo ' <input type="Submit" name="source_remove2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
 			echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
 			echo '</form>';
@@ -2586,6 +2565,33 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				$sql="DELETE FROM humo_sources WHERE source_id='".safe_text($_POST["source_id"])."'";
 				$result=$dbh->query($sql);
 
+				// *** Delete connections to source, and re-order remaining source connections ***
+				$connect_sql="SELECT * FROM humo_connections
+					WHERE connect_tree_id='".$tree_id."'
+					AND connect_source_id='".safe_text($_POST['source_gedcomnr'])."'";
+				$connect_qry=$dbh->query($connect_sql);
+				while($connectDb=$connect_qry->fetch(PDO::FETCH_OBJ)){
+					// *** Delete source connections ***
+					$sql="DELETE FROM humo_connections WHERE connect_id='".$connectDb->connect_id."'";
+					$result=$dbh->query($sql);
+
+					// *** Re-order remaining source connections ***
+					$event_order=1;
+					$event_sql="SELECT * FROM humo_connections
+						WHERE connect_tree_id='".$tree_id."'
+						AND connect_kind='".$connectDb->connect_kind."'
+						AND connect_sub_kind='".$connectDb->connect_sub_kind."'
+						AND connect_connect_id='".$connectDb->connect_connect_id."'
+						ORDER BY connect_order";
+					$event_qry=$dbh->query($event_sql);
+					while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+						$sql="UPDATE humo_connections
+							SET connect_order='".$event_order."'
+							WHERE connect_id='".$eventDb->connect_id."'";
+						$result=$dbh->query($sql);
+						$event_order++;
+					}
+				}
 				echo __('Source is removed!');
 			echo '</div>';
 		}
@@ -2646,6 +2652,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			print '<tr class="table_header"><th>'.__('Option').'</th><th colspan="3">'.__('Value').'</th></tr>';
 
 			if (isset($_POST['add_source'])){
+				$source_gedcomnr='';
 				$source_status=''; $source_title=''; $source_date=''; $source_place=''; $source_publ=''; $source_refn='';
 				$source_auth=''; $source_auth=''; $source_subj=''; $source_item=''; $source_kind='';
 				$source_text='';
@@ -2662,6 +2669,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				} catch (PDOException $e) {
 					echo $die_message;
 				}
+				$source_gedcomnr=$sourceDb->source_gedcomnr;
 				$source_status=$sourceDb->source_status;
 				$source_title=$sourceDb->source_title; $source_date=$sourceDb->source_date;
 				$source_place=$sourceDb->source_place; $source_publ=$sourceDb->source_publ;
@@ -2675,8 +2683,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
-			//echo '<input type="hidden" name="source_id" value="'.$_POST['source_id'].'">';
 			echo '<input type="hidden" name="source_id" value="'.$source_id.'">';
+
+			echo '<input type="hidden" name="source_gedcomnr" value="'.$source_gedcomnr.'">';
 
 			echo '<tr><td>'.__('Status:').'</td><td colspan="3">';
 				echo '<select class="fonts" size="1" name="source_status">';
@@ -3020,6 +3029,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo ' <form method="post" action="'.$phpself.'" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="address_id" value="'.$_POST['address_id'].'">';
+			echo '<input type="hidden" name="address_gedcomnr" value="'.$_POST['address_gedcomnr'].'">';
 			echo ' <input type="Submit" name="address_remove2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
 			echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
 			echo '</form>';
@@ -3027,22 +3037,41 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		}
 		if (isset($_POST['address_remove2'])){
 			echo '<div class="confirm">';
-			// *** Find gedcomnumber, needed for events query ***
-			$address_qry=$dbh->query("SELECT * FROM humo_addresses
-				WHERE address_tree_id='".$tree_id."' AND address_id='".safe_text($_POST["address_id"])."'");
-			$addressDb=$address_qry->fetch(PDO::FETCH_OBJ);
 
-			// *** Remove added sources from connection table ***
+			// *** Remove sources by this address from connection table ***
 			$sql="DELETE FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
-				AND connect_kind='address' AND connect_connect_id='".$addressDb->address_id."'";
+				AND connect_kind='address' AND connect_connect_id='".safe_text($_POST["address_id"])."'";
 			$result=$dbh->query($sql);
 
-			// *** Remove connected persons ***
-			$sql="DELETE FROM humo_connections
+			// *** Delete connections to address, and re-order remaining address connections ***
+			$connect_sql="SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
-				connect_sub_kind='person_address' AND connect_item_id='".$addressDb->address_gedcomnr."'";
-			$result=$dbh->query($sql);
+				AND connect_sub_kind='person_address'
+				AND connect_item_id='".safe_text($_POST["address_gedcomnr"])."'";
+			$connect_qry=$dbh->query($connect_sql);
+			while($connectDb=$connect_qry->fetch(PDO::FETCH_OBJ)){
+				// *** Delete source connections ***
+				$sql="DELETE FROM humo_connections WHERE connect_id='".$connectDb->connect_id."'";
+				$result=$dbh->query($sql);
+
+				// *** Re-order remaining source connections ***
+				$event_order=1;
+				$event_sql="SELECT * FROM humo_connections
+					WHERE connect_tree_id='".$tree_id."'
+					AND connect_kind='".$connectDb->connect_kind."'
+					AND connect_sub_kind='".$connectDb->connect_sub_kind."'
+					AND connect_connect_id='".$connectDb->connect_connect_id."'
+					ORDER BY connect_order";
+				$event_qry=$dbh->query($event_sql);
+				while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+					$sql="UPDATE humo_connections
+						SET connect_order='".$event_order."'
+						WHERE connect_id='".$eventDb->connect_id."'";
+					$result=$dbh->query($sql);
+					$event_order++;
+				}
+			}
 
 			// *** Delete address ***
 			$sql="DELETE FROM humo_addresses
@@ -3082,6 +3111,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		// *** Edit source by address ***
 		// NO SOURCE BY ADDRESS AT THIS MOMENT
 
+		$address_id='';
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -3094,7 +3124,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			while ($addressDb=$address_qry->fetch(PDO::FETCH_OBJ)){
 				$selected='';
 				if (isset($_POST['address_id'])){
-					if ($_POST['address_id']==$addressDb->address_id){$selected=' SELECTED';}
+					if ($_POST['address_id']==$addressDb->address_id){ $selected=' SELECTED'; $address_id=$addressDb->address_id; }
 				}
 				echo '<option value="'.$addressDb->address_id.'"'.$selected.'>'.
 				@$addressDb->address_place.', '.$addressDb->address_address.' ['.@$addressDb->address_gedcomnr.']</option>'."\n";
@@ -3107,13 +3137,21 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		echo '</td></tr></table><br>';
 
 		// *** Show selected address ***
-		if (isset($_POST['address_id'])){
+		//if ($address_id AND isset($_POST['address_id'])){
+		if ($address_id OR isset($_POST['add_address'])){
 			echo '<table class="humo standard" border="1">';
 			print '<tr class="table_header"><th>'.__('Option').'</th><th colspan="2">'.__('Value').'</th></tr>';
 
 			if (isset($_POST['add_address'])){
-				$address_address=''; $address_date=''; $address_zip=''; $address_place=''; $address_phone='';
-				$address_text=''; //$address_source=''; $address_photo='';
+				$address_gedcomnr='';
+				$address_address='';
+				$address_date='';
+				$address_zip='';
+				$address_place='';
+				$address_phone='';
+				$address_text='';
+				//$address_photo='';
+				//$address_source='';
 			}
 			else{
 				@$address_qry2=$dbh->query("SELECT * FROM humo_addresses
@@ -3125,23 +3163,29 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				} catch(PDOException $e) {
 					echo $die_message;
 				}
-				$address_address=$addressDb->address_address; $address_date=$addressDb->address_date;
-				$address_zip=$addressDb->address_zip; $address_place=$addressDb->address_place;
-				$address_phone=$addressDb->address_phone; //$address_photo=$addressDb->address_photo;
-				$address_text=$addressDb->address_text; //$address_source=$addressDb->address_source;
+				$address_gedcomnr=$addressDb->address_gedcomnr;
+				$address_address=$addressDb->address_address;
+				$address_date=$addressDb->address_date;
+				$address_zip=$addressDb->address_zip;
+				$address_place=$addressDb->address_place;
+				$address_phone=$addressDb->address_phone;
+				$address_text=$addressDb->address_text;
+				//$address_photo=$addressDb->address_photo;
+				//$address_source=$addressDb->address_source;
 			}
 
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="address_id" value="'.$_POST['address_id'].'">';
-			echo '<tr><td>'.__('Address').':</td><td><input type="text" name="address_address" value="'.htmlspecialchars($address_address).'" size="60"></td></tr>';
-			echo '<tr><td>'.__('date').' - '.__('place').'</td><td>'.$editor_cls->date_show($address_date,"address_date").' <input type="text" name="address_place" value="'.htmlspecialchars($address_place).'" size="50"></td></tr>';
-			echo '<tr><td>'.__('Zip code').':</td><td><input type="text" name="address_zip" value="'.$address_zip.'" size="60"></td></tr>';
-			echo '<tr><td>'.__('Phone').':</td><td><input type="text" name="address_phone" value="'.$address_phone.'" size="60"></td></tr>';
+			echo '<input type="hidden" name="address_gedcomnr" value="'.$address_gedcomnr.'">';
+			echo '<tr><td>'.__('Address').'</td><td><input type="text" name="address_address" value="'.htmlspecialchars($address_address).'" size="60"></td></tr>';
+			echo '<tr><td>'.ucfirst(__('date')).' - '.__('place').'</td><td>'.$editor_cls->date_show($address_date,"address_date").' <input type="text" name="address_place" value="'.htmlspecialchars($address_place).'" size="50"></td></tr>';
+			echo '<tr><td>'.__('Zip code').'</td><td><input type="text" name="address_zip" value="'.$address_zip.'" size="60"></td></tr>';
+			echo '<tr><td>'.__('Phone').'</td><td><input type="text" name="address_phone" value="'.$address_phone.'" size="60"></td></tr>';
 			//echo '<tr><td>'.__('Picture').'</td><td><input type="text" name="address_photo" value="'.$address_photo.'" size="60"></td></tr>';
 
 			// *** Source by address ***
-			echo '<tr><td>'.__('source').'</td><td>';
+			echo '<tr><td>'.ucfirst(__('source')).'</td><td>';
 				if (isset($addressDb->address_id)){
 					// *** Calculate and show nr. of sources ***
 					$connect_qry="SELECT * FROM humo_connections
@@ -3154,7 +3198,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				}
 			echo '</td></tr>';
 
-			echo '<tr><td>'.__('text').'</td><td><textarea rows="1" name="address_text" '.$field_text_large.'>'.
+			echo '<tr><td>'.ucfirst(__('text')).'</td><td><textarea rows="1" name="address_text" '.$field_text_large.'>'.
 			$editor_cls->text_show($address_text).'</textarea></td></tr>';
 
 			if (isset($_POST['add_address'])){

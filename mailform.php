@@ -107,8 +107,8 @@ else{
 
 		if ($humo_option["use_newsletter_question"]=='y'){
 			print '<tr><td>'.__('Receive newsletter').'</td><td>
-			<input type="radio" name="newsletter" value="Yes"> Ja<br>
-			<input type="radio" name="newsletter" value="No" checked> Nee</td></tr>';
+			<input type="radio" name="newsletter" value="Yes"> '.__('Yes').'<br>
+			<input type="radio" name="newsletter" value="No" checked> '.__('No').'</td></tr>';
 		}
 
 		if ($humo_option["use_spam_question"]=='y'){

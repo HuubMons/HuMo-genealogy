@@ -29,21 +29,21 @@ function language_date($date_text){
 		$date_text=str_replace("SEP", __('sep'), $date_text);
 		$date_text=str_replace("OCT", __('oct'), $date_text);
 		$date_text=str_replace("NOV", __('nov'), $date_text);
-		$date_text=str_replace("DEC", __('dec'), $date_text);	
-	}	
+		$date_text=str_replace("DEC", __('dec'), $date_text);
+	}
 	else {
 		$date_text=str_replace("JAN", __('January'), $date_text);
 		$date_text=str_replace("FEB", __('February'), $date_text);
 		$date_text=str_replace("MAR", __('March'), $date_text);
 		$date_text=str_replace("APR", __('April'), $date_text);
-		$date_text=str_replace("MAY", __('may'), $date_text); // without capital that's how it is in the source file...
+		$date_text=str_replace("MAY", __('May'), $date_text); // without capital that's how it is in the source file...
 		$date_text=str_replace("JUN", __('June'), $date_text);
 		$date_text=str_replace("JUL", __('July'), $date_text);
 		$date_text=str_replace("AUG", __('August'), $date_text);
 		$date_text=str_replace("SEP", __('September'), $date_text);
 		$date_text=str_replace("OCT", __('October'), $date_text);
 		$date_text=str_replace("NOV", __('November'), $date_text);
-		$date_text=str_replace("DEC", __('December'), $date_text);	
+		$date_text=str_replace("DEC", __('December'), $date_text);
 	}
 	if($humo_option["date_display"]=="us" OR $humo_option["date_display"]=="ch" OR $selected_language=="hu") {
 
@@ -62,12 +62,12 @@ function language_date($date_text){
 			}
 			elseif($humo_option["date_display"]=="ch" AND $selected_language!="hu") {
 				$date_text = chinese_date($date_text);
-				$date_text = $prfx." ".$date_text;			
+				$date_text = $prfx." ".$date_text;
 			}
 			else { // Hungarian display
 				$date_text = hungarian_date($date_text);
 				if($prfx == __('before') OR $prfx == __('after')) {
-					$date_text = $date_text." ".$prfx;		
+					$date_text = $date_text." ".$prfx;
 				}
 				else { 
 					if($prfx == __('estimated &#177;')) { $prfx = __('estimated'); } 
@@ -90,12 +90,12 @@ function language_date($date_text){
 			elseif($humo_option["date_display"]=="ch" AND $selected_language!="hu"){
 				$date_arr[0] = chinese_date($date_arr[0]); 
 				$date_arr[1] = chinese_date($date_arr[1]); 
-				$date_text = __('between')." ".$date_arr[0]." ".__('and')." ".$date_arr[1];			
+				$date_text = __('between')." ".$date_arr[0]." ".__('and')." ".$date_arr[1];
 			}
 			else { // Hungarian display: "between" at the end
 				$date_arr[0] = hungarian_date($date_arr[0]); 
 				$date_arr[1] = hungarian_date($date_arr[1]); 
-				$date_text = $date_arr[0]." ".__('and')." ".$date_arr[1]." ".__('between');			
+				$date_text = $date_arr[0]." ".__('and')." ".$date_arr[1]." ".__('between');
 			}
 
 

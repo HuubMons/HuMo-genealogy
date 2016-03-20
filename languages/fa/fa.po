@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-22 22:15+0100\n"
-"PO-Revision-Date: 2015-11-11 21:55+0100\n"
+"PO-Revision-Date: 2015-12-26 11:52+0100\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,8 +11,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fa\n"
 "X-Launchpad-Export-Date: 2012-05-28 18:32+0000\n"
-"X-Generator: Poedit 1.7.3\n"
-"X-Poedit-Basepath: D:\\xampp\\htdocs\\\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-Basepath: D:/xampp/htdocs\n"
 "X-Poedit-KeywordsList: gettext;gettext_noop;_e;__\n"
 "X-Poedit-SearchPath-0: humo-gen\n"
 
@@ -669,11 +669,10 @@ msgstr ""
 msgid "Recently changed and/or new persons"
 msgstr "اشخاص جدید یا آنها که تغییر کرده‌اند"
 
-#: humo-gen/latest_changes.php:62 humo-gen/list.php:1156
-#: humo-gen/list.php:1377 humo-gen/list_places_families.php:455
-#: humo-gen/menu.php:71 humo-gen/photoalbum.php:155
-#: humo-gen/relations.php:2590 humo-gen/relations.php:2620
-#: humo-gen/relations.php:2689
+#: humo-gen/latest_changes.php:62 humo-gen/list.php:1156 humo-gen/list.php:1377
+#: humo-gen/list_places_families.php:455 humo-gen/menu.php:71
+#: humo-gen/photoalbum.php:155 humo-gen/relations.php:2590
+#: humo-gen/relations.php:2620 humo-gen/relations.php:2689
 msgid "Search"
 msgstr "جستجو"
 
@@ -2635,8 +2634,7 @@ msgstr ""
 #: humo-gen/admin/include/cms_pages.php:358
 #: humo-gen/admin/include/cms_pages.php:433
 #: humo-gen/admin/include/cms_pages.php:590
-#: humo-gen/admin/include/editor.php:928
-#: humo-gen/admin/include/editor.php:1782
+#: humo-gen/admin/include/editor.php:928 humo-gen/admin/include/editor.php:1782
 #: humo-gen/admin/include/editor.php:2392
 #: humo-gen/admin/include/editor.php:2593
 #: humo-gen/admin/include/editor.php:2810
@@ -2665,8 +2663,7 @@ msgid "Remove menu"
 msgstr ""
 
 #: humo-gen/admin/include/cms_pages.php:444
-#: humo-gen/admin/include/editor.php:931
-#: humo-gen/admin/include/editor.php:1253
+#: humo-gen/admin/include/editor.php:931 humo-gen/admin/include/editor.php:1253
 #: humo-gen/admin/include/editor.php:1322
 #: humo-gen/admin/include/editor.php:2389
 #: humo-gen/admin/include/editor.php:2590
@@ -2739,8 +2736,7 @@ msgid "Found:"
 msgstr ""
 
 #: humo-gen/admin/include/editor.php:414 humo-gen/admin/include/editor.php:625
-#: humo-gen/admin/include/editor.php:881
-#: humo-gen/admin/include/editor.php:2902
+#: humo-gen/admin/include/editor.php:881 humo-gen/admin/include/editor.php:2902
 msgid "Select"
 msgstr ""
 
@@ -2748,8 +2744,7 @@ msgstr ""
 msgid "Add person"
 msgstr ""
 
-#: humo-gen/admin/include/editor.php:460
-#: humo-gen/admin/include/editor.php:1594
+#: humo-gen/admin/include/editor.php:460 humo-gen/admin/include/editor.php:1594
 msgid "Marriage(s) and children"
 msgstr ""
 
@@ -2807,8 +2802,7 @@ msgstr ""
 msgid "Delete person"
 msgstr "جابجایی نامها"
 
-#: humo-gen/admin/include/editor.php:899
-#: humo-gen/admin/include/editor.php:2405
+#: humo-gen/admin/include/editor.php:899 humo-gen/admin/include/editor.php:2405
 #: humo-gen/admin/include/editor.php:2821
 msgid "Example"
 msgstr ""
@@ -2820,8 +2814,7 @@ msgstr ""
 msgid "Nickname"
 msgstr ""
 
-#: humo-gen/admin/include/editor.php:950
-#: humo-gen/admin/include/editor.php:1016
+#: humo-gen/admin/include/editor.php:950 humo-gen/admin/include/editor.php:1016
 #: humo-gen/admin/include/editor.php:1042
 #: humo-gen/admin/include/editor.php:1084
 #: humo-gen/admin/include/editor.php:1123
@@ -2851,8 +2844,7 @@ msgstr ""
 msgid "patronymic"
 msgstr ""
 
-#: humo-gen/admin/include/editor.php:963
-#: humo-gen/admin/include/editor.php:1059
+#: humo-gen/admin/include/editor.php:963 humo-gen/admin/include/editor.php:1059
 #: humo-gen/admin/include/editor.php:1098
 #: humo-gen/admin/include/editor.php:1181
 #: humo-gen/admin/include/editor.php:1221
@@ -4820,8 +4812,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: humo-gen/admin/include/links.php:74
-#: humo-gen/admin/include/trees_cls.php:264
+#: humo-gen/admin/include/links.php:74 humo-gen/admin/include/trees_cls.php:264
 msgid "Owner of tree"
 msgstr ""
 
@@ -5548,8 +5539,7 @@ msgstr ""
 msgid "NO NAME"
 msgstr ""
 
-#: humo-gen/admin/include/trees.php:274
-#: humo-gen/admin/include/trees_cls.php:19
+#: humo-gen/admin/include/trees.php:274 humo-gen/admin/include/trees_cls.php:19
 #: humo-gen/admin/include/trees_cls.php:260
 msgid "Family tree data"
 msgstr ""

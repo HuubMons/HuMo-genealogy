@@ -133,7 +133,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 							else {
 								// check if default name exists for this category
 								$qry3= "SELECT * FROM humo_photocat WHERE photocat_prefix ='".$row['photocat_prefix']."' AND photocat_language ='default'";
-								$result3 = $dbh->query($qry3);	
+								$result3 = $dbh->query($qry3);
 								if($result3->rowCount()!=0) {  
 									$catnameDb = $result3->fetch(PDO::FETCH_OBJ);
 									$menutab_name = $catnameDb->photocat_name;
@@ -236,7 +236,7 @@ function showthem ($pref) {
 			reset($sub_arr);
 			$subpage = key($sub_arr);
 		}
-	}	
+	}
 	
 	// *** Order pictures by alphabet ***
 	//@sort($picture_array);
@@ -380,8 +380,10 @@ if($subsub==true) {
 			$picture_text='';	// Text with link to person
 			$picture_text2='';	// Text without link to person
 
+			//$sql="SELECT * FROM humo_events
+			//	WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
 			$sql="SELECT * FROM humo_events
-				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
+				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND LEFT(event_kind,7)='picture' AND LOWER(event_event)='".strtolower($filename)."'";
 			$afbqry= $dbh->query($sql);
 			$picture_privacy=false;
 			if(!$afbqry->rowCount()) {  $picture_text = substr($thepic,0,-4); }
@@ -401,7 +403,7 @@ if($subsub==true) {
 				}
 			}
 
-			// *** Show texts from connected objects ***
+			// *** Show texts from connected objects (where object is saved in seperate table) ***
 			$picture_qry=$dbh->query("SELECT * FROM humo_events
 				WHERE event_tree_id='".$tree_id."' AND event_kind='object' AND LOWER(event_event)='".strtolower($filename)."'");
 			while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)) {
@@ -418,7 +420,7 @@ if($subsub==true) {
 					$picture_text2.=$name["standard_name"];
 					$privacy=$person_cls->set_privacy($personDb);
 					if ($privacy){ $picture_privacy=true; }
-					if($afbDb->event_text!='') {
+					if($pictureDb->event_text!='') {
 						$picture_text.=$pictureDb->event_text.'<br>';
 						$picture_text2.=$pictureDb->event_text;
 					}
@@ -445,8 +447,8 @@ if($subsub==true) {
 		}  
 	}
 if($subsub==true) { 
-	echo '</div>'; // rightsub	
-	echo '</div>'; // outersub		
+	echo '</div>'; // rightsub
+	echo '</div>'; // outersub
 }
 	echo '</div>'; // end of white menu page
 	echo '<br clear="all"><br>';

@@ -114,7 +114,7 @@ echo '<table class="humo standard" border="1">';
 			echo '<td><input type="text" name="own_code" value="Code" size="5"></td>';
 			echo '<td><input type="text" name="link_text" value="'.__('Owner of tree').'" size="20"></td>';
 			echo '<td><input type="Submit" name="add_link" value="'.__('Add').'"></td>';
-			echo '<td bgcolor="red"><br></td>';
+			echo '<td><br></td>';
 		echo "</tr>";
 	}
 	else{

@@ -1165,7 +1165,7 @@ if ($index_list=='patronym'){
 		else{
 			if($humo_option['one_name_study']!='y') {
 				echo '<td class="no_border center" colspan="2">'.__('Enter name or part of name').'<br>';
-				echo '<span style="font-size:10px;">"John Jones", "Jones John", "John of Jones", "of Jones, John", "Jones, John of", "Jones of, John"</span>';
+				echo '<span style="font-size:10px;">' .__('"John Jones", "Jones John", "John of Jones", "of Jones, John", "Jones, John of", "Jones of, John"').'</span>';
 			}
 			else {
 				echo '<td class="no_border center" colspan="2">'.__('Enter private name');

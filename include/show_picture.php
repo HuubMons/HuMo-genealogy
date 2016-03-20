@@ -17,18 +17,6 @@ function show_media($event_connect_kind,$event_connect_id){
 		// in joomla relative path is relative to joomla main folder, NOT HuMo-gen main folder. Therefore use the path entered as-is, without ROOTPATH.
 
 		// *** Standard connected media by person and family ***
-		/*
-		if ($event_connect_kind=='person'){
-			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-				AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND LEFT(event_kind,7)='picture'
-				ORDER BY event_kind, event_order");
-		}
-		elseif ($event_connect_kind=='family'){
-			$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-				AND event_connect_kind='family' AND event_connect_id='".$event_connect_id."' AND event_kind='picture'
-				ORDER BY event_order");
-		}
-		*/
 		$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 			AND event_connect_kind='".$event_connect_kind."' AND event_connect_id='".$event_connect_id."' AND LEFT(event_kind,7)='picture'
 			ORDER BY event_kind, event_order");

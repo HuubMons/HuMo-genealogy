@@ -80,7 +80,7 @@ $sql = "SELECT *,
 	FROM humo_persons
 	WHERE pers_tree_id='".$tree_id."' AND (substring( pers_birth_date,  4,3) = :month
 	OR substring( pers_birth_date,  3,3) = :month)
-	order by birth_day ";
+	order by birth_day, birth_year ";
 
 try {
 	$qry = $dbh->prepare( $sql );

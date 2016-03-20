@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
@@ -1619,7 +1619,7 @@ if (isset($_GET['person_place_address']) AND isset($_GET['address_add'])){
 	$_POST["connect_connect_id"]=$pers_gedcomnumber;
 }
 
-// *** Add new source or address connection ***
+// *** Add new source/ address connection ***
 if (isset($_POST['connect_add'])){
 	// *** Generate new order number ***
 	$event_sql="SELECT * FROM humo_connections
@@ -1642,7 +1642,7 @@ if (isset($_POST['connect_add'])){
 	$result=$dbh->query($sql);
 } // *** End of update sources ***
 
-// *** Change source connection ***
+// *** Change source/ address connection ***
 if (isset($_POST['connect_change'])){
 	foreach($_POST['connect_change'] as $key=>$value){
 		$sql="UPDATE humo_connections SET
@@ -1660,7 +1660,6 @@ if (isset($_POST['connect_change'])){
 		$sql.=" connect_changed_date='".$gedcom_date."', ";
 		$sql.=" connect_changed_time='".$gedcom_time."'";
 		$sql.=" WHERE connect_id='".safe_text($_POST["connect_change"][$key])."'";
-//echo $sql;
 		$result=$dbh->query($sql);
 	}
 }

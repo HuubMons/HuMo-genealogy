@@ -251,6 +251,9 @@ if ($install_status==true){
 	if (isset($_SESSION["user_name_admin"])) {
 		$check_login='<td class="line_nok">'.__('At the moment you are logged in through PHP-MySQL.');
 	}
+
+//echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
+
 	echo '<tr><td class="line_item">'.__('Login control').'</td>'.$check_login;
 
 	print '<form method="POST" action="'.$path_tmp.'" style="display : inline;">';
@@ -395,6 +398,7 @@ The file .htpasswd will look something like this:<br>');
 	else{
 		echo '<tr><td>'.__('Trees table').'</td><td class="line_nok">ERROR</td></tr>';
 	}
+
 
 	// *** End of check database and table status ***
 }

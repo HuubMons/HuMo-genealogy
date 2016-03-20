@@ -2276,25 +2276,6 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		// *** Code _NMR is used TWICE in this file ***
 		if ($buffer6=='1 _NMR'){ $processed=1; $family["fam_kind"]="non-marital"; }
 
-// CODE MUST BE CHECKED...
-		// *** Remark: in $level1 was DIV changed into _LIV for Aldfaer relations ***
-/*
-		if ($gen_program=='ALDFAER' AND $level1=='_LIV'){
-			// *** Aldfaer uses DIV if an relation is ended! ***
-			// 1 DIV
-			// 2 DATE 2 JAN 2011
-			// 2 PLAC Brunssum
-			$family["fam_div"]=false;
-			$family["fam_relation_end_date"] = $family["fam_div_date"]; $family["fam_div_date"]='';
-			//$family["fam_relation_end_place"] = $family["fam_div_place"];
-			$family["fam_div_place"]='';
-			//$family["fam_relation_text"] = $family["fam_div_text"];
-			$family["fam_div_text"]='';
-			//$family["fam_relation_source"] = $family["fam_div_place"];
-			$family["fam_div_source"]='';
-		}
-*/
-
 		// Haza-data living together, begin and end date
 		// 0 @F9@ FAM
 		// 1 TYPE non-marital
@@ -2601,6 +2582,24 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		if (!$fam_man){ $family["fam_kind"]="PRO-GEN"; }
 	}
 
+	// Aldfaer: special treatment for end of relation.
+	// *** Aldfaer uses DIV if an relation is ended! ***
+	// 1 DIV
+	// 2 DATE 2 JAN 2011
+	// 2 PLAC Brunssum
+	// 1 MARR
+	// 2 TYPE partners
+	// etc.
+	if ($gen_program=='ALDFAER' AND $family["fam_kind"]=='partners'){
+		$family["fam_div"]=false;
+		$family["fam_relation_end_date"] = $family["fam_div_date"]; $family["fam_div_date"]='';
+		//$family["fam_relation_end_place"] = $family["fam_div_place"];
+		$family["fam_div_place"]='';
+		//$family["fam_relation_text"] = $family["fam_div_text"];
+		$family["fam_div_text"]='';
+		// Sources and events...
+	}
+
  	if($add_tree==true OR $reassign==true) { 
 		if(isset($family["fam_text"])) { $family["fam_text"] = $this->reassign_ged($family["fam_text"],'N');  }
 		if(isset($family["fam_marr_church_notice_text"])) { $family["fam_marr_church_notice_text"] = $this->reassign_ged($family["fam_marr_church_notice_text"],'N');  }
@@ -2612,7 +2611,6 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 	}   
 
 	// *** Save temporary text "DIVORCE" for a divorce without further data ***
-	//AND !$family["fam_div_source"]
 	if ($family["fam_div"]){
 		if (!$family["fam_div_date"] AND !$family["fam_div_place"] AND !$family["fam_div_text"]
 		AND !$family["fam_div_authority"]){

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 class editor_event_cls{
 
 // *** Show event_kind text ***
@@ -427,50 +427,49 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			} 
 			$text.='</ul>';
 
+
+// DEC 2015: FOR NOW, ONLY SHOW NUMBER OF PICTURE-OBJECTS.
+// *** Search for all external connected objects by a person or a family ***
+if ($event_connect_kind=='person'){
+	$connect_qry="SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."'
+		AND connect_sub_kind='pers_object'
+		AND connect_connect_id='".$event_connect_id."'
+		ORDER BY connect_order";
+}
+elseif ($event_connect_kind=='family'){
+	$connect_qry="SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."'
+		AND connect_sub_kind='fam_object'
+		AND connect_connect_id='".$event_connect_id."'
+		ORDER BY connect_order";
+}
+if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
+	$media_nr=0;
+	$connect_sql=$dbh->query($connect_qry);
+	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+		$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
+			ORDER BY event_order");
+		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
+			$media_nr++;
+			//$media_event_id[$media_nr]=$pictureDb->event_id;
+			//$media_event_event[$media_nr]=$pictureDb->event_event;
+			//$media_event_date[$media_nr]=$pictureDb->event_date;
+			//$media_event_text[$media_nr]=$pictureDb->event_text;
+			//$media_event_source[$media_nr]=$pictureDb->event_source;
+		}
+	}
+	if ($media_nr>0)
+		$text.='<div style="white-space: nowrap;"><b>'.$media_nr.' Picture-objects found. Editing not supported yet...</b></div>';
+}
+
+
+
 			$data_list_qry=$dbh->query($qry);
 			$data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ);
 
 			/*
-			?>
-			<script>
-			$('#sortable_pic').sortable().bind('sortupdate', function() {
-				var mediastring = ""; 
-				var media_arr = document.getElementsByClassName("mediamove"); 
-				for (var z = 0; z < media_arr.length; z++) { 
-					// create the new order after dragging to store in database with ajax
-					mediastring = mediastring + media_arr[z].id + ";"; 
-					// change the order numbers of the pics in the pulldown (that was generated before the drag
-					// so that if one presses on delete before refresh the right pic will be deleted !!
-				}
-				mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
-				
-				var parnode = document.getElementById('pic_main_' + media_arr[0].id).parentNode; 
-				var picdomclass = document.getElementsByClassName("pic_row2");
-				var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
-
-				for(var d=media_arr.length-1; d >=0 ; d--) {
-					parnode.insertBefore(document.getElementById('pic_row2_' + media_arr[d].id),nextnode);
-					nextnode = document.getElementById('pic_row2_' + media_arr[d].id);
-					parnode.insertBefore(document.getElementById('pic_row1_' + media_arr[d].id),nextnode);
-					nextnode = document.getElementById('pic_row1_' + media_arr[d].id);
-					parnode.insertBefore(document.getElementById('pic_main_' + media_arr[d].id),nextnode);
-					nextnode = document.getElementById('pic_main_' + media_arr[d].id);  
-				}
-
-				$.ajax({ 
-					url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
-					success: function(data){
-					} ,
-					error: function (xhr, ajaxOptions, thrownError) {
-						alert(xhr.status);
-						alert(thrownError);
-					}
-				});
-			});
-			</script>
-			<?php
-			*/
-
 			$text.= '
 			<script>
 			$(\'#sortable_pic\').sortable().bind(\'sortupdate\', function() {
@@ -493,6 +492,48 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 					nextnode = document.getElementById(\'pic_row2_\' + media_arr[d].id);
 					parnode.insertBefore(document.getElementById(\'pic_row1_\' + media_arr[d].id),nextnode);
 					nextnode = document.getElementById(\'pic_row1_\' + media_arr[d].id);
+					parnode.insertBefore(document.getElementById(\'pic_main_\' + media_arr[d].id),nextnode);
+					nextnode = document.getElementById(\'pic_main_\' + media_arr[d].id);  
+				}
+
+				$.ajax({ 
+					url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
+					success: function(data){
+					} ,
+					error: function (xhr, ajaxOptions, thrownError) {
+						alert(xhr.status);
+						alert(thrownError);
+					}
+				});
+			});
+			</script>';
+			*/
+
+			$text.= '
+			<script>
+			$(\'#sortable_pic\').sortable().bind(\'sortupdate\', function() {
+				var mediastring = ""; 
+				var media_arr = document.getElementsByClassName("mediamove"); 
+				for (var z = 0; z < media_arr.length; z++) { 
+					// create the new order after dragging to store in database with ajax
+					mediastring = mediastring + media_arr[z].id + ";"; 
+					// change the order numbers of the pics in the pulldown (that was generated before the drag
+					// so that if one presses on delete before refresh the right pic will be deleted !!
+				}
+				mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
+				
+				var parnode = document.getElementById(\'pic_main_\' + media_arr[0].id).parentNode; 
+				//var picdomclass = document.getElementsByClassName("pic_row2");
+				//var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
+				var nextnode = document.getElementById(\'pic_main_\' + media_arr[1].id); 
+
+				for(var d=media_arr.length-1; d >=0 ; d--) {
+					//parnode.insertBefore(document.getElementById(\'pic_row2_\' + media_arr[d].id),nextnode);
+					//nextnode = document.getElementById(\'pic_row2_\' + media_arr[d].id);
+
+					//parnode.insertBefore(document.getElementById(\'pic_row1_\' + media_arr[d].id),nextnode);
+					//nextnode = document.getElementById(\'pic_row1_\' + media_arr[d].id);
+
 					parnode.insertBefore(document.getElementById(\'pic_main_\' + media_arr[d].id),nextnode);
 					nextnode = document.getElementById(\'pic_main_\' + media_arr[d].id);  
 				}
@@ -635,12 +676,10 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 			if ($data_listDb->event_kind !='picture'){
 				// *** Count number of events ***
-				//if ($event_group=='event_person=1'){
 				if ($event_connect_kind=='person'){
 					$count_event=$dbh->query("SELECT * FROM humo_events
 						WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND event_kind='".$data_listDb->event_kind."'");
 				}
-				//elseif ($event_group=='event_family=1'){
 				elseif ($event_connect_kind=='family'){
 					$count_event=$dbh->query("SELECT * FROM humo_events
 						WHERE event_tree_id='".$tree_id."' AND event_connect_kind='family' AND event_connect_id='".$event_connect_id."' AND event_kind='".$data_listDb->event_kind."'");
@@ -1018,7 +1057,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='</td>';
 		$text.='<td>';
 			// *** Source by event ***
-			//if ($event_group=='event_person=1'){
 			if ($event_connect_kind=='person'){
 				// *** Calculate and show nr. of sources ***
 				$connect_qry="SELECT *

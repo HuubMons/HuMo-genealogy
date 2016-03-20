@@ -3057,7 +3057,7 @@ echo '<br><table class="humo relmenu">';
 echo '<tr class=table_headline><th>&nbsp;</th>';
 	print '<th>'.__('First name').'</th>';
 	print '<th>'.__('Last name').'</th>';
-	echo '<th>'._('or: ID').'</th>';
+	echo '<th>'.__('or: ID').'</th>';
 	echo '<th>'.__('Search').'</th>';
 	echo '<th colspan=2>'.__('Pick a name from search results').'</th>';
 	echo '<th>'.__('Calculate relationships').'</th></tr>';

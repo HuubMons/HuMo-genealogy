@@ -88,7 +88,7 @@ function calender($month, $year, $thismonth){
 	if ($month=='2'){ $calender_head=__('February'); }
 	if ($month=='3'){ $calender_head=__('March'); }
 	if ($month=='4'){ $calender_head=__('April'); }
-	if ($month=='5'){ $calender_head=__('may'); }
+	if ($month=='5'){ $calender_head=__('May'); }
 	if ($month=='6'){ $calender_head=__('June'); }
 	if ($month=='7'){ $calender_head=__('July'); }
 	if ($month=='8'){ $calender_head=__('August'); }
@@ -522,7 +522,7 @@ if ($statistics_screen=='date_statistics'){
 				$select=''; if ($month=='4'){ $select=' SELECTED'; }
 				echo '<option value="4"'.$select.'>'.__('April').'</option>';
 				$select=''; if ($month=='5'){ $select=' SELECTED'; }
-				echo '<option value="5"'.$select.'>'.__('may').'</option>';
+				echo '<option value="5"'.$select.'>'.__('May').'</option>';
 				$select=''; if ($month=='6'){ $select=' SELECTED'; }
 				echo '<option value="6"'.$select.'>'.__('June').'</option>';
 				$select=''; if ($month=='7'){ $select=' SELECTED'; }
@@ -558,7 +558,7 @@ if ($statistics_screen=='date_statistics'){
 			}
 			echo "</select>";
 
-			echo ' <input type="Submit" name="submit" value="Select">';
+			echo ' <input type="Submit" name="submit" value='.__('Select').'>';
 
 		echo '</form>';
 
@@ -601,7 +601,7 @@ if ($statistics_screen=='visitors'){
 				$select=''; if ($month=='4'){ $select=' SELECTED'; }
 				echo '<option value="4"'.$select.'>'.__('April').'</option>';
 				$select=''; if ($month=='5'){ $select=' SELECTED'; }
-				echo '<option value="5"'.$select.'>'.__('may').'</option>';
+				echo '<option value="5"'.$select.'>'.__('May').'</option>';
 				$select=''; if ($month=='6'){ $select=' SELECTED'; }
 				echo '<option value="6"'.$select.'>'.__('June').'</option>';
 				$select=''; if ($month=='7'){ $select=' SELECTED'; }
@@ -637,7 +637,7 @@ if ($statistics_screen=='visitors'){
 			}
 			echo "</select>";
 
-			echo ' <input type="Submit" name="submit" value="Select">';
+			echo ' <input type="Submit" name="submit" value='.__('Select').'>';
 
 		echo '</form>';
 

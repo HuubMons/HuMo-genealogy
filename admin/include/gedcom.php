@@ -104,25 +104,40 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 				$gedcom_directory=".";
 			}
 		}
-		$new_upload = $gedcom_directory.'/' . basename($_FILES['upload_file']['name']);
-		// *** Move and check for succesful upload ***
-		echo '<p><b>'.$new_upload.'<br>';
-		if (move_uploaded_file($_FILES['upload_file']['tmp_name'], $new_upload))
-			echo __('File successfully uploaded.').'</b>';
-		else
-			echo __('Upload has failed.').'</b>';
 
-		// *** If file is zipped, unzip it ***
-		if (substr($new_upload,-4)=='.zip'){
-			$zip = new ZipArchive;
-			$res = $zip->open($new_upload);
-			if ($res === TRUE) {
-				//$zip->extractTo('/myzips/extract_path/');
-				$zip->extractTo($gedcom_directory);
-				$zip->close();
-				echo '<br>Succesfully unzipped file!';
-			} else {
-				echo '<br>Error in unzipping file!';
+		// *** Only upload .ged or .zip files ***
+		if (substr($_FILES['upload_file']['name'],-4)=='.zip' OR substr($_FILES['upload_file']['name'],-4)=='.ged'){
+			$new_upload = $gedcom_directory.'/' . basename($_FILES['upload_file']['name']);
+			// *** Move and check for succesful upload ***
+			echo '<p><b>'.$new_upload.'<br>';
+			if (move_uploaded_file($_FILES['upload_file']['tmp_name'], $new_upload))
+				echo __('File successfully uploaded.').'</b>';
+			else
+				echo __('Upload has failed.').'</b>';
+
+			// *** If file is zipped, unzip it ***
+			if (substr($new_upload,-4)=='.zip'){
+				$zip = new ZipArchive;
+				$res = $zip->open($new_upload);
+				if ($res === TRUE) {
+
+					// *** Only unzip .ged files ***
+					$check_gedcom=true;
+					for ($i = 0; $i < $zip->numFiles; $i++) {
+						$filename = $zip->getNameIndex($i);
+						if (substr($filename,-4)!='.ged') $check_gedcom=false;
+					}
+					if ($check_gedcom){
+						//$zip->extractTo('/myzips/extract_path/');
+						$zip->extractTo($gedcom_directory);
+						$zip->close();
+						echo '<br>Succesfully unzipped file!';
+					}
+
+				} else {
+					echo '<br>Error in unzipping file!';
+				}
+
 			}
 		}
 
@@ -212,7 +227,7 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		$result = $dbh->query("SELECT tree_persons FROM humo_trees WHERE tree_prefix ='".$_SESSION['tree_prefix']."'");
 		$resultDb=$result->fetch(PDO::FETCH_OBJ);
 		if ($resultDb->tree_persons != 0) {  // don't show if there is nothing in the database yet: this can't be a second gedcom!
-			echo "<p><INPUT type='checkbox' name='add_tree'> ".__('Add this tree to the existing tree')."<br>\n";
+			echo "<p><INPUT type='checkbox' name='add_tree'> ".__('Add this gedcom file to the existing tree')."<br>\n";
 		}
 
 		echo '<p><input type="checkbox" name="check_processed"> '.__('Show non-processed items when processing gedcom (can be a long list!')."<br>\n";

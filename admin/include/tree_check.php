@@ -128,7 +128,8 @@ if (isset($_POST['tree']) AND isset($_POST['last_changes'])){
 }
 if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 	// *** Check tables for wrongly connected id's etc. ***
-	echo '<h3>'.__('Checking database tables...').'<br>Please wait till finished</h3>';
+	//echo '<h3>'.__('Checking database tables...').'<br>'.__('Please wait till finished').'.</h3>';
+	echo '<h3>'.__('Checking database tables...').'</h3>';
 
 	// *** Option to remove wrong database connections ***
 	if(CMS_SPECIFIC=="Joomla") {
@@ -139,13 +140,13 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 	}
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 	$checked=''; if (isset($_POST['remove'])) $checked = " checked";
-	echo '<input type="checkbox" name="remove"'.$checked.'> Remove links to missing items from database (first make a database backup!) ';
+	echo '<input type="checkbox" name="remove"'.$checked.'> '.__('Remove links to missing items from database (first make a database backup!)');
 		echo ' <input type="Submit" name="database_check" value="'.__('REMOVE').'">';
 	echo '</form>';
 
 	echo '<div style="height: 200px; overflow-y: scroll;">';
 	echo '<table class="humo" style="text-align:left;">';
-	echo '<tr><td><b>Check item</b></td><td><b>Item</b></td><td><b>Result</b></td>';
+	echo '<tr><td><b>'.__('Check item').'</b></td><td><b>'.__('Item').'</b></td><td><b>'.__('Result').'</b></td>';
 
 	$wrong_indexnr=0;
 	$wrong_famc=0;

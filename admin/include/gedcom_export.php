@@ -138,7 +138,6 @@ function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$sta
 	global $dbh, $buffer, $tree_id;
 	//$tree;
 	// *** Search for all connected sources ***
-	//$connect_qry="SELECT * FROM ".$tree."connections
 	$connect_qry="SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_kind='".$connect_kind."'
@@ -192,9 +191,9 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 
 	$parent1=''; $parent2=''; $change_main_person=false;
 
-	// *** Standard main_person is the father ***
+	// *** Standard main_person is the man ***
 	if ($familyDb->fam_man){ $parent1=$familyDb->fam_man; }
-	// *** If mother is selected, mother will be main_person ***
+	// *** If woman is selected, woman will be main_person ***
 	if ($familyDb->fam_woman==$main_person){
 		$parent1=$familyDb->fam_woman;
 		$change_main_person=true;
@@ -203,9 +202,6 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 	// *** Check family with parent1: N.N. ***
 	if ($parent1){
 		// *** Save man's families in array ***
-		//$person_qry=$dbh->query("SELECT pers_fams FROM humo_persons
-		//	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$parent1."'");
-		//@$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
 		$personDb=$db_functions->get_person($parent1);
 
 		$marriage_array=explode(";",$personDb->pers_fams);
@@ -286,7 +282,7 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 				if($child->rowCount()>0) {
 					// *** Build descendant_report ***
 					if ($childDb->pers_fams){
-						// *** 1e family of child ***
+						// *** 1st family of child ***
 						$child_family=explode(";",$childDb->pers_fams);
 						$child1stfam=$child_family[0];
 						descendants($child1stfam,$childDb->pers_gedcomnumber,$gn,$max_generations);  // recursive
@@ -584,14 +580,16 @@ if (isset($_POST["tree"]) AND isset($_POST['submit_button'])){
 		$desc_fams='';
 		$desc_pers = $_POST['person'];
 		$max_gens = $_POST['generations'];
-		//$fam_search = $dbh->query("SELECT pers_fams, pers_indexnr FROM ".$tree."person WHERE pers_gedcomnumber ='".$desc_pers."'");
 		$fam_search = $dbh->query("SELECT pers_fams, pers_indexnr
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$desc_pers."'");
 		$fam_searchDb = $fam_search->fetch(PDO::FETCH_OBJ);
 		if($fam_searchDb->pers_fams != '') { $desc_fams = $fam_searchDb->pers_fams; }
 		else { $desc_fams = $fam_searchDb->pers_indexnr; }
 		$gn=0;
-		descendants($desc_fams,$desc_pers,$gn,$max_gens);
+
+		// *** Only use first marriage of selected person to avoid error. Other marriages will be processed in the function! ***
+		$pers_fams=explode(";",$desc_fams);
+		descendants($pers_fams[0],$desc_pers,$gn,$max_gens);
 	}
 	if(isset($_POST['part_tree']) AND $_POST['part_tree']=='part' AND isset($_POST['kind_tree']) AND $_POST['kind_tree']=="ancestor") {
 		// map ancestors
@@ -793,8 +791,6 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	// 2 ADDR Ridderkerk
 	// 1 RESI
 	// 2 ADDR Slikkerveer
-	//$addressqry=$dbh->query("SELECT * FROM ".$tree."addresses
-	//	WHERE address_person_id='$person->pers_gedcomnumber'");
 	$addressqry=$dbh->query("SELECT * FROM humo_addresses
 		WHERE address_tree_id='".$tree_id."' AND address_person_id='$person->pers_gedcomnumber'");
 	while($addressDb=$addressqry->fetch(PDO::FETCH_OBJ)){
@@ -1013,7 +1009,6 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 */
 
 // *** FAMILY DATA ***
-//$family_qry=$dbh->query("SELECT * FROM ".$tree."family");
 $family_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."'");
 while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 
@@ -1239,8 +1234,6 @@ while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 if($_POST['part_tree']=='part') {  // only include sources that are used by the people in this partial tree
 	$source_array= array();
 	// find all sources referred to by persons (I233) or families (F233)
-	//$qry = $dbh->query("SELECT connect_connect_id, connect_source_id FROM ".$tree."connections
-	//	WHERE connect_source_id != ''");
 	$qry = $dbh->query("SELECT connect_connect_id, connect_source_id FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."' AND connect_source_id != ''");
 	while($qryDb=$qry->fetch(PDO::FETCH_OBJ)){
@@ -1251,7 +1244,6 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 	// find all sources referred to by addresses (233)
 	// extended addresses: we need a three-fold procedure....
 	// First: in the connections table search for exported persons/families that have an RESI number connection (R34)
-	//$address_connect_qry = $dbh->query("SELECT connect_connect_id, connect_item_id FROM ".$tree."connections WHERE connect_sub_kind LIKE '%_address'");
 	$address_connect_qry = $dbh->query("SELECT connect_connect_id, connect_item_id
 		FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind LIKE '%_address'");
 	$resi_array = array();
@@ -1261,7 +1253,6 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 		}
 	}
 	// Second: in the address table search for the previously found R numbers and get their id number (33)
-	//$address_address_qry = $dbh->query("SELECT address_gedcomnr, address_id FROM ".$tree."addresses WHERE address_gedcomnr !='' ");
 	$address_address_qry = $dbh->query("SELECT address_gedcomnr, address_id FROM humo_addresses
 		WHERE address_tree_id='".$tree_id."' AND address_gedcomnr !='' ");
 	$resi_id_array = array();
@@ -1271,9 +1262,6 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 		}
 	}
 	// Third: back in the connections table, find the previously found address id numbers and get the associated source ged number ($23)
-	//$address_connect2_qry = $dbh->query("SELECT connect_connect_id, connect_source_id
-	//	FROM ".$tree."connections
-	//	WHERE connect_sub_kind = 'address_source'");
 	$address_connect2_qry = $dbh->query("SELECT connect_connect_id, connect_source_id
 		FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind = 'address_source'");
@@ -1283,7 +1271,6 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 		}
 	}
 	// "direct" addresses
-	//$addressqry = $dbh->query("SELECT address_id, address_person_id, address_family_id FROM ".$tree."addresses");
 	$addressqry = $dbh->query("SELECT address_id, address_person_id, address_family_id FROM humo_addresses
 		WHERE address_tree_id='".$tree_id."'");
 	$source_address_array=array();
@@ -1295,7 +1282,6 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 			$source_address_array[] = $addressqryDb->address_id;
 		}
 	}
-	//$addresssourceqry = $dbh->query("SELECT connect_source_id, connect_connect_id FROM ".$tree."connections WHERE connect_sub_kind LIKE 'address_%'");
 	$addresssourceqry = $dbh->query("SELECT connect_source_id, connect_connect_id
 		FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind LIKE 'address_%'");
 	while($addresssourceqryDb=$addresssourceqry->fetch(PDO::FETCH_OBJ)){
@@ -1317,7 +1303,6 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 			$source_event_array[] = $eventqryDb->event_id;
 		}
 	}
-	//$eventsourceqry = $dbh->query("SELECT connect_source_id, connect_connect_id FROM ".$tree."connections WHERE connect_sub_kind LIKE 'event_%'");
 	$eventsourceqry = $dbh->query("SELECT connect_source_id, connect_connect_id
 		FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind LIKE 'event_%'");
 	while($eventsourceqryDb=$eventsourceqry->fetch(PDO::FETCH_OBJ)){
@@ -1333,7 +1318,6 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 }
 
 if ($gedcom_sources=='yes'){
-	//$family_qry=$dbh->query("SELECT * FROM ".$tree."sources");
 	$family_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'");
 	while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 		if($_POST['part_tree']=='part'  AND !in_array($family->source_gedcomnr,$source_array)) { continue; }
@@ -1424,8 +1408,6 @@ if ($gedcom_sources=='yes'){
 	repo_url='".safe_text($_POST['repo_url'])."',
 	*/
 	// *** Repository data ***
-	//$repo_qry=$dbh->query("SELECT * FROM ".$tree."repositories
-	//	ORDER BY repo_name, repo_place");
 	$repo_qry=$dbh->query("SELECT * FROM humo_repositories
 		WHERE repo_tree_id='".$tree_id."'
 		ORDER BY repo_name, repo_place");
@@ -1521,8 +1503,6 @@ if ($gedcom_texts=='yes'){
 	$buffer='';
 	natsort($noteids);
 	foreach ($noteids as $s){
-		//$text_query = "SELECT * FROM ".$tree."texts WHERE text_gedcomnr='".$s."'";
-		//$text_query = "SELECT * FROM ".$tree."texts WHERE text_gedcomnr='".substr($s,1,-1)."'";
 		$text_query = "SELECT * FROM humo_texts
 			WHERE text_tree_id='".$tree_id."' AND text_gedcomnr='".substr($s,1,-1)."'";
 		$text_sql=$dbh->query($text_query);

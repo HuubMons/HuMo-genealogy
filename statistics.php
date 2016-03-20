@@ -975,10 +975,10 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		//echo '<tr class=table_headline style="height:40px">';
 		echo '<tr class=table_headline style="height:25px">';
 		echo '<th style="border-right-width:6px;width:50%" colspan="4"><span style="font-size:135%">'.__('Male').'</span></th><th  style="width:50%" colspan="4"><span style="font-size:135%">'.__('Female').'</span></th></tr><tr class=table_headline>';
-		echo '<th width="19%">'.__('Name').'</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">'.__('Total').'</th>';  
-		echo '<th width="19%">'.__('Name').'</th><th style="text-align:center;font-size:90%;border-right-width:6px;width:6%">'.__('Total').'</th>'; 
-		echo '<th width="19%">'.__('Name').'</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">'.__('Total').'</th>';  
-		echo '<th width="19%">'.__('Name').'</th><th style="text-align:center;font-size:90%;width:6%">'.__('Total').'</th>';
+		echo '<th width="19%">'.__('First name').'</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">'.__('Total').'</th>';  
+		echo '<th width="19%">'.__('First name').'</th><th style="text-align:center;font-size:90%;border-right-width:6px;width:6%">'.__('Total').'</th>'; 
+		echo '<th width="19%">'.__('First name').'</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">'.__('Total').'</th>';  
+		echo '<th width="19%">'.__('First name').'</th><th style="text-align:center;font-size:90%;width:6%">'.__('Total').'</th>';
 		echo '</tr>';
 
 		$baseperc = first_names($maxnames);  // displays table and gets return value

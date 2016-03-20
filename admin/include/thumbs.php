@@ -64,7 +64,7 @@ echo '<div class="pageHeading">';
 
 			// *** Create thumbnails ***
 			$select_item=''; if ($menu_admin=='picture_thumbnails'){ $select_item=' pageTab-active'; }
-			echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=picture_thumbnails'.'">'.ucfirst (strtolower(__('CREATE THUMBNAILS')))."</a></div></li>";
+			echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=picture_thumbnails'.'">'.__('Create thumbnails')."</a></div></li>";
 
 			// *** Show thumbnails ***
 			$select_item=''; if ($menu_admin=='picture_show'){ $select_item=' pageTab-active'; }
@@ -82,38 +82,42 @@ echo '</div>';
 echo '<div style="float: left; background-color:white; height:500px; padding:10px;">';
 
 // *** Default settings ***
-$start_text='';
+$end_text='';
 $show_table=false;
+$table_header_text=__('Picture settings');
 
 // *** Show picture settings ***
 if (isset($menu_admin) AND $menu_admin=='picture_settings'){
-	$start_text='- '.__('To show pictures, also check the user-group settings: ');
-	$start_text.=' <a href="index.php?page=groups">'.__('User groups').'</a><br>';
+	$end_text='- '.__('To show pictures, also check the user-group settings: ');
+	$end_text.=' <a href="index.php?page=groups">'.__('User groups').'</a>';
 	$show_table=true;
+}
+
+// *** Create picture thumbnails ***
+if (isset($menu_admin) AND $menu_admin=='picture_thumbnails'){
+	$end_text=__('- Creating thumbnails<br>
+- ATTENTION: it may be necessary to (temporarily) change access to the folder with the pictures (rwxrwxrwx)<br>
+- Sometimes the php.ini has to be changed slightly, remove the ; before the line with:');
+	$end_text.=' <i>extension=php.gd2.dll</i>';
+	$show_table=true;
+	$table_header_text=__('Create thumbnails');
 }
 
 // *** Show picture thumbnails ***
-if (isset($menu_admin) AND $menu_admin=='picture_thumbnails'){
-	$start_text=__('- Creating thumbnails<br>
-- ATTENTION: it may be necessary to (temporarily) change access to the folder with the pictures (rwxrwxrwx)<br>
-- Sometimes the php.ini has to be changed slightly, remove the ; before the line with:');
-	$start_text.=' <i>extension=php.gd2.dll</i>';
-	$show_table=true;
-}
-
-// *** Show picture settings ***
 if (isset($menu_admin) AND $menu_admin=='picture_show'){
 	$show_table=true;
+	$table_header_text=__('Show thumbnails');
 }
 
-// *** Start selection table ***
-echo $start_text;
-
+// *** Selection table ***
 if ($show_table){
 	//echo '<table class="humo standard" style="width:800px;" border="1">';
-	echo '<table class="humo standard" style="margin-left:0px;" border="1">';
+	//echo '<table class="humo standard" style="margin-left:0px;" border="1">';
+	echo '<table class="humo" style="margin-left:0px;" border="1">';
 
-	echo '<tr class="table_header"><th colspan="2">'.__('Picture settings').'</th></tr>';
+	echo '<tr class="table_header"><th colspan="2">';
+	echo $table_header_text;
+	echo '</th></tr>';
 
 		echo '<tr><td class="line_item">'.__('Choose family').'</td>';
 		echo '<td>';
@@ -196,7 +200,7 @@ if ($show_table){
 					echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
 					echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 					echo __('Thumbnail height: ').' <input type="text" name="pict_height" value="'.$thumb_height.'" size="4"> pixels';
-					echo ' <input type="Submit" name="thumbnail" value="'.__('CREATE THUMBNAILS').'">';
+					echo ' <input type="Submit" name="thumbnail" value="'.__('Create thumbnails').'">';
 					echo '</form>';
 				echo '</td></tr>';
 			}
@@ -219,6 +223,8 @@ if ($show_table){
 
 		}
 	echo '</table><br>';
+
+	echo $end_text.'<br>';
 }
 
 
@@ -340,32 +346,6 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 	categories();
 }
 
-// *** Change filename ***
-/*
-if (isset($_POST['filename'])){
-	$picture_path_old=$_POST['picture_path'];
-	$picture_path_new=$_POST['picture_path'];
-	// *** If filename has a category AND a sub category directory exists, use it ***
-	if($_POST['filename'][2]=='_' AND is_dir($_POST['picture_path'].substr($_POST['filename'],0,2))){
-		$picture_path_new.=substr($_POST['filename'],0,2).'/';
-		$_POST['filename']==substr($_POST['filename'],3);
-	}
-
-	if (file_exists($picture_path_old.$_POST['filename_old'])){
-		rename ($picture_path_old.$_POST['filename_old'],$picture_path_new.$_POST['filename']);
-		echo '<b>'.__('Changed filename:').'</b> '.$picture_path_old.$_POST['filename_old'].' <b>'.__('into filename:').'</b> '.$picture_path_new.$_POST['filename'].'<br>';
-	}
-
-	if (file_exists($picture_path_old.'thumb_'.$_POST['filename_old'])){
-		rename ($picture_path_old.'thumb_'.$_POST['filename_old'],$picture_path_new.'thumb_'.$_POST['filename']);
-		echo '<b>'.__('Changed filename:').' </b>'.$picture_path_old.'thumb_'.$_POST['filename_old'].' <b>'.__('into filename:').'</b> '.$picture_path_new.'thumb_'.$_POST['filename'].'<br>';
-	}
-
-	$sql="UPDATE humo_events SET
-	event_event='".safe_text($_POST['filename'])."' WHERE event_event='".safe_text($_POST['filename_old'])."'";
-	$result=$dbh->query($sql);
-}
-*/
 // *** Change filename ***
 if (isset($_POST['filename'])){
 	$picture_path_old=$_POST['picture_path'];
@@ -595,7 +575,8 @@ function categories(){
 	echo '<input type="hidden" name="menu_admin" value="picture_categorie">';
 	echo '<input type="hidden" name="language_tree" value="'.$language_tree.'">';
 
-	echo '<table class="humo" cellspacing="0" style="text-align:center;width:80%">';
+	//echo '<table class="humo" cellspacing="0" style="text-align:center;width:80%">';
+	echo '<table class="humo" cellspacing="0" style="margin-left:0px; text-align:center; width:80%">';
 
 	echo '<tr class="table_header"><th colspan="5">'.__('Create categories for your photo albums').'</th></tr>';
 
@@ -705,7 +686,7 @@ function categories(){
 	}
 	
 	echo '</table>';
-	echo '<br><div style="margin-left:auto;margin-right:auto;width:80%;text-align:center;"><input type="Submit" name="save_cat" value="'.__('Save changes').'"></div>';
+	echo '<br><div style="margin-left:auto; margin-right:auto; text-align:center;"><input type="Submit" name="save_cat" value="'.__('Save changes').'"></div>';
 	echo '</form>';
 }
 

@@ -101,13 +101,9 @@ function tree_main(){
 		if ($dataDb->tree_prefix=='EMPTY'){
 			//
 		}
-		elseif ($dataDb->tree_persons>0){ echo ' <font color="#00FF00"><b>'.__('OK').'</b></font>'; }
-		else{ echo ' <font color="#FF0000"><b>'.__('ERROR').'!</b></font>'; }
-
-		if ($dataDb->tree_prefix=='EMPTY'){
-			//
-		}
 		elseif ($dataDb->tree_persons>0){
+			echo ' <font color="#00FF00"><b>'.__('OK').'</b></font>';
+
 			// *** Show tree data ***
 			$tree_date=$dataDb->tree_date;
 			$month=''; // for empty tree_dates
@@ -128,6 +124,7 @@ function tree_main(){
 			__('persons').', '.$dataDb->tree_families.' '.__('families').'</font>';
 		}
 		else{
+			//echo ' <font color="#FF0000"><b>'.__('ERROR').'!</b></font>';
 			echo ' <b>'.__('This tree does not yet contain any data or has not been imported properly!').'</b>';
 		}
 
@@ -1013,7 +1010,7 @@ You will be notified of results as the action is completed');
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 		echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 		echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
-		echo '<input type="Submit" name="auto_merge" value="'.__('Perform automatic merge').'">';
+		echo '<input type="Submit" name="auto_merge" value="'.__('Start automatic merge').'">';
 		echo '</form>';
 		echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		echo '<form method="post" action="'.$phpself.'" style="display : inline;">';

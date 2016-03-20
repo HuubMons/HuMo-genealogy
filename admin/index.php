@@ -150,6 +150,7 @@ while (false!==($file = readdir($map))) {
 			elseif ($file=='no') $language_order[]='Norsk';
 			elseif ($file=='pt') $language_order[]='Portuguese';
 			elseif ($file=='ru') $language_order[]='Russian';
+			elseif ($file=='sk') $language_order[]='Slovensky';
 			elseif ($file=='sv') $language_order[]='Swedish';
 			elseif ($file=='zh') $language_order[]='Chinese_traditional';
 			else $language_order[]=$file;
@@ -204,11 +205,14 @@ if($language["dir"]=="rtl") {
 // *** Process login form ***
 $fault='';
 if (isset($_POST['username'])){
-	$query = "SELECT * FROM humo_users WHERE user_name='" .$_POST["username"] ."' AND user_password='".MD5($_POST["password"])."'";
-	$result = $dbh->query($query);
-	if ($result->rowCount() > 0){
-		@$resultDb=$result->fetch(PDO::FETCH_OBJ);
-		$_SESSION['user_name_admin'] = safe_text($_POST["username"]);
+	//$query = "SELECT * FROM humo_users WHERE user_name='" .$_POST["username"] ."' AND user_password='".MD5($_POST["password"])."'";
+	//$result = $dbh->query($query);
+	$resultDb = $db_functions->get_user($_POST["username"],$_POST["password"]);
+
+	//if ($result->rowCount() > 0){
+	if ($resultDb){
+		//@$resultDb=$result->fetch(PDO::FETCH_OBJ);
+		$_SESSION['user_name_admin'] = $resultDb->user_name;
 		$_SESSION['user_id_admin'] = $resultDb->user_id;
 		$_SESSION['group_id_admin'] = $resultDb->user_group_id;
 
@@ -216,7 +220,7 @@ if (isset($_POST['username'])){
 		$log_date=date("Y-m-d H:i");
 		$sql="INSERT INTO humo_user_log SET
 			log_date='$log_date',
-			log_username='".safe_text($_POST["username"])."',
+			log_username='".$resultDb->user_name."',
 			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
 			log_user_admin='admin'";
 		@$dbh->query($sql);

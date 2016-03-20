@@ -51,6 +51,10 @@ function __construct($tree_prefix='') {
 
 	// *** Prepared statements ***
 	if ($dbh){
+		$sql = "SELECT * FROM humo_users
+			WHERE user_name=:user_name AND user_password=:user_password";
+		$this->query['get_user'] = $dbh->prepare( $sql );
+
 		$sql = "SELECT * FROM humo_trees WHERE tree_prefix=:tree_prefix";
 		$this->query['get_tree'] = $dbh->prepare( $sql );
 
@@ -123,6 +127,26 @@ function set_tree_id($tree_id){
 // *** Set family tree_prefix ***
 function set_tree_prefix($tree_prefix){
 	$this->tree_prefix=$tree_prefix;
+}
+
+/*--------------------[get user]----------------------------------
+ * FUNCTION	: Get user from database.
+ * QUERY	: SELECT * FROM humo_users
+ *				WHERE user_name=:user_name AND user_password=:user_password
+ * RETURNS	: user data.
+ *----------------------------------------------------------------
+ */
+function get_user($user_name,$user_password){
+	$qryDb=false;
+	try {
+		$this->query['get_user']->bindValue(':user_name', $user_name, PDO::PARAM_STR);
+		$this->query['get_user']->bindValue(':user_password', MD5($user_password), PDO::PARAM_STR);
+		$this->query['get_user']->execute();
+		$qryDb=$this->query['get_user']->fetch(PDO::FETCH_OBJ);
+	}catch (PDOException $e) {
+		echo $e->getMessage() . "<br/>";
+	}
+	return $qryDb;
 }
 
 /*--------------------[get tree]--------------------------------
