@@ -59,6 +59,12 @@ include_once(CMS_ROOTPATH."include/safe.php");
 include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
 include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
 
+// *** Check if visitor is allowed ***
+if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'],'partial')){
+	echo 'Access to website is blocked.';
+	exit;
+}
+
 // *** Set timezone ***
 include_once(CMS_ROOTPATH."include/timezone.php"); // set timezone 
 timezone();
@@ -116,16 +122,8 @@ array_multisort($language_order, $language_file);
 
 // *** Log in ***
 if (isset($_POST["username"]) && isset($_POST["password"])){
-	//$query = "SELECT * FROM humo_users
-	//	WHERE user_name='" . safe_text($_POST["username"]) ."'
-	//	AND user_password='".MD5(safe_text($_POST["password"]))."'";
-	//$result = $dbh->query($query);
 	$resultDb = $db_functions->get_user($_POST["username"],$_POST["password"]);
-
-	//if($result->rowcount() > 0) {
 	if ($resultDb){
-		//@$resultDb = $result->fetch(PDO::FETCH_OBJ);
-		//$_SESSION['user_name'] = safe_text($_POST["username"]);
 		$_SESSION['user_name'] = $resultDb->user_name;
 		$_SESSION['user_id'] = $resultDb->user_id;
 		$_SESSION['user_group_id'] = $resultDb->user_group_id;
@@ -135,7 +133,8 @@ if (isset($_POST["username"]) && isset($_POST["password"])){
 			log_date='".date("Y-m-d H:i")."',
 			log_username='".$resultDb->user_name."',
 			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
-			log_user_admin='user'";
+			log_user_admin='user',
+			log_status='success'";
 		$dbh->query($sql);
 		
 		// *** Send to secured page ***
@@ -151,6 +150,15 @@ if (isset($_POST["username"]) && isset($_POST["password"])){
 	else{
 		// *** No valid user found ***
 		$fault=true;
+
+		// *** Save log! ***
+		$sql="INSERT INTO humo_user_log SET
+			log_date='".date("Y-m-d H:i")."',
+			log_username='".safe_text($_POST["username"])."',
+			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
+			log_user_admin='user',
+			log_status='failed'";
+		$dbh->query($sql);
 	}
 }
 
@@ -376,7 +384,14 @@ else{
 
 		$url_position=strpos($uri_path,'!');
 		if ($url_position){
-			$uri_path= 'http://'.$_SERVER['SERVER_NAME'].substr($uri_path,0,$url_position);
+			//$uri_path= 'http://'.$_SERVER['SERVER_NAME'].substr($uri_path,0,$url_position);
+			if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+				$uri_path= 'https://'.$_SERVER['SERVER_NAME'].substr($uri_path,0,$url_position);
+			}
+			else{
+				$uri_path= 'http://'.$_SERVER['SERVER_NAME'].substr($uri_path,0,$url_position);
+			}
+
 			echo '<base href="'.$uri_path.'">';
 
 			$url_path=$uri_path.$url_path;
@@ -446,7 +461,7 @@ else{
 			// *** Check is family tree is showed or hidden for user group ***
 			$hide_tree_array=explode(";",$user['group_hide_trees']);
 			$hide_tree=false; if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
-			if ($hide_tree==false){	
+			if ($hide_tree==false){
 				$_SESSION['tree_prefix']=$dataDb->tree_prefix;
 				break;
 			}

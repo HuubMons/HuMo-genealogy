@@ -153,6 +153,10 @@ if (!isset($groupDb->group_gen_protection)){ $user['group_gen_protection']='n'; 
 if (!isset($groupDb->group_hide_trees)){ $user['group_hide_trees']=''; }
 	else{ $user['group_hide_trees']=$groupDb->group_hide_trees; }
 
+// *** Show or hide photo categories, saved as ; separated id numbers ***
+if (!isset($groupDb->group_hide_photocat)){ $user['group_hide_photocat']=''; }
+	else{ $user['group_hide_photocat']=$groupDb->group_hide_photocat; }
+
 // *** Edit family trees [GROUP SETTING], saved as ; separated id numbers (NOT USED FOR ADMINISTRATOR) ***
 if (!isset($groupDb->group_edit_trees)){ $user['group_edit_trees']=''; }
 	else{ $user['group_edit_trees']=$groupDb->group_edit_trees; }

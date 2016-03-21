@@ -191,7 +191,7 @@ function show_media($event_connect_kind,$event_connect_id){
 
 				$process_text.='<div class="photo">';
 					$process_text.=$picture;
-					if ($picture_array['picture']=='missing-image.jpg') $picture_text.='<br><b>'.__('Missing image').':<br>'.$tree_pict_path.$event_event.'</b>';
+					if (isset($picture_array['picture']) AND $picture_array['picture']=='missing-image.jpg') $picture_text.='<br><b>'.__('Missing image').':<br>'.$tree_pict_path.$event_event.'</b>';
 					if(isset($picture_text)) {$process_text.='<div class="phototext">'.$picture_text.'</div>';}
 				$process_text.= '</div>'."\n";
 			}

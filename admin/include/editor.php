@@ -418,7 +418,7 @@ if (isset($tree_prefix)){
 				echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				print '<select size="1" name="person" style="width: 200px">';
-				$counter==0;
+				$counter=0;
 				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 					$selected='';
 					if (isset($pers_gedcomnumber)){
@@ -1396,7 +1396,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 				$address_qry=$dbh->query("SELECT * FROM humo_addresses
 					WHERE address_tree_id='".$tree_id."'
-					AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
+					AND address_connect_sub_kind='person'
+					AND address_connect_id='".$pers_gedcomnumber."' ORDER BY address_order");
 				$count=$address_qry->rowCount();
 				if ($count>0)
 				echo '<a href="#places" onclick="hideShow(54);"><span id="hideshowlink54">'.__('[+]').'</span></a> ';
@@ -1408,7 +1409,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				$text='';
 				$address_qry=$dbh->query("SELECT * FROM humo_addresses
 					WHERE address_tree_id='".$tree_id."'
-					AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
+					AND address_connect_sub_kind='person'
+					AND address_connect_id='".$pers_gedcomnumber."' ORDER BY address_order");
 				while($addressDb=$address_qry->fetch(PDO::FETCH_OBJ)){
 					if ($text) $text.=', ';
 					$text.=htmlspecialchars($addressDb->address_place);
@@ -1420,7 +1422,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			// *** Residences ***
 			$address_qry=$dbh->query("SELECT * FROM humo_addresses
-				WHERE address_tree_id='".$tree_id."' AND address_person_id='".$pers_gedcomnumber."' ORDER BY address_order");
+				WHERE address_tree_id='".$tree_id."'
+				AND address_connect_sub_kind='person'
+				AND address_connect_id='".$pers_gedcomnumber."' ORDER BY address_order");
 			$address_count=$address_qry->rowCount();
 			$address_nr=0;
 			while($addressDb=$address_qry->fetch(PDO::FETCH_OBJ)){
@@ -2380,9 +2384,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				if ($nr_children > 1) {
 					unset ($children_array);
 					for ($i=0; $i<$nr_children; $i++){
-						$child=$dbh->query("SELECT * FROM humo_persons
-							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$child_array[$i]."'");
-						@$childDb=$child->fetch(PDO::FETCH_OBJ);
+						@$childDb = $db_functions->get_person($child_array[$i]);
 
 						$child_array_nr=$child_array[$i];
 						if ($childDb->pers_birth_date){

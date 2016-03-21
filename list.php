@@ -278,20 +278,19 @@ if ($selectsort){
 	}
 
 	if($selectsort=="sort_birthdate") {
-		//$make_date = ", right(pers_birth_date,4) as year,
-		//date_format( str_to_date( substring(pers_birth_date,-8,3),'%b' ),'%m') as month,
-		//date_format( str_to_date( left(pers_birth_date,2),'%d' ),'%d') as day";
-		//$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
-
-		// *** Replace ABT, AFT, BEF items and sort by birth or baptise date ***
+		
+		// *** Replace ABT, AFT, BEF, EST and BET...AND items and sort by birth or baptise date ***
 		$make_date= ", CASE
-			WHEN pers_birth_date = '' THEN replace(replace(replace(pers_bapt_date,'ABT ',''),'AFT ',''),'BEF ','')
-			ELSE replace(replace(replace(pers_birth_date,'ABT ',''),'AFT ',''),'BEF ','')
-			END AS year";
-		$orderby = " CONCAT( right(year,4),
+			WHEN pers_birth_date = '' AND SUBSTR(CONCAT(' ',pers_bapt_date),-4,1)= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(CONCAT(SUBSTR(pers_bapt_date,1,LENGTH(pers_bapt_date)-3),'0',SUBSTR(pers_bapt_date,-3)) USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
+			WHEN pers_birth_date = '' AND SUBSTR(CONCAT(' ',pers_bapt_date),-4,1)!= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(pers_bapt_date USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ')
+			WHEN pers_birth_date != '' AND SUBSTR(CONCAT(' ',pers_birth_date),-4,1)= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(CONCAT(SUBSTR(pers_birth_date,1,LENGTH(pers_birth_date)-3),'0',SUBSTR(pers_birth_date,-3)) USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
+			WHEN pers_birth_date != '' AND SUBSTR(CONCAT(' ',pers_birth_date),-4,1)!= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(pers_birth_date USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
+			END AS year"; 
+ 
+		$orderby = " CONCAT( substring(year,-4),
 			date_format( str_to_date( substring(year,-8,3),'%b' ) ,'%m'),
 			date_format( str_to_date( substring(year,-11,2),'%d' ),'%d')
-			)".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
+			) ".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
 	}
 	if($selectsort=="sort_birthplace") {
 		//$orderby = " pers_birth_place ".$desc_asc.",".$last_or_patronym.$desc_asc;
@@ -308,10 +307,14 @@ if ($selectsort){
 		//$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
 
 		// *** Replace ABT, AFT, BEF items and sort by death or buried date ***
-		$make_date= ", CASE
-			WHEN pers_death_date = '' THEN replace(replace(replace(pers_buried_date,'ABT ',''),'AFT ',''),'BEF ','')
-			ELSE replace(replace(replace(pers_death_date,'ABT ',''),'AFT ',''),'BEF ','')
+
+ 		$make_date= ", CASE
+			WHEN pers_death_date = '' AND SUBSTR(CONCAT(' ',pers_buried_date),-4,1)= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(CONCAT(SUBSTR(pers_buried_date,1,LENGTH(pers_buried_date)-3),'0',SUBSTR(pers_buried_date,-3)) USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
+			WHEN pers_death_date = '' AND SUBSTR(CONCAT(' ',pers_buried_date),-4,1)!= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(pers_buried_date USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ')
+			WHEN pers_death_date != '' AND SUBSTR(CONCAT(' ',pers_death_date),-4,1)= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(CONCAT(SUBSTR(pers_death_date,1,LENGTH(pers_death_date)-3),'0',SUBSTR(pers_death_date,-3)) USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
+			WHEN pers_death_date != '' AND SUBSTR(CONCAT(' ',pers_death_date),-4,1)!= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(pers_death_date USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
 			END AS year";
+
 		$orderby = " CONCAT( right(year,4),
 			date_format( str_to_date( substring(year,-8,3),'%b' ) ,'%m'),
 			date_format( str_to_date( substring(year,-11,2),'%d' ),'%d')
@@ -740,9 +743,10 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 			// *** Check is family tree is shown or hidden for user group ***
 			$hide_tree_array=explode(";",$user['group_hide_trees']);
 			$hide_tree=false;
-			for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-				if ($hide_tree_array[$x]==$datapdo['tree_id']){ $hide_tree=true; }
-			}
+			//for ($x=0; $x<=count($hide_tree_array)-1; $x++){
+			//	if ($hide_tree_array[$x]==$datapdo['tree_id']){ $hide_tree=true; }
+			//}
+			if (in_array($datapdo['tree_id'], $hide_tree_array)) $hide_tree=true;
 			if ($hide_tree==false){
 				if ($counter > 0) $multi_tree.=' OR ';
 				$multi_tree.='pers_tree_id='.$datapdo['tree_id'];
@@ -773,11 +777,10 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	if ($add_event_qry)
 		$query_select .= " LEFT JOIN humo_events ON event_tree_id=pers_tree_id AND event_connect_id=pers_gedcomnumber";
 	if ($add_address_qry)
-		//$query_select .= " LEFT JOIN humo_addresses ON address_person_id=pers_gedcomnumber AND address_tree_id=pers_tree_id";
 		$query_select .= " LEFT JOIN humo_connections ON connect_tree_id=pers_tree_id AND connect_connect_id=pers_gedcomnumber
-							AND connect_sub_kind='person_address'
-							LEFT JOIN humo_addresses ON address_person_id=pers_gedcomnumber AND address_tree_id=pers_tree_id
-							OR address_gedcomnr=connect_item_id AND address_tree_id=connect_tree_id AND connect_connect_id=pers_gedcomnumber";
+			AND connect_sub_kind='person_address'
+			LEFT JOIN humo_addresses ON address_connect_id=pers_gedcomnumber AND address_connect_sub_kind='person' AND address_tree_id=pers_tree_id
+			OR address_gedcomnr=connect_item_id AND address_tree_id=connect_tree_id AND connect_connect_id=pers_gedcomnumber";
 
 	$query_select.=" WHERE (".$multi_tree.") ".$query;
 	$query_select.=" GROUP BY pers_gedcomnumber";
@@ -808,9 +811,7 @@ if ($index_list=='quicksearch'){
 			// *** Check if family tree is shown or hidden for user group ***
 			$hide_tree_array=explode(";",$user['group_hide_trees']);
 			$hide_tree=false;
-			for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-				if ($hide_tree_array[$x]==$pdoresult['tree_id']){ $hide_tree=true; }
-			}
+			if (in_array($pdoresult['tree_id'], $hide_tree_array)) $hide_tree=true;
 			if ($hide_tree==false){
 				if ($counter > 0) $multi_tree.=' OR ';
 				$multi_tree.='pers_tree_id='.$pdoresult['tree_id'];

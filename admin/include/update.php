@@ -2960,6 +2960,168 @@ else{
 		echo '</td></tr>';
 	}
 
+	// **************************************
+	// *** Update procedure version 5.1.9 ***
+	// **************************************
+	if ($humo_option["update_status"]>'9'){
+		echo '<tr><td>HuMo-gen update V5.1.9</td><td style="background-color:#00FF00">OK</td></tr>';
+	}
+	else{
+		echo '<tr><td>HuMo-gen update V5.1.9</td><td style="background-color:#00FF00">';
+
+		// *** Show update status ***
+		echo __('Update in progress...').' <div id="information" style="display: inline; font-weight:bold;"></div><br>';
+
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_groups');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (!isset($field['group_source_presentation'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_source_presentation VARCHAR(20) NOT NULL DEFAULT 'title' AFTER group_sources;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_text_presentation'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_text_presentation VARCHAR(20) NOT NULL DEFAULT 'show' AFTER group_source_presentation;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_show_restricted_source'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_show_restricted_source VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_sources;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_death_date_act'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_death_date_act VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_alive_date;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_death_date'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_death_date VARCHAR(4) NOT NULL DEFAULT '1980' AFTER group_death_date_act;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_menu_persons'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_menu_persons VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_statistics;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_menu_names'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_menu_names VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_statistics;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_menu_login'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_menu_login VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_menu_names;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_showstatistics'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_showstatistics VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_relcalc'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_relcalc VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_googlemaps'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_googlemaps VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_contact'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_contact VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_latestchanges'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_latestchanges VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_pdf_button'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_pdf_button VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_own_code;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_rtf_button'])){
+			$sql="ALTER TABLE humo_groups ADD group_rtf_button VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_pdf_button;";
+			$result=$dbh->query($sql);
+
+			// *** Show RTF button in usergroup "Admin" ***
+			$sql="UPDATE humo_groups SET group_rtf_button='y' WHERE group_id=1";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_user_notes'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_user_notes VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_own_code;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_user_notes_show'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_user_notes_show VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_user_notes;";
+			$result=$dbh->query($sql);
+		}
+
+		if (!isset($field['group_family_presentation'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_family_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'compact' AFTER group_pdf_button;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['group_maps_presentation'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_maps_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'hide' AFTER group_family_presentation;";
+			$result=$dbh->query($sql);
+		}
+
+		if (!isset($field['group_edit trees'])){
+			$sql="ALTER TABLE humo_groups
+				ADD group_edit_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER group_hide_trees;";
+			$result=$dbh->query($sql);
+		}
+
+		$sql="ALTER TABLE humo_groups ADD group_hide_photocat varchar(200) NOT NULL DEFAULT ''";
+		$result=$dbh->query($sql);
+
+		// *** Update user_log table ***
+		$sql="ALTER TABLE humo_user_log ADD log_id mediumint(6) unsigned NOT NULL auto_increment FIRST, ADD PRIMARY KEY (`log_id`)";
+		$result=$dbh->query($sql);
+
+		$sql="ALTER TABLE humo_user_log ADD log_status varchar(10) CHARACTER SET utf8 DEFAULT '' AFTER log_user_admin";
+		$result=$dbh->query($sql);
+
+		$result = $dbh->query("UPDATE humo_user_log SET log_status='success'");
+
+		// *** Update address table ***
+		$sql="ALTER TABLE humo_addresses ADD address_connect_kind varchar(25) DEFAULT NULL AFTER address_order";
+		$result=$dbh->query($sql);
+
+		$sql="ALTER TABLE humo_addresses ADD address_connect_sub_kind varchar(30) DEFAULT NULL AFTER address_connect_kind";
+		$result=$dbh->query($sql);
+
+		$sql='UPDATE humo_addresses SET address_connect_kind="person", address_connect_sub_kind="person" WHERE address_person_id!=""';
+		$result = $dbh->query($sql);
+
+		$sql='UPDATE humo_addresses SET address_connect_kind="family", address_connect_sub_kind="family", address_person_id=address_family_id WHERE address_family_id!=""';
+		$result = $dbh->query($sql);
+
+		$sql="ALTER TABLE humo_addresses CHANGE address_person_id address_connect_id VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci";
+		$result=$dbh->query($sql);
+
+		$qry="ALTER TABLE humo_addresses DROP address_family_id;";
+		$result=$dbh->query($qry);
+
+		// *** Update "update_status" to number 9 ***
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='10'
+			WHERE setting_variable='update_status'");
+
+		echo ' Database updated!';
+		echo '</td></tr>';
+	}
+
 	/*	END OF UPDATE SCRIPT
 		*** VERY IMPORTANT REMARKS FOR PROGRAMMERS ***
 		* Change update_status in install.php

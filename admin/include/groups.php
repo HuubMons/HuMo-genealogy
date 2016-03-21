@@ -42,7 +42,9 @@ if (isset($_POST['group_change'])){
 	$group_menu_names='n'; if (isset($_POST["group_menu_names"])){ $group_menu_names='j'; }
 	$group_menu_places='n'; if (isset($_POST["group_menu_places"])){ $group_menu_places='j'; }
 	$group_addresses='n'; if (isset($_POST["group_addresses"])){ $group_addresses='j'; }
-	$group_photobook='n'; if (isset($_POST["group_photobook"])){ $group_photobook='j'; }
+	$group_pictures='n'; if (isset($_POST["group_pictures"])){ $group_pictures='j'; }
+	// *** If photobook is enabled, also enable pictures ***
+	$group_photobook='n'; if (isset($_POST["group_photobook"])){ $group_photobook='j'; $group_pictures='j'; }
 	$group_birthday_list='n'; if (isset($_POST["group_birthday_list"])){ $group_birthday_list='j'; }
 	$group_showstatistics='n'; if (isset($_POST["group_showstatistics"])){ $group_showstatistics='j'; }
 	$group_relcalc='n'; if (isset($_POST["group_relcalc"])){ $group_relcalc='j'; }
@@ -50,7 +52,6 @@ if (isset($_POST['group_change'])){
 	$group_contact='n'; if (isset($_POST["group_contact"])){ $group_contact='j'; }
 	$group_latestchanges='n'; if (isset($_POST["group_latestchanges"])){ $group_latestchanges='j'; }
 	$group_menu_login='n'; if (isset($_POST["group_menu_login"])){ $group_menu_login='j'; }
-	$group_pictures='n'; if (isset($_POST["group_pictures"])){ $group_pictures='j'; }
 	$group_gedcomnr='n'; if (isset($_POST["group_gedcomnr"])){ $group_gedcomnr='j'; }
 	$group_living_place='n'; if (isset($_POST["group_living_place"])){ $group_living_place='j'; }
 	$group_places='n'; if (isset($_POST["group_places"])){ $group_places='j'; }
@@ -203,115 +204,16 @@ echo '<br><table class="humo standard" style="text-align:center;"><tr class="tab
 	echo '</form>';
 echo '</td></tr></table><br>';
 
-// *** Show usergroup ***
-//$groupsql="SELECT * FROM humo_groups WHERE group_id='".$show_group_id."'";
-//$groupresult=$dbh->query($groupsql);
-//$groupDb=$groupresult->fetch(PDO::FETCH_OBJ);
-
-// *** Automatic installation or update ***
+/* *** Automatic installation or update ***
+  Januari 2016: Older updates are moved to update and installation script (was allready a long list...)!
+  If new extra settings are needed, just enable code below!
+*/ 
+/*
+// *** UPDATES MOVED TO UPDATE SCRIPT ***
 $column_qry = $dbh->query('SHOW COLUMNS FROM humo_groups');
 while ($columnDb = $column_qry->fetch()) {
 	$field_value=$columnDb['Field'];
 	$field[$field_value]=$field_value;
-}
-if (!isset($field['group_source_presentation'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_source_presentation VARCHAR(20) NOT NULL DEFAULT 'title' AFTER group_sources;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_text_presentation'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_text_presentation VARCHAR(20) NOT NULL DEFAULT 'show' AFTER group_source_presentation;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_show_restricted_source'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_show_restricted_source VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_sources;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_death_date_act'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_death_date_act VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_alive_date;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_death_date'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_death_date VARCHAR(4) NOT NULL DEFAULT '1980' AFTER group_death_date_act;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_menu_persons'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_menu_persons VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_statistics;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_menu_names'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_menu_names VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_statistics;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_menu_login'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_menu_login VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_menu_names;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_showstatistics'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_showstatistics VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_relcalc'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_relcalc VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_googlemaps'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_googlemaps VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_contact'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_contact VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_latestchanges'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_latestchanges VARCHAR(1) NOT NULL DEFAULT 'j' AFTER group_birthday_list;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_pdf_button'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_pdf_button VARCHAR(1) NOT NULL DEFAULT 'y' AFTER group_own_code;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_rtf_button'])){
-	$sql="ALTER TABLE humo_groups ADD group_rtf_button VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_pdf_button;";
-	$result=$dbh->query($sql);
-
-	// *** Show RTF button in usergroup "Admin" ***
-	$sql="UPDATE humo_groups SET group_rtf_button='y' WHERE group_id=1";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_user_notes'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_user_notes VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_own_code;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_user_notes_show'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_user_notes_show VARCHAR(1) NOT NULL DEFAULT 'n' AFTER group_user_notes;";
-	$result=$dbh->query($sql);
-}
-
-if (!isset($field['group_family_presentation'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_family_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'compact' AFTER group_pdf_button;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['group_maps_presentation'])){
-	$sql="ALTER TABLE humo_groups
-		ADD group_maps_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'hide' AFTER group_family_presentation;";
-	$result=$dbh->query($sql);
 }
 
 if (!isset($field['group_edit trees'])){
@@ -319,6 +221,7 @@ if (!isset($field['group_edit trees'])){
 		ADD group_edit_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER group_hide_trees;";
 	$result=$dbh->query($sql);
 }
+*/
 
 // *** Show usergroup ***
 $groupsql="SELECT * FROM humo_groups WHERE group_id='".$show_group_id."'";
@@ -656,11 +559,11 @@ echo __('Save all changes').'</th><th><input type="Submit" name="group_change" v
 echo '</table>';
 
 // *** User settings per family tree (hide or show tree, edit tree etc.) ***
-$group_hide_trees=$groupDb->group_hide_trees;
-$group_edit_trees=$groupDb->group_edit_trees;
+$hide_tree_array=explode(";",$groupDb->group_hide_trees);
+$edit_tree_array=explode(";",$groupDb->group_edit_trees);
 
 // *** Update tree settings ***
-if (isset($_POST['group_change'])){
+if (isset($_POST['group_change']) AND is_numeric($_POST["id"])){
 	$group_hide_trees=''; $group_edit_trees='';
 	$data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY'");
 	while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){
@@ -683,23 +586,23 @@ if (isset($_POST['group_change'])){
 		group_edit_trees='".$group_edit_trees."' 
 		WHERE group_id=".$_POST["id"];
 	$result=$dbh->query($sql);
+
+	$hide_tree_array=explode(";",$group_hide_trees);
+	$edit_tree_array=explode(";",$group_edit_trees);
 }
 
-$hide_tree_array=explode(";",$group_hide_trees);
-$edit_tree_array=explode(";",$group_edit_trees);
 
 echo '<h2 align="center">'.__('Hide or show family trees per user group.').'</h2>';
 echo __('Editor').': '.__('If an .htpasswd file is used: add username in .htpasswd file.').'<br>';
 echo __('These settings can also be set per user!');
 
 echo '<table class="humo standard" border="1">';
-	//echo '<tr style="background-color:green; color:white"><th>'.__('Table prefix').'</th><th>'.__('Family tree').'</th><th>'.__('Show tree?').'</th><th>'.__('Edit tree?').' <input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
-	echo '<tr class="table_header"><th>'.__('Table prefix').'</th><th>'.__('Family tree').'</th><th>'.__('Show tree?').'</th><th>'.__('Edit tree?').' <input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
+	echo '<tr class="table_header"><th>'.__('Family tree').'</th><th>'.__('Show tree?').'</th><th>'.__('Edit tree?').' <input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
 	$data3sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 	while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){
 		$treetext=show_tree_text($data3Db->tree_prefix, $selected_language); $treetext_name=$treetext['name'];
-		echo '<tr><td>'.$data3Db->tree_prefix.'</td><td>'.$treetext_name.'</td>';
+		echo '<tr><td>'.$data3Db->tree_id.' '.$treetext_name.'</td>';
 
 		// *** Show/ hide tree for user ***
 		$check=' checked'; if (in_array($data3Db->tree_id, $hide_tree_array)) $check='';
@@ -718,6 +621,50 @@ echo '<table class="humo standard" border="1">';
 		echo '</tr>';
 	}
 echo '</table>';
+
+
+// *** Photo categories ***
+// *** User settings per photo category ***
+$hide_photocat_array=explode(";",$groupDb->group_hide_photocat);
+
+// *** Update photocat settings ***
+if (isset($_POST['change_photocat']) and is_numeric($_POST["id"])){
+	$group_hide_photocat='';
+	$data3sql = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
+	while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){
+		// *** Show/ hide categories ***
+		$check='show_photocat_'.$data3Db->photocat_id;
+		if (!isset($_POST["$check"])){
+			if ($group_hide_photocat!=''){ $group_hide_photocat.=';'; }
+			$group_hide_photocat.=$data3Db->photocat_id;
+		}
+	}
+	$sql="UPDATE humo_groups
+		SET group_hide_photocat='".$group_hide_photocat."' 
+		WHERE group_id=".$_POST["id"];
+	$result=$dbh->query($sql);
+
+	$hide_photocat_array=explode(";",$group_hide_photocat);
+}
+
+echo '<h2 align="center">'.__('Hide or show photo categories per user group.').'</h2>';
+echo '<table class="humo standard" border="1">';
+	echo '<tr class="table_header"><th>'.__('Category prefix').'</th><th>'.__('Show category?').' <input type="Submit" name="change_photocat" value="'.__('Change').'"></th></tr>';
+
+	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");  
+	if($temp->rowCount()) {   // a humo_photocat table exists
+		$data3sql = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
+		while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){
+			// *** Show/ hide photo categories for user ***
+			$check=' checked'; if (in_array($data3Db->photocat_id, $hide_photocat_array)) $check='';
+			echo '<tr><td>'.$data3Db->photocat_prefix.'</td>';
+			echo '<td><input type="checkbox" name="show_photocat_'.$data3Db->photocat_id.'"'.$check.'></td></tr>';
+		}
+	}
+	else
+		echo '<tr><td colspan="2">'.__('No photo categories available.').'</td></tr>';
+echo '</table>';
+
 
 echo '</form>';
 ?>

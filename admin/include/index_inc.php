@@ -69,25 +69,21 @@ if (isset($_POST['save_settings_database'])){
 			//define("DATABASE_NAME",     'humo-gen');
 
 			if (substr($buffer[$i],0,21)=='define("DATABASE_HOST'){
-				//$buffer[$i]='define("DATABASE_HOST",     "'.$_POST['db_host'].'");'."\n";
 				$buffer[$i]='define("DATABASE_HOST",     '."'".$_POST['db_host']."');\n";
 				$check_config=true;
 			}
 
 			if (substr($buffer[$i],0,25)=='define("DATABASE_USERNAME'){
-				//$buffer[$i]='define("DATABASE_USERNAME", "'.$_POST['db_username'].'");'."\n";
 				$buffer[$i]='define("DATABASE_USERNAME", '."'".$_POST['db_username']."');\n";
 				$check_config=true;
 			}
 
 			if (substr($buffer[$i],0,25)=='define("DATABASE_PASSWORD'){
-				//$buffer[$i]='define("DATABASE_PASSWORD", "'.$_POST['db_password'].'");'."\n";
 				$buffer[$i]='define("DATABASE_PASSWORD", '."'".$_POST['db_password']."');\n";
 				$check_config=true;
 			}
 
 			if (substr($buffer[$i],0,21)=='define("DATABASE_NAME'){
-				//$buffer[$i]='define("DATABASE_NAME",     "'.$_POST['db_name'].'");'."\n";
 				$buffer[$i]='define("DATABASE_NAME",     '."'".$_POST['db_name']."');\n";
 				$check_config=true;
 			}
@@ -106,7 +102,7 @@ if (isset($_POST['save_settings_database'])){
 // *** Show HuMo-gen status, use scroll bar to show lots of family trees ***
 // *************************************************************************
 
-echo '<div style="height:400px; width:830px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
+echo '<div style="height:400px; width:850px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
 echo '<table class="humo" width="100%">';
 	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
 
@@ -142,13 +138,12 @@ echo '<table class="humo" width="100%">';
 $install_status=true;
 
 // *** Check database, if needed install local database ***
-echo '<tr><td class="line_item">';
+echo '<tr><td class="line_item">'.__('Database').'</td>';
 if (@$database_check){
-	echo __('Database').'</td>';
 	echo '<td class="line_ok">'.__('OK');
 }
 else{
-	echo __('Database').'</td><td class="line_nok">';
+	echo '<td class="line_nok">';
 	echo __('<b>There is no database connection! To connect the MySQL database to HuMo-gen, fill in these settings:</b>');
 
 	$install_status=false;
@@ -197,6 +192,11 @@ else{
 	echo '</table>';
 	
 	echo '</form>';
+
+	echo __('Sometimes it\'s needed to add these lines to a /php.ini and admin/php.ini files to activate the PDO driver:').'<br>';
+	echo 'extension=pdo.so<br>
+	extension=pdo_sqlite.so<br>
+	extension=pdo_mysql.so<br>';
 }
 
 if (isset($_POST['install_database'])){
@@ -242,6 +242,60 @@ if ($install_status==true){
 // *** Only show table status if database AND tables are checked ***
 if ($install_status==true){
 
+	// *** Show size of statistics table ***
+	$size = $dbh->query('SHOW TABLE STATUS WHERE Name="humo_stat_date"');
+	$sizeDb=$size->fetch(PDO::FETCH_OBJ);
+	$size=$sizeDb->Data_length;
+	$bytes = array( ' kB', ' MB', ' GB', ' TB' );
+	$size = $size / 1024;
+	foreach ($bytes as $val) {
+		if (1024 <= $size) {
+			$size = $size / 1024;
+			continue;
+		}
+		break;
+	}
+	$size= round( $size, 1 ) . $val;
+
+	echo '<tr><td class="line_item">'.__('Size of statistics table').'</td><td class="line_ok">'.$size;
+		echo ' <a href="index.php?page=statistics">'.__('If needed remove old statistics.').'</a>';
+	echo '</td></tr>';
+
+	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen security items').'</th></tr>';
+
+	// *** Check for standard admin username and password ***
+	$sql="SELECT * FROM humo_users WHERE user_name='admin' OR (user_name='admin' AND user_password='".MD5('humogen')."')";
+	$check_login = $dbh->query($sql);
+	$check_loginDb=$check_login->fetch(PDO::FETCH_OBJ);
+	if ($check_loginDb){
+		$check_login='<td class="line_nok">'.__('Standard admin username or admin password is used.');
+		$check_login.='<br><a href="index.php?page=users">'.__('Change admin username and password.').'</a>';
+	}
+	else
+		$check_login='<td class="line_ok">'.__('OK');
+	echo '<tr><td class="line_item">'.__('Check admin account').'</td>'.$check_login;
+
+
+	// *** Show failed logins ***
+	//3600 = 1 uur
+	//86400 = 1 dag
+	//604800 = 1 week
+	//2419200 = 1 maand
+	//31536000 = jaar
+	$sql="SELECT count(log_id) as count_failed FROM humo_user_log
+		WHERE log_status='failed'
+		AND UNIX_TIMESTAMP(log_date) > (UNIX_TIMESTAMP(NOW()) - 2419200)";
+	$check_login = $dbh->query($sql);
+	$check_loginDb=$check_login->fetch(PDO::FETCH_OBJ);
+	if ($check_loginDb){
+		$check_login='<td class="line_ok">'.__('Number of failed logins attempts last month').': '.$check_loginDb->count_failed;
+		$check_login.='<br><a href="index.php?page=log">'.__('Logfile users').'</a>';
+	}
+	//else
+	//	$check_login='<td class="line_ok">'.__('OK');
+	echo '<tr><td class="line_item">'.__('Failed login attempts').'</td>'.$check_login;
+
+
 	// *** Check login ***
 	$check_login='<td class="line_nok"><b>'.__('The folder "admin" has NOT YET been secured.').'</b>';
 	if (isset($_SERVER["PHP_AUTH_USER"])){
@@ -251,8 +305,6 @@ if ($install_status==true){
 	if (isset($_SESSION["user_name_admin"])) {
 		$check_login='<td class="line_nok">'.__('At the moment you are logged in through PHP-MySQL.');
 	}
-
-//echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
 
 	echo '<tr><td class="line_item">'.__('Login control').'</td>'.$check_login;
 
@@ -332,6 +384,7 @@ The file .htpasswd will look something like this:<br>');
 	@$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
 	if ($datasql){
 
+/*
 		// *** Show size of statistics table ***
 		$size = $dbh->query('SHOW TABLE STATUS WHERE Name="humo_stat_date"');
 		$sizeDb=$size->fetch(PDO::FETCH_OBJ);
@@ -350,8 +403,9 @@ The file .htpasswd will look something like this:<br>');
 		echo '<tr><td class="line_item">'.__('Size of statistics table').'</td><td class="line_ok">'.$size;
 			echo ' <a href="index.php?page=statistics">'.__('If needed remove old statistics.').'</a>';
 		echo '</td></tr>';
+*/
 
-		echo '<tr><td class="line_item">'.__('Trees table').'</td><td class="line_ok">OK</td></tr>';
+		//echo '<tr><td class="line_item">'.__('Trees table').'</td><td class="line_ok">OK</td></tr>';
 
 		$tree_counter=0;
 		//echo '<tr><td colspan="2"><br></td></tr>'; // *** Show empty line ***

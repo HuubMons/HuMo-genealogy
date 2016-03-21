@@ -127,8 +127,7 @@ if($screen_mode=='PDF') {
 	$pdfdetails=array();
 	$pdf_marriage=array();
 	$pdf=new PDF();
-	$pers = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$family_id."'");
-	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
+	@$persDb = $db_functions->get_person($family_id);
 	// *** Use person class ***
 	$pers_cls = New person_cls;
 	$pers_cls->construct($persDb);
@@ -188,8 +187,7 @@ if($screen_mode=='RTF') {  // initialize rtf generation
 	$parSimple->setIndentRight(0.5);
 
 	// *** Generate title of RTF file ***
-	$pers = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='$family_id'");
-	@$persDb = $pers->fetch(PDO::FETCH_OBJ);
+	@$persDb = $db_functions->get_person($family_id);
 	// *** Use person class ***
 	$pers_cls = New person_cls;
 	$pers_cls->construct($persDb);

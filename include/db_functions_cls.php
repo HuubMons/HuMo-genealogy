@@ -5,16 +5,19 @@
  * THANKS TO	: Michael.j.Falconer
  *
  * FUNCTIONS:
+ *		check_visitor			Check for valid visitor.
+ *		get_user				Check if user exists.
  *		get_tree				Get data from selected family tree.
  *		get_trees				Get data from all family trees.
  *		get_person				Get a single person from database.
+ *		get_person_with_id		Get a single person from database using id number.
  *		get_family				Get a single family from database.
  *		get_event				Get a single event from database.
  *		get_events_kind			Get multiple events of one event_kind from database. Example:
  *		get_events_connect		Get multiple events of a connected person, family etc. selecting one event_kind from database.
  *		get_source				Get a single source from database.
  *		get_address				Get a single address from database.
- *		get_addressses_person	Get a all adresses (places) by a person.
+ *		get_addressses			Get a all adresses (places) by a person, family, etc.
  *		get_connections			Get multiple connections (used for sources and addresses).
  *		get_connections_person	Get multiple connections of a person.
  *		get_repository			Get a single repository from database.
@@ -51,6 +54,9 @@ function __construct($tree_prefix='') {
 
 	// *** Prepared statements ***
 	if ($dbh){
+		$sql = "SELECT * FROM humo_user_log WHERE log_ip_address=:log_ip_address ORDER BY log_date DESC LIMIT 0,11";
+		$this->query['check_visitor'] = $dbh->prepare( $sql );
+
 		$sql = "SELECT * FROM humo_users
 			WHERE user_name=:user_name AND user_password=:user_password";
 		$this->query['get_user'] = $dbh->prepare( $sql );
@@ -82,6 +88,9 @@ function __construct($tree_prefix='') {
 			WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber";
 		$this->query['get_person_fams'] = $dbh->prepare( $sql );
 
+		$sql = "SELECT * FROM humo_persons WHERE pers_id=:pers_id";
+		$this->query['get_person_with_id'] = $dbh->prepare( $sql );
+
 		// *** Family queries ***
 		$sql = "SELECT * FROM humo_families
 			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
@@ -105,10 +114,13 @@ function __construct($tree_prefix='') {
 		// *** Address queries ***
 		$sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_gedcomnr=:address_gedcomnr";
 		$this->query['get_address'] = $dbh->prepare( $sql );
-		$sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_person_id=:address_person_id ORDER BY address_order";
-		$this->query['get_addresses_person'] = $dbh->prepare( $sql );
-		$sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_family_id=:address_family_id ORDER BY address_order";
-		$this->query['get_addresses_family'] = $dbh->prepare( $sql );
+
+		$sql = "SELECT * FROM humo_addresses
+			WHERE address_tree_id=:address_tree_id
+			AND address_connect_kind=:address_connect_kind
+			AND address_connect_id=:address_connect_id
+			ORDER BY address_order";
+		$this->query['get_addresses'] = $dbh->prepare( $sql );
 
 		// *** Connection queries ***
 		$sql = "SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_sub_kind=:connect_sub_kind AND connect_item_id=:connect_item_id";
@@ -129,8 +141,48 @@ function set_tree_prefix($tree_prefix){
 	$this->tree_prefix=$tree_prefix;
 }
 
+/*--------------------[check_visitor]------------------------------
+ * FUNCTION	: Check visitor
+ * QUERY	: SELECT * FROM humo_user_log
+ *				WHERE log_ip_address=:log_ip_address ORDER BY log_date DESC LIMIT 0,11
+ * RETURNS	: True/ false.
+ *----------------------------------------------------------------
+ */
+// *** $block: can be used to totally or partially (no login page) block the website ***
+function check_visitor($ip_address,$block='total'){
+	global $dbh;
+	$allowed=true;
+	$check_fails=0;
+
+	// *** Check last 10 logins of IP address ***
+	if ($block=='total'){
+		try {
+			$this->query['check_visitor']->bindValue(':log_ip_address', $ip_address, PDO::PARAM_STR);
+			$this->query['check_visitor']->execute();
+			$this->query['check_visitor']->execute();
+			$result_array=$this->query['check_visitor']->fetchAll(PDO::FETCH_OBJ);
+			foreach($result_array as $dataDb){
+				if (@$dataDb->log_status=='failed') $check_fails++;
+			}
+		}catch (PDOException $e) {
+			//echo $e->getMessage() . "<br/>";
+		}
+		if ($check_fails > 10) $allowed=false;
+	}
+
+	// *** Check IP Blacklist ***
+	$check = $dbh->query("SELECT * FROM humo_settings
+		WHERE setting_variable='ip_blacklist'");
+	while($checkDb = $check->fetch(PDO::FETCH_OBJ)){
+		$list=explode("|",$checkDb->setting_value);
+		if ($ip_address==$list[0]) $allowed=false;
+	}
+
+	return $allowed;
+}
+
 /*--------------------[get user]----------------------------------
- * FUNCTION	: Get user from database.
+ * FUNCTION	: Get user from database return false if it isn't.
  * QUERY	: SELECT * FROM humo_users
  *				WHERE user_name=:user_name AND user_password=:user_password
  * RETURNS	: user data.
@@ -236,6 +288,24 @@ function get_person($pers_gedcomnumber,$item=''){
 			$this->query['get_person']->execute();
 			$qryDb=$this->query['get_person']->fetch(PDO::FETCH_OBJ);
 		}
+	}catch (PDOException $e) {
+		echo $e->getMessage() . "<br/>";
+	}
+	return $qryDb;
+}
+
+/*--------------------[get person with id]-----------------------
+ * FUNCTION	: Get a single person from database.
+ * QUERY	: SELECT * FROM humo_persons WHERE pers_id=:pers_tree_id
+ * RETURNS	: a single person.
+ *----------------------------------------------------------------
+ */
+function get_person_with_id($pers_id){
+	$qryDb=false;
+	try {
+		$this->query['get_person_with_id']->bindValue(':pers_id', $pers_id, PDO::PARAM_INT);
+		$this->query['get_person_with_id']->execute();
+		$qryDb=$this->query['get_person_with_id']->fetch(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}
@@ -391,42 +461,23 @@ function get_address($address_gedcomnr){
 	return $qryDb;
 }
 
-/*--------------------[get addresses (places) from person ]-------
- * FUNCTION	: Get all places by a person from database.
+/*--------------------[get addresses (places) ]-------
+ * FUNCTION	: Get all places by a person, family etc. from database.
  * QUERY	: SELECT * FROM humo_addresses
  *				WHERE address_tree_id=:address_tree_id
- *				AND address_person_id=:address_person_id ORDER BY address_order
- * RETURNS	: all places by a person.
+ *				AND address_connect_kind=:address_connect_kind
+ *				AND address_connect_id=:address_connect_id ORDER BY address_order
+ * RETURNS	: all places by a person, family etc.
  *----------------------------------------------------------------
  */
-function get_addresses_person($address_person_id){
+function get_addresses($address_connect_id,$address_connect_kind){
 	$result_array = array();
 	try {
-		$this->query['get_addresses_person']->bindValue(':address_tree_id', $this->tree_id, PDO::PARAM_STR);
-		$this->query['get_addresses_person']->bindValue(':address_person_id', $address_person_id, PDO::PARAM_STR);
-		$this->query['get_addresses_person']->execute();
-		$result_array=$this->query['get_addresses_person']->fetchAll(PDO::FETCH_OBJ);
-	}catch (PDOException $e) {
-		echo $e->getMessage() . "<br/>";
-	}
-	return $result_array;
-}
-
-/*--------------------[get addresses (places) from family ]-------
- * FUNCTION	: Get all places by a family from database.
- * QUERY	: SELECT * FROM humo_addresses
- *				WHERE address_tree_id=:address_tree_id
- *				AND address_family_id=:address_family_id ORDER BY address_order
- * RETURNS	: all places by a family.
- *----------------------------------------------------------------
- */
-function get_addresses_family($address_family_id){
-	$result_array = array();
-	try {
-		$this->query['get_addresses_family']->bindValue(':address_tree_id', $this->tree_id, PDO::PARAM_STR);
-		$this->query['get_addresses_family']->bindValue(':address_family_id', $address_family_id, PDO::PARAM_STR);
-		$this->query['get_addresses_family']->execute();
-		$result_array=$this->query['get_addresses_family']->fetchAll(PDO::FETCH_OBJ);
+		$this->query['get_addresses']->bindValue(':address_tree_id', $this->tree_id, PDO::PARAM_STR);
+		$this->query['get_addresses']->bindValue(':address_connect_kind', $address_connect_kind, PDO::PARAM_STR);
+		$this->query['get_addresses']->bindValue(':address_connect_id', $address_connect_id, PDO::PARAM_STR);
+		$this->query['get_addresses']->execute();
+		$result_array=$this->query['get_addresses']->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}

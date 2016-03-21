@@ -14,7 +14,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 
 	echo '<tr><td>';
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-		if(!$temp->rowCount()) {
+	if(!$temp->rowCount()) {
 		// no database exists - so create it
 		// (Re)create a location table "humo_location" for each tree (humo1_ , humo2_ etc)
 		// It has 4 columns:
@@ -67,7 +67,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 
 	foreach($_SESSION['add_locations'] as $value) {
 		$count_parsed++;
-
+		//if($count_parsed<110 OR $count_parsed > 125) continue;
 		$loc=urlencode($value);
 		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
 			$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc."&sensor=false";
@@ -100,7 +100,6 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 		$json_output = json_decode($json, true);
 		if ($json_output['status']=="OK") {
 			$map_count_found++;
-
 			$lat=$json_output['results'][0]['geometry']['location']['lat'];
 			$lng=$json_output['results'][0]['geometry']['location']['lng'];
 			$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".safe_text($value)."', '".$lat."', '".$lng."') ");
@@ -110,6 +109,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 		elseif ($json_output['status']=="ZERO_RESULTS") { // store locations that were not found by google geocoding
 			$map_notfound_array[]= $json_output['status'].' - '.$value;
 			$map_count_notfound++;
+			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text($value)."') ");	
 			sleep(1);  // crucial, otherwise google kicks you out after a few queries
 		}
 		elseif ($json_output['status']=="OVER_QUERY_LIMIT") {
@@ -123,13 +123,14 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 
 	} // end of foreach
 
+
 	if($flag_stop==0) {
 		echo '<p style="color:red;font-size:120%"><b> '.__('Finished updating geo-location database').'<b></p>';
 		echo __('Finish time').': '.date('G:i:s').'<br><br>';
 		echo $map_count_found.' '.__('locations were successfully mapped.').' <br><br>';
 
 		if($map_notfound_array) { // some locations were not found by geocoding
-			printf(__('The following %s locations were not recognized by google and were not added to the database:'), $map_count_notfound);
+			printf(__('The following %d new locations were passed for query, but were not found. Please check their validity.'), $map_count_notfound);
 			echo '<br>';
 			foreach($map_notfound_array as $value) {
 				echo $value."<br>";
@@ -137,16 +138,17 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 		}
 	}
 	else {  // the process was interrupted because of OVER_QUERY_LIMIT. Explain to the admin!
-		echo '<p style="color:red;font-size:120%"><b> '.__('The process was interrupted because Google limits to maximum 2500 queries within one day (counting is reset at midnight PST, which is 08:00 AM GMT)').'<b></p>';
+		echo '<p style="color:red;font-size:120%"><b> '.__('The process was interrupted because Google limits to maximum 2500 queries within one day (counting is reset at midnight PST, which is 08:00 AM GMT)').'</b></p>';
 		printf(__('In total %1$d out of %2$d new locations were passed for query to Google.'), $count_parsed, count($_SESSION['add_locations']));
 		echo __('Tomorrow you can run this process again to add the locations that were not passed for geocoding today.');
-		echo '<p>'.$map_count_found.' '.__('locations were recognized by geocoding and have been saved in the database.').'<br><br>';
+		echo '<p>'.$map_count_found.' '.__('locations were recognized by geocoding and have been saved in the database.').'</p><br>';
 
 		if($map_notfound_array) { // some locations were not found by geocoding
-			printf(__('The following  %d locations were passed for query, but were not found:'), $map_count_notfound);
-			echo '<br>';
+			echo '<b>';
+			printf(__('The following %d new locations were passed for query, but were not found. Please check their validity.'), $map_count_notfound);
+			echo '</b><br>';
 			foreach($map_notfound_array as $value) {
-				echo $value."<br>";
+				echo $value."<br>"; 
 			}
 		}
 	}
@@ -174,7 +176,37 @@ else {  // main screen
 		$dbh->query("DROP TABLE humo_location");
 		$dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable = 'geo_trees'");
 	}
+	if(isset($_POST['refresh_no_locs'])) { // refresh non-indexable locations table
+		$new_no_locs = array();
+		$unionstring = "SELECT pers_birth_place FROM humo_persons
+			UNION SELECT pers_bapt_place FROM humo_persons WHERE pers_birth_place = ''
+			UNION SELECT pers_death_place FROM humo_persons
+			UNION SELECT pers_buried_place FROM humo_persons WHERE pers_death_place = ''";
+			// (only take bapt place if no birth place and only take burial place if no death place)
+			
+		// from here on we can use only "pers_birth_place", since the UNION puts also all other locations under pers_birth_place
+		$map_person=$dbh->query("SELECT pers_birth_place, count(*) AS quantity
+			FROM (".$unionstring.") AS x GROUP BY pers_birth_place ");
 
+		// make array of all stored non indexable locations
+		$no_location=$dbh->query("SELECT no_location_location FROM humo_no_location");
+		while (@$no_locationDb=$no_location->fetch(PDO::FETCH_OBJ)){
+			$non_exist_locs[] = $no_locationDb->no_location_location; 
+		}
+		
+		while (@$personDb=$map_person->fetch(PDO::FETCH_OBJ)){ // loop thru all locations in database
+			foreach($non_exist_locs AS $value) {  // loop thru stored list of non-indexable loactions
+				if($value == $personDb->pers_birth_place) { // check if this non-indexable location indeed still exists in the birth/death places in database
+					$new_no_locs[] = $value;  // if it does - add to array
+				}
+			}
+		}
+		$dbh->query("TRUNCATE TABLE humo_no_location"); 
+		foreach($new_no_locs AS $value) { 
+			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text($value)."') ");			
+		}
+	}
+	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CREATE/UPDATE GEOLOCATION DATABASE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	//echo '<tr bgcolor="green"><th><font color="white">'.__('Create or update geolocation database').'</font></th></tr>';
@@ -207,7 +239,80 @@ else {  // main screen
 			FROM (".$unionstring.") AS x GROUP BY pers_birth_place ");
 
 		$add_locations = array();
+		
+		// make array of all existing locations in database	
+		$exist_locs = array();
+		$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+		$is_database=false;
+		if($temp->rowCount() > 0) {
+			// there is a database 
+			$is_database = true;
+			$location=$dbh->query("SELECT location_location FROM humo_location");
+			while (@$locationDb=$location->fetch(PDO::FETCH_OBJ)){
+				$exist_locs[] = $locationDb->location_location;
+			}
+		}
 
+		// make array of all non-recognized locations (from previous attempts)	
+		$non_exist_locs = array();
+		$temp = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
+		$is_noloc_database=false;
+		if($temp->rowCount() > 0) {
+			// there is a table with not found locations 
+			$is_noloc_database = true;
+			$no_location=$dbh->query("SELECT no_location_location FROM humo_no_location");
+			while (@$no_locationDb=$no_location->fetch(PDO::FETCH_OBJ)){
+				$non_exist_locs[] = $no_locationDb->no_location_location;
+			}
+		}
+		else {
+			// Database table for non recognized locations doesn't exists so create it.
+			// We need it in a minute to prevent google api queries that we already know won't yield results
+			$temp = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
+			if(!$temp->rowCount()) {
+				// no such database table exists - so create it
+				// (Re)create a location table "humo_no_location"
+				// It has 2 columns:
+				//     1. id
+				//     2. name of location
+				$nolocationtbl="CREATE TABLE humo_no_location (
+					no_location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+					no_location_location VARCHAR(100) CHARACTER SET utf8
+				)";
+				$dbh->query($nolocationtbl);
+			}			
+		}
+		
+		$thistree_non_exist= array(); 
+		// This will hold only those non-indexable locations (from $non_exist_locs) that appear in the chosen tree (or trees if 'all' was chosen)		
+		
+		while (@$personDb=$map_person->fetch(PDO::FETCH_OBJ)){
+			// for each location we check:
+			// 1. if it has already been indexed (if so, skip it)
+			// 2. if in the past it couldn't be found by google api (if so, skip it)
+			// If neither of these two cases - add it to the array of locations to be queried through google api ($add_locations)
+		
+			if($is_database===true) {
+				// there is a database - see if the location already exists and if so - continue with a next loop
+				foreach($exist_locs AS $value) {
+					if($value == $personDb->pers_birth_place) {  // this location has already been mapped
+						continue 2;  //continue the outer while loop 
+					}
+				}
+				if($is_noloc_database===true) { // stored list of non-indexable locations exists
+					foreach($non_exist_locs AS $value) {
+						if($value == $personDb->pers_birth_place) {  // this location cannot be mapped (not found by google api)
+							$thistree_non_exist[]=$value;
+							continue 2;  //continue the outer while loop
+						}
+					}
+				}
+			}
+			// add the new location to an array for use if the user presses YES
+			if($personDb->pers_birth_place) { $add_locations[] = $personDb->pers_birth_place; }
+		}		
+		
+/*
 		while (@$personDb=$map_person->fetch(PDO::FETCH_OBJ)){
 			$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 			if($temp->rowCount() > 0) {
@@ -222,10 +327,18 @@ else {  // main screen
 			// add the new location to an array for use if the user presses YES
 			if($personDb->pers_birth_place) { $add_locations[] = $personDb->pers_birth_place; }
 		}
-
+*/
 		//echo 'Calculating......<br><br>'; // with a large existing data base and large number of locations to check this can take a second or two...
 		if (!$add_locations) {
 			echo '<p>'.__('No new locations were found to add to the database').'</p>';
+			if($thistree_non_exist) {
+				echo '<b>';
+				printf(__('The following %d locations are already known as non-indexable by Google. Please check their validity.'),count($thistree_non_exist));
+				echo '</b><br>';
+				foreach($thistree_non_exist AS $value) {
+					echo $value."<br>";
+				}
+			}
 		}
 
 		else {
@@ -251,6 +364,15 @@ else {  // main screen
 			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post">';
 			echo '<input type="submit" style="font-size:14px" value="'.__('YES').'" name="makedatabase">';
 			echo '</form><br>';
+
+			if($thistree_non_exist) {
+				echo "<br><b>";
+				printf(__('The following %d locations are already known as non-indexable by Google. Please check their validity.'),count($thistree_non_exist));
+				echo '</b><br>';
+				foreach($thistree_non_exist AS $value) {
+					echo $value."<br>";
+				}
+			}			
 		}
 	}
 	else {
@@ -616,6 +738,24 @@ If you are absolutely sure, press the button below.'), $num_rows);
 			echo '<input type="submit" style="font-size:14px;color:red;font-weight:bold" value="'.__('DELETE ENTIRE GEOLOCATION DATABASE').'" name="deletedatabase">';
 			echo '<br></form><br>';
 		}
+		if(isset($_POST['refresh_no_locs'])) {
+			echo '<p style="color:red;font-weight:bold;">'.__('List of non-indexable locations was refreshed!').'<p>';
+		}
+		else {  
+			$temp1 = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
+			if($temp1->rowCount() > 0) {		
+				$no_loc_list = $dbh->query("SELECT * FROM humo_no_location ORDER BY no_location_location");
+				$num_rows1 = $no_loc_list->rowCount();
+				if($num_rows1>0) {
+					printf(__('Here you can refresh the list of %d non-indexable locations that was stored in your database after previous geolocation processes.<br>
+		Do this if you have corrected non-indexable locations in your data or have imported updated gedcoms and some of these locations may no longer appear in your data.'), $num_rows1);
+					echo '<br><form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post">';
+					echo '<input type="submit" style="font-size:14px;color:red;font-weight:bold" value="'.__('REFRESH LIST OF NON-INDEXABLE LOCATIONS').'" name="refresh_no_locs">';
+					echo '<br></form><br>';
+				}
+			}
+		}
+		
 		echo '</td></tr>';
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~ SETTINGS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

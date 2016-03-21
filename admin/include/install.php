@@ -225,7 +225,7 @@ if (isset($_POST['install_tables2'])){
 		// *** Other settings are saved in the table in file: settings_global.php ***
 
 		// *** Update status number. Number must be: update_status+1! ***
-		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','9')");
+		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','10')");
 	}
 
 	if (!$table_stat_date){
@@ -260,11 +260,20 @@ if (isset($_POST['install_tables2'])){
 			group_menu_places varchar(1) CHARACTER SET utf8,
 			group_admin varchar(1) CHARACTER SET utf8,
 			group_statistics varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j',
+			group_menu_persons VARCHAR(1) NOT NULL DEFAULT 'j',
+			group_menu_names VARCHAR(1) NOT NULL DEFAULT 'j',
+			group_menu_login VARCHAR(1) NOT NULL DEFAULT 'j',
 			group_birthday_rss varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j',
 			group_birthday_list varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'j',
+			group_latestchanges VARCHAR(1) NOT NULL DEFAULT 'j',
+			group_contact VARCHAR(1) NOT NULL DEFAULT 'j',
+			group_googlemaps VARCHAR(1) NOT NULL DEFAULT 'j',
+			group_relcalc VARCHAR(1) NOT NULL DEFAULT 'j',
+			group_showstatistics VARCHAR(1) NOT NULL DEFAULT 'j',
 			group_sources varchar(1) CHARACTER SET utf8,
 			group_show_restricted_source varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y',
 			group_source_presentation varchar(20) CHARACTER SET utf8,
+			group_text_presentation VARCHAR(20) NOT NULL DEFAULT 'show',
 			group_pictures varchar(1) CHARACTER SET utf8,
 			group_photobook varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 			group_gedcomnr varchar(1) CHARACTER SET utf8,
@@ -278,6 +287,7 @@ if (isset($_POST['install_tables2'])){
 			group_own_code varchar(1) CHARACTER SET utf8,
 			group_user_notes varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 			group_user_notes_notes varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
+			group_user_notes_show VARCHAR(1) NOT NULL DEFAULT 'n',
 			group_family_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'compact',
 			group_maps_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'hide',
 			group_pdf_button varchar(1) CHARACTER SET utf8,
@@ -292,7 +302,7 @@ if (isset($_POST['install_tables2'])){
 			group_alive_date varchar(4) CHARACTER SET utf8,
 			group_death_date_act varchar(1) CHARACTER SET utf8,
 			group_death_date varchar(4) CHARACTER SET utf8,
-			group_filter_date varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',	
+			group_filter_date varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 			group_filter_death varchar(1) CHARACTER SET utf8,
 			group_filter_total varchar(1) CHARACTER SET utf8,
 			group_filter_name varchar(1) CHARACTER SET utf8,
@@ -306,6 +316,7 @@ if (isset($_POST['install_tables2'])){
 			group_gen_protection VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 			group_hide_trees VARCHAR(200) NOT NULL DEFAULT '',
 			group_edit_trees VARCHAR(200) NOT NULL DEFAULT '',
+			group_hide_photocat VARCHAR(200) NOT NULL DEFAULT '',
 			PRIMARY KEY (`group_id`)
 		) DEFAULT CHARSET=utf8");
 		//group_editor varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
@@ -434,10 +445,13 @@ if (isset($_POST['install_tables2'])){
 		printf(__('create table: %s.'), 'humo_log');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_user_log (
+			log_id mediumint(6) unsigned NOT NULL auto_increment,
 			log_username varchar(25) CHARACTER SET utf8,
 			log_date varchar(20) CHARACTER SET utf8,
 			log_ip_address varchar(20) CHARACTER SET utf8 DEFAULT '',
-			log_user_admin varchar(5) CHARACTER SET utf8 DEFAULT ''
+			log_user_admin varchar(5) CHARACTER SET utf8 DEFAULT '',
+			log_status varchar(10) CHARACTER SET utf8 DEFAULT '',
+			PRIMARY KEY (`log_id`)
 			) DEFAULT CHARSET=utf8");
 	}
 
@@ -783,8 +797,9 @@ if (isset($_POST['install_tables2'])){
 			address_tree_id smallint(5),
 			address_gedcomnr varchar(20) CHARACTER SET utf8,
 			address_order mediumint(6),
-			address_person_id varchar(20) CHARACTER SET utf8,
-			address_family_id varchar(20) CHARACTER SET utf8,
+			address_connect_kind varchar(25) DEFAULT NULL,
+			address_connect_sub_kind varchar(30) DEFAULT NULL,
+			address_connect_id varchar(20) CHARACTER SET utf8,
 			address_address text CHARACTER SET utf8,
 			address_zip varchar(20) CHARACTER SET utf8,
 			address_place varchar(75) CHARACTER SET utf8,

@@ -106,7 +106,8 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		}
 
 		// *** Only upload .ged or .zip files ***
-		if (substr($_FILES['upload_file']['name'],-4)=='.zip' OR substr($_FILES['upload_file']['name'],-4)=='.ged'){
+		//if (substr($_FILES['upload_file']['name'],-4)=='.zip' OR substr($_FILES['upload_file']['name'],-4)=='.ged'){
+		if (strtolower(substr($_FILES['upload_file']['name'],-4))=='.zip' OR strtolower(substr($_FILES['upload_file']['name'],-4))=='.ged'){
 			$new_upload = $gedcom_directory.'/' . basename($_FILES['upload_file']['name']);
 			// *** Move and check for succesful upload ***
 			echo '<p><b>'.$new_upload.'<br>';
@@ -116,7 +117,8 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 				echo __('Upload has failed.').'</b>';
 
 			// *** If file is zipped, unzip it ***
-			if (substr($new_upload,-4)=='.zip'){
+			//if (substr($new_upload,-4)=='.zip'){
+			if (strtolower(substr($new_upload,-4))=='.zip'){
 				$zip = new ZipArchive;
 				$res = $zip->open($new_upload);
 				if ($res === TRUE) {
@@ -125,7 +127,8 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 					$check_gedcom=true;
 					for ($i = 0; $i < $zip->numFiles; $i++) {
 						$filename = $zip->getNameIndex($i);
-						if (substr($filename,-4)!='.ged') $check_gedcom=false;
+						//if (substr($filename,-4)!='.ged') $check_gedcom=false;
+						if (strtolower(substr($filename,-4))!='.ged') $check_gedcom=false;
 					}
 					if ($check_gedcom){
 						//$zip->extractTo('/myzips/extract_path/');
@@ -1069,7 +1072,7 @@ if (isset($_POST['step3'])){
 	if ($commit_records>1){ $dbh->beginTransaction(); }
 
 
-	/* Insert a temporary line into data base to get latest id.
+	/* Insert a temporary line into database to get latest id.
 	*  Must be done because table can be empty when reloading gedcom file...
 	*  Even in an empty table, latest id can be a high number...
 	*/
@@ -1605,54 +1608,8 @@ if (isset($_POST['step4'])){
 		}
 	}
 
-	/*
-	// *** OLD CODE!!!! This code must be rewritten if it's used!!!!! ***
-	function Sorteerhuwelijken($family_array2,$persoonDb2,$db){
-		$max = substr_count($persoonDb2->fams,";");
-		if (substr_count($persoonDb2->fams, ";")>0) {
-			for ($j=0; $j<substr_count($persoonDb2->fams, ";"); $j++){
-				for ($i=0; $i<$max; $i++){
-					$fams1=mysql_query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND gedcomnummer=$family_array2[$i]",$db);
-					$famsDb1=mysql_fetch_object($fams1);
-					$ii = $i+1;
-					$fams2=mysql_query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND gedcomnummer=$family_array2[$ii]",$db);
-					$famsDb2=mysql_fetch_object($fams2);
-					if (date_string($famsDb1->trdatum) > date_string($famsDb2->trdatum)) {
-						$tempfams = $family_array2[$i];
-						$family_array2[$i] = $family_array2[$i+1];
-						$family_array2[$i+1] = $tempfams;
-					} 
-				}
-				$max--;
-			}
-		}
-		return $family_array2;
-	}
-
 	// *** Order families ***
-	echo "<P><B>Huwelijken sorteren:</B>";
-	$persoon=mysql_query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'",$db);
-	while ($persoonDb=mysql_fetch_object($persoon)) {
-		$family_array=explode(";",$persoonDb->fams);
-		if (substr_count($persoonDb->fams, ";") > 0) {
-			$family_array = Sorteerhuwelijken($family_array,$persoonDb,$db); 
-			$s = $family_array[0];
-			for ($i=1; $i<=substr_count($persoonDb->fams, ";"); $i++){
-				$s = $s.";".$family_array[$i];
-			}
-			if ($persoonDb->fams <> $s) {
-				echo "<BR>Gezin: ".$persoonDb->gedcomnummer;
-				echo " Van: ".$persoonDb->fams;
-				echo "<BR>Gezin: ".$persoonDb->gedcomnummer;
-				echo " Naar: ".$s;
-				$Sql = "UPDATE humo_persons SET fams='".$s."' WHERE id =".$persoonDb->id;
-				mysql_query($Sql); 
-				mysql_query("COMMIT"); 
-			}
-		} 
-	}
-	*/
-
+	// ===> If needed: order families here...
 
 	// *** Process Aldfaer adoption children: remove unecesary added relations ***
 	if ($gen_program=='ALDFAER') {

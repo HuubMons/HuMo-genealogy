@@ -473,11 +473,95 @@ echo '<td>';
 	echo '</td></tr>';
 	if(isset($_POST['part_tree']) AND $_POST['part_tree']=="part") {
 		echo '<tr><td>'.__('Choose person:').'</td><td>';
+
+		// *** Select person ***
+		$search_quicksearch='';
+		$search_id='';
+		if (isset($_POST["search_quicksearch"])){
+			$search_quicksearch=safe_text($_POST['search_quicksearch']);
+			$_SESSION['admin_search_quicksearch']=$search_quicksearch;
+			$_SESSION['admin_search_id']='';
+			$search_id='';
+		}
+		if (isset($_SESSION['admin_search_quicksearch']))
+			$search_quicksearch=$_SESSION['admin_search_quicksearch'];
+
+		if (isset($_POST["search_id"]) AND (!isset($_POST["search_quicksearch"]) OR $_POST["search_quicksearch"]=='')){
+			// if both name and ID given go by name
+			$search_id=safe_text($_POST['search_id']);
+			$_SESSION['admin_search_id']=$search_id;
+			$_SESSION['admin_search_quicksearch']='';
+			$search_quicksearch='';
+		}
+		if (isset($_SESSION['admin_search_id']))
+			$search_id=$_SESSION['admin_search_id'];
+
+		// *** Search persons firstname/ lastname ***
+		echo __('Person').':';
+		echo ' <input class="fonts" type="text" name="search_quicksearch" placeholder="'.__('Name').'" value="'.$search_quicksearch.'" size="15"> ';
+		echo __('or ID:');
+		echo ' <input class="fonts" type="text" name="search_id" value="'.$search_id.'" size="8">';
+		echo ' <input class="fonts" type="submit" value="'.__('Search').'">';
+		echo '<br>';
+		unset($person_result);
+
+		$idsearch=false; // flag for search with ID;
+		if($search_quicksearch != '') {
+			// *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
+			$search_quicksearch=str_replace(' ', '%', $search_quicksearch);
+
+			// *** In case someone entered "Mons, Huub" using a comma ***
+			$search_quicksearch = str_replace(',','',$search_quicksearch);
+
+			$person_qry= "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."'
+				AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch%'
+				OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch%' 
+				OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch%' 
+				OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch%')
+				ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)";
+			$person_result = $dbh->query($person_qry);
+		}
+		elseif($search_id!='') {
+			if(substr($search_id,0,1)!="i" AND substr($search_id,0,1)!="I") { $search_id = "I".$search_id; } //make entry "48" into "I48"
+			$person_qry= "SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$search_id."'";
+			$person_result = $dbh->query($person_qry);
+			$idsearch=true;
+		}
+		else{
+			$person_qry= "SELECT pers_tree_id, pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."' LIMIT 0,1";
+			$person_result = $dbh->query($person_qry);
+		}
+
+		$pers_gedcomnumber=''; if(isset($_POST['person']) AND $_POST['flag_newtree']!='1') { $pers_gedcomnumber = $_POST['person']; }
+
+		echo '<input type="hidden" name="page" value="'.$page.'">';
+		echo '<select size="1" name="person" style="width: 300px">';
+		$counter=0;
+		while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+			// *** Directly select first founded person! ***
+			//$counter++;
+			//if ($counter==1 AND isset($_POST["search_quicksearch"])){
+			//	$pers_gedcomnumber=$person->pers_gedcomnumber;
+			//	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
+			$selected='';
+			if (isset($pers_gedcomnumber)){
+				if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
+			}
+			$prefix2=" ".strtolower(str_replace("_"," ",$person->pers_prefix));
+			echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
+				$person->pers_lastname.', '.$person->pers_firstname.$prefix2.' ['.$person->pers_gedcomnumber.']</option>';
+		}
+		echo '</select>';
+
+		/*
 		$pers_gedcomnumber='';
 		if(isset($_POST['person']) AND $_POST['flag_newtree']!='1') { $pers_gedcomnumber = $_POST['person']; }
 		$pers_search = $dbh->query("SELECT pers_lastname, pers_firstname, pers_gedcomnumber, pers_prefix
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname, pers_firstname");
-		print '<select size="1" name="person" style="width: 300px">';
+		echo '<select size="1" name="person" style="width: 300px">';
 		while ($person=$pers_search->fetch(PDO::FETCH_OBJ)){
 			$selected='';
 			if (isset($pers_gedcomnumber)){
@@ -487,7 +571,12 @@ echo '<td>';
 			echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
 				$person->pers_lastname.', '.$person->pers_firstname.$prefix2.' ['.$person->pers_gedcomnumber.']</option>';
 		}
-		echo '</select></td></tr><tr><td>';
+		echo '</select>';
+		*/
+
+		echo '</td><tr>';
+
+		echo '<tr><td>';
 		echo __('Number of generations to export:').'</td><td>';
 		echo '<select size="1" name="generations" style="width:80px">';
 		echo '<option value="50">'.__('All').'</option>';
@@ -664,9 +753,13 @@ fwrite($fh, $buffer);
 3 TIME 20:31:24
 */
 
-$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
-$person_result = $dbh->query($person_qry);
-while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+// *** To reduce use of memory, first read pers_id only ***
+$persons_qry= "SELECT pers_id FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
+$persons_result = $dbh->query($persons_qry);
+while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
+
+	// *** Now read all person items ***
+	$person=$db_functions->get_person_with_id($persons->pers_id);
 
 	if(isset($_POST['part_tree']) AND $_POST['part_tree']=='part' AND !in_array($person->pers_gedcomnumber,$persids)) { continue;}
 
@@ -792,7 +885,9 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 	// 1 RESI
 	// 2 ADDR Slikkerveer
 	$addressqry=$dbh->query("SELECT * FROM humo_addresses
-		WHERE address_tree_id='".$tree_id."' AND address_person_id='$person->pers_gedcomnumber'");
+		WHERE address_tree_id='".$tree_id."'
+		AND address_connect_sub_kind='person'
+		AND address_connect_id='$person->pers_gedcomnumber'");
 	while($addressDb=$addressqry->fetch(PDO::FETCH_OBJ)){
 		$buffer.="1 RESI\r\n";
 		$buffer.='2 ADDR'."\r\n";
@@ -1009,8 +1104,13 @@ while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 */
 
 // *** FAMILY DATA ***
-$family_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."'");
-while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
+// *** To reduce use of memory, first read fam_id only ***
+$families_qry=$dbh->query("SELECT fam_id FROM humo_families WHERE fam_tree_id='".$tree_id."'");
+while($families=$families_qry->fetch(PDO::FETCH_OBJ)){
+
+	// *** Now read all family items ***
+	$family_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_id='".$families->fam_id."'");
+	$family=$family_qry->fetch(PDO::FETCH_OBJ);
 
 	if($_POST['part_tree']=='part'  AND !in_array($family->fam_gedcomnumber,$famsids)) { continue;}
 
@@ -1271,14 +1371,15 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 		}
 	}
 	// "direct" addresses
-	$addressqry = $dbh->query("SELECT address_id, address_person_id, address_family_id FROM humo_addresses
+	$addressqry = $dbh->query("SELECT address_id, address_connect_sub_kind, address_connect_id
+		FROM humo_addresses
 		WHERE address_tree_id='".$tree_id."'");
 	$source_address_array=array();
 	while($addressqryDb=$addressqry->fetch(PDO::FETCH_OBJ)){
-		if($addressqryDb->address_person_id!='' AND in_array($addressqryDb->address_person_id,$persids)) {
+		if($addressqryDb->address_connect_sub_kind=='person' AND in_array($addressqryDb->address_connect_id,$persids)) {
 			$source_address_array[] = $addressqryDb->address_id;
 		}
-		if($addressqryDb->address_family_id!='' AND in_array($addressqryDb->address_family_id,$famsids)) {
+		if($addressqryDb->address_connect_sub_kind=='family' AND in_array($addressqryDb->address_connect_id,$famsids)) {
 			$source_address_array[] = $addressqryDb->address_id;
 		}
 	}

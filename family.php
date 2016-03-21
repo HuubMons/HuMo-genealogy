@@ -1413,7 +1413,7 @@ else{
 					if ($user['group_living_place']=='j'){
 						if ($familyDb->fam_gedcomnumber){
 							$addressnr=0;
-							$address_qry_prep = $db_functions->get_addresses_family($familyDb->fam_gedcomnumber);
+							$address_qry_prep = $db_functions->get_addresses($familyDb->fam_gedcomnumber,'family');
 							if($screen_mode!='PDF') {
 								foreach($address_qry_prep as $addressDb){
 									$addressnr++;
@@ -2128,7 +2128,7 @@ if($screen_mode=='') {
 
 		if ($user['group_user_notes_show']=='y'){
 			$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_prefix='".$tree_prefix_quoted."'
-			AND note_fam_gedcomnumber='".$family_id."' AND note_pers_gedcomnumber='".$main_person."'";
+			AND note_fam_gedcomnumber='".$family_id."' AND note_pers_gedcomnumber='".$main_person."' AND note_status = 'approved'";
 			$note_result = $dbh->query($note_qry);
 			$num_rows = $note_result->rowCount();
 

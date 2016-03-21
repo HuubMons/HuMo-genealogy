@@ -38,7 +38,6 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 						$selected=' SELECTED';
 						// *** Needed for submitter ***
 						//$tree_owner=$treeDb->tree_owner;
-						//$tree_id=$treeDb->tree_id;
 						$tree_prefix=$treeDb->tree_prefix;
 						$tree_id=$treeDb->tree_id;
 						$db_functions->set_tree_id($tree_id);
@@ -81,9 +80,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 			// *** Check first marriage of person ***
 			if ($pers_cal_date=='' AND $person_db->pers_fams){
 				$marriage_array=explode(";",$person_db->pers_fams);
-				$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$marriage_array[0]."'";
-				$fam_result = $dbh->query($fam_qry);
-				$fam_db=$fam_result->fetch(PDO::FETCH_OBJ);
+				$fam_db=$db_functions->get_family($marriage_array[0]);
 				if ($fam_db->fam_marr_date) $pers_cal_date=$fam_db->fam_marr_date;
 				if ($fam_db->fam_marr_church_date) $pers_cal_date=$fam_db->fam_marr_church_date;
 				if ($pers_cal_date){

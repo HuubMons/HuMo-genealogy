@@ -122,8 +122,9 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 				echo '<select '.$onchange.' size="1" name="note_status">';
 					$selected='';
 					echo '<option value="new"'.$selected.'>'.__('New').'</option>';
-					if ($note_status=='approved') $selected=' SELECTED';
+					$selected=''; if ($note_status=='approved') $selected=' SELECTED';
 					echo '<option value="approved"'.$selected.'>'.__('Approved').'</option>';
+					$selected=''; if ($note_status=='remove') $selected=' SELECTED';
 					echo '<option value="remove"'.$selected.'>'.__('Remove').'</option>';
 				echo '</select>';
 

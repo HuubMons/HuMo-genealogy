@@ -76,7 +76,8 @@ else{
 // *** This line can be found in: index.php and tree_index.php ***
 echo '<br><div class="humo_version">';
 printf(__('This database is made by %s, a freeware genealogical  program'), '<a href="http://www.humo-gen.com">HuMo-gen</a>');
-echo ' ('.$humo_option["version"].').<br>';
+//echo ' ('.$humo_option["version"].').<br>';
+echo '.<br>';
 if (!$bot_visit){ printf(__('European law: %s HuMo-gen cookie information'),'<a href="info_cookies.php">'); }
 echo '</a></div>';
 

@@ -1606,7 +1606,7 @@ function person_data($person_kind, $id){
 		if ($personDb->pers_gedcomnumber AND $user['group_living_place']=='j'){
 			$text='';
 			$eventnr=0;
-			$event_qry = $db_functions->get_addresses_person($personDb->pers_gedcomnumber);
+			$event_qry = $db_functions->get_addresses($personDb->pers_gedcomnumber,'person');
 			$nr_addresses=count($event_qry);
 			foreach($event_qry as $eventDb){
 				$eventnr++;

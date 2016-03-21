@@ -43,9 +43,7 @@ echo '<select size="1" name="database" onChange="this.form.submit();">';
 		// *** Check if family tree is shown or hidden for user group ***
 		$hide_tree_array=explode(";",$user['group_hide_trees']);
 		$hide_tree=false;
-		for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-			if ($hide_tree_array[$x]==$tree_prefixDb->tree_id){ $hide_tree=true; }
-		}
+		if (in_array($tree_prefixDb->tree_id, $hide_tree_array)) $hide_tree=true;
 		if ($hide_tree==false){
 			$selected='';
 			if (isset($_SESSION['tree_prefix'])){
@@ -463,7 +461,7 @@ if(isset($_POST['descmap'])) {
 			strstr($visitor_user_agent,"iPhone")!== false ) {
 			$select_size=""; $select_height= '100px';
 		}
-		}
+	}
 
 	echo '<div id="descmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:'.$select_height.'; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">';
 	if($user['group_kindindex']=="j") { $orderlast = "CONCAT(pers_prefix,pers_lastname)"; }
@@ -611,7 +609,6 @@ else {
 
 <?php
 include_once(CMS_ROOTPATH."googlemaps/google_initiate.php");
-//$db_functions->set_tree_id($tree_id);
 ?>
 
 <script type="text/javascript">

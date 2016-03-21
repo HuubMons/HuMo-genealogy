@@ -59,9 +59,9 @@ if(isset($_GET['adr_address']) AND $_GET['adr_address'] != '') { $adr_address = 
 //if($adr_country OR $adr_state OR $adr_place OR $adr_address) {
 if($adr_place OR $adr_address) {
 	//if($adr_country!='') { $where .= " AND address_country LIKE '%".$adr_country."%' "; }
-	//if($adr_state!='')    { $where .= " AND address_state LIKE '%".$adr_state."%' "; 	}
-	if($adr_place!='')    { $where .= " AND address_place LIKE '%".$adr_place."%' "; 	}
-	if($adr_address!=''){ $where .= " AND address_address LIKE '%".$adr_address."%' ";  }
+	//if($adr_state!='')    { $where .= " AND address_state LIKE '%".$adr_state."%' "; }
+	if($adr_place!='')    { $where .= " AND address_place LIKE '%".safe_text($adr_place)."%' "; }
+	if($adr_address!=''){ $where .= " AND address_address LIKE '%".safe_text($adr_address)."%' ";  }
 }
 
 echo '<h1 style="text-align:center;">'.__('Addresses').'</h1>';
@@ -118,8 +118,6 @@ echo '<div>';
 
 	echo '</tr>';
 
-	//$address = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."' 
-	//	AND address_gedcomnr LIKE '_%'");
 	$sql="SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."' 
 		AND address_gedcomnr LIKE '_%'  ".$where." ORDER BY ".$orderby;
 	$address = $dbh->query($sql);

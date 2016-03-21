@@ -8,8 +8,8 @@ echo '<h1 align=center>'.__('Select person').'</h1>';
 $place_item='connect_man'; $form='form2';
 if ($_GET['person_item']=='woman'){ $place_item='connect_woman'; $form='form2'; }
 if ($_GET['person_item']=='relation_add2'){ $place_item='relation_add2'; $form='form4'; }
-$man_gedcomnumber=$_GET['person'];
-$tree_prefix=$_GET['tree_prefix'];
+$man_gedcomnumber=safe_text($_GET['person']);
+$tree_prefix=safe_text($_GET['tree_prefix']);
 
 $tree_id=$_SESSION['admin_tree_id'];
 
@@ -25,7 +25,7 @@ echo'
 ';
 
 echo '<form method="POST" action="index.php?page=editor_person_select&person_item='.$_GET['person_item'].'&person='.$_GET['person'].'&tree_prefix='.$_GET['tree_prefix'].'" style="display : inline;">';
-	$search_quicksearch_man=''; if (isset($_POST['search_quicksearch_man'])){ $search_quicksearch_man=$_POST['search_quicksearch_man']; }
+	$search_quicksearch_man=''; if (isset($_POST['search_quicksearch_man'])){ $search_quicksearch_man=safe_text($_POST['search_quicksearch_man']); }
 	print ' <input class="fonts" type="text" name="search_quicksearch_man" placeholder="'.__('Name').'" value="'.$search_quicksearch_man.'" size="15">';
 
 	$search_man_id=''; if (isset($_POST['search_man_id'])) $search_man_id=safe_text($_POST['search_man_id']);
@@ -52,15 +52,19 @@ if($search_quicksearch_man != '') {
 		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
 		LIKE '%".$search_quicksearch_man."%')
 		ORDER BY pers_lastname, pers_firstname";
+	$person_result = $dbh->query($person_qry);
 }
 elseif($search_man_id!='') {
 	if(substr($search_man_id,0,1)!="i" AND substr($search_man_id,0,1)!="I") { $search_man_id = "I".$search_man_id; } //make entry "48" into "I48"
 	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$search_man_id."'";
+	$person_result = $dbh->query($person_qry);
+	//$person = $db_functions->get_person($man_gedcomnumber);
 }
 else{
 	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$man_gedcomnumber."'";
+	$person_result = $dbh->query($person_qry);
+	//$person = $db_functions->get_person($man_gedcomnumber);
 }
-$person_result = $dbh->query($person_qry);
 
 include ('include/editor_cls.php');
 $editor_cls = New editor_cls;

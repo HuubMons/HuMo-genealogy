@@ -184,7 +184,7 @@ function text_show($find_text){
 		$text=$find_text;
 		if (substr($find_text, 0, 1)=='@'){
 			$search_text=$dbh->query("SELECT * FROM humo_texts
-			WHERE text_tree_id='".$tree_id."' AND text_gedcomnr='".substr($find_text,1,-1)."'");
+				WHERE text_tree_id='".$tree_id."' AND text_gedcomnr='".substr($find_text,1,-1)."'");
 			@$search_textDb=$search_text->fetch(PDO::FETCH_OBJ);
 			@$text=$search_textDb->text_text;
 			$text = str_replace("<br>", "<br>\n", $text);

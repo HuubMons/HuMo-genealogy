@@ -84,7 +84,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 							$catpics++;
 						}
 					}
-				} 
+				}
 			}
 		}  
 		if($catpics>0) { // at least one of the user-created categories has at least one picture
@@ -106,7 +106,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 								if($check2===false OR count($check2)==0) {  // if there are no pics for this category, try subfolder
 									if(is_dir($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2))) {  // check for subfolder of the prefix name (without underscore)
 										$check3 = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.$row['photocat_prefix'].'*');
-										if($check3===false OR count($check3) == 0) {  // no pics in subfolder  - maybe sub-subs									
+										if($check3===false OR count($check3) == 0) {  // no pics in subfolder  - maybe sub-subs
 											$check4 = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.'*');
 											if($check4!==false AND count($check4) >= 1) {  // found at least one sub-sub for this category
 												$catpics++;   
@@ -164,7 +164,16 @@ else {  // show album with category tabs
 	$result = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
 	while($prefixDb = $result->fetch(PDO::FETCH_OBJ)) {
 		if($chosen_tab==$prefixDb->photocat_prefix) {
-			showthem($chosen_tab);  // show only pics that match this category
+			// *** Check is photo category tree is shown or hidden for user group ***
+			$hide_photocat_array=explode(";",$user['group_hide_photocat']);
+			$hide_photocat=false; if (in_array($prefixDb->photocat_id, $hide_photocat_array)) $hide_photocat=true;
+			if ($hide_photocat==false)
+				showthem($chosen_tab);  // show only pics that match this category
+			else{
+				echo '<div style="float: left; background-color:white; height:auto; width:98%;padding:5px;"><br>';
+				echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***');
+				echo '<br><br></div>';
+			}
 		}
 	}
 }

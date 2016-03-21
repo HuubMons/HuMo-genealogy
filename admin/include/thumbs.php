@@ -228,7 +228,6 @@ if ($show_table){
 }
 
 
-
 // *** Picture categories ***
 if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
@@ -260,25 +259,24 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 
 	if(isset($_GET['cat_drop2']) AND $_GET['cat_drop2']==1 AND !isset($_POST['save_cat'])) {
 		// delete category and make sure that the order sequence is restored
-		$dbh->query("UPDATE humo_photocat SET photocat_order = (photocat_order-1) WHERE photocat_order > '".$_GET['cat_order']."'");
-		$dbh->query("DELETE FROM humo_photocat WHERE photocat_prefix = '".$_GET['cat_prefix']."'");
+		$dbh->query("UPDATE humo_photocat SET photocat_order = (photocat_order-1) WHERE photocat_order > '".safe_text($_GET['cat_order'])."'");
+		$dbh->query("DELETE FROM humo_photocat WHERE photocat_prefix = '".safe_text($_GET['cat_prefix'])."'");
 	}
 	if(isset($_GET['cat_up']) AND !isset($_POST['save_cat'])) { 
 		// move category up
-		$dbh->query("UPDATE humo_photocat SET photocat_order = 'temp' WHERE photocat_order ='".$_GET['cat_up']."'");  // set present one to temp
-		$dbh->query("UPDATE humo_photocat SET photocat_order = '".$_GET['cat_up']."' WHERE photocat_order ='".($_GET['cat_up'] - 1)."'");  // move the one above down
-		$dbh->query("UPDATE humo_photocat SET photocat_order = '".($_GET['cat_up'] - 1)."' WHERE photocat_order = 'temp'");  // move this one up
+		$dbh->query("UPDATE humo_photocat SET photocat_order = 'temp' WHERE photocat_order ='".safe_text($_GET['cat_up'])."'");  // set present one to temp
+		$dbh->query("UPDATE humo_photocat SET photocat_order = '".$_GET['cat_up']."' WHERE photocat_order ='".(safe_text($_GET['cat_up']) - 1)."'");  // move the one above down
+		$dbh->query("UPDATE humo_photocat SET photocat_order = '".(safe_text($_GET['cat_up']) - 1)."' WHERE photocat_order = 'temp'");  // move this one up
 		
 	}
 	if(isset($_GET['cat_down']) AND !isset($_POST['save_cat'])) {
 		// move category down
-		$dbh->query("UPDATE humo_photocat SET photocat_order = 'temp' WHERE photocat_order ='".$_GET['cat_down']."'");  // set present one to temp
-		$dbh->query("UPDATE humo_photocat SET photocat_order = '".$_GET['cat_down']."' WHERE photocat_order ='".($_GET['cat_down'] + 1)."'");  // move the one under it up
-		$dbh->query("UPDATE humo_photocat SET photocat_order = '".($_GET['cat_down'] + 1)."' WHERE photocat_order = 'temp'");  // move this one down
+		$dbh->query("UPDATE humo_photocat SET photocat_order = 'temp' WHERE photocat_order ='".safe_text($_GET['cat_down'])."'");  // set present one to temp
+		$dbh->query("UPDATE humo_photocat SET photocat_order = '".safe_text($_GET['cat_down'])."' WHERE photocat_order ='".(safe_text($_GET['cat_down']) + 1)."'");  // move the one under it up
+		$dbh->query("UPDATE humo_photocat SET photocat_order = '".(safe_text($_GET['cat_down']) + 1)."' WHERE photocat_order = 'temp'");  // move this one down
 	}
 
 	if(isset($_POST['save_cat'])) {  // the user decided to add a new category and/or save changes to names
-
 		// save names of existing categories in case some were altered. There is at least always one name (for default category)
 
 		$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix";
@@ -288,21 +286,23 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 			if(isset($_POST[$resultDb->photocat_prefix])) {
 				if($language_tree != "default") {  
 					// only update names for the chosen language
-					$check_lang = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix = '".$resultDb->photocat_prefix."' AND photocat_language='".$language_tree."'");
+					$check_lang = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix = '".$resultDb->photocat_prefix."' AND photocat_language='".safe_text($language_tree)."'");
 					if($check_lang->rowCount() != 0) { // this language already has a name for this category - update it
-						$dbh->query("UPDATE humo_photocat SET photocat_name = '".$_POST[$resultDb->photocat_prefix]."' WHERE photocat_prefix = '".$resultDb->photocat_prefix."' AND photocat_language='".$language_tree."'");
+						$dbh->query("UPDATE humo_photocat SET photocat_name = '".safe_text($_POST[$resultDb->photocat_prefix])."'
+							WHERE photocat_prefix = '".$resultDb->photocat_prefix."' AND photocat_language='".safe_text($language_tree)."'");
 					}
 					else {  // this language doesn't yet have a name for this category - create it
-						$dbh->query("INSERT INTO humo_photocat (photocat_prefix, photocat_order, photocat_language, photocat_name) VALUES ('".$resultDb->photocat_prefix."', '".$resultDb->photocat_order."', '".$language_tree."', '".$_POST[$resultDb->photocat_prefix]."')");
+						$dbh->query("INSERT INTO humo_photocat (photocat_prefix, photocat_order, photocat_language, photocat_name) VALUES ('".$resultDb->photocat_prefix."', '".$resultDb->photocat_order."', '".$language_tree."', '".safe_text($_POST[$resultDb->photocat_prefix])."')");
 					}
 				}
 				else {  // update entered names for all languages 
 					$check_default = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix = '".$resultDb->photocat_prefix."' AND photocat_language='default'");
 					if($check_default->rowCount() != 0) {	// there is a default name for this language - update it
-						$dbh->query("UPDATE humo_photocat SET photocat_name = '".$_POST[$resultDb->photocat_prefix]."' WHERE photocat_prefix='".$resultDb->photocat_prefix."' AND photocat_language='default'");
+						$dbh->query("UPDATE humo_photocat SET photocat_name = '".safe_text($_POST[$resultDb->photocat_prefix])."'
+							WHERE photocat_prefix='".$resultDb->photocat_prefix."' AND photocat_language='default'");
 					}
 					else {  // no default name yet for this category - create it
-						$dbh->query("INSERT INTO humo_photocat (photocat_prefix, photocat_order, photocat_language, photocat_name) VALUES ('".$resultDb->photocat_prefix."', '".$resultDb->photocat_order."', 'default', '".$_POST[$resultDb->photocat_prefix]."')");
+						$dbh->query("INSERT INTO humo_photocat (photocat_prefix, photocat_order, photocat_language, photocat_name) VALUES ('".$resultDb->photocat_prefix."', '".$resultDb->photocat_order."', 'default', '".safe_text($_POST[$resultDb->photocat_prefix])."')");
 					}
 				}
 			}
@@ -320,7 +320,7 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 				}
 				else {
 					$warning_exist_prefix =""; 
-					$check_exist = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='".$new_cat_prefix."'");
+					$check_exist = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='".safe_text($new_cat_prefix)."'");
 					if($check_exist->rowCount() == 0) {
 						if($_POST['new_cat_name']=="") {
 							$warning_noname = __('When creating a category you have to give it a name');
@@ -330,7 +330,7 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 							$highest_order= $dbh->query("SELECT MAX(photocat_order) AS maxorder FROM humo_photocat");
 							$orderDb = $highest_order->fetch(PDO::FETCH_ASSOC);
 							$order = $orderDb['maxorder']; $order++;
-							$qry = "INSERT INTO humo_photocat (photocat_prefix,photocat_order,photocat_language,photocat_name) VALUES ('".$new_cat_prefix."', '".$order."', '".$language_tree."', '".$new_cat_name."')";
+							$qry = "INSERT INTO humo_photocat (photocat_prefix,photocat_order,photocat_language,photocat_name) VALUES ('".safe_text($new_cat_prefix)."', '".safe_text($order)."', '".safe_text($language_tree)."', '".safe_text($new_cat_name)."')";
 							$dbh->query($qry);
 						}
 					}
@@ -401,7 +401,7 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 		while (false !== ($filename = readdir($dh))) {
 			$imgtype = strtolower(substr($filename, -3));
 			if ($imgtype == "jpg" OR $imgtype == "png" OR ($imgtype == "gif" AND $gd["GIF Read Support"]==TRUE AND $gd["GIF Create Support"]==TRUE)){  
-				$pict_path_original=$prefx.$pict_path."/".$filename;        //ORIGINEEL
+				$pict_path_original=$prefx.$pict_path."/".$filename;    //ORIGINEEL
 				$pict_path_thumb=$prefx.$pict_path."/thumb_".$filename; //THUMB
 
 				//*** Create a thumbnail ***
@@ -441,7 +441,7 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 						// *** Show name of connected persons ***
 						include_once('../include/person_cls.php');
 						$picture_text='';
-						$sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+						$sql="SELECT * FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."'
 							AND event_connect_kind='person' AND event_kind='picture'
 							AND LOWER(event_event)='".strtolower($filename)."'";
 						$afbqry= $dbh->query($sql);
@@ -629,7 +629,7 @@ function categories(){
 	$number = 1;  // number on list
 	
 	while ($catDb = $cat_result->fetch(PDO::FETCH_OBJ)){
-		$name = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='".$catDb->photocat_prefix."' AND photocat_language = '".$language_tree."'");
+		$name = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix='".$catDb->photocat_prefix."' AND photocat_language = '".safe_text($language_tree)."'");
 		if($name->rowCount()) {  // there is a name for this language
 			$nameDb = $name->fetch(PDO::FETCH_OBJ);
 			$catname = $nameDb->photocat_name;

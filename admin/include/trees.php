@@ -99,7 +99,7 @@ if (isset($_POST['tree_collation'])){
 	$dbh->query("ALTER TABLE humo_events CHANGE `event_event` `event_event` TEXT COLLATE ".$tree_collation.";");
 }
 
-if (isset($_GET['remove_tree'])){
+if (isset($_GET['remove_tree']) AND is_numeric($_GET['remove_tree']) ){
 	echo '<div class="confirm">';
 	echo '<b>'.__('Selected:').' '.$_GET['treetext_name'].'</b> ';
 	echo __('Are you sure you want to remove this tree <b>AND all its statistics</b>?');
@@ -111,7 +111,7 @@ if (isset($_GET['remove_tree'])){
 	echo '</form>';
 	echo '</div>';
 }
-if (isset($_POST['remove_tree2'])){
+if (isset($_POST['remove_tree2']) AND is_numeric($_POST['tree_id']) ){
 	$removeqry='SELECT * FROM humo_trees WHERE tree_id="'.safe_text($_POST['tree_id']).'"';
 	@$removesql = $dbh->query($removeqry);
 	@$removeDb=$removesql->fetch(PDO::FETCH_OBJ);
@@ -201,7 +201,7 @@ if (isset($_POST['remove_tree2'])){
 	unset($_SESSION['admin_fam_gedcomnumber']);
 }
 
-if (isset($_GET['up'])){
+if (isset($_GET['up']) AND is_numeric($_GET['tree_order']) AND is_numeric($_GET['id']) ){
 	// *** Search previous family tree ***
 	$item=$dbh->query("SELECT * FROM humo_trees WHERE tree_order=".($_GET['tree_order']-1));
 	$itemDb=$item->fetch(PDO::FETCH_OBJ);
@@ -209,10 +209,10 @@ if (isset($_GET['up'])){
 	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order'])."' WHERE tree_id=$itemDb->tree_id";
 	$result=$dbh->query($sql);
 	// *** Lower tree order ***
-	$sql="UPDATE humo_trees SET tree_order='".($_GET['tree_order']-1)."' WHERE tree_id=".$_GET['id'];
+	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order']-1)."' WHERE tree_id=".safe_text($_GET['id']);
 	$result=$dbh->query($sql);
 }
-if (isset($_GET['down'])){
+if (isset($_GET['down']) AND is_numeric($_GET['tree_order']) AND is_numeric($_GET['id']) ){
 	// *** Search next family tree ***
 	$item=$dbh->query("SELECT * FROM humo_trees WHERE tree_order=".($_GET['tree_order']+1));
 	$itemDb=$item->fetch(PDO::FETCH_OBJ);
@@ -220,7 +220,7 @@ if (isset($_GET['down'])){
 	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order'])."' WHERE tree_id=$itemDb->tree_id";
 	$result=$dbh->query($sql);
 	// *** Raise tree order ***
-	$sql="UPDATE humo_trees SET tree_order='".($_GET['tree_order']+1)."' WHERE tree_id=".$_GET['id'];
+	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order']+1)."' WHERE tree_id=".safe_text($_GET['id']);
 	$result=$dbh->query($sql);
 }
 
@@ -243,13 +243,12 @@ if (isset($_POST['add_tree_data'])){
 else{
 	$data2sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order LIMIT 0,1");
 }
-//$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
 $data2Db = $data2sql->fetchObject();
 if ($data2Db){
 	$tree_id=$data2Db->tree_id;
 }
-if (isset($_POST['tree_id'])){ $tree_id=$_POST['tree_id']; }
-if (isset($_GET['tree_id'])){ $tree_id=$_GET['tree_id']; }
+if (isset($_POST['tree_id']) AND is_numeric($_POST['tree_id']) ){ $tree_id=$_POST['tree_id']; }
+if (isset($_GET['tree_id']) AND is_numeric($_GET['tree_id']) ){ $tree_id=$_GET['tree_id']; }
 
 // ******************************************
 // *** Show texts of selected family tree ***
@@ -276,8 +275,8 @@ else{
 }
 
 $menu_admin='tree_main';
-if (isset($_POST['menu_admin'])){ $menu_admin=$_POST['menu_admin']; }
-if (isset($_GET['menu_admin'])){ $menu_admin=$_GET['menu_admin']; }
+if (isset($_POST['menu_admin'])) $menu_admin=$_POST['menu_admin'];
+if (isset($_GET['menu_admin'])) $menu_admin=$_GET['menu_admin'];
 
 // *** Select family tree ***
 $tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";

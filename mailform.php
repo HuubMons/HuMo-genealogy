@@ -37,6 +37,7 @@ if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	//$headers .= "X-Priority: 3\n";
 	//$headers .= "X-MSMail-Priority: Normal\n";
 	//$headers .= "X-Mailer: php\n";
+	// *** Removed "From e-mail address"! Some providers don't accept other e-mail addresses because safety reasons! ***
 	//$headers .= "From: \"".$_POST['mail_name']."\"\n";
 	//$headers .= "Reply-To: \"".$_POST['mail_name']."\" <".$_POST['mail_sender'].">\n";
 
@@ -54,16 +55,27 @@ if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	//	echo "<br><b>".__('Sending e-mail failed!')."</b><br>";
 	//}
 
+	// *** Use PhpMailer to send mail ***
 	include_once ('include/mail.php');
+
 	// *** Set who the message is to be sent from ***
 	$mail->setFrom($_POST['mail_sender'], $_POST['mail_name']);
+	// *** Removed "From e-mail address"! Some providers don't accept other e-mail addresses because of safety reasons! ***
+	//$mail->setFrom('', $_POST['mail_name']);
+
+	//NEW:
+	//$mail->AddReplyTo($_POST['mail_sender'], $_POST['mail_name']);
+
 	// *** Set who the message is to be sent to ***
 	$mail->addAddress($mail_address, $mail_address);
+
 	// *** Set the subject line ***
 	$mail->Subject = $mail_subject;
+
 	$mail->msgHTML($mail_message);
 	// *** Replace the plain text body with one created manually ***
 	//$mail->AltBody = 'This is a plain-text message body';
+
 	if (!$mail->send()) {
 		echo '<br><b>'.__('Sending e-mail failed!').' '. $mail->ErrorInfo.'</b>';
 	} else {

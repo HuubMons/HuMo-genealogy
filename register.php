@@ -11,13 +11,17 @@ if ($humo_option["registration_use_spam_question"]!='y'){
 	$register_allowed=true;
 }
 
+$show_form=true;
+
 if (isset($_POST['send_mail']) AND $register_allowed==true){
+	$show_form=false;
 	$error='';
 
 	$usersql='SELECT * FROM humo_users WHERE user_name="'.safe_text($_POST["register_name"]).'"';
 	$user = $dbh->query($usersql);
 	$userDb=$user->fetch(PDO::FETCH_OBJ);
-	if (isset($userDb->user_id)){
+	//if (isset($userDb->user_id)){
+	if (isset($userDb->user_id) OR strtolower(safe_text($_POST["register_name"])) == "admin") {
 		$error=__('ERROR: username already exists');
 	}
 
@@ -25,6 +29,10 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 		$error=__('ERROR: No identical passwords');
 	}
 
+	if(strlen($_POST["register_password"])<6) {
+		$error=__('ERROR: Password has to contain at least 6 characters');
+	}
+   
 	if ($error==false){
 		$user_register_date=date("Y-m-d H:i");
 		$sql="INSERT INTO humo_users SET
@@ -83,11 +91,13 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 
 	}
 	else{
+		$show_form=true;
 		echo '<h2>'.$error.'</h2>';
 	}
 
 }
-else{
+
+if ($show_form){
 	$email='';
 	if (isset($dataDb->tree_email)) $email=$dataDb->tree_email; // Used in older HuMo-gen versions. Backwards compatible...
 	if ($humo_option["general_email"]) $email=$humo_option["general_email"];
@@ -139,7 +149,7 @@ else{
 		print '</table>';
 		print '</form>';
 		
-		if (isset($_POST['send_mail'])){
+		if (isset($_POST['send_mail']) AND $error==false){
 			echo '<h3 style="text-align:center";>'.__('Wrong answer to the block-spam question! Try again...').'</h3>';
 		}
 	}

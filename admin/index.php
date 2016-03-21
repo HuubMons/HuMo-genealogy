@@ -95,6 +95,12 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	if ($check_tables){
 		include_once(CMS_ROOTPATH."include/settings_global.php");
 		$show_menu_left=true;
+
+		// *** Check if visitor is allowed ***
+		if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'])){
+			echo 'Access to website is blocked.';
+			exit;
+		}
 	}
 }
 
@@ -108,8 +114,8 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 
 	// *** Check HuMo-gen database status ***
 	// *** Change this value if the database must be updated ***
-	if (isset($humo_option["update_status"])){ 
-		if ($humo_option["update_status"]<9){ $page='update'; $show_menu_left=false; }
+	if (isset($humo_option["update_status"])){
+		if ($humo_option["update_status"]<10){ $page='update'; $show_menu_left=false; }
 	}
 
 	if (isset($_GET['page']) AND ($_GET['page']=='editor_sources' OR $_GET['page']=='editor_place_select' OR $_GET['page']=='editor_person_select' OR $_GET['page']=='editor_user_settings')){
@@ -201,17 +207,11 @@ if($language["dir"]=="rtl") {
 	$rtlmarker="rtl";
 }
 
-
 // *** Process login form ***
 $fault='';
 if (isset($_POST['username'])){
-	//$query = "SELECT * FROM humo_users WHERE user_name='" .$_POST["username"] ."' AND user_password='".MD5($_POST["password"])."'";
-	//$result = $dbh->query($query);
 	$resultDb = $db_functions->get_user($_POST["username"],$_POST["password"]);
-
-	//if ($result->rowCount() > 0){
 	if ($resultDb){
-		//@$resultDb=$result->fetch(PDO::FETCH_OBJ);
 		$_SESSION['user_name_admin'] = $resultDb->user_name;
 		$_SESSION['user_id_admin'] = $resultDb->user_id;
 		$_SESSION['group_id_admin'] = $resultDb->user_group_id;
@@ -222,15 +222,24 @@ if (isset($_POST['username'])){
 			log_date='$log_date',
 			log_username='".$resultDb->user_name."',
 			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
-			log_user_admin='admin'";
+			log_user_admin='admin',
+			log_status='success'";
 		@$dbh->query($sql);
 	}
 	else{
 		// *** No valid user or password ***
 		$fault='<p align="center"><font color="red">'.__('Please enter a valid username or password. ').'</font>';
+
+		// *** Save log! ***
+		$sql="INSERT INTO humo_user_log SET
+			log_date='".date("Y-m-d H:i")."',
+			log_username='".safe_text($_POST["username"])."',
+			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
+			log_user_admin='admin',
+			log_status='failed'";
+		$dbh->query($sql);
 	}
 }
-
 
 // *** Login check ***
 $group_administrator=''; $group_edit_trees=''; //$group_editor='';
@@ -502,6 +511,44 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					}
 				}
 
+				// *** Copy HuMo-gen to server using file_get_contents ***
+				/*
+				if (!file_exists('update/temp_update_check.php')){
+					$source='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+					$update_file='update/temp_update_check.php';
+
+					$content = @file_get_contents($source);
+					//if ($content === false) {
+					//	$this->_log->addError(sprintf('Could not download update "%s"!', $updateUrl));
+					//	return false;
+					//}
+
+					// *** Open file ***
+					$handle = fopen($update_file, 'w');
+					//if (!$handle) {
+					//	$this->_log->addError(sprintf('Could not open file handle to save update to "%s"!', $updateFile));
+					//	return false;
+					//}
+
+					// *** Copy file ***
+					if (!fwrite($handle, $content)) {
+					//	$this->_log->addError(sprintf('Could not write update to file "%s"!', $updateFile));
+					//	fclose($handle);
+					//	return false;
+					}
+
+					fclose($handle);
+				}
+				*/
+
+				// *** Copy HuMo-gen to server using copy ***
+				// DISABLED BECAUSE MOST PROVIDERS BLOCK THIS COPY FUNCTION FOR OTHER WEBSITES...
+				//if (!file_exists('update/temp_update_check.php')){
+				//	$source='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+				//	$update_file='update/temp_update_check.php';
+				//	@copy($source, $update_file);
+				//}
+
 				if ($f = @fopen($update_file, 'r')){
 					// *** Used for automatic update procedure ***
 					$update['up_to_date']='no';
@@ -565,6 +612,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 				if(!function_exists('curl_exec')) $update_text.=' Extension php_curl.dll is disabled.';
 				elseif (!is_writable('update')) $update_text.=' Folder admin/update/ is read only.';
+
+				//if( !ini_get('allow_url_fopen') ) $update_text.=' Setting allow_url_fopen is disabled.';
 
 					// *** Update settings, only check for update once a day ***
 					$update_last_check=date("Y-m-d");

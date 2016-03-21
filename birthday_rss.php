@@ -68,10 +68,8 @@ $datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDE
 while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 	// *** Check is family tree is shown or hidden for user group ***
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
-	$hide_tree=false;
-	for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-		if ($hide_tree_array[$x]==$dataDb->tree_id){ $hide_tree=true; }
-	}
+	$hide_tree=false; if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
+
 	if ($hide_tree==false){
 		$sql="SELECT *,
 			substring(pers_birth_date,1,2) as birth_day,

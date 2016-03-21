@@ -75,6 +75,13 @@ if (isset($_POST['remove_user2'])){
 // *** Users ***
 // *************
 
+// *** Check for standard admin username and password ***
+$sql="SELECT * FROM humo_users WHERE user_name='admin' OR (user_name='admin' AND user_password='".MD5('humogen')."')";
+$check_login = $dbh->query($sql);
+$check_loginDb=$check_login->fetch(PDO::FETCH_OBJ);
+if ($check_loginDb)
+	echo '<b><span style="color:red">'.__('Standard admin username or admin password is used.').'</span></b>';
+
 if(CMS_SPECIFIC=="Joomla") {
 	echo "<form method=\"POST\" action=\"index.php?option=com_humo-gen&amp;task=admin&amp;page=users\">\n";
 }

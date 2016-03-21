@@ -341,8 +341,10 @@ function tree_text(){
 //******  tree_merge is the function that navigates all merge screens and options  *****
 //**************************************************************************************
 function tree_merge() {
-	global $dbh, $data2Db, $phpself;
+	global $dbh, $db_functions, $data2Db, $phpself;
 	global $page, $language, $tree_id, $menu_admin, $relatives_merge, $merge_chars;
+
+	$db_functions->set_tree_id($data2Db->tree_id);
 
 	// check for stored settings and if not present set them
 	$relatives_merge='';
@@ -390,15 +392,13 @@ function tree_merge() {
 			$nr = $_POST['choice_nr'];
 			$_SESSION['present_compare_'.$data2Db->tree_prefix] = $_POST['choice_nr'];
 		}
-			// make sure the persons in the array are still there (in case in the mean time someone was merged)
-			// after all, one person may be compared to more than one other person!
 
+		// make sure the persons in the array are still there (in case in the mean time someone was merged)
+		// after all, one person may be compared to more than one other person!
 		while($_SESSION['present_compare_'.$data2Db->tree_prefix] < count($_SESSION['dupl_arr_'.$data2Db->tree_prefix])) {
 			$comp_set = explode(';',$_SESSION['dupl_arr_'.$data2Db->tree_prefix][$nr]);
-			$qry = "SELECT * FROM humo_persons WHERE pers_id ='".$comp_set[0]."'";
-			$res = $dbh->query($qry);
-			$qry = "SELECT * FROM humo_persons WHERE pers_id ='".$comp_set[1]."'";
-			$res2 = $dbh->query($qry);
+			$res=$db_functions->get_person_with_id($comp_set[0]);
+			$res2=$db_functions->get_person_with_id($comp_set[1]);
 			if(!$res OR !$res2) { // one or 2 persons are missing - continue with next pair
 				$nr = ++$_SESSION['present_compare_'.$data2Db->tree_prefix];
 				continue; // look for next pair in array
@@ -488,12 +488,8 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
 	elseif(isset($_POST['manual_compare'])) {
 
 		// check if persons are of opposite sex - if so don't continue
-		$qry1= "SELECT * FROM humo_persons WHERE pers_id ='".$_POST['left']."'";  // left person
-		$per1 = $dbh->query($qry1);
-		$per1Db = $per1->fetch(PDO::FETCH_OBJ);
-		$qry2= "SELECT * FROM humo_persons WHERE pers_id ='".$_POST['right']."'";  // right person
-		$per2 = $dbh->query($qry2);
-		$per2Db = $per2->fetch(PDO::FETCH_OBJ);
+		$per1Db=$db_functions->get_person_with_id($_POST['left']);
+		$per2Db=$db_functions->get_person_with_id($_POST['right']);
 		if($per1Db->pers_sexe != $per2Db->pers_sexe) { // trying to merge opposite sexes
 			echo '<br>'.__('You cannot merge persons of opposite sex. Please try again').'.<br><br>';
 			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -593,11 +589,11 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
 				$pair = explode('@',$allpairs[0]); // $pair[0]:  I23;
 				$lft = $pair[0];  // I23
 				$rght = $pair[1]; // I300
-				$leftqry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$lft."'");
-				$leftDb = $leftqry->fetch(PDO::FETCH_OBJ);
+
+				$leftDb=$db_functions->get_person($lft);
 				$left = $leftDb->pers_id;
-				$rightqry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$rght."'");
-				$rightDb = $rightqry->fetch(PDO::FETCH_OBJ);
+
+				$rightDb=$db_functions->get_person($rght);
 				$right = $rightDb->pers_id;
 			}
 			else {  // "switch left-right" button used"
@@ -1052,9 +1048,11 @@ You will be notified of results as the action is completed');
 							WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$persDb->pers_famc."'";
 						$fam1 = $dbh->query($qry);
 						$fam1Db = $fam1->fetch(PDO::FETCH_OBJ);
+
 						$qry = "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$pers2Db->pers_famc."'";
 						$fam2 = $dbh->query($qry);
 						$fam2Db = $fam2->fetch(PDO::FETCH_OBJ);
+
 						if($fam1->rowCount() > 0 AND $fam2->rowCount() > 0) {
 							$go = 1;
 							if($merge_parentsdate=='YES') { // we want to check for wedding date of parents
@@ -1148,8 +1146,7 @@ You will be notified of results as the action is completed');
 		if(isset($mergedlist)) { // there is a list of merged persons
 			echo '<br><br><b><u>'.__('These are the persons that were merged:').'</u></b><br>';
 			for($i=0;$i<count($mergedlist);$i++) {
-				$result=$dbh->query("SELECT * FROM humo_persons WHERE pers_id='".$mergedlist[$i]."'");
-				$resultDb=$result->fetch(PDO::FETCH_OBJ);
+				$resultDb=$db_functions->get_person_with_id($mergedlist[$i]);
 				echo $resultDb->pers_lastname.', '.$resultDb->pers_firstname.' '.strtolower(str_replace("_"," ",$resultDb->pers_prefix)).' (#'.$resultDb->pers_gedcomnumber.')<br>';
 			}
 		}
@@ -1394,21 +1391,18 @@ After a merge you can switch to "relatives merge" and after that return to dupli
 //******  with the possibility to determine what information is passed from left to right *****
 //*********************************************************************************************
 function show_pair($left_id,$right_id,$mode) {
-	global $dbh, $data2Db, $phpself;
+	global $dbh, $db_functions, $data2Db, $phpself;
 	global $page, $tree_id, $menu_admin, $relatives_merge, $language;
 
 	// get data for left person
-	$qry = "SELECT * FROM humo_persons WHERE  pers_id = '".$left_id."'";
-	$left = $dbh->query($qry);
-	$leftDb = $left->fetch(PDO::FETCH_OBJ);
+	$leftDb=$db_functions->get_person_with_id($left_id);
 
 	$spouses1 = ''; $children1='';
 	if($leftDb->pers_fams) {
 		$fams = explode(';',$leftDb->pers_fams);
 		foreach($fams as $value) {
-			$fam_qry = "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber ='".$value."'";
-			$fam = $dbh->query($fam_qry);
-			$famDb = $fam->fetch(PDO::FETCH_OBJ);
+			$famDb = $db_functions->get_family($value);
+
 			if($famDb->fam_man == $leftDb->pers_gedcomnumber) { // spouse is the woman
 				$spouse_ged = $famDb->fam_woman;
 			}
@@ -1459,17 +1453,13 @@ function show_pair($left_id,$right_id,$mode) {
 	}
 
 	// get data for right person
-	$qry = "SELECT * FROM humo_persons WHERE  pers_id = '".$right_id."'";
-	$right = $dbh->query($qry);
-	$rightDb = $right->fetch(PDO::FETCH_OBJ);
+	$rightDb=$db_functions->get_person_with_id($right_id);
 
 	$spouses2 = ''; $children2 = '';
 	if($rightDb->pers_fams) {
 		$fams = explode(';',$rightDb->pers_fams);
 		foreach($fams as $value) {
-			$fam_qry = "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber ='".$value."'";
-			$fam = $dbh->query($fam_qry);
-			$famDb = $fam->fetch(PDO::FETCH_OBJ);
+			$famDb = $db_functions->get_family($value);
 			if($famDb->fam_man == $rightDb->pers_gedcomnumber) { // spouse is the woman
 				$spouse_ged = $famDb->fam_woman;
 			}
@@ -1868,7 +1858,7 @@ function show_addresses ($left_ged,$right_ged) {
 //******  "merge_them" is the function that does the actual job of merging the data of two persons (left and right)*****
 //**********************************************************************************************************************
 function merge_them($left,$right,$mode) {
-	global $dbh, $tree_id, $data2Db, $phpself, $language;
+	global $dbh, $db_functions, $tree_id, $data2Db, $phpself, $language;
 	global $page, $menu_admin;
 	global $relatives_merge, $merge_chars;
 	global $result1Db, $result2Db;
@@ -1883,13 +1873,8 @@ function merge_them($left,$right,$mode) {
 	// 3. In either case whether right has family or not, if right has famc then in
 	//    humo_family in right's parents Fxx, the child's Ixx is changed from right's to left's
 
-	$qry1= "SELECT * FROM humo_persons WHERE pers_id ='".$left."'";  // left person
-	$result1 = $dbh->query($qry1);
-	$result1Db = $result1->fetch(PDO::FETCH_OBJ);
-
-	$qry2= "SELECT * FROM humo_persons WHERE pers_id ='".$right."'";  // right person
-	$result2 = $dbh->query($qry2);
-	$result2Db = $result2->fetch(PDO::FETCH_OBJ);
+	$result1Db = $db_functions->get_person_with_id($left);
+	$result2Db = $db_functions->get_person_with_id($right);
 
 	$name1 = $result1Db->pers_firstname.' '.$result1Db->pers_lastname; // store for notification later
 	$name2 = $result2Db->pers_firstname.' '.$result2Db->pers_lastname; // store for notification later
@@ -2167,7 +2152,9 @@ for($i=0; $i<count($f1); $i++) {
 					$dbh->query($qry);
 					// CLEANUP: also delete this F from other tables where it may appear
 					$qry = "DELETE FROM humo_addresses
-						WHERE address_tree_id='".$tree_id."' AND address_family_id ='".$f2[$i]->fam_gedcomnumber."'";
+						WHERE address_tree_id='".$tree_id."'
+						AND address_connect_sub_kind='family'
+						AND address_connect_id ='".$f2[$i]->fam_gedcomnumber."'";
 					$dbh->query($qry);
 					$qry = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
 						AND event_connect_kind='family' AND event_connect_id ='".$f2[$i]->fam_gedcomnumber."'";
@@ -2498,7 +2485,10 @@ for($i=0; $i<count($f1); $i++) {
 	$qry = "DELETE FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$result2Db->pers_gedcomnumber."'";
 	$dbh->query($qry);
 	// CLEANUP: delete this person's I from any other tables that refer to this person (otherwise we will receive errors in humogen)
-	$qry = "DELETE FROM humo_addresses WHERE address_tree_id='".$tree_id."' AND address_person_id ='".$result2Db->pers_gedcomnumber."'";
+	$qry = "DELETE FROM humo_addresses
+		WHERE address_tree_id='".$tree_id."'
+		AND address_connect_sub_kind='person'
+		AND address_connect_id ='".$result2Db->pers_gedcomnumber."'";
 	$dbh->query($qry);
 	$qry = "DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$result2Db->pers_gedcomnumber."'";
 	$dbh->query($qry);

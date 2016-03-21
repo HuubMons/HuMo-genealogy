@@ -48,14 +48,8 @@ echo '<?xml version="1.0" encoding="UTF-8"?>'."\r\n"
 foreach($datasql as $dataDb){
 	// *** Check is family tree is shown or hidden for user group ***
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
-	$hide_tree=false;
-	for ($x=0; $x<=count($hide_tree_array)-1; $x++){
-		if ($hide_tree_array[$x]==$dataDb->tree_id){ $hide_tree=true; }
-	}
+	$hide_tree=false; if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
 	if ($hide_tree==false){
-		//$person_qry=$dbh->query("SELECT * FROM ".safe_text($dataDb->tree_prefix)."person
-		//	WHERE pers_indexnr!='' GROUP BY pers_indexnr
-		//	UNION SELECT * FROM ".safe_text($dataDb->tree_prefix)."person WHERE pers_indexnr=''");
 		$person_qry=$dbh->query("SELECT * FROM humo_persons
 			WHERE pers_tree_id='".$dataDb->tree_id."' AND pers_indexnr!='' GROUP BY pers_indexnr
 			UNION SELECT * FROM humo_persons WHERE pers_tree_id='".$dataDb->tree_id."' AND pers_indexnr=''");

@@ -618,7 +618,7 @@ To point to a folder outside (and parallel to) the humogen folder, use ../../../
 
 	echo '<h2>In some cases the picture-path setting doesn\'t work...</h2>';
 	echo '<b>First try renaming or removing file: admin\php.ini.</b><br><br>';
-	echo '<b>If you need this setting, you can manual set this picture path in this file: admin/include/kcfinder/config.php<br>';
+	echo '<b>If you need this setting, you can manual set this picture path in this file: admin/include/kcfinder/conf/config.php<br>';
 	echo 'Change "upload" into your picture path: \'uploadURL\' => "upload",<br>';
 	echo 'Change "true" into "false": \'disabled\' => true,</b>';
 

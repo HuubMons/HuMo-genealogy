@@ -5,6 +5,12 @@ include_once(CMS_ROOTPATH."menu.php");
 
 //print '<div class="standard_header fonts">'.__('Login').'</div>';
 
+// *** Check if visitor is allowed ***
+if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'])){
+	echo 'Access to website is blocked.';
+	exit;
+}
+
 // *** No valid user found ***
 if ($fault==true){
 	echo '<div class="center"><font color="red"><b>'.__('No valid username or password.').'</b></font></div>';

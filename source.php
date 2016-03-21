@@ -287,8 +287,8 @@ print '<tr><td>';
 				$address_sql="SELECT * FROM humo_addresses WHERE address_id='".$connectDb->connect_connect_id."'";
 				@$address_qry=$dbh->query($address_sql);
 				$address_Db=$address_qry->fetch(PDO::FETCH_OBJ);
-				if ($address_Db->address_person_id){
-					$personDb=$db_functions->get_person ($address_Db->address_person_id);
+				if ($address_Db->address_connect_sub_kind=='person' AND $address_Db->address_connect_id){
+					$personDb=$db_functions->get_person ($address_Db->address_connect_id);
 					$name=$person_cls->person_name($personDb);
 					echo __('Source for address:').' <a href="'.CMS_ROOTPATH.'family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 					echo $name["standard_name"].'</a>';
