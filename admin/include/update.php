@@ -27,8 +27,8 @@ else{
 	// ********************************
 	// *** HuMo-gen update 1 (V3.1) ***
 	// ********************************
-	$update_check = @$dbh->query("SELECT * FROM humo_tree_texts");
-	$update_check2 = @$dbh->query("SELECT * FROM humo_stambomen_tekst");
+	$update_check = @$dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
+	$update_check2 = @$dbh->query("SELECT * FROM humo_stambomen_tekst LIMIT 0,1");
 	if ($update_check OR $update_check2){
 		echo '<tr><td>Check table humo_tree_texts</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -46,7 +46,7 @@ else{
 			PRIMARY KEY  (`treetext_id`)
 			) DEFAULT CHARSET=utf8");
 		// *** Re-check ***
-		$update_check2 = $dbh->query("SELECT * FROM humo_tree_texts");
+		$update_check2 = $dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
 		if ($update_check2){
 			echo __('UPDATE OK!');
 		}
@@ -75,7 +75,7 @@ else{
 	// ********************************
 	// *** HuMo-gen update 4 (V4.6) ***
 	// ********************************
-	$update_check_sql = $dbh->query("SELECT * FROM humo_tree_texts");
+	$update_check_sql = $dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_tree_texts 2</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -134,8 +134,8 @@ else{
 	// ********************************
 	// *** HuMo-gen update 2 (V3.2) ***
 	// ********************************
-	$update_check = $dbh->query("SELECT * FROM humo_stat_date");
-	$update_check2 = $dbh->query("SELECT * FROM humo_stat_datum");
+	$update_check = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
+	$update_check2 = $dbh->query("SELECT * FROM humo_stat_datum LIMIT 0,1");
 	if ($update_check OR $update_check2) {
 		echo '<tr><td>Check table humo_stat_date</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -165,7 +165,7 @@ else{
 		echo '</td></tr>';
 	}
 
-	$update_check_sql = $dbh->query("SELECT * FROM humo_stat_date");
+	$update_check_sql = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_stat_date 2</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -224,7 +224,7 @@ else{
 	// ********************************
 	// *** HuMo-gen update 4 (V4.6) ***
 	// ********************************
-	$update_check_sql = $dbh->query("SELECT * FROM humo_settings");
+	$update_check_sql = $dbh->query("SELECT * FROM humo_settings LIMIT 0,1");
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_settings</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -272,7 +272,7 @@ else{
 	$sql='UPDATE humo_settings SET setting_value="fr" WHERE setting_value="talen/taal-francais.php"';
 	$result=$dbh->query($sql);
 
-	$update_check_sql = $dbh->query("SELECT * FROM humo_trees");
+	$update_check_sql = $dbh->query("SELECT * FROM humo_trees LIMIT 0,1");
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_trees</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -364,13 +364,13 @@ else{
 
 
 	echo '<tr><td>Check table humo_user_log</td>';
-	$update_check_sql = $dbh->query("SELECT * FROM humo_user_log");
+	$update_check_sql = $dbh->query("SELECT * FROM humo_user_log LIMIT 0,1");
 	if ($update_check_sql){
 		echo '<td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		// *** Check if there is an old humo_logboek table ***
-		$update_check2_sql = $dbh->query("SELECT * FROM humo_logboek");
+		$update_check2_sql = $dbh->query("SELECT * FROM humo_logboek LIMIT 0,1");
 		if ($update_check2_sql){
 			echo '<td style="background-color:#00FF00">'.__('AUTOMATIC UPDATE PROCESS STARTED!').'<br>';
 			// *** Translate dutch table name into english ***
@@ -384,7 +384,7 @@ else{
 			$update_Db = $dbh->query($sql);
 
 			// *** New check ***
-			$update_check2 = $dbh->query("SELECT * FROM humo_user_log");
+			$update_check2 = $dbh->query("SELECT * FROM humo_user_log LIMIT 0,1");
 			if ($update_check2){
 				echo __('UPDATE OK!');
 			}
@@ -402,7 +402,7 @@ else{
 
 
 	// *** Update users ***
-	$update_check_sql = $dbh->query("SELECT * FROM humo_users");
+	$update_check_sql = $dbh->query("SELECT * FROM humo_users LIMIT 0,1");
 	$tabel_controleDb=$update_check_sql->fetch(PDO::FETCH_OBJ);	
 	if (!isset($tabel_controleDb->id)){
 		echo '<tr><td>Check table humo_users</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -419,7 +419,7 @@ else{
 		$update_Db = $dbh->query($sql);
 
 		// *** New check ***
-		$update_check2 = $dbh->query("SELECT * FROM humo_users");
+		$update_check2 = $dbh->query("SELECT * FROM humo_users LIMIT 0,1");
 		if ($update_check2){
 			echo __('UPDATE OK!');
 		}
@@ -432,7 +432,7 @@ else{
 
 
 	// *** Update groups ***
-	$groupsql="SELECT * FROM humo_groups";
+	$groupsql="SELECT * FROM humo_groups LIMIT 0,1";
 	$groupresult=$dbh->query($groupsql);
 	$groupDb=$groupresult->fetch(PDO::FETCH_OBJ);
 
@@ -478,7 +478,7 @@ else{
 		$update_Db = $dbh->query($sql);
 
 		// *** New check ***
-		$update_check2 = $dbh->query("SELECT * FROM humo_groups");
+		$update_check2 = $dbh->query("SELECT * FROM humo_groups LIMIT 0,1");
 		if ($update_check2){
 			echo __('UPDATE OK!');
 		}
@@ -631,7 +631,7 @@ else{
 			$translate_tables=false;
 
 			// *** Rename old tables, rename fields, convert html to utf-8 ***
-			$update_check_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."persoon");			// *** Translate table names, update tables ***
+			$update_check_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."persoon LIMIT 0,1");			// *** Translate table names, update tables ***
 			if ($update_check_sql){
 
 				$translate_tables=true;
@@ -1231,7 +1231,7 @@ else{
 		echo '<tr><td>HuMo-gen update V4.7</td><td style="background-color:#00FF00">';
 
 		// *** Automatic installation or update ***
-		$update_check_sql = $dbh->query("SELECT * FROM humo_user_log");
+		$update_check_sql = $dbh->query("SELECT * FROM humo_user_log LIMIT 0,1");
 		if ($update_check_sql){
 			if (isset($field)){ unset ($field); }
 			$column_qry = $dbh->query("SHOW COLUMNS FROM humo_user_log");
@@ -3124,6 +3124,7 @@ else{
 
 	/*	END OF UPDATE SCRIPT
 		*** VERY IMPORTANT REMARKS FOR PROGRAMMERS ***
+		* Use LIMIT 0,1 to prevent update problems (in large family trees) if possible: SELECT * FROM humo_stat_date LIMIT 0,1
 		* Change update_status in install.php
 		* Change version check in admin/index.php
 		* Don't forget to add new database fields in the tables of install.php!

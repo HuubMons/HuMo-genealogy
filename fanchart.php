@@ -28,9 +28,12 @@ include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."menu.php");
 require_once(CMS_ROOTPATH."include/fanchart/persian_log2vis.php");
 
-$family_id=1; // *** Show 1st family if file is called directly. ***
+// *** CHECK: $family_id is actually a person_id... ***
+$family_id='I1'; // *** Show 1st family if file is called directly. ***
 if (isset($_GET["id"])){ $family_id=$_GET["id"]; }
 if (isset($_POST["id"])){ $family_id=$_POST["id"]; }
+// *** Check if person gedcomnumber is valid ***
+$db_functions->check_person($family_id);
 
 $chosengen=5;
 if (isset($_GET["chosengen"])){ $chosengen=$_GET["chosengen"]; }

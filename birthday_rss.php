@@ -78,8 +78,8 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 			FROM humo_persons
 			WHERE pers_tree_id='".$dataDb->tree_id."'
 			AND (pers_birth_date!=''
-			AND (substring(pers_birth_date,3,3) = '$month_number' AND CONCAT('0',substring(pers_birth_date,1,1)) = '$today_day') 
-			OR (substring(pers_birth_date,4,3) = '$month_number' AND substring(pers_birth_date,1,2)='$today_day')
+			AND (substring(pers_birth_date,3,3) = '".$month_number."' AND CONCAT('0',substring(pers_birth_date,1,1)) = '".$today_day."') 
+			OR (substring(pers_birth_date,4,3) = '".$month_number."' AND substring(pers_birth_date,1,2)='".$today_day."')
 			) order by pers_lastname";
 		$query = $dbh->query($sql);
 		while($record = $query->fetch(PDO::FETCH_OBJ)) {

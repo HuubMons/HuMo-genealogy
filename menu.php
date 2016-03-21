@@ -241,7 +241,7 @@ echo '<ul class="humo_menu_item">';
 		//}
 		echo '<a href="'.$path_tmp.'"';
 		echo ' onmouseover="mopen(event,\'m0x\',\'?\',\'?\')"';
-		echo ' onmouseout="mclosetime()"'.$select_top.'><img src="images\menu_mobile.png" width="18"></a>';
+		echo ' onmouseout="mclosetime()"'.$select_top.'><img src="images/menu_mobile.png" width="18"></a>';
 
 		echo '<div id="m0x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			echo '<ul class="humo_menu_item2">';
@@ -837,6 +837,20 @@ echo '</ul>';
 echo '</div>'; // End of humo_menu
 
 echo '</div>';   // End of top_menu
+
+// *** Override margin if slideshow is used ***
+if ($menu_choice=='main_index' AND isset($humo_option["slideshow_show"]) AND $humo_option["slideshow_show"]=='y'){
+	echo '<style>
+	#rtlcontent {
+		padding-left:0px;
+		padding-right:0px;
+	}
+	#content {
+		padding-left:0px;
+		padding-right:0px;
+	}
+	</style>';
+}
 
 if($language["dir"]=="rtl") {
 	print '<div id="rtlcontent">';

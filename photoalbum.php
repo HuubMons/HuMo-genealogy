@@ -36,6 +36,7 @@ $photo_name='';
 if (isset($_POST['photo_name'])){ $photo_name=safe_text($_POST['photo_name']); }
 if (isset($_GET['photo_name'])){ $photo_name=safe_text($_GET['photo_name']); }
 
+$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 
 // Create one-time an array of all pics with person_id's
 $qry="SELECT event_event, event_kind, event_connect_kind, event_connect_id FROM humo_events
@@ -68,18 +69,18 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 
 		foreach($result_arr as $row) {
 			if($row['photocat_prefix'] != 'none')   {  
-				$check = glob($dataDb->tree_pict_path.'/'.$row['photocat_prefix'].'*');
+				$check = glob($tree_pict_path.'/'.$row['photocat_prefix'].'*');
 				if($check!==false AND count($check) >= 1) {  // found at least one pic for this category
 					$catpics++;
 				}
-				elseif(is_dir($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2))) {
-					$check = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.$row['photocat_prefix'].'*');
+				elseif(is_dir($tree_pict_path.'/'.substr($row['photocat_prefix'],0,2))) {
+					$check = glob($tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.$row['photocat_prefix'].'*');
 					if($check!==false AND count($check) >= 1) {  // found at least one pic for this category
 						$catpics++;
 					}
 					// check for sub-sub cat
 					else{
-						$check2 = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.'*');
+						$check2 = glob(tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.'*');
 						if($check2!==false AND count($check2) >= 1) {  // found at least one sub-sub for this category
 							$catpics++;
 						}
@@ -102,12 +103,12 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 							if($row['photocat_prefix'] != 'none')   {  
 								$cat_string .= $row['photocat_prefix']."@"; 
 								// now check if there are pics for this category, otherwise don't show it
-								$check2 = glob($dataDb->tree_pict_path.'/'.$row['photocat_prefix'].'*');
+								$check2 = glob($tree_pict_path.'/'.$row['photocat_prefix'].'*');
 								if($check2===false OR count($check2)==0) {  // if there are no pics for this category, try subfolder
-									if(is_dir($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2))) {  // check for subfolder of the prefix name (without underscore)
-										$check3 = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.$row['photocat_prefix'].'*');
+									if(is_dir($tree_pict_path.'/'.substr($row['photocat_prefix'],0,2))) {  // check for subfolder of the prefix name (without underscore)
+										$check3 = glob($tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.$row['photocat_prefix'].'*');
 										if($check3===false OR count($check3) == 0) {  // no pics in subfolder  - maybe sub-subs
-											$check4 = glob($dataDb->tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.'*');
+											$check4 = glob($tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.'*');
 											if($check4!==false AND count($check4) >= 1) {  // found at least one sub-sub for this category
 												$catpics++;   
 											}
@@ -180,11 +181,13 @@ else {  // show album with category tabs
 
 function showthem ($pref) {
 	global $dataDb, $photo_name, $dbh, $show_pictures, $uri_path, $tree_id, $db_functions, $my_array, $cat_string, $categories, $chosen_tab;
-	
+
+	$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
+
 	$subfolder="";
-	if($pref!='none'  AND $pref!="dummy" AND is_dir($dataDb->tree_pict_path.substr($pref,0,2).'/')) { $subfolder= substr($pref,0,2).'/'; }
+	if($pref!='none'  AND $pref!="dummy" AND is_dir($tree_pict_path.substr($pref,0,2).'/')) { $subfolder= substr($pref,0,2).'/'; }
 	// *** Read all photos from directory ***
-	$dir=$dataDb->tree_pict_path.$subfolder;  
+	$dir=$tree_pict_path.$subfolder;  
 	
 	$picture_array = Array();
 	if (file_exists($dir)){   //echo $dir."<br>";

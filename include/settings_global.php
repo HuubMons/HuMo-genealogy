@@ -1,13 +1,13 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.1.9';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.1.10';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 9 mrt. 2014';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
-$humo_option["version_date"]='2016-02-08';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2016-03-17';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -197,37 +197,37 @@ if (!isset($humo_option["gedcom_read_process_geo_location"])){
 if (!isset($humo_option["gedcom_read_commit_records"])){
 	$humo_option["gedcom_read_commit_records"]='500';
 	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_read_commit_records', setting_value='500'";
-	@$result=$dbh->query($sql);	
+	@$result=$dbh->query($sql);
 }
 
 if (!isset($humo_option["gedcom_read_time_out"])){
 	$humo_option["gedcom_read_time_out"]='0';
 	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_read_time_out', setting_value='0'";
-	@$result=$dbh->query($sql);	
+	@$result=$dbh->query($sql);
 }
 
 // *** Watermark text and color in PDF file ***
 if (!isset($humo_option["watermark_text"])){
 	$humo_option["watermark_text"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_text', setting_value=''";
-	@$result=$dbh->query($sql);	
+	@$result=$dbh->query($sql);
 }
 if (!isset($humo_option["watermark_color_r"])){
 	$humo_option["watermark_color_r"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_color_r', setting_value='224'";
-	@$result=$dbh->query($sql);	
+	@$result=$dbh->query($sql);
 }
 if (!isset($humo_option["watermark_color_g"])){
 	$humo_option["watermark_color_g"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_color_g', setting_value='224'";
-	@$result=$dbh->query($sql);	
+	@$result=$dbh->query($sql);
 }
 if (!isset($humo_option["watermark_color_b"])){
 	$humo_option["watermark_color_b"]=''; $sql="INSERT INTO humo_settings SET setting_variable='watermark_color_b', setting_value='224'";
-	@$result=$dbh->query($sql);	
+	@$result=$dbh->query($sql);
 }
 
 // *** Minimum characters in search boxes
 if (!isset($humo_option["min_search_chars"])){
 	$humo_option["min_search_chars"]='3'; $sql="INSERT INTO humo_settings SET setting_variable='min_search_chars', setting_value='3'";
-	@$result=$dbh->query($sql);	
+	@$result=$dbh->query($sql);
 }
 if (!isset($humo_option["date_display"])){
 	$humo_option["date_display"]='eu'; $sql="INSERT INTO humo_settings SET setting_variable='date_display', setting_value='eu'";
@@ -235,16 +235,16 @@ if (!isset($humo_option["date_display"])){
 }
 if (!isset($humo_option["name_order"])){
 	$humo_option["name_order"]='western'; $sql="INSERT INTO humo_settings SET setting_variable='name_order', setting_value='western'";
-	@$result=$dbh->query($sql);	
+	@$result=$dbh->query($sql);
 }
 if (!isset($humo_option["default_timeline"])){
 	$humo_option["default_timeline"]=''; $sql="INSERT INTO humo_settings SET setting_variable='default_timeline', setting_value=''";
-	@$result=$dbh->query($sql);	
+	@$result=$dbh->query($sql);
 }
 // one name study display
 if (!isset($humo_option["one_name_study"])){
 	$humo_option["one_name_study"]='n'; $sql="INSERT INTO humo_settings SET setting_variable='one_name_study', setting_value='n'";
-	@$result=$dbh->query($sql);	
+	@$result=$dbh->query($sql);
 }
 // one name study setting of the name
 if (!isset($humo_option["one_name_thename"])){
@@ -285,7 +285,46 @@ if (!isset($humo_option["geo_trees"])){
 		}
 		$humo_option["geo_trees"]=$geo_string; 
 		$sql="INSERT INTO humo_settings SET setting_variable='geo_trees', setting_value='".$geo_string."'";
-		@$result=$dbh->query($sql);	
+		@$result=$dbh->query($sql);
 	}
 }
+
+// *** Slideshow_show homepage ***
+if (!isset($humo_option["slideshow_show"])){
+	$humo_option["slideshow_show"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='slideshow_show', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+// *** Slideshow slide 1 ***
+if (!isset($humo_option["slideshow_01"])){
+	$humo_option["slideshow_01"]='|';
+	$sql="INSERT INTO humo_settings SET setting_variable='slideshow_01', setting_value='|'";
+	@$result=$dbh->query($sql);
+}
+// *** Slideshow slide 2 ***
+if (!isset($humo_option["slideshow_02"])){
+	$humo_option["slideshow_02"]='|';
+	$sql="INSERT INTO humo_settings SET setting_variable='slideshow_02', setting_value='|'";
+	@$result=$dbh->query($sql);
+}
+// *** Slideshow slide 3 ***
+if (!isset($humo_option["slideshow_03"])){
+	$humo_option["slideshow_03"]='|';
+	$sql="INSERT INTO humo_settings SET setting_variable='slideshow_03', setting_value='|'";
+	@$result=$dbh->query($sql);
+}
+// *** Slideshow slide 4 ***
+if (!isset($humo_option["slideshow_04"])){
+	$humo_option["slideshow_04"]='|';
+	$sql="INSERT INTO humo_settings SET setting_variable='slideshow_04', setting_value='|'";
+	@$result=$dbh->query($sql);
+}
+
+// *** "Today in history" on the homepage ***
+if (!isset($humo_option["today_in_history_show"])){
+	$humo_option["today_in_history_show"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='today_in_history_show', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+
 ?>

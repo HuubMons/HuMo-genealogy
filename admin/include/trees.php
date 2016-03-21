@@ -26,10 +26,18 @@ else {
 
 // *** Family tree admin ***
 if (isset($_POST['change_tree_data'])){
+	$tree_pict_path=$_POST['tree_pict_path'];
+	if (substr($_POST['tree_pict_path'],0,1)=='|'){
+		if (isset($_POST['default_path']) AND $_POST['default_path']=='no') $tree_pict_path=substr($tree_pict_path,1);
+	}
+	else{
+		if (isset($_POST['default_path']) AND $_POST['default_path']=='yes') $tree_pict_path='|'.$tree_pict_path;
+	}
+
 	$sql="UPDATE humo_trees SET
 	tree_email='".safe_text($_POST['tree_email'])."',
 	tree_owner='".safe_text($_POST['tree_owner'])."',
-	tree_pict_path='".safe_text($_POST['tree_pict_path'])."',
+	tree_pict_path='".safe_text($tree_pict_path)."',
 	tree_privacy='".safe_text($_POST['tree_privacy'])."'
 	WHERE tree_id=".safe_text($_POST['tree_id']);
 	$result=$dbh->query($sql);
@@ -56,7 +64,7 @@ if (isset($_POST['add_tree_data'])){
 	tree_families='0',
 	tree_email='',
 	tree_privacy='',
-	tree_pict_path='../pictures/'
+	tree_pict_path='|../pictures/'
 	";
 	$result=$dbh->query($sql);
 

@@ -361,7 +361,7 @@ if ($cms_item=='pages'){
 		echo "</select>";
 
 		$checked=''; if ($page_status){ $checked=' CHECKED'; }
-		echo ' <INPUT TYPE="CHECKBOX" name="page_status"'.$checked.'>Published';
+		echo ' <INPUT TYPE="CHECKBOX" name="page_status"'.$checked.'>'.__('Published');
 
 		if ($page_edit=='add'){
 			echo ' <input type="Submit" name="add_page" value="'.__('Save').'">';
@@ -381,7 +381,7 @@ if ($cms_item=='pages'){
 	echo '</td></tr></table>';
 
 	// *** Updated CKEditor ***
-	echo '<script src="include/ckeditor/ckeditor.js"></script>';
+	//echo '<script src="include/ckeditor/ckeditor.js"></script>';
 
 	// *** KCfinder settings ***
 	//$_SESSION['KCFINDER'] = array(
@@ -393,9 +393,11 @@ if ($cms_item=='pages'){
 	$_SESSION['KCFINDER'] = array();
 	$_SESSION['KCFINDER']['disabled'] = false;
 	if (isset($humo_option["cms_images_path"])){
-		$_SESSION['KCFINDER']['uploadURL'] = $humo_option["cms_images_path"];
+		$cms_images_path=$humo_option["cms_images_path"]; if (substr($cms_images_path,0,1)=='|') $cms_images_path='../../../media/cms';
+		//$_SESSION['KCFINDER']['uploadURL'] = $humo_option["cms_images_path"];
+		$_SESSION['KCFINDER']['uploadURL'] = $cms_images_path;
 		//$_SESSION['KCuploadURL'] = $humo_option["cms_images_path"];
-		//$_SESSION['KCFINDER']['uploadDir'] = "";
+		$_SESSION['KCFINDER']['uploadDir'] = "";
 	}
 	else{
 		//$_SESSION['KCuploadURL']='upload';
@@ -416,6 +418,9 @@ if ($cms_item=='pages'){
 		});
 	</script>";
 	*/
+
+	// *** Updated CKEditor ***
+	echo '<script src="include/ckeditor/ckeditor.js"></script>';
 }
 
 // *** Show and edit menu's ***
@@ -477,9 +482,9 @@ if ($cms_item=='menu'){
 if ($cms_item=='settings'){
 	// *** Automatic installation or update ***
 	if (!isset($humo_option["cms_images_path"])){
-		$sql="INSERT INTO humo_settings SET setting_variable='cms_images_path', setting_value=''";
+		$sql="INSERT INTO humo_settings SET setting_variable='cms_images_path', setting_value='|'";
 		@$result=$dbh->query($sql);
-		$cms_images_path='';
+		$cms_images_path='|';
 	}
 	else{
 		$cms_images_path=$humo_option["cms_images_path"];
@@ -496,11 +501,20 @@ if ($cms_item=='settings'){
 	}
 	
 	if (isset($_POST['cms_images_path'])){
-		$qry="UPDATE humo_settings SET setting_value='".addslashes($_POST["cms_images_path"])."' WHERE setting_variable='cms_images_path'";
-		//echo $qry;
+		$cms_images_path=$_POST['cms_images_path'];
+		if (substr($_POST['cms_images_path'],0,1)=='|'){
+			if (isset($_POST['default_path']) AND $_POST['default_path']=='no') $cms_images_path=substr($cms_images_path,1);
+		}
+		else{
+			if (isset($_POST['default_path']) AND $_POST['default_path']=='yes') $cms_images_path='|'.$cms_images_path;
+		}
+
+		$qry="UPDATE humo_settings SET setting_value='".safe_text($cms_images_path)."' WHERE setting_variable='cms_images_path'";
 		$result = $dbh->query($qry);
-		
-		$humo_option["cms_images_path"]=$_POST["cms_images_path"];
+
+		//$humo_option["cms_images_path"]=$_POST["cms_images_path"];
+		//$cms_images_path=$humo_option["cms_images_path"];
+		$humo_option["cms_images_path"]=$cms_images_path;
 		$cms_images_path=$humo_option["cms_images_path"];
 	}
 
@@ -543,10 +557,24 @@ if ($cms_item=='settings'){
 	echo '<tr><td>';
 
 		echo __('Path for pictures in CMS pages').':<br>';
+		//echo 'media/cms<br>';
 		echo __('To point the main humogen folder, use ../../../foldername<br>
 To point to a folder outside (and parallel to) the humogen folder, use ../../../../foldername');
 
 	echo '</td><td>';
+
+		// *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
+		if (substr($cms_images_path,0,1)=='|'){
+			$checked1 = ' checked'; $checked2 = '';
+		}
+		else{
+			$checked1 = ''; $checked2 = ' checked';
+		}
+		//$tree_pict_path=$data2Db->tree_pict_path;
+		if (substr($cms_images_path,0,1)=='|') $cms_images_path=substr($cms_images_path,1);
+
+		echo '<input type="radio" value="yes" name="default_path" '.$checked1.'> '.__('Use default picture path:').' <b>media/cms</b><br>';
+		echo '<input type="radio" value="no" name="default_path" '.$checked2.'> ';
 
 		echo '<input type="text" name="cms_images_path" value="'.$cms_images_path.'" size=25>';
 

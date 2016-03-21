@@ -124,8 +124,12 @@ function date_process($process_name, $multiple_rows=''){
 function valid_date($date) {
 	include_once(CMS_ROOTPATH."include/validate_date_cls.php");
 	$check = New validate_date_cls;
+
+	// German date input: 01.02.2016
+	if(strpos($date,".")!==false) $date = str_replace(".", "-", $date);
+
 	// date entered as 01-04-2013 or 01/04/2013
-	if((strpos($date,"-")!==false OR strpos($date,"/")!==false)AND strpos($date," ")===false) { // skips "2 mar 1741/42" and "mar 1741/42"
+	if((strpos($date,"-")!==false OR strpos($date,"/")!==false) AND strpos($date," ")===false) { // skips "2 mar 1741/42" and "mar 1741/42"
 		if(strpos($date,"-")!==false) { $delimiter = "-"; }
 		else { $delimiter = "/"; }
 		$date_dash = explode($delimiter,$date); 

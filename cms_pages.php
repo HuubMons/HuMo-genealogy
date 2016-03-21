@@ -29,12 +29,12 @@ echo '<div id="mainmenu_centerbox">';
 	echo '</div>';
 
 	echo '<div id="mainmenu_center_alt" style="text-align:left;">';
-		if (isset($_GET['select_page']))
+		if (isset($_GET['select_page']) AND (is_numeric($_GET['select_page'])) )
 		{
-			$select_page=safe_text($_GET['select_page']);
+			$select_page=$_GET['select_page'];
 		}
-		elseif(isset($urlpart[0])){
-			$select_page=safe_text($urlpart[0]);
+		elseif(isset($urlpart[0]) AND (is_numeric($urlpart[0])) ){
+			$select_page=$urlpart[0];
 		}
 		else{
 			$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order ASC LIMIT 0,1");
@@ -43,14 +43,13 @@ echo '<div id="mainmenu_centerbox">';
 		}
 		
 		// *** Show page ***
-		$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='".$select_page."' AND page_status!=''");
+		$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='".safe_text($select_page)."' AND page_status!=''");
 		$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
 		echo $cms_pagesDb->page_text;
 
 		// *** Raise page counter ***
 		// Only count page once every session
 		$session_counter[]='';
-		//@$itemteller=$cms_pagesDb->page_counter;
 		$visited=0;
 		if (isset($_SESSION["opslag_sessieteller"])) $session_counter=$_SESSION["opslag_sessieteller"];
 		for ($i=0; $i<=count($session_counter)-1; $i++)

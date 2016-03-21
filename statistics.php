@@ -798,9 +798,9 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo '<tr class=table_headline>';
 		$col_width = ((round(100/$maxcols))-6)."%";
 		for($x=1; $x<$maxcols;$x++) {
-			echo '<th width="'.$col_width.'">'.__('Name').'</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">'.__('Total').'</th>';  
+			echo '<th width="'.$col_width.'">'.__('Surname').'</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">'.__('Total').'</th>';  
 		}
-		echo '<th width="'.$col_width.'">'.__('Name').'</th><th style="text-align:center;font-size:90%;width:6%">'.__('Total').'</th>';
+		echo '<th width="'.$col_width.'">'.__('Surname').'</th><th style="text-align:center;font-size:90%;width:6%">'.__('Total').'</th>';
 		echo '</tr>';
 
 		$baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
@@ -838,7 +838,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 
 			// men
 			$personqry="SELECT pers_firstname FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='M' AND pers_firstname NOT LIKE ''";  
-				
+
 			$person=$dbh->query($personqry);
 			while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 				$fstname_arr = explode(" ",$personDb->pers_firstname);

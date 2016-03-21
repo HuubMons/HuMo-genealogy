@@ -182,8 +182,8 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 				}
 			}
 
-			// *** Find all existing HuMo-gen files, skip humo-gen_update.zip, humo-gen_update folder and ip_files folder. ***
-			listFolderFiles('..',array('humo-gen_update.zip','humo-gen_update','ip_files'),'existing_files'); 
+			// *** Find all existing HuMo-gen files, skip humo-gen_update.zip, humo-gen_update folder, ip_files and media folders. ***
+			listFolderFiles('..',array('humo-gen_update.zip','humo-gen_update','ip_files','media'),'existing_files');
 
 			// *** Find all update HuMo-gen files, a__ is just some random text (skip items)... ***
 			listFolderFiles('./update/humo-gen_update',array('a__','a__'),'update_files');
@@ -239,8 +239,12 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 						$create_dir='../'.substr($update_dir[$i].'/'.$update_files[$i],25);
 						echo $create_dir;
 						if ($_GET['step']=='3'){
-							if (mkdir($create_dir)){
-								echo ' '.__('Directory created.');
+							//if (mkdir($create_dir)){
+							// *** Media folders could allready exist, so skip them ***
+							if (!isset($create_dir)){
+								if (mkdir($create_dir)){
+									echo ' '.__('Directory created.');
+								}
 							}
 						}
 						echo '<br>';

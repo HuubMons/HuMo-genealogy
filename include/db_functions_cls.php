@@ -9,8 +9,10 @@
  *		get_user				Check if user exists.
  *		get_tree				Get data from selected family tree.
  *		get_trees				Get data from all family trees.
+ *		check_person			Check if person is valid.
  *		get_person				Get a single person from database.
  *		get_person_with_id		Get a single person from database using id number.
+ *		check_family			Check if family is valid.
  *		get_family				Get a single family from database.
  *		get_event				Get a single event from database.
  *		get_events_kind			Get multiple events of one event_kind from database. Example:
@@ -84,6 +86,11 @@ function __construct($tree_prefix='') {
 		$sql = "SELECT * FROM humo_persons
 			WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber";
 		$this->query['get_person'] = $dbh->prepare( $sql );
+
+		$sql = "SELECT pers_id FROM humo_persons
+			WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber";
+		$this->query['check_person'] = $dbh->prepare( $sql );
+
 		$sql = "SELECT pers_famc, pers_fams FROM humo_persons
 			WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber";
 		$this->query['get_person_fams'] = $dbh->prepare( $sql );
@@ -92,9 +99,14 @@ function __construct($tree_prefix='') {
 		$this->query['get_person_with_id'] = $dbh->prepare( $sql );
 
 		// *** Family queries ***
+		$sql = "SELECT fam_id FROM humo_families
+			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
+		$this->query['check_family'] = $dbh->prepare( $sql );
+
 		$sql = "SELECT * FROM humo_families
 			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
 		$this->query['get_family'] = $dbh->prepare( $sql );
+
 		$sql = "SELECT fam_man, fam_woman FROM humo_families
 			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
 		$this->query['get_family_man_woman'] = $dbh->prepare( $sql );
@@ -264,6 +276,30 @@ function count_persons($tree_prefix,$pers_gedcomnumber){
 }
 */
 
+/*--------------------[check person]------------------------------
+ * FUNCTION	: Check for valid person in database.
+ * QUERY 1	: SELECT pers_id FROM humo_persons
+ *				WHERE pers_tree_id=:pers_tree_id AND pers_gedcomnumber=:pers_gedcomnumber
+ * RETURNS	: Check for valid person.
+ *----------------------------------------------------------------
+ */
+function check_person($pers_gedcomnumber){
+	if ($pers_gedcomnumber!=''){
+		try {
+			$this->query['check_person']->bindValue(':pers_tree_id', $this->tree_id, PDO::PARAM_INT);
+			$this->query['check_person']->bindValue(':pers_gedcomnumber', $pers_gedcomnumber, PDO::PARAM_STR);
+			$this->query['check_person']->execute();
+			$qryDb=$this->query['check_person']->fetch(PDO::FETCH_OBJ);
+		}catch (PDOException $e) {
+			echo $e->getMessage() . "<br/>";
+		}
+		if (!isset($qryDb->pers_id)){
+			echo '<b>'.__('Something went wrong, there is no valid person id.').'</b>';
+			exit();
+		}
+	}
+}
+
 /*--------------------[get person]--------------------------------
  * FUNCTION	: Get a single person from database.
  * QUERY 1	: SELECT * FROM humo_persons
@@ -310,6 +346,30 @@ function get_person_with_id($pers_id){
 		echo $e->getMessage() . "<br/>";
 	}
 	return $qryDb;
+}
+
+/*--------------------[check family]------------------------------
+ * FUNCTION	: Check for valid family in database.
+ * QUERY 1	: SELECT fam_id FROM humo_families
+ *				WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber
+ * RETURNS	: Check for valid family.
+ *----------------------------------------------------------------
+ */
+function check_family($fam_gedcomnumber){
+	if ($fam_gedcomnumber!=''){
+		try {
+			$this->query['check_family']->bindValue(':fam_tree_id', $this->tree_id, PDO::PARAM_INT);
+			$this->query['check_family']->bindValue(':fam_gedcomnumber', $fam_gedcomnumber, PDO::PARAM_STR);
+			$this->query['check_family']->execute();
+			$qryDb=$this->query['check_family']->fetch(PDO::FETCH_OBJ);
+		}catch (PDOException $e) {
+			echo $e->getMessage() . "<br/>";
+		}
+		if (!isset($qryDb->fam_id)){
+			echo '<b>'.__('Something went wrong, there is no valid family id.').'</b>';
+			exit();
+		}
+	}
 }
 
 /*--------------------[get family]--------------------------------

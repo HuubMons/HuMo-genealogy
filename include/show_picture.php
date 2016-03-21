@@ -13,7 +13,7 @@ function show_media($event_connect_kind,$event_connect_id){
 	// *** Pictures/ media ***
 	if ($user['group_pictures']=='j' AND $picture_presentation!='hide'){
 		//$tree_pict_path=CMS_ROOTPATH.$dataDb->tree_pict_path;
-		$tree_pict_path=$dataDb->tree_pict_path;
+		$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 		// in joomla relative path is relative to joomla main folder, NOT HuMo-gen main folder. Therefore use the path entered as-is, without ROOTPATH.
 
 		// *** Standard connected media by person and family ***
@@ -230,7 +230,7 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 				}
 			}
 		}
-	}	
+	}
 	
 	$picture["path"]=$picture_path; // *** Standard picture path. Will be overwritten if picture is removed ***
 	$picture["picture"]=$picture_org;

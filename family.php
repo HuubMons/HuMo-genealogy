@@ -90,7 +90,7 @@ function topline(){
 			$text.= 'onmouseover="mopen(event,\'help_menu\',0,0)"';
 			$text.= 'onmouseout="mclosetime()">';
 			//$text.= '<b>'.__('Settings').'</b>';
-			$text.= '<img src="images\settings.png" alt="'.__('Settings').'">';
+			$text.= '<img src="images/settings.png" alt="'.__('Settings').'">';
 			$text.= '</a> ';
 
 			//$text='<div style="z-index:40; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -237,15 +237,19 @@ function topline(){
 
 $family_nr=1;  // *** process multiple families ***
 
-$family_id=1; // *** standard: show first family ***
+$family_id='F1'; // *** standard: show first family ***
 if (isset($urlpart[1])){ $family_id=$urlpart[1]; }
 if (isset($_GET["id"])){ $family_id=$_GET["id"]; }
 if (isset($_POST["id"])){ $family_id=$_POST["id"]; }
+// *** Check if family gedcomnumber is valid ***
+$db_functions->check_family($family_id);
 
 $main_person=''; // *** Mainperson of a family ***
 if (isset($urlpart[2])){ $main_person=$urlpart[2]; }
 if (isset($_GET["main_person"])){ $main_person=$_GET["main_person"]; }
 if (isset($_POST["main_person"])){ $main_person=$_POST["main_person"]; }
+// *** Check if person gedcomnumber is valid ***
+$db_functions->check_person($main_person);
 
 // *** A favorite ID is used ***
 if (isset($_POST["favorite_id"])){
@@ -2161,7 +2165,7 @@ if($screen_mode=='') {
 
 
 		// *** User is allowed to add a note to a person in the family tree ***
-		if ($user['group_user_notes']=='y'){
+		if ($user['group_user_notes']=='y' AND is_numeric($_SESSION['user_id'])){
 			// *** Find user that adds a note ***
 			$usersql='SELECT * FROM humo_users WHERE user_id="'.$_SESSION['user_id'].'"';
 			$user_note=$dbh->query($usersql);

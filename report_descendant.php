@@ -678,7 +678,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 					if (!$man_privacy AND $user['group_pictures']=='j'){
 						//  *** Path can be changed per family tree ***
 						global $dataDb;
-						$tree_pict_path=$dataDb->tree_pict_path;
+						$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 						$picture_qry=$db_functions->get_events_connect('person',$man->pers_gedcomnumber,'picture');
 						// *** Only show 1st picture ***
 						if (isset($picture_qry[0])){

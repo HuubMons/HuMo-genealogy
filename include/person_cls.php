@@ -234,8 +234,10 @@ function person_name($personDb){
 			// *** Firstname only ***
 			$name_array["firstname"]=$pers_firstname;
 
-			// *** Firstname, prefix and lastname ***
+			// *** Firstname, patronym, prefix and lastname ***
 			$name_array["name"]=$pers_firstname." ";
+			// *** feb 2016: added patronym ***
+			if ($personDb->pers_patronym) $name_array["name"].=$personDb->pers_patronym." ";
 			$name_array["name"].=str_replace("_", " ", $personDb->pers_prefix);
 			$name_array["name"].=$personDb->pers_lastname;
 
@@ -247,7 +249,7 @@ function person_name($personDb){
 			// *** $name_array["standard_name"] ***
 			// *** Example: Predikaat Hubertus [Huub] van Mons, Title, 2nd title ***
 			$name_array["standard_name"]=$nobility.$title_before.$pers_firstname." ";
-			if ($personDb->pers_patronym){ $name_array["standard_name"].=" ".$personDb->pers_patronym." "; }
+			if ($personDb->pers_patronym) $name_array["standard_name"].=" ".$personDb->pers_patronym." ";
 			$name_array["standard_name"].=$title_between;
 			$name_array["standard_name"].=str_replace("_", " ", $personDb->pers_prefix);
 			$name_array["standard_name"].=$personDb->pers_lastname;
@@ -292,7 +294,7 @@ function person_name($personDb){
 				$name_array["short_firstname"] = $personDb->pers_lastname." ".$personDb->pers_firstname;
 				$name_array["standard_name"] = $personDb->pers_lastname." ".$personDb->pers_firstname;
 				$name_array["index_name_extended"] = $personDb->pers_lastname." ".$personDb->pers_firstname;
-			}			
+			}
 
 			// *** Is search is done for profession, show profession **
 			if ($selection['pers_profession']){
@@ -639,7 +641,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					if (!$privacy AND $user['group_pictures']=='j'){
 						//  *** Path can be changed per family tree ***
 						global $dataDb;
-						$tree_pict_path=$dataDb->tree_pict_path;
+						$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 						$picture_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'picture');
 						// *** Only show 1st picture ***
 						if (isset($picture_qry[0])){
@@ -766,7 +768,7 @@ function name_extended($person_kind){
 			//
 		}
 		else{
-			if ($personDb->pers_callname){$standard_name.= ', '.__('Nickname').': '.$personDb->pers_callname;}
+			if ($personDb->pers_callname){ $standard_name.= ', '.__('Nickname').': '.$personDb->pers_callname; }
 		}
 
 		// *** No links if gen_protection is enabled ***
@@ -1226,15 +1228,14 @@ function person_data($person_kind, $id){
 		// *** Own code ***
 		if ($user['group_own_code']=='j' AND $personDb->pers_own_code){
 			if($temp) { $templ_person[$temp].=", "; }
-			//$templ_person["own_code"]='('.ucfirst($personDb->pers_own_code).')';
 			$templ_person["own_code"]=ucfirst($personDb->pers_own_code);
 			$temp="own_code";
 
 			if (!$process_text OR $family_expanded==true) $text='<b>'.__('Own code').':</b> ';
 				else $text=', <b>'.lcfirst(__('Own code')).':</b> ';
 
-			//	if ($process_text) $process_text.=', ';
-			//$process_text.='<span class="pers_own_code">'.$templ_person["own_code"].'</span>';
+			if ($process_text AND $family_expanded==true){ $text='<br>'.$text; }
+
 			$process_text.='<span class="pers_own_code">'.$text.$templ_person["own_code"].'</span>';
 		}
 

@@ -132,13 +132,15 @@ function show_person($gedcomnumber, $gedcom_date=false, $show_link=true){
 	if ($gedcomnumber){
 		$personDb = $db_functions->get_person($gedcomnumber);
 		if ($show_link==true){
-			//$text='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;tree='.$tree_prefix.
 			$text='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=person&amp;tree='.$tree_prefix.
-				'&amp;person='.$personDb->pers_gedcomnumber.'">'.$personDb->pers_firstname.' '.
-				strtolower(str_replace("_"," ",$personDb->pers_prefix)).$personDb->pers_lastname.'</a>'."\n";
+				'&amp;person='.$personDb->pers_gedcomnumber.'">'.$personDb->pers_firstname.' ';
+			if ($personDb->pers_patronym) $text.=$personDb->pers_patronym.' ';
+			$text.=strtolower(str_replace("_"," ",$personDb->pers_prefix)).$personDb->pers_lastname.'</a>'."\n";
 		}
 		else{
-			$text=$personDb->pers_firstname.' '.strtolower(str_replace("_"," ",$personDb->pers_prefix)).$personDb->pers_lastname."\n";
+			$text=$personDb->pers_firstname.' ';
+			if ($personDb->pers_patronym) $text.=$personDb->pers_patronym.' ';
+			$text.=strtolower(str_replace("_"," ",$personDb->pers_prefix)).$personDb->pers_lastname."\n";
 		}
 	}
 	else { $text=__('N.N.'); }
@@ -461,7 +463,7 @@ if (isset($tree_prefix)){
 				//echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo __('Examples of date entries, using English month abbreviations: jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec or month numbers:').'<br>';
-					echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, between 1986 and 1987').', 13 oct 1100 BC.</b><br>';
+					echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, between 1986 and 1987').', 13 oct 1100 BC.</b><br>';
 					echo __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#').'<br>';
 
 					echo '<img src="../images/search.png" border="0"> '.__('= click to open selection popup screen.').'<br>';
@@ -546,7 +548,7 @@ if (isset($pers_gedcomnumber)){
 
 					// *** Example of family screen in popup ***
 					if ($person)
-						echo " <a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a>';
+						echo " <a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Preview').' ***</b></a>';
 
 				echo '</ul>';
 			echo '</div>';
@@ -997,7 +999,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<td>'.$hide_show_all.' <input type="Submit" name="person_remove" value="'.__('Delete person').'"></td>';
 
 			// *** Example of family screen in popup ***
-			//echo '<td style="border-right: none">'."<a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Example').' ***</b></a></td>';
+			//echo '<td style="border-right: none">'."<a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Preview').' ***</b></a></td>';
 			echo '<td style="border-right: none"></td>';
 		}
 		else{
@@ -2750,7 +2752,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			// *** Source example in IFRAME ***
 			if (!isset($_POST['add_source'])){
-				echo '<p>'.__('Example').'<br>';
+				echo '<p>'.__('Preview').'<br>';
 				echo '<iframe src ="'.$sourcestring.'database='.$tree_prefix.'&amp;id='.$sourceDb->source_gedcomnr.'" class="iframe">';
 //TRANSLATE
 				echo '  <p>Your browser does not support iframes.</p>';
@@ -2960,7 +2962,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Repository example in IFRAME ***
 			if (!isset($_POST['add_repo'])){
 //TO DO: show repo in example frame.
-				//echo '<p>'.__('Example').'<br>';
+				//echo '<p>'.__('Preview').'<br>';
 				//echo '<iframe src ="'.$sourcestring.'database='.$tree_prefix.'&amp;id='.$repoDb->repo_gedcomnr.'" class="iframe">';
 //TRANSLATE
 				//echo '  <p>Your browser does not support iframes.</p>';
@@ -3218,7 +3220,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			// *** Example in IFRAME ***
 			if (!isset($_POST['add_address'])){
-				echo '<p>'.__('Example').'<br>';
+				echo '<p>'.__('Preview').'<br>';
 				echo '<iframe src ="'.$addresstring.'database='.$tree_prefix.'&gedcomnumber='.$addressDb->address_gedcomnr.'" class="iframe">';
 				echo '  <p>Your browser does not support iframes.</p>';
 				echo '</iframe>';

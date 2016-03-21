@@ -397,7 +397,7 @@ elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timelin
 	foreach($str AS $value) {
 		$str2 = explode("!",$value);   //  $value = nl!europa
 		$val_arr[$str2[0]] = $str2[1];   //  $val_arr[nl]='europa'
-	}	
+	}
 	if(isset($val_arr[$selected_language])  AND is_file(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$val_arr[$selected_language].".txt")) {  $tml= $val_arr[$selected_language]; }
 }
 $default=false; if($tml==$filenames[0][1]) $default=true;

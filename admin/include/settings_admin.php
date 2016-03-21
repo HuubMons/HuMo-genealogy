@@ -21,6 +21,26 @@ if (isset($_POST['save_option'])){
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["homepage"])."' WHERE setting_variable='homepage'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["homepage_description"])."' WHERE setting_variable='homepage_description'");
 
+	// *** Slideshow ***
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["slideshow_show"])."'
+		WHERE setting_variable='slideshow_show'");
+	$result = $dbh->query("UPDATE humo_settings
+		SET setting_value='".safe_text($_POST["slideshow_slide_01"]).'|'.safe_text($_POST["slideshow_text_01"])."'
+		WHERE setting_variable='slideshow_01'");
+	$result = $dbh->query("UPDATE humo_settings
+		SET setting_value='".safe_text($_POST["slideshow_slide_02"]).'|'.safe_text($_POST["slideshow_text_02"])."'
+		WHERE setting_variable='slideshow_02'");
+	$result = $dbh->query("UPDATE humo_settings
+		SET setting_value='".safe_text($_POST["slideshow_slide_03"]).'|'.safe_text($_POST["slideshow_text_03"])."'
+		WHERE setting_variable='slideshow_03'");
+	$result = $dbh->query("UPDATE humo_settings
+		SET setting_value='".safe_text($_POST["slideshow_slide_04"]).'|'.safe_text($_POST["slideshow_text_04"])."'
+		WHERE setting_variable='slideshow_04'");
+
+	// *** Today in history ***
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["today_in_history_show"])."'
+		WHERE setting_variable='today_in_history_show'");
+
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["rss_link"])."' WHERE setting_variable='rss_link'");
 
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["searchengine"])."' WHERE setting_variable='searchengine'");
@@ -368,7 +388,7 @@ if($langs) {
 			echo '<option value="'.$langs[$i][1].'"'.$select.'>'.$langs[$i][0].'</option>';
 		}
 	}
-	echo "</select>";	
+	echo "</select>";
 }
 echo '</td></tr>';
 
@@ -387,6 +407,51 @@ echo '<tr><td>'.__('Link for birthdays RSS').'</td><td>';
 
 echo '<input type="text" name="rss_link" value="'.$humo_option["rss_link"].'" size="40"> <span style="white-space:nowrap;">'.__('(link to this site including http://)').'</span><br>';
 echo '<i>'.__('This option can be turned on or off in the user groups.').'</i>';
+
+echo '<tr class="table_header"><th colspan="2">'.__('Slideshow on the homepage').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr><td><br></td><td>'.__('This option shows a slideshow at the homepage. Put the images in the media/slideshow/ folder at the website.<br>Example of image link:').' <b>media/slideshow/slide01.jpg</b><br>';
+echo __('Images size should be about:').' <b>950 x 170 pixels.</b>';
+echo '</td></tr>';
+echo '<tr><td style="white-space:nowrap;">'.__('Show slideshow on the homepage').'?</td>';
+echo '<td><select size="1" name="slideshow_show">';
+	$selected=''; if ($humo_option["slideshow_show"]!='y') $selected=' SELECTED';
+	echo '<option value="y">'.__('Yes').'</option>';
+	echo '<option value="n"'.$selected.'>'.__('No').'</option>';
+	echo '</select>';
+echo '</td></tr>';
+// *** Picture 1 ***
+$slideshow_01=explode('|',$humo_option["slideshow_01"]);
+echo '<tr><td>'.__('Link to image').' 1<br>'.__('Link description').' 1</td>';
+echo '<td><input type="text" name="slideshow_slide_01" value="'.$slideshow_01[0].'" size="40"> media/slideshow/slide01.jpg<br>';
+echo '<input type="text" name="slideshow_text_01" value="'.$slideshow_01[1].'" size="40"></td>';
+echo "</tr>";
+// *** Picture 2 ***
+$slideshow_02=explode('|',$humo_option["slideshow_02"]);
+echo '<tr><td>'.__('Link to image').' 2<br>'.__('Link description').' 2</td>';
+echo '<td><input type="text" name="slideshow_slide_02" value="'.$slideshow_02[0].'" size="40"> media/slideshow/slide02.jpg<br>';
+echo '<input type="text" name="slideshow_text_02" value="'.$slideshow_02[1].'" size="40"></td>';
+echo "</tr>";
+// *** Picture 3 ***
+$slideshow_03=explode('|',$humo_option["slideshow_03"]);
+echo '<tr><td>'.__('Link to image').' 3<br>'.__('Link description').' 3</td>';
+echo '<td><input type="text" name="slideshow_slide_03" value="'.$slideshow_03[0].'" size="40"> media/slideshow/slide03.jpg<br>';
+echo '<input type="text" name="slideshow_text_03" value="'.$slideshow_03[1].'" size="40"></td>';
+echo "</tr>";
+// *** Picture 4 ***
+$slideshow_04=explode('|',$humo_option["slideshow_04"]);
+echo '<tr><td>'.__('Link to image').' 4<br>'.__('Link description').' 4</td>';
+echo '<td><input type="text" name="slideshow_slide_04" value="'.$slideshow_04[0].'" size="40"> media/slideshow/slide04.jpg<br>';
+echo '<input type="text" name="slideshow_text_04" value="'.$slideshow_04[1].'" size="40"></td>';
+echo "</tr>";
+
+echo '<tr class="table_header"><th colspan="2">'.__('"Today in history" on the homepage').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+echo '<tr><td style="white-space:nowrap;">'.__('Show "Today in history" list on the homepage').'?</td>';
+echo '<td><select size="1" name="today_in_history_show">';
+	$selected=''; if ($humo_option["today_in_history_show"]!='y') $selected=' SELECTED';
+	echo '<option value="y">'.__('Yes').'</option>';
+	echo '<option value="n"'.$selected.'>'.__('No').'</option>';
+	echo '</select>';
+echo '</td></tr>';
 
 // *** FAMILY ***
 echo '<tr class="table_header"><th colspan="2">'.__('Settings family page').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';

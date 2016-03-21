@@ -2,31 +2,15 @@
 include_once("header.php");
 include_once (CMS_ROOTPATH."menu.php");
 
-/*
-if (!$user["user_name"]){
-	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
-	session_unset();
-	session_destroy();
-	die();
+if (isset($_SESSION['user_id']) AND is_numeric($_SESSION['user_id'])){
+	@$qry = "SELECT * FROM humo_users LEFT JOIN humo_groups
+		ON humo_users.user_group_id=humo_groups.group_id
+		WHERE humo_users.user_id='".$_SESSION['user_id']."'";
+	@$result = $dbh->query($qry);
+	if($result->rowCount() > 0) {
+		@$userDb=$result->fetch(PDO::FETCH_OBJ);
+	}
 }
-*/
-
-@$qry = "SELECT * FROM humo_users LEFT JOIN humo_groups
-	ON humo_users.user_group_id=humo_groups.group_id
-	WHERE humo_users.user_id='".$_SESSION['user_id']."'";
-@$result = $dbh->query($qry);
-if($result->rowCount() > 0) {
-	@$userDb=$result->fetch(PDO::FETCH_OBJ);
-	//echo $userDb->user_name;
-}
-/*
-else{
-	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
-	session_unset();
-	session_destroy();
-	die();
-}
-*/
 
 if (isset($_POST['send_mail'])){
 	$error='';

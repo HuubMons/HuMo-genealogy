@@ -20,7 +20,7 @@ if ($user["group_birthday_list"]!='j'){
 }
 
 // *** Month to show ***
-if (isset($_GET['month'])){
+if (isset($_GET['month']) AND strlen($_GET['month'])=='3' ){
 	$month = $_GET['month'];
 }
 else{
@@ -78,12 +78,13 @@ $sql = "SELECT *,
 	abs(substring( pers_birth_date,1,2 )) as birth_day,
 	substring( pers_birth_date,-4 ) as birth_year
 	FROM humo_persons
-	WHERE pers_tree_id='".$tree_id."' AND (substring( pers_birth_date,  4,3) = :month
-	OR substring( pers_birth_date,  3,3) = :month)
+	WHERE pers_tree_id = :tree_id AND (substring( pers_birth_date, 4,3) = :month
+	OR substring( pers_birth_date, 3,3) = :month)
 	order by birth_day, birth_year ";
 
 try {
 	$qry = $dbh->prepare( $sql );
+	$qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
 	$qry->bindValue(':month', $month, PDO::PARAM_STR);
 	$qry->execute();
 }catch (PDOException $e) {

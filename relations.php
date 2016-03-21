@@ -3019,6 +3019,7 @@ if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["ca
 
 $person=''; if (isset($_POST["person"])){ $person=$_POST['person']; }
 $person2=''; if (isset($_POST["person2"])){ $person2=$_POST['person2']; }
+
 if (isset($_POST["search1"])){ $_SESSION["search1"]=1; }
 if (isset($_POST["search2"])){ $_SESSION["search2"]=1; }
 // *** Link from person pop-up menu ***

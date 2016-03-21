@@ -1069,7 +1069,7 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 	// *** get path of pictures folder 
 	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix."'");
 	$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
-	$tree_pict_path=$dataDb->tree_pict_path;
+	$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 	$dir=$path_prefix.$tree_pict_path;
 	
 	// check if this is a category file (file with existing category prefix) and if a subfolder for this category exists, place it there.

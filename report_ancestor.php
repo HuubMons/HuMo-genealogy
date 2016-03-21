@@ -69,9 +69,13 @@ if($screen_mode!='PDF' AND $screen_mode!='ASPDF') {  //we can't have a menu in p
 	$db_functions->set_tree_id($tree_id);
 }
 if($hourglass===false) {
-	$family_id=1; // *** Default value, normally not used... ***
+	// *** CHECK: $family_id is actually a person_id... ***
+	$family_id='I1'; // *** Default value, normally not used... ***
 	if (isset($_GET["id"])){ $family_id=$_GET["id"]; }
 	if (isset($_POST["id"])){ $family_id=$_POST["id"]; }
+
+	// *** Check if person gedcomnumber is valid ***
+	$db_functions->check_person($family_id);
 }
 if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $screen_mode!='ASPDF'){
 	// *** Source presentation selected by user (title/ footnote or hide sources) ***
@@ -807,7 +811,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 				if (!$pers_privacy AND $user['group_pictures']=='j'){
 					//  *** Path can be changed per family tree ***
 					global $dataDb;
-					$tree_pict_path=$dataDb->tree_pict_path;
+					$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 					$picture_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'picture');
 					// *** Only show 1st picture ***
 					if (isset($picture_qry[0])){

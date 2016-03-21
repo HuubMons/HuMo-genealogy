@@ -108,12 +108,12 @@ echo '<table class="humo" width="100%">';
 
 	// *** HuMo-gen version ***
 	if (isset($humo_option["version"]))
-		echo '<tr><td class="line_item">'.__('HuMo-gen Version').'</td><td class="line_ok">'.__('HuMo-gen Version').': '.$humo_option["version"].'</td></tr>';
+		echo '<tr><td class="line_item">'.__('HuMo-gen Version').'</td><td class="line_ok">'.$humo_option["version"].'</td></tr>';
 
 	// *** PHP Version ***
 	$version = explode('.', phpversion() );
 	if ($version[0] > 4){
-		echo '<tr><td class="line_item">'.__('PHP Version').'</td><td class="line_ok">'.__('PHP Version').': '.phpversion().'</td></tr>';
+		echo '<tr><td class="line_item">'.__('PHP Version').'</td><td class="line_ok">'.phpversion().'</td></tr>';
 	}
 	else{
 		echo '<tr><td class="line_item">'.__('PHP Version').'</td><td class="line_nok">'.phpversion().' '.__('It is recommended to update PHP!').'</td></tr>';
@@ -127,7 +127,7 @@ echo '<table class="humo" width="100%">';
 		$mysqlversion = $dbh->getAttribute(PDO::ATTR_SERVER_VERSION);  
 		$version = explode('.',$mysqlversion);
 		if ($version[0] > 4){
-			echo '<tr><td class="line_item">'.__('MySQL Version').'</td><td class="line_ok">'.__('MySQL Version').': '.$mysqlversion.'</td></tr>';
+			echo '<tr><td class="line_item">'.__('MySQL Version').'</td><td class="line_ok">'.$mysqlversion.'</td></tr>';
 		}
 		else{
 			echo '<tr><td class="line_item">'.__('MySQL Version').'</td><td class="line_nok">'.$mysqlversion.' '.__('It is recommended to update MySQL!').'</td></tr>';
@@ -383,34 +383,9 @@ The file .htpasswd will look something like this:<br>');
 	// *** Family trees ***
 	@$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
 	if ($datasql){
-
-/*
-		// *** Show size of statistics table ***
-		$size = $dbh->query('SHOW TABLE STATUS WHERE Name="humo_stat_date"');
-		$sizeDb=$size->fetch(PDO::FETCH_OBJ);
-		$size=$sizeDb->Data_length;
-		$bytes = array( ' kB', ' MB', ' GB', ' TB' );
-		$size = $size / 1024;
-		foreach ($bytes as $val) {
-			if (1024 <= $size) {
-				$size = $size / 1024;
-				continue;
-			}
-			break;
-		}
-		$size= round( $size, 1 ) . $val;
-
-		echo '<tr><td class="line_item">'.__('Size of statistics table').'</td><td class="line_ok">'.$size;
-			echo ' <a href="index.php?page=statistics">'.__('If needed remove old statistics.').'</a>';
-		echo '</td></tr>';
-*/
-
-		//echo '<tr><td class="line_item">'.__('Trees table').'</td><td class="line_ok">OK</td></tr>';
-
 		$tree_counter=0;
-		//echo '<tr><td colspan="2"><br></td></tr>'; // *** Show empty line ***
-		//echo '<tr class="table_header"><th colspan="2">'.__('Family trees').'</th></tr>';
-		echo '<tr class="table_header"><th colspan="2"><a href="index.php?page=tree">'.__('Family trees').'</a></th></tr>';
+		echo '<tr class="table_header"><th colspan="2">'.__('Family trees').'</th></tr>';
+		//echo '<tr class="table_header"><th colspan="2"><a href="index.php?page=tree">'.__('Family trees').'</a></th></tr>';
 
 		while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			// *** Skip empty lines (didn't work in query...) ***
@@ -425,7 +400,9 @@ The file .htpasswd will look something like this:<br>');
 					echo '<td class="line_nok">';
 				}
 				$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
-				echo $dirmark1.$treetext['name'];
+				//echo $dirmark1.$treetext['name'];
+				echo $dirmark1.'<a href="index.php?page=tree">'.$treetext['name'].'</a>';
+
 				if ($dataDb->tree_persons>0){
 					print $dirmark1.' <font size=-1>('.$dataDb->tree_persons.' '.__('persons').', '.$dataDb->tree_families.' '.__('families').')</font>';
 				}
@@ -433,7 +410,6 @@ The file .htpasswd will look something like this:<br>');
 					echo ' <b>'.__('This tree does not yet contain any data or has not been imported properly!').'</b><br>';
 						// *** Read gedcom file ***
 						echo ' <form method="post" action="'.$path_tmp.'" style="display : inline;">';
-						//echo '<input type="hidden" name="page" value="gedcom">';
 						echo '<input type="hidden" name="page" value="tree">';
 						echo '<input type="hidden" name="tree_prefix" value="'.$dataDb->tree_prefix.'">';
 						echo '<input type="Submit" name="step1" value="'.__('Import Gedcom file').'">';
@@ -459,20 +435,4 @@ The file .htpasswd will look something like this:<br>');
 
 echo '</table>';
 echo '</div>';
-
-// *** Show result messages after installing settings of db_login.php ***
-//echo '<p>'.$result_message.'</p>';
-
-// *** Only show if database AND tables are checked ***
-/*
-if ($install_status==true){
-	echo '<p>'.__('TIPS:<br>
-- Administrate one or more trees: go to "Family Trees"<br>
-- Import Gedcom file: in menu under "Family trees"
-<p>Not everything can be changed here:<br>
-- The layout of HuMo-gen (style sheet) can be changed in: gedcom.css<br>
-- Prefixes for family names can be changed in: prefixes.php');
-	echo '</p>';
-}
-*/
 ?>

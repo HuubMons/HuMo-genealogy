@@ -88,7 +88,8 @@ if (isset($menu_admin) AND $menu_admin=='log_blacklist'){
 		$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist'");
 		while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			$setting_value=$_POST[$dataDb->setting_id.'own_code']."|".$_POST[$dataDb->setting_id.'link_text'];
-			$sql="UPDATE humo_settings SET setting_value='".safe_text($setting_value)."' WHERE setting_id=".safe_text($_POST[$dataDb->setting_id.'id']);
+			$sql="UPDATE humo_settings SET setting_value='".safe_text($setting_value)."'
+				WHERE setting_id=".safe_text($_POST[$dataDb->setting_id.'id']);
 			$result=$dbh->query($sql);
 		}
 	}

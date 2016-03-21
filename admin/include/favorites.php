@@ -2,7 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('Links').'</h1>';
+echo '<h1 align=center>'.__('Homepage favorites').'</h1>';
 
 echo __('"Own code" is the code that has to be entered in your genealogy program under "own code or REFN"
 <p>Do the following:<br>
@@ -76,7 +76,7 @@ else {
 echo '<input type="hidden" name="page" value="'.$page.'">';
 
 echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large">';
-	print '<th class="table_header">'.__('EXTRA LINKS IN MAIN MENU').'</th></tr>';
+	print '<th class="table_header">'.__('Show list of favorites in homepage').'</th></tr>';
 echo '</table><br>';
 
 echo '<table class="humo standard" border="1">';

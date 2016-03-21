@@ -226,10 +226,26 @@ function tree_data(){
 		echo '<input type="text" name="tree_owner" value="'.$data2Db->tree_owner.'" size="40"></td></tr>';
 		echo '<tr><td>'.__('Path to the pictures').'</td>';
 			$data2Db->tree_pict_path.'</textarea></td></tr>';
-		echo '<td>'.__('example: ../pictures/');
-		echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
-		echo '<br><textarea rows="1" cols="20" name="tree_pict_path" style="height: 20px; width:500px">'.
-			$data2Db->tree_pict_path.'</textarea></td></tr>';
+		echo '<td>';
+			//echo '<textarea rows="1" cols="20" name="tree_pict_path" style="height: 20px; width:500px">'.
+			//	$data2Db->tree_pict_path.'</textarea></td></tr>';
+
+			// *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
+			if (substr($data2Db->tree_pict_path,0,1)=='|'){
+				$checked1 = ' checked'; $checked2 = '';
+			}
+			else{
+				$checked1 = ''; $checked2 = ' checked';
+			}
+			$tree_pict_path=$data2Db->tree_pict_path;
+			if (substr($data2Db->tree_pict_path,0,1)=='|') $tree_pict_path=substr($tree_pict_path,1);
+
+			echo '<input type="radio" value="yes" name="default_path" '.$checked1.'> '.__('Use default picture path:').' <b>media/</b><br>';
+			echo '<input type="radio" value="no" name="default_path" '.$checked2.'> ';
+
+			echo '<input type="text" name="tree_pict_path" value="'.$tree_pict_path.'" size="40"> '.__('example: ../pictures/').'<br>';
+			echo '<br><a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a><br>';
+		echo '</td></tr>';
 
 		// *** Family tree privacy ***
 		echo '<tr><td>'.__('Tree privacy').':</td>';

@@ -659,7 +659,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 					echo '<a href="'.$path_tmp.'page=admin"';
 					echo ' onmouseover="mopen(event,\'m1x\',\'?\',\'?\')"';
-					echo ' onmouseout="mclosetime()"'.$select_top.'><img src="..\images\menu_mobile.png" width="18"></a>';
+					echo ' onmouseout="mclosetime()"'.$select_top.'><img src="../images/menu_mobile.png" width="18"></a>';
 
 					echo '<div id="m1x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<ul class="humo_menu_item2">';
@@ -724,7 +724,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				if ($page=='install'){ $select_top=' id="current_top"'; }
 				if ($page=='settings'){ $select_top=' id="current_top"'; }
 				if ($page=='cms_pages'){ $select_top=' id="current_top"'; }
-				if ($page=='links'){ $select_top=' id="current_top"'; }
+				if ($page=='favorites'){ $select_top=' id="current_top"'; }
 				if ($page=='language_editor'){ $select_top=' id="current_top"'; }
 				if ($page=='prefix_editor'){ $select_top=' id="current_top"'; }
 				if ($page=='google_maps'){ $select_top=' id="current_top"'; }
@@ -745,8 +745,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 						$menu_item=''; if ($page=='cms_pages'){ $menu_item=' id="current"'; }
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cms_pages">'.__('CMS Own pages').'</a></li>';
 
-						$menu_item=''; if ($page=='links'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=links">'.__('Extra links').'</a></li>';
+						$menu_item=''; if ($page=='favorites'){ $menu_item=' id="current"'; }
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=favorites">'.__('Homepage favorites').'</a></li>';
 
 						// *** Language Editor ***
 						$menu_item=''; if ($page=='language_editor'){ $menu_item=' id="current"'; }
@@ -986,7 +986,7 @@ echo '<div id="content_admin">';
 	elseif ($page=='gedcom'){ include_once ("include/gedcom.php"); }
 	elseif ($page=='settings'){ include_once ("include/settings_admin.php"); }
 	elseif ($page=='thumbs'){ include_once ("include/thumbs.php"); }
-	elseif ($page=='links'){ include_once ("include/links.php"); }
+	elseif ($page=='favorites'){ include_once ("include/favorites.php"); }
 	elseif ($page=='users'){ include_once ("include/users.php"); }
 	elseif ($page=='editor_user_settings'){ $_GET['menu_admin']='users'; include_once ("include/editor_user_settings.php"); }
 

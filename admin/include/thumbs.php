@@ -152,8 +152,16 @@ if ($show_table){
 		if (isset($tree_prefix)){
 			// *** Save new/ changed picture path ***
 			if (isset($_POST['change_tree_data'])){
+				$tree_pict_path=$_POST['tree_pict_path'];
+				if (substr($_POST['tree_pict_path'],0,1)=='|'){
+					if (isset($_POST['default_path']) AND $_POST['default_path']=='no') $tree_pict_path=substr($tree_pict_path,1);
+				}
+				else{
+					if (isset($_POST['default_path']) AND $_POST['default_path']=='yes') $tree_pict_path='|'.$tree_pict_path;
+				}
+
 				$sql="UPDATE humo_trees SET
-				tree_pict_path='".safe_text($_POST['tree_pict_path'])."' WHERE tree_id=".safe_text($_POST['tree_id']);
+				tree_pict_path='".safe_text($tree_pict_path)."' WHERE tree_id=".safe_text($_POST['tree_id']);
 				$result=$dbh->query($sql);
 			}
 
@@ -163,11 +171,26 @@ if ($show_table){
 			echo '<tr><td class="line_item">';
 				echo __('Path to the pictures');
 			echo '</td><td>';
+				// *** Picture path. A | character is used for a default path (the old path will remain in the field) ***
+				if (substr($data2Db->tree_pict_path,0,1)=='|'){
+					$checked1 = ' checked'; $checked2 = '';
+				}
+				else{
+					$checked1 = ''; $checked2 = ' checked';
+				}
+				$tree_pict_path=$data2Db->tree_pict_path;
+				if (substr($data2Db->tree_pict_path,0,1)=='|') $tree_pict_path=substr($tree_pict_path,1);
+
 				echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
 				echo '<input type="hidden" name="page" value="thumbs">';
 				echo '<input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
-				echo '<input type="text" name="tree_pict_path" value="'.$data2Db->tree_pict_path.'" size="40">';
+
+				echo '<input type="radio" value="yes" name="default_path" '.$checked1.'> '.__('Use default picture path:').' <b>media/</b><br>';
+				echo '<input type="radio" value="no" name="default_path" '.$checked2.'> ';
+
+				echo '<input type="text" name="tree_pict_path" value="'.$tree_pict_path.'" size="40">';
+
 				echo ' <input type="Submit" name="change_tree_data" value="'.__('Change').'">';
 				echo ' '.__('example: ../pictures/');
 				echo '</form>';
@@ -175,7 +198,9 @@ if ($show_table){
 
 			// *** Status of picture path ***
 			$path_status='';
-			if ($data2Db->tree_pict_path!='' AND file_exists($prefx.$data2Db->tree_pict_path))
+			$tree_pict_path=$data2Db->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
+			//if ($data2Db->tree_pict_path!='' AND file_exists($prefx.$data2Db->tree_pict_path))
+			if ($tree_pict_path!='' AND file_exists($prefx.$tree_pict_path))
 				$path_status = __('Picture path exists.');
 			else
 				$path_status = '<span class="line_nok"><b>'.__('Picture path doesn\'t exist!').'</b></span>';
@@ -388,7 +413,7 @@ if (isset($_POST['filename'])){
 
 $counter=0;
 if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
-	$pict_path=$data2Db->tree_pict_path;
+	$pict_path=$data2Db->tree_pict_path; if (substr($pict_path,0,1)=='|') $pict_path='media/';
 
 	@set_time_limit(3000);
 	$selected_picture_folder=$prefx.$pict_path;

@@ -3,6 +3,9 @@ include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."menu.php");
 include_once(CMS_ROOTPATH."include/person_cls.php");
 
+// *** Extra safety line ***
+if (!is_numeric($tree_id)) exit;
+
 global $selected_language;
 
 $person_cls = New person_cls;
@@ -31,22 +34,27 @@ if (isset($_POST["search_name"])){
 	//$qry.= " UNION (SELECT * FROM humo3_person ".$query.')';
 	//$qry.= " ORDER BY pers_lastname, pers_firstname";
 
-	$person_qry = "(SELECT * , STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+	$person_qry = "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
+		FROM humo_persons
  		LEFT JOIN humo_events
- 			ON pers_gedcomnumber=event_connect_id AND event_kind='name' AND event_tree_id='".$tree_id."' 
-		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
- 			OR event_event LIKE '%$search_name%')
+ 			ON pers_gedcomnumber=event_connect_id AND pers_tree_id=event_tree_id AND event_kind='name'
+		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($search_name)."%'
+			OR event_event LIKE '%".safe_text($search_name)."%')
 			AND pers_changed_date IS NOT NULL
-			)";
+			AND pers_tree_id='".$tree_id."'
+		GROUP BY pers_gedcomnumber
+		)";
 
 	$person_qry .= " UNION (SELECT * , STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+		FROM humo_persons
  		LEFT JOIN humo_events
- 			ON pers_gedcomnumber=event_connect_id AND event_kind='name' AND event_tree_id='".$tree_id."'
-		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
- 			OR event_event LIKE '%$search_name%')
-			AND pers_changed_date IS NULL)";
+ 			ON pers_gedcomnumber=event_connect_id AND pers_tree_id=event_tree_id AND event_kind='name'
+		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($search_name)."%'
+ 			OR event_event LIKE '%".safe_text($search_name)."%')
+			AND pers_changed_date IS NULL
+			AND pers_tree_id='".$tree_id."'
+		GROUP BY pers_gedcomnumber
+		)";
 
 	$person_qry .= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,100";
 }

@@ -38,7 +38,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// *** Picture list for selecting pictures ***
 	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix."'");
 	$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
-	$tree_pict_path=$dataDb->tree_pict_path;
+	$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 	$dir=$path_prefix.$tree_pict_path;
 	if (file_exists($dir)){
 		$dh  = opendir($dir);

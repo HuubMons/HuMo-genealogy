@@ -77,6 +77,6 @@ function ansihtml($text){
 	$text = str_replace(chr(253),'ý', $text); //ý
 	$text = str_replace(chr(221),'Ý', $text); //Ý
 	$text = str_replace(chr(255),'ÿ', $text); //ÿ
-	return $text;	
+	return $text;
 }
 ?>
