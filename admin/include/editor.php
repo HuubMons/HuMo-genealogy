@@ -844,7 +844,8 @@ if (isset($pers_gedcomnumber)){
 					//echo '<br><a href="index.php?'.$joomlastring.'page=editor&amp;menu_tab=marriage&amp;marriage_nr='.$familyDb->fam_gedcomnumber.'"><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b></a>';
 					echo '<a href="index.php?'.$joomlastring.'page=editor&amp;menu_tab=marriage&amp;marriage_nr='.$familyDb->fam_gedcomnumber.'"><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b></a>';
 
-					if ($i<$fam_count){
+					//if ($i<$fam_count){
+					if ($i<$fam_count-1){
 						echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;person_id='.$person->pers_id.'&amp;fam_down='.$i.'&amp;fam_array='.$person->pers_fams.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="fam_down"></a> ';
 					}
 					else{

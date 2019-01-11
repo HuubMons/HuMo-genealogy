@@ -210,6 +210,14 @@ function person_name($personDb){
 				}
 			}
 		}
+		else {
+			$rufname_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'name');
+			foreach ($rufname_qry as $rufnameDb){
+				if($rufnameDb->event_gedcom == "_RUFN") {
+					$pers_firstname = str_ireplace($rufnameDb->event_event,'<u>'.$rufnameDb->event_event.'</u>',$pers_firstname);
+				}
+			}
+		}
 
 		$privacy_name=''; if ($privacy AND $user['group_filter_name']=='n'){ $privacy_name=__('Name filtered'); }
 
@@ -285,15 +293,16 @@ function person_name($personDb){
 			$name_array["index_name_extended"].=$stillborn;
 			// *** If a special name is found in the results (event table), show it **
 			if (isset($personDb->event_event) AND $personDb->event_event AND $personDb->event_kind=='name'){
-				$name_array["index_name_extended"].=' ('.$personDb->event_event.')';}
+				$name_array["index_name_extended"].=' ('.$personDb->event_event.')';
+			}
 			$name_array["index_name_extended"].=$prefix2;
 			
 			if($humo_option['name_order']=="chinese") {  
 				// for Chinese no commas or spaces
-				$name_array["name"] = $personDb->pers_lastname." ".$personDb->pers_firstname;
-				$name_array["short_firstname"] = $personDb->pers_lastname." ".$personDb->pers_firstname;
-				$name_array["standard_name"] = $personDb->pers_lastname." ".$personDb->pers_firstname;
-				$name_array["index_name_extended"] = $personDb->pers_lastname." ".$personDb->pers_firstname;
+				$name_array["name"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
+				$name_array["short_firstname"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
+				$name_array["standard_name"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
+				$name_array["index_name_extended"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
 			}
 
 			// *** Is search is done for profession, show profession **
@@ -748,6 +757,13 @@ function name_extended($person_kind){
 				$source='';
 				if ($person_kind != 'outline') $source=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber).' ';
 				if ($source) $text_name.=$source;
+
+				$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa";
+				if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
+				   preg_match("/($camps)/i",$personDb->pers_buried_place)!==0 OR strpos(strtolower($personDb->pers_death_place),"holocaust") !==FALSE)  {
+					$text_name .= '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
+				}
+
 			}
 		}
 
@@ -1172,7 +1188,7 @@ function person_data($person_kind, $id){
 				if ($nameDb->event_gedcom=='_HEBN') $text.=__('Hebrew name').': ';
 				if ($nameDb->event_gedcom=='_CENN') $text.=__('Census name').': ';
 				if ($nameDb->event_gedcom=='_MARN') $text.=__('Married name').': ';
-				if ($nameDb->event_gedcom=='_GERN') $text.=__('Nickname').': ';
+				if ($nameDb->event_gedcom=='_GERN') $text.=__('Given name').': ';
 				if ($nameDb->event_gedcom=='_FARN') $text.=__('Farm name').': ';
 				if ($nameDb->event_gedcom=='_BIRN') $text.=__('Birth name').': ';
 				if ($nameDb->event_gedcom=='_INDN') $text.=__('Indian name').': ';
@@ -1182,8 +1198,9 @@ function person_data($person_kind, $id){
 				if ($nameDb->event_gedcom=='_FRKA') $text.=__('Formerly known as').': ';
 				if ($nameDb->event_gedcom=='_RELN') $text.=__('Religious name').': ';
 				if ($nameDb->event_gedcom=='_OTHN') $text.=__('Other name').': ';
+				if ($nameDb->event_gedcom=='_RUFN') { } // don't do anything
 
-				if ($eventnr>1){
+				if ($eventnr>1 AND $nameDb->event_gedcom !='_RUFN'){
 					$templ_person["bknames".$eventnr]=', ';
 					$process_text.=', ';
 					$text=lcfirst($text);
@@ -1204,7 +1221,7 @@ function person_data($person_kind, $id){
 
 				$templ_person["bk_event".$eventnr]=$nameDb->event_event;
 				if($templ_person["bk_event".$eventnr]!='') $temp="bk_event".$eventnr;
-				$process_text.=$nameDb->event_event;
+				if($nameDb->event_gedcom !='_RUFN') $process_text.=$nameDb->event_event;
 
 				$source=show_sources2("person","pers_event_source",$nameDb->event_id);
 				if ($source){

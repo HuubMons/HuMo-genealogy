@@ -241,22 +241,28 @@ if ($install_status==true){
 
 // *** Only show table status if database AND tables are checked ***
 if ($install_status==true){
-
 	// *** Show size of statistics table ***
 	//$size = $dbh->query('SHOW TABLE STATUS WHERE Name="humo_stat_date"');
-	$size = $dbh->query('SHOW TABLE STATUS LIKE "humo_stat_date"');
-	@$sizeDb=$size->fetch(PDO::FETCH_OBJ);
-	$size=$sizeDb->Data_length;
-	$bytes = array( ' kB', ' MB', ' GB', ' TB' );
-	$size = $size / 1024;
-	foreach ($bytes as $val) {
-		if (1024 <= $size) {
+	$sizeqry = $dbh->query('SHOW TABLE STATUS LIKE "humo_stat_date"');
+	//$size='? kB';
+	//if ($sizeqry){
+		//$sizeDb=$sizeqry->fetch();
+		$sizeDb=$sizeqry->fetch(PDO::FETCH_OBJ);
+		$size='0 kB';
+		if ($sizeDb){
+			$size=$sizeDb->Data_length;
+			$bytes = array( ' kB', ' MB', ' GB', ' TB' );
 			$size = $size / 1024;
-			continue;
+			foreach ($bytes as $val) {
+				if (1024 <= $size) {
+					$size = $size / 1024;
+					continue;
+				}
+				break;
+			}
+			$size= round( $size, 1 ) . $val;
 		}
-		break;
-	}
-	$size= round( $size, 1 ) . $val;
+	//}
 
 	echo '<tr><td class="line_item">'.__('Size of statistics table').'</td><td class="line_ok">'.$size;
 		echo ' <a href="index.php?page=statistics">'.__('If needed remove old statistics.').'</a>';

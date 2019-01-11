@@ -68,7 +68,7 @@ if (isset($_GET['down'])){
 
 // *** Show all links ***
 if(CMS_SPECIFIC == "Joomla") {
-	print "<form method='post' action='index.php?option=com_humo-gen&amp;task=admin&amp;page=links'>";
+	print "<form method='post' action='index.php?option=com_humo-gen&amp;task=admin&amp;page=favorites'>";
 }
 else {
 	print "<form method='post' action='".$_SERVER['PHP_SELF']."'>";
@@ -94,10 +94,10 @@ echo '<table class="humo standard" border="1">';
 				echo '<input type="hidden" name="'.$dataDb->setting_id.'id" value="'.$dataDb->setting_id.'">'.__('Link').' '.$teller;
 
 				if ($dataDb->setting_order!='1'){
-					echo ' <a href="index.php?page=links&amp;up=1&amp;link_order='.$dataDb->setting_order.
+					echo ' <a href="index.php?page=favorites&amp;up=1&amp;link_order='.$dataDb->setting_order.
 					'&amp;id='.$dataDb->setting_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="up"></a>'; }
 				if ($dataDb->setting_order!=$count_links){
-					echo ' <a href="index.php?page=links&amp;down=1&amp;link_order='.$dataDb->setting_order.'&amp;id='.
+					echo ' <a href="index.php?page=favorites&amp;down=1&amp;link_order='.$dataDb->setting_order.'&amp;id='.
 					$dataDb->setting_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>'; }
 			echo '</td>';
 			echo '<td><input type="text" name="'.$dataDb->setting_id.'own_code" value="'.$lijst[0].'" size="5"></td>';

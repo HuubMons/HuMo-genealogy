@@ -236,7 +236,7 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		echo '<p><input type="checkbox" name="check_processed"> '.__('Show non-processed items when processing gedcom (can be a long list!')."<br>\n";
 		echo '<input type="checkbox" name="show_gedcomnumbers"> '.__('Show all numbers when processing gedcom (useful when a time-out occurs!)')."<br>\n";
 
-		echo '<input type="checkbox" name="commit_checkbox" checked disabled> Batch processing: <select class="fonts" size="1" name="commit_records" style="width: 200px">';
+		echo '<input type="checkbox" name="commit_checkbox" checked disabled> '.__('Batch processing').': <select class="fonts" size="1" name="commit_records" style="width: 200px">';
 			echo '<option value="1">'.__('1 record (slow processing, but needs less server-memory)').'</option>';
 			$selected=''; if ($humo_option["gedcom_read_commit_records"]=='10'){ $selected=' selected'; }
 			echo '<option value="10"'.$selected.'>10 '.__('records per batch').'</option>';

@@ -220,7 +220,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>').'<br>';
 				$thumb_height=120; // *** Standard thumb height ***
 				if (isset($_POST['pict_height']) AND is_numeric($_POST['pict_height'])){ $thumb_height=$_POST['pict_height']; }
 				echo '<tr><td class="line_item">';
-					echo ucfirst (strtolower(__('CREATE THUMBNAILS')));
+					echo __('Create thumbnails');
 				echo '</td><td>';
 					echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
 					echo '<input type="hidden" name="page" value="thumbs">';
@@ -307,7 +307,9 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 	if(isset($_POST['save_cat'])) {  // the user decided to add a new category and/or save changes to names
 		// save names of existing categories in case some were altered. There is at least always one name (for default category)
 
-		$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix";
+		//$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix";
+		// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+		$qry = "SELECT photocat_prefix, photocat_order FROM humo_photocat GROUP BY photocat_prefix, photocat_order";
 		$result = $dbh->query($qry);  
 		
 		while($resultDb = $result->fetch(PDO::FETCH_OBJ)) {  
@@ -509,7 +511,9 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 		// if category subfolders exist do the same there...
 		$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 		if($temp->rowCount()) {   // there is a category table
-			$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+			//$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+			// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+			$catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
 			if($catg->rowCount()) {
 				while($catDb = $catg->fetch(PDO::FETCH_OBJ)) {   
 					if(is_dir($selected_picture_folder.substr($catDb->photocat_prefix,0,2)))  {    // there is a subfolder for this prefix
@@ -652,7 +656,9 @@ function categories(){
 		echo '<a href="index.php?'.$joomlastring.'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=default'.$add.'">'.__('Default').'</a> ';
 	echo '</td></tr>';
 	
-	$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
+	//$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
+	// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+	$qry = "SELECT photocat_prefix, photocat_order FROM humo_photocat GROUP BY photocat_prefix, photocat_order ORDER BY photocat_order";
 	$cat_result = $dbh->query($qry);
 	$number = 1;  // number on list
 	
@@ -677,14 +683,14 @@ function categories(){
 		// arrows
 		$order_sequence= $dbh->query("SELECT MAX(photocat_order) AS maxorder, MIN(photocat_order) AS minorder FROM humo_photocat");
 		$orderDb = $order_sequence->fetch(PDO::FETCH_ASSOC);
-		$maxorder = $orderDb['maxorder']; 	
+		$maxorder = $orderDb['maxorder'];
 		$minorder = $orderDb['minorder'];
 		if($catDb->photocat_order == $minorder) {  echo '<td style="text-align:right;padding-right:4px">'; }
 		elseif($catDb->photocat_order == $maxorder) {  echo '<td style="text-align:left;padding-left:4px">'; }
 		else { echo '<td>'; }
 		if($catDb->photocat_order != $minorder) {
 			echo '<a href="index.php?'.$joomlastring.'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix='.$catDb->photocat_prefix.'&amp;cat_up='.$catDb->photocat_order.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif"></a>&nbsp;&nbsp;';
-		}		
+		}
 		if($catDb->photocat_order != $maxorder) {
 			echo '<a href="index.php?'.$joomlastring.'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix='.$catDb->photocat_prefix.'&amp;cat_down='.$catDb->photocat_order.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif"></a>';
 		}

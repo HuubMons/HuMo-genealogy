@@ -62,7 +62,8 @@ $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 if($temp->rowCount()) {   // a humo_photocat table exists
 	$temp2 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none'");
 	if($temp2->rowCount() >= 1) { //  the table contains more than the default category (otherwise display regular photoalbum)
-		$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
+		//$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
+		$qry = "SELECT photocat_prefix FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
 		$result = $dbh->query($qry);
 		$result_arr = $result->fetchAll(); // PDO has a problem with resetting pointer in MySQL and the fastest workaround is to use an array instead
 		$catpics=0; // checks if any of the user-created categories have pics at all, otherwise don't show the tabbed menu, just regular photo album
@@ -80,7 +81,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 					}
 					// check for sub-sub cat
 					else{
-						$check2 = glob(tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.'*');
+						$check2 = glob($tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.'*');
 						if($check2!==false AND count($check2) >= 1) {  // found at least one sub-sub for this category
 							$catpics++;
 						}
@@ -163,6 +164,8 @@ else {  // show album with category tabs
 	$chosen_tab = 'none';
 	if(isset($_GET['menu_photoalbum'])) { $chosen_tab = $_GET['menu_photoalbum']; }
 	$result = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
+	// WRONG RESULTS, REBUILD QUERY FOR MYSQL 5.7:
+	//$result = $dbh->query("SELECT photocat_prefix, photocat_id FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
 	while($prefixDb = $result->fetch(PDO::FETCH_OBJ)) {
 		if($chosen_tab==$prefixDb->photocat_prefix) {
 			// *** Check is photo category tree is shown or hidden for user group ***

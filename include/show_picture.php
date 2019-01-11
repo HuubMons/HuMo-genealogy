@@ -28,6 +28,7 @@ function show_media($event_connect_kind,$event_connect_id){
 			$media_event_event[$media_nr]=$pictureDb->event_event;
 			$media_event_date[$media_nr]=$pictureDb->event_date;
 			$media_event_text[$media_nr]=$pictureDb->event_text;
+			if(substr(rtrim($media_event_text[$media_nr]),-1)=="|") $media_event_text[$media_nr] = substr($media_event_text[$media_nr],0,-1);
 			//$media_event_source[$media_nr]=$pictureDb->event_source;
 		}
 
@@ -49,6 +50,7 @@ function show_media($event_connect_kind,$event_connect_id){
 					$media_event_event[$media_nr]=$pictureDb->event_event;
 					$media_event_date[$media_nr]=$pictureDb->event_date;
 					$media_event_text[$media_nr]=$pictureDb->event_text;
+					if(substr(rtrim($media_event_text[$media_nr]),-1)=="|") $media_event_text[$media_nr] = substr($media_event_text[$media_nr],0,-1);
 					//$media_event_source[$media_nr]=$pictureDb->event_source;
 				}
 			}
@@ -80,7 +82,8 @@ function show_media($event_connect_kind,$event_connect_id){
 			$temp_path = $tree_pict_path; // store original so we can reset after using for subfolder path for this picture.
 			$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 			if($temp->rowCount()) {   // there is a category table 
-				$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+				//$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
+				$catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 				if($catg->rowCount()) {
 					while($catDb = $catg->fetch(PDO::FETCH_OBJ)) {  
 						if(substr($event_event,0,3)==$catDb->photocat_prefix AND is_dir($tree_pict_path.'/'.substr($event_event,0,2)))  {  // there is a subfolder of this prefix
@@ -162,10 +165,13 @@ function show_media($event_connect_kind,$event_connect_id){
 				// *** Show photo using the lightbox effect ***
 				$picture_array=show_picture($tree_pict_path,$event_event,'',120);
 				// *** lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
-				// *** But: reverse change of / character (if a sub folders are used) ***
+				// *** But: reverse change of / character (if sub folders are used) ***
 				//$picture_array['picture'] = rawurlencode($picture_array['picture']);
 				$picture_array['picture'] = str_ireplace("%2F","/",rawurlencode($picture_array['picture']));
-				$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $media_event_text[$i]).'">';
+				$line_pos = strpos("|",$media_event_text[$i]);
+				$title_txt=''; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
+
+				$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $title_txt).'">';
 				$picture.='<img src="'.$picture_array['path'].$picture_array['thumb'].$picture_array['picture'].'" height="'.$picture_array['height'].'" alt="'.$event_event.'"></a>';
 
 				//$templ_person["pic_path".$i]=$tree_pict_path."thumb_".$event_event; //for the time being pdf only with thumbs
@@ -226,7 +232,8 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 	// in cases where the $picture_path is already set with subfolder this anyway gives false and so the $picture_path gives will work
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 	if($temp->rowCount()) {  // there is a category table 
-		$cat1 = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+		//$cat1 = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
+		$cat1 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		if($cat1->rowCount()) { 
 			while($catDb = $cat1->fetch(PDO::FETCH_OBJ)) {  
 				if(substr($picture_org,0,3)==$catDb->photocat_prefix AND is_dir($picture_path.'/'.substr($picture_org,0,2)))  {  // there is a subfolder of this prefix

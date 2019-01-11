@@ -118,7 +118,7 @@ function tree_main(){
 			if (substr($tree_date,5,2)=='09'){ $month=' '.strtolower(__('sep')).' ';}
 			if (substr($tree_date,5,2)=='10'){ $month=' '.strtolower(__('oct')).' ';}
 			if (substr($tree_date,5,2)=='11'){ $month=' '.strtolower(__('nov')).' ';}
-			if (substr($tree_date,5,2)=='12'){ $month=' '.strtolower(__('oct')).' ';}
+			if (substr($tree_date,5,2)=='12'){ $month=' '.strtolower(__('dec')).' ';}
 			$tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4);
 			echo ' <font size=-1>'.$tree_date.': '.$dataDb->tree_persons.' '.
 			__('persons').', '.$dataDb->tree_families.' '.__('families').'</font>';

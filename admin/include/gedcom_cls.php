@@ -420,6 +420,9 @@ function process_person($person_array){
 			if ($buffer7=='2 _RELN'){ $process_event=true; }
 			if ($buffer7=='2 _OTHN'){ $process_event=true; }
 
+			// *** For German _RUFNAME entries
+			if ($buffer7=='2 _RUFN'){ $process_event=true; }  // this needs the isset($buffer[10] check a few line below
+
 			if ($process_event){
 				$processed=1; $event_nr++; $calculated_event_id++;
 				$event['connect_kind'][$event_nr]='person';
@@ -429,7 +432,8 @@ function process_person($person_array){
 				// *** Cater for longer tags such as MyHeritage _MARNM ***
 				// *** This maybe is a problem for texts like: "1 tekst" or "A text". ***
 				if (isset($buffer[8]) AND $buffer[8]==' ') {$event['event'][$event_nr]=substr($buffer,8);}
-					else {$event['event'][$event_nr]=substr($buffer,7);}
+				elseif (isset($buffer[10]) AND $buffer[10]==' ') {$event['event'][$event_nr]=substr($buffer,11);}
+				else {$event['event'][$event_nr]=substr($buffer,7);}
 
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]=trim(substr($buffer, 2, 5));

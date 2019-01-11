@@ -42,8 +42,9 @@ if (isset($_POST["search_name"])){
 			OR event_event LIKE '%".safe_text($search_name)."%')
 			AND pers_changed_date IS NOT NULL
 			AND pers_tree_id='".$tree_id."'
-		GROUP BY pers_gedcomnumber
+		GROUP BY pers_id
 		)";
+		//GROUP BY pers_gedcomnumber
 
 	$person_qry .= " UNION (SELECT * , STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
 		FROM humo_persons
@@ -53,8 +54,9 @@ if (isset($_POST["search_name"])){
  			OR event_event LIKE '%".safe_text($search_name)."%')
 			AND pers_changed_date IS NULL
 			AND pers_tree_id='".$tree_id."'
-		GROUP BY pers_gedcomnumber
+		GROUP BY pers_id
 		)";
+		//GROUP BY pers_gedcomnumber
 
 	$person_qry .= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,100";
 }

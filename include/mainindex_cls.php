@@ -172,7 +172,8 @@ function tree_data(){
 	if (substr($tree_date,5,2)=='11'){ $month=' '.__('nov').' ';}
 	if (substr($tree_date,5,2)=='12'){ $month=' '.__('dec').' ';}
 
-	$tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4);
+	//$tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4);
+	$tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4)." ".substr($tree_date,11,5);
 	//return __('Latest update:').' '.$tree_date.', '.$dataDb->tree_persons.' '.__('persons').", ".$dataDb->tree_families.' '.__('families').".";
 	return __('Latest update:').' '.$tree_date.', '.$dataDb->tree_persons.' '.__('persons').", ".$dataDb->tree_families.' '.__('families').'. <a href="'.CMS_ROOTPATH.'statistics.php">'.__('More statistics').'.</a>';
 }
@@ -203,63 +204,8 @@ function owner(){
 
 //*** Most frequent names ***
 function last_names(){
-	global $dbh, $tree_id, $language, $user, $humo_option, $uri_path;
+	global $dbh, $tree_id, $language, $user, $humo_option, $uri_path, $maxcols;
 
-	/*
-	$personqry="SELECT pers_lastname, pers_prefix,
-		CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
-		FROM humo_persons
-		WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
-		GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,10";
-	$person=$dbh->query($personqry);
-	while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
-		// *** No & character in $_GET, replace to: | !!!
-		$last_names[]=$personDb->pers_lastname;
-		$pers_prefix[]=$personDb->pers_prefix;
-		$count_last_names[]=$personDb->count_last_names;
-	}
-	//echo __('Most frequent surnames:')."<br>";
-	echo '<div id="most_frequent_names">'.__('Most frequent surnames:')."<br>";
-	for ($i=0; $i<@count($last_names); $i++){
-		$top_pers_lastname='';
-		if ($pers_prefix[$i]){ $top_pers_lastname=str_replace("_", " ", $pers_prefix[$i]); }
-		$top_pers_lastname.=$last_names[$i];
-
-		if (CMS_SPECIFIC=='Joomla'){
-			$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
-		}
-		else{
-			$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
-		}
-
-		if ($user['group_kindindex']=="j"){
-			echo '<a href="'.$path_tmp.'&amp;pers_lastname='.
-			str_replace("_", " ", $pers_prefix[$i]).str_replace("&", "|", $last_names[$i]);
-		}
-		else{
-			$top_pers_lastname=$last_names[$i];
-			if ($pers_prefix[$i]){ $top_pers_lastname.=', '.str_replace("_", " ", $pers_prefix[$i]); }
-
-			echo '<a href="'.$path_tmp.'&amp;pers_lastname='.
-				str_replace("&", "|", $last_names[$i]);
-			if ($pers_prefix[$i]){
-				//echo '&amp;pers_prefix='.addslashes($pers_prefix[$i]);
-				echo '&amp;pers_prefix='.$pers_prefix[$i];
-			}
-			else{
-				echo '&amp;pers_prefix=EMPTY';
-			}
-		}
-		echo '&amp;part_lastname=equals">'.$top_pers_lastname."</a>";
-
-		echo " (".$count_last_names[$i].")";
-
-		if ($i<count($last_names)-1){ echo ' / '; }
-	}
-	echo '</div>';
-	*/
-
-	global $maxcols;
 	// MAIN SETTINGS
 	$maxcols = 2; // number of name&nr colums in table. For example 3 means 3x name col + nr col
 	$maxnames = 8;
@@ -306,11 +252,20 @@ function last_names(){
 
 	function last_names($max) {
 		global $dbh, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols;
+		/*
 		$personqry="SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
 			FROM humo_persons
 			WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
 			GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,".$max;
+		*/
+
+		// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+		$personqry="SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
+			FROM humo_persons
+			WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
+			GROUP BY pers_lastname, pers_prefix ORDER BY count_last_names DESC LIMIT 0,".$max;
+
 		$person=$dbh->query($personqry);
 		while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){ 
 			$freq_last_names[]=$personDb->pers_lastname;  
@@ -429,27 +384,6 @@ function search_box(){
 		$path_tmp=CMS_ROOTPATH.'list.php';
 	}
 	echo '<form method="post" action="'.$path_tmp.'">';
-	/*
-	echo __('First name').':<br>';
-	echo ' <select name="part_firstname" style="width: 90px">';
-	echo '<option value="contains">'.__('Contains').'</option>';
-	$select_item=''; if ($part_firstname=='equals'){ $select_item=' selected'; }
-	echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
-	$select_item=''; if ($part_firstname=='starts_with'){ $select_item=' selected'; }
-	echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
-	echo '</select>';
-	echo ' <input type="text" name="pers_firstname" value="'.$pers_firstname.'" size="15"><br>';
-
-	echo '<p>'.__('Last name').':<br>';
-	echo ' <select name="part_lastname" style="width: 90px">';
-	echo '<option value="contains">'.__('Contains').'</option>';
-	$select_item=''; if ($part_lastname=='equals'){ $select_item=' selected'; }
-	echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
-	$select_item=''; if ($part_lastname=='starts_with'){ $select_item=' selected'; }
-	echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
-	echo '</select>';
-	echo ' <input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="15"></p>';
-	*/
 
 	if($humo_option['one_name_study']=='n') { echo __('Enter name or part of name').'<br>'; }
 	else { echo __('Enter private name').'<br>'; }
@@ -681,62 +615,6 @@ function today_in_history(){
 			echo '<tr><td colspan="3">'.$count_privacy.__(' persons are not shown due to privacy settings').'</td></tr>';
 	echo '</table>';
 	echo '</div>';
-
-	/*
-	echo '<div class="mainmenu_bar fonts">'.__('Today in history').'</div>';
-
-	echo '<div style="max-height:200px; overflow-x: auto;">';
-	echo '<table width="90%" class="humo nametbl" align="center">';
-		// *** Override td style ***
-		echo '
-		<style>
-		table.humo td, table.relmenu td {
-			padding-top: 0px;
-			padding-bottom: 0px;
-		}
-		</style>';
-
-		//echo '<tr class="table_headline">';
-		//	echo '<td colspan="3"><b>'.__('Today in history').'</b></td>';
-		//echo '</tr>';
-
-		echo '<tr class="table_headline">';
-			echo '<td><b>'.__('Date').'</b></td><td><b>'.__('Event').'</b></td><td><b>'.__('Name').'</b></td>';
-		echo '</tr>';
-
-		while ($record=$birth_qry->fetch(PDO::FETCH_OBJ)){
-			$person_cls = New person_cls;
-			$name=$person_cls->person_name($record);
-			$person_cls->construct($record);
-			if ($person_cls->privacy==''){
-				echo '<tr>';
-					if (trim(substr($record->pers_birth_date,0,6))==$today OR substr($record->pers_birth_date,0,6)==$today2){
-						//echo '<td>'.date_place($record->pers_birth_date,$record->pers_birth_place).'</td>';
-						echo '<td>'.date_place($record->pers_birth_date,'').'</td>';
-						echo '<td>'.__('born').'</td>';
-					}
-					elseif (trim(substr($record->pers_bapt_date,0,6))==$today OR substr($record->pers_bapt_date,0,6)==$today2){
-						echo '<td>'.date_place($record->pers_bapt_date,'').'</td>';
-						echo '<td>'.__('baptised').'</td>';
-					}
-					else{
-						//echo '<td>'.date_place($record->pers_death_date,$record->pers_death_place).'</td>';
-						echo '<td>'.date_place($record->pers_death_date,'').'</td>';
-						echo '<td>'.__('died').'</td>';
-					}
-					echo '<td><a href="'.CMS_ROOTPATH.'family.php?id='.$record->pers_indexnr.'&amp;main_person='.$record->pers_gedcomnumber.'">'.$name["standard_name"].'</a></td>';
-
-				echo '</tr>';
-			}
-			else
-				$count_privacy++;
-		}
-
-		if ($count_privacy)
-			echo '<tr><td colspan="3">'.$count_privacy.__(' persons are not shown due to privacy settings').'</td></tr>';
-	echo '</table>';
-	echo '</div>';
-	*/
 }
 
 function show_footer(){

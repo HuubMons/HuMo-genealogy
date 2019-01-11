@@ -56,7 +56,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// if subfolders exist for category files, list those too
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");  
 	if($temp->rowCount()) {    // there is a category table
-		$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+		//$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
+		$catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		if($catg->rowCount()) {
 			while($catDb = $catg->fetch(PDO::FETCH_OBJ)) { 
 				if(is_dir($dir.substr($catDb->photocat_prefix,0,2)))  {  // there is a subfolder for this prefix
@@ -387,7 +388,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				$tree_pict_path2 = $tree_pict_path;  // we change it only if category subfolders exist
 				$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 				if($temp->rowCount()) {  // there is a category table 
-					$catgr = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+					//$catgr = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
+					$catgr = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 					if($catgr->rowCount()) { 
 						while($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {  
 							if(substr($data_listDb->event_event,0,3)==$catDb->photocat_prefix AND is_dir($path_prefix.$tree_pict_path2.substr($data_listDb->event_event,0,2)))  {   // there is a subfolder of this prefix
@@ -715,7 +717,8 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 				$tree_pict_path3 = $tree_pict_path;  // we change it only if category subfolders exist
 				$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 				if($temp->rowCount()) {  // there is a category table 
-					$catgr = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+					//$catgr = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
+					$catgr = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 					if($catgr->rowCount()) { 
 						while($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {  
 							if(substr($data_listDb->event_event,0,3)==$catDb->photocat_prefix AND is_dir($path_prefix.$tree_pict_path3.substr($data_listDb->event_event,0,2)))  {   // there is a subfolder of this prefix
@@ -1017,7 +1020,7 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 			$text.='<option value="'.$event.'"'.$selected.'>_MARN '.__('Married name').'</option>';
 
 			$event='_GERN'; $selected=''; if ($data_listDb->event_gedcom==$event){ $selected=' SELECTED'; }
-			$text.='<option value="'.$event.'"'.$selected.'>_GERN '.__('Nickname').'</option>';
+			$text.='<option value="'.$event.'"'.$selected.'>_GERN '.__('Given name').'</option>';
 
 			$event='_FARN'; $selected=''; if ($data_listDb->event_gedcom==$event){ $selected=' SELECTED'; }
 			$text.='<option value="'.$event.'"'.$selected.'>_FARN '.__('Farm name').'</option>';
@@ -1045,6 +1048,9 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 
 			$event='_FRKA'; $selected=''; if ($data_listDb->event_gedcom==$event){ $selected=' SELECTED'; }
 			$text.='<option value="'.$event.'"'.$selected.'>_FRKA '.__('Formerly known as').'</option>';
+
+			$event='_RUFN'; $selected=''; if ($data_listDb->event_gedcom==$event){ $selected=' SELECTED'; }
+			$text.='<option value="'.$event.'"'.$selected.'>_RUFN '.__('German Rufname').'</option>';
 
 			$text.='</select>';
 		}

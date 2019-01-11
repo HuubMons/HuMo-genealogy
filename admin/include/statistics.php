@@ -491,8 +491,12 @@ if ($statistics_screen=='general_statistics'){
 		while ($familyDb=$family_qry->fetch(PDO::FETCH_OBJ)){ statistics_line($familyDb); }
 	echo '</table>';
 
-	$family_qry=$dbh->query("SELECT * FROM humo_stat_date, humo_trees
-		WHERE humo_trees.tree_id=humo_stat_date.stat_tree_id
+	//$family_qry=$dbh->query("SELECT * FROM humo_stat_date, humo_trees
+	//	WHERE humo_trees.tree_id=humo_stat_date.stat_tree_id
+	//	ORDER BY humo_stat_date.stat_date_stat DESC LIMIT 0,".$nr_lines);
+	// *** First line is a bit strange, but was needed for a specific provider ***
+	$family_qry=$dbh->query("SELECT humo_stat_date.* , humo_trees.tree_id, humo_trees.tree_prefix FROM humo_stat_date, humo_trees 
+		WHERE humo_trees.tree_id=humo_stat_date.stat_tree_id 
 		ORDER BY humo_stat_date.stat_date_stat DESC LIMIT 0,".$nr_lines);
 	echo '<h2 align="center">'.$nr_lines.' '.__('last visited families:').'</h2>';
 	echo '<table class="humo standard" border="1" cellspacing="0">';

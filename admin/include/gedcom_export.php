@@ -775,9 +775,11 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 	// 1 REFN Code *** Own code ***
 	if ($person->pers_own_code) $buffer.='1 REFN '.$person->pers_own_code."\r\n";
 
-	// 1 NAME Firstname/Lastname/ *** Name ***
-	$buffer.='1 NAME '.$person->pers_firstname.'/';
-	$buffer.=str_replace("_", " ", $person->pers_prefix);
+	// *** Name, add a space after first name if first name is present ***
+	// 1 NAME Firstname /Lastname/
+	$buffer.='1 NAME '.$person->pers_firstname;
+	if ($person->pers_firstname) $buffer.=' '; // add a space after first name if first name is present
+	$buffer.='/'.str_replace("_", " ", $person->pers_prefix);
 	$buffer.=$person->pers_lastname."/\r\n";
 
 	if ($person->pers_callname) $buffer.='2 NICK '.$person->pers_callname."\r\n";
@@ -798,7 +800,9 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 		AND event_connect_kind='person' AND event_connect_id='".$person->pers_gedcomnumber."'
 		AND event_kind='name' ORDER BY event_order");
 	while($nameDb=$nameqry->fetch(PDO::FETCH_OBJ)){	
-		$buffer.='2 '.$nameDb->event_gedcom.' '.$nameDb->event_event."\r\n";
+		$eventgedcom = $nameDb->event_gedcom;
+		if($nameDb->event_gedcom == "_RUFN") $eventgedcom = '_RUFNAME';
+		$buffer.='2 '.$eventgedcom.' '.$nameDb->event_event."\r\n";
 		if ($nameDb->event_date) $buffer.='3 DATE '.$nameDb->event_date."\r\n";
 		if ($gedcom_sources=='yes')
 			sources_export('person','pers_event_source',$nameDb->event_id,3);

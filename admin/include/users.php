@@ -5,6 +5,7 @@ if (!defined('ADMIN_PAGE')){ exit; }
 // *** Automatic installation or update ***
 $column_qry = $dbh->query('SHOW COLUMNS FROM humo_users');
 while ($columnDb = $column_qry->fetch()) {
+//while ($columnDb = $column_qry->fetch(PDO::FETCH_OBJ)) {
 	$field_value=$columnDb['Field'];
 	$field[$field_value]=$field_value;
 }

@@ -2001,8 +2001,8 @@ function display () {
 
 				if(($spouse==1 AND $special_spouseX!==1) OR $spouse==3) {
 					if($relmarriedX==0 AND $selected_language!="cn") {
-						$spousetext1 =strtolower(__('Partner')).__(' of ');
-						$finnish_spouse1 = strtolower(__('Partner'));
+						$spousetext1 =__('partner').__(' of ');
+						$finnish_spouse1 = __('partner');
 					}
 					else {
 						if($searchDb->pers_sexe=='M') {
@@ -2019,8 +2019,8 @@ function display () {
 				}
 				if(($spouse==2 OR $spouse==3) AND $special_spouseY!==1) {
 					if($relmarriedY==0 AND $selected_language!="cn") {
-						$spousetext2 = strtolower(__('Partner')).__(' of ');
-						$finnish_spouse2 = strtolower(__('Partner'));
+						$spousetext2 = __('partner').__(' of ');
+						$finnish_spouse2 = __('partner');
 					}
 					else {
 						if($searchDb2->pers_sexe=='M') {
@@ -2073,7 +2073,7 @@ function display () {
 					}
 					elseif ($table == 7) {
 						if($relmarriedX==0 OR $relmarriedY==0) {
-							print '<b>'.strtolower(__('Partner')).'</b><br>';
+							print '<b>'.__('partner').'</b><br>';
 						}
 						else {
 							print '<b>'.$finnish_spouse1.'</b><br>';

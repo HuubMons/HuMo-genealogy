@@ -849,7 +849,8 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 			OR address_gedcomnr=connect_item_id AND address_tree_id=connect_tree_id AND connect_connect_id=pers_gedcomnumber";
 
 	$query_select.=" WHERE (".$multi_tree.") ".$query;
-	$query_select.=" GROUP BY pers_gedcomnumber";
+	//$query_select.=" GROUP BY pers_gedcomnumber";
+	$query_select.=" GROUP BY pers_id";
 	$query_select.=" ORDER BY ".$orderby;
 	$query=$query_select;
 }
@@ -890,7 +891,8 @@ if ($index_list=='quicksearch'){
 		$multi_tree="pers_tree_id='".$tree_id."'";
 	}
 
-	// *** feb 2016: added search for patronym ***
+	// *** QUICKSEARCH QUERY. feb 2016: added search for patronym ***
+//$query.="SELECT SQL_CALC_FOUND_ROWS pers_gedcomnumber,
 	$query.="SELECT SQL_CALC_FOUND_ROWS *,
 	CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name
 	".$make_date."
@@ -907,7 +909,8 @@ if ($index_list=='quicksearch'){
 		OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
 		OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text($quicksearch)."%'
 		)
-	GROUP BY pers_gedcomnumber";
+	GROUP BY pers_id";
+	//GROUP BY pers_gedcomnumber";
 
 	$query.=" ORDER BY ".$orderby;
 }
@@ -1630,8 +1633,15 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 
 		echo '</tr>';
 	}
-
 	while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
+
+		//TEST MYSQL 5.7
+		//$query="SELECT * FROM humo_persons WHERE pers_tree_id='".$personDb->pers_tree_id."' AND pers_gedcomnumber='".$personDb->pers_gedcomnumber."'";
+//		$query="SELECT * FROM humo_persons WHERE pers_id='".$personDb->pers_id."'";
+//		$person2_result = $dbh->query($query);
+//		$person2Db = $person2_result->fetch(PDO::FETCH_OBJ);
+
+
 		$spouse_found='1';
 
 		// *** Search name of spouse ***
@@ -1702,6 +1712,7 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 					}
 					else{
 						show_person($personDb);
+//show_person($person2Db);
 					}
 
 				}
@@ -1721,6 +1732,7 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 				}
 				else{
 					show_person($personDb);
+//show_person($person2Db);
 				}
 			}
 		}

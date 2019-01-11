@@ -83,7 +83,7 @@ function tablerow($nr,$lastcol=false) {
 		$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
 	//}
 	echo '<td class="namelst">';
-	if(isset($freq_last_names[$nr])) { 
+	if (isset($freq_last_names[$nr])) { 
 		$top_pers_lastname=''; if ($freq_pers_prefix[$nr]){ $top_pers_lastname=str_replace("_", " ", $freq_pers_prefix[$nr]); }
 		$top_pers_lastname.=$freq_last_names[$nr];
 		if ($user['group_kindindex']=="j"){
@@ -114,52 +114,99 @@ $number_high=0;
 
 // Mons, van or: van Mons
 if ($user['group_kindindex']=="j"){
+	/*
 	$personqry="SELECT pers_lastname, pers_prefix,
 		CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
 		FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
 		GROUP BY long_name";
-
-	$count_qry="SELECT pers_lastname, pers_prefix,
-		CONCAT(pers_prefix,pers_lastname) as long_name
+	*/
+	// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+	$personqry="SELECT pers_prefix, pers_lastname, count(pers_lastname) as count_last_names
 		FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
+		GROUP BY pers_prefix, pers_lastname ORDER BY CONCAT(pers_prefix, pers_lastname)";
+
+	/*
+	$count_qry="SELECT CONCAT(pers_prefix,pers_lastname) as long_name FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
 		GROUP BY long_name";
+	*/
+	// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+	$count_qry="SELECT pers_lastname, pers_prefix
+		FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
+		GROUP BY pers_prefix, pers_lastname";
+
 
 	if ($last_name=='all'){
+		/*
 		$personqry="SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY long_name";
+		*/
+		// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+		$personqry="SELECT pers_prefix, pers_lastname, count(pers_lastname) as count_last_names
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			GROUP BY pers_prefix, pers_lastname ORDER BY CONCAT(pers_prefix, pers_lastname)";
 
-		$count_qry="SELECT pers_lastname, pers_prefix,
-			CONCAT(pers_prefix,pers_lastname) as long_name
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY long_name";
+		/*
+		$count_qry="SELECT CONCAT(pers_prefix,pers_lastname) as long_name FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' GROUP BY long_name";
+		*/
+		// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+		$count_qry="SELECT pers_prefix, pers_lastname
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			GROUP BY pers_prefix, pers_lastname";
 	}
 }
 else{
 	// *** Select alphabet first_character ***
+	/*
 	$personqry="SELECT pers_lastname, pers_prefix,
 		CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_last_names
 		FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_lastname LIKE '".$last_name."%'
 		GROUP BY long_name";
-
-	$count_qry="SELECT pers_lastname, pers_prefix,
-		CONCAT(pers_lastname,pers_prefix) as long_name
+	*/
+	// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+	$personqry="SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
 		FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_lastname LIKE '".$last_name."%'
+		GROUP BY pers_lastname, pers_prefix";
+
+	/*
+	$count_qry="SELECT CONCAT(pers_lastname,pers_prefix) as long_name FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_lastname LIKE '".$last_name."%'
 		GROUP BY long_name";
+	*/
+	// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+	$count_qry="SELECT pers_lastname, pers_prefix
+		FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_lastname LIKE '".$last_name."%'
+		GROUP BY pers_lastname, pers_prefix";
 
 	if ($last_name=='all'){
+		/*
 		$personqry="SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_last_names
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
 			GROUP BY long_name";
+		*/
+		// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+		$personqry="SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			GROUP BY pers_lastname, pers_prefix";
 
-		$count_qry="SELECT pers_lastname, pers_prefix,
-			CONCAT(pers_lastname,pers_prefix) as long_name
+		/*
+		$count_qry="SELECT CONCAT(pers_lastname,pers_prefix) as long_name
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
 			GROUP BY long_name";
+		*/
+		// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+		$count_qry="SELECT pers_lastname, pers_prefix
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			GROUP BY pers_lastname, pers_prefix";
 	}
 }
 // *** Add limit to query (results per page) ***

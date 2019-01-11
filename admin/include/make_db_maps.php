@@ -269,8 +269,8 @@ else {  // main screen
 
 	echo "<li>".__('For the second key, set restriction to <strong>"IP addresses"</strong> and enter your server IP.')." ".__('Not your computer\'s IP!')."<br>";
 	echo __('Your server IP would seem to be:')." <strong>".$ip."</strong><br>";
-	if(@isset($ipv6[0][ipv6])) {  // cpntains the IPv6 address is present
-		echo __('Your server also has an IPv6 address. If the above IP doesn\'t work, try the IPv6 which would seem to be:')." <strong>".$ipv6[0][ipv6]."</strong><br>";
+	if(isset($ipv6[0]['ipv6'])) {  // cpntains the IPv6 address is present
+		echo __('Your server also has an IPv6 address. If the above IP doesn\'t work, try the IPv6 which would seem to be:')." <strong>".$ipv6[0]['ipv6']."</strong><br>";
 	}
 	echo __('If this doesn\'t work, contact your provider and try to obtain the proper IP address from them.')."<br>";
 	echo __('Once you receive the keys enter them in the two fields below and save.')."<br><br>";

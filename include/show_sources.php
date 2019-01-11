@@ -58,11 +58,11 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				for ($j=0; $j<=(count($source_footnotes)-1); $j++){
 					if ($sourceDb->source_id==$source_footnotes[$j]){
 						if($source_presentation=='footnote') {
-							$text.=' ('.strtolower(__('Sources')).' '.($j+1).')';
+							$text.=' ('.__('sources').' '.($j+1).')';
 							$text.='~'; // delimiter
 						}
 						else {
-							$text.=', '.strtolower(__('Source')).': ';
+							$text.=', '.__('source').': ';
 							if ($sourceDb->source_title){ $text.= " ".trim($sourceDb->source_title); }
 							if ($sourceDb->source_date or $sourceDb->source_place) {
 								$text.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
@@ -74,11 +74,11 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				}
 				if ($source_check!=true){
 					if($source_presentation=='footnote') {
-						$text.=' ('.strtolower(__('Sources')).' '.($j+1).')';
+						$text.=' ('.__('sources').' '.($j+1).')';
 						$text.='~'; // delimiter
 					}
 					else {
-						$text.=', '.strtolower(__('Source')).': ';
+						$text.=', '.__('source').': ';
 						if ($sourceDb->source_title){ $text.= " ".trim($sourceDb->source_title); }
 						if ($sourceDb->source_date or $sourceDb->source_place) { $text.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
 						// append num of source in list as !!3 for use with fpdf_extend.php to add the right link:
@@ -117,7 +117,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 					// *** Always show title of source, show link only after permission check ***
 					if ($user['group_sources']=='j' AND $connect_sub_kind!='person_source'){
 						$text.= ', <a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].
-						'&amp;id='.$sourceDb->source_gedcomnr.'">'.strtolower(__('Source'));
+						'&amp;id='.$sourceDb->source_gedcomnr.'">'.__('source');
 					}
 					elseif ($connect_sub_kind=='person_source'){
 						$text.= '. <b>'.__('Source for person').'</b>';
@@ -142,7 +142,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				//else{
 				//	// *** No shared, show source text ***
 				//	if ($connectDb->connect_text){
-				//		$text.=', '.strtolower(__('Source')).': '.nl2br($connectDb->connect_text);
+				//		$text.=', '.__('source').': '.nl2br($connectDb->connect_text);
 				//	}
 				//}
 
@@ -189,7 +189,7 @@ function show_sources_footnotes(){
 			$text.='<a name="source_ref'.($j+1).'"><b>'.($j+1).')</b></a>';
 			if ($user['group_sources']=='j'){
 				$text.=' <a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].
-				'&amp;id='.$sourceDb->source_gedcomnr.'">'.strtolower(__('Source')).': ';
+				'&amp;id='.$sourceDb->source_gedcomnr.'">'.__('source').': ';
 				if ($sourceDb->source_title){ $text.=" ".trim($sourceDb->source_title); }
 				$text.='</a>';
 			}
@@ -224,7 +224,7 @@ function show_sources_footnotes(){
 
 		// *** Source page ***
 		if ($connectDb->connect_page){
-			$text.=', '.strtolower(__('Page')).': '.$connectDb->connect_page;
+			$text.=', '.__('page').': '.$connectDb->connect_page;
 		}
 
 		// *** Show picture by source ***

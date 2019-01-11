@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-05 10:58+0100\n"
-"PO-Revision-Date: 2016-11-05 10:58+0100\n"
+"POT-Creation-Date: 2017-01-20 16:02+0100\n"
+"PO-Revision-Date: 2017-01-20 16:02+0100\n"
 "Last-Translator: Nagy-Vajda Domokos <nagydomi@yahoo.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/humo-gen/humo-gen/"
 "language/hu/)\n"
@@ -31,9 +31,9 @@ msgid "You are not authorised to see this page."
 msgstr "Nincs jogosultsága az oldal megtekintéséhez."
 
 #: humo-gen/address.php:15 humo-gen/address.php:19
-#: humo-gen/admin/include/editor.php:1583
-#: humo-gen/admin/include/editor.php:2934
-#: humo-gen/admin/include/editor.php:3189
+#: humo-gen/admin/include/editor.php:1584
+#: humo-gen/admin/include/editor.php:2935
+#: humo-gen/admin/include/editor.php:3190
 #: humo-gen/admin/include/editor_sources.php:96
 #: humo-gen/admin/include/editor_sources.php:151
 #: humo-gen/admin/include/trees_cls.php:1720 humo-gen/header.php:233
@@ -42,8 +42,8 @@ msgstr "Nincs jogosultsága az oldal megtekintéséhez."
 msgid "Address"
 msgstr "Cím"
 
-#: humo-gen/address.php:20 humo-gen/admin/include/editor.php:2936
-#: humo-gen/admin/include/editor.php:3191 humo-gen/list.php:1339
+#: humo-gen/address.php:20 humo-gen/admin/include/editor.php:2937
+#: humo-gen/admin/include/editor.php:3192 humo-gen/list.php:1339
 #: humo-gen/list.php:1347 humo-gen/source.php:223
 msgid "Zip code"
 msgstr "Irányítószám"
@@ -55,8 +55,8 @@ msgstr "Irányítószám"
 msgid "Place"
 msgstr "Helység"
 
-#: humo-gen/address.php:22 humo-gen/admin/include/editor.php:2940
-#: humo-gen/admin/include/editor.php:3192
+#: humo-gen/address.php:22 humo-gen/admin/include/editor.php:2941
+#: humo-gen/admin/include/editor.php:3193
 msgid "Phone"
 msgstr "Telefon"
 
@@ -64,7 +64,7 @@ msgstr "Telefon"
 msgid "Address by person"
 msgstr "Cím személy szerint"
 
-#: humo-gen/addresses.php:67 humo-gen/admin/include/editor.php:1494
+#: humo-gen/addresses.php:67 humo-gen/admin/include/editor.php:1495
 #: humo-gen/admin/include/trees_cls.php:1849 humo-gen/menu.php:465
 msgid "Addresses"
 msgstr "Címek"
@@ -78,7 +78,7 @@ msgid "Street"
 msgstr "Utca"
 
 #: humo-gen/addresses.php:79 humo-gen/admin/include/editor.php:379
-#: humo-gen/admin/include/editor.php:672 humo-gen/admin/include/editor.php:939
+#: humo-gen/admin/include/editor.php:672 humo-gen/admin/include/editor.php:940
 #: humo-gen/admin/include/editor_person_select.php:34
 #: humo-gen/admin/include/gedcom_export.php:504
 #: humo-gen/admin/include/language_editor.php:270
@@ -86,10 +86,10 @@ msgstr "Utca"
 #: humo-gen/admin/include/trees_cls.php:859
 #: humo-gen/admin/include/trees_cls.php:897
 #: humo-gen/admin/include/trees_cls.php:971
-#: humo-gen/include/mainindex_cls.php:98 humo-gen/include/mainindex_cls.php:482
+#: humo-gen/include/mainindex_cls.php:98 humo-gen/include/mainindex_cls.php:416
 #: humo-gen/latest_changes.php:70 humo-gen/list.php:1171 humo-gen/list.php:1403
 #: humo-gen/list_places_families.php:440 humo-gen/menu.php:75
-#: humo-gen/photoalbum.php:372 humo-gen/relations.php:3062
+#: humo-gen/photoalbum.php:374 humo-gen/relations.php:3062
 #: humo-gen/relations.php:3101 humo-gen/relations.php:3192
 msgid "Search"
 msgstr "Keresés"
@@ -192,8 +192,8 @@ msgstr ""
 "lehet: \".sql\" vagy \".sql.zip\""
 
 #: humo-gen/admin/include/backup.php:91
-#: humo-gen/admin/include/editor_event_cls.php:1149
-#: humo-gen/admin/include/editor_event_cls.php:1158
+#: humo-gen/admin/include/editor_event_cls.php:1152
+#: humo-gen/admin/include/editor_event_cls.php:1161
 msgid "Upload"
 msgstr "Feltöltés"
 
@@ -259,7 +259,7 @@ msgstr "Az adatbázist sikeresen visszaállítottuk!"
 
 #: humo-gen/admin/include/cal_date.php:10
 #: humo-gen/admin/include/cal_date.php:18
-#: humo-gen/admin/include/editor.php:1110 humo-gen/admin/index.php:802
+#: humo-gen/admin/include/editor.php:1111 humo-gen/admin/index.php:803
 msgid "Calculated birth date"
 msgstr "Kiszámított születési dátum"
 
@@ -286,10 +286,10 @@ msgid "Choose family"
 msgstr "Család kiválasztása"
 
 #: humo-gen/admin/include/cal_date.php:50 humo-gen/admin/include/editor.php:438
-#: humo-gen/admin/include/editor.php:722 humo-gen/admin/include/editor.php:988
-#: humo-gen/admin/include/editor.php:3308
-#: humo-gen/admin/include/statistics.php:561
-#: humo-gen/admin/include/statistics.php:640
+#: humo-gen/admin/include/editor.php:722 humo-gen/admin/include/editor.php:989
+#: humo-gen/admin/include/editor.php:3309
+#: humo-gen/admin/include/statistics.php:565
+#: humo-gen/admin/include/statistics.php:644
 #: humo-gen/admin/include/thumbs.php:146
 #: humo-gen/admin/include/user_notes.php:51
 #: humo-gen/admin/include/user_notes.php:131
@@ -308,7 +308,7 @@ msgstr ""
 "Születési dátum kiszámítása befejeződött. Néha több dátumot is találunk, ha "
 "a számítást újraindítja!"
 
-#: humo-gen/admin/include/cms_pages.php:12 humo-gen/admin/index.php:746
+#: humo-gen/admin/include/cms_pages.php:12 humo-gen/admin/index.php:747
 msgid "CMS Own pages"
 msgstr "TKR Saját oldalak"
 
@@ -349,15 +349,15 @@ msgstr "Biztosan törli ezt az oldalt?"
 
 #: humo-gen/admin/include/cms_pages.php:107
 #: humo-gen/admin/include/cms_pages.php:176
-#: humo-gen/admin/include/editor.php:2565
-#: humo-gen/admin/include/editor.php:2837
-#: humo-gen/admin/include/editor.php:3041
+#: humo-gen/admin/include/editor.php:2566
+#: humo-gen/admin/include/editor.php:2838
+#: humo-gen/admin/include/editor.php:3042
 #: humo-gen/admin/include/editor_inc.php:50
 #: humo-gen/admin/include/editor_inc.php:446
 #: humo-gen/admin/include/editor_inc.php:680
-#: humo-gen/admin/include/editor_inc.php:1345
-#: humo-gen/admin/include/editor_inc.php:1712
-#: humo-gen/admin/include/editor_inc.php:1802
+#: humo-gen/admin/include/editor_inc.php:1346
+#: humo-gen/admin/include/editor_inc.php:1713
+#: humo-gen/admin/include/editor_inc.php:1803
 #: humo-gen/admin/include/gedcom_export.php:606
 #: humo-gen/admin/include/gedcom_export.php:614
 #: humo-gen/admin/include/gedcom_export.php:625
@@ -374,7 +374,7 @@ msgstr "Biztosan törli ezt az oldalt?"
 #: humo-gen/admin/include/settings_admin.php:418
 #: humo-gen/admin/include/settings_admin.php:451
 #: humo-gen/admin/include/settings_admin.php:487
-#: humo-gen/admin/include/thumbs.php:711 humo-gen/admin/include/trees.php:117
+#: humo-gen/admin/include/thumbs.php:717 humo-gen/admin/include/trees.php:117
 #: humo-gen/admin/include/trees_cls.php:1254
 #: humo-gen/admin/include/trees_cls.php:1259
 #: humo-gen/admin/include/trees_cls.php:1270
@@ -390,15 +390,15 @@ msgstr "Igen"
 
 #: humo-gen/admin/include/cms_pages.php:108
 #: humo-gen/admin/include/cms_pages.php:177
-#: humo-gen/admin/include/editor.php:2566
-#: humo-gen/admin/include/editor.php:2838
-#: humo-gen/admin/include/editor.php:3042
+#: humo-gen/admin/include/editor.php:2567
+#: humo-gen/admin/include/editor.php:2839
+#: humo-gen/admin/include/editor.php:3043
 #: humo-gen/admin/include/editor_inc.php:51
 #: humo-gen/admin/include/editor_inc.php:447
 #: humo-gen/admin/include/editor_inc.php:681
-#: humo-gen/admin/include/editor_inc.php:1346
-#: humo-gen/admin/include/editor_inc.php:1713
-#: humo-gen/admin/include/editor_inc.php:1803
+#: humo-gen/admin/include/editor_inc.php:1347
+#: humo-gen/admin/include/editor_inc.php:1714
+#: humo-gen/admin/include/editor_inc.php:1804
 #: humo-gen/admin/include/gedcom_export.php:607
 #: humo-gen/admin/include/gedcom_export.php:615
 #: humo-gen/admin/include/gedcom_export.php:626
@@ -415,7 +415,7 @@ msgstr "Igen"
 #: humo-gen/admin/include/settings_admin.php:419
 #: humo-gen/admin/include/settings_admin.php:452
 #: humo-gen/admin/include/settings_admin.php:488
-#: humo-gen/admin/include/thumbs.php:712 humo-gen/admin/include/trees.php:118
+#: humo-gen/admin/include/thumbs.php:718 humo-gen/admin/include/trees.php:118
 #: humo-gen/admin/include/trees_cls.php:1255
 #: humo-gen/admin/include/trees_cls.php:1258
 #: humo-gen/admin/include/trees_cls.php:1271
@@ -492,12 +492,12 @@ msgstr "Közzétéve"
 #: humo-gen/admin/include/cms_pages.php:367
 #: humo-gen/admin/include/cms_pages.php:370
 #: humo-gen/admin/include/cms_pages.php:463
-#: humo-gen/admin/include/editor.php:1040
-#: humo-gen/admin/include/editor.php:1943
-#: humo-gen/admin/include/editor.php:2746
-#: humo-gen/admin/include/editor.php:2955
-#: humo-gen/admin/include/editor.php:3216
-#: humo-gen/admin/include/editor.php:3323
+#: humo-gen/admin/include/editor.php:1041
+#: humo-gen/admin/include/editor.php:1944
+#: humo-gen/admin/include/editor.php:2747
+#: humo-gen/admin/include/editor.php:2956
+#: humo-gen/admin/include/editor.php:3217
+#: humo-gen/admin/include/editor.php:3324
 #: humo-gen/admin/include/editor_sources.php:200
 #: humo-gen/admin/include/language_editor.php:281
 #: humo-gen/admin/include/make_db_maps.php:285
@@ -533,25 +533,25 @@ msgid "Remove menu"
 msgstr "Menü eltávolítása"
 
 #: humo-gen/admin/include/cms_pages.php:474
-#: humo-gen/admin/include/editor.php:1043
-#: humo-gen/admin/include/editor.php:1414
-#: humo-gen/admin/include/editor.php:1497
-#: humo-gen/admin/include/editor.php:2743
-#: humo-gen/admin/include/editor.php:2952
-#: humo-gen/admin/include/editor.php:3213
-#: humo-gen/admin/include/editor_event_cls.php:234
-#: humo-gen/admin/include/editor_event_cls.php:248
-#: humo-gen/admin/include/editor_event_cls.php:260
-#: humo-gen/admin/include/editor_event_cls.php:271
-#: humo-gen/admin/include/editor_event_cls.php:283
-#: humo-gen/admin/include/editor_event_cls.php:295
-#: humo-gen/admin/include/editor_event_cls.php:307
-#: humo-gen/admin/include/editor_event_cls.php:319
-#: humo-gen/admin/include/editor_event_cls.php:338
-#: humo-gen/admin/include/editor_event_cls.php:369
-#: humo-gen/admin/include/editor_event_cls.php:372
-#: humo-gen/admin/include/editor_event_cls.php:565
-#: humo-gen/admin/include/editor_event_cls.php:577
+#: humo-gen/admin/include/editor.php:1044
+#: humo-gen/admin/include/editor.php:1415
+#: humo-gen/admin/include/editor.php:1498
+#: humo-gen/admin/include/editor.php:2744
+#: humo-gen/admin/include/editor.php:2953
+#: humo-gen/admin/include/editor.php:3214
+#: humo-gen/admin/include/editor_event_cls.php:235
+#: humo-gen/admin/include/editor_event_cls.php:249
+#: humo-gen/admin/include/editor_event_cls.php:261
+#: humo-gen/admin/include/editor_event_cls.php:272
+#: humo-gen/admin/include/editor_event_cls.php:284
+#: humo-gen/admin/include/editor_event_cls.php:296
+#: humo-gen/admin/include/editor_event_cls.php:308
+#: humo-gen/admin/include/editor_event_cls.php:320
+#: humo-gen/admin/include/editor_event_cls.php:339
+#: humo-gen/admin/include/editor_event_cls.php:370
+#: humo-gen/admin/include/editor_event_cls.php:373
+#: humo-gen/admin/include/editor_event_cls.php:567
+#: humo-gen/admin/include/editor_event_cls.php:579
 #: humo-gen/admin/include/editor_sources.php:379
 #: humo-gen/admin/include/favorites.php:117 humo-gen/admin/include/log.php:191
 #: humo-gen/admin/include/users.php:214
@@ -633,15 +633,15 @@ msgstr "Standard fő index"
 msgid "Set per language"
 msgstr "Nyelvenkénti beállítás"
 
-#: humo-gen/admin/include/editor.php:126 humo-gen/admin/include/editor.php:1313
-#: humo-gen/admin/include/editor.php:2650
-#: humo-gen/admin/include/editor.php:2748
-#: humo-gen/admin/include/editor.php:2888
-#: humo-gen/admin/include/editor.php:2957
-#: humo-gen/admin/include/editor.php:3142
-#: humo-gen/admin/include/editor.php:3217
-#: humo-gen/admin/include/index_inc.php:420
-#: humo-gen/admin/include/thumbs.php:651 humo-gen/fanchart.php:756
+#: humo-gen/admin/include/editor.php:126 humo-gen/admin/include/editor.php:1314
+#: humo-gen/admin/include/editor.php:2651
+#: humo-gen/admin/include/editor.php:2749
+#: humo-gen/admin/include/editor.php:2889
+#: humo-gen/admin/include/editor.php:2958
+#: humo-gen/admin/include/editor.php:3143
+#: humo-gen/admin/include/editor.php:3218
+#: humo-gen/admin/include/index_inc.php:423
+#: humo-gen/admin/include/thumbs.php:655 humo-gen/fanchart.php:756
 #: humo-gen/include/calculate_age_cls.php:171
 #: humo-gen/include/calculate_age_cls.php:197
 #: humo-gen/include/calculate_age_cls.php:283
@@ -652,11 +652,11 @@ msgstr "vagy"
 # Nomen Nescio: unknown name.
 #: humo-gen/admin/include/editor.php:146 humo-gen/admin/include/editor.php:651
 #: humo-gen/admin/include/editor.php:657 humo-gen/admin/include/editor.php:808
-#: humo-gen/admin/include/editor.php:813 humo-gen/admin/include/editor.php:976
-#: humo-gen/admin/include/editor.php:981
+#: humo-gen/admin/include/editor.php:813 humo-gen/admin/include/editor.php:977
+#: humo-gen/admin/include/editor.php:982
 #: humo-gen/admin/include/editor_cls.php:185
-#: humo-gen/admin/include/editor_event_cls.php:833
-#: humo-gen/admin/include/editor_event_cls.php:842
+#: humo-gen/admin/include/editor_event_cls.php:836
+#: humo-gen/admin/include/editor_event_cls.php:845
 #: humo-gen/admin/include/editor_inc.php:561
 #: humo-gen/admin/include/editor_inc.php:576
 #: humo-gen/admin/include/editor_inc.php:815
@@ -701,15 +701,15 @@ msgstr "Kedvencek lista:"
 msgid "Person"
 msgstr "Személy"
 
-#: humo-gen/admin/include/editor.php:375 humo-gen/admin/include/editor.php:1050
+#: humo-gen/admin/include/editor.php:375 humo-gen/admin/include/editor.php:1051
 #: humo-gen/admin/include/editor_event_cls.php:15
-#: humo-gen/admin/include/editor_event_cls.php:232
+#: humo-gen/admin/include/editor_event_cls.php:233
 #: humo-gen/admin/include/editor_inc.php:964
 #: humo-gen/admin/include/editor_person_select.php:29
 #: humo-gen/admin/include/gedcom_export.php:501 humo-gen/birthday_list.php:71
 #: humo-gen/family.php:2295 humo-gen/family.php:2366
-#: humo-gen/include/mainindex_cls.php:644 humo-gen/list.php:1584
-#: humo-gen/list_names.php:285 humo-gen/list_names.php:287
+#: humo-gen/include/mainindex_cls.php:600 humo-gen/list.php:1584
+#: humo-gen/list_names.php:332 humo-gen/list_names.php:334
 #: humo-gen/mailform.php:25 humo-gen/mailform.php:109 humo-gen/register.php:61
 #: humo-gen/user_settings.php:52
 msgid "Name"
@@ -766,20 +766,20 @@ msgid "= click to open extended editor items."
 msgstr "= kattintson a kiterjesztett szerkesztői elemek megjelenítéséhez."
 
 #: humo-gen/admin/include/editor.php:507 humo-gen/admin/include/editor.php:845
-#: humo-gen/admin/include/editor.php:1798
-#: humo-gen/admin/include/editor.php:1951
-#: humo-gen/admin/include/editor.php:2076 humo-gen/include/marriage_cls.php:576
+#: humo-gen/admin/include/editor.php:1799
+#: humo-gen/admin/include/editor.php:1952
+#: humo-gen/admin/include/editor.php:2077 humo-gen/include/marriage_cls.php:576
 msgid "marriage/ relation"
 msgstr "házasság/ kapcsolat"
 
-#: humo-gen/admin/include/editor.php:512 humo-gen/admin/include/editor.php:866
+#: humo-gen/admin/include/editor.php:512 humo-gen/admin/include/editor.php:867
 #: humo-gen/admin/include/trees_cls.php:1607 humo-gen/family.php:1518
 #: humo-gen/family.php:1535
 msgid "Children"
 msgstr "Gyermekek"
 
-#: humo-gen/admin/include/editor.php:544 humo-gen/admin/include/editor.php:2759
-#: humo-gen/admin/include/editor.php:3227
+#: humo-gen/admin/include/editor.php:544 humo-gen/admin/include/editor.php:2760
+#: humo-gen/admin/include/editor.php:3228
 msgid "Preview"
 msgstr "Előnézet"
 
@@ -787,11 +787,11 @@ msgstr "Előnézet"
 msgid "Add child to family:"
 msgstr "Gyermek hozzáadása a családhoz:"
 
-#: humo-gen/admin/include/editor.php:653 humo-gen/admin/include/editor.php:977
-#: humo-gen/admin/include/editor.php:1831
-#: humo-gen/admin/include/editor.php:1941
-#: humo-gen/admin/include/editor.php:1975
-#: humo-gen/admin/include/editor_event_cls.php:835
+#: humo-gen/admin/include/editor.php:653 humo-gen/admin/include/editor.php:978
+#: humo-gen/admin/include/editor.php:1832
+#: humo-gen/admin/include/editor.php:1942
+#: humo-gen/admin/include/editor.php:1976
+#: humo-gen/admin/include/editor_event_cls.php:838
 #: humo-gen/admin/include/tree_check.php:1404
 #: humo-gen/include/language_date.php:88 humo-gen/include/language_date.php:93
 #: humo-gen/include/language_date.php:98 humo-gen/include/language_date.php:115
@@ -821,116 +821,114 @@ msgstr "Szülők"
 msgid "Add parents"
 msgstr "Szülők hozzáadása"
 
-#: humo-gen/admin/include/editor.php:878
+#: humo-gen/admin/include/editor.php:879
 msgid "Connect child"
 msgstr "Gyermek kapcsolása"
 
-#: humo-gen/admin/include/editor.php:878
+#: humo-gen/admin/include/editor.php:879
 msgid "Add child"
 msgstr "Gyermek hozzáadása"
 
-#: humo-gen/admin/include/editor.php:886
+#: humo-gen/admin/include/editor.php:887
 msgid "Add marriage/ relation"
 msgstr "Házasság / kapcsolat hozzáadása"
 
-#: humo-gen/admin/include/editor.php:911 humo-gen/admin/include/editor.php:913
+#: humo-gen/admin/include/editor.php:912 humo-gen/admin/include/editor.php:914
 msgid "parents"
 msgstr "szülők"
 
-#: humo-gen/admin/include/editor.php:932
+#: humo-gen/admin/include/editor.php:933
 msgid "There are no parents."
 msgstr "Nincsenek szülők."
 
-#: humo-gen/admin/include/editor.php:933
+#: humo-gen/admin/include/editor.php:934
 msgid "Add new parents (N.N. & N.N.)"
 msgstr "Új szülők hozzáadása (N.N. & N.N.)"
 
-#: humo-gen/admin/include/editor.php:933
+#: humo-gen/admin/include/editor.php:934
 msgid "or select an existing family as parents."
 msgstr "vagy létező család kiválasztása szülőként."
 
-#: humo-gen/admin/include/editor.php:971
+#: humo-gen/admin/include/editor.php:972
 msgid "Select parents:"
 msgstr "Szülők kiválasztása:"
 
-#: humo-gen/admin/include/editor.php:986
+#: humo-gen/admin/include/editor.php:987
 msgid "Results are limited, use search to find more parents."
 msgstr ""
 "Találatok korlátozottak, használja a keresést, hogy több szülőt találjon."
 
 # Buried
-#: humo-gen/admin/include/editor.php:1000
-#: humo-gen/admin/include/editor.php:1049
-#: humo-gen/admin/include/editor.php:1141
-#: humo-gen/admin/include/editor.php:1195
-#: humo-gen/admin/include/editor.php:1236
-#: humo-gen/admin/include/editor.php:1332
-#: humo-gen/admin/include/editor.php:1409
-#: humo-gen/admin/include/editor.php:1492
-#: humo-gen/admin/include/editor.php:1721
-#: humo-gen/admin/include/editor.php:1747
-#: humo-gen/admin/include/editor.php:1928
-#: humo-gen/admin/include/editor.php:2011
-#: humo-gen/admin/include/editor.php:2047
-#: humo-gen/admin/include/editor.php:2074
-#: humo-gen/admin/include/editor.php:2177
-#: humo-gen/admin/include/editor.php:2204
-#: humo-gen/admin/include/editor.php:2240
-#: humo-gen/admin/include/editor.php:2334
-#: humo-gen/admin/include/editor_event_cls.php:174
-#: humo-gen/admin/include/editor_event_cls.php:202
-#: humo-gen/admin/include/editor_event_cls.php:333
-#: humo-gen/admin/include/editor_event_cls.php:359 humo-gen/family.php:2360
+#: humo-gen/admin/include/editor.php:1001
+#: humo-gen/admin/include/editor.php:1050
+#: humo-gen/admin/include/editor.php:1142
+#: humo-gen/admin/include/editor.php:1196
+#: humo-gen/admin/include/editor.php:1237
+#: humo-gen/admin/include/editor.php:1333
+#: humo-gen/admin/include/editor.php:1410
+#: humo-gen/admin/include/editor.php:1493
+#: humo-gen/admin/include/editor.php:1722
+#: humo-gen/admin/include/editor.php:1748
+#: humo-gen/admin/include/editor.php:1929
+#: humo-gen/admin/include/editor.php:2012
+#: humo-gen/admin/include/editor.php:2048
+#: humo-gen/admin/include/editor.php:2075
+#: humo-gen/admin/include/editor.php:2178
+#: humo-gen/admin/include/editor.php:2205
+#: humo-gen/admin/include/editor.php:2241
+#: humo-gen/admin/include/editor.php:2335
+#: humo-gen/admin/include/editor_event_cls.php:175
+#: humo-gen/admin/include/editor_event_cls.php:203
+#: humo-gen/admin/include/editor_event_cls.php:334
+#: humo-gen/admin/include/editor_event_cls.php:360 humo-gen/family.php:2360
 msgid "[+]"
 msgstr "[+]"
 
-#: humo-gen/admin/include/editor.php:1000
-#: humo-gen/admin/include/editor.php:1928
+#: humo-gen/admin/include/editor.php:1001
+#: humo-gen/admin/include/editor.php:1929
 #: humo-gen/admin/include/gedcom_export.php:582 humo-gen/list.php:1318
-#: humo-gen/list_names.php:208 humo-gen/statistics.php:776
-#: humo-gen/statistics.php:959
+#: humo-gen/list_names.php:255 humo-gen/statistics.php:783
+#: humo-gen/statistics.php:966
 msgid "All"
 msgstr "Minden"
 
-#: humo-gen/admin/include/editor.php:1003
+#: humo-gen/admin/include/editor.php:1004
 msgid "Delete person"
 msgstr "Személy törlése"
 
-#: humo-gen/admin/include/editor.php:1052 humo-gen/list.php:1597
+#: humo-gen/admin/include/editor.php:1053 humo-gen/list.php:1597
 msgid "firstname"
 msgstr "keresztnév"
 
-#: humo-gen/admin/include/editor.php:1052
-#: humo-gen/admin/include/editor_event_cls.php:235
-#: humo-gen/admin/include/editor_event_cls.php:999
-#: humo-gen/admin/include/editor_event_cls.php:1020
+#: humo-gen/admin/include/editor.php:1053
+#: humo-gen/admin/include/editor_event_cls.php:236
+#: humo-gen/admin/include/editor_event_cls.php:1002
 #: humo-gen/admin/include/trees_cls.php:1567
 #: humo-gen/include/person_cls.php:771 humo-gen/include/person_cls.php:1168
-#: humo-gen/include/person_cls.php:1175
 msgid "Nickname"
 msgstr "Más név"
 
-#: humo-gen/admin/include/editor.php:1062
-#: humo-gen/admin/include/editor.php:1135
-#: humo-gen/admin/include/editor.php:1166
-#: humo-gen/admin/include/editor.php:1209
-#: humo-gen/admin/include/editor.php:1263
-#: humo-gen/admin/include/editor.php:1346
-#: humo-gen/admin/include/editor.php:1470
-#: humo-gen/admin/include/editor.php:1658
-#: humo-gen/admin/include/editor.php:1675
-#: humo-gen/admin/include/editor.php:2026
-#: humo-gen/admin/include/editor.php:2061
-#: humo-gen/admin/include/editor.php:2090
-#: humo-gen/admin/include/editor.php:2191
-#: humo-gen/admin/include/editor.php:2218
-#: humo-gen/admin/include/editor.php:2254
-#: humo-gen/admin/include/editor.php:2295
-#: humo-gen/admin/include/editor.php:2310
-#: humo-gen/admin/include/editor.php:3196
-#: humo-gen/admin/include/editor.php:3204
-#: humo-gen/admin/include/editor_event_cls.php:1070
-#: humo-gen/admin/include/editor_event_cls.php:1081
+#: humo-gen/admin/include/editor.php:1063
+#: humo-gen/admin/include/editor.php:1136
+#: humo-gen/admin/include/editor.php:1167
+#: humo-gen/admin/include/editor.php:1210
+#: humo-gen/admin/include/editor.php:1264
+#: humo-gen/admin/include/editor.php:1347
+#: humo-gen/admin/include/editor.php:1471
+#: humo-gen/admin/include/editor.php:1659
+#: humo-gen/admin/include/editor.php:1676
+#: humo-gen/admin/include/editor.php:2027
+#: humo-gen/admin/include/editor.php:2062
+#: humo-gen/admin/include/editor.php:2091
+#: humo-gen/admin/include/editor.php:2192
+#: humo-gen/admin/include/editor.php:2219
+#: humo-gen/admin/include/editor.php:2255
+#: humo-gen/admin/include/editor.php:2296
+#: humo-gen/admin/include/editor.php:2311
+#: humo-gen/admin/include/editor.php:3197
+#: humo-gen/admin/include/editor.php:3205
+#: humo-gen/admin/include/editor_event_cls.php:1073
+#: humo-gen/admin/include/editor_event_cls.php:1084
 #: humo-gen/admin/include/editor_sources.php:54
 #: humo-gen/admin/include/editor_sources.php:60
 #: humo-gen/admin/include/editor_sources.php:66
@@ -952,80 +950,82 @@ msgstr "Más név"
 #: humo-gen/admin/include/editor_sources.php:168
 #: humo-gen/admin/include/editor_sources.php:193
 #: humo-gen/admin/include/editor_sources.php:295
+#: humo-gen/include/show_sources.php:65 humo-gen/include/show_sources.php:81
+#: humo-gen/include/show_sources.php:120 humo-gen/include/show_sources.php:192
 msgid "source"
 msgstr "forrás"
 
-#: humo-gen/admin/include/editor.php:1067 humo-gen/list.php:1203
+#: humo-gen/admin/include/editor.php:1068 humo-gen/list.php:1203
 msgid "prefix"
 msgstr "előtag"
 
-#: humo-gen/admin/include/editor.php:1067
+#: humo-gen/admin/include/editor.php:1068
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr "Például: d' vagy:  van_ (használjon _ hézaghoz)"
 
-#: humo-gen/admin/include/editor.php:1069 humo-gen/list.php:1603
+#: humo-gen/admin/include/editor.php:1070 humo-gen/list.php:1603
 msgid "lastname"
 msgstr "családnév"
 
-#: humo-gen/admin/include/editor.php:1070
+#: humo-gen/admin/include/editor.php:1071
 msgid "patronymic"
 msgstr "patronimikon"
 
-#: humo-gen/admin/include/editor.php:1075
-#: humo-gen/admin/include/editor.php:1185
-#: humo-gen/admin/include/editor.php:1225
-#: humo-gen/admin/include/editor.php:1323
-#: humo-gen/admin/include/editor.php:1365
-#: humo-gen/admin/include/editor.php:2041
-#: humo-gen/admin/include/editor.php:2069
-#: humo-gen/admin/include/editor.php:2169
-#: humo-gen/admin/include/editor.php:2199
-#: humo-gen/admin/include/editor.php:2227
-#: humo-gen/admin/include/editor.php:2277
-#: humo-gen/admin/include/editor.php:2736
-#: humo-gen/admin/include/editor.php:2944
-#: humo-gen/admin/include/editor.php:3209
-#: humo-gen/admin/include/editor_event_cls.php:1057
+#: humo-gen/admin/include/editor.php:1076
+#: humo-gen/admin/include/editor.php:1186
+#: humo-gen/admin/include/editor.php:1226
+#: humo-gen/admin/include/editor.php:1324
+#: humo-gen/admin/include/editor.php:1366
+#: humo-gen/admin/include/editor.php:2042
+#: humo-gen/admin/include/editor.php:2070
+#: humo-gen/admin/include/editor.php:2170
+#: humo-gen/admin/include/editor.php:2200
+#: humo-gen/admin/include/editor.php:2228
+#: humo-gen/admin/include/editor.php:2278
+#: humo-gen/admin/include/editor.php:2737
+#: humo-gen/admin/include/editor.php:2945
+#: humo-gen/admin/include/editor.php:3210
+#: humo-gen/admin/include/editor_event_cls.php:1060
 #: humo-gen/admin/include/editor_sources.php:84
 #: humo-gen/admin/include/editor_sources.php:139
 #: humo-gen/admin/include/gedcom.php:1401
 msgid "text"
 msgstr "szöveg"
 
-#: humo-gen/admin/include/editor.php:1098 humo-gen/admin/include/groups.php:502
+#: humo-gen/admin/include/editor.php:1099 humo-gen/admin/include/groups.php:502
 msgid "Privacy filter"
 msgstr "Adatvédelmi szűrő"
 
-#: humo-gen/admin/include/editor.php:1102
+#: humo-gen/admin/include/editor.php:1103
 #: humo-gen/admin/include/trees_cls.php:1581
 msgid "alive"
 msgstr "életben van"
 
-#: humo-gen/admin/include/editor.php:1105
+#: humo-gen/admin/include/editor.php:1106
 msgid "deceased"
 msgstr "elhunyt"
 
-#: humo-gen/admin/include/editor.php:1120
+#: humo-gen/admin/include/editor.php:1121
 #: humo-gen/admin/include/editor_sources.php:54
 msgid "Sex"
 msgstr "Nem"
 
-#: humo-gen/admin/include/editor.php:1122
-#: humo-gen/admin/include/editor.php:2099 humo-gen/report_ancestor.php:1439
+#: humo-gen/admin/include/editor.php:1123
+#: humo-gen/admin/include/editor.php:2100 humo-gen/report_ancestor.php:1439
 msgid "male"
 msgstr "férfi"
 
-#: humo-gen/admin/include/editor.php:1124
-#: humo-gen/admin/include/editor.php:2103 humo-gen/report_ancestor.php:1437
+#: humo-gen/admin/include/editor.php:1125
+#: humo-gen/admin/include/editor.php:2104 humo-gen/report_ancestor.php:1437
 msgid "female"
 msgstr "nő"
 
-#: humo-gen/admin/include/editor.php:1142
+#: humo-gen/admin/include/editor.php:1143
 #: humo-gen/admin/include/editor_sources.php:60 humo-gen/birthday_list.php:70
 #: humo-gen/family.php:2204 humo-gen/googlemaps/namesearch.php:189
 #: humo-gen/include/fpdf16/fpdfextend.php:101
 #: humo-gen/include/fpdf16/fpdfextend.php:102
-#: humo-gen/include/mainindex_cls.php:656 humo-gen/include/person_cls.php:1296
+#: humo-gen/include/mainindex_cls.php:566 humo-gen/include/person_cls.php:1296
 #: humo-gen/include/person_cls.php:1297 humo-gen/list.php:1257
 #: humo-gen/list.php:1263 humo-gen/list.php:1585 humo-gen/maps.php:623
 #: humo-gen/maps.php:732 humo-gen/report_ancestor.php:1121
@@ -1033,78 +1033,78 @@ msgstr "nő"
 msgid "born"
 msgstr "született"
 
-#: humo-gen/admin/include/editor.php:1144
-#: humo-gen/admin/include/editor.php:1197
-#: humo-gen/admin/include/editor.php:1238
-#: humo-gen/admin/include/editor.php:1334
-#: humo-gen/admin/include/editor.php:1459
-#: humo-gen/admin/include/editor.php:1581
-#: humo-gen/admin/include/editor.php:2014
-#: humo-gen/admin/include/editor.php:2049
-#: humo-gen/admin/include/editor.php:2077
-#: humo-gen/admin/include/editor.php:2179
-#: humo-gen/admin/include/editor.php:2206
-#: humo-gen/admin/include/editor.php:2242
-#: humo-gen/admin/include/editor.php:2712
-#: humo-gen/admin/include/editor.php:2938
-#: humo-gen/admin/include/editor.php:3190
+#: humo-gen/admin/include/editor.php:1145
+#: humo-gen/admin/include/editor.php:1198
+#: humo-gen/admin/include/editor.php:1239
+#: humo-gen/admin/include/editor.php:1335
+#: humo-gen/admin/include/editor.php:1460
+#: humo-gen/admin/include/editor.php:1582
+#: humo-gen/admin/include/editor.php:2015
+#: humo-gen/admin/include/editor.php:2050
+#: humo-gen/admin/include/editor.php:2078
+#: humo-gen/admin/include/editor.php:2180
+#: humo-gen/admin/include/editor.php:2207
+#: humo-gen/admin/include/editor.php:2243
+#: humo-gen/admin/include/editor.php:2713
+#: humo-gen/admin/include/editor.php:2939
+#: humo-gen/admin/include/editor.php:3191
 #: humo-gen/admin/include/editor_cls.php:38
 #: humo-gen/admin/include/editor_sources.php:308
 msgid "date"
 msgstr "dátum"
 
-#: humo-gen/admin/include/editor.php:1146
-#: humo-gen/admin/include/editor.php:1197
-#: humo-gen/admin/include/editor.php:1238
-#: humo-gen/admin/include/editor.php:1334
-#: humo-gen/admin/include/editor.php:1461
-#: humo-gen/admin/include/editor.php:2014
-#: humo-gen/admin/include/editor.php:2049
-#: humo-gen/admin/include/editor.php:2077
-#: humo-gen/admin/include/editor.php:2179
-#: humo-gen/admin/include/editor.php:2206
-#: humo-gen/admin/include/editor.php:2242
-#: humo-gen/admin/include/editor.php:2712
-#: humo-gen/admin/include/editor.php:2938
-#: humo-gen/admin/include/editor.php:3190
-#: humo-gen/admin/include/editor_event_cls.php:1054
+#: humo-gen/admin/include/editor.php:1147
+#: humo-gen/admin/include/editor.php:1198
+#: humo-gen/admin/include/editor.php:1239
+#: humo-gen/admin/include/editor.php:1335
+#: humo-gen/admin/include/editor.php:1462
+#: humo-gen/admin/include/editor.php:2015
+#: humo-gen/admin/include/editor.php:2050
+#: humo-gen/admin/include/editor.php:2078
+#: humo-gen/admin/include/editor.php:2180
+#: humo-gen/admin/include/editor.php:2207
+#: humo-gen/admin/include/editor.php:2243
+#: humo-gen/admin/include/editor.php:2713
+#: humo-gen/admin/include/editor.php:2939
+#: humo-gen/admin/include/editor.php:3191
+#: humo-gen/admin/include/editor_event_cls.php:1057
 #: humo-gen/admin/include/editor_sources.php:315
 msgid "place"
 msgstr "helység"
 
-#: humo-gen/admin/include/editor.php:1175
+#: humo-gen/admin/include/editor.php:1176
 #: humo-gen/admin/include/trees_cls.php:1571
 msgid "birth time"
 msgstr "születés ideje"
 
-#: humo-gen/admin/include/editor.php:1178 humo-gen/include/person_cls.php:191
+#: humo-gen/admin/include/editor.php:1179 humo-gen/include/person_cls.php:191
 msgid "stillborn child"
 msgstr "halva született gyermek"
 
-#: humo-gen/admin/include/editor.php:1196
+#: humo-gen/admin/include/editor.php:1197
 #: humo-gen/admin/include/editor_sources.php:66 humo-gen/family.php:2207
 #: humo-gen/googlemaps/namesearch.php:192
 #: humo-gen/include/fpdf16/fpdfextend.php:112
 #: humo-gen/include/fpdf16/fpdfextend.php:113
-#: humo-gen/include/mainindex_cls.php:660 humo-gen/include/person_cls.php:1354
+#: humo-gen/include/mainindex_cls.php:570 humo-gen/include/person_cls.php:1354
 #: humo-gen/include/person_cls.php:1355 humo-gen/list.php:1257
 #: humo-gen/list.php:1263 humo-gen/list.php:1585 humo-gen/maps.php:626
 #: humo-gen/maps.php:735 humo-gen/timelines.php:41
 msgid "baptised"
 msgstr "keresztelve"
 
-#: humo-gen/admin/include/editor.php:1217
+#: humo-gen/admin/include/editor.php:1218
 #: humo-gen/admin/include/trees_cls.php:1582
 #: humo-gen/include/person_cls.php:1325 humo-gen/include/person_cls.php:1327
 msgid "religion"
 msgstr "vallás"
 
-#: humo-gen/admin/include/editor.php:1237
+#: humo-gen/admin/include/editor.php:1238
 #: humo-gen/admin/include/editor_sources.php:72 humo-gen/birthday_list.php:72
 #: humo-gen/googlemaps/namesearch.php:198
 #: humo-gen/include/fpdf16/fpdfextend.php:123
 #: humo-gen/include/fpdf16/fpdfextend.php:124
-#: humo-gen/include/mainindex_cls.php:665 humo-gen/include/person_cls.php:1456
+#: humo-gen/include/mainindex_cls.php:574 humo-gen/include/person_cls.php:1456
 #: humo-gen/include/person_cls.php:1457 humo-gen/list.php:1286
 #: humo-gen/list.php:1292 humo-gen/list.php:1586 humo-gen/maps.php:629
 #: humo-gen/maps.php:738 humo-gen/report_ancestor.php:1121
@@ -1112,13 +1112,13 @@ msgstr "vallás"
 msgid "died"
 msgstr "meghalt"
 
-#: humo-gen/admin/include/editor.php:1242
-#: humo-gen/admin/include/editor.php:2099
-#: humo-gen/admin/include/editor.php:2103
+#: humo-gen/admin/include/editor.php:1243
+#: humo-gen/admin/include/editor.php:2100
+#: humo-gen/admin/include/editor.php:2104
 msgid "Age"
 msgstr "Életkor"
 
-#: humo-gen/admin/include/editor.php:1251
+#: humo-gen/admin/include/editor.php:1252
 msgid ""
 "If death year and age are used, then birth year is calculated automatically "
 "(when empty)."
@@ -1126,66 +1126,66 @@ msgstr ""
 "Ha az elhalálozási év és életkor ismert, a születési évet automatikusan "
 "kiszámoljuk (amikor üres)"
 
-#: humo-gen/admin/include/editor.php:1271
+#: humo-gen/admin/include/editor.php:1272
 #: humo-gen/admin/include/trees_cls.php:1574
 msgid "death time"
 msgstr "elhalálozás ideje"
 
-#: humo-gen/admin/include/editor.php:1273
+#: humo-gen/admin/include/editor.php:1274
 msgid "cause"
 msgstr "ok"
 
-#: humo-gen/admin/include/editor.php:1279 humo-gen/include/person_cls.php:1407
+#: humo-gen/admin/include/editor.php:1280 humo-gen/include/person_cls.php:1407
 msgid "murdered"
 msgstr "gyilkosság áldozata"
 
-#: humo-gen/admin/include/editor.php:1282 humo-gen/include/person_cls.php:1408
+#: humo-gen/admin/include/editor.php:1283 humo-gen/include/person_cls.php:1408
 msgid "drowned"
 msgstr "fulladás"
 
-#: humo-gen/admin/include/editor.php:1285 humo-gen/include/person_cls.php:1409
+#: humo-gen/admin/include/editor.php:1286 humo-gen/include/person_cls.php:1409
 msgid "perished"
 msgstr "elpusztult"
 
-#: humo-gen/admin/include/editor.php:1288 humo-gen/include/person_cls.php:1410
+#: humo-gen/admin/include/editor.php:1289 humo-gen/include/person_cls.php:1410
 msgid "killed in action"
 msgstr "bevetés közben elhunyt"
 
-#: humo-gen/admin/include/editor.php:1291 humo-gen/include/person_cls.php:1411
+#: humo-gen/admin/include/editor.php:1292 humo-gen/include/person_cls.php:1411
 msgid "being missed"
 msgstr "elveszett"
 
-#: humo-gen/admin/include/editor.php:1294 humo-gen/include/person_cls.php:1412
+#: humo-gen/admin/include/editor.php:1295 humo-gen/include/person_cls.php:1412
 msgid "committed suicide"
 msgstr "öngyilkosságot követett el"
 
-#: humo-gen/admin/include/editor.php:1297 humo-gen/include/person_cls.php:1413
+#: humo-gen/admin/include/editor.php:1298 humo-gen/include/person_cls.php:1413
 msgid "executed"
 msgstr "kivégezték"
 
-#: humo-gen/admin/include/editor.php:1300 humo-gen/include/person_cls.php:1414
+#: humo-gen/admin/include/editor.php:1301 humo-gen/include/person_cls.php:1414
 msgid "died young"
 msgstr "fiatalon halt meg"
 
-#: humo-gen/admin/include/editor.php:1303 humo-gen/include/person_cls.php:1415
+#: humo-gen/admin/include/editor.php:1304 humo-gen/include/person_cls.php:1415
 msgid "died unmarried"
 msgstr "nőtlenként / hajadonként hunyt el"
 
-#: humo-gen/admin/include/editor.php:1306 humo-gen/include/person_cls.php:1416
+#: humo-gen/admin/include/editor.php:1307 humo-gen/include/person_cls.php:1416
 msgid "registration"
 msgstr "regisztráció"
 
-#: humo-gen/admin/include/editor.php:1309 humo-gen/include/person_cls.php:1417
+#: humo-gen/admin/include/editor.php:1310 humo-gen/include/person_cls.php:1417
 msgid "declared death"
 msgstr "holttá nyilvánítva"
 
-#: humo-gen/admin/include/editor.php:1333
-#: humo-gen/admin/include/editor.php:1354
+#: humo-gen/admin/include/editor.php:1334
+#: humo-gen/admin/include/editor.php:1355
 msgid "Buried"
 msgstr "Temetve"
 
-#: humo-gen/admin/include/editor.php:1354
-#: humo-gen/admin/include/editor.php:1358
+#: humo-gen/admin/include/editor.php:1355
+#: humo-gen/admin/include/editor.php:1359
 #: humo-gen/admin/include/trees_cls.php:1576
 #: humo-gen/include/fpdf16/fpdfextend.php:135
 #: humo-gen/include/fpdf16/fpdfextend.php:136
@@ -1193,7 +1193,7 @@ msgstr "Temetve"
 msgid "cremation"
 msgstr "hamvasztva"
 
-#: humo-gen/admin/include/editor.php:1356
+#: humo-gen/admin/include/editor.php:1357
 #: humo-gen/admin/include/editor_sources.php:78
 #: humo-gen/googlemaps/namesearch.php:201
 #: humo-gen/include/fpdf16/fpdfextend.php:143
@@ -1204,12 +1204,12 @@ msgstr "hamvasztva"
 msgid "buried"
 msgstr "temetve"
 
-#: humo-gen/admin/include/editor.php:1375
+#: humo-gen/admin/include/editor.php:1376
 #: humo-gen/admin/include/trees_cls.php:1583
 msgid "own code"
 msgstr "saját kód"
 
-#: humo-gen/admin/include/editor.php:1386
+#: humo-gen/admin/include/editor.php:1387
 msgid ""
 "Use own code for your own remarks.<br>\n"
 "It's possible to use own code for special privacy options, see Admin > Users "
@@ -1224,57 +1224,57 @@ msgstr ""
 "képek mappában pl. 'szemely.gif', majd a 'szemely'-t írja be a saját kód "
 "mezőbe."
 
-#: humo-gen/admin/include/editor.php:1411
-#: humo-gen/admin/include/editor.php:3294 humo-gen/header.php:230
+#: humo-gen/admin/include/editor.php:1412
+#: humo-gen/admin/include/editor.php:3295 humo-gen/header.php:230
 #: humo-gen/list.php:1583 humo-gen/list_places_families.php:570
 msgid "Places"
 msgstr "Helységek"
 
-#: humo-gen/admin/include/editor.php:1519
+#: humo-gen/admin/include/editor.php:1520
 msgid "(shared address by a person)"
 msgstr ""
 
-#: humo-gen/admin/include/editor.php:1594
-#: humo-gen/admin/include/editor.php:3129
-#: humo-gen/admin/include/editor.php:3131
+#: humo-gen/admin/include/editor.php:1595
+#: humo-gen/admin/include/editor.php:3130
+#: humo-gen/admin/include/editor.php:3132
 msgid "Select address"
 msgstr "Cím kiválasztása"
 
-#: humo-gen/admin/include/editor.php:1610
+#: humo-gen/admin/include/editor.php:1611
 msgid "Addressrole"
 msgstr "Cím szerep"
 
-#: humo-gen/admin/include/editor.php:1646
+#: humo-gen/admin/include/editor.php:1647
 msgid "Text for person"
 msgstr "Jegyzet a személyhez"
 
-#: humo-gen/admin/include/editor.php:1666 humo-gen/include/show_sources.php:123
+#: humo-gen/admin/include/editor.php:1667 humo-gen/include/show_sources.php:123
 msgid "Source for person"
 msgstr "Forrás a személyhez"
 
-#: humo-gen/admin/include/editor.php:1723
-#: humo-gen/admin/include/editor.php:2335
+#: humo-gen/admin/include/editor.php:1724
+#: humo-gen/admin/include/editor.php:2336
 msgid "Gedcom tags"
 msgstr "Gedcom címkék"
 
-#: humo-gen/admin/include/editor.php:1725
-#: humo-gen/admin/include/editor.php:1728
-#: humo-gen/admin/include/editor.php:2337
-#: humo-gen/admin/include/editor.php:2340
+#: humo-gen/admin/include/editor.php:1726
+#: humo-gen/admin/include/editor.php:1729
+#: humo-gen/admin/include/editor.php:2338
+#: humo-gen/admin/include/editor.php:2341
 #, php-format
 msgid "There are %d unprocessed gedcom tags."
 msgstr "%d feldolgozatlan gedcom címke van."
 
-#: humo-gen/admin/include/editor.php:1748
+#: humo-gen/admin/include/editor.php:1749
 #: humo-gen/admin/include/user_notes.php:10
 #: humo-gen/admin/include/user_notes.php:14
-#: humo-gen/admin/include/user_notes.php:102 humo-gen/admin/index.php:796
+#: humo-gen/admin/include/user_notes.php:102 humo-gen/admin/index.php:797
 #: humo-gen/family.php:2231
 msgid "User notes"
 msgstr "Felhasználói jegyzetek"
 
-#: humo-gen/admin/include/editor.php:1750
-#: humo-gen/admin/include/editor.php:1752
+#: humo-gen/admin/include/editor.php:1751
+#: humo-gen/admin/include/editor.php:1753
 #: humo-gen/admin/include/user_notes.php:104
 #: humo-gen/admin/include/user_notes.php:106 humo-gen/family.php:2233
 #: humo-gen/family.php:2235
@@ -1282,11 +1282,11 @@ msgstr "Felhasználói jegyzetek"
 msgid "There are %d user added notes."
 msgstr "%d felhasználói jegyzet van."
 
-#: humo-gen/admin/include/editor.php:1809
+#: humo-gen/admin/include/editor.php:1810
 msgid "Select marriage"
 msgstr "Házasság kiválasztása"
 
-#: humo-gen/admin/include/editor.php:1813
+#: humo-gen/admin/include/editor.php:1814
 #: humo-gen/admin/include/tree_check.php:876
 #: humo-gen/admin/include/tree_check.php:1042
 #: humo-gen/admin/include/tree_check.php:1046
@@ -1297,49 +1297,49 @@ msgstr "Házasság kiválasztása"
 msgid "marriage"
 msgstr "házasság"
 
-#: humo-gen/admin/include/editor.php:1845
-#: humo-gen/admin/include/editor.php:1858
+#: humo-gen/admin/include/editor.php:1846
+#: humo-gen/admin/include/editor.php:1859
 msgid "Add relation"
 msgstr "Kapcsolat hozzáadása"
 
-#: humo-gen/admin/include/editor.php:1849
+#: humo-gen/admin/include/editor.php:1850
 msgid "Add relation with new partner (N.N.)"
 msgstr "Kapcsolat hozzáadása új partnerrel (N.N.)"
 
-#: humo-gen/admin/include/editor.php:1849
+#: humo-gen/admin/include/editor.php:1850
 msgid "or add relation with existing person as partner."
 msgstr "vagy partneri kapcsolat hozzáadása létező személlyel."
 
-#: humo-gen/admin/include/editor.php:1854
-#: humo-gen/admin/include/editor.php:1955
-#: humo-gen/admin/include/editor.php:1982
+#: humo-gen/admin/include/editor.php:1855
+#: humo-gen/admin/include/editor.php:1956
+#: humo-gen/admin/include/editor.php:1983
 #: humo-gen/admin/include/editor_person_select.php:5
 #: humo-gen/admin/include/editor_person_select.php:6
 msgid "Select person"
 msgstr "Személy kiválasztása"
 
-#: humo-gen/admin/include/editor.php:1932
+#: humo-gen/admin/include/editor.php:1933
 msgid "Delete relation"
 msgstr "Kapcsolat törlése"
 
-#: humo-gen/admin/include/editor.php:2013
-#: humo-gen/admin/include/editor.php:2131
+#: humo-gen/admin/include/editor.php:2014
+#: humo-gen/admin/include/editor.php:2132
 #: humo-gen/admin/include/editor_sources.php:103
 #: humo-gen/include/marriage_cls.php:52 humo-gen/include/marriage_cls.php:128
 #: humo-gen/include/marriage_cls.php:129 humo-gen/include/marriage_cls.php:130
 msgid "Living together"
 msgstr "Élettársi kapcsolat"
 
-#: humo-gen/admin/include/editor.php:2035
+#: humo-gen/admin/include/editor.php:2036
 msgid "End date"
 msgstr "Befejezés időpontja"
 
-#: humo-gen/admin/include/editor.php:2048
+#: humo-gen/admin/include/editor.php:2049
 #: humo-gen/admin/include/editor_sources.php:109
 msgid "Notice of Marriage"
 msgstr "Házassági hirdetés"
 
-#: humo-gen/admin/include/editor.php:2113
+#: humo-gen/admin/include/editor.php:2114
 msgid ""
 "If birth year of man or woman is empty it will be calculated automatically "
 "using age by marriage."
@@ -1347,188 +1347,182 @@ msgstr ""
 "Amennyiben agy férfi vagy nő születési éve üres, automatikusan kiszámoljuk "
 "azt, a házasságkötési életkor alapján."
 
-#: humo-gen/admin/include/editor.php:2122
+#: humo-gen/admin/include/editor.php:2123
 msgid "Relation Type"
 msgstr "Kapcsolat típusa"
 
-#: humo-gen/admin/include/editor.php:2125
+#: humo-gen/admin/include/editor.php:2126
 msgid "Marriage/ Related"
 msgstr "Hásasság/ kapcsolat"
 
-#: humo-gen/admin/include/editor.php:2128 humo-gen/family.php:2027
-#: humo-gen/family.php:2033 humo-gen/include/calculate_age_cls.php:325
-#: humo-gen/include/calculate_age_cls.php:328
-#: humo-gen/include/marriage_cls.php:261 humo-gen/include/marriage_cls.php:262
-#: humo-gen/include/marriage_cls.php:263 humo-gen/include/marriage_cls.php:270
-#: humo-gen/include/marriage_cls.php:271
+#: humo-gen/admin/include/editor.php:2129 humo-gen/include/marriage_cls.php:261
+#: humo-gen/include/marriage_cls.php:262 humo-gen/include/marriage_cls.php:263
+#: humo-gen/include/marriage_cls.php:270 humo-gen/include/marriage_cls.php:271
 msgid "Married"
 msgstr "Házasságot kötött"
 
-#: humo-gen/admin/include/editor.php:2134 humo-gen/include/marriage_cls.php:55
+#: humo-gen/admin/include/editor.php:2135 humo-gen/include/marriage_cls.php:55
 msgid "Living apart together"
 msgstr "Különélés élettársi kapcsolatban"
 
-#: humo-gen/admin/include/editor.php:2137 humo-gen/include/marriage_cls.php:58
+#: humo-gen/admin/include/editor.php:2138 humo-gen/include/marriage_cls.php:58
 msgid "Intentionally unmarried mother"
 msgstr "Szándékosan egyedülálló anya"
 
-#: humo-gen/admin/include/editor.php:2140 humo-gen/include/marriage_cls.php:62
+#: humo-gen/admin/include/editor.php:2141 humo-gen/include/marriage_cls.php:62
 msgid "Homosexual"
 msgstr "Homoszexuális"
 
-#: humo-gen/admin/include/editor.php:2143
+#: humo-gen/admin/include/editor.php:2144
 msgid "Non_marital"
 msgstr "Nem_házassági"
 
-#: humo-gen/admin/include/editor.php:2146 humo-gen/include/marriage_cls.php:69
+#: humo-gen/admin/include/editor.php:2147 humo-gen/include/marriage_cls.php:69
 #: humo-gen/include/marriage_cls.php:75
 msgid "Extramarital"
 msgstr "Házasságon kívüli"
 
-#: humo-gen/admin/include/editor.php:2149 humo-gen/include/marriage_cls.php:81
-#: humo-gen/relations.php:2004 humo-gen/relations.php:2005
-#: humo-gen/relations.php:2022 humo-gen/relations.php:2023
-#: humo-gen/relations.php:2076
+#: humo-gen/admin/include/editor.php:2150 humo-gen/include/marriage_cls.php:81
 msgid "Partner"
 msgstr "Házastárs"
 
-#: humo-gen/admin/include/editor.php:2152 humo-gen/include/marriage_cls.php:84
+#: humo-gen/admin/include/editor.php:2153 humo-gen/include/marriage_cls.php:84
 msgid "Registered"
 msgstr "Bejegyzett"
 
-#: humo-gen/admin/include/editor.php:2155 humo-gen/include/marriage_cls.php:87
+#: humo-gen/admin/include/editor.php:2156 humo-gen/include/marriage_cls.php:87
 msgid "Unknown relation"
 msgstr "Ismeretlen kapcsolat"
 
-#: humo-gen/admin/include/editor.php:2163
-#: humo-gen/admin/include/editor.php:2270
+#: humo-gen/admin/include/editor.php:2164
+#: humo-gen/admin/include/editor.php:2271
 msgid "Registrar"
 msgstr "Anyakönyvvezető"
 
-#: humo-gen/admin/include/editor.php:2178
+#: humo-gen/admin/include/editor.php:2179
 #: humo-gen/admin/include/editor_sources.php:121
 msgid "Religious Notice of Marriage"
 msgstr "Egyházi házassági hirdetés"
 
-#: humo-gen/admin/include/editor.php:2205
+#: humo-gen/admin/include/editor.php:2206
 #: humo-gen/admin/include/editor_sources.php:127
 msgid "Religious Marriage"
 msgstr "Egyházi házasság"
 
-#: humo-gen/admin/include/editor.php:2236
+#: humo-gen/admin/include/editor.php:2237
 msgid "Religion"
 msgstr "Vallás"
 
-#: humo-gen/admin/include/editor.php:2241
+#: humo-gen/admin/include/editor.php:2242
 #: humo-gen/admin/include/editor_sources.php:133
 msgid "Divorce"
 msgstr "Válás"
 
-#: humo-gen/admin/include/editor.php:2264
+#: humo-gen/admin/include/editor.php:2265
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr ""
 "Válás (használja ezt a jelölőnégyzetet a minden további adat nélküli válások "
 "esetében)."
 
-#: humo-gen/admin/include/editor.php:2282
+#: humo-gen/admin/include/editor.php:2283
 msgid "Text by marriage"
 msgstr "Házassági jegyzetek"
 
-#: humo-gen/admin/include/editor.php:2302
+#: humo-gen/admin/include/editor.php:2303
 msgid "Source by marriage"
 msgstr "Forrás házassághoz"
 
-#: humo-gen/admin/include/editor.php:2429
+#: humo-gen/admin/include/editor.php:2430
 msgid "Use this icon to order children (drag and drop)"
 msgstr "Használja ezt az ikont a gyermekek rendezéséhez (húzd és ejtsd)"
 
-#: humo-gen/admin/include/editor.php:2431
+#: humo-gen/admin/include/editor.php:2432
 msgid "Or automatically order children:"
 msgstr "Vagy rendezze automatikusan a gyermekeket:"
 
-#: humo-gen/admin/include/editor.php:2431
+#: humo-gen/admin/include/editor.php:2432
 msgid "Automatic order children"
 msgstr "Gyermekek automatikus rendezése"
 
-#: humo-gen/admin/include/editor.php:2433
+#: humo-gen/admin/include/editor.php:2434
 msgid "Children are re-ordered."
 msgstr "A gyermekek újrarendezve."
 
-#: humo-gen/admin/include/editor.php:2448
+#: humo-gen/admin/include/editor.php:2449
 msgid "Drag to change order (saves automatically)"
 msgstr "Sorrend változtatása húzással (automatikus  mentés)"
 
-#: humo-gen/admin/include/editor.php:2448
+#: humo-gen/admin/include/editor.php:2449
 msgid "Drag to change order"
 msgstr "Sorrend változtatása húzással"
 
-#: humo-gen/admin/include/editor.php:2452
+#: humo-gen/admin/include/editor.php:2453
 msgid "Disconnect child"
 msgstr "Gyermek leválasztása"
 
-#: humo-gen/admin/include/editor.php:2560
+#: humo-gen/admin/include/editor.php:2561
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr ""
 "Biztosan el kívnja távolítani ezt a forrást és az ÖSSZES forráshivatkozást?"
 
-#: humo-gen/admin/include/editor.php:2603
+#: humo-gen/admin/include/editor.php:2604
 msgid "Source is removed!"
 msgstr "Forrás eltávolítva!"
 
-#: humo-gen/admin/include/editor.php:2607
+#: humo-gen/admin/include/editor.php:2608
 msgid ""
 "Shared sources. These sources can be connected to multiple persons, "
 "families, events and other items."
 msgstr ""
 
-#: humo-gen/admin/include/editor.php:2623
-#: humo-gen/admin/include/editor.php:2625
+#: humo-gen/admin/include/editor.php:2624
+#: humo-gen/admin/include/editor.php:2626
 msgid "Select source"
 msgstr "Forrás kiválasztása"
 
-#: humo-gen/admin/include/editor.php:2652
+#: humo-gen/admin/include/editor.php:2653
 #: humo-gen/admin/include/editor_sources.php:398
 msgid "Add source"
 msgstr "Forrás hozzáadása"
 
-#: humo-gen/admin/include/editor.php:2660
-#: humo-gen/admin/include/editor.php:2896
-#: humo-gen/admin/include/editor.php:3151
+#: humo-gen/admin/include/editor.php:2661
+#: humo-gen/admin/include/editor.php:2897
+#: humo-gen/admin/include/editor.php:3152
 #: humo-gen/admin/include/editor_sources.php:198
 msgid "Option"
 msgstr "Beállítás"
 
-#: humo-gen/admin/include/editor.php:2660
-#: humo-gen/admin/include/editor.php:2896
-#: humo-gen/admin/include/editor.php:3151
+#: humo-gen/admin/include/editor.php:2661
+#: humo-gen/admin/include/editor.php:2897
+#: humo-gen/admin/include/editor.php:3152
 #: humo-gen/admin/include/editor_sources.php:199
 msgid "Value"
 msgstr "Érték"
 
-#: humo-gen/admin/include/editor.php:2674 humo-gen/source.php:43
+#: humo-gen/admin/include/editor.php:2675 humo-gen/source.php:43
 msgid "No valid source number."
 msgstr "Érvénytelen forrás szám."
 
-#: humo-gen/admin/include/editor.php:2698
+#: humo-gen/admin/include/editor.php:2699
 msgid "Status:"
 msgstr "Állapot:"
 
-#: humo-gen/admin/include/editor.php:2701
+#: humo-gen/admin/include/editor.php:2702
 msgid "publish"
 msgstr "közzététel"
 
-#: humo-gen/admin/include/editor.php:2704
+#: humo-gen/admin/include/editor.php:2705
 msgid "restricted"
 msgstr "bizalmas"
 
-#: humo-gen/admin/include/editor.php:2705
+#: humo-gen/admin/include/editor.php:2706
 msgid "restricted = only visible for selected user groups"
 msgstr "bizalmas = csak kiválasztott felhasználói csoportok láthatják"
 
-#: humo-gen/admin/include/editor.php:2709
-#: humo-gen/admin/include/editor.php:2932
+#: humo-gen/admin/include/editor.php:2710
+#: humo-gen/admin/include/editor.php:2933
 #: humo-gen/admin/include/editor_event_cls.php:17
-#: humo-gen/admin/include/editor_event_cls.php:258
+#: humo-gen/admin/include/editor_event_cls.php:259
 #: humo-gen/admin/include/editor_inc.php:968
 #: humo-gen/admin/include/trees_cls.php:1730 humo-gen/family.php:2409
 #: humo-gen/source.php:48 humo-gen/source.php:53 humo-gen/source.php:220
@@ -1536,25 +1530,25 @@ msgstr "bizalmas = csak kiválasztott felhasználói csoportok láthatják"
 msgid "Title"
 msgstr "Cím"
 
-#: humo-gen/admin/include/editor.php:2711 humo-gen/source.php:135
+#: humo-gen/admin/include/editor.php:2712 humo-gen/source.php:135
 #: humo-gen/source.php:140
 msgid "Subject"
 msgstr "Tárgy"
 
-#: humo-gen/admin/include/editor.php:2714 humo-gen/source.php:218
+#: humo-gen/admin/include/editor.php:2715 humo-gen/source.php:218
 msgid "Repository"
 msgstr "Lelőhely"
 
-#: humo-gen/admin/include/editor.php:2729 humo-gen/source.php:84
+#: humo-gen/admin/include/editor.php:2730 humo-gen/source.php:84
 #: humo-gen/source.php:96
 msgid "Publication"
 msgstr "Kiadvány"
 
-#: humo-gen/admin/include/editor.php:2729
+#: humo-gen/admin/include/editor.php:2730
 msgid "will be shown as a link."
 msgstr "hiperhivatkozásként lesz látható."
 
-#: humo-gen/admin/include/editor.php:2730
+#: humo-gen/admin/include/editor.php:2731
 #: humo-gen/admin/include/favorites.php:83
 #: humo-gen/include/fpdf16/fpdfextend.php:89
 #: humo-gen/include/fpdf16/fpdfextend.php:90
@@ -1564,39 +1558,38 @@ msgstr "hiperhivatkozásként lesz látható."
 msgid "Own code"
 msgstr "Saját azonosító"
 
-#: humo-gen/admin/include/editor.php:2731 humo-gen/source.php:124
+#: humo-gen/admin/include/editor.php:2732 humo-gen/source.php:124
 #: humo-gen/source.php:129
 msgid "Author"
 msgstr "Szerző"
 
-#: humo-gen/admin/include/editor.php:2732 humo-gen/source.php:146
+#: humo-gen/admin/include/editor.php:2733 humo-gen/source.php:146
 #: humo-gen/source.php:151
 msgid "Nr."
 msgstr "Sz."
 
-#: humo-gen/admin/include/editor.php:2733 humo-gen/source.php:157
+#: humo-gen/admin/include/editor.php:2734 humo-gen/source.php:157
 #: humo-gen/source.php:162
 msgid "Kind"
 msgstr "Típus"
 
-#: humo-gen/admin/include/editor.php:2734 humo-gen/source.php:168
+#: humo-gen/admin/include/editor.php:2735 humo-gen/source.php:168
 #: humo-gen/source.php:173
 msgid "Archive"
 msgstr "Levéltár"
 
-#: humo-gen/admin/include/editor.php:2735
+#: humo-gen/admin/include/editor.php:2736
 #: humo-gen/admin/include/editor_sources.php:180
-#: humo-gen/admin/include/editor_sources.php:320
-#: humo-gen/include/show_sources.php:227 humo-gen/list.php:1459
-#: humo-gen/list_names.php:228 humo-gen/list_places_families.php:456
-#: humo-gen/photoalbum.php:288 humo-gen/source.php:178 humo-gen/source.php:183
-#: humo-gen/source.php:384 humo-gen/sources.php:61
+#: humo-gen/admin/include/editor_sources.php:320 humo-gen/list.php:1459
+#: humo-gen/list_names.php:275 humo-gen/list_places_families.php:456
+#: humo-gen/photoalbum.php:290 humo-gen/source.php:178 humo-gen/source.php:183
+#: humo-gen/sources.php:61
 msgid "Page"
 msgstr "Oldal"
 
-#: humo-gen/admin/include/editor.php:2749
-#: humo-gen/admin/include/editor.php:2958
-#: humo-gen/admin/include/editor.php:3218
+#: humo-gen/admin/include/editor.php:2750
+#: humo-gen/admin/include/editor.php:2959
+#: humo-gen/admin/include/editor.php:3219
 #: humo-gen/admin/include/make_db_maps.php:315
 #: humo-gen/admin/include/make_db_maps.php:339
 #: humo-gen/admin/include/make_db_maps.php:390
@@ -1604,76 +1597,76 @@ msgstr "Oldal"
 msgid "Delete"
 msgstr "Törlés"
 
-#: humo-gen/admin/include/editor.php:2833
+#: humo-gen/admin/include/editor.php:2834
 msgid "Really remove repository with all repository links?"
 msgstr "Valóban törli a lelőhelyet és az összes lelőhely hiperhivatkozást?"
 
-#: humo-gen/admin/include/editor.php:2859
+#: humo-gen/admin/include/editor.php:2860
 msgid "Repository is removed!"
 msgstr "Lelőhely törölve!"
 
-#: humo-gen/admin/include/editor.php:2866 humo-gen/admin/index.php:846
+#: humo-gen/admin/include/editor.php:2867 humo-gen/admin/index.php:846
 msgid "Repositories"
 msgstr "Lelőhelyek"
 
-#: humo-gen/admin/include/editor.php:2867
+#: humo-gen/admin/include/editor.php:2868
 msgid ""
 "A repository can be connected to a shared source. Edit a shared source to "
 "connect a repository."
 msgstr ""
 
-#: humo-gen/admin/include/editor.php:2875
-#: humo-gen/admin/include/editor.php:2877
+#: humo-gen/admin/include/editor.php:2876
+#: humo-gen/admin/include/editor.php:2878
 msgid "Select repository"
 msgstr "Lelőhely kiválasztása"
 
-#: humo-gen/admin/include/editor.php:2889
+#: humo-gen/admin/include/editor.php:2890
 msgid "Add repository"
 msgstr "Lelőhely hozzáadása"
 
-#: humo-gen/admin/include/editor.php:2907
+#: humo-gen/admin/include/editor.php:2908
 msgid "No valid repository number."
 msgstr "Nincs érvényes lelőhely szám."
 
-#: humo-gen/admin/include/editor.php:2947 humo-gen/mailform.php:26
+#: humo-gen/admin/include/editor.php:2948 humo-gen/mailform.php:26
 #: humo-gen/register.php:62 humo-gen/user_settings.php:53
 msgid "E-mail"
 msgstr "E-mail"
 
-#: humo-gen/admin/include/editor.php:2949
+#: humo-gen/admin/include/editor.php:2950
 #: humo-gen/admin/include/editor_event_cls.php:20
-#: humo-gen/admin/include/editor_event_cls.php:1180
+#: humo-gen/admin/include/editor_event_cls.php:1183
 msgid "URL/ Internet link"
 msgstr "URL/ Internetes hiperhivatkozás"
 
-#: humo-gen/admin/include/editor.php:3036
+#: humo-gen/admin/include/editor.php:3037
 msgid ""
 "Are you sure you want to remove this address and ALL address references?"
 msgstr "Biztosan törli ezt a címet és MINDEN hivatkozást a címre?"
 
-#: humo-gen/admin/include/editor.php:3089
+#: humo-gen/admin/include/editor.php:3090
 msgid "Address has been removed!"
 msgstr "A címet eltávolítottuk!"
 
-#: humo-gen/admin/include/editor.php:3117
+#: humo-gen/admin/include/editor.php:3118
 msgid ""
 "Shared addresses, these addresses can be connected to multiple persons, "
 "families and other items."
 msgstr ""
 
-#: humo-gen/admin/include/editor.php:3143
+#: humo-gen/admin/include/editor.php:3144
 msgid "Add address"
 msgstr "Cím hozzáadása"
 
-#: humo-gen/admin/include/editor.php:3168
+#: humo-gen/admin/include/editor.php:3169
 msgid "No valid address number."
 msgstr "Nincs érvényes cím szám."
 
-#: humo-gen/admin/include/editor.php:3244 humo-gen/admin/index.php:854
+#: humo-gen/admin/include/editor.php:3245 humo-gen/admin/index.php:854
 msgid "Rename places"
 msgstr "Helységek átnevezése"
 
-#: humo-gen/admin/include/editor.php:3246
+#: humo-gen/admin/include/editor.php:3247
 msgid ""
 "Update all places here. At this moment these places are updated: birth, "
 "baptise, death and burial places."
@@ -1681,7 +1674,7 @@ msgstr ""
 "Itt frissítsen minden helységet. jelenleg ezek a helységek naprakészek: "
 "születési, keresztelési, elhalálozási és temetési helységek."
 
-#: humo-gen/admin/include/editor.php:3283 humo-gen/admin/include/update.php:51
+#: humo-gen/admin/include/editor.php:3284 humo-gen/admin/include/update.php:51
 #: humo-gen/admin/include/update.php:103 humo-gen/admin/include/update.php:160
 #: humo-gen/admin/include/update.php:195 humo-gen/admin/include/update.php:248
 #: humo-gen/admin/include/update.php:298 humo-gen/admin/include/update.php:389
@@ -1689,16 +1682,16 @@ msgstr ""
 msgid "UPDATE OK!"
 msgstr "FRISSÍTÉS KÉSZ!"
 
-#: humo-gen/admin/include/editor.php:3295
+#: humo-gen/admin/include/editor.php:3296
 msgid "Select location"
 msgstr "Válasszon helységet"
 
-#: humo-gen/admin/include/editor.php:3315
-#: humo-gen/admin/include/editor.php:3320
+#: humo-gen/admin/include/editor.php:3316
+#: humo-gen/admin/include/editor.php:3321
 msgid "Change location"
 msgstr "Helység módosítása"
 
-#: humo-gen/admin/include/editor.php:3322
+#: humo-gen/admin/include/editor.php:3323
 msgid "Also change Google Maps table."
 msgstr "Változtasson Google Maps táblát is."
 
@@ -1767,12 +1760,12 @@ msgstr "[]"
 
 #: humo-gen/admin/include/editor_event_cls.php:8
 #: humo-gen/admin/include/editor_event_cls.php:24
-#: humo-gen/admin/include/editor_event_cls.php:361
+#: humo-gen/admin/include/editor_event_cls.php:362
 msgid "Picture/ Media"
 msgstr "Kép/ Média"
 
 #: humo-gen/admin/include/editor_event_cls.php:9
-#: humo-gen/admin/include/editor_event_cls.php:335
+#: humo-gen/admin/include/editor_event_cls.php:336
 #: humo-gen/admin/include/editor_inc.php:980
 #: humo-gen/admin/include/trees_cls.php:1722 humo-gen/list.php:1221
 #: humo-gen/list.php:1229
@@ -1781,19 +1774,19 @@ msgstr "Foglalkozás"
 
 # Language indicator, used for birthday RSS
 #: humo-gen/admin/include/editor_event_cls.php:10
-#: humo-gen/admin/include/editor_event_cls.php:194
-#: humo-gen/admin/include/editor_event_cls.php:215
-#: humo-gen/admin/include/editor_event_cls.php:1170
-#: humo-gen/admin/include/editor_event_cls.php:1195
+#: humo-gen/admin/include/editor_event_cls.php:195
+#: humo-gen/admin/include/editor_event_cls.php:216
+#: humo-gen/admin/include/editor_event_cls.php:1173
+#: humo-gen/admin/include/editor_event_cls.php:1198
 #: humo-gen/admin/include/editor_sources.php:160
 #: humo-gen/admin/include/editor_sources.php:168
 #: humo-gen/admin/include/trees_cls.php:1723
-#: humo-gen/include/mainindex_cls.php:644
+#: humo-gen/include/mainindex_cls.php:600
 msgid "Event"
 msgstr "Esemény"
 
 #: humo-gen/admin/include/editor_event_cls.php:11
-#: humo-gen/admin/include/editor_event_cls.php:281
+#: humo-gen/admin/include/editor_event_cls.php:282
 #: humo-gen/admin/include/editor_inc.php:972
 #: humo-gen/admin/include/trees_cls.php:1724
 #: humo-gen/include/person_cls.php:1289 humo-gen/include/witness.php:91
@@ -1801,7 +1794,7 @@ msgid "birth declaration"
 msgstr "születés bejelentése"
 
 #: humo-gen/admin/include/editor_event_cls.php:12
-#: humo-gen/admin/include/editor_event_cls.php:293
+#: humo-gen/admin/include/editor_event_cls.php:294
 #: humo-gen/admin/include/editor_inc.php:974
 #: humo-gen/admin/include/trees_cls.php:1725
 #: humo-gen/include/person_cls.php:1346 humo-gen/include/person_cls.php:1348
@@ -1810,7 +1803,7 @@ msgid "baptism witness"
 msgstr "keresztelési tanú "
 
 #: humo-gen/admin/include/editor_event_cls.php:13
-#: humo-gen/admin/include/editor_event_cls.php:305
+#: humo-gen/admin/include/editor_event_cls.php:306
 #: humo-gen/admin/include/editor_inc.php:976
 #: humo-gen/admin/include/trees_cls.php:1726
 #: humo-gen/include/person_cls.php:1448 humo-gen/include/person_cls.php:1450
@@ -1819,7 +1812,7 @@ msgid "death declaration"
 msgstr "elhalálozás bejelentése"
 
 #: humo-gen/admin/include/editor_event_cls.php:14
-#: humo-gen/admin/include/editor_event_cls.php:317
+#: humo-gen/admin/include/editor_event_cls.php:318
 #: humo-gen/admin/include/editor_inc.php:978
 #: humo-gen/admin/include/trees_cls.php:1727
 #: humo-gen/include/person_cls.php:1499 humo-gen/include/witness.php:94
@@ -1827,31 +1820,31 @@ msgid "burial witness"
 msgstr "temetési tanú"
 
 #: humo-gen/admin/include/editor_event_cls.php:16
-#: humo-gen/admin/include/editor_event_cls.php:246
+#: humo-gen/admin/include/editor_event_cls.php:247
 #: humo-gen/admin/include/editor_inc.php:966
 #: humo-gen/admin/include/trees_cls.php:1729
 msgid "Title of Nobility"
 msgstr "Nemesi cím"
 
 #: humo-gen/admin/include/editor_event_cls.php:18
-#: humo-gen/admin/include/editor_event_cls.php:1178
+#: humo-gen/admin/include/editor_event_cls.php:1181
 msgid "Adoption"
 msgstr "Örökbefogadás"
 
 #: humo-gen/admin/include/editor_event_cls.php:19
-#: humo-gen/admin/include/editor_event_cls.php:269
+#: humo-gen/admin/include/editor_event_cls.php:270
 #: humo-gen/admin/include/editor_inc.php:970
 #: humo-gen/admin/include/trees_cls.php:1731
 msgid "Title of Lordship"
 msgstr "Főnemesi cím"
 
 #: humo-gen/admin/include/editor_event_cls.php:21
-#: humo-gen/admin/include/editor_event_cls.php:1181
+#: humo-gen/admin/include/editor_event_cls.php:1184
 msgid "Colour mark by person"
 msgstr "Színkód személyenként"
 
 #: humo-gen/admin/include/editor_event_cls.php:22
-#: humo-gen/admin/include/editor_event_cls.php:563
+#: humo-gen/admin/include/editor_event_cls.php:565
 #: humo-gen/admin/include/editor_inc.php:984
 #: humo-gen/include/marriage_cls.php:237 humo-gen/include/marriage_cls.php:240
 #: humo-gen/include/witness.php:95
@@ -1859,7 +1852,7 @@ msgid "marriage witness"
 msgstr "házassági tanú"
 
 #: humo-gen/admin/include/editor_event_cls.php:23
-#: humo-gen/admin/include/editor_event_cls.php:575
+#: humo-gen/admin/include/editor_event_cls.php:577
 #: humo-gen/admin/include/editor_inc.php:986
 #: humo-gen/include/marriage_cls.php:338 humo-gen/include/marriage_cls.php:340
 #: humo-gen/include/witness.php:96
@@ -1867,246 +1860,251 @@ msgid "marriage witness (religious)"
 msgstr "házassági tanú (egyházi)"
 
 # Language indicator, used for birthday RSS
-#: humo-gen/admin/include/editor_event_cls.php:174
-#: humo-gen/admin/include/editor_event_cls.php:193
-#: humo-gen/admin/include/editor_event_cls.php:202
-#: humo-gen/admin/include/editor_event_cls.php:214
+#: humo-gen/admin/include/editor_event_cls.php:175
+#: humo-gen/admin/include/editor_event_cls.php:194
+#: humo-gen/admin/include/editor_event_cls.php:203
+#: humo-gen/admin/include/editor_event_cls.php:215
 msgid "Events"
 msgstr "Események"
 
-#: humo-gen/admin/include/editor_event_cls.php:194
-#: humo-gen/admin/include/editor_event_cls.php:215
+#: humo-gen/admin/include/editor_event_cls.php:195
+#: humo-gen/admin/include/editor_event_cls.php:216
 msgid "For items like:"
 msgstr "Elemekhez mint például:"
 
-#: humo-gen/admin/include/editor_event_cls.php:194
+#: humo-gen/admin/include/editor_event_cls.php:195
 #: humo-gen/include/language_event.php:12
 msgid "baptized as child"
 msgstr "gyermekként keresztelve"
 
-#: humo-gen/admin/include/editor_event_cls.php:194
+#: humo-gen/admin/include/editor_event_cls.php:195
 #: humo-gen/include/language_event.php:25
 msgid "depart"
 msgstr "eltávozás"
 
-#: humo-gen/admin/include/editor_event_cls.php:194
-#: humo-gen/admin/include/editor_event_cls.php:215
-#: humo-gen/admin/include/editor_event_cls.php:235
+#: humo-gen/admin/include/editor_event_cls.php:195
+#: humo-gen/admin/include/editor_event_cls.php:216
+#: humo-gen/admin/include/editor_event_cls.php:236
 msgid "etc."
 msgstr "stb."
 
-#: humo-gen/admin/include/editor_event_cls.php:215
+#: humo-gen/admin/include/editor_event_cls.php:216
 #: humo-gen/include/language_event.php:42
 msgid "Marriage contract"
 msgstr "Házassági szerződés"
 
-#: humo-gen/admin/include/editor_event_cls.php:215
+#: humo-gen/admin/include/editor_event_cls.php:216
 #: humo-gen/include/language_event.php:43
 msgid "Marriage license"
 msgstr "Házassági engedély"
 
-#: humo-gen/admin/include/editor_event_cls.php:235
-#: humo-gen/admin/include/editor_event_cls.php:1002
+#: humo-gen/admin/include/editor_event_cls.php:236
+#: humo-gen/admin/include/editor_event_cls.php:1005
 #: humo-gen/include/person_cls.php:1169
 msgid "alias name"
 msgstr "álnév"
 
-#: humo-gen/admin/include/editor_event_cls.php:235
-#: humo-gen/admin/include/editor_event_cls.php:1008
+#: humo-gen/admin/include/editor_event_cls.php:236
+#: humo-gen/admin/include/editor_event_cls.php:1011
 #: humo-gen/include/person_cls.php:1171
 msgid "Adopted name"
 msgstr "Adoptív név"
 
-#: humo-gen/admin/include/editor_event_cls.php:235
-#: humo-gen/admin/include/editor_event_cls.php:1011
+#: humo-gen/admin/include/editor_event_cls.php:236
+#: humo-gen/admin/include/editor_event_cls.php:1014
 #: humo-gen/include/person_cls.php:1172
 msgid "Hebrew name"
 msgstr "Héber név"
 
-#: humo-gen/admin/include/editor_event_cls.php:248
-#: humo-gen/admin/include/editor_event_cls.php:917
+#: humo-gen/admin/include/editor_event_cls.php:249
+#: humo-gen/admin/include/editor_event_cls.php:920
 msgid "e.g. Jhr., Jkvr."
 msgstr "pl. Jhr., Jkvr."
 
-#: humo-gen/admin/include/editor_event_cls.php:260
-#: humo-gen/admin/include/editor_event_cls.php:918
+#: humo-gen/admin/include/editor_event_cls.php:261
+#: humo-gen/admin/include/editor_event_cls.php:921
 msgid "e.g. Prof., Dr."
 msgstr "pl. Prof., Dr."
 
-#: humo-gen/admin/include/editor_event_cls.php:271
-#: humo-gen/admin/include/editor_event_cls.php:919
+#: humo-gen/admin/include/editor_event_cls.php:272
+#: humo-gen/admin/include/editor_event_cls.php:922
 msgid "e.g. Lord of Amsterdam"
 msgstr "pl. Amsterdam hercege"
 
-#: humo-gen/admin/include/editor_event_cls.php:374
+#: humo-gen/admin/include/editor_event_cls.php:375
 msgid "(Drag pictures to change display order)"
 msgstr "(Változtassa meg a sorrendet aképek áthúzásával)"
 
-#: humo-gen/admin/include/editor_event_cls.php:375
+#: humo-gen/admin/include/editor_event_cls.php:376
 #: humo-gen/admin/include/groups.php:353
-#: humo-gen/admin/include/trees_cls.php:253 humo-gen/admin/index.php:793
+#: humo-gen/admin/include/trees_cls.php:253 humo-gen/admin/index.php:794
 msgid "Pictures/ create thumbnails"
 msgstr "Képek / bélyegkép létrehozása"
 
-#: humo-gen/admin/include/editor_event_cls.php:413
+#: humo-gen/admin/include/editor_event_cls.php:415
 msgid "Format not supported"
 msgstr "Nem támogatott formátum"
 
-#: humo-gen/admin/include/editor_event_cls.php:817
+#: humo-gen/admin/include/editor_event_cls.php:820
 msgid "Category files are displayed at bottom of list"
 msgstr "A kategória állományok a lista alján láthatók"
 
-#: humo-gen/admin/include/editor_event_cls.php:823
+#: humo-gen/admin/include/editor_event_cls.php:826
 msgid "* Select adoption parents *"
 msgstr "* Válasszon örökbefogadó szülőt *"
 
-#: humo-gen/admin/include/editor_event_cls.php:858
+#: humo-gen/admin/include/editor_event_cls.php:861
 msgid "Change colour mark by person"
 msgstr "Személyek színkódjának módosítása"
 
-#: humo-gen/admin/include/editor_event_cls.php:860
+#: humo-gen/admin/include/editor_event_cls.php:863
 msgid "Colour 1"
 msgstr "1. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:862
+#: humo-gen/admin/include/editor_event_cls.php:865
 msgid "Colour 2"
 msgstr "2. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:864
+#: humo-gen/admin/include/editor_event_cls.php:867
 msgid "Colour 3"
 msgstr "3. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:866
+#: humo-gen/admin/include/editor_event_cls.php:869
 msgid "Colour 4"
 msgstr "4. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:868
+#: humo-gen/admin/include/editor_event_cls.php:871
 msgid "Colour 5"
 msgstr "5. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:870
+#: humo-gen/admin/include/editor_event_cls.php:873
 msgid "Colour 6"
 msgstr "6. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:872
+#: humo-gen/admin/include/editor_event_cls.php:875
 msgid "Colour 7"
 msgstr "7. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:874
+#: humo-gen/admin/include/editor_event_cls.php:877
 msgid "Colour 8"
 msgstr "8. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:876
+#: humo-gen/admin/include/editor_event_cls.php:879
 msgid "Colour 9"
 msgstr "9. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:878
+#: humo-gen/admin/include/editor_event_cls.php:881
 msgid "Colour 10"
 msgstr "10. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:880
+#: humo-gen/admin/include/editor_event_cls.php:883
 msgid "Colour 11"
 msgstr "11. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:882
+#: humo-gen/admin/include/editor_event_cls.php:885
 msgid "Colour 12"
 msgstr "12. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:884
+#: humo-gen/admin/include/editor_event_cls.php:887
 msgid "Colour 13"
 msgstr "13. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:886
+#: humo-gen/admin/include/editor_event_cls.php:889
 msgid "Colour 14"
 msgstr "14. szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:904
+#: humo-gen/admin/include/editor_event_cls.php:907
 msgid "Selected colour"
 msgstr "Kiválasztott szín"
 
-#: humo-gen/admin/include/editor_event_cls.php:908
+#: humo-gen/admin/include/editor_event_cls.php:911
 msgid "Also change"
 msgstr "Módosítsa is"
 
-#: humo-gen/admin/include/editor_event_cls.php:908
-#: humo-gen/admin/include/editor_inc.php:1341
+#: humo-gen/admin/include/editor_event_cls.php:911
+#: humo-gen/admin/include/editor_inc.php:1342
 #: humo-gen/admin/include/gedcom_export.php:590 humo-gen/hourglass.php:81
 msgid "Descendants"
 msgstr "Leszármazottak"
 
-#: humo-gen/admin/include/editor_event_cls.php:909
-#: humo-gen/admin/include/editor_inc.php:1342
+#: humo-gen/admin/include/editor_event_cls.php:912
+#: humo-gen/admin/include/editor_inc.php:1343
 #: humo-gen/admin/include/gedcom_export.php:596 humo-gen/hourglass.php:79
 msgid "Ancestors"
 msgstr "Ősök"
 
-#: humo-gen/admin/include/editor_event_cls.php:996
+#: humo-gen/admin/include/editor_event_cls.php:999
 #: humo-gen/include/person_cls.php:1165 humo-gen/include/person_cls.php:1167
 msgid "Also known as"
 msgstr "Más ismert neve"
 
-#: humo-gen/admin/include/editor_event_cls.php:1005
+#: humo-gen/admin/include/editor_event_cls.php:1008
 #: humo-gen/include/person_cls.php:1170
 msgid "Short name (for reports)"
 msgstr "Rövid név (jelentésekhez)"
 
-#: humo-gen/admin/include/editor_event_cls.php:1014
+#: humo-gen/admin/include/editor_event_cls.php:1017
 #: humo-gen/include/person_cls.php:1173
 msgid "Census name"
 msgstr "Népszámlálási név"
 
-#: humo-gen/admin/include/editor_event_cls.php:1017
+#: humo-gen/admin/include/editor_event_cls.php:1020
 #: humo-gen/include/person_cls.php:1174
 msgid "Married name"
 msgstr "Házassági név"
 
 #: humo-gen/admin/include/editor_event_cls.php:1023
+#: humo-gen/include/person_cls.php:1175
+msgid "Given name"
+msgstr ""
+
+#: humo-gen/admin/include/editor_event_cls.php:1026
 #: humo-gen/include/person_cls.php:1176
 msgid "Farm name"
 msgstr "Farm neve"
 
-#: humo-gen/admin/include/editor_event_cls.php:1026
+#: humo-gen/admin/include/editor_event_cls.php:1029
 #: humo-gen/include/person_cls.php:1177
 msgid "Birth name"
 msgstr "Születési név"
 
-#: humo-gen/admin/include/editor_event_cls.php:1029
+#: humo-gen/admin/include/editor_event_cls.php:1032
 #: humo-gen/include/person_cls.php:1178
 msgid "Indian name"
 msgstr "Indián név"
 
-#: humo-gen/admin/include/editor_event_cls.php:1032
+#: humo-gen/admin/include/editor_event_cls.php:1035
 #: humo-gen/include/person_cls.php:1179
 msgid "Formal name"
 msgstr "Hivatalos név"
 
-#: humo-gen/admin/include/editor_event_cls.php:1035
+#: humo-gen/admin/include/editor_event_cls.php:1038
 #: humo-gen/include/person_cls.php:1180
 msgid "Current name"
 msgstr "Jelenlegi név"
 
-#: humo-gen/admin/include/editor_event_cls.php:1038
+#: humo-gen/admin/include/editor_event_cls.php:1041
 #: humo-gen/include/person_cls.php:1181
 msgid "Soldier name"
 msgstr "Katonai név"
 
-#: humo-gen/admin/include/editor_event_cls.php:1041
+#: humo-gen/admin/include/editor_event_cls.php:1044
 #: humo-gen/include/person_cls.php:1183
 msgid "Religious name"
 msgstr "Vallási név"
 
-#: humo-gen/admin/include/editor_event_cls.php:1044
+#: humo-gen/admin/include/editor_event_cls.php:1047
 #: humo-gen/include/person_cls.php:1184
 msgid "Other name"
 msgstr "Más név"
 
-#: humo-gen/admin/include/editor_event_cls.php:1047
+#: humo-gen/admin/include/editor_event_cls.php:1050
 #: humo-gen/include/person_cls.php:1182
 msgid "Formerly known as"
 msgstr "Azelőtt használt név"
 
-#: humo-gen/admin/include/editor_event_cls.php:1183
-#: humo-gen/admin/include/editor_event_cls.php:1199
+#: humo-gen/admin/include/editor_event_cls.php:1186
+#: humo-gen/admin/include/editor_event_cls.php:1202
 msgid "Add event"
 msgstr "Esemény hozzáadása"
 
@@ -2155,36 +2153,36 @@ msgstr "Szülők kiválasztva!"
 msgid "Are you sure you want to disconnect this child?"
 msgstr "Biztosan leválasztja ezt a gyermeket?"
 
-#: humo-gen/admin/include/editor_inc.php:1093
+#: humo-gen/admin/include/editor_inc.php:1094
 msgid "Photo too large"
 msgstr "Fénykép túl nagy"
 
-#: humo-gen/admin/include/editor_inc.php:1098
+#: humo-gen/admin/include/editor_inc.php:1099
 msgid "Photo upload failed, check folder rights"
 msgstr "A fotó feltöltése nem sikerült, ellenőrizze a mappa jogosultságait."
 
-#: humo-gen/admin/include/editor_inc.php:1147
+#: humo-gen/admin/include/editor_inc.php:1148
 msgid "Media too large"
 msgstr "A média túl nagy"
 
-#: humo-gen/admin/include/editor_inc.php:1151
+#: humo-gen/admin/include/editor_inc.php:1152
 msgid "Media upload failed, check folder rights"
 msgstr "Média feltöltése nem sikerült, ellenőrizze a mappa jogosultságait"
 
-#: humo-gen/admin/include/editor_inc.php:1169
+#: humo-gen/admin/include/editor_inc.php:1170
 msgid "No valid picture, media or document file"
 msgstr "Nincs érvényes fénykép, média vagy dokumentum fájl"
 
-#: humo-gen/admin/include/editor_inc.php:1327
-#: humo-gen/admin/include/editor_inc.php:1692
+#: humo-gen/admin/include/editor_inc.php:1328
+#: humo-gen/admin/include/editor_inc.php:1693
 msgid "Are you sure you want to remove this event?"
 msgstr "Biztosan törli ezt az eseményt?"
 
-#: humo-gen/admin/include/editor_inc.php:1340
+#: humo-gen/admin/include/editor_inc.php:1341
 msgid "Also remove colour marks of"
 msgstr "Távolítsa el a színjeleket innen:"
 
-#: humo-gen/admin/include/editor_inc.php:1797
+#: humo-gen/admin/include/editor_inc.php:1798
 msgid "Are you sure you want to delete this place? "
 msgstr "Biztosan törli ezt a helységet?"
 
@@ -2206,7 +2204,7 @@ msgstr "Házasság"
 
 #: humo-gen/admin/include/editor_sources.php:145
 #: humo-gen/admin/include/statistics.php:490
-#: humo-gen/admin/include/statistics.php:499
+#: humo-gen/admin/include/statistics.php:503
 msgid "family"
 msgstr "család"
 
@@ -2275,7 +2273,7 @@ msgstr "Fa megjelenítése?"
 msgid "Edit tree?"
 msgstr "Fa szerkesztése?"
 
-#: humo-gen/admin/include/favorites.php:5 humo-gen/admin/index.php:749
+#: humo-gen/admin/include/favorites.php:5 humo-gen/admin/index.php:750
 msgid "Homepage favorites"
 msgstr "Kedvencek főoldal"
 
@@ -2372,7 +2370,7 @@ msgstr "Válassza ki a Gedcom fájlt:"
 #: humo-gen/admin/include/make_db_maps.php:985
 #: humo-gen/admin/include/settings_admin.php:5
 #: humo-gen/admin/include/trees_cls.php:1237
-#: humo-gen/admin/include/trees_cls.php:1403 humo-gen/admin/index.php:743
+#: humo-gen/admin/include/trees_cls.php:1403 humo-gen/admin/index.php:744
 #: humo-gen/family.php:93 humo-gen/family.php:2369 humo-gen/header.php:246
 #: humo-gen/menu.php:773
 msgid "Settings"
@@ -2420,6 +2418,10 @@ msgid ""
 msgstr ""
 "Mutasson meg minden számot a gedcom feldolgozása közben (hasznos lehet ha "
 "időtúllépés áll fenn!)"
+
+#: humo-gen/admin/include/gedcom.php:239
+msgid "Batch processing"
+msgstr ""
 
 #: humo-gen/admin/include/gedcom.php:240
 msgid "1 record (slow processing, but needs less server-memory)"
@@ -2708,7 +2710,7 @@ msgstr "UTF-8 (ajánlott karakterkészlet)"
 msgid "Show export status"
 msgstr "Exportálás állapotának megjelenítése"
 
-#: humo-gen/admin/include/gedcom_export.php:652 humo-gen/admin/index.php:805
+#: humo-gen/admin/include/gedcom_export.php:652 humo-gen/admin/index.php:806
 msgid "Gedcom export"
 msgstr "Gedcom exportálása"
 
@@ -2965,7 +2967,6 @@ msgstr ""
 #: humo-gen/admin/include/groups.php:435
 #: humo-gen/admin/include/trees_cls.php:1808 humo-gen/family.php:115
 #: humo-gen/family.php:2391 humo-gen/header.php:232
-#: humo-gen/include/show_sources.php:61 humo-gen/include/show_sources.php:77
 #: humo-gen/include/show_sources.php:177 humo-gen/menu.php:447
 #: humo-gen/report_ancestor.php:1451 humo-gen/source.php:37
 msgid "Sources"
@@ -3151,7 +3152,8 @@ msgid "Hide or show family trees per user group."
 msgstr "Családfák megjelenítése vagy rejtése felhasználói csoportonként."
 
 #: humo-gen/admin/include/groups.php:625
-#: humo-gen/admin/include/index_inc.php:422 humo-gen/include/person_cls.php:632
+#: humo-gen/admin/include/index_inc.php:425 humo-gen/admin/index.php:831
+#: humo-gen/include/person_cls.php:632
 msgid "Editor"
 msgstr "Szerkesztés"
 
@@ -3169,7 +3171,7 @@ msgstr "Ezeket felhasználónként is beállíthatja!"
 msgid "Hide or show photo categories per user group."
 msgstr "Fénykép kategóriák elrejtése vagy mutatása felhasználói csoportonként."
 
-#: humo-gen/admin/include/groups.php:683 humo-gen/admin/include/thumbs.php:615
+#: humo-gen/admin/include/groups.php:683 humo-gen/admin/include/thumbs.php:619
 msgid "Category prefix"
 msgstr "Kategória előtag"
 
@@ -3182,7 +3184,7 @@ msgid "No photo categories available."
 msgstr "Nincs elérhető fénykép kategória."
 
 #: humo-gen/admin/include/index_inc.php:5 humo-gen/admin/index.php:353
-#: humo-gen/admin/index.php:669
+#: humo-gen/admin/index.php:670
 msgid "Administration"
 msgstr "Adminisztráció"
 
@@ -3258,7 +3260,7 @@ msgstr "Adatbázis"
 
 #: humo-gen/admin/include/index_inc.php:143
 #: humo-gen/admin/include/index_inc.php:227
-#: humo-gen/admin/include/index_inc.php:276
+#: humo-gen/admin/include/index_inc.php:279
 #: humo-gen/admin/include/trees_cls.php:105
 msgid "OK"
 msgstr "OK"
@@ -3358,63 +3360,63 @@ msgstr "Nem találtunk HuMo-gen táblát az adatbázisban."
 msgid "Install HuMo-gen database tables"
 msgstr "HuMo-gen adatbázis táblák telepítése"
 
-#: humo-gen/admin/include/index_inc.php:261
+#: humo-gen/admin/include/index_inc.php:264
 msgid "Size of statistics table"
 msgstr "Statisztikai tábla mérete"
 
-#: humo-gen/admin/include/index_inc.php:262
+#: humo-gen/admin/include/index_inc.php:265
 msgid "If needed remove old statistics."
 msgstr "Ha szükséges, távolítsa el a régi statisztikát."
 
-#: humo-gen/admin/include/index_inc.php:265
+#: humo-gen/admin/include/index_inc.php:268
 msgid "HuMo-gen security items"
 msgstr "HuMo-gen biztonsági elemek"
 
-#: humo-gen/admin/include/index_inc.php:272 humo-gen/admin/include/users.php:90
+#: humo-gen/admin/include/index_inc.php:275 humo-gen/admin/include/users.php:90
 msgid "Standard admin username or admin password is used."
 msgstr "Standard admin felhasználónév vagy admin jelszó van használatban."
 
-#: humo-gen/admin/include/index_inc.php:273
+#: humo-gen/admin/include/index_inc.php:276
 msgid "Change admin username and password."
 msgstr "Admin felhasználónév és jelszó megváltoztatása."
 
-#: humo-gen/admin/include/index_inc.php:277
+#: humo-gen/admin/include/index_inc.php:280
 msgid "Check admin account"
 msgstr "Admin fiók ellenőrzése"
 
-#: humo-gen/admin/include/index_inc.php:292
+#: humo-gen/admin/include/index_inc.php:295
 msgid "Number of failed logins attempts last month"
 msgstr "Sikertelen bejelentkezési kísérletek száma az elmúlt hónapban"
 
-#: humo-gen/admin/include/index_inc.php:293 humo-gen/admin/include/log.php:38
+#: humo-gen/admin/include/index_inc.php:296 humo-gen/admin/include/log.php:38
 msgid "Logfile users"
 msgstr "Naplófájl felhasználók"
 
-#: humo-gen/admin/include/index_inc.php:297
+#: humo-gen/admin/include/index_inc.php:300
 msgid "Failed login attempts"
 msgstr "Sikertelen bejelentkezési kísérletek"
 
-#: humo-gen/admin/include/index_inc.php:301
+#: humo-gen/admin/include/index_inc.php:304
 msgid "The folder \"admin\" has NOT YET been secured."
 msgstr "Az \"admin\" mappa MÉG NINCS biztosítva."
 
-#: humo-gen/admin/include/index_inc.php:303
+#: humo-gen/admin/include/index_inc.php:306
 msgid "At the moment you are logged in through an .htacces file."
 msgstr "Jelenleg .htacces  fájl segítségével van bejelentkezve."
 
-#: humo-gen/admin/include/index_inc.php:307
+#: humo-gen/admin/include/index_inc.php:310
 msgid "At the moment you are logged in through PHP-MySQL."
 msgstr "Jelenleg PHP-MySQL segítségével van bejelentkezve."
 
-#: humo-gen/admin/include/index_inc.php:310
+#: humo-gen/admin/include/index_inc.php:313
 msgid "Login control"
 msgstr "Bejelentkezés ellenőrzése"
 
-#: humo-gen/admin/include/index_inc.php:314
+#: humo-gen/admin/include/index_inc.php:317
 msgid "INFO"
 msgstr "INFÓ"
 
-#: humo-gen/admin/include/index_inc.php:320
+#: humo-gen/admin/include/index_inc.php:323
 msgid ""
 "After installation of the tables (click on the left at Install) the admin "
 "folder will be secured with PHP-MySQL security.\n"
@@ -3434,11 +3436,11 @@ msgstr ""
 "ilyen lehetősége, ön is készíthet egy .htaccess fájlt.<br>\n"
 ".htaccess fájl készítése:"
 
-#: humo-gen/admin/include/index_inc.php:326
+#: humo-gen/admin/include/index_inc.php:329
 msgid "Secured website"
 msgstr "Biztosított weboldal"
 
-#: humo-gen/admin/include/index_inc.php:332
+#: humo-gen/admin/include/index_inc.php:335
 msgid ""
 "Next, you need a file with user names and passwords.<br>\n"
 "For example go to: http://www.htaccesstools.com/htpasswd-generator/<br>\n"
@@ -3449,20 +3451,20 @@ msgstr ""
 "<br>\n"
 "A .htppasswd fájl valahogy így fog kinézni:"
 
-#: humo-gen/admin/include/index_inc.php:339
+#: humo-gen/admin/include/index_inc.php:342
 msgid "You can also try this password generator:"
 msgstr "Kipróbálhatja ezt a jelszó-generátort is:"
 
-#: humo-gen/admin/include/index_inc.php:343
+#: humo-gen/admin/include/index_inc.php:346
 msgid "Generate new ht-password"
 msgstr "Új ht-jelszó generálása:"
 
-#: humo-gen/admin/include/index_inc.php:359
-#: humo-gen/admin/include/index_inc.php:378
+#: humo-gen/admin/include/index_inc.php:362
+#: humo-gen/admin/include/index_inc.php:381
 msgid "OK (option is OFF)"
 msgstr "OK (opció KIKAPCSOLVA)"
 
-#: humo-gen/admin/include/index_inc.php:362
+#: humo-gen/admin/include/index_inc.php:365
 msgid ""
 "UNSAFE (option is ON)<br>change this option in .htaccess file or put: "
 "\"register_globals = Off\" in the php.ini file."
@@ -3470,11 +3472,11 @@ msgstr ""
 "NEM BIZTONSÁGOS (opció BEKACSOLVA)<br>módosítsa a .htaccess fájlban vagy "
 "állítsa: \"register_globals = Off\" a php.ini fájlban."
 
-#: humo-gen/admin/include/index_inc.php:369
+#: humo-gen/admin/include/index_inc.php:372
 msgid "OK (option is ON)"
 msgstr "OK (opció BEKAPCSOLVA)"
 
-#: humo-gen/admin/include/index_inc.php:372
+#: humo-gen/admin/include/index_inc.php:375
 msgid ""
 "UNSAFE (option is OFF)<br>change this option in .htaccess file or put: "
 "\"magic_quotes_gpc = On\" in the php.ini file."
@@ -3482,51 +3484,51 @@ msgstr ""
 "NEM BIZTONSÁGOS (opció BEKACSOLVA)<br>módosítsa ezt a .htaccess fájlban vagy "
 "állítsa: \"magic_quotes_gpc = On\" a php.ini fájlban."
 
-#: humo-gen/admin/include/index_inc.php:381
+#: humo-gen/admin/include/index_inc.php:384
 msgid "UNSAFE (option is ON)<br>change this option in .htaccess file."
 msgstr ""
 "NEM BIZTONSÁGOS (opció BEKAPCSOLVA)<br>módosítsa ezt az opciót a .htaccess "
 "fájlban."
 
-#: humo-gen/admin/include/index_inc.php:388 humo-gen/admin/index.php:783
-#: humo-gen/admin/index.php:789
+#: humo-gen/admin/include/index_inc.php:391 humo-gen/admin/index.php:784
+#: humo-gen/admin/index.php:790
 msgid "Family trees"
 msgstr "Családfák"
 
-#: humo-gen/admin/include/index_inc.php:395
+#: humo-gen/admin/include/index_inc.php:398
 msgid "Status tree"
 msgstr "Fa állapota"
 
-#: humo-gen/admin/include/index_inc.php:408
-#: humo-gen/admin/include/statistics.php:743
+#: humo-gen/admin/include/index_inc.php:411
+#: humo-gen/admin/include/statistics.php:747
 #: humo-gen/admin/include/trees_cls.php:124
-#: humo-gen/include/mainindex_cls.php:177
+#: humo-gen/include/mainindex_cls.php:178
 msgid "persons"
 msgstr "személy"
 
-#: humo-gen/admin/include/index_inc.php:408
-#: humo-gen/admin/include/statistics.php:743
+#: humo-gen/admin/include/index_inc.php:411
+#: humo-gen/admin/include/statistics.php:747
 #: humo-gen/admin/include/trees_cls.php:124
-#: humo-gen/include/mainindex_cls.php:177
+#: humo-gen/include/mainindex_cls.php:178
 msgid "families"
 msgstr "család"
 
-#: humo-gen/admin/include/index_inc.php:411
+#: humo-gen/admin/include/index_inc.php:414
 #: humo-gen/admin/include/trees_cls.php:128
 msgid ""
 "This tree does not yet contain any data or has not been imported properly!"
 msgstr "Ez a fa nem tartalmaz még adatot vagy nem volt megfelelően importálva!"
 
-#: humo-gen/admin/include/index_inc.php:416
+#: humo-gen/admin/include/index_inc.php:419
 #: humo-gen/admin/include/trees.php:326
 msgid "Import Gedcom file"
 msgstr "Gedcom állomány importálása"
 
-#: humo-gen/admin/include/index_inc.php:430
+#: humo-gen/admin/include/index_inc.php:433
 msgid "Trees table"
 msgstr "Fák tábla"
 
-#: humo-gen/admin/include/install.php:5 humo-gen/admin/index.php:740
+#: humo-gen/admin/include/install.php:5 humo-gen/admin/index.php:741
 msgid "Install"
 msgstr "Telepítés"
 
@@ -3689,11 +3691,11 @@ msgid "All updates completed, click at \"Mainmenu\""
 msgstr "Minden frissités kész, kattintson a \"Főmenü\"-re"
 
 #: humo-gen/admin/include/install.php:852
-#: humo-gen/admin/include/update.php:3137 humo-gen/admin/index.php:669
+#: humo-gen/admin/include/update.php:3137 humo-gen/admin/index.php:670
 msgid "Main menu"
 msgstr "Főmenü"
 
-#: humo-gen/admin/include/language_editor.php:13 humo-gen/admin/index.php:753
+#: humo-gen/admin/include/language_editor.php:13 humo-gen/admin/index.php:754
 msgid "Language editor"
 msgstr "Nyelvszerkesztő"
 
@@ -3716,7 +3718,7 @@ msgstr ""
 
 #: humo-gen/admin/include/language_editor.php:28
 #: humo-gen/admin/include/language_editor.php:111
-#: humo-gen/admin/include/thumbs.php:618
+#: humo-gen/admin/include/thumbs.php:622
 #: humo-gen/admin/include/trees_cls.php:296
 msgid "Language"
 msgstr "Nyelv"
@@ -4061,7 +4063,7 @@ msgstr ""
 "mennyi ideig tart az indexelés."
 
 #: humo-gen/admin/include/make_db_maps.php:620
-#: humo-gen/include/mainindex_cls.php:475 humo-gen/list.php:1396
+#: humo-gen/include/mainindex_cls.php:409 humo-gen/list.php:1396
 msgid "All family trees"
 msgstr "Minden családfa"
 
@@ -4274,7 +4276,7 @@ msgstr ""
 msgid "Default zoom"
 msgstr ""
 
-#: humo-gen/admin/include/prefix_editor.php:29 humo-gen/admin/index.php:757
+#: humo-gen/admin/include/prefix_editor.php:29 humo-gen/admin/index.php:758
 msgid "Prefix editor"
 msgstr "Előtag szerkesztő"
 
@@ -4641,15 +4643,15 @@ msgstr ""
 "Sitemap: http://www.yourwebsite.com/humo-gen/sitemap.php"
 
 #: humo-gen/admin/include/statistics.php:10
-#: humo-gen/admin/include/users.php:106 humo-gen/admin/index.php:811
+#: humo-gen/admin/include/users.php:106 humo-gen/admin/index.php:812
 #: humo-gen/header.php:235 humo-gen/menu.php:534
 msgid "Statistics"
 msgstr "Statisztika"
 
 #: humo-gen/admin/include/statistics.php:42
 #: humo-gen/admin/include/statistics.php:46
-#: humo-gen/admin/include/statistics.php:756
-#: humo-gen/admin/include/statistics.php:759
+#: humo-gen/admin/include/statistics.php:760
+#: humo-gen/admin/include/statistics.php:763
 #: humo-gen/list_places_families.php:571
 msgid "Family"
 msgstr "Család"
@@ -4659,85 +4661,85 @@ msgid "FAMILY NOT FOUND IN FAMILY TREE"
 msgstr "NEM TALÁLTUNK CSALÁDOT A CSALÁDFÁBAN"
 
 #: humo-gen/admin/include/statistics.php:87
-#: humo-gen/admin/include/statistics.php:517
-#: humo-gen/admin/include/statistics.php:596
+#: humo-gen/admin/include/statistics.php:521
+#: humo-gen/admin/include/statistics.php:600
 #: humo-gen/include/language_date.php:35
 msgid "January"
 msgstr "január"
 
 #: humo-gen/admin/include/statistics.php:88
-#: humo-gen/admin/include/statistics.php:519
-#: humo-gen/admin/include/statistics.php:598
+#: humo-gen/admin/include/statistics.php:523
+#: humo-gen/admin/include/statistics.php:602
 #: humo-gen/include/language_date.php:36
 msgid "February"
 msgstr "február"
 
 #: humo-gen/admin/include/statistics.php:89
-#: humo-gen/admin/include/statistics.php:521
-#: humo-gen/admin/include/statistics.php:600
+#: humo-gen/admin/include/statistics.php:525
+#: humo-gen/admin/include/statistics.php:604
 #: humo-gen/include/language_date.php:37
 msgid "March"
 msgstr "március"
 
 #: humo-gen/admin/include/statistics.php:90
-#: humo-gen/admin/include/statistics.php:523
-#: humo-gen/admin/include/statistics.php:602
+#: humo-gen/admin/include/statistics.php:527
+#: humo-gen/admin/include/statistics.php:606
 #: humo-gen/include/language_date.php:38
 msgid "April"
 msgstr "április"
 
 #: humo-gen/admin/include/statistics.php:91
-#: humo-gen/admin/include/statistics.php:525
-#: humo-gen/admin/include/statistics.php:604
+#: humo-gen/admin/include/statistics.php:529
+#: humo-gen/admin/include/statistics.php:608
 #: humo-gen/include/language_date.php:39
 msgid "May"
 msgstr "május"
 
 #: humo-gen/admin/include/statistics.php:92
-#: humo-gen/admin/include/statistics.php:527
-#: humo-gen/admin/include/statistics.php:606
+#: humo-gen/admin/include/statistics.php:531
+#: humo-gen/admin/include/statistics.php:610
 #: humo-gen/include/language_date.php:40
 msgid "June"
 msgstr "június"
 
 #: humo-gen/admin/include/statistics.php:93
-#: humo-gen/admin/include/statistics.php:529
-#: humo-gen/admin/include/statistics.php:608
+#: humo-gen/admin/include/statistics.php:533
+#: humo-gen/admin/include/statistics.php:612
 #: humo-gen/include/language_date.php:41
 msgid "July"
 msgstr "július"
 
 #: humo-gen/admin/include/statistics.php:94
-#: humo-gen/admin/include/statistics.php:531
-#: humo-gen/admin/include/statistics.php:610
+#: humo-gen/admin/include/statistics.php:535
+#: humo-gen/admin/include/statistics.php:614
 #: humo-gen/include/language_date.php:42
 msgid "August"
 msgstr "augusztus"
 
 #: humo-gen/admin/include/statistics.php:95
-#: humo-gen/admin/include/statistics.php:533
-#: humo-gen/admin/include/statistics.php:612
+#: humo-gen/admin/include/statistics.php:537
+#: humo-gen/admin/include/statistics.php:616
 #: humo-gen/include/language_date.php:43
 msgid "September"
 msgstr "szeptember"
 
 #: humo-gen/admin/include/statistics.php:96
-#: humo-gen/admin/include/statistics.php:535
-#: humo-gen/admin/include/statistics.php:614
+#: humo-gen/admin/include/statistics.php:539
+#: humo-gen/admin/include/statistics.php:618
 #: humo-gen/include/language_date.php:44
 msgid "October"
 msgstr "október"
 
 #: humo-gen/admin/include/statistics.php:97
-#: humo-gen/admin/include/statistics.php:537
-#: humo-gen/admin/include/statistics.php:616
+#: humo-gen/admin/include/statistics.php:541
+#: humo-gen/admin/include/statistics.php:620
 #: humo-gen/include/language_date.php:45
 msgid "November"
 msgstr "november"
 
 #: humo-gen/admin/include/statistics.php:98
-#: humo-gen/admin/include/statistics.php:539
-#: humo-gen/admin/include/statistics.php:618
+#: humo-gen/admin/include/statistics.php:543
+#: humo-gen/admin/include/statistics.php:622
 #: humo-gen/include/language_date.php:46
 msgid "December"
 msgstr "december"
@@ -4834,8 +4836,7 @@ msgid "sep"
 msgstr "Szept."
 
 #: humo-gen/admin/include/statistics.php:222
-#: humo-gen/admin/include/trees_cls.php:119
-#: humo-gen/admin/include/trees_cls.php:121 humo-gen/birthday_list.php:56
+#: humo-gen/admin/include/trees_cls.php:119 humo-gen/birthday_list.php:56
 #: humo-gen/include/language_date.php:30 humo-gen/include/mainindex_cls.php:171
 #: humo-gen/statistics.php:32
 msgid "oct"
@@ -4848,7 +4849,8 @@ msgstr "Okt."
 msgid "nov"
 msgstr "Nov."
 
-#: humo-gen/admin/include/statistics.php:224 humo-gen/birthday_list.php:58
+#: humo-gen/admin/include/statistics.php:224
+#: humo-gen/admin/include/trees_cls.php:121 humo-gen/birthday_list.php:58
 #: humo-gen/include/language_date.php:32 humo-gen/include/mainindex_cls.php:173
 #: humo-gen/statistics.php:34
 msgid "dec"
@@ -4856,7 +4858,7 @@ msgstr "Dec."
 
 #: humo-gen/admin/include/statistics.php:238
 #: humo-gen/admin/include/statistics.php:363
-#: humo-gen/admin/include/statistics.php:645
+#: humo-gen/admin/include/statistics.php:649
 msgid "Visitors"
 msgstr "Látogatók"
 
@@ -4932,7 +4934,7 @@ msgstr "Állapot statisztikai táblája"
 
 #: humo-gen/admin/include/statistics.php:421
 #: humo-gen/admin/include/statistics.php:490
-#: humo-gen/admin/include/statistics.php:499
+#: humo-gen/admin/include/statistics.php:503
 msgid "family tree"
 msgstr "családfa"
 
@@ -4959,7 +4961,7 @@ msgid "Counter"
 msgstr "Számláló"
 
 #: humo-gen/admin/include/statistics.php:463
-#: humo-gen/admin/include/statistics.php:566
+#: humo-gen/admin/include/statistics.php:570
 msgid "Total number of visited families:"
 msgstr "Látogatott családok összes száma:"
 
@@ -4972,27 +4974,27 @@ msgid "Unique visitors - Country of origin"
 msgstr "Egyedi látogatók - Származási ország"
 
 #: humo-gen/admin/include/statistics.php:488
-#: humo-gen/admin/include/statistics.php:749
+#: humo-gen/admin/include/statistics.php:753
 msgid "Most visited families:"
 msgstr "Leggyakrabban látogatott családok:"
 
-#: humo-gen/admin/include/statistics.php:497
+#: humo-gen/admin/include/statistics.php:501
 msgid "last visited families:"
 msgstr "legutóbb látogatott családok:"
 
-#: humo-gen/admin/include/statistics.php:499
+#: humo-gen/admin/include/statistics.php:503
 msgid "date-time"
 msgstr "dátum-idő"
 
-#: humo-gen/admin/include/statistics.php:661
+#: humo-gen/admin/include/statistics.php:665
 msgid "User agent information"
 msgstr "Felhasználó ugynök információja"
 
-#: humo-gen/admin/include/statistics.php:701
+#: humo-gen/admin/include/statistics.php:705
 msgid "Old statistics (numbers since last gedcom update)"
 msgstr "Régi statisztika (számok a legutóbbi gedcom frissítés óta)"
 
-#: humo-gen/admin/include/statistics.php:703
+#: humo-gen/admin/include/statistics.php:707
 msgid "Select family tree"
 msgstr "Családfa kiválasztása"
 
@@ -5001,7 +5003,7 @@ msgid "Picture settings"
 msgstr ""
 
 #: humo-gen/admin/include/thumbs.php:67 humo-gen/admin/include/thumbs.php:103
-#: humo-gen/admin/include/thumbs.php:231
+#: humo-gen/admin/include/thumbs.php:223 humo-gen/admin/include/thumbs.php:231
 msgid "Create thumbnails"
 msgstr "Bélyegkép létrehozása"
 
@@ -5059,10 +5061,6 @@ msgstr "Nem létezik kép útvonal!"
 msgid "Status of picture path"
 msgstr "Kép útvonal állapota"
 
-#: humo-gen/admin/include/thumbs.php:223
-msgid "CREATE THUMBNAILS"
-msgstr "BÉLYEGKÉP LÉTREHOZÁSA"
-
 #: humo-gen/admin/include/thumbs.php:230
 msgid "Thumbnail height: "
 msgstr "Bélyegkép magassága:"
@@ -5075,39 +5073,39 @@ msgstr ""
 msgid "Photos"
 msgstr "Fotók"
 
-#: humo-gen/admin/include/thumbs.php:346
+#: humo-gen/admin/include/thumbs.php:348
 msgid "Prefix has to be 2 letters and _"
 msgstr "Az előtag 2 betűból és _ áll."
 
-#: humo-gen/admin/include/thumbs.php:354
+#: humo-gen/admin/include/thumbs.php:356
 msgid "When creating a category you have to give it a name"
 msgstr "Mikor kategóriát hoz létre, nevet kell neki adnia"
 
-#: humo-gen/admin/include/thumbs.php:366
+#: humo-gen/admin/include/thumbs.php:368
 msgid "A category with this prefix already exists!"
 msgstr "Már létezik kategória ezzel az előtaggal!"
 
-#: humo-gen/admin/include/thumbs.php:403 humo-gen/admin/include/thumbs.php:408
+#: humo-gen/admin/include/thumbs.php:405 humo-gen/admin/include/thumbs.php:410
 msgid "Changed filename:"
 msgstr ""
 
-#: humo-gen/admin/include/thumbs.php:403 humo-gen/admin/include/thumbs.php:408
+#: humo-gen/admin/include/thumbs.php:405 humo-gen/admin/include/thumbs.php:410
 msgid "into filename:"
 msgstr ""
 
-#: humo-gen/admin/include/thumbs.php:496 humo-gen/admin/include/thumbs.php:569
+#: humo-gen/admin/include/thumbs.php:498 humo-gen/admin/include/thumbs.php:573
 msgid "Change filename"
 msgstr ""
 
-#: humo-gen/admin/include/thumbs.php:588
+#: humo-gen/admin/include/thumbs.php:592
 msgid "This folder does not exists!"
 msgstr "Ez a mappa nem létezik!"
 
-#: humo-gen/admin/include/thumbs.php:609
+#: humo-gen/admin/include/thumbs.php:613
 msgid "Create categories for your photo albums"
 msgstr "Hozzon létre kategóriát fotóalbumaihoz"
 
-#: humo-gen/admin/include/thumbs.php:612
+#: humo-gen/admin/include/thumbs.php:616
 msgid ""
 "Here you can create categories for all your photo albums.</li><li><b>A "
 "category will not be displayed in the photobook menu unless there is at "
@@ -5138,25 +5136,25 @@ msgstr ""
 "ilyenformán: <b>sp_</b>John Smith.jpg</li><li>Azokat a képeket, amelyeket az "
 "alapértelmezett kategóriába szeretné helyezni, nem kell előtaggal ellátni. "
 
-#: humo-gen/admin/include/thumbs.php:615
+#: humo-gen/admin/include/thumbs.php:619
 msgid "Category name"
 msgstr "Kategória név"
 
-#: humo-gen/admin/include/thumbs.php:652
+#: humo-gen/admin/include/thumbs.php:656
 #: humo-gen/admin/include/trees_cls.php:28
 #: humo-gen/admin/include/trees_cls.php:297
 msgid "Default"
 msgstr "Alapértelmezett"
 
-#: humo-gen/admin/include/thumbs.php:696
+#: humo-gen/admin/include/thumbs.php:702
 msgid "default - without prefix"
 msgstr "alapértelmezett - előtag nélkül"
 
-#: humo-gen/admin/include/thumbs.php:710
+#: humo-gen/admin/include/thumbs.php:716
 msgid "Do you really want to delete category:"
 msgstr "Tényleg törölni akarja ezt a kategóriát:"
 
-#: humo-gen/admin/include/thumbs.php:717
+#: humo-gen/admin/include/thumbs.php:723
 msgid "Save changes"
 msgstr "Változások mentése"
 
@@ -5787,7 +5785,7 @@ msgstr ""
 "b>?"
 
 #: humo-gen/admin/include/trees.php:277 humo-gen/include/show_tree_text.php:6
-#: humo-gen/photoalbum.php:144
+#: humo-gen/photoalbum.php:145
 msgid "NO NAME"
 msgstr "NINCS NÉV"
 
@@ -6122,8 +6120,8 @@ msgstr ""
 
 #: humo-gen/admin/include/trees_cls.php:853 humo-gen/list.php:1190
 #: humo-gen/list.php:1198 humo-gen/list.php:1360 humo-gen/relations.php:3059
-#: humo-gen/statistics.php:978 humo-gen/statistics.php:979
-#: humo-gen/statistics.php:980 humo-gen/statistics.php:981
+#: humo-gen/statistics.php:985 humo-gen/statistics.php:986
+#: humo-gen/statistics.php:987 humo-gen/statistics.php:988
 msgid "First name"
 msgstr "Keresztnév"
 
@@ -6787,63 +6785,59 @@ msgstr ""
 msgid "Please enter a valid username or password. "
 msgstr "Kérjük, írjon be érvényes felhasználónevet és jelszót."
 
-#: humo-gen/admin/index.php:447 humo-gen/admin/index.php:452
-#: humo-gen/admin/index.php:587
+#: humo-gen/admin/index.php:448 humo-gen/admin/index.php:453
+#: humo-gen/admin/index.php:588
 msgid "Update options"
 msgstr "Frissítési lehetőségek"
 
-#: humo-gen/admin/index.php:451
+#: humo-gen/admin/index.php:452
 msgid "HuMo-gen update check is disabled."
 msgstr "HuMo-gen frissítés ellenőrzése kikapcsolva."
 
-#: humo-gen/admin/index.php:586 humo-gen/admin/update/install_update.php:37
+#: humo-gen/admin/index.php:587 humo-gen/admin/update/install_update.php:37
 msgid "HuMo-gen is up-to-date!"
 msgstr "HuMo-gen is naprakész!"
 
-#: humo-gen/admin/index.php:592
+#: humo-gen/admin/index.php:593
 msgid "Update available"
 msgstr "Frissítés elérhető"
 
-#: humo-gen/admin/index.php:597
+#: humo-gen/admin/index.php:598
 msgid "Beta version available"
 msgstr "Beta verzió elérhető"
 
-#: humo-gen/admin/index.php:610 humo-gen/admin/update/install_update.php:418
+#: humo-gen/admin/index.php:611 humo-gen/admin/update/install_update.php:418
 msgid "Online version check unavailable."
 msgstr "Online verzió ellenőrzése nem elérhető."
 
-#: humo-gen/admin/index.php:679
+#: humo-gen/admin/index.php:680
 msgid "Website"
 msgstr "Weboldal"
 
-#: humo-gen/admin/index.php:689 humo-gen/menu.php:232 humo-gen/menu.php:687
+#: humo-gen/admin/index.php:690 humo-gen/menu.php:232 humo-gen/menu.php:687
 msgid "Logoff"
 msgstr "Kijelentkezés"
 
-#: humo-gen/admin/index.php:714
+#: humo-gen/admin/index.php:715
 msgid "Close source editor"
 msgstr "Forrásszerkesztő bezárása"
 
-#: humo-gen/admin/index.php:735
+#: humo-gen/admin/index.php:736
 msgid "Control"
 msgstr "Vezérlő"
 
-#: humo-gen/admin/index.php:761 humo-gen/family.php:131 humo-gen/header.php:238
+#: humo-gen/admin/index.php:762 humo-gen/family.php:131 humo-gen/header.php:238
 #: humo-gen/menu.php:558
 msgid "Google maps"
 msgstr "Google térkép"
 
-#: humo-gen/admin/index.php:799
+#: humo-gen/admin/index.php:800
 msgid "Data check"
 msgstr "Adatvizsgálat"
 
-#: humo-gen/admin/index.php:808
+#: humo-gen/admin/index.php:809
 msgid "Database backup"
 msgstr "Adatbázis mentés"
-
-#: humo-gen/admin/index.php:831
-msgid "EDITOR"
-msgstr "SZERKESZTÉS"
 
 #: humo-gen/admin/index.php:842
 msgid "Shared sources"
@@ -7155,6 +7149,12 @@ msgstr "Törvényes gyermek"
 msgid "Foster child"
 msgstr "Foster child"
 
+#: humo-gen/family.php:2027 humo-gen/family.php:2033
+#: humo-gen/include/calculate_age_cls.php:325
+#: humo-gen/include/calculate_age_cls.php:328 humo-gen/report_ancestor.php:1121
+msgid "married"
+msgstr "házasságot kötött"
+
 #: humo-gen/family.php:2119
 msgid "Family events"
 msgstr "Családi események"
@@ -7369,7 +7369,7 @@ msgstr "Fő index"
 msgid "Persons"
 msgstr "Személyek"
 
-#: humo-gen/header.php:229 humo-gen/include/mainindex_cls.php:338
+#: humo-gen/header.php:229 humo-gen/include/mainindex_cls.php:293
 #: humo-gen/menu.php:401
 msgid "Names"
 msgstr "Nevek"
@@ -7445,13 +7445,13 @@ msgstr ""
 
 #: humo-gen/hourglass.php:105 humo-gen/list.php:1320
 #: humo-gen/report_descendant.php:426 humo-gen/statistics.php:225
-#: humo-gen/statistics.php:977
+#: humo-gen/statistics.php:984
 msgid "Male"
 msgstr "Férfi"
 
 #: humo-gen/hourglass.php:106 humo-gen/list.php:1322
 #: humo-gen/report_descendant.php:427 humo-gen/statistics.php:225
-#: humo-gen/statistics.php:977
+#: humo-gen/statistics.php:984
 msgid "Female"
 msgstr "Nő"
 
@@ -7591,9 +7591,7 @@ msgstr "lakhely"
 #: humo-gen/include/fpdf16/fpdfextend.php:324
 #: humo-gen/include/fpdf16/fpdfextend.php:400
 #: humo-gen/include/fpdf16/fpdfextend.php:518
-#: humo-gen/include/show_sources.php:65 humo-gen/include/show_sources.php:81
-#: humo-gen/include/show_sources.php:120 humo-gen/include/show_sources.php:127
-#: humo-gen/include/show_sources.php:192 humo-gen/sources.php:100
+#: humo-gen/include/show_sources.php:127 humo-gen/sources.php:100
 msgid "Source"
 msgstr "Forrás"
 
@@ -7871,7 +7869,7 @@ msgstr "Yartzeit"
 msgid "Select a family tree"
 msgstr "Válasszon családfát"
 
-#: humo-gen/include/mainindex_cls.php:35 humo-gen/include/mainindex_cls.php:472
+#: humo-gen/include/mainindex_cls.php:35 humo-gen/include/mainindex_cls.php:406
 #: humo-gen/list.php:1394
 msgid "Selected family tree"
 msgstr "kiválasztott családfa"
@@ -7885,99 +7883,99 @@ msgstr ""
 msgid "One Name Study of the name"
 msgstr ""
 
-#: humo-gen/include/mainindex_cls.php:177
+#: humo-gen/include/mainindex_cls.php:178
 msgid "Latest update:"
 msgstr "Legutóbbi frissítés:"
 
-#: humo-gen/include/mainindex_cls.php:177
+#: humo-gen/include/mainindex_cls.php:178
 msgid "More statistics"
 msgstr ""
 
-#: humo-gen/include/mainindex_cls.php:186
+#: humo-gen/include/mainindex_cls.php:187
 msgid "Owner family tree:"
 msgstr "Családfa tulajdonos:"
 
-#: humo-gen/include/mainindex_cls.php:355
-#: humo-gen/include/mainindex_cls.php:357 humo-gen/statistics.php:801
-#: humo-gen/statistics.php:803
+#: humo-gen/include/mainindex_cls.php:310
+#: humo-gen/include/mainindex_cls.php:312 humo-gen/statistics.php:808
+#: humo-gen/statistics.php:810
 msgid "Surname"
 msgstr ""
 
-#: humo-gen/include/mainindex_cls.php:355
-#: humo-gen/include/mainindex_cls.php:357 humo-gen/list_names.php:285
-#: humo-gen/list_names.php:287 humo-gen/statistics.php:801
-#: humo-gen/statistics.php:803 humo-gen/statistics.php:978
-#: humo-gen/statistics.php:979 humo-gen/statistics.php:980
-#: humo-gen/statistics.php:981
+#: humo-gen/include/mainindex_cls.php:310
+#: humo-gen/include/mainindex_cls.php:312 humo-gen/list_names.php:332
+#: humo-gen/list_names.php:334 humo-gen/statistics.php:808
+#: humo-gen/statistics.php:810 humo-gen/statistics.php:985
+#: humo-gen/statistics.php:986 humo-gen/statistics.php:987
+#: humo-gen/statistics.php:988
 msgid "Total"
 msgstr "Összesen"
 
-#: humo-gen/include/mainindex_cls.php:362
+#: humo-gen/include/mainindex_cls.php:317
 msgid "More frequent surnames"
 msgstr "Gyakoribb családnevek"
 
-#: humo-gen/include/mainindex_cls.php:366
+#: humo-gen/include/mainindex_cls.php:321
 msgid "Frequent first names"
 msgstr "Gyakori személynevek"
 
-#: humo-gen/include/mainindex_cls.php:454 humo-gen/list.php:1236
+#: humo-gen/include/mainindex_cls.php:388 humo-gen/list.php:1236
 msgid "Enter name or part of name"
 msgstr "Írja be a nevet vagy a név egy részét"
 
-#: humo-gen/include/mainindex_cls.php:455 humo-gen/list.php:1240
+#: humo-gen/include/mainindex_cls.php:389 humo-gen/list.php:1240
 msgid "Enter private name"
 msgstr ""
 
-#: humo-gen/include/mainindex_cls.php:465
+#: humo-gen/include/mainindex_cls.php:399
 msgid "Minimum: 3 characters."
 msgstr "Legkevesebb: 3 betű."
 
-#: humo-gen/include/mainindex_cls.php:477 humo-gen/list.php:1398
+#: humo-gen/include/mainindex_cls.php:411 humo-gen/list.php:1398
 msgid "All but selected tree"
 msgstr "Minden fa, kivéve a kiválasztott"
 
-#: humo-gen/include/mainindex_cls.php:489 humo-gen/list.php:1444
+#: humo-gen/include/mainindex_cls.php:423 humo-gen/list.php:1444
 msgid "Advanced search"
 msgstr "Haladó keresés"
 
-#: humo-gen/include/mainindex_cls.php:537
+#: humo-gen/include/mainindex_cls.php:471
 msgid "Favorites"
 msgstr ""
 
-#: humo-gen/include/mainindex_cls.php:552
+#: humo-gen/include/mainindex_cls.php:486
 msgid "Surnames Index:"
 msgstr "Vezetéknév index: "
 
-#: humo-gen/include/mainindex_cls.php:583
+#: humo-gen/include/mainindex_cls.php:517
 msgid "Other"
 msgstr "Más"
 
-#: humo-gen/include/mainindex_cls.php:589
+#: humo-gen/include/mainindex_cls.php:523
 msgid "Patronyms"
 msgstr "Patronimikon"
 
-#: humo-gen/include/mainindex_cls.php:626
+#: humo-gen/include/mainindex_cls.php:582
 msgid "Today in history"
 msgstr ""
 
-#: humo-gen/include/mainindex_cls.php:644 humo-gen/list.php:1258
+#: humo-gen/include/mainindex_cls.php:600 humo-gen/list.php:1258
 #: humo-gen/list.php:1260 humo-gen/list.php:1287 humo-gen/list.php:1289
 #: humo-gen/list.php:1609 humo-gen/list.php:1621 humo-gen/source.php:59
 #: humo-gen/source.php:64 humo-gen/source.php:227 humo-gen/sources.php:116
 msgid "Date"
 msgstr "Időpont"
 
-#: humo-gen/include/mainindex_cls.php:676 humo-gen/list.php:1730
+#: humo-gen/include/mainindex_cls.php:615 humo-gen/list.php:1730
 #: humo-gen/list_places_families.php:603
 msgid " persons are not shown due to privacy settings"
 msgstr " személy nincs megjelenítve adatvédelmi beállítások miatt"
 
-#: humo-gen/include/mainindex_cls.php:688
+#: humo-gen/include/mainindex_cls.php:627
 #, php-format
 msgid "This database is made by %s, a freeware genealogical  program"
 msgstr "Ez az adatbázis a  %s ingyenes genealógiai programmal készült."
 
-#: humo-gen/include/mainindex_cls.php:693
+#: humo-gen/include/mainindex_cls.php:632
 #, php-format
 msgid "European law: %s HuMo-gen cookie information"
 msgstr "Európai törvény: %s HuMo-gen süti információ"
@@ -8141,7 +8139,7 @@ msgstr "Admin"
 #: humo-gen/list.php:179 humo-gen/list.php:188 humo-gen/list.php:197
 #: humo-gen/list_places_families.php:180 humo-gen/list_places_families.php:189
 #: humo-gen/list_places_families.php:198 humo-gen/list_places_families.php:207
-#: humo-gen/photoalbum.php:465 humo-gen/report_ancestor.php:1199
+#: humo-gen/photoalbum.php:467 humo-gen/report_ancestor.php:1199
 #: humo-gen/report_ancestor.php:1216 humo-gen/report_ancestor.php:1217
 #: humo-gen/report_ancestor.php:1349 humo-gen/timelines.php:323
 msgid "PRIVACY FILTER"
@@ -8211,8 +8209,12 @@ msgstr "óra"
 msgid "ash dispersion"
 msgstr "hamvak szétszórása"
 
-#: humo-gen/include/show_picture.php:198
+#: humo-gen/include/show_picture.php:199
 msgid "Missing image"
+msgstr ""
+
+#: humo-gen/include/show_sources.php:61 humo-gen/include/show_sources.php:77
+msgid "sources"
 msgstr ""
 
 #: humo-gen/include/show_sources.php:151
@@ -8222,6 +8224,10 @@ msgstr "forrás jegyzet"
 #: humo-gen/include/show_sources.php:222 humo-gen/source.php:380
 msgid "role"
 msgstr "szerep"
+
+#: humo-gen/include/show_sources.php:227 humo-gen/source.php:384
+msgid "page"
+msgstr ""
 
 #: humo-gen/include/witness.php:87
 msgid "This person was witness at:"
@@ -8444,11 +8450,11 @@ msgstr "Rendezze a következő szerint:"
 msgid "All names"
 msgstr "Összes név"
 
-#: humo-gen/list_names.php:200 humo-gen/statistics.php:768
+#: humo-gen/list_names.php:247 humo-gen/statistics.php:775
 msgid "Number of displayed surnames"
 msgstr "Megjelenített személynevek száma"
 
-#: humo-gen/list_names.php:211 humo-gen/statistics.php:779
+#: humo-gen/list_names.php:258 humo-gen/statistics.php:786
 msgid "Number of columns"
 msgstr "Oszlopok száma"
 
@@ -8876,7 +8882,7 @@ msgstr "Évforduló lista"
 msgid "Contact"
 msgstr "Kapcsolat"
 
-#: humo-gen/photoalbum.php:175 humo-gen/timelines.php:511
+#: humo-gen/photoalbum.php:177 humo-gen/timelines.php:511
 msgid ""
 "*** Privacy filter is active, one or more items are filtered. Please login "
 "to see all items ***"
@@ -8884,7 +8890,7 @@ msgstr ""
 "*** Adatvédelmi szűrő aktív, egy vagy több elem szűrve van. Jelentkezzen be, "
 "hogy minden elemet láthasson ***"
 
-#: humo-gen/photoalbum.php:346
+#: humo-gen/photoalbum.php:348
 msgid "Photo's per page"
 msgstr "Fotó oldalanként"
 
@@ -9104,6 +9110,12 @@ msgstr "mindketten férjei a következőnek:"
 #: humo-gen/relations.php:1996
 msgid "are both wifes of"
 msgstr "mindketten feleségei a következőnek:"
+
+#: humo-gen/relations.php:2004 humo-gen/relations.php:2005
+#: humo-gen/relations.php:2022 humo-gen/relations.php:2023
+#: humo-gen/relations.php:2076
+msgid "partner"
+msgstr ""
 
 #: humo-gen/relations.php:2009 humo-gen/relations.php:2033
 msgid "husband of"
@@ -9481,10 +9493,6 @@ msgstr ""
 msgid "Legend"
 msgstr "Jelmagyarázat"
 
-#: humo-gen/report_ancestor.php:1121
-msgid "married"
-msgstr "házasságot kötött"
-
 #: humo-gen/report_ancestor.php:1122
 msgid "Generated with HuMo-gen on "
 msgstr "HuMo-gen-nel generálva "
@@ -9762,7 +9770,7 @@ msgstr "Házasságban élő személyek átlagéletkora"
 msgid "Lifespan range of married individuals"
 msgstr ""
 
-#: humo-gen/statistics.php:951
+#: humo-gen/statistics.php:958
 msgid "Number of displayed first names"
 msgstr "Megjelenített keresztnevek száma"
 
@@ -9939,6 +9947,12 @@ msgstr "Válasszon színsémát (egy sütit fogunk használni a séma megjegyzs�
 #: humo-gen/user_settings.php:150 humo-gen/user_settings.php:154
 msgid "Standard-colours"
 msgstr "Alapértelmezett színek"
+
+#~ msgid "CREATE THUMBNAILS"
+#~ msgstr "BÉLYEGKÉP LÉTREHOZÁSA"
+
+#~ msgid "EDITOR"
+#~ msgstr "SZERKESZTÉS"
 
 #~ msgid "Source list, these sources can be connected to multiple items."
 #~ msgstr "Forrás lista, ezek több elemhez is kapcsolhatók."

@@ -52,7 +52,22 @@ function process_text($text_process, $text_sort='standard'){
 		//$text_process = preg_replace("#(^|[ \n\r\t])(((ftp://)|(http://)|(https://))([a-z0-9\-\.,\?!%\*_\#:;~\\&$@\/=\+]+))#mi", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $text_process);
 		$text_process = preg_replace("#(^|[ \n\r\t])(((http://)|(https://))([a-z0-9\-\.,\?!%\*_\#:;~\\&$@\/=\+]+))#mi", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $text_process);
 
-		if ($text_process){ $text_process=nl2br($text_process); }
+		if ($text_process){ 
+			if(strpos($text_process,"</table>") !== false) {  // if the text contains an html table make sure it doesn't get <br>
+				$text_process = preg_replace('~\R~u', "\n", $text_process); // first make sure all type newline combinations (\r, \r\n etc) will be \n
+				$txt_arr = explode("\n",$text_process);
+				$flag_table=0;
+				$new_text_process='';
+				foreach($txt_arr as $value) {
+					if(strpos($value,"<table")!==false) $flag_table=1; // we're in a table -> table flag ON
+					elseif(strpos($value,"</table>")!==false) $flag_table=0; // we're leaving table -> table flag OFF
+					if($flag_table==1) $new_text_process.=$value; // this is a table line -> don't give it a <br>
+					else $new_text_process.=$value."<br>"; // add a <br> to the non-table lines
+				}
+				$text_process = $new_text_process;
+			}
+			else $text_process=nl2br($text_process);
+ 		}
 
 		if ($text_process){
 			if ($screen_mode=='RTF')

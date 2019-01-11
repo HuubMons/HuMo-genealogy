@@ -310,7 +310,7 @@ elseif(isset($_POST['ak']) AND $_POST['ak']!='') {
 			$count=$dbh->prepare("update humo_users set user_password='".$password."' where user_name='".$userid."'");
 			$count->execute();
 			$no=$count->rowCount();
-			echo '<br><table class="humo" cellspacing="0" align="center">';			 
+			echo '<br><table class="humo" cellspacing="0" align="center">';
 			if($no==1){
 				$tm=time();
 				// Update the key so it can't be used again. 

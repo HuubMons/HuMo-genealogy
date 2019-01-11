@@ -317,15 +317,15 @@ function calculate_marriage($church_marr_date, $marr_date, $end_date, $age_check
 			}
 		}
 		//if($age) {
-		//	$age=" (".$age.' '.strtolower(__('Married')).')';
+		//	$age=" (".$age.' '.__('married').')';
 		//}
 		// *** Maybe something like this code is better: $age=printf(__('married %d'), $age);
 		if($age) {
 			if($selected_language=="sv" OR $selected_language=="no" OR $selected_language=="da") {
-				$age=" (".strtolower(__('Married')).' '.$age.')';
+				$age=" (".__('married').' '.$age.')';
 			}
 			else {
-				$age=" (".$age.' '.strtolower(__('Married')).')';
+				$age=" (".$age.' '.__('married').')';
 			}
 		}
 

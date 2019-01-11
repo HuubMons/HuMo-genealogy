@@ -122,7 +122,8 @@ class FileReader {
 // over it (it assumes knowledge of StringReader internals)
 
 class CachedFileReader extends StringReader {
-	function CachedFileReader($filename) {
+	//function CachedFileReader($filename) {
+	function __construct($filename) {
 		if (file_exists($filename)) {
 			$length=filesize($filename);
 			$fd = fopen($filename,'rb');

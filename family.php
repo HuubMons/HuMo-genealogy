@@ -2024,13 +2024,13 @@ else{
 									if ($man_cls->privacy=='' AND $woman_cls->privacy==''){
 										$key = array_search($familyDb->fam_marr_place, $location_array);
 										if (isset($key) AND $key>0){
-											$text_array[$key].="\\n".addslashes($google_name.", ".strtolower(__('Married')).' '.$familyDb->fam_marr_place);
+											$text_array[$key].="\\n".addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
 										}
 										else{
 											$location_array[]=$familyDb->fam_marr_place;
 											$lat_array[]=$info['location_lat'];
 											$lon_array[]=$info['location_lng'];
-											$text_array[]=addslashes($google_name.", ".strtolower(__('Married')).' '.$familyDb->fam_marr_place);
+											$text_array[]=addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
 										}
 									}
 								}

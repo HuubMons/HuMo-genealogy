@@ -170,7 +170,7 @@ if($screen_mode!="PDF") {
 			$pdf->Write(6,$sourceDb->source_repo_caln."\n");
 		}
 		else {
-			print '<b>'.__('Archive')."</b> $sourceDb->source_repo_caln<br>"; }
+			print '<b>'.__('Archive').":</b> $sourceDb->source_repo_caln<br>"; }
 		}
 	if ($sourceDb->source_repo_page){
 		if($screen_mode=="PDF") {
@@ -180,7 +180,7 @@ if($screen_mode!="PDF") {
 			$pdf->Write(6,$sourceDb->source_repo_page."\n");
 		}
 		else {
-			print '<b>'.__('Page')."</b> $sourceDb->source_repo_page<br>";
+			print '<b>'.__('Page').":</b> $sourceDb->source_repo_page<br>";
 		}
 	}
 
@@ -381,7 +381,7 @@ print '<tr><td>';
 		}
 		// *** Source page ***
 		if ($connectDb->connect_page){
-			echo ', '.strtolower(__('Page')).': '.$connectDb->connect_page;
+			echo ', '.__('page').': '.$connectDb->connect_page;
 		}
 		echo '<br>';
 	}

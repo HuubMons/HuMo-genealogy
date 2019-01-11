@@ -437,7 +437,8 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 echo '<div id="humo_top" '.$top_dir.'>';
 	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-small.gif" align="left" alt="logo">';
 	echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
-	if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
+	//if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
+	if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
 
 		// *** Enable/ disable HuMo-gen update check ***
 		if (isset($_POST['enable_update_check_change'])){
@@ -453,11 +454,9 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			}
 
 			$result = $dbh->query("UPDATE humo_settings
-				SET setting_value='".$update_text."'
+				SET setting_value='".$update_text."',
+				setting_value='".$update_last_check."'
 				WHERE setting_variable='update_text'");
-			$result = $dbh->query("UPDATE humo_settings
-				SET setting_value='".$update_last_check."'
-				WHERE setting_variable='update_last_check'");
 			$humo_option['update_last_check']=$update_last_check;
 			//$humo_option['update_text']=$update_text;
 		}
@@ -469,10 +468,9 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			// *** Update check, once a day ***
 
 			// *** Manual check for update ***
-			//if (isset($_GET['update_check'])){
 			if (isset($_GET['update_check']) AND $humo_option['update_last_check']!='DISABLED'){
 				// *** Update settings ***
-				$result = @$dbh->query("UPDATE humo_settings
+				$result = $dbh->query("UPDATE humo_settings
 					SET setting_value='2012-01-01'
 					WHERE setting_variable='update_last_check'");
 				$humo_option['update_last_check']='2012-01-01';
@@ -500,8 +498,9 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					curl_setopt($resource, CURLOPT_URL, $source);
 					curl_setopt($resource, CURLOPT_HEADER, false);
 					curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
-					//curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
-					curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 20);
+					//curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 20);
+					// *** BE AWARE: for hostinger provider Hostinger this must be a low value, otherwise the $dbh connection will be disconnected! ***
+					curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 15);
 					$content = curl_exec($resource);
 					curl_close($resource);
 					if($content != ''){
@@ -549,7 +548,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				//	@copy($source, $update_file);
 				//}
 
-				if ($f = @fopen($update_file, 'r')){
+				//if ($f = @fopen($update_file, 'r')){
+				if (is_file($update_file) AND $f = @fopen($update_file, 'r')){
 					// *** Used for automatic update procedure ***
 					$update['up_to_date']='no';
 
@@ -610,10 +610,10 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					$update_text= '  '.__('Online version check unavailable.');
 					//$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
 
-				if(!function_exists('curl_exec')) $update_text.=' Extension php_curl.dll is disabled.';
-				elseif (!is_writable('update')) $update_text.=' Folder admin/update/ is read only.';
+					if(!function_exists('curl_exec')) $update_text.=' Extension php_curl.dll is disabled.';
+					elseif (!is_writable('update')) $update_text.=' Folder admin/update/ is read only.';
 
-				//if( !ini_get('allow_url_fopen') ) $update_text.=' Setting allow_url_fopen is disabled.';
+					//if( !ini_get('allow_url_fopen') ) $update_text.=' Setting allow_url_fopen is disabled.';
 
 					// *** Update settings, only check for update once a day ***
 					$update_last_check=date("Y-m-d");
@@ -635,6 +635,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			echo $update_text;
 		}
 	}
+
 	// ******************
 	// *** START MENU ***
 	// ******************
@@ -827,8 +828,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			echo '<div class="'.$rtlmarker.'sddm">';
 				echo '<a href="'.$path_tmp.'page=editor"';
 				echo ' onmouseover="mopen(event,\'m3xa\',\'?\',\'?\')"';
-				// *** Changed text "EDITOR" into "Editor" ***
-				$editor_text=ucfirst(strtolower(__('EDITOR')));
+				$editor_text=__('Editor');
 				echo ' onmouseout="mclosetime()"'.$select_top.'>'.$editor_text.'</a>';
 
 				echo '<div id="m3xa" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -1013,7 +1013,9 @@ echo '<div id="content_admin">';
 	elseif ($group_administrator!='j' AND $group_edit_trees){ $_GET['menu_admin']='person'; include_once ("include/editor.php"); }
 
 	// *** Default page for administrator ***
-	else{ include_once ("include/index_inc.php"); }
+	else{
+		include_once ("include/index_inc.php");
+	}
 
 echo '</div>';
 

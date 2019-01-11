@@ -1075,7 +1075,8 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 	// check if this is a category file (file with existing category prefix) and if a subfolder for this category exists, place it there.
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 	if($temp->rowCount()) {  // there is a category table
-		$catgry = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
+		//$catgry = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
+		$catgry = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		if($catgry->rowCount()) {
 			while($catDb = $catgry->fetch(PDO::FETCH_OBJ)) {
 				//if(is_dir($dir.substr($dir.$_FILES['photo_upload']['name'],0,2))  AND substr($_FILES['photo_upload']['name'],0,3)==$catDb->photocat_prefix)  {   // there is a subfolder of this prefix
