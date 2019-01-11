@@ -14,24 +14,26 @@ function utf8ize($d) {
 function event_text($event_kind){
 	global $language;
 
-	if ($event_kind=='picture'){ $event_text=__('Picture/ Media'); }
-	elseif ($event_kind=='profession'){ $event_text=__('Profession'); }
-	elseif ($event_kind=='event'){ $event_text=__('Event'); }
-	elseif ($event_kind=='birth_declaration'){ $event_text=__('birth declaration'); }
-	elseif ($event_kind=='baptism_witness'){ $event_text=__('baptism witness'); }
-	elseif ($event_kind=='death_declaration'){ $event_text=__('death declaration'); }
-	elseif ($event_kind=='burial_witness'){ $event_text=__('burial witness'); }
-	elseif ($event_kind=='name'){ $event_text=__('Name'); }
-	elseif ($event_kind=='nobility'){ $event_text=__('Title of Nobility'); }
-	elseif ($event_kind=='title'){ $event_text=__('Title'); }
-	elseif ($event_kind=='adoption'){ $event_text=__('Adoption'); }
-	elseif ($event_kind=='lordship'){ $event_text=__('Title of Lordship'); }
-	elseif ($event_kind=='URL'){ $event_text=__('URL/ Internet link'); }
-	elseif ($event_kind=='person_colour_mark'){ $event_text=__('Colour mark by person'); }
-	elseif ($event_kind=='marriage_witness'){ $event_text= __('marriage witness'); }
-	elseif ($event_kind=='marriage_witness_rel'){ $event_text= __('marriage witness (religious)'); }
-	elseif ($event_kind=='source_picture'){ $event_text=__('Picture/ Media'); }
-	else { $event_text=ucfirst($event_kind); }
+	if ($event_kind=='picture') $event_text=__('Picture/ Media');
+	elseif ($event_kind=='profession') $event_text=__('Profession');
+	elseif ($event_kind=='event') $event_text=__('Event');
+	elseif ($event_kind=='birth_declaration') $event_text=__('birth declaration');
+	elseif ($event_kind=='baptism_witness') $event_text=__('baptism witness');
+	elseif ($event_kind=='death_declaration') $event_text=__('death declaration');
+	elseif ($event_kind=='burial_witness') $event_text=__('burial witness');
+	elseif ($event_kind=='name') $event_text=__('Name');
+	elseif ($event_kind=='NPFX') $event_text=__('Prefix');
+	elseif ($event_kind=='NSFX') $event_text=__('Suffix');
+	elseif ($event_kind=='nobility') $event_text=__('Title of Nobility');
+	elseif ($event_kind=='title') $event_text=__('Title');
+	elseif ($event_kind=='adoption') $event_text=__('Adoption');
+	elseif ($event_kind=='lordship') $event_text=__('Title of Lordship');
+	elseif ($event_kind=='URL') $event_text=__('URL/ Internet link');
+	elseif ($event_kind=='person_colour_mark') $event_text=__('Colour mark by person');
+	elseif ($event_kind=='marriage_witness') $event_text= __('marriage witness');
+	elseif ($event_kind=='marriage_witness_rel') $event_text= __('marriage witness (religious)');
+	elseif ($event_kind=='source_picture') $event_text=__('Picture/ Media');
+	else $event_text=ucfirst($event_kind);
 	return $event_text;
 }
 
@@ -65,7 +67,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// if subfolders exist for category files, list those too
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 	if($temp->rowCount()) {    // there is a category table
-		//$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		$catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		if($catg->rowCount()) {
 			while($catDb = $catg->fetch(PDO::FETCH_OBJ)) { 
@@ -102,6 +103,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$qry="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."'
 			AND event_kind!='name'
+			AND event_kind!='NPFX'
+			AND event_kind!='NSFX'
 			AND event_kind!='nobility'
 			AND event_kind!='title'
 			AND event_kind!='lordship'
@@ -116,6 +119,14 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	elseif ($event_kind=='name'){
 		$qry="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND event_kind='name' ORDER BY event_order";
+	}
+	elseif ($event_kind=='NPFX'){
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND event_kind='NPFX' ORDER BY event_order";
+	}
+	elseif ($event_kind=='NSFX'){
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND event_kind='NSFX' ORDER BY event_order";
 	}
 	elseif ($event_kind=='nobility'){
 		$qry="SELECT * FROM humo_events
@@ -200,6 +211,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$count_event=$dbh->query("SELECT * FROM humo_events
 				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."'
 				AND event_kind!='name'
+				AND event_kind!='NPFX'
+				AND event_kind!='NSFX'
 				AND event_kind!='nobility'
 				AND event_kind!='title'
 				AND event_kind!='lordship'
@@ -255,6 +268,30 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_name">['.__('Add').']</a> ';
 			$text.=__('Nickname').', '.__('alias name').', '.__('Adopted name').', '.__('Hebrew name').', '.__('etc.');
 			$text.='</td>';
+		$text.='<td></td>';
+		$text.='</tr>';
+	}
+
+	// *** Show NPFX Name prefix like: Lt. Cmndr. ***
+	if ($event_kind=='NPFX'){
+		//$text.='<tr style="display:none;" class="row1" name="row1">';
+		$text.='<tr style="display:none;" class="row1">';
+		$text.='<td></td>';
+		$text.='<td style="border-right:0px;">'.__('Prefix').'</td>';
+		$text.='<td style="border-left:0px;">';
+			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_npfx">['.__('Add').']</a> '.__('e.g. Lt. Cmndr.').'</td>';
+		$text.='<td></td>';
+		$text.='</tr>';
+	}
+
+	// *** Show NSFX Name suffix like: jr. ***
+	if ($event_kind=='NSFX'){
+		//$text.='<tr style="display:none;" class="row1" name="row1">';
+		$text.='<tr style="display:none;" class="row1">';
+		$text.='<td></td>';
+		$text.='<td style="border-right:0px;">'.__('Suffix').'</td>';
+		$text.='<td style="border-left:0px;">';
+			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_nsfx">['.__('Add').']</a> '.__('e.g. Jr.').'</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
 	}
@@ -356,7 +393,14 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$text.=__('Profession').'</td>';
 		$text.='<td style="border-right:0px;"></td>';
 		$text.='<td style="border-left:0px;">';
-			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
+	
+if (isset($_GET['add_person'])){
+			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
+}
+else {	
+			$text.='<a href="index.php?'.$joomlastring.'page='.$page.
+			'&amp;menu_admin=person&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
+}			
 			$temp_text='';
 			while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 				if ($temp_text) $temp_text.=', ';
@@ -408,7 +452,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				$tree_pict_path2 = $tree_pict_path;  // we change it only if category subfolders exist
 				$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 				if($temp->rowCount()) {  // there is a category table 
-					//$catgr = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 					$catgr = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 					if($catgr->rowCount()) { 
 						while($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {  
@@ -623,6 +666,16 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 			$expand_link=' style="display:none;" class="row1" name="row1"';
 			$internal_link='#';
 		}
+		if ($event_kind=='NPFX'){
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
+			$expand_link=' style="display:none;" class="row1" name="row1"';
+		}
+		if ($event_kind=='NSFX'){
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
+			$expand_link=' style="display:none;" class="row1" name="row1"';
+		}
 		if ($event_kind=='nobility'){
 			//$change_bg_colour=' class="humo_color"';
 			$change_bg_colour='';
@@ -689,8 +742,8 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 		$text.='<td>';
 			//$text.='&nbsp;&nbsp;&nbsp;<a href="'.$internal_link.'" onclick="hideShow('.$data_listDb->event_id.'00);"><span id="hideshowlink'.$data_listDb->event_id.'00">'.__('[+]').'</span></a>';
 			//$text.=' #'.$data_listDb->event_order;
-
-			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;'.$event_group.'&amp;event_kind='.$data_listDb->event_kind.'&amp;event_drop='.
+			$newpers = ""; if(isset($_GET['add_person'])) { $newpers = "&amp;add_person=1"; }
+			$text.='<a href="index.php?'.$joomlastring.'page='.$page.$newpers.'&amp;'.$event_group.'&amp;event_kind='.$data_listDb->event_kind.'&amp;event_drop='.
 				$data_listDb->event_order;
 			// *** Remove picture by source ***
 			if ($event_kind=='source_picture') $text.='&amp;source_id='.$data_listDb->event_connect_id;
@@ -737,7 +790,6 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 				$tree_pict_path3 = $tree_pict_path;  // we change it only if category subfolders exist
 				$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 				if($temp->rowCount()) {  // there is a category table 
-					//$catgr = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 					$catgr = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 					if($catgr->rowCount()) { 
 						while($catDb = $catgr->fetch(PDO::FETCH_OBJ)) {  
@@ -942,7 +994,9 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 			$text.='<input type="text" name="text_event['.$data_listDb->event_id.']" value="'.$data_listDb->event_event.'" size="60">';
 		}
 
-		if ($data_listDb->event_kind=='nobility'){ $text.=' '.__('e.g. Jhr., Jkvr.'); }
+		if ($data_listDb->event_kind=='NPFX'){ $text.=' '.__('e.g. Lt. Cmndr.'); }
+		elseif ($data_listDb->event_kind=='NSFX'){ $text.=' '.__('e.g. Jr.'); }
+		elseif ($data_listDb->event_kind=='nobility'){ $text.=' '.__('e.g. Jhr., Jkvr.'); }
 		elseif ($data_listDb->event_kind=='title'){ $text.=' '.__('e.g. Prof., Dr.'); }
 		elseif ($data_listDb->event_kind=='lordship'){ $text.=' '.__('e.g. Lord of Amsterdam'); }
 
@@ -1172,6 +1226,39 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 		*/
 	}
 
+
+if(isset($_GET['add_person'])) {
+		$text.='<input type="hidden" name="event_profession" value="">';
+
+		$change_bg_colour='';
+		$internal_link='#profession';
+		//$text.='<tr style="display:none;" class="row50" name="row50">';
+		$text.='<tr class="row50" name="row50">';
+		// *** Show name of event and [+] link ***
+		$text.='<td>';
+		//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;event_person=1&amp;add_person=1&amp;event_kind=profession&amp;event_drop=';
+		//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
+		//$text.='"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" border="0" alt="down"></a>';
+		$text.='</td>';
+		$text.='<td style="border-right:0px;">';
+		$text.=__('Profession');
+		$text.='<br>';
+		$text.='</td>';
+		$text.='<td style="border-left:solid 2px #0000FF;">';
+		$text.='<input type="text" name="event_profession" value="" size="60">';
+
+		// *** Date and place by event ***
+		$text.='<br>'.$editor_cls->date_show("","event_date_profession","").' '.__('place').' <input type="text" name="event_place_profession" placeholder="'.__('place').'" value="" size="'.$field_date.'">';
+
+		// *** Text by event ***
+		$text.='<br><textarea rows="1" name="event_text_profession" '.$field_text.' placeholder="'.__('text').'">'.$editor_cls->text_show("").'</textarea>';
+
+		$text.='</td>';
+		$text.='<td>';
+		$text.='</td>';
+		$text.='</tr>';
+}
+
 	if ($event_kind=='picture'){
 		// *** Upload image ***
 		//$text.='<tr style="display:none;" id="row51" name="row51"><td class="table_header_large" colspan="4">';
@@ -1241,6 +1328,8 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 		if (isset($_GET['event_family']) AND $_GET['event_family']=='1') $link_id='52';
 		if (isset($_GET['event_kind'])){
 			if ($_GET['event_kind']=='name') $link_id='1';
+			if ($_GET['event_kind']=='npfx') $link_id='1';
+			if ($_GET['event_kind']=='nsfx') $link_id='1';
 			if ($_GET['event_kind']=='nobility') $link_id='1';
 			if ($_GET['event_kind']=='title') $link_id='1';
 			if ($_GET['event_kind']=='lordship') $link_id='1';
@@ -1256,6 +1345,8 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 		
 		if (isset($_GET['event_add'])){
 			if ($_GET['event_add']=='add_name') $link_id='1';
+			if ($_GET['event_add']=='add_npfx') $link_id='1';
+			if ($_GET['event_add']=='add_nsfx') $link_id='1';
 			if ($_GET['event_add']=='add_nobility') $link_id='1';
 			if ($_GET['event_add']=='add_title') $link_id='1';
 			if ($_GET['event_add']=='add_lordship') $link_id='1';

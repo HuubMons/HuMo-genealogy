@@ -657,9 +657,9 @@ echo '</table>';
 $hide_photocat_array=explode(";",$groupDb->group_hide_photocat);
 
 // *** Update photocat settings ***
-//if (isset($_POST['change_photocat']) and is_numeric($_POST["id"])){
 $table_exists = $dbh->query("SHOW TABLES LIKE 'humo_photocat'")->rowCount() > 0;
 if ($table_exists AND isset($_POST['change_photocat']) and is_numeric($_POST["id"])){
+	/*
 	$group_hide_photocat='';
 	$data3sql = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
 	while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){
@@ -670,6 +670,28 @@ if ($table_exists AND isset($_POST['change_photocat']) and is_numeric($_POST["id
 			$group_hide_photocat.=$data3Db->photocat_id;
 		}
 	}
+	*/
+
+	$group_hide_photocat='';
+	$photocat_prefix_array[]='';
+	// *** Can't use GROUP BY in this querie because we need multiple fields (not allowed in MySQL 5.7) ***
+	$data3sql = $dbh->query("SELECT * FROM humo_photocat ORDER BY photocat_order");
+	while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){
+		// *** Only use first found prefix ***
+		if (!in_array($data3Db->photocat_prefix, $photocat_prefix_array)){
+			$photocat_prefix_array[] = $data3Db->photocat_prefix;
+
+			// *** Show/ hide categories ***
+			$check='show_photocat_'.$data3Db->photocat_id;
+			if (!isset($_POST["$check"])){
+				if ($group_hide_photocat!=''){ $group_hide_photocat.=';'; }
+				$group_hide_photocat.=$data3Db->photocat_id;
+			}
+		}
+	}
+	// *** Remove array, so it can be re-used ***
+	unset ($photocat_prefix_array);
+
 	$sql="UPDATE humo_groups
 		SET group_hide_photocat='".$group_hide_photocat."' 
 		WHERE group_id=".$_POST["id"];
@@ -682,15 +704,34 @@ echo '<h2 align="center">'.__('Hide or show photo categories per user group.').'
 echo '<table class="humo standard" border="1">';
 	echo '<tr class="table_header"><th>'.__('Category prefix').'</th><th>'.__('Show category?').' <input type="Submit" name="change_photocat" value="'.__('Change').'"></th></tr>';
 
-	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");  
+	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 	if($temp->rowCount()) {   // a humo_photocat table exists
+		/*
 		$data3sql = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
+		// MySQL 5.7: doesn't work yet:
+		//$data3sql = $dbh->query("SELECT photocat_id,photocat_prefix FROM humo_photocat GROUP BY photocat_prefix,photocat_id ORDER BY photocat_order");
 		while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){
 			// *** Show/ hide photo categories for user ***
 			$check=' checked'; if (in_array($data3Db->photocat_id, $hide_photocat_array)) $check='';
 			echo '<tr><td>'.$data3Db->photocat_prefix.'</td>';
 			echo '<td><input type="checkbox" name="show_photocat_'.$data3Db->photocat_id.'"'.$check.'></td></tr>';
 		}
+		*/
+
+		// *** Can't do GROUP BY because we need multiple fields and MySQL 5.7 doesn't like that ***
+		$data3sql = $dbh->query("SELECT * FROM humo_photocat ORDER BY photocat_order");
+		$photocat_prefix_array[]='';
+		while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){
+			// *** Only use first found prefix ***
+			if (!in_array($data3Db->photocat_prefix, $photocat_prefix_array)){
+				$photocat_prefix_array[] = $data3Db->photocat_prefix;
+				// *** Show/ hide photo categories for user ***
+				$check=' checked'; if (in_array($data3Db->photocat_id, $hide_photocat_array)) $check='';
+				echo '<tr><td>'.$data3Db->photocat_prefix.'</td>';
+				echo '<td><input type="checkbox" name="show_photocat_'.$data3Db->photocat_id.'"'.$check.'></td></tr>';
+			} 
+		}
+
 	}
 	else
 		echo '<tr><td colspan="2">'.__('No photo categories available.').'</td></tr>';

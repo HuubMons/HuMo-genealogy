@@ -21,6 +21,12 @@ if (isset($_GET['place_item'])){
 	if ($_GET['place_item']=='fam_marr_church'){ $place_item='fam_marr_church_place'; $form='form2'; }
 	if ($_GET['place_item']=='fam_div'){ $place_item='fam_div_place'; $form='form2'; }
 }
+
+if(strpos($_GET['place_item'],"add_fam")!== false ) { 
+	$form = "form_entire";
+	$place_item = $_GET['place_item'];
+}
+
 echo'
 	<script type="text/javascript">
 	function select_item(item){

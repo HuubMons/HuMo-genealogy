@@ -99,7 +99,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 
 		// *** Most children in family ***
 		echo "<tr><td>".__('Most children in family')."</td>\n";
-		$test_number="2"; // *** minimum of 2 children ***
+		$test_number="0"; // *** minimum of 0 children ***
 		$res=@$dbh->query("SELECT fam_gedcomnumber, fam_man, fam_woman, fam_children
 			FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children != ''");
 		while (@$record=$res->fetch(PDO::FETCH_OBJ)){
@@ -113,24 +113,29 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			}
 		}
 		echo "<td align='center'><i>$test_number</i></td>\n";
-		@$record=$db_functions->get_person($man_gedcomnumber);
-		$person_cls = New person_cls;
-		$person_cls->construct($record);
-		$name=$person_cls->person_name($record);
-		$man=$name["standard_name"];
-		$index = @$record->pers_indexnr;
+		if($test_number != "0") {
+			@$record=$db_functions->get_person($man_gedcomnumber);
+			$person_cls = New person_cls;
+			$person_cls->construct($record);
+			$name=$person_cls->person_name($record);
+			$man=$name["standard_name"];
+			$index = @$record->pers_indexnr;
 
-		@$record=$db_functions->get_person($woman_gedcomnumber);
-		$person_cls = New person_cls;
-		$person_cls->construct($record);
-		$name=$person_cls->person_name($record);
-		$woman=$name["standard_name"];
+			@$record=$db_functions->get_person($woman_gedcomnumber);
+			$person_cls = New person_cls;
+			$person_cls->construct($record);
+			$name=$person_cls->person_name($record);
+			$woman=$name["standard_name"];
 
-		if(CMS_SPECIFIC=="Joomla") {
-			echo '<td align="center"><a href="index.php?option=com_humo-gen&task=family&id='.$fam_gedcomnumber.'"><i><b>'.$man.__(' and ').$woman.'</b></i> </a></td></tr>';
+			if(CMS_SPECIFIC=="Joomla") {
+				echo '<td align="center"><a href="index.php?option=com_humo-gen&task=family&id='.$fam_gedcomnumber.'"><i><b>'.$man.__(' and ').$woman.'</b></i> </a></td></tr>';
+			}
+			else{
+				echo '<td align="center"><a href="family.php?id='.@$fam_gedcomnumber.'"><i><b>'.$man.__(' and ').$woman.'</b></i> </a></td></tr>';
+			}
 		}
-		else{
-			echo '<td align="center"><a href="family.php?id='.@$fam_gedcomnumber.'"><i><b>'.$man.__(' and ').$woman.'</b></i> </a></td></tr>';
+		else {
+			echo '<td></td></tr>';
 		}
 		// *** Nr. of persons database ***
 		$nr_persons=$dataDb->tree_persons;
@@ -728,13 +733,6 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 
 		function last_names($max) {
 			global $dbh, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols;
-			/*
-			$personqry="SELECT pers_lastname, pers_prefix,
-				CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
-				FROM humo_persons
-				WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
-				GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,".$max;
-			*/
 			// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
 			$personqry="SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
 				FROM humo_persons

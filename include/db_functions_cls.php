@@ -77,10 +77,10 @@ function __construct($tree_prefix='') {
 			WHERE source_tree_id=:source_tree_id AND source_gedcomnr=:source_gedcomnr";
 		$this->query['get_source'] = $dbh->prepare( $sql );
 		// *** Hide restricted source ***
-		$sql = "SELECT * FROM humo_sources
-			WHERE source_tree_id=:source_tree_id AND source_gedcomnr=:source_gedcomnr
-			AND source_status!='restricted'";
-		$this->query['get_source_restricted'] = $dbh->prepare( $sql );
+		//$sql = "SELECT * FROM humo_sources
+		//	WHERE source_tree_id=:source_tree_id AND source_gedcomnr=:source_gedcomnr
+		//	AND source_status!='restricted'";
+		//$this->query['get_source_restricted'] = $dbh->prepare( $sql );
 
 		// *** Person queries ***
 		$sql = "SELECT * FROM humo_persons
@@ -483,18 +483,19 @@ function get_source($source_gedcomnr){
 	global $user;
 	$qryDb=false;
 	try {
-		if ($user['group_show_restricted_source']=='n'){
+		// *** REMARK: it's easier to check for restricted sources in the script that uses this function, so disabled this code ***
+		//if ($user['group_show_restricted_source']=='n'){
 			$this->query['get_source']->bindValue(':source_tree_id', $this->tree_id, PDO::PARAM_INT);
 			$this->query['get_source']->bindValue(':source_gedcomnr', $source_gedcomnr, PDO::PARAM_STR);
 			$this->query['get_source']->execute();
 			$qryDb=$this->query['get_source']->fetch(PDO::FETCH_OBJ);
-		}
-		else{
-			$this->query['get_source_restricted']->bindValue(':source_tree_id', $this->tree_id, PDO::PARAM_INT);
-			$this->query['get_source_restricted']->bindValue(':source_gedcomnr', $source_gedcomnr, PDO::PARAM_STR);
-			$this->query['get_source_restricted']->execute();
-			$qryDb=$this->query['get_source_restricted']->fetch(PDO::FETCH_OBJ);
-		}
+		//}
+		//else{
+		//	$this->query['get_source_restricted']->bindValue(':source_tree_id', $this->tree_id, PDO::PARAM_INT);
+		//	$this->query['get_source_restricted']->bindValue(':source_gedcomnr', $source_gedcomnr, PDO::PARAM_STR);
+		//	$this->query['get_source_restricted']->execute();
+		//	$qryDb=$this->query['get_source_restricted']->fetch(PDO::FETCH_OBJ);
+		//}
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}

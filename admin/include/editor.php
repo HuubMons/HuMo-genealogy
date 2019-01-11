@@ -262,6 +262,340 @@ if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['
 if (isset($pers_gedcomnumber) AND $pers_gedcomnumber)
 	$person = $db_functions->get_person($pers_gedcomnumber);
 
+$userid = $_SESSION['user_id_admin'];
+$username = $_SESSION['user_name_admin'];
+$gedcom_date = strtoupper(date("d M Y"));
+$gedcom_time = date("H:i:s");
+
+$column_qry = $dbh->query('SHOW COLUMNS FROM humo_persons');
+while ($columnDb = $column_qry->fetch()) {
+	$field_value=$columnDb['Field'];
+	$field[$field_value]=$field_value;
+}
+if (!isset($field['pers_new_user'])){
+	$sql="ALTER TABLE humo_persons
+		ADD pers_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER pers_quality;";
+	$result=$dbh->query($sql);
+}
+if (!isset($field['pers_changed_user'])){
+	$sql="ALTER TABLE humo_persons
+		ADD pers_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER pers_new_time;";
+	$result=$dbh->query($sql);
+}
+
+$column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
+while ($columnDb = $column_qry->fetch()) {
+	$field_value=$columnDb['Field'];
+	$field[$field_value]=$field_value;
+}
+if (!isset($field['fam_new_user'])){
+	$sql="ALTER TABLE humo_families
+		ADD fam_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER fam_counter;";
+	$result=$dbh->query($sql);
+}
+if (!isset($field['fam_changed_user'])){
+	$sql="ALTER TABLE humo_families
+		ADD fam_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER fam_new_time;";
+	$result=$dbh->query($sql);
+}
+
+$column_qry = $dbh->query('SHOW COLUMNS FROM humo_sources');
+while ($columnDb = $column_qry->fetch()) {
+	$field_value=$columnDb['Field'];
+	$field[$field_value]=$field_value;
+}
+if (!isset($field['source_new_user'])){
+	$sql="ALTER TABLE humo_sources
+		ADD source_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER source_quality;";
+	$result=$dbh->query($sql);
+}
+if (!isset($field['source_changed_user'])){
+	$sql="ALTER TABLE humo_sources
+		ADD source_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER source_new_time;";
+	$result=$dbh->query($sql);
+}
+
+$column_qry = $dbh->query('SHOW COLUMNS FROM humo_repositories');
+while ($columnDb = $column_qry->fetch()) {
+	$field_value=$columnDb['Field'];
+	$field[$field_value]=$field_value;
+}
+if (!isset($field['repo_new_user'])){
+	$sql="ALTER TABLE humo_repositories
+		ADD repo_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER repo_quality;";
+	$result=$dbh->query($sql);
+}
+if (!isset($field['repo_changed_user'])){
+	$sql="ALTER TABLE humo_repositories
+		ADD repo_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER repo_new_time;";
+	$result=$dbh->query($sql);
+}
+
+$column_qry = $dbh->query('SHOW COLUMNS FROM humo_addresses');
+while ($columnDb = $column_qry->fetch()) {
+	$field_value=$columnDb['Field'];
+	$field[$field_value]=$field_value;
+}
+if (!isset($field['address_new_user'])){
+	$sql="ALTER TABLE humo_addresses
+		ADD address_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER address_quality;";
+	$result=$dbh->query($sql);
+}
+if (!isset($field['address_changed_user'])){
+	$sql="ALTER TABLE humo_addresses
+		ADD address_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER address_new_time;";
+	$result=$dbh->query($sql);
+}
+
+$column_qry = $dbh->query('SHOW COLUMNS FROM humo_events');
+while ($columnDb = $column_qry->fetch()) {
+	$field_value=$columnDb['Field'];
+	$field[$field_value]=$field_value;
+}
+if (!isset($field['event_new_user'])){
+	$sql="ALTER TABLE humo_events
+		ADD event_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER event_quality;";
+	$result=$dbh->query($sql);
+}
+if (!isset($field['event_changed_user'])){
+	$sql="ALTER TABLE humo_events
+		ADD event_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER event_new_time;";
+	$result=$dbh->query($sql);
+}
+
+//~~~~~BEGIN NEW FOR PETER~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+			if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_family'])) {
+				//$userid = $_SESSION['user_id_admin'];
+				//$username = $_SESSION['user_name_admin'];
+				//$gedcom_date = strtoupper(date("d M Y"));
+				//$gedcom_time = date("H:i:s");
+				// save all data from the table
+				// *** Generate new pers_gedcomnumber, find highest gedcomnumber I100: strip I and order by numeric ***
+				$new_gednr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
+					FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
+				$new_gednr_result = $dbh->query($new_gednr_qry);
+				$new_gednr=$new_gednr_result->fetch(PDO::FETCH_OBJ);
+				$gednr_int = intval(substr($new_gednr->pers_gedcomnumber,1)); //echo $gednr_int."-"; // I234 ==> 234
+				
+				// *** Generate new fam_gedcomnumber, find highest gedcomnumber F100: strip I and order by numeric ***
+				$new_fgednr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS fgednr
+					FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY fgednr DESC LIMIT 0,1";
+				$new_fgednr_result = $dbh->query($new_fgednr_qry);
+				$new_fgednr=$new_fgednr_result->fetch(PDO::FETCH_OBJ);
+				$fgednr_int = intval(substr($new_fgednr->fam_gedcomnumber,1)); //echo $fgednr_int."-"; // F234 ==> 234
+				
+				if(!isset($_POST['exist_partner'])) {
+					// we are in adding a whole new family: imports data for new relation and partner
+
+					$add_fam_marr_type = "";
+					$add_fam_marr_date_prefix = "";
+					$add_fam_marr_date = "";
+					$add_fam_marr_place = "";
+					
+					if(isset($_POST['add_fam_marr_type'])) $add_fam_marr_type = $_POST['add_fam_marr_type'];
+					if(isset($_POST['add_fam_marr_date_prefix'])) $add_fam_marr_date_prefix = $_POST['add_fam_marr_date_prefix'];
+					if(isset($_POST['add_fam_marr_date'])) $add_fam_marr_date = $_POST['add_fam_marr_date'];
+					if(isset($_POST['add_fam_marr_place'])) $add_fam_marr_place = $_POST['add_fam_marr_place'];
+					
+					//if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
+						// we are not using an existing person from the database
+						$add_fam_partner_sexe = "";
+						$add_fam_partner_lastname = "";
+						$add_fam_partner_prefix = "";
+						$add_fam_partner_firstname = "";
+						$add_fam_partner_birthdate_prefix = "";
+						$add_fam_partner_birthdate = "";
+						$add_fam_partner_birthplace = "";
+						$add_fam_partner_deathdate_prefix = "";
+						$add_fam_partner_deathdate = "";
+						$add_fam_partner_deathplace = "";
+						
+						if(isset($_POST['add_fam_partner_sexe'])) $add_fam_partner_sexe = $editor_cls->text_process($_POST['add_fam_partner_sexe']);
+						if(isset($_POST['add_fam_partner_lastname'])) $add_fam_partner_lastname = $editor_cls->text_process($_POST['add_fam_partner_lastname']);
+						if(isset($_POST['add_fam_partner_firstname'])) $add_fam_partner_firstname = $editor_cls->text_process($_POST['add_fam_partner_firstname']);
+						if(isset($_POST['add_fam_partner_prefix'])) $add_fam_partner_prefix = $editor_cls->text_process($_POST['add_fam_partner_prefix']);
+						if(isset($_POST['add_fam_partner_birthdate_prefix'])) $add_fam_partner_birthdate_prefix = $editor_cls->text_process($_POST['add_fam_partner_birthdate_prefix']);
+						if(isset($_POST['add_fam_partner_birthdate'])) $add_fam_partner_birthdate = $editor_cls->text_process($_POST['add_fam_partner_birthdate']);
+						if(isset($_POST['add_fam_partner_birthplace'])) $add_fam_partner_birthplace = $editor_cls->text_process($_POST['add_fam_partner_birthplace']);
+						if(isset($_POST['add_fam_partner_deathdate_prefix'])) $add_fam_partner_deathdate_prefix = $editor_cls->text_process($_POST['add_fam_partner_deathdate_prefix']);
+						if(isset($_POST['add_fam_partner_deathdate'])) $add_fam_partner_deathdate = $editor_cls->text_process($_POST['add_fam_partner_deathdate']);
+						if(isset($_POST['add_fam_partner_deathplace'])) $add_fam_partner_deathplace = $editor_cls->text_process($_POST['add_fam_partner_deathplace']);
+					//}
+				}
+
+				$x=1;
+				if(isset($_POST['exist_children'])) { 
+					// for adding to existing family: there were already children in this relation: get the total number of existing children
+					$x = $_POST['exist_children']+1; // the number of existing children + 1
+				}	
+				
+				while(isset($_POST['add_fam_child_firstname_'.$x]) AND $_POST['add_fam_child_firstname_'.$x]!="") { 
+					// as long as there are children's lines in the table with at least a firstname entered, collect their data
+					${'add_fam_child_sexe'.$x} = "";
+					if(isset($_POST['add_fam_child_sexe_'.$x])) ${'add_fam_child_sexe'.$x} = $editor_cls->text_process($_POST['add_fam_child_sexe_'.$x]);
+					${'add_fam_child_lastname'.$x} = "";
+					if(isset($_POST['add_fam_child_lastname_'.$x])) ${'add_fam_child_lastname'.$x} = $editor_cls->text_process($_POST['add_fam_child_lastname_'.$x]); 
+					${'add_fam_child_firstname'.$x} = "";
+					if(isset($_POST['add_fam_child_firstname_'.$x])) ${'add_fam_child_firstname'.$x} = $editor_cls->text_process($_POST['add_fam_child_firstname_'.$x]);
+					${'add_fam_child_prefix'.$x} = "";
+					if(isset($_POST['add_fam_child_prefix_'.$x])) ${'add_fam_child_prefix'.$x} = $editor_cls->text_process($_POST['add_fam_child_prefix_'.$x]);					
+					${'add_fam_child_birthdate'.$x.'_prefix'} = "";
+					if(isset($_POST['add_fam_child_birthdate_'.$x.'_prefix'])) ${'add_fam_child_birthdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x.'_prefix']);
+					${'add_fam_child_birthdate'.$x} = "";
+					if(isset($_POST['add_fam_child_birthdate_'.$x])) ${'add_fam_child_birthdate'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x]);
+					${'add_fam_child_birthplace'.$x} = "";
+					if(isset($_POST['add_fam_child_birthplace_'.$x])) ${'add_fam_child_birthplace'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthplace_'.$x]);
+					${'add_fam_child_deathdate'.$x.'_prefix'} = "";
+					if(isset($_POST['add_fam_child_deathdate_'.$x.'_prefix'])) ${'add_fam_child_deathdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_deathdate_'.$x.'_prefix']);
+					${'add_fam_child_deathdate'.$x} = "";
+					if(isset($_POST['add_fam_child_deathdate_'.$x])) ${'add_fam_child_deathdate'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathdate_'.$x]);
+					${'add_fam_child_deathplace'.$x} = "";
+					if(isset($_POST['add_fam_child_deathplace_'.$x])) ${'add_fam_child_deathplace'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathplace_'.$x]);
+					$x++;
+				}
+				// now start writing the variables to the database...
+				//- 1. UPDATE person's pers_fams field in the humo_persons table
+				//- 2. INSERT the new fam_gedcomnumber,fam_man and fam_woman in the humo_families table
+				// 3. INSERT the partner and children in the humo_persons table
+				// 4. UPDATE the fam_children field in the humo_families table with new partner
+				
+				if(!isset($_POST['exist_partner'])) {
+					// we are adding a new family: generate new (highest) pers_fams gedcomnumber
+					$newfam_id = "F".($fgednr_int+1); 
+					
+					if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
+						// we're are not entering a person retrieved from search of the database - generate new (highest) pers_gedcomnumber
+						$newpartner_id = "I".(++$gednr_int); 
+					}
+					else {
+						// we chose a person from search of the database - get his pers_gedcomnumber
+						$newpartner_id = $_POST['add_fam_partner_exist'];
+					}
+ 
+					if($person->pers_fams) {  
+						// main person already has a pers_fam - add new fam ID to this persons pers_fams
+						$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."', pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."', pers_fams=CONCAT(pers_fams,';','".$newfam_id."') WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'");
+					}
+					else {  
+						// person had no pers_fam - enter it into the database
+						$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."', pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',pers_fams='".$newfam_id."' WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'");
+					}
+					
+					// add new family to the families table
+					if($person->pers_sexe=="M") { $manged = $person->pers_gedcomnumber; $womanged = $newpartner_id; }
+					else { $manged = $newpartner_id; $womanged = $person->pers_gedcomnumber; }	
+					if(($add_fam_marr_type AND $add_fam_marr_type=="civil") OR !$add_fam_marr_type) { // regular marriage
+						$fammarrdate = $add_fam_marr_date_prefix.$add_fam_marr_date;
+						$fammarrplace = $add_fam_marr_place;
+						$famreldate = "";
+						$famrelplace = "";
+					}
+					else {  // relation
+						$fammarrdate = "";
+						$fammarrplace = "";
+						$famreldate = $add_fam_marr_date_prefix.$add_fam_marr_date;
+						$famrelplace = $add_fam_marr_place;
+					}
+				
+					$result = $dbh->query("INSERT INTO humo_families (fam_children,fam_relation_text,
+	fam_marr_notice_date,fam_marr_notice_place,fam_marr_notice_text,fam_marr_text,fam_marr_authority,
+	fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_notice_date,fam_marr_church_notice_place, fam_marr_church_notice_text,fam_religion,fam_div_date,fam_div_place,fam_div_text,fam_div_authority,fam_text,fam_changed_user,fam_changed_date,fam_changed_time,fam_new_user,fam_new_date,fam_new_time,fam_tree_id,fam_gedcomnumber,fam_man,fam_woman,fam_kind,fam_marr_date,fam_marr_place,fam_relation_date,fam_relation_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_id."','".$newfam_id."','".$manged."','".$womanged."','".$add_fam_marr_type."','".$fammarrdate."','".$fammarrplace."','".$famreldate."','".$famrelplace."')");
+
+				
+					// if not person taken from search in database, insert partner in humo_persons table
+					if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
+						if($add_fam_partner_prefix!="" AND substr($add_fam_partner_prefix,-1)!="_" AND substr($add_fam_partner_prefix,-1)!="'") { $add_fam_partner_prefix .= "_";  }
+
+						$result = $dbh->query("INSERT INTO humo_persons (pers_famc,pers_callname,pers_patronym,pers_name_text,pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time,pers_birth_text,	pers_stillborn, pers_bapt_date,pers_bapt_place,pers_bapt_text, pers_religion,pers_death_time,pers_death_text,pers_death_cause,pers_death_age,	pers_buried_date,pers_buried_place,pers_buried_text,pers_new_user,pers_new_date,pers_new_time,pers_tree_id,pers_tree_prefix, pers_gedcomnumber,pers_fams,pers_indexnr,pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,pers_death_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_id."','".$tree_prefix."','".$newpartner_id."','".$newfam_id."','".$newfam_id."','".$add_fam_partner_sexe."','".$add_fam_partner_firstname."','".$add_fam_partner_prefix."','".$add_fam_partner_lastname."','".$add_fam_partner_birthdate_prefix.$add_fam_partner_birthdate."','".$add_fam_partner_birthplace."','".$add_fam_partner_deathdate_prefix.$add_fam_partner_deathdate."','".$add_fam_partner_deathplace."')");
+					}
+					elseif(isset($_POST['add_fam_partner_exist']) AND $_POST['add_fam_partner_exist']!="") {
+						// this is a partner taken from search in the database he has to get new pers_fams too
+						if($add_fam_partner_prefix!="" AND substr($add_fam_partner_prefix,-1)!="_" AND substr($add_fam_partner_prefix,-1)!="'") { $add_fam_partner_prefix .= "_";  }
+						$this_partner = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
+						$this_partnerDb = $this_partner->fetch(PDO::FETCH_OBJ);
+						
+						if($this_partnerDb->pers_fams=="") {
+							$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."', pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',pers_indexnr='".$newfam_id."',pers_fams='".$newfam_id."' WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
+						}
+						else {
+							$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."',pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',pers_fams=CONCAT(pers_fams,';','".$newfam_id."') WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
+						}
+
+						$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."',pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."'
+							,pers_firstname = '".$add_fam_partner_firstname."' 
+							,pers_lastname = '".$add_fam_partner_lastname."' 
+							,pers_prefix = '".$add_fam_partner_prefix."' 
+							,pers_sexe = '".$add_fam_partner_sexe."' 
+							,pers_birth_date = '".$add_fam_partner_birthdate_prefix.$add_fam_partner_birthdate."' 
+							,pers_birth_place = '".$add_fam_partner_birthplace."' 
+							,pers_death_date = '".$add_fam_partner_deathdate_prefix.$add_fam_partner_deathdate."' 
+							,pers_death_place = '".$add_fam_partner_deathplace."' 
+							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
+							
+					}
+				}
+				
+				else {	// this is an existing partner of the main person
+					$newfam_id = $_POST['exist_partner'];
+				}
+				
+				$child_string = "";
+				// will hold the list of children to be added/entered to the families table: fam_children field
+
+				$x=1;
+				if(isset($_POST['exist_children'])) {  
+					// we're adding to existing family - get pers_gedcomnumbers of children that where already listed with this family
+					$x = $_POST['exist_children']+1; 
+					$famresult = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$_POST['exist_partner']."'");
+					$newfam_id = $_POST['exist_partner'];
+					$famresultDb=$famresult->fetch(PDO::FETCH_OBJ);
+					if($famresultDb) $child_string=$famresultDb->fam_children.";";
+				}
+				while(isset(${'add_fam_child_firstname'.$x}) AND ${'add_fam_child_firstname'.$x} != "") {
+					// now get newly added children
+					if(!isset($_POST['add_fam_child_exist_'.$x]) OR $_POST['add_fam_child_exist_'.$x]=="") {
+						// this child was manually entered
+						$childged = "I".(++$gednr_int); // allocate new gedcomnumber
+						// arrange proper prefix
+						
+						if(${'add_fam_child_prefix'.$x} != "" AND substr(${'add_fam_child_prefix'.$x},-1)!="_" AND substr(${'add_fam_child_prefix'.$x},-1)!="'") { ${'add_fam_child_prefix'.$x} .= "_"; }
+						
+						// enter new child into humo_persons table
+						$result = $dbh->query("INSERT INTO humo_persons (pers_changed_user,pers_changed_date,pers_changed_time,pers_fams,pers_callname,pers_patronym,pers_name_text,pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time, pers_birth_text,	pers_stillborn,pers_bapt_date,pers_bapt_place,pers_bapt_text,pers_religion,pers_death_time,pers_death_text, pers_death_cause,pers_death_age,pers_buried_date,pers_buried_place,pers_buried_text,pers_new_user,pers_new_date,pers_new_time,pers_tree_prefix,pers_tree_id,pers_gedcomnumber,pers_famc,pers_indexnr,pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,pers_death_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_prefix."','".$tree_id."','".$childged."','".$newfam_id."','".$newfam_id."','".${'add_fam_child_sexe'.$x}."','".${'add_fam_child_firstname'.$x}."','".${'add_fam_child_prefix'.$x}."','".${'add_fam_child_lastname'.$x}."','".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."','".${'add_fam_child_birthplace'.$x}."','".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."','".${'add_fam_child_deathplace'.$x}."')");
+						$x++;
+						$child_string .= $childged.";";	
+					}	
+					elseif(isset($_POST['add_fam_child_exist_'.$x]) AND $_POST['add_fam_child_exist_'.$x]!="") {
+						// this is a child that was taken from search in database
+						$chlresult = $dbh->query("SELECT pers_fams FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_child_exist_'.$x]."'");
+						$chlresultDB = $chlresult->fetch(PDO::FETCH_OBJ);
+						if(${'add_fam_child_prefix'.$x} != "" AND substr(${'add_fam_child_prefix'.$x},-1)!="_" AND substr(${'add_fam_child_prefix'.$x},-1)!="'") { ${'add_fam_child_prefix'.$x} .= "_"; }
+						$indexset = ""; if(!isset($chlresultDB->pers_fams) OR $chlresultDB->pers_fams =="") { $indexset = ", pers_indexnr='".$newfam_id."' "; }
+						$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."'
+							,pers_changed_time='".$gedcom_time."'
+							,pers_changed_date='".$gedcom_date."'
+							,pers_famc='".$newfam_id."' ".$indexset." 
+							,pers_firstname = '".${'add_fam_child_firstname'.$x}."' 
+							,pers_lastname = '".${'add_fam_child_lastname'.$x}."' 
+							,pers_prefix = '".${'add_fam_child_prefix'.$x}."' 
+							,pers_sexe = '".${'add_fam_child_sexe'.$x}."' 
+							,pers_birth_date = '".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."' 
+							,pers_birth_place = '".${'add_fam_child_birthplace'.$x}."' 
+							,pers_death_date = '".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."' 
+							,pers_death_place = '".${'add_fam_child_deathplace'.$x}."' 
+							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_child_exist_'.$x]."'");	
+						$child_string .= $_POST['add_fam_child_exist_'.$x].";";
+						$x++;
+					}
+				}
+
+				if($child_string != "") { $child_string = substr($child_string,0,-1); }
+				$result = $dbh->query("UPDATE humo_families SET fam_changed_user='".$username."',fam_changed_time='".$gedcom_time."',fam_changed_date='".$gedcom_date."'
+							,fam_children='".$child_string."' WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$newfam_id."'");
+			}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if (isset($person->pers_fams) AND $person->pers_fams){
 	$fams1=explode(";",$person->pers_fams);
 	$marriage=$fams1[0];
@@ -296,8 +630,9 @@ echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
 	echo '<option value="">'.__('Select a family tree:').'</option>';
 	while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
 		$edit_tree_array=explode(";",$group_edit_trees);
+		$team_tree_array=explode(";",$group_team_trees);
 		// *** Administrator can always edit in all family trees ***
-		if ($group_administrator=='j' OR in_array($tree_prefixDb->tree_id, $edit_tree_array)) {
+		if ($group_administrator=='j' OR in_array($tree_prefixDb->tree_id, $edit_tree_array) OR in_array($tree_prefixDb->tree_id, $team_tree_array)) {
 			$selected='';
 			if (isset($tree_prefix) AND $tree_prefixDb->tree_prefix==$tree_prefix){
 				$selected=' SELECTED';
@@ -444,7 +779,7 @@ if (isset($tree_prefix)){
 						$editor_cls->show_selected_person($person).'</option>';
 				}
 				echo '</select>';
-				echo ' <input type="Submit" name="submit" value="'.__('Select').'">';
+				echo ' <input type="Submit" name="dummy1" value="'.__('Select').'">';
 				echo '</form>';
 				if($idsearch==true OR $person_result->rowCount()==0) { echo '</span>'; }
 			}
@@ -519,6 +854,10 @@ if (isset($pers_gedcomnumber)){
 
 						$select_item=''; if ($menu_tab=='children'){ $select_item=' pageTab-active'; }
 						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=children">'.__('Children')."</a></div></li>";
+						
+						$select_item=''; if ($menu_tab=='entirefamily'){ $select_item=' pageTab-active'; }
+						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=entirefamily&amp;add_family=1">'.__('Bulk add family members')."</a></div></li>";						
+						
 					}
 
 					if ($person){
@@ -619,8 +958,8 @@ if (isset($pers_gedcomnumber)){
 		}
 		else{
 			$pers_gedcomnumber=$person->pers_gedcomnumber;
-			$pers_firstname=$person->pers_firstname; $pers_callname=$person->pers_callname;
-			$pers_prefix=$person->pers_prefix; $pers_lastname=$person->pers_lastname; $pers_patronym=$person->pers_patronym;
+			$pers_firstname=str_replace('"','&#34;',$person->pers_firstname); $pers_callname=str_replace('"','&#34;',$person->pers_callname);
+			$pers_prefix=str_replace('"','&#34;',$person->pers_prefix); $pers_lastname=str_replace('"','&#34;',$person->pers_lastname); $pers_patronym=str_replace('"','&#34;',$person->pers_patronym);
 			$pers_name_text=$person->pers_name_text;
 			$pers_alive=$person->pers_alive; $pers_cal_date=$person->pers_cal_date; $pers_sexe=$person->pers_sexe;
 			$pers_own_code=$person->pers_own_code; $person_text=$person->pers_text;
@@ -894,6 +1233,10 @@ if (isset($pers_gedcomnumber)){
 			// *** Add Marriage/ relation ***
 			echo '<br><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage&amp;add_marriage2=1">';
 			echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Add marriage/ relation').'" alt="'.__('Add marriage/ relation').'"> '.__('Add marriage/ relation').'</a><br>';
+			
+			// *** Add entire family to this person ***
+			echo '<br><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=entirefamily&amp;add_family=1">';
+			echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Bulk add family members').'" alt="'.__('Bulk add family members').'"> '.__('Bulk add family members').'</a><br>';
 
 		}
 		echo '</div>';
@@ -996,7 +1339,7 @@ if (isset($pers_gedcomnumber)){
 				if($search_quicksearch_parent == '')
 					echo '<option value="">*** '.__('Results are limited, use search to find more parents.').' ***</option>';
 				echo '</select>';
-				echo ' <input type="Submit" name="submit" value="'.__('Select').'">';
+				echo ' <input type="Submit" name="dummy2" value="'.__('Select').'">';
 			//}
 			echo $parent_text.'</td></tr>';
 
@@ -1098,6 +1441,12 @@ if (isset($pers_gedcomnumber)){
 		if ($add_person==false){
 			// *** Event name ***
 			echo $event_cls->show_event('person',$pers_gedcomnumber,'name');
+
+			// *** NPFX Name prefix like: Lt. Cmndr. ***
+			echo $event_cls->show_event('person',$pers_gedcomnumber,'NPFX');
+
+			// *** NSFX Name suffix like: jr. ***
+			echo $event_cls->show_event('person',$pers_gedcomnumber,'NSFX');
 
 			// *** Title of Nobility ***
 			echo $event_cls->show_event('person',$pers_gedcomnumber,'nobility');
@@ -1409,7 +1758,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</div>';
 		echo '</div>';
 		echo '</td><td></td></tr>';
-
+		
+		if (isset($_GET['add_person'])){  
+			// *** Profession(s) ***
+			echo $event_cls->show_event('person',$new_gedcomnumber,'profession');
+		}
 		if (!isset($_GET['add_person'])){
 
 			// *** Profession(s) ***
@@ -1789,6 +2142,18 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '</td>';
 				echo '<td></td></tr>';
 			}
+
+			// *** Person added by user ***
+			if ($person->pers_new_user){
+				echo '<tr><td>'.__('Added by').'</td>';
+				echo '<td colspan="2">'.$person->pers_new_user.'</td><td></td></tr>';
+			}
+			// *** Person changed by user ***
+			if ($person->pers_changed_user){
+				echo '<tr><td>'.__('Changed by').'</td>';
+				echo '<td colspan="2">'.$person->pers_changed_user.'</td><td></td></tr>';
+			}
+
 		}
 
 		} // *** end of menu_tab ***
@@ -1828,7 +2193,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 								echo '<form method="POST" action="'.$phpself.'">';
 								echo '<input type="hidden" name="page" value="'.$page.'">';
 								echo '<input type="hidden" name="marriage_nr" value="'.$familyDb->fam_gedcomnumber.'">';
-								echo ' <input type="Submit" name="submit" value="'.__('Select marriage').' '.($i+1).'">';
+								echo ' <input type="Submit" name="dummy3" value="'.__('Select marriage').' '.($i+1).'">';
 								echo '</form>';
 							}
 							else{
@@ -1877,7 +2242,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 						echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
-						echo ' <input type="Submit" name="submit" value="'.__('Add relation').'">';
+						echo ' <input type="Submit" name="dummy4" value="'.__('Add relation').'">';
 					echo '</form>';
 				echo '</td></tr>';
 			}
@@ -2606,7 +2971,348 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			<?php
 		}
 
+		
+//~~~~~~~~~ADDED FOR PETER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+		if ($menu_tab=='entirefamily') {
+			for($y=5;$y<15;$y++) {
+				echo '
+				<script type="text/javascript">
+				$(document).ready(function(){
+					$("#child'.$y.'").click(function(){
+						$("#child'.($y+1).'").show();
+					});
+				});
+				</script>
+				';
+			}
+		
+			if(isset($_GET['add_family']) OR isset($_POST['add_family']) OR isset($_POST['save_and_new_entire_family'])) {
+
+				// if main person already has family, show choices whether to add to existing fam or add new fam
+				// (form name: form_use)
+				if($person->pers_fams AND !isset($_POST['use_fam']) AND !isset($_POST['use_new_fam'])) { // person already has family
+					echo '<form method="POST" action="./index.php?page=editor&amp;menu_tab=entirefamily&amp;add_family=1" id="form_use" name="form_use" id="form_use">';
+					echo '<input type="hidden" name="page" value="'.$page.'">';
+					echo '<input type="hidden" name="use_fam_value" value="">';
+					echo '<div style="text-align:center;font-weight:bold;font-size:150%">'.__('Bulk add family members')."</div><br>";
+					$famarray = explode(";",$person->pers_fams);
+					echo "<table style='border-collapse:separate;border-spacing:30px'>";
+					
+					echo '<tr><td>';
+					/*
+					echo '<button onClick="document.getElementById(\'form_use\').use_fam_value.value=\'newfam\';this.form.submit();" style="font-size:130%" name="use_new_fam">';
+					echo __('Add new partner and children')."</b></button></td>";
+					*/
+					echo '<input type="submit" onClick="document.getElementById(\'form_use\').use_fam_value.value=\'newfam\';" style="width:270px;font-size:130%" id="tralala" name="use_new_fam" value="'.__('Add new partner and children').'">';	
+					echo "</td>";
+					
+					echo "</tr>";
+					
+					foreach($famarray AS $value) { 
+						$result = $dbh->query("SELECT fam_woman,fam_man FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$value."'");
+						$resultDb = $result->fetch(PDO::FETCH_OBJ); 
+						if($resultDb->fam_man==$person->pers_gedcomnumber) {
+							$result2= $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$resultDb->fam_woman."'");
+						}
+						else {
+							$result2= $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$resultDb->fam_man."'");
+						}
+						$resultDb2 = $result2->fetch(PDO::FETCH_OBJ);
+
+						echo "<tr><td>";
+						/*
+						echo '<button onClick="document.getElementById(\'form_use\').use_fam_value.value=\''.$value.'\';this.form.submit();" style="font-size:130%" name="use_fam">';
+						echo __('Add children to existing relation').": <b>".$person->pers_firstname." ".str_replace("_","",$person->pers_prefix)." ".$person->pers_lastname."</b> ".__('and');
+						echo " <b>".$resultDb2->pers_firstname." ".str_replace("_","",$resultDb2->pers_prefix)." ".$resultDb2->pers_lastname."</b></button>";
+						echo "</td></tr>";
+						*/
+						echo '<input type="submit" onClick="document.getElementById(\'form_use\').use_fam_value.value=\''.$value.'\';" style="width:270px;font-size:130%" name="use_fam" ';
+						echo ' value="'.__('Add children to existing relation:').'">';
+						echo '<span style="font-size:130%"> <b>'.$person->pers_firstname.' '.str_replace("_","",$person->pers_prefix).' '.$person->pers_lastname.'</b> '.__('and');
+						echo ' <b>'.$resultDb2->pers_firstname.' '.str_replace("_","",$resultDb2->pers_prefix).' '.$resultDb2->pers_lastname.'</b></span>';
+						echo "</td></tr>";
+						
+					}
+					echo "</table></form>";
+ 					
+				}
+				
+				else {  
+					// person has no family yet or we want to add children to existing family
+					// show the mask table (form name: form_entire)
+					echo '<form method="POST" action="'.$phpself.'" name="form_entire" id="form_entire">';
+					echo '<input type="hidden" name="page" value="'.$page.'">';
+
+					if(isset($_POST['use_fam_value']) AND substr($_POST['use_fam_value'],0,1)=="F") { 
+						// adding to existing fam: take the chosen fam
+						$fam_to_use = $_POST['use_fam_value'];
+					}
+					if(isset($_POST['use_fam_value']) AND $_POST['use_fam_value']=="newfam") { 
+						// adding a new family to person with family: signal new fam_gedcomnumber has to be generated
+						$fam_to_use = "newfam";
+					}
+					if(!isset($_POST['use_fam_value']) OR $_POST['use_fam_value']=="") { 
+						// adding a family to person with no family: the lone pers_fams can be taken
+						$fam_to_use = "newfam"; 
+					}
+					echo '<input type="hidden" name="fam_to_use" value="'.$fam_to_use.'">';
+ 
+					if(!$person->pers_fams OR ($person->pers_fams AND isset($_POST['use_new_fam']))) {
+						// user chose to add to existing fam: display marriage detail table (un-editable) with existing data
+						echo '<div style="text-align:center;font-weight:bold;font-size:150%">'.__('Add new family to this person')."</div><br>";
+
+						echo '<table class="humo" border="1">';
+						echo '<tr class="table_header_large">';
+						echo '<td>'.__('Relation Type').'</td>';
+						echo '<td>'.ucfirst(__('marriage/ relation')).'</td>';
+						echo '<td>'.ucfirst(__('marriage/ relation')).'</td>';
+						echo '</tr><tr>';
+						echo '<td style="border-right:0px;">';
+						echo '<select size="1" name="add_fam_marr_type">';
+							echo '<option value="">'.__('Marriage/ Related').' </option>';
+
+							$selected=''; //if ($fam_kind=='civil'){ $selected=' SELECTED'; }
+							echo '<option value="civil"'.$selected.'>'.__('Married').'</option>';
+
+							$selected=''; //if ($fam_kind=='living together'){ $selected=' SELECTED'; }
+							echo '<option value="living together"'.$selected.'>'.__('Living together').'</option>';
+
+							$selected=''; //if ($fam_kind=='living apart together'){ $selected=' SELECTED'; }
+							echo '<option value="living apart together"'.$selected.'>'.__('Living apart together').'</option>';
+
+							$selected=''; //if ($fam_kind=='intentionally unmarried mother'){ $selected=' SELECTED'; }
+							echo '<option value="intentionally unmarried mother"'.$selected.'>'.__('Intentionally unmarried mother').'</option>';
+
+							$selected=''; //if ($fam_kind=='homosexual'){ $selected=' SELECTED'; }
+							echo '<option value="homosexual"'.$selected.'>'.__('Homosexual').'</option>';
+
+							$selected=''; //if ($fam_kind=='non-marital'){ $selected=' SELECTED'; }
+							echo '<option value="non-marital"'.$selected.'>'.__('Non_marital').'</option>';
+
+							$selected=''; //if ($fam_kind=='extramarital'){ $selected=' SELECTED'; }
+							echo '<option value="extramarital"'.$selected.'>'.__('Extramarital').'</option>';
+
+							$selected=''; //if ($fam_kind=='partners'){ $selected=' SELECTED'; }
+							echo '<option value="partners"'.$selected.'>'.__('Partner').'</option>';
+
+							$selected=''; //if ($fam_kind=='registered'){ $selected=' SELECTED'; }
+							echo '<option value="registered"'.$selected.'>'.__('Registered').'</option>';
+
+							$selected=''; //if ($fam_kind=='unknown'){ $selected=' SELECTED'; }
+							echo '<option value="unknown"'.$selected.'>'.__('Unknown relation').'</option>';
+
+						echo '</select>';
+						echo '</td>';
+						echo '<td>'.$editor_cls->date_show("","add_fam_marr_date").'</td>';
+						echo '<td><input type="text" name="add_fam_marr_place" placeholder="'.ucfirst(__('place')).'" size="'.$field_place.'">';
+						echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=add_fam_marr_place","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+						echo '</tr></table><br>';
+					}
+					else {
+						// user choose to add new fam: display empty (editable) marriage details table
+						$result = $dbh->query("SELECT fam_kind,fam_marr_date,fam_marr_place,fam_relation_date,fam_relation_place FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$_POST['use_fam_value']."'");
+						$resultDb = $result->fetch(PDO::FETCH_OBJ);
+						$marrdate = $resultDb->fam_marr_date;
+						$marrplace = $resultDb->fam_marr_place;
+						$marrkind = $resultDb->fam_kind;
+						if($marrkind=="") {
+							$marrkind= __('Marriage/ Related');
+						}
+						if($resultDb->fam_kind!="civil" AND $resultDb->fam_kind!="") { 
+							$marrdate = $resultDb->fam_relation_date;
+							$marrplace = $resultDb->fam_relation_place;
+						}
+				
+						echo '<div style="text-align:center;font-weight:bold;font-size:150%">'.__('Add children to this family')."</div><br>";
+
+						echo '<table class="humo" border="1">';
+						echo '<tr class="table_header_large">';
+						echo '<td style="width:150px">'.__('Relation Type').'</td>';
+						echo '<td style="width:150px">'.ucfirst(__('marriage/ relation')).'</td>';
+						echo '<td style="width:150px">'.ucfirst(__('marriage/ relation')).'</td>';
+						echo '</tr><tr>';
+						echo '<td style="border-right:0px;">';
+						echo $marrkind;
+						echo '</td>';
+						echo '<td>'.strtolower($marrdate).'</td>';
+						echo '<td>'.$marrplace.'</td>';
+						echo '</tr></table><br>';
+					}
+					
+					
+					// header of partner and children table
+					echo '<table id="addpers" name="addpers" class="humo" border="1">';
+					echo '<tbody>';
+					echo '<tr style="text-align:center" class="table_header_large">';
+					echo '<td rowspan=2>'.'&nbsp;'.'</td>';
+					echo '<td colspan="3">'.__('Sex').'</td>';
+					//echo '<td rowspan=2>'.__('Find<br>Existing').'</td>';
+					echo '<td rowspan=2>'.__('Search').'</td>';
+					echo '<td rowspan=2>'.ucfirst(__('prefix')).'</td>';
+					echo '<td style="width:150px" rowspan=2>'.ucfirst(__('lastname')).'</td>';
+					echo '<td style="width:150px" rowspan=2>'.ucfirst(__('firstname')).'</td>';
+					echo '<td style="width:185px" rowspan=2>'.ucfirst(__('born')).'</td>';
+					echo '<td style="width:175px" rowspan=2>'.ucfirst(__('born')).'</td>';
+					echo '<td style="width:185px" rowspan=2>'.ucfirst(__('died')).'</td>';
+					echo '<td style="width:175px" rowspan=2>'.ucfirst(__('died')).'</td></tr>';
+					
+					echo '<tr style="text-align:center" class="table_header_large">';
+					echo '<td>'.__(' M ').'</td>';
+					echo '<td>'.__(' F ').'</td>';
+					echo '<td>'.__(' ? ').'</td>';
+					echo '</tr>';
+
+				if(isset($_POST['use_fam_value']) AND $_POST['use_fam_value'] != "" AND $_POST['use_fam_value'] != "newfam") {
+					// user chose to add to existing fam: show (un-editable) details of existing partner
+					echo '<input type="hidden" name="exist_partner" value="'.$_POST['use_fam_value'].'">';
+
+					$result = $dbh->query("SELECT fam_woman,fam_man FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$_POST['use_fam_value']."'");
+					$resultDb = $result->fetch(PDO::FETCH_OBJ);
+					$partner_male = "";
+					$partner_female = "";
+					if($resultDb->fam_man==$person->pers_gedcomnumber) {
+						$result2= $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$resultDb->fam_woman."'");
+						$partner_female = " CHECKED ";
+					}
+					else {
+						$result2= $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$resultDb->fam_man."'");
+						$partner_male = " CHECKED ";
+					}
+					$resultDb2 = $result2->fetch(PDO::FETCH_OBJ);
+					echo '<tr style="background-color:#E5E7E9;text-align:left"><td>'.__('Partner').'</td>';
+					echo '<td>'.'<input type="radio" name="add_fam_partner_sexe" value="M"'.$partner_male.' disabled>'.'</td>';
+					echo '<td>'.'<input type="radio" name="add_fam_partner_sexe" value="F"'.$partner_female.' disabled>'.'</td>';
+					echo '<td>'.'<input type="radio" name="add_fam_partner_sexe" value="" disabled>'.'</td>';
+					echo '<td>&nbsp;</td>';
+					echo '<td>&nbsp;'.str_replace("_","",$resultDb2->pers_prefix).'</td>';
+					echo '<td>&nbsp;'.$resultDb2->pers_lastname.'</td>';
+					echo '<td>&nbsp;'.$resultDb2->pers_firstname.'</td>';
+					echo '<td>&nbsp;'.strtolower($resultDb2->pers_birth_date).'</td>';
+					echo '<td>&nbsp;'.$resultDb2->pers_birth_place.'</td>';
+					echo '<td>&nbsp;'.strtolower($resultDb2->pers_death_date).'</td>';
+					echo '<td>&nbsp;'.$resultDb2->pers_death_place.'</td>';
+					echo '</tr>';
+
+				}
+				else {
+					// user chose to add new family: display (editable) table for entering partner's details
+					echo '<tr id="pmain" style="text-align:center"><td>'.__('Partner').'</td>';
+					echo '<td>'.'<input type="radio" id="prad1" name="add_fam_partner_sexe" value="M">'.'</td>';
+					echo '<td>'.'<input type="radio" id="prad2" name="add_fam_partner_sexe" value="F">'.'</td>';
+					echo '<td>'.'<input type="radio" id="prad3" name="add_fam_partner_sexe" value="" CHECKED>'.'</td>';
+					
+					echo '<td id="psearp"><a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=add_partner&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+					echo '<td id="ppref"><input type="text" name="add_fam_partner_prefix" value="" size="4" placeholder="'.ucfirst(__('prefix')).'"></td>';
+					echo '<td id="plsnm"><input type="text" id="add_fam_partner_lastname" name="add_fam_partner_lastname" value="" size="18" placeholder="'.ucfirst(__('lastname')).'"></td>';
+					echo '<td id="pfsnm"><input type="text" name="add_fam_partner_firstname" value=""  size="18" placeholder="'.ucfirst(__('firstname')).'"></td>';
+					echo '<td id="pbrdt">'.$editor_cls->date_show("","add_fam_partner_birthdate").'</td>';
+					echo '<td id="pbrpl"><input type="text" name="add_fam_partner_birthplace" value="" placeholder="'.ucfirst(__('place')).'" size="17">';
+					echo '<a id="search_partner_bplace" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=add_fam_partner_birthplace","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+					echo '<td id="pdedt">'.$editor_cls->date_show("","add_fam_partner_deathdate").'</td>';
+					echo '<td id="pdepl"><input type="text" name="add_fam_partner_deathplace" value="" placeholder="'.ucfirst(__('place')).'" size="17">';
+					echo '<a id="search_partner_dplace" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=add_fam_partner_deathplace","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+					echo '</tr>';
+					echo '<input type="hidden" value="" name="add_fam_partner_exist">';
+				}
+					$i=0;
+					if(isset($_POST['use_fam_value']) AND $_POST['use_fam_value'] != "" AND $_POST['use_fam_value']!="newfam") {
+						// adding to existing family, first display the existing children (non-editable)
+						echo '<input type="hidden" value="'.$_POST['use_fam_value'].'" name="chosenfamily">';
+						$result = $dbh->query("SELECT fam_children FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$_POST['use_fam_value']."'");
+						$resultDb = $result->fetch(PDO::FETCH_OBJ);
+						
+						if($resultDb->fam_children != '') {
+							$chld_arr = explode(";",$resultDb->fam_children);
+							
+							foreach($chld_arr AS $value) {
+								$i++;
+								$result2= $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$value."'");
+								$resultDb2 = $result2->fetch(PDO::FETCH_OBJ);
+								$chld_male = "";
+								$chld_female = "";	
+								$chld_notknown = "";
+								if($resultDb2->pers_sexe=="M") {
+									$chld_male = " CHECKED ";
+								}
+								elseif($resultDb2->pers_sexe=="F") {
+									$chld_female = " CHECKED ";
+								}
+								else {
+									$chld_notknown = " CHECKED ";
+								}
+								echo '<tr style="height:25px;background-color:#E5E7E9;text-align:left"><td>'.__('Child').' '.$i.'</td>';
+								echo '<td>'.'<input type="radio" name="add_fam_child_sexe_'.$i.'" value="M"'.$chld_male.' disabled>'.'</td>';
+								echo '<td>'.'<input type="radio" name="add_fam_child_sexe_'.$i.'" value="F"'.$chld_female.' disabled>'.'</td>';
+								echo '<td>'.'<input type="radio" name="add_fam_child_sexe_'.$i.'" value=""'.$chld_notknown.' disabled>'.'</td>';
+								echo '<td>&nbsp;</td>';
+								echo '<td>&nbsp;'.$resultDb2->pers_prefix.'</td>';
+								echo '<td>&nbsp;'.$resultDb2->pers_lastname.'</td>';
+								echo '<td>&nbsp;'.$resultDb2->pers_firstname.'</td>';
+								echo '<td>&nbsp;'.strtolower($resultDb2->pers_birth_date).'</td>';
+								echo '<td>&nbsp;'.$resultDb2->pers_birth_place.'</td>';
+								echo '<td>&nbsp;'.strtolower($resultDb2->pers_death_date).'</td>';
+								echo '<td>&nbsp;'.$resultDb2->pers_death_place.'</td>';
+								echo '</tr>';
+
+							}
+							echo '<input type="hidden" name="exist_children" value="'.$i.'">';
+						}
+						
+					}
+		
+					// Children
+					if($person->pers_sexe=="M") {
+						$lastname_value = $person->pers_lastname;
+						$prefix_value = str_replace("_","",$person->pers_prefix);
+					}
+					else {
+						$lastname_value = "";
+						$prefix_value = "";
+					}
+
+					for($x=$i+1;$x<$i+16;$x++) { 
+						// display table with 5 lines to enter new children and another 10 hidden lines that will open ono-by one when
+						// the last line is clicked
+						$hidden_tr = "";
+						if($x > $i+5) { $hidden_tr ="display:none;"; }
+						echo '<tr id="child'.$x.'" style="'.$hidden_tr.'text-align:center"><td>'.__('Child').' '.$x.'</td>';
+						echo '<td>'.'<input type="radio" id="prad1_'.$x.'" name="add_fam_child_sexe_'.$x.'" value="M">'.'</td>';
+						echo '<td>'.'<input type="radio" id="prad2_'.$x.'" name="add_fam_child_sexe_'.$x.'" value="F">'.'</td>';
+						echo '<td>'.'<input type="radio" id="prad3_'.$x.'" name="add_fam_child_sexe_'.$x.'" value=""'.' CHECKED'.'>'.'</td>';
+						$chosenfam = ""; if(isset($_POST['use_fam_value'])) { $chosenfam = $_POST['use_fam_value'];}
+						echo '<td id="psearp'.$x.'"><a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=add_child_'.$x.'&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+						echo '<td id="ppref'.$x.'"><input type="text" name="add_fam_child_prefix_'.$x.'" value="'.$prefix_value.'"  size="4" placeholder="'.ucfirst(__('prefix')).'"></td>';
+						echo '<td id="plsnm'.$x.'"><input type="text" name="add_fam_child_lastname_'.$x.'" value="'.$lastname_value.'"  size="18" placeholder="'.ucfirst(__('lastname')).'"></td>';
+						echo '<td id="pfsnm'.$x.'"><input type="text" name="add_fam_child_firstname_'.$x.'" value=""  size="18" placeholder="'.ucfirst(__('firstname')).'"></td>';
+						echo '<td id="pbrdt'.$x.'">'.$editor_cls->date_show("","add_fam_child_birthdate_".$x).'</td>';
+						echo '<td id="pbrpl'.$x.'"><input type="text" name="add_fam_child_birthplace_'.$x.'" placeholder="'.ucfirst(__('place')).'" size="17">';
+						echo '<a id="search_child_bplace_'.$x.'" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=add_fam_child_birthplace_'.$x.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+						echo '<td id="pdedt'.$x.'">'.$editor_cls->date_show("","add_fam_child_deathdate_".$x).'</td>';
+						echo '<td id="pdepl'.$x.'"><input type="text" name="add_fam_child_deathplace_'.$x.'" placeholder="'.ucfirst(__('place')).'" size="17">';
+						echo '<a id="search_child_dplace_'.$x.'" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=add_fam_child_deathplace_'.$x.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+						echo '</tr>';
+						echo '<input type="hidden" value="" name="add_fam_child_exist_'.$x.'">';
+					}
+					
+					echo '</tr></tbody></table>';
+					
+					//echo '<div><br><button onclick="changeAction()" style="font-size:130%" name="save_entire_family">'.__('Save entire family').'</button><br><br>';
+					echo '<div><br><input type="submit" onclick="changeAction();" style="font-size:130%" value="'.__('Save entire family').'"  name="save_entire_family"><br><br>';
+					echo '
+					<script type="text/javascript">
+					function changeAction() { 
+						document.form_entire.action = "./index.php?page=editor&menu_tab=person&tree='.$_SESSION['admin_tree_prefix'].'&person='.$person->pers_gedcomnumber.'";
+					}
+					</script>
+					';
+
+//					echo '<button onclick="document.form_entire.submit();" style="font-size:130%" name="save_and_new_entire_family">'.__('Save entire family and add another').'</button><br><br>';
+					echo '<input type="submit" style="font-size:130%" value="'.__('Save entire family and add another').'"  name="save_and_new_entire_family"><br><br>';
+					echo '</form>';
+				} 
+			}
+		}
 	}
 
 
@@ -2645,6 +3351,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				source_repo_page='".safe_text($_POST['source_repo_page'])."',
 				source_repo_gedcomnr='".$editor_cls->text_process($_POST['source_repo_gedcomnr'])."',
 				source_text='".$editor_cls->text_process($_POST['source_text'])."',
+				source_new_user='".$username."',
 				source_new_date='".$gedcom_date."',
 				source_new_time='".$gedcom_time."'";
 			$result=$dbh->query($sql);
@@ -2673,6 +3380,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			source_repo_page='".$editor_cls->text_process($_POST['source_repo_page'])."',
 			source_repo_gedcomnr='".$editor_cls->text_process($_POST['source_repo_gedcomnr'])."',
 			source_text='".$editor_cls->text_process($_POST['source_text'],true)."',
+			source_changed_user='".$username."',
 			source_changed_date='".$gedcom_date."',
 			source_changed_time='".$gedcom_time."'
 			WHERE source_tree_id='".$tree_id."' AND source_id='".safe_text($_POST["source_id"])."'";
@@ -2688,7 +3396,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<input type="hidden" name="source_id" value="'.$_POST['source_id'].'">';
 			echo '<input type="hidden" name="source_gedcomnr" value="'.$_POST['source_gedcomnr'].'">';
 			echo ' <input type="Submit" name="source_remove2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
-			echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
+			echo ' <input type="Submit" name="dummy5" value="'.__('No').'" style="color : blue; font-weight: bold;">';
 			echo '</form>';
 			echo '</div>';
 		}
@@ -2923,6 +3631,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				repo_text='".$editor_cls->text_process($_POST['repo_text'])."',
 				repo_mail='".safe_text($_POST['repo_mail'])."',
 				repo_url='".safe_text($_POST['repo_url'])."',
+				repo_new_user='".$username."',
 				repo_new_date='".$gedcom_date."',
 				repo_new_time='".$gedcom_time."'";
 			$result=$dbh->query($sql);
@@ -2947,6 +3656,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				repo_text='".$editor_cls->text_process($_POST['repo_text'])."',
 				repo_mail='".safe_text($_POST['repo_mail'])."',
 				repo_url='".safe_text($_POST['repo_url'])."',
+				repo_changed_user='".$username."',
 				repo_changed_date='".$gedcom_date."',
 				repo_changed_time='".$gedcom_time."'
 			WHERE repo_id='".safe_text($_POST["repo_id"])."'";
@@ -2961,7 +3671,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="repo_id" value="'.$_POST['repo_id'].'">';
 			echo ' <input type="Submit" name="repo_remove2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
-			echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
+			echo ' <input type="Submit" name="dummy6" value="'.__('No').'" style="color : blue; font-weight: bold;">';
 			echo '</form>';
 			echo '</div>';
 		}
@@ -3025,7 +3735,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				$repo_name=''; $repo_address=''; $repo_zip=''; $repo_place='';
 				$repo_phone=''; $repo_date=''; $repo_text=''; //$repo_source='';
 				$repo_mail=''; $repo_url='';
-				$repo_new_date=''; $repo_new_time=''; $repo_changed_date=''; $repo_changed_time='';
+				$repo_new_user=''; $repo_new_date=''; $repo_new_time=''; $repo_changed_user=''; $repo_changed_date=''; $repo_changed_time='';
 			}
 			else{
 				@$repo_qry=$dbh->query("SELECT * FROM humo_repositories
@@ -3046,7 +3756,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				$repo_text=$repoDb->repo_text;
 				$repo_mail=$repoDb->repo_mail;
 				$repo_url=$repoDb->repo_url;
-				$repo_new_date=$repoDb->repo_new_date; $repo_new_time=$repoDb->repo_new_time;
+				$repo_new_user=$repoDb->repo_new_user;$repo_new_date=$repoDb->repo_new_date; $repo_new_time=$repoDb->repo_new_time;
+				$repo_changed_user=$repoDb->repo_changed_user;
 				$repo_changed_date=$repoDb->repo_changed_date;
 				$repo_changed_time=$repoDb->repo_changed_time;
 			}
@@ -3128,6 +3839,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				address_place='".$editor_cls->text_process($_POST['address_place'])."',
 				address_phone='".safe_text($_POST['address_phone'])."',
 				address_text='".$editor_cls->text_process($_POST['address_text'])."',
+				address_new_user='".$username."',
 				address_new_date='".$gedcom_date."',
 				address_new_time='".$gedcom_time."'";
 			$result=$dbh->query($sql);
@@ -3149,6 +3861,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				address_place='".$editor_cls->text_process($_POST['address_place'])."',
 				address_phone='".safe_text($_POST['address_phone'])."',
 				address_text='".$editor_cls->text_process($_POST['address_text'],true)."',
+				address_changed_user='".$username."',
 				address_changed_date='".$gedcom_date."',
 				address_changed_time='".$gedcom_time."'
 			WHERE address_id='".safe_text($_POST["address_id"])."'";
@@ -3165,7 +3878,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<input type="hidden" name="address_id" value="'.$_POST['address_id'].'">';
 			echo '<input type="hidden" name="address_gedcomnr" value="'.$_POST['address_gedcomnr'].'">';
 			echo ' <input type="Submit" name="address_remove2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
-			echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
+			echo ' <input type="Submit" name="dummy7" value="'.__('No').'" style="color : blue; font-weight: bold;">';
 			echo '</form>';
 			echo '</div>';
 		}
@@ -3432,12 +4145,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				}
 			}
 			echo '</select>';
-			echo '<input type="Submit" name="submit" value="'.__('Select').'">';
+			echo '<input type="Submit" name="dummy8" value="'.__('Select').'">';
 			echo '</form>';
 		echo '</td></tr></table><br>';
 
 		// *** Change selected place ***
-		if (isset($_POST["place_select"])){
+		if (isset($_POST["place_select"]) AND $_POST["place_select"]!=''){
 			echo '<table class="humo standard" border="1">';
 				echo '<tr class="table_header"><th colspan="2">'.__('Change location').'</th></tr>';
 				echo '<form method="POST" action="'.$phpself.'">';
@@ -3445,7 +4158,6 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="place_old" value="'.$_POST["place_select"].'">';
 				echo __('Change location').':</td><td><input type="text" name="place_new" value="'.$_POST["place_select"].'" size="60"><br>';
-
 				echo '<input type="Checkbox" name="google_maps" value="1" checked>'.__('Also change Google Maps table.').'<br>';
 				echo '<input type="Submit" name="place_change" value="'.__('Save').'">';
 				echo '</td></tr>';

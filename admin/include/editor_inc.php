@@ -202,6 +202,7 @@ if (isset($_POST['person_change'])){
 	pers_sexe='".safe_text($_POST["pers_sexe"])."',
 	pers_own_code='".safe_text($_POST["pers_own_code"])."',
 	pers_text='".$editor_cls->text_process($_POST["person_text"],true)."',
+	pers_changed_user='".$username."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
@@ -245,6 +246,7 @@ if (isset($_POST['person_change'])){
 	if ($pers_cal_date) $sql.="pers_cal_date='".$pers_cal_date."',";
 	$sql.="pers_cremation='".safe_text($_POST["pers_cremation"])."',
 	pers_cremation='".safe_text($_POST["pers_cremation"])."',
+	pers_changed_user='".$username."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
@@ -252,7 +254,19 @@ if (isset($_POST['person_change'])){
 	family_tree_update($tree_prefix);
 }
 
-if (isset($_POST['person_add'])){
+if (isset($_GET['add_person'])){
+	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
+	$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
+	$new_nr_result = $dbh->query($new_nr_qry);
+	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
+	$new_gedcomnumber='I1';
+	if (isset($new_nr->pers_gedcomnumber)){
+		$new_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+1);
+	}	
+}
+
+if (isset($_POST['person_add'])){  
 	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
 	$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
 		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
@@ -324,11 +338,32 @@ if (isset($_POST['person_add'])){
 		pers_buried_text='".$editor_cls->text_process($_POST["pers_buried_text"],true)."',";
 		if ($pers_cal_date) $sql.="pers_cal_date='".$pers_cal_date."',";
 		$sql.="pers_cremation='".safe_text($_POST["pers_cremation"])."',
-
+		pers_new_user='".$username."',
 		pers_new_date='".$gedcom_date."',
 		pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
-
+	if(isset($_POST["event_profession"]) AND $_POST["event_profession"]!="" AND $_POST["event_profession"]!= "Profession") {
+		$event_text="";
+		$event_date="";
+		$event_place="";
+		if(isset($_POST["event_text_profession"]))  $event_text=$_POST["event_text_profession"];
+		if(isset($_POST["event_date_profession"]))  $event_date=$_POST["event_date_profession"];
+		if(isset($_POST["event_place_profession"])) $event_place=$_POST["event_place_profession"];
+		$sql="INSERT INTO humo_events SET
+			event_tree_id='".$tree_id."',
+			event_connect_kind='person',
+			event_connect_id='".$new_gedcomnumber."',
+			event_kind='profession',
+			event_event='".$_POST["event_profession"]."',
+			event_order='1',
+			event_place='".$event_place."',
+			event_text='".$event_text."',
+			event_date='".$event_date."',
+			event_new_user='".$username."',
+			event_new_date='".$gedcom_date."',
+			event_new_time='".$gedcom_time."'";
+		$result=$dbh->query($sql);	
+	}
 	// *** Show new person ***
 	$pers_gedcomnumber=$new_gedcomnumber;
 	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
@@ -355,6 +390,7 @@ if (isset($_GET['fam_down'])){
 	}
 	$sql="UPDATE humo_persons SET
 	pers_fams='".$fams."',
+	pers_changed_user='".$username."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_id='".safe_text($_GET["person_id"])."'";
@@ -375,6 +411,7 @@ if (isset($_GET['fam_up'])){
 	}
 	$sql="UPDATE humo_persons SET
 	pers_fams='".$fams."',
+	pers_changed_user='".$username."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_id='".safe_text($_GET["person_id"])."'";
@@ -399,6 +436,7 @@ function fams_add($personnr, $familynr){
 		$sql="UPDATE humo_persons SET
 			pers_fams='".$fams."',
 			pers_indexnr='".$pers_indexnr."',
+			pers_changed_user='".$username."',
 			pers_changed_date='".$gedcom_date."',
 			pers_changed_time='".$gedcom_time."'
 			WHERE pers_id='".$person_db->pers_id."'";
@@ -423,6 +461,7 @@ function fams_remove($personnr, $familynr){
 		$sql="UPDATE humo_persons SET
 			pers_fams='".$fams3."',
 			pers_indexnr='".$pers_indexnr."',
+			pers_changed_user='".$username."',
 			pers_changed_date='".$gedcom_date."',
 			pers_changed_time='".$gedcom_time."'
 			WHERE pers_id='".$person_db->pers_id."'";
@@ -467,6 +506,7 @@ if (isset($_POST['fam_remove2'])){
 			$sql="UPDATE humo_persons SET
 			pers_famc='',
 			pers_indexnr='".safe_text($pers_indexnr)."',
+			pers_changed_user='".$username."',
 			pers_changed_date='".$gedcom_date."',
 			pers_changed_time='".$gedcom_time."'
 			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($child_gedcomnumber[$i])."'";
@@ -548,6 +588,7 @@ if (isset($_GET['add_parents'])){
 	fam_marr_church_notice_date='', fam_marr_church_notice_place='', fam_marr_church_notice_text='', fam_religion='',
 	fam_div_date='', fam_div_place='', fam_div_text='', fam_div_authority='',
 	fam_text='',
+	fam_new_user='".$username."',
 	fam_new_date='".$gedcom_date."',
 	fam_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
@@ -563,7 +604,7 @@ if (isset($_GET['add_parents'])){
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
 		pers_death_date='', pers_death_place='', pers_death_time='', pers_death_text='', pers_death_cause='',
-		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='',
+		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', pers_new_user='".$username."',
 		pers_new_date='".$gedcom_date."', pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
 
@@ -578,13 +619,14 @@ if (isset($_GET['add_parents'])){
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
 		pers_death_date='', pers_death_place='', pers_death_time='', pers_death_text='', pers_death_cause='',
-		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='',
+		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', pers_new_user='".$username."',
 		pers_new_date='".$gedcom_date."', pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
 
 	// *** Add parents to child record ***
 	$sql="UPDATE humo_persons SET
 	pers_famc='".safe_text($fam_gedcomnumber)."',
+	pers_changed_user='".$username."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($pers_gedcomnumber)."'";
@@ -607,6 +649,7 @@ if (isset($_POST['add_parents']) AND $_POST['add_parents']!=''){
 
 	$sql="UPDATE humo_families SET
 	fam_children='".$fam_children."',
+	fam_changed_user='".$username."',
 	fam_changed_date='".$gedcom_date."',
 	fam_changed_time='".$gedcom_time."'
 	WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['add_parents'])."'";
@@ -621,6 +664,7 @@ if (isset($_POST['add_parents']) AND $_POST['add_parents']!=''){
 	$sql="UPDATE humo_persons SET
 	pers_famc='".safe_text($_POST['add_parents'])."',
 	pers_indexnr='".safe_text($pers_indexnr)."',
+	pers_changed_user='".$username."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
@@ -638,6 +682,7 @@ if (isset($_POST['child_connect2'])){
 	if (isset($_POST["children"])){
 		$sql="UPDATE humo_families SET
 		fam_children='".safe_text($_POST["children"]).';'.safe_text($_POST["child_connect2"])."',
+		fam_changed_user='".$username."',
 		fam_changed_date='".$gedcom_date."',
 		fam_changed_time='".$gedcom_time."'
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['family_id'])."'";
@@ -645,6 +690,7 @@ if (isset($_POST['child_connect2'])){
 	else{
 		$sql="UPDATE humo_families SET
 		fam_children='".safe_text($_POST["child_connect2"])."',
+		fam_changed_user='".$username."',
 		fam_changed_date='".$gedcom_date."',
 		fam_changed_time='".$gedcom_time."'
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['family_id'])."'";
@@ -660,6 +706,7 @@ if (isset($_POST['child_connect2'])){
 	$sql="UPDATE humo_persons SET
 	pers_famc='".safe_text($_POST['family_id'])."',
 	pers_indexnr='".safe_text($pers_indexnr)."',
+	pers_changed_user='".$username."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($_POST["child_connect2"])."'";
@@ -685,6 +732,7 @@ if (isset($_GET['child_disconnect'])){
 if (isset($_POST['child_disconnecting'])){
 	$sql="UPDATE humo_families SET
 	fam_children='".safe_text($_POST["child_disconnect2"])."',
+	fam_changed_user='".$username."',
 	fam_changed_date='".$gedcom_date."',
 	fam_changed_time='".$gedcom_time."'
 	WHERE fam_id='".safe_text($_POST["family_id"])."'";
@@ -706,6 +754,7 @@ if (isset($_POST['child_disconnecting'])){
 	$sql="UPDATE humo_persons SET
 	pers_famc='',
 	pers_indexnr='".safe_text($pers_indexnr)."',
+	pers_changed_user='".$username."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($_POST["child_disconnect_gedcom"])."'";
@@ -726,6 +775,7 @@ if (isset($_GET['child_down'])){
 	}
 	$sql="UPDATE humo_families SET
 	fam_children='".$fam_children."',
+	fam_changed_user='".$username."',
 	fam_changed_date='".$gedcom_date."',
 	fam_changed_time='".$gedcom_time."'
 	WHERE fam_id='".safe_text($_GET["family_id"])."'";
@@ -746,6 +796,7 @@ if (isset($_GET['child_up'])){
 	}
 	$sql="UPDATE humo_families SET
 	fam_children='".$fam_children."',
+	fam_changed_user='".$username."',
 	fam_changed_date='".$gedcom_date."',
 	fam_changed_time='".$gedcom_time."'
 	WHERE fam_id='".safe_text($_GET["family_id"])."'";
@@ -802,6 +853,7 @@ if (isset($_GET['relation_add'])){
 	fam_marr_church_notice_date='', fam_marr_church_notice_place='', fam_marr_church_notice_text='', fam_religion='',
 	fam_div_date='', fam_div_place='', fam_div_text='', fam_div_authority='',
 	fam_text='',
+	fam_new_user='".$username."',
 	fam_new_date='".$gedcom_date."',
 	fam_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
@@ -817,7 +869,7 @@ if (isset($_GET['relation_add'])){
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
 		pers_death_date='', pers_death_place='', pers_death_time='', pers_death_text='', pers_death_cause='',
-		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='',
+		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', pers_new_user='".$username."',
 		pers_new_date='".$gedcom_date."', pers_new_time='".$gedcom_time."'";
 	//echo $sql.'<br>';
 	$result=$dbh->query($sql);
@@ -866,6 +918,7 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 	fam_marr_church_notice_date='', fam_marr_church_notice_place='', fam_marr_church_notice_text='', fam_religion='',
 	fam_div_date='', fam_div_place='', fam_div_text='', fam_div_authority='',
 	fam_text='',
+	fam_new_user='".$username."',
 	fam_new_date='".$gedcom_date."',
 	fam_new_time='".$gedcom_time."'";
 	//echo $sql.'<br>';
@@ -943,6 +996,7 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 		fam_div_text='".$editor_cls->text_process($fam_div_text,true)."',
 		fam_div_authority='".safe_text($_POST["fam_div_authority"])."',
 		fam_text='".$editor_cls->text_process($_POST["fam_text"],true)."',
+		fam_changed_user='".$username."',
 		fam_changed_date='".$gedcom_date."',
 		fam_changed_time='".$gedcom_time."'
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text($_POST['marriage'])."'";
@@ -959,35 +1013,40 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 
 
 // *** Add new event ***
-if (isset($_GET['event_add'])){
+if (isset($_GET['event_add']) AND !isset($_GET['add_person'])){
+	
 	if ($_GET['event_add']=='add_name'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='name'; $event_event=__('Name'); }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='name'; $event_event=__('Name'); $event_gedcom=''; }
+	if ($_GET['event_add']=='add_npfx'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='NPFX'; $event_event=__('Prefix'); $event_gedcom='NPFX'; }
+	if ($_GET['event_add']=='add_nsfx'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='NSFX'; $event_event=__('Suffix'); $event_gedcom='NSFX'; }
 	if ($_GET['event_add']=='add_nobility'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='nobility'; $event_event=__('Title of Nobility'); }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='nobility'; $event_event=__('Title of Nobility'); $event_gedcom=''; }
 	if ($_GET['event_add']=='add_title'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='title'; $event_event=__('Title'); }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='title'; $event_event=__('Title'); $event_gedcom=''; }
 	if ($_GET['event_add']=='add_lordship'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='lordship'; $event_event=__('Title of Lordship'); }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='lordship'; $event_event=__('Title of Lordship'); $event_gedcom=''; }
 	if ($_GET['event_add']=='add_birth_declaration'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='birth_declaration'; $event_event=__('birth declaration'); }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='birth_declaration'; $event_event=__('birth declaration'); $event_gedcom=''; }
 	if ($_GET['event_add']=='add_baptism_witness'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='baptism_witness'; $event_event=__('baptism witness'); }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='baptism_witness'; $event_event=__('baptism witness'); $event_gedcom=''; }
 	if ($_GET['event_add']=='add_death_declaration'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='death_declaration'; $event_event=__('death declaration'); }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='death_declaration'; $event_event=__('death declaration'); $event_gedcom=''; }
 	if ($_GET['event_add']=='add_burial_witness'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='burial_witness'; $event_event=__('burial witness'); }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='burial_witness'; $event_event=__('burial witness'); $event_gedcom=''; }
 	if ($_GET['event_add']=='add_profession'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='profession'; $event_event=__('Profession'); }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='profession'; $event_event=__('Profession'); $event_gedcom=''; }
 	if ($_GET['event_add']=='add_picture'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='picture'; $event_event=''; }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='picture'; $event_event=''; $event_gedcom=''; }
 	if ($_GET['event_add']=='add_marriage_witness'){
-		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='marriage_witness'; $event_event=__('marriage witness'); }
+		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='marriage_witness'; $event_event=__('marriage witness'); $event_gedcom=''; }
 	if ($_GET['event_add']=='add_marriage_witness_rel'){
-		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='marriage_witness_rel'; $event_event=__('marriage witness (religious)'); }
+		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='marriage_witness_rel'; $event_event=__('marriage witness (religious)'); $event_gedcom=''; }
 	if ($_GET['event_add']=='add_marriage_picture'){
-		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='picture'; $event_event=''; }
+		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='picture'; $event_event=''; $event_gedcom=''; }
 	if ($_GET['event_add']=='add_source_picture'){
-		$event_connect_kind='source'; $event_connect_id=$_GET['source_id']; $event_kind='picture'; $event_event=''; }
+		$event_connect_kind='source'; $event_connect_id=$_GET['source_id']; $event_kind='picture'; $event_event=''; $event_gedcom=''; }
 
 	// *** Generate new order number ***
 	$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
@@ -1006,7 +1065,9 @@ if (isset($_GET['event_add'])){
 		event_connect_id='".safe_text($event_connect_id)."',
 		event_kind='".$event_kind."',
 		event_event='".$event_event."',
+		event_gedcom='".$event_gedcom."',
 		event_order='".$event_order."',
+		event_new_user='".$username."',
 		event_new_date='".$gedcom_date."',
 		event_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
@@ -1032,6 +1093,7 @@ if (isset($_POST['person_event_add'])){
 		event_connect_id='".$pers_gedcomnumber."',
 		event_kind='".$_POST["event_kind"]."',
 		event_order='".$event_order."',
+		event_new_user='".$username."',
 		event_new_date='".$gedcom_date."',
 		event_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
@@ -1057,6 +1119,7 @@ if (isset($_POST['marriage_event_add'])){
 		event_connect_id='".$marriage."',
 		event_kind='".$_POST["event_kind"]."',
 		event_order='".$event_order."',
+		event_new_user='".$username."',
 		event_new_date='".$gedcom_date."',
 		event_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
@@ -1075,11 +1138,9 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 	// check if this is a category file (file with existing category prefix) and if a subfolder for this category exists, place it there.
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 	if($temp->rowCount()) {  // there is a category table
-		//$catgry = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		$catgry = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		if($catgry->rowCount()) {
 			while($catDb = $catgry->fetch(PDO::FETCH_OBJ)) {
-				//if(is_dir($dir.substr($dir.$_FILES['photo_upload']['name'],0,2))  AND substr($_FILES['photo_upload']['name'],0,3)==$catDb->photocat_prefix)  {   // there is a subfolder of this prefix
 				if(is_dir($dir.substr($_FILES['photo_upload']['name'],0,2)) AND
 				substr($_FILES['photo_upload']['name'],0,3)==$catDb->photocat_prefix)  {   // there is a subfolder of this prefix
 					$dir = $dir.substr($_FILES['photo_upload']['name'],0,2).'/';  // place uploaded file in that subfolder
@@ -1182,6 +1243,7 @@ if (isset($_POST['event_id'])){
 			event_event='".$event_event."',
 			event_date='".$editor_cls->date_process("event_date",$key)."',
 			event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
+			event_changed_user='".$username."',
 			event_changed_date='".$gedcom_date."', ";
 		if (isset($_POST["event_gedcom"][$key])){
 			$sql.="event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."',";
@@ -1216,6 +1278,7 @@ if (isset($_POST['event_id'])){
 						event_event='".$event_event."',
 						event_date='".$editor_cls->date_process("event_date",$key)."',
 						event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
+						event_changed_user='".$username."',
 						event_changed_date='".$gedcom_date."', ";
 					if (isset($_POST["event_gedcom"][$key])){
 						$sql.="event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."',";
@@ -1248,6 +1311,7 @@ if (isset($_POST['event_id'])){
 						event_kind='person_colour_mark',
 						event_event='".$event_event."',
 						event_order='".$event_order."',
+						event_new_user='".$username."',
 						event_new_date='".$gedcom_date."',
 						event_new_time='".$gedcom_time."'";
 					$result=$dbh->query($sql);
@@ -1279,6 +1343,7 @@ if (isset($_POST['event_id'])){
 						event_event='".$event_event."',
 						event_date='".$editor_cls->date_process("event_date",$key)."',
 						event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
+						event_changed_user='".$username."',
 						event_changed_date='".$gedcom_date."', ";
 					if (isset($_POST["event_gedcom"][$key])){
 						$sql.="event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."',";
@@ -1310,6 +1375,7 @@ if (isset($_POST['event_id'])){
 						event_kind='person_colour_mark',
 						event_event='".$event_event."',
 						event_order='".$event_order."',
+						event_new_user='".$username."',
 						event_new_date='".$gedcom_date."',
 						event_new_time='".$gedcom_time."'";
 					$result=$dbh->query($sql);
@@ -1379,6 +1445,7 @@ if (isset($_POST['event_drop2'])){
 		while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 			$sql="UPDATE humo_events SET
 			event_order='".($eventDb->event_order-1)."',
+			event_changed_user='".$username."',
 			event_changed_date='".$gedcom_date."',
 			event_changed_time='".$gedcom_time."'
 			WHERE event_id='".$eventDb->event_id."'";
@@ -1414,6 +1481,7 @@ if (isset($_POST['event_drop2'])){
 				while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 					$sql="UPDATE humo_events SET
 					event_order='".($eventDb->event_order-1)."',
+					event_changed_user='".$username."',
 					event_changed_date='".$gedcom_date."',
 					event_changed_time='".$gedcom_time."'
 					WHERE event_id='".$eventDb->event_id."'";
@@ -1452,6 +1520,7 @@ if (isset($_POST['event_drop2'])){
 				while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 					$sql="UPDATE humo_events SET
 					event_order='".($eventDb->event_order-1)."',
+					event_changed_user='".$username."',
 					event_changed_date='".$gedcom_date."',
 					event_changed_time='".$gedcom_time."'
 					WHERE event_id='".$eventDb->event_id."'";
@@ -1476,6 +1545,7 @@ if (isset($_POST['event_drop2'])){
 		while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 			$sql="UPDATE humo_events SET
 				event_order='".($eventDb->event_order-1)."',
+				event_changed_user='".$username."',
 				event_changed_date='".$gedcom_date."',
 				event_changed_time='".$gedcom_time."'
 				WHERE event_id='".$eventDb->event_id."'";
@@ -1496,6 +1566,7 @@ if (isset($_POST['event_drop2'])){
 		while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 			$sql="UPDATE humo_events SET
 				event_order='".($eventDb->event_order-1)."',
+				event_changed_user='".$username."',
 				event_changed_date='".$gedcom_date."',
 				event_changed_time='".$gedcom_time."'
 				WHERE event_id='".$eventDb->event_id."'";
@@ -1838,6 +1909,7 @@ if (isset($_POST['living_place_drop2'])){
 	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 		$sql="UPDATE humo_addresses SET
 		address_order='".($eventDb->address_order-1)."',
+		address_changed_user='".$username."',
 		address_changed_date='".$gedcom_date."',
 		address_changed_time='".$gedcom_time."'
 		WHERE address_id='".$eventDb->address_id."'";
@@ -1888,6 +1960,7 @@ if (isset($_POST['change_address_id'])){
 			address_date='".$editor_cls->date_process("address_date",$key)."',
 			address_address='".$editor_cls->text_process($_POST["address_address_".$key])."',
 			address_place='".$editor_cls->text_process($_POST["address_place_".$key])."',
+			address_changed_user='".$username."',
 			address_changed_date='".$gedcom_date."',
 			address_changed_time='".$gedcom_time."'
 		WHERE address_id='".safe_text($_POST["change_address_id"][$key])."'";

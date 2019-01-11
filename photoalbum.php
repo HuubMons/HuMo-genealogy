@@ -62,7 +62,6 @@ $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 if($temp->rowCount()) {   // a humo_photocat table exists
 	$temp2 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none'");
 	if($temp2->rowCount() >= 1) { //  the table contains more than the default category (otherwise display regular photoalbum)
-		//$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
 		$qry = "SELECT photocat_prefix FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
 		$result = $dbh->query($qry);
 		$result_arr = $result->fetchAll(); // PDO has a problem with resetting pointer in MySQL and the fastest workaround is to use an array instead
@@ -163,20 +162,24 @@ if($categories == false) {  //show regular photo album with no categories
 else {  // show album with category tabs
 	$chosen_tab = 'none';
 	if(isset($_GET['menu_photoalbum'])) { $chosen_tab = $_GET['menu_photoalbum']; }
-	$result = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
-	// WRONG RESULTS, REBUILD QUERY FOR MYSQL 5.7:
-	//$result = $dbh->query("SELECT photocat_prefix, photocat_id FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
+	// *** Can't use * and GROUP BY in 1 query in MySQL > 5.7 ***
+	//$result = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
+	$result = $dbh->query("SELECT * FROM humo_photocat ORDER BY photocat_order");
+	$photocat_prefix_array[]='';
 	while($prefixDb = $result->fetch(PDO::FETCH_OBJ)) {
-		if($chosen_tab==$prefixDb->photocat_prefix) {
-			// *** Check is photo category tree is shown or hidden for user group ***
-			$hide_photocat_array=explode(";",$user['group_hide_photocat']);
-			$hide_photocat=false; if (in_array($prefixDb->photocat_id, $hide_photocat_array)) $hide_photocat=true;
-			if ($hide_photocat==false)
-				showthem($chosen_tab);  // show only pics that match this category
-			else{
-				echo '<div style="float: left; background-color:white; height:auto; width:98%;padding:5px;"><br>';
-				echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***');
-				echo '<br><br></div>';
+		if (!in_array($prefixDb->photocat_prefix, $photocat_prefix_array)){
+			$photocat_prefix_array[] = $prefixDb->photocat_prefix;
+			if($chosen_tab==$prefixDb->photocat_prefix) {
+				// *** Check is photo category tree is shown or hidden for user group ***
+				$hide_photocat_array=explode(";",$user['group_hide_photocat']);
+				$hide_photocat=false; if (in_array($prefixDb->photocat_id, $hide_photocat_array)) $hide_photocat=true;
+				if ($hide_photocat==false)
+					showthem($chosen_tab);  // show only pics that match this category
+				else{
+					echo '<div style="float: left; background-color:white; height:auto; width:98%;padding:5px;"><br>';
+					echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***');
+					echo '<br><br></div>';
+				}
 			}
 		}
 	}

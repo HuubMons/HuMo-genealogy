@@ -728,6 +728,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 		echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 		echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
+		echo '&nbsp;&nbsp;'.__('Find doubles only within this family name (optional)').': <input type="text" name="famname_search">&nbsp;&nbsp;&nbsp;&nbsp;';
 		echo '<input type="Submit" style="min-width:150px" name="duplicate" value="'.__('Generate new duplicate merge').'">';
 		echo '</form>';
 
@@ -744,9 +745,11 @@ this page will also show a "Continue duplicate merge" button so you can continue
 	// this is called when the "duplicate merge" button is used on the duplicate_choices page
 	// it creates the dupl_arr array with all duplicates found
 	elseif(isset($_POST['duplicate'])) {
-		echo __('Please wait while duplicate list is generated').'<br>';
+		echo __('Please wait while duplicate list is generated');
+		$famname_search = "";
+		if(isset($_POST['famname_search']) AND $_POST['famname_search'] != "") { $famname_search = " AND pers_lastname = '".$_POST['famname_search']."'"; }
 		$qry = "SELECT pers_id,pers_firstname,pers_lastname, pers_birth_date, pers_death_date
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_id";
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'".$famname_search." ORDER BY pers_id";
 		$pers = $dbh->query($qry);
 		unset($dupl_arr); // just to make sure...
 		while($persDb = $pers->fetch(PDO::FETCH_OBJ)) {
@@ -2233,13 +2236,23 @@ for($i=0; $i<count($f1); $i++) {
 			// left has no fams or fams with different spouses than right -> add fams to left
 
 			// add right's F to left's fams
+			$set_indexnr = "";
 			if($result1Db->pers_fams) {
 				$fam = $result1Db->pers_fams.";".$result2Db->pers_fams;
 			}
 			else {
 				$fam = $result2Db->pers_fams;
+				// since left didn't have a fams, pers_indexnr is still set to famc. We have to change that to the first fams from right
+				if(strpos($result2Db->pers_fams,";") !== false) { // right has more than one family: get the first of those
+					$fams_arr = explode(";",$result2Db->pers_fams);
+					$first_fam = $fams_arr[0];
+				}
+				else {
+					$first_fam = $result2Db->pers_fams;
+				}
+ 				$set_indexnr = ", pers_indexnr = '".$first_fam."' ";
 			}
-			$qry = "UPDATE humo_persons SET pers_fams='".$fam."'
+			$qry = "UPDATE humo_persons SET pers_fams='".$fam."'".$set_indexnr."
 				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$result1Db->pers_gedcomnumber."'";
 			$dbh->query($qry);
 
@@ -2370,7 +2383,12 @@ for($i=0; $i<count($f1); $i++) {
 				$qry = "UPDATE humo_persons SET pers_famc ='".$result2Db->pers_famc."'
 					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$result1Db->pers_gedcomnumber."'";
 				$dbh->query($qry);
-			}
+				if(!$result1Db->pers_fams AND !$result2Db->pers_fams) {
+					// neither has fams - the pers_indexnr has to be set to right person's famc which is now left's famc too
+					$qry = "UPDATE humo_persons SET pers_indexnr ='".$result2Db->pers_famc."' WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$result1Db->pers_gedcomnumber."'";
+					$dbh->query($qry);
+				}
+			}	
 		}
 		elseif ($result1Db->pers_famc AND $result1Db->pers_famc == $result2Db->pers_famc) {
 			// same parent set (double children in one family) just remove right's I from F

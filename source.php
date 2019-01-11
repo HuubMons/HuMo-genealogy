@@ -39,6 +39,9 @@ if($screen_mode!="PDF") {
 
 	$sourceDb=$db_functions->get_source ($sourcenum);
 
+	// *** Check if visitor tries to see restricted sources ***
+	if ($user['group_show_restricted_source']=='n' AND $sourceDb->source_status=='restricted') exit(__('No valid source number.'));
+
 	// *** If an unknown source ID is choosen, exit function ***
 	if (!isset($sourceDb->source_id)) exit(__('No valid source number.'));
 

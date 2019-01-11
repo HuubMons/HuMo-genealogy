@@ -412,11 +412,23 @@ if ($statistics_screen=='remove'){
 if ($statistics_screen=='general_statistics'){
 
 	echo '<h2 align="center">'.__('Status statistics table').'</h2>';
-	$family_qry=$dbh->query("SELECT *, count(humo_stat_date.stat_easy_id) as count_lines
-		FROM humo_stat_date LEFT JOIN humo_trees
-		ON humo_trees.tree_id=humo_stat_date.stat_tree_id
-		GROUP BY humo_stat_date.stat_tree_id
-		ORDER BY tree_order desc");
+	//$family_qry=$dbh->query("SELECT *, count(humo_stat_date.stat_easy_id) as count_lines
+	//	FROM humo_stat_date LEFT JOIN humo_trees
+	//	ON humo_trees.tree_id=humo_stat_date.stat_tree_id
+	//	GROUP BY humo_stat_date.stat_tree_id
+	//	ORDER BY tree_order desc");
+
+	$family_qry=$dbh->query("
+		SELECT * FROM humo_trees as humo_trees2
+		RIGHT JOIN
+		(
+			SELECT stat_tree_id, count(humo_stat_date.stat_easy_id) as count_lines FROM humo_stat_date
+			GROUP BY stat_tree_id
+		) as humo_stat_date2
+		ON humo_trees2.tree_id=humo_stat_date2.stat_tree_id
+		ORDER BY tree_order desc
+		");
+
 	echo '<table class="humo standard" border="1" cellspacing="0">';
 	echo '<tr class="table_header"><th>'.ucfirst(__('family tree')).'</th><th>'.__('Records').'</th><th>'.__('Number of unique visitors').'</th></tr>';
 	while ($familyDb=$family_qry->fetch(PDO::FETCH_OBJ)){
@@ -435,7 +447,13 @@ if ($statistics_screen=='general_statistics'){
 		// *** Total number of unique visitors ***
 		$count_visitors=0;
 		if ($familyDb->tree_id){
-			$stat=$dbh->query("SELECT *
+			//$stat=$dbh->query("SELECT *
+			//	FROM humo_stat_date LEFT JOIN humo_trees
+			//	ON humo_trees.tree_id=humo_stat_date.stat_tree_id
+			//	WHERE humo_trees.tree_id=".$familyDb->tree_id."
+			//	GROUP BY stat_ip_address
+			//	");
+			$stat=$dbh->query("SELECT stat_ip_address
 				FROM humo_stat_date LEFT JOIN humo_trees
 				ON humo_trees.tree_id=humo_stat_date.stat_tree_id
 				WHERE humo_trees.tree_id=".$familyDb->tree_id."
@@ -453,12 +471,14 @@ if ($statistics_screen=='general_statistics'){
 	echo '<table class="humo standard" border="1" cellspacing="0">';
 	echo '<tr class="table_header"><th>'.__('Item').'</th><th>'.__('Counter').'</th></tr>';
 		// *** Total number unique visitors ***
-		$stat=$dbh->query("SELECT * FROM humo_stat_date GROUP BY stat_ip_address");
+		//$stat=$dbh->query("SELECT * FROM humo_stat_date GROUP BY stat_ip_address");
+		$stat=$dbh->query("SELECT stat_ip_address FROM humo_stat_date GROUP BY stat_ip_address");
 		$count_visitors=$stat->rowCount();
 		echo '<tr><td>'.__('Total number of unique visitors:').'</td><td>'.$count_visitors.'</td>';
 
 		// *** Total number visited families ***
-		$datasql = $dbh->query("SELECT * FROM humo_stat_date");
+		//$datasql = $dbh->query("SELECT * FROM humo_stat_date");
+		$datasql = $dbh->query("SELECT stat_id FROM humo_stat_date");
 		if ($datasql){ $total=$datasql->rowCount(); }
 		echo '<tr><td>'.__('Total number of visited families:').'</td><td>'.$total.'</td>';
 
@@ -479,12 +499,26 @@ if ($statistics_screen=='general_statistics'){
 
 	$nr_lines=15; // *** Nr. of statistics lines ***
 
-	$family_qry=$dbh->query("SELECT *, count(humo_stat_date.stat_easy_id) as count_lines
-		FROM humo_stat_date, humo_trees
-		WHERE humo_trees.tree_id=humo_stat_date.stat_tree_id
-		GROUP BY humo_stat_date.stat_easy_id desc
+	//$family_qry=$dbh->query("SELECT *, count(humo_stat_date.stat_easy_id) as count_lines
+	//	FROM humo_stat_date, humo_trees
+	//	WHERE humo_trees.tree_id=humo_stat_date.stat_tree_id
+	//	GROUP BY humo_stat_date.stat_easy_id desc
+	//	ORDER BY count_lines desc
+	//	LIMIT 0,".$nr_lines);
+
+	// *** Didn't use "GROUP BY stat_easy_id" because stat_tree_id is also needed, and 2 results in GROUP BY is not allowed in > MySQL 5.7 ***
+	$family_qry=$dbh->query("
+		SELECT * FROM humo_trees as humo_trees2
+		RIGHT JOIN
+		(
+			SELECT stat_tree_id, stat_gedcom_fam, stat_gedcom_man, stat_gedcom_woman, count(humo_stat_date.stat_easy_id) as count_lines FROM humo_stat_date
+			GROUP BY stat_tree_id, stat_gedcom_fam, stat_gedcom_man, stat_gedcom_woman
+		) as humo_stat_date2
+		ON humo_trees2.tree_id=humo_stat_date2.stat_tree_id
 		ORDER BY count_lines desc
-		LIMIT 0,".$nr_lines);
+		LIMIT 0,".$nr_lines
+		);
+
 	echo '<h2 align="center">'.$nr_lines.' '.__('Most visited families:').'</h2>';
 	echo '<table class="humo standard" border="1" cellspacing="0">';
 		echo '<tr class="table_header"><th>#</th><th>'.__('family tree').'</th><th>'.__('family').'</th></tr>';
@@ -664,13 +698,19 @@ if ($statistics_screen=='visitors'){
 	// *** User agent ***
 	echo '<br><b>'.__('User agent information').'</b><br>';
 	// *** Show user agent info (50 most used user agents) ***
-	$datasql=$dbh->query("SELECT *, count(humo_stat_date.stat_user_agent) as count_lines
+	//$datasql=$dbh->query("SELECT *, count(humo_stat_date.stat_user_agent) as count_lines
+	//	FROM humo_stat_date
+	//	WHERE stat_user_agent LIKE '_%'
+	//	GROUP BY humo_stat_date.stat_user_agent desc
+	//	ORDER BY count_lines desc
+	//	LIMIT 0,50");
+	$datasql=$dbh->query("SELECT stat_user_agent, count(humo_stat_date.stat_user_agent) as count_lines
 		FROM humo_stat_date
 		WHERE stat_user_agent LIKE '_%'
-		GROUP BY humo_stat_date.stat_user_agent desc
+		GROUP BY humo_stat_date.stat_user_agent
 		ORDER BY count_lines desc
 		LIMIT 0,50");
-	
+
 	while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 		$stat_user_agent=$dataDb->stat_user_agent;
 		if (count_chars($stat_user_agent)>100){

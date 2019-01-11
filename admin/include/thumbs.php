@@ -312,9 +312,9 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 		$qry = "SELECT photocat_prefix, photocat_order FROM humo_photocat GROUP BY photocat_prefix, photocat_order";
 		$result = $dbh->query($qry);  
 		
-		while($resultDb = $result->fetch(PDO::FETCH_OBJ)) {  
+		while($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
 			if(isset($_POST[$resultDb->photocat_prefix])) {
-				if($language_tree != "default") {  
+				if($language_tree != "default") {
 					// only update names for the chosen language
 					$check_lang = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix = '".$resultDb->photocat_prefix."' AND photocat_language='".safe_text($language_tree)."'");
 					if($check_lang->rowCount() != 0) { // this language already has a name for this category - update it

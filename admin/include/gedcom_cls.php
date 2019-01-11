@@ -280,7 +280,6 @@ function process_person($person_array){
 
 		// *** Pro-gen titles by name ***
 		// 1 _TITL2 = title between first and last name.
-		// 1 _TITL3 = title behind lastname.
 		if ($buffer8=='1 _TITL2'){
 			$level1='NAME';
 			//$level2='NPFX';
@@ -289,6 +288,7 @@ function process_person($person_array){
 			$buffer='2 SPFX'.substr($buffer, 8);
 			$buffer6=substr($buffer,0,6);
 		}
+		// 1 _TITL3 = title behind lastname.
 		if ($buffer8=='1 _TITL3'){
 			$level1='NAME';
 			$level2='NSFX';

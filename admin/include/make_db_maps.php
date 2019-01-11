@@ -227,7 +227,7 @@ else {  // main screen
 		}
 		$dbh->query("TRUNCATE TABLE humo_no_location"); 
 		foreach($new_no_locs AS $value) { 
-			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text($value)."') ");			
+			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text($value)."') ");
 		}
 	}
 
@@ -437,9 +437,9 @@ else {  // main screen
 
 		if(isset($_SESSION['geo_tree']) AND $_SESSION['geo_tree'] != "all_geo_trees") {   
 			$unionstring .= "SELECT pers_birth_place FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' UNION
-			SELECT pers_bapt_place  FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' AND pers_birth_place = '' UNION
+			SELECT pers_bapt_place FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' AND pers_birth_place = '' UNION
 			SELECT pers_death_place FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' UNION
-			SELECT pers_buried_place  FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' AND pers_death_place = ''";
+			SELECT pers_buried_place FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' AND pers_death_place = ''";
 				// (only take bapt place if no birth place and only take burial place if no death place)
 		}
 		else { 

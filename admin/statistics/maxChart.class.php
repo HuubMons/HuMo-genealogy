@@ -14,7 +14,8 @@ class maxChart {
 	var $metaSpaceVertical = 60; // Total space needed for chart title + bar title + bar value
 	var $variousColors = false;
 
-	function maxChart($data){
+	//function maxChart($data){
+	function __construct($data){
 			$this->data = $data;
 	}
 

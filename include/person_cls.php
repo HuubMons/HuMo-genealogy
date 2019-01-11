@@ -295,8 +295,9 @@ function person_name($personDb){
 			if (isset($personDb->event_event) AND $personDb->event_event AND $personDb->event_kind=='name'){
 				$name_array["index_name_extended"].=' ('.$personDb->event_event.')';
 			}
+
 			$name_array["index_name_extended"].=$prefix2;
-			
+
 			if($humo_option['name_order']=="chinese") {  
 				// for Chinese no commas or spaces
 				$name_array["name"].= $personDb->pers_lastname." ".$personDb->pers_firstname;

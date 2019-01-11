@@ -82,7 +82,6 @@ function show_media($event_connect_kind,$event_connect_id){
 			$temp_path = $tree_pict_path; // store original so we can reset after using for subfolder path for this picture.
 			$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 			if($temp->rowCount()) {   // there is a category table 
-				//$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 				$catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 				if($catg->rowCount()) {
 					while($catDb = $catg->fetch(PDO::FETCH_OBJ)) {  
@@ -197,7 +196,14 @@ function show_media($event_connect_kind,$event_connect_id){
 			}
 
 			if ($screen_mode!='RTF'){
-				$source=show_sources2("person","pers_event_source",$media_event_id[$i]);
+				// *** Show source by picture ***
+				$source='';
+				if ($event_connect_kind=='person'){
+					$source=show_sources2("person","pers_event_source",$media_event_id[$i]);
+				}
+				else{
+					$source=show_sources2("family","fam_event_source",$media_event_id[$i]);
+				}
 				if ($source) $picture_text.=$source;
 
 				$process_text.='<div class="photo">';
@@ -233,7 +239,6 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 	// in cases where the $picture_path is already set with subfolder this anyway gives false and so the $picture_path gives will work
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 	if($temp->rowCount()) {  // there is a category table 
-		//$cat1 = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		$cat1 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		if($cat1->rowCount()) { 
 			while($catDb = $cat1->fetch(PDO::FETCH_OBJ)) {  

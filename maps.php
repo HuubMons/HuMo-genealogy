@@ -546,8 +546,14 @@ echo '</div>';
 // END MENU
 
 // FIXED WINDOW WITH LIST OF SPECIFIC FAMILY NAMES TO MAP BY
-$fam_search = "SELECT * , CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
-	FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
+//$fam_search = "SELECT * , CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
+//	FROM humo_persons
+//	WHERE pers_tree_id='".$tree_id."'
+//	AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
+$fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix,'_',1))) as totalname
+	FROM humo_persons
+	WHERE pers_tree_id='".$tree_id."'
+	AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
 $fam_search_result = $dbh->query($fam_search);
 echo '<div id="namemapping" style="display:none; z-index:100; position:absolute; top:90px; margin-left:10px; height:460px; width:250px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;">';
 echo '<form method="POST" action="maps.php" name="yossi" style="display : inline;">';
