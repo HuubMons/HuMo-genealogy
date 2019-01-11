@@ -41,11 +41,12 @@ if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	//$headers .= "From: \"".$_POST['mail_name']."\"\n";
 	//$headers .= "Reply-To: \"".$_POST['mail_name']."\" <".$_POST['mail_sender'].">\n";
 
-	echo '<br>'.__('You have entered the following e-mail address: ').'<b> '.$_POST['mail_sender'].'</b><br>';
+	// *** REMARK: because of security, the mail adres and message entered by the visitor are not shown on screen anymore! ***
+	//echo '<br>'.__('You have entered the following e-mail address: ').'<b> '.$_POST['mail_sender'].'</b><br>';
 	$position = strpos($_POST['mail_sender'],"@");
-	if ($position<1){ echo '<font color="red">'.__('The e-mail address you entered doesn\'t seem to be a valid e-mail address!').'</font><br>'; }
-	echo '<b>'.__('If you do not enter a valid e-mail address, unfortunately I cannot answer you!').'</b><br>';
-	echo __('Message: ').'<br>'.$_POST['mail_text'];
+	if ($position<1) echo '<font color="red">'.__('The e-mail address you entered doesn\'t seem to be a valid e-mail address!').'</font><br>';
+	//echo '<b>'.__('If you do not enter a valid e-mail address, unfortunately I cannot answer you!').'</b><br>';
+	//echo __('Message: ').'<br>'.$_POST['mail_text'];
 
 	//@$mail = mail($mail_address, $mail_subject, $mail_message, $headers);
 	//if($mail){
@@ -100,7 +101,7 @@ else{
 		';
 		echo '</script>';
 
-		print '<br><form id="form_id" method="post" action="'.$_SERVER['PHP_SELF'].'" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'mail_sender\');">';
+		print '<br><form id="form_id" method="post" action="mailform.php" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'mail_sender\');">';
 
 		print '<table align="center" class="humo">';
 		print '<tr class=table_headline><th class="fonts" colspan="2">'.__('Mail form').'</th></tr>';

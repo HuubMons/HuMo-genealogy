@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-if (isset($_POST['tree'])){ $tree=safe_text($_POST["tree"]); }
+if (isset($_POST['tree'])){ $tree=safe_text_db($_POST["tree"]); }
 
 echo '<h1 align=center>'.__('Calculated birth date').'</h1>';
 
@@ -27,7 +27,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 		//	echo '<input type="hidden" name="flag_newtree" value=\'0\'>';
 		//	$onchange = ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ';
 		//}
-		echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+		echo '<form method="POST" action="index.php">';
 		echo '<input type="hidden" name="page" value="cal_date">';
 		echo '<select '.$onchange.' size="1" name="tree">';
 			while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){

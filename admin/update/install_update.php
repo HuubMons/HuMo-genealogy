@@ -9,7 +9,7 @@ if(CMS_SPECIFIC=="Joomla") {
 	$phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=groups";
 }
 else {
-	$phpself = $_SERVER['PHP_SELF'];
+	$phpself = 'index.php';
 }
 echo '<h1 align=center>'.__('HuMo-gen Update').'</h1>';
 
@@ -409,7 +409,7 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 		echo __('b) Download the new version: ').' <a href="'.$update['version_download'].'" target="_blank">'.__('HuMo-gen version').' '.$update['version'].'</a><br>';
 
 		echo __('c) Unzip the file and replace the old HuMo-gen files by the new HuMo-gen files.').'<br>';
-		echo __('Full installation and update instructions can be found at:').' <a href="http://www.humo-gen.com/genwiki" target="_blank">HuMo-gen Wiki</a>';
+		echo __('Full installation and update instructions can be found at:').' <a href="https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/" target="_blank">'.__('HuMo-gen manual').'</a>';
 	}
 
 }

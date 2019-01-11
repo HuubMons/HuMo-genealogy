@@ -56,12 +56,13 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			$path_tmp=CMS_ROOTPATH.'list.php';
 		}
 
-		print '<form method="post" action="'.$path_tmp.'" id="top_quicksearch">';
-			print '<input type="hidden" name="index_list" value="quicksearch">';
-			print '<input type="hidden" name="search_database" value="tree_selected">';
+		echo '<form method="post" action="'.$path_tmp.'" id="top_quicksearch">';
+			echo '<input type="hidden" name="index_list" value="quicksearch">';
+			echo '<input type="hidden" name="search_database" value="tree_selected">';
 			$quicksearch='';
 			if (isset($_POST['quicksearch'])){
-				$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
+				//$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
+				$quicksearch=safe_text_show($_POST['quicksearch']);
 				$_SESSION["save_quicksearch"]=$quicksearch;
 			}
 			if (isset($_SESSION["save_quicksearch"])){ $quicksearch=$_SESSION["save_quicksearch"]; }
@@ -71,9 +72,9 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			else {
 				$pattern='pattern=".{'.$humo_option['min_search_chars'].',}"'; $min_chars = " ".$humo_option['min_search_chars']." ";
 			}
-			print '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="10" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
-			print ' <input type="submit" value="'.__('Search').'">';
-		print "</form>";
+			echo '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="10" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
+			echo ' <input type="submit" value="'.__('Search').'">';
+		echo "</form>";
 	}
 
 	//TEST Line to see all cookies...
@@ -393,7 +394,7 @@ echo '<ul class="humo_menu_item">';
 							$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;database='.$_SESSION['tree_prefix'];
 						}
 						elseif ($humo_option["url_rewrite"]=="j"){
-							$path_tmp= 'list_names/'.$_SESSION['tree_prefix'];
+							$path_tmp= 'list_names/'.$_SESSION['tree_prefix'].'/';
 						}
 						else{
 							$path_tmp=CMS_ROOTPATH.'list_names.php?database='.$_SESSION['tree_prefix'];

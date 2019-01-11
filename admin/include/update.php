@@ -150,7 +150,7 @@ else{
 			stat_gedcom_fam varchar(20) CHARACTER SET utf8,
 			stat_gedcom_man varchar(20) CHARACTER SET utf8,
 			stat_gedcom_woman varchar(20) CHARACTER SET utf8,
-			stat_date_stat datetime NOT NULL,
+			stat_date_stat datetime,
 			stat_date_linux varchar(50) CHARACTER SET utf8,
 			PRIMARY KEY (`stat_id`)
 		) DEFAULT CHARSET=utf8");
@@ -184,7 +184,7 @@ else{
 			CHANGE gedcom_gezin stat_gedcom_fam varchar(20) CHARACTER SET utf8,
 			CHANGE gedcom_man stat_gedcom_man varchar(20) CHARACTER SET utf8,
 			CHANGE gedcom_vrouw stat_gedcom_woman varchar(20) CHARACTER SET utf8,
-			CHANGE datum_stat stat_date_stat datetime NOT NULL,
+			CHANGE datum_stat stat_date_stat datetime,
 			CHANGE datum_linux stat_date_linux varchar(50) CHARACTER SET utf8
 			';
 		$update_Db = $dbh->query($sql);
@@ -1047,31 +1047,31 @@ else{
 				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."person");
 				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 					$sql='UPDATE '.$updateDb->tree_prefix.'person SET
-						pers_firstname="'.safe_text($read_persDb->pers_firstname).'",
-						pers_callname="'.safe_text($read_persDb->pers_callname).'",
-						pers_prefix="'.safe_text($read_persDb->pers_prefix).'",
-						pers_lastname="'.safe_text($read_persDb->pers_lastname).'",
-						pers_patronym="'.safe_text($read_persDb->pers_patronym).'",
-						pers_name_text="'.safe_text($read_persDb->pers_name_text).'",
-						pers_name_source="'.safe_text($read_persDb->pers_name_source).'",
-						pers_own_code="'.safe_text($read_persDb->pers_own_code).'",
-						pers_birth_place="'.safe_text($read_persDb->pers_birth_place).'",
-						pers_birth_text="'.safe_text($read_persDb->pers_birth_text).'",
-						pers_birth_source="'.safe_text($read_persDb->pers_birth_source).'",
-						pers_bapt_place="'.safe_text($read_persDb->pers_bapt_place).'",
-						pers_bapt_text="'.safe_text($read_persDb->pers_bapt_text).'",
-						pers_bapt_source="'.safe_text($read_persDb->pers_bapt_source).'",
-						pers_religion="'.safe_text($read_persDb->pers_religion).'",
-						pers_death_place="'.safe_text($read_persDb->pers_death_place).'",
-						pers_death_text="'.safe_text($read_persDb->pers_death_text).'",
-						pers_death_source="'.safe_text($read_persDb->pers_death_source).'",
-						pers_death_cause="'.safe_text($read_persDb->pers_death_cause).'",
-						pers_buried_place="'.safe_text($read_persDb->pers_buried_place).'",
-						pers_buried_text="'.safe_text($read_persDb->pers_buried_text).'",
-						pers_buried_source="'.safe_text($read_persDb->pers_buried_source).'",
-						pers_place_index="'.safe_text($read_persDb->pers_place_index).'",
-						pers_text="'.safe_text($read_persDb->pers_text).'",
-						pers_text_source="'.safe_text($read_persDb->pers_text_source).'"
+						pers_firstname="'.safe_text_db($read_persDb->pers_firstname).'",
+						pers_callname="'.safe_text_db($read_persDb->pers_callname).'",
+						pers_prefix="'.safe_text_db($read_persDb->pers_prefix).'",
+						pers_lastname="'.safe_text_db($read_persDb->pers_lastname).'",
+						pers_patronym="'.safe_text_db($read_persDb->pers_patronym).'",
+						pers_name_text="'.safe_text_db($read_persDb->pers_name_text).'",
+						pers_name_source="'.safe_text_db($read_persDb->pers_name_source).'",
+						pers_own_code="'.safe_text_db($read_persDb->pers_own_code).'",
+						pers_birth_place="'.safe_text_db($read_persDb->pers_birth_place).'",
+						pers_birth_text="'.safe_text_db($read_persDb->pers_birth_text).'",
+						pers_birth_source="'.safe_text_db($read_persDb->pers_birth_source).'",
+						pers_bapt_place="'.safe_text_db($read_persDb->pers_bapt_place).'",
+						pers_bapt_text="'.safe_text_db($read_persDb->pers_bapt_text).'",
+						pers_bapt_source="'.safe_text_db($read_persDb->pers_bapt_source).'",
+						pers_religion="'.safe_text_db($read_persDb->pers_religion).'",
+						pers_death_place="'.safe_text_db($read_persDb->pers_death_place).'",
+						pers_death_text="'.safe_text_db($read_persDb->pers_death_text).'",
+						pers_death_source="'.safe_text_db($read_persDb->pers_death_source).'",
+						pers_death_cause="'.safe_text_db($read_persDb->pers_death_cause).'",
+						pers_buried_place="'.safe_text_db($read_persDb->pers_buried_place).'",
+						pers_buried_text="'.safe_text_db($read_persDb->pers_buried_text).'",
+						pers_buried_source="'.safe_text_db($read_persDb->pers_buried_source).'",
+						pers_place_index="'.safe_text_db($read_persDb->pers_place_index).'",
+						pers_text="'.safe_text_db($read_persDb->pers_text).'",
+						pers_text_source="'.safe_text_db($read_persDb->pers_text_source).'"
 						WHERE pers_id="'.$read_persDb->pers_id.'"';
 					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
 					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
@@ -1085,29 +1085,29 @@ else{
 				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 					$sql='UPDATE '.$updateDb->tree_prefix.'family SET
 						fam_id="'.$read_persDb->fam_id.'",
-						fam_relation_place="'.safe_text($read_persDb->fam_relation_place).'",
-						fam_relation_text="'.safe_text($read_persDb->fam_relation_text).'",
-						fam_relation_source="'.safe_text($read_persDb->fam_relation_source).'",
-						fam_marr_notice_place="'.safe_text($read_persDb->fam_marr_notice_place).'",
-						fam_marr_notice_text="'.safe_text($read_persDb->fam_marr_notice_text).'",
-						fam_marr_notice_source="'.safe_text($read_persDb->fam_marr_notice_source).'",
-						fam_marr_place="'.safe_text($read_persDb->fam_marr_place).'",
-						fam_marr_text="'.safe_text($read_persDb->fam_marr_text).'",
-						fam_marr_source="'.safe_text($read_persDb->fam_marr_source).'",
-						fam_marr_authority="'.safe_text($read_persDb->fam_marr_authority).'",
-						fam_marr_church_notice_place="'.safe_text($read_persDb->fam_marr_church_notice_place).'",
-						fam_marr_church_notice_text="'.safe_text($read_persDb->fam_marr_church_notice_text).'",
-						fam_marr_church_notice_source="'.safe_text($read_persDb->fam_marr_church_notice_source).'",
-						fam_marr_church_place="'.safe_text($read_persDb->fam_marr_church_place).'",
-						fam_marr_church_text="'.safe_text($read_persDb->fam_marr_church_text).'",
-						fam_marr_church_source="'.safe_text($read_persDb->fam_marr_church_source).'",
-						fam_religion="'.safe_text($read_persDb->fam_religion).'",
-						fam_div_place="'.safe_text($read_persDb->fam_div_place).'",
-						fam_div_text="'.safe_text($read_persDb->fam_div_text).'",
-						fam_div_source="'.safe_text($read_persDb->fam_div_source).'",
-						fam_div_authority="'.safe_text($read_persDb->fam_div_authority).'",
-						fam_text="'.safe_text($read_persDb->fam_text).'",
-						fam_text_source="'.safe_text($read_persDb->fam_text_source).'"
+						fam_relation_place="'.safe_text_db($read_persDb->fam_relation_place).'",
+						fam_relation_text="'.safe_text_db($read_persDb->fam_relation_text).'",
+						fam_relation_source="'.safe_text_db($read_persDb->fam_relation_source).'",
+						fam_marr_notice_place="'.safe_text_db($read_persDb->fam_marr_notice_place).'",
+						fam_marr_notice_text="'.safe_text_db($read_persDb->fam_marr_notice_text).'",
+						fam_marr_notice_source="'.safe_text_db($read_persDb->fam_marr_notice_source).'",
+						fam_marr_place="'.safe_text_db($read_persDb->fam_marr_place).'",
+						fam_marr_text="'.safe_text_db($read_persDb->fam_marr_text).'",
+						fam_marr_source="'.safe_text_db($read_persDb->fam_marr_source).'",
+						fam_marr_authority="'.safe_text_db($read_persDb->fam_marr_authority).'",
+						fam_marr_church_notice_place="'.safe_text_db($read_persDb->fam_marr_church_notice_place).'",
+						fam_marr_church_notice_text="'.safe_text_db($read_persDb->fam_marr_church_notice_text).'",
+						fam_marr_church_notice_source="'.safe_text_db($read_persDb->fam_marr_church_notice_source).'",
+						fam_marr_church_place="'.safe_text_db($read_persDb->fam_marr_church_place).'",
+						fam_marr_church_text="'.safe_text_db($read_persDb->fam_marr_church_text).'",
+						fam_marr_church_source="'.safe_text_db($read_persDb->fam_marr_church_source).'",
+						fam_religion="'.safe_text_db($read_persDb->fam_religion).'",
+						fam_div_place="'.safe_text_db($read_persDb->fam_div_place).'",
+						fam_div_text="'.safe_text_db($read_persDb->fam_div_text).'",
+						fam_div_source="'.safe_text_db($read_persDb->fam_div_source).'",
+						fam_div_authority="'.safe_text_db($read_persDb->fam_div_authority).'",
+						fam_text="'.safe_text_db($read_persDb->fam_text).'",
+						fam_text_source="'.safe_text_db($read_persDb->fam_text_source).'"
 						WHERE fam_id="'.$read_persDb->fam_id.'"';
 					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
 					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
@@ -1121,7 +1121,7 @@ else{
 				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."texts");
 				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 					$sql='UPDATE '.$updateDb->tree_prefix.'texts SET
-						text_text="'.safe_text($read_persDb->text_text).'"
+						text_text="'.safe_text_db($read_persDb->text_text).'"
 						WHERE text_id="'.$read_persDb->text_id.'"';
 					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
 					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
@@ -1135,19 +1135,19 @@ else{
 				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."sources");
 				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 					$sql='UPDATE '.$updateDb->tree_prefix.'sources SET
-						source_title="'.safe_text($read_persDb->source_title).'",
-						source_abbr="'.safe_text($read_persDb->source_abbr).'",
-						source_publ="'.safe_text($read_persDb->source_publ).'",
-						source_place="'.safe_text($read_persDb->source_place).'",
-						source_refn="'.safe_text($read_persDb->source_refn).'",
-						source_auth="'.safe_text($read_persDb->source_auth).'",
-						source_subj="'.safe_text($read_persDb->source_subj).'",
-						source_item="'.safe_text($read_persDb->source_item).'",
-						source_kind="'.safe_text($read_persDb->source_kind).'",
-						source_text="'.safe_text($read_persDb->source_text).'",
-						source_repo_name="'.safe_text($read_persDb->source_repo_name).'",
-						source_repo_caln="'.safe_text($read_persDb->source_repo_caln).'",
-						source_repo_page="'.safe_text($read_persDb->source_repo_page).'"
+						source_title="'.safe_text_db($read_persDb->source_title).'",
+						source_abbr="'.safe_text_db($read_persDb->source_abbr).'",
+						source_publ="'.safe_text_db($read_persDb->source_publ).'",
+						source_place="'.safe_text_db($read_persDb->source_place).'",
+						source_refn="'.safe_text_db($read_persDb->source_refn).'",
+						source_auth="'.safe_text_db($read_persDb->source_auth).'",
+						source_subj="'.safe_text_db($read_persDb->source_subj).'",
+						source_item="'.safe_text_db($read_persDb->source_item).'",
+						source_kind="'.safe_text_db($read_persDb->source_kind).'",
+						source_text="'.safe_text_db($read_persDb->source_text).'",
+						source_repo_name="'.safe_text_db($read_persDb->source_repo_name).'",
+						source_repo_caln="'.safe_text_db($read_persDb->source_repo_caln).'",
+						source_repo_page="'.safe_text_db($read_persDb->source_repo_page).'"
 						WHERE source_id="'.$read_persDb->source_id.'"';
 					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
 					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
@@ -1161,14 +1161,14 @@ else{
 				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."addresses");
 				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 					$sql='UPDATE '.$updateDb->tree_prefix.'addresses SET
-						address_address="'.safe_text($read_persDb->address_address).'",
-						address_zip="'.safe_text($read_persDb->address_zip).'",
-						address_place="'.safe_text($read_persDb->address_place).'",
-						address_phone="'.safe_text($read_persDb->address_phone).'",
-						address_date="'.safe_text($read_persDb->address_date).'",
-						address_source="'.safe_text($read_persDb->address_source).'",
-						address_text="'.safe_text($read_persDb->address_text).'",
-						address_photo="'.safe_text($read_persDb->address_photo).'"
+						address_address="'.safe_text_db($read_persDb->address_address).'",
+						address_zip="'.safe_text_db($read_persDb->address_zip).'",
+						address_place="'.safe_text_db($read_persDb->address_place).'",
+						address_phone="'.safe_text_db($read_persDb->address_phone).'",
+						address_date="'.safe_text_db($read_persDb->address_date).'",
+						address_source="'.safe_text_db($read_persDb->address_source).'",
+						address_text="'.safe_text_db($read_persDb->address_text).'",
+						address_photo="'.safe_text_db($read_persDb->address_photo).'"
 						WHERE address_id="'.$read_persDb->address_id.'"';
 					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
 					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
@@ -1182,15 +1182,15 @@ else{
 				$read_pers_sql = $dbh->query("SELECT * FROM ".$updateDb->tree_prefix."events");
 				while ($read_persDb=$read_pers_sql->fetch(PDO::FETCH_OBJ)){
 					$sql='UPDATE '.$updateDb->tree_prefix.'events SET
-						event_person_id="'.safe_text($read_persDb->event_person_id).'",
-						event_family_id="'.safe_text($read_persDb->event_family_id).'",
-						event_kind="'.safe_text($read_persDb->event_kind).'",
-						event_event="'.safe_text($read_persDb->event_event).'",
-						event_gedcom="'.safe_text($read_persDb->event_gedcom).'",
-						event_date="'.safe_text($read_persDb->event_date).'",
-						event_place="'.safe_text($read_persDb->event_place).'",
-						event_source="'.safe_text($read_persDb->event_source).'",
-						event_text="'.safe_text($read_persDb->event_text).'"
+						event_person_id="'.safe_text_db($read_persDb->event_person_id).'",
+						event_family_id="'.safe_text_db($read_persDb->event_family_id).'",
+						event_kind="'.safe_text_db($read_persDb->event_kind).'",
+						event_event="'.safe_text_db($read_persDb->event_event).'",
+						event_gedcom="'.safe_text_db($read_persDb->event_gedcom).'",
+						event_date="'.safe_text_db($read_persDb->event_date).'",
+						event_place="'.safe_text_db($read_persDb->event_place).'",
+						event_source="'.safe_text_db($read_persDb->event_source).'",
+						event_text="'.safe_text_db($read_persDb->event_text).'"
 						WHERE event_id="'.$read_persDb->event_id.'"';
 					//$sql = html_entity_decode($sql, ENT_QUOTES, 'UTF-8');
 					$sql = html_entity_decode($sql, ENT_NOQUOTES, 'UTF-8');
@@ -1670,8 +1670,8 @@ else{
 			page_menu_id int(10) NOT NULL DEFAULT '0',
 			page_order int(10) NOT NULL DEFAULT '0',
 			page_counter int(10) NOT NULL DEFAULT '0',
-			page_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			page_edit_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			page_date datetime,
+			page_edit_date datetime,
 			page_title varchar(50) CHARACTER SET utf8 DEFAULT '',
 			page_text longtext CHARACTER SET utf8 DEFAULT '',
 			PRIMARY KEY (`page_id`)
@@ -2373,34 +2373,34 @@ else{
 					pers_famc='".$getDb->pers_famc."',
 					pers_fams='".$getDb->pers_fams."',
 					pers_indexnr='".$getDb->pers_indexnr."',
-					pers_firstname='".safe_text($getDb->pers_firstname)."',
-					pers_callname='".safe_text($getDb->pers_callname)."',
-					pers_prefix='".safe_text($getDb->pers_prefix)."',
-					pers_lastname='".safe_text($getDb->pers_lastname)."',
-					pers_patronym='".safe_text($getDb->pers_patronym)."',
-					pers_name_text='".safe_text($getDb->pers_name_text)."',
+					pers_firstname='".safe_text_db($getDb->pers_firstname)."',
+					pers_callname='".safe_text_db($getDb->pers_callname)."',
+					pers_prefix='".safe_text_db($getDb->pers_prefix)."',
+					pers_lastname='".safe_text_db($getDb->pers_lastname)."',
+					pers_patronym='".safe_text_db($getDb->pers_patronym)."',
+					pers_name_text='".safe_text_db($getDb->pers_name_text)."',
 					pers_sexe='".$getDb->pers_sexe."',
-					pers_own_code='".safe_text($getDb->pers_own_code)."',
-				pers_birth_place='".safe_text($getDb->pers_birth_place)."',
+					pers_own_code='".safe_text_db($getDb->pers_own_code)."',
+				pers_birth_place='".safe_text_db($getDb->pers_birth_place)."',
 				pers_birth_date='".$getDb->pers_birth_date."',
 				pers_birth_time='".$getDb->pers_birth_time."',
-				pers_birth_text='".safe_text($getDb->pers_birth_text)."',
+				pers_birth_text='".safe_text_db($getDb->pers_birth_text)."',
 				pers_stillborn='".$getDb->pers_stillborn."',
-				pers_bapt_place='".safe_text($getDb->pers_bapt_place)."',
+				pers_bapt_place='".safe_text_db($getDb->pers_bapt_place)."',
 				pers_bapt_date='".$getDb->pers_bapt_date."',
-				pers_bapt_text='".safe_text($getDb->pers_bapt_text)."',
+				pers_bapt_text='".safe_text_db($getDb->pers_bapt_text)."',
 				pers_religion='".$getDb->pers_religion."',
-				pers_death_place='".safe_text($getDb->pers_death_place)."',
+				pers_death_place='".safe_text_db($getDb->pers_death_place)."',
 				pers_death_date='".$getDb->pers_death_date."',
 				pers_death_time='".$getDb->pers_death_time."',
-				pers_death_text='".safe_text($getDb->pers_death_text)."',
-				pers_death_cause='".safe_text($getDb->pers_death_cause)."',
-				pers_buried_place='".safe_text($getDb->pers_buried_place)."',
+				pers_death_text='".safe_text_db($getDb->pers_death_text)."',
+				pers_death_cause='".safe_text_db($getDb->pers_death_cause)."',
+				pers_buried_place='".safe_text_db($getDb->pers_buried_place)."',
 				pers_buried_date='".$getDb->pers_buried_date."',
-				pers_buried_text='".safe_text($getDb->pers_buried_text)."',
+				pers_buried_text='".safe_text_db($getDb->pers_buried_text)."',
 				pers_cremation='".$getDb->pers_cremation."',
-					pers_place_index='".safe_text($getDb->pers_place_index)."',
-					pers_text='".safe_text($getDb->pers_text)."',
+					pers_place_index='".safe_text_db($getDb->pers_place_index)."',
+					pers_text='".safe_text_db($getDb->pers_text)."',
 					pers_alive='".$getDb->pers_alive."',
 					pers_quality='".$getDb->pers_quality."',
 					pers_new_date='".$getDb->pers_new_date."',
@@ -2415,7 +2415,7 @@ else{
 						$gebeurtsql="INSERT INTO humo_unprocessed_tags SET
 							tag_pers_id='".$pers_id."',
 							tag_tree_id='".$updateDb->tree_id."',
-							tag_tag='".safe_text($getDb->pers_unprocessed_tags)."'";
+							tag_tag='".safe_text_db($getDb->pers_unprocessed_tags)."'";
 						$result=$dbh->query($gebeurtsql);
 					}
 				}
@@ -2441,28 +2441,28 @@ else{
 					fam_children='".$getDb->fam_children."',
 					fam_kind='".$getDb->fam_kind."',
 				fam_relation_date='".$getDb->fam_relation_date."',
-				fam_relation_place='".safe_text($getDb->fam_relation_place)."',
-				fam_relation_text='".safe_text($getDb->fam_relation_text)."',
+				fam_relation_place='".safe_text_db($getDb->fam_relation_place)."',
+				fam_relation_text='".safe_text_db($getDb->fam_relation_text)."',
 				fam_relation_end_date='".$getDb->fam_relation_end_date."',
 				fam_marr_notice_date='".$getDb->fam_marr_notice_date."',
-				fam_marr_notice_place='".safe_text($getDb->fam_marr_notice_place)."',
-				fam_marr_notice_text='".safe_text($getDb->fam_marr_notice_text)."',
+				fam_marr_notice_place='".safe_text_db($getDb->fam_marr_notice_place)."',
+				fam_marr_notice_text='".safe_text_db($getDb->fam_marr_notice_text)."',
 				fam_marr_date='".$getDb->fam_marr_date."',
-				fam_marr_place='".safe_text($getDb->fam_marr_place)."',
-				fam_marr_text='".safe_text($getDb->fam_marr_text)."',
-				fam_marr_authority='".safe_text($getDb->fam_marr_authority)."',
+				fam_marr_place='".safe_text_db($getDb->fam_marr_place)."',
+				fam_marr_text='".safe_text_db($getDb->fam_marr_text)."',
+				fam_marr_authority='".safe_text_db($getDb->fam_marr_authority)."',
 				fam_marr_church_notice_date='".$getDb->fam_marr_church_notice_date."',
-				fam_marr_church_notice_place='".safe_text($getDb->fam_marr_church_notice_place)."',
-				fam_marr_church_notice_text='".safe_text($getDb->fam_marr_church_notice_text)."',
+				fam_marr_church_notice_place='".safe_text_db($getDb->fam_marr_church_notice_place)."',
+				fam_marr_church_notice_text='".safe_text_db($getDb->fam_marr_church_notice_text)."',
 				fam_marr_church_date='".$getDb->fam_marr_church_date."',
-				fam_marr_church_place='".safe_text($getDb->fam_marr_church_place)."',
-				fam_marr_church_text='".safe_text($getDb->fam_marr_church_text)."',
-				fam_religion='".safe_text($getDb->fam_religion)."',
+				fam_marr_church_place='".safe_text_db($getDb->fam_marr_church_place)."',
+				fam_marr_church_text='".safe_text_db($getDb->fam_marr_church_text)."',
+				fam_religion='".safe_text_db($getDb->fam_religion)."',
 				fam_div_date='".$getDb->fam_div_date."',
-				fam_div_place='".safe_text($getDb->fam_div_place)."',
-				fam_div_text='".safe_text($getDb->fam_div_text)."',
-				fam_div_authority='".safe_text($getDb->fam_div_authority)."',
-					fam_text='".safe_text($getDb->fam_text)."',
+				fam_div_place='".safe_text_db($getDb->fam_div_place)."',
+				fam_div_text='".safe_text_db($getDb->fam_div_text)."',
+				fam_div_authority='".safe_text_db($getDb->fam_div_authority)."',
+					fam_text='".safe_text_db($getDb->fam_text)."',
 					fam_alive='".$getDb->fam_alive."',
 					fam_quality='".$getDb->fam_quality."',
 					fam_counter='".$getDb->fam_counter."',
@@ -2479,7 +2479,7 @@ else{
 						$gebeurtsql="INSERT INTO humo_unprocessed_tags SET
 							tag_rel_id='".$fam_id."',
 							tag_tree_id='".$updateDb->tree_id."',
-							tag_tag='".safe_text($getDb->fam_unprocessed_tags)."'";
+							tag_tag='".safe_text_db($getDb->fam_unprocessed_tags)."'";
 						$result=$dbh->query($gebeurtsql);
 					}
 
@@ -2503,18 +2503,18 @@ else{
 					$sql_put="INSERT INTO humo_repositories SET
 					repo_gedcomnr='".$getDb->repo_gedcomnr."',
 					repo_tree_id='".$updateDb->tree_id."',
-					repo_name='".safe_text($getDb->repo_name)."',
-					repo_address='".safe_text($getDb->repo_address)."',
+					repo_name='".safe_text_db($getDb->repo_name)."',
+					repo_address='".safe_text_db($getDb->repo_address)."',
 					repo_zip='".$getDb->repo_zip."',
-					repo_place='".safe_text($getDb->repo_place)."',
+					repo_place='".safe_text_db($getDb->repo_place)."',
 					repo_phone='".$getDb->repo_phone."',
 					repo_date='".$getDb->repo_date."',
-					repo_text='".safe_text($getDb->repo_text)."',
-					repo_photo='".safe_text($getDb->repo_photo)."',
+					repo_text='".safe_text_db($getDb->repo_text)."',
+					repo_photo='".safe_text_db($getDb->repo_photo)."',
 					repo_mail='".$getDb->repo_mail."',
 					repo_url='".$getDb->repo_url."',
 					repo_quality='".$getDb->repo_quality."',
-					repo_unprocessed_tags='".safe_text($getDb->repo_unprocessed_tags)."',
+					repo_unprocessed_tags='".safe_text_db($getDb->repo_unprocessed_tags)."',
 					repo_new_date='".$getDb->repo_new_date."',
 					repo_new_time='".$getDb->repo_new_time."',
 					repo_changed_date='".$getDb->repo_changed_date."',
@@ -2535,24 +2535,24 @@ else{
 						source_status='".$getDb->source_status."',
 						source_gedcomnr='".$getDb->source_gedcomnr."',
 						source_order='".$getDb->source_order."',
-						source_title='".safe_text($getDb->source_title)."',
-						source_abbr='".safe_text($getDb->source_abbr)."',
+						source_title='".safe_text_db($getDb->source_title)."',
+						source_abbr='".safe_text_db($getDb->source_abbr)."',
 						source_date='".$getDb->source_date."',
-						source_place='".safe_text($getDb->source_place)."',
-						source_publ='".safe_text($getDb->source_publ)."',
-						source_refn='".safe_text($getDb->source_refn)."',
-						source_auth='".safe_text($getDb->source_auth)."',
-						source_subj='".safe_text($getDb->source_subj)."',
-						source_item='".safe_text($getDb->source_item)."',
-						source_kind='".safe_text($getDb->source_kind)."',
-						source_text='".safe_text($getDb->source_text)."',
-						source_photo='".safe_text($getDb->source_photo)."',
-						source_repo_name='".safe_text($getDb->source_repo_name)."',
-						source_repo_caln='".safe_text($getDb->source_repo_caln)."',
-						source_repo_page='".safe_text($getDb->source_repo_page)."',
+						source_place='".safe_text_db($getDb->source_place)."',
+						source_publ='".safe_text_db($getDb->source_publ)."',
+						source_refn='".safe_text_db($getDb->source_refn)."',
+						source_auth='".safe_text_db($getDb->source_auth)."',
+						source_subj='".safe_text_db($getDb->source_subj)."',
+						source_item='".safe_text_db($getDb->source_item)."',
+						source_kind='".safe_text_db($getDb->source_kind)."',
+						source_text='".safe_text_db($getDb->source_text)."',
+						source_photo='".safe_text_db($getDb->source_photo)."',
+						source_repo_name='".safe_text_db($getDb->source_repo_name)."',
+						source_repo_caln='".safe_text_db($getDb->source_repo_caln)."',
+						source_repo_page='".safe_text_db($getDb->source_repo_page)."',
 						source_repo_gedcomnr='".$getDb->source_repo_gedcomnr."',
 						source_quality='".$getDb->source_quality."',
-						source_unprocessed_tags='".safe_text($getDb->source_unprocessed_tags)."',
+						source_unprocessed_tags='".safe_text_db($getDb->source_unprocessed_tags)."',
 						source_new_date='".$getDb->source_new_date."',
 						source_new_time='".$getDb->source_new_time."',
 						source_changed_date='".$getDb->source_changed_date."',
@@ -2573,9 +2573,9 @@ else{
 						$sql_put="INSERT INTO humo_texts SET
 						text_tree_id='".$updateDb->tree_id."',
 						text_gedcomnr='".$getDb->text_gedcomnr."',
-						text_text='".safe_text($getDb->text_text)."',
+						text_text='".safe_text_db($getDb->text_text)."',
 						text_quality='".$getDb->text_quality."',
-						text_unprocessed_tags='".safe_text($getDb->text_unprocessed_tags)."',
+						text_unprocessed_tags='".safe_text_db($getDb->text_unprocessed_tags)."',
 						text_new_date='".$getDb->text_new_date."',
 						text_new_time='".$getDb->text_new_time."',
 						text_changed_date='".$getDb->text_changed_date."',
@@ -2624,16 +2624,16 @@ else{
 						connect_sub_kind='".$connect_sub_kind."',
 						connect_connect_id='".$getDb->connect_connect_id."',
 						connect_date='".$getDb->connect_date."',
-						connect_place='".safe_text($getDb->connect_place)."',
-						connect_time='".safe_text($getDb->connect_time)."',
-						connect_page='".safe_text($getDb->connect_page)."',
-						connect_role='".safe_text($getDb->connect_role)."',
-						connect_text='".safe_text($getDb->connect_text)."',
+						connect_place='".safe_text_db($getDb->connect_place)."',
+						connect_time='".safe_text_db($getDb->connect_time)."',
+						connect_page='".safe_text_db($getDb->connect_page)."',
+						connect_role='".safe_text_db($getDb->connect_role)."',
+						connect_text='".safe_text_db($getDb->connect_text)."',
 						connect_source_id='".$getDb->connect_source_id."',
 						connect_item_id='".$getDb->connect_item_id."',
 						connect_status='".$getDb->connect_status."',
 						connect_quality='".$getDb->connect_quality."',
-						connect_unprocessed_tags='".safe_text($getDb->connect_unprocessed_tags)."',
+						connect_unprocessed_tags='".safe_text_db($getDb->connect_unprocessed_tags)."',
 						connect_new_date='".$getDb->connect_new_date."',
 						connect_new_time='".$getDb->connect_new_time."',
 						connect_changed_date='".$getDb->connect_changed_date."',
@@ -2658,15 +2658,15 @@ else{
 						address_order='".$getDb->address_order."',
 						address_person_id='".$getDb->address_person_id."',
 						address_family_id='".$getDb->address_family_id."',
-						address_address='".safe_text($getDb->address_address)."',
-						address_zip='".safe_text($getDb->address_zip)."',
-						address_place='".safe_text($getDb->address_place)."',
-						address_phone='".safe_text($getDb->address_phone)."',
+						address_address='".safe_text_db($getDb->address_address)."',
+						address_zip='".safe_text_db($getDb->address_zip)."',
+						address_place='".safe_text_db($getDb->address_place)."',
+						address_phone='".safe_text_db($getDb->address_phone)."',
 						address_date='".$getDb->address_date."',
-						address_text='".safe_text($getDb->address_text)."',
-						address_photo='".safe_text($getDb->address_photo)."',
+						address_text='".safe_text_db($getDb->address_text)."',
+						address_photo='".safe_text_db($getDb->address_photo)."',
 						address_quality='".$getDb->address_quality."',
-						address_unprocessed_tags='".safe_text($getDb->address_unprocessed_tags)."',
+						address_unprocessed_tags='".safe_text_db($getDb->address_unprocessed_tags)."',
 						address_new_date='".$getDb->address_new_date."',
 						address_new_time='".$getDb->address_new_time."',
 						address_changed_date='".$getDb->address_changed_date."',
@@ -2715,13 +2715,13 @@ else{
 						event_family_id='".$getDb->event_family_id."',
 						event_kind='".$getDb->event_kind."',
 						event_event='".$getDb->event_event."',
-						event_event_extra='".safe_text($getDb->event_event_extra)."',
+						event_event_extra='".safe_text_db($getDb->event_event_extra)."',
 						event_gedcom='".$getDb->event_gedcom."',
 						event_date='".$getDb->event_date."',
-						event_place='".safe_text($getDb->event_place)."',
-						event_text='".safe_text($getDb->event_text)."',
+						event_place='".safe_text_db($getDb->event_place)."',
+						event_text='".safe_text_db($getDb->event_text)."',
 						event_quality='".$getDb->event_quality."',
-						event_unprocessed_tags='".safe_text($getDb->event_unprocessed_tags)."',
+						event_unprocessed_tags='".safe_text_db($getDb->event_unprocessed_tags)."',
 						event_new_date='".$getDb->event_new_date."',
 						event_new_time='".$getDb->event_new_time."',
 						event_changed_date='".$getDb->event_changed_date."',
@@ -2778,7 +2778,7 @@ else{
 				$gebeurtsql="INSERT INTO humo_unprocessed_tags SET
 					tag_tree_id='".$qryDb->source_tree_id."',
 					tag_source_id='".$qryDb->source_id."',
-					tag_tag='".safe_text($qryDb->source_unprocessed_tags)."'";
+					tag_tag='".safe_text_db($qryDb->source_unprocessed_tags)."'";
 				$result=$dbh->query($gebeurtsql);
 			}
 		// *** Commit data in database ***
@@ -2795,7 +2795,7 @@ else{
 			$gebeurtsql="INSERT INTO humo_unprocessed_tags SET
 				tag_tree_id='".$qryDb->repo_tree_id."',
 				tag_repo_id='".$qryDb->repo_id."',
-				tag_tag='".safe_text($qryDb->repo_unprocessed_tags)."'";
+				tag_tag='".safe_text_db($qryDb->repo_unprocessed_tags)."'";
 			$result=$dbh->query($gebeurtsql);
 		}
 		// *** Remove tags from repositories table ***
@@ -2812,7 +2812,7 @@ else{
 				$gebeurtsql="INSERT INTO humo_unprocessed_tags SET
 					tag_tree_id='".$qryDb->text_tree_id."',
 					tag_text_id='".$qryDb->text_id."',
-					tag_tag='".safe_text($qryDb->text_unprocessed_tags)."'";
+					tag_tag='".safe_text_db($qryDb->text_unprocessed_tags)."'";
 				$result=$dbh->query($gebeurtsql);
 			}
 		// *** Commit data in database ***
@@ -2831,7 +2831,7 @@ else{
 				$gebeurtsql="INSERT INTO humo_unprocessed_tags SET
 					tag_tree_id='".$qryDb->connect_tree_id."',
 					tag_connect_id='".$qryDb->connect_id."',
-					tag_tag='".safe_text($qryDb->connect_unprocessed_tags)."'";
+					tag_tag='".safe_text_db($qryDb->connect_unprocessed_tags)."'";
 				$result=$dbh->query($gebeurtsql);
 			}
 		// *** Commit data in database ***
@@ -2850,7 +2850,7 @@ else{
 				$gebeurtsql="INSERT INTO humo_unprocessed_tags SET
 					tag_tree_id='".$qryDb->address_tree_id."',
 					tag_address_id='".$qryDb->address_id."',
-					tag_tag='".safe_text($qryDb->address_unprocessed_tags)."'";
+					tag_tag='".safe_text_db($qryDb->address_unprocessed_tags)."'";
 				$result=$dbh->query($gebeurtsql);
 			}
 		// *** Commit data in database ***
@@ -2869,7 +2869,7 @@ else{
 				$gebeurtsql="INSERT INTO humo_unprocessed_tags SET
 					tag_tree_id='".$qryDb->event_tree_id."',
 					tag_event_id='".$qryDb->event_id."',
-					tag_tag='".safe_text($qryDb->event_unprocessed_tags)."'";
+					tag_tag='".safe_text_db($qryDb->event_unprocessed_tags)."'";
 				$result=$dbh->query($gebeurtsql);
 			}
 		// *** Commit data in database ***

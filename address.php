@@ -38,7 +38,7 @@ print "</td></tr><tr><td>";
 			print __('Address by person').': <a href="family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
 			echo $name["standard_name"].'</a>';
 			if ($eventDb->connect_role){ echo ' '.$eventDb->connect_role; }
-			print '<br>';
+			echo '<br>';
 		}
 	}
 	unset($event_qry); // *** If finished, remove data from memory ***

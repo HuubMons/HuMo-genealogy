@@ -34,14 +34,14 @@ if (isset($_POST['change_user'])){
 				$username='GEEN NAAM / NO NAME';
 			}
 			$sql="UPDATE humo_users SET
-				user_name='".safe_text($username)."',
-				user_mail='".safe_text($usermail)."', ";
+				user_name='".safe_text_db($username)."',
+				user_mail='".safe_text_db($usermail)."', ";
 			if (isset($_POST[$userDb->user_id."password"]) AND $_POST[$userDb->user_id."password"]){
 				//$sql=$sql."user_password='".MD5($_POST[$userDb->user_id."password"]);
 				$sql=$sql."user_password='".MD5($_POST[$userDb->user_id."password"])."', ";
 			}
-			$sql=$sql."user_group_id='".safe_text($_POST[$userDb->user_id."group_id"]);
-			$sql=$sql."' WHERE user_id=".safe_text($_POST[$userDb->user_id."user_id"]);
+			$sql=$sql."user_group_id='".safe_text_db($_POST[$userDb->user_id."group_id"]);
+			$sql=$sql."' WHERE user_id=".safe_text_db($_POST[$userDb->user_id."user_id"]);
 			$result=$dbh->query($sql);
 		}
 	}
@@ -49,10 +49,10 @@ if (isset($_POST['change_user'])){
 
 if (isset($_POST['add_user']) AND is_numeric($_POST["add_group_id"])){
 	$sql="INSERT INTO humo_users SET
-	user_name='".safe_text($_POST["add_username"])."',
-	user_mail='".safe_text($_POST["add_usermail"])."',
+	user_name='".safe_text_db($_POST["add_username"])."',
+	user_mail='".safe_text_db($_POST["add_usermail"])."',
 	user_password='".MD5($_POST["add_password"])."',
-	user_group_id='".safe_text($_POST["add_group_id"])."';";
+	user_group_id='".safe_text_db($_POST["add_group_id"])."';";
 	$result=$dbh->query($sql);
 }
 
@@ -60,7 +60,7 @@ if (isset($_POST['add_user']) AND is_numeric($_POST["add_group_id"])){
 if (isset($_GET['remove_user'])){
 	echo '<div class="confirm">';
 	echo __('Are you sure you want to delete this user?');
-	echo ' <form method="post" action="'.$_SERVER['PHP_SELF'].'" style="display : inline;">';
+	echo ' <form method="post" action="index.php" style="display : inline;">';
 	echo '<input type="hidden" name="page" value="'.$_GET['page'].'">';
 	echo '<input type="hidden" name="remove_user" value="'.$_GET['remove_user'].'">';
 	echo ' <input type="Submit" name="remove_user2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
@@ -70,12 +70,12 @@ if (isset($_GET['remove_user'])){
 }
 if (isset($_POST['remove_user2']) AND is_numeric($_POST['remove_user'])){
 	// *** Delete source connection ***
-	$sql="DELETE FROM humo_users WHERE user_id='".safe_text($_POST['remove_user'])."'";
+	$sql="DELETE FROM humo_users WHERE user_id='".safe_text_db($_POST['remove_user'])."'";
 	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['unblock_ip_address'])){
-	$sql="DELETE FROM humo_user_log WHERE log_ip_address='".safe_text($_GET['unblock_ip_address'])."' AND log_status='failed'";
+	$sql="DELETE FROM humo_user_log WHERE log_ip_address='".safe_text_db($_GET['unblock_ip_address'])."' AND log_status='failed'";
 	$result=$dbh->query($sql);
 }
 
@@ -94,7 +94,7 @@ if(CMS_SPECIFIC=="Joomla") {
 	echo "<form method=\"POST\" action=\"index.php?option=com_humo-gen&amp;task=admin&amp;page=users\">\n";
 }
 else {
-	echo "<form method=\"POST\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+	echo "<form method=\"POST\" action=\"index.php\">\n";
 }
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<br><table class="humo standard" border="1" style="width:95%;">';
@@ -114,7 +114,7 @@ while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 	echo '<tr align="center"><td>';
 
 	if ($userDb->user_name!='gast' AND $userDb->user_name!='guest' AND $userDb->user_id!='1'){
-		echo '<a href="'.$_SERVER['PHP_SELF'].'?page=users&remove_user='.$userDb->user_id.'">';
+		echo '<a href="index.php?page=users&remove_user='.$userDb->user_id.'">';
 		echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" border="0" alt="remove person"></a> ';
 	}
 	else
@@ -188,7 +188,7 @@ while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 		if (!$db_functions->check_visitor($log_ip_address)){
 			echo 'Access to website is blocked.<br>';
 			echo 'IP address: '.$logdateDb->log_ip_address.'<br>';
-			echo '<a href="'.$_SERVER['PHP_SELF'].'?page=users&unblock_ip_address='.$logdateDb->log_ip_address.'">'.__('Unblock IP address').'</a>';
+			echo '<a href="index.php?page=users&unblock_ip_address='.$logdateDb->log_ip_address.'">'.__('Unblock IP address').'</a>';
 		}
 		else echo '<br>';
 	echo '</td>';

@@ -16,7 +16,7 @@ if(CMS_SPECIFIC=="Joomla") {
 	echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=check" style="display : inline;">';
 }
 else {
-	echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'" style="display : inline;">';
+	echo '<form method="POST" action="index.php" style="display : inline;">';
 }
 
 echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -136,7 +136,7 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 		echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=check" style="display : inline;">';
 	}
 	else {
-		echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'" style="display : inline;">';
+		echo '<form method="POST" action="index.php" style="display : inline;">';
 	}
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 	$checked=''; if (isset($_POST['remove'])) $checked = " checked";
@@ -164,7 +164,6 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 
 		// *** Now get all data for one person at a time ***
 		$person = $dbh->query("SELECT * FROM humo_persons WHERE pers_id='".$person_startDb['pers_id']."'");
-		//$personDb=$person->fetch();
 		$person=$person->fetch(PDO::FETCH_OBJ);
 
 		$check=false;

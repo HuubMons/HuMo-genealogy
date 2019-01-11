@@ -19,9 +19,16 @@ if(isset($_POST['create_backup'])) {
 	backup_tables();
 }
 else {
+
+	echo __('If you use HuMo-gen to edit in the family tree, then create multiple backups. Recommended backups:<br>
+<b>1) Best option: use PhpMyAdmin. Export all tables from the HuMo-gen database (TIP: use the zip option for a compressed file).</b><br>
+2) Just for sure: export a gedcom file. This is not a full family tree backup! But it will contain all basic genealogical data.<br>
+3) Use the HuMo-gen backup page.');
+	echo '<br><br>';
+
 	echo __('The last backup file will be saved to the admin folder. You can restore from this file with "Option 1" below.<br>
 You will also be offered a download button and we suggest downloading backup files frequently in case the data on your server (including the backup file) might get deleted or corrupted. You can restore from downloaded files with "Option 2" below.').'<br>';
-	echo '<form action="'.$_SERVER['PHP_SELF'].'?page=backup" method="post">';
+	echo '<form action="index.php?page=backup" method="post">';
 	echo '&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Create backup file').'" name="create_backup">';
 	echo '</form>';
 }
@@ -33,7 +40,7 @@ echo '<tr><td>';
 echo __('Here you can restore your entire database from the last backup made with HuMo-gen Backup (if available) or from an .sql or .sql.zip backup file on your computer.').'<br><br>';
 
 echo '<table style="width:750px;margin-left:auto;margin-right:auto"><tr><th style="text-align:left">'.__('Option 1: Restore from last backup created with HuMo-gen Backup').'</th></tr><tr><td style="height:40px">';
-echo '<form name="uploadform" enctype="multipart/form-data" action="'.$_SERVER['PHP_SELF'].'?page=backup" method="post">';
+echo '<form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
 
 // RESTORE FROM HUMOGEN BACKUP
 if(isset($_POST['restore_server'])) {
@@ -56,8 +63,8 @@ echo '</form>';
 echo '</td></tr></table><br>';
 
 // RESTORE FROM FILE ON COMPUTER
-echo '<table style="width:750px;margin-left:auto;margin-right:auto"><tr><th style="text-align:left">'.__('Option 2: Restore from backup file on your computer').'</th></tr><tr><td>'; 
-echo '<form name="uploadform2" enctype="multipart/form-data" action="'.$_SERVER['PHP_SELF'].'?page=backup" method="post">'; 
+echo '<table style="width:750px;margin-left:auto;margin-right:auto"><tr><th style="text-align:left">'.__('Option 2: Restore from backup file on your computer').'</th></tr><tr><td>';
+echo '<form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">'; 
 
 if(isset($_POST['restore']) AND isset($_POST['select_bkfile']) AND $_POST['select_bkfile'] != "none") {
 	// restore from uploaded .sql.zip or .sql file

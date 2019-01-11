@@ -10,81 +10,81 @@ else { $time_lang = $humo_option['default_language'];   }
 
 if (isset($_POST['save_option'])){
 	// *** Update settings ***
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_skin"])."' WHERE setting_variable='default_skin'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["default_skin"])."' WHERE setting_variable='default_skin'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_language"])."' WHERE setting_variable='default_language'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["default_language_admin"])."' WHERE setting_variable='default_language_admin'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["default_language"])."' WHERE setting_variable='default_language'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["default_language_admin"])."' WHERE setting_variable='default_language_admin'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["text_footer"])."' WHERE setting_variable='text_footer'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["text_footer"])."' WHERE setting_variable='text_footer'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["database_name"])."' WHERE setting_variable='database_name'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["homepage"])."' WHERE setting_variable='homepage'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["homepage_description"])."' WHERE setting_variable='homepage_description'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["database_name"])."' WHERE setting_variable='database_name'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["homepage"])."' WHERE setting_variable='homepage'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["homepage_description"])."' WHERE setting_variable='homepage_description'");
 
 	// *** Slideshow ***
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["slideshow_show"])."'
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["slideshow_show"])."'
 		WHERE setting_variable='slideshow_show'");
 	$result = $dbh->query("UPDATE humo_settings
-		SET setting_value='".safe_text($_POST["slideshow_slide_01"]).'|'.safe_text($_POST["slideshow_text_01"])."'
+		SET setting_value='".safe_text_db($_POST["slideshow_slide_01"]).'|'.safe_text_db($_POST["slideshow_text_01"])."'
 		WHERE setting_variable='slideshow_01'");
 	$result = $dbh->query("UPDATE humo_settings
-		SET setting_value='".safe_text($_POST["slideshow_slide_02"]).'|'.safe_text($_POST["slideshow_text_02"])."'
+		SET setting_value='".safe_text_db($_POST["slideshow_slide_02"]).'|'.safe_text_db($_POST["slideshow_text_02"])."'
 		WHERE setting_variable='slideshow_02'");
 	$result = $dbh->query("UPDATE humo_settings
-		SET setting_value='".safe_text($_POST["slideshow_slide_03"]).'|'.safe_text($_POST["slideshow_text_03"])."'
+		SET setting_value='".safe_text_db($_POST["slideshow_slide_03"]).'|'.safe_text_db($_POST["slideshow_text_03"])."'
 		WHERE setting_variable='slideshow_03'");
 	$result = $dbh->query("UPDATE humo_settings
-		SET setting_value='".safe_text($_POST["slideshow_slide_04"]).'|'.safe_text($_POST["slideshow_text_04"])."'
+		SET setting_value='".safe_text_db($_POST["slideshow_slide_04"]).'|'.safe_text_db($_POST["slideshow_text_04"])."'
 		WHERE setting_variable='slideshow_04'");
 
 	// *** Today in history ***
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["today_in_history_show"])."'
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["today_in_history_show"])."'
 		WHERE setting_variable='today_in_history_show'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["rss_link"])."' WHERE setting_variable='rss_link'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["rss_link"])."' WHERE setting_variable='rss_link'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["searchengine"])."' WHERE setting_variable='searchengine'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["robots_option"])."' WHERE setting_variable='robots_option'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["searchengine"])."' WHERE setting_variable='searchengine'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["robots_option"])."' WHERE setting_variable='robots_option'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["searchengine_cms_only"])."' WHERE setting_variable='searchengine_cms_only'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["searchengine_cms_only"])."' WHERE setting_variable='searchengine_cms_only'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["block_spam_question"])."' WHERE setting_variable='block_spam_question'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["block_spam_answer"])."' WHERE setting_variable='block_spam_answer'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["block_spam_question"])."' WHERE setting_variable='block_spam_question'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["block_spam_answer"])."' WHERE setting_variable='block_spam_answer'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["use_spam_question"])."' WHERE setting_variable='use_spam_question'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["use_newsletter_question"])."' WHERE setting_variable='use_newsletter_question'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["use_spam_question"])."' WHERE setting_variable='use_spam_question'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["use_newsletter_question"])."' WHERE setting_variable='use_newsletter_question'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["visitor_registration"])."' WHERE setting_variable='visitor_registration'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["general_email"])."' WHERE setting_variable='general_email'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["visitor_registration_group"])."' WHERE setting_variable='visitor_registration_group'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["registration_use_spam_question"])."' WHERE setting_variable='registration_use_spam_question'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["visitor_registration"])."' WHERE setting_variable='visitor_registration'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["general_email"])."' WHERE setting_variable='general_email'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["visitor_registration_group"])."' WHERE setting_variable='visitor_registration_group'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["registration_use_spam_question"])."' WHERE setting_variable='registration_use_spam_question'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["descendant_generations"])."' WHERE setting_variable='descendant_generations'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["descendant_generations"])."' WHERE setting_variable='descendant_generations'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["show_persons"])."' WHERE setting_variable='show_persons'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["show_persons"])."' WHERE setting_variable='show_persons'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["url_rewrite"])."' WHERE setting_variable='url_rewrite'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["url_rewrite"])."' WHERE setting_variable='url_rewrite'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["timezone"])."' WHERE setting_variable='timezone'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["timezone"])."' WHERE setting_variable='timezone'");
 
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["watermark_text"])."' WHERE setting_variable='watermark_text'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["watermark_color_r"])."' WHERE setting_variable='watermark_color_r'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["watermark_color_g"])."' WHERE setting_variable='watermark_color_g'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["watermark_color_b"])."' WHERE setting_variable='watermark_color_b'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["min_search_chars"])."' WHERE setting_variable='min_search_chars'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["date_display"])."' WHERE setting_variable='date_display'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["name_order"])."' WHERE setting_variable='name_order'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["one_name_study"])."' WHERE setting_variable='one_name_study'");
-	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST["one_name_thename"])."' WHERE setting_variable='one_name_thename'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["watermark_text"])."' WHERE setting_variable='watermark_text'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["watermark_color_r"])."' WHERE setting_variable='watermark_color_r'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["watermark_color_g"])."' WHERE setting_variable='watermark_color_g'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["watermark_color_b"])."' WHERE setting_variable='watermark_color_b'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["min_search_chars"])."' WHERE setting_variable='min_search_chars'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["date_display"])."' WHERE setting_variable='date_display'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["name_order"])."' WHERE setting_variable='name_order'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["one_name_study"])."' WHERE setting_variable='one_name_study'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["one_name_thename"])."' WHERE setting_variable='one_name_thename'");
 	if(strpos($humo_option['default_timeline'],$time_lang."!")===false) {  
 		// no entry for this language yet - append it
-		$result = $dbh->query("UPDATE humo_settings SET setting_value=CONCAT(setting_value,'".safe_text($_POST["default_timeline"])."') WHERE setting_variable='default_timeline'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value=CONCAT(setting_value,'".safe_text_db($_POST["default_timeline"])."') WHERE setting_variable='default_timeline'");
 	}
 	else {
 		$time_arr = explode("@",substr($humo_option['default_timeline'],0,-1));
 		foreach($time_arr AS $key => $value) { 
 			if(strpos($value,$time_lang."!")!==false) {  
-				$time_arr[$key] = substr(safe_text($_POST["default_timeline"]),0,-1);
+				$time_arr[$key] = substr(safe_text_db($_POST["default_timeline"]),0,-1);
 			}
 		}
 		$time_str = implode("@",$time_arr)."@";  
@@ -119,9 +119,8 @@ if(CMS_SPECIFIC == "Joomla") {
 	echo '<form method="post" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=settings">';
 }
 else {
-	echo '<form method="post" action="'.$_SERVER['PHP_SELF'].'">';
+	echo '<form method="post" action="index.php">';
 }
-
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<table class="humo standard" border="1">';
 
@@ -381,7 +380,7 @@ if($folder !== false) {  // no use showing the option if we can't access the tim
 echo "&nbsp;&nbsp;";
 
 if($langs) {
-	echo '<select onChange="window.location =\''.$_SERVER['PHP_SELF'].'?page=settings&timeline_language=\' + this.value + \'#timeline_anchor\'; "  size="1" name="timeline_language">';
+	echo '<select onChange="window.location =\'index.php?page=settings&timeline_language=\' + this.value + \'#timeline_anchor\'; "  size="1" name="timeline_language">';
 	for($i=0; $i<count($langs); $i++) { 
 		if(is_dir(CMS_ROOTPATH.'languages/'.$langs[$i][1].'/timelines/')) {
 			$select=''; if ($time_lang==$langs[$i][1]){ $select=' SELECTED'; }

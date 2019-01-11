@@ -54,7 +54,7 @@ if(CMS_SPECIFIC=="Joomla") {
 	global $gen_program, $not_processed;
 }
 else {
-	$phpself = $_SERVER['PHP_SELF'];
+	$phpself = 'index.php';
 }
 
 // *** Step 1 ***
@@ -313,7 +313,7 @@ if (isset($_POST['step2'])){
 			// *** Remove unprocessed tags ***
 			printf(__('Remove old family tree items from %s table...'), 'humo_persons');
 			echo '<br>';
-			$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 			ob_flush();
 			flush(); // IE
@@ -330,12 +330,12 @@ if (isset($_POST['step2'])){
 		if ($nr_records>0){
 			$loop=$nr_records/$limit;
 			for ($i=0; $i<=$loop; $i++){
-				$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
 				@$result=$dbh->query($sql);
 				echo '*';
 				ob_flush(); flush(); // IE
 			}
-			$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -351,7 +351,7 @@ if (isset($_POST['step2'])){
 			// *** Remove unprocessed tags ***
 			printf(__('Remove old family tree items from %s table...'), 'humo_families');
 			echo '<br>';
-			$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 			ob_flush();
 			flush(); // IE
@@ -367,12 +367,12 @@ if (isset($_POST['step2'])){
 		if ($nr_records>0){
 			$loop=$nr_records/$limit;
 			for ($i=0; $i<=$loop; $i++){
-				$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
 				@$result=$dbh->query($sql);
 				echo '*';
 				ob_flush(); flush(); // IE
 			}
-			$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...').' ';
@@ -389,7 +389,7 @@ if (isset($_POST['step2'])){
 			printf(__('Remove old family tree items from %s table...'), 'humo_unprocessed_tags');
 			echo ' ';
 			ob_flush(); flush(); // IE
-			$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -410,12 +410,12 @@ if (isset($_POST['step2'])){
 		if ($nr_records>0){
 			$loop=$nr_records/$limit;
 			for ($i=0; $i<=$loop; $i++){
-				$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
 				@$result=$dbh->query($sql);
 				echo '*';
 				ob_flush(); flush(); // IE
 			}
-			$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -429,7 +429,7 @@ if (isset($_POST['step2'])){
 		// *** Remove admin favourites ***
 		printf(__('Remove old family tree items from %s table...'), 'humo_settings');
 		ob_flush(); flush(); // IE
-		$sql="DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='".safe_text($tree_id)."'";
+		$sql="DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='".safe_text_db($tree_id)."'";
 		@$result=$dbh->query($sql);
 
 		echo ' '.__('Optimize table...');
@@ -441,7 +441,7 @@ if (isset($_POST['step2'])){
 		// *** Remove repositories ***
 		printf(__('Remove old family tree items from %s table...'), 'humo_repositories');
 		ob_flush(); flush(); // IE
-		$sql="DELETE FROM humo_repositories WHERE repo_tree_id='".safe_text($tree_id)."'";
+		$sql="DELETE FROM humo_repositories WHERE repo_tree_id='".safe_text_db($tree_id)."'";
 		@$result=$dbh->query($sql);
 
 		echo ' '.__('Optimize table...');
@@ -456,7 +456,7 @@ if (isset($_POST['step2'])){
 			// *** Remove sources ***
 			printf(__('Remove old family tree items from %s table...'), 'humo_sources');
 			ob_flush(); flush(); // IE
-			$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -477,12 +477,12 @@ if (isset($_POST['step2'])){
 		if ($nr_records>0){
 			$loop=$nr_records/$limit;
 			for ($i=0; $i<=$loop; $i++){
-				$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
 				@$result=$dbh->query($sql);
 				echo '*';
 				ob_flush(); flush(); // IE
 			}
-			$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -499,7 +499,7 @@ if (isset($_POST['step2'])){
 			// *** Remove texts ***
 			printf(__('Remove old family tree items from %s table...'), 'humo_texts');
 			echo '<br>';
-			$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 			ob_flush();
 			flush(); // IE
@@ -516,12 +516,12 @@ if (isset($_POST['step2'])){
 		if ($nr_records>0){
 			$loop=$nr_records/$limit;
 			for ($i=0; $i<=$loop; $i++){
-				$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
 				@$result=$dbh->query($sql);
 				echo '*';
 				ob_flush(); flush(); // IE
 			}
-			$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -537,7 +537,7 @@ if (isset($_POST['step2'])){
 			// *** Remove connections ***
 			printf(__('Remove old family tree items from %s table...'), 'humo_connections');
 			ob_flush(); flush(); // IE
-			$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -558,12 +558,12 @@ if (isset($_POST['step2'])){
 		if ($nr_records>0){
 			$loop=$nr_records/$limit;
 			for ($i=0; $i<=$loop; $i++){
-				$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
 				@$result=$dbh->query($sql);
 				echo '*';
 				ob_flush(); flush(); // IE
 			}
-			$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -580,7 +580,7 @@ if (isset($_POST['step2'])){
 			/*
 			printf(__('Remove old family tree items from %s table...'), 'humo_addresses');
 			echo '<br>';
-			$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 			ob_flush();
 			flush(); // IE
@@ -597,13 +597,13 @@ if (isset($_POST['step2'])){
 		if ($nr_records>0){
 			$loop=$nr_records/$limit;
 			for ($i=0; $i<=$loop; $i++){
-				$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
 				@$result=$dbh->query($sql);
 				echo '*';
 				ob_flush();
 				flush(); // IE
 			}
-			$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -619,7 +619,7 @@ if (isset($_POST['step2'])){
 			// *** Remove events ***
 			printf(__('Remove old family tree items from %s table...'), 'humo_events');
 			ob_flush(); flush(); // IE
-			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -640,12 +640,12 @@ if (isset($_POST['step2'])){
 		if ($nr_records>0){
 			$loop=$nr_records/$limit;
 			for ($i=0; $i<=$loop; $i++){
-				$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."' LIMIT ".$limit;
+				$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
 				@$result=$dbh->query($sql);
 				echo '*';
 				ob_flush(); flush(); // IE
 			}
-			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($tree_id)."'";
+			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -692,11 +692,11 @@ if (isset($_POST['step2'])){
 	}
 
 	if (isset($_POST['commit_records'])){
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST['commit_records'])."' WHERE setting_variable='gedcom_read_commit_records'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST['commit_records'])."' WHERE setting_variable='gedcom_read_commit_records'");
 	}
 
 	if (isset($_POST['time_out'])){
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text($_POST['time_out'])."' WHERE setting_variable='gedcom_read_time_out'");
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST['time_out'])."' WHERE setting_variable='gedcom_read_time_out'");
 	}
 
 	//$progress_counter=0;
@@ -885,6 +885,8 @@ if (isset($_POST['step3'])){
 	if($reassign==true) {  // reassign gedcomnumbers when importing tree
 		$new_gednum["I"] = 1;
 		$new_gednum["F"] = 1;
+		$new_gednum["M"] = 1;
+		$new_gednum["O"] = 1;
 		$new_gednum["S"] = 1;
 		$new_gednum["R"] = 1;
 		$new_gednum["RP"] = 1;
@@ -893,6 +895,8 @@ if (isset($_POST['step3'])){
 	if($add_tree==true) { // reassign gedcomnumbers when importing added tree in merging
 		$new_gednum["I"] = $largest_pers_ged + 1;
 		$new_gednum["F"] = $largest_fam_ged + 1;
+		$new_gednum["M"] = $largest_fam_ged + 1;
+		$new_gednum["O"] = $largest_fam_ged + 1;
 		$new_gednum["S"] = $largest_source_ged + 1;
 		$new_gednum["R"] = $largest_address_ged + 1;
 		$new_gednum["RP"] = $largest_repo_ged + 1;
@@ -1435,33 +1439,316 @@ if (isset($_POST['step4'])){
 	$start_time=time();
 	$gen_program=$_POST['gen_program'];
 
-	echo '<b>'.__('STEP 4) Processing single persons:').'</b><br>';
+	echo '<b>'.__('STEP 4) Final database processing:').'</b><br>';
 
 	// *** To proceed if a (30 seconds) timeout has occured ***
-	/*
 	echo '<form method="post" action="'.$phpself.'">';
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 		echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 		echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 		echo '<input type="hidden" name="gen_program" value="'.$_POST['gen_program'].'">';
-		if (isset($_POST['check_processed'])){
-			echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
-		}
-		if (isset($_POST['show_gedcomnumbers'])){
-			echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
-		}
+		//if (isset($_POST['check_processed'])){
+		//	echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
+		//}
+		//if (isset($_POST['show_gedcomnumbers'])){
+		//	echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
+		//}
 		echo '<br>'.__('ONLY use in case of a time-out, to continue click:').' <input type="Submit" name="step4" value="'.__('Step').' 4">';
 	echo '</form><br>';
-	*/
 
-	echo '&gt;&gt;&gt; '.__('Processing single persons...');
+	// *** Show progress ***
+	//echo '<div id="progress" style="width:500px;border:1px solid #ccc;"></div>';
+	echo '<!-- Progress information -->';
+	echo '<div id="information" style="width"></div>';
+	$total=1;
 
-	// *** Check for seperate saved texts in database (used in aldfaer program, and some other programs) ***
-	//$zoektekst=mysql_query("SELECT * FROM ".$_SESSION['tree_prefix']."texts",$db);
-	//$aantal_teksten = mysql_num_rows($zoektekst);
-	//echo 'AANTAL TEKSTEN'.$aantal_teksten;
+	//echo '&gt;&gt;&gt; '.__('Processing single persons...');
+
+	// *** Check for seperate saved texts in database (used in Aldfaer program and Reunion) and store them as standard texts ***
+	$search_text_qry=$dbh->query("SELECT * FROM humo_texts WHERE text_tree_id='".$tree_id."'");
+	$count_text=$search_text_qry->rowCount();
+	if ($count_text>0){
+
+		echo '<br>&gt;&gt;&gt; '.__('Processing of referenced texts into standard texts...');
+
+		$db_functions->set_tree_id($tree_id);
+
+		// *** Batch processing for InnoDB tables ***
+		$commit_counter=0;
+		$commit_records=$humo_option["gedcom_read_commit_records"];
+		if ($commit_records>1){ $dbh->beginTransaction(); }
+
+		// *** Process texts in person table ***
+		$person_qry=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
+		while ($personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
+
+			$pers_text=''; 
+			if (substr($personDb->pers_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($personDb->pers_text,1,-1));
+				if ($search_textDb){
+					$pers_text=$search_textDb->text_text;
+
+					// *** Search for all connected sources ***
+					$connect_order=0;
+					$connect_qry="SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'
+						AND connect_kind='ref_text' AND connect_sub_kind='ref_text_source'
+						AND connect_connect_id='".$search_textDb->text_gedcomnr."'
+						ORDER BY connect_order";
+					$connect_sql=$dbh->query($connect_qry);
+					while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+						// *** Add to connection table ***
+						$connect_order++;
+						$gebeurtsql="INSERT INTO humo_connections SET
+							connect_tree_id='".$tree_id."',
+							connect_order='".$connect_order."',
+							connect_kind='person',
+							connect_sub_kind='pers_text_source',
+							connect_connect_id='".safe_text_db($personDb->pers_gedcomnumber)."',
+							connect_source_id='".safe_text_db($connectDb->connect_source_id)."'
+							";
+						$result=$dbh->query($gebeurtsql);
+					}
+				}
+			}
+
+			$pers_name_text=''; 
+			if (substr($personDb->pers_name_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($personDb->pers_name_text,1,-1));
+				if ($search_textDb) $pers_name_text=$search_textDb->text_text;
+			}
+
+			$pers_birth_text=''; 
+			if (substr($personDb->pers_birth_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($personDb->pers_birth_text,1,-1));
+				if ($search_textDb) $pers_birth_text=$search_textDb->text_text;
+			}
+
+			$pers_bapt_text='';
+			if (substr($personDb->pers_bapt_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($personDb->pers_bapt_text,1,-1));
+				if ($search_textDb) $pers_bapt_text=$search_textDb->text_text;
+			}
+
+			$pers_death_text=''; 
+			if (substr($personDb->pers_death_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($personDb->pers_death_text,1,-1));
+				if ($search_textDb) $pers_death_text=$search_textDb->text_text;
+			}
+
+			$pers_buried_text='';
+			if (substr($personDb->pers_buried_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($personDb->pers_buried_text,1,-1));
+				if ($search_textDb) $pers_buried_text=$search_textDb->text_text;
+			}
+
+			// *** Save all standard person texts ***
+			if ($pers_text OR $pers_name_text OR $pers_birth_text OR $pers_bapt_text OR $pers_death_text OR $pers_buried_text){
+				$first_item=true;
+				// *** Remark: no need to check for fam_tree_id because fam_id is used ***
+				$sql="UPDATE humo_persons SET ";
+					if ($pers_text){ $first_item=false; $sql.="pers_text='".safe_text_db($pers_text)."'"; }
+					if ($pers_name_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="pers_name_text='".safe_text_db($pers_name_text)."'";
+					}
+					if ($pers_birth_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="pers_birth_text='".safe_text_db($pers_birth_text)."'";
+					}
+					if ($pers_bapt_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="pers_bapt_text='".safe_text_db($pers_bapt_text)."'";
+					}
+					if ($pers_death_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="pers_death_text='".safe_text_db($pers_death_text)."'";
+					}
+					if ($pers_buried_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="pers_buried_text='".safe_text_db($pers_buried_text)."'";
+					}
+				$sql.=" WHERE pers_id='".$personDb->pers_id."'";
+//echo $sql.'<hr>';
+				$dbh->query($sql);
+
+				// *** Update progress ***
+				$total++;
+				echo '<script language="javascript">';
+				echo 'document.getElementById("information").innerHTML="'.$total.' '.__('lines processed').'";';
+				echo '</script>';
+				ob_flush();
+				flush(); // for IE
+
+				// *** Commit genealogical data every x records. CAN ONLY BE USED WITH InnoDB TABLES!! ***
+				if ($commit_records>1){
+					$commit_counter++;
+					if ($commit_counter>$humo_option["gedcom_read_commit_records"]){
+						$commit_counter=0;
+						// *** Save data in database ***
+						$dbh->commit();
+						// *** Start next process batch ***
+						$dbh->beginTransaction();
+					}
+				}
+			}
+
+
+		}
+
+		// *** End of InnoDB batch processing ***
+		if ($commit_records>1){
+			// *** Save data in database ***
+			$dbh->commit();
+			// *** Start next process batch ***
+			$dbh->beginTransaction();
+		}
+
+
+		// *** Process texts in family table ***
+		$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."'");
+		while ($famDb=$fam_qry->fetch(PDO::FETCH_OBJ)){
+
+			$fam_text=''; 
+			if (substr($famDb->fam_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($famDb->fam_text,1,-1));
+				if ($search_textDb) $fam_text=$search_textDb->text_text;
+			}
+
+			$fam_relation_text='';
+			if (substr($famDb->fam_relation_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($famDb->fam_relation_text,1,-1));
+				if ($search_textDb) $fam_relation_text=$search_textDb->text_text;
+			}
+
+			$fam_marr_notice_text='';
+			if (substr($famDb->fam_marr_notice_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($famDb->fam_marr_notice_text,1,-1));
+				if ($search_textDb) $fam_marr_notice_text=$search_textDb->text_text;
+			}
+
+			$fam_marr_text='';
+			if (substr($famDb->fam_marr_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($famDb->fam_marr_text,1,-1));
+				if ($search_textDb){
+					$fam_marr_text=$search_textDb->text_text;
+					// *** Search for all connected sources ***
+					$connect_order=0;
+					$connect_qry="SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'
+						AND connect_kind='ref_text' AND connect_sub_kind='ref_text_source'
+						AND connect_connect_id='".$search_textDb->text_gedcomnr."'
+						ORDER BY connect_order";
+					$connect_sql=$dbh->query($connect_qry);
+					while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+						// *** Add to connection table ***
+						$connect_order++;
+						$gebeurtsql="INSERT INTO humo_connections SET
+							connect_tree_id='".$tree_id."',
+							connect_order='".$connect_order."',
+							connect_kind='family',
+							connect_sub_kind='family_text',
+							connect_connect_id='".safe_text_db($famDb->fam_gedcomnumber)."',
+							connect_source_id='".safe_text_db($connectDb->connect_source_id)."'
+							";
+						$result=$dbh->query($gebeurtsql);
+					}
+				}
+			}
+
+			$fam_marr_church_notice_text='';
+			if (substr($famDb->fam_marr_church_notice_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($famDb->fam_marr_church_notice_text,1,-1));
+				if ($search_textDb) $fam_marr_church_notice_text=$search_textDb->text_text;
+			}
+
+			$fam_marr_church_text='';
+			if (substr($famDb->fam_marr_church_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($famDb->fam_marr_church_text,1,-1));
+				if ($search_textDb) $fam_marr_church_text=$search_textDb->text_text;
+			}
+
+			$fam_div_text='';
+			if (substr($famDb->fam_div_text, 0, 1)=='@'){
+				$search_textDb=$db_functions->get_text(substr($famDb->fam_div_text,1,-1));
+				if ($search_textDb) $fam_div_text=$search_textDb->text_text;
+			}
+
+			// *** Save all standard family texts ***
+			if ($fam_text OR $fam_relation_text OR $fam_marr_notice_text OR $fam_marr_text OR $fam_marr_church_notice_text
+				OR $fam_marr_church_text OR $fam_div_text){
+				$first_item=true;
+				// *** Remark: no need to check for fam_tree_id because fam_id is used ***
+				$sql="UPDATE humo_families SET ";
+					if ($fam_text){ $first_item=false; $sql.="fam_text='".safe_text_db($fam_text).'"'; }
+
+					if ($fam_relation_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="fam_relation_text='".safe_text_db($fam_relation_text)."'";
+					}
+
+					if ($fam_marr_notice_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="fam_marr_notice_text='".safe_text_db($fam_marr_notice_text)."'";
+					}
+
+					if ($fam_marr_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="fam_marr_text='".safe_text_db($fam_marr_text)."'";
+					}
+
+					if ($fam_marr_church_notice_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="fam_marr_church_notice_text='".safe_text_db($fam_marr_church_notice_text)."'";
+					}
+
+					if ($fam_marr_church_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="fam_marr_church_text='".safe_text_db($fam_marr_church_text)."'";
+					}
+
+					if ($fam_div_text){
+						if (!$first_item) $sql.=", ";
+						$first_item=false; $sql.="fam_div_text='".safe_text_db($fam_div_text)."'";
+					}
+
+				$sql.=" WHERE fam_id='".$famDb->fam_id."'";
+//echo $sql.'<hr>';
+				$dbh->query($sql);
+
+				// *** Update progress ***
+				$total++;
+				echo '<script language="javascript">';
+				echo 'document.getElementById("information").innerHTML="'.$total.' '.__('lines processed').'";';
+				echo '</script>';
+				ob_flush();
+				flush(); // for IE
+
+				// *** Commit genealogical data every x records. CAN ONLY BE USED WITH InnoDB TABLES!! ***
+				if ($commit_records>1){
+					$commit_counter++;
+					if ($commit_counter>$humo_option["gedcom_read_commit_records"]){
+						$commit_counter=0;
+						// *** Save data in database ***
+						$dbh->commit();
+						// *** Start next process batch ***
+						$dbh->beginTransaction();
+					}
+				}
+			}
+
+		}
+
+		// *** End of InnoDB batch processing ***
+		if ($commit_records>1){
+			// *** Save data in database ***
+			$dbh->commit();
+		}
+
+	}
+
+
 
 	// *** Process text by name etc. ***
+	echo '<br>&gt;&gt;&gt; '.__('Processing texts IN names...');
 	$person_qry=$dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname
 		FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
 	while ($personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
@@ -1474,7 +1761,7 @@ if (isset($_POST['step4'])){
 				$pers_firstname=substr($personDb->pers_firstname,0,$position).
 					$personDb->pers_name_text.substr($personDb->pers_firstname,$position+1);
 				$sql="UPDATE humo_persons
-					SET pers_firstname='".safe_text($pers_firstname)."', pers_name_text=''
+					SET pers_firstname='".safe_text_db($pers_firstname)."', pers_name_text=''
 					WHERE pers_id='".$personDb->pers_id."'";
 				$dbh->query($sql);
 			}
@@ -1497,7 +1784,7 @@ if (isset($_POST['step4'])){
 	if ($humo_option["gedcom_read_process_geo_location"]=='y' AND $res->rowCount()) {
 		// after import, and ONLY for people with a humo_location table for googlemaps, refresh the location_status fields
 		// first, make sure the location_status column exists. If not create it
-		echo '<br><br>>>> '.__('Updating location database...').'<br>';
+		echo '<br>&gt;&gt;&gt; '.__('Updating location database...');
 		$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
 		$exists = $result->rowCount();
 		if(!$exists) {
@@ -1570,7 +1857,6 @@ if (isset($_POST['step4'])){
 		echo '<br>&gt;&gt;&gt; '.__('Order children...');
 
 		$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children!=''");
-		//while ($famDb=$fam_qry->fetch()){
 		while ($famDb=$fam_qry->fetch(PDO::FETCH_OBJ)){  
 			$child_array=explode(";",$famDb->fam_children);
 			$nr_children = count($child_array);
@@ -1673,10 +1959,10 @@ if (isset($_POST['step4'])){
 
 	$tree_date=date("Y-m-d H:i");
 	$sql="UPDATE humo_trees SET
-	tree_persons='".$persons."',
-	tree_families='".$families."',
-	tree_date='".$tree_date."'
-	WHERE tree_prefix='".$_SESSION['tree_prefix']."'";
+		tree_persons='".$persons."',
+		tree_families='".$families."',
+		tree_date='".$tree_date."'
+		WHERE tree_prefix='".$_SESSION['tree_prefix']."'";
 	$dbh->query($sql);
 
 

@@ -272,9 +272,9 @@ else{
 
 // *** Search for (part of) first or lastname ***
 function name_qry($search_name, $search_part){
-	$text="LIKE '%".safe_text($search_name)."%'"; // *** Default value: "contains" ***
-	if ($search_part=='equals'){ $text="='".safe_text($search_name)."'"; }
-	if ($search_part=='starts_with'){ $text="LIKE '".safe_text($search_name)."%'"; }
+	$text="LIKE '%".safe_text_db($search_name)."%'"; // *** Default value: "contains" ***
+	if ($search_part=='equals'){ $text="='".safe_text_db($search_name)."'"; }
+	if ($search_part=='starts_with'){ $text="LIKE '".safe_text_db($search_name)."%'"; }
 	return $text;
 }
 
@@ -435,7 +435,7 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
 
-			echo '<br><br><input type="text" name="place_name" value="'.$place_name.'" size="15"><br>';
+			echo '<br><br><input type="text" name="place_name" value="'.safe_text_show($place_name).'" size="15"><br>';
 
 			echo '<br><input type="submit" value="'.__('Search').'" name="B1">';echo '</div>';
 			echo '</form>';
@@ -626,7 +626,7 @@ echo '<script type="text/javascript">
    	}
 </script>';
 //for testing only:
-//echo 'Query: '.$query." LIMIT ".safe_text($item).",".$nr_persons.'<br>';
+//echo 'Query: '.$query." LIMIT ".safe_text_db($item).",".$nr_persons.'<br>';
 //echo 'Count qry: '.$count_qry.'<br>';
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;

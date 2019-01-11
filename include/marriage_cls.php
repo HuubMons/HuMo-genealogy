@@ -227,6 +227,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
 		$templ_relation["wedd_text"]=process_text($marriageDb->fam_marr_text);
+
+		// *** Source by family text ***
+		$templ_relation["wedd_text"].=show_sources2("family","family_text",$marriageDb->fam_gedcomnumber);
+
 		$temp="wedd_text";
 		$temp_text.= $templ_relation["wedd_text"];
 	}

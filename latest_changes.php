@@ -41,8 +41,8 @@ if (isset($_POST["search_name"])){
 		FROM humo_persons
  		LEFT JOIN humo_events
  			ON pers_gedcomnumber=event_connect_id AND pers_tree_id=event_tree_id AND event_kind='name'
-		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($search_name)."%'
-			OR event_event LIKE '%".safe_text($search_name)."%')
+		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+			OR event_event LIKE '%".safe_text_db($search_name)."%')
 			AND pers_changed_date IS NOT NULL
 			AND pers_tree_id='".$tree_id."'
 		GROUP BY pers_id
@@ -53,8 +53,8 @@ if (isset($_POST["search_name"])){
 		FROM humo_persons
  		LEFT JOIN humo_events
  			ON pers_gedcomnumber=event_connect_id AND pers_tree_id=event_tree_id AND event_kind='name'
-		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($search_name)."%'
- 			OR event_event LIKE '%".safe_text($search_name)."%')
+		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+ 			OR event_event LIKE '%".safe_text_db($search_name)."%')
 			AND pers_changed_date IS NULL
 			AND pers_tree_id='".$tree_id."'
 		GROUP BY pers_id
@@ -75,8 +75,8 @@ if (isset($_POST["search_name"])){
 		FROM humo_persons
  		LEFT JOIN humo_events
  			ON pers_gedcomnumber=event_connect_id AND pers_tree_id=event_tree_id AND event_kind='name'
-		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($search_name)."%'
-			OR event_event LIKE '%".safe_text($search_name)."%')
+		WHERE (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+			OR event_event LIKE '%".safe_text_db($search_name)."%')
 			AND ((pers_changed_date IS NOT NULL AND pers_changed_date!='') OR (pers_new_date IS NOT NULL AND pers_new_date!=''))
 			AND pers_tree_id='".$tree_id."'
 		GROUP BY pers_id
@@ -103,7 +103,7 @@ echo '<h2 class="center">'.__('Recently changed and/or new persons').'</h2>';
 // *** Search box ***
 echo '<div style="text-align: center; margin-bottom: 16px">';
 echo '<form action="'.CMS_ROOTPATH.'latest_changes.php" method="post">';
-echo '<input type="text" name="search_name" id="part_of_name" value="'.$search_name.'">';
+echo '<input type="text" name="search_name" id="part_of_name" value="'.safe_text_show($search_name).'">';
 echo ' <input type="submit" value="'.__('Search').'">';
 echo '</form>';
 echo '</div>';

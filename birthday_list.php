@@ -21,7 +21,20 @@ if ($user["group_birthday_list"]!='j'){
 
 // *** Month to show ***
 if (isset($_GET['month']) AND strlen($_GET['month'])=='3' ){
-	$month = $_GET['month'];
+	$month_check = $_GET['month'];
+	$month='jan';
+	if ($month_check=='jan') $month='jan';
+	if ($month_check=='feb') $month='feb';
+	if ($month_check=='mar') $month='mar';
+	if ($month_check=='apr') $month='apr';
+	if ($month_check=='may') $month='may';
+	if ($month_check=='jun') $month='jun';
+	if ($month_check=='jul') $month='jul';
+	if ($month_check=='aug') $month='aug';
+	if ($month_check=='sep') $month='sep';
+	if ($month_check=='oct') $month='oct';
+	if ($month_check=='nov') $month='nov';
+	if ($month_check=='dec') $month='dec';
 }
 else{
 	$month = date ("M");
@@ -33,7 +46,7 @@ $today = date('j').' '.date('M');
 $today=strtolower($today);
 $year = date("Y");
 
-$url_start='<a href="'.$_SERVER['PHP_SELF'].'?month=';
+$url_start='<a href="'.CMS_ROOTPATH.'birthday_list.php?month=';
 $spacer='&nbsp;&#124;&nbsp;';
 $newline ="\n";
 $max_age = '110';
@@ -65,11 +78,11 @@ echo "<div class='standard_header'>".ucfirst(language_date($month))." ".$year."<
 echo '<table class="humo" align="center">';
 
 echo '<tr class=table_headline>'.$newline;
-// *** Show headers ***
-echo '<th>'.__('Day')."</h></td>\n";
-echo '<th>'.ucfirst(__('born'))."</th>\n";
-echo '<th>'.__('Name')."</th>\n";
-echo '<th>'.ucfirst(__('died'))."</th>\n";
+	// *** Show headers ***
+	echo '<th>'.__('Day')."</h></td>\n";
+	echo '<th>'.ucfirst(__('born'))."</th>\n";
+	echo '<th>'.__('Name')."</th>\n";
+	echo '<th>'.ucfirst(__('died'))."</th>\n";
 echo "</tr>\n";
 
 // *** Build query ***

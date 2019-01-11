@@ -154,7 +154,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])){
 		// *** Save failed login into log! ***
 		$sql="INSERT INTO humo_user_log SET
 			log_date='".date("Y-m-d H:i")."',
-			log_username='".safe_text($_POST["username"])."',
+			log_username='".safe_text_db($_POST["username"])."',
 			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
 			log_user_admin='user',
 			log_status='failed'";
@@ -258,7 +258,7 @@ if (isset($screen_mode) AND ($screen_mode=='PDF' OR $screen_mode=="ASPDF")){
 	require(CMS_ROOTPATH.'include/fpdf16/fpdf.php');
 	require(CMS_ROOTPATH.'include/fpdf16/fpdfextend.php');
 	// *** Set variabele for queries ***
-	$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
+	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 }
 else{
 	// *** Save family-favourite in cookie ***
@@ -297,7 +297,7 @@ else{
 			setcookie("humogen_showdesc", "0", time()+60*60*24*365); // set cookie to "0"
 			// we don't delete the cookie but set it to "O" for the sake of those who want to make the default "ON" ($showdesc="1")
 		}
-	}	
+	}
 
 	if (!CMS_SPECIFIC){
 		// *** Generate header of HTML pages ***
@@ -443,13 +443,15 @@ else{
 	// *** Family tree choice ***
 	global $database;
 	$database='';
-	if (isset($urlpart[0]) AND $urlpart[0]!='standaard'){ $database=$urlpart[0]; } // *** url_rewrite ***
-	if (isset($_GET["database"])){ $database=$_GET["database"]; }
-	if (isset($_POST["database"])){ $database=$_POST["database"]; }
+	if (isset($urlpart[0]) AND $urlpart[0]!='standaard') $database=$urlpart[0]; // *** url_rewrite ***
+	if (isset($_GET["database"])) $database=$_GET["database"];
+	if (isset($_POST["database"])) $database=$_POST["database"];
 	if (isset($database) AND $database){
 		// *** Check if family tree really exists ***
 		$dataDb=$db_functions->get_tree($database);
-		if ($database==$dataDb->tree_prefix) $_SESSION['tree_prefix']=$database;
+		if ($dataDb){
+			if ($database==$dataDb->tree_prefix) $_SESSION['tree_prefix']=$database;
+		}
 	}
 	// *** No family tree selected yet ***
 	if (!isset($_SESSION["tree_prefix"]) OR $_SESSION['tree_prefix']=='' ){
@@ -485,7 +487,7 @@ else{
 	}
 
 	// *** Set variabele for queries ***
-	$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
+	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 
 	/*
 	// *****************************************************************

@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-if (isset($_POST['tree'])){ $tree=safe_text($_POST["tree"]); }
+if (isset($_POST['tree'])){ $tree=safe_text_db($_POST["tree"]); }
 
 echo '<h1 align=center>'.__('User notes').'</h1>';
 
@@ -23,7 +23,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 		//	echo '<input type="hidden" name="flag_newtree" value=\'0\'>';
 		//	$onchange = ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ';
 		//}
-		echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+		echo '<form method="POST" action="index.php">';
 		echo '<input type="hidden" name="page" value="user_notes">';
 		echo '<select '.$onchange.' size="1" name="tree">';
 			while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
@@ -68,7 +68,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 		if ($_POST['note_status']=='remove'){
 			echo '<div class="confirm">';
 				echo __('Are you sure you want to remove this user note?');
-			echo ' <form method="post" action="'.$_SERVER['PHP_SELF'].'" style="display : inline;">';
+			echo ' <form method="post" action="index.php" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="user_notes">';
 			echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
 			echo '<input type="hidden" name="note_id" value="'.$_POST['note_id'].'">';
@@ -83,7 +83,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 	if (isset($_POST['note_remove'])){
 		echo '<div class="confirm">';
 			// *** Delete source ***
-			$sql="DELETE FROM humo_user_notes WHERE note_id='".safe_text($_POST["note_id"])."'";
+			$sql="DELETE FROM humo_user_notes WHERE note_id='".safe_text_db($_POST["note_id"])."'";
 			$result=$dbh->query($sql);
 
 			echo __('User note is removed.');
@@ -114,7 +114,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 
 			echo '<tr class="humo_color"><td>';
 				// *** Select status of message ***
-				echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+				echo '<form method="POST" action="index.php">';
 				echo '<input type="hidden" name="page" value="user_notes">';
 				echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
 				echo '<input type="hidden" name="note_id" value="'.$noteDb->note_id.'">';

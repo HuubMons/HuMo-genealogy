@@ -7,7 +7,7 @@ HuMo-gen genealogical program
 *** Manual  ***
 ***************
 
-The manual/ wiki can be found at the HuMo-gen websites.
+The manual can be found at the HuMo-gen websites.
 
 www.humo-gen.com (dutch/ english)
 www.humogen.com (international)

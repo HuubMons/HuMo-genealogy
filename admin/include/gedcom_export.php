@@ -410,7 +410,7 @@ function ancestors($person_id,$max_generations) {
 	}	// loop ancestors function
 }
 
-if (isset($_POST['tree'])){ $tree=safe_text($_POST["tree"]); }
+if (isset($_POST['tree'])){ $tree=safe_text_db($_POST["tree"]); }
 
 @set_time_limit(3000);
 
@@ -432,7 +432,7 @@ if (CMS_SPECIFIC=='Joomla'){
 	echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=export" style="display : inline;">';
 }
 else {
-	echo '<form method="POST" id="aform" action="'.$_SERVER['PHP_SELF'].'" style="display : inline;">';
+	echo '<form method="POST" id="aform" action="index.php" style="display : inline;">';
 }
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<table class="humo">';
@@ -478,7 +478,7 @@ echo '<td>';
 		$search_quicksearch='';
 		$search_id='';
 		if (isset($_POST["search_quicksearch"])){
-			$search_quicksearch=safe_text($_POST['search_quicksearch']);
+			$search_quicksearch=safe_text_db($_POST['search_quicksearch']);
 			$_SESSION['admin_search_quicksearch']=$search_quicksearch;
 			$_SESSION['admin_search_id']='';
 			$search_id='';
@@ -488,7 +488,7 @@ echo '<td>';
 
 		if (isset($_POST["search_id"]) AND (!isset($_POST["search_quicksearch"]) OR $_POST["search_quicksearch"]=='')){
 			// if both name and ID given go by name
-			$search_id=safe_text($_POST['search_id']);
+			$search_id=safe_text_db($_POST['search_id']);
 			$_SESSION['admin_search_id']=$search_id;
 			$_SESSION['admin_search_quicksearch']='';
 			$search_quicksearch='';
@@ -1509,8 +1509,8 @@ if ($gedcom_sources=='yes'){
 	/*
 	repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
 	repo_date='".$editor_cls->date_process('repo_date')."',
-	repo_mail='".safe_text($_POST['repo_mail'])."',
-	repo_url='".safe_text($_POST['repo_url'])."',
+	repo_mail='".safe_text_db($_POST['repo_mail'])."',
+	repo_url='".safe_text_db($_POST['repo_url'])."',
 	*/
 	// *** Repository data ***
 	$repo_qry=$dbh->query("SELECT * FROM humo_repositories
@@ -1668,7 +1668,7 @@ if (CMS_SPECIFIC=='Joomla'){
 	echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=export">';
 }
 else {
-	echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+	echo '<form method="POST" action="index.php">';
 }
 
 echo ' <input type="Submit" name="remove_gedcom" value="'.__('Remove gedcom file').'">';

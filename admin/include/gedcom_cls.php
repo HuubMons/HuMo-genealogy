@@ -399,7 +399,8 @@ function process_person($person_array){
 
 			// *** BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
 			// *** Users can change nickname for BK in language file! ***
-			if ($buffer6=='2 NICK'){ $process_event=true; }
+			// UPDATE 23-12-2017: 2 NICK will now be processed as callname!
+			//if ($buffer6=='2 NICK'){ $process_event=true; }
 
 			// *** PG: 2 _ALIA ***
 			if ($buffer7=='2 _ALIA'){ $process_event=true; }
@@ -484,6 +485,18 @@ function process_person($person_array){
 		if ($buffer6=='1 ALIA'){
 			$processed=1;
 			$buffer = str_replace("/", "", $buffer);  // *** Remove / from alias: 1 ALIA Frederik Hektor /McLean/ ***
+			if ($pers_callname){
+				$pers_callname=$pers_callname.", ".substr($buffer, 7);
+			}
+			else {
+				$pers_callname=substr($buffer,7);
+			}
+			$pers_callname=rtrim($pers_callname);
+		}
+
+		// *** HuMo-gen (roepnaam), BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
+		if ($buffer6=='2 NICK'){
+			$processed=1;
 			if ($pers_callname){
 				$pers_callname=$pers_callname.", ".substr($buffer, 7);
 			}
@@ -2867,12 +2880,15 @@ function process_text($text_array){
 	global $dbh, $tree_id, $not_processed, $gen_program;
 	global $largest_pers_ged, $largest_fam_ged, $largest_source_ged, $largest_text_ged, $largest_repo_ged, $largest_address_ged;
 	global $add_tree, $reassign;
+	global $connect_nr, $connect;
 	$line=$text_array;
 	$line2=explode("\n",$line);
 	$buffer=$line2[0];
 	$text['text_text']='';
 	$text["text_unprocessed_tags"]="";
 	$text["new_date"]=''; $text["new_time"]=''; $text["changed_date"]=''; $text["changed_time"]='';
+	// *** For source connect table ***
+	$connect_nr=0;
 
 	// *** Strpos: we can search for the character, ignoring anything before the offset ***
 	$second_char=strpos($buffer, '@', 3);
@@ -2923,8 +2939,28 @@ function process_text($text_array){
 		// *** Save level4 ***
 		elseif ($buffer1=='4'){ $level4=substr($buffer,2,4); }
 
-		if ($level1=='CONC'){ $processed=1; $text['text_text'].=substr($buffer,7); }
-		if ($level1=='CONT'){ $processed=1; $text['text_text'].="\n".substr($buffer,7); }
+		if ($level1=='CONC'){
+			if (substr($buffer,2,4)=='CONC'){
+				$processed=1; $text['text_text'].=substr($buffer,7);
+			}
+		}
+		if ($level1=='CONT'){
+			if (substr($buffer,2,4)=='CONT'){
+				$processed=1; $text['text_text'].="\n".substr($buffer,7);
+			}
+		}
+
+		// *** Reunion program: source by text ***
+		/*	0 @N23@ NOTE
+			1 CONT text
+			2 SOUR @S16@
+			2 SOUR @S16@
+			2 SOUR @S20@
+		*/
+		if ($level2=='SOUR'){
+			//echo $buffer.'<br>';
+			$this->process_sources('ref_text','ref_text_source',$text['text_gedcomnr'],$buffer,'2');
+		}
 
 		// *** New date/ time ***
 		//1 _NEW
@@ -2979,6 +3015,45 @@ function process_text($text_array){
 		text_changed_time='".$text['changed_time']."'
 		";
 	$result=$dbh->query($sql);
+
+	// *** Save connections in seperate table (source connected to text) ***
+	if ($connect_nr>0){
+		$connect_order=0;
+		$check_connect=$connect['kind']['1'].$connect['sub_kind']['1'].$connect['connect_id']['1'];
+		for ($i=1; $i<=$connect_nr; $i++){
+			$connect_order++;
+			if ( $check_connect!=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i] ){
+				$connect_order=1;
+				$check_connect=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i];
+			}
+// NAZIEN!!!!!!!
+			//if($add_tree==true OR $reassign==true) { $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N');  }
+			$connect['text'][$i]=$text['text_gedcomnr'];
+
+			$gebeurtsql="INSERT INTO humo_connections SET
+				connect_tree_id='".$tree_id."',
+				connect_order='".$connect_order."',
+				connect_kind='".$connect['kind'][$i]."',
+				connect_sub_kind='".$connect['sub_kind'][$i]."',
+				connect_connect_id='".$this->text_process($connect['connect_id'][$i])."',
+				connect_source_id='".$this->text_process($connect['source_id'][$i])."',
+				connect_item_id='".$this->text_process($connect['item_id'][$i])."',
+				connect_text='".$this->text_process($connect['text'][$i])."',
+				connect_page='".$this->text_process($connect['page'][$i])."',
+				connect_role='".$this->text_process($connect['role'][$i])."',
+				connect_date='".$this->process_date($this->text_process($connect['date'][$i]))."',
+				connect_place='".$this->text_process($connect['place'][$i])."'
+				";
+			//echo $check_connect.' !! '.$gebeurtsql.'<br>';
+			$result=$dbh->query($gebeurtsql);
+		}
+
+		// *** Reset array to free memory ***
+		//echo '<br>====>>>>'.memory_get_usage().' RESET ';
+		unset ($event);
+		//$connect=null;
+		//echo ' '.memory_get_usage().'@ ';
+	}
 
 	$text_id=$dbh->lastInsertId();
 
@@ -3872,7 +3947,7 @@ function text_process($text,$long_text=false){
 	//if ($long_text==true){
 	//	$text = str_replace("\r\n", "\n", $text);
 	//}
-	//$text=safe_text($text);
+	//$text=safe_text_db($text);
 	//return $text;
 
 	$return_text = $dbh->quote($text); 

@@ -33,8 +33,8 @@ include_once(CMS_ROOTPATH."include/show_picture.php");
 
 // *** Photo search ***
 $photo_name='';
-if (isset($_POST['photo_name'])){ $photo_name=safe_text($_POST['photo_name']); }
-if (isset($_GET['photo_name'])){ $photo_name=safe_text($_GET['photo_name']); }
+if (isset($_POST['photo_name'])){ $photo_name=safe_text_db($_POST['photo_name']); }
+if (isset($_GET['photo_name'])){ $photo_name=safe_text_db($_GET['photo_name']); }
 
 $tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 

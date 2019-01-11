@@ -48,7 +48,7 @@ echo '<div id="mainmenu_centerbox">';
 		}
 		
 		// *** Show page ***
-		$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='".safe_text($select_page)."' AND page_status!=''");
+		$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_id='".safe_text_db($select_page)."' AND page_status!=''");
 		$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
 		echo $cms_pagesDb->page_text;
 

@@ -232,7 +232,7 @@ if (isset($_GET["index_list"])) $index_list=$_GET['index_list'];
 if ($index_list!='search' AND $index_list!='quicksearch') unset ($_SESSION["save_search_database"]);
 
 // *** Save selected "search" family tree (can be used to erase search values if tree is changed) ***
-$_SESSION["save_search_tree_prefix"]=safe_text($_SESSION['tree_prefix']);
+$_SESSION["save_search_tree_prefix"]=safe_text_db($_SESSION['tree_prefix']);
 
 //************* SORT CHOICES *********************
 
@@ -649,9 +649,9 @@ if ($index_list=='places'){
 
 // *** Search for (part of) first or lastname ***
 function name_qry($search_name, $search_part){
-	$text="LIKE '%".safe_text($search_name)."%'"; // *** Default value: "contains" ***
-	if ($search_part=='equals'){ $text="='".safe_text($search_name)."'"; }
-	if ($search_part=='starts_with'){ $text="LIKE '".safe_text($search_name)."%'"; }
+	$text="LIKE '%".safe_text_db($search_name)."%'"; // *** Default value: "contains" ***
+	if ($search_part=='equals'){ $text="='".safe_text_db($search_name)."'"; }
+	if ($search_part=='starts_with'){ $text="LIKE '".safe_text_db($search_name)."%'"; }
 	return $text;
 }
 
@@ -695,10 +695,10 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	}
 	elseif ($selection['pers_prefix']){
 		//$query.=$and."pers_prefix='".$selection['pers_prefix']."'"; $and=" AND ";
-		//$query.=$and."pers_prefix='".safe_text( str_replace(' ', '_', $selection['pers_prefix']) )."'"; $and=" AND ";
+		//$query.=$and."pers_prefix='".safe_text_db( str_replace(' ', '_', $selection['pers_prefix']) )."'"; $and=" AND ";
 
 		// *** Search results for: "van", "van " and "van_" ***
-		$pers_prefix=safe_text( str_replace(' ', '_', $selection['pers_prefix']));
+		$pers_prefix=safe_text_db( str_replace(' ', '_', $selection['pers_prefix']));
 		//$query.=$and."(pers_prefix='".$pers_prefix."' OR SUBSTRING(pers_prefix,-1) ='".$pers_prefix."')"; $and=" AND ";
 		$query.=$and."(pers_prefix='".$pers_prefix."' OR pers_prefix ='".$pers_prefix.'_'."')"; $and=" AND ";
 	}
@@ -728,33 +728,33 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 
 	if ($selection['birth_year']){
 		if (!$selection['birth_year_end']){   // filled in one year: exact date
-			//$query.=$and."pers_birth_date LIKE '%".safe_text($selection['birth_year'])."%'"; $and=" AND ";
+			//$query.=$and."pers_birth_date LIKE '%".safe_text_db($selection['birth_year'])."%'"; $and=" AND ";
 
 			// *** Also search for baptise ***
-			$query.=$and."(pers_birth_date LIKE '%".safe_text($selection['birth_year'])."%'"; $and=" AND ";
-			$query.=" OR pers_bapt_date LIKE '%".safe_text($selection['birth_year'])."%')"; $and=" AND ";
+			$query.=$and."(pers_birth_date LIKE '%".safe_text_db($selection['birth_year'])."%'"; $and=" AND ";
+			$query.=" OR pers_bapt_date LIKE '%".safe_text_db($selection['birth_year'])."%')"; $and=" AND ";
 		} else{
-			//$query.=$and."RIGHT(pers_birth_date, 4)>='".safe_text($selection['birth_year'])."' AND RIGHT(pers_birth_date, 4)<='".safe_text($selection['birth_year_end'])."'"; $and=" AND ";
+			//$query.=$and."RIGHT(pers_birth_date, 4)>='".safe_text_db($selection['birth_year'])."' AND RIGHT(pers_birth_date, 4)<='".safe_text_db($selection['birth_year_end'])."'"; $and=" AND ";
 
 			// *** Also search for baptise ***
-			$query.=$and."(RIGHT(pers_birth_date, 4)>='".safe_text($selection['birth_year'])."' AND RIGHT(pers_birth_date, 4)<='".safe_text($selection['birth_year_end'])."'"; $and=" AND ";
-			$query.=" OR RIGHT(pers_bapt_date, 4)>='".safe_text($selection['birth_year'])."' AND RIGHT(pers_bapt_date, 4)<='".safe_text($selection['birth_year_end'])."')"; $and=" AND ";
+			$query.=$and."(RIGHT(pers_birth_date, 4)>='".safe_text_db($selection['birth_year'])."' AND RIGHT(pers_birth_date, 4)<='".safe_text_db($selection['birth_year_end'])."'"; $and=" AND ";
+			$query.=" OR RIGHT(pers_bapt_date, 4)>='".safe_text_db($selection['birth_year'])."' AND RIGHT(pers_bapt_date, 4)<='".safe_text_db($selection['birth_year_end'])."')"; $and=" AND ";
 		}
 	}
 
 	if ($selection['death_year']){
 		if (!$selection['death_year_end']){      // filled in one year: exact date
-			//$query.=$and."pers_death_date LIKE '%".safe_text($selection['death_year'])."%'"; $and=" AND ";
+			//$query.=$and."pers_death_date LIKE '%".safe_text_db($selection['death_year'])."%'"; $and=" AND ";
 
 			// ** Also search for buried date ***
-			$query.=$and."(pers_death_date LIKE '%".safe_text($selection['death_year'])."%'"; $and=" AND ";
-			$query.="OR pers_buried_date LIKE '%".safe_text($selection['death_year'])."%')"; $and=" AND ";
+			$query.=$and."(pers_death_date LIKE '%".safe_text_db($selection['death_year'])."%'"; $and=" AND ";
+			$query.="OR pers_buried_date LIKE '%".safe_text_db($selection['death_year'])."%')"; $and=" AND ";
 		} else {
-			//$query.=$and."RIGHT(pers_death_date, 4)>='".safe_text($selection['death_year'])."' AND RIGHT(pers_death_date, 4)<='".safe_text($selection['death_year_end'])."'"; $and=" AND ";
+			//$query.=$and."RIGHT(pers_death_date, 4)>='".safe_text_db($selection['death_year'])."' AND RIGHT(pers_death_date, 4)<='".safe_text_db($selection['death_year_end'])."'"; $and=" AND ";
 
 			// ** Also search for buried date ***
-			$query.=$and."(RIGHT(pers_death_date, 4)>='".safe_text($selection['death_year'])."' AND RIGHT(pers_death_date, 4)<='".safe_text($selection['death_year_end'])."'"; $and=" AND ";
-			$query.=" OR RIGHT(pers_buried_date, 4)>='".safe_text($selection['death_year'])."' AND RIGHT(pers_buried_date, 4)<='".safe_text($selection['death_year_end'])."')"; $and=" AND ";
+			$query.=$and."(RIGHT(pers_death_date, 4)>='".safe_text_db($selection['death_year'])."' AND RIGHT(pers_death_date, 4)<='".safe_text_db($selection['death_year_end'])."'"; $and=" AND ";
+			$query.=" OR RIGHT(pers_buried_date, 4)>='".safe_text_db($selection['death_year'])."' AND RIGHT(pers_buried_date, 4)<='".safe_text_db($selection['death_year_end'])."')"; $and=" AND ";
 		}
 	}
 
@@ -821,7 +821,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$counter=0;
 		$multi_tree='';
 		foreach($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") AS $datapdo) {
-			if($search_database=="all_but_this" AND $datapdo['tree_prefix']==safe_text($_SESSION['tree_prefix'])) {
+			if($search_database=="all_but_this" AND $datapdo['tree_prefix']==safe_text_db($_SESSION['tree_prefix'])) {
 				continue;
 			}
 
@@ -945,7 +945,7 @@ if ($index_list=='quicksearch'){
 		$counter=0;
 		$multi_tree='';
 		foreach($dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order") as $pdoresult) {
-			if($search_database=="all_but_this" AND $pdoresult['tree_prefix']==safe_text($_SESSION['tree_prefix'])) {
+			if($search_database=="all_but_this" AND $pdoresult['tree_prefix']==safe_text_db($_SESSION['tree_prefix'])) {
 				continue;
 			}
 			// *** Check if family tree is shown or hidden for user group ***
@@ -979,14 +979,14 @@ if ($index_list=='quicksearch'){
 	LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
 	WHERE (".$multi_tree.")
 		AND 
-		( CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text($quicksearch)."%'
-		OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text($quicksearch)."%' 
-		OR CONCAT(pers_patronym,pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
-		OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text($quicksearch)."%'
-		OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($quicksearch)."%'
-		OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text($quicksearch)."%' 
-		OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
-		OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text($quicksearch)."%'
+		( CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
+		OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text_db($quicksearch)."%' 
+		OR CONCAT(pers_patronym,pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
+		OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text_db($quicksearch)."%'
+		OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
+		OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($quicksearch)."%' 
+		OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
+		OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($quicksearch)."%'
 		)
 	GROUP BY pers_id";
 	*/
@@ -1004,14 +1004,14 @@ if ($index_list=='quicksearch'){
 		LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
 		WHERE (".$multi_tree.")
 			AND 
-			( CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text($quicksearch)."%'
-			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(pers_patronym,pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text($quicksearch)."%'
-			OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($quicksearch)."%'
-			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text($quicksearch)."%'
+			( CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
+			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text_db($quicksearch)."%'
+			OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
+			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($quicksearch)."%'
 			)
 		GROUP BY pers_id
 	) as humo_persons1
@@ -1030,14 +1030,14 @@ if ($index_list=='quicksearch'){
 		LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
 		WHERE (".$multi_tree.")
 			AND 
-			( CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text($quicksearch)."%'
-			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(pers_patronym,pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text($quicksearch)."%'
-			OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text($quicksearch)."%'
-			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text($quicksearch)."%' 
-			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text($quicksearch)."%'
+			( CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
+			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text_db($quicksearch)."%'
+			OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
+			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($quicksearch)."%'
 			)
 		GROUP BY pers_id, event_event, event_kind
 	) as humo_persons1
@@ -1251,7 +1251,7 @@ if ($index_list=='patronym'){
 
 	// *** Show error message if search in multiple trees is going wrong (nr of fields is different in some tables) ***
 	// $person_result2=mysql_query($query,$db) or die("FAULT : " . mysql_error());
-	// $person_result=mysql_query($query." LIMIT ".safe_text($item).",".$nr_persons,$db) or die("FAULT : " . mysql_error());
+	// $person_result=mysql_query($query." LIMIT ".safe_text_db($item).",".$nr_persons,$db) or die("FAULT : " . mysql_error());
 
 	if (CMS_SPECIFIC=='Joomla'){
 		$list_var  = 'index.php?option=com_humo-gen&amp;task=list';  // for use without query string
@@ -1301,13 +1301,13 @@ if ($index_list=='patronym'){
 		echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 		echo '</select>';
 
-		echo '<br><br><input type="text" name="place_name" value="'.$place_name.'" size="15"><br>';
+		echo '<br><br><input type="text" name="place_name" value="'.safe_text_show($place_name).'" size="15"><br>';
 
 		echo '<input type="hidden" name="index_list" value="'.$index_list.'">';
 		echo '<br><input type="submit" value="'.__('Search').'" name="B1">';echo '</div>';
 		echo '</form>';
 
-		//***************** end search of places **********************************		
+		//***************** end search of places **********************************
 	}
 
 	// *** Search fields ***
@@ -1331,12 +1331,12 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_firstname']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="pers_firstname" value="'.$selection['pers_firstname'].'" size="15" placeholder="'.__('First name').'"></td>';
+			echo ' <input type="text" name="pers_firstname" value="'.safe_text_show($selection['pers_firstname']).'" size="15" placeholder="'.__('First name').'"></td>';
 			if($humo_option['one_name_study']!='y') {
 				echo '<td align="right" class="no_border">'.__('Last name').':';
 				// *** Lastname prefix ***
 				$pers_prefix=$selection['pers_prefix']; if ($pers_prefix=='EMPTY') $pers_prefix='';
-				echo ' <input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="8" placeholder="'.ucfirst(__('prefix')).'">';
+				echo ' <input type="text" name="pers_prefix" value="'.safe_text_show($pers_prefix).'" size="8" placeholder="'.ucfirst(__('prefix')).'">';
 				// *** Lastname ***
 				echo ' <select size="1" name="part_lastname">';
 				echo '<option value="contains">'.__('Contains').'</option>';
@@ -1345,13 +1345,13 @@ if ($index_list=='patronym'){
 				$select_item=''; if ($selection['part_lastname']=='starts_with'){ $select_item=' selected'; }
 				echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 				echo '</select>';
-				echo ' <input type="text" name="pers_lastname" value="'.$selection['pers_lastname'].'" size="15" placeholder="'.__('Last name').'"></td>';
+				echo ' <input type="text" name="pers_lastname" value="'.safe_text_show($selection['pers_lastname']).'" size="15" placeholder="'.__('Last name').'"></td>';
 			}
 			else {
 				echo '<td align="center" class="no_border">'.__('Last name').':';
 				echo '<span style="text-align:center;font-weight:bold">'.$humo_option['one_name_thename'].'</span>';
 				echo '<input type="hidden" name="pers_lastname" value="'.$humo_option['one_name_thename'].'">';
-				echo '<input type="hidden" name="part_lastname" value="equals">';					
+				echo '<input type="hidden" name="part_lastname" value="equals">';
 			}
 			// *** Profession ***
 			echo '<td align="right" class="no_border">'.__('Profession').':';
@@ -1362,7 +1362,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_profession']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="pers_profession" value="'.$selection['pers_profession'].'" size="15" placeholder="'.__('Profession').'"></td>';
+			echo ' <input type="text" name="pers_profession" value="'.safe_text_show($selection['pers_profession']).'" size="15" placeholder="'.__('Profession').'"></td>';
 
 			echo '</tr>';
 
@@ -1378,7 +1378,8 @@ if ($index_list=='patronym'){
 			echo '<input type="hidden" name="index_list" value="quicksearch">';
 			$quicksearch='';
 			if (isset($_POST['quicksearch'])){
-				$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
+				//$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
+				$quicksearch=safe_text_show($_POST['quicksearch']);
 				$_SESSION["save_quicksearch"]=$quicksearch;
 			}
 			if (isset($_SESSION["save_quicksearch"])){ $quicksearch=$_SESSION["save_quicksearch"]; }
@@ -1391,9 +1392,9 @@ if ($index_list=='patronym'){
 		if ($adv_search==true){
 			//echo '<tr><td align="right" class="no_border">'.__('Year (or period) of birth:');
 			echo '<tr><td align="right" class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':';
-			echo ' <input type="text" name="birth_year" value="'.$selection['birth_year'].'" size="4" placeholder="'.__('Date').'">';
+			echo ' <input type="text" name="birth_year" value="'.safe_text_show($selection['birth_year']).'" size="4" placeholder="'.__('Date').'">';
 			echo '&nbsp;&nbsp;('.__('till:').'&nbsp;';
-			echo '<input type="text" name="birth_year_end" value="'.$selection['birth_year_end'].'" size="4" placeholder="'.__('Date').'">&nbsp;)</td>';
+			echo '<input type="text" name="birth_year_end" value="'.safe_text_show($selection['birth_year_end']).'" size="4" placeholder="'.__('Date').'">&nbsp;)</td>';
 
 			//echo '<td align="right" class="no_border">'.__('Place of birth').':';
 			echo '<td align="right" class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':';
@@ -1404,7 +1405,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_birth_place']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="birth_place" value="'.$selection['birth_place'].'" size="15" placeholder="'.__('Place').'"></td>';
+			echo ' <input type="text" name="birth_place" value="'.safe_text_show($selection['birth_place']).'" size="15" placeholder="'.__('Place').'"></td>';
 
 			echo '<td align="right" class="no_border">'.__('Own code').':';
 			echo ' <select size="1" name="part_own_code">';
@@ -1414,15 +1415,15 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_own_code']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="own_code" value="'.$selection['own_code'].'" size="15" placeholder="'.__('Own code').'">';
+			echo ' <input type="text" name="own_code" value="'.safe_text_show($selection['own_code']).'" size="15" placeholder="'.__('Own code').'">';
 			echo '</td>';
 
 			echo '</tr>';
 			//echo '<tr><td align="right" class="no_border">'.__('Year (or period) of death:');
 			echo '<tr><td align="right" class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':';
-			echo ' <input type="text" name="death_year" value="'.$selection['death_year'].'" size="4" placeholder="'.__('Date').'">';
+			echo ' <input type="text" name="death_year" value="'.safe_text_show($selection['death_year']).'" size="4" placeholder="'.__('Date').'">';
 			echo '&nbsp;&nbsp;('.__('till:').'&nbsp;';
-			echo '<input type="text" name="death_year_end" value="'.$selection['death_year_end'].'" size="4" placeholder="'.__('Date').'">&nbsp;)</td>';
+			echo '<input type="text" name="death_year_end" value="'.safe_text_show($selection['death_year_end']).'" size="4" placeholder="'.__('Date').'">&nbsp;)</td>';
 
 			//echo '<td align="right" class="no_border">'.__('Place of death').':';
 			echo '<td align="right" class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':';
@@ -1433,7 +1434,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_death_place']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="death_place" value="'.$selection['death_place'].'" size="15" placeholder="'.__('Place').'"></td>';
+			echo ' <input type="text" name="death_place" value="'.safe_text_show($selection['death_place']).'" size="15" placeholder="'.__('Place').'"></td>';
 
 			// *** Text ***
 			echo '<td align="right" class="no_border">'.__('Text').':';
@@ -1444,7 +1445,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_text']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="text" value="'.$selection['text'].'" size="15" placeholder="'.__('Text by person').'">';
+			echo ' <input type="text" name="text" value="'.safe_text_show($selection['text']).'" size="15" placeholder="'.__('Text by person').'">';
 			echo '</td>';
 
 			echo '</tr>';
@@ -1469,7 +1470,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_place']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="pers_place" value="'.$selection['pers_place'].'" size="15" placeholder="'.__('Place').'"></td>';
+			echo ' <input type="text" name="pers_place" value="'.safe_text_show($selection['pers_place']).'" size="15" placeholder="'.__('Place').'"></td>';
 
 			// *** Zip code ***
 			echo '<td align="right" class="no_border">'.__('Zip code').':';
@@ -1480,7 +1481,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_zip_code']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="zip_code" value="'.$selection['zip_code'].'" size="15" placeholder="'.__('Zip code').'">';
+			echo ' <input type="text" name="zip_code" value="'.safe_text_show($selection['zip_code']).'" size="15" placeholder="'.__('Zip code').'">';
 			echo '</td>';
 
 			echo '</tr>';
@@ -1493,7 +1494,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_spouse_firstname']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="spouse_firstname" value="'.$selection['spouse_firstname'].'" size="15" placeholder="'.__('First name').'"></td>';
+			echo ' <input type="text" name="spouse_firstname" value="'.safe_text_show($selection['spouse_firstname']).'" size="15" placeholder="'.__('First name').'"></td>';
 
 			echo '<td align="right" class="no_border">'.__('Partner lastname').':';
 			echo ' <select size="1" name="part_spouse_lastname">';
@@ -1503,7 +1504,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_spouse_lastname']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="spouse_lastname" value="'.$selection['spouse_lastname'].'" size="15" placeholder="'.__('Last name').'"></td>';
+			echo ' <input type="text" name="spouse_lastname" value="'.safe_text_show($selection['spouse_lastname']).'" size="15" placeholder="'.__('Last name').'"></td>';
 
 			// *** Witness ***
 			echo '<td align="right" class="no_border">'.ucfirst(__('witness')).':';
@@ -1514,7 +1515,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_witness']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="witness" value="'.$selection['witness'].'" size="15" placeholder="'.ucfirst(__('witness')).'">';
+			echo ' <input type="text" name="witness" value="'.safe_text_show($selection['witness']).'" size="15" placeholder="'.ucfirst(__('witness')).'">';
 			echo '</td>';
 			echo '</tr>';
 			echo '<tr>';
@@ -1526,7 +1527,7 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_gednr']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="gednr" value="'.$selection['gednr'].'" size="15" placeholder="'.ucfirst(__('gedcomnumber (ID)')).'">';
+			echo ' <input type="text" name="gednr" value="'.safe_text_show($selection['gednr']).'" size="15" placeholder="'.ucfirst(__('gedcomnumber (ID)')).'">';
 			//~~~~~~~~~~~~~~~~~~~
 			echo '</td><td colspan="2" align="center" class="no_border">'.__('Research status:');
 			$check=''; if ($selection['parent_status']=='noparents'){ $check=' checked'; }
@@ -1538,7 +1539,7 @@ if ($index_list=='patronym'){
 			//$check=''; if ($selection['parent_status']=='bothparents'){ $check=' checked'; }
 			//echo '<input type="radio" name="parent_status" value="bothparents"'.$check.'>'.__('Both parents').'&nbsp;&nbsp;';	
 			$check=''; if ($selection['parent_status']=="" OR $selection['parent_status']=='allpersons'){ $check=' checked'; }
-			echo '<input type="radio" name="parent_status" value="allpersons"'.$check.'>'.__('All').'&nbsp;&nbsp;';						
+			echo '<input type="radio" name="parent_status" value="allpersons"'.$check.'>'.__('All').'&nbsp;&nbsp;';
 			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			//echo '</td><td>';
 			echo '</td>';
@@ -1796,10 +1797,10 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 	}
 	$pers_counter = 0;
 
-	if($adv_search==true AND $selection['parent_status']!="allpersons" AND $selection['parent_status']!="noparents") { 	
+	if($adv_search==true AND $selection['parent_status']!="allpersons" AND $selection['parent_status']!="noparents") {
 		echo '<script type="text/javascript"> 
 			document.getElementById("found_div").innerHTML = "'.__('Loading...').'";
-			</script>';		
+			</script>';
 	}
 	
 	while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
@@ -1820,45 +1821,42 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 
 			// *** Search all persons with a spouse IN the same tree as the 1st person ***
 			for ($marriage_loop=0; $marriage_loop<count($person_fams); $marriage_loop++){
-				$fam_result = $dbh->query("SELECT * FROM humo_families
-					WHERE fam_tree_id='".$personDb->pers_tree_id."' AND fam_gedcomnumber='".$person_fams[$marriage_loop]."'");
-				while($famDb= $fam_result->fetch(PDO::FETCH_OBJ)) {
+				$famDb = $db_functions->get_family($person_fams[$marriage_loop],'man-woman');
 
-					// *** Search all persons with a spouse IN the same tree as the 1st person ***
-					$spouse_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$personDb->pers_tree_id."' AND";
-					if ($user['group_kindindex']=="j"){
-						$spouse_qry= "SELECT *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name
-							FROM humo_persons WHERE pers_tree_id='".$personDb->pers_tree_id."' AND";
-					}
-
-					if ($personDb->pers_gedcomnumber==$famDb->fam_man){
-						$spouse_qry.=' pers_gedcomnumber="'.safe_text($famDb->fam_woman).'"';
-					}
-					else{
-						$spouse_qry.=' pers_gedcomnumber="'.safe_text($famDb->fam_man).'"';
-					}
-
-					if ($selection['spouse_lastname']) {
-						if ($selection['spouse_lastname']==__('...')){
-							$spouse_qry.=" AND pers_lastname=''";
-						}
-						elseif ($user['group_kindindex']=="j"){
-							$spouse_qry.=" AND CONCAT( REPLACE(pers_prefix,'_',' ') ,pers_lastname) ".name_qry($selection['spouse_lastname'], $selection['part_spouse_lastname']);
-						}
-						else {
-							$spouse_qry.=" AND pers_lastname ".name_qry($selection['spouse_lastname'], $selection['part_spouse_lastname']);
-						}
-					}
-					//if ($selection['pers_prefix']){
-					//  $spouse_qry.=" AND pers_prefix='".$selection['pers_prefix']."'";
-					//}
-					if ($selection['spouse_firstname']){
-						$spouse_qry.=" AND pers_firstname ".name_qry($selection['spouse_firstname'], $selection['part_spouse_firstname']);
-					}
-					$spouse_result= $dbh->query($spouse_qry);
-					$spouseDb= $spouse_result->fetch(PDO::FETCH_OBJ);
-					if (isset($spouseDb->pers_id)){ $spouse_found='1'; break; }
+				// *** Search all persons with a spouse IN the same tree as the 1st person ***
+				$spouse_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$personDb->pers_tree_id."' AND";
+				if ($user['group_kindindex']=="j"){
+					$spouse_qry= "SELECT *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name
+						FROM humo_persons WHERE pers_tree_id='".$personDb->pers_tree_id."' AND";
 				}
+
+				if ($personDb->pers_gedcomnumber==$famDb->fam_man){
+					$spouse_qry.=' pers_gedcomnumber="'.safe_text_db($famDb->fam_woman).'"';
+				}
+				else{
+					$spouse_qry.=' pers_gedcomnumber="'.safe_text_db($famDb->fam_man).'"';
+				}
+
+				if ($selection['spouse_lastname']) {
+					if ($selection['spouse_lastname']==__('...')){
+						$spouse_qry.=" AND pers_lastname=''";
+					}
+					elseif ($user['group_kindindex']=="j"){
+						$spouse_qry.=" AND CONCAT( REPLACE(pers_prefix,'_',' ') ,pers_lastname) ".name_qry($selection['spouse_lastname'], $selection['part_spouse_lastname']);
+					}
+					else {
+						$spouse_qry.=" AND pers_lastname ".name_qry($selection['spouse_lastname'], $selection['part_spouse_lastname']);
+					}
+				}
+				//if ($selection['pers_prefix']){
+				//  $spouse_qry.=" AND pers_prefix='".$selection['pers_prefix']."'";
+				//}
+				if ($selection['spouse_firstname']){
+					$spouse_qry.=" AND pers_firstname ".name_qry($selection['spouse_firstname'], $selection['part_spouse_firstname']);
+				}
+				$spouse_result= $dbh->query($spouse_qry);
+				$spouseDb= $spouse_result->fetch(PDO::FETCH_OBJ);
+				if (isset($spouseDb->pers_id)){ $spouse_found='1'; break; }
 			}
 
 
@@ -1868,20 +1866,20 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 		$parent_status_found='1';
 		if($adv_search==true AND $selection['parent_status']!="allpersons" AND $selection['parent_status']!="noparents") { 
 			$parent_status_found='0';
-			$par_famc = "";
-			if(isset($personDb->pers_famc)) { $par_famc= $personDb->pers_famc;	}
+			$par_famc = ""; if(isset($personDb->pers_famc)) $par_famc= $personDb->pers_famc;
 			if($par_famc != "") { 
-				$par_result = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$personDb->pers_tree_id."' AND fam_gedcomnumber='".$par_famc."'");
-				$parDb= $par_result->fetch(PDO::FETCH_OBJ);  
+				$parDb = $db_functions->get_family($par_famc,'man-woman');
 
-				if($selection['parent_status']=="fatheronly" AND substr($parDb->fam_man,0,1)=="I" AND substr($parDb->fam_woman,0,1) != "I") {
+				if($selection['parent_status']=="fatheronly" AND substr($parDb->fam_man,0,1)=="I"
+					AND substr($parDb->fam_woman,0,1) != "I") {
 					$parent_status_found='1'; 
 				}
-				elseif($selection['parent_status']=="motheronly" AND substr($parDb->fam_man,0,1)!="I" AND substr($parDb->fam_woman,0,1)=="I") {
+				elseif($selection['parent_status']=="motheronly" AND substr($parDb->fam_man,0,1)!="I"
+					AND substr($parDb->fam_woman,0,1)=="I") {
 					$parent_status_found='1'; 
-				}	
+				}
 			}
-		}		
+		}
 
 		// *** Show search results ***
 		if ($spouse_found=='1' AND ($parent_status_found=='1' OR ($parent_status_found!='1' AND !isset($_POST['adv_search'])))) { 
@@ -1966,7 +1964,7 @@ echo '<script type="text/javascript">
 </script>';
 
 //for testing only:
-//echo 'Query: '.$query." LIMIT ".safe_text($item).",".$nr_persons.'<br>';
+//echo 'Query: '.$query." LIMIT ".safe_text_db($item).",".$nr_persons.'<br>';
 //echo 'Count qry: '.$count_qry.'<br>';
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;

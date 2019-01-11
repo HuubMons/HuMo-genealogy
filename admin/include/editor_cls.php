@@ -105,7 +105,7 @@ function date_process($process_name, $multiple_rows=''){
 	elseif ($this_date == '!') $process_date=$post_date.'!';
 
 	$process_date=strtoupper($process_date);
-	$process_date=safe_text($process_date);
+	$process_date=safe_text_db($process_date);
 	return $process_date;
 }
 
@@ -164,7 +164,7 @@ function text_process($text,$long_text=false){
 		//$text = str_replace("\r\n", "<br>\n", $text);
 		$text = str_replace("\r\n", "\n", $text);
 	}
-	$text=safe_text($text);
+	$text=safe_text_db($text);
 	return $text;
 }
 

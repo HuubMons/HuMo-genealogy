@@ -1,4 +1,9 @@
 <?php
+
+/*	Merge data functions are made by Yossi.
+	2017_12_22 Huub: Updated merge data functions with correct person and family counter for main page.
+*/
+
 class tree_cls{
 
 // *** List of trees ***
@@ -426,7 +431,7 @@ function tree_merge() {
 				continue; // look for next pair in array
 			}
 			else { // we have got a valid pair
-				echo '<br'.__('Carefully compare these two persons. Only if you are <b>absolutely sure</b> they are identical, press "Merge right into left".<br>
+				echo '<br>'.__('Carefully compare these two persons. Only if you are <b>absolutely sure</b> they are identical, press "Merge right into left".<br>
 If you don\'t want to merge, press "SKIP" to continue to the next pair of possible duplicates').'<br><br>';
 
 				$left = $comp_set[0];
@@ -748,14 +753,16 @@ this page will also show a "Continue duplicate merge" button so you can continue
 		echo __('Please wait while duplicate list is generated');
 		$famname_search = "";
 		if(isset($_POST['famname_search']) AND $_POST['famname_search'] != "") { $famname_search = " AND pers_lastname = '".$_POST['famname_search']."'"; }
-		$qry = "SELECT pers_id,pers_firstname,pers_lastname, pers_birth_date, pers_death_date
+		$qry = "SELECT pers_id, pers_firstname, pers_lastname, pers_birth_date, pers_death_date
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'".$famname_search." ORDER BY pers_id";
 		$pers = $dbh->query($qry);
 		unset($dupl_arr); // just to make sure...
 		while($persDb = $pers->fetch(PDO::FETCH_OBJ)) {
 			// the exact phrasing of the query depends on the admin settings
-			$qry2 = "SELECT pers_id,pers_firstname,pers_lastname, pers_birth_date, pers_death_date
-				FROM humo_persons WHERE pers_id > ".$persDb->pers_id;
+			//$qry2 = "SELECT pers_id, pers_firstname, pers_lastname, pers_birth_date, pers_death_date
+			//	FROM humo_persons WHERE pers_id > ".$persDb->pers_id;
+			$qry2 = "SELECT pers_id, pers_firstname, pers_lastname, pers_birth_date, pers_death_date
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_id > ".$persDb->pers_id;
 			if($merge_firstname == 'YES') {
 				$qry2 .= " AND SUBSTR(pers_firstname,1,".$merge_chars.") = SUBSTR('".$persDb->pers_firstname."',1,".$merge_chars.")";
 			}
@@ -871,21 +878,21 @@ this page will also show a "Continue duplicate merge" button so you can continue
 
 		$search_firstname='';
 		if (isset($_POST["search_firstname"]) AND !isset($_POST["switch"])){
-			$search_firstname=safe_text($_POST['search_firstname']);
+			$search_firstname=safe_text_db($_POST['search_firstname']);
 			$_SESSION['rel_search_firstname']=$search_firstname;
 		}
 		if (isset($_SESSION['rel_search_firstname'])){ $search_firstname=$_SESSION['rel_search_firstname']; }
 
 		$search_lastname='';
 		if (isset($_POST["search_lastname"]) AND !isset($_POST["switch"])){
-			$search_lastname=safe_text($_POST['search_lastname']);
+			$search_lastname=safe_text_db($_POST['search_lastname']);
 			$_SESSION['rel_search_lastname']=$search_lastname;
 		}
 		if (isset($_SESSION['rel_search_lastname'])){ $search_lastname=$_SESSION['rel_search_lastname']; }
 
 		$search_indi='';
 		if (isset($_POST["search_indi"]) AND !isset($_POST["switch"])){
-			$search_indi=safe_text($_POST['search_indi']);
+			$search_indi=safe_text_db($_POST['search_indi']);
 			$_SESSION['search_indi']=$search_indi;
 		}
 		if (isset($_SESSION['search_indi'])){ $search_indi=$_SESSION['search_indi']; }
@@ -946,21 +953,21 @@ this page will also show a "Continue duplicate merge" button so you can continue
 
 		$search_firstname2='';
 		if (isset($_POST["search_firstname2"]) AND !isset($_POST["switch"])){
-			$search_firstname2=safe_text($_POST['search_firstname2']);
+			$search_firstname2=safe_text_db($_POST['search_firstname2']);
 			$_SESSION['rel_search_firstname2']=$search_firstname2;
 		}
 		if (isset($_SESSION['rel_search_firstname2'])){ $search_firstname2=$_SESSION['rel_search_firstname2']; }
 
 		$search_lastname2='';
 		if (isset($_POST["search_lastname2"]) AND !isset($_POST["switch"])){
-			$search_lastname2=safe_text($_POST['search_lastname2']);
+			$search_lastname2=safe_text_db($_POST['search_lastname2']);
 			$_SESSION['rel_search_lastname2']=$search_lastname2;
 		}
 		if (isset($_SESSION['rel_search_lastname2'])){ $search_lastname2=$_SESSION['rel_search_lastname2']; }
 
 		$search_indi2='';
 		if (isset($_POST["search_indi2"]) AND !isset($_POST["switch"])){
-			$search_indi2=safe_text($_POST['search_indi2']);
+			$search_indi2=safe_text_db($_POST['search_indi2']);
 			$_SESSION['search_indi2']=$search_indi2;
 		}
 		if (isset($_SESSION['search_indi2'])){ $search_indi2=$_SESSION['search_indi2']; }
@@ -1047,18 +1054,17 @@ You will be notified of results as the action is completed');
 			echo '<br>'.__('Please wait while the automatic merges are processed...').'<br>';
 			$merges=0;
 			$qry= "SELECT pers_id, pers_lastname, pers_firstname, pers_birth_date, pers_death_date, pers_famc
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND
-				pers_lastname !='' AND
-				pers_firstname !='' AND
-				(pers_birth_date !='' OR pers_death_date !='') AND
-				pers_famc !=''
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND pers_lastname !=''
+				AND pers_firstname !=''
+				AND (pers_birth_date !='' OR pers_death_date !='')
+				AND pers_famc !=''
 				ORDER BY pers_id";
 			$pers = $dbh->query($qry);
 			while($persDb = $pers->fetch(PDO::FETCH_OBJ)) {
-				$qry2 = "SELECT pers_id, pers_lastname, pers_firstname, pers_birth_date, pers_death_date, pers_famc  FROM humo_persons WHERE
-				pers_tree_id='".$tree_id."' AND
-				pers_id > ".$persDb->pers_id." AND
-				(pers_lastname !='' AND pers_lastname = '".$persDb->pers_lastname."') AND
+				$qry2 = "SELECT pers_id, pers_lastname, pers_firstname, pers_birth_date, pers_death_date, pers_famc  FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND pers_id > ".$persDb->pers_id."
+				AND (pers_lastname !='' AND pers_lastname = '".$persDb->pers_lastname."') AND
 				(pers_firstname !='' AND pers_firstname = '".$persDb->pers_firstname."') AND
 				((pers_birth_date !='' AND pers_birth_date ='".$persDb->pers_birth_date."') OR
 				(pers_death_date !='' AND pers_death_date ='".$persDb->pers_death_date."')) AND
@@ -1620,19 +1626,19 @@ function show_regular ($left_item,$right_item,$title,$name) {
 	if($left_item OR $right_item) {
 		if($color=='#e6e6e6') { $color='#f2f2f2'; } else { $color='#e6e6e6'; }
 		echo '<tr style="background-color:'.$color.'"><td style="font-weight:bold">'.ucfirst($title).':</td>';
-		$checked=''; if($left_item) {
-			$checked=" CHECKED";
-			if($name=='crem' AND $left_item=='1') { $left_item = 'Yes'; }
-			if($name=='fav' AND $left_item=='1') { $left_item = 'Yes'; }
-			if($name=='stborn' AND $left_item=='y') { $left_item = 'Yes'; }
-		}
-		echo '<td><input type="radio" name="'.$name.'" value="1"'.$checked.'>'.$left_item.'</td>';
-		$checked=''; if(!$left_item) {
-			$checked=" CHECKED";
+			$checked='';
+			if($left_item) {
+				$checked=" CHECKED";
+				if($name=='crem' AND $left_item=='1') { $left_item = 'Yes'; }
+				if($name=='fav' AND $left_item=='1') { $left_item = 'Yes'; }
+				if($name=='stborn' AND $left_item=='y') { $left_item = 'Yes'; }
+			}
+
+			echo '<td><input type="radio" name="'.$name.'" value="1"'.$checked.'>'.$left_item.'</td>';
+			$checked=''; if(!$left_item) $checked=" CHECKED";
 			if($name=='crem' AND $right_item=='1') { $right_item = 'Yes'; }
 			if($name=='fav' AND $right_item=='1') { $right_item = 'Yes'; }
 			if($name=='stborn' AND $right_item=='y') { $right_item = 'Yes'; }
-		}
 		echo '<td><input type="radio" name="'.$name.'" value="2"'.$checked.'>'.$right_item.'</td></tr>';
 	}
 }
@@ -1852,7 +1858,7 @@ function show_addresses ($left_ged,$right_ged) {
 		echo '<tr style="background-color:'.$color.'"><td style="font-weight:bold">'.__('Addresses').':</td>';
 		echo '<td>';
 		if($left_addresses->rowCount() > 0) {
-			while($left_addressesDb = $left_addresses->fetch(PDO::FETCH_OBJ))	{
+			while($left_addressesDb = $left_addresses->fetch(PDO::FETCH_OBJ)){
 				$l_address= $dbh->query("SELECT address_address, address_place FROM humo_addresses
 					WHERE address_tree_id='".$tree_id."' AND address_gedcomnr='".$left_addressesDb->connect_item_id."'");
 				$result = $l_address->fetch(PDO::FETCH_OBJ);
@@ -2099,82 +2105,87 @@ function merge_them($left,$right,$mode) {
 						$dbh->query($qry);
 					}
 				}
-				
-// - new piece for fam sources that were removed in the code above 2052 - 2078)
-for($i=0; $i<count($f1); $i++) {
-	$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
-	$sourDb = $dbh->query($qry);
-	if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
-		$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
-		$sourDb2 = $dbh->query($qry2);
-		if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
-			$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
-			$dbh->query($qry3);
-		}
-		
-	}
-	$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
-	$sourDb = $dbh->query($qry);
-	if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
-		$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
-		$sourDb2 = $dbh->query($qry2);
-		if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
-			$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
-			$dbh->query($qry3);
-		}
-		
-	}
-	$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
-	$sourDb = $dbh->query($qry);
-	if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
-		$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
-		$sourDb2 = $dbh->query($qry2);
-		if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
-			$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
-			$dbh->query($qry3);
-		}
-		
-	}
-	$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
-	$sourDb = $dbh->query($qry);
-	if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
-		$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
-		$sourDb2 = $dbh->query($qry2);
-		if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
-			$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
-			$dbh->query($qry3);
-		}
-		
-	}
-	$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
-	$sourDb = $dbh->query($qry);
-	if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
-		$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
-		$sourDb2 = $dbh->query($qry2);
-		if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
-			$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
-			$dbh->query($qry3);
-		}
-		
-	}
-	$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
-	$sourDb = $dbh->query($qry);
-	if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
-		$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
-		$sourDb2 = $dbh->query($qry2);
-		if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
-			$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
-			$dbh->query($qry3);
-		}
-		
-	}	
-}
-// - end new piece for fam sources 
+
+				// - new piece for fam sources that were removed in the code above 2052 - 2078)
+				for($i=0; $i<count($f1); $i++) {
+					$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
+					$sourDb = $dbh->query($qry);
+					if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
+						$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
+						$sourDb2 = $dbh->query($qry2);
+						if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
+							$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_relation_source'";
+							$dbh->query($qry3);
+						}
+					}
+
+					$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
+					$sourDb = $dbh->query($qry);
+					if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
+						$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
+						$sourDb2 = $dbh->query($qry2);
+						if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
+							$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_notice_source'";
+							$dbh->query($qry3);
+						}
+					}
+
+					$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
+					$sourDb = $dbh->query($qry);
+					if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
+						$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
+						$sourDb2 = $dbh->query($qry2);
+						if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
+							$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_source'";
+							$dbh->query($qry3);
+						}
+					}
+
+					$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
+					$sourDb = $dbh->query($qry);
+					if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
+						$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
+						$sourDb2 = $dbh->query($qry2);
+						if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
+							$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_notice_source'";
+							$dbh->query($qry3);
+						}
+					}
+
+					$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
+					$sourDb = $dbh->query($qry);
+					if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
+						$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
+						$sourDb2 = $dbh->query($qry2);
+						if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
+							$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
+							$dbh->query($qry3);
+						}
+						
+					}
+					$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
+					$sourDb = $dbh->query($qry);
+					if($sourDb->rowCount()==0)  {  // no fam sources of the sub kind for this fam
+						$qry2 = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
+						$sourDb2 = $dbh->query($qry2);
+						if($sourDb2->rowCount() > 0)  {  // second fam has source of this sub kind - transfer these sources to left fam
+							$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
+							$dbh->query($qry3);
+						}
+						
+					}	
+				}
+				// - end new piece for fam sources 
 
 				// delete F's that belonged to identical right spouse(s)
 				for($i=0; $i<count($f1); $i++) { // for each of the identical spouses
 					$qry = "DELETE FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber ='".$f2[$i]->fam_gedcomnumber."'";
 					$dbh->query($qry);
+
+					// Substract 1 family from the number of families counter in the family tree.
+					$sql="UPDATE humo_trees SET tree_families=tree_families-1 WHERE tree_id='".$tree_id."'";
+					$dbh->query($sql);
+
 					// CLEANUP: also delete this F from other tables where it may appear
 					$qry = "DELETE FROM humo_addresses
 						WHERE address_tree_id='".$tree_id."'
@@ -2385,10 +2396,11 @@ for($i=0; $i<count($f1); $i++) {
 				$dbh->query($qry);
 				if(!$result1Db->pers_fams AND !$result2Db->pers_fams) {
 					// neither has fams - the pers_indexnr has to be set to right person's famc which is now left's famc too
-					$qry = "UPDATE humo_persons SET pers_indexnr ='".$result2Db->pers_famc."' WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$result1Db->pers_gedcomnumber."'";
+					$qry = "UPDATE humo_persons SET pers_indexnr ='".$result2Db->pers_famc."'
+						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$result1Db->pers_gedcomnumber."'";
 					$dbh->query($qry);
 				}
-			}	
+			}
 		}
 		elseif ($result1Db->pers_famc AND $result1Db->pers_famc == $result2Db->pers_famc) {
 			// same parent set (double children in one family) just remove right's I from F
@@ -2521,16 +2533,23 @@ for($i=0; $i<count($f1); $i++) {
 			}
 		}
 	}
-	// now delete right I from humoX_person table
-	$qry = "DELETE FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$result2Db->pers_gedcomnumber."'";
+	// Delete right I from humoX_person table
+	$qry = "DELETE FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+		AND pers_gedcomnumber ='".$result2Db->pers_gedcomnumber."'";
 	$dbh->query($qry);
+
+	// Substract 1 person from the number of persons counter in the family tree.
+	$sql="UPDATE humo_trees SET tree_persons=tree_persons-1 WHERE tree_id='".$tree_id."'";
+	$dbh->query($sql);
+
 	// CLEANUP: delete this person's I from any other tables that refer to this person (otherwise we will receive errors in humogen)
 	$qry = "DELETE FROM humo_addresses
 		WHERE address_tree_id='".$tree_id."'
 		AND address_connect_sub_kind='person'
 		AND address_connect_id ='".$result2Db->pers_gedcomnumber."'";
 	$dbh->query($qry);
-	$qry = "DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$result2Db->pers_gedcomnumber."'";
+	$qry = "DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."'
+		AND connect_connect_id ='".$result2Db->pers_gedcomnumber."'";
 	$dbh->query($qry);
 	$qry = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
 		AND event_connect_kind='person' AND event_connect_id ='".$result2Db->pers_gedcomnumber."'";
@@ -2580,7 +2599,6 @@ for($i=0; $i<count($f1); $i++) {
 	}
 
 	if($mode != 'automatic' AND $mode != 'relatives') {
-
 		echo '<br>'.$name2.__(' was successfully merged into ').$name1.'<br><br>';  // john was successfully merged into jack
 		$rela = explode(';',$relatives_merge);
 		$rela = count($rela) - 1;
@@ -2625,8 +2643,9 @@ This is the easiest way to make sure you don\'t forget anyone.');
 			}
 			echo '</form>';
 		}
-	}	// end if not automatic}
+	}	// end if not automatic
 }
+
 //*********************************************************************************************************************************
 //*********  function check_regular checks if data from the humoX_person table was marked (checked) in the comparison table  *****
 //*********************************************************************************************************************************
@@ -2638,9 +2657,10 @@ function check_regular ($post_var,$auto_var,$mysql_var) {
 		$dbh->query($qry);
 	}
 }
-//*********************************************************************************************************************************
-//*********  function check_regular_text checks if text data from the humoX_person table was marked (checked) in the comparison table  *****
-//*********************************************************************************************************************************
+
+// *********************************************************************************************************************************
+// ***  function check_regular_text checks if text data from the humoX_person table was marked (checked) in the comparison table  *****
+// *********************************************************************************************************************************
 function check_regular_text ($post_var,$auto_var,$mysql_var) {
 	global $dbh, $tree_id, $language, $data2Db, $result1Db, $result2Db;
 	if(isset($_POST[$post_var.'_r']) OR $auto_var=='2') {
@@ -2675,6 +2695,7 @@ function check_regular_text ($post_var,$auto_var,$mysql_var) {
 		$dbh->query($qry);
 	}
 }
+
 //****************************************************************************************************
 //*********  function check_event checks if event were marked (checked) in the comparison table  *****
 //****************************************************************************************************
@@ -2703,6 +2724,7 @@ function check_events($left_ged,$right_ged) {
 		}
 	}
 }
+
 //****************************************************************************************************
 //** function check_addresses checks if addresses were marked (checked) in the comparison table  *****
 //****************************************************************************************************
@@ -2729,17 +2751,18 @@ function check_addresses($left_ged,$right_ged) {
 		}
 	}
 }
+
 //****************************************************************************************************
 //*********  function check_sources checks if sources were marked (checked) in the comparison table  *****
 //****************************************************************************************************
-
 function check_sources($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db;
 	$left_source = $dbh->query("SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."' AND LOCATE('source',connect_sub_kind)!=0 AND connect_connect_id ='".$left_ged."'");
 	$right_source = $dbh->query("SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."' AND LOCATE('source',connect_sub_kind)!=0 AND connect_connect_id ='".$right_ged."'");
-	if($right_source->rowCount() > 0) { //if right has no sources it did not appear in the comparison table, so the whole thing is unnecessary
+	if($right_source->rowCount() > 0) {
+		//if right has no sources it did not appear in the comparison table, so the whole thing is unnecessary
 		while($left_sourceDb = $left_source->fetch(PDO::FETCH_OBJ)) {
 			if(!isset($_POST['l_source_'.$left_sourceDb->connect_id])) {
 				$dbh->query("DELETE FROM humo_connections WHERE connect_id ='".$left_sourceDb->connect_id."'");
@@ -2747,14 +2770,17 @@ function check_sources($left_ged,$right_ged) {
 		}
 		while($right_sourceDb = $right_source->fetch(PDO::FETCH_OBJ)) {
 			if(isset($_POST['r_source_'.$right_sourceDb->connect_id])) { // change right's I to left's I
-				$dbh->query("UPDATE humo_connections SET connect_connect_id ='".$left_ged."' WHERE connect_id ='".$right_sourceDb->connect_id."'");
+				$dbh->query("UPDATE humo_connections SET connect_connect_id ='".$left_ged."'
+				WHERE connect_id ='".$right_sourceDb->connect_id."'");
 			}
-			else { // clean up database -> remove this entry altogether (IF IT EXISTS...)
+			else {
+				// clean up database -> remove this entry altogether (IF IT EXISTS...)
 				$dbh->query("DELETE FROM humo_connections WHERE connect_id ='".$right_sourceDb->connect_id."'");
 			}
 		}
 	}
 }
+
 //********************************************************************************************************
 //*********  function popclean prepares a mysql output string for presentation with popup_merge.js *****
 //********************************************************************************************************

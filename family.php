@@ -85,7 +85,8 @@ function topline(){
 		// *** Settings in pop-up screen ***
 		//$text.= '<div class="'.$rtlmarker.'sddm" style="left:10px;top:10px;display:inline;">';
 		$text.= '<div class="'.$rtlmarker.'sddm" style="left:10px; top:10px; display:inline-block; vertical-align:middle;">';
-			$text.= '<a href="'.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'"';
+// ALSO USE URL_REWRITE HERE?
+			$text.= '<a href="family.php?id='.$family_id.'&amp;main_person='.$main_person.'"';
 			$text.= ' style="display:inline" ';
 			$text.= 'onmouseover="mopen(event,\'help_menu\',0,0)"';
 			$text.= 'onmouseout="mclosetime()">';
@@ -106,8 +107,8 @@ function topline(){
 				$desc_rep = ''; if($descendant_report==true) { $desc_rep = '&amp;descendant_report=1'; }
 
 				$selected=' CHECKED'; $selected2=''; if ($family_expanded==true) { $selected=''; $selected2=' CHECKED'; }
-				$text.='<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;family_expanded=0&xx=\'+this.value"'.$selected.'>'.__('Compact view')."<br>\n";
-				$text.='<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;family_expanded=1&xx=\'+this.value"'.$selected2.'>'.__('Expanded view')."<br>\n";
+				$text.='<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;family_expanded=0&xx=\'+this.value"'.$selected.'>'.__('Compact view')."<br>\n";
+				$text.='<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;family_expanded=1&xx=\'+this.value"'.$selected2.'>'.__('Expanded view')."<br>\n";
 
 				// *** Select source presentation (as title/ footnote or hide sources) ***
 				if($user['group_sources']!='n') {
@@ -116,13 +117,13 @@ function topline(){
 					$desc_rep = ''; if($descendant_report==true) { $desc_rep = '&amp;descendant_report=1'; }
 
 					$selected=''; if ($source_presentation=='title') { $selected=' CHECKED'; }
-					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;source_presentation=title&xx=\'+this.value"'.$selected.'>'.__('Show source title')."<br>\n";
+					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;source_presentation=title&xx=\'+this.value"'.$selected.'>'.__('Show source title')."<br>\n";
 
 					$selected=''; if ($source_presentation=='footnote') { $selected=' CHECKED'; }
-					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;source_presentation=footnote&xx=\'+this.value"'.$selected.'>'.__('Show source title as footnote')."<br>\n";
+					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;source_presentation=footnote&xx=\'+this.value"'.$selected.'>'.__('Show source title as footnote')."<br>\n";
 
 					$selected=''; if ($source_presentation=='hide') { $selected=' CHECKED'; }
-					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;source_presentation=hide&xx=\'+this.value"'.$selected.'>'.__('Hide sources')."<br>\n";
+					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;source_presentation=hide&xx=\'+this.value"'.$selected.'>'.__('Hide sources')."<br>\n";
 				}
 
 				// *** Show/ hide Google maps ***
@@ -130,8 +131,8 @@ function topline(){
 					$text.='<hr>';
 					$text.='<b>'.__('Google maps').'</b><br>';
 					$selected=''; $selected2=''; if ($maps_presentation=='hide') $selected2=' CHECKED'; else $selected=' CHECKED';
-					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show Google maps')."<br>\n";
-					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide Google maps')."<br>\n";
+					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show Google maps')."<br>\n";
+					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide Google maps')."<br>\n";
 				}
 
 			$text.='</td><td valign="top">';
@@ -139,18 +140,18 @@ function topline(){
 				if ($user['group_pictures']=='j'){
 					$text.='<b>'.__('Pictures').'</b><br>';
 					$selected=''; $selected2=''; if ($picture_presentation=='hide') $selected2=' CHECKED'; else $selected=' CHECKED';
-					$text.='<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;picture_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show pictures')."<br>\n";
-					$text.='<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;picture_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide pictures')."<br>\n";
+					$text.='<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;picture_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show pictures')."<br>\n";
+					$text.='<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;picture_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide pictures')."<br>\n";
 					$text.='<hr>';
 				}
 
 				$text.='<b>'.__('Texts').'</b><br>';
 				$selected=''; if ($text_presentation=='show') $selected=' CHECKED';
-				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show texts')."<br>\n";
+				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show texts')."<br>\n";
 				$selected=''; if ($text_presentation=='popup') $selected=' CHECKED';
-				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=popup&xx=\'+this.value"'.$selected.'>'.__('Show texts in popup screen')."<br>\n";
+				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=popup&xx=\'+this.value"'.$selected.'>'.__('Show texts in popup screen')."<br>\n";
 				$selected=''; if ($text_presentation=='hide') $selected=' CHECKED';
-				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\''.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=hide&xx=\'+this.value"'.$selected.'>'.__('Hide texts')."<br>\n";
+				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=hide&xx=\'+this.value"'.$selected.'>'.__('Hide texts')."<br>\n";
 
 			$text.='</td></tr></table>';
 
@@ -345,31 +346,31 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 
 	// *** Source presentation selected by user (title/ footnote/ hide) ***
 	if (isset($_GET['source_presentation'])){
-		$_SESSION['save_source_presentation']=safe_text($_GET["source_presentation"]);
+		$_SESSION['save_source_presentation']=safe_text_db($_GET["source_presentation"]);
 	}
 	// *** Default setting is selected by administrator ***
 	$source_presentation=$user['group_source_presentation'];
 	if (isset($_SESSION['save_source_presentation'])) $source_presentation=$_SESSION['save_source_presentation'];
 	else{
 		// *** Extra saving of setting in session (if no choice is made, this is admin default setting, needed for show_sources.php!!!) ***
-		$_SESSION['save_source_presentation']=safe_text($source_presentation);
+		$_SESSION['save_source_presentation']=safe_text_db($source_presentation);
 	}
 
 	// *** Show/ hide Google maps ***
-	if (isset($_GET['maps_presentation'])) $_SESSION['save_maps_presentation']=safe_text($_GET["maps_presentation"]);
+	if (isset($_GET['maps_presentation'])) $_SESSION['save_maps_presentation']=safe_text_db($_GET["maps_presentation"]);
 	// *** Default setting is selected by administrator ***
 	$maps_presentation=$user['group_maps_presentation'];
 	//if ($user['group_maps_presentation']=='sources') $maps_presentation='hide'; // *** sources = backwards compatible!! *** 
 	if (isset($_SESSION['save_maps_presentation'])) $maps_presentation=$_SESSION['save_maps_presentation'];
 
 	// *** Show/ hide pictures ***
-	if (isset($_GET['picture_presentation'])) $_SESSION['save_picture_presentation']=safe_text($_GET["picture_presentation"]);
+	if (isset($_GET['picture_presentation'])) $_SESSION['save_picture_presentation']=safe_text_db($_GET["picture_presentation"]);
 	// *** Default setting is selected by administrator ***
 	//$picture_presentation=$user['group_picture_presentation'];
 	if (isset($_SESSION['save_picture_presentation'])) $picture_presentation=$_SESSION['save_picture_presentation'];
 
 	// *** Show/ hide texts ***
-	if (isset($_GET['text_presentation'])) $_SESSION['save_text_presentation']=safe_text($_GET["text_presentation"]);
+	if (isset($_GET['text_presentation'])) $_SESSION['save_text_presentation']=safe_text_db($_GET["text_presentation"]);
 	// *** Default setting is selected by administrator ***
 	$text_presentation=$user['group_text_presentation'];
 	if (isset($_SESSION['save_text_presentation'])) $text_presentation=$_SESSION['save_text_presentation'];
@@ -2187,8 +2188,8 @@ if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
 		echo '"'.__('Family Page').': '.$name1['name'].' &amp; '.$name2['name'].'."';
 
 		// *** Link to family page ***
-		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person;
-		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].'family.php?id='.$family_id.'&amp;main_person='.$main_person;
+		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].'family.php';
 		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].'/family.php?id='.$family_id.'&amp;main_person='.$main_person;
 		echo ' HuMo-gen - '.$humo_option["database_name"].' (';
 		// *** url_rewrite ***
@@ -2281,12 +2282,12 @@ if($screen_mode=='') {
 				$sql="INSERT INTO humo_user_notes SET
 				note_date='".$gedcom_date."',
 				note_time='".$gedcom_time."',
-				note_user_id='".safe_text($_SESSION['user_id'])."',
-				note_note='".safe_text($_POST["user_note"])."',
-				note_fam_gedcomnumber='".safe_text($family_id)."',
-				note_pers_gedcomnumber='".safe_text($main_person)."',
+				note_user_id='".safe_text_db($_SESSION['user_id'])."',
+				note_note='".safe_text_db($_POST["user_note"])."',
+				note_fam_gedcomnumber='".safe_text_db($family_id)."',
+				note_pers_gedcomnumber='".safe_text_db($main_person)."',
 				note_tree_prefix='".$tree_prefix_quoted."',
-				note_names='".safe_text($name["standard_name"])."'
+				note_names='".safe_text_db($name["standard_name"])."'
 				;";
 				$result=$dbh->query($sql);
 
@@ -2304,8 +2305,8 @@ if($screen_mode=='') {
 				//$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";
 				$register_message .=$_POST['user_note']."<br>\n";
 
-				$register_message.=__('User note by family').': <a href="'.$_SERVER['SERVER_NAME'].'/'.$_SERVER['PHP_SELF'].'?database='.$tree_prefix_quoted.
-				'&amp;id='.$family_id.'&amp;main_person='.$main_person.'">'.safe_text($name["standard_name"]).'</a>';
+				$register_message.=__('User note by family').': <a href="'.$_SERVER['SERVER_NAME'].'/family.php?database='.$tree_prefix_quoted.
+				'&amp;id='.$family_id.'&amp;main_person='.$main_person.'">'.safe_text_db($name["standard_name"]).'</a>';
 
 				include_once ('include/mail.php');
 				// *** Set who the message is to be sent from ***

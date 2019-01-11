@@ -24,7 +24,7 @@ if (!defined('PDO::ATTR_DRIVER_NAME')) {
 
 	<p>If it\'s not possible to use PDO, you have to downgrade to HuMo-gen 4.9.4!<br>
 	1) Download HuMo-gen 4.9.4 at: <a href="https://sourceforge.net/projects/humo-gen/files">Sourceforge</a><br>
-	2) Follow <a href="http://www.humo-gen.com/genwiki/index.php?title=Installation">HuMo-gen installation</a> instructions.
+	2) Follow <a href="https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/">HuMo-gen installation</a> instructions.
 	</body></html>
 	';
 	exit();

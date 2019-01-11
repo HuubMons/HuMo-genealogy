@@ -7,7 +7,7 @@ global $selected_language;
 if(CMS_SPECIFIC=="Joomla")
 	$phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=groups";
 else
-	$phpself = $_SERVER['PHP_SELF'];
+	$phpself = 'index.php';
 
 echo '<h1 align=center>'.__('CMS Own pages').'</h1>';
 
@@ -42,15 +42,15 @@ if (isset($_POST['add_page']) OR isset($_POST['change_page'])){
 		$sql="UPDATE humo_cms_pages SET ";
 	}
 	$sql.="page_status='".$page_status."',
-	page_menu_id='".safe_text($_POST['page_menu_id'])."',
-	page_title='".safe_text($_POST['page_title'])."',
-	page_text='".safe_text($_POST['page_text'])."'
+	page_menu_id='".safe_text_db($_POST['page_menu_id'])."',
+	page_title='".safe_text_db($_POST['page_title'])."',
+	page_text='".safe_text_db($_POST['page_text'])."'
 	";
 
 	if (isset($_POST['change_page'])){
-		$sql.="WHERE page_id='".safe_text($_POST['page_id'])."'";
+		$sql.="WHERE page_id='".safe_text_db($_POST['page_id'])."'";
 
-		$_GET["select_page"]=safe_text($_POST['page_id']);
+		$_GET["select_page"]=safe_text_db($_POST['page_id']);
 	}
 
 	//echo $sql;
@@ -68,26 +68,26 @@ if (isset($_POST['add_page']) OR isset($_POST['change_page'])){
 if (isset($_GET['page_up'])){
 	$sql="UPDATE humo_cms_pages as table1, humo_cms_pages as table2
 		SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
-		WHERE table1.page_id='".safe_text($_GET['page_up'])."' AND table2.page_id='".safe_text($_GET['select_page'])."'";
+		WHERE table1.page_id='".safe_text_db($_GET['page_up'])."' AND table2.page_id='".safe_text_db($_GET['select_page'])."'";
 	//echo $sql;
 	$result=$dbh->query($sql);
 }
 if (isset($_GET['page_down'])){
-	$qry2=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".safe_text($_GET['menu_id'])."' ORDER BY page_order");
+	$qry2=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".safe_text_db($_GET['menu_id'])."' ORDER BY page_order");
 	$search_page=false;
 	while($cms_pagesDb=$qry2->fetch(PDO::FETCH_OBJ)){
 		if ($search_page==true){
 			$page2=$cms_pagesDb->page_id;
 			$search_page=false;
 		}
-		if ($cms_pagesDb->page_id==safe_text($_GET['select_page'])){
+		if ($cms_pagesDb->page_id==safe_text_db($_GET['select_page'])){
 			$search_page=true;
 		}
 	}
 
 	$sql="UPDATE humo_cms_pages as table1, humo_cms_pages as table2
 		SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
-		WHERE table1.page_id='".safe_text($_GET['select_page'])."' AND table2.page_id='".$page2."'";
+		WHERE table1.page_id='".safe_text_db($_GET['select_page'])."' AND table2.page_id='".$page2."'";
 	//echo $sql;
 	$result=$dbh->query($sql);
 }
@@ -111,7 +111,7 @@ if (isset($_GET['page_remove'])){
 	echo '</div>';
 }
 if (isset($_POST['page_remove2'])){
-	$sql="DELETE FROM humo_cms_pages WHERE page_id='".safe_text($_POST['page_id'])."'";
+	$sql="DELETE FROM humo_cms_pages WHERE page_id='".safe_text_db($_POST['page_id'])."'";
 	@$result=$dbh->query($sql);
 }
 
@@ -132,10 +132,10 @@ if (isset($_POST['add_menu']) OR isset($_POST['change_menu'])){
 	else{
 		$sql="UPDATE humo_cms_menu SET ";
 	}
-	$sql.="menu_name='".safe_text($_POST['menu_name'])."'";
+	$sql.="menu_name='".safe_text_db($_POST['menu_name'])."'";
 
 	if (isset($_POST['change_menu'])){
-		$sql.="WHERE menu_id='".safe_text($_POST['menu_id'])."'";
+		$sql.="WHERE menu_id='".safe_text_db($_POST['menu_id'])."'";
 	}
 
 	//echo $sql;
@@ -145,14 +145,14 @@ if (isset($_POST['add_menu']) OR isset($_POST['change_menu'])){
 if (isset($_GET['menu_up'])){
 	$sql="UPDATE humo_cms_menu as table1, humo_cms_menu as table2
 		SET table1.menu_order=table2.menu_order, table2.menu_order=table1.menu_order
-		WHERE table1.menu_order='".safe_text($_GET['menu_up'])."' AND table2.menu_order='".safe_text($_GET['menu_up']-1)."'";
+		WHERE table1.menu_order='".safe_text_db($_GET['menu_up'])."' AND table2.menu_order='".safe_text_db($_GET['menu_up']-1)."'";
 	//echo $sql;
 	$result=$dbh->query($sql);
 }
 if (isset($_GET['menu_down'])){
 	$sql="UPDATE humo_cms_menu as table1, humo_cms_menu as table2
 		SET table1.menu_order=table2.menu_order, table2.menu_order=table1.menu_order
-		WHERE table1.menu_order='".safe_text($_GET['menu_down'])."' AND table2.menu_order='".safe_text($_GET['menu_down']+1)."'";
+		WHERE table1.menu_order='".safe_text_db($_GET['menu_down'])."' AND table2.menu_order='".safe_text_db($_GET['menu_down']+1)."'";
 	//echo $sql;
 	$result=$dbh->query($sql);
 }
@@ -160,7 +160,7 @@ if (isset($_GET['menu_down'])){
 if (isset($_GET['menu_remove'])){
 	echo '<div class="confirm">';
 	$qry=$dbh->query("SELECT * FROM humo_cms_pages
-		WHERE page_menu_id='".safe_text($_GET['menu_remove'])."' ORDER BY page_order");
+		WHERE page_menu_id='".safe_text_db($_GET['menu_remove'])."' ORDER BY page_order");
 	$count=$qry->rowCount();
 	if ($count>0){
 		echo __('There are still pages connected to this menu!<br>
@@ -180,7 +180,7 @@ Please disconnect the pages from this menu first.');
 	echo '</div>';
 }
 if (isset($_POST['menu_remove2'])){
-	$sql="DELETE FROM humo_cms_menu WHERE menu_id='".safe_text($_POST['menu_id'])."'";
+	$sql="DELETE FROM humo_cms_menu WHERE menu_id='".safe_text_db($_POST['menu_id'])."'";
 	@$result=$dbh->query($sql);
 	
 	// *** Re-order menu's ***
@@ -304,7 +304,7 @@ if ($cms_item=='pages'){
 	echo '</td><td valign="top">';
 
 		if (isset($_GET["select_page"])){
-			$sql="SELECT * FROM humo_cms_pages WHERE page_id=".safe_text($_GET["select_page"]);
+			$sql="SELECT * FROM humo_cms_pages WHERE page_id=".safe_text_db($_GET["select_page"]);
 			$qry=$dbh->query($sql);
 			$cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ);
 			//if ($memosoort2Db->website_id==$memosoortDb->menu_website_id){
@@ -510,7 +510,7 @@ if ($cms_item=='settings'){
 			if (isset($_POST['default_path']) AND $_POST['default_path']=='yes') $cms_images_path='|'.$cms_images_path;
 		}
 
-		$qry="UPDATE humo_settings SET setting_value='".safe_text($cms_images_path)."' WHERE setting_variable='cms_images_path'";
+		$qry="UPDATE humo_settings SET setting_value='".safe_text_db($cms_images_path)."' WHERE setting_variable='cms_images_path'";
 		$result = $dbh->query($qry);
 
 		//$humo_option["cms_images_path"]=$_POST["cms_images_path"];

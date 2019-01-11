@@ -259,6 +259,10 @@ function person_name($personDb){
 			$name_array["standard_name"]=$nobility.$title_before.$pers_firstname." ";
 			if ($personDb->pers_patronym) $name_array["standard_name"].=" ".$personDb->pers_patronym." ";
 			$name_array["standard_name"].=$title_between;
+				// *** Callname shown as "Huub" ***
+				//if ($personDb->pers_callname AND $privacy=='') $name_array["standard_name"].= ' "'.$personDb->pers_callname.'" ';
+				if ($personDb->pers_callname AND $privacy=='' OR ($privacy AND $user['group_filter_name']=='j') )
+					$name_array["standard_name"].= ' "'.$personDb->pers_callname.'" ';
 			$name_array["standard_name"].=str_replace("_", " ", $personDb->pers_prefix);
 			$name_array["standard_name"].=$personDb->pers_lastname;
 			if ($title_after){ $name_array["standard_name"].=$title_after; }
@@ -283,10 +287,18 @@ function person_name($personDb){
 				$name_array["index_name"].=$personDb->pers_lastname.', ';
 				$name_array["index_name_extended"].=$personDb->pers_lastname.', ';
 			}
-			$name_array["index_name"].=$pers_firstname.$prefix2;
+			$name_array["index_name"].=$pers_firstname;
+				// *** Callname shown as "Huub" ***
+				//if ($personDb->pers_callname  AND $privacy=='') $name_array["index_name"].= ' "'.$personDb->pers_callname.'" ';
+				if ($personDb->pers_callname AND $privacy=='' OR ($privacy AND $user['group_filter_name']=='j') )
+					$name_array["index_name"].= ' "'.$personDb->pers_callname.'" ';
+			$name_array["index_name"].=$prefix2;
 
 			$name_array["index_name_extended"].=$pers_firstname;
-
+				// *** Callname shown as "Huub" ***
+				//if ($personDb->pers_callname AND $privacy=='') $name_array["index_name_extended"].= ' "'.$personDb->pers_callname.'" ';
+				if ($personDb->pers_callname AND $privacy=='' OR ($privacy AND $user['group_filter_name']=='j') )
+					$name_array["index_name_extended"].= ' "'.$personDb->pers_callname.'" ';
 			if ($title_after){ $name_array["index_name_extended"].=$title_after; }
 
 			if ($personDb->pers_patronym){ $name_array["index_name_extended"].=' '.$personDb->pers_patronym;}
@@ -403,7 +415,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 	if (!$bot_visit AND $screen_mode!="PDF" AND $screen_mode!="RTF") {
 
 		// *** Family tree for search in multiple family trees ***
-		$tree_prefix=safe_text($personDb->pers_tree_prefix);
+		$tree_prefix=safe_text_db($personDb->pers_tree_prefix);
 		$db_functions->set_tree_prefix($tree_prefix);
 
 		if (CMS_SPECIFIC=='Joomla'){
@@ -780,13 +792,13 @@ function name_extended($person_kind){
 		}
 
 		// *** Check privacy filter for callname ***
-		if (($privacy AND $user['group_filter_name']=='n')
-			OR ($user["group_pers_hide_totally_act"]=='j' AND strpos($personDb->pers_own_code,$user["group_pers_hide_totally"])>0)){
-			//
-		}
-		else{
-			if ($personDb->pers_callname){ $standard_name.= ', '.__('Nickname').': '.$personDb->pers_callname; }
-		}
+		//if (($privacy AND $user['group_filter_name']=='n')
+		//	OR ($user["group_pers_hide_totally_act"]=='j' AND strpos($personDb->pers_own_code,$user["group_pers_hide_totally"])>0)){
+		//	//
+		//}
+		//else{
+		//	if ($personDb->pers_callname) $standard_name.= ', '.__('Nickname').': '.$personDb->pers_callname;
+		//}
 
 		// *** No links if gen_protection is enabled ***
 		if ($user["group_gen_protection"]=='j'){ $person_kind=''; }

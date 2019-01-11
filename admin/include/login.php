@@ -2,7 +2,7 @@
 if (CMS_SPECIFIC=='Joomla')
 	$path_tmp='index.php?option=com_humo-gen&amp;task=admin';
 else
-	$path_tmp=$_SERVER['PHP_SELF'];
+	$path_tmp='index.php';
 
 print '<h2 align=center>'.__('Administration menu login').'</h2>';
 

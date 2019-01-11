@@ -2,7 +2,7 @@
 $user["user_name"]="";
 if (isset($_SESSION["user_name"]) AND is_numeric($_SESSION["user_id"])){
 	$user["user_name"]=$_SESSION["user_name"];
-	$account="SELECT * FROM humo_users WHERE user_id=".safe_text($_SESSION["user_id"]);
+	$account="SELECT * FROM humo_users WHERE user_id=".safe_text_db($_SESSION["user_id"]);
 }
 else{
 	// *** For guest account ("gast" is only used for backward compatibility) ***
@@ -28,14 +28,14 @@ if (!isset($groupDb->group_statistics)) $user['group_statistics']='j';
 if (!isset($groupDb->group_birthday_rss)) $user['group_birthday_rss']='j';
 	else $user['group_birthday_rss']=$groupDb->group_birthday_rss;
 
-if (!isset($groupDb->group_birthday_list)){ $user['group_birthday_list']='j'; }
-	else{ $user['group_birthday_list']=$groupDb->group_birthday_list; }
+if (!isset($groupDb->group_birthday_list)) $user['group_birthday_list']='j';
+	else $user['group_birthday_list']=$groupDb->group_birthday_list;
 
-if (!isset($groupDb->group_showstatistics)){ $user['group_showstatistics']='j'; }
-	else{ $user['group_showstatistics']=$groupDb->group_showstatistics; }
+if (!isset($groupDb->group_showstatistics)) $user['group_showstatistics']='j';
+	else $user['group_showstatistics']=$groupDb->group_showstatistics;
 
-if (!isset($groupDb->group_relcalc)){ $user['group_relcalc']='j'; }
-	else{ $user['group_relcalc']=$groupDb->group_relcalc; }
+if (!isset($groupDb->group_relcalc)) $user['group_relcalc']='j';
+	else $user['group_relcalc']=$groupDb->group_relcalc;
 
 if (!isset($groupDb->group_googlemaps)){ $user['group_googlemaps']='j'; }
 	else{ $user['group_googlemaps']=$groupDb->group_googlemaps; }

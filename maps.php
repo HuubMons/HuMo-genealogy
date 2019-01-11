@@ -36,7 +36,6 @@ $tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ".$tree_
 $tree_prefix_result = $dbh->query($tree_prefix_sql);
 $count=0;
 echo '<form method="POST" action="maps.php" style="display : inline;">';
-//echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
 echo '<select size="1" name="database" onChange="this.form.submit();">';
 	echo '<option value="">'.__('Select a family tree:').'</option>';
 	while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
@@ -173,7 +172,7 @@ echo '</div>';
 echo ' <input type="Submit" style="font-size:110%;" name="anything" onclick="document.getElementById(\'namemapping\').style.display=\'block\' ;" value="'.__('Filter by specific family name(s)').'">';
 
 // BUTTON: SEARCH BY DESCENDANTS
-echo '<form method="POST" style="display:inline" name="descform" action='.$_SERVER['PHP_SELF'].'>';
+echo '<form method="POST" style="display:inline" name="descform" action="maps.php">';
 echo '<input type="hidden" name="descmap" value="1">';
 echo '&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anything" value="'.__('Filter by descendants').'">';
 echo '</form>';
@@ -181,7 +180,7 @@ echo '</form>';
 //echo '</td></tr>';
 
 // BUTTON: SEARCH BY ANCESTORS
-echo '<form method="POST" style="display:inline" name="ancform" action='.$_SERVER['PHP_SELF'].'>';
+echo '<form method="POST" style="display:inline" name="ancform" action="maps.php">';
 echo '<input type="hidden" name="ancmap" value="1">';
 echo '&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anythingelse" value="'.__('Filter by ancestors').'">';
 echo '</form>';
@@ -302,7 +301,7 @@ if(isset($_POST['items'])) {
 	}
 	$names = substr($names,0,-2); // take off last ", "
 	echo $names;
-	echo '&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.__('Switch name filter off').'</a>';
+	echo '&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="maps.php">'.__('Switch name filter off').'</a>';
 	echo '</div>';
 }
 
@@ -417,15 +416,15 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	}
 	echo '<div id="desc_search" style="border: 0px solid #bdbdbd;background-color:#f3f781;">';
 	if($desc_array!='') {
-		echo '&nbsp;'.__('Filter by descendants of: ').$chosenname.'&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.'&nbsp;|&nbsp;'.__('Switch descendant filter off').'</a>' ;
+		echo '&nbsp;'.__('Filter by descendants of: ').$chosenname.'&nbsp;&nbsp;<a href="maps.php">'.'&nbsp;|&nbsp;'.__('Switch descendant filter off').'</a>' ;
 	}
 	else {
-		echo '&nbsp;'.__('No known birth places amongst descendants').'&nbsp;&nbsp;|&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.__('Close').'</a>';
+		echo '&nbsp;'.__('No known birth places amongst descendants').'&nbsp;&nbsp;|&nbsp;&nbsp;<a href="maps.php">'.__('Close').'</a>';
 	}
 	echo '</div>';
 } // end descendant notifications
 
-// NEW =============================
+// =============================
 // FUNCTION TO FIND ANCESTORS OF CHOSEN PERSON AND SHOW NOTIFICATION
 include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."include/marriage_cls.php");
@@ -531,10 +530,10 @@ if(isset($_GET['anc_persged']) AND isset($_GET['anc_persfams'])) {
 	echo '<div id="anc_search" style="border: 0px solid #bdbdbd;background-color:#f3f781;">';
 
 	if($anc_array!='') {
-		echo '&nbsp;'.__('Filter by ancestors of: ').$chosenname.'&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.'&nbsp;|&nbsp;'.__('Switch ancestor filter off').'</a>' ;
+		echo '&nbsp;'.__('Filter by ancestors of: ').$chosenname.'&nbsp;&nbsp;<a href="maps.php">'.'&nbsp;|&nbsp;'.__('Switch ancestor filter off').'</a>' ;
 	}
 	else {
-		echo '&nbsp;'.__('No known birth places amongst ancestors').'&nbsp;&nbsp;|&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.__('Close').'</a>';
+		echo '&nbsp;'.__('No known birth places amongst ancestors').'&nbsp;&nbsp;|&nbsp;&nbsp;<a href="maps.php">'.__('Close').'</a>';
 	}
 	echo '</div>';
 } // end ancestor notifications
@@ -660,7 +659,7 @@ if(isset($_POST['descmap'])) {
 						if($desc_searchDb->pers_prefix) { $pref = ' '.strtolower(str_replace('_','',$desc_searchDb->pers_prefix)); }
 						$name = $last.$first.$pref;
 					}
-					echo '<option value="'.$_SERVER['PHP_SELF'].'?persged='.$desc_searchDb->pers_gedcomnumber.'&persfams='.$desc_searchDb->pers_fams.'" '.$selected.'>'.$name.$date.' [#'.$desc_searchDb->pers_gedcomnumber.']</option>';
+					echo '<option value="maps.php?persged='.$desc_searchDb->pers_gedcomnumber.'&persfams='.$desc_searchDb->pers_fams.'" '.$selected.'>'.$name.$date.' [#'.$desc_searchDb->pers_gedcomnumber.']</option>';
 				}
 			}
 		}
@@ -680,7 +679,7 @@ if(isset($_POST['descmap'])) {
 	</script>
 	<?php
 	echo '<br><div style="margin-top:5px;text-align:left">&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="'.__('Go!').'" onclick="findGednr(getElementById(\'id_field\').value);">';
-	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.__('Cancel').'</a></div>';
+	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="maps.php">'.__('Cancel').'</a></div>';
 	echo '</div>';
 }
 
@@ -772,7 +771,7 @@ if(isset($_POST['ancmap'])) {
 						if($anc_searchDb->pers_prefix) { $pref = ' '.strtolower(str_replace('_','',$anc_searchDb->pers_prefix)); }
 						$name = $last.$first.$pref;
 					}
-					echo '<option value="'.$_SERVER['PHP_SELF'].'?anc_persged='.$anc_searchDb->pers_gedcomnumber.'&anc_persfams='.$anc_searchDb->pers_fams.'" '.$selected.'>'.$name.$date.' [#'.$anc_searchDb->pers_gedcomnumber.']</option>';
+					echo '<option value="maps.php?anc_persged='.$anc_searchDb->pers_gedcomnumber.'&anc_persfams='.$anc_searchDb->pers_fams.'" '.$selected.'>'.$name.$date.' [#'.$anc_searchDb->pers_gedcomnumber.']</option>';
 				}
 			}
 		}
@@ -792,7 +791,7 @@ if(isset($_POST['ancmap'])) {
 	</script>
 	<?php
 	echo '<br><div style="margin-top:5px;text-align:left">&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="'.__('Go!').'" onclick="findGednr(getElementById(\'id_field\').value);">';
-	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.__('Cancel').'</a></div>';
+	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="maps.php">'.__('Cancel').'</a></div>';
 	echo '</div>';
 }
 // END NEW~~~~~~~~~~~~~~~~~~~~~~

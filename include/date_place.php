@@ -4,7 +4,10 @@ function date_place($process_date, $process_place){
 	global $language, $user, $screen_mode, $dirmark1, $humo_option;
 	$self = $_SERVER['QUERY_STRING']; $hebdate='';
 	if($humo_option['date_display']=="is") {
-		if(stripos($self,"star")===FALSE AND stripos($self,"ancestor_chart")===FALSE AND stripos($self,"ancestor_sheet")===FALSE) { $hebdate=hebdate($process_date); }
+		if(stripos($self,"star")===FALSE
+			AND stripos($self,"ancestor_chart")===FALSE
+			AND stripos($self,"ancestor_sheet")===FALSE)
+			$hebdate=hebdate($process_date);
 	}
 	if ($process_place==" "){$process_place="";} // *** If there is no place ***
 	if ($user['group_place_date']=='j'){

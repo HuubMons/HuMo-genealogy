@@ -7,7 +7,7 @@ global $selected_language;
 if(CMS_SPECIFIC=="Joomla")
 	$phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=groups";
 else
-	$phpself = $_SERVER['PHP_SELF'];
+	$phpself = 'index.php';
 
 echo '<h1 align="center">'.__('User groups').'</h1>';
 

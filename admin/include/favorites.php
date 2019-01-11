@@ -15,7 +15,7 @@ if (isset($_POST['change_link'])){
 	$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link'");
 	while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 		$setting_value=$_POST[$dataDb->setting_id.'own_code']."|".$_POST[$dataDb->setting_id.'link_text'];
-		$sql="UPDATE humo_settings SET setting_value='".safe_text($setting_value)."' WHERE setting_id=".safe_text($_POST[$dataDb->setting_id.'id']);
+		$sql="UPDATE humo_settings SET setting_value='".safe_text_db($setting_value)."' WHERE setting_id=".safe_text_db($_POST[$dataDb->setting_id.'id']);
 		$result=$dbh->query($sql);
 	}
 }
@@ -33,45 +33,45 @@ while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 if (isset($_POST['add_link']) AND is_numeric ($_POST['link_order'])){
 	$setting_value=$_POST['own_code']."|".$_POST['link_text'];
 	$sql="INSERT INTO humo_settings SET setting_variable='link',
-		setting_value='".safe_text($setting_value)."', setting_order='".safe_text($_POST['link_order'])."'";
+		setting_value='".safe_text_db($setting_value)."', setting_order='".safe_text_db($_POST['link_order'])."'";
 	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['up'])){
 	// *** Search previous link ***
-	$item=$dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' AND setting_order=".(safe_text($_GET['link_order'])-1));
+	$item=$dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' AND setting_order=".(safe_text_db($_GET['link_order'])-1));
 	$itemDb=$item->fetch(PDO::FETCH_OBJ);
 
 	// *** Raise previous link ***
-	$sql="UPDATE humo_settings SET setting_order='".safe_text($_GET['link_order'])."' WHERE setting_id='".$itemDb->setting_id."'";
+	$sql="UPDATE humo_settings SET setting_order='".safe_text_db($_GET['link_order'])."' WHERE setting_id='".$itemDb->setting_id."'";
 
 	$result=$dbh->query($sql);
 	// *** Lower link order ***
-	$sql="UPDATE humo_settings SET setting_order='".(safe_text($_GET['link_order'])-1)."' WHERE setting_id=".safe_text($_GET['id']);
+	$sql="UPDATE humo_settings SET setting_order='".(safe_text_db($_GET['link_order'])-1)."' WHERE setting_id=".safe_text_db($_GET['id']);
 
 	$result=$dbh->query($sql);
 }
 if (isset($_GET['down'])){
 	// *** Search next link ***
-	$item=$dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' AND setting_order=".(safe_text($_GET['link_order'])+1));
+	$item=$dbh->query("SELECT * FROM humo_settings WHERE setting_variable='link' AND setting_order=".(safe_text_db($_GET['link_order'])+1));
 	$itemDb=$item->fetch(PDO::FETCH_OBJ);
 
 	// *** Lower previous link ***
-	$sql="UPDATE humo_settings SET setting_order='".safe_text($_GET['link_order'])."' WHERE setting_id='".$itemDb->setting_id."'";
+	$sql="UPDATE humo_settings SET setting_order='".safe_text_db($_GET['link_order'])."' WHERE setting_id='".$itemDb->setting_id."'";
 
 	$result=$dbh->query($sql);
 	// *** Raise link order ***
-	$sql="UPDATE humo_settings SET setting_order='".(safe_text($_GET['link_order'])+1)."' WHERE setting_id=".safe_text($_GET['id']);
+	$sql="UPDATE humo_settings SET setting_order='".(safe_text_db($_GET['link_order'])+1)."' WHERE setting_id=".safe_text_db($_GET['id']);
 
 	$result=$dbh->query($sql);
 }
 
 // *** Show all links ***
 if(CMS_SPECIFIC == "Joomla") {
-	print "<form method='post' action='index.php?option=com_humo-gen&amp;task=admin&amp;page=favorites'>";
+	echo "<form method='post' action='index.php?option=com_humo-gen&amp;task=admin&amp;page=favorites'>";
 }
 else {
-	print "<form method='post' action='".$_SERVER['PHP_SELF']."'>";
+	echo "<form method='post' action='index.php'>";
 }
 echo '<input type="hidden" name="page" value="'.$page.'">';
 

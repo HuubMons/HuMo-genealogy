@@ -20,8 +20,8 @@ if (isset($_GET['menu_admin'])){ $menu_admin=$_GET['menu_admin']; }
 
 if (isset($_SESSION['tree_prefix'])) $tree_prefix=$_SESSION['tree_prefix'];
 if (isset($_POST['tree_prefix'])){
-	$tree_prefix=safe_text($_POST["tree_prefix"]);
-	$_SESSION['tree_prefix']=safe_text($_POST['tree_prefix']);
+	$tree_prefix=safe_text_db($_POST["tree_prefix"]);
+	$_SESSION['tree_prefix']=safe_text_db($_POST['tree_prefix']);
 }
 
 echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="">';
@@ -88,8 +88,8 @@ if (isset($menu_admin) AND $menu_admin=='log_blacklist'){
 		$datasql = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist'");
 		while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			$setting_value=$_POST[$dataDb->setting_id.'own_code']."|".$_POST[$dataDb->setting_id.'link_text'];
-			$sql="UPDATE humo_settings SET setting_value='".safe_text($setting_value)."'
-				WHERE setting_id=".safe_text($_POST[$dataDb->setting_id.'id']);
+			$sql="UPDATE humo_settings SET setting_value='".safe_text_db($setting_value)."'
+				WHERE setting_id=".safe_text_db($_POST[$dataDb->setting_id.'id']);
 			$result=$dbh->query($sql);
 		}
 	}
@@ -107,35 +107,35 @@ if (isset($menu_admin) AND $menu_admin=='log_blacklist'){
 	if (isset($_POST['add_link']) AND is_numeric ($_POST['link_order'])){
 		$setting_value=$_POST['own_code']."|".$_POST['link_text'];
 		$sql="INSERT INTO humo_settings SET setting_variable='ip_blacklist',
-			setting_value='".safe_text($setting_value)."', setting_order='".safe_text($_POST['link_order'])."'";
+			setting_value='".safe_text_db($setting_value)."', setting_order='".safe_text_db($_POST['link_order'])."'";
 		$result=$dbh->query($sql);
 	}
 
 	if (isset($_GET['up'])){
 		// *** Search previous link ***
-		$sql="SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist' AND setting_order=".(safe_text($_GET['link_order'])-1);
+		$sql="SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist' AND setting_order=".(safe_text_db($_GET['link_order'])-1);
 		$item=$dbh->query($sql);
 		$itemDb=$item->fetch(PDO::FETCH_OBJ);
 
 		// *** Raise previous link ***
-		$sql="UPDATE humo_settings SET setting_order='".safe_text($_GET['link_order'])."' WHERE setting_id='".$itemDb->setting_id."'";
+		$sql="UPDATE humo_settings SET setting_order='".safe_text_db($_GET['link_order'])."' WHERE setting_id='".$itemDb->setting_id."'";
 		$result=$dbh->query($sql);
 
 		// *** Lower link order ***
-		$sql="UPDATE humo_settings SET setting_order='".(safe_text($_GET['link_order'])-1)."' WHERE setting_id=".safe_text($_GET['id']);
+		$sql="UPDATE humo_settings SET setting_order='".(safe_text_db($_GET['link_order'])-1)."' WHERE setting_id=".safe_text_db($_GET['id']);
 		$result=$dbh->query($sql);
 	}
 	if (isset($_GET['down'])){
 		// *** Search next link ***
-		$item=$dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist' AND setting_order=".(safe_text($_GET['link_order'])+1));
+		$item=$dbh->query("SELECT * FROM humo_settings WHERE setting_variable='ip_blacklist' AND setting_order=".(safe_text_db($_GET['link_order'])+1));
 		$itemDb=$item->fetch(PDO::FETCH_OBJ);
 
 		// *** Lower previous link ***
-		$sql="UPDATE humo_settings SET setting_order='".safe_text($_GET['link_order'])."' WHERE setting_id='".$itemDb->setting_id."'";
+		$sql="UPDATE humo_settings SET setting_order='".safe_text_db($_GET['link_order'])."' WHERE setting_id='".$itemDb->setting_id."'";
 
 		$result=$dbh->query($sql);
 		// *** Raise link order ***
-		$sql="UPDATE humo_settings SET setting_order='".(safe_text($_GET['link_order'])+1)."' WHERE setting_id=".safe_text($_GET['id']);
+		$sql="UPDATE humo_settings SET setting_order='".(safe_text_db($_GET['link_order'])+1)."' WHERE setting_id=".safe_text_db($_GET['id']);
 
 		$result=$dbh->query($sql);
 	}
@@ -148,7 +148,6 @@ if (isset($menu_admin) AND $menu_admin=='log_blacklist'){
 		print "<form method='post' action='index.php?option=com_humo-gen&amp;task=admin&amp;page=log&amp;menu_admin=log_blacklist'>";
 	}
 	else {
-		//print "<form method='post' action='".$_SERVER['PHP_SELF']."'>";
 		print "<form method='post' action='index.php?page=log&amp;menu_admin=log_blacklist'>";
 	}
 	echo '<input type="hidden" name="page" value="'.$page.'">';

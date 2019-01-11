@@ -18,8 +18,8 @@ function show_media($event_connect_kind,$event_connect_id){
 
 		// *** Standard connected media by person and family ***
 		$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-			AND event_connect_kind='".safe_text($event_connect_kind)."'
-			AND event_connect_id='".safe_text($event_connect_id)."'
+			AND event_connect_kind='".safe_text_db($event_connect_kind)."'
+			AND event_connect_id='".safe_text_db($event_connect_id)."'
 			AND LEFT(event_kind,7)='picture'
 			ORDER BY event_kind, event_order");
 		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
@@ -42,7 +42,7 @@ function show_media($event_connect_kind,$event_connect_id){
 		if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 			foreach ($connect_sql as $connectDb){
 				$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-					AND event_gedcomnr='".safe_text($connectDb->connect_source_id)."' AND event_kind='object'
+					AND event_gedcomnr='".safe_text_db($connectDb->connect_source_id)."' AND event_kind='object'
 					ORDER BY event_order");
 				while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
 					$media_nr++;

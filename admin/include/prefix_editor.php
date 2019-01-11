@@ -16,8 +16,8 @@ if (isset($_POST['save_language'])){
 	if (file_exists($file)){
 		$language_text=$_POST['language_text'];
 		if (get_magic_quotes_gpc()==1) {
-		   // *** magic quotes is activated, addslashes is used ***
-		   $language_text = stripslashes($language_text);
+			// *** magic quotes is activated, addslashes is used ***
+			$language_text = stripslashes($language_text);
 		}
 		file_put_contents($file, $language_text);
 	}

@@ -181,7 +181,7 @@ function mapbirthplace ($place) {
 			$privacy_man=$man_cls->privacy;
 			$name=$man_cls->person_name($maplistDb);
 			if ($name["show_name"]==true){
-				echo '<a href=family.php?database='.safe_text($_SESSION['tree_prefix']).'&amp;id='.$maplistDb->pers_indexnr.'&amp;main_person='.$maplistDb->pers_gedcomnumber.' target="blank">';
+				echo '<a href=family.php?database='.safe_text_db($_SESSION['tree_prefix']).'&amp;id='.$maplistDb->pers_indexnr.'&amp;main_person='.$maplistDb->pers_gedcomnumber.' target="blank">';
 			}
 			if($_SESSION['type_birth']==1) {
 				echo $name["index_name"];

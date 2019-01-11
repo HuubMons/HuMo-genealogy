@@ -765,7 +765,7 @@ if($showdesc=="1" ) {
 	elseif($fan_style==3) $top_pos = 0.856*$fan_w;
 	elseif($fan_style==4) $top_pos = $fan_w;
 
-	echo '<iframe src="family.php?database='.safe_text($_SESSION['tree_prefix']).'&amp;id='.$indexnr.'&amp;main_person='.$family_id.'&amp;screen_mode=STAR&amp;menu=1" id="iframe1"  style="position:absolute;top:'.$top_pos.'px;left:0px;width:100%;height:700px;" ;" >';
+	echo '<iframe src="family.php?database='.safe_text_db($_SESSION['tree_prefix']).'&amp;id='.$indexnr.'&amp;main_person='.$family_id.'&amp;screen_mode=STAR&amp;menu=1" id="iframe1"  style="position:absolute;top:'.$top_pos.'px;left:0px;width:100%;height:700px;" ;" >';
 	echo '</iframe>';
 }
 //END NEW

@@ -132,7 +132,7 @@ function tree_list($datasql){
 					$path_tmp=$uri_path.'tree_index/'.$dataDb->tree_prefix.'/';
 				}
 				else{
-					$path_tmp=$_SERVER['PHP_SELF'].'?database='.$dataDb->tree_prefix;
+					$path_tmp='index.php?database='.$dataDb->tree_prefix;
 				}
 
 				$tree_name='<span class="tree_link fonts">';
@@ -392,7 +392,8 @@ function search_box(){
 	echo '<input type="hidden" name="index_list" value="quicksearch">';
 	$quicksearch='';
 	if (isset($_POST['quicksearch'])){
-		$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
+		//$quicksearch=htmlentities($_POST['quicksearch'],ENT_QUOTES,'UTF-8');
+		$quicksearch=safe_text_show($_POST['quicksearch']);
 		$_SESSION["save_quicksearch"]=$quicksearch;
 	}
 	if (isset($_SESSION["save_quicksearch"])){ $quicksearch=$_SESSION["save_quicksearch"]; }

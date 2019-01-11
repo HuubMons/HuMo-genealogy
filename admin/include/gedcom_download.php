@@ -9,7 +9,7 @@
 //echo '<H1 align=center>'.__('Gedcom file export').'</H1>';
 
 //if (isset($_POST['tree'])){
-//	$tree=safe_text($_POST["tree"]);
+//	$tree=safe_text_db($_POST["tree"]);
 //}
 
 //$myFile = CMS_ROOTPATH_ADMIN."backup_tmp/gedcom.ged";

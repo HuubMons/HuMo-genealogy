@@ -19,8 +19,8 @@ if(CMS_SPECIFIC=="Joomla") {
 	$phpself2= "index.php?option=com_humo-gen&amp;task=admin&amp;"; // used only in trees_cls.php
 }
 else {
-	$phpself =$_SERVER['PHP_SELF'];
-	$phpself2=$_SERVER['PHP_SELF']."?";
+	$phpself ='index.php';
+	$phpself2='index.php?';
 	$joomlastring='';
 }
 
@@ -35,31 +35,31 @@ if (isset($_POST['change_tree_data'])){
 	}
 
 	$sql="UPDATE humo_trees SET
-	tree_email='".safe_text($_POST['tree_email'])."',
-	tree_owner='".safe_text($_POST['tree_owner'])."',
-	tree_pict_path='".safe_text($tree_pict_path)."',
-	tree_privacy='".safe_text($_POST['tree_privacy'])."'
-	WHERE tree_id=".safe_text($_POST['tree_id']);
+	tree_email='".safe_text_db($_POST['tree_email'])."',
+	tree_owner='".safe_text_db($_POST['tree_owner'])."',
+	tree_pict_path='".safe_text_db($tree_pict_path)."',
+	tree_privacy='".safe_text_db($_POST['tree_privacy'])."'
+	WHERE tree_id=".safe_text_db($_POST['tree_id']);
 	$result=$dbh->query($sql);
 }
 
 if (isset($_POST['change_tree_text'])){
 	$sql="UPDATE humo_tree_texts SET
-	treetext_tree_id='".safe_text($_POST['tree_id'])."',
-	treetext_language='".safe_text($_POST['language_tree'])."',
-	treetext_name='".safe_text($_POST['treetext_name'])."',
-	treetext_mainmenu_text='".safe_text($_POST['treetext_mainmenu_text'])."',
-	treetext_mainmenu_source='".safe_text($_POST['treetext_mainmenu_source'])."',
-	treetext_family_top='".safe_text($_POST['treetext_family_top'])."',
-	treetext_family_footer='".safe_text($_POST['treetext_family_footer'])."'
-	WHERE treetext_id=".safe_text($_POST['treetext_id']);
+	treetext_tree_id='".safe_text_db($_POST['tree_id'])."',
+	treetext_language='".safe_text_db($_POST['language_tree'])."',
+	treetext_name='".safe_text_db($_POST['treetext_name'])."',
+	treetext_mainmenu_text='".safe_text_db($_POST['treetext_mainmenu_text'])."',
+	treetext_mainmenu_source='".safe_text_db($_POST['treetext_mainmenu_source'])."',
+	treetext_family_top='".safe_text_db($_POST['treetext_family_top'])."',
+	treetext_family_footer='".safe_text_db($_POST['treetext_family_footer'])."'
+	WHERE treetext_id=".safe_text_db($_POST['treetext_id']);
 	$result=$dbh->query($sql);
 }
 
 if (isset($_POST['add_tree_data'])){
 	$sql="INSERT INTO humo_trees SET
-	tree_order='".safe_text($_POST['tree_order'])."',
-	tree_prefix='".safe_text($_POST['tree_prefix'])."',
+	tree_order='".safe_text_db($_POST['tree_order'])."',
+	tree_prefix='".safe_text_db($_POST['tree_prefix'])."',
 	tree_persons='0',
 	tree_families='0',
 	tree_email='',
@@ -69,12 +69,12 @@ if (isset($_POST['add_tree_data'])){
 	$result=$dbh->query($sql);
 
 	// *** Immediately add new tables in tree ***
-	$_SESSION['tree_prefix']=safe_text($_POST['tree_prefix']);
+	$_SESSION['tree_prefix']=safe_text_db($_POST['tree_prefix']);
 }
 
 if (isset($_POST['add_tree_data_empty'])){
 	$sql="INSERT INTO humo_trees SET
-	tree_order='".safe_text($_POST['tree_order'])."',
+	tree_order='".safe_text_db($_POST['tree_order'])."',
 	tree_prefix='EMPTY',
 	tree_persons='EMPTY',
 	tree_families='EMPTY',
@@ -87,19 +87,19 @@ if (isset($_POST['add_tree_data_empty'])){
 
 if (isset($_POST['add_tree_text'])){
 	$sql="INSERT INTO humo_tree_texts SET
-	treetext_tree_id='".safe_text($_POST['tree_id'])."',
-	treetext_language='".safe_text($_POST['language_tree'])."',
-	treetext_name='".safe_text($_POST['treetext_name'])."',
-	treetext_mainmenu_text='".safe_text($_POST['treetext_mainmenu_text'])."',
-	treetext_mainmenu_source='".safe_text($_POST['treetext_mainmenu_source'])."',
-	treetext_family_top='".safe_text($_POST['treetext_family_top'])."',
-	treetext_family_footer='".safe_text($_POST['treetext_family_footer'])."'";
+	treetext_tree_id='".safe_text_db($_POST['tree_id'])."',
+	treetext_language='".safe_text_db($_POST['language_tree'])."',
+	treetext_name='".safe_text_db($_POST['treetext_name'])."',
+	treetext_mainmenu_text='".safe_text_db($_POST['treetext_mainmenu_text'])."',
+	treetext_mainmenu_source='".safe_text_db($_POST['treetext_mainmenu_source'])."',
+	treetext_family_top='".safe_text_db($_POST['treetext_family_top'])."',
+	treetext_family_footer='".safe_text_db($_POST['treetext_family_footer'])."'";
 	$result=$dbh->query($sql);
 }
 
 // *** Change collation of tree ***
 if (isset($_POST['tree_collation'])){
-	$tree_collation=safe_text($_POST['tree_collation']);
+	$tree_collation=safe_text_db($_POST['tree_collation']);
 	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_lastname` `pers_lastname` VARCHAR(50) COLLATE ".$tree_collation.";");
 	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_firstname` `pers_firstname` VARCHAR(50) COLLATE ".$tree_collation.";");
 	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_prefix` `pers_prefix` VARCHAR(20) COLLATE ".$tree_collation.";");
@@ -120,7 +120,7 @@ if (isset($_GET['remove_tree']) AND is_numeric($_GET['remove_tree']) ){
 	echo '</div>';
 }
 if (isset($_POST['remove_tree2']) AND is_numeric($_POST['tree_id']) ){
-	$removeqry='SELECT * FROM humo_trees WHERE tree_id="'.safe_text($_POST['tree_id']).'"';
+	$removeqry='SELECT * FROM humo_trees WHERE tree_id="'.safe_text_db($_POST['tree_id']).'"';
 	@$removesql = $dbh->query($removeqry);
 	@$removeDb=$removesql->fetch(PDO::FETCH_OBJ);
 	$remove=$removeDb->tree_prefix;
@@ -133,51 +133,51 @@ if (isset($_POST['remove_tree2']) AND is_numeric($_POST['tree_id']) ){
 		$result=$dbh->query($sql);
 	}
 
-	$sql="DELETE FROM humo_trees WHERE tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_trees WHERE tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove items from table family_tree_text ***
-	$sql="DELETE FROM humo_tree_texts WHERE treetext_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_tree_texts WHERE treetext_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove persons ***
-	$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_persons WHERE pers_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove families ***
-	$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_families WHERE fam_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove sources ***
-	$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_sources WHERE source_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove texts ***
-	$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_texts WHERE text_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove connections ***
-	$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_connections WHERE connect_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove addresses ***
-	$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_addresses WHERE address_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove events ***
-	$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove statistics ***
-	$sql="DELETE FROM humo_stat_date WHERE stat_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_stat_date WHERE stat_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove unprocessed tags ***
-	$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove admin favourites ***
-	$sql="DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='".safe_text($_POST['tree_id'])."'";
+	$sql="DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='".safe_text_db($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove adjusted glider settings ***
@@ -185,7 +185,7 @@ if (isset($_POST['remove_tree2']) AND is_numeric($_POST['tree_id']) ){
 	@$result=$dbh->query($sql);
 
 	// *** Remove geo_tree settings for this tree ***
-	$sql="UPDATE humo_settings SET setting_value = REPLACE(setting_value, CONCAT('@',".safe_text($_POST['tree_id']).",';'), '')  WHERE setting_variable='geo_trees'";
+	$sql="UPDATE humo_settings SET setting_value = REPLACE(setting_value, CONCAT('@',".safe_text_db($_POST['tree_id']).",';'), '')  WHERE setting_variable='geo_trees'";
 	@$result=$dbh->query($sql);
 
 	// *** Remove tree_prefix of this tree from location table (humo2_birth, humo2_death, humo2_bapt, humo2_buried)  ***
@@ -214,10 +214,10 @@ if (isset($_GET['up']) AND is_numeric($_GET['tree_order']) AND is_numeric($_GET[
 	$item=$dbh->query("SELECT * FROM humo_trees WHERE tree_order=".($_GET['tree_order']-1));
 	$itemDb=$item->fetch(PDO::FETCH_OBJ);
 	// *** Raise previous family trees ***
-	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order'])."' WHERE tree_id=$itemDb->tree_id";
+	$sql="UPDATE humo_trees SET tree_order='".safe_text_db($_GET['tree_order'])."' WHERE tree_id=$itemDb->tree_id";
 	$result=$dbh->query($sql);
 	// *** Lower tree order ***
-	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order']-1)."' WHERE tree_id=".safe_text($_GET['id']);
+	$sql="UPDATE humo_trees SET tree_order='".safe_text_db($_GET['tree_order']-1)."' WHERE tree_id=".safe_text_db($_GET['id']);
 	$result=$dbh->query($sql);
 }
 if (isset($_GET['down']) AND is_numeric($_GET['tree_order']) AND is_numeric($_GET['id']) ){
@@ -225,10 +225,10 @@ if (isset($_GET['down']) AND is_numeric($_GET['tree_order']) AND is_numeric($_GE
 	$item=$dbh->query("SELECT * FROM humo_trees WHERE tree_order=".($_GET['tree_order']+1));
 	$itemDb=$item->fetch(PDO::FETCH_OBJ);
 	// *** Lower previous family tree ***
-	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order'])."' WHERE tree_id=$itemDb->tree_id";
+	$sql="UPDATE humo_trees SET tree_order='".safe_text_db($_GET['tree_order'])."' WHERE tree_id=$itemDb->tree_id";
 	$result=$dbh->query($sql);
 	// *** Raise tree order ***
-	$sql="UPDATE humo_trees SET tree_order='".safe_text($_GET['tree_order']+1)."' WHERE tree_id=".safe_text($_GET['id']);
+	$sql="UPDATE humo_trees SET tree_order='".safe_text_db($_GET['tree_order']+1)."' WHERE tree_id=".safe_text_db($_GET['id']);
 	$result=$dbh->query($sql);
 }
 

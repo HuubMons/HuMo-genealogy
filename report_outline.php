@@ -119,10 +119,11 @@ if($screen_mode != "PDF") {
 	if(CMS_SPECIFIC=='Joomla') {
 		$qstr='';
 		if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
-		print '<form method="POST" action="'.$_SERVER['PHP_SELF'].$qstr.'" style="display : inline;">';
+		print '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
 	}
 	else {
-		print '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+		//print '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+		print '<form method="POST" action="report_outline.php" style="display : inline;">';
 	}
 	print '<input type="hidden" name="id" value="'.$family_id.'">';
 	print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
@@ -147,10 +148,11 @@ if($screen_mode != "PDF") {
 		if(CMS_SPECIFIC=='Joomla') {
 			$qstr='';
 			if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
-			print '<form method="POST" action="'.$_SERVER['PHP_SELF'].$qstr.'" style="display : inline;">';
+			print '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
 		}
 		else {
-			print '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+			//print '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+			print '<form method="POST" action="report_outline.php" style="display : inline;">';
 		}
 		print '<input type="hidden" name="id" value="'.$family_id.'">';
 		print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
@@ -173,10 +175,11 @@ if($screen_mode != "PDF") {
 		if(CMS_SPECIFIC=='Joomla') {
 			$qstr='';
 			if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
-			print '<form method="POST" action="'.$_SERVER['PHP_SELF'].$qstr.'" style="display : inline;">';
+			//print '<form method="POST" action="'.$_SERVER['PHP_SELF'].$qstr.'" style="display : inline;">';
+			print '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
 		}
 		else {
-			print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+			print ' <form method="POST" action="report_outline.php" style="display : inline;">';
 		}
 		print '<input type="hidden" name="id" value="'.$family_id.'">';
 		print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
@@ -206,20 +209,22 @@ if($screen_mode != "PDF") {
 		echo '<option';
 		if($nr_gen==$nr_generations) { echo ' SELECTED';}
 			if(CMS_SPECIFIC=='Joomla') {
-				echo ' value="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'&amp;nr_generations='.$nr_gen.'&amp;show_details='.$show_details.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.$i.'</option>';
+				//echo ' value="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'&amp;nr_generations='.$nr_gen.'&amp;show_details='.$show_details.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.$i.'</option>';
+				echo ' value="report_outline.php?'.$_SERVER['QUERY_STRING'].'&amp;nr_generations='.$nr_gen.'&amp;show_details='.$show_details.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.$i.'</option>';
 			}
 			else {
-				echo ' value="'.$_SERVER['PHP_SELF'].'?nr_generations='.$nr_gen.'&amp;id='.$family_id.'&amp;main_person='.$main_person.'&amp;show_details='.$show_details.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.$i.'</option>';
+				echo ' value="report_outline.php?nr_generations='.$nr_gen.'&amp;id='.$family_id.'&amp;main_person='.$main_person.'&amp;show_details='.$show_details.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.$i.'</option>';
 			}
 	}
 	echo '<option';
 	if($nr_generations==50) { echo ' SELECTED';}
 
 	if(CMS_SPECIFIC=='Joomla') {
-		echo ' value="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'&amp;nr_generations=50&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.'ALL'.'</option>';
+		//echo ' value="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'&amp;nr_generations=50&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.'ALL'.'</option>';
+		echo ' value="report_outline.php?'.$_SERVER['QUERY_STRING'].'&amp;nr_generations=50&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.'ALL'.'</option>';
 	}
 	else {
-		echo ' value="'.$_SERVER['PHP_SELF'].'?nr_generations=50&amp;id='.$family_id.'&amp;main_person='.$main_person.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'"> ALL </option>';
+		echo ' value="report_outline.php?nr_generations=50&amp;id='.$family_id.'&amp;main_person='.$main_person.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'"> ALL </option>';
 	}
 	echo '</select>';
 	echo '</span>';

@@ -12,15 +12,15 @@ if ($humo_option["registration_use_spam_question"]!='y'){
 }
 
 $show_form=true;
+$error=false;
 
 if (isset($_POST['send_mail']) AND $register_allowed==true){
 	$show_form=false;
-	$error='';
 
-	$usersql='SELECT * FROM humo_users WHERE user_name="'.safe_text($_POST["register_name"]).'"';
+	$usersql='SELECT * FROM humo_users WHERE user_name="'.safe_text_db($_POST["register_name"]).'"';
 	$user = $dbh->query($usersql);
 	$userDb=$user->fetch(PDO::FETCH_OBJ);
-	if (isset($userDb->user_id) OR strtolower(safe_text($_POST["register_name"])) == "admin") {
+	if (isset($userDb->user_id) OR strtolower(safe_text_db($_POST["register_name"])) == "admin") {
 		$error=__('ERROR: username already exists');
 	}
 
@@ -35,10 +35,10 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 	if ($error==false){
 		$user_register_date=date("Y-m-d H:i");
 		$sql="INSERT INTO humo_users SET
-		user_name='".safe_text($_POST["register_name"])."',
-		user_remark='".safe_text($_POST["register_text"])."',
-		user_register_date='".safe_text($user_register_date)."',
-		user_mail='".safe_text($_POST["register_mail"])."',
+		user_name='".safe_text_db($_POST["register_name"])."',
+		user_remark='".safe_text_db($_POST["register_text"])."',
+		user_register_date='".safe_text_db($user_register_date)."',
+		user_mail='".safe_text_db($_POST["register_mail"])."',
 		user_password='".MD5($_POST["register_password"])."',
 		user_group_id='".$humo_option["visitor_registration_group"]."';";
 		$result = $dbh->query($sql);
@@ -113,7 +113,7 @@ if ($show_form){
 		';
 		echo '</script>';
 
-		print '<br><form id="form_id" method="post" action="'.$_SERVER['PHP_SELF'].'" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
+		echo '<br><form id="form_id" method="post" action="'.CMS_ROOTPATH.'register.php" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
 
 		print '<table align="center" class="humo">';
 		echo '<tr class="table_headline"><th class=fonts" colspan="2">'.__('User registration form').'</th></tr>';
@@ -143,9 +143,9 @@ if ($show_form){
 		}
 
 		//print '<tr><td></td><td style="font-weight:bold;" class="fonts" align="left">'.__('Please enter a full and valid email address,<br>otherwise I cannot respond to your e-mail!').'</td></tr>';
-		print '<tr><td></td><td><input class="fonts" type="submit" name="send_mail" value="'.__('Send').'"></td></tr>';
-		print '</table>';
-		print '</form>';
+		echo '<tr><td></td><td><input class="fonts" type="submit" name="send_mail" value="'.__('Send').'"></td></tr>';
+		echo '</table>';
+		echo '</form>';
 		
 		if (isset($_POST['send_mail']) AND $error==false){
 			echo '<h3 style="text-align:center";>'.__('Wrong answer to the block-spam question! Try again...').'</h3>';

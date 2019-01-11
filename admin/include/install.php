@@ -10,7 +10,7 @@ if (CMS_SPECIFIC=='Joomla'){
 	$path_tmp='index.php?option=com_humo-gen&amp;task=admin&amp;page=install';
 }
 else{
-	$path_tmp=$_SERVER['PHP_SELF'];
+	$path_tmp='index.php';
 }
 
 // *** Check if tables exists ***
@@ -242,7 +242,7 @@ if (isset($_POST['install_tables2'])){
 			stat_gedcom_fam varchar(20) CHARACTER SET utf8,
 			stat_gedcom_man varchar(20) CHARACTER SET utf8,
 			stat_gedcom_woman varchar(20) CHARACTER SET utf8,
-			stat_date_stat datetime NOT NULL,
+			stat_date_stat datetime,
 			stat_date_linux varchar(50) CHARACTER SET utf8,
 			PRIMARY KEY (`stat_id`)
 		) DEFAULT CHARSET=utf8");
@@ -407,8 +407,6 @@ if (isset($_POST['install_tables2'])){
 	}
 
 	if (!$table_cms_menu){
-		$db_update = $dbh->query("DROP TABLE humo_cms_menu");
-		//echo __('creating humo_cms_menu...').'<br>';
 		printf(__('create table: %s.'), 'humo_cms_menu');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_cms_menu (
@@ -431,8 +429,8 @@ if (isset($_POST['install_tables2'])){
 			page_menu_id int(10) NOT NULL DEFAULT '0',
 			page_order int(10) NOT NULL DEFAULT '0',
 			page_counter int(10) NOT NULL DEFAULT '0',
-			page_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			page_edit_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			page_date datetime,
+			page_edit_date datetime,
 			page_title varchar(50) CHARACTER SET utf8 DEFAULT '',
 			page_text longtext CHARACTER SET utf8,
 			PRIMARY KEY (`page_id`)

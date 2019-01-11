@@ -51,22 +51,22 @@ if($order_sources=="place") {
 }
 
 // *** Pages ***
-$start=0; if (isset($_GET["start"]) AND is_numeric($_GET["start"])){ $start=$_GET["start"]; }
-$item=0; if (isset($_GET['item']) AND is_numeric($_GET['item'])){ $item=$_GET['item']; }
+$start=0; if (isset($_GET["start"]) AND is_numeric($_GET["start"])) $start=$_GET["start"];
+$item=0; if (isset($_GET['item']) AND is_numeric($_GET['item'])) $item=$_GET['item'];
 $count_sources=$humo_option['show_persons'];
 
 // *** All sources query ***
 $all_sources=$dbh->query($querie);
-$source=$dbh->query($querie." LIMIT ".safe_text($item).",".$count_sources);
+$source=$dbh->query($querie." LIMIT ".safe_text_db($item).",".$count_sources);
 $line_pages=__('Page');
 
 // "<="
 if ($start>1){
 	$start2=$start-20;
 	$calculated=($start-2)*$count_sources;
-	$line_pages.= "<a href=\"".$_SERVER['PHP_SELF']."?start=$start2&amp;item=$calculated";
-	if (isset($_GET['order_sources'])){ $line_pages.=  "&amp;order_sources=".$_GET['order_sources'].'&sort_desc='.$sort_desc; }
-	$line_pages.=  "\">&lt;= </a>";
+	$line_pages.= '<a href="sources.php?start='.$start2.'&amp;item='.$calculated;
+	if (isset($_GET['order_sources'])){ $line_pages.=  '&amp;order_sources='.$_GET['order_sources'].'&sort_desc='.$sort_desc; }
+	$line_pages.=  '">&lt;= </a>';
 }
 if ($start<=0){$start=1;}
 
@@ -78,9 +78,9 @@ for ($i=$start; $i<=$start+19; $i++) {
 			$line_pages.=  " <b>$i</b>";
 		}
 		else {
-			$line_pages.=  " <a href=\"".$_SERVER['PHP_SELF']."?item=$calculated&amp;start=$start";
-			if (isset($_GET['order_sources'])){ $line_pages.= "&amp;order_sources=".$_GET['order_sources'].'&sort_desc='.$sort_desc; }
-			$line_pages.=  "\">$i</a>";
+			$line_pages.=  ' <a href="sources.php?item='.$calculated.'&amp;start='.$start;
+			if (isset($_GET['order_sources'])) $line_pages.= '&amp;order_sources='.$_GET['order_sources'].'&sort_desc='.$sort_desc;
+			$line_pages.=  '">'.$i.'</a>';
 		}
 	}
 }
@@ -88,9 +88,9 @@ for ($i=$start; $i<=$start+19; $i++) {
 // "=>"
 $calculated=($i-1)*$count_sources;
 if ($calculated<$all_sources->rowCount()){
-	$line_pages.=  "<a href=\"".$_SERVER['PHP_SELF']."?start=$i&amp;item=$calculated";
-	if (isset($_GET['order_sources'])){ $line_pages.=  "&amp;order_sources=".$_GET['order_sources'].'&sort_desc='.$sort_desc; }
-	$line_pages.=  "\"> =&gt;</a>";
+	$line_pages.=  '<a href="sources.php?start='.$i.'&amp;item='.$calculated;
+	if (isset($_GET['order_sources'])){ $line_pages.=  '&amp;order_sources='.$_GET['order_sources'].'&sort_desc='.$sort_desc; }
+	$line_pages.=  '"> =&gt;</a>';
 }
 
 echo '<div class=index_list1>'.$line_pages.'</div><br>';

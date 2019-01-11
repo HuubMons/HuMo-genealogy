@@ -20,12 +20,12 @@ if (isset($_POST['send_mail'])){
 
 	if ($error==false){
 		$user_register_date=date("Y-m-d H:i");
-		//user_name='".safe_text($_POST["register_name"])."',
-		//user_remark='".safe_text($_POST["register_text"])."',
-		//user_register_date='".safe_text($user_register_date)."',
+		//user_name='".safe_text_db($_POST["register_name"])."',
+		//user_remark='".safe_text_db($_POST["register_text"])."',
+		//user_register_date='".safe_text_db($user_register_date)."',
 		//user_group_id='".$humo_option["visitor_registration_group"]."'
 		$sql="UPDATE humo_users SET";
-		$sql.=" user_mail='".safe_text($_POST["register_mail"])."'";
+		$sql.=" user_mail='".safe_text_db($_POST["register_mail"])."'";
 		if ($_POST["register_password"]!='')
 			$sql.=", user_password='".MD5($_POST["register_password"])."'";
 		$sql.=" WHERE user_id=".$userDb->user_id;
@@ -95,7 +95,7 @@ elseif (isset($userDb->user_name)){
 	';
 	echo '</script>';
 
-	echo '<br><form id="form_id" method="post" action="'.$_SERVER['PHP_SELF'].'" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
+	echo '<br><form id="form_id" method="post" action="user_settings.php" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
 
 	echo '<table align="center" class="humo small">';
 	echo '<tr class=table_headline><th class="fonts" colspan="2">'.__('User settings').'</th></tr>';

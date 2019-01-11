@@ -58,8 +58,8 @@ elseif(isset($_POST['got_email'])) {
 	) DEFAULT CHARSET=utf8");
 	$pw_table->execute();
 	
-	$email=safe_text($_POST['got_email']);
-	$pw_username = safe_text($_POST['pw_username']);
+	$email=safe_text_db($_POST['got_email']);
+	$pw_username = safe_text_db($_POST['pw_username']);
 
  	function getUrl() {
 		$url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
@@ -144,10 +144,8 @@ elseif(isset($_POST['got_email'])) {
 			//Array of alphabets
 			$input = array ("A", "B", "C", "D", "E","F","G","H","I","J","K","L","M","N","O","P","Q",
 			"R","S","T","U","V","W","X","Y","Z");
-
 			$random_generator="";// Initialize the string to store random numbers
 			for($i=1;$i<$digits+1;$i++){ // Loop the number of times of required digits
-
 				if(rand(1,2) == 1){// to decide the digit should be numeric or alphabet
 					// Add one random alphabet 
 					$rand_index = array_rand($input);
@@ -157,12 +155,10 @@ elseif(isset($_POST['got_email'])) {
 				else{
 					// Add one numeric digit between 1 and 10
 					$random_generator .=rand(1,10); // one number is added
-				} // end of if else
-
-			} // end of for loop 
-
+				}
+			}
 			return $random_generator;
-		} // end of function
+		}
 
 
 		$key=random_generator(10);
@@ -174,7 +170,7 @@ elseif(isset($_POST['got_email'])) {
 		include_once ('include/mail.php'); 
 
 		// get mail of admin
-		$get_admin_mail=$dbh->prepare("SELECT user_mail FROM humo_users WHERE user_id='1'AND user_group_id = '1'"); 
+		$get_admin_mail=$dbh->prepare("SELECT user_mail FROM humo_users WHERE user_id='1' AND user_group_id = '1'"); 
 		// user_id 1 should always be admin, but just to make sure we also checked that group is admin
 		$get_admin_mail->execute();
 		$adm_mailDb = $get_admin_mail->fetch(PDO::FETCH_OBJ);
@@ -223,9 +219,10 @@ elseif(isset($_POST['got_email'])) {
 //form to enter new password 2x (after reset link was used)
 elseif(isset($_GET['ak']) AND $_GET['ak']!='') {
 	$tm=time()-86400; // Duration within which the key is valid is 86400 sec (=24 hours) - can be adjusted here 
-	$ak=safe_text($_GET['ak']);
-	$userid=safe_text($_GET['userid']);
-	$sql=$dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval WHERE retrieval_pkey=:ak and retrieval_userid=:userid and retrieval_time > '$tm' and retrieval_status='pending'");
+	$ak=safe_text_db($_GET['ak']);
+	$userid=safe_text_db($_GET['userid']);
+	$sql=$dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval
+		WHERE retrieval_pkey=:ak and retrieval_userid=:userid and retrieval_time > '$tm' and retrieval_status='pending'");
 	$sql->bindParam(':userid',$userid,PDO::PARAM_STR, 10);
 	$sql->bindParam(':ak',$ak,PDO::PARAM_STR, 32);
 	$sql->execute();
@@ -253,15 +250,16 @@ elseif(isset($_GET['ak']) AND $_GET['ak']!='') {
 
 // store new password and display success or error message 
 elseif(isset($_POST['ak']) AND $_POST['ak']!='') {
-	$ak=safe_text($_POST['ak']);
-	$userid=safe_text($_POST['userid']);
-	$todo=safe_text($_POST['todo']);
-	$password=safe_text($_POST['password']);
-	$password2=safe_text($_POST['password2']);
+	$ak=safe_text_db($_POST['ak']);
+	$userid=safe_text_db($_POST['userid']);
+	$todo=safe_text_db($_POST['todo']);
+	$password=safe_text_db($_POST['password']);
+	$password2=safe_text_db($_POST['password2']);
  
 	$tm=time()-86400;
 
-	$sql=$dbh->prepare("SELECT retrieval_userid  FROM humo_pw_retrieval WHERE retrieval_pkey=:ak and retrieval_userid=:userid and retrieval_time > '$tm' and retrieval_status='pending'");
+	$sql=$dbh->prepare("SELECT retrieval_userid  FROM humo_pw_retrieval
+		WHERE retrieval_pkey=:ak and retrieval_userid=:userid and retrieval_time > '$tm' and retrieval_status='pending'");
 	$sql->bindParam(':userid',$userid,PDO::PARAM_STR, 10);
 	$sql->bindParam(':ak',$ak,PDO::PARAM_STR, 32);
 	$sql->execute();
@@ -314,7 +312,8 @@ elseif(isset($_POST['ak']) AND $_POST['ak']!='') {
 			if($no==1){
 				$tm=time();
 				// Update the key so it can't be used again. 
-				$count=$dbh->prepare("update humo_pw_retrieval set retrieval_status='done' where retrieval_pkey='".$ak."' and retrieval_userid='".$userid."' and retrieval_status='pending'");
+				$count=$dbh->prepare("update humo_pw_retrieval set retrieval_status='done'
+					where retrieval_pkey='".$ak."' and retrieval_userid='".$userid."' and retrieval_status='pending'");
 				$count->execute();
 				echo '<tr class="table_headline"><th class="fonts">'.__('Success').'</th></tr>';
 				echo '<tr><td style="font-weight:bold">';
@@ -352,7 +351,7 @@ else {
 	print '</form>';
 
 	// only display password retrieval button if admin has filled out a valid email address for himself...
-	$get_admin_mail=$dbh->prepare("SELECT user_mail FROM humo_users WHERE user_mail != '' AND user_id='1'AND user_group_id = '1'"); 
+	$get_admin_mail=$dbh->prepare("SELECT user_mail FROM humo_users WHERE user_mail != '' AND user_id='1' AND user_group_id = '1'"); 
 	// user_id 1 should always be admin, but just to make sure we also checked that group is admin
 	$get_admin_mail->execute();
 	$no=$get_admin_mail->rowCount();
@@ -361,10 +360,10 @@ else {
 		$mail_address = $adm_mailDb->user_mail;
 		if(filter_var($mail_address,FILTER_VALIDATE_EMAIL)) {  // admin mail is valid
 			echo '<br><div class="center">'; 
-			echo '<form name="forget_form" method="post" action="'.$path_tmp.'">';
-			echo '<input class="fonts" type="submit" name="Submit" value="'.__('Forgot password').'">';
-			echo '<input type="hidden" name="forgotpw" value="1">';
-			echo '</form>';
+				echo '<form name="forget_form" method="post" action="'.$path_tmp.'">';
+					echo '<input class="fonts" type="submit" name="Submit" value="'.__('Forgot password').'">';
+					echo '<input type="hidden" name="forgotpw" value="1">';
+				echo '</form>';
 			echo '</div>';
 		}
 	}

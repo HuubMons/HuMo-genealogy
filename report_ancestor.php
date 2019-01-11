@@ -81,7 +81,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 	// *** Source presentation selected by user (title/ footnote or hide sources) ***
 	// *** Default setting is selected by administrator ***
 	if (isset($_GET['source_presentation'])){
-		$_SESSION['save_source_presentation']=safe_text($_GET["source_presentation"]);
+		$_SESSION['save_source_presentation']=safe_text_db($_GET["source_presentation"]);
 	}
 	$source_presentation=$user['group_source_presentation'];
 	if (isset($_SESSION['save_source_presentation'])){
@@ -89,7 +89,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 	}
 	else{
 		// *** Save setting in session (if no choice is made, this is admin default setting) ***
-		$_SESSION['save_source_presentation']=safe_text($source_presentation);
+		$_SESSION['save_source_presentation']=safe_text_db($source_presentation);
 	}
 }
 
@@ -725,8 +725,6 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 			// >>>>> link to show rest of ancestor chart
 			//if ($box_appearance=='small' AND isset($personDb->pers_gedcomnumber) AND $screen_mode!="ancestor_sheet"){
 			if ($box_appearance=='small' AND isset($personDb->pers_gedcomnumber) AND $personDb->pers_famc AND $screen_mode!="ancestor_sheet"){
-				//$replacement_text.= ' <a href="'.$_SERVER['PHP_SELF'].'?id='.$personDb->pers_gedcomnumber.
-				//	"&amp;screen_mode=ancestor_chart\">&gt;&gt;&gt;</a> ";
 				$replacement_text.=' &gt;&gt;&gt;'.$dirmark1;
 			}
 

@@ -51,7 +51,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				if (!isset($source_footnotes)){
 					$source_footnotes[]=$sourceDb->source_id;
 					$pdf_footnotes[] = $pdf->AddLink();
-					$pdf_source[safe_text($connectDb->connect_source_id)]=safe_text($connectDb->connect_source_id);
+					$pdf_source[safe_text_db($connectDb->connect_source_id)]=safe_text_db($connectDb->connect_source_id);
 				}
 
 				$source_check=false;
@@ -84,7 +84,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 						// append num of source in list as !!3 for use with fpdf_extend.php to add the right link:
 						$text .= "!!".($j+1).'~'; // ~ is delimiter for multiple sources
 					}
-					$pdf_source[safe_text($connectDb->connect_source_id)]=safe_text($connectDb->connect_source_id);
+					$pdf_source[safe_text_db($connectDb->connect_source_id)]=safe_text_db($connectDb->connect_source_id);
 					$pdf_footnotes[] = $pdf->AddLink();
 					$source_footnotes[]=$sourceDb->source_id;
 				}

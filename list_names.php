@@ -44,10 +44,10 @@ echo '<p class="fonts">';
 $last_name='a'; // *** Default first_character ***
 // *** Search variables in: http://localhost/humo-gen/list/humo1_/M/ ***
 if (isset($urlpart[1])){  
-	$last_name=urldecode(safe_text($urlpart[1]));   // without urldecode skandinavian letters don't work!
+	$last_name=urldecode(safe_text_db($urlpart[1]));   // without urldecode skandinavian letters don't work!
 }
 if (isset($_GET['last_name'])){
-	$last_name=safe_text($_GET['last_name']);
+	$last_name=safe_text_db($_GET['last_name']);
 }
 
 // *** MAIN SETTINGS ***

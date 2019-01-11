@@ -43,8 +43,7 @@ if ($selectsort){
 		$orderby = " address_address ".$desc_asc;
 	}
 }
-if(isset($_GET['database'])) { $database=$_GET['database']; }
-if(isset($_POST['database'])) { $database=$_POST['database']; }
+
 $where = '';
 //$adr_country=''; $adr_state='';
 $adr_place=''; $adr_address=''; 
@@ -52,16 +51,18 @@ $adr_place=''; $adr_address='';
 //if(isset($_POST['adr_state']) AND $_POST['adr_state'] != '') { $adr_state = $_POST['adr_state']; }
 if(isset($_POST['adr_place']) AND $_POST['adr_place'] != '') { $adr_place = $_POST['adr_place']; }
 if(isset($_POST['adr_address']) AND $_POST['adr_address'] != '') { $adr_address = $_POST['adr_address']; }
+
 //if(isset($_GET['adr_country']) AND $_GET['adr_country'] != '') { $adr_country = $_GET['adr_country']; }
 //if(isset($_GET['adr_state']) AND $_GET['adr_state'] != '') { $adr_state = $_GET['adr_state']; }
 if(isset($_GET['adr_place']) AND $_GET['adr_place'] != '') { $adr_place = $_GET['adr_place']; }
 if(isset($_GET['adr_address']) AND $_GET['adr_address'] != '') { $adr_address = $_GET['adr_address']; }
+
 //if($adr_country OR $adr_state OR $adr_place OR $adr_address) {
 if($adr_place OR $adr_address) {
 	//if($adr_country!='') { $where .= " AND address_country LIKE '%".$adr_country."%' "; }
-	//if($adr_state!='')    { $where .= " AND address_state LIKE '%".$adr_state."%' "; }
-	if($adr_place!='')    { $where .= " AND address_place LIKE '%".safe_text($adr_place)."%' "; }
-	if($adr_address!=''){ $where .= " AND address_address LIKE '%".safe_text($adr_address)."%' ";  }
+	//if($adr_state!='') { $where .= " AND address_state LIKE '%".$adr_state."%' "; }
+	if($adr_place!='') { $where .= " AND address_place LIKE '%".safe_text_db($adr_place)."%' "; }
+	if($adr_address!=''){ $where .= " AND address_address LIKE '%".safe_text_db($adr_address)."%' ";  }
 }
 
 echo '<h1 style="text-align:center;">'.__('Addresses').'</h1>';

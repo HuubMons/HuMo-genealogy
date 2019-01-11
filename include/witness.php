@@ -16,7 +16,7 @@
 // **********************************************************************
 // * function witness (person gedcomnumber, $event item, database field);
 // **********************************************************************
-function witness($gedcomnr,$event, $field='person'){
+function witness($gedcomnr, $event, $field='person'){
 	global $dbh, $db_functions;
 	$counter=0; $text='';
 	if ($gedcomnr){
@@ -32,7 +32,7 @@ function witness($gedcomnr,$event, $field='person'){
 					// *** Connected witness ***
 					$witness_nameDb = $db_functions->get_person(substr($witnessDb->event_event,1,-1));
 					$name=$witness_cls->person_name($witness_nameDb);
-					$text.='<a href="'.$_SERVER['PHP_SELF'].'?id='.$witness_nameDb->pers_indexnr.'&amp;main_person='.$witness_nameDb->pers_gedcomnumber.'">'.rtrim($name["standard_name"]).'</a>';
+					$text.='<a href="family.php?id='.$witness_nameDb->pers_indexnr.'&amp;main_person='.$witness_nameDb->pers_gedcomnumber.'">'.rtrim($name["standard_name"]).'</a>';
 				}
 				else{
 					// *** Witness as text ***
@@ -76,7 +76,6 @@ function witness_by_events($gedcomnr){
 				OR event_kind='death_declaration' OR event_kind='burial_witness'
 				OR event_kind='marriage_witness' OR event_kind='marriage_witness_rel')
 			");
-
 		$source_prep->bindParam(':event_tree_id',$tree_id);
 
 		$event_event='@'.$gedcomnr.'@';
@@ -113,14 +112,14 @@ function witness_by_events($gedcomnr){
 						$name_woman=$witness_cls->person_name($witness_nameDb);
 					}
 
-					$text.='<a href="'.$_SERVER['PHP_SELF'].'?id='.$witnessDb->event_connect_id.'">'.rtrim($name_man["standard_name"]).' &amp; '.rtrim($name_woman["standard_name"]).'</a>';
+					$text.='<a href="family.php?id='.$witnessDb->event_connect_id.'">'.rtrim($name_man["standard_name"]).' &amp; '.rtrim($name_woman["standard_name"]).'</a>';
 				}
 				else{
 					// *** Connected witness by a person ***
 					$witness_nameDb = $db_functions->get_person($witnessDb->event_connect_id);
 					$name=$witness_cls->person_name($witness_nameDb);
 
-					$text.='<a href="'.$_SERVER['PHP_SELF'].'?id='.$witness_nameDb->pers_indexnr.'&amp;main_person='.$witness_nameDb->pers_gedcomnumber.'">'.rtrim($name["standard_name"]).'</a>';
+					$text.='<a href="family.php?id='.$witness_nameDb->pers_indexnr.'&amp;main_person='.$witness_nameDb->pers_gedcomnumber.'">'.rtrim($name["standard_name"]).'</a>';
 				}
 
 			}

@@ -56,7 +56,7 @@ if(CMS_SPECIFIC=="Joomla")
 }
 else
 {
-	$phpself=$_SERVER['PHP_SELF'];
+	$phpself='index.php';
 	$joomlastring='';
 	$family_string='../family.php?';
 	$sourcestring='../source.php?';
@@ -85,8 +85,7 @@ $event_cls = New editor_event_cls;
 // *****************
 
 // *** Calculate nr. of persons and families ***
-function family_tree_update($tree_prefix)
-{
+function family_tree_update($tree_prefix){
 	global $dbh, $tree_id;
 
 	$total = $dbh->query("SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id='".$tree_id."'"); 
@@ -98,17 +97,14 @@ function family_tree_update($tree_prefix)
 	$nr_families=$total1[0]; 
 
 	$tree_date=date("Y-m-d H:i");
-	$sql="UPDATE humo_trees SET
-	tree_persons='".$nr_persons."',
-	tree_families='".$nr_families."',
-	tree_date='".$tree_date."'
-	WHERE tree_prefix='".$tree_prefix."'";
+	$sql="UPDATE humo_trees
+		SET tree_persons='".$nr_persons."', tree_families='".$nr_families."', tree_date='".$tree_date."'
+		WHERE tree_prefix='".$tree_prefix."'";
 	$dbh->query($sql);
 }
 
 // *** Show event options ***
-function event_option($event_gedcom,$event)
-{
+function event_option($event_gedcom,$event){
 	global $language;
 	$selected=''; if ($event_gedcom==$event){ $selected=' SELECTED'; }
 	return '<option value="'.$event.'"'.$selected.'>'.language_event($event).'</option>';
@@ -193,7 +189,7 @@ if (isset($_POST["tree_prefix"])){
 	unset ($_SESSION['admin_pers_gedcomnumber']);
 
 	// *** Get tree_id ***
-	$qry = $dbh->query("SELECT tree_id FROM humo_trees WHERE tree_prefix='".safe_text($tree_prefix)."'");
+	$qry = $dbh->query("SELECT tree_id FROM humo_trees WHERE tree_prefix='".safe_text_db($tree_prefix)."'");
 	@$qryDb=$qry->fetch(PDO::FETCH_OBJ);
 	$tree_id=$qryDb->tree_id;
 	$_SESSION['admin_tree_id']=$tree_id;
@@ -201,7 +197,7 @@ if (isset($_POST["tree_prefix"])){
 	// *** Select first person to show ***
 	$new_nr_qry = "SELECT * FROM humo_settings
 		WHERE setting_variable='admin_favourite'
-		AND setting_tree_id='".safe_text($tree_id)."' LIMIT 0,1";
+		AND setting_tree_id='".safe_text_db($tree_id)."' LIMIT 0,1";
 	$new_nr_result = $dbh->query($new_nr_qry);
 
 	//if (isset($new_nr->setting_value)){
@@ -211,7 +207,7 @@ if (isset($_POST["tree_prefix"])){
 		$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 	}
 	else{
-		$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."' LIMIT 0,1";
+		$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".safe_text_db($tree_id)."' LIMIT 0,1";
 		$new_nr_result = $dbh->query($new_nr_qry);
 		@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 		if (isset($new_nr->pers_gedcomnumber)){
@@ -227,7 +223,7 @@ if (isset($_GET["tree"])){
 	$_SESSION['admin_tree_prefix']=$tree_prefix;
 
 	// *** Get tree_id ***
-	$qry = "SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($tree_prefix)."'";
+	$qry = "SELECT * FROM humo_trees WHERE tree_prefix='".safe_text_db($tree_prefix)."'";
 	$tree_prefix = $dbh->query($qry);
 	$tree_prefixDb=$tree_prefix->fetch(PDO::FETCH_OBJ);
 	$tree_id=$tree_prefixDb->tree_id;
@@ -439,7 +435,7 @@ if (!isset($field['event_changed_user'])){
 					${'add_fam_child_firstname'.$x} = "";
 					if(isset($_POST['add_fam_child_firstname_'.$x])) ${'add_fam_child_firstname'.$x} = $editor_cls->text_process($_POST['add_fam_child_firstname_'.$x]);
 					${'add_fam_child_prefix'.$x} = "";
-					if(isset($_POST['add_fam_child_prefix_'.$x])) ${'add_fam_child_prefix'.$x} = $editor_cls->text_process($_POST['add_fam_child_prefix_'.$x]);					
+					if(isset($_POST['add_fam_child_prefix_'.$x])) ${'add_fam_child_prefix'.$x} = $editor_cls->text_process($_POST['add_fam_child_prefix_'.$x]);
 					${'add_fam_child_birthdate'.$x.'_prefix'} = "";
 					if(isset($_POST['add_fam_child_birthdate_'.$x.'_prefix'])) ${'add_fam_child_birthdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x.'_prefix']);
 					${'add_fam_child_birthdate'.$x} = "";
@@ -484,7 +480,7 @@ if (!isset($field['event_changed_user'])){
 					
 					// add new family to the families table
 					if($person->pers_sexe=="M") { $manged = $person->pers_gedcomnumber; $womanged = $newpartner_id; }
-					else { $manged = $newpartner_id; $womanged = $person->pers_gedcomnumber; }	
+					else { $manged = $newpartner_id; $womanged = $person->pers_gedcomnumber; }
 					if(($add_fam_marr_type AND $add_fam_marr_type=="civil") OR !$add_fam_marr_type) { // regular marriage
 						$fammarrdate = $add_fam_marr_date_prefix.$add_fam_marr_date;
 						$fammarrplace = $add_fam_marr_place;
@@ -511,28 +507,37 @@ if (!isset($field['event_changed_user'])){
 					}
 					elseif(isset($_POST['add_fam_partner_exist']) AND $_POST['add_fam_partner_exist']!="") {
 						// this is a partner taken from search in the database he has to get new pers_fams too
-						if($add_fam_partner_prefix!="" AND substr($add_fam_partner_prefix,-1)!="_" AND substr($add_fam_partner_prefix,-1)!="'") { $add_fam_partner_prefix .= "_";  }
-						$this_partner = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
-						$this_partnerDb = $this_partner->fetch(PDO::FETCH_OBJ);
-						
+						if($add_fam_partner_prefix!=""
+							AND substr($add_fam_partner_prefix,-1)!="_" AND substr($add_fam_partner_prefix,-1)!="'") { $add_fam_partner_prefix .= "_";  }
+						$this_partnerDb = $db_functions->get_person($_POST['add_fam_partner_exist']);
+
 						if($this_partnerDb->pers_fams=="") {
-							$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."', pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',pers_indexnr='".$newfam_id."',pers_fams='".$newfam_id."' WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
+							$result = $dbh->query("UPDATE humo_persons
+								SET pers_changed_user='".$username."',
+								pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',
+								pers_indexnr='".$newfam_id."',pers_fams='".$newfam_id."'
+								WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
 						}
 						else {
-							$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."',pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',pers_fams=CONCAT(pers_fams,';','".$newfam_id."') WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
+							$result = $dbh->query("UPDATE humo_persons
+								SET pers_changed_user='".$username."',
+								pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',
+								pers_fams=CONCAT(pers_fams,';','".$newfam_id."')
+								WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
 						}
 
-						$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."',pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."'
-							,pers_firstname = '".$add_fam_partner_firstname."' 
-							,pers_lastname = '".$add_fam_partner_lastname."' 
-							,pers_prefix = '".$add_fam_partner_prefix."' 
-							,pers_sexe = '".$add_fam_partner_sexe."' 
-							,pers_birth_date = '".$add_fam_partner_birthdate_prefix.$add_fam_partner_birthdate."' 
-							,pers_birth_place = '".$add_fam_partner_birthplace."' 
-							,pers_death_date = '".$add_fam_partner_deathdate_prefix.$add_fam_partner_deathdate."' 
-							,pers_death_place = '".$add_fam_partner_deathplace."' 
+						$result = $dbh->query("UPDATE humo_persons
+							SET pers_changed_user='".$username."',
+							pers_changed_time='".$gedcom_time."', pers_changed_date='".$gedcom_date."',
+							pers_firstname = '".$add_fam_partner_firstname."',
+							pers_lastname = '".$add_fam_partner_lastname."',
+							pers_prefix = '".$add_fam_partner_prefix."',
+							pers_sexe = '".$add_fam_partner_sexe."',
+							pers_birth_date = '".$add_fam_partner_birthdate_prefix.$add_fam_partner_birthdate."',
+							pers_birth_place = '".$add_fam_partner_birthplace."',
+							pers_death_date = '".$add_fam_partner_deathdate_prefix.$add_fam_partner_deathdate."',
+							pers_death_place = '".$add_fam_partner_deathplace."' 
 							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
-							
 					}
 				}
 				
@@ -541,15 +546,15 @@ if (!isset($field['event_changed_user'])){
 				}
 				
 				$child_string = "";
-				// will hold the list of children to be added/entered to the families table: fam_children field
+				// will hold the list of children to be added/ entered to the families table: fam_children field
 
 				$x=1;
 				if(isset($_POST['exist_children'])) {  
-					// we're adding to existing family - get pers_gedcomnumbers of children that where already listed with this family
+					// we're adding to existing family - get pers_gedcomnumbers of children that were already listed with this family
 					$x = $_POST['exist_children']+1; 
-					$famresult = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$_POST['exist_partner']."'");
 					$newfam_id = $_POST['exist_partner'];
-					$famresultDb=$famresult->fetch(PDO::FETCH_OBJ);
+
+					$famresultDb = $db_functions->get_family($_POST['exist_partner']);
 					if($famresultDb) $child_string=$famresultDb->fam_children.";";
 				}
 				while(isset(${'add_fam_child_firstname'.$x}) AND ${'add_fam_child_firstname'.$x} != "") {
@@ -663,7 +668,7 @@ if (isset($tree_prefix)){
 	$search_quicksearch='';
 	$search_id='';
 	if (isset($_POST["search_quicksearch"])){
-		$search_quicksearch=safe_text($_POST['search_quicksearch']);
+		$search_quicksearch=safe_text_db($_POST['search_quicksearch']);
 		$_SESSION['admin_search_quicksearch']=$search_quicksearch;
 		$_SESSION['admin_search_id']='';
 		$search_id='';
@@ -673,7 +678,7 @@ if (isset($tree_prefix)){
 
 	if (isset($_POST["search_id"]) AND (!isset($_POST["search_quicksearch"]) OR $_POST["search_quicksearch"]=='')){
 		// if both name and ID given go by name
-		$search_id=safe_text($_POST['search_id']);
+		$search_id=safe_text_db($_POST['search_id']);
 		$_SESSION['admin_search_id']=$search_id;
 		$_SESSION['admin_search_quicksearch']='';
 		$search_quicksearch='';
@@ -690,7 +695,7 @@ if (isset($tree_prefix)){
 
 				$fav_qry = "SELECT * FROM humo_settings, humo_persons
 					WHERE setting_variable='admin_favourite'
-					AND setting_tree_id='".safe_text($tree_id)."'
+					AND setting_tree_id='".safe_text_db($tree_id)."'
 					AND pers_tree_id='".$tree_id."'
 					AND pers_gedcomnumber=setting_value
 					ORDER BY pers_lastname, pers_firstname";
@@ -856,8 +861,7 @@ if (isset($pers_gedcomnumber)){
 						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=children">'.__('Children')."</a></div></li>";
 						
 						$select_item=''; if ($menu_tab=='entirefamily'){ $select_item=' pageTab-active'; }
-						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=entirefamily&amp;add_family=1">'.__('Bulk add family members')."</a></div></li>";						
-						
+						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=entirefamily&amp;add_family=1">'.__('Bulk add family members')."</a></div></li>";
 					}
 
 					if ($person){
@@ -1032,17 +1036,6 @@ if (isset($pers_gedcomnumber)){
 				$search_quicksearch_child=str_replace(' ', '%', $search_quicksearch_child);
 				// *** In case someone entered "Mons, Huub" using a comma ***
 				$search_quicksearch_child = str_replace(',','',$search_quicksearch_child);
-				//$person_qry= "SELECT * FROM humo_persons
-				//	WHERE pers_tree_id='".$tree_id."'
-				//	AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
-				//	LIKE '%$search_quicksearch_child%'
-				//	OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname)
-				//	LIKE '%$search_quicksearch_child%' 
-				//	OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' '))
-				//	LIKE '%$search_quicksearch_child%' 
-				//	OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
-				//	LIKE '%$search_quicksearch_child%'
-				//	ORDER BY pers_lastname, pers_firstname";
 				$person_qry= "SELECT * FROM humo_persons
 					WHERE pers_tree_id='".$tree_id."'
 					AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
@@ -1237,8 +1230,11 @@ if (isset($pers_gedcomnumber)){
 			// *** Add entire family to this person ***
 			echo '<br><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=entirefamily&amp;add_family=1">';
 			echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Bulk add family members').'" alt="'.__('Bulk add family members').'"> '.__('Bulk add family members').'</a><br>';
-
 		}
+
+		echo '<br>'.__('Editing in HuMo-gen?<br>
+<b>Always backup your data!</b>');
+
 		echo '</div>';
 
 
@@ -1377,7 +1373,7 @@ if (isset($pers_gedcomnumber)){
 			// *** Add person to admin favourite list ***
 			$fav_qry = "SELECT * FROM humo_settings
 				WHERE setting_variable='admin_favourite'
-				AND setting_tree_id='".safe_text($tree_id)."'
+				AND setting_tree_id='".safe_text_db($tree_id)."'
 				AND setting_value='".$pers_gedcomnumber."'";
 
 			$fav_result = $dbh->query($fav_qry);
@@ -1835,6 +1831,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=place&address_place='.$addressDb->address_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a><br>';
 					// *** New: also edit a address ***
 					echo '<input type="text" name="address_address_'.$addressDb->address_id.'" placeholder="'.__('Address').'" value="'.$addressDb->address_address.'"  style="width: 500px">';
+// *** New: also edit text ***
+//echo '<br>';
+//echo '<textarea rows="1" name="address_address_'.$addressDb->address_id.'"'.$field_text.'>'.
+//		$editor_cls->text_show($addressDb->address_text).'</textarea>';
+
 				echo '</td>';
 				echo '<td>';
 					$connect_qry="SELECT *
@@ -1860,7 +1861,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 				$connect_sql="SELECT * FROM humo_connections
 					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='person_address'
-					AND connect_connect_id='".safe_text($pers_gedcomnumber)."'";
+					AND connect_connect_id='".safe_text_db($pers_gedcomnumber)."'";
 				$connect_qry=$dbh->query($connect_sql);
 				$count=$connect_qry->rowCount();
 				if ($count>0)
@@ -1877,13 +1878,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				//	AND address_tree_id='".$tree_id."'
 				//	AND connect_sub_kind='person_address'
 				//	AND connect_item_id=address_gedcomnr
-				//	AND connect_connect_id='".safe_text($pers_gedcomnumber)."'
+				//	AND connect_connect_id='".safe_text_db($pers_gedcomnumber)."'
 				//	ORDER BY connect_order";
 				$connect_qry="SELECT * FROM humo_connections LEFT JOIN humo_addresses
 					ON (address_gedcomnr=connect_item_id AND address_tree_id=connect_tree_id)
 					WHERE connect_tree_id='".$tree_id."'
 					AND connect_sub_kind='person_address'
-					AND connect_connect_id='".safe_text($pers_gedcomnumber)."'
+					AND connect_connect_id='".safe_text_db($pers_gedcomnumber)."'
 					ORDER BY connect_order";
 				$connect_sql=$dbh->query($connect_qry);
 				while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
@@ -1899,7 +1900,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			$connect_qry=$dbh->query("SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='person_address'
-				AND connect_connect_id='".safe_text($pers_gedcomnumber)."'
+				AND connect_connect_id='".safe_text_db($pers_gedcomnumber)."'
 				ORDER BY connect_order");
 			$count=$connect_qry->rowCount();
 			$address_nr=0;
@@ -2256,9 +2257,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		// *** Select marriage ***
 		//if ($person->pers_fams){
 		if ($menu_tab=='marriage' AND $person->pers_fams){
-			$family=$dbh->query("SELECT * FROM humo_families
-				WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$marriage."'");
-			$familyDb=$family->fetch(PDO::FETCH_OBJ);
+			$familyDb = $db_functions->get_family($marriage);
 
 			$fam_kind=$familyDb->fam_kind;
 			$man_gedcomnumber=$familyDb->fam_man; $woman_gedcomnumber=$familyDb->fam_woman;
@@ -2349,8 +2348,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			if (isset($_POST["fam_man_age"]) AND $_POST["fam_man_age"]!=''
 				AND $fam_marr_date!='' AND $person->pers_birth_date=='' AND $person->pers_bapt_date==''){
 					$pers_birth_date= 'ABT '.(substr($fam_marr_date,-4) - $_POST["fam_man_age"]);
-					$sql="UPDATE humo_persons SET pers_birth_date='".safe_text($pers_birth_date)."'
-					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($man_gedcomnumber)."'";
+					$sql="UPDATE humo_persons SET pers_birth_date='".safe_text_db($pers_birth_date)."'
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($man_gedcomnumber)."'";
 					$result=$dbh->query($sql);
 			}
 
@@ -2376,8 +2375,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			if (isset($_POST["fam_woman_age"]) AND $_POST["fam_woman_age"]!=''
 				AND $fam_marr_date!='' AND $person->pers_birth_date=='' AND $person->pers_bapt_date==''){
 					$pers_birth_date= 'ABT '.(substr($fam_marr_date,-4) - $_POST["fam_woman_age"]);
-					$sql="UPDATE humo_persons SET pers_birth_date='".safe_text($pers_birth_date)."'
-					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text($woman_gedcomnumber)."'";
+					$sql="UPDATE humo_persons SET pers_birth_date='".safe_text_db($pers_birth_date)."'
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($woman_gedcomnumber)."'";
 					$result=$dbh->query($sql);
 			}
 
@@ -2971,9 +2970,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			<?php
 		}
 
-		
-//~~~~~~~~~ADDED FOR PETER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+		//~~~~~~~~~ADDED FOR PETER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		if ($menu_tab=='entirefamily') {
 			for($y=5;$y<15;$y++) {
 				echo '
@@ -3010,15 +3008,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo "</tr>";
 					
 					foreach($famarray AS $value) { 
-						$result = $dbh->query("SELECT fam_woman,fam_man FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$value."'");
-						$resultDb = $result->fetch(PDO::FETCH_OBJ); 
-						if($resultDb->fam_man==$person->pers_gedcomnumber) {
-							$result2= $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$resultDb->fam_woman."'");
-						}
-						else {
-							$result2= $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$resultDb->fam_man."'");
-						}
-						$resultDb2 = $result2->fetch(PDO::FETCH_OBJ);
+						$resultDb = $db_functions->get_family($value,'man-woman');
+						if($resultDb->fam_man==$person->pers_gedcomnumber)
+							$resultDb2 = $db_functions->get_person($resultDb->fam_woman);
+						else
+							$resultDb2 = $db_functions->get_person($resultDb->fam_man);
 
 						echo "<tr><td>";
 						/*
@@ -3167,19 +3161,18 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					// user chose to add to existing fam: show (un-editable) details of existing partner
 					echo '<input type="hidden" name="exist_partner" value="'.$_POST['use_fam_value'].'">';
 
-					$result = $dbh->query("SELECT fam_woman,fam_man FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$_POST['use_fam_value']."'");
-					$resultDb = $result->fetch(PDO::FETCH_OBJ);
+					$resultDb = $db_functions->get_family($_POST['use_fam_value'],'man-woman');
+
 					$partner_male = "";
 					$partner_female = "";
 					if($resultDb->fam_man==$person->pers_gedcomnumber) {
-						$result2= $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$resultDb->fam_woman."'");
+						$resultDb2 = $db_functions->get_person($resultDb->fam_woman);
 						$partner_female = " CHECKED ";
 					}
 					else {
-						$result2= $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$resultDb->fam_man."'");
+						$resultDb2 = $db_functions->get_person($resultDb->fam_man);
 						$partner_male = " CHECKED ";
 					}
-					$resultDb2 = $result2->fetch(PDO::FETCH_OBJ);
 					echo '<tr style="background-color:#E5E7E9;text-align:left"><td>'.__('Partner').'</td>';
 					echo '<td>'.'<input type="radio" name="add_fam_partner_sexe" value="M"'.$partner_male.' disabled>'.'</td>';
 					echo '<td>'.'<input type="radio" name="add_fam_partner_sexe" value="F"'.$partner_female.' disabled>'.'</td>';
@@ -3219,7 +3212,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					if(isset($_POST['use_fam_value']) AND $_POST['use_fam_value'] != "" AND $_POST['use_fam_value']!="newfam") {
 						// adding to existing family, first display the existing children (non-editable)
 						echo '<input type="hidden" value="'.$_POST['use_fam_value'].'" name="chosenfamily">';
-						$result = $dbh->query("SELECT fam_children FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$_POST['use_fam_value']."'");
+						$result = $dbh->query("SELECT fam_children FROM humo_families
+							WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$_POST['use_fam_value']."'");
 						$resultDb = $result->fetch(PDO::FETCH_OBJ);
 						
 						if($resultDb->fam_children != '') {
@@ -3227,20 +3221,15 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 							
 							foreach($chld_arr AS $value) {
 								$i++;
-								$result2= $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$value."'");
-								$resultDb2 = $result2->fetch(PDO::FETCH_OBJ);
-								$chld_male = "";
-								$chld_female = "";	
+								$resultDb2 = $db_functions->get_person($value);
+								$chld_male = ""; $chld_female = "";
 								$chld_notknown = "";
-								if($resultDb2->pers_sexe=="M") {
+								if($resultDb2->pers_sexe=="M")
 									$chld_male = " CHECKED ";
-								}
-								elseif($resultDb2->pers_sexe=="F") {
+								elseif($resultDb2->pers_sexe=="F")
 									$chld_female = " CHECKED ";
-								}
-								else {
+								else
 									$chld_notknown = " CHECKED ";
-								}
 								echo '<tr style="height:25px;background-color:#E5E7E9;text-align:left"><td>'.__('Child').' '.$i.'</td>';
 								echo '<td>'.'<input type="radio" name="add_fam_child_sexe_'.$i.'" value="M"'.$chld_male.' disabled>'.'</td>';
 								echo '<td>'.'<input type="radio" name="add_fam_child_sexe_'.$i.'" value="F"'.$chld_female.' disabled>'.'</td>';
@@ -3339,7 +3328,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				source_gedcomnr='".$new_gedcomnumber."',
 				source_status='".$editor_cls->text_process($_POST['source_status'])."',
 				source_title='".$editor_cls->text_process($_POST['source_title'])."',
-				source_date='".safe_text($_POST['source_date'])."',
+				source_date='".safe_text_db($_POST['source_date'])."',
 				source_place='".$editor_cls->text_process($_POST['source_place'])."',
 				source_publ='".$editor_cls->text_process($_POST['source_publ'])."',
 				source_refn='".$editor_cls->text_process($_POST['source_refn'])."',
@@ -3348,7 +3337,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				source_item='".$editor_cls->text_process($_POST['source_item'])."',
 				source_kind='".$editor_cls->text_process($_POST['source_kind'])."',
 				source_repo_caln='".$editor_cls->text_process($_POST['source_repo_caln'])."',
-				source_repo_page='".safe_text($_POST['source_repo_page'])."',
+				source_repo_page='".safe_text_db($_POST['source_repo_page'])."',
 				source_repo_gedcomnr='".$editor_cls->text_process($_POST['source_repo_gedcomnr'])."',
 				source_text='".$editor_cls->text_process($_POST['source_text'])."',
 				source_new_user='".$username."',
@@ -3383,7 +3372,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			source_changed_user='".$username."',
 			source_changed_date='".$gedcom_date."',
 			source_changed_time='".$gedcom_time."'
-			WHERE source_tree_id='".$tree_id."' AND source_id='".safe_text($_POST["source_id"])."'";
+			WHERE source_tree_id='".$tree_id."' AND source_id='".safe_text_db($_POST["source_id"])."'";
 			$result=$dbh->query($sql);
 			family_tree_update($tree_prefix);
 		}
@@ -3403,13 +3392,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		if (isset($_POST['source_remove2'])){
 			echo '<div class="confirm">';
 				// *** Delete source ***
-				$sql="DELETE FROM humo_sources WHERE source_id='".safe_text($_POST["source_id"])."'";
+				$sql="DELETE FROM humo_sources WHERE source_id='".safe_text_db($_POST["source_id"])."'";
 				$result=$dbh->query($sql);
 
 				// *** Delete connections to source, and re-order remaining source connections ***
 				$connect_sql="SELECT * FROM humo_connections
 					WHERE connect_tree_id='".$tree_id."'
-					AND connect_source_id='".safe_text($_POST['source_gedcomnr'])."'";
+					AND connect_source_id='".safe_text_db($_POST['source_gedcomnr'])."'";
 				$connect_qry=$dbh->query($connect_sql);
 				while($connectDb=$connect_qry->fetch(PDO::FETCH_OBJ)){
 					// *** Delete source connections ***
@@ -3503,7 +3492,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			}
 			else{
 				@$source_qry=$dbh->query("SELECT * FROM humo_sources
-					WHERE source_tree_id='".$tree_id."' AND source_id='".safe_text($source_id)."'");
+					WHERE source_tree_id='".$tree_id."' AND source_id='".safe_text_db($source_id)."'");
 
 				$die_message=__('No valid source number.');
 				try {
@@ -3624,13 +3613,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				repo_gedcomnr='".$new_gedcomnumber."',
 				repo_name='".$editor_cls->text_process($_POST['repo_name'])."',
 				repo_address='".$editor_cls->text_process($_POST['repo_address'])."',
-				repo_zip='".safe_text($_POST['repo_zip'])."',
+				repo_zip='".safe_text_db($_POST['repo_zip'])."',
 				repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
-				repo_phone='".safe_text($_POST['repo_phone'])."',
+				repo_phone='".safe_text_db($_POST['repo_phone'])."',
 				repo_date='".$editor_cls->date_process('repo_date')."',
 				repo_text='".$editor_cls->text_process($_POST['repo_text'])."',
-				repo_mail='".safe_text($_POST['repo_mail'])."',
-				repo_url='".safe_text($_POST['repo_url'])."',
+				repo_mail='".safe_text_db($_POST['repo_mail'])."',
+				repo_url='".safe_text_db($_POST['repo_url'])."',
 				repo_new_user='".$username."',
 				repo_new_date='".$gedcom_date."',
 				repo_new_time='".$gedcom_time."'";
@@ -3649,17 +3638,17 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			$sql="UPDATE humo_repositories SET
 				repo_name='".$editor_cls->text_process($_POST['repo_name'])."',
 				repo_address='".$editor_cls->text_process($_POST['repo_address'])."',
-				repo_zip='".safe_text($_POST['repo_zip'])."',
+				repo_zip='".safe_text_db($_POST['repo_zip'])."',
 				repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
-				repo_phone='".safe_text($_POST['repo_phone'])."',
+				repo_phone='".safe_text_db($_POST['repo_phone'])."',
 				repo_date='".$editor_cls->date_process('repo_date')."',
 				repo_text='".$editor_cls->text_process($_POST['repo_text'])."',
-				repo_mail='".safe_text($_POST['repo_mail'])."',
-				repo_url='".safe_text($_POST['repo_url'])."',
+				repo_mail='".safe_text_db($_POST['repo_mail'])."',
+				repo_url='".safe_text_db($_POST['repo_url'])."',
 				repo_changed_user='".$username."',
 				repo_changed_date='".$gedcom_date."',
 				repo_changed_time='".$gedcom_time."'
-			WHERE repo_id='".safe_text($_POST["repo_id"])."'";
+			WHERE repo_id='".safe_text_db($_POST["repo_id"])."'";
 			$result=$dbh->query($sql);
 			family_tree_update($tree_prefix);
 		}
@@ -3679,7 +3668,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<div class="confirm">';
 				// *** Find gedcomnumber, needed for events query ***
 				$repo_qry=$dbh->query("SELECT * FROM humo_repositories
-					WHERE repo_id='".safe_text($_POST["repo_id"])."'");
+					WHERE repo_id='".safe_text_db($_POST["repo_id"])."'");
 				$repoDb=$repo_qry->fetch(PDO::FETCH_OBJ);
 
 				// *** Delete repository link ***
@@ -3689,7 +3678,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 				// *** Delete repository ***
 				$sql="DELETE FROM humo_repositories
-					WHERE repo_id='".safe_text($_POST["repo_id"])."'";
+					WHERE repo_id='".safe_text_db($_POST["repo_id"])."'";
 
 				$result=$dbh->query($sql);
 				echo __('Repository is removed!');
@@ -3739,7 +3728,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			}
 			else{
 				@$repo_qry=$dbh->query("SELECT * FROM humo_repositories
-					WHERE repo_id='".safe_text($_POST["repo_id"])."'");
+					WHERE repo_id='".safe_text_db($_POST["repo_id"])."'");
 				$die_message=__('No valid repository number.');
 				try {
 					@$repoDb=$repo_qry->fetch(PDO::FETCH_OBJ);
@@ -3834,10 +3823,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				address_tree_id='".$tree_id."',
 				address_gedcomnr='".$new_gedcomnumber."',
 				address_address='".$editor_cls->text_process($_POST['address_address'])."',
-				address_date='".safe_text($_POST['address_date'])."',
-				address_zip='".safe_text($_POST['address_zip'])."',
+				address_date='".safe_text_db($_POST['address_date'])."',
+				address_zip='".safe_text_db($_POST['address_zip'])."',
 				address_place='".$editor_cls->text_process($_POST['address_place'])."',
-				address_phone='".safe_text($_POST['address_phone'])."',
+				address_phone='".safe_text_db($_POST['address_phone'])."',
 				address_text='".$editor_cls->text_process($_POST['address_text'])."',
 				address_new_user='".$username."',
 				address_new_date='".$gedcom_date."',
@@ -3853,18 +3842,18 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		}
 
 		if (isset($_POST['address_change'])){
-			//address_photo='".safe_text($_POST['address_photo'])."',
+			//address_photo='".safe_text_db($_POST['address_photo'])."',
 			$sql="UPDATE humo_addresses SET
 				address_address='".$editor_cls->text_process($_POST['address_address'])."',
 				address_date='".$editor_cls->date_process('address_date')."',
-				address_zip='".safe_text($_POST['address_zip'])."',
+				address_zip='".safe_text_db($_POST['address_zip'])."',
 				address_place='".$editor_cls->text_process($_POST['address_place'])."',
-				address_phone='".safe_text($_POST['address_phone'])."',
+				address_phone='".safe_text_db($_POST['address_phone'])."',
 				address_text='".$editor_cls->text_process($_POST['address_text'],true)."',
 				address_changed_user='".$username."',
 				address_changed_date='".$gedcom_date."',
 				address_changed_time='".$gedcom_time."'
-			WHERE address_id='".safe_text($_POST["address_id"])."'";
+			WHERE address_id='".safe_text_db($_POST["address_id"])."'";
 			$result=$dbh->query($sql);
 
 			family_tree_update($tree_prefix);
@@ -3888,14 +3877,14 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Remove sources by this address from connection table ***
 			$sql="DELETE FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
-				AND connect_kind='address' AND connect_connect_id='".safe_text($_POST["address_id"])."'";
+				AND connect_kind='address' AND connect_connect_id='".safe_text_db($_POST["address_id"])."'";
 			$result=$dbh->query($sql);
 
 			// *** Delete connections to address, and re-order remaining address connections ***
 			$connect_sql="SELECT * FROM humo_connections
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='person_address'
-				AND connect_item_id='".safe_text($_POST["address_gedcomnr"])."'";
+				AND connect_item_id='".safe_text_db($_POST["address_gedcomnr"])."'";
 			$connect_qry=$dbh->query($connect_sql);
 			while($connectDb=$connect_qry->fetch(PDO::FETCH_OBJ)){
 				// *** Delete source connections ***
@@ -3922,7 +3911,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			// *** Delete address ***
 			$sql="DELETE FROM humo_addresses
-				WHERE address_id='".safe_text($_POST["address_id"])."'";
+				WHERE address_id='".safe_text_db($_POST["address_id"])."'";
 			$result=$dbh->query($sql);
 
 			echo __('Address has been removed!');
@@ -4003,7 +3992,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			}
 			else{
 				@$address_qry2=$dbh->query("SELECT * FROM humo_addresses
-					WHERE address_tree_id='".$tree_id."' AND address_id='".safe_text($_POST["address_id"])."'");
+					WHERE address_tree_id='".$tree_id."' AND address_id='".safe_text_db($_POST["address_id"])."'");
 
 				$die_message=__('No valid address number.');
 				try{
@@ -4088,22 +4077,22 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		if (isset($_POST['place_change'])){
 			$sql="UPDATE humo_persons SET
 				pers_birth_place='".$editor_cls->text_process($_POST['place_new'])."'
-			WHERE pers_tree_id='".$tree_id."' AND pers_birth_place='".safe_text($_POST["place_old"])."'";
+			WHERE pers_tree_id='".$tree_id."' AND pers_birth_place='".safe_text_db($_POST["place_old"])."'";
 			$result=$dbh->query($sql);
 
 			$sql="UPDATE humo_persons SET
 				pers_bapt_place='".$editor_cls->text_process($_POST['place_new'])."'
-			WHERE pers_tree_id='".$tree_id."' AND pers_bapt_place='".safe_text($_POST["place_old"])."'";
+			WHERE pers_tree_id='".$tree_id."' AND pers_bapt_place='".safe_text_db($_POST["place_old"])."'";
 			$result=$dbh->query($sql);
 
 			$sql="UPDATE humo_persons SET
 				pers_death_place='".$editor_cls->text_process($_POST['place_new'])."'
-			WHERE pers_tree_id='".$tree_id."' AND pers_death_place='".safe_text($_POST["place_old"])."'";
+			WHERE pers_tree_id='".$tree_id."' AND pers_death_place='".safe_text_db($_POST["place_old"])."'";
 			$result=$dbh->query($sql);
 
 			$sql="UPDATE humo_persons SET
 				pers_buried_place='".$editor_cls->text_process($_POST['place_new'])."'
-			WHERE pers_tree_id='".$tree_id."' AND pers_buried_place='".safe_text($_POST["place_old"])."'";
+			WHERE pers_tree_id='".$tree_id."' AND pers_buried_place='".safe_text_db($_POST["place_old"])."'";
 			$result=$dbh->query($sql);
 
 			if (isset($_POST["google_maps"])){
@@ -4111,8 +4100,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				$tempqry = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 				if ($tempqry->rowCount()) {
 					$sql= "UPDATE humo_location
-						SET location_location ='".safe_text($_POST['place_new'])."'
-						WHERE location_location = '".safe_text($_POST['place_old'])."'";
+						SET location_location ='".safe_text_db($_POST['place_new'])."'
+						WHERE location_location = '".safe_text_db($_POST['place_old'])."'";
 					$result=$dbh->query($sql);
 				}
 			}
@@ -4169,7 +4158,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 	}
 
 }
- 
+
 echo '
 <script> 
 $("#chtd1").width($("#target1").width()); 

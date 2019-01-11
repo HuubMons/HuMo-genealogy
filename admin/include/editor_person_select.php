@@ -12,10 +12,10 @@ if ($_GET['person_item']=='relation_add2'){ $place_item='relation_add2'; $form='
 if ($_GET['person_item']=='add_partner'){ $form='form_entire'; }
 if (substr($_GET['person_item'],0,10)=='add_child_'){ $form='form_entire'; }
 
-$man_gedcomnumber=safe_text($_GET['person']);
-$tree_prefix=safe_text($_GET['tree_prefix']);
-
+$man_gedcomnumber=safe_text_db($_GET['person']);
+$tree_prefix=safe_text_db($_GET['tree_prefix']);
 $tree_id=$_SESSION['admin_tree_id'];
+
 if($_GET['person_item']!= 'add_partner' AND substr($_GET['person_item'],0,10)!= 'add_child_') {
 	echo'
 		<script type="text/javascript">
@@ -71,7 +71,7 @@ else {
 			return false;
 		}
 		</script>
-	';	
+	';
 }
 /*
 echo'
@@ -86,10 +86,10 @@ echo'
 ';
 */
 echo '<form method="POST" action="index.php?page=editor_person_select&person_item='.$_GET['person_item'].'&person='.$_GET['person'].'&tree_prefix='.$_GET['tree_prefix'].'" style="display : inline;">';
-	$search_quicksearch_man=''; if (isset($_POST['search_quicksearch_man'])){ $search_quicksearch_man=safe_text($_POST['search_quicksearch_man']); }
+	$search_quicksearch_man=''; if (isset($_POST['search_quicksearch_man'])){ $search_quicksearch_man=safe_text_db($_POST['search_quicksearch_man']); }
 	print ' <input class="fonts" type="text" name="search_quicksearch_man" placeholder="'.__('Name').'" value="'.$search_quicksearch_man.'" size="15">';
 
-	$search_man_id=''; if (isset($_POST['search_man_id'])) $search_man_id=safe_text($_POST['search_man_id']);
+	$search_man_id=''; if (isset($_POST['search_man_id'])) $search_man_id=safe_text_db($_POST['search_man_id']);
 	echo __('or ID:').' <input class="fonts" type="text" name="search_man_id" value="'.$search_man_id.'" size="5">';
 
 	echo ' <input class="fonts" type="submit" name="submit" value="'.__('Search').'">';
@@ -142,7 +142,7 @@ else {
 	
 		$bdate_arr = explode(" ",$person->pers_birth_date);
 		//if(is_numeric(substr($bdate_arr[0],0,1))===false){ $dateprefix = $bdate_arr[0]." "; $dateself = substr($person->pers_birth_date,strpos($person->pers_birth_date," ")+1);}
-		if(substr($bdate_arr[0],0,3)=="BEF" OR substr($bdate_arr[0],0,3)=="AFT" OR substr($bdate_arr[0],0,3)=="ABT" OR substr($bdate_arr[0],0,3)=="BET"){ $dateprefix = $bdate_arr[0]." "; $dateself = substr($person->pers_birth_date,strpos($person->pers_birth_date," ")+1);}		
+		if(substr($bdate_arr[0],0,3)=="BEF" OR substr($bdate_arr[0],0,3)=="AFT" OR substr($bdate_arr[0],0,3)=="ABT" OR substr($bdate_arr[0],0,3)=="BET"){ $dateprefix = $bdate_arr[0]." "; $dateself = substr($person->pers_birth_date,strpos($person->pers_birth_date," ")+1);}
 		else {
 			$dateself=$person->pers_birth_date;
 			$dateprefix=""; 

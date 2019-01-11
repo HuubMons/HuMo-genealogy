@@ -2,8 +2,8 @@
 *** Handleiding/ Manual    ***
 ******************************
 
-De handleiding/ wiki staat op de website van het HuMo-gen programma.
-The manual/ wiki can be found at the HuMo-gen websites.
+De handleiding staat op de HuMo-gen website.
+The manual can be found at the HuMo-gen website.
 
 www.humo-gen.com (dutch/ english)
 www.humogen.com (international)

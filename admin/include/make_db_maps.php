@@ -126,14 +126,14 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 			$map_count_found++;
 			$lat=$json_output['results'][0]['geometry']['location']['lat'];
 			$lng=$json_output['results'][0]['geometry']['location']['lng'];
-			$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".safe_text($value)."', '".$lat."', '".$lng."') ");
+			$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".safe_text_db($value)."', '".$lat."', '".$lng."') ");
 
 			sleep(1);  // crucial, otherwise google kicks you out after a few queries
 		}
 		elseif ($json_output['status']=="ZERO_RESULTS") { // store locations that were not found by google geocoding
 			$map_notfound_array[]= $json_output['status'].' - '.$value;
 			$map_count_notfound++;
-			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text($value)."') ");
+			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text_db($value)."') ");
 			sleep(1);  // crucial, otherwise google kicks you out after a few queries
 		}
 		elseif ($json_output['status']=="OVER_QUERY_LIMIT") {
@@ -186,7 +186,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 	unset($_SESSION['add_locations']);
 
 	echo '</td></tr>';
-	echo '<br><form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post">';
+	echo '<br><form action="index.php?page=google_maps" method="post">';
 	echo '<input type="submit" style="font-size:14px" value="'.__('Back').'">';
 	echo '<br></form><br>';
  
@@ -227,7 +227,7 @@ else {  // main screen
 		}
 		$dbh->query("TRUNCATE TABLE humo_no_location"); 
 		foreach($new_no_locs AS $value) { 
-			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text($value)."') ");
+			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text_db($value)."') ");
 		}
 	}
 
@@ -280,7 +280,7 @@ else {  // main screen
 		if(isset($_POST['change_api']) OR $apiDb->setting_value=='') {  
 			// admin requested to change the existing key OR key setting in database is empty - show field to enter updated key
 			echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 			echo '<input type="text" id="new_api" name="new_api" size="40" >';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="api_save">';
 			echo '</form><br>';
@@ -291,7 +291,7 @@ else {  // main screen
 			$temp = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'google_api_key'");
 			echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
 			echo __('has been deleted');
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api">';
 			echo '</form><br>';
 		}
@@ -308,10 +308,10 @@ else {  // main screen
 				echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): "; 
 				echo '<span style="font-weight:bold">'.$apiDb->setting_value.'</span>'; 
 			}
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api">';
 			echo '</form>&nbsp;&nbsp;&nbsp;';
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api">';
 			echo '</form><br>';
 		}
@@ -321,7 +321,7 @@ else {  // main screen
 		if(!isset($_POST['new_api'])) { 
 			// fresh page when no api key 1 variable exists - show field to enter key 1
  			echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 			echo '<input type="text" id="new_api" name="new_api" size="40" >';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="save_new_api">';
 			echo '</form><br>';
@@ -332,16 +332,16 @@ else {  // main screen
 				$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key', setting_value='".$_POST['new_api']."'");
 				echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): "; 
 				echo '<span style="font-weight:bold">'.$_POST['new_api'].'</span>';
-				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api">';
 				echo '</form>&nbsp;&nbsp;&nbsp;';
-				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api">';
 				echo '</form><br>';
 			}
 			else { // empty key was entered, show field again...
 				echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
-				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 				echo '<input type="text" id="new_api" name="new_api" size="40" >';
 				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="save_new_api">';
 				echo '</form><br>';
@@ -355,7 +355,7 @@ else {  // main screen
 		if(isset($_POST['change_api2']) OR $apiDb2->setting_value=='') {  
 			// admin requested to change the existing key OR key setting in database is empty - show field to enter updated key
 			echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;";
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 			echo '<input type="text" id="new_api2" name="new_api2" size="40" >';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="api_save2">';
 			echo '</form><br>';
@@ -366,7 +366,7 @@ else {  // main screen
 			$temp2 = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'google_api_key2'");
 			echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;";
 			echo __('has been deleted');
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api2">';
 			echo '</form><br>';
 		}
@@ -383,10 +383,10 @@ else {  // main screen
 	  	  		echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;"; 
 				echo '<span style="font-weight:bold">'.$apiDb2->setting_value.'</span>'; 
 			}
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api2">';
 			echo '</form>&nbsp;&nbsp;&nbsp;';
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api2">';
 			echo '</form><br>';
 		}
@@ -396,7 +396,7 @@ else {  // main screen
 		if(!isset($_POST['new_api2'])) { 
 			// fresh page when no api key 2 variable exists - show field to enter key 1
  			echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;";
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 			echo '<input type="text" id="new_api2" name="new_api2" size="40" >';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="save_new_api2">';
 			echo '</form><br>';
@@ -407,16 +407,16 @@ else {  // main screen
 				$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key2', setting_value='".$_POST['new_api2']."'");
 				echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;"; 
 				echo '<span style="font-weight:bold">'.$_POST['new_api2'].'</span>';
-				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api2">';
 				echo '</form>&nbsp;&nbsp;&nbsp;';
-				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api2">';
 				echo '</form><br>';
 			}
 			else { // empty key was entered, show field again...
 				echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;";
-				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
 				echo '<input type="text" id="new_api2" name="new_api2" size="40" >';
 				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="save_new_api2">';
 				echo '</form><br>';
@@ -579,7 +579,7 @@ else {  // main screen
 			printf(__('This will take approximately <b>%1$d minutes and %2$d seconds.</b>'), $map_mins, $map_secs);
 			echo '<br>';
 			echo __('Do you wish to add these locations to the database database now?').'<br>';
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post">';
+			echo '<form action="index.php?page=google_maps" method="post">';
 			echo '<input type="submit" style="font-size:14px" value="'.__('YES').'" name="makedatabase">';
 			echo '</form><br>';
 
@@ -608,7 +608,7 @@ else {  // main screen
 		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 		$tree_prefix_result = $dbh->query($tree_prefix_sql);
 		$count=0;
-		echo '<br><form method="POST" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
+		echo '<br><form method="POST" action="index.php?page=google_maps" style="display : inline;">';
 		//echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
 		echo '<select size="1" name="database" onChange="this.form.submit();">';
 			//echo '<option value="">'.__('Select a family tree:').'</option>';
@@ -639,7 +639,7 @@ else {  // main screen
 		echo '</select>';
 		echo '</form><br>';
 
-		echo '<form method="POST" name="checkform" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
+		echo '<form method="POST" name="checkform" action="index.php?page=google_maps" style="display : inline;">';
 		echo '<br><input type="submit" name="check_new" value="'.__('Check').'"><br><br>';
 		echo '</form>';
 	}
@@ -658,7 +658,7 @@ else {  // main screen
 			echo '<div style="color:red;font-weight:bold;">'.__('The birth/ death status and tree affiliation has been refreshed.').'</div><br>';
 		}
 		else {
-			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post">';
+			echo '<form action="index.php?page=google_maps" method="post">';
 			echo __('The "Find a location on the map" pull-down displays a list according to the chosen tree and the birth/ death mapping choice. For this to work properly, the birth/death status and tree affiliation of all locations has to be up to date.<br><br><b>
 TIP:</b> When you import a gedcom, you can mark the option "Add new locations to geo-location database" and the location status of existing locations will also be updated automatically! (If you didn\'t mark this option on import, use the "Update geolocation database" above. This will also refresh the existing location status).
 <p><b>When to use this button:</b><ul><li> if you edited location data directly with the HuMo-gen editor</li><li>if you wish to delete all locations that have become obsolete (mark the box below)</li></ul></p>');
@@ -684,7 +684,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		else {
 			if(isset($_POST['flag_form'])) {  
 				// the pulldown was used -- so show the place that was chosen
-				$result = $dbh->query("SELECT * FROM humo_location WHERE location_id = ".safe_text($_POST['loc_find']));
+				$result = $dbh->query("SELECT * FROM humo_location WHERE location_id = ".safe_text_db($_POST['loc_find']));
 			}
 			elseif (isset($_POST['loc_delete'])) { 
 				// "delete" was used -- so show map+marker for first on list
@@ -815,15 +815,15 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		$leave_bottom = false;
 		if(isset($_POST['loc_delete'])) {
 			// delete location
-			echo '<span style="color:red;font-weight:bold;">'.__('Deleted location:').str_replace("\'","'",safe_text($_POST['loc_del_name'])).'</span><br>';
+			echo '<span style="color:red;font-weight:bold;">'.__('Deleted location:').str_replace("\'","'",safe_text_db($_POST['loc_del_name'])).'</span><br>';
 		}
 		if(isset($_POST['loc_change']) OR isset($_POST['yes_change']) OR isset($_POST['cancel_change'])) {
 			// "change" location or "yes" button pressed
 			$pos = strpos($_POST['add_name'],$_POST['loc_del_name']);
 
 			if(!isset($_POST['cancel_change']) AND ($pos !== false OR isset($_POST['yes_change']))) {  // the name in pulldown appears in the name in the search box
-				$dbh->query("UPDATE humo_location SET location_location ='".safe_text($_POST['loc_del_name'])."', location_lat =".floatval($_POST['add_lat']).", location_lng = ".floatval($_POST['add_lng'])." WHERE location_location = '".safe_text($_POST['loc_del_name'])."'");
-				echo '<span style="color:red;font-weight:bold;">'.__('Changed location:').' '.str_replace("\'","'",safe_text($_POST['loc_del_name'])).'</span><br>';
+				$dbh->query("UPDATE humo_location SET location_location ='".safe_text_db($_POST['loc_del_name'])."', location_lat =".floatval($_POST['add_lat']).", location_lng = ".floatval($_POST['add_lng'])." WHERE location_location = '".safe_text_db($_POST['loc_del_name'])."'");
+				echo '<span style="color:red;font-weight:bold;">'.__('Changed location:').' '.str_replace("\'","'",safe_text_db($_POST['loc_del_name'])).'</span><br>';
 			}
 			elseif(isset($_POST['cancel_change'])) {
 				$leave_bottom = true;
@@ -832,7 +832,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				$leave_bottom = true;
 				echo '<span style="color:red;font-weight:bold;">Are you sure you want to change the lat/lng of </span><b>'.$_POST['loc_del_name'].'</b>';
 				echo '<span style="color:red;font-weight:bold;"> and set them to those that belong to </span><b>'.$_POST['add_name'].'?</b></span><br>';
-				echo '<form method="POST" name="check_change" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
+				echo '<form method="POST" name="check_change" action="index.php?page=google_maps" style="display : inline;">';
 				echo '<input type="hidden" name="add_lat" value="'.$_POST['add_lat'].'">';
 				echo '<input type="hidden" name="add_lng" value="'.$_POST['add_lng'].'">';
 				echo '<input type="hidden" name="add_name" value="'.$_POST['add_name'].'">';
@@ -851,15 +851,15 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			@$result = $dbh->query("SELECT location_location FROM humo_location WHERE location_location = '".$_POST['add_name']."'");
 			if($result->rowCount()==0) { // doesn't exist yet
 				$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".$_POST['add_name']."','".floatval($_POST['add_lat'])."','".floatval($_POST['add_lng'])."') ");
-				echo '<span style="color:red;font-weight:bold;">'.__('Added location:').' '.str_replace("\'","'",safe_text($_POST['add_name'])).'</span><br>';
+				echo '<span style="color:red;font-weight:bold;">'.__('Added location:').' '.str_replace("\'","'",safe_text_db($_POST['add_name'])).'</span><br>';
 			}
 			else { // location already exists, just update the lat/lng
-				$dbh->query("UPDATE humo_location SET location_location ='".$_POST['add_name']."', location_lat =".floatval($_POST['add_lat']).", location_lng = ".floatval($_POST['add_lng'])." WHERE location_location = '".safe_text($_POST['add_name'])."'");
-				echo '<span style="color:red;font-weight:bold;"> '.str_replace("\'","'",safe_text($_POST['add_name'])).': Location already exists.<br>Updated lat/lng.</span><br>';
+				$dbh->query("UPDATE humo_location SET location_location ='".$_POST['add_name']."', location_lat =".floatval($_POST['add_lat']).", location_lng = ".floatval($_POST['add_lng'])." WHERE location_location = '".safe_text_db($_POST['add_name'])."'");
+				echo '<span style="color:red;font-weight:bold;"> '.str_replace("\'","'",safe_text_db($_POST['add_name'])).': Location already exists.<br>Updated lat/lng.</span><br>';
 			}
 		}
 
-		echo '<form method="POST" name="dbform" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
+		echo '<form method="POST" name="dbform" action="index.php?page=google_maps" style="display : inline;">';
 		$loc_list = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
 		echo '<input type="hidden" name="flag_form" value="dummy">';
 		echo '<select size="1" onChange="document.dbform.submit();" name="loc_find" id="loc_find">';
@@ -909,7 +909,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		}
 		$resultDb=$result->fetch(PDO::FETCH_OBJ);
 
-		echo '<form method="POST" name="delform" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
+		echo '<form method="POST" name="delform" action="index.php?page=google_maps" style="display : inline;">';
 		echo '<tr><th colspan="2">'.__('Details from the database').'</th></tr>';
 		echo '<tr><td>'.__('Location').':</td><td><input type="text" id="loc_name" name="loc_name" value="'.$resultDb->location_location.'" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
 		echo '<tr><td>'.__('Latitude').':</td><td><input type="text" id="loc_lat" name="loc_lat" value="'.$resultDb->location_lat.'" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
@@ -920,7 +920,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		echo '<input type="Submit" style="color:red;font-weight:bold" name="loc_delete" value="'.__('Delete this location').'"></td></tr>';
 		//echo '</form>';
 
-		//echo '<form method="POST" name="searchform" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" style="display : inline;">';
+		//echo '<form method="POST" name="searchform" action="index.php?page=google_maps" style="display : inline;">';
 		$search_name = $resultDb->location_location;
 		$search_lat = $resultDb->location_lat;
 		$search_lng = $resultDb->location_lng;
@@ -956,7 +956,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			$num_rows = $loc_list->rowCount();
 			printf(__('Here you can delete your entire geolocation database (%d entries).<br>
 If you are absolutely sure, press the button below.'), $num_rows);
-			echo '<br><form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post">';
+			echo '<br><form action="index.php?page=google_maps" method="post">';
 			echo '<input type="submit" style="font-size:14px;color:red;font-weight:bold" value="'.__('DELETE ENTIRE GEOLOCATION DATABASE').'" name="deletedatabase">';
 			echo '<br></form><br>';
 		}
@@ -971,7 +971,7 @@ If you are absolutely sure, press the button below.'), $num_rows);
 				if($num_rows1>0) {
 					printf(__('Here you can refresh the list of %d non-indexable locations that was stored in your database after previous geolocation processes.<br>
 		Do this if you have corrected non-indexable locations in your data or have imported updated gedcoms and some of these locations may no longer appear in your data.'), $num_rows1);
-					echo '<br><form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post">';
+					echo '<br><form action="index.php?page=google_maps" method="post">';
 					echo '<input type="submit" style="font-size:14px;color:red;font-weight:bold" value="'.__('REFRESH LIST OF NON-INDEXABLE LOCATIONS').'" name="refresh_no_locs">';
 					echo '<br></form><br>';
 				}
@@ -984,7 +984,7 @@ If you are absolutely sure, press the button below.'), $num_rows);
 		//echo '<tr bgcolor="green"><th><font color="white">'.__('Settings').'</font></th></tr>';
 		echo '<tr class="table_header"><th>'.__('Settings').'</th>';
 		echo '<tr><td>';
-		echo '<form name="slider" action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="POST">';
+		echo '<form name="slider" action="index.php?page=google_maps" method="POST">';
 		echo __('The slider has 10 steps. By default the starting year is 1560 with 9 intervals of 50 years up till 2010 and beyond.<br>
 You can set the starting year yourself for each tree, to suit it to the earliest years in that tree<br>
 The 9 intervals will be calculated automatically. Some example starting years for round intervals:<br>

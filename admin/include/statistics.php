@@ -15,9 +15,10 @@ $person_cls = New person_cls;
 
 // *** Show 1 statistics line ***
 function statistics_line($familyDb){
-	global $dbh, $language, $person_cls, $selected_language;
+	global $dbh, $language, $person_cls, $selected_language, $db_functions;
 
 	$tree_id=$familyDb->tree_id;
+	if (isset($tree_id) AND $tree_id) $db_functions->set_tree_id($tree_id);
 
 	echo '<tr>';
 	if (isset($familyDb->count_lines)){ echo '<td>'.$familyDb->count_lines.'</td>'; }
@@ -28,13 +29,8 @@ function statistics_line($familyDb){
 	if (!isset($familyDb->count_lines)){ echo '<td>'.$familyDb->stat_date_stat.'</td>'; }
 
 	// *** Check if family is still in the genealogy! ***
-	$check_sql=$dbh->query("SELECT * FROM humo_families
-		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='$familyDb->stat_gedcom_fam'");
-	$checkDb=$check_sql->fetch(PDO::FETCH_OBJ);
-	$check=false;
-	if ($checkDb AND $checkDb->fam_man==$familyDb->stat_gedcom_man AND $checkDb->fam_woman==$familyDb->stat_gedcom_woman){
-		$check=true;
-	}
+	$checkDb = $db_functions->get_family($familyDb->stat_gedcom_fam);
+	$check=false; if ($checkDb AND $checkDb->fam_man==$familyDb->stat_gedcom_man AND $checkDb->fam_woman==$familyDb->stat_gedcom_woman) $check=true;
 
 	if ($check==true){
 		if(CMS_SPECIFIC == "Joomla") {
@@ -47,13 +43,10 @@ function statistics_line($familyDb){
 		}
 
 		//*** Man ***
-		$person_qry=$dbh->query("SELECT * FROM humo_persons
-			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$familyDb->stat_gedcom_man."'");
-		$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
+		$personDb = $db_functions->get_person($familyDb->stat_gedcom_man);
 
-		if (!$familyDb->stat_gedcom_man){
+		if (!$familyDb->stat_gedcom_man)
 			echo 'N.N.';
-		}
 		else{
 			$name=$person_cls->person_name($personDb);
 			echo $name["standard_name"];
@@ -62,12 +55,9 @@ function statistics_line($familyDb){
 		echo " &amp; ";
 
 		//*** Woman ***
-		$person_qry=$dbh->query("SELECT * FROM humo_persons
-			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$familyDb->stat_gedcom_woman."'");
-		$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
-		if (!$familyDb->stat_gedcom_woman){
+		$personDb = $db_functions->get_person($familyDb->stat_gedcom_woman);
+		if (!$familyDb->stat_gedcom_woman)
 			echo 'N.N.';
-		}
 		else{
 			$name=$person_cls->person_name($personDb);
 			echo $name["standard_name"];
@@ -338,7 +328,7 @@ if(CMS_SPECIFIC == "Joomla") {
 	$phpself = "index.php?option=com_humo-gen&amp;task=admin&amp;page=statistics";
 }
 else {
-	$phpself = $_SERVER['PHP_SELF'];
+	$phpself = 'index.php';
 }
 
 echo '<table class="humo" style="width:90%; text-align:center; border:1px solid black;"><tr class="table_header_large"><td>';
@@ -781,7 +771,7 @@ if ($statistics_screen=='statistics_old'){
 						echo '<a href="index.php?option=com_humo-gen&amp;task=admin&amp;page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext['name'].'</a>';
 					}
 					else {
-						echo '<a href="'.$_SERVER['PHP_SELF'].'?page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext['name'].'</a>';
+						echo '<a href="index.php?page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext['name'].'</a>';
 					}
 				}
 				echo ' <font size=-1>('.$date.': '.$count_persons.' '.__('persons').", ".$count_families.' '.__('families').")</font>\n<br>";
@@ -790,6 +780,7 @@ if ($statistics_screen=='statistics_old'){
 	}
 
 	//*** Statistics ***
+	if (isset($tree_id) AND $tree_id) $db_functions->set_tree_id($tree_id);
 	echo '<br><b>'.__('Most visited families:').'</b><br>';
 		//MAXIMUM 50 LINES
 		$family_qry=$dbh->query("SELECT fam_gedcomnumber, fam_counter, fam_man, fam_woman FROM humo_families
@@ -804,9 +795,7 @@ if ($statistics_screen=='statistics_old'){
 				}
 
 			//*** Man ***
-			$person_qry=$dbh->query("SELECT * FROM humo_persons
-				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$familyDb->fam_man."'");
-			$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
+			$personDb = $db_functions->get_person($familyDb->fam_man);
 			if (!$familyDb->fam_man){
 				echo 'N.N.';
 			}
@@ -818,9 +807,7 @@ if ($statistics_screen=='statistics_old'){
 			echo " &amp; ";
 
 			//*** Woman ***
-			$person_qry=$dbh->query("SELECT * FROM humo_persons
-				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$familyDb->fam_woman."'");
-			$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
+			$personDb = $db_functions->get_person($familyDb->fam_woman);
 			if (!$familyDb->fam_woman){
 				echo 'N.N.';
 			}

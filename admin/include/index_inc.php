@@ -436,10 +436,10 @@ The file .htpasswd will look something like this:<br>');
 		echo '<tr><td>'.__('Trees table').'</td><td class="line_nok">ERROR</td></tr>';
 	}
 
-
 	// *** End of check database and table status ***
 }
 
 echo '</table>';
+
 echo '</div>';
 ?>

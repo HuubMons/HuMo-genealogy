@@ -233,7 +233,7 @@ if (isset($_POST['username'])){
 		// *** Save log! ***
 		$sql="INSERT INTO humo_user_log SET
 			log_date='".date("Y-m-d H:i")."',
-			log_username='".safe_text($_POST["username"])."',
+			log_username='".safe_text_db($_POST["username"])."',
 			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
 			log_user_admin='admin',
 			log_status='failed'";
@@ -600,7 +600,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					// *** Update settings ***
 					$update_last_check=date("Y-m-d");
 					$result = $dbh->query("UPDATE humo_settings
-						SET setting_value='".safe_text($update_last_check)."'
+						SET setting_value='".safe_text_db($update_last_check)."'
 						WHERE setting_variable='update_last_check'");
 
 					// *** Remove temporary file, used for curl method ***
@@ -618,12 +618,12 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					// *** Update settings, only check for update once a day ***
 					$update_last_check=date("Y-m-d");
 					$result = $dbh->query("UPDATE humo_settings
-						SET setting_value='".safe_text($update_last_check)."'
+						SET setting_value='".safe_text_db($update_last_check)."'
 						WHERE setting_variable='update_last_check'");
 				}
 
 				$result = $dbh->query("UPDATE humo_settings
-					SET setting_value='".safe_text($update_text)."'
+					SET setting_value='".safe_text_db($update_text)."'
 					WHERE setting_variable='update_text'");
 
 				$update_text.=' *';

@@ -17,7 +17,7 @@ function process_text($text_process, $text_sort='standard'){
 			if (substr($text_pieces[$i], 0, 1)=='@'){
 				$text_check=substr($text_pieces[$i],1,-1);
 				$search_text=$dbh->query("SELECT * FROM humo_texts
-					WHERE text_tree_id='".$tree_id."' AND text_gedcomnr='".safe_text($text_check)."'");
+					WHERE text_tree_id='".$tree_id."' AND text_gedcomnr='".safe_text_db($text_check)."'");
 				$search_textDb=$search_text->fetch(PDO::FETCH_OBJ);
 				if ($text_result){ $text_result.='<br>'; }
 				$text_result.=@$search_textDb->text_text;
@@ -81,7 +81,7 @@ function process_text($text_process, $text_sort='standard'){
 			global $rtlmarker, $family_id, $main_person, $alignmarker, $text_nr;
 			if (isset($text_nr)) $text_nr++; else $text_nr=1;
 			$text= '<div class="'.$rtlmarker.'sddm" style="left:10px;top:10px;display:inline;">';
-				$text.= '<a href="'.$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person.'"';
+				$text.= '<a href="family.php?id='.$family_id.'&amp;main_person='.$main_person.'"';
 				$text.= ' style="display:inline" ';
 				$text.= 'onmouseover="mopen(event,\'show_text'.$text_nr.'\',0,0)"';
 				$text.= 'onmouseout="mclosetime()">';

@@ -111,6 +111,11 @@ function __construct($tree_prefix='') {
 			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
 		$this->query['get_family_man_woman'] = $dbh->prepare( $sql );
 
+		// *** Text queries ***
+		$sql = "SELECT * FROM humo_texts
+			WHERE text_tree_id=:text_tree_id AND text_gedcomnr=:text_gedcomnr";
+		$this->query['get_text'] = $dbh->prepare( $sql );
+
 		// *** Event queries ***
 		$sql = "SELECT * FROM humo_events WHERE event_id=:event_id";
 		$this->query['get_event'] = $dbh->prepare( $sql );
@@ -398,6 +403,26 @@ function get_family($fam_gedcomnumber,$item=''){
 			$qryDb=$this->query['get_family']->fetch(PDO::FETCH_OBJ);
 		}
 
+	}catch (PDOException $e) {
+		echo $e->getMessage() . "<br/>";
+	}
+	return $qryDb;
+}
+
+/*--------------------[get text]----------------------------------
+ * FUNCTION	: Get a single text from database.
+ * QUERY	: SELECT * FROM humo_texts
+ * 				WHERE fam_tree_id=:fam_tree_id AND text_gedcomnr=:text_gedcomnr
+ * RETURNS	: a single text.
+ *----------------------------------------------------------------
+ */
+function get_text($text_gedcomnr){
+	$qryDb=false;
+	try {
+		$this->query['get_text']->bindValue(':text_tree_id', $this->tree_id, PDO::PARAM_INT);
+		$this->query['get_text']->bindValue(':text_gedcomnr', $text_gedcomnr, PDO::PARAM_INT);
+		$this->query['get_text']->execute();
+		$qryDb=$this->query['get_text']->fetch(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}
