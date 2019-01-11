@@ -2,9 +2,10 @@
 // *** Script by Yossi Beck ***
 // *** Function calculate_marriage added by Huub Mons ***
 // *** Translated all variables and remarks by Huub Mons ***
+//error_reporting(E_ALL);
 
 class calculate_year_cls{
-
+/*
 function search_month($search_date) {
 	$month=substr($search_date, -8, 3);
 	if ($month=="JAN") {$text=1;}
@@ -22,7 +23,26 @@ function search_month($search_date) {
 	else {$text=null;}
 	return($text);
 }
+*/
 
+function search_month($search_date) {
+	if(strpos($search_date,"JAN") !== false) {$text=1;}
+	elseif(strpos($search_date,"FEB") !== false) {$text=2;}
+	elseif(strpos($search_date,"MAR") !== false) {$text=3;}
+	elseif(strpos($search_date,"APR") !== false) {$text=4;}
+	elseif(strpos($search_date,"MAY") !== false) {$text=5;}
+	elseif(strpos($search_date,"JUN") !== false) {$text=6;}
+	elseif(strpos($search_date,"JUL") !== false) {$text=7;}
+	elseif(strpos($search_date,"AUG") !== false) {$text=8;}
+	elseif(strpos($search_date,"SEP") !== false) {$text=9;}
+	elseif(strpos($search_date,"OCT") !== false) {$text=10;}
+	elseif(strpos($search_date,"NOV") !== false) {$text=11;}
+	elseif(strpos($search_date,"DEC") !== false) {$text=12;}
+	else {$text=null;}
+	return($text);
+}
+
+/*
 function search_day($search_date) {
 	$day="";
 	if (strlen($search_date)==11) {    // 12 sep 2002 or 08 sep 2002
@@ -41,10 +61,37 @@ function search_day($search_date) {
 	else { $day=null; }
 	return($day);
 }
+*/
 
+function search_day($search_date) {
+	$day = null;
+	if($this->search_month($search_date)!=null) { // a day value only makes sense if there is a month
+		if(is_numeric(trim(substr($search_date,0,2)))) { // this will give true for "08 FEB", "8 FEB"
+			$day = trim(substr($search_date,0,2));
+		}
+	}
+	return($day);
+}
+
+/*
 function search_year($search_date) {
 	$year=substr($search_date,-4, 4);
 	if ($year < 2100 AND $year > 0) {}
+	else { $year=null;}
+	return ($year);
+}
+*/
+
+function search_year($search_date) {
+	if(is_numeric(substr($search_date,-4, 4))) {
+		$year=trim(substr($search_date,-4, 4));
+	}
+	elseif(is_numeric(substr($search_date,-3, 3))) {
+		$year=trim(substr($search_date,-3, 3));
+	}
+	elseif(is_numeric(substr($search_date,-2, 2))) {
+		$year=trim(substr($search_date,-2, 2));
+	}
 	else { $year=null;}
 	return ($year);
 }
@@ -103,7 +150,8 @@ function process_special_text($date1, $date2, $baptism) {
 }
 
 // *** $age_check=false/true. true=show short age text. ***
-function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false) {	global $language;
+function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false) {
+	global $language;
 
 	$birth_date=strtoupper($birth_date);
 
@@ -211,12 +259,14 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 
 		if ($age_check==true){ $age=$calculated_age; }
 		return($age);
+
 	}
 }
 
 // *** $age_check=false/true. true=show shortened age ***
 // *** Function calculate_marriage added by Huub Mons ***
-function calculate_marriage($church_marr_date, $marr_date, $end_date, $age_check=false) {	global $language, $selected_language;
+function calculate_marriage($church_marr_date, $marr_date, $end_date, $age_check=false) {
+	global $language, $selected_language;
 
 	$marr_date=strtoupper($marr_date);
 
@@ -248,7 +298,8 @@ function calculate_marriage($church_marr_date, $marr_date, $end_date, $age_check
 	$age="";
 
 	if (($start_year=$this->search_year($marr_date)) AND ($end_year=$this->search_year($end_date))) { // there must be 2 dates...
-		// Check for EST AFT ABT
+
+		// Check for EST AFT ABT
 		$special_text=$this->process_special_text($marr_date,$end_date,$baptism);
 
 		if($start_year==$end_year) { // start 1850 - end 1850

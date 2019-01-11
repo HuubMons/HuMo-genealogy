@@ -80,6 +80,21 @@ if (isset($step1)){
 	}
 	*/
 
+	// *** Set parameters ***
+	if(CMS_SPECIFIC=="Joomla")
+		$gedcom_directory=substr(CMS_ROOTPATH_ADMIN, 0, -1); // take away the / at the end
+	else
+		$gedcom_directory="gedcom_files";
+
+	// *** Only needed for Huub's test server ***
+	if (@file_exists("../../gedcom-bestanden")){
+		$gedcom_directory="../../gedcom-bestanden";
+	}
+	// *** Only needed for Huub's test server (for component in Joomla) ***
+	//if (@file_exists("../../../../../../gedcom-bestanden")){
+	//	$gedcom_directory="../../../../../../gedcom-bestanden";
+	//}
+
 	echo __('<b>STEP 1) Select Gedcom file:</b>
 <p>First a Gedcom file has to be placed in this folder: /humo-gen/admin/gedcom_files/<br>
 This can be done in two ways:<br>
@@ -106,7 +121,6 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		}
 
 		// *** Only upload .ged or .zip files ***
-		//if (substr($_FILES['upload_file']['name'],-4)=='.zip' OR substr($_FILES['upload_file']['name'],-4)=='.ged'){
 		if (strtolower(substr($_FILES['upload_file']['name'],-4))=='.zip' OR strtolower(substr($_FILES['upload_file']['name'],-4))=='.ged'){
 			$new_upload = $gedcom_directory.'/' . basename($_FILES['upload_file']['name']);
 			// *** Move and check for succesful upload ***
@@ -151,10 +165,76 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 			echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
-			echo "<input type='file' name='upload_file' >";
-			echo "<input type='hidden' name='upload' value='Upload'>";
-			echo " <input type='submit' name='step1' value='Upload'>";
+			echo '<input type="file" name="upload_file" >';
+			echo '<input type="hidden" name="upload" value="Upload">';
+			echo ' <input type="submit" name="step1" value="Upload">';
 		echo "</form>";
+
+		// *** Form to remove gedcom files ***
+		if (isset($_POST['remove_gedcom_files'])){
+			echo '<br>'.__('Are you sure to remove gedcom files?');
+			echo ' <form name="remove_gedcomfiles" action="'.$phpself.'" method="post">';
+			echo '<input type="hidden" name="page" value="'.$page.'">';
+			echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
+			echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+			echo '<input type="hidden" name="step1" value="step1">';
+			echo '<input type="hidden" name="remove_gedcom_files2" value="'.$_POST['remove_gedcom_files'].'">';
+			echo ' <input type="Submit" name="remove_confirm" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
+			echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
+			echo '</form>';
+		}
+		elseif (isset($_POST['remove_gedcom_files2']) AND isset($_POST['remove_confirm'])){
+			// *** Remove old gedcom files ***
+			$dh  = opendir($gedcom_directory);
+			while (false !== ($filename = readdir($dh))) {
+				if (strtolower(substr($filename, -3)) == "ged"){
+					if ($_POST['remove_gedcom_files2']=='gedcom_files_all'){
+						$filenames[]=$gedcom_directory.'/'.$filename;
+					}
+					elseif ($_POST['remove_gedcom_files2']=='gedcom_files_1_month'){
+						if (time() - filemtime($gedcom_directory.'/'.$filename) >= 60 * 60 * 24 * 30) { // 30 days
+							$filenames[]=$gedcom_directory.'/'.$filename;
+						}
+					}
+					elseif ($_POST['remove_gedcom_files2']=='gedcom_files_1_year'){
+						if (time() - filemtime($gedcom_directory.'/'.$filename) >= 60 * 60 * 24 * 365) { // 365 days
+							$filenames[]=$gedcom_directory.'/'.$filename;
+						}
+					}
+				}
+			}
+			// *** Order gedcom files by alfabet ***
+			if (isset($filenames)) usort($filenames,'strnatcasecmp');
+			echo '<br>';
+			for ($i=0; $i<count($filenames); $i++){
+				if (strpos($filenames[$i],'HuMo-gen test gedcomfile.ged')>1)
+					echo '<b>'.$filenames[$i].'</b><br>';
+				else{
+					echo $filenames[$i].' '._('Gedcom file is REMOVED.').'<br>';
+					unlink ($filenames[$i]);
+				}
+			}
+		}
+		else{
+			echo '<br>'.__('If needed remove gedcom files (except test gedcom file):');
+			echo ' <form name="remove_gedcomfiles" action="'.$phpself.'" method="post">';
+				echo '<select size="1" name="remove_gedcom_files">';
+					//	$selected = ''; if($gedfile == $filenames[$i]) $selected = " selected ";
+					echo '<option value="gedcom_files_all">'.__('Remove all gedcom files').'</option>';
+					echo '<option value="gedcom_files_1_month">';
+						printf(__('Remove gedcom files older than %d month(s)'), 1);
+					echo '</option>';
+					echo '<option value="gedcom_files_1_year">';
+						printf(__('Remove gedcom files older than %d year(s)'), 1);
+					echo '</option>';
+				echo '</select>';
+				echo '<input type="hidden" name="page" value="'.$page.'">';
+				echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
+				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+				echo ' <input type="submit" name="step1" value="'.__('Remove').'">';
+			echo '</form>';
+		}
+
 	}
 	echo '</td></tr></table>';
 
@@ -172,28 +252,12 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 	echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 	echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 
-	if(CMS_SPECIFIC=="Joomla") {
-		$gedcom_directory=substr(CMS_ROOTPATH_ADMIN, 0, -1); // take away the / at the end
-	}
-	else {
-		$gedcom_directory="gedcom_files";
-	}
-	// *** Only needed for Huub's test server ***
-	if (@file_exists("../../gedcom-bestanden")){
-		$gedcom_directory="../../gedcom-bestanden";
-	}
-	// *** Only needed for Huub's test server (for component in Joomla) ***
-	//if (@file_exists("../../../../../../gedcom-bestanden")){
-	//	$gedcom_directory="../../../../../../gedcom-bestanden";
-	//}
 	$dh  = opendir($gedcom_directory);
 	while (false !== ($filename = readdir($dh))) {
-		if (strtolower(substr($filename, -3)) == "ged"){
-			$filenames[]=$gedcom_directory."/".$filename;
-		}
+		if (strtolower(substr($filename, -3)) == "ged") $filenames[]=$gedcom_directory."/".$filename;
 	}
 	// *** Order gedcom files by alfabet ***
-	if (isset($filenames)){ usort($filenames,'strnatcasecmp'); }
+	if (isset($filenames)) usort($filenames,'strnatcasecmp');
 
 	echo '<br>'.__('Select Gedcom file:').'<br>';
 	echo '<select size="1" name="gedcom_file">';
@@ -324,7 +388,7 @@ if (isset($_POST['step2'])){
 		printf(__('Remove old family tree items from %s table...'), 'humo_persons');
 		echo ' ';
 		ob_flush(); flush(); // IE
-		$total = $dbh->query("SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id='".$tree_id."'"); 
+		$total = $dbh->query("SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
 		$total = $total->fetch();
 		$nr_records=$total[0];
 		if ($nr_records>0){
@@ -806,7 +870,7 @@ if (isset($_POST['step3'])){
 		// this way they will never be the same as the existing ones
 
 		// I40
-		$test_qry = "SELECT `pers_gedcomnumber` FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
+		$test_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_pers_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -814,7 +878,7 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_pers_ged) { $largest_pers_ged = $gednum; }
 		}
 		// F40
-		$test_qry = "SELECT `fam_gedcomnumber` FROM humo_families WHERE fam_tree_id='".$tree_id."'";
+		$test_qry = "SELECT fam_gedcomnumber FROM humo_families WHERE fam_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_fam_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -822,7 +886,7 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_fam_ged) { $largest_fam_ged = $gednum; }
 		}
 		// S40
-		$test_qry = "SELECT `source_gedcomnr` FROM humo_sources WHERE source_tree_id='".$tree_id."'";
+		$test_qry = "SELECT source_gedcomnr FROM humo_sources WHERE source_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_source_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -830,7 +894,7 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_source_ged) { $largest_source_ged = $gednum; }
 		}
 		//  R40 (RESI)
-		$test_qry = "SELECT `address_gedcomnr` FROM humo_addresses WHERE address_tree_id='".$tree_id."'";
+		$test_qry = "SELECT address_gedcomnr FROM humo_addresses WHERE address_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_address_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -838,7 +902,7 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_address_ged) { $largest_address_ged = $gednum; }
 		}
 		//  R40 (REPO)
-		$test_qry = "SELECT `repo_gedcomnr` FROM humo_repositories WHERE repo_tree_id='".$tree_id."'";
+		$test_qry = "SELECT repo_gedcomnr FROM humo_repositories WHERE repo_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_repo_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -846,7 +910,7 @@ if (isset($_POST['step3'])){
 			if ($gednum > $largest_repo_ged) { $largest_repo_ged = $gednum; }
 		}
 		// N40 (texts)
-		$test_qry = "SELECT `text_gedcomnr` FROM humo_texts WHERE text_tree_id='".$tree_id."'";
+		$test_qry = "SELECT text_gedcomnr FROM humo_texts WHERE text_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_text_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -855,7 +919,7 @@ if (isset($_POST['step3'])){
 		}
 
 		// @O40@ object table
-		$test_qry = "SELECT `event_gedcomnr` FROM humo_events WHERE event_tree_id='".$tree_id."'";
+		$test_qry = "SELECT event_gedcomnr FROM humo_events WHERE event_tree_id='".$tree_id."'";
 		$geds = $dbh->query($test_qry);
 		$largest_object_ged = 0;
 		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
@@ -1059,15 +1123,15 @@ if (isset($_POST['step3'])){
 	// TEST: lock tables. Unfortunately not much faster than usual... ONLY FOR MYISAM TABLES!
 	/*
 	mysql_query("LOCK TABLES
-		".$_SESSION['tree_prefix']."person
-		".$_SESSION['tree_prefix']."events
-		".$_SESSION['tree_prefix']."addresses
-		".$_SESSION['tree_prefix']."family
-		".$_SESSION['tree_prefix']."connections
-		".$_SESSION['tree_prefix']."humo_location
-		".$_SESSION['tree_prefix']."texts
-		".$_SESSION['tree_prefix']."sources
-		".$_SESSION['tree_prefix']."repositories
+		humo_person
+		humo_events
+		humo_addresses
+		humo_family
+		humo_connections
+		humo_humo_location
+		humo_texts
+		humo_sources
+		humo_repositories
 		WRITE;");
 	*/
 	// *** Batch processing for InnoDB tables ***
@@ -1256,11 +1320,10 @@ if (isset($_POST['step3'])){
 			printf(__('this is an <b>%s</b> file'), $_POST["gedcom_accent"]);
 			echo '<br>';
 
-			// NEW tree <-> gedcom connection - write gedcom to "tree_gedcom" in relevant tree
+			// Save tree <-> gedcom connection - write gedcom to "tree_gedcom" in relevant tree
 			$dbh->query("UPDATE humo_trees SET tree_gedcom='".$_POST["gedcom_file"]."',
 				tree_gedcom_program='".$gen_program."'
 				WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
-			// END
 		}
 
 		// *** progress bar ***
@@ -1788,7 +1851,7 @@ if (isset($_POST['step4'])){
 		$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
 		$exists = $result->rowCount();
 		if(!$exists) {
-			$dbh->query("ALTER TABLE humo_location ADD location_status TEXT DEFAULT '' AFTER location_lng");
+			$dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
 		}
 		$all_loc = $dbh->query("SELECT location_location FROM humo_location");
 		while($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {  
@@ -1863,8 +1926,7 @@ if (isset($_POST['step4'])){
 			if ($nr_children > 1) {
 				unset ($children_array);
 				for ($i=0; $i<$nr_children; $i++){
-					$child=$dbh->query("SELECT * FROM humo_persons
-						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$child_array[$i]."'");
+					$child=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$child_array[$i]."'");
 					@$childDb=$child->fetch(PDO::FETCH_OBJ);
 
 					$child_array_nr=$child_array[$i];
@@ -1901,7 +1963,7 @@ if (isset($_POST['step4'])){
 	// *** Process Aldfaer adoption children: remove unecesary added relations ***
 	if ($gen_program=='ALDFAER') {
 		function fams_remove($personnr, $familynr){
-			global $dbh, $tree_id, $tree_prefix;
+			global $dbh, $tree_id;
 			$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$personnr."'";
 			$person_result = $dbh->query($person_qry);
 			$person_db=$person_result->fetch(PDO::FETCH_OBJ);

@@ -111,7 +111,7 @@ function mapbirthplace ($place) {
 		$idstring = substr($idstring,0,-3).') AND ';
 	}
 
-//NEW ~~~~~~~~~~~~~~~~
+	//NEW ~~~~~~~~~~~~~~~~
 	$anc_arr=''; $anc_idstring='';
 	if(isset($_SESSION['anc_array'])) {
 		$anc_arr = $_SESSION['anc_array'];
@@ -125,7 +125,7 @@ function mapbirthplace ($place) {
 	if($anc_idstring != '') {
 		$idstring = $anc_idstring;
 	}
-// END NEW ~~~~~~~~~~~~~~~~
+	// END NEW ~~~~~~~~~~~~~~~~
 
 	$min = 1;
 	if($place != "NONFOUND") {

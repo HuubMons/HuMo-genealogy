@@ -31,39 +31,38 @@ foreach($id_arr as $value) {
 }
 $tree_id_string = substr($tree_id_string,0,-4).")"; // take off last " ON " and add ")"
 
-$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ".$tree_id_string." ORDER BY tree_order";
-//$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-$tree_prefix_result = $dbh->query($tree_prefix_sql);
+$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ".$tree_id_string." ORDER BY tree_order";
+$tree_search_result = $dbh->query($tree_search_sql);
 $count=0;
 echo '<form method="POST" action="maps.php" style="display : inline;">';
 echo '<select size="1" name="database" onChange="this.form.submit();">';
 	echo '<option value="">'.__('Select a family tree:').'</option>';
-	while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
+	while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){
 		// *** Check if family tree is shown or hidden for user group ***
 		$hide_tree_array=explode(";",$user['group_hide_trees']);
 		$hide_tree=false;
-		if (in_array($tree_prefixDb->tree_id, $hide_tree_array)) $hide_tree=true;
+		if (in_array($tree_searchDb->tree_id, $hide_tree_array)) $hide_tree=true;
 		if ($hide_tree==false){
 			$selected='';
 			if (isset($_SESSION['tree_prefix'])){
-				if ($tree_prefixDb->tree_prefix==$_SESSION['tree_prefix']){
+				if ($tree_searchDb->tree_prefix==$_SESSION['tree_prefix']){
 					$selected=' SELECTED';
-					$tree_id=$tree_prefixDb->tree_id;
+					$tree_id=$tree_searchDb->tree_id;
 					$_SESSION['tree_id']=$tree_id;
 					$db_functions->set_tree_id($tree_id);
 				}
 			}
 			else {
 				if($count==0) {
-					$_SESSION['tree_prefix'] = $tree_prefixDb->tree_prefix;
+					$_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix;
 					$selected=' SELECTED';
-					$tree_id=$tree_prefixDb->tree_id;
+					$tree_id=$tree_searchDb->tree_id;
 					$_SESSION['tree_id']=$tree_id;
 					$db_functions->set_tree_id($tree_id);
 				}
 			}
-			$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
-			echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+			$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
+			echo '<option value="'.$tree_searchDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
 			$count++;
 		}
 	}

@@ -179,7 +179,7 @@ if (isset($_POST['person_remove2'])){
 		}
 	}
 
-	family_tree_update($tree_prefix);
+	family_tree_update($tree_id);
 
 	$confirm.='</div>';
 }
@@ -251,7 +251,7 @@ if (isset($_POST['person_change'])){
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($pers_gedcomnumber)."'";
 	$result=$dbh->query($sql);
-	family_tree_update($tree_prefix);
+	family_tree_update($tree_id);
 }
 
 if (isset($_GET['add_person'])){
@@ -362,13 +362,13 @@ if (isset($_POST['person_add'])){
 			event_new_user='".$username."',
 			event_new_date='".$gedcom_date."',
 			event_new_time='".$gedcom_time."'";
-		$result=$dbh->query($sql);	
+		$result=$dbh->query($sql);
 	}
 	// *** Show new person ***
 	$pers_gedcomnumber=$new_gedcomnumber;
 	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 
-	family_tree_update($tree_prefix);
+	family_tree_update($tree_id);
 
 	// *** Add child to family, add a new child (new gedcomnumber) ***
 	if (isset($_POST['child_connect'])){
@@ -420,7 +420,7 @@ if (isset($_GET['fam_up'])){
 
 // *** Some functions to add and remove a fams number from a person (if marriage is changed) ***
 function fams_add($personnr, $familynr){
-	global $dbh, $db_functions, $tree_id, $tree_prefix, $gedcom_date, $gedcom_time, $username;
+	global $dbh, $db_functions, $tree_id, $gedcom_date, $gedcom_time, $username;
 	// *** Add marriage to person records ***
 	$person_db = $db_functions->get_person($personnr);
 	if (@$person_db->pers_gedcomnumber){
@@ -445,7 +445,7 @@ function fams_add($personnr, $familynr){
 }
 
 function fams_remove($personnr, $familynr){
-	global $dbh, $db_functions, $tree_id, $tree_prefix, $gedcom_date, $gedcom_time, $username;
+	global $dbh, $db_functions, $tree_id, $gedcom_date, $gedcom_time, $username;
 	$person_db = $db_functions->get_person($personnr);
 	if (@$person_db->pers_gedcomnumber){
 		$fams=explode(";",$person_db->pers_fams);
@@ -534,7 +534,7 @@ if (isset($_POST['fam_remove2'])){
 	$sql="DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_connect_id='".$fam_remove."'";
 	$result=$dbh->query($sql);
 
-	family_tree_update($tree_prefix);
+	family_tree_update($tree_id);
 
 	$confirm_relation.='<div class="confirm">';
 	$confirm_relation.=__('Marriage is removed!');
@@ -633,7 +633,7 @@ if (isset($_GET['add_parents'])){
 	$result=$dbh->query($sql);
 	//	pers_indexnr='".safe_text_db($pers_indexnr)."',
 
-	family_tree_update($tree_prefix);
+	family_tree_update($tree_id);
 }
 
 // *** Add EXISTING parents to a child ***
@@ -670,7 +670,7 @@ if (isset($_POST['add_parents']) AND $_POST['add_parents']!=''){
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$pers_gedcomnumber."'";
 	$result=$dbh->query($sql);
 
-	family_tree_update($tree_prefix);
+	family_tree_update($tree_id);
 
 	$confirm.='<div class="confirm">';
 	$confirm.=__('Parents are selected!');
@@ -712,7 +712,7 @@ if (isset($_POST['child_connect2'])){
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($_POST["child_connect2"])."'";
 	$result=$dbh->query($sql);
 
-	family_tree_update($tree_prefix);
+	family_tree_update($tree_id);
 }
 
 // *** Disconnect child ***
@@ -877,7 +877,7 @@ if (isset($_GET['relation_add'])){
 	// *** Add marriage to person records MAN and WOMAN ***
 	fams_add($pers_gedcomnumber, $fam_gedcomnumber);
 
-	family_tree_update($tree_prefix);
+	family_tree_update($tree_id);
 }
 
 // *** Add new family with selected partner ***
@@ -928,7 +928,7 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 	fams_add($man_gedcomnumber, $fam_gedcomnumber);
 	fams_add($woman_gedcomnumber, $fam_gedcomnumber);
 
-	family_tree_update($tree_prefix);
+	family_tree_update($tree_id);
 }
 
 
@@ -1002,7 +1002,7 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($_POST['marriage'])."'";
 		$result=$dbh->query($sql);
 
-		family_tree_update($tree_prefix);
+		family_tree_update($tree_id);
 	}
 //}
 
@@ -1134,7 +1134,7 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 	$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 	$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 	$dir=$path_prefix.$tree_pict_path;
-	
+
 	// check if this is a category file (file with existing category prefix) and if a subfolder for this category exists, place it there.
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 	if($temp->rowCount()) {  // there is a category table
@@ -1384,7 +1384,7 @@ if (isset($_POST['event_id'])){
 			}
 		}
 
-		family_tree_update($tree_prefix);
+		family_tree_update($tree_id);
 	}
 }
 
@@ -1966,7 +1966,7 @@ if (isset($_POST['change_address_id'])){
 		WHERE address_id='".safe_text_db($_POST["change_address_id"][$key])."'";
 		$result=$dbh->query($sql);
 //echo $sql.'<br>';
-		family_tree_update($tree_prefix);
+		family_tree_update($tree_id);
 	}
 }
 

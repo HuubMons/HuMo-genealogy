@@ -15,7 +15,6 @@ function show_person($personDb){
 	global $selectsort;
 
 	$pers_tree_prefix=$personDb->pers_tree_prefix;
-	$db_functions->set_tree_prefix($pers_tree_prefix);
 	$db_functions->set_tree_id($personDb->pers_tree_id);
 
 	if (CMS_SPECIFIC=='Joomla'){
@@ -199,7 +198,7 @@ function show_person($personDb){
 
 		// *** Show name of family tree, if search in multiple family trees is used ***
 		if ($search_database=='all_trees' OR $search_database=='all_but_this'){
-			$treetext=show_tree_text($pers_tree_prefix, $selected_language);
+			$treetext=show_tree_text($pers_tree_id, $selected_language);
 			echo '</td><td>';
 			echo '<i><font size="-1">'.$treetext['name'].'</font></i>';
 		}

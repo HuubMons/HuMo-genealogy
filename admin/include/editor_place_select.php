@@ -39,24 +39,19 @@ echo'
 ';
 
 $tree_id=$_SESSION['admin_tree_id'];
-$query = "(SELECT pers_birth_place as place_order
-	FROM humo_persons
+$query = "(SELECT pers_birth_place as place_order FROM humo_persons
 	WHERE pers_tree_id='".$tree_id."' AND pers_birth_place LIKE '_%' GROUP BY place_order)";
 
-$query.= " UNION (SELECT pers_bapt_place as place_order
-	FROM humo_persons
+$query.= " UNION (SELECT pers_bapt_place as place_order FROM humo_persons
 	WHERE pers_tree_id='".$tree_id."' AND pers_bapt_place LIKE '_%' GROUP BY place_order)";
 
-//$query.= " UNION (SELECT pers_place_index as place_order
-//	FROM humo_persons
+//$query.= " UNION (SELECT pers_place_index as place_order FROM humo_persons
 //	WHERE pers_tree_id='".$tree_id."' AND pers_place_index LIKE '_%' GROUP BY place_order)";
 
-$query.= " UNION (SELECT pers_death_place as place_order
-	FROM humo_persons
+$query.= " UNION (SELECT pers_death_place as place_order FROM humo_persons
 	WHERE pers_tree_id='".$tree_id."' AND pers_death_place LIKE '_%' GROUP BY place_order)";
 
-$query.= " UNION (SELECT pers_buried_place as place_order
-	FROM humo_persons
+$query.= " UNION (SELECT pers_buried_place as place_order FROM humo_persons
 	WHERE pers_tree_id='".$tree_id."' AND pers_buried_place LIKE '_%' GROUP BY place_order)";
 
 $query.=' ORDER BY place_order';

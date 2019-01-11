@@ -13,7 +13,7 @@ if(isset($_GET["id"])) { // source.php is called from show_sources.php, sources.
  *----------------------------------------------------------------
  */
 function source_display($sourcenum) {
-	global $dbh, $db_functions, $tree_id, $tree_prefix_quoted, $dataDb, $user, $pdf, $screen_mode, $language;
+	global $dbh, $db_functions, $tree_id, $dataDb, $user, $pdf, $screen_mode, $language;
 
 	if($screen_mode!="PDF") {
 		include_once("header.php"); //returns CMS_ROOTPATH constant
@@ -245,7 +245,7 @@ function source_display($sourcenum) {
 		// *** Find person data if source is connected to a family item ***
 		// *** This seperate function speeds up the sources page ***
 		function person_data($familyDb){
-			global $dbh, $tree_prefix_quoted, $db_functions;
+			global $dbh, $db_functions;
 			if ($familyDb->fam_man)
 				$personDb=$db_functions->get_person ($familyDb->fam_man);
 			else

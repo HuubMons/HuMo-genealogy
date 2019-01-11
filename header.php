@@ -446,7 +446,7 @@ else{
 	if (isset($urlpart[0]) AND $urlpart[0]!='standaard') $database=$urlpart[0]; // *** url_rewrite ***
 	if (isset($_GET["database"])) $database=$_GET["database"];
 	if (isset($_POST["database"])) $database=$_POST["database"];
-	if (isset($database) AND $database){
+	if (isset($database) AND is_string($database) AND $database){
 		// *** Check if family tree really exists ***
 		$dataDb=$db_functions->get_tree($database);
 		if ($dataDb){
@@ -555,7 +555,6 @@ else{
 		print "<body onload='checkCookie()'>\n";
 	}
 
-	$db_functions->set_tree_prefix($tree_prefix_quoted);
 	$db_functions->set_tree_id($_SESSION['tree_id']);
 
 	echo '<div class="silverbody">'; 

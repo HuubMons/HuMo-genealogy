@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-if (isset($_POST['tree'])){ $tree=safe_text_db($_POST["tree"]); }
+if (isset($_POST['tree']) AND (is_numeric($_POST['tree']))){ $tree=safe_text_db($_POST["tree"]); }
 
 echo '<h1 align=center>'.__('User notes').'</h1>';
 
@@ -17,34 +17,24 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 	echo '<td>';
 		$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 		$tree_result = $dbh->query($tree_sql);
-		$onchange='';
-		//if(isset($_POST['part_tree']) AND $_POST['part_tree']=='part') {
-		//	// we have to refresh so that the persons to choose from will belong to this tree!
-		//	echo '<input type="hidden" name="flag_newtree" value=\'0\'>';
-		//	$onchange = ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ';
-		//}
 		echo '<form method="POST" action="index.php">';
 		echo '<input type="hidden" name="page" value="user_notes">';
-		echo '<select '.$onchange.' size="1" name="tree">';
+		echo '<select size="1" name="tree">';
 			while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
-				$treetext=show_tree_text($treeDb->tree_prefix, $selected_language);
+				$treetext=show_tree_text($treeDb->tree_id, $selected_language);
 				$selected='';
-				if (isset($tree)){
-					if ($treeDb->tree_prefix==$tree){
-						$selected=' SELECTED';
-						// *** Needed for submitter ***
-						//$tree_owner=$treeDb->tree_owner;
-						//$tree_id=$treeDb->tree_id;
-						$tree_prefix=$treeDb->tree_prefix;
-						$db_functions->set_tree_id($tree_id);
-					}
+				if (isset($tree) AND ($treeDb->tree_id==$tree)){
+					$selected=' SELECTED';
+					$tree_id=$treeDb->tree_id;
+					$note_tree_prefix=$treeDb->tree_prefix; // *** There is no note_tree_id at this moment ***
+					$db_functions->set_tree_id($tree_id);
 				}
 
 				$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_prefix='".$treeDb->tree_prefix."'";
 				$note_result = $dbh->query($note_qry);
 				$num_rows = $note_result->rowCount();
 
-				echo '<option value="'.$treeDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].' ['.$num_rows.']</option>';
+				echo '<option value="'.$treeDb->tree_id.'"'.$selected.'>'.@$treetext['name'].' ['.$num_rows.']</option>';
 			}
 		echo '</select>';
 
@@ -53,14 +43,14 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 
 	echo '</td></tr>';
 
-	if (isset($_POST['note_status'])){
+	if (isset($_POST['note_status']) AND is_numeric($_POST['note_id'])){
 		// *** For safety reasons: only save valid values ***
 		$note_status='';
 		if ($_POST['note_status']=='new'){ $note_status='new'; }
 		if ($_POST['note_status']=='approved'){ $note_status='approved'; }
 		if ($note_status){
-			$sql="UPDATE humo_user_notes SET
-			note_status='".$note_status."'
+			$sql="UPDATE humo_user_notes
+			SET note_status='".$note_status."'
 			WHERE note_id='".$_POST['note_id']."'";
 			$result=$dbh->query($sql);
 		}
@@ -70,7 +60,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 				echo __('Are you sure you want to remove this user note?');
 			echo ' <form method="post" action="index.php" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="user_notes">';
-			echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
+			echo '<input type="hidden" name="tree" value="'.$tree_id.'">';
 			echo '<input type="hidden" name="note_id" value="'.$_POST['note_id'].'">';
 			echo ' <input type="Submit" name="note_remove" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
 			echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
@@ -80,7 +70,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 
 	}
 
-	if (isset($_POST['note_remove'])){
+	if (isset($_POST['note_remove']) AND is_numeric($_POST["note_id"])){
 		echo '<div class="confirm">';
 			// *** Delete source ***
 			$sql="DELETE FROM humo_user_notes WHERE note_id='".safe_text_db($_POST["note_id"])."'";
@@ -91,8 +81,8 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 	}
 
 	// *** Show user added notes ***
-	if (isset($tree_prefix)){
-		$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_prefix='".$tree_prefix."'";
+	if (isset($note_tree_prefix)){
+		$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_prefix='".$note_tree_prefix."'";
 		$note_result = $dbh->query($note_qry);
 		$num_rows = $note_result->rowCount();
 
@@ -107,8 +97,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 		echo '</td></tr>';
 
 		while($noteDb=$note_result->fetch(PDO::FETCH_OBJ)){
-			$user_qry = "SELECT * FROM humo_users
-				WHERE user_id='".$noteDb->note_user_id."'";
+			$user_qry = "SELECT * FROM humo_users WHERE user_id='".$noteDb->note_user_id."'";
 			$user_result = $dbh->query($user_qry);
 			$userDb=$user_result->fetch(PDO::FETCH_OBJ);
 
@@ -116,10 +105,10 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 				// *** Select status of message ***
 				echo '<form method="POST" action="index.php">';
 				echo '<input type="hidden" name="page" value="user_notes">';
-				echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
+				echo '<input type="hidden" name="tree" value="'.$tree_id.'">';
 				echo '<input type="hidden" name="note_id" value="'.$noteDb->note_id.'">';
 				$note_status=''; if ($noteDb->note_status) $note_status=$noteDb->note_status;
-				echo '<select '.$onchange.' size="1" name="note_status">';
+				echo '<select size="1" name="note_status">';
 					$selected='';
 					echo '<option value="new"'.$selected.'>'.__('New').'</option>';
 					$selected=''; if ($note_status=='approved') $selected=' SELECTED';

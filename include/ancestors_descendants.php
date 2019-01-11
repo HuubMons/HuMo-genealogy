@@ -1,5 +1,4 @@
 <?php
-
 /* REMARK: these functions are under construction! */
 
 /*

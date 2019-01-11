@@ -18,12 +18,6 @@ $menu_admin='log_users';
 if (isset($_POST['menu_admin'])){ $menu_admin=$_POST['menu_admin']; }
 if (isset($_GET['menu_admin'])){ $menu_admin=$_GET['menu_admin']; }
 
-if (isset($_SESSION['tree_prefix'])) $tree_prefix=$_SESSION['tree_prefix'];
-if (isset($_POST['tree_prefix'])){
-	$tree_prefix=safe_text_db($_POST["tree_prefix"]);
-	$_SESSION['tree_prefix']=safe_text_db($_POST['tree_prefix']);
-}
-
 echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="">';
 echo '<div class="pageHeading">';
 	// <div class="pageHeadingText">Configuratie gegevens</div>
@@ -104,7 +98,7 @@ if (isset($menu_admin) AND $menu_admin=='log_blacklist'){
 	}
 
 	// *** Add link ***
-	if (isset($_POST['add_link']) AND is_numeric ($_POST['link_order'])){
+	if (isset($_POST['add_link']) AND ($_POST['own_code']!='') AND is_numeric ($_POST['link_order'])){
 		$setting_value=$_POST['own_code']."|".$_POST['link_text'];
 		$sql="INSERT INTO humo_settings SET setting_variable='ip_blacklist',
 			setting_value='".safe_text_db($setting_value)."', setting_order='".safe_text_db($_POST['link_order'])."'";
@@ -185,8 +179,8 @@ if (isset($menu_admin) AND $menu_admin=='log_blacklist'){
 			echo "<tr>";
 				echo "<td><br></td>";
 				echo '<input type="hidden" name="link_order" value="'.$new_number.'">';
-				echo '<td><input type="text" name="own_code" value="'.__('IP Address').'" size="5"></td>';
-				echo '<td><input type="text" name="link_text" value="'.__('Description').'" size="20"></td>';
+				echo '<td><input type="text" name="own_code" placeholder="'.__('IP Address').'" size="5"></td>';
+				echo '<td><input type="text" name="link_text" placeholder="'.__('Description').'" size="20"></td>';
 				echo '<td><input type="Submit" name="add_link" value="'.__('Add').'"></td>';
 				echo '<td><br></td>';
 			echo "</tr>";

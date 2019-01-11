@@ -87,7 +87,7 @@ function tree_main(){
 
 		echo '<td>';
 
-		$treetext=show_tree_text($dataDb->tree_prefix, $language_tree);
+		$treetext=show_tree_text($dataDb->tree_id, $language_tree);
 		if ($dataDb->tree_prefix=='EMPTY')
 			echo '* '.__('EMPTY LINE').' *';
 		else{

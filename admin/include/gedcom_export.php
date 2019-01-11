@@ -451,7 +451,7 @@ echo '<td>';
 	}
 	echo '<select '.$onchange.' size="1" name="tree">';
 		while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
-			$treetext=show_tree_text($treeDb->tree_prefix, $selected_language);
+			$treetext=show_tree_text($treeDb->tree_id, $selected_language);
 			$selected='';
 			if (isset($tree)){
 				if ($treeDb->tree_prefix==$tree){

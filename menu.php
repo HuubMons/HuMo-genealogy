@@ -14,28 +14,28 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 	// *** Select family tree ***
 	if (!$bot_visit){
 		$sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		$tree_prefix_result2 = $dbh->query($sql);
-		$num_rows = $tree_prefix_result2->rowCount();
+		$tree_search_result2 = $dbh->query($sql);
+		$num_rows = $tree_search_result2->rowCount();
 		if ($num_rows>1){
 			echo ' <form method="POST" action="tree_index.php" style="display : inline;" id="top_tree_select">';
 			echo __('Family tree');
 			echo ': <select size=1 name="database" onChange="this.form.submit();" style="width: 150px; height:20px;">';
 			echo '<option value="">'.__('Select a family tree:').'</option>';
 			$count=0;
-			while($tree_prefixDb=$tree_prefix_result2->fetch(PDO::FETCH_OBJ)) {
+			while($tree_searchDb=$tree_search_result2->fetch(PDO::FETCH_OBJ)) {
 				// *** Check if family tree is shown or hidden for user group ***
 				$hide_tree_array2=explode(";",$user['group_hide_trees']);
-				$hide_tree2=false; if (in_array($tree_prefixDb->tree_id, $hide_tree_array2)) $hide_tree2=true;
+				$hide_tree2=false; if (in_array($tree_searchDb->tree_id, $hide_tree_array2)) $hide_tree2=true;
 				if ($hide_tree2==false){
 					$selected='';
 					if (isset($_SESSION['tree_prefix'])){
-						if ($tree_prefixDb->tree_prefix==$_SESSION['tree_prefix']){ $selected=' SELECTED'; }
+						if ($tree_searchDb->tree_prefix==$_SESSION['tree_prefix']){ $selected=' SELECTED'; }
 					}
 					else {
-						if($count==0) { $_SESSION['tree_prefix'] = $tree_prefixDb->tree_prefix; $selected=' SELECTED'; }
+						if($count==0) { $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix; $selected=' SELECTED'; }
 					}
-					$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
-					echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+					$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
+					echo '<option value="'.$tree_searchDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
 					$count++;
 				}
 			}
@@ -44,8 +44,10 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		}
 	}
 	echo '</div>';
-	// *** This code is only used to restore $dataDb reading. Used for picture etc. ***
-	$treetext=show_tree_text($_SESSION['tree_prefix'], $selected_language);
+
+	// *** This code is used to restore $dataDb reading. Used for picture etc. ***
+	if (is_string($_SESSION['tree_prefix']))
+		$dataDb=$db_functions->get_tree($_SESSION['tree_prefix']);
 
 	// *** Show quicksearch field ***
 	if (!$bot_visit){

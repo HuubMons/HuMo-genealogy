@@ -2,12 +2,11 @@
 include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."menu.php");
 require_once(CMS_ROOTPATH."include/person_cls.php");
-//require_once(CMS_ROOTPATH."include/date_place.php");
 require_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
 $process_age = New calculate_year_cls;
 
-if(isset($_GET['id'])) { $id=$_GET['id']; }
+if(isset($_GET['id'])) $id=$_GET['id'];
 @$personDb = $db_functions->get_person($id);
 
 $isborn=0; $isdeath=0; $ismarr=0; $ischild=0;
@@ -23,7 +22,7 @@ function julgreg($date) {   // alters a julian/gregorian date entry such as 4 ma
 }
 
 $bornyear=''; $borndate=''; $temp='';
-if($personDb->pers_birth_date) {
+if(@$personDb->pers_birth_date) {
 	$borndate=julgreg($personDb->pers_birth_date);
 	$temp=substr($borndate,-4);
 	if($temp > 0 AND $temp < 2200) {
@@ -33,7 +32,7 @@ if($personDb->pers_birth_date) {
 	}
 }
 $baptyear=''; $baptdate=''; $temp='';
-if($personDb->pers_bapt_date) {
+if(@$personDb->pers_bapt_date) {
 	$baptdate=julgreg($personDb->pers_bapt_date);
 	$temp=substr($baptdate,-4);
 	if($temp > 0 AND $temp < 2200) {
@@ -43,7 +42,7 @@ if($personDb->pers_bapt_date) {
 	}
 }
 $deathyear=''; $deathdate=''; $temp='';
-if($personDb->pers_death_date) {
+if(@$personDb->pers_death_date) {
 	$deathdate=julgreg($personDb->pers_death_date);
 	$temp=substr($deathdate,-4);
 	if($temp > 0 AND $temp < 2200) {
@@ -57,7 +56,7 @@ if($personDb->pers_death_date) {
 	}
 }
 $burryear=''; $burrdate=''; $temp='';
-if($personDb->pers_buried_date) {
+if(@$personDb->pers_buried_date) {
 	$burrdate=julgreg($personDb->pers_buried_date);
 	$temp=substr($burrdate,-4);
 	if($temp > 0 AND $temp < 2200) {
@@ -68,7 +67,7 @@ if($personDb->pers_buried_date) {
 }
 
 // ***********  MARRIAGES & CHILDREN
-if($personDb->pers_fams) {
+if(@$personDb->pers_fams) {
 	$marriages=explode(";",$personDb->pers_fams);
 	for($i=0; $i<count($marriages);$i++) {
 		$children[$i]=''; $marryear[$i]=''; $marrdate[$i]=''; $temp='';
@@ -200,62 +199,62 @@ if($personDb->pers_fams) {
 						$chmarryear[$i][$m][$p]=''; $chmarrdate[$i][$m][$p]=''; $temp='';
 						@$chfamilyDb = $db_functions->get_family($chmarriages[$i][$m][$p]);
 
-		// CHILDREN'S MARRIAGES
-		if ($chldDb->pers_gedcomnumber==$chfamilyDb->fam_man){
-			$chspouse=$chfamilyDb->fam_woman;
-		}
-		else{
-			$chspouse=$chfamilyDb->fam_man;
-		}
-		@$chspouse2Db = $db_functions->get_person($chspouse);
-		$person_cls = New person_cls;
-		$person_cls->construct($chspouse2Db);
-		$privacy=$person_cls->privacy;
-		$name=$person_cls->person_name($chspouse2Db);
-		if ($privacy==''){
-			if ($chfamilyDb->fam_marr_date) {
-				$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_date);
-				$chtext=ucfirst(__('marriage')).' ';
-			}
-			elseif ($chfamilyDb->fam_marr_church_date) {
-				$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_church_date);
-				$chtext=ucfirst(__('church marriage')).' ';
-			}
-			elseif ($chfamilyDb->fam_marr_notice_date) {
-			$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_notice_date);
-				$chtext=ucfirst(__('marriage notice')).' ';
-			}
-			elseif	($chfamilyDb->fam_marr_church_notice_date) {
-				$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_church_notice_date);
-				$chtext=ucfirst(__('church marriage notice')).' ';
-			}
-			elseif	($chfamilyDb->fam_relation_date) {
-				$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_relation_date);
-				$chtext=ucfirst(__('partnership')).' ';
-			}
-			if	($chmarrdate[$i][$m][$p]) {
-				$temp=substr($chmarrdate[$i][$m][$p],-4);
-			}
-			if	($temp AND $temp > 0 AND $temp < 2200) {
-				//if	(isset($chspouse2Db->pers_firstname) AND $chspouse2Db->pers_firstname) {
-				if ($name["firstname"]){
-					$chspousename=$name["firstname"];
-					$chspousetext=__('with ').$chspousename;
-				}
-				$chmarryear[$i][$m][$p]=$temp;
-				$chmarrtext[$i][$m][$p]= $chtext.$child." ".$childname[$i][$m].' '.$chspousetext." ".$dirmark1.str_replace(" ","&nbsp;",language_date($chmarrdate[$i][$m][$p]));
-				//$chismarr=1;
+						// CHILDREN'S MARRIAGES
+						if ($chldDb->pers_gedcomnumber==$chfamilyDb->fam_man){
+							$chspouse=$chfamilyDb->fam_woman;
+						}
+						else{
+							$chspouse=$chfamilyDb->fam_man;
+						}
+						@$chspouse2Db = $db_functions->get_person($chspouse);
+						$person_cls = New person_cls;
+						$person_cls->construct($chspouse2Db);
+						$privacy=$person_cls->privacy;
+						$name=$person_cls->person_name($chspouse2Db);
+						if ($privacy==''){
+							if ($chfamilyDb->fam_marr_date) {
+								$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_date);
+								$chtext=ucfirst(__('marriage')).' ';
+							}
+							elseif ($chfamilyDb->fam_marr_church_date) {
+								$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_church_date);
+								$chtext=ucfirst(__('church marriage')).' ';
+							}
+							elseif ($chfamilyDb->fam_marr_notice_date) {
+							$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_notice_date);
+								$chtext=ucfirst(__('marriage notice')).' ';
+							}
+							elseif	($chfamilyDb->fam_marr_church_notice_date) {
+								$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_church_notice_date);
+								$chtext=ucfirst(__('church marriage notice')).' ';
+							}
+							elseif	($chfamilyDb->fam_relation_date) {
+								$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_relation_date);
+								$chtext=ucfirst(__('partnership')).' ';
+							}
+							if	($chmarrdate[$i][$m][$p]) {
+								$temp=substr($chmarrdate[$i][$m][$p],-4);
+							}
+							if	($temp AND $temp > 0 AND $temp < 2200) {
+								//if	(isset($chspouse2Db->pers_firstname) AND $chspouse2Db->pers_firstname) {
+								if ($name["firstname"]){
+									$chspousename=$name["firstname"];
+									$chspousetext=__('with ').$chspousename;
+								}
+								$chmarryear[$i][$m][$p]=$temp;
+								$chmarrtext[$i][$m][$p]= $chtext.$child." ".$childname[$i][$m].' '.$chspousetext." ".$dirmark1.str_replace(" ","&nbsp;",language_date($chmarrdate[$i][$m][$p]));
+								//$chismarr=1;
 
-				$age=$process_age->calculate_age($personDb->pers_bapt_date,$personDb->pers_birth_date,$chmarrdate[$i][$m][$p], true);
-				if ($age){ $chmarrtext[$i][$m][$p]='['.$age.'] '.$chmarrtext[$i][$m][$p]; }
-			}
+								$age=$process_age->calculate_age($personDb->pers_bapt_date,$personDb->pers_birth_date,$chmarrdate[$i][$m][$p], true);
+								if ($age){ $chmarrtext[$i][$m][$p]='['.$age.'] '.$chmarrtext[$i][$m][$p]; }
+							}
 
-		}
-		else{
-			// *** Privacy filter activated ***
-			$privacy_filtered=true;
-		}
-		// END CHILDREN'S MARRIAGES
+						}
+						else{
+							// *** Privacy filter activated ***
+							$privacy_filtered=true;
+						}
+						// END CHILDREN'S MARRIAGES
 
 						if($chfamilyDb->fam_children) {
 
@@ -373,24 +372,41 @@ if($isborn==0 AND $isdeath==0 AND $ismarr==0 and $ischild==1) {
 	$deathtext=__('Date of death unknown');
 }
 
-// ****** OPEN TIMELINE DIRECTORY FOR READING AVAILABLE FILES
+// *** OPEN TIMELINE DIRECTORY FOR READING AVAILABLE FILES ***
+if (is_dir(CMS_ROOTPATH."languages/".$selected_language."/timelines")){
+	// *** Open languages/xx/timelines folder ***
+	$dh  = opendir(CMS_ROOTPATH."languages/".$selected_language."/timelines");
+}
+else{
+	// *** No timelines folder found inside selected language: use default timeline folder ***
+	$dh  = opendir(CMS_ROOTPATH."languages/default_timelines");
+}
 
-$dh  = opendir(CMS_ROOTPATH."languages/".$selected_language."/timelines"); // we know directory exists - otherwise the timelines options would not be displayed
 $counter=0;
 while (false !== ($filename = readdir($dh))) {
 	if (strtolower(substr($filename, -3)) == "txt"){
 		$counter++;
-		$filenames[$counter-1][0]=CMS_ROOTPATH."languages/".$selected_language."/timelines/".$filename;
+		if (is_file(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$filename)) {
+			$filenames[$counter-1][0]=CMS_ROOTPATH."languages/".$selected_language."/timelines/".$filename;
+		}
+		elseif (is_file(CMS_ROOTPATH."languages/default_timelines/".$filename)){
+			$filenames[$counter-1][0]=CMS_ROOTPATH."languages/default_timelines/".$filename;
+		}
+		else{
+			$filenames[$counter-1][0]=''; // Should not be used normally...
+		}
 		$filenames[$counter-1][1]=substr($filename,0,-4);
 	}
 }
 sort($filenames);
 
+// *** Selected step ***
 $step=5; // default step - user can choose 1 or 10 instead
-if(isset($_POST['step'])) { $step=$_POST['step']; }
-//$tml=3;  // default timeline file
+if(isset($_POST['step'])) $step=$_POST['step'];
+
+// *** Selected timeline ***
 $tml = $filenames[0][1]; // if default is not set the first file will be checked
-if(isset($_POST['tml'])) { $tml=$_POST['tml']; }
+if(isset($_POST['tml'])) $tml=$_POST['tml'];
 elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timeline']!="") {
 	$str = explode("@",substr($humo_option['default_timeline'],0,-1));  // humo_option is: nl!europa@de!Sweitz@en!british  etc.
 	$val_arr = Array();
@@ -398,17 +414,26 @@ elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timelin
 		$str2 = explode("!",$value);   //  $value = nl!europa
 		$val_arr[$str2[0]] = $str2[1];   //  $val_arr[nl]='europa'
 	}
-	if(isset($val_arr[$selected_language])  AND is_file(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$val_arr[$selected_language].".txt")) {  $tml= $val_arr[$selected_language]; }
+
+	// *** Use timeline file from default folder ***
+	if(isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language].".txt")) {
+		$tml= $val_arr[$selected_language];
+	}
+
+	// *** Use timeline from language folder ***
+	if(isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$val_arr[$selected_language].".txt")) {
+		$tml= $val_arr[$selected_language];
+	}
 }
 $default=false; if($tml==$filenames[0][1]) $default=true;
 
 // **** SHOW MENU ****
-print '<div class="left_box">';
+echo '<div class="left_box">';
 	if(CMS_SPECIFIC=="Joomla") {
-		print '<form name="tmlstep" method="post" action="index.php?option=com_humo-gen&task=timelines&id='.$id.'&amp;database='.$database.'" style="display:inline;">';
+		echo '<form name="tmlstep" method="post" action="index.php?option=com_humo-gen&task=timelines&id='.$id.'&amp;database='.$database.'" style="display:inline;">';
 	}
 	else {
-		print '<form name="tmlstep" method="post" action="timelines.php?id='.$id.'&amp;database='.$database.'" style="display:inline;">';
+		echo '<form name="tmlstep" method="post" action="timelines.php?id='.$id.'&amp;database='.$database.'" style="display:inline;">';
 	}
 
 	//======== HELP POPUP ========================
@@ -453,31 +478,26 @@ The timeline menu:<br>
 	//=================================
 	// Steps of years in display: 1, 5 or 10
 	print '<br>'.__('Steps:').'<br>';
-	print '<input type="radio" name="step" value="1"';
-	if ($step==1) print ' checked="checked"';
+	print '<input type="radio" name="step" value="1"'; if ($step==1) print ' checked="checked"';
 	print ' >1 '.__('year');
-	print '<br><input type="radio" name="step" value="5"';
-	if ($step==5) print ' checked="checked"';
+	print '<br><input type="radio" name="step" value="5"'; if ($step==5) print ' checked="checked"';
 	print ' >5 '.__('years');
-	print '<br><input type="radio" name="step" value="10"';
-	if ($step==10) print ' checked="checked"';
+	print '<br><input type="radio" name="step" value="10"'; if ($step==10) print ' checked="checked"';
 	print ' >10 '.__('years');
 
 	// Choice of timeline files available
 
 	if(count($filenames) > 1) { // only show timelines menu if there are more than 1 timeline files
-
 		print '<br><br>'.__('Choose timeline');
 		print '<div style="direction:ltr">';
 		$checked=false;
 		for ($i=0; $i<count($filenames); $i++){
-			//print '<input type="radio" name="tml" value="'.$i.'"';
 			print '<input type="radio" name="tml" value="'.$filenames[$i][1].'"';
 			
 			if($i==0 AND $default == true) {
 				print ' checked="checked"';    $checked=true;
 			}
-			elseif($checked==false AND isset($_POST['tml'])  AND $_POST['tml']==$filenames[$i][1]) {
+			elseif($checked==false AND isset($_POST['tml']) AND $_POST['tml']==$filenames[$i][1]) {
 				print ' checked="checked"';      $checked=true;
 			}
 			elseif($checked==false AND isset($humo_option['default_timeline']) AND strpos($humo_option['default_timeline'],$selected_language."!".$filenames[$i][1]."@") !== false) {
@@ -494,7 +514,12 @@ print '</div>';
 
 // **** END MENU ****
 if(file_exists($filenames[0][0])) {
-	$handle = fopen(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$tml.'.txt',"r");
+	if (file_exists(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$tml.'.txt')){
+		$handle = fopen(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$tml.'.txt',"r");
+	}
+	elseif (file_exists(CMS_ROOTPATH."languages/default_timelines/".$tml.'.txt')){
+		$handle = fopen(CMS_ROOTPATH."languages/default_timelines/".$tml.'.txt',"r");
+	}
 }
 ($isborn==1 AND $bornyear == '') ? $byear = $baptyear : $byear = $bornyear; // if only bapt date available use that
 $beginyear=$byear-(($byear % $step) + $step);    // if beginyear=1923 and step is 5 this makes it 1915
@@ -505,7 +530,7 @@ $flag=0; // flags a first entry of timeline event in a specific year. is set to 
 
 // ****** DISPLAY
 
-print "<div style='position:absolute;top:30px;left:150px;right:10px'>";  //echo CMS_ROOTPATH."languages/".$selected_language."/timelines/".$tml.'.txt';
+print "<div style='position:absolute;top:30px;left:150px;right:10px'>";
 
 if ($privacy_filtered==true){
 	echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***').'<br>';

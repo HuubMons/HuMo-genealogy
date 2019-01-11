@@ -30,7 +30,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 			location_location VARCHAR(100) CHARACTER SET utf8,
 			location_lat FLOAT(10,6),
 			location_lng FLOAT(10,6),
-			location_status TEXT DEFAULT ''
+			location_status TEXT
 		)";
 		$dbh->query($locationtbl);
 	}
@@ -55,10 +55,10 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 	}
 	else {
 		$str="";
-		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		$tree_prefix_result = $dbh->query($tree_prefix_sql);
-		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){ 
-			$str .= "@".$tree_prefixDb->tree_id.";";
+		$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+		$tree_search_result = $dbh->query($tree_search_sql);
+		while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){ 
+			$str .= "@".$tree_searchDb->tree_id.";";
 		}
 			$dbh->query("UPDATE humo_settings SET setting_value = '".$str."' WHERE setting_variable ='geo_trees'"); 
 		$humo_option['geo_trees'] = $str; // humo_option is used further on before page is refreshed so we have to update it manually
@@ -567,10 +567,10 @@ else {  // main screen
 			$map_secs = $map_totalsecs % 60;
 			$one_tree="";
 			if(isset($_SESSION['geo_tree']) AND $_SESSION['geo_tree'] != "all_geo_trees") {
-				$tree_prefix_sql2 = "SELECT * FROM humo_trees WHERE tree_id='".$_SESSION['geo_tree']."'";
-				$tree_prefix_result2 = $dbh->query($tree_prefix_sql2);
-				$tree_prefixDb2=$tree_prefix_result2->fetch(PDO::FETCH_OBJ);
-				$treetext2=show_tree_text($tree_prefixDb2->tree_prefix, $selected_language);
+				$tree_search_sql2 = "SELECT * FROM humo_trees WHERE tree_id='".$_SESSION['geo_tree']."'";
+				$tree_search_result2 = $dbh->query($tree_search_sql2);
+				$tree_searchDb2=$tree_search_result2->fetch(PDO::FETCH_OBJ);
+				$treetext2=show_tree_text($tree_searchDb2->tree_id, $selected_language);
 				$one_tree= "<b>".__('Family tree')." ".@$treetext2['name'].": </b>";
 			}
 			echo $one_tree;
@@ -605,8 +605,8 @@ else {  // main screen
 
 		// SELECT FAMILY TREE
 		echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		$tree_prefix_result = $dbh->query($tree_prefix_sql);
+		$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+		$tree_search_result = $dbh->query($tree_search_sql);
 		$count=0;
 		echo '<br><form method="POST" action="index.php?page=google_maps" style="display : inline;">';
 		//echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
@@ -618,22 +618,22 @@ else {  // main screen
 				$_SESSION['geo_tree']="all_geo_trees";
 			}
 			echo '<option value="all_geo_trees"'.$selected.'>'.__('All family trees').'</option>';
-			while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){ 
+			while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){ 
 
 				$selected='';
 				if (isset($_POST['database'])){   
-					if ($tree_prefixDb->tree_prefix==$_POST['database']){ 
+					if ($tree_searchDb->tree_prefix==$_POST['database']){ 
 						$selected=' SELECTED';
-						$_SESSION['geo_tree']=$tree_prefixDb->tree_id;
+						$_SESSION['geo_tree']=$tree_searchDb->tree_id;
 					}
 				}
 				else { 
-					if(isset($_SESSION['geo_tree']) AND $_SESSION['geo_tree'] ==$tree_prefixDb->tree_id) { 
+					if(isset($_SESSION['geo_tree']) AND $_SESSION['geo_tree'] ==$tree_searchDb->tree_id) { 
 						$selected=' SELECTED';
 					}
 				}
-				$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
-				echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+				$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
+				echo '<option value="'.$tree_searchDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
 				$count++;
 			}
 		echo '</select>';
@@ -998,40 +998,40 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 		}
 		$tree_id_string = substr($tree_id_string,0,-4).")"; // take off last " ON " and add ")"
 
-		$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ".$tree_id_string." ORDER BY tree_order"; 
-		$tree_prefix_result = $dbh->query($tree_prefix_sql);
+		$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ".$tree_id_string." ORDER BY tree_order"; 
+		$tree_search_result = $dbh->query($tree_search_sql);
 		echo '<table><tr><th>'.__('Name of tree').'</th><th style="text-align:center">'.__('Starting year').'</th>';
 		echo '<th style="text-align:center">'.__('Interval').'</th>';
-		$rowspan = $tree_prefix_result->rowCount() + 1;
+		$rowspan = $tree_search_result->rowCount() + 1;
 		echo '<th rowspan='.$rowspan.'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="Submit" name="submit" value="'.__('Change').'"></th></tr>';
 		echo '<form method="POST" action="maps.php" style="display : inline;">';
 
-		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
-			${"slider_choice".$tree_prefixDb->tree_prefix}="1560"; // default
-			$query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_".$tree_prefixDb->tree_prefix."' ";
+		while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){
+			${"slider_choice".$tree_searchDb->tree_prefix}="1560"; // default
+			$query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_".$tree_searchDb->tree_prefix."' ";
 			$result = $dbh->query($query);
-			$offset="slider_choice_".$tree_prefixDb->tree_prefix;
+			$offset="slider_choice_".$tree_searchDb->tree_prefix;
 			if ($result->rowCount() >0) {
 				$slider_choiceDb = $result->fetch(PDO::FETCH_OBJ);
-				${"slider_choice".$tree_prefixDb->tree_prefix} = $slider_choiceDb->setting_value;
+				${"slider_choice".$tree_searchDb->tree_prefix} = $slider_choiceDb->setting_value;
 				if(isset($_POST[$offset])) {
-					$sql="UPDATE humo_settings SET setting_value='".$_POST[$offset]."' WHERE setting_variable='gslider_".$tree_prefixDb->tree_prefix."'";
+					$sql="UPDATE humo_settings SET setting_value='".$_POST[$offset]."' WHERE setting_variable='gslider_".$tree_searchDb->tree_prefix."'";
 					$dbh->query($sql);
-					${"slider_choice".$tree_prefixDb->tree_prefix}=$_POST[$offset];
+					${"slider_choice".$tree_searchDb->tree_prefix}=$_POST[$offset];
 				}
 			}
 			else {
 				if(isset($_POST[$offset])) {
-					$sql="INSERT INTO humo_settings SET setting_variable='gslider_".$tree_prefixDb->tree_prefix."', setting_value='".$_POST[$offset]."'";
+					$sql="INSERT INTO humo_settings SET setting_variable='gslider_".$tree_searchDb->tree_prefix."', setting_value='".$_POST[$offset]."'";
 					$dbh->query($sql);
-					${"slider_choice".$tree_prefixDb->tree_prefix}=$_POST[$offset];
+					${"slider_choice".$tree_searchDb->tree_prefix}=$_POST[$offset];
 				}
 			}
 
-			$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
+			$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
 			echo "<tr><td>".$treetext['name']."</td>";
-			echo "<td><input style='text-align:center' type='text' name='".$offset."' value='${"slider_choice".$tree_prefixDb->tree_prefix}'></td>";
-			$interval = round((2010 - ${"slider_choice".$tree_prefixDb->tree_prefix})/9);
+			echo "<td><input style='text-align:center' type='text' name='".$offset."' value='${"slider_choice".$tree_searchDb->tree_prefix}'></td>";
+			$interval = round((2010 - ${"slider_choice".$tree_searchDb->tree_prefix})/9);
 			echo "<td style='text-align:center'>".$interval."</td></tr>";
 			//echo '<td><input type="Submit" name="submit" value="'.__('Change').'"></td></tr>';
 
@@ -1161,7 +1161,7 @@ function refresh_status() {
 	$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
 	$exists = $result->rowCount();
 	if(!$exists) {
-		$dbh->query("ALTER TABLE humo_location ADD location_status TEXT DEFAULT '' AFTER location_lng");
+		$dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
 	}
 	$all_loc = $dbh->query("SELECT location_location FROM humo_location");
 	while($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {

@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-if (isset($_POST['tree'])){ $tree=safe_text_db($_POST["tree"]); }
+if (isset($_POST['tree']) AND is_numeric($_POST['tree'])){ $tree=safe_text_db($_POST["tree"]); }
 
 echo '<h1 align=center>'.__('Calculated birth date').'</h1>';
 
@@ -19,31 +19,21 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 
 	echo '<tr><td>'.__('Choose family').'</td>';
 	echo '<td>';
-		$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		$tree_result = $dbh->query($tree_sql);
-		$onchange='';
-		//if(isset($_POST['part_tree']) AND $_POST['part_tree']=='part') {
-		//	// we have to refresh so that the persons to choose from will belong to this tree!
-		//	echo '<input type="hidden" name="flag_newtree" value=\'0\'>';
-		//	$onchange = ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ';
-		//}
 		echo '<form method="POST" action="index.php">';
 		echo '<input type="hidden" name="page" value="cal_date">';
-		echo '<select '.$onchange.' size="1" name="tree">';
-			while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
-				$treetext=show_tree_text($treeDb->tree_prefix, $selected_language);
+		echo '<select size="1" name="tree">';
+			$tree_result=$db_functions->get_trees();
+			foreach($tree_result as $treeDb){
+				$treetext=show_tree_text($treeDb->tree_id, $selected_language);
 				$selected='';
-				if (isset($tree)){
-					if ($treeDb->tree_prefix==$tree){
-						$selected=' SELECTED';
-						// *** Needed for submitter ***
-						//$tree_owner=$treeDb->tree_owner;
-						$tree_prefix=$treeDb->tree_prefix;
-						$tree_id=$treeDb->tree_id;
-						$db_functions->set_tree_id($tree_id);
-					}
+				if (isset($tree) AND ($treeDb->tree_id==$tree)){
+					$selected=' SELECTED';
+					// *** Needed for submitter ***
+					//$tree_owner=$treeDb->tree_owner;
+					$tree_id=$treeDb->tree_id;
+					$db_functions->set_tree_id($tree_id);
 				}
-				echo '<option value="'.$treeDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+				echo '<option value="'.$treeDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
 			}
 		echo '</select>';
 
@@ -52,7 +42,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 
 	echo '</td></tr>';
 
-	if (isset($tree_prefix)){
+	if (isset($tree_id)){
 
 		function calculate_person($gedcomnumber){
 			global $db_functions;
@@ -124,7 +114,6 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 					$pers_cal_date=calculate_person($fam_db->fam_woman);
 					if ($pers_cal_date) $pers_cal_date=$pers_cal_date+25;
 				}
-
 			}
 
 			if ($pers_cal_date=='' AND $person_db->pers_death_date){
@@ -132,18 +121,15 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 				if ($pers_cal_date) $pers_cal_date=$pers_cal_date-60;
 			}
 
-			//echo $person_db->pers_id.' ';
 			echo '<span style="width:80px; display:inline-block;">'.$person_db->pers_gedcomnumber.'</span> ';
 			echo $person_db->pers_firstname.' '.strtolower(str_replace("_"," ",$person_db->pers_prefix)).$person_db->pers_lastname;
 			echo ' '.$pers_cal_date;
 			if ($pers_cal_date=='') echo '<b>'.__('No dates').'</b>';
 			echo '<br>';
 
-			$sql="UPDATE humo_persons SET
-				pers_cal_date='".$pers_cal_date."'
-				WHERE pers_tree_prefix='".$tree_prefix."' AND pers_id='".$person_db->pers_id."'";
+			$sql="UPDATE humo_persons SET pers_cal_date='".$pers_cal_date."'
+				WHERE pers_tree_id='".$tree_id."' AND pers_id='".$person_db->pers_id."'";
 			$result=$dbh->query($sql);
-
 		}
 		echo '<b>'.__('Calculation of birth dates is completed. Sometimes more dates will be found if calculation is restarted!').'</b>';
 

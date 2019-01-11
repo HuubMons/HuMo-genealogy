@@ -1,4 +1,5 @@
 <?php
+//error_reporting(E_ALL);
 /**
 * This is the editor file for HuMo-gen.
 *
@@ -73,7 +74,7 @@ include_once (CMS_ROOTPATH."include/language_date.php");
 include_once (CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/language_event.php");
 
-// *** Used for person color selectection for descendants and ancestors, etc. ***
+// *** Used for person color selection for descendants and ancestors, etc. ***
 include_once(CMS_ROOTPATH."include/ancestors_descendants.php");
 
 include ('editor_event_cls.php');
@@ -84,22 +85,17 @@ $event_cls = New editor_event_cls;
 // *** FUNCTIONS ***
 // *****************
 
-// *** Calculate nr. of persons and families ***
-function family_tree_update($tree_prefix){
-	global $dbh, $tree_id;
+// *** Calculate and update nr. of persons and nr. of families ***
+function family_tree_update($tree_id){
+	global $db_functions, $dbh;
 
-	$total = $dbh->query("SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id='".$tree_id."'"); 
-	$total = $total->fetch();
-	$nr_persons=$total[0]; 
-
-	$total1 = $dbh->query("SELECT COUNT(*) FROM humo_families WHERE fam_tree_id='".$tree_id."'"); 
-	$total1 = $total1->fetch();
-	$nr_families=$total1[0]; 
+	$nr_persons=$db_functions->count_persons($tree_id);
+	$nr_families=$db_functions->count_families($tree_id);
 
 	$tree_date=date("Y-m-d H:i");
 	$sql="UPDATE humo_trees
 		SET tree_persons='".$nr_persons."', tree_families='".$nr_families."', tree_date='".$tree_date."'
-		WHERE tree_prefix='".$tree_prefix."'";
+		WHERE tree_id='".$tree_id."'";
 	$dbh->query($sql);
 }
 
@@ -111,7 +107,7 @@ function event_option($event_gedcom,$event){
 }
 
 function witness_edit($witness, $multiple_rows=''){
-	global $dbh, $tree_id, $tree_prefix, $language;
+	global $dbh, $tree_id, $language;
 	$text='';
 
 	// *** Witness: pull-down menu ***
@@ -133,11 +129,11 @@ function witness_edit($witness, $multiple_rows=''){
 }
 
 function show_person($gedcomnumber, $gedcom_date=false, $show_link=true){
-	global $dbh, $db_functions, $tree_prefix, $page, $joomlastring;
+	global $dbh, $db_functions, $page, $joomlastring;
 	if ($gedcomnumber){
 		$personDb = $db_functions->get_person($gedcomnumber);
 		if ($show_link==true){
-			$text='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=person&amp;tree='.$tree_prefix.
+			$text='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=person&amp;tree='.$personDb->pers_tree_prefix.
 				'&amp;person='.$personDb->pers_gedcomnumber.'">'.$personDb->pers_firstname.' ';
 			if ($personDb->pers_patronym) $text.=$personDb->pers_patronym.' ';
 			$text.=strtolower(str_replace("_"," ",$personDb->pers_prefix)).$personDb->pers_lastname.'</a>'."\n";
@@ -182,6 +178,7 @@ if (isset($_GET["menu_admin"])){
 }
 if (isset($_SESSION['admin_menu_admin'])){ $menu_admin=$_SESSION['admin_menu_admin']; }
 
+// *** Used for new selected family tree or search person etc. ***
 if (isset($_POST["tree_prefix"])){
 	$tree_prefix=$_POST['tree_prefix'];
 	$_SESSION['admin_tree_prefix']=$tree_prefix;
@@ -189,8 +186,7 @@ if (isset($_POST["tree_prefix"])){
 	unset ($_SESSION['admin_pers_gedcomnumber']);
 
 	// *** Get tree_id ***
-	$qry = $dbh->query("SELECT tree_id FROM humo_trees WHERE tree_prefix='".safe_text_db($tree_prefix)."'");
-	@$qryDb=$qry->fetch(PDO::FETCH_OBJ);
+	$qryDb=$db_functions->get_tree($tree_prefix);
 	$tree_id=$qryDb->tree_id;
 	$_SESSION['admin_tree_id']=$tree_id;
 
@@ -223,17 +219,13 @@ if (isset($_GET["tree"])){
 	$_SESSION['admin_tree_prefix']=$tree_prefix;
 
 	// *** Get tree_id ***
-	$qry = "SELECT * FROM humo_trees WHERE tree_prefix='".safe_text_db($tree_prefix)."'";
-	$tree_prefix = $dbh->query($qry);
-	$tree_prefixDb=$tree_prefix->fetch(PDO::FETCH_OBJ);
-	$tree_id=$tree_prefixDb->tree_id;
+	$qryDb=$db_functions->get_tree($tree_prefix);
+	$tree_id=$qryDb->tree_id;
 	$_SESSION['admin_tree_id']=$tree_id;
 }
 if (isset($_SESSION['admin_tree_prefix'])){ $tree_prefix=$_SESSION['admin_tree_prefix']; }
 if (isset($_SESSION['admin_tree_id'])){ $tree_id=$_SESSION['admin_tree_id']; }
-if ($tree_prefix) $db_functions->set_tree_prefix($tree_prefix);
-if (isset($tree_id) AND $tree_id) $db_functions->set_tree_id($tree_id);
-
+if (isset($tree_id) AND $tree_id) { $db_functions->set_tree_id($tree_id); }
 
 // *** Delete session id's for new person ***
 if (isset($_POST['person_add'])){
@@ -361,244 +353,247 @@ if (!isset($field['event_changed_user'])){
 
 //~~~~~BEGIN NEW FOR PETER~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-			if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_family'])) {
-				//$userid = $_SESSION['user_id_admin'];
-				//$username = $_SESSION['user_name_admin'];
-				//$gedcom_date = strtoupper(date("d M Y"));
-				//$gedcom_time = date("H:i:s");
-				// save all data from the table
-				// *** Generate new pers_gedcomnumber, find highest gedcomnumber I100: strip I and order by numeric ***
-				$new_gednr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
-					FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-				$new_gednr_result = $dbh->query($new_gednr_qry);
-				$new_gednr=$new_gednr_result->fetch(PDO::FETCH_OBJ);
-				$gednr_int = intval(substr($new_gednr->pers_gedcomnumber,1)); //echo $gednr_int."-"; // I234 ==> 234
-				
-				// *** Generate new fam_gedcomnumber, find highest gedcomnumber F100: strip I and order by numeric ***
-				$new_fgednr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS fgednr
-					FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY fgednr DESC LIMIT 0,1";
-				$new_fgednr_result = $dbh->query($new_fgednr_qry);
-				$new_fgednr=$new_fgednr_result->fetch(PDO::FETCH_OBJ);
-				$fgednr_int = intval(substr($new_fgednr->fam_gedcomnumber,1)); //echo $fgednr_int."-"; // F234 ==> 234
-				
-				if(!isset($_POST['exist_partner'])) {
-					// we are in adding a whole new family: imports data for new relation and partner
+if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_family'])) {
+	//$userid = $_SESSION['user_id_admin'];
+	//$username = $_SESSION['user_name_admin'];
+	//$gedcom_date = strtoupper(date("d M Y"));
+	//$gedcom_time = date("H:i:s");
+	// save all data from the table
+	// *** Generate new pers_gedcomnumber, find highest gedcomnumber I100: strip I and order by numeric ***
+	$new_gednr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
+	$new_gednr_result = $dbh->query($new_gednr_qry);
+	$new_gednr=$new_gednr_result->fetch(PDO::FETCH_OBJ);
+	$gednr_int = intval(substr($new_gednr->pers_gedcomnumber,1)); //echo $gednr_int."-"; // I234 ==> 234
+	
+	// *** Generate new fam_gedcomnumber, find highest gedcomnumber F100: strip I and order by numeric ***
+	$new_fgednr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS fgednr
+		FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY fgednr DESC LIMIT 0,1";
+	$new_fgednr_result = $dbh->query($new_fgednr_qry);
+	$new_fgednr=$new_fgednr_result->fetch(PDO::FETCH_OBJ);
+	$fgednr_int = intval(substr($new_fgednr->fam_gedcomnumber,1)); //echo $fgednr_int."-"; // F234 ==> 234
+	
+	if(!isset($_POST['exist_partner'])) {
+		// we are in adding a whole new family: imports data for new relation and partner
 
-					$add_fam_marr_type = "";
-					$add_fam_marr_date_prefix = "";
-					$add_fam_marr_date = "";
-					$add_fam_marr_place = "";
-					
-					if(isset($_POST['add_fam_marr_type'])) $add_fam_marr_type = $_POST['add_fam_marr_type'];
-					if(isset($_POST['add_fam_marr_date_prefix'])) $add_fam_marr_date_prefix = $_POST['add_fam_marr_date_prefix'];
-					if(isset($_POST['add_fam_marr_date'])) $add_fam_marr_date = $_POST['add_fam_marr_date'];
-					if(isset($_POST['add_fam_marr_place'])) $add_fam_marr_place = $_POST['add_fam_marr_place'];
-					
-					//if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
-						// we are not using an existing person from the database
-						$add_fam_partner_sexe = "";
-						$add_fam_partner_lastname = "";
-						$add_fam_partner_prefix = "";
-						$add_fam_partner_firstname = "";
-						$add_fam_partner_birthdate_prefix = "";
-						$add_fam_partner_birthdate = "";
-						$add_fam_partner_birthplace = "";
-						$add_fam_partner_deathdate_prefix = "";
-						$add_fam_partner_deathdate = "";
-						$add_fam_partner_deathplace = "";
-						
-						if(isset($_POST['add_fam_partner_sexe'])) $add_fam_partner_sexe = $editor_cls->text_process($_POST['add_fam_partner_sexe']);
-						if(isset($_POST['add_fam_partner_lastname'])) $add_fam_partner_lastname = $editor_cls->text_process($_POST['add_fam_partner_lastname']);
-						if(isset($_POST['add_fam_partner_firstname'])) $add_fam_partner_firstname = $editor_cls->text_process($_POST['add_fam_partner_firstname']);
-						if(isset($_POST['add_fam_partner_prefix'])) $add_fam_partner_prefix = $editor_cls->text_process($_POST['add_fam_partner_prefix']);
-						if(isset($_POST['add_fam_partner_birthdate_prefix'])) $add_fam_partner_birthdate_prefix = $editor_cls->text_process($_POST['add_fam_partner_birthdate_prefix']);
-						if(isset($_POST['add_fam_partner_birthdate'])) $add_fam_partner_birthdate = $editor_cls->text_process($_POST['add_fam_partner_birthdate']);
-						if(isset($_POST['add_fam_partner_birthplace'])) $add_fam_partner_birthplace = $editor_cls->text_process($_POST['add_fam_partner_birthplace']);
-						if(isset($_POST['add_fam_partner_deathdate_prefix'])) $add_fam_partner_deathdate_prefix = $editor_cls->text_process($_POST['add_fam_partner_deathdate_prefix']);
-						if(isset($_POST['add_fam_partner_deathdate'])) $add_fam_partner_deathdate = $editor_cls->text_process($_POST['add_fam_partner_deathdate']);
-						if(isset($_POST['add_fam_partner_deathplace'])) $add_fam_partner_deathplace = $editor_cls->text_process($_POST['add_fam_partner_deathplace']);
-					//}
-				}
+		$add_fam_marr_type = "";
+		$add_fam_marr_date_prefix = "";
+		$add_fam_marr_date = "";
+		$add_fam_marr_place = "";
+		
+		if(isset($_POST['add_fam_marr_type'])) $add_fam_marr_type = $_POST['add_fam_marr_type'];
+		if(isset($_POST['add_fam_marr_date_prefix'])) $add_fam_marr_date_prefix = $_POST['add_fam_marr_date_prefix'];
+		if(isset($_POST['add_fam_marr_date'])) $add_fam_marr_date = $_POST['add_fam_marr_date'];
+		if(isset($_POST['add_fam_marr_place'])) $add_fam_marr_place = $_POST['add_fam_marr_place'];
+		
+		//if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
+			// we are not using an existing person from the database
+			$add_fam_partner_sexe = "";
+			$add_fam_partner_lastname = "";
+			$add_fam_partner_prefix = "";
+			$add_fam_partner_firstname = "";
+			$add_fam_partner_birthdate_prefix = "";
+			$add_fam_partner_birthdate = "";
+			$add_fam_partner_birthplace = "";
+			$add_fam_partner_deathdate_prefix = "";
+			$add_fam_partner_deathdate = "";
+			$add_fam_partner_deathplace = "";
+			
+			if(isset($_POST['add_fam_partner_sexe'])) $add_fam_partner_sexe = $editor_cls->text_process($_POST['add_fam_partner_sexe']);
+			if(isset($_POST['add_fam_partner_lastname'])) $add_fam_partner_lastname = $editor_cls->text_process($_POST['add_fam_partner_lastname']);
+			if(isset($_POST['add_fam_partner_firstname'])) $add_fam_partner_firstname = $editor_cls->text_process($_POST['add_fam_partner_firstname']);
+			if(isset($_POST['add_fam_partner_prefix'])) $add_fam_partner_prefix = $editor_cls->text_process($_POST['add_fam_partner_prefix']);
+			if(isset($_POST['add_fam_partner_birthdate_prefix'])) $add_fam_partner_birthdate_prefix = $editor_cls->text_process($_POST['add_fam_partner_birthdate_prefix']);
+			if(isset($_POST['add_fam_partner_birthdate'])) $add_fam_partner_birthdate = $editor_cls->text_process($_POST['add_fam_partner_birthdate']);
+			if(isset($_POST['add_fam_partner_birthplace'])) $add_fam_partner_birthplace = $editor_cls->text_process($_POST['add_fam_partner_birthplace']);
+			if(isset($_POST['add_fam_partner_deathdate_prefix'])) $add_fam_partner_deathdate_prefix = $editor_cls->text_process($_POST['add_fam_partner_deathdate_prefix']);
+			if(isset($_POST['add_fam_partner_deathdate'])) $add_fam_partner_deathdate = $editor_cls->text_process($_POST['add_fam_partner_deathdate']);
+			if(isset($_POST['add_fam_partner_deathplace'])) $add_fam_partner_deathplace = $editor_cls->text_process($_POST['add_fam_partner_deathplace']);
+		//}
+	}
 
-				$x=1;
-				if(isset($_POST['exist_children'])) { 
-					// for adding to existing family: there were already children in this relation: get the total number of existing children
-					$x = $_POST['exist_children']+1; // the number of existing children + 1
-				}	
-				
-				while(isset($_POST['add_fam_child_firstname_'.$x]) AND $_POST['add_fam_child_firstname_'.$x]!="") { 
-					// as long as there are children's lines in the table with at least a firstname entered, collect their data
-					${'add_fam_child_sexe'.$x} = "";
-					if(isset($_POST['add_fam_child_sexe_'.$x])) ${'add_fam_child_sexe'.$x} = $editor_cls->text_process($_POST['add_fam_child_sexe_'.$x]);
-					${'add_fam_child_lastname'.$x} = "";
-					if(isset($_POST['add_fam_child_lastname_'.$x])) ${'add_fam_child_lastname'.$x} = $editor_cls->text_process($_POST['add_fam_child_lastname_'.$x]); 
-					${'add_fam_child_firstname'.$x} = "";
-					if(isset($_POST['add_fam_child_firstname_'.$x])) ${'add_fam_child_firstname'.$x} = $editor_cls->text_process($_POST['add_fam_child_firstname_'.$x]);
-					${'add_fam_child_prefix'.$x} = "";
-					if(isset($_POST['add_fam_child_prefix_'.$x])) ${'add_fam_child_prefix'.$x} = $editor_cls->text_process($_POST['add_fam_child_prefix_'.$x]);
-					${'add_fam_child_birthdate'.$x.'_prefix'} = "";
-					if(isset($_POST['add_fam_child_birthdate_'.$x.'_prefix'])) ${'add_fam_child_birthdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x.'_prefix']);
-					${'add_fam_child_birthdate'.$x} = "";
-					if(isset($_POST['add_fam_child_birthdate_'.$x])) ${'add_fam_child_birthdate'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x]);
-					${'add_fam_child_birthplace'.$x} = "";
-					if(isset($_POST['add_fam_child_birthplace_'.$x])) ${'add_fam_child_birthplace'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthplace_'.$x]);
-					${'add_fam_child_deathdate'.$x.'_prefix'} = "";
-					if(isset($_POST['add_fam_child_deathdate_'.$x.'_prefix'])) ${'add_fam_child_deathdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_deathdate_'.$x.'_prefix']);
-					${'add_fam_child_deathdate'.$x} = "";
-					if(isset($_POST['add_fam_child_deathdate_'.$x])) ${'add_fam_child_deathdate'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathdate_'.$x]);
-					${'add_fam_child_deathplace'.$x} = "";
-					if(isset($_POST['add_fam_child_deathplace_'.$x])) ${'add_fam_child_deathplace'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathplace_'.$x]);
-					$x++;
-				}
-				// now start writing the variables to the database...
-				//- 1. UPDATE person's pers_fams field in the humo_persons table
-				//- 2. INSERT the new fam_gedcomnumber,fam_man and fam_woman in the humo_families table
-				// 3. INSERT the partner and children in the humo_persons table
-				// 4. UPDATE the fam_children field in the humo_families table with new partner
-				
-				if(!isset($_POST['exist_partner'])) {
-					// we are adding a new family: generate new (highest) pers_fams gedcomnumber
-					$newfam_id = "F".($fgednr_int+1); 
-					
-					if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
-						// we're are not entering a person retrieved from search of the database - generate new (highest) pers_gedcomnumber
-						$newpartner_id = "I".(++$gednr_int); 
-					}
-					else {
-						// we chose a person from search of the database - get his pers_gedcomnumber
-						$newpartner_id = $_POST['add_fam_partner_exist'];
-					}
- 
-					if($person->pers_fams) {  
-						// main person already has a pers_fam - add new fam ID to this persons pers_fams
-						$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."', pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."', pers_fams=CONCAT(pers_fams,';','".$newfam_id."') WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'");
-					}
-					else {  
-						// person had no pers_fam - enter it into the database
-						$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."', pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',pers_fams='".$newfam_id."' WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'");
-					}
-					
-					// add new family to the families table
-					if($person->pers_sexe=="M") { $manged = $person->pers_gedcomnumber; $womanged = $newpartner_id; }
-					else { $manged = $newpartner_id; $womanged = $person->pers_gedcomnumber; }
-					if(($add_fam_marr_type AND $add_fam_marr_type=="civil") OR !$add_fam_marr_type) { // regular marriage
-						$fammarrdate = $add_fam_marr_date_prefix.$add_fam_marr_date;
-						$fammarrplace = $add_fam_marr_place;
-						$famreldate = "";
-						$famrelplace = "";
-					}
-					else {  // relation
-						$fammarrdate = "";
-						$fammarrplace = "";
-						$famreldate = $add_fam_marr_date_prefix.$add_fam_marr_date;
-						$famrelplace = $add_fam_marr_place;
-					}
-				
-					$result = $dbh->query("INSERT INTO humo_families (fam_children,fam_relation_text,
-	fam_marr_notice_date,fam_marr_notice_place,fam_marr_notice_text,fam_marr_text,fam_marr_authority,
-	fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_notice_date,fam_marr_church_notice_place, fam_marr_church_notice_text,fam_religion,fam_div_date,fam_div_place,fam_div_text,fam_div_authority,fam_text,fam_changed_user,fam_changed_date,fam_changed_time,fam_new_user,fam_new_date,fam_new_time,fam_tree_id,fam_gedcomnumber,fam_man,fam_woman,fam_kind,fam_marr_date,fam_marr_place,fam_relation_date,fam_relation_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_id."','".$newfam_id."','".$manged."','".$womanged."','".$add_fam_marr_type."','".$fammarrdate."','".$fammarrplace."','".$famreldate."','".$famrelplace."')");
+	$x=1;
+	if(isset($_POST['exist_children'])) { 
+		// for adding to existing family: there were already children in this relation: get the total number of existing children
+		$x = $_POST['exist_children']+1; // the number of existing children + 1
+	}
+	
+	while(isset($_POST['add_fam_child_firstname_'.$x]) AND $_POST['add_fam_child_firstname_'.$x]!="") { 
+		// as long as there are children's lines in the table with at least a firstname entered, collect their data
+		${'add_fam_child_sexe'.$x} = "";
+		if(isset($_POST['add_fam_child_sexe_'.$x])) ${'add_fam_child_sexe'.$x} = $editor_cls->text_process($_POST['add_fam_child_sexe_'.$x]);
+		${'add_fam_child_lastname'.$x} = "";
+		if(isset($_POST['add_fam_child_lastname_'.$x])) ${'add_fam_child_lastname'.$x} = $editor_cls->text_process($_POST['add_fam_child_lastname_'.$x]); 
+		${'add_fam_child_firstname'.$x} = "";
+		if(isset($_POST['add_fam_child_firstname_'.$x])) ${'add_fam_child_firstname'.$x} = $editor_cls->text_process($_POST['add_fam_child_firstname_'.$x]);
+		${'add_fam_child_prefix'.$x} = "";
+		if(isset($_POST['add_fam_child_prefix_'.$x])) ${'add_fam_child_prefix'.$x} = $editor_cls->text_process($_POST['add_fam_child_prefix_'.$x]);
+		${'add_fam_child_birthdate'.$x.'_prefix'} = "";
+		if(isset($_POST['add_fam_child_birthdate_'.$x.'_prefix'])) ${'add_fam_child_birthdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x.'_prefix']);
+		${'add_fam_child_birthdate'.$x} = "";
+		if(isset($_POST['add_fam_child_birthdate_'.$x])) ${'add_fam_child_birthdate'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x]);
+		${'add_fam_child_birthplace'.$x} = "";
+		if(isset($_POST['add_fam_child_birthplace_'.$x])) ${'add_fam_child_birthplace'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthplace_'.$x]);
+		${'add_fam_child_deathdate'.$x.'_prefix'} = "";
+		if(isset($_POST['add_fam_child_deathdate_'.$x.'_prefix'])) ${'add_fam_child_deathdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_deathdate_'.$x.'_prefix']);
+		${'add_fam_child_deathdate'.$x} = "";
+		if(isset($_POST['add_fam_child_deathdate_'.$x])) ${'add_fam_child_deathdate'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathdate_'.$x]);
+		${'add_fam_child_deathplace'.$x} = "";
+		if(isset($_POST['add_fam_child_deathplace_'.$x])) ${'add_fam_child_deathplace'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathplace_'.$x]);
+		$x++;
+	}
+	// now start writing the variables to the database...
+	//- 1. UPDATE person's pers_fams field in the humo_persons table
+	//- 2. INSERT the new fam_gedcomnumber,fam_man and fam_woman in the humo_families table
+	// 3. INSERT the partner and children in the humo_persons table
+	// 4. UPDATE the fam_children field in the humo_families table with new partner
+	
+	if(!isset($_POST['exist_partner'])) {
+		// we are adding a new family: generate new (highest) pers_fams gedcomnumber
+		$newfam_id = "F".($fgednr_int+1); 
+		
+		if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
+			// we're are not entering a person retrieved from search of the database - generate new (highest) pers_gedcomnumber
+			$newpartner_id = "I".(++$gednr_int); 
+		}
+		else {
+			// we chose a person from search of the database - get his pers_gedcomnumber
+			$newpartner_id = $_POST['add_fam_partner_exist'];
+		}
 
-				
-					// if not person taken from search in database, insert partner in humo_persons table
-					if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
-						if($add_fam_partner_prefix!="" AND substr($add_fam_partner_prefix,-1)!="_" AND substr($add_fam_partner_prefix,-1)!="'") { $add_fam_partner_prefix .= "_";  }
+		if($person->pers_fams) {  
+			// main person already has a pers_fam - add new fam ID to this persons pers_fams
+			$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."', pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."', pers_fams=CONCAT(pers_fams,';','".$newfam_id."') WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'");
+		}
+		else {  
+			// person had no pers_fam - enter it into the database
+			$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."', pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',pers_fams='".$newfam_id."' WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'");
+		}
+		
+		// add new family to the families table
+		if($person->pers_sexe=="M") { $manged = $person->pers_gedcomnumber; $womanged = $newpartner_id; }
+		else { $manged = $newpartner_id; $womanged = $person->pers_gedcomnumber; }
+		if(($add_fam_marr_type AND $add_fam_marr_type=="civil") OR !$add_fam_marr_type) { // regular marriage
+			$fammarrdate = $add_fam_marr_date_prefix.$add_fam_marr_date;
+			$fammarrplace = $add_fam_marr_place;
+			$famreldate = "";
+			$famrelplace = "";
+		}
+		else {  // relation
+			$fammarrdate = "";
+			$fammarrplace = "";
+			$famreldate = $add_fam_marr_date_prefix.$add_fam_marr_date;
+			$famrelplace = $add_fam_marr_place;
+		}
+	
+		$result = $dbh->query("INSERT INTO humo_families (fam_children,fam_relation_text,
+fam_marr_notice_date,fam_marr_notice_place,fam_marr_notice_text,fam_marr_text,fam_marr_authority,
+fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_notice_date,fam_marr_church_notice_place, fam_marr_church_notice_text,fam_religion,fam_div_date,fam_div_place,fam_div_text,fam_div_authority,fam_text,fam_changed_user,fam_changed_date,fam_changed_time,fam_new_user,fam_new_date,fam_new_time,fam_tree_id,fam_gedcomnumber,fam_man,fam_woman,fam_kind,fam_marr_date,fam_marr_place,fam_relation_date,fam_relation_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_id."','".$newfam_id."','".$manged."','".$womanged."','".$add_fam_marr_type."','".$fammarrdate."','".$fammarrplace."','".$famreldate."','".$famrelplace."')");
 
-						$result = $dbh->query("INSERT INTO humo_persons (pers_famc,pers_callname,pers_patronym,pers_name_text,pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time,pers_birth_text,	pers_stillborn, pers_bapt_date,pers_bapt_place,pers_bapt_text, pers_religion,pers_death_time,pers_death_text,pers_death_cause,pers_death_age,	pers_buried_date,pers_buried_place,pers_buried_text,pers_new_user,pers_new_date,pers_new_time,pers_tree_id,pers_tree_prefix, pers_gedcomnumber,pers_fams,pers_indexnr,pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,pers_death_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_id."','".$tree_prefix."','".$newpartner_id."','".$newfam_id."','".$newfam_id."','".$add_fam_partner_sexe."','".$add_fam_partner_firstname."','".$add_fam_partner_prefix."','".$add_fam_partner_lastname."','".$add_fam_partner_birthdate_prefix.$add_fam_partner_birthdate."','".$add_fam_partner_birthplace."','".$add_fam_partner_deathdate_prefix.$add_fam_partner_deathdate."','".$add_fam_partner_deathplace."')");
-					}
-					elseif(isset($_POST['add_fam_partner_exist']) AND $_POST['add_fam_partner_exist']!="") {
-						// this is a partner taken from search in the database he has to get new pers_fams too
-						if($add_fam_partner_prefix!=""
-							AND substr($add_fam_partner_prefix,-1)!="_" AND substr($add_fam_partner_prefix,-1)!="'") { $add_fam_partner_prefix .= "_";  }
-						$this_partnerDb = $db_functions->get_person($_POST['add_fam_partner_exist']);
+	
+		// if not person taken from search in database, insert partner in humo_persons table
+		if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
+			if($add_fam_partner_prefix!="" AND substr($add_fam_partner_prefix,-1)!="_" AND substr($add_fam_partner_prefix,-1)!="'") { $add_fam_partner_prefix .= "_";  }
 
-						if($this_partnerDb->pers_fams=="") {
-							$result = $dbh->query("UPDATE humo_persons
-								SET pers_changed_user='".$username."',
-								pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',
-								pers_indexnr='".$newfam_id."',pers_fams='".$newfam_id."'
-								WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
-						}
-						else {
-							$result = $dbh->query("UPDATE humo_persons
-								SET pers_changed_user='".$username."',
-								pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',
-								pers_fams=CONCAT(pers_fams,';','".$newfam_id."')
-								WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
-						}
+			$result = $dbh->query("INSERT INTO humo_persons (pers_famc,pers_callname,pers_patronym,pers_name_text,pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time,pers_birth_text,	pers_stillborn, pers_bapt_date,pers_bapt_place,pers_bapt_text, pers_religion,pers_death_time,pers_death_text,pers_death_cause,pers_death_age,	pers_buried_date,pers_buried_place,pers_buried_text,pers_new_user,pers_new_date,pers_new_time,pers_tree_id,pers_tree_prefix, pers_gedcomnumber,pers_fams,pers_indexnr,pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,pers_death_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_id."','".$tree_prefix."','".$newpartner_id."','".$newfam_id."','".$newfam_id."','".$add_fam_partner_sexe."','".$add_fam_partner_firstname."','".$add_fam_partner_prefix."','".$add_fam_partner_lastname."','".$add_fam_partner_birthdate_prefix.$add_fam_partner_birthdate."','".$add_fam_partner_birthplace."','".$add_fam_partner_deathdate_prefix.$add_fam_partner_deathdate."','".$add_fam_partner_deathplace."')");
+		}
+		elseif(isset($_POST['add_fam_partner_exist']) AND $_POST['add_fam_partner_exist']!="") {
+			// this is a partner taken from search in the database he has to get new pers_fams too
+			if($add_fam_partner_prefix!=""
+				AND substr($add_fam_partner_prefix,-1)!="_" AND substr($add_fam_partner_prefix,-1)!="'") { $add_fam_partner_prefix .= "_";  }
+			$this_partnerDb = $db_functions->get_person($_POST['add_fam_partner_exist']);
 
-						$result = $dbh->query("UPDATE humo_persons
-							SET pers_changed_user='".$username."',
-							pers_changed_time='".$gedcom_time."', pers_changed_date='".$gedcom_date."',
-							pers_firstname = '".$add_fam_partner_firstname."',
-							pers_lastname = '".$add_fam_partner_lastname."',
-							pers_prefix = '".$add_fam_partner_prefix."',
-							pers_sexe = '".$add_fam_partner_sexe."',
-							pers_birth_date = '".$add_fam_partner_birthdate_prefix.$add_fam_partner_birthdate."',
-							pers_birth_place = '".$add_fam_partner_birthplace."',
-							pers_death_date = '".$add_fam_partner_deathdate_prefix.$add_fam_partner_deathdate."',
-							pers_death_place = '".$add_fam_partner_deathplace."' 
-							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
-					}
-				}
-				
-				else {	// this is an existing partner of the main person
-					$newfam_id = $_POST['exist_partner'];
-				}
-				
-				$child_string = "";
-				// will hold the list of children to be added/ entered to the families table: fam_children field
-
-				$x=1;
-				if(isset($_POST['exist_children'])) {  
-					// we're adding to existing family - get pers_gedcomnumbers of children that were already listed with this family
-					$x = $_POST['exist_children']+1; 
-					$newfam_id = $_POST['exist_partner'];
-
-					$famresultDb = $db_functions->get_family($_POST['exist_partner']);
-					if($famresultDb) $child_string=$famresultDb->fam_children.";";
-				}
-				while(isset(${'add_fam_child_firstname'.$x}) AND ${'add_fam_child_firstname'.$x} != "") {
-					// now get newly added children
-					if(!isset($_POST['add_fam_child_exist_'.$x]) OR $_POST['add_fam_child_exist_'.$x]=="") {
-						// this child was manually entered
-						$childged = "I".(++$gednr_int); // allocate new gedcomnumber
-						// arrange proper prefix
-						
-						if(${'add_fam_child_prefix'.$x} != "" AND substr(${'add_fam_child_prefix'.$x},-1)!="_" AND substr(${'add_fam_child_prefix'.$x},-1)!="'") { ${'add_fam_child_prefix'.$x} .= "_"; }
-						
-						// enter new child into humo_persons table
-						$result = $dbh->query("INSERT INTO humo_persons (pers_changed_user,pers_changed_date,pers_changed_time,pers_fams,pers_callname,pers_patronym,pers_name_text,pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time, pers_birth_text,	pers_stillborn,pers_bapt_date,pers_bapt_place,pers_bapt_text,pers_religion,pers_death_time,pers_death_text, pers_death_cause,pers_death_age,pers_buried_date,pers_buried_place,pers_buried_text,pers_new_user,pers_new_date,pers_new_time,pers_tree_prefix,pers_tree_id,pers_gedcomnumber,pers_famc,pers_indexnr,pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,pers_death_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_prefix."','".$tree_id."','".$childged."','".$newfam_id."','".$newfam_id."','".${'add_fam_child_sexe'.$x}."','".${'add_fam_child_firstname'.$x}."','".${'add_fam_child_prefix'.$x}."','".${'add_fam_child_lastname'.$x}."','".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."','".${'add_fam_child_birthplace'.$x}."','".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."','".${'add_fam_child_deathplace'.$x}."')");
-						$x++;
-						$child_string .= $childged.";";	
-					}	
-					elseif(isset($_POST['add_fam_child_exist_'.$x]) AND $_POST['add_fam_child_exist_'.$x]!="") {
-						// this is a child that was taken from search in database
-						$chlresult = $dbh->query("SELECT pers_fams FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_child_exist_'.$x]."'");
-						$chlresultDB = $chlresult->fetch(PDO::FETCH_OBJ);
-						if(${'add_fam_child_prefix'.$x} != "" AND substr(${'add_fam_child_prefix'.$x},-1)!="_" AND substr(${'add_fam_child_prefix'.$x},-1)!="'") { ${'add_fam_child_prefix'.$x} .= "_"; }
-						$indexset = ""; if(!isset($chlresultDB->pers_fams) OR $chlresultDB->pers_fams =="") { $indexset = ", pers_indexnr='".$newfam_id."' "; }
-						$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."'
-							,pers_changed_time='".$gedcom_time."'
-							,pers_changed_date='".$gedcom_date."'
-							,pers_famc='".$newfam_id."' ".$indexset." 
-							,pers_firstname = '".${'add_fam_child_firstname'.$x}."' 
-							,pers_lastname = '".${'add_fam_child_lastname'.$x}."' 
-							,pers_prefix = '".${'add_fam_child_prefix'.$x}."' 
-							,pers_sexe = '".${'add_fam_child_sexe'.$x}."' 
-							,pers_birth_date = '".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."' 
-							,pers_birth_place = '".${'add_fam_child_birthplace'.$x}."' 
-							,pers_death_date = '".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."' 
-							,pers_death_place = '".${'add_fam_child_deathplace'.$x}."' 
-							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_child_exist_'.$x]."'");	
-						$child_string .= $_POST['add_fam_child_exist_'.$x].";";
-						$x++;
-					}
-				}
-
-				if($child_string != "") { $child_string = substr($child_string,0,-1); }
-				$result = $dbh->query("UPDATE humo_families SET fam_changed_user='".$username."',fam_changed_time='".$gedcom_time."',fam_changed_date='".$gedcom_date."'
-							,fam_children='".$child_string."' WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$newfam_id."'");
+			if($this_partnerDb->pers_fams=="") {
+				$result = $dbh->query("UPDATE humo_persons
+					SET pers_changed_user='".$username."',
+					pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',
+					pers_indexnr='".$newfam_id."',pers_fams='".$newfam_id."'
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
 			}
+			else {
+				$result = $dbh->query("UPDATE humo_persons
+					SET pers_changed_user='".$username."',
+					pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',
+					pers_fams=CONCAT(pers_fams,';','".$newfam_id."')
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
+			}
+
+			$result = $dbh->query("UPDATE humo_persons
+				SET pers_changed_user='".$username."',
+				pers_changed_time='".$gedcom_time."', pers_changed_date='".$gedcom_date."',
+				pers_firstname = '".$add_fam_partner_firstname."',
+				pers_lastname = '".$add_fam_partner_lastname."',
+				pers_prefix = '".$add_fam_partner_prefix."',
+				pers_sexe = '".$add_fam_partner_sexe."',
+				pers_birth_date = '".$add_fam_partner_birthdate_prefix.$add_fam_partner_birthdate."',
+				pers_birth_place = '".$add_fam_partner_birthplace."',
+				pers_death_date = '".$add_fam_partner_deathdate_prefix.$add_fam_partner_deathdate."',
+				pers_death_place = '".$add_fam_partner_deathplace."' 
+				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_partner_exist']."'");
+		}
+	}
+	
+	else {	// this is an existing partner of the main person
+		$newfam_id = $_POST['exist_partner'];
+	}
+	
+	$child_string = "";
+	// will hold the list of children to be added/ entered to the families table: fam_children field
+
+	$x=1;
+	if(isset($_POST['exist_children'])) {  
+		// we're adding to existing family - get pers_gedcomnumbers of children that were already listed with this family
+		$x = $_POST['exist_children']+1; 
+		$newfam_id = $_POST['exist_partner'];
+
+		$famresultDb = $db_functions->get_family($_POST['exist_partner']);
+		if($famresultDb) $child_string=$famresultDb->fam_children.";";
+	}
+	while(isset(${'add_fam_child_firstname'.$x}) AND ${'add_fam_child_firstname'.$x} != "") {
+		// now get newly added children
+		if(!isset($_POST['add_fam_child_exist_'.$x]) OR $_POST['add_fam_child_exist_'.$x]=="") {
+			// this child was manually entered
+			$childged = "I".(++$gednr_int); // allocate new gedcomnumber
+			// arrange proper prefix
+			
+			if(${'add_fam_child_prefix'.$x} != "" AND substr(${'add_fam_child_prefix'.$x},-1)!="_" AND substr(${'add_fam_child_prefix'.$x},-1)!="'") { ${'add_fam_child_prefix'.$x} .= "_"; }
+			
+			// enter new child into humo_persons table
+			$result = $dbh->query("INSERT INTO humo_persons (pers_changed_user,pers_changed_date,pers_changed_time,pers_fams,pers_callname,pers_patronym,pers_name_text,pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time, pers_birth_text,	pers_stillborn,pers_bapt_date,pers_bapt_place,pers_bapt_text,pers_religion,pers_death_time,pers_death_text, pers_death_cause,pers_death_age,pers_buried_date,pers_buried_place,pers_buried_text,pers_new_user,pers_new_date,pers_new_time,pers_tree_prefix,pers_tree_id,pers_gedcomnumber,pers_famc,pers_indexnr,pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,pers_death_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_prefix."','".$tree_id."','".$childged."','".$newfam_id."','".$newfam_id."','".${'add_fam_child_sexe'.$x}."','".${'add_fam_child_firstname'.$x}."','".${'add_fam_child_prefix'.$x}."','".${'add_fam_child_lastname'.$x}."','".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."','".${'add_fam_child_birthplace'.$x}."','".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."','".${'add_fam_child_deathplace'.$x}."')");
+			$x++;
+			$child_string .= $childged.";";	
+		}
+		elseif(isset($_POST['add_fam_child_exist_'.$x]) AND $_POST['add_fam_child_exist_'.$x]!="") {
+			// this is a child that was taken from search in database
+			$chlresult = $dbh->query("SELECT pers_fams FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_child_exist_'.$x]."'");
+			$chlresultDB = $chlresult->fetch(PDO::FETCH_OBJ);
+			if(${'add_fam_child_prefix'.$x} != "" AND substr(${'add_fam_child_prefix'.$x},-1)!="_" AND substr(${'add_fam_child_prefix'.$x},-1)!="'") { ${'add_fam_child_prefix'.$x} .= "_"; }
+			$indexset = ""; if(!isset($chlresultDB->pers_fams) OR $chlresultDB->pers_fams =="") { $indexset = ", pers_indexnr='".$newfam_id."' "; }
+			$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."'
+				,pers_changed_time='".$gedcom_time."'
+				,pers_changed_date='".$gedcom_date."'
+				,pers_famc='".$newfam_id."' ".$indexset." 
+				,pers_firstname = '".${'add_fam_child_firstname'.$x}."' 
+				,pers_lastname = '".${'add_fam_child_lastname'.$x}."' 
+				,pers_prefix = '".${'add_fam_child_prefix'.$x}."' 
+				,pers_sexe = '".${'add_fam_child_sexe'.$x}."' 
+				,pers_birth_date = '".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."' 
+				,pers_birth_place = '".${'add_fam_child_birthplace'.$x}."' 
+				,pers_death_date = '".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."' 
+				,pers_death_place = '".${'add_fam_child_deathplace'.$x}."' 
+				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_child_exist_'.$x]."'");	
+			$child_string .= $_POST['add_fam_child_exist_'.$x].";";
+			$x++;
+		}
+	}
+
+	if($child_string != "") { $child_string = substr($child_string,0,-1); }
+	$result = $dbh->query("UPDATE humo_families SET fam_changed_user='".$username."',fam_changed_time='".$gedcom_time."',fam_changed_date='".$gedcom_date."'
+		,fam_children='".$child_string."' WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$newfam_id."'");
+
+	// *** Update nr. of persons and nr. of families ***
+	family_tree_update($tree_id);
+}
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if (isset($person->pers_fams) AND $person->pers_fams){
@@ -626,25 +621,25 @@ $add_person=false; if (isset($_GET['add_person'])){ $add_person=true; }
 
 // *** Select family tree ***
 $tree_id=0;
-$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-$tree_prefix_result = $dbh->query($tree_prefix_sql);
+$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+$tree_search_result = $dbh->query($tree_search_sql);
 echo __('Family tree').': ';
 echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
 	echo '<option value="">'.__('Select a family tree:').'</option>';
-	while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
+	while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){
 		$edit_tree_array=explode(";",$group_edit_trees);
 		$team_tree_array=explode(";",$group_team_trees);
 		// *** Administrator can always edit in all family trees ***
-		if ($group_administrator=='j' OR in_array($tree_prefixDb->tree_id, $edit_tree_array) OR in_array($tree_prefixDb->tree_id, $team_tree_array)) {
+		if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array) OR in_array($tree_searchDb->tree_id, $team_tree_array)) {
 			$selected='';
-			if (isset($tree_prefix) AND $tree_prefixDb->tree_prefix==$tree_prefix){
+			if (isset($tree_prefix) AND $tree_searchDb->tree_prefix==$tree_prefix){
 				$selected=' SELECTED';
-				$tree_id=$tree_prefixDb->tree_id;
+				$tree_id=$tree_searchDb->tree_id;
 			}
-			$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
-			echo '<option value="'.$tree_prefixDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+			$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
+			echo '<option value="'.$tree_searchDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
 		}
 	}
 echo '</select>';
@@ -749,8 +744,7 @@ if (isset($tree_prefix)){
 			}
 			elseif($search_id!='') {
 				if(substr($search_id,0,1)!="i" AND substr($search_id,0,1)!="I") { $search_id = "I".$search_id; } //make entry "48" into "I48"
-				$person_qry= "SELECT * FROM humo_persons
-					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$search_id."'";
+				$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$search_id."'";
 				$person_result = $dbh->query($person_qry);
 				$idsearch=true;
 			}
@@ -867,7 +861,8 @@ if (isset($pers_gedcomnumber)){
 					if ($person){
 						// *** Browser through persons: previous button ***
 						$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-							AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."' ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
+							AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."'
+							ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
 						$previous_result = $dbh->query($previous_qry);
 						$previousDb=$previous_result->fetch(PDO::FETCH_OBJ);
 						if ($previousDb){
@@ -893,7 +888,7 @@ if (isset($pers_gedcomnumber)){
 
 					// *** Example of family screen in popup ***
 					if ($person)
-						echo " <a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Preview').' ***</b></a>';
+						echo " <a href=\"#\" onClick=\"window.open('../family.php?database=".$person->pers_tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Preview').' ***</b></a>';
 
 				echo '</ul>';
 			echo '</div>';
@@ -1160,9 +1155,7 @@ if (isset($pers_gedcomnumber)){
 			}
 
 			// *** Show person ***
-			//echo '<br><span style="font-weight:bold; font-size:13px">'.__('Person').'</span><br>';
 			echo '<br><b>'.__('Person').'</b><br>';
-			//echo show_person($person->pers_gedcomnumber).'<br>';
 			echo '<span style="font-weight:bold; font-size:12px">'.show_person($person->pers_gedcomnumber).'</span><br>';
 
 			// *** Show marriages and children ***
@@ -1180,12 +1173,16 @@ if (isset($pers_gedcomnumber)){
 						";>';
 					$familyDb = $db_functions->get_family($fams1[$i]);
 
-					//echo '<br><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b><br>';
-					//echo '<br><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b>';
-					//echo '<br><a href="index.php?'.$joomlastring.'page=editor&amp;menu_tab=marriage&amp;marriage_nr='.$familyDb->fam_gedcomnumber.'"><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b></a>';
-					echo '<a href="index.php?'.$joomlastring.'page=editor&amp;menu_tab=marriage&amp;marriage_nr='.$familyDb->fam_gedcomnumber.'"><b>'.ucfirst(__('marriage/ relation')).' '.($i+1).'</b></a>';
+					$show_fams=''; if ($fam_count>1) $show_fams=$i+1; // *** Only show marriage nr. if there are multiple marriages ***
+					$show_marr_status=ucfirst(__('marriage/ relation'));
+					if ($familyDb->fam_marr_notice_date OR $familyDb->fam_marr_notice_place
+						OR $familyDb->fam_marr_date OR $familyDb->fam_marr_place
+						OR $familyDb->fam_marr_church_notice_date OR $familyDb->fam_marr_church_notice_place
+						OR $familyDb->fam_marr_church_date OR $familyDb->fam_marr_church_place
+						)
+						$show_marr_status=__('Married');
+					echo '<a href="index.php?'.$joomlastring.'page=editor&amp;menu_tab=marriage&amp;marriage_nr='.$familyDb->fam_gedcomnumber.'"><b>'.$show_marr_status.' '.$show_fams.'</b></a>';
 
-					//if ($i<$fam_count){
 					if ($i<$fam_count-1){
 						echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;person_id='.$person->pers_id.'&amp;fam_down='.$i.'&amp;fam_array='.$person->pers_fams.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="fam_down"></a> ';
 					}
@@ -1199,6 +1196,9 @@ if (isset($pers_gedcomnumber)){
 						//echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 					}
 					echo '<br>';
+
+					// *** Name of selected person ***
+					echo show_person($person->pers_gedcomnumber).'<br>';
 
 					if ($person->pers_gedcomnumber==$familyDb->fam_man)
 						echo show_person($familyDb->fam_woman).'<br>';
@@ -1351,9 +1351,6 @@ if (isset($pers_gedcomnumber)){
 
 		if ($add_person==false){
 			echo '<td>'.$hide_show_all.' <input type="Submit" name="person_remove" value="'.__('Delete person').'"></td>';
-
-			// *** Example of family screen in popup ***
-			//echo '<td style="border-right: none">'."<a href=\"#\" onClick=\"window.open('../family.php?database=".$tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Preview').' ***</b></a></td>';
 			echo '<td style="border-right: none"></td>';
 		}
 		else{
@@ -1481,13 +1478,13 @@ if (isset($pers_gedcomnumber)){
 		$colour='';
 		// *** If sex = unknown then show a red line (new person = other colour). ***
 		if ($pers_sexe==''){ $colour=' bgcolor="#FF0000"'; }
-		if ($add_person==true AND $pers_sexe==''){ $colour=' bgcolor="#CCFFFF"'; }
+		if ($add_person==true AND $pers_sexe=='') $colour=' bgcolor="#CCFFFF"';
 		echo '<tr><td>'.__('Sex').'</td><td style="border-right:0px;"></td><td'.$colour.' style="border-left:0px;">';
-			$selected=''; if ($pers_sexe=='M'){ $selected=' CHECKED'; }
+			$selected=''; if ($pers_sexe=='M') $selected=' CHECKED';
 			echo '<input type="radio" name="pers_sexe" value="M"'.$selected.'> '.__('male');
-			$selected=''; if ($pers_sexe=='F'){ $selected=' CHECKED'; }
+			$selected=''; if ($pers_sexe=='F') $selected=' CHECKED';
 			echo ' <input type="radio" name="pers_sexe" value="F"'.$selected.'> '.__('female');
-			$selected=''; if ($pers_sexe==''){ $selected=' CHECKED'; }
+			$selected=''; if ($pers_sexe=='') $selected=' CHECKED';
 			echo ' <input type="radio" name="pers_sexe" value=""'.$selected.'> ?';
 		echo '</td><td>';
 
@@ -1757,7 +1754,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		
 		if (isset($_GET['add_person'])){  
 			// *** Profession(s) ***
-			echo $event_cls->show_event('person',$new_gedcomnumber,'profession');
+			//echo $event_cls->show_event('person',$new_gedcomnumber,'profession');
 		}
 		if (!isset($_GET['add_person'])){
 
@@ -3374,7 +3371,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			source_changed_time='".$gedcom_time."'
 			WHERE source_tree_id='".$tree_id."' AND source_id='".safe_text_db($_POST["source_id"])."'";
 			$result=$dbh->query($sql);
-			family_tree_update($tree_prefix);
+			family_tree_update($tree_id);
 		}
 
 		if (isset($_POST['source_remove'])){
@@ -3465,8 +3462,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					$source_id=$sourceDb->source_id;
 				}
 
+				$restricted=''; if (@$sourceDb->source_status=='restricted') $restricted=' *'.__('restricted').'*';
 				echo '<option value="'.$sourceDb->source_id.'"'.$selected.'>'.@$sourceDb->source_title.
-					' ['.@$sourceDb->source_gedcomnr.']</option>'."\n";
+					' ['.@$sourceDb->source_gedcomnr.$restricted.']</option>'."\n";
 			}
 			echo '</select>';
 
@@ -3532,7 +3530,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<tr><td>'.__('Title').'</td><td colspan="3"><input type="text" name="source_title" value="'.htmlspecialchars($source_title).'" size="60"></td></tr>';
 
 			echo '<tr><td>'.__('Subject').'</td><td colspan="3"><input type="text" name="source_subj" value="'.htmlspecialchars($source_subj).'" size="60"></td></tr>';
-			echo '<tr><td>'.__('date').' - '.__('place').'</td><td colspan="3">'.$editor_cls->date_show($source_date,"source_date").' <input type="text" name="source_place" value="'.htmlspecialchars($source_place).'" size="50"></td></tr>';
+			echo '<tr><td>'.__('date').' - '.__('place').'</td><td colspan="3">'.$editor_cls->date_show($source_date,"source_date").' <input type="text" name="source_place" value="'.htmlspecialchars($source_place).'" placeholder='.ucfirst(__('place')).' size="50"></td></tr>';
 
 			echo '<tr><td>'.__('Repository').'</td><td colspan="3">';
 				$repo_qry=$dbh->query("SELECT * FROM humo_repositories
@@ -3650,7 +3648,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				repo_changed_time='".$gedcom_time."'
 			WHERE repo_id='".safe_text_db($_POST["repo_id"])."'";
 			$result=$dbh->query($sql);
-			family_tree_update($tree_prefix);
+			family_tree_update($tree_id);
 		}
 
 		if (isset($_POST['repo_remove'])){
@@ -3761,7 +3759,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo '<tr><td>'.__('Zip code').'</td><td><input type="text" name="repo_zip" value="'.$repo_zip.'" size="60"></td></tr>';
 
-			echo '<tr><td>'.ucfirst(__('date')).' - '.__('place').'</td><td>'.$editor_cls->date_show($repo_date,"repo_date").' <input type="text" name="repo_place" value="'.htmlspecialchars($repo_place).'" size="50"></td></tr>';
+			echo '<tr><td>'.ucfirst(__('date')).' - '.__('place').'</td><td>'.$editor_cls->date_show($repo_date,"repo_date").' <input type="text" name="repo_place" value="'.htmlspecialchars($repo_place).'" placeholder='.ucfirst(__('place')).' size="50"></td></tr>';
 
 			echo '<tr><td>'.__('Phone').'</td><td><input type="text" name="repo_phone" value="'.$repo_phone.'" size="60"></td></tr>';
 
@@ -3856,7 +3854,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			WHERE address_id='".safe_text_db($_POST["address_id"])."'";
 			$result=$dbh->query($sql);
 
-			family_tree_update($tree_prefix);
+			family_tree_update($tree_id);
 		}
 
 		if (isset($_POST['address_remove'])){
@@ -4068,31 +4066,66 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 	// *** Show places ***
 	// *******************
 
-
 	if ($menu_admin=='places'){
 		echo '<h2>'.__('Rename places').'</h2>';
 
-		echo __('Update all places here. At this moment these places are updated: birth, baptise, death and burial places.').'<br>';
+		//echo __('Update all places here. At this moment these places are updated: birth, baptise, death and burial places.').'<br>';
 
 		if (isset($_POST['place_change'])){
-			$sql="UPDATE humo_persons SET
-				pers_birth_place='".$editor_cls->text_process($_POST['place_new'])."'
+			$sql="UPDATE humo_persons SET pers_birth_place='".$editor_cls->text_process($_POST['place_new'])."'
 			WHERE pers_tree_id='".$tree_id."' AND pers_birth_place='".safe_text_db($_POST["place_old"])."'";
 			$result=$dbh->query($sql);
 
-			$sql="UPDATE humo_persons SET
-				pers_bapt_place='".$editor_cls->text_process($_POST['place_new'])."'
+			$sql="UPDATE humo_persons SET pers_bapt_place='".$editor_cls->text_process($_POST['place_new'])."'
 			WHERE pers_tree_id='".$tree_id."' AND pers_bapt_place='".safe_text_db($_POST["place_old"])."'";
 			$result=$dbh->query($sql);
 
-			$sql="UPDATE humo_persons SET
-				pers_death_place='".$editor_cls->text_process($_POST['place_new'])."'
+			$sql="UPDATE humo_persons SET pers_death_place='".$editor_cls->text_process($_POST['place_new'])."'
 			WHERE pers_tree_id='".$tree_id."' AND pers_death_place='".safe_text_db($_POST["place_old"])."'";
 			$result=$dbh->query($sql);
 
-			$sql="UPDATE humo_persons SET
-				pers_buried_place='".$editor_cls->text_process($_POST['place_new'])."'
+			$sql="UPDATE humo_persons SET pers_buried_place='".$editor_cls->text_process($_POST['place_new'])."'
 			WHERE pers_tree_id='".$tree_id."' AND pers_buried_place='".safe_text_db($_POST["place_old"])."'";
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_families SET fam_relation_place='".$editor_cls->text_process($_POST['place_new'])."'
+			WHERE fam_tree_id='".$tree_id."' AND fam_relation_place='".safe_text_db($_POST["place_old"])."'";
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_families SET fam_marr_notice_place='".$editor_cls->text_process($_POST['place_new'])."'
+			WHERE fam_tree_id='".$tree_id."' AND fam_marr_notice_place='".safe_text_db($_POST["place_old"])."'";
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_families SET fam_marr_place='".$editor_cls->text_process($_POST['place_new'])."'
+			WHERE fam_tree_id='".$tree_id."' AND fam_marr_place='".safe_text_db($_POST["place_old"])."'";
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_families SET fam_marr_church_notice_place='".$editor_cls->text_process($_POST['place_new'])."'
+			WHERE fam_tree_id='".$tree_id."' AND fam_marr_church_notice_place='".safe_text_db($_POST["place_old"])."'";
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_families SET fam_marr_church_place='".$editor_cls->text_process($_POST['place_new'])."'
+			WHERE fam_tree_id='".$tree_id."' AND fam_marr_church_place='".safe_text_db($_POST["place_old"])."'";
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_families SET fam_div_place='".$editor_cls->text_process($_POST['place_new'])."'
+			WHERE fam_tree_id='".$tree_id."' AND fam_div_place='".safe_text_db($_POST["place_old"])."'";
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_addresses SET address_place='".$editor_cls->text_process($_POST['place_new'])."'
+			WHERE address_tree_id='".$tree_id."' AND address_place='".safe_text_db($_POST["place_old"])."'";
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_events SET event_place='".$editor_cls->text_process($_POST['place_new'])."'
+			WHERE event_tree_id='".$tree_id."' AND event_place='".safe_text_db($_POST["place_old"])."'";
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_sources SET source_place='".$editor_cls->text_process($_POST['place_new'])."'
+			WHERE source_tree_id='".$tree_id."' AND source_place='".safe_text_db($_POST["place_old"])."'";
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_connections SET connect_place='".$editor_cls->text_process($_POST['place_new'])."'
+			WHERE connect_tree_id='".$tree_id."' AND connect_place='".safe_text_db($_POST["place_old"])."'";
 			$result=$dbh->query($sql);
 
 			if (isset($_POST["google_maps"])){
@@ -4109,14 +4142,52 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Show changed place again ***
 			$_POST["place_select"]=$_POST['place_new'];
 
-			echo '<b>'.__('UPDATE OK!').'</b> ';
+			//echo '<b>'.__('UPDATE OK!').'</b> ';
 		}
 
-		$person_qry= "(SELECT pers_birth_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_birth_place)
+		$first=true;
+		$person_qry='';
+		if (isset($_POST['person_places'])){
+			$first=false;
+			$person_qry.= "(SELECT pers_birth_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_birth_place)
+				UNION (SELECT pers_bapt_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_bapt_place)
+				UNION (SELECT pers_death_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_death_place)
+				UNION (SELECT pers_buried_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_buried_place)";
+		}
+
+		if (isset($_POST['family_places'])){
+		if (!$first){
+			$first=false;
+			$person_qry.= " UNION ";
+		}
+			$person_qry.= "(SELECT fam_relation_place as place_edit FROM humo_families WHERE fam_tree_id='".$tree_id."' GROUP BY fam_relation_place)
+				UNION (SELECT fam_marr_notice_place as place_edit FROM humo_families WHERE fam_tree_id='".$tree_id."' GROUP BY fam_marr_notice_place)
+				UNION (SELECT fam_marr_place as place_edit FROM humo_families WHERE fam_tree_id='".$tree_id."' GROUP BY fam_marr_place)
+				UNION (SELECT fam_marr_church_notice_place as place_edit FROM humo_families WHERE fam_tree_id='".$tree_id."' GROUP BY fam_marr_church_notice_place)
+				UNION (SELECT fam_div_place as place_edit FROM humo_families WHERE fam_tree_id='".$tree_id."' GROUP BY fam_div_place)";
+		}
+
+		if (isset($_POST['other_places'])){
+		if (!$first){
+			$first=false;
+			$person_qry.= " UNION ";
+		}
+			$person_qry.= "(SELECT address_place as place_edit FROM humo_addresses WHERE address_tree_id='".$tree_id."' GROUP BY address_place)
+				UNION (SELECT event_place as place_edit FROM humo_events WHERE event_tree_id='".$tree_id."' GROUP BY event_place)
+				UNION (SELECT source_place as place_edit FROM humo_sources WHERE source_tree_id='".$tree_id."' GROUP BY source_place)
+				UNION (SELECT connect_place as place_edit FROM humo_connections WHERE connect_tree_id='".$tree_id."' GROUP BY connect_place)
+				ORDER BY place_edit";
+		}
+
+		// *** Just for sure: if no $_POST is found show person places ***
+		if ($person_qry==''){
+			$_POST['person_places']='on';
+			$person_qry.= "(SELECT pers_birth_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_birth_place)
 			UNION (SELECT pers_bapt_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_bapt_place)
 			UNION (SELECT pers_death_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_death_place)
-			UNION (SELECT pers_buried_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_buried_place)
-			ORDER BY place_edit";
+			UNION (SELECT pers_buried_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_buried_place)";
+		}
+
 		$person_result = $dbh->query($person_qry);
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 			echo '<form method="POST" action="'.$phpself.'">';
@@ -4134,7 +4205,15 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				}
 			}
 			echo '</select>';
-			echo '<input type="Submit" name="dummy8" value="'.__('Select').'">';
+
+			$check=''; if (isset($_POST['person_places'])) $check=' checked';
+			echo '<input type="checkbox" name="person_places"'.$check.'>'.__('Person places');
+			$check=''; if (isset($_POST['family_places'])) $check=' checked';
+			echo ' <input type="checkbox" name="family_places"'.$check.'>'.__('Family places');
+			$check=''; if (isset($_POST['other_places'])) $check=' checked';
+			echo ' <input type="checkbox" name="other_places"'.$check.'>'.__('Other places (sources, events, addresses, etc.)');
+
+			echo ' <input type="Submit" name="dummy8" value="'.__('Select').'">';
 			echo '</form>';
 		echo '</td></tr></table><br>';
 
@@ -4146,6 +4225,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '<tr><td>';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="place_old" value="'.$_POST["place_select"].'">';
+
+				if (isset($_POST['person_places'])) echo '<input type="hidden" name="person_places" value="on">';
+				if (isset($_POST['family_places'])) echo '<input type="hidden" name="family_places" value="on">';
+				if (isset($_POST['other_places'])) echo '<input type="hidden" name="other_places" value="on">';
+
 				echo __('Change location').':</td><td><input type="text" name="place_new" value="'.$_POST["place_select"].'" size="60"><br>';
 				echo '<input type="Checkbox" name="google_maps" value="1" checked>'.__('Also change Google Maps table.').'<br>';
 				echo '<input type="Submit" name="place_change" value="'.__('Save').'">';

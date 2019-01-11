@@ -9,7 +9,7 @@
 *
 * See the manual for basic setup instructions
 *
-* http://www.huubmons.nl/software/
+* https://www.humo-gen.com
 *
 * ----------
 *
@@ -212,6 +212,23 @@ $fault='';
 if (isset($_POST['username'])){
 	$resultDb = $db_functions->get_user($_POST["username"],$_POST["password"]);
 	if ($resultDb){
+
+		// *** FIRST CHECK IF USER IS ADMIN OR EDITOR ***
+		// *** Edit family trees [GROUP SETTING] ***
+		$groepsql = $dbh->query("SELECT * FROM humo_groups WHERE group_id='".$resultDb->user_group_id."'");
+		@$groepDb=$groepsql->fetch(PDO::FETCH_OBJ);
+		if (isset($groepDb->group_edit_trees)){ $group_edit_trees=$groepDb->group_edit_trees; }
+		// *** Edit family trees [USER SETTING] ***
+		if (isset($resultDb->user_edit_trees) AND $resultDb->user_edit_trees){
+			if ($group_edit_trees) $group_edit_trees.=';'.$resultDb->user_edit_trees;
+				else $group_edit_trees=$resultDb->user_edit_trees;
+		}
+		if ($groepDb->group_admin!='j' AND $group_edit_trees==''){
+			// *** User is not an administrator or editor ***
+			echo 'Access to admin is not allowed.';
+			exit;
+		}
+
 		$_SESSION['user_name_admin'] = $resultDb->user_name;
 		$_SESSION['user_id_admin'] = $resultDb->user_id;
 		$_SESSION['group_id_admin'] = $resultDb->user_group_id;
@@ -242,20 +259,13 @@ if (isset($_POST['username'])){
 }
 
 // *** Login check ***
-$group_administrator=''; $group_edit_trees=''; //$group_editor='';
+$group_administrator=''; $group_edit_trees='';
 if(isset($database_check) AND $database_check) {
 	if (isset($_SERVER["PHP_AUTH_USER"])){
 		// *** Logged in using .htacess ***
  
 		// *** Standard group permissions ***
 		$group_administrator='j'; $group_edit_trees='';
-		//$group_editor='j';
-
-		// *** If username = editor then change group permissions ***
-		//if ($_SERVER["PHP_AUTH_USER"]=='editor'){
-		//	$group_administrator='n';
-		//	$group_editor='j';
-		//}
 
 		// *** If .htaccess is used, check usergroup for admin rights ***
 		@$query = "SELECT * FROM humo_users LEFT JOIN humo_groups
@@ -266,10 +276,8 @@ if(isset($database_check) AND $database_check) {
 			@$resultDb=$result->fetch(PDO::FETCH_OBJ);
 			$group_administrator=$resultDb->group_admin;
 
-			// *** Check if user is a editor ***
-			//$group_editor='j'; if (isset($resultDb->group_editor)){ $group_editor=$resultDb->group_editor; }
+			// *** Check if user is a editor, GROUP SETTINGS ***
 			$group_edit_trees=''; if (isset($resultDb->group_edit_trees)){ $group_edit_trees=$resultDb->group_edit_trees; }
-
 			// *** Edit family trees [USER SETTING] ***
 			if (isset($resultDb->user_edit_trees) AND $resultDb->user_edit_trees){
 				if ($group_edit_trees) $group_edit_trees.=';'.$resultDb->user_edit_trees;
@@ -288,7 +296,6 @@ if(isset($database_check) AND $database_check) {
 		if($result !== FALSE) {
             if($result->rowCount() > 0) {
 				// *** humo-users table exists, check admin log in ***
-				//if (isset($_SESSION["group_id_admin"]) AND $_SESSION["group_id_admin"] == "1") {
 				if (isset($_SESSION["group_id_admin"])) {
 				// *** Logged in as admin... ***
 
@@ -305,7 +312,6 @@ if(isset($database_check) AND $database_check) {
 					// *** Edit family trees [USER SETTING] ***
 					$user_result2=$dbh->query("SELECT * FROM humo_users WHERE user_id=".$_SESSION['user_id_admin']);
 					$resultDb=$user_result2->fetch(PDO::FETCH_OBJ);
-					// *** Edit family trees [USER SETTING] ***
 					if (isset($resultDb->user_edit_trees) AND $resultDb->user_edit_trees){
 						if ($group_edit_trees) $group_edit_trees.=';'.$resultDb->user_edit_trees;
 							else $group_edit_trees=$resultDb->user_edit_trees;
@@ -513,7 +519,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				// *** Copy HuMo-gen to server using file_get_contents ***
 				/*
 				if (!file_exists('update/temp_update_check.php')){
-					$source='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+					$source='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 					$update_file='update/temp_update_check.php';
 
 					$content = @file_get_contents($source);
@@ -543,7 +549,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				// *** Copy HuMo-gen to server using copy ***
 				// DISABLED BECAUSE MOST PROVIDERS BLOCK THIS COPY FUNCTION FOR OTHER WEBSITES...
 				//if (!file_exists('update/temp_update_check.php')){
-				//	$source='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+				//	$source='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 				//	$update_file='update/temp_update_check.php';
 				//	@copy($source, $update_file);
 				//}
@@ -966,9 +972,6 @@ echo '</div>'; // *** End of humo_top ***
 echo '<div id="content_admin">';
 	define('ADMIN_PAGE', true); // *** Safety line ***
 
-	// *** Editor group is only allowed to see editor screen ***
-	//if ($group_administrator!='j' AND $group_editor=='j'){ $page='editor'; }
-
 	if ($page=='install'){ include_once ("include/install.php"); }
 	elseif ($page=='login'){ include_once ("include/login.php"); }
 	elseif ($group_administrator=='j' AND $page=='tree'){ include_once ("include/trees.php"); }
@@ -1009,7 +1012,6 @@ echo '<div id="content_admin">';
 	//elseif ($page=='editor_person_event'){ include_once ("include/editor_person_event.php"); }
 
 	// *** Default page for editor ***
-	//elseif ($group_administrator!='j' AND $group_editor=='j'){ $_GET['menu_admin']='person'; include_once ("include/editor.php"); }
 	elseif ($group_administrator!='j' AND $group_edit_trees){ $_GET['menu_admin']='person'; include_once ("include/editor.php"); }
 
 	// *** Default page for administrator ***

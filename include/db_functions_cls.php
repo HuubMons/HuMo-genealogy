@@ -12,8 +12,10 @@
  *		check_person				Check if person is valid.
  *		get_person					Get a single person from database.
  *		get_person_with_id			Get a single person from database using id number.
+ *		count_persons				Count persons in family tree.
  *		check_family				Check if family is valid.
  *		get_family					Get a single family from database.
+ *		count_families				Count families in family tree.
  *		get_event					Get a single event from database.
  *		get_events_kind				Get multiple events of one event_kind from database. Example:
  *		get_events_connect			Get multiple events of a connected person, family etc. selecting one event_kind from database.
@@ -25,7 +27,7 @@
  *		get_repository				Get a single repository from database.
  *
  * SET family tree variabele:
- *	$db_functions->set_tree_prefix($tree_prefix_quoted);
+ *	$db_functions->set_tree_id($tree_id);
  *
  * EXAMPLE get single item from database:
  *		$person_manDb = $db_functions->get_person($familyDb->fam_man);
@@ -51,7 +53,7 @@ private $query = array();
 var $tree_id='';
 var $tree_prefix='';
 
-function __construct($tree_prefix='') {
+function __construct() {
 	global $dbh;
 
 	// *** Prepared statements ***
@@ -60,7 +62,7 @@ function __construct($tree_prefix='') {
 		$this->query['check_visitor'] = $dbh->prepare( $sql );
 
 		$sql = "SELECT * FROM humo_users
-			WHERE user_name=:user_name AND user_password=:user_password";
+			WHERE (user_name=:user_name OR user_mail=:user_name) AND user_password=:user_password";
 		$this->query['get_user'] = $dbh->prepare( $sql );
 
 		$sql = "SELECT * FROM humo_trees WHERE tree_prefix=:tree_prefix";
@@ -98,6 +100,9 @@ function __construct($tree_prefix='') {
 		$sql = "SELECT * FROM humo_persons WHERE pers_id=:pers_id";
 		$this->query['get_person_with_id'] = $dbh->prepare( $sql );
 
+		$sql = "SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id=:pers_tree_id";
+		$this->query['count_persons'] = $dbh->prepare( $sql );
+
 		// *** Family queries ***
 		$sql = "SELECT fam_id FROM humo_families
 			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
@@ -110,6 +115,9 @@ function __construct($tree_prefix='') {
 		$sql = "SELECT fam_man, fam_woman FROM humo_families
 			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
 		$this->query['get_family_man_woman'] = $dbh->prepare( $sql );
+
+		$sql = "SELECT COUNT(*) FROM humo_families WHERE fam_tree_id=:fam_tree_id";
+		$this->query['count_families'] = $dbh->prepare( $sql );
 
 		// *** Text queries ***
 		$sql = "SELECT * FROM humo_texts
@@ -150,12 +158,15 @@ function __construct($tree_prefix='') {
 
 // *** Set family tree_id ***
 function set_tree_id($tree_id){
-	$this->tree_id=$tree_id;
-}
+	if (is_numeric($tree_id)) $this->tree_id=$tree_id;
 
-// *** Set family tree_prefix ***
-function set_tree_prefix($tree_prefix){
-	$this->tree_prefix=$tree_prefix;
+	// *** Also set tree_prefix variable ***
+	global $dbh;
+	$get_tree_prefix = $dbh->prepare("SELECT tree_prefix FROM humo_trees WHERE tree_id=:tree_id");
+	$get_tree_prefix->bindValue(':tree_id', $tree_id, PDO::PARAM_INT);
+	$get_tree_prefix->execute();
+	$get_tree_prefixDb=$get_tree_prefix->fetch(PDO::FETCH_OBJ);
+	if (isset($get_tree_prefixDb->tree_prefix)) $this->tree_prefix=$get_tree_prefixDb->tree_prefix;
 }
 
 /*--------------------[check_visitor]------------------------------
@@ -171,20 +182,20 @@ function check_visitor($ip_address,$block='total'){
 	$allowed=true;
 	$check_fails=0;
 
-	// *** Check last 10 logins of IP address ***
+	// *** Check last 20 logins of IP address ***
 	if ($block=='total'){
 		try {
 			$this->query['check_visitor']->bindValue(':log_ip_address', $ip_address, PDO::PARAM_STR);
 			$this->query['check_visitor']->execute();
 			$this->query['check_visitor']->execute();
 			$result_array=$this->query['check_visitor']->fetchAll(PDO::FETCH_OBJ);
-			foreach($result_array as $dataDb){
-				if (@$dataDb->log_status=='failed') $check_fails++;
+			foreach($result_array as $data2Db){
+				if (@$data2Db->log_status=='failed') $check_fails++;
 			}
 		}catch (PDOException $e) {
 			//echo $e->getMessage() . "<br/>";
 		}
-		if ($check_fails > 10) $allowed=false;
+		if ($check_fails > 20) $allowed=false;
 	}
 
 	// *** Check IP Blacklist ***
@@ -192,7 +203,8 @@ function check_visitor($ip_address,$block='total'){
 		WHERE setting_variable='ip_blacklist'");
 	while($checkDb = $check->fetch(PDO::FETCH_OBJ)){
 		$list=explode("|",$checkDb->setting_value);
-		if ($ip_address==$list[0]) $allowed=false;
+		//if ($ip_address==$list[0]) $allowed=false;
+		if(strcmp($ip_address,$list[0])==0) $allowed=false;
 	}
 
 	return $allowed;
@@ -254,32 +266,6 @@ function get_trees(){
 	}
 	return $result_array;
 }
-
-/*--------------------[count persons]-----------------------------
- * FUNCTION	: Count all persons in family tree.
- * RETURNS	: number of persons.
- *----------------------------------------------------------------
- */
-/*
-function count_persons($tree_prefix,$pers_gedcomnumber){
-	global $dbh;
-	$nr_persons=0;
-	try {
-		//$sql = "SELECT COUNT(*) FROM humo_person";
-		//$qry = $dbh->prepare( $sql );
-
-		//$qry->bindValue(':pers_gedcomnumber', $pers_gedcomnumber, PDO::PARAM_STR);
-		//$qry->execute();
-		//$qryDb=$qry->fetch(PDO::FETCH_OBJ);
-		$total = $dbh->query( SQL_COUNT_PERSONS );
-		$total = $total->fetch();
-		$nr_persons=$total[0]; 
-	}catch (PDOException $e) {
-		echo $e->getMessage() . "<br/>";
-	}
-	return $nr_persons;
-}
-*/
 
 /*--------------------[check person]------------------------------
  * FUNCTION	: Check for valid person in database.
@@ -353,6 +339,24 @@ function get_person_with_id($pers_id){
 	return $qryDb;
 }
 
+/*--------------------[count_persons]-------------------------------------------
+ * FUNCTION	: Count persons in selected family tree.
+ * QUERY	: SELECT COUNT(*) FROM humo_persons WHERE pers_tree_id=:pers_tree_id
+ * RETURNS	: Number of persons in family tree.
+ *------------------------------------------------------------------------------
+ */
+function count_persons($tree_id){
+	$nr_persons=0;
+	try {
+		$this->query['count_persons']->bindValue(':pers_tree_id', $tree_id, PDO::PARAM_INT);
+		$this->query['count_persons']->execute();
+		$nr_persons = $this->query['count_persons']->fetchColumn();
+	}catch (PDOException $e) {
+		echo $e->getMessage() . "<br/>";
+	}
+	return $nr_persons;
+}
+
 /*--------------------[check family]------------------------------
  * FUNCTION	: Check for valid family in database.
  * QUERY 1	: SELECT fam_id FROM humo_families
@@ -407,6 +411,24 @@ function get_family($fam_gedcomnumber,$item=''){
 		echo $e->getMessage() . "<br/>";
 	}
 	return $qryDb;
+}
+
+/*--------------------[count_families]-----------------------------------------
+ * FUNCTION	: Count families in selected family tree.
+ * QUERY	: SELECT COUNT(*) FROM humo_families WHERE fam_tree_id=:fam_tree_id
+ * RETURNS	: Number of families in family tree.
+ *-----------------------------------------------------------------------------
+ */
+function count_families($tree_id){
+	$nr_families=0;
+	try {
+		$this->query['count_families']->bindValue(':fam_tree_id', $tree_id, PDO::PARAM_INT);
+		$this->query['count_families']->execute();
+		$nr_families = $this->query['count_families']->fetchColumn();
+	}catch (PDOException $e) {
+		echo $e->getMessage() . "<br/>";
+	}
+	return $nr_families;
 }
 
 /*--------------------[get text]----------------------------------

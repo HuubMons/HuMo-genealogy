@@ -344,7 +344,7 @@ else {
 	print '<form name="form1" method="post" action="'.$path_tmp.'">';
 	print '<br><table class="humo" cellspacing="0" align="center">';
 	echo '<tr class="table_headline"><th class="fonts" colspan="2">'.__('Login').'</th></tr>';
-	print '<tr><td>'.__('Username').':</td><td><input class="fonts" name="username" type="text" size="20" maxlength="25"></td></tr>';
+	print '<tr><td>'.__('Username or e-mail address').':</td><td><input class="fonts" name="username" type="text" size="20" maxlength="25"></td></tr>';
 	print '<tr><td>'.__('Password').':</td><td><input class="fonts" name="password" type="password" size="20" maxlength="50"></td></tr>';
 	print '<tr><td><br></td><td><input class="fonts" type="submit" name="Submit" value="'.__('Login').'"></td></tr>';
 	print '</table>';

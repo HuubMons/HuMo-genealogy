@@ -1,6 +1,6 @@
 <?php
 function process_text($text_process, $text_sort='standard'){
-	global $dbh, $tree_id, $user, $tree_prefix_quoted;
+	global $dbh, $tree_id, $user;
 	global $screen_mode, $text_presentation;
 
 	if ($text_presentation!='hide'){

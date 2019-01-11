@@ -10,7 +10,7 @@
 // $connect_sub_kind = birth/ baptise/ etc.
 // $connect_connect_id = id (gedcomnumber or direct table id)
 function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
-	global $dbh, $db_functions, $tree_id, $user, $humo_option, $language, $tree_prefix_quoted, $family_id, $url_path, $uri_path;
+	global $dbh, $db_functions, $tree_id, $user, $humo_option, $language, $family_id, $url_path, $uri_path;
 	global $main_person, $descendant_report, $pdf_source;
 	global $source_footnotes, $screen_mode, $pdf_footnotes, $pdf;
 	global $source_footnote_connect_id;
@@ -177,7 +177,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 // *** Show source list if footnotes are selected ***
 // **************************************************
 function show_sources_footnotes(){
-	global $dbh, $db_functions, $tree_id, $source_footnotes, $language, $tree_prefix_quoted, $user;
+	global $dbh, $db_functions, $tree_id, $source_footnotes, $language, $user;
 	global $uri_path, $source_footnote_connect_id;
 	$text='';
 

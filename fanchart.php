@@ -84,7 +84,8 @@ function fillarray ($nr, $famid) {
 		$man_privacy=$man_cls->privacy;
 
 		$name=$man_cls->person_name($personmnDb);
-		$treeid[$nr][0]=$name["standard_name"];
+		//$treeid[$nr][0]=$name["standard_name"];
+		$treeid[$nr][0]=html_entity_decode($name["standard_name"]);
 
 		// *** Privacy filter ***
 		if ($man_privacy==''){

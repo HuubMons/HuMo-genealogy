@@ -30,12 +30,11 @@ if (isset($_POST['add_page']) OR isset($_POST['change_page'])){
 
 	if (isset($_POST['add_page'])){
 		$page_order='1';
-		$datasql = $dbh->query("SELECT page_order FROM humo_cms_pages ORDER BY page_order DESC LIMIT 0,1");
-		if ($datasql){
-			$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
-			$page_order=$dataDb->page_order+1;
+		$ordersql = $dbh->query("SELECT page_order FROM humo_cms_pages ORDER BY page_order DESC LIMIT 0,1");
+		if ($ordersql){
+			$orderDb=$ordersql->fetch(PDO::FETCH_OBJ);
+			$page_order=$orderDb->page_order+1;
 		}
-
 		$sql="INSERT INTO humo_cms_pages SET page_order='".$page_order."', ";
 	}
 	else{

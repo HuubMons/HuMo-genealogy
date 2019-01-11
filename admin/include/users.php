@@ -197,23 +197,23 @@ while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 }
 
 // *** Add user ***
-print '<tr align="center" bgcolor="green">';
-echo '<td><input type="text" name="add_username" size="15"></td>';
-echo '<td><input type="text" name="add_usermail" size="20"></td>';
-print '<td><input type="password" name="add_password" size="15"></td>';
+echo '<tr align="center" bgcolor="green">';
+	echo '<td><input type="text" name="add_username" size="15"></td>';
+	echo '<td><input type="text" name="add_usermail" size="20"></td>';
+	echo '<td><input type="password" name="add_password" size="15"></td>';
 
-// *** Select group for new user ***
-$groupsql="SELECT * FROM humo_groups";
-$groupresult=$dbh->query($groupsql);
-print "<td><select size='1' name='add_group_id'>";
-while ($groupDb=$groupresult->fetch(PDO::FETCH_OBJ)){
-	$select=''; if ($groupDb->group_id=='2') $select=' SELECTED';
-	echo '<option value="'.$groupDb->group_id.'"'.$select.'>'.$groupDb->group_name.'</option>';
-}
-print "</select></td>";
+	// *** Select group for new user ***
+	$groupsql="SELECT * FROM humo_groups";
+	$groupresult=$dbh->query($groupsql);
+	echo "<td><select size='1' name='add_group_id'>";
+		while ($groupDb=$groupresult->fetch(PDO::FETCH_OBJ)){
+			$select=''; if ($groupDb->group_id=='2') $select=' SELECTED';
+			echo '<option value="'.$groupDb->group_id.'"'.$select.'>'.$groupDb->group_name.'</option>';
+		}
+	echo '</select></td>';
 
-print '<td></td><td></td><td><input type="Submit" name="add_user" value="'.__('Add').'"></td>';
-print '</tr>';
+	echo '<td></td><td></td><td><input type="Submit" name="add_user" value="'.__('Add').'"></td>';
+echo '</tr>';
 echo '</table>';
-print '</form>';
+echo '</form>';
 ?>

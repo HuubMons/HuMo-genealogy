@@ -46,7 +46,7 @@ if ($selectsort){
 
 $where = '';
 //$adr_country=''; $adr_state='';
-$adr_place=''; $adr_address=''; 
+$adr_place=''; $adr_address='';
 //if(isset($_POST['adr_country']) AND $_POST['adr_country'] != '') { $adr_country = $_POST['adr_country']; }
 //if(isset($_POST['adr_state']) AND $_POST['adr_state'] != '') { $adr_state = $_POST['adr_state']; }
 if(isset($_POST['adr_place']) AND $_POST['adr_place'] != '') { $adr_place = $_POST['adr_place']; }
@@ -107,7 +107,7 @@ echo '<div>';
 		$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 	}
 	//echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('City').' <img src="images/button3'.$img.'.png"></a>';
-	echo '<th><a href="addresses.php?database='.$database.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('City').' <img src="images/button3'.$img.'.png"></a>';
+	echo '<th><a href="addresses.php?database='.$database.'&adr_place='.safe_text_show($adr_place).'&adr_address='.safe_text_show($adr_address).'&sort=sort_place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('City').' <img src="images/button3'.$img.'.png"></a>';
 
 	$style=''; $sort_reverse=$sort_desc; $img='';
 	if ($selectsort=="sort_address"){
@@ -115,7 +115,7 @@ echo '<div>';
 		$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 	}
 	//echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_address&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Street').' <img src="images/button3'.$img.'.png"></a>';
-	echo '<th><a href="addresses.php?database='.$database.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_address&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Street').' <img src="images/button3'.$img.'.png"></a>';
+	echo '<th><a href="addresses.php?database='.$database.'&adr_place='.safe_text_show($adr_place).'&adr_address='.safe_text_show($adr_address).'&sort=sort_address&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Street').' <img src="images/button3'.$img.'.png"></a>';
 
 	echo '</tr>';
 
@@ -131,11 +131,10 @@ echo '<div>';
 		//if($addressDb->address_state!='')  { echo $addressDb->address_state; }
 		//echo '</td>';
 		echo '<td style="padding-left:5px;padding-right:5px">';
-		if($addressDb->address_place!='')  { echo $addressDb->address_place; }
+			if($addressDb->address_place!='') echo $addressDb->address_place;
 		echo '</td><td style="padding-left:5px;padding-right:5px">';
-		if($addressDb->address_address!='') { 
-			echo '<a href="'.CMS_ROOTPATH.'address.php?gedcomnumber='.$addressDb->address_gedcomnr.'">'.$addressDb->address_address.'</a>';
-		}
+			if($addressDb->address_address!='')
+				echo '<a href="'.CMS_ROOTPATH.'address.php?gedcomnumber='.$addressDb->address_gedcomnr.'">'.$addressDb->address_address.'</a>';
 		echo '</td></tr>';
 	}
 	echo '</table>';

@@ -288,16 +288,16 @@ if (isset($_POST['menu_admin'])) $menu_admin=$_POST['menu_admin'];
 if (isset($_GET['menu_admin'])) $menu_admin=$_GET['menu_admin'];
 
 // *** Select family tree ***
-$tree_prefix_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-$tree_prefix_result = $dbh->query($tree_prefix_sql);
+$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+$tree_search_result = $dbh->query($tree_search_sql);
 echo __('Family tree').': ';
 echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 	echo '<select size="1" name="tree_id" onChange="this.form.submit();">';
-		while ($tree_prefixDb=$tree_prefix_result->fetch(PDO::FETCH_OBJ)){
-			$selected=''; if ($tree_prefixDb->tree_id==$tree_id){ $selected=' SELECTED'; }
-			$treetext=show_tree_text($tree_prefixDb->tree_prefix, $selected_language);
-			echo '<option value="'.$tree_prefixDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
+		while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){
+			$selected=''; if ($tree_searchDb->tree_id==$tree_id){ $selected=' SELECTED'; }
+			$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
+			echo '<option value="'.$tree_searchDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
 		}
 	echo '</select>';
 echo '</form>';

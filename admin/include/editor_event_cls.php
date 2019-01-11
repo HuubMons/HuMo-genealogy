@@ -40,14 +40,14 @@ function event_text($event_kind){
 // *** Show events ***
 // *** REMARK: queries can be found in editor_inc.php! ***
 function show_event($event_connect_kind,$event_connect_id,$event_kind){
- 	global $dbh, $tree_id, $page, $tree_prefix, $field_date, $field_text, $joomlastring;
+ 	global $dbh, $tree_id, $page, $field_date, $field_text, $joomlastring;
 	global $editor_cls, $path_prefix, $tree_pict_path;
 
 	$text='';
 
 	$picture_array = Array();
 	// *** Picture list for selecting pictures ***
-	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix."'");
+	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_id='".$tree_id."'");
 	$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 	$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 	$dir=$path_prefix.$tree_pict_path;
@@ -394,19 +394,19 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='<td style="border-right:0px;"></td>';
 		$text.='<td style="border-left:0px;">';
 	
-if (isset($_GET['add_person'])){
+		if (isset($_GET['add_person'])){
 			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
-}
-else {	
+		}
+		else {
 			$text.='<a href="index.php?'.$joomlastring.'page='.$page.
 			'&amp;menu_admin=person&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
-}			
-			$temp_text='';
-			while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
-				if ($temp_text) $temp_text.=', ';
-				$temp_text.=$data_listDb->event_event;
-			}
-			$text.=$temp_text;
+		}
+		$temp_text='';
+		while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
+			if ($temp_text) $temp_text.=', ';
+			$temp_text.=$data_listDb->event_event;
+		}
+		$text.=$temp_text;
 		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';

@@ -2,7 +2,7 @@
 header ('Content-type: text/plain; charset=UTF-8');
 
 // **************************************************
-// *** Privacy person                             ***
+// *** Sitemap                                    ***
 // **************************************************
 
 define("CMS_ROOTPATH", '');
@@ -87,7 +87,8 @@ foreach($datasql as $dataDb){
 		}
 
 		// *** Get all single persons ***
-		$person_qry=$dbh->query("SELECT pers_indexnr, pers_gedcomnumber, pers_own_code FROM humo_persons WHERE pers_tree_id='".$dataDb->tree_id."' AND pers_indexnr=''");
+		$person_qry=$dbh->query("SELECT pers_indexnr, pers_gedcomnumber, pers_own_code FROM humo_persons
+			WHERE pers_tree_id='".$dataDb->tree_id."' AND pers_indexnr=''");
 		while (@$personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
 			// *** Use class for privacy filter ***
 			//$person_cls = New person_cls;

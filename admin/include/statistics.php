@@ -23,7 +23,7 @@ function statistics_line($familyDb){
 	echo '<tr>';
 	if (isset($familyDb->count_lines)){ echo '<td>'.$familyDb->count_lines.'</td>'; }
 
-	$treetext=show_tree_text($familyDb->tree_prefix, $selected_language);
+	$treetext=show_tree_text($familyDb->tree_id, $selected_language);
 	echo '<td>'.$treetext['name'].'</td>';
 
 	if (!isset($familyDb->count_lines)){ echo '<td>'.$familyDb->stat_date_stat.'</td>'; }
@@ -426,7 +426,7 @@ if ($statistics_screen=='general_statistics'){
 		if ($familyDb->tree_prefix){
 			$tree_id=$familyDb->tree_id;
 			// *** Show family tree name ***
-			$treetext=show_tree_text($familyDb->tree_prefix, $selected_language);
+			$treetext=show_tree_text($familyDb->tree_id, $selected_language);
 			echo '<tr><td>'.$treetext['name'].'</td>';
 		}
 		else{
@@ -729,7 +729,6 @@ if ($statistics_screen=='statistics_old'){
 
 	// *** Select database ***
 	@$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
-
 	$num_rows = $datasql->rowCount();
 	if ($num_rows>1){
 		echo '<h2>'.__('Old statistics (numbers since last gedcom update)').'</h2>';
@@ -737,13 +736,6 @@ if ($statistics_screen=='statistics_old'){
 		echo '<b>'.__('Select family tree').'</b><br>';
 		while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 			if ($dataDb->tree_prefix!='EMPTY'){
-				//Count persons and families
-				$person_qry=$dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
-				@$count_persons=$person_qry->rowCount();
-
-				$family_qry=$dbh->query("SELECT fam_id FROM humo_families WHERE fam_tree_id='".$tree_id."'");
-				@$count_families=$family_qry->rowCount();
-
 				// *** Update date ***
 				$date=$dataDb->tree_date;
 				$month=''; //voor lege datums
@@ -761,7 +753,7 @@ if ($statistics_screen=='statistics_old'){
 					if (substr($date,5,2)=='12'){ $month=' dec ';}
 				$date=substr($date,8,2).$month.substr($date,0,4);
 
-				$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+				$treetext=show_tree_text($dataDb->tree_id, $selected_language);
 				if (isset($_SESSION['tree_prefix']) AND $_SESSION['tree_prefix']==$dataDb->tree_prefix){
 					echo '<b>'.$treetext['name'].'</b>';
 					$tree_id=$dataDb->tree_id;
@@ -774,7 +766,7 @@ if ($statistics_screen=='statistics_old'){
 						echo '<a href="index.php?page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext['name'].'</a>';
 					}
 				}
-				echo ' <font size=-1>('.$date.': '.$count_persons.' '.__('persons').", ".$count_families.' '.__('families').")</font>\n<br>";
+				echo ' <font size=-1>('.$date.': '.$dataDb->tree_persons.' '.__('persons').", ".$dataDb->tree_families.' '.__('families').")</font>\n<br>";
 			}
 		}
 	}

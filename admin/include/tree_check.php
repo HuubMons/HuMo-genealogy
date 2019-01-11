@@ -28,8 +28,9 @@ echo '<span class="noprint">'.__('Choose tree:');  // class "noprint" hides it w
 	$tree_result = $dbh->query($tree_sql);
 	echo '<select size="1" name="tree">';
 		while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
-			$treetext=show_tree_text($treeDb->tree_prefix, $selected_language);
-			$selected=''; if (isset($tree)){
+			$treetext=show_tree_text($treeDb->tree_id, $selected_language);
+			$selected='';
+			if (isset($tree)){
 				if ($treeDb->tree_prefix==$tree){
 					$selected=' SELECTED';
 					$tree_id=$treeDb->tree_id;

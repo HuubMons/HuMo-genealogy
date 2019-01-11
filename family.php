@@ -35,7 +35,6 @@ if($screen_mode!='PDF' AND $menu!=1) {  //we can't have a menu in pdf... and don
 if($screen_mode=='PDF') {  // if PDF: necessary parts from menu.php
 	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
 	$db_functions = New db_functions;
-	$db_functions->set_tree_prefix($tree_prefix_quoted);
 
 	if (isset($_SESSION['tree_prefix'])){
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
@@ -60,7 +59,6 @@ include_once(CMS_ROOTPATH."include/marriage_cls.php");
 include_once(CMS_ROOTPATH."include/show_sources.php");
 include_once(CMS_ROOTPATH."include/witness.php");
 include_once(CMS_ROOTPATH."include/show_picture.php");
-//include_once(CMS_ROOTPATH."include/db_functions_cls.php"); // *** Extra db_functions include, needed for PDF report ***
 
 // *** Show person/ family topline: family top text, pop-up settings, PDF export, favourite ***
 function topline(){
@@ -73,7 +71,7 @@ function topline(){
 	$text='<tr class="table_headline"><td class="table_header">';
 
 	// *** Text above family ***
-	$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+	$treetext=show_tree_text($dataDb->tree_id, $selected_language);
 	$text.='<div class="family_page_toptext fonts">'.$treetext['family_top'].'<br></div>';
 
 	//$text.='</td><td class="table_header fonts" width="12%" style="text-align:center";>';
@@ -533,7 +531,7 @@ if (!$family_id){
 		$pdf->SetFont('Arial','BI',12);
 		$pdf->SetFillColor(196,242,107);
 
-		$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+		$treetext=show_tree_text($dataDb->tree_id, $selected_language);
 		$family_top=$treetext['family_top'];
 		if($family_top!='') {
 			$pdf->Cell(0,6,pdf_convert($family_top),0,1,'L',true);
@@ -732,19 +730,15 @@ else{
 					$fam_counter_var = $fam_counter;
 					$fam_gednr_var = $id;
 					$old_stat_prep->execute();
-
 					// *** Extended statistics, first check if table exists ***
 					@$statistics = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
 					if ($statistics AND $descendant_report==false AND $user['group_statistics']=='j'){
-						$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix_quoted."'");
-						$datasqlDb = $datasql->fetch(PDO::FETCH_OBJ);
-						$stat_easy_id=$datasqlDb->tree_id.'-'.$familyDb->fam_gedcomnumber.'-'.$familyDb->fam_man.'-'.$familyDb->fam_woman;
-
+						$stat_easy_id=$familyDb->fam_tree_id.'-'.$familyDb->fam_gedcomnumber.'-'.$familyDb->fam_man.'-'.$familyDb->fam_woman;
 						$update_sql="INSERT INTO humo_stat_date SET
 							stat_easy_id='".$stat_easy_id."',
 							stat_ip_address='".$_SERVER['REMOTE_ADDR']."',
 							stat_user_agent='".$_SERVER['HTTP_USER_AGENT']."',
-							stat_tree_id='".$datasqlDb->tree_id."',
+							stat_tree_id='".$familyDb->fam_tree_id."',
 							stat_gedcom_fam='".$familyDb->fam_gedcomnumber."',
 							stat_gedcom_man='".$familyDb->fam_man."',
 							stat_gedcom_woman='".$familyDb->fam_woman."',
@@ -812,7 +806,7 @@ else{
 						$pdf->SetFont('Arial','BI',12);
 						$pdf->SetFillColor(186,244,193);
 
-						$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+						$treetext=show_tree_text($dataDb->tree_id, $selidected_language);
 						$family_top=$treetext['family_top'];
 						if($family_top!='') {
 							$pdf->SetLeftMargin(10);
@@ -2224,7 +2218,7 @@ if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
 if($screen_mode=='') {
 	if ($descendant_report==false) {
 		// *** Show extra footer text in family screen ***
-		$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+		$treetext=show_tree_text($dataDb->tree_id, $selected_language);
 		echo $treetext['family_footer'];
 
 		if ($user['group_user_notes_show']=='y'){

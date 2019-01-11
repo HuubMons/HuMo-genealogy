@@ -63,10 +63,8 @@ if($screen_mode!='PDF' AND $screen_mode!='ASPDF') {  //we can't have a menu in p
 	}
 
 	$tree_prefix=$dataDb->tree_prefix;
-	$db_functions->set_tree_prefix($tree_prefix);
-
 	$tree_id=$dataDb->tree_id;
-	$db_functions->set_tree_id($tree_id);
+	$db_functions->set_tree_id($dataDb->tree_id);
 }
 if($hourglass===false) {
 	// *** CHECK: $family_id is actually a person_id... ***

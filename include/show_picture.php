@@ -2,7 +2,7 @@
 // *** Function to show media by person or by marriage ***
 // *** Updated feb 2013, aug 2015. ***
 function show_media($event_connect_kind,$event_connect_id){
-	global $dbh, $db_functions, $tree_id, $user, $dataDb, $tree_prefix_quoted, $uri_path;
+	global $dbh, $db_functions, $tree_id, $user, $dataDb, $uri_path;
 	global $sect, $screen_mode; // *** RTF Export ***
 	global $picture_presentation;
 
@@ -28,6 +28,7 @@ function show_media($event_connect_kind,$event_connect_id){
 			$media_event_event[$media_nr]=$pictureDb->event_event;
 			$media_event_date[$media_nr]=$pictureDb->event_date;
 			$media_event_text[$media_nr]=$pictureDb->event_text;
+			// *** Remove last seperator ***
 			if(substr(rtrim($media_event_text[$media_nr]),-1)=="|") $media_event_text[$media_nr] = substr($media_event_text[$media_nr],0,-1);
 			//$media_event_source[$media_nr]=$pictureDb->event_source;
 		}
@@ -50,6 +51,7 @@ function show_media($event_connect_kind,$event_connect_id){
 					$media_event_event[$media_nr]=$pictureDb->event_event;
 					$media_event_date[$media_nr]=$pictureDb->event_date;
 					$media_event_text[$media_nr]=$pictureDb->event_text;
+					// *** Remove last seperator ***
 					if(substr(rtrim($media_event_text[$media_nr]),-1)=="|") $media_event_text[$media_nr] = substr($media_event_text[$media_nr],0,-1);
 					//$media_event_source[$media_nr]=$pictureDb->event_source;
 				}

@@ -498,7 +498,7 @@ function process_person($person_array){
 		if ($buffer6=='2 NICK'){
 			$processed=1;
 			if ($pers_callname){
-				$pers_callname=$pers_callname.", ".substr($buffer, 7);
+				$pers_callname=$pers_callname.", ".substr($buffer,7);
 			}
 			else {
 				$pers_callname=substr($buffer,7);
@@ -1651,7 +1651,7 @@ function process_person($person_array){
 			location_location VARCHAR(100) CHARACTER SET utf8,
 			location_lat DECIMAL(10,6),
 			location_lng DECIMAL(10,6),
-			location_status TEXT DEFAULT ''
+			location_status TEXT
 			)";
 			$dbh->query($locationtbl);
 		}
@@ -2770,7 +2770,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 				location_location VARCHAR(100) CHARACTER SET utf8,
 				location_lat DECIMAL(10,6),
 				location_lng DECIMAL(10,6),
-				location_status TEXT DEFAULT ''
+				location_status TEXT
 			)";
 			$dbh->query($locationtbl);
 		}
@@ -3963,7 +3963,10 @@ function process_date($date) {
 
 	// in case years under 1000 are given as 0945, make it 945
 	$date = str_replace(" 0"," ",$date); //gets rid of "bet 2 may 0954 AND jun 0951" and "5 may 0985"
-	if(substr($date,-4,1)=="0") { // if there is still a "0" this means we had the year by itself "0985" with nothing before it
+	//if(substr($date,-4,1)=="0") {
+	//	 // if there is still a "0" this means we had the year by itself "0985" with nothing before it
+	if(substr($date,-4,1)=="0" AND strlen($date)==4) { // if there is still a "0" this means we had the year by itself "0985" with nothing before it
+		// the strlen code was added to prevent that double dates with a 0 in position 4th from the end, will be erroneously changed  (1960/61 --> /61)
 		$date = substr($date,-3,3); 
 	}
 	return $date;

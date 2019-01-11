@@ -406,7 +406,7 @@ The file .htpasswd will look something like this:<br>');
 				else{
 					echo '<td class="line_nok">';
 				}
-				$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+				$treetext=show_tree_text($dataDb->tree_id, $selected_language);
 				//echo $dirmark1.$treetext['name'];
 				echo $dirmark1.'<a href="index.php?page=tree">'.$treetext['name'].'</a>';
 

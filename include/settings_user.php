@@ -2,7 +2,7 @@
 $user["user_name"]="";
 if (isset($_SESSION["user_name"]) AND is_numeric($_SESSION["user_id"])){
 	$user["user_name"]=$_SESSION["user_name"];
-	$account="SELECT * FROM humo_users WHERE user_id=".safe_text_db($_SESSION["user_id"]);
+	$account="SELECT * FROM humo_users WHERE user_id='".safe_text_db($_SESSION["user_id"])."'";
 }
 else{
 	// *** For guest account ("gast" is only used for backward compatibility) ***

@@ -110,9 +110,8 @@ function person_name($personDb){
 	global $dbh, $db_functions, $user, $language, $screen_mode, $selection;
 	global $humo_option;
 
-	$tree_prefix_quoted='';
-	if ($personDb) $tree_prefix_quoted=$personDb->pers_tree_prefix;
-	$db_functions->set_tree_prefix($tree_prefix_quoted);
+	$pers_tree_id=''; if ($personDb) $pers_tree_id=$personDb->pers_tree_id;
+	$db_functions->set_tree_id($pers_tree_id);
 
 	$stillborn=''; $nobility=''; $lordship='';
 	$title_before=''; $title_between=''; $title_after='';
@@ -261,8 +260,8 @@ function person_name($personDb){
 			$name_array["standard_name"].=$title_between;
 				// *** Callname shown as "Huub" ***
 				//if ($personDb->pers_callname AND $privacy=='') $name_array["standard_name"].= ' "'.$personDb->pers_callname.'" ';
-				if ($personDb->pers_callname AND $privacy=='' OR ($privacy AND $user['group_filter_name']=='j') )
-					$name_array["standard_name"].= ' "'.$personDb->pers_callname.'" ';
+				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
+					$name_array["standard_name"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
 			$name_array["standard_name"].=str_replace("_", " ", $personDb->pers_prefix);
 			$name_array["standard_name"].=$personDb->pers_lastname;
 			if ($title_after){ $name_array["standard_name"].=$title_after; }
@@ -290,15 +289,15 @@ function person_name($personDb){
 			$name_array["index_name"].=$pers_firstname;
 				// *** Callname shown as "Huub" ***
 				//if ($personDb->pers_callname  AND $privacy=='') $name_array["index_name"].= ' "'.$personDb->pers_callname.'" ';
-				if ($personDb->pers_callname AND $privacy=='' OR ($privacy AND $user['group_filter_name']=='j') )
-					$name_array["index_name"].= ' "'.$personDb->pers_callname.'" ';
+				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
+					$name_array["index_name"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
 			$name_array["index_name"].=$prefix2;
 
 			$name_array["index_name_extended"].=$pers_firstname;
 				// *** Callname shown as "Huub" ***
 				//if ($personDb->pers_callname AND $privacy=='') $name_array["index_name_extended"].= ' "'.$personDb->pers_callname.'" ';
-				if ($personDb->pers_callname AND $privacy=='' OR ($privacy AND $user['group_filter_name']=='j') )
-					$name_array["index_name_extended"].= ' "'.$personDb->pers_callname.'" ';
+				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
+					$name_array["index_name_extended"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
 			if ($title_after){ $name_array["index_name_extended"].=$title_after; }
 
 			if ($personDb->pers_patronym){ $name_array["index_name_extended"].=' '.$personDb->pers_patronym;}
@@ -416,7 +415,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 
 		// *** Family tree for search in multiple family trees ***
 		$tree_prefix=safe_text_db($personDb->pers_tree_prefix);
-		$db_functions->set_tree_prefix($tree_prefix);
+		$db_functions->set_tree_id($personDb->pers_tree_id);
 
 		if (CMS_SPECIFIC=='Joomla'){
 			$start_url='index.php?option=com_humo-gen&amp;task=family&amp;database='.$tree_prefix.
@@ -615,6 +614,8 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 				}
 				// check for timeline folder and tml files
 				if ($privacy==''){
+					// *** Disabled check for timelines files in language folder. If no files are found, default files will be used ***
+					/*
 					$tmlcounter=0;
 					$tmldir=CMS_ROOTPATH."languages/".$selected_language."/timelines";
 					if (file_exists($tmldir)) {
@@ -625,12 +626,14 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 							}
 						}
 					}
+					*/
 					$tmldates=0;
 					if ($personDb->pers_birth_date OR $personDb->pers_bapt_date
 						OR $personDb->pers_death_date OR $personDb->pers_buried_date OR $personDb->pers_fams) {
 						$tmldates=1;
 					}
-					if ($user['group_gen_protection']=='n' AND $tmlcounter>0 AND $tmldates==1) {
+					//if ($user['group_gen_protection']=='n' AND $tmlcounter>0 AND $tmldates==1) {
+					if ($user['group_gen_protection']=='n' AND $tmldates==1) {
 						if (CMS_SPECIFIC=='Joomla'){
 							$path_tmp='index.php?option=com_humo-gen&amp;task=timelines&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber;
 						}
@@ -736,7 +739,7 @@ function name_extended($person_kind){
 	}
 	else{
 		$tree_prefix_quoted=$personDb->pers_tree_prefix;
-		$db_functions->set_tree_prefix($tree_prefix_quoted);
+		$db_functions->set_tree_id($personDb->pers_tree_id);
 
 		// *** Show pop-up menu ***
 		$text_name.= $this->person_popup_menu($personDb);
@@ -1161,8 +1164,7 @@ function person_data($person_kind, $id){
 	// *** $personDb is empty by N.N. person ***
 	if ($personDb){
 	$tree_prefix_quoted=$personDb->pers_tree_prefix;
-	$db_functions->set_tree_prefix($tree_prefix_quoted);
-
+	$db_functions->set_tree_id($personDb->pers_tree_id);
 
 	$process_text=''; $temp='';
 

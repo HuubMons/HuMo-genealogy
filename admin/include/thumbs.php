@@ -43,10 +43,10 @@ $menu_admin='picture_settings';
 if (isset($_POST['menu_admin'])){ $menu_admin=$_POST['menu_admin']; }
 if (isset($_GET['menu_admin'])){ $menu_admin=$_GET['menu_admin']; }
 
-if (isset($_SESSION['tree_prefix'])) $tree_prefix=$_SESSION['tree_prefix'];
-if (isset($_POST['tree_prefix'])){
-	$tree_prefix=safe_text_db($_POST["tree_prefix"]);
-	$_SESSION['tree_prefix']=safe_text_db($_POST['tree_prefix']);
+if (isset($_SESSION['admin_tree_id']) AND is_numeric($_SESSION['admin_tree_id'])){ $tree=$_SESSION['admin_tree_id']; }
+if (isset($_POST['tree_id']) AND is_numeric($_POST['tree_id'])){
+	$tree=$_POST['tree_id'];
+	$_SESSION['admin_tree_id']=$tree;
 }
 
 echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="">';
@@ -125,21 +125,17 @@ if ($show_table){
 			$tree_result = $dbh->query($tree_sql);
 			echo '<form method="POST" action="index.php">';
 			echo '<input type="hidden" name="page" value="thumbs">';
-			echo '<select size="1" name="tree_prefix">';
+			echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
+			echo '<select size="1" name="tree_id">';
 				while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
-					$treetext=show_tree_text($treeDb->tree_prefix, $selected_language);
+					$treetext=show_tree_text($treeDb->tree_id, $selected_language);
 					$selected='';
-					if (isset($tree_prefix)){
-						if ($treeDb->tree_prefix==$tree_prefix){
-							$selected=' SELECTED';
-							// *** Needed for submitter ***
-							//$tree_owner=$treeDb->tree_owner;
-							$tree_id=$treeDb->tree_id;
-							$tree_prefix=$treeDb->tree_prefix;
-							$db_functions->set_tree_id($tree_id);
-						}
+					if (isset($tree) AND ($treeDb->tree_id==$tree)){
+						$selected=' SELECTED';
+						$tree_id=$treeDb->tree_id;
+						$db_functions->set_tree_id($tree_id);
 					}
-					echo '<option value="'.$treeDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+					echo '<option value="'.$treeDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
 				}
 			echo '</select>';
 
@@ -149,7 +145,7 @@ if ($show_table){
 		echo '</td></tr>';
 
 		// *** Set path to pictures ***
-		if (isset($tree_prefix)){
+		if (isset($tree_id)){
 			// *** Save new/ changed picture path ***
 			if (isset($_POST['change_tree_data'])){
 				$tree_pict_path=$_POST['tree_pict_path'];
@@ -183,7 +179,7 @@ if ($show_table){
 
 				echo '<form method="POST" action="index.php">';
 				echo '<input type="hidden" name="page" value="thumbs">';
-				echo '<input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
+				echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 
 				echo '<input type="radio" value="yes" name="default_path" '.$checked1.'> '.__('Use default picture path:').' <b>media/</b><br>';
@@ -225,7 +221,6 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>').'<br>';
 					echo '<form method="POST" action="index.php">';
 					echo '<input type="hidden" name="page" value="thumbs">';
 					echo '<input type="hidden" name="menu_admin" value="picture_thumbnails">';
-					echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
 					echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 					echo __('Thumbnail height: ').' <input type="text" name="pict_height" value="'.$thumb_height.'" size="4"> pixels';
 					echo ' <input type="Submit" name="thumbnail" value="'.__('Create thumbnails').'">';
@@ -241,7 +236,6 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>').'<br>';
 					echo '<form method="POST" action="index.php">';
 					echo '<input type="hidden" name="page" value="thumbs">';
 					echo '<input type="hidden" name="menu_admin" value="picture_show">';
-					echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
 					echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 					echo ' <input type="Submit" name="change_filename" value="'.__('Show thumbnails').'">';
 					echo ' '.__('You can change filenames here.');
@@ -480,7 +474,7 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 							$person_cls = New person_cls;
 							$personDb=$db_functions->get_person($afbDb->event_connect_id);
 							$name=$person_cls->person_name($personDb);
-							$picture_text.='<br><a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
+							$picture_text.='<br><a href="'.CMS_ROOTPATH.'family.php?database='.$personDb->pers_tree_prefix.
 								'&amp;id='.$personDb->pers_indexnr.
 								'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
 						}
@@ -490,7 +484,6 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 							echo '<form method="POST" action="index.php">';
 							echo '<input type="hidden" name="page" value="thumbs">';
 							echo '<input type="hidden" name="menu_admin" value="picture_show">';
-							echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
 							echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 							echo '<input type="hidden" name="picture_path" value="'.$prefx.$pict_path.'">';
 							echo '<input type="hidden" name="filename_old" value="'.$filename.'">';
@@ -565,7 +558,6 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 											echo '<form method="POST" action="index.php">';
 											echo '<input type="hidden" name="page" value="thumbs">';
 											echo '<input type="hidden" name="menu_admin" value="picture_show">';
-											echo '<input type="hidden" name="tree" value="'.$tree_prefix.'">';
 											echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 											echo '<input type="hidden" name="picture_path" value="'.$cat_dir.'/">';
 											echo '<input type="hidden" name="filename_old" value="'.$filename.'">';

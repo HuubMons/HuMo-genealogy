@@ -6,6 +6,7 @@
  *
  * April 2015, Huub: added tab menu, and Yossi's new freqently firstnames and surnames pages.
  */
+//error_reporting(E_ALL);
 
 include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."menu.php");
@@ -16,7 +17,7 @@ include_once(CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
 
 // *** Get general data from family tree ***
-$db_functions->get_tree($tree_prefix_quoted);
+$dataDb=$db_functions->get_tree($tree_prefix_quoted);
 
 $tree_date=$dataDb->tree_date;
 $month=''; // *** empty date ***
@@ -153,7 +154,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 
 		function convert_date_number($date){
 			//31 SEP 2010 -> 20100931
-
+//$dote=$date;
 			// *** Remove ABT from date ***
 			$date=str_replace("ABT ", "", $date);
 			$date=str_replace("EST ABT ", "", $date);
@@ -175,7 +176,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 				$date=strstr($date, ' TO ');
 				$date=str_replace(" TO ", "", $date);
 			}
-
+/* 
 			// *** Check for year only ***
 			if (strlen($date)=='4' AND is_numeric($date)) $date='01 JUN '.$date; // 1887 -> 01 JUN 1887
 			if (strlen($date)=='8') $date='15 '.$date; // AUG 1887 -> 15 AUG 1887
@@ -192,8 +193,35 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			$date=str_replace(" NOV ", "11", $date);
 			$date=str_replace(" DEC ", "12", $date);
 			$date=substr($date,-4).substr($date,2,2).substr($date,0,2);
+*/ 
+ 
+			$process_age = New calculate_year_cls;
 
-			//echo $date.'<br>';
+			if(strpos($date,'/')>0){  // if date is gregorian double date, take first part:  972/73 --> 972
+				$temp=explode ('/',$date);
+				$date=$temp[0];
+			}
+
+			$year=$process_age->search_year($date);
+			if($year == null OR $year > date("Y")) { return null;}
+
+			$month=$process_age->search_month($date);
+			if($month != null) {
+				if(strlen($month)==1)  { $month = "0".$month; }
+			}
+			else {
+				$month = "07";
+			}
+
+			$day=$process_age->search_day($date);
+			if($day != null) {
+				if(strlen($day)==1)  { $day = "0".$day; }
+			}
+			else {
+				$day = "01";
+			}
+			$date=$year.$month.$day;
+
 			return $date;
 		}
 
@@ -228,7 +256,8 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo '<br><table width='.$table2_width.' class="humo" align="center">';
 
 		echo '<tr class=table_headline><th width="20%">'.__('Item').'</th><th colspan="2" width="40%">'.__('Male').'</th><th colspan="2" width="40%">'.__('Female').'</th></tr>';
-/*
+
+		/*
 		// *** Count man ***
 		$person_qry=$dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='m'");
 		$count_persons=$person_qry->rowCount();
@@ -247,7 +276,405 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		@$percent=($count_persons/$nr_persons)*100;
 		//echo '<td align="center">'.floor($percent).'%</td>';
 		echo '<td align="center">'.round($percent,1).'%</td>';
-*/
+		*/
+
+		$countman=0;
+		$countwoman=0;
+		$oldest_man_bir_date='30003112';
+		$oldest_woman_bir_date='30003112';
+		$oldest_man_bir_ged='';
+		$oldest_woman_bir_ged='';
+
+		$latest_man_bir_date='0';
+		$latest_woman_bir_date='0';
+		$latest_man_bir_ged='';
+		$latest_woman_bir_ged='';
+
+		$oldest_man_dea_date='30003112';
+		$oldest_woman_dea_date='30003112';
+		$oldest_man_dea_ged='';
+		$oldest_woman_dea_ged='';
+
+		$latest_man_dea_date='0';
+		$latest_woman_dea_date='0';
+		$latest_man_dea_ged='';
+		$latest_woman_dea_ged='';
+
+		$oldest_man_bap_date='30003112';
+		$oldest_woman_bap_date='30003112';
+		$oldest_man_bap_ged='';
+		$oldest_woman_bap_ged='';
+
+		$latest_man_bap_date='0';
+		$latest_woman_bap_date='0';
+		$latest_man_bap_ged='';
+		$latest_woman_bap_ged='';
+
+		$longest_living_man=0;
+		$longest_living_woman=0;
+		$longest_living_man_ged='';
+		$longest_living_woman_ged='';
+		$total_age_man=0;
+		$total_age_woman=0;
+		$man_age_count=0;
+		$woman_age_count=0;	
+		$average_living_man=0;
+		$average_living_woman=0;
+
+		$longest_living_man_marr=0;
+		$longest_living_woman_marr=0;
+		$shortest_living_man_marr=120;
+		$shortest_living_woman_marr=120;
+		$total_age_man_marr=0;
+		$total_age_woman_marr=0;
+		$man_age_count_marr=0;
+		$woman_age_count_marr=0;
+		$average_living_man_marr=0;
+		$average_living_woman_marr=0;
+
+		$livingcalc = New calculate_year_cls;
+
+		$persqr = $dbh->query("SELECT pers_sexe, pers_gedcomnumber, pers_birth_date, pers_death_date, pers_bapt_date, pers_fams
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
+		while($persstatDb = $persqr->fetch(PDO::FETCH_OBJ)) {
+
+			if($persstatDb->pers_sexe=="M") {
+				$countman++;
+
+				$manbirdate = convert_date_number($persstatDb->pers_birth_date);
+				if($manbirdate!= null AND $manbirdate < $oldest_man_bir_date) {
+					$oldest_man_bir_date = $manbirdate;
+					$oldest_man_bir_ged = $persstatDb->pers_gedcomnumber;
+				}
+				if($manbirdate!= null AND $manbirdate > $latest_man_bir_date) {
+					$latest_man_bir_date = $manbirdate;
+					$latest_man_bir_ged = $persstatDb->pers_gedcomnumber;
+				}
+
+				$mandeadate = convert_date_number($persstatDb->pers_death_date);
+				if($mandeadate!= null AND $mandeadate < $oldest_man_dea_date) {
+					$oldest_man_dea_date = $mandeadate;
+					$oldest_man_dea_ged = $persstatDb->pers_gedcomnumber;
+				}
+				if($mandeadate!= null AND $mandeadate > $latest_man_dea_date) {
+					$latest_man_dea_date = $mandeadate;
+					$latest_man_dea_ged = $persstatDb->pers_gedcomnumber;
+				}
+
+				$manbapdate = convert_date_number($persstatDb->pers_bapt_date);
+				if($manbapdate!= null AND $manbapdate < $oldest_man_bap_date) {
+					$oldest_man_bap_date = $manbapdate;
+					$oldest_man_bap_ged = $persstatDb->pers_gedcomnumber;
+				}
+				if($manbapdate!= null AND $manbapdate > $latest_man_bap_date) {
+					$latest_man_bap_date = $manbapdate;
+					$latest_man_bap_ged = $persstatDb->pers_gedcomnumber;
+				}
+				if($persstatDb->pers_death_date!="" AND ($persstatDb->pers_birth_date!="" OR $persstatDb->pers_bapt_date!="")) {
+					$man_age = $livingcalc->calculate_age($persstatDb->pers_bapt_date,$persstatDb->pers_birth_date,$persstatDb->pers_death_date,true);
+					if($man_age >= 0 AND $man_age < 120) { // valid age
+						$total_age_man += $man_age;
+						$man_age_count++;
+						if($man_age >= $longest_living_man) {
+							$longest_living_man = $man_age;
+							$longest_living_man_ged=$persstatDb->pers_gedcomnumber;
+						}
+						if($persstatDb->pers_fams!='') {
+							$total_age_man_marr += $man_age;
+							$man_age_count_marr++;
+							if($man_age > $longest_living_man_marr) {
+								$longest_living_man_marr = $man_age;
+							}
+							if($man_age < $shortest_living_man_marr AND $man_age > 0) {
+								$shortest_living_man_marr = $man_age;
+							}
+						}
+					}
+				}
+			}
+			elseif($persstatDb->pers_sexe=="F") {
+				$countwoman++;
+
+				$womanbirdate = convert_date_number($persstatDb->pers_birth_date);
+				if($womanbirdate!= null AND $womanbirdate < $oldest_woman_bir_date) {
+					$oldest_woman_bir_date = $womanbirdate;
+					$oldest_woman_bir_ged = $persstatDb->pers_gedcomnumber;
+				}
+				if($womanbirdate!= null AND $womanbirdate > $latest_woman_bir_date) {
+					$latest_woman_bir_date = $womanbirdate;
+					$latest_woman_bir_ged = $persstatDb->pers_gedcomnumber;
+				}
+
+				$womandeadate = convert_date_number($persstatDb->pers_death_date);
+				if($womandeadate!= null AND $womandeadate < $oldest_woman_dea_date) {
+					$oldest_woman_dea_date = $womandeadate;
+					$oldest_woman_dea_ged = $persstatDb->pers_gedcomnumber;
+				}
+				if($womandeadate!= null AND $womandeadate > $latest_woman_dea_date) {
+					$latest_woman_dea_date = $womandeadate;
+					$latest_woman_dea_ged = $persstatDb->pers_gedcomnumber;
+				}
+
+				$womanbapdate = convert_date_number($persstatDb->pers_bapt_date);
+				if($womanbapdate!= null AND $womanbapdate < $oldest_woman_bap_date) {
+					$oldest_woman_bap_date = $womanbapdate;
+					$oldest_woman_bap_ged = $persstatDb->pers_gedcomnumber;
+				}
+				if($womanbapdate!= null AND $womanbapdate > $latest_woman_bap_date) {
+					$latest_woman_bap_date = $womanbapdate;
+					$latest_woman_bap_ged = $persstatDb->pers_gedcomnumber;
+				}
+
+				if($persstatDb->pers_death_date!="" AND ($persstatDb->pers_birth_date!="" OR $persstatDb->pers_bapt_date!="")) {
+					$woman_age = $livingcalc->calculate_age($persstatDb->pers_bapt_date,$persstatDb->pers_birth_date,$persstatDb->pers_death_date,true);
+					if($woman_age >= 0 AND $woman_age < 120) {
+						$total_age_woman += $woman_age;
+						$woman_age_count++;
+						if($woman_age >= $longest_living_woman) {
+							$longest_living_woman = $woman_age;
+							$longest_living_woman_ged=$persstatDb->pers_gedcomnumber;
+						}
+						if($persstatDb->pers_fams!='') {
+							$total_age_woman_marr += $woman_age;
+							$woman_age_count_marr++;
+							if($woman_age > $longest_living_woman_marr) {
+								$longest_living_woman_marr = $woman_age;
+							}
+							if($woman_age < $shortest_living_woman_marr AND $woman_age > 0) {
+								$shortest_living_woman_marr = $woman_age;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if($longest_living_man==0) { 
+			$longest_living_man = null;
+		}
+		else {
+			$average_living_man = $total_age_man / $man_age_count; 
+			$average_living_man_marr = $total_age_man_marr / $man_age_count_marr;  
+		}
+		if($longest_living_woman==0) { 
+			$longest_living_woman = null;
+		}
+		else {
+			$average_living_woman = $total_age_woman / $woman_age_count; 
+			$average_living_woman_marr = $total_age_woman_marr / $woman_age_count_marr;   
+		}
+		if($oldest_man_bir_date == '30003112') $oldest_man_bir_date = null;
+		if($oldest_man_dea_date == '30003112') $oldest_man_dea_date = null;
+		if($oldest_man_bap_date == '30003112') $oldest_man_bap_date = null;
+
+		if($oldest_woman_bir_date == '30003112') $oldest_woman_bir_date = null;
+		if($oldest_woman_dea_date == '30003112') $oldest_woman_dea_date = null;
+		if($oldest_woman_bap_date == '30003112') $oldest_woman_bap_date = null;
+
+		if($latest_man_bir_date == '0') $latest_man_bir_date = null;
+		if($latest_man_dea_date == '0') $latest_man_dea_date = null;
+		if($latest_man_bap_date == '0') $latest_man_bap_date = null;
+
+		if($latest_woman_bir_date == '0') $latest_woman_bir_date = null;
+		if($latest_woman_dea_date == '0') $latest_woman_dea_date = null;
+		if($latest_woman_bap_date == '0') $latest_woman_bap_date = null;
+
+
+		$both = $countman + $countwoman;
+		echo "<tr><td>".__('No. of persons')."</td>\n";
+		echo "<td align='center'><i>$countman</i></td>\n";
+		@$percent=($countman/$both)*100;
+		echo '<td align="center">'.round($percent,1).'%</td>';
+		echo "<td align='center'><i>$countwoman</i></td>\n";
+		@$percent=($countwoman/$both)*100;
+		echo '<td align="center">'.round($percent,1).'%</td>';
+		echo '<tr><td colspan="5"><br></td></tr>';
+
+		// *** Oldest pers_birth_date man.
+		echo "<tr><td>".__('Oldest birth date')."</td>\n";
+		if($oldest_man_bir_date != null) {
+			$row=$db_functions->get_person($oldest_man_bir_ged);
+			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
+			echo show_person($row);
+		}
+		else {
+			echo "<td></td><td></td>\n";
+		}
+
+		// *** Oldest pers_birth_date woman.
+		if($oldest_woman_bir_date != null) {
+			$row=$db_functions->get_person($oldest_woman_bir_ged);
+			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
+			echo show_person($row);
+			echo "</tr>\n";
+		}
+		else {
+			echo "<td></td><td></td></tr>\n";
+		}
+
+		// *** Youngest pers_birth_date man.
+		echo "<tr><td>".__('Youngest birth date')."</td>\n";
+		if($latest_man_bir_date != null) {
+			$row=$db_functions->get_person($latest_man_bir_ged);
+			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
+			echo show_person($row);
+		}
+		else {
+			echo "<td></td><td></td>\n";
+		}
+
+		// *** Youngest pers_birth_date woman.
+		if($latest_woman_bir_date != null) {
+			$row=$db_functions->get_person($latest_woman_bir_ged);
+			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
+			echo show_person($row);
+			echo "</tr>\n";
+		}
+		else {
+			echo "<td></td><td></td></tr>\n";
+		}
+
+		// *** Oldest pers_bapt_date man.
+		echo "<tr><td>".__('Oldest baptism date')."</td>\n";
+		if($oldest_man_bap_date != null) {
+			$row=$db_functions->get_person($oldest_man_bap_ged);
+			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
+			echo show_person($row);
+		}
+		else {
+			echo "<td></td><td></td>\n";
+		}
+
+		// *** Oldest pers_bapt_date woman.
+		if($oldest_woman_bap_date != null) {
+			$row=$db_functions->get_person($oldest_woman_bap_ged);
+			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
+			echo show_person($row);
+			echo "</tr>\n";
+		}
+		else {
+			echo "<td></td><td></td></tr>\n";
+		}
+
+		// *** Youngest pers_bapt_date man.
+		echo "<tr><td>".__('Youngest baptism date')."</td>\n";
+		if($latest_man_bap_date != null) {
+			$row=$db_functions->get_person($latest_man_bap_ged);
+			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
+			echo show_person($row);
+		}
+		else {
+			echo "<td></td><td></td>\n";
+		}
+
+		// *** Youngest pers_bapt_date woman.
+		if($latest_woman_bap_date != null) {
+			$row=$db_functions->get_person($latest_woman_bap_ged);
+			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
+			echo show_person($row);
+			echo "</tr>\n";
+		}
+		else {
+			echo "<td></td><td></td></tr>\n";
+		}
+
+
+		// *** Oldest pers_death_date man.
+		echo "<tr><td>".__('Oldest death date')."</td>\n";
+		if($oldest_man_dea_date != null) {
+			$row=$db_functions->get_person($oldest_man_dea_ged);
+			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
+			echo show_person($row);
+		}
+		else {
+			echo "<td></td><td></td>\n";
+		}
+
+		// *** Oldest pers_death_date woman.
+		if($oldest_woman_dea_date != null) {
+			$row=$db_functions->get_person($oldest_woman_dea_ged);
+			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
+			echo show_person($row);
+			echo "</tr>\n";
+		}
+		else {
+			echo "<td></td><td></td></tr>\n";
+		}
+
+		// *** Youngest pers_death_date man.
+		echo "<tr><td>".__('Youngest death date')."</td>\n";
+		if($latest_man_dea_date != null) {
+			$row=$db_functions->get_person($latest_man_dea_ged);
+			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
+			echo show_person($row);
+		}
+		else {
+			echo "<td></td><td></td>\n";
+		}
+
+		// *** Youngest pers_death_date woman.
+		if($latest_woman_dea_date != null) {
+			$row=$db_functions->get_person($latest_woman_dea_ged);
+			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
+			echo show_person($row);
+			echo "</tr>\n";
+		}
+		else {
+			echo "<td></td><td></td></tr>\n";
+		}
+
+		echo "<tr><td>".__('Longest living person')."</td>\n";
+		// *** Longest living man.
+		if($longest_living_man != null) {
+			$row=$db_functions->get_person($longest_living_man_ged);
+			echo '<td align="center"><i>'.$longest_living_man.' '.__('years')."</i></td>\n";
+			echo show_person($row);
+		}
+		else {
+			echo "<td></td><td></td>\n";
+		}
+		// *** Longest living woman.
+		if($longest_living_woman != null) {
+			$row=$db_functions->get_person($longest_living_woman_ged);
+			echo '<td align="center"><i>'.$longest_living_woman.' '.__('years')."</i></td>\n";
+			echo show_person($row);
+		}
+		else {
+			echo "<td></td><td></td></tr>\n";
+		}
+		// *** Average age ***
+		echo "<tr><td>".__('Average age')."</td>\n";
+		// Man
+		echo '<td align="center">';
+		if($average_living_man != 0) echo round($average_living_man,1);
+		echo ' '.__('years').'</td><td></td>';
+		// Woman
+		echo '<td align="center">';
+		if($average_living_woman != 0) echo round($average_living_woman,1);
+		echo ' '.__('years').'</td><td></td></tr>';
+
+
+		// *** Average age married ***
+		echo "<tr><td>".__('Average age married persons')."</td>\n";
+
+		// Man
+		echo '<td align="center">';
+		if($average_living_man_marr != 0) echo round($average_living_man_marr,1);
+		echo ' '.__('years').'</td><td></td>';
+		// Woman
+		echo '<td align="center">';
+		if($average_living_woman_marr != 0) echo round($average_living_woman_marr,1);
+		echo ' '.__('years').'</td><td></td></tr>';
+
+		echo "<tr><td>".__('Lifespan range of married individuals')."</td>\n";
+		echo '<td align="center">'.$shortest_living_man_marr.' - '.$longest_living_man_marr.' '.__('years').'</td>';
+		echo '<td align="center">&nbsp;</td>';
+		echo '<td align="center">'.$shortest_living_woman_marr.' - '.$longest_living_woman_marr.' '.__('years').'</td>';
+		echo '<td align="center">&nbsp;</td>';
+		echo '</tr>';
+// till here NEW
+
+		/*
 		// *** Count man ***
 		$man_qry=$dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='m'");
 		$count_man=$man_qry->rowCount();
@@ -681,6 +1108,8 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo '<td align="center">'.$woman_min_married.' - '.$woman_max_married.' '.__('years').'</td>';
 		echo '<td align="center">&nbsp;</td>';
 		echo '</tr>';
+		*/
+
 		echo '</table>';
 
 	}

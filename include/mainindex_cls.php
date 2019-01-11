@@ -34,7 +34,7 @@ function show_tree_index(){
 		echo '<div class="mainmenu_bar fonts">';
 			if ($num_rows>1){ echo __('Selected family tree').': '; }
 			// *** Variable $treetext_name used from menu.php ***
-			$treetext=show_tree_text($_SESSION['tree_prefix'], $selected_language);
+			$treetext=show_tree_text($_SESSION['tree_id'], $selected_language);
 			echo $treetext['name'];
 		echo '</div>';
 
@@ -54,7 +54,7 @@ function show_tree_index(){
 				echo $this->owner();
 
 				// *** Prepare mainmenu text and source ***
-				$treetext=show_tree_text($tree_prefix_quoted, $selected_language);
+				$treetext=show_tree_text($dataDb->tree_id, $selected_language);
 				// *** Show mainmenu text ***
 				$mainmenu_text=$treetext['mainmenu_text'];
 				if ($mainmenu_text!='') echo '<p>'.nl2br($mainmenu_text).$dirmark2.'</p>';
@@ -115,7 +115,7 @@ function tree_list($datasql){
 		$hide_tree_array=explode(";",$user['group_hide_trees']);
 		$hide_tree=false; if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
 		if ($hide_tree==false){
-			$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
+			$treetext=show_tree_text($dataDb->tree_id, $selected_language);
 			$treetext_name=$treetext['name'];
 
 			// *** Name family tree ***
@@ -172,9 +172,8 @@ function tree_data(){
 	if (substr($tree_date,5,2)=='11'){ $month=' '.__('nov').' ';}
 	if (substr($tree_date,5,2)=='12'){ $month=' '.__('dec').' ';}
 
-	//$tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4);
 	$tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4)." ".substr($tree_date,11,5);
-	//return __('Latest update:').' '.$tree_date.', '.$dataDb->tree_persons.' '.__('persons').", ".$dataDb->tree_families.' '.__('families').".";
+
 	return __('Latest update:').' '.$tree_date.', '.$dataDb->tree_persons.' '.__('persons').", ".$dataDb->tree_families.' '.__('families').'. <a href="'.CMS_ROOTPATH.'statistics.php">'.__('More statistics').'.</a>';
 }
 

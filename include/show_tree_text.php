@@ -1,5 +1,5 @@
 <?php
-function show_tree_text($tree_prefix,$selected_language){
+function show_tree_text($tree_id,$selected_language){
 	global $dbh, $dataDb;
 
 	// *** Standard tree text values ***
@@ -14,7 +14,7 @@ function show_tree_text($tree_prefix,$selected_language){
 	// *** Default tree texts ***
 	$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 		ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-		AND treetext_language='default' WHERE tree_prefix='".safe_text_db($tree_prefix)."'";
+		AND treetext_language='default' WHERE tree_id='".safe_text_db($tree_id)."'";
 	$datasql = $dbh->query($sql);
 	@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 	if (isset($dataDb->treetext_name)){
@@ -31,7 +31,7 @@ function show_tree_text($tree_prefix,$selected_language){
 	// *** Check for tree texts in selected language ***
 	$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 		ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-		AND treetext_language='".safe_text_db($selected_language)."' WHERE tree_prefix='".safe_text_db($tree_prefix)."'";
+		AND treetext_language='".safe_text_db($selected_language)."' WHERE tree_id='".safe_text_db($tree_id)."'";
 	$datasql = $dbh->query($sql);
 	@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 	if (isset($dataDb->treetext_name)){
@@ -50,7 +50,7 @@ function show_tree_text($tree_prefix,$selected_language){
 		$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 			ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
 			AND treetext_name LIKE '_%'
-			WHERE tree_prefix='".safe_text_db($tree_prefix)."'";
+			WHERE tree_id='".safe_text_db($tree_id)."'";
 		@$datasql = $dbh->query($sql);
 		@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 		if (isset($dataDb->treetext_name)){

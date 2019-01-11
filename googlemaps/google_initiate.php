@@ -280,7 +280,7 @@ else {
 	unset($_SESSION['desc_array']);
 }
 
-// NEW ~~~~~~~~~~~~~~~~~~`
+// NEW ~~~~~~~~~~~~~~~~~~
 $_SESSION['anc_array']='';
 if($flag_anc_search==1 AND $anc_array !='') {
 	$_SESSION['anc_array'] = $anc_array; // for use in namesearch.php
