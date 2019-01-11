@@ -839,7 +839,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 						// *** Sources ***
 						$menu_item=''; if ($page=='edit_sources'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_sources">* '.__('Sources')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_sources">* '.__('Shared sources')."</a>";
 
 						// *** Repositories ***
 						$menu_item=''; if ($page=='edit_repositories'){ $menu_item=' id="current"'; }
@@ -847,7 +847,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 						// *** Addresses ***
 						$menu_item=''; if ($page=='edit_addresses'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_addresses">* '.__('Addresses')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_addresses">* '.__('Shared addresses')."</a>";
 
 						// *** Place editor ***
 						$menu_item=''; if ($page=='edit_places'){ $menu_item=' id="current"'; }

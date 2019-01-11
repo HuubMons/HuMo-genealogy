@@ -72,7 +72,9 @@ function witness_by_events($gedcomnr){
 		$source_prep = $dbh->prepare("SELECT * FROM humo_events
 			WHERE event_tree_id=:event_tree_id
 			AND event_event=:event_event
-			AND (event_kind='birth_declaration' OR event_kind='baptism_witness' OR event_kind='death_declaration' OR event_kind='burial_witness' OR event_kind='marriage_witness' OR event_kind='marriage_witness_rel')
+			AND (event_kind='birth_declaration' OR event_kind='baptism_witness'
+				OR event_kind='death_declaration' OR event_kind='burial_witness'
+				OR event_kind='marriage_witness' OR event_kind='marriage_witness_rel')
 			");
 
 		$source_prep->bindParam(':event_tree_id',$tree_id);
@@ -85,9 +87,6 @@ function witness_by_events($gedcomnr){
 			if ($counter==0) $text='<br>'.__('This person was witness at:').'<br>';
 			$counter++; if ($counter>1){ $text.=', '; }
 			if ($witnessDb->event_event){
-				// *** Connected witness ***
-				$witness_nameDb = $db_functions->get_person($witnessDb->event_connect_id);
-				$name=$witness_cls->person_name($witness_nameDb);
 
 				if ($witnessDb->event_kind=='birth_declaration') $text.=__('birth declaration');
 				if ($witnessDb->event_kind=='baptism_witness') $text.=__('baptism witness');
@@ -95,9 +94,35 @@ function witness_by_events($gedcomnr){
 				if ($witnessDb->event_kind=='burial_witness') $text.=__('burial witness');
 				if ($witnessDb->event_kind=='marriage_witness') $text.=__('marriage witness');
 				if ($witnessDb->event_kind=='marriage_witness_rel') $text.=__('marriage witness (religious)');
+
 				$text.=': ';
 
-				$text.='<a href="'.$_SERVER['PHP_SELF'].'?id='.$witness_nameDb->pers_indexnr.'&amp;main_person='.$witness_nameDb->pers_gedcomnumber.'">'.rtrim($name["standard_name"]).'</a>';
+				if ($witnessDb->event_kind=='marriage_witness' OR $witnessDb->event_kind=='marriage_witness_rel'){
+					// *** Connected witness by a family ***
+					$fam_db=$db_functions->get_family($witnessDb->event_connect_id,'man_woman');
+
+					$name_man=__('N.N.');
+					if (isset($fam_db->fam_man)){
+						$witness_nameDb = $db_functions->get_person($fam_db->fam_man);
+						$name_man=$witness_cls->person_name($witness_nameDb);
+					}
+
+					$name_woman=__('N.N.');
+					if (isset($fam_db->fam_woman)){
+						$witness_nameDb = $db_functions->get_person($fam_db->fam_woman);
+						$name_woman=$witness_cls->person_name($witness_nameDb);
+					}
+
+					$text.='<a href="'.$_SERVER['PHP_SELF'].'?id='.$witnessDb->event_connect_id.'">'.rtrim($name_man["standard_name"]).' &amp; '.rtrim($name_woman["standard_name"]).'</a>';
+				}
+				else{
+					// *** Connected witness by a person ***
+					$witness_nameDb = $db_functions->get_person($witnessDb->event_connect_id);
+					$name=$witness_cls->person_name($witness_nameDb);
+
+					$text.='<a href="'.$_SERVER['PHP_SELF'].'?id='.$witness_nameDb->pers_indexnr.'&amp;main_person='.$witness_nameDb->pers_gedcomnumber.'">'.rtrim($name["standard_name"]).'</a>';
+				}
+
 			}
 			if ($witnessDb->event_date){ $text.=' '.date_place($witnessDb->event_date,''); } // *** Use date_place function, there is no place here... ***
 

@@ -321,7 +321,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 
 		$text.='</td></tr>';
 
-		// *** Extended source, source role and source page ***
+		// *** Shared source, source role and source page ***
 		$color= ''; if ($change_bg_colour==true){ $color = ' class="humo_color"'; }
 		$text.= '<tr'.$color.'>';
 		$text.='<td><br></td>';	
@@ -332,7 +332,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 			$source_qry=$dbh->query("SELECT * FROM humo_sources
 				WHERE source_tree_id='".safe_text($tree_id)."' ORDER BY source_title");
 			$text.='<select size="1" name="connect_source_id['.$connectDb->connect_id.']" style="width: 300px">';
-			$text.='<option value="">'.__('Select extended source').':</option>';
+			$text.='<option value="">'.__('Select shared source').':</option>';
 			while ($sourceDb=$source_qry->fetch(PDO::FETCH_OBJ)){
 				$selected='';
 				if($connectDb->connect_source_id != '') {

@@ -6,7 +6,7 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 echo '<h1 align=center>'.__('Google maps administration').'</h1>';
 //echo '<table style="width:800px; margin-left:auto; margin-right:auto;" class="humo" border="1">';
-echo '<table class="humo standard" border="1" style="width:800px;">';
+echo '<table class="humo standard" border="1" style="width:900px;">';
 
 if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the location database
 	echo '<tr class="table_header"><th>'.__('Creating/ updating database').'</th>';
@@ -68,11 +68,17 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 		$count_parsed++;
 		//if($count_parsed<110 OR $count_parsed > 125) continue;
 		$loc=urlencode($value);
+
+		$api_key = '';
+		if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
+			$api_key = "&key=".$humo_option['google_api_key'];
+		}
+
 		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-			$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc."&sensor=false";
+			$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key;
 		}
 		else {
-			$jsonurl = "http://maps.googleapis.com/maps/api/geocode/json?address=".$loc."&sensor=false";
+			$jsonurl = "http://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key;
 		}
 		@$json = file_get_contents($jsonurl,0,null,null);
 		// file_get_contents won't work if "allow_url_fopen" is disabled by host for security considerations.
@@ -108,7 +114,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 		elseif ($json_output['status']=="ZERO_RESULTS") { // store locations that were not found by google geocoding
 			$map_notfound_array[]= $json_output['status'].' - '.$value;
 			$map_count_notfound++;
-			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text($value)."') ");	
+			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text($value)."') ");
 			sleep(1);  // crucial, otherwise google kicks you out after a few queries
 		}
 		elseif ($json_output['status']=="OVER_QUERY_LIMIT") {
@@ -205,7 +211,67 @@ else {  // main screen
 			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text($value)."') ");			
 		}
 	}
-	
+
+
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CHECK FOR GOOGLE MAPS API KEY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	echo '<tr class="table_header"><th>'.__('Google maps API Key').'</th>';
+	echo '<tr><td>';
+	echo __('As of Jun 22, 2016 Google has changed its API policy and all queries to the Google maps API now require a site-specific key.')."<br>";
+	echo __('For now, it seems that installations that started API queries prior to June 22, 2016 will continue to work also without a key.')."<br>";
+	echo __('If however you start activating the Google map feature after this date, you are likely to encounter error messages concerning a missing key if you do not first enter and save a key here.')."<br>";
+	echo __('If you don\'t have a Google account, first create one. Once logged into your Google account, go to:');
+	echo ' <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#get-an-api-key" target="_blank">Get API key</a> ';
+	echo __('and follow the instructions.')." ";
+	echo __('Once you receive the key enter it here and save.')."<br><br>";
+	$api_query = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'google_api_key'");
+	$apiDb = $api_query->fetch(PDO::FETCH_OBJ); 
+	if($api_query->rowCount() > 0) { // there is a api setting in the database
+		if(isset($_POST['change_api'])) { // admin requested to change the existing key - show field to enter updated key
+			echo __('Enter API key').": ";
+			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<input type="text" id="api_changed" name="api_changed" size="40" >';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="api_save">';
+			echo '</form><br>';
+		}
+
+		else  { // fresh page called OR updated key entered
+			if(isset($_POST['api_changed'])) { // admin enter updated key
+  				$temp = $dbh->query("UPDATE humo_settings SET setting_value = '".$_POST['api_changed']."' WHERE setting_variable = 'google_api_key'");
+  	  	  	  	echo __('API key was saved as').": "; 
+			  	echo '<span style="font-weight:bold">'.$_POST['api_changed'].'</span>';
+			}
+			else { 
+  	  	  	  	echo __('API key')." = "; 
+			  	echo '<span style="font-weight:bold">'.$apiDb->setting_value.'</span>';
+  	  	  	}
+
+
+			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api">';
+			echo '</form><br>';
+		}
+
+	}
+	else  { // no API key found in database
+		if(!isset($_POST['new_api'])) {  // fresh page when no api setting exists
+ 			echo __('Enter API key').": ";
+			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<input type="text" id="new_api" name="new_api" size="40" >';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="save_new_api">';
+			echo '</form><br>';
+		}
+		else { // new api was entered
+			$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key', setting_value='".$_POST['new_api']."'");
+  	  	  	echo __('API key was saved as').": "; 
+			echo '<span style="font-weight:bold">'.$_POST['new_api'].'</span>';
+			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api">';
+			echo '</form><br>';
+		}
+	}
+
+	echo '<br></td></tr>';	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CREATE/UPDATE GEOLOCATION DATABASE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	//echo '<tr bgcolor="green"><th><font color="white">'.__('Create or update geolocation database').'</font></th></tr>';
@@ -481,11 +547,15 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			$lng = $row['location_lng']; 
 		}
 
+		$api_key = '';
+		if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
+			$api_key = "?key=".$humo_option['google_api_key'];
+		}
 		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-			echo '<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>';
+			echo '<script type="text/javascript" src="https://maps.google.com/maps/api/js'.$api_key.'"></script>';
 		}
 		else {
-			echo '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>';
+			echo '<script type="text/javascript" src="http://maps.google.com/maps/api/js'.$api_key.'"></script>';
 		}
 		?>
 
@@ -814,20 +884,23 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 
 		}
 		echo '</table>';  // end list of trees and starting years
+
+		echo '</form>';
+
 		echo '<br>'.__('Default slider position').": ";
 		$query = "SELECT * FROM humo_settings WHERE setting_variable='gslider_default_pos' ";
 		$result = $dbh->query($query);
 
-		if(isset($_POST['slider_default'])) {
-			if ($result->rowCount >0) { 
-				$sql="UPDATE humo_settings SET setting_value ='".$_POST['slider_default']."' WHERE setting_variable='gslider_default_pos'";
+		if(isset($_GET['slider_default'])) {
+			if ($result->rowCount() >0) { 
+				$sql="UPDATE humo_settings SET setting_value ='".$_GET['slider_default']."' WHERE setting_variable='gslider_default_pos'";
 				$dbh->query($sql);
-				$sl_def=$_POST['slider_default'];
+				$sl_def=$_GET['slider_default'];
 			}
 			else {
-				$sql="INSERT INTO humo_settings SET setting_variable='gslider_default_pos', setting_value='".$_POST['slider_default']."'";
+				$sql="INSERT INTO humo_settings SET setting_variable='gslider_default_pos', setting_value='".$_GET['slider_default']."'";
 				$dbh->query($sql);
-				$sl_def=$_POST['slider_default'];
+				$sl_def=$_GET['slider_default'];
 			}
 		}
 		else {
@@ -841,13 +914,85 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 		}
 
 
-		echo '<select size="1" name="slider_default" id="slider_default">';
+		echo '<select size="1" name="slider_default" id="slider_default" onChange="window.location=\'index.php?page=google_maps&slider_default=\'+this.value;">';
 		$selected = ""; if($sl_def=="off") $selected=" SELECTED ";
 		echo '<option value="off" '.$selected.'>'.__('OFF position (leftmost position)').'</option>';
 		$selected = ""; if($sl_def=="all") $selected=" SELECTED ";
 		echo '<option value="all" '.$selected.'>'.__('Show all periods (rightmost position)').'</option>';
 		echo '</select>';
-		echo '</form>';
+
+//NEW
+
+		echo '<br><br>'.__('Default map type').": ";
+		$query = "SELECT * FROM humo_settings WHERE setting_variable='google_map_type' ";
+		$result = $dbh->query($query);
+
+		if(isset($_GET['maptype_default'])) {
+			if ($result->rowCount() >0) { 
+				$sql="UPDATE humo_settings SET setting_value ='".$_GET['maptype_default']."' WHERE setting_variable='google_map_type'";
+				$dbh->query($sql);
+				$maptype_def=$_GET['maptype_default'];
+			}
+			else {
+				$sql="INSERT INTO humo_settings SET setting_variable='google_map_type', setting_value='".$_GET['maptype_default']."'";
+				$dbh->query($sql);
+				$maptype_def=$_GET['maptype_default'];
+			}
+		}
+		else {
+			if ($result->rowCount() >0) {
+				$maptype_default=$result->fetch();
+				$maptype_def = $maptype_default['setting_value'];
+			}
+			else {
+				$maptype_def="ROADMAP";
+			}
+		}
+
+
+		echo '<select size="1" name="maptype_default" id="maptype_default" onChange="window.location=\'index.php?page=google_maps&maptype_default=\'+this.value;">';
+		$selected = ""; if($maptype_def=="ROADMAP") $selected=" SELECTED ";
+		echo '<option value="ROADMAP" '.$selected.'>'.__('Regular map (ROADMAP)').'</option>';
+		$selected = ""; if($maptype_def=="HYBRID") $selected=" SELECTED ";
+		echo '<option value="HYBRID" '.$selected.'>'.__('Satellite map with roads and places (HYBRID)').'</option>';
+		echo '</select>';
+
+		echo '<br><br>'.__('Default zoom').": ";
+		$query = "SELECT * FROM humo_settings WHERE setting_variable='google_map_zoom' ";
+		$result = $dbh->query($query);
+
+		if(isset($_GET['map_zoom_default'])) {
+			if ($result->rowCount() >0) { 
+				$sql="UPDATE humo_settings SET setting_value ='".$_GET['map_zoom_default']."' WHERE setting_variable='google_map_zoom'";
+				$dbh->query($sql);
+				$mapzoom_def=$_GET['map_zoom_default'];
+			}
+			else {
+				$sql="INSERT INTO humo_settings SET setting_variable='google_map_zoom', setting_value='".$_GET['map_zoom_default']."'";
+				$dbh->query($sql);
+				$mapzoom_def=$_GET['map_zoom_default'];
+			}
+		}
+		else {
+			if ($result->rowCount() >0) {
+				$mapzoom_default=$result->fetch();
+				$mapzoom_def = $mapzoom_default['setting_value'];
+			}
+			else {
+				$mapzoom_def="11";
+			}
+		}
+
+
+		echo '<select size="1" name="map_zoom_default" id="map_zoom_default" onChange="window.location=\'index.php?page=google_maps&map_zoom_default=\'+this.value;">';
+		for($x=1;$x<15;$x++) {
+			$selected = ""; if($mapzoom_def==$x) $selected=" SELECTED ";
+			echo '<option value="'.$x.'" '.$selected.'>'.$x.'</option>';
+		}
+		echo '</select>';
+
+//END NEW
+		//echo '</form>';
 		echo '</td></tr>';
 	}
 }

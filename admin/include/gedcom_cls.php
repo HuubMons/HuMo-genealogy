@@ -328,9 +328,14 @@ function process_person($person_array){
 				}
 			}
 
+			// *** Pro-gen titles ***
+			// 1 _TITL2 = title between first and last name.
+			// 1 _TITL3 = title behind lastname.
+			if ($buffer8=='1 _TITL2') $buffer='2 NPFX'.substr($buffer, 9);
+			if ($buffer8=='1 _TITL3') $buffer='2 NSFX'.substr($buffer, 9);
+
 			// *** Gedcom 5.5 lastname prefix: 2 SPFX Le ***
 			if ($buffer6=='2 SPFX'){ $processed=1; $person["pers_prefix"]=substr($buffer,7).'_'; }
-
 
 			// *** Title in gedcom 5.5: 2 NPFX Prof. ***
 			if ($buffer6=='2 NPFX'){
@@ -4027,7 +4032,7 @@ function process_sources($connect_kind2,$connect_sub_kind2,$connect_connect_id2,
 		$connect['item_id'][$connect_nr]='';
 		$connect['text'][$connect_nr]='';
 
-		// *** Check for @ characters (=link to extended source), or save text ***
+		// *** Check for @ characters (=link to shared source), or save text ***
 		if (substr($buffer,7,1)=='@'){
 			// *** Trim needed for MyHeritage (double spaces behind a source line) ***
 			$buffer=trim($buffer);
@@ -4144,7 +4149,11 @@ function process_sources($connect_kind2,$connect_sub_kind2,$connect_connect_id2,
 	}
 }
 
-
+/* EXAMPLES
+ * if ($level2=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_birth', $buffer);
+ * if ($level2=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_event_'.$calculated_event_id, $buffer);
+ * if ($level2=='OBJE') $this->process_picture('family',$gedcomnumber,'picture_fam_marr_notice', $buffer);
+ */
 function process_picture($connect_kind, $connect_id, $picture, $buffer){
 	global $level2, $level3, $level4, $processed;
 	global $event, $event_nr, $event2, $event2_nr;
@@ -4173,19 +4182,25 @@ function process_picture($connect_kind, $connect_id, $picture, $buffer){
 	// *** Picture by standard source ***
 	if ($connect_kind=='connect' AND $picture=='picture'){ $test_level='level4'; $test_number1='3'; $test_number2='4'; }
 
-	// *** External object/ image ***
+	// *** External object/ image (could be multiple lines, they will be processed!) ***
 	// 1 OBJE @O3@
-	// Only 1 line is processed. Maybe it's possible there are multiple lines?
-	//if ($level1=='OBJE' AND substr($buffer,7,1)=='@'){
 	if ($buffer6==$test_number1.' OBJE' AND substr($buffer,7,1)=='@'){
 		// *** Connection to seperate object (image) stored in connection table ***
 		$processed=1;
 		$connect_nr++; $calculated_connect_id++;
-		$connect['kind'][$connect_nr]='person';
-		$connect['sub_kind'][$connect_nr]='pers_object';
+
+		if ($connect_kind=='person'){
+			$connect['kind'][$connect_nr]='person';
+			$connect['sub_kind'][$connect_nr]='pers_object';
+		}
+		elseif ($connect_kind=='family'){
+			$connect['kind'][$connect_nr]='family';
+			$connect['sub_kind'][$connect_nr]='fam_object';
+		}
+
 		$connect['connect_id'][$connect_nr]=$connect_id;
 		$connect['text'][$connect_nr]='';
-		// *** Check for @ characters (=link to extended source), or save text ***
+		// *** Check for @ characters (=link to shared source), or save text ***
 		$connect['source_id'][$connect_nr]='';
 		$connect['item_id'][$connect_nr]='';
 		//$connect['text'][$connect_nr]='';
@@ -4204,7 +4219,9 @@ function process_picture($connect_kind, $connect_id, $picture, $buffer){
 		$connect['date'][$connect_nr]='';
 	}
 
-	// *** Skip link to object: 1 OBJE @O3@ ***
+	// *** Objects without reference ***
+	// 3 OBJE H:\haza21v3\plaatjes\IM000247.jpg
+	// *** Skip link to object with reference: 1 OBJE @O3@ ***
 	if ($buffer6==$test_number1.' OBJE' AND substr($buffer,7,1)!='@'){
 		$processed=1;
 		if ($event_picture==true){

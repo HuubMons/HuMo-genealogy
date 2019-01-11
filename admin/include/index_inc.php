@@ -92,7 +92,7 @@ if (isset($_POST['save_settings_database'])){
 		}
 		fclose($bestand_config);
 		if ($check_config==false){
-			$result_message='<b> *** '.__('There is a problem in the db_config file, maybe an old db_config file is used.').' ***</b>';
+			$result_message='<b> *** '.__('There is a problem in the db_login file, maybe an old db_login file is used.').' ***</b>';
 		}
 	}
 }

@@ -21,6 +21,12 @@ if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'])){
 	exit;
 }
 
+if ($user['group_menu_login']!='j'){
+	echo 'Access to this page is blocked.';
+	exit;
+}
+
+
 if (CMS_SPECIFIC=='Joomla'){
 	$path_tmp='index.php?option=com_humo-gen&amp;task=login';
 }

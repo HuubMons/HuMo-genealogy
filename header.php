@@ -128,7 +128,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])){
 		$_SESSION['user_id'] = $resultDb->user_id;
 		$_SESSION['user_group_id'] = $resultDb->user_group_id;
 
-		// *** Save log! ***
+		// *** Save succesful login into log! ***
 		$sql="INSERT INTO humo_user_log SET
 			log_date='".date("Y-m-d H:i")."',
 			log_username='".$resultDb->user_name."',
@@ -151,7 +151,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])){
 		// *** No valid user found ***
 		$fault=true;
 
-		// *** Save log! ***
+		// *** Save failed login into log! ***
 		$sql="INSERT INTO humo_user_log SET
 			log_date='".date("Y-m-d H:i")."',
 			log_username='".safe_text($_POST["username"])."',

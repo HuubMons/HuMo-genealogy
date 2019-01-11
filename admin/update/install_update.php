@@ -349,7 +349,7 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 					}
 					fclose($bestand_config);
 					if ($check_config==false){
-						$result_message='<b> *** '.__('There is a problem in the db_config file, maybe an old db_config file is used.').' ***</b>';
+						$result_message='<b> *** '.__('There is a problem in the db_login file, maybe an old db_login file is used.').' ***</b>';
 					}
 					else{
 						$result_message=__('File is updated.');

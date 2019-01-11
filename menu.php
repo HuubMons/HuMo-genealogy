@@ -214,35 +214,37 @@ echo '<ul class="humo_menu_item">';
 				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Home')."</a></li>\n";
 
 				// *** Login - Logoff ***
-				if (!$user["user_name"]){
-					$select_menu=''; if ($menu_choice=='login'){ $select_menu=' id="current"'; }
-					if (CMS_SPECIFIC=='Joomla'){
-						$path_tmp='index.php?option=com_humo-gen&amp;task=login';
-					} else{
-						$path_tmp=CMS_ROOTPATH.'login.php';
-					}
-					print '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Login')."</a></li>\n";
-				} else{
-					$select_menu=''; //if ($menu_choice=='help'){ $select_menu=' id="current"'; }
-					// *** Log off ***
-					if (CMS_SPECIFIC=='Joomla'){
-						$path_tmp='index.php?option=com_humo-gen&amp;task=index&amp;log_off=1';
-					} else{
-						$path_tmp=CMS_ROOTPATH.'index.php?log_off=1';
-					}
-					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Logoff').'</a></li>';
-
-					// *** Link to administration ***
-					//if  ($user['group_editor']=='j' OR $user['group_admin']=='j') {
-					if  ($user['group_edit_trees'] OR $user['group_admin']=='j') {
-						$select_menu='';
+				if ($user['group_menu_login']=='j'){
+					if (!$user["user_name"]){
+						$select_menu=''; if ($menu_choice=='login'){ $select_menu=' id="current"'; }
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=admin';
+							$path_tmp='index.php?option=com_humo-gen&amp;task=login';
+						} else{
+							$path_tmp=CMS_ROOTPATH.'login.php';
 						}
-						else{
-							$path_tmp=CMS_ROOTPATH_ADMIN.'index.php';
+						print '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Login')."</a></li>\n";
+					} else{
+						$select_menu=''; //if ($menu_choice=='help'){ $select_menu=' id="current"'; }
+						// *** Log off ***
+						if (CMS_SPECIFIC=='Joomla'){
+							$path_tmp='index.php?option=com_humo-gen&amp;task=index&amp;log_off=1';
+						} else{
+							$path_tmp=CMS_ROOTPATH.'index.php?log_off=1';
 						}
-						echo '<li'.$select_menu.'><a href="'.$path_tmp.'" target="_blank">'.__('Admin').'</a></li>';
+						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Logoff').'</a></li>';
+
+						// *** Link to administration ***
+						//if  ($user['group_editor']=='j' OR $user['group_admin']=='j') {
+						if  ($user['group_edit_trees'] OR $user['group_admin']=='j') {
+							$select_menu='';
+							if (CMS_SPECIFIC=='Joomla'){
+								$path_tmp='index.php?option=com_humo-gen&amp;task=admin';
+							}
+							else{
+								$path_tmp=CMS_ROOTPATH_ADMIN.'index.php';
+							}
+							echo '<li'.$select_menu.'><a href="'.$path_tmp.'" target="_blank">'.__('Admin').'</a></li>';
+						}
 					}
 				}
 

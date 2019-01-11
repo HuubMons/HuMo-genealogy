@@ -1436,7 +1436,7 @@ else{
 				PRIMARY KEY (`connect_id`),
 				KEY (connect_connect_id)
 				) DEFAULT CHARSET=utf8");
-			// *** Move extended addresses from event to connect table ***
+			// *** Move shared addresses from event to connect table ***
 			$event_qry=$dbh->query("SELECT * FROM ".$updateDb->tree_prefix."events
 				WHERE event_kind='address'");
 			$eventnr=0;
@@ -1462,7 +1462,7 @@ else{
 			$sql="DELETE FROM ".$updateDb->tree_prefix."events WHERE event_kind='address'";
 			$result=$dbh->query($sql);
 
-			// *** Copy extended sources to new connect table ***
+			// *** Copy shared sources to new connect table ***
 			$event_qry=$dbh->query("SELECT * FROM ".$updateDb->tree_prefix."events
 				WHERE event_source LIKE '_%'
 				ORDER BY event_person_id,event_family_id,event_order");

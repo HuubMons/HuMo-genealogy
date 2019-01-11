@@ -576,14 +576,23 @@ function findPlace () {
 </script>
 
 <?php
+
+$api_key = '';
+if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
+	$api_key = "?key=".$humo_option['google_api_key'];
+}
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-	echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>';
+	echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
 }
 else {
-	echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>';
+	echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
 }
-?>
+$maptype = "ROADMAP";
+if(isset($humo_option['google_map_type'])) { 
+	$maptype = $humo_option['google_map_type']; 
+}
 
+echo '
 <script type="text/javascript">
 	var map;
 	function initialize() {
@@ -591,12 +600,12 @@ else {
 		var myOptions = {
 			zoom: 2,
 			center: latlng,
-			mapTypeId: google.maps.MapTypeId.ROADMAP
+			mapTypeId: google.maps.MapTypeId.'.$maptype.'
 		};
 		map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 	}
-</script>
-
+</script>';
+?>
 <script type="text/javascript">
 	initialize();
 </script>

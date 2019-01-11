@@ -33,24 +33,12 @@ function show_media($event_connect_kind,$event_connect_id){
 
 		// *** Search for all external connected objects by a person or a family ***
 		if ($event_connect_kind=='person'){
-			//$connect_qry="SELECT * FROM humo_connections
-			//	WHERE connect_tree_id='".$tree_id."'
-			//	AND connect_sub_kind='pers_object'
-			//	AND connect_connect_id='".safe_text($event_connect_id)."'
-			//	ORDER BY connect_order";
 			$connect_sql = $db_functions->get_connections_connect_id('person','pers_object',$event_connect_id);
 		}
 		elseif ($event_connect_kind=='family'){
-			//$connect_qry="SELECT * FROM humo_connections
-			//	WHERE connect_tree_id='".$tree_id."'
-			//	AND connect_sub_kind='fam_object'
-			//	AND connect_connect_id='".safe_text($event_connect_id)."'
-			//	ORDER BY connect_order";
 			$connect_sql = $db_functions->get_connections_connect_id('family','fam_object',$event_connect_id);
 		}
 		if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
-			//$connect_sql=$dbh->query($connect_qry);
-			//while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
 			foreach ($connect_sql as $connectDb){
 				$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 					AND event_gedcomnr='".safe_text($connectDb->connect_source_id)."' AND event_kind='object'

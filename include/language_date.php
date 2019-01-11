@@ -49,12 +49,12 @@ function language_date($date_text){
 
 		$prfx = ""; // prefix
 		if(strpos($date_text,"EST ABT")!==false) { $prfx = __('estimated &#177;'); $date_text = str_replace("EST ABT ","",$date_text);}
-		elseif(strpos($date_text,"CAL ABT")!==false) { $prfx = __('estimated &#177;'); $date_text = str_replace("CAL ABT ","",$date_text);}
+		elseif(strpos($date_text,"CAL ABT")!==false) { $prfx = __('calculated &#177;'); $date_text = str_replace("CAL ABT ","",$date_text);}
 		elseif(strpos($date_text,"AFT")!==false) { $prfx = __('after'); $date_text = str_replace("AFT ","",$date_text);}
 		elseif(strpos($date_text,"ABT")!==false) { $prfx = __('&#177;'); $date_text = str_replace("ABT ","",$date_text);}
 		elseif(strpos($date_text,"BEF")!==false) { $prfx = __('before'); $date_text = str_replace("BEF ","",$date_text);}
 		elseif(strpos($date_text,"EST")!==false) { $prfx = __('estimated'); $date_text = str_replace("EST ","",$date_text);}
-		elseif(strpos($date_text,"CAL")!==false) { $prfx = __('estimated'); $date_text = str_replace("CAL ","",$date_text);}
+		elseif(strpos($date_text,"CAL")!==false) { $prfx = __('calculated'); $date_text = str_replace("CAL ","",$date_text);}
 		if(strpos($date_text,"BET")===false AND strpos($date_text,"BETWEEN")===false) {
 			if($humo_option["date_display"]=="us" AND $selected_language!="hu") {
 				$date_text = american_date($date_text);
@@ -103,7 +103,7 @@ function language_date($date_text){
 	}
 	else {
 		$date_text=str_replace("EST ABT", __('estimated &#177;'), $date_text);
-		$date_text=str_replace("CAL ABT", __('estimated &#177;'), $date_text);
+		$date_text=str_replace("CAL ABT", __('calculated &#177;'), $date_text);
 
 		$date_text=str_replace("AFT", __('after'), $date_text);
 		$date_text=str_replace("ABT", __('&#177;'), $date_text);
@@ -111,7 +111,7 @@ function language_date($date_text){
 		$date_text=str_replace("BETWEEN", "BET", $date_text);
 		$date_text=str_replace("BET", __('between'), $date_text);
 		$date_text=str_replace("EST", __('estimated'), $date_text);
-		$date_text=str_replace("CAL", __('estimated'), $date_text);
+		$date_text=str_replace("CAL", __('calculated'), $date_text);
 		$date_text=str_replace("AND", __('and'), $date_text);
 
 		// *** Aldfaer items ***

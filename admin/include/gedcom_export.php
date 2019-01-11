@@ -903,7 +903,7 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 		}
 	}
 
-	// *** Extended address (no valid gedcom 5.5.1) ***
+	// *** Shared address (no valid gedcom 5.5.1) ***
 	$eventnr=0;
 	$connect_sql = $db_functions->get_connections_connect_id('person','person_address',$person->pers_gedcomnumber);
 	foreach ($connect_sql as $connectDb){
@@ -1342,7 +1342,7 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 		}
 	}
 	// find all sources referred to by addresses (233)
-	// extended addresses: we need a three-fold procedure....
+	// shared addresses: we need a three-fold procedure....
 	// First: in the connections table search for exported persons/families that have an RESI number connection (R34)
 	$address_connect_qry = $dbh->query("SELECT connect_connect_id, connect_item_id
 		FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind LIKE '%_address'");

@@ -35,7 +35,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 			ORDER BY connect_order";
 		$connect_sql=$dbh->query($connect_qry);
 		while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-			// *** Get extended source, and check for restriction (in source and user group) ***
+			// *** Get shared source, and check for restriction (in source and user group) ***
 			$source_status='publish';
 			if ($connectDb->connect_source_id){
 				$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
@@ -44,7 +44,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				}
 			}
 
-			// *** PDF export, for now only EXTENDED sources are exported! ***
+			// *** PDF export, for now only SHARED sources are exported! ***
 			if ($screen_mode=='PDF' AND $connectDb->connect_source_id AND $source_status=='publish'){
 
 				// *** Show sources as footnotes ***
@@ -112,7 +112,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				$text.=' <a href="'.str_replace("&","&amp;",$_SERVER['REQUEST_URI']).'#source_ref'.$j2.'"><sup>'.$j2.')</sup></a>';
 			}
 			else{
-				// *** Link to extended source ***
+				// *** Link to shared source ***
 				if ($connectDb->connect_source_id AND $source_status=='publish'){
 					// *** Always show title of source, show link only after permission check ***
 					if ($user['group_sources']=='j' AND $connect_sub_kind!='person_source'){
@@ -137,10 +137,10 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 					if ($sourceDb->source_title){ $text.= ' '.trim($sourceDb->source_title); }
 					if ($sourceDb->source_date or $sourceDb->source_place){ $text.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
 					if ($user['group_sources']=='j') $text.= '</a>'; // *** End of link ***
-				} // *** End of extended source ***
+				} // *** End of shared source ***
 
 				//else{
-				//	// *** No extended source, show source text ***
+				//	// *** No shared, show source text ***
 				//	if ($connectDb->connect_text){
 				//		$text.=', '.strtolower(__('Source')).': '.nl2br($connectDb->connect_text);
 				//	}
@@ -182,7 +182,7 @@ function show_sources_footnotes(){
 			WHERE connect_id='".$source_footnote_connect_id[$j]."'";
 		$connect_sql=$dbh->query($connect_qry);
 		$connectDb=$connect_sql->fetch(PDO::FETCH_OBJ);
-		// *** Show extended source data ***
+		// *** Show shared source data ***
 		if ($connectDb->connect_source_id){
 			$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
 			// *** Always show title of source, show link only after permission check ***
@@ -208,7 +208,7 @@ function show_sources_footnotes(){
 		}
 
 		else{
-			// *** No extended source connected ***
+			// *** No shared source connected ***
 			$text.='<a name="source_ref'.($j+1).'">'.($j+1).')</a>';
 
 			// *** Source text ***

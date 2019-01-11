@@ -5,7 +5,6 @@ include_once(CMS_ROOTPATH."menu.php");
 echo '<p class="fonts">';
 
 	//*** Find first first_character of last name ***
-
 	print '<div style="text-align:center">';
 	$person_qry="SELECT UPPER(substring(pers_lastname,1,1)) as first_character
 		FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY first_character";
@@ -51,9 +50,26 @@ if (isset($_GET['last_name'])){
 	$last_name=safe_text($_GET['last_name']);
 }
 
-// MAIN SETTINGS
+// *** MAIN SETTINGS ***
 $maxcols = 5; // number of name & nr colums in table. For example 3 means 3x name col + nr col
-if(isset($_POST['maxcols'])) { $maxcols = $_POST['maxcols']; }
+if(isset($_POST['maxcols'])) {
+	$maxcols = $_POST['maxcols'];
+	$_SESSION["save_maxcols"]=$maxcols;
+}
+if (isset($_SESSION["save_maxcols"])) $maxcols=$_SESSION["save_maxcols"];
+
+$maxnames = 201;
+if(isset($_POST['freqsurnames'])) {
+	$maxnames = $_POST['freqsurnames'];
+	$_SESSION["save_maxnames"]=$maxnames;
+}
+if (isset($_SESSION["save_maxnames"])) $maxnames=$_SESSION["save_maxnames"];
+$nr_persons=$maxnames;
+
+$item=0; if (isset($_GET['item'])){ $item=$_GET['item']; }
+$start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
+$uri_path_string='list_names.php?';
+
 
 function tablerow($nr,$lastcol=false) {    
 	// displays one set of name & nr column items in the row
@@ -93,83 +109,94 @@ function tablerow($nr,$lastcol=false) {
 	echo '</td>';
 }
 
-function last_names($max) {
-	global $dbh, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols;
-	global $last_name;
+// *** Get names from database ***
+$number_high=0;
 
-	$number_high=0;
+// Mons, van or: van Mons
+if ($user['group_kindindex']=="j"){
+	$personqry="SELECT pers_lastname, pers_prefix,
+		CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
+		FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
+		GROUP BY long_name";
 
-	//$personqry="SELECT pers_lastname, pers_prefix,
-	//	CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
-	//	FROM humo_persons
-	//	WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
-	//	GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,".$max;
+	$count_qry="SELECT pers_lastname, pers_prefix,
+		CONCAT(pers_prefix,pers_lastname) as long_name
+		FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
+		GROUP BY long_name";
 
-	// Mons, van or: van Mons
-	if ($user['group_kindindex']=="j"){
+	if ($last_name=='all'){
 		$personqry="SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
-			FROM humo_persons
-			WHERE pers_tree_id='".$tree_id."' AND CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
-			GROUP BY long_name LIMIT 0,".$max;
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY long_name";
 
-		if ($last_name=='all'){
-			$personqry="SELECT pers_lastname, pers_prefix,
-				CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
-				FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY long_name LIMIT 0,".$max;
-		}
+		$count_qry="SELECT pers_lastname, pers_prefix,
+			CONCAT(pers_prefix,pers_lastname) as long_name
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY long_name";
 	}
-	else{
-		// *** Select alphabet first_character ***
-			$personqry="SELECT pers_lastname, pers_prefix,
-			CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_last_names
-			FROM humo_persons
-			WHERE pers_tree_id='".$tree_id."' AND pers_lastname LIKE '".$last_name."%'
-			GROUP BY long_name LIMIT 0,".$max;
+}
+else{
+	// *** Select alphabet first_character ***
+	$personqry="SELECT pers_lastname, pers_prefix,
+		CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_last_names
+		FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_lastname LIKE '".$last_name."%'
+		GROUP BY long_name";
 
-		if ($last_name=='all'){
-			$personqry="SELECT pers_lastname, pers_prefix,
+	$count_qry="SELECT pers_lastname, pers_prefix,
+		CONCAT(pers_lastname,pers_prefix) as long_name
+		FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_lastname LIKE '".$last_name."%'
+		GROUP BY long_name";
+
+	if ($last_name=='all'){
+		$personqry="SELECT pers_lastname, pers_prefix,
 			CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_last_names
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			GROUP BY long_name LIMIT 0,".$max;
-		}
-	}
+			GROUP BY long_name";
 
-	$person=$dbh->query($personqry);
-	while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){ 
-		if ($personDb->pers_lastname=='') $personDb->pers_lastname='...';
-		$freq_last_names[]=$personDb->pers_lastname;
-		$freq_pers_prefix[]=$personDb->pers_prefix;
-		$freq_count_last_names[]=$personDb->count_last_names;
-		if ($personDb->count_last_names > $number_high)$number_high=$personDb->count_last_names;
+		$count_qry="SELECT pers_lastname, pers_prefix,
+			CONCAT(pers_lastname,pers_prefix) as long_name
+			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			GROUP BY long_name";
 	}
-	//$row = round(count($freq_last_names)/$maxcols);
-	$row = ceil(count($freq_last_names)/$maxcols);
-
-	for ($i=0; $i<$row; $i++){
-		echo '<tr>';
-		for($n=0;$n<$maxcols;$n++) {
-			if($n == $maxcols-1) {
-				tablerow($i+($row*$n),true); // last col
-			}
-			else {
-				tablerow($i+($row*$n)); // other cols
-			}
-		}
-		echo '</tr>';
-	}
-	//return $freq_count_last_names[0];
-	return $number_high;
 }
+// *** Add limit to query (results per page) ***
+if ($maxnames!='ALL') $personqry.=" LIMIT ".$item.",".$maxnames;
+
+$person=$dbh->query($personqry);
+while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){ 
+	if ($personDb->pers_lastname=='') $personDb->pers_lastname='...';
+	$freq_last_names[]=$personDb->pers_lastname;
+	$freq_pers_prefix[]=$personDb->pers_prefix;
+	$freq_count_last_names[]=$personDb->count_last_names;
+	if ($personDb->count_last_names > $number_high) $number_high=$personDb->count_last_names;
+}
+$row = ceil(count($freq_last_names)/$maxcols);
+
+// *** Total number of persons for multiple pages ***
+//if ($count_qry){  
+	// *** Use MySQL COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
+	$result= $dbh->query($count_qry);
+	//@$resultDb = $result->fetch(PDO::FETCH_OBJ);
+	//$count_persons=@$resultDb->teller;
+	$count_persons=$result->rowCount();
+//}
+//else{  
+//		// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
+//		$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
+//		$rows = $result->fetch();
+//		$count_persons = $rows['found_rows'];   
+//}
+
 
 //echo '<div class="standard_header">'.__('Frequency of Surnames').'</div>';
 
+// *** Show options line ***
 echo '<div style="text-align:center">';
-	$maxnames = 201;
 
-	if(isset($_POST['freqsurnames'])) { $maxnames = $_POST['freqsurnames']; }
 	echo ' <form method="POST" action="'.CMS_ROOTPATH.'list_names.php?menu_tab=stats_surnames&amp;tree_id='.$tree_id.'&amp;last_name='.$last_name.'" style="display:inline;" id="frqnames">';
-
 		echo __('Number of displayed surnames');
 		echo ': <select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">';
 		$selected=''; if($maxnames==25) $selected=" selected "; echo '<option value="25" '.$selected.'>25</option>';
@@ -178,7 +205,7 @@ echo '<div style="text-align:center">';
 		$selected=''; if($maxnames==100) $selected=" selected "; echo '<option value="100" '.$selected.'>100</option>';
 		$selected=''; if($maxnames==201) $selected=" selected "; echo '<option value="201" '.$selected.'>200</option>'; // 201 so no empty last field (if more names than this)
 		$selected=''; if($maxnames==300) $selected=" selected "; echo '<option value="300" '.$selected.'>300</option>';
-		$selected=''; if($maxnames==100000) $selected=" selected "; echo '<option value="100000" '.$selected.'">'.__('All').'</option>'; 
+		$selected=''; if($maxnames=='ALL') $selected=" selected "; echo '<option value="ALL" '.$selected.'">'.__('All').'</option>';
 		echo '</select>';
 
 		echo '&nbsp;&nbsp;&nbsp;&nbsp;'.__('Number of columns');
@@ -187,8 +214,59 @@ echo '<div style="text-align:center">';
 			$selected=''; if($maxcols==$i) $selected=" selected "; echo '<option value="'.$i.'" '.$selected.'>'.$i.'</option>';
 		}
 		echo '</select>';
-
 	echo '</form>';
+
+
+	//*** Show number of persons and pages *****************************************
+
+	// *** Check for search results ***
+	if (@$person->rowCount()==0) {
+		$line_pages='';
+		//echo '<br><div class="center">'.__('No names found.').'</div>';
+	}
+	else{
+		$line_pages=__('Page');
+
+		// "<="
+		if ($start>1){
+			$start2=$start-20;
+			$calculated=($start-2)*$nr_persons;
+			$line_pages.= ' <a href="'.$uri_path_string.
+			"&amp;start=".$start2.
+			"&amp;item=".$calculated.
+			"&last_name=".$last_name.
+			'">&lt;= </a>';
+		}
+		if ($start<=0){$start=1;}
+
+		// 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
+		for ($i=$start; $i<=$start+19; $i++) {
+			$calculated=($i-1)*$nr_persons;
+			if ($calculated<$count_persons){
+				if ($item==$calculated){
+					$line_pages.=  " <b>$i</b>";
+				}
+				else {
+					$line_pages.= ' <a href="'.$uri_path_string.
+					"&amp;start=".$start.
+					"&amp;item=".$calculated.
+					"&last_name=".$last_name.
+					'"> '.$i.'</a>';
+				}
+			}
+		}
+
+		// "=>"
+		$calculated=($i-1)*$nr_persons;
+		if ($calculated<$count_persons){
+			$line_pages.= ' <a href="'.$uri_path_string.
+			"&amp;start=".$i.
+			"&amp;item=".$calculated.
+			"&last_name=".$last_name.
+			'"> =&gt;</a>';
+		}
+	}
+	echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$line_pages;
 
 echo '</div>';
 
@@ -201,23 +279,33 @@ else {
 }
 
 echo '<br><table width='.$table2_width.' class="humo nametbl" align="center">';
+	echo '<tr class=table_headline>';
+		$col_width = ((round(100/$maxcols))-6)."%";
+		for($x=1; $x<$maxcols;$x++) {
+			echo '<th width="'.$col_width.'">'.__('Name').'</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">'.__('Total').'</th>';  
+		}
+		echo '<th width="'.$col_width.'">'.__('Name').'</th><th style="text-align:center;font-size:90%;width:6%">'.__('Total').'</th>';
+	echo '</tr>';
 
-echo '<tr class=table_headline>';
-	$col_width = ((round(100/$maxcols))-6)."%";
-	for($x=1; $x<$maxcols;$x++) {
-		echo '<th width="'.$col_width.'">'.__('Name').'</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">'.__('Total').'</th>';  
+	for ($i=0; $i<$row; $i++){
+		echo '<tr>';
+			for($n=0;$n<$maxcols;$n++) {
+				if($n == $maxcols-1) {
+					tablerow($i+($row*$n),true); // last col
+				}
+				else {
+					tablerow($i+($row*$n)); // other cols
+				}
+			}
+		echo '</tr>';
 	}
-	echo '<th width="'.$col_width.'">'.__('Name').'</th><th style="text-align:center;font-size:90%;width:6%">'.__('Total').'</th>';
-echo '</tr>';
-
-$baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
 echo '</table>';
 
 // *** Show number of names with gray background bar ***
 echo '
 <script>
 var tbl = document.getElementsByClassName("nametbl")[0];
-var rws = tbl.rows; var baseperc = '.$baseperc.';
+var rws = tbl.rows; var baseperc = '.$number_high.';
 for(var i = 0; i < rws.length; i ++) {
 	var tbs =  rws[i].getElementsByClassName("namenr");
 	var nms = rws[i].getElementsByClassName("namelst");

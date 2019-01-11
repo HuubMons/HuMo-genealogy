@@ -347,7 +347,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='</tr>';
 	}
 
-	// *** Show pictures by person, family and (extended) source ***
+	// *** Show pictures by person, family and (shared) source ***
 	if ($event_kind=='picture' OR $event_kind=='marriage_picture' OR $event_kind=='source_picture'){
 		$text.='<tr class="humo_color">';
 		$text.='<td style="border-right:0px;">';
@@ -796,8 +796,10 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 		$text.='<td style="border-left:solid 2px #0000FF;">';
 
 		// *** Witness and declaration persons ***
-		if ($data_listDb->event_kind=='baptism_witness' OR $data_listDb->event_kind=='birth_declaration' OR
-		$data_listDb->event_kind=='death_declaration' OR $data_listDb->event_kind=='burial_witness'){
+		if ($data_listDb->event_kind=='baptism_witness' OR $data_listDb->event_kind=='birth_declaration'
+		OR $data_listDb->event_kind=='death_declaration' OR $data_listDb->event_kind=='burial_witness'
+		OR $data_listDb->event_kind=='marriage_witness' OR $data_listDb->event_kind=='marriage_witness_rel')
+		{
 			//$text.='<td style="border-left:0px;">';
 			$text.=witness_edit($data_listDb->event_event,'['.$data_listDb->event_id.']');
 		}

@@ -1837,11 +1837,17 @@ else{
 						$show_google_map=false;
 						// *** Only show main javascript once ***
 						if ($family_nr==2){
+
+							$api_key = '';
+							if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
+								$api_key = "&key=".$humo_option['google_api_key'];
+							}
+
 							if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-								echo '<script src="https://maps.google.com/maps/api/js?v=3&sensor=false" type="text/javascript"></script>';
+								echo '<script src="https://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
 							}
 							else {
-								echo '<script src="http://maps.google.com/maps/api/js?v=3&sensor=false" type="text/javascript"></script>';
+								echo '<script src="http://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
 							}
 
 							echo '<script type="text/javascript">
@@ -1867,6 +1873,10 @@ else{
 							</script>';
 						}
 
+						$maptype = "ROADMAP";
+						if(isset($humo_option['google_map_type'])) { 
+							$maptype = $humo_option['google_map_type']; 
+						}
 						echo '<script type="text/javascript">
 
 							function initMap'.$family_nr.'(family_nr) {
@@ -1874,7 +1884,7 @@ else{
 								map[fam_nr] = new google.maps.Map(document.getElementById(fam_nr), {
 									center: new google.maps.LatLng(50.917293, 5.974782),
 									maxZoom: 16,
-									mapTypeId: google.maps.MapTypeId.ROADMAP,
+									mapTypeId: google.maps.MapTypeId.'.$maptype.',
 									mapTypeControl: true,
 									mapTypeControlOptions: {
 										style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
@@ -1890,7 +1900,12 @@ else{
 
 								// BIRTH man
 								if ($man_cls->privacy==''){
-									$location_var = $person_manDb->pers_birth_place;
+									$location_var = $person_manDb->pers_birth_place; 
+									$short=__('BORN_SHORT');
+									if($location_var=='') { 
+										$location_var = $person_manDb->pers_bapt_place; 
+										$short=__('BAPTISED_SHORT');
+									}
 									$location_prep->execute();
 									$man_birth_result = $location_prep->rowCount();
 									if($man_birth_result >0) {
@@ -1898,41 +1913,48 @@ else{
 										$name=$man_cls->person_name($person_manDb);
 										$google_name=$name["standard_name"];
 
-										$location_array[]=$person_manDb->pers_birth_place;
+										$location_array[]=$location_var;
 										$lat_array[]=$info['location_lat'];
 										$lon_array[]=$info['location_lng'];
-										$text_array[]=addslashes($google_name.", ".__('BORN_SHORT').' '.$person_manDb->pers_birth_place);
+										$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
 									}
 								}
 
 								// BIRTH woman
 								if ($woman_cls->privacy==''){
 									$location_var = $person_womanDb->pers_birth_place;
+									$short=__('BORN_SHORT');
+									if($location_var=='') {
+										$location_var = $person_womanDb->pers_bapt_place;
+										$short=__('BAPTISED_SHORT');
+									}
 									$location_prep->execute();
-									$woman_birth_result = $location_prep->rowCount();
-									
+									$woman_birth_result = $location_prep->rowCount();						
 									if($woman_birth_result >0) {
 										$info = $location_prep->fetch();
 										$name=$woman_cls->person_name($person_womanDb);
 										$google_name=$name["standard_name"];
-
-										$key = array_search($person_womanDb->pers_birth_place, $location_array);
+										$key = array_search($location_var , $location_array);
 										if (isset($key) AND $key>0){
-											$text_array[$key].="\\n".addslashes($google_name.", ".__('BORN_SHORT').' '.$person_womanDb->pers_birth_place);
+											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
 										}
 										else{
-											$location_array[]=$person_womanDb->pers_birth_place;
+											$location_array[]=$location_var ;
 											$lat_array[]=$info['location_lat'];
 											$lon_array[]=$info['location_lng'];
-											$text_array[]=addslashes($google_name.", ".__('BORN_SHORT').' '.$person_womanDb->pers_birth_place);
+											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
 										}
-
 									}
 								}
 
 								// DEATH man
 								if ($man_cls->privacy==''){
 									$location_var = $person_manDb->pers_death_place;
+									$short = __('DIED_SHORT');
+									if($location_var=='') {
+										$location_var = $person_manDb->pers_buried_place;
+										$short = __('BURIED_SHORT');
+									}
 									$location_prep->execute();
 									$man_death_result = $location_prep->rowCount();
 									
@@ -1941,15 +1963,15 @@ else{
 
 										$name=$man_cls->person_name($person_manDb);
 										$google_name=$name["standard_name"];
-										$key = array_search($person_manDb->pers_death_place, $location_array);
+										$key = array_search($location_var, $location_array);
 										if (isset($key) AND $key>0){
-											$text_array[$key].="\\n".addslashes($google_name.", ".__('DIED_SHORT').' '.$person_manDb->pers_death_place);
+											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var);
 										}
 										else{
-											$location_array[]=$person_manDb->pers_death_place;
+											$location_array[]=$location_var;
 											$lat_array[]=$info['location_lat'];
 											$lon_array[]=$info['location_lng'];
-											$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$person_manDb->pers_death_place);
+											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var);
 										}
 									}
 								}
@@ -1957,6 +1979,11 @@ else{
 								// DEATH woman
 								if ($woman_cls->privacy==''){
 									$location_var = $person_womanDb->pers_death_place;
+									$short = __('DIED_SHORT');
+									if($location_var=='') {
+										$location_var = $person_womanDb->pers_buried_place;
+										$short = __('BURIED_SHORT');
+									}
 									$location_prep->execute();
 									$woman_death_result = $location_prep->rowCount();
 									if($woman_death_result >0) {
@@ -1964,15 +1991,15 @@ else{
 
 										$name=$woman_cls->person_name($person_womanDb);
 										$google_name=$name["standard_name"];
-										$key = array_search($person_womanDb->pers_death_place, $location_array);
+										$key = array_search($location_var , $location_array);
 										if (isset($key) AND $key>0){
-											$text_array[$key].="\\n".addslashes($google_name.", ".__('DIED_SHORT').' '.$person_womanDb->pers_death_place);
+											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
 										}
 										else{
-											$location_array[]=$person_womanDb->pers_death_place;
+											$location_array[]=$location_var ;
 											$lat_array[]=$info['location_lat'];
 											$lon_array[]=$info['location_lng'];
-											$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$person_womanDb->pers_death_place);
+											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
 										}
 
 									}
@@ -2068,11 +2095,16 @@ else{
 								for ($i=1; $i<count($location_array); $i++){
 									$show_google_map=true;
 
+									$api_key = '';
+									if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
+										$api_key = "&key=".$humo_option['google_api_key'];
+									}
+
 									if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'https://chart.apis.google.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|');\n");
+										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'https://chart.apis.google.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|".$api_key."');\n");
 									}
 									else {
-										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'http://chart.apis.google.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|');\n");
+										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'http://chart.apis.google.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|".$api_key."');\n");
 									}
 								}
 

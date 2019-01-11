@@ -1354,11 +1354,12 @@ if (isset($_POST['step3'])){
 
 		$gedcom_date=strtoupper(date("d M Y"));
 		$gedcom_time=date("H:i:s");
+		//source_title='".__('Persons added by gedcom import.').' '.$gedcom_date.' '.$gedcom_time."',
 		$sql="INSERT INTO humo_sources SET
 			source_tree_id='".$tree_id."',
 			source_gedcomnr='".$new_gedcomnumber."',
 			source_status='',
-			source_title='".__('Persons added by gedcom import.').' '.$gedcom_date.' '.$gedcom_time."',
+			source_title='".__('Persons added by gedcom import.')."',
 			source_date='".$gedcom_date."',
 			source_place='',
 			source_publ='',

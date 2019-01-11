@@ -1505,7 +1505,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					$text.=@$connectDb->address_place;
 				}
 				echo $text;
-				echo ' '.__('(extended address by a person)');
+				echo ' '.__('(shared address by a person)');
 			echo '</td>';
 			echo '<td></td>';
 			echo '</tr>';
@@ -2593,7 +2593,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</div>';
 		}
 
-		echo '<h2>'.__('Source list, these sources can be connected to multiple items.').'</h2>';
+		echo '<h2>'.__('Shared sources. These sources can be connected to multiple persons, families, events and other items.').'</h2>';
 
 		// *** Show delete message ***
 		if ($confirm) echo $confirm;
@@ -2853,7 +2853,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		}
 
 		echo '<h2>'.__('Repositories').'</h2>';
-		echo __('A repository can be connected to an extended source. Edit an extended source to connect a repository.');
+		echo __('A repository can be connected to a shared source. Edit a shared source to connect a repository.');
 
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 			echo '<form method="POST" action="'.$phpself.'">';
@@ -3103,7 +3103,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		}
 
 
-		echo '<h2>'.__('Address list, these addresses can be connected to multiple persons.').'</h2>';
+		echo '<h2>'.__('Shared addresses, these addresses can be connected to multiple persons, families and other items.').'</h2>';
 
 		// *** Edit source by address ***
 		// NO SOURCE BY ADDRESS AT THIS MOMENT

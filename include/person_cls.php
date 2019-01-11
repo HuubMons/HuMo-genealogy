@@ -1445,9 +1445,9 @@ function person_data($person_kind, $id){
 			$temp_text=witness($personDb->pers_gedcomnumber, 'death_declaration');
 			if ($temp_text){
 				if ($temp) { $templ_person[$temp].=" ("; }
-				$templ_person["dead_witn"]= __('death declaration').' '.$temp_text.')';
+				$templ_person["dead_witn"]= __('death declaration').': '.$temp_text.')';
 				$temp="dead_witn";
-				$text.= ' ('.__('death declaration').' '.$temp_text.')';
+				$text.= ' ('.__('death declaration').': '.$temp_text.')';
 			}
 		}
 
