@@ -1844,7 +1844,6 @@ function person_data($person_kind, $id){
 		//
 	}
 	else{
-
 		// *** Show media/ pictures ***
 		$result = show_media('person',$personDb->pers_gedcomnumber); // *** This function can be found in file: show_picture.php! ***
 		$process_text.= $result[0];

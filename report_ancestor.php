@@ -802,7 +802,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 			}
 
 			// *** Show picture by person ***
-			if ($box_appearance!='small' AND $box_appearance!='medium'){
+			if ($box_appearance!='small' AND $box_appearance!='medium' AND (strpos($box_appearance,"hour")===false OR $box_appearance=="hour50")){
 				// *** Show picture ***
 				if (!$pers_privacy AND $user['group_pictures']=='j'){
 					//  *** Path can be changed per family tree ***
@@ -1430,9 +1430,11 @@ echo '<div>';
 		$legend = __('Legend').':  '.__('*').' ('.__('born').'),  '.$dsign.' ('.__('died').'),  '.__('X').' ('.__('marriage').')';
 		$pdf->MultiCell(80,5,$legend,0,"L",false);
 		$pdf->Cell(13,3," ",0,0);
-		$pdf->SetFillColor(255,228,225); $pdf->Cell(20,3,__('female'),1,0,"C",true);
+		//$pdf->SetFillColor(255,228,225); $pdf->Cell(20,3,__('female'),1,0,"C",true);
+		$pdf->SetFillColor(255,228,225); $pdf->Cell(20,3,pdf_convert(__('female')),1,0,"C",true);
 		$pdf->Cell(5,3," ",0,0);
-		$pdf->SetFillColor(191,239,255); $pdf->Cell(20,3,__('male'),1,0,"C",true);
+		//$pdf->SetFillColor(191,239,255); $pdf->Cell(20,3,__('male'),1,0,"C",true);
+		$pdf->SetFillColor(191,239,255); $pdf->Cell(20,3,pdf_convert(__('male')),1,0,"C",true);
 
 	} // end of ancestor sheet PDF code
 }

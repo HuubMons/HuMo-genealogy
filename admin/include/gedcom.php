@@ -95,17 +95,15 @@ if (isset($step1)){
 	//	$gedcom_directory="../../../../../../gedcom-bestanden";
 	//}
 
-	echo __('<b>STEP 1) Select Gedcom file:</b>
-<p>First a Gedcom file has to be placed in this folder: /humo-gen/admin/gedcom_files/<br>
-This can be done in two ways:<br>
-1) Put the file in this folder yourself (i.e. with FTP).<br>
-2) With the following upload form.');
+	echo '<b>'.__('STEP 1) Select Gedcom file:').'</b>';
 
 	// *** Upload gedcom file ***
-	echo '<table class="humo" border="1" cellspacing="0" width="100%" bgcolor="#DDFD9B"><tr><td>';
+	echo '<p><table class="humo" style="width:100%;">';
+	echo '<tr class="table_header"><th colspan="2">'.__('Add and remove gedcom files').'</th></tr>';
 
-	echo __('Here you can upload a Gedcom file (or zipped Gedcom file).<br>
-ATTENTION: the privileges of the file map may have to be adjusted!');
+	echo '<tr><td>'.__('Add gedcom file').'</td><td>';
+
+	echo __('Here you can upload a gedcom file (for example: gedcom_name.ged or gedcom_name.zip).').'<br>';
 
 	if (isset($_POST['upload'])){
 		// *** Only needed for Huub's test server ***
@@ -168,11 +166,16 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 			echo '<input type="file" name="upload_file" >';
 			echo '<input type="hidden" name="upload" value="Upload">';
 			echo ' <input type="submit" name="step1" value="Upload">';
-		echo "</form>";
+		echo "</form><br>";
+
+		echo __('ATTENTION: the privileges of the file map may have to be adjusted!').'<br>';
+		echo __('Another option is to upload gedcom files manually by using FTP to folder: /humo-gen/admin/gedcom_files/').'<br><br>';
+
+		echo '</tr><td>'.__('Remove gedcom files').'</td><td>';
 
 		// *** Form to remove gedcom files ***
 		if (isset($_POST['remove_gedcom_files'])){
-			echo '<br>'.__('Are you sure to remove gedcom files?');
+			echo __('Are you sure to remove gedcom files?');
 			echo ' <form name="remove_gedcomfiles" action="'.$phpself.'" method="post">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
@@ -216,7 +219,7 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 			}
 		}
 		else{
-			echo '<br>'.__('If needed remove gedcom files (except test gedcom file):');
+			echo __('If needed remove gedcom files (except test gedcom file):');
 			echo ' <form name="remove_gedcomfiles" action="'.$phpself.'" method="post">';
 				echo '<select size="1" name="remove_gedcom_files">';
 					//	$selected = ''; if($gedfile == $filenames[$i]) $selected = " selected ";
@@ -232,7 +235,7 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 				echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 				echo ' <input type="submit" name="step1" value="'.__('Remove').'">';
-			echo '</form>';
+			echo '</form><br>';
 		}
 
 	}
@@ -246,6 +249,7 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		$tree_prefix=$_GET['tree_prefix'];
 		$_SESSION['tree_prefix']=$tree_prefix;
 	}
+	$_SESSION['debug_person']=1;
 
 	echo '<form method="post" action="'.$phpself.'" style="display : inline">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -259,21 +263,23 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 	// *** Order gedcom files by alfabet ***
 	if (isset($filenames)) usort($filenames,'strnatcasecmp');
 
-	echo '<br>'.__('Select Gedcom file:').'<br>';
-	echo '<select size="1" name="gedcom_file">';
-		$result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
-		$treegedDb = $result->fetch();
-		$gedfile = $treegedDb['tree_gedcom'];
-		for ($i=0; $i<count($filenames); $i++){
-			// *** if this was last gedcom that was used for this tree - select it ***
-			$selected = ''; if($gedfile == $filenames[$i]) $selected = " selected ";
-			echo '<option value="'.$filenames[$i].'" '.$selected.'>'.$filenames[$i].'</option>';
-		}
-	echo '</select>';
-
 	echo '<p><table class="humo" style="width:100%;">';
-	echo '<tr class="table_header"><th>'.__('Settings').'</th></tr>';
-	echo '</tr><td>';
+	echo '<tr class="table_header"><th colspan="2">'.__('Select gedcom file and settings').'</th></tr>';
+
+		echo '</tr><td><br>'.__('Select gedcom file').'<br><br></td><td>';
+
+		echo '<br><select size="1" name="gedcom_file">';
+			$result = $dbh->query("SELECT tree_gedcom FROM humo_trees WHERE tree_prefix='".$_SESSION['tree_prefix']."'");
+			$treegedDb = $result->fetch();
+			$gedfile = $treegedDb['tree_gedcom'];
+			for ($i=0; $i<count($filenames); $i++){
+				// *** if this was last gedcom file that was used for this tree - select it ***
+				$selected = ''; if($gedfile == $filenames[$i]) $selected = " selected ";
+				echo '<option value="'.$filenames[$i].'" '.$selected.'>'.$filenames[$i].'</option>';
+			}
+		echo '</select><br><br>';
+
+	echo '</tr><td>'.__('Gedcom settings').'</td><td>';
 
 		$check=''; if ($humo_option["gedcom_read_add_source"]=='y'){ $check=' checked'; }
 		echo '<input type="checkbox" name="add_source"'.$check.'> '.__('Add a general source connected to all persons in this gedcom file.')."<br>\n";
@@ -284,21 +290,36 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 		$check=''; if ($humo_option["gedcom_read_order_by_date"]=='y'){ $check=' checked'; }
 		echo '<input type="checkbox" name="order_by_date"'.$check.'> '.__('Order children by date (only needed if children are in wrong order)')."<br>\n";
 
-		// if a humo_location table exists, refresh the location_status column
+		$check=''; if ($humo_option["gedcom_read_order_by_fams"]=='y'){ $check=' checked'; }
+		echo '<input type="checkbox" name="order_by_fams"'.$check.'> '.__('Order families by date (only needed if families are in wrong order)')."<br>\n";
+
+		// *** if a humo_location table exists, refresh the location_status column ***
 		$res = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 		if ($res->rowCount()) {
 			$check=''; if ($humo_option["gedcom_read_process_geo_location"]=='y'){ $check=' checked'; }
-			echo "<input type='checkbox' name='process_geo_location'".$check."> ".__('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of gedcom file!')."\n";
+			echo "<input type='checkbox' name='process_geo_location'".$check."> ".__('Add new locations to geo-location database (for Google Maps locations). This will slow down reading of gedcom file!')."<br>\n";
 		}
 
-		$result = $dbh->query("SELECT tree_persons FROM humo_trees WHERE tree_prefix ='".$_SESSION['tree_prefix']."'");
+		// *** Process full picture path of files ***
+		echo '<input type="checkbox" name="check_gedcom_process_pict_path" checked disabled> <select class="fonts" size="1" name="gedcom_process_pict_path" style="width: 550px">';
+			$selected=''; if ($humo_option["gedcom_process_pict_path"]=='file_name'){ $selected=' selected'; }
+			echo '<option value="file_name"'.$selected.'>'.__('Only process picture file name. For example: picture.jpg [DEFAULT]').'</option>';
+			$selected=''; if ($humo_option["gedcom_process_pict_path"]=='full_path'){ $selected=' selected'; }
+			echo '<option value="full_path"'.$selected.'>'.__('Process full picture path. For example: picture_path&#92;picture.jpg').'</option>';
+		echo '</select><br>';
+
+		// *** Option to add gedcom file to family tree if this family tree isn't empty ***
+		$result = $dbh->query("SELECT tree_persons FROM humo_trees WHERE tree_prefix ='".$_SESSION['tree_prefix']."' LIMIT 1");
 		$resultDb=$result->fetch(PDO::FETCH_OBJ);
 		if ($resultDb->tree_persons != 0) {  // don't show if there is nothing in the database yet: this can't be a second gedcom!
-			echo "<p><INPUT type='checkbox' name='add_tree'> ".__('Add this gedcom file to the existing tree')."<br>\n";
+			echo "<br><input type='checkbox' name='add_tree'> ".__('Add this gedcom file to the existing tree')."<br>\n";
 		}
 
-		echo '<p><input type="checkbox" name="check_processed"> '.__('Show non-processed items when processing gedcom (can be a long list!')."<br>\n";
+		echo '<br></tr><td>'.__('Gedcom process settings').'</td><td>';
+
+		echo '<input type="checkbox" name="check_processed"> '.__('Show non-processed items when processing gedcom (can be a long list!')."<br>\n";
 		echo '<input type="checkbox" name="show_gedcomnumbers"> '.__('Show all numbers when processing gedcom (useful when a time-out occurs!)')."<br>\n";
+		echo '<input type="checkbox" name="debug_mode"> '.__('Debug mode')."<br>\n";
 
 		echo '<input type="checkbox" name="commit_checkbox" checked disabled> '.__('Batch processing').': <select class="fonts" size="1" name="commit_records" style="width: 200px">';
 			echo '<option value="1">'.__('1 record (slow processing, but needs less server-memory)').'</option>';
@@ -326,12 +347,12 @@ ATTENTION: the privileges of the file map may have to be adjusted!');
 			echo '<b>'.__('Time-out detected! Controlled time-out setting is adjusted. Retry reading of gedcom with new setting.').'</b><br>';
 		}
 		echo '&nbsp;<input type="text" name="time_out" value="'.$time_out.'" size="2"> ';
-		echo __('seconds. Controlled time-out. Use this if the server has a time-out setting (set less seconds then server time-out). 0 = disable controlled time-out.');
+		echo __('seconds. Controlled time-out. Use this if the server has a time-out setting (set less seconds then server time-out). 0 = disable controlled time-out.')."<br>\n";
 
-	echo '</table>';
+	echo '</td></tr></table>';
 
 	echo '<p><input type="Submit" name="step2" value="'.__('Step').' 2">';
-	echo '</form>';
+	echo '</form><br>';
 
 	if(CMS_SPECIFIC=="Joomla") {
 		echo '<br><br><br><br><br><br><br><br><br>'; //make sure left menu won't run off bottom of screen if content is not long enough
@@ -362,6 +383,8 @@ if (isset($_POST['step2'])){
 				echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
 			if (isset($_POST['show_gedcomnumbers']))
 				echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
+			if (isset($_POST['debug_mode']))
+				echo '<input type="hidden" name="debug_mode" value="'.$_POST['debug_mode'].'">';
 			if (isset($_POST['time_out']))
 				echo '<input type="hidden" name="time_out" value="'.$_POST['time_out'].'">';
 			if(isset($_POST['add_tree']))
@@ -748,11 +771,22 @@ if (isset($_POST['step2'])){
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='gedcom_read_order_by_date'");
 	}
 
+	if(!isset($_POST['order_by_fams'])) {
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='gedcom_read_order_by_fams'");
+	}
+	else {
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='gedcom_read_order_by_fams'");
+	}
+
 	if (isset($_POST['process_geo_location'])){
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='gedcom_read_process_geo_location'");
 	}
 	else{
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='gedcom_read_process_geo_location'");
+	}
+
+	if (isset($_POST['gedcom_process_pict_path'])){
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST['gedcom_process_pict_path'])."' WHERE setting_variable='gedcom_process_pict_path'");
 	}
 
 	if (isset($_POST['commit_records'])){
@@ -805,6 +839,8 @@ if (isset($_POST['step2'])){
 			echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
 		if (isset($_POST['show_gedcomnumbers']))
 			echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
+		if (isset($_POST['debug_mode']))
+			echo '<input type="hidden" name="debug_mode" value="'.$_POST['debug_mode'].'">';
 		if (isset($_POST['time_out']))
 			echo '<input type="hidden" name="time_out" value="'.$_POST['time_out'].'">';
 
@@ -997,6 +1033,9 @@ if (isset($_POST['step3'])){
 		if (isset($_POST['show_gedcomnumbers'])){
 			echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
 		}
+		if (isset($_POST['debug_mode'])){
+			echo '<input type="hidden" name="debug_mode" value="'.$_POST['debug_mode'].'">';
+		}
 
 		echo '<input type="hidden" name="gedcom_file" value="'.$_POST['gedcom_file'].'">';
 		echo '<input type="hidden" name="timeout" value="1">';
@@ -1016,6 +1055,8 @@ if (isset($_POST['step3'])){
 				echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
 			if (isset($_POST['show_gedcomnumbers']))
 				echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
+			if (isset($_POST['debug_mode']))
+				echo '<input type="hidden" name="debug_mode" value="'.$_POST['debug_mode'].'">';
 
 			echo '<input type="hidden" name="timeout_restart" value="1">';
 			echo '<input type="hidden" name="step1" value="'.$_POST['gedcom_file'].'">';
@@ -1039,6 +1080,18 @@ if (isset($_POST['step3'])){
 		$i=$_SESSION['save_progress2']; // save number of lines processed
 		$perc=$_SESSION['save_perc'];   // save percentage processed
 
+		$total=0;
+		if($_SESSION['save_total']=='0') { // only first time in session: count number of lines in gedcom
+			$handle = fopen($_POST["gedcom_file"], "r");
+			while(!feof($handle)){
+				$line = fgets($handle);
+				$total++;
+			}
+			$_SESSION['save_total']=$total;
+			fclose($handle);
+		}
+		$total = $_SESSION['save_total'];
+
 		// Javascript for initial display of the progress bar and information (or after timeout)
 		$percent=$perc."%"; if($perc==0) { $percent="0.5%"; } // show at least some green 
 		echo '<script language="javascript">';
@@ -1050,19 +1103,6 @@ if (isset($_POST['step3'])){
 		// Send output to browser immediately
 		ob_flush(); 
 		flush(); // IE
-
-		$total=0;
-		if($_SESSION['save_total']=='0') { // only first time in session: count number of lines in gedcom
-			$handle = fopen($_POST["gedcom_file"], "r");
-			while(!feof($handle)){
-				$line = fgets($handle);
-				$total++;
-			}
-			$_SESSION['save_total']=$total;
-			fclose($handle);
-		}
-
-		$total = $_SESSION['save_total'];
 
 		$devider=50; // determines the steps in percentages - regular: 2%
 		if($total >200000) { $devider=100; } // 1% for larger files with over 200,000 lines
@@ -1385,6 +1425,9 @@ if (isset($_POST['step3'])){
 					if (isset($_POST['show_gedcomnumbers'])){
 						echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
 					}
+					if (isset($_POST['debug_mode'])){
+						echo '<input type="hidden" name="debug_mode" value="'.$_POST['debug_mode'].'">';
+					}
 
 					echo '<input type="hidden" name="gedcom_file" value="'.$_POST['gedcom_file'].'">';
 					echo '<input type="hidden" name="time_out" value="'.$time_out.'">';
@@ -1515,6 +1558,9 @@ if (isset($_POST['step4'])){
 		//}
 		//if (isset($_POST['show_gedcomnumbers'])){
 		//	echo '<input type="hidden" name="show_gedcomnumbers" value="'.$_POST['show_gedcomnumbers'].'">';
+		//}
+		//if (isset($_POST['debug_mode'])){
+		//	echo '<input type="hidden" name="debug_mode" value="'.$_POST['debug_mode'].'">';
 		//}
 		echo '<br>'.__('ONLY use in case of a time-out, to continue click:').' <input type="Submit" name="step4" value="'.__('Step').' 4">';
 	echo '</form><br>';
@@ -1898,6 +1944,7 @@ if (isset($_POST['step4'])){
 
 
 	// *** Jeroen Beemster Jan 2006. Code rewritten in June 2013 by Huub. Order children and marriages ***
+	// If there are children without dates, ordering doesn't work very good...
 	if ($humo_option["gedcom_read_order_by_date"]=='y') {
 		function date_string($text) {
 			$text=str_replace("JAN", "01", $text);
@@ -1919,11 +1966,13 @@ if (isset($_POST['step4'])){
 
 		echo '<br>&gt;&gt;&gt; '.__('Order children...');
 
-		$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children!=''");
-		while ($famDb=$fam_qry->fetch(PDO::FETCH_OBJ)){  
+		//$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children!=''");
+		$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children!='' AND (INSTR(fam_children,';')>0) ");
+		while ($famDb=$fam_qry->fetch(PDO::FETCH_OBJ)){
 			$child_array=explode(";",$famDb->fam_children);
+//echo '<br>'.$famDb->fam_children.' ';
 			$nr_children = count($child_array);
-			if ($nr_children > 1) {
+			//if ($nr_children > 1) {
 				unset ($children_array);
 				for ($i=0; $i<$nr_children; $i++){
 					$child=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$child_array[$i]."'");
@@ -1939,6 +1988,7 @@ if (isset($_POST['step4'])){
 					else{
 						$children_array[$child_array_nr]='';
 					}
+//echo $children_array[$child_array_nr].' ';
 				}
 
 				asort ($children_array);
@@ -1951,16 +2001,92 @@ if (isset($_POST['step4'])){
 
 				if ($famDb->fam_children!=$fam_children){
 					$sql = "UPDATE humo_families SET fam_children='".$fam_children."' WHERE fam_id='".$famDb->fam_id."'";
+//echo $sql.' ';
 					$dbh->query($sql);
 				}
-			}
+			//}
 		}
 	}
 
-	// *** Order families ***
-	// ===> If needed: order families here...
+	// *** Order families, added in november 2018 by Huub. ***
+	// If there is a relation without dates, ordering doesn't work very good...
+	if ($humo_option["gedcom_read_order_by_fams"]=='y') {
+		function date_string2($text) {
+			$text=str_replace("JAN", "01", $text);
+			$text=str_replace("FEB", "02", $text);
+			$text=str_replace("MAR", "03", $text);
+			$text=str_replace("APR", "04", $text);
+			$text=str_replace("MAY", "05", $text);
+			$text=str_replace("JUN", "06", $text);
+			$text=str_replace("JUL", "07", $text);
+			$text=str_replace("AUG", "08", $text);
+			$text=str_replace("SEP", "09", $text);
+			$text=str_replace("OCT", "10", $text);
+			$text=str_replace("NOV", "11", $text);
+			$text=str_replace("DEC", "12", $text);
+			$returnstring = substr($text,-4).substr(substr($text,-7),0,2).substr($text,0,2);
+			return $returnstring;
+			// Solve maybe later: date_string 2 mei is smaller then 10 may (2 marriages in 1 month is rare...).
+		}
 
-	// *** Process Aldfaer adoption children: remove unecesary added relations ***
+		echo '<br>&gt;&gt;&gt; '.__('Order families...');
+
+		// *** Find only persons with multiple relations ***
+		$person=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_fams!='' AND (INSTR(pers_fams,';')>0) ");
+		while($personDb=$person->fetch(PDO::FETCH_OBJ)){
+//echo '<br>'.$personDb->pers_fams.' - ';
+			$fam_array=explode(";",$personDb->pers_fams);
+			$nr_fams = count($fam_array);
+
+			unset ($families_array);
+			for ($i=0; $i<$nr_fams; $i++){
+				$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fam_array[$i]."'");
+				$famDb=$fam_qry->fetch(PDO::FETCH_OBJ);
+
+				$fam_array_nr=$fam_array[$i];
+				if ($famDb->fam_relation_date){
+					$families_array[$fam_array_nr]=date_string2($famDb->fam_relation_date);
+				}
+				elseif ($famDb->fam_marr_notice_date){
+					$families_array[$fam_array_nr]=date_string2($famDb->fam_marr_notice_date);
+				}
+				elseif ($famDb->fam_marr_date){
+					$families_array[$fam_array_nr]=date_string2($famDb->fam_marr_date);
+				}
+				elseif ($famDb->fam_marr_church_notice_date){
+					$families_array[$fam_array_nr]=date_string2($famDb->fam_marr_church_notice_date);
+				}
+				elseif ($famDb->fam_marr_church_date){
+					$families_array[$fam_array_nr]=date_string2($famDb->fam_marr_church_date);
+				}
+				else{
+					$families_array[$fam_array_nr]='';
+				}
+
+//echo $families_array[$fam_array_nr].' ';
+
+			}
+
+			asort ($families_array);
+
+			$families='';
+			foreach ($families_array as $key => $val) {
+				if ($families!=''){ $families.=';'; }
+				$families.=$key;
+			}
+
+			if ($personDb->pers_fams!=$families){
+				$sql = "UPDATE humo_persons SET fams='".$families."' WHERE pers_id='".$personDb->pers_id."'";
+//echo $sql.'<br>';
+				$dbh->query($sql);
+			}
+
+		}
+
+	}
+
+
+	// *** Process Aldfaer adoption children: remove uneccessary added relations ***
 	if ($gen_program=='ALDFAER') {
 		function fams_remove($personnr, $familynr){
 			global $dbh, $tree_id;

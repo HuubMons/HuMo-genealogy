@@ -806,7 +806,7 @@ else{
 						$pdf->SetFont('Arial','BI',12);
 						$pdf->SetFillColor(186,244,193);
 
-						$treetext=show_tree_text($dataDb->tree_id, $selidected_language);
+						$treetext=show_tree_text($dataDb->tree_id, $selected_language);
 						$family_top=$treetext['family_top'];
 						if($family_top!='') {
 							$pdf->SetLeftMargin(10);
@@ -914,42 +914,45 @@ else{
 								$rtf_text=strip_tags($woman_cls->person_data("parent1", $id),"<b><i>");
 								$sect->writeText($rtf_text, $arial12, $parSimple);
 
-								$result = show_media('person',$person_womanDb->pers_gedcomnumber); 
-								if(isset($result[1]) AND count($result[1])>0) { 
-									$break=0; $textarr = Array(); $goodpics=FALSE;
-									foreach($result[1] as $key => $value) {
-										if (strpos($key,"path")!==FALSE) {
-											$type = substr($result[1][$key],-3); 
-											if($type=="jpg" OR $type=="png") {
-												if($goodpics==FALSE) { //found 1st pic - make table
-													$table = $sect->addTable();
-													$table->addRow(0.1);
-													$table->addColumnsList(array(5,5,5));
-													$goodpics=TRUE;
+								// *** Show RTF media ***
+								if ($woman_cls->privacy==''){
+									$result = show_media('person',$person_womanDb->pers_gedcomnumber); 
+									if(isset($result[1]) AND count($result[1])>0) { 
+										$break=0; $textarr = Array(); $goodpics=FALSE;
+										foreach($result[1] as $key => $value) {
+											if (strpos($key,"path")!==FALSE) {
+												$type = substr($result[1][$key],-3); 
+												if($type=="jpg" OR $type=="png") {
+													if($goodpics==FALSE) { //found 1st pic - make table
+														$table = $sect->addTable();
+														$table->addRow(0.1);
+														$table->addColumnsList(array(5,5,5));
+														$goodpics=TRUE;
+													}
+													$break++;
+													$cell = $table->getCell(1,$break);
+													$imageFile = $value;
+													$image = $cell->addImage($imageFile);
+													$txtkey = str_replace("pic_path","pic_text",$key); 
+													if(isset($result[1][$txtkey])) {
+														$textarr[]=$result[1][$txtkey];
+													}
+													else { $textarr[]="&nbsp;"; }
 												}
-												$break++;
-												$cell = $table->getCell(1,$break);
-												$imageFile = $value;
-												$image = $cell->addImage($imageFile);
-												$txtkey = str_replace("pic_path","pic_text",$key); 
-												if(isset($result[1][$txtkey])) {
-													$textarr[]=$result[1][$txtkey];
-												}
-												else { $textarr[]="&nbsp;"; }
+				
 											}
-			
-										}
-										if($break==3) break; // max 3 pics
-									} 
-									$break1=0;
-									if(count($textarr)>0) {
-										$table->addRow(0.1); //add row only if there is photo text
-										foreach($textarr as $value) {
-											$break1++;
-											$cell = $table->getCell(2, $break1);
-											$cell->writeText($value);
-										}
-									}  
+											if($break==3) break; // max 3 pics
+										} 
+										$break1=0;
+										if(count($textarr)>0) {
+											$table->addRow(0.1); //add row only if there is photo text
+											foreach($textarr as $value) {
+												$break1++;
+												$cell = $table->getCell(2, $break1);
+												$cell->writeText($value);
+											}
+										}  
+									}
 								}
 							}
 
@@ -1015,42 +1018,45 @@ else{
 								$rtf_text=strip_tags($man_cls->person_data("parent1", $id),"<b><i>");
 								$sect->writeText($rtf_text, $arial12, $parSimple);
 
-								$result = show_media('person',$person_manDb->pers_gedcomnumber); 
-								if(isset($result[1]) AND count($result[1])>0) { 
-									$break=0; $textarr = Array(); $goodpics=FALSE;
-									foreach($result[1] as $key => $value) {
-										if (strpos($key,"path")!==FALSE) {
-											$type = substr($result[1][$key],-3); 
-											if($type=="jpg" OR $type=="png") {
-												if($goodpics==FALSE) { //found 1st pic - make table
-													$table = $sect->addTable();
-													$table->addRow(0.1);
-													$table->addColumnsList(array(5,5,5));
-													$goodpics=TRUE;
+								// *** Show RTF media ***
+								if ($man_cls->privacy==''){
+									$result = show_media('person',$person_manDb->pers_gedcomnumber); 
+									if(isset($result[1]) AND count($result[1])>0) { 
+										$break=0; $textarr = Array(); $goodpics=FALSE;
+										foreach($result[1] as $key => $value) {
+											if (strpos($key,"path")!==FALSE) {
+												$type = substr($result[1][$key],-3); 
+												if($type=="jpg" OR $type=="png") {
+													if($goodpics==FALSE) { //found 1st pic - make table
+														$table = $sect->addTable();
+														$table->addRow(0.1);
+														$table->addColumnsList(array(5,5,5));
+														$goodpics=TRUE;
+													}
+													$break++;
+													$cell = $table->getCell(1,$break);
+													$imageFile = $value;
+													$image = $cell->addImage($imageFile);
+													$txtkey = str_replace("pic_path","pic_text",$key); 
+													if(isset($result[1][$txtkey])) {
+														$textarr[]=$result[1][$txtkey];
+													}
+													else { $textarr[]="&nbsp;"; }
 												}
-												$break++;
-												$cell = $table->getCell(1,$break);
-												$imageFile = $value;
-												$image = $cell->addImage($imageFile);
-												$txtkey = str_replace("pic_path","pic_text",$key); 
-												if(isset($result[1][$txtkey])) {
-													$textarr[]=$result[1][$txtkey];
-												}
-												else { $textarr[]="&nbsp;"; }
+				
 											}
-			
-										}
-										if($break==3) break; // max 3 pics
-									} 
-									$break1=0;
-									if(count($textarr)>0) {
-										$table->addRow(0.1); //add row only if there is photo text
-										foreach($textarr as $value) {
-											$break1++;
-											$cell = $table->getCell(2, $break1);
-											$cell->writeText($value);
-										}
-									}  
+											if($break==3) break; // max 3 pics
+										} 
+										$break1=0;
+										if(count($textarr)>0) {
+											$table->addRow(0.1); //add row only if there is photo text
+											foreach($textarr as $value) {
+												$break1++;
+												$cell = $table->getCell(2, $break1);
+												$cell->writeText($value);
+											}
+										}  
+									}
 								}
 							}
 
@@ -1234,42 +1240,45 @@ else{
 						$rtf_text=strip_tags($man_cls->person_data("parent2",$id),"<b><i>");
 						$sect->writeText($rtf_text, $arial12, $parSimple);
 
-						$result = show_media('person',$person_manDb->pers_gedcomnumber); 
-						if(isset($result[1]) AND count($result[1])>0) { 
-							$break=0; $textarr = Array(); $goodpics=FALSE;
-							foreach($result[1] as $key => $value) {
-								if (strpos($key,"path")!==FALSE) {
-									$type = substr($result[1][$key],-3); 
-									if($type=="jpg" OR $type=="png") {
-										if($goodpics==FALSE) { //found 1st pic - make table
-											$table = $sect->addTable();
-											$table->addRow(0.1);
-											$table->addColumnsList(array(5,5,5));
-											$goodpics=TRUE;
+						// *** Show RTF media ***
+						if ($man_cls->privacy==''){
+							$result = show_media('person',$person_manDb->pers_gedcomnumber); 
+							if(isset($result[1]) AND count($result[1])>0) { 
+								$break=0; $textarr = Array(); $goodpics=FALSE;
+								foreach($result[1] as $key => $value) {
+									if (strpos($key,"path")!==FALSE) {
+										$type = substr($result[1][$key],-3); 
+										if($type=="jpg" OR $type=="png") {
+											if($goodpics==FALSE) { //found 1st pic - make table
+												$table = $sect->addTable();
+												$table->addRow(0.1);
+												$table->addColumnsList(array(5,5,5));
+												$goodpics=TRUE;
+											}
+											$break++;
+											$cell = $table->getCell(1,$break);
+											$imageFile = $value;
+											$image = $cell->addImage($imageFile);
+											$txtkey = str_replace("pic_path","pic_text",$key); 
+											if(isset($result[1][$txtkey])) {
+												$textarr[]=$result[1][$txtkey];
+											}
+											else { $textarr[]="&nbsp;"; }
 										}
-										$break++;
-										$cell = $table->getCell(1,$break);
-										$imageFile = $value;
-										$image = $cell->addImage($imageFile);
-										$txtkey = str_replace("pic_path","pic_text",$key); 
-										if(isset($result[1][$txtkey])) {
-											$textarr[]=$result[1][$txtkey];
-										}
-										else { $textarr[]="&nbsp;"; }
+		
 									}
-	
-								}
-								if($break==3) break; // max 3 pics
-							} 
-							$break1=0;
-							if(count($textarr)>0) {
-								$table->addRow(0.1); //add row only if there is photo text
-								foreach($textarr as $value) {
-									$break1++;
-									$cell = $table->getCell(2, $break1);
-									$cell->writeText($value);
-								}
-							}  
+									if($break==3) break; // max 3 pics
+								} 
+								$break1=0;
+								if(count($textarr)>0) {
+									$table->addRow(0.1); //add row only if there is photo text
+									foreach($textarr as $value) {
+										$break1++;
+										$cell = $table->getCell(2, $break1);
+										$cell->writeText($value);
+									}
+								}  
+							}
 						}
 					}
 					if($screen_mode=='STAR') {
@@ -1323,42 +1332,45 @@ else{
 						$rtf_text=strip_tags($woman_cls->person_data("parent2",$id),"<b><i>");
 						$sect->writeText($rtf_text, $arial12, $parSimple);
 
-						$result = show_media('person',$person_womanDb->pers_gedcomnumber);
-						if(isset($result[1]) AND count($result[1])>0) { 
-							$break=0; $textarr = Array(); $goodpics=FALSE;
-							foreach($result[1] as $key => $value) {
-								if (strpos($key,"path")!==FALSE) {
-									$type = substr($result[1][$key],-3); 
-									if($type=="jpg" OR $type=="png") {
-										if($goodpics==FALSE) { //found 1st pic - make table
-											$table = $sect->addTable();
-											$table->addRow(0.1);
-											$table->addColumnsList(array(5,5,5));
-											$goodpics=TRUE;
+						// *** Show RTF media ***
+						if ($woman_cls->privacy==''){
+							$result = show_media('person',$person_womanDb->pers_gedcomnumber);
+							if(isset($result[1]) AND count($result[1])>0) { 
+								$break=0; $textarr = Array(); $goodpics=FALSE;
+								foreach($result[1] as $key => $value) {
+									if (strpos($key,"path")!==FALSE) {
+										$type = substr($result[1][$key],-3); 
+										if($type=="jpg" OR $type=="png") {
+											if($goodpics==FALSE) { //found 1st pic - make table
+												$table = $sect->addTable();
+												$table->addRow(0.1);
+												$table->addColumnsList(array(5,5,5));
+												$goodpics=TRUE;
+											}
+											$break++;
+											$cell = $table->getCell(1,$break);
+											$imageFile = $value;
+											$image = $cell->addImage($imageFile);
+											$txtkey = str_replace("pic_path","pic_text",$key); 
+											if(isset($result[1][$txtkey])) {
+												$textarr[]=$result[1][$txtkey];
+											}
+											else { $textarr[]="&nbsp;"; }
 										}
-										$break++;
-										$cell = $table->getCell(1,$break);
-										$imageFile = $value;
-										$image = $cell->addImage($imageFile);
-										$txtkey = str_replace("pic_path","pic_text",$key); 
-										if(isset($result[1][$txtkey])) {
-											$textarr[]=$result[1][$txtkey];
-										}
-										else { $textarr[]="&nbsp;"; }
+		
 									}
-	
-								}
-								if($break==3) break; // max 3 pics
-							} 
-							$break1=0;
-							if(count($textarr)>0) {
-								$table->addRow(0.1); //add row only if there is photo text
-								foreach($textarr as $value) {
-									$break1++;
-									$cell = $table->getCell(2, $break1);
-									$cell->writeText($value);
-								}
-							}  
+									if($break==3) break; // max 3 pics
+								} 
+								$break1=0;
+								if(count($textarr)>0) {
+									$table->addRow(0.1); //add row only if there is photo text
+									foreach($textarr as $value) {
+										$break1++;
+										$cell = $table->getCell(2, $break1);
+										$cell->writeText($value);
+									}
+								}  
+							}
 						}
 					}
 					if($screen_mode=='STAR') {
@@ -1722,42 +1734,45 @@ else{
 								$rtf_text=strip_tags($child_cls->person_data("child", $id),'<b><i>');
 								$sect->writeText($rtf_text, $arial12, $par_child_text);
 
-								$result = show_media('person',$childDb->pers_gedcomnumber); 
-								if(isset($result[1]) AND count($result[1])>0) { 
-									$break=0; $textarr = Array(); $goodpics=FALSE;
-									foreach($result[1] as $key => $value) {
-										if (strpos($key,"path")!==FALSE) {
-											$type = substr($result[1][$key],-3); 
-											if($type=="jpg" OR $type=="png") {
-												if($goodpics==FALSE) { //found 1st pic - make table
-													$table = $sect->addTable();
-													$table->addRow(0.1);
-													$table->addColumnsList(array(5,5,5));
-													$goodpics=TRUE;
+								// *** Show RTF media ***
+								if ($child_cls->privacy==''){
+									$result = show_media('person',$childDb->pers_gedcomnumber); 
+									if(isset($result[1]) AND count($result[1])>0) { 
+										$break=0; $textarr = Array(); $goodpics=FALSE;
+										foreach($result[1] as $key => $value) {
+											if (strpos($key,"path")!==FALSE) {
+												$type = substr($result[1][$key],-3); 
+												if($type=="jpg" OR $type=="png") {
+													if($goodpics==FALSE) { //found 1st pic - make table
+														$table = $sect->addTable();
+														$table->addRow(0.1);
+														$table->addColumnsList(array(5,5,5));
+														$goodpics=TRUE;
+													}
+													$break++;
+													$cell = $table->getCell(1,$break);
+													$imageFile = $value;
+													$image = $cell->addImage($imageFile);
+													$txtkey = str_replace("pic_path","pic_text",$key); 
+													if(isset($result[1][$txtkey])) {
+														$textarr[]=$result[1][$txtkey];
+													}
+													else { $textarr[]="&nbsp;"; }
 												}
-												$break++;
-												$cell = $table->getCell(1,$break);
-												$imageFile = $value;
-												$image = $cell->addImage($imageFile);
-												$txtkey = str_replace("pic_path","pic_text",$key); 
-												if(isset($result[1][$txtkey])) {
-													$textarr[]=$result[1][$txtkey];
-												}
-												else { $textarr[]="&nbsp;"; }
+				
 											}
-			
-										}
-										if($break==3) break; // max 3 pics
-									} 
-									$break1=0;
-									if(count($textarr)>0) {
-										$table->addRow(0.1); //add row only if there is photo text
-										foreach($textarr as $value) {
-											$break1++;
-											$cell = $table->getCell(2, $break1);
-											$cell->writeText($value);
-										}
-									}  
+											if($break==3) break; // max 3 pics
+										} 
+										$break1=0;
+										if(count($textarr)>0) {
+											$table->addRow(0.1); //add row only if there is photo text
+											foreach($textarr as $value) {
+												$break1++;
+												$cell = $table->getCell(2, $break1);
+												$cell->writeText($value);
+											}
+										}  
+									}
 								}
 							}
 							if($screen_mode=='STAR') {
@@ -1934,7 +1949,7 @@ else{
 										$short=__('BAPTISED_SHORT');
 									}
 									$location_prep->execute();
-									$woman_birth_result = $location_prep->rowCount();						
+									$woman_birth_result = $location_prep->rowCount();
 									if($woman_birth_result >0) {
 										$info = $location_prep->fetch();
 										$name=$woman_cls->person_name($person_womanDb);

@@ -1597,6 +1597,11 @@ function process_person($person_array){
 	pers_changed_time='".$person["changed_time"]."',
 	pers_alive='".$pers_alive."'";
 
+	if (isset($_POST['debug_mode']) AND $_SESSION['debug_person']<2){
+		echo '<br>'.$sql.'<br>';
+		$_SESSION['debug_person']++; // *** Only process debug line once ***
+	}
+
 	// *** Process SQL ***
 	$result=$dbh->query($sql);
 
@@ -4017,14 +4022,25 @@ function process_texts($text, $buffer, $number){
 }
 
 function humo_basename($photo){
-	// *** Basename is locale aware! If basename is used, also set "setlocale" ***
-	setlocale(LC_ALL,'en_US.UTF-8');
-	$photo=basename ($photo);
+	global $humo_option;
 
-	// *** Because basename isn't working by all providers, extra code to remove a path ***
-	if (strpos(' '.$photo,"\\")>0){
-		$photo=substr(strrchr(' '.$photo, "\\"), 1 );
+	// *** Default: only read file name for example: picture.jpg ***
+	if ($humo_option["gedcom_process_pict_path"]=='file_name'){
+		// *** Basename is locale aware! If basename is used, also set "setlocale" ***
+		setlocale(LC_ALL,'en_US.UTF-8');
+		$photo=basename ($photo);
+
+		// *** Because basename isn't working by all providers, extra code to remove a path ***
+		if (strpos(' '.$photo,"\\")>0){
+			$photo=substr(strrchr(' '.$photo, "\\"), 1 );
+		}
 	}
+	else{
+		// *** Read full picture path ***
+		// *** It's probably better to replace \ by / for use at Linux webservers ***
+		$photo = str_replace('\\', '/', $photo);
+	}
+
 	return $photo;
 }
 

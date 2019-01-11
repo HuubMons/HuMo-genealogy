@@ -89,10 +89,12 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			echo '<select size=1 name="humo_favorite_id" onChange="this.form.submit();" style="width: 115px; height:20px;">';
 			echo '<option value="">'.__('Favourites list:').'</option>';
 
-			$favorites_array='';
+			//$favorites_array='';
+			$favorites_array[]='';
 			// *** Use session if session is available ***
 			if (isset($_SESSION["save_favorites"]) AND $_SESSION["save_favorites"]){
-				$favorites_array=$_SESSION["save_favorites"];
+				//$favorites_array=$_SESSION["save_favorites"];
+				$favorites_array[]=$_SESSION["save_favorites"];
 			}
 			else{
 				// *** Get favorites from cookie (only if session is empty) ***

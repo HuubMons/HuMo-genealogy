@@ -3,7 +3,7 @@
 // *** Om HuMo-gen werkend te krijgen onderstaande regels GOED invullen! ***
 define("DATABASE_HOST",     'localhost');
 define("DATABASE_USERNAME", 'root');
-define("DATABASE_PASSWORD", 'usbw');
+define("DATABASE_PASSWORD", '');
 define("DATABASE_NAME",     'humo-gen');
 
 // *** DON'T CHANGE ANYTHING BELOW THIS LINE! ***

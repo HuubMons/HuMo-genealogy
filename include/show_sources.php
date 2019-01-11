@@ -94,8 +94,10 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				$combiner_check=$connectDb->connect_source_id.'_'.$connectDb->connect_role.'_'.$connectDb->connect_page.'_'.$connectDb->connect_date.' '.$connectDb->connect_place.' '.$connectDb->connect_text;
 				$check=false;
 				// *** Check if the source (including role and page) is allready used ***
-				for ($j=0; $j<=(count($source_combiner)-1); $j++){
-					if ($source_combiner[$j]==$combiner_check){ $check=true; $j2=$j+1;}
+				if ($source_combiner){
+					for ($j=0; $j<=(count($source_combiner)-1); $j++){
+						if ($source_combiner[$j]==$combiner_check){ $check=true; $j2=$j+1;}
+					}
 				}
 				// *** Source not found in array, add new source to array ***
 				if (!$check){
@@ -181,67 +183,67 @@ function show_sources_footnotes(){
 	global $uri_path, $source_footnote_connect_id;
 	$text='';
 
-	if (count($source_footnote_connect_id)>0){
+	if ($source_footnote_connect_id && count($source_footnote_connect_id)>0){
 		$text.='<h3>'.__('Sources')."</h3>\n";
-	}
 
-	for ($j=0; $j<=(count($source_footnote_connect_id)-1); $j++){
-		$connect_qry="SELECT * FROM humo_connections
-			WHERE connect_id='".$source_footnote_connect_id[$j]."'";
-		$connect_sql=$dbh->query($connect_qry);
-		$connectDb=$connect_sql->fetch(PDO::FETCH_OBJ);
-		// *** Show shared source data ***
-		if ($connectDb->connect_source_id){
-			$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-			// *** Always show title of source, show link only after permission check ***
-			$text.='<a name="source_ref'.($j+1).'"><b>'.($j+1).')</b></a>';
-			if ($user['group_sources']=='j'){
-				$text.=' <a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].
-				'&amp;id='.$sourceDb->source_gedcomnr.'">'.__('source').': ';
-				if ($sourceDb->source_title){ $text.=" ".trim($sourceDb->source_title); }
-				$text.='</a>';
+		for ($j=0; $j<=(count($source_footnote_connect_id)-1); $j++){
+			$connect_qry="SELECT * FROM humo_connections
+				WHERE connect_id='".$source_footnote_connect_id[$j]."'";
+			$connect_sql=$dbh->query($connect_qry);
+			$connectDb=$connect_sql->fetch(PDO::FETCH_OBJ);
+			// *** Show shared source data ***
+			if ($connectDb->connect_source_id){
+				$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
+				// *** Always show title of source, show link only after permission check ***
+				$text.='<a name="source_ref'.($j+1).'"><b>'.($j+1).')</b></a>';
+				if ($user['group_sources']=='j'){
+					$text.=' <a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].
+					'&amp;id='.$sourceDb->source_gedcomnr.'">'.__('source').': ';
+					if ($sourceDb->source_title){ $text.=" ".trim($sourceDb->source_title); }
+					$text.='</a>';
+				}
+				else{
+					if ($sourceDb->source_title){ $text.=' '.trim($sourceDb->source_title); }
+				}
+				if ($connectDb->connect_date or $connectDb->connect_place){
+					//if ($connectDb->source_title){ $text.=', '; }
+					$text.=" ".date_place($connectDb->connect_date, $connectDb->connect_place);
+				}
+
+				// *** Show extra source text ***
+				if ($connectDb->connect_text){
+					$text.=' '.nl2br($connectDb->connect_text);
+				}
 			}
+
 			else{
-				if ($sourceDb->source_title){ $text.=' '.trim($sourceDb->source_title); }
-			}
-			if ($connectDb->connect_date or $connectDb->connect_place){
-				//if ($connectDb->source_title){ $text.=', '; }
-				$text.=" ".date_place($connectDb->connect_date, $connectDb->connect_place);
-			}
+				// *** No shared source connected ***
+				$text.='<a name="source_ref'.($j+1).'">'.($j+1).')</a>';
 
-			// *** Show extra source text ***
-			if ($connectDb->connect_text){
+				// *** Source text ***
 				$text.=' '.nl2br($connectDb->connect_text);
 			}
-		}
 
-		else{
-			// *** No shared source connected ***
-			$text.='<a name="source_ref'.($j+1).'">'.($j+1).')</a>';
+			// *** Show rest of source items ***
 
-			// *** Source text ***
-			$text.=' '.nl2br($connectDb->connect_text);
-		}
+			// *** Source role ***
+			if ($connectDb->connect_role){
+				$text.=', '.__('role').': '.$connectDb->connect_role;
+			}
 
-		// *** Show rest of source items ***
+			// *** Source page ***
+			if ($connectDb->connect_page){
+				$text.=', '.__('page').': '.$connectDb->connect_page;
+			}
 
-		// *** Source role ***
-		if ($connectDb->connect_role){
-			$text.=', '.__('role').': '.$connectDb->connect_role;
-		}
+			// *** Show picture by source ***
+			$result = show_media('connect',$connectDb->connect_id); // *** This function can be found in file: show_picture.php! ***
+			$text.= $result[0];
 
-		// *** Source page ***
-		if ($connectDb->connect_page){
-			$text.=', '.__('page').': '.$connectDb->connect_page;
-		}
+			$text.="<br>\n";
 
-		// *** Show picture by source ***
-		$result = show_media('connect',$connectDb->connect_id); // *** This function can be found in file: show_picture.php! ***
-		$text.= $result[0];
-
-		$text.="<br>\n";
-
-	} // *** End of loop source footnotes ***
+		} // *** End of loop source footnotes ***
+	}
 	return $text;
 }
 ?>

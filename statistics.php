@@ -372,7 +372,8 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 				}
 				if($persstatDb->pers_death_date!="" AND ($persstatDb->pers_birth_date!="" OR $persstatDb->pers_bapt_date!="")) {
 					$man_age = $livingcalc->calculate_age($persstatDb->pers_bapt_date,$persstatDb->pers_birth_date,$persstatDb->pers_death_date,true);
-					if($man_age >= 0 AND $man_age < 120) { // valid age
+					//if($man_age >= 0 AND $man_age < 120) { // valid age
+					if($man_age && $man_age >= 0 && $man_age < 120) { // valid age
 						$total_age_man += $man_age;
 						$man_age_count++;
 						if($man_age >= $longest_living_man) {
@@ -427,7 +428,8 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 
 				if($persstatDb->pers_death_date!="" AND ($persstatDb->pers_birth_date!="" OR $persstatDb->pers_bapt_date!="")) {
 					$woman_age = $livingcalc->calculate_age($persstatDb->pers_bapt_date,$persstatDb->pers_birth_date,$persstatDb->pers_death_date,true);
-					if($woman_age >= 0 AND $woman_age < 120) {
+					//if($woman_age >= 0 AND $woman_age < 120) {
+					if($woman_age && $woman_age >= 0 && $woman_age < 120) {
 						$total_age_woman += $woman_age;
 						$woman_age_count++;
 						if($woman_age >= $longest_living_woman) {

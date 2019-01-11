@@ -1,4 +1,6 @@
 <?php
+//ini_set('display_errors', '1');
+//error_reporting(E_ALL);  // neergezet door yossi voor debuggen
 //=================================================================
 // relations.php - checks relationships between person X and person Y
 //
@@ -89,6 +91,8 @@ function create_rel_array ($gednr)  {
 	$marriage_number2[] = 0;
 	$generation = 1;
 	$genarray_count = 0;
+	
+	$trackfamc = array();
 
 	// *** Loop ancestor report ***
 	while (isset($ancestor_id2[0])){
@@ -109,6 +113,7 @@ function create_rel_array ($gednr)  {
 		for ($i=0; $i<$kwcount; $i++) {
 
 			if ($ancestor_id[$i]!='0'){
+			
 				$person_manDb=$db_functions->get_person($ancestor_id[$i]);
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
@@ -135,7 +140,10 @@ function create_rel_array ($gednr)  {
 				$genarray_count++; // increase by one
 
 				// *** Check for parents ***
-				if ($person_manDb->pers_famc){
+				if ($person_manDb->pers_famc AND !in_array($person_manDb->pers_famc,$trackfamc)){ 
+				
+					$trackfamc[] =	$person_manDb->pers_famc;	
+
 					@$familyDb = $db_functions->get_family($person_manDb->pers_famc);
 					if ($familyDb->fam_man){
 						$ancestor_id2[] = $familyDb->fam_man;
@@ -156,6 +164,7 @@ function create_rel_array ($gednr)  {
 			}
 		}	// loop per generation
 		$generation++;
+		
 	}	// loop ancestors
 
 	return @$genarray;
@@ -514,8 +523,8 @@ global $rel_arrayspouseY;
 			$gennr=$pers;
 			if ($pers >  4) { $reltext = $gennr.':e generations ana på '.$direct_par.'s sida'.__(' of '); } 
 		}
-		elseif($selected_language=="cn") {	
-			if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) { 		
+		elseif($selected_language=="cn") {
+			if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) {
 			//if($sexe2=="m") { // kwan gives: grandson, great-grandson etc 曾內孫仔  孫子 ???
 				if ($pers == 2) { $reltext = '孙子'; }
 				if ($pers == 3) { $reltext = '曾孙'; }
@@ -615,8 +624,8 @@ global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseX, $langu
 		}
 		else {
 			$child = '母亲';  // mother
-		}	
-	}	
+		}
+	}
 	if ($pers == 1) {
 		if($spouse==1) {
 			if($child==__('son')) { $child=__('daughter-in-law'); }
@@ -631,7 +640,7 @@ global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseX, $langu
 					if($sexe=="f") { $child = '婆婆'; } // mother-in-law called by daughter-in-law
 					else { $child = '岳母'; } // mother-in-law called by son-in-law
 				}
-			}			
+			}
 		}  
 		$reltext = $child.__(' of ');
 		if($selected_language=="cn") {
@@ -887,7 +896,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 		if ($generX == 7) { $reltext = 'tip tip tip oldebarn'.__(' of '); }
 		$gennr=$generX-4;
 		if ($generX >  7) { $reltext = $gennr.' gange tip oldebarn'.__(' of '); }
-	}	
+	}
 	elseif ($selected_language=="nl"){
 		if($sexe=='m') {
 			$nephniece = __('nephew');
@@ -1944,6 +1953,7 @@ function display () {
 					$relmarriedX=0;  // use: partner
 				}
 			}
+
 			$relmarriedY=0;
 			if(isset($famspouseY)) {
 				$kindrel2=$dbh->query("SELECT fam_kind
@@ -2040,7 +2050,7 @@ function display () {
 				}
 
 				if($selected_language=="fi") {  // very different phrasing for correct grammar
-					print 'Kuka: ';
+				print 'Kuka: ';
 					print "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
 					print $name1."</a>";
 					print '&nbsp;&nbsp;Kenelle: ';
@@ -2102,6 +2112,7 @@ function display () {
 
 					print $name1."</a>".$language_is.$spousetext1.$reltext.$reltext_nor2.$spousetext2;
 					print "<a class='relsearch' href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>".$reltext_nor."</span><br>";
+
 				}
 
 			}
@@ -2554,7 +2565,7 @@ function map_tree($pers_array, $pers_array2) {
 		if ($persDb==false){ echo "NO SUCH PERSON:"."ref=".$refer."persged=".$persged."callged=".$callged."$$"; return(false); }
 
 		if($refer=="fst") { $globaltrack .= $persDb->pers_gedcomnumber."@"; }
-
+		// find parents
 		if(isset($persDb->pers_famc) AND $persDb->pers_famc!="" AND $refer!="par") {  
 			$famcDb=$db_functions->get_family($persDb->pers_famc);
 			if ($famcDb==false){ echo "NO SUCH FAMILY"; return; }
@@ -2576,14 +2587,16 @@ function map_tree($pers_array, $pers_array2) {
 				$globaltrack .= $famcDb->fam_woman."@";
 			}
 		}
-
+		
 		if(isset($persDb->pers_fams) AND $persDb->pers_fams!="") {  
 			$famsarray = explode(";",$persDb->pers_fams); 
+			
 			foreach($famsarray as $value) {   
 				if($refer=="spo" AND $value == $callged) continue;
 				if($refer=="fst" AND $_SESSION['couple']==$value) continue;
 				$famsDb = $db_functions->get_family($value);
 				if($refer=="chd" AND $famsDb->fam_woman==$persDb->pers_gedcomnumber AND isset($famsDb->fam_man) AND $famsDb->fam_man!="" AND $famsDb->fam_gedcomnumber==$callarray[1]) { continue; }
+				// find children
 	 			if(isset($famsDb->fam_children) AND $famsDb->fam_children!="") {
 	 				$childarray = explode(";",$famsDb->fam_children);
 					foreach($childarray as $value) {
@@ -2599,6 +2612,7 @@ function map_tree($pers_array, $pers_array2) {
 					}
 				}
 			}  
+			// find spouses
 			foreach($famsarray as $value) {  
 				if($refer=="chd" AND $value == $callarray[1]) continue;
 				if($refer=="spo" AND $value == $callged) continue;
@@ -3039,14 +3053,18 @@ if(isset($_POST["switch"])) {
 }
 
 // ===== BEGIN SEARCH BOX SYSTEM
-
-ob_start();
+ob_implicit_flush(true);
+//ob_start();
 echo "<div class='print_version'>";
 print '<span class="fonts"><br><br>&nbsp;&nbsp;&nbsp;'.__('You can enter names or part of names in either search box, or leave a search box empty').'<br>';
 echo '&nbsp;&nbsp;&nbsp;';
 echo __('<b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b>');
 echo '</span><br>';
 /* echo '<br>'; */
+
+if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
+	echo '<br><div id="geargif"><img src="images/gear.gif">&nbsp;&nbsp;&nbsp;'.__('Calculating relations').'</div>';
+}
 
 if(CMS_SPECIFIC == "Joomla") {
 	echo '<form method="POST" action="'.'index.php?option=com_humo-gen&task=relations'.'" style="display : inline;">';
@@ -3241,13 +3259,18 @@ else { print '<select size="1" name="person2" style="width:'.$len.'px"><option><
 echo '</td></tr></table>';
 /* echo '</form>'; */
 echo "</div>";
+
 // ===== END SEARCH BOX SYSTEM
 ob_end_flush(); 
+ob_implicit_flush(true);
 
 if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
 	if(!isset($_POST["next_path"])) { $_SESSION['next_path']=""; }
 
 	ob_start();
+
+	echo '<script type="text/javascript"> var element = document.getElementById("geargif");  element.parentNode.removeChild(element);   </script>';
+	
 	$count=0; $countfunc = 0;
 
 	$globaltrack = "";

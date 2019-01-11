@@ -481,7 +481,8 @@ function get_events_kind($event_event,$event_kind){
 	$result_array = array();
 	try {
 		$this->query['get_events_kind']->bindValue(':event_tree_id', $this->tree_id, PDO::PARAM_STR);
-		$this->query['get_events_kind']->bindValue(':event_event', $event_event, PDO::PARAM_INT);
+		//$this->query['get_events_kind']->bindValue(':event_event', $event_event, PDO::PARAM_INT); // Gaat fout in PHP 7.2. Controle op waarde: I39
+		$this->query['get_events_kind']->bindValue(':event_event', $event_event, PDO::PARAM_STR);
 		$this->query['get_events_kind']->bindValue(':event_kind', $event_kind, PDO::PARAM_STR);
 		$this->query['get_events_kind']->execute();
 		$result_array=$this->query['get_events_kind']->fetchAll(PDO::FETCH_OBJ);

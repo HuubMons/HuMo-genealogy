@@ -42,9 +42,18 @@ echo '<div id="mainmenu_centerbox">';
 			$select_page=$urlpart[0];
 		}
 		else{
-			$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order ASC LIMIT 0,1");
+			//$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order ASC LIMIT 0,1");
+			// *** First page in a menu ***
+			$page_qry = $dbh->query("SELECT * FROM humo_cms_menu, humo_cms_pages
+				WHERE page_status!='' AND page_menu_id=menu_id
+				ORDER BY menu_order, page_order ASC LIMIT 0,1");
 			$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
 			$select_page=$cms_pagesDb->page_id;
+
+			// *** First pages without a menu (if present) ***
+			$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id=0 ORDER BY page_order ASC LIMIT 0,1");
+			$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
+			if (isset($cms_pagesDb->page_id)) $select_page=$cms_pagesDb->page_id;
 		}
 		
 		// *** Show page ***

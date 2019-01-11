@@ -153,6 +153,22 @@ function process_special_text($date1, $date2, $baptism) {
 function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false) {
 	global $language;
 
+// handle person born and died BC
+	if(substr($birth_date,-2,2)=="BC" AND substr($death_date,-2,2)=="BC") { 
+		$temp = $birth_date;
+		$birth_date = substr($death_date,0,-3); 
+		$death_date = substr($temp,0,-3); 
+	}
+
+// handle person born BC and died after year zero
+	else if(substr($birth_date,-2,2)=="BC" AND substr($death_date,-2,2)!="BC") {
+		$first = $this->search_year(substr($birth_date,0,-3));
+		$secnd = $this->search_year($death_date);
+		$totl  = (int)$first + (int)$secnd;
+		$age = ", ".($totl-1)." or ".$totl." ".__('years');
+		return($age);
+	}
+
 	$birth_date=strtoupper($birth_date);
 
 	// *** Also calculate age if only baptism and death date is known ***

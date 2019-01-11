@@ -49,13 +49,15 @@ class PHPRtfLite_Table
      * array of PHPRtfLite_Table_Row instances
      * @var array
      */
-    protected $_rows;
+    //protected $_rows;
+    protected $_rows = [];
 
     /**
      * array of PHPRtfLite_Table_Column instances
      * @var array
      */
-    protected $_columns;
+    //protected $_columns;
+    protected $_columns = [];
 
     /**
      * @var string

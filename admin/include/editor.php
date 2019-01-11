@@ -630,9 +630,10 @@ echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
 	echo '<option value="">'.__('Select a family tree:').'</option>';
 	while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){
 		$edit_tree_array=explode(";",$group_edit_trees);
-		$team_tree_array=explode(";",$group_team_trees);
+		//$team_tree_array=explode(";",$group_team_trees);
 		// *** Administrator can always edit in all family trees ***
-		if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array) OR in_array($tree_searchDb->tree_id, $team_tree_array)) {
+		//if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array) OR in_array($tree_searchDb->tree_id, $team_tree_array)) {
+		if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array)) {
 			$selected='';
 			if (isset($tree_prefix) AND $tree_searchDb->tree_prefix==$tree_prefix){
 				$selected=' SELECTED';
@@ -4175,8 +4176,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			$person_qry.= "(SELECT address_place as place_edit FROM humo_addresses WHERE address_tree_id='".$tree_id."' GROUP BY address_place)
 				UNION (SELECT event_place as place_edit FROM humo_events WHERE event_tree_id='".$tree_id."' GROUP BY event_place)
 				UNION (SELECT source_place as place_edit FROM humo_sources WHERE source_tree_id='".$tree_id."' GROUP BY source_place)
-				UNION (SELECT connect_place as place_edit FROM humo_connections WHERE connect_tree_id='".$tree_id."' GROUP BY connect_place)
-				ORDER BY place_edit";
+				UNION (SELECT connect_place as place_edit FROM humo_connections WHERE connect_tree_id='".$tree_id."' GROUP BY connect_place)";
+		}
+
+		// *** Order results ***
+		if ($person_qry!=''){
+			$person_qry.=' ORDER BY place_edit';
 		}
 
 		// *** Just for sure: if no $_POST is found show person places ***
@@ -4185,7 +4190,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			$person_qry.= "(SELECT pers_birth_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_birth_place)
 			UNION (SELECT pers_bapt_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_bapt_place)
 			UNION (SELECT pers_death_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_death_place)
-			UNION (SELECT pers_buried_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_buried_place)";
+			UNION (SELECT pers_buried_place as place_edit FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_buried_place)
+			ORDER BY place_edit";
 		}
 
 		$person_result = $dbh->query($person_qry);

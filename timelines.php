@@ -195,7 +195,7 @@ if(@$personDb->pers_fams) {
 				if($chldDb->pers_fams) {
 					$chmarriages[$i][$m]=explode(";",$chldDb->pers_fams);
 					for($p=0; $p<count($chmarriages[$i][$m]);$p++) {
-						$grchildren[$i][$m][$p]=''; // enter value so usbwebserver wont throw error messages
+						$grchildren[$i][$m][$p]=''; // enter value so webserver wont throw error messages
 						$chmarryear[$i][$m][$p]=''; $chmarrdate[$i][$m][$p]=''; $temp='';
 						@$chfamilyDb = $db_functions->get_family($chmarriages[$i][$m][$p]);
 
