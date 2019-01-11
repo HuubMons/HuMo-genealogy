@@ -36,7 +36,8 @@ if (isset($_POST['change_user'])){
 				user_name='".safe_text($username)."',
 				user_mail='".safe_text($usermail)."', ";
 			if (isset($_POST[$userDb->user_id."password"]) AND $_POST[$userDb->user_id."password"]){
-				$sql=$sql."user_password='".MD5($_POST[$userDb->user_id."password"]);
+				//$sql=$sql."user_password='".MD5($_POST[$userDb->user_id."password"]);
+				$sql=$sql."user_password='".MD5($_POST[$userDb->user_id."password"])."', ";
 			}
 			$sql=$sql."user_group_id='".safe_text($_POST[$userDb->user_id."group_id"]);
 			$sql=$sql."' WHERE user_id=".safe_text($_POST[$userDb->user_id."user_id"]);

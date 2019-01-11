@@ -9,8 +9,8 @@ if (isset($humo_option['default_language'])
 }
 
 // *** Extra check if language exists ***
-if (isset($_SESSION["language"]) AND file_exists(CMS_ROOTPATH.'languages/'.$_SESSION["language"].'/'.$_SESSION["language"].'.mo')){
-	$selected_language=$_SESSION["language"];
+if (isset($_SESSION["language_humo"]) AND file_exists(CMS_ROOTPATH.'languages/'.$_SESSION["language_humo"].'/'.$_SESSION["language_humo"].'.mo')){
+	$selected_language=$_SESSION["language_humo"];
 }
 
 // *** Read language file ***

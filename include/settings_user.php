@@ -46,6 +46,9 @@ if (!isset($groupDb->group_contact)){ $user['group_contact']='j'; }
 if (!isset($groupDb->group_latestchanges)){ $user['group_latestchanges']='j'; }
 	else{ $user['group_latestchanges']=$groupDb->group_latestchanges; }
 
+if (!isset($groupDb->group_menu_cms)){ $user['group_menu_cms']='y'; }
+	else{ $user['group_menu_cms']=$groupDb->group_menu_cms; }
+
 if (!isset($groupDb->group_menu_persons)){ $user['group_menu_persons']='j'; }
 	else{ $user['group_menu_persons']=$groupDb->group_menu_persons; }
 
@@ -56,6 +59,9 @@ $user['group_menu_places']=$groupDb->group_menu_places;
 
 if (!isset($groupDb->group_menu_login)){ $user['group_menu_login']='j'; }
 	else{ $user['group_menu_login']=$groupDb->group_menu_login; }
+
+if (!isset($groupDb->group_menu_change_password)) $user['group_menu_change_password']='y';
+	else $user['group_menu_change_password']=$groupDb->group_menu_change_password;
 
 $user["group_privacy"]=$groupDb->group_privacy;
 

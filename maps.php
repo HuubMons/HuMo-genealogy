@@ -94,7 +94,7 @@ echo '<tr><td style="border:1px solid #bdbdbd; width:995px; background-color:#d8
 
 if($language['dir']!="rtl") { echo '<div style="margin-top:4px;font-size:110%;float:left">'; }  // div tree choice
 else { echo '<div style="font-size:110%;float:right">'; }
-echo '&nbsp;&nbsp;'.__('Filters:').'&nbsp;&nbsp;&nbsp;&nbsp;';
+echo '&nbsp;&nbsp;'.__('Filters:').'&nbsp;&nbsp;';
 echo '</div>';
 
 if($language['dir']!="rtl") {echo '<div style="float:left">'; } // div slider text + year box
@@ -175,7 +175,15 @@ echo ' <input type="Submit" style="font-size:110%;" name="anything" onclick="doc
 // BUTTON: SEARCH BY DESCENDANTS
 echo '<form method="POST" style="display:inline" name="descform" action='.$_SERVER['PHP_SELF'].'>';
 echo '<input type="hidden" name="descmap" value="1">';
-echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anything" value="'.__('Filter by descendants of a person').'">';
+echo '&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anything" value="'.__('Filter by descendants').'">';
+echo '</form>';
+
+//echo '</td></tr>';
+
+// BUTTON: SEARCH BY ANCESTORS
+echo '<form method="POST" style="display:inline" name="ancform" action='.$_SERVER['PHP_SELF'].'>';
+echo '<input type="hidden" name="ancmap" value="1">';
+echo '&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anythingelse" value="'.__('Filter by ancestors').'">';
 echo '</form>';
 
 echo '</td></tr>';
@@ -407,7 +415,6 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	if($desc_array != '') {
 		$desc_array = array_unique($desc_array); // removes duplicate persons (because of related ancestors)
 	}
-
 	echo '<div id="desc_search" style="border: 0px solid #bdbdbd;background-color:#f3f781;">';
 	if($desc_array!='') {
 		echo '&nbsp;'.__('Filter by descendants of: ').$chosenname.'&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.'&nbsp;|&nbsp;'.__('Switch descendant filter off').'</a>' ;
@@ -417,6 +424,121 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 	}
 	echo '</div>';
 } // end descendant notifications
+
+// NEW =============================
+// FUNCTION TO FIND ANCESTORS OF CHOSEN PERSON AND SHOW NOTIFICATION
+include_once(CMS_ROOTPATH."include/person_cls.php");
+include_once(CMS_ROOTPATH."include/marriage_cls.php");
+$flag_anc_search=0; $chosenperson=''; $persfams = '';
+if(isset($_GET['anc_persged']) AND isset($_GET['anc_persfams'])) {
+	$flag_anc_search=1;
+	$chosenperson= $_GET['anc_persged'];
+	$persfams = $_GET['anc_persfams'];
+	$persfams_arr = explode(';',$persfams);
+	$myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$chosenperson."'");
+	$myresultDb=$myresult->fetch(PDO::FETCH_OBJ);
+	$chosenname = $myresultDb->pers_firstname.' '.strtolower(str_replace('_','',$myresultDb->pers_prefix)).' '.$myresultDb->pers_lastname;
+
+	function find_anc($family_id) { // function to find all ancestors - family_id = person gedcom number
+		global $dbh, $db_functions, $anc_array;
+		global $language, $dirmark1, $dirmark1;
+		global $listed_array;
+		$ancestor_array2[] = $family_id;
+		$ancestor_number2[]=1;
+		$marriage_gedcomnumber2[]=0;
+		$generation = 1;
+
+		//$listed_array=array();
+
+		// *** Loop for ancestor report ***
+		while (isset($ancestor_array2[0])){
+			unset($ancestor_array);
+			$ancestor_array=$ancestor_array2;
+			unset($ancestor_array2);
+
+			unset($ancestor_number);
+			$ancestor_number=$ancestor_number2;
+			unset($ancestor_number2);
+
+			unset($marriage_gedcomnumber);
+			$marriage_gedcomnumber=$marriage_gedcomnumber2;
+			unset($marriage_gedcomnumber2);
+
+			// *** Loop per generation ***
+			for ($i=0; $i<count($ancestor_array); $i++) {
+
+				$listednr='';
+
+				foreach ($listed_array as $key => $value) {
+					if($value==$ancestor_array[$i]) {$listednr=$key;}
+					// if person was already listed, $listednr gets kwartier number for reference in report:
+					// instead of person's details it will say: "already listed above under number 4234"
+					// and no additional ancestors will be looked for, to prevent duplicated branches
+				}
+				if($listednr=='') {  //if not listed yet, add person to array
+					$listed_array[$ancestor_number[$i]]=$ancestor_array[$i];  
+					//$listed_array[]=$ancestor_array[$i];  
+				}
+
+				if ($ancestor_array[$i]!='0'){
+					@$person_manDb = $db_functions->get_person($ancestor_array[$i]);
+
+					// ==	Check for parents
+					if ($person_manDb->pers_famc  AND $listednr==''){
+ 						@$family_parentsDb = $db_functions->get_family($person_manDb->pers_famc);
+						if ($family_parentsDb->fam_man){
+							$ancestor_array2[] = $family_parentsDb->fam_man;
+							$ancestor_number2[]=(2*$ancestor_number[$i]);
+							$marriage_gedcomnumber2[]=$person_manDb->pers_famc;
+						}
+
+						if ($family_parentsDb->fam_woman){
+							$ancestor_array2[]= $family_parentsDb->fam_woman;
+							$ancestor_number2[]=(2*$ancestor_number[$i]+1);
+							$marriage_gedcomnumber2[]=$person_manDb->pers_famc;
+						}
+						else{
+							// *** N.N. name ***
+							$ancestor_array2[]= '0';
+							$ancestor_number2[]=(2*$ancestor_number[$i]+1);
+							$marriage_gedcomnumber2[]=$person_manDb->pers_famc;
+						}
+					}
+				} 
+				else{
+					// *** Show N.N. person ***
+					@$person_manDb = $db_functions->get_person($ancestor_array[$i]);
+					$listed_array[0] = $person_manDb->pers_gedcomnumber;
+				}
+			}	// loop per generation
+			$generation++;
+		}	// loop ancestor report
+
+	}
+
+	// ******* Start function here ******
+	$anc_array = array();
+	$listed_array=array();
+	find_anc($chosenperson);
+	foreach($listed_array as $value) {
+	$anc_array[] = $value;  
+	}
+/*	if($anc_array != '') {
+		$anc_array = array_unique($anc_array); // removes duplicate persons (because of related ancestors)
+	}
+*/
+	echo '<div id="anc_search" style="border: 0px solid #bdbdbd;background-color:#f3f781;">';
+
+	if($anc_array!='') {
+		echo '&nbsp;'.__('Filter by ancestors of: ').$chosenname.'&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.'&nbsp;|&nbsp;'.__('Switch ancestor filter off').'</a>' ;
+	}
+	else {
+		echo '&nbsp;'.__('No known birth places amongst ancestors').'&nbsp;&nbsp;|&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.__('Close').'</a>';
+	}
+	echo '</div>';
+} // end ancestor notifications
+// END NEW =========================
 
 echo '</td></tr>';
 echo '</table>';
@@ -469,6 +591,7 @@ if(isset($_POST['descmap'])) {
 	$desc_search = "SELECT * FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_fams !='' ORDER BY ".$orderlast.", pers_firstname";
 	$desc_search_result = $dbh->query($desc_search);
+	echo '&nbsp;&nbsp;<strong>'.__('Filter by descendants of a person').'</strong><br>';
 	echo '&nbsp;&nbsp;'.__('Pick a name or enter ID:').'<br>';
 	echo '<form method="POST" action="" style="display : inline;">';
 	echo '<select style="max-width:396px;background:#eee" '.$select_size.' onChange="window.location=this.value;" id="desc_map" name="desc_map">';
@@ -555,6 +678,120 @@ if(isset($_POST['descmap'])) {
 	echo '</div>';
 }
 
+// NEW~~~~~~~~~~~~~~~~~~~~~~~~~~`
+// FIXED WINDOW WITH LIST TO CHOOSE PERSON TO MAP WITH ANCESTORS
+if(isset($_POST['ancmap'])) {
+
+	//adjust pulldown for mobiles/tablets
+	$select_size = 'size="20"'; $select_height = '400px';
+	if (isset($_SERVER["HTTP_USER_AGENT"]) OR ($_SERVER["HTTP_USER_AGENT"] != "")) { //adjust pulldown for mobiles/tablets
+		$visitor_user_agent = $_SERVER["HTTP_USER_AGENT"];
+		if(strstr($visitor_user_agent,"Android")!== false OR
+			strstr($visitor_user_agent,"iOS")!== false OR
+			strstr($visitor_user_agent,"iPad")!== false OR
+			strstr($visitor_user_agent,"iPhone")!== false ) {
+			$select_size=""; $select_height= '100px';
+		}
+	}
+
+	echo '<div id="ancmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:'.$select_height.'; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">';
+	if($user['group_kindindex']=="j") { $orderlast = "CONCAT(pers_prefix,pers_lastname)"; }
+	else { $orderlast = "pers_lastname"; }
+	$anc_search = "SELECT * FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' AND pers_fams !='' ORDER BY ".$orderlast.", pers_firstname";
+	$anc_search_result = $dbh->query($anc_search);
+	echo '&nbsp;&nbsp;<strong>'.__('Filter by ancestors of a person').'</strong><br>';
+	echo '&nbsp;&nbsp;'.__('Pick a name or enter ID:').'<br>';
+	echo '<form method="POST" action="" style="display : inline;">';
+	echo '<select style="max-width:396px;background:#eee" '.$select_size.' onChange="window.location=this.value;" id="anc_map" name="anc_map">';
+	echo '<option value="toptext">'.__('Pick a name from the pulldown list').'</option>';
+	//prepared statement out of loop
+	$chld_prep = $dbh->prepare("SELECT fam_children FROM humo_families
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber =? AND fam_children != ''");
+	$chld_prep->bindParam(1,$chld_var);
+	while($anc_searchDb=$anc_search_result->fetch(PDO::FETCH_OBJ)) {
+		$countmarr = 0;
+		$man_cls = New person_cls;
+		$fam_arr = explode(";", $anc_searchDb->pers_fams);
+		foreach ($fam_arr as $value) {
+			if($countmarr==1) { break; } //this person is already listed
+			$chld_var = $value;
+			$chld_prep->execute();
+			while($chld_search_resultDb = $chld_prep->fetch(PDO::FETCH_OBJ)) {
+				$countmarr = 1;
+				$selected='';
+				//if($anc_searchDb->pers_gedcomnumber == $chosenperson) { $selected = ' SELECTED '; }
+				$man_cls->construct($anc_searchDb);
+				$privacy_man=$man_cls->privacy;
+				$date='';
+				if(!$privacy_man) { // don't show dates if privacy is set for this person
+					// if a person has privacy set (even if only for data, not for name,
+					// we won't put them on the list. Most likely it concerns recent people.
+					// Also, using the $man_cls->person_name functions takes too much time...
+					$b_date=$anc_searchDb->pers_birth_date;
+					$b_sign = __('born').' ';
+					if (!$anc_searchDb->pers_birth_date AND $anc_searchDb->pers_bapt_date) {
+						$b_date = $anc_searchDb->pers_bapt_date;
+						$b_sign = __('baptised').' ';
+					}
+					$d_date=$anc_searchDb->pers_death_date;
+					$d_sign = __('died').' ';
+					if (!$anc_searchDb->pers_death_date AND $anc_searchDb->pers_buried_date) {
+						$d_date = $anc_searchDb->pers_buried_date;
+						$d_sign = __('buried').' ';
+					}
+					$date='';
+					if($b_date AND !$d_date) {
+						$date = ' ('.$b_sign.date_place($b_date,'').')';
+					}
+					if($b_date AND $d_date) {
+						$date .= ' ('.$b_sign.date_place($b_date,'').' - '.$d_sign.date_place($d_date,'').')';
+					}
+					if(!$b_date AND $d_date) {
+						$date = '('.$d_sign.date_place($d_date,'').')';
+					}
+				}
+				if(!$privacy_man OR ($privacy_man AND $user['group_filter_name']=="j")) { 
+					// don't show the person at all on the list if names are hidden when privacy is set for person
+					$name = ''; $pref = ''; $last = '- , '; $first = '-';
+					if($anc_searchDb->pers_lastname) { $last = $anc_searchDb->pers_lastname.', '; }
+					if($anc_searchDb->pers_firstname) { $first = $anc_searchDb->pers_firstname; }
+					if($anc_searchDb->pers_prefix) { $pref = strtolower(str_replace('_','',$anc_searchDb->pers_prefix)); }
+
+					if($user['group_kindindex']=="j") {
+						if($anc_searchDb->pers_prefix) { $pref = strtolower(str_replace('_','',$anc_searchDb->pers_prefix)).' '; }
+						$name = $pref.$last.$first;
+					}
+					else {
+						if($anc_searchDb->pers_prefix) { $pref = ' '.strtolower(str_replace('_','',$anc_searchDb->pers_prefix)); }
+						$name = $last.$first.$pref;
+					}
+					echo '<option value="'.$_SERVER['PHP_SELF'].'?anc_persged='.$anc_searchDb->pers_gedcomnumber.'&anc_persfams='.$anc_searchDb->pers_fams.'" '.$selected.'>'.$name.$date.' [#'.$anc_searchDb->pers_gedcomnumber.']</option>';
+				}
+			}
+		}
+	}
+	echo '</select>';
+	echo '</form>';
+
+	?>
+	<script type="text/javascript">    
+	function findGednr (pers_id) { 
+		for(var i=1;i<anc_map.length-1;i++) {
+			if(anc_map.options[i].text.indexOf("[#" + pers_id + "]") != -1 || anc_map.options[i].text.indexOf("[#I" + pers_id + "]") != -1 ) { 
+				window.location = anc_map.options[i].value;
+			}
+		}
+	}
+	</script>
+	<?php
+	echo '<br><div style="margin-top:5px;text-align:left">&nbsp;&nbsp;Find by ID (I324):<input id="id_field" type="text" style="font-size:120%;width:60px;" value=""><input type="button" value="'.__('Go!').'" onclick="findGednr(getElementById(\'id_field\').value);">';
+	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'">'.__('Cancel').'</a></div>';
+	echo '</div>';
+}
+// END NEW~~~~~~~~~~~~~~~~~~~~~~
+
+
 // GOOGLE MAP
 echo '<div id="map_canvas" style="width:1000px; height:520px"></div>'; // placeholder div for map generated below
 
@@ -579,10 +816,10 @@ function findPlace () {
 
 $api_key = '';
 if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
-	$api_key = "?key=".$humo_option['google_api_key'];
+	$api_key = "?key=".$humo_option['google_api_key']; //echo "http://maps.googleapis.com/maps/api/js".$api_key;
 }
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-	echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
+	echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
 }
 else {
 	echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';

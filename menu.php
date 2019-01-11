@@ -83,7 +83,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 	if (!$bot_visit){
 		echo ' <form method="POST" action="'.$uri_path.'family.php'.'" style="display : inline;" id="top_favorites_select">';
 			echo '<img src="images/favorite_blue.png"> ';
-			echo '<select size=1 name="favorite_id" onChange="this.form.submit();" style="width: 115px; height:20px;">';
+			echo '<select size=1 name="humo_favorite_id" onChange="this.form.submit();" style="width: 115px; height:20px;">';
 			echo '<option value="">'.__('Favourites list:').'</option>';
 
 			$favorites_array='';
@@ -130,15 +130,13 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 					// *** Show only persons in selected family tree ***
 					if ($_SESSION['tree_prefix']==$favorite_array2['2']){
 						// *** Check if family tree is still the same family tree ***
-						//@$person_manDb=$db_functions->get_person($person_man);
+						$person_manDb=$db_functions->get_person($favorite_array2['3']);
 
 						// *** Proces man using a class ***
-						//$man_cls = New person_cls;
-						//$man_cls->construct($person_manDb);
-						//$name=$man_cls->person_name($person_manDb);
-						//if ($name==$favorite_array2['0']){
+						$test_favorite = $db_functions->get_person($favorite_array2['3']);
+						if ($test_favorite)
 							echo '<option value="'.$favorite_array2['1'].'|'.$favorite_array2['3'].'">'.$favorite_array2['0'].'</option>';
-						//}
+
 					}
 				}
 			}
@@ -308,17 +306,19 @@ echo '<ul class="humo_menu_item">';
 
 
 	// *** Menu genealogy (for CMS pages) ***
-	$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
-	if($cms_qry->rowCount() > 0) {
-		$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
+	if ($user['group_menu_cms']=='y'){
+		$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
+		if($cms_qry->rowCount() > 0) {
+			$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
 
-		if (CMS_SPECIFIC=='Joomla'){
-			$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages';
+			if (CMS_SPECIFIC=='Joomla'){
+				$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages';
+			}
+			else{
+				$path_tmp=CMS_ROOTPATH.'cms_pages.php';
+			}
+			echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
 		}
-		else{
-			$path_tmp=CMS_ROOTPATH.'cms_pages.php';
-		}
-		echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
 	}
 
 	// *** Menu: Family tree ***

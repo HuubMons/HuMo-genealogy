@@ -249,9 +249,9 @@ function process_person($person_array){
 		// Some programs uses an extra space after firstname:
 		// 1 NAME Firstname /Lastname/
 
-		// *** ALL BK names. It's possible to have text, soource or date by these names ***
-		//1 NAME Hubertus  /Huub/ Andriessen Mons   OK
-		//2 SOUR @S3@                               OK
+		// *** ALL BK names. It's possible to have text, source or date by these names ***
+		//1 NAME Hubertus  /Huub/ Andriessen Mons
+		//2 SOUR @S3@
 		//2 _AKAN also known as
 		//2 NICK bijnaam
 		//2 _SHON verkort voor rapporten
@@ -277,6 +277,25 @@ function process_person($person_array){
 		//2 _OTHN andere naam
 		//1 TITL Sr.
 		//*************************************
+
+		// *** Pro-gen titles by name ***
+		// 1 _TITL2 = title between first and last name.
+		// 1 _TITL3 = title behind lastname.
+		if ($buffer8=='1 _TITL2'){
+			$level1='NAME';
+			//$level2='NPFX';
+			$level2='SPFX';
+			//$buffer='2 NPFX'.substr($buffer, 8);
+			$buffer='2 SPFX'.substr($buffer, 8);
+			$buffer6=substr($buffer,0,6);
+		}
+		if ($buffer8=='1 _TITL3'){
+			$level1='NAME';
+			$level2='NSFX';
+			$buffer='2 NSFX'.substr($buffer, 8);
+			$buffer6=substr($buffer,0,6);
+		}
+
 		if ($level1=='NAME'){
 			if ($buffer6=='1 NAME'){
 				$processed=1;
@@ -327,12 +346,6 @@ function process_person($person_array){
 					}
 				}
 			}
-
-			// *** Pro-gen titles ***
-			// 1 _TITL2 = title between first and last name.
-			// 1 _TITL3 = title behind lastname.
-			if ($buffer8=='1 _TITL2') $buffer='2 NPFX'.substr($buffer, 9);
-			if ($buffer8=='1 _TITL3') $buffer='2 NSFX'.substr($buffer, 9);
 
 			// *** Gedcom 5.5 lastname prefix: 2 SPFX Le ***
 			if ($buffer6=='2 SPFX'){ $processed=1; $person["pers_prefix"]=substr($buffer,7).'_'; }
@@ -4115,7 +4128,10 @@ function process_sources($connect_kind2,$connect_sub_kind2,$connect_connect_id2,
 	// *** ONLY CHECK: 3 OBJE ***
 	//$test_level='level'.($number+1);
 	//if ($$test_level=='OBJE'){
-	if ($level3=='OBJE'){
+
+	//if ($level3=='OBJE'){
+	//SKIP @xx@, otherwise this will process errors: 3 OBJE @M1@
+	if ($level3=='OBJE' AND substr($buffer,7,1)!='@'){
 		$this->process_picture('connect',$calculated_connect_id,'picture', $buffer);
 	}
 

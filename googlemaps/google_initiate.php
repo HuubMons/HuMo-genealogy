@@ -61,7 +61,7 @@ if($flag_namesearch!='') {
 	$namesearch_string = substr($namesearch_string,0,-3).")"; // take off last "OR "
 }
 
-if($flag_desc_search==1 AND $desc_array != '') {
+if($flag_desc_search==1 AND $desc_array != '') {  
 	//for($i=0; $i<count($desc_array); $i++) {
 	foreach($desc_array as $value) {
 		if($_SESSION['type_birth']==1) {
@@ -122,7 +122,69 @@ if($flag_desc_search==1 AND $desc_array != '') {
 		}     // end if($personDb)
 	}   	// end for
 }
-else {
+elseif($flag_anc_search==1 AND $anc_array != '') {
+//elseif(1==3) {
+	//for($i=0; $i<count($desc_array); $i++) {
+	foreach($anc_array as $value) {
+		if($_SESSION['type_birth']==1) {
+			$persoon=$dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND pers_gedcomnumber ='".$value."'
+				AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !=''))");
+			@$personDb=$persoon->fetch(PDO::FETCH_OBJ);
+		}
+		elseif($_SESSION['type_death']==1) {
+			$persoon=$dbh->query("SELECT pers_firstname, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND pers_gedcomnumber ='".$value."'
+				AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !=''))");
+			@$personDb=$persoon->fetch(PDO::FETCH_OBJ);
+		}
+		if($personDb) {
+			if($_SESSION['type_birth']==1) {
+				$place=$personDb->pers_birth_place;
+				$date =$personDb->pers_birth_date;
+				if(!$personDb->pers_birth_place AND $personDb->pers_bapt_place) {
+					$place=$personDb->pers_bapt_place;
+				}
+				if(!$personDb->pers_birth_date AND $personDb->pers_bapt_date) {
+					$date =$personDb->pers_bapt_date;
+				}
+			}
+			elseif($_SESSION['type_death']==1) {
+				$place=$personDb->pers_death_place;
+				$date =$personDb->pers_death_date;
+				if(!$personDb->pers_death_place AND $personDb->pers_buried_place) {
+					$place=$personDb->pers_buried_place;
+				}
+				if(!$personDb->pers_death_date AND $personDb->pers_buried_date) {
+					$date =$personDb->pers_buried_date;
+				}
+			}
+			if(isset($locarray[$place])) { // birthplace exists in location database
+				if($date) {
+					$year = substr($date,-4);
+
+					if($year > 1 AND $year < $realmin) {  $locarray[$place][3]++; }
+					if($year > 1 AND $year < ($realmin+ $step)) {  $locarray[$place][4]++; }
+					if($year > 1 AND $year < ($realmin+ (2*$step))) {  $locarray[$place][5]++; }
+					if($year > 1 AND $year < ($realmin+ (3*$step))) {  $locarray[$place][6]++; }
+					if($year > 1 AND $year < ($realmin+ (4*$step))) {  $locarray[$place][7]++; }
+					if($year > 1 AND $year < ($realmin+ (5*$step))) {  $locarray[$place][8]++; }
+					if($year > 1 AND $year < ($realmin+ (6*$step))) {  $locarray[$place][9]++; }
+					if($year > 1 AND $year < ($realmin+ (7*$step))) {  $locarray[$place][10]++; }
+					if($year > 1 AND $year < ($realmin+ (8*$step))) {  $locarray[$place][11]++; }
+					if($year > 1 AND $year < 2050) {  $locarray[$place][12]++; }
+					$locarray[$place][13]++;  // array of all people incl without birth date
+				}
+				else {
+					$locarray[$place][13]++ ; // array of all people incl without birth date
+				}
+			}
+		}     // end if($personDb)
+	}   	// end for
+}
+else  {
 	if($_SESSION['type_birth']==1) {
 		$persoon=$dbh->query("SELECT pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
@@ -217,6 +279,16 @@ if($flag_desc_search==1 AND $desc_array !='') {
 else {
 	unset($_SESSION['desc_array']);
 }
+
+// NEW ~~~~~~~~~~~~~~~~~~`
+$_SESSION['anc_array']='';
+if($flag_anc_search==1 AND $anc_array !='') {
+	$_SESSION['anc_array'] = $anc_array; // for use in namesearch.php
+}
+else {
+	unset($_SESSION['anc_array']);
+}
+// END NEW ~~~~~~~~~~~~~~
 
 ?>
 

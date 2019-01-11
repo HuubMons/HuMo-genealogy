@@ -111,7 +111,7 @@ while (false!==($file = readdir($language_folder))) {
 		if ($language_choice!=''){
 			// Check if file exists (IMPORTANT DO NOT REMOVE THESE LINES)
 			// ONLY save an existing language file.
-			if ($language_choice==$file){ $_SESSION['language'] = $file; }
+			if ($language_choice==$file){ $_SESSION["language_humo"] = $file; }
 		}
 	}
 }
@@ -418,7 +418,7 @@ else{
 	}
 	
 	if (isset($user["group_birthday_rss"]) AND $user["group_birthday_rss"]=="j"){
-		$language_rss='en'; if (isset($_SESSION['language'])){ $language_rss=$_SESSION['language']; }
+		$language_rss='en'; if (isset($_SESSION["language_humo"])){ $language_rss=$_SESSION["language_humo"]; }
 		echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="'.CMS_ROOTPATH.'birthday_rss.php?lang='.$language_rss.'" >';
 	}
 

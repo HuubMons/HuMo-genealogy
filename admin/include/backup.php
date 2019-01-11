@@ -272,7 +272,7 @@ function restore_tables($filename) {
 			// This is for the buffer achieve the minimum size in order to flush data
 			//echo str_repeat(' ',1024*64);
 			// Send output to browser immediately
-			ob_flush(); 
+			ob_flush();
 			flush(); // IE
 
 			// *** Commit data every x lines in database ***

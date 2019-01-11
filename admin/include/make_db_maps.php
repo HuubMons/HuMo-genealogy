@@ -63,24 +63,42 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 			$dbh->query("UPDATE humo_settings SET setting_value = '".$str."' WHERE setting_variable ='geo_trees'"); 
 		$humo_option['geo_trees'] = $str; // humo_option is used further on before page is refreshed so we have to update it manually
 	}
-
 	foreach($_SESSION['add_locations'] as $value) {
 		$count_parsed++;
 		//if($count_parsed<110 OR $count_parsed > 125) continue;
 		$loc=urlencode($value);
+		//echo "<br>".$value." - ".$loc."<br>";
+		/* This piece is outdated since Google's API revision. The second key (IP address restricted) has to be used and an https connection is mandatory.
+ 		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+ 			$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key; 
 
-		$api_key = '';
+ 		}
+ 		else {
+ 
+ 			$jsonurl = "http://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key;
+ 		}
+		*/
+
+		$api_key = ''; 
+		// Key is meant for showing maps and should be set to restriction: "HTTP referrers". This key will only be used here if no second key is present.
+		// This key will only work here if admin temporarily set it to restriction "None" or to "IP addresses" with server IP.
 		if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
 			$api_key = "&key=".$humo_option['google_api_key'];
-		}
+		} 
 
-		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-			$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key;
-		}
-		else {
-			$jsonurl = "http://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key;
-		}
-		@$json = file_get_contents($jsonurl,0,null,null);
+		$api_key2 = ''; // Key meant for geolocation. Is protected by "IP addresses" restriction.
+		if(isset($humo_option['google_api_key2']) AND $humo_option['google_api_key2']!='') {
+			$api_key2 = "&key=".$humo_option['google_api_key2'];
+		} 
+		if($api_key2 == "") { $api_key2 = $api_key; }  // if no second key is present, try to use first key.
+
+		$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key2; 
+		//echo $api_key." - ".$api_key2."<br>";
+		//echo $jsonurl."<br>";	
+		//$json = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key2);
+		//echo $json;
+ 
+		$json = file_get_contents($jsonurl,0,null,null);
 		// file_get_contents won't work if "allow_url_fopen" is disabled by host for security considerations.
 		// in that case try the PHP "curl" extension that is installed on most hosts (but we still check...)
 		if(!$json) {
@@ -88,6 +106,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 				$ch = curl_init();
 				curl_setopt ($ch, CURLOPT_URL, $jsonurl);
 				curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+//curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
 				$json = curl_exec($ch);
 				curl_close($ch);
 			}
@@ -102,7 +121,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 		echo '*';  // show progress by simple progress bar of *******
 		if($count_parsed % 100 == 0) { echo '<br>'; }
 
-		$json_output = json_decode($json, true);
+		$json_output = json_decode($json, true); 
 		if ($json_output['status']=="OK") {
 			$map_count_found++;
 			$lat=$json_output['results'][0]['geometry']['location']['lat'];
@@ -125,10 +144,10 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 			// not a good situation. this is either "REQUEST_DENIED" which shouldn't happen,
 			// or "INVALID_REQUEST" that can't really happen, because this code is perfect....   ;-)
 		}
-
+ 
 	} // end of foreach
 
-
+ 
 	if($flag_stop==0) {
 		echo '<p style="color:red;font-size:120%"><b> '.__('Finished updating geo-location database').'<b></p>';
 		echo __('Finish time').': '.date('G:i:s').'<br><br>';
@@ -170,7 +189,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 	echo '<br><form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post">';
 	echo '<input type="submit" style="font-size:14px" value="'.__('Back').'">';
 	echo '<br></form><br>';
-
+ 
 }  // end - if add to database
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MAIN SCREEN on entry into the google maps option in the admin menu
@@ -221,53 +240,187 @@ else {  // main screen
 	echo __('For now, it seems that installations that started API queries prior to June 22, 2016 will continue to work also without a key.')."<br>";
 	echo __('If however you start activating the Google map feature after this date, you are likely to encounter error messages concerning a missing key if you do not first enter and save a key here.')."<br>";
 	echo __('If you don\'t have a Google account, first create one. Once logged into your Google account, go to:');
-	echo ' <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#get-an-api-key" target="_blank">Get API key</a> ';
-	echo __('and follow the instructions.')." ";
-	echo __('Once you receive the key enter it here and save.')."<br><br>";
+	echo ' <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#get-an-api-key" target="_blank">'.__('Get API key').'</a> ';
+	echo __('and follow the instructions.')."<br>";
+	echo "<strong>".__('Create two keys').":</strong><br><ul><li>";
+	echo __('For the first key, set restriction to <strong>"HTTP referrers"</strong> and enter your website domain name.')."<br>".__('If your domain looks like \'www.mydomain.com\', enter:')." <strong>*.mydomain.com/*</strong><br>".__('If your domain looks like \'mydomain.com\', enter:')." <strong>mydomain.com/*</strong></li><br>";
+
+	//Function to try every way to resolve domain IP. Is more accurate than good old: gethostbyname($_SERVER['SERVER_NAME']) or gethostbyname(gethostname()) ;
+	function get_host() {
+		if (isset($_SERVER['HTTP_X_FORWARDED_HOST']) AND $host = $_SERVER['HTTP_X_FORWARDED_HOST']) {
+			$elements = explode(',', $host);
+			$host = trim(end($elements));
+		}
+		else {
+				if (!$host = $_SERVER['HTTP_HOST']) {
+					if (!$host = $_SERVER['SERVER_NAME']) {
+						$host = !empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+					}
+			}
+		}
+		// Remove port number from host
+		$host = preg_replace('/:\d+$/', '', $host);
+		return trim($host);
+	}
+	// get IPv4 address
+	$ip = gethostbyname(get_host());
+	// get IPv6 address
+	$ipv6 = dns_get_record(get_host(),DNS_AAAA);
+
+	echo "<li>".__('For the second key, set restriction to <strong>"IP addresses"</strong> and enter your server IP.')." ".__('Not your computer\'s IP!')."<br>";
+	echo __('Your server IP would seem to be:')." <strong>".$ip."</strong><br>";
+	if(@isset($ipv6[0][ipv6])) {  // cpntains the IPv6 address is present
+		echo __('Your server also has an IPv6 address. If the above IP doesn\'t work, try the IPv6 which would seem to be:')." <strong>".$ipv6[0][ipv6]."</strong><br>";
+	}
+	echo __('If this doesn\'t work, contact your provider and try to obtain the proper IP address from them.')."<br>";
+	echo __('Once you receive the keys enter them in the two fields below and save.')."<br><br>";
 	$api_query = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'google_api_key'");
-	$apiDb = $api_query->fetch(PDO::FETCH_OBJ); 
-	if($api_query->rowCount() > 0) { // there is a api setting in the database
-		if(isset($_POST['change_api'])) { // admin requested to change the existing key - show field to enter updated key
-			echo __('Enter API key').": ";
+	$apiDb = $api_query->fetch(PDO::FETCH_OBJ);   
+	if($api_query->rowCount() > 0) { // there is an api key 1 setting in the database
+		if(isset($_POST['change_api']) OR $apiDb->setting_value=='') {  
+			// admin requested to change the existing key OR key setting in database is empty - show field to enter updated key
+			echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
 			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
-			echo '<input type="text" id="api_changed" name="api_changed" size="40" >';
+			echo '<input type="text" id="new_api" name="new_api" size="40" >';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="api_save">';
 			echo '</form><br>';
 		}
 
-		else  { // fresh page called OR updated key entered
-			if(isset($_POST['api_changed'])) { // admin enter updated key
-  				$temp = $dbh->query("UPDATE humo_settings SET setting_value = '".$_POST['api_changed']."' WHERE setting_variable = 'google_api_key'");
-  	  	  	  	echo __('API key was saved as').": "; 
-			  	echo '<span style="font-weight:bold">'.$_POST['api_changed'].'</span>';
-			}
-			else { 
-  	  	  	  	echo __('API key')." = "; 
-			  	echo '<span style="font-weight:bold">'.$apiDb->setting_value.'</span>';
-  	  	  	}
-
-
+		elseif(isset($_POST['delete_api'])) {  
+			// admin requested to delete the existing key - show field to enter updated key
+			$temp = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'google_api_key'");
+			echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
+			echo __('has been deleted');
 			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api">';
 			echo '</form><br>';
 		}
+		
+		else  {
+			// fresh page called OR updated key entered
+			if(isset($_POST['new_api']) AND $_POST['new_api']!="") {  
+				// admin enter updated key
+				$temp = $dbh->query("UPDATE humo_settings SET setting_value = '".$_POST['new_api']."' WHERE setting_variable = 'google_api_key'");
+				echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): "; 
+				echo '<span style="font-weight:bold">'.$_POST['new_api'].'</span>';
+			}
+			else {
+				echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): "; 
+				echo '<span style="font-weight:bold">'.$apiDb->setting_value.'</span>'; 
+			}
+			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api">';
+			echo '</form>&nbsp;&nbsp;&nbsp;';
+			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api">';
+			echo '</form><br>';
+		}
 
 	}
-	else  { // no API key found in database
-		if(!isset($_POST['new_api'])) {  // fresh page when no api setting exists
- 			echo __('Enter API key').": ";
+	else  { // no API key 1 variable found in database
+		if(!isset($_POST['new_api'])) { 
+			// fresh page when no api key 1 variable exists - show field to enter key 1
+ 			echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
 			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
 			echo '<input type="text" id="new_api" name="new_api" size="40" >';
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="save_new_api">';
 			echo '</form><br>';
 		}
-		else { // new api was entered
-			$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key', setting_value='".$_POST['new_api']."'");
-  	  	  	echo __('API key was saved as').": "; 
-			echo '<span style="font-weight:bold">'.$_POST['new_api'].'</span>';
+		else { 
+			// new api was entered
+			if($_POST['new_api'] != "") { // a key was entered, store in database and show
+				$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key', setting_value='".$_POST['new_api']."'");
+				echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): "; 
+				echo '<span style="font-weight:bold">'.$_POST['new_api'].'</span>';
+				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api">';
+				echo '</form>&nbsp;&nbsp;&nbsp;';
+				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api">';
+				echo '</form><br>';
+			}
+			else { // empty key was entered, show field again...
+				echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
+				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '<input type="text" id="new_api" name="new_api" size="40" >';
+				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="save_new_api">';
+				echo '</form><br>';
+			}
+		}
+	}
+	echo '<br>';
+	$api_query2 = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'google_api_key2'");
+	$apiDb2 = $api_query2->fetch(PDO::FETCH_OBJ);   
+	if($api_query2->rowCount() > 0) { // there is an api key 1 setting in the database
+		if(isset($_POST['change_api2']) OR $apiDb2->setting_value=='') {  
+			// admin requested to change the existing key OR key setting in database is empty - show field to enter updated key
+			echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;";
 			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
-			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api">';
+			echo '<input type="text" id="new_api2" name="new_api2" size="40" >';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="api_save2">';
 			echo '</form><br>';
+		}
+
+		elseif(isset($_POST['delete_api2'])) {  
+			// admin requested to delete the existing key - show field to enter updated key
+			$temp2 = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'google_api_key2'");
+			echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo __('has been deleted');
+			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api2">';
+			echo '</form><br>';
+		}
+		
+		else  {  
+			// fresh page called OR updated key entered
+			if(isset($_POST['new_api2']) AND $_POST['new_api2']!="") {  
+				// admin enter updated key
+				$temp = $dbh->query("UPDATE humo_settings SET setting_value = '".$_POST['new_api2']."' WHERE setting_variable = 'google_api_key2'");
+				echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;"; 
+				echo '<span style="font-weight:bold">'.$_POST['new_api2'].'</span>';
+			}
+			else { 
+	  	  		echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;"; 
+				echo '<span style="font-weight:bold">'.$apiDb2->setting_value.'</span>'; 
+			}
+			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api2">';
+			echo '</form>&nbsp;&nbsp;&nbsp;';
+			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api2">';
+			echo '</form><br>';
+		}
+
+	}
+	else  { // no API key 1 variable found in database
+		if(!isset($_POST['new_api2'])) { 
+			// fresh page when no api key 2 variable exists - show field to enter key 1
+ 			echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+			echo '<input type="text" id="new_api2" name="new_api2" size="40" >';
+			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="save_new_api2">';
+			echo '</form><br>';
+		}
+		else { 
+			// new api was entered
+			if($_POST['new_api2'] != "") { // a key was entered, store in database and show
+				$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key2', setting_value='".$_POST['new_api2']."'");
+				echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;"; 
+				echo '<span style="font-weight:bold">'.$_POST['new_api2'].'</span>';
+				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api2">';
+				echo '</form>&nbsp;&nbsp;&nbsp;';
+				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api2">';
+				echo '</form><br>';
+			}
+			else { // empty key was entered, show field again...
+				echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo '<form action="'.$_SERVER['PHP_SELF'].'?page=google_maps" method="post" style="display:inline">';
+				echo '<input type="text" id="new_api2" name="new_api2" size="40" >';
+				echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="save_new_api2">';
+				echo '</form><br>';
+			}
 		}
 	}
 
@@ -345,11 +498,11 @@ else {  // main screen
 					no_location_location VARCHAR(100) CHARACTER SET utf8
 				)";
 				$dbh->query($nolocationtbl);
-			}			
+			}
 		}
 		
 		$thistree_non_exist= array(); 
-		// This will hold only those non-indexable locations (from $non_exist_locs) that appear in the chosen tree (or trees if 'all' was chosen)		
+		// This will hold only those non-indexable locations (from $non_exist_locs) that appear in the chosen tree (or trees if 'all' was chosen)
 		
 		while (@$personDb=$map_person->fetch(PDO::FETCH_OBJ)){
 			// for each location we check:
@@ -375,7 +528,7 @@ else {  // main screen
 			}
 			// add the new location to an array for use if the user presses YES
 			if($personDb->pers_birth_place) { $add_locations[] = $personDb->pers_birth_place; }
-		}		
+		}
 		
 /*
 		while (@$personDb=$map_person->fetch(PDO::FETCH_OBJ)){
@@ -437,7 +590,7 @@ else {  // main screen
 				foreach($thistree_non_exist AS $value) {
 					echo $value."<br>";
 				}
-			}			
+			}
 		}
 	}
 	else {
@@ -549,13 +702,13 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 
 		$api_key = '';
 		if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
-			$api_key = "?key=".$humo_option['google_api_key'];
+			$api_key = "?key=".$humo_option['google_api_key']; 
 		}
 		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
 			echo '<script type="text/javascript" src="https://maps.google.com/maps/api/js'.$api_key.'"></script>';
 		}
 		else {
-			echo '<script type="text/javascript" src="http://maps.google.com/maps/api/js'.$api_key.'"></script>';
+			echo '<script type="text/javascript" src="https://maps.google.com/maps/api/js'.$api_key.'"></script>';
 		}
 		?>
 
@@ -812,7 +965,7 @@ If you are absolutely sure, press the button below.'), $num_rows);
 		}
 		else {  
 			$temp1 = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
-			if($temp1->rowCount() > 0) {		
+			if($temp1->rowCount() > 0) {
 				$no_loc_list = $dbh->query("SELECT * FROM humo_no_location ORDER BY no_location_location");
 				$num_rows1 = $no_loc_list->rowCount();
 				if($num_rows1>0) {

@@ -179,6 +179,7 @@ else {  // show album with category tabs
 	}
 }
 
+// *** $pref = category ***
 function showthem ($pref) {
 	global $dataDb, $photo_name, $dbh, $show_pictures, $uri_path, $tree_id, $db_functions, $my_array, $cat_string, $categories, $chosen_tab;
 
@@ -196,7 +197,13 @@ function showthem ($pref) {
 		//$subsub=false;
 		$sub_arr = array();
 		while (false !== ($filename = readdir($dh))) {  //echo $filename."<br>";
-			if ((strtolower(substr($filename, -3)) == "jpg" OR strtolower(substr($filename, -3)) == "gif" OR strtolower(substr($filename, -3)) == "png") AND substr($filename,0,6)!='thumb_'){
+
+			// *** Skip thumb_ files and directories cms, slideshow and thumbs ***
+			if (substr($filename,0,6)=='thumb_' OR $filename=='cms' OR $filename=='slideshow' OR $filename=='thumbs'){
+				// *** Skip, no action ***
+			}
+			//if ((strtolower(substr($filename, -3)) == "jpg" OR strtolower(substr($filename, -3)) == "gif" OR strtolower(substr($filename, -3)) == "png") AND substr($filename,0,6)!='thumb_'){
+			elseif (strtolower(substr($filename, -3)) == "jpg" OR strtolower(substr($filename, -3)) == "gif" OR strtolower(substr($filename, -3)) == "png"){
 				if(($pref != 'none' AND $pref != 'dummy' AND substr($filename,0,3)==$pref) OR ($pref == 'none' AND strpos($cat_string,substr($filename,0,3)."@")===false) OR $pref=='dummy') {
 					// *** Use search field (search for person) to show pictures ***
 					$show_photo=true; 
@@ -221,7 +228,8 @@ function showthem ($pref) {
 					}
 				}
 			}
-			elseif($pref!='none' AND $pref!='dummy' AND is_dir($dir.$filename) AND $filename != "." AND $filename != ".." AND substr($filename,0,6)!='thumb_') {
+			//elseif($pref!='none' AND $pref!='dummy' AND is_dir($dir.$filename) AND $filename != "." AND $filename != ".." AND substr($filename,0,6)!='thumb_'){
+			elseif($pref!='none' AND $pref!='dummy' AND is_dir($dir.$filename) AND $filename != "." AND $filename != ".."){
 				$subsub=true;
 				$dh2  = opendir($dir.$filename);
 				while (false !== ($subfilename = readdir($dh2))) {
@@ -236,7 +244,8 @@ function showthem ($pref) {
 					}
 				}
 				closedir($dh2);
-			}  
+			}
+
 		}
 		closedir($dh);
 	}  

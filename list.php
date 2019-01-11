@@ -279,7 +279,7 @@ if ($selectsort){
 
 	if($selectsort=="sort_birthdate") {
 		
-		// *** Replace ABT, AFT, BEF, EST and BET...AND items and sort by birth or baptise date ***
+		// *** Replace ABT, AFT, BEF, EST, CAL and BET...AND items and sort by birth or baptise date ***
 		$make_date= ", CASE
 			WHEN pers_birth_date = '' AND SUBSTR(CONCAT(' ',pers_bapt_date),-4,1)= ' ' THEN 
 			replace(
@@ -287,22 +287,71 @@ if ($selectsort){
 					replace(
 						replace(
 							replace(
-								UPPER(
-									CONVERT(
-										CONCAT(
-											SUBSTR(pers_bapt_date,1,LENGTH(pers_bapt_date)-3),'0',SUBSTR(pers_bapt_date,-3)
-										) USING latin1
-									)
-								),
-							'ABT ',''),
-						'AFT ',''),
-					'BEF ',''),
-				'EST ',''),
+								replace(
+									UPPER(
+										CONVERT(
+											CONCAT(
+												SUBSTR(pers_bapt_date,1,LENGTH(pers_bapt_date)-3),'0',SUBSTR(pers_bapt_date,-3)
+											) USING latin1
+										)
+									),
+								'ABT ',''),
+							'AFT ',''),
+						'BEF ',''),
+					'EST ',''),
+				'CAL ',''),
 			'AND ','       ') 
-			WHEN pers_birth_date = '' AND SUBSTR(CONCAT(' ',pers_bapt_date),-4,1)!= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(pers_bapt_date USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ')
-			WHEN pers_birth_date != '' AND SUBSTR(CONCAT(' ',pers_birth_date),-4,1)= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(CONCAT(SUBSTR(pers_birth_date,1,LENGTH(pers_birth_date)-3),'0',SUBSTR(pers_birth_date,-3)) USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
-			WHEN pers_birth_date != '' AND SUBSTR(CONCAT(' ',pers_birth_date),-4,1)!= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(pers_birth_date USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
-			END AS year"; 
+			WHEN pers_birth_date = '' AND SUBSTR(CONCAT(' ',pers_bapt_date),-4,1)!= ' ' THEN
+				replace(
+					replace(
+						replace(
+							replace(
+								replace(
+									replace(
+										UPPER(
+											CONVERT(pers_bapt_date USING latin1)
+										),
+									'ABT ',''),
+								'AFT ',''),
+							'BEF ',''),
+						'EST ',''),
+					'CAL ',''),
+				'AND ','       ')
+			WHEN pers_birth_date != '' AND SUBSTR(CONCAT(' ',pers_birth_date),-4,1)= ' ' THEN
+				replace(
+					replace(
+						replace(
+							replace(
+								replace(
+									replace(
+										UPPER(
+											CONVERT(
+												CONCAT(SUBSTR(pers_birth_date,1,LENGTH(pers_birth_date)-3),'0',SUBSTR(pers_birth_date,-3))
+											USING latin1)
+										),
+									'ABT ',''),
+								'AFT ',''),
+							'BEF ',''),
+						'EST ',''),
+					'CAL ',''),
+				'AND ','       ') 
+			WHEN pers_birth_date != '' AND SUBSTR(CONCAT(' ',pers_birth_date),-4,1)!= ' ' THEN
+				replace(
+					replace(
+						replace(
+							replace(
+								replace(
+									replace(
+										UPPER(
+											CONVERT(pers_birth_date USING latin1)
+										),
+									'ABT ',''),
+								'AFT ',''),
+							'BEF ',''),
+						'EST ',''),
+					'CAL ',''),
+				'AND ','       ') 
+				END AS year";
  
 		$orderby = " CONCAT( substring(year,-4),
 			date_format( str_to_date( substring(year,-8,3),'%b' ) ,'%m'),

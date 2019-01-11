@@ -600,6 +600,7 @@ function today_in_history(){
 	$today2 = '0'.date('j').' '.strtoupper(date ("M"));
 	$count_privacy=0;
 
+	// *** Check user group is restricted sources can be shown ***
 	// *** Calculate present date, month and year ***
 	$sql = "SELECT * FROM humo_persons WHERE pers_tree_id = :tree_id
 		AND (
@@ -607,7 +608,9 @@ function today_in_history(){
 			OR substring( pers_bapt_date,1,6) = :today OR substring( pers_bapt_date, 1,6 ) = :today2
 			OR substring( pers_death_date,1,6) = :today OR substring( pers_death_date, 1,6 ) = :today2
 		)
-		LIMIT 0,30";
+		ORDER BY substring(pers_birth_date,-4) DESC
+		LIMIT 0,30
+		";
 	try {
 		$birth_qry = $dbh->prepare( $sql );
 		$birth_qry->bindValue(':tree_id', $dataDb->tree_id, PDO::PARAM_STR);
@@ -618,6 +621,68 @@ function today_in_history(){
 		//echo $e->getMessage() . "<br/>";
 	}
 
+	// *** Save results in an array, so it's possible to order the results by date ***
+	while ($record=$birth_qry->fetch(PDO::FETCH_OBJ)){
+		$person_cls = New person_cls;
+		$name=$person_cls->person_name($record);
+		$person_cls->construct($record);
+		if ($person_cls->privacy==''){
+			if (trim(substr($record->pers_birth_date,0,6))==$today OR substr($record->pers_birth_date,0,6)==$today2){
+				$history['order'][]=substr($record->pers_birth_date,-4);
+				$history['date'][]='<td>'.date_place($record->pers_birth_date,'').'</td><td>'.__('born').'</td>';
+			}
+			elseif (trim(substr($record->pers_bapt_date,0,6))==$today OR substr($record->pers_bapt_date,0,6)==$today2){
+				$history['order'][]=substr($record->pers_bapt_date,-4);
+				$history['date'][]='<td>'.date_place($record->pers_bapt_date,'').'</td><td>'.__('baptised').'</td>';
+			}
+			else{
+				$history['order'][]=substr($record->pers_death_date,-4);
+				$history['date'][]='<td>'.date_place($record->pers_death_date,'').'</td><td>'.__('died').'</td>';
+			}
+			$history['name'][]='<td><a href="'.CMS_ROOTPATH.'family.php?id='.$record->pers_indexnr.'&amp;main_person='.$record->pers_gedcomnumber.'">'.$name["standard_name"].'</a></td>';
+		}
+		else
+			$count_privacy++;
+	}
+
+	echo '<div class="mainmenu_bar fonts">'.__('Today in history').'</div>';
+
+	echo '<div style="max-height:200px; overflow-x: auto;">';
+	echo '<table width="90%" class="humo nametbl" align="center">';
+		// *** Override td style ***
+		echo '
+		<style>
+		table.humo td, table.relmenu td {
+			padding-top: 0px;
+			padding-bottom: 0px;
+		}
+		</style>';
+
+		//echo '<tr class="table_headline">';
+		//	echo '<td colspan="3"><b>'.__('Today in history').'</b></td>';
+		//echo '</tr>';
+
+		echo '<tr class="table_headline">';
+			echo '<td><b>'.__('Date').'</b></td><td><b>'.__('Event').'</b></td><td><b>'.__('Name').'</b></td>';
+		echo '</tr>';
+
+		if (isset($history['date'])){
+			array_multisort($history['order'], SORT_DESC, $history['date'], $history['name']);
+
+			for ($i=0; $i<=count($history['date'])-1; $i++){
+				echo '<tr>';
+					echo $history['date'][$i];
+					echo $history['name'][$i];
+				echo '</tr>';
+			}
+		}
+
+		if ($count_privacy)
+			echo '<tr><td colspan="3">'.$count_privacy.__(' persons are not shown due to privacy settings').'</td></tr>';
+	echo '</table>';
+	echo '</div>';
+
+	/*
 	echo '<div class="mainmenu_bar fonts">'.__('Today in history').'</div>';
 
 	echo '<div style="max-height:200px; overflow-x: auto;">';
@@ -671,6 +736,7 @@ function today_in_history(){
 			echo '<tr><td colspan="3">'.$count_privacy.__(' persons are not shown due to privacy settings').'</td></tr>';
 	echo '</table>';
 	echo '</div>';
+	*/
 }
 
 function show_footer(){

@@ -19,7 +19,7 @@ if (isset($_POST['group_add'])){
 		group_religion='n', group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n',
 		group_own_code='n', group_pdf_button='y', group_rtf_button='n', group_work_text='n', group_texts='j',
 		group_family_presentation='compact', group_maps_presentation='hide',
-		group_menu_persons='j', group_menu_names='j', group_menu_login='j',
+		group_menu_cms='y', group_menu_persons='j', group_menu_names='j', group_menu_login='j', group_menu_change_password='y',
 		group_showstatistics='j', group_relcalc='j', group_googlemaps='j', group_contact='j', group_latestchanges='j',
 		group_text_pers='j', group_texts_pers='j', group_texts_fam='j', group_alive='n', group_alive_date_act='j',
 		group_alive_date='1920', group_death_date_act='j', group_death_date='1980',
@@ -38,6 +38,7 @@ if (isset($_POST['group_change'])){
 	//$group_editor='n'; if (isset($_POST["group_editor"])){ $group_editor='j'; }
 	$group_statistics='n'; if (isset($_POST["group_statistics"])){ $group_statistics='j'; }
 	$group_birthday_rss='n'; if (isset($_POST["group_birthday_rss"])){ $group_birthday_rss='j'; }
+	$group_menu_cms='n'; if (isset($_POST["group_menu_cms"])){ $group_menu_cms='y'; }
 	$group_menu_persons='n'; if (isset($_POST["group_menu_persons"])){ $group_menu_persons='j'; }
 	$group_menu_names='n'; if (isset($_POST["group_menu_names"])){ $group_menu_names='j'; }
 	$group_menu_places='n'; if (isset($_POST["group_menu_places"])){ $group_menu_places='j'; }
@@ -52,6 +53,7 @@ if (isset($_POST['group_change'])){
 	$group_contact='n'; if (isset($_POST["group_contact"])){ $group_contact='j'; }
 	$group_latestchanges='n'; if (isset($_POST["group_latestchanges"])){ $group_latestchanges='j'; }
 	$group_menu_login='n'; if (isset($_POST["group_menu_login"])){ $group_menu_login='j'; }
+	$group_menu_change_password='n'; if (isset($_POST["group_menu_change_password"])){ $group_menu_change_password='y'; }
 	$group_gedcomnr='n'; if (isset($_POST["group_gedcomnr"])){ $group_gedcomnr='j'; }
 	$group_living_place='n'; if (isset($_POST["group_living_place"])){ $group_living_place='j'; }
 	$group_places='n'; if (isset($_POST["group_places"])){ $group_places='j'; }
@@ -98,9 +100,11 @@ if (isset($_POST['group_change'])){
 	group_user_notes='".$group_user_notes."',
 	group_user_notes_show='".$group_user_notes_show."',
 	group_birthday_rss='".$group_birthday_rss."',
+	group_menu_cms='".$group_menu_cms."',
 	group_menu_persons='".$group_menu_persons."',
 	group_menu_names='".$group_menu_names."',
 	group_menu_login='".$group_menu_login."',
+	group_menu_change_password='".$group_menu_change_password."',
 	group_birthday_list='".$group_birthday_list."',
 	group_showstatistics='".$group_showstatistics."',
 	group_relcalc='".$group_relcalc."',
@@ -224,6 +228,16 @@ if (!isset($field['group_citation_generation'])){
 		ADD group_citation_generation VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n' AFTER group_own_code;";
 	$result=$dbh->query($sql);
 }
+if (!isset($field['group_menu_change_password'])){
+	$sql="ALTER TABLE humo_groups
+		ADD group_menu_change_password VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_menu_login;";
+	$result=$dbh->query($sql);
+}
+if (!isset($field['group_menu_cms'])){
+	$sql="ALTER TABLE humo_groups
+		ADD group_menu_cms VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_menu_login;";
+	$result=$dbh->query($sql);
+}
 
 // *** Show usergroup ***
 $groupsql="SELECT * FROM humo_groups WHERE group_id='".$show_group_id."'";
@@ -270,6 +284,10 @@ echo '<tr><td>'.__('Birthday RSS in main menu').'</td>';
 $check=''; if ($groupDb->group_birthday_rss!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_birthday_rss"'.$check.'></td></tr>';
 
+echo '<tr><td>'.__('INFORMATION menu: show "CMS" pages').'</td>';
+$check=''; if ($groupDb->group_menu_cms!='n') $check=' checked';
+echo '<td><input type="checkbox" name="group_menu_cms"'.$check.'></td></tr>';
+
 echo '<tr><td>'.__('FAMILY TREE menu: show "Persons" submenu').'</td>';
 $check=''; if ($groupDb->group_menu_persons!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_menu_persons"'.$check.'></td></tr>';
@@ -314,7 +332,7 @@ echo '<tr><td>'.__('TOOLS menu: show "Latest changes" submenu').'</td>';
 $check=''; if ($groupDb->group_latestchanges!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_latestchanges"'.$check.'></td></tr>';
 
-echo '<tr><td>'.__('Menu item: show "Login" for visitors').'</td>';
+echo '<tr><td>'.__('Show "Login" link (can be changed in group "guest" only)').'</td>';
 // *** Only change this item for guest group ***
 $disabled='';
 if ($groupDb->group_id!='3'){
@@ -323,6 +341,10 @@ if ($groupDb->group_id!='3'){
 }
 $check=''; if ($groupDb->group_menu_login!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_menu_login"'.$check.$disabled.'></td></tr>';
+
+echo '<tr><td>'.__('Is allowed to change password').'</td>';
+$check=''; if ($groupDb->group_menu_change_password!='n') $check=' checked';
+echo '<td><input type="checkbox" name="group_menu_change_password"'.$check.'></td></tr>';
 
 //echo '<tr style="background-color:green; color:white"><th>'.__('General').'</font></th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 echo '<tr class="table_header"><th>'.__('General').'</font></th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';

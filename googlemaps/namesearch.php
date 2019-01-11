@@ -111,6 +111,22 @@ function mapbirthplace ($place) {
 		$idstring = substr($idstring,0,-3).') AND ';
 	}
 
+//NEW ~~~~~~~~~~~~~~~~
+	$anc_arr=''; $anc_idstring='';
+	if(isset($_SESSION['anc_array'])) {
+		$anc_arr = $_SESSION['anc_array'];
+		$anc_idstring = ' (';
+		foreach($anc_arr as $value) {
+			$anc_idstring.= " pers_gedcomnumber = '".$value."' OR ";
+		}
+		$anc_idstring = substr($anc_idstring,0,-3).') AND ';
+	}
+
+	if($anc_idstring != '') {
+		$idstring = $anc_idstring;
+	}
+// END NEW ~~~~~~~~~~~~~~~~
+
 	$min = 1;
 	if($place != "NONFOUND") {
 		if($_SESSION['type_birth']==1) {

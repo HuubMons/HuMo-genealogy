@@ -95,31 +95,35 @@ elseif (isset($userDb->user_name)){
 	';
 	echo '</script>';
 
-	print '<br><form id="form_id" method="post" action="'.$_SERVER['PHP_SELF'].'" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
+	echo '<br><form id="form_id" method="post" action="'.$_SERVER['PHP_SELF'].'" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
 
-	print '<table align="center" class="humo small">';
-	print '<tr class=table_headline><th class="fonts" colspan="2">'.__('User settings').'</th></tr>';
+	echo '<table align="center" class="humo small">';
+	echo '<tr class=table_headline><th class="fonts" colspan="2">'.__('User settings').'</th></tr>';
 
 	$register_name=$userDb->user_name; if (isset($_POST['register_name'])){ $register_name=$_POST['register_name']; }
-	//print '<tr><td>'.__('Username').':</td><td><input type="text" class="fonts" name="register_name" size="40" style="background-color:#FFFFFF" value="'.$register_name.'"></td></tr>';
-	print '<tr><td>'.__('Username').':</td><td>'.$register_name.'</td></tr>';
+	//echo '<tr><td>'.__('Username').':</td><td><input type="text" class="fonts" name="register_name" size="40" style="background-color:#FFFFFF" value="'.$register_name.'"></td></tr>';
+	echo '<tr><td>'.__('Username').':</td><td>'.$register_name.'</td></tr>';
 
 	$register_password=''; if (isset($_POST['register_password'])){ $register_password=$_POST['register_password']; }
-	print '<tr><td>'.__('Password').':</td><td><input type="password" class="fonts" name="register_password" size="30" style="background-color:#FFFFFF" value="'.$register_password.'"></td></tr>';
 
-	$register_repeat_password=''; if (isset($_POST['register_repeat_password'])){ $register_repeat_password=$_POST['register_repeat_password']; }
-	print '<tr><td>'.__('Repeat password').':</td><td><input type="password" class="fonts" name="register_repeat_password" size="30" style="background-color:#FFFFFF" value="'.$register_repeat_password.'"></td></tr>';
+	if ($user['group_menu_change_password']=='y'){
+		echo '<tr><td>'.__('Password').':</td><td><input type="password" class="fonts" name="register_password" size="30" style="background-color:#FFFFFF" value="'.$register_password.'"></td></tr>';
 
-	$register_mail=$userDb->user_mail; if (isset($_POST['register_mail'])){ $register_mail=$_POST['register_mail']; }
-	print '<tr><td>'.__('FULL e-mail address: ').'</td><td><input type="text" class="fonts" id="register_mail" name="register_mail" value="'.$register_mail.'" size="30" style="background-color:#FFFFFF"> </td></tr>';
+		$register_repeat_password=''; if (isset($_POST['register_repeat_password'])){ $register_repeat_password=$_POST['register_repeat_password']; }
+		echo '<tr><td>'.__('Repeat password').':</td><td><input type="password" class="fonts" name="register_repeat_password" size="30" style="background-color:#FFFFFF" value="'.$register_repeat_password.'"></td></tr>';
 
-	//$register_text=''; if (isset($_POST['register_text'])){ $register_text=$_POST['register_text']; }
-	//print '<tr><td>'.__('Message: ').'</td><td><textarea name="register_text" ROWS="5" COLS="40" class="fonts">'.$register_text.'</textarea></td></tr>';
+		$register_mail=$userDb->user_mail; if (isset($_POST['register_mail'])){ $register_mail=$_POST['register_mail']; }
+		echo '<tr><td>'.__('FULL e-mail address: ').'</td><td><input type="text" class="fonts" id="register_mail" name="register_mail" value="'.$register_mail.'" size="30" style="background-color:#FFFFFF"> </td></tr>';
 
-	//print '<tr><td></td><td style="font-weight:bold;" class="fonts" align="left">'.__('Please enter a full and valid email address,<br>otherwise I cannot respond to your e-mail!').'</td></tr>';
-	print '<tr><td></td><td><input class="fonts" type="submit" name="send_mail" value="'.__('Change').'"></td></tr>';
-	print '</table>';
-	print '</form>';
+		//$register_text=''; if (isset($_POST['register_text'])){ $register_text=$_POST['register_text']; }
+		//echo '<tr><td>'.__('Message: ').'</td><td><textarea name="register_text" ROWS="5" COLS="40" class="fonts">'.$register_text.'</textarea></td></tr>';
+
+		//echo '<tr><td></td><td style="font-weight:bold;" class="fonts" align="left">'.__('Please enter a full and valid email address,<br>otherwise I cannot respond to your e-mail!').'</td></tr>';
+		echo '<tr><td></td><td><input class="fonts" type="submit" name="send_mail" value="'.__('Change').'"></td></tr>';
+	}
+
+	echo '</table>';
+	echo '</form>';
 }
 
 
@@ -135,18 +139,18 @@ if (count($theme_folder)==1){
 if ($bot_visit){ $show_theme_select=false; }
 
 if ($show_theme_select==true){
-	print '<br><table class="humo small">';
-	print '<tr class=table_headline><th class="fonts">'.__('Select a theme').'</th></tr>';
+	echo '<br><table class="humo small">';
+	echo '<tr class=table_headline><th class="fonts">'.__('Select a theme').'</th></tr>';
 		echo '<td align="center">';
 		echo '<form title="'.__('Select a colour theme (a cookie will be used to remember the theme)').'" action="">';
 		echo '<select name="switchcontrol" size="1" onchange="chooseStyle(this.options[this.selectedIndex].value, 365)">';
 
 		if (isset($humo_option['default_skin'])){
-			print '<option value="'.$humo_option['default_skin'].'" selected="selected">'.__('Select a theme').':</option>';
+			echo '<option value="'.$humo_option['default_skin'].'" selected="selected">'.__('Select a theme').':</option>';
 			echo '<option value="'.$humo_option['default_skin'].'">'.__('Standard-colours').'</option>';
 		}
 		else{
-			print '<option value="none" selected="selected">'.__('Select a theme').':</option>';
+			echo '<option value="none" selected="selected">'.__('Select a theme').':</option>';
 			echo '<option value="none">'.__('Standard-colours').'</option>';
 		}
 
@@ -154,7 +158,7 @@ if ($show_theme_select==true){
 		for ($i=0; $i<count($theme_folder); $i++){
 			$theme=$theme_folder[$i];
 			$theme=str_replace(".css","", $theme);
-			print '<option value="'.$theme.'">'.$theme.'</option>';
+			echo '<option value="'.$theme.'">'.$theme.'</option>';
 		}
 		echo '</select></form>';
 		echo '</td>';

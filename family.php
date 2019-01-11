@@ -241,22 +241,24 @@ $family_id='F1'; // *** standard: show first family ***
 if (isset($urlpart[1])){ $family_id=$urlpart[1]; }
 if (isset($_GET["id"])){ $family_id=$_GET["id"]; }
 if (isset($_POST["id"])){ $family_id=$_POST["id"]; }
-// *** Check if family gedcomnumber is valid ***
-$db_functions->check_family($family_id);
 
 $main_person=''; // *** Mainperson of a family ***
 if (isset($urlpart[2])){ $main_person=$urlpart[2]; }
 if (isset($_GET["main_person"])){ $main_person=$_GET["main_person"]; }
 if (isset($_POST["main_person"])){ $main_person=$_POST["main_person"]; }
-// *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($main_person);
 
 // *** A favorite ID is used ***
-if (isset($_POST["favorite_id"])){
-	$favorite_array_id=explode("|",$_POST["favorite_id"]);
+if (isset($_POST["humo_favorite_id"])){
+	$favorite_array_id=explode("|",$_POST["humo_favorite_id"]);
 	$family_id=$favorite_array_id[0];
 	$main_person=$favorite_array_id[1];
 }
+
+// *** Check if family gedcomnumber is valid ***
+$db_functions->check_family($family_id);
+
+// *** Check if person gedcomnumber is valid ***
+$db_functions->check_person($main_person);
 
 
 if($screen_mode=='STAR' OR $screen_mode=='STARSIZE') {
@@ -2101,10 +2103,10 @@ else{
 									}
 
 									if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'https://chart.apis.google.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|".$api_key."');\n");
+										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'https://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|".$api_key."');\n");
 									}
 									else {
-										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'http://chart.apis.google.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|".$api_key."');\n");
+										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'http://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|".$api_key."');\n");
 									}
 								}
 

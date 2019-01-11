@@ -684,16 +684,27 @@ if (isset($pers_gedcomnumber)){
 				$search_quicksearch_child=str_replace(' ', '%', $search_quicksearch_child);
 				// *** In case someone entered "Mons, Huub" using a comma ***
 				$search_quicksearch_child = str_replace(',','',$search_quicksearch_child);
+				//$person_qry= "SELECT * FROM humo_persons
+				//	WHERE pers_tree_id='".$tree_id."'
+				//	AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
+				//	LIKE '%$search_quicksearch_child%'
+				//	OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname)
+				//	LIKE '%$search_quicksearch_child%' 
+				//	OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' '))
+				//	LIKE '%$search_quicksearch_child%' 
+				//	OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
+				//	LIKE '%$search_quicksearch_child%'
+				//	ORDER BY pers_lastname, pers_firstname";
 				$person_qry= "SELECT * FROM humo_persons
 					WHERE pers_tree_id='".$tree_id."'
-					AND CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
+					AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
 					LIKE '%$search_quicksearch_child%'
 					OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname)
 					LIKE '%$search_quicksearch_child%' 
 					OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' '))
 					LIKE '%$search_quicksearch_child%' 
 					OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
-					LIKE '%$search_quicksearch_child%'
+					LIKE '%$search_quicksearch_child%')
 					ORDER BY pers_lastname, pers_firstname";
 			}
 			else{
@@ -702,7 +713,7 @@ if (isset($pers_gedcomnumber)){
 			}
 			$person_result = $dbh->query($person_qry);
 			echo __('Select child').' ';
-			print '<select size="1" name="child_connect2" style="width: 250px">';
+			echo '<select size="1" name="child_connect2" style="width: 250px">';
 				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 					echo '<option value="'.$person->pers_gedcomnumber.'">'.
 						$editor_cls->show_selected_person($person).'</option>';
