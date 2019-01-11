@@ -62,7 +62,7 @@ include_once(CMS_ROOTPATH."include/witness.php");
 include_once(CMS_ROOTPATH."include/show_picture.php");
 //include_once(CMS_ROOTPATH."include/db_functions_cls.php"); // *** Extra db_functions include, needed for PDF report ***
 
-// *** Show person/ family topline: family top text, pop-up settings, PDF export, favorite ***
+// *** Show person/ family topline: family top text, pop-up settings, PDF export, favourite ***
 function topline(){
 	global $dataDb, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker, $family_id, $main_person;
 	global $alignmarker, $language, $uri_path, $descendant_report, $family_expanded;
@@ -193,8 +193,8 @@ function topline(){
 
 	//$text.='</td><td class="table_header fonts" width="5%" style="text-align:center";>';
 
-		// *** Add family to favorite list ***
-		// If there is a N.N. father, then use mother in favorite icon.
+		// *** Add family to favourite list ***
+		// If there is a N.N. father, then use mother in favourite icon.
 		if ($change_main_person==true OR !isset($person_manDb->pers_gedcomnumber)){
 			$name=$woman_cls->person_name($person_womanDb);
 			$favorite_gedcomnumber=' ['.$person_womanDb->pers_gedcomnumber.']';
@@ -247,7 +247,7 @@ if (isset($urlpart[2])){ $main_person=$urlpart[2]; }
 if (isset($_GET["main_person"])){ $main_person=$_GET["main_person"]; }
 if (isset($_POST["main_person"])){ $main_person=$_POST["main_person"]; }
 
-// *** A favorite ID is used ***
+// *** A favourite ID is used ***
 if (isset($_POST["humo_favorite_id"])){
 	$favorite_array_id=explode("|",$_POST["humo_favorite_id"]);
 	$family_id=$favorite_array_id[0];
@@ -569,7 +569,7 @@ if (!$family_id){
 
 		echo '<table class="humo standard">';
 
-			// *** Show person topline (top text, settings, favorite) ***
+			// *** Show person topline (top text, settings, favourite) ***
 			echo topline();
 
 		echo '<tr><td colspan="4">';
@@ -842,7 +842,7 @@ else{
 
 						echo '<table class="humo standard">';
 
-							// *** Show family top line (family top text, settings, favorite) ***
+							// *** Show family top line (family top text, settings, favourite) ***
 							echo topline();
 
 						echo '<tr><td colspan="4">';
@@ -1435,6 +1435,11 @@ else{
 									}
 									if ($addressnr>1){ echo ', '; }
 									if ($addressDb->address_date){ echo date_place($addressDb->address_date,'').' '; } //use default function, there is no place...
+
+									if ($user['group_addresses']=='j' AND $addressDb->address_address){
+										echo ' '.$addressDb->address_address.' ';
+									}
+
 									echo $addressDb->address_place;
 
 									// *** Show address source ***
@@ -1462,6 +1467,9 @@ else{
 									}
 									if ($addressnr>1){ $pdf->Write(6,', '); }
 									if ($addressDb->address_date){$pdf->Write(6,date_place($addressDb->address_date,'').' '); }
+
+									// To do: Address address...
+
 									$pdf->Write(6,$addressDb->address_place);
 									// *** Show address source ***
 									$source = show_sources2("family","fam_address_source",$addressDb->address_id);
@@ -2162,7 +2170,7 @@ if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_pres
 */
 if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
 
-	// If there is a N.N. father, then use mother in favorite icon.
+	// If there is a N.N. father, then use mother in favourite icon.
 	if ($change_main_person==true OR !isset($person_manDb->pers_gedcomnumber)){
 		$name1=$woman_cls->person_name($person_womanDb);
 		$name2=$man_cls->person_name($person_manDb);

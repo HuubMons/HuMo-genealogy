@@ -939,7 +939,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 				echo '</td><td class="f_namelst">';
 				if(isset($f_keys[$i+$row]) AND isset($f_first_names[$f_keys[$i+$row]])) { echo '<a href="'.$path_tmp.'&amp;sexe=F&amp;pers_firstname='.$f_keys[$i+$row].'&amp;part_firstname=contains">'.$f_keys[$i+$row]."</a>"; }
 				//female 2nd nr
-				echo '</td><td class="f_namenr" style="text-align:center;border-right-width:3px">';
+				echo '</td><td class="f_namenr" style="text-align:center;border-right-width:1px">';
 				if(isset($f_keys[$i+$row]) AND isset($f_first_names[$f_keys[$i+$row]])) { echo $f_first_names[$f_keys[$i+$row]]; }
 
 				echo '</td></tr>';

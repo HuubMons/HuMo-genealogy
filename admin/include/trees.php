@@ -176,7 +176,7 @@ if (isset($_POST['remove_tree2']) AND is_numeric($_POST['tree_id']) ){
 	$sql="DELETE FROM humo_unprocessed_tags WHERE tag_tree_id='".safe_text($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 
-	// *** Remove admin favorites ***
+	// *** Remove admin favourites ***
 	$sql="DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='".safe_text($_POST['tree_id'])."'";
 	@$result=$dbh->query($sql);
 

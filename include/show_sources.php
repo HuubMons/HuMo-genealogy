@@ -109,18 +109,26 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				// *** Test line for footnotes ***
 				//$text.=' '.$combiner_check.' ';
 
+// NOT YET IN PDF EXPORT.
+				// *** Add extra text by "Source for person". Otherwise it isn't clear wich source it is ***
+				if ($connect_sub_kind=='person_source') $text.= '. <b>'.__('Source for person').'</b> ';
+				if ($connect_sub_kind=='family_source') $text.= '. <b>'.__('Source for family').'</b> ';
 				$text.=' <a href="'.str_replace("&","&amp;",$_SERVER['REQUEST_URI']).'#source_ref'.$j2.'"><sup>'.$j2.')</sup></a>';
 			}
 			else{
 				// *** Link to shared source ***
 				if ($connectDb->connect_source_id AND $source_status=='publish'){
 					// *** Always show title of source, show link only after permission check ***
-					if ($user['group_sources']=='j' AND $connect_sub_kind!='person_source'){
+					if ($user['group_sources']=='j' AND $connect_sub_kind!='person_source' AND $connect_sub_kind!='family_source'){
 						$text.= ', <a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].
 						'&amp;id='.$sourceDb->source_gedcomnr.'">'.__('source');
 					}
 					elseif ($connect_sub_kind=='person_source'){
 						$text.= '. <b>'.__('Source for person').'</b>';
+						$text.= '<a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$sourceDb->source_gedcomnr.'">';
+					}
+					elseif ($connect_sub_kind=='family_source'){
+						$text.= '. <b>'.__('Source for family').'</b>';
 						$text.= '<a href="'.$uri_path.'source.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$sourceDb->source_gedcomnr.'">';
 					}
 					else{

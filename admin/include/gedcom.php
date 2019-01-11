@@ -426,7 +426,7 @@ if (isset($_POST['step2'])){
 		echo '<br>';
 
 
-		// *** Remove admin favorites ***
+		// *** Remove admin favourites ***
 		printf(__('Remove old family tree items from %s table...'), 'humo_settings');
 		ob_flush(); flush(); // IE
 		$sql="DELETE FROM humo_settings WHERE setting_variable='admin_favourite' AND setting_tree_id='".safe_text($tree_id)."'";

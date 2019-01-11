@@ -1797,6 +1797,12 @@ if (isset($_GET['living_place_drop'])){
 	echo '<div class="confirm">';
 	echo __('Are you sure you want to delete this place? ');
 	echo '<form method="post" action="'.$phpself.'" style="display : inline;">';
+	if (isset($_GET['pers_place'])){
+		echo '<input type="hidden" name="pers_place" value="1">';
+	}
+	elseif (isset($_GET['fam_place'])){
+		echo '<input type="hidden" name="fam_place" value="1">';
+	}
 	echo '<input type="hidden" name="page" value="'.$_GET['page'].'">';
 	echo '<input type="hidden" name="person_place_address" value="person_place_address">';
 	echo '<input type="hidden" name="living_place_id" value="'.$_GET['living_place_drop'].'">';
@@ -1806,17 +1812,27 @@ if (isset($_GET['living_place_drop'])){
 	echo '</div>';
 }
 if (isset($_POST['living_place_drop2'])){
+	if (isset($_POST['pers_place'])){
+		$address_connect_sub_kind='person';
+		$address_connect_id=$pers_gedcomnumber;
+	}
+	elseif (isset($_POST['fam_place'])){
+		$address_connect_sub_kind='family';
+		$address_connect_id=$marriage;
+	}
+
 	$living_place_order=safe_text($_POST['living_place_id']);
 	$sql="DELETE FROM humo_addresses WHERE address_tree_id='".$tree_id."'
-		AND address_connect_sub_kind='person'
-		AND address_connect_id='".$pers_gedcomnumber."'
+		AND address_connect_sub_kind='".$address_connect_sub_kind."'
+		AND address_connect_id='".$address_connect_id."'
 		AND address_order='".$living_place_order."'";
+//echo $sql;
 	$result=$dbh->query($sql);
 
 	$address_sql="SELECT * FROM humo_addresses
 		WHERE address_tree_id='".$tree_id."'
-		AND address_connect_sub_kind='person'
-		AND address_connect_id='".$pers_gedcomnumber."' AND address_order>'".$living_place_order."'
+		AND address_connect_sub_kind='".$address_connect_sub_kind."'
+		AND address_connect_id='".$address_connect_id."' AND address_order>'".$living_place_order."'
 		ORDER BY address_order";
 	$event_qry=$dbh->query($address_sql);
 	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
@@ -1830,92 +1846,119 @@ if (isset($_POST['living_place_drop2'])){
 }
 
 if (isset($_GET['living_place_add'])){
+	if (isset($_GET['pers_place'])){
+		$address_connect_id=$pers_gedcomnumber;
+		$address_connect_kind='person';
+		$address_connect_sub_kind='person';
+	}
+	elseif (isset($_GET['fam_place'])){
+		$address_connect_id=$marriage;
+		$address_connect_kind='family';
+		$address_connect_sub_kind='family';
+	}
+
 	// *** Generate new order number ***
 	$address_sql="SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."'
-		AND address_connect_sub_kind='person'
-		AND address_connect_id='".$pers_gedcomnumber."' ORDER BY address_order DESC LIMIT 0,1";
+		AND address_connect_sub_kind='".$address_connect_sub_kind."'
+		AND address_connect_id='".$address_connect_id."'
+		ORDER BY address_order DESC LIMIT 0,1";
 	$address_qry=$dbh->query($address_sql);
-	$addressDb=$address_qry->fetch(PDO::FETCH_OBJ);	
-	$address_order=0; if (isset($addressDb->address_order)){ $address_order=$addressDb->address_order; }
+	$addressDb=$address_qry->fetch(PDO::FETCH_OBJ);
+	$address_order=0; if (isset($addressDb->address_order)) $address_order=$addressDb->address_order;
 	$address_order++;
 
 	$sql="INSERT INTO humo_addresses SET
 		address_tree_id='".$tree_id."',
-		address_connect_kind='person',
-		address_connect_sub_kind='person',
-		address_connect_id='".$pers_gedcomnumber."',
+		address_connect_kind='".$address_connect_kind."',
+		address_connect_sub_kind='".$address_connect_sub_kind."',
+		address_connect_id='".$address_connect_id."',
 		address_date='',
 		address_place='',
 		address_order='".$address_order."',
 		address_new_date='".$gedcom_date."',
 		address_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
+//echo $sql.'!'.$_GET['menu_admin'],$marriage.$_GET['pers_place'].'!'.$_GET['fam_place'];
 }
 
 // *** Change address ***
-if (isset($_POST['person_address_id'])){
-	foreach($_POST['person_address_id'] as $key=>$value){  
-		//$sql="UPDATE ".$tree_prefix."addresses SET
-		//address_place='".$editor_cls->text_process($_POST["address_place"][$key])."',
+if (isset($_POST['change_address_id'])){
+	foreach($_POST['change_address_id'] as $key=>$value){
 		$sql="UPDATE humo_addresses SET
 			address_date='".$editor_cls->date_process("address_date",$key)."',
+			address_address='".$editor_cls->text_process($_POST["address_address_".$key])."',
 			address_place='".$editor_cls->text_process($_POST["address_place_".$key])."',
-			address_changed_date='".$gedcom_date."', ";
-		//if (isset($_POST["address_text"][$key])){
-			//$sql.="address_text='".$editor_cls->text_process($_POST["address_text"][$key])."',";
-		//}
-		$sql.=" address_changed_time='".$gedcom_time."'";
-		$sql.=" WHERE address_id='".safe_text($_POST["person_address_id"][$key])."'";
-		//echo $sql.'<br>';
+			address_changed_date='".$gedcom_date."',
+			address_changed_time='".$gedcom_time."'
+		WHERE address_id='".safe_text($_POST["change_address_id"][$key])."'";
 		$result=$dbh->query($sql);
-
+//echo $sql.'<br>';
 		family_tree_update($tree_prefix);
 	}
 }
 
 if (isset($_GET['living_place_down'])){
+	if (isset($_GET['pers_place'])){
+		$address_connect_id=$pers_gedcomnumber;
+		$address_connect_sub_kind='person';
+	}
+	elseif (isset($_GET['fam_place'])){
+		$address_connect_id=$marriage;
+		$address_connect_sub_kind='family';
+	}
+
 	$sql="UPDATE humo_addresses
 	SET address_order='99'
 	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='person'
-	AND address_connect_id='".$pers_gedcomnumber."' AND address_order='".safe_text($_GET["living_place_down"])."'";
+	AND address_connect_sub_kind='".$address_connect_sub_kind."'
+	AND address_connect_id='".$address_connect_id."' AND address_order='".safe_text($_GET["living_place_down"])."'";
+//echo $sql;
 	$result=$dbh->query($sql);
 
 	$sql="UPDATE humo_addresses
 	SET address_order='".(safe_text($_GET['living_place_down']))."'
 	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='person'
-	AND address_connect_id='".$pers_gedcomnumber."' AND address_order='".(safe_text($_GET["living_place_down"])+1)."'";
+	AND address_connect_sub_kind='".$address_connect_sub_kind."'
+	AND address_connect_id='".$address_connect_id."' AND address_order='".(safe_text($_GET["living_place_down"])+1)."'";
 	$result=$dbh->query($sql);
 
 	$sql="UPDATE humo_addresses
 	SET address_order='".(safe_text($_GET['living_place_down'])+1)."'
 	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='person'
-	AND address_connect_id='".$pers_gedcomnumber."' AND address_order=99";
+	AND address_connect_sub_kind='".$address_connect_sub_kind."'
+	AND address_connect_id='".$address_connect_id."' AND address_order=99";
 	$result=$dbh->query($sql);
 }
 
 if (isset($_GET['living_place_up'])){
+	if (isset($_GET['pers_place'])){
+		$address_connect_id=$pers_gedcomnumber;
+		$address_connect_sub_kind='person';
+	}
+	elseif (isset($_GET['fam_place'])){
+		$address_connect_id=$marriage;
+		$address_connect_sub_kind='family';
+	}
+
 	$sql="UPDATE humo_addresses
 	SET address_order='99'
 	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='person'
-	AND address_connect_id='".$pers_gedcomnumber."' AND address_order='".safe_text($_GET["living_place_up"])."'";
+	AND address_connect_sub_kind='".$address_connect_sub_kind."'
+	AND address_connect_id='".$address_connect_id."' AND address_order='".safe_text($_GET["living_place_up"])."'";
 	$result=$dbh->query($sql);
 
 	$sql="UPDATE humo_addresses
 	SET address_order='".(safe_text($_GET['living_place_up']))."'
 	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='person'
-	AND address_connect_id='".$pers_gedcomnumber."' AND address_order='".(safe_text($_GET["living_place_up"])-1)."'";
+	AND address_connect_sub_kind='".$address_connect_sub_kind."'
+	AND address_connect_id='".$address_connect_id."' AND address_order='".(safe_text($_GET["living_place_up"])-1)."'";
 	$result=$dbh->query($sql);
 
 	$sql="UPDATE humo_addresses
 	SET address_order='".(safe_text($_GET['living_place_up'])-1)."'
 	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='person'
-	AND address_connect_id='".$pers_gedcomnumber."' AND address_order=99";
+	AND address_connect_sub_kind='".$address_connect_sub_kind."'
+	AND address_connect_id='".$address_connect_id."' AND address_order=99";
 	$result=$dbh->query($sql);
 }
 ?>

@@ -747,7 +747,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cms_pages">'.__('CMS Own pages').'</a></li>';
 
 						$menu_item=''; if ($page=='favorites'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=favorites">'.__('Homepage favorites').'</a></li>';
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=favorites">'.__('Homepage favourites').'</a></li>';
 
 						// *** Language Editor ***
 						$menu_item=''; if ($page=='language_editor'){ $menu_item=' id="current"'; }

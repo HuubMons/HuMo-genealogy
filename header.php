@@ -261,14 +261,14 @@ if (isset($screen_mode) AND ($screen_mode=='PDF' OR $screen_mode=="ASPDF")){
 	$tree_prefix_quoted = safe_text($_SESSION['tree_prefix']);
 }
 else{
-	// *** Save family-favorite in cookie ***
+	// *** Save family-favourite in cookie ***
 	if (isset($_POST['favorite'])){
 		$favorite_array2=explode("|",$_POST['favorite']);
 		// *** Combine tree prefix and family number as unique array id, for example: humo_F4 ***
 		$i=$favorite_array2['2'].$favorite_array2['1'];
 		setcookie("humo_favorite[$i]", $_POST['favorite'], time()+60*60*24*365);
 	}
-	// *** Remove family-favorite cookie ***
+	// *** Remove family-favourite cookie ***
 	if (isset($_POST['favorite_remove'])){
 		if (isset($_COOKIE['humo_favorite'])) {
 			foreach ($_COOKIE['humo_favorite'] as $name => $value) {

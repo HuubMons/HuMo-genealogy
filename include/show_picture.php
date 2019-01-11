@@ -168,8 +168,9 @@ function show_media($event_connect_kind,$event_connect_id){
 				// *** But: reverse change of / character (if sub folders are used) ***
 				//$picture_array['picture'] = rawurlencode($picture_array['picture']);
 				$picture_array['picture'] = str_ireplace("%2F","/",rawurlencode($picture_array['picture']));
-				$line_pos = strpos("|",$media_event_text[$i]);
-				$title_txt=''; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
+				$line_pos = strpos($media_event_text[$i],"|");
+				//$title_txt=''; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
+				$title_txt=$media_event_text[$i]; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
 
 				$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $title_txt).'">';
 				$picture.='<img src="'.$picture_array['path'].$picture_array['thumb'].$picture_array['picture'].'" height="'.$picture_array['height'].'" alt="'.$event_event.'"></a>';

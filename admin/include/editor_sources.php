@@ -146,6 +146,13 @@ if ($connect_sub_kind=='family_source'){
 	echo source_edit("family","family_source",$marriage);
 }
 
+// *** Edit source by address by person ***
+if ($connect_sub_kind=='fam_address_source'){
+	echo '<h2>'.__('source').' - '.__('Address').'</h2>';
+	//echo source_edit("person","pers_address_source",$pers_gedcomnumber);
+	echo source_edit("family","fam_address_source",$connect_connect_id);
+}
+
 // *** Edit source by address ***
 if ($connect_sub_kind=='address_source'){
 	echo '<h2>'.__('source').' - '.__('Address').': </h2>';

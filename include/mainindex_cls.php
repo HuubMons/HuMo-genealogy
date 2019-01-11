@@ -79,9 +79,9 @@ function show_tree_index(){
 
 				//*** Today in history ***
 				if ($humo_option["today_in_history_show"]=='y')
-					echo '<br>'.$this->today_in_history().'<br>';
+					echo '<br>'.$this->today_in_history();
 
-				// *** Homepage favorites ***
+				// *** Homepage favourites ***
 				echo '<br>'.$this->extra_links();
 			}
 		}
@@ -425,7 +425,7 @@ function search_box(){
 	echo "</form>\n";
 }
 
-// *** Favorites ***
+// *** Favourites ***
 function extra_links(){
 	global $dbh, $tree_id, $humo_option, $uri_path;
 
@@ -468,7 +468,7 @@ function extra_links(){
 
 		// *** Show links ***
 		if (isset($link_text2)){
-			echo '<div class="mainmenu_bar fonts">'.__('Favorites').'</div>';
+			echo '<div class="mainmenu_bar fonts">'.__('Favourites').'</div>';
 			//for($i=1; $i<=count($link_text2); $i++){
 			for($i=1; $i<=$num_rows; $i++){
 				if (isset($link_text2[$i])) echo $link_text2[$i]."<br>\n";
@@ -614,7 +614,7 @@ function today_in_history(){
 		if ($count_privacy)
 			echo '<tr><td colspan="3">'.$count_privacy.__(' persons are not shown due to privacy settings').'</td></tr>';
 	echo '</table>';
-	echo '</div>';
+	echo '<br></div>';
 }
 
 function show_footer(){

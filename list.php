@@ -515,9 +515,13 @@ if (isset($_POST['part_spouse_lastname'])){ $selection['part_spouse_lastname']=$
 
 $selection['sexe']=''; if (isset($_POST['sexe'])){ $selection['sexe']=$_POST['sexe']; }
 	elseif (isset($_GET['sexe'])){ $selection['sexe']=$_GET['sexe']; }
-
+// *** Own Code ***
 $selection['own_code']=''; if (isset($_POST['own_code'])){ $selection['own_code']=$_POST['own_code']; }
 $selection['part_own_code']=''; if (isset($_POST['part_own_code'])){ $selection['part_own_code']=$_POST['part_own_code']; }
+
+// *** Gedcomnumber ***
+$selection['gednr']=''; if (isset($_POST['gednr'])){ $selection['gednr']=$_POST['gednr']; }
+$selection['part_gednr']=''; if (isset($_POST['part_gednr'])){ $selection['part_gednr']=$_POST['part_gednr']; }
 
 // *** Profession ***
 $selection['pers_profession']=''; if (isset($_POST['pers_profession'])){ $selection['pers_profession']=$_POST['pers_profession']; }
@@ -660,7 +664,7 @@ $count_qry='';
 
 if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['pers_lastname'] OR $selection['birth_place'] OR $selection['death_place']
 	OR $selection['birth_year'] OR $selection['death_year'] OR ($selection['sexe'] AND $selection['sexe']!='both')
-	OR $selection['own_code'] OR $selection['pers_profession'] OR $selection['pers_place'] OR $selection['text']
+	OR $selection['own_code'] OR $selection['gednr'] OR $selection['pers_profession'] OR $selection['pers_place'] OR $selection['text']
 	OR $selection['zip_code'] OR $selection['witness'] ){
 
 	// *** Build query ***
@@ -760,7 +764,12 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	if ($selection['own_code']){
 		$query.=$and."pers_own_code ".name_qry($selection['own_code'], $selection['part_own_code']); $and=" AND ";
 	}
-
+	if ($selection['gednr']){
+		if(strtoupper(substr($_POST['gednr'],0,1)) != 'I') $selection['gednr']='I'.$_POST['gednr']; // if only number was entered - add "I" before
+		else strtoupper($selection['gednr']=$_POST['gednr']); // in case lowercase "i" was entered before number, make it "I"
+		$query.=$and."pers_gedcomnumber ".name_qry($selection['gednr'], $selection['part_gednr']); $and=" AND ";
+	}
+	
 	if ($selection['pers_profession']){
 		$query.=$and." (event_kind='profession' AND event_event ".name_qry($selection['pers_profession'], $selection['part_profession']).')';
 		$and=" AND ";
@@ -1383,7 +1392,20 @@ if ($index_list=='patronym'){
 			echo '</select>';
 			echo ' <input type="text" name="witness" value="'.$selection['witness'].'" size="15" placeholder="'.ucfirst(__('witness')).'">';
 			echo '</td>';
-
+			echo '</tr>';
+			echo '<tr>';
+			echo '<td align="right" class="no_border">'.ucfirst(__('gedcomnumber (ID)')).':';
+			echo ' <select size="1" name="part_gednr">';
+			echo '<option value="equals">'.__('Equals').'</option>';
+			$select_item=''; if ($selection['part_gednr']=='contains'){ $select_item=' selected'; }
+			echo '<option value="contains"'.$select_item.'>'.__('Contains').'</option>';
+			$select_item=''; if ($selection['part_gednr']=='starts_with'){ $select_item=' selected'; }
+			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
+			echo '</select>';
+			echo ' <input type="text" name="gednr" value="'.$selection['gednr'].'" size="15" placeholder="'.ucfirst(__('gedcomnumber (ID)')).'">';
+			echo '</td><td>';
+			echo '</td><td>';
+			echo '</td>';
 			echo '</tr>';
 
 		}	// *** End of advanced search fields ***

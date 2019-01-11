@@ -1,6 +1,15 @@
 <?php
 class editor_event_cls{
 
+// *** Encode entire array (for picture array searches) ***
+function utf8ize($d) {
+	foreach($d as $key => $value) {
+		$d[$key] = utf8_encode($value);
+	}
+       	return $d;  
+}  
+
+
 // *** Show event_kind text ***
 function event_text($event_kind){
 	global $language;
@@ -54,7 +63,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	$is_cat=false; // flags there are category files (for use later on)
 	$picture_array2 = Array(); // declare, otherwise if not used gives error
 	// if subfolders exist for category files, list those too
-	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");  
+	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 	if($temp->rowCount()) {    // there is a category table
 		//$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		$catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
@@ -139,11 +148,22 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$qry="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND event_kind='profession' ORDER BY event_order";
 	}
+/*
 	elseif ($event_kind=='picture'){
 		$qry="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND
 			event_kind='picture' ORDER BY event_order";
 	}
+*/
+	elseif ($event_kind=='picture'){
+		$search_picture = ""; $searchpic="";
+		if(isset($_POST['searchpic'])) { $search_picture = $_POST['searchpic']; }
+		if($search_picture != "") { $searchpic = " AND event_event LIKE '%".$search_picture."%' ";}
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND
+			event_kind='picture' ".$searchpic." ORDER BY event_order";
+	}
+
 	elseif ($event_kind=='family'){
 		$qry="SELECT * FROM humo_events 
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='family' AND event_connect_id='".$event_connect_id."'
@@ -810,13 +830,18 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 		elseif ($data_listDb->event_kind=='picture'){
 			// *** Show pull-down list pictures ***
 			//$text.='<td style="border-left:0px;">';
-			$text.='<select size="1" name="text_event['.$data_listDb->event_id.']">';
+			$text.='<select size="1" name="text_event['.$data_listDb->event_id.']" id="text_event'.$data_listDb->event_id.'">';
 				$text.='<option value=""></option>';
 				for ($picture_nr=0; $picture_nr<$nr_pictures; $picture_nr++){
 					$selected=''; if ($picture_array[$picture_nr]==$data_listDb->event_event){ $selected=' SELECTED'; }
 					$text.='<option value="'.$picture_array[$picture_nr].'"'.$selected.'>'.$picture_array[$picture_nr].'</option>';
 				}
 			$text.='</select>';
+
+			$text.= '&nbsp&nbsp&nbsp'.__('Search filename').'&nbsp'.'<input type="text" name="searchpic" id="inp_text_event'.$data_listDb->event_id.'" size="15">';
+			$jsonarr = json_encode($this->utf8ize($picture_array)); 
+			$text.= '<input type=\'button\' onclick=\'Search_pic('.$data_listDb->event_id.','.$nr_pictures.','.$jsonarr.')\' value=\'Search\'>';
+ 
 			if($is_cat==true) { $text.='<br>'.__('Category files are displayed at bottom of list'); }
 		}
 
@@ -1265,7 +1290,27 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 	}
 
 	return $text;
-}
 
-}
+}   // end function show_event
+
+}   // end class
+
+// javascript for "search by file name of picture" feature  
+echo 	'<script type="text/javascript">
+		function Search_pic(idnum, picnr, picarr){
+			var searchval = document.getElementById("inp_text_event" + idnum).value;
+			searchval = searchval.toLowerCase();
+			var countarr = 0;
+			// *** delete existing full list ***
+			document.getElementById("text_event" + idnum).options.length=0; 
+			for (var countpics=0; countpics<picnr; countpics++){
+				var picname = picarr[countpics].toLowerCase();
+				if(picname.indexOf(searchval) != -1) {
+					document.getElementById("text_event" + idnum).options[countarr]=new Option(picarr[countpics], picarr[countpics], true, false);
+					countarr++;
+				}
+			}
+ 	 	}
+ 	</script>';
+ 
 ?>
