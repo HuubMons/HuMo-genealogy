@@ -130,13 +130,15 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 
 				echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';
 				echo '</form>';
-
-				echo '</td><td>';
+			echo '</td><td>';
 				echo '<b>'.$noteDb->note_date.' '.$noteDb->note_time.' '.$userDb->user_name.'</b><br>';
-				echo '<b>'.$noteDb->note_names.'</b><br>';
+				//echo '<b>'.$noteDb->note_names.'</b><br>';
+
+				// index.php?page=editor&tree=humo2_&person=I313
+				echo '<b><a href="index.php?page=editor&tree='.$noteDb->note_tree_prefix.'&amp;person='.$noteDb->note_pers_gedcomnumber.'">'.$noteDb->note_pers_gedcomnumber.' '.$noteDb->note_names.'</a></b><br>';
+
 				echo nl2br($noteDb->note_note);
-				echo '</td>';
-			echo '</tr>';
+			echo '</td></tr>';
 		}
 	}
 

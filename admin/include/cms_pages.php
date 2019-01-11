@@ -391,13 +391,14 @@ if ($cms_item=='pages'){
 	//);
 
 	$_SESSION['KCFINDER'] = array();
+	// *** Enable KCFinder ***
 	$_SESSION['KCFINDER']['disabled'] = false;
 	if (isset($humo_option["cms_images_path"])){
-		$cms_images_path=$humo_option["cms_images_path"]; if (substr($cms_images_path,0,1)=='|') $cms_images_path='../../../media/cms';
-		//$_SESSION['KCFINDER']['uploadURL'] = $humo_option["cms_images_path"];
-		$_SESSION['KCFINDER']['uploadURL'] = $cms_images_path;
-		//$_SESSION['KCuploadURL'] = $humo_option["cms_images_path"];
+		// *** Set KCfinder pathes ***
 		$_SESSION['KCFINDER']['uploadDir'] = "";
+
+		$cms_images_path=$humo_option["cms_images_path"]; if (substr($cms_images_path,0,1)=='|') $cms_images_path='../../../media/cms';
+		$_SESSION['KCFINDER']['uploadURL'] = $cms_images_path;;
 	}
 	else{
 		//$_SESSION['KCuploadURL']='upload';

@@ -3138,6 +3138,9 @@ if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
 						if ($searchDb->pers_birth_date){
 							$birth=' '.__('*').' '.date_place($searchDb->pers_birth_date,'');
 						}
+						$search1_cls = New person_cls;
+						$search1_cls->construct($searchDb);	
+						if($search1_cls->privacy)	 { $birth = ''; }
 						echo ' value="'.$searchDb->pers_gedcomnumber.'">'.$name["index_name"].$birth.' ['.$searchDb->pers_gedcomnumber.']</option>';
 					}
 				}
@@ -3217,7 +3220,11 @@ if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
 					if ($searchDb2->pers_birth_date){
 						$birth=' '.__('*').' '.date_place($searchDb2->pers_birth_date,'');
 					}
+					$search2_cls = New person_cls;
+					$search2_cls->construct($searchDb2);	
+					if($search2_cls->privacy)	 { $birth = ''; }				
 					echo ' value="'.$searchDb2->pers_gedcomnumber.'">'.$name["index_name"].$birth.' ['.$searchDb2->pers_gedcomnumber.']</option>';
+					
 				}
 			}
 			echo '</select>';

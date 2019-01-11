@@ -6,7 +6,6 @@ if (!defined('ADMIN_PAGE')){ exit; }
 include_once ("editor_cls.php");
 $editor_cls = New editor_cls;
 
-//if (isset($_SESSION['admin_tree_prefix'])){ $tree_prefix=$_SESSION['admin_tree_prefix']; }
 if (isset($_SESSION['admin_tree_id'])){ $tree_id=$_SESSION['admin_tree_id']; }
 if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['admin_pers_gedcomnumber']; }
 if (isset($_SESSION['admin_fam_gedcomnumber'])){ $marriage=$_SESSION['admin_fam_gedcomnumber']; }
@@ -175,7 +174,6 @@ if ($connect_sub_kind=='fam_event_source'){
 function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 	global $dbh, $tree_id, $language, $page, $phpself2, $joomlastring, $marriage;
 	global $editor_cls, $field_date;
-	//global $tree_prefix;
 
 	// *** Explanation of role and page ***
 	$text='<p>'.__('Sourcerole').': '.__('e.g. Writer, Brother, Sister, Father').'<br>';

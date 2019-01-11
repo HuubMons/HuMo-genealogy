@@ -189,10 +189,13 @@ if ($show_table){
 				echo '<input type="radio" value="yes" name="default_path" '.$checked1.'> '.__('Use default picture path:').' <b>media/</b><br>';
 				echo '<input type="radio" value="no" name="default_path" '.$checked2.'> ';
 
-				echo '<input type="text" name="tree_pict_path" value="'.$tree_pict_path.'" size="40">';
-
-				echo ' <input type="Submit" name="change_tree_data" value="'.__('Change').'">';
-				echo ' '.__('example: ../pictures/');
+				echo '<input type="text" name="tree_pict_path" value="'.$tree_pict_path.'" size="40" placeholder="../pictures/">';
+				echo ' <input type="Submit" name="change_tree_data" value="'.__('Change').'"><br>';
+				echo __('Example of picture path:<br>
+www.myhomepage.nl/humo-gen/ => folder for HuMo-gen files.<br>
+www.myhomepage.nl/pictures/ => folder for pictures.<br>
+Use a relative path, exactly as shown here: <b>../pictures/</b>').'<br>';
+				//echo ' '.__('example: ../pictures/');
 				echo '</form>';
 			echo '</td></tr>';
 

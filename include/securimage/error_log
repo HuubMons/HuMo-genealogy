@@ -1,0 +1,2 @@
+[07-Feb-2016 15:35:33 America/Denver] PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/php/56/usr/lib64/php/modules/pdo.so' - /usr/php/56/usr/lib64/php/modules/pdo.so: cannot open shared object file: No such file or directory in Unknown on line 0
+[07-Feb-2016 15:36:50 America/Denver] PHP Warning:  PHP Startup: Unable to load dynamic library '/usr/php/56/usr/lib64/php/modules/pdo.so' - /usr/php/56/usr/lib64/php/modules/pdo.so: cannot open shared object file: No such file or directory in Unknown on line 0

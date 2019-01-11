@@ -6,13 +6,12 @@ function show_tree_text($tree_prefix,$selected_language){
 	$treetext_array['name']=__('NO NAME');
 	$treetext_array['mainmenu_text']='';
 	$treetext_array['mainmenu_source']='';
-	//$treetext_array['family_top']='Family page';
 	$treetext_array['family_top']='';
 	$treetext_array['family_footer']='';
 
 	$found_text=false;
 
-	// *** NEW: Default tree texts ***
+	// *** Default tree texts ***
 	$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 		ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
 		AND treetext_language='default' WHERE tree_prefix='".safe_text($tree_prefix)."'";
@@ -32,7 +31,7 @@ function show_tree_text($tree_prefix,$selected_language){
 	// *** Check for tree texts in selected language ***
 	$sql = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
 		ON humo_trees.tree_id=humo_tree_texts.treetext_tree_id
-		AND treetext_language='".$selected_language."' WHERE tree_prefix='".safe_text($tree_prefix)."'";
+		AND treetext_language='".safe_text($selected_language)."' WHERE tree_prefix='".safe_text($tree_prefix)."'";
 	$datasql = $dbh->query($sql);
 	@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 	if (isset($dataDb->treetext_name)){

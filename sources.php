@@ -27,7 +27,6 @@ if(isset($_GET['order_sources'])) {
 }
 if($order_sources=="title") {
 	// *** Default querie: order by title ***
-	//$querie="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources";
 	$querie="SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'";
 	// *** Check user group is restricted sources can be shown ***
 	if ($user['group_show_restricted_source']=='n'){ $querie.=" AND (source_status!='restricted' OR source_status IS NULL)"; }
@@ -35,27 +34,16 @@ if($order_sources=="title") {
 }
 if($order_sources=="date") {
 	// *** Check user group is restricted sources can be shown ***
-	/*
-	$querie="SELECT source_status, source_id, source_gedcomnr, source_title, source_date, source_place,
-	right(source_date,4) as year,
-	date_format( str_to_date( substring(source_date,4,3),'%b' ),'%m') as month,
-	date_format( str_to_date( left(source_date,2),'%d' ),'%d') as day
-	FROM ".$tree_prefix_quoted."sources";
-	if ($user['group_show_restricted_source']=='n'){ $querie.=" WHERE source_status!='restricted' OR source_status IS NULL"; }
-	$querie.=" ORDER BY year, month, day";
-	*/
 	$querie="SELECT source_status, source_id, source_gedcomnr, source_title, source_date, source_place,
 	CONCAT(right(source_date,4),
 		date_format( str_to_date( substring(source_date,4,3),'%b' ),'%m'),
 		date_format( str_to_date( left(source_date,2),'%d' ),'%d') )
 		as year
 	FROM humo_sources WHERE source_tree_id='".$tree_id."'";
-	//FROM ".$tree_prefix_quoted."sources";
 	if ($user['group_show_restricted_source']=='n'){ $querie.=" AND (source_status!='restricted' OR source_status IS NULL)"; }
 	$querie.=" ORDER BY year".$desc_asc;
 }
 if($order_sources=="place") {
-	//$querie="SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."sources";
 	$querie="SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'";
 	// *** Check user group is restricted sources can be shown ***
 	if ($user['group_show_restricted_source']=='n'){ $querie.=" AND (source_status!='restricted' OR source_status IS NULL)"; }
@@ -63,9 +51,10 @@ if($order_sources=="place") {
 }
 
 // *** Pages ***
-$start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
-$item=0; if (isset($_GET['item'])){ $item=$_GET['item']; }
+$start=0; if (isset($_GET["start"]) AND is_numeric($_GET["start"])){ $start=$_GET["start"]; }
+$item=0; if (isset($_GET['item']) AND is_numeric($_GET['item'])){ $item=$_GET['item']; }
 $count_sources=$humo_option['show_persons'];
+
 // *** All sources query ***
 $all_sources=$dbh->query($querie);
 $source=$dbh->query($querie." LIMIT ".safe_text($item).",".$count_sources);
@@ -86,12 +75,12 @@ for ($i=$start; $i<=$start+19; $i++) {
 	$calculated=($i-1)*$count_sources;
 	if ($calculated<$all_sources->rowCount()){
 		if ($item==$calculated){
-			$line_pages.=  " <b>$i</B>";
+			$line_pages.=  " <b>$i</b>";
 		}
 		else {
-			$line_pages.=  "<a href=\"".$_SERVER['PHP_SELF']."?item=$calculated&amp;start=$start";
+			$line_pages.=  " <a href=\"".$_SERVER['PHP_SELF']."?item=$calculated&amp;start=$start";
 			if (isset($_GET['order_sources'])){ $line_pages.= "&amp;order_sources=".$_GET['order_sources'].'&sort_desc='.$sort_desc; }
-			$line_pages.=  "\"> $i</a>";
+			$line_pages.=  "\">$i</a>";
 		}
 	}
 }

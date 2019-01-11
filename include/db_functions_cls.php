@@ -5,24 +5,24 @@
  * THANKS TO	: Michael.j.Falconer
  *
  * FUNCTIONS:
- *		check_visitor			Check for valid visitor.
- *		get_user				Check if user exists.
- *		get_tree				Get data from selected family tree.
- *		get_trees				Get data from all family trees.
- *		check_person			Check if person is valid.
- *		get_person				Get a single person from database.
- *		get_person_with_id		Get a single person from database using id number.
- *		check_family			Check if family is valid.
- *		get_family				Get a single family from database.
- *		get_event				Get a single event from database.
- *		get_events_kind			Get multiple events of one event_kind from database. Example:
- *		get_events_connect		Get multiple events of a connected person, family etc. selecting one event_kind from database.
- *		get_source				Get a single source from database.
- *		get_address				Get a single address from database.
- *		get_addressses			Get a all adresses (places) by a person, family, etc.
- *		get_connections			Get multiple connections (used for sources and addresses).
- *		get_connections_person	Get multiple connections of a person.
- *		get_repository			Get a single repository from database.
+ *		check_visitor				Check for valid visitor.
+ *		get_user					Check if user exists.
+ *		get_tree					Get data from selected family tree.
+ *		get_trees					Get data from all family trees.
+ *		check_person				Check if person is valid.
+ *		get_person					Get a single person from database.
+ *		get_person_with_id			Get a single person from database using id number.
+ *		check_family				Check if family is valid.
+ *		get_family					Get a single family from database.
+ *		get_event					Get a single event from database.
+ *		get_events_kind				Get multiple events of one event_kind from database. Example:
+ *		get_events_connect			Get multiple events of a connected person, family etc. selecting one event_kind from database.
+ *		get_source					Get a single source from database.
+ *		get_address					Get a single address from database.
+ *		get_addressses				Get a all adresses (places) by a person, family, etc.
+ *		get_connections				Get multiple connections (used for sources and addresses).
+ *		get_connections_connect_id	Get multiple connections of a person or family.
+ *		get_repository				Get a single repository from database.
  *
  * SET family tree variabele:
  *	$db_functions->set_tree_prefix($tree_prefix_quoted);
@@ -137,8 +137,8 @@ function __construct($tree_prefix='') {
 		// *** Connection queries ***
 		$sql = "SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_sub_kind=:connect_sub_kind AND connect_item_id=:connect_item_id";
 		$this->query['get_connections'] = $dbh->prepare( $sql );
-		$sql = "SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_kind='person' AND connect_sub_kind=:connect_sub_kind AND connect_connect_id=:connect_connect_id ORDER BY connect_order";
-		$this->query['get_connections_person'] = $dbh->prepare( $sql );
+		$sql = "SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_kind=:connect_kind AND connect_sub_kind=:connect_sub_kind AND connect_connect_id=:connect_connect_id ORDER BY connect_order";
+		$this->query['get_connections_connect_id'] = $dbh->prepare( $sql );
 
 	}
 }
@@ -260,7 +260,7 @@ function count_persons($tree_prefix,$pers_gedcomnumber){
 	global $dbh;
 	$nr_persons=0;
 	try {
-		//$sql = "SELECT COUNT(*) FROM ".$tree_prefix."person";
+		//$sql = "SELECT COUNT(*) FROM humo_person";
 		//$qry = $dbh->prepare( $sql );
 
 		//$qry->bindValue(':pers_gedcomnumber', $pers_gedcomnumber, PDO::PARAM_STR);
@@ -545,7 +545,7 @@ function get_addresses($address_connect_id,$address_connect_kind){
 }
 
 /*--------------------[get connections]---------------------------
- * FUNCTION	: Get a single connection (source or address) from database.
+ * FUNCTION	: Get multiple connections (sources or addresses) from database.
  * QUERY	: SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id
  *				AND connect_sub_kind=:connect_sub_kind AND connect_item_id=:connect_item_id
  * RETURNS	: multiple connections.
@@ -565,22 +565,24 @@ function get_connections($connect_sub_kind, $connect_item_id){
 	return $result_array;
 }
 
-/*--------------------[get connections_persons]-------------------
- * FUNCTION	: Get a multiple connections from database.
+/*--------------------[get connections_connect_id]----------------
+ * FUNCTION	: Get multiple connections from database (for a person or family).
  * QUERY	: SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id
- *				AND connect_kind='person' AND connect_sub_kind=:connect_sub_kind
+ *				AND connect_kind=:connect_kind AND connect_sub_kind=:connect_sub_kind
  *				AND connect_connect_id=:connect_connect_id ORDER BY connect_order
  * RETURNS	: multiple connections.
+ * EXAMPLE	: $connect_sql = $db_functions->get_connections_connect_id('person','pers_object',$event_connect_id);
  *----------------------------------------------------------------
  */
-function get_connections_person($connect_sub_kind, $connect_connect_id){
+function get_connections_connect_id($connect_kind, $connect_sub_kind, $connect_connect_id){
 	$result_array = array();
 	try {
-		$this->query['get_connections_person']->bindValue(':connect_tree_id', $this->tree_id, PDO::PARAM_STR);
-		$this->query['get_connections_person']->bindValue(':connect_sub_kind', $connect_sub_kind, PDO::PARAM_STR);
-		$this->query['get_connections_person']->bindValue(':connect_connect_id', $connect_connect_id, PDO::PARAM_STR);
-		$this->query['get_connections_person']->execute();
-		$result_array=$this->query['get_connections_person']->fetchAll(PDO::FETCH_OBJ);
+		$this->query['get_connections_connect_id']->bindValue(':connect_tree_id', $this->tree_id, PDO::PARAM_STR);
+		$this->query['get_connections_connect_id']->bindValue(':connect_kind', $connect_kind, PDO::PARAM_STR);
+		$this->query['get_connections_connect_id']->bindValue(':connect_sub_kind', $connect_sub_kind, PDO::PARAM_STR);
+		$this->query['get_connections_connect_id']->bindValue(':connect_connect_id', $connect_connect_id, PDO::PARAM_STR);
+		$this->query['get_connections_connect_id']->execute();
+		$result_array=$this->query['get_connections_connect_id']->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}

@@ -2122,13 +2122,67 @@ if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_pres
 	}
 }
 
+// *** Generate citations, that can be used as a source for this person/ page ***
+/* EXAMPLE:
+"Family Page: Bethel, Catherine Ann Charles." database, Dolly Mae Alpha Index - Wyannie Malone Historical Museum (http://subscriber.bahamasgenealogyrecor ... son=I52982 : accessed 17 April 2016, Catherine Anne Charles Bethel, born 19 feb 1809 at New Providence, Bahamas; citing Christ Church Cathedral - Baptismal Register. Book 2, Whites -Page 99, item 21. for period Feb. 7, 1802 to Dec. 22, 1840.
+*/
+if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
+
+	// If there is a N.N. father, then use mother in favorite icon.
+	if ($change_main_person==true OR !isset($person_manDb->pers_gedcomnumber)){
+		$name1=$woman_cls->person_name($person_womanDb);
+		$name2=$man_cls->person_name($person_manDb);
+	}
+	else{
+		$name1=$man_cls->person_name($person_manDb);
+		$name2=$woman_cls->person_name($person_womanDb);
+	}
+
+	echo '<br><b>'.__('Citation for:').' '.__('Family Page').'</b><br>';
+
+	echo '<span class="citation">';
+		// *** Name of citation ***
+		echo '"'.__('Family Page').': '.$name1['name'].' &amp; '.$name2['name'].'."';
+
+		// *** Link to family page ***
+		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?id='.$family_id.'&amp;main_person='.$main_person;
+		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].'/family.php?id='.$family_id.'&amp;main_person='.$main_person;
+		echo ' HuMo-gen - '.$humo_option["database_name"].' (';
+		// *** url_rewrite ***
+		if ($humo_option["url_rewrite"]=="j"){
+			// *** $uri_path is made header.php ***
+			echo $uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$family_id.'/'.$main_person;
+		}
+		else{
+			echo 'http://'.$_SERVER['SERVER_NAME'].'/family.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$family_id.'&amp;main_person='.$main_person;
+		}
+
+		echo ' : '.__('accessed').' '.date("d F Y");
+		echo ')';
+
+		// *** Name and gedcom number of main person ***
+		echo ' '.$name1['name'].' #'.$person_manDb->pers_gedcomnumber;
+
+		// *** Birth or baptise date ***
+		if (!$family_privacy){
+			if ($person_manDb->pers_birth_date OR $person_manDb->pers_birth_place){
+				echo ', '.__('born').' '.date_place($person_manDb->pers_birth_date,$person_manDb->pers_birth_place);
+			}
+			elseif ($person_manDb->pers_bapt_date OR $person_manDb->pers_bapt_place){
+				echo ', '.__('baptised').' '.date_place($person_manDb->pers_bapt_date,$person_manDb->pers_bapt_place);
+			}
+		}
+
+	echo '</span><br><br>';
+}
+
 // *** Extra footer text in family screen ***
 if($screen_mode=='') {
 	if ($descendant_report==false) {
 		// *** Show extra footer text in family screen ***
 		$treetext=show_tree_text($dataDb->tree_prefix, $selected_language);
 		echo $treetext['family_footer'];
-
 
 		if ($user['group_user_notes_show']=='y'){
 			$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_prefix='".$tree_prefix_quoted."'

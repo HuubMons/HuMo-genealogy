@@ -11,7 +11,7 @@ if (isset($_SESSION['admin_tree_prefix'])){
 
 	$gedcom_date=strtoupper(date("d M Y"));
 	$gedcom_time=date("H:i:s");
-	$tree_prefix=safe_text($_SESSION['admin_tree_prefix']);
+	//$tree_prefix=safe_text($_SESSION['admin_tree_prefix']);
 	$drag_kind=safe_text($_GET["drag_kind"]);
 	
 	if($drag_kind=="children") {

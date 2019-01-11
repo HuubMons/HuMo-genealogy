@@ -13,8 +13,8 @@ echo '<h1 align="center">'.__('User groups').'</h1>';
 
 if (isset($_POST['group_add'])){
 	$sql="INSERT INTO humo_groups SET group_name='new groep', group_privacy='n', group_menu_places='n', group_admin='n',
-		group_sources='n', group_source_presentation='title', group_text_presentation='show', group_user_notes='n',
-		group_user_notes_show='n', group_show_restricted_source='y',
+		group_sources='n', group_source_presentation='title', group_text_presentation='show', group_citation_generation='n',
+		group_user_notes='n', group_user_notes_show='n', group_show_restricted_source='y',
 		group_pictures='n', group_gedcomnr='n', group_living_place='n', group_places='j',
 		group_religion='n', group_place_date='n', group_kindindex='n', group_event='n', group_addresses='n',
 		group_own_code='n', group_pdf_button='y', group_rtf_button='n', group_work_text='n', group_texts='j',
@@ -60,6 +60,7 @@ if (isset($_POST['group_change'])){
 	$group_own_code='n'; if (isset($_POST["group_own_code"])){ $group_own_code='j'; }
 	$group_pdf_button='n'; if (isset($_POST["group_pdf_button"])){ $group_pdf_button='y'; }
 	$group_rtf_button='n'; if (isset($_POST["group_rtf_button"])){ $group_rtf_button='y'; }
+	$group_citation_generation='n'; if (isset($_POST["group_citation_generation"])){ $group_citation_generation='y'; }
 
 	//if (!isset($_POST["group_user_notes"])){ $_POST["group_user_notes"]='n'; }
 	$group_user_notes='n'; if (isset($_POST["group_user_notes"])){ $group_user_notes='y'; }
@@ -93,6 +94,7 @@ if (isset($_POST['group_change'])){
 	group_show_restricted_source='".$group_show_restricted_source."',
 	group_source_presentation='".$_POST["group_source_presentation"]."',
 	group_text_presentation='".$_POST["group_text_presentation"]."',
+	group_citation_generation='".$group_citation_generation."',
 	group_user_notes='".$group_user_notes."',
 	group_user_notes_show='".$group_user_notes_show."',
 	group_birthday_rss='".$group_birthday_rss."',
@@ -205,23 +207,23 @@ echo '<br><table class="humo standard" style="text-align:center;"><tr class="tab
 echo '</td></tr></table><br>';
 
 /* *** Automatic installation or update ***
-  Januari 2016: Older updates are moved to update and installation script (was allready a long list...)!
-  If new extra settings are needed, just enable code below!
-*/ 
-/*
-// *** UPDATES MOVED TO UPDATE SCRIPT ***
+ * Januari 2016: Older updates are moved to update and installation script (was allready a long list...)!
+ */ 
 $column_qry = $dbh->query('SHOW COLUMNS FROM humo_groups');
 while ($columnDb = $column_qry->fetch()) {
 	$field_value=$columnDb['Field'];
 	$field[$field_value]=$field_value;
 }
-
-if (!isset($field['group_edit trees'])){
+//if (!isset($field['group_citation_generation'])){
+//	$sql="ALTER TABLE humo_groups
+//		ADD group_citation_generation VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER group_own_code;";
+//	$result=$dbh->query($sql);
+//}
+if (!isset($field['group_citation_generation'])){
 	$sql="ALTER TABLE humo_groups
-		ADD group_edit_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER group_hide_trees;";
+		ADD group_citation_generation VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n' AFTER group_own_code;";
 	$result=$dbh->query($sql);
 }
-*/
 
 // *** Show usergroup ***
 $groupsql="SELECT * FROM humo_groups WHERE group_id='".$show_group_id."'";
@@ -390,6 +392,11 @@ echo '<td><input type="checkbox" name="group_pdf_button"'.$check.'></td></tr>';
 echo '<tr><td>'.__('Show "RTF Report" button in family screen and reports').'</td>';
 $check=''; if ($groupDb->group_rtf_button!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_rtf_button"'.$check.'></td></tr>';
+
+// *** Show Citation generation ***
+echo '<tr><td>'.__('Generate citations (can be used as source).').'</td>';
+$check=''; if ($groupDb->group_citation_generation!='n') $check=' checked';
+echo '<td><input type="checkbox" name="group_citation_generation"'.$check.'></td></tr>';
 
 echo '<tr><td>'.__('User is allowed to add notes/ remarks by a person in the family tree').'. '.__('Disabled in group "Guest"').'</td>';
 $disabled=''; if ($groupDb->group_id=='3'){ $disabled=' disabled';} // *** Disable this option in "Guest" group.
@@ -628,7 +635,9 @@ echo '</table>';
 $hide_photocat_array=explode(";",$groupDb->group_hide_photocat);
 
 // *** Update photocat settings ***
-if (isset($_POST['change_photocat']) and is_numeric($_POST["id"])){
+//if (isset($_POST['change_photocat']) and is_numeric($_POST["id"])){
+$table_exists = $dbh->query("SHOW TABLES LIKE 'humo_photocat'")->rowCount() > 0;
+if ($table_exists AND isset($_POST['change_photocat']) and is_numeric($_POST["id"])){
 	$group_hide_photocat='';
 	$data3sql = $dbh->query("SELECT * FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order");
 	while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){

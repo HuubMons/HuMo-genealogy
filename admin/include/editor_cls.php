@@ -55,22 +55,6 @@ function date_show($process_date, $process_name, $multiple_rows=''){
 	return $text;
 }
 
-/*
-function date_process($process_name, $multiple_rows=''){
-	// *** Save "before", "about", "after" texts before a date ***
-	$process_name_prefix=$process_name.'_prefix';
-
-	if ($multiple_rows!='')
-		$process_date=$_POST["$process_name_prefix"][$multiple_rows].$_POST["$process_name"][$multiple_rows];
-	else
-		$process_date=$_POST["$process_name_prefix"].$_POST["$process_name"];
-
-	$process_date=strtoupper($process_date);
-	$process_date=safe_text($process_date);
-	return $process_date;
-}
-*/
-
 function date_process($process_name, $multiple_rows=''){
 	// *** Save "before", "about", "after" texts before a date ***
 	$process_name_prefix=$process_name.'_prefix'; 
@@ -183,7 +167,6 @@ function text_process($text,$long_text=false){
 // *** Show texts without <br> and process Aldfaer and other @xx@ texts ***
 function text_show($find_text){
 	global $dbh, $tree_id; 
-	//$tree_prefix;
 	if($find_text != '') {
 		$text=$find_text;
 		if (substr($find_text, 0, 1)=='@'){

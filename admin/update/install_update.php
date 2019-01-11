@@ -101,30 +101,37 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 				echo '<b>ERROR: Folder admin/update is NOT WRITABLE. Please change permissions.</b><br>';
 			}
 
-			// *** Copy HuMo-gen update to server using curl ***
-			if(function_exists('curl_exec')){
-				$source=$update['version_auto_download'];
-				$destination='update/humo-gen_update.zip';
-				$resource = curl_init();
-				curl_setopt($resource, CURLOPT_URL, $source);
-				curl_setopt($resource, CURLOPT_HEADER, false);
-				curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
-				$content = curl_exec($resource);
-				curl_close($resource);
-				if($content != ''){
-					$fp = fopen($destination, 'w');
-					$fw = fwrite($fp, $content);
-					fclose($fp);
-					if($fw != false){
-						$download=true;
+			// *** No download of software update, manually put in update folder! ***
+			if (file_exists('update/humo-gen_update.zip')) {
+				echo '<b>'.__('Found update file, skipped download of update!').'</b><br>';
+				$download=true;
+			}
+			else{
+				// *** Copy HuMo-gen update to server using curl ***
+				if(function_exists('curl_exec')){
+					$source=$update['version_auto_download'];
+					$destination='update/humo-gen_update.zip';
+					$resource = curl_init();
+					curl_setopt($resource, CURLOPT_URL, $source);
+					curl_setopt($resource, CURLOPT_HEADER, false);
+					curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
+					curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
+					$content = curl_exec($resource);
+					curl_close($resource);
+					if($content != ''){
+						$fp = fopen($destination, 'w');
+						$fw = fwrite($fp, $content);
+						fclose($fp);
+						if($fw != false){
+							$download=true;
+						}
 					}
 				}
-			}
-			// *** copy HuMo-gen to server using copy ***
-			else{
-				if (copy($update['version_auto_download'], 'update/humo-gen_update.zip')) {
-					$download=true;
+				// *** copy HuMo-gen to server using copy ***
+				else{
+					if (copy($update['version_auto_download'], 'update/humo-gen_update.zip')) {
+						$download=true;
+					}
 				}
 			}
 
@@ -166,24 +173,30 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 				foreach($ffs as $ff){
 					if(is_array($exclude) and !in_array($ff,$exclude)){ 
 						if($ff != '.' && $ff != '..'){
-							if ($file_array=='existing_files'){
-								$existing_dir[]=$dir;
-								$existing_files[]=$ff;
-								$existing_dir_files[]=substr($dir.'/'.$ff,3);
+							// *** Skip media files in ../media/, ../media/cms/ etc.
+							if (substr($dir,0,8)=='../media' AND !is_dir($dir.'/'.$ff) AND $ff != 'readme.txt'){
+								// skip media files
 							}
 							else{
-								$update_dir[]=$dir;
-								$update_files[]=$ff;
-								$update_dir_files[]=substr($dir.'/'.$ff,25);
+								if ($file_array=='existing_files'){
+									$existing_dir[]=$dir;
+									$existing_files[]=$ff;
+									$existing_dir_files[]=substr($dir.'/'.$ff,3);
+								}
+								else{
+									$update_dir[]=$dir;
+									$update_files[]=$ff;
+									$update_dir_files[]=substr($dir.'/'.$ff,25);
+								}
+								if(is_dir($dir.'/'.$ff)) listFolderFiles($dir.'/'.$ff,$exclude,$file_array); 
 							}
-							if(is_dir($dir.'/'.$ff)) listFolderFiles($dir.'/'.$ff,$exclude,$file_array); 
 						}
 					}
 				}
 			}
 
-			// *** Find all existing HuMo-gen files, skip humo-gen_update.zip, humo-gen_update folder, ip_files and media folders. ***
-			listFolderFiles('..',array('humo-gen_update.zip','humo-gen_update','ip_files','media'),'existing_files');
+			// *** Find all existing HuMo-gen files, skip humo-gen_update.zip, humo-gen_update folder and ip_files folders. ***
+			listFolderFiles('..',array('humo-gen_update.zip','humo-gen_update','ip_files'),'existing_files');
 
 			// *** Find all update HuMo-gen files, a__ is just some random text (skip items)... ***
 			listFolderFiles('./update/humo-gen_update',array('a__','a__'),'update_files');
@@ -239,12 +252,8 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 						$create_dir='../'.substr($update_dir[$i].'/'.$update_files[$i],25);
 						echo $create_dir;
 						if ($_GET['step']=='3'){
-							//if (mkdir($create_dir)){
-							// *** Media folders could allready exist, so skip them ***
-							if (!isset($create_dir)){
-								if (mkdir($create_dir)){
-									echo ' '.__('Directory created.');
-								}
+							if (mkdir($create_dir)){
+								echo ' '.__('Directory created.');
 							}
 						}
 						echo '<br>';

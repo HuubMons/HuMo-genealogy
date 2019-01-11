@@ -45,7 +45,6 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 	}
 	echo '</div>';
 	// *** This code is only used to restore $dataDb reading. Used for picture etc. ***
-	//$treetext_name=database_name($_SESSION['tree_prefix'], $selected_language);
 	$treetext=show_tree_text($_SESSION['tree_prefix'], $selected_language);
 
 	// *** Show quicksearch field ***
@@ -66,8 +65,12 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 				$_SESSION["save_quicksearch"]=$quicksearch;
 			}
 			if (isset($_SESSION["save_quicksearch"])){ $quicksearch=$_SESSION["save_quicksearch"]; }
-			if($humo_option['min_search_chars']==1) { $pattern=""; $min_chars =" 1 ";}
-			else { $pattern='pattern=".{'.$humo_option['min_search_chars'].',}"'; $min_chars = " ".$humo_option['min_search_chars']." ";}
+			if ($humo_option['min_search_chars']==1) {
+				$pattern=""; $min_chars =" 1 ";
+			}
+			else {
+				$pattern='pattern=".{'.$humo_option['min_search_chars'].',}"'; $min_chars = " ".$humo_option['min_search_chars']." ";
+			}
 			print '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="10" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
 			print ' <input type="submit" value="'.__('Search').'">';
 		print "</form>";
@@ -127,9 +130,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 					// *** Show only persons in selected family tree ***
 					if ($_SESSION['tree_prefix']==$favorite_array2['2']){
 						// *** Check if family tree is still the same family tree ***
-						//$person_man=mysql_query("SELECT * FROM ".safe_text($_SESSION['tree_prefix'])."person
-						//	WHERE pers_gedcomnumber='".$favorite_array2['1']."'",$db);
-						//@$person_manDb=mysql_fetch_object($person_man);
+						//@$person_manDb=$db_functions->get_person($person_man);
 
 						// *** Proces man using a class ***
 						//$man_cls = New person_cls;
@@ -145,42 +146,6 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		echo '</select>';
 		echo '</form>';
 	}
-
-	// *** Theme select ***
-	// *** Hide theme select if there is only one theme, AND it is the default theme ***
-	/*
-	$show_theme_select=true;
-	if (count($theme_folder)==1){
-		if (isset($humo_option['default_skin']) AND $humo_option['default_skin'].'.css'==$theme_folder[0]) {
-			$show_theme_select=false;
-		}
-	}
-
-	if ($bot_visit){ $show_theme_select=false; }
-
-	if ($show_theme_select==true){
-		echo '<form title="'.__('Select a colour theme (a cookie will be used to remember the theme)').'" action="" id="switchform">';
-		echo '<select name="switchcontrol" size="1" onchange="chooseStyle(this.options[this.selectedIndex].value, 365)">';
-
-		if (isset($humo_option['default_skin'])){
-			print '<option value="'.$humo_option['default_skin'].'" selected="selected">'.__('Select a theme').':</option>';
-			echo '<option value="'.$humo_option['default_skin'].'">'.__('Standard-colours').'</option>';
-		}
-		else{
-			print '<option value="none" selected="selected">'.__('Select a theme').':</option>';
-			echo '<option value="none">'.__('Standard-colours').'</option>';
-		}
-
-		sort($theme_folder);
-		for ($i=0; $i<count($theme_folder); $i++){
-			$theme=$theme_folder[$i];
-			$theme=str_replace(".css","", $theme);
-			print '<option value="'.$theme.'">'.$theme.'</option>';
-		}
-		echo '</select></form>';
-	}
-	*/
-
 
 	// *** Show "A+ A- Reset" ***
 	/*
@@ -408,22 +373,6 @@ echo '<ul class="humo_menu_item">';
 					$select_menu=''; if ($menu_choice=='tree_index'){ $select_menu=' id="current"'; }
 					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Family tree index').'</a></li>';
 
-					// *** Menu genealogy (for CMS pages) ***
-					/*
-					$cms_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' AND page_menu_id!='9999'");
-					if($cms_qry->rowCount() > 0) {
-						$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
-
-						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages&amp;database='.$_SESSION['tree_prefix'];
-						}
-						else{
-							$path_tmp=CMS_ROOTPATH.'cms_pages.php?database='.$_SESSION['tree_prefix'];
-						}
-						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
-					}
-					*/
-
 					// *** Persons ***
 					if ($user['group_menu_persons']=="j"){
 						$select_menu=''; if ($menu_choice=='persons'){ $select_menu=' id="current"'; }
@@ -483,7 +432,7 @@ echo '<ul class="humo_menu_item">';
 					//if ($user['group_sources']=='j'){
 					if ($user['group_sources']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check if there are sources in the database ***
-						$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$_SESSION['tree_id']."'");
+						$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'");
 						@$sourceDb=$source_qry->rowCount();
 						if ($sourceDb>0){
 							$select_menu=''; if ($menu_choice=='sources'){ $select_menu=' id="current"'; }
@@ -529,16 +478,13 @@ echo '<ul class="humo_menu_item">';
 	else{
 
 	// make sure at least one of the submenus is activated, otherwise don't show TOOLS menu
-	/*
-	if($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j' OR
-	($user["group_googlemaps"]=='j' AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0) OR 
-	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
-	$user["group_latestchanges"]=='j' ) {
-	*/
-	if($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j' OR
-	($user["group_googlemaps"]=='j' AND 1==2 AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0 AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees' AND setting_value LIKE '%@".$_SESSION['tree_id'].";%' ")->rowCount() > 0) OR 
-	($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email ) OR 
-	$user["group_latestchanges"]=='j' ) {
+	if ($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j'
+	OR ($user["group_googlemaps"]=='j' AND 1==2
+		AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0
+		AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
+			AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0)
+	OR ($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email )
+	OR $user["group_latestchanges"]=='j' ) {
 		// *** Javascript pull-down menu ***
 		echo '<li>';
 		echo '<div class="'.$rtlmarker.'sddm">';
@@ -596,8 +542,10 @@ echo '<ul class="humo_menu_item">';
 					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Relationship calculator')."</a></li>\n";
 				}  
 				if ($user["group_googlemaps"]=='j' AND file_exists(CMS_ROOTPATH.'maps.php')){
-					//if(!$bot_visit AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0) {
-					if(!$bot_visit AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0 AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees' AND setting_value LIKE '%@".$_SESSION['tree_id'].";%' ")->rowCount() > 0) {  // this tree has been indexed
+					if(!$bot_visit
+						AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0
+						AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
+							AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0) {  // this tree has been indexed
 						$select_menu=''; if ($menu_choice=='maps'){ $select_menu=' id="current"'; }
 						if (CMS_SPECIFIC=='Joomla'){
 							$path_tmp='index.php?option=com_humo-gen&amp;task=maps';
@@ -617,7 +565,7 @@ echo '<ul class="humo_menu_item">';
 								$path_tmp='index.php?option=com_humo-gen&amp;task=mailform';
 							}
 							else{
-							$path_tmp=CMS_ROOTPATH.'mailform.php';
+								$path_tmp=CMS_ROOTPATH.'mailform.php';
 							}
 							echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Contact')."</a></li>\n";
 						}
@@ -712,16 +660,7 @@ echo '<ul class="humo_menu_item">';
 			print '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'">'.__('Login')."</a></li>\n";
 		} else{
 
-			// *** Log off ***
-			//if (CMS_SPECIFIC=='Joomla'){
-			//	$path_tmp='index.php?option=com_humo-gen&amp;task=index&amp;log_off=1';
-			//} else{
-			//	$path_tmp=CMS_ROOTPATH.'index.php?log_off=1';
-			//}
-			//print '<li class="mobile_hidden"><a href="'.$path_tmp.'">'.__('Logoff')." [".$_SESSION["user_name"]."]</a></li>\n";
-
 			$select_top='';
-			//if ($menu_choice=='help'){ $select_top=' id="current_top"'; }
 			echo '<li class="mobile_hidden">';
 			echo '<div class="'.$rtlmarker.'sddm">';
 				if (CMS_SPECIFIC=='Joomla'){
@@ -853,10 +792,10 @@ if ($menu_choice=='main_index' AND isset($humo_option["slideshow_show"]) AND $hu
 }
 
 if($language["dir"]=="rtl") {
-	print '<div id="rtlcontent">';
+	echo '<div id="rtlcontent">';
 }
 else {
-	print '<div id="content">';
+	echo '<div id="content">';
 }
 
 ?>

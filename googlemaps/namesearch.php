@@ -116,7 +116,6 @@ function mapbirthplace ($place) {
 		if($_SESSION['type_birth']==1) {
 			if(isset($_GET['all'])) { // the 'All birth locations' button
 				echo '<b><u>'.__('All persons born here: ').'</u></b><br>';
-				//$maplist=$dbh->query("SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE ".$idstring.$namestring." (pers_birth_place = '".$place."' OR (pers_birth_place = '' AND pers_bapt_place = '".$place."')) ORDER BY wholename");
 				$sql="SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename
 					FROM humo_persons WHERE pers_tree_id='".$tree_id."'
 					AND ".$idstring.$namestring." (pers_birth_place = '".$place."' OR (pers_birth_place = '' AND pers_bapt_place = '".$place."')) ORDER BY wholename";
@@ -138,7 +137,6 @@ function mapbirthplace ($place) {
 		elseif($_SESSION['type_death']==1) {
 			if(isset($_GET['all'])) { // the 'All birth locations' button
 				echo '<b><u>'.__('All persons that died here: ').'</u></b><br>';
-				//$maplist=$dbh->query("SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename FROM ".safe_text($_SESSION['tree_prefix'])."person WHERE ".$idstring.$namestring." (pers_death_place = '".$place."' OR (pers_death_place = '' AND pers_buried_place = '".$place."')) ORDER BY wholename");
 				$sql="SELECT * , CONCAT(pers_lastname,pers_firstname) AS wholename
 					FROM humo_persons
 					WHERE pers_tree_id='".$tree_id."'

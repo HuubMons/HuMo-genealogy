@@ -51,110 +51,9 @@ if (isset($_GET['last_name'])){
 	$last_name=safe_text($_GET['last_name']);
 }
 
-/*
-echo '<div class="index_lastname">';
-
-// Mons, van or: van Mons
-if ($user['group_kindindex']=="j"){
-	$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
-		CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_lastnames
-		FROM humo_persons
-		WHERE pers_tree_id='".$tree_id."' AND CONCAT(pers_prefix,pers_lastname) LIKE '".$last_name."%'
-		GROUP BY long_name");
-
-	if ($last_name=='all'){
-		$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
-			CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_lastnames
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY long_name");
-	}
-
-	while(@$personDb=$person_result->fetch(PDO::FETCH_OBJ)) {
-		// *** No & character in a link, replace to: | !!!
-		$long_name=str_replace("_", " ", $personDb->long_name);
-		if ($long_name){
-			$link=str_replace("_", " ", $personDb->pers_prefix).$personDb->pers_lastname;
-			$link=str_replace("&", "|", $link);
-			$person_name=$long_name;
-		}
-		else{
-			$link=__('...');
-			$person_name=__('...');
-		}
-
-		if (CMS_SPECIFIC=='Joomla'){
-			$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.
-			$_SESSION['tree_prefix'].'&amp;pers_last_name='.$link.'&amp;part_lastname=equals';
-		}
-		else {
-			$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'].'&amp;pers_lastname='.$link.'&amp;part_lastname=equals';
-		}
-
-		echo '<a href="'.$path_tmp.'">'.$person_name.'</a> ('.$personDb->count_lastnames.')'.$dirmark2.' / '.$dirmark2;
-	}
-}
-else{
-	// *** Select alphabet first_character ***
-		$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
-		CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_lastnames
-		FROM humo_persons
-		WHERE pers_tree_id='".$tree_id."' AND pers_lastname LIKE '".$last_name."%'
-		GROUP BY long_name");
-
-	if ($last_name=='all'){ 
-		$person_result=$dbh->query("SELECT pers_lastname, pers_prefix,
-		CONCAT(pers_lastname,pers_prefix) as long_name, count(pers_lastname) as count_lastnames
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-		GROUP BY long_name");
-	}
-
-	while(@$personDb=$person_result->fetch(PDO::FETCH_OBJ)) {
-		// *** Do not use a & character in a GET, rename to: | !!! ***
-		$pers_lastname=$personDb->pers_lastname;
-		if ($personDb->pers_prefix){ $pers_lastname.=', '.$personDb->pers_prefix; }
-		$pers_lastname=str_replace("_", " ", $pers_lastname);
-		// *** Backwards compatibly only! Not in use in newer versions ***
-		if ($pers_lastname){
-			$link=$personDb->pers_lastname;
-			$link=str_replace("&", "|", $link);
-			$pers_prefix='';
-			if ($personDb->pers_prefix){
-				$pers_prefix=$personDb->pers_prefix;
-			}
-			else{
-				$pers_prefix='EMPTY';
-			}
-			$person_name=$pers_lastname;
-
-		}
-		else{
-			$link=__('...');
-			$pers_prefix=''; //if ($personDb->pers_prefix){ $pers_prefix='&amp;pers_prefix='.$personDb->pers_prefix; }
-			$person_name=__('...');
-		}
-
-		if (CMS_SPECIFIC=='Joomla'){
-			$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.
-			$_SESSION['tree_prefix'].'&amp;pers_lastname='.$link;
-		}
-		else {
-			$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'].'&amp;pers_lastname='.$link;
-		}
-
-		if ($pers_prefix){ $path_tmp .= '&amp;pers_prefix='.$pers_prefix; }
-		$path_tmp .= '&amp;part_lastname=equals';
-		echo '<a href="'.$path_tmp.'">'.$person_name.'</a> ('.$personDb->count_lastnames.')'.$dirmark2.' / '.$dirmark2;
-
-	}
-}
-echo '<br><br><br>'; // some joomla templates have "back to top link" before end of page. make room for that.
-echo '</div>';
-*/
-
 // MAIN SETTINGS
-$maxcols = 5; // number of name&nr colums in table. For example 3 means 3x name col + nr col
-if(isset($_POST['maxcols'])) {
-	$maxcols = $_POST['maxcols'];
-}
+$maxcols = 5; // number of name & nr colums in table. For example 3 means 3x name col + nr col
+if(isset($_POST['maxcols'])) { $maxcols = $_POST['maxcols']; }
 
 function tablerow($nr,$lastcol=false) {    
 	// displays one set of name & nr column items in the row
@@ -169,7 +68,7 @@ function tablerow($nr,$lastcol=false) {
 	//}
 	echo '<td class="namelst">';
 	if(isset($freq_last_names[$nr])) { 
-		$top_pers_lastname=''; 	if ($freq_pers_prefix[$nr]){ $top_pers_lastname=str_replace("_", " ", $freq_pers_prefix[$nr]); }
+		$top_pers_lastname=''; if ($freq_pers_prefix[$nr]){ $top_pers_lastname=str_replace("_", " ", $freq_pers_prefix[$nr]); }
 		$top_pers_lastname.=$freq_last_names[$nr];
 		if ($user['group_kindindex']=="j"){
 			echo '<a href="'.$path_tmp.'&amp;pers_lastname='.str_replace("_", " ", $freq_pers_prefix[$nr]).str_replace("&", "|", $freq_last_names[$nr]); 
@@ -197,6 +96,9 @@ function tablerow($nr,$lastcol=false) {
 function last_names($max) {
 	global $dbh, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols;
 	global $last_name;
+
+	$number_high=0;
+
 	//$personqry="SELECT pers_lastname, pers_prefix,
 	//	CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
 	//	FROM humo_persons
@@ -239,6 +141,7 @@ function last_names($max) {
 		$freq_last_names[]=$personDb->pers_lastname;
 		$freq_pers_prefix[]=$personDb->pers_prefix;
 		$freq_count_last_names[]=$personDb->count_last_names;
+		if ($personDb->count_last_names > $number_high)$number_high=$personDb->count_last_names;
 	}
 	//$row = round(count($freq_last_names)/$maxcols);
 	$row = ceil(count($freq_last_names)/$maxcols);
@@ -255,36 +158,38 @@ function last_names($max) {
 		}
 		echo '</tr>';
 	}
-	return $freq_count_last_names[0];
+	//return $freq_count_last_names[0];
+	return $number_high;
 }
 
 //echo '<div class="standard_header">'.__('Frequency of Surnames').'</div>';
 
 echo '<div style="text-align:center">';
-$maxnames = 201;
+	$maxnames = 201;
 
-if(isset($_POST['freqsurnames'])) { $maxnames = $_POST['freqsurnames']; }
-//echo ' <form method="POST" action="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_surnames&amp;tree_id='.$tree_id.'" style="display:inline;" id="frqnames">';
-echo ' <form method="POST" action="'.CMS_ROOTPATH.'list_names.php?menu_tab=stats_surnames&amp;tree_id='.$tree_id.'&amp;last_name='.$last_name.'" style="display:inline;" id="frqnames">';
+	if(isset($_POST['freqsurnames'])) { $maxnames = $_POST['freqsurnames']; }
+	echo ' <form method="POST" action="'.CMS_ROOTPATH.'list_names.php?menu_tab=stats_surnames&amp;tree_id='.$tree_id.'&amp;last_name='.$last_name.'" style="display:inline;" id="frqnames">';
 
-echo __('Number of displayed surnames');
-echo ': <select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">';
-$selected=''; if($maxnames==25) $selected=" selected "; echo '<option value="25" '.$selected.'>25</option>';
-$selected=''; if($maxnames==51) $selected=" selected "; echo '<option value="51" '.$selected.'>50</option>'; // 51 so no empty last field (if more names than this)
-$selected=''; if($maxnames==75) $selected=" selected "; echo '<option value="75" '.$selected.'>75</option>';
-$selected=''; if($maxnames==100) $selected=" selected "; echo '<option value="100" '.$selected.'>100</option>';
-$selected=''; if($maxnames==201) $selected=" selected "; echo '<option value="201" '.$selected.'>200</option>'; // 201 so no empty last field (if more names than this)
-$selected=''; if($maxnames==300) $selected=" selected "; echo '<option value="300" '.$selected.'>300</option>';
-$selected=''; if($maxnames==100000) $selected=" selected "; echo '<option value="100000" '.$selected.'">'.__('All').'</option>'; 
-echo '</select>';
+		echo __('Number of displayed surnames');
+		echo ': <select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">';
+		$selected=''; if($maxnames==25) $selected=" selected "; echo '<option value="25" '.$selected.'>25</option>';
+		$selected=''; if($maxnames==51) $selected=" selected "; echo '<option value="51" '.$selected.'>50</option>'; // 51 so no empty last field (if more names than this)
+		$selected=''; if($maxnames==75) $selected=" selected "; echo '<option value="75" '.$selected.'>75</option>';
+		$selected=''; if($maxnames==100) $selected=" selected "; echo '<option value="100" '.$selected.'>100</option>';
+		$selected=''; if($maxnames==201) $selected=" selected "; echo '<option value="201" '.$selected.'>200</option>'; // 201 so no empty last field (if more names than this)
+		$selected=''; if($maxnames==300) $selected=" selected "; echo '<option value="300" '.$selected.'>300</option>';
+		$selected=''; if($maxnames==100000) $selected=" selected "; echo '<option value="100000" '.$selected.'">'.__('All').'</option>'; 
+		echo '</select>';
 
-echo '&nbsp;&nbsp;&nbsp;&nbsp;'.__('Number of columns');
-echo ': <select size=1 name="maxcols" onChange="this.form.submit();" style="width: 50px; height:20px;">';
-for($i=1;$i<7;$i++) {
-	$selected=''; if($maxcols==$i) $selected=" selected "; echo '<option value="'.$i.'" '.$selected.'>'.$i.'</option>';
-}
-echo '</select>';
-echo '</form>';
+		echo '&nbsp;&nbsp;&nbsp;&nbsp;'.__('Number of columns');
+		echo ': <select size=1 name="maxcols" onChange="this.form.submit();" style="width: 50px; height:20px;">';
+		for($i=1;$i<7;$i++) {
+			$selected=''; if($maxcols==$i) $selected=" selected "; echo '<option value="'.$i.'" '.$selected.'>'.$i.'</option>';
+		}
+		echo '</select>';
+
+	echo '</form>';
+
 echo '</div>';
 
 if(CMS_SPECIFIC=="Joomla") {
@@ -298,16 +203,17 @@ else {
 echo '<br><table width='.$table2_width.' class="humo nametbl" align="center">';
 
 echo '<tr class=table_headline>';
-$col_width = ((round(100/$maxcols))-6)."%";
-for($x=1; $x<$maxcols;$x++) {
-	echo '<th width="'.$col_width.'">'.__('Name').'</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">'.__('Total').'</th>';  
-}
-echo '<th width="'.$col_width.'">'.__('Name').'</th><th style="text-align:center;font-size:90%;width:6%">'.__('Total').'</th>';
+	$col_width = ((round(100/$maxcols))-6)."%";
+	for($x=1; $x<$maxcols;$x++) {
+		echo '<th width="'.$col_width.'">'.__('Name').'</th><th style="text-align:center;font-size:90%;border-right-width:3px;width:6%">'.__('Total').'</th>';  
+	}
+	echo '<th width="'.$col_width.'">'.__('Name').'</th><th style="text-align:center;font-size:90%;width:6%">'.__('Total').'</th>';
 echo '</tr>';
 
 $baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
 echo '</table>';
-/*
+
+// *** Show number of names with gray background bar ***
 echo '
 <script>
 var tbl = document.getElementsByClassName("nametbl")[0];
@@ -327,7 +233,6 @@ for(var i = 0; i < rws.length; i ++) {
 	}
 }
 </script>';
-*/
 
 include_once(CMS_ROOTPATH."footer.php");
 ?>

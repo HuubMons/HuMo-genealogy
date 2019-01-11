@@ -188,11 +188,12 @@ function showthem ($pref) {
 	if($pref!='none'  AND $pref!="dummy" AND is_dir($tree_pict_path.substr($pref,0,2).'/')) { $subfolder= substr($pref,0,2).'/'; }
 	// *** Read all photos from directory ***
 	$dir=$tree_pict_path.$subfolder;  
-	
+
+	$subsub=false;
 	$picture_array = Array();
 	if (file_exists($dir)){   //echo $dir."<br>";
 		$dh  = opendir($dir);
-		$subsub=false;
+		//$subsub=false;
 		$sub_arr = array();
 		while (false !== ($filename = readdir($dh))) {  //echo $filename."<br>";
 			if ((strtolower(substr($filename, -3)) == "jpg" OR strtolower(substr($filename, -3)) == "gif" OR strtolower(substr($filename, -3)) == "png") AND substr($filename,0,6)!='thumb_'){

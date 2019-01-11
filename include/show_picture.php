@@ -2,7 +2,7 @@
 // *** Function to show media by person or by marriage ***
 // *** Updated feb 2013, aug 2015. ***
 function show_media($event_connect_kind,$event_connect_id){
-	global $dbh, $tree_id, $user, $dataDb, $tree_prefix_quoted, $uri_path;
+	global $dbh, $db_functions, $tree_id, $user, $dataDb, $tree_prefix_quoted, $uri_path;
 	global $sect, $screen_mode; // *** RTF Export ***
 	global $picture_presentation;
 
@@ -12,13 +12,15 @@ function show_media($event_connect_kind,$event_connect_id){
 
 	// *** Pictures/ media ***
 	if ($user['group_pictures']=='j' AND $picture_presentation!='hide'){
+		// In joomla relative path is relative to joomla main folder, NOT HuMo-gen main folder. Therefore use the path entered as-is, without ROOTPATH.
 		//$tree_pict_path=CMS_ROOTPATH.$dataDb->tree_pict_path;
 		$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
-		// in joomla relative path is relative to joomla main folder, NOT HuMo-gen main folder. Therefore use the path entered as-is, without ROOTPATH.
 
 		// *** Standard connected media by person and family ***
 		$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-			AND event_connect_kind='".$event_connect_kind."' AND event_connect_id='".$event_connect_id."' AND LEFT(event_kind,7)='picture'
+			AND event_connect_kind='".safe_text($event_connect_kind)."'
+			AND event_connect_id='".safe_text($event_connect_id)."'
+			AND LEFT(event_kind,7)='picture'
 			ORDER BY event_kind, event_order");
 		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
 			$media_nr++;
@@ -30,26 +32,28 @@ function show_media($event_connect_kind,$event_connect_id){
 		}
 
 		// *** Search for all external connected objects by a person or a family ***
-		//if ($personDb!=''){
 		if ($event_connect_kind=='person'){
-			$connect_qry="SELECT * FROM humo_connections
-				WHERE connect_tree_id='".$tree_id."'
-				AND connect_sub_kind='pers_object'
-				AND connect_connect_id='".$event_connect_id."'
-				ORDER BY connect_order";
+			//$connect_qry="SELECT * FROM humo_connections
+			//	WHERE connect_tree_id='".$tree_id."'
+			//	AND connect_sub_kind='pers_object'
+			//	AND connect_connect_id='".safe_text($event_connect_id)."'
+			//	ORDER BY connect_order";
+			$connect_sql = $db_functions->get_connections_connect_id('person','pers_object',$event_connect_id);
 		}
 		elseif ($event_connect_kind=='family'){
-			$connect_qry="SELECT * FROM humo_connections
-				WHERE connect_tree_id='".$tree_id."'
-				AND connect_sub_kind='fam_object'
-				AND connect_connect_id='".$event_connect_id."'
-				ORDER BY connect_order";
+			//$connect_qry="SELECT * FROM humo_connections
+			//	WHERE connect_tree_id='".$tree_id."'
+			//	AND connect_sub_kind='fam_object'
+			//	AND connect_connect_id='".safe_text($event_connect_id)."'
+			//	ORDER BY connect_order";
+			$connect_sql = $db_functions->get_connections_connect_id('family','fam_object',$event_connect_id);
 		}
 		if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
-			$connect_sql=$dbh->query($connect_qry);
-			while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+			//$connect_sql=$dbh->query($connect_qry);
+			//while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+			foreach ($connect_sql as $connectDb){
 				$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-					AND event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
+					AND event_gedcomnr='".safe_text($connectDb->connect_source_id)."' AND event_kind='object'
 					ORDER BY event_order");
 				while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
 					$media_nr++;
@@ -104,23 +108,28 @@ function show_media($event_connect_kind,$event_connect_id){
 
 			// *** Show PDF file ***
 			if(strtolower(substr($tree_pict_path.$event_event,-3,3))=="pdf") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'/images/pdf.jpeg" alt="PDF"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'/images/pdf.jpeg" alt="PDF"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'images/pdf.jpeg" alt="PDF"></a>';
 			}
 			// *** Show DOC file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="doc" OR substr($tree_pict_path.$event_event,-4,4)=="docx") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'/images/msdoc.gif" alt="DOC"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'/images/msdoc.gif" alt="DOC"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'images/msdoc.gif" alt="DOC"></a>';
 			}
 			// *** Show AVI Video file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="avi") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="AVI"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="AVI"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/video-file.png" alt="AVI"></a>';
 			}
 			// *** Show WMV Video file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="wmv") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="WMV"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="WMV"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/video-file.png" alt="WMV"></a>';
 			}
 			// *** Show MPG Video file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="mpg") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MPG"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MPG"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/video-file.png" alt="MPG"></a>';
 			}
 			// *** Show MP4 Video file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="mp4") {
@@ -128,31 +137,38 @@ function show_media($event_connect_kind,$event_connect_id){
 			}
 			// *** Show MOV Video file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="mov") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MOV"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MOV"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/video-file.png" alt="MOV"></a>';
 			}
 			// *** Show WMA Audio file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="wma") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif" alt="WMA"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif" alt="WMA"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/audio.gif" alt="WMA"></a>';
 			}
 			// *** Show MP3 Audio file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="mp3") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="MP3"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="MP3"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/audio.gif"" alt="MP3"></a>';
 			}
 			// *** Show WAV Audio file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="wav") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="WAV"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="WAV"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/audio.gif"" alt="WAV"></a>';
 			}
 			// *** Show MID Audio file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="mid") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="MID"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="MID"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/audio.gif"" alt="MID"></a>';
 			}
 			// *** Show RAM Audio file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="ram") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="RAM"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="RAM"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/audio.gif"" alt="RAM"></a>';
 			}
 			// *** Show RA Audio file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-2,2))=="ra") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="RA"></a>';
+				//$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/audio.gif"" alt="RA"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/audio.gif"" alt="RA"></a>';
 			}
 			else{
 				// *** Show photo using the lightbox effect ***

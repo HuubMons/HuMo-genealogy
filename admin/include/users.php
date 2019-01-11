@@ -26,29 +26,31 @@ if (isset($_POST['change_user'])){
 	$usersql="SELECT * FROM humo_users ORDER BY user_name";
 	$user=$dbh->query($usersql);
 	while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
-		$username=$_POST[$userDb->user_id."username"];
-		$usermail=$_POST[$userDb->user_id."usermail"];
-		if ($_POST[$userDb->user_id."username"]==""){
-			$username='GEEN NAAM / NO NAME';
+		if (is_numeric($_POST[$userDb->user_id."group_id"]) AND is_numeric($_POST[$userDb->user_id."user_id"])){
+			$username=$_POST[$userDb->user_id."username"];
+			$usermail=$_POST[$userDb->user_id."usermail"];
+			if ($_POST[$userDb->user_id."username"]==""){
+				$username='GEEN NAAM / NO NAME';
+			}
+			$sql="UPDATE humo_users SET
+				user_name='".safe_text($username)."',
+				user_mail='".safe_text($usermail)."', ";
+			if (isset($_POST[$userDb->user_id."password"]) AND $_POST[$userDb->user_id."password"]){
+				$sql=$sql."user_password='".MD5($_POST[$userDb->user_id."password"]);
+			}
+			$sql=$sql."user_group_id='".safe_text($_POST[$userDb->user_id."group_id"]);
+			$sql=$sql."' WHERE user_id=".safe_text($_POST[$userDb->user_id."user_id"]);
+			$result=$dbh->query($sql);
 		}
-		$sql="UPDATE humo_users SET
-			user_name='".$username."',
-			user_mail='".$usermail;
-		if (isset($_POST[$userDb->user_id."password"]) AND $_POST[$userDb->user_id."password"]){
-			$sql=$sql."', user_password='".MD5($_POST[$userDb->user_id."password"]);
-		}
-		$sql=$sql."', user_group_id='".$_POST[$userDb->user_id."group_id"];
-		$sql=$sql."' WHERE user_id=".$_POST[$userDb->user_id."user_id"];
-		$result=$dbh->query($sql);
 	}
 }
 
-if (isset($_POST['add_user'])){
+if (isset($_POST['add_user']) AND is_numeric($_POST["add_group_id"])){
 	$sql="INSERT INTO humo_users SET
-	user_name='".$_POST["add_username"]."',
-	user_mail='".$_POST["add_usermail"]."',
+	user_name='".safe_text($_POST["add_username"])."',
+	user_mail='".safe_text($_POST["add_usermail"])."',
 	user_password='".MD5($_POST["add_password"])."',
-	user_group_id='".$_POST["add_group_id"]."';";
+	user_group_id='".safe_text($_POST["add_group_id"])."';";
 	$result=$dbh->query($sql);
 }
 
@@ -64,12 +66,16 @@ if (isset($_GET['remove_user'])){
 	echo '</form>';
 	echo '</div>';
 }
-if (isset($_POST['remove_user2'])){
+if (isset($_POST['remove_user2']) AND is_numeric($_POST['remove_user'])){
 	// *** Delete source connection ***
 	$sql="DELETE FROM humo_users WHERE user_id='".safe_text($_POST['remove_user'])."'";
 	$result=$dbh->query($sql);
 }
 
+if (isset($_GET['unblock_ip_address'])){
+	$sql="DELETE FROM humo_user_log WHERE log_ip_address='".safe_text($_GET['unblock_ip_address'])."' AND log_status='failed'";
+	$result=$dbh->query($sql);
+}
 
 // *************
 // *** Users ***
@@ -147,18 +153,22 @@ while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 		print "</select></td>";
 	}
 
+	//echo '<td>';
+	//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_user_settings&user='.$userDb->user_id.'","","scrollbars=1,width=900,height=500,top=100,left=100");><img src="../images/search.png" border="0"></a>';
+	$extra_icon = "../images/search.png"; 
+	if($userDb->user_hide_trees !='' OR $userDb->user_edit_trees !='')   { $extra_icon = "../images/searchicon_red.png";  }
 	echo '<td>';
-	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_user_settings&user='.$userDb->user_id.'","","scrollbars=1,width=900,height=500,top=100,left=100");><img src="../images/search.png" border="0"></a>';
+	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_user_settings&user='.$userDb->user_id.'","","scrollbars=1,width=900,height=500,top=100,left=100");><img src='.$extra_icon.' border="0"></a>';
 	echo '</td>';
 
 	// *** Show statistics ***
 	$logbooksql='SELECT COUNT(log_date) as nr_login FROM humo_user_log WHERE log_username="'.$userDb->user_name.'"';
 	$logbook=$dbh->query($logbooksql);
-	$logbookDb=$logbook->fetch(PDO::FETCH_OBJ);	
+	$logbookDb=$logbook->fetch(PDO::FETCH_OBJ);
 
-	$logdatesql='SELECT log_date FROM humo_user_log	WHERE log_username="'.$userDb->user_name.'" ORDER BY log_date DESC LIMIT 0,1';
+	$logdatesql='SELECT log_date, log_ip_address FROM humo_user_log WHERE log_username="'.$userDb->user_name.'" ORDER BY log_date DESC LIMIT 0,1';
 	$logdate=$dbh->query($logdatesql);
-	$logdateDb=$logdate->fetch(PDO::FETCH_OBJ);	
+	$logdateDb=$logdate->fetch(PDO::FETCH_OBJ);
 
 	if ($logbookDb->nr_login){
 		echo '<td>#'.$logbookDb->nr_login.', '.$logdateDb->log_date.'</td>';
@@ -167,8 +177,20 @@ while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 		echo '<td><br></td>';
 	}
 
-	//print '<td><input type="Submit" name="change_user" value="'.__('Change').'"></td>';
-	echo '<td><br></td>';
+	//echo '<td><br></td>';
+
+	// *** Check if user is locked, using last IP address ***
+// FUNCTION CAN BE IMPROVED? MUST BE CHECKED USING USER AND IP ADDRESS?
+	echo '<td>';
+		$log_ip_address=0; if (isset($logdateDb->log_ip_address)) $log_ip_address=$logdateDb->log_ip_address;
+		if (!$db_functions->check_visitor($log_ip_address)){
+			echo 'Access to website is blocked.<br>';
+			echo 'IP address: '.$logdateDb->log_ip_address.'<br>';
+			echo '<a href="'.$_SERVER['PHP_SELF'].'?page=users&unblock_ip_address='.$logdateDb->log_ip_address.'">'.__('Unblock IP address').'</a>';
+		}
+		else echo '<br>';
+	echo '</td>';
+
 	echo "</tr>\n";
 }
 

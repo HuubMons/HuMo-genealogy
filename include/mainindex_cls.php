@@ -2,7 +2,7 @@
 class mainindex_cls{
 
 function show_tree_index(){
-	global $dbh, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option;
+	global $dbh, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
 
 	echo '<script type="text/javascript">';
 	echo 'checkCookie();';
@@ -26,14 +26,14 @@ function show_tree_index(){
 	if ($num_rows<=1 OR $humo_option["one_name_study"]=='y') $center_id="mainmenu_center_alt";
 	if($humo_option["one_name_study"]=='n') {
 		echo '<div id="'.$center_id.'" class="style_tree_text fonts">';
-		$sql = "SELECT * FROM humo_trees WHERE tree_prefix='".$tree_prefix_quoted."' ORDER BY tree_order";
-		$datasql = $dbh->query($sql);
-		@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
+
+		// *** Just for sure, probably not necessary here: re-get selected family tree data ***
+		@$dataDb=$db_functions->get_tree($tree_prefix_quoted);
+
 		// *** Show name of selected family tree ***
 		echo '<div class="mainmenu_bar fonts">';
 			if ($num_rows>1){ echo __('Selected family tree').': '; }
 			// *** Variable $treetext_name used from menu.php ***
-			//echo $treetext_name;
 			$treetext=show_tree_text($_SESSION['tree_prefix'], $selected_language);
 			echo $treetext['name'];
 		echo '</div>';
@@ -155,7 +155,7 @@ function tree_list($datasql){
 
 // *** Family tree data ***
 function tree_data(){
-	global $dataDb,$language;
+	global $dataDb, $language;
 	$tree_date=$dataDb->tree_date;
 
 	$month=''; // *** empty date ***

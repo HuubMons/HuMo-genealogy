@@ -243,8 +243,9 @@ if ($install_status==true){
 if ($install_status==true){
 
 	// *** Show size of statistics table ***
-	$size = $dbh->query('SHOW TABLE STATUS WHERE Name="humo_stat_date"');
-	$sizeDb=$size->fetch(PDO::FETCH_OBJ);
+	//$size = $dbh->query('SHOW TABLE STATUS WHERE Name="humo_stat_date"');
+	$size = $dbh->query('SHOW TABLE STATUS LIKE "humo_stat_date"');
+	@$sizeDb=$size->fetch(PDO::FETCH_OBJ);
 	$size=$sizeDb->Data_length;
 	$bytes = array( ' kB', ' MB', ' GB', ' TB' );
 	$size = $size / 1024;

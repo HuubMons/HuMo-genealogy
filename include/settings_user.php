@@ -1,6 +1,6 @@
 <?php
 $user["user_name"]="";
-if (isset($_SESSION["user_name"])){
+if (isset($_SESSION["user_name"]) AND is_numeric($_SESSION["user_id"])){
 	$user["user_name"]=$_SESSION["user_name"];
 	$account="SELECT * FROM humo_users WHERE user_id=".safe_text($_SESSION["user_id"]);
 }
@@ -22,11 +22,11 @@ try {
 	echo "No valid usergroup / Geen geldige gebruikersgroup.";
 }
 
-if (!isset($groupDb->group_statistics)){ $user['group_statistics']='j'; }
-	else{ $user['group_statistics']=$groupDb->group_statistics; }
+if (!isset($groupDb->group_statistics)) $user['group_statistics']='j';
+	else $user['group_statistics']=$groupDb->group_statistics;
 
-if (!isset($groupDb->group_birthday_rss)){ $user['group_birthday_rss']='j'; }
-	else{ $user['group_birthday_rss']=$groupDb->group_birthday_rss; }
+if (!isset($groupDb->group_birthday_rss)) $user['group_birthday_rss']='j';
+	else $user['group_birthday_rss']=$groupDb->group_birthday_rss;
 
 if (!isset($groupDb->group_birthday_list)){ $user['group_birthday_list']='j'; }
 	else{ $user['group_birthday_list']=$groupDb->group_birthday_list; }
@@ -80,12 +80,15 @@ if (!isset($groupDb->group_source_presentation)){ $user['group_source_presentati
 if (!isset($groupDb->group_text_presentation)){ $user['group_text_presentation']='show'; }
 	else{ $user['group_text_presentation']=$groupDb->group_text_presentation; }
 
-// *** User can add notes/ remarks by a person in the family tree ***
-if (!isset($groupDb->group_user_notes)){ $user['group_user_notes']='n'; }
-	else{ $user['group_user_notes']=$groupDb->group_user_notes; }
+if (!isset($groupDb->group_citation_generation)) $user['group_citation_generation']='n';
+	else $user['group_citation_generation']=$groupDb->group_citation_generation;
 
-if (!isset($groupDb->group_user_notes_show)){ $user['group_user_notes_show']='n'; }
-	else{ $user['group_user_notes_show']=$groupDb->group_user_notes_show; }
+// *** User can add notes/ remarks by a person in the family tree ***
+if (!isset($groupDb->group_user_notes)) $user['group_user_notes']='n';
+	else $user['group_user_notes']=$groupDb->group_user_notes;
+
+if (!isset($groupDb->group_user_notes_show)) $user['group_user_notes_show']='n';
+	else $user['group_user_notes_show']=$groupDb->group_user_notes_show;
 
 $user['group_gedcomnr']=$groupDb->group_gedcomnr; // Show gedcomnumber
 $user['group_living_place']=$groupDb->group_living_place; // Show living place

@@ -20,7 +20,6 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 	$usersql='SELECT * FROM humo_users WHERE user_name="'.safe_text($_POST["register_name"]).'"';
 	$user = $dbh->query($usersql);
 	$userDb=$user->fetch(PDO::FETCH_OBJ);
-	//if (isset($userDb->user_id)){
 	if (isset($userDb->user_id) OR strtolower(safe_text($_POST["register_name"])) == "admin") {
 		$error=__('ERROR: username already exists');
 	}
@@ -47,7 +46,6 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 		echo __('At this moment you are registered in the user-group "guest". The administrator will check your registration, and select a user-group for you.');
 
 		// *** Mail new registered user to the administrator ***
-		//$register_address=$dataDb->tree_email;
 		$register_address='';
 		if (isset($dataDb->tree_email)) $register_address=$dataDb->tree_email; // Used in older HuMo-gen versions. Backwards compatible...
 		if ($humo_option["general_email"]) $register_address=$humo_option["general_email"];

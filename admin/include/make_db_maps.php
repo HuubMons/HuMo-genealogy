@@ -9,7 +9,6 @@ echo '<h1 align=center>'.__('Google maps administration').'</h1>';
 echo '<table class="humo standard" border="1" style="width:800px;">';
 
 if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the location database
-	//echo '<tr bgcolor="green"><th><font color="white">'.__('Creating/ updating database').'</font></th></tr>';
 	echo '<tr class="table_header"><th>'.__('Creating/ updating database').'</th>';
 
 	echo '<tr><td>';
@@ -879,32 +878,19 @@ function refresh_status() {
 	}
 	$tree_id_string = substr($tree_id_string,0,-4); // take off last " OR"
 
-	//$tree_pref_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-	//$tree_pref_result = $dbh->query($tree_pref_sql);
-	//while ($tree_prefDb=$tree_pref_result->fetch(PDO::FETCH_OBJ)){
-		//$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place
-		//	FROM ".$tree_prefDb->tree_prefix."person");
 	$result=$dbh->query("SELECT pers_tree_id, pers_tree_prefix, pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place
 		FROM humo_persons".$tree_id_string);
 	while($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
-		//if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$tree_prefDb->tree_prefix."birth ")===false) {
 		if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$resultDb->pers_tree_prefix."birth ")===false) {
-			//$loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix."birth ";
 			$loca_array[$resultDb->pers_birth_place] .= $resultDb->pers_tree_prefix."birth ";
 		}
-		//if (isset($loca_array[$resultDb->pers_bapt_place]) AND strpos($loca_array[$resultDb->pers_bapt_place],$tree_prefDb->tree_prefix."bapt ")===false) {
 		if (isset($loca_array[$resultDb->pers_bapt_place]) AND strpos($loca_array[$resultDb->pers_bapt_place],$resultDb->pers_tree_prefix."bapt ")===false) {
-			//$loca_array[$resultDb->pers_bapt_place] .= $tree_prefDb->tree_prefix."bapt ";
 			$loca_array[$resultDb->pers_bapt_place] .= $resultDb->pers_tree_prefix."bapt ";
 		}
-		//if (isset($loca_array[$resultDb->pers_death_place]) AND strpos($loca_array[$resultDb->pers_death_place],$tree_prefDb->tree_prefix."death ")===false) {
 		if (isset($loca_array[$resultDb->pers_death_place]) AND strpos($loca_array[$resultDb->pers_death_place],$resultDb->pers_tree_prefix."death ")===false) {
-			//$loca_array[$resultDb->pers_death_place] .= $tree_prefDb->tree_prefix."death ";
 			$loca_array[$resultDb->pers_death_place] .= $resultDb->pers_tree_prefix."death ";
 		}
-		//if (isset($loca_array[$resultDb->pers_buried_place]) AND strpos($loca_array[$resultDb->pers_buried_place],$tree_prefDb->tree_prefix."buried ")===false) {
 		if (isset($loca_array[$resultDb->pers_buried_place]) AND strpos($loca_array[$resultDb->pers_buried_place],$resultDb->pers_tree_prefix."buried ")===false) {
-			//$loca_array[$resultDb->pers_buried_place] .= $tree_prefDb->tree_prefix."buried ";
 			$loca_array[$resultDb->pers_buried_place] .= $resultDb->pers_tree_prefix."buried ";
 		}
 	}

@@ -183,20 +183,13 @@ if (isset($_POST["tree_prefix"])){
 	unset ($pers_gedcomnumber);
 	unset ($_SESSION['admin_pers_gedcomnumber']);
 
-	// *** Select first person to show ***
-	$qry = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($tree_prefix)."'");
+	// *** Get tree_id ***
+	$qry = $dbh->query("SELECT tree_id FROM humo_trees WHERE tree_prefix='".safe_text($tree_prefix)."'");
 	@$qryDb=$qry->fetch(PDO::FETCH_OBJ);
 	$tree_id=$qryDb->tree_id;
 	$_SESSION['admin_tree_id']=$tree_id;
 
 	// *** Select first person to show ***
-	/*
-	$new_nr_qry = "SELECT * FROM humo_settings, humo_trees
-		WHERE setting_variable='admin_favourite'
-		AND tree_prefix='".safe_text($tree_prefix)."'
-		AND setting_tree_id=tree_id
-		LIMIT 0,1";
-	*/
 	$new_nr_qry = "SELECT * FROM humo_settings
 		WHERE setting_variable='admin_favourite'
 		AND setting_tree_id='".safe_text($tree_id)."' LIMIT 0,1";
@@ -209,7 +202,7 @@ if (isset($_POST["tree_prefix"])){
 		$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 	}
 	else{
-		$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' LIMIT 0,1";
+		$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".safe_text($tree_id)."' LIMIT 0,1";
 		$new_nr_result = $dbh->query($new_nr_qry);
 		@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 		if (isset($new_nr->pers_gedcomnumber)){

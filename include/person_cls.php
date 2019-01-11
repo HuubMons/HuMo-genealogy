@@ -1701,7 +1701,7 @@ function person_data($person_kind, $id){
 		if ($user['group_addresses']=='j'){
 			// *** Search for all connected addresses ***
 			$eventnr=0;
-			$connect_sql = $db_functions->get_connections_person('person_address',$personDb->pers_gedcomnumber);
+			$connect_sql = $db_functions->get_connections_connect_id('person','person_address',$personDb->pers_gedcomnumber);
 			foreach ($connect_sql as $connectDb){
 				$eventnr++;
 
@@ -1726,6 +1726,8 @@ function person_data($person_kind, $id){
 			}
 		}
 
+		// *** This person was witness at.... ***
+		$process_text.=witness_by_events($personDb->pers_gedcomnumber);
 
 	} //*** END PRIVACY PART ***
 

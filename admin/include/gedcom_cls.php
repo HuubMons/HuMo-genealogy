@@ -1104,6 +1104,13 @@ function process_person($person_array){
 				$event['text'][$event_nr]=$this->process_texts($event['text'][$event_nr],$buffer,'2'); // BK
 			}
 
+			// *** Occupation in iFamily program ***
+			// 1 OCCU
+			// 2 TYPE baas van de herberg
+			if ($buffer6=='2 TYPE'){
+				$processed=1; $event['event'][$event_nr]=$event['event'][$event_nr].substr($buffer, 7);
+			}
+
 			if ($buffer6=='2 DATE'){ $processed=1; $event['date'][$event_nr]=substr($buffer, 7); } // BK
 			if ($buffer6=='2 PLAC'){ $processed=1; $event['place'][$event_nr]=substr($buffer, 7); }
 

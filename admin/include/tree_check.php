@@ -148,15 +148,25 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 	echo '<table class="humo" style="text-align:left;">';
 	echo '<tr><td><b>'.__('Check item').'</b></td><td><b>'.__('Item').'</b></td><td><b>'.__('Result').'</b></td>';
 
+	// Send output to browser immediately for large family trees.
+	ob_flush();
+	flush(); // for IE
+
 	$wrong_indexnr=0;
 	$wrong_famc=0;
 	$wrong_fams=0;
 	$removed=''; if (isset($_POST['remove'])) $removed=' <b>Link is removed.</b>';
 
 	// *** Check person table ***
-	$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname, pers_firstname";
-	$person_result = $dbh->query($person_qry);
-	while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+	// *** First get pers_id, otherwise there will be a memory problem if a large family tree is used ***
+	$person_start = $dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname,pers_firstname");
+	while($person_startDb=$person_start->fetch()){
+
+		// *** Now get all data for one person at a time ***
+		$person = $dbh->query("SELECT * FROM humo_persons WHERE pers_id='".$person_startDb['pers_id']."'");
+		//$personDb=$person->fetch();
+		$person=$person->fetch(PDO::FETCH_OBJ);
+
 		$check=false;
 		$pers_indexnr='';
 		if ($person->pers_famc){ $pers_indexnr=$person->pers_famc; }
@@ -257,11 +267,19 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 		}
 	}
 
+	// Send output to browser immediately for large family trees.
+	ob_flush();
+	flush(); // for IE
+
 	// *** Check family table ***
 	$wrong_children=0;
-	$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children LIKE '_%'";
-	$fam_result = $dbh->query($fam_qry);
-	while($famDb=$fam_result->fetch(PDO::FETCH_OBJ)){
+	$fam_qry_start= "SELECT fam_id FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children LIKE '_%'";
+	$fam_result_start = $dbh->query($fam_qry_start);
+	while($famDb_start=$fam_result_start->fetch(PDO::FETCH_OBJ)){
+
+		$fam_qry= "SELECT * FROM humo_families WHERE fam_id='".$famDb_start->fam_id."'";
+		$fam_result = $dbh->query($fam_qry);
+		$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
 
 		// *** Check man ***
 		if ($famDb->fam_man){
@@ -371,10 +389,19 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 
 	}
 
+	// Send output to browser immediately for large family trees.
+	ob_flush();
+	flush(); // for IE
+
 	// *** Check connections table ***
-	$connect_qry= "SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'";
-	$connect_result = $dbh->query($connect_qry);
-	while ($connect=$connect_result->fetch(PDO::FETCH_OBJ)){
+	$connect_qry_start= "SELECT connect_id FROM humo_connections WHERE connect_tree_id='".$tree_id."'";
+	$connect_result_start = $dbh->query($connect_qry_start);
+	while ($connect_start=$connect_result_start->fetch(PDO::FETCH_OBJ)){
+
+		$connect_qry= "SELECT * FROM humo_connections WHERE connect_id='".$connect_start->connect_id."'";
+		$connect_result = $dbh->query($connect_qry);
+		$connect=$connect_result->fetch(PDO::FETCH_OBJ);
+
 		// *** Check person ***
 		if ($connect->connect_kind=='person' AND $connect->connect_sub_kind!='pers_event_source'){
 			$person=$db_functions->get_person($connect->connect_connect_id);
@@ -410,10 +437,19 @@ if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 
 	}
 
+	// Send output to browser immediately for large family trees.
+	ob_flush();
+	flush(); // for IE
+
 	// *** Check events table ***
-	$connect_qry= "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'";
+	$connect_qry= "SELECT event_id FROM humo_events WHERE event_tree_id='".$tree_id."'";
 	$connect_result = $dbh->query($connect_qry);
 	while ($connect=$connect_result->fetch(PDO::FETCH_OBJ)){
+
+		$connect_qry= "SELECT * FROM humo_events WHERE event_id='".$connect->event_id."'";
+		$connect_result = $dbh->query($connect_qry);
+		$connect=$connect_result->fetch(PDO::FETCH_OBJ);
+
 		// *** Check person ***
 		if ($connect->event_connect_kind=='person' AND $connect->event_connect_id){
 			$person=$db_functions->get_person($connect->event_connect_id);
@@ -467,7 +503,8 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 		'</th><th style="width:15%;border:1px solid black">'.__('Invalid date').'</th></tr>';
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid person dates:').'</td></tr>';
 	$found = false; // if this stays false, displays message that no problems where found
-	$person = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname,pers_firstname");
+	$person = $dbh->query("SELECT pers_gedcomnumber, pers_birth_date, pers_bapt_date, pers_death_date, pers_buried_date FROM humo_persons
+		WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname,pers_firstname");
 	while($persdateDb=$person->fetch()){
 		if(isset($persdateDb['pers_birth_date']) AND $persdateDb['pers_birth_date']!='')
 	 		$result = invalid($persdateDb['pers_birth_date'],$persdateDb['pers_gedcomnumber'],'pers_birth_date');
@@ -486,7 +523,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid family dates:').'</td></tr>';
 	$found = false;
-	$family = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."'");
+	$family = $dbh->query("SELECT fam_gedcomnumber, fam_div_date, fam_marr_church_date, fam_marr_church_notice_date, fam_marr_date, fam_marr_notice_date, fam_relation_date FROM humo_families WHERE fam_tree_id='".$tree_id."'");
 	while($famdateDb=$family->fetch()){
 		if(isset($famdateDb['fam_div_date']) AND $famdateDb['fam_div_date']!='')
  			$result = invalid($famdateDb['fam_div_date'],$famdateDb['fam_gedcomnumber'],'fam_div_date');
@@ -511,7 +548,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid event dates:').'</td></tr>';
 	$found = false;
-	$event = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'");
+	$event = $dbh->query("SELECT event_id, event_date FROM humo_events WHERE event_tree_id='".$tree_id."'");
 	while($eventdateDb=$event->fetch()){ 
 		if(isset($eventdateDb['event_date']) AND $eventdateDb['event_date']!='')
  	 		$result = invalid($eventdateDb['event_date'],$eventdateDb['event_id'],'event_date');
@@ -521,7 +558,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid connection dates:').'</td></tr>';
 	$found = false;
-	$connection = $dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'");
+	$connection = $dbh->query("SELECT connect_id, connect_date FROM humo_connections WHERE connect_tree_id='".$tree_id."'");
 	while($connectdateDb=$connection->fetch()){
 		if(isset($connectdateDb['connect_date']) AND $connectdateDb['connect_date']!='')
   			$result = invalid($connectdateDb['connect_date'],$connectdateDb['connect_id'],'connect_date');
@@ -531,7 +568,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid address dates:').'</td></tr>';
 	$found = false;
-	$address = $dbh->query("SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."'");
+	$address = $dbh->query("SELECT address_id, address_date FROM humo_addresses WHERE address_tree_id='".$tree_id."'");
 	while($addressdateDb=$address->fetch()){
 		if(isset($addressdateDb['address_date']) AND $addressdateDb['address_date']!='')
   			$result = invalid($addressdateDb['address_date'],$addressdateDb['address_id'],'address_date');
@@ -541,7 +578,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid repository dates:').'</td></tr>';
 	$found = false;
-	$repo = $dbh->query("SELECT * FROM humo_repositories
+	$repo = $dbh->query("SELECT repo_gedcomnr, repo_date FROM humo_repositories
 		WHERE repo_tree_id='".$tree_id."'");
 	while($repodateDb=$repo->fetch()){ 
 		if(isset($repodateDb['repo_date']) AND $repodateDb['repo_date']!='')  
@@ -552,7 +589,7 @@ if (isset($_POST['tree']) AND isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid source dates:').'</td></tr>';
 	$found = false;
-	$sources = $dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'");
+	$sources = $dbh->query("SELECT source_gedcomnr, source_date FROM humo_sources WHERE source_tree_id='".$tree_id."'");
 	while($sourcedateDb=$sources->fetch()){
 		if(isset($sourcedateDb['source_date']) AND $sourcedateDb['source_date']!='')
 			$result = invalid($sourcedateDb['source_date'],$sourcedateDb['source_gedcomnr'],'source_date');
@@ -667,8 +704,13 @@ if (isset($_POST['final_check'])){
 
 	$results_found=0;
 
-	$person = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname,pers_firstname");
-	while($personDb=$person->fetch()){
+	// *** First get pers_id, otherwise there will be a memory problem if a large family tree is used ***
+	$person_start = $dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname,pers_firstname");
+	while($person_startDb=$person_start->fetch()){
+
+		// *** Now get all data for one person at a time ***
+		$person = $dbh->query("SELECT * FROM humo_persons WHERE pers_id='".$person_startDb['pers_id']."'");
+		$personDb=$person->fetch();
 
 		/*	// using class slows down considerably: 10,000 persons without class 15 sec, with class for name: over 4 minutes...
 			$persclass = New person_cls;
@@ -1346,7 +1388,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 		if(substr($table,0,3) =="per") {
 			$personDb=$db_functions->get_person($gednr);
 			$name = $personDb->pers_firstname.' '.str_replace("_"," ",$personDb->pers_prefix.' '.$personDb->pers_lastname);
-			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$personDb['pers_gedcomnumber'].'" target=\'_blank\'>'.$name.'</a></td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
+			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$personDb->pers_gedcomnumber.'" target=\'_blank\'>'.$name.'</a></td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="fam") {
 			$fam = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$gednr."'");
@@ -1358,8 +1400,8 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			$spouse2Db=$db_functions->get_person($famDb['fam_woman']);
 			$name2 = $spouse2Db->pers_firstname.' '.str_replace("_"," ",$spouse2Db->pers_prefix.' '.$spouse2Db->pers_lastname);
 
-			$spousegednr = $spouse1Db['pers_gedcomnumber']; if($spousegednr=='') $spousegednr = $spouse2Db['pers_gedcomnumber'];
-			$and = ' '.__('and').' '; if($spouse1Db['pers_gedcomnumber']=='' OR $spouse2Db['pers_gedcomnumber']=='') $and='';
+			$spousegednr = $spouse1Db->pers_gedcomnumber; if($spousegednr=='') $spousegednr = $spouse2Db->pers_gedcomnumber;
+			$and = ' '.__('and').' '; if($spouse1Db->pers_gedcomnumber=='' OR $spouse2Db->pers_gedcomnumber=='') $and='';
 			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree='.$tree.'&person='.$spousegednr.'" target=\'_blank\'>'.$name1.$and.$name2.'</a></td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>';
 		}
 		if(substr($table,0,3) =="eve") {

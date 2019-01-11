@@ -111,7 +111,7 @@ while (false!==($file = readdir($language_folder))) {
 		if ($language_choice!=''){
 			// Check if file exists (IMPORTANT DO NOT REMOVE THESE LINES)
 			// ONLY save an existing language file.
-			if ($language_choice==$file){ $_SESSION['language'] = $file;}
+			if ($language_choice==$file){ $_SESSION['language'] = $file; }
 		}
 	}
 }
@@ -448,8 +448,8 @@ else{
 	if (isset($_POST["database"])){ $database=$_POST["database"]; }
 	if (isset($database) AND $database){
 		// *** Check if family tree really exists ***
-		$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix='".safe_text($database)."'");
-		if($datasql->rowCount()==1) { $_SESSION['tree_prefix']=$database; }
+		$dataDb=$db_functions->get_tree($database);
+		if ($database==$dataDb->tree_prefix) $_SESSION['tree_prefix']=$database;
 	}
 	// *** No family tree selected yet ***
 	if (!isset($_SESSION["tree_prefix"]) OR $_SESSION['tree_prefix']=='' ){
@@ -469,8 +469,7 @@ else{
 	}
 
 	// *** Check if tree is allowed for visitor and Google etc. ***
-	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' AND tree_prefix='".safe_text($_SESSION['tree_prefix'])."'");
-	@$dataDb = $datasql->fetch(PDO::FETCH_OBJ);
+	@$dataDb=$db_functions->get_tree($_SESSION['tree_prefix']);
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
 	$hide_tree=false; if (in_array(@$dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
 

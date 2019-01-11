@@ -905,7 +905,7 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 
 	// *** Extended address (no valid gedcom 5.5.1) ***
 	$eventnr=0;
-	$connect_sql = $db_functions->get_connections_person('person_address',$person->pers_gedcomnumber);
+	$connect_sql = $db_functions->get_connections_connect_id('person','person_address',$person->pers_gedcomnumber);
 	foreach ($connect_sql as $connectDb){
 		//1 RESI @R210@
 		$buffer.='1 RESI @'.$connectDb->connect_item_id."@\r\n";

@@ -1,4 +1,6 @@
 <?php 
+// error_reporting(E_ALL);
+
 //==================================================================
 //===            OUTLINE REPORT  - report_outline.php            ===
 //=== by Yossi Beck - Nov 2008 - (on basis of Huub's family.php) ===
@@ -21,7 +23,12 @@ include_once(CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/process_text.php");
 include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."include/marriage_cls.php");
-//include_once(CMS_ROOTPATH."include/show_sources.php"); // *** No sources in use in outline report ***
+
+// TRY OUTLINE WITH DETAILS
+include_once(CMS_ROOTPATH."include/show_sources.php"); // *** No sources in use in outline report ***
+include_once(CMS_ROOTPATH."include/witness.php");
+include_once(CMS_ROOTPATH."include/show_picture.php");
+include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
 
 if($screen_mode!='PDF') {  //we can't have a menu in pdf...
 	include_once(CMS_ROOTPATH."menu.php");
@@ -57,6 +64,10 @@ if (isset($_GET["main_person"])){ $main_person=$_GET["main_person"]; }
 if (isset($_POST["main_person"])){ $main_person=$_POST["main_person"]; }
 // *** Check if person gedcomnumber is valid ***
 $db_functions->check_person($main_person);
+
+$show_details=false;
+if (isset($_GET["show_details"])){ $show_details=$_GET["show_details"];}
+if (isset($_POST["show_details"])){ $show_details=$_POST["show_details"];}
 
 $show_date=true;
 if (isset($_GET["show_date"])){ $show_date=$_GET["show_date"];}
@@ -98,11 +109,12 @@ if($screen_mode=='PDF') {
 
 if($screen_mode != "PDF") {
 	echo '<div class="standard_header fonts">'.__('Outline report').'</div>';
-	echo '<div class="pers_name center">';
+	echo '<div class="pers_name center print_version">';
 
-	// ***************************************
-	// ******** Button: Show date  ***********
-	// ***************************************
+
+	// ******************************************************
+	// ******** Button: Show full details (book)  ***********
+	// ******************************************************
 
 	if(CMS_SPECIFIC=='Joomla') {
 		$qstr='';
@@ -116,109 +128,141 @@ if($screen_mode != "PDF") {
 	print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
 	print '<input type="hidden" name="main_person" value="'.$main_person.'">';
 
-	if ($show_date==true){
-		print '<input type="hidden" name="show_date" value="0">';
-		print '<input class="fonts" type="Submit" name="submit" value="'.__('Hide dates').'">';
+	if ($show_details==true){
+		print '<input type="hidden" name="show_details" value="0">';
+		print '<input class="fonts" type="Submit" name="submit" value="'.__('Hide full details').'">';
 	}
 	else{
-		print '<input type="hidden" name="show_date" value="1">';
-		print '<input class="fonts" type="Submit" name="submit" value="'.__('Show dates').'">';
+		print '<input type="hidden" name="show_details" value="1">';
+		print '<input class="fonts" type="Submit" name="submit" value="'.__('Show full details').'">';
 	}
-	print '</form>';
+	print '</form>&nbsp;';
 
-	// *****************************************************************
-	// ******** Show button: date after or below each other ************
-	// *****************************************************************
+	if(!$show_details) {
+	   
+		// ***************************************
+		// ******** Button: Show date  ***********
+		// ***************************************
 
-	if(CMS_SPECIFIC=='Joomla') {
-		$qstr='';
-		if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
-		print '<form method="POST" action="'.$_SERVER['PHP_SELF'].$qstr.'" style="display : inline;">';
-	}
-	else {
-		print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
-	}
-	print '<input type="hidden" name="id" value="'.$family_id.'">';
-	print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
-	print '<input type="hidden" name="main_person" value="'.$main_person.'">';
-
-	if ($dates_behind_names=="1"){
-		print '<input type="hidden" name="dates_behind_names" value="0">';
-		print '<input type="Submit" class="fonts" name="submit" value="'.__('Dates below names').'">';
-	}
-	else{
-		print '<input type="hidden" name="dates_behind_names" value="1">';
-		print '<input type="Submit" class="fonts" name="submit" value="'.__('Dates beside names').'">';
-	}
-	print '</form>';
-
-// ********************************************************
-// ******** Show button: nr. of generations    ************
-// ********************************************************
-echo ' <span class="button fonts">';
-echo __('Choose number of generations to display').': ';
-
-echo '<select size=1 name="selectnr_generations" onChange="window.location=this.value;" style="display:inline;">';
-
-for ($i=2;$i<20;$i++) {
-	$nr_gen=$i-1;
-	echo '<option';
-	if($nr_gen==$nr_generations) { echo ' SELECTED';}
 		if(CMS_SPECIFIC=='Joomla') {
-			echo ' value="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'&amp;nr_generations='.$nr_gen.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.$i.'</option>';
+			$qstr='';
+			if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
+			print '<form method="POST" action="'.$_SERVER['PHP_SELF'].$qstr.'" style="display : inline;">';
 		}
 		else {
-			echo ' value="'.$_SERVER['PHP_SELF'].'?nr_generations='.$nr_gen.'&amp;id='.$family_id.'&amp;main_person='.$main_person.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.$i.'</option>';
+			print '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
 		}
-}
-echo '<option';
-if($nr_generations==50) { echo ' SELECTED';}
-
-if(CMS_SPECIFIC=='Joomla') {
-	echo ' value="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'&amp;nr_generations=50&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.'ALL'.'</option>';
-}
-else {
-	echo ' value="'.$_SERVER['PHP_SELF'].'?nr_generations=50&amp;id='.$family_id.'&amp;main_person='.$main_person.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'"> ALL </option>';
-}
-echo '</select>';
-echo '</span>';
-
-echo '&nbsp;&nbsp;&nbsp;<span>';
-	//if($language["dir"]!="rtl") {
-	if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
-		//Show pdf button
-		print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
-		print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
-		print '<input type="hidden" name="screen_mode" value="PDF-P">';
 		print '<input type="hidden" name="id" value="'.$family_id.'">';
 		print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
-		print '<input type="hidden" name="dates_behind_names" value="'.$dates_behind_names.'">';
-		print '<input type="hidden" name="show_date" value="'.$show_date.'">';
 		print '<input type="hidden" name="main_person" value="'.$main_person.'">';
-		print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF (Portrait)').'">';
+
+		if ($show_date==true){
+			print '<input type="hidden" name="show_date" value="0">';
+			print '<input class="fonts" type="Submit" name="submit" value="'.__('Hide dates').'">';
+		}
+		else{
+			print '<input type="hidden" name="show_date" value="1">';
+			print '<input class="fonts" type="Submit" name="submit" value="'.__('Show dates').'">';
+		}
+		print '</form>';
+
+		// *****************************************************************
+		// ******** Show button: date after or below each other ************
+		// *****************************************************************
+
+		if(CMS_SPECIFIC=='Joomla') {
+			$qstr='';
+			if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
+			print '<form method="POST" action="'.$_SERVER['PHP_SELF'].$qstr.'" style="display : inline;">';
+		}
+		else {
+			print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+		}
+		print '<input type="hidden" name="id" value="'.$family_id.'">';
+		print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
+		print '<input type="hidden" name="main_person" value="'.$main_person.'">';
+
+		if ($dates_behind_names=="1"){
+			print '<input type="hidden" name="dates_behind_names" value="0">';
+			print '<input type="Submit" class="fonts" name="submit" value="'.__('Dates below names').'">';
+		}
+		else{
+			print '<input type="hidden" name="dates_behind_names" value="1">';
+			print '<input type="Submit" class="fonts" name="submit" value="'.__('Dates beside names').'">';
+		}
 		print '</form>';
 	}
 
-echo '</span>';
+	// ********************************************************
+	// ******** Show button: nr. of generations    ************
+	// ********************************************************
+	echo ' <span class="button fonts">';
+	echo __('Choose number of generations to display').': ';
 
-echo '&nbsp;&nbsp;&nbsp;<span>';
-	//if($language["dir"]!="rtl") {
-	if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
-		//Show pdf button
-		print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
-		print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
-		print '<input type="hidden" name="screen_mode" value="PDF-L">';
-		print '<input type="hidden" name="id" value="'.$family_id.'">';
-		print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
-		print '<input type="hidden" name="dates_behind_names" value="'.$dates_behind_names.'">';
-		print '<input type="hidden" name="show_date" value="'.$show_date.'">';
-		print '<input type="hidden" name="main_person" value="'.$main_person.'">';
-		print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF (Landscape)').'">';
-		print '</form>';
+	echo '<select size=1 name="selectnr_generations" onChange="window.location=this.value;" style="display:inline;">';
+
+	for ($i=2;$i<20;$i++) {
+		$nr_gen=$i-1;
+		echo '<option';
+		if($nr_gen==$nr_generations) { echo ' SELECTED';}
+			if(CMS_SPECIFIC=='Joomla') {
+				echo ' value="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'&amp;nr_generations='.$nr_gen.'&amp;show_details='.$show_details.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.$i.'</option>';
+			}
+			else {
+				echo ' value="'.$_SERVER['PHP_SELF'].'?nr_generations='.$nr_gen.'&amp;id='.$family_id.'&amp;main_person='.$main_person.'&amp;show_details='.$show_details.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.$i.'</option>';
+			}
 	}
-echo '</span>';
+	echo '<option';
+	if($nr_generations==50) { echo ' SELECTED';}
 
-echo '</div><br>';
+	if(CMS_SPECIFIC=='Joomla') {
+		echo ' value="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'&amp;nr_generations=50&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'">'.'ALL'.'</option>';
+	}
+	else {
+		echo ' value="'.$_SERVER['PHP_SELF'].'?nr_generations=50&amp;id='.$family_id.'&amp;main_person='.$main_person.'&amp;show_date='.$show_date.'&amp;dates_behind_names='.$dates_behind_names.'"> ALL </option>';
+	}
+	echo '</select>';
+	echo '</span>';
+
+	if(!$show_details) {
+
+		echo '&nbsp;&nbsp;&nbsp;<span>';
+		//if($language["dir"]!="rtl") {
+		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
+			//Show pdf button
+			print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+			print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
+			print '<input type="hidden" name="screen_mode" value="PDF-P">';
+			print '<input type="hidden" name="id" value="'.$family_id.'">';
+			print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
+			print '<input type="hidden" name="dates_behind_names" value="'.$dates_behind_names.'">';
+			print '<input type="hidden" name="show_date" value="'.$show_date.'">';
+			print '<input type="hidden" name="main_person" value="'.$main_person.'">';
+			print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF (Portrait)').'">';
+			print '</form>';
+		}
+
+		echo '</span>';
+
+		echo '&nbsp;&nbsp;&nbsp;<span>';
+		//if($language["dir"]!="rtl") {
+		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
+			//Show pdf button
+			print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+			print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
+			print '<input type="hidden" name="screen_mode" value="PDF-L">';
+			print '<input type="hidden" name="id" value="'.$family_id.'">';
+			print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
+			print '<input type="hidden" name="dates_behind_names" value="'.$dates_behind_names.'">';
+			print '<input type="hidden" name="show_date" value="'.$show_date.'">';
+			print '<input type="hidden" name="main_person" value="'.$main_person.'">';
+			print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF (Landscape)').'">';
+			print '</form>';
+		}
+		echo '</span>';
+	}
+
+	echo '</div><br>';
 
 } // if not PDF
 
@@ -229,7 +273,7 @@ $gn=0;   // generatienummer
 // *************************************
 
 function outline($family_id,$main_person,$gn,$nr_generations) {
-	global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $show_date, $dates_behind_names, $nr_generations;
+	global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $show_details, $show_date, $dates_behind_names, $nr_generations;
 	global $language, $dirmark1, $dirmark1, $screen_mode;
 
 	$family_nr=1; //*** Process multiple families ***
@@ -298,7 +342,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 				$indent=$dir.'sub'.$gn;  // hier wordt de indent bepaald voor de namen div class (sub1, sub2 enz. die in gedcom.css staan)
 				if($screen_mode != "PDF") {
 					echo '<div class="'.$indent.'">';
-					echo '<b>'.$gn.' </b>';
+					echo '<span style="font-weight:bold;font-size:120%">'.$gn.' </span>';
 				}
 				else {
 					$pdf->SetLeftMargin($gn*10);
@@ -308,17 +352,18 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 				if ($change_main_person==true){
 					if($screen_mode != "PDF") {
 						echo $woman_cls->name_extended("outline");
+						if($show_details AND !$privacy_woman) { echo $woman_cls->person_data("outline",$familyDb->fam_gedcomnumber); }
 					}
 					else {
 						$pdf->SetFont('Arial','B',12);
 						$pdf->Write(8,$woman_cls->name_extended("outline"));
 						$pdf->SetFont('Arial','',12);
 					}
-					if ($show_date=="1" AND !$privacy_woman) {
+					if ($show_date=="1" AND !$privacy_woman AND !$show_details) {
 						if($screen_mode != "PDF") {
-							echo $dirmark1.',';
-							if($dates_behind_names==false) {echo '<br>';}
-							echo ' &nbsp; ('.language_date($person_womanDb->pers_birth_date).' - '.language_date($person_womanDb->pers_death_date).')';
+ 							echo $dirmark1.',';
+ 							if($dates_behind_names==false) {echo '<br>';}
+ 							echo ' &nbsp; ('.language_date($person_womanDb->pers_birth_date).' - '.language_date($person_womanDb->pers_death_date).')';
 						}
 						else {
 							if($dates_behind_names==false) {
@@ -328,21 +373,24 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 							$pdf->Write(8,' ('.language_date($person_womanDb->pers_birth_date).' - '.language_date($person_womanDb->pers_death_date).')');
 						}
 					}
+
 				}
 				else{
 					if($screen_mode != "PDF") {
 						echo $man_cls->name_extended("outline");
+						if($show_details AND !$privacy_man) { echo $man_cls->person_data("outline",$familyDb->fam_gedcomnumber); }
+
 					}
 					else {
 						$pdf->SetFont('Arial','B',12);
 						$pdf->Write(8,$man_cls->name_extended("outline"));
 						$pdf->SetFont('Arial','',12);
 					}
-					if ($show_date=="1" AND !$privacy_man) {
+					if ($show_date=="1" AND !$privacy_man AND !$show_details) {
 						if($screen_mode != "PDF") {
-							echo $dirmark1.',';
-							if($dates_behind_names==false) {echo '<br>';}
-							echo ' &nbsp; ('.language_date($person_manDb->pers_birth_date).' - '.language_date($person_manDb->pers_death_date).')';
+ 							echo $dirmark1.',';
+ 							if($dates_behind_names==false) {echo '<br>';}
+ 							echo ' &nbsp; ('.language_date($person_manDb->pers_birth_date).' - '.language_date($person_manDb->pers_death_date).')';
 						}
 						else {
 							if($dates_behind_names==false) {
@@ -352,6 +400,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 							$pdf->Write(8,' ('.language_date($person_manDb->pers_birth_date).' - '.language_date($person_manDb->pers_death_date).')');
 						}
 					}
+
 				}
 				if($screen_mode != "PDF") {
 					echo '</div>';
@@ -366,7 +415,19 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 		// *************************************************************
 		if($screen_mode != "PDF") {
 			echo '<div class="'.$indent.'" style="font-style:italic">';
-			echo ' x '.$dirmark1;
+			if(!$show_details) { 	
+				echo ' x '.$dirmark1; 
+			}
+			else { 
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				if($parent1_marr==0) {
+					if($familylevend) {echo $marriage_cls->marriage_data($familyDb,'','short')."<br>"; }
+					else { echo $marriage_cls->marriage_data()."<br>";  }
+				}
+				else {
+					echo $marriage_cls->marriage_data($familyDb,$parent1_marr+1,'shorter').' <br>';
+				}
+			}
 		}
 		else {
 			$pdf->SetLeftMargin($gn*10);
@@ -375,18 +436,20 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 		}
 		if ($change_main_person==true){
 			if($screen_mode != "PDF") {
+				if($show_details) { echo "&nbsp;&nbsp;&nbsp;&nbsp;"; }
 				echo $man_cls->name_extended("outline");
+				if($show_details AND !$privacy_man) { echo $man_cls->person_data("outline",$familyDb->fam_gedcomnumber); }
 			}
 			else {
 				$pdf->SetFont('Arial','BI',12);
 				$pdf->Write(8,$man_cls->name_extended("outline"));
 				$pdf->SetFont('Arial','',12);
 			}
-			if ($show_date=="1" AND !$privacy_man) {
+			if ($show_date=="1" AND !$privacy_man AND !$show_details) {
 				if($screen_mode != "PDF") {
-					echo $dirmark1.',';
-					if($dates_behind_names==false) {echo '<br>';}
-					echo ' &nbsp; ('.@language_date($person_manDb->pers_birth_date).' - '.@language_date($person_manDb->pers_death_date).')';
+ 					echo $dirmark1.',';
+ 					if($dates_behind_names==false) {echo '<br>';}
+ 					echo ' &nbsp; ('.@language_date($person_manDb->pers_birth_date).' - '.@language_date($person_manDb->pers_death_date).')';
 				}
 				else {
 					if($dates_behind_names==false) {
@@ -399,18 +462,20 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 		}
 		else{
 			if($screen_mode != "PDF") {
+				if($show_details) { echo "&nbsp;&nbsp;&nbsp;&nbsp;"; }
 				echo $woman_cls->name_extended("outline");
+				if($show_details AND !$privacy_woman) { echo $woman_cls->person_data("outline",$familyDb->fam_gedcomnumber); }
 			}
 			else {
 				$pdf->SetFont('Arial','BI',12);
 				$pdf->Write(8,$woman_cls->name_extended("outline"));
 				$pdf->SetFont('Arial','',12);
 			}
-			if ($show_date=="1" AND !$privacy_woman) {
+			if ($show_date=="1" AND !$privacy_woman AND !$show_details) {
 				if($screen_mode != "PDF") {
-					echo $dirmark1.',';
-					if($dates_behind_names==false) {echo '<br>';}
-					echo ' &nbsp; ('.@language_date($person_womanDb->pers_birth_date).' - '.@language_date($person_womanDb->pers_death_date).')';
+ 					echo $dirmark1.',';
+ 					if($dates_behind_names==false) {echo '<br>';}
+ 					echo ' &nbsp; ('.@language_date($person_womanDb->pers_birth_date).' - '.@language_date($person_womanDb->pers_death_date).')';
 				}
 				else {
 					if($dates_behind_names==false) {
@@ -452,8 +517,9 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 						$childindent=$dir.'sub'.$childgn;
 						if($screen_mode != "PDF") {
 							echo '<div class="'.$childindent.'">';
-							echo '<b>'.$childgn.' '.'</b>';
+							echo '<span style="font-weight:bold;font-size:120%">'.$childgn.' '.'</span>';
 							echo $child_cls->name_extended("outline");
+							if($show_details AND !$child_privacy) { echo $child_cls->person_data("outline",""); }
 						}
 						else {
 							$pdf->SetLeftMargin($childgn*10);
@@ -463,11 +529,11 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 							$pdf->Write(8,$child_cls->name_extended("outline"));
 							$pdf->SetFont('Arial','',12);
 						}
-						if ($show_date=="1" AND !$child_privacy) {
+						if ($show_date=="1" AND !$child_privacy AND !$show_details) {
 							if($screen_mode != "PDF") {
-								echo $dirmark1.',';
-								if($dates_behind_names==false) {echo '<br>';}
-								echo ' &nbsp; ('.language_date($childDb->pers_birth_date).' - '.language_date($childDb->pers_death_date).')';
+ 								echo $dirmark1.',';
+ 								if($dates_behind_names==false) {echo '<br>';}
+ 								echo ' &nbsp; ('.language_date($childDb->pers_birth_date).' - '.language_date($childDb->pers_death_date).')';
 							}
 							else {
 								if($dates_behind_names==false) {
