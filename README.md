@@ -1,22 +1,22 @@
 HuMo-gen
 ========
 
-HuMo-gen genealogical program
+HuMo-genealogy genealogical program
 
 ***************
 *** Manual  ***
 ***************
 
-The manual can be found at the HuMo-gen websites.
+The manual can be found at the HuMo-genealogy websites.
 
-www.humo-gen.com (dutch/ english)
-www.humogen.com (international)
+https://humo-gen.com (dutch/ english)
+https://humogen.com (international)
 
 ************************
 *** Version history  ***
 ************************
 
-A version history can be found at the HuMo-gen forum.
+A version history can be found at the HuMo-genealogy forum.
 
-www.humo-gen.com (dutch/ english)
-www.humogen.com (international)
+https://humo-gen.com (dutch/ english)
+https://humogen.com (international)
