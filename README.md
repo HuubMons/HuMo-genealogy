@@ -10,6 +10,7 @@ HuMo-genealogy genealogical program
 The manual can be found at the HuMo-genealogy websites.
 
 https://humo-gen.com (dutch/ english)
+
 https://humogen.com (international)
 
 ************************
@@ -19,4 +20,5 @@ https://humogen.com (international)
 A version history can be found at the HuMo-genealogy forum.
 
 https://humo-gen.com (dutch/ english)
+
 https://humogen.com (international)
