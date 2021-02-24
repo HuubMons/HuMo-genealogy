@@ -1,5 +1,10 @@
-HuMo-gen
+HuMo-genealogy
 ========
+
+
+SORRY! I don't do regular updates at this website, but HuMo-genealogy is still in development!!
+
+
 
 HuMo-genealogy genealogical program
 
