@@ -177,7 +177,9 @@ if (isset($accountDb->user_hide_trees) AND $accountDb->user_hide_trees){
 			$user['group_hide_trees']=rtrim($user['group_hide_trees'], $key[1]);
 		}
 		else{
-			if (!in_array($key, $user['group_hide_trees'])){
+			$check_array=explode(";",$user['group_hide_trees']);
+			//if (!in_array($key, $user['group_hide_trees'])){
+			if (!in_array($key, $check_array)){
 				if ($user['group_hide_trees']) $user['group_hide_trees'].=';'.$key;
 					else $user['group_hide_trees']=$key;
 				

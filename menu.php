@@ -74,7 +74,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			else {
 				$pattern='pattern=".{'.$humo_option['min_search_chars'].',}"'; $min_chars = " ".$humo_option['min_search_chars']." ";
 			}
-			echo '<input type="text" name="quicksearch" value="'.$quicksearch.'" size="10" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
+			echo '<input type="text" name="quicksearch" placeholder="'.__('Name').'" value="'.$quicksearch.'" size="10" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
 			echo ' <input type="submit" value="'.__('Search').'">';
 		echo "</form>";
 	}
@@ -185,9 +185,11 @@ echo '<ul class="humo_menu_item">';
 	}
 	elseif ($humo_option["url_rewrite"]=="j"){
 		$path_tmp='index/'.$_SESSION['tree_prefix']."/";
+		//$path_tmp='index/';
 	}
 	else{
 		$path_tmp=CMS_ROOTPATH.'index.php?database='.$_SESSION['tree_prefix'];
+		//$path_tmp=CMS_ROOTPATH.'index.php';
 	}
 	echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'">'.__('Home')."</a></li>\n";
 
@@ -363,12 +365,15 @@ echo '<ul class="humo_menu_item">';
 
 			if (CMS_SPECIFIC=='Joomla'){
 				$path_tmp='index.php?option=com_humo-gen&amp;task=tree_index&amp;database='.$_SESSION['tree_prefix'].'&amp;reset=1';
+				//$path_tmp='index.php?option=com_humo-gen&amp;task=index&amp;database='.$_SESSION['tree_prefix'].'&amp;reset=1';
 			}
 			elseif ($humo_option["url_rewrite"]=="j"){
 				$path_tmp='tree_index/'.$_SESSION['tree_prefix']."/";
+				//$path_tmp='index/'.$_SESSION['tree_prefix']."/";
 			}
 			else{
 				$path_tmp=CMS_ROOTPATH.'tree_index.php?database='.$_SESSION['tree_prefix'].'&amp;reset=1';
+				//$path_tmp=CMS_ROOTPATH.'index.php?database='.$_SESSION['tree_prefix'].'&amp;reset=1';
 			}
 
 			echo '<a href="'.$path_tmp.'"';
@@ -487,7 +492,7 @@ echo '<ul class="humo_menu_item">';
 
 	// make sure at least one of the submenus is activated, otherwise don't show TOOLS menu
 	if ($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j'
-	OR ($user["group_googlemaps"]=='j' AND 1==2
+	OR ($user["group_googlemaps"]=='j'
 		AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0
 		AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
 			AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0)

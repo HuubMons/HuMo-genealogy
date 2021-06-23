@@ -472,7 +472,10 @@ function process_person($person_array){
 
 		// *** Quality ***
 		// BELONGS TO A 1 xxxx ITEM????
-		if ($buffer8=='2 QUAY 0'){ $processed=1; $pers_firstname='(?) '.$pers_firstname; } //Certain/ uncertain person (onzeker persoon) HZ
+		// Certain/ uncertain person (onzeker persoon) HZ
+		if ($gen_program=='Haza-Data' AND $buffer8=='2 QUAY 0'){
+			$processed=1; $pers_firstname='(?) '.$pers_firstname;
+		}
 		//if ($buffer6=='2 QUAY'){ $processed=1; $person["pers_quality"]=$this->process_quality($buffer); }
 
 		// *** Pro-gen: 1 _PATR Jans ***
@@ -1599,7 +1602,7 @@ function process_person($person_array){
 	}
 
 	// *** Save data ***
-	$sql="INSERT INTO humo_persons SET
+	$sql="INSERT IGNORE INTO humo_persons SET
 	pers_gedcomnumber='".$this->text_process($pers_gedcomnumber)."',
 	pers_tree_id='".$tree_id."',
 	pers_tree_prefix='".$_SESSION['tree_prefix']."',
@@ -1650,7 +1653,7 @@ function process_person($person_array){
 
 	// *** Save unprocessed items ***
 	if ($person["pers_unprocessed_tags"]){
-		$sql="INSERT INTO humo_unprocessed_tags SET
+		$sql="INSERT IGNORE INTO humo_unprocessed_tags SET
 			tag_pers_id='".$pers_id."',
 			tag_tree_id='".$tree_id."',
 			tag_tag='".$this->text_process($person["pers_unprocessed_tags"])."'";
@@ -1664,7 +1667,7 @@ function process_person($person_array){
 	// *** Save standard addressses in separate table ***
 	if ($nraddress2>0){
 		for ($i=1; $i<=$nraddress2; $i++){
-			$gebeurtsql="INSERT INTO humo_addresses SET
+			$gebeurtsql="INSERT IGNORE INTO humo_addresses SET
 				address_tree_id='".$tree_id."',
 				address_order='".$i."',
 				address_connect_kind='person',
@@ -1704,7 +1707,7 @@ function process_person($person_array){
 		for($i=1; $i<=$geocode_nr; $i++) {
 			$loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '".$this->text_process($geocode_plac[$i])."'");
 			if(!$loc_qry->rowCount() AND $geocode_type[$geocode_nr] !="") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event) {  
-				$geosql="INSERT INTO humo_location SET
+				$geosql="INSERT IGNORE INTO humo_location SET
 				location_location='".$this->text_process($geocode_plac[$i])."',
 				location_lat='".$geocode_lati[$i]."',
 				location_lng='".$geocode_long[$i]."',
@@ -1731,7 +1734,7 @@ function process_person($person_array){
 		for ($i=1; $i<=$event_nr; $i++){
 			$event_order++;
 			if ( $check_event_kind!=$event['kind'][$i] ){ $event_order=1; $check_event_kind=$event['kind'][$i]; }
-			$gebeurtsql="INSERT INTO humo_events SET
+			$gebeurtsql="INSERT IGNORE INTO humo_events SET
 				event_tree_id='".$tree_id."',
 				event_order='".$event_order."',
 				event_connect_kind='".$this->text_process($event['connect_kind'][$i])."',
@@ -1761,7 +1764,7 @@ function process_person($person_array){
 			$calculated_event_id++;
 			$event_order++;
 			if ( $check_event_kind!=$event2['kind'][$i] ){ $event_order=1; $check_event_kind=$event2['kind'][$i]; }
-			$gebeurtsql="INSERT INTO humo_events SET
+			$gebeurtsql="INSERT IGNORE INTO humo_events SET
 				event_tree_id='".$tree_id."',
 				event_order='".$event_order."',
 				event_connect_kind='".$this->text_process($event2['connect_kind'][$i])."',
@@ -1810,7 +1813,7 @@ function process_person($person_array){
 				$connect_order=1;
 				$check_connect=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i];
 			}
-			$gebeurtsql="INSERT INTO humo_connections SET
+			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
 				connect_tree_id='".$tree_id."',
 				connect_order='".$connect_order."',
 				connect_kind='".$connect['kind'][$i]."',
@@ -2775,7 +2778,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		$heb_qry .= "fam_marr_notice_date_hebnight='".$family["fam_marr_notice_date_hebnight"]."',fam_marr_date_hebnight='".$family["fam_marr_date_hebnight"]."',fam_marr_church_notice_date_hebnight='".$family["fam_marr_church_notice_date_hebnight"]."',fam_marr_church_date_hebnight='".$family["fam_marr_church_date_hebnight"]."',";
 	}	
 
-	$sql="INSERT INTO humo_families SET
+	$sql="INSERT IGNORE INTO humo_families SET
 	fam_tree_id='".$tree_id."',
 	fam_gedcomnumber='$gedcomnumber',
 	fam_man='$fam_man',
@@ -2819,7 +2822,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 
 	// *** Save unprocessed items ***
 	if ($family["fam_unprocessed_tags"]){
-		$sql="INSERT INTO humo_unprocessed_tags SET
+		$sql="INSERT IGNORE INTO humo_unprocessed_tags SET
 			tag_rel_id='".$fam_id."',
 			tag_tree_id='".$tree_id."',
 			tag_tag='".$this->text_process($family["fam_unprocessed_tags"])."'";
@@ -2830,7 +2833,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 	if ($nraddress>0){
 		for ($i=1; $i<=$nraddress; $i++){
 			if($add_tree==true OR $reassign==true) { $address_text[$i] = $this->reassign_ged($address_text[$i],'N');  }
-			$gebeurtsql="INSERT INTO humo_addresses SET
+			$gebeurtsql="INSERT IGNORE INTO humo_addresses SET
 				address_tree_id='".$tree_id."',
 				address_order='".$i."',
 				address_connect_kind='family',
@@ -2861,7 +2864,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 			$loc_qry = $dbh->query("SELECT * FROM humo_location WHERE location_location = '".$this->text_process($geocode_plac[$i])."'");
  
 			if(!$loc_qry->rowCount() AND $geocode_type[$geocode_nr] !="") {  // doesn't appear in the table yet and the location belongs to birth, bapt, death or buried event
-				$geosql="INSERT INTO humo_location SET
+				$geosql="INSERT IGNORE INTO humo_location SET
 					location_location='".$this->text_process($geocode_plac[$i])."',
 					location_lat='".$geocode_lati[$i]."',
 					location_lng='".$geocode_long[$i]."',
@@ -2895,7 +2898,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 			}
 			if($add_tree==true OR $reassign==true) { $event['text'][$i] = $this->reassign_ged($event['text'][$i],'N');  }
 
-			$gebeurtsql="INSERT INTO humo_events SET
+			$gebeurtsql="INSERT IGNORE INTO humo_events SET
 				event_tree_id='".$tree_id."',
 				event_order='".$event_order."',
 				event_connect_kind='".$event['connect_kind'][$i]."',
@@ -2929,7 +2932,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 				$check_connect=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i];
 			}
 			if($add_tree==true OR $reassign==true) { $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N');  }
-			$gebeurtsql="INSERT INTO humo_connections SET
+			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
 				connect_tree_id='".$tree_id."',
 				connect_order='".$connect_order."',
 				connect_kind='".$connect['kind'][$i]."',
@@ -3088,7 +3091,7 @@ function process_text($text_array){
 	$text['text_text'] = str_replace('@@', '@', $text['text_text']);
 
 	// *** Save text ***
-	$sql="INSERT INTO humo_texts SET
+	$sql="INSERT IGNORE INTO humo_texts SET
 		text_tree_id='".$tree_id."',
 		text_gedcomnr='".$this->text_process($text['text_gedcomnr'])."',
 		text_text='".$this->text_process($text['text_text'])."',
@@ -3113,7 +3116,7 @@ function process_text($text_array){
 			//if($add_tree==true OR $reassign==true) { $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N');  }
 			$connect['text'][$i]=$text['text_gedcomnr'];
 
-			$gebeurtsql="INSERT INTO humo_connections SET
+			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
 				connect_tree_id='".$tree_id."',
 				connect_order='".$connect_order."',
 				connect_kind='".$connect['kind'][$i]."',
@@ -3142,7 +3145,7 @@ function process_text($text_array){
 
 	// *** Save unprocessed items ***
 	if ($text["text_unprocessed_tags"]){
-		$sql="INSERT INTO humo_unprocessed_tags SET
+		$sql="INSERT IGNORE INTO humo_unprocessed_tags SET
 			tag_text_id='".$text_id."',
 			tag_tree_id='".$tree_id."',
 			tag_tag='".$this->text_process($text["text_unprocessed_tags"])."'";
@@ -3436,7 +3439,7 @@ function process_source($source_array){
 			}
 			if($add_tree==true OR $reassign==true) { $event['text'][$i] = $this->reassign_ged($event['text'][$i],'N');  }
 
-			$gebeurtsql="INSERT INTO humo_events SET
+			$gebeurtsql="INSERT IGNORE INTO humo_events SET
 				event_tree_id='".$tree_id."',
 				event_order='".$event_order."',
 				event_connect_kind='".$event['connect_kind'][$i]."',
@@ -3459,7 +3462,7 @@ function process_source($source_array){
 	}
 
 	// *** Save sources ***
-	$sql="INSERT INTO humo_sources SET
+	$sql="INSERT IGNORE INTO humo_sources SET
 	source_tree_id='".$tree_id."',
 	source_gedcomnr='".$this->text_process($source["id"])."',
 	source_status='".$source["source_status"]."',
@@ -3489,7 +3492,7 @@ function process_source($source_array){
 
 	// *** Save unprocessed items ***
 	if ($source["source_unprocessed_tags"]){
-		$sql="INSERT INTO humo_unprocessed_tags SET
+		$sql="INSERT IGNORE INTO humo_unprocessed_tags SET
 			tag_source_id='".$source_id."',
 			tag_tree_id='".$tree_id."',
 			tag_tag='".$this->text_process($source["source_unprocessed_tags"])."'";
@@ -3670,7 +3673,7 @@ function process_repository($repo_array){
 	if($add_tree==true OR $reassign==true) { $repo["repo_text"] = $this->reassign_ged($repo["repo_text"],'N');  }
 
 	// *** Save repository ***
-	$sql="INSERT INTO humo_repositories SET
+	$sql="INSERT IGNORE INTO humo_repositories SET
 	repo_tree_id='".$tree_id."',
 	repo_gedcomnr='".$this->text_process($repo["repo_gedcomnr"])."',
 	repo_name='".$this->text_process($repo["repo_name"])."',
@@ -3693,7 +3696,7 @@ function process_repository($repo_array){
 
 	// *** Save unprocessed items ***
 	if ($repo["repo_unprocessed_tags"]){
-		$sql="INSERT INTO humo_unprocessed_tags SET
+		$sql="INSERT IGNORE INTO humo_unprocessed_tags SET
 			tag_repo_id='".$repo_id."',
 			tag_tree_id='".$tree_id."',
 			tag_tag='".$this->text_process($repo["repo_unprocessed_tags"])."'";
@@ -3824,7 +3827,7 @@ function process_address($address_array){
 
 	if($add_tree==true OR $reassign==true) { $address["address_text"] = $this->reassign_ged($address["address_text"],'N');  }
 	// *** Save addressses ***
-	$sql="INSERT INTO humo_addresses SET
+	$sql="INSERT IGNORE INTO humo_addresses SET
 	address_tree_id='".$tree_id."',
 	address_gedcomnr='".$this->text_process($address["address_gedcomnr"])."',
 	address_address='".$this->text_process($address["address"])."',
@@ -3842,7 +3845,7 @@ function process_address($address_array){
 
 	// *** Save unprocessed items ***
 	if ($address["address_unprocessed_tags"]){
-		$sql="INSERT INTO humo_unprocessed_tags SET
+		$sql="INSERT IGNORE INTO humo_unprocessed_tags SET
 			tag_address_id='".$address_id."',
 			tag_tree_id='".$tree_id."',
 			tag_tag='".$this->text_process($address["address_unprocessed_tags"])."'";
@@ -3967,7 +3970,7 @@ function process_object($object_array){
 
 	if($add_tree==true OR $reassign==true) { $event['text'] = $this->reassign_ged($event['text'],'O');  }
 	// *** Save object ***
-	$eventsql="INSERT INTO humo_events SET
+	$eventsql="INSERT IGNORE INTO humo_events SET
 		event_tree_id='".$tree_id."',
 		event_gedcomnr='".$event['gedcomnr']."',
 		event_order='1',
@@ -3991,7 +3994,7 @@ function process_object($object_array){
 
 	// *** Save unprocessed items ***
 	if ($event_unprocessed_tags){
-		$sql="INSERT INTO humo_unprocessed_tags SET
+		$sql="INSERT IGNORE INTO humo_unprocessed_tags SET
 			tag_event_id='".$event_id."',
 			tag_tree_id='".$tree_id."',
 			tag_tag='".$this->text_process($event_unprocessed_tags)."'";

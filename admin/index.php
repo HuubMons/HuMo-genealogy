@@ -11,7 +11,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2014 Huub Mons,
+* Copyright (C) 2008-2019 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -167,6 +167,7 @@ while (false!==($file = readdir($map))) {
 			elseif ($file=='sk') $language_order[]='Slovensky';
 			elseif ($file=='sv') $language_order[]='Swedish';
 			elseif ($file=='zh') $language_order[]='Chinese_traditional';
+			elseif ($file=='pl') $language_order[]='Polish';
 			else $language_order[]=$file;
 		}
 		// *** Save language choice ***
@@ -329,12 +330,12 @@ if(isset($database_check) AND $database_check) {
 				else{
 					// *** Show log in screen ***
 					$page='login';
-				} 
+				}
 			}
 		}
 		else{
 			// *** No user table: probably first installation: everything will be visible! ***
-		}  
+		}
 
 	}
 }
@@ -357,7 +358,6 @@ if (!CMS_SPECIFIC){
 		$html_text="\n<html>\n";
 	}
 	echo $html_text;
-	//echo "<html>\n";
 	echo "<head>\n";
 	echo '<meta http-equiv="content-type" content="text/html; charset=utf-8">'."\n";
 
@@ -395,23 +395,22 @@ if (!CMS_SPECIFIC){
 	// *** Close pop-up screen and update main screen ***
 	if (isset($_GET['page']) AND $_GET['page']=='close_popup'){
 		echo '<script type="text/javascript">';
+			$page_link='editor';
+			// *** Also add these links in "Close source screen" link ***
+			if (isset($_GET['connect_sub_kind'])){
+				if ($_GET['connect_sub_kind']=='address_source') $page_link='edit_addresses';
+				//if ($_GET['connect_sub_kind']=='pers_address_source') $page_link='edit_addresses';
+				//if ($_GET['connect_sub_kind']=='fam_address_source') $page_link='edit_addresses';
+				if ($_GET['connect_sub_kind']=='pers_event_source') $page_link='editor&event_person=1';
+				if ($_GET['connect_sub_kind']=='fam_event_source') $page_link='editor&event_family=1';
+			}
+			if (isset($_GET['event_person']) AND $_GET['event_person']=='1') $page_link='editor&event_person=1#event_person_link';
+			if (isset($_GET['event_family']) AND $_GET['event_family']=='1') $page_link='editor&event_family=1#event_family_link';
 
-		$page_link='editor';
-		// *** Also add these links in "Close source screen" link ***
-		if (isset($_GET['connect_sub_kind'])){
-			if ($_GET['connect_sub_kind']=='address_source') $page_link='edit_addresses';
-			//if ($_GET['connect_sub_kind']=='pers_address_source') $page_link='edit_addresses';
-			//if ($_GET['connect_sub_kind']=='fam_address_source') $page_link='edit_addresses';
-			if ($_GET['connect_sub_kind']=='pers_event_source') $page_link='editor&event_person=1';
-			if ($_GET['connect_sub_kind']=='fam_event_source') $page_link='editor&event_family=1';
-		}
-		if (isset($_GET['event_person']) AND $_GET['event_person']=='1') $page_link='editor&event_person=1#event_person_link';
-		if (isset($_GET['event_family']) AND $_GET['event_family']=='1') $page_link='editor&event_family=1#event_family_link';
-
-		echo 'function redirect_to(where, closewin){
-			opener.location= \'index.php?page='.$page_link.'\' + where;
-			if (closewin == 1){ self.close(); }
-		}';
+			echo 'function redirect_to(where, closewin){
+				opener.location= \'index.php?page='.$page_link.'\' + where;
+				if (closewin == 1){ self.close(); }
+			}';
 		echo '</script>';
 
 		//echo '<body onload="redirect_to(\'index.php\',\'1\')">';
@@ -470,10 +469,9 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
 			}
 
-			$result = $dbh->query("UPDATE humo_settings
-				SET setting_value='".$update_text."',
-				setting_value='".$update_last_check."'
-				WHERE setting_variable='update_text'");
+			$result = $db_functions->update_settings('update_text',$update_text);
+			$result = $db_functions->update_settings('update_last_check',$update_last_check);
+
 			$humo_option['update_last_check']=$update_last_check;
 			//$humo_option['update_text']=$update_text;
 		}
@@ -487,9 +485,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			// *** Manual check for update ***
 			if (isset($_GET['update_check']) AND $humo_option['update_last_check']!='DISABLED'){
 				// *** Update settings ***
-				$result = $dbh->query("UPDATE humo_settings
-					SET setting_value='2012-01-01'
-					WHERE setting_variable='update_last_check'");
+				$result = $db_functions->update_settings('update_last_check','2012-01-01');
+
 				$humo_option['update_last_check']='2012-01-01';
 			}
 
@@ -616,9 +613,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 					// *** Update settings ***
 					$update_last_check=date("Y-m-d");
-					$result = $dbh->query("UPDATE humo_settings
-						SET setting_value='".safe_text_db($update_last_check)."'
-						WHERE setting_variable='update_last_check'");
+					$result = $db_functions->update_settings('update_last_check',$update_last_check);
 
 					// *** Remove temporary file, used for curl method ***
 					if (file_exists('update/temp_update_check.php')) unlink ('update/temp_update_check.php');
@@ -634,14 +629,10 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 					// *** Update settings, only check for update once a day ***
 					$update_last_check=date("Y-m-d");
-					$result = $dbh->query("UPDATE humo_settings
-						SET setting_value='".safe_text_db($update_last_check)."'
-						WHERE setting_variable='update_last_check'");
+					$result = $db_functions->update_settings('update_last_check',$update_last_check);
 				}
 
-				$result = $dbh->query("UPDATE humo_settings
-					SET setting_value='".safe_text_db($update_text)."'
-					WHERE setting_variable='update_text'");
+				$result = $db_functions->update_settings('update_text',$update_text);
 
 				$update_text.=' *';
 			}
@@ -652,6 +643,36 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			echo $update_text;
 		}
 	}
+
+	// *** NEW DECEMBER 2019 ***
+	// *** Selected family tree, using tree_id ***
+	/*
+	if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
+		$check_tree_id=''; $admin_tree_id=''; $admin_tree_prefix='';
+		// *** save_admin_tree_id must be numeric ***
+		if (isset($_SESSION['save_admin_tree_id']) AND is_numeric($_SESSION['save_admin_tree_id'])){
+			$check_tree_id=$_SESSION['save_admin_tree_id'];
+		}
+		// *** tree_id must be numeric ***
+		if (isset($_POST['change_admin_tree_id']) AND is_numeric($_POST['change_admin_tree_id'])){
+			$check_tree_id=$_POST['change_admin_tree_id'];
+		}
+		// *** Just logged in, or no tree_id available: find first family tree ***
+		if ($check_tree_id==''){
+			$check_tree_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order LIMIT 0,1");
+			@$check_treeDb=$check_tree_sql->fetch(PDO::FETCH_OBJ);
+			$check_tree_id=$check_treeDb->tree_id;
+		}
+		// *** Double check tree_id ***
+		if ($check_tree_id AND $check_tree_id!=''){
+			$get_treeDb=$db_functions->get_tree($check_tree_id);
+			$admin_tree_id=$get_treeDb->tree_id;
+			$_SESSION['save_admin_tree_id']=$tree_id;
+			$admin_tree_prefix=$get_treeDb->tree_prefix;
+		}
+		//echo 'test'.$admin_tree_id.' '.$admin_tree_prefix;
+	}
+	*/
 
 	// ******************
 	// *** START MENU ***
@@ -764,11 +785,11 @@ echo '<div id="humo_top" '.$top_dir.'>';
 						$menu_item=''; if ($page=='settings'){ $menu_item=' id="current"'; }
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=settings">'.__('Settings').'</a></li>';
 
+						$menu_item=''; if ($page=='favorites'){ $menu_item=' id="current"'; }
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=settings&amp;menu_admin=settings_homepage">'.__('Homepage').'</a></li>';
+
 						$menu_item=''; if ($page=='cms_pages'){ $menu_item=' id="current"'; }
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cms_pages">'.__('CMS Own pages').'</a></li>';
-
-						$menu_item=''; if ($page=='favorites'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=favorites">'.__('Homepage favourites').'</a></li>';
 
 						// *** Language Editor ***
 						$menu_item=''; if ($page=='language_editor'){ $menu_item=' id="current"'; }

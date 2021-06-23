@@ -109,6 +109,7 @@ while (false!==($file = readdir($language_folder))) {
 		elseif ($file=='sk') $language_order[]='Slovensky';
 		elseif ($file=='sv') $language_order[]='Swedish';
 		elseif ($file=='zh') $language_order[]='Chinese_traditional';
+		elseif ($file=='pl') $language_order[]='Polish';
 		else $language_order[]=$file;
 
 		// *** Save choice of language ***
@@ -450,9 +451,24 @@ else{
 	// *** Family tree choice ***
 	global $database;
 	$database='';
-	if (isset($urlpart[0]) AND $urlpart[0]!='standaard') $database=$urlpart[0]; // *** url_rewrite ***
 	if (isset($_GET["database"])) $database=$_GET["database"];
 	if (isset($_POST["database"])) $database=$_POST["database"];
+	if (isset($urlpart[0]) AND $urlpart[0]!='' AND $urlpart[0]!='standaard'){
+		$database=$urlpart[0]; // *** url_rewrite ***
+		$_GET["database"]=$database; // *** Needed to check for CMS page if url-rewrite is used ***
+	}
+
+	// *** Future option, use database number: datase=1 ***
+	// *** $database wordt: $tree_id
+	//if (isset($database) AND is_numeric($database) AND $database){
+	//	// *** Check if family tree really exists ***
+	//	$dataDb=$db_functions->get_tree($database);
+	//	if ($dataDb){
+	//		if ($database==$dataDb->tree_id) $_SESSION['tree_prefix']=$dataDb->tree_prefix;
+	//	}
+	//}
+
+	// *** For example: database=humo2_ ***
 	if (isset($database) AND is_string($database) AND $database){
 		// *** Check if family tree really exists ***
 		$dataDb=$db_functions->get_tree($database);
@@ -482,10 +498,8 @@ else{
 	@$dataDb=$db_functions->get_tree($_SESSION['tree_prefix']);
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
 	$hide_tree=false; if (in_array(@$dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
-	//$_SESSION['tree_id']=''; $tree_id='';
-
-	// *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
 	if ($hide_tree){
+		// *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
 		$_SESSION['tree_prefix']='';
 		$_SESSION['tree_id']='';
 		$tree_id='';
@@ -523,16 +537,16 @@ else{
 
 	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/sliderbar/slider.js"></script>';
 
-	if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR 
+	if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR
 		strpos($_SERVER['REQUEST_URI'],"maps")!== false OR
-		strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR    
+		strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR
 		$user['group_pictures']=='j') { 
 		// if lightbox activated or descendant chart or hourglass chart or google maps is used --> load jquery
 		echo '	<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script> ';
 	}
-	if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR 
-		strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR 
-		strpos($_SERVER['REQUEST_URI'],"maps")!== false) { 
+	if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR
+		strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR
+		strpos($_SERVER['REQUEST_URI'],"maps")!== false) {
 		// if descendant chart or hourglass chart or google maps used --> load additional jquery modules for slider
 		echo ' <link rel="stylesheet" href="'.CMS_ROOTPATH.'include/jqueryui/css/hot-sneaks/jquery-ui-1.8.23.custom.css"> ';
 		echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script> ';
@@ -587,7 +601,7 @@ else{
 		}
 	}
 
-	echo '<div class="silverbody">'; 
+	echo '<div class="silverbody">';
 } // *** End of PDF export check ***
 
 ?>

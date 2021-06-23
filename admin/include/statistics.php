@@ -391,7 +391,7 @@ if ($statistics_screen=='remove'){
 	echo ' <input type="text" name="stat_day" value="1" size="1">';
 	$month=date("m"); $year=date("Y");
 	$month--; if ($month==0){ $month=12; $year--; }
-	echo ' <input type="text" name="stat_month" value="'.$month.'" size="1">	';
+	echo ' <input type="text" name="stat_month" value="'.$month.'" size="1">';
 
 	echo ' <input type="text" name="stat_year" value="'.$year.'" size="2"> '.__('d-m-yyyy').'<br>';
 
@@ -789,7 +789,7 @@ if ($statistics_screen=='statistics_old'){
 			//*** Man ***
 			$personDb = $db_functions->get_person($familyDb->fam_man);
 			if (!$familyDb->fam_man){
-				echo 'N.N.';
+				echo __('N.N.');
 			}
 			else{
 				$name=$person_cls->person_name($personDb);
@@ -801,7 +801,7 @@ if ($statistics_screen=='statistics_old'){
 			//*** Woman ***
 			$personDb = $db_functions->get_person($familyDb->fam_woman);
 			if (!$familyDb->fam_woman){
-				echo 'N.N.';
+				echo __('N.N.');
 			}
 			else{
 				$name=$person_cls->person_name($personDb);

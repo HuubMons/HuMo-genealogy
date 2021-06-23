@@ -39,151 +39,42 @@ include_once(CMS_ROOTPATH."menu.php");
 include_once(CMS_ROOTPATH."include/mainindex_cls.php");
 $mainindex = new mainindex_cls();
 
-// *** Show slideshow ***
-if (isset($humo_option["slideshow_show"]) AND $humo_option["slideshow_show"]=='y'){
-	// *** Used inline CSS, so it will be possible to use other CSS style (can be used for future slideshow options) ***
-
-	echo '<style>
-	/* CSS3 slider for mainmenu */
-	/* @import url(http://fonts.googleapis.com/css?family=Istok+Web); */
-	@keyframes slidy {
-		0% { left: 0%; }
-		20% { left: 0%; }
-		25% { left: -100%; }
-		45% { left: -100%; }
-		50% { left: -200%; }
-		70% { left: -200%; }
-		75% { left: -300%; }
-		95% { left: -300%; }
-		100% { left: -400%; }
-	}
-	/* body, figure { */
-	figure {
-		margin: 0;
-		/*	font-family: Istok Web, sans-serif; */
-		font-weight: 100;
-		
-		/* height:250px; */
-	}
-	div#captioned-gallery {
-		width: 100%; overflow: hidden; 
-		margin-top: -17px;
-	}
-	figure.slider { 
-		position: relative; width: 500%; 
-		font-size: 0; animation: 30s slidy infinite; 
-	}
-	figure.slider figure { 
-		width: 20%; height: auto;
-		display: inline-block;  position: inherit; 
-	}
-	figure.slider img { width: 100%; height: auto; }
-	figure.slider figure figcaption {
-		position: absolute; bottom: 10px;
-		background: rgba(0,0,0,0.4);
-		color: #fff; width: 100%;
-		font-size: 1.2rem; padding: .6rem;
-		text-shadow: 2px 2px 4px #000000; 
-	}
-	/* end of CSS3 slider */
-	</style>';
-
-	echo '<div id="captioned-gallery">';
-
-		echo '<figure class="slider">';
-			echo '<figure>';
-				$slideshow_01=explode('|',$humo_option["slideshow_01"]);
-				if ($slideshow_01[0] AND file_exists($slideshow_01[0])){
-					echo '<img src="'.$slideshow_01[0].'" height="174" width="946" alt="">';
-					echo '<figcaption class="mobile_hidden">'.$slideshow_01[1].'</figcaption>';
-				}else{
-					echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-					echo '<figcaption class="mobile_hidden">Missing image 01</figcaption>';
-				}
-			echo '</figure>';
-
-			echo '<figure>';
-				$slideshow_02=explode('|',$humo_option["slideshow_02"]);
-				if ($slideshow_02[0] AND file_exists($slideshow_02[0])){
-					echo '<img src="'.$slideshow_02[0].'" height="174" width="946" alt="">';
-					echo '<figcaption class="mobile_hidden">'.$slideshow_02[1].'</figcaption>';
-				}else{
-					echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-					echo '<figcaption class="mobile_hidden">Missing image 02</figcaption>';
-				}
-			echo '</figure>';
-
-			echo '<figure>';
-				$slideshow_03=explode('|',$humo_option["slideshow_03"]);
-				if ($slideshow_03[0] AND file_exists($slideshow_03[0])){
-					echo '<img src="'.$slideshow_03[0].'" height="174" width="946" alt="">';
-					echo '<figcaption class="mobile_hidden">'.$slideshow_03[1].'</figcaption>';
-				}else{
-					echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-					echo '<figcaption class="mobile_hidden">Missing image 03</figcaption>';
-				}
-			echo '</figure>';
-
-			echo '<figure>';
-				$slideshow_04=explode('|',$humo_option["slideshow_04"]);
-				if ($slideshow_04[0] AND file_exists($slideshow_04[0])){
-					echo '<img src="'.$slideshow_04[0].'" height="174" width="946" alt="">';
-					echo '<figcaption class="mobile_hidden">'.$slideshow_04[1].'</figcaption>';
-				}else{
-					echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-					echo '<figcaption class="mobile_hidden">Missing image 04</figcaption>';
-				}
-			echo '</figure>';
-
-			// *** 5th picture must be the same as 1st picture ***
-			echo '<figure>';
-				$slideshow_01=explode('|',$humo_option["slideshow_01"]);
-				if ($slideshow_01[0] AND file_exists($slideshow_01[0])){
-					echo '<img src="'.$slideshow_01[0].'" height="174" width="946" alt="">';
-					echo '<figcaption class="mobile_hidden">'.$slideshow_01[1].'</figcaption>';
-				}else{
-					echo '<img src="images/missing-image_large.jpg" height="174" width="946" alt="">';
-					echo '<figcaption class="mobile_hidden">Missing image 01</figcaption>';
-				}
-			echo '</figure>';
-
-		echo '</figure>';
-	echo '</div>';
-}
-
 // *** Replace the main index by an own CMS page ***
-if (isset($humo_option["main_page_cms_id_".$selected_language])) {
-	if ($humo_option["main_page_cms_id_".$selected_language] == "") {
-		include_once(CMS_ROOTPATH."include/mainindex_cls.php");
-		$mainindex = new mainindex_cls();
-		echo $mainindex->show_tree_index();
-	}
-	else {
-		// *** Show CMS page ***
-		echo '<div id="mainmenu_centerbox">';
-			if (is_numeric($humo_option["main_page_cms_id_".$selected_language])){
-				$page_qry = $dbh->query("SELECT * FROM humo_cms_pages
-					WHERE page_id='".$humo_option["main_page_cms_id_".$selected_language]."' AND page_status!=''");
-				$cms_pagesDb=$page_qry->fetch(PDO::FETCH_OBJ);
-				echo $cms_pagesDb->page_text;
-			}
-		echo '</div>';
+$text='';
+if (isset($humo_option["main_page_cms_id_".$selected_language]) AND $humo_option["main_page_cms_id_".$selected_language]) {
+	// *** Show CMS page ***
+	if (is_numeric($humo_option["main_page_cms_id_".$selected_language])){
+		$page_qry = $dbh->query("SELECT * FROM humo_cms_pages
+			WHERE page_id='".$humo_option["main_page_cms_id_".$selected_language]."' AND page_status!=''");
+		$cms_pagesDb=$page_qry->fetch(PDO::FETCH_OBJ);
+		$text=$cms_pagesDb->page_text;
 	}
 }
 elseif (isset($humo_option["main_page_cms_id"]) AND $humo_option["main_page_cms_id"]){
 	// *** Show CMS page ***
+	if (is_numeric($humo_option["main_page_cms_id"])){
+		$page_qry = $dbh->query("SELECT * FROM humo_cms_pages
+			WHERE page_id='".$humo_option["main_page_cms_id"]."' AND page_status!=''");
+		$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
+		$text=$cms_pagesDb->page_text;
+	}
+}
+
+// *** Show slideshow ***
+if (isset($humo_option["slideshow_show"]) AND $humo_option["slideshow_show"]=='y'){
+	$mainindex->show_slideshow();
+}
+
+if ($text){
+	// *** Can be used for extra box in lay-out ***
 	echo '<div id="mainmenu_centerbox">';
-		if (is_numeric($humo_option["main_page_cms_id"])){
-			$page_qry = $dbh->query("SELECT * FROM humo_cms_pages
-				WHERE page_id='".$humo_option["main_page_cms_id"]."' AND page_status!=''");
-			$cms_pagesDb = $page_qry->fetch(PDO::FETCH_OBJ);
-			echo $cms_pagesDb->page_text;
-		}
+		// *** Show CMS page ***
+		echo $text;
 	echo '</div>';
 }
 else{
 	// *** Show default HuMo-gen homepage ***
-	echo $mainindex->show_tree_index();
+	$mainindex->show_tree_index();
 }
 
 // *** Show HuMo-gen footer ***

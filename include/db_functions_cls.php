@@ -66,7 +66,9 @@ function __construct() {
 		$this->query['get_user'] = $dbh->prepare( $sql );
 
 		$sql = "SELECT * FROM humo_trees WHERE tree_prefix=:tree_prefix";
-		$this->query['get_tree'] = $dbh->prepare( $sql );
+		$this->query['get_tree_prefix'] = $dbh->prepare( $sql );
+		$sql = "SELECT * FROM humo_trees WHERE tree_id=:tree_id";
+		$this->query['get_tree_id'] = $dbh->prepare( $sql );
 
 		$sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 		$this->query['get_trees'] = $dbh->prepare( $sql );
@@ -153,6 +155,10 @@ function __construct() {
 		$sql = "SELECT * FROM humo_connections WHERE connect_tree_id=:connect_tree_id AND connect_kind=:connect_kind AND connect_sub_kind=:connect_sub_kind AND connect_connect_id=:connect_connect_id ORDER BY connect_order";
 		$this->query['get_connections_connect_id'] = $dbh->prepare( $sql );
 
+		// *** Update humo_settings ***
+		$sql = "UPDATE humo_settings SET setting_value=:setting_value WHERE setting_variable=:setting_variable";
+		$this->query['update_settings'] = $dbh->prepare( $sql );
+
 	}
 }
 
@@ -232,19 +238,35 @@ function get_user($user_name,$user_password){
 
 /*--------------------[get tree]--------------------------------
  * FUNCTION	: Get family tree data from database.
- * QUERY	: SELECT * FROM humo_trees
+ * QUERY 1	: SELECT * FROM humo_trees
  *				WHERE tree_prefix=:tree_prefix
+ * QUERY 2	: SELECT * FROM humo_trees
+ *				WHERE tree_id=:tree_id
  * RETURNS	: family tree data.
  *----------------------------------------------------------------
  */
 function get_tree($tree_prefix){
 	$qryDb=false;
-	try {
-		$this->query['get_tree']->bindValue(':tree_prefix', $tree_prefix, PDO::PARAM_STR);
-		$this->query['get_tree']->execute();
-		$qryDb=$this->query['get_tree']->fetch(PDO::FETCH_OBJ);
-	}catch (PDOException $e) {
-		echo $e->getMessage() . "<br/>";
+	// *** Detection of tree_prefix/ tree_id ***
+	 if (substr($tree_prefix,0,4)=='humo'){
+		// *** Found tree_prefix humox_ ***
+		try {
+			$this->query['get_tree_prefix']->bindValue(':tree_prefix', $tree_prefix, PDO::PARAM_STR);
+			$this->query['get_tree_prefix']->execute();
+			$qryDb=$this->query['get_tree_prefix']->fetch(PDO::FETCH_OBJ);
+		}catch (PDOException $e) {
+			echo $e->getMessage() . "<br/>";
+		}
+	}
+	elseif (is_numeric($tree_prefix)){
+		// **** Found tree_id, numeric value ***
+		try {
+			$this->query['get_tree_id']->bindValue(':tree_id', $tree_prefix, PDO::PARAM_STR);
+			$this->query['get_tree_id']->execute();
+			$qryDb=$this->query['get_tree_id']->fetch(PDO::FETCH_OBJ);
+		}catch (PDOException $e) {
+			echo $e->getMessage() . "<br/>";
+		}
 	}
 	return $qryDb;
 }
@@ -653,6 +675,26 @@ function get_repository($repo_gedcomnr){
 		$this->query['get_repositories']->bindValue(':repo_gedcomnr', $repo_gedcomnr, PDO::PARAM_STR);
 		$this->query['get_repositories']->execute();
 		$qryDb=$this->query['get_repositories']->fetch(PDO::FETCH_OBJ);
+	}catch (PDOException $e) {
+		echo $e->getMessage() . "<br/>";
+	}
+	return $qryDb;
+}
+
+/*--------------------[update settings]----------------------------
+ * FUNCTION	: Update humo_settings.
+ * QUERY	: UPDATE humo_settings
+ * 				SET setting_value=:setting_value WHERE setting_variable=:setting_variable
+ * RETURNS	: result.
+ *----------------------------------------------------------------
+ */
+function update_settings($setting_variable,$setting_value){
+	$qryDb=false;
+	try {
+		$this->query['update_settings']->bindValue(':setting_value', $setting_value, PDO::PARAM_STR);
+		$this->query['update_settings']->bindValue(':setting_variable', $setting_variable, PDO::PARAM_STR);
+		$this->query['update_settings']->execute();
+		$qryDb=$this->query['update_settings']->fetch(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}

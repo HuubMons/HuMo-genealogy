@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
@@ -27,12 +27,10 @@ if (isset($_POST['save_option'])){
 			}
 		}
 	}
-	$qry="UPDATE humo_settings SET setting_value='".safe_text_db($language_total)."' WHERE setting_variable='hide_languages'";
-	$result = $dbh->query($qry);
+	$result = $db_functions->update_settings('hide_languages',$language_total);
 
 	// *** Update settings / Theme choice ***
 	$theme_total='';
-	//for ($i=0; $i<count($language_file); $i++){
 	for ($i=0; $i<count($theme_folder); $i++){
 		$theme=$theme_folder[$i];
 		$theme=str_replace(".css","", $theme);
@@ -42,8 +40,7 @@ if (isset($_POST['save_option'])){
 			$theme_total.=$theme;
 		}
 	}
-	$qry="UPDATE humo_settings SET setting_value='".safe_text_db($theme_total)."' WHERE setting_variable='hide_themes'";
-	$result = $dbh->query($qry);
+	$result = $db_functions->update_settings('hide_themes',$theme_total);
 }
 
 

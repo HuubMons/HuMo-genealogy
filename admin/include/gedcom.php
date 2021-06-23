@@ -14,7 +14,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2009 Huub Mons,
+* Copyright (C) 2008-2019 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -781,51 +781,31 @@ if (isset($_POST['step2'])){
 		echo __('The data in this gedcom will be appended to the existing data in this tree!').'<br>';
 	}
 
-	if(!isset($_POST['add_source'])) {
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='gedcom_read_add_source'");
-	}
-	else {
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='gedcom_read_add_source'");
-	}
+	$setting_value='n'; if(isset($_POST["add_source"])) $setting_value='y';
+	$result = $db_functions->update_settings('gedcom_read_add_source',$setting_value);
 
-	if(!isset($_POST['reassign_gedcomnumbers'])) {
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='gedcom_read_reassign_gedcomnumbers'");
-	}
-	else {
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='gedcom_read_reassign_gedcomnumbers'");
-	}
+	$setting_value='n'; if(isset($_POST["reassign_gedcomnumbers"])) $setting_value='y';
+	$result = $db_functions->update_settings('gedcom_read_reassign_gedcomnumbers',$setting_value);
 
-	if(!isset($_POST['order_by_date'])) {
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='gedcom_read_order_by_date'");
-	}
-	else {
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='gedcom_read_order_by_date'");
-	}
+	$setting_value='n'; if(isset($_POST["order_by_date"])) $setting_value='y';
+	$result = $db_functions->update_settings('gedcom_read_order_by_date',$setting_value);
 
-	if(!isset($_POST['order_by_fams'])) {
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='gedcom_read_order_by_fams'");
-	}
-	else {
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='gedcom_read_order_by_fams'");
-	}
+	$setting_value='n'; if(isset($_POST["order_by_fams"])) $setting_value='y';
+	$result = $db_functions->update_settings('gedcom_read_order_by_fams',$setting_value);
 
-	if (isset($_POST['process_geo_location'])){
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='gedcom_read_process_geo_location'");
-	}
-	else{
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='gedcom_read_process_geo_location'");
-	}
+	$setting_value='n'; if(isset($_POST["process_geo_location"])) $setting_value='y';
+	$result = $db_functions->update_settings('gedcom_read_process_geo_location',$setting_value);
 
 	if (isset($_POST['gedcom_process_pict_path'])){
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST['gedcom_process_pict_path'])."' WHERE setting_variable='gedcom_process_pict_path'");
+		$result = $db_functions->update_settings('gedcom_process_pict_path',$_POST['gedcom_process_pict_path']);
 	}
 
 	if (isset($_POST['commit_records'])){
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST['commit_records'])."' WHERE setting_variable='gedcom_read_commit_records'");
+		$result = $db_functions->update_settings('gedcom_read_commit_records',$_POST['commit_records']);
 	}
 
 	if (isset($_POST['time_out'])){
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST['time_out'])."' WHERE setting_variable='gedcom_read_time_out'");
+		$result = $db_functions->update_settings('gedcom_read_time_out',$_POST['time_out']);
 	}
 
 	//$progress_counter=0;
@@ -2016,10 +1996,10 @@ if (isset($_POST['step4'])){
 		foreach($loca_array as $key => $value) {
 			$dbh->query("UPDATE humo_location SET location_status = '".$value."' WHERE location_location = '".addslashes($key)."'");
 		}
-		if(strpos($humo_option['geo_trees'],"@".$tree_id.";")===false) {  
+		if(strpos($humo_option['geo_trees'],"@".$tree_id.";")===false) {
 			$dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@".$tree_id.";') WHERE setting_variable = 'geo_trees'");
 			$humo_option['geo_trees'] .= "@".$tree_id.";";
-		} 
+		}
 	} // end refresh location_status column
 
 

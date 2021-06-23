@@ -673,7 +673,10 @@ function Header(){
 	//Put watermark
 	$this->SetFont('Arial', 'B', 50);
 	$this->SetTextColor($humo_option["watermark_color_r"], $humo_option["watermark_color_g"], $humo_option["watermark_color_b"]);  // original was 255 192 203, changed default to 229 229 229
-	$this->RotatedText(30, 190, $humo_option["watermark_text"], 45);
+	//$this->RotatedText(30, 190, $humo_option["watermark_text"], 45);
+	//$watermark=htmlentities($humo_option["watermark_text"]);
+	$watermark=utf8_decode($humo_option["watermark_text"]);
+	$this->RotatedText(30, 190, $watermark, 45);
 }
 
 function RotatedText($x, $y, $txt, $angle){
