@@ -228,10 +228,11 @@ function source_display($sourcenum) {
 
 			echo '<b>'.__('Title').':</b> '.$repoDb->repo_name.'<br>';
 
-			if ($user['group_addresses']=='j'){
+			//if ($user['group_addresses']=='j'){
+			//if ($user['group_living_place']=='j'){
 				echo '<b>'.__('Zip code').':</b> '.$repoDb->repo_zip.'<br>';
 				echo '<b>'.__('Address').':</b> '.$repoDb->repo_address.'<br>';
-			}
+			//}
 
 			if ($repoDb->repo_date){ echo '<b>'.__('Date').':</b> '.$repoDb->repo_date.'<br>'; }
 			if ($repoDb->repo_place){ echo '<b>'.__('Place').':</b> '.$repoDb->repo_place.'<br>'; }	

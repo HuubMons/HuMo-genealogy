@@ -120,7 +120,9 @@ $editor_cls = New editor_cls;
 
 if($_GET['person_item']!= 'add_partner' AND substr($_GET['person_item'],0,10)!= 'add_child_') {
 	while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
-		echo '<a href="" onClick=\'return select_item("'.$person->pers_gedcomnumber.'")\'>'.$editor_cls->show_selected_person($person).'</a><br>';
+		echo '<a href="" onClick=\'return select_item("'.$person->pers_gedcomnumber.'")\'>'.$editor_cls->show_selected_person($person).'</a>';
+			if ($person->pers_famc) echo ' ('.__('Parents').' '.$person->pers_famc.')';
+		echo '<br>';
 	}
 }
 else {

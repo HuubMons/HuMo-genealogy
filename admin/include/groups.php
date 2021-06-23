@@ -211,18 +211,13 @@ echo '<br><table class="humo standard" style="text-align:center;"><tr class="tab
 echo '</td></tr></table><br>';
 
 /* *** Automatic installation or update ***
- * Januari 2016: Older updates are moved to update and installation script (was allready a long list...)!
+ * Januari 2016: Older updates are moved to update and installation script (was already a long list...)!
  */ 
 $column_qry = $dbh->query('SHOW COLUMNS FROM humo_groups');
 while ($columnDb = $column_qry->fetch()) {
 	$field_value=$columnDb['Field'];
 	$field[$field_value]=$field_value;
 }
-//if (!isset($field['group_citation_generation'])){
-//	$sql="ALTER TABLE humo_groups
-//		ADD group_citation_generation VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER group_own_code;";
-//	$result=$dbh->query($sql);
-//}
 if (!isset($field['group_citation_generation'])){
 	$sql="ALTER TABLE humo_groups
 		ADD group_citation_generation VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n' AFTER group_own_code;";
@@ -350,6 +345,7 @@ echo '<td><input type="checkbox" name="group_menu_change_password"'.$check.'></t
 echo '<tr class="table_header"><th>'.__('General').'</font></th><th><input type="Submit" name="group_change" value="'.__('Change').'"></th></tr>';
 
 echo '<tr><td>'.__('Show pictures');
+echo ' <i>'.__('(option can only be disabled if option "Show photobook in submenu" is disabled)').'</i>';
 echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
 echo '</td>';
 $check=''; if ($groupDb->group_pictures!='n') $check=' checked';
@@ -359,7 +355,7 @@ echo '<tr><td>'.__('Show Gedcom number (from gedcom file)').'</td>';
 $check=''; if ($groupDb->group_gedcomnr!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_gedcomnr"'.$check.'></td></tr>';
 
-echo '<tr><td>'.__('Show residence').'</td>';
+echo '<tr><td>'.__('Show residence and address').'</td>';
 $check=''; if ($groupDb->group_living_place!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_living_place"'.$check.'></td></tr>';
 

@@ -1806,7 +1806,7 @@ function update_v5_0(){
 	echo '<tr><td>HuMo-genealogy update V5.0</td><td style="background-color:#00FF00">';
 
 	// *** Save GEDCOM file name and GEDCOM program in database ***
-	// *** Test for existing column, some users allready tried a new script including a database update ***
+	// *** Test for existing column, some users already tried a new script including a database update ***
 	$result = $dbh->query("SHOW COLUMNS FROM `humo_trees` LIKE 'tree_gedcom'");
 	if($result->rowCount() ==0) {
 		// create it
@@ -3170,7 +3170,145 @@ function update_v5_2_5(){
 }
 
 
+function update_v5_6_1(){
+	// **************************************
+	// *** Update procedure version 5.2.5 ***
+	// **************************************
+
+	global $dbh;
+
+	// *** Show update status ***
+	echo '<tr><td>HuMo-genealogy update V5.6.1</td>';
+	echo '<td style="background-color:#00FF00">'.__('Update in progress...').' <div id="information v5_6_1" style="display: inline; font-weight:bold;"></div></td></tr>';
+	ob_flush(); flush(); // IE
+
+	// *** Batch processing ***
+	$dbh->beginTransaction();
+
+		// *** Add user_password_salted field to humo_users table ***
+		$result = $dbh->query("SHOW COLUMNS FROM `humo_users` LIKE 'user_password_salted'");
+		$exists = $result->rowCount();
+		if(!$exists) {
+			$dbh->query("ALTER TABLE humo_users ADD user_password_salted VARCHAR(255) CHARACTER SET utf8 AFTER user_password;");
+		}
+
+		$sql="ALTER TABLE humo_sources
+			CHANGE source_subj source_subj varchar(248) CHARACTER SET utf8,
+			CHANGE source_place source_place varchar(120) CHARACTER SET utf8";
+		$result=$dbh->query($sql);
+
+		$sql="ALTER TABLE humo_user_log CHANGE log_ip_address log_ip_address varchar(45) CHARACTER SET utf8";
+		$result=$dbh->query($sql);
+
+		$sql="ALTER TABLE humo_repositories CHANGE repo_phone repo_phone varchar(25) CHARACTER SET utf8";
+		$result=$dbh->query($sql);
+
+		$sql="ALTER TABLE humo_users ADD user_ip_address VARCHAR(45) CHARACTER SET utf8 DEFAULT '' AFTER user_edit_trees;";
+		$result=$dbh->query($sql);
+
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_persons');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (!isset($field['pers_new_user'])){
+			$sql="ALTER TABLE humo_persons
+				ADD pers_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER pers_quality;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['pers_changed_user'])){
+			$sql="ALTER TABLE humo_persons
+				ADD pers_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER pers_new_user;";
+			$result=$dbh->query($sql);
+		}
+
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (!isset($field['fam_new_user'])){
+			$sql="ALTER TABLE humo_families ADD fam_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER fam_counter;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['fam_changed_user'])){
+			$sql="ALTER TABLE humo_families ADD fam_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER fam_new_user;";
+			$result=$dbh->query($sql);
+		}
+
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_sources');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (!isset($field['source_new_user'])){
+			$sql="ALTER TABLE humo_sources ADD source_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER source_quality;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['source_changed_user'])){
+			$sql="ALTER TABLE humo_sources ADD source_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER source_new_user;";
+			$result=$dbh->query($sql);
+		}
+
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_repositories');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (!isset($field['repo_new_user'])){
+			$sql="ALTER TABLE humo_repositories ADD repo_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER repo_quality;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['repo_changed_user'])){
+			$sql="ALTER TABLE humo_repositories ADD repo_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER repo_new_user;";
+			$result=$dbh->query($sql);
+		}
+
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_addresses');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (!isset($field['address_new_user'])){
+			$sql="ALTER TABLE humo_addresses ADD address_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER address_quality;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['address_changed_user'])){
+			$sql="ALTER TABLE humo_addresses ADD address_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER address_new_user;";
+			$result=$dbh->query($sql);
+		}
+
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_events');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (!isset($field['event_new_user'])){
+			$sql="ALTER TABLE humo_events ADD event_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER event_quality;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['event_changed_user'])){
+			$sql="ALTER TABLE humo_events ADD event_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER event_new_user;";
+			$result=$dbh->query($sql);
+		}
+
+		// *** Update "update_status" to number 11 ***
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='12' WHERE setting_variable='update_status'");
+
+	// *** Commit data in database ***
+	$dbh->commit();
+
+	// *** Show status of database update ***
+	echo '<script type="text/javascript">document.getElementById("information v5_6_1").innerHTML="Database updated!";</script>'; ob_flush(); flush(); // IE
+}
+
+
+
 /*	*** UPDATE REMARKS ***
+
+	Length of all PLAC items: 120 chars.
+		IP address: 45 characters (IP v6)
+		PHON:25 characters
 
 	EXAMPLES:
 	*** Combination of ALTER and ADD in one query ***

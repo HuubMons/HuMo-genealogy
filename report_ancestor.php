@@ -377,7 +377,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 							echo $man_cls->person_data("standard", $ancestor_array[$i]);
 						}
 						else { // person was already listed
-							echo ' <strong> ('.__('Allready listed above as number ').$listednr.') </strong>';
+							echo ' <strong> ('.__('Already listed above as number ').$listednr.') </strong>';
 						}
 					echo '</div>';
 					echo '</td></tr>';
@@ -406,7 +406,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 						$rtf_text = substr($rtf_text,0,-1); // take off newline
 					}
 					else { // person was already listed
-						$rtf_text=strip_tags('('.__('Allready listed above as number ').$listednr.') ',"<b><i>");
+						$rtf_text=strip_tags('('.__('Already listed above as number ').$listednr.') ',"<b><i>");
 					}
 					$cell->writeText($rtf_text, $arial12, $parNames);
 
@@ -465,7 +465,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					else { // person was already listed
 						$thisx=$pdf->GetX();
 						$pdf->SetX($thisx+28);
-						$pdf->Write(8,__('Allready listed above as number ').$listednr."\n");
+						$pdf->Write(8,__('Already listed above as number ').$listednr."\n");
 						$pdf->SetX($thisx);
 					}
 

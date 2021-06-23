@@ -110,6 +110,7 @@ echo "</div>";
 
 // *** Build page ***
 if(!isset($_POST['ann_choice']) OR $_POST['ann_choice']=="birthdays") {
+	$privcount=0; // *** Count privacy persons ***
 	echo '<table class="humo" align="center">';
 	echo '<tr class=table_headline>'.$newline;
 		// *** Show headers ***
@@ -144,57 +145,64 @@ if(!isset($_POST['ann_choice']) OR $_POST['ann_choice']=="birthdays") {
 		$name=$person_cls->person_name($record);
 		$person_cls->construct($record);
 
-		$url=$person_cls->person_url($record);
-		$person_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
+		if (!$person_cls->privacy){
+			$url=$person_cls->person_url($record);
+			$person_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 
-		$death_date = $record->pers_death_date;
-		$age = ($year - $record->birth_year);
+			$death_date = $record->pers_death_date;
+			$age = ($year - $record->birth_year);
 
-		if ($death_date !=''){
-			$died =language_date($death_date);
-		}
+			if ($death_date !=''){
+				$died =language_date($death_date);
+			}
 
-		else if ($age > $max_age){
-			$died = '? ';
-		}
-		else{
-			$died = '  ';
-		}
-		// Highlight present day
-		if ($birth_day == $today){
-			echo '<tr bgcolor="#BFBFBF">'."\n";
-		}
-		else{
-			echo "<tr>\n";
-		}
+			else if ($age > $max_age){
+				$died = '? ';
+			}
+			else{
+				$died = '  ';
+			}
+			// Highlight present day
+			if ($birth_day == $today){
+				echo '<tr bgcolor="#BFBFBF">'."\n";
+			}
+			else{
+				echo "<tr>\n";
+			}
 
-		if ($calendar_day==$last_cal_day)
-			echo "<td><br></td>";
+			if ($calendar_day==$last_cal_day)
+				echo "<td><br></td>";
+			else
+				echo "<td>$calendar_day $month</td>";
+			$last_cal_day=$calendar_day;
+
+			if (!$person_cls->privacy)
+				echo "<td>".$record->birth_year."</td>";
+			else
+				echo '<td>'.__(' PRIVACY FILTER').'</td>';
+
+			echo '<td align="left">'.$person_name.'</td>';
+
+			if (!$person_cls->privacy)
+				echo '<td><div class="pale">'.$died.'</div></td>';
+			else
+				echo '<td><div class="pale">'.__(' PRIVACY FILTER').'</div></td>';
+
+			echo "</tr>\n";
+		}
 		else
-			echo "<td>$calendar_day $month</td>";
-		$last_cal_day=$calendar_day;
-
-		if (!$person_cls->privacy)
-			echo "<td>".$record->birth_year."</td>";
-		else
-			echo '<td>'.__(' PRIVACY FILTER').'</td>';
-
-		echo '<td align="left">'.$person_name.'</td>';
-
-		if (!$person_cls->privacy)
-			echo '<td><div class="pale">'.$died.'</div></td>';
-		else
-			echo '<td><div class="pale">'.__(' PRIVACY FILTER').'</div></td>';
-
-		echo "</tr>\n";
-
+			$privcount++;
 	}
 
 	echo "</table>\n";
+
+	if($privcount) { echo "<br>".$privcount.__(' persons are not shown due to privacy settings').".<br>";}
 }
 
 else {
 	// wedding anniversary
+	$privcount=0; // *** Count privacy persons ***
+
 	echo '<table class="humo" align="center">';
 	echo '<tr class=table_headline>'.$newline;
 	// *** Show headers ***
@@ -223,7 +231,7 @@ else {
 			$qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
 			$qry->bindValue(':month', $month, PDO::PARAM_STR);
 			$qry->execute();
-		}	
+		}
 		catch (PDOException $e) {
 			echo $e->getMessage() . "<br/>";
 		}
@@ -312,36 +320,43 @@ else {
 			$calendar_day = $value['calday'];
 			$marr_day =$value['marday'];
 
-			// Highlight present day
-			if ($marr_day == $today){
-				echo '<tr bgcolor="#BFBFBF">'."\n";
+			if (!$man_cls->privacy AND !$woman_cls->privacy){
+				// Highlight present day
+				if ($marr_day == $today){
+					echo '<tr bgcolor="#BFBFBF">'."\n";
+				}
+				else{
+					echo "<tr>\n";
+				}
+				if ($calendar_day==$last_cal_day)
+					echo "<td><br></td>";
+				else
+					echo "<td>$calendar_day $month</td>";
+
+				$last_cal_day=$calendar_day;
+				if (!$man_cls->privacy AND !$woman_cls->privacy)
+					echo "<td>".$value['maryr']."</td>";
+				else
+					echo '<td>'.__(' PRIVACY FILTER').'</td>';
+
+				echo '<td align="left">'.$value['type'].'</td>';
+				echo '<td align="left">'.$man_name.' & '.$woman_name.'</td>';
+
+				echo "</tr>\n";
 			}
-			else{
-				echo "<tr>\n";
-			}
-			if ($calendar_day==$last_cal_day)
-				echo "<td><br></td>";
 			else
-				echo "<td>$calendar_day $month</td>";
+				$privcount++;
 
-			$last_cal_day=$calendar_day;
-			if (!$man_cls->privacy AND !$woman_cls->privacy)
-				echo "<td>".$value['maryr']."</td>";
-			else
-				echo '<td>'.__(' PRIVACY FILTER').'</td>';
-
-			echo '<td align="left">'.$value['type'].'</td>';
-			echo '<td align="left">'.$man_name.' & '.$woman_name.'</td>';
-
-			echo "</tr>\n";
-			
 		}
 		unset($wed);
+
 	}
 	else {
 		echo "<tr><td colspan='4'>".__('No results found for this month')."</td></tr>";
 	}
 	echo "</table>\n";
+
+	if($privcount) { echo "<br>".$privcount.__(' persons are not shown due to privacy settings').".<br>";}
 }
 echo "</div>";
 

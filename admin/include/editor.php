@@ -229,24 +229,13 @@ $username = $_SESSION['user_name_admin'];
 $gedcom_date = strtoupper(date("d M Y"));
 $gedcom_time = date("H:i:s");
 
-$column_qry = $dbh->query('SHOW COLUMNS FROM humo_persons');
-while ($columnDb = $column_qry->fetch()) {
-	$field_value=$columnDb['Field'];
-	$field[$field_value]=$field_value;
-}
-if (!isset($field['pers_new_user'])){
-	$sql="ALTER TABLE humo_persons
-		ADD pers_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER pers_quality;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['pers_changed_user'])){
-	$sql="ALTER TABLE humo_persons
-		ADD pers_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER pers_new_time;";
-	$result=$dbh->query($sql);
-}
-
 // for jewish settings only for humo_persons table:
 if($humo_option['admin_hebnight'] == "y") {
+	$column_qry = $dbh->query('SHOW COLUMNS FROM humo_persons');
+	while ($columnDb = $column_qry->fetch()) {
+		$field_value=$columnDb['Field'];
+		$field[$field_value]=$field_value;
+	}
 	if (!isset($field['pers_birth_date_hebnight'])){
 		$sql="ALTER TABLE humo_persons
 			ADD pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_birth_date;";
@@ -262,24 +251,12 @@ if($humo_option['admin_hebnight'] == "y") {
 			ADD pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_buried_date;";
 		$result=$dbh->query($sql);
 	}
-}
-// end jewish settings
 
-$column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
-while ($columnDb = $column_qry->fetch()) {
-	$field_value=$columnDb['Field'];
-	$field[$field_value]=$field_value;
-}
-if (!isset($field['fam_new_user'])){
-	$sql="ALTER TABLE humo_families ADD fam_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER fam_counter;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['fam_changed_user'])){
-	$sql="ALTER TABLE humo_families ADD fam_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER fam_new_time;";
-	$result=$dbh->query($sql);
-}
-// for jewish settings only for humo_families table:
-if($humo_option['admin_hebnight'] == "y") {
+	$column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
+	while ($columnDb = $column_qry->fetch()) {
+		$field_value=$columnDb['Field'];
+		$field[$field_value]=$field_value;
+	}
 	if (!isset($field['fam_marr_notice_date_hebnight'])){
 		$sql="ALTER TABLE humo_families
 			ADD fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_notice_date;";
@@ -300,66 +277,12 @@ if($humo_option['admin_hebnight'] == "y") {
 			ADD fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_church_date;";
 		$result=$dbh->query($sql);
 	}
-}
-// end jewish settings
 
-$column_qry = $dbh->query('SHOW COLUMNS FROM humo_sources');
-while ($columnDb = $column_qry->fetch()) {
-	$field_value=$columnDb['Field'];
-	$field[$field_value]=$field_value;
-}
-if (!isset($field['source_new_user'])){
-	$sql="ALTER TABLE humo_sources ADD source_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER source_quality;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['source_changed_user'])){
-	$sql="ALTER TABLE humo_sources ADD source_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER source_new_time;";
-	$result=$dbh->query($sql);
-}
-
-$column_qry = $dbh->query('SHOW COLUMNS FROM humo_repositories');
-while ($columnDb = $column_qry->fetch()) {
-	$field_value=$columnDb['Field'];
-	$field[$field_value]=$field_value;
-}
-if (!isset($field['repo_new_user'])){
-	$sql="ALTER TABLE humo_repositories ADD repo_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER repo_quality;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['repo_changed_user'])){
-	$sql="ALTER TABLE humo_repositories ADD repo_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER repo_new_time;";
-	$result=$dbh->query($sql);
-}
-
-$column_qry = $dbh->query('SHOW COLUMNS FROM humo_addresses');
-while ($columnDb = $column_qry->fetch()) {
-	$field_value=$columnDb['Field'];
-	$field[$field_value]=$field_value;
-}
-if (!isset($field['address_new_user'])){
-	$sql="ALTER TABLE humo_addresses ADD address_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER address_quality;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['address_changed_user'])){
-	$sql="ALTER TABLE humo_addresses ADD address_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER address_new_time;";
-	$result=$dbh->query($sql);
-}
-
-$column_qry = $dbh->query('SHOW COLUMNS FROM humo_events');
-while ($columnDb = $column_qry->fetch()) {
-	$field_value=$columnDb['Field'];
-	$field[$field_value]=$field_value;
-}
-if (!isset($field['event_new_user'])){
-	$sql="ALTER TABLE humo_events ADD event_new_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER event_quality;";
-	$result=$dbh->query($sql);
-}
-if (!isset($field['event_changed_user'])){
-	$sql="ALTER TABLE humo_events ADD event_changed_user VARCHAR(200) CHARACTER SET utf8 NULL DEFAULT NULL AFTER event_new_time;";
-	$result=$dbh->query($sql);
-}
-// for jewish settings only for humo_events table:
-if($humo_option['admin_hebnight'] == "y") {
+	$column_qry = $dbh->query('SHOW COLUMNS FROM humo_events');
+	while ($columnDb = $column_qry->fetch()) {
+		$field_value=$columnDb['Field'];
+		$field[$field_value]=$field_value;
+	}
 	if (!isset($field['event_date_hebnight'])){
 		$sql="ALTER TABLE humo_events ADD event_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER event_date;";
 		$result=$dbh->query($sql);
@@ -477,7 +400,7 @@ if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_fami
 	
 	if(!isset($_POST['exist_partner'])) {
 		// we are adding a new family: generate new (highest) pers_fams gedcomnumber
-		$newfam_id = "F".($fgednr_int+1); 
+		$newfam_id = "F".($fgednr_int+1);
 		
 		if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
 			// we're are not entering a person retrieved from search of the database - generate new (highest) pers_gedcomnumber
@@ -488,11 +411,11 @@ if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_fami
 			$newpartner_id = $_POST['add_fam_partner_exist'];
 		}
 
-		if($person->pers_fams) {  
+		if($person->pers_fams) {
 			// main person already has a pers_fam - add new fam ID to this persons pers_fams
 			$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."', pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."', pers_fams=CONCAT(pers_fams,';','".$newfam_id."') WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'");
 		}
-		else {  
+		else {
 			// person had no pers_fam - enter it into the database
 			$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."', pers_changed_time='".$gedcom_time."',pers_changed_date='".$gedcom_date."',pers_fams='".$newfam_id."' WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'");
 		}
@@ -2280,16 +2203,21 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 					}
 				echo '</td>';
-				echo '<td style="border-right:0px;">'.__('date').'<br>'.__('Address').'</td>';
+				echo '<td style="border-right:0px;">'.__('date').'<br>'.__('Address').'<br>'.__('text').'<br>'.__('Phone').'</td>';
 				echo '<td style="border-left:0px;">';
 					echo $editor_cls->date_show($addressDb->address_date,'address_date',"[$addressDb->address_id]").' '.__('place').' <input type="text" name="address_place_'.$addressDb->address_id.'" placeholder="'.__('Place').'" value="'.$addressDb->address_place.'" size="'.$field_place.'">';
 					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=place&address_place='.$addressDb->address_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a><br>';
+
 					// *** New: also edit a address ***
 					echo '<input type="text" name="address_address_'.$addressDb->address_id.'" placeholder="'.__('Address').'" value="'.$addressDb->address_address.'"  style="width: 500px">';
-// *** New: also edit text ***
-//echo '<br>';
-//echo '<textarea rows="1" name="address_address_'.$addressDb->address_id.'"'.$field_text.'>'.
-//		$editor_cls->text_show($addressDb->address_text).'</textarea>';
+
+					// *** New: also edit text ***
+					echo '<br>';
+					echo '<textarea rows="1" name="address_text_'.$addressDb->address_id.'"'.$field_text.' placeholder="'.__('Text').'"'.$field_text.'>'.
+					$editor_cls->text_show($addressDb->address_text).'</textarea>';
+
+					// *** New: also edit phone ***
+					echo '<input type="text" name="address_phone_'.$addressDb->address_id.'" placeholder="'.__('Phone').'" value="'.$addressDb->address_phone.'"  style="width: 500px">';
 
 				echo '</td>';
 				echo '<td>';
@@ -2812,7 +2740,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<td style="border-right:0px;"></td>';
 			echo '<td style="border-left:0px;">';
 
-			echo __('Select person').': <input class="fonts" type="text" name="connect_man" value="'.$man_gedcomnumber.'" size="5">';
+			echo __('Select person 1').' <input class="fonts" type="text" name="connect_man" value="'.$man_gedcomnumber.'" size="5">';
 
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=man&person='.$man_gedcomnumber.'&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
@@ -2839,7 +2767,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			}
 			echo '<br>';
 
-			echo __('Select person').': <input class="fonts" type="text" name="connect_woman" value="'.$woman_gedcomnumber.'" size="5">';
+			echo __('Select person 2').' <input class="fonts" type="text" name="connect_woman" value="'.$woman_gedcomnumber.'" size="5">';
 
 			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=woman&person='.$woman_gedcomnumber.'&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
@@ -2956,11 +2884,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<tr class="humo_color"><td>';
 			echo '<td style="border-right:0px;"><br></td><td style="border-left:0px;">';
 				// *** Age of man by marriage ***
-				echo __('Age').' '.__('male').' <input type="text" name="fam_man_age" placeholder="'.__('Age').'" value="'.$fam_man_age.'" size="3">';
+				echo __('Age person 1').' <input type="text" name="fam_man_age" placeholder="'.__('Age').'" value="'.$fam_man_age.'" size="3">';
 				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp';
 
 				// *** Age of woman by marriage ***
-				echo __('Age').' '.__('female').' <input type="text" name="fam_woman_age" placeholder="'.__('Age').'" value="'.$fam_woman_age.'" size="3">';
+				echo __('Age person 2').' <input type="text" name="fam_woman_age" placeholder="'.__('Age').'" value="'.$fam_woman_age.'" size="3">';
 
 				// *** HELP POPUP for age by marriage ***
 				echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
@@ -4631,7 +4559,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			$result=$dbh->query($sql);
 
 			if (isset($_POST["google_maps"])){
-				// *** Check if Google Maps table allready exist ***
+				// *** Check if Google Maps table already exist ***
 				$tempqry = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 				if ($tempqry->rowCount()) {
 					$sql= "UPDATE humo_location

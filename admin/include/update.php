@@ -197,6 +197,19 @@ else{
 	ob_flush();
 	flush(); // IE
 
+	// **************************************
+	// *** Update procedure version 5.6.1 ***
+	// *** ...
+	// **************************************
+	if ($humo_option["update_status"]>'11'){
+		echo '<tr><td>HuMo-genealogy update V5.6.1</td><td style="background-color:#00FF00">OK</td></tr>';
+	}
+	else{
+		$update_cls -> update_v5_6_1();
+	}
+	ob_flush();
+	flush(); // IE
+
 	/*	END OF MAIN UPDATE SCRIPT
 		*** VERY IMPORTANT REMARKS FOR PROGRAMMERS ***
 		* 1) Change update_status in install.php

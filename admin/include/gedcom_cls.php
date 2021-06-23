@@ -358,7 +358,7 @@ function process_person($person_array){
 
 			// *** 2 TYPE aka: also know as. ***
 			// 1 NAME Sijpkje Sipkes /Visser/
-			// 1 NAME Sijpkje /Visser/		Was allready saved as $pers_callname.
+			// 1 NAME Sijpkje /Visser/		Was already saved as $pers_callname.
 			// 2 TYPE aka
 			// 1 NAME Sijke /Visser/
 			// 2 TYPE aka
@@ -865,7 +865,7 @@ function process_person($person_array){
 		}
 
 		// *******************************************************************************************
-		// *** Baptism ***
+		// *** Baptise ***
 		// *******************************************************************************************
 
 		// *** FTW ***
@@ -884,6 +884,17 @@ function process_person($person_array){
 			//$level1='CHR';
 			//$buffer='2 RELI '.substr($buffer,7);
 			$processed=1; $pers_religion=substr($buffer, 7);
+		}
+
+		// Geneanet/ Geneweb
+		// 1 BAPM
+		// 2 DATE 23 APR 1658
+		// 2 PLAC Venlo
+		if ($gen_program=='GeneWeb' AND $buffer=='1 BAPM'){
+			$level1='CHR';
+			$buffer='1 CHR';
+			$buffer5='1 CHR';
+			$buffer6='1 CHR';
 		}
 
 		//$buffer = str_replace("1 CHR ", "1 CHR", $buffer);  // For Aldfaer etc.
@@ -948,6 +959,33 @@ function process_person($person_array){
 			}
 			if (substr($buffer,0,12)=='3 TYPE locum'){
 				$processed=1; $event['event'][$event_nr].=" i.p.v. ";
+			}
+
+			// Doopheffer/ Godfather.
+			//  1 BAPM
+			//  2 ASSO @I2334@
+			//  3 TYPE INDI
+			//  3 RELA GODP
+			if ($level2=='ASSO'){
+				if (substr($buffer,0,6)=='2 ASSO'){
+					$processed=1;
+					$event_nr++; $calculated_event_id++;
+					$event['connect_kind'][$event_nr]='person';
+					$event['connect_id'][$event_nr]=$pers_gedcomnumber;
+					$event['kind'][$event_nr]='godfather';
+					$event['event'][$event_nr]=substr($buffer,7);
+					$event['event_extra'][$event_nr]='';
+					$event['gedcom'][$event_nr]='GODP';
+					$event['date'][$event_nr]='';
+					$event['text'][$event_nr]='';
+					$event['place'][$event_nr]='';
+				}
+				if (substr($buffer,0,11)=='3 TYPE INDI'){
+					$processed=1; //$event['event'][$event_nr].="godfather";
+				}
+				if (substr($buffer,0,11)=='3 RELA GODP'){
+					$processed=1; //$event['event'][$event_nr].="godfather";
+				}
 			}
 
 			// *** Religion ***
@@ -1118,6 +1156,11 @@ function process_person($person_array){
 		//  2 RELA religious
 		//  3 NOTE INDI I1281
 
+		// Geneanet/ geneweb
+		//  1 ASSO @F101@
+		//  2 TYPE FAM
+		//  2 RELA witness
+
 		if ($level1=='ASSO'){
 			if ($buffer6=='1 ASSO'){
 				$processed=1; $event_nr++; $calculated_event_id++;
@@ -1152,9 +1195,9 @@ function process_person($person_array){
 			}
 			if ($buffer=='2 RELA burial'){ $processed=1; $event['kind'][$event_nr]='burial_witness'; }
 			if ($buffer=='2 RELA civil'){ $processed=1; $event['kind'][$event_nr]='marriage_witness'; }
+			if ($buffer=='2 RELA witness'){ $processed=1; $event['kind'][$event_nr]='marriage_witness'; }
 			if ($buffer=='2 RELA religious'){ $processed=1; $event['kind'][$event_nr]='marriage_witness_rel'; }
 		}
-
 
 		// ******************************************************************************************
 		// *** Occupation ***
@@ -1767,7 +1810,7 @@ function process_person($person_array){
 				}
 			}
 		}
-		if(strpos($humo_option['geo_trees'],"@".$tree_id.";")===false) {  
+		if(strpos($humo_option['geo_trees'],"@".$tree_id.";")===false) {
 			$dbh->query("UPDATE humo_settings SET setting_value = CONCAT(setting_value,'@".$tree_id.";') WHERE setting_variable = 'geo_trees'");
 			$humo_option['geo_trees'] .= "@".$tree_id.";";
 		} 

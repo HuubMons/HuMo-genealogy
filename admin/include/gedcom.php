@@ -14,7 +14,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2019 Huub Mons,
+* Copyright (C) 2008-2020 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -300,6 +300,11 @@ if (isset($step1)){
 			echo '<option value="full_path"'.$selected.'>'.__('Process full picture path. For example: picture_path&#92;picture.jpg').'</option>';
 		echo '</select><br>';
 
+
+		$check=''; if ($humo_option["gedcom_read_save_pictures"]=='y'){ $check=' checked'; }
+		echo '<input type="checkbox" name="save_pictures"'.$check.'> '.__('Don\'t remove picture links from database (only needed for Geneanet GEDCOM file).')."<br>\n";
+
+
 		// *** Option to add GEDCOM file to family tree if this family tree isn't empty ***
 //use this code?
 //$nr_persons=$db_functions->count_persons($tree_id);
@@ -384,6 +389,40 @@ if (isset($step1)){
 
 // *** Step 2 generate tables ***
 if (isset($_POST['step2'])){
+
+	$setting_value='n'; if(isset($_POST["add_source"])) $setting_value='y';
+	$result = $db_functions->update_settings('gedcom_read_add_source',$setting_value);
+
+	$setting_value='n'; if(isset($_POST["reassign_gedcomnumbers"])) $setting_value='y';
+	$result = $db_functions->update_settings('gedcom_read_reassign_gedcomnumbers',$setting_value);
+
+	$setting_value='n'; if(isset($_POST["order_by_date"])) $setting_value='y';
+	$result = $db_functions->update_settings('gedcom_read_order_by_date',$setting_value);
+
+	$setting_value='n'; if(isset($_POST["order_by_fams"])) $setting_value='y';
+	$result = $db_functions->update_settings('gedcom_read_order_by_fams',$setting_value);
+
+	$setting_value='n'; if(isset($_POST["process_geo_location"])) $setting_value='y';
+	$result = $db_functions->update_settings('gedcom_read_process_geo_location',$setting_value);
+
+	if (isset($_POST['gedcom_process_pict_path'])){
+		$result = $db_functions->update_settings('gedcom_process_pict_path',$_POST['gedcom_process_pict_path']);
+	}
+
+	$humo_option["gedcom_read_save_pictures"]='n';
+	$setting_value='n'; if(isset($_POST["save_pictures"])){
+		$setting_value='y';
+		$humo_option["gedcom_read_save_pictures"]='y';	// *** Because variable is needed directly ***
+	}
+	$result = $db_functions->update_settings('gedcom_read_save_pictures',$setting_value);
+
+	if (isset($_POST['commit_records'])){
+		$result = $db_functions->update_settings('gedcom_read_commit_records',$_POST['commit_records']);
+	}
+
+	if (isset($_POST['time_out'])){
+		$result = $db_functions->update_settings('gedcom_read_time_out',$_POST['time_out']);
+	}
 
 	if(!isset($_POST['add_tree'])) {
 		$_SESSION['add_tree']=false; 
@@ -750,12 +789,20 @@ if (isset($_POST['step2'])){
 		if ($nr_records>0){
 			$loop=$nr_records/$limit;
 			for ($i=0; $i<=$loop; $i++){
-				$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
+
+				if ($humo_option["gedcom_read_save_pictures"]=='y')
+					$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)." AND event_kind!='picture' LIMIT ".$limit;
+				else
+					$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
+
 				@$result=$dbh->query($sql);
 				echo '*';
 				ob_flush(); flush(); // IE
 			}
-			$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."'";
+			if ($humo_option["gedcom_read_save_pictures"]=='y')
+				$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)." AND event_kind!='picture'";
+			else
+				$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);
 
 			echo ' '.__('Optimize table...');
@@ -771,33 +818,6 @@ if (isset($_POST['step2'])){
 	else {
 		$_SESSION['add_tree']=true;
 		echo __('The data in this GEDCOM will be appended to the existing data in this tree!').'<br>';
-	}
-
-	$setting_value='n'; if(isset($_POST["add_source"])) $setting_value='y';
-	$result = $db_functions->update_settings('gedcom_read_add_source',$setting_value);
-
-	$setting_value='n'; if(isset($_POST["reassign_gedcomnumbers"])) $setting_value='y';
-	$result = $db_functions->update_settings('gedcom_read_reassign_gedcomnumbers',$setting_value);
-
-	$setting_value='n'; if(isset($_POST["order_by_date"])) $setting_value='y';
-	$result = $db_functions->update_settings('gedcom_read_order_by_date',$setting_value);
-
-	$setting_value='n'; if(isset($_POST["order_by_fams"])) $setting_value='y';
-	$result = $db_functions->update_settings('gedcom_read_order_by_fams',$setting_value);
-
-	$setting_value='n'; if(isset($_POST["process_geo_location"])) $setting_value='y';
-	$result = $db_functions->update_settings('gedcom_read_process_geo_location',$setting_value);
-
-	if (isset($_POST['gedcom_process_pict_path'])){
-		$result = $db_functions->update_settings('gedcom_process_pict_path',$_POST['gedcom_process_pict_path']);
-	}
-
-	if (isset($_POST['commit_records'])){
-		$result = $db_functions->update_settings('gedcom_read_commit_records',$_POST['commit_records']);
-	}
-
-	if (isset($_POST['time_out'])){
-		$result = $db_functions->update_settings('gedcom_read_time_out',$_POST['time_out']);
 	}
 
 	//$progress_counter=0;

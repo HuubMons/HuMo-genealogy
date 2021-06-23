@@ -94,7 +94,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				// *** Combine footnotes with the same source including the same source role and source page... ***
 				$combiner_check=$connectDb->connect_source_id.'_'.$connectDb->connect_role.'_'.$connectDb->connect_page.'_'.$connectDb->connect_date.' '.$connectDb->connect_place.' '.$connectDb->connect_text;
 				$check=false;
-				// *** Check if the source (including role and page) is allready used ***
+				// *** Check if the source (including role and page) is already used ***
 				if ($source_combiner){
 					for ($j=0; $j<=(count($source_combiner)-1); $j++){
 						if ($source_combiner[$j]==$combiner_check){ $check=true; $j2=$j+1;}

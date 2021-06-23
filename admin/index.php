@@ -134,7 +134,7 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	// *** Check HuMo-genealogy database status ***
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])){
-		if ($humo_option["update_status"]<11){ $page='update'; $show_menu_left=false; }
+		if ($humo_option["update_status"]<12){ $page='update'; $show_menu_left=false; }
 	}
 
 	if (isset($_GET['page']) AND ($_GET['page']=='editor_sources' OR $_GET['page']=='editor_place_select'
@@ -692,9 +692,11 @@ echo '<div id="humo_top" '.$top_dir.'>';
 		$tree_id=''; $tree_prefix='';
 		if (isset($check_tree_id) AND $check_tree_id AND $check_tree_id!=''){
 			$get_treeDb=$db_functions->get_tree($check_tree_id);
-			$tree_id=$get_treeDb->tree_id;
-			$_SESSION['admin_tree_id']=$tree_id;
-			$tree_prefix=$get_treeDb->tree_prefix;
+			if (isset($get_treeDb)){
+				$tree_id=$get_treeDb->tree_id;
+				$_SESSION['admin_tree_id']=$tree_id;
+				$tree_prefix=$get_treeDb->tree_prefix;
+			}
 		}
 
 		// *** Double double check for family tree editor. ***

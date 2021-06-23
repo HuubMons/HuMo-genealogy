@@ -438,10 +438,10 @@ if (isset($_GET['add_person'])){
 	$new_gedcomnumber='I1';
 	if (isset($new_nr->pers_gedcomnumber)){
 		$new_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+1);
-	}	
+	}
 }
 
-if (isset($_POST['person_add'])){  
+if (isset($_POST['person_add'])){
 	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
 	$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
 		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
@@ -517,7 +517,7 @@ if (isset($_POST['person_add'])){
 		pers_new_date='".$gedcom_date."',
 		pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
-	
+
 	// only needed for jewish settings
 	if($humo_option['admin_hebnight']=="y" AND isset($_POST["pers_birth_date_hebnight"])) {
 		$sql="UPDATE humo_persons SET
@@ -527,7 +527,7 @@ if (isset($_POST['person_add'])){
 			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($new_gedcomnumber)."'";
 		$result=$dbh->query($sql);
 	}
-	
+
 	if(isset($_POST["event_profession"]) AND $_POST["event_profession"]!="" AND $_POST["event_profession"]!= "Profession") {
 		$event_text="";
 		$event_date="";
@@ -785,7 +785,7 @@ if (isset($_GET['add_parents'])){
 		fam_marr_notice_date_hebnight='', fam_marr_date_hebnight='', fam_marr_church_date_hebnight='', fam_marr_church_notice_date_hebnight='' 
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($fam_gedcomnumber)."'";
 		$result=$dbh->query($sql);
-	}	
+	}
 
 	// *** Add N.N. father ***
 	$sql="INSERT INTO humo_persons SET
@@ -831,7 +831,7 @@ if (isset($_GET['add_parents'])){
 		pers_birth_date_hebnight='', pers_death_date_hebnight='', pers_buried_date_hebnight='' 
 		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($woman_gedcomnumber)."'";
 		$result=$dbh->query($sql);
-	}	
+	}
 
 	// *** Add parents to child record ***
 	$sql="UPDATE humo_persons SET
@@ -888,47 +888,86 @@ if (isset($_POST['add_parents']) AND $_POST['add_parents']!=''){
 }
 
 // *** Add child to family ***
-if (isset($_POST['child_connect2'])){
+if (isset($_POST['child_connect2']) AND $_POST['child_connect2'] AND !isset($_POST['submit']) ){
 
-	// *** Change i10 into I10 ***
-	$_POST["child_connect2"]=ucfirst($_POST["child_connect2"]);
-	// *** Change entry "48" into "I48" ***
-	if(substr($_POST["child_connect2"],0,1)!="I") { $_POST["child_connect2"] = "I".$_POST["child_connect2"]; } 
-
-	if (isset($_POST["children"])){
-		$sql="UPDATE humo_families SET
-		fam_children='".safe_text_db($_POST["children"]).';'.safe_text_db($_POST["child_connect2"])."',
-		fam_changed_user='".$username."',
-		fam_changed_date='".$gedcom_date."',
-		fam_changed_time='".$gedcom_time."'
-		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($_POST['family_id'])."'";
-	}
-	else{
-		$sql="UPDATE humo_families SET
-		fam_children='".safe_text_db($_POST["child_connect2"])."',
-		fam_changed_user='".$username."',
-		fam_changed_date='".$gedcom_date."',
-		fam_changed_time='".$gedcom_time."'
-		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($_POST['family_id'])."'";
-	}
-	$result=$dbh->query($sql);
-
-	// *** Check pers_indexnr, change indexnr if needed ***
+	// *** Check valid gedcomnumber and check if child already has parents connected! ***
 	$resultDb=$db_functions->get_person($_POST["child_connect2"]);
-	$pers_indexnr=$resultDb->pers_indexnr;
-	if ($pers_indexnr==''){ $pers_indexnr=$_POST['family_id']; }
 
-	// *** Add parents to child record ***
-	$sql="UPDATE humo_persons SET
-	pers_famc='".safe_text_db($_POST['family_id'])."',
-	pers_indexnr='".safe_text_db($pers_indexnr)."',
-	pers_changed_user='".$username."',
-	pers_changed_date='".$gedcom_date."',
-	pers_changed_time='".$gedcom_time."'
-	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($_POST["child_connect2"])."'";
-	$result=$dbh->query($sql);
+	// *** Check if input is a valid gedcomnumber ***
+	if (isset($resultDb->pers_gedcomnumber)){
 
-	family_tree_update($tree_id);
+		if ($resultDb->pers_famc  AND !isset($_POST['child_connecting']) ){
+			$confirm.='<div class="confirm">';
+			$confirm.=__('Child already has parents connected! Are you sure you want to connect this child?');
+			$confirm.=' <form method="post" action="'.$phpself.'" style="display : inline;">';
+				$confirm.='<input type="hidden" name="page" value="editor">';
+				$confirm.='<input type="hidden" name="family_id" value="'.$_POST['family_id'].'">';
+				$confirm.='<input type="hidden" name="children" value="'.$_POST['children'].'">';
+				$confirm.='<input type="hidden" name="child_connect2" value="'.$_POST['child_connect2'].'">';
+				$confirm.=' <input type="Submit" name="child_connecting" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
+				$confirm.=' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
+			$confirm.='</form>';
+			$confirm.='</div>';
+		}
+		else{
+
+			// *** First check if person already was connected to other parents: remove this person as child from this family. ***
+			if ($resultDb->pers_famc){
+				$famDb=$db_functions->get_family($resultDb->pers_famc);
+				$fam_children=explode(";",$famDb->fam_children);
+				foreach ($fam_children as $key => $value) {
+					if ($fam_children[$key] != $_POST["child_connect2"]){ $fam_children2[]=$fam_children[$key]; }
+				}
+				$fam_children3='';
+				if (isset($fam_children2[0])){ $fam_children3 = implode(";", $fam_children2); }
+
+				$sql="UPDATE humo_families SET
+					fam_children='".$fam_children3."'
+					WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$resultDb->pers_famc."'";
+				$result=$dbh->query($sql);
+			}
+
+			// *** Change i10 into I10 ***
+			$_POST["child_connect2"]=ucfirst($_POST["child_connect2"]);
+			// *** Change entry "48" into "I48" ***
+			if(substr($_POST["child_connect2"],0,1)!="I") { $_POST["child_connect2"] = "I".$_POST["child_connect2"]; } 
+
+			if (isset($_POST["children"])){
+				$sql="UPDATE humo_families SET
+				fam_children='".safe_text_db($_POST["children"]).';'.safe_text_db($_POST["child_connect2"])."',
+				fam_changed_user='".$username."',
+				fam_changed_date='".$gedcom_date."',
+				fam_changed_time='".$gedcom_time."'
+				WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($_POST['family_id'])."'";
+			}
+			else{
+				$sql="UPDATE humo_families SET
+				fam_children='".safe_text_db($_POST["child_connect2"])."',
+				fam_changed_user='".$username."',
+				fam_changed_date='".$gedcom_date."',
+				fam_changed_time='".$gedcom_time."'
+				WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($_POST['family_id'])."'";
+			}
+			$result=$dbh->query($sql);
+
+			// *** Check pers_indexnr, change indexnr if needed ***
+			$resultDb=$db_functions->get_person($_POST["child_connect2"]);
+			$pers_indexnr=$resultDb->pers_indexnr;
+			if ($pers_indexnr==''){ $pers_indexnr=$_POST['family_id']; }
+
+			// *** Add parents to child record ***
+			$sql="UPDATE humo_persons SET
+			pers_famc='".safe_text_db($_POST['family_id'])."',
+			pers_indexnr='".safe_text_db($pers_indexnr)."',
+			pers_changed_user='".$username."',
+			pers_changed_date='".$gedcom_date."',
+			pers_changed_time='".$gedcom_time."'
+			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($_POST["child_connect2"])."'";
+			$result=$dbh->query($sql);
+
+			family_tree_update($tree_id);
+		}
+	}
 }
 
 // *** Disconnect child ***
@@ -985,6 +1024,7 @@ if (isset($_GET['child_down'])){
 	$child_array[$child_array_id]=$child_array_org[($child_array_id+1)];
 	$child_array[$child_array_id+1]=$child_array_org[($child_array_id)];
 	$fam_children='';
+// use implode: $fam_children = implode(";", $child_array);
 	for ($k=0; $k<count($child_array); $k++){
 		if ($k>0){ $fam_children.=';'; }
 		$fam_children.=$child_array[$k];
@@ -1006,6 +1046,7 @@ if (isset($_GET['child_up'])){
 	$child_array[$child_array_id+1]=$child_array_org[($child_array_id)];
 	$child_array[$child_array_id]=$child_array_org[($child_array_id+1)];
 	$fam_children='';
+// use implode: $fam_children = implode(";", $child_array);
 	for ($k=0; $k<count($child_array); $k++){
 		if ($k>0){ $fam_children.=';'; }
 		$fam_children.=$child_array[$k];
@@ -1097,7 +1138,7 @@ if (isset($_GET['relation_add'])){
 		pers_new_date='".$gedcom_date."', pers_new_time='".$gedcom_time."'";
 	//echo $sql.'<br>';
 	$result=$dbh->query($sql);
-	
+
 	// extra UPDATE queries if jewish dates enabled
 	if($humo_option['admin_hebnight']=="y") {
 		$sql="UPDATE humo_persons SET 
@@ -1520,10 +1561,10 @@ if (isset($_POST['event_id'])){
 		if (isset($_POST["pers_colour_desc"][$key])){
 			// EXAMPLE: descendants($family_id,$main_person,$gn,$nr_generations);
 			descendants($marriage,$pers_gedcomnumber,0,20);
-			// *** Starts with 2nd descendant, skip main person (that's allready processed above this code)! ***
+			// *** Starts with 2nd descendant, skip main person (that's already processed above this code)! ***
 			for ($i=2; $i<=$descendant_id; $i++){
 
-				// *** Check if descendant allready has this colour ***
+				// *** Check if descendant already has this colour ***
 				$event_sql="SELECT * FROM humo_events
 					WHERE event_tree_id='".$tree_id."'
 					AND event_connect_kind='person' 
@@ -1533,7 +1574,7 @@ if (isset($_POST['event_id'])){
 				$event_qry=$dbh->query($event_sql);
 				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
 
-				// *** Descendant allready has this color, change it ***
+				// *** Descendant already has this color, change it ***
 				if (isset($eventDb->event_event)){
 					$sql="UPDATE humo_events SET
 						event_event='".$event_event."',
@@ -1588,7 +1629,7 @@ if (isset($_POST['event_id'])){
 				//echo $key2.'-'.$value.', ';
 				$selected_ancestor=$value;
 
-				// *** Check if ancestor allready has this colour ***
+				// *** Check if ancestor already has this colour ***
 				$event_sql="SELECT * FROM humo_events
 					WHERE event_tree_id='".$tree_id."'
 					AND event_connect_kind='person'
@@ -1598,7 +1639,7 @@ if (isset($_POST['event_id'])){
 				$event_qry=$dbh->query($event_sql);
 				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
 
-				// *** Ancestor allready has this color, change it ***
+				// *** Ancestor already has this color, change it ***
 				if (isset($eventDb->event_event)){
 					$sql="UPDATE humo_events SET
 						event_event='".$event_event."',
@@ -1717,7 +1758,7 @@ if (isset($_POST['event_drop2'])){
 		if (isset($_POST['event_descendants'])){
 			// EXAMPLE: descendants($family_id,$main_person,$gn,$nr_generations);
 			descendants($marriage,$pers_gedcomnumber,0,20);
-			// *** Starts with 2nd descendant, skip main person (that's allready processed above this code)! ***
+			// *** Starts with 2nd descendant, skip main person (that's already processed above this code)! ***
 			for ($i=2; $i<=$descendant_id; $i++){
 				// *** Get event_order from selected person ***
 				$event_sql="SELECT event_order FROM humo_events WHERE event_tree_id='".$tree_id."'
@@ -1767,7 +1808,7 @@ if (isset($_POST['event_drop2'])){
 				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
 				$event_order=$eventDb->event_order;
 
-				// *** Check if ancestor allready has this colour ***
+				// *** Check if ancestor already has this colour ***
 				$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
 					AND event_connect_kind='person' AND event_connect_id='".$selected_ancestor."'
 					AND event_kind='person_colour_mark' AND event_event='".$event_event."'";
@@ -2221,6 +2262,8 @@ if (isset($_POST['change_address_id'])){
 			address_date='".$editor_cls->date_process("address_date",$key)."',
 			address_address='".$editor_cls->text_process($_POST["address_address_".$key])."',
 			address_place='".$editor_cls->text_process($_POST["address_place_".$key])."',
+			address_text='".$editor_cls->text_process($_POST["address_text_".$key])."',
+			address_phone='".$editor_cls->text_process($_POST["address_phone_".$key])."',
 			address_changed_user='".$username."',
 			address_changed_date='".$gedcom_date."',
 			address_changed_time='".$gedcom_time."'

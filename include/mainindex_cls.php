@@ -3,7 +3,6 @@ class mainindex_cls{
 
 function show_tree_index(){
 	global $dbh, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
-//global $dataDb;
 
 	echo '<script type="text/javascript">';
 	echo 'checkCookie();';
@@ -661,12 +660,12 @@ function alphabet(){
 	//*** Find first first_character of last name ***
 	$text.=__('Surnames Index:')."<br>\n";
 	$personqry="SELECT UPPER(LEFT(pers_lastname,1)) as first_character FROM humo_persons
-		WHERE pers_tree_id='".$tree_id."' GROUP BY first_character";
+		WHERE pers_tree_id='".$tree_id."' GROUP BY first_character ORDER BY first_character";
 
 	// *** If "van Mons" is selected, also check pers_prefix ***
 	if ($user['group_kindindex']=="j"){
 		$personqry="SELECT UPPER(LEFT(CONCAT(pers_prefix,pers_lastname),1)) as first_character FROM humo_persons
-			WHERE pers_tree_id='".$tree_id."' GROUP BY first_character";
+			WHERE pers_tree_id='".$tree_id."' GROUP BY first_character ORDER BY first_character";
 	}
 	@$person=$dbh->query($personqry);
 	while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
@@ -693,7 +692,7 @@ function alphabet(){
 	$text.=' <a href="'.$path_tmp. '">'.__('Other')."</a>\n";
 
 	$person="SELECT pers_patronym FROM humo_persons
-		WHERE pers_tree_id='".$tree_id."' AND pers_patronym LIKE '_%' AND pers_lastname =''";
+		WHERE pers_tree_id='".$tree_id."' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";
 	@$personDb=$dbh->query($person);
 	if ($personDb->rowCount()>0) {
 		$text.=' <a href="'.CMS_ROOTPATH.'list.php?index_list=patronym">'.__('Patronyms').'</a>';
@@ -869,10 +868,7 @@ function show_footer(){
 	echo '</div>';
 }
 
-
-
 // *** Show slideshow ***
-//if (isset($humo_option["slideshow_show"]) AND $humo_option["slideshow_show"]=='y'){
 function show_slideshow(){
 	global $humo_option;
 

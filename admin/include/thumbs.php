@@ -120,7 +120,7 @@ if ($show_table){
 			echo '<form method="POST" action="index.php">';
 			echo '<input type="hidden" name="page" value="thumbs">';
 			echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
-			echo '<select size="1" name="tree_id">';
+			echo '<select size="1" name="tree_id" onChange="this.form.submit();">';
 				while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
 					$treetext=show_tree_text($treeDb->tree_id, $selected_language);
 					$selected='';
@@ -134,7 +134,7 @@ if ($show_table){
 				}
 			echo '</select>';
 
-			echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';
+			//echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';
 			echo '</form>';
 
 		echo '</td></tr>';
@@ -245,7 +245,7 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'),'HuMo-genealog
 // *** Picture categories ***
 if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-	if(!$temp->rowCount()) {  
+	if(!$temp->rowCount()) {
 		// no category database table exists - so create it
 		// It has 4 columns:
 		//     1. id
@@ -276,7 +276,7 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 		$dbh->query("UPDATE humo_photocat SET photocat_order = (photocat_order-1) WHERE photocat_order > '".safe_text_db($_GET['cat_order'])."'");
 		$dbh->query("DELETE FROM humo_photocat WHERE photocat_prefix = '".safe_text_db($_GET['cat_prefix'])."'");
 	}
-	if(isset($_GET['cat_up']) AND !isset($_POST['save_cat'])) { 
+	if(isset($_GET['cat_up']) AND !isset($_POST['save_cat'])) {
 		// move category up
 		$dbh->query("UPDATE humo_photocat SET photocat_order = 'temp' WHERE photocat_order ='".safe_text_db($_GET['cat_up'])."'");  // set present one to temp
 		$dbh->query("UPDATE humo_photocat SET photocat_order = '".$_GET['cat_up']."' WHERE photocat_order ='".(safe_text_db($_GET['cat_up']) - 1)."'");  // move the one above down
@@ -325,7 +325,7 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 		}
 		
 		// save new category
-		if(isset($_POST['new_cat_prefix']) AND isset($_POST['new_cat_name'])) { 
+		if(isset($_POST['new_cat_prefix']) AND isset($_POST['new_cat_name'])) {
 			if($_POST['new_cat_prefix']!="") {
 				$new_cat_prefix = $_POST['new_cat_prefix'];
 				$new_cat_name = $_POST['new_cat_name'];
@@ -402,6 +402,7 @@ if (isset($_POST['filename'])){
 }
 
 
+// *** Create thumbnails ***
 $counter=0;
 if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 	$pict_path=$data2Db->tree_pict_path; if (substr($pict_path,0,1)=='|') $pict_path='media/';
@@ -486,7 +487,7 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 						else{
 							echo '<div class="photobooktext">'.$filename.'</div>';
 						}
-					echo '</div>';  
+					echo '</div>';
 				}
 
 			}
