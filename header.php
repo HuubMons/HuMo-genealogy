@@ -115,6 +115,7 @@ while (false!==($file = readdir($language_folder))) {
 		elseif ($file=='id') $language_order[]='Indonesian';
 		elseif ($file=='hu') $language_order[]='Magyar';
 		elseif ($file=='it') $language_order[]='Italiano';
+		elseif ($file=='es_mx') $language_order[]='Mexicano';
 		elseif ($file=='nl') $language_order[]='Nederlands';
 		elseif ($file=='no') $language_order[]='Norsk';
 		elseif ($file=='pt') $language_order[]='Portuguese';
@@ -563,10 +564,13 @@ else{
 
 	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/sliderbar/slider.js"></script>';
 
+	//if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR
+	//	strpos($_SERVER['REQUEST_URI'],"maps")!== false OR
+	//	strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR
+	//	$user['group_pictures']=='j') {
 	if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR
 		strpos($_SERVER['REQUEST_URI'],"maps")!== false OR
-		strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR
-		$user['group_pictures']=='j') { 
+		strpos($_SERVER['REQUEST_URI'],"HOUR")!== false) {
 		// if lightbox activated or descendant chart or hourglass chart or google maps is used --> load jquery
 		echo '	<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script> ';
 	}
@@ -602,12 +606,19 @@ else{
 		echo '<link rel="stylesheet" type="text/css" href="'.CMS_ROOTPATH.'include/popup_menu/popup_menu.css">';
 	}
 
+	// OLD LIGHTBOX
 	// *** Photo lightbox effect ***
-	if ($user['group_pictures']=='j'){
-		//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/jquery.min.js"></script>';
-		echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/slimbox2.js"></script>';
-		echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/lightbox/css/slimbox2.css" type="text/css" media="screen">';
-	}
+	//if ($user['group_pictures']=='j'){
+	//	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/jquery.min.js"></script>';
+	//	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/slimbox2.js"></script>';
+	//	echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/lightbox/css/slimbox2.css" type="text/css" media="screen">';
+	//}
+
+	// *** Always load script, because of "Random photo" at homepage ***
+	// *** Photo lightbox effect using GLightbox ***
+	echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/glightbox/css/glightbox.css" />';
+	echo '<script src="'.CMS_ROOTPATH.'include/glightbox/js/glightbox.min.js"></script>';
+	// *** There is also a script in footer.php, otherwise GLightbox doesn't work ***
 
 	// *** CSS changes for mobile devices ***
 	echo '<link rel="stylesheet" media="(max-width: 640px)" href="gedcom_mobile.css">';

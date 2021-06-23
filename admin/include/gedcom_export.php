@@ -216,42 +216,26 @@ function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$sta
 	//$connect_sql = $db_functions->get_connections_connect_id('person','person_address',$person->pers_gedcomnumber);
 	//foreach ($connect_sql as $connectDb){
 
-		//if ($connectDb->source_shared=='1'){
-			// *** Source contains title, can be connected to multiple items ***
-			// 0 @S2@ SOUR
-			// 1 ROLE ROL
-			// 1 PAGE page
-			$buffer.=$start_number.' SOUR @'.$connectDb->connect_source_id."@\r\n";
-			if ($connectDb->connect_role){ $buffer.=($start_number+1).' ROLE '.$connectDb->connect_role."\r\n"; }
-			if ($connectDb->connect_page){ $buffer.=($start_number+1).' PAGE '.$connectDb->connect_page."\r\n"; }
-			if ($connectDb->connect_quality OR $connectDb->connect_quality=='0'){ $buffer.=($start_number+1).' QUAY '.$connectDb->connect_quality."\r\n"; }
+		// *** Source contains title, can be connected to multiple items ***
+		// 0 @S2@ SOUR
+		// 1 ROLE ROL
+		// 1 PAGE page
+		$buffer.=$start_number.' SOUR @'.$connectDb->connect_source_id."@\r\n";
+		if ($connectDb->connect_role){ $buffer.=($start_number+1).' ROLE '.$connectDb->connect_role."\r\n"; }
+		if ($connectDb->connect_page){ $buffer.=($start_number+1).' PAGE '.$connectDb->connect_page."\r\n"; }
+		if ($connectDb->connect_quality OR $connectDb->connect_quality=='0'){ $buffer.=($start_number+1).' QUAY '.$connectDb->connect_quality."\r\n"; }
 
-			// *** Extra text by source ***
-			if ($connectDb->connect_text){
-				// 3 DATA
-				// 4 TEXT text .....
-				// 5 CONT ..........
-				$buffer.=($start_number+1)." DATA\r\n";
-				$buffer.=($start_number+2).' TEXT '.process_text($start_number+3,$connectDb->connect_text);
-			}
-		//}
-		/*
-		else{
-			//$buffer.=$start_number." SOUR\r\n";
-			$buffer.=$start_number." SOUR ".process_text($start_number+1,$connectDb->source_text);
-
-			// *** Extra text by source ***
-			if ($connectDb->connect_text){
-				// 3 DATA
-				// 4 TEXT text .....
-				// 5 CONT ..........
-				$buffer.=($start_number+1)." DATA\r\n";
-				$buffer.=($start_number+2).' TEXT '.process_text($start_number+3,$connectDb->connect_text);
-			}
-			if ($connectDb->source_date){ $buffer.=($start_number+1).' DATE '.$connectDb->source_date."\r\n"; }
-			if ($connectDb->source_place){ $buffer.=($start_number+1).' PLAC '.$connectDb->source_place."\r\n"; }
+		// *** Extra text by source ***
+		if ($connectDb->connect_text){
+			// 3 DATA
+			// 4 TEXT text .....
+			// 5 CONT ..........
+			$buffer.=($start_number+1)." DATA\r\n";
+			$buffer.=($start_number+2).' TEXT '.process_text($start_number+3,$connectDb->connect_text);
 		}
-		*/
+
+		if ($connectDb->source_date){ $buffer.=($start_number+1).' DATE '.$connectDb->connect_date."\r\n"; }
+		if ($connectDb->source_place){ $buffer.=($start_number+1).' PLAC '.$connectDb->connect_place."\r\n"; }
 	}
 }
 
@@ -1207,13 +1191,16 @@ while($families=$families_qry->fetch(PDO::FETCH_OBJ)){
 	if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes') echo $family->fam_gedcomnumber. ' ';
 
 	if ($family->fam_man){
-		if($_POST['part_tree']=='part' AND !in_array($family->fam_man,$persids)) {}
-		// skip if not included (e.g. if spouse of base person in ancestor export or spouses of descendants in desc export are not checked for export)
+		if($_POST['part_tree']=='part' AND !in_array($family->fam_man,$persids)) {
+			// skip if not included (e.g. if spouse of base person in ancestor export or spouses of descendants in desc export are not checked for export)
+		}
 		else { $buffer.='1 HUSB @'.$family->fam_man."@\r\n"; }
 	}
 
 	if ($family->fam_woman){
-		if($_POST['part_tree']=='part' AND !in_array($family->fam_woman,$persids)) {} // skip if not included
+		if($_POST['part_tree']=='part' AND !in_array($family->fam_woman,$persids)) {
+			// skip if not included
+		}
 		else { $buffer.='1 WIFE @'.$family->fam_woman."@\r\n"; }
 	}
 

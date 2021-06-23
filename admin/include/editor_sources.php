@@ -10,6 +10,9 @@ if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['
 if (isset($_SESSION['admin_fam_gedcomnumber'])){ $marriage=$_SESSION['admin_fam_gedcomnumber']; }
 if (isset($_SESSION['admin_address_gedcomnumber'])){ $address_gedcomnr=$_SESSION['admin_address_gedcomnumber']; }
 
+
+//echo '<br>'.$pers_gedcomnumber;
+
 // *** Needed for event sources ***
 $connect_kind='';
 if (isset($_GET['connect_kind'])) $connect_kind=$_GET['connect_kind'];
@@ -182,7 +185,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 	global $db_functions;
 	$db_functions->set_tree_id($tree_id);
 
-	$text='<p>'.__('<b>Sourcerole</b>: e.g. Writer, Brother, Sister, Father. <b>Page</b>: page in source. <b>Text *</b>: mandatory field.');
+	$text='<p>'.__('<b>Sourcerole</b>: e.g. Writer, Brother, Sister, Father. <b>Page</b>: page in source.');
 
 	//$text.= '<table class="humo standard" border="1">';
 	$text.= '<table class="humo" border="1">';
@@ -286,17 +289,16 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 		$text.= '</tr>';
 
 
-
-
 		$color= ''; if ($change_bg_colour==true){ $color = ' class="humo_color"'; }
 		$text.= '<tr'.$color.'>';
 
 			$text.='<td style="vertical-align:top; min-width:100px">'.__('Source').'<br>';
 				$text.='<div style="margin-top:3px;">'.__('Title').'</div>';
 				$text.='<div style="margin-top:3px;">'.__('Date').'</div>';
-				$text.='<div style="margin-top:3px;">'.__('Text').' *</div>';
+				$text.='<div style="margin-top:3px;">'.__('Text').'</div>';
 				$text.='<div style="margin-top:50px;">'.__('Own code').'</div>';
 				$text.='<div style="margin-top:3px;">'.__('Sourcerole').'</div>';
+				$text.='<div style="margin-top:3px;">'.__('Date').'</div>';
 				$text.='<div style="margin-top:3px;">'.__('Extra text').'</div>';
 			$text.='</td>';
 
@@ -342,7 +344,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 
 					//$field_text='style="height: 60px; width:550px"';
 					$field_text='style="height: 60px; width:600px"';
-					$text.= '<textarea rows="2" name="source_text['.$connectDb->connect_id.']" '.$field_text.' placeholder="'.__('Text').'" required>'.
+					$text.= '<textarea rows="2" name="source_text['.$connectDb->connect_id.']" '.$field_text.' placeholder="'.__('Text').'">'.
 						$editor_cls->text_show($sourceDb->source_text).'</textarea><br>';
 
 					$text.='<input type="text" name="source_refn['.$connectDb->connect_id.']" placeholder="'.__('Own code').'" value="'.htmlspecialchars($sourceDb->source_refn).'" size="15">';
@@ -362,7 +364,9 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 					if (isset($_POST['source_search'])){
 						$qry.=" AND ( source_title LIKE '%".safe_text_db($_POST['source_search'])."%' OR (source_title='' AND source_text LIKE '%".safe_text_db($source_search)."%') )";
 					}
-					$qry.=" ORDER BY source_title";
+					//$qry.=" ORDER BY source_title";
+					$qry.=" ORDER BY IF (source_title!='',source_title,source_text)";
+
 					$source_qry=$dbh->query($qry);
 
 					$text.='<select size="1" name="connect_source_id['.$connectDb->connect_id.']" style="width: 300px">';
@@ -409,12 +413,9 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 			$text.='</div>';
 
 			if ($connectDb->connect_source_id!=''){
-				//$field_date=12; // Size of date field.
-				//$text.= $editor_cls->date_show($connectDb->connect_date,'connect_date',"[$connectDb->connect_id]");
-
-				//$text.=' '.__('place').' <input type="text" name="connect_place['.$connectDb->connect_id.']" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($connectDb->connect_place).'" size="15">';
 
 				$text.=' <input type="text" name="connect_role['.$connectDb->connect_id.']" placeholder="'.__('Sourcerole').'" value="'.htmlspecialchars($connectDb->connect_role).'" size="6"> ';
+
 				$text.=__('Page').' <input type="text" name="connect_page['.$connectDb->connect_id.']" placeholder="'.__('Page').'" value="'.$connectDb->connect_page.'" size="6">';
 
 				// *** Quality ***
@@ -428,8 +429,11 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 				$text.='<option value="2"'.$selected.'>'.ucfirst(__('quality: data from secondary evidence')).'</option>';
 				$selected=''; if ($connectDb->connect_quality=='3'){ $selected=' SELECTED'; }
 				$text.='<option value="3"'.$selected.'>'.ucfirst(__('quality: data from direct source')).'</option>';
-				$text.='</select>';
+				$text.='</select><br>';
 
+				$field_date=12; // Size of date field.
+				$text.= $editor_cls->date_show($connectDb->connect_date,'connect_date',"[$connectDb->connect_id]");
+				$text.=' '.ucfirst(__('place')).' <input type="text" name="connect_place['.$connectDb->connect_id.']" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($connectDb->connect_place).'" size="15">';
 
 				// *** Extra text by shared source ***
 				$field_text='style="height: 20px; width:550px"';
@@ -463,30 +467,39 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 	//$text.='<tr class="table_header_large" style="border-top:solid 2px #000000;"><td colspan="3"><br></td></tr>';
 
 	// *** Add new source connection ***
-	$text.='<tr bgcolor="#CCFFFF" style="border-top:solid 2px #000000;"><td>'.__('Add').'</td>';
-		//$text.='<td style="border-right:0px;"></td>';
-		//$text.='<td style="border-left:0px;"></td>';
-		$text.='<th>';
-			$text.='<form method="POST" action="'.$phpself2.'">';
-			$text.='<input type="hidden" name="page" value="'.$page.'">';
+	if (!isset($_POST['connect_add'])){
+		$text.='<tr bgcolor="#CCFFFF" style="border-top:solid 2px #000000;"><td>'.__('Add').'</td>';
+			//$text.='<td style="border-right:0px;"></td>';
+			//$text.='<td style="border-left:0px;"></td>';
+			$text.='<th>';
+				$text.='<form method="POST" action="'.$phpself2.'">';
+				$text.='<input type="hidden" name="page" value="'.$page.'">';
 
-			if (isset($_POST['event_person']) OR isset($_GET['event_person'])){
-				$text.='<input type="hidden" name="event_person" value="1">';
-			}
-			if (isset($_POST['event_family']) OR isset($_GET['event_family'])){
-				$text.='<input type="hidden" name="event_family" value="1">';
-			}
+				if (isset($_POST['event_person']) OR isset($_GET['event_person'])){
+					$text.='<input type="hidden" name="event_person" value="1">';
+				}
+				if (isset($_POST['event_family']) OR isset($_GET['event_family'])){
+					$text.='<input type="hidden" name="event_family" value="1">';
+				}
 
-			$text.='<input type="hidden" name="connect_kind" value="'.$connect_kind.'">';
-			$text.='<input type="hidden" name="connect_sub_kind" value="'.$connect_sub_kind.'">';
-			$text.='<input type="hidden" name="connect_connect_id" value="'.$connect_connect_id.'">';
+				$text.='<input type="hidden" name="connect_kind" value="'.$connect_kind.'">';
+				$text.='<input type="hidden" name="connect_sub_kind" value="'.$connect_sub_kind.'">';
+				$text.='<input type="hidden" name="connect_connect_id" value="'.$connect_connect_id.'">';
 
-			if (isset($marriage)){ $text.='<input type="hidden" name="marriage_nr" value="'.$marriage.'">'; }
-			//echo '<tr bgcolor="#CCFFFF"><td>'.__('Add').'</td><td colspan="2">';
-			$text.=' <input type="Submit" name="connect_add" value="'.__('Add source').'">';
-			$text.='</form>';
-		$text.='</th>';
-	$text.='</tr>';
+				if (isset($marriage)){ $text.='<input type="hidden" name="marriage_nr" value="'.$marriage.'">'; }
+				//echo '<tr bgcolor="#CCFFFF"><td>'.__('Add').'</td><td colspan="2">';
+
+				if ($nr_sources>0){
+					$text.=' <input type="Submit" name="connect_add" value="'.__('Add another source').'">';
+				}
+				else{
+					$text.=' <input type="Submit" name="connect_add" value="'.__('Add source').'">';
+				}
+
+				$text.='</form>';
+			$text.='</th>';
+		$text.='</tr>';
+	}
 
 	$text.='</table>';
 	$text.='<p>'; // some extra space below table.

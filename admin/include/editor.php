@@ -591,6 +591,10 @@ if (isset($person->pers_fams) AND $person->pers_fams){
 	if (isset($_SESSION['admin_fam_gedcomnumber'])){
 		$marriage=$_SESSION['admin_fam_gedcomnumber'];
 	}
+
+//test
+//$marriage=$_SESSION['admin_fam_gedcomnumber'];
+//echo $marriage;
 }
 
 
@@ -618,7 +622,6 @@ echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 		}
 	echo '</select>';
 echo '</form>';
-
 
 if (isset($tree_id)){
 	// *** Process queries ***
@@ -695,7 +698,8 @@ if (isset($tree_id)){
 		if ($new_tree==false){
 			// *** Favourites ***
 			echo '&nbsp;&nbsp;&nbsp; <img src="'.CMS_ROOTPATH.'images/favorite_blue.png"> ';
-			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+			//echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+			echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 
@@ -718,11 +722,26 @@ if (isset($tree_id)){
 			echo '</form>';
 
 			// *** Latest changes ***
-			echo '&nbsp;&nbsp;&nbsp; ';
-			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
-				echo '<input type="hidden" name="page" value="'.$page.'">';
-				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 
+			// *** Read cache (only used in large family trees) ***
+			$cache=''; $cache_count=0; $cache_check=false; // *** Use cache for large family trees ***
+			$cacheqry = $dbh->query("SELECT * FROM humo_settings
+				WHERE setting_variable='cache_latest_changes' AND setting_tree_id='".$tree_id."'");
+			$cacheDb=$cacheqry->fetch(PDO::FETCH_OBJ);
+			if ($cacheDb){
+				$cache_array=explode("|",$cacheDb->setting_value);
+				foreach ($cache_array as $cache_line) {
+					$cacheDb = json_decode(unserialize($cache_line));
+
+					$pers_id[]=$cacheDb->pers_id;
+
+					$cache_check=true;
+					$test_time=time()-10800; // *** 86400 = 1 day, 7200 = 2 hours, 10800 = 3 hours ***
+					if($cacheDb->time < $test_time) $cache_check=false;
+				}
+			}
+
+			if ($cache_check==false){
 				// *** First get pers_id, will be quicker in very large family trees ***
 				$person_qry= "(SELECT pers_id, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
 					FROM humo_persons
@@ -732,22 +751,48 @@ if (isset($tree_id)){
 					WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NULL) ";
 				$person_qry.= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,15";
 				$person_result = $dbh->query($person_qry);
-
-				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
-				echo '<option value="">'.__('Latest changes').'</option>';
+				$count_latest_changes=$person_result->rowCount();
 				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
-					//$selected=''; // Not in use.
-					//echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person).'</option>';
-
-					$person2_qry= "SELECT * FROM humo_persons WHERE pers_id='".$person->pers_id."'";
-					$person2_result = $dbh->query($person2_qry);
-					$person2=$person2_result->fetch(PDO::FETCH_OBJ);
-					echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).'</option>';
+					// *** Cache: only use cache if there are > 5.000 persons in database ***
+					//if (isset($dataDb->tree_persons) AND $dataDb->tree_persons>5000){
+						$person->time=time(); // *** Add linux time to array ***
+						if ($cache) $cache.='|';
+						$cache.=serialize(json_encode($person));
+						$cache_count++;
+					//}
+					$pers_id[]=$person->pers_id;
 				}
+
+				// *** Add or renew cache in database (only if cache_count is valid) ***
+				if ($cache AND ($cache_count==$count_latest_changes)){
+					$sql = "DELETE FROM humo_settings
+						WHERE setting_variable='cache_latest_changes' AND setting_tree_id='".safe_text_db($tree_id)."'";
+					$result = $dbh->query($sql);
+					$sql = "INSERT INTO humo_settings SET
+						setting_variable='cache_latest_changes', setting_value='".safe_text_db($cache)."',
+						setting_tree_id='".safe_text_db($tree_id)."'";
+					$result = $dbh->query($sql);
+				}
+			}
+
+			echo '&nbsp;&nbsp;&nbsp; ';
+			//echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+			echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
+				echo '<input type="hidden" name="page" value="'.$page.'">';
+				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
+					echo '<option value="">'.__('Latest changes').'</option>';
+					for ($i=0; $i<count($pers_id); $i++){
+						//$selected=''; // Not in use.
+						//echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person).'</option>';
+
+						$person2_qry= "SELECT * FROM humo_persons WHERE pers_id='".$pers_id[$i]."'";
+						$person2_result = $dbh->query($person2_qry);
+						$person2=$person2_result->fetch(PDO::FETCH_OBJ);
+						echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).'</option>';
+					}
 				echo '</select>';
-
 			echo '</form>';
-
 		}
 
 		// *** Show delete message ***
@@ -756,9 +801,9 @@ if (isset($tree_id)){
 		if ($new_tree==false){
 		echo '<br><table class="humo" style="text-align:left; width:98%; margin-left: initial; margin-right: initial;">';
 		echo '<tr class="table_header_large"><td>';
-
 			// *** Search persons firstname/ lastname ***
-			echo '&nbsp;<form method="POST" action="'.$phpself.'" style="display : inline;">';
+			//echo '&nbsp;<form method="POST" action="'.$phpself.'" style="display : inline;">';
+			echo '&nbsp;<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 				echo __('Person').':';
@@ -846,7 +891,8 @@ if (isset($tree_id)){
 				// *** Found multiple persons ***
 				elseif($nr_persons>0) {
 					//echo '<b>'.__('Found:').'</b> ';
-					echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+					//echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+					echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
 					echo '<input type="hidden" name="page" value="'.$page.'">';
 					echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 					echo '<select size="1" name="person" style="width: 200px; background-color: #ffaa80;" onChange="this.form.submit();">';
@@ -883,9 +929,9 @@ if (isset($tree_id)){
 				if ($nr_persons>1 AND isset($_POST["search_quicksearch"])) $pers_gedcomnumber='';
 			}
 
-
 			// *** Search person GEDCOM number ***
-			echo '&nbsp;<form method="POST" action="'.$phpself.'" style="display : inline;">';
+			//echo '&nbsp;<form method="POST" action="'.$phpself.'" style="display : inline;">';
+			echo '&nbsp;<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 				echo __('or ID:');
@@ -898,7 +944,6 @@ if (isset($tree_id)){
 				echo '<b>'.__('Person not found').'</b>';
 				$pers_gedcomnumber=''; // *** Don't show a person if there are no results ***
 			}
-
 
 			// *** Add new person ***
 			echo '&nbsp;&nbsp;&nbsp; <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1">
@@ -936,13 +981,27 @@ if (isset($tree_id)){
 
 }
 
+
+$check_person=false;
 if (isset($pers_gedcomnumber)){
-	// *** Exit if selection of person is needed ***
-	if ($new_tree==false AND $add_person==false AND !$pers_gedcomnumber) exit;
+	if ($new_tree==false AND $add_person==false AND !$pers_gedcomnumber) $check_person=false;
 
 	// *** Get person data to show name and calculate nr. of items ***
 	$person = $db_functions->get_person($pers_gedcomnumber);
-	if (!$person AND $new_tree==false AND $add_person==false) exit;
+	if ($person) $check_person=true;
+	if (!$person AND $new_tree==false AND $add_person==false) $check_person=false;
+}
+if ($new_tree) $check_person=true;
+if ($check_person){
+	// *** Exit if selection of person is needed ***
+	//if ($new_tree==false AND $add_person==false AND !$pers_gedcomnumber) exit;
+
+	// *** Get person data to show name and calculate nr. of items ***
+	//$person = $db_functions->get_person($pers_gedcomnumber);
+	//if (!$person AND $new_tree==false AND $add_person==false) exit;
+
+	// *** Save person GEDCOM number, needed for source pop-up ***
+	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 
 	// *** Tab menu ***
 	$menu_tab='person';
@@ -983,9 +1042,12 @@ if (isset($pers_gedcomnumber)){
 
 					if ($person){
 						// *** Browser through persons: previous button ***
+						//$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+						//	AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."'
+						//	ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
 						$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
 							AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."'
-							ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
+							ORDER BY pers_gedcomnumber DESC LIMIT 0,1";
 						$previous_result = $dbh->query($previous_qry);
 						$previousDb=$previous_result->fetch(PDO::FETCH_OBJ);
 						if ($previousDb){
@@ -995,9 +1057,14 @@ if (isset($pers_gedcomnumber)){
 								echo ' <input type="submit" value="<">';
 							echo '</form>';
 						}
+
 						// *** Next button ***
-						$next_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-							AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) > '".substr($person->pers_gedcomnumber,1)."' ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0,1";
+						//$next_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+						//	AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) > '".substr($person->pers_gedcomnumber,1)."' ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0,1";
+						$next_qry = "SELECT pers_gedcomnumber FROM humo_persons
+							WHERE pers_tree_id='".$tree_id."'
+							AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) > '".substr($person->pers_gedcomnumber,1)."'
+							ORDER BY pers_gedcomnumber LIMIT 0,1";
 						$next_result = $dbh->query($next_qry);
 						$nextDb=$next_result->fetch(PDO::FETCH_OBJ);
 						if ($nextDb){
@@ -1179,8 +1246,6 @@ if (isset($pers_gedcomnumber)){
 		//ob_flush(); flush(); // IE
 	}
 
-
-
 	// *****************
 	// *** Show data ***
 	// *****************
@@ -1264,14 +1329,13 @@ if (isset($pers_gedcomnumber)){
 			}
 		}
 
-
 		// *** MARRIAGE sources ***
-		if (isset($person->pers_fams) AND $person->pers_fams){
-			$fams1=explode(";",$person->pers_fams);
-			$marriage=$fams1[0];
-			if (isset($_POST['marriage_nr'])){ $marriage=$_POST['marriage_nr']; }
-			if (isset($_GET['marriage_nr'])){ $marriage=$_GET['marriage_nr']; }
-		}
+		//if (isset($person->pers_fams) AND $person->pers_fams){
+		//	$fams1=explode(";",$person->pers_fams);
+		//	$marriage=$fams1[0];
+		//	if (isset($_POST['marriage_nr'])){ $marriage=$_POST['marriage_nr']; }
+		//	if (isset($_GET['marriage_nr'])){ $marriage=$_GET['marriage_nr']; }
+		//}
 
 		// *** Add child to family, 1st option: select an existing person as a child ***
 		if (isset($_GET['child_connect'])){
@@ -1479,13 +1543,14 @@ if (isset($pers_gedcomnumber)){
 							//echo show_person($person->pers_gedcomnumber).'<br>';
 							echo show_person($person->pers_gedcomnumber,false,false).'<br><br>';
 
-							// GeneaNet
-							// https://nl.geneanet.org/fonds/individus/?size=10&amp;nom=Heijnen&prenom=Andreas&ampprenom_operateur=or&amp;place__0__=Wouw+Nederland&amp;go=1
+							// *** GeneaNet ***
+							// https://nl.geneanet.org/fonds/individus/?size=10&amp;
+							//nom=Heijnen&prenom=Andreas&ampprenom_operateur=or&amp;place__0__=Wouw+Nederland&amp;go=1
 							$link= 'https://geneanet.org/fonds/individus/?size=10&amp;nom='.urlencode($person->pers_lastname).'&amp;prenom='.urlencode($person->pers_firstname);
 							//if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&birthdate_until='.$OAfromyear;
 							echo '<a href="'.$link.'&amp;go=1" target="_blank">Geneanet.org</a><br><br>';
 
-							// StamboomZoeker.nl
+							// *** StamboomZoeker.nl ***
 							// UITLEG: https://www.stamboomzoeker.nl/page/16/zoekhulp
 							// sn: Familienaam
 							// fn: Voornaam
@@ -1496,27 +1561,34 @@ if (isset($pers_gedcomnumber)){
 							if ($OAfromyear!='') $link.='&amp;bd1='.$OAfromyear.'&amp;bd2='.$OAfromyear;
 							echo '<a href="'.$link.'" target="_blank">Familytreeseeker.com/ StamboomZoeker.nl</a><br><br>';
 
-							// GenealogieOnline
+							// *** GenealogieOnline ***
 							//https://www.genealogieonline.nl/zoeken/index.php?q=mons&vn=nikus&pn=harderwijk
 							$link= 'https://genealogieonline.nl/zoeken/index.php?q='.urlencode($person->pers_lastname).'&amp;vn='.urlencode($person->pers_firstname);
 							//if ($OAfromyear!='') $link.='&amp;bd1='.$OAfromyear.'&amp;bd2='.$OAfromyear;
 							echo '<a href="'.$link.'" target="_blank">Genealogyonline.nl/ Genealogieonline.nl</a><br><br>';
 
-							// GrafTombe
+							// FamilySearch
+							//https://www.familysearch.org/search/record/results?q.givenName=Marie&q.surname=CORNEZ&count=20
+							$link= 'http://www.familysearch.org/search/record/results?count=20
+							&q.givenName='.urlencode($person->pers_firstname).'&q.surname='.urlencode($person->pers_lastname);
+							//if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&amp;birthdate_until='.$OAfromyear;
+							echo '<a href="'.$link.'" target="_blank">FamilySearch</a><br><br>';
+
+							// *** GrafTombe ***
 							// http://www.graftombe.nl/names/search?forename=Andreas&surname=Heijnen&birthdate_from=1655
 							// &amp;birthdate_until=1655&amp;submit=Zoeken&amp;r=names-search
 							$link= 'http://www.graftombe.nl/names/search?forename='.urlencode($person->pers_firstname).'&amp;surname='.urlencode($person->pers_lastname);
 							if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&amp;birthdate_until='.$OAfromyear;
 							echo '<a href="'.$link.'&amp;submit=Zoeken&amp;r=names-search" target="_blank">Graftombe.nl</a><br><br>';
 
-
-							// FamilySearch
-							// https://www.familysearch.org/search/record/results?count=20&query=+givenname:Andreas~+surname:%22Heijnen%22
-
-							// WieWasWie
+							// *** WieWasWie ***
 							// https://www.wiewaswie.nl/nl/zoeken/?q=Andreas+Adriaensen+Heijnen
+							$link= 'https://www.wiewaswie.nl/nl/zoeken/?q='.urlencode($person->pers_firstname).
+								'+'.urlencode($person->pers_lastname);
+							//if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&amp;birthdate_until='.$OAfromyear;
+							echo '<a href="'.$link.'" target="_blank">WieWasWie</a><br><br>';
 
-							// StamboomOnderzoek
+							// *** StamboomOnderzoek ***
 							// https://www.stamboomonderzoek.com/default/search.php?
 							// myfirstname=Andreas&mylastname=Heijnen&lnqualify=startswith&mybool=AND&showdeath=1&tree=-x--all--x-
 						}
@@ -1744,13 +1816,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<td>';
 			if (!isset($_GET['add_person'])){
 				// *** Source by name ***
-				// *** Calculate and show nr. of sources ***
-				$connect_qry="SELECT * FROM humo_connections
-					WHERE connect_tree_id='".$tree_id."'
-					AND connect_sub_kind='pers_name_source' AND connect_connect_id='".$pers_gedcomnumber."'";
-				$connect_sql=$dbh->query($connect_qry);
-				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_name_source', '','width=800,height=500')\">".__('source');
-				echo ' ['.$connect_sql->rowCount().']</a>';
+				source_link('individual',$pers_gedcomnumber,'pers_name_source');
 			}
 		echo '</td></tr>';
 
@@ -1826,13 +1892,7 @@ if (isset($pers_gedcomnumber)){
 		echo '</td><td>';
 
 		if (!isset($_GET['add_person'])){
-			// *** Calculate and show nr. of sources ***
-			$connect_qry="SELECT * FROM humo_connections
-				WHERE connect_tree_id='".$tree_id."'
-				AND connect_sub_kind='pers_sexe_source' AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_sexe_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.$connect_sql->rowCount().']</a>';
+			source_link('individual',$pers_gedcomnumber,'pers_sexe_source');
 		}
 		echo '</td></tr>';
 
@@ -1875,13 +1935,7 @@ if (isset($pers_gedcomnumber)){
 		// *** Source by birth ***
 		echo '<td>';
 		if (!isset($_GET['add_person'])){
-			// *** Calculate and show nr. of sources ***
-			$connect_qry="SELECT *
-				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
-				AND connect_sub_kind='pers_birth_source' AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_birth_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.$connect_sql->rowCount().']</a>';
+			source_link('individual',$pers_gedcomnumber,'pers_birth_source');
 		}
 
 		echo '</td></tr>';
@@ -1936,15 +1990,7 @@ if (isset($pers_gedcomnumber)){
 
 			// *** Source by Brit Mila ***
 			echo '<td>';
-			/*		if (!isset($_GET['add_person'])){
-				// *** Calculate and show nr. of sources ***
-				$connect_qry="SELECT *
-					FROM humo_connections WHERE connect_tree_id='".$tree_id."'
-					AND connect_sub_kind='pers_bapt_source' AND connect_connect_id='".$pers_gedcomnumber."'";
-				$connect_sql=$dbh->query($connect_qry);
-				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
-				echo ' ['.$connect_sql->rowCount().']</a>';
-			} */
+				// No source yet.
 			echo '</td></tr>';
 			
 			// *** Text by event ***
@@ -1985,13 +2031,7 @@ if (isset($pers_gedcomnumber)){
 			// *** Source by Bar Mitsva ***
 			/*		echo '<td>';
 			if (!isset($_GET['add_person'])){
-				// *** Calculate and show nr. of sources ***
-				$connect_qry="SELECT *
-					FROM humo_connections WHERE connect_tree_id='".$tree_id."'
-					AND connect_sub_kind='pers_bapt_source' AND connect_connect_id='".$pers_gedcomnumber."'";
-				$connect_sql=$dbh->query($connect_qry);
-				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
-				echo ' ['.$connect_sql->rowCount().']</a>';
+				// no source yet
 			} */
 			echo '</td></tr>';
 
@@ -2018,13 +2058,7 @@ if (isset($pers_gedcomnumber)){
 		// *** Source by baptise ***
 		echo '<td>';
 		if (!isset($_GET['add_person'])){
-			// *** Calculate and show nr. of sources ***
-			$connect_qry="SELECT *
-				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
-				AND connect_sub_kind='pers_bapt_source' AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.$connect_sql->rowCount().']</a>';
+			source_link('individual',$pers_gedcomnumber,'pers_bapt_source');
 		}
 		echo '</td></tr>';
 
@@ -2072,13 +2106,7 @@ if (isset($pers_gedcomnumber)){
 		// *** Source by death ***
 		echo '</td><td>';
 		if (!isset($_GET['add_person'])){
-			// *** Calculate and show nr. of sources ***
-			$connect_qry="SELECT *
-				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
-				AND connect_sub_kind='pers_death_source' AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_death_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.$connect_sql->rowCount().']</a>';
+			source_link('individual',$pers_gedcomnumber,'pers_death_source');
 		}
 		echo '</td></tr>';
 
@@ -2154,14 +2182,7 @@ if (isset($pers_gedcomnumber)){
 		// *** Source by burial ***
 		echo '</td><td>';
 		if (!isset($_GET['add_person'])){
-			// *** Calculate and show nr. of sources ***
-			$connect_qry="SELECT *
-				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
-				AND connect_sub_kind='pers_buried_source'
-				AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_buried_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.$connect_sql->rowCount().']</a>';
+			source_link('individual',$pers_gedcomnumber,'pers_buried_source');
 		}
 		echo '</td></tr>';
 
@@ -2227,14 +2248,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		echo '</td><td>';
 		// *** Source by text ***
 		if (!isset($_GET['add_person'])){
-			// *** Calculate and show nr. of sources ***
-			$connect_qry="SELECT *
-				FROM humo_connections
-				WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='pers_text_source'
-				AND connect_connect_id='".$pers_gedcomnumber."'";
-			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_text_source', '','width=800,height=500')\">".__('source');
-			echo ' ['.$connect_sql->rowCount().']</a>';
+			source_link('individual',$pers_gedcomnumber,'pers_text_source');
 		}
 		echo '</td></tr>';
 
@@ -2243,14 +2257,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Person sources in new person editor screen ***
 			echo '<tr><td>'.__('Source for person').'</td><td colspan="2"></td>';
 			echo '<td>';
-				// *** Calculate and show nr. of sources ***
-				$connect_qry="SELECT *
-					FROM humo_connections
-					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='person_source'
-					AND connect_connect_id='".$pers_gedcomnumber."'";
-				$connect_sql=$dbh->query($connect_qry);
-				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=person_source', '','width=800,height=500')\">".__('source');
-				echo ' ['.$connect_sql->rowCount().']</a>';
+				source_link('individual',$pers_gedcomnumber,'person_source');
 			echo '</td></tr>';
 
 			// *** Picture ***
@@ -2630,14 +2637,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</td><td>';
 				// *** Source by relation ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					// *** Calculate and show nr. of sources ***
-					$connect_qry="SELECT *
-						FROM humo_connections
-						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_relation_source'
-						AND connect_connect_id='".$marriage."'";
-					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_relation_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.$connect_sql->rowCount().']</a>';
+					source_link('relation',$marriage,'fam_relation_source');
 				}
 			echo '</td></tr>';
 
@@ -2665,14 +2665,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</td><td>';
 				// *** Source by fam_marr_notice ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					// *** Calculate and show nr. of sources ***
-					$connect_qry="SELECT *
-						FROM humo_connections
-						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_notice_source'
-						AND connect_connect_id='".$marriage."'";
-					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_marr_notice_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.$connect_sql->rowCount().']</a>';
+					source_link('relation',$marriage,'fam_marr_notice_source');
 				}
 			echo '</td></tr>';
 
@@ -2694,14 +2687,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			// *** Source by fam_marr ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					// *** Calculate and show nr. of sources ***
-					$connect_qry="SELECT *
-						FROM humo_connections
-						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_source'
-						AND connect_connect_id='".$marriage."'";
-					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_marr_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.$connect_sql->rowCount().']</a>';
+					source_link('relation',$marriage,'fam_marr_source');
 				}
 
 			echo '</td></tr>';
@@ -2795,14 +2781,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '</td><td>';
 				// *** Source by fam_marr_church_notice ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					// *** Calculate and show nr. of sources ***
-					$connect_qry="SELECT *
-						FROM humo_connections
-						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_church_notice_source'
-						AND connect_connect_id='".$marriage."'";
-					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_marr_church_notice_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.$connect_sql->rowCount().']</a>';
+					source_link('relation',$marriage,'fam_marr_church_notice_source');
 				}
 			echo '</td></tr>';
 
@@ -2822,14 +2801,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</td><td>';
 			// *** Source by fam_marr_church ***
 			if (isset($marriage) AND !isset($_GET['add_marriage'])){
-				// *** Calculate and show nr. of sources ***
-				$connect_qry="SELECT *
-					FROM humo_connections
-					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_church_source'
-					AND connect_connect_id='".$marriage."'";
-				$connect_sql=$dbh->query($connect_qry);
-				echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_marr_church_source', '','width=800,height=500')\">".__('source');
-				echo ' ['.$connect_sql->rowCount().']</a>';
+				source_link('relation',$marriage,'fam_marr_church_source');
 			}
 
 			echo '</td></tr>';
@@ -2857,15 +2829,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo '</td><td>';
 				// *** Source by fam_div ***
-					if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					// *** Calculate and show nr. of sources ***
-					$connect_qry="SELECT *
-						FROM humo_connections
-						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_div_source'
-						AND connect_connect_id='".$marriage."'";
-					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_div_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.$connect_sql->rowCount().']</a>';
+				if (isset($marriage) AND !isset($_GET['add_marriage'])){
+					source_link('relation',$marriage,'fam_div_source');
 				}
 			echo '</td></tr>';
 
@@ -2899,14 +2864,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '</td><td>';
 				// *** Source by text ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					// *** Calculate and show nr. of sources ***
-					$connect_qry="SELECT *
-						FROM humo_connections
-						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_text_source'
-						AND connect_connect_id='".$marriage."'";
-					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_text_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.$connect_sql->rowCount().']</a>';
+					source_link('relation',$marriage,'fam_text_source');
 				}
 			echo '</td></tr>';
 
@@ -2914,14 +2872,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			if (isset($marriage) AND !isset($_GET['add_marriage'])){
 				echo '<tr><td>'.__('Source by marriage').'</td><td colspan="2">';
 				echo '</td><td>';
-					// *** Calculate and show nr. of sources ***
-					$connect_qry="SELECT *
-						FROM humo_connections
-						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='family_source'
-						AND connect_connect_id='".$marriage."'";
-					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=family_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.$connect_sql->rowCount().']</a>';
+					source_link('relation',$marriage,'family_source');
 				echo '</td></tr>';
 			}
 
@@ -2967,7 +2918,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 
 		//if ($menu_tab=='children' and $person->pers_fams){
-		if ($person->pers_fams){
+		//if ($person->pers_fams){
+		if ($marriage){
 
 			// *** Automatic order of children ***
 			if (isset($_GET['order_children'])) {
@@ -3463,12 +3415,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			}
 		}
 	}
+} // End person check
 
 
 	// ********************
 	// *** Show sources ***
 	// ********************
-
 	if ($menu_admin=='sources'){
 
 // ALSO MOVE THIS CODE TO EDITOR_INC.PHP???
@@ -3540,9 +3492,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			//$source_qry=$dbh->query("SELECT * FROM humo_sources
 			//	WHERE source_tree_id='".$tree_id."' AND source_shared='1' ORDER BY source_title");
+			//$source_qry=$dbh->query("SELECT * FROM humo_sources
+			//	WHERE source_tree_id='".$tree_id."' ORDER BY source_title");
 			$source_qry=$dbh->query("SELECT * FROM humo_sources
-				WHERE source_tree_id='".$tree_id."' ORDER BY source_title");
-			echo __('Select source').': ';
+				WHERE source_tree_id='".$tree_id."' ORDER BY IF (source_title!='',source_title,source_text)");
+		echo __('Select source').': ';
 			echo '<select size="1" name="source_id" style="width: 300px" onChange="this.form.submit();">';
 			echo '<option value="">'.__('Select source').'</option>'; // *** For new source in new database... ***
 			while ($sourceDb=$source_qry->fetch(PDO::FETCH_OBJ)){
@@ -3638,7 +3592,6 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '</select> '.__('restricted = only visible for selected user groups');
 			echo '</td></tr>';
 
-			// *** "Required" because it's better to have a title in a shared sourve ***
 			echo '<tr><td>'.__('Title').'</td><td colspan="3"><input type="text" name="source_title" value="'.htmlspecialchars($source_title).'" size="60"></td></tr>';
 
 			echo '<tr><td>'.__('Subject').'</td><td colspan="3"><input type="text" name="source_subj" value="'.htmlspecialchars($source_subj).'" size="60"></td></tr>';
@@ -3667,7 +3620,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<tr><td>'.__('Kind').'</td><td colspan="3"><input type="text" name="source_kind" value="'.$source_kind.'" size="60"></td></tr>';
 			echo '<tr><td>'.__('Archive').'</td><td colspan="3"><input type="text" name="source_repo_caln" value="'.$source_repo_caln.'" size="60"></td></tr>';
 			echo '<tr><td>'.__('Page').'</td><td colspan="3"><input type="text" name="source_repo_page" value="'.$source_repo_page.'" size="60"></td></tr>';
-			echo '<tr><td>'.__('text').'</td><td colspan="3"><textarea rows="6" cols="80" name="source_text" '.$field_text_large.' required>'.$editor_cls->text_show($source_text).'</textarea></td></tr>';
+			echo '<tr><td>'.__('text').'</td><td colspan="3"><textarea rows="6" cols="80" name="source_text" '.$field_text_large.'>'.$editor_cls->text_show($source_text).'</textarea></td></tr>';
 
 			// *** Picture by source ***
 			if (!isset($_POST['add_source']))
@@ -4340,7 +4293,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		//echo '<br><br><br>'; // in some browser settings the bottom line (with the event choice!) is hidden under bottom bar
 	}
 
-}
+//} was person check
 
 
 // *****************
@@ -4366,6 +4319,28 @@ function event_option($event_gedcom,$event){
 	global $language;
 	$selected=''; if ($event_gedcom==$event){ $selected=' SELECTED'; }
 	return '<option value="'.$event.'"'.$selected.'>'.language_event($event).'</option>';
+}
+
+// *** Show link to sources ***
+function source_link($item,$connect_connect_id, $connect_sub_kind){
+	global $tree_id, $dbh;
+
+	$connect_qry="SELECT connect_connect_id, connect_source_id FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."'
+		AND connect_sub_kind='".$connect_sub_kind."' AND connect_connect_id='".$connect_connect_id."'";
+	$connect_sql=$dbh->query($connect_qry);
+	$source_count=$connect_sql->rowCount();
+	$source_error=false;
+	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+		if (!$connectDb->connect_source_id) $source_error=true;
+	}
+
+	echo '&nbsp;';
+	if ($source_error) echo '<span style="background-color:#FFAA80">';
+		$relation='';if ($item=='relation') $relation='mariage';
+		echo "<a href=\"#'.$relation.'\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=".$connect_sub_kind."', '','width=800,height=500')\">".__('source');
+		echo ' ['.$source_count.']</a>';
+	if ($source_error) echo '</span>';
 }
 
 function witness_edit($witness, $multiple_rows=''){

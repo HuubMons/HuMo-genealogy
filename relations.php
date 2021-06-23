@@ -1347,8 +1347,10 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 		$gendiff = abs($generX - $generY);
 
 		if ($gendiff == 0) {
-			if($sexe=="m") { $cousin=__('COUSIN_MALE'); $span_postfix="o "; $sibling=__('1st [COUSIN]'); }
-			else { $cousin=__('COUSIN_FEMALE'); $span_postfix="a "; $sibling='hermana';}
+			//if($sexe=="m") { $cousin=__('COUSIN_MALE'); $span_postfix="o "; $sibling=__('1st [COUSIN]'); }
+			//else { $cousin=__('COUSIN_FEMALE'); $span_postfix="a "; $sibling='hermana';}
+			if($sexe=="m") { $cousin=__('cousin.male'); $span_postfix="o "; $sibling=__('1st [COUSIN]'); }
+			else { $cousin=__('cousin.female'); $span_postfix="a "; $sibling='hermana';}
 			if($generX==2) { $reltext=$cousin." ".$sibling.__(' of ');}
 			elseif($generX > 2) { $degree=$generX-1; $reltext = $cousin." ".$degree.$span_postfix.__(' of '); }
 		}
@@ -1696,15 +1698,17 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 		elseif ($gendiff > 2 ) { $removenr = $gendiff.' '.__('times removed'); }
 
 		$degreediff = min($generX,$generY);
-		if($degreediff == 2) { $degree = __('1st [COUSIN]'); }  
-		if($degreediff == 3) { $degree = __('2nd [COUSIN]'); }  
-		if($degreediff == 4) { $degree = __('3rd [COUSIN]'); }  
+		if($degreediff == 2) { $degree = __('1st [COUSIN]'); }
+		if($degreediff == 3) { $degree = __('2nd [COUSIN]'); }
+		if($degreediff == 4) { $degree = __('3rd [COUSIN]'); }
 		
 		if($sexe=='m') {
-			$cousin=__('COUSIN_MALE');
+			//$cousin=__('COUSIN_MALE');
+			$cousin=__('cousin.male');
 		}
 		else {
-			$cousin=__('COUSIN_FEMALE');
+			//$cousin=__('COUSIN_FEMALE');
+			$cousin=__('cousin.female');
 		}
 
 		if($degreediff > 4)  {
@@ -3038,8 +3042,10 @@ if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["ca
 $person=''; if (isset($_POST["person"])){ $person=$_POST['person']; }
 $person2=''; if (isset($_POST["person2"])){ $person2=$_POST['person2']; }
 
-if (isset($_POST["search1"])){ $_SESSION["search1"]=1; }
-if (isset($_POST["search2"])){ $_SESSION["search2"]=1; }
+//if (isset($_POST["search1"])){ $_SESSION["search1"]=1; }
+//if (isset($_POST["search2"])){ $_SESSION["search2"]=1; }
+if (isset($_POST["search1"]) OR isset($_POST["search_id1"])){ $_SESSION["search1"]=1; }
+if (isset($_POST["search2"]) OR isset($_POST["search_id2"])){ $_SESSION["search2"]=1; }
 // *** Link from person pop-up menu ***
 if (isset($_GET['pers_id'])){
 	$_SESSION["search1"]=1;
@@ -3048,11 +3054,21 @@ if (isset($_GET['pers_id'])){
 }
 
 if(isset($_POST["switch"])) {
-	$temp=$_SESSION['rel_search_firstname']; $_SESSION['rel_search_firstname']=$_SESSION['rel_search_firstname2']; $_SESSION['rel_search_firstname2']=$temp;
-	$temp=$_SESSION['rel_search_lastname'];  $_SESSION['rel_search_lastname']=$_SESSION['rel_search_lastname2'];   $_SESSION['rel_search_lastname2']=$temp;
-	$temp=$_SESSION['rel_search_gednr'];  $_SESSION['rel_search_gednr']=$_SESSION['rel_search_gednr2'];   $_SESSION['rel_search_gednr2']=$temp;	
-	$temp=$person; $person=$person2; $person2=$temp;
-	$temp=$_SESSION["search1"]; $_SESSION["search1"]=$_SESSION["search2"]; $_SESSION["search2"]=$temp;
+	$temp=$_SESSION['rel_search_firstname'];
+		$_SESSION['rel_search_firstname']=$_SESSION['rel_search_firstname2'];
+		$_SESSION['rel_search_firstname2']=$temp;
+	$temp=$_SESSION['rel_search_lastname'];
+		$_SESSION['rel_search_lastname']=$_SESSION['rel_search_lastname2'];
+		$_SESSION['rel_search_lastname2']=$temp;
+	$temp=$_SESSION['rel_search_gednr'];
+		$_SESSION['rel_search_gednr']=$_SESSION['rel_search_gednr2'];
+		$_SESSION['rel_search_gednr2']=$temp;
+	$temp=$person;
+		$person=$person2;
+		$person2=$temp;
+	$temp=$_SESSION["search1"];
+		$_SESSION["search1"]=$_SESSION["search2"];
+		$_SESSION["search2"]=$temp;
 }
 
 // ===== BEGIN SEARCH BOX SYSTEM
@@ -3132,11 +3148,11 @@ Directions for use:<br>
 
 	$search_gednr='';
 	if (isset($_POST["search_gednr"]) AND !isset($_POST["switch"])){
-		$search_gednr=safe_text_db($_POST['search_gednr']);
+		$search_gednr=strtoupper(safe_text_db($_POST['search_gednr']));
 		$_SESSION['rel_search_gednr']=$search_gednr;
 	}
-	if (isset($_SESSION['rel_search_gednr'])){ $search_gednr=$_SESSION['rel_search_gednr']; }
 
+	if (isset($_SESSION['rel_search_gednr'])){ $search_gednr=$_SESSION['rel_search_gednr']; }
 	if (isset($_POST["search1"])){
 		$search_gednr='';
 	}
@@ -3158,29 +3174,35 @@ Directions for use:<br>
 	$len=230;  // length of name pulldown box
 	if(CMS_SPECIFIC == "Joomla") { $len = 180; } // for joomla keep it short....
 
+
+	// *** Limit results ***
+	$limit=500;
+
 	echo '<td>';
 	if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
-		$search_qry= "SELECT * FROM humo_persons ORDER BY pers_lastname, pers_firstname";
+		$search_qry= "SELECT * FROM humo_persons ORDER BY pers_lastname, pers_firstname LIMIT 0,".$limit;
 
 		if($search_lastname!='' OR $search_firstname!='') {
 			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
 				AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".$search_lastname."%'
 				AND pers_firstname LIKE '%".$search_firstname."%'
-				ORDER BY pers_lastname, pers_firstname";
+				ORDER BY pers_lastname, pers_firstname LIMIT 0,".$limit;
 		}
 		elseif($search_gednr!='') {
 			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-				AND (pers_gedcomnumber = '".$search_gednr."' OR pers_gedcomnumber = 'I".strtoupper($search_gednr)."')
-				ORDER BY pers_lastname, pers_firstname";
+				AND (pers_gedcomnumber = '".$search_gednr."' OR pers_gedcomnumber = 'I".$search_gednr."')";
 		}
 
 		// *** Link from person pop-up menu ***
-		if (isset($_SESSION["search_pers_id"]))
-			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_id='".$_SESSION["search_pers_id"]."'";
+		if (isset($_SESSION["search_pers_id"])){
+			$search_qry= "SELECT * FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."' AND pers_id='".$_SESSION["search_pers_id"]."'";
+		}
 
 		$search_result = $dbh->query($search_qry);
 		if ($search_result){
-			if($search_result->rowCount()>0) {
+			$number_results=$search_result->rowCount();
+			if($number_results>0) {
 				echo '<select class="fonts" size="1" name="person"  style="width:'.$len.'px">';
 					while($searchDb=$search_result->fetch(PDO::FETCH_OBJ)) {
 						$name=$pers_cls->person_name($searchDb);
@@ -3205,6 +3227,10 @@ Directions for use:<br>
 							if($search1_cls->privacy) { $birth = ''; }
 							echo ' value="'.$searchDb->pers_gedcomnumber.'">'.$name["index_name"].$birth.' ['.$searchDb->pers_gedcomnumber.']</option>';
 						}
+					}
+					// *** Simple test only, if number of results = limit then show message ***
+					if ($number_results==$limit){
+						echo '<option value="">'.__('Results are limited, use search to find more persons.').'</option>';
 					}
 					echo '</select>';
 				}
@@ -3243,11 +3269,11 @@ Directions for use:<br>
 
 	$search_gednr2='';
 	if (isset($_POST["search_gednr2"]) AND !isset($_POST["switch"])){
-		$search_gednr2=safe_text_db($_POST['search_gednr2']);
+		$search_gednr2=strtoupper(safe_text_db($_POST['search_gednr2']));
 		$_SESSION['rel_search_gednr2']=$search_gednr2;
 	}
-	if (isset($_SESSION['rel_search_gednr2'])){ $search_gednr2=$_SESSION['rel_search_gednr2']; }
 
+	if (isset($_SESSION['rel_search_gednr2'])){ $search_gednr2=$_SESSION['rel_search_gednr2']; }
 	if (isset($_POST["search2"])){
 		$search_gednr2='';
 	}
@@ -3268,18 +3294,24 @@ Directions for use:<br>
 
 	echo '<td>';
 	if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
-		$search_qry= "SELECT * FROM humo_persons ORDER BY pers_lastname, pers_firstname";
+
+		$search_qry= "SELECT * FROM humo_persons ORDER BY pers_lastname, pers_firstname LIMIT 0,".$limit;
 
 		if($search_lastname2!='' OR $search_firstname2!='') {
-			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
-				LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ORDER BY pers_lastname, pers_firstname";
+			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".$search_lastname2."%'
+				AND pers_firstname LIKE '%".$search_firstname2."%'
+				ORDER BY pers_lastname, pers_firstname LIMIT 0,".$limit;
 		}
 		elseif($search_gednr2!='') {
-			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND (pers_gedcomnumber = '".$search_gednr2."' OR pers_gedcomnumber = 'I".strtoupper($search_gednr2)."') ORDER BY pers_lastname, pers_firstname";
+			$search_qry= "SELECT * FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."'
+				AND (pers_gedcomnumber = '".$search_gednr2."' OR pers_gedcomnumber = 'I".$search_gednr2."')";
 		}
 		$search_result2 = $dbh->query($search_qry);
 		if ($search_result2){
-			if($search_result2->rowCount()>0) {
+			$number_results=$search_result2->rowCount();
+			if($number_results>0) {
 				echo '<select class="fonts" size="1" name="person2" style="width:'.$len.'px">';
 				while($searchDb2=$search_result2->fetch(PDO::FETCH_OBJ)) {
 					$name=$pers_cls->person_name($searchDb2);
@@ -3302,6 +3334,10 @@ Directions for use:<br>
 						if($search2_cls->privacy){ $birth = ''; }
 						echo ' value="'.$searchDb2->pers_gedcomnumber.'">'.$name["index_name"].$birth.' ['.$searchDb2->pers_gedcomnumber.']</option>';
 					}
+				}
+				// *** Simple test only, if number of results = limit then show message ***
+				if ($number_results==$limit){
+					echo '<option value="">'.__('Results are limited, use search to find more persons.').'</option>';
 				}
 				echo '</select>';
 			}

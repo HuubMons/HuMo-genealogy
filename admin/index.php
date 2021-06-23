@@ -11,7 +11,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2020 Huub Mons,
+* Copyright (C) 2008-2021 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -55,17 +55,18 @@ $page='index';
 global $menu_admin, $tree_id, $language_file, $page, $language_tree, $data2Db;
 global $treetext_name, $treetext_mainmenu_text, $treetext_mainmenu_source, $treetext_family_top, $treetext_family_footer, $treetext_id;
 
+// DISABLED because the SECURED PAGE message was shown regularly.
 // *** Prevent Session hijacking ***
-if (isset( $_SESSION['current_ip_address']) AND $_SESSION['current_ip_address'] != $_SERVER['REMOTE_ADDR']){
-	// *** Remove login session if IP address is changed ***
-	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
-		// *** Test ***
-		//echo '<br>'.$_SESSION['current_ip_address'].'<br>';
-		//echo $_SERVER['REMOTE_ADDR'];
-	session_unset();
-	session_destroy();
-	die();
-}
+//if (isset( $_SESSION['current_ip_address']) AND $_SESSION['current_ip_address'] != $_SERVER['REMOTE_ADDR']){
+//	// *** Remove login session if IP address is changed ***
+//	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
+//		// *** Test ***
+//		//echo '<br>'.$_SESSION['current_ip_address'].'<br>';
+//		//echo $_SERVER['REMOTE_ADDR'];
+//	session_unset();
+//	session_destroy();
+//	die();
+//}
 
 // *** Only logoff admin ***
 if (isset($_GET['log_off'])){
@@ -147,8 +148,12 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 		if ($humo_option["update_status"]<13){ $page='update'; $show_menu_left=false; }
 	}
 
-	if (isset($_GET['page']) AND ($_GET['page']=='editor_sources' OR $_GET['page']=='editor_place_select'
-		OR $_GET['page']=='editor_person_select' OR $_GET['page']=='editor_relation_select' OR $_GET['page']=='editor_user_settings')){
+	if (isset($_GET['page'])
+		AND ($_GET['page']=='editor_sources'
+			OR $_GET['page']=='editor_place_select'
+			OR $_GET['page']=='editor_person_select'
+			OR $_GET['page']=='editor_relation_select'
+			OR $_GET['page']=='editor_user_settings')){
 		$show_menu_left=false;
 		$popup=true;
 	}
@@ -182,6 +187,7 @@ while (false!==($file = readdir($map))) {
 			elseif ($file=='hu') $language_order[]='Magyar';
 			elseif ($file=='id') $language_order[]='Indonesian';
 			elseif ($file=='it') $language_order[]='Italiano';
+			elseif ($file=='es_mx') $language_order[]='Mexicano';
 			elseif ($file=='nl') $language_order[]='Nederlands';
 			elseif ($file=='no') $language_order[]='Norsk';
 			elseif ($file=='pt') $language_order[]='Portuguese';
@@ -405,8 +411,8 @@ if (!CMS_SPECIFIC){
 
 	echo '<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script> ';
 	echo '<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery.sortable.min.js"></script>';
-	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/slimbox2.js"></script>';
-	echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/lightbox/css/slimbox2.css" type="text/css" media="screen">';
+	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/slimbox2.js"></script>';
+	//echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/lightbox/css/slimbox2.css" type="text/css" media="screen">';
 
 	echo '<script type="text/javascript" src="include/popup_merge.js"></script>';
 
@@ -428,11 +434,22 @@ if (!CMS_SPECIFIC){
 				if ($_GET['connect_sub_kind']=='address_source') $page_link='edit_addresses';
 				//if ($_GET['connect_sub_kind']=='pers_address_source') $page_link='edit_addresses';
 				//if ($_GET['connect_sub_kind']=='fam_address_source') $page_link='edit_addresses';
-				if ($_GET['connect_sub_kind']=='pers_event_source') $page_link='editor&event_person=1';
-				if ($_GET['connect_sub_kind']=='fam_event_source') $page_link='editor&event_family=1';
+				if ($_GET['connect_sub_kind']=='pers_event_source') $page_link='editor&event_person=1'; // Don't use &amp;
+				if ($_GET['connect_sub_kind']=='fam_event_source') $page_link='editor&event_family=1'; // Don't use &amp;
 			}
-			if (isset($_GET['event_person']) AND $_GET['event_person']=='1') $page_link='editor&event_person=1#event_person_link';
-			if (isset($_GET['event_family']) AND $_GET['event_family']=='1') $page_link='editor&event_family=1#event_family_link';
+
+			// *** Added May 2021: For multiple marriages ***
+			if (substr($_GET['connect_sub_kind'],0,3)=='fam')
+				$page_link.='&marriage_nr='.$_SESSION['admin_fam_gedcomnumber']; // Don't use &amp;
+
+			if (isset($_GET['event_person']) AND $_GET['event_person']=='1')
+				$page_link='editor&event_person=1#event_person_link'; // Don't use &amp;
+			//if (isset($_GET['event_family']) AND $_GET['event_family']=='1')
+			//	$page_link='editor&event_family=1#event_family_link'; // Don't use &amp;
+			// *** Added May 2021: For multiple marriages ***
+			if (isset($_GET['event_family']) AND $_GET['event_family']=='1')
+				$page_link='editor&event_family=1&marriage_nr='.$_SESSION['admin_fam_gedcomnumber'].'#event_family_link'; // Don't use &amp;
+
 
 			echo 'function redirect_to(where, closewin){
 				opener.location= \'index.php?page='.$page_link.'\' + where;
@@ -539,32 +556,88 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 				$link_versie=str_replace(' ', '_', $humo_option["version"]);
 
 				// *** Use update file directly from humo-genealogy website ***
-				$update_file='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+				$update_file='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 
 				// *** Copy update data from humo-genealogy website to local website ***
 				if(function_exists('curl_exec')){
-					$source='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
-					$update_file='update/temp_update_check.php';
+					// *** Used for automatic update procedure ***
+					$update['up_to_date']='no';
+
+					// *** HuMo-genealogy version ***
+					$update['version']='';
+					$update['version_date']='';
+					$update['version_auto_download']='';
+
+					// *** HuMo-genealogy beta version ***
+					$update['beta_version']='';
+					$update['beta_version_date']='';
+					$update['beta_version_auto_download']='';
+
+					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+					//$update_file='update/temp_update_check.php';
 					$resource = curl_init();
 					curl_setopt($resource, CURLOPT_URL, $source);
 					curl_setopt($resource, CURLOPT_HEADER, false);
 					curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
 					//curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 20);
-					// *** BE AWARE: for hostinger provider Hostinger this must be a low value, otherwise the $dbh connection will be disconnected! ***
+					// *** BE AWARE: for provider Hostinger this must be a low value, otherwise the $dbh connection will be disconnected! ***
 					curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 15);
 					$content = curl_exec($resource);
 					curl_close($resource);
-					if($content != ''){
-						$fp = @fopen($update_file, 'w');
-						$fw = @fwrite($fp, $content);
-						@fclose($fp);
-					}
+
+					$content_array=explode(PHP_EOL,$content); // *** Split array into seperate lines ***
+
+					//if($content != ''){
+					//	$fp = @fopen($update_file, 'w');
+					//	$fw = @fwrite($fp, $content);
+					//	@fclose($fp);
+					//}
 				}
+
+				// *** If provider or curl blocks https link: DISABLE SSL and recheck ***
+				if (!isset($content_array)){
+					// *** Used for automatic update procedure ***
+					$update['up_to_date']='no';
+
+					// *** HuMo-genealogy version ***
+					$update['version']='';
+					$update['version_date']='';
+					$update['version_auto_download']='';
+
+					// *** HuMo-genealogy beta version ***
+					$update['beta_version']='';
+					$update['beta_version_date']='';
+					$update['beta_version_auto_download']='';
+
+					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+					//$update_file='update/temp_update_check.php';
+					$resource = curl_init();
+					curl_setopt($resource, CURLOPT_URL, $source);
+					curl_setopt($resource, CURLOPT_HEADER, false);
+					curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
+					//curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 20);
+					// *** BE AWARE: for provider Hostinger this must be a low value, otherwise the $dbh connection will be disconnected! ***
+					curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 15);
+
+					// *********************************************************************
+					// *** EXTRA SETTINGS TO DISABLE SSL CHECK NEEDED FOR SOME PROVIDERS ***
+					//Disable CURLOPT_SSL_VERIFYHOST and CURLOPT_SSL_VERIFYPEER by
+					//setting them to false.
+					curl_setopt($resource, CURLOPT_SSL_VERIFYHOST, false);
+					curl_setopt($resource, CURLOPT_SSL_VERIFYPEER, false);
+					// *********************************************************************
+
+					$content = curl_exec($resource);
+					curl_close($resource);
+
+					$content_array=explode(PHP_EOL,$content); // *** Split array into seperate lines ***
+				}
+
 
 				// *** Copy HuMo-genealogy to server using file_get_contents ***
 				/*
 				if (!file_exists('update/temp_update_check.php')){
-					$source='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 					$update_file='update/temp_update_check.php';
 
 					$content = @file_get_contents($source);
@@ -594,13 +667,15 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 				// *** Copy HuMo-genealogy to server using copy ***
 				// DISABLED BECAUSE MOST PROVIDERS BLOCK THIS COPY FUNCTION FOR OTHER WEBSITES...
 				//if (!file_exists('update/temp_update_check.php')){
-				//	$source='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+				//	$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 				//	$update_file='update/temp_update_check.php';
 				//	@copy($source, $update_file);
 				//}
 
+
 				//if ($f = @fopen($update_file, 'r')){
-				if (is_file($update_file) AND $f = @fopen($update_file, 'r')){
+				//if (is_file($update_file) AND $f = @fopen($update_file, 'r')){
+				if (isset($content_array) AND $content_array){
 					// *** Used for automatic update procedure ***
 					$update['up_to_date']='no';
 
@@ -614,9 +689,10 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					$update['beta_version_date']='';
 					$update['beta_version_auto_download']='';
 
-					while(!feof($f)) { 
-						$update_data = fgets( $f, 4096 );
-						$update_array=explode("=",$update_data);
+					//while(!feof($f)) { 
+					foreach ($content_array as $content_line) {
+						//$update_data = fgets( $f, 4096 );
+						$update_array=explode("=",$content_line);
 
 						// *** HuMo-genealogy version ***
 						if ($update_array[0]=='version'){ $update['version']=trim($update_array[1]); }
@@ -630,7 +706,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 						if ($update_array[0]=='beta_version_download'){ $update['beta_version_download']=trim($update_array[1]); }
 						if ($update_array[0]=='beta_version_auto_download'){ $update['beta_version_auto_download']=trim($update_array[1]); }
 					}
-					fclose($f);
+					//fclose($f);
 
 					// *** 1) Standard text: HuMo-genealogy up-to-date ***
 					$update['up_to_date']='yes';
@@ -653,7 +729,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					$result = $db_functions->update_settings('update_last_check',$update_last_check);
 
 					// *** Remove temporary file, used for curl method ***
-					if (file_exists('update/temp_update_check.php')) unlink ('update/temp_update_check.php');
+					//if (file_exists('update/temp_update_check.php')) unlink ('update/temp_update_check.php');
 				}
 				else{
 					$update_text= '  '.__('Online version check unavailable.');
@@ -723,7 +799,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 			} catch (Exception $e) {
 				//
 			}
-			if (isset($get_treeDb)){
+			if (isset($get_treeDb) AND $get_treeDb){
 				$tree_id=$get_treeDb->tree_id;
 				$_SESSION['admin_tree_id']=$tree_id;
 				$tree_prefix=$get_treeDb->tree_prefix;
@@ -821,10 +897,14 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 				if (isset($_GET['connect_sub_kind']) AND $_GET['connect_sub_kind']=='address_source')
 					echo '&connect_sub_kind=address_source';
 
+				// *** Added may 2021 ***
+				if (isset($_GET['connect_sub_kind']))
+					echo '&connect_sub_kind='.$_GET['connect_sub_kind'];
+
 				// *** Return link to person events ***
-				if (isset($_GET['event_person']) AND $_GET['event_person']=='1') echo '&event_person=1';
+				if (isset($_GET['event_person']) AND $_GET['event_person']=='1') echo '&amp;event_person=1';
 				// *** Return link to family events ***
-				if (isset($_GET['event_family']) AND $_GET['event_family']=='1') echo '&event_family=1';
+				if (isset($_GET['event_family']) AND $_GET['event_family']=='1') echo '&amp;event_family=1';
 
 				echo '">'.__('Close source editor').'</a>';
 			echo '</div>';

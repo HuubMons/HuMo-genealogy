@@ -272,6 +272,7 @@ function person_name($personDb){
 
 		// *** Privacy filter: show only first character of firstname. Like: D. Duck ***
 		$pers_firstname=$personDb->pers_firstname;
+
 		if ($pers_firstname!='N.N.' AND $privacy AND $user['group_filter_name']=='i'){
 			$names = explode(' ', $personDb->pers_firstname);
 			$pers_firstname = "";
@@ -285,7 +286,8 @@ function person_name($personDb){
 			$rufname_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'name');
 			foreach ($rufname_qry as $rufnameDb){
 				if($rufnameDb->event_gedcom == "_RUFN") {
-					$pers_firstname = str_ireplace($rufnameDb->event_event,'<u>'.$rufnameDb->event_event.'</u>',$pers_firstname);
+					//$pers_firstname = str_ireplace($rufnameDb->event_event,'<u>'.$rufnameDb->event_event.'</u>',$pers_firstname);
+					$pers_firstname .= ' &quot;'.$rufnameDb->event_event.'&quot;';
 				}
 			}
 		}
@@ -791,8 +793,9 @@ function name_extended($person_kind){
 	global $selected_language, $family_expanded, $bot_visit;
 	global $sect; // *** RTF Export ***
 	global $templ_name;
+	global $pdf;
 
-	$text_name=''; $text_name2=''; $text_colour=''; $text_parents=''; $child_marriage='';
+	$start_name='';$text_name=''; $text_name2=''; $text_colour=''; $text_parents=''; $child_marriage='';
 
 	$personDb=$this->personDb;
 	$privacy=$this->privacy;
@@ -805,31 +808,49 @@ function name_extended($person_kind){
 		$db_functions->set_tree_id($personDb->pers_tree_id);
 
 		// *** Show pop-up menu ***
-		$text_name.= $this->person_popup_menu($personDb);
+		//$text_name.= $this->person_popup_menu($personDb);
+		$start_name.= $this->person_popup_menu($personDb);
 
 		// *** Check privacy filter ***
 		if ($privacy AND $user['group_filter_name']=='n'){
 			//dummy
 		}
 		else{
-
 			// *** Show man or woman picture ***
-			if($screen_mode=="RTF") {  //  rtf does this in family.php
-				//
+			// *** Ancestor reports uses cells, not sections. Ancestor M/F/? icons are generated in ancestor script ***
+			if($screen_mode=="RTF" AND !isset($_POST['ancestor_report'])) {
+				// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
+				if ($personDb->pers_sexe=="M")
+					$sect->addImage('images/man.jpg', null);
+				elseif ($personDb->pers_sexe=="F")
+					$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
+				else
+					$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
+// SOURCE IS MISSING
 			}
-			else{
-				$text_name.= $dirmark1;
-				if ($personDb->pers_sexe=="M"){
-					$templ_name["name_sexe"]=$personDb->pers_sexe;
-					$text_name.='<img src="'.CMS_ROOTPATH.'images/man.gif" alt="man">';
-				}
-				elseif ($personDb->pers_sexe=="F"){
-					$templ_name["name_sexe"]=$personDb->pers_sexe;
-					$text_name.='<img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman">';
+
+			/*
+			// *** New in this script may 2021 (from fpdfextend.php) ***
+			elseif($screen_mode=="PDF" AND !isset($_POST['ancestor_report'])) {
+			//elseif($screen_mode=="PDF") {
+				$indentation=$pdf->GetX()+5;
+				if (isset($_POST['ancestor_report'])) $indentation=$pdf->GetX();
+
+				if($personDb->pers_sexe=="M") $pic="images/man.gif";
+					elseif ($personDb->pers_sexe=='F') $pic="images/woman.gif";
+					else $pic="images/unknown.gif";
+
+				if ($person_kind!='child'){
+					$pdf->Image($pic,$indentation-4,$pdf->GetY()+2,3.5,3.5);
 				}
 				else{
-					$templ_name["name_sexe"]='?';
-					$text_name.='<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
+					$pdf->Image($pic,$indentation-4,$pdf->GetY()+1,3.5,3.5);
+					$pdf->SetX($pdf->GetX()+5);
+				}
+
+				$pdf->SetX($indentation);
+				if($person_kind=="parent1" OR $person_kind=="parent2") {
+					$indent=$pdf->GetX();
 				}
 
 				// *** Source by sexe ***
@@ -837,21 +858,57 @@ function name_extended($person_kind){
 				if ($person_kind != 'outline') $source=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber);
 				if ($source){
 					$templ_name["name_sexe_source"]=$source;
-					$text_name.=$source.' ';
+
+					// *** Show source ***
+					//$pdf->PDFShowSources($source);
+					//$pdf->Write(6,' ');
+				}
+			}
+			*/
+
+			else{
+				$text_name.= $dirmark1;
+				if ($personDb->pers_sexe=="M"){
+					$templ_name["name_sexe"]=$personDb->pers_sexe;
+					//$text_name.='<img src="'.CMS_ROOTPATH.'images/man.gif" alt="man">';
+					$start_name.='<img src="'.CMS_ROOTPATH.'images/man.gif" alt="man">';
+				}
+				elseif ($personDb->pers_sexe=="F"){
+					$templ_name["name_sexe"]=$personDb->pers_sexe;
+					//$text_name.='<img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman">';
+					$start_name.='<img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman">';
+				}
+				else{
+					$templ_name["name_sexe"]='?';
+					//$text_name.='<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
+					$start_name.='<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
 				}
 
+				// *** Source by sexe ***
+				$source='';
+				if ($person_kind != 'outline') $source=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber);
+				if ($source){
+					//$text_name.=$source.' ';
+					$start_name.=$source.' ';
+					//NEW may 2021:
+					$templ_name["name_sexe_source"]=$source;
+				}
 
+				// *** PDF does this elsewhere ***
 				if($screen_mode!="PDF") {  //  pdf does this elsewhere
 					if($humo_option['david_stars'] == "y") {
 						$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
 						if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
 							preg_match("/($camps)/i",$personDb->pers_buried_place)!==0 OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE) {
-							$text_name .= '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
+							//$text_name .= '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
+							$start_name .= '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
 						}
 					}
 					// *** Add own icon by person, using a file name in own code ***
-					if($personDb->pers_own_code !='' AND is_file("images/".$personDb->pers_own_code.".gif"))
-						$text_name .= '<img src="'.CMS_ROOTPATH.'images/'.$personDb->pers_own_code.'.gif" alt="'.$personDb->pers_own_code.'">&nbsp;';
+					if($personDb->pers_own_code !='' AND is_file("images/".$personDb->pers_own_code.".gif")){
+						//$text_name .= '<img src="'.CMS_ROOTPATH.'images/'.$personDb->pers_own_code.'.gif" alt="'.$personDb->pers_own_code.'">&nbsp;';
+						$start_name .= '<img src="'.CMS_ROOTPATH.'images/'.$personDb->pers_own_code.'.gif" alt="'.$personDb->pers_own_code.'">&nbsp;';
+					}
 				}
 			}
 
@@ -860,12 +917,8 @@ function name_extended($person_kind){
 		$name=$this->person_name($personDb);
 		$standard_name= $name["standard_name"].$dirmark2;
 
-		// *** Show full gedcomnummer as [I5] (because of Heredis GEDCOM file) ***
+		// *** Show full gedcomnummer as [I5] (because of Heredis GEDCOM file, that shows: 5I) ***
 		if ($user['group_gedcomnr']=='j'){
-			//$show_gedcomnumber=$personDb->pers_gedcomnumber;
-			//if (substr($show_gedcomnumber, 0, 1)=='I')
-			//	$show_gedcomnumber=substr($show_gedcomnumber, 1);
-			//$standard_name.= $dirmark1." #".$show_gedcomnumber;
 			$standard_name.= $dirmark1.' ['.$personDb->pers_gedcomnumber.']';
 		}
 
@@ -881,7 +934,6 @@ function name_extended($person_kind){
 		// *** No links if gen_protection is enabled ***
 		if ($user["group_gen_protection"]=='j'){ $person_kind=''; }
 
-
 		if (($person_kind=='child' OR $person_kind=='outline') AND $personDb->pers_fams){
 			$templ_name["name_name"]=$standard_name;
 
@@ -894,8 +946,10 @@ function name_extended($person_kind){
 		}
 		else{
 			$templ_name["name_name"]=$standard_name;
+
 			$text_name.=$standard_name; // *** Show name without link **
 		}
+
 
 		// *** Check privacy filter ***
 		$text_name2='';
@@ -916,14 +970,13 @@ function name_extended($person_kind){
 			$source='';
 			if ($person_kind != 'outline') $source=show_sources2("person","pers_name_source",$personDb->pers_gedcomnumber);
 			if ($source){
-				//if($screen_mode=='PDF') {
+				if($screen_mode=='PDF') {
 					$templ_name["name_name_source"]=$source;
-				//}
-				//else
-					$text_name2.=$source;
+				}
+				$text_name2.=$source;
 			}
-
 		}
+
 
 		// *** Add colour marks to person ***
 		$text_colour=$name["colour_mark"];
@@ -953,7 +1006,7 @@ function name_extended($person_kind){
 			if ($parents_familyDb->fam_man){
 				$fatherDb=$db_functions->get_person($parents_familyDb->fam_man);
 				$name=$this->person_name($fatherDb);
-//				$templ_name["parents"]=$name["standard_name"];
+				//$templ_name["parents"]=$name["standard_name"];
 				$templ_name["name_parents"].=$name["standard_name"];
 
 				// *** Seperate father/mother links ***
@@ -965,14 +1018,14 @@ function name_extended($person_kind){
 
 			}
 			else{
-//				$templ_name["parents"]=__('N.N.');
+				//$templ_name["parents"]=__('N.N.');
 				// *** Seperate father/mother links ***
 				$templ_name["name_parents"].=__('N.N.');
 				$text=__('N.N.');
 			}
 
-//			$templ_name["parents"].=' '.__('and').' ';
-//			$temp="parents";
+			//$templ_name["parents"].=' '.__('and').' ';
+			//$temp="parents";
 			//$text=$templ_name["parents"];
 			// *** Seperate father/mother links ***
 			$templ_name["name_parents"].=' '.__('and').' ';
@@ -982,8 +1035,8 @@ function name_extended($person_kind){
 			if ($parents_familyDb->fam_woman){
 				$motherDb=$db_functions->get_person($parents_familyDb->fam_woman);
 				$name=$this->person_name($motherDb);
-//				$templ_name["parents"].=$name["standard_name"];
-//				$text.=$name["standard_name"];
+				//$templ_name["parents"].=$name["standard_name"];
+				//$text.=$name["standard_name"];
 				$templ_name["name_parents"].=$name["standard_name"];
 
 				// *** Seperate father/mother links ***
@@ -1034,13 +1087,13 @@ function name_extended($person_kind){
 					$templ_name["name_parents"].=$name["standard_name"];
 					$text=$name["standard_name"];
 					//$templ_name["parents"]=$name["standard_name"];
-					//$temp="parents";
+					$temp="parents";
 				}
 				else{
 					$templ_name["name_parents"].=__('N.N.');
 					$text=__('N.N.');
 					//$templ_name["parents"]=__('N.N.');
-					//$temp="parents";
+					$temp="parents";
 				}
 
 				$templ_name["name_parents"].=' '.__('and').' ';
@@ -1132,6 +1185,7 @@ function name_extended($person_kind){
 			}
 		}
 
+
 		//*** Show spouse/ partner by child ***
 		if (!$bot_visit AND $person_kind=='child' AND $personDb->pers_fams){
 			$marriage_array=explode(";",$personDb->pers_fams);
@@ -1218,7 +1272,7 @@ function name_extended($person_kind){
 	if ($screen_mode=='RTF')
 		return '<b>'.$text_name.$dirmark1.'</b>'.$text_name2.$text_colour.$text_parents.$child_marriage;
 	else
-		return '<span class="pers_name">'.$text_name.$dirmark1.'</span>'.$text_name2.$text_colour.$text_parents.$child_marriage;
+		return $start_name.'<span class="pers_name">'.$text_name.$dirmark1.'</span>'.$text_name2.$text_colour.$text_parents.$child_marriage;
 
 	/*
 	if ($screen_mode=='RTF')
@@ -1234,6 +1288,41 @@ function name_extended($person_kind){
 }
 
 
+
+/*
+//TEST
+//$process_text.=$this->html_display($templ_person);
+
+
+//TEST to show HTML:
+function html_display($templ_person){
+	global $pdf;
+	$text='';
+	if (isset($templ_person)){
+		foreach ($templ_person as $key => $value) {
+			$own_code=0;
+
+			if(strpos($key,"own_code_start")!==false) continue;
+			if(!$own_code AND strpos($key,"own_code")!==false) {
+				$text='<b>'.$templ_person["own_code_start"].'</b>';
+				$own_code=1;
+			}
+
+// for now, only process own_code
+if(strpos($key,"own_code")!==false) {
+			if(strpos($key,"text")!==false) {  $text.='<b>'; }
+			$text.=$key;
+			if(strpos($key,"text")!==false) {  $text.='</b>'; }
+}
+
+		}
+	}
+	return $text;
+}
+*/
+
+
+
 // ***************************************************************************************
 // *** Show person                                                                     ***
 // *** $personDb = data person                                                         ***
@@ -1247,8 +1336,7 @@ function person_data($person_kind, $id){
 	global $childnr, $screen_mode, $dirmark1, $dirmark2;
 	global $temp, $templ_person;
 	global $sect, $arial12; // *** RTF export ***
-
-//	unset($templ_person);
+	global $pdf;
 
 	$personDb=$this->personDb;
 	$privacy=$this->privacy;
@@ -1309,19 +1397,22 @@ function person_data($person_kind, $id){
 				if ($nameDb->event_gedcom=='_FRKA') $text.=__('Formerly known as').': ';
 				if ($nameDb->event_gedcom=='_RELN') $text.=__('Religious name').': ';
 				if ($nameDb->event_gedcom=='_OTHN') $text.=__('Other name').': ';
-				if ($nameDb->event_gedcom=='_RUFN') { } // don't do anything
-				$previous_event_gedcom=$nameDb->event_gedcom;
+				// *** _RUFN is shown by name ***
+				//if ($nameDb->event_gedcom=='_RUFN') { } // don't do anything
+				if ($nameDb->event_gedcom=='_RUFN'){
+					$eventnr--;
+					continue; // *** Skip __RUFN in events ***
+				}
 
-				if ($eventnr>1 AND $nameDb->event_gedcom !='_RUFN'){
-					$templ_person["bknames".$eventnr]=', ';
-					$process_text.=', ';
-					$text=lcfirst($text);
+				$previous_event_gedcom=$nameDb->event_gedcom;
+				if ($eventnr>1){
+					$templ_person["bknames".$eventnr]=', '.lcfirst($text);
+					$text=', '.lcfirst($text);
 				}
 				else{
-					$templ_person["bknames".$eventnr]='';
+					$templ_person["bknames".$eventnr]=ucfirst($text);
 					$text=ucfirst($text);
 				}
-				$templ_person["bknames".$eventnr].=$text;
 				if($templ_person["bknames".$eventnr]!='') $temp="bk_names".$eventnr;
 				$process_text.=$text;
 
@@ -1333,7 +1424,13 @@ function person_data($person_kind, $id){
 
 				$templ_person["bk_event".$eventnr]=$nameDb->event_event;
 				if($templ_person["bk_event".$eventnr]!='') $temp="bk_event".$eventnr;
-				if($nameDb->event_gedcom !='_RUFN') $process_text.=$nameDb->event_event;
+				$process_text.=$nameDb->event_event;
+
+				if ($nameDb->event_text) {
+					$templ_person["bk_text".$eventnr]=' '.$nameDb->event_text;
+					$temp="bk_text".$eventnr;
+					$process_text.=process_text($templ_person["bk_text".$eventnr]);
+				}
 
 				$source=show_sources2("person","pers_event_source",$nameDb->event_id);
 				if ($source){
@@ -1345,11 +1442,6 @@ function person_data($person_kind, $id){
 						$process_text.=$source;
 				}
 
-				if ($nameDb->event_text) {
-					$templ_person["bk_text".$eventnr]=' '.$nameDb->event_text;
-					$temp="bk_text".$eventnr;
-					$process_text.=$templ_person["bk_text".$eventnr];
-				}
 			}
 			unset ($name_qry);
 		}
@@ -1357,34 +1449,52 @@ function person_data($person_kind, $id){
 		// *** Own code ***
 		if ($user['group_own_code']=='j' AND $personDb->pers_own_code){
 			if($temp) { $templ_person[$temp].=", "; }
-			$templ_person["own_code"]=ucfirst($personDb->pers_own_code);
-			$temp="own_code";
+			//$templ_person["own_code"]=ucfirst($personDb->pers_own_code);
+			$templ_person["own_code"]=$personDb->pers_own_code;
 
-			if (!$process_text OR $family_expanded==true) $text='<b>'.__('Own code').':</b> ';
-				else $text=', <b>'.lcfirst(__('Own code')).':</b> ';
+			if (!$temp)
+				$templ_person["own_code_start"]=__('Own code').': ';
+			else
+				$templ_person["own_code_start"]=lcfirst(__('Own code')).': ';
 
+			if (!$process_text OR $family_expanded==true){
+				$text='<b>'.__('Own code').':</b> ';
+			}
+			else{
+				$text=', <b>'.lcfirst(__('Own code')).':</b> ';
+			}
 			if ($process_text AND $family_expanded==true){ $text='<br>'.$text; }
+//PDF expanded view
+			//$process_text.='<span class="pers_own_code">'.$text.$templ_person["own_code"].'</span>';
+			$process_text.='<span class="pers_own_code">'.$text.$personDb->pers_own_code.'</span>';
 
-			$process_text.='<span class="pers_own_code">'.$text.$templ_person["own_code"].'</span>';
+			$temp="own_code";
 		}
+
 
 		// ****************
 		// *** BIRTH    ***
 		// ****************
 		$text='';
+		$temp_previous=$temp;
 
 		if ($personDb->pers_birth_date OR $personDb->pers_birth_place){
 			$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$personDb->pers_birth_date_hebnight; }
 			$templ_person["born_dateplacetime"]=date_place($personDb->pers_birth_date,$personDb->pers_birth_place,$nightfall);
 			if($templ_person["born_dateplacetime"]!='') $temp="born_dateplacetime";
-			$text=$templ_person["born_dateplacetime"];
+			$text.=$templ_person["born_dateplacetime"];
 		}
 		// *** Birth time ***
 		if (isset($personDb->pers_birth_time) AND $personDb->pers_birth_time){
-			$templ_person["born_dateplacetime"]=' '.__('at').' '.$personDb->pers_birth_time.' '.__('hour');
+			if ($templ_person["born_dateplacetime"])
+				$templ_person["born_dateplacetime"].=' '.__('at').' '.$personDb->pers_birth_time.' '.__('hour');
+			else
+				$templ_person["born_dateplacetime"]=' '.__('at').' '.$personDb->pers_birth_time.' '.__('hour');
 			$temp="born_dateplacetime";
-			$text.=$templ_person["born_dateplacetime"];
+
+			$text.=' '.__('at').' '.$personDb->pers_birth_time.' '.__('hour');
 		}
+
  		if ($user["group_texts_pers"]=='j'){
 			$work_text=process_text($personDb->pers_birth_text);
 			if ($work_text){
@@ -1398,19 +1508,23 @@ function person_data($person_kind, $id){
 		// *** Birth source ***
 		$source=show_sources2("person","pers_birth_source",$personDb->pers_gedcomnumber);
 		if ($source){
-			if($screen_mode=='PDF') {
+			//if($screen_mode=='PDF') {
 				$templ_person["born_source"]=$source;
 				$temp="born_source";
-			}
+			//}
 			// *** Not necessary to do this in person_cls.php, this is processed in family.php.
 			//elseif($screen_mode=='RTF') {
 			//	$templ_person["born_source"]=$source;
 			//	$rtf_text=strip_tags($templ_person["born_source"],"<b><i>");
 			//	$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
 			//}
-			else{
+			//else{
 				$text.=$dirmark1.$source;
-			}
+			//}
+
+			// *** Extra item, so it's possible to add a comma or space ***
+			$templ_person["born_add"]='';
+			$temp="born_add";
 		}
 
 		// *** Birth declaration/ registration ***
@@ -1418,23 +1532,40 @@ function person_data($person_kind, $id){
 			$temp_text=witness($personDb->pers_gedcomnumber, 'birth_declaration');
 			if ($temp_text){
 				//if($temp) { $templ_person[$temp].=" ("; }
-				$templ_person["born_witn"]= ' ('.__('birth declaration').': '.$temp_text.')';
+				//$templ_person["born_witn"]= __('birth declaration').': '.$temp_text.')';
+				if($temp) { $templ_person[$temp].=' '; }
+				$templ_person["born_witn"]= '('.__('birth declaration').': '.$temp_text.')';
 				$temp="born_witn";
-				$text.= $templ_person["born_witn"];
+
+				$text.= ' '.$templ_person["born_witn"];
 			}
 		}
+
 		// *** Check for birth items, if needed use a new line ***
 		if ($text){
-			if (!$process_text OR $family_expanded==true) $text='<b>'.ucfirst(__('born')).'</b> '.$text;
-				else $text=', <b>'.__('born').'</b> '.$text;
+			if (!$temp_previous)
+				$templ_person["born_start"]=ucfirst(__('born')).' ';
+			else{
+				$templ_person["born_start"]=__('born').' ';
+				if($temp_previous) { $templ_person[$temp_previous].=', '; }
+			}
+
+			if (!$process_text OR $family_expanded==true){
+				$text='<b>'.ucfirst(__('born')).'</b> '.$text;
+			}
+			else{
+				$text=', <b>'.__('born').'</b> '.$text;
+			}
 			if ($process_text AND $family_expanded==true){ $text='<br>'.$text; }
 			$process_text.=$text;
 		}
+
 
 		// ***************
 		// *** BAPTISE ***
 		// ***************
 		$text='';
+		$temp_previous=$temp;
 
 		if ($personDb->pers_bapt_date OR $personDb->pers_bapt_place){
 			$templ_person["bapt_dateplacetime"]=date_place($personDb->pers_bapt_date,$personDb->pers_bapt_place);
@@ -1462,12 +1593,16 @@ function person_data($person_kind, $id){
 		// *** Baptise source ***
 		$source=show_sources2("person","pers_bapt_source",$personDb->pers_gedcomnumber);
 		if ($source){
-			if($screen_mode=='PDF') {
+			//if($screen_mode=='PDF') {
 				$templ_person["bapt_source"]=$source;
 				$temp="bapt_source";
-			}
-			else
+			//}
+			//else
 				$text.=$source;
+
+			// *** Extra item, so it's possible to add a comma or space ***
+			$templ_person["bapt_add"]='';
+			$temp="bapt_add";
 		}
 
 		// *** Show baptise witnesses ***
@@ -1486,19 +1621,32 @@ function person_data($person_kind, $id){
 			$temp_text=witness($personDb->pers_gedcomnumber, 'godfather');
 			if ($temp_text){
 				if($temp) { $templ_person[$temp].=" ("; }
-				$templ_person["godfather"]=__('godfather').': '.$temp_text.')';
+				$templ_person["godfather"]=_('godfather').': '.$temp_text.')';
 				$temp="godfather";
 				$text.= ' ('.__('godfather').': '.$temp_text.')';
 			}
 		}
 
+
 		// *** check for baptise items, if needed use a new line ***
 		if ($text){
-			if (!$process_text OR $family_expanded==true) $text='<b>'.ucfirst(__('baptised')).'</b> '.$text;
-				else $text=', <b>'.__('baptised').'</b> '.$text;
+			if (!$temp_previous)
+				$templ_person["bapt_start"]=ucfirst(__('baptised')).' ';
+			else{
+				$templ_person["bapt_start"]=__('baptised').' ';
+				if($temp_previous) { $templ_person[$temp_previous].=', '; }
+			}
+
+			if (!$process_text OR $family_expanded==true){
+				$text='<b>'.ucfirst(__('baptised')).'</b> '.$text;
+			}
+			else{
+				$text=', <b>'.__('baptised').'</b> '.$text;
+			}
 			if ($process_text AND $family_expanded==true){ $text='<br>'.$text; }
 			$process_text.=$text;
 		}
+
 
 		// *** Show age of living person ***
 		if (($personDb->pers_bapt_date OR $personDb->pers_birth_date) AND !$personDb->pers_death_date AND $personDb->pers_alive!='deceased'){
@@ -1509,10 +1657,14 @@ function person_data($person_kind, $id){
 			$process_text.=$dirmark1.$age;  // *** comma and space already in $age
 		}
 
+
+
+
 		// ******************
 		// *** DEATH      ***
 		// ******************
 		$text='';
+		$temp_previous=$temp;
 
 		if ($personDb->pers_death_date OR $personDb->pers_death_place){
 			$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$personDb->pers_death_date_hebnight; }
@@ -1523,10 +1675,14 @@ function person_data($person_kind, $id){
 		// *** Death time ***
 		if (isset($personDb->pers_death_time) AND $personDb->pers_death_time){
 			//$templ_person["dead_dateplacetime"]=' '.$personDb->pers_death_time;
-			$templ_person["dead_dateplacetime"]=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
+			if ($templ_person["dead_dateplacetime"])
+				$templ_person["dead_dateplacetime"].=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
+			else
+				$templ_person["dead_dateplacetime"]=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
 			$temp="dead_dateplacetime";
 			$text.=$templ_person["dead_dateplacetime"];
 		}
+
 		if ($user["group_texts_pers"]=='j'){
 			$work_text=process_text($personDb->pers_death_text);
 			if ($work_text){
@@ -1575,7 +1731,7 @@ function person_data($person_kind, $id){
 				$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
 				if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
 					preg_match("/($camps)/i",$personDb->pers_buried_place)!==0 OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE)  {
-					if(!isset($personDb->pers_death_date) OR (isset($personDb->pers_death_date) AND  substr($personDb->pers_death_date,-4)>1939 AND substr($personDb->pers_death_date,-4)<1946)) { 
+					if(!isset($personDb->pers_death_date) OR (isset($personDb->pers_death_date) AND  substr($personDb->pers_death_date,-4)>1939 AND substr($personDb->pers_death_date,-4)<1946)) {
 						$text.=', '.__('cause of death').': '.__('murdered'); 
 					}
 				}
@@ -1585,12 +1741,16 @@ function person_data($person_kind, $id){
 		// *** Death source ***
 		$source=show_sources2("person","pers_death_source",$personDb->pers_gedcomnumber);
 		if ($source){
-			if($screen_mode=='PDF') {
+			//if($screen_mode=='PDF') {
 				$templ_person["dead_source"]=$source;
 				$temp="dead_source";
-			}
-			else
+			//}
+			//else
 				$text.=$source;
+
+			// *** Extra item, so it's possible to add a comma or space ***
+			$templ_person["dead_add"]='';
+			$temp="dead_add";
 		}
 
 		// *** Death declaration ***
@@ -1604,8 +1764,16 @@ function person_data($person_kind, $id){
 			}
 		}
 
+
 		// *** Check for death items, if needed use a new line ***
 		if ($text){
+			if (!$temp_previous)
+				$templ_person["dead_start"]=ucfirst(__('died')).' ';
+			else{
+				$templ_person["dead_start"]=__('died').' ';
+				if($temp_previous) { $templ_person[$temp_previous].=', '; }
+			}
+
 			if (!$process_text OR $family_expanded==true) $text='<b>'.ucfirst(__('died')).'</b> '.$text;
 				else $text=', <b>'.__('died').'</b> '.$text;
 			if ($process_text AND $family_expanded==true){ $text='<br>'.$text; }
@@ -1616,6 +1784,7 @@ function person_data($person_kind, $id){
 		// *** BURIED   ***
 		// ****************
 		$text='';
+		$temp_previous=$temp;
 
 		if ($personDb->pers_buried_date OR $personDb->pers_buried_place){
 			$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$personDb->pers_buried_date_hebnight; }
@@ -1637,38 +1806,52 @@ function person_data($person_kind, $id){
 		// *** Buried source ***
 		$source=show_sources2("person","pers_buried_source",$personDb->pers_gedcomnumber);
 		if ($source){
-			if($screen_mode=='PDF') {
+			//if($screen_mode=='PDF') {
 				$templ_person["buri_source"]=$source;
 				$temp="buri_source";
-			}
-			else
+			//}
+			//else
 				$text.=$source;
+
+			// *** Extra item, so it's possible to add a comma or space ***
+			$templ_person["buri_add"]='';
+			$temp="buri_add";
 		}
 
 		// *** Buried witness ***
 		if ($personDb->pers_gedcomnumber){
 			$temp_text=witness($personDb->pers_gedcomnumber, 'burial_witness');
 			if ($temp_text){
-				//$templ_person[$temp].=" (";
-				$templ_person["buri_witn"]= ' ('.__('burial witness').' '.$temp_text.')';
+				$templ_person[$temp].=" (";
+				$templ_person["buri_witn"]= __('burial witness').' '.$temp_text.')';
 				$temp="buri_witn";
 				$text.= $templ_person["buri_witn"];
 			}
 		}
 
+
 		// *** Check for burial items, if needed use a new line ***
 		if ($text){
 			if ($personDb->pers_cremation){
 				$buried_cremation=__('cremation');
-				$templ_person["flag_buri"]=1;
 			}
 			else {
 				$buried_cremation=__('buried');
-				$templ_person["flag_buri"]=0;
 			}
 
-			if (!$process_text OR $family_expanded==true) $text='<b>'.ucfirst($buried_cremation).'</b> '.$text;
-				else $text=', <b>'.$buried_cremation.'</b> '.$text;
+			if (!$temp_previous)
+				$templ_person["buri_start"]=ucfirst($buried_cremation).' ';
+			else{
+				$templ_person["buri_start"]=$buried_cremation.' ';
+				if($temp_previous) { $templ_person[$temp_previous].=', '; }
+			}
+
+			if (!$process_text OR $family_expanded==true){
+				$text='<b>'.ucfirst($buried_cremation).'</b> '.$text;
+			}
+			else{
+				$text=', <b>'.$buried_cremation.'</b> '.$text;
+			}
 			if ($process_text AND $family_expanded==true){ $text='<br>'.$text; }
 			$process_text.=$text;
 		}
@@ -1687,10 +1870,8 @@ function person_data($person_kind, $id){
 		// *** Show professions   ***
 		// **************************
 		if ($personDb->pers_gedcomnumber){
+			$temp_previous=$temp;
 			$eventnr=0;
-			//$event_qry=$dbh->query("SELECT * FROM humo_events
-			//	WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$personDb->pers_gedcomnumber."' AND //event_kind='profession'
-			//	ORDER BY substring( event_date,-4 ), event_order");
 			$event_qry=$dbh->query("SELECT * FROM humo_events
 				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$personDb->pers_gedcomnumber."' AND event_kind='profession'
 				ORDER BY event_order");
@@ -1700,35 +1881,28 @@ function person_data($person_kind, $id){
 				if ($eventnr=='1'){
 					if ($nr_occupations=='1'){
 						$occupation=__('occupation');
-						$templ_person["flag_prof"]=0;
 					}
 					else{
 						$occupation=__('occupations');
-						$templ_person["flag_prof"]=1;
 					}
 					if ($family_expanded==true){
 						$process_text.='<br><span class="profession"><b>'.ucfirst($occupation).':</b> ';
 					}
 					else{
 						if ($process_text){ $process_text.='. <span class="profession">'; }
-						if($temp) { $templ_person[$temp].=". "; }
 						$process_text.='<b>'.ucfirst($occupation).':</b> ';
-						//$templ_person["prof_exist"]=ucfirst($occupation).': ';
-						//$temp="prof_exist";
+//						if($temp) { $templ_person[$temp].=". "; }
+//						$temp="prof_exist";
 					}
+
+					if($temp) { $templ_person[$temp].=". "; }
+					$templ_person["prof_start"]=ucfirst($occupation).': ';
 				}
 				if ($eventnr>1){
 					$process_text.=', ';
 					if($temp) { $templ_person[$temp].=", "; }
+//$templ_person["profession"]=', ';
 				}
-
-				// MOVED TO LINE 1674 AND ADDED ().
-				// *** Profession date and place ***
-				//if ($eventDb->event_date OR $eventDb->event_place){
-				//	$templ_person["prof_date".$eventnr]=date_place($eventDb->event_date,$eventDb->event_place).'; ';
-				//	$temp="prof_date".$eventnr;
-				//	$process_text.=$templ_person["prof_date".$eventnr];
-				//}
 
 				// *** Show profession ***
 				$process_text.=$eventDb->event_event;
@@ -1749,6 +1923,7 @@ function person_data($person_kind, $id){
 						if($temp) { $templ_person[$temp].=" "; }
 						$templ_person["prof_text".$eventnr]=$work_text;
 						$temp="prof_text".$eventnr;
+
 						//$process_text.=", ".$work_text;
 						$process_text.=" ".$work_text;
 					}
@@ -1757,15 +1932,20 @@ function person_data($person_kind, $id){
 				// *** Profession source ***
 				$source=show_sources2("person","pers_event_source",$eventDb->event_id);
 				if ($source){
-					if($screen_mode=='PDF') {
+					//if($screen_mode=='PDF') {
 						$templ_person["prof_source"]=$source;
 						$temp="prof_source";
-					}
-					else
+					//}
+					//else
 						$process_text.=$source;
+
+						// *** Extra item, so it's possible to add a comma or space ***
+						$templ_person["prof_add"]='';
+						$temp="prof_add";
 				}
 
 			}
+
 			if ($eventnr>0){ $process_text.='</span>'; }
 		}
 
@@ -1788,6 +1968,8 @@ function person_data($person_kind, $id){
 		$source=show_sources2("person","person_source",$personDb->pers_gedcomnumber);
 		if ($source){
 			if($screen_mode=='PDF') {
+if ($temp) $templ_person[$temp].='. ';
+
 				$templ_person["pers_source"]=$source;
 				$temp="pers_source";
 			}
@@ -1904,7 +2086,7 @@ function person_data($person_kind, $id){
 			// *** BK: Source by person text ***
 			$source=show_sources2("person","pers_text_source",$personDb->pers_gedcomnumber);
 			if ($source){
-//PDF
+//PDF source by text
 				if($screen_mode=='PDF') {
 					//
 				}

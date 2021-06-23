@@ -174,10 +174,19 @@ function show_media($event_connect_kind,$event_connect_id){
 				//$title_txt=''; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
 				$title_txt=$media_event_text[$i]; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
 
-				$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $title_txt).'">';
+				// *** Old Slimbox lightbox ***
+				//$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $title_txt).'">';
+
+				// *** April 2021: using GLightbox ***
+				//$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" data-glightbox="title: Title; description: '.str_replace("&", "&amp;", $title_txt).'" class="glightbox3" data-gallery="gallery'.$event_connect_id.'">';
+				//$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" data-glightbox="description: '.str_replace("&", "&amp;", $title_txt).'" class="glightbox3" data-gallery="gallery'.$event_connect_id.'">';
+
+				$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" class="glightbox3" data-gallery="gallery'.$event_connect_id.'" data-glightbox="description: .custom-desc'.$media_event_id[$i].'">';
+				// *** Need a class for multiple lines and HTML code in a text ***
+				$picture.='<div class="glightbox-desc custom-desc'.$media_event_id[$i].'">'.$title_txt.'</div>';
+
 				$picture.='<img src="'.$picture_array['path'].$picture_array['thumb'].$picture_array['picture'].'" height="'.$picture_array['height'].'" alt="'.$event_event.'"></a>';
 
-				//$templ_person["pic_path".$i]=$tree_pict_path."thumb_".$event_event; //for the time being pdf only with thumbs
 				$templ_person["pic_path".$i]=$picture_array['path']."thumb_".$picture_array['picture']; //for the time being pdf only with thumbs
 				// *** Remove spaces ***
 				$templ_person["pic_path".$i]=trim($templ_person["pic_path".$i]);

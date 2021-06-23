@@ -71,7 +71,12 @@ if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	//$mail->AddReplyTo($_POST['mail_sender'], $_POST['mail_name']);
 
 	// *** Set who the message is to be sent to ***
-	$mail->addAddress($mail_address, $mail_address);
+	//$mail->addAddress($mail_address, $mail_address);
+	$mult = explode(",",$mail_address);
+	foreach($mult AS $val) {
+		$val = trim($val); // this way it will work both with "someone@gmail.com,other@gmail.com" and also "someone@gmail.com , other@gmail.com"
+		$mail->addAddress($val,$val);
+	}
 
 	// *** Set the subject line ***
 	$mail->Subject = $mail_subject;

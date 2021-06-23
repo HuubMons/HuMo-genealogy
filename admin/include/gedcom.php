@@ -1092,7 +1092,8 @@ if (isset($_POST['step3'])){
 				if (substr($line, -6, 6)=='@ SOUR'){
 					$source_gedcomnr=substr($line,4,-6);
 					if ($source_gedcomnr>$source_high) $source_high=$source_gedcomnr;
-					$_SESSION['new_source_gedcomnr']=$source_high+1;
+					// *** Gedcom torture file uses: 0 @SOURCE1@ SOUR ***
+					if (is_int($source_gedcomnr)) $_SESSION['new_source_gedcomnr']=$source_high+1;
 					//echo 'SOURCE: '.$source_gedcomnr.'!'.$source_high.' '.$_SESSION['new_source_gedcomnr'].'<br>';
 				}
 
@@ -2223,7 +2224,6 @@ if (isset($_POST['step4'])){
 		}
 	}
 
-
 	// *** Count persons and families ***
 	echo '<br>&gt;&gt;&gt; '.__('Counting persons and families and enter into database...').' ';
 	// *** Calculate number of persons and families ***
@@ -2241,6 +2241,10 @@ if (isset($_POST['step4'])){
 		WHERE tree_prefix='".$tree_prefix."'";
 	$dbh->query($sql);
 
+	// *** Remove cache ***
+	$sql = "DELETE FROM humo_settings
+		WHERE setting_variable LIKE 'cache%' AND setting_tree_id='".safe_text_db($tree_id)."'";
+	$result = $dbh->query($sql);
 
 	// Show process time:
 	$end_time=time();

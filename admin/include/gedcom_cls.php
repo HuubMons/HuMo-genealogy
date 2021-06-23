@@ -4585,11 +4585,10 @@ function process_sources($connect_kind2,$connect_sub_kind2,$connect_connect_id2,
 		$connect['source_id'][$connect_nr]='';
 		$connect['item_id'][$connect_nr]='';
 		$connect['text'][$connect_nr]='';
-//PLACE NOT IN USE YET
-		$connect['place'][$connect_nr]='';
 		$connect['page'][$connect_nr]='';
 		$connect['role'][$connect_nr]='';
 		$connect['date'][$connect_nr]='';
+		$connect['place'][$connect_nr]='';
 
 		// *** Check for @ characters (=link to shared source), or save text ***
 		// 1 SOUR @S1@
@@ -4722,11 +4721,18 @@ function process_sources($connect_kind2,$connect_sub_kind2,$connect_connect_id2,
 	if ($buffer6==($number+1).' ROLE'){
 		$processed=1; $connect['role'][$connect_nr]=substr($buffer, 7);
 	}
+
 	// *** Source date ***
 	if ($buffer6==($number+1).' DATE'){
-		//$processed=1; $connect['date'][$connect_nr]=substr($buffer, 7);
-		$processed=1; $source["source_date"][$nrsource]=substr($buffer, 7);
+		$processed=1; $connect['date'][$connect_nr]=substr($buffer, 7);
+		//$processed=1; $source["source_date"][$nrsource]=substr($buffer, 7);
 	}
+	// *** Source place ***
+	if ($buffer6==($number+1).' PLAC'){
+		$processed=1; $connect['place'][$connect_nr]=substr($buffer, 7);
+		//$processed=1; $source["source_place"][$nrsource]=substr($buffer, 7);
+	}
+
 	// *** Aldfaer time ***
 	//2 _ALDFAER_TIME 08:00:00
 	//if (substr($buffer,0,15)=='2 _ALDFAER_TIME'){

@@ -429,7 +429,9 @@ if($subsub==true) {
 				if ($privacy){ $picture_privacy=true; }
 				if($afbDb->event_text!='') {
 					$picture_text.=$afbDb->event_text.'<br>';
-					$picture_text2.=$afbDb->event_text;
+
+					//$picture_text2.=$afbDb->event_text; // Only use event text in lightbox.
+					$picture_text2.='<br>'.$afbDb->event_text;
 				}
 			}
 
@@ -456,7 +458,9 @@ if($subsub==true) {
 					if ($privacy){ $picture_privacy=true; }
 					if($pictureDb->event_text!='') {
 						$picture_text.=$pictureDb->event_text.'<br>';
-						$picture_text2.=$pictureDb->event_text;
+
+						//$picture_text2=$pictureDb->event_text; // Only use event text in lightbox.
+						$picture_text2.='<br>'.$pictureDb->event_text;
 					}
 				}
 			}
@@ -469,18 +473,26 @@ if($subsub==true) {
 			echo '<div class="photobook">';
 				if ($picture_privacy==false){
 					// *** Show photo using the lightbox effect ***
-					echo '<a href="'.$dir.$filename.'" rel="lightbox" title="'.$picture_text2.'">';
+					//echo '<a href="'.$dir.$filename.'" rel="lightbox" title="'.$picture_text2.'">';
+
+					// *** Show photo using the lightbox: GLightbox effect ***
+					//echo '<a href="'.$dir.$filename.'" class="glightbox3" data-gallery="gallery1" data-glightbox="description: '.str_replace("&", "&amp;", $picture_text2).'">';
+
+					echo '<a href="'.$dir.$filename.'" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc'.$picture_nr.'">';
+					// *** Need a class for multiple lines and HTML code in a text ***
+					echo '<div class="glightbox-desc custom-desc'.$picture_nr.'">'.$picture_text2.'</div>';
+
 					echo $picture;
 					echo '<div class="photobooktext">'.$picture_text.'</div>';
 				}
 				else{
 					echo __('PRIVACY FILTER');
 				}
-			echo '</div>';  
-	
-		}  
+			echo '</div>';
+
+		}
 	}
-if($subsub==true) { 
+if($subsub==true) {
 	echo '</div>'; // rightsub
 	echo '</div>'; // outersub
 }

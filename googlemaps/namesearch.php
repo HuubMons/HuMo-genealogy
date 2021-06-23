@@ -14,8 +14,6 @@ ini_set('url_rewriter.tags','');
 //if (!CMS_SPECIFIC){
 //	session_cache_limiter ('private, must-revalidate'); //tb edit
 	session_start();
-	// *** Regenerate session id regularly to prevent session hacking ***
-	session_regenerate_id();
 //}
 include_once(CMS_ROOTPATH."include/db_login.php"); //Inloggen database.
 

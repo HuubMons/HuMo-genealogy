@@ -11,9 +11,6 @@ Added multiple languages.
 */
 
 session_start();
-// *** Regenerate session id regularly to prevent session hacking ***
-session_regenerate_id();
-
 
 define("CMS_ROOTPATH", "");
 

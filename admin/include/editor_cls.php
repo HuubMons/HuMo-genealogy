@@ -65,23 +65,23 @@ function date_show($process_date, $process_name, $multiple_rows='', $disabled=''
 		$process_date=str_replace("OCT", __('oct'), $process_date);
 		$process_date=str_replace("NOV", __('nov'), $process_date);
 		$process_date=str_replace("DEC", __('dec'), $process_date);
-
 		$process_date=str_replace(" AND ", __(' and '), $process_date);
 
-		// *** BEF, ABT, AFT, etc. is shown in date_prefix ***
-		$process_date=strtolower($process_date);
+		// *** Show BC with uppercase, check case-insensitive ***
+		if (strtolower(substr($process_date,-3))==' bc')
+			$process_date=substr($process_date,0,-3).' BC';
+		if (strtolower(substr($process_date,-5))==' b.c.')
+			$process_date=substr($process_date,0,-5).' B.C.';
 
-		// *** Show BC with uppercase ***
-		if (substr($process_date,-3)==' bc') $process_date=str_replace(' bc',' BC',$process_date);
-		if (substr($process_date,-5)==' b.c.') $process_date=str_replace(' b.c.',' B.C.',$process_date);
-
-		if (substr($process_date,0,4)=='bef '){ $text.=substr($process_date,4); }
-		elseif (substr($process_date,0,4)=='abt '){ $text.=substr($process_date,4); }
-		elseif (substr($process_date,0,4)=='aft '){ $text.=substr($process_date,4); }
-		elseif (substr($process_date,0,4)=='bet '){ $text.=substr($process_date,4); }
-		elseif (substr($process_date,0,4)=='int '){ $text.=substr($process_date,4); }
-		elseif (substr($process_date,0,4)=='est '){ $text.=substr($process_date,4); }
-		elseif (substr($process_date,0,4)=='cal '){ $text.=substr($process_date,4); }
+		// *** Strip tags BEF, ABT, AFT, etc. are allready shown in date_prefix. Variable $text must be case sensitive. ***
+		$process_date2=strtolower($process_date);
+		if (substr($process_date2,0,4)=='bef '){ $text.=substr($process_date,4); }
+		elseif (substr($process_date2,0,4)=='abt '){ $text.=substr($process_date,4); }
+		elseif (substr($process_date2,0,4)=='aft '){ $text.=substr($process_date,4); }
+		elseif (substr($process_date2,0,4)=='bet '){ $text.=substr($process_date,4); }
+		elseif (substr($process_date2,0,4)=='int '){ $text.=substr($process_date,4); }
+		elseif (substr($process_date2,0,4)=='est '){ $text.=substr($process_date,4); }
+		elseif (substr($process_date2,0,4)=='cal '){ $text.=substr($process_date,4); }
 		else { $text.=$process_date; }
 
 	$text.='" size="'.$field_date.'" '.$disabled.'>';
@@ -157,7 +157,8 @@ function valid_date($date) {
 	$check = New validate_date_cls;
 
 	// German date input: 01.02.2016 or Scandinavian input: 01,02,2016
-	if(strpos($date,".")!==false) $date = str_replace(".", "-", $date);
+	$date2 = str_replace(" B.C.", "", $date); // Don't check . in B.C.!
+	if(strpos($date2,".")!==false) $date = str_replace(".", "-", $date);
 	if(strpos($date,",")!==false) $date = str_replace(",", "-", $date);
 
 	// Use your own language for input, FULL MONTH NAMES

@@ -116,6 +116,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		}
 		else
 			$temp_text.=$source;
+
+		// *** Extra item, so it's possible to add a comma or space ***
+		$templ_person["marriage_add"]='';
+		$temp="marriage_add";
 	}
 
 	if ($temp_text){
@@ -126,8 +130,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		// *** Just in case made an extra text "living together" here ***
 		if (!$relation_kind){
 			$text.='<b>'.__('Living together').'</b>';
-			if(isset($templ_relation["marriage_exist"])) {$templ_relation["marriage_exist"].=__('Living together')." "; }
-				else {$templ_relation["marriage_exist"]=__('Living together')." ";  }
+			if(isset($templ_relation["marriage_exist"])) { $templ_relation["marriage_exist"].=__('Living together')." "; }
+				else { $templ_relation["marriage_exist"]=__('Living together')." "; }
 		}
 		$text.=' '.$temp_text;
 	}
@@ -192,11 +196,15 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($source){
 		if($screen_mode=='PDF') {
 			$templ_relation["prew_source"]=$source;
-			$temp="pre_source";
+			$temp="prew_source";
 		}
 		else {
 			$temp_text.=$source;
 		}
+
+		// *** Extra item, so it's possible to add a comma or space ***
+		$templ_person["prew_source_add"]='';
+		$temp="prew_source_add";
 	}
 
 	if ($temp_text){
@@ -259,6 +267,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		else {
 			$temp_text.=$source;
 		}
+
+		// *** Extra item, so it's possible to add a comma or space ***
+		$templ_person["wedd_source_add"]='';
+		$temp="wedd_source_add";
 	}
 
 	if ($temp_text){
@@ -282,7 +294,11 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Married church notice ***
 	$temp_text='';
 	$temp='';
-	if ($marriageDb->fam_marr_church_notice_date OR $marriageDb->fam_marr_church_notice_place){				$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_church_notice_date_hebnight; }
+	if ($marriageDb->fam_marr_church_notice_date OR $marriageDb->fam_marr_church_notice_place){
+		$nightfall="";
+		if($humo_option['admin_hebnight']=="y") {
+			$nightfall=$marriageDb->fam_marr_church_notice_date_hebnight;
+		}
 		$templ_relation["prec_date"]=date_place($marriageDb->fam_marr_church_notice_date,$marriageDb->fam_marr_church_notice_place,$nightfall);
 		$temp="prec_date";
 		$temp_text.= $templ_relation["prec_date"];
@@ -308,6 +324,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		}
 		else
 			$temp_text.=$source;
+
+		// *** Extra item, so it's possible to add a comma or space ***
+		$templ_person["prec_source_add"]='';
+		$temp="prec_source_add";
 	}
 
 	if ($temp_text){
@@ -322,7 +342,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Married church ***
 	$temp_text='';
 	$temp='';
-	if ($marriageDb->fam_marr_church_date OR $marriageDb->fam_marr_church_place){				$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_church_date_hebnight; }
+	if ($marriageDb->fam_marr_church_date OR $marriageDb->fam_marr_church_place){
+		$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_church_date_hebnight; }
 		$templ_relation["chur_date"]=date_place($marriageDb->fam_marr_church_date,$marriageDb->fam_marr_church_place,$nightfall);
 		$temp="chur_date";
 		$temp_text.= $templ_relation["chur_date"];
@@ -358,6 +379,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		}
 		else
 			$temp_text.=$source;
+
+		// *** Extra item, so it's possible to add a comma or space ***
+		$templ_person["chur_source_add"]='';
+		$temp="chur_source_add";
 	}
 
 	if ($temp_text){
@@ -409,6 +434,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		}
 		else
 			$temp_text.=$source;
+
+		// *** Extra item, so it's possible to add a comma or space ***
+		$templ_person["devr_source_add"]='';
+		$temp="devr_source_add";
 	}
 
 	//if ($temp_text){

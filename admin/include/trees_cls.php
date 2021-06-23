@@ -1131,7 +1131,7 @@ You will be notified of results as the action is completed');
 										$merges++;
 									}
 								}
-							} 	// end "if($go)"
+							}	// end "if($go)"
 						}
 					}	// end while
 				} // end "if($pers2)
@@ -1660,7 +1660,7 @@ function show_regular_text ($left_item,$right_item,$title,$name) {
 		if($left_item) {
 			$checked=" CHECKED"; $showtext="&nbsp;&nbsp;[ ".__('Read text')." ]";
 			echo '<input type="checkbox" name="'.$name.'_l" '.$checked.'>';
-			if(substr($left_item,0,2)=="@N") {  // not plain text but @N23@ -> look it up in humoX_texts
+			if(substr($left_item,0,2)=="@N") {  // not plain text but @N23@ -> look it up in humo_texts
 				$notes = $dbh->query("SELECT text_text FROM humo_texts
 					WHERE text_tree_id='".$tree_id."' AND text_gedcomnr ='".substr($left_item,1,-1)."'");
 				$notesDb = $notes->fetch(PDO::FETCH_OBJ);
@@ -1673,7 +1673,7 @@ function show_regular_text ($left_item,$right_item,$title,$name) {
 		$checked=''; $showtext=''; if(!$left_item) { $checked=" CHECKED"; }
 		$showtext="&nbsp;&nbsp;[ ".__('Read text')." ]";
 		echo '</td><td><input type="checkbox" name="'.$name.'_r" '.$checked.'>';
-		if(substr($right_item,0,2)=="@N") {  // not plain text but @N23@ -> look it up in humoX_texts
+		if(substr($right_item,0,2)=="@N") {  // not plain text but @N23@ -> look it up in humo_texts
 			$notes = $dbh->query("SELECT text_text FROM humo_texts
 				WHERE text_tree_id='".$tree_id."' AND text_gedcomnr ='".substr($right_item,1,-1)."'");
 			$notesDb = $notes->fetch(PDO::FETCH_OBJ);
@@ -2568,7 +2568,7 @@ function merge_them($left,$right,$mode) {
 	$sql="UPDATE humo_trees SET tree_persons=tree_persons-1 WHERE tree_id='".$tree_id."'";
 	$dbh->query($sql);
 
-	// CLEANUP: delete this person's I from any other tables that refer to this person (otherwise we will receive errors in humogen)
+	// CLEANUP: delete this person's I from any other tables that refer to this person
 	$qry = "DELETE FROM humo_addresses
 		WHERE address_tree_id='".$tree_id."'
 		AND address_connect_sub_kind='person'
@@ -2673,7 +2673,7 @@ This is the easiest way to make sure you don\'t forget anyone.');
 }
 
 //*********************************************************************************************************************************
-//*********  function check_regular checks if data from the humoX_person table was marked (checked) in the comparison table  *****
+//*********  function check_regular checks if data from the humo_person table was marked (checked) in the comparison table  *****
 //*********************************************************************************************************************************
 function check_regular ($post_var,$auto_var,$mysql_var) {
 	global $dbh, $language, $data2Db, $result1Db, $result2Db;
@@ -2685,7 +2685,7 @@ function check_regular ($post_var,$auto_var,$mysql_var) {
 }
 
 // *********************************************************************************************************************************
-// ***  function check_regular_text checks if text data from the humoX_person table was marked (checked) in the comparison table  *****
+// ***  function check_regular_text checks if text data from the humo_person table was marked (checked) in the comparison table  *****
 // *********************************************************************************************************************************
 function check_regular_text ($post_var,$auto_var,$mysql_var) {
 	global $dbh, $tree_id, $language, $data2Db, $result1Db, $result2Db;
@@ -2783,10 +2783,10 @@ function check_addresses($left_ged,$right_ged) {
 //****************************************************************************************************
 function check_sources($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db;
-	$left_source = $dbh->query("SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."' AND LOCATE('source',connect_sub_kind)!=0 AND connect_connect_id ='".$left_ged."'");
-	$right_source = $dbh->query("SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."' AND LOCATE('source',connect_sub_kind)!=0 AND connect_connect_id ='".$right_ged."'");
+	$left_source = $dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'
+		AND LOCATE('source',connect_sub_kind)!=0 AND connect_connect_id ='".$left_ged."'");
+	$right_source = $dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."'
+		AND LOCATE('source',connect_sub_kind)!=0 AND connect_connect_id ='".$right_ged."'");
 	if($right_source->rowCount() > 0) {
 		//if right has no sources it did not appear in the comparison table, so the whole thing is unnecessary
 		while($left_sourceDb = $left_source->fetch(PDO::FETCH_OBJ)) {

@@ -1,7 +1,5 @@
 <?php
 session_start();
-// *** Regenerate session id regularly to prevent session hacking ***
-session_regenerate_id();
 //error_reporting(E_ALL);
 
 //if (!defined('ADMIN_PAGE')){ exit; }
