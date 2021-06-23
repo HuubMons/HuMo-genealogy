@@ -426,16 +426,13 @@ elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timelin
 		$tml= $val_arr[$selected_language];
 	}
 
-// *** Use timeline file from default folder ***
-$selected_language2='default_timelines';
-//echo $val_arr[$selected_language2].'!!!!!';
-if(!isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language2].".txt")) {
-	$tml= $val_arr[$selected_language2];
+	// *** Use timeline file from default folder ***
+	$selected_language2='default_timelines';
+	if(!isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language2].".txt")) {
+		$tml= $val_arr[$selected_language2];
+	}
 }
-
-
-}
-$default=false; if($tml==$filenames[0][1]) $default=true;
+//$default=false; if($tml==$filenames[0][1]) $default=true;
 
 // **** SHOW MENU ****
 echo '<table align="center" class="humo index_table">';
@@ -498,25 +495,34 @@ The timeline menu:<br>
 
 	// *** Choice of timeline files available ***
 	if(count($filenames) > 1) { // only show timelines menu if there are more than 1 timeline files
-		echo '<br><br>'.__('Choose timeline').':<br>';
-		//echo '<div style="direction:ltr">';
-		$checked=false;
-		for ($i=0; $i<count($filenames); $i++){
-			echo '<span class="select_box"><input type="radio" name="tml" value="'.$filenames[$i][1].'"';
 
-			if($i==0 AND $default == true) {
-				echo ' checked="checked"'; $checked=true;
+		echo '<br><br>'.__('Choose timeline').':<br>';
+
+		//echo '<div style="direction:ltr">';
+		$selected_language2='default_timelines';
+		$checked='';
+		for ($i=0; $i<count($filenames); $i++){
+			// *** A timeline is selected ***
+			if(isset($_POST['tml']) AND $_POST['tml']==$filenames[$i][1]) {
+				$checked=" checked";
 			}
-			elseif($checked==false AND isset($_POST['tml']) AND $_POST['tml']==$filenames[$i][1]) {
-				echo ' checked="checked"'; $checked=true;
+
+			// *** If no selection is made, use default settings ***
+			if(!isset($_POST['tml'])){
+				// *** humo_option is: nl!europa@de!Sweitz@en!british  etc. ***
+				if(isset($humo_option['default_timeline']) AND strpos($humo_option['default_timeline'],$selected_language."!".$filenames[$i][1]."@") !== false) {
+					$checked=" checked";
+				}
+				// *** humo_option is: nl!europa@de!Sweitz@en!british  etc. ***
+				elseif(isset($humo_option['default_timeline']) AND strpos($humo_option['default_timeline'],$selected_language2."!".$filenames[$i][1]."@") !== false) {
+					$checked=" checked";
+				}
 			}
-			elseif($checked==false AND isset($humo_option['default_timeline']) AND strpos($humo_option['default_timeline'],$selected_language."!".$filenames[$i][1]."@") !== false) {
-				echo ' checked="checked"'; $checked=true;
-			}
-			elseif($checked==false AND isset($humo_option['default_timeline']) AND strpos($humo_option['default_timeline'],$selected_language2."!".$filenames[$i][1]."@") !== false) {
-				echo ' checked="checked"';
-			}
-			echo ' >'.$filenames[$i][1].'</span>';
+
+			echo '<span class="select_box">';
+				echo '<input type="radio" name="tml" value="'.$filenames[$i][1].'"'.$checked.'>'.$filenames[$i][1];
+			echo '</span>';
+			$checked='';
 		}
 		//echo '</div>';
 	}

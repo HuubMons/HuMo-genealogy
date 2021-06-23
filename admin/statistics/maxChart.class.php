@@ -19,7 +19,8 @@ class maxChart {
 			$this->data = $data;
 	}
 
-	function displayChart($title='', $type, $width=300, $height=200, $variousColor=false, $thismonth=false){
+	//function displayChart($title='', $type, $width=300, $height=200, $variousColor=false, $thismonth=false){
+	function displayChart($title, $type, $width=300, $height=200, $variousColor=false, $thismonth=false){
 		$this->type   = $type;
 		$this->title  = $title;
 		$this->width  = $width;

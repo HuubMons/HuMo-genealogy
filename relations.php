@@ -1905,24 +1905,24 @@ function display () {
 	search_bloodrel();
 
 	if($reltext) {
-		//print '<table class="humo container"><tr><td>';
-		print '<table class="ext"><tr><td style="padding-right:30px;vertical-align:text-top;">';
+		//echo '<table class="humo container"><tr><td>';
+		echo '<br><br><table class="ext"><tr><td style="padding-right:30px;vertical-align:text-top;">';
 		$bloodrel=1;
-		print __('BLOOD RELATIONSHIP: ');
+		echo __('BLOOD RELATIONSHIP: ');
 		echo "<br><br>"; 
 		if($selected_language=="cn" AND strpos($reltext,"notext")!==false) {
 			// don't display text if relation can't be phrased  
 		} 
 		else {
-			if($selected_language=="fi") { print 'Kuka: '; }   // who
-			print "&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
-			print $name1."</a>";
-			if($selected_language=="fi") { print '&nbsp;&nbsp;'.'Kenelle: '; }  // to whom
-			else { print $language_is.$reltext; }
-			print "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>".$reltext_nor."<p>";
-			print $dutchtext;
+			if($selected_language=="fi") { echo 'Kuka: '; }   // who
+			echo "&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
+			echo $name1."</a>";
+			if($selected_language=="fi") { echo '&nbsp;&nbsp;'.'Kenelle: '; }  // to whom
+			else { echo $language_is.$reltext; }
+			echo "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>".$reltext_nor."<p>";
+			echo $dutchtext;
 			if($selected_language=="fi") { echo 'Sukulaisuus tai muu suhde: <b>'.$reltext.'</b>'; }
-			print '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;"  >';
+			echo '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;"  >';
 		}
 		$bloodreltext=$reltext;
 		display_table();
@@ -1975,16 +1975,16 @@ function display () {
 
 			if($bloodrel==1) {
 				if(CMS_SPECIFIC=="Joomla") {
-					print '</td></tr><tr><td>'; // in joomla we want blood- and marital tables one under the other for lack of space
+					echo '</td></tr><tr><td>'; // in joomla we want blood- and marital tables one under the other for lack of space
 				}
 				else {
-					print '</td><td style="padding-left:30px;border-left:2px solid #bbbbbb;vertical-align:text-top;">';
+					echo '</td><td style="padding-left:30px;border-left:2px solid #bbbbbb;vertical-align:text-top;">';
 				}
 			}
 			//else { echo '<table class="humo container"<tr><td>'; }
-			else { echo '<table class="ext"<tr><td>'; }
+			else { echo '<br><br><table class="ext"<tr><td>'; }
 
-			print __('MARITAL RELATIONSHIP: ');
+			echo __('MARITAL RELATIONSHIP: ');
 
 			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="print_version"><input style="font-size:110%" type="submit" name="extended" value="'.__('Use Extended Calculator').'"></span>';
 
@@ -1996,17 +1996,17 @@ function display () {
 				$name=$pers_cls->person_name($spouseidDb);
 				$spousename=$name["name"];
 
-				print "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
-				//print $name1."</a> and ";
-				print $name1."</a> ".__('and').': ';
-				print "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
+				echo "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
+				//echo $name1."</a> and ";
+				echo $name1."</a> ".__('and').': ';
+				echo "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
 				if($searchDb->pers_sexe == "M") {
 					echo ' '.__('are both husbands of').' ';
 				}
 				else {
-					print ' '.__('are both wifes of').' ';
+					echo ' '.__('are both wifes of').' ';
 				}
-				print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayspouseX[$foundX_match][0]."'>".$spousename."</a></span><br>";
+				echo "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayspouseX[$foundX_match][0]."'>".$spousename."</a></span><br>";
 			}
 			elseif($reltext!="notext") {
 
@@ -2050,44 +2050,44 @@ function display () {
 				}
 
 				if($selected_language=="fi") {  // very different phrasing for correct grammar
-				print 'Kuka: ';
-					print "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
-					print $name1."</a>";
-					print '&nbsp;&nbsp;Kenelle: ';
-					print "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a></span><br>";
-					print 'Sukulaisuus tai muu suhde: ';
+				echo 'Kuka: ';
+					echo "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
+					echo $name1."</a>";
+					echo '&nbsp;&nbsp;Kenelle: ';
+					echo "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a></span><br>";
+					echo 'Sukulaisuus tai muu suhde: ';
 					if(!$special_spouseX AND !$special_spouseY AND $table!=7) {
 						if($spousetext2 != '' AND $spousetext1 == '') { // X is relative of spouse of Y
-							print '(';
-							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a>";
-							print ' - '.$spousenameY.'):&nbsp;&nbsp;'.$reltext.'<br>';
-							print $spousenameY.', '.$finnish_spouse2.' ';
-							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
+							echo '(';
+							echo "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a>";
+							echo ' - '.$spousenameY.'):&nbsp;&nbsp;'.$reltext.'<br>';
+							echo $spousenameY.', '.$finnish_spouse2.' ';
+							echo "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
 						}
 						elseif ($spousetext1 != '' AND $spousetext2 == '') { // X is spouse of relative of Y
-							print '('.$spousenameX.' - ';
-							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
-							print '):&nbsp;&nbsp;'.$reltext.'<br>';
-							print $spousenameX.', '.$finnish_spouse1.' ';
-							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a>";
+							echo '('.$spousenameX.' - ';
+							echo "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
+							echo '):&nbsp;&nbsp;'.$reltext.'<br>';
+							echo $spousenameX.', '.$finnish_spouse1.' ';
+							echo "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a>";
 						}
 						else {   // X is spouse of relative of spouse of Y
-							print '('.$spousenameX.' - '.$spousenameY.'):&nbsp;&nbsp;'.$reltext.'<br>';
-							print $spousenameX.', '.$finnish_spouse1.' ';
-							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a><br>";
-							print $spousenameY.', '.$finnish_spouse2.' ';
-							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
+							echo '('.$spousenameX.' - '.$spousenameY.'):&nbsp;&nbsp;'.$reltext.'<br>';
+							echo $spousenameX.', '.$finnish_spouse1.' ';
+							echo "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a><br>";
+							echo $spousenameY.', '.$finnish_spouse2.' ';
+							echo "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
 						}
 					}
 					elseif ($special_spouseX OR $special_spouseY) { // brother-in-law/sister-in-law/father-in-law/mother-in-law
-						print '<b>'.$reltext.'</b><br>';
+						echo '<b>'.$reltext.'</b><br>';
 					}
 					elseif ($table == 7) {
 						if($relmarriedX==0 OR $relmarriedY==0) {
-							print '<b>'.__('partner').'</b><br>';
+							echo '<b>'.__('partner').'</b><br>';
 						}
 						else {
-							print '<b>'.$finnish_spouse1.'</b><br>';
+							echo '<b>'.$finnish_spouse1.'</b><br>';
 						}
 					}
 				}  // end of finnish part
@@ -2108,16 +2108,16 @@ function display () {
 						}
 					}
 					if($table==6 OR $table==7) { $reltext_nor = ''; }
-					print "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
+					echo "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
 
-					print $name1."</a>".$language_is.$spousetext1.$reltext.$reltext_nor2.$spousetext2;
-					print "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>".$reltext_nor."</span><br>";
+					echo $name1."</a>".$language_is.$spousetext1.$reltext.$reltext_nor2.$spousetext2;
+					echo "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>".$reltext_nor."</span><br>";
 
 				}
 
 			}
 
-			print '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;" >';
+			echo '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;" >';
 
 			display_table();
 /*			
@@ -2131,18 +2131,18 @@ function display () {
 	//if($bloodreltext=='' AND $reltext=='') { 
 	if($reltext=='') {  
 		if($bloodreltext=='') { 
-			echo '<br><table class="ext"><tr><td>'; 
+			echo '<br><br><table class="ext"><tr><td>'; 
 			echo '<td style="text-align:left;border-left:0px;padding10px;vertical-align:text-top;width:800px">';
 			echo "<div style='font-weight:bold'>".__('No blood relation or direct marital relation found')."</div>";
 		}
 		else {
 			echo '<td style="width:60px">&nbsp;</td>'; 
 			echo '<td class="print_version" style="padding-left:50px;padding-right:10px;vertical-align:text-top;border-left:2px solid #bbbbbb;width:350px">';
-			print __('MARITAL RELATIONSHIP: ');
+			echo __('MARITAL RELATIONSHIP: ');
 			echo "<br><br><div style='font-weight:bold;margin-bottom:10px'>".__('No direct marital relation found')."</div>";
 		}
 
-		print '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;" >';
+		echo '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;" >';
  		echo  __("You may wish to try finding a connection with the <span style='font-weight:bold'>Extended Marital Calculator</span> below.<br>
 This will find connections that span over many marital relations and generations.<br>
 Computing time will vary depending on the size of the tree and the distance between the two persons.<br>
@@ -2153,10 +2153,10 @@ In a 75,000 person tree the most distant persons may take up to 8 sec to find.")
 
 	}
 	else { 
-		print '</td></tr></table>'; 
+		echo '</td></tr></table>'; 
 	}
 
-	print '<br><br>';
+	echo '<br><br>';
 
 }
 
@@ -2195,9 +2195,9 @@ function display_table() {
 				$tempfamily=$famX;  $famX=$famY; $famY=$tempfamily;
 				$tempged=$gednr2;  $gednr2=$gednr; $gednr=$tempged;
 			}
-			//print "<table id=\"reltable\" class=\"reltable\">";
+			//echo "<table id=\"reltable\" class=\"reltable\">";
 			echo '<br><table class="newrel" style="border:0px;border-collapse:separate;border-spacing:3px 1px;">'; 
-			print "<tr>";
+			echo "<tr>";
 
 			if(($spouse==1 AND $table==1) OR ($spouse==2 AND $table==2) OR $spouse==3) { 
 				$persidDb=$db_functions->get_person($rel_arrayX[0][0]);
@@ -2207,19 +2207,19 @@ function display_table() {
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 				
-				print '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath.'tree_id='.$tree_id.'&amp;id='.$famspouseX.'&amp;main_person='.$rel_arrayX[0][0].'">'.$personname.'</a></td>';
+				echo '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath.'tree_id='.$tree_id.'&amp;id='.$famspouseX.'&amp;main_person='.$rel_arrayX[0][0].'">'.$personname.'</a></td>';
 
 				$persidDb=$db_functions->get_person($gednr);
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 
-				print '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
+				echo '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
 				
-				print '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a></td>";
-				print '</tr><tr>';
-				print '<td style="border:0px;">&#8593;</td>';
-				print '<td style="border:0px;">&nbsp;</td>';
-				print '<td style="border:0px;">&nbsp;</td>';
+				echo '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a></td>";
+				echo '</tr><tr>';
+				echo '<td style="border:0px;">&#8593;</td>';
+				echo '<td style="border:0px;">&nbsp;</td>';
+				echo '<td style="border:0px;">&nbsp;</td>';
 			}
 			else { 
 				$persidDb=$db_functions->get_person($rel_arrayX[0][0]);
@@ -2229,16 +2229,16 @@ function display_table() {
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 
-				print '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0].'">'.$name1."</a></td>";
+				echo '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0].'">'.$name1."</a></td>";
 				if(($spouse==1 AND $table==2) OR ($spouse==2 AND $table==1)) {
-					print '<td style="border:0px;">&nbsp;</td>';
-					print '<td style="border:0px;">&nbsp;</td>';
+					echo '<td style="border:0px;">&nbsp;</td>';
+					echo '<td style="border:0px;">&nbsp;</td>';
 				}
-				print '</tr><tr>';
-				print '<td style="border:0px;">&#8595;</td>';
+				echo '</tr><tr>';
+				echo '<td style="border:0px;">&#8595;</td>';
 			}
 
-			print "</tr>";
+			echo "</tr>";
 			$count=$foundY_nr;
 			while($count!=0) { 
 				$persidDb=$db_functions->get_person($rel_arrayY[$count][0]);
@@ -2256,52 +2256,52 @@ function display_table() {
 				else {
 					$fam=$persidDb->pers_famc;
 				}
-				print "<tr>";
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
+				echo "<tr>";
+				echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 				if($spouse==1 OR $spouse==2 OR $spouse==3) { 
-					print '<td style="border:0px;">&nbsp;</td>';
+					echo '<td style="border:0px;">&nbsp;</td>';
 				}
-				print '</tr><tr><td style="border:0px;">&#8593;</td>';
+				echo '</tr><tr><td style="border:0px;">&#8593;</td>';
 				$count=$rel_arrayY[$count][2];
 			}
 
-			print "</tr><tr>";
+			echo "</tr><tr>";
 
 			if(($spouse==1 AND $table==2) OR ($spouse==2 AND $table==1) OR $spouse==3) { 
 				$persidDb=$db_functions->get_person($rel_arrayY[0][0]);
 				$name=$pers_cls->person_name($persidDb);
 				$personname=$name["name"];
 /*				
-				print '<td style="border:0px;">&#8593;</td>';
-				print '<td style="border:0px;">&nbsp;</td>';
-				print '<td style="border:0px;">&nbsp;</td>';
-				print '</tr><tr>';
+				echo '<td style="border:0px;">&#8593;</td>';
+				echo '<td style="border:0px;">&nbsp;</td>';
+				echo '<td style="border:0px;">&nbsp;</td>';
+				echo '</tr><tr>';
 */				
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 				
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famspouseY."&amp;main_person=".$rel_arrayY[0][0].'">'.$personname."</a></td>";
+				echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famspouseY."&amp;main_person=".$rel_arrayY[0][0].'">'.$personname."</a></td>";
 				
 				$persidDb=$db_functions->get_person($gednr2);
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 
-				print '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
+				echo '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
 				
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
+				echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
 			}
 			else { 
 				$persidDb=$db_functions->get_person($rel_arrayY[0][0]);
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0].'">'.$name2."</a></td>";
+				echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0].'">'.$name2."</a></td>";
 				if(($spouse==1 AND $table==1) OR ($spouse==2 AND $table==2)) {
-					print '<td style="border:0px;">&nbsp;</td>';
-					print '<td style="border:0px;">&nbsp;</td>';
+					echo '<td style="border:0px;">&nbsp;</td>';
+					echo '<td style="border:0px;">&nbsp;</td>';
 				}
 			}
-			print "</tr></table>";
+			echo "</tr></table>";
 		}
 	}
 	if($table==3 OR $table==4 OR $table==5 OR $table==6 ) { 
@@ -2316,7 +2316,7 @@ function display_table() {
 		if($spouse==2) { $rel_arrayY = $rel_arrayspouseY;}
 		if($spouse==3) { $rel_arrayX = $rel_arrayspouseX; $rel_arrayY = $rel_arrayspouseY;}
 
-		//print "<table id=\"reltable\" class=\"humo reltable\">";
+		//echo "<table id=\"reltable\" class=\"humo reltable\">";
 		echo '<br><table  class="newrel" style="border-collapse:separate;border-spacing:3px 1px;">'; 
 
 		$persidDb=$db_functions->get_person($rel_arrayX[$foundX_match][0]);
@@ -2326,10 +2326,10 @@ function display_table() {
 		if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 		else $ext_cls = "extended_woman ";
 
-		print "<tr>";
+		echo "<tr>";
 		if($spouse==1 OR $spouse==3) {
-			print '<td style="border:0px;">&nbsp;</td>'; 
-			print '<td style="border:0px;">&nbsp;</td>'; 
+			echo '<td style="border:0px;">&nbsp;</td>'; 
+			echo '<td style="border:0px;">&nbsp;</td>'; 
 		}
 		if($persidDb->pers_fams) {
 			$fams=$persidDb->pers_fams;
@@ -2339,28 +2339,28 @@ function display_table() {
 		else {
 			$fam=$persidDb->pers_famc;
 		}
-		print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px" colspan='.$colspan.'><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a>";
+		echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px" colspan='.$colspan.'><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a>";
 
-		print "</td>";
+		echo "</td>";
 		if($spouse==2 OR $spouse==3) {
-			print '<td style="border:0px;">&nbsp;</td>'; 
-			print '<td style="border:0px;">&nbsp;</td>'; 
+			echo '<td style="border:0px;">&nbsp;</td>'; 
+			echo '<td style="border:0px;">&nbsp;</td>'; 
 		}
-		print "</tr>";
+		echo "</tr>";
 		
-		print "<tr>";
+		echo "<tr>";
 		if($spouse==1 OR $spouse==3) {
-			print '<td style="border:0px;">&nbsp;</td>'; 
-			print '<td style="border:0px;">&nbsp;</td>'; 
+			echo '<td style="border:0px;">&nbsp;</td>'; 
+			echo '<td style="border:0px;">&nbsp;</td>'; 
 		}
-		print '<td style="border:0px;">&#8593;</td>'; 
-		print '<td style="border:0px;">&nbsp;</td>'; 
-		print '<td style="border:0px;">&#8595;</td>';
+		echo '<td style="border:0px;">&#8593;</td>'; 
+		echo '<td style="border:0px;">&nbsp;</td>'; 
+		echo '<td style="border:0px;">&#8595;</td>';
 		if($spouse==2 OR $spouse==3) {
-			print '<td style="border:0px;">&nbsp;</td>'; 
-			print '<td style="border:0px;">&nbsp;</td>'; 
+			echo '<td style="border:0px;">&nbsp;</td>'; 
+			echo '<td style="border:0px;">&nbsp;</td>'; 
 		}
-		print "</tr>";
+		echo "</tr>";
 		
 
 		for($e=1; $e <= $rowcount; $e++) {
@@ -2373,10 +2373,10 @@ function display_table() {
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 
-				print "<tr>";
+				echo "<tr>";
 				if($spouse==1 OR $spouse==3) {
-					print '<td style="border:0px;">&nbsp;</td>';  
-					print '<td style="border:0px;">&nbsp;</td>'; 
+					echo '<td style="border:0px;">&nbsp;</td>';  
+					echo '<td style="border:0px;">&nbsp;</td>'; 
 				}
 				if($persidDb->pers_fams) {
 					$fams=$persidDb->pers_fams;
@@ -2386,11 +2386,11 @@ function display_table() {
 				else {
 					$fam=$persidDb->pers_famc;
 				}
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
+				echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 				$countX=$rel_arrayX[$countX][2];
 			}
 			elseif($name1_done==0) { 
-				print "<tr>";
+				echo "<tr>";
 				if($spouse==1 OR $spouse==3) {
 					$persidDb=$db_functions->get_person($rel_arrayX[0][0]);
 					$name=$pers_cls->person_name($persidDb);
@@ -2412,27 +2412,27 @@ function display_table() {
 					if($persidDb2->pers_sexe == "M") $ext_cls = "extended_man ";
 					else $ext_cls = "extended_woman ";
 					
-					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a>";
+					echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a>";
 					
-					print '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>'; 
+					echo '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>'; 
 					
-					print '<td  class="'.$ext_cls2.'" style="width:200px;text-align:center;padding:2px" class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
+					echo '<td  class="'.$ext_cls2.'" style="width:200px;text-align:center;padding:2px" class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 				}
 				else {
 					$persidDb2=$db_functions->get_person($gednr);
 					if($persidDb2->pers_sexe == "M") $ext_cls = "extended_man ";
 					else $ext_cls = "extended_woman ";
-					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a></td>";
+					echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a></td>";
 				}
 				$name1_done=1;
 			}
 			else { 
-				print "<tr>";
+				echo "<tr>";
 				if($spouse==1 OR $spouse==3) {
-					print '<td style="border:0px;">&nbsp;</td>'; 
-					print '<td style="border:0px;">&nbsp;</td>'; 
+					echo '<td style="border:0px;">&nbsp;</td>'; 
+					echo '<td style="border:0px;">&nbsp;</td>'; 
 				}
-				print '<td style="border:0px;">&nbsp;</td>';
+				echo '<td style="border:0px;">&nbsp;</td>';
 			}
 
 			if($countY!=0) { 
@@ -2443,7 +2443,7 @@ function display_table() {
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 				
-				print '<td style="border:0px;width:70px">&nbsp;</td>';
+				echo '<td style="border:0px;width:70px">&nbsp;</td>';
 
 				if($persidDb->pers_fams) {
 					$fams=$persidDb->pers_fams;
@@ -2453,12 +2453,12 @@ function display_table() {
 				else {
 					$fam=$persidDb->pers_famc;
 				}
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
+				echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 				if($spouse==2 OR $spouse==3) {
-					print '<td style="border:0px;">&nbsp;</td>';
-					print '<td style="border:0px;">&nbsp;</td>';  
+					echo '<td style="border:0px;">&nbsp;</td>';
+					echo '<td style="border:0px;">&nbsp;</td>';  
 				}
-				print "</tr>";
+				echo "</tr>";
 				$countY=$rel_arrayY[$countY][2];
 			}
 			elseif($name2_done==0) { 
@@ -2470,7 +2470,7 @@ function display_table() {
 					if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 					else $ext_cls = "extended_woman ";
 
-					print '<td style="border:0px;width:70px">&nbsp;</td>';
+					echo '<td style="border:0px;width:70px">&nbsp;</td>';
 
 					if($persidDb->pers_fams) {
 						$fams=$persidDb->pers_fams;
@@ -2480,54 +2480,54 @@ function display_table() {
 					else {
 						$fam=$persidDb->pers_famc;
 					}
-					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
+					echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 					
-					print '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
+					echo '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
 					
 					$persidDb=$db_functions->get_person($gednr2);
 					if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 					else $ext_cls = "extended_woman ";
 					
-					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
+					echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
 				}
 				else {
-					print '<td style="border:0px;width:70px">&nbsp;</td>';
+					echo '<td style="border:0px;width:70px">&nbsp;</td>';
 
 					$persidDb=$db_functions->get_person($gednr2);
 					if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 					else $ext_cls = "extended_woman ";
 					
-					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
+					echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
 				}
-				print "</tr>";
+				echo "</tr>";
 				$name2_done=1;
 			}
 			else { 
-				print '<td style="border:0px;width:70px>">&nbsp;</td>';
-				print '<td style="border:0px;">&nbsp;</td>';
+				echo '<td style="border:0px;width:70px>">&nbsp;</td>';
+				echo '<td style="border:0px;">&nbsp;</td>';
 				if($spouse==2 OR $spouse==3) {
-					print '<td style="border:0px;">&nbsp;</td>'; 
-					print '<td style="border:0px;">&nbsp;</td>'; 
+					echo '<td style="border:0px;">&nbsp;</td>'; 
+					echo '<td style="border:0px;">&nbsp;</td>'; 
 				}
-				print "</tr>";
+				echo "</tr>";
 			}
 
-				print "<tr>";
+				echo "<tr>";
 				if($spouse==1 OR $spouse==3) {
-					print '<td style="border:0px;">&nbsp;</td>';  
-					print '<td style="width=50px;border:0px;">&nbsp;</td>'; 
+					echo '<td style="border:0px;">&nbsp;</td>';  
+					echo '<td style="width=50px;border:0px;">&nbsp;</td>'; 
 				}
-				if($name1_done==0) { print '<td style="border:0px;">&#8593;</td>'; } else { print '<td style="border:0px;">&nbsp;</td>';  }
-				print '<td style="border:0px;">&nbsp;</td>';
-				if($name2_done==0) { print '<td style="border:0px;">&#8595;</td>'; }  else { print '<td style="border:0px;">&nbsp;</td>';  }
+				if($name1_done==0) { echo '<td style="border:0px;">&#8593;</td>'; } else { echo '<td style="border:0px;">&nbsp;</td>';  }
+				echo '<td style="border:0px;">&nbsp;</td>';
+				if($name2_done==0) { echo '<td style="border:0px;">&#8595;</td>'; }  else { echo '<td style="border:0px;">&nbsp;</td>';  }
 				if($spouse==2 OR $spouse==3) {
-					print '<td style="border:0px;">&nbsp;</td>';  
-					print '<td style="border:0px;">&nbsp;</td>'; 
+					echo '<td style="border:0px;">&nbsp;</td>';  
+					echo '<td style="border:0px;">&nbsp;</td>'; 
 				}
-				print "</tr>";
+				echo "</tr>";
 			
 		}
-		print "</table>";
+		echo "</table>";
 	}
 }
 //-----------------------------------------------------------------------------------------------------
@@ -2829,7 +2829,7 @@ function join_path($workarr,$path2,$pers2,$ref) {
 
 /* displays result of extended marital calculator */
 
-function display_result($result) {  
+function display_result($result) {
 	// $result holds the entire track of persons from person A to person B
 	// this string is made up of items sperated by ";"
 	// each items starts with "par" (parent), "chd" (child) or "spo" (spouse), followed by the gedcomnumber of the person
@@ -2981,6 +2981,7 @@ $name1= ''; $name2= '';
 
 $pers_cls = New person_cls;
 
+/*
 //======== HELP POPUP ========================
 if(CMS_SPECIFIC=="Joomla") {
 	echo '<div class="fonts '.$rtlmarker.'sddm" style="z-index:400; position:absolute; top:20px; left:10px;">';
@@ -2990,37 +2991,35 @@ else {
 	echo '<div class="fonts '.$rtlmarker.'sddm" style="margin-right:10px; float:right; display:inline">';
 	$popwidth="";
 }
-
-echo '<a href="#"';
-echo ' style="display:inline;" ';
-if(CMS_SPECIFIC=="Joomla") {
-	echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
-}
-else {
-	echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
-}
-echo 'onmouseout="mclosetime()">';
-echo '&nbsp;&nbsp;&nbsp;<strong><span class="print_version">'.__('Information about the Relationship Calculator').'</span></strong>';
-echo '</a>&nbsp;';
-echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-print '<br>';
-
-echo __('This calculator will find the following relationships:<br>
-<ul><li>Any blood relationship between X and Y ("X is great-grandfather of Y", "X is 3rd cousin once removed of Y" etc.)</li>
-<li>Blood relationship between the spouse of X and person Y ("X is spouse of 2nd cousin of Y", "X is son-in-law of Y")</li>
-<li>Blood relationship between person X and the spouse of Y ("X is 2nd cousin of spouse of Y", "X is father-in-law of Y")</li>
-<li>Blood relationship between spouse of X and spouse of Y ("X spouse of sister-in-law of Y" etc.)</li>
-<li>Direct marital relation ("X is spouse of Y")</li></ul>
-Directions for use:<br>
-<ul><li>Enter first and/or last name (or part of names) in the search boxes and press "Search". Repeat this for person 1 and 2.</li>
-<li>If more than 1 person is found, select the one you want from the search result pulldown box. Repeat this for person 1 and 2.</li>
-<li>Now press the "Calculate relationships" button on the right.</li>
-<li><b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b></li></ul>');
-
+	echo '<a href="#"';
+	echo ' style="display:inline;" ';
+	if(CMS_SPECIFIC=="Joomla") {
+		echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
+	}
+	else {
+		echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
+	}
+	echo 'onmouseout="mclosetime()">';
+	echo '&nbsp;&nbsp;&nbsp;<strong><span class="print_version">'.__('Information about the Relationship Calculator').'</span></strong>';
+	echo '</a>&nbsp;';
+	echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+	echo '<br>';
+		echo __('This calculator will find the following relationships:<br>
+		<ul><li>Any blood relationship between X and Y ("X is great-grandfather of Y", "X is 3rd cousin once removed of Y" etc.)</li>
+		<li>Blood relationship between the spouse of X and person Y ("X is spouse of 2nd cousin of Y", "X is son-in-law of Y")</li>
+		<li>Blood relationship between person X and the spouse of Y ("X is 2nd cousin of spouse of Y", "X is father-in-law of Y")</li>
+		<li>Blood relationship between spouse of X and spouse of Y ("X spouse of sister-in-law of Y" etc.)</li>
+		<li>Direct marital relation ("X is spouse of Y")</li></ul>
+		Directions for use:<br>
+		<ul><li>Enter first and/or last name (or part of names) in the search boxes and press "Search". Repeat this for person 1 and 2.</li>
+		<li>If more than 1 person is found, select the one you want from the search result pulldown box. Repeat this for person 1 and 2.</li>
+		<li>Now press the "Calculate relationships" button on the right.</li>
+		<li><b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b></li></ul>');
+	echo '</div>';
 echo '</div>';
-echo '</div>';
-
 //=================================
+*/
+
 
 if (isset($_SESSION['tree_prefix'])) { $tree_prefix=$_SESSION['tree_prefix'];}
 
@@ -3056,12 +3055,12 @@ if(isset($_POST["switch"])) {
 // ===== BEGIN SEARCH BOX SYSTEM
 ob_implicit_flush(true);
 //ob_start();
-echo "<div class='print_version'>";
-print '<span class="fonts"><br><br>&nbsp;&nbsp;&nbsp;'.__('You can enter names or part of names in either search box, or leave a search box empty').'<br>';
-echo '&nbsp;&nbsp;&nbsp;';
-echo __('<b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b>');
-echo '</span><br>';
-/* echo '<br>'; */
+//echo "<div class='print_version'>";
+//echo '<span class="fonts"><br><br>&nbsp;&nbsp;&nbsp;'.__('You can enter names or part of names in either search box, or leave a search box empty').'<br>';
+//echo '&nbsp;&nbsp;&nbsp;';
+//echo __('<b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b>');
+//echo '</span><br>';
+
 
 if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
 	echo '<br><div id="geargif"><img src="images/gear.gif">&nbsp;&nbsp;&nbsp;'.__('Calculating relations').'</div>';
@@ -3075,193 +3074,217 @@ else {
 }
 
 echo '<br><table class="humo relmenu">';
-echo '<tr class=table_headline><th>&nbsp;</th>';
-	print '<th>'.__('First name').'</th>';
-	print '<th>'.__('Last name').'</th>';
-	echo '<th>'.__('or: ID').'</th>';
-	echo '<th>'.__('Search').'</th>';
-	echo '<th colspan=2>'.__('Pick a name from search results').'</th>';
-	echo '<th>'.__('Calculate relationships').'</th></tr>';
+	echo '<tr class="table_headline">';
+		//echo '<th>&nbsp;</th>';
 
-echo '<tr><td>';
-$language_person=__('Person').' ';
-if(CMS_SPECIFIC == "Joomla") { $language_person=''; }  // for joomla keep it short....
-echo $language_person.'1:';
-echo '</td><td>';
+		// *** HELP POPUP ***
+		echo '<th style="font-weight: normal;"><div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+			echo '<a href="#" style="display:inline" ';
+			echo 'onmouseover="mopen(event,\'help_address_address\',100,200)"';
+			echo 'onmouseout="mclosetime()">';
+				echo '<img src="images/help.png" height="16" width="16">';
+			echo '</a>';
+			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_address_address" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				echo __('This calculator will find the following relationships:<br>
+<ul><li>Any blood relationship between X and Y ("X is great-grandfather of Y", "X is 3rd cousin once removed of Y" etc.)</li>
+<li>Blood relationship between the spouse of X and person Y ("X is spouse of 2nd cousin of Y", "X is son-in-law of Y")</li>
+<li>Blood relationship between person X and the spouse of Y ("X is 2nd cousin of spouse of Y", "X is father-in-law of Y")</li>
+<li>Blood relationship between spouse of X and spouse of Y ("X spouse of sister-in-law of Y" etc.)</li>
+<li>Direct marital relation ("X is spouse of Y")</li></ul>
+Directions for use:<br>
+<ul><li>Enter first and/or last name (or part of names) in the search boxes and press "Search". Repeat this for person 1 and 2.</li>
+<li>If more than 1 person is found, select the one you want from the search result pulldown box. Repeat this for person 1 and 2.</li>
+<li>Now press the "Calculate relationships" button on the right.</li>
+<li><b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b></li></ul>');
+			echo '</div>';
+		echo '</div></th>';
 
-$search_firstname='';
-if (isset($_POST["search_firstname"]) AND !isset($_POST["switch"])){
-	$search_firstname=safe_text_db($_POST['search_firstname']);
-	$_SESSION['rel_search_firstname']=$search_firstname;
-}
-if (isset($_SESSION['rel_search_firstname'])){ $search_firstname=$_SESSION['rel_search_firstname']; }
+		echo '<th>'.__('First name').'</th>';
+		echo '<th>'.__('Last name').'</th>';
+		echo '<th>'.__('or: ID').'</th>';
+		echo '<th>'.__('Search').'</th>';
+		echo '<th colspan=2>'.__('Pick a name from search results').'</th>';
+		echo '<th>'.__('Calculate relationships').'</th></tr>';
 
-$search_lastname='';
-if (isset($_POST["search_lastname"]) AND !isset($_POST["switch"])){
-	$search_lastname=safe_text_db($_POST['search_lastname']);
-	$_SESSION['rel_search_lastname']=$search_lastname;
-}
-if (isset($_SESSION['rel_search_lastname'])){ $search_lastname=$_SESSION['rel_search_lastname']; }
+	echo '<tr><td>';
+	$language_person=__('Person').' ';
+	if(CMS_SPECIFIC == "Joomla") { $language_person=''; }  // for joomla keep it short....
+	echo $language_person.'1:';
+	echo '</td><td>';
 
-$search_gednr='';
-if (isset($_POST["search_gednr"]) AND !isset($_POST["switch"])){
-	$search_gednr=safe_text_db($_POST['search_gednr']);
-	$_SESSION['rel_search_gednr']=$search_gednr;
-}
-if (isset($_SESSION['rel_search_gednr'])){ $search_gednr=$_SESSION['rel_search_gednr']; }
-
-print ' <input type="text" class="fonts relboxes" name="search_firstname" value="'.safe_text_show($search_firstname).'" size="15"> ';
-echo '</td><td>';
-
-print '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname" value="'.safe_text_show($search_lastname).'" size="15">';
-echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
-echo '</td><td>';
-print '&nbsp; <input class="fonts relboxes" type="text" name="search_gednr" value="'.safe_text_show($search_gednr).'" size="8">';
-echo '</td><td>';
-print '&nbsp; <input class="fonts" type="submit" name="search1" value="'.__('Search').'">';
-echo '</td><td>';
-
-$len=230;  // length of name pulldown box
-if(CMS_SPECIFIC == "Joomla") { $len = 180; } // for joomla keep it short....
-
-if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
-	if($search_lastname!='' OR $search_firstname!='') {
-		$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".$search_lastname."%'
-			AND pers_firstname LIKE '%".$search_firstname."%'
-			ORDER BY pers_lastname, pers_firstname";
+	$search_firstname='';
+	if (isset($_POST["search_firstname"]) AND !isset($_POST["switch"])){
+		$search_firstname=safe_text_db($_POST['search_firstname']);
+		$_SESSION['rel_search_firstname']=$search_firstname;
 	}
-	elseif($search_gednr!='') {
-		$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND (pers_gedcomnumber = '".$search_gednr."' OR pers_gedcomnumber = 'I".strtoupper($search_gednr)."')
-			ORDER BY pers_lastname, pers_firstname";
+	if (isset($_SESSION['rel_search_firstname'])){ $search_firstname=$_SESSION['rel_search_firstname']; }
+
+	$search_lastname='';
+	if (isset($_POST["search_lastname"]) AND !isset($_POST["switch"])){
+		$search_lastname=safe_text_db($_POST['search_lastname']);
+		$_SESSION['rel_search_lastname']=$search_lastname;
 	}
+	if (isset($_SESSION['rel_search_lastname'])){ $search_lastname=$_SESSION['rel_search_lastname']; }
 
-	// *** Link from person pop-up menu ***
-	if (isset($_SESSION["search_pers_id"]))
-		$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_id='".$_SESSION["search_pers_id"]."'";
+	$search_gednr='';
+	if (isset($_POST["search_gednr"]) AND !isset($_POST["switch"])){
+		$search_gednr=safe_text_db($_POST['search_gednr']);
+		$_SESSION['rel_search_gednr']=$search_gednr;
+	}
+	if (isset($_SESSION['rel_search_gednr'])){ $search_gednr=$_SESSION['rel_search_gednr']; }
 
-	$search_result = $dbh->query($search_qry);
-	if ($search_result){
-		if($search_result->rowCount()>0) {
-			print '<select class="fonts" size="1" name="person"  style="width:'.$len.'px">';
-				while($searchDb=$search_result->fetch(PDO::FETCH_OBJ)) {
-					$name=$pers_cls->person_name($searchDb);
+	echo ' <input type="text" class="fonts relboxes" name="search_firstname" value="'.safe_text_show($search_firstname).'" size="15"> ';
+	echo '</td><td>';
+
+	echo '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname" value="'.safe_text_show($search_lastname).'" size="15">';
+	echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
+	echo '</td><td>';
+	echo '&nbsp; <input class="fonts relboxes" type="text" name="search_gednr" value="'.safe_text_show($search_gednr).'" size="8">';
+	echo '</td><td>';
+	echo '&nbsp; <input class="fonts" type="submit" name="search1" value="'.__('Search').'">';
+	echo '</td><td>';
+
+	$len=230;  // length of name pulldown box
+	if(CMS_SPECIFIC == "Joomla") { $len = 180; } // for joomla keep it short....
+
+	if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
+		if($search_lastname!='' OR $search_firstname!='') {
+			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".$search_lastname."%'
+				AND pers_firstname LIKE '%".$search_firstname."%'
+				ORDER BY pers_lastname, pers_firstname";
+		}
+		elseif($search_gednr!='') {
+			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				AND (pers_gedcomnumber = '".$search_gednr."' OR pers_gedcomnumber = 'I".strtoupper($search_gednr)."')
+				ORDER BY pers_lastname, pers_firstname";
+		}
+
+		// *** Link from person pop-up menu ***
+		if (isset($_SESSION["search_pers_id"]))
+			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_id='".$_SESSION["search_pers_id"]."'";
+
+		$search_result = $dbh->query($search_qry);
+		if ($search_result){
+			if($search_result->rowCount()>0) {
+				echo '<select class="fonts" size="1" name="person"  style="width:'.$len.'px">';
+					while($searchDb=$search_result->fetch(PDO::FETCH_OBJ)) {
+						$name=$pers_cls->person_name($searchDb);
+						if ($name["show_name"]){
+							echo '<option';
+							if(isset($person)) {
+								if ($searchDb->pers_gedcomnumber==$person AND !(isset($_POST["search1"]) AND $search_lastname=='' AND $search_firstname=='' AND $search_gednr=='')){
+									echo ' SELECTED';
+								}
+							}
+
+							$birth='';
+							if ($searchDb->pers_bapt_date){
+								$birth=' '.__('~').' '.date_place($searchDb->pers_bapt_date,'');
+							}
+							if ($searchDb->pers_birth_date){
+								$birth=' '.__('*').' '.date_place($searchDb->pers_birth_date,'');
+							}
+							$search1_cls = New person_cls;
+							$search1_cls->construct($searchDb);	
+							if($search1_cls->privacy)	 { $birth = ''; }
+							echo ' value="'.$searchDb->pers_gedcomnumber.'">'.$name["index_name"].$birth.' ['.$searchDb->pers_gedcomnumber.']</option>';
+						}
+					}
+					echo '</select>';
+				}
+			else {echo '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>'; }
+		}
+	}
+	else {  echo '<select size="1" name="person" style="width:'.$len.'px"><option></option></select>'; }
+	echo '</td><td rowspan=2>';
+	//echo '<input type="image" src="'.ROOTPATH.'images/turn_around.gif" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value="Submit" name="switch" >';
+	echo '<input type="submit" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value=" " name="switch" style="background: #fff url(\''.CMS_ROOTPATH.'images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
+	echo '</td><td rowspan=2>';
+	echo '<input type="submit" name="calculator" value="'.__('Calculate relationships').'" style="font-size:115%;">';
+	echo '</td></tr><tr><td>';
+
+	// SECOND PERSON
+	echo $language_person.'2:';
+	echo '</td><td>';
+
+	$search_firstname2='';
+	if (isset($_POST["search_firstname2"]) AND !isset($_POST["switch"])){
+		$search_firstname2=safe_text_db($_POST['search_firstname2']);
+		$_SESSION['rel_search_firstname2']=$search_firstname2;
+	}
+	if (isset($_SESSION['rel_search_firstname2'])){ $search_firstname2=$_SESSION['rel_search_firstname2']; }
+
+	$search_lastname2='';
+	if (isset($_POST["search_lastname2"]) AND !isset($_POST["switch"])){
+		$search_lastname2=safe_text_db($_POST['search_lastname2']);
+		$_SESSION['rel_search_lastname2']=$search_lastname2;
+	}
+	if (isset($_SESSION['rel_search_lastname2'])){ $search_lastname2=$_SESSION['rel_search_lastname2']; }
+
+	$search_gednr2='';
+	if (isset($_POST["search_gednr2"]) AND !isset($_POST["switch"])){
+		$search_gednr2=safe_text_db($_POST['search_gednr2']);
+		$_SESSION['rel_search_gednr2']=$search_gednr2;
+	}
+	if (isset($_SESSION['rel_search_gednr2'])){ $search_gednr2=$_SESSION['rel_search_gednr2']; }
+
+	echo ' <input type="text" class="fonts relboxes" name="search_firstname2" value="'.safe_text_show($search_firstname2).'" size="15"> ';
+	echo '</td><td>';
+	echo '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname2" value="'.safe_text_show($search_lastname2).'" size="15">';
+	echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
+	echo '</td><td>';
+	echo '&nbsp; <input class="fonts relboxes" type="text" name="search_gednr2" value="'.safe_text_show($search_gednr2).'" size="8">';
+	echo '</td><td>';
+	echo '&nbsp; <input class="fonts" type="submit" name="search2" value="'.__('Search').'">';
+	echo '</td><td>';
+
+	if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
+		if($search_lastname2!='' OR $search_firstname2!='') {
+			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
+				LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ORDER BY pers_lastname, pers_firstname";
+		}
+		elseif($search_gednr2!='') {
+			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND (pers_gedcomnumber = '".$search_gednr2."' OR pers_gedcomnumber = 'I".strtoupper($search_gednr2)."') ORDER BY pers_lastname, pers_firstname";
+		}
+		$search_result2 = $dbh->query($search_qry);
+		if ($search_result2){
+			if($search_result2->rowCount()>0) {
+				echo '<select class="fonts" size="1" name="person2" style="width:'.$len.'px">';
+				while($searchDb2=$search_result2->fetch(PDO::FETCH_OBJ)) {
+					$name=$pers_cls->person_name($searchDb2);
 					if ($name["show_name"]){
 						echo '<option';
-						if(isset($person)) {
-							if ($searchDb->pers_gedcomnumber==$person AND !(isset($_POST["search1"]) AND $search_lastname=='' AND $search_firstname=='' AND $search_gednr=='')){
+						if(isset($person2)) {
+							if ($searchDb2->pers_gedcomnumber==$person2 AND !(isset($_POST["search2"]) AND $search_lastname2=='' AND $search_firstname2=='' AND $search_gednr2=='')){
 								echo ' SELECTED';
 							}
 						}
-
 						$birth='';
-						if ($searchDb->pers_bapt_date){
-							$birth=' '.__('~').' '.date_place($searchDb->pers_bapt_date,'');
+						if ($searchDb2->pers_bapt_date){
+							$birth=' '.__('~').' '.date_place($searchDb2->pers_bapt_date,'');
 						}
-						if ($searchDb->pers_birth_date){
-							$birth=' '.__('*').' '.date_place($searchDb->pers_birth_date,'');
+						if ($searchDb2->pers_birth_date){
+							$birth=' '.__('*').' '.date_place($searchDb2->pers_birth_date,'');
 						}
-						$search1_cls = New person_cls;
-						$search1_cls->construct($searchDb);	
-						if($search1_cls->privacy)	 { $birth = ''; }
-						echo ' value="'.$searchDb->pers_gedcomnumber.'">'.$name["index_name"].$birth.' ['.$searchDb->pers_gedcomnumber.']</option>';
+						$search2_cls = New person_cls;
+						$search2_cls->construct($searchDb2);
+						if($search2_cls->privacy){ $birth = ''; }
+						echo ' value="'.$searchDb2->pers_gedcomnumber.'">'.$name["index_name"].$birth.' ['.$searchDb2->pers_gedcomnumber.']</option>';
+						
 					}
 				}
 				echo '</select>';
 			}
-		else {print '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>'; }
-	}
-}
-else {  print '<select size="1" name="person" style="width:'.$len.'px"><option></option></select>'; }
-echo '</td><td rowspan=2>';
-//echo '<input type="image" src="'.ROOTPATH.'images/turn_around.gif" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value="Submit" name="switch" >';
-echo '<input type="submit" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value=" " name="switch" style="background: #fff url(\''.CMS_ROOTPATH.'images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
-echo '</td><td rowspan=2>';
-echo '<input type="submit" name="calculator" value="'.__('Calculate relationships').'" style="font-size:115%;">';
-echo '</td></tr><tr><td>';
-
-// SECOND PERSON
-echo $language_person.'2:';
-echo '</td><td>';
-
-$search_firstname2='';
-if (isset($_POST["search_firstname2"]) AND !isset($_POST["switch"])){
-	$search_firstname2=safe_text_db($_POST['search_firstname2']);
-	$_SESSION['rel_search_firstname2']=$search_firstname2;
-}
-if (isset($_SESSION['rel_search_firstname2'])){ $search_firstname2=$_SESSION['rel_search_firstname2']; }
-
-$search_lastname2='';
-if (isset($_POST["search_lastname2"]) AND !isset($_POST["switch"])){
-	$search_lastname2=safe_text_db($_POST['search_lastname2']);
-	$_SESSION['rel_search_lastname2']=$search_lastname2;
-}
-if (isset($_SESSION['rel_search_lastname2'])){ $search_lastname2=$_SESSION['rel_search_lastname2']; }
-
-$search_gednr2='';
-if (isset($_POST["search_gednr2"]) AND !isset($_POST["switch"])){
-	$search_gednr2=safe_text_db($_POST['search_gednr2']);
-	$_SESSION['rel_search_gednr2']=$search_gednr2;
-}
-if (isset($_SESSION['rel_search_gednr2'])){ $search_gednr2=$_SESSION['rel_search_gednr2']; }
-
-print ' <input type="text" class="fonts relboxes" name="search_firstname2" value="'.safe_text_show($search_firstname2).'" size="15"> ';
-echo '</td><td>';
-print '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname2" value="'.safe_text_show($search_lastname2).'" size="15">';
-echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
-echo '</td><td>';
-print '&nbsp; <input class="fonts relboxes" type="text" name="search_gednr2" value="'.safe_text_show($search_gednr2).'" size="8">';
-echo '</td><td>';
-print '&nbsp; <input class="fonts" type="submit" name="search2" value="'.__('Search').'">';
-echo '</td><td>';
-
-if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
-	if($search_lastname2!='' OR $search_firstname2!='') {
-		$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
-			LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ORDER BY pers_lastname, pers_firstname";
-	}
-	elseif($search_gednr2!='') {
-		$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND (pers_gedcomnumber = '".$search_gednr2."' OR pers_gedcomnumber = 'I".strtoupper($search_gednr2)."') ORDER BY pers_lastname, pers_firstname";
-	}
-	$search_result2 = $dbh->query($search_qry);
-	if ($search_result2){
-		if($search_result2->rowCount()>0) {
-			print '<select class="fonts" size="1" name="person2" style="width:'.$len.'px">';
-			while($searchDb2=$search_result2->fetch(PDO::FETCH_OBJ)) {
-				$name=$pers_cls->person_name($searchDb2);
-				if ($name["show_name"]){
-					echo '<option';
-					if(isset($person2)) {
-						if ($searchDb2->pers_gedcomnumber==$person2 AND !(isset($_POST["search2"]) AND $search_lastname2=='' AND $search_firstname2=='' AND $search_gednr2=='')){
-							echo ' SELECTED';
-						}
-					}
-					$birth='';
-					if ($searchDb2->pers_bapt_date){
-						$birth=' '.__('~').' '.date_place($searchDb2->pers_bapt_date,'');
-					}
-					if ($searchDb2->pers_birth_date){
-						$birth=' '.__('*').' '.date_place($searchDb2->pers_birth_date,'');
-					}
-					$search2_cls = New person_cls;
-					$search2_cls->construct($searchDb2);
-					if($search2_cls->privacy){ $birth = ''; }
-					echo ' value="'.$searchDb2->pers_gedcomnumber.'">'.$name["index_name"].$birth.' ['.$searchDb2->pers_gedcomnumber.']</option>';
-					
-				}
-			}
-			echo '</select>';
+			else { echo '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>'; }
 		}
-		else { print '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>'; }
 	}
-}
-else { print '<select size="1" name="person2" style="width:'.$len.'px"><option></option></select>'; }
+	else { echo '<select size="1" name="person2" style="width:'.$len.'px"><option></option></select>'; }
 echo '</td></tr></table>';
 /* echo '</form>'; */
 echo "</div>";
-
 // ===== END SEARCH BOX SYSTEM
+
 ob_end_flush(); 
 ob_implicit_flush(true);
 
@@ -3271,7 +3294,7 @@ if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
 	ob_start();
 
 	echo '<script type="text/javascript"> var element = document.getElementById("geargif");  element.parentNode.removeChild(element);   </script>';
-	
+
 	$count=0; $countfunc = 0;
 
 	$globaltrack = "";
@@ -3284,7 +3307,7 @@ if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
 
 	$total_arr = array();
 
-	if(isset($_POST["extended"]) AND !isset($_POST["next_path"])) {  
+	if(isset($_POST["extended"]) AND !isset($_POST["next_path"])) {
 		$_SESSION["couple"]="";  
 		// session[couple] flags that persons A & B are a couple. consequences: 
 		// 1. don't display that (has already been done in regular calculator)
@@ -3297,19 +3320,18 @@ if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
 			foreach($fam1 as $value1) {
 				foreach($fam2 as $value2) {
 					if($value1==$value2) {
-						$_SESSION["couple"]=$value1;  
+						$_SESSION["couple"]=$value1;
 					}
 				}
 			}
 		}
 	}
 
-	echo '<br><table class="ext"><tr><td>'; 
+	echo '<br><br><table class="ext"><tr><td>'; 
+		$global_array = array();
+		$global_array2 = array(); 
 
-	$global_array = array();
-	$global_array2 = array(); 
-
-	map_tree($firstcall,$firstcall2);
+		map_tree($firstcall,$firstcall2);
 	echo '</td></tr></table>';
 	ob_end_flush();
 }
@@ -3352,7 +3374,7 @@ if(isset($_POST["calculator"]) OR isset($_POST["switch"])) { // calculate or swi
 		display(); // initiates all the comparison and calculation functions and writes result
 	}
 	else {  // "calculate" or "switch" button pressed with one or two names not selected: write warning to first choose two names
-		print "<br><h3>&nbsp;&nbsp;&nbsp;".__('You have to search and than choose Person 1 and Person 2 from the search result pulldown')."</h3>";
+		echo "<br><h3>&nbsp;&nbsp;&nbsp;".__('You have to search and than choose Person 1 and Person 2 from the search result pulldown')."</h3>";
 	}
 }
 echo '</form>';

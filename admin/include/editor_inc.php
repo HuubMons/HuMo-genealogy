@@ -576,6 +576,7 @@ if (isset($_GET['fam_down'])){
 	}
 	$sql="UPDATE humo_persons SET
 	pers_fams='".$fams."',
+	pers_indexnr='".$child_array[0]."',
 	pers_changed_user='".$username."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
@@ -597,6 +598,7 @@ if (isset($_GET['fam_up'])){
 	}
 	$sql="UPDATE humo_persons SET
 	pers_fams='".$fams."',
+	pers_indexnr='".$child_array[0]."',
 	pers_changed_user='".$username."',
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
@@ -1722,6 +1724,18 @@ if (isset($_POST['event_drop2'])){
 
 	if (isset($_POST['event_person'])){
 
+		// *** Remove NON SHARED source from event (connection in humo_connections table) ***
+		$event_sql="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
+			AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
+		$event_qry=$dbh->query($event_sql);
+		$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
+		$event_event=$eventDb->event_event;
+
+		// *** Remove sources ***
+		remove_sources($tree_id,'pers_event_source',$eventDb->event_id);
+
 		if (isset($_POST['event_descendants']) OR isset($_POST['event_ancestors'])){
 			// *** Get event_event from selected person, needed to remove colour from descendant and/ or ancestors ***
 			$event_sql="SELECT event_event FROM humo_events
@@ -1739,6 +1753,7 @@ if (isset($_POST['event_drop2'])){
 			AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
 		$result=$dbh->query($sql);
 
+		// *** Change order of events ***
 		$event_sql="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."'
 			AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
@@ -1835,6 +1850,19 @@ if (isset($_POST['event_drop2'])){
 	}
 
 	if (isset($_POST['event_family'])){
+
+		// *** Remove NON SHARED source from event (connection in humo_connections table) ***
+		$event_sql="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='family' AND event_connect_id='".$marriage."'
+			AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
+		$event_qry=$dbh->query($event_sql);
+		$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
+		$event_event=$eventDb->event_event;
+
+		// *** Remove sources ***
+		remove_sources($tree_id,'fam_event_source',$eventDb->event_id);
+
 		$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
 			AND event_connect_kind='family' AND event_connect_id='".$marriage."'
 			AND event_kind='".$event_kind."' AND event_order='".$event_order_id."'";
@@ -1855,6 +1883,7 @@ if (isset($_POST['event_drop2'])){
 		}
 	}
 
+	// *** Picture by source: pictures are stored in event table ***
 	if (isset($_POST['event_source'])){
 		$sql="DELETE FROM humo_events WHERE event_tree_id='".$tree_id."'
 			AND event_connect_kind='source' AND event_connect_id='".safe_text_db($_GET['source_id'])."'
@@ -1984,13 +2013,19 @@ if (isset($_GET['event_up'])){
 // ************************
 // *** Save connections ***
 // ************************
-
-// *** Add new address connection ***
+// *** Add new person-address connection ***
 if (isset($_GET['person_place_address']) AND isset($_GET['address_add'])){
 	$_POST['connect_add']='add_address';
 	$_POST['connect_kind']='person';
 	$_POST["connect_sub_kind"]='person_address';
 	$_POST["connect_connect_id"]=$pers_gedcomnumber;
+}
+// *** Add new family-address connection ***
+if (isset($_GET['family_place_address']) AND isset($_GET['address_add'])){
+	$_POST['connect_add']='add_address';
+	$_POST['connect_kind']='family';
+	$_POST["connect_sub_kind"]='family_address';
+	$_POST["connect_connect_id"]=$marriage;
 }
 
 // *** Add new source/ address connection ***
@@ -2022,19 +2057,58 @@ if (isset($_POST['connect_change'])){
 		$sql="UPDATE humo_connections SET
 		connect_kind='".safe_text_db($_POST['connect_kind'][$key])."',
 		connect_sub_kind='".safe_text_db($_POST['connect_sub_kind'][$key])."',
-		connect_date='".$editor_cls->date_process("connect_date",$key)."',
-		connect_place='".$editor_cls->text_process($_POST["connect_place"][$key])."',
 		connect_page='".$editor_cls->text_process($_POST["connect_page"][$key])."',
 		connect_role='".$editor_cls->text_process($_POST["connect_role"][$key])."',
-		connect_source_id='".safe_text_db($_POST['connect_source_id'][$key])."',
-		connect_item_id='".safe_text_db($_POST['connect_item_id'][$key])."',
-		connect_text='".safe_text_db($_POST['connect_text'][$key])."',";
+		connect_source_id='".safe_text_db($_POST['connect_source_id'][$key])."',";
+
+		if (isset($_POST['connect_date'][$key]) AND ($_POST['connect_date'][$key]))
+			$sql.="connect_date='".$editor_cls->date_process("connect_date",$key)."',";
+		if (isset($_POST['connect_place'][$key]) AND ($_POST['connect_place'][$key]))
+			$sql.="connect_place='".$editor_cls->text_process($_POST["connect_place"][$key])."',";
+
+		// *** Extra text for source ***
+		if (isset($_POST['connect_text'][$key]) AND ($_POST['connect_text'][$key]))
+			$sql.="connect_text='".safe_text_db($_POST['connect_text'][$key])."',";
+
 		if (isset($_POST['connect_quality'][$key]) AND ($_POST['connect_quality'][$key] OR $_POST['connect_quality'][$key]=='0'))
 			$sql.=" connect_quality='".safe_text_db($_POST['connect_quality'][$key])."',";
+
+		if (isset($_POST['connect_item_id'][$key]) AND ($_POST['connect_item_id'][$key]))
+			$sql.=" connect_item_id='".safe_text_db($_POST['connect_item_id'][$key])."',";
+
 		$sql.=" connect_changed_date='".$gedcom_date."', ";
 		$sql.=" connect_changed_time='".$gedcom_time."'";
 		$sql.=" WHERE connect_id='".safe_text_db($_POST["connect_change"][$key])."'";
+//echo $sql.'<br>';
 		$result=$dbh->query($sql);
+
+		//source_status='".$editor_cls->text_process($_POST['source_status'][$key])."',
+		//source_publ='".$editor_cls->text_process($_POST['source_publ'][$key])."',
+		//source_auth='".$editor_cls->text_process($_POST['source_auth'][$key])."',
+		//source_subj='".$editor_cls->text_process($_POST['source_subj'][$key])."',
+		//source_item='".$editor_cls->text_process($_POST['source_item'][$key])."',
+		//source_kind='".$editor_cls->text_process($_POST['source_kind'][$key])."',
+		//source_repo_caln='".$editor_cls->text_process($_POST['source_repo_caln'][$key])."',
+		//source_repo_page='".$editor_cls->text_process($_POST['source_repo_page'][$key])."',
+		//source_repo_gedcomnr='".$editor_cls->text_process($_POST['source_repo_gedcomnr'][$key])."',
+		if (isset($_POST['source_title'][$key])){
+			$username = $_SESSION['user_name_admin'];
+			//source_date='".safe_text_db($_POST['source_date'][$key])."',
+			$source_shared=''; if (isset($_POST['source_shared'][$key])) $source_shared='1';
+			$sql="UPDATE humo_sources SET
+			source_title='".$editor_cls->text_process($_POST['source_title'][$key])."',
+			source_shared='".$source_shared."',
+			source_text='".$editor_cls->text_process($_POST['source_text'][$key],true)."',
+			source_refn='".$editor_cls->text_process($_POST['source_refn'][$key])."',
+			source_date='".$editor_cls->date_process("source_date",$key)."',
+			source_place='".$editor_cls->text_process($_POST['source_place'][$key])."',
+			source_changed_user='".$username."',
+			source_changed_date='".$gedcom_date."',
+			source_changed_time='".$gedcom_time."'
+			WHERE source_tree_id='".$tree_id."' AND source_id='".safe_text_db($_POST["source_id"][$key])."'";
+			$result=$dbh->query($sql);
+			//family_tree_update($tree_id);
+		}
 	}
 }
 
@@ -2067,9 +2141,11 @@ if (isset($_GET['connect_drop'])){
 	echo ' <form method="post" action="'.$phpself2.'" style="display : inline;">';
 	echo '<input type="hidden" name="page" value="'.$_GET['page'].'">';
 	echo '<input type="hidden" name="connect_drop" value="'.$_GET['connect_drop'].'">';
-	echo '<input type="hidden" name="connect_kind" value="'.$_GET['connect_kind'].'">';
-	echo '<input type="hidden" name="connect_sub_kind" value="'.$_GET['connect_sub_kind'].'">';
-	echo '<input type="hidden" name="connect_connect_id" value="'.$_GET['connect_connect_id'].'">';
+
+	// *** Needed for events!!! ***
+	echo '<input type="hidden" name="connect_kind" value="'.$connect_kind.'">';
+	echo '<input type="hidden" name="connect_sub_kind" value="'.$connect_sub_kind.'">';
+	echo '<input type="hidden" name="connect_connect_id" value="'.$connect_connect_id.'">';
 
 	if (isset($_POST['event_person']) OR isset($_GET['event_person']))
 		echo '<input type="hidden" name="event_person" value="1">';
@@ -2088,8 +2164,57 @@ if (isset($_GET['connect_drop'])){
 	echo '</form>';
 	echo '</div>';
 }
+// *** Delete source or address connection ***
 if (isset($_POST['connect_drop2'])){
-	// *** Delete source connection ***
+
+	$event_sql="SELECT * FROM humo_connections
+		WHERE connect_id='".safe_text_db($_POST['connect_drop'])."'";
+	$event_qry=$dbh->query($event_sql);
+	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
+
+	$connect_kind=$eventDb->connect_kind;
+	$connect_sub_kind=$eventDb->connect_sub_kind;
+	$connect_connect_id=$eventDb->connect_connect_id;
+	//echo $connect_kind.' '.$connect_sub_kind.' '.$connect_connect_id.'!!';
+
+	// *** Remove (NON-SHARED) source by all connections ***
+	if ($eventDb->connect_source_id){
+		//DOESN'T WORK
+		//$sourceDb = $db_functions->get_source($eventDb->connect_source_id);
+		$source_sql="SELECT * FROM humo_sources
+			WHERE source_gedcomnr='".safe_text_db($eventDb->connect_source_id)."'
+			AND source_shared!='1'";
+		//echo $source_sql.'<br>';
+		$source_qry=$dbh->query($source_sql);
+		$sourceDb=$source_qry->fetch(PDO::FETCH_OBJ);
+		if ($sourceDb){
+			$sql="DELETE FROM humo_sources
+				WHERE source_id='".safe_text_db($sourceDb->source_id)."'";
+			$result=$dbh->query($sql);
+		}
+	}
+
+	// *** Remove NON SHARED addresses ***
+	if ($connect_sub_kind=='person_address' OR $connect_sub_kind=='family_address'){
+		$address_sql="SELECT * FROM humo_addresses
+			WHERE address_gedcomnr='".safe_text_db($eventDb->connect_item_id)."'
+			AND address_shared!='1'";
+		$address_qry=$dbh->query($address_sql);
+		$addressDb=$address_qry->fetch(PDO::FETCH_OBJ);
+		if ($addressDb){
+			$sql="DELETE FROM humo_addresses
+				WHERE address_id='".safe_text_db($addressDb->address_id)."'";
+			//echo $sql.'!';
+			$result=$dbh->query($sql);
+		}
+
+		// *** Remove sources ***
+		if ($connect_sub_kind=='person_address')
+			remove_sources($tree_id,'pers_address_source',$eventDb->connect_item_id);
+		if ($connect_sub_kind=='family_address')
+			remove_sources($tree_id,'fam_address_source',$eventDb->connect_item_id);
+	}
+
 	$sql="DELETE FROM humo_connections
 		WHERE connect_id='".safe_text_db($_POST['connect_drop'])."'";
 	$result=$dbh->query($sql);
@@ -2098,19 +2223,18 @@ if (isset($_POST['connect_drop2'])){
 	$event_order=1;
 	$event_sql="SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."'
-		AND connect_kind='".safe_text_db($_POST['connect_kind'])."'
-		AND connect_sub_kind='".safe_text_db($_POST['connect_sub_kind'])."'
-		AND connect_connect_id='".safe_text_db($_POST['connect_connect_id'])."'
+		AND connect_kind='".$connect_kind."'
+		AND connect_sub_kind='".$connect_sub_kind."'
+		AND connect_connect_id='".$connect_connect_id."'
 		ORDER BY connect_order";
 	$event_qry=$dbh->query($event_sql);
-	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){	
+	while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 		$sql="UPDATE humo_connections
 			SET connect_order='".$event_order."'
 			WHERE connect_id='".$eventDb->connect_id."'";
 		$result=$dbh->query($sql);
 		$event_order++;
 	}
-
 }
 
 if (isset($_GET['connect_down'])){
@@ -2160,11 +2284,134 @@ if (isset($_GET['connect_up'])){
 }
 
 
+// *******************
+// *** Save source ***
+// *******************
+
+// *** Add a new shared source (in page "Shared sources") without connections ***
+if (isset($_POST['source_add'])){
+	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
+	$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
+		FROM humo_sources WHERE source_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
+	$new_nr_result = $dbh->query($new_nr_qry);
+	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
+
+	$new_gedcomnumber='S1';
+	if (isset($new_nr->source_gedcomnr)){
+		$new_gedcomnumber='S'.(substr($new_nr->source_gedcomnr,1)+1);
+	}
+
+	$sql="INSERT INTO humo_sources SET
+		source_tree_id='".$tree_id."',
+		source_gedcomnr='".$new_gedcomnumber."',
+		source_shared='1',
+		source_status='".$editor_cls->text_process($_POST['source_status'])."',
+		source_title='".$editor_cls->text_process($_POST['source_title'])."',
+		source_date='".safe_text_db($_POST['source_date'])."',
+		source_place='".$editor_cls->text_process($_POST['source_place'])."',
+		source_publ='".$editor_cls->text_process($_POST['source_publ'])."',
+		source_refn='".$editor_cls->text_process($_POST['source_refn'])."',
+		source_auth='".$editor_cls->text_process($_POST['source_auth'])."',
+		source_subj='".$editor_cls->text_process($_POST['source_subj'])."',
+		source_item='".$editor_cls->text_process($_POST['source_item'])."',
+		source_kind='".$editor_cls->text_process($_POST['source_kind'])."',
+		source_repo_caln='".$editor_cls->text_process($_POST['source_repo_caln'])."',
+		source_repo_page='".safe_text_db($_POST['source_repo_page'])."',
+		source_repo_gedcomnr='".$editor_cls->text_process($_POST['source_repo_gedcomnr'])."',
+		source_text='".$editor_cls->text_process($_POST['source_text'])."',
+		source_new_user='".$username."',
+		source_new_date='".$gedcom_date."',
+		source_new_time='".$gedcom_time."'";
+	$result=$dbh->query($sql);
+
+	//$new_source_qry= "SELECT * FROM humo_sources
+	//	WHERE source_tree_id='".$tree_id."' ORDER BY source_id DESC LIMIT 0,1";
+	//$new_source_result = $dbh->query($new_source_qry);
+	//$new_source=$new_source_result->fetch(PDO::FETCH_OBJ);
+	//$_POST['source_id']=$new_source->source_id;
+	$_POST['source_id'] = $dbh->lastInsertId();
+}
+
+// *** december 2020: new combined source and shared source system ***
+if (isset($_GET['source_add2'])){
+	$username = $_SESSION['user_name_admin'];
+
+	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
+	$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
+		FROM humo_sources WHERE source_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
+	$new_nr_result = $dbh->query($new_nr_qry);
+	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
+
+	$new_gedcomnumber='S1';
+	if (isset($new_nr->source_gedcomnr)){
+		$new_gedcomnumber='S'.(substr($new_nr->source_gedcomnr,1)+1);
+	}
+
+	$sql="INSERT INTO humo_sources SET
+		source_tree_id='".$tree_id."',
+		source_gedcomnr='".$new_gedcomnumber."',
+		source_status='',
+		source_title='',
+		source_date='',
+		source_place='',
+		source_publ='',
+		source_refn='',
+		source_auth='',
+		source_subj='',
+		source_item='',
+		source_kind='',
+		source_repo_caln='',
+		source_repo_page='',
+		source_repo_gedcomnr='',
+		source_text='',
+		source_new_user='".$username."',
+		source_new_date='".$gedcom_date."',
+		source_new_time='".$gedcom_time."'";
+		//echo $sql.'<br>';
+	$result=$dbh->query($sql);
+
+	$sql="UPDATE humo_connections SET
+		connect_tree_id='".$tree_id."',
+		connect_new_date='".$gedcom_date."',
+		connect_new_time='".$gedcom_time."',
+		connect_source_id='".$new_gedcomnumber."'
+		WHERE connect_id='".safe_text_db($_GET["connect_id"])."'";
+		//echo $sql.'<br>';
+	$result=$dbh->query($sql);
+}
+
+//source_shared='".$editor_cls->text_process($_POST['source_shared'])."',
+if (isset($_POST['source_change'])){
+	$sql="UPDATE humo_sources SET
+	source_status='".$editor_cls->text_process($_POST['source_status'])."',
+	source_title='".$editor_cls->text_process($_POST['source_title'])."',
+	source_date='".$editor_cls->date_process('source_date')."',
+	source_place='".$editor_cls->text_process($_POST['source_place'])."',
+	source_publ='".$editor_cls->text_process($_POST['source_publ'])."',
+	source_refn='".$editor_cls->text_process($_POST['source_refn'])."',
+	source_auth='".$editor_cls->text_process($_POST['source_auth'])."',
+	source_subj='".$editor_cls->text_process($_POST['source_subj'])."',
+	source_item='".$editor_cls->text_process($_POST['source_item'])."',
+	source_kind='".$editor_cls->text_process($_POST['source_kind'])."',
+	source_repo_caln='".$editor_cls->text_process($_POST['source_repo_caln'])."',
+	source_repo_page='".$editor_cls->text_process($_POST['source_repo_page'])."',
+	source_repo_gedcomnr='".$editor_cls->text_process($_POST['source_repo_gedcomnr'])."',
+	source_text='".$editor_cls->text_process($_POST['source_text'],true)."',
+	source_changed_user='".$username."',
+	source_changed_date='".$gedcom_date."',
+	source_changed_time='".$gedcom_time."'
+	WHERE source_tree_id='".$tree_id."' AND source_id='".safe_text_db($_POST["source_id"])."'";
+	$result=$dbh->query($sql);
+	family_tree_update($tree_id);
+}
+
+
 // ************************
 // *** Save data places ***
 // ************************
 
-
+//OLD CODE
+/*
 // *** Remove living place ***
 if (isset($_GET['living_place_drop'])){
 	echo '<div class="confirm">';
@@ -2218,48 +2465,54 @@ if (isset($_POST['living_place_drop2'])){
 		$result=$dbh->query($sql);
 	}
 }
+*/
 
-if (isset($_GET['living_place_add'])){
-	if (isset($_GET['pers_place'])){
-		$address_connect_id=$pers_gedcomnumber;
-		$address_connect_kind='person';
-		$address_connect_sub_kind='person';
+// *** 25-12-2020: NEW combined addresses and shared addresses ***
+if (isset($_GET['address_add2'])){
+	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
+	$new_nr_qry= "SELECT *, ABS(substring(address_gedcomnr, 2)) AS gednr
+		FROM humo_addresses WHERE address_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
+	$new_nr_result = $dbh->query($new_nr_qry);
+	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
+	$new_gedcomnumber='R1';
+	if (isset($new_nr->address_gedcomnr)){
+		$new_gedcomnumber='R'.(substr($new_nr->address_gedcomnr,1)+1);
 	}
-	elseif (isset($_GET['fam_place'])){
-		$address_connect_id=$marriage;
-		$address_connect_kind='family';
-		$address_connect_sub_kind='family';
-	}
-
-	// *** Generate new order number ***
-	$address_sql="SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."'
-		AND address_connect_sub_kind='".$address_connect_sub_kind."'
-		AND address_connect_id='".$address_connect_id."'
-		ORDER BY address_order DESC LIMIT 0,1";
-	$address_qry=$dbh->query($address_sql);
-	$addressDb=$address_qry->fetch(PDO::FETCH_OBJ);
-	$address_order=0; if (isset($addressDb->address_order)) $address_order=$addressDb->address_order;
-	$address_order++;
 
 	$sql="INSERT INTO humo_addresses SET
 		address_tree_id='".$tree_id."',
-		address_connect_kind='".$address_connect_kind."',
-		address_connect_sub_kind='".$address_connect_sub_kind."',
-		address_connect_id='".$address_connect_id."',
+		address_gedcomnr='".$new_gedcomnumber."',
+		address_address='',
 		address_date='',
+		address_zip='',
 		address_place='',
-		address_order='".$address_order."',
+		address_phone='',
+		address_text='',
+		address_new_user='".$username."',
 		address_new_date='".$gedcom_date."',
 		address_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
-//echo $sql.'!'.$_GET['menu_admin'],$marriage.$_GET['pers_place'].'!'.$_GET['fam_place'];
+
+	$sql="UPDATE humo_connections SET
+		connect_tree_id='".$tree_id."',
+		connect_new_date='".$gedcom_date."',
+		connect_new_time='".$gedcom_time."',
+		connect_kind='".safe_text_db($_GET['connect_kind'])."',
+		connect_sub_kind='".safe_text_db($_GET["connect_sub_kind"])."',
+		connect_connect_id='".safe_text_db($_GET["connect_connect_id"])."',
+		connect_item_id='".$new_gedcomnumber."'
+		WHERE connect_id='".safe_text_db($_GET["connect_id"])."'";
+	$result=$dbh->query($sql);
 }
 
 // *** Change address ***
 if (isset($_POST['change_address_id'])){
 	foreach($_POST['change_address_id'] as $key=>$value){
+		// *** Date for address is processed in connection table ***
+		//address_date='".$editor_cls->date_process("address_date",$key)."',
+		$address_shared=''; if (isset($_POST["address_shared_".$key])) $address_shared='1';
 		$sql="UPDATE humo_addresses SET
-			address_date='".$editor_cls->date_process("address_date",$key)."',
+			address_shared='".$address_shared."',
 			address_address='".$editor_cls->text_process($_POST["address_address_".$key])."',
 			address_place='".$editor_cls->text_process($_POST["address_place_".$key])."',
 			address_text='".$editor_cls->text_process($_POST["address_text_".$key])."',
@@ -2270,73 +2523,36 @@ if (isset($_POST['change_address_id'])){
 			address_changed_time='".$gedcom_time."'
 		WHERE address_id='".safe_text_db($_POST["change_address_id"][$key])."'";
 		$result=$dbh->query($sql);
-//echo $sql.'<br>';
+		//echo $sql.'<br>';
 		family_tree_update($tree_id);
 	}
 }
 
-if (isset($_GET['living_place_down'])){
-	if (isset($_GET['pers_place'])){
-		$address_connect_id=$pers_gedcomnumber;
-		$address_connect_sub_kind='person';
+// *** Remove all sources from an item ***
+function remove_sources($tree_id,$connect_sub_kind,$connect_connect_id){
+	global $dbh;
+
+	// *** Remove (NON-SHARED) source by all connections ***
+	$connect_source_sql="SELECT * FROM humo_connections LEFT JOIN humo_sources
+		ON source_gedcomnr=connect_source_id
+		WHERE connect_tree_id='".$tree_id."' AND source_tree_id='".$tree_id."'
+		AND connect_sub_kind='".safe_text_db($connect_sub_kind)."'
+		AND connect_connect_id='".safe_text_db($connect_connect_id)."'
+		AND source_shared!='1'";
+	//echo $connect_source_sql.'<br>';
+	$connect_source_qry=$dbh->query($connect_source_sql);
+	while($connect_sourceDb=$connect_source_qry->fetch(PDO::FETCH_OBJ)){
+
+// TO DO: ALWAYS REMOVE A CONNECTION, ONLY REMOVE SOURCE IF IT ISN'T SHARED
+
+		$sql="DELETE FROM humo_sources WHERE source_id='".safe_text_db($connect_sourceDb->source_id)."'";
+		//echo $sql.'<br>';
+		$result=$dbh->query($sql);
+
+		$sql="DELETE FROM humo_connections WHERE connect_id='".safe_text_db($connect_sourceDb->connect_id)."'";
+		//echo $sql.'<br>';
+		$result=$dbh->query($sql);
 	}
-	elseif (isset($_GET['fam_place'])){
-		$address_connect_id=$marriage;
-		$address_connect_sub_kind='family';
-	}
-
-	$sql="UPDATE humo_addresses
-	SET address_order='99'
-	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='".$address_connect_sub_kind."'
-	AND address_connect_id='".$address_connect_id."' AND address_order='".safe_text_db($_GET["living_place_down"])."'";
-//echo $sql;
-	$result=$dbh->query($sql);
-
-	$sql="UPDATE humo_addresses
-	SET address_order='".(safe_text_db($_GET['living_place_down']))."'
-	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='".$address_connect_sub_kind."'
-	AND address_connect_id='".$address_connect_id."' AND address_order='".(safe_text_db($_GET["living_place_down"])+1)."'";
-	$result=$dbh->query($sql);
-
-	$sql="UPDATE humo_addresses
-	SET address_order='".(safe_text_db($_GET['living_place_down'])+1)."'
-	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='".$address_connect_sub_kind."'
-	AND address_connect_id='".$address_connect_id."' AND address_order=99";
-	$result=$dbh->query($sql);
 }
 
-if (isset($_GET['living_place_up'])){
-	if (isset($_GET['pers_place'])){
-		$address_connect_id=$pers_gedcomnumber;
-		$address_connect_sub_kind='person';
-	}
-	elseif (isset($_GET['fam_place'])){
-		$address_connect_id=$marriage;
-		$address_connect_sub_kind='family';
-	}
-
-	$sql="UPDATE humo_addresses
-	SET address_order='99'
-	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='".$address_connect_sub_kind."'
-	AND address_connect_id='".$address_connect_id."' AND address_order='".safe_text_db($_GET["living_place_up"])."'";
-	$result=$dbh->query($sql);
-
-	$sql="UPDATE humo_addresses
-	SET address_order='".(safe_text_db($_GET['living_place_up']))."'
-	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='".$address_connect_sub_kind."'
-	AND address_connect_id='".$address_connect_id."' AND address_order='".(safe_text_db($_GET["living_place_up"])-1)."'";
-	$result=$dbh->query($sql);
-
-	$sql="UPDATE humo_addresses
-	SET address_order='".(safe_text_db($_GET['living_place_up'])-1)."'
-	WHERE address_tree_id='".$tree_id."'
-	AND address_connect_sub_kind='".$address_connect_sub_kind."'
-	AND address_connect_id='".$address_connect_id."' AND address_order=99";
-	$result=$dbh->query($sql);
-}
 ?>

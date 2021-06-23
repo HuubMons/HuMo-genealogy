@@ -11,7 +11,8 @@ if (isset($_GET['place_item'])){
 	if ($_GET['place_item']=='baptise'){ $place_item='pers_bapt_place'; $form='form1'; }
 	if ($_GET['place_item']=='death'){ $place_item='pers_death_place'; $form='form1'; }
 	if ($_GET['place_item']=='buried'){ $place_item='pers_buried_place'; $form='form1'; }
-	if ($_GET['place_item']=='place'){ $place_item='address_place_'.$_GET['address_place']; $form='form1'; }
+	if ($_GET['place_item']=='place_person'){ $place_item='address_place_'.$_GET['address_place']; $form='form1'; }
+	if ($_GET['place_item']=='place_relation'){ $place_item='address_place_'.$_GET['address_place']; $form='form2'; }
 
 	// *** Places by family ***
 	if ($_GET['place_item']=='relation'){ $place_item='fam_relation_place'; $form='form2'; }

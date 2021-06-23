@@ -1,4 +1,4 @@
-HuMo-genealogy website: http://www.humo-gen.com
+HuMo-genealogy website: https://humo-gen.com
 - Demonstration website
 - Forum
 - Manual

@@ -12,7 +12,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2020 Huub Mons,
+* Copyright (C) 2008-2021 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -133,37 +133,123 @@ function process_place($place, $number){
 	return $text;
 }
 
+
+// *** jan. 2021 new function ***
+function adresses_export($connect_kind,$connect_sub_kind,$connect_connect_id){
+	global $dbh, $buffer, $tree_id, $db_functions, $gedcom_sources;
+
+	// *** Addresses (shared addresses are no valid GEDCOM 5.5.1) ***
+	// *** Living place ***
+	// 1 RESI
+	// 2 ADDR Ridderkerk
+	// 1 RESI
+	// 2 ADDR Slikkerveer
+	$eventnr=0;
+	$connect_sql = $db_functions->get_connections_connect_id($connect_kind,$connect_sub_kind,$connect_connect_id);
+	foreach ($connect_sql as $connectDb){
+		$addressDb = $db_functions->get_address($connectDb->connect_item_id);
+		if ($addressDb->address_shared=='1'){
+			// *** Shared address ***
+			// 1 RESI @R210@
+			// 2 DATE 1 JAN 2021
+			// 2 ROLE ROL
+			$buffer.='1 RESI @'.$connectDb->connect_item_id."@\r\n";
+			if ($connectDb->connect_date) $buffer.='2 DATE '.$connectDb->connect_date."\r\n";
+			if ($connectDb->connect_role){ $buffer.='2 ROLE '.$connectDb->connect_role."\r\n"; }
+
+			// *** Source by address ***
+			if ($gedcom_sources=='yes'){
+				if ($connect_kind=='person'){
+					//$buffer.='2 SOUR '.process_text(3,$addressDb->address_source);
+					sources_export('person','pers_address_source',$addressDb->address_id,2);
+				}
+				else{
+					sources_export('family','fam_address_source',$addressDb->address_id,2);
+				}
+			}
+
+		}
+		else{
+			// *** Living place ***
+			// 1 RESI
+			// 2 ADDR Ridderkerk
+			// 1 RESI
+			// 2 ADDR Slikkerveer
+			$buffer.="1 RESI\r\n";
+			$buffer.='2 ADDR';
+				if ($addressDb->address_address){ $buffer.=' '.$addressDb->address_address; }
+				$buffer.="\r\n";
+			if ($addressDb->address_place){ $buffer.='3 CITY '.$addressDb->address_place."\r\n"; }
+			if ($addressDb->address_zip){ $buffer.='3 POST '.$addressDb->address_zip."\r\n"; }
+			if ($addressDb->address_phone){ $buffer.='2 PHON '.$addressDb->address_phone."\r\n"; }
+			//if ($addressDb->address_date){ $buffer.='2 DATE '.$addressDb->address_date."\r\n"; }
+			if ($connectDb->connect_date) $buffer.='2 DATE '.$connectDb->connect_date."\r\n";
+			if ($addressDb->address_text){ $buffer.='2 NOTE '.process_text(3,$addressDb->address_text); }
+
+			// *** Source by address ***
+			if ($gedcom_sources=='yes'){
+				if ($connect_kind=='person'){
+					//$buffer.='2 SOUR '.process_text(3,$addressDb->address_source);
+					sources_export('person','pers_address_source',$addressDb->address_gedcomnr,2);
+				}
+				else{
+					sources_export('family','fam_address_source',$addressDb->address_gedcomnr,2);
+				}
+			}
+
+		}
+	}
+}
+
 // *** Function to export all kind of sources including role, pages etc. ***
 function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$start_number){
 	global $dbh, $buffer, $tree_id;
-	//$tree;
 	// *** Search for all connected sources ***
-	$connect_qry="SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."'
+	$connect_qry="SELECT * FROM humo_connections LEFT JOIN humo_sources ON source_gedcomnr=connect_source_id
+		WHERE connect_tree_id='".$tree_id."' AND source_tree_id='".$tree_id."'
 		AND connect_kind='".$connect_kind."'
 		AND connect_sub_kind='".$connect_sub_kind."'
 		AND connect_connect_id='".$connect_connect_id."'
 		ORDER BY connect_order";
 	$connect_sql=$dbh->query($connect_qry);
 	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-		$buffer.=$start_number.' SOUR';
-		if ($connectDb->connect_source_id){ $buffer.=' @'.$connectDb->connect_source_id."@"; }
-		$buffer.="\r\n";
+	//$connect_sql = $db_functions->get_connections_connect_id('person','person_address',$person->pers_gedcomnumber);
+	//foreach ($connect_sql as $connectDb){
 
-		// *** Source text ***
-		if ($connectDb->connect_text){
-			// 3 DATA
-			// 4 TEXT text .....
-			// 5 CONT ..........
-			$buffer.=($start_number+1)." DATA\r\n";
-			$buffer.=($start_number+2).' TEXT '.process_text($start_number+3,$connectDb->connect_text);
+		if ($connectDb->source_shared=='1'){
+			// *** Source contains title, can be connected to multiple items ***
+			// 0 @S2@ SOUR
+			// 1 ROLE ROL
+			// 1 PAGE page
+			$buffer.=$start_number.' SOUR @'.$connectDb->connect_source_id."@\r\n";
+			if ($connectDb->connect_role){ $buffer.=($start_number+1).' ROLE '.$connectDb->connect_role."\r\n"; }
+			if ($connectDb->connect_page){ $buffer.=($start_number+1).' PAGE '.$connectDb->connect_page."\r\n"; }
+			if ($connectDb->connect_quality OR $connectDb->connect_quality=='0'){ $buffer.=($start_number+1).' QUAY '.$connectDb->connect_quality."\r\n"; }
+
+			// *** Extra text by source ***
+			if ($connectDb->connect_text){
+				// 3 DATA
+				// 4 TEXT text .....
+				// 5 CONT ..........
+				$buffer.=($start_number+1)." DATA\r\n";
+				$buffer.=($start_number+2).' TEXT '.process_text($start_number+3,$connectDb->connect_text);
+			}
 		}
+		else{
+			//$buffer.=$start_number." SOUR\r\n";
+			$buffer.=$start_number." SOUR ".process_text($start_number+1,$connectDb->source_text);
 
-		if ($connectDb->connect_date){ $buffer.=($start_number+1).' DATE '.$connectDb->connect_date."\r\n"; }
-		if ($connectDb->connect_place){ $buffer.=($start_number+1).' PLAC '.$connectDb->connect_place."\r\n"; }
-		if ($connectDb->connect_role){ $buffer.=($start_number+1).' ROLE '.$connectDb->connect_role."\r\n"; }
-		if ($connectDb->connect_page){ $buffer.=($start_number+1).' PAGE '.$connectDb->connect_page."\r\n"; }
-		if ($connectDb->connect_quality){ $buffer.=($start_number+1).' QUAY '.$connectDb->connect_quality."\r\n"; }
+			// *** Extra text by source ***
+			if ($connectDb->connect_text){
+				// 3 DATA
+				// 4 TEXT text .....
+				// 5 CONT ..........
+				$buffer.=($start_number+1)." DATA\r\n";
+				$buffer.=($start_number+2).' TEXT '.process_text($start_number+3,$connectDb->connect_text);
+			}
+			if ($connectDb->source_date){ $buffer.=($start_number+1).' DATE '.$connectDb->source_date."\r\n"; }
+			if ($connectDb->source_place){ $buffer.=($start_number+1).' PLAC '.$connectDb->source_place."\r\n"; }
+		}
 	}
 }
 
@@ -598,62 +684,65 @@ echo '<td>';
 		echo '<br>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ances_sibbl" value="1" '.$checked.'>'.__('Include sibblings of ancestors and base person');
 		echo '</td></tr>';
 	}
-echo '<tr><td>'.__('Export texts').'</td><td>';
-$selected=''; if (isset($_POST['gedcom_texts']) AND $_POST['gedcom_texts']=='no'){ $selected=' SELECTED'; }
-echo '<select size="1" name="gedcom_texts">';
-	echo '<option value="yes">'.__('Yes').'</option>';
-	echo '<option value="no"'.$selected.'>'.__('No').'</option>';
-echo '</select>';
-echo '</td></tr>';
 
-echo '<tr><td>'.__('Export sources').'</td><td>';
-$selected=''; if (isset($_POST['gedcom_sources']) AND $_POST['gedcom_sources']=='no'){ $selected=' SELECTED'; }
-echo '<select size="1" name="gedcom_sources">';
-	echo '<option value="yes">'.__('Yes').'</option>';
-	echo '<option value="no"'.$selected.'>'.__('No').'</option>';
-echo '</select>';
-echo '</td></tr>';
-
-// *** Check if geo_location table exists ***
-$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
-if($temp->rowCount() > 0) {
-	echo '<tr><td>'.__('Export longitude & latitude by places').'</td><td>';
-	$selected=''; if (isset($_POST['gedcom_geocode']) AND $_POST['gedcom_geocode']=='no'){ $selected=' SELECTED'; }
-	echo '<select size="1" name="gedcom_geocode">';
+	echo '<tr><td>'.__('Export texts').'</td><td>';
+	$selected=''; if (isset($_POST['gedcom_texts']) AND $_POST['gedcom_texts']=='no'){ $selected=' SELECTED'; }
+	echo '<select size="1" name="gedcom_texts">';
 		echo '<option value="yes">'.__('Yes').'</option>';
 		echo '<option value="no"'.$selected.'>'.__('No').'</option>';
 	echo '</select>';
 	echo '</td></tr>';
-}
 
-echo '<tr><td>'.__('Character set').'</td><td>';
-echo '<select size="1" name="gedcom_char_set">';
-	$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='UTF-8'){ $selected=' SELECTED'; }
-	echo '<option value="UTF-8"'.$selected.'>'.__('UTF-8 (recommended character set)').'</option>';
+	echo '<tr><td>'.__('Export sources').'</td><td>';
+	$selected=''; if (isset($_POST['gedcom_sources']) AND $_POST['gedcom_sources']=='no'){ $selected=' SELECTED'; }
+	echo '<select size="1" name="gedcom_sources">';
+		echo '<option value="yes">'.__('Yes').'</option>';
+		echo '<option value="no"'.$selected.'>'.__('No').'</option>';
+	echo '</select>';
+	echo '</td></tr>';
 
-	$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='ANSI'){ $selected=' SELECTED'; }
-	echo '<option value="ANSI"'.$selected.'>ANSI</option>';
+	// *** Check if geo_location table exists ***
+	$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+	if($temp->rowCount() > 0) {
+		echo '<tr><td>'.__('Export longitude & latitude by places').'</td><td>';
+		$selected=''; if (isset($_POST['gedcom_geocode']) AND $_POST['gedcom_geocode']=='no'){ $selected=' SELECTED'; }
+		echo '<select size="1" name="gedcom_geocode">';
+			echo '<option value="yes">'.__('Yes').'</option>';
+			echo '<option value="no"'.$selected.'>'.__('No').'</option>';
+		echo '</select>';
+		echo '</td></tr>';
+	}
 
-	$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='ASCII'){ $selected=' SELECTED'; }
-	echo '<option value="ASCII"'.$selected.'>ASCII</option>';
-echo '</select>';
-echo '</td></tr>';
+	echo '<tr><td>'.__('Character set').'</td><td>';
+	echo '<select size="1" name="gedcom_char_set">';
+		$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='UTF-8'){ $selected=' SELECTED'; }
+		echo '<option value="UTF-8"'.$selected.'>'.__('UTF-8 (recommended character set)').'</option>';
 
-echo '<tr><td>'.__('Show export status').'</td><td>';
-$selected=''; if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes'){ $selected=' SELECTED'; }
-echo '<select size="1" name="gedcom_status">';
-	echo '<option value="no">'.__('No').'</option>';
-	echo '<option value="yes"'.$selected.'>'.__('Yes').'</option>';
-echo '</select>';
-echo '</td></tr>';
+		$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='ANSI'){ $selected=' SELECTED'; }
+		echo '<option value="ANSI"'.$selected.'>ANSI</option>';
 
-echo '<tr><td>'.__('GEDCOM export').'</td><td>';
+		$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='ASCII'){ $selected=' SELECTED'; }
+		echo '<option value="ASCII"'.$selected.'>ASCII</option>';
+	echo '</select>';
+	echo '</td></tr>';
+
+	echo '<tr><td>'.__('Show export status').'</td><td>';
+	$selected=''; if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes'){ $selected=' SELECTED'; }
+	echo '<select size="1" name="gedcom_status">';
+		echo '<option value="no">'.__('No').'</option>';
+		echo '<option value="yes"'.$selected.'>'.__('Yes').'</option>';
+	echo '</select>';
+	echo '</td></tr>';
+
+	echo '<tr><td>'.__('GEDCOM export').'</td><td>';
+
 	echo ' <input type="Submit" name="submit_button" value="'.__('Start export').'">';
 
 	// *** Show processed lines ***
 	//if (isset($_POST["tree"]) AND isset($_POST['submit_button'])){
 	if (isset($_POST['submit_button'])){
 		$line_nr=0;
+		$line_counter=500;  // Count down
 		echo ' <div id="information" style="display: inline;"></div> '.__('Processed lines...');
 	}
 echo '</td></tr>';
@@ -892,37 +981,13 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 		if ($person->pers_cremation) $buffer.='2 TYPE cremation'."\r\n";
 	}
 
+	// *** Addresses (shared addresses are no valid GEDCOM 5.5.1 but is used in some genealogical programs) ***
 	// *** Living place ***
 	// 1 RESI
 	// 2 ADDR Ridderkerk
 	// 1 RESI
 	// 2 ADDR Slikkerveer
-	$addressqry=$dbh->query("SELECT * FROM humo_addresses
-		WHERE address_tree_id='".$tree_id."'
-		AND address_connect_sub_kind='person'
-		AND address_connect_id='$person->pers_gedcomnumber'");
-	while($addressDb=$addressqry->fetch(PDO::FETCH_OBJ)){
-		$buffer.="1 RESI\r\n";
-		$buffer.='2 ADDR'."\r\n";
-		if ($addressDb->address_place){ $buffer.='3 CITY '.$addressDb->address_place."\r\n"; }
-		if ($addressDb->address_zip){ $buffer.='3 POST '.$addressDb->address_zip."\r\n"; }
-		if ($addressDb->address_phone){ $buffer.='2 PHON '.$addressDb->address_phone."\r\n"; }
-		if ($addressDb->address_date){ $buffer.='2 DATE '.$addressDb->address_date."\r\n"; }
-		if ($addressDb->address_text){ $buffer.='2 NOTE '.process_text(3,$addressDb->address_text); }
-//SOURCE
-		if ($gedcom_sources=='yes'){
-		//	$buffer.='2 SOUR '.process_text(3,$addressDb->address_source);
-		//	//sources_export('person','address_source',$nameDb->event_id,3);
-		}
-	}
-
-	// *** Shared address (no valid GEDCOM 5.5.1) ***
-	$eventnr=0;
-	$connect_sql = $db_functions->get_connections_connect_id('person','person_address',$person->pers_gedcomnumber);
-	foreach ($connect_sql as $connectDb){
-		//1 RESI @R210@
-		$buffer.='1 RESI @'.$connectDb->connect_item_id."@\r\n";
-	}
+	adresses_export('person','person_address',$person->pers_gedcomnumber);
 
 	// *** Occupation ***
 	$professionqry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
@@ -1022,6 +1087,9 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 			if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
 			if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
 		}
+
+		// *** Source ***
+		sources_export('person','pers_event_source',$eventDb->event_id,2);
 	}
 
 	// *** Quality ***
@@ -1082,16 +1150,20 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 
 
 	// *** Update processed lines ***
-	echo '<script language="javascript">';
-	echo 'document.getElementById("information").innerHTML="'.$line_nr.'";';
-	$line_nr++;
-	echo '</script>';
-	// This is for the buffer achieve the minimum size in order to flush data
-	//echo str_repeat(' ',1024*64);
-	// Send output to browser immediately
-	ob_flush(); 
-	flush(); // IE
-
+	//if ($line_counter==0){
+		echo '<script language="javascript">';
+		echo 'document.getElementById("information").innerHTML="'.$line_nr.'";';
+		$line_nr++;
+		echo '</script>';
+		// This is for the buffer achieve the minimum size in order to flush data
+		//echo str_repeat(' ',1024*64);
+		// Send output to browser immediately
+		ob_flush(); 
+		flush(); // IE
+	//}
+	//else{
+	//	$line_counter--; $line_nr++;
+	//}
 
 
 	// *** Show person data on screen ***
@@ -1258,6 +1330,9 @@ while($families=$families_qry->fetch(PDO::FETCH_OBJ)){
 	if ($gedcom_sources=='yes'){
 		sources_export('family','family_source',$family->fam_gedcomnumber,1);
 	}
+
+	// *** Addresses (shared addresses are no valid GEDCOM 5.5.1) ***
+	adresses_export('family','family_address',$family->fam_gedcomnumber);
 
 	// *** Family Note ***
 	if ($gedcom_texts=='yes' AND $family->fam_text){
@@ -1440,7 +1515,10 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 }
 
 if ($gedcom_sources=='yes'){
-	$family_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'");
+	// *** Only generate seperated sources if source is shared ***
+	$family_qry=$dbh->query("SELECT * FROM humo_sources
+		WHERE source_tree_id='".$tree_id."'
+		AND source_shared='1'");
 	while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 		if($_POST['part_tree']=='part'  AND !in_array($family->source_gedcomnr,$source_array)) { continue; }
 
@@ -1470,7 +1548,7 @@ if ($gedcom_sources=='yes'){
 			$buffer.="1 OBJE\r\n";
 			$buffer.="2 FORM jpg\r\n";
 			$buffer.='2 FILE '.$sourceDb->event_event."\r\n";
-			$buffer.='2 DATE '.$sourceDb->event_date."\r\n";
+			if ($sourceDb->event_date) $buffer.='2 DATE '.$sourceDb->event_date."\r\n";
 
 			if ($gedcom_texts=='yes' AND $sourceDb->event_text){
 				$buffer.='2 NOTE '.process_text(3,$sourceDb->event_text);
@@ -1577,19 +1655,21 @@ if ($gedcom_sources=='yes'){
 		// Send output to browser immediately
 		ob_flush(); 
 		flush(); // IE
-
 	}
 
 }
 
 // *** THIS PART ISN'T VALID GEDCOM 5.5.1!!!!!!!! ***
+// *** Only export shared addresses ***
 // *** Addresses ***
 // 0 @R155@ RESI
 // 1 ADDR Straat
+// 1 ZIP
 // 1 PLAC Plaats
-// *** ADDRESS IS ADDED BY PERSON! ***
+// 1 PHON
 $family_qry=$dbh->query("SELECT * FROM humo_addresses
-	WHERE address_tree_id='".$tree_id."' AND address_gedcomnr LIKE '_%'");
+	WHERE address_tree_id='".$tree_id."'
+	AND address_shared='1'");
 while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 	// 0 @I1181@ INDI *** Gedcomnumber ***
 	$buffer='0 @'.$family->address_gedcomnr."@ RESI\r\n";

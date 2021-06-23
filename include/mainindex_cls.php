@@ -4,6 +4,8 @@ class mainindex_cls{
 function show_tree_index(){
 	global $dbh, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
 
+	include_once(CMS_ROOTPATH."include/person_cls.php");
+
 	echo '<script type="text/javascript">';
 	echo 'checkCookie();';
 	echo '</script>';
@@ -575,10 +577,9 @@ function random_photo(){
 				$text.='<div style="text-align: center;"><img src="'.$tree_pict_path.$picname.'" width="200 px"
 					style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"><br>';
 
-				$fam=''; if ($personmnDb->pers_famc) $fam=$personmnDb->pers_famc; else $fam=$personmnDb->pers_fams;
-				$text.='<a href="family.php?tree_id='.$personmnDb->pers_tree_id.'&amp;id='.$fam.'&amp;main_person='.$personmnDb->pers_gedcomnumber.'">';
-					$text.=$picqryDb->event_text;
-				$text.='</a></div><br>';
+				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+				$url=$man_cls->person_url($personmnDb->pers_tree_id,$personmnDb->pers_indexnr,$personmnDb->pers_gedcomnumber);
+				$text.='<a href="'.$url.'">'.$picqryDb->event_text.'</a></div><br>';
 
 				// *** Show first available picture without privacy restrictions ***
 				break;
@@ -613,7 +614,7 @@ function extra_links(){
 			$link_text[] = $item[1];
 			$link_order[] = $data2Db->setting_order;
 		}
-		include_once(CMS_ROOTPATH.'include/person_cls.php');
+		//include_once(CMS_ROOTPATH.'include/person_cls.php');
 		$person=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_own_code NOT LIKE ''");
 		while(@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 			if (in_array ($personDb->pers_own_code,$pers_own_code) ){
@@ -706,7 +707,7 @@ function alphabet(){
 
 function today_in_history($view='with_table'){
 	global $dbh, $dataDb;
-	include_once(CMS_ROOTPATH."include/person_cls.php");
+	//include_once(CMS_ROOTPATH."include/person_cls.php");
 	include_once(CMS_ROOTPATH."include/language_date.php");
 	include_once(CMS_ROOTPATH."include/date_place.php");
 
@@ -779,7 +780,9 @@ function today_in_history($view='with_table'){
 					$history['date'][]=date_place($record->pers_death_date,'');
 				}
 			}
-			$url=$person_cls->person_url($record);
+			//$url=$person_cls->person_url($record);
+			// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+			$url=$person_cls->person_url($record->pers_tree_id,$record->pers_indexnr,$record->pers_gedcomnumber);
 			$history['name'][]='<td><a href="'.$url.'">'.$name["standard_name"].'</a></td>';
 		}
 		else
@@ -852,18 +855,26 @@ function today_in_history($view='with_table'){
 }
 
 function show_footer(){
-	global $bot_visit;
+	global $bot_visit,$humo_option,$uri_path;
+
 	echo '<br><div class="humo_version">';
 		// *** Show owner of family tree ***
 		echo $this->owner();
 
 		// *** Show HuMo-genealogy link ***
-		printf(__('This database is made by %s, a freeware genealogical  program'), '<a href="http://www.humo-gen.com">HuMo-genealogy</a>');
+		printf(__('This database is made by %s, a freeware genealogical  program'), '<a href="https://humo-gen.com">HuMo-genealogy</a>');
 		//echo ' ('.$humo_option["version"].').<br>';
 		echo '.<br>';
 
 		// *** Show European cookie information ***
-		if (!$bot_visit){ printf(__('European law: %s cookie information'),'<a href="info_cookies.php">HuMo-genealogy'); }
+		if ($humo_option["url_rewrite"]=="j"){
+			// *** $uri_path made in header.php ***
+			$url=$uri_path.'cookies';
+		}
+		else{
+			$url='cookies.php';
+		}
+		if (!$bot_visit){ printf(__('European law: %s cookie information'),'<a href="'.$url.'">HuMo-genealogy'); }
 		echo '</a>';
 	echo '</div>';
 }

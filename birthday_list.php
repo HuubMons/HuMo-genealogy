@@ -146,7 +146,9 @@ if(!isset($_POST['ann_choice']) OR $_POST['ann_choice']=="birthdays") {
 		$person_cls->construct($record);
 
 		if (!$person_cls->privacy){
-			$url=$person_cls->person_url($record);
+			// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+			$url=$person_cls->person_url($record->pers_tree_id,$record->pers_indexnr,$record->pers_gedcomnumber);
+
 			$person_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 
 			$death_date = $record->pers_death_date;
@@ -282,12 +284,13 @@ else {
 	if(isset($wed) AND count($wed)>0) {
 		// sort the array to mix civill and religious
 		if(isset($_POST['civil']) AND isset($_POST['relig'])) {
-			 function custom_sort($a,$b) {
-				  return $a['dayyear']>$b['dayyear'];
-			 }
-			 // Sort the multidimensional array
-			 usort($wed, "custom_sort");
-			 // Define the custom sort function
+			function custom_sort($a,$b) {
+				//return $a['dayyear']>$b['dayyear']; // DEPRECATED in PHP 8.
+				return $a['dayyear']<=>$b['dayyear'];
+			}
+			// Sort the multidimensional array
+			usort($wed, "custom_sort");
+			// Define the custom sort function
 		}
 
 		foreach($wed AS $key => $value) {
@@ -300,7 +303,9 @@ else {
 				$man_name='N.N.';
 			else{
 				$name=$man_cls->person_name($manDb);
-				$url=$man_cls->person_url($manDb);
+				//$url=$man_cls->person_url($manDb);
+				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+				$url=$man_cls->person_url($manDb->pers_tree_id,$manDb->pers_indexnr,$manDb->pers_gedcomnumber);
 				$man_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 			}
 
@@ -313,7 +318,9 @@ else {
 				$woman_name='N.N.';
 			else{
 				$name=$man_cls->person_name($womanDb);
-				$url=$man_cls->person_url($womanDb);
+				//$url=$man_cls->person_url($womanDb);
+				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+				$url=$man_cls->person_url($womanDb->pers_tree_id,$womanDb->pers_indexnr,$womanDb->pers_gedcomnumber);
 				$woman_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 			}
 

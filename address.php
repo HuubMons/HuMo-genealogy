@@ -19,7 +19,7 @@ echo '<tr><td><h2>'.__('Address').'</h2>';
 
 $addressDb = $db_functions->get_address($_GET['gedcomnumber']);
 
-if (@$addressDb->address_address){ echo '<b>'.__('Address').":</b> $addressDb->address_address<br>"; }
+if (@$addressDb->address_address){ echo '<b>'.__('Street').":</b> $addressDb->address_address<br>"; }
 if (@$addressDb->address_zip){ echo '<b>'.__('Zip code').":</b> $addressDb->address_zip<br>"; }
 if (@$addressDb->address_place){ echo '<b>'.__('Place').":</b> $addressDb->address_place<br>"; }
 if (@$addressDb->address_phone){ echo '<b>'.__('Phone').":</b>$addressDb->address_phone<br>"; }
@@ -29,7 +29,7 @@ if (@$addressDb->address_text){ echo '</td></tr><tr><td>'.nl2br($addressDb->addr
 
 // *** Show source by addresss ***
 $source='';
-$source=show_sources2("address","address_source",$addressDb->address_id).' ';
+$source=show_sources2("address","address_source",$addressDb->address_gedcomnr).' ';
 if ($source){
 	echo '</td></tr><tr><td>';
 	echo '<b>'.__('Source').' '.$source;
@@ -55,12 +55,10 @@ echo '</td></tr><tr><td>';
 
 echo '</td></tr></table>';
 
-
 // *** If source footnotes are selected, show them here ***
 if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_presentation']=='footnote'){
 	echo show_sources_footnotes();
 }
-
 
 include_once(CMS_ROOTPATH."footer.php");
 ?>

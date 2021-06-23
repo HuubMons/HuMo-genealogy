@@ -231,7 +231,7 @@ if (isset($_POST['install_tables2'])){
 		// *** Other settings are saved in the table in file: settings_global.php ***
 
 		// *** Update status number. Number must be: update_status+1! ***
-		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','12')");
+		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','13')");
 	}
 
 	if (!$table_stat_date){
@@ -786,6 +786,7 @@ if (isset($_POST['install_tables2'])){
 			source_tree_id smallint(5),
 			source_status varchar(10) CHARACTER SET utf8,
 			source_gedcomnr varchar(25) CHARACTER SET utf8,
+			source_shared varchar(1) CHARACTER SET utf8 DEFAULT '',
 			source_order mediumint(6),
 			source_title text CHARACTER SET utf8,
 			source_abbr varchar(50) CHARACTER SET utf8,
@@ -881,6 +882,7 @@ if (isset($_POST['install_tables2'])){
 			address_id INT(10) unsigned NOT NULL auto_increment,
 			address_tree_id smallint(5),
 			address_gedcomnr varchar(25) CHARACTER SET utf8,
+			address_shared varchar(1) CHARACTER SET utf8 DEFAULT '',
 			address_order mediumint(6),
 			address_connect_kind varchar(25) DEFAULT NULL,
 			address_connect_sub_kind varchar(30) DEFAULT NULL,

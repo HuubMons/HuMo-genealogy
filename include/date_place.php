@@ -25,7 +25,7 @@ function date_place($process_date, $process_place,$hebnight=""){
 		$text=$dirmark1.language_date($process_date).$hebdate;
 		if ($user['group_places']=='j' AND $process_place){
 			//$text.=" ".__('PLACE_AT ').$process_place;
-			$text.=' ';
+			if ($process_date) $text.=' '; // *** Only add space if there is a date ***
 			if (__('PLACE_AT ')!='PLACE_AT '){ $text.=__('PLACE_AT '); }
 			$text.=$process_place;
 		}
@@ -103,8 +103,18 @@ function hebdate($datestr,$hebnight="") {
 			if($string[0]==3) $month = "כסלו";
 			if($string[0]==4) $month = "טבת";
 			if($string[0]==5) $month = "שבט";
-			if($string[0]==6) $month = "אדר";
-			if($string[0]==7) $month = "אדר שני";
+			
+			$m = array(3, 6, 8, 11, 14, 17, 19);
+			$meuberet = in_array(($string[2] % 19), $m);
+			if($meuberet) {
+				if($string[0]==6) $month = "אדר ראשון";
+				if($string[0]==7) $month = "אדר שני"; 
+			}
+			else {
+				if($string[0]==6) $month = "אדר";
+				if($string[0]==7) $month = "אדר";
+			}
+			
 			if($string[0]==8) $month = "ניסן";
 			if($string[0]==9) $month = "אייר";
 			if($string[0]==10) $month = "סיון";
@@ -118,8 +128,18 @@ function hebdate($datestr,$hebnight="") {
 			if($string[0]==3) $month = "Kislev";
 			if($string[0]==4) $month = "Tevet";
 			if($string[0]==5) $month = "Shevat";
-			if($string[0]==6) $month = "Adar";
-			if($string[0]==7) $month = "Adar II";
+			
+			$m = array(3, 6, 8, 11, 14, 17, 19);
+			$meuberet = in_array(($string[2] % 19), $m);
+			if($meuberet) {
+				if($string[0]==6) $month = "Adar I";
+				if($string[0]==7) $month = "Adar II"; 
+			}
+			else {
+				if($string[0]==6) $month = "Adar";
+				if($string[0]==7) $month = "Adar";
+			}
+			
 			if($string[0]==8) $month = "Nisan";
 			if($string[0]==9) $month = "Iyar";
 			if($string[0]==10) $month = "Sivan";

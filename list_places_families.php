@@ -101,7 +101,10 @@ function show_person($familyDb){
 	echo '</td><td style="border-left:0px;">';
 
 	// *** Show name of person ***
-	$start_url=$person_cls->person_url($personDb);	// *** Get url to family ***
+	//$start_url=$person_cls->person_url($personDb);	// *** Get url to family ***
+	// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+	$start_url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+
 	echo ' <a href="'.$start_url.'">'.rtrim($index_name).'</a>';
 
 	//*** Show spouse/ partner ***
@@ -395,16 +398,16 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 				echo __('Find place').':<br><br>';
 
 				$checked=''; if ($select_marriage_notice=='1'){$checked='checked';}
-				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice" value="1" '.$checked.'> '.__('&infin;').' '.lcfirst(__('Marriage notice')).'</span>';
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice" value="1" '.$checked.'> '.__('&infin;').' '.__('Marriage notice').'</span>';
 
 				$checked=''; if ($select_marriage=='1'){$checked='checked';}
-				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage" value="1" '.$checked.'> '.__('X').' '.__('marriage').'</span>';
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage" value="1" '.$checked.'> '.__('X').' '.__('Marriage').'</span>';
 
 				$checked=''; if ($select_marriage_notice_religious=='1'){$checked='checked';}
-				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice_religious" value="1" '.$checked.'> '.__('o').' '.lcfirst(__('Married notice (religious)')).'</span>';
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice_religious" value="1" '.$checked.'> '.__('o').' '.__('Married notice (religious)').'</span>';
 
 				$checked=''; if ($select_marriage_religious=='1'){$checked='checked';}
-				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_religious" value="1" '.$checked.'> '.__('x').' '.lcfirst(__('Married (religious)')).'</span><br><br clear="all">';
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_religious" value="1" '.$checked.'> '.__('x').' '.__('Married (religious)').'</span><br><br clear="all">';
 				echo '<select name="part_place_name">';
 				echo '<option value="contains">'.__('Contains').'</option>';
 

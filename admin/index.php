@@ -144,7 +144,7 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	// *** Check HuMo-genealogy database status ***
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])){
-		if ($humo_option["update_status"]<12){ $page='update'; $show_menu_left=false; }
+		if ($humo_option["update_status"]<13){ $page='update'; $show_menu_left=false; }
 	}
 
 	if (isset($_GET['page']) AND ($_GET['page']=='editor_sources' OR $_GET['page']=='editor_place_select'
@@ -474,14 +474,23 @@ else{
 }
 
 $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:right" '; }
-echo '<div id="humo_top" '.$top_dir.'>';
+
+	if ($popup==false){
+		echo '<div id="humo_top" '.$top_dir.'>';
+	}
+	else{
+		echo '<div id="humo_top" style="height:auto;">';
+	}
+ 
 	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-small.gif" align="left" alt="logo">';
 	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
 
-	echo '<span id="top_website_name">';
-		//echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy<span style="font-size:18px; color:#7F7F7F;">ealogy</span></a>';
-		echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy</a>';
-	echo '</span>';
+	if ($popup==false){
+		echo '<span id="top_website_name">';
+			//echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy<span style="font-size:18px; color:#7F7F7F;">ealogy</span></a>';
+			echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy</a>';
+		echo '</span>';
+	}
 
 	//if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
 	if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
@@ -743,7 +752,14 @@ echo '<div id="humo_top" '.$top_dir.'>';
 		if (isset($_POST['page'])){ $page=$_POST['page']; }
 	}
 
-	echo '<div id="humo_menu">';
+
+	if ($popup==false){
+		echo '<div id="humo_menu">';
+	}
+	else{
+		echo '<div id="humo_menu" style="top:0px;">';
+	}
+
 	echo '<ul class="humo_menu_item">';
 
 		// *** Menu ***
@@ -1073,7 +1089,13 @@ echo '<div id="humo_top" '.$top_dir.'>';
 echo '</div>'; // *** End of humo_top ***
 
 // *** Show selected page, default page = admin homepage ***
-echo '<div id="content_admin">';
+if ($popup==false){
+	echo '<div id="content_admin">';
+}
+else{
+	echo '<div id="content_admin" style="top:10px;">';
+}
+
 	define('ADMIN_PAGE', true); // *** Safety line ***
 
 	if ($page=='install'){ include_once ("include/install.php"); }

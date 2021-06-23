@@ -17,6 +17,10 @@ $pdf_source= array();  // is set in show_sources.php with sourcenr as key to be 
 global $chosengen, $genarray, $size, $keepfamily_id, $keepmain_person, $direction;
 global $pdf_footnotes;
 
+//global $temp,$templ_person;
+//global $templ_relation;
+global $templ_name;
+
 include_once("header.php"); // returns CMS_ROOTPATH constant
 
 // *** "Last visited" id is used for contact form ***
@@ -58,14 +62,18 @@ include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."include/marriage_cls.php");
 include_once(CMS_ROOTPATH."include/show_sources.php");
 include_once(CMS_ROOTPATH."include/witness.php");
+include_once(CMS_ROOTPATH."include/show_addresses.php");
 include_once(CMS_ROOTPATH."include/show_picture.php");
+include_once(CMS_ROOTPATH."include/show_quality.php");
 
 // *** Show person/ family topline: family top text, pop-up settings, PDF export, favourite ***
 function topline(){
 	global $dataDb, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker, $family_id, $main_person;
 	global $alignmarker, $language, $uri_path, $descendant_report, $family_expanded;
-	global $user, $source_presentation, $change_main_person, $maps_presentation, $picture_presentation, $text_presentation, $database, $man_cls, $person_manDb;
+	global $user, $source_presentation, $change_main_person, $maps_presentation, $picture_presentation, $text_presentation;
+	global $database, $man_cls, $person_manDb;
 	global $woman_cls, $person_womanDb, $selected_language;
+	global $tree_id,$humo_option;
 
 	//$text='<tr class="table_headline"><td class="table_header" width="65%">';
 	$text='<tr class="table_headline"><td class="table_header">';
@@ -83,12 +91,27 @@ function topline(){
 		// *** Settings in pop-up screen ***
 		//$text.= '<div class="'.$rtlmarker.'sddm" style="left:10px;top:10px;display:inline;">';
 		$text.= '<div class="'.$rtlmarker.'sddm" style="left:10px; top:10px; display:inline-block; vertical-align:middle;">';
-// ALSO USE URL_REWRITE HERE?
-			$text.= '<a href="family.php?id='.$family_id.'&amp;main_person='.$main_person.'"';
-			$text.= ' style="display:inline" ';
+
+			// *** Use url_rewrite ***
+			if ($humo_option["url_rewrite"]=="j"){
+				// *** $uri_path made in header.php ***
+				$settings_url=$uri_path.'family/'.$tree_id.'/'.$family_id; $url_add='?';
+				if ($main_person){
+					$settings_url.='?main_person='.$main_person; $url_add='&amp;';
+				}
+			}
+			else{
+				$settings_url=CMS_ROOTPATH.'family.php?tree_id='.$tree_id.'&amp;id='.$family_id;
+				if ($main_person){
+					$settings_url.='&amp;main_person='.$main_person;
+				}
+				$url_add='&amp;';
+			}
+			//$settings_url=$db_functions->person_url($tree_id,$family_id,$main_person);
+
+			$text.= '<a href="'.$settings_url.'" style="display:inline" ';
 			$text.= 'onmouseover="mopen(event,\'help_menu\',0,0)"';
 			$text.= 'onmouseout="mclosetime()">';
-			//$text.= '<b>'.__('Settings').'</b>';
 			$text.= '<img src="images/settings.png" alt="'.__('Settings').'">';
 			$text.= '</a> ';
 
@@ -105,8 +128,9 @@ function topline(){
 				$desc_rep = ''; if($descendant_report==true) { $desc_rep = '&amp;descendant_report=1'; }
 
 				$selected=' CHECKED'; $selected2=''; if ($family_expanded==true) { $selected=''; $selected2=' CHECKED'; }
-				$text.='<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;family_expanded=0&xx=\'+this.value"'.$selected.'>'.__('Compact view')."<br>\n";
-				$text.='<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;family_expanded=1&xx=\'+this.value"'.$selected2.'>'.__('Expanded view')."<br>\n";
+				$text.='<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'family_expanded=0'.$desc_rep.'&xx=\'+this.value"'.$selected.'>'.__('Compact view')."<br>\n";
+
+				$text.='<input type="radio" name="keuze0" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'family_expanded=1'.$desc_rep.'&xx=\'+this.value"'.$selected2.'>'.__('Expanded view')."<br>\n";
 
 				// *** Select source presentation (as title/ footnote or hide sources) ***
 				if($user['group_sources']!='n') {
@@ -115,13 +139,13 @@ function topline(){
 					$desc_rep = ''; if($descendant_report==true) { $desc_rep = '&amp;descendant_report=1'; }
 
 					$selected=''; if ($source_presentation=='title') { $selected=' CHECKED'; }
-					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;source_presentation=title&xx=\'+this.value"'.$selected.'>'.__('Show source title')."<br>\n";
+					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'source_presentation=title'.$desc_rep.'&xx=\'+this.value"'.$selected.'>'.__('Show source')."<br>\n";
 
 					$selected=''; if ($source_presentation=='footnote') { $selected=' CHECKED'; }
-					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;source_presentation=footnote&xx=\'+this.value"'.$selected.'>'.__('Show source title as footnote')."<br>\n";
+					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'source_presentation=footnote'.$desc_rep.'&xx=\'+this.value"'.$selected.'>'.__('Show source as footnote')."<br>\n";
 
 					$selected=''; if ($source_presentation=='hide') { $selected=' CHECKED'; }
-					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;source_presentation=hide&xx=\'+this.value"'.$selected.'>'.__('Hide sources')."<br>\n";
+					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'source_presentation=hide'.$desc_rep.'&xx=\'+this.value"'.$selected.'>'.__('Hide sources')."<br>\n";
 				}
 
 				// *** Show/ hide Google maps ***
@@ -130,11 +154,12 @@ function topline(){
 					global $dbh;
 					$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 					if($temp->rowCount()) {
-						$text.='<hr>';
-						$text.='<b>'.__('Google maps').'</b><br>';
+						$text.='<hr><b>'.__('Google maps').'</b><br>';
 						$selected=''; $selected2=''; if ($maps_presentation=='hide') $selected2=' CHECKED'; else $selected=' CHECKED';
-						$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show Google maps')."<br>\n";
-						$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide Google maps')."<br>\n";
+
+						$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'maps_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show Google maps')."<br>\n";
+
+						$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'maps_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide Google maps')."<br>\n";
 					}
 				}
 
@@ -143,18 +168,23 @@ function topline(){
 				if ($user['group_pictures']=='j'){
 					$text.='<b>'.__('Pictures').'</b><br>';
 					$selected=''; $selected2=''; if ($picture_presentation=='hide') $selected2=' CHECKED'; else $selected=' CHECKED';
-					$text.='<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;picture_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show pictures')."<br>\n";
-					$text.='<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;picture_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide pictures')."<br>\n";
+
+					$text.='<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'picture_presentation=show'.$desc_rep.'&xx=\'+this.value"'.$selected.'>'.__('Show pictures')."<br>\n";
+
+					$text.='<input type="radio" name="keuze3" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'picture_presentation=hide'.$desc_rep.'&xx=\'+this.value"'.$selected2.'>'.__('Hide pictures')."<br>\n";
+
 					$text.='<hr>';
 				}
 
 				$text.='<b>'.__('Texts').'</b><br>';
 				$selected=''; if ($text_presentation=='show') $selected=' CHECKED';
-				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show texts')."<br>\n";
+				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'text_presentation=show'.$desc_rep.'&xx=\'+this.value"'.$selected.'>'.__('Show texts')."<br>\n";
+
 				$selected=''; if ($text_presentation=='popup') $selected=' CHECKED';
-				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=popup&xx=\'+this.value"'.$selected.'>'.__('Show texts in popup screen')."<br>\n";
+				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'text_presentation=popup'.$desc_rep.'&xx=\'+this.value"'.$selected.'>'.__('Show texts in popup screen')."<br>\n";
+
 				$selected=''; if ($text_presentation=='hide') $selected=' CHECKED';
-				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.$desc_rep.'&amp;text_presentation=hide&xx=\'+this.value"'.$selected.'>'.__('Hide texts')."<br>\n";
+				$text.='<input type="radio" name="keuze4" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'text_presentation=hide'.$desc_rep.'&xx=\'+this.value"'.$selected.'>'.__('Hide texts')."<br>\n";
 
 			$text.='</td></tr></table>';
 
@@ -242,12 +272,12 @@ function topline(){
 $family_nr=1;  // *** process multiple families ***
 
 $family_id='F1'; // *** standard: show first family ***
-if (isset($urlpart[1])){ $family_id=$urlpart[1]; }
+//if (isset($urlpart[1])){ $family_id=$urlpart[1]; }
 if (isset($_GET["id"])){ $family_id=$_GET["id"]; }
 if (isset($_POST["id"])){ $family_id=$_POST["id"]; }
 
 $main_person=''; // *** Mainperson of a family ***
-if (isset($urlpart[2])){ $main_person=$urlpart[2]; }
+//if (isset($urlpart[2])){ $main_person=$urlpart[2]; }
 if (isset($_GET["main_person"])){ $main_person=$_GET["main_person"]; }
 if (isset($_POST["main_person"])){ $main_person=$_POST["main_person"]; }
 
@@ -905,9 +935,16 @@ else{
 							if($screen_mode=='PDF') {
 								//  PDF rendering of name + details
 								unset ($templ_person);
-								if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
-									else $pers_sexe = $person_womanDb->pers_sexe;
-								$pdf->writename($pers_sexe,$pdf->GetX()+5,$woman_cls->name_extended("parent1"),"long");
+
+								// *** Name ***
+								$pdfdetails=$woman_cls->name_extended("parent1");
+								if($pdfdetails) {
+									//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
+									$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+								}
+								$indent=$pdf->GetX();
+
+								// *** Person data ***
 								$pdf->SetLeftMargin($indent);
 								$pdfdetails= $woman_cls->person_data("parent1", $id);
 								if($pdfdetails) {
@@ -1010,9 +1047,16 @@ else{
 							if($screen_mode=='PDF') {
 								//  PDF rendering of name + details
 								unset ($templ_person);
-								if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
-									else $pers_sexe = $person_manDb->pers_sexe;
-								$pdf->writename($pers_sexe,$pdf->GetX()+5,$man_cls->name_extended("parent1"),"long");
+
+								// *** Name ***
+								$pdfdetails=$man_cls->name_extended("parent1");
+								if($pdfdetails) {
+									//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
+									$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+								}
+								$indent=$pdf->GetX();
+
+								// *** Person data ***
 								$pdf->SetLeftMargin($indent);
 								$pdfdetails= $man_cls->person_data("parent1", $id);
 								if($pdfdetails) {
@@ -1120,10 +1164,13 @@ else{
 						if($screen_mode!='STAR') {
 							if ($change_main_person==true){
 								if($screen_mode=='PDF') {
-									// PDF rendering of name
-									if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
-									else $pers_sexe = $person_womanDb->pers_sexe;
-									$pdf->writename($pers_sexe,$indent,$woman_cls->name_extended("parent1"),"kort");
+									// *** PDF rendering of name ***
+									$pdfdetails=$woman_cls->name_extended("parent1");
+									if($pdfdetails) {
+										//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"kort");
+										$pdf->write_name($templ_name,$pdf->GetX()+5,"kort");
+									}
+									$indent=$pdf->GetX();
 								}
 								elseif($screen_mode=='RTF') {
 									$rtf_text=strip_tags($woman_cls->name_extended("parent1"),"<b><i>");
@@ -1135,10 +1182,13 @@ else{
 							}
 							else{
 								if($screen_mode=='PDF') {
-									//  PDF rendering of name
-									if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
-									else $pers_sexe = $person_manDb->pers_sexe;
-									$pdf->writename($pers_sexe,$indent,$man_cls->name_extended("parent1"),"kort");
+									// *** PDF rendering of name ***
+									$pdfdetails=$man_cls->name_extended("parent1");
+									if($pdfdetails) {
+										//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"kort");
+										$pdf->write_name($templ_name,$pdf->GetX()+5,"kort");
+									}
+									$indent=$pdf->GetX();
 								}
 								elseif($screen_mode=='RTF') {
 									$rtf_text=strip_tags($man_cls->name_extended("parent1"),"<b><i>");
@@ -1231,11 +1281,16 @@ else{
 					}
 					if($screen_mode=='PDF') {
 						unset ($templ_person);
+						unset ($templ_name);
 						// PDF rendering of name + details
 						$pdf->Write(8," "); // IMPORTANT - otherwise at bottom of page man/woman.gif image will print, but name may move to following page!
-						if(!isset($person_manDb->pers_sexe)) { $pers_sexe = "?";} 
-						else $pers_sexe = $person_manDb->pers_sexe;
-						$pdf->writename($pers_sexe,$indent,$man_cls->name_extended("parent2"),"kort");
+						$pdfdetails=$man_cls->name_extended("parent2");
+						if($pdfdetails) {
+							//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
+							$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+						}
+						$indent=$pdf->GetX();
+
 						$pdfdetails= $man_cls->person_data("parent2", $id);
 						$pdf->SetLeftMargin($indent);
 						if($pdfdetails) {
@@ -1323,11 +1378,16 @@ else{
 					}
 					if($screen_mode=='PDF'){
 						unset ($templ_person);
+						unset ($templ_name);
 						// PDF rendering of name + details
 						$pdf->Write(8," ");   // IMPORTANT - otherwise at bottom of page man/woman.gif image will print, but name may move to following page!
-						if(!isset($person_womanDb->pers_sexe)) { $pers_sexe = "?";} 
-						else $pers_sexe = $person_womanDb->pers_sexe;
-						$pdf->writename($pers_sexe,$indent,$woman_cls->name_extended("parent2"),"kort");
+						$pdfdetails=$woman_cls->name_extended("parent2");
+						if($pdfdetails) {
+							//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
+							$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+						}
+						$indent=$pdf->GetX();
+
 						$pdfdetails= $woman_cls->person_data("parent2", $id);
 						$pdf->SetLeftMargin($indent);
 						if($pdfdetails) {
@@ -1446,75 +1506,28 @@ else{
 
 					// *** Show addresses by family ***
 					if ($user['group_living_place']=='j'){
-						if ($familyDb->fam_gedcomnumber){
-							$addressnr=0;
-							$address_qry_prep = $db_functions->get_addresses($familyDb->fam_gedcomnumber,'family');
-							if($screen_mode!='PDF') {
-								foreach($address_qry_prep as $addressDb){
-									$addressnr++;
-									if ($addressnr=='1'){
-										$nr_addresses=count($address_qry_prep);
-										if ($nr_addresses=='1')
-											$residence=__('Residence (family)');
-										else
-											$residence=__('Residences (family)');
-
-										echo '<br><b>'.$residence.':</b> ';
-										echo '<span class="pers_living_place fonts">';
-									}
-									if ($addressnr>1){ echo ', '; }
-									if ($addressDb->address_date){ echo date_place($addressDb->address_date,'').' '; } //use default function, there is no place...
-
-									//if ($user['group_addresses']=='j' AND $addressDb->address_address){
-									if ($user['group_living_place']=='j' AND $addressDb->address_address){
-										echo ' '.$addressDb->address_address.' ';
-									}
-
-									echo $addressDb->address_place;
-
-									// *** Show address source ***
-									$source=show_sources2("family","fam_address_source",$addressDb->address_id);
-									if ($source) echo $source;
-
-									if ($addressDb->address_text) { echo ' '.$addressDb->address_text; }
-								}
-								if ($addressnr>0){ echo '</span>'; }
+						if($screen_mode=='PDF') {
+							show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
+						}
+//						elseif($screen_mode=='RTF') {
+//							//
+//						}
+						else{
+							$temp=show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
+							if ($temp){
+								echo '<br>'.$temp;
 							}
-							else {
-								//  PDF rendering of addresses
-								foreach($address_qry_prep as $addressDb){
-									$addressnr++;
-									$pdf->SetFont('Arial','',12);
-									if ($addressnr=='1'){
-										$nr_addresses=count($address_qry_prep);
-										if ($nr_addresses=='1')
-											$residence=__('Residence (family)');
-										else
-											$residence=__('Residences (family)');
-										$pdf->SetFont('Arial','B',12);
-										$pdf->Write(6,$residence.': ');
-										$pdf->SetFont('Arial','',12);
-									}
-									if ($addressnr>1){ $pdf->Write(6,', '); }
-									if ($addressDb->address_date){$pdf->Write(6,date_place($addressDb->address_date,'').' '); }
-
-									// To do: Address address...
-
-									$pdf->Write(6,$addressDb->address_place);
-									// *** Show address source ***
-									$source = show_sources2("family","fam_address_source",$addressDb->address_id);
-									if ($source){ $pdf->SetFont('Times','',12);  $pdf->Write(6,$source); }
-									if ($addressDb->address_text) {$pdf->SetFont('Arial','I',11);  $pdf->Write(6,' '.$addressDb->address_text); }
-								} // end while
-								if($addressnr>0) {$pdf->Ln(6); }
-							}  // end else (pdf)
-						}   // end if gedcomnumber
-					}   // end if group_living_place
+						}
+					}
 
 					// *** Family source ***
 					if($screen_mode=='PDF') {
-						// PDF rendering of sources
-						$pdf->Write(6,show_sources2("family","family_source",$familyDb->fam_gedcomnumber)."\n");
+						$source=show_sources2("family","family_source",$familyDb->fam_gedcomnumber);
+						if ($source){
+							$templ_relation["fam_source"]=$source;
+							$temp="fam_source";
+							$pdf->displayrel($templ_relation,"dummy");
+						}
 					}
 					elseif($screen_mode=='RTF') {
 						$rtf_text=strip_tags(show_sources2("family","family_source",$familyDb->fam_gedcomnumber),"<b><i>");
@@ -1585,16 +1598,15 @@ else{
 							for($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
 //if (isset($genarray[$arraynr]["sex"]) AND isset($genarray[$arraynr]["dna"] )){
 
-//TEST
-//echo $familyDb->fam_gedcomnumber;
-//echo $genarray[$arraynr]["nam"].$familyDb->fam_children.'<br>';
+								//TEST
+								//echo $familyDb->fam_gedcomnumber;
+								//echo $genarray[$arraynr]["nam"].$familyDb->fam_children.'<br>';
 
-//TEST
-//$name=$man_cls->person_name($person_manDb);
-//echo $name["standard_name"].' ';
-//$name= $woman_cls->person_name($person_womanDb);
-//echo $name["standard_name"].'<br>';
-
+								//TEST
+								//$name=$man_cls->person_name($person_manDb);
+								//echo $name["standard_name"].' ';
+								//$name= $woman_cls->person_name($person_womanDb);
+								//echo $name["standard_name"].'<br>';
 
 								@$childDb = $db_functions->get_person($child_array[$i]);
 								if($dna=="ydna" AND $childDb->pers_sexe == "M" AND $genarray[$arraynr]["sex"]=="m" AND $genarray[$arraynr]["dna"]==1) $countdna++;
@@ -1616,25 +1628,19 @@ else{
 							echo $child_cls->name_extended("child");
 						}
 						if($screen_mode=='PDF') {
-							//  PDF rendering of name + details
+							// *** PDF rendering of name and details ***
 							$pdf->SetFont('Arial','B',11);
 							$pdf->SetLeftMargin($indent);
 							$pdf->Write(6,$childnr.'. ');
-							if($childDb->pers_sexe=='M') {
-								$pdf->Image("images/man.gif",$pdf->GetX()+1,$pdf->GetY()+1,3.5,3.5);
-								$pdf->SetX($pdf->GetX()+5);
+
+							//unset ($templ_person);
+							unset ($templ_name);
+							$pdfdetails=$child_cls->name_extended("child");
+							if($pdfdetails) {
+								//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
+								$pdf->write_name($templ_name,$pdf->GetX()+5,"child");
 							}
-							elseif($childDb->pers_sexe=='F') {
-								$pdf->Image("images/woman.gif",$pdf->GetX()+1,$pdf->GetY()+1,3.5,3.5);
-								$pdf->SetX($pdf->GetX()+5);
-							}
-							else {
-								$pdf->Image("images/unknown.gif",$pdf->GetX()+1,$pdf->GetY()+1,3.5,3.5);
-								$pdf->SetX($pdf->GetX()+5);
-							}
-							$child_indent=$pdf->GetX();
-							$pdf->Write(6,$child_cls->name_extended("child"));
-							$pdf->SetFont('Arial','',12);
+							//$indent=$pdf->GetX();
 						}
 						if($screen_mode=='RTF') {
 							$rtf_text=$childnr.'. ';
@@ -1654,6 +1660,7 @@ else{
 						if($screen_mode=='STAR') {
 							$chdn_in_gen=$nrchldingen + $childnr;
 							$place=$lst_in_array+$chdn_in_gen;
+
 //if (isset($genarray[$arraynr]["sex"]) AND isset($genarray[$arraynr]["dna"] )){
 							if(($dna=="ydnamark" OR $dna=="ydna") AND $childDb->pers_sexe=="M" 
 									AND $genarray[$arraynr]["sex"]=="m" AND $genarray[$arraynr]["dna"]==1) {
@@ -1759,7 +1766,7 @@ else{
 								echo $child_cls->person_data("child", $id);
 							}
 							if($screen_mode=='PDF') {
-								//  PDF rendering of child details
+								// *** PDF rendering of child details ***
 								$pdf->Write(6,"\n");
 								unset ($templ_person);
 								$pdf_child=$child_cls->person_data("child", $id);
@@ -1798,7 +1805,7 @@ else{
 													}
 													else { $textarr[]="&nbsp;"; }
 												}
-				
+
 											}
 											if($break==3) break; // max 3 pics
 										} 
@@ -1820,7 +1827,7 @@ else{
 						}
 
 						if($screen_mode=='') {
-							echo "<br></div>\n";	// *** Added an empty line between children ***
+							echo "</div><br>\n";	// *** Added an empty line between children ***
 							//echo '</td></tr>'."\n";
 						}
 						$childnr++;
@@ -1960,49 +1967,53 @@ else{
 								// BIRTH man
 								if ($man_cls->privacy==''){
 									$location_var = $person_manDb->pers_birth_place; 
-									$short=__('BORN_SHORT');
-									if($location_var=='') { 
-										$location_var = $person_manDb->pers_bapt_place; 
-										$short=__('BAPTISED_SHORT');
-									}
-									$location_prep->execute();
-									$man_birth_result = $location_prep->rowCount();
-									if($man_birth_result >0) {
-										$info = $location_prep->fetch();
-										$name=$man_cls->person_name($person_manDb);
-										$google_name=$name["standard_name"];
-
-										$location_array[]=$location_var;
-										$lat_array[]=$info['location_lat'];
-										$lon_array[]=$info['location_lng'];
-										$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
+									if($location_var !='') {
+    									$short=__('BORN_SHORT');
+    									if($location_var=='') { 
+    										$location_var = $person_manDb->pers_bapt_place; 
+    										$short=__('BAPTISED_SHORT');
+    									}
+    									$location_prep->execute();
+    									$man_birth_result = $location_prep->rowCount();
+    									if($man_birth_result >0) {
+    										$info = $location_prep->fetch();
+    										$name=$man_cls->person_name($person_manDb);
+    										$google_name=$name["standard_name"];
+    
+    										$location_array[]=$location_var;
+    										$lat_array[]=$info['location_lat'];
+    										$lon_array[]=$info['location_lng'];
+    										$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
+    									}
 									}
 								}
 
 								// BIRTH woman
 								if ($woman_cls->privacy==''){
 									$location_var = $person_womanDb->pers_birth_place;
-									$short=__('BORN_SHORT');
-									if($location_var=='') {
-										$location_var = $person_womanDb->pers_bapt_place;
-										$short=__('BAPTISED_SHORT');
-									}
-									$location_prep->execute();
-									$woman_birth_result = $location_prep->rowCount();
-									if($woman_birth_result >0) {
-										$info = $location_prep->fetch();
-										$name=$woman_cls->person_name($person_womanDb);
-										$google_name=$name["standard_name"];
-										$key = array_search($location_var , $location_array);
-										if (isset($key) AND $key>0){
-											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
-										}
-										else{
-											$location_array[]=$location_var ;
-											$lat_array[]=$info['location_lat'];
-											$lon_array[]=$info['location_lng'];
-											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
-										}
+									if($location_var !='') {
+    									$short=__('BORN_SHORT');
+    									if($location_var=='') {
+    										$location_var = $person_womanDb->pers_bapt_place;
+    										$short=__('BAPTISED_SHORT');
+    									}
+    									$location_prep->execute();
+    									$woman_birth_result = $location_prep->rowCount();
+    									if($woman_birth_result >0) {
+    										$info = $location_prep->fetch();
+    										$name=$woman_cls->person_name($person_womanDb);
+    										$google_name=$name["standard_name"];
+    										$key = array_search($location_var , $location_array);
+    										if (isset($key) AND $key>0){
+    											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
+    										}
+    										else{
+    											$location_array[]=$location_var ;
+    											$lat_array[]=$info['location_lat'];
+    											$lon_array[]=$info['location_lng'];
+    											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
+    										}
+    									}
 									}
 								}
 
@@ -2014,25 +2025,27 @@ else{
 										$location_var = $person_manDb->pers_buried_place;
 										$short = __('BURIED_SHORT');
 									}
-									$location_prep->execute();
-									$man_death_result = $location_prep->rowCount();
-									
-									if($man_death_result >0) {
-										$info = $location_prep->fetch();
-
-										$name=$man_cls->person_name($person_manDb);
-										$google_name=$name["standard_name"];
-										$key = array_search($location_var, $location_array);
-										if (isset($key) AND $key>0){
-											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var);
-										}
-										else{
-											$location_array[]=$location_var;
-											$lat_array[]=$info['location_lat'];
-											$lon_array[]=$info['location_lng'];
-											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var);
-										}
-									}
+    								if($location_var !='') {
+    									$location_prep->execute();
+    									$man_death_result = $location_prep->rowCount();
+	
+    									if($man_death_result >0) {
+    										$info = $location_prep->fetch();
+    
+    										$name=$man_cls->person_name($person_manDb);
+    										$google_name=$name["standard_name"];
+    										$key = array_search($location_var, $location_array);
+    										if (isset($key) AND $key>0){
+    											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var);
+    										}
+    										else{
+    											$location_array[]=$location_var;
+    											$lat_array[]=$info['location_lat'];
+    											$lon_array[]=$info['location_lng'];
+    											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var);
+    										}
+    									}
+								    }
 								}
 
 								// DEATH woman
@@ -2043,53 +2056,56 @@ else{
 										$location_var = $person_womanDb->pers_buried_place;
 										$short = __('BURIED_SHORT');
 									}
-									$location_prep->execute();
-									$woman_death_result = $location_prep->rowCount();
-									if($woman_death_result >0) {
-										$info = $location_prep->fetch();
-
-										$name=$woman_cls->person_name($person_womanDb);
-										$google_name=$name["standard_name"];
-										$key = array_search($location_var , $location_array);
-										if (isset($key) AND $key>0){
-											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
-										}
-										else{
-											$location_array[]=$location_var ;
-											$lat_array[]=$info['location_lat'];
-											$lon_array[]=$info['location_lng'];
-											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
-										}
-
+									if($location_var !='') {
+    									$location_prep->execute();
+    									$woman_death_result = $location_prep->rowCount();
+    									if($woman_death_result >0) {
+    										$info = $location_prep->fetch();
+    
+    										$name=$woman_cls->person_name($person_womanDb);
+    										$google_name=$name["standard_name"];
+    										$key = array_search($location_var , $location_array);
+    										if (isset($key) AND $key>0){
+    											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
+    										}
+    										else{
+    											$location_array[]=$location_var ;
+    											$lat_array[]=$info['location_lat'];
+    											$lon_array[]=$info['location_lng'];
+    											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
+    										}
+    									}
 									}
 								}
 
 								// MARRIED
 								$location_var = $familyDb->fam_marr_place;
-								$location_prep->execute();
-								$marriage_result = $location_prep->rowCount();
-									
-								if($marriage_result >0) {
-									$info = $location_prep->fetch();
-
-									$name=$man_cls->person_name($person_manDb);
-									$google_name=$name["standard_name"];
-
-									$name=$woman_cls->person_name($person_womanDb);
-									$google_name.=' & '.$name["standard_name"];
-
-									if ($man_cls->privacy=='' AND $woman_cls->privacy==''){
-										$key = array_search($familyDb->fam_marr_place, $location_array);
-										if (isset($key) AND $key>0){
-											$text_array[$key].="\\n".addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
-										}
-										else{
-											$location_array[]=$familyDb->fam_marr_place;
-											$lat_array[]=$info['location_lat'];
-											$lon_array[]=$info['location_lng'];
-											$text_array[]=addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
-										}
-									}
+								if($location_var !='') {
+    								$location_prep->execute();
+    								$marriage_result = $location_prep->rowCount();
+    									
+    								if($marriage_result >0) {
+    									$info = $location_prep->fetch();
+    
+    									$name=$man_cls->person_name($person_manDb);
+    									$google_name=$name["standard_name"];
+    
+    									$name=$woman_cls->person_name($person_womanDb);
+    									$google_name.=' & '.$name["standard_name"];
+    
+    									if ($man_cls->privacy=='' AND $woman_cls->privacy==''){
+    										$key = array_search($familyDb->fam_marr_place, $location_array);
+    										if (isset($key) AND $key>0){
+    											$text_array[$key].="\\n".addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
+    										}
+    										else{
+    											$location_array[]=$familyDb->fam_marr_place;
+    											$lat_array[]=$info['location_lat'];
+    											$lon_array[]=$info['location_lng'];
+    											$text_array[]=addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
+    										}
+    									}
+    								}
 								}
 
 
@@ -2104,47 +2120,50 @@ else{
 
 											// *** Child birth ***
 											$location_var = $childDb->pers_birth_place;
-											$location_prep->execute();
-											$child_result = $location_prep->rowCount();
-
-											if($child_result >0) {
-												$info = $location_prep->fetch();
-
-												$name=$person_cls->person_name($childDb);
-												$google_name=$name["standard_name"];
-												$key = array_search($childDb->pers_birth_place, $location_array);
-												if (isset($key) AND $key>0){
-													$text_array[$key].="\\n".addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
-												}
-												else{
-													$location_array[]=$childDb->pers_birth_place;
-													$lat_array[]=$info['location_lat'];
-													$lon_array[]=$info['location_lng'];
-													$text_array[]=addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
-												}
-											}
-
+											if($location_var !='') {
+    											$location_prep->execute();
+    											$child_result = $location_prep->rowCount();
+    
+    											if($child_result >0) {
+    												$info = $location_prep->fetch();
+    
+    												$name=$person_cls->person_name($childDb);
+    												$google_name=$name["standard_name"];
+    												$key = array_search($childDb->pers_birth_place, $location_array);
+    												if (isset($key) AND $key>0){
+    													$text_array[$key].="\\n".addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
+    												}
+    												else{
+    													$location_array[]=$childDb->pers_birth_place;
+    													$lat_array[]=$info['location_lat'];
+    													$lon_array[]=$info['location_lng'];
+    													$text_array[]=addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
+    												}
+    											}
+										    }
 											// *** Child death ***
 											$location_var = $childDb->pers_death_place;
-											$location_prep->execute();
-											$child_result = $location_prep->rowCount();
-											
-											if($child_result >0) {
-												$info = $location_prep->fetch();
-
-												$name=$person_cls->person_name($childDb);
-												$google_name=$name["standard_name"];
-												$key = array_search($childDb->pers_death_place, $location_array);
-												if (isset($key) AND $key>0){
-													$text_array[$key].="\\n".addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
-												}
-												else{
-													$location_array[]=$childDb->pers_death_place;
-													$lat_array[]=$info['location_lat'];
-													$lon_array[]=$info['location_lng'];
-													$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
-												}
-											}
+											if($location_var !='') {
+    											$location_prep->execute();
+    											$child_result = $location_prep->rowCount();
+    											
+    											if($child_result >0) {
+    												$info = $location_prep->fetch();
+    
+    												$name=$person_cls->person_name($childDb);
+    												$google_name=$name["standard_name"];
+    												$key = array_search($childDb->pers_death_place, $location_array);
+    												if (isset($key) AND $key>0){
+    													$text_array[$key].="\\n".addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
+    												}
+    												else{
+    													$location_array[]=$childDb->pers_death_place;
+    													$lat_array[]=$info['location_lat'];
+    													$lon_array[]=$info['location_lng'];
+    													$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
+    												}
+    											}
+										    }
 										}
 									}
 								}
@@ -2250,8 +2269,8 @@ if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
 			echo 'http://'.$_SERVER['SERVER_NAME'].'/family.php?tree_id='.$tree_id.'&amp;id='.$family_id.'&amp;main_person='.$main_person;
 		}
 
-		//$url=$man_cls->person_url($row);	// *** Get link to family ***
-		//$url=$man_cls->person_url('','family',$tree_id,$family_id,$main_person);	// *** Get link to family ***
+		// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+		//$url=$person_cls->person_url($tree_id,$family_id,$main_person);
 
 		echo ' : '.__('accessed').' '.date("d F Y");
 		echo ')';
@@ -2467,11 +2486,15 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 			}
 			elseif ($user['group_sources']=='t') {
 				$sourceDb = $db_functions->get_source($pdf_source[$key]);
-				if ($sourceDb->source_title){
-					$pdf->SetFont('Arial','B',10);
-					$pdf->Write(6,__('Title').": ");
+				if ($sourceDb->source_title OR $sourceDb->source_text){
+					//$pdf->SetFont('Arial','B',10);
+					//$pdf->Write(6,__('Title').": ");
 					$pdf->SetFont('Arial','',10);
-					$txt = ' '.trim($sourceDb->source_title);
+
+					if (trim($sourceDb->source_title))
+						$txt = ' '.trim($sourceDb->source_title);
+					else $txt =' '.trim($sourceDb->source_text);
+
 					if ($sourceDb->source_date or $sourceDb->source_place){ $txt.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
 					$pdf->Write(6,$txt."\n");
 				}
@@ -2517,21 +2540,6 @@ if($hourglass===false) { // in hourglass there's more code after family.php is i
 	else {
 		$pdf->Output($title.".pdf","I");
 	}
-}
-
-
-// *********************************************************
-// *** General functions to show specific pieces of data ***
-// *********************************************************
-
-// *** Quality ***
-function show_quality($quality){
-	$quality_text='';
-	if ($quality=='0') $quality_text=__('quality: unreliable evidence or estimated data'); 
-	if ($quality=='1') $quality_text=__('quality: questionable reliability of evidence'); 
-	if ($quality=='2') $quality_text=__('quality: data from secondary evidence'); 
-	if ($quality=='3') $quality_text=__('quality: data from direct source'); 
-	return $quality_text;
 }
 
 ?>

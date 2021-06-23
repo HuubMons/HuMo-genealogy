@@ -446,9 +446,9 @@ echo '</td></tr>';
 echo '<tr><td>'.__('Default presentation of source').'</td>';
 echo '<td><select size="1" name="group_source_presentation">';
 $selected=''; if ($groupDb->group_source_presentation=='title'){ $selected=' SELECTED'; }
-echo '<option value="title"'.$selected.'>'.__('Show source title').'</option>';
+echo '<option value="title"'.$selected.'>'.__('Show source').'</option>';
 $selected=''; if ($groupDb->group_source_presentation=='footnote'){ $selected=' SELECTED'; }
-echo '<option value="footnote"'.$selected.'>'.__('Show source title as footnote').'</option>';
+echo '<option value="footnote"'.$selected.'>'.__('Show source as footnote').'</option>';
 $selected=''; if ($groupDb->group_source_presentation=='hide'){ $selected=' SELECTED'; }
 echo '<option value="hide"'.$selected.'>'.__('Hide sources').'</option></select></td></tr>';
 

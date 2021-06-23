@@ -22,12 +22,13 @@ echo '<p class="fonts">';
 		elseif ($humo_option["url_rewrite"]=="j"){
 			// *** url_rewrite ***
 			// *** $uri_path is made header.php ***
-			$path_tmp=$uri_path.'list_names/'.$_SESSION['tree_prefix'].'/'.$personDb->first_character.'/';
+			//$path_tmp=$uri_path.'list_names/'.$_SESSION['tree_prefix'].'/'.$personDb->first_character.'/';
+			$path_tmp=$uri_path.'list_names/'.$tree_id.'/'.$personDb->first_character.'/';
 		}
 		else{
 			$path_tmp=CMS_ROOTPATH.'list_names.php?tree_id='.$tree_id.'&amp;last_name='.$personDb->first_character;
 		}
-		print ' <a href="'.$path_tmp.'">'.$personDb->first_character.'</a>';
+		echo ' <a href="'.$path_tmp.'">'.$personDb->first_character.'</a>';
 	}
  
 	if (CMS_SPECIFIC=='Joomla'){
@@ -42,12 +43,13 @@ echo '<p class="fonts">';
 // *** Alphabet find first first_character of lastname ***
 $last_name='a'; // *** Default first_character ***
 // *** Search variables in: http://localhost/humo-gen/list/humo1_/M/ ***
-if (isset($urlpart[1])){
-	$last_name=urldecode(safe_text_db($urlpart[1]));   // without urldecode skandinavian letters don't work!
-}
+//if (isset($urlpart[1])){
+//	$last_name=urldecode(safe_text_db($urlpart[1]));   // without urldecode skandinavian letters don't work!
+//}
 if (isset($_GET['last_name'])){
 	$last_name=safe_text_db($_GET['last_name']);
 }
+//echo 'TEST'.$_GET['last_name'].'!'.$lastname.'!';
 
 // *** MAIN SETTINGS ***
 $maxcols = 5; // number of name & nr colums in table. For example 3 means 3x name col + nr col
@@ -164,6 +166,7 @@ else{
 			GROUP BY pers_lastname, pers_prefix";
 	}
 }
+
 // *** Add limit to query (results per page) ***
 if ($maxnames!='ALL') $personqry.=" LIMIT ".$item.",".$maxnames;
 
@@ -200,7 +203,16 @@ while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 // *** Show options line ***
 echo '<div style="text-align:center">';
 
-	echo ' <form method="POST" action="'.CMS_ROOTPATH.'list_names.php?menu_tab=stats_surnames&amp;tree_id='.$tree_id.'&amp;last_name='.$last_name.'" style="display:inline;" id="frqnames">';
+	//echo ' <form method="POST" action="'.CMS_ROOTPATH.'list_names.php?menu_tab=stats_surnames&amp;tree_id='.$tree_id.'&amp;last_name='.$last_name.'" style="display:inline;" id="frqnames">';
+	if ($humo_option["url_rewrite"]=="j"){
+		// *** $uri_path made in header.php ***
+		$url=$uri_path.'list_names/'.$tree_id.'/'.$last_name;
+	}
+	else{
+		//$url=CMS_ROOTPATH.'list_names.php?menu_tab=stats_surnames&amp;tree_id='.$tree_id.'&amp;last_name='.$last_name;
+		$url=CMS_ROOTPATH.'list_names.php?tree_id='.$tree_id.'&amp;last_name='.$last_name;
+	}
+	echo ' <form method="POST" action="'.$url.'" style="display:inline;" id="frqnames">';
 		echo __('Number of displayed surnames');
 		echo ': <select size=1 name="freqsurnames" onChange="this.form.submit();" style="width: 50px; height:20px;">';
 		$selected=''; if($maxnames==25) $selected=" selected "; echo '<option value="25" '.$selected.'>25</option>';

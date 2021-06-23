@@ -26,6 +26,7 @@ include_once(CMS_ROOTPATH."include/marriage_cls.php");
 
 // TRY OUTLINE WITH DETAILS
 include_once(CMS_ROOTPATH."include/show_sources.php"); // *** No sources in use in outline report ***
+include_once(CMS_ROOTPATH."include/show_addresses.php");
 include_once(CMS_ROOTPATH."include/witness.php");
 include_once(CMS_ROOTPATH."include/show_picture.php");
 include_once(CMS_ROOTPATH."include/calculate_age_cls.php");

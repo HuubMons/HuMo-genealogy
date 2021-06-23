@@ -911,7 +911,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 			$text.= '&nbsp&nbsp&nbsp'.__('Search filename').'&nbsp'.'<input type="text" name="searchpic" id="inp_text_event'.$data_listDb->event_id.'" size="15">';
 			$jsonarr = json_encode($this->utf8ize($picture_array)); 
-			$text.= '<input type=\'button\' onclick=\'Search_pic('.$data_listDb->event_id.','.$nr_pictures.','.$jsonarr.')\' value=\'Search\'>';
+			//$text.= '<input type=\'button\' onclick=\'Search_pic('.$data_listDb->event_id.','.$nr_pictures.','.$jsonarr.')\' value=\'Search\'>';
+			$text.= '<input type=\'button\' onclick=\'Search_pic('.$data_listDb->event_id.','.$nr_pictures.','.$jsonarr.')\' value=\''.__('Search').'\'>';
  
 			if($is_cat==true) { $text.='<br>'.__('Category files are displayed at bottom of list'); }
 		}
@@ -1335,7 +1336,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		//$text.='<tr bgcolor="#CCFFFF" style="display:none;" class="row52" name="row52"></td><td>'.__('Add event').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
 		$text.='<tr></td><td><br></td><td style="border-right:0px;"></td><td style="border-left:0px;">';
 			$text.='<select size="1" name="event_kind">';
-				//$text.='<option value="address">Address</option>';
 				//$text.='<option value="picture">Picture</option>';
 				$text.='<option value="event">'.__('Event').'</option>';
 				//$text.='<option value="marriage_witness">'.__('Marriage Witness').'</option>';
