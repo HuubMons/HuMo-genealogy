@@ -238,7 +238,8 @@ if ($cms_item=='pages'){
 					if ($page_nr!=$count_pages){
 						echo ' <a href="index.php?page='.$page.'&amp;page_down='.$cms_pagesDb->page_order.'&amp;select_page='.$cms_pagesDb->page_id.'&amp;menu_id='.$cms_pagesDb->page_menu_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>'; }
 				echo '</td><td>';
-					echo ' <a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
+					$page_title='['.__('No page title').']'; if ($cms_pagesDb->page_title) $page_title=$cms_pagesDb->page_title;
+					echo ' <a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'">'.$page_title.'</a><br>';
 				echo '</td></tr>';
 				$previous_page=$cms_pagesDb->page_id;
 			}
@@ -510,8 +511,8 @@ if ($cms_item=='settings'){
 			if (isset($_POST['default_path']) AND $_POST['default_path']=='yes') $cms_images_path='|'.$cms_images_path;
 		}
 
-		$qry="UPDATE humo_settings SET setting_value='".safe_text_db($cms_images_path)."' WHERE setting_variable='cms_images_path'";
-		$result = $dbh->query($qry);
+		// *** Save settings***
+		$result = $db_functions->update_settings('cms_images_path',$cms_images_path);
 
 		//$humo_option["cms_images_path"]=$_POST["cms_images_path"];
 		//$cms_images_path=$humo_option["cms_images_path"];
@@ -520,9 +521,8 @@ if ($cms_item=='settings'){
 	}
 
 	if (isset($_POST['main_page_cms_id'])){
-		$qry="UPDATE humo_settings SET setting_value='".addslashes($_POST["main_page_cms_id"])."' WHERE setting_variable='main_page_cms_id'";
-		//echo $qry;
-		$result = $dbh->query($qry);
+		// *** Save settings***
+		$result = $db_functions->update_settings('main_page_cms_id',$_POST["main_page_cms_id"]);
 
 		$humo_option["main_page_cms_id"]=$_POST["main_page_cms_id"];
 		$main_page_cms_id=$humo_option["main_page_cms_id"];
@@ -542,7 +542,8 @@ if ($cms_item=='settings'){
 					$dbh->query("INSERT INTO humo_settings SET setting_variable='main_page_cms_id_".$language_file[$i]."', setting_value='".$_POST['main_page_cms_id_'.$language_file[$i]]."'");
 				}
 				else {
-					$dbh->query("UPDATE humo_settings SET setting_value='".$_POST['main_page_cms_id_'.$language_file[$i]]."' WHERE setting_variable='main_page_cms_id_".$language_file[$i]."'");
+					// *** Save settings***
+					$result = $db_functions->update_settings('main_page_cms_id_'.$language_file[$i],$_POST['main_page_cms_id_'.$language_file[$i]]);
 				}
 			}
 		}

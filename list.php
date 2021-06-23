@@ -310,7 +310,7 @@ if ($selectsort){
 						'BEF ',''),
 					'EST ',''),
 				'CAL ',''),
-			'AND ','       ') 
+			'AND ','       ')
 			WHEN pers_birth_date = '' AND SUBSTR(CONCAT(' ',pers_bapt_date),-4,1)!= ' ' THEN
 				replace(
 					replace(
@@ -344,7 +344,7 @@ if ($selectsort){
 							'BEF ',''),
 						'EST ',''),
 					'CAL ',''),
-				'AND ','       ') 
+				'AND ','       ')
 			WHEN pers_birth_date != '' AND SUBSTR(CONCAT(' ',pers_birth_date),-4,1)!= ' ' THEN
 				replace(
 					replace(
@@ -360,7 +360,7 @@ if ($selectsort){
 							'BEF ',''),
 						'EST ',''),
 					'CAL ',''),
-				'AND ','       ') 
+				'AND ','       ')
 				END AS year";
  
 		$orderby = " CONCAT( substring(year,-4),
@@ -779,11 +779,15 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$query.=$and."pers_own_code ".name_qry($selection['own_code'], $selection['part_own_code']); $and=" AND ";
 	}
 	if ($selection['gednr']){
-		if(strtoupper(substr($_POST['gednr'],0,1)) != 'I') $selection['gednr']='I'.$_POST['gednr']; // if only number was entered - add "I" before
-		else strtoupper($selection['gednr']=$_POST['gednr']); // in case lowercase "i" was entered before number, make it "I"
+		if(strtoupper(substr($_POST['gednr'],0,1)) != 'I'){
+			$selection['gednr']='I'.$_POST['gednr']; // if only number was entered - add "I" before
+		}
+		else{
+			$selection['gednr']=strtoupper($_POST['gednr']); // in case lowercase "i" was entered before number, make it "I"
+		}
 		$query.=$and."pers_gedcomnumber ".name_qry($selection['gednr'], $selection['part_gednr']); $and=" AND ";
 	}
-	
+
 	if ($selection['pers_profession']){
 		$query.=$and." (event_kind='profession' AND event_event ".name_qry($selection['pers_profession'], $selection['part_profession']).')';
 		$and=" AND ";
@@ -816,7 +820,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$query.=$and." (pers_famc = '') ";
 		$and=" AND ";
 		$add_event_qry=true;
-	}	
+	}
 	
 	// *** Change query if searched for spouse ***
 	if ($selection['spouse_firstname'] OR $selection['spouse_lastname']) {

@@ -80,6 +80,7 @@ HuMo-gen uses <a href="https://www.transifex.com/organization/humo-gen" target="
 <li>Hungarian by: Nagy-Vajda Domokos.</li>
 <li>Italian by: Ambrogio Chiotti.</li>
 <li>Persian by: Dr. Maleki</li>
+<li>Polish by: Jaroslaw Bochenek</li>
 <li>Portugese: António Duarte</li>
 <li>Russian: Demian Nikonorov</li>
 <li>Slowak: dusbaj</li>

@@ -29,6 +29,9 @@
 	// *** Create a new PHPMailer instance ***
 	//$mail = new PHPMailer\PHPMailer\PHPMailer;
 	$mail = new PHPMailer;
+
+	// *** 2019_12_14 added for UTF-8 mailings ***
+	$mail->CharSet = 'UTF-8';
 // *** End of part 1 ***
 
 

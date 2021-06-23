@@ -62,13 +62,14 @@ $temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 if($temp->rowCount()) {   // a humo_photocat table exists
 	$temp2 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none'");
 	if($temp2->rowCount() >= 1) { //  the table contains more than the default category (otherwise display regular photoalbum)
-		$qry = "SELECT photocat_prefix FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
+		//$qry = "SELECT photocat_prefix FROM humo_photocat GROUP BY photocat_prefix ORDER BY photocat_order";
+		$qry = "SELECT photocat_prefix, photocat_order FROM humo_photocat GROUP BY photocat_prefix, photocat_order";
 		$result = $dbh->query($qry);
 		$result_arr = $result->fetchAll(); // PDO has a problem with resetting pointer in MySQL and the fastest workaround is to use an array instead
 		$catpics=0; // checks if any of the user-created categories have pics at all, otherwise don't show the tabbed menu, just regular photo album
 
 		foreach($result_arr as $row) {
-			if($row['photocat_prefix'] != 'none')   {  
+			if($row['photocat_prefix'] != 'none') {
 				$check = glob($tree_pict_path.'/'.$row['photocat_prefix'].'*');
 				if($check!==false AND count($check) >= 1) {  // found at least one pic for this category
 					$catpics++;
@@ -89,7 +90,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 			}
 		}  
 		if($catpics>0) { // at least one of the user-created categories has at least one picture
-			$categories = true;  
+			$categories = true;
 			$menu_admin='none';  // by default display the default category
 			if(isset($_GET['menu_photoalbum'])) $menu_admin = $_GET['menu_photoalbum'];
 			echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="">';
@@ -100,7 +101,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 						$cat_string=""; // will hold the string of user-created prefixes for use in the showthem function below
 
 						foreach($result_arr as $row) {
-							if($row['photocat_prefix'] != 'none')   {  
+							if($row['photocat_prefix'] != 'none') {
 								$cat_string .= $row['photocat_prefix']."@"; 
 								// now check if there are pics for this category, otherwise don't show it
 								$check2 = glob($tree_pict_path.'/'.$row['photocat_prefix'].'*');
@@ -110,7 +111,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 										if($check3===false OR count($check3) == 0) {  // no pics in subfolder  - maybe sub-subs
 											$check4 = glob($tree_pict_path.'/'.substr($row['photocat_prefix'],0,2).'/'.'*');
 											if($check4!==false AND count($check4) >= 1) {  // found at least one sub-sub for this category
-												$catpics++;   
+												$catpics++;
 											}
 											else {
 												continue; 
@@ -127,7 +128,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 							// check if name for this category exists for this language
 							$qry2= "SELECT * FROM humo_photocat WHERE photocat_prefix ='".$row['photocat_prefix']."' AND photocat_language ='".$selected_language."'";
 							$result2 = $dbh->query($qry2);
-							if($result2->rowCount()!=0) {  
+							if($result2->rowCount()!=0) {
 								$catnameDb = $result2->fetch(PDO::FETCH_OBJ);
 								$menutab_name = $catnameDb->photocat_name;
 							}
@@ -135,7 +136,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 								// check if default name exists for this category
 								$qry3= "SELECT * FROM humo_photocat WHERE photocat_prefix ='".$row['photocat_prefix']."' AND photocat_language ='default'";
 								$result3 = $dbh->query($qry3);
-								if($result3->rowCount()!=0) {  
+								if($result3->rowCount()!=0) {
 									$catnameDb = $result3->fetch(PDO::FETCH_OBJ);
 									$menutab_name = $catnameDb->photocat_name;
 								}

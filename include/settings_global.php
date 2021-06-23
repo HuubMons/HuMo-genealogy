@@ -1,13 +1,14 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.3';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.4';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
-//$humo_option["version"]='BETA version 9 mrt. 2014';  // Version line, DO NOT CHANGE THIS LINE
+//$humo_option["version"]='BETA version 28 nov. 2019';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
-$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+//$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2019-12-14';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -46,6 +47,59 @@ while( @$row = $result->fetch(PDO::FETCH_NUM)){
 }
 
 // *** Automatic installation or update ***
+
+if (!isset($humo_option["template_homepage"])){
+	$order=1;
+	$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='active|left|select_family_tree', setting_order='".$order."'";
+	@$result=$dbh->query($sql);
+
+	$order++;
+	$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='active|center|selected_family_tree', setting_order='".$order."'";
+	@$result=$dbh->query($sql);
+
+	$order++;
+	$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='active|center|names|2|4', setting_order='".$order."'";
+	@$result=$dbh->query($sql);
+
+	$order++;
+	$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='active|center|alphabet', setting_order='".$order."'";
+	@$result=$dbh->query($sql);
+
+	$order++;
+	// *** Replace old "today in history setting"  ***
+	if (isset($humo_option["today_in_history_show"])){
+		$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='active|center|history', setting_order='".$order."'";
+		@$result=$dbh->query($sql);
+
+		$sql="DELETE FROM humo_settings WHERE setting_variable='today_in_history_show'";
+		$result=$dbh->query($sql);
+	}
+	else{
+		$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='inactive|center|history', setting_order='".$order."'";
+		@$result=$dbh->query($sql);
+	}
+
+	$order++;
+	$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='active|center|favourites', setting_order='".$order."'";
+	@$result=$dbh->query($sql);
+
+	$order++;
+	$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='inactive|center|text', setting_order='".$order."'";
+	@$result=$dbh->query($sql);
+
+	$order++;
+	$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='inactive|center|cms_page', setting_order='".$order."'";
+	@$result=$dbh->query($sql);
+
+	$order++;
+	$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='active|right|search', setting_order='".$order."'";
+	@$result=$dbh->query($sql);
+
+	$order++;
+	$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='inactive|right|random_photo', setting_order='".$order."'";
+	@$result=$dbh->query($sql);
+}
+
 if (!isset($humo_option["rss_link"])){
 	$humo_option["rss_link"]='http://';
 	$sql="INSERT INTO humo_settings SET setting_variable='rss_link', setting_value='http://'";
@@ -328,13 +382,6 @@ if (!isset($humo_option["slideshow_03"])){
 if (!isset($humo_option["slideshow_04"])){
 	$humo_option["slideshow_04"]='|';
 	$sql="INSERT INTO humo_settings SET setting_variable='slideshow_04', setting_value='|'";
-	@$result=$dbh->query($sql);
-}
-
-// *** "Today in history" on the homepage ***
-if (!isset($humo_option["today_in_history_show"])){
-	$humo_option["today_in_history_show"]='n';
-	$sql="INSERT INTO humo_settings SET setting_variable='today_in_history_show', setting_value='n'";
 	@$result=$dbh->query($sql);
 }
 

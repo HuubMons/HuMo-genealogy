@@ -48,7 +48,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 	// so we can update correctly with the "REFRESH BIRTH/DEATH STATUS" option further on.
 	if($_SESSION['geo_tree']  != "all_geo_trees") {  // we add locations from one tree
 		if(strpos($humo_option['geo_trees'],"@".$_SESSION['geo_tree'].";")===false) { // this tree_id does not appear already
-				$dbh->query("UPDATE humo_settings SET setting_value = '".$humo_option['geo_trees']."@".$_SESSION['geo_tree'] .";' WHERE setting_variable ='geo_trees'"); 
+			$result = $db_functions->update_settings('geo_trees',$humo_option['geo_trees']."@".$_SESSION['geo_tree']);
 			// add tree_prefix if not already present
 			$humo_option['geo_trees'] .= "@".$_SESSION['geo_tree'].';'; // humo_option is used further on before page is refreshed so we have to update it manually
 		}
@@ -60,7 +60,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 		while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){ 
 			$str .= "@".$tree_searchDb->tree_id.";";
 		}
-			$dbh->query("UPDATE humo_settings SET setting_value = '".$str."' WHERE setting_variable ='geo_trees'"); 
+		$result = $db_functions->update_settings('geo_trees',$str);
 		$humo_option['geo_trees'] = $str; // humo_option is used further on before page is refreshed so we have to update it manually
 	}
 	foreach($_SESSION['add_locations'] as $value) {
@@ -198,7 +198,7 @@ else {  // main screen
 
 	if(isset($_POST['deletedatabase'])) {
 		$dbh->query("DROP TABLE humo_location");
-		$dbh->query("UPDATE humo_settings SET setting_value='' WHERE setting_variable = 'geo_trees'");
+		$result = $db_functions->update_settings('geo_trees','');
 	}
 	if(isset($_POST['refresh_no_locs'])) { // refresh non-indexable locations table
 		$new_no_locs = array();
@@ -300,7 +300,7 @@ else {  // main screen
 			// fresh page called OR updated key entered
 			if(isset($_POST['new_api']) AND $_POST['new_api']!="") {  
 				// admin enter updated key
-				$temp = $dbh->query("UPDATE humo_settings SET setting_value = '".$_POST['new_api']."' WHERE setting_variable = 'google_api_key'");
+				$result = $db_functions->update_settings('google_api_key',$_POST['new_api']);
 				echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): "; 
 				echo '<span style="font-weight:bold">'.$_POST['new_api'].'</span>';
 			}
@@ -375,8 +375,8 @@ else {  // main screen
 			// fresh page called OR updated key entered
 			if(isset($_POST['new_api2']) AND $_POST['new_api2']!="") {  
 				// admin enter updated key
-				$temp = $dbh->query("UPDATE humo_settings SET setting_value = '".$_POST['new_api2']."' WHERE setting_variable = 'google_api_key2'");
-				echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;"; 
+				$result = $db_functions->update_settings('google_api_key2',$_POST['new_api2']);
+			echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;"; 
 				echo '<span style="font-weight:bold">'.$_POST['new_api2'].'</span>';
 			}
 			else { 
@@ -1015,8 +1015,7 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 				$slider_choiceDb = $result->fetch(PDO::FETCH_OBJ);
 				${"slider_choice".$tree_searchDb->tree_prefix} = $slider_choiceDb->setting_value;
 				if(isset($_POST[$offset])) {
-					$sql="UPDATE humo_settings SET setting_value='".$_POST[$offset]."' WHERE setting_variable='gslider_".$tree_searchDb->tree_prefix."'";
-					$dbh->query($sql);
+					$result = $db_functions->update_settings('gslider_'.$tree_searchDb->tree_prefix,$_POST[$offset]);
 					${"slider_choice".$tree_searchDb->tree_prefix}=$_POST[$offset];
 				}
 			}
@@ -1046,8 +1045,7 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 
 		if(isset($_GET['slider_default'])) {
 			if ($result->rowCount() >0) { 
-				$sql="UPDATE humo_settings SET setting_value ='".$_GET['slider_default']."' WHERE setting_variable='gslider_default_pos'";
-				$dbh->query($sql);
+				$result = $db_functions->update_settings('gslider_default_pos',$_GET['slider_default']);
 				$sl_def=$_GET['slider_default'];
 			}
 			else {
@@ -1081,9 +1079,8 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 		$result = $dbh->query($query);
 
 		if(isset($_GET['maptype_default'])) {
-			if ($result->rowCount() >0) { 
-				$sql="UPDATE humo_settings SET setting_value ='".$_GET['maptype_default']."' WHERE setting_variable='google_map_type'";
-				$dbh->query($sql);
+			if ($result->rowCount() >0) {
+				$result = $db_functions->update_settings('google_map_type',$_GET['maptype_default']);
 				$maptype_def=$_GET['maptype_default'];
 			}
 			else {
@@ -1115,9 +1112,8 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 		$result = $dbh->query($query);
 
 		if(isset($_GET['map_zoom_default'])) {
-			if ($result->rowCount() >0) { 
-				$sql="UPDATE humo_settings SET setting_value ='".$_GET['map_zoom_default']."' WHERE setting_variable='google_map_zoom'";
-				$dbh->query($sql);
+			if ($result->rowCount() >0) {
+				$result = $db_functions->update_settings('google_map_zoom',$_GET['map_zoom_default']);
 				$mapzoom_def=$_GET['map_zoom_default'];
 			}
 			else {
@@ -1194,7 +1190,7 @@ function refresh_status() {
 			$loca_array[$resultDb->pers_buried_place] .= $resultDb->pers_tree_prefix."buried ";
 		}
 	}
- 
+
 	foreach($loca_array as $key => $value) {
 		if(isset($_POST['purge']) AND ($value == "" OR $value == NULL)) {
 			$dbh->query("DELETE FROM humo_location WHERE location_location = '".addslashes($key)."'");

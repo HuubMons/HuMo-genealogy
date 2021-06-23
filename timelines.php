@@ -408,6 +408,7 @@ if(isset($_POST['step'])) $step=$_POST['step'];
 $tml = $filenames[0][1]; // if default is not set the first file will be checked
 if(isset($_POST['tml'])) $tml=$_POST['tml'];
 elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timeline']!="") {
+	
 	$str = explode("@",substr($humo_option['default_timeline'],0,-1));  // humo_option is: nl!europa@de!Sweitz@en!british  etc.
 	$val_arr = Array();
 	foreach($str AS $value) {

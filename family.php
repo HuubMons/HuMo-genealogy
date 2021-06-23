@@ -2219,15 +2219,17 @@ if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
 		echo ')';
 
 		// *** Name and gedcom number of main person ***
-		echo ' '.$name1['name'].' #'.$person_manDb->pers_gedcomnumber;
+		if ($person_manDb){
+			echo ' '.$name1['name'].' #'.$person_manDb->pers_gedcomnumber;
 
-		// *** Birth or baptise date ***
-		if (!$family_privacy){
-			if ($person_manDb->pers_birth_date OR $person_manDb->pers_birth_place){
-				echo ', '.__('born').' '.date_place($person_manDb->pers_birth_date,$person_manDb->pers_birth_place);
-			}
-			elseif ($person_manDb->pers_bapt_date OR $person_manDb->pers_bapt_place){
-				echo ', '.__('baptised').' '.date_place($person_manDb->pers_bapt_date,$person_manDb->pers_bapt_place);
+			// *** Birth or baptise date ***
+			if (!$family_privacy){
+				if ($person_manDb->pers_birth_date OR $person_manDb->pers_birth_place){
+					echo ', '.__('born').' '.date_place($person_manDb->pers_birth_date,$person_manDb->pers_birth_place);
+				}
+				elseif ($person_manDb->pers_bapt_date OR $person_manDb->pers_bapt_place){
+					echo ', '.__('baptised').' '.date_place($person_manDb->pers_bapt_date,$person_manDb->pers_bapt_place);
+				}
 			}
 		}
 

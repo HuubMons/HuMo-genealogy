@@ -182,6 +182,7 @@ if (isset($_SESSION['admin_menu_admin'])){ $menu_admin=$_SESSION['admin_menu_adm
 if (isset($_POST["tree_prefix"])){
 	$tree_prefix=$_POST['tree_prefix'];
 	$_SESSION['admin_tree_prefix']=$tree_prefix;
+
 	unset ($pers_gedcomnumber);
 	unset ($_SESSION['admin_pers_gedcomnumber']);
 
@@ -618,7 +619,7 @@ fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_
 	// will hold the list of children to be added/ entered to the families table: fam_children field
 
 	$x=1;
-	if(isset($_POST['exist_children'])) {  
+	if(isset($_POST['exist_children'])) {
 		// we're adding to existing family - get pers_gedcomnumbers of children that were already listed with this family
 		$x = $_POST['exist_children']+1; 
 		$newfam_id = $_POST['exist_partner'];
@@ -992,18 +993,29 @@ if (isset($pers_gedcomnumber)){
 					}
 					</style>';
 
+					// *** Show navigation pop-up ***
 					echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
 						echo '<a href="#" style="display:inline" ';
 						echo 'onmouseover="mopen(event,\'browse_menu\',0,0)"';
 						echo 'onmouseout="mclosetime()">';
 						//echo '***'.__('Navigate').'***</a>';
 						echo '['.__('Browse').']</a>';
+						//echo '<div class="sddm_fixed"
+						//	style="text-align:left; z-index:400; padding:4px;
+						//	direction:'.$rtlmarker.'"
+						//	id="browse_menu"
+						//	onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 						echo '<div class="sddm_fixed"
-							style="text-align:left; z-index:400; padding:4px;
-							direction:'.$rtlmarker.'"
+							style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153);
+							direction:'.$rtlmarker.'
+							box-shadow: 6px 6px 6px #999;
+							-moz-box-shadow: 6px 6px 6px #999;
+							-webkit-box-shadow: 6px 6px 6px #999;
+							-moz-border-radius: 6px 6px 6px 6px;
+							-webkit-border-radius: 6px 6px 6px 6px;
+							border-radius: 6px 6px 6px 6px;"
 							id="browse_menu"
 							onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-
 							// *** Show box with list of parents, person, marriages etc. ***
 							/*
 							echo '<div style="position:absolute;

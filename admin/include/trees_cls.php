@@ -21,9 +21,9 @@ function tree_main(){
 
 	echo '<table class="humo" border="1" cellspacing="0" width="100%">';
 	echo '<tr class="table_header"><th>'.__('Order').'</th>';
-	echo '<th>'.__('Name of family tree').'</th>';
-	echo '<th>'.__('Family tree data').'</th>';
-	echo '<th>'.__('Remove').'</th>';
+		echo '<th>'.__('Name of family tree').'</th>';
+		echo '<th>'.__('Family tree data').'</th>';
+		echo '<th>'.__('Remove').'</th>';
 	echo '</tr>';
 
 	echo '<tr class="table_header">';
@@ -72,80 +72,78 @@ function tree_main(){
 	while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
 		$style=''; if ($tree_id==$dataDb->tree_id){ $style=' bgcolor="#99CCFF"'; }
 		echo '<tr'.$style.'>';
+
 		echo '<td nowrap>';
-		if ($dataDb->tree_order<10){ echo '0'; }
-		echo $dataDb->tree_order;
-		// *** Number for new family tree ***
-		$new_number=$dataDb->tree_order+1;
-		if ($dataDb->tree_order!='1'){
-			echo ' <a href="'.$phpself2.'page='.$page.'&amp;up=1&amp;tree_order='.$dataDb->tree_order.
-			'&amp;id='.$dataDb->tree_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="up"></a>'; }
-		if ($dataDb->tree_order!=$count_trees){
-			echo ' <a href="'.$phpself2.'page='.$page.'&amp;down=1&amp;tree_order='.$dataDb->tree_order.'&amp;id='.
-			$dataDb->tree_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>'; }
+			if ($dataDb->tree_order<10){ echo '0'; }
+			echo $dataDb->tree_order;
+			// *** Number for new family tree ***
+			$new_number=$dataDb->tree_order+1;
+			if ($dataDb->tree_order!='1'){
+				echo ' <a href="'.$phpself2.'page='.$page.'&amp;up=1&amp;tree_order='.$dataDb->tree_order.
+				'&amp;id='.$dataDb->tree_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="up"></a>'; }
+			if ($dataDb->tree_order!=$count_trees){
+				echo ' <a href="'.$phpself2.'page='.$page.'&amp;down=1&amp;tree_order='.$dataDb->tree_order.'&amp;id='.
+				$dataDb->tree_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>'; }
 		echo '</td>';
 
 		echo '<td>';
+			$treetext=show_tree_text($dataDb->tree_id, $language_tree);
+			if ($dataDb->tree_prefix=='EMPTY')
+				echo '* '.__('EMPTY LINE').' *';
+			else{
+				// *** Change family tree name ***
+				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=tree_text&amp;tree_id='.$dataDb->tree_id.'"><img src="images/edit.jpg" title="edit" alt="edit"></a> '.$treetext['name'];
+			}
+		echo '</td>';
 
-		$treetext=show_tree_text($dataDb->tree_id, $language_tree);
-		if ($dataDb->tree_prefix=='EMPTY')
-			echo '* '.__('EMPTY LINE').' *';
-		else{
-			// *** Change family tree name ***
-			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=tree_text&amp;tree_id='.$dataDb->tree_id.'"><img src="images/edit.jpg" title="edit" alt="edit"></a> '.$treetext['name'];
-		}
+		echo '<td>';
+			if ($dataDb->tree_prefix!='EMPTY'){
+				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=tree_gedcom&amp;tree_id='.$dataDb->tree_id.'&tree_prefix='.$dataDb->tree_prefix.'&step1=read_gedcom"><img src="images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
+			}
 
-	echo '</td>';
+			if ($dataDb->tree_prefix=='EMPTY'){
+				//
+			}
+			elseif ($dataDb->tree_persons>0){
+				echo ' <font color="#00FF00"><b>'.__('OK').'</b></font>';
 
-	echo '<td>';
+				// *** Show tree data ***
+				$tree_date=$dataDb->tree_date;
+				$month=''; // for empty tree_dates
+				if (substr($tree_date,5,2)=='01'){ $month=' '.strtolower(__('jan')).' ';}
+				if (substr($tree_date,5,2)=='02'){ $month=' '.strtolower(__('feb')).' ';}
+				if (substr($tree_date,5,2)=='03'){ $month=' '.strtolower(__('mar')).' ';}
+				if (substr($tree_date,5,2)=='04'){ $month=' '.strtolower(__('apr')).' ';}
+				if (substr($tree_date,5,2)=='05'){ $month=' '.strtolower(__('may')).' ';}
+				if (substr($tree_date,5,2)=='06'){ $month=' '.strtolower(__('jun')).' ';}
+				if (substr($tree_date,5,2)=='07'){ $month=' '.strtolower(__('jul')).' ';}
+				if (substr($tree_date,5,2)=='08'){ $month=' '.strtolower(__('aug')).' ';}
+				if (substr($tree_date,5,2)=='09'){ $month=' '.strtolower(__('sep')).' ';}
+				if (substr($tree_date,5,2)=='10'){ $month=' '.strtolower(__('oct')).' ';}
+				if (substr($tree_date,5,2)=='11'){ $month=' '.strtolower(__('nov')).' ';}
+				if (substr($tree_date,5,2)=='12'){ $month=' '.strtolower(__('dec')).' ';}
+				$tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4);
+				echo ' <font size=-1>'.$tree_date.': '.$dataDb->tree_persons.' '.
+				__('persons').', '.$dataDb->tree_families.' '.__('families').'</font>';
+			}
+			else{
+				//echo ' <font color="#FF0000"><b>'.__('ERROR').'!</b></font>';
+				echo ' <b>'.__('This tree does not yet contain any data or has not been imported properly!').'</b>';
+			}
+		echo '</td>';
 
-		if ($dataDb->tree_prefix!='EMPTY'){
-			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=tree_gedcom&amp;tree_id='.$dataDb->tree_id.'&tree_prefix='.$dataDb->tree_prefix.'&step1=read_gedcom"><img src="images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
-		}
+		echo '<td nowrap>';
+			// *** If there is only one family tree, prevent it can be removed ***
+			if ($count_trees>1){
+				echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;remove_tree='.$dataDb->tree_id.'&amp;treetext_name='.$treetext['name'].'">';
+				echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" alt="'.__('Remove tree').'" border="0"></a>';
+			}
+		echo '</td>';
 
-		if ($dataDb->tree_prefix=='EMPTY'){
-			//
-		}
-		elseif ($dataDb->tree_persons>0){
-			echo ' <font color="#00FF00"><b>'.__('OK').'</b></font>';
-
-			// *** Show tree data ***
-			$tree_date=$dataDb->tree_date;
-			$month=''; // for empty tree_dates
-			if (substr($tree_date,5,2)=='01'){ $month=' '.strtolower(__('jan')).' ';}
-			if (substr($tree_date,5,2)=='02'){ $month=' '.strtolower(__('feb')).' ';}
-			if (substr($tree_date,5,2)=='03'){ $month=' '.strtolower(__('mar')).' ';}
-			if (substr($tree_date,5,2)=='04'){ $month=' '.strtolower(__('apr')).' ';}
-			if (substr($tree_date,5,2)=='05'){ $month=' '.strtolower(__('may')).' ';}
-			if (substr($tree_date,5,2)=='06'){ $month=' '.strtolower(__('jun')).' ';}
-			if (substr($tree_date,5,2)=='07'){ $month=' '.strtolower(__('jul')).' ';}
-			if (substr($tree_date,5,2)=='08'){ $month=' '.strtolower(__('aug')).' ';}
-			if (substr($tree_date,5,2)=='09'){ $month=' '.strtolower(__('sep')).' ';}
-			if (substr($tree_date,5,2)=='10'){ $month=' '.strtolower(__('oct')).' ';}
-			if (substr($tree_date,5,2)=='11'){ $month=' '.strtolower(__('nov')).' ';}
-			if (substr($tree_date,5,2)=='12'){ $month=' '.strtolower(__('dec')).' ';}
-			$tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4);
-			echo ' <font size=-1>'.$tree_date.': '.$dataDb->tree_persons.' '.
-			__('persons').', '.$dataDb->tree_families.' '.__('families').'</font>';
-		}
-		else{
-			//echo ' <font color="#FF0000"><b>'.__('ERROR').'!</b></font>';
-			echo ' <b>'.__('This tree does not yet contain any data or has not been imported properly!').'</b>';
-		}
-
-	echo '</td>';
-
-	echo '<td nowrap>';
-		// *** If there is only one family tree, prevent it can be removed ***
-		if ($count_trees>1){
-			echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;remove_tree='.$dataDb->tree_id.'&amp;treetext_name='.$treetext['name'].'">';
-			echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" alt="'.__('Remove tree').'" border="0"></a>';
-		}
-	echo '</td>';
-
+		echo '</tr>';
 	}
 
-	echo '</tr>';
+	//echo '</tr>';
 	}
 
 	// *** Add new family tree ***
@@ -596,7 +594,7 @@ If you don\'t want to merge, press "SKIP" to continue to the next pair of possib
 			$relcompDb = $relcomp->fetch(PDO::FETCH_OBJ);		// database row: I23@I300;I54@I304;I34@I430;
 			$firstsemi = strpos($relcompDb->setting_value,';') + 1;
 			$string = substr($relcompDb->setting_value,$firstsemi);
-			$dbh->query("UPDATE humo_settings SET setting_value ='".$string."' WHERE setting_variable = 'rel_merge_".$data2Db->tree_prefix."'");
+			$result = $db_functions->update_settings('rel_merge_'.$data2Db->tree_prefix,$string);
 			$relatives_merge = $string;
 		}
 
@@ -1192,51 +1190,51 @@ You will be notified of results as the action is completed');
 		echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 
 		if(isset($_POST['reset'])) { // reset to default
-			$dbh->query("UPDATE humo_settings SET setting_value ='10' WHERE setting_variable='merge_chars'");
+			$result = $db_functions->update_settings('merge_chars','10');
 		}
 		elseif(isset($_POST['merge_chars'])) { // the "Save" button was pressed
 			$merge_chars = $_POST['merge_chars'];  // store into variable and write to database
-			$dbh->query("UPDATE humo_settings SET setting_value ='".$merge_chars."' WHERE setting_variable = 'merge_chars'");
+			$result = $db_functions->update_settings('merge_chars',$merge_chars);
 		}
 		$chars = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_chars'");
 		$charsDb = $chars->fetch(PDO::FETCH_OBJ);
 
 		if(isset($_POST['reset'])) {
-			$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_dates'");
+			$result = $db_functions->update_settings('merge_dates','YES');
 		}
 		elseif(isset($_POST['merge_dates'])) {
 			$merge_dates = $_POST['merge_dates'];
-			$dbh->query("UPDATE humo_settings SET setting_value ='".$merge_dates."' WHERE setting_variable = 'merge_dates'");
+			$result = $db_functions->update_settings('merge_dates',$merge_dates);
 		}
 		$dates = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_dates'");
 		$datesDb = $dates->fetch(PDO::FETCH_OBJ);
 
 		if(isset($_POST['reset'])) {
-			$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_lastname'");
+			$result = $db_functions->update_settings('merge_lastname','YES');
 		}
 		elseif(isset($_POST['merge_lastname'])) {
 			$merge_lastname = $_POST['merge_lastname'];
-			$dbh->query("UPDATE humo_settings SET setting_value ='".$merge_lastname."' WHERE setting_variable = 'merge_lastname'");
+			$result = $db_functions->update_settings('merge_lastname',$merge_lastname);
 		}
 		$lastn = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_lastname'");
 		$lastnDb = $lastn->fetch(PDO::FETCH_OBJ);
 
 		if(isset($_POST['reset'])) {
-			$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_firstname'");
+			$result = $db_functions->update_settings('merge_firstname','YES');
 		}
 		elseif(isset($_POST['merge_firstname'])) {
 			$merge_firstname = $_POST['merge_firstname'];
-			$dbh->query("UPDATE humo_settings SET setting_value ='".$merge_firstname."' WHERE setting_variable = 'merge_firstname'");
+			$result = $db_functions->update_settings('merge_firstname',$merge_firstname);
 		}
 		$firstn = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_firstname'");
 		$firstnDb = $firstn->fetch(PDO::FETCH_OBJ);
 
 		if(isset($_POST['reset'])) {
-			$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_parentsdate'");
+			$result = $db_functions->update_settings('merge_parentsdate','YES');
 		}
 		elseif(isset($_POST['merge_parentsdate'])) {
 			$merge_parentsdate = $_POST['merge_parentsdate'];
-			$dbh->query("UPDATE humo_settings SET setting_value ='".$merge_parentsdate."' WHERE setting_variable = 'merge_parentsdate'");
+			$result = $db_functions->update_settings('merge_parentsdate',$merge_parentsdate);
 		}
 		$pard = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'merge_parentsdate'");
 		$pardDb = $pard->fetch(PDO::FETCH_OBJ);
@@ -2014,8 +2012,7 @@ function merge_them($left,$right,$mode) {
 											if(strstr($relatives_merge,$string1)===false AND strstr($relatives_merge,$string2)===false) {
 												$relatives_merge .= $string1;
 											}
-											$dbh->query("UPDATE humo_settings SET setting_value ='".$relatives_merge."'
-												WHERE setting_variable = 'rel_merge_".$data2Db->tree_prefix."'");
+											$result = $db_functions->update_settings('rel_merge_'.$data2Db->tree_prefix,$relatives_merge);
 										}
 									}
 								}
@@ -2242,8 +2239,7 @@ function merge_them($left,$right,$mode) {
 										if(strstr($relatives_merge,$string1) === false AND strstr($relatives_merge,$string2) === false) {
 											$relatives_merge .= $string1;
 										}
-										$dbh->query("UPDATE humo_settings SET setting_value ='".$relatives_merge."'
-											WHERE setting_variable = 'rel_merge_".$data2Db->tree_prefix."'");
+										$result = $db_functions->update_settings('rel_merge_'.$data2Db->tree_prefix,$relatives_merge);
 									}
 								}
 							}
@@ -2325,8 +2321,7 @@ function merge_them($left,$right,$mode) {
 									if(strstr($relatives_merge,$string1) === false AND strstr($relatives_merge,$string2) === false)	{
 										$relatives_merge .= $string1;
 									}
-									$dbh->query("UPDATE humo_settings SET setting_value ='".$relatives_merge."'
-										WHERE setting_variable = 'rel_merge_".$data2Db->tree_prefix."'");
+									$result = $db_functions->update_settings('rel_merge_'.$data2Db->tree_prefix,$relatives_merge);
 								}
 							}
 						}
@@ -2396,8 +2391,7 @@ function merge_them($left,$right,$mode) {
 					$dbh->query("UPDATE humo_families SET fam_woman = '".$par2Db->fam_woman."'
 						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber ='".$result1Db->pers_famc."'");
 				}
-				$dbh->query("UPDATE humo_settings SET setting_value ='".$relatives_merge."'
-					WHERE setting_variable = 'rel_merge_".$data2Db->tree_prefix."'");
+				$result = $db_functions->update_settings('rel_merge_'.$data2Db->tree_prefix,$relatives_merge);
 			}
 			if(!$result1Db->pers_famc) {
 				// give left the famc of right
@@ -2594,7 +2588,7 @@ function merge_them($left,$right,$mode) {
 			$relatives_merge = str_replace($found2,'',$relatives_merge);
 		}
 		*/
-		$dbh->query("UPDATE humo_settings SET setting_value ='".$relatives_merge."' WHERE setting_variable = 'rel_merge_".$data2Db->tree_prefix."'");
+		$result = $db_functions->update_settings('rel_merge_'.$data2Db->tree_prefix,$relatives_merge);
 	}
 
 	if(isset($_SESSION['dupl_arr_'.$data2Db->tree_prefix])) { //remove this pair from the dupl_arr array
