@@ -41,23 +41,23 @@ elseif($size==45) { $boxhight = 1.5 * 45;}
 else { $boxhight = 1.5 * $size ; }
 $anc_top = (pow(2,$chosengenanc-1)*$boxhight)/2; 
 
-if($genarray[0]["y"] < $anc_top) { // if desc base pers higher on screen than base person of ancestor chart - has to be lowered to there.
-	$offset = $anc_top - $genarray[0]["y"];
+if($genarray[0]["posy"] < $anc_top) { // if desc base pers higher on screen than base person of ancestor chart - has to be lowered to there.
+	$offset = $anc_top - $genarray[0]["posy"];
 	for($a=0; $a<count($genarray);$a++) {
-		$genarray[$a]["y"] += $offset;
+		$genarray[$a]["posy"] += $offset;
 		if(isset($genarray[$a]["fst"])) $genarray[$a]["fst"] += $offset;
 		if(isset($genarray[$a]["lst"])) $genarray[$a]["lst"] += $offset;
 	}
 }
-if($genarray[0]["y"] > $anc_top)  { // if desc base person lower, we have to lower base person of anc chart.
-	$anc_top = $genarray[0]["y"] ;
+if($genarray[0]["posy"] > $anc_top)  { // if desc base person lower, we have to lower base person of anc chart.
+	$anc_top = $genarray[0]["posy"] ;
 }
 //Set height of chart, both for screen and img-to-print
 //Descendant chart bottom coordinates
 $desc_hi=0;
 for($i=0; $i < count($genarray); $i++) {
-	if($genarray[$i]["y"] > $desc_hi) {
-		$desc_hi = $genarray[$i]["y"];
+	if($genarray[$i]["posy"] > $desc_hi) {
+		$desc_hi = $genarray[$i]["posy"];
 	}
 }
 $desc_hi +=150;  // lowest point of desc chart

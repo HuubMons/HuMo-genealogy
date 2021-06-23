@@ -103,18 +103,18 @@ elseif (isset($userDb->user_name)){
 
 	$register_name=$userDb->user_name; if (isset($_POST['register_name'])){ $register_name=$_POST['register_name']; }
 	//echo '<tr><td>'.__('Username').':</td><td><input type="text" class="fonts" name="register_name" size="40" style="background-color:#FFFFFF" value="'.$register_name.'"></td></tr>';
-	echo '<tr><td>'.__('Username').':</td><td>'.$register_name.'</td></tr>';
+	echo '<tr><td>'.__('Username').'</td><td>'.$register_name.'</td></tr>';
 
 	$register_password=''; if (isset($_POST['register_password'])){ $register_password=$_POST['register_password']; }
 
 	if ($user['group_menu_change_password']=='y'){
-		echo '<tr><td>'.__('Password').':</td><td><input type="password" class="fonts" name="register_password" size="30" style="background-color:#FFFFFF" value="'.$register_password.'"></td></tr>';
+		echo '<tr><td>'.__('Password').'</td><td><input type="password" class="fonts" name="register_password" size="30" style="background-color:#FFFFFF" value="'.$register_password.'"></td></tr>';
 
 		$register_repeat_password=''; if (isset($_POST['register_repeat_password'])){ $register_repeat_password=$_POST['register_repeat_password']; }
-		echo '<tr><td>'.__('Repeat password').':</td><td><input type="password" class="fonts" name="register_repeat_password" size="30" style="background-color:#FFFFFF" value="'.$register_repeat_password.'"></td></tr>';
+		echo '<tr><td>'.__('Repeat password').'</td><td><input type="password" class="fonts" name="register_repeat_password" size="30" style="background-color:#FFFFFF" value="'.$register_repeat_password.'"></td></tr>';
 
 		$register_mail=$userDb->user_mail; if (isset($_POST['register_mail'])){ $register_mail=$_POST['register_mail']; }
-		echo '<tr><td>'.__('FULL e-mail address: ').'</td><td><input type="text" class="fonts" id="register_mail" name="register_mail" value="'.$register_mail.'" size="30" style="background-color:#FFFFFF"> </td></tr>';
+		echo '<tr><td>'.__('E-mail address').'</td><td><input type="text" class="fonts" id="register_mail" name="register_mail" value="'.$register_mail.'" size="30" style="background-color:#FFFFFF"> </td></tr>';
 
 		//$register_text=''; if (isset($_POST['register_text'])){ $register_text=$_POST['register_text']; }
 		//echo '<tr><td>'.__('Message: ').'</td><td><textarea name="register_text" ROWS="5" COLS="40" class="fonts">'.$register_text.'</textarea></td></tr>';

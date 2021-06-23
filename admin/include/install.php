@@ -205,7 +205,11 @@ if (isset($_POST['install_tables2'])){
 	echo '<p><b>'.__('Creating tables:').'</b><br>';
 
 	if (!$table_settings){
-		$db_update = $dbh->query("DROP TABLE humo_settings"); // Remove table.
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_settings"); // Remove table.
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('creating humo_settings...').'<br>';
 		printf(__('create table: %s.'), 'humo_settings');
 		echo '<br>';
@@ -231,7 +235,11 @@ if (isset($_POST['install_tables2'])){
 	}
 
 	if (!$table_stat_date){
-		$db_update = $dbh->query("DROP TABLE humo_stat_date");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_stat_date");
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('Install statistics table...').'<br>';
 		printf(__('create table: %s.'), 'humo_stat_date');
 		echo '<br>';
@@ -251,7 +259,11 @@ if (isset($_POST['install_tables2'])){
 	}
 
 	if (!$table_groups){
-		$db_update = $dbh->query("DROP TABLE humo_groups");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_groups");
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('creating humo_groups...').'<br>';
 		printf(__('create table: %s.'), 'humo_groups');
 		echo '<br>';
@@ -381,7 +393,11 @@ if (isset($_POST['install_tables2'])){
 	}
 
 	if (!$table_users){
-		$db_update = $dbh->query("DROP TABLE humo_users");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_users");
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('creating humo_users...').'<br>';
 		printf(__('create table: %s.'), 'humo_users');
 		echo '<br>';
@@ -429,7 +445,11 @@ if (isset($_POST['install_tables2'])){
 	}
 
 	if (!$table_cms_pages){
-		$db_update = $dbh->query("DROP TABLE humo_cms_pages");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_cms_pages");
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('creating humo_cms_pages...').'<br>';
 		printf(__('create table: %s.'), 'humo_cms_pages');
 		echo '<br>';
@@ -448,7 +468,11 @@ if (isset($_POST['install_tables2'])){
 	}
 
 	if (!$table_user_log){
-		$db_update = $dbh->query("DROP TABLE humo_user_log");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_user_log");
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('creating humo_log...').'<br>';
 		printf(__('create table: %s.'), 'humo_log');
 		echo '<br>';
@@ -464,7 +488,11 @@ if (isset($_POST['install_tables2'])){
 	}
 
 	if (!$table_user_notes){
-		$db_update = $dbh->query("DROP TABLE humo_user_notes");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_user_notes");
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('creating humo_notes...').'<br>';
 		printf(__('create table: %s.'), 'humo_notes');
 		echo '<br>';
@@ -489,7 +517,11 @@ if (isset($_POST['install_tables2'])){
 
 	// *** Family tree tables ***
 	if (!$table_trees){
-		$db_update = $dbh->query("DROP TABLE humo_trees");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_trees");
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('creating humo_trees').'<br>';
 		printf(__('create table: %s.'), 'humo_trees');
 		echo '<br>';
@@ -524,7 +556,11 @@ if (isset($_POST['install_tables2'])){
 		";
 		$db_update = $dbh->query($sql);
 
-		$db_update = $dbh->query("DROP TABLE humo_tree_texts");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_tree_texts");
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('creating humo_trees').'<br>';
 		printf(__('create table: %s.'), 'humo_tree_texts');
 		echo '<br>';
@@ -550,7 +586,11 @@ if (isset($_POST['install_tables2'])){
 		unset($_SESSION['admin_tree_prefix']); unset ($_SESSION['admin_tree_id']);
 
 		// *** Persons ***
-		$db_update = $dbh->query("DROP TABLE humo_persons");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_persons");
+		} catch (Exception $e) {
+			//
+		}
 		printf(__('create table: %s.'), 'humo_persons');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_persons (
@@ -607,7 +647,11 @@ if (isset($_POST['install_tables2'])){
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
 		// *** Families ***
-		$db_update = $dbh->query("DROP TABLE humo_families");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_families");
+		} catch (Exception $e) {
+			//
+		}
 		printf(__('create table: %s.'), 'humo_families');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_families (
@@ -662,7 +706,11 @@ if (isset($_POST['install_tables2'])){
 
 
 		// *** Unprocessed tags ***
-		$db_update = $dbh->query("DROP TABLE humo_unprocessed_tags");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_unprocessed_tags");
+		} catch (Exception $e) {
+			//
+		}
 		printf(__('create table: %s.'), 'humo_unprocessed_tags');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_unprocessed_tags (
@@ -692,7 +740,11 @@ if (isset($_POST['install_tables2'])){
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
 		// *** Repositories ***
-		$db_update = $dbh->query("DROP TABLE humo_repositories");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_repositories");
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('creating humo_repositories...').'<br>';
 		printf(__('create table: %s.'), 'humo_repositories');
 		echo '<br>';
@@ -721,7 +773,11 @@ if (isset($_POST['install_tables2'])){
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
 		// *** Sources ***
-		$db_update = $dbh->query("DROP TABLE humo_sources");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_sources");
+		} catch (Exception $e) {
+			//
+		}
 		//echo __('creating humo_sources...').'<br>';
 		printf(__('create table: %s.'), 'humo_sources');
 		echo '<br>';
@@ -758,7 +814,11 @@ if (isset($_POST['install_tables2'])){
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
 		// *** Texts ***
-		$db_update = $dbh->query("DROP TABLE humo_texts");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_texts");
+		} catch (Exception $e) {
+			//
+		}
 		printf(__('create table: %s.'), 'humo_texts');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_texts (
@@ -776,7 +836,11 @@ if (isset($_POST['install_tables2'])){
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
 		// *** Connections ***
-		$db_update = $dbh->query("DROP TABLE humo_connections");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_connections");
+		} catch (Exception $e) {
+			//
+		}
 		printf(__('create table: %s.'), 'humo_connections');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_connections (
@@ -806,7 +870,11 @@ if (isset($_POST['install_tables2'])){
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
 		// *** Addresses ***
-		$db_update = $dbh->query("DROP TABLE humo_addresses");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_addresses");
+		} catch (Exception $e) {
+			//
+		}
 		printf(__('create table: %s.'), 'humo_addresses');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_addresses (
@@ -835,7 +903,11 @@ if (isset($_POST['install_tables2'])){
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
 		// *** Events ***
-		$db_update = $dbh->query("DROP TABLE humo_events");
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_events");
+		} catch (Exception $e) {
+			//
+		}
 		printf(__('create table: %s.'), 'humo_events');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_events (

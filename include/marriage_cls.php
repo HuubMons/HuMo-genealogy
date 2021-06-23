@@ -133,6 +133,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	}
 
 	// *** End of living together. NO end place, end text or end source yet. ***
+
 	$temp_text='';
 	$temp='';
 	$fam_relation_end_place='';
@@ -168,7 +169,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Married Notice ***
 	$temp_text='';
 	$temp='';
-	if ($marriageDb->fam_marr_notice_date OR $marriageDb->fam_marr_notice_place){				$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_notice_date_hebnight; }		
+	if ($marriageDb->fam_marr_notice_date OR $marriageDb->fam_marr_notice_place){
+		$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_notice_date_hebnight; }
 		$temp_text.= date_place($marriageDb->fam_marr_notice_date,$marriageDb->fam_marr_notice_place,$nightfall);
 		$templ_relation["prew_date"]=date_place($marriageDb->fam_marr_notice_date,$marriageDb->fam_marr_notice_place,$nightfall);
 		$temp="prew_date";
@@ -201,7 +203,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		$marriage_check=true;
 		$addition=__(' to: ');
 		if ($text!=''){ $text.="<br>\n"; $templ_relation["prew_exist"]="\n"; }
-		$text.='<b>'.__('Marriage notice').'</b> '.$temp_text;
+		$text.='<b>'.__('Marriage notice').'</b> '.$temp_text.'. ';
 		if(isset($templ_relation["prew_exist"])) {$templ_relation["prew_exist"].=__('Marriage notice').' ';}
 		else { $templ_relation["prew_exist"]=__('Marriage notice').' '; }
 	}
@@ -209,7 +211,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Marriage ***
 	$temp_text='';
 	$temp='';
-	if ($marriageDb->fam_marr_date OR $marriageDb->fam_marr_place){				$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_date_hebnight; }
+	if ($marriageDb->fam_marr_date OR $marriageDb->fam_marr_place){
+		$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_date_hebnight; }
 		$templ_relation["wedd_date"]=date_place($marriageDb->fam_marr_date,$marriageDb->fam_marr_place,$nightfall);
 		$temp="wedd_date";
 		$temp_text.= $templ_relation["wedd_date"];
@@ -607,7 +610,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		if ($presentation=='shorter'){ $addition=''; }
 	}
 	else{
-		$text='<b>'.$relation_number.$relation_kind.'</b>'.$text;
+		$text='<b>'.$relation_number.$relation_kind.'</b> '.$text;
 	}
 	if ($addition) $text.='<b>'.$addition.'</b>';
 

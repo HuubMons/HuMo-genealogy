@@ -851,6 +851,7 @@ function name_extended($person_kind){
 				// *** Source by sexe ***
 				$source='';
 				if ($person_kind != 'outline') $source=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber).' ';
+//PDF
 				if ($source) $text_name.=$source;
 
 			}
@@ -1624,9 +1625,12 @@ function person_data($person_kind, $id){
 		// **************************
 		if ($personDb->pers_gedcomnumber){
 			$eventnr=0;
+			//$event_qry=$dbh->query("SELECT * FROM humo_events
+			//	WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$personDb->pers_gedcomnumber."' AND //event_kind='profession'
+			//	ORDER BY substring( event_date,-4 ), event_order");
 			$event_qry=$dbh->query("SELECT * FROM humo_events
 				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$personDb->pers_gedcomnumber."' AND event_kind='profession'
-				ORDER BY substring( event_date,-4 ), event_order");
+				ORDER BY event_order");
 			$nr_occupations=$event_qry->rowCount();
 			while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 				$eventnr++;
@@ -1654,15 +1658,26 @@ function person_data($person_kind, $id){
 					$process_text.=', ';
 					if($temp) { $templ_person[$temp].=", "; }
 				}
-				if ($eventDb->event_date OR $eventDb->event_place){
-					$templ_person["prof_date".$eventnr]=date_place($eventDb->event_date,$eventDb->event_place).'; ';
-					$temp="prof_date".$eventnr;
-					$process_text.=$templ_person["prof_date".$eventnr];
-				}
 
+				// MOVED TO LINE 1674 AND ADDED ().
+				// *** Profession date and place ***
+				//if ($eventDb->event_date OR $eventDb->event_place){
+				//	$templ_person["prof_date".$eventnr]=date_place($eventDb->event_date,$eventDb->event_place).'; ';
+				//	$temp="prof_date".$eventnr;
+				//	$process_text.=$templ_person["prof_date".$eventnr];
+				//}
+
+				// *** Show profession ***
 				$process_text.=$eventDb->event_event;
 				$templ_person["prof_prof".$eventnr]=$eventDb->event_event;
 				$temp="prof_prof".$eventnr;
+
+				// *** Profession date and place ***
+				if ($eventDb->event_date OR $eventDb->event_place){
+					$templ_person["prof_date".$eventnr]=' ('.date_place($eventDb->event_date,$eventDb->event_place).')';
+					$temp="prof_date".$eventnr;
+					$process_text.=$templ_person["prof_date".$eventnr];
+				}
 
 				if ($eventDb->event_text) {
 					$work_text=process_text($eventDb->event_text);
@@ -1722,12 +1737,14 @@ function person_data($person_kind, $id){
 					$text.=', ';
 					if($temp) { $templ_person[$temp].=", "; }
 				}
-				if ($eventDb->address_date){
-					$text.=date_place($eventDb->address_date,'').' ';
-					// default, without place, place is processed later.
-					$templ_person["address_date".$eventnr]=date_place($eventDb->address_date,'').' ';
-					$temp="address_date".$eventnr;
-				}
+
+				// MOVED to 1767 and added ()
+				//if ($eventDb->address_date){
+				//	$text.=date_place($eventDb->address_date,'').' ';
+				//	// default, without place, place is processed later.
+				//	$templ_person["address_date".$eventnr]=date_place($eventDb->address_date,'').' ';
+				//	$temp="address_date".$eventnr;
+				//}
 
 				//if ($user['group_addresses']=='j' AND $eventDb->address_address){
 				if ($user['group_living_place']=='j' AND $eventDb->address_address){
@@ -1748,6 +1765,14 @@ function person_data($person_kind, $id){
 					$text.=', '.$eventDb->address_phone;
 				}
 
+				if ($eventDb->address_date){
+					//$text.=date_place($eventDb->address_date,'').' ';
+					$text.=' ('.date_place($eventDb->address_date,'').')';
+					// default, without place, place is processed later.
+					$templ_person["address_date".$eventnr]=' ('.date_place($eventDb->address_date,'').')';
+					$temp="address_date".$eventnr;
+				}
+
 				// *** Address text ***
 				if ($eventDb->address_text) {
 					$work_text=process_text($eventDb->address_text);
@@ -1755,7 +1780,8 @@ function person_data($person_kind, $id){
 						if($temp) { $templ_person[$temp].=", "; }
 						$templ_person["address_text".$eventnr]=$work_text;
 						$temp="address_text".$eventnr;
-						$text.=", ".$work_text;
+						//$text.=', '.$work_text;
+						$text.=' '.$work_text;
 					}
 				}
 
@@ -1969,9 +1995,13 @@ function person_data($person_kind, $id){
 						$temp="event_event".$eventnr;
 						$process_text.=$templ_person["event_event".$eventnr];
 					}
-					$templ_person["event_dateplace".$eventnr]=' '.date_place($eventDb->event_date, $eventDb->event_place);
-					$temp="event_dateplace".$eventnr;
-					$process_text.=$templ_person["event_dateplace".$eventnr];
+
+					if ($eventDb->event_date OR $eventDb->event_place){
+						//$templ_person["event_dateplace".$eventnr]=' '.date_place($eventDb->event_date, $eventDb->event_place);
+						$templ_person["event_dateplace".$eventnr]=' ('.date_place($eventDb->event_date, $eventDb->event_place).')';
+						$temp="event_dateplace".$eventnr;
+						$process_text.=$templ_person["event_dateplace".$eventnr];
+					}
 
 					if ($eventDb->event_text){
 						$work_text=process_text($eventDb->event_text);

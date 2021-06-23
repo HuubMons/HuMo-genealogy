@@ -1,7 +1,7 @@
  <?php
 // -------------------------------------------------------------------------
 // |   REPORT_DESCENDANT.PHP                                               |
-// |   for use with the $genarray generated in Humogen                     |
+// |   for use with the $genarray generated in HuMo-genealogy              |
 // |   Original starfield plotting code by Yossi Beck - Feb-March 2010     |
 // |   Copyright GPL_GNU licence                                           |
 // -------------------------------------------------------------------------
@@ -9,8 +9,8 @@
 // "par" = array nr of parent
 // "nrc" = nr of children (children with multiple marriages are counted as additional children for plotting's sake
 // "gen" = nr of the generation
-// "x"   = the x position of top left corner of a person's square
-// "y"   = the y position of top left corner of a person's square
+// "posx" = the x position of top left corner of a person's square
+// "posy" = the y position of top left corner of a person's square
 // "fst" = the x position of first (lefmost) child
 // "lst" = the x position of last (rightmost) child, unless this is a second marriage of this child,
 //         in which case the first marriage of the last child is entered into "lst"
@@ -21,8 +21,8 @@
 // "sex" = sex of the person
 // "nam" = name of the person
 // "sps" = name of spouse
-// "fams"  = humogen family number (F345)
-// "gednr" = humogen GEDCOM number (I143)
+// "fams"  = GEDCOM family number (F345)
+// "gednr" = GEDCOM person number (I143)
 // "non" = person with no own family (i.e. only child status)
 // *********************************************************************************************
 
@@ -38,9 +38,9 @@ global $vbasesize; // vertical distance in between X value of parent and X value
 global $vdist; // vertical distance in between boxes of two generations
 global $hdist; // horizontal distance in between boxes of two generations
 
-//**********************************************************************************************
+//*********************************************************************************
 //********** 1st Part:  CODE TO GENERATE THE STARFIELD CHART FROM $GENARRAY *******
-//**********************************************************************************************
+//*********************************************************************************
 function generate() {
 	global $genarray, $direction;
 	$_SESSION['genarray']=$genarray;
@@ -83,36 +83,42 @@ function generate() {
 
 			$distance=0;
 
-			$genarray[$i]["y"]=($genarray[$i]["gen"]*($vbasesize))+40;
+			$genarray[$i]["posy"]=($genarray[$i]["gen"]*($vbasesize))+40;
 			$par=$genarray[$i]["par"];
 			if($genarray[$i]["chd"]==1) {   // the first child in this fam
 				if($genarray[$i]["gen"]==0) {  // this is base person - put in left most position
-					$genarray[$i]["x"]=0;
+					$genarray[$i]["posx"]=0;
 				}
 				else { // first child in fam in 2nd or following generation
 					$exponent=$genarray[$par]["nrc"]-1; // exponent is number of additional children
-
-					$genarray[$i]["x"] = $genarray[$par]["x"] -  (($exponent*($hsize+$inbetween))/2); // place in proper spot under parent
+//if (isset($genarray[$i]["posx"]))
+					$genarray[$i]["posx"] = $genarray[$par]["posx"] - (($exponent*($hsize+$inbetween))/2); // place in proper spot under parent
+//else
+//					$genarray[$i]["posx"] = (($exponent*($hsize+$inbetween))/2); // place in proper spot under parent
 
 					if($genarray[$i]["gen"]==$genarray[$i-1]["gen"]) { // is first child in fam but not in generation
 
-						if($genarray[$i]["x"] < $genarray[$i-1]["x"]+($hsize+$inbetween*2)) {
-							$genarray[$i]["x"]=$genarray[$i-1]["x"]+($hsize+$inbetween*2);
+						if($genarray[$i]["posx"] < $genarray[$i-1]["posx"]+($hsize+$inbetween*2)) {
+							$genarray[$i]["posx"]=$genarray[$i-1]["posx"]+($hsize+$inbetween*2);
 							$movepar=1;
 						}
 					}
 					else {  // is first child in generation. If it was set to minus 0, move it to 0 and call "move parents" function move()
-						if($genarray[$i]["x"]<0) {
-							$genarray[$i]["x"]=0;
+//if (isset($genarray[$i]["posx"])){
+						if($genarray[$i]["posx"]<0) {
+							$genarray[$i]["posx"]=0;
 							$movepar=1;
 						}
+//}
 					}
-					$genarray[$par]["fst"]=$genarray[$i]["x"];       // x of first child in fam
+//if (isset($genarray[$i]["posx"]))
+					$genarray[$par]["fst"]=$genarray[$i]["posx"];    // x of first child in fam
 				}
 
 			}
 			else {
-				$genarray[$i]["x"] = $genarray[$i-1]["x"] + ($hsize+$inbetween);
+//if (isset($genarray[$i]["posx"]))
+				$genarray[$i]["posx"] = $genarray[$i-1]["posx"] + ($hsize+$inbetween);
 			}
 
 			$z=$i;
@@ -122,16 +128,15 @@ function generate() {
 					$z--;
 				}
 
-				$genarray[$par]["lst"]=$genarray[$z]["x"];
-				//NEW
+				$genarray[$par]["lst"]=$genarray[$z]["posx"];
 				if($genarray[$z]["gen"]>$genarray[$z-1]["gen"] AND $genarray[$par]["lst"]==$genarray[$par]["fst"]) { 
 				// this person is first in generation and is only child - move directly under parent
-					$genarray[$z]["x"]=$genarray[$par]["x"];
+					$genarray[$z]["posx"]=$genarray[$par]["posx"];
 					while(isset($genarray[$z+1]) AND $genarray[$z+1]["2nd"]==1) {
-						$genarray[$z+1]["x"]=$genarray[$z]["x"]+$hsize+$inbetween;
+						$genarray[$z+1]["posx"]=$genarray[$z]["posx"]+$hsize+$inbetween;
 						$z++;
 					}
-					$genarray[$par]["fst"]=$genarray[$par]["x"];
+					$genarray[$par]["fst"]=$genarray[$par]["posx"];
 				}
 				elseif($movepar==1) {
 					$movepar=0;
@@ -173,7 +178,7 @@ function generate() {
 
 			$distance=0;
 
-			$genarray[$i]["x"]=($genarray[$i]["gen"]*$hbasesize)+1;
+			$genarray[$i]["posx"]=($genarray[$i]["gen"]*$hbasesize)+1;
 
 			if($hourglass===true) {
 				// calculate left position for hourglass (depends on number of ancestor generations chosen)
@@ -198,37 +203,37 @@ function generate() {
 					}
 				}
 
-				$genarray[$i]["x"]=($genarray[$i]["gen"]*$hbasesize)+$left;
+				$genarray[$i]["posx"]=($genarray[$i]["gen"]*$hbasesize)+$left;
 			}
 			$par=$genarray[$i]["par"];
 			if($genarray[$i]["chd"]==1) {
 				if($genarray[$i]["gen"]==0) {
-					$genarray[$i]["y"]=40;
+					$genarray[$i]["posy"]=40;
 				}
 				else {
 					$exponent=$genarray[$par]["nrc"]-1;
 
-					$genarray[$i]["y"] = $genarray[$par]["y"] -  (($exponent*($vsize+$vinbetween))/2);
+					$genarray[$i]["posy"] = $genarray[$par]["posy"] -  (($exponent*($vsize+$vinbetween))/2);
 
 					if($genarray[$i]["gen"]==$genarray[$i-1]["gen"]) {
 
-						if($genarray[$i]["y"] < $genarray[$i-1]["y"]+($vsize+$vinbetween*2)) {
-							$genarray[$i]["y"]=$genarray[$i-1]["y"]+($vsize+$vinbetween*2);
+						if($genarray[$i]["posy"] < $genarray[$i-1]["posy"]+($vsize+$vinbetween*2)) {
+							$genarray[$i]["posy"]=$genarray[$i-1]["posy"]+($vsize+$vinbetween*2);
 							$movepar=1;
 						}
 					}
 					else {
-						if($genarray[$i]["y"]<40) {
-							$genarray[$i]["y"]=40;
+						if($genarray[$i]["posy"]<40) {
+							$genarray[$i]["posy"]=40;
 							$movepar=1;
 						}
 					}
-					$genarray[$par]["fst"]=$genarray[$i]["y"];       // y of first child in fam
+					$genarray[$par]["fst"]=$genarray[$i]["posy"];       // y of first child in fam
 				}
 
 			}
 			else {
-				$genarray[$i]["y"] = $genarray[$i-1]["y"] + ($vsize+$vinbetween);
+				$genarray[$i]["posy"] = $genarray[$i-1]["posy"] + ($vsize+$vinbetween);
 			}
 
 			$z=$i;
@@ -238,17 +243,17 @@ function generate() {
 					$z--;
 				}
 
-				$genarray[$par]["lst"]=$genarray[$z]["y"];
+				$genarray[$par]["lst"]=$genarray[$z]["posy"];
 				//NEW
 				if($genarray[$z]["gen"]>$genarray[$z-1]["gen"] AND $genarray[$par]["lst"]==$genarray[$par]["fst"]) {
 				// this person is first in generation and is only child - move directly under parent
-					$genarray[$z]["y"]=$genarray[$par]["y"];
+					$genarray[$z]["posy"]=$genarray[$par]["posy"];
 					// make this into while loop
 					while(isset($genarray[$z+1]) AND $genarray[$z+1]["2nd"]==1) {
-						$genarray[$z+1]["y"]=$genarray[$z]["y"]+$vsize+$vinbetween;
+						$genarray[$z+1]["posy"]=$genarray[$z]["posy"]+$vsize+$vinbetween;
 						$z++;
 					}
-					$genarray[$par]["fst"]=$genarray[$par]["y"];
+					$genarray[$par]["fst"]=$genarray[$par]["posy"];
 				}
 				elseif($movepar==1) {
 					$movepar=0;
@@ -270,38 +275,43 @@ function move($i) {
 
 	if($direction==0) { // if vertical
 		$par=$genarray[$i]["par"];
-		$tempx= $genarray[$i]["x"];
-		$genarray[$i]["x"] = ($genarray[$i]["fst"] + $genarray[$i]["lst"])/2;
+		$tempx= $genarray[$i]["posx"];
+//if (isset($genarray[$i]["lst"]))
+		$genarray[$i]["posx"] = ($genarray[$i]["fst"] + $genarray[$i]["lst"])/2;
 
 		if($genarray[$i]["gen"]!=0) {
 			$q=$i;
 			if($genarray[$q]["chd"] == 1) {
-				$genarray[$par]["fst"]=$genarray[$q]["x"];
+				$genarray[$par]["fst"]=$genarray[$q]["posx"];
 			}
 			if($genarray[$q]["chd"]==$genarray[$par]["nrc"]) {
 				while($genarray[$q]["2nd"]==1) {
 					$q--;
 				}
-			$genarray[$par]["lst"]=$genarray[$q]["x"];
+			$genarray[$par]["lst"]=$genarray[$q]["posx"];
 			}
 		}
-		$distance = $genarray[$i]["x"] - $tempx;
+		$distance = $genarray[$i]["posx"] - $tempx;
 
 		$n=$i+1;
 		while($genarray[$n]["gen"] == $genarray[$n-1]["gen"]) {
+//		while(isset($genarray[$n]["gen"]) AND $genarray[$n]["gen"] == $genarray[$n-1]["gen"]) {
 			if(isset($genarray[$n]["fst"]) AND isset($genarray[$n]["lst"])) {
-				$tempx= $genarray[$n]["x"];
-				$genarray[$n]["x"] = ($genarray[$n]["fst"] + $genarray[$n]["lst"])/2;
-				$distance = $genarray[$n]["x"] - $tempx;
+				$tempx= $genarray[$n]["posx"];
+				$genarray[$n]["posx"] = ($genarray[$n]["fst"] + $genarray[$n]["lst"])/2;
+				$distance = $genarray[$n]["posx"] - $tempx;
 			}
 			else {
-				$genarray[$n]["x"] += $distance;
+//if (isset($genarray[$n]["posx"]))
+				$genarray[$n]["posx"] += $distance;
+//else
+//				$genarray[$n]["posx"] = $distance;
 			}
 			if($genarray[$n]["gen"]!=0) {
 				$c=$n;
 				$par=$genarray[$c]["par"];
 				if($genarray[$c]["chd"] == 1) {
-					$genarray[$par]["fst"]=$genarray[$c]["x"];
+					$genarray[$par]["fst"]=$genarray[$c]["posx"];
 				}
 				if($genarray[$c]["chd"]==$genarray[$par]["nrc"]) {
 
@@ -310,7 +320,7 @@ function move($i) {
 						$c--;
 					}
 
-					$genarray[$par]["lst"]=$genarray[$c]["x"];
+					$genarray[$par]["lst"]=$genarray[$c]["posx"];
 				}
 			}
 			$n++;
@@ -323,38 +333,38 @@ function move($i) {
 
 	else { // if horizontal
 		$par=$genarray[$i]["par"];
-		$tempx= $genarray[$i]["y"];
-		$genarray[$i]["y"] = ($genarray[$i]["fst"] + $genarray[$i]["lst"])/2;
+		$tempx= $genarray[$i]["posy"];
+		$genarray[$i]["posy"] = ($genarray[$i]["fst"] + $genarray[$i]["lst"])/2;
 
 		if($genarray[$i]["gen"]!=0) {
 			$q=$i;
 			if($genarray[$q]["chd"] == 1) {
-				$genarray[$par]["fst"]=$genarray[$q]["y"];
+				$genarray[$par]["fst"]=$genarray[$q]["posy"];
 			}
 			if($genarray[$q]["chd"]==$genarray[$par]["nrc"]) {
 				while($genarray[$q]["2nd"]==1) {
 					$q--;
 				}
-			$genarray[$par]["lst"]=$genarray[$q]["y"];
+			$genarray[$par]["lst"]=$genarray[$q]["posy"];
 			}
 		}
-		$distance = $genarray[$i]["y"] - $tempx;
+		$distance = $genarray[$i]["posy"] - $tempx;
 
 		$n=$i+1;
 		while($genarray[$n]["gen"] == $genarray[$n-1]["gen"]) {
 			if(isset($genarray[$n]["fst"]) AND isset($genarray[$n]["lst"])) {
-				$tempx= $genarray[$n]["y"];
-				$genarray[$n]["y"] = ($genarray[$n]["fst"] + $genarray[$n]["lst"])/2;
-				$distance = $genarray[$n]["y"] - $tempx;
+				$tempx= $genarray[$n]["posy"];
+				$genarray[$n]["posy"] = ($genarray[$n]["fst"] + $genarray[$n]["lst"])/2;
+				$distance = $genarray[$n]["posy"] - $tempx;
 			}
 			else {
-				$genarray[$n]["y"] += $distance;
+				$genarray[$n]["posy"] += $distance;
 			}
 			if($genarray[$n]["gen"]!=0) {
 				$c=$n;
 				$par=$genarray[$c]["par"];
 				if($genarray[$c]["chd"] == 1) {
-					$genarray[$par]["fst"]=$genarray[$c]["y"];
+					$genarray[$par]["fst"]=$genarray[$c]["posy"];
 				}
 				if($genarray[$c]["chd"]==$genarray[$par]["nrc"]) {
 
@@ -362,7 +372,7 @@ function move($i) {
 						$c--;
 					}
 
-					$genarray[$par]["lst"]=$genarray[$c]["y"];
+					$genarray[$par]["lst"]=$genarray[$c]["posy"];
 				}
 			}
 			$n++;
@@ -375,9 +385,9 @@ function move($i) {
 	}  // end if horizontal
 }
 
-//****************************************************************************
+//*********************************************************************
 //********** 3rd Part:  CODE TO PRINT THE STARFIELD CHART         *****
-//****************************************************************************
+//*********************************************************************
 function printchart() {
 	global $dbh, $tree_id, $db_functions, $genarray, $size, $tree_prefix_quoted, $language, $chosengen, $keepfamily_id, $keepmain_person, $uri_path, $database;
 	global $vbasesize, $hsize, $vsize, $vdist, $hdist, $user, $direction, $dna;
@@ -392,11 +402,11 @@ function printchart() {
 		// find rightmost and bottommost positions to calculate size of the canvas needed for png image
 		$divlen=0; $divhi=0;
 		for($i=0; $i < count($genarray); $i++) {
-			if($genarray[$i]["x"] > $divlen) {
-				$divlen = $genarray[$i]["x"];
+			if($genarray[$i]["posx"] > $divlen) {
+				$divlen = $genarray[$i]["posx"];
 			}
-			if($genarray[$i]["y"] > $divhi) {
-				$divhi = $genarray[$i]["y"];
+			if($genarray[$i]["posy"] > $divhi) {
+				$divhi = $genarray[$i]["posy"];
 			}
 		}
 		$divlen += 200; $divhi +=300;
@@ -458,12 +468,12 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		if ($direction==0) {
 			$latter=count($genarray)-1;
-			$the_height=$genarray[$latter]["y"]+130;
+			$the_height=$genarray[$latter]["posy"]+130;
 		}
 		else {
 			$hgt = 0;
 			for ($e = 0; $e < count($genarray); $e++) {
-				if($genarray[$e]["y"] > $hgt) { $hgt = $genarray[$e]["y"]; }
+				if($genarray[$e]["posy"] > $hgt) { $hgt = $genarray[$e]["posy"]; }
 			}
 			$the_height = $hgt + 130;
 		}
@@ -611,7 +621,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		//echo '<label for="amount">Zoom in/out:</label>';
 		echo '<label for="amount">'.__('Zoom level:').'</label> ';
-		echo '<input type="text" id="amount" disabled="disabled" style="width:15px;border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
+		echo '<input type="text" id="amount" disabled="disabled" style="width:20px;border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
 		echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
 		echo '</div>';
 
@@ -619,8 +629,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 	} // end if not hourglass
 
 	for($w=0; $w < count($genarray); $w++) {
-		$xvalue=$genarray[$w]["x"];
-		$yvalue=$genarray[$w]["y"];
+		$xvalue=$genarray[$w]["posx"];
+		$yvalue=$genarray[$w]["posy"];
 
 		$sexe_colour=''; $backgr_col = "#FFFFFF"; 
 		if($genarray[$w]["sex"]=="v") {
@@ -813,23 +823,23 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		if($direction==0) { // if vertical
 			// draw dotted line from first marriage to following marriages
 			if(isset($genarray[$w]["2nd"]) AND $genarray[$w]["2nd"]==1) {
-				$startx=$genarray[$w-1]["x"]+$hsize+2;
-					$starty=$genarray[$w-1]["y"]+($vsize/2);
-				$width=($genarray[$w]["x"]) - ($genarray[$w-1]["x"]+$hsize)-2;
+				$startx=$genarray[$w-1]["posx"]+$hsize+2;
+					$starty=$genarray[$w-1]["posy"]+($vsize/2);
+				$width=($genarray[$w]["posx"]) - ($genarray[$w-1]["posx"]+$hsize)-2;
 				print  '<div style="position:absolute;border:1px blue dashed;height:2px;width:'.$width.'px;left:'.$startx.'px;top:'.$starty.'px"></div>';
 			}
 
 			// draw line to children
 			if($genarray[$w]["nrc"]!=0) {
-				$startx=$genarray[$w]["x"]+($hsize/2);
-					$starty=$genarray[$w]["y"]+$vsize+2;
+				$startx=$genarray[$w]["posx"]+($hsize/2);
+					$starty=$genarray[$w]["posy"]+$vsize+2;
 				print  '<div class="chart_line" style="position:absolute; height:'.(($vdist/2)-2).'px; width:1px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 			}
 
 			// draw line to parent
 			if($genarray[$w]["gen"]!=0 AND $genarray[$w]["2nd"]!=1) {
-				$startx=$genarray[$w]["x"]+($hsize/2);
-				$starty=$genarray[$w]["y"]-($vdist/2);
+				$startx=$genarray[$w]["posx"]+($hsize/2);
+				$starty=$genarray[$w]["posy"]-($vdist/2);
 				print '<div class="chart_line" style="position:absolute; height:'.($vdist/2).'px;width:1px;left:'.$startx.'px;top:'.$starty.'px"></div>';
 			}
 
@@ -842,8 +852,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						$z--;
 					}
 						$startx=$genarray[$parent]["fst"]+($hsize/2);
-						$starty=$genarray[$z]["y"]-($vdist/2);
-						$width=$genarray[$z]["x"] - $genarray[$parent]["fst"];
+						$starty=$genarray[$z]["posy"]-($vdist/2);
+						$width=$genarray[$z]["posx"] - $genarray[$parent]["fst"];
 						print '<div class="chart_line" style="position:absolute; height:1px; width:'.$width.'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 				}
 			}
@@ -852,23 +862,23 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		else { // if horizontal
 			// draw dotted line from first marriage to following marriages
 			if(isset($genarray[$w]["2nd"]) AND $genarray[$w]["2nd"]==1) {
-				$starty=$genarray[$w-1]["y"]+$vsize+2;
-				$startx=$genarray[$w-1]["x"]+($hsize/2);
-				$height=($genarray[$w]["y"]) - ($genarray[$w-1]["y"]+$vsize)-2;
+				$starty=$genarray[$w-1]["posy"]+$vsize+2;
+				$startx=$genarray[$w-1]["posx"]+($hsize/2);
+				$height=($genarray[$w]["posy"]) - ($genarray[$w-1]["posy"]+$vsize)-2;
 				print  '<div style="position:absolute;border:1px blue dashed;height:'.$height.'px; width:3px; left:'.$startx.'px;top:'.$starty.'px"></div>';
 			}
 
 			// draw line to children
 			if($genarray[$w]["nrc"]!=0) {
-				$starty=$genarray[$w]["y"]+($vsize/2);
-				$startx=$genarray[$w]["x"]+$hsize+3;
+				$starty=$genarray[$w]["posy"]+($vsize/2);
+				$startx=$genarray[$w]["posx"]+$hsize+3;
 				print '<div class="chart_line" style="position:absolute; height:1px; width:'.(($hdist/2)-2).'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 			}
 
 			// draw line to parent
 			if($genarray[$w]["gen"]!=0 AND $genarray[$w]["2nd"]!=1) {
-				$starty=$genarray[$w]["y"]+($vsize/2);
-				$startx=$genarray[$w]["x"]-($hdist/2);
+				$starty=$genarray[$w]["posy"]+($vsize/2);
+				$startx=$genarray[$w]["posx"]-($hdist/2);
 				print '<div class="chart_line" style="position:absolute; width:'.($hdist/2).'px; height:1px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 			}
 
@@ -881,8 +891,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						$z--;
 					}
 					$starty=$genarray[$parent]["fst"]+($vsize/2);
-					$startx=$genarray[$z]["x"]-($hdist/2);
-					$height=$genarray[$z]["y"] - $genarray[$parent]["fst"];
+					$startx=$genarray[$z]["posx"]-($hdist/2);
+					$height=$genarray[$z]["posy"] - $genarray[$parent]["fst"];
 					print '<div class="chart_line" style="position:absolute; width:1px; height:'.$height.'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 				}
 			}
@@ -969,7 +979,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 	// here place div at bottom so there is some space under last boxes
 	$last=count($genarray)-1;
-	$putit=$genarray[$last]["y"]+130;
+	$putit=$genarray[$last]["posy"]+130;
 	print '<div style="position:absolute;left:1px;top:'.$putit.'px;">&nbsp; </div>';
 
 }

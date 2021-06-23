@@ -28,6 +28,9 @@ if (!CMS_SPECIFIC){
 }
 
 if (isset($_GET['log_off'])){
+	/*
+	// THIS CODE DOESN'T WORK IN RECENT PHP VERSIONS:
+
 	if (isset($_SESSION["user_name_admin"])) {
 		// *** DO NOT REMOVE data if logged in as administrator! ***
 		unset($_SESSION['user_name']);
@@ -43,6 +46,12 @@ if (isset($_GET['log_off'])){
 		// *** Regenerate session id regularly to prevent session hacking ***
 		session_regenerate_id();
 	}
+	*/
+	unset($_SESSION['user_name']);
+	unset($_SESSION['user_id']);
+	unset($_SESSION['user_group_id']);
+	unset($_SESSION['tree_prefix']);
+	session_destroy();
 }
 
 include_once(CMS_ROOTPATH."include/db_login.php"); //Inloggen database.

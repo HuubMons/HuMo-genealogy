@@ -627,11 +627,11 @@ else{
 
 	try { // only prepare location statement if table exists otherwise PDO throws exception!
 		$result = $dbh->query("SELECT 1 FROM humo_location LIMIT 1"); 
-	} catch (Exception $e) {  
+	} catch (Exception $e) {
 		// We got an exception == table not found
 		$result = FALSE;
 	}
-	if($result !== FALSE) { 
+	if($result !== FALSE) {
 		$location_prep=$dbh->prepare("SELECT * FROM humo_location where location_location =?");
 		$location_prep->bindParam(1,$location_var);
 	}
@@ -641,10 +641,13 @@ else{
 	$old_stat_prep->bindParam(2,$fam_gednr_var);
 
 	for ($descendant_loop=0; $descendant_loop<=$max_generation; $descendant_loop++){
+		// ORG
 		$descendant_family_id2[]=0;
-		//$descendant_main_person[2]=0;
 		$descendant_main_person2[]=0;
 		if (!isset($descendant_family_id2[1])){ break; }
+
+		// TEST code (only works with family, will give error in descendant report and DNA reports:
+		// if (!isset($descendant_family_id2[0])){ break; }
 
 		// *** Copy array ***
 		unset ($descendant_family_id);
@@ -688,8 +691,9 @@ else{
 			}
 		}
 
-		// *** Nr of families in one generation
-		for ($descendant_loop2=0; $descendant_loop2<=count($descendant_family_id); $descendant_loop2++){
+		// *** Nr of families in one generation ***
+		$nr_families=count($descendant_family_id);
+		for ($descendant_loop2=0; $descendant_loop2<$nr_families; $descendant_loop2++){
 
 			if($screen_mode=='STAR') {
 				while (isset($genarray[$arraynr]["non"]) AND $genarray[$arraynr]["non"]==1
@@ -700,7 +704,10 @@ else{
 				}
 			}
 
-			if ($descendant_family_id[$descendant_loop2]==''){ break; }
+			// Original code:
+			//if ($descendant_family_id[$descendant_loop2]==''){ break; }
+			if ($descendant_family_id[$descendant_loop2]=='0') { break; }
+
 			$family_id_loop=$descendant_family_id[$descendant_loop2];
 			$main_person=$descendant_main_person[$descendant_loop2];
 			$family_nr=1;
@@ -783,9 +790,10 @@ else{
 				// *** Show family                                                 ***
 				// *******************************************************************
 				if($screen_mode!='STAR') {
-					// *** Interne link voor descendant_report ***
+
+					// *** Internal link for descendant_report ***
 					if ($descendant_report==true){
-						// *** Interne link (Romeins number_generation) ***
+						// *** Internal link (Roman number_generation) ***
 						if($screen_mode=='PDF') {
 							// put internal PDF link to family
 							$pdf->Cell(0,1," ",0,1);
@@ -889,9 +897,8 @@ else{
 								// *** Change page title ***
 								if ($descendant_loop==0 AND $descendant_loop2==0){
 									echo '<script type="text/javascript">';
-									$name = $woman_cls->person_name($person_womanDb);
-									echo 'document.title = "'.__('Family Page').': '.
-										$name["index_name"].'";';
+										$name = $woman_cls->person_name($person_womanDb);
+										echo 'document.title = "'.__('Family Page').': '.$name["index_name"].'";';
 									echo '</script>';
 								}
 							}
@@ -995,9 +1002,8 @@ else{
 								// *** Change page title ***
 								if ($descendant_loop==0 AND $descendant_loop2==0){
 									echo '<script type="text/javascript">';
-									$name = $man_cls->person_name($person_manDb);
-									echo 'document.title = "'.__('Family Page').': '.
-										$name["index_name"].'";';
+										$name = $man_cls->person_name($person_manDb);
+										echo 'document.title = "'.__('Family Page').': '.$name["index_name"].'";';
 									echo '</script>';
 								}
 							}
@@ -1419,7 +1425,7 @@ else{
 								// PDF rendering of marriage notes
 								$pdf->SetFont('Arial','I',11);
 								$pdf->Write(6,process_text($familyDb->fam_text)."\n");
-								$pdf->Write(6,show_sources2("family","fam_text",$familyDb->fam_gedcomnumber)."\n");
+								$pdf->Write(6,show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber)."\n");
 								$pdf->SetFont('Arial','',12);
 							}
 							elseif($screen_mode=='RTF') {
@@ -1427,13 +1433,13 @@ else{
 
 								$rtf_text=strip_tags(process_text($familyDb->fam_text),"<b><i>");
 								$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-								$rtf_text=strip_tags(show_sources2("family","fam_text",$familyDb->fam_gedcomnumber),"<b><i>");
+								$rtf_text=strip_tags(show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber),"<b><i>");
 								$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
 							}
 							else {
 								echo '<br>'.process_text($familyDb->fam_text, 'family');
 								// *** BK: source by family text ***
-								echo show_sources2("family","fam_text",$familyDb->fam_gedcomnumber);
+								echo show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber);
 							}
 						}
 					}
@@ -1510,8 +1516,11 @@ else{
 						// PDF rendering of sources
 						$pdf->Write(6,show_sources2("family","family_source",$familyDb->fam_gedcomnumber)."\n");
 					}
+					elseif($screen_mode=='RTF') {
+						$rtf_text=strip_tags(show_sources2("family","family_source",$familyDb->fam_gedcomnumber),"<b><i>");
+						$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+					}
 					else {
-						//echo show_sources2("family","family",$familyDb->fam_gedcomnumber);
 						echo show_sources2("family","family_source",$familyDb->fam_gedcomnumber);
 					}
 
@@ -1571,18 +1580,30 @@ else{
 					if($screen_mode=='STAR') {
 						$genarray[$arraynr]["nrc"]=count($child_array);
 						// dna -> count only man or women
-						if($dna=="ydna" OR $dna=="mtdna") { 
+						if($dna=="ydna" OR $dna=="mtdna") {
 							$countdna = 0;
 							for($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
+//if (isset($genarray[$arraynr]["sex"]) AND isset($genarray[$arraynr]["dna"] )){
+
+//TEST
+//echo $familyDb->fam_gedcomnumber;
+//echo $genarray[$arraynr]["nam"].$familyDb->fam_children.'<br>';
+
+//TEST
+//$name=$man_cls->person_name($person_manDb);
+//echo $name["standard_name"].' ';
+//$name= $woman_cls->person_name($person_womanDb);
+//echo $name["standard_name"].'<br>';
+
+
 								@$childDb = $db_functions->get_person($child_array[$i]);
-								if($dna=="ydna" AND $childDb->pers_sexe == "M" AND $genarray[$arraynr]["sex"]=="m" 
-									AND $genarray[$arraynr]["dna"]==1) $countdna++;
+								if($dna=="ydna" AND $childDb->pers_sexe == "M" AND $genarray[$arraynr]["sex"]=="m" AND $genarray[$arraynr]["dna"]==1) $countdna++;
 								elseif($dna=="mtdna" AND $genarray[$arraynr]["sex"]=="v" AND $genarray[$arraynr]["dna"]==1) $countdna++;
+//}
 							} 
 							$genarray[$arraynr]["nrc"]=$countdna;
 						}
 					}
-
 					for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
 						@$childDb = $db_functions->get_person($child_array[$i]);
 						// *** Use person class ***
@@ -1633,8 +1654,8 @@ else{
 						if($screen_mode=='STAR') {
 							$chdn_in_gen=$nrchldingen + $childnr;
 							$place=$lst_in_array+$chdn_in_gen;
-
-							if(($dna=="ydnamark" OR $dna=="ydna") AND $childDb->pers_sexe=="M"  
+//if (isset($genarray[$arraynr]["sex"]) AND isset($genarray[$arraynr]["dna"] )){
+							if(($dna=="ydnamark" OR $dna=="ydna") AND $childDb->pers_sexe=="M" 
 									AND $genarray[$arraynr]["sex"]=="m" AND $genarray[$arraynr]["dna"]==1) {
 								$genarray[$place]["dna"]=1;
 							}
@@ -1647,6 +1668,7 @@ else{
 							else {
 								$genarray[$place]["dna"]="no";
 							}
+//}
 
 							$genarray[$place]["gen"]=$descendant_loop+1;
 							$genarray[$place]["par"]=$arraynr;
