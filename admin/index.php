@@ -1,6 +1,4 @@
 <?php
-//error_reporting(E_ALL);
-
 /**
 * This is the admin web entry point for HuMo-gen.
 *
@@ -84,6 +82,9 @@ include_once (CMS_ROOTPATH.'include/show_tree_text.php');
 include_once(CMS_ROOTPATH."include/db_functions_cls.php");
 $db_functions = New db_functions();
 
+// *** Added juli 2019: Person functions ***
+include_once(CMS_ROOTPATH."include/person_cls.php");
+
 // *** Only load settings if database and table exists ***
 $show_menu_left=false;
 $popup=false;
@@ -95,6 +96,12 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	if ($check_tables){
 		include_once(CMS_ROOTPATH."include/settings_global.php");
 		$show_menu_left=true;
+
+		// *** Debug HuMo-gen`admin pages ***
+		if ($humo_option["debug_admin_pages"]=='y'){
+			error_reporting(E_ALL);
+			ini_set('display_errors', 1);
+		}
 
 		// *** Check if visitor is allowed ***
 		if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'])){
@@ -115,10 +122,11 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	// *** Check HuMo-gen database status ***
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])){
-		if ($humo_option["update_status"]<10){ $page='update'; $show_menu_left=false; }
+		if ($humo_option["update_status"]<11){ $page='update'; $show_menu_left=false; }
 	}
 
-	if (isset($_GET['page']) AND ($_GET['page']=='editor_sources' OR $_GET['page']=='editor_place_select' OR $_GET['page']=='editor_person_select' OR $_GET['page']=='editor_user_settings')){
+	if (isset($_GET['page']) AND ($_GET['page']=='editor_sources' OR $_GET['page']=='editor_place_select'
+		OR $_GET['page']=='editor_person_select' OR $_GET['page']=='editor_relation_select' OR $_GET['page']=='editor_user_settings')){
 		$show_menu_left=false;
 		$popup=true;
 	}
@@ -137,7 +145,6 @@ while (false!==($file = readdir($map))) {
 		$language_select[]=$file;
 		if (file_exists(CMS_ROOTPATH.'languages/'.$file.'/'.$file.'.mo')){
 			$language_file[]=$file;
-
 			// *** Order of languages ***
 			if ($file=='cn') $language_order[]='Chinese';
 			elseif ($file=='da') $language_order[]='Dansk';
@@ -151,6 +158,7 @@ while (false!==($file = readdir($map))) {
 			elseif ($file=='fr') $language_order[]='French';
 			elseif ($file=='he') $language_order[]='Hebrew';
 			elseif ($file=='hu') $language_order[]='Magyar';
+			elseif ($file=='id') $language_order[]='Indonesian';
 			elseif ($file=='it') $language_order[]='Italiano';
 			elseif ($file=='nl') $language_order[]='Nederlands';
 			elseif ($file=='no') $language_order[]='Norsk';
@@ -284,7 +292,7 @@ if(isset($database_check) AND $database_check) {
 					else $group_edit_trees=$resultDb->user_edit_trees;
 			}
 
-		}   
+		}
 	}
 	elseif($page=='update') {
 		// *** No log in, update procedure (group table will be changed) ***
@@ -294,7 +302,7 @@ if(isset($database_check) AND $database_check) {
 		@$query = "SELECT * FROM humo_users";
 		@$result = $dbh->query($query);
 		if($result !== FALSE) {
-            if($result->rowCount() > 0) {
+			if($result->rowCount() > 0) {
 				// *** humo-users table exists, check admin log in ***
 				if (isset($_SESSION["group_id_admin"])) {
 				// *** Logged in as admin... ***
@@ -442,6 +450,9 @@ else{
 $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:right" '; }
 echo '<div id="humo_top" '.$top_dir.'>';
 	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-small.gif" align="left" alt="logo">';
+
+	//echo '<span style="font-family: Baskerville Old Face; font-size: 150%; color:black;">HuMo-genealogy</span>';
+
 	echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
 	//if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
 	if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
@@ -494,11 +505,11 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				$link_versie=str_replace(' ', '_', $humo_option["version"]);
 
 				// *** Use update file directly from humo-gen website ***
-				$update_file='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+				$update_file='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 
 				// *** Copy update data from humo-gen website to local website ***
 				if(function_exists('curl_exec')){
-					$source='http://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+					$source='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 					$update_file='update/temp_update_check.php';
 					$resource = curl_init();
 					curl_setopt($resource, CURLOPT_URL, $source);
@@ -729,6 +740,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			if ($group_administrator=='j'){
 				$select_top='';
 				if ($page=='install'){ $select_top=' id="current_top"'; }
+				if ($page=='extensions'){ $select_top=' id="current_top"'; }
 				if ($page=='settings'){ $select_top=' id="current_top"'; }
 				if ($page=='cms_pages'){ $select_top=' id="current_top"'; }
 				if ($page=='favorites'){ $select_top=' id="current_top"'; }
@@ -745,6 +757,9 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 						$menu_item=''; if ($page=='install'){ $menu_item=' id="current"'; }
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=install">'.__('Install').'</a></li>';
+
+						$menu_item=''; if ($page=='extensions'){ $menu_item=' id="current"'; }
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=extensions">'.__('Extensions').'</a></li>';
 
 						$menu_item=''; if ($page=='settings'){ $menu_item=' id="current"'; }
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=settings">'.__('Settings').'</a></li>';
@@ -923,6 +938,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 		if ($popup==false){
 			// *** Country flags ***
+			$hide_languages_array=explode(";",$humo_option["hide_languages"]);
 			$select_top='';
 			echo '<li>';
 			echo '<div class="'.$rtlmarker.'sddm">';
@@ -936,7 +952,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					echo '<ul class="humo_menu_item2">';
 						for ($i=0; $i<count($language_file); $i++){
 							// *** Get language name ***
-							if ($language_file[$i] != $selected_language) {
+							//if ($language_file[$i] != $selected_language) {
+							if ($language_file[$i] != $selected_language AND !in_array($language_file[$i], $hide_languages_array)) {
 								include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
 								//echo '<li><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
 								echo '<li><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
@@ -953,7 +970,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			echo '</li>';
 		}
 		else{
-			// *** Set language is popup window is used ***
+			// *** Set language if popup window is used ***
 			include(CMS_ROOTPATH.'languages/'.$selected_language.'/language_data.php');
 			for ($i=0; $i<count($language_file); $i++){
 				if ($language_file[$i] != $selected_language) {
@@ -973,6 +990,7 @@ echo '<div id="content_admin">';
 	define('ADMIN_PAGE', true); // *** Safety line ***
 
 	if ($page=='install'){ include_once ("include/install.php"); }
+	elseif ($page=='extensions'){ include_once ("include/extensions.php"); }
 	elseif ($page=='login'){ include_once ("include/login.php"); }
 	elseif ($group_administrator=='j' AND $page=='tree'){ include_once ("include/trees.php"); }
 	elseif ($page=='editor'){ $_GET['menu_admin']='person'; include_once ("include/editor.php"); }
@@ -984,6 +1002,7 @@ echo '<div id="content_admin">';
 	elseif ($page=='edit_places'){ $_GET['menu_admin']='places'; include_once ("include/editor.php"); }
 	elseif ($page=='editor_place_select'){ $_GET['menu_admin']='places'; include_once ("include/editor_place_select.php"); }
 	elseif ($page=='editor_person_select'){ $_GET['menu_admin']='marriage'; include_once ("include/editor_person_select.php"); }
+	elseif ($page=='editor_relation_select'){ $_GET['menu_admin']='relation'; include_once ("include/editor_relation_select.php"); }
 
 	elseif ($page=='check'){ include_once ("include/tree_check.php"); }
 	elseif ($page=='gedcom'){ include_once ("include/gedcom.php"); }

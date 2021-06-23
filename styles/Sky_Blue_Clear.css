@@ -1,15 +1,7 @@
 body {
 	color: #000000;
-	/* background-image: url('images_sky_blue/background.gif'); */
-	background-image:none;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#C2C1FF));
-	background-image: -webkit-linear-gradient(top, #ffffff, #C2C1FF);
-	background-image:    -moz-linear-gradient(top, #ffffff, #C2C1FF);
-	background-image:      -o-linear-gradient(top, #ffffff, #C2C1FF);
-	background-image:      -ms-linear-gradient(top, #ffffff, #C2C1FF);
-	background-image:         linear-gradient(to bottom, #ffffff, #C2C1FF);
-
-	font: 13px Verdana, tahoma, arial, sans-serif;
+	background-image: linear-gradient(to bottom, #ffffff, #C2C1FF);
+	/* font: 13px Verdana, tahoma, arial, sans-serif; */
 }
 
 #top_menu {
@@ -76,20 +68,16 @@ td.style_tree_text { background-color: #BDD7EF; }
 
 /* Menu */
 #top_menu {
-	/* For IE - Voor IE: */
-	/* color: #6666aa; */
-	/* background-color: #aaccee; */
 }
 #humo_menu {
-	/* background-color:#bbeeff; */
 	/* background:url("images_sky_blue/blue.png") repeat left top; */
 	background:none;
 	border-top: solid 0px #61a0d9;
 	/* border-bottom: solid 1px #61a0d9; */
 	border-bottom: 0px;
 
-	font-size:15px;
-	font-family: Trebuchet MS;
+	/* font-size:15px;
+	font-family: Trebuchet MS; */
 }
 #humo_menu a {
 	color: #111;

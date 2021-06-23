@@ -139,12 +139,16 @@ if (count($theme_folder)==1){
 if ($bot_visit){ $show_theme_select=false; }
 
 if ($show_theme_select==true){
-	echo '<br><table class="humo small">';
+	$hide_themes_array=explode(";",$humo_option["hide_themes"]);
+
+	//echo '<br><table class="humo small">';
+	echo '<br><table class="humo">';
 	echo '<tr class=table_headline><th class="fonts">'.__('Select a theme').'</th></tr>';
 		echo '<td align="center">';
 		echo '<form title="'.__('Select a colour theme (a cookie will be used to remember the theme)').'" action="">';
 		echo '<select name="switchcontrol" size="1" onchange="chooseStyle(this.options[this.selectedIndex].value, 365)">';
 
+// NAZIEN DIT STUK CODE KAN ERUIT? En dan het geselecteerde thema als selected (uit cookie?)?
 		if (isset($humo_option['default_skin'])){
 			echo '<option value="'.$humo_option['default_skin'].'" selected="selected">'.__('Select a theme').':</option>';
 			echo '<option value="'.$humo_option['default_skin'].'">'.__('Standard-colours').'</option>';
@@ -158,11 +162,32 @@ if ($show_theme_select==true){
 		for ($i=0; $i<count($theme_folder); $i++){
 			$theme=$theme_folder[$i];
 			$theme=str_replace(".css","", $theme);
-			echo '<option value="'.$theme.'">'.$theme.'</option>';
+			if (!in_array($theme, $hide_themes_array)){
+				echo '<option value="'.$theme.'">'.$theme.'</option>';
+			}
 		}
 		echo '</select></form>';
+
+
+		// *** Theme select using screen shots ***
+		// *** Screen shots about 725x500 (but resized to smaller pictures) ***
+		echo '<br>';
+		echo '<form title="'.__('Select a colour theme (a cookie will be used to remember the theme)').'" action="">';
+		for ($i=0; $i<count($theme_folder); $i++){
+			$theme=$theme_folder[$i];
+			$theme=str_replace(".css","", $theme);
+			if (!in_array($theme, $hide_themes_array)){
+				echo '<span style="float: left; margin: 3px; border: solid 1px #999999;">';
+					echo '<b>'.$theme.'</b><br>';
+					echo '<input type="image" name="submit" value="submit" alt="theme" src="styles/'.$theme.'.png" width="360" height="250" onclick="chooseStyle(\''.$theme.'\', 365)">';
+				echo '</span>';
+			}
+		}
+		echo '</form>';
+
 		echo '</td>';
 	echo '</table>';
+
 }
 
 include_once(CMS_ROOTPATH."footer.php");

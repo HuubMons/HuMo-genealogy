@@ -24,7 +24,8 @@
 	text-decoration: none;
 	background: #EAEBD8;
 	color: #2875DE;
-	font: 11px arial;
+	/* font: 11px arial; */
+	font: 14px arial;
 }
 
 .ltrsddm div a:hover{
@@ -60,7 +61,8 @@
 	text-decoration: none;
 	background: #EAEBD8;
 	color: #2875DE;
-	font: 11px arial;
+	/* font: 11px arial; */
+	font: 14px arial;
 }
 
 .rtlsddm div a:hover{

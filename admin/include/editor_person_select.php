@@ -50,17 +50,17 @@ else {
 		<script type="text/javascript">
 		function select_item2(pgn,ppf,pln,pfn,pbdp,pbd,pbp,pddp,pdd,pdp,psx){ 
 
-			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_exist'.$childnr.'.value=pgn; 
-			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_lastname'.$childnr.'.value=pln; 
-			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_prefix'.$childnr.'.value=ppf; 
+			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_exist'.$childnr.'.value=pgn;
+			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_lastname'.$childnr.'.value=pln;
+			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_prefix'.$childnr.'.value=ppf;
 			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_firstname'.$childnr.'.value=pfn;
 			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_birthdate'.$childnr.'_prefix.value=pbdp;
-			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_birthdate'.$childnr.'.value=pbd;  
-			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_birthplace'.$childnr.'.value=pbp;	
+			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_birthdate'.$childnr.'.value=pbd;
+			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_birthplace'.$childnr.'.value=pbp;
 			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_deathdate'.$childnr.'_prefix.value=pddp;
-			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_deathdate'.$childnr.'.value=pdd;  
-			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_deathplace'.$childnr.'.value=pdp;  
-			//window.opener.document.'.$form.'.add_fam_'.$pers_status.'_sexe'.$childnr.'.value=psx; 
+			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_deathdate'.$childnr.'.value=pdd;
+			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_deathplace'.$childnr.'.value=pdp;
+			//window.opener.document.'.$form.'.add_fam_'.$pers_status.'_sexe'.$childnr.'.value=psx;
 			if(psx=="M") window.opener.document.getElementById("prad1'.$childnr.'").checked=true;
 			else if(psx=="F") window.opener.document.getElementById("prad2'.$childnr.'").checked=true;
 			else window.opener.document.getElementById("prad3'.$childnr.'").checked=true;
@@ -104,14 +104,10 @@ if($search_quicksearch_man != '') {
 	$person_qry= "SELECT *
 	FROM humo_persons
 	WHERE pers_tree_id='".$tree_id."'
-		AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
-		LIKE '%".$search_quicksearch_man."%'
-		OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname)
-		LIKE '%".$search_quicksearch_man."%' 
-		OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' '))
-		LIKE '%".$search_quicksearch_man."%' 
-		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
-		LIKE '%".$search_quicksearch_man."%')
+		AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".$search_quicksearch_man."%'
+		OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".$search_quicksearch_man."%' 
+		OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".$search_quicksearch_man."%' 
+		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".$search_quicksearch_man."%')
 		ORDER BY pers_lastname, pers_firstname";
 	$person_result = $dbh->query($person_qry);
 }

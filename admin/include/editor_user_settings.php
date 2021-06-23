@@ -13,9 +13,14 @@ if (isset($_POST['user_change']) AND isset($_POST["id"]) AND (is_numeric($_POST[
 	while($data3Db=$data3sql->fetch(PDO::FETCH_OBJ)){
 		// *** Show/ hide trees ***
 		$check='show_tree_'.$data3Db->tree_id;
-		if (!isset($_POST["$check"])){
+		//if (!isset($_POST["$check"])){
+		if (isset($_POST["$check"]) AND ($_POST["$check"]=='no')){
 			if ($user_hide_trees!=''){ $user_hide_trees.=';'; }
 			$user_hide_trees.=$data3Db->tree_id;
+		}
+		if (isset($_POST["$check"]) AND ($_POST["$check"]=='yes')){
+			if ($user_hide_trees!=''){ $user_hide_trees.=';'; }
+			$user_hide_trees.='y'.$data3Db->tree_id;
 		}
 
 		// *** Edit trees (NOT USED FOR ADMINISTRATOR) ***
@@ -61,8 +66,15 @@ if (is_numeric($user)){
 			echo '<tr><td>'.$treetext_name.'</td>';
 
 			// *** Show/ hide tree for user ***
-			$check=' checked'; if (in_array($data3Db->tree_id, $hide_tree_array)) $check='';
-			echo '<td><input type="checkbox" name="show_tree_'.$data3Db->tree_id.'"'.$check.'></td>';
+			//$check=' checked'; if (in_array($data3Db->tree_id, $hide_tree_array)) $check='';
+			//echo '<td><input type="checkbox" name="show_tree_'.$data3Db->tree_id.'"'.$check.'></td>';
+			echo '<td><select size="1" name="show_tree_'.$data3Db->tree_id.'">';
+				echo '<option value="user-group">'.__('Use user-group setting').'</option>';
+				$select=''; if (in_array('y'.$data3Db->tree_id, $hide_tree_array)) $select=' SELECTED';
+				echo '<option value="yes"'.$select.'>'.__('Yes').'</option>';
+				$select=''; if (in_array($data3Db->tree_id, $hide_tree_array)) $select=' SELECTED';
+				echo '<option value="no"'.$select.'>'.__('No').'</option>';
+			echo "</select></td>";
 
 			// *** Editor rights per family tree (NOT USED FOR ADMINISTRATOR) ***
 			echo '<td>';

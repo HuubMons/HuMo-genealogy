@@ -75,7 +75,7 @@ HuMo-gen uses <a href="https://www.transifex.com/organization/humo-gen" target="
 <li>English (CA) by: nerdykit.</li>
 <li>English (US) by: Yossi, Brian.</li>
 <li>Finnish by: Rauno Salomäki.</li>
-<li>French by: Raymond Larche, Carlos, Alphonse Philippe.</li>
+<li>French by: Raymond Larche, Carlos, Alphonse Philippe, Bob Cornet.</li>
 <li>German by: Johannes Prost, Marco Steinhaeuser.</li>
 <li>Hungarian by: Nagy-Vajda Domokos.</li>
 <li>Italian by: Ambrogio Chiotti.</li>

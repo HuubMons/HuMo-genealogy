@@ -12,15 +12,12 @@ $confirm_relation='';
 if (isset($_GET['pers_favorite'])){
 	if ($_GET['pers_favorite']=="1"){
 		$sql = "INSERT INTO humo_settings SET
-			setting_variable='admin_favourite',
-			setting_value='".safe_text_db($pers_gedcomnumber)."',
-			setting_tree_id='".safe_text_db($tree_id)."'";
+			setting_variable='admin_favourite', setting_value='".safe_text_db($pers_gedcomnumber)."', setting_tree_id='".safe_text_db($tree_id)."'";
 		$result = $dbh->query($sql);
 	}
 	else{
 		$sql = "DELETE FROM humo_settings
-			WHERE setting_variable='admin_favourite'
-			AND setting_value='".safe_text_db($pers_gedcomnumber)."'
+			WHERE setting_variable='admin_favourite' AND setting_value='".safe_text_db($pers_gedcomnumber)."'
 			AND setting_tree_id='".safe_text_db($tree_id)."'";
 		$result = $dbh->query($sql);
 	}
@@ -260,16 +257,16 @@ if (isset($_POST['person_change'])){
 		if(isset($_POST["pers_buried_date_hebnight"]))  $per_bur_heb = $_POST["pers_buried_date_hebnight"];
 		if(isset($_POST["pers_death_date_hebnight"]))  $per_dea_heb = $_POST["pers_death_date_hebnight"];
 		$sql="UPDATE humo_persons SET 
-		pers_birth_date_hebnight='".safe_text_db($per_bir_heb)."',
-		pers_death_date_hebnight='".safe_text_db($per_dea_heb)."',	
-		pers_buried_date_hebnight='".safe_text_db($per_bur_heb)."'
-		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($pers_gedcomnumber)."'";
+			pers_birth_date_hebnight='".safe_text_db($per_bir_heb)."',
+			pers_death_date_hebnight='".safe_text_db($per_dea_heb)."',
+			pers_buried_date_hebnight='".safe_text_db($per_bur_heb)."'
+			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($pers_gedcomnumber)."'";
 		$result=$dbh->query($sql);
 		family_tree_update($tree_id);
 	}
 	
 	// extra UPDATE queries if Hebrew name is displayed in main Name section (and not under name event)
-	if($humo_option['admin_hebname']=="y") {  
+	if($humo_option['admin_hebname']=="y") {
 		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '_HEBN' AND event_connect_id = '".$pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
 		$result = $dbh->query($sql);
 		if($result->rowCount() != 0) {     // a Hebrew name entry already exists for this person: UPDATE 
@@ -279,12 +276,12 @@ if (isset($_POST['person_change'])){
 				$result=$dbh->query($sql);
 			}		
 			else {  // update or retain the entered value
-				//$hebnameDb=$result->fetch(PDO::FETCH_OBJ);	 
+				//$hebnameDb=$result->fetch(PDO::FETCH_OBJ);
 				$sql="UPDATE `humo_events` SET 
-				event_event='".safe_text_db($_POST["even_hebname"])."', 
+				event_event='".safe_text_db($_POST["even_hebname"])."',
 				event_changed_user='".$username."',
 				event_changed_date='".$gedcom_date."',
-				event_changed_time='".$gedcom_time."' 			
+				event_changed_time='".$gedcom_time."'
 				WHERE event_tree_id='".$tree_id."' AND  event_gedcom='_HEBN' AND event_kind='name' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'";
 				$doit=$dbh->query($sql);
 			}
@@ -333,11 +330,11 @@ if (isset($_POST['person_change'])){
 				//WHERE event_tree_id='".$tree_id."' AND  event_gedcom='_BRTM' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'";
 				$sql="UPDATE `humo_events` SET 
 				`event_date`='".safe_text_db($_POST["even_brit_date"])."', 
-				`event_place`='".safe_text_db($_POST["even_brit_place"])."',	
+				`event_place`='".safe_text_db($_POST["even_brit_place"])."',
 				`event_text`='".safe_text_db($_POST["even_brit_text"])."',
 				event_changed_user='".$username."',
 				event_changed_date='".$gedcom_date."',
-				event_changed_time='".$gedcom_time."' 			
+				event_changed_time='".$gedcom_time."'
 				WHERE event_tree_id='".$tree_id."' AND  event_gedcom='_BRTM' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'";
 				$doit=$dbh->query($sql);
 			}
@@ -381,19 +378,19 @@ if (isset($_POST['person_change'])){
 		$result = $dbh->query($sql);
 		if($result->rowCount() != 0) {     // a bar/bat mitsvah already exists for this person: UPDATE 
 
-			if($_POST["even_barm_date"]=='' AND $_POST["even_barm_place"]=='' AND $_POST["even_barm_text"]=='') {    
+			if($_POST["even_barm_date"]=='' AND $_POST["even_barm_place"]=='' AND $_POST["even_barm_text"]=='') {
 				$sql = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom='".$barmbasm."'  AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."' AND event_kind='event' ";
 				$result=$dbh->query($sql);
-			}		
+			}
 			else {
-				//$barmDb=$result->fetch(PDO::FETCH_OBJ);	
+				//$barmDb=$result->fetch(PDO::FETCH_OBJ);
 				$sql="UPDATE `humo_events` SET 
 				`event_date`='".safe_text_db($_POST["even_barm_date"])."', 
-				`event_place`='".safe_text_db($_POST["even_barm_place"])."',	
+				`event_place`='".safe_text_db($_POST["even_barm_place"])."',
 				`event_text`='".safe_text_db($_POST["even_barm_text"])."',
 				event_changed_user='".$username."',
 				event_changed_date='".$gedcom_date."',
-				event_changed_time='".$gedcom_time."' 		
+				event_changed_time='".$gedcom_time."'
 				WHERE event_tree_id='".$tree_id."' AND  event_gedcom='".$barmbasm."' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'";
 				$doit=$dbh->query($sql);
 			}
@@ -427,9 +424,9 @@ if (isset($_POST['person_change'])){
 		}
 
 		family_tree_update($tree_id);
-	}		
+	}
 
-	
+
 }
 
 if (isset($_GET['add_person'])){
@@ -522,14 +519,14 @@ if (isset($_POST['person_add'])){
 	$result=$dbh->query($sql);
 	
 	// only needed for jewish settings
-	if($humo_option['admin_hebnight']=="y") {
-		$sql="UPDATE humo_persons SET 
-		pers_birth_date_hebnight='".safe_text_db($_POST["pers_birth_date_hebnight"])."',
-		pers_death_date_hebnight='".safe_text_db($_POST["pers_death_date_hebnight"])."',	
-		pers_buried_date_hebnight='".safe_text_db($_POST["pers_buried_date_hebnight"])."'
-		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($new_gedcomnumber)."'";
+	if($humo_option['admin_hebnight']=="y" AND isset($_POST["pers_birth_date_hebnight"])) {
+		$sql="UPDATE humo_persons SET
+			pers_birth_date_hebnight='".safe_text_db($_POST["pers_birth_date_hebnight"])."',
+			pers_death_date_hebnight='".safe_text_db($_POST["pers_death_date_hebnight"])."',
+			pers_buried_date_hebnight='".safe_text_db($_POST["pers_buried_date_hebnight"])."'
+			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($new_gedcomnumber)."'";
 		$result=$dbh->query($sql);
-	}	
+	}
 	
 	if(isset($_POST["event_profession"]) AND $_POST["event_profession"]!="" AND $_POST["event_profession"]!= "Profession") {
 		$event_text="";

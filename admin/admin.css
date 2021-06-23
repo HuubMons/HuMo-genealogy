@@ -3,8 +3,9 @@ body.humo {
 	background-image: url('style_admin/background.gif');
 	background-repeat: no-repeat;
 
-	font: 12px Verdana, tahoma, arial, sans-serif;
-	line-height:150%;
+	/* font: 12px Verdana, tahoma, arial, sans-serif; */
+	font: 15px Verdana, tahoma, arial, sans-serif;
+	/* line-height:150%; */
 
 	height:100%; max-height:100%;
 	padding:0; margin:0; border:0;
@@ -23,7 +24,7 @@ table.humo {
 	border-collapse: collapse;
 	background-color:#F8F8F8;
 
-	font-size: 13px;
+	/* font-size: 13px; */
 	margin-left:auto; margin-right:auto;
 }
 .humo_color {
@@ -38,13 +39,15 @@ table.humo {
 table.standard {
 	width:90%;
 }
-table.humo th { font-size: 15px; }
+table.humo th {
+	/* font-size: 15px; */
+}
 table.humo td { border: solid 1px #999999; }
 .table_header {
-	background-image: url('style_admin/button.png');
+	background: linear-gradient(rgb(251, 251, 251) 0%, rgb(212, 212, 212) 100%);
 }
 .table_header_large {
-	background-image: url('style_admin/button_large.png');
+	background: linear-gradient(rgb(251, 251, 251) 0%, rgb(212, 212, 212) 100%);
 }
 .table_empty_line {
 	background-color: white;
@@ -69,7 +72,7 @@ table.humo td { border: solid 1px #999999; }
 #security_remark {
 	background-color:#FFFFFF;
 	color:red;
-	font-size: 12px;
+	/* font-size: 12px; */
 	width: 500px;
 	border: 1px solid blue;
 	padding: 0.5em;
@@ -77,9 +80,8 @@ table.humo td { border: solid 1px #999999; }
 
 #humo_top {
 	text-align:left;
-	color:#7F7F7F;
-	background-color:#E8E8E8;
-	background:url(../images/gray_white.png) repeat left top;
+	color:#737373;
+	background-color:#f7f7f7;
 	height:35px;
 	padding:5px 0px 0;
 }
@@ -89,13 +91,10 @@ table.humo td { border: solid 1px #999999; }
 	top:40px;
 	display:block;
 	width:100%;
-	background-image: url('style_admin/button_large.png');
-
-	font-size: 13px;
-
+	background: linear-gradient(rgb(251, 251, 251) 0%, rgb(212, 212, 212) 100%);
+	font-size: 15px;
 	border-top: solid 1px #EED4D4;
 	border-bottom: solid 1px #EED4D4;
-
 	z-index:100;
 }
 
@@ -157,12 +156,13 @@ ul.humo_menu_item li a{
 /* Pop-up menu */
 ul.humo_menu_item2 li a{
 	float:none;
-	font-size: 13px;
+	/* font-size: 13px; */
+	font-size: 15px;
 	padding:8px 5px 6px 5px;
 	text-decoration:none;
 	color:#333;
 	border-right: none;
-	background-image: url('style_admin/button_large.png');
+	background: linear-gradient(rgb(251, 251, 251) 0%, rgb(212, 212, 212) 100%);
 	display:block;
 }
 
@@ -175,27 +175,23 @@ ul.humo_menu_item2 li a{
 }
 
 #humo_menu a:hover {
-	/* background:url(../images/gray_down.png) repeat left top; */
-	/* color:#FFFFFF; */
-	background:url(../images/gray_down.jpg) repeat left top;
+	background: linear-gradient(rgb(204, 204, 204) 0%, rgb(238, 238, 238) 60%, rgb(238, 238, 238) 100%);
 	color:#333;
 }
 #humo_menu #current {
 
 }
 #humo_menu #current a, #humo_menu #current_top {
-	/* background:url(../images/gray_down.png) repeat left top;
-	color:#FFFFFF; */
-	background:url(../images/gray_down.jpg) repeat left top;
+	background: linear-gradient(rgb(204, 204, 204) 0%, rgb(238, 238, 238) 60%, rgb(238, 238, 238) 100%);
 	color:#333;
 }
 
 /* iPhone/iPad hack */
 ul.humo_menu_item li ul.humo_menu_item2 {
-  display:none;
+	display:none;
 }
 ul.humo_menu_item li:hover ul.humo_menu_item2 {
-  display:block;
+	display:block;
 }
 
 #content_admin {
@@ -247,16 +243,16 @@ div.confirm{
 	text-align: center;
 }
 #pup {
-  position:absolute;
-  z-index:200; /* always on top*/
-  padding: 3px;
-  margin-left: 10px;
-  margin-top: 5px;
-  width: 250px;
-  border: 1px solid black;
-  background-color: #777;
-  color: white;
-  font-size: 0.95em;
+	position:absolute;
+	z-index:200; /* always on top*/
+	padding: 3px;
+	margin-left: 10px;
+	margin-top: 5px;
+	width: 250px;
+	border: 1px solid black;
+	background-color: #777;
+	color: white;
+	font-size: 0.95em;
 }
 
 

@@ -117,7 +117,7 @@ if(!isset($_POST['install_tables2'])){
 
 	echo '<p><input type="checkbox" name="table_stat_date" '.$check_stat.'> '.__('(Re) create statistics tree table. <b>EXISTING STATISTICS TREES WILL BE REMOVED!</b>').'<br>';
 
-	echo '<p><input type="checkbox" name="table_users" '.$check_users.'> '.__('(Re) create user tree table. <b>The user table will be filled with new users. Please add passwords:</b>').'<br>';
+	echo '<p><input type="checkbox" name="table_users" '.$check_users.'> '.__('(Re) create user table. <b>The user table will be filled with new users. Please add passwords:</b>').'<br>';
 
 		echo '<table class="humo" border="1" cellspacing="0" bgcolor="#DDFD9B" style="margin-left: 20px;">';
 		echo '<tr class="table_header"><td><b>'.__('User').'</b></td><td><b>'.__('Username').'</b></td><td><b>'.__('Password').'</b></td></tr>';
@@ -227,7 +227,7 @@ if (isset($_POST['install_tables2'])){
 		// *** Other settings are saved in the table in file: settings_global.php ***
 
 		// *** Update status number. Number must be: update_status+1! ***
-		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','10')");
+		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','11')");
 	}
 
 	if (!$table_stat_date){
@@ -241,9 +241,9 @@ if (isset($_POST['install_tables2'])){
 			stat_ip_address varchar(20) CHARACTER SET utf8,
 			stat_user_agent varchar(255) CHARACTER SET utf8,
 			stat_tree_id varchar(5) CHARACTER SET utf8,
-			stat_gedcom_fam varchar(20) CHARACTER SET utf8,
-			stat_gedcom_man varchar(20) CHARACTER SET utf8,
-			stat_gedcom_woman varchar(20) CHARACTER SET utf8,
+			stat_gedcom_fam varchar(25) CHARACTER SET utf8,
+			stat_gedcom_man varchar(25) CHARACTER SET utf8,
+			stat_gedcom_woman varchar(25) CHARACTER SET utf8,
 			stat_date_stat datetime,
 			stat_date_linux varchar(50) CHARACTER SET utf8,
 			PRIMARY KEY (`stat_id`)
@@ -469,9 +469,10 @@ if (isset($_POST['install_tables2'])){
 			note_guest_mail varchar(25) CHARACTER SET utf8 DEFAULT NULL,
 			note_note text CHARACTER SET utf8,
 			note_status varchar(10) CHARACTER SET utf8,
+			note_tree_id mediumint(7),
 			note_tree_prefix varchar(25) CHARACTER SET utf8,
-			note_pers_gedcomnumber varchar(20) CHARACTER SET utf8,
-			note_fam_gedcomnumber varchar(20) CHARACTER SET utf8,
+			note_pers_gedcomnumber varchar(25) CHARACTER SET utf8,
+			note_fam_gedcomnumber varchar(25) CHARACTER SET utf8,
 			note_names text CHARACTER SET utf8,
 			PRIMARY KEY  (`note_id`)
 			) DEFAULT CHARSET=utf8");
@@ -545,13 +546,13 @@ if (isset($_POST['install_tables2'])){
 		printf(__('create table: %s.'), 'humo_persons');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_persons (
-			pers_id mediumint(7) unsigned NOT NULL auto_increment,
-			pers_gedcomnumber varchar(20) CHARACTER SET utf8,
+			pers_id INT(10) unsigned NOT NULL auto_increment,
+			pers_gedcomnumber varchar(25) CHARACTER SET utf8,
 			pers_tree_id mediumint(7),
 			pers_tree_prefix varchar(10) CHARACTER SET utf8,
 			pers_famc varchar(50) CHARACTER SET utf8,
 			pers_fams varchar(150) CHARACTER SET utf8,
-			pers_indexnr varchar(20) CHARACTER SET utf8,
+			pers_indexnr varchar(25) CHARACTER SET utf8,
 			pers_firstname varchar(60) CHARACTER SET utf8,
 			pers_callname varchar(50) CHARACTER SET utf8,
 			pers_prefix varchar(20) CHARACTER SET utf8,
@@ -600,12 +601,12 @@ if (isset($_POST['install_tables2'])){
 		printf(__('create table: %s.'), 'humo_families');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_families (
-			fam_id mediumint(7) unsigned NOT NULL auto_increment,
+			fam_id INT(10) unsigned NOT NULL auto_increment,
 			fam_tree_id mediumint(7),
-			fam_gedcomnumber varchar(20) CHARACTER SET utf8,
-			fam_man varchar(20) CHARACTER SET utf8,
+			fam_gedcomnumber varchar(25) CHARACTER SET utf8,
+			fam_man varchar(25) CHARACTER SET utf8,
 			fam_man_age varchar(15) CHARACTER SET utf8,
-			fam_woman varchar(20) CHARACTER SET utf8,
+			fam_woman varchar(25) CHARACTER SET utf8,
 			fam_woman_age varchar(15) CHARACTER SET utf8,
 			fam_children text CHARACTER SET utf8,
 			fam_kind varchar(50) CHARACTER SET utf8,
@@ -653,16 +654,16 @@ if (isset($_POST['install_tables2'])){
 		printf(__('create table: %s.'), 'humo_unprocessed_tags');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_unprocessed_tags (
-			tag_id mediumint(6) unsigned NOT NULL auto_increment,
-			tag_pers_id mediumint(6),
-			tag_rel_id mediumint(6),
-			tag_event_id mediumint(6),
-			tag_source_id mediumint(6),
-			tag_connect_id mediumint(6),
-			tag_repo_id mediumint(6),
-			tag_place_id mediumint(6),
-			tag_address_id mediumint(6),
-			tag_text_id mediumint(6),
+			tag_id INT(10) unsigned NOT NULL auto_increment,
+			tag_pers_id INT(10),
+			tag_rel_id INT(10),
+			tag_event_id INT(10),
+			tag_source_id INT(10),
+			tag_connect_id INT(10),
+			tag_repo_id INT(10),
+			tag_place_id INT(10),
+			tag_address_id INT(10),
+			tag_text_id INT(10),
 			tag_tree_id smallint(5),
 			tag_tag text CHARACTER SET utf8,
 			PRIMARY KEY (`tag_id`),
@@ -684,9 +685,9 @@ if (isset($_POST['install_tables2'])){
 		printf(__('create table: %s.'), 'humo_repositories');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_repositories (
-			repo_id mediumint(6) unsigned NOT NULL auto_increment,
+			repo_id INT(10) unsigned NOT NULL auto_increment,
 			repo_tree_id smallint(5),
-			repo_gedcomnr varchar(20) CHARACTER SET utf8,
+			repo_gedcomnr varchar(25) CHARACTER SET utf8,
 			repo_name text CHARACTER SET utf8,
 			repo_address text CHARACTER SET utf8,
 			repo_zip varchar(20) CHARACTER SET utf8,
@@ -711,10 +712,10 @@ if (isset($_POST['install_tables2'])){
 		printf(__('create table: %s.'), 'humo_sources');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_sources (
-			source_id mediumint(6) unsigned NOT NULL auto_increment,
+			source_id INT(10) unsigned NOT NULL auto_increment,
 			source_tree_id smallint(5),
 			source_status varchar(10) CHARACTER SET utf8,
-			source_gedcomnr varchar(20) CHARACTER SET utf8,
+			source_gedcomnr varchar(25) CHARACTER SET utf8,
 			source_order mediumint(6),
 			source_title text CHARACTER SET utf8,
 			source_abbr varchar(50) CHARACTER SET utf8,
@@ -730,7 +731,7 @@ if (isset($_POST['install_tables2'])){
 			source_repo_name varchar(50) CHARACTER SET utf8,
 			source_repo_caln varchar(50) CHARACTER SET utf8,
 			source_repo_page varchar(50) CHARACTER SET utf8,
-			source_repo_gedcomnr varchar(20) CHARACTER SET utf8,
+			source_repo_gedcomnr varchar(25) CHARACTER SET utf8,
 			source_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
 			source_new_date varchar(35) CHARACTER SET utf8,
 			source_new_time varchar(25) CHARACTER SET utf8,
@@ -745,9 +746,9 @@ if (isset($_POST['install_tables2'])){
 		printf(__('create table: %s.'), 'humo_texts');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_texts (
-			text_id mediumint(6) unsigned NOT NULL auto_increment,
+			text_id INT(10) unsigned NOT NULL auto_increment,
 			text_tree_id smallint(5),
-			text_gedcomnr varchar(20) CHARACTER SET utf8,
+			text_gedcomnr varchar(25) CHARACTER SET utf8,
 			text_text text CHARACTER SET utf8,
 			text_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
 			text_new_date varchar(35) CHARACTER SET utf8,
@@ -758,25 +759,25 @@ if (isset($_POST['install_tables2'])){
 			KEY (text_tree_id)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
-		// *** Texts ***
+		// *** Connections ***
 		$db_update = $dbh->query("DROP TABLE humo_connections");
 		printf(__('create table: %s.'), 'humo_connections');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_connections (
-			connect_id mediumint(6) unsigned NOT NULL auto_increment,
+			connect_id INT(10) unsigned NOT NULL auto_increment,
 			connect_tree_id smallint(5),
 			connect_order mediumint(6),
 			connect_kind varchar(25) CHARACTER SET utf8,
 			connect_sub_kind varchar(30) CHARACTER SET utf8,
-			connect_connect_id varchar(20) CHARACTER SET utf8,
+			connect_connect_id varchar(25) CHARACTER SET utf8,
 			connect_date varchar(35) CHARACTER SET utf8,
 			connect_place varchar(75) CHARACTER SET utf8,
 			connect_time varchar(25) CHARACTER SET utf8,
 			connect_page text CHARACTER SET utf8,
 			connect_role varchar(75) CHARACTER SET utf8,
 			connect_text text CHARACTER SET utf8,
-			connect_source_id varchar(20) CHARACTER SET utf8,
-			connect_item_id varchar(20) CHARACTER SET utf8,
+			connect_source_id varchar(25) CHARACTER SET utf8,
+			connect_item_id varchar(25) CHARACTER SET utf8,
 			connect_status varchar(10) CHARACTER SET utf8,
 			connect_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
 			connect_new_date varchar(35) CHARACTER SET utf8,
@@ -793,13 +794,13 @@ if (isset($_POST['install_tables2'])){
 		printf(__('create table: %s.'), 'humo_addresses');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_addresses (
-			address_id mediumint(6) unsigned NOT NULL auto_increment,
+			address_id INT(10) unsigned NOT NULL auto_increment,
 			address_tree_id smallint(5),
-			address_gedcomnr varchar(20) CHARACTER SET utf8,
+			address_gedcomnr varchar(25) CHARACTER SET utf8,
 			address_order mediumint(6),
 			address_connect_kind varchar(25) DEFAULT NULL,
 			address_connect_sub_kind varchar(30) DEFAULT NULL,
-			address_connect_id varchar(20) CHARACTER SET utf8,
+			address_connect_id varchar(25) CHARACTER SET utf8,
 			address_address text CHARACTER SET utf8,
 			address_zip varchar(20) CHARACTER SET utf8,
 			address_place varchar(75) CHARACTER SET utf8,
@@ -820,17 +821,17 @@ if (isset($_POST['install_tables2'])){
 		printf(__('create table: %s.'), 'humo_events');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_events (
-			event_id mediumint(6) unsigned NOT NULL auto_increment,
+			event_id INT(10) unsigned NOT NULL auto_increment,
 			event_tree_id smallint(5),
-			event_gedcomnr varchar(20) CHARACTER SET utf8,
+			event_gedcomnr varchar(25) CHARACTER SET utf8,
 			event_order mediumint(6),
 			event_connect_kind varchar(25) CHARACTER SET utf8,
-			event_connect_id varchar(20) DEFAULT NULL,
+			event_connect_id varchar(25) DEFAULT NULL,
 			event_pers_age varchar(15) CHARACTER SET utf8,
 			event_kind varchar(20) CHARACTER SET utf8,
 			event_event text CHARACTER SET utf8,
 			event_event_extra text CHARACTER SET utf8,
-			event_gedcom varchar(10) CHARACTER SET utf8,
+			event_gedcom varchar(20) CHARACTER SET utf8,
 			event_date varchar(35) CHARACTER SET utf8,
 			event_place varchar(75) CHARACTER SET utf8,
 			event_text text CHARACTER SET utf8,

@@ -16,13 +16,13 @@ body{
 }
 
 #humo_menu {
-	font-size: 10px;
+	font-size: 13px;
 }
 
 /* Pop-up menu */
 ul.humo_menu_item2 li a{
 	display:block;
-	font-size: 11px;
+	font-size: 13px;
 	padding:5px 4px 5px 4px;
 }
 

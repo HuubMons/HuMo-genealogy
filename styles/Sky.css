@@ -1,7 +1,6 @@
 body {
 	color: #ffffff;
-	background-image: url('images_sky/background.gif');
-	background-repeat: repeat;
+	background:url("images_sky/background.gif") repeat left top;
 }
 
 #top_website_name a {
@@ -71,7 +70,6 @@ td.table_header { background-image: url('images_sky/default_trans.png'); }
 
 /* Menu */
 #top_menu {
-	/* For IE - Voor IE: */
 	color: #bbbbff;
 	font-weight: normal;
 	background-color: #333333;
@@ -79,12 +77,9 @@ td.table_header { background-image: url('images_sky/default_trans.png'); }
 
 /* Menutabs */
 #humo_menu {
-	/* background:#DAE0D2 url("images_sky/sky.gif") repeat-x bottom; */
 	background:url("images_sky/sky.gif") repeat-x bottom;
-	/* background-color:#E8E8E8; */
 }
 #humo_menu a {
-	/* background:url("images_sky/right.gif") no-repeat right top; */
 }
 
 /* Pop-up menu */
@@ -95,13 +90,10 @@ td.table_header { background-image: url('images_sky/default_trans.png'); }
 
 /* #humo_menu a:hover { */
 #humo_menu a:hover, #humo_menu ul.humo_menu_item2 li a:hover {
-	/* background:url("images_sky/sky.gif") repeat left top; */
-	background:url("images_white/white.jpg") repeat left top;
+	background: linear-gradient(rgb(204, 204, 204) 0%, rgb(238, 238, 238) 60%, rgb(238, 238, 238) 100%);
 }
 
 #humo_menu #current a, #humo_menu #current_top {
-	/* background-image:url("images_sky/right_on.gif"); */
-	/* color: #ffdd55; */
 }
 ul.humo_menu_item li {
 	border-left: none;
@@ -111,11 +103,6 @@ ul.humo_menu_item li {
 /* Center box */
 #mainmenu_centerbox{
 	background: #000000;
-	/*
-	box-shadow: 0px 0px 0px #999;
-	-moz-box-shadow: 0px 0px 0px #999;
-	-webkit-box-shadow: 0px 0px 0px #999;
-	*/
 	background-image: url('images_sky/sky_dark.gif');
 }
 
@@ -129,11 +116,6 @@ input {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 }
-input:hover {
-	border: #ffee66 2px inset;
-	border-right-color: #ffff77;
-	border-bottom-color: #ffff77;
-}
 
 .help_box {
 	background-color: #000000;
@@ -145,14 +127,3 @@ div.photobook, div.photobooktext { background-color: #ffffff; }
 
 table.reltable td { border:0px; background-image:none; background-color:transparent;}
 table.reltable { background:none; background-image:none; }
-
-.left_box, .right_box {
-	background-image: url('images_sky/sky_dark.gif');
-	color: #eeeeff; 
-	letter-spacing: 1px;
-	/*
-	-moz-box-shadow:    0px 0px 0px;
-	-webkit-box-shadow: 0px 0px 0px;
-	box-shadow:         0px 0px 0px;
-	*/
-}

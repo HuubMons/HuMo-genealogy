@@ -2,16 +2,16 @@
 // *** Stylesheet Switcher 1 ***
 
 $folder=opendir(CMS_ROOTPATH.'styles/');
-while (false!==($file = readdir($folder))) { 
-	if (substr($file,-4,4)=='.css') { 
-		$theme_folder[]=$file; 
+while (false!==($file = readdir($folder))) {
+	if (substr($file,-4,4)=='.css') {
+		$theme_folder[]=$file;
 	}
 }
 closedir($folder);
 
 for ($i=0; $i<count($theme_folder); $i++){
 	$theme=$theme_folder[$i];
-	$theme=str_replace(".css","", $theme);  
+	$theme=str_replace(".css","", $theme);
 	echo '<link href="'.CMS_ROOTPATH.'styles/'.$theme.'.css" rel="alternate stylesheet" type="text/css" media="screen" title="'.$theme.'">';
 }
 

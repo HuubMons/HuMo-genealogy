@@ -13,7 +13,7 @@ include_once(CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."include/marriage_cls.php");
 
-error_reporting(E_ALL);
+//error_reporting(E_ALL);
 @set_time_limit(300);
 
 // *** show person ***
@@ -398,48 +398,40 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 	//}
 
 	//if ($index_list=='places'){
-		//echo '<div class="index_list1">';
-		if($language['dir']=="ltr") {
-			echo '<div class="left_box" style="width:150px;">';
-		}
-		else {
-			echo '<div class="right_box" style="width:150px;">';
-		}
+		echo '<table align="center" class="humo index_table">';
+		echo '<tr><td>';
 
-		//************** search places **************************************
-		//echo ' <form method="post" action="'.$list_var.'" style="display : inline;">';
-		echo ' <form method="post" action="'.$list_var.'">';
-			echo __('Find place').':';
+			//************** search places **************************************
+			//echo ' <form method="post" action="'.$list_var.'" style="display : inline;">';
+			echo ' <form method="post" action="'.$list_var.'">';
+				echo __('Find place').':<br><br>';
 
-			$checked=''; if ($select_marriage_notice=='1'){$checked='checked';}
-			echo '<br><br><input type="Checkbox" name="select_marriage_notice" value="1" '.$checked.'> '.__('&infin;').' '.lcfirst(__('Marriage notice')).'<br>';
+				$checked=''; if ($select_marriage_notice=='1'){$checked='checked';}
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice" value="1" '.$checked.'> '.__('&infin;').' '.lcfirst(__('Marriage notice')).'</span>';
 
-			$checked=''; if ($select_marriage_notice_religious=='1'){$checked='checked';}
-			echo '<input type="Checkbox" name="select_marriage_notice_religious" value="1" '.$checked.'> '.__('o').' '.lcfirst(__('Married notice (religious)')).'<br>';
+				$checked=''; if ($select_marriage=='1'){$checked='checked';}
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage" value="1" '.$checked.'> '.__('X').' '.__('marriage').'</span>';
 
-			$checked=''; if ($select_marriage=='1'){$checked='checked';}
-			echo '<br><input type="Checkbox" name="select_marriage" value="1" '.$checked.'> '.__('X').' '.__('marriage').'<br>';
+				$checked=''; if ($select_marriage_notice_religious=='1'){$checked='checked';}
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice_religious" value="1" '.$checked.'> '.__('o').' '.lcfirst(__('Married notice (religious)')).'</span>';
 
-			$checked=''; if ($select_marriage_religious=='1'){$checked='checked';}
-			echo '<input type="Checkbox" name="select_marriage_religious" value="1" '.$checked.'> '.__('x').' '.lcfirst(__('Married (religious)'));
+				$checked=''; if ($select_marriage_religious=='1'){$checked='checked';}
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_religious" value="1" '.$checked.'> '.__('x').' '.lcfirst(__('Married (religious)')).'</span><br><br clear="all">';
+				echo '<select name="part_place_name">';
+				echo '<option value="contains">'.__('Contains').'</option>';
 
-			echo '<p><select name="part_place_name">';   // leave <p> tag here so it will break nicely - line too long anyway
-			echo '<option value="contains">'.__('Contains').'</option>';
+				$select_item=''; if ($part_place_name=='equals'){ $select_item=' selected'; }
+				echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
 
-			$select_item=''; if ($part_place_name=='equals'){ $select_item=' selected'; }
-			echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
+				$select_item=''; if ($part_place_name=='starts_with'){ $select_item=' selected'; }
+				echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
+				echo '</select>';
 
-			$select_item=''; if ($part_place_name=='starts_with'){ $select_item=' selected'; }
-			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
-			echo '</select>';
-
-			echo '<br><br><input type="text" name="place_name" value="'.safe_text_show($place_name).'" size="15"><br>';
-
-			echo '<br><input type="submit" value="'.__('Search').'" name="B1">';echo '</div>';
+				echo ' <input type="text" name="place_name" value="'.safe_text_show($place_name).'" size="15">';
+				echo ' <input type="submit" value="'.__('Search').'" name="B1">';echo '</div>';
 			echo '</form>';
+		echo '</td></tr></table>';
 		//***************** end search of places **********************************
-
-		
 	//}
 
 	if (CMS_SPECIFIC=='Joomla'){ $uri_path_string = "index.php?option=com_humo-gen&amp;task=list&amp;"; }
@@ -602,6 +594,7 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 
 	echo '<br><div class="index_list1">'.$line_pages.'</div>';
 
+// For inline use?
 echo '<script type="text/javascript">
 	if(window.self != window.top) {
 		var framew = window.frameElement.offsetWidth; 
@@ -612,14 +605,7 @@ echo '<script type="text/javascript">
 		}
 		var lists = document.getElementsByClassName("index_list1");
 		for (var i = 0; i < lists.length; i++) {
-				lists[i].style.width = framew-40+"px";
-		}
-		var boxes = document.getElementsByClassName("left_box");
-		if(boxes.length > 0) {
-			boxes[0].style.width=framew-60+"px";
-			boxes[0].style.marginBottom="10px";
-			boxes[0].innerHTML= boxes[0].innerHTML.replace(/<br>/g,"&nbsp;&nbsp;");
-			boxes[0].style.textAlign="center"; 
+			lists[i].style.width = framew-40+"px";
 		}
 	}
 </script>';

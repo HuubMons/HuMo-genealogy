@@ -2,10 +2,10 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
+/*
 // *** Automatic installation or update ***
 $column_qry = $dbh->query('SHOW COLUMNS FROM humo_users');
 while ($columnDb = $column_qry->fetch()) {
-//while ($columnDb = $column_qry->fetch(PDO::FETCH_OBJ)) {
 	$field_value=$columnDb['Field'];
 	$field[$field_value]=$field_value;
 }
@@ -15,11 +15,7 @@ if (!isset($field['user_hide_trees'])){
 		ADD user_hide_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER user_group_id;";
 	$result=$dbh->query($sql);
 }
-if (!isset($field['user_edit_trees'])){
-	$sql="ALTER TABLE humo_users
-		ADD user_edit_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER user_hide_trees;";
-	$result=$dbh->query($sql);
-}
+*/
 
 echo '<h1 align=center>'.__('Users').'</h1>';
 
@@ -155,12 +151,12 @@ while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 	else{
 		$groupsql="SELECT * FROM humo_groups";
 		$groupresult=$dbh->query($groupsql);
-		print '<td><select size="1" name="'.$userDb->user_id.'group_id">';
+		echo '<td><select size="1" name="'.$userDb->user_id.'group_id">';
 		while ($groupDb=$groupresult->fetch(PDO::FETCH_OBJ)){
 			$select=''; if ($userDb->user_group_id==$groupDb->group_id) $select=' SELECTED';
 			echo '<option value="'.$groupDb->group_id.'"'.$select.'>'.$groupDb->group_name.'</option>';
 		}
-		print "</select></td>";
+		echo '</select></td>';
 	}
 
 	//echo '<td>';

@@ -198,7 +198,7 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr) {
 }
 
 /**
-* print ancestors on a fan chart
+* echo ancestors on a fan chart
 * @param array $treeid ancestry pid
 * @param int $fanw fan width in px (default=840)
 * @param int $fandeg fan size in deg (default=270)
@@ -211,11 +211,11 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 	global $china_message;
 	// check for GD 2.x library
 	if (!defined("IMG_ARC_PIE")) {
-		print "ERROR: NO GD LIBRARY";
+		echo "ERROR: NO GD LIBRARY";
 		return false;
 	}
 	if (!function_exists("ImageTtfBbox")) {
-		print "ERROR: NO GD LIBRARY";
+		echo "ERROR: NO GD LIBRARY";
 		return false;
 	}
 
@@ -411,7 +411,7 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 				$ty=$cy - $mr * -sin($rad);
 				if ($sosa==1) $ty-=$mr/2;
 
-				// print text
+				// echo text
 				ImageTtfText($image, (double)$fontpx, $tangle, $tx, $ty, $color, $fontfile, $text);
 
 				$imagemap .= "<area shape=\"poly\" coords=\"";
@@ -507,7 +507,7 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 }
 
 
-// *** Huub: TEXT in image using CSS... ***
+// *** Huub test: TEXT in image using CSS... ***
 //echo '
 //<STYLE>
 //#rotate {
@@ -544,36 +544,32 @@ if(CMS_SPECIFIC == "Joomla") {
 	$top_for_name=45; // lower to get out of the way of possible scrollbar
 }
 echo '<div style="border:1px;z-index:80; position:absolute; top:'.$top_for_name.'px; left:135px; width:'.$realwidth.'px; height:30px; text-align:center; color:#000000">';
-
 echo '<div style="padding:5px">';
-print "<strong>".__('Fanchart')." - ".$treeid[1][0]."</strong>\n";
+echo "<strong>".__('Fanchart')." - ".$treeid[1][0]."</strong>\n";
 
-//======== HELP POPUP ========================
-echo '<div class='.$rtlmarker.'sddm>';
-echo '<a href="#"';
-echo ' style="display:inline" ';
-echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
-echo 'onmouseout="mclosetime()">';
-echo '<br><strong>'.__('How to print the chart').'</strong>';
-echo '</a>&nbsp;';
-echo '<div class="sddm_fixed" style="z-index:40; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-
-echo __('<u>Internet Explorer:</u><br>
+	//======== HELP POPUP ========================
+	echo '<div class='.$rtlmarker.'sddm>';
+		echo '<a href="#"';
+		echo ' style="display:inline" ';
+		echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
+		echo 'onmouseout="mclosetime()">';
+		echo '<br><strong>'.__('How to print the chart').'</strong>';
+		echo '</a>&nbsp;';
+		echo '<div class="sddm_fixed" style="z-index:40; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+			echo __('<u>Internet Explorer:</u><br>
 1. Set background to "white" on the menu and press "View"<br>
 2. Right-click on the chart<br>
 3. Save to disk with "Save picture as"<br>
 4. Print the saved picture');
 
-echo __('<p><u>All other browsers:</u><br>
+			echo __('<p><u>All other browsers:</u><br>
 Just print the page .... ;-)<br>
 Print the chart in "Landscape" layout, use "Print Preview"<br>
 and adjust printing size to fit the page<br>
 (for regular charts 85%-90% of screen size)');
-
-echo '</div>';
-echo "</div>\n";
-
-//=================================
+		echo '</div>';
+	echo "</div>\n";
+	//=================================
 
 echo '</div></div>';
 
@@ -635,105 +631,105 @@ echo '<div class="fanmenu2">';
 echo '<div class="fanmenu3"></div>';
 echo '<div style="position:absolute; left:0; top:0; color: #000000">';
 
-//echo '<div style="border: 2px solid #000077; padding:10px">';
+	//echo '<div style="border: 2px solid #000077; padding:10px">';
 
-if (CMS_SPECIFIC == "Joomla") {
-	print "<form name=\"people\" method=\"post\" action=\"index.php?option=com_humo-gen&task=fanchart&id=".$family_id."\" style=\"display:inline;\">";
-}
-else {
-	print "<form name=\"people\" method=\"post\" action=\"fanchart.php?id=".$family_id."\" style=\"display:inline;\">";
-}
-//print "<br>";
-print "<input type=\"submit\" value=\"" .__('View'). "\">";
+	if (CMS_SPECIFIC == "Joomla") {
+		echo "<form name=\"people\" method=\"post\" action=\"index.php?option=com_humo-gen&task=fanchart&id=".$family_id."\" style=\"display:inline;\">";
+	}
+	else {
+		echo "<form name=\"people\" method=\"post\" action=\"fanchart.php?id=".$family_id."\" style=\"display:inline;\">";
+	}
+	//echo "<br>";
+	echo "<input type=\"submit\" value=\"" .__('View'). "\">";
 
-// Fan style
-print '<br><hr style="width:110px">';
-print __('Fan style')."<br>";
-print '<div style="text-align:'.$alignmarker.';margin-left:15%;margin-right:15%">';
-print "<input type=\"radio\" name=\"fan_style\" value=\"2\"";
-if ($fan_style==2) print " checked=\"checked\"";
+	// Fan style
+	echo '<br><hr style="width:110px">';
+	echo __('Fan style')."<br>";
+	echo '<div style="text-align:'.$alignmarker.';margin-left:15%;margin-right:15%">';
+	echo "<input type=\"radio\" name=\"fan_style\" value=\"2\"";
+	if ($fan_style==2) echo " checked=\"checked\"";
 
-print ">".__('half');
+	echo ">".__('half');
 
-print "<br><input type=\"radio\" name=\"fan_style\" value=\"3\"";
-if ($fan_style==3) print " checked=\"checked\"";
-print "> 3/4";
-print "<br><input type=\"radio\" name=\"fan_style\" value=\"4\"";
-if ($fan_style==4) print " checked=\"checked\"";
-print ">".__('full');
-print '</div>';
+	echo "<br><input type=\"radio\" name=\"fan_style\" value=\"3\"";
+	if ($fan_style==3) echo " checked=\"checked\"";
+	echo "> 3/4";
+	echo "<br><input type=\"radio\" name=\"fan_style\" value=\"4\"";
+	if ($fan_style==4) echo " checked=\"checked\"";
+	echo ">".__('full');
+	echo '</div>';
 
-// Nr. of generations
-print '<hr style="width:110px">';
-print __('Generations').":<br>";
-print "<select name=\"chosengen\">";
-for ($i=2; $i<=min(9,$maxgens); $i++) {
-	print "<option value=\"".$i."\"" ;
-	if ($i == $chosengen) print "selected=\"selected\" ";
-	print ">".$i."</option>";
-}
-print "</select>";
+	// Nr. of generations
+	echo '<hr style="width:110px">';
+	echo __('Generations').":<br>";
+	echo "<select name=\"chosengen\">";
+	for ($i=2; $i<=min(9,$maxgens); $i++) {
+		echo "<option value=\"".$i."\"" ;
+		if ($i == $chosengen) echo "selected=\"selected\" ";
+		echo ">".$i."</option>";
+	}
+	echo "</select>";
 
-// Fontsize
-print '<br><hr style="width:110px">';
-print __('Font size').":<br>";
-print "<select name=\"fontsize\">";
-for ($i=5; $i<=12; $i++) {
-	print "<option value=\"".$i."\"" ;
-	if ($i == $fontsize) print "selected=\"selected\" ";
-	print ">".$i."</option>";
-}
-print "</select>";
+	// Fontsize
+	echo '<br><hr style="width:110px">';
+	echo __('Font size').":<br>";
+	echo "<select name=\"fontsize\">";
+	for ($i=5; $i<=12; $i++) {
+		echo "<option value=\"".$i."\"" ;
+		if ($i == $fontsize) echo "selected=\"selected\" ";
+		echo ">".$i."</option>";
+	}
+	echo "</select>";
 
-// Date display
-print '<br><hr style="width:110px">';
-print __('Date display').":<br>";
+	// Date display
+	echo '<br><hr style="width:110px">';
+	echo __('Date display').":<br>";
 
-print '<div style="text-align:'.$alignmarker.';margin-left:5%;margin-right:5%">';
-print "<input type=\"radio\" name=\"date_display\" value=\"1\"";
-if ($date_display=="1") print " checked=\"checked\"";
-print '>'.__('No dates');
+	echo '<div style="text-align:'.$alignmarker.';margin-left:5%;margin-right:5%">';
+	echo "<input type=\"radio\" name=\"date_display\" value=\"1\"";
+	if ($date_display=="1") echo " checked=\"checked\"";
+	echo '>'.__('No dates');
 
-print "<br><input type=\"radio\" name=\"date_display\" value=\"2\"";
-if ($date_display=="2") print " checked=\"checked\"";
-print ">".__('Years only');
+	echo "<br><input type=\"radio\" name=\"date_display\" value=\"2\"";
+	if ($date_display=="2") echo " checked=\"checked\"";
+	echo ">".__('Years only');
 
-print "<br><input type=\"radio\" name=\"date_display\" value=\"3\"";
-if ($date_display=="3") print " checked=\"checked\"";
-print ">".__('Full dates');
-print '</div>';
+	echo "<br><input type=\"radio\" name=\"date_display\" value=\"3\"";
+	if ($date_display=="3") echo " checked=\"checked\"";
+	echo ">".__('Full dates');
+	echo '</div>';
 
-// Fan width in percentages
-print '<hr style="width:110px">';
-print __('Fan width:')."<br>";
-print "<input type=\"text\" size=\"3\" name=\"fan_width\" value=\"".$menu_fan."\"> <b>%</b> ";
-print '<div style="font-size:10px;">'.__('"auto" for automatic resizing for best display, or value between 50-300').'</div>';
+	// Fan width in percentages
+	echo '<hr style="width:110px">';
+	echo __('Fan width:')."<br>";
+	echo "<input type=\"text\" size=\"3\" name=\"fan_width\" value=\"".$menu_fan."\"> <b>%</b> ";
+	echo '<div style="font-size:10px;">'.__('"auto" for automatic resizing for best display, or value between 50-300').'</div>';
 
-// Background (for printing with IE)
-print '<hr style="width:110px">';
-print __('Background').":<br>";
+	// Background (for printing with IE)
+	echo '<hr style="width:110px">';
+	echo __('Background').":<br>";
 
-print '<div style="text-align:'.$alignmarker.';margin-left:5%;margin-right:5%">';
-print "<input type=\"radio\" name=\"printing\" value=\"1\"";
-if ($printing==1) print " checked=\"checked\"";
-print "> <span style=\"font-size:10px;\">".__('transparent')."</span>";
-print "<br><input type=\"radio\" name=\"printing\" value=\"2\"";
-if ($printing==2) print " checked=\"checked\"";
-print "> <span style=\"font-size:10px;\">".__('white')."</span>";
-print '</div>';
- 
-//NEW
-print '<hr style="width:110px">';
-print '<div style="text-align:'.$alignmarker.';margin-left:5%;margin-right:5%">';
-print '<input type="hidden" name="show_desc" value="0">';
-print '<input type="checkbox" name="show_desc" value="1"';
-if ($showdesc=="1") print ' checked="checked"';
-print '> <span style="font-size:10px;">'.__('descendants').'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.__('under fanchart').'</span>';
-print '</div>';
-//END NEW
- 
-print "</form>";
-print "</div></div></div>";
+	echo '<div style="text-align:'.$alignmarker.';margin-left:5%;margin-right:5%">';
+		echo "<input type=\"radio\" name=\"printing\" value=\"1\"";
+		if ($printing==1) echo " checked=\"checked\"";
+		echo "> <span style=\"font-size:10px;\">".__('transparent')."</span>";
+		echo "<br><input type=\"radio\" name=\"printing\" value=\"2\"";
+		if ($printing==2) echo " checked=\"checked\"";
+		echo "> <span style=\"font-size:10px;\">".__('white')."</span>";
+	echo '</div>';
+	 
+	//NEW
+	echo '<hr style="width:110px">';
+	echo '<div style="text-align:'.$alignmarker.';margin-left:5%;margin-right:5%">';
+	echo '<input type="hidden" name="show_desc" value="0">';
+	echo '<input type="checkbox" name="show_desc" value="1"';
+	if ($showdesc=="1") echo ' checked="checked"';
+	echo '> <span style="font-size:10px;">'.__('descendants').'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.__('under fanchart').'</span>';
+	echo '</div>';
+	//END NEW
+	 
+	echo "</form>";
+echo "</div></div></div>";
 
 //  Container for fanchart
 //echo '<div style="position:absolute; top:60px; left:135px; width:'.$fan_width.'">';

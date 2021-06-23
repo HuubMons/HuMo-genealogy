@@ -268,7 +268,6 @@ function person_name($personDb){
 		// *** Completely filter person ***
 		if ($user["group_pers_hide_totally_act"]=='j'
 			AND strpos(' '.$personDb->pers_own_code,$user["group_pers_hide_totally"])>0){ $privacy_name=__('Name filtered'); }
-
 		if ($privacy_name){
 			$name_array["show_name"]=false;
 			$name_array["firstname"]=$privacy_name;
@@ -1351,10 +1350,12 @@ function person_data($person_kind, $id){
 				$templ_person["born_source"]=$source;
 				$temp="born_source";
 			}
-			elseif($screen_mode=='RTF') {
-				$rtf_text=strip_tags($templ_person["born_source"],"<b><i>");
-				$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-			}
+			// *** Not necessary to do this in person_cls.php, this is processed in family.php.
+			//elseif($screen_mode=='RTF') {
+			//	$templ_person["born_source"]=$source;
+			//	$rtf_text=strip_tags($templ_person["born_source"],"<b><i>");
+			//	$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+			//}
 			else{
 				$text.=$dirmark1.$source;
 			}
@@ -1484,13 +1485,13 @@ function person_data($person_kind, $id){
 		}
 
 		$pers_death_cause='';
-		If ($personDb->pers_death_cause=='murdered'){ $pers_death_cause=', '.__('death cause').': '.__('murdered'); }
-		If ($personDb->pers_death_cause=='drowned'){ $pers_death_cause=', '.__('death cause').': '.__('drowned'); }
-		If ($personDb->pers_death_cause=='perished'){ $pers_death_cause=', '.__('death cause').': '.__('perished'); }
+		If ($personDb->pers_death_cause=='murdered'){ $pers_death_cause=', '.__('cause of death').': '.__('murdered'); }
+		If ($personDb->pers_death_cause=='drowned'){ $pers_death_cause=', '.__('cause of death').': '.__('drowned'); }
+		If ($personDb->pers_death_cause=='perished'){ $pers_death_cause=', '.__('cause of death').': '.__('perished'); }
 		If ($personDb->pers_death_cause=='killed in action'){ $pers_death_cause=', '.__('killed in action'); }
 		If ($personDb->pers_death_cause=='being missed'){ $pers_death_cause=', '.__('being missed'); }
-		If ($personDb->pers_death_cause=='committed suicide'){ $pers_death_cause=', '.__('death cause').': '.__('committed suicide'); }
-		If ($personDb->pers_death_cause=='executed'){ $pers_death_cause=', '.__('death cause').': '.__('executed'); }
+		If ($personDb->pers_death_cause=='committed suicide'){ $pers_death_cause=', '.__('cause of death').': '.__('committed suicide'); }
+		If ($personDb->pers_death_cause=='executed'){ $pers_death_cause=', '.__('cause of death').': '.__('executed'); }
 		If ($personDb->pers_death_cause=='died young'){ $pers_death_cause=', '.__('died young'); }
 		If ($personDb->pers_death_cause=='died unmarried'){ $pers_death_cause=', '.__('died unmarried'); }
 		If ($personDb->pers_death_cause=='registration'){ $pers_death_cause=', '.__('registration'); } //2 TYPE registration?
@@ -1503,16 +1504,16 @@ function person_data($person_kind, $id){
 		else{
 			if ($personDb->pers_death_cause){
 				if($temp) { $templ_person[$temp].=", "; }
-				$templ_person["dead_cause"]=__('death cause').': '.$personDb->pers_death_cause;
+				$templ_person["dead_cause"]=__('cause of death').': '.$personDb->pers_death_cause;
 				$temp="dead_cause";
-				$text.=', '.__('death cause').': '.$personDb->pers_death_cause;
+				$text.=', '.__('cause of death').': '.$personDb->pers_death_cause;
 			}
 			elseif($humo_option['death_shoa']=="y" AND $text!='') {
 				$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
 				if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
 					preg_match("/($camps)/i",$personDb->pers_buried_place)!==0 OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE)  {
 					if(!isset($personDb->pers_death_date) OR (isset($personDb->pers_death_date) AND  substr($personDb->pers_death_date,-4)>1939 AND substr($personDb->pers_death_date,-4)<1946)) { 
-						$text.=', '.__('death cause').': '.__('murdered'); 
+						$text.=', '.__('cause of death').': '.__('murdered'); 
 					}
 				}
 			}

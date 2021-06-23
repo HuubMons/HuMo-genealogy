@@ -820,8 +820,9 @@ function process_person($person_array){
 
 		// *******************************************************************************************
 		// *** Baptism ***
+		// *******************************************************************************************
 
-		//FTW
+		// *** FTW ***
 		//1 EVEN
 		//2 TYPE Doopgetuigen
 		//2 PLAC Petrus Verdeurmen, Judoca De Grauw
@@ -1568,7 +1569,7 @@ function process_person($person_array){
 	// *** Process estimates/ calculated date for privacy filter ***
 	if ($pers_birth_date) $person["pers_cal_date"]=$pers_birth_date;
 	elseif ($pers_bapt_date) $person["pers_cal_date"]=$pers_bapt_date;
-	
+
 	// for Jewish dates after nightfall
 	$heb_qry = '';
 	if($pers_heb_flag==1) {  // At least one nightfall date is imported. We have to make sure the required tables exist and if not create them
@@ -1593,7 +1594,8 @@ function process_person($person_array){
 			$result=$dbh->query($sql);
 		}
 		// we have to add these values to the query below
-		$heb_qry .= "pers_birth_date_hebnight='".$pers_birth_date_hebnight."',pers_death_date_hebnight='".$pers_death_date_hebnight."',pers_buried_date_hebnight='".$pers_buried_date_hebnight."',";
+		$heb_qry .= "pers_birth_date_hebnight='".$pers_birth_date_hebnight."',
+		pers_death_date_hebnight='".$pers_death_date_hebnight."', pers_buried_date_hebnight='".$pers_buried_date_hebnight."',";
 	}
 
 	// *** Save data ***

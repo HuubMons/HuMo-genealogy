@@ -162,6 +162,30 @@ if (!isset($groupDb->group_gen_protection)){ $user['group_gen_protection']='n'; 
 if (!isset($groupDb->group_hide_trees)){ $user['group_hide_trees']=''; }
 	else{ $user['group_hide_trees']=$groupDb->group_hide_trees; }
 
+// *** Also check user settings. Example: 1, y2, 3, y4. y=yes to show family tree ***
+if (isset($accountDb->user_hide_trees) AND $accountDb->user_hide_trees){
+	$user_hide_trees_array=explode(";",$accountDb->user_hide_trees);
+	foreach($user_hide_trees_array as $key){
+		// *** Check for y (used in y1, y2 etc.). Indicates to SHOW a family tree ***
+		// *** $key[0]= 1st character ***
+		if ($key[0]=='y'){
+			// *** remove y1; ***
+			$replace=$key[1].';';
+			$user['group_hide_trees']=str_replace($replace,'',$user['group_hide_trees']);
+			// *** Or: remove y1 (without ;) ***
+			//$user['group_hide_trees']=str_replace($key[1],'',$user['group_hide_trees']);
+			$user['group_hide_trees']=rtrim($user['group_hide_trees'], $key[1]);
+		}
+		else{
+			if (!in_array($key, $user['group_hide_trees'])){
+				if ($user['group_hide_trees']) $user['group_hide_trees'].=';'.$key;
+					else $user['group_hide_trees']=$key;
+				
+			}
+		}
+	}
+}
+
 // *** Show or hide photo categories, saved as ; separated id numbers ***
 if (!isset($groupDb->group_hide_photocat)){ $user['group_hide_photocat']=''; }
 	else{ $user['group_hide_photocat']=$groupDb->group_hide_photocat; }

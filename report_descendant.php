@@ -738,7 +738,6 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		}
 		else {
 			if(isset($genarray[$w]["fams"]) AND isset($genarray[$w]["gednr"])) {
-
 				/*
 				if(CMS_SPECIFIC=='Joomla') {
 					$replacement_text.= '<a href="index.php?option=com_humo-gen&task=family&id='.$genarray[$w]["fams"].'&amp;main_person='.$genarray[$w]["gednr"].'&amp;chosensize='.$size.'&amp;direction='.$direction.'&amp;screen_mode=STAR"';

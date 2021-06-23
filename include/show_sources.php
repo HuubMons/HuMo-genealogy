@@ -4,11 +4,12 @@
 // ********************************************************
 //error_reporting(E_ALL);
 
-// *** Source function ***
-// function show_sources2
-// $connect_kind = person/ family/ address
-// $connect_sub_kind = birth/ baptise/ etc.
-// $connect_connect_id = id (gedcomnumber or direct table id)
+/* *** Source function ***
+	function show_sources2
+	$connect_kind = person/ family/ address
+	$connect_sub_kind = birth/ baptise/ etc.
+	$connect_connect_id = id (gedcomnumber or direct table id)
+*/
 function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 	global $dbh, $db_functions, $tree_id, $user, $humo_option, $language, $family_id, $url_path, $uri_path;
 	global $main_person, $descendant_report, $pdf_source;
@@ -113,9 +114,11 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 // NOT YET IN PDF EXPORT.
 				// *** Add extra text by "Source for person". Otherwise it isn't clear wich source it is ***
+				$rtf_text='';
 				if ($connect_sub_kind=='person_source') $text.= '. <b>'.__('Source for person').'</b> ';
-				if ($connect_sub_kind=='family_source') $text.= '. <b>'.__('Source for family').'</b> ';
-				$text.=' <a href="'.str_replace("&","&amp;",$_SERVER['REQUEST_URI']).'#source_ref'.$j2.'"><sup>'.$j2.')</sup></a>';
+				elseif ($connect_sub_kind=='family_source') $text.= '. <b>'.__('Source for family').'</b> ';
+				elseif ($screen_mode=='RTF') $rtf_text=__('sources').' ';
+				$text.=' <a href="'.str_replace("&","&amp;",$_SERVER['REQUEST_URI']).'#source_ref'.$j2.'"><sup>'.$rtf_text.$j2.')</sup></a>';
 			}
 			else{
 				// *** Link to shared source ***

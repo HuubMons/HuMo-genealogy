@@ -26,7 +26,8 @@ echo '</form>';
 // *** Save or add page ***
 if (isset($_POST['add_page']) OR isset($_POST['change_page'])){
 	$page_status="";
-	if (isset($_POST['page_status'])){ $page_status=$_POST['page_status']; }
+	//if (isset($_POST['page_status'])){ $page_status=$_POST['page_status']; }
+	if (isset($_POST['page_status']) AND !empty($_POST['page_status'])){ $page_status='1'; }
 
 	if (isset($_POST['add_page'])){
 		$page_order='1';

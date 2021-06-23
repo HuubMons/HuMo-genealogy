@@ -1581,7 +1581,7 @@ function show_pair($left_id,$right_id,$mode) {
 	$this->show_regular($leftDb->pers_death_date,$rightDb->pers_death_date,__('death date'),'d_date');
 	$this->show_regular($leftDb->pers_death_place,$rightDb->pers_death_place,__('death place'),'d_place');
 	$this->show_regular($leftDb->pers_death_time,$rightDb->pers_death_time,__('death time'),'d_time');
-	$this->show_regular($leftDb->pers_death_cause,$rightDb->pers_death_cause,__('death cause'),'d_cause');
+	$this->show_regular($leftDb->pers_death_cause,$rightDb->pers_death_cause,__('cause of death'),'d_cause');
 	$this->show_regular($leftDb->pers_cremation,$rightDb->pers_cremation,__('cremation'),'crem');
 	$this->show_regular($leftDb->pers_bapt_date,$rightDb->pers_bapt_date,__('baptism date'),'bp_date');
 	$this->show_regular($leftDb->pers_bapt_place,$rightDb->pers_bapt_place,__('baptism place'),'bp_place');

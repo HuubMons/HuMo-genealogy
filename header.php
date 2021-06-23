@@ -59,6 +59,12 @@ include_once(CMS_ROOTPATH."include/safe.php");
 include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
 include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
 
+// *** Debug HuMo-gen`front pages ***
+if ($humo_option["debug_front_pages"]=='y'){
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+}
+
 // *** Check if visitor is allowed ***
 if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'],'partial')){
 	echo 'Access to website is blocked.';
@@ -93,6 +99,7 @@ while (false!==($file = readdir($language_folder))) {
 		elseif ($file=='fi') $language_order[]='Suomi';
 		elseif ($file=='fr') $language_order[]='French';
 		elseif ($file=='he') $language_order[]='Hebrew';
+		elseif ($file=='id') $language_order[]='Indonesian';
 		elseif ($file=='hu') $language_order[]='Magyar';
 		elseif ($file=='it') $language_order[]='Italiano';
 		elseif ($file=='nl') $language_order[]='Nederlands';
@@ -453,6 +460,7 @@ else{
 			if ($database==$dataDb->tree_prefix) $_SESSION['tree_prefix']=$database;
 		}
 	}
+
 	// *** No family tree selected yet ***
 	if (!isset($_SESSION["tree_prefix"]) OR $_SESSION['tree_prefix']=='' ){
 		$_SESSION['tree_prefix']=''; // *** If all trees are blocked then session is empty ***
@@ -470,16 +478,30 @@ else{
 		}
 	}
 
-	// *** Check if tree is allowed for visitor and Google etc. ***
+	// *** Check if selected tree is allowed for visitor and Google etc. ***
 	@$dataDb=$db_functions->get_tree($_SESSION['tree_prefix']);
 	$hide_tree_array=explode(";",$user['group_hide_trees']);
 	$hide_tree=false; if (in_array(@$dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
+	//$_SESSION['tree_id']=''; $tree_id='';
 
-	$_SESSION['tree_id']=''; $tree_id='';
+	// *** Logged in or logged out user is not allowed to see this tree. Select another if possible ***
 	if ($hide_tree){
 		$_SESSION['tree_prefix']='';
 		$_SESSION['tree_id']='';
 		$tree_id='';
+
+		// *** Find first family tree that's not blocked for this usergroup ***
+		$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+		while(@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)) {
+			// *** Check is family tree is showed or hidden for user group ***
+			$hide_tree_array=explode(";",$user['group_hide_trees']);
+			$hide_tree=false; if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
+			if ($hide_tree==false){
+				$_SESSION['tree_prefix']=$dataDb->tree_prefix;
+				$_SESSION['tree_id']=$dataDb->tree_id; $tree_id=$dataDb->tree_id;
+				break;
+			}
+		}
 	}
 	elseif (isset($dataDb->tree_id)){
 		$_SESSION['tree_id']=$dataDb->tree_id;

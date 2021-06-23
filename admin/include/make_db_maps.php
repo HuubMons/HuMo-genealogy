@@ -471,7 +471,7 @@ else {  // main screen
 			}
 		}
 
-		// make array of all non-recognized locations (from previous attempts)	
+		// make array of all non-recognized locations (from previous attempts)
 		$non_exist_locs = array();
 		$temp = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
 		$is_noloc_database=false;
@@ -678,11 +678,11 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			// the "change" or "add" buttons were used -- show the place that was added or changed
 			// the "YES" was pressed -- the lat/lng of bottom box are used so they have to be shown
 			// the "NO" button was pressed -- we leave the bottom box as it was so the user may consider again
-			$lat = $_POST['add_lat'];  
-			$lng = $_POST['add_lng']; 
+			$lat = $_POST['add_lat'];
+			$lng = $_POST['add_lng'];
 		}
 		else {
-			if(isset($_POST['flag_form'])) {  
+			if(isset($_POST['flag_form'])) {
 				// the pulldown was used -- so show the place that was chosen
 				$result = $dbh->query("SELECT * FROM humo_location WHERE location_id = ".safe_text_db($_POST['loc_find']));
 			}
@@ -696,8 +696,8 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				$result = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
 			}
 			$row = $result->fetch();
-			$lat = $row['location_lat'];  
-			$lng = $row['location_lng']; 
+			$lat = $row['location_lat'];
+			$lng = $row['location_lng'];
 		}
 
 		$api_key = '';
@@ -718,9 +718,9 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		var key; 
 			if(window.event){ 
 				key = window.event.keyCode; 
-			} 
-			else { 
-				key = e.which;      
+			}
+			else {
+				key = e.which;
 			} 
 			if(key == 13){ 
 				return false; 
@@ -731,10 +731,10 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		} 
 		function testForEnter() 
 		// works for IE
-		{   
+		{
 			if(navigator.userAgent.indexOf("MSIE") != -1) {
 				if (event.keyCode == 13) 
-				{        
+				{
 					event.cancelBubble = true;
 					event.returnValue = false;
 				}
@@ -772,7 +772,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			document.getElementById("lngbox").value = event.latLng.lng().toFixed(5);
 			});
 		}
-	  
+	
 		function clearMarker() {
 			for(j=0; j<markers.length; j++){
 			if(markers[j] != undefined) markers[j].setMap(null);
@@ -799,11 +799,11 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				document.getElementById("latbox").value = event.latLng.lat().toFixed(5);
 				document.getElementById("lngbox").value = event.latLng.lng().toFixed(5);
 
-				});  
+				});
 			} else {
 				alert("Geocode was not successful for the following reason: " + status);
 			}
-			markers.push(markers[1]);         	
+			markers.push(markers[1]);
 			});
 		}
 		</script>
@@ -1157,12 +1157,14 @@ echo '</table>';  // end google maps admin
 // function to refresh location_status column
 function refresh_status() {
 	global $dbh, $humo_option;
+
 	// make sure the location_status column exists. If not create it
 	$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
 	$exists = $result->rowCount();
 	if(!$exists) {
 		$dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
 	}
+
 	$all_loc = $dbh->query("SELECT location_location FROM humo_location");
 	while($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {
 		$loca_array[$all_locDb->location_location] = "";

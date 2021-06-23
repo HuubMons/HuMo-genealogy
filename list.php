@@ -156,7 +156,8 @@ function show_person($personDb){
 			}
 
 			if ($nr_marriages>1 and $x>0) echo ',';
-			echo ' <span class="index_partner" style="font-size:10px;">';
+			//echo ' <span class="index_partner" style="font-size:10px;">';
+			echo ' <span class="index_partner">';
 			if ($nr_marriages>1){
 				if ($x==0) echo __('1st');
 				elseif ($x==1) echo __('2nd');
@@ -1272,49 +1273,45 @@ if ($index_list=='patronym'){
 	}
 
 	if ($index_list=='places'){
-		//echo '<div class="index_list1">';
-		if($language['dir']=="ltr") {
-			echo '<div class="left_box" style="display:inline">';
-		}
-		else {
-			echo '<div class="right_box">';
-		}
+		echo '<table align="center" class="humo index_table">';
+		echo '<tr><td>';
 
-		//************** search places **************************************
-		//echo ' <form method="post" action="'.$list_var.'" style="display : inline;">';
-		echo ' <form method="post" action="'.$list_var.'">';
-			echo __('Find place').':';
+			//************** search places **************************************
+			//echo ' <form method="post" action="'.$list_var.'" style="display : inline;">';
+			echo ' <form method="post" action="'.$list_var.'">';
+				echo __('Find place').':<br><br>';
 
-			$checked=''; if ($select_birth=='1'){$checked='checked';}
-			echo '<br><br><input type="Checkbox" name="select_birth" value="1" '.$checked.'> '.__('*').' '.__('birth pl.').'<br>';
+				$checked=''; if ($select_birth=='1'){$checked='checked';}
+				echo '<span class="select_box"><input type="Checkbox" name="select_birth" value="1" '.$checked.'> '.__('*').' '.__('birth pl.').'</span>';
 
-			$checked=''; if ($select_bapt=='1'){$checked='checked';}
-			echo ' <input type="Checkbox" name="select_bapt" value="1" '.$checked.'> '.__('~').' '.__('bapt pl.').'<br>';
+				$checked=''; if ($select_bapt=='1'){$checked='checked';}
+				echo '<span class="select_box"><input type="Checkbox" name="select_bapt" value="1" '.$checked.'> '.__('~').' '.__('bapt pl.').'</span>';
 
-			$checked=''; if ($select_place=='1'){$checked='checked';}
-			echo ' <input type="Checkbox" name="select_place" value="1" '.$checked.'> '.__('^').' '.__('residence').'<br>';
+				$checked=''; if ($select_place=='1'){$checked='checked';}
+				echo '<span class="select_box"><input type="Checkbox" name="select_place" value="1" '.$checked.'> '.__('^').' '.__('residence').'</span>';
 
-			$checked=''; if ($select_death=='1'){$checked='checked';}
-			echo '<input type="Checkbox" name="select_death" value="1" '.$checked.'> '.__('&#134;').' '.__('death pl.').'<br>';
+				$checked=''; if ($select_death=='1'){$checked='checked';}
+				echo '<span class="select_box"><input type="Checkbox" name="select_death" value="1" '.$checked.'> '.__('&#134;').' '.__('death pl.').'</span>';
 
-			$checked=''; if ($select_buried=='1'){$checked='checked';}
-			echo '<input type="Checkbox" name="select_buried" value="1" '.$checked.'> '.__('[]').' '.__('bur pl.');
+				$checked=''; if ($select_buried=='1'){$checked='checked';}
+				echo '<input type="Checkbox" name="select_buried" value="1" '.$checked.'> '.__('[]').' '.__('bur pl.');
 
-		echo '<br><br><select name="part_place_name">';
-		echo '<option value="contains">'.__('Contains').'</option>';
+				echo '<br><br><select name="part_place_name">';
+				echo '<option value="contains">'.__('Contains').'</option>';
 
-		$select_item=''; if ($part_place_name=='equals'){ $select_item=' selected'; }
-		echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
+				$select_item=''; if ($part_place_name=='equals'){ $select_item=' selected'; }
+				echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
 
-		$select_item=''; if ($part_place_name=='starts_with'){ $select_item=' selected'; }
-		echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
-		echo '</select>';
+				$select_item=''; if ($part_place_name=='starts_with'){ $select_item=' selected'; }
+				echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
+				echo '</select>';
 
-		echo '<br><br><input type="text" name="place_name" value="'.safe_text_show($place_name).'" size="15"><br>';
+				echo ' <input type="text" name="place_name" value="'.safe_text_show($place_name).'" size="15">';
+				echo '<input type="hidden" name="index_list" value="'.$index_list.'">';
+				echo ' <input type="submit" value="'.__('Search').'" name="B1">';
+			echo '</form>';
 
-		echo '<input type="hidden" name="index_list" value="'.$index_list.'">';
-		echo '<br><input type="submit" value="'.__('Search').'" name="B1">';echo '</div>';
-		echo '</form>';
+		echo '</td></tr></table>';
 
 		//***************** end search of places **********************************
 	}
@@ -1332,7 +1329,8 @@ if ($index_list=='patronym'){
 		// *** ADVANCED SEARCH BOX ***
 		if ($adv_search==true){ 
 
-			echo '<td align="right" class="no_border" >'.__('First name').':';
+			//echo '<td align="right" class="no_border" >'.__('First name').':';
+			echo '<td class="no_border" >'.__('First name').':<br>';
 			echo ' <select size="1" name="part_firstname">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_firstname']=='equals'){ $select_item=' selected'; }
@@ -1342,7 +1340,8 @@ if ($index_list=='patronym'){
 			echo '</select>';
 			echo ' <input type="text" name="pers_firstname" value="'.safe_text_show($selection['pers_firstname']).'" size="15" placeholder="'.__('First name').'"></td>';
 			if($humo_option['one_name_study']!='y') {
-				echo '<td align="right" class="no_border">'.__('Last name').':';
+				//echo '<td align="right" class="no_border">'.__('Last name').':';
+				echo '<td class="no_border">'.__('Last name').':<br>';
 				// *** Lastname prefix ***
 				$pers_prefix=$selection['pers_prefix']; if ($pers_prefix=='EMPTY') $pers_prefix='';
 				echo ' <input type="text" name="pers_prefix" value="'.safe_text_show($pers_prefix).'" size="8" placeholder="'.ucfirst(__('prefix')).'">';
@@ -1358,12 +1357,13 @@ if ($index_list=='patronym'){
 			}
 			else {
 				echo '<td align="center" class="no_border">'.__('Last name').':';
-				echo '<span style="text-align:center;font-weight:bold">'.$humo_option['one_name_thename'].'</span>';
+				echo '<span style="text-align:center; font-weight:bold">'.$humo_option['one_name_thename'].'</span>';
 				echo '<input type="hidden" name="pers_lastname" value="'.$humo_option['one_name_thename'].'">';
 				echo '<input type="hidden" name="part_lastname" value="equals">';
 			}
 			// *** Profession ***
-			echo '<td align="right" class="no_border">'.__('Profession').':';
+			//echo '<td align="right" class="no_border">'.__('Profession').':';
+			echo '<td class="no_border">'.__('Profession').':<br>';
 			echo ' <select size="1" name="part_profession">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_profession']=='equals'){ $select_item=' selected'; }
@@ -1379,7 +1379,7 @@ if ($index_list=='patronym'){
 		else{
 			if($humo_option['one_name_study']!='y') {
 				echo '<td class="no_border center" colspan="2">'.__('Enter name or part of name').'<br>';
-				echo '<span style="font-size:10px;">' .__('"John Jones", "Jones John", "John of Jones", "of Jones, John", "Jones, John of", "Jones of, John"').'</span>';
+				echo '<span style="font-size:12px;">'.__('"John Jones", "Jones John", "John of Jones", "of Jones, John", "Jones, John of", "Jones of, John"').'</span>';
 			}
 			else {
 				echo '<td class="no_border center" colspan="2">'.__('Enter private name');
@@ -1400,13 +1400,15 @@ if ($index_list=='patronym'){
 		// *** ADVANCED SEARCH BOX ***
 		if ($adv_search==true){
 			//echo '<tr><td align="right" class="no_border">'.__('Year (or period) of birth:');
-			echo '<tr><td align="right" class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':';
+			//echo '<tr><td align="right" class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':';
+			echo '<tr><td class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':<br>';
 			echo ' <input type="text" name="birth_year" value="'.safe_text_show($selection['birth_year']).'" size="4" placeholder="'.__('Date').'">';
 			echo '&nbsp;&nbsp;('.__('till:').'&nbsp;';
 			echo '<input type="text" name="birth_year_end" value="'.safe_text_show($selection['birth_year_end']).'" size="4" placeholder="'.__('Date').'">&nbsp;)</td>';
 
 			//echo '<td align="right" class="no_border">'.__('Place of birth').':';
-			echo '<td align="right" class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':';
+			//echo '<td align="right" class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':';
+			echo '<td class="no_border">'.ucfirst(__('born')).'/ '.ucfirst(__('baptised')).':<br>';
 			echo ' <select size="1" name="part_birth_place">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_birth_place']=='equals'){ $select_item=' selected'; }
@@ -1416,7 +1418,8 @@ if ($index_list=='patronym'){
 			echo '</select>';
 			echo ' <input type="text" name="birth_place" value="'.safe_text_show($selection['birth_place']).'" size="15" placeholder="'.__('Place').'"></td>';
 
-			echo '<td align="right" class="no_border">'.__('Own code').':';
+			//echo '<td align="right" class="no_border">'.__('Own code').':';
+			echo '<td class="no_border">'.__('Own code').':<br>';
 			echo ' <select size="1" name="part_own_code">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_own_code']=='equals'){ $select_item=' selected'; }
@@ -1429,13 +1432,15 @@ if ($index_list=='patronym'){
 
 			echo '</tr>';
 			//echo '<tr><td align="right" class="no_border">'.__('Year (or period) of death:');
-			echo '<tr><td align="right" class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':';
+			//echo '<tr><td align="right" class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':';
+			echo '<tr><td class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':<br>';
 			echo ' <input type="text" name="death_year" value="'.safe_text_show($selection['death_year']).'" size="4" placeholder="'.__('Date').'">';
 			echo '&nbsp;&nbsp;('.__('till:').'&nbsp;';
 			echo '<input type="text" name="death_year_end" value="'.safe_text_show($selection['death_year_end']).'" size="4" placeholder="'.__('Date').'">&nbsp;)</td>';
 
 			//echo '<td align="right" class="no_border">'.__('Place of death').':';
-			echo '<td align="right" class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':';
+			//echo '<td align="right" class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':';
+			echo '<td class="no_border">'.ucfirst(__('died')).'/ '.ucfirst(__('buried')).':<br>';
 			echo ' <select size="1" name="part_death_place">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_death_place']=='equals'){ $select_item=' selected'; }
@@ -1446,7 +1451,8 @@ if ($index_list=='patronym'){
 			echo ' <input type="text" name="death_place" value="'.safe_text_show($selection['death_place']).'" size="15" placeholder="'.__('Place').'"></td>';
 
 			// *** Text ***
-			echo '<td align="right" class="no_border">'.__('Text').':';
+			//echo '<td align="right" class="no_border">'.__('Text').':';
+			echo '<td class="no_border">'.__('Text').':<br>';
 			echo ' <select size="1" name="part_text">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_text']=='equals'){ $select_item=' selected'; }
@@ -1459,7 +1465,8 @@ if ($index_list=='patronym'){
 
 			echo '</tr>';
 
-			echo '<tr><td align="right" class="no_border">'.__('Choose sex:');
+			//echo '<tr><td align="right" class="no_border">'.__('Choose sex:');
+			echo '<tr><td class="no_border">'.__('Choose sex:').'<br>';
 			$check=''; if ($selection['sexe']=='both'){ $check=' checked'; }
 			echo '<input type="radio" name="sexe" value="both"'.$check.'>'.__('All').'&nbsp;&nbsp;';
 			$check=''; if ($selection['sexe']=='M'){ $check=' checked'; }
@@ -1471,7 +1478,8 @@ if ($index_list=='patronym'){
 			echo '</td>';
 
 			// *** Living place ***
-			echo '<td align="right" class="no_border">'.__('Place').':';
+			//echo '<td align="right" class="no_border">'.__('Place').':';
+			echo '<td class="no_border">'.__('Place').':<br>';
 			echo ' <select size="1" name="part_place">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_place']=='equals'){ $select_item=' selected'; }
@@ -1482,7 +1490,8 @@ if ($index_list=='patronym'){
 			echo ' <input type="text" name="pers_place" value="'.safe_text_show($selection['pers_place']).'" size="15" placeholder="'.__('Place').'"></td>';
 
 			// *** Zip code ***
-			echo '<td align="right" class="no_border">'.__('Zip code').':';
+			//echo '<td align="right" class="no_border">'.__('Zip code').':';
+			echo '<td class="no_border">'.__('Zip code').':<br>';
 			echo ' <select size="1" name="part_zip_code">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_zip_code']=='equals'){ $select_item=' selected'; }
@@ -1495,7 +1504,8 @@ if ($index_list=='patronym'){
 
 			echo '</tr>';
 
-			echo '<tr><td align="right" class="no_border">'.__('Partner firstname').':';
+			//echo '<tr><td align="right" class="no_border">'.__('Partner firstname').':';
+			echo '<tr><td class="no_border">'.__('Partner firstname').':<br>';
 			echo ' <select size="1" name="part_spouse_firstname">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_spouse_firstname']=='equals'){ $select_item=' selected'; }
@@ -1505,7 +1515,8 @@ if ($index_list=='patronym'){
 			echo '</select>';
 			echo ' <input type="text" name="spouse_firstname" value="'.safe_text_show($selection['spouse_firstname']).'" size="15" placeholder="'.__('First name').'"></td>';
 
-			echo '<td align="right" class="no_border">'.__('Partner lastname').':';
+			//echo '<td align="right" class="no_border">'.__('Partner lastname').':';
+			echo '<td class="no_border">'.__('Partner lastname').':<br>';
 			echo ' <select size="1" name="part_spouse_lastname">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_spouse_lastname']=='equals'){ $select_item=' selected'; }
@@ -1516,7 +1527,8 @@ if ($index_list=='patronym'){
 			echo ' <input type="text" name="spouse_lastname" value="'.safe_text_show($selection['spouse_lastname']).'" size="15" placeholder="'.__('Last name').'"></td>';
 
 			// *** Witness ***
-			echo '<td align="right" class="no_border">'.ucfirst(__('witness')).':';
+			//echo '<td align="right" class="no_border">'.ucfirst(__('witness')).':';
+			echo '<td class="no_border">'.ucfirst(__('witness')).':<br>';
 			echo ' <select size="1" name="part_witness">';
 			echo '<option value="contains">'.__('Contains').'</option>';
 			$select_item=''; if ($selection['part_witness']=='equals'){ $select_item=' selected'; }
@@ -1527,8 +1539,10 @@ if ($index_list=='patronym'){
 			echo ' <input type="text" name="witness" value="'.safe_text_show($selection['witness']).'" size="15" placeholder="'.ucfirst(__('witness')).'">';
 			echo '</td>';
 			echo '</tr>';
+
 			echo '<tr>';
-			echo '<td align="right" class="no_border">'.ucfirst(__('gedcomnumber (ID)')).':';
+			//echo '<td align="right" class="no_border">'.ucfirst(__('gedcomnumber (ID)')).':';
+			echo '<td class="no_border">'.ucfirst(__('gedcomnumber (ID)')).':<br>';
 			echo ' <select size="1" name="part_gednr">';
 			echo '<option value="equals">'.__('Equals').'</option>';
 			$select_item=''; if ($selection['part_gednr']=='contains'){ $select_item=' selected'; }
@@ -1537,8 +1551,10 @@ if ($index_list=='patronym'){
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
 			echo ' <input type="text" name="gednr" value="'.safe_text_show($selection['gednr']).'" size="15" placeholder="'.ucfirst(__('gedcomnumber (ID)')).'">';
+
 			//~~~~~~~~~~~~~~~~~~~
-			echo '</td><td colspan="2" align="center" class="no_border">'.__('Research status:');
+			//echo '</td><td colspan="2" align="center" class="no_border">'.__('Research status:');
+			echo '</td><td colspan="2" align="center" class="no_border">'.__('Research status:').'<br>';
 			$check=''; if ($selection['parent_status']=='noparents'){ $check=' checked'; }
 			echo '<input type="radio" name="parent_status" value="noparents"'.$check.'>'.__('parents unknown').'&nbsp;&nbsp;';
 			$check=''; if ($selection['parent_status']=='motheronly'){ $check=' checked'; }
@@ -1583,27 +1599,19 @@ if ($index_list=='patronym'){
 
 			//======== HELP POPUP ========================
 			echo '<div class="'.$rtlmarker.'sddm" style="display: inline;">';
-			echo ' <a href="#"';
-			echo ' style="display:inline" ';
+			echo '&nbsp;&nbsp;&nbsp;<a href="#" style="display:inline" ';
 			echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
-			echo 'onmouseout="mclosetime()">';
-			echo '&nbsp;&nbsp;&nbsp;<strong>'.__('Help').'</strong>';
-			echo '</a>';
+			echo 'onmouseout="mclosetime()"><strong>'.__('Help').'</strong></a>';
 			echo '<div class="sddm_fixed" style="z-index:40; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo '<table width="98%" class="humo"><tr>';
 				echo '<td width="50">'.__('Tip').':</td>';
 
 				echo '<td>';
-				echo __('With Advanced Search you can easily create lists like: all persons with surname <b>Schaap</b> who were born <b>between 1820 and 1840</b> in <b>Amsterdam</b><br>
-You can also search without a name: all persons who <b>died in 1901</b> in <b>Amstelveen.</b>');
+				echo __('With Advanced Search you can easily create lists like: all persons with surname <b>Schaap</b> who were born <b>between 1820 and 1840</b> in <b>Amsterdam</b><br>You can also search without a name: all persons who <b>died in 1901</b> in <b>Amstelveen.</b>');
 				echo '</td></tr>';
 
 				echo '<tr><td>';
-				echo __('Note:</td>
-<td>When you use the birth and/or death search boxes please note this:<br>
-&nbsp;&nbsp;1. Persons for whom no birth/death data exist in the database, will not be found.<br>
-2. Persons with privacy settings will not be shown, unless you are logged in with the proper permissions.<br>
-&nbsp;&nbsp;These persons can be found by searching by name and/or surname only.');
+				echo __('Note:</td><td>When you use the birth and/ or death search boxes please note this:<br>1. Persons for whom no birth/ death data exist in the database, will not be found.<br>2. Persons with privacy settings will not be shown, unless you are logged in with the proper permissions.<br>These persons can be found by searching by name and/ or surname only.');
 				echo '</td></tr></table>';
 
 				echo '</div>';
@@ -1946,6 +1954,7 @@ You can also search without a name: all persons who <b>died in 1901</b> in <b>Am
 
 	//echo '</div>';
 
+// For use with inline site?
 echo '<script type="text/javascript"> 
 	if(window.self != window.top) {
 		var framew = window.frameElement.offsetWidth; 
@@ -1957,13 +1966,6 @@ echo '<script type="text/javascript">
 		var lists = document.getElementsByClassName("index_list1");
 		for (var i = 0; i < lists.length; i++) {
 			lists[i].style.width = framew-40+"px";
-		}
-		var boxes = document.getElementsByClassName("left_box"); 
-		if(boxes.length > 0) {
-			boxes[0].style.width=framew-60+"px";
-			boxes[0].style.marginBottom="10px";
-			boxes[0].innerHTML= boxes[0].innerHTML.replace(/<br>/g,"&nbsp;&nbsp;");  
-			boxes[0].style.textAlign="center";
 		}
 	}
 </script>';

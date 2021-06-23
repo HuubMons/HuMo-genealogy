@@ -43,7 +43,7 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 		user_group_id='".$humo_option["visitor_registration_group"]."';";
 		$result = $dbh->query($sql);
 		echo '<h2>'.__('Registration completed').'</h2>';
-		echo __('At this moment you are registered in the user-group "guest". The administrator will check your registration, and select a user-group for you.');
+		echo __('At this moment you are registered in the user-group "guest". The administrator will check your registration, and select a user-group for you.').'<br>';
 
 		// *** Mail new registered user to the administrator ***
 		$register_address='';
@@ -155,5 +155,6 @@ if ($show_form){
 		echo '<h2>'.__('The register function has been switched off!').'</h2>';
 	}
 }
+echo '<br>';
 include_once(CMS_ROOTPATH."footer.php");
 ?>

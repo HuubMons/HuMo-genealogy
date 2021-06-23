@@ -86,7 +86,7 @@ function show_media($event_connect_kind,$event_connect_id){
 			if($temp->rowCount()) {   // there is a category table 
 				$catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 				if($catg->rowCount()) {
-					while($catDb = $catg->fetch(PDO::FETCH_OBJ)) {  
+					while($catDb = $catg->fetch(PDO::FETCH_OBJ)) {
 						if(substr($event_event,0,3)==$catDb->photocat_prefix AND is_dir($tree_pict_path.'/'.substr($event_event,0,2)))  {  // there is a subfolder of this prefix
 							$tree_pict_path .= substr($event_event,0,2).'/';  // look in that subfolder
 						}

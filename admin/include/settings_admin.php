@@ -17,6 +17,9 @@ if (isset($_POST['save_option'])){
 
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["text_footer"])."' WHERE setting_variable='text_footer'");
 
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["debug_front_pages"])."' WHERE setting_variable='debug_front_pages'");
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["debug_admin_pages"])."' WHERE setting_variable='debug_admin_pages'");
+
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["database_name"])."' WHERE setting_variable='database_name'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["homepage"])."' WHERE setting_variable='homepage'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["homepage_description"])."' WHERE setting_variable='homepage_description'");
@@ -93,17 +96,17 @@ if (isset($_POST['save_option'])){
 	if(isset($_POST["admin_barm"])) {$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='admin_barm'");}
 	else { $result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='admin_barm'"); }
 	
-	if(isset($_POST["death_char"]) AND safe_text_db($_POST["death_char"]) == "y"  AND $humo_option['death_char'] == "n") { 
+	if(isset($_POST["death_char"]) AND safe_text_db($_POST["death_char"]) == "y"  AND $humo_option['death_char'] == "n") {
 		include(CMS_ROOTPATH."languages/change_all.php");  // change cross to infinity
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='death_char'");
 	}
-	elseif((!isset($_POST["death_char"]) OR safe_text_db($_POST["death_char"]) == "n") AND $humo_option['death_char'] == "y" ) { 
+	elseif((!isset($_POST["death_char"]) OR safe_text_db($_POST["death_char"]) == "n") AND $humo_option['death_char'] == "y" ) {
 		include(CMS_ROOTPATH."languages/change_all.php");  // change infinity to cross
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='death_char'");
 	}
 
 
-	if(strpos($humo_option['default_timeline'],$time_lang."!")===false) {  
+	if(strpos($humo_option['default_timeline'],$time_lang."!")===false) {
 		// no entry for this language yet - append it
 		$result = $dbh->query("UPDATE humo_settings SET setting_value=CONCAT(setting_value,'".safe_text_db($_POST["default_timeline"])."') WHERE setting_variable='default_timeline'");
 	}
@@ -199,24 +202,38 @@ echo '<tr><td>'.__('Text in footer for all pages').'</td><td>';
 	echo __('Can be used for statistics, counter, etc. It\'s possible to use HTML codes!');
 echo '</td></tr>';
 
+// *** Debug options ***
+echo '<tr><td valign="top">'.__('Debug HuMo-gen front pages').'</td><td><select size="1" name="debug_front_pages">';
+	$selected=''; if ($humo_option["debug_front_pages"]!='y') $selected=' SELECTED';
+	echo '<option value="y">'.__('Yes').'</option>';
+	echo '<option value="n"'.$selected.'>'.__('No').'</option>';
+	echo '</select> '.__('Only use this option to debug problems in HuMo-gen.');
+echo '</td></tr>';
+
+echo '<tr><td valign="top">'.__('Debug HuMo-gen admin pages').'</td><td><select size="1" name="debug_admin_pages">';
+	$selected=''; if ($humo_option["debug_admin_pages"]!='y') $selected=' SELECTED';
+	echo '<option value="y">'.__('Yes').'</option>';
+	echo '<option value="n"'.$selected.'>'.__('No').'</option>';
+	echo '</select> '.__('Only use this option to debug problems in HuMo-gen.');
+echo '</td></tr>';
+
 echo '<tr class="table_header"><th colspan="2">'.__('Search engine settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '<tr class="humo_color"><td valign="top">url_rewrite<br>'.__('Improve indexing of search engines (like Google)').'</td><td><select size="1" name="url_rewrite">';
-$selected=''; if ($humo_option["url_rewrite"]!='j') $selected=' SELECTED';
-echo '<option value="j">'.__('Yes').'</option>';
-echo '<option value="n"'.$selected.'>'.__('No').'</option>';
-
-echo '</select> <b>'.__('ATTENTION: the Apache module "mod_rewrite" has to be installed!').'</b><br>';
-echo 'URL&nbsp;&nbsp;: http://www.website.nl/humo-php/family.php?id=F12<br>';
-echo __('becomes:').' http://www.website.nl/humo-php/family/F12/<br>';
+	$selected=''; if ($humo_option["url_rewrite"]!='j') $selected=' SELECTED';
+	echo '<option value="j">'.__('Yes').'</option>';
+	echo '<option value="n"'.$selected.'>'.__('No').'</option>';
+	echo '</select> <b>'.__('ATTENTION: the Apache module "mod_rewrite" has to be installed!').'</b><br>';
+	echo 'URL&nbsp;&nbsp;: http://www.website.nl/humo-php/family.php?id=F12<br>';
+	echo __('becomes:').' http://www.website.nl/humo-php/family/F12/<br>';
 echo '</td></tr>';
 
 echo '<tr class="humo_color"><td>'.__('Stop search engines').'</td><td><select size="1" name="searchengine">';
-$selected=''; if ($humo_option["searchengine"]!='j') $selected=' SELECTED';
-echo '<option value="j">'.__('Yes').'</option>';
-echo '<option value="n"'.$selected.'>'.__('No').'</option>';
-echo "</select><br>";
-if(CMS_SPECIFIC == "Joomla") {  $cols="48"; } else { $cols="80"; }   // in joomla make sure it won't run off the screen
+	$selected=''; if ($humo_option["searchengine"]!='j') $selected=' SELECTED';
+	echo '<option value="j">'.__('Yes').'</option>';
+	echo '<option value="n"'.$selected.'>'.__('No').'</option>';
+	echo "</select><br>";
+	if(CMS_SPECIFIC == "Joomla") {  $cols="48"; } else { $cols="80"; }   // in joomla make sure it won't run off the screen
 echo "<textarea cols=".$cols." rows=1 name=\"robots_option\" style='height: 20px;'>".htmlentities($humo_option["robots_option"],ENT_NOQUOTES)."</textarea></td></tr>";
 
 echo '<tr class="humo_color"><td>'.__('Search engines:<br>Hide family tree (no indexing)<br>Show frontpage and CMS pages').'</td><td><select size="1" name="searchengine_cms_only">';
@@ -542,7 +559,7 @@ echo '<input type="checkbox" id="admin_hebdate" value="y" name="admin_hebdate" '
 $checked = '';  if(isset($humo_option['david_stars']) and $humo_option['david_stars'] == "y")  { $checked = " checked "; }
 echo '<input type="checkbox" id="david_stars" value="y" name="david_stars" '.$checked.'>  <label for="david_stars">'.__('Place yellow Stars of David before holocaust victims in lists and reports').'</label><br>';
 $checked = '';  if(isset($humo_option['death_shoa']) and $humo_option['death_shoa'] == "y")  { $checked = " checked "; }
-echo '<input type="checkbox" id="death_shoa" value="y" name="death_shoa" '.$checked.'>  <label for="death_shoa">'.__('Add: "death cause: murdered" to holocaust victims').'</label><br>';
+echo '<input type="checkbox" id="death_shoa" value="y" name="death_shoa" '.$checked.'>  <label for="death_shoa">'.__('Add: "cause of death: murdered" to holocaust victims').'</label><br>';
 echo '<u>'.__('Editor settings').':</u><br>';
 $checked = '';  if(isset($humo_option['admin_hebnight']) and $humo_option['admin_hebnight'] == "y")  { $checked = " checked "; }
 echo '<input type="checkbox" id="admin_hebnight" value="y" name="admin_hebnight" '.$checked.'>  <label for="admin_hebnight">'.__('Add "night" checkbox next to Gregorian dates to calculate Hebrew date correctly').'</label><br>';

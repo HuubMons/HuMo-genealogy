@@ -143,7 +143,7 @@ echo '</table>';
 
 // BACKUP FUNCTION 
 function backup_tables()
-{ 
+{
 	global $dbh;
 	echo '<div id="red_text" style="color:red">'.__('Creating backup file. This may take some time. Please wait...').'</div>';
 ob_start();

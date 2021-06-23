@@ -102,13 +102,15 @@ if (isset($_POST['save_settings_database'])){
 // *** Show HuMo-gen status, use scroll bar to show lots of family trees ***
 // *************************************************************************
 
-echo '<div style="height:400px; width:850px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
+echo '<div style="height:450px; width:850px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
 echo '<table class="humo" width="100%">';
 	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
 
 	// *** HuMo-gen version ***
-	if (isset($humo_option["version"]))
-		echo '<tr><td class="line_item">'.__('HuMo-gen Version').'</td><td class="line_ok">'.$humo_option["version"].'</td></tr>';
+	if (isset($humo_option["version"])){
+		echo '<tr><td class="line_item">'.__('HuMo-gen Version').'</td><td class="line_ok">'.$humo_option["version"];
+		echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=extensions">'.__('HuMo-gen extensions').'</a></td></tr>';
+	}
 
 	// *** PHP Version ***
 	$version = explode('.', phpversion() );
@@ -120,11 +122,11 @@ echo '<table class="humo" width="100%">';
 	}
 
 	// *** MySQL Version ***
-	if(isset($dbh)) {  
-		// in PDO and MySQLi you can't get MySQL version number until connection is made 
-		// so on very first screens before saving connection parameters we do without. 
+	if(isset($dbh)) {
+		// in PDO and MySQLi you can't get MySQL version number until connection is made
+		// so on very first screens before saving connection parameters we do without.
 		// as of Jan 2014 mysql_get_server_info still works but once deprecated will give errors, so better so without.
-		$mysqlversion = $dbh->getAttribute(PDO::ATTR_SERVER_VERSION);  
+		$mysqlversion = $dbh->getAttribute(PDO::ATTR_SERVER_VERSION);
 		$version = explode('.',$mysqlversion);
 		if ($version[0] > 4){
 			echo '<tr><td class="line_item">'.__('MySQL Version').'</td><td class="line_ok">'.$mysqlversion.'</td></tr>';
@@ -385,6 +387,16 @@ The file .htpasswd will look something like this:<br>');
 	}
 	else{
 		echo '<tr><td class="line_item">display_errors</td><td class="line_nok">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file.').'</td></tr>';
+	}
+
+	// *** NEW: HuMo-gen debug options ***
+	if ($humo_option["debug_front_pages"]=='n' AND $humo_option["debug_admin_pages"]=='n'){
+		echo '<tr><td class="line_item">'.__('Debug HuMo-gen pages').'</td><td class="line_ok">'.__('OK (option is OFF)');
+		echo ' <a href="index.php?page=settings">'.__('Debug HuMo-gen pages').'</a></td></tr>';
+	}
+	else{
+		echo '<tr><td class="line_item">'.__('Debug HuMo-gen pages').'</td><td class="line_nok">'.__('UNSAFE (option is ON).');
+		echo ' <a href="index.php?page=settings">'.__('Debug HuMo-gen pages').'</a></td></tr>';
 	}
 
 	// *** Family trees ***
