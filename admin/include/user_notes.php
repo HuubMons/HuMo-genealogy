@@ -17,7 +17,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 		$tree_result = $dbh->query($tree_sql);
 		echo '<form method="POST" action="index.php">';
 		echo '<input type="hidden" name="page" value="user_notes">';
-		echo '<select size="1" name="tree_id">';
+		echo '<select size="1" name="tree_id" onChange="this.form.submit();">';
 			while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
 				$treetext=show_tree_text($treeDb->tree_id, $selected_language);
 				$selected='';
@@ -35,7 +35,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 			}
 		echo '</select>';
 
-		echo ' <input type="Submit" name="submit_notes" value="'.__('Select').'">';
+		//echo ' <input type="Submit" name="submit_notes" value="'.__('Select').'">';
 		echo '</form>';
 
 	echo '</td></tr>';

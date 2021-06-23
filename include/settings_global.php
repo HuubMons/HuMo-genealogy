@@ -1,14 +1,14 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.6';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.6.1';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 28 nov. 2019';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-$humo_option["version_date"]='2020-06-13';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2020-11-29';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -16,12 +16,7 @@ $humo_option["version_date"]='2020-06-13';  // Version date yyyy-mm-dd, DO NOT C
 
 
 // *** Database updates (can be moved to database update script later) ***
-// *** Add user_password_salted field to humo_users table ***
-$result = $dbh->query("SHOW COLUMNS FROM `humo_users` LIKE 'user_password_salted'");
-$exists = $result->rowCount();
-if(!$exists) {
-	$dbh->query("ALTER TABLE humo_users ADD user_password_salted VARCHAR(255) CHARACTER SET utf8 AFTER user_password;");
-}
+// ..............................
 
 
 // *** If needed: translate setting_variabele into setting variable ***
@@ -266,6 +261,12 @@ if (!isset($humo_option["gedcom_read_process_geo_location"])){
 if (!isset($humo_option["gedcom_process_pict_path"])){
 	$humo_option["gedcom_process_pict_path"]='file_name';
 	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_process_pict_path', setting_value='file_name'";
+	@$result=$dbh->query($sql);
+}
+
+if (!isset($humo_option["gedcom_read_save_pictures"])){
+	$humo_option["gedcom_read_save_pictures"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_read_save_pictures', setting_value='n'";
 	@$result=$dbh->query($sql);
 }
 

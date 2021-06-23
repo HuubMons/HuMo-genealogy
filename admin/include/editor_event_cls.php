@@ -97,7 +97,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_connect_kind=='family') $event_group='event_family=1';
 	if ($event_connect_kind=='source') $event_group='event_source=1';
 
-	// *** Show all events EXCEPT for events allready processed by person data (profession etc.) ***
+	// *** Show all events EXCEPT for events already processed by person data (profession etc.) ***
 	
 	// Don't show Brit Mila and/or Bar Mitzva if user set them to be displayed among person data
 	$hebtext='';

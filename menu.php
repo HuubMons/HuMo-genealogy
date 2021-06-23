@@ -469,7 +469,6 @@ echo '<ul class="humo_menu_item">';
 						}
 					}
 
-					//if ($user['group_addresses']=='j'){
 					if ($user['group_addresses']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check for addresses in the database ***
 						$address_qry=$dbh->query("SELECT * FROM humo_addresses

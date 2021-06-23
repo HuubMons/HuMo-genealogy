@@ -104,10 +104,24 @@ function show_person($personDb){
 				echo '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
 			}
 	}
-	
+
 	// *** Add own icon by person, using a file name in own code ***
-	if($personDb->pers_own_code !='' AND is_file("images/".$personDb->pers_own_code.".gif"))
-		echo  $dirmark1.'<img src="'.CMS_ROOTPATH.'images/'.$personDb->pers_own_code.'.gif" alt="'.$personDb->pers_own_code.'">&nbsp;';
+	if($personDb->pers_own_code !='' AND is_file("images/".$personDb->pers_own_code.".gif")){
+		if ($personDb->pers_own_code!='foto'){ // *** Remove photo.gif icon, new method is used to show photo icon ***
+			echo  $dirmark1.'<img src="'.CMS_ROOTPATH.'images/'.$personDb->pers_own_code.'.gif" alt="'.$personDb->pers_own_code.'">&nbsp;';
+		}
+	}
+
+	// *** Show camera icon if there is a photo ***
+	if ($user['group_pictures']=='j' AND !$privacy){
+		global $dataDb;
+		$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
+		$picture_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'picture');
+		// *** Only check 1st picture ***
+		if (isset($picture_qry[0])){
+			echo  $dirmark1.'<img src="'.CMS_ROOTPATH.'images/photo.gif" alt="photo">&nbsp;';
+		}
+	}
 
 	echo '</td><td style="border-left:0px;">';
 
@@ -703,10 +717,12 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 
 	if ($selection['pers_firstname']){
 		$query.=$and."(pers_firstname ".name_qry($selection['pers_firstname'], $selection['part_firstname']);
+
 		//$query.=" OR event_event ".name_qry($selection['pers_firstname'], $selection['part_firstname']).')';
 		//$query.=" OR (event_kind='name' AND event_event ".name_qry($selection['pers_firstname'], $selection['part_firstname']).') )';
 		//$query.=" OR (event_event ".name_qry($selection['pers_firstname'], $selection['part_firstname']).') )';
 		$query.=" OR (event_kind='name' AND event_event ".name_qry($selection['pers_firstname'], $selection['part_firstname']).') )';
+
 		$and=" AND ";
 		$add_event_qry=true;
 	}
@@ -905,6 +921,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 			//$query_select .= " LEFT JOIN humo_events
 			//ON event_tree_id=pers_tree_id
 			//AND event_connect_id=pers_gedcomnumber
+			// *** If event_kind='name' is used, search for name will work, but other events are hidden! ***
 			//AND event_kind='name'";
 			$query_select .= " LEFT JOIN humo_events
 			ON event_tree_id=pers_tree_id
@@ -923,8 +940,10 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 			AND connect_connect_id=pers_gedcomnumber";
 
 		$query_select.=" WHERE (".$multi_tree.") ".$query." GROUP BY pers_id";
-		if ($add_event_qry) $query_select .= ", event_event, event_kind";
-		if ($add_address_qry) $query_select .= ", address_place, address_zip";
+		// *** This line IS DISABLED because it will give multiple lines for one person if there are multiple events. ***
+		//if ($add_event_qry) $query_select .= ", event_event, event_kind";
+		// *** This line IS DISABLED because it will give multiple lines for one person if there are multiple events. ***
+		//if ($add_address_qry) $query_select .= ", address_place, address_zip";
 
 	$query_select .= "
 	) as humo_persons1

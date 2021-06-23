@@ -126,11 +126,16 @@ function topline(){
 
 				// *** Show/ hide Google maps ***
 				if($descendant_report==false) {
-					$text.='<hr>';
-					$text.='<b>'.__('Google maps').'</b><br>';
-					$selected=''; $selected2=''; if ($maps_presentation=='hide') $selected2=' CHECKED'; else $selected=' CHECKED';
-					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show Google maps')."<br>\n";
-					$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide Google maps')."<br>\n";
+					// *** Only show selection if there is a Google maps database ***
+					global $dbh;
+					$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+					if($temp->rowCount()) {
+						$text.='<hr>';
+						$text.='<b>'.__('Google maps').'</b><br>';
+						$selected=''; $selected2=''; if ($maps_presentation=='hide') $selected2=' CHECKED'; else $selected=' CHECKED';
+						$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show Google maps')."<br>\n";
+						$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\'family.php?id='.$family_id.'&amp;main_person='.$main_person.'&amp;maps_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide Google maps')."<br>\n";
+					}
 				}
 
 			$text.='</td><td valign="top">';
@@ -360,6 +365,12 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 	$maps_presentation=$user['group_maps_presentation'];
 	//if ($user['group_maps_presentation']=='sources') $maps_presentation='hide'; // *** sources = backwards compatible!! *** 
 	if (isset($_SESSION['save_maps_presentation'])) $maps_presentation=$_SESSION['save_maps_presentation'];
+	// *** Only show selection if there is a Google maps database ***
+	global $dbh;
+	$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+	if(!$temp->rowCount()) {
+		$maps_presentation='hide';
+	}
 
 	// *** Show/ hide pictures ***
 	if (isset($_GET['picture_presentation'])) $_SESSION['save_picture_presentation']=safe_text_db($_GET["picture_presentation"]);
@@ -1448,7 +1459,8 @@ else{
 									if ($addressnr>1){ echo ', '; }
 									if ($addressDb->address_date){ echo date_place($addressDb->address_date,'').' '; } //use default function, there is no place...
 
-									if ($user['group_addresses']=='j' AND $addressDb->address_address){
+									//if ($user['group_addresses']=='j' AND $addressDb->address_address){
+									if ($user['group_living_place']=='j' AND $addressDb->address_address){
 										echo ' '.$addressDb->address_address.' ';
 									}
 
@@ -1786,7 +1798,7 @@ else{
 						}
 
 						if($screen_mode=='') {
-							echo "</div>\n";
+							echo "<br></div>\n";	// *** Added an empty line between children ***
 							//echo '</td></tr>'."\n";
 						}
 						$childnr++;
@@ -1899,7 +1911,7 @@ else{
 						}
 
 						$maptype = "ROADMAP";
-						if(isset($humo_option['google_map_type'])) { 
+						if(isset($humo_option['google_map_type'])) {
 							$maptype = $humo_option['google_map_type']; 
 						}
 						echo '<script type="text/javascript">

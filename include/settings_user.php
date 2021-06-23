@@ -103,7 +103,7 @@ $user['group_religion']=$groupDb->group_religion; // Show birth and marr. religi
 $user['group_place_date']=$groupDb->group_place_date; // j=place-date, n-date-place
 $user['group_kindindex']=$groupDb->group_kindindex; // n='Mons, Henk van', j='van Mons, Henk'
 $user['group_event']=$groupDb->group_event; // Show events
-$user['group_addresses']=$groupDb->group_addresses; // Show addresses
+$user['group_addresses']=$groupDb->group_addresses; // Show addresses IN MENU
 $user['group_own_code']=$groupDb->group_own_code; // Show Own code
 
 if (!isset($groupDb->group_pdf_button)){ $user['group_pdf_button']='y'; }

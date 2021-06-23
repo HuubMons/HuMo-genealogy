@@ -401,28 +401,28 @@ function person_name($personDb){
 				$name_array["index_name_extended"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
 			}
 
-			// *** Is search is done for profession, show profession **
+			// *** If search is done for profession, show profession **
 			//if ($selection['pers_profession']){
 			if (isset ($selection['pers_profession']) AND $selection['pers_profession']){
 				if (isset($personDb->event_event) AND $personDb->event_event AND $personDb->event_kind=='profession'){
 					$name_array["index_name_extended"].=' ('.$personDb->event_event.')';}
 			}
 
-			// *** Is search is done for places, show place **
+			// *** If search is done for places, show place **
 			if (isset ($selection['pers_place']) AND $selection['pers_place']){
 				if (isset($personDb->address_place)){
 					$name_array["index_name_extended"].=' ('.$personDb->address_place.')';
 				}
 			}
 
-			// *** Is search is done for places, show place **
+			// *** If search is done for places, show place **
 			if (isset ($selection['zip_code']) AND $selection['zip_code']){
 				if (isset($personDb->address_zip)){
 					$name_array["index_name_extended"].=' ('.$personDb->address_zip.')';
 				}
 			}
 
-			// *** Is search is done for places, show place **
+			// *** If search is done for places, show place **
 			//if ($selection['witness']){
 			if (isset($selection['witness']) AND $selection['witness']){
 				if (isset($personDb->event_event)){
@@ -947,33 +947,55 @@ function name_extended($person_kind){
 				$fatherDb=$db_functions->get_person($parents_familyDb->fam_man);
 				$name=$this->person_name($fatherDb);
 				$templ_person["parents"]=$name["standard_name"];
+
+				// *** Seperate father/mother links ***
+				$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
+				$url=$this->person_url('','family',$personDb->pers_tree_id,$personDb->pers_famc,$gedcomnumber);	// *** Get link to family ***
+				// *** Add link ***
+				if ($user['group_gen_protection']=='n') $text='<a href="'.$url.'">'.$name["standard_name"].'</a>';
+
 			}
 			else{
 				$templ_person["parents"]=__('N.N.');
+				// *** Seperate father/mother links ***
+				$text=__('N.N.');
 			}
 
 			$templ_person["parents"].=' '.__('and').' ';
 			$temp="parents";
-			$text=$templ_person["parents"];
+			//$text=$templ_person["parents"];
+			// *** Seperate father/mother links ***
+			$text.=' '.__('and').' ';
 
 			// *** Mother ***
 			if ($parents_familyDb->fam_woman){
 				$motherDb=$db_functions->get_person($parents_familyDb->fam_woman);
 				$name=$this->person_name($motherDb);
 				$templ_person["parents"].=$name["standard_name"];
-				$text.=$name["standard_name"];
+//				$text.=$name["standard_name"];
+
+				// *** Seperate father/mother links ***
+				// *** Added this number for better Google indexing links (otherwise too many links to index) ***
+				$gedcomnumber=''; if (isset($motherDb->pers_gedcomnumber)){ $gedcomnumber=$motherDb->pers_gedcomnumber; }
+				$url=$this->person_url('','family',$personDb->pers_tree_id,$personDb->pers_famc,$gedcomnumber);	// *** Get link to family ***
+				// *** Add link ***
+				if ($user['group_gen_protection']=='n'){ $text.='<a href="'.$url.'">'.$name["standard_name"].'</a>'; }
+
 			}
-			else{ $text.=__('N.N.'); }
+			else{
+				$text.=__('N.N.');
+			}
+
 			// *** Add link for parents ***
 			// *** Added this number for better Google indexing links (otherwise too many links to index) ***
-			$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
-			$url=$this->person_url('','family',$personDb->pers_tree_id,$personDb->pers_famc,$gedcomnumber);	// *** Get link to family ***
-			$text2='<a href="'.$url.'">';
+			//$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
+			//$url=$this->person_url('','family',$personDb->pers_tree_id,$personDb->pers_famc,$gedcomnumber);	// *** Get link to family ***
 
 			// *** Add link ***
-			if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
+			//if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
 
 			$text_parents.='<span class="parents">'.$text.$dirmark2.'.</span>';
+
 		}
 
 
@@ -1021,16 +1043,16 @@ function name_extended($person_kind){
 				// *** Added this number for better Google indexing links (otherwise too many links to index) ***
 				$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
 				$url=$this->person_url('','family',$personDb->pers_tree_id,$famc_adoptiveDb->event_event,$gedcomnumber);	// *** Get link to family ***
-				$text2='<a href="'.$url.'">';
+				//$text2='<a href="'.$url.'">';
 
 				// *** Add link ***
-				if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
+				//if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
+				if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
 
 				//$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
 				$text_parents.='<span class="parents">'.$text.' </span>';
 			}
 		}
-
 
 		// ********************************************************
 		// *** Check for adoptive parent ESPECIALLY FOR ALDFAER ***
@@ -1061,17 +1083,17 @@ function name_extended($person_kind){
 					// *** Added this number for better Google indexing links (otherwise too many links to index) ***
 					$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
 					$url=$this->person_url('','family',$personDb->pers_tree_id,$fatherDb->pers_indexnr,$gedcomnumber);	// *** Get link to family ***
-					$text2='<a href="'.$url.'">';
+					//$text2='<a href="'.$url.'">';
 				}
 
 				// *** Add link ***
-				if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
+				//if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
+				if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
 
 				//$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
 				$text_parents.='<span class="parents">'.$text.' </span>';
 			}
 		}
-
 
 		//*** Show spouse/ partner by child ***
 		if (!$bot_visit AND $person_kind=='child' AND $personDb->pers_fams){
@@ -1114,8 +1136,9 @@ function name_extended($person_kind){
 
 				// *** Link for partner ***
 				$url=$this->person_url('','family',$personDb->pers_tree_id,$famc,$pers_gedcomnumber);	// *** Get link to family ***
-				$text_link='<a href="'.$url.'">';
-				$name["standard_name"]=$text_link.$name["standard_name"].'</a>';
+				//$text_link='<a href="'.$url.'">';
+				//$name["standard_name"]=$text_link.$name["standard_name"].'</a>';
+				$name["standard_name"]='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 
 				//$child_marriage.=' <span class="index_partner" style="font-size:10px;">';
 				if ($nr_marriages>1){
@@ -1391,6 +1414,17 @@ function person_data($person_kind, $id){
 				$templ_person["bapt_witn"]=__('baptism witness').': '.$temp_text.')';
 				$temp="bapt_witn";
 				$text.= ' ('.__('baptism witness').': '.$temp_text.')';
+			}
+		}
+
+		// *** Geneanet/Geneweb godfather/ doopheffer ***
+		if ($personDb->pers_gedcomnumber){
+			$temp_text=witness($personDb->pers_gedcomnumber, 'godfather');
+			if ($temp_text){
+				if($temp) { $templ_person[$temp].=" ("; }
+				$templ_person["godfather"]=__('godfather').': '.$temp_text.')';
+				$temp="godfather";
+				$text.= ' ('.__('godfather').': '.$temp_text.')';
 			}
 		}
 
@@ -1695,7 +1729,8 @@ function person_data($person_kind, $id){
 					$temp="address_date".$eventnr;
 				}
 
-				if ($user['group_addresses']=='j' AND $eventDb->address_address){
+				//if ($user['group_addresses']=='j' AND $eventDb->address_address){
+				if ($user['group_living_place']=='j' AND $eventDb->address_address){
 					$text.=' '.$eventDb->address_address.' ';
 					// PDF Export?
 				}
@@ -1754,7 +1789,8 @@ function person_data($person_kind, $id){
 		}
 
 		// *** Extended addresses for HuMo-genealogy and dutch Haza-data program (Haza-data plus version) ***
-		if ($user['group_addresses']=='j'){
+		//if ($user['group_addresses']=='j'){
+		if ($user['group_living_place']=='j'){
 			// *** Search for all connected addresses ***
 			$eventnr=0;
 			$connect_sql = $db_functions->get_connections_connect_id('person','person_address',$personDb->pers_gedcomnumber);

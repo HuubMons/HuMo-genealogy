@@ -2,21 +2,6 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-/*
-// *** Automatic installation or update ***
-$column_qry = $dbh->query('SHOW COLUMNS FROM humo_users');
-while ($columnDb = $column_qry->fetch()) {
-	$field_value=$columnDb['Field'];
-	$field[$field_value]=$field_value;
-}
-
-if (!isset($field['user_hide_trees'])){
-	$sql="ALTER TABLE humo_users
-		ADD user_hide_trees VARCHAR(200) CHARACTER SET utf8 NOT NULL DEFAULT '' AFTER user_group_id;";
-	$result=$dbh->query($sql);
-}
-*/
-
 echo '<h1 align=center>'.__('Users').'</h1>';
 
 if (isset($_POST['change_user'])){

@@ -143,10 +143,10 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 			// not a good situation. this is either "REQUEST_DENIED" which shouldn't happen,
 			// or "INVALID_REQUEST" that can't really happen, because this code is perfect....   ;-)
 		}
- 
+
 	} // end of foreach
 
- 
+
 	if($flag_stop==0) {
 		echo '<p style="color:red;font-size:120%"><b> '.__('Finished updating geo-location database').'<b></p>';
 		echo __('Finish time').': '.date('G:i:s').'<br><br>';
@@ -325,7 +325,7 @@ else {  // main screen
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="save_new_api">';
 			echo '</form><br>';
 		}
-		else { 
+		else {
 			// new api was entered
 			if($_POST['new_api'] != "") { // a key was entered, store in database and show
 				$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key', setting_value='".$_POST['new_api']."'");
@@ -360,7 +360,7 @@ else {  // main screen
 			echo '</form><br>';
 		}
 
-		elseif(isset($_POST['delete_api2'])) {  
+		elseif(isset($_POST['delete_api2'])) {
 			// admin requested to delete the existing key - show field to enter updated key
 			$temp2 = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'google_api_key2'");
 			echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -370,7 +370,7 @@ else {  // main screen
 			echo '</form><br>';
 		}
 		
-		else  {  
+		else  {
 			// fresh page called OR updated key entered
 			if(isset($_POST['new_api2']) AND $_POST['new_api2']!="") {  
 				// admin enter updated key
@@ -378,8 +378,8 @@ else {  // main screen
 			echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;"; 
 				echo '<span style="font-weight:bold">'.$_POST['new_api2'].'</span>';
 			}
-			else { 
-	  	  		echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;"; 
+			else {
+				echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;"; 
 				echo '<span style="font-weight:bold">'.$apiDb2->setting_value.'</span>'; 
 			}
 			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
@@ -392,7 +392,7 @@ else {  // main screen
 
 	}
 	else  { // no API key 1 variable found in database
-		if(!isset($_POST['new_api2'])) { 
+		if(!isset($_POST['new_api2'])) {
 			// fresh page when no api key 2 variable exists - show field to enter key 1
  			echo __('API key')." 2 (restriction: <strong>IP addresses</strong>):&nbsp;&nbsp;&nbsp;&nbsp;";
 			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
@@ -423,7 +423,7 @@ else {  // main screen
 		}
 	}
 
-	echo '<br></td></tr>';	
+	echo '<br></td></tr>';
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CREATE/UPDATE GEOLOCATION DATABASE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	echo '<tr class="table_header"><th>'.__('Create or update geolocation database').'</th>';
@@ -440,7 +440,7 @@ else {  // main screen
 			SELECT pers_buried_place FROM humo_persons WHERE pers_tree_id='".$_SESSION['geo_tree']."' AND pers_death_place = ''";
 				// (only take bapt place if no birth place and only take burial place if no death place)
 		}
-		else { 
+		else {
 			$unionstring .= "SELECT pers_birth_place FROM humo_persons
 				UNION SELECT pers_bapt_place FROM humo_persons WHERE pers_birth_place = ''
 				UNION SELECT pers_death_place FROM humo_persons
@@ -619,13 +619,13 @@ else {  // main screen
 			while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){ 
 
 				$selected='';
-				if (isset($_POST['database'])){   
+				if (isset($_POST['database'])){
 					if ($tree_searchDb->tree_prefix==$_POST['database']){ 
 						$selected=' SELECTED';
 						$_SESSION['geo_tree']=$tree_searchDb->tree_id;
 					}
 				}
-				else { 
+				else {
 					if(isset($_SESSION['geo_tree']) AND $_SESSION['geo_tree'] ==$tree_searchDb->tree_id) { 
 						$selected=' SELECTED';
 					}
@@ -683,7 +683,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				// the pulldown was used -- so show the place that was chosen
 				$result = $dbh->query("SELECT * FROM humo_location WHERE location_id = ".safe_text_db($_POST['loc_find']));
 			}
-			elseif (isset($_POST['loc_delete'])) { 
+			elseif (isset($_POST['loc_delete'])) {
 				// "delete" was used -- so show map+marker for first on list
 				$dbh->query("DELETE FROM humo_location WHERE location_id = ".$_POST['loc_del_id']);
 				$result = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
@@ -709,23 +709,23 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		}
 		?>
 
-		<script type="text/javascript"> 
-		function disableEnterKey(e){ 
+		<script type="text/javascript">
+		function disableEnterKey(e){
 		// works for FF and Chrome
-		var key; 
-			if(window.event){ 
-				key = window.event.keyCode; 
+		var key;
+			if(window.event){
+				key = window.event.keyCode;
 			}
 			else {
 				key = e.which;
-			} 
-			if(key == 13){ 
-				return false; 
-			} 
-			else { 
-				return true; 
-			} 
-		} 
+			}
+			if(key == 13){
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
 		function testForEnter() 
 		// works for IE
 		{
@@ -737,7 +737,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				}
 			}
 		} 
-		</script> 
+		</script>
 		<script type="text/javascript">
 		var geocoder;
 		var map;
@@ -959,7 +959,7 @@ If you are absolutely sure, press the button below.'), $num_rows);
 		if(isset($_POST['refresh_no_locs'])) {
 			echo '<p style="color:red;font-weight:bold;">'.__('List of non-indexable locations was refreshed!').'<p>';
 		}
-		else {  
+		else {
 			$temp1 = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
 			if($temp1->rowCount() > 0) {
 				$no_loc_list = $dbh->query("SELECT * FROM humo_no_location ORDER BY no_location_location");
