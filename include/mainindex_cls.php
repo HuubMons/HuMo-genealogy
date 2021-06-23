@@ -187,24 +187,24 @@ function show_tree_index(){
 		if ($left_column){
 			echo '<div id="mainmenu_left">'.$left_column.'</div>';
 			// Send output to browser immediately for large family trees.
-			ob_flush();
-			flush(); // IE
+			//ob_flush();
+			//flush(); // IE
 		}
 
 		// *** Center column ***
 		echo '<div id="'.$center_id.'" class="style_tree_text fonts">';
 			echo $center_column;
 			// Send output to browser immediately for large family trees.
-			ob_flush();
-			flush(); // for IE
+			//ob_flush();
+			//flush(); // for IE
 		echo '</div>';
 
 		// *** Right column ***
 		if ($right_column){
 			echo '<div id="mainmenu_right" class="fonts">'.$right_column.'</div>';
 			// Send output to browser immediately for large family trees.
-			ob_flush();
-			flush(); // IE
+			//ob_flush();
+			//flush(); // IE
 		}
 
 	echo '</div>'; // end of center_box

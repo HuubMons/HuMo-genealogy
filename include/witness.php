@@ -39,7 +39,15 @@ function witness($gedcomnr, $event, $field='person'){
 					$text.=$witnessDb->event_event;
 				}
 			}
-			if ($witnessDb->event_date){ $text.=' '.date_place($witnessDb->event_date,''); } // *** Use date_place function, there is no place here... ***
+
+			//if ($witnessDb->event_date){ $text.=' '.date_place($witnessDb->event_date,''); } // *** Use date_place function, there is no place here... ***
+			if ($witnessDb->event_date OR $witnessDb->event_place){
+				$text.=' '.date_place($witnessDb->event_date,$witnessDb->event_place);
+			}
+
+			if ($witnessDb->event_text){
+				$text.=' <i>'.process_text($witnessDb->event_text).'</i>';
+			}
 
 			$source=show_sources2($field,"pers_event_source",$witnessDb->event_id);
 			if ($source) $text.=$source;

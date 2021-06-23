@@ -500,12 +500,12 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 			if (isset($_POST['enable_update_check'])){
 				$update_last_check='2012-01-01';
 				$update_text='';
-				$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
+				$update_text.= ' <a href="'.$path_tmp.'page=install_update&amp;update_check=1">'.__('Update options').'</a>';
 			}
 			else{
 				$update_last_check='DISABLED';
 				$update_text= '  '.__('update check is disabled.');
-				$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
+				$update_text.= ' <a href="'.$path_tmp.'page=install_update&amp;update_check=1">'.__('Update options').'</a>';
 			}
 
 			$result = $db_functions->update_settings('update_text',$update_text);
@@ -635,17 +635,17 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					// *** 1) Standard text: HuMo-genealogy up-to-date ***
 					$update['up_to_date']='yes';
 					$update_text= '  '.__('is up-to-date!');
-					$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
+					$update_text.= ' <a href="'.$path_tmp.'page=install_update&amp;update_check=1">'.__('Update options').'</a>';
 
 					// *** 2) First priority: check for normal HuMo-genealogy update ***
 					if (strtotime ($update['version_date'])-strtotime($humo_option["version_date"])>0){
 						$update['up_to_date']='no';
-						$update_text= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update available').' ('.$update['version'].')!</a>';
+						$update_text= ' <a href="'.$path_tmp.'page=install_update&amp;update_check=1">'.__('Update available').' ('.$update['version'].')!</a>';
 					}
 					// *** 3) Second priority: check for Beta version update ***
 					elseif (strtotime ($update['beta_version_date'])-strtotime($humo_option["version_date"])>0){
 						$update['up_to_date']='yes';
-						$update_text= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Beta version available').' ('.$update['beta_version'].')!</a>';
+						$update_text= ' <a href="'.$path_tmp.'page=install_update&amp;update_check=1">'.__('Beta version available').' ('.$update['beta_version'].')!</a>';
 					}
 
 					// *** Update settings ***

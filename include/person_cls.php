@@ -860,12 +860,13 @@ function name_extended($person_kind){
 		$name=$this->person_name($personDb);
 		$standard_name= $name["standard_name"].$dirmark2;
 
-		// *** Show gedcomnummer #I5 as #5 ***
+		// *** Show full gedcomnummer as [I5] (because of Heredis GEDCOM file) ***
 		if ($user['group_gedcomnr']=='j'){
-			$show_gedcomnumber=$personDb->pers_gedcomnumber;
-			if (substr($show_gedcomnumber, 0, 1)=='I')
-				$show_gedcomnumber=substr($show_gedcomnumber, 1);
-			$standard_name.= $dirmark1." #".$show_gedcomnumber;
+			//$show_gedcomnumber=$personDb->pers_gedcomnumber;
+			//if (substr($show_gedcomnumber, 0, 1)=='I')
+			//	$show_gedcomnumber=substr($show_gedcomnumber, 1);
+			//$standard_name.= $dirmark1." #".$show_gedcomnumber;
+			$standard_name.= $dirmark1.' ['.$personDb->pers_gedcomnumber.']';
 		}
 
 		// *** Check privacy filter for callname ***
