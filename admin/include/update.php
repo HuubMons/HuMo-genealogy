@@ -1,6 +1,6 @@
 <?php
 /*
-HuMo-gen database update script by Huub Mons.
+HuMo-genealogy database update script by Huub Mons.
 
 15-08-2011 Completely rewritten this script, and update for version 4.7.
 26-05-2019 Improved this script. Used update_cls.php, improved use of flush and commit for version 5.2.5.
@@ -25,7 +25,9 @@ else{
 	if (isset($_SESSION['save_humo_update'])){ $humo_update=$_SESSION['save_humo_update']; }
 
 	echo '<p><table class="humo">';
-	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
+	echo '<tr class="table_header"><th colspan="2">';
+	printf(__('%s status'),'HuMo-genealogy');
+	echo '</th></tr>';
 
 	// *** Very old databases: no database update status available ***
 	if (!isset($humo_option["update_status"])){
@@ -60,7 +62,7 @@ else{
 		$update_cls -> update_v4_7();
 	}
 	if ($humo_option["update_status"]>'0'){
-		echo '<tr><td>HuMo-gen update V4.7</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V4.7</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	ob_flush();
 	flush(); // IE
@@ -70,7 +72,7 @@ else{
 	// *** ...
 	// ************************************
 	if ($humo_option["update_status"]>'1'){
-		echo '<tr><td>HuMo-gen update V4.8</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V4.8</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		$update_cls -> update_v4_8();
@@ -83,7 +85,7 @@ else{
 	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'2'){
-		echo '<tr><td>HuMo-gen update V4.8.2</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V4.8.2</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		$update_cls -> update_v4_8_2();
@@ -96,7 +98,7 @@ else{
 	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'3'){
-		echo '<tr><td>HuMo-gen update V4.8.8</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V4.8.8</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		$update_cls -> update_v4_8_8();
@@ -109,7 +111,7 @@ else{
 	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'4'){
-		echo '<tr><td>HuMo-gen update V4.8.9</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V4.8.9</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		$update_cls -> update_v4_8_9();
@@ -122,7 +124,7 @@ else{
 	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'5'){
-		echo '<tr><td>HuMo-gen update V4.9.1</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V4.9.1</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		$update_cls -> update_v4_9_1();
@@ -135,7 +137,7 @@ else{
 	// *** ...
 	// ************************************
 	if ($humo_option["update_status"]>'6'){
-		echo '<tr><td>HuMo-gen update V5.0</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V5.0</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		$update_cls -> update_v5_0();
@@ -148,7 +150,7 @@ else{
 	// *** ...
 	// ************************************
 	if ($humo_option["update_status"]>'7'){
-		echo '<tr><td>HuMo-gen update V5.1</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V5.1</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		$update_cls -> update_v5_1();
@@ -161,7 +163,7 @@ else{
 	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'8'){
-		echo '<tr><td>HuMo-gen update V5.1.6</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V5.1.6</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		$update_cls -> update_v5_1_6();
@@ -174,7 +176,7 @@ else{
 	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'9'){
-		echo '<tr><td>HuMo-gen update V5.1.9</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V5.1.9</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		$update_cls -> update_v5_1_9();
@@ -187,7 +189,7 @@ else{
 	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'10'){
-		echo '<tr><td>HuMo-gen update V5.2.5</td><td style="background-color:#00FF00">OK</td></tr>';
+		echo '<tr><td>HuMo-genealogy update V5.2.5</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
 	else{
 		$update_cls -> update_v5_2_5();

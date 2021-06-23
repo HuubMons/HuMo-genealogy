@@ -962,12 +962,14 @@ else{
 							if($screen_mode=='STAR') {
 								if($descendant_loop==0) {
 									$name=$woman_cls->person_name($person_womanDb);
-									$genarray[$arraynr]["nam"]=$name["standard_name"].$name["colour_mark"];
+									$genarray[$arraynr]["nam"]=$name["standard_name"];
+										if (isset ($name["colour_mark"])) $genarray[$arraynr]["nam"].=$name["colour_mark"];
 									$genarray[$arraynr]["init"]=$name["initials"];
 									$genarray[$arraynr]["short"]=$name["short_firstname"];
 									$genarray[$arraynr]["sex"]="v";
 									$genarray[$arraynr]["fams"]=$id;
-									$genarray[$arraynr]["gednr"]=$person_womanDb->pers_gedcomnumber;
+									if (isset($person_womanDb->pers_gedcomnumber))
+										$genarray[$arraynr]["gednr"]=$person_womanDb->pers_gedcomnumber;
 									$genarray[$arraynr]["2nd"]=0;
 									if($dna=="mtdnamark" OR $dna=="mtdna") { $genarray[$arraynr]["dna"]=1; }
 									else $genarray[$arraynr]["dna"]="no";
@@ -2203,7 +2205,7 @@ if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
 		if (isset($name2['name'])) echo ' &amp; '.$name2['name'].'."';
 
 		// *** Link to family page ***
-		echo ' HuMo-gen - '.$humo_option["database_name"].' (';
+		echo ' HuMo-genealogy - '.$humo_option["database_name"].' (';
 
 		// *** url_rewrite ***
 		if ($humo_option["url_rewrite"]=="j"){
@@ -2311,13 +2313,13 @@ if($screen_mode=='') {
 
 				// *** Mail new user note to the administrator ***
 				$register_address=$dataDb->tree_email;
-				$register_subject="HuMo-gen. ".__('New user note').": ".$userDb->user_name."\n";
+				$register_subject="HuMo-genealogy. ".__('New user note').": ".$userDb->user_name."\n";
 
 				// *** It's better to use plain text in the subject ***
 				$register_subject=strip_tags($register_subject,ENT_QUOTES);
 
-				$register_message =__('Message sent through HuMo-gen from the website.')."<br>\n";
-				$register_message .="<br>\n";
+				$register_message = sprintf(__('Message sent through %s from the website.'),'HuMo-genealogy');
+				$register_message .="<br><br>\n";
 				$register_message .=__('New user note')."<br>\n";
 				$register_message .=__('Name').':'.$userDb->user_name."<br>\n";
 				//$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";

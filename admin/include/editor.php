@@ -1,7 +1,7 @@
 <?php
 //error_reporting(E_ALL);
 /**
-* This is the editor file for HuMo-gen.
+* This is the editor file for HuMo-genealogy.
 *
 * If you are reading this in your web browser, your server is probably
 * not configured correctly to run PHP applications!
@@ -107,9 +107,10 @@ function event_option($event_gedcom,$event){
 }
 
 function witness_edit($witness, $multiple_rows=''){
-	global $dbh, $tree_id, $language;
+	global $dbh, $tree_id, $language, $menu_tab;
 	$text='';
 
+	/*
 	// *** Witness: pull-down menu ***
 	$witnessqry=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname, pers_firstname");
 	$text.='<select size="1" name="text_event2'.$multiple_rows.'" style="width: 250px">';
@@ -120,6 +121,18 @@ function witness_edit($witness, $multiple_rows=''){
 			$witnessDb->pers_lastname.', '.$witnessDb->pers_firstname.' '.strtolower(str_replace("_"," ",$witnessDb->pers_prefix)).' ['.$witnessDb->pers_gedcomnumber.']</option>'."\n";
 	}
 	$text.='</select>';
+	*/
+
+	// *** Witness select popup screen ***
+	$value=''; $person_item='person_witness';
+	if (substr($witness,0,1)=='@'){
+		$value=substr($witness,1,-1);
+		$text.=show_person(substr($witness,1,-1),$gedcom_date=false, $show_link=false).'<br>';
+	}
+
+	if ($menu_tab=='marriage') $person_item='marriage_witness';
+	$text.='<input class="fonts" type="text" name="text_event2'.substr($multiple_rows,1,-1).'" value="'.$value.'" size="17" placeholder="'.__('GEDCOM number (ID)').'">';
+	$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item='.$person_item.'&event_row='.substr($multiple_rows,1,-1).'&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 	// *** Witness: text field ***
 	$witness_value=$witness;
@@ -164,9 +177,9 @@ function show_person($gedcomnumber, $gedcom_date=false, $show_link=true){
 }
 
 
-// ***********************
-// *** HuMo-gen Editor ***
-// ***********************
+// *****************************
+// *** HuMo-genealogy Editor ***
+// *****************************
 
 $new_tree=false;
 
@@ -779,7 +792,7 @@ if (isset($tree_id)){
 				$fav_result = $dbh->query($fav_qry);
 
 				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
-				echo '<option value="">'.__('Favourites list:').'</option>';
+				echo '<option value="">'.__('Favourites list').'</option>';
 				while ($favDb=$fav_result->fetch(PDO::FETCH_OBJ)){
 					$selected=''; if ($favDb->setting_value==$pers_gedcomnumber){ $selected=' SELECTED'; }
 					echo '<option value="'.$favDb->setting_value.'"'.$selected.'>'.$editor_cls->show_selected_person($favDb).'</option>';
@@ -792,19 +805,26 @@ if (isset($tree_id)){
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 
-				$person_qry= "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
+				// *** First get pers_id, will be quicker in very large family trees ***
+				$person_qry= "(SELECT pers_id, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
 					FROM humo_persons
 					WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')";
-				$person_qry.= " UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
+				$person_qry.= " UNION (SELECT pers_id, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
 					FROM humo_persons
-					WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NULL) LIMIT 0,15";
+					WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NULL) ";
+				$person_qry.= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,15";
 				$person_result = $dbh->query($person_qry);
 
 				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
 				echo '<option value="">'.__('Latest changes').'</option>';
 				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 					$selected=''; // Not in use.
-					echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person).'</option>';
+					//echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person).'</option>';
+
+					$person2_qry= "SELECT * FROM humo_persons WHERE pers_id='".$person->pers_id."'";
+					$person2_result = $dbh->query($person2_qry);
+					$person2=$person2_result->fetch(PDO::FETCH_OBJ);
+					echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).'</option>';
 				}
 				echo '</select>';
 			echo '</form>';
@@ -816,10 +836,11 @@ if (isset($tree_id)){
 
 		if ($new_tree==false){
 		//echo '<br><br><table class="humo" style="text-align:center; width:90%; margin-left: auto; margin-right:auto;"><tr class="table_header_large"><td>';
-		echo '<br><br><table class="humo" style="text-align:center; width:90%; margin-left: initial; margin-right: initial;"><tr class="table_header_large"><td>';
+		//echo '<br><br><table class="humo" style="text-align:center; width:90%; margin-left: initial; margin-right: initial;"><tr class="table_header_large"><td>';
+		echo '<br><br><table class="humo" style="text-align:left; width:98%; margin-left: initial; margin-right: initial;"><tr class="table_header_large"><td>';
 
 			// *** Search persons firstname/ lastname ***
-			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+			echo '&nbsp;<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 				echo __('Person').':';
@@ -858,10 +879,13 @@ if (isset($tree_id)){
 			if (isset($person_result)){
 				if($person_result->rowCount() ==0) echo __('Person not found');
 				if($idsearch==true OR $person_result->rowCount()==0) { echo '<span style="display:none">'; }
-				echo '<b>'.__('Found:').'</b> ';
+				//echo '<b>'.__('Found:').'</b> ';
 				echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				print '<select size="1" name="person" style="width: 200px" onChange="this.form.submit();">';
+
+				echo '<option value="">'.__('Results').'</option>';
+
 				$counter=0;
 				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 					$selected='';
@@ -914,6 +938,8 @@ if (isset($tree_id)){
 			echo '</div>';
 
 		echo '</td></tr></table>';
+
+		ob_flush(); flush(); // IE
 		} // *** end of check for new tree ***
 
 	}
@@ -1143,7 +1169,8 @@ if (isset($pers_gedcomnumber)){
 								echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Bulk add family members').'" alt="'.__('Bulk add family members').'"> '.__('Bulk add family members').'</a><br>';
 							}
 
-							echo '<br>'.__('Editing in HuMo-gen? <b>Always backup your data!</b>');
+							echo '<br>';
+							printf(__('Editing in %s? <b>Always backup your data!</b>'),'HuMo-genealogy');
 
 							//echo '</div>';
 						echo '</div>';
@@ -1163,6 +1190,8 @@ if (isset($pers_gedcomnumber)){
 		//echo '<div style="float: left; background-color:white; height:500px; padding:10px;">';
 		//echo '<div style="float: left; background-color:white; height:500px; margin-left:205px; padding-top:10px;">';
 		echo '<div style="float: left; background-color:white; height:500px; padding:10px;">';
+
+		ob_flush(); flush(); // IE
 	}
 
 
@@ -1307,9 +1336,10 @@ if (isset($pers_gedcomnumber)){
 			else
 				document.getElementById(\'hideshowlinkall\').innerHTML = "[+]";
 
-			for (j=1; j<12; j++){
+			var items = [1,2,3,4,5,13,51,53,54,55,61,62];
+			for(j=0; j<items.length; j++){
 				// *** Hide or show item ***
-				var arr = document.getElementsByClassName(\'row\'+j);
+				var arr = document.getElementsByClassName(\'row\'+items[j]);
 				for (i=0; i<arr.length; i++){
 					if(arr[i].style.display!="none"){
 						arr[i].style.display="none";
@@ -1318,20 +1348,19 @@ if (isset($pers_gedcomnumber)){
 					}
 				}
 
-				// *** Change [+] into [-] or reverse ***
-				if (document.getElementById(\'hideshowlink\'+j).innerHTML == "[+]")
-					document.getElementById(\'hideshowlink\'+j).innerHTML = "[-]";
-				else
-					document.getElementById(\'hideshowlink\'+j).innerHTML = "[+]";
+				// *** Check if items exists (profession and addresses are not always avaiable) ***
+				if (document.getElementById(\'hideshowlink\'+items[j]) !== null){
+					// *** Change [+] into [-] or reverse ***
+					// *** Change [+] into [-] or reverse ***
+					if (document.getElementById(\'hideshowlink\'+items[j]).innerHTML == "[+]")
+						document.getElementById(\'hideshowlink\'+items[j]).innerHTML = "[-]";
+					else
+						document.getElementById(\'hideshowlink\'+items[j]).innerHTML = "[+]";
+				}
 			}
-
-			// *** MARRIAGE: Change [+] into [-] or reverse ***
-			//if (document.getElementById(\'hideshowlinkall2\').innerHTML == "[+]")
-			//	document.getElementById(\'hideshowlinkall2\').innerHTML = "[-]";
-			//else
-			//	document.getElementById(\'hideshowlinkall2\').innerHTML = "[+]";
 		}
 
+		// *** Marriage ***
 		function hideShowAll2(){
 			// *** MARRIAGE: Change [+] into [-] or reverse ***
 			if (document.getElementById(\'hideshowlinkall2\').innerHTML == "[+]")
@@ -1339,9 +1368,10 @@ if (isset($pers_gedcomnumber)){
 			else
 				document.getElementById(\'hideshowlinkall2\').innerHTML = "[+]";
 
-			for (j=6; j<12; j++){
+			var items = [6,7,8,9,10,11,52,53,110];
+			for(j=0; j<items.length; j++){
 				// *** Hide or show item ***
-				var arr = document.getElementsByClassName(\'row\'+j);
+				var arr = document.getElementsByClassName(\'row\'+items[j]);
 				for (i=0; i<arr.length; i++){
 					if(arr[i].style.display!="none"){
 						arr[i].style.display="none";
@@ -1351,10 +1381,13 @@ if (isset($pers_gedcomnumber)){
 				}
 
 				// *** Change [+] into [-] or reverse ***
-				if (document.getElementById(\'hideshowlink\'+j).innerHTML == "[+]")
-					document.getElementById(\'hideshowlink\'+j).innerHTML = "[-]";
-				else
-					document.getElementById(\'hideshowlink\'+j).innerHTML = "[+]";
+				// *** Check if items exists (profession and addresses are not always avaiable) ***
+				if (document.getElementById(\'hideshowlink\'+items[j]) !== null){
+					if (document.getElementById(\'hideshowlink\'+items[j]).innerHTML == "[+]")
+						document.getElementById(\'hideshowlink\'+items[j]).innerHTML = "[-]";
+					else
+						document.getElementById(\'hideshowlink\'+items[j]).innerHTML = "[+]";
+				}
 			}
 		}
 		</script>';
@@ -1587,6 +1620,7 @@ if (isset($pers_gedcomnumber)){
 			// *** Empty line in table ***
 			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
 
+			ob_flush(); flush(); // IE
 
 
 			echo '<tr><th class="table_header_large" colspan="4">'.ucfirst(__('parents')).'</tr>';
@@ -2176,7 +2210,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		echo '</div>';
 		echo '</td><td></td></tr>';
 		
-		if (isset($_GET['add_person'])){  
+		if (isset($_GET['add_person'])){
 			// *** Profession(s) ***
 			//echo $event_cls->show_event('person',$new_gedcomnumber,'profession');
 		}

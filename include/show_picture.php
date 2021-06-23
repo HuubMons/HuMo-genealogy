@@ -12,7 +12,7 @@ function show_media($event_connect_kind,$event_connect_id){
 
 	// *** Pictures/ media ***
 	if ($user['group_pictures']=='j' AND $picture_presentation!='hide'){
-		// In joomla relative path is relative to joomla main folder, NOT HuMo-gen main folder. Therefore use the path entered as-is, without ROOTPATH.
+		// In joomla relative path is relative to joomla main folder, NOT HuMo-genealogy main folder. Therefore use the path entered as-is, without ROOTPATH.
 		//$tree_pict_path=CMS_ROOTPATH.$dataDb->tree_pict_path;
 		$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 

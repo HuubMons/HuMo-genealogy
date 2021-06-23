@@ -4,7 +4,7 @@
 //error_reporting(E_ALL);
 //error_reporting(0);
 
-// *** Check if HuMo-gen is in a CMS system ***
+// *** Check if HuMo-genealogy is in a CMS system ***
 //	Names:
 //		- CMS names used for now are 'Joomla' and 'CMSMS'.
 //	Usage:
@@ -56,14 +56,14 @@ $db_functions = New db_functions;
 // *** Show a message at NEW installation. ***
 $result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
 if (!$result OR $result->rowCount() ==0) {
-	echo "Installation of HuMo-gen is not yet completed.<br>Installatie van HuMo-gen is nog niet voltooid.";
+	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
 	exit();
 }
 include_once(CMS_ROOTPATH."include/safe.php");
 include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
 include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
 
-// *** Debug HuMo-gen`front pages ***
+// *** Debug HuMo-genealogy`front pages ***
 if ($humo_option["debug_front_pages"]=='y'){
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
@@ -337,7 +337,7 @@ else{
 		echo '<meta http-equiv="content-type" content="text/html; charset=utf-8">'; //to support all of the unicode scripts.
 		// --------------------------------------------------- end
 
-		// *** Rescale standard HuMo-gen pages for mobile devices ***
+		// *** Rescale standard HuMo-genealogy pages for mobile devices ***
 		echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
 
 		echo '<title>'.$head_text."</title>\n";
@@ -369,14 +369,20 @@ else{
 			$url_path='index.php';
 		}
 
-		if (substr_count($uri_path, 'list')>0){
-			$uri_path = str_replace("list", "!", $uri_path);
-			$url_path='list.php';
+		// *** First long items like "birthday_list", "list_names" here before testing "list" ***
+		if (substr_count($uri_path, 'birthday_list')>0){
+			$uri_path = str_replace("birthday_list", "!", $uri_path);
+			$url_path='birthday_list.php';
 		}
 
 		if (substr_count($uri_path, 'list_names')>0){
 			$uri_path = str_replace("list_names", "!", $uri_path);
 			$url_path='list_names.php';
+		}
+
+		if (substr_count($uri_path, 'list')>0){
+			$uri_path = str_replace("list", "!", $uri_path);
+			$url_path='list.php';
 		}
 
 		if (substr_count($uri_path, 'family')>0){

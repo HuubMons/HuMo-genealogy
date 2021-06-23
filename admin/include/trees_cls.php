@@ -251,10 +251,10 @@ function tree_data(){
 
 			//echo '<input type="text" name="tree_pict_path" value="'.$tree_pict_path.'" size="40"> '.__('example: ../pictures/').'<br>';
 			echo '<input type="text" name="tree_pict_path" value="'.$tree_pict_path.'" size="40" placeholder="../pictures/"><br>';
-			echo __('Example of picture path:<br>
-www.myhomepage.nl/humo-gen/ => folder for HuMo-gen files.<br>
+			printf(__('Example of picture path:<br>
+www.myhomepage.nl/humo-gen/ => folder for %s files.<br>
 www.myhomepage.nl/pictures/ => folder for pictures.<br>
-Use a relative path, exactly as shown here: <b>../pictures/</b>').'<br>';
+Use a relative path, exactly as shown here: <b>../pictures/</b>'),'HuMo-genealogy');
 
 			echo '<br><a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a><br>';
 		echo '</td></tr>';

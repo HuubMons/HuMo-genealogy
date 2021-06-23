@@ -5,13 +5,13 @@ error_reporting(E_ALL);
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('HuMo-gen backup').'</h1>';
+echo '<h1 align=center>';
+printf(__('%s backup'),'HuMo-genealogy');
+echo '</h1>';
 
-// CREATE BACKUP FILE 
-//echo '<table style="width:800px; margin-left:auto; margin-right:auto;" class="humo" border="1">';
+// *** CREATE BACKUP FILE *** 
 echo '<table class="humo standard" style="width:800px;" border="1">';
 
-//echo '<tr bgcolor="green"><th><font color="white">'.__('Create backup file').'</font></th></tr>';
 echo '<tr class="table_header"><th>'.__('Create backup file').'</th></tr>';
 
 echo '<tr><td>';
@@ -20,10 +20,10 @@ if(isset($_POST['create_backup'])) {
 }
 else {
 
-	echo __('If you use HuMo-gen to edit in the family tree, then create multiple backups. Recommended backups:<br>
-<b>1) Best option: use PhpMyAdmin. Export all tables from the HuMo-gen database (TIP: use the zip option for a compressed file).</b><br>
+	printf(__('If you use %s to edit in the family tree, then create multiple backups. Recommended backups:<br>
+<b>1) Best option: use PhpMyAdmin. Export all tables from the %s database (TIP: use the zip option for a compressed file).</b><br>
 2) Just for sure: export a GEDCOM file. This is not a full family tree backup! But it will contain all basic genealogical data.<br>
-3) Use the HuMo-gen backup page.');
+3) Use the %s backup page.'),'HuMo-genealogy','HuMo-genealogy','HuMo-genealogy');
 	echo '<br><br>';
 
 	echo __('The last backup file will be saved to the admin folder. You can restore from this file with "Option 1" below.<br>
@@ -33,18 +33,23 @@ You will also be offered a download button and we suggest downloading backup fil
 	echo '</form>';
 }
 echo '</td></tr>';
-//echo '<tr bgcolor="green"><th><font color="white">'.__('Restore database from backup file').'</font></th></tr>';
+
 echo '<tr class="table_header"><th>'.__('Restore database from backup file').'</th></tr>';
 echo '<tr><td>';
 
-echo __('Here you can restore your entire database from the last backup made with HuMo-gen Backup (if available) or from an .sql or .sql.zip backup file on your computer.').'<br><br>';
+printf(__('Here you can restore your entire database from the last backup made with %s (if available) or from an .sql or .sql.zip backup file on your computer.'),'HuMo-genealogy');
+echo '<br><br>';
 
-echo '<table style="width:750px;margin-left:auto;margin-right:auto"><tr><th style="text-align:left">'.__('Option 1: Restore from last backup created with HuMo-gen Backup').'</th></tr><tr><td style="height:40px">';
+echo '<table style="width:750px;margin-left:auto;margin-right:auto"><tr><th style="text-align:left">';
+printf(__('Option 1: Restore from last backup created with %s Backup'),'HuMo-genealogy');
+
+echo '</th></tr><tr><td style="height:40px">';
+
 echo '<form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
 
-// RESTORE FROM HUMOGEN BACKUP
+// *** RESTORE FROM HUMOGENEALOGY BACKUP ***
 if(isset($_POST['restore_server'])) {
-	// restore from backup on server made by humogen backup
+	// *** restore from backup on server made by HuMo-genealogy backup ***
 	echo '<span style="color:red">'.__('Starting to restore database. This may take some time. Please wait...').'</span><br>';
 	if(is_file('humo_backup.sql.zip')) {
 		restore_tables('humo_backup.sql.zip');
@@ -62,7 +67,7 @@ else { echo "<b>&nbsp;&nbsp;&nbsp;".__('No backup file found!').'</b>'; }
 echo '</form>';
 echo '</td></tr></table><br>';
 
-// RESTORE FROM FILE ON COMPUTER
+// *** RESTORE FROM FILE ON COMPUTER ***
 echo '<table style="width:750px;margin-left:auto;margin-right:auto"><tr><th style="text-align:left">'.__('Option 2: Restore from backup file on your computer').'</th></tr><tr><td>';
 echo '<form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">'; 
 
@@ -84,7 +89,7 @@ else {
 	if(isset($_POST['upload_the_file'])) {
 		if(substr($_FILES['upload_file']['name'],-4)==".sql" OR substr($_FILES['upload_file']['name'],-8)==".sql.zip") {
 			if (move_uploaded_file($_FILES['upload_file']['tmp_name'], './backup_tmp/'.$_FILES['upload_file']['name'])) {
-				//file was successfully uploaded...
+				// file was successfully uploaded...
 			}
 			else {
 				echo '<span style="color:red;font-weight:bold">'.__('Upload has failed</span> (you may wish to try again or choose to place the file in the admin/backup_tmp folder yourself with an ftp program or the control panel of your webhost)').'<br>';
@@ -105,7 +110,7 @@ else {
 		  $("#fake_field").text(filename);
 
 		});
-		</script>	
+		</script>
 	';
 
 	echo "<br>&nbsp;&nbsp;&nbsp;&nbsp;b.&nbsp;<input type='submit' style='margin-top:4px' name='upload_the_file' value='".__('Upload')."'>&nbsp;&nbsp;(".__('File will be deleted after successful restore').")<br>";
@@ -129,19 +134,19 @@ else {
 		echo "3.&nbsp;<input type='submit' style='margin-top:4px;font-size:14px' name='restore' value='".__('Restore database')."' ><br><br>";
 	}
 	echo '<b><u>'.__('IMPORTANT').':</u></b><ul>';
-	echo __('<li>Only use files with .sql.zip or .sql extension. (Files you downloaded with HuMo-gen Backup automatically have a .sql.zip extension).</li>
+	printf(__('<li>Only use files with .sql.zip or .sql extension. (Files you downloaded with %s Backup automatically have a .sql.zip extension).</li>
 <li>If you want to restore from a .sql file you created with any other program, we suggest you zip it first and rename it with a .sql.zip extension since zipping reduces the file size drastically!</li>
-<li>If upload fails, you can place the backup file yourself in the admin/backup_tmp folder by other means, such as an ftp program or your web host\'s control panel.</li></ul>');
-}  
+<li>If upload fails, you can place the backup file yourself in the admin/backup_tmp folder by other means, such as an ftp program or your web host\'s control panel.</li></ul>'),'HuMo-genealogy');
+}
 
 echo '</form>';
-echo '</td></tr></table><br>';  
+echo '</td></tr></table><br>';
 
 echo '</td></tr>';
 echo '</table>';
 
 
-// BACKUP FUNCTION 
+// *** BACKUP FUNCTION ***
 function backup_tables()
 {
 	global $dbh;
@@ -223,7 +228,7 @@ echo '</script>';
 ob_flush();
 }
 
-// RESTORE FUNCTION
+// *** RESTORE FUNCTION ***
 function restore_tables($filename) {
 	global $dbh;
 	$original_name = $filename;
@@ -308,9 +313,9 @@ function restore_tables($filename) {
 		if($original_name != 'humo_backup.sql.zip') { 
 			// if a file was uploaded to backup_tmp in order to restore, delete it now. 
 			// if however the restore was made from the last humogen backup (humo_backup.sql.zip) it should always stay in /admin, until replaced by next backup
-			unlink($original_name); 
+			unlink($original_name);
 		}
-		if($original_name != $filename) { 
+		if($original_name != $filename) {
 			// the original was a zip file, so we also have to delete the unzipped file
 			unlink($filename); 
 		}

@@ -15,12 +15,15 @@ if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	$mail_address=$dataDb->tree_email;
 
 	$treetext=show_tree_text($_SESSION['tree_id'], $selected_language);
-	$mail_subject="HuMo-gen ".__('Mail form')." (".$treetext['name']."): ".$_POST['mail_subject']."\n";
+	$mail_subject = sprintf(__('%s Mail form.'),'HuMo-genealogy');
+	$mail_subject .=" (".$treetext['name']."): ".$_POST['mail_subject']."\n";
 
 	// *** It's better to use plain text in the subject ***
 	$mail_subject=strip_tags($mail_subject,ENT_QUOTES);
 
-	$mail_message =__('Message sent through HuMo-gen from the website.')."<br>\n";
+	$mail_message = sprintf(__('Message sent through %s from the website.'),'HuMo-genealogy');
+	$mail_message .="<br>\n";
+
 	$mail_message .="<br>\n";
 	$mail_message .=__('Name').':'.$_POST['mail_name']."<br>\n";
 	$mail_message .=__('E-mail').": <a href='mailto:".$_POST['mail_sender']."'>".$_POST['mail_sender']."</a><br>\n";
@@ -48,16 +51,16 @@ if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	//echo '<b>'.__('If you do not enter a valid e-mail address, unfortunately I cannot answer you!').'</b><br>';
 	//echo __('Message: ').'<br>'.$_POST['mail_text'];
 
-	//@$mail = mail($mail_address, $mail_subject, $mail_message, $headers);
-	//if($mail){
-	//	echo ("<br>".__('E-mail sent!'));
-	//}
-	//else{
-	//	echo "<br><b>".__('Sending e-mail failed!')."</b><br>";
-	//}
-
 	// *** Use PhpMailer to send mail ***
-	include_once ('include/mail.php');
+	/********************************************************************
+	Change Kai Mahnke April 2020: if admin settings "Mail: Configuration" indicates "auto" 
+	the new routine in mail_auto.php will be called,
+	otherwise the existing mail.php will be used to preserve backward compatibility
+	******************************************************************** */
+	if ($humo_option["mail_auto"]=='auto'){
+		include_once ('include/mail_auto.php');}
+	else{
+		include_once ('include/mail.php');}
 
 	// *** Set who the message is to be sent from ***
 	$mail->setFrom($_POST['mail_sender'], $_POST['mail_name']);
@@ -101,25 +104,25 @@ else{
 		';
 		echo '</script>';
 
-		print '<br><form id="form_id" method="post" action="mailform.php" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'mail_sender\');">';
+		echo '<br><form id="form_id" method="post" action="mailform.php" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'mail_sender\');">';
 
-		print '<table align="center" class="humo">';
-		print '<tr class=table_headline><th class="fonts" colspan="2">'.__('Mail form').'</th></tr>';
+		echo '<table align="center" class="humo">';
+		echo '<tr class=table_headline><th class="fonts" colspan="2">'.__('Mail form').'</th></tr>';
 
 		$mail_name=''; if (isset($_POST['mail_name'])){ $mail_name=$_POST['mail_name']; }
-		print '<tr><td>'.__('Name').':</td><td><input type="text" class="fonts" name="mail_name" size="40" style="background-color:#FFFFFF" value="'.$mail_name.'"></td></tr>';
+		echo '<tr><td>'.__('Name').':</td><td><input type="text" class="fonts" name="mail_name" size="40" style="background-color:#FFFFFF" value="'.$mail_name.'"></td></tr>';
 
 		$mail_sender=''; if (isset($_POST['mail_sender'])){ $mail_sender=$_POST['mail_sender']; }
-		print '<tr><td>'.__('FULL e-mail address: ').'</td><td><input type="text" class="fonts" id="mail_sender" name="mail_sender" value="'.$mail_sender.'" size="40" style="background-color:#FFFFFF"><br>'.__('My response will be sent to this e-mail address!').'</td></tr>';
+		echo '<tr><td>'.__('FULL e-mail address: ').'</td><td><input type="text" class="fonts" id="mail_sender" name="mail_sender" value="'.$mail_sender.'" size="40" style="background-color:#FFFFFF"><br>'.__('My response will be sent to this e-mail address!').'</td></tr>';
 
 		$mail_subject=''; if (isset($_POST['mail_subject'])){ $mail_subject=$_POST['mail_subject']; }
-		print '<tr><td>'.__('Subject:').'</td><td><input type="text" class="fonts" name="mail_subject" size="40" style="background-color:#FFFFFF" value="'.$mail_subject.'"></td></tr>';
+		echo '<tr><td>'.__('Subject:').'</td><td><input type="text" class="fonts" name="mail_subject" size="40" style="background-color:#FFFFFF" value="'.$mail_subject.'"></td></tr>';
 
 		$mail_text=''; if (isset($_POST['mail_text'])){ $mail_text=$_POST['mail_text']; }
-		print '<tr><td>'.__('Message: ').'</td><td><textarea name="mail_text" ROWS="10" COLS="29" class="fonts">'.$mail_text.'</textarea></td></tr>';
+		echo '<tr><td>'.__('Message: ').'</td><td><textarea name="mail_text" ROWS="10" COLS="29" class="fonts">'.$mail_text.'</textarea></td></tr>';
 
 		if ($humo_option["use_newsletter_question"]=='y'){
-			print '<tr><td>'.__('Receive newsletter').'</td><td>
+			echo '<tr><td>'.__('Receive newsletter').'</td><td>
 			<input type="radio" name="newsletter" value="Yes"> '.__('Yes').'<br>
 			<input type="radio" name="newsletter" value="No" checked> '.__('No').'</td></tr>';
 		}
@@ -130,10 +133,10 @@ else{
 			echo '<input type="text" class="fonts" name="mail_block_spam" size="80" style="background-color:#FFFFFF"></td></tr>';
 		}
 
-		print '<tr><td></td><td style="font-weight:bold;" class="fonts" align="left">'.__('Please enter a full and valid email address,<br>otherwise I cannot respond to your e-mail!').'</td></tr>';
-		print '<tr><td></td><td><input class="fonts" type="submit" name="send_mail" value="'.__('Send').'"></td></tr>';
-		print '</table>';
-		print '</form>';
+		echo '<tr><td></td><td style="font-weight:bold;" class="fonts" align="left">'.__('Please enter a full and valid email address,<br>otherwise I cannot respond to your e-mail!').'</td></tr>';
+		echo '<tr><td></td><td><input class="fonts" type="submit" name="send_mail" value="'.__('Send').'"></td></tr>';
+		echo '</table>';
+		echo '</form>';
 		
 		if (isset($_POST['send_mail'])){
 			echo '<h3 style="text-align:center";>'.__('Wrong answer to the block-spam question! Try again...').'</h3>';

@@ -4,26 +4,9 @@
 // *** Translated all variables and remarks by Huub Mons ***
 //error_reporting(E_ALL);
 
+// 24-04-2020 Huub: Added EST and removed some old code.
+
 class calculate_year_cls{
-/*
-function search_month($search_date) {
-	$month=substr($search_date, -8, 3);
-	if ($month=="JAN") {$text=1;}
-	else if($month=="FEB") {$text=2;}
-	else if($month=="MAR") {$text=3;}
-	else if($month=="APR") {$text=4;}
-	else if($month=="MAY") {$text=5;}
-	else if($month=="JUN") {$text=6;}
-	else if($month=="JUL") {$text=7;}
-	else if($month=="AUG") {$text=8;}
-	else if($month=="SEP") {$text=9;}
-	else if($month=="OCT") {$text=10;}
-	else if($month=="NOV") {$text=11;}
-	else if($month=="DEC") {$text=12;}
-	else {$text=null;}
-	return($text);
-}
-*/
 
 function search_month($search_date) {
 	if(strpos($search_date,"JAN") !== false) {$text=1;}
@@ -73,15 +56,6 @@ function search_day($search_date) {
 	return($day);
 }
 
-/*
-function search_year($search_date) {
-	$year=substr($search_date,-4, 4);
-	if ($year < 2100 AND $year > 0) {}
-	else { $year=null;}
-	return ($year);
-}
-*/
-
 function search_year($search_date) {
 	if(is_numeric(substr($search_date,-4, 4))) {
 		$year=trim(substr($search_date,-4, 4));
@@ -105,16 +79,18 @@ function process_special_text($date1, $date2, $baptism) {
 	if (strlen(stristr($date1,"BEF"))>0){$date1_remark="Bef";}
 	else if (strlen(stristr($date1,"AFT"))>0){$date1_remark="Aft";}
 	else if (strlen(stristr($date1,"ABT"))>0){$date1_remark="Abt";}
-	else if (strlen(stristr($date1,"EST"))>0){$date1_remark="Abt";}  // Calculate Abt, Est and Cal as the same text
-	else if (strlen(stristr($date1,"CAL"))>0){$date1_remark="Abt";}  // calculate Abt, Est and Cal as the same text
+	else if (strlen(stristr($date1,"EST"))>0){$date1_remark="Abt";}  // Calculate EST the same as ABT
+	else if (strlen(stristr($date1,"CAL"))>0){$date1_remark="Abt";}  // calculate CAL the same as ABT
+	else if (strlen(stristr($date1,"INT"))>0){$date1_remark="Abt";}  // calculate INT the same as ABT
 	else if (strlen(stristr($date1,"BET"))>0){$date1_remark="Bet";}  // Don't calculate BET text
 	else {$date1_remark=null;}
 
 	if (strlen(stristr($date2,"BEF"))>0){$date2_remark="Bef";}
 	else if (strlen(stristr($date2,"AFT"))>0){$date2_remark="Aft";}
 	else if (strlen(stristr($date2,"ABT"))>0){$date2_remark="Abt";}
-	else if (strlen(stristr($date2,"EST"))>0){$date2_remark="Abt";}  // Calculate Abt, Est and Cal as the same text
-	else if (strlen(stristr($date2,"CAL"))>0){$date2_remark="Abt";}  // Calculate Abt, Est and Cal as the same text
+	else if (strlen(stristr($date2,"EST"))>0){$date2_remark="Abt";}  // Calculate EST the same as ABT
+	else if (strlen(stristr($date2,"CAL"))>0){$date2_remark="Abt";}  // Calculate CAL the same as ABT
+	else if (strlen(stristr($date2,"INT"))>0){$date2_remark="Abt";}  // calculate INT the same as ABT
 	else if (strlen(stristr($date2,"BET"))>0){$date2_remark="Bet";}  // Don't calculate BET text
 	else {$date2_remark=null;}
 
@@ -153,14 +129,14 @@ function process_special_text($date1, $date2, $baptism) {
 function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false) {
 	global $language;
 
-// handle person born and died BC
+	// *** handle person born and died BC ***
 	if(substr($birth_date,-2,2)=="BC" AND substr($death_date,-2,2)=="BC") { 
 		$temp = $birth_date;
 		$birth_date = substr($death_date,0,-3); 
 		$death_date = substr($temp,0,-3); 
 	}
 
-// handle person born BC and died after year zero
+	// *** handle person born BC and died after year zero ***
 	elseif(substr($birth_date,-2,2)=="BC" AND $death_date != "" AND substr($death_date,-2,2)!="BC") {
 		$first = $this->search_year(substr($birth_date,0,-3));
 		$secnd = $this->search_year($death_date);
@@ -206,16 +182,23 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 		if($birth_year==$death_year) { // born 1850 - death 1850
 			if(!$special_text) {
 				$age=__('under 1 year old');
+
+				if (($birth_month=$this->search_month($birth_date)) AND ($death_month=$this->search_month($death_date))) { // There must be 2 months
+					// *** Dead within one month, don't show age ***
+					if($birth_month==$death_month){
+						$age='';
+					}
+				}
+
 			}
 			else {
 				if($special_text!=-1) {
-					//print "BOOGIE";
 					$age=$special_text.__('1 years');
 				}
 			}
 		}
 		else { // Month is needed for better calculation
-			if (($birth_month=$this->search_month($birth_date))  AND ($death_month=$this->search_month($death_date))) { // 2 months
+			if (($birth_month=$this->search_month($birth_date)) AND ($death_month=$this->search_month($death_date))) { // 2 months
 				if($birth_month==$death_month) { // same month: we need day for exact age
 					if (($birth_day=$this->search_day($birth_date)) AND ($death_day=$this->search_day($death_date))) { // 2 days
 						// *** Show "about" is calculated with "baptism" ***

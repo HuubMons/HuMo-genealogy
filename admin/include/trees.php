@@ -7,7 +7,7 @@ if (!defined('ADMIN_PAGE')){ exit; }
 echo '<h1 align=center>'.__('Family tree administration').'</h1>';
 
 // THIS FILE IS MADE BY Huub Mons
-// IT IS PART OF THE HuMo-gen program.
+// IT IS PART OF THE HuMo-genealogy program.
 // jan 2014: updated family tree texts.
 
 // have to be declared global here for use in trees_cls.php

@@ -5,7 +5,6 @@ if (!defined('ADMIN_PAGE')){ exit; }
 @set_time_limit(3000);
 
 echo '<h1 align=center>'.__('Google maps administration').'</h1>';
-//echo '<table style="width:800px; margin-left:auto; margin-right:auto;" class="humo" border="1">';
 echo '<table class="humo standard" border="1" style="width:900px;">';
 
 if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the location database
@@ -427,7 +426,6 @@ else {  // main screen
 	echo '<br></td></tr>';	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CREATE/UPDATE GEOLOCATION DATABASE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	//echo '<tr bgcolor="green"><th><font color="white">'.__('Create or update geolocation database').'</font></th></tr>';
 	echo '<tr class="table_header"><th>'.__('Create or update geolocation database').'</th>';
 
 	echo '<tr><td>';
@@ -530,7 +528,7 @@ else {  // main screen
 			if($personDb->pers_birth_place) { $add_locations[] = $personDb->pers_birth_place; }
 		}
 		
-/*
+		/*
 		while (@$personDb=$map_person->fetch(PDO::FETCH_OBJ)){
 			$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 			if($temp->rowCount() > 0) {
@@ -545,7 +543,7 @@ else {  // main screen
 			// add the new location to an array for use if the user presses YES
 			if($personDb->pers_birth_place) { $add_locations[] = $personDb->pers_birth_place; }
 		}
-*/
+		*/
 		//echo 'Calculating......<br><br>'; // with a large existing data base and large number of locations to check this can take a second or two...
 		if (!$add_locations) {
 			echo '<p>'.__('No new locations were found to add to the database').'</p>';
@@ -612,8 +610,8 @@ else {  // main screen
 		//echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
 		echo '<select size="1" name="database" onChange="this.form.submit();">';
 			//echo '<option value="">'.__('Select a family tree:').'</option>';
-			$selected=''; 	
-			if (!isset($_SESSION['geo_tree']) OR (isset($_POST['database']) AND $_POST['database']=="all_geo_trees") )  { 
+			$selected='';
+			if (!isset($_SESSION['geo_tree']) OR (isset($_POST['database']) AND $_POST['database']=="all_geo_trees") )  {
 				$selected=' SELECTED';  
 				$_SESSION['geo_tree']="all_geo_trees";
 			}
@@ -649,7 +647,6 @@ else {  // main screen
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 	if($temp->rowCount() > 0) {
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~ REFRESH BIRTH/DEATH STATUS ~~~~~~~~~~~~~~~~~~~~~~
-		//echo '<tr bgcolor="green"><th><font color="white">'.__('Refresh birth/ death status and tree affiliation of all locations').'</font></th></tr>';
 		echo '<tr class="table_header"><th>'.__('Refresh birth/ death status and tree affiliation of all locations').'</th>';
 
 		echo '<tr><td>';
@@ -659,9 +656,10 @@ else {  // main screen
 		}
 		else {
 			echo '<form action="index.php?page=google_maps" method="post">';
-			echo __('The "Find a location on the map" pull-down displays a list according to the chosen tree and the birth/ death mapping choice. For this to work properly, the birth/death status and tree affiliation of all locations has to be up to date.<br><br><b>
+			printf(__('The "Find a location on the map" pull-down displays a list according to the chosen tree and the birth/ death mapping choice. For this to work properly, the birth/death status and tree affiliation of all locations has to be up to date.<br><br><b>
 TIP:</b> When you import a gedcom, you can mark the option "Add new locations to geo-location database" and the location status of existing locations will also be updated automatically! (If you didn\'t mark this option on import, use the "Update geolocation database" above. This will also refresh the existing location status).
-<p><b>When to use this button:</b><ul><li> if you edited location data directly with the HuMo-gen editor</li><li>if you wish to delete all locations that have become obsolete (mark the box below)</li></ul></p>');
+<p><b>When to use this button:</b><ul><li> if you edited location data directly with the %s editor</li><li>if you wish to delete all locations that have become obsolete (mark the box below)</li></ul></p>'),'HuMo-genealogy');
+
 echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that have become obsolete (not connected to any persons anymore)').'<br>';
 		echo '<input type="submit" style="font-size:14px" value="'.__('Refresh').'" name="refresh">';
 			echo '</form>';
@@ -670,7 +668,6 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~ EDIT GEOLOCATION DATABASE ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-		//echo '<tr bgcolor="green"><th><font color="white">'.__('Edit geolocation database').'</font></th></tr>';
 		echo '<tr class="table_header"><th>'.__('Edit geolocation database').'</th>';
 
 		echo '<tr><td>';
@@ -945,7 +942,6 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~DELETE GEOLOCATION DATABASE~~~~~~~~~~~~~~~~~~~~~~~~~
 
-		//echo '<tr bgcolor="green"><th><font color="white">'.__('Delete geolocation database').'</font></th></tr>';
 		echo '<tr class="table_header"><th>'.__('Delete geolocation database').'</th>';
 		echo '<tr><td>';
 
@@ -981,7 +977,6 @@ If you are absolutely sure, press the button below.'), $num_rows);
 		echo '</td></tr>';
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~ SETTINGS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-		//echo '<tr bgcolor="green"><th><font color="white">'.__('Settings').'</font></th></tr>';
 		echo '<tr class="table_header"><th>'.__('Settings').'</th>';
 		echo '<tr><td>';
 		echo '<form name="slider" action="index.php?page=google_maps" method="POST">';
@@ -1150,7 +1145,7 @@ The 9 intervals will be calculated automatically. Some example starting years fo
 //}
 echo '</table>';  // end google maps admin
 
-// function to refresh location_status column
+// *** Function to refresh location_status column ***
 function refresh_status() {
 	global $dbh, $humo_option;
 

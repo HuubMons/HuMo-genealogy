@@ -565,32 +565,35 @@ function random_photo(){
 		ORDER BY RAND()";
 	$picqry=$dbh->query($qry);
 	while($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
-		@$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
-		$man_cls = New person_cls;
-		$man_cls->construct($personmnDb);
-		$man_privacy=$man_cls->privacy;
-		if ($man_cls->privacy==''){
-			$picname = str_replace(" ","_",$picqryDb->event_event);
-			$text.='<div style="text-align: center;"><img src="'.$tree_pict_path.$picname.'" width="200 px"
-				style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"><br>';
+		$picname = str_replace(" ","_",$picqryDb->event_event);
+		$check_file=strtolower(substr($picname,-3,3));
+		if (($check_file=='png' OR $check_file=='gif'  OR $check_file=='jpg')AND file_exists($tree_pict_path.$picname)){
+			@$personmnDb = $db_functions->get_person($picqryDb->event_connect_id);
+			$man_cls = New person_cls;
+			$man_cls->construct($personmnDb);
+			$man_privacy=$man_cls->privacy;
+			if ($man_cls->privacy==''){
+				$text.='<div style="text-align: center;"><img src="'.$tree_pict_path.$picname.'" width="200 px"
+					style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"><br>';
 
-			$fam=''; if ($personmnDb->pers_famc) $fam=$personmnDb->pers_famc; else $fam=$personmnDb->pers_fams;
-			$text.='<a href="family.php?tree_id='.$personmnDb->pers_tree_id.'&amp;id='.$fam.'&amp;main_person='.$personmnDb->pers_gedcomnumber.'">';
-				$text.=$picqryDb->event_text;
-			$text.='</a></div><br>';
+				$fam=''; if ($personmnDb->pers_famc) $fam=$personmnDb->pers_famc; else $fam=$personmnDb->pers_fams;
+				$text.='<a href="family.php?tree_id='.$personmnDb->pers_tree_id.'&amp;id='.$fam.'&amp;main_person='.$personmnDb->pers_gedcomnumber.'">';
+					$text.=$picqryDb->event_text;
+				$text.='</a></div><br>';
 
-			// *** Show first available picture without privacy restrictions ***
-			break;
+				// *** Show first available picture without privacy restrictions ***
+				break;
+			}
+
+			// *** TEST privacy filter ***
+			//else{
+			//	$picname = str_replace(" ","_",$picqryDb->event_event);
+			//	$text.='<img src="'.$tree_pict_path.$picname.'" width="200 px"
+			//		style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">';
+			//	$text.=$picqryDb->event_id.' tree_id:'.$picqryDb->event_tree_id.' ';
+			//	$text.=$man_cls->privacy.'PRIVACY<br>';
+			//}
 		}
-
-		// *** TEST privacy filter ***
-		//else{
-		//	$picname = str_replace(" ","_",$picqryDb->event_event);
-		//	$text.='<img src="'.$tree_pict_path.$picname.'" width="200 px"
-		//		style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">';
-		//	$text.=$picqryDb->event_id.' tree_id:'.$picqryDb->event_tree_id.' ';
-		//	$text.=$man_cls->privacy.'PRIVACY<br>';
-		//}
 	}
 
 	return $text;
@@ -855,13 +858,13 @@ function show_footer(){
 		// *** Show owner of family tree ***
 		echo $this->owner();
 
-		// *** Show HuMo-gen link ***
-		printf(__('This database is made by %s, a freeware genealogical  program'), '<a href="http://www.humo-gen.com">HuMo-gen</a>');
+		// *** Show HuMo-genealogy link ***
+		printf(__('This database is made by %s, a freeware genealogical  program'), '<a href="http://www.humo-gen.com">HuMo-genealogy</a>');
 		//echo ' ('.$humo_option["version"].').<br>';
 		echo '.<br>';
 
 		// *** Show European cookie information ***
-		if (!$bot_visit){ printf(__('European law: %s HuMo-gen cookie information'),'<a href="info_cookies.php">'); }
+		if (!$bot_visit){ printf(__('European law: %s cookie information'),'<a href="info_cookies.php">HuMo-genealogy'); }
 		echo '</a>';
 	echo '</div>';
 }

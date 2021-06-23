@@ -3,7 +3,7 @@
 @ini_set('auto_detect_line_endings', TRUE);
 
 /**
-* This is the GEDCOM processing file for HuMo-gen.
+* This is the GEDCOM processing file for HuMo-genealogy.
 *
 * If you are reading this in your web browser, your server is probably
 * not configured correctly to run PHP applications!
@@ -210,7 +210,7 @@ if (isset($step1)){
 			if (isset($filenames)) usort($filenames,'strnatcasecmp');
 			echo '<br>';
 			for ($i=0; $i<count($filenames); $i++){
-				if (strpos($filenames[$i],'HuMo-gen test gedcomfile.ged')>1)
+				if (strpos($filenames[$i],'HuMo-genealogy test gedcomfile.ged')>1)
 					echo '<b>'.$filenames[$i].'</b><br>';
 				else{
 					echo $filenames[$i].' '._('GEDCOM file is REMOVED.').'<br>';

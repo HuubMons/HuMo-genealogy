@@ -30,7 +30,9 @@ echo '</div>';
 echo '<p><div class="help_box">';
 echo '<p class="help_header">'.__('Top Ribbon').'</p>';
 echo '<p class="help_text">'.__('“Search” field and button').'<br>';
-echo '<span class="help_explanation">'.__('This box appears on all pages of HuMo-gen and allows you the convenience to search for any persons from the database from any page. Typing in a name and clicking search will display a list of people from the database bearing a name matching the search term.').'</span><br><br>';
+echo '<span class="help_explanation">';
+printf(__('This box appears on all pages of %s and allows you the convenience to search for any persons from the database from any page. Typing in a name and clicking search will display a list of people from the database bearing a name matching the search term.'),'HuMo-genealogy');
+echo '</span><br><br>';
 
 echo __('The orange RSS-icon').' '.__('(only displayed if activated by the site owner and enabled in webbrowser)').'<br>';
 echo '<span class="help_explanation">'.__('If you add this feed (as it\'s called) to your RSS-reader, you will be able to see at one glance who has a birthday!<br>(In the "Tools" pull-down menu you may see an "Anniversary List" option. That option will display a list of birthdays in the present month).').'</span><br></p>';
@@ -92,7 +94,9 @@ echo '</div>';
 echo '<p><div class="help_box">';
 echo '<p class="help_header">'.__('User settings').'</p><br>';
 echo '<p class="help_text">'.__('”Select a theme” dropdown').'<br>';
-echo '<span class="help_explanation">'.__('By default, HuMo-gen is provided with several color schemes, and so long as the site administrator has not disabled them, they will appear in this dropdown list. You can select a theme to your preference, that will change elements such as page color, background images, etc. These themes will only affect your experience on HuMo-gen and will make no changes to your internet browser or computer.').'</span><br><br>';
+echo '<span class="help_explanation">';
+printf(__('By default, %s is provided with several color schemes, and so long as the site administrator has not disabled them, they will appear in this dropdown list. You can select a theme to your preference, that will change elements such as page color, background images, etc. These themes will only affect your experience on %s and will make no changes to your internet browser or computer.'),'HuMo-genealogy','HuMo-genealogy');
+echo '</span><br><br>';
 echo '</div></p>';
 
 

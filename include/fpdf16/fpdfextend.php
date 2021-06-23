@@ -2,7 +2,8 @@
 class PDF extends FPDF{
 
 //***********************************************************************************************
-// EXTRA FUNCTIONS FOR HUMO-GEN BY YOSSI BECK : pdfdisplay() , displayrel() , writename(),  pdf_ancestor_name() and adjusted Header()
+// EXTRA FUNCTIONS FOR HUMO-GENEALOGY BY YOSSI BECK:
+// pdfdisplay() , displayrel() , writename(),  pdf_ancestor_name() and adjusted Header()
 //************************************************************************************************
 
 //**********************************************************************************************
@@ -717,7 +718,7 @@ function Footer(){
 	//Text color in gray
 	$this->SetTextColor(128);
 	//Page number
-	$this->Cell(0,10,'PDF Created with HuMo-gen (PHP)    Page '.$this->PageNo(),0,0,'C');
+	$this->Cell(0,10,'PDF Created with HuMo-genealogy    Page '.$this->PageNo(),0,0,'C');
 }
 
 // function to make super- or subscript

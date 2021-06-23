@@ -48,16 +48,16 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 
 		// *** Mail new registered user to the administrator ***
 		$register_address='';
-		if (isset($dataDb->tree_email)) $register_address=$dataDb->tree_email; // Used in older HuMo-gen versions. Backwards compatible...
+		if (isset($dataDb->tree_email)) $register_address=$dataDb->tree_email; // Used in older HuMo-genealogy versions. Backwards compatible...
 		if ($humo_option["general_email"]) $register_address=$humo_option["general_email"];
 
-		$register_subject="HuMo-gen. ".__('New registered user').": ".$_POST['register_name']."\n";
+		$register_subject="HuMo-genealogy. ".__('New registered user').": ".$_POST['register_name']."\n";
 
 		// *** It's better to use plain text in the subject ***
 		$register_subject=strip_tags($register_subject,ENT_QUOTES);
 
-		$register_message =__('Message sent through HuMo-gen from the website.')."<br>\n";
-		$register_message .="<br>\n";
+		$register_message = sprintf(__('Message sent through %s from the website.'),'HuMo-genealogy');
+		$register_message .="<br><br>\n";
 		$register_message .=__('New registered user')."<br>\n";
 		$register_message .=__('Name').':'.$_POST['register_name']."<br>\n";
 		$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";
@@ -98,7 +98,7 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 
 if ($show_form){
 	$email='';
-	if (isset($dataDb->tree_email)) $email=$dataDb->tree_email; // Used in older HuMo-gen versions. Backwards compatible...
+	if (isset($dataDb->tree_email)) $email=$dataDb->tree_email; // Used in older HuMo-genealogy versions. Backwards compatible...
 	if ($humo_option["general_email"]) $email=$humo_option["general_email"];
 	if ($email!=''){
 		echo '<script type="text/javascript">';

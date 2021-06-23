@@ -29,8 +29,19 @@ function date_show($process_date, $process_name, $multiple_rows='', $disabled=''
 
 			$selected=''; if (substr($process_date,0,4)=='BET '){ $selected=' selected'; }
 			$text.='<option value="BET "'.$selected.'>'.__('between').'</option>';
+
+			// *** New added april 2020 ***
+			$selected=''; if (substr($process_date,0,4)=='INT '){ $selected=' selected'; }
+			$text.='<option value="INT "'.$selected.'>'.__('interpreted').'</option>';
+
+			$selected=''; if (substr($process_date,0,4)=='EST '){ $selected=' selected'; }
+			$text.='<option value="EST "'.$selected.'>'.__('estimated').'</option>';
+
+			$selected=''; if (substr($process_date,0,4)=='CAL '){ $selected=' selected'; }
+			$text.='<option value="CAL "'.$selected.'>'.__('calculated').'</option>';
+
 		$text.='</select>';
-	
+
 		// *** '!' is added after an invalid date, change background color if date is invalid ***
 		$style=''; if (substr($process_date,-1)=='!'){
 			$process_date=substr($process_date,0,-1);
@@ -52,6 +63,9 @@ function date_show($process_date, $process_name, $multiple_rows='', $disabled=''
 		elseif (substr($process_date,0,4)=='abt '){ $text.=substr($process_date,4); }
 		elseif (substr($process_date,0,4)=='aft '){ $text.=substr($process_date,4); }
 		elseif (substr($process_date,0,4)=='bet '){ $text.=substr($process_date,4); }
+		elseif (substr($process_date,0,4)=='int '){ $text.=substr($process_date,4); }
+		elseif (substr($process_date,0,4)=='est '){ $text.=substr($process_date,4); }
+		elseif (substr($process_date,0,4)=='cal '){ $text.=substr($process_date,4); }
 		else { $text.=$process_date; }
 
 	$text.='" size="'.$field_date.'" '.$disabled.'>';

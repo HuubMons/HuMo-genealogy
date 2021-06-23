@@ -99,18 +99,25 @@ if (isset($_POST['save_settings_database'])){
 }
 
 
-// *************************************************************************
-// *** Show HuMo-gen status, use scroll bar to show lots of family trees ***
-// *************************************************************************
+// *******************************************************************************
+// *** Show HuMo-genealogy status, use scroll bar to show lots of family trees ***
+// *******************************************************************************
 
 echo '<div style="height:450px; width:850px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
 echo '<table class="humo" width="100%">';
-	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen status').'</th></tr>';
+	echo '<tr class="table_header"><th colspan="2">';
+	printf(__('%s status'),'HuMo-genealogy');
+	echo '</th></tr>';
 
-	// *** HuMo-gen version ***
+	// *** HuMo-genealogy version ***
 	if (isset($humo_option["version"])){
-		echo '<tr><td class="line_item">'.__('HuMo-gen Version').'</td><td class="line_ok">'.$humo_option["version"];
-		echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=extensions">'.__('HuMo-gen extensions').'</a></td></tr>';
+		echo '<tr><td class="line_item">';
+		printf(__('%s version'),'HuMo-genealogy');
+		echo '</td><td class="line_ok">'.$humo_option["version"];
+
+		echo '&nbsp;&nbsp;&nbsp;<a href="index.php?page=extensions">';
+		printf(__('%s extensions'),'HuMo-genealogy');
+		echo '</a></td></tr>';
 	}
 
 	// *** PHP Version ***
@@ -144,10 +151,11 @@ $install_status=true;
 echo '<tr><td class="line_item">'.__('Database').'</td>';
 if (@$database_check){
 	echo '<td class="line_ok">'.__('OK');
+	echo ' <font size=-1>('.__('Database name').': '.DATABASE_NAME.')</font>';
 }
 else{
 	echo '<td class="line_nok">';
-	echo __('<b>There is no database connection! To connect the MySQL database to HuMo-gen, fill in these settings:</b>');
+	printf(__('<b>There is no database connection! To connect the MySQL database to %s, fill in these settings:</b>'),'HuMo-genealogy');
 
 	$install_status=false;
 
@@ -203,7 +211,11 @@ else{
 }
 
 if (isset($_POST['install_database'])){
-	if (!$database_check){
+	if (isset($database_check) AND @$database_check){
+		//
+	}
+	else{
+	//if (!$database_check){
 		echo '<p><b>'.__('The database has NOT been created!').'</b>';
 		$install_status=false;
 	}
@@ -230,12 +242,15 @@ if ($install_status==true){
 		echo '<tr><td class="line_item">'.__('Database tables').'</td><td class="line_ok">'.__('OK').'</td></tr>';
 	}
 	else{
-		echo '<tr><td class="line_item">'.__('Database tables').'</td><td class="line_nok">'.__('No HuMo-gen tables found in database.').'<br>';
+		echo '<tr><td class="line_item">'.__('Database tables').'</td><td class="line_nok">';
+		printf(__('No %s tables found in database.'),'HuMo-genealogy');
+		echo '<br>';
 
 		echo ' <form method="post" action="'.$path_tmp.'" style="display : inline;">';
 		echo '<input type="hidden" name="page" value="install">';
-		echo '<input type="Submit" name="submit" value="'.__('Install HuMo-gen database tables').'">';
-		echo '</form>';
+		echo '<input type="Submit" name="submit" value="';
+		printf(__('Install %s database tables'),'HuMo-genealogy');
+		echo '"></form>';
 		echo '</td></tr>';
 		$install_status=false;
 	}
@@ -271,20 +286,31 @@ if ($install_status==true){
 		echo ' <a href="index.php?page=statistics">'.__('If needed remove old statistics.').'</a>';
 	echo '</td></tr>';
 
-	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen security items').'</th></tr>';
+	echo '<tr class="table_header"><th colspan="2">';
+	printf(__('%s security items'),'HuMo-genealogy');
+	echo '</th></tr>';
 
 	// *** Check for standard admin username and password ***
-	$check_admin=false;
+	$check_admin_user=false;
+	$check_admin_pw=false;
 	$sql="SELECT * FROM humo_users WHERE user_group_id='1'";
 	$check_login = $dbh->query($sql);
 	while ($check_loginDb=$check_login->fetch(PDO::FETCH_OBJ)){
-		if ($check_loginDb->user_name=='admin') $check_admin=true;
-		if ($check_loginDb->user_password==MD5('humogen')) $check_admin=true; // *** Check old password method ***
-		$check_password = password_verify('humogen', $check_loginDb->user_password_salted); if ($check_password) $check_admin=true;
+		if ($check_loginDb->user_name=='admin') $check_admin_user=true;
+		if ($check_loginDb->user_password==MD5('humogen')) $check_admin_pw=true; // *** Check old password method ***
+		$check_password = password_verify('humogen', $check_loginDb->user_password_salted); if ($check_password) $check_admin_pw=true;
 	}
-	if ($check_admin){
-		$check_login='<td class="line_nok">'.__('Standard admin username or admin password is used.');
+	if ($check_admin_user AND $check_admin_pw){
+		$check_login='<td class="line_nok">'.__('Standard admin username and admin password is used.');
 		$check_login.='<br><a href="index.php?page=users">'.__('Change admin username and password.').'</a>';
+	}
+	elseif ($check_admin_user){
+		$check_login='<td class="line_nok">'.__('Standard admin username is used.');
+		$check_login.='<br><a href="index.php?page=users">'.__('Change admin username.').'</a>';
+	}
+	elseif ($check_admin_pw){
+		$check_login='<td class="line_nok">'.__('Standard admin password is used.');
+		$check_login.='<br><a href="index.php?page=users">'.__('Change admin password.').'</a>';
 	}
 	else
 		$check_login='<td class="line_ok">'.__('OK');
@@ -330,10 +356,10 @@ if ($install_status==true){
 	if (isset($_POST['login_info'])){
 		echo '<div id="security_remark">';
 
-			echo __('After installation of the tables (click on the left at Install) the admin folder will be secured with PHP-MySQL security.
+		printf(__('After installation of the tables (click on the left at Install) the admin folder will be secured with PHP-MySQL security.
 <p>You can have better security with .htaccess (server security).<br>
-If the administration panel of your webhost has an option to password-protect directories, use this option on the \"admin\" folder of HuMo-gen. If you don\'t have such an option, you can make an .htaccess file yourself.<br>
-Make a file .htaccess:');
+If the administration panel of your webhost has an option to password-protect directories, use this option on the \"admin\" folder of %s. If you don\'t have such an option, you can make an .htaccess file yourself.<br>
+Make a file .htaccess:'),'HuMo-genealogy');
 
 			echo '<p>AuthType Basic<br>
 				AuthName "'.__('Secured website').'"<br>';
@@ -368,12 +394,12 @@ The file .htpasswd will look something like this:<br>');
 	echo '</td></tr>';
 
 	// *** Register global. Not nessecary in PHP 6.0! ***
-	if (!ini_get('register_globals')){
-		echo '<tr><td class="line_item">register_globals</td><td class="line_ok">'.__('OK (option is OFF)').'</td></tr>';
-	}
-	else{
-		echo '<tr><td class="line_item">register_globals</td><td class="line_nok">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file or put: "register_globals = Off" in the php.ini file.').'</td></tr>';
-	}
+	//if (!ini_get('register_globals')){
+	//	echo '<tr><td class="line_item">register_globals</td><td class="line_ok">'.__('OK (option is OFF)').'</td></tr>';
+	//}
+	//else{
+	//	echo '<tr><td class="line_item">register_globals</td><td class="line_nok">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file or put: "register_globals = Off" in the php.ini file.').'</td></tr>';
+	//}
 
 	// *** Magic_quotes_gpc. Deprecated in PHP 5.3.0! ***
 	$version = explode('.', phpversion() );
@@ -394,14 +420,22 @@ The file .htpasswd will look something like this:<br>');
 		echo '<tr><td class="line_item">display_errors</td><td class="line_nok">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file.').'</td></tr>';
 	}
 
-	// *** NEW: HuMo-gen debug options ***
+	// *** HuMo-genealogy debug options ***
 	if ($humo_option["debug_front_pages"]=='n' AND $humo_option["debug_admin_pages"]=='n'){
-		echo '<tr><td class="line_item">'.__('Debug HuMo-gen pages').'</td><td class="line_ok">'.__('OK (option is OFF)');
-		echo ' <a href="index.php?page=settings">'.__('Debug HuMo-gen pages').'</a></td></tr>';
+		echo '<tr><td class="line_item">';
+		printf(__('Debug %s pages'),'HuMo-genealogy');
+		echo '</td><td class="line_ok">'.__('OK (option is OFF)');
+		echo ' <a href="index.php?page=settings">';
+		printf(__('Debug %s pages'),'HuMo-genealogy');
+		echo '</a></td></tr>';
 	}
 	else{
-		echo '<tr><td class="line_item">'.__('Debug HuMo-gen pages').'</td><td class="line_nok">'.__('UNSAFE (option is ON).');
-		echo ' <a href="index.php?page=settings">'.__('Debug HuMo-gen pages').'</a></td></tr>';
+		echo '<tr><td class="line_item">';
+		printf(__('Debug %s pages'),'HuMo-genealogy');
+		echo '</td><td class="line_nok">'.__('UNSAFE (option is ON).');
+		echo ' <a href="index.php?page=settings">';
+		printf(__('Debug %s pages'),'HuMo-genealogy');
+		echo '</a></td></tr>';
 	}
 
 	// *** Family trees ***

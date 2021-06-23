@@ -420,7 +420,6 @@ if($subsub==true) {
 				$person_cls = New person_cls;
 				$personDb=$db_functions->get_person($afbDb->event_connect_id);
 				$name=$person_cls->person_name($personDb);
-
 				$url=$person_cls->person_url($personDb);
 				$picture_text.='<a href="'.$url.'">'.$name["standard_name"].'</a><br>';
 

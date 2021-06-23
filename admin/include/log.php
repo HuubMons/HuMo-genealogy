@@ -6,7 +6,7 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 // *** Tab menu ***
 if(CMS_SPECIFIC=="Joomla") {
-	$prefx = ''; // in joomla the base folder is the main joomla map - not the HuMo-gen admin map
+	$prefx = ''; // in joomla the base folder is the main joomla map - not the HuMo-genealogy admin map
 	$joomlastring="option=com_humo-gen&amp;task=admin&amp;";
 }
 else {
@@ -134,7 +134,7 @@ if (isset($menu_admin) AND $menu_admin=='log_blacklist'){
 		$result=$dbh->query($sql);
 	}
 
-	echo __('IP Blacklist: access to HuMo-gen will be totally blocked for these IP addresses.').'<br>';
+	printf(__('IP Blacklist: access to %s will be totally blocked for these IP addresses.'),'HuMo-genealogy');
 
 	// *** Show all links ***
 	if(CMS_SPECIFIC == "Joomla") {

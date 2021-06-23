@@ -49,7 +49,7 @@ function process_person($person_array){
 	$pers_birth_date_hebnight=''; $pers_death_date_hebnight=''; $pers_buried_date_hebnight=''; $pers_heb_flag='';
 	$pers_alive='';
 	if ($gen_program=='Haza-Data'){ $pers_alive='deceased'; }
-	//if ($gen_program=='HuMo-gen'){ $pers_alive='deceased'; }
+	//if ($gen_program=='HuMo-gen' OR $gen_program=='HuMo-genealogy'){ $pers_alive='deceased'; }
 
 	$event_status="";
 
@@ -305,9 +305,17 @@ function process_person($person_array){
 
 				// *** Second line "1 NAME" is a callname ***
 				if ($pers_firstname){
-					if ($pers_callname){ $pers_callname=$pers_callname.", ".substr($name,7); } else {
-						$pers_callname=substr($name,7); }
+
+					$pers_callname_org=$pers_callname; // *** If "2 TYPE aka" is used, $pers_callname can be restored ***
+					$pers_aka=substr($name,7); // *** If "2 TYPE aka" is used
+
+					if ($pers_callname){
+						$pers_callname=$pers_callname.", ".substr($name,7);
+					} else {
+						$pers_callname=substr($name,7);
+					}
 					$pers_callname=str_replace("/", " ", $pers_callname);
+					$pers_callname=str_replace("  ", " ", $pers_callname);
 					$pers_callname=rtrim($pers_callname);
 				}
 				else{
@@ -346,6 +354,33 @@ function process_person($person_array){
 						}
 					}
 				}
+			}
+
+			// *** 2 TYPE aka: also know as. ***
+			// 1 NAME Sijpkje Sipkes /Visser/
+			// 1 NAME Sijpkje /Visser/		Was allready saved as $pers_callname.
+			// 2 TYPE aka
+			// 1 NAME Sijke /Visser/
+			// 2 TYPE aka
+			// 1 NAME Sipkje /Visser/
+			// 2 TYPE aka
+			if (strtoupper($buffer)=='2 TYPE AKA'){
+				$pers_aka=str_replace("/", " ", $pers_aka);
+				$pers_aka=str_replace("  ", " ", $pers_aka);
+				$pers_aka=rtrim($pers_aka);
+
+				$processed=1; $event_nr++; $calculated_event_id++;
+				$event['connect_kind'][$event_nr]='person';
+				$event['connect_id'][$event_nr]=$pers_gedcomnumber;
+				$event['kind'][$event_nr]='name';
+				$event['event'][$event_nr]=$pers_aka;
+				$event['event_extra'][$event_nr]='';
+				$event['gedcom'][$event_nr]='_AKA';
+				$event['date'][$event_nr]='';
+				$event['text'][$event_nr]='';
+				$event['place'][$event_nr]='';
+				// *** Empty original pers_call_name ***
+				$pers_callname=$pers_callname_org;
 			}
 
 			// *** GEDCOM 5.5 lastname prefix: 2 SPFX Le ***
@@ -396,7 +431,13 @@ function process_person($person_array){
 			$process_event=false;
 			if ($buffer7=='2 _AKAN'){ $process_event=true; }
 			// *** MyHeritage uses _AKA
-			if ($buffer6=='2 _AKA'){ $process_event=true; }
+			if ($buffer6=='2 _AKA'){
+				$process_event=true;
+				//  *** Replace optional / characters: 2 _AKA Sijpkje /Visser/ ***
+				$buffer=str_replace("/", " ", $buffer);
+				$buffer=str_replace("  ", " ", $buffer);
+				$buffer=rtrim($buffer);
+			}
 
 			// *** BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
 			// *** Users can change nickname for BK in language file! ***
@@ -498,7 +539,7 @@ function process_person($person_array){
 			$pers_callname=rtrim($pers_callname);
 		}
 
-		// *** HuMo-gen (roepnaam), BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
+		// *** HuMo-genealogy (roepnaam), BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
 		if ($buffer6=='2 NICK'){
 			$processed=1;
 			if ($pers_callname){
@@ -606,7 +647,7 @@ function process_person($person_array){
 					$processed=1; $connect['date'][$address_connect_nr]=substr($buffer, 7);
 				}
 
-				//SOURCE (used in HuMo-gen)?
+				//SOURCE (used in HuMo-genealogy)?
 			}
 
 			// BK
@@ -798,8 +839,9 @@ function process_person($person_array){
 			// *** Birth witness Pro-Gen ***
 			if (substr($buffer,2,5)=='_WITN'){
 				$processed=1;
-				$buffer = str_replace("/", " ", $buffer);
-				$buffer = trim($buffer);
+				$buffer=str_replace("/", " ", $buffer);
+				$buffer=str_replace("  ", " ", $buffer);
+				$buffer=trim($buffer);
 				$event_nr++; $calculated_event_id++;
 				$event['connect_kind'][$event_nr]='person';
 				$event['connect_id'][$event_nr]=$pers_gedcomnumber;
@@ -891,6 +933,7 @@ function process_person($person_array){
 			if (substr($buffer,2,4)=='WITN'){
 				$processed=1;
 				$buffer = str_replace("/", " ", $buffer);
+				$buffer=str_replace("  ", " ", $buffer);
 				$buffer = trim($buffer);
 				$event_nr++; $calculated_event_id++;
 				$event['connect_kind'][$event_nr]='person';
@@ -963,6 +1006,7 @@ function process_person($person_array){
 			if (substr($buffer,2,5)=='_WITN'){
 				$processed=1;
 				$buffer = str_replace("/", " ", $buffer);
+				$buffer=str_replace("  ", " ", $buffer);
 				$buffer = trim($buffer);
 				$event_nr++; $calculated_event_id++;
 				$event['connect_kind'][$event_nr]='person';
@@ -1402,7 +1446,7 @@ function process_person($person_array){
 				$level1="";
 			}
 
-			// *** Humo-gen ***
+			// *** Humo-genealogy ***
 			//1 EVEN
 			//2 TYPE deceased
 			if (substr($buffer,0,15)=='2 TYPE deceased'){
@@ -1997,6 +2041,7 @@ function process_family($family_array,$first_marr, $second_marr){
 		if ($buffer6=='1 WITN'){
 			$processed=1;
 			$buffer = str_replace("/", " ", $buffer);
+			$buffer=str_replace("  ", " ", $buffer);
 			$buffer = trim($buffer);
 			$event_nr++; $calculated_event_id++;
 			$event['connect_kind'][$event_nr]='family';
@@ -2430,7 +2475,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_relation_end_date"])  $family["fam_relation_end_date"]= trim(substr($buffer,7)); }
 		}
 
-		// *** Pro-gen & HuMo-gen living together: 1 _LIV ***
+		// *** Pro-gen & HuMo-genealogy living together: 1 _LIV ***
 		//if ($buffer6=='1 _LIV'){ $processed=1; $family["fam_kind"]="living together"; }
 		if ($level1=='_LIV'){
 			if ($buffer6=='1 _LIV'){ $processed=1; }
@@ -4039,7 +4084,7 @@ function text_process($text,$long_text=false){
 
 	$return_text = $dbh->quote($text); 
 	// PDO "quote" escapes, BUT also encloses in single quotes. 
-	// In all HuMo-gen scripts the single quotes are already coded ( "...some-parameter = '".$var."'")  so we take them off:
+	// In all HuMo-genealogy scripts the single quotes are already coded ( "...some-parameter = '".$var."'")  so we take them off:
 	$return_text = substr($return_text,1,-1); // remove quotes from beginning and end
 	return $return_text; 
 }
@@ -4077,7 +4122,7 @@ function cont($text1){
 function conc($text1){
 	global $gen_program;
 	$spacer='';
-	if ($gen_program=='HuMo-gen'){ $spacer=' '; }
+	if ($gen_program=='HuMo-gen' OR $gen_program=='HuMo-genealogy'){ $spacer=' '; }
 	elseif ($gen_program=='Haza-Data'){ $spacer=' '; }
 	elseif ($gen_program=='PRO-GEN'){ $spacer=' '; }
 	elseif ($gen_program=='Family Tree Legends'){ $spacer=' '; }

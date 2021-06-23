@@ -241,7 +241,7 @@ else {
 		}
 	}
 
-	if(isset($_POST['relig'])) { 
+	if(isset($_POST['relig'])) {
 		$sql = "SELECT *,
 		abs(substring( fam_marr_church_date,1,2 )) as marr_day,
 		substring( fam_marr_church_date,-4 ) as marr_year
@@ -284,19 +284,6 @@ else {
 
 		foreach($wed AS $key => $value) {
 			// get husband
-			/*
-			$manqry = "SELECT * FROM humo_persons WHERE pers_gedcomnumber = '".$value['man']."' AND pers_tree_id = '".$tree_id."'";
-			$manres = $dbh->query($manqry);
-			$man_name = __('N.N.');
-			if($manres AND $manres->rowCount()>0) {
-				$man_record = $manres->fetch(PDO::FETCH_OBJ);
-				$man_cls = New person_cls;
-				$name=$man_cls->person_name($man_record);
-				$man_cls->construct($man_record);
-				$man_name='<a href="'.CMS_ROOTPATH.'family.php?id='.$man_record->pers_indexnr.'&amp;main_person='.$man_record->pers_gedcomnumber.'">'.$name["standard_name"].'</a>';
-			}
-			*/
-			// get husband
 			@$manDb = $db_functions->get_person($value['man']);
 			// *** Use class to process person ***
 			$man_cls = New person_cls;
@@ -309,19 +296,6 @@ else {
 				$man_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 			}
 
-			/*
-			// get wife
-			$womanqry = "SELECT * FROM humo_persons WHERE pers_gedcomnumber = '".$value['woman']."' AND pers_tree_id = '".$tree_id."'";
-			$womanres = $dbh->query($womanqry);
-			$woman_name = __('N.N.');
-			if($womanres AND $womanres->rowCount()>0) {
-				$woman_record = $womanres->fetch(PDO::FETCH_OBJ);
-				$woman_cls = New person_cls;
-				$name=$woman_cls->person_name($woman_record);
-				$woman_cls->construct($woman_record);
-				$woman_name='<a href="'.CMS_ROOTPATH.'family.php?id='.$woman_record->pers_indexnr.'&amp;main_person='.$woman_record->pers_gedcomnumber.'">'.$name["standard_name"].'</a>';
-			}
-			*/
 			// get wife
 			@$womanDb = $db_functions->get_person($value['woman']);
 			// *** Use class to process person ***

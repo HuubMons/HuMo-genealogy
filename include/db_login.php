@@ -1,6 +1,6 @@
 <?php
-// *** To make HuMo-gen work, fill these lines properly! ***
-// *** Om HuMo-gen werkend te krijgen onderstaande regels GOED invullen! ***
+// *** To make HuMo-genealogy work, fill these lines properly! ***
+// *** Om HuMo-genealogy werkend te krijgen onderstaande regels GOED invullen! ***
 define("DATABASE_HOST",     'localhost');
 define("DATABASE_USERNAME", 'root');
 define("DATABASE_PASSWORD", '');
@@ -15,15 +15,15 @@ if (!defined('PDO::ATTR_DRIVER_NAME')) {
 	<header><title>ERROR</title><body>
 	<h2>ERROR: The PDO driver is unavailable!</h2>
 	Possible solutions:<br><br>
-	1) Update PHP to 5.0 or even better: 5.1 (or newer)<br>
+	1) Update PHP to 7.x<br>
 	2) Check if the PDO driver is enabled.<br>
 	3) If the PDO driver is enabled but you receive this message from the Admin screen, try adding these three lines to the admin/php.ini file:<br>
 	extension=pdo.so<br>
 	extension=pdo_sqlite.so<br>
 	extension=pdo_mysql.so<br>
 
-	<p>If it\'s not possible to use PDO, you have to downgrade to HuMo-gen 4.9.4!<br>
-	1) Download HuMo-gen 4.9.4 at: <a href="https://sourceforge.net/projects/humo-gen/files">Sourceforge</a><br>
+	<p>If it\'s not possible to use PDO, you have to downgrade to HuMo-genealogy 4.9.4!<br>
+	1) Download HuMo-genealogy 4.9.4 at: <a href="https://sourceforge.net/projects/humo-gen/files">Sourceforge</a><br>
 	2) Follow <a href="https://sourceforge.net/projects/humo-gen/files/HuMo-gen_Manual/">HuMo-gen installation</a> instructions.
 	</body></html>
 	';

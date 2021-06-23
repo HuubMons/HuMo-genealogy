@@ -182,11 +182,11 @@ $show_group_id='3'; // *** Default group to show ***
 if (isset($_POST['show_group_id'])){ $show_group_id=$_POST['show_group_id']; }
 
 // *** User groups ***
-echo __('You can have multiple users in HuMo-gen. Every user can be connected to 1 group.<br>
+printf(__('You can have multiple users in %s. Every user can be connected to 1 group.<br>
 Examples:<br>
 Group "guest" = <b>guests at the website (who are not logged in).</b><br>
 Group "admin" = website administrator.<br>
-Group "family" = family members or genealogists.').'<br>';
+Group "family" = family members or genealogists.'),'HuMo-genealogy');
 
 $groupsql="SELECT * FROM humo_groups";
 $groupresult=$dbh->query($groupsql);
@@ -512,7 +512,10 @@ echo '<td><input type="checkbox" name="group_privacy"'.$check.'></td></tr>';
 
 echo '<tr><th>'.__('Privacy filter settings').'</th><td></td></tr>';
 
-echo '<tr><td>1) '.__('HuMo-gen (alive or deceased), Aldfaer (death sign), Haza-data (filter living persons)').'</td>';
+echo '<tr><td>1) ';
+printf(__('%s (alive or deceased), Aldfaer (death sign), Haza-data (filter living persons)'),'HuMo-genealogy');
+echo '</td>';
+
 $check=''; if ($groupDb->group_alive!='n') $check=' checked';
 echo '<td><input type="checkbox" name="group_alive"'.$check.'></td></tr>';
 

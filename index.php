@@ -1,6 +1,6 @@
 <?php
 /**
- * This is the main web entry point for HuMo-gen.
+ * This is the main web entry point for HuMo-genealogy.
  *
  * If you are reading this in your web browser, your server is probably
  * not configured correctly to run PHP applications!
@@ -73,11 +73,11 @@ if ($text){
 	echo '</div>';
 }
 else{
-	// *** Show default HuMo-gen homepage ***
+	// *** Show default HuMo-genealogy homepage ***
 	$mainindex->show_tree_index();
 }
 
-// *** Show HuMo-gen footer ***
+// *** Show HuMo-genealogy footer ***
 echo $mainindex->show_footer();
 
 include_once(CMS_ROOTPATH."footer.php");

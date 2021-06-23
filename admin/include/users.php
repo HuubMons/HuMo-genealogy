@@ -92,17 +92,25 @@ if ($check_loginDb)
 */
 
 // *** Check for standard admin username and password ***
-$check_admin=false;
+$check_admin_user=false;
+$check_admin_pw=false;
 $sql="SELECT * FROM humo_users WHERE user_group_id='1'";
 $check_login = $dbh->query($sql);
 while ($check_loginDb=$check_login->fetch(PDO::FETCH_OBJ)){
-	if ($check_loginDb->user_name=='admin') $check_admin=true;
-	if ($check_loginDb->user_password==MD5('humogen')) $check_admin=true; // *** Check old password method ***
-	$check_password = password_verify('humogen', $check_loginDb->user_password_salted); if ($check_password) $check_admin=true;
+	if ($check_loginDb->user_name=='admin') $check_admin_user=true;
+	if ($check_loginDb->user_password==MD5('humogen')) $check_admin_pw=true; // *** Check old password method ***
+	$check_password = password_verify('humogen', $check_loginDb->user_password_salted); if ($check_password) $check_admin_pw=true;
 }
-if ($check_admin){
-	echo '<b><span style="color:red">'.__('Standard admin username or admin password is used.').'</span></b>';
+if ($check_admin_user AND $check_admin_pw){
+	echo '<b><span style="color:red">'.__('Standard admin username and admin password is used.').'</span></b>';
 }
+elseif ($check_admin_user){
+	echo '<b><span style="color:red">'.__('Standard admin username is used.').'</span></b>';
+}
+elseif ($check_admin_pw){
+	echo '<b><span style="color:red">'.__('Standard admin password is used.').'</span></b>';
+}
+
 
 if(CMS_SPECIFIC=="Joomla") {
 	echo "<form method=\"POST\" action=\"index.php?option=com_humo-gen&amp;task=admin&amp;page=users\">\n";

@@ -1,14 +1,14 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.5.1';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.6';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 28 nov. 2019';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-$humo_option["version_date"]='2020-03-29';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2020-06-13';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -464,4 +464,45 @@ if (!isset($humo_option["hide_themes"])){
 	@$result=$dbh->query($sql);
 }
 
+// *** New mail settings ***
+if (!isset($humo_option["mail_auto"])){
+	$humo_option["mail_auto"]='manual';
+	$sql="INSERT INTO humo_settings SET setting_variable='mail_auto', setting_value='manual'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["email_user"])){
+	$humo_option["email_user"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='email_user', setting_value=''";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["email_password"])){
+	$humo_option["email_password"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='email_password', setting_value=''";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["smtp_server"])){
+	$humo_option["smtp_server"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='smtp_server', setting_value=''";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["smtp_port"])){
+	$humo_option["smtp_port"]='587';
+	$sql="INSERT INTO humo_settings SET setting_variable='smtp_port', setting_value='587'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["smtp_auth"])){
+	$humo_option["smtp_auth"]='true';
+	$sql="INSERT INTO humo_settings SET setting_variable='smtp_auth', setting_value='true'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["smtp_encryption"])){
+	$humo_option["smtp_encryption"]='tls';
+	$sql="INSERT INTO humo_settings SET setting_variable='smtp_encryption', setting_value='tls'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["smtp_debug"])){
+	$humo_option["smtp_debug"]='0';
+	$sql="INSERT INTO humo_settings SET setting_variable='smtp_debug', setting_value='0'";
+	@$result=$dbh->query($sql);
+}
 ?>
