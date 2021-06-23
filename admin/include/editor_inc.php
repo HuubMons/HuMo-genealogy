@@ -889,6 +889,12 @@ if (isset($_POST['add_parents']) AND $_POST['add_parents']!=''){
 
 // *** Add child to family ***
 if (isset($_POST['child_connect2'])){
+
+	// *** Change i10 into I10 ***
+	$_POST["child_connect2"]=ucfirst($_POST["child_connect2"]);
+	// *** Change entry "48" into "I48" ***
+	if(substr($_POST["child_connect2"],0,1)!="I") { $_POST["child_connect2"] = "I".$_POST["child_connect2"]; } 
+
 	if (isset($_POST["children"])){
 		$sql="UPDATE humo_families SET
 		fam_children='".safe_text_db($_POST["children"]).';'.safe_text_db($_POST["child_connect2"])."',
@@ -1110,6 +1116,8 @@ if (isset($_GET['relation_add'])){
 if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 	// *** Change i10 into I10 ***
 	$_POST['relation_add2']=ucfirst($_POST['relation_add2']);
+	// *** Change entry "48" into "I48" ***
+	if(substr($_POST['relation_add2'],0,1)!="I") { $_POST['relation_add2'] = "I".$_POST['relation_add2']; }
 
 	// *** Generate new gedcomnr, find highest gedcomnumber F100: strip F and order by numeric ***
 	$new_nr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS gednr

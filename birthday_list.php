@@ -143,7 +143,10 @@ if(!isset($_POST['ann_choice']) OR $_POST['ann_choice']=="birthdays") {
 		$person_cls = New person_cls;
 		$name=$person_cls->person_name($record);
 		$person_cls->construct($record);
-		$person_name='<a href="'.CMS_ROOTPATH.'family.php?id='.$record->pers_indexnr.'&amp;main_person='.$record->pers_gedcomnumber.'">'.$name["standard_name"].'</a>';
+
+		$url=$person_cls->person_url($record);
+		$person_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
+
 		$death_date = $record->pers_death_date;
 		$age = ($year - $record->birth_year);
 
@@ -302,7 +305,8 @@ else {
 				$man_name='N.N.';
 			else{
 				$name=$man_cls->person_name($manDb);
-				$man_name='<a href="'.CMS_ROOTPATH.'family.php?id='.$manDb->pers_indexnr.'&amp;main_person='.$manDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a>';
+				$url=$man_cls->person_url($manDb);
+				$man_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 			}
 
 			/*
@@ -327,7 +331,8 @@ else {
 				$woman_name='N.N.';
 			else{
 				$name=$man_cls->person_name($womanDb);
-				$woman_name='<a href="'.CMS_ROOTPATH.'family.php?id='.$womanDb->pers_indexnr.'&amp;main_person='.$womanDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a>';
+				$url=$man_cls->person_url($womanDb);
+				$woman_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 			}
 
 			$calendar_day = $value['calday'];

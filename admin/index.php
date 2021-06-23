@@ -656,7 +656,11 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 	// *** NEW FEBRUARI 2020: centralised processing of tree_id and tree_prefix ***
 	// *** Selected family tree, using tree_id ***
-	if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
+
+
+	// *** Don't check for group_administrator, because of family tree editors ***
+	//if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
+	if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
 		$check_tree_id='';
 		// *** admin_tree_id must be numeric ***
 		if (isset($_SESSION['admin_tree_id']) AND is_numeric($_SESSION['admin_tree_id'])){
@@ -676,6 +680,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			@$check_treeDb=$check_tree_sql->fetch(PDO::FETCH_OBJ);
 			$check_tree_id=$check_treeDb->tree_id;
 		}
+
 		// *** Double check tree_id and save tree id in session ***
 		$tree_id=''; $tree_prefix='';
 		if ($check_tree_id AND $check_tree_id!=''){
@@ -684,6 +689,17 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			$_SESSION['admin_tree_id']=$tree_id;
 			$tree_prefix=$get_treeDb->tree_prefix;
 		}
+
+		// *** Double double check for family tree editor. ***
+		$edit_tree_array=explode(";",$group_edit_trees);
+		if ($group_administrator=='j' OR in_array($check_tree_id, $edit_tree_array)) {
+			// OK
+		}
+		else{
+			// No access to family tree.
+			$check_tree_id='';
+		}
+
 		//echo 'test'.$tree_id.' '.$tree_prefix;
 	}
 
