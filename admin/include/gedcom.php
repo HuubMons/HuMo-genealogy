@@ -929,64 +929,27 @@ if (isset($_POST['step3'])){
 		// and in gedcom_cls.php we add this number to the ones in the new gedcom
 		// this way they will never be the same as the existing ones
 
-		// I40
-		$test_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
-		$geds = $dbh->query($test_qry);
-		$largest_pers_ged = 0;
-		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
-			$gednum = (int)(preg_replace('/\D/','',$gedsDb->pers_gedcomnumber));
-			if ($gednum > $largest_pers_ged) { $largest_pers_ged = $gednum; }
-		}
-		// F40
-		$test_qry = "SELECT fam_gedcomnumber FROM humo_families WHERE fam_tree_id='".$tree_id."'";
-		$geds = $dbh->query($test_qry);
-		$largest_fam_ged = 0;
-		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
-			$gednum = (int)(preg_replace('/\D/','',$gedsDb->fam_gedcomnumber));
-			if ($gednum > $largest_fam_ged) { $largest_fam_ged = $gednum; }
-		}
-		// S40
-		$test_qry = "SELECT source_gedcomnr FROM humo_sources WHERE source_tree_id='".$tree_id."'";
-		$geds = $dbh->query($test_qry);
-		$largest_source_ged = 0;
-		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
-			$gednum = (int)(preg_replace('/\D/','',$gedsDb->source_gedcomnr));
-			if ($gednum > $largest_source_ged) { $largest_source_ged = $gednum; }
-		}
-		//  R40 (RESI)
-		$test_qry = "SELECT address_gedcomnr FROM humo_addresses WHERE address_tree_id='".$tree_id."'";
-		$geds = $dbh->query($test_qry);
-		$largest_address_ged = 0;
-		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
-			$gednum = (int)(preg_replace('/\D/','',$gedsDb->address_gedcomnr));
-			if ($gednum > $largest_address_ged) { $largest_address_ged = $gednum; }
-		}
-		//  R40 (REPO)
-		$test_qry = "SELECT repo_gedcomnr FROM humo_repositories WHERE repo_tree_id='".$tree_id."'";
-		$geds = $dbh->query($test_qry);
-		$largest_repo_ged = 0;
-		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
-			$gednum = (int)(preg_replace('/\D/','',$gedsDb->repo_gedcomnr));
-			if ($gednum > $largest_repo_ged) { $largest_repo_ged = $gednum; }
-		}
-		// N40 (texts)
-		$test_qry = "SELECT text_gedcomnr FROM humo_texts WHERE text_tree_id='".$tree_id."'";
-		$geds = $dbh->query($test_qry);
-		$largest_text_ged = 0;
-		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
-			$gednum = (int)(preg_replace('/\D/','',$gedsDb->text_gedcomnr)); // takes away @@'s and any other letters
-			if ($gednum > $largest_text_ged) { $largest_text_ged = $gednum; }
-		}
+		// *** Generate new GEDCOM number ***
+		$largest_pers_ged=$db_functions->generate_gedcomnr($tree_id,'person');
+
+		// *** Generate new GEDCOM number ***
+		$largest_fam_ged=$db_functions->generate_gedcomnr($tree_id,'family');
+
+		// *** Generate new GEDCOM number ***
+		$largest_source_ged=$db_functions->generate_gedcomnr($tree_id,'source');
+
+		// *** Generate new GEDCOM number ***
+		$largest_address_ged=$db_functions->generate_gedcomnr($tree_id,'address');
+
+		// *** Generate new GEDCOM number ***
+		$largest_repo_ged=$db_functions->generate_gedcomnr($tree_id,'repo');
+
+		// *** Generate new GEDCOM number ***
+		$largest_text_ged=$db_functions->generate_gedcomnr($tree_id,'text');
 
 		// @O40@ object table
-		$test_qry = "SELECT event_gedcomnr FROM humo_events WHERE event_tree_id='".$tree_id."'";
-		$geds = $dbh->query($test_qry);
-		$largest_object_ged = 0;
-		while ($gedsDb = $geds->fetch(PDO::FETCH_OBJ)) {
-			$gednum = (int)(preg_replace('/\D/','',$gedsDb->event_gedcomnr)); // takes away @@'s and any other letters
-			if ($gednum > $largest_object_ged) { $largest_object_ged = $gednum; }
-		}
-
+		// *** Generate new GEDCOM number ***
+		$largest_object_ged=$db_functions->generate_gedcomnr($tree_id,'event');
 	}
 
 	// for merging when we read in a new tree we have to make sure that the relevant rel_merge row in the Db is removed.
@@ -1017,14 +980,14 @@ if (isset($_POST['step3'])){
 		$new_gednum["N"] = 1;
 	}
 	if($add_tree==true) { // reassign gedcomnumbers when importing added tree in merging
-		$new_gednum["I"] = $largest_pers_ged + 1;
-		$new_gednum["F"] = $largest_fam_ged + 1;
-		$new_gednum["M"] = $largest_fam_ged + 1;
-		$new_gednum["O"] = $largest_fam_ged + 1;
-		$new_gednum["S"] = $largest_source_ged + 1;
-		$new_gednum["R"] = $largest_address_ged + 1;
-		$new_gednum["RP"] = $largest_repo_ged + 1;
-		$new_gednum["N"] = $largest_text_ged + 1;
+		$new_gednum["I"] = $largest_pers_ged;
+		$new_gednum["F"] = $largest_fam_ged;
+		$new_gednum["M"] = $largest_fam_ged;
+		$new_gednum["O"] = $largest_fam_ged;
+		$new_gednum["S"] = $largest_source_ged;
+		$new_gednum["R"] = $largest_address_ged;
+		$new_gednum["RP"] = $largest_repo_ged;
+		$new_gednum["N"] = $largest_text_ged;
 	}
 
 	include_once(CMS_ROOTPATH_ADMIN.'include/gedcom_cls.php');
@@ -1527,14 +1490,8 @@ if (isset($_POST['step3'])){
 
 	// *** Add a general source to all persons in this GEDCOM file ***
 	if ($humo_option["gedcom_read_add_source"]=='y'){
-		// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-		$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
-			FROM humo_sources WHERE source_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-		$new_nr_result = $dbh->query($new_nr_qry);
-		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-
-		$new_gedcomnumber='S1';
-		if (isset($new_nr->source_gedcomnr)) $new_gedcomnumber='S'.(substr($new_nr->source_gedcomnr,1)+1);
+		// *** Generate new GEDCOM number ***
+		$new_gedcomnumber='S'.$db_functions->generate_gedcomnr($tree_id,'source');
 
 		$gedcom_date=strtoupper(date("d M Y"));
 		$gedcom_time=date("H:i:s");

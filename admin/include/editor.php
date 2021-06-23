@@ -121,6 +121,7 @@ if (isset($_POST["person"]) AND $_POST["person"]){
 
 	$search_id=safe_text_db($_POST['person']);
 	$_SESSION['admin_search_id']=$search_id;
+
 	//$_SESSION['admin_search_name']='';
 	//$search_name='';
 }
@@ -130,6 +131,7 @@ if (isset($_GET["person"])){
 
 	$search_id=safe_text_db($_GET['person']);
 	$_SESSION['admin_search_id']=$search_id;
+
 	$_SESSION['admin_search_name']='';
 	$search_name='';
 }
@@ -206,23 +208,18 @@ if($humo_option['admin_hebnight'] == "y") {
 // end jewish settings
 
 
-//~~~~~BEGIN NEW FOR PETER~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~~~~~BEGIN NEW FOR PETER~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_family'])) {
 	// save all data from the table
-	// *** Generate new pers_gedcomnumber, find highest gedcomnumber I100: strip I and order by numeric ***
-	$new_gednr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_gednr_result = $dbh->query($new_gednr_qry);
-	$new_gednr=$new_gednr_result->fetch(PDO::FETCH_OBJ);
-	$gednr_int = intval(substr($new_gednr->pers_gedcomnumber,1)); //echo $gednr_int."-"; // I234 ==> 234
 
-	// *** Generate new fam_gedcomnumber, find highest gedcomnumber F100: strip I and order by numeric ***
-	$new_fgednr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS fgednr
-		FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY fgednr DESC LIMIT 0,1";
-	$new_fgednr_result = $dbh->query($new_fgednr_qry);
-	$new_fgednr=$new_fgednr_result->fetch(PDO::FETCH_OBJ);
-	$fgednr_int = intval(substr($new_fgednr->fam_gedcomnumber,1)); //echo $fgednr_int."-"; // F234 ==> 234
+	// *** Generate new GEDCOM number ***
+	$gednr_int=$db_functions->generate_gedcomnr($tree_id,'person');
+	$gednr_int--; // This script uses highest number, not new number.
+
+	// *** Generate new GEDCOM number ***
+	$fgednr_int=$db_functions->generate_gedcomnr($tree_id,'family');
+	$fgednr_int--; // This script uses highest number, not new number.
 
 	if(!isset($_POST['exist_partner'])) {
 		// we are in adding a whole new family: imports data for new relation and partner
@@ -575,7 +572,7 @@ fam_new_user,fam_new_date,fam_new_time,fam_tree_id,fam_gedcomnumber,fam_man,fam_
 	// *** Update nr. of persons and nr. of families ***
 	family_tree_update($tree_id);
 }
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if (isset($person->pers_fams) AND $person->pers_fams){
 	$fams1=explode(";",$person->pers_fams);
@@ -700,10 +697,11 @@ if (isset($tree_id)){
 			echo '&nbsp;&nbsp;&nbsp; <img src="'.CMS_ROOTPATH.'images/favorite_blue.png"> ';
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
+				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 
 				$fav_qry = "SELECT * FROM humo_settings, humo_persons
 					WHERE setting_variable='admin_favourite'
-					AND setting_tree_id='".safe_text_db($tree_id)."'
+					AND setting_tree_id='".$tree_id."'
 					AND pers_tree_id='".$tree_id."'
 					AND pers_gedcomnumber=setting_value
 					ORDER BY pers_lastname, pers_firstname";
@@ -723,6 +721,7 @@ if (isset($tree_id)){
 			echo '&nbsp;&nbsp;&nbsp; ';
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
+				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 
 				// *** First get pers_id, will be quicker in very large family trees ***
 				$person_qry= "(SELECT pers_id, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
@@ -807,7 +806,11 @@ if (isset($tree_id)){
 				$person_result = $dbh->query($person_qry);
 			}
 			elseif($search_id!='') {
-				if(substr($search_id,0,1)!="i" AND substr($search_id,0,1)!="I") { $search_id = "I".$search_id; } //make entry "48" into "I48"
+				// *** Heredis GEDCOM don't uses I, so don't add a I anymore! ***
+				// *** Make entry "48" into "I48" ***
+				//if(substr($search_id,0,1)!="i" AND substr($search_id,0,1)!="I") {
+				//	$search_id = "I".$search_id;
+				//}
 				$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($search_id)."'";
 				//echo $person_qry;
 				$person_result = $dbh->query($person_qry);
@@ -845,6 +848,7 @@ if (isset($tree_id)){
 					//echo '<b>'.__('Found:').'</b> ';
 					echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 					echo '<input type="hidden" name="page" value="'.$page.'">';
+					echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 					echo '<select size="1" name="person" style="width: 200px; background-color: #ffaa80;" onChange="this.form.submit();">';
 						echo '<option value="">'.__('Results').'</option>';
 
@@ -922,7 +926,7 @@ if (isset($tree_id)){
 
 		echo '</td></tr></table>';
 
-		ob_flush(); flush(); // IE
+		//ob_flush(); flush(); // IE
 		} // *** end of check for new tree ***
 
 	}
@@ -1070,7 +1074,7 @@ if (isset($pers_gedcomnumber)){
 								}
 								else{
 									// *** Add parents ***
-									echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;add_parents2=1&menu_tab=person">';
+									echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;add_parents2=1&amp;menu_tab=person">';
 									echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Add parents').'" alt="'.__('Add parents').'"> '.__('Add parents').'</a><br>';
 								}
 
@@ -1085,13 +1089,7 @@ if (isset($pers_gedcomnumber)){
 									$fams1=explode(";",$person->pers_fams);
 									$fam_count=count($fams1);
 									for ($i=0; $i<$fam_count; $i++){
-										echo '<span style="
-											display: block;
-											margin-top:5px;
-											padding:2px;
-											border:solid 1px #0000FF;
-											width:350px;
-											";>';
+										echo '<span style="display:block; margin-top:5px; padding:2px; border:solid 1px #0000FF; width:350px;">';
 										$familyDb = $db_functions->get_family($fams1[$i]);
 
 										$show_fams=''; if ($fam_count>1) $show_fams=$i+1; // *** Only show marriage nr. if there are multiple marriages ***
@@ -1166,7 +1164,7 @@ if (isset($pers_gedcomnumber)){
 
 					// *** Example of family screen in popup ***
 					if ($person)
-						echo " <a href=\"#\" onClick=\"window.open('../family.php?tree_id=".$person->pers_tree_id."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>[".__('Preview').']</b></a>';
+						echo " <a href=\"#\" onClick=\"window.open('../family.php?tree_id=".$person->pers_tree_id."&amp;id=".$person->pers_indexnr."&amp;main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>[".__('Preview').']</b></a>';
 
 				echo '</ul>';
 			echo '</div>';
@@ -1178,7 +1176,7 @@ if (isset($pers_gedcomnumber)){
 		//echo '<div style="float: left; background-color:white; height:500px; margin-left:205px; padding-top:10px;">';
 		echo '<div style="float: left; background-color:white; height:500px; padding:10px;">';
 
-		ob_flush(); flush(); // IE
+		//ob_flush(); flush(); // IE
 	}
 
 
@@ -1394,6 +1392,7 @@ if (isset($pers_gedcomnumber)){
 			// *** Start of editor table ***
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
+			echo '<input type="hidden" name="person" value="'.$pers_gedcomnumber.'">';
 
 			// *** Date needed to check if birth or baptise date is changed ***
 			echo '<input type="hidden" name="pers_birth_date_previous" value="'.$pers_birth_date.'">';
@@ -1481,8 +1480,8 @@ if (isset($pers_gedcomnumber)){
 							echo show_person($person->pers_gedcomnumber,false,false).'<br><br>';
 
 							// GeneaNet
-							// https://nl.geneanet.org/fonds/individus/?size=10&nom=Heijnen&prenom=Andreas&prenom_operateur=or&place__0__=Wouw+Nederland&go=1
-							$link= 'https://geneanet.org/fonds/individus/?size=10&nom='.urlencode($person->pers_lastname).'&amp;prenom='.urlencode($person->pers_firstname);
+							// https://nl.geneanet.org/fonds/individus/?size=10&amp;nom=Heijnen&prenom=Andreas&ampprenom_operateur=or&amp;place__0__=Wouw+Nederland&amp;go=1
+							$link= 'https://geneanet.org/fonds/individus/?size=10&amp;nom='.urlencode($person->pers_lastname).'&amp;prenom='.urlencode($person->pers_firstname);
 							//if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&birthdate_until='.$OAfromyear;
 							echo '<a href="'.$link.'&amp;go=1" target="_blank">Geneanet.org</a><br><br>';
 
@@ -1505,10 +1504,10 @@ if (isset($pers_gedcomnumber)){
 
 							// GrafTombe
 							// http://www.graftombe.nl/names/search?forename=Andreas&surname=Heijnen&birthdate_from=1655
-							// &birthdate_until=1655&submit=Zoeken&r=names-search
+							// &amp;birthdate_until=1655&amp;submit=Zoeken&amp;r=names-search
 							$link= 'http://www.graftombe.nl/names/search?forename='.urlencode($person->pers_firstname).'&amp;surname='.urlencode($person->pers_lastname);
-							if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&birthdate_until='.$OAfromyear;
-							echo '<a href="'.$link.'&amp;submit=Zoeken&r=names-search" target="_blank">Graftombe.nl</a><br><br>';
+							if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&amp;birthdate_until='.$OAfromyear;
+							echo '<a href="'.$link.'&amp;submit=Zoeken&amp;r=names-search" target="_blank">Graftombe.nl</a><br><br>';
 
 
 							// FamilySearch
@@ -1614,7 +1613,7 @@ if (isset($pers_gedcomnumber)){
 			// *** Empty line in table ***
 			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
 
-			ob_flush(); flush(); // IE
+			//ob_flush(); flush(); // IE
 
 
 			//echo '<tr><th class="table_header_large" colspan="4">'.ucfirst(__('parents')).'</tr>';
@@ -1645,7 +1644,7 @@ if (isset($pers_gedcomnumber)){
 
 				echo '<input class="fonts" type="text" name="add_parents" placeholder="'.__('GEDCOM number (ID)').'" value="" size="20">';
 
-				//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select&place_item=birth","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+				//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select&amp;place_item=birth","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 				echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 				echo ' <input type="Submit" name="dummy2" value="'.__('Select').'">';
@@ -1689,9 +1688,9 @@ if (isset($pers_gedcomnumber)){
 			$fav_result = $dbh->query($fav_qry);
 			$rows = $fav_result->rowCount();
 			if ($rows>0)
-				echo '<a href="'.$phpself.'?page=editor&amp;pers_favorite=0"><img src="'.CMS_ROOTPATH.'images/favorite_blue.png" style="border: 0px"></a>';
+				echo '<a href="'.$phpself.'?page=editor&amp;person='.$pers_gedcomnumber.'&amp;pers_favorite=0"><img src="'.CMS_ROOTPATH.'images/favorite_blue.png" style="border: 0px"></a>';
 			else
-				echo '<a href="'.$phpself.'?page=editor&amp;pers_favorite=1"><img src="'.CMS_ROOTPATH.'images/favorite.png" style="border: 0px"></a>';
+				echo '<a href="'.$phpself.'?page=editor&amp;person='.$pers_gedcomnumber.'&amp;pers_favorite=1"><img src="'.CMS_ROOTPATH.'images/favorite.png" style="border: 0px"></a>';
 			echo '<br>';
 		}
 		echo '</th><td>';
@@ -1750,7 +1749,7 @@ if (isset($pers_gedcomnumber)){
 					WHERE connect_tree_id='".$tree_id."'
 					AND connect_sub_kind='pers_name_source' AND connect_connect_id='".$pers_gedcomnumber."'";
 				$connect_sql=$dbh->query($connect_qry);
-				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_name_source', '','width=800,height=500')\">".__('source');
+				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_name_source', '','width=800,height=500')\">".__('source');
 				echo ' ['.$connect_sql->rowCount().']</a>';
 			}
 		echo '</td></tr>';
@@ -1832,7 +1831,7 @@ if (isset($pers_gedcomnumber)){
 				WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_sexe_source' AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_sexe_source', '','width=800,height=500')\">".__('source');
+			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_sexe_source', '','width=800,height=500')\">".__('source');
 			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
@@ -1869,7 +1868,7 @@ if (isset($pers_gedcomnumber)){
 		//WORKS:
 		//echo '<input type="button" onClick=window.open("index.php?page=editor_place_select","","width=400,height=500,top=100,left=100,scrollbars=yes");
 		//	value="'.__('Search').'">';
-		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=birth","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=birth","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 		echo '</td>';
 
@@ -1881,7 +1880,7 @@ if (isset($pers_gedcomnumber)){
 				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_birth_source' AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_birth_source', '','width=800,height=500')\">".__('source');
+			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_birth_source', '','width=800,height=500')\">".__('source');
 			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 
@@ -1894,12 +1893,12 @@ if (isset($pers_gedcomnumber)){
 			// *** Stillborn child ***
 			$check=''; if (isset($pers_stillborn) AND $pers_stillborn=='y'){ $check=' checked'; }
 			print '<input type="checkbox" name="pers_stillborn" '.$check.'> '.__('stillborn child');
-		echo '</td><td>';
-		echo '</td></tr>';
+		echo '</td>';
+		echo '<td></td></tr>';
 
 		//echo '<tr class="humo_color row2" style="display:none;" name="row2">';
 		echo '<tr class="humo_color row2" style="display:none;">';
-		echo '</td><td>';
+		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_birth_text" '.$field_text.'>'.
 		$editor_cls->text_show($pers_birth_text).'</textarea></td>';
@@ -1932,7 +1931,7 @@ if (isset($pers_gedcomnumber)){
 			$britDb=$result->fetch(PDO::FETCH_OBJ);
 			echo '<td style="border-right:0px;">'.__('date').'<br>&nbsp;</td><td style="border-left:0px;">'.$editor_cls->date_show($britdate,'even_brit_date').' '.__('place').'  <input type="text" name="even_brit_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($britplace).'" size="'.$field_place.'">';
 			echo "<br>".__('To display this, the option "Show events" has to be checked in "Users -> Groups"');
-			//		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=baptise","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			//		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=baptise","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 			echo '</td>';
 
 			// *** Source by Brit Mila ***
@@ -1943,7 +1942,7 @@ if (isset($pers_gedcomnumber)){
 					FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 					AND connect_sub_kind='pers_bapt_source' AND connect_connect_id='".$pers_gedcomnumber."'";
 				$connect_sql=$dbh->query($connect_qry);
-				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
+				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
 				echo ' ['.$connect_sql->rowCount().']</a>';
 			} */
 			echo '</td></tr>';
@@ -1953,7 +1952,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<tr style="display:none;" class="row20">';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td>';
-			echo '<td style="border-left:0px;"><textarea rows="1" name="even_brit_text" '.$field_text.'>'.$editor_cls->text_show($brittext).'</textarea>';
+			echo '<td style="border-left:0px;"><textarea rows="1" name="even_brit_text" '.$field_text.'>'.$editor_cls->text_show($brittext).'</textarea></td>';
 			echo '<td></td>';
 			echo '</td></tr>';
 		}
@@ -1980,7 +1979,7 @@ if (isset($pers_gedcomnumber)){
 			}
 			echo '<td style="border-right:0px;">'.__('date').'<br>&nbsp;</td><td style="border-left:0px;">'.$editor_cls->date_show($bardate,'even_barm_date').' '.__('place').'  <input type="text" name="even_barm_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($barplace).'" size="'.$field_place.'">';
 			echo "<br>".__('To display this, the option "Show events" has to be checked in "Users -> Groups"');
-			//		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=baptise","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			//		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=baptise","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 			echo '</td>';
 
 			// *** Source by Bar Mitsva ***
@@ -1991,7 +1990,7 @@ if (isset($pers_gedcomnumber)){
 					FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 					AND connect_sub_kind='pers_bapt_source' AND connect_connect_id='".$pers_gedcomnumber."'";
 				$connect_sql=$dbh->query($connect_qry);
-				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
+				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
 				echo ' ['.$connect_sql->rowCount().']</a>';
 			} */
 			echo '</td></tr>';
@@ -2001,7 +2000,7 @@ if (isset($pers_gedcomnumber)){
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td>';
 			echo '<td style="border-left:0px;"><textarea rows="1" name="even_barm_text" '.$field_text.'>'.
-				$editor_cls->text_show($bartext).'</textarea>';
+				$editor_cls->text_show($bartext).'</textarea></td>';
 			echo '<td></td>';
 			echo '</td></tr>';
 		}
@@ -2013,7 +2012,7 @@ if (isset($pers_gedcomnumber)){
 		echo '<td><a href="#" onclick="hideShow(3);"><span id="hideshowlink3">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('baptised')).'</td>';
 		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_bapt_date,'pers_bapt_date').' '.__('place').'  <input type="text" name="pers_bapt_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_bapt_place).'" size="'.$field_place.'">';
-		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=baptise","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=baptise","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 		echo '</td>';
 
 		// *** Source by baptise ***
@@ -2024,7 +2023,7 @@ if (isset($pers_gedcomnumber)){
 				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_bapt_source' AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
+			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_bapt_source', '','width=800,height=500')\">".__('source');
 			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
@@ -2042,9 +2041,9 @@ if (isset($pers_gedcomnumber)){
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_bapt_text" '.$field_text.'>'.
-			$editor_cls->text_show($pers_bapt_text).'</textarea>';
+			$editor_cls->text_show($pers_bapt_text).'</textarea></td>';
 		echo '<td></td>';
-		echo '</td></tr>';
+		echo '</tr>';
 
 		// *** Baptism Witness ***
 		if ($add_person==false) echo $event_cls->show_event('person',$pers_gedcomnumber,'baptism_witness');
@@ -2054,7 +2053,7 @@ if (isset($pers_gedcomnumber)){
 		echo '<a href="#" onclick="hideShow(4);"><span id="hideshowlink4">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('died')).'</td>';
 		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_death_date,'pers_death_date','','',$pers_death_date_hebnight,'pers_death_date_hebnight').' '.__('place').'  <input type="text" name="pers_death_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_death_place).'" size="'.$field_place.'">';
-		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=death","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=death","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 		// *** Age by death ***
 		echo ' <input type="text" name="pers_death_age" placeholder="'.__('Age').'" value="'.$pers_death_age.'" size="3">';
@@ -2078,7 +2077,7 @@ if (isset($pers_gedcomnumber)){
 				FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 				AND connect_sub_kind='pers_death_source' AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_death_source', '','width=800,height=500')\">".__('source');
+			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_death_source', '','width=800,height=500')\">".__('source');
 			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
@@ -2150,7 +2149,7 @@ if (isset($pers_gedcomnumber)){
 		echo '<td><a href="#" onclick="hideShow(5);"><span id="hideshowlink5">'.__('[+]').'</span></a> ';
 		echo __('Buried').'</td>';
 		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_buried_date,'pers_buried_date','','',$pers_buried_date_hebnight,'pers_buried_date_hebnight').' '.__('place').' <input type="text" name="pers_buried_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_buried_place).'" size="'.$field_place.'">';
-		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=buried","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=buried","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 		// *** Source by burial ***
 		echo '</td><td>';
@@ -2161,7 +2160,7 @@ if (isset($pers_gedcomnumber)){
 				AND connect_sub_kind='pers_buried_source'
 				AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_buried_source', '','width=800,height=500')\">".__('source');
+			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_buried_source', '','width=800,height=500')\">".__('source');
 			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
@@ -2174,8 +2173,9 @@ if (isset($pers_gedcomnumber)){
 			echo '<input type="radio" name="pers_cremation" value=""'.$selected.'> '.__('buried');
 			$selected=''; if ($pers_cremation=='1'){ $selected=' CHECKED'; }
 			echo ' <input type="radio" name="pers_cremation" value="1"'.$selected.'> '.__('cremation');
+		echo '</td>';
 		echo '<td></td>';
-		echo '</td></tr>';
+		echo '</tr>';
 
 		//echo '<tr style="display:none;" class="row5" name="row5">';
 		echo '<tr style="display:none;" class="row5">';
@@ -2233,7 +2233,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='pers_text_source'
 				AND connect_connect_id='".$pers_gedcomnumber."'";
 			$connect_sql=$dbh->query($connect_qry);
-			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=pers_text_source', '','width=800,height=500')\">".__('source');
+			echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=pers_text_source', '','width=800,height=500')\">".__('source');
 			echo ' ['.$connect_sql->rowCount().']</a>';
 		}
 		echo '</td></tr>';
@@ -2249,7 +2249,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='person_source'
 					AND connect_connect_id='".$pers_gedcomnumber."'";
 				$connect_sql=$dbh->query($connect_qry);
-				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=person_source', '','width=800,height=500')\">".__('source');
+				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=person_source', '','width=800,height=500')\">".__('source');
 				echo ' ['.$connect_sql->rowCount().']</a>';
 			echo '</td></tr>';
 
@@ -2355,10 +2355,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 		}
 
+			echo '</table><br>';
+
 			// *** End of person form ***
 			echo '</form>';
-
-			echo '</table><br>';
 
 		} // *** end of menu_tab ***
 
@@ -2625,7 +2625,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo __('Living together').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_relation_date,'fam_relation_date').' '.__('place').' <input type="text" name="fam_relation_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_relation_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=relation","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=relation","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			echo '</td><td>';
 				// *** Source by relation ***
@@ -2636,7 +2636,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_relation_source'
 						AND connect_connect_id='".$marriage."'";
 					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_relation_source', '','width=800,height=500')\">".__('source');
+					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_relation_source', '','width=800,height=500')\">".__('source');
 					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
@@ -2651,7 +2651,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			//echo '<tr style="display:none;" class="row6" name="row6">';
 			echo '<tr style="display:none;" class="row6 humo_color">';
 			echo '<td></td>';
-			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_relation_text" '.$field_text.'>'.$fam_relation_text.'</textarea>';
+			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_relation_text" '.$field_text.'>'.$fam_relation_text.'</textarea></td>';
 			echo '<td></td>';
 			echo '</td></tr>';
 
@@ -2660,7 +2660,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<a href="#marriage" onclick="hideShow(7);"><span id="hideshowlink7">'.__('[+]').'</span></a> ';
 			echo __('Notice of Marriage').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_notice_date,"fam_marr_notice_date","","",$fam_marr_notice_date_hebnight,"fam_marr_notice_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_notice_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_notice_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=marr_notice","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=marr_notice","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			echo '</td><td>';
 				// *** Source by fam_marr_notice ***
@@ -2671,7 +2671,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_notice_source'
 						AND connect_connect_id='".$marriage."'";
 					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_marr_notice_source', '','width=800,height=500')\">".__('source');
+					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_marr_notice_source', '','width=800,height=500')\">".__('source');
 					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
@@ -2688,7 +2688,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			//echo __('Marriage').'</td>';
 			echo ucfirst(__('marriage/ relation')).'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_date,"fam_marr_date","","",$fam_marr_date_hebnight,"fam_marr_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=marr","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=marr","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			echo '</td><td>';
 
@@ -2700,7 +2700,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_source'
 						AND connect_connect_id='".$marriage."'";
 					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_marr_source', '','width=800,height=500')\">".__('source');
+					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_marr_source', '','width=800,height=500')\">".__('source');
 					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 
@@ -2790,7 +2790,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<a href="#marriage" onclick="hideShow(9);"><span id="hideshowlink9">'.__('[+]').'</span></a> ';
 			echo __('Religious Notice of Marriage').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_notice_date,"fam_marr_church_notice_date","","",$fam_marr_church_notice_date_hebnight,"fam_marr_church_notice_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_church_notice_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_church_notice_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=fam_marr_church_notice","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=fam_marr_church_notice","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 				echo '</td><td>';
 				// *** Source by fam_marr_church_notice ***
@@ -2801,7 +2801,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_church_notice_source'
 						AND connect_connect_id='".$marriage."'";
 					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_marr_church_notice_source', '','width=800,height=500')\">".__('source');
+					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_marr_church_notice_source', '','width=800,height=500')\">".__('source');
 					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
@@ -2817,7 +2817,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<a href="#marriage" onclick="hideShow(10);"><span id="hideshowlink10">'.__('[+]').'</span></a> ';
 			echo __('Religious Marriage').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_date,"fam_marr_church_date","","",$fam_marr_church_date_hebnight,"fam_marr_church_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_church_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_church_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=fam_marr_church","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=fam_marr_church","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			echo '</td><td>';
 			// *** Source by fam_marr_church ***
@@ -2828,7 +2828,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_marr_church_source'
 					AND connect_connect_id='".$marriage."'";
 				$connect_sql=$dbh->query($connect_qry);
-				echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_marr_church_source', '','width=800,height=500')\">".__('source');
+				echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_marr_church_source', '','width=800,height=500')\">".__('source');
 				echo ' ['.$connect_sql->rowCount().']</a>';
 			}
 
@@ -2853,7 +2853,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<a href="#marriage" onclick="hideShow(11);"><span id="hideshowlink11">'.__('[+]').'</span></a> ';
 			echo __('Divorce').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_div_date,"fam_div_date").' '.__('place').' <input type="text" name="fam_div_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_div_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=fam_div","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=fam_div","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			echo '</td><td>';
 				// *** Source by fam_div ***
@@ -2864,7 +2864,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_div_source'
 						AND connect_connect_id='".$marriage."'";
 					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_div_source', '','width=800,height=500')\">".__('source');
+					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_div_source', '','width=800,height=500')\">".__('source');
 					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
@@ -2905,7 +2905,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_text_source'
 						AND connect_connect_id='".$marriage."'";
 					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_text_source', '','width=800,height=500')\">".__('source');
+					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=fam_text_source', '','width=800,height=500')\">".__('source');
 					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
@@ -2920,7 +2920,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='family_source'
 						AND connect_connect_id='".$marriage."'";
 					$connect_sql=$dbh->query($connect_qry);
-					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=family_source', '','width=800,height=500')\">".__('source');
+					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=family_source', '','width=800,height=500')\">".__('source');
 					echo ' ['.$connect_sql->rowCount().']</a>';
 				echo '</td></tr>';
 			}
@@ -2933,8 +2933,6 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			// *** Show and edit addresses by family ***
 			edit_addresses('family','family_address',$marriage);
-
-			echo '</form>';
 
 			// *** Show unprocessed GEDCOM tags ***
 			$tag_qry= "SELECT * FROM humo_unprocessed_tags
@@ -2964,6 +2962,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo '</table><br>'."\n";
 
+			echo '</form>';
 
 
 
@@ -3035,7 +3034,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$marriage."'");
 			$familyDb=$family->fetch(PDO::FETCH_OBJ);
 			if ($familyDb->fam_children){
-				echo '<a name="children">';
+				echo '<a name="children"></a>';
 				echo __('Use this icon to order children (drag and drop)').': <img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0">';
 				
 				//echo '<br>'.__('Or automatically order children:').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=children&amp;marriage_nr='.$marriage.'&amp;order_children=1">'.__('Automatic order children').'</a>';
@@ -3247,7 +3246,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						echo '</td>';
 						echo '<td>'.$editor_cls->date_show("","add_fam_marr_date","","","","add_fam_marr_date_hebnight").'</td>';
 						echo '<td><input type="text" name="add_fam_marr_place" placeholder="'.ucfirst(__('place')).'" size="'.$field_place.'">';
-						echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=add_fam_marr_place","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+						echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=add_fam_marr_place","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
 						echo '</tr></table><br>';
 					}
 					else {
@@ -3360,10 +3359,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '<td id="pfsnm"><input type="text" name="add_fam_partner_firstname" value=""  size="18" placeholder="'.ucfirst(__('firstname')).'"></td>';
 					echo '<td id="pbrdt">'.$editor_cls->date_show("","add_fam_partner_birthdate","","","","add_fam_partner_birthdate_hebnight").'</td>';
 					echo '<td id="pbrpl"><input type="text" name="add_fam_partner_birthplace" value="" placeholder="'.ucfirst(__('place')).'" size="17">';
-					echo '<a id="search_partner_bplace" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=add_fam_partner_birthplace","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+					echo '<a id="search_partner_bplace" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=add_fam_partner_birthplace","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
 					echo '<td id="pdedt">'.$editor_cls->date_show("","add_fam_partner_deathdate","","","","add_fam_partner_deathdate_hebnight").'</td>';
 					echo '<td id="pdepl"><input type="text" name="add_fam_partner_deathplace" value="" placeholder="'.ucfirst(__('place')).'" size="17">';
-					echo '<a id="search_partner_dplace" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=add_fam_partner_deathplace","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+					echo '<a id="search_partner_dplace" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=add_fam_partner_deathplace","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
 					echo '</tr>';
 					echo '<input type="hidden" value="" name="add_fam_partner_exist">';
 				}
@@ -3436,10 +3435,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						echo '<td id="pfsnm'.$x.'"><input type="text" name="add_fam_child_firstname_'.$x.'" value=""  size="18" placeholder="'.ucfirst(__('firstname')).'"></td>';
 						echo '<td id="pbrdt'.$x.'">'.$editor_cls->date_show("","add_fam_child_birthdate_".$x,"","","","add_fam_child_birthdate_hebnight_".$x).'</td>';
 						echo '<td id="pbrpl'.$x.'"><input type="text" name="add_fam_child_birthplace_'.$x.'" placeholder="'.ucfirst(__('place')).'" size="17">';
-						echo '<a id="search_child_bplace_'.$x.'" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=add_fam_child_birthplace_'.$x.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+						echo '<a id="search_child_bplace_'.$x.'" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=add_fam_child_birthplace_'.$x.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
 						echo '<td id="pdedt'.$x.'">'.$editor_cls->date_show("","add_fam_child_deathdate_".$x,"","","","add_fam_child_deathdate_hebnight_".$x).'</td>';
 						echo '<td id="pdepl'.$x.'"><input type="text" name="add_fam_child_deathplace_'.$x.'" placeholder="'.ucfirst(__('place')).'" size="17">';
-						echo '<a id="search_child_dplace_'.$x.'" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=add_fam_child_deathplace_'.$x.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+						echo '<a id="search_child_dplace_'.$x.'" href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=add_fam_child_deathplace_'.$x.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
 						echo '</tr>';
 						echo '<input type="hidden" value="" name="add_fam_child_exist_'.$x.'">';
 					}
@@ -3452,7 +3451,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '
 					<script type="text/javascript">
 					function changeAction() { 
-						document.form_entire.action = "./index.php?page=editor&menu_tab=person&tree_id='.$tree_id.'&person='.$person->pers_gedcomnumber.'";
+						document.form_entire.action = "./index.php?page=editor&amp;menu_tab=person&amp;tree_id='.$tree_id.'&amp;person='.$person->pers_gedcomnumber.'";
 					}
 					</script>
 					';
@@ -3587,8 +3586,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 		// *** Show selected source ***
 		if ($source_id OR isset($_POST['add_source'])){
-			echo '<table class="humo standard" border="1">';
-			print '<tr class="table_header"><th>'.__('Option').'</th><th colspan="3">'.__('Value').'</th></tr>';
+			//echo '<table class="humo standard" border="1">';
+			//echo '<tr class="table_header"><th>'.__('Option').'</th><th colspan="3">'.__('Value').'</th></tr>';
 
 			if (isset($_POST['add_source'])){
 				$source_gedcomnr='';
@@ -3624,8 +3623,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="source_id" value="'.$source_id.'">';
-
 			echo '<input type="hidden" name="source_gedcomnr" value="'.$source_gedcomnr.'">';
+
+			echo '<table class="humo standard" border="1">';
+			echo '<tr class="table_header"><th>'.__('Option').'</th><th colspan="3">'.__('Value').'</th></tr>';
 
 			echo '<tr><td>'.__('Status:').'</td><td colspan="3">';
 				echo '<select class="fonts" size="1" name="source_status">';
@@ -3684,8 +3685,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '</td></tr>';
 			}
 
-			echo '</form>';
 			echo '</table>'."\n";
+			echo '</form>';
 
 			// *** Source example in IFRAME ***
 			if (!isset($_POST['add_source'])){
@@ -3707,16 +3708,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 	if ($menu_admin=='repositories'){
 		if (isset($_POST['repo_add'])){
-			// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-			$new_nr_qry= "SELECT *, ABS(substring(repo_gedcomnr, 2)) AS gednr FROM humo_repositories
-				WHERE repo_tree_id='".$tree_id."'
-				ORDER BY gednr DESC LIMIT 0,1";
-			$new_nr_result = $dbh->query($new_nr_qry);
-			$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-			$new_gedcomnumber='R1';
-			if (isset($new_nr->repo_gedcomnr)){
-				$new_gedcomnumber='R'.(substr($new_nr->repo_gedcomnr,1)+1);
-			}
+			// *** Generate new GEDCOM number ***
+			$new_gedcomnumber='R'.$db_functions->generate_gedcomnr($tree_id,'repo');
 
 			$sql="INSERT INTO humo_repositories SET
 				repo_tree_id='".$tree_id."',
@@ -3801,12 +3794,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		echo '<h2>'.__('Repositories').'</h2>';
 		echo __('A repository can be connected to a source. Edit a source to connect a repository.');
 
+		echo '<form method="POST" action="'.$phpself.'">';
+		echo '<input type="hidden" name="page" value="'.$page.'">';
+		$repo_qry=$dbh->query("SELECT * FROM humo_repositories
+			WHERE repo_tree_id='".$tree_id."'
+			ORDER BY repo_name, repo_place");
+
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
-			echo '<form method="POST" action="'.$phpself.'">';
-			echo '<input type="hidden" name="page" value="'.$page.'">';
-			$repo_qry=$dbh->query("SELECT * FROM humo_repositories
-				WHERE repo_tree_id='".$tree_id."'
-				ORDER BY repo_name, repo_place");
 			echo __('Select repository').' ';
 			echo '<select size="1" name="repo_id" onChange="this.form.submit();">';
 			echo '<option value="">'.__('Select repository').'</option>'; // *** For new repository in new database... ***
@@ -3822,13 +3816,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo ' '.__('or').': ';
 			echo '<input type="Submit" name="add_repo" value="'.__('Add repository').'">';
-			echo '</form>';
 		echo '</td></tr></table><br>';
+		echo '</form>';
 
 		// *** Show selected repository ***
 		if (isset($_POST['repo_id'])){
-			echo '<table class="humo standard" border="1">';
-			print '<tr class="table_header"><th>'.__('Option').'</th><th colspan="2">'.__('Value').'</th></tr>';
 
 			if (isset($_POST['add_repo'])){
 				$repo_name=''; $repo_address=''; $repo_zip=''; $repo_place='';
@@ -3865,6 +3857,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="repo_id" value="'.$_POST['repo_id'].'">';
 
+			echo '<table class="humo standard" border="1">';
+			echo '<tr class="table_header"><th>'.__('Option').'</th><th colspan="2">'.__('Value').'</th></tr>';
+
 			echo '<tr><td>'.__('Title').'</td><td><input type="text" name="repo_name" value="'.htmlspecialchars($repo_name).'" size="60"></td></tr>';
 
 			echo '<tr><td>'.__('Address').'</td><td><input type="text" name="repo_address" value="'.htmlspecialchars($repo_address).'" size="60"></td></tr>';
@@ -3896,8 +3891,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '</td></tr>';
 			}
 
-			echo '</form>';
 			echo '</table>'."\n";
+			echo '</form>';
 
 			// *** Repository example in IFRAME ***
 			if (!isset($_POST['add_repo'])){
@@ -3919,15 +3914,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 	if ($menu_admin=='addresses'){
 		if (isset($_POST['address_add'])){
-			// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-			$new_nr_qry= "SELECT *, ABS(substring(address_gedcomnr, 2)) AS gednr
-				FROM humo_addresses WHERE address_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-			$new_nr_result = $dbh->query($new_nr_qry);
-			$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-			$new_gedcomnumber='R1';
-			if (isset($new_nr->address_gedcomnr)){
-				$new_gedcomnumber='R'.(substr($new_nr->address_gedcomnr,1)+1);
-			}
+			// *** Generate new GEDCOM number ***
+			$new_gedcomnumber='R'.$db_functions->generate_gedcomnr($tree_id,'address');
 
 			//address_date='".safe_text_db($_POST['address_date'])."',
 			$sql="INSERT INTO humo_addresses SET
@@ -4039,13 +4027,14 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		echo __('These addresses can be connected to multiple persons, families and other items.');
 
 		$address_id='';
-		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
-			echo '<form method="POST" action="'.$phpself.'">';
-			echo '<input type="hidden" name="page" value="'.$page.'">';
+		echo '<form method="POST" action="'.$phpself.'">';
+		echo '<input type="hidden" name="page" value="'.$page.'">';
 
-			$address_qry=$dbh->query("SELECT * FROM humo_addresses
-				WHERE address_tree_id='".$tree_id."' AND address_shared='1'
-				ORDER BY address_place, address_address");
+		$address_qry=$dbh->query("SELECT * FROM humo_addresses
+			WHERE address_tree_id='".$tree_id."' AND address_shared='1'
+			ORDER BY address_place, address_address");
+
+		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 
 			echo __('Select address').': ';
 			echo '<select size="1" name="address_id" onChange="this.form.submit();">';
@@ -4062,15 +4051,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo ' '.__('or').': ';
 			echo '<input type="Submit" name="add_address" value="'.__('Add address').'">';
-			echo '</form>';
 		echo '</td></tr></table><br>';
+		echo '</form>';
 
 		// *** Show selected address ***
 		//if ($address_id AND isset($_POST['address_id'])){
 		if ($address_id OR isset($_POST['add_address'])){
-			echo '<table class="humo standard" border="1">';
-			print '<tr class="table_header"><th>'.__('Option').'</th><th colspan="2">'.__('Value').'</th></tr>';
-
 			if (isset($_POST['add_address'])){
 				$address_gedcomnr='';
 				$address_address='';
@@ -4110,6 +4096,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<input type="hidden" name="address_id" value="'.$_POST['address_id'].'">';
 			echo '<input type="hidden" name="address_gedcomnr" value="'.$address_gedcomnr.'">';
 
+			echo '<table class="humo standard" border="1">';
+			echo '<tr class="table_header"><th>'.__('Option').'</th><th colspan="2">'.__('Value').'</th></tr>';
+
 			//echo '<tr><td>';
 			//echo ucfirst(__('date')).' - '.__('place').'</td><td>'.$editor_cls->date_show($address_date,"address_date");
 			echo '<tr><td>'.__('Place').'</td><td>';
@@ -4133,7 +4122,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						AND connect_connect_id='".$address_gedcomnr."'";
 					$connect_sql=$dbh->query($connect_qry);
 // Also add address_gedcomnumber to link? For now a session parameter is used: $_SESSION['admin_address_gedcomnumber']
-					echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=address_source', '','width=800,height=500')\">".__('source');
+					echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=address_source', '','width=800,height=500')\">".__('source');
 					echo ' ['.$connect_sql->rowCount().']</a>';
 				}
 			echo '</td></tr>';
@@ -4151,8 +4140,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '</td></tr>';
 			}
 
-			echo '</form>';
 			echo '</table>'."\n";
+			echo '</form>';
 
 			// *** Example in IFRAME ***
 			if (!isset($_POST['add_address'])){
@@ -4299,8 +4288,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		}
 
 		$person_result = $dbh->query($person_qry);
+		echo '<form method="POST" action="'.$phpself.'">';
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
-			echo '<form method="POST" action="'.$phpself.'">';
 			echo $person_result->rowCount().' '.__('Places').'. ';
 			echo __('Select location');
 			echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -4324,14 +4313,14 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo ' <input type="checkbox" name="other_places"'.$check.'>'.__('Other places (sources, events, addresses, etc.)');
 
 			echo ' <input type="Submit" name="dummy8" value="'.__('Select').'">';
-			echo '</form>';
 		echo '</td></tr></table><br>';
+		echo '</form>';
 
 		// *** Change selected place ***
 		if (isset($_POST["place_select"]) AND $_POST["place_select"]!=''){
+			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<table class="humo standard" border="1">';
 				echo '<tr class="table_header"><th colspan="2">'.__('Change location').'</th></tr>';
-				echo '<form method="POST" action="'.$phpself.'">';
 				echo '<tr><td>';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="place_old" value="'.$_POST["place_select"].'">';
@@ -4344,8 +4333,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '<input type="Checkbox" name="google_maps" value="1" checked>'.__('Also change Google Maps table.').'<br>';
 				echo '<input type="Submit" name="place_change" value="'.__('Save').'">';
 				echo '</td></tr>';
-				echo '</form>';
 			echo '</table>';
+			echo '</form>';
 		}
 
 		//echo '<br><br><br>'; // in some browser settings the bottom line (with the event choice!) is hidden under bottom bar
@@ -4442,6 +4431,7 @@ function show_person($gedcomnumber, $gedcom_date=false, $show_link=true){
 		}
 		elseif($personDb->pers_death_date){
 			$text.=' &#134; '.date_place($personDb->pers_death_date,'');
+			//$text.=' &dagger; '.date_place($personDb->pers_death_date,'');
 		}
 		elseif($personDb->pers_buried_date){
 			$text.=' [] '.date_place($personDb->pers_buried_date,'');
@@ -4473,8 +4463,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 		echo __('Addresses').'</td>';
 	echo '<td style="border-right:0px;"></td>';
 	echo '<td style="border-left:0px;">';
-		echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;
-			menu_admin='.$connect_kind.'&amp;';
+		echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin='.$connect_kind.'&amp;';
 			if ($connect_kind=='person')
 				echo 'person_place_address=1&amp;';
 			else
@@ -4610,7 +4599,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 						$place_item='place_person';
 					else
 						$place_item='place_relation';
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item='.$place_item.'&address_place='.$address3Db->address_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a><br>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item='.$place_item.'&address_place='.$address3Db->address_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a><br>';
 
 					// *** Save latest place in table humo_persons as person_place_index (in use for place index) ***
 					if ($connect_kind=='person'){
@@ -4692,7 +4681,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 					AND connect_connect_id='".$address3Db->address_gedcomnr."'";
 				$connect2_sql=$dbh->query($connect2_qry);
 
-				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=".
+				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=".
 				$connect_sub_kind2."&connect_connect_id=".$address3Db->address_gedcomnr."', '','width=800,height=500')\">".__('source');
 				echo ' ['.$connect2_sql->rowCount().']</a>';
 			}

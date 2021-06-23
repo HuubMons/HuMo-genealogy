@@ -225,7 +225,7 @@ echo '</script>';
 	echo '<input type="button" value="'.__('Download backup file').'" onClick="window.location.href=\'downloadbk.php\'">&nbsp;&nbsp;('.$downloadname.')';
 	echo '</form><div>';
 
-ob_flush();
+//ob_flush();
 }
 
 // *** RESTORE FUNCTION ***
@@ -297,8 +297,8 @@ function restore_tables($filename) {
 			// This is for the buffer achieve the minimum size in order to flush data
 			//echo str_repeat(' ',1024*64);
 			// Send output to browser immediately
-			ob_flush();
-			flush(); // IE
+			//ob_flush();
+			//flush(); // IE
 
 			// *** Commit data every x lines in database ***
 			if ($commit_data>500){

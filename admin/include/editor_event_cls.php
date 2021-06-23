@@ -211,7 +211,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show events by person ***
 	if ($event_kind=='person'){
-		$text.='<tr><td style="border-right:0px;"><a name="event_person_link"><a href="#event_person_link" onclick="hideShow(51);"><span id="hideshowlink51">'.__('[+]').'</span></a> '.__('Events').'</td>';
+		$text.='<tr><td style="border-right:0px;"><a name="event_person_link"></a><a href="#event_person_link" onclick="hideShow(51);"><span id="hideshowlink51">'.__('[+]').'</span></a> '.__('Events').'</td>';
 		//$text.='<tr><td style="border-right:0px;"><a name="event_person_link"></a>'.__('Events').'</td>';
 		$text.='<td style="border-right:0px;">';
 			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
@@ -249,7 +249,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show events by family ***
 	if ($event_kind=='family'){
-		$text.='<tr><td style="border-right:0px;"><a name="event_family_link"><a href="#event_family_link" onclick="hideShow(52);"><span id="hideshowlink52">'.__('[+]').'</span></a> '.__('Events').'</td>';
+		$text.='<tr><td style="border-right:0px;"><a name="event_family_link"></a><a href="#event_family_link" onclick="hideShow(52);"><span id="hideshowlink52">'.__('[+]').'</span></a> '.__('Events').'</td>';
 		//$text.='<tr><td style="border-right:0px;"><a name="event_family_link"></a>'.__('Events').'</td>';
 		$text.='<td style="border-right:0px;">';
 			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
@@ -927,7 +927,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				$parent_text='['.$family_parentsDb->fam_gedcomnumber.'] ';
 				//*** Father ***
 				if ($family_parentsDb->fam_man){
-					$parent_text.=show_person($family_parentsDb->fam_man);
+					$parent_text.=show_person($family_parentsDb->fam_man,false,false);
 				}
 				else{
 					$parent_text=__('N.N.');
@@ -936,7 +936,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 				//*** Mother ***
 				if ($family_parentsDb->fam_woman){
-					$parent_text.=show_person($family_parentsDb->fam_woman);
+					$parent_text.=show_person($family_parentsDb->fam_woman,false,false);
 				}
 				else{
 					$parent_text.=__('N.N.');
@@ -1328,7 +1328,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$text.='</select>';
 			$text.=' <input type="Submit" name="person_event_add" value="'.__('Add event').'">';
 		//$text.='</td><td><input type="Submit" name="person_event_add" value="'.__('Add').'"></td><tr>';
-		$text.='</td><td><br></td><tr>';
+		$text.='</td><td><br></td></tr>';
 	}
 
 	// *** Add event ***

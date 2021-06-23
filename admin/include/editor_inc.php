@@ -12,12 +12,15 @@ $confirm_relation='';
 if (isset($_GET['pers_favorite'])){
 	if ($_GET['pers_favorite']=="1"){
 		$sql = "INSERT INTO humo_settings SET
-			setting_variable='admin_favourite', setting_value='".safe_text_db($pers_gedcomnumber)."', setting_tree_id='".safe_text_db($tree_id)."'";
+			setting_variable='admin_favourite',
+			setting_value='".safe_text_db($pers_gedcomnumber)."',
+			setting_tree_id='".safe_text_db($tree_id)."'";
 		$result = $dbh->query($sql);
 	}
 	else{
 		$sql = "DELETE FROM humo_settings
-			WHERE setting_variable='admin_favourite' AND setting_value='".safe_text_db($pers_gedcomnumber)."'
+			WHERE setting_variable='admin_favourite'
+			AND setting_value='".safe_text_db($pers_gedcomnumber)."'
 			AND setting_tree_id='".safe_text_db($tree_id)."'";
 		$result = $dbh->query($sql);
 	}
@@ -219,6 +222,7 @@ if (isset($_POST['person_change'])){
 	pers_changed_date='".$gedcom_date."',
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($pers_gedcomnumber)."'";
+	//echo $sql;
 	$result=$dbh->query($sql);
 
 	$pers_stillborn=''; if (isset($_POST["pers_stillborn"])) $pers_stillborn='y';
@@ -446,27 +450,13 @@ if (isset($_POST['person_change'])){
 }
 
 if (isset($_GET['add_person'])){
-	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-	$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-	$new_gedcomnumber='I1';
-	if (isset($new_nr->pers_gedcomnumber)){
-		$new_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+1);
-	}
+	// *** Generate new GEDCOM number ***
+	$new_gedcomnumber='I'.$db_functions->generate_gedcomnr($tree_id,'person');
 }
 
 if (isset($_POST['person_add'])){
-	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-	$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-	$new_gedcomnumber='I1';
-	if (isset($new_nr->pers_gedcomnumber)){
-		$new_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+1);
-	}
+	// *** Generate new GEDCOM number ***
+	$new_gedcomnumber='I'.$db_functions->generate_gedcomnr($tree_id,'person');
 
 	// *** If person is deceased, set alive setting ***
 	@$pers_alive=safe_text_db($_POST["pers_alive"]);
@@ -759,27 +749,12 @@ if (isset($_POST['fam_remove2'])){
 
 // *** Add NEW N.N. parents to a child ***
 if (isset($_GET['add_parents'])){
-	// *** Generate new gedcomnr, find highest gedcomnumber F100: strip F and order by numeric ***
-	$new_nr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS gednr
-		FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-	//$new_gedcomnumber='F1';
-	$fam_gedcomnumber='F1';
-	if (isset($new_nr->fam_gedcomnumber)) $fam_gedcomnumber='F'.(substr($new_nr->fam_gedcomnumber,1)+1);
+	// *** Generate new GEDCOM number ***
+	$fam_gedcomnumber='F'.$db_functions->generate_gedcomnr($tree_id,'family');
 
-	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-	$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-	//$new_gedcomnumber='I1';
-	$man_gedcomnumber='I1';
-	$woman_gedcomnumber='I2';
-	if (isset($new_nr->pers_gedcomnumber)){
-		$man_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+1);
-		$woman_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+2);
-	}
+	// *** Generate new GEDCOM number ***
+	$man_gedcomnumber='I'.$db_functions->generate_gedcomnr($tree_id,'person');
+	$woman_gedcomnumber='I'.$db_functions->generate_gedcomnr($tree_id,'person')+1;
 
 	$sql="INSERT INTO humo_families SET
 	fam_gedcomnumber='".$fam_gedcomnumber."',
@@ -1089,27 +1064,16 @@ if (isset($_GET['child_up'])){
 
 // *** Add new family with new partner N.N. ***
 if (isset($_GET['relation_add'])){
-	// *** Generate new gedcomnr, find highest gedcomnumber F100: strip F and order by numeric ***
-	$new_nr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS gednr
-		FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-	$fam_gedcomnumber='F1';
-	if (isset($new_nr->fam_gedcomnumber)) $fam_gedcomnumber='F'.(substr($new_nr->fam_gedcomnumber,1)+1);
+	// *** Generate new GEDCOM number ***
+	$fam_gedcomnumber='F'.$db_functions->generate_gedcomnr($tree_id,'family');
 
 	// *** Directly show new marriage on screen ***
 	$_POST["marriage_nr"]=$fam_gedcomnumber;
 	$marriage=$fam_gedcomnumber;
 	$_SESSION['admin_fam_gedcomnumber']=$marriage;
 
-	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-	$new_nr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-	//$new_gedcomnumber='I1';
-	$partner_gedcomnumber='I1';
-	if (isset($new_nr->pers_gedcomnumber)) $partner_gedcomnumber='I'.(substr($new_nr->pers_gedcomnumber,1)+1);
+	// *** Generate new GEDCOM number ***
+	$partner_gedcomnumber='I'.$db_functions->generate_gedcomnr($tree_id,'person');
 
 	$person_db=$db_functions->get_person($pers_gedcomnumber);
 	if ($person_db->pers_sexe=='M'){
@@ -1181,13 +1145,8 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 	// *** Change entry "48" into "I48" ***
 	if(substr($_POST['relation_add2'],0,1)!="I") { $_POST['relation_add2'] = "I".$_POST['relation_add2']; }
 
-	// *** Generate new gedcomnr, find highest gedcomnumber F100: strip F and order by numeric ***
-	$new_nr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS gednr
-		FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-	$fam_gedcomnumber='F1';
-	if (isset($new_nr->fam_gedcomnumber)) $fam_gedcomnumber='F'.(substr($new_nr->fam_gedcomnumber,1)+1);
+	// *** Generate new GEDCOM number ***
+	$fam_gedcomnumber='F'.$db_functions->generate_gedcomnr($tree_id,'family');
 
 	// *** Directly show new marriage on screen ***
 	$_POST["marriage_nr"]=$fam_gedcomnumber;
@@ -2314,18 +2273,10 @@ if (isset($_GET['connect_up'])){
 // *** Save source ***
 // *******************
 
-// *** Add a new shared source (in page "Shared sources") without connections ***
+// *** Add a new shared source in page "Shared sources" without connections ***
 if (isset($_POST['source_add'])){
-	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-	$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
-		FROM humo_sources WHERE source_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-
-	$new_gedcomnumber='S1';
-	if (isset($new_nr->source_gedcomnr)){
-		$new_gedcomnumber='S'.(substr($new_nr->source_gedcomnr,1)+1);
-	}
+	// *** Generate new GEDCOM number ***
+	$new_gedcomnumber='S'.$db_functions->generate_gedcomnr($tree_id,'source');
 
 	//source_shared='1',
 	$sql="INSERT INTO humo_sources SET
@@ -2362,16 +2313,8 @@ if (isset($_POST['source_add'])){
 if (isset($_GET['source_add2'])){
 	$username = $_SESSION['user_name_admin'];
 
-	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-	$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
-		FROM humo_sources WHERE source_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-
-	$new_gedcomnumber='S1';
-	if (isset($new_nr->source_gedcomnr)){
-		$new_gedcomnumber='S'.(substr($new_nr->source_gedcomnr,1)+1);
-	}
+	// *** Generate new GEDCOM number ***
+	$new_gedcomnumber='S'.$db_functions->generate_gedcomnr($tree_id,'source');
 
 	$sql="INSERT INTO humo_sources SET
 		source_tree_id='".$tree_id."',
@@ -2495,15 +2438,8 @@ if (isset($_POST['living_place_drop2'])){
 
 // *** 25-12-2020: NEW combined addresses and shared addresses ***
 if (isset($_GET['address_add2'])){
-	// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-	$new_nr_qry= "SELECT *, ABS(substring(address_gedcomnr, 2)) AS gednr
-		FROM humo_addresses WHERE address_tree_id='".$tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-	$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-	$new_gedcomnumber='R1';
-	if (isset($new_nr->address_gedcomnr)){
-		$new_gedcomnumber='R'.(substr($new_nr->address_gedcomnr,1)+1);
-	}
+	// *** Generate new GEDCOM number ***
+	$new_gedcomnumber='R'.$db_functions->generate_gedcomnr($tree_id,'address');
 
 	$sql="INSERT INTO humo_addresses SET
 		address_tree_id='".$tree_id."',

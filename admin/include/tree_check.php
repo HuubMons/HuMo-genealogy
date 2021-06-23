@@ -144,8 +144,8 @@ if (isset($_POST['database_check'])){
 	echo '<tr><td><b>'.__('Check item').'</b></td><td><b>'.__('Item').'</b></td><td><b>'.__('Result').'</b></td>';
 
 	// Send output to browser immediately for large family trees.
-	ob_flush();
-	flush(); // for IE
+	//ob_flush();
+	//flush(); // for IE
 
 	$wrong_indexnr=0;
 	$wrong_famc=0;
@@ -282,8 +282,8 @@ if (isset($_POST['database_check'])){
 	}
 
 	// Send output to browser immediately for large family trees.
-	ob_flush();
-	flush(); // for IE
+	//ob_flush();
+	//flush(); // for IE
 
 	// *** Check family table ***
 	$wrong_children=0;
@@ -404,8 +404,8 @@ if (isset($_POST['database_check'])){
 	}
 
 	// Send output to browser immediately for large family trees.
-	ob_flush();
-	flush(); // for IE
+	//ob_flush();
+	//flush(); // for IE
 
 	// *** Check connections table ***
 	$connect_qry_start= "SELECT connect_id FROM humo_connections WHERE connect_tree_id='".$tree_id."'";
@@ -452,8 +452,8 @@ if (isset($_POST['database_check'])){
 	}
 
 	// Send output to browser immediately for large family trees.
-	ob_flush();
-	flush(); // for IE
+	//ob_flush();
+	//flush(); // for IE
 
 	// *** Check events table ***
 	$connect_qry_start= "SELECT event_id FROM humo_events WHERE event_tree_id='".$tree_id."'";
@@ -499,8 +499,8 @@ if (isset($_POST['database_check'])){
 	}
 
 	// Send output to browser immediately for large family trees.
-	ob_flush();
-	flush(); // for IE
+	//ob_flush();
+	//flush(); // for IE
 
 	/*
 	// *** Check source table (only NON SHARED sources) ***

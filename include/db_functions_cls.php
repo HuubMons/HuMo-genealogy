@@ -25,6 +25,11 @@
  *		get_connections				Get multiple connections (used for sources and addresses).
  *		get_connections_connect_id	Get multiple connections of a person or family.
  *		get_repository				Get a single repository from database.
+ 
+ *		generate_gedcomnr
+
+
+
  *
  * SET family tree variabele:
  *	$db_functions->set_tree_id($tree_id);
@@ -162,6 +167,27 @@ function __construct() {
 		$sql = "UPDATE humo_settings SET setting_value=:setting_value WHERE setting_variable=:setting_variable";
 		$this->query['update_settings'] = $dbh->prepare( $sql );
 
+		// *** Generate new gedcomnumber PERSON ***
+		$sql = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id=:tree_id";
+		$this->query['generate_gedcomnr_person'] = $dbh->prepare( $sql );
+		// *** Generate new gedcomnumber FAMILY ***
+		$sql = "SELECT fam_gedcomnumber FROM humo_families WHERE fam_tree_id=:tree_id";
+		$this->query['generate_gedcomnr_family'] = $dbh->prepare( $sql );
+		// *** Generate new gedcomnumber SOURCE ***
+		$sql = "SELECT source_gedcomnr FROM humo_sources WHERE source_tree_id=:tree_id";
+		$this->query['generate_gedcomnr_source'] = $dbh->prepare( $sql );
+		// *** Generate new gedcomnumber ADDRESS ***
+		$sql = "SELECT address_gedcomnr FROM humo_addresses WHERE address_tree_id=:tree_id";
+		$this->query['generate_gedcomnr_address'] = $dbh->prepare( $sql );
+		// *** Generate new gedcomnumber REPO ***
+		$sql = "SELECT repo_gedcomnr FROM humo_repositories WHERE repo_tree_id=:tree_id";
+		$this->query['generate_gedcomnr_repo'] = $dbh->prepare( $sql );
+		// *** Generate new gedcomnumber TEXT ***
+		$sql = "SELECT text_gedcomnr FROM humo_texts WHERE text_tree_id=:tree_id";
+		$this->query['generate_gedcomnr_text'] = $dbh->prepare( $sql );
+		// *** Generate new gedcomnumber EVENT ***
+		$sql = "SELECT event_gedcomnr FROM humo_events WHERE event_tree_id=:tree_id";
+		$this->query['generate_gedcomnr_event'] = $dbh->prepare( $sql );
 	}
 }
 
@@ -733,6 +759,89 @@ function update_settings($setting_variable,$setting_value){
 	}
 	return $qryDb;
 }
+
+// *** Generate new GEDCOM number for item (person, family, source, repo, address, etc.) ***
+//	Generates new GEDCOM number (only numerical, like: 1234).
+//	$sql = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id=:tree_id";
+//	$sql = "SELECT fam_gedcomnumber FROM humo_families WHERE pers_tree_id=:tree_id";
+function generate_gedcomnr($tree_id,$item){
+	$qryDb=false;
+	$new_gedcomnumber=0;
+	try {
+		// *** Command preg_replace \D removes all non-digit characters (including spaces etc.) ***
+		// *** This will work for all kinds of GEDCOM numbers like I1234, 1234I, U1234, X1234. ***
+		if ($item=='person'){
+			$this->query['generate_gedcomnr_person']->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+			$this->query['generate_gedcomnr_person']->execute();
+			$result_array=$this->query['generate_gedcomnr_person']->fetchAll(PDO::FETCH_OBJ);
+			foreach ($result_array as $resultDb){
+				$gednum = (int)(preg_replace('/\D/','',$resultDb->pers_gedcomnumber));
+				if ($gednum > $new_gedcomnumber) { $new_gedcomnumber = $gednum; }
+			}
+		}
+		if ($item=='family'){
+			$this->query['generate_gedcomnr_family']->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+			$this->query['generate_gedcomnr_family']->execute();
+			$result_array=$this->query['generate_gedcomnr_family']->fetchAll(PDO::FETCH_OBJ);
+			foreach ($result_array as $resultDb){
+				$gednum = (int)(preg_replace('/\D/','',$resultDb->fam_gedcomnumber));
+				if ($gednum > $new_gedcomnumber) { $new_gedcomnumber = $gednum; }
+			}
+		}
+		if ($item=='source'){
+			$this->query['generate_gedcomnr_source']->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+			$this->query['generate_gedcomnr_source']->execute();
+			$result_array=$this->query['generate_gedcomnr_source']->fetchAll(PDO::FETCH_OBJ);
+			foreach ($result_array as $resultDb){
+				$gednum = (int)(preg_replace('/\D/','',$resultDb->source_gedcomnr));
+				if ($gednum > $new_gedcomnumber) { $new_gedcomnumber = $gednum; }
+			}
+		}
+		if ($item=='address'){
+			$this->query['generate_gedcomnr_address']->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+			$this->query['generate_gedcomnr_address']->execute();
+			$result_array=$this->query['generate_gedcomnr_address']->fetchAll(PDO::FETCH_OBJ);
+			foreach ($result_array as $resultDb){
+				$gednum = (int)(preg_replace('/\D/','',$resultDb->address_gedcomnr));
+				if ($gednum > $new_gedcomnumber) { $new_gedcomnumber = $gednum; }
+			}
+		}
+		if ($item=='repo'){
+			$this->query['generate_gedcomnr_repo']->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+			$this->query['generate_gedcomnr_repo']->execute();
+			$result_array=$this->query['generate_gedcomnr_repo']->fetchAll(PDO::FETCH_OBJ);
+			foreach ($result_array as $resultDb){
+				$gednum = (int)(preg_replace('/\D/','',$resultDb->repo_gedcomnr));
+				if ($gednum > $new_gedcomnumber) { $new_gedcomnumber = $gednum; }
+			}
+		}
+		if ($item=='text'){
+			$this->query['generate_gedcomnr_text']->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+			$this->query['generate_gedcomnr_text']->execute();
+			$result_array=$this->query['generate_gedcomnr_text']->fetchAll(PDO::FETCH_OBJ);
+			foreach ($result_array as $resultDb){
+				$gednum = (int)(preg_replace('/\D/','',$resultDb->text_gedcomnr));
+				if ($gednum > $new_gedcomnumber) { $new_gedcomnumber = $gednum; }
+			}
+		}
+		if ($item=='event'){
+			$this->query['generate_gedcomnr_event']->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
+			$this->query['generate_gedcomnr_event']->execute();
+			$result_array=$this->query['generate_gedcomnr_event']->fetchAll(PDO::FETCH_OBJ);
+			foreach ($result_array as $resultDb){
+				$gednum = (int)(preg_replace('/\D/','',$resultDb->event_gedcomnr));
+				if ($gednum > $new_gedcomnumber) { $new_gedcomnumber = $gednum; }
+			}
+		}
+	}catch (PDOException $e) {
+		echo $e->getMessage() . "<br/>";
+	}
+
+	$new_gedcomnumber++;
+	return $new_gedcomnumber;
+}
+
+
 
 } // *** End of db_functions class ***
 ?>
