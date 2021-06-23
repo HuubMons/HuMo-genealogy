@@ -252,6 +252,184 @@ if (isset($_POST['person_change'])){
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($pers_gedcomnumber)."'";
 	$result=$dbh->query($sql);
 	family_tree_update($tree_id);
+
+	// extra UPDATE queries if is jewish dates enabled
+	if($humo_option['admin_hebnight']=="y") {
+		$per_bir_heb = ""; $per_bur_heb=""; $per_dea_heb="";
+		if(isset($_POST["pers_birth_date_hebnight"]))  $per_bir_heb = $_POST["pers_birth_date_hebnight"];
+		if(isset($_POST["pers_buried_date_hebnight"]))  $per_bur_heb = $_POST["pers_buried_date_hebnight"];
+		if(isset($_POST["pers_death_date_hebnight"]))  $per_dea_heb = $_POST["pers_death_date_hebnight"];
+		$sql="UPDATE humo_persons SET 
+		pers_birth_date_hebnight='".safe_text_db($per_bir_heb)."',
+		pers_death_date_hebnight='".safe_text_db($per_dea_heb)."',	
+		pers_buried_date_hebnight='".safe_text_db($per_bur_heb)."'
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($pers_gedcomnumber)."'";
+		$result=$dbh->query($sql);
+		family_tree_update($tree_id);
+	}
+	
+	// extra UPDATE queries if Hebrew name is displayed in main Name section (and not under name event)
+	if($humo_option['admin_hebname']=="y") {  
+		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '_HEBN' AND event_connect_id = '".$pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
+		$result = $dbh->query($sql);
+		if($result->rowCount() != 0) {     // a Hebrew name entry already exists for this person: UPDATE 
+		
+			if($_POST["even_hebname"]=='') {  // empty entry: existing hebrew name was deleted so delete the event
+				$sql = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom='_HEBN'  AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."' AND event_kind='name' ";
+				$result=$dbh->query($sql);
+			}		
+			else {  // update or retain the entered value
+				//$hebnameDb=$result->fetch(PDO::FETCH_OBJ);	 
+				$sql="UPDATE `humo_events` SET 
+				event_event='".safe_text_db($_POST["even_hebname"])."', 
+				event_changed_user='".$username."',
+				event_changed_date='".$gedcom_date."',
+				event_changed_time='".$gedcom_time."' 			
+				WHERE event_tree_id='".$tree_id."' AND  event_gedcom='_HEBN' AND event_kind='name' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'";
+				$doit=$dbh->query($sql);
+			}
+		}
+		elseif($_POST["even_hebname"]!='') {  // new Hebrew name event: INSERT
+		
+			// *** Generate new order number ***
+			$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+				AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'
+				AND event_kind='name' 
+				ORDER BY event_order DESC LIMIT 0,1";
+			$event_qry=$dbh->query($event_sql);
+			$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
+			$event_order=1;
+			if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; $event_order++; }
+		
+			$sql = "INSERT INTO humo_events SET
+			event_event='".safe_text_db($_POST["even_hebname"])."',
+			event_tree_id='".$tree_id."',
+			event_connect_kind='person',
+			event_gedcom='_HEBN',
+			event_connect_id='".$pers_gedcomnumber."',
+			event_kind='name',
+			event_order='".$event_order."',
+			event_new_user='".$username."',
+			event_new_date='".$gedcom_date."',
+			event_new_time='".$gedcom_time."'";
+			$result = $dbh->query($sql);
+		}
+		
+		family_tree_update($tree_id);
+	}		
+	
+	// extra UPDATE queries if brit mila is displayed 
+	if($humo_option['admin_brit']=="y") {  
+		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '_BRTM' AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
+		$result = $dbh->query($sql);
+		if($result->rowCount() != 0) {     // a brit mila already exists for this person: UPDATE 
+		
+			if($_POST["even_brit_date"]=='' AND $_POST["even_brit_place"]=='' AND $_POST["even_brit_text"]=='') {
+				$sql = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom='_BRTM'  AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."' AND event_kind='event' ";
+				$result=$dbh->query($sql);
+			}		
+			else {
+				//$britDb=$result->fetch(PDO::FETCH_OBJ);	echo $britDb->event_gedcom."---".$britDb->event_connect_id;
+				//WHERE event_tree_id='".$tree_id."' AND  event_gedcom='_BRTM' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'";
+				$sql="UPDATE `humo_events` SET 
+				`event_date`='".safe_text_db($_POST["even_brit_date"])."', 
+				`event_place`='".safe_text_db($_POST["even_brit_place"])."',	
+				`event_text`='".safe_text_db($_POST["even_brit_text"])."',
+				event_changed_user='".$username."',
+				event_changed_date='".$gedcom_date."',
+				event_changed_time='".$gedcom_time."' 			
+				WHERE event_tree_id='".$tree_id."' AND  event_gedcom='_BRTM' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'";
+				$doit=$dbh->query($sql);
+			}
+		}
+		elseif($_POST["even_brit_date"]!='' OR $_POST["even_brit_place"]!='' OR $_POST["even_brit_text"]!='') {  // new brit mila event: INSERT
+		
+			// *** Generate new order number ***
+			$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+				AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'
+				AND event_kind='event' 
+				ORDER BY event_order DESC LIMIT 0,1";
+			$event_qry=$dbh->query($event_sql);
+			$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
+			$event_order=1;
+			if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; $event_order++; }
+		
+			$sql = "INSERT INTO humo_events SET
+			event_date='".safe_text_db($_POST["even_brit_date"])."',
+			event_place='".safe_text_db($_POST["even_brit_place"])."',
+			event_text='".safe_text_db($_POST["even_brit_text"])."',
+			event_tree_id='".$tree_id."',
+			event_connect_kind='person',
+			event_gedcom='_BRTM',
+			event_connect_id='".$pers_gedcomnumber."',
+			event_kind='event',
+			event_order='".$event_order."',
+			event_new_user='".$username."',
+			event_new_date='".$gedcom_date."',
+			event_new_time='".$gedcom_time."'";
+			$result = $dbh->query($sql);
+		}
+		
+		family_tree_update($tree_id);
+	}	
+
+	// extra UPDATE queries if Bar Mitsva  is displayed 
+	if($humo_option['admin_barm']=="y") {  
+		if($_POST["pers_sexe"]=="F") {  $barmbasm="BASM"; }
+		else { $barmbasm = "BARM"; }
+		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '".$barmbasm."' AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
+		$result = $dbh->query($sql);
+		if($result->rowCount() != 0) {     // a bar/bat mitsvah already exists for this person: UPDATE 
+
+			if($_POST["even_barm_date"]=='' AND $_POST["even_barm_place"]=='' AND $_POST["even_barm_text"]=='') {    
+				$sql = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom='".$barmbasm."'  AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."' AND event_kind='event' ";
+				$result=$dbh->query($sql);
+			}		
+			else {
+				//$barmDb=$result->fetch(PDO::FETCH_OBJ);	
+				$sql="UPDATE `humo_events` SET 
+				`event_date`='".safe_text_db($_POST["even_barm_date"])."', 
+				`event_place`='".safe_text_db($_POST["even_barm_place"])."',	
+				`event_text`='".safe_text_db($_POST["even_barm_text"])."',
+				event_changed_user='".$username."',
+				event_changed_date='".$gedcom_date."',
+				event_changed_time='".$gedcom_time."' 		
+				WHERE event_tree_id='".$tree_id."' AND  event_gedcom='".$barmbasm."' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'";
+				$doit=$dbh->query($sql);
+			}
+		}
+		elseif($_POST["even_barm_date"]!='' OR $_POST["even_barm_place"]!='' OR $_POST["even_barm_text"]!='') {  // new BAR/BAT MITSVA event: INSERT
+
+			// *** Generate new order number ***
+			$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+				AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'
+				AND event_kind='event' 
+				ORDER BY event_order DESC LIMIT 0,1";
+			$event_qry=$dbh->query($event_sql);
+			$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
+			$event_order=1;
+			if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; $event_order++;}
+		
+			$sql = "INSERT INTO humo_events SET
+			event_date='".safe_text_db($_POST["even_barm_date"])."',
+			event_place='".safe_text_db($_POST["even_barm_place"])."',
+			event_text='".safe_text_db($_POST["even_barm_text"])."',
+			event_tree_id='".$tree_id."',
+			event_connect_kind='person',
+			event_gedcom='".$barmbasm."',
+			event_connect_id='".$pers_gedcomnumber."',
+			event_kind='event',
+			event_order='".$event_order."',
+			event_new_user='".$username."',
+			event_new_date='".$gedcom_date."',
+			event_new_time='".$gedcom_time."'";
+			$result = $dbh->query($sql);
+		}
+
+		family_tree_update($tree_id);
+	}		
+
+	
 }
 
 if (isset($_GET['add_person'])){
@@ -342,6 +520,17 @@ if (isset($_POST['person_add'])){
 		pers_new_date='".$gedcom_date."',
 		pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
+	
+	// only needed for jewish settings
+	if($humo_option['admin_hebnight']=="y") {
+		$sql="UPDATE humo_persons SET 
+		pers_birth_date_hebnight='".safe_text_db($_POST["pers_birth_date_hebnight"])."',
+		pers_death_date_hebnight='".safe_text_db($_POST["pers_death_date_hebnight"])."',	
+		pers_buried_date_hebnight='".safe_text_db($_POST["pers_buried_date_hebnight"])."'
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($new_gedcomnumber)."'";
+		$result=$dbh->query($sql);
+	}	
+	
 	if(isset($_POST["event_profession"]) AND $_POST["event_profession"]!="" AND $_POST["event_profession"]!= "Profession") {
 		$event_text="";
 		$event_date="";
@@ -592,6 +781,14 @@ if (isset($_GET['add_parents'])){
 	fam_new_date='".$gedcom_date."',
 	fam_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
+	
+	// only needed for jewish settings
+	if($humo_option['admin_hebnight']=="y") {
+		$sql="UPDATE humo_families SET 
+		fam_marr_notice_date_hebnight='', fam_marr_date_hebnight='', fam_marr_church_date_hebnight='', fam_marr_church_notice_date_hebnight='' 
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($fam_gedcomnumber)."'";
+		$result=$dbh->query($sql);
+	}	
 
 	// *** Add N.N. father ***
 	$sql="INSERT INTO humo_persons SET
@@ -607,6 +804,14 @@ if (isset($_GET['add_parents'])){
 		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', pers_new_user='".$username."',
 		pers_new_date='".$gedcom_date."', pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
+	
+	// only needed for jewish settings
+	if($humo_option['admin_hebnight']=="y") {
+		$sql="UPDATE humo_persons SET 
+		pers_birth_date_hebnight='', pers_death_date_hebnight='', pers_buried_date_hebnight='' 
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($man_gedcomnumber)."'";
+		$result=$dbh->query($sql);
+	}
 
 	// *** Add N.N. mother ***
 	$sql="INSERT INTO humo_persons SET
@@ -622,6 +827,14 @@ if (isset($_GET['add_parents'])){
 		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', pers_new_user='".$username."',
 		pers_new_date='".$gedcom_date."', pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
+	
+	// only needed for jewish settings
+	if($humo_option['admin_hebnight']=="y") {
+		$sql="UPDATE humo_persons SET 
+		pers_birth_date_hebnight='', pers_death_date_hebnight='', pers_buried_date_hebnight='' 
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($woman_gedcomnumber)."'";
+		$result=$dbh->query($sql);
+	}	
 
 	// *** Add parents to child record ***
 	$sql="UPDATE humo_persons SET
@@ -857,6 +1070,14 @@ if (isset($_GET['relation_add'])){
 	fam_new_date='".$gedcom_date."',
 	fam_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
+	
+	// only needed for jewish settings
+	if($humo_option['admin_hebnight']=="y") {
+		$sql="UPDATE humo_families SET 
+		fam_marr_notice_date_hebnight='', fam_marr_date_hebnight='', fam_marr_church_date_hebnight='', fam_marr_church_notice_date_hebnight=''  
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($fam_gedcomnumber)."'";
+		$result=$dbh->query($sql);
+	}
 
 	// *** Add N.N. partner ***
 	$sql="INSERT INTO humo_persons SET
@@ -873,6 +1094,14 @@ if (isset($_GET['relation_add'])){
 		pers_new_date='".$gedcom_date."', pers_new_time='".$gedcom_time."'";
 	//echo $sql.'<br>';
 	$result=$dbh->query($sql);
+	
+	// extra UPDATE queries if jewish dates enabled
+	if($humo_option['admin_hebnight']=="y") {
+		$sql="UPDATE humo_persons SET 
+		pers_birth_date_hebnight='', pers_death_date_hebnight='', pers_buried_date_hebnight='' 
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($partner_gedcomnumber)."'";
+		$result=$dbh->query($sql);
+	}	
 
 	// *** Add marriage to person records MAN and WOMAN ***
 	fams_add($pers_gedcomnumber, $fam_gedcomnumber);
@@ -923,6 +1152,14 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 	fam_new_time='".$gedcom_time."'";
 	//echo $sql.'<br>';
 	$result=$dbh->query($sql);
+	
+	// only needed for jewish settings
+	if($humo_option['admin_hebnight']=="y") {
+		$sql="UPDATE humo_families SET 
+		fam_marr_notice_date_hebnight='', fam_marr_date_hebnight='', fam_marr_church_date_hebnight='', fam_marr_church_notice_date_hebnight='' 
+		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($fam_gedcomnumber)."'";
+		$result=$dbh->query($sql);
+	}
 
 	// *** Add marriage to person records MAN and WOMAN ***
 	fams_add($man_gedcomnumber, $fam_gedcomnumber);
@@ -1001,6 +1238,22 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 		fam_changed_time='".$gedcom_time."'
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($_POST['marriage'])."'";
 		$result=$dbh->query($sql);
+		
+		// only needed for jewish settings
+		if($humo_option['admin_hebnight']=="y") {
+			$f_m_n_d_h = ""; $f_m_d_h = ""; $f_m_c_d_h = ""; $f_m_c_n_d_h="";
+			if(isset($_POST["fam_marr_notice_date_hebnight"]))  $f_m_n_d_h = $_POST["fam_marr_notice_date_hebnight"];
+			if(isset($_POST["fam_marr_date_hebnight"]))  $f_m_d_h = $_POST["fam_marr_date_hebnight"];
+			if(isset($_POST["fam_marr_church_date_hebnight"]))  $f_m_c_d_h = $_POST["fam_marr_church_date_hebnight"];
+			if(isset($_POST["fam_marr_church_notice_date_hebnight"]))  $f_m_c_n_d_h = $_POST["fam_marr_church_notice_date_hebnight"];
+			$sql="UPDATE humo_families SET 
+			fam_marr_notice_date_hebnight='".$editor_cls->text_process($f_m_n_d_h)."', 
+			fam_marr_date_hebnight='".$editor_cls->text_process($f_m_d_h)."', 
+			fam_marr_church_date_hebnight='".$editor_cls->text_process($f_m_c_d_h)."', 
+			fam_marr_church_notice_date_hebnight='".$editor_cls->text_process($f_m_c_n_d_h)."' 
+			WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($_POST['marriage'])."'";
+			$result=$dbh->query($sql);
+		}
 
 		family_tree_update($tree_id);
 	}

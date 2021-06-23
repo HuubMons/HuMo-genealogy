@@ -142,7 +142,7 @@ function create_rel_array ($gednr)  {
 				// *** Check for parents ***
 				if ($person_manDb->pers_famc AND !in_array($person_manDb->pers_famc,$trackfamc)){ 
 				
-					$trackfamc[] =	$person_manDb->pers_famc;	
+					$trackfamc[] = $person_manDb->pers_famc;
 
 					@$familyDb = $db_functions->get_family($person_manDb->pers_famc);
 					if ($familyDb->fam_man){
@@ -1048,7 +1048,7 @@ global  $rel_arrayspouseX, $rel_arrayX, $foundX_nr; // for Chinese
 			}
 			else {
 				$relarrY = $rel_arrayY;
-			}			
+			}
 			$arrnumY=0; if(isset($ancsarrY)) reset($ancsarrY);
 			$count=$foundY_nr;
 			while($count!=0) {
@@ -1314,7 +1314,7 @@ global  $rel_arrayspouseX, $rel_arrayX, $foundX_nr; // for Chinese
 		if ($generY == 4) { $temptext = 'oldeforældre'; }
 		if ($generY == 5) { $temptext = 'tip oldeforældre'; }
 		if ($generY == 6) { $temptext = 'tip tip oldeforældre'; }
-		if ($generY == 7) { $temptext = 'tip tip tip oldeforældre'; }		
+		if ($generY == 7) { $temptext = 'tip tip tip oldeforældre'; }
 		$gennr=$generY-4;
 		if ($generY >  7) { $temptext = $gennr.' gange tip oldeforældre'; }
 		if($temptext != '') {

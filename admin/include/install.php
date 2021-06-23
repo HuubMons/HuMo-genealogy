@@ -149,17 +149,19 @@ if(!isset($_POST['install_tables2'])){
 	echo '<p><input type="checkbox" name="table_trees" '.$check_trees.'> '.
 		__('(Re) create all family tree tables. <b>*** ALL EXISTING FAMILY TREES WILL BE REMOVED! ***</b>').'<br>';
 
-	echo '<p><b>'.__('Are you sure? Old settings will be deleted!').'</b><br>';
+	//echo '<p><b>'.__('Are you sure? Old settings will be deleted!').'</b><br>';
 
 	if(isset($_POST['install_tables'])){
-		echo '<p>'.__('install').' ';
+		echo '<p>'.__('Install').' ';
 		echo '<input type="Submit" name="install_tables2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
 		echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
 	}
 	else{
 		//echo '<p><b>'.__('Are you sure? Old settings will be deleted!').'</b><br>';
-		echo '<p><input type="Submit" name="install_tables" value='.__('install').'>';
+		echo '<p><input type="Submit" name="install_tables" value='.__('Install').'>';
 	}
+
+	echo ' <b>'.__('Are you sure? Old settings will be deleted!').'</b><br>';
 
 	echo '</form>';
 }

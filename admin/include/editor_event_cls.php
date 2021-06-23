@@ -41,7 +41,7 @@ function event_text($event_kind){
 // *** REMARK: queries can be found in editor_inc.php! ***
 function show_event($event_connect_kind,$event_connect_id,$event_kind){
  	global $dbh, $tree_id, $page, $field_date, $field_text, $joomlastring;
-	global $editor_cls, $path_prefix, $tree_pict_path;
+	global $editor_cls, $path_prefix, $tree_pict_path, $humo_option;
 
 	$text='';
 
@@ -99,6 +99,12 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_connect_kind=='source') $event_group='event_source=1';
 
 	// *** Show all events EXCEPT for events allready processed by person data (profession etc.) ***
+	
+	// Don't show Brit Mila and/or Bar Mitzva if user set them to be displayed among person data
+	$hebtext='';
+	if($humo_option['admin_brit']=="y") {  $hebtext .= " AND event_gedcom!='_BRTM'  "; }
+	if($humo_option['admin_barm']=="y") {  $hebtext .= " AND event_gedcom!='BARM' AND event_gedcom!='BASM' "; }
+
 	if ($event_kind=='person'){
 		$qry="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."'
@@ -113,12 +119,13 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			AND event_kind!='death_declaration'
 			AND event_kind!='burial_witness'
 			AND event_kind!='profession'
-			AND event_kind!='picture'
+			AND event_kind!='picture' ".$hebtext."
 			ORDER BY event_kind, event_order";
 	}
 	elseif ($event_kind=='name'){
+		$hebclause=""; if($humo_option['admin_hebname'] == 'y') {  $hebclause=" AND event_gedcom!='_HEBN' "; }
 		$qry="SELECT * FROM humo_events
-			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND event_kind='name' ORDER BY event_order";
+			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND event_kind='name' ".$hebclause."ORDER BY event_order";
 	}
 	elseif ($event_kind=='NPFX'){
 		$qry="SELECT * FROM humo_events
@@ -208,6 +215,12 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='<td style="border-right:0px;">';
 			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
 		$text.='</td><td style="border-left:0px;">';
+		
+			// Don't show Brit Mila and/or Bar Mitzva in event list if user set them to be displayed among person data
+			$hebtext='';
+			if($humo_option['admin_brit']=="y") {     $hebtext .= " AND event_gedcom!='_BRTM'  "; }
+			if($humo_option['admin_barm']=="y") {  $hebtext .= " AND event_gedcom!='BARM' AND event_gedcom!='BASM'";	}
+			
 			$count_event=$dbh->query("SELECT * FROM humo_events
 				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."'
 				AND event_kind!='name'
@@ -221,7 +234,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				AND event_kind!='death_declaration'
 				AND event_kind!='burial_witness'
 				AND event_kind!='profession'
-				AND event_kind!='picture'
+				AND event_kind!='picture' ".$hebtext."
 				ORDER BY event_kind, event_order");
 			$count=$count_event->rowCount();
 			$text.=$count.' x '.__('Events');
@@ -1088,10 +1101,12 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 
 			$event='_ADPN'; $selected=''; if ($data_listDb->event_gedcom==$event){ $selected=' SELECTED'; }
 			$text.='<option value="'.$event.'"'.$selected.'>_ADPN '.__('Adopted name').'</option>';
-
-			$event='_HEBN'; $selected=''; if ($data_listDb->event_gedcom==$event){ $selected=' SELECTED'; }
-			$text.='<option value="'.$event.'"'.$selected.'>_HEBN '.__('Hebrew name').'</option>';
-
+			
+			if($humo_option['admin_hebname']!="y" ) {  // display here if user didn't set to be displayed in main name section
+				$event='_HEBN'; $selected=''; if ($data_listDb->event_gedcom==$event){ $selected=' SELECTED'; }
+				$text.='<option value="'.$event.'"'.$selected.'>_HEBN '.__('Hebrew name').'</option>';
+			}
+			
 			$event='_CENN'; $selected=''; if ($data_listDb->event_gedcom==$event){ $selected=' SELECTED'; }
 			$text.='<option value="'.$event.'"'.$selected.'>_CENN '.__('Census name').'</option>';
 

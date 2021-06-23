@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 10:34+0100\n"
-"PO-Revision-Date: 2018-11-17 10:34+0100\n"
+"POT-Creation-Date: 2019-04-30 18:47+0200\n"
+"PO-Revision-Date: 2019-04-30 18:48+0200\n"
 "Last-Translator: António Duarte <123quetreta@openmailbox.org>\n"
 "Language-Team: Portuguese (http://www.transifex.com/humo-gen/humo-gen/"
 "language/pt/)\n"
@@ -29,29 +29,29 @@ msgstr ""
 msgid "You are not authorised to see this page."
 msgstr "Não tem autorização para aceder a esta página."
 
-#: address.php:15 address.php:19 admin/include/editor.php:1826
-#: admin/include/editor.php:1831 admin/include/editor.php:1957
-#: admin/include/editor.php:2767 admin/include/editor.php:2772
-#: admin/include/editor.php:3759 admin/include/editor.php:4017
+#: address.php:15 address.php:19 admin/include/editor.php:2057
+#: admin/include/editor.php:2062 admin/include/editor.php:2188
+#: admin/include/editor.php:3007 admin/include/editor.php:3012
+#: admin/include/editor.php:3999 admin/include/editor.php:4257
 #: admin/include/editor_sources.php:96 admin/include/editor_sources.php:151
 #: admin/include/editor_sources.php:158 admin/include/trees_cls.php:1729
-#: header.php:233 include/person_cls.php:1741 include/person_cls.php:1744
+#: header.php:233 include/person_cls.php:1799 include/person_cls.php:1802
 #: source.php:227
 msgid "Address"
 msgstr "Endereço"
 
-#: address.php:20 admin/include/editor.php:3761 admin/include/editor.php:4019
-#: list.php:1476 list.php:1484 source.php:226
+#: address.php:20 admin/include/editor.php:4001 admin/include/editor.php:4259
+#: list.php:1485 list.php:1493 source.php:226
 msgid "Zip code"
 msgstr "CP ou CEP"
 
-#: address.php:21 admin/include/editor.php:1828 list.php:1408 list.php:1437
-#: list.php:1465 list.php:1473 list.php:1780 list.php:1792 source.php:105
+#: address.php:21 admin/include/editor.php:2059 list.php:1417 list.php:1446
+#: list.php:1474 list.php:1482 list.php:1789 list.php:1801 source.php:105
 #: source.php:110 source.php:231 sources.php:123
 msgid "Place"
 msgstr "Local"
 
-#: address.php:22 admin/include/editor.php:3765 admin/include/editor.php:4020
+#: address.php:22 admin/include/editor.php:4005 admin/include/editor.php:4260
 msgid "Phone"
 msgstr "Telefone"
 
@@ -59,7 +59,7 @@ msgstr "Telefone"
 msgid "Address by person"
 msgstr "Endereço por pessoa"
 
-#: addresses.php:68 admin/include/trees_cls.php:1858 menu.php:470
+#: addresses.php:68 admin/include/trees_cls.php:1868 menu.php:471
 msgid "Addresses"
 msgstr "Endereços"
 
@@ -71,14 +71,14 @@ msgstr "Cidade"
 msgid "Street"
 msgstr "Rua"
 
-#: addresses.php:80 admin/include/editor.php:724 admin/include/editor.php:1020
-#: admin/include/editor.php:1290 admin/include/editor.php:3143
+#: addresses.php:80 admin/include/editor.php:822 admin/include/editor.php:1127
+#: admin/include/editor.php:1397 admin/include/editor.php:3383
 #: admin/include/editor_person_select.php:95
 #: admin/include/gedcom_export.php:504 admin/include/language_editor.php:270
 #: admin/include/make_db_maps.php:935 admin/include/trees_cls.php:869
 #: admin/include/trees_cls.php:907 admin/include/trees_cls.php:981
 #: include/mainindex_cls.php:98 include/mainindex_cls.php:416
-#: latest_changes.php:107 list.php:1307 list.php:1565
+#: latest_changes.php:79 list.php:1316 list.php:1574
 #: list_places_families.php:438 menu.php:78 photoalbum.php:378
 #: relations.php:3081 relations.php:3120 relations.php:3215
 msgid "Search"
@@ -151,8 +151,8 @@ msgstr ""
 msgid "No humo_backup file found on server."
 msgstr "Não se encontraram ficheiros de backup no servidor."
 
-#: admin/include/backup.php:58 admin/include/backup.php:113
-#: admin/include/backup.php:116
+#: admin/include/backup.php:58 admin/include/backup.php:126
+#: admin/include/backup.php:129
 msgid "Restore database"
 msgstr "Restaurar o banco de dados"
 
@@ -193,24 +193,32 @@ msgid ""
 msgstr ""
 "Ficheiro de backup inválido: tem de ter uma extensão \".sql\" ou \".sql.zip\""
 
-#: admin/include/backup.php:98 admin/include/editor_event_cls.php:1267
-#: admin/include/editor_event_cls.php:1276
+#: admin/include/backup.php:97
+msgid "Select a file"
+msgstr ""
+
+#: admin/include/backup.php:98
+msgid "no file chosen"
+msgstr ""
+
+#: admin/include/backup.php:111 admin/include/editor_event_cls.php:1282
+#: admin/include/editor_event_cls.php:1291
 msgid "Upload"
 msgstr "Enviar"
 
-#: admin/include/backup.php:98
+#: admin/include/backup.php:111
 msgid "File will be deleted after successful restore"
 msgstr "O ficheiro será apagado após a restauração se a mesma tiver êxito"
 
-#: admin/include/backup.php:109
+#: admin/include/backup.php:122
 msgid "No backup files found in admin/backup_tmp..."
 msgstr "Não se encontraram ficheiros na pasta admin/backup_tmp..."
 
-#: admin/include/backup.php:118
+#: admin/include/backup.php:131
 msgid "IMPORTANT"
 msgstr "IMPORTANTE"
 
-#: admin/include/backup.php:119
+#: admin/include/backup.php:132
 msgid ""
 "<li>Only use files with .sql.zip or .sql extension. (Files you downloaded "
 "with HuMo-gen Backup automatically have a .sql.zip extension).</li>\n"
@@ -232,13 +240,13 @@ msgstr ""
 "admin/backup_tmp por qualquer outro meio, como seja um programa de ftp ou o "
 "painel de controle do seu alojamento na web.</li></ul>"
 
-#: admin/include/backup.php:135
+#: admin/include/backup.php:148
 msgid "Creating backup file. This may take some time. Please wait..."
 msgstr ""
 "Criando o ficheiro de backup. O processo pode demorar algum tempo. Por favor "
 "aguarde..."
 
-#: admin/include/backup.php:192
+#: admin/include/backup.php:205
 msgid ""
 "A backup file was saved to the server. We strongly suggest you download a "
 "copy to your computer in case you might need it later."
@@ -247,20 +255,20 @@ msgstr ""
 "envie uma cópia para o seu computador no caso de vir a necessitar dela mais "
 "tarde."
 
-#: admin/include/backup.php:207
+#: admin/include/backup.php:220
 msgid "Download backup file"
 msgstr "Descarregar o ficheiro de backup"
 
-#: admin/include/backup.php:247 admin/include/gedcom_export.php:658
+#: admin/include/backup.php:260 admin/include/gedcom_export.php:658
 msgid "Processed lines..."
 msgstr "Linhas processadas..."
 
-#: admin/include/backup.php:304
+#: admin/include/backup.php:317
 msgid "Database has been restored successfully!"
 msgstr "O banco de dados foi restaurado com sucesso!"
 
 #: admin/include/cal_date.php:10 admin/include/cal_date.php:18
-#: admin/include/editor.php:1473 admin/index.php:809
+#: admin/include/editor.php:1601 admin/index.php:809
 msgid "Calculated birth date"
 msgstr "Data de nascimento calculada"
 
@@ -285,15 +293,15 @@ msgstr ""
 msgid "Choose family"
 msgstr "Escolha a família"
 
-#: admin/include/cal_date.php:40 admin/include/editor.php:782
-#: admin/include/editor.php:1059 admin/include/editor.php:1339
-#: admin/include/editor.php:4217 admin/include/statistics.php:589
+#: admin/include/cal_date.php:40 admin/include/editor.php:880
+#: admin/include/editor.php:1166 admin/include/editor.php:1446
+#: admin/include/editor.php:4462 admin/include/statistics.php:589
 #: admin/include/statistics.php:668 admin/include/thumbs.php:142
 #: admin/include/user_notes.php:41 admin/include/user_notes.php:120
 msgid "Select"
 msgstr "Selecione"
 
-#: admin/include/cal_date.php:127 fanchart.php:694
+#: admin/include/cal_date.php:127 fanchart.php:695
 msgid "No dates"
 msgstr "Sem datas"
 
@@ -343,50 +351,50 @@ msgid "Are you sure you want to remove this page?"
 msgstr "Confirma a remoção desta página?"
 
 #: admin/include/cms_pages.php:106 admin/include/cms_pages.php:175
-#: admin/include/editor.php:3385 admin/include/editor.php:3661
-#: admin/include/editor.php:3868 admin/include/editor_inc.php:50
-#: admin/include/editor_inc.php:485 admin/include/editor_inc.php:727
-#: admin/include/editor_inc.php:1412 admin/include/editor_inc.php:1784
-#: admin/include/editor_inc.php:1880 admin/include/gedcom.php:185
+#: admin/include/editor.php:3625 admin/include/editor.php:3901
+#: admin/include/editor.php:4108 admin/include/editor_inc.php:50
+#: admin/include/editor_inc.php:674 admin/include/editor_inc.php:940
+#: admin/include/editor_inc.php:1665 admin/include/editor_inc.php:2037
+#: admin/include/editor_inc.php:2133 admin/include/gedcom.php:185
 #: admin/include/gedcom_export.php:606 admin/include/gedcom_export.php:614
 #: admin/include/gedcom_export.php:625 admin/include/gedcom_export.php:648
 #: admin/include/groups.php:170 admin/include/groups.php:558
-#: admin/include/install.php:156 admin/include/settings_admin.php:179
-#: admin/include/settings_admin.php:189 admin/include/settings_admin.php:197
-#: admin/include/settings_admin.php:211 admin/include/settings_admin.php:220
-#: admin/include/settings_admin.php:228 admin/include/settings_admin.php:249
-#: admin/include/settings_admin.php:417 admin/include/settings_admin.php:450
-#: admin/include/settings_admin.php:486 admin/include/thumbs.php:709
+#: admin/include/install.php:156 admin/include/settings_admin.php:206
+#: admin/include/settings_admin.php:216 admin/include/settings_admin.php:224
+#: admin/include/settings_admin.php:238 admin/include/settings_admin.php:247
+#: admin/include/settings_admin.php:255 admin/include/settings_admin.php:276
+#: admin/include/settings_admin.php:444 admin/include/settings_admin.php:477
+#: admin/include/settings_admin.php:513 admin/include/thumbs.php:709
 #: admin/include/trees.php:117 admin/include/trees_cls.php:1263
 #: admin/include/trees_cls.php:1268 admin/include/trees_cls.php:1279
 #: admin/include/trees_cls.php:1284 admin/include/trees_cls.php:1295
 #: admin/include/trees_cls.php:1300 admin/include/trees_cls.php:1313
 #: admin/include/trees_cls.php:1318 admin/include/user_notes.php:65
-#: admin/include/users.php:66 mailform.php:123
+#: admin/include/users.php:74 mailform.php:123
 msgid "Yes"
 msgstr "Sim"
 
 #: admin/include/cms_pages.php:107 admin/include/cms_pages.php:176
-#: admin/include/editor.php:3386 admin/include/editor.php:3662
-#: admin/include/editor.php:3869 admin/include/editor_inc.php:51
-#: admin/include/editor_inc.php:486 admin/include/editor_inc.php:728
-#: admin/include/editor_inc.php:1413 admin/include/editor_inc.php:1785
-#: admin/include/editor_inc.php:1881 admin/include/gedcom.php:186
+#: admin/include/editor.php:3626 admin/include/editor.php:3902
+#: admin/include/editor.php:4109 admin/include/editor_inc.php:51
+#: admin/include/editor_inc.php:675 admin/include/editor_inc.php:941
+#: admin/include/editor_inc.php:1666 admin/include/editor_inc.php:2038
+#: admin/include/editor_inc.php:2134 admin/include/gedcom.php:186
 #: admin/include/gedcom_export.php:607 admin/include/gedcom_export.php:615
 #: admin/include/gedcom_export.php:626 admin/include/gedcom_export.php:647
 #: admin/include/groups.php:171 admin/include/groups.php:560
-#: admin/include/install.php:157 admin/include/settings_admin.php:180
-#: admin/include/settings_admin.php:190 admin/include/settings_admin.php:198
-#: admin/include/settings_admin.php:212 admin/include/settings_admin.php:221
-#: admin/include/settings_admin.php:229 admin/include/settings_admin.php:250
-#: admin/include/settings_admin.php:418 admin/include/settings_admin.php:451
-#: admin/include/settings_admin.php:487 admin/include/thumbs.php:710
+#: admin/include/install.php:157 admin/include/settings_admin.php:207
+#: admin/include/settings_admin.php:217 admin/include/settings_admin.php:225
+#: admin/include/settings_admin.php:239 admin/include/settings_admin.php:248
+#: admin/include/settings_admin.php:256 admin/include/settings_admin.php:277
+#: admin/include/settings_admin.php:445 admin/include/settings_admin.php:478
+#: admin/include/settings_admin.php:514 admin/include/thumbs.php:710
 #: admin/include/trees.php:118 admin/include/trees_cls.php:1264
 #: admin/include/trees_cls.php:1267 admin/include/trees_cls.php:1280
 #: admin/include/trees_cls.php:1283 admin/include/trees_cls.php:1296
 #: admin/include/trees_cls.php:1299 admin/include/trees_cls.php:1314
 #: admin/include/trees_cls.php:1317 admin/include/user_notes.php:66
-#: admin/include/users.php:67 mailform.php:124
+#: admin/include/users.php:75 mailform.php:124
 msgid "No"
 msgstr "Não"
 
@@ -449,10 +457,10 @@ msgid "Published"
 msgstr "Publicado"
 
 #: admin/include/cms_pages.php:366 admin/include/cms_pages.php:369
-#: admin/include/cms_pages.php:462 admin/include/editor.php:1388
-#: admin/include/editor.php:2327 admin/include/editor.php:3568
-#: admin/include/editor.php:3780 admin/include/editor.php:4044
-#: admin/include/editor.php:4236 admin/include/editor_sources.php:207
+#: admin/include/cms_pages.php:462 admin/include/editor.php:1495
+#: admin/include/editor.php:2567 admin/include/editor.php:3808
+#: admin/include/editor.php:4020 admin/include/editor.php:4284
+#: admin/include/editor.php:4481 admin/include/editor_sources.php:207
 #: admin/include/language_editor.php:281 admin/include/make_db_maps.php:285
 #: admin/include/make_db_maps.php:326 admin/include/make_db_maps.php:346
 #: admin/include/make_db_maps.php:360 admin/include/make_db_maps.php:401
@@ -481,27 +489,27 @@ msgstr "Item/ categoria de menú"
 msgid "Remove menu"
 msgstr "Eliminar menú"
 
-#: admin/include/cms_pages.php:473 admin/include/editor.php:1391
-#: admin/include/editor.php:1781 admin/include/editor.php:1871
-#: admin/include/editor.php:2722 admin/include/editor.php:3565
-#: admin/include/editor.php:3777 admin/include/editor.php:4041
-#: admin/include/editor_event_cls.php:268
-#: admin/include/editor_event_cls.php:282
-#: admin/include/editor_event_cls.php:294
-#: admin/include/editor_event_cls.php:306
-#: admin/include/editor_event_cls.php:318
-#: admin/include/editor_event_cls.php:329
-#: admin/include/editor_event_cls.php:341
-#: admin/include/editor_event_cls.php:353
-#: admin/include/editor_event_cls.php:365
-#: admin/include/editor_event_cls.php:377
-#: admin/include/editor_event_cls.php:402
-#: admin/include/editor_event_cls.php:434
-#: admin/include/editor_event_cls.php:437
-#: admin/include/editor_event_cls.php:630
-#: admin/include/editor_event_cls.php:642 admin/include/editor_sources.php:386
+#: admin/include/cms_pages.php:473 admin/include/editor.php:1498
+#: admin/include/editor.php:2012 admin/include/editor.php:2102
+#: admin/include/editor.php:2962 admin/include/editor.php:3805
+#: admin/include/editor.php:4017 admin/include/editor.php:4281
+#: admin/include/editor_event_cls.php:281
+#: admin/include/editor_event_cls.php:295
+#: admin/include/editor_event_cls.php:307
+#: admin/include/editor_event_cls.php:319
+#: admin/include/editor_event_cls.php:331
+#: admin/include/editor_event_cls.php:342
+#: admin/include/editor_event_cls.php:354
+#: admin/include/editor_event_cls.php:366
+#: admin/include/editor_event_cls.php:378
+#: admin/include/editor_event_cls.php:390
+#: admin/include/editor_event_cls.php:415
+#: admin/include/editor_event_cls.php:447
+#: admin/include/editor_event_cls.php:450
+#: admin/include/editor_event_cls.php:643
+#: admin/include/editor_event_cls.php:655 admin/include/editor_sources.php:386
 #: admin/include/favorites.php:117 admin/include/log.php:184
-#: admin/include/users.php:215
+#: admin/include/users.php:223
 msgid "Add"
 msgstr "Adicionar"
 
@@ -515,15 +523,15 @@ msgstr "Adicionar"
 #: admin/include/make_db_maps.php:312 admin/include/make_db_maps.php:336
 #: admin/include/make_db_maps.php:370 admin/include/make_db_maps.php:387
 #: admin/include/make_db_maps.php:411 admin/include/make_db_maps.php:1006
-#: admin/include/settings_admin.php:127 admin/include/settings_admin.php:175
-#: admin/include/settings_admin.php:201 admin/include/settings_admin.php:258
-#: admin/include/settings_admin.php:394 admin/include/settings_admin.php:410
-#: admin/include/settings_admin.php:446 admin/include/settings_admin.php:456
-#: admin/include/settings_admin.php:468 admin/include/settings_admin.php:482
-#: admin/include/settings_admin.php:495 admin/include/thumbs.php:189
-#: admin/include/trees_cls.php:272 admin/include/trees_cls.php:357
-#: admin/include/trees_cls.php:360 admin/include/users.php:109
-#: user_settings.php:122
+#: admin/include/settings_admin.php:154 admin/include/settings_admin.php:202
+#: admin/include/settings_admin.php:228 admin/include/settings_admin.php:285
+#: admin/include/settings_admin.php:421 admin/include/settings_admin.php:437
+#: admin/include/settings_admin.php:473 admin/include/settings_admin.php:483
+#: admin/include/settings_admin.php:495 admin/include/settings_admin.php:509
+#: admin/include/settings_admin.php:522 admin/include/settings_admin.php:555
+#: admin/include/thumbs.php:189 admin/include/trees_cls.php:272
+#: admin/include/trees_cls.php:357 admin/include/trees_cls.php:360
+#: admin/include/users.php:117 user_settings.php:122
 msgid "Change"
 msgstr "Alterar"
 
@@ -568,89 +576,89 @@ msgstr "Índice principal standard"
 msgid "Set per language"
 msgstr "Definir para cada linguagem"
 
-#: admin/include/editor.php:127 admin/include/editor.php:1676
-#: admin/include/editor.php:3472 admin/include/editor.php:3570
-#: admin/include/editor.php:3712 admin/include/editor.php:3782
-#: admin/include/editor.php:3970 admin/include/editor.php:4045
+#: admin/include/editor.php:127 admin/include/editor.php:1907
+#: admin/include/editor.php:3712 admin/include/editor.php:3810
+#: admin/include/editor.php:3952 admin/include/editor.php:4022
+#: admin/include/editor.php:4210 admin/include/editor.php:4285
 #: admin/include/index_inc.php:426 admin/include/thumbs.php:647
-#: fanchart.php:757 include/calculate_age_cls.php:235
+#: fanchart.php:758 include/calculate_age_cls.php:235
 #: include/calculate_age_cls.php:261 include/calculate_age_cls.php:350
 #: include/calculate_age_cls.php:376
 msgid "or"
 msgstr "ou"
 
 # Nomen Nescio: unknown name.
-#: admin/include/editor.php:147 admin/include/editor.php:999
-#: admin/include/editor.php:1005 admin/include/editor.php:1145
-#: admin/include/editor.php:1150 admin/include/editor.php:1327
-#: admin/include/editor.php:1332 admin/include/editor_cls.php:189
-#: admin/include/editor_event_cls.php:913
-#: admin/include/editor_event_cls.php:922 admin/include/editor_inc.php:602
-#: admin/include/editor_inc.php:617 admin/include/editor_inc.php:867
-#: include/person_cls.php:387 include/person_cls.php:389
-#: include/person_cls.php:390 include/person_cls.php:391
-#: include/person_cls.php:392 include/person_cls.php:738
-#: include/person_cls.php:892 include/person_cls.php:906
-#: include/person_cls.php:956 include/person_cls.php:973
-#: include/person_cls.php:1090 include/person_cls.php:1801
-#: include/person_cls.php:1821 include/person_cls.php:1834
-#: include/witness.php:103 include/witness.php:109 list.php:146
+#: admin/include/editor.php:147 admin/include/editor.php:1106
+#: admin/include/editor.php:1112 admin/include/editor.php:1252
+#: admin/include/editor.php:1257 admin/include/editor.php:1434
+#: admin/include/editor.php:1439 admin/include/editor_cls.php:194
+#: admin/include/editor_event_cls.php:926
+#: admin/include/editor_event_cls.php:935 admin/include/editor_inc.php:799
+#: admin/include/editor_inc.php:822 admin/include/editor_inc.php:1088
+#: include/person_cls.php:432 include/person_cls.php:434
+#: include/person_cls.php:435 include/person_cls.php:436
+#: include/person_cls.php:437 include/person_cls.php:783
+#: include/person_cls.php:938 include/person_cls.php:952
+#: include/person_cls.php:1002 include/person_cls.php:1019
+#: include/person_cls.php:1136 include/person_cls.php:1859
+#: include/person_cls.php:1879 include/person_cls.php:1892
+#: include/witness.php:103 include/witness.php:109 list.php:155
 #: list_places_families.php:148 report_ancestor.php:614
 #: report_ancestor.php:1187 report_ancestor.php:1297 report_descendant.php:805
 msgid "N.N."
 msgstr "N.N."
 
-#: admin/include/editor.php:626 admin/include/editor_user_settings.php:56
+#: admin/include/editor.php:724 admin/include/editor_user_settings.php:56
 #: admin/include/groups.php:629 admin/include/make_db_maps.php:574
-#: admin/include/trees.php:293 list.php:1752 menu.php:21 menu.php:375
+#: admin/include/trees.php:293 list.php:1761 menu.php:21 menu.php:376
 #: statistics.php:53
 msgid "Family tree"
 msgstr "Árvore de Família"
 
-#: admin/include/editor.php:630 maps.php:39 menu.php:23
+#: admin/include/editor.php:728 maps.php:39 menu.php:23
 msgid "Select a family tree:"
 msgstr "Escolha uma árvore de família:"
 
-#: admin/include/editor.php:701 menu.php:90
+#: admin/include/editor.php:799 menu.php:90
 msgid "Favourites list:"
 msgstr "Lista de favoritos:"
 
-#: admin/include/editor.php:719 admin/include/editor.php:845
-#: admin/include/editor.php:1159 admin/include/gedcom_export.php:500
+#: admin/include/editor.php:817 admin/include/editor.php:943
+#: admin/include/editor.php:1266 admin/include/gedcom_export.php:500
 #: admin/include/tree_check.php:700 admin/include/trees_cls.php:874
 #: family.php:2382 relations.php:3086
 msgid "Person"
 msgstr "Pessoa"
 
-#: admin/include/editor.php:720 admin/include/editor.php:1398
-#: admin/include/editor_event_cls.php:24 admin/include/editor_event_cls.php:266
-#: admin/include/editor_inc.php:1019 admin/include/editor_person_select.php:90
+#: admin/include/editor.php:818 admin/include/editor.php:1505
+#: admin/include/editor_event_cls.php:24 admin/include/editor_event_cls.php:279
+#: admin/include/editor_inc.php:1272 admin/include/editor_person_select.php:90
 #: admin/include/gedcom_export.php:501 birthday_list.php:84 family.php:2313
-#: family.php:2384 include/mainindex_cls.php:600 list.php:1749
-#: list_names.php:288 list_names.php:290 mailform.php:25 mailform.php:110
+#: family.php:2384 include/mainindex_cls.php:600 list.php:1758
+#: list_names.php:290 list_names.php:292 mailform.php:25 mailform.php:110
 #: register.php:61 user_settings.php:52
 msgid "Name"
 msgstr "Nome"
 
-#: admin/include/editor.php:721 admin/include/editor_person_select.php:93
+#: admin/include/editor.php:819 admin/include/editor_person_select.php:93
 #: admin/include/gedcom_export.php:502
 msgid "or ID:"
 msgstr "ou ID:"
 
-#: admin/include/editor.php:754 admin/include/trees_cls.php:940
+#: admin/include/editor.php:852 admin/include/trees_cls.php:940
 #: admin/include/trees_cls.php:1011 relations.php:3172 relations.php:3255
 msgid "Person not found"
 msgstr "Pessoa não encontrada"
 
-#: admin/include/editor.php:756
+#: admin/include/editor.php:854
 msgid "Found:"
 msgstr "Resultado:"
 
-#: admin/include/editor.php:789 admin/include/editor.php:790
+#: admin/include/editor.php:887 admin/include/editor.php:888
 msgid "Add person"
 msgstr "Adicionar pessoa"
 
-#: admin/include/editor.php:802
+#: admin/include/editor.php:900
 msgid ""
 "Examples of date entries, using English month abbreviations: jan, feb, mar, "
 "apr, may, jun, jul, aug, sep, oct, nov, dec or month numbers:"
@@ -659,11 +667,11 @@ msgstr ""
 "jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez, ou a numeração "
 "dos meses:"
 
-#: admin/include/editor.php:803
+#: admin/include/editor.php:901
 msgid "13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, between 1986 and 1987"
 msgstr "13 out 1813, 13-10-1813, 13/10/1813, 13.10.1813, entre 1986 e 1987"
 
-#: admin/include/editor.php:804
+#: admin/include/editor.php:902
 msgid ""
 "In all text fields it's possible to add a hidden text/ own remarks by using "
 "# characters. Example: #Check birthday.#"
@@ -672,193 +680,205 @@ msgstr ""
 "pessoais através de caracteres  #. Por exemplo: #Conferir a data de "
 "nascimento.#"
 
-#: admin/include/editor.php:806
+#: admin/include/editor.php:904
 msgid "= click to open selection popup screen."
 msgstr "= ckique para abrir o menú de seleção"
 
-#: admin/include/editor.php:807
+#: admin/include/editor.php:905
 msgid "= click to open extended editor items."
 msgstr "= ckique para abrir ítens do editor extendido."
 
-#: admin/include/editor.php:851 admin/include/editor.php:1178
-#: admin/include/editor.php:2184 admin/include/editor.php:2335
-#: admin/include/editor.php:2460 admin/include/editor.php:3060
-#: admin/include/editor.php:3061 admin/include/editor.php:3124
-#: admin/include/editor.php:3125 include/marriage_cls.php:580
+#: admin/include/editor.php:949 admin/include/editor.php:1285
+#: admin/include/editor.php:2415 admin/include/editor.php:2575
+#: admin/include/editor.php:2700 admin/include/editor.php:3300
+#: admin/include/editor.php:3301 admin/include/editor.php:3364
+#: admin/include/editor.php:3365 include/marriage_cls.php:580
 msgid "marriage/ relation"
 msgstr "Matrimónio / Relação"
 
-#: admin/include/editor.php:856 admin/include/editor.php:1209
+#: admin/include/editor.php:954 admin/include/editor.php:1316
 #: admin/include/trees_cls.php:1616 family.php:1533 family.php:1550
 msgid "Children"
 msgstr "Filhos"
 
-#: admin/include/editor.php:859 admin/include/editor.php:1233
-#: admin/include/editor.php:2994
+#: admin/include/editor.php:957 admin/include/editor.php:1340
+#: admin/include/editor.php:3234
 msgid "Bulk add family members"
 msgstr ""
 
-#: admin/include/editor.php:892 admin/include/editor.php:3581
-#: admin/include/editor.php:4055
+#: admin/include/editor.php:990 admin/include/editor.php:3821
+#: admin/include/editor.php:4295
 msgid "Preview"
 msgstr "Pré-Visualização"
 
-#: admin/include/editor.php:996
+#: admin/include/editor.php:1103
 msgid "Add child to family:"
 msgstr "Adicionar o filho à família:"
 
-#: admin/include/editor.php:1001 admin/include/editor.php:1328
-#: admin/include/editor.php:2217 admin/include/editor.php:2325
-#: admin/include/editor.php:2359 admin/include/editor.php:3024
-#: admin/include/editor_event_cls.php:915 admin/include/tree_check.php:1404
+#: admin/include/editor.php:1108 admin/include/editor.php:1435
+#: admin/include/editor.php:2448 admin/include/editor.php:2565
+#: admin/include/editor.php:2599 admin/include/editor.php:3264
+#: admin/include/editor_event_cls.php:928 admin/include/tree_check.php:1404
 #: include/language_date.php:88 include/language_date.php:93
 #: include/language_date.php:98 include/language_date.php:115
-#: include/person_cls.php:895 include/person_cls.php:961 relations.php:2001
+#: include/person_cls.php:941 include/person_cls.php:1007 relations.php:2001
 msgid "and"
 msgstr "e"
 
-#: admin/include/editor.php:1018 admin/include/editor.php:3231
-#: admin/include/editor.php:3266 family.php:1530 family.php:1546
+#: admin/include/editor.php:1125 admin/include/editor.php:3471
+#: admin/include/editor.php:3506 family.php:1530 family.php:1546
 msgid "Child"
 msgstr "Filho"
 
-#: admin/include/editor.php:1052
+#: admin/include/editor.php:1159
 msgid "Select child"
 msgstr "Selecionar o filho"
 
-#: admin/include/editor.php:1062
+#: admin/include/editor.php:1169
 msgid "Or add a new child:"
 msgstr "Ou adicionar novo filho:"
 
-#: admin/include/editor.php:1138 report_ancestor.php:229
+#: admin/include/editor.php:1245 report_ancestor.php:229
 msgid "Parents"
 msgstr "Progenitores"
 
-#: admin/include/editor.php:1155
+#: admin/include/editor.php:1262
 msgid "Add parents"
 msgstr "Adicionar os progenitores"
 
-#: admin/include/editor.php:1184 admin/include/editor.php:2512
-#: admin/include/editor.php:3068 include/marriage_cls.php:265
+#: admin/include/editor.php:1291 admin/include/editor.php:2752
+#: admin/include/editor.php:3308 include/marriage_cls.php:265
 #: include/marriage_cls.php:266 include/marriage_cls.php:267
 #: include/marriage_cls.php:274 include/marriage_cls.php:275
 msgid "Married"
 msgstr "Matrimónio: "
 
-#: admin/include/editor.php:1221
+#: admin/include/editor.php:1328
 msgid "Connect child"
 msgstr "Ligar o filho"
 
-#: admin/include/editor.php:1221
+#: admin/include/editor.php:1328
 msgid "Add child"
 msgstr "Adicionar filho"
 
-#: admin/include/editor.php:1229
+#: admin/include/editor.php:1336
 msgid "Add marriage/ relation"
 msgstr "Adicionar Matrimónio / Relacionamento"
 
-#: admin/include/editor.php:1236
+#: admin/include/editor.php:1343
 msgid ""
 "Editing in HuMo-gen?<br>\n"
 "<b>Always backup your data!</b>"
 msgstr ""
 
-#: admin/include/editor.php:1262 admin/include/editor.php:1264
+#: admin/include/editor.php:1369 admin/include/editor.php:1371
 msgid "parents"
 msgstr "Progenitores"
 
-#: admin/include/editor.php:1283
+#: admin/include/editor.php:1390
 msgid "There are no parents."
 msgstr "Não existem progenitores referenciados."
 
-#: admin/include/editor.php:1284
+#: admin/include/editor.php:1391
 msgid "Add new parents (N.N. & N.N.)"
 msgstr "Adicionar novos progenitores (N.N. & N.N.)"
 
-#: admin/include/editor.php:1284
+#: admin/include/editor.php:1391
 msgid "or select an existing family as parents."
 msgstr "ou selecionar pessoas existentes como progenitores."
 
-#: admin/include/editor.php:1322
+#: admin/include/editor.php:1429
 msgid "Select parents:"
 msgstr "Selecionar os progenitores:"
 
-#: admin/include/editor.php:1337
+#: admin/include/editor.php:1444
 msgid "Results are limited, use search to find more parents."
 msgstr ""
 "Os resultados são limitados, utilize a pesquisa para encontrar mais "
 "progenitores."
 
 # Buried
-#: admin/include/editor.php:1351 admin/include/editor.php:1397
-#: admin/include/editor.php:1504 admin/include/editor.php:1558
-#: admin/include/editor.php:1599 admin/include/editor.php:1695
-#: admin/include/editor.php:1776 admin/include/editor.php:1866
-#: admin/include/editor.php:2095 admin/include/editor.php:2121
-#: admin/include/editor.php:2312 admin/include/editor.php:2395
-#: admin/include/editor.php:2431 admin/include/editor.php:2458
-#: admin/include/editor.php:2561 admin/include/editor.php:2588
-#: admin/include/editor.php:2624 admin/include/editor.php:2717
-#: admin/include/editor.php:2821 admin/include/editor_event_cls.php:206
-#: admin/include/editor_event_cls.php:236
-#: admin/include/editor_event_cls.php:391
-#: admin/include/editor_event_cls.php:424 family.php:2378
+#: admin/include/editor.php:1458 admin/include/editor.php:1504
+#: admin/include/editor.php:1632 admin/include/editor.php:1689
+#: admin/include/editor.php:1740 admin/include/editor.php:1789
+#: admin/include/editor.php:1830 admin/include/editor.php:1926
+#: admin/include/editor.php:2007 admin/include/editor.php:2097
+#: admin/include/editor.php:2326 admin/include/editor.php:2352
+#: admin/include/editor.php:2552 admin/include/editor.php:2635
+#: admin/include/editor.php:2671 admin/include/editor.php:2698
+#: admin/include/editor.php:2801 admin/include/editor.php:2828
+#: admin/include/editor.php:2864 admin/include/editor.php:2957
+#: admin/include/editor.php:3061 admin/include/editor_event_cls.php:213
+#: admin/include/editor_event_cls.php:249
+#: admin/include/editor_event_cls.php:404
+#: admin/include/editor_event_cls.php:437 family.php:2378
 msgid "[+]"
 msgstr "[+]"
 
-#: admin/include/editor.php:1351 admin/include/editor.php:2312
-#: admin/include/gedcom_export.php:582 list.php:1455 list.php:1542
-#: list_names.php:211 statistics.php:1212 statistics.php:1395
+#: admin/include/editor.php:1458 admin/include/editor.php:2552
+#: admin/include/gedcom_export.php:582 list.php:1464 list.php:1551
+#: list_names.php:213 statistics.php:752 statistics.php:935
 msgid "All"
 msgstr "Tudo"
 
-#: admin/include/editor.php:1354
+#: admin/include/editor.php:1461
 msgid "Delete person"
 msgstr "Apagar a pessoa"
 
-#: admin/include/editor.php:1400 admin/include/editor.php:3146
-#: admin/include/editor.php:3199 admin/include/editor.php:3274 list.php:1762
+#: admin/include/editor.php:1507 admin/include/editor.php:1511
+#: admin/include/editor.php:3386 admin/include/editor.php:3439
+#: admin/include/editor.php:3514 list.php:1771
 msgid "firstname"
 msgstr "Nome Próprio e Intermédios"
 
-#: admin/include/editor.php:1400 admin/include/editor.php:1403
-#: admin/include/editor.php:3144 admin/include/editor.php:3197
-#: admin/include/editor.php:3272 list.php:1339
+#: admin/include/editor.php:1507 admin/include/editor.php:1514
+#: admin/include/editor.php:3384 admin/include/editor.php:3437
+#: admin/include/editor.php:3512 list.php:1348
 msgid "prefix"
 msgstr "prefixo"
 
-#: admin/include/editor.php:1400 admin/include/editor.php:1406
-#: admin/include/editor.php:3145 admin/include/editor.php:3198
-#: admin/include/editor.php:3273 list.php:1768
+#: admin/include/editor.php:1507 admin/include/editor.php:1517
+#: admin/include/editor.php:3385 admin/include/editor.php:3438
+#: admin/include/editor.php:3513 list.php:1777
 msgid "lastname"
 msgstr "Apelido"
 
-#: admin/include/editor.php:1400 admin/include/editor_event_cls.php:269
-#: admin/include/editor_event_cls.php:1081 admin/include/trees_cls.php:1576
-#: include/person_cls.php:1199
+#: admin/include/editor.php:1509 admin/include/editor.php:1533
+#: admin/include/editor_event_cls.php:282
+#: admin/include/editor_event_cls.php:1107 include/person_cls.php:1249
+msgid "Hebrew name"
+msgstr "Nome judaico"
+
+#: admin/include/editor.php:1511 admin/include/editor_event_cls.php:282
+#: admin/include/editor_event_cls.php:1094 admin/include/trees_cls.php:1576
+#: include/person_cls.php:1245
 msgid "Nickname"
 msgstr "Alcunha"
 
-#: admin/include/editor.php:1403
+#: admin/include/editor.php:1514
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr " Por exemplo: d' ou  van_ (use _ para representar um espaço em branco)"
 
-#: admin/include/editor.php:1407
+#: admin/include/editor.php:1518
 msgid "patronymic"
 msgstr "Patrónimo"
 
-#: admin/include/editor.php:1419 admin/include/editor.php:1498
-#: admin/include/editor.php:1529 admin/include/editor.php:1572
-#: admin/include/editor.php:1626 admin/include/editor.php:1709
-#: admin/include/editor.php:1844 admin/include/editor.php:2032
-#: admin/include/editor.php:2049 admin/include/editor.php:2410
-#: admin/include/editor.php:2445 admin/include/editor.php:2474
-#: admin/include/editor.php:2575 admin/include/editor.php:2602
-#: admin/include/editor.php:2638 admin/include/editor.php:2679
-#: admin/include/editor.php:2694 admin/include/editor.php:2780
-#: admin/include/editor.php:4024 admin/include/editor.php:4032
-#: admin/include/editor_event_cls.php:1155
-#: admin/include/editor_event_cls.php:1166 admin/include/editor_sources.php:54
+#: admin/include/editor.php:1534
+msgid "For example: Joseph ben Hirsch Zvi"
+msgstr ""
+
+#: admin/include/editor.php:1547 admin/include/editor.php:1626
+#: admin/include/editor.php:1657 admin/include/editor.php:1803
+#: admin/include/editor.php:1857 admin/include/editor.php:1940
+#: admin/include/editor.php:2075 admin/include/editor.php:2263
+#: admin/include/editor.php:2280 admin/include/editor.php:2650
+#: admin/include/editor.php:2685 admin/include/editor.php:2714
+#: admin/include/editor.php:2815 admin/include/editor.php:2842
+#: admin/include/editor.php:2878 admin/include/editor.php:2919
+#: admin/include/editor.php:2934 admin/include/editor.php:3020
+#: admin/include/editor.php:4264 admin/include/editor.php:4272
+#: admin/include/editor_event_cls.php:1170
+#: admin/include/editor_event_cls.php:1181 admin/include/editor_sources.php:54
 #: admin/include/editor_sources.php:60 admin/include/editor_sources.php:66
 #: admin/include/editor_sources.php:72 admin/include/editor_sources.php:78
 #: admin/include/editor_sources.php:84 admin/include/editor_sources.php:90
@@ -875,122 +895,143 @@ msgstr "Patrónimo"
 msgid "source"
 msgstr "Fonte"
 
-#: admin/include/editor.php:1432 admin/include/editor.php:1548
-#: admin/include/editor.php:1588 admin/include/editor.php:1686
-#: admin/include/editor.php:1728 admin/include/editor.php:2425
-#: admin/include/editor.php:2453 admin/include/editor.php:2553
-#: admin/include/editor.php:2583 admin/include/editor.php:2611
-#: admin/include/editor.php:2661 admin/include/editor.php:3558
-#: admin/include/editor.php:3769 admin/include/editor.php:4037
-#: admin/include/editor_event_cls.php:1142
-#: admin/include/editor_event_cls.php:1254 admin/include/editor_sources.php:84
-#: admin/include/editor_sources.php:139 admin/include/gedcom.php:1511
+#: admin/include/editor.php:1560 admin/include/editor.php:1676
+#: admin/include/editor.php:1729 admin/include/editor.php:1778
+#: admin/include/editor.php:1819 admin/include/editor.php:1917
+#: admin/include/editor.php:1959 admin/include/editor.php:2665
+#: admin/include/editor.php:2693 admin/include/editor.php:2793
+#: admin/include/editor.php:2823 admin/include/editor.php:2851
+#: admin/include/editor.php:2901 admin/include/editor.php:3798
+#: admin/include/editor.php:4009 admin/include/editor.php:4277
+#: admin/include/editor_event_cls.php:1157
+#: admin/include/editor_event_cls.php:1269 admin/include/editor_sources.php:84
+#: admin/include/editor_sources.php:139 admin/include/gedcom.php:1549
 msgid "text"
 msgstr "Texto"
 
-#: admin/include/editor.php:1461 admin/include/groups.php:502
+#: admin/include/editor.php:1589 admin/include/groups.php:502
 msgid "Privacy filter"
 msgstr "Filtro de Privacidade"
 
-#: admin/include/editor.php:1465 admin/include/trees_cls.php:1590
+#: admin/include/editor.php:1593 admin/include/trees_cls.php:1590
 msgid "alive"
 msgstr "Vivo"
 
-#: admin/include/editor.php:1468
+#: admin/include/editor.php:1596
 msgid "deceased"
 msgstr "Finado"
 
-#: admin/include/editor.php:1483 admin/include/editor.php:3141
+#: admin/include/editor.php:1611 admin/include/editor.php:3381
 #: admin/include/editor_sources.php:54
 msgid "Sex"
 msgstr "Sexo"
 
-#: admin/include/editor.php:1485 admin/include/editor.php:2483
+#: admin/include/editor.php:1613 admin/include/editor.php:2723
 #: report_ancestor.php:1437
 msgid "male"
 msgstr "Masculino"
 
-#: admin/include/editor.php:1487 admin/include/editor.php:2487
+#: admin/include/editor.php:1615 admin/include/editor.php:2727
 #: report_ancestor.php:1434
 msgid "female"
 msgstr "Feminino"
 
-#: admin/include/editor.php:1505 admin/include/editor.php:3147
-#: admin/include/editor.php:3148 admin/include/editor_sources.php:60
+#: admin/include/editor.php:1633 admin/include/editor.php:3387
+#: admin/include/editor.php:3388 admin/include/editor_sources.php:60
 #: birthday_list.php:83 family.php:2222 googlemaps/namesearch.php:189
 #: include/fpdf16/fpdfextend.php:101 include/fpdf16/fpdfextend.php:102
-#: include/mainindex_cls.php:566 include/person_cls.php:1328
-#: include/person_cls.php:1329 list.php:1394 list.php:1400 list.php:1750
+#: include/mainindex_cls.php:566 include/person_cls.php:1375
+#: include/person_cls.php:1376 list.php:1403 list.php:1409 list.php:1759
 #: maps.php:627 maps.php:736 report_ancestor.php:1117 report_ancestor.php:1430
 #: report_descendant.php:796
 msgid "born"
 msgstr "nascimento "
 
-#: admin/include/editor.php:1507 admin/include/editor.php:1560
-#: admin/include/editor.php:1601 admin/include/editor.php:1697
-#: admin/include/editor.php:1826 admin/include/editor.php:1955
-#: admin/include/editor.php:2398 admin/include/editor.php:2433
-#: admin/include/editor.php:2461 admin/include/editor.php:2563
-#: admin/include/editor.php:2590 admin/include/editor.php:2626
-#: admin/include/editor.php:2767 admin/include/editor.php:3534
-#: admin/include/editor.php:3763 admin/include/editor.php:4018
+#: admin/include/editor.php:1635 admin/include/editor.php:1707
+#: admin/include/editor.php:1757 admin/include/editor.php:1791
+#: admin/include/editor.php:1832 admin/include/editor.php:1928
+#: admin/include/editor.php:2057 admin/include/editor.php:2186
+#: admin/include/editor.php:2638 admin/include/editor.php:2673
+#: admin/include/editor.php:2701 admin/include/editor.php:2803
+#: admin/include/editor.php:2830 admin/include/editor.php:2866
+#: admin/include/editor.php:3007 admin/include/editor.php:3774
+#: admin/include/editor.php:4003 admin/include/editor.php:4258
 #: admin/include/editor_cls.php:39 admin/include/editor_sources.php:315
 msgid "date"
 msgstr "data"
 
-#: admin/include/editor.php:1509 admin/include/editor.php:1560
-#: admin/include/editor.php:1601 admin/include/editor.php:1697
-#: admin/include/editor.php:1828 admin/include/editor.php:2398
-#: admin/include/editor.php:2433 admin/include/editor.php:2461
-#: admin/include/editor.php:2563 admin/include/editor.php:2590
-#: admin/include/editor.php:2626 admin/include/editor.php:2769
-#: admin/include/editor.php:3100 admin/include/editor.php:3201
-#: admin/include/editor.php:3204 admin/include/editor.php:3276
-#: admin/include/editor.php:3279 admin/include/editor.php:3534
-#: admin/include/editor.php:3763 admin/include/editor.php:4018
-#: admin/include/editor_event_cls.php:1139
-#: admin/include/editor_event_cls.php:1251 admin/include/editor_sources.php:322
+#: admin/include/editor.php:1637 admin/include/editor.php:1707
+#: admin/include/editor.php:1757 admin/include/editor.php:1791
+#: admin/include/editor.php:1832 admin/include/editor.php:1928
+#: admin/include/editor.php:2059 admin/include/editor.php:2638
+#: admin/include/editor.php:2673 admin/include/editor.php:2701
+#: admin/include/editor.php:2803 admin/include/editor.php:2830
+#: admin/include/editor.php:2866 admin/include/editor.php:3009
+#: admin/include/editor.php:3340 admin/include/editor.php:3441
+#: admin/include/editor.php:3444 admin/include/editor.php:3516
+#: admin/include/editor.php:3519 admin/include/editor.php:3774
+#: admin/include/editor.php:4003 admin/include/editor.php:4258
+#: admin/include/editor_event_cls.php:1154
+#: admin/include/editor_event_cls.php:1266 admin/include/editor_sources.php:322
 msgid "place"
 msgstr "Local"
 
-#: admin/include/editor.php:1538 admin/include/trees_cls.php:1580
+#: admin/include/editor.php:1666 admin/include/trees_cls.php:1580
 msgid "birth time"
 msgstr "Hora do nascimento"
 
-#: admin/include/editor.php:1541 include/person_cls.php:190
+#: admin/include/editor.php:1669 include/person_cls.php:235
 msgid "stillborn child"
 msgstr "Nado-morto"
 
-#: admin/include/editor.php:1559 admin/include/editor_sources.php:66
+#: admin/include/editor.php:1690 include/language_event.php:16
+msgid "Brit Mila"
+msgstr "Brit Mila"
+
+#: admin/include/editor.php:1708 admin/include/editor.php:1758
+msgid ""
+"To display this, the option \"Show events\" has to be checked in \"Users -> "
+"Groups\""
+msgstr ""
+
+#: admin/include/editor.php:1741 include/language_event.php:14
+msgid "Bat Mitzvah"
+msgstr "Baptismo Mitzvah"
+
+#: admin/include/editor.php:1742 include/language_event.php:13
+msgid "Bar Mitzvah"
+msgstr "Bar Mitzvah"
+
+#: admin/include/editor.php:1790 admin/include/editor_sources.php:66
 #: family.php:2225 googlemaps/namesearch.php:192
 #: include/fpdf16/fpdfextend.php:112 include/fpdf16/fpdfextend.php:113
-#: include/mainindex_cls.php:570 include/person_cls.php:1386
-#: include/person_cls.php:1387 list.php:1394 list.php:1400 list.php:1750
+#: include/mainindex_cls.php:570 include/person_cls.php:1433
+#: include/person_cls.php:1434 list.php:1403 list.php:1409 list.php:1759
 #: maps.php:630 maps.php:739 timelines.php:40
 msgid "baptised"
 msgstr " Batismo"
 
-#: admin/include/editor.php:1580 admin/include/trees_cls.php:1591
-#: include/person_cls.php:1357 include/person_cls.php:1359
+#: admin/include/editor.php:1811 admin/include/trees_cls.php:1591
+#: include/person_cls.php:1404 include/person_cls.php:1406
 msgid "religion"
 msgstr "Religião"
 
-#: admin/include/editor.php:1600 admin/include/editor.php:3149
-#: admin/include/editor.php:3150 admin/include/editor_sources.php:72
+#: admin/include/editor.php:1831 admin/include/editor.php:3389
+#: admin/include/editor.php:3390 admin/include/editor_sources.php:72
 #: birthday_list.php:85 googlemaps/namesearch.php:198
 #: include/fpdf16/fpdfextend.php:123 include/fpdf16/fpdfextend.php:124
-#: include/mainindex_cls.php:574 include/person_cls.php:1488
-#: include/person_cls.php:1489 list.php:1423 list.php:1429 list.php:1751
+#: include/mainindex_cls.php:574 include/person_cls.php:1545
+#: include/person_cls.php:1546 list.php:1432 list.php:1438 list.php:1760
 #: maps.php:633 maps.php:742 report_ancestor.php:1117 report_ancestor.php:1430
 msgid "died"
 msgstr "Óbito "
 
-#: admin/include/editor.php:1605 admin/include/editor.php:2483
-#: admin/include/editor.php:2487
+#: admin/include/editor.php:1836 admin/include/editor.php:2723
+#: admin/include/editor.php:2727
 msgid "Age"
 msgstr "Idade"
 
-#: admin/include/editor.php:1614
+#: admin/include/editor.php:1845
 msgid ""
 "If death year and age are used, then birth year is calculated automatically "
 "(when empty)."
@@ -998,80 +1039,81 @@ msgstr ""
 "Se a idade e o ano em que ocorreu o óbito forem usados, então a data de "
 "nascimento é automaticamente calculada (quando em branco)."
 
-#: admin/include/editor.php:1634 admin/include/trees_cls.php:1583
+#: admin/include/editor.php:1865 admin/include/trees_cls.php:1583
 msgid "death time"
 msgstr "Hora do óbito "
 
-#: admin/include/editor.php:1636
+#: admin/include/editor.php:1867
 msgid "cause"
 msgstr "Causa"
 
-#: admin/include/editor.php:1642 include/person_cls.php:1439
+#: admin/include/editor.php:1873 include/person_cls.php:1487
+#: include/person_cls.php:1515
 msgid "murdered"
 msgstr "homicídio"
 
-#: admin/include/editor.php:1645 include/person_cls.php:1440
+#: admin/include/editor.php:1876 include/person_cls.php:1488
 msgid "drowned"
 msgstr "afogamento"
 
-#: admin/include/editor.php:1648 include/person_cls.php:1441
+#: admin/include/editor.php:1879 include/person_cls.php:1489
 msgid "perished"
 msgstr "acidente"
 
-#: admin/include/editor.php:1651 include/person_cls.php:1442
+#: admin/include/editor.php:1882 include/person_cls.php:1490
 msgid "killed in action"
 msgstr "morte em ação"
 
-#: admin/include/editor.php:1654 include/person_cls.php:1443
+#: admin/include/editor.php:1885 include/person_cls.php:1491
 msgid "being missed"
 msgstr "desaparecimento"
 
-#: admin/include/editor.php:1657 include/person_cls.php:1444
+#: admin/include/editor.php:1888 include/person_cls.php:1492
 msgid "committed suicide"
 msgstr "suicídio"
 
-#: admin/include/editor.php:1660 include/person_cls.php:1445
+#: admin/include/editor.php:1891 include/person_cls.php:1493
 msgid "executed"
 msgstr "execução"
 
-#: admin/include/editor.php:1663 include/person_cls.php:1446
+#: admin/include/editor.php:1894 include/person_cls.php:1494
 msgid "died young"
 msgstr "morte prematura"
 
-#: admin/include/editor.php:1666 include/person_cls.php:1447
+#: admin/include/editor.php:1897 include/person_cls.php:1495
 msgid "died unmarried"
 msgstr "faleceu sem contraír matrimónio"
 
-#: admin/include/editor.php:1669 include/person_cls.php:1448
+#: admin/include/editor.php:1900 include/person_cls.php:1496
 msgid "registration"
 msgstr "Registo"
 
-#: admin/include/editor.php:1672 include/person_cls.php:1449
+#: admin/include/editor.php:1903 include/person_cls.php:1497
 msgid "declared death"
 msgstr "Morte declarada"
 
-#: admin/include/editor.php:1696 admin/include/editor.php:1717
+#: admin/include/editor.php:1927 admin/include/editor.php:1948
 msgid "Buried"
 msgstr "Enterro"
 
-#: admin/include/editor.php:1717 admin/include/editor.php:1721
+#: admin/include/editor.php:1948 admin/include/editor.php:1952
 #: admin/include/trees_cls.php:1585 include/fpdf16/fpdfextend.php:135
-#: include/fpdf16/fpdfextend.php:136 include/person_cls.php:1540
+#: include/fpdf16/fpdfextend.php:136 include/person_cls.php:1598
 msgid "cremation"
 msgstr "Cremação"
 
-#: admin/include/editor.php:1719 admin/include/editor_sources.php:78
+#: admin/include/editor.php:1950 admin/include/editor_sources.php:78
 #: googlemaps/namesearch.php:201 include/fpdf16/fpdfextend.php:143
-#: include/fpdf16/fpdfextend.php:144 include/person_cls.php:1544 list.php:1423
-#: list.php:1429 list.php:1751 maps.php:636 maps.php:745 timelines.php:64
+#: include/fpdf16/fpdfextend.php:144 include/person_cls.php:1602 list.php:1432
+#: list.php:1438 list.php:1760 maps.php:636 maps.php:745 timelines.php:64
 msgid "buried"
 msgstr "sepultura"
 
-#: admin/include/editor.php:1738 admin/include/trees_cls.php:1592
+#: admin/include/editor.php:1969 admin/include/trees_cls.php:1592
 msgid "own code"
 msgstr "Código próprio"
 
-#: admin/include/editor.php:1749
+#: admin/include/editor.php:1980
 msgid ""
 "Use own code for your own remarks.<br>\n"
 "It's possible to use own code for special privacy options, see Admin > Users "
@@ -1086,75 +1128,75 @@ msgstr ""
 "ícone na pasta de imagens, e.g. 'pessoa.gif', e adicione 'pessoa' no campo "
 "de código próprio."
 
-#: admin/include/editor.php:1778 admin/include/editor.php:2719
-#: admin/include/editor.php:4195 header.php:230 list.php:1748
+#: admin/include/editor.php:2009 admin/include/editor.php:2959
+#: admin/include/editor.php:4440 header.php:230 list.php:1757
 #: list_places_families.php:568
 msgid "Places"
 msgstr "Locais"
 
-#: admin/include/editor.php:1868 admin/include/editor.php:3944
+#: admin/include/editor.php:2099 admin/include/editor.php:4184
 #: admin/index.php:856
 msgid "Shared addresses"
 msgstr "Endereços partilhados"
 
-#: admin/include/editor.php:1893
+#: admin/include/editor.php:2124
 msgid "(shared address by a person)"
 msgstr "(endereço partilhado por uma pessoa)"
 
-#: admin/include/editor.php:1968 admin/include/editor.php:3957
-#: admin/include/editor.php:3959
+#: admin/include/editor.php:2199 admin/include/editor.php:4197
+#: admin/include/editor.php:4199
 msgid "Select address"
 msgstr "Selecionar o endereço"
 
-#: admin/include/editor.php:1984
+#: admin/include/editor.php:2215
 msgid "Addressrole"
 msgstr "Addressrole"
 
-#: admin/include/editor.php:2020
+#: admin/include/editor.php:2251
 msgid "Text for person"
 msgstr "Texto para a pessoa"
 
-#: admin/include/editor.php:2040 include/show_sources.php:116
+#: admin/include/editor.php:2271 include/show_sources.php:116
 #: include/show_sources.php:129
 msgid "Source for person"
 msgstr "Fonte para a pessoa"
 
-#: admin/include/editor.php:2097 admin/include/editor.php:2822
+#: admin/include/editor.php:2328 admin/include/editor.php:3062
 msgid "Gedcom tags"
 msgstr "Tags Gedcom"
 
-#: admin/include/editor.php:2099 admin/include/editor.php:2102
-#: admin/include/editor.php:2824 admin/include/editor.php:2827
+#: admin/include/editor.php:2330 admin/include/editor.php:2333
+#: admin/include/editor.php:3064 admin/include/editor.php:3067
 #, php-format
 msgid "There are %d unprocessed gedcom tags."
 msgstr "Existem %d tags gedcom não processadas."
 
-#: admin/include/editor.php:2122 admin/include/user_notes.php:10
+#: admin/include/editor.php:2353 admin/include/user_notes.php:10
 #: admin/include/user_notes.php:14 admin/include/user_notes.php:92
 #: admin/index.php:803 family.php:2249
 msgid "User notes"
 msgstr "Notas do Utilizador"
 
-#: admin/include/editor.php:2124 admin/include/editor.php:2126
+#: admin/include/editor.php:2355 admin/include/editor.php:2357
 #: admin/include/user_notes.php:94 admin/include/user_notes.php:96
 #: family.php:2251 family.php:2253
 #, php-format
 msgid "There are %d user added notes."
 msgstr "Existem %d notas adicionadas pelo Utilizador."
 
-#: admin/include/editor.php:2147
+#: admin/include/editor.php:2378
 msgid "Added by"
 msgstr ""
 
-#: admin/include/editor.php:2152
+#: admin/include/editor.php:2383
 msgid "Changed by"
 msgstr ""
 
-#: admin/include/editor.php:2195
+#: admin/include/editor.php:2426
 msgid "Select marriage"
 msgstr "Escolha o matrimónio"
 
-#: admin/include/editor.php:2199 admin/include/tree_check.php:876
+#: admin/include/editor.php:2430 admin/include/tree_check.php:876
 #: admin/include/tree_check.php:1042 admin/include/tree_check.php:1046
 #: admin/include/tree_check.php:1091 include/marriage_cls.php:552
 #: list_places_families.php:421 report_ancestor.php:1430 timelines.php:109
@@ -1162,44 +1204,44 @@ msgstr "Escolha o matrimónio"
 msgid "marriage"
 msgstr "casamento"
 
-#: admin/include/editor.php:2231 admin/include/editor.php:2244
+#: admin/include/editor.php:2462 admin/include/editor.php:2475
 msgid "Add relation"
 msgstr "Adicionar relacionamento"
 
-#: admin/include/editor.php:2235
+#: admin/include/editor.php:2466
 msgid "Add relation with new partner (N.N.)"
 msgstr "Adicionar relacionamento com um novo parceiro (N.N.)"
 
-#: admin/include/editor.php:2235
+#: admin/include/editor.php:2466
 msgid "or add relation with existing person as partner."
 msgstr "ou adicionar um relacionamento com uma pessoa já existente."
 
-#: admin/include/editor.php:2240 admin/include/editor.php:2339
-#: admin/include/editor.php:2366 admin/include/editor_person_select.php:5
+#: admin/include/editor.php:2471 admin/include/editor.php:2579
+#: admin/include/editor.php:2606 admin/include/editor_person_select.php:5
 #: admin/include/editor_person_select.php:6
 msgid "Select person"
 msgstr "Selecionar a pessoa"
 
-#: admin/include/editor.php:2316
+#: admin/include/editor.php:2556
 msgid "Delete relation"
 msgstr "Apagar o relacionamento"
 
-#: admin/include/editor.php:2397 admin/include/editor.php:2515
-#: admin/include/editor.php:3071 admin/include/editor_sources.php:103
+#: admin/include/editor.php:2637 admin/include/editor.php:2755
+#: admin/include/editor.php:3311 admin/include/editor_sources.php:103
 #: include/marriage_cls.php:52 include/marriage_cls.php:128
 #: include/marriage_cls.php:129 include/marriage_cls.php:130
 msgid "Living together"
 msgstr "Vida em comum"
 
-#: admin/include/editor.php:2419
+#: admin/include/editor.php:2659
 msgid "End date"
 msgstr "Data em que terminou"
 
-#: admin/include/editor.php:2432 admin/include/editor_sources.php:109
+#: admin/include/editor.php:2672 admin/include/editor_sources.php:109
 msgid "Notice of Marriage"
 msgstr "Registo do Casamento"
 
-#: admin/include/editor.php:2497
+#: admin/include/editor.php:2737
 msgid ""
 "If birth year of man or woman is empty it will be calculated automatically "
 "using age by marriage."
@@ -1207,282 +1249,282 @@ msgstr ""
 "Se a data de nascimento de um homem ou mulher estiver por preencher, será "
 "automaticamente calculada através da idade na altura do matrimónio."
 
-#: admin/include/editor.php:2506 admin/include/editor.php:3059
-#: admin/include/editor.php:3123
+#: admin/include/editor.php:2746 admin/include/editor.php:3299
+#: admin/include/editor.php:3363
 msgid "Relation Type"
 msgstr "Tipo de Relacionamento"
 
-#: admin/include/editor.php:2509 admin/include/editor.php:3065
-#: admin/include/editor.php:3112
+#: admin/include/editor.php:2749 admin/include/editor.php:3305
+#: admin/include/editor.php:3352
 msgid "Marriage/ Related"
 msgstr "Casada / Relacionada"
 
-#: admin/include/editor.php:2518 admin/include/editor.php:3074
+#: admin/include/editor.php:2758 admin/include/editor.php:3314
 #: include/marriage_cls.php:55
 msgid "Living apart together"
 msgstr "Vida em conjunto mas separada"
 
-#: admin/include/editor.php:2521 admin/include/editor.php:3077
+#: admin/include/editor.php:2761 admin/include/editor.php:3317
 #: include/marriage_cls.php:58
 msgid "Intentionally unmarried mother"
 msgstr "Mãe intencionalmente não casada"
 
-#: admin/include/editor.php:2524 admin/include/editor.php:3080
+#: admin/include/editor.php:2764 admin/include/editor.php:3320
 #: include/marriage_cls.php:62
 msgid "Homosexual"
 msgstr "Homossexual"
 
-#: admin/include/editor.php:2527 admin/include/editor.php:3083
+#: admin/include/editor.php:2767 admin/include/editor.php:3323
 msgid "Non_marital"
 msgstr "Não marital"
 
-#: admin/include/editor.php:2530 admin/include/editor.php:3086
+#: admin/include/editor.php:2770 admin/include/editor.php:3326
 #: include/marriage_cls.php:69 include/marriage_cls.php:75
 msgid "Extramarital"
 msgstr "Extramarital"
 
-#: admin/include/editor.php:2533 admin/include/editor.php:3089
-#: admin/include/editor.php:3174 admin/include/editor.php:3191
+#: admin/include/editor.php:2773 admin/include/editor.php:3329
+#: admin/include/editor.php:3414 admin/include/editor.php:3431
 #: include/marriage_cls.php:81
 msgid "Partner"
 msgstr "Companheiros"
 
-#: admin/include/editor.php:2536 admin/include/editor.php:3092
+#: admin/include/editor.php:2776 admin/include/editor.php:3332
 #: include/marriage_cls.php:84
 msgid "Registered"
 msgstr "Registado"
 
-#: admin/include/editor.php:2539 admin/include/editor.php:3095
+#: admin/include/editor.php:2779 admin/include/editor.php:3335
 #: include/marriage_cls.php:87
 msgid "Unknown relation"
 msgstr "Relacionamento desconhecido"
 
-#: admin/include/editor.php:2547 admin/include/editor.php:2654
+#: admin/include/editor.php:2787 admin/include/editor.php:2894
 msgid "Registrar"
 msgstr "Entidade que Emitiu o Registo"
 
-#: admin/include/editor.php:2562 admin/include/editor_sources.php:121
+#: admin/include/editor.php:2802 admin/include/editor_sources.php:121
 msgid "Religious Notice of Marriage"
 msgstr "Registo do Casamento Religioso"
 
-#: admin/include/editor.php:2589 admin/include/editor_sources.php:127
+#: admin/include/editor.php:2829 admin/include/editor_sources.php:127
 msgid "Religious Marriage"
 msgstr "Casamento Religioso"
 
-#: admin/include/editor.php:2620
+#: admin/include/editor.php:2860
 msgid "Religion"
 msgstr "Religião"
 
-#: admin/include/editor.php:2625 admin/include/editor_sources.php:133
+#: admin/include/editor.php:2865 admin/include/editor_sources.php:133
 msgid "Divorce"
 msgstr "Divórcio"
 
-#: admin/include/editor.php:2648
+#: admin/include/editor.php:2888
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr ""
 "Divórcio (use esta caixa de verificação para um divórcio sem mais dados)."
 
-#: admin/include/editor.php:2666
+#: admin/include/editor.php:2906
 msgid "Text by marriage"
 msgstr "Texto para o matrimónio"
 
-#: admin/include/editor.php:2686
+#: admin/include/editor.php:2926
 msgid "Source by marriage"
 msgstr "Fonte para o matrimónio"
 
-#: admin/include/editor.php:2916
+#: admin/include/editor.php:3156
 msgid "Use this icon to order children (drag and drop)"
 msgstr "Use este ícone para ordenar os filhos (arrastar e largar)"
 
-#: admin/include/editor.php:2918
+#: admin/include/editor.php:3158
 msgid "Or automatically order children:"
 msgstr "Ou ordenar automaticamente os filhos:"
 
-#: admin/include/editor.php:2918
+#: admin/include/editor.php:3158
 msgid "Automatic order children"
 msgstr "Ordenar automaticamente os filhos"
 
-#: admin/include/editor.php:2920
+#: admin/include/editor.php:3160
 msgid "Children are re-ordered."
 msgstr "Os filhos foram reordenados."
 
-#: admin/include/editor.php:2935
+#: admin/include/editor.php:3175
 msgid "Drag to change order (saves automatically)"
 msgstr "Arraste para alterar a ordem (gravação automática)"
 
-#: admin/include/editor.php:2935
+#: admin/include/editor.php:3175
 msgid "Drag to change order"
 msgstr "Arraste para alterar a ordem"
 
-#: admin/include/editor.php:2939
+#: admin/include/editor.php:3179
 msgid "Disconnect child"
 msgstr "Desligar o filho"
 
-#: admin/include/editor.php:3003
+#: admin/include/editor.php:3243
 msgid "Add new partner and children"
 msgstr ""
 
-#: admin/include/editor.php:3023
+#: admin/include/editor.php:3263
 msgid "Add children to existing relation:"
 msgstr ""
 
-#: admin/include/editor.php:3055
+#: admin/include/editor.php:3295
 msgid "Add new family to this person"
 msgstr ""
 
-#: admin/include/editor.php:3119
+#: admin/include/editor.php:3359
 msgid "Add children to this family"
 msgstr ""
 
-#: admin/include/editor.php:3153
+#: admin/include/editor.php:3393
 msgid " M "
 msgstr ""
 
-#: admin/include/editor.php:3154
+#: admin/include/editor.php:3394
 msgid " F "
 msgstr ""
 
-#: admin/include/editor.php:3155
+#: admin/include/editor.php:3395
 msgid " ? "
 msgstr ""
 
-#: admin/include/editor.php:3288
+#: admin/include/editor.php:3528
 msgid "Save entire family"
 msgstr ""
 
-#: admin/include/editor.php:3298
+#: admin/include/editor.php:3538
 msgid "Save entire family and add another"
 msgstr ""
 
-#: admin/include/editor.php:3380
+#: admin/include/editor.php:3620
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr "Confirma a eliminação desta fonte e de TODAS as fontes de referência?"
 
-#: admin/include/editor.php:3423
+#: admin/include/editor.php:3663
 msgid "Source is removed!"
 msgstr "A fonte foi apagada!"
 
-#: admin/include/editor.php:3427 admin/index.php:848
+#: admin/include/editor.php:3667 admin/index.php:848
 msgid "Shared sources"
 msgstr "Fontes partilhadas"
 
-#: admin/include/editor.php:3428
+#: admin/include/editor.php:3668
 msgid ""
 "These sources can be connected to multiple persons, families, events and "
 "other items."
 msgstr ""
 
-#: admin/include/editor.php:3444 admin/include/editor.php:3446
+#: admin/include/editor.php:3684 admin/include/editor.php:3686
 msgid "Select source"
 msgstr "Escolher a fonte"
 
-#: admin/include/editor.php:3466 admin/include/editor.php:3526
+#: admin/include/editor.php:3706 admin/include/editor.php:3766
 msgid "restricted"
 msgstr "Restrito"
 
-#: admin/include/editor.php:3474 admin/include/editor_sources.php:405
+#: admin/include/editor.php:3714 admin/include/editor_sources.php:405
 msgid "Add source"
 msgstr "Adicionar fonte"
 
-#: admin/include/editor.php:3482 admin/include/editor.php:3720
-#: admin/include/editor.php:3979 admin/include/editor_sources.php:205
+#: admin/include/editor.php:3722 admin/include/editor.php:3960
+#: admin/include/editor.php:4219 admin/include/editor_sources.php:205
 msgid "Option"
 msgstr "Opção"
 
-#: admin/include/editor.php:3482 admin/include/editor.php:3720
-#: admin/include/editor.php:3979 admin/include/editor_sources.php:206
+#: admin/include/editor.php:3722 admin/include/editor.php:3960
+#: admin/include/editor.php:4219 admin/include/editor_sources.php:206
 msgid "Value"
 msgstr "Valor"
 
-#: admin/include/editor.php:3496 source.php:43 source.php:46
+#: admin/include/editor.php:3736 source.php:43 source.php:46
 msgid "No valid source number."
 msgstr "O número da fonte é inválido."
 
-#: admin/include/editor.php:3520
+#: admin/include/editor.php:3760
 msgid "Status:"
 msgstr "Estado:"
 
-#: admin/include/editor.php:3523
+#: admin/include/editor.php:3763
 msgid "publish"
 msgstr "Publicar"
 
-#: admin/include/editor.php:3527
+#: admin/include/editor.php:3767
 msgid "restricted = only visible for selected user groups"
 msgstr "Restrito = somente visível pelos grupos de utilizadores selecionados"
 
-#: admin/include/editor.php:3531 admin/include/editor.php:3757
-#: admin/include/editor_event_cls.php:28 admin/include/editor_event_cls.php:316
-#: admin/include/editor_inc.php:1027 admin/include/trees_cls.php:1739
+#: admin/include/editor.php:3771 admin/include/editor.php:3997
+#: admin/include/editor_event_cls.php:28 admin/include/editor_event_cls.php:329
+#: admin/include/editor_inc.php:1280 admin/include/trees_cls.php:1739
 #: family.php:2427 source.php:51 source.php:56 source.php:223 sources.php:109
 msgid "Title"
 msgstr "Título"
 
-#: admin/include/editor.php:3533 source.php:138 source.php:143
+#: admin/include/editor.php:3773 source.php:138 source.php:143
 msgid "Subject"
 msgstr "Assunto"
 
-#: admin/include/editor.php:3536 source.php:221
+#: admin/include/editor.php:3776 source.php:221
 msgid "Repository"
 msgstr "Repositório"
 
-#: admin/include/editor.php:3551 source.php:87 source.php:99
+#: admin/include/editor.php:3791 source.php:87 source.php:99
 msgid "Publication"
 msgstr "Publicação"
 
-#: admin/include/editor.php:3551
+#: admin/include/editor.php:3791
 msgid "will be shown as a link."
 msgstr "serão exibidos como um link."
 
-#: admin/include/editor.php:3552 admin/include/favorites.php:83
+#: admin/include/editor.php:3792 admin/include/favorites.php:83
 #: include/fpdf16/fpdfextend.php:89 include/fpdf16/fpdfextend.php:90
-#: include/person_cls.php:1266 include/person_cls.php:1267 list.php:1410
-#: list.php:1418 source.php:116 source.php:121
+#: include/person_cls.php:1312 include/person_cls.php:1313 list.php:1419
+#: list.php:1427 source.php:116 source.php:121
 msgid "Own code"
 msgstr "Código próprio"
 
-#: admin/include/editor.php:3553 source.php:127 source.php:132
+#: admin/include/editor.php:3793 source.php:127 source.php:132
 msgid "Author"
 msgstr "Autor"
 
-#: admin/include/editor.php:3554 source.php:149 source.php:154
+#: admin/include/editor.php:3794 source.php:149 source.php:154
 msgid "Nr."
 msgstr "Nº."
 
-#: admin/include/editor.php:3555 source.php:160 source.php:165
+#: admin/include/editor.php:3795 source.php:160 source.php:165
 msgid "Kind"
 msgstr "Caro(a)"
 
-#: admin/include/editor.php:3556 source.php:171 source.php:176
+#: admin/include/editor.php:3796 source.php:171 source.php:176
 msgid "Archive"
 msgstr "Arquivo"
 
-#: admin/include/editor.php:3557 admin/include/editor_sources.php:187
-#: admin/include/editor_sources.php:327 list.php:1621 list_names.php:231
+#: admin/include/editor.php:3797 admin/include/editor_sources.php:187
+#: admin/include/editor_sources.php:327 list.php:1630 list_names.php:233
 #: list_places_families.php:454 photoalbum.php:294 source.php:181
 #: source.php:186 sources.php:61
 msgid "Page"
 msgstr "Página"
 
-#: admin/include/editor.php:3571 admin/include/editor.php:3783
-#: admin/include/editor.php:4046 admin/include/make_db_maps.php:315
+#: admin/include/editor.php:3811 admin/include/editor.php:4023
+#: admin/include/editor.php:4286 admin/include/make_db_maps.php:315
 #: admin/include/make_db_maps.php:339 admin/include/make_db_maps.php:390
 #: admin/include/make_db_maps.php:414
 msgid "Delete"
 msgstr "Apagar"
 
-#: admin/include/editor.php:3657
+#: admin/include/editor.php:3897
 msgid "Really remove repository with all repository links?"
 msgstr "Confirma a eliminação do repositório com todos os seus links?"
 
-#: admin/include/editor.php:3683
+#: admin/include/editor.php:3923
 msgid "Repository is removed!"
 msgstr "O repositório foi apagado!"
 
-#: admin/include/editor.php:3690 admin/index.php:852
+#: admin/include/editor.php:3930 admin/index.php:852
 msgid "Repositories"
 msgstr "Repositórios"
 
-#: admin/include/editor.php:3691
+#: admin/include/editor.php:3931
 msgid ""
 "A repository can be connected to a shared source. Edit a shared source to "
 "connect a repository."
@@ -1490,77 +1532,77 @@ msgstr ""
 "Um repositório pode ser conectado a uma fonte partilhada. Edite uma fonte "
 "partilhada para ligá-la a um repositório."
 
-#: admin/include/editor.php:3699 admin/include/editor.php:3701
+#: admin/include/editor.php:3939 admin/include/editor.php:3941
 msgid "Select repository"
 msgstr "Selecionar repositório"
 
-#: admin/include/editor.php:3713
+#: admin/include/editor.php:3953
 msgid "Add repository"
 msgstr "Adicionar repositório"
 
-#: admin/include/editor.php:3731
+#: admin/include/editor.php:3971
 msgid "No valid repository number."
 msgstr "Não existe um número de repositório válido."
 
-#: admin/include/editor.php:3772 mailform.php:26 register.php:62
+#: admin/include/editor.php:4012 mailform.php:26 register.php:62
 #: user_settings.php:53
 msgid "E-mail"
 msgstr "E-mail"
 
-#: admin/include/editor.php:3774 admin/include/editor_event_cls.php:31
-#: admin/include/editor_event_cls.php:1298
+#: admin/include/editor.php:4014 admin/include/editor_event_cls.php:31
+#: admin/include/editor_event_cls.php:1313
 msgid "URL/ Internet link"
 msgstr "Link de URL/ Internet"
 
-#: admin/include/editor.php:3863
+#: admin/include/editor.php:4103
 msgid ""
 "Are you sure you want to remove this address and ALL address references?"
 msgstr ""
 "Confirma a eliminação destes endereços e de TODAS as referências aos mesmos?"
 
-#: admin/include/editor.php:3916
+#: admin/include/editor.php:4156
 msgid "Address has been removed!"
 msgstr "O endereço foi apagado!"
 
-#: admin/include/editor.php:3945
+#: admin/include/editor.php:4185
 msgid ""
 "These addresses can be connected to multiple persons, families and other "
 "items."
 msgstr ""
 
-#: admin/include/editor.php:3971
+#: admin/include/editor.php:4211
 msgid "Add address"
 msgstr "Adicionar endereço"
 
-#: admin/include/editor.php:3996
+#: admin/include/editor.php:4236
 msgid "No valid address number."
 msgstr "Não existem números de endereço válidos."
 
-#: admin/include/editor.php:4071 admin/index.php:860
+#: admin/include/editor.php:4311 admin/index.php:860
 msgid "Rename places"
 msgstr "Renomear Locais"
 
-#: admin/include/editor.php:4196
+#: admin/include/editor.php:4441
 msgid "Select location"
 msgstr "Selecionar local"
 
-#: admin/include/editor.php:4211
+#: admin/include/editor.php:4456
 msgid "Person places"
 msgstr ""
 
-#: admin/include/editor.php:4213
+#: admin/include/editor.php:4458
 msgid "Family places"
 msgstr ""
 
-#: admin/include/editor.php:4215
+#: admin/include/editor.php:4460
 msgid "Other places (sources, events, addresses, etc.)"
 msgstr ""
 
-#: admin/include/editor.php:4224 admin/include/editor.php:4234
+#: admin/include/editor.php:4469 admin/include/editor.php:4479
 msgid "Change location"
 msgstr "Alterar local"
 
-#: admin/include/editor.php:4235
+#: admin/include/editor.php:4480
 msgid "Also change Google Maps table."
 msgstr "Alterar também a tabela de Mapas do Google."
 
@@ -1588,365 +1630,364 @@ msgstr "após"
 msgid "between"
 msgstr "entre"
 
+#: admin/include/editor_cls.php:61
+msgid "After nightfall"
+msgstr ""
+
 # Birth
-#: admin/include/editor_cls.php:202 include/person_cls.php:684 list.php:64
-#: list.php:168 list.php:177 list.php:1280 relations.php:3162
+#: admin/include/editor_cls.php:207 include/person_cls.php:729 list.php:64
+#: list.php:177 list.php:186 list.php:1289 relations.php:3162
 #: relations.php:3244 report_ancestor.php:742 report_ancestor.php:1117
 #: report_ancestor.php:1200 report_ancestor.php:1430 report_descendant.php:705
 msgid "*"
 msgstr "*"
 
 # Baptise
-#: admin/include/editor_cls.php:204 include/person_cls.php:688 list.php:71
-#: list.php:166 list.php:175 list.php:1283 relations.php:3159
+#: admin/include/editor_cls.php:209 include/person_cls.php:733 list.php:71
+#: list.php:175 list.php:184 list.php:1292 relations.php:3159
 #: relations.php:3241 report_ancestor.php:746 report_descendant.php:710
 msgid "~"
 msgstr "~"
 
 # Death sign
-#: admin/include/editor_cls.php:207 include/person_cls.php:693 list.php:85
-#: list.php:186 list.php:195 list.php:1289 report_ancestor.php:751
+#: admin/include/editor_cls.php:212 include/person_cls.php:738 list.php:85
+#: list.php:195 list.php:204 list.php:1298 report_ancestor.php:751
 #: report_ancestor.php:1117 report_ancestor.php:1166 report_descendant.php:716
 msgid "&#134;"
 msgstr "&#134;"
 
 # Buried
-#: admin/include/editor_cls.php:211 include/person_cls.php:697 list.php:92
-#: list.php:184 list.php:193 list.php:1292 report_ancestor.php:755
+#: admin/include/editor_cls.php:216 include/person_cls.php:742 list.php:92
+#: list.php:193 list.php:202 list.php:1301 report_ancestor.php:755
 #: report_descendant.php:721
 msgid "[]"
 msgstr "[]"
 
 #: admin/include/editor_event_cls.php:17 admin/include/editor_event_cls.php:35
-#: admin/include/editor_event_cls.php:426
+#: admin/include/editor_event_cls.php:439
 msgid "Picture/ Media"
 msgstr "Inagens/Media"
 
-#: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:393
-#: admin/include/editor_event_cls.php:1244 admin/include/editor_inc.php:1039
-#: admin/include/trees_cls.php:1731 list.php:1357 list.php:1365
+#: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:406
+#: admin/include/editor_event_cls.php:1259 admin/include/editor_inc.php:1292
+#: admin/include/trees_cls.php:1731 list.php:1366 list.php:1374
 msgid "Profession"
 msgstr "Profissão"
 
 # Language indicator, used for birthday RSS
-#: admin/include/editor_event_cls.php:19 admin/include/editor_event_cls.php:228
-#: admin/include/editor_event_cls.php:249
-#: admin/include/editor_event_cls.php:1288
-#: admin/include/editor_event_cls.php:1313 admin/include/editor_sources.php:167
+#: admin/include/editor_event_cls.php:19 admin/include/editor_event_cls.php:241
+#: admin/include/editor_event_cls.php:262
+#: admin/include/editor_event_cls.php:1303
+#: admin/include/editor_event_cls.php:1328 admin/include/editor_sources.php:167
 #: admin/include/editor_sources.php:175 admin/include/trees_cls.php:1732
 #: include/mainindex_cls.php:600
 msgid "Event"
 msgstr "Evento"
 
-#: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:339
-#: admin/include/editor_inc.php:1031 admin/include/trees_cls.php:1733
-#: include/person_cls.php:1321 include/witness.php:90
+#: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:352
+#: admin/include/editor_inc.php:1284 admin/include/trees_cls.php:1733
+#: include/person_cls.php:1368 include/witness.php:90
 msgid "birth declaration"
 msgstr "Certidão de nascimento"
 
-#: admin/include/editor_event_cls.php:21 admin/include/editor_event_cls.php:351
-#: admin/include/editor_inc.php:1033 admin/include/trees_cls.php:1734
-#: include/person_cls.php:1378 include/person_cls.php:1380
+#: admin/include/editor_event_cls.php:21 admin/include/editor_event_cls.php:364
+#: admin/include/editor_inc.php:1286 admin/include/trees_cls.php:1734
+#: include/person_cls.php:1425 include/person_cls.php:1427
 #: include/witness.php:91
 msgid "baptism witness"
 msgstr "Testemunha de batismo"
 
-#: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:363
-#: admin/include/editor_inc.php:1035 admin/include/trees_cls.php:1735
-#: include/person_cls.php:1480 include/person_cls.php:1482
+#: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:376
+#: admin/include/editor_inc.php:1288 admin/include/trees_cls.php:1735
+#: include/person_cls.php:1537 include/person_cls.php:1539
 #: include/witness.php:92
 msgid "death declaration"
 msgstr "Certidão de óbito"
 
-#: admin/include/editor_event_cls.php:23 admin/include/editor_event_cls.php:375
-#: admin/include/editor_inc.php:1037 admin/include/trees_cls.php:1736
-#: include/person_cls.php:1531 include/witness.php:93
+#: admin/include/editor_event_cls.php:23 admin/include/editor_event_cls.php:388
+#: admin/include/editor_inc.php:1290 admin/include/trees_cls.php:1736
+#: include/person_cls.php:1589 include/witness.php:93
 msgid "burial witness"
 msgstr "Testemunha do funeral"
 
-#: admin/include/editor_event_cls.php:25 admin/include/editor_event_cls.php:280
-#: admin/include/editor_inc.php:1021
+#: admin/include/editor_event_cls.php:25 admin/include/editor_event_cls.php:293
+#: admin/include/editor_inc.php:1274
 msgid "Prefix"
 msgstr ""
 
-#: admin/include/editor_event_cls.php:26 admin/include/editor_event_cls.php:292
-#: admin/include/editor_inc.php:1023
+#: admin/include/editor_event_cls.php:26 admin/include/editor_event_cls.php:305
+#: admin/include/editor_inc.php:1276
 msgid "Suffix"
 msgstr ""
 
-#: admin/include/editor_event_cls.php:27 admin/include/editor_event_cls.php:304
-#: admin/include/editor_inc.php:1025 admin/include/trees_cls.php:1738
+#: admin/include/editor_event_cls.php:27 admin/include/editor_event_cls.php:317
+#: admin/include/editor_inc.php:1278 admin/include/trees_cls.php:1738
 msgid "Title of Nobility"
 msgstr "Título Nobilitário"
 
 #: admin/include/editor_event_cls.php:29
-#: admin/include/editor_event_cls.php:1296
+#: admin/include/editor_event_cls.php:1311
 msgid "Adoption"
 msgstr "Adopção"
 
-#: admin/include/editor_event_cls.php:30 admin/include/editor_event_cls.php:327
-#: admin/include/editor_inc.php:1029 admin/include/trees_cls.php:1740
+#: admin/include/editor_event_cls.php:30 admin/include/editor_event_cls.php:340
+#: admin/include/editor_inc.php:1282 admin/include/trees_cls.php:1740
 msgid "Title of Lordship"
 msgstr "Título de Nobreza"
 
 #: admin/include/editor_event_cls.php:32
-#: admin/include/editor_event_cls.php:1299
+#: admin/include/editor_event_cls.php:1314
 msgid "Colour mark by person"
 msgstr "Marcador colorido por pessoa"
 
-#: admin/include/editor_event_cls.php:33 admin/include/editor_event_cls.php:628
-#: admin/include/editor_inc.php:1043 include/marriage_cls.php:241
+#: admin/include/editor_event_cls.php:33 admin/include/editor_event_cls.php:641
+#: admin/include/editor_inc.php:1296 include/marriage_cls.php:241
 #: include/marriage_cls.php:244 include/witness.php:94
 msgid "marriage witness"
 msgstr "Testemunha do casamento"
 
-#: admin/include/editor_event_cls.php:34 admin/include/editor_event_cls.php:640
-#: admin/include/editor_inc.php:1045 include/marriage_cls.php:342
+#: admin/include/editor_event_cls.php:34 admin/include/editor_event_cls.php:653
+#: admin/include/editor_inc.php:1298 include/marriage_cls.php:342
 #: include/marriage_cls.php:344 include/witness.php:95
 msgid "marriage witness (religious)"
 msgstr "testemunha de casamento (religioso)"
 
 # Language indicator, used for birthday RSS
-#: admin/include/editor_event_cls.php:206
-#: admin/include/editor_event_cls.php:227
-#: admin/include/editor_event_cls.php:236
-#: admin/include/editor_event_cls.php:248
+#: admin/include/editor_event_cls.php:213
+#: admin/include/editor_event_cls.php:240
+#: admin/include/editor_event_cls.php:249
+#: admin/include/editor_event_cls.php:261
 msgid "Events"
 msgstr "Eventos"
 
-#: admin/include/editor_event_cls.php:228
-#: admin/include/editor_event_cls.php:249
+#: admin/include/editor_event_cls.php:241
+#: admin/include/editor_event_cls.php:262
 msgid "For items like:"
 msgstr "Para itens como:"
 
-#: admin/include/editor_event_cls.php:228 include/language_event.php:12
+#: admin/include/editor_event_cls.php:241 include/language_event.php:12
 msgid "baptized as child"
 msgstr "baptismo em criança"
 
-#: admin/include/editor_event_cls.php:228 include/language_event.php:25
+#: admin/include/editor_event_cls.php:241 include/language_event.php:25
 msgid "depart"
 msgstr "despedida"
 
-#: admin/include/editor_event_cls.php:228
-#: admin/include/editor_event_cls.php:249
-#: admin/include/editor_event_cls.php:269
+#: admin/include/editor_event_cls.php:241
+#: admin/include/editor_event_cls.php:262
+#: admin/include/editor_event_cls.php:282
 msgid "etc."
 msgstr "etc."
 
-#: admin/include/editor_event_cls.php:249 include/language_event.php:42
+#: admin/include/editor_event_cls.php:262 include/language_event.php:42
 msgid "Marriage contract"
 msgstr "Contrato de matrimónio"
 
-#: admin/include/editor_event_cls.php:249 include/language_event.php:43
+#: admin/include/editor_event_cls.php:262 include/language_event.php:43
 msgid "Marriage license"
 msgstr "Licença de casamento"
 
-#: admin/include/editor_event_cls.php:269
-#: admin/include/editor_event_cls.php:1084 include/person_cls.php:1200
+#: admin/include/editor_event_cls.php:282
+#: admin/include/editor_event_cls.php:1097 include/person_cls.php:1246
 msgid "alias name"
 msgstr "alcunha"
 
-#: admin/include/editor_event_cls.php:269
-#: admin/include/editor_event_cls.php:1090 include/person_cls.php:1202
+#: admin/include/editor_event_cls.php:282
+#: admin/include/editor_event_cls.php:1103 include/person_cls.php:1248
 msgid "Adopted name"
 msgstr "Nome adoptado"
 
-#: admin/include/editor_event_cls.php:269
-#: admin/include/editor_event_cls.php:1093 include/person_cls.php:1203
-msgid "Hebrew name"
-msgstr "Nome judaico"
-
-#: admin/include/editor_event_cls.php:282
-#: admin/include/editor_event_cls.php:997
+#: admin/include/editor_event_cls.php:295
+#: admin/include/editor_event_cls.php:1010
 msgid "e.g. Lt. Cmndr."
 msgstr ""
 
-#: admin/include/editor_event_cls.php:294
-#: admin/include/editor_event_cls.php:998
+#: admin/include/editor_event_cls.php:307
+#: admin/include/editor_event_cls.php:1011
 msgid "e.g. Jr."
 msgstr ""
 
-#: admin/include/editor_event_cls.php:306
-#: admin/include/editor_event_cls.php:999
+#: admin/include/editor_event_cls.php:319
+#: admin/include/editor_event_cls.php:1012
 msgid "e.g. Jhr., Jkvr."
 msgstr "por ex. Jhr., Jkvr."
 
-#: admin/include/editor_event_cls.php:318
-#: admin/include/editor_event_cls.php:1000
+#: admin/include/editor_event_cls.php:331
+#: admin/include/editor_event_cls.php:1013
 msgid "e.g. Prof., Dr."
 msgstr "por ex. Prof., Dr."
 
-#: admin/include/editor_event_cls.php:329
-#: admin/include/editor_event_cls.php:1001
+#: admin/include/editor_event_cls.php:342
+#: admin/include/editor_event_cls.php:1014
 msgid "e.g. Lord of Amsterdam"
 msgstr "por ex. Lorde de Amesterdão"
 
-#: admin/include/editor_event_cls.php:439
+#: admin/include/editor_event_cls.php:452
 msgid "(Drag pictures to change display order)"
 msgstr "(Arraste as gravuras para alterar a ordem de apresentação)"
 
-#: admin/include/editor_event_cls.php:440 admin/include/groups.php:353
+#: admin/include/editor_event_cls.php:453 admin/include/groups.php:353
 #: admin/include/trees_cls.php:258 admin/index.php:800
 msgid "Pictures/ create thumbnails"
 msgstr "Imagens/ criação de thumbnails"
 
-#: admin/include/editor_event_cls.php:478
+#: admin/include/editor_event_cls.php:491
 msgid "Format not supported"
 msgstr "Formato não suportado"
 
-#: admin/include/editor_event_cls.php:893
+#: admin/include/editor_event_cls.php:906
 msgid "Search filename"
 msgstr ""
 
-#: admin/include/editor_event_cls.php:897
+#: admin/include/editor_event_cls.php:910
 msgid "Category files are displayed at bottom of list"
 msgstr "Os arquivos de categorias são apresentados no fim da lista"
 
-#: admin/include/editor_event_cls.php:903
+#: admin/include/editor_event_cls.php:916
 msgid "* Select adoption parents *"
 msgstr "* Selecione os pais adoptivos *"
 
-#: admin/include/editor_event_cls.php:938
+#: admin/include/editor_event_cls.php:951
 msgid "Change colour mark by person"
 msgstr "Mudar o marcador colorido por pessoa"
 
-#: admin/include/editor_event_cls.php:940
+#: admin/include/editor_event_cls.php:953
 msgid "Colour 1"
 msgstr "Cor 1"
 
-#: admin/include/editor_event_cls.php:942
+#: admin/include/editor_event_cls.php:955
 msgid "Colour 2"
 msgstr "Cor 2"
 
-#: admin/include/editor_event_cls.php:944
+#: admin/include/editor_event_cls.php:957
 msgid "Colour 3"
 msgstr "Cor 3"
 
-#: admin/include/editor_event_cls.php:946
+#: admin/include/editor_event_cls.php:959
 msgid "Colour 4"
 msgstr "Cor 4"
 
-#: admin/include/editor_event_cls.php:948
+#: admin/include/editor_event_cls.php:961
 msgid "Colour 5"
 msgstr "Cor 5"
 
-#: admin/include/editor_event_cls.php:950
+#: admin/include/editor_event_cls.php:963
 msgid "Colour 6"
 msgstr "Cor 6"
 
-#: admin/include/editor_event_cls.php:952
+#: admin/include/editor_event_cls.php:965
 msgid "Colour 7"
 msgstr "Cor 7"
 
-#: admin/include/editor_event_cls.php:954
+#: admin/include/editor_event_cls.php:967
 msgid "Colour 8"
 msgstr "Cor 8"
 
-#: admin/include/editor_event_cls.php:956
+#: admin/include/editor_event_cls.php:969
 msgid "Colour 9"
 msgstr "Cor 9"
 
-#: admin/include/editor_event_cls.php:958
+#: admin/include/editor_event_cls.php:971
 msgid "Colour 10"
 msgstr "Cor 10"
 
-#: admin/include/editor_event_cls.php:960
+#: admin/include/editor_event_cls.php:973
 msgid "Colour 11"
 msgstr "Cor 11"
 
-#: admin/include/editor_event_cls.php:962
+#: admin/include/editor_event_cls.php:975
 msgid "Colour 12"
 msgstr "Cor 12"
 
-#: admin/include/editor_event_cls.php:964
+#: admin/include/editor_event_cls.php:977
 msgid "Colour 13"
 msgstr "Cor 13"
 
-#: admin/include/editor_event_cls.php:966
+#: admin/include/editor_event_cls.php:979
 msgid "Colour 14"
 msgstr "Cor 14"
 
-#: admin/include/editor_event_cls.php:984
+#: admin/include/editor_event_cls.php:997
 msgid "Selected colour"
 msgstr "Cor selecionada"
 
-#: admin/include/editor_event_cls.php:988
+#: admin/include/editor_event_cls.php:1001
 msgid "Also change"
 msgstr "Alterar também"
 
-#: admin/include/editor_event_cls.php:988 admin/include/editor_inc.php:1408
+#: admin/include/editor_event_cls.php:1001 admin/include/editor_inc.php:1661
 #: admin/include/gedcom_export.php:590 hourglass.php:81
 msgid "Descendants"
 msgstr "Descendentes"
 
-#: admin/include/editor_event_cls.php:989 admin/include/editor_inc.php:1409
+#: admin/include/editor_event_cls.php:1002 admin/include/editor_inc.php:1662
 #: admin/include/gedcom_export.php:596 hourglass.php:79
 msgid "Ancestors"
 msgstr "Antepassados"
 
-#: admin/include/editor_event_cls.php:1078 include/person_cls.php:1196
-#: include/person_cls.php:1198
+#: admin/include/editor_event_cls.php:1091 include/person_cls.php:1242
+#: include/person_cls.php:1244
 msgid "Also known as"
 msgstr "Também conhecido por"
 
-#: admin/include/editor_event_cls.php:1087 include/person_cls.php:1201
+#: admin/include/editor_event_cls.php:1100 include/person_cls.php:1247
 msgid "Short name (for reports)"
 msgstr "Nome abreviado (para relatórios)"
 
-#: admin/include/editor_event_cls.php:1096 include/person_cls.php:1204
+#: admin/include/editor_event_cls.php:1111 include/person_cls.php:1250
 msgid "Census name"
 msgstr "Nome do recenseamento"
 
-#: admin/include/editor_event_cls.php:1099 include/person_cls.php:1205
+#: admin/include/editor_event_cls.php:1114 include/person_cls.php:1251
 msgid "Married name"
 msgstr "Nome de casado(a)"
 
-#: admin/include/editor_event_cls.php:1102 include/person_cls.php:1206
+#: admin/include/editor_event_cls.php:1117 include/person_cls.php:1252
 msgid "Given name"
 msgstr ""
 
-#: admin/include/editor_event_cls.php:1105 include/person_cls.php:1207
+#: admin/include/editor_event_cls.php:1120 include/person_cls.php:1253
 msgid "Farm name"
 msgstr "Nome rural (seja lá o que isso for)"
 
-#: admin/include/editor_event_cls.php:1108 include/person_cls.php:1208
+#: admin/include/editor_event_cls.php:1123 include/person_cls.php:1254
 msgid "Birth name"
 msgstr "Nome de nascimento"
 
-#: admin/include/editor_event_cls.php:1111 include/person_cls.php:1209
+#: admin/include/editor_event_cls.php:1126 include/person_cls.php:1255
 msgid "Indian name"
 msgstr "Nome indígena"
 
-#: admin/include/editor_event_cls.php:1114 include/person_cls.php:1210
+#: admin/include/editor_event_cls.php:1129 include/person_cls.php:1256
 msgid "Formal name"
 msgstr "Nome formal"
 
-#: admin/include/editor_event_cls.php:1117 include/person_cls.php:1211
+#: admin/include/editor_event_cls.php:1132 include/person_cls.php:1257
 msgid "Current name"
 msgstr "Nome corrente"
 
-#: admin/include/editor_event_cls.php:1120 include/person_cls.php:1212
+#: admin/include/editor_event_cls.php:1135 include/person_cls.php:1258
 msgid "Soldier name"
 msgstr "Nome de soldado"
 
-#: admin/include/editor_event_cls.php:1123 include/person_cls.php:1214
+#: admin/include/editor_event_cls.php:1138 include/person_cls.php:1260
 msgid "Religious name"
 msgstr "Nome religioso"
 
-#: admin/include/editor_event_cls.php:1126 include/person_cls.php:1215
+#: admin/include/editor_event_cls.php:1141 include/person_cls.php:1261
 msgid "Other name"
 msgstr "Outro nome"
 
-#: admin/include/editor_event_cls.php:1129 include/person_cls.php:1213
+#: admin/include/editor_event_cls.php:1144 include/person_cls.php:1259
 msgid "Formerly known as"
 msgstr "Anteriormente conhecido como"
 
-#: admin/include/editor_event_cls.php:1132
+#: admin/include/editor_event_cls.php:1147
 msgid "German Rufname"
 msgstr ""
 
-#: admin/include/editor_event_cls.php:1301
-#: admin/include/editor_event_cls.php:1317
+#: admin/include/editor_event_cls.php:1316
+#: admin/include/editor_event_cls.php:1332
 msgid "Add event"
 msgstr "Adicionar evento"
 
@@ -1975,55 +2016,55 @@ msgstr "A pessoa foi desconectada dos progenitores."
 msgid "Person is removed"
 msgstr "A pessoa foi apagada"
 
-#: admin/include/editor_inc.php:480
+#: admin/include/editor_inc.php:669
 msgid "If you continue, ALL children will be disconnected automatically!"
 msgstr "Se prosseguir TODOS os filhos serão desconectados automaticamente!"
 
-#: admin/include/editor_inc.php:481
+#: admin/include/editor_inc.php:670
 msgid "Are you sure to remove this mariage?"
 msgstr "Confirma a eliminação deste casamento?"
 
-#: admin/include/editor_inc.php:540
+#: admin/include/editor_inc.php:729
 msgid "Marriage is removed!"
 msgstr "Casamento apagado!"
 
-#: admin/include/editor_inc.php:676
+#: admin/include/editor_inc.php:889
 msgid "Parents are selected!"
 msgstr "Os progenitores já foram selecionados!"
 
-#: admin/include/editor_inc.php:721
+#: admin/include/editor_inc.php:934
 msgid "Are you sure you want to disconnect this child?"
 msgstr "Confirma a desconexão deste filho?"
 
-#: admin/include/editor_inc.php:1155
+#: admin/include/editor_inc.php:1408
 msgid "Photo too large"
 msgstr "Foto demasiado grande"
 
-#: admin/include/editor_inc.php:1160
+#: admin/include/editor_inc.php:1413
 msgid "Photo upload failed, check folder rights"
 msgstr "O envio da foto falhou, verifique as permissões da pasta"
 
-#: admin/include/editor_inc.php:1209
+#: admin/include/editor_inc.php:1462
 msgid "Media too large"
 msgstr "Media demasiado grande"
 
-#: admin/include/editor_inc.php:1213
+#: admin/include/editor_inc.php:1466
 msgid "Media upload failed, check folder rights"
 msgstr "O envio da media falhou, verifique as permissões da pasta"
 
-#: admin/include/editor_inc.php:1231
+#: admin/include/editor_inc.php:1484
 msgid "No valid picture, media or document file"
 msgstr "Imagem, media ou documento inválidos"
 
-#: admin/include/editor_inc.php:1394 admin/include/editor_inc.php:1764
+#: admin/include/editor_inc.php:1647 admin/include/editor_inc.php:2017
 msgid "Are you sure you want to remove this event?"
 msgstr "Conforma a eliminação deste evento?"
 
-#: admin/include/editor_inc.php:1407
+#: admin/include/editor_inc.php:1660
 msgid "Also remove colour marks of"
 msgstr "Remover também as máscaras de cor de"
 
-#: admin/include/editor_inc.php:1869
+#: admin/include/editor_inc.php:2122
 msgid "Are you sure you want to delete this place? "
 msgstr "Confirma a eliminação deste local? "
 
@@ -2085,7 +2126,7 @@ msgid "quality: data from direct source"
 msgstr "qualidade: dados da fonte direta"
 
 #: admin/include/editor_user_settings.php:5
-#: admin/include/editor_user_settings.php:7 admin/include/users.php:106
+#: admin/include/editor_user_settings.php:7 admin/include/users.php:114
 msgid "Extra settings"
 msgstr "Parâmetros extra"
 
@@ -2280,51 +2321,51 @@ msgstr ""
 msgid "Process full picture path. For example: picture_path&#92;picture.jpg"
 msgstr ""
 
-#: admin/include/gedcom.php:315
+#: admin/include/gedcom.php:319
 msgid "Add this gedcom file to the existing tree"
 msgstr "Adicionar este ficheiro gedcom à arvore existente"
 
-#: admin/include/gedcom.php:318
+#: admin/include/gedcom.php:331
 msgid "Gedcom process settings"
 msgstr ""
 
-#: admin/include/gedcom.php:320
+#: admin/include/gedcom.php:333
 msgid "Show non-processed items when processing gedcom (can be a long list!"
 msgstr ""
 "Exibir os itens não processados durante o processamento do arquivo gedcom "
 "(Pode ser uma lista grande!)."
 
-#: admin/include/gedcom.php:321
+#: admin/include/gedcom.php:334
 msgid ""
 "Show all numbers when processing gedcom (useful when a time-out occurs!)"
 msgstr ""
 "Exibir todos os números durante o processamento do gedcom (útil se ocorrer "
 "um time-out!)"
 
-#: admin/include/gedcom.php:322
+#: admin/include/gedcom.php:335
 msgid "Debug mode"
 msgstr ""
 
-#: admin/include/gedcom.php:324
+#: admin/include/gedcom.php:337
 msgid "Batch processing"
 msgstr ""
 
-#: admin/include/gedcom.php:325
+#: admin/include/gedcom.php:338
 msgid "1 record (slow processing, but needs less server-memory)"
 msgstr "1 registo (processamento lento, mas requer menos memória do servidor)"
 
-#: admin/include/gedcom.php:327 admin/include/gedcom.php:329
-#: admin/include/gedcom.php:331 admin/include/gedcom.php:333
-#: admin/include/gedcom.php:335 admin/include/gedcom.php:337
+#: admin/include/gedcom.php:340 admin/include/gedcom.php:342
+#: admin/include/gedcom.php:344 admin/include/gedcom.php:346
+#: admin/include/gedcom.php:348 admin/include/gedcom.php:350
 msgid "records per batch"
 msgstr "registos por lote"
 
-#: admin/include/gedcom.php:339
+#: admin/include/gedcom.php:352
 msgid "ALL records (fast processing, but needs server-memory)"
 msgstr ""
 "TODOS os registos (processamento rápido, mas exige mais memória do servidor)"
 
-#: admin/include/gedcom.php:347
+#: admin/include/gedcom.php:360
 msgid ""
 "Time-out detected! Controlled time-out setting is adjusted. Retry reading of "
 "gedcom with new setting."
@@ -2332,7 +2373,7 @@ msgstr ""
 "Detectado um time-out! O parâmetro de controlo para o time-out foi ajustado. "
 "Tente ler de novo o gedcom com esta nova definição."
 
-#: admin/include/gedcom.php:350
+#: admin/include/gedcom.php:363
 msgid ""
 "seconds. Controlled time-out. Use this if the server has a time-out setting "
 "(set less seconds then server time-out). 0 = disable controlled time-out."
@@ -2341,55 +2382,61 @@ msgstr ""
 "out definido (estipule um valor em segundos inferior ao time-out do "
 "servidor). 0 = desactivar o time-out controlado."
 
-#: admin/include/gedcom.php:354 admin/include/gedcom.php:394
-#: admin/include/gedcom.php:862 admin/include/gedcom.php:1434
-#: admin/include/gedcom.php:1534 admin/include/gedcom.php:1565
+#: admin/include/gedcom.php:375
+#, php-format
+msgid "Yes, replace existing family tree: <b>\"%1$s\"</b> with %2$s persons!"
+msgstr ""
+
+#: admin/include/gedcom.php:377 admin/include/gedcom.php:380
+#: admin/include/gedcom.php:422 admin/include/gedcom.php:890
+#: admin/include/gedcom.php:1472 admin/include/gedcom.php:1572
+#: admin/include/gedcom.php:1603
 msgid "Step"
 msgstr "Etapa"
 
-#: admin/include/gedcom.php:375
+#: admin/include/gedcom.php:403
 msgid "STEP 2) Remove old family tree:"
 msgstr "ETAPA 2) Remover a árvore de família antiga:"
 
-#: admin/include/gedcom.php:393 admin/include/gedcom.php:1064
-#: admin/include/gedcom.php:1565
+#: admin/include/gedcom.php:421 admin/include/gedcom.php:1092
+#: admin/include/gedcom.php:1603
 msgid "ONLY use in case of a time-out, to continue click:"
 msgstr "Usar APENAS em caso de time-out, para continuar clique:"
 
-#: admin/include/gedcom.php:411 admin/include/gedcom.php:449
-#: admin/include/gedcom.php:491 admin/include/gedcom.php:517
-#: admin/include/gedcom.php:529 admin/include/gedcom.php:558
-#: admin/include/gedcom.php:597 admin/include/gedcom.php:639
-#: admin/include/gedcom.php:678 admin/include/gedcom.php:721
+#: admin/include/gedcom.php:439 admin/include/gedcom.php:477
+#: admin/include/gedcom.php:519 admin/include/gedcom.php:545
+#: admin/include/gedcom.php:557 admin/include/gedcom.php:586
+#: admin/include/gedcom.php:625 admin/include/gedcom.php:667
+#: admin/include/gedcom.php:706 admin/include/gedcom.php:749
 #, php-format
 msgid "Remove old family tree items from %s table..."
 msgstr "Remova os ítens da árvore de família antiga da tabela %s..."
 
-#: admin/include/gedcom.php:428 admin/include/gedcom.php:465
-#: admin/include/gedcom.php:508 admin/include/gedcom.php:522
-#: admin/include/gedcom.php:534 admin/include/gedcom.php:575
-#: admin/include/gedcom.php:614 admin/include/gedcom.php:656
-#: admin/include/gedcom.php:696 admin/include/gedcom.php:738
+#: admin/include/gedcom.php:456 admin/include/gedcom.php:493
+#: admin/include/gedcom.php:536 admin/include/gedcom.php:550
+#: admin/include/gedcom.php:562 admin/include/gedcom.php:603
+#: admin/include/gedcom.php:642 admin/include/gedcom.php:684
+#: admin/include/gedcom.php:724 admin/include/gedcom.php:766
 msgid "Optimize table..."
 msgstr "Optimize a tabela...."
 
-#: admin/include/gedcom.php:746
+#: admin/include/gedcom.php:774
 msgid "No error messages above? In that case the tables have been created!"
 msgstr ""
 "Não surgiram mensagens de erro acima? Nesse caso as tabelas foram criadas!"
 
-#: admin/include/gedcom.php:750
+#: admin/include/gedcom.php:778
 msgid ""
 "The data in this gedcom will be appended to the existing data in this tree!"
 msgstr ""
 "Os dados do gedcom serão adicionados aos dados já existentes nesta árvore!"
 
-#: admin/include/gedcom.php:871 admin/include/make_db_maps.php:843 maps.php:572
+#: admin/include/gedcom.php:899 admin/include/make_db_maps.php:843 maps.php:572
 #: maps.php:681 maps.php:793
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: admin/include/gedcom.php:1018
+#: admin/include/gedcom.php:1046
 msgid ""
 "<b>STEP 3) Processing Gedcom file:</b>\n"
 "<p>The following lines have to be processed without error messages...<br>\n"
@@ -2399,36 +2446,36 @@ msgstr ""
 "<p>As linhas seguintyes têm de ser processadas sem mensagens de erro...<br>\n"
 "<b>O processamento pode demorar algum tempo!</b>"
 
-#: admin/include/gedcom.php:1064
+#: admin/include/gedcom.php:1092
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: admin/include/gedcom.php:1065
+#: admin/include/gedcom.php:1093
 msgid "Restarts reading of gedcom using a controlled time-out."
 msgstr "Reiniciar a leitura do gedcom através de um time-out controlado."
 
-#: admin/include/gedcom.php:1099 admin/include/gedcom.php:1385
-#: admin/include/gedcom.php:1524 admin/include/gedcom.php:1686
-#: admin/include/gedcom.php:1829
+#: admin/include/gedcom.php:1127 admin/include/gedcom.php:1423
+#: admin/include/gedcom.php:1562 admin/include/gedcom.php:1747
+#: admin/include/gedcom.php:1906
 msgid "lines processed"
 msgstr "linhas processadas"
 
-#: admin/include/gedcom.php:1358
+#: admin/include/gedcom.php:1396
 msgid "Gedcom file"
 msgstr "Arquivo Gedcom"
 
-#: admin/include/gedcom.php:1360
+#: admin/include/gedcom.php:1398
 #, php-format
 msgid "this is an <b>%s</b> file"
 msgstr "esté é um ficheiro <b>%s</b>"
 
-#: admin/include/gedcom.php:1434
+#: admin/include/gedcom.php:1472
 msgid "Controlled time-out to continue reading of gedcom file, click:"
 msgstr ""
 "Para continuar a leitura do ficheiro gedcom com um time-out controlado, "
 "clique:"
 
-#: admin/include/gedcom.php:1435
+#: admin/include/gedcom.php:1473
 #, php-format
 msgid ""
 "Or wait %s seconds for automatic continuation. Some browsers will give a "
@@ -2437,72 +2484,84 @@ msgstr ""
 "Ou aguarde %s segundos para prosseguir automaticamente. Alguns browsers "
 "podem exibir uma mensagem de recarregamento..."
 
-#: admin/include/gedcom.php:1472 admin/include/gedcom.php:1484
+#: admin/include/gedcom.php:1510 admin/include/gedcom.php:1522
 msgid "Persons added by gedcom import."
 msgstr "Pessoas adicionadas pela importação do ficheiro gedcom."
 
-#: admin/include/gedcom.php:1504
+#: admin/include/gedcom.php:1542
 #, php-format
 msgid "Reading in the file took: %d seconds"
 msgstr "A leitura do arquivo demorou: %d segundos"
 
-#: admin/include/gedcom.php:1510
+#: admin/include/gedcom.php:1548
 msgid "Non-processed items"
 msgstr "Itens não processados"
 
-#: admin/include/gedcom.php:1511
+#: admin/include/gedcom.php:1549
 msgid "Level"
 msgstr "Nível"
 
-#: admin/include/gedcom.php:1516
+#: admin/include/gedcom.php:1554
 msgid "All items have been processed!"
 msgstr "Todos os itens foram processados!"
 
-#: admin/include/gedcom.php:1548
+#: admin/include/gedcom.php:1586
 msgid "STEP 4) Final database processing:"
 msgstr ""
 
-#: admin/include/gedcom.php:1581
+#: admin/include/gedcom.php:1626
 msgid "Processing of referenced texts into standard texts..."
 msgstr ""
 
-#: admin/include/gedcom.php:1860
+#: admin/include/gedcom.php:1746 admin/include/index_inc.php:414
+#: admin/include/statistics.php:769 admin/include/trees_cls.php:129
+#: include/mainindex_cls.php:177
+msgid "persons"
+msgstr "pessoas"
+
+#: admin/include/gedcom.php:1905 admin/include/index_inc.php:414
+#: admin/include/statistics.php:769 admin/include/trees_cls.php:129
+#: include/mainindex_cls.php:177
+msgid "families"
+msgstr "famílias"
+
+#: admin/include/gedcom.php:1937
 msgid "Processing texts IN names..."
 msgstr ""
 
-#: admin/include/gedcom.php:1896
+#: admin/include/gedcom.php:1976
 msgid "Updating location database..."
 msgstr "A atualizar a base de dados dos locais..."
 
-#: admin/include/gedcom.php:1967
+#: admin/include/gedcom.php:2047
 msgid "Order children..."
 msgstr "A orrdenar os filhos..."
 
-#: admin/include/gedcom.php:2032
+#: admin/include/gedcom.php:2112
 msgid "Order families..."
 msgstr ""
 
-#: admin/include/gedcom.php:2140
+#: admin/include/gedcom.php:2220
 msgid "Counting persons and families and enter into database..."
 msgstr "A contar pessoas e famílias e a inseri-las na base de dados..."
 
-#: admin/include/gedcom.php:2159
+#: admin/include/gedcom.php:2239
 #, php-format
 msgid "Processing took: %d seconds"
 msgstr "o processamento demorou: %d segundos"
 
-#: admin/include/gedcom.php:2160
+#: admin/include/gedcom.php:2240
 msgid "No error messages? In this case the database is ready for use!"
 msgstr ""
 "Não surgiram mensagens de erro? Nesse caso a base de dados está pronta para "
 "usar!"
 
-#: admin/include/gedcom.php:2163 admin/include/gedcom.php:2168
+#: admin/include/gedcom.php:2243 admin/include/gedcom.php:2248
 #, php-format
 msgid "Ready! Now click %s to watch the family tree"
 msgstr "Pronto! Agora clique %s para ver a árvore de família"
 
-#: admin/include/gedcom.php:2169
+#: admin/include/gedcom.php:2249
 msgid ""
 "TIP: Use <a href=\"index.php?page=cal_date\">\"Calculated birth dates\"</a> "
 "for a better privacy filter."
@@ -2616,15 +2675,15 @@ msgstr "Começar a exportação"
 msgid "Gedcom file will be exported to backup_tmp/ folder"
 msgstr "O ficheiro gedcom será exportado para a pasta backup_tmp/"
 
-#: admin/include/gedcom_export.php:1660
+#: admin/include/gedcom_export.php:1677
 msgid "Gedcom file is generated"
 msgstr "O arquivo gedcom foi gerado"
 
-#: admin/include/gedcom_export.php:1663
+#: admin/include/gedcom_export.php:1680
 msgid "Download gedcom file"
 msgstr "Download do arquivo gedcom"
 
-#: admin/include/gedcom_export.php:1674
+#: admin/include/gedcom_export.php:1691
 msgid "Remove gedcom file"
 msgstr "Remover o arquivo gedcom"
 
@@ -2812,7 +2871,7 @@ msgstr "Apresentação por omissão da página de família"
 msgid "Compact view"
 msgstr "Vista compacta"
 
-#: admin/include/groups.php:398 family.php:109 list.php:1707
+#: admin/include/groups.php:398 family.php:109 list.php:1716
 #: list_places_families.php:534
 msgid "Expanded view"
 msgstr "Vista estendida"
@@ -2858,7 +2917,7 @@ msgstr ""
 "árvore de família."
 
 #: admin/include/groups.php:435 admin/include/trees_cls.php:1817 family.php:114
-#: family.php:2409 header.php:232 include/show_sources.php:187 menu.php:452
+#: family.php:2409 header.php:232 include/show_sources.php:187 menu.php:453
 #: report_ancestor.php:1449 source.php:37
 msgid "Sources"
 msgstr "Fontes"
@@ -2991,7 +3050,7 @@ msgstr ""
 
 #: admin/include/groups.php:538 admin/include/groups.php:543
 #: admin/include/groups.php:548 family.php:2391 include/process_text.php:89
-#: include/process_text.php:91 list.php:1440
+#: include/process_text.php:91 list.php:1449
 msgid "Text"
 msgstr "Texto"
 
@@ -3045,7 +3104,7 @@ msgid "Hide or show family trees per user group."
 msgstr "Mostrar ou ocultar as árvores de família por grupo de utilizadores."
 
 #: admin/include/groups.php:625 admin/include/index_inc.php:428
-#: admin/index.php:837 include/person_cls.php:657
+#: admin/index.php:837 include/person_cls.php:702
 msgid "Editor"
 msgstr "Editor"
 
@@ -3256,7 +3315,7 @@ msgstr "Em caso de necessidade, remova as estatísticas antigas,"
 msgid "HuMo-gen security items"
 msgstr "Ítens de segurança do HuMo-gen"
 
-#: admin/include/index_inc.php:278 admin/include/users.php:91
+#: admin/include/index_inc.php:278 admin/include/users.php:99
 msgid "Standard admin username or admin password is used."
 msgstr "Utiliza-se o nome do admin ou a senha do mesmo."
 
@@ -3381,16 +3440,6 @@ msgstr "Árvores de Família"
 msgid "Status tree"
 msgstr "Estado das árvores"
 
-#: admin/include/index_inc.php:414 admin/include/statistics.php:769
-#: admin/include/trees_cls.php:129 include/mainindex_cls.php:177
-msgid "persons"
-msgstr "pessoas"
-
-#: admin/include/index_inc.php:414 admin/include/statistics.php:769
-#: admin/include/trees_cls.php:129 include/mainindex_cls.php:177
-msgid "families"
-msgstr "famílias"
-
 #: admin/include/index_inc.php:417 admin/include/trees_cls.php:133
 msgid ""
 "This tree does not yet contain any data or has not been imported properly!"
@@ -3404,7 +3453,8 @@ msgstr "Importar arquivo Gedcom"
 msgid "Trees table"
 msgstr "Tabela de árvores"
 
-#: admin/include/install.php:5 admin/index.php:747
+#: admin/include/install.php:5 admin/include/install.php:155
+#: admin/include/install.php:161 admin/index.php:747
 msgid "Install"
 msgstr "Instalação"
 
@@ -3437,7 +3487,7 @@ msgstr ""
 "preenchida com novos utilizadores. Por favor crie as senhas de acesso:</b>"
 
 #: admin/include/install.php:123 admin/include/log.php:58
-#: admin/include/users.php:102
+#: admin/include/users.php:110
 msgid "User"
 msgstr "Utilizador"
 
@@ -3501,33 +3551,29 @@ msgstr ""
 "(Re) criar todas as tabelas das árvores de família. >b> *** TODAS AS ÁRVORES "
 "DE FAMÍLIA EXISTENTES SERÃO REMOVIDAS! *** </b>"
 
-#: admin/include/install.php:152
+#: admin/include/install.php:164
 msgid "Are you sure? Old settings will be deleted!"
 msgstr "Tem a certeza? Os parâmetros antigos serão apagados!"
 
-#: admin/include/install.php:155 admin/include/install.php:161
-msgid "install"
-msgstr "instalar"
-
-#: admin/include/install.php:203
+#: admin/include/install.php:205
 msgid "Creating tables:"
 msgstr "A criar as tabelas:"
 
-#: admin/include/install.php:208 admin/include/install.php:234
-#: admin/include/install.php:254 admin/include/install.php:384
-#: admin/include/install.php:410 admin/include/install.php:424
-#: admin/include/install.php:443 admin/include/install.php:459
-#: admin/include/install.php:483 admin/include/install.php:518
-#: admin/include/install.php:543 admin/include/install.php:598
-#: admin/include/install.php:651 admin/include/install.php:682
-#: admin/include/install.php:709 admin/include/install.php:743
-#: admin/include/install.php:761 admin/include/install.php:791
-#: admin/include/install.php:818
+#: admin/include/install.php:210 admin/include/install.php:236
+#: admin/include/install.php:256 admin/include/install.php:386
+#: admin/include/install.php:412 admin/include/install.php:426
+#: admin/include/install.php:445 admin/include/install.php:461
+#: admin/include/install.php:485 admin/include/install.php:520
+#: admin/include/install.php:545 admin/include/install.php:600
+#: admin/include/install.php:653 admin/include/install.php:684
+#: admin/include/install.php:711 admin/include/install.php:745
+#: admin/include/install.php:763 admin/include/install.php:793
+#: admin/include/install.php:820
 #, php-format
 msgid "create table: %s."
 msgstr "criar a tabela: %s."
 
-#: admin/include/install.php:218
+#: admin/include/install.php:220
 msgid ""
 "fill humo_settings... <font color=red>Standard settings are saved in "
 "database!</font>"
@@ -3535,27 +3581,27 @@ msgstr ""
 "a preencher os parâmetros do humo... <font color=red>Os parâmetros "
 "padronizados estão guardados da base de dados!</font>"
 
-#: admin/include/install.php:324
+#: admin/include/install.php:326
 msgid "filling humo_groups..."
 msgstr "a preencher os grupos do humo..."
 
-#: admin/include/install.php:401
+#: admin/include/install.php:403
 msgid "filling humo_users..."
 msgstr "a preencher os utilizadores do humo..."
 
-#: admin/include/install.php:848
+#: admin/include/install.php:850
 msgid "No errors above? This means that the database has been processed!"
 msgstr ""
 "Não surgiram erros em cima? Isso significa que a base de dados foi "
 "processada!"
 
-#: admin/include/install.php:849 admin/include/update.php:3136
+#: admin/include/install.php:851 admin/include/update.php:3136
 msgid "All updates completed, click at \"Mainmenu\""
 msgstr ""
 "Todas as actualizações foram realizadas com êxito, clique no \"Menú Principal"
 "\""
 
-#: admin/include/install.php:850 admin/include/update.php:3137
+#: admin/include/install.php:852 admin/include/update.php:3137
 #: admin/index.php:676
 msgid "Main menu"
 msgstr "Menú principal"
@@ -3671,7 +3717,7 @@ msgid "Username or e-mail address"
 msgstr ""
 
 #: admin/include/login.php:16 header.php:244 login.php:346 login.php:349
-#: menu.php:228 menu.php:667
+#: menu.php:229 menu.php:668
 msgid "Login"
 msgstr "Acesso de Membros"
 
@@ -3923,7 +3969,7 @@ msgstr ""
 "demorar a indexação (aproximadamente)."
 
 #: admin/include/make_db_maps.php:620 include/mainindex_cls.php:409
-#: list.php:1558
+#: list.php:1567
 msgid "All family trees"
 msgstr "Árvores de todas as famílias"
 
@@ -4083,7 +4129,7 @@ msgstr "ACTUALIZAR A LISTA DE LOCAIS NÃO INDEXÁVEIS"
 #: admin/include/make_db_maps.php:985 admin/include/settings_admin.php:5
 #: admin/include/trees_cls.php:1246 admin/include/trees_cls.php:1412
 #: admin/index.php:750 family.php:92 family.php:2387 header.php:246
-#: menu.php:778
+#: menu.php:779
 msgid "Settings"
 msgstr "Parâmetros"
 
@@ -4160,54 +4206,54 @@ msgstr ""
 "Estes prefixos são usados para processar os prefixos de nomes durante a "
 "leitura dos ficheiros gedcom ."
 
-#: admin/include/settings_admin.php:127
+#: admin/include/settings_admin.php:154
 msgid "General settings"
 msgstr "Parâmetros gerais"
 
-#: admin/include/settings_admin.php:129
+#: admin/include/settings_admin.php:156
 msgid "Default skin"
 msgstr "Skin por omissão"
 
-#: admin/include/settings_admin.php:149
+#: admin/include/settings_admin.php:176
 msgid "Standard language HuMo-gen"
 msgstr "Linguagem standard do HuMo-gen"
 
-#: admin/include/settings_admin.php:159
+#: admin/include/settings_admin.php:186
 msgid "Standard language admin menu"
 msgstr "Menú de administração da linguagem standard"
 
-#: admin/include/settings_admin.php:169
+#: admin/include/settings_admin.php:196
 msgid "Text in footer for all pages"
 msgstr "Texto no rodapé para todas as páginas"
 
-#: admin/include/settings_admin.php:172
+#: admin/include/settings_admin.php:199
 msgid ""
 "Can be used for statistics, counter, etc. It's possible to use HTML codes!"
 msgstr ""
 "Pode ser empregue em estatísticas, como contador, etc. É possível utilizar "
 "códigos HTML!"
 
-#: admin/include/settings_admin.php:175
+#: admin/include/settings_admin.php:202
 msgid "Search engine settings"
 msgstr "Parâmetros do motor de pesquisa"
 
-#: admin/include/settings_admin.php:177
+#: admin/include/settings_admin.php:204
 msgid "Improve indexing of search engines (like Google)"
 msgstr "Melhorar a indexação dos motores de pesquisa (como o Google)"
 
-#: admin/include/settings_admin.php:182
+#: admin/include/settings_admin.php:209
 msgid "ATTENTION: the Apache module \"mod_rewrite\" has to be installed!"
 msgstr "ATENÇÃO: É necessário instalar o módulo \"mod_rewrite\" do Apache!"
 
-#: admin/include/settings_admin.php:184
+#: admin/include/settings_admin.php:211
 msgid "becomes:"
 msgstr "passa a:"
 
-#: admin/include/settings_admin.php:187
+#: admin/include/settings_admin.php:214
 msgid "Stop search engines"
 msgstr "Parar os motores de pesquisa"
 
-#: admin/include/settings_admin.php:195
+#: admin/include/settings_admin.php:222
 msgid ""
 "Search engines:<br>Hide family tree (no indexing)<br>Show frontpage and CMS "
 "pages"
@@ -4215,57 +4261,57 @@ msgstr ""
 "Motores de pesquisa:<br>Esconder a árvore de família (proibir a "
 "indexação)<br>Mostra a página inicial e as páginas do CMS"
 
-#: admin/include/settings_admin.php:201
+#: admin/include/settings_admin.php:228
 msgid "Contact & registration form settings"
 msgstr "Parâmetros dos formulários de contacto & inscrição "
 
-#: admin/include/settings_admin.php:203
+#: admin/include/settings_admin.php:230
 msgid "Block spam question"
 msgstr "Pergunta para bloqueio de spam"
 
-#: admin/include/settings_admin.php:203
+#: admin/include/settings_admin.php:230
 msgid "Block spam answer"
 msgstr "Resposta à pergunta de bloqueio de sapm"
 
-#: admin/include/settings_admin.php:208
+#: admin/include/settings_admin.php:235
 msgid "Mail form: use spam question"
 msgstr "Formulário de correio: utilizar a pergunta ant-spam"
 
-#: admin/include/settings_admin.php:216
+#: admin/include/settings_admin.php:243
 msgid "Mail form: use newsletter question"
 msgstr "Formulário de correio: perguntar sobre a newsletter"
 
-#: admin/include/settings_admin.php:223
+#: admin/include/settings_admin.php:250
 msgid "Adds the question: \"Receive newsletter: yes/ no\" to the mailform."
 msgstr ""
 "Adiciona a pergunta: \"Receber a newsletter: sim / não\" no formulário de "
 "correio."
 
-#: admin/include/settings_admin.php:226
+#: admin/include/settings_admin.php:253
 msgid "Visitors can register"
 msgstr "Os visitantes podem inscrever-se"
 
-#: admin/include/settings_admin.php:231
+#: admin/include/settings_admin.php:258
 msgid "Default user-group for new users:"
 msgstr "Grupo por omissão para os novos utilizadores:"
 
-#: admin/include/settings_admin.php:243
+#: admin/include/settings_admin.php:270
 msgid "Registration form: e-mail address"
 msgstr "Formulário de inscrição: endereço de e-mail"
 
-#: admin/include/settings_admin.php:244
+#: admin/include/settings_admin.php:271
 msgid "Send registration form to this e-mail address."
 msgstr "Enviar o formulário de inscrição para este endereço de e-mail."
 
-#: admin/include/settings_admin.php:246
+#: admin/include/settings_admin.php:273
 msgid "Visitor registration: use spam question"
 msgstr "Inscrição de visitantes: aplicar a pergunta anti-spam"
 
-#: admin/include/settings_admin.php:254
+#: admin/include/settings_admin.php:281
 msgid "SMTP mails"
 msgstr "Envio de mensagens por SMTP"
 
-#: admin/include/settings_admin.php:255
+#: admin/include/settings_admin.php:282
 msgid ""
 "Sometimes it's necessary to use SMTP to send e-mails. These settings can be "
 "changed in file: include/mail.php"
@@ -4273,62 +4319,58 @@ msgstr ""
 "Por vezes é necessário usar SMTP para enviar correio electrónico. Estes "
 "parâmetros podem ser alterados no ficheiro: include/mail.php"
 
-#: admin/include/settings_admin.php:258
+#: admin/include/settings_admin.php:285
 msgid "International settings"
 msgstr "Parâmetros internacionais"
 
-#: admin/include/settings_admin.php:260
+#: admin/include/settings_admin.php:287
 msgid "Timezone"
 msgstr "Zona de tempo"
 
-#: admin/include/settings_admin.php:334
+#: admin/include/settings_admin.php:361
 msgid "Minimum characters in search box"
 msgstr "Nº mínimo de caracteres na caixa de pesquisa"
 
-#: admin/include/settings_admin.php:335
+#: admin/include/settings_admin.php:362
 msgid ""
 "Minimum characters in search boxes (standard value=3. For Chinese set to 1)."
 msgstr ""
 "Nº mínimo de caracteres nas caixas de pesquisa (valor padrão = 3. Para "
 "Chinês definir 1)."
 
-#: admin/include/settings_admin.php:338 fanchart.php:689
+#: admin/include/settings_admin.php:365 fanchart.php:690
 msgid "Date display"
 msgstr "Exibição da data"
 
-#: admin/include/settings_admin.php:341
+#: admin/include/settings_admin.php:368
 msgid "Europe/Global - 5 Jan 1787"
 msgstr "Europa/Global - 5 Jan 1787"
 
-#: admin/include/settings_admin.php:343
+#: admin/include/settings_admin.php:370
 msgid "USA - Jan 5, 1787"
 msgstr "EUA - Jan 5, 1787"
 
-#: admin/include/settings_admin.php:345
+#: admin/include/settings_admin.php:372
 msgid "China - 1787-01-05"
 msgstr "China - 1787-01-05"
 
-#: admin/include/settings_admin.php:347
-msgid "Israel - 5 Jan 1787 (15 Tevet 5547)"
-msgstr "Israel - 5 Jan 1787 (15 Tevet 5547)"
-
-#: admin/include/settings_admin.php:351
+#: admin/include/settings_admin.php:378
 msgid "Order of names in reports"
 msgstr "Ordem dos nomes nos relatórios"
 
-#: admin/include/settings_admin.php:354
+#: admin/include/settings_admin.php:381
 msgid "Western"
 msgstr "Ocidental"
 
-#: admin/include/settings_admin.php:356
+#: admin/include/settings_admin.php:383
 msgid "Chinese"
 msgstr "Chinês"
 
-#: admin/include/settings_admin.php:356
+#: admin/include/settings_admin.php:383
 msgid "Hungarian"
 msgstr "Húngaro"
 
-#: admin/include/settings_admin.php:358
+#: admin/include/settings_admin.php:385
 msgid ""
 "Western - reports: John Smith, lists: Smith, John. Chinese 中文 - reports "
 "and lists: 刘 理想"
@@ -4336,49 +4378,49 @@ msgstr ""
 "Relatórios Ocidentais: John Smith, na lista aparece: Smith, John. Relatórios "
 "e listas Chineses 中文 - : 刘 理想"
 
-#: admin/include/settings_admin.php:358
+#: admin/include/settings_admin.php:385
 msgid "Hungarian - reports and lists: Smith John"
 msgstr "Húngaro - relatórios e listas: Smith John"
 
-#: admin/include/settings_admin.php:362
+#: admin/include/settings_admin.php:389
 msgid "Default timeline file (per language)"
 msgstr "Arquivo por defeito da linha de tempo (por linguagem)"
 
-#: admin/include/settings_admin.php:394
+#: admin/include/settings_admin.php:421
 msgid "Settings Main Menu"
 msgstr "Menú Principal dos Parâmetros"
 
-#: admin/include/settings_admin.php:396
+#: admin/include/settings_admin.php:423
 msgid "Website name"
 msgstr "Nome do website"
 
-#: admin/include/settings_admin.php:399
+#: admin/include/settings_admin.php:426
 msgid "Link homepage"
 msgstr "Página principal do link (homepage)"
 
-#: admin/include/settings_admin.php:399 admin/include/settings_admin.php:423
-#: admin/include/settings_admin.php:429 admin/include/settings_admin.php:435
-#: admin/include/settings_admin.php:441
+#: admin/include/settings_admin.php:426 admin/include/settings_admin.php:450
+#: admin/include/settings_admin.php:456 admin/include/settings_admin.php:462
+#: admin/include/settings_admin.php:468
 msgid "Link description"
 msgstr "Descrição do link"
 
-#: admin/include/settings_admin.php:400 admin/include/settings_admin.php:407
+#: admin/include/settings_admin.php:427 admin/include/settings_admin.php:434
 msgid "(link to this site including http://)"
 msgstr "(link para este site, incluindo http://)"
 
-#: admin/include/settings_admin.php:405
+#: admin/include/settings_admin.php:432
 msgid "Link for birthdays RSS"
 msgstr "Link para a RSS de aniversários"
 
-#: admin/include/settings_admin.php:408
+#: admin/include/settings_admin.php:435
 msgid "This option can be turned on or off in the user groups."
 msgstr "Esta opção pode ser ligada ou desligada nos grupos de utilizadores."
 
-#: admin/include/settings_admin.php:410
+#: admin/include/settings_admin.php:437
 msgid "Slideshow on the homepage"
 msgstr "Sequência de slides na página inicial"
 
-#: admin/include/settings_admin.php:411
+#: admin/include/settings_admin.php:438
 msgid ""
 "This option shows a slideshow at the homepage. Put the images in the media/"
 "slideshow/ folder at the website.<br>Example of image link:"
@@ -4386,117 +4428,149 @@ msgstr ""
 "Esta opção exibe uma sequência de slides na página inicial. Ponha as imagens "
 "na pasta media/slideshow do website. <br>Examplo de um link da imagem:"
 
-#: admin/include/settings_admin.php:412
+#: admin/include/settings_admin.php:439
 msgid "Images size should be about:"
 msgstr "O tamanho das imagens deve ser de aproximadamente:"
 
-#: admin/include/settings_admin.php:414
+#: admin/include/settings_admin.php:441
 msgid "Show slideshow on the homepage"
 msgstr "Mostrar a sequência de slides na página inicial"
 
-#: admin/include/settings_admin.php:423 admin/include/settings_admin.php:429
-#: admin/include/settings_admin.php:435 admin/include/settings_admin.php:441
+#: admin/include/settings_admin.php:450 admin/include/settings_admin.php:456
+#: admin/include/settings_admin.php:462 admin/include/settings_admin.php:468
 msgid "Link to image"
 msgstr "Link para a imagem"
 
-#: admin/include/settings_admin.php:446
+#: admin/include/settings_admin.php:473
 msgid "\"Today in history\" on the homepage"
 msgstr "\"Hoje em historial\" na página inicial."
 
-#: admin/include/settings_admin.php:447
+#: admin/include/settings_admin.php:474
 msgid "Show \"Today in history\" list on the homepage"
 msgstr "Mostrar a lista \"Hoje em historial\" na página inicial."
 
-#: admin/include/settings_admin.php:456
+#: admin/include/settings_admin.php:483
 msgid "Settings family page"
 msgstr "Página de parâmetros das famílias"
 
-#: admin/include/settings_admin.php:458
+#: admin/include/settings_admin.php:485
 msgid "Number of generations in descendant report"
 msgstr "Número de gerações no relatório dos descendentes"
 
-#: admin/include/settings_admin.php:459
+#: admin/include/settings_admin.php:486
 msgid "Show number of generation in descendant report (standard value=4)."
 msgstr ""
 "Mostrar o número de gerações no relatório dos descendentes (valor por "
 "omissão = 4)."
 
-#: admin/include/settings_admin.php:462
+#: admin/include/settings_admin.php:489
 msgid "Number of persons in search results"
 msgstr "Número de pessoas nos resultados de pesquisa"
 
-#: admin/include/settings_admin.php:463
+#: admin/include/settings_admin.php:490
 msgid "Show number of persons in search results (standard value=30)."
 msgstr ""
 "Mostrar o número de pessoas nos resultados de pesquisa (valor padrão = 30)."
 
-#: admin/include/settings_admin.php:468 admin/include/settings_admin.php:469
+#: admin/include/settings_admin.php:495 admin/include/settings_admin.php:496
 msgid "Watermark text in PDF file"
 msgstr "Texto da marca-de-água em ficheiro PDF"
 
-#: admin/include/settings_admin.php:470
+#: admin/include/settings_admin.php:497
 msgid "Watermark text (clear to remove watermark)"
 msgstr "Texto da marca-de-água (limpar para remover a marca-de-água)"
 
-#: admin/include/settings_admin.php:472
+#: admin/include/settings_admin.php:499
 msgid "Watermark RGB text color"
 msgstr "Cor (RGB) do texto da marca-de-água"
 
-#: admin/include/settings_admin.php:477
+#: admin/include/settings_admin.php:504
 msgid "Default values: R = 224, G = 224, B = 224."
 msgstr "Valores por omissão: R = 224, G = 224, B = 224."
 
-#: admin/include/settings_admin.php:482
+#: admin/include/settings_admin.php:509
 msgid "Display for One Name Study web sites"
 msgstr "Écrã para os websites de Nome Único para Estudo"
 
-#: admin/include/settings_admin.php:483
+#: admin/include/settings_admin.php:510
 msgid "One Name Study display"
 msgstr "Écrã para Nome Único de Estudo"
 
-#: admin/include/settings_admin.php:490
+#: admin/include/settings_admin.php:517
 msgid "Enter the One Name of this site"
 msgstr "Introduza o Nome Único deste site."
 
-#: admin/include/settings_admin.php:495
+#: admin/include/settings_admin.php:522
 msgid "Save settings"
 msgstr "Gravar as definições"
 
-#: admin/include/settings_admin.php:501 admin/include/settings_admin.php:504
+#: admin/include/settings_admin.php:528 admin/include/settings_admin.php:531
 msgid "Special settings"
 msgstr "Parâmetros especiais"
 
-#: admin/include/settings_admin.php:506
-msgid "&#134 => &infin;"
-msgstr "&#134 => &infin;"
-
-#: admin/include/settings_admin.php:507 admin/include/settings_admin.php:511
-msgid ""
-"Change all &#134; characters into &infin; characters in all language files."
+#: admin/include/settings_admin.php:536
+msgid "Jewish settings"
 msgstr ""
-"Alterar todos &#134; caracteres para &infin; caracteres em todos os "
-"ficheiros de linguagem."
 
-#: admin/include/settings_admin.php:508
-msgid ""
-"Some remarks about this option:<br>\n"
-"If you want the &infin; characters, you have to click the link below "
-"everytime HuMo-gen is updated.<br>\n"
-"It's not posssible to reverse this action, you have to re-install the "
-"language files!"
+#: admin/include/settings_admin.php:537
+msgid "Display settings"
 msgstr ""
-"Algumas notas sobre esta opçãon:<br>\n"
-"Se pretender os caracteres &infin; , tem de clicar no link abaixo sempre que "
-"o HuMo-gen for actualizado.<br>\n"
-"It's not posssible to reverse this action, you have to re-install the "
-"language files!"
 
-#: admin/include/settings_admin.php:514 admin/include/settings_admin.php:515
-#: admin/include/settings_admin.php:518
+#: admin/include/settings_admin.php:539
+msgid ""
+"Change all &#134; characters into &infin; characters in all language files"
+msgstr ""
+
+#: admin/include/settings_admin.php:539
+msgid "unchecking and saving will revert to the cross sign"
+msgstr ""
+
+#: admin/include/settings_admin.php:541
+msgid "Display Hebrew date after Gregorian date: 23 Dec 1980 (16 Tevet 5741)"
+msgstr ""
+
+#: admin/include/settings_admin.php:543
+msgid ""
+"Place yellow Stars of David before holocaust victims in lists and reports"
+msgstr ""
+
+#: admin/include/settings_admin.php:545
+msgid "Add: \"death cause: murdered\" to holocaust victims"
+msgstr ""
+
+#: admin/include/settings_admin.php:546
+msgid "Editor settings"
+msgstr ""
+
+#: admin/include/settings_admin.php:548
+msgid ""
+"Add \"night\" checkbox next to Gregorian dates to calculate Hebrew date "
+"correctly"
+msgstr ""
+
+#: admin/include/settings_admin.php:550
+msgid ""
+"Add field for Hebrew name in name section of editor (instead of in \"events"
+"\" list)"
+msgstr ""
+
+#: admin/include/settings_admin.php:552
+msgid ""
+"Add field for Brit Mila under birth fields (instead of in \"events\" list)"
+msgstr ""
+
+#: admin/include/settings_admin.php:554
+msgid ""
+"Add field for Bar/ Bat Mitsva before baptise fields (instead of in \"events"
+"\" list)"
+msgstr ""
+
+#: admin/include/settings_admin.php:567 admin/include/settings_admin.php:568
+#: admin/include/settings_admin.php:571
 msgid "Sitemap"
 msgstr "Mapa do site"
 
-#: admin/include/settings_admin.php:516
+#: admin/include/settings_admin.php:569
 msgid ""
 "A sitemap can be used for quick indexing of the HuMo-gen family screens by "
 "search engines. Add the sitemap link to a search engine (like Google), or "
@@ -4511,8 +4585,8 @@ msgstr ""
 "do sitemap:<br>\n"
 "Sitemap: http://www.yourwebsite.com/humo-gen/sitemap.php"
 
-#: admin/include/statistics.php:10 admin/include/users.php:107
-#: admin/index.php:818 header.php:235 menu.php:539
+#: admin/include/statistics.php:10 admin/include/users.php:115
+#: admin/index.php:818 header.php:235 menu.php:540
 msgid "Statistics"
 msgstr "Estatísticas"
 
@@ -4696,7 +4770,7 @@ msgid "Visited families in the past 12 months"
 msgstr "Famílias visitadas nos últimos 12 meses"
 
 #: admin/include/statistics.php:259 admin/include/statistics.php:300
-#: family.php:1291 family.php:1383 list.php:1461
+#: family.php:1291 family.php:1383 list.php:1470
 msgid "Unknown"
 msgstr "Desconhecido"
 
@@ -4774,7 +4848,7 @@ msgid "General statistics:"
 msgstr "Estatística geral:"
 
 #: admin/include/statistics.php:462 admin/include/tree_check.php:150
-#: statistics.php:86 statistics.php:258
+#: statistics.php:86 statistics.php:268
 msgid "Item"
 msgstr "Item"
 
@@ -5107,7 +5181,7 @@ msgstr ""
 "familiares entre parentes ou a formação de ligações erradas."
 
 #: admin/include/tree_check.php:83 admin/include/tree_check.php:99
-#: header.php:239 menu.php:590
+#: header.php:239 menu.php:591
 msgid "Latest changes"
 msgstr "Últimas alterações"
 
@@ -5118,15 +5192,15 @@ msgstr ""
 "Aqui você pode ver as últimas alterações que foram efectuadas na sua base de "
 "dados."
 
-#: admin/include/tree_check.php:104 latest_changes.php:116
+#: admin/include/tree_check.php:104 latest_changes.php:88
 msgid "Changed/ Added"
 msgstr "Alterado(a)/Adicionado(a)"
 
-#: admin/include/tree_check.php:105 latest_changes.php:117
+#: admin/include/tree_check.php:105 latest_changes.php:89
 msgid "When changed"
 msgstr "Quando ocorreu a alteração"
 
-#: admin/include/tree_check.php:106 latest_changes.php:118
+#: admin/include/tree_check.php:106 latest_changes.php:90
 msgid "When added"
 msgstr "Quando foi adicionado(a)"
 
@@ -5605,7 +5679,7 @@ msgstr "Adicionar linha em branco na lista de árvores de família"
 msgid "Collation"
 msgstr "Colação"
 
-#: admin/include/trees_cls.php:229 admin/include/users.php:103 family.php:2387
+#: admin/include/trees_cls.php:229 admin/include/users.php:111 family.php:2387
 msgid "E-mail address"
 msgstr "Endereço de e-mail"
 
@@ -5743,7 +5817,7 @@ msgstr ""
 "Não pode combinar pessoas de sexos diferentes. Por favor tente de novo."
 
 #: admin/include/trees_cls.php:527 admin/include/trees_cls.php:537
-#: admin/include/trees_cls.php:567 admin/include/trees_cls.php:2639
+#: admin/include/trees_cls.php:567 admin/include/trees_cls.php:2649
 msgid "Choose another pair"
 msgstr "Escolha outro par"
 
@@ -5826,7 +5900,7 @@ msgstr ""
 "<b>Note for favor que a geração de duplicatas pode demorar algum tempo, "
 "dependendo do tamanho da árvore.</b>"
 
-#: admin/include/trees_cls.php:728 admin/include/trees_cls.php:2629
+#: admin/include/trees_cls.php:728 admin/include/trees_cls.php:2639
 msgid "Continue duplicate merge"
 msgstr "Prosseguir com a combinação de duplicados"
 
@@ -5883,14 +5957,14 @@ msgstr ""
 "a lista de todas as pessoas na base de dados. (Este processo pode demorar "
 "alguns segundos)</b>"
 
-#: admin/include/trees_cls.php:863 list.php:1326 list.php:1334 list.php:1497
-#: relations.php:3078 statistics.php:1414 statistics.php:1415
-#: statistics.php:1416 statistics.php:1417
+#: admin/include/trees_cls.php:863 list.php:1335 list.php:1343 list.php:1506
+#: relations.php:3078 statistics.php:954 statistics.php:955 statistics.php:956
+#: statistics.php:957
 msgid "First name"
 msgstr "Nome próprio"
 
-#: admin/include/trees_cls.php:865 list.php:1336 list.php:1348 list.php:1351
-#: list.php:1507 relations.php:3079
+#: admin/include/trees_cls.php:865 list.php:1345 list.php:1357 list.php:1360
+#: list.php:1516 relations.php:3079
 msgid "Last name"
 msgstr "Sobrenome"
 
@@ -5972,7 +6046,7 @@ msgstr ""
 "anteriores que foram entretanto realizadas."
 
 #: admin/include/trees_cls.php:1148 admin/include/trees_cls.php:1368
-#: admin/include/trees_cls.php:1372 admin/include/trees_cls.php:2619
+#: admin/include/trees_cls.php:1372 admin/include/trees_cls.php:2629
 msgid "Relatives merge"
 msgstr "Combinação de familiares"
 
@@ -6287,10 +6361,11 @@ msgstr "Local de nascimento"
 msgid "death place"
 msgstr "Local de óbito"
 
-#: admin/include/trees_cls.php:1584 include/person_cls.php:1439
-#: include/person_cls.php:1440 include/person_cls.php:1441
-#: include/person_cls.php:1444 include/person_cls.php:1445
-#: include/person_cls.php:1458 include/person_cls.php:1460
+#: admin/include/trees_cls.php:1584 include/person_cls.php:1487
+#: include/person_cls.php:1488 include/person_cls.php:1489
+#: include/person_cls.php:1492 include/person_cls.php:1493
+#: include/person_cls.php:1506 include/person_cls.php:1508
+#: include/person_cls.php:1515
 msgid "death cause"
 msgstr "Causa da morte"
 
@@ -6347,8 +6422,8 @@ msgid "Read text"
 msgstr "Texto a ler"
 
 #: admin/include/trees_cls.php:1666 admin/include/trees_cls.php:1775
-#: admin/include/trees_cls.php:1799 admin/include/trees_cls.php:1830
-#: admin/include/trees_cls.php:1871
+#: admin/include/trees_cls.php:1799 admin/include/trees_cls.php:1835
+#: admin/include/trees_cls.php:1881
 msgid "(no data)"
 msgstr "(sem dados)"
 
@@ -6364,11 +6439,11 @@ msgstr "Outros nomes"
 msgid "Internet link / URL"
 msgstr "Link / URL da Internet link"
 
-#: admin/include/trees_cls.php:2602
+#: admin/include/trees_cls.php:2612
 msgid " was successfully merged into "
 msgstr " foi combinada com sucesso para "
 
-#: admin/include/trees_cls.php:2606
+#: admin/include/trees_cls.php:2616
 #, php-format
 msgid ""
 "After this merge there are %d surrounding relatives to be checked for "
@@ -6377,7 +6452,7 @@ msgstr ""
 "Após esta combinação existem %d parentes próximos a conmferir para "
 "combinação!"
 
-#: admin/include/trees_cls.php:2610
+#: admin/include/trees_cls.php:2620
 msgid ""
 "<b>You are strongly advised to move to \"Relatives merge\" mode to check all "
 "surrounding persons who may have to be checked for merging.</b><br>\n"
@@ -6393,11 +6468,11 @@ msgstr ""
 "adicionadas automaticamente.<br>\n"
 "Esta é a forma mais fácil de garantir que não se está a esquecer de alguém."
 
-#: admin/include/trees_cls.php:2626
+#: admin/include/trees_cls.php:2636
 msgid "Continue manual merge"
 msgstr "Prosseguir com a combinação manual"
 
-#: admin/include/trees_cls.php:2642
+#: admin/include/trees_cls.php:2652
 msgid "Continue with next pair"
 msgstr "Prosseguir com o par seguinte"
 
@@ -6489,23 +6564,23 @@ msgstr "Aprovada"
 msgid "Users"
 msgstr "Utilizadores"
 
-#: admin/include/users.php:62
+#: admin/include/users.php:70
 msgid "Are you sure you want to delete this user?"
 msgstr "Confirma a eliminação deste utilizador?"
 
-#: admin/include/users.php:104
+#: admin/include/users.php:112
 msgid "Change password"
 msgstr "Alterar a senha de acesso"
 
-#: admin/include/users.php:105
+#: admin/include/users.php:113
 msgid "User group"
 msgstr "Grupo de Utilizadores"
 
-#: admin/include/users.php:132
+#: admin/include/users.php:140
 msgid "no need to log in"
 msgstr "não é necessário fazer o log-in"
 
-#: admin/include/users.php:191
+#: admin/include/users.php:199
 msgid "Unblock IP address"
 msgstr "Desbloquear o endereço IP"
 
@@ -6541,7 +6616,7 @@ msgstr "A verificação online da versão não está disponível."
 msgid "Website"
 msgstr "Website"
 
-#: admin/index.php:696 menu.php:237 menu.php:692
+#: admin/index.php:696 menu.php:238 menu.php:693
 msgid "Logoff"
 msgstr "Sair do Sistema"
 
@@ -6553,7 +6628,7 @@ msgstr "Fechar o editor da fonte"
 msgid "Control"
 msgstr "Controle"
 
-#: admin/index.php:768 family.php:130 header.php:238 menu.php:563
+#: admin/index.php:768 family.php:130 header.php:238 menu.php:564
 msgid "Google maps"
 msgstr "Mapas do Google"
 
@@ -6774,20 +6849,20 @@ msgstr "Dia"
 msgid " PRIVACY FILTER"
 msgstr "FILTRO de PRIVACIDADE"
 
-#: birthday_rss.php:61 header.php:234
+#: birthday_rss.php:63 header.php:234
 msgid "Birthday calendar"
 msgstr "Calendário de Aniversários"
 
-#: birthday_rss.php:63
+#: birthday_rss.php:65
 msgid "Whose birthday is it today?"
 msgstr "Quem faz anos hoje?"
 
 # Language indicator, used for birthday RSS
-#: birthday_rss.php:64
+#: birthday_rss.php:66
 msgid "En-en"
 msgstr "En-en"
 
-#: birthday_rss.php:130
+#: birthday_rss.php:132
 msgid "No results found."
 msgstr "Não se encontraram resultados."
 
@@ -6819,12 +6894,12 @@ msgstr "RTF"
 msgid "Add to favourite list"
 msgstr "Adicionar à lista de favoritos"
 
-#: family.php:395 family.php:455 family.php:593 include/person_cls.php:522
+#: family.php:395 family.php:455 family.php:593 include/person_cls.php:567
 msgid "Descendant report"
 msgstr "Relatório dos descendentes"
 
 #: family.php:398 family.php:458 family.php:540 family.php:596 family.php:817
-#: family.php:828 include/person_cls.php:502
+#: family.php:828 include/person_cls.php:547
 msgid "Family group sheet"
 msgstr "Folha do grupo de famílias"
 
@@ -6926,19 +7001,19 @@ msgstr ""
 "incorrecto!). É melhor usar um processador de texto como o Word ou o "
 "OpenOffice Writer."
 
-#: fanchart.php:484
+#: fanchart.php:485
 msgid "RELOAD FANCHART WITH 'VIEW' BUTTON ON THE LEFT"
 msgstr "Recarregue FANCHART com o botão \"VIEW\" da esquerda"
 
-#: fanchart.php:548 include/person_cls.php:564
+#: fanchart.php:549 include/person_cls.php:609
 msgid "Fanchart"
 msgstr "Fanchart"
 
-#: fanchart.php:556
+#: fanchart.php:557
 msgid "How to print the chart"
 msgstr "Como imprimir o mapa"
 
-#: fanchart.php:560
+#: fanchart.php:561
 msgid ""
 "<u>Internet Explorer:</u><br>\n"
 "1. Set background to \"white\" on the menu and press \"View\"<br>\n"
@@ -6952,7 +7027,7 @@ msgstr ""
 "3. Salve no disco com  \"Save picture as\"<br>\n"
 "4. Imprima a imagem guardada"
 
-#: fanchart.php:566
+#: fanchart.php:567
 msgid ""
 "<p><u>All other browsers:</u><br>\n"
 "Just print the page .... ;-)<br>\n"
@@ -6966,78 +7041,78 @@ msgstr ""
 "e ajuste o tamanho da impressão de forma a caber na página<br>\n"
 "(para gráficos regulares isto representa 85%-90% do tamanho do écrã)"
 
-#: fanchart.php:646
+#: fanchart.php:647
 msgid "View"
 msgstr "Visualização"
 
-#: fanchart.php:650
+#: fanchart.php:651
 msgid "Fan style"
 msgstr "Estilo de Fan"
 
-#: fanchart.php:655
+#: fanchart.php:656
 msgid "half"
 msgstr "metade"
 
-#: fanchart.php:662
+#: fanchart.php:663
 msgid "full"
 msgstr "total"
 
-#: fanchart.php:667
+#: fanchart.php:668
 msgid "Generations"
 msgstr "Gerações"
 
-#: fanchart.php:678
+#: fanchart.php:679
 msgid "Font size"
 msgstr "Tamanho da fonte"
 
-#: fanchart.php:698
+#: fanchart.php:699
 msgid "Years only"
 msgstr "Apenas os anos"
 
-#: fanchart.php:702
+#: fanchart.php:703
 msgid "Full dates"
 msgstr "Datas completas"
 
-#: fanchart.php:707
+#: fanchart.php:708
 msgid "Fan width:"
 msgstr "Comprimento da fan:"
 
-#: fanchart.php:709
+#: fanchart.php:710
 msgid ""
 "\"auto\" for automatic resizing for best display, or value between 50-300"
 msgstr ""
 "\"auto\" para redimensionamento automático da melhor tela, ou um valor entre "
 "50-300"
 
-#: fanchart.php:713
+#: fanchart.php:714
 msgid "Background"
 msgstr "Background"
 
-#: fanchart.php:718
+#: fanchart.php:719
 msgid "transparent"
 msgstr "transparente"
 
-#: fanchart.php:721
+#: fanchart.php:722
 msgid "white"
 msgstr "branco"
 
-#: fanchart.php:730
+#: fanchart.php:731
 msgid "descendants"
 msgstr "descendentes"
 
-#: fanchart.php:730
+#: fanchart.php:731
 msgid "under fanchart"
 msgstr "sob fanchart"
 
-#: fanchart.php:756
+#: fanchart.php:757
 msgid "No Chinese ttf font file found"
 msgstr "Não se descobriu nenhum arquivo de fonte ttf em Chinês."
 
-#: fanchart.php:757
+#: fanchart.php:758
 msgid "Download link"
 msgstr "Link para download:"
 
-#: fanchart.php:759
+#: fanchart.php:760
 msgid "Unzip and place in \"include/fanchart/chinese/\" folder"
 msgstr ""
 "Descomprima p arquivo (\"unzip\") e coloque-o na pasta \"include/fanchart/"
@@ -7087,19 +7162,19 @@ msgstr "Todas as pessoas que faleceram até"
 msgid "Main index"
 msgstr "Índice principal"
 
-#: header.php:228 menu.php:392 statistics.php:56
+#: header.php:228 menu.php:393 statistics.php:56
 msgid "Persons"
 msgstr "Pessoas"
 
-#: header.php:229 include/mainindex_cls.php:292 menu.php:406
+#: header.php:229 include/mainindex_cls.php:292 menu.php:407
 msgid "Names"
 msgstr "Nomes"
 
-#: header.php:231 menu.php:436
+#: header.php:231 menu.php:437
 msgid "Photobook"
 msgstr "Álbum de Fotografias"
 
-#: header.php:236 include/person_cls.php:550 menu.php:549
+#: header.php:236 include/person_cls.php:595 menu.php:550
 msgid "Relationship calculator"
 msgstr "Calculador de relacionamentos"
 
@@ -7107,12 +7182,12 @@ msgstr "Calculador de relacionamentos"
 msgid "Mail form"
 msgstr "Formulário de correio"
 
-#: header.php:240 hourglass.php:92 list.php:1581 maps.php:226 menu.php:275
-#: menu.php:616 menu.php:621 report_descendant.php:414 timelines.php:457
+#: header.php:240 hourglass.php:92 list.php:1590 maps.php:226 menu.php:276
+#: menu.php:617 menu.php:622 report_descendant.php:414 timelines.php:457
 msgid "Help"
 msgstr "Ajuda"
 
-#: header.php:241 menu.php:325 menu.php:344
+#: header.php:241 menu.php:326 menu.php:345
 msgid "Information"
 msgstr "Informação"
 
@@ -7124,11 +7199,11 @@ msgstr "Créditos"
 msgid "Cookie information"
 msgstr "Informação sobre os cookies"
 
-#: header.php:245 menu.php:263 menu.php:723
+#: header.php:245 menu.php:264 menu.php:724
 msgid "Register"
 msgstr "Inscrição"
 
-#: hourglass.php:73 include/person_cls.php:613
+#: hourglass.php:73 include/person_cls.php:658
 msgid "Hourglass chart"
 msgstr "Mapa de ampulheta"
 
@@ -7157,13 +7232,13 @@ msgstr ""
 "pessoa<br><br>\n"
 "<b>LEGENDA:</b>"
 
-#: hourglass.php:105 list.php:1457 report_descendant.php:426 statistics.php:258
-#: statistics.php:1413
+#: hourglass.php:105 list.php:1466 report_descendant.php:426 statistics.php:268
+#: statistics.php:953
 msgid "Male"
 msgstr "Sexo Masculino"
 
-#: hourglass.php:106 list.php:1459 report_descendant.php:427 statistics.php:258
-#: statistics.php:1413
+#: hourglass.php:106 list.php:1468 report_descendant.php:427 statistics.php:268
+#: statistics.php:953
 msgid "Female"
 msgstr "Sexo Feminino"
 
@@ -7239,9 +7314,9 @@ msgstr "com cerca de"
 #: include/calculate_age_cls.php:344 include/calculate_age_cls.php:350
 #: include/calculate_age_cls.php:355 include/calculate_age_cls.php:363
 #: include/calculate_age_cls.php:369 include/calculate_age_cls.php:376
-#: include/calculate_age_cls.php:381 statistics.php:632 statistics.php:641
-#: statistics.php:652 statistics.php:656 statistics.php:665 statistics.php:669
-#: statistics.php:672 statistics.php:674 timelines.php:484 timelines.php:486
+#: include/calculate_age_cls.php:381 statistics.php:609 statistics.php:618
+#: statistics.php:629 statistics.php:633 statistics.php:642 statistics.php:646
+#: statistics.php:649 statistics.php:651 timelines.php:484 timelines.php:486
 msgid "years"
 msgstr "anos"
 
@@ -7253,7 +7328,7 @@ msgstr "com menos de 1 ano de idade"
 msgid "1 years"
 msgstr "1 ano"
 
-#: include/date_place.php:17 include/date_place.php:28
+#: include/date_place.php:18 include/date_place.php:28
 msgid "PLACE_AT "
 msgstr "PLACE_AT "
 
@@ -7265,19 +7340,19 @@ msgstr "Algo está errado, a id da pessoa não é válida."
 msgid "Something went wrong, there is no valid family id."
 msgstr "Algo está errado, a id da família não é válida."
 
-#: include/fpdf16/fpdfextend.php:160 include/person_cls.php:1581
+#: include/fpdf16/fpdfextend.php:160 include/person_cls.php:1639
 msgid "occupations"
 msgstr "profissões"
 
-#: include/fpdf16/fpdfextend.php:162 include/person_cls.php:1577
+#: include/fpdf16/fpdfextend.php:162 include/person_cls.php:1635
 msgid "occupation"
 msgstr "profissão"
 
-#: include/fpdf16/fpdfextend.php:174 include/person_cls.php:1655
+#: include/fpdf16/fpdfextend.php:174 include/person_cls.php:1713
 msgid "residences"
 msgstr "residências"
 
-#: include/fpdf16/fpdfextend.php:176 include/person_cls.php:1651 list.php:1286
+#: include/fpdf16/fpdfextend.php:176 include/person_cls.php:1709 list.php:1295
 msgid "residence"
 msgstr "residência"
 
@@ -7345,21 +7420,9 @@ msgstr "chegada"
 msgid "Baptized LDS"
 msgstr "Baptismo LDS"
 
-#: include/language_event.php:13
-msgid "Bar Mitzvah"
-msgstr "Bar Mitzvah"
-
-#: include/language_event.php:14
-msgid "Bat Mitzvah"
-msgstr "Baptismo Mitzvah"
-
 #: include/language_event.php:15
 msgid "Blessing"
 msgstr "Bênçoas"
-
-#: include/language_event.php:16
-msgid "Brit Mila"
-msgstr "Brit Mila"
 
 #: include/language_event.php:17
 msgid "Caste"
@@ -7561,7 +7624,7 @@ msgstr "Yartzeit"
 msgid "Select a family tree"
 msgstr "Selecione uma árvore de família"
 
-#: include/mainindex_cls.php:35 include/mainindex_cls.php:406 list.php:1556
+#: include/mainindex_cls.php:35 include/mainindex_cls.php:406 list.php:1565
 msgid "Selected family tree"
 msgstr "Árvore da família selecionada"
 
@@ -7588,14 +7651,13 @@ msgid "Owner family tree:"
 msgstr "Detentor da árvore de família:"
 
 #: include/mainindex_cls.php:309 include/mainindex_cls.php:311
-#: statistics.php:1237 statistics.php:1239
+#: statistics.php:777 statistics.php:779
 msgid "Surname"
 msgstr "Apelido"
 
 #: include/mainindex_cls.php:309 include/mainindex_cls.php:311
-#: list_names.php:288 list_names.php:290 statistics.php:1237
-#: statistics.php:1239 statistics.php:1414 statistics.php:1415
-#: statistics.php:1416 statistics.php:1417
+#: list_names.php:290 list_names.php:292 statistics.php:777 statistics.php:779
+#: statistics.php:954 statistics.php:955 statistics.php:956 statistics.php:957
 msgid "Total"
 msgstr "Total"
 
@@ -7607,11 +7669,11 @@ msgstr "Apelidos mais frequentes"
 msgid "Frequent first names"
 msgstr "Apelidos frequentes"
 
-#: include/mainindex_cls.php:387 list.php:1372
+#: include/mainindex_cls.php:387 list.php:1381
 msgid "Enter name or part of name"
 msgstr "Introduza o nome ou parte do nome"
 
-#: include/mainindex_cls.php:388 list.php:1376
+#: include/mainindex_cls.php:388 list.php:1385
 msgid "Enter private name"
 msgstr "Introduza o nome próprio"
 
@@ -7619,11 +7681,11 @@ msgstr "Introduza o nome próprio"
 msgid "Minimum: 3 characters."
 msgstr "No mínimo: 3 caracteres."
 
-#: include/mainindex_cls.php:411 list.php:1560
+#: include/mainindex_cls.php:411 list.php:1569
 msgid "All but selected tree"
 msgstr "Todas as árvores menos a selecionada"
 
-#: include/mainindex_cls.php:423 list.php:1606
+#: include/mainindex_cls.php:423 list.php:1615
 msgid "Advanced search"
 msgstr "Pesquisa avançada"
 
@@ -7647,13 +7709,13 @@ msgstr "Patrónimos"
 msgid "Today in history"
 msgstr "Hoje em Historial"
 
-#: include/mainindex_cls.php:600 list.php:1395 list.php:1397 list.php:1424
-#: list.php:1426 list.php:1774 list.php:1786 source.php:62 source.php:67
+#: include/mainindex_cls.php:600 list.php:1404 list.php:1406 list.php:1433
+#: list.php:1435 list.php:1783 list.php:1795 source.php:62 source.php:67
 #: source.php:230 sources.php:116
 msgid "Date"
 msgstr "Data"
 
-#: include/mainindex_cls.php:615 list.php:1929 list_places_families.php:601
+#: include/mainindex_cls.php:615 list.php:1938 list_places_families.php:601
 msgid " persons are not shown due to privacy settings"
 msgstr " as pessoas não são exibidas devido aos parâmetros de privacidade"
 
@@ -7723,24 +7785,24 @@ msgstr "divórcio"
 msgid "Married/ Related"
 msgstr "Casamento/ Relacionamento"
 
-#: include/marriage_cls.php:545 include/person_cls.php:1114 list.php:152
+#: include/marriage_cls.php:545 include/person_cls.php:1160 list.php:161
 #: list_places_families.php:158
 msgid "1st"
 msgstr "1º"
 
-#: include/marriage_cls.php:546 include/person_cls.php:1115 list.php:153
+#: include/marriage_cls.php:546 include/person_cls.php:1161 list.php:162
 #: list_places_families.php:159 relations.php:546 relations.php:813
 #: relations.php:911 relations.php:1025 relations.php:1333
 msgid "2nd"
 msgstr "2º"
 
-#: include/marriage_cls.php:547 include/person_cls.php:1116 list.php:154
+#: include/marriage_cls.php:547 include/person_cls.php:1162 list.php:163
 #: list_places_families.php:160 relations.php:547 relations.php:814
 #: relations.php:912 relations.php:1026 relations.php:1334
 msgid "3rd"
 msgstr "3º"
 
-#: include/marriage_cls.php:548 include/person_cls.php:1117 list.php:155
+#: include/marriage_cls.php:548 include/person_cls.php:1163 list.php:164
 #: list_places_families.php:161 relations.php:377 relations.php:549
 #: relations.php:816 relations.php:1240 relations.php:1271 relations.php:1336
 #: relations.php:1712 relations.php:1715
@@ -7759,132 +7821,133 @@ msgstr " relacionada"
 msgid "married/ related"
 msgstr "Casamento/ Relacionamento"
 
-#: include/person_cls.php:188
+#: include/person_cls.php:233
 msgid "stillborn boy"
 msgstr "nado-morto do sexo masculino"
 
-#: include/person_cls.php:189
+#: include/person_cls.php:234
 msgid "stillborn girl"
 msgstr "nado-morto do sexo feminino"
 
-#: include/person_cls.php:221 include/person_cls.php:225 list.php:40
+#: include/person_cls.php:266 include/person_cls.php:270 list.php:40
 #: list_places_families.php:55
 msgid "Name filtered"
 msgstr "Nome filtrado"
 
-#: include/person_cls.php:501
+#: include/person_cls.php:546
 msgid "Text reports"
 msgstr "Relatorios de texto"
 
-#: include/person_cls.php:532 report_outline.php:96 report_outline.php:105
+#: include/person_cls.php:577 report_outline.php:96 report_outline.php:105
 #: report_outline.php:111
 msgid "Outline report"
 msgstr "Relatório Outline"
 
-#: include/person_cls.php:544 report_ancestor.php:101 report_ancestor.php:137
+#: include/person_cls.php:589 report_ancestor.php:101 report_ancestor.php:137
 #: report_ancestor.php:146 report_ancestor.php:197
 msgid "Ancestor report"
 msgstr "Relatório dos Antepassados"
 
-#: include/person_cls.php:546 report_ancestor.php:1082 report_ancestor.php:1382
+#: include/person_cls.php:591 report_ancestor.php:1082 report_ancestor.php:1382
 #: report_ancestor.php:1397
 msgid "Ancestor sheet"
 msgstr "Folha dos Antepassados"
 
-#: include/person_cls.php:554
+#: include/person_cls.php:599
 msgid "Charts"
 msgstr "Mapas"
 
-#: include/person_cls.php:572 report_ancestor.php:98
+#: include/person_cls.php:617 report_ancestor.php:98
 msgid "Ancestor chart"
 msgstr "Mapa dos Antepassados"
 
-#: include/person_cls.php:583 report_descendant.php:448
+#: include/person_cls.php:628 report_descendant.php:448
 msgid "Descendant chart"
 msgstr "Mapa dos Descendentes"
 
-#: include/person_cls.php:599
+#: include/person_cls.php:644
 msgid "DNA Charts"
 msgstr "Mapas de ADN"
 
-#: include/person_cls.php:644 include/person_cls.php:657
+#: include/person_cls.php:689 include/person_cls.php:702
 msgid "Timeline"
 msgstr "Escala de tempo"
 
-#: include/person_cls.php:654 menu.php:249 menu.php:711
+#: include/person_cls.php:699 menu.php:250 menu.php:712
 msgid "Admin"
 msgstr "Admin"
 
-#: include/person_cls.php:706 include/person_cls.php:1175
-#: include/person_cls.php:1177 list.php:169 list.php:178 list.php:187
-#: list.php:196 list_places_families.php:178 list_places_families.php:187
+#: include/person_cls.php:751 include/person_cls.php:1221
+#: include/person_cls.php:1223 list.php:178 list.php:187 list.php:196
+#: list.php:205 list_places_families.php:178 list_places_families.php:187
 #: list_places_families.php:196 list_places_families.php:205 photoalbum.php:471
 #: report_ancestor.php:1195 report_ancestor.php:1212 report_ancestor.php:1213
-#: report_ancestor.php:1345 timelines.php:322
+#: report_ancestor.php:1345 statistics.php:253 statistics.php:254
+#: timelines.php:322
 msgid "PRIVACY FILTER"
 msgstr "FILTRO de PRIVACIDADE"
 
-#: include/person_cls.php:870
+#: include/person_cls.php:916
 msgid "son of"
 msgstr "filho de"
 
-#: include/person_cls.php:871
+#: include/person_cls.php:917
 msgid "daughter of"
 msgstr "filha de"
 
-#: include/person_cls.php:872
+#: include/person_cls.php:918
 msgid "child of"
 msgstr "filho(a) de"
 
-#: include/person_cls.php:940
+#: include/person_cls.php:986
 msgid "adoption parents"
 msgstr "Pais adoptivos"
 
-#: include/person_cls.php:1008
+#: include/person_cls.php:1054
 msgid "stepparent"
 msgstr "Padrasto"
 
-#: include/person_cls.php:1009
+#: include/person_cls.php:1055
 msgid "legal parent"
 msgstr "Progenitor legal"
 
-#: include/person_cls.php:1010
+#: include/person_cls.php:1056
 msgid "foster parent"
 msgstr "Pai de acolhimento"
 
-#: include/person_cls.php:1011
+#: include/person_cls.php:1057
 msgid "adoptive parent"
 msgstr "Pai adoptivo"
 
-#: include/person_cls.php:1070
+#: include/person_cls.php:1116
 msgid "relationship with"
 msgstr "relacionamento com"
 
-#: include/person_cls.php:1073
+#: include/person_cls.php:1119
 msgid "married to"
 msgstr "casado(a) com"
 
-#: include/person_cls.php:1074
+#: include/person_cls.php:1120
 msgid "marriage with"
 msgstr "matrimónio com"
 
-#: include/person_cls.php:1078
+#: include/person_cls.php:1124
 msgid "divorced from"
 msgstr "divorciado(a) de"
 
-#: include/person_cls.php:1079
+#: include/person_cls.php:1125
 msgid "marriage (divorced) with"
 msgstr "matrimónio (divorciado) com"
 
-#: include/person_cls.php:1286 include/person_cls.php:1414
+#: include/person_cls.php:1333 include/person_cls.php:1462
 msgid "at"
 msgstr "em"
 
-#: include/person_cls.php:1286 include/person_cls.php:1414
+#: include/person_cls.php:1333 include/person_cls.php:1462
 msgid "hour"
 msgstr "hora"
 
-#: include/person_cls.php:1557
+#: include/person_cls.php:1615
 msgid "ash dispersion"
 msgstr "dispersão das cinzas"
 
@@ -7937,21 +8000,21 @@ msgid ""
 "</p>"
 msgstr ""
 
-#: latest_changes.php:101
+#: latest_changes.php:73
 msgid "Recently changed and/or new persons"
 msgstr "Pessoas novas ou recentemente alteradas"
 
 # Residence
-#: list.php:78 list.php:1286
+#: list.php:78 list.php:1295
 msgid "^"
 msgstr "^"
 
-#: list.php:134 list_places_families.php:134
+#: list.php:143 list_places_families.php:134
 msgid "&amp;"
 msgstr "&amp;"
 
 # Married
-#: list.php:136 list_places_families.php:88 list_places_families.php:136
+#: list.php:145 list_places_families.php:88 list_places_families.php:136
 #: list_places_families.php:195 list_places_families.php:204
 #: list_places_families.php:421 report_ancestor.php:765 report_ancestor.php:776
 #: report_ancestor.php:777 report_ancestor.php:801 report_ancestor.php:1117
@@ -7960,56 +8023,56 @@ msgid "X"
 msgstr "X"
 
 # Divorse
-#: list.php:138 list_places_families.php:138
+#: list.php:147 list_places_families.php:138
 msgid ") ("
 msgstr ") ("
 
-#: list.php:681 list.php:1841
+#: list.php:690 list.php:1850
 msgid "..."
 msgstr "..."
 
-#: list.php:1277 list_places_families.php:412
+#: list.php:1286 list_places_families.php:412
 msgid "Find place"
 msgstr "Encontrar local"
 
-#: list.php:1280
+#: list.php:1289
 msgid "birth pl."
 msgstr "Local de nasc."
 
-#: list.php:1283
+#: list.php:1292
 msgid "bapt pl."
 msgstr "Local de bapt."
 
-#: list.php:1289
+#: list.php:1298
 msgid "death pl."
 msgstr "Local de falecim."
 
-#: list.php:1292
+#: list.php:1301
 msgid "bur pl."
 msgstr "Local de enterro"
 
-#: list.php:1295 list.php:1328 list.php:1342 list.php:1359 list.php:1402
-#: list.php:1412 list.php:1431 list.php:1442 list.php:1467 list.php:1478
-#: list.php:1491 list.php:1501 list.php:1512 list.php:1526
+#: list.php:1304 list.php:1337 list.php:1351 list.php:1368 list.php:1411
+#: list.php:1421 list.php:1440 list.php:1451 list.php:1476 list.php:1487
+#: list.php:1500 list.php:1510 list.php:1521 list.php:1535
 #: list_places_families.php:427
 msgid "Contains"
 msgstr "Contém"
 
-#: list.php:1298 list.php:1330 list.php:1344 list.php:1361 list.php:1404
-#: list.php:1414 list.php:1433 list.php:1444 list.php:1469 list.php:1480
-#: list.php:1493 list.php:1503 list.php:1514 list.php:1524
+#: list.php:1307 list.php:1339 list.php:1353 list.php:1370 list.php:1413
+#: list.php:1423 list.php:1442 list.php:1453 list.php:1478 list.php:1489
+#: list.php:1502 list.php:1512 list.php:1523 list.php:1533
 #: list_places_families.php:430
 msgid "Equals"
 msgstr "Iguala"
 
-#: list.php:1301 list.php:1332 list.php:1346 list.php:1363 list.php:1406
-#: list.php:1416 list.php:1435 list.php:1446 list.php:1471 list.php:1482
-#: list.php:1495 list.php:1505 list.php:1516 list.php:1528
+#: list.php:1310 list.php:1341 list.php:1355 list.php:1372 list.php:1415
+#: list.php:1425 list.php:1444 list.php:1455 list.php:1480 list.php:1491
+#: list.php:1504 list.php:1514 list.php:1525 list.php:1537
 #: list_places_families.php:433
 msgid "Starts with"
 msgstr "Começa com"
 
-#: list.php:1373
+#: list.php:1382
 msgid ""
 "\"John Jones\", \"Jones John\", \"John of Jones\", \"of Jones, John\", "
 "\"Jones, John of\", \"Jones of, John\""
@@ -8017,67 +8080,67 @@ msgstr ""
 "\"João Almeida\", \"Almeida João\", \"João de Almeida\", \"de Almeida, João"
 "\", \"Almeida, João de\", \"Almeida de, João\""
 
-#: list.php:1388 menu.php:77
+#: list.php:1397 menu.php:77
 msgid "Minimum:"
 msgstr "Mínimo:"
 
-#: list.php:1388 menu.php:77
+#: list.php:1397 menu.php:77
 msgid "characters"
 msgstr "caracteres"
 
-#: list.php:1396 list.php:1425
+#: list.php:1405 list.php:1434
 msgid "till:"
 msgstr "até:"
 
-#: list.php:1448
+#: list.php:1457
 msgid "Text by person"
 msgstr "Texto por pessoa"
 
-#: list.php:1453
+#: list.php:1462
 msgid "Choose sex:"
 msgstr "Escolha o sexo:"
 
-#: list.php:1489
+#: list.php:1498
 msgid "Partner firstname"
 msgstr "Nome próprio do companheiro(a)"
 
-#: list.php:1499
+#: list.php:1508
 msgid "Partner lastname"
 msgstr "Último nome do companheiro(a)"
 
-#: list.php:1510 list.php:1518
+#: list.php:1519 list.php:1527
 msgid "witness"
 msgstr "testemunha"
 
-#: list.php:1522 list.php:1530
+#: list.php:1531 list.php:1539
 msgid "gedcomnumber (ID)"
 msgstr ""
 
-#: list.php:1532
+#: list.php:1541
 msgid "Research status:"
 msgstr ""
 
-#: list.php:1534
+#: list.php:1543
 msgid "parents unknown"
 msgstr ""
 
-#: list.php:1536
+#: list.php:1545
 msgid "father unknown"
 msgstr ""
 
-#: list.php:1538
+#: list.php:1547
 msgid "mother unknown"
 msgstr ""
 
-#: list.php:1570
+#: list.php:1579
 msgid "Standard search"
 msgstr "Pesquisa normal"
 
-#: list.php:1585
+#: list.php:1594
 msgid "Tip"
 msgstr "Dica"
 
-#: list.php:1588
+#: list.php:1597
 msgid ""
 "With Advanced Search you can easily create lists like: all persons with "
 "surname <b>Schaap</b> who were born <b>between 1820 and 1840</b> in "
@@ -8091,7 +8154,7 @@ msgstr ""
 "Também pode pesquisar sem incluir um nome, por exemplo: todas as pessoas que "
 "<b>faleceram em 1901</b> em <b>Natal.</b>"
 
-#: list.php:1593
+#: list.php:1602
 msgid ""
 "Note:</td>\n"
 "<td>When you use the birth and/or death search boxes please note this:<br>\n"
@@ -8110,23 +8173,23 @@ msgstr ""
 "não ser que disponha das permissões adequadas.<br>\n"
 "   Estas pessoas só podem ser encontradas por pesquisa do nome e/ou apelido."
 
-#: list.php:1667 list.php:1963
+#: list.php:1676 list.php:1972
 msgid " persons found."
 msgstr " pessoas encontradas."
 
-#: list.php:1703 list_places_families.php:530
+#: list.php:1712 list_places_families.php:530
 msgid "Concise view"
 msgstr "Vista concisa"
 
-#: list.php:1719 list_places_families.php:542
+#: list.php:1728 list_places_families.php:542
 msgid "No names found."
 msgstr "Não foram encontrados nomes."
 
-#: list.php:1762
+#: list.php:1771
 msgid "Sort by:"
 msgstr "Ordenar por:"
 
-#: list.php:1802
+#: list.php:1811
 msgid "Loading..."
 msgstr ""
 
@@ -8134,11 +8197,11 @@ msgstr ""
 msgid "All names"
 msgstr "Todos os nomes"
 
-#: list_names.php:203 statistics.php:1204
+#: list_names.php:205 statistics.php:744
 msgid "Number of displayed surnames"
 msgstr "Número de apelidos exibidos"
 
-#: list_names.php:214 statistics.php:1215
+#: list_names.php:216 statistics.php:755
 msgid "Number of columns"
 msgstr "Número de colunas"
 
@@ -8558,43 +8621,43 @@ msgstr "Escolha um nome da lista"
 msgid "Filter by ancestors of a person"
 msgstr ""
 
-#: menu.php:191 menu.php:217
+#: menu.php:192 menu.php:218
 msgid "Home"
 msgstr "Página Inicial"
 
-#: menu.php:284 menu.php:630
+#: menu.php:285 menu.php:631
 msgid "HuMo-gen info"
 msgstr "Info sobre HuMo-gen"
 
-#: menu.php:293 menu.php:639
+#: menu.php:294 menu.php:640
 msgid "HuMo-gen credits"
 msgstr "Créditos do HuMo-gen"
 
-#: menu.php:303 menu.php:649
+#: menu.php:304 menu.php:650
 msgid "HuMo-gen cookies"
 msgstr "Cookies do HuMo-gen"
 
-#: menu.php:381
+#: menu.php:382
 msgid "Family tree index"
 msgstr "Índice das árvores de família"
 
-#: menu.php:416
+#: menu.php:417
 msgid "Places (by persons)"
 msgstr "Locais (por pessoas)"
 
-#: menu.php:425
+#: menu.php:426
 msgid "Places (by families)"
 msgstr "Locais (por famílias)"
 
-#: menu.php:516
+#: menu.php:517
 msgid "Tools"
 msgstr "Ferramentas"
 
-#: menu.php:529
+#: menu.php:530
 msgid "Anniversary list"
 msgstr "Lista de aniversários"
 
-#: menu.php:577
+#: menu.php:578
 msgid "Contact"
 msgstr "Contato"
 
@@ -9423,51 +9486,51 @@ msgstr "Família com maior nº de filhos"
 msgid " and "
 msgstr " e "
 
-#: statistics.php:143 statistics.php:486
+#: statistics.php:143 statistics.php:475
 msgid "No. of persons"
 msgstr "Nº de pessoas"
 
-#: statistics.php:496
+#: statistics.php:485
 msgid "Oldest birth date"
 msgstr "Nascimento mais antigo"
 
-#: statistics.php:518
+#: statistics.php:505
 msgid "Youngest birth date"
 msgstr "Nascimento mais recente"
 
-#: statistics.php:540
+#: statistics.php:525
 msgid "Oldest baptism date"
 msgstr "Data de baptismo mais antiga:"
 
-#: statistics.php:562
+#: statistics.php:545
 msgid "Youngest baptism date"
 msgstr "Data de baptismo mais recente"
 
-#: statistics.php:585
+#: statistics.php:566
 msgid "Oldest death date"
 msgstr "Óbito mais antigo"
 
-#: statistics.php:607
+#: statistics.php:586
 msgid "Youngest death date"
 msgstr "Óbito mais recente"
 
-#: statistics.php:628
+#: statistics.php:605
 msgid "Longest living person"
 msgstr "Pessoa de vida mais longa"
 
-#: statistics.php:648
+#: statistics.php:625
 msgid "Average age"
 msgstr "Média  etária"
 
-#: statistics.php:660
+#: statistics.php:637
 msgid "Average age married persons"
 msgstr "Média etária das pessoas casadas"
 
-#: statistics.php:671
+#: statistics.php:648
 msgid "Lifespan range of married individuals"
 msgstr "Tempo de vida dos indivíduos casados"
 
-#: statistics.php:1387
+#: statistics.php:927
 msgid "Number of displayed first names"
 msgstr "Número de nomes próprios exibidos"
 
@@ -9611,7 +9674,7 @@ msgstr "Não existem ficheiros da linha de tempo para esta linguagem."
 msgid "HISTORIC EVENTS"
 msgstr "EVENTOS HISTÓRICOS"
 
-#: timelines.php:723
+#: timelines.php:733
 msgid "till"
 msgstr "até"
 
@@ -9642,6 +9705,35 @@ msgstr "Selecione um tema (o tema será memorizado num cookie)"
 #: user_settings.php:150 user_settings.php:154
 msgid "Standard-colours"
 msgstr "Cores Normais"
+
+#~ msgid "install"
+#~ msgstr "instalar"
+
+#~ msgid "Israel - 5 Jan 1787 (15 Tevet 5547)"
+#~ msgstr "Israel - 5 Jan 1787 (15 Tevet 5547)"
+
+#~ msgid "&#134 => &infin;"
+#~ msgstr "&#134 => &infin;"
+
+#~ msgid ""
+#~ "Change all &#134; characters into &infin; characters in all language "
+#~ "files."
+#~ msgstr ""
+#~ "Alterar todos &#134; caracteres para &infin; caracteres em todos os "
+#~ "ficheiros de linguagem."
+
+#~ msgid ""
+#~ "Some remarks about this option:<br>\n"
+#~ "If you want the &infin; characters, you have to click the link below "
+#~ "everytime HuMo-gen is updated.<br>\n"
+#~ "It's not posssible to reverse this action, you have to re-install the "
+#~ "language files!"
+#~ msgstr ""
+#~ "Algumas notas sobre esta opçãon:<br>\n"
+#~ "Se pretender os caracteres &infin; , tem de clicar no link abaixo sempre "
+#~ "que o HuMo-gen for actualizado.<br>\n"
+#~ "It's not posssible to reverse this action, you have to re-install the "
+#~ "language files!"
 
 #~ msgid ""
 #~ "<b>STEP 1) Select Gedcom file:</b>\n"

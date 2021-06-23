@@ -232,7 +232,7 @@ if (isset($_POST['place_name'])){
 	//$place_name=htmlentities($_POST['place_name'],ENT_QUOTES,'UTF-8');
 	$_SESSION["save_place_name"]=$place_name;
 
-	if (isset($_POST['select_marriage_notice'])){	$select_marriage_notice='1'; $_SESSION["save_select_marriage_notice"]='1'; }
+	if (isset($_POST['select_marriage_notice'])){ $select_marriage_notice='1'; $_SESSION["save_select_marriage_notice"]='1'; }
 		else{ $_SESSION["save_select_marriage_notice"]='0'; }
 	if (isset($_POST['select_marriage'])){ $select_marriage='1'; $_SESSION["save_select_marriage"]='1'; }
 		else{ $_SESSION["save_select_marriage"]='0'; }
@@ -602,7 +602,7 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 
 	echo '<br><div class="index_list1">'.$line_pages.'</div>';
 
-echo '<script type="text/javascript"> 
+echo '<script type="text/javascript">
 	if(window.self != window.top) {
 		var framew = window.frameElement.offsetWidth; 
 		document.getElementById("content").style.width = framew-40+"px";
@@ -612,16 +612,16 @@ echo '<script type="text/javascript">
 		}
 		var lists = document.getElementsByClassName("index_list1");
 		for (var i = 0; i < lists.length; i++) {
-    		   	lists[i].style.width = framew-40+"px";
-   	   	}
-   		var boxes = document.getElementsByClassName("left_box"); 
+				lists[i].style.width = framew-40+"px";
+		}
+		var boxes = document.getElementsByClassName("left_box");
 		if(boxes.length > 0) {
 			boxes[0].style.width=framew-60+"px";
 			boxes[0].style.marginBottom="10px";
-			boxes[0].innerHTML= boxes[0].innerHTML.replace(/<br>/g,"&nbsp;&nbsp;");  
+			boxes[0].innerHTML= boxes[0].innerHTML.replace(/<br>/g,"&nbsp;&nbsp;");
 			boxes[0].style.textAlign="center"; 
 		}
-   	}
+	}
 </script>';
 //for testing only:
 //echo 'Query: '.$query." LIMIT ".safe_text_db($item).",".$nr_persons.'<br>';

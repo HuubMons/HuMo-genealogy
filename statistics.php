@@ -145,7 +145,6 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo '<td><br></td></tr>';
 
 		echo '</table>';
-
 	}
 
 
@@ -176,7 +175,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 				$date=strstr($date, ' TO ');
 				$date=str_replace(" TO ", "", $date);
 			}
-/* 
+			/* 
 			// *** Check for year only ***
 			if (strlen($date)=='4' AND is_numeric($date)) $date='01 JUN '.$date; // 1887 -> 01 JUN 1887
 			if (strlen($date)=='8') $date='15 '.$date; // AUG 1887 -> 15 AUG 1887
@@ -193,7 +192,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			$date=str_replace(" NOV ", "11", $date);
 			$date=str_replace(" DEC ", "12", $date);
 			$date=substr($date,-4).substr($date,2,2).substr($date,0,2);
-*/ 
+			*/ 
  
 			$process_age = New calculate_year_cls;
 
@@ -226,24 +225,35 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		}
 
 		// *** Men and women table ***
-		function show_person($row) {
+		function show_person($row, $date='EMPTY') {
 			global $humo_option, $uri_path;
 			$person_cls = New person_cls;
 			$person_cls->construct($row);
+			$privacy=$person_cls->privacy;
+
 			$name=$person_cls->person_name($row);
-			if(CMS_SPECIFIC=="Joomla") {
-				return '<td align="center"><a href="index.php?option=com_humo-gen&task=family&id='.$row->pers_indexnr.'"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
-			}
-			else {
-				if ($humo_option["url_rewrite"]=="j"){
-					// *** $uri_path generated in header.php ***
-					return '<td align="center"><a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$row->pers_indexnr.
-					'/'.$row->pers_gedcomnumber.'/"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
+			if ($privacy==''){
+				$line='';
+				if ($date!='EMPTY') $line="<td align='center'><i>".date_place($date,'')."</i></td>\n";
+				if(CMS_SPECIFIC=="Joomla") {
+					$line.='<td align="center"><a href="index.php?option=com_humo-gen&task=family&id='.$row->pers_indexnr.'"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
 				}
-				else{
-					return '<td align="center"><a href="family.php?id='.$row->pers_indexnr.'"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
+				else {
+					if ($humo_option["url_rewrite"]=="j"){
+						// *** $uri_path generated in header.php ***
+						$line.='<td align="center"><a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$row->pers_indexnr.
+						'/'.$row->pers_gedcomnumber.'/"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
+					}
+					else{
+						$line.='<td align="center"><a href="family.php?id='.$row->pers_indexnr.'"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
+					}
 				}
 			}
+			else{
+				$line='<td align="center">'.__('PRIVACY FILTER').'</td>';
+				if ($date!='EMPTY') $line.='<td align="center">'.__('PRIVACY FILTER').'</td>';
+			}
+			return $line;
 		}
 
 		if(CMS_SPECIFIC=="Joomla") {
@@ -256,27 +266,6 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo '<br><table width='.$table2_width.' class="humo" align="center">';
 
 		echo '<tr class=table_headline><th width="20%">'.__('Item').'</th><th colspan="2" width="40%">'.__('Male').'</th><th colspan="2" width="40%">'.__('Female').'</th></tr>';
-
-		/*
-		// *** Count man ***
-		$person_qry=$dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='m'");
-		$count_persons=$person_qry->rowCount();
-		echo "<tr><td>".__('No. of persons')."</td>\n";
-		echo "<td align='center'><i>$count_persons</i></td>\n";
-		$nr_persons = $dataDb->tree_persons;
-		@$percent=($count_persons/$nr_persons)*100;
-		//echo '<td align="center">'.floor($percent).'%</td>';
-		echo '<td align="center">'.round($percent,1).'%</td>';
-
-		// *** Count woman ***
-		$person_qry=$dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='f'");
-		$count_persons=$person_qry->rowCount();
-		echo "<td align='center'><i>$count_persons</i></td>\n";
-		$nr_persons = $dataDb->tree_persons;
-		@$percent=($count_persons/$nr_persons)*100;
-		//echo '<td align="center">'.floor($percent).'%</td>';
-		echo '<td align="center">'.round($percent,1).'%</td>';
-		*/
 
 		$countman=0;
 		$countwoman=0;
@@ -496,8 +485,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo "<tr><td>".__('Oldest birth date')."</td>\n";
 		if($oldest_man_bir_date != null) {
 			$row=$db_functions->get_person($oldest_man_bir_ged);
-			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_birth_date);
 		}
 		else {
 			echo "<td></td><td></td>\n";
@@ -506,8 +494,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		// *** Oldest pers_birth_date woman.
 		if($oldest_woman_bir_date != null) {
 			$row=$db_functions->get_person($oldest_woman_bir_ged);
-			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_birth_date);
 			echo "</tr>\n";
 		}
 		else {
@@ -518,8 +505,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo "<tr><td>".__('Youngest birth date')."</td>\n";
 		if($latest_man_bir_date != null) {
 			$row=$db_functions->get_person($latest_man_bir_ged);
-			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_birth_date);
 		}
 		else {
 			echo "<td></td><td></td>\n";
@@ -528,8 +514,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		// *** Youngest pers_birth_date woman.
 		if($latest_woman_bir_date != null) {
 			$row=$db_functions->get_person($latest_woman_bir_ged);
-			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_birth_date);
 			echo "</tr>\n";
 		}
 		else {
@@ -540,8 +525,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo "<tr><td>".__('Oldest baptism date')."</td>\n";
 		if($oldest_man_bap_date != null) {
 			$row=$db_functions->get_person($oldest_man_bap_ged);
-			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_bapt_date);
 		}
 		else {
 			echo "<td></td><td></td>\n";
@@ -550,8 +534,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		// *** Oldest pers_bapt_date woman.
 		if($oldest_woman_bap_date != null) {
 			$row=$db_functions->get_person($oldest_woman_bap_ged);
-			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_bapt_date);
 			echo "</tr>\n";
 		}
 		else {
@@ -562,8 +545,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo "<tr><td>".__('Youngest baptism date')."</td>\n";
 		if($latest_man_bap_date != null) {
 			$row=$db_functions->get_person($latest_man_bap_ged);
-			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_bapt_date);
 		}
 		else {
 			echo "<td></td><td></td>\n";
@@ -572,8 +554,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		// *** Youngest pers_bapt_date woman.
 		if($latest_woman_bap_date != null) {
 			$row=$db_functions->get_person($latest_woman_bap_ged);
-			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_bapt_date);
 			echo "</tr>\n";
 		}
 		else {
@@ -585,8 +566,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo "<tr><td>".__('Oldest death date')."</td>\n";
 		if($oldest_man_dea_date != null) {
 			$row=$db_functions->get_person($oldest_man_dea_ged);
-			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_death_date);
 		}
 		else {
 			echo "<td></td><td></td>\n";
@@ -595,8 +575,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		// *** Oldest pers_death_date woman.
 		if($oldest_woman_dea_date != null) {
 			$row=$db_functions->get_person($oldest_woman_dea_ged);
-			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_death_date);
 			echo "</tr>\n";
 		}
 		else {
@@ -607,8 +586,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo "<tr><td>".__('Youngest death date')."</td>\n";
 		if($latest_man_dea_date != null) {
 			$row=$db_functions->get_person($latest_man_dea_ged);
-			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_death_date);
 		}
 		else {
 			echo "<td></td><td></td>\n";
@@ -617,8 +595,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		// *** Youngest pers_death_date woman.
 		if($latest_woman_dea_date != null) {
 			$row=$db_functions->get_person($latest_woman_dea_ged);
-			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
-			echo show_person($row);
+			echo show_person($row,$row->pers_death_date);
 			echo "</tr>\n";
 		}
 		else {
@@ -674,443 +651,6 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 		echo '<td align="center">'.$shortest_living_woman_marr.' - '.$longest_living_woman_marr.' '.__('years').'</td>';
 		echo '<td align="center">&nbsp;</td>';
 		echo '</tr>';
-// till here NEW
-
-		/*
-		// *** Count man ***
-		$man_qry=$dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='m'");
-		$count_man=$man_qry->rowCount();
-
-		// *** Count woman ***
-		$woman_qry=$dbh->query("SELECT pers_sexe FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='f'");
-		$count_woman=$woman_qry->rowCount();
-
-		$both = $count_man + $count_woman;
-
-		echo "<tr><td>".__('No. of persons')."</td>\n";
-		echo "<td align='center'><i>$count_man</i></td>\n";
-		@$percent=($count_man/$both)*100;
-		echo '<td align="center">'.round($percent,1).'%</td>';
-		echo "<td align='center'><i>$count_woman</i></td>\n";
-		@$percent=($count_woman/$both)*100;
-		echo '<td align="center">'.round($percent,1).'%</td>';
-		echo '<tr><td colspan="5"><br></td></tr>';
-
-		// *** Oldest pers_birth_date man.
-		echo "<tr><td>".__('Oldest birth date')."</td>\n";
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_birth_date, substring(pers_birth_date,-4) as search
-			FROM humo_persons
-			WHERE pers_tree_id='".$tree_id."' AND pers_birth_date LIKE '_%' AND pers_sexe='M' AND substring(pers_birth_date,-3)!=' BC'
-			ORDER BY search");
-		$oldest_year=''; $oldest_date='30003112'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$oldest_year) $oldest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($oldest_year!=$row->search) break;
-			if ($oldest_year==substr($row->pers_birth_date,-4)){
-				$pers_birth_date=convert_date_number($row->pers_birth_date);
-				if ($pers_birth_date<$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-		// *** Oldest pers_birth_date woman.
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_birth_date, substring(pers_birth_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_birth_date LIKE '_%' AND pers_sexe='F' AND substring(pers_birth_date,-3)!=' BC'
-			ORDER BY search
-			");
-		$oldest_year=''; $oldest_date='30003112'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$oldest_year) $oldest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($oldest_year!=$row->search) break;
-			if ($oldest_year==substr($row->pers_birth_date,-4)){
-				$pers_birth_date=convert_date_number($row->pers_birth_date);
-				if ($pers_birth_date<$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-
-		// Youngest pers_birth_date man
-		echo "<tr><td>".__('Youngest birth date')."</td>\n";
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_birth_date, substring(pers_birth_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_birth_date LIKE '_%' AND pers_sexe='M' AND substring(pers_birth_date,-3)!=' BC'
-			ORDER BY search DESC");
-		$youngest_year=''; $oldest_date='0'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$youngest_year) $youngest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($youngest_year!=$row->search) break;
-			if ($youngest_year==substr($row->pers_birth_date,-4)){
-				$pers_birth_date=convert_date_number($row->pers_birth_date);
-				if ($pers_birth_date>$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-
-			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-		// Youngest pers_birth_date woman
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_birth_date, substring(pers_birth_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_birth_date LIKE '_%' AND pers_sexe='F' AND substring(pers_birth_date,-3)!=' BC'
-			ORDER BY search DESC");
-		$youngest_year=''; $oldest_date='0'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$youngest_year) $youngest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($youngest_year!=$row->search) break;
-			if ($youngest_year==substr($row->pers_birth_date,-4)){
-				$pers_birth_date=convert_date_number($row->pers_birth_date);
-				if ($pers_birth_date>$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_birth_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-
-
-		// *** Oldest pers_bapt_date man.
-		echo "<tr><td>".__('Oldest baptism date')."</td>\n";
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_bapt_date, substring(pers_bapt_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_bapt_date LIKE '_%' AND pers_sexe='M' AND substring(pers_bapt_date,-3)!=' BC'
-			ORDER BY search");
-		$oldest_year=''; $oldest_date='30003112'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$oldest_year) $oldest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($oldest_year!=$row->search) break;
-			if ($oldest_year==substr($row->pers_bapt_date,-4)){
-				$pers_bapt_date=convert_date_number($row->pers_bapt_date);
-				if ($pers_bapt_date<$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-		// Oldest pers_bapt_date woman
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_bapt_date, substring(pers_bapt_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_bapt_date LIKE '_%' AND pers_sexe='F' AND substring(pers_bapt_date,-3)!=' BC'
-			ORDER BY search");
-		$oldest_year=''; $oldest_date='30003112'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$oldest_year) $oldest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($oldest_year!=$row->search) break;
-			if ($oldest_year==substr($row->pers_bapt_date,-4)){
-				$pers_bapt_date=convert_date_number($row->pers_bapt_date);
-				if ($pers_bapt_date<$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-
-
-		// Youngest pers_bapt_date man
-		echo "<tr><td>".__('Youngest baptism date')."</td>\n";
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_bapt_date, substring(pers_bapt_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_bapt_date LIKE '_%' AND pers_sexe='M' AND substring(pers_bapt_date,-3)!=' BC'
-			ORDER BY search DESC");
-		$youngest_year=''; $oldest_date='0'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$youngest_year) $youngest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($youngest_year!=$row->search) break;
-			if ($youngest_year==substr($row->pers_bapt_date,-4)){
-				$pers_bapt_date=convert_date_number($row->pers_bapt_date);
-				if ($pers_bapt_date>$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-		// Youngest pers_bapt_date woman
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_bapt_date, substring(pers_bapt_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_bapt_date LIKE '_%' AND pers_sexe='F' AND substring(pers_bapt_date,-3)!=' BC'
-			ORDER BY search DESC");
-		$youngest_year=''; $oldest_date='0'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$youngest_year) $youngest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($youngest_year!=$row->search) break;
-			if ($youngest_year==substr($row->pers_bapt_date,-4)){
-				$pers_bapt_date=convert_date_number($row->pers_bapt_date);
-				if ($pers_bapt_date>$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_bapt_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-
-		// Oldest death date man
-		echo "<tr><td>".__('Oldest death date')."</td>\n";
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_death_date, substring(pers_death_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_death_date LIKE '_%' AND pers_sexe='M' AND substring(pers_death_date,-3)!=' BC'
-			ORDER BY search");
-		$oldest_year=''; $oldest_date='30003112'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$oldest_year) $oldest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($oldest_year!=$row->search) break;
-			if ($oldest_year==substr($row->pers_death_date,-4)){
-				$pers_death_date=convert_date_number($row->pers_death_date);
-				if ($pers_death_date<$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-		// Oldest pers_death_date woman
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_death_date, substring(pers_death_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_death_date LIKE '_%' AND pers_sexe='F' AND substring(pers_death_date,-3)!=' BC'
-			ORDER BY search");
-		$oldest_year=''; $oldest_date='30003112'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$oldest_year) $oldest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($oldest_year!=$row->search) break;
-			if ($oldest_year==substr($row->pers_death_date,-4)){
-				$pers_death_date=convert_date_number($row->pers_death_date);
-				if ($pers_death_date<$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-
-		// Youngest death date man
-		echo "<tr><td>".__('Youngest death date')."</td>\n";
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_death_date, substring(pers_death_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_death_date LIKE '_%' AND pers_sexe='M' AND substring(pers_death_date,-3)!=' BC'
-			ORDER BY search DESC");
-		$oldest_year=''; $oldest_date='0'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$oldest_year) $oldest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($oldest_year!=$row->search) break;
-			if ($oldest_year==substr($row->pers_death_date,-4)){
-				$pers_death_date=convert_date_number($row->pers_death_date);
-				if ($pers_death_date>$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-		// Youngest pers_death_date woman
-		$qry = $dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_death_date, substring(pers_death_date,-4) as search
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_death_date LIKE '_%' AND pers_sexe='F' AND substring(pers_death_date,-3)!=' BC'
-			ORDER BY search DESC");
-		$oldest_year=''; $oldest_date='0'; $person_found='';
-		while($row=$qry->fetch(PDO::FETCH_OBJ)){
-			if (!$oldest_year) $oldest_year=$row->search;
-			// *** Only search for dates in oldest year ***
-			if ($oldest_year!=$row->search) break;
-			if ($oldest_year==substr($row->pers_death_date,-4)){
-				$pers_death_date=convert_date_number($row->pers_death_date);
-				if ($pers_death_date>$oldest_date) $person_found=$row;
-			}
-		}
-		if ($person_found){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($person_found->pers_gedcomnumber);
-			echo "<td align='center'><i>".date_place($row->pers_death_date,'')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-
-
-		echo '<tr><td colspan="5"><br></td></tr>';
-
-		// *** Longest living man, and calculate ages ***
-		$man_min=50;
-		$man_max=0;
-		$man_min_married=50;
-		$man_max_married=0;
-
-		echo "<tr><td>".__('Longest living person')."</td>\n";
-		$res = @$dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_birth_date, pers_bapt_date, pers_death_date, pers_fams, pers_indexnr
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_sexe='M' AND (pers_birth_date LIKE '_%' OR pers_bapt_date LIKE '_%') AND pers_death_date LIKE '_%'");
-		$test_year="10";
-		while(@$record = $res->fetch(PDO::FETCH_OBJ)){
-			$age = New calculate_year_cls;
-			$age_cal=$age->calculate_age($record->pers_bapt_date,$record->pers_birth_date,$record->pers_death_date,true);
-			$age_man[]=$age_cal;
-			if ($age_cal>$man_max){ $man_max=$age_cal; }
-			if ($age_cal>0 AND $age_cal<$man_min){ $man_min=$age_cal; }
-
-			if ($record->pers_fams!='' AND $age_cal>0){
-				$age_man_married[]=$age_cal;
-				if ($age_cal>$man_max_married){ $man_max_married=$age_cal; }
-				if ($age_cal>0 AND $age_cal<$man_min_married){ $man_min_married=$age_cal; }
-			}
-			else{
-				$age_man_unmarried[]=$age_cal;
-			}
-
-			if ($age_cal >= $test_year && $age_cal < 120){
-				$index = $record->pers_indexnr;
-				$test_year=	$age_cal;
-				$oldest_person=$record;
-			}
-		}
-		if (isset($oldest_person)){
-			// *** Now get full person data (quicker in large family trees) ***
-			$row=$db_functions->get_person($oldest_person->pers_gedcomnumber);
-			echo '<td align="center"><i>'.$test_year.' '.__('years')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-
-		// *** Longest living woman and calculate ages ***
-		$woman_min=50;
-		$woman_max=0;
-		$woman_min_married=50;
-		$woman_max_married=0;
-		$res = @$dbh->query("SELECT pers_gedcomnumber, pers_sexe, pers_birth_date, pers_bapt_date, pers_death_date, pers_fams, pers_indexnr
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-			AND pers_sexe='F' AND (pers_birth_date LIKE '_%' OR pers_bapt_date LIKE '_%') AND pers_death_date LIKE '_%'");
-		$test_year="10";
-		while(@$record = $res->fetch(PDO::FETCH_OBJ)){
-			$age = New calculate_year_cls;
-			$age_cal=$age->calculate_age($record->pers_bapt_date,$record->pers_birth_date,$record->pers_death_date,true);
-			$age_woman[]=$age_cal;
-			if ($age_cal>$woman_max){ $woman_max=$age_cal; }
-			if ($age_cal>0 AND $age_cal<$woman_min){ $woman_min=$age_cal; }
-
-			if ($record->pers_fams AND $age_cal>0){
-				$age_woman_married[]=$age_cal;
-				if ($age_cal>$woman_max_married){ $woman_max_married=$age_cal; }
-				if ($age_cal>0 AND $age_cal<$woman_min_married){ $woman_min_married=$age_cal; }
-			}
-			else{
-				$age_woman_unmarried[]=$age_cal;
-			}
-
-			if ($age_cal >= $test_year && $age_cal < 120){
-				$index = $record->pers_indexnr;
-				$test_year = $age_cal;
-				$oldest_person=$record;
-			}
-		}
-		if (isset($oldest_person)){
-			$row=$db_functions->get_person($oldest_person->pers_gedcomnumber);
-			echo '<td align="center"><i>'.$test_year.' '.__('years')."</i></td>\n";
-			echo show_person($row);
-		}
-		else echo "<td></td><td></td>\n";
-
-		// *** Average age ***
-		echo "<tr><td>".__('Average age')."</td>\n";
-
-		echo '<td align="center">';
-		@$average=(array_sum($age_man) / count($age_man));
-		echo round($average,1);
-		echo ' '.__('years').'</td>';
-		if ($man_min==0){ $man_min='0'; }
-		//echo '<td align="center">'.$man_min.' '.__('years').' - '.$man_max.' '.__('years').'</td>';
-		echo '<td align="center">&nbsp;</td>';
-
-		echo '<td align="center">';
-		@$average=array_sum($age_woman) / count($age_woman);
-		echo round($average,1);
-		echo ' '.__('years').'</td>';
-		if ($woman_min==0){ $woman_min='0'; }
-		//echo '<td align="center">'.$woman_min.' '.__('years').' - '.$woman_max.' '.__('years').'</td>';
-		echo '<td align="center">&nbsp;</td>';
-		echo '</tr>';
-
-		echo "<tr><td>".__('Lifespan range')."</td>\n";
-		echo '<td align="center">'.$man_min.' - '.$man_max.' '.__('years').'</td>';
-		echo '<td align="center">&nbsp;</td>';
-		echo '<td align="center">'.$woman_min.' - '.$woman_max.' '.__('years').'</td>';
-		echo '<td align="center">&nbsp;</td>';
-		echo '</tr>';
-
-		// *** Average age married ***
-		echo "<tr><td>".__('Average age married persons')."</td>\n";
-
-		echo '<td align="center">';
-		@$average=(array_sum($age_man_married) / count($age_man_married));
-		echo round($average,1);
-		echo ' '.__('years').'</td>';
-		if ($man_min_married==0){ $man_min_married='0'; }
-		//echo '<td align="center">'.$man_min_married.' '.__('years').' - '.$man_max_married.' '.__('years').'</td>';
-		echo '<td align="center">&nbsp;</td>';
-
-		echo '<td align="center">';
-		@$average=array_sum($age_woman_married) / count($age_woman_married);
-		echo round($average,1);
-		echo ' '.__('years').'</td>';
-		if ($woman_min_married==0){ $woman_min_married='0'; }
-		//echo '<td align="center">'.$woman_min_married.' '.__('years').' - '.$woman_max_married.' '.__('years').'</td>';
-		echo '<td align="center">&nbsp;</td>';
-		echo '</tr>';
-
-		echo "<tr><td>".__('Lifespan range of married individuals')."</td>\n";
-		echo '<td align="center">'.$man_min_married.' - '.$man_max_married.' '.__('years').'</td>';
-		echo '<td align="center">&nbsp;</td>';
-		echo '<td align="center">'.$woman_min_married.' - '.$woman_max_married.' '.__('years').'</td>';
-		echo '<td align="center">&nbsp;</td>';
-		echo '</tr>';
-		*/
 
 		echo '</table>';
 

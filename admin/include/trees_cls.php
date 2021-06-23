@@ -1192,7 +1192,7 @@ You will be notified of results as the action is completed');
 		echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 
 		if(isset($_POST['reset'])) { // reset to default
-				$dbh->query("UPDATE humo_settings SET setting_value ='10' WHERE setting_variable='merge_chars'");
+			$dbh->query("UPDATE humo_settings SET setting_value ='10' WHERE setting_variable='merge_chars'");
 		}
 		elseif(isset($_POST['merge_chars'])) { // the "Save" button was pressed
 			$merge_chars = $_POST['merge_chars'];  // store into variable and write to database
@@ -1202,7 +1202,7 @@ You will be notified of results as the action is completed');
 		$charsDb = $chars->fetch(PDO::FETCH_OBJ);
 
 		if(isset($_POST['reset'])) {
-				$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_dates'");
+			$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_dates'");
 		}
 		elseif(isset($_POST['merge_dates'])) {
 			$merge_dates = $_POST['merge_dates'];
@@ -1212,7 +1212,7 @@ You will be notified of results as the action is completed');
 		$datesDb = $dates->fetch(PDO::FETCH_OBJ);
 
 		if(isset($_POST['reset'])) {
-				$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_lastname'");
+			$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_lastname'");
 		}
 		elseif(isset($_POST['merge_lastname'])) {
 			$merge_lastname = $_POST['merge_lastname'];
@@ -1222,7 +1222,7 @@ You will be notified of results as the action is completed');
 		$lastnDb = $lastn->fetch(PDO::FETCH_OBJ);
 
 		if(isset($_POST['reset'])) {
-				$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_firstname'");
+			$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_firstname'");
 		}
 		elseif(isset($_POST['merge_firstname'])) {
 			$merge_firstname = $_POST['merge_firstname'];
@@ -1232,7 +1232,7 @@ You will be notified of results as the action is completed');
 		$firstnDb = $firstn->fetch(PDO::FETCH_OBJ);
 
 		if(isset($_POST['reset'])) {
-				$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_parentsdate'");
+			$dbh->query("UPDATE humo_settings SET setting_value ='YES' WHERE setting_variable='merge_parentsdate'");
 		}
 		elseif(isset($_POST['merge_parentsdate'])) {
 			$merge_parentsdate = $_POST['merge_parentsdate'];
@@ -1682,8 +1682,8 @@ function show_regular_text ($left_item,$right_item,$title,$name) {
 //***********************************************************************************
 function show_events ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
-	$l_address = $l_picture = $l_profession = $l_source = $l_event = $l_birth_declaration = $l_baptism_witness = $l_death_declaration = $l_burial_witness = $l_name = $l_nobility = $l_title = $l_lordship = $l_URL = $l_else = '';
-	$r_address = $r_picture = $r_profession = $r_source = $r_event = $r_birth_declaration = $r_baptism_witness = $r_death_declaration = $r_burial_witness = $r_name = $r_nobility = $r_title = $r_lordship = $r_URL = $r_else = '';
+	$l_address = $l_picture = $l_profession = $l_source = $l_event = $l_birth_declaration = $l_baptism_witness = $l_death_declaration = $l_burial_witness = $l_name = $l_nobility = $l_title = $l_lordship = $l_URL = $l_else = Array();
+	$r_address = $r_picture = $r_profession = $r_source = $r_event = $r_birth_declaration = $r_baptism_witness = $r_death_declaration = $r_burial_witness = $r_name = $r_nobility = $r_title = $r_lordship = $r_URL = $r_else = Array();
 	$left_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 		AND event_connect_kind='person' AND event_connect_id ='".$left_ged."' ORDER BY event_kind ");
 	$right_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
@@ -1726,19 +1726,19 @@ function show_events ($left_ged,$right_ged) {
 			else { 	$r_else[] = $r_eventsDb->event_event; }
 		}
 		// before calling put_event function check if right has a value otherwise there is no need to show
-		if(isset($r_address)) { $this->put_event('address',__('Address'),$l_address,$r_address); }
-		if(isset($r_picture)) { $this->put_event('picture',__('Picture'),$l_picture,$r_picture); }
-		if(isset($r_profession)) { $this->put_event('profession',__('Profession'),$l_profession,$r_profession); }
-		if(isset($r_event)) { $this->put_event('event',__('Event'),$l_event,$r_event); }
-		if(isset($r_birth_declaration)) { $this->put_event('birth_declaration',__('birth declaration'),$l_birth_declaration,$r_birth_declaration); }
-		if(isset($r_baptism_witness)) { $this->put_event('baptism_witness',__('baptism witness'),$l_baptism_witness,$r_baptism_witness); }
-		if(isset($r_death_declaration)) { $this->put_event('death_declaration',__('death declaration'),$l_death_declaration,$r_death_declaration); }
-		if(isset($r_burial_witness)) { $this->put_event('burial_witness',__('burial witness'),$l_burial_witness,$r_burial_witness); }
-		if(isset($r_name)) { $this->put_event('name',__('Other names'),$l_name,$r_name); }
-		if(isset($r_nobility)) { $this->put_event('nobility',__('Title of Nobility'),$l_nobility,$r_nobility); }
-		if(isset($r_title)) { $this->put_event('title',__('Title'),$l_title,$r_title); }
-		if(isset($r_lordship)) { $this->put_event('lordship',__('Title of Lordship'),$l_lordship,$r_lordship); }
-		if(isset($r_URL)) { $this->put_event('URL',__('Internet link / URL'),$l_URL,$r_URL); }
+		if(!empty($r_address)) { $this->put_event('address',__('Address'),$l_address,$r_address); }
+		if(!empty($r_picture)) { $this->put_event('picture',__('Picture'),$l_picture,$r_picture); }
+		if(!empty($r_profession)) { $this->put_event('profession',__('Profession'),$l_profession,$r_profession); }   
+		if(!empty($r_event)) { $this->put_event('event',__('Event'),$l_event,$r_event); }
+		if(!empty($r_birth_declaration)) { $this->put_event('birth_declaration',__('birth declaration'),$l_birth_declaration,$r_birth_declaration); }
+		if(!empty($r_baptism_witness)) { $this->put_event('baptism_witness',__('baptism witness'),$l_baptism_witness,$r_baptism_witness); }
+		if(!empty($r_death_declaration)) { $this->put_event('death_declaration',__('death declaration'),$l_death_declaration,$r_death_declaration); }
+		if(!empty($r_burial_witness)) { $this->put_event('burial_witness',__('burial witness'),$l_burial_witness,$r_burial_witness); }
+		if(!empty($r_name)) { $this->put_event('name',__('Other names'),$l_name,$r_name); }
+		if(!empty($r_nobility)) { $this->put_event('nobility',__('Title of Nobility'),$l_nobility,$r_nobility); }
+		if(!empty($r_title)) { $this->put_event('title',__('Title'),$l_title,$r_title); }
+		if(!empty($r_lordship)) { $this->put_event('lordship',__('Title of Lordship'),$l_lordship,$r_lordship); }
+		if(!empty($r_URL)) { $this->put_event('URL',__('Internet link / URL'),$l_URL,$r_URL); }
 	}
 }
 
@@ -1752,7 +1752,7 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 		if($color=='#e6e6e6') { $color='#f2f2f2'; } else { $color='#e6e6e6'; }
 		echo '<tr style="background-color:'.$color.'"><td style="font-weight:bold">'.$name_event.':</td>';
 		echo '<td>';
-		if($l_ev!='') {
+		if(is_array($l_ev) AND $l_ev!='') {
 			foreach($l_ev as $key => $value) {
 				if(substr($value,0,2)=='@I') {  // this is a person gedcom number, not plain text -> show the name
 					$value = str_replace('@','',$value);
@@ -1775,7 +1775,7 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 			echo __('(no data)');
 		}
 		echo '</td><td>';
-		if($r_ev!='') {
+		if(is_array($r_ev) AND $r_ev!='') {
 			$checked=''; if($l_ev=='') { $checked=" CHECKED"; }
 			foreach($r_ev as $key => $value) {
 				if(substr($value,0,2)=='@I') {  // this is a person gedcom number, not plain text
@@ -1821,8 +1821,13 @@ function show_sources ($left_ged,$right_ged) {
 				$l_source= $dbh->query("SELECT source_title FROM humo_sources
 					WHERE source_tree_id='".$tree_id."' AND source_gedcomnr='".$left_sourcesDb->connect_source_id."'");
 				$result = $l_source->fetch(PDO::FETCH_OBJ);
-				if(strlen($result->source_title) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->source_title).'\');" href="#">'.'&nbsp;[ Show source ]'.'</a>'; }
-				else { $title = $result->source_title; }
+				if(isset($result->source_title)) {
+					if(strlen($result->source_title) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->source_title).'\');" href="#">'.'&nbsp;[ Show source ]'.'</a>'; }
+					else { $title = $result->source_title; }
+				}
+				else {
+					$title = "";
+				}
 				echo '<input type="checkbox" name="l_source_'.$left_sourcesDb->connect_id.'" '.'checked'.'>('.str_replace('_source',' ',$left_sourcesDb->connect_sub_kind).') '.$title.'<br>';
 			}
 		}
@@ -1835,8 +1840,13 @@ function show_sources ($left_ged,$right_ged) {
 			$r_source= $dbh->query("SELECT source_title FROM humo_sources
 				WHERE source_tree_id='".$tree_id."' AND source_gedcomnr='".$right_sourcesDb->connect_source_id."'");
 			$result = $r_source->fetch(PDO::FETCH_OBJ);
-			if(strlen($result->source_title) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->source_title).'\');" href="#">'.'&nbsp;[ Show source ]'.'</a>'; }
-			else { $title = $result->source_title; }
+			if(isset($result->source_title)) {
+				if(strlen($result->source_title) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->source_title).'\');" href="#">'.'&nbsp;[ Show source ]'.'</a>'; }
+				else { $title = $result->source_title; }
+			}
+			else {
+				$title = "";
+			}			
 			echo '<input type="checkbox" name="r_source_'.$right_sourcesDb->connect_id.'" '.$checked.'>('.str_replace('_source',' ',$right_sourcesDb->connect_sub_kind).') '.$title.'<br>';
 		}
 		echo '</td></tr>';
@@ -2701,14 +2711,14 @@ function check_regular_text ($post_var,$auto_var,$mysql_var) {
 //****************************************************************************************************
 function check_events($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db;
-	$right_event_array='';
+	$right_event_array= Array();
 	$left_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 		AND event_connect_kind='person' AND event_connect_id ='".$left_ged."' ORDER BY event_kind ");
 	$right_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 		AND event_connect_kind='person' AND event_connect_id ='".$right_ged."' ORDER BY event_kind ");
 	if($right_events->rowCount() > 0) { //if right has no events it did not appear in the comparison table, so the whole thing is unnecessary
 		while($right_eventsDb = $right_events->fetch(PDO::FETCH_OBJ)) {
-			$right_event_array[$right_eventsDb->event_kind]="1"; // we need this to know whether to handle left
+			$right_event_array[$right_eventsDb->event_kind]="1"; // we need this to know whether to handle left   
 			if(isset($_POST['r_'.$right_eventsDb->event_kind.'_'.$right_eventsDb->event_id])) { // change right's I to left's I
 				$dbh->query("UPDATE humo_events SET event_connect_kind='person', event_connect_id ='".$left_ged."'
 					WHERE event_id ='".$right_eventsDb->event_id."'");

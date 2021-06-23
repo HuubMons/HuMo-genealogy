@@ -27,6 +27,7 @@ function set_privacy($personDb){
 		// *** $personDb is empty by N.N. person ***
 		if ($personDb){
 			// *** HuMo-gen, Haza-data and Aldfaer alive/ deceased status ***
+
 			if ($user['group_alive']=="j"){
 				if ($personDb->pers_alive=='deceased'){ $privacy_person=''; }
 				if ($personDb->pers_alive=='alive'){ $privacy_person='1'; }
@@ -34,6 +35,7 @@ function set_privacy($personDb){
 
 			// *** Privacy filter: date ***
 			if ($user["group_alive_date_act"]=="j"){
+				/*
 				if ($personDb->pers_birth_date){
 					if (substr($personDb->pers_birth_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }
 						else $privacy_person='1'; // *** overwrite pers_alive status ***
@@ -46,8 +48,29 @@ function set_privacy($personDb){
 					if (substr($personDb->pers_cal_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }
 						else $privacy_person='1'; // *** overwrite pers_alive status ***
 				}
-
+				*/
+				
+				if ($personDb->pers_birth_date){
+					if (substr($personDb->pers_birth_date,-2) == "BC") {$privacy_person='';}  // born before year 0
+					elseif(substr($personDb->pers_birth_date,-2,1) == " " OR substr($personDb->pers_birth_date,-3,1) == " " )  {$privacy_person='';}  // born between year 0 and 99
+					elseif (substr($personDb->pers_birth_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }  // born from year 100 onwards but before $user["group_alive_date"]
+					else $privacy_person='1'; // *** overwrite pers_alive status ***
+				}
+				if ($personDb->pers_bapt_date){
+					if (substr($personDb->pers_bapt_date,-2) == "BC") {$privacy_person='';}  // baptized before year 0
+					elseif(substr($personDb->pers_bapt_date,-2,1) == " " OR substr($personDb->pers_bapt_date,-3,1) == " " )  {$privacy_person='';}  // baptized between year 0 and 99
+					elseif (substr($personDb->pers_bapt_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }  // baptized from year 100 onwards but before $user["group_alive_date"]
+					else $privacy_person='1'; // *** overwrite pers_alive status ***
+				}
+				if ($personDb->pers_cal_date){
+					if (substr($personDb->pers_cal_date,-2) == "BC") {$privacy_person='';}  // calculated born before year 0
+					elseif(substr($personDb->pers_cal_date,-2,1) == " " OR substr($personDb->pers_cal_date,-3,1) == " " )  {$privacy_person='';}  // calculated born between year 0 and 99
+					elseif (substr($personDb->pers_cal_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }  // calculated born from year 100 onwards but before $user["group_alive_date"]
+					else $privacy_person='1'; // *** overwrite pers_alive status ***
+				}								
+				
 				// *** Check if deceased persons should be filtered ***
+				
 				if ($user["group_filter_death"]=='n'){
 					// *** If person is deceased, filter is off ***
 					if ($personDb->pers_death_date or $personDb->pers_death_place){ $privacy_person=''; }
@@ -55,8 +78,10 @@ function set_privacy($personDb){
 					// *** pers_alive for deceased persons without date ***
 					if ($personDb->pers_alive=='deceased'){ $privacy_person=''; }
 				}
+				
 			}
 
+/*
 			// *** Privacy filter: date ***
 			if ($user["group_death_date_act"]=="j"){
 				if ($personDb->pers_death_date){
@@ -68,7 +93,24 @@ function set_privacy($personDb){
 						else $privacy_person='1'; // *** overwrite pers_alive status ***
 				}
 			}
+*/
+			// *** Privacy filter: date ***
+			if ($user["group_death_date_act"]=="j"){
+				if ($personDb->pers_death_date){
+					if(substr($personDb->pers_death_date,-2)=="BC") { $privacy_person=''; } // person died BC
+					elseif(substr($personDb->pers_death_date,-2,1) == " " OR substr($personDb->pers_death_date,-3,1) == " ") { $privacy_person=''; } // person died between year 0 and 99
+					elseif (substr($personDb->pers_death_date,-4) < $user["group_death_date"]){ $privacy_person=''; } // person died after year 100 until $user["group_death_date"]
+						else $privacy_person='1'; // *** overwrite pers_alive status ***
+				}
+				if ($personDb->pers_buried_date){
+					if(substr($personDb->pers_buried_date,-2)=="BC") { $privacy_person=''; } // person buried BC
+					elseif(substr($personDb->pers_buried_date,-2,1) == " " OR substr($personDb->pers_buried_date,-3,1) == " ") { $privacy_person=''; } // person buried between year 0 and 99
+					elseif (substr($personDb->pers_buried_date,-4) < $user["group_death_date"]){ $privacy_person=''; } // person buried after year 100 until $user["group_death_date"]
+						else $privacy_person='1'; // *** overwrite pers_alive status ***
+				}
+			}
 
+  
 			// *** Filter person's WITHOUT any date's ***
 			if ($user["group_filter_date"]=='j'){
 				if ($personDb->pers_birth_date=='' AND $personDb->pers_bapt_date==''
@@ -79,11 +121,13 @@ function set_privacy($personDb){
 				}
 			}
 
+
 			// *** Privacy filter exceptions (added a space for single character check) ***
 			if ($user["group_filter_pers_show_act"]=='j'
 				AND strpos(' '.$personDb->pers_own_code,$user["group_filter_pers_show"])>0){ $privacy_person=""; }
 			if ($user["group_filter_pers_hide_act"]=='j'
-				AND strpos(' '.$personDb->pers_own_code,$user["group_filter_pers_hide"])>0){ $privacy_person="1"; }
+				AND strpos(' '.$personDb->pers_own_code,$user["group_filter_pers_hide"])>0){ $privacy_person="1"; }  
+				
 		}
 
 	}
@@ -99,6 +143,7 @@ function set_privacy($personDb){
 		if ($dataDb->tree_privacy=='filter_persons'){ $privacy_person="1"; }
 		if ($dataDb->tree_privacy=='show_persons'){ $privacy_person=""; }
 	}
+
 	return $privacy_person;
 }
 
@@ -764,6 +809,13 @@ function name_extended($person_kind){
 					else
 						$text_name.='<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
 
+					if($humo_option['david_stars'] == "y") {
+						$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
+						if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
+							preg_match("/($camps)/i",$personDb->pers_buried_place)!==0 OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE)  {
+							$text_name .= '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
+						}					
+					}
 					// *** Add own icon by person, using a file name in own code ***
 					if($personDb->pers_own_code !='' AND is_file("images/".$personDb->pers_own_code.".gif"))
 						$text_name .= '<img src="'.CMS_ROOTPATH.'images/'.$personDb->pers_own_code.'.gif" alt="'.$personDb->pers_own_code.'">&nbsp;';
@@ -773,12 +825,6 @@ function name_extended($person_kind){
 				$source='';
 				if ($person_kind != 'outline') $source=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber).' ';
 				if ($source) $text_name.=$source;
-
-				$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa";
-				if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
-				   preg_match("/($camps)/i",$personDb->pers_buried_place)!==0 OR strpos(strtolower($personDb->pers_death_place),"holocaust") !==FALSE)  {
-					$text_name .= '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
-				}
 
 			}
 		}
@@ -1277,7 +1323,8 @@ function person_data($person_kind, $id){
 		$text='';
 
 		if ($personDb->pers_birth_date OR $personDb->pers_birth_place){
-			$templ_person["born_dateplacetime"]=date_place($personDb->pers_birth_date,$personDb->pers_birth_place);
+			$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$personDb->pers_birth_date_hebnight; }
+			$templ_person["born_dateplacetime"]=date_place($personDb->pers_birth_date,$personDb->pers_birth_place,$nightfall);
 			if($templ_person["born_dateplacetime"]!='') $temp="born_dateplacetime";
 			$text=$templ_person["born_dateplacetime"];
 		}
@@ -1404,7 +1451,8 @@ function person_data($person_kind, $id){
 		$text='';
 
 		if ($personDb->pers_death_date OR $personDb->pers_death_place){
-			$templ_person["dead_dateplacetime"]=date_place($personDb->pers_death_date,$personDb->pers_death_place);
+			$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$personDb->pers_death_date_hebnight; }
+			$templ_person["dead_dateplacetime"]=date_place($personDb->pers_death_date,$personDb->pers_death_place,$nightfall);
 			if($templ_person["dead_dateplacetime"]!='') $temp="dead_dateplacetime";
 			$text=$templ_person["dead_dateplacetime"];
 		}
@@ -1459,6 +1507,15 @@ function person_data($person_kind, $id){
 				$temp="dead_cause";
 				$text.=', '.__('death cause').': '.$personDb->pers_death_cause;
 			}
+			elseif($humo_option['death_shoa']=="y" AND $text!='') {
+				$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
+				if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
+					preg_match("/($camps)/i",$personDb->pers_buried_place)!==0 OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE)  {
+					if(!isset($personDb->pers_death_date) OR (isset($personDb->pers_death_date) AND  substr($personDb->pers_death_date,-4)>1939 AND substr($personDb->pers_death_date,-4)<1946)) { 
+						$text.=', '.__('death cause').': '.__('murdered'); 
+					}
+				}
+			}
 		}
 
 		// *** Death source ***
@@ -1497,7 +1554,8 @@ function person_data($person_kind, $id){
 		$text='';
 
 		if ($personDb->pers_buried_date OR $personDb->pers_buried_place){
-			$templ_person["buri_dateplacetime"]=date_place($personDb->pers_buried_date,$personDb->pers_buried_place);
+			$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$personDb->pers_buried_date_hebnight; }
+			$templ_person["buri_dateplacetime"]=date_place($personDb->pers_buried_date,$personDb->pers_buried_place,$nightfall);
 			if($templ_person["buri_dateplacetime"]!='') $temp="buri_dateplacetime";
 			$text=$templ_person["buri_dateplacetime"];
 		}

@@ -263,7 +263,7 @@ $db_functions->check_person($main_person);
 if($screen_mode=='STAR' OR $screen_mode=='STARSIZE') {
 	$dna = "none"; // DNA setting
 	if (isset($_GET["dnachart"])){ $dna=$_GET["dnachart"]; }
-	if (isset($_POST["dnachart"])){ $dna=$_POST["dnachart"]; } 
+	if (isset($_POST["dnachart"])){ $dna=$_POST["dnachart"]; }
 	$chosengen=4; if($dna!="none") $chosengen="All"; // in DNA chart by default show all generations
 	if (isset($_GET["chosengen"])){ $chosengen=$_GET["chosengen"]; }
 	if (isset($_POST["chosengen"])){ $chosengen=$_POST["chosengen"]; }
@@ -283,13 +283,13 @@ if($screen_mode=='STAR' OR $screen_mode=='STARSIZE') {
 
 	if($dna!="none") {
 		if (isset($_GET["bf"])){ $base_person_famc=$_GET["bf"]; }
-		if (isset($_POST["bf"])){ $base_person_famc=$_POST["bf"]; } 
+		if (isset($_POST["bf"])){ $base_person_famc=$_POST["bf"]; }
 		if (isset($_GET["bs"])){ $base_person_sexe=$_GET["bs"]; }
-		if (isset($_POST["bs"])){ $base_person_sexe=$_POST["bs"]; } 
+		if (isset($_POST["bs"])){ $base_person_sexe=$_POST["bs"]; }
 		if (isset($_GET["bn"])){ $base_person_name=$_GET["bn"]; }
-		if (isset($_POST["bn"])){ $base_person_name=$_POST["bn"]; } 
+		if (isset($_POST["bn"])){ $base_person_name=$_POST["bn"]; }
 		if (isset($_GET["bg"])){ $base_person_gednr=$_GET["bg"]; }
-		if (isset($_POST["bg"])){ $base_person_gednr=$_POST["bg"]; }  	
+		if (isset($_POST["bg"])){ $base_person_gednr=$_POST["bg"]; }
 	}
 }
 
@@ -1676,7 +1676,7 @@ else{
 							}
 
 							if ($screen_mode=='STAR') {
-								if (count($child_family>1)) {
+								if (count($child_family)>1) {
 									for ($k=1; $k<count($child_family) ; $k++) {
 										$childnr++;
 										$thisplace=$place+$k;
@@ -2057,56 +2057,56 @@ else{
 								$child_array=explode(";",$familyDb->fam_children);
 								for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
 									@$childDb = $db_functions->get_person($child_array[$i]);
+									if ($childDb !== false) {  // no error in query
+										// *** Use person class ***
+										$person_cls = New person_cls;
+										$person_cls->construct($childDb);
+										if ($person_cls->privacy==''){
 
-									// *** Use person class ***
-									$person_cls = New person_cls;
-									$person_cls->construct($childDb);
-									if ($person_cls->privacy==''){
+											// *** Child birth ***
+											$location_var = $childDb->pers_birth_place;
+											$location_prep->execute();
+											$child_result = $location_prep->rowCount();
 
-										// *** Child birth ***
-										$location_var = $childDb->pers_birth_place;
-										$location_prep->execute();
-										$child_result = $location_prep->rowCount();
+											if($child_result >0) {
+												$info = $location_prep->fetch();
 
-										if($child_result >0) {
-											$info = $location_prep->fetch();
-
-											$name=$person_cls->person_name($childDb);
-											$google_name=$name["standard_name"];
-											$key = array_search($childDb->pers_birth_place, $location_array);
-											if (isset($key) AND $key>0){
-												$text_array[$key].="\\n".addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
+												$name=$person_cls->person_name($childDb);
+												$google_name=$name["standard_name"];
+												$key = array_search($childDb->pers_birth_place, $location_array);
+												if (isset($key) AND $key>0){
+													$text_array[$key].="\\n".addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
+												}
+												else{
+													$location_array[]=$childDb->pers_birth_place;
+													$lat_array[]=$info['location_lat'];
+													$lon_array[]=$info['location_lng'];
+													$text_array[]=addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
+												}
 											}
-											else{
-												$location_array[]=$childDb->pers_birth_place;
-												$lat_array[]=$info['location_lat'];
-												$lon_array[]=$info['location_lng'];
-												$text_array[]=addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
+
+											// *** Child death ***
+											$location_var = $childDb->pers_death_place;
+											$location_prep->execute();
+											$child_result = $location_prep->rowCount();
+											
+											if($child_result >0) {
+												$info = $location_prep->fetch();
+
+												$name=$person_cls->person_name($childDb);
+												$google_name=$name["standard_name"];
+												$key = array_search($childDb->pers_death_place, $location_array);
+												if (isset($key) AND $key>0){
+													$text_array[$key].="\\n".addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
+												}
+												else{
+													$location_array[]=$childDb->pers_death_place;
+													$lat_array[]=$info['location_lat'];
+													$lon_array[]=$info['location_lng'];
+													$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
+												}
 											}
 										}
-
-										// *** Child death ***
-										$location_var = $childDb->pers_death_place;
-										$location_prep->execute();
-										$child_result = $location_prep->rowCount();
-										
-										if($child_result >0) {
-											$info = $location_prep->fetch();
-
-											$name=$person_cls->person_name($childDb);
-											$google_name=$name["standard_name"];
-											$key = array_search($childDb->pers_death_place, $location_array);
-											if (isset($key) AND $key>0){
-												$text_array[$key].="\\n".addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
-											}
-											else{
-												$location_array[]=$childDb->pers_death_place;
-												$lat_array[]=$info['location_lat'];
-												$lon_array[]=$info['location_lng'];
-												$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
-											}
-										}
-
 									}
 								}
 

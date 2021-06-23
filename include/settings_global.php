@@ -1,13 +1,13 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.2.3';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.2.4';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 9 mrt. 2014';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
-$humo_option["version_date"]='2019-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2019-04-30';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -336,6 +336,48 @@ if (!isset($humo_option["slideshow_04"])){
 if (!isset($humo_option["today_in_history_show"])){
 	$humo_option["today_in_history_show"]='n';
 	$sql="INSERT INTO humo_settings SET setting_variable='today_in_history_show', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+
+// *** Jewish settings ***
+if (!isset($humo_option["david_stars"])){
+	$humo_option["david_stars"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='david_stars', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["death_char"])){
+	$humo_option["death_char"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='death_char', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["death_shoa"])){
+	$humo_option["death_shoa"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='death_shoa', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["admin_hebdate"])){
+	$humo_option["admin_hebdate"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='admin_hebdate', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["admin_hebnight"])){
+	$humo_option["admin_hebnight"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='admin_hebnight', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["admin_hebname"])){
+	$humo_option["admin_hebname"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='admin_hebname', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["admin_brit"])){
+	$humo_option["admin_brit"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='admin_brit', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["admin_barm"])){
+	$humo_option["admin_barm"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='admin_barm', setting_value='n'";
 	@$result=$dbh->query($sql);
 }
 

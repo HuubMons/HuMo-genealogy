@@ -161,7 +161,7 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 	}
 
 // handle person born BC and died after year zero
-	else if(substr($birth_date,-2,2)=="BC" AND substr($death_date,-2,2)!="BC") {
+	elseif(substr($birth_date,-2,2)=="BC" AND $death_date != "" AND substr($death_date,-2,2)!="BC") {
 		$first = $this->search_year(substr($birth_date,0,-3));
 		$secnd = $this->search_year($death_date);
 		$totl  = (int)$first + (int)$secnd;

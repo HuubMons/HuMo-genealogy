@@ -148,9 +148,9 @@ function generate() {
 		global $hdist; // horizontal distance in between boxes of two generations
 
 		if($size==50){   // full size box with name and details
-			$hsize=150; if($hourglass===true) $hsize=170;  
+			$hsize=150; if($hourglass===true) $hsize=170;
 			$vsize=75;
-			$hdist=60;  if($hourglass===true) $hdist=30; 
+			$hdist=60;  if($hourglass===true) $hdist=30;
  		}
 		elseif($size==45) { // smaller box with name + popup
 			$hsize=100;
@@ -182,23 +182,23 @@ function generate() {
 				else $thissize = $size;
 
 				$left = 30 + $thissize; // default when 2 generations only
-				if($chosengenanc==3 AND $size==50 AND $genarray[1]["2nd"]==1) { 
+				if($chosengenanc==3 AND $size==50 AND $genarray[1]["2nd"]==1) {
 					// prevent parent overlap by 2nd marr of base person in 3 gen display
-					$left = 10 + (2*(20 + $thissize)) + (($chosengenanc-3)*(($thissize/2)+20)); 
+					$left = 10 + (2*(20 + $thissize)) + (($chosengenanc-3)*(($thissize/2)+20));
 				}
 				elseif($chosengenanc>2) { 
 					if($size==50) {
-						$left = 10 + (2*$thissize) + (($chosengenanc-3)*(($thissize/2)+20)); 
+						$left = 10 + (2*$thissize) + (($chosengenanc-3)*(($thissize/2)+20));
 					}
 					elseif($size==45) {
-						$left = 10 + (2*(20 + $thissize)) + (($chosengenanc-3)*(($thissize/2)+20)); 
+						$left = 10 + (2*(20 + $thissize)) + (($chosengenanc-3)*(($thissize/2)+20));
 					}
 					elseif($size<45 ) {
 						$left = 10 + (($chosengenanc-1) * ($size +20));
 					}
 				}
 
-				$genarray[$i]["x"]=($genarray[$i]["gen"]*$hbasesize)+$left;  
+				$genarray[$i]["x"]=($genarray[$i]["gen"]*$hbasesize)+$left;
 			}
 			$par=$genarray[$i]["par"];
 			if($genarray[$i]["chd"]==1) {
@@ -208,7 +208,7 @@ function generate() {
 				else {
 					$exponent=$genarray[$par]["nrc"]-1;
 
-					$genarray[$i]["y"] = $genarray[$par]["y"] -  (($exponent*($vsize+$vinbetween))/2)      ;
+					$genarray[$i]["y"] = $genarray[$par]["y"] -  (($exponent*($vsize+$vinbetween))/2);
 
 					if($genarray[$i]["gen"]==$genarray[$i-1]["gen"]) {
 
@@ -240,7 +240,7 @@ function generate() {
 
 				$genarray[$par]["lst"]=$genarray[$z]["y"];
 				//NEW
-				if($genarray[$z]["gen"]>$genarray[$z-1]["gen"] AND $genarray[$par]["lst"]==$genarray[$par]["fst"]) { 
+				if($genarray[$z]["gen"]>$genarray[$z-1]["gen"] AND $genarray[$par]["lst"]==$genarray[$par]["fst"]) {
 				// this person is first in generation and is only child - move directly under parent
 					$genarray[$z]["y"]=$genarray[$par]["y"];
 					// make this into while loop
@@ -249,7 +249,7 @@ function generate() {
 						$z++;
 					}
 					$genarray[$par]["fst"]=$genarray[$par]["y"];
-				}				
+				}
 				elseif($movepar==1) {
 					$movepar=0;
 					move($par);
@@ -452,7 +452,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		}
 		elseif($dna=="mtdna" OR $dna=="mtdnamark") {
 			echo '<div class="standard_header fonts" style="align:center; text-align: center;"><b>'.__('Same mtDNA as ').$base_person_name.'</b>';
-		}		
+		}
 		echo '<br><input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow popup!)').'" onClick="showimg();">';
 		echo '</div>';
 

@@ -4,9 +4,9 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 echo '<h1 align=center>'.__('Settings').'</h1>';
 
-if(isset($_POST['timeline_language']) ) {  $time_lang = $_POST['timeline_language']; }
-elseif(isset($_GET['timeline_language']) ) {  $time_lang = $_GET['timeline_language'];  }
-else { $time_lang = $humo_option['default_language'];   }
+if(isset($_POST['timeline_language']) ) { $time_lang = $_POST['timeline_language']; }
+elseif(isset($_GET['timeline_language']) ) { $time_lang = $_GET['timeline_language']; }
+else { $time_lang = $humo_option['default_language']; }
 
 if (isset($_POST['save_option'])){
 	// *** Update settings ***
@@ -76,6 +76,33 @@ if (isset($_POST['save_option'])){
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["name_order"])."' WHERE setting_variable='name_order'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["one_name_study"])."' WHERE setting_variable='one_name_study'");
 	$result = $dbh->query("UPDATE humo_settings SET setting_value='".safe_text_db($_POST["one_name_thename"])."' WHERE setting_variable='one_name_thename'");
+	
+	// Jewish settings
+	if(isset($_POST["david_stars"])) {$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='david_stars'");}
+	else { $result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='david_stars'"); }
+	if(isset($_POST["death_shoa"])) {$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='death_shoa'");}
+	else { $result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='death_shoa'"); }
+	if(isset($_POST["admin_hebnight"])) {$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='admin_hebnight'");}
+	else { $result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='admin_hebnight'"); }
+	if(isset($_POST["admin_hebdate"])) {$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='admin_hebdate'");}
+	else { $result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='admin_hebdate'"); }
+	if(isset($_POST["admin_hebname"])) {$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='admin_hebname'");}
+	else { $result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='admin_hebname'"); }
+	if(isset($_POST["admin_brit"])) {$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='admin_brit'");}
+	else { $result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='admin_brit'"); }
+	if(isset($_POST["admin_barm"])) {$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='admin_barm'");}
+	else { $result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='admin_barm'"); }
+	
+	if(isset($_POST["death_char"]) AND safe_text_db($_POST["death_char"]) == "y"  AND $humo_option['death_char'] == "n") { 
+		include(CMS_ROOTPATH."languages/change_all.php");  // change cross to infinity
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='y' WHERE setting_variable='death_char'");
+	}
+	elseif((!isset($_POST["death_char"]) OR safe_text_db($_POST["death_char"]) == "n") AND $humo_option['death_char'] == "y" ) { 
+		include(CMS_ROOTPATH."languages/change_all.php");  // change infinity to cross
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='n' WHERE setting_variable='death_char'");
+	}
+
+
 	if(strpos($humo_option['default_timeline'],$time_lang."!")===false) {  
 		// no entry for this language yet - append it
 		$result = $dbh->query("UPDATE humo_settings SET setting_value=CONCAT(setting_value,'".safe_text_db($_POST["default_timeline"])."') WHERE setting_variable='default_timeline'");
@@ -343,8 +370,8 @@ $selected=''; if ($humo_option["date_display"]== 'us') $selected=' SELECTED';
 echo '<option value="us"'.$selected.'>'.__('USA - Jan 5, 1787').'</option>';
 $selected=''; if ($humo_option["date_display"]== 'ch') $selected=' SELECTED';
 echo '<option value="ch"'.$selected.'>'.__('China - 1787-01-05').'</option>';
-$selected=''; if ($humo_option["date_display"]== 'is') $selected=' SELECTED';
-echo '<option value="is"'.$selected.'>'.__('Israel - 5 Jan 1787 (15 Tevet 5547)').'</option>';
+//$selected=''; if ($humo_option["date_display"]== 'is') $selected=' SELECTED';
+//echo '<option value="is"'.$selected.'>'.__('Israel - 5 Jan 1787 (15 Tevet 5547)').'</option>';
 echo "</select>"; 
 echo "</td></tr>";
 
@@ -495,14 +522,40 @@ echo '</td></tr>';
 echo '<tr class="table_header"><th colspan="2">'.__('Save settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 echo '</table>';
-echo '</form>';
+//echo '</form>';
 
 
 echo '<h1 align=center>'.__('Special settings').'</h1>';
 
 echo '<table class="humo standard" border="1">';
-	echo '<tr class="table_header"><th colspan="2">'.__('Special settings').'</th></tr>';
+echo '<tr class="table_header"><th colspan="2">'.__('Special settings').'</th></tr>';
 
+//echo '<form method="post" action="index.php">';
+//echo '<input type="hidden" name="page" value="'.$page.'">';
+
+echo '<tr><td>'.__('Jewish settings').'</td><td>';
+echo '<u>'.__('Display settings').':</u><br>';
+$checked = '';  if(isset($humo_option['death_char']) and $humo_option['death_char'] == "y")  { $checked = " checked "; }
+echo '<input type="checkbox" id="death_char" value="y" name="death_char" '.$checked.'>  <label for="death_char">'.__('Change all &#134; characters into &infin; characters in all language files')." (".__('unchecking and saving will revert to the cross sign').')</label><br>';
+$checked = '';  if(isset($humo_option['admin_hebdate']) and $humo_option['admin_hebdate'] == "y")  { $checked = " checked "; }
+echo '<input type="checkbox" id="admin_hebdate" value="y" name="admin_hebdate" '.$checked.'>  <label for="admin_hebdate">'.__('Display Hebrew date after Gregorian date: 23 Dec 1980 (16 Tevet 5741)').'</label><br>';
+$checked = '';  if(isset($humo_option['david_stars']) and $humo_option['david_stars'] == "y")  { $checked = " checked "; }
+echo '<input type="checkbox" id="david_stars" value="y" name="david_stars" '.$checked.'>  <label for="david_stars">'.__('Place yellow Stars of David before holocaust victims in lists and reports').'</label><br>';
+$checked = '';  if(isset($humo_option['death_shoa']) and $humo_option['death_shoa'] == "y")  { $checked = " checked "; }
+echo '<input type="checkbox" id="death_shoa" value="y" name="death_shoa" '.$checked.'>  <label for="death_shoa">'.__('Add: "death cause: murdered" to holocaust victims').'</label><br>';
+echo '<u>'.__('Editor settings').':</u><br>';
+$checked = '';  if(isset($humo_option['admin_hebnight']) and $humo_option['admin_hebnight'] == "y")  { $checked = " checked "; }
+echo '<input type="checkbox" id="admin_hebnight" value="y" name="admin_hebnight" '.$checked.'>  <label for="admin_hebnight">'.__('Add "night" checkbox next to Gregorian dates to calculate Hebrew date correctly').'</label><br>';
+$checked = '';  if(isset($humo_option['admin_hebname']) and $humo_option['admin_hebname'] == "y")  { $checked = " checked "; }
+echo '<input type="checkbox" id="admin_hebname" value="y" name="admin_hebname" '.$checked.'>  <label for="admin_hebname">'.__('Add field for Hebrew name in name section of editor (instead of in "events" list)').'</label><br>';
+$checked = '';  if(isset($humo_option['admin_brit']) and $humo_option['admin_brit'] == "y")  { $checked = " checked "; }
+echo '<input type="checkbox" id="admin_brit" value="y" name="admin_brit" '.$checked.'>  <label for="admin_brit">'.__('Add field for Brit Mila under birth fields (instead of in "events" list)').'</label><br>';
+$checked = '';  if(isset($humo_option['admin_barm']) and $humo_option['admin_barm'] == "y")  { $checked = " checked "; }
+echo '<input type="checkbox" id="admin_barm" value="y" name="admin_barm" '.$checked.'>  <label for="admin_barm">'.__('Add field for Bar/ Bat Mitsva before baptise fields (instead of in "events" list)').'</label>';
+echo '<br><input type="Submit" style="margin:3px" name="save_option" value="'.__('Change').'">';
+echo '</td></tr>';
+echo '</form>';
+/*
 	echo '<tr><td>'.__('&#134 => &infin;').'</td><td>';
 		echo '<b>'.__('Change all &#134; characters into &infin; characters in all language files.').'</b> <br>';
 		echo __('Some remarks about this option:<br>
@@ -510,7 +563,7 @@ If you want the &infin; characters, you have to click the link below everytime H
 It\'s not posssible to reverse this action, you have to re-install the language files!');
 		echo '<br><a href="../languages/change_all.php">'.__('Change all &#134; characters into &infin; characters in all language files.').'</a>';
 	echo '</td></tr>';
-
+*/
 	echo '<tr><td>'.__('Sitemap').'</td><td>';
 		echo '<b>'.__('Sitemap').'</b> <br>';
 		echo __('A sitemap can be used for quick indexing of the HuMo-gen family screens by search engines. Add the sitemap link to a search engine (like Google), or add the link in a robots.txt file (in the root folder of your website). Example of robots.txt file, sitemap line:<br>

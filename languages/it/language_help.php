@@ -1,62 +1,62 @@
 <?php
 echo '<div class="help_box">';
 echo '
-<p class="help_header">Icons</p>
-<p class="help_text">- Explanation: <br>
-<span class="help_explanation">To the left of names of persons in lists or reports, you will see the icon <img src="'.CMS_ROOTPATH.'images/reports.gif" alt="Reports">. When you hover over this icon with your mouse, a popup will be displayed. In the popup list you will find several icons with names of reports and charts that you can create from this person (the exact number of icons on the list varies according to the presence of ancestors and/or descendants). Following is a list of those icons and their meaning.</span><br><br>
-<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/ancestor_report.gif" alt="Pedigree">&nbsp;<b>Ancestor Report (Pedigree)</b>: A pedigree is a genealogical report of a person\'s ancestors. A pedigree uses a special method of numbering: the base person is number 1, his father number 2 and his mother number 3. The number of a father is ways twice that of his son and the mother is one number higher. Thus, number 40 is the father of number 20 and 41 is the mother of number 20. <br>From amongst the icons in the popup menu you can also choose a graphical display of the ancestor report.<br>You can read more about pedigrees <a href="http://en.wikipedia.org/wiki/Pedigree_chart" target="blank"><b>here</b></a> and <a href="http://en.wikipedia.org/wiki/Ahnentafel" target="blank"><b>here.</b></a></span><br><br>
-<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/descendant.gif" alt="Parenteel">&nbsp;<b>Descendant Report/Chart</b>: A descendant report is a genealogical report of a patriarchal couple or of one patriarch (generation I) with their children (generation II) and all further descendants, both along male and female lines. <br>From amongst the icons in the popup menu you can also choose a graphical display of the descendant report</span><br><br>
-<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/outline.gif" alt="Outline report">&nbsp;<b>Outline Report</b>: An outline report is a clear summary of all descendants of one person (and his/her partners), where each generation gets its own (ascending) number. </span><br><br>
-<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/ancestor_chart.gif" alt="ancestor sheet">&nbsp;<b>Ancestor Sheet</b>: An ancestor sheet lists 5 generations in table layout, with the base person at the bottom and the ancestors above him/her in increasingly smaller boxes. </span><br><br>
-<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/fanchart.gif" alt="Fanchart">&nbsp;<b>Fanchart</b>: A fanchart is a circular chart that shows the ancestors in circles around the base person. This allows for a very clear view of the ancestry of any specific person. The box for each person on the chart is clickable to enable fast access to that person\'s family sheet. <br> The size of the fanchart and some other settings may be adjusted from the menu to the left of the chart. </span><br><br>
-<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/timeline.gif" alt="Timeline chart">&nbsp;<b>Timeline Chart</b>: The timeline chart displays historic events alongside a person\'s life events to give a context of the time in which the person lived.<br> This chart has its own dedicated help which you can view by hovering the cursor over the word "Help" to the left of screen.</span><br><br>
+<p class="help_header">Icone</p>
+<p class="help_text">- Spiegazione: <br>
+<span class="help_explanation">A sinistra dei nomi delle persone nelle liste o nei rapporti, vedrai l'icona <img src="'.CMS_ROOTPATH.'images/reports.gif" alt="Reports">. Quando passi su questa icona con il mouse, verrà visualizzata una finestrella nella quale sono elencate diverse icone con i nomi dei report e dei grafici che è possibile creare da questa persona (il numero esatto di icone nell'elenco varia in base alla presenza di antenati e / o discendenti). Di seguito è riportato l'elenco di queste icone e il loro significato.</span><br><br>
+<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/ancestor_report.gif" alt="Pedigree">&nbsp;<b>Report  degli antenati (albero genealogico)</b>: Il Report  degli Antenati è un rapporto genealogico degli antenati di una persona,  utilizzando un metodo speciale di numerazione: la persona di base è il numero 1, il padre numero 2 e sua madre numero 3. Il numero di un padre è due volte maggiore di quello di suo figlio e la madre è il numero successivo. Quindi, il numero 40 è il padre del numero 20 e 41 è la madre del numero 20. <br> Tra le icone nel menu a comparsa puoi anche scegliere una visualizzazione grafica del rapporto antenato. <br> Puoi leggere di più sul Report  degli Antenati <a href="http://en.wikipedia.org/wiki/Pedigree_chart" target="blank"><b>qui</b></a> e <a href="http://en.wikipedia.org/wiki/Ahnentafel" target="blank"><b>qui.</b></a></span><br><br>
+<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/descendant.gif" alt="Parenteel">&nbsp;<b>Report dei discendenti</b>: Un report dei discendenti è un rapporto genealogico di una coppia patriarcale o di un patriarca (Prima Generazione) con i loro figli (Seconda Generazione) e tutti gli altri discendenti, sia lungo le linee maschili che femminili. <br> Tra le icone nel menu a comparsa puoi anche scegliere una visualizzazione grafica del rapporto discendente</span><br><br>
+<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/outline.gif" alt="Outline report">&nbsp;<b>Report descrittivo</b>: Un report descrittivo è un dettagliagto elenco di tutti i discendenti di una persona (e dei suoi partner), in cui ogni generazione riceve il proprio numero (crescente). </span><br><br>
+<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/ancestor_chart.gif" alt="ancestor sheet">&nbsp;<b>Scheda degli antenati</b>: An ancestor sheet lists 5 generations in table layout, with the base person at the bottom and the ancestors above him/her in increasingly smaller boxes. </span><br><br>
+<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/fanchart.gif" alt="Fanchart">&nbsp;<b>Grafico a Ventaglio</b>: Un Ventaglio è un grafico circolare che mostra gli antenati nei circoli attorno alla persona di base. Ciò consente una visione molto chiara della discendenza di una persona specifica. La casella per ogni persona sul grafico è selezionabile per consentire l'accesso rapido alla scheda della famiglia di quella persona. <br> Le dimensioni del Ventaglio e alcune altre impostazioni possono essere regolate dal menu a sinistra del grafico. </span><br><br>
+<span class="help_explanation"><img src="'.CMS_ROOTPATH.'images/timeline.gif" alt="Timeline chart">&nbsp;<b>Grafico Cronologico</b>: Il grafico cronologico mostra gli eventi storici insieme agli eventi della vita di una persona per fornire un contesto del tempo in cui la persona ha vissuto. <br> Questo grafico ha il suo aiuto dedicato che puoi visualizzare posizionando il cursore sopra la parola "Aiuto "a sinistra dello schermo.</span><br><br>
 </p>';
 echo '</div>';
 
 echo '<p><div class="help_box">';
 echo '
 <p class="help_header">Top Ribbon</p>
-<p class="help_text">- “Search” field and button<br>
-<span class="help_explanation">This box appears on all pages of HuMo-gen and allows you the convenience to search for any persons from the database from any page. Typing in a name and clicking search will display a list of people from the database bearing a name matching the search term.</span><br><br>
-- “Select a theme” dropdown:<br>
-<span class="help_explanation">By default, HuMo-gen is provided with several color schemes, and so long as the site administrator has not disabled them, they will appear in this dropdown list. You can select a theme to your preference, that will change elements such as page color, background images, etc. These themes will only affect your experience on HuMo-gen and will make no changes to your internet browser or computer.</span><br><br>
-- The A+ A- Reset buttons<br>
-<span class="help_explanation">These controls allow you to control the text size on screen while using HuMo-gen. These controls will only affect your experience on HuMo-gen and will make no changes to your internet browser or computer. (Note: Reset is only visible on browsers that support this function). </span><br><br>
-- The orange RSS-icon (only displayed if activated by the site owner)<br>
-<span class="help_explanation">If you add this feed (as it\'s called) to your RSS-reader, you will be able to see at one glance who has a birthday!<br>(In the "Tools" pull-down menu you may see an "Anniversary List" option. That option will display a list of birthdays in the present month).</span><br>
+<p class="help_text">- Campo e pulsante “Cerca”<br>
+<span class="help_explanation">Questa finestra appare su tutte le pagine di HuMo-gen e ti consente di cercare qualsiasi persona dal database da qualsiasi pagina. Digitando un nome e facendo clic su Cerca verrà visualizzato un elenco di persone dal database con un nome corrispondente al termine di ricerca.</span><br><br>
+- Menu "Seleziona un tema":<br>
+<span class="help_explanation">Per impostazione predefinita, HuMo-gen viene fornito con diversi schemi di colori, e fintanto che l'amministratore del sito non li ha disabilitati, appariranno in questa tendina. In base alle tue preferenze, puoi selezionare un tema che cambierà alcuni elementi come il colore della pagina, gli sfondi, ecc. Il tema scelto influenzerà solo la tua ricerca su HuMo-gen e non cambierà nulla nel tuo browser o computer.</span><br><br>
+- I pulsanti A+ A- Reset<br>
+<span class="help_explanation">Questi controlli ti permettono di controllare le dimensioni del testo sullo schermo mentre usi HuMo-gen. Questi controlli influenzeranno solo la tua ricerca su HuMo-gen e non cambieranno nulla nel tuo browser o computer. (Nota: il tasto "Reset" è visibile solo sui browser che supportano questa funzione). </span><br><br>
+- L'icona RSS arancione (visualizzato solo se attivato dall'amministratore del sito)<br>
+<span class="help_explanation">Se aggiungi questo feed (come viene chiamato) al tuo RSS-Reader, sarai in grado di vedere a colpo d'occhio chi ha un compleanno!<br>(Nel menù "Strumenti" è possibile visualizzare l'opzione "Elenco anniversari". Quell'opzione mostrerà un elenco di compleanni nel mese corrente).</span><br>
 
 </p>';
 echo '</div>';
 
 echo '<p><div class="help_box">';
 echo 
-'<p class="help_header">Main Menu Button "Home"</p><br>
-<span class="help_explanation">This takes you to the main Persons Index.
-Some panels on this page that require explanation:</span><br>
-<p class="help_text">- Owner family tree<br>
-<span class="help_explanation">Clicking the name of the site owner will open an email form that allows you to send the site owner a short notice. Please enter your name and email address, so you can be answered. If you wish to send the site owner an attachment (such as a photo or a document) you can use this form to ask the site owner for his email. Then you can use any regular email program to send those attachments. (The email address of the site owner is not published on the site to prevent spamming).</span><br><br>
+'<p class="help_header">Pulsante "Home" del menu principale</p><br>
+<span class="help_explanation">Questo ti porta all'Indice principale delle persone .
+Alcuni pannelli su questa pagina che richiedono una spiegazione:</span><br>
+<p class="help_text">- Albero genealogico del proprietario<br>
+<span class="help_explanation">Facendo clic sul nome del proprietario verrà aperto un modulo di posta elettronica che consente di inviare al proprietario una breve Nota. Inserisci il tuo nome e indirizzo e-mail, in modo da poter ricevere una risposta.</span><br><br>
 <p class="help_text">- Search fields<br>
-<span class="help_explanation">In the search fields you can search by first and/or last name. You can also choose from three options: "contains", "equals" and "starts with". Note: next to the search button there is an option for  &quot;Advanced Search!&quot;</span><br><br>
-- More<br>
-<span class="help_explanation">The next few lines are obvious: click the link that you want to move to.</span><br>
+<span class="help_explanation">E' possibile effettuare la ricerca per nome e / o cognome. Puoi anche scegliere tra tre opzioni: "contiene...", "è uguale a..." and "comincia con...". Nota: accanto al pulsante di ricerca c'è un'opzione per "Ricerca Avanzata".</span><br><br>
+- Inoltre:<br>
+<span class="help_explanation">Le prossime righe sono ovvie: fai clic sul link che desideri.</span><br>
 </p>';
 echo '</div>';
 
 echo '<p><div class="help_box">';
 echo 
-'<p class="help_header">Main Menu Button "Family Tree"</p><br>
-<p class="help_text">- Family tree index<br>
-<span class="help_explanation">This takes you to the main Persons Index (See above).</span><br><br>
-<p class="help_text">- Persons<br>
-<span class="help_explanation">Takes you to the main persons index.  Same as the ‘Home’ button.
-The list shows all persons in the family tree, sorted alphabetically. A maximum number of 150 persons is displayed. You can press the page numbers to see more. You can chose between "Concise view" or "Expanded view".  In the expanded view (ex)partners are also displayed, that are not shown in concise view.</span><br><br>
-<p class="help_text">- Names<br>
-<span class="help_explanation">Here you will find a list of all family names, followed by the number of persons who carry that name.</span><br><br>
-<p class="help_text">- Places (this button is only displayed if activated by the site owner)<br>
-<span class="help_explanation">Here you can search by place of birth, baptism, by address, place of death or burial. 
-You can search with the options: "contains", "equals" and "starts with". 
-Here too, you can choose between expanded or concise view. 
-The results will be sorted alphabetically by place name.
+'<p class="help_header">Pulsante "Family Tree" del menu principale </p><br>
+<p class="help_text">- Indice dell'albero genealogico<br>
+<span class="help_explanation">Questo ti porta all'Indice principale (vedi sopra).</span><br><br>
+<p class="help_text">- Persone<br>
+<span class="help_explanation">Vai all'indice principale delle persone. Come il pulsante "Home".
+L'elenco mostra tutte le persone nell'albero genealogico, in ordine alfabetico. Viene visualizzato un numero massimo di 150 persone per pagina. Puoi premere i numeri di pagina per vedere di più. Puoi scegliere tra "Vista Concisa" o "Vista Espansa". Nella vista espansa vengono visualizzati anche i partner, che non sono mostrati nella visualizzazione concisa.</span><br><br>
+<p class="help_text">- Nomi<br>
+<span class="help_explanation">Qui trovi l'elenco di tutti i cognomi, seguito dal numero di persone che portano quel cognome.</span><br><br>
+<p class="help_text">- Luoghi (questo pulsante viene visualizzato solo se attivato dall'amministratore del sito)<br>
+<span class="help_explanation">Qui puoi cercare per luogo di nascita, battesimo, indirizzo, luogo di morte o sepoltura.
+Puoi scegliere tra tre opzioni: "contiene...", "è uguale a..." and "comincia con...".
+Anche in questo caso, puoi scegliere tra visualizzazione estesa o concisa. 
+I risultati verranno ordinati alfabeticamente in base al nome del luogo.
 </span><br><br>
 </p>';
 echo '</div>';
@@ -64,42 +64,42 @@ echo '</div>';
 
 
 echo '<p><div class="help_box">';
-echo '<p class="help_header">Main Menu Button "Tools"</p><br>
-<span class="help_explanation">Several child menus appear under the Tools menu:</span><br>
-<p class="help_text">- Sources: (only displayed if activated by the site owner)<br>
-<span class="help_explanation">Here you will find a list of all sources used in the genealogical research.</span><br><br>
-<p class="help_text">- Anniversary List<br>
-<span class="help_explanation">This opens a list with all persons in the selected tree who have a birthday in the current month. You can also choose a different month than the current one.</span><br><br>
-<p class="help_text">- Statistics<br>
-<span class="help_explanation">The information given in the statistics table doesnt warrant further explanation.</span><br><br>
-<p class="help_text">- Relationship calculator<br>
-<span class="help_explanation">With the relationship calculator you can establish blood and/or marital relations between two people. In the search fields "First Name" and "Last Name" you can enter names, part of names or leave a field empty. Then you can click "search" and consequently pick a name from the result list. Once two names have been selected, you can click "Calculate relationship" and if a relationship is found it will be listed together with a graphical representation. You can press the change symbol to switch between the persons.</span><br><br>
+echo '<p class="help_header">Pulsante del menu "Strumenti"</p><br>
+<span class="help_explanation">Diversi Sottomenu compaiono sotto il menu Strumenti:</span><br>
+<p class="help_text">- Fonti: (visualizzate solo se attivate dal proprietario del sito)<br>
+<span class="help_explanation">Qui troverai un elenco di tutte le fonti utilizzate in questa ricerca genealogica.</span><br><br>
+<p class="help_text">- Lista degli Anniversari<br>
+<span class="help_explanation">Questo apre una lista con tutte le persone dell'albero selezionato che hanno un compleanno nel mese corrente. Puoi anche scegliere un mese diverso da quello attuale.</span><br><br>
+<p class="help_text">- Statistiche<br>
+<span class="help_explanation">Le informazioni fornite nella tabella delle statistiche non richiedono ulteriori spiegazioni.</span><br><br>
+<p class="help_text">- Calcolo della Parentela<br>
+<span class="help_explanation">Con il calcolatore delle parentele puoi stabilire le relazioni di sangue e / o coniugali tra due persone. Nei campi di ricercas "Nome" e "Cognome" puoi inserire il nome, parte del nome o lasciare un campo vuoto. Quindi puoi fare clic su "cerca" e poi scegliere un nome dalla lista dei risultati. Dopo aver selezionato due nomi, puoi fare clic su  "Calcola parentela" e se viene trovata una relazione verrà elencata insieme a una rappresentazione grafica. È possibile premere il simbolo di modifica per passare da una persona all'altra.</span><br><br>
 <p class="help_text">- Google maps<br>
-<span class="help_explanation">This will display a googlemap relating to the people present in the database, with ability to map by births or deaths. Instructions on the use of these googlemap features can be found <a href="http://humogen.com/index.php?option=com_wrapper&view=wrapper&Itemid=58" target="_blank">here</a> in the online manual, under "Advanced Options"</span><br><br>
-<p class="help_text">- Contact<br>
-<span class="help_explanation">This will open an email form, similar to the one explained above (see “owner family tree”).</span><br>
-<p class="help_text">- Latest changes<br>
-<span class="help_explanation">This will display a list of new and recently changed people in the database. A fully scrollable list is displayed in reverse chronological date order, with the most recent items displayed first.
-There is a search field that allows you to narrow the list of results down. It accepts partial names, e.g. searching for “Sa” will return all people with SA in their name, such as Sam, Sarah, Susanne, or even people with the surname Samson for example.</span><br>
+<span class="help_explanation">Questo mostrerà una mappa di Google relativa alle persone presenti nel database, con possibilità di mappare per nascita o morte. È possibile trovare istruzioni sull'utilizzo di queste funzioni della mappa di google <a href="http://humogen.com/index.php?option=com_wrapper&view=wrapper&Itemid=58" target="_blank">qui</a> nel manuale online, sotto "Advanced Options"</span><br><br>
+<p class="help_text">- Contatto<br>
+<span class="help_explanation">Verrà aperto un modulo email simile a quanto spiegato sopra (vedi "proprietario dell'albero genealogico").</span><br>
+<p class="help_text">- Ultime modifiche<br>
+<span class="help_explanation">Questo mostrerà l'elenco delle persone nuove o modificate di recente nel database. La <b>lista</b> viene visualizzato in ordine cronologico inverso, con le voci più recenti visualizzate per prime.
+Un ulteriore campo di ricerca che ti consente di restringere la lista dei risultati. Accetta nomi parziali, ad es. cercando “Sa” si otterrà tutte le persone con SA nel loro nome, come Sandro, Sarah, Susanna, o anche persone con il cognome Sabbadini per esempio.</span><br>
 </p>';
 echo '</div>';
 
 echo '<p><div class="help_box">';
-echo '<p class="help_header">Menu Button "Language Flags"</p><br>
-<span class="help_explanation">On the menu bar, to the right of the menu buttons, you will notice several national flags, that allow you to change the display language.<br>
+echo '<p class="help_header">menu "Bandiere delle lingue"</p><br>
+<span class="help_explanation">Sulla barra dei menu, a destra dei pulsanti del menu, noterai diverse bandiere nazionali che ti permetteranno di cambiare la lingua del display.<br>
+</p>';
+echo '</div>';
+
+echo '<p><div class="help_box">';                                                                                                                                                                                                         
+echo '<p class="help_header">menu "Album Fotografico"</p>
+<p class="help_text">Nota: questo pulsante viene visualizzato solo se attivato dal proprietario del sito<br><br>
+<span class="help_explanation">Qui puoi vedere una galleria di tutte le foto nel database.<br>Clicca su una foto per ingrandirla o clicca sul nome per passare alla pagina di famiglia di quella persona.<br>
 </p>';
 echo '</div>';
 
 echo '<p><div class="help_box">';
-echo '<p class="help_header">Menu Button "Photobook"</p>
-<p class="help_text">Note: this button is only displayed if activated by the site owner<br><br>
-<span class="help_explanation">Here you will see a display of all photos in the database.<br>Click on a photo for an enlarged version or click on the name to move to the family page of that person.<br>
-</p>';
-echo '</div>';
-
-echo '<p><div class="help_box">';
-echo '<p class="help_header">Menu Button "Login"</p><br>
-<span class="help_explanation">If the site owner gave you a username and password, you can log in here to see data that is not shown to the general public (such as details of living people or "hidden" family trees).<br>
+echo '<p class="help_header">Bottone "Login" del menu principale</p><br>
+<span class="help_explanation">Se l'amministratore del sito ti ha fornito un nome utente e una password, puoi accedere da qui per vedere i dati che non vengono mostrati al pubblico (come i dettagli di persone viventi o alberi genealogici "nascosti").<br>
 </p>';
 echo '</div>';
 ?>

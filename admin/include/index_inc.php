@@ -37,10 +37,10 @@ if (isset($_POST['save_settings_database'])){
 	try {
 		$conn = 'mysql:host='.$_POST['db_host'].';dbname='.$_POST['db_name'];
 		//$temp_dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);
-		$temp_dbh = new PDO($conn,$_POST['db_username'],$_POST['db_password']);	
+		$temp_dbh = new PDO($conn,$_POST['db_username'],$_POST['db_password']);
 		if($temp_dbh!==false) { $database_check=1; $result_message.=__('Database connection: OK!').'<br>'; }
 		$temp_dbh=null;
-	} catch (PDOException $e) { 
+	} catch (PDOException $e) {
 		unset($database_check);
 		$result_message.='<b>*** '.__('No database found! Check MySQL connection and database name').' ***</b><br>';
 	}

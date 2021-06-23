@@ -557,6 +557,14 @@ else{
 
 	$db_functions->set_tree_id($_SESSION['tree_id']);
 
+	if($humo_option['death_char'] == "y") {   // user wants infinity instead of cross -> check if the language files comply
+		$str=file_get_contents(CMS_ROOTPATH."languages/en/en.po");
+		if(strpos($str,'msgstr "&#134;"') OR strpos($str,'msgstr "&dagger;"')) {    // the cross is used (probably new upgrade) so this has to be changed to infinity
+			$humo_option['death_char'] = "n"; // fool "change_all.php" into thinking a change was requested from cross to infinity
+			include(CMS_ROOTPATH."languages/change_all.php");
+		}
+	}
+
 	echo '<div class="silverbody">'; 
 } // *** End of PDF export check ***
 

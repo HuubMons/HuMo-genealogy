@@ -12,7 +12,7 @@ function process_text($text_process, $text_sort='standard'){
 		// *** Split the text, and check for @Nxx@ texts ***
 		$text_pieces = explode("|", $text_process);
 		$text_result='';
-		for ( $i = 0; $i <= (count($text_pieces)-1); $i++) { 
+		for ($i = 0; $i <= (count($text_pieces)-1); $i++) {
 			// *** Search for Aldfaer texts ***
 			if (substr($text_pieces[$i], 0, 1)=='@'){
 				$text_check=substr($text_pieces[$i],1,-1);
