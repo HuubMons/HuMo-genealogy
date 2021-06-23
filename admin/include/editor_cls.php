@@ -52,7 +52,7 @@ function date_show($process_date, $process_name, $multiple_rows='', $disabled=''
 
 	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" placeholder="'.$placeholder.'" style="direction:ltr'.$style.'" value="';
 
-		// *** Translate months ***
+		// *** Show month in selected language ***
 		$process_date=str_replace("JAN", __('jan'), $process_date);
 		$process_date=str_replace("FEB", __('feb'), $process_date);
 		$process_date=str_replace("MAR", __('mar'), $process_date);
@@ -65,6 +65,8 @@ function date_show($process_date, $process_name, $multiple_rows='', $disabled=''
 		$process_date=str_replace("OCT", __('oct'), $process_date);
 		$process_date=str_replace("NOV", __('nov'), $process_date);
 		$process_date=str_replace("DEC", __('dec'), $process_date);
+
+		$process_date=str_replace(" AND ", __(' and '), $process_date);
 
 		// *** BEF, ABT, AFT, etc. is shown in date_prefix ***
 		$process_date=strtolower($process_date);
@@ -100,6 +102,8 @@ function date_process($process_name, $multiple_rows=''){
 	if ($multiple_rows!='') { $post_date = trim($_POST[$process_name][$multiple_rows]); $pref = $_POST["$process_name_prefix"][$multiple_rows]; }
 	else { $post_date = trim($_POST[$process_name]); $pref = $_POST["$process_name_prefix"]; }
 	$this_date="";
+
+	$post_date=str_replace(__(' and '),' AND ', $post_date); // *** Use selected language for text "and" ***
 	$pos = strpos(strtoupper($post_date),"AND");
 	if($pos!==false) {
 		if($pref == "BET ") { // we've got "BET" and "AND"
@@ -151,7 +155,13 @@ function valid_date($date) {
 	if(strpos($date,".")!==false) $date = str_replace(".", "-", $date);
 	if(strpos($date,",")!==false) $date = str_replace(",", "-", $date);
 
-	// Use your own language for input
+	// Use your own language for input, FULL MONTH NAMES
+	$search  = array(__('Januari'), __('Februari'), __('March'), __('April'), __('May'), __('June'), __('July'), __('August'), __('September'), __('October'), __('November'), __('December'));
+	$replace = array('JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC');
+	$date=str_replace($search, $replace, ucwords($date));
+
+	$date=strtolower($date);
+	// Use your own language for input, SHORT MONTH NAMES
 	$date=str_replace(__('jan'),"JAN", $date);
 	$date=str_replace(__('feb'),"FEB", $date);
 	$date=str_replace(__('mar'),"MAR", $date);

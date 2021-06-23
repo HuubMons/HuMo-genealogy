@@ -34,13 +34,12 @@ echo '<div id="mainmenu_centerbox">';
 	echo '</div>';
 
 	echo '<div id="mainmenu_center_alt" style="text-align:left;">';
-		if (isset($_GET['select_page']) AND (is_numeric($_GET['select_page'])) )
-		{
+		if (isset($_GET['select_page']) AND (is_numeric($_GET['select_page'])) ){
 			$select_page=$_GET['select_page'];
 		}
-		elseif(isset($urlpart[0]) AND (is_numeric($urlpart[0])) ){
-			$select_page=$urlpart[0];
-		}
+		//elseif(isset($urlpart[0]) AND (is_numeric($urlpart[0])) ){
+		//	$select_page=$urlpart[0];
+		//}
 		else{
 			//$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order ASC LIMIT 0,1");
 			// *** First page in a menu ***

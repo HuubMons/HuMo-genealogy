@@ -618,20 +618,11 @@ function extra_links(){
 		$person=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_own_code NOT LIKE ''");
 		while(@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 			if (in_array ($personDb->pers_own_code,$pers_own_code) ){
-				if (CMS_SPECIFIC=='Joomla'){
-					$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$_SESSION['tree_id'].
-						'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-				}
-				elseif ($humo_option["url_rewrite"]=="j"){
-					// *** $uri_path is generated in header.php ***
-					$path_tmp=$uri_path.'family/'.$tree_id.'/'.$personDb->pers_indexnr.
-						'/'.$personDb->pers_gedcomnumber.'/';
-				}
-				else{
-					$path_tmp= CMS_ROOTPATH.'family.php?tree_id='.$tree_id.
-						'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-				}
 				$person_cls = New person_cls;
+
+				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+				$path_tmp=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+
 				$name=$person_cls->person_name($personDb);
 				$text_nr=array_search ($personDb->pers_own_code,$pers_own_code);
 
@@ -685,12 +676,12 @@ function alphabet(){
 		$text.=' <a href="'.$path_tmp.'">'.$personDb->first_character.'</a>';
 	}
 
-	if (CMS_SPECIFIC=='Joomla'){
-		$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;pers_lastname=...';
-	} else{
-		$path_tmp=CMS_ROOTPATH.'list.php?pers_lastname=...';
-	}
-	$text.=' <a href="'.$path_tmp. '">'.__('Other')."</a>\n";
+	//if (CMS_SPECIFIC=='Joomla'){
+	//	$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;pers_lastname=...';
+	//} else{
+	//	$path_tmp=CMS_ROOTPATH.'list.php?pers_lastname=...';
+	//}
+	//$text.=' <a href="'.$path_tmp. '">'.__('Other')."</a>\n";
 
 	$person="SELECT pers_patronym FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_patronym LIKE '_%' AND pers_lastname ='' LIMIT 0,1";

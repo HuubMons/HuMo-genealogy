@@ -435,6 +435,7 @@ else{
 		echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="'.CMS_ROOTPATH.'birthday_rss.php?lang='.$language_rss.'" >';
 	}
 
+	/*
 	// *** url_rewrite variabele ***
 	// *** urlpart[0] = (family) database, urlpart[1] = next variabale, etc. ***
 	if ($humo_option["url_rewrite"]=="j"){
@@ -452,12 +453,14 @@ else{
 			$urlpart = explode("/", $urlpart1);
 		}
 	}
+	*/
 
 	// *** Family tree choice ***
 	global $database;
 	$database='';
 	if (isset($_GET["database"])) $database=$_GET["database"];
 	if (isset($_POST["database"])) $database=$_POST["database"];
+	/*
 	if (isset($urlpart[0]) AND $urlpart[0]!='' AND $urlpart[0]!='standaard'){
 		// backwards compatible: humo2_
 		$database=$urlpart[0]; // *** url_rewrite ***
@@ -475,6 +478,7 @@ else{
 			}
 		}
 	}
+	*/
 
 	// *** New option, use family tree number in the url: database=humo_2 changed into: tree_id=1 ***
 	if (isset($_GET["tree_id"])) $temp_tree_id=$_GET["tree_id"];

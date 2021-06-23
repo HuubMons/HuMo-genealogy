@@ -216,7 +216,10 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 					if ($sourceDb->source_title){ $text.= ' '.trim($sourceDb->source_title); }
 						// *** Standard source without title ***
-						else $text.=' '.$sourceDb->source_text;
+						//else $text.=' '.$sourceDb->source_text;
+
+					if ($sourceDb->source_text AND $sourceDb->source_shared!='1')
+						$text.=' '.process_text($sourceDb->source_text);
 
 					// *** User group option to only show title of source ***
 					if ($user['group_sources']!='t'){
@@ -282,15 +285,23 @@ function show_sources_footnotes(){
 					}
 					$text.=' <a href="'.$url.'">'.__('source').': ';
 
-					if ($sourceDb->source_title){ $text.=" ".trim($sourceDb->source_title); }
+					if ($sourceDb->source_title){ $text.=' '.trim($sourceDb->source_title); }
 						// *** Standard source without title ***
 						else $text.=' '.$sourceDb->source_text;
+
+					//if ($sourceDb->source_text)
+					//	$text.=' '.process_text($sourceDb->source_text);
+
+
 					$text.='</a>';
 				}
 				else{
 					if ($sourceDb->source_title){ $text.=' '.trim($sourceDb->source_title); }
 						// *** Standard source without title ***
-						else $text.=' '.$sourceDb->source_text;
+						//else $text.=' '.$sourceDb->source_text;
+
+					if ($sourceDb->source_text)
+						$text.=' '.process_text($sourceDb->source_text);
 
 					// *** User group option to only show title of source ***
 					if ($user['group_sources']!='t'){

@@ -3,7 +3,7 @@ function process_text($text_process, $text_sort='standard'){
 	global $dbh, $tree_id, $user;
 	global $screen_mode, $text_presentation;
 
-	if ($text_presentation!='hide'){
+	if ($text_presentation!='hide' AND $text_process){
 		//1 NOTE Text by person#werktekst#
 		//2 CONT 2e line text persoon#2e werktekst#
 		//2 CONT 3e line #3e werktekst# tekst persoon
@@ -16,8 +16,9 @@ function process_text($text_process, $text_sort='standard'){
 			// *** Search for Aldfaer texts ***
 			if (substr($text_pieces[$i], 0, 1)=='@'){
 				$text_check=substr($text_pieces[$i],1,-1);
-				$search_text=$dbh->query("SELECT * FROM humo_texts
-					WHERE text_tree_id='".$tree_id."' AND text_gedcomnr='".safe_text_db($text_check)."'");
+				$qry="SELECT * FROM humo_texts
+					WHERE text_tree_id='".$tree_id."' AND text_gedcomnr='".safe_text_db($text_check)."'";
+				$search_text=$dbh->query($qry);
 				$search_textDb=$search_text->fetch(PDO::FETCH_OBJ);
 				if ($text_result){ $text_result.='<br>'; }
 				$text_result.=@$search_textDb->text_text;

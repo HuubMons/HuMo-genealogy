@@ -673,9 +673,7 @@ foreach($add_locations AS $val) {
 		}
 		else {
 			echo '<form action="index.php?page=google_maps" method="post">';
-			printf(__('The "Find a location on the map" pull-down displays a list according to the chosen tree and the birth/ death mapping choice. For this to work properly, the birth/death status and tree affiliation of all locations has to be up to date.<br><br><b>
-TIP:</b> When you import a gedcom, you can mark the option "Add new locations to geo-location database" and the location status of existing locations will also be updated automatically! (If you didn\'t mark this option on import, use the "Update geolocation database" above. This will also refresh the existing location status).
-<p><b>When to use this button:</b><ul><li> if you edited location data directly with the %s editor</li><li>if you wish to delete all locations that have become obsolete (mark the box below)</li></ul></p>'),'HuMo-genealogy');
+printf(__('The "Find a location on the map" pull-down displays a list according to the chosen tree and the birth/ death mapping choice. For this to work properly, the birth/death status and tree affiliation of all locations has to be up to date.<br><br><b>TIP:</b> When you import a gedcom, you can mark the option "Add new locations to geo-location database" and the location status of existing locations will also be updated automatically! (If you didn\'t mark this option on import, use the "Update geolocation database" above. This will also refresh the existing location status).<p><b>When to use this button:</b><ul><li> if you edited location data directly with the %s editor</li><li>if you wish to delete all locations that have become obsolete (mark the box below)</li></ul></p>'),'HuMo-genealogy');
 
 echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that have become obsolete (not connected to any persons anymore)').'<br>';
 		echo '<input type="submit" style="font-size:14px" value="'.__('Refresh').'" name="refresh">';
@@ -967,8 +965,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		}
 		else {  // there is a database
 			$num_rows = $loc_list->rowCount();
-			printf(__('Here you can delete your entire geolocation database (%d entries).<br>
-If you are absolutely sure, press the button below.'), $num_rows);
+			printf(__('Here you can delete your entire geolocation database (%d entries).<br>If you are absolutely sure, press the button below.'), $num_rows);
 			echo '<br><form action="index.php?page=google_maps" method="post">';
 			echo '<input type="submit" style="font-size:14px;color:red;font-weight:bold" value="'.__('DELETE ENTIRE GEOLOCATION DATABASE').'" name="deletedatabase">';
 			echo '<br></form><br>';
@@ -982,8 +979,7 @@ If you are absolutely sure, press the button below.'), $num_rows);
 				$no_loc_list = $dbh->query("SELECT * FROM humo_no_location ORDER BY no_location_location");
 				$num_rows1 = $no_loc_list->rowCount();
 				if($num_rows1>0) {
-					printf(__('Here you can refresh the list of %d non-indexable locations that was stored in your database after previous geolocation processes.<br>
-		Do this if you have corrected non-indexable locations in your data or have imported updated gedcoms and some of these locations may no longer appear in your data.'), $num_rows1);
+					printf(__('Here you can refresh the list of %d non-indexable locations that was stored in your database after previous geolocation processes.<br>Do this if you have corrected non-indexable locations in your data or have imported updated gedcoms and some of these locations may no longer appear in your data.'), $num_rows1);
 					echo '<br><form action="index.php?page=google_maps" method="post">';
 					echo '<input type="submit" style="font-size:14px;color:red;font-weight:bold" value="'.__('REFRESH LIST OF NON-INDEXABLE LOCATIONS').'" name="refresh_no_locs">';
 					echo '<br></form><br>';
@@ -997,10 +993,7 @@ If you are absolutely sure, press the button below.'), $num_rows);
 		echo '<tr class="table_header"><th>'.__('Settings').'</th>';
 		echo '<tr><td>';
 		echo '<form name="slider" action="index.php?page=google_maps" method="POST">';
-		echo __('The slider has 10 steps. By default the starting year is 1560 with 9 intervals of 50 years up till 2010 and beyond.<br>
-You can set the starting year yourself for each tree, to suit it to the earliest years in that tree<br>
-The 9 intervals will be calculated automatically. Some example starting years for round intervals:<br>
-1110 (intv. 100), 1560 (intv. 50), 1695 (intv. 35),1740 (intv. 30), 1785 (intv. 25), 1830 (intv. 20)').'<br><br>';
+		echo __('The slider has 10 steps. By default the starting year is 1560 with 9 intervals of 50 years up till 2010 and beyond.<br>You can set the starting year yourself for each tree, to suit it to the earliest years in that tree<br>The 9 intervals will be calculated automatically. Some example starting years for round intervals:<br>1110 (intv. 100), 1560 (intv. 50), 1695 (intv. 35),1740 (intv. 30), 1785 (intv. 25), 1830 (intv. 20)').'<br><br>';
 
 		// *** Select family tree ***
 		$tree_id_string = " AND ( ";

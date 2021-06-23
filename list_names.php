@@ -40,16 +40,18 @@ echo '<p class="fonts">';
 	echo ' <a href="'.$path_tmp.'">'.__('All names')."</a>\n";
 	echo '</div><br>';
 
-// *** Alphabet find first first_character of lastname ***
-$last_name='a'; // *** Default first_character ***
 // *** Search variables in: http://localhost/humo-gen/list/humo1_/M/ ***
 //if (isset($urlpart[1])){
 //	$last_name=urldecode(safe_text_db($urlpart[1]));   // without urldecode skandinavian letters don't work!
 //}
-if (isset($_GET['last_name'])){
+if (isset($_GET['last_name']) AND $_GET['last_name'] AND is_string($_GET['last_name'])){
 	$last_name=safe_text_db($_GET['last_name']);
 }
-//echo 'TEST'.$_GET['last_name'].'!'.$lastname.'!';
+else{
+	// *** Alphabet find first first_character of lastname ***
+	$last_name='a'; // *** Default first_character ***
+}
+//echo 'TEST'.$_GET['last_name'].'!'.$last_name.'!';
 
 // *** MAIN SETTINGS ***
 $maxcols = 5; // number of name & nr colums in table. For example 3 means 3x name col + nr col
@@ -69,7 +71,6 @@ $nr_persons=$maxnames;
 
 $item=0; if (isset($_GET['item'])){ $item=$_GET['item']; }
 $start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
-$uri_path_string='list_names.php?';
 
 
 function tablerow($nr,$lastcol=false) {
@@ -243,14 +244,21 @@ echo '<div style="text-align:center">';
 	else{
 		$line_pages=__('Page');
 
+		if ($humo_option["url_rewrite"]=="j"){
+			// *** $uri_path made in header.php ***
+			$uri_path_string=$uri_path.'list_names/'.$tree_id.'/'.$last_name.'?';
+		}
+		else{
+			$uri_path_string='list_names.php?last_name='.$last_name.'&amp;';
+		}
+
 		// "<="
 		if ($start>1){
 			$start2=$start-20;
 			$calculated=($start-2)*$nr_persons;
 			$line_pages.= ' <a href="'.$uri_path_string.
-			"&amp;start=".$start2.
+			"start=".$start2.
 			"&amp;item=".$calculated.
-			"&last_name=".$last_name.
 			'">&lt;= </a>';
 		}
 		if ($start<=0){$start=1;}
@@ -264,9 +272,8 @@ echo '<div style="text-align:center">';
 				}
 				else {
 					$line_pages.= ' <a href="'.$uri_path_string.
-					"&amp;start=".$start.
+					"start=".$start.
 					"&amp;item=".$calculated.
-					"&last_name=".$last_name.
 					'"> '.$i.'</a>';
 				}
 			}
@@ -276,9 +283,8 @@ echo '<div style="text-align:center">';
 		$calculated=($i-1)*$nr_persons;
 		if ($calculated<$count_persons){
 			$line_pages.= ' <a href="'.$uri_path_string.
-			"&amp;start=".$i.
+			"start=".$i.
 			"&amp;item=".$calculated.
-			"&last_name=".$last_name.
 			'"> =&gt;</a>';
 		}
 	}
