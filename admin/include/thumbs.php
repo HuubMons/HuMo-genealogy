@@ -43,12 +43,6 @@ $menu_admin='picture_settings';
 if (isset($_POST['menu_admin'])){ $menu_admin=$_POST['menu_admin']; }
 if (isset($_GET['menu_admin'])){ $menu_admin=$_GET['menu_admin']; }
 
-if (isset($_SESSION['admin_tree_id']) AND is_numeric($_SESSION['admin_tree_id'])){ $tree=$_SESSION['admin_tree_id']; }
-if (isset($_POST['tree_id']) AND is_numeric($_POST['tree_id'])){
-	$tree=$_POST['tree_id'];
-	$_SESSION['admin_tree_id']=$tree;
-}
-
 echo '<p><div class="pageHeadingContainer pageHeadingContainer-lineVisible" aria-hidden="false" style="">';
 echo '<div class="pageHeading">';
 	// <div class="pageHeadingText">Configuratie gegevens</div>
@@ -130,9 +124,10 @@ if ($show_table){
 				while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
 					$treetext=show_tree_text($treeDb->tree_id, $selected_language);
 					$selected='';
-					if (isset($tree) AND ($treeDb->tree_id==$tree)){
+					//if (isset($tree) AND ($treeDb->tree_id==$tree)){
+					if (isset($tree_id) AND ($treeDb->tree_id==$tree_id)){
 						$selected=' SELECTED';
-						$tree_id=$treeDb->tree_id;
+						//$tree_id=$treeDb->tree_id;
 						$db_functions->set_tree_id($tree_id);
 					}
 					echo '<option value="'.$treeDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
@@ -155,9 +150,7 @@ if ($show_table){
 				else{
 					if (isset($_POST['default_path']) AND $_POST['default_path']=='yes') $tree_pict_path='|'.$tree_pict_path;
 				}
-
-				$sql="UPDATE humo_trees SET
-				tree_pict_path='".safe_text_db($tree_pict_path)."' WHERE tree_id=".safe_text_db($_POST['tree_id']);
+				$sql="UPDATE humo_trees SET tree_pict_path='".safe_text_db($tree_pict_path)."' WHERE tree_id=".safe_text_db($tree_id);
 				$result=$dbh->query($sql);
 			}
 
@@ -267,7 +260,7 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 			photocat_prefix VARCHAR(30) CHARACTER SET utf8,
 			photocat_language VARCHAR(10) CHARACTER SET utf8,
 			photocat_name VARCHAR(50) CHARACTER SET utf8
-		)";
+		) DEFAULT CHARSET=utf8";
 		$dbh->query($albumtbl);
 		// Enter the default category with default name that can be changed by admin afterwards
 		$dbh->query("INSERT INTO humo_photocat (photocat_prefix,photocat_order,photocat_language,photocat_name) VALUES ('none','1','default','".safe_text_db(__('Photos'))."')");
@@ -474,7 +467,7 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 							$person_cls = New person_cls;
 							$personDb=$db_functions->get_person($afbDb->event_connect_id);
 							$name=$person_cls->person_name($personDb);
-							$picture_text.='<br><a href="'.CMS_ROOTPATH.'family.php?database='.$personDb->pers_tree_prefix.
+							$picture_text.='<br><a href="'.CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.
 								'&amp;id='.$personDb->pers_indexnr.
 								'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
 						}

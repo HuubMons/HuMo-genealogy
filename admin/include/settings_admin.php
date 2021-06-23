@@ -854,7 +854,7 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo '</table>';
 		echo '</form>';
 		//echo __('If there is no text in an item, the item will not be shown in the homepage.');
-		echo __('If the left column isn\'t used, the center column will be made large automatically.');
+		echo __("If the left column isn't used, the center column will be made large automatically.");
 
 		echo '<br>';
 
@@ -990,7 +990,7 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		<p>Do the following:<br>
 		1) In your genealogy program, put a code. For example, with the patriarch enter a code "patriarch".<br>
 		2) Enter the same code in this table (multiple codes are possible)<br>
-		3) After processing the gedcom file, an extra link will appear in the main menu, i.e. to the patriarch!<br>');
+		3) After processing the GEDCOM file, an extra link will appear in the main menu, i.e. to the patriarch!<br>');
 
 
 		echo '<br>';

@@ -6,7 +6,7 @@
 //global $persids, $famsids; $noteids;
 //$persids = array(); $famsids = array(); $noteids = array();
 
-//echo '<H1 align=center>'.__('Gedcom file export').'</H1>';
+//echo '<H1 align=center>'.__('GEDCOM file export').'</H1>';
 
 //if (isset($_POST['tree'])){
 //	$tree=safe_text_db($_POST["tree"]);

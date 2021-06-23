@@ -27,7 +27,8 @@ if (isset($_POST['send_mail'])){
 		$sql="UPDATE humo_users SET";
 		$sql.=" user_mail='".safe_text_db($_POST["register_mail"])."'";
 		if ($_POST["register_password"]!='')
-			$sql.=", user_password='".safe_text_db(MD5($_POST["register_password"]))."'";
+			$hashToStoreInDb = password_hash($_POST["register_password"], PASSWORD_DEFAULT);
+			$sql.=", user_password_salted='".$hashToStoreInDb."'";
 		$sql.=" WHERE user_id=".$userDb->user_id;
 		$result = $dbh->query($sql);
 		echo '<h2>'.__('Your settings are updated!').'</h2>';

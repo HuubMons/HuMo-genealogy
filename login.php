@@ -302,10 +302,9 @@ elseif(isset($_POST['ak']) AND $_POST['ak']!='') {
 			echo '<div style="font-family:Verdana;font-size:14px;text-align:center"><input type="button" value="'.__('Retry').'" onClick="history.go(-1)"></div>';
 		}
 		else{ // if all validations are passed.
-			$password=md5($password); // Encrypt the password before storing
-
-			// Update the new password now //
-			$count=$dbh->prepare("update humo_users set user_password='".$password."' where user_name='".$userid."'");
+			// Update the new password now (and use salted password)  //
+			$hashToStoreInDb = password_hash(password, PASSWORD_DEFAULT);
+			$count=$dbh->prepare("update humo_users set user_password_salted='".$hashToStoreInDb."', user_password='' where user_name='".$userid."'");
 			$count->execute();
 			$no=$count->rowCount();
 			echo '<br><table class="humo" cellspacing="0" align="center">';

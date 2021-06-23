@@ -245,17 +245,18 @@ function tree_list($datasql){
 			}
 			else{
 				if (CMS_SPECIFIC=='Joomla'){
-					$path_tmp='index.php?option=com_humo-gen&amp;database='.$dataDb->tree_prefix;
+					//$path_tmp='index.php?option=com_humo-gen&amp;database='.$dataDb->tree_prefix;
+					$path_tmp='index.php?option=com_humo-gen&amp;tree_id='.$dataDb->tree_id;
 				}
 				// *** url_rewrite ***
 				elseif ($humo_option["url_rewrite"]=="j"){
 					// *** $uri_path is made in header.php ***
-					$path_tmp=$uri_path.'tree_index/'.$dataDb->tree_prefix.'/';
-					//$path_tmp=$uri_path.'index/'.$dataDb->tree_prefix.'/';
+					$path_tmp=$uri_path.'tree_index/'.$dataDb->tree_id.'/';
+					//$path_tmp=$uri_path.'index/'.$dataDb->tree_id.'/';
 				}
 				else{
-					$path_tmp='tree_index.php?database='.$dataDb->tree_prefix;
-					//$path_tmp='index.php?database='.$dataDb->tree_prefix;
+					$path_tmp='tree_index.php?tree_id='.$dataDb->tree_id;
+					//$path_tmp='index.php?tree_id='.$dataDb->tree_id;
 				}
 				$tree_name='<span class="tree_link fonts"><a href="'.$path_tmp.'">'.$treetext_name.'</a></span>';
 			}
@@ -340,10 +341,12 @@ function last_names($columns,$rows){
 			// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
 			global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $text;
 			if (CMS_SPECIFIC=='Joomla'){
-				$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
+				//$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
+				$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;tree_id='.tree_id;
 			}
 			else{
-				$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
+				//$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
+				$path_tmp=CMS_ROOTPATH.'list.php?tree_id='.$_SESSION['tree_id'];
 			}
 			$text.='<td class="namelst">';
 				if(isset($freq_last_names[$nr])) {
@@ -544,7 +547,7 @@ function search_box(){
 	else{
 		$path_tmp=CMS_ROOTPATH.'list.php?adv_search=1&index_list=search';
 	}
-	$text.='<p><a href="'.$path_tmp.'">'.__('Advanced search').'</p>';
+	$text.='<p><a href="'.$path_tmp.'">'.__('Advanced search').'</a></p>';
 
 	$text.="</form>\n";
 	return $text;
@@ -572,7 +575,7 @@ function random_photo(){
 				style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"><br>';
 
 			$fam=''; if ($personmnDb->pers_famc) $fam=$personmnDb->pers_famc; else $fam=$personmnDb->pers_fams;
-			$text.='<a href="family.php?database='.$personmnDb->pers_tree_prefix.'&amp;id='.$fam.'&amp;main_person='.$personmnDb->pers_gedcomnumber.'">';
+			$text.='<a href="family.php?tree_id='.$personmnDb->pers_tree_id.'&amp;id='.$fam.'&amp;main_person='.$personmnDb->pers_gedcomnumber.'">';
 				$text.=$picqryDb->event_text;
 			$text.='</a></div><br>';
 
@@ -613,16 +616,16 @@ function extra_links(){
 		while(@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 			if (in_array ($personDb->pers_own_code,$pers_own_code) ){
 				if (CMS_SPECIFIC=='Joomla'){
-					$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;database='.$_SESSION['tree_prefix'].
+					$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$_SESSION['tree_id'].
 						'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
 				}
 				elseif ($humo_option["url_rewrite"]=="j"){
 					// *** $uri_path is generated in header.php ***
-					$path_tmp=$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$personDb->pers_indexnr.
+					$path_tmp=$uri_path.'family/'.$tree_id.'/'.$personDb->pers_indexnr.
 						'/'.$personDb->pers_gedcomnumber.'/';
 				}
 				else{
-					$path_tmp= CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
+					$path_tmp= CMS_ROOTPATH.'family.php?tree_id='.$tree_id.
 						'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
 				}
 				$person_cls = New person_cls;
@@ -665,16 +668,16 @@ function alphabet(){
 	@$person=$dbh->query($personqry);
 	while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 		if (CMS_SPECIFIC=='Joomla'){
-			$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;database='.
-			$_SESSION['tree_prefix'].'&amp;last_name='.$personDb->first_character;
+			$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id='.$tree_id.
+			'&amp;last_name='.$personDb->first_character;
 		}
 		elseif ($humo_option["url_rewrite"]=="j"){
 			// *** url_rewrite ***
 			// *** $uri_path is gemaakt in header.php ***
-			$path_tmp=$uri_path.'list_names/'.$_SESSION['tree_prefix'].'/'.$personDb->first_character.'/';
+			$path_tmp=$uri_path.'list_names/'.$tree_id.'/'.$personDb->first_character.'/';
 		}
 		else{
-			$path_tmp=CMS_ROOTPATH.'list_names.php?database='.$_SESSION['tree_prefix'].'&amp;last_name='.$personDb->first_character;
+			$path_tmp=CMS_ROOTPATH.'list_names.php?tree_id='.$tree_id.'&amp;last_name='.$personDb->first_character;
 		}
 		$text.=' <a href="'.$path_tmp.'">'.$personDb->first_character.'</a>';
 	}
@@ -693,8 +696,8 @@ function alphabet(){
 		$text.=' <a href="'.CMS_ROOTPATH.'list.php?index_list=patronym">'.__('Patronyms').'</a>';
 	}
 
-	ob_flush();
-	flush(); // IE
+	//ob_flush();
+	//flush(); // IE
 
 	return $text;
 }
@@ -774,7 +777,8 @@ function today_in_history($view='with_table'){
 					$history['date'][]=date_place($record->pers_death_date,'');
 				}
 			}
-			$history['name'][]='<td><a href="'.CMS_ROOTPATH.'family.php?id='.$record->pers_indexnr.'&amp;main_person='.$record->pers_gedcomnumber.'">'.$name["standard_name"].'</a></td>';
+			$url=$person_cls->person_url($record);
+			$history['name'][]='<td><a href="'.$url.'">'.$name["standard_name"].'</a></td>';
 		}
 		else
 			$count_privacy++;

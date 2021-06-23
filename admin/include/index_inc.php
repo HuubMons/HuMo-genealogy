@@ -26,7 +26,8 @@ if (isset($_POST['save_settings_database'])){
 		$result_message.=__('MySQL connection: OK!').'<br>';
 		// *** If needed immediately install a new database ***
 		if (isset($_POST['install_database'])){
-			$install_qry="CREATE DATABASE IF NOT EXISTS `".$_POST['db_name']."`";
+			//$install_qry="CREATE DATABASE IF NOT EXISTS `".$_POST['db_name']."`";
+			$install_qry="CREATE DATABASE IF NOT EXISTS `".$_POST['db_name']."`CHARACTER SET utf8 COLLATE utf8_general_ci";
 			$db_check->query($install_qry);
 		}
 	} catch (PDOException $e) { 
@@ -273,17 +274,21 @@ if ($install_status==true){
 	echo '<tr class="table_header"><th colspan="2">'.__('HuMo-gen security items').'</th></tr>';
 
 	// *** Check for standard admin username and password ***
-	$sql="SELECT * FROM humo_users WHERE user_name='admin' OR (user_name='admin' AND user_password='".MD5('humogen')."')";
+	$check_admin=false;
+	$sql="SELECT * FROM humo_users WHERE user_group_id='1'";
 	$check_login = $dbh->query($sql);
-	$check_loginDb=$check_login->fetch(PDO::FETCH_OBJ);
-	if ($check_loginDb){
+	while ($check_loginDb=$check_login->fetch(PDO::FETCH_OBJ)){
+		if ($check_loginDb->user_name=='admin') $check_admin=true;
+		if ($check_loginDb->user_password==MD5('humogen')) $check_admin=true; // *** Check old password method ***
+		$check_password = password_verify('humogen', $check_loginDb->user_password_salted); if ($check_password) $check_admin=true;
+	}
+	if ($check_admin){
 		$check_login='<td class="line_nok">'.__('Standard admin username or admin password is used.');
 		$check_login.='<br><a href="index.php?page=users">'.__('Change admin username and password.').'</a>';
 	}
 	else
 		$check_login='<td class="line_ok">'.__('OK');
 	echo '<tr><td class="line_item">'.__('Check admin account').'</td>'.$check_login;
-
 
 	// *** Show failed logins ***
 	//3600 = 1 uur
@@ -427,7 +432,7 @@ The file .htpasswd will look something like this:<br>');
 				}
 				else{
 					echo ' <b>'.__('This tree does not yet contain any data or has not been imported properly!').'</b><br>';
-						// *** Read gedcom file ***
+						// *** Read GEDCOM file ***
 						echo ' <form method="post" action="'.$path_tmp.'" style="display : inline;">';
 						echo '<input type="hidden" name="page" value="tree">';
 						echo '<input type="hidden" name="tree_prefix" value="'.$dataDb->tree_prefix.'">';

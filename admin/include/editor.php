@@ -12,7 +12,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2015 Huub Mons,
+* Copyright (C) 2008-2020 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -133,7 +133,7 @@ function show_person($gedcomnumber, $gedcom_date=false, $show_link=true){
 	if ($gedcomnumber){
 		$personDb = $db_functions->get_person($gedcomnumber);
 		if ($show_link==true){
-			$text='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=person&amp;tree='.$personDb->pers_tree_prefix.
+			$text='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=person&amp;tree_id='.$personDb->pers_tree_id.
 				'&amp;person='.$personDb->pers_gedcomnumber.'">'.$personDb->pers_firstname.' ';
 			if ($personDb->pers_patronym) $text.=$personDb->pers_patronym.' ';
 			$text.=strtolower(str_replace("_"," ",$personDb->pers_prefix)).$personDb->pers_lastname.'</a>'."\n";
@@ -179,17 +179,14 @@ if (isset($_GET["menu_admin"])){
 if (isset($_SESSION['admin_menu_admin'])){ $menu_admin=$_SESSION['admin_menu_admin']; }
 
 // *** Used for new selected family tree or search person etc. ***
-if (isset($_POST["tree_prefix"])){
-	$tree_prefix=$_POST['tree_prefix'];
-	$_SESSION['admin_tree_prefix']=$tree_prefix;
-
-	unset ($pers_gedcomnumber);
+if (isset($_POST["tree_id"])){
+	//unset ($pers_gedcomnumber);
+	$pers_gedcomnumber='';
 	unset ($_SESSION['admin_pers_gedcomnumber']);
 
-	// *** Get tree_id ***
-	$qryDb=$db_functions->get_tree($tree_prefix);
-	$tree_id=$qryDb->tree_id;
-	$_SESSION['admin_tree_id']=$tree_id;
+	// *** Code in this part is copied in other part of the script. Maybe not necesarry here anymore... ***
+	/*
+	unset ($_SESSION['admin_pers_gedcomnumber']);
 
 	// *** Select first person to show ***
 	$new_nr_qry = "SELECT * FROM humo_settings
@@ -212,20 +209,10 @@ if (isset($_POST["tree_prefix"])){
 			$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 		}
 	}
+	*/
 }
 
 // *** Editor icon for admin and editor: select family tree ***
-if (isset($_GET["tree"])){
-	$tree_prefix=$_GET['tree'];
-	$_SESSION['admin_tree_prefix']=$tree_prefix;
-
-	// *** Get tree_id ***
-	$qryDb=$db_functions->get_tree($tree_prefix);
-	$tree_id=$qryDb->tree_id;
-	$_SESSION['admin_tree_id']=$tree_id;
-}
-if (isset($_SESSION['admin_tree_prefix'])){ $tree_prefix=$_SESSION['admin_tree_prefix']; }
-if (isset($_SESSION['admin_tree_id'])){ $tree_id=$_SESSION['admin_tree_id']; }
 if (isset($tree_id) AND $tree_id) { $db_functions->set_tree_id($tree_id); }
 
 // *** Delete session id's for new person ***
@@ -235,7 +222,7 @@ if (isset($_POST['person_add'])){
 }
 
 
-// *** Save person gedcomnumber ***
+// *** Save person GEDCOM number ***
 $pers_gedcomnumber='';
 if (isset($_POST["person"]) AND $_POST["person"]){
 	$pers_gedcomnumber=$_POST['person'];
@@ -247,7 +234,7 @@ if (isset($_GET["person"])){
 }
 if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['admin_pers_gedcomnumber']; }
 
-// *** Save family gedcomnumber ***
+// *** Save family GEDCOM number ***
 if (isset($pers_gedcomnumber) AND $pers_gedcomnumber)
 	$person = $db_functions->get_person($pers_gedcomnumber);
 
@@ -272,7 +259,7 @@ if (!isset($field['pers_changed_user'])){
 	$result=$dbh->query($sql);
 }
 
-// for jewish settings only for humo_persons table:  
+// for jewish settings only for humo_persons table:
 if($humo_option['admin_hebnight'] == "y") {
 	if (!isset($field['pers_birth_date_hebnight'])){
 		$sql="ALTER TABLE humo_persons
@@ -289,7 +276,7 @@ if($humo_option['admin_hebnight'] == "y") {
 			ADD pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_buried_date;";
 		$result=$dbh->query($sql);
 	}
-}	
+}
 // end jewish settings
 
 $column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
@@ -463,12 +450,12 @@ if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_fami
 	}
 
 	$x=1;
-	if(isset($_POST['exist_children'])) { 
+	if(isset($_POST['exist_children'])) {
 		// for adding to existing family: there were already children in this relation: get the total number of existing children
 		$x = $_POST['exist_children']+1; // the number of existing children + 1
 	}
 	
-	while(isset($_POST['add_fam_child_firstname_'.$x]) AND $_POST['add_fam_child_firstname_'.$x]!="") { 
+	while(isset($_POST['add_fam_child_firstname_'.$x]) AND $_POST['add_fam_child_firstname_'.$x]!="") {
 		// as long as there are children's lines in the table with at least a firstname entered, collect their data
 		${'add_fam_child_sexe'.$x} = "";
 		if(isset($_POST['add_fam_child_sexe_'.$x])) ${'add_fam_child_sexe'.$x} = $editor_cls->text_process($_POST['add_fam_child_sexe_'.$x]);
@@ -564,7 +551,7 @@ fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_
 				$result = $dbh->query("UPDATE humo_persons SET pers_buried_date_hebnight='',
 				pers_birth_date_hebnight='".$add_fam_partner_birthdate_hebnight."',
 				pers_death_date_hebnight='".$add_fam_partner_deathdate_hebnight."'
-				WHERE  pers_gedcomnumber='".$newpartner_id."' AND pers_tree_prefix='".$tree_prefix."'");
+				WHERE  pers_gedcomnumber='".$newpartner_id."' AND pers_tree_id='".$tree_id."'");
 			}
 		}
 		elseif(isset($_POST['add_fam_partner_exist']) AND $_POST['add_fam_partner_exist']!="") {
@@ -714,44 +701,71 @@ if (isset($person->pers_fams) AND $person->pers_fams){
 $add_person=false; if (isset($_GET['add_person'])){ $add_person=true; }
 
 // *** Select family tree ***
-$tree_id=0;
-$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-$tree_search_result = $dbh->query($tree_search_sql);
+//$tree_id=0;
 echo __('Family tree').': ';
 echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
-echo '<input type="hidden" name="page" value="'.$page.'">';
-echo '<select size="1" name="tree_prefix" onChange="this.form.submit();">';
-	echo '<option value="">'.__('Select a family tree:').'</option>';
-	while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){
-		$edit_tree_array=explode(";",$group_edit_trees);
-		//$team_tree_array=explode(";",$group_team_trees);
-		// *** Administrator can always edit in all family trees ***
-		//if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array) OR in_array($tree_searchDb->tree_id, $team_tree_array)) {
-		if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array)) {
-			$selected='';
-			if (isset($tree_prefix) AND $tree_searchDb->tree_prefix==$tree_prefix){
-				$selected=' SELECTED';
-				$tree_id=$tree_searchDb->tree_id;
+	echo '<input type="hidden" name="page" value="'.$page.'">';
+	echo '<select size="1" name="tree_id" onChange="this.form.submit();">';
+		echo '<option value="">'.__('Select a family tree:').'</option>';
+		$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+		$tree_search_result = $dbh->query($tree_search_sql);
+		while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){
+			$edit_tree_array=explode(";",$group_edit_trees);
+			//$team_tree_array=explode(";",$group_team_trees);
+			// *** Administrator can always edit in all family trees ***
+			//if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array) OR in_array($tree_searchDb->tree_id, $team_tree_array)) {
+			if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array)) {
+				$selected=''; if (isset($tree_id) AND $tree_searchDb->tree_id==$tree_id){ $selected=' SELECTED'; }
+				$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
+				echo '<option value="'.$tree_searchDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
 			}
-			$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
-			echo '<option value="'.$tree_searchDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
 		}
-	}
-echo '</select>';
+	echo '</select>';
 echo '</form>';
 
 // *** To prevent errors in Internet Explorer ***
-if ($tree_prefix=='') $menu_admin='';
+//if ($tree_prefix=='') $menu_admin='';
 
-if (isset($tree_prefix)){
+//if (isset($tree_prefix)){
+if (isset($tree_id)){
 
 	// *** Process queries ***
 	include_once ($joomlapath."editor_inc.php");
 
 	// *** New family tree: no default or selected pers_gedcomnumer, add new person ***
 	if ($pers_gedcomnumber==''){
-		$add_person=true; $_GET['add_person']='1';
-		$new_tree=true;
+
+		// *** Open editor screen first time after starting browser ***
+		unset ($_SESSION['admin_pers_gedcomnumber']);
+
+		// *** Select first person to show ***
+		$new_nr_qry = "SELECT * FROM humo_settings
+			WHERE setting_variable='admin_favourite'
+			AND setting_tree_id='".safe_text_db($tree_id)."' LIMIT 0,1";
+		$new_nr_result = $dbh->query($new_nr_qry);
+
+		//if (isset($new_nr->setting_value)){
+		if ($new_nr_result AND $new_nr_result->rowCount()){
+			@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
+			$pers_gedcomnumber=$new_nr->setting_value;
+			$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
+		}
+		else{
+			$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".safe_text_db($tree_id)."' LIMIT 0,1";
+			$new_nr_result = $dbh->query($new_nr_qry);
+			@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
+			if (isset($new_nr->pers_gedcomnumber)){
+				$pers_gedcomnumber=$new_nr->pers_gedcomnumber;
+				$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
+			}
+		}
+
+		// *** New family tree ***
+		if ($pers_gedcomnumber==''){
+			$add_person=true; $_GET['add_person']='1';
+			$new_tree=true;
+		}
+
 	}
 
 	// *** Select person ***
@@ -799,6 +813,29 @@ if (isset($tree_prefix)){
 				}
 				echo '</select>';
 			echo '</form>';
+
+			// *** Latest changes ***
+			echo '&nbsp;&nbsp;&nbsp; ';
+			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+				echo '<input type="hidden" name="page" value="'.$page.'">';
+
+				$person_qry= "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
+					FROM humo_persons
+					WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')";
+				$person_qry.= " UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
+					FROM humo_persons
+					WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NULL) LIMIT 0,15";
+				$person_result = $dbh->query($person_qry);
+
+				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
+				echo '<option value="">'.__('Latest changes').'</option>';
+				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+					$selected=''; // Not in use.
+					echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person).'</option>';
+				}
+				echo '</select>';
+			echo '</form>';
+
 		}
 
 		// *** Show delete message ***
@@ -811,13 +848,13 @@ if (isset($tree_prefix)){
 			// *** Search persons firstname/ lastname ***
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
-				print __('Person').':';
-				print ' <input class="fonts" type="text" name="search_quicksearch" placeholder="'.__('Name').'" value="'.$search_quicksearch.'" size="15"> ';
-				print __('or ID:');
-				print ' <input class="fonts" type="text" name="search_id" value="'.$search_id.'" size="8">';
-				echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
-				print ' <input class="fonts" type="submit" value="'.__('Search').'">';
-			print "</form>\n";
+				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+				echo __('Person').':';
+				echo ' <input class="fonts" type="text" name="search_quicksearch" placeholder="'.__('Name').'" value="'.$search_quicksearch.'" size="15"> ';
+				echo __('or ID:');
+				echo ' <input class="fonts" type="text" name="search_id" value="'.$search_id.'" size="8">';
+				echo ' <input class="fonts" type="submit" value="'.__('Search').'">';
+			echo "</form>\n";
 			unset($person_result);
 
 			$idsearch=false; // flag for search with ID;
@@ -1143,8 +1180,7 @@ if (isset($pers_gedcomnumber)){
 
 					// *** Example of family screen in popup ***
 					if ($person)
-						//echo " <a href=\"#\" onClick=\"window.open('../family.php?database=".$person->pers_tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>*** ".__('Preview').' ***</b></a>';
-						echo " <a href=\"#\" onClick=\"window.open('../family.php?database=".$person->pers_tree_prefix."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>[".__('Preview').']</b></a>';
+						echo " <a href=\"#\" onClick=\"window.open('../family.php?tree_id=".$person->pers_tree_id."&id=".$person->pers_indexnr."&main_person=".$person->pers_gedcomnumber."', '','width=800,height=500')\"><b>[".__('Preview').']</b></a>';
 
 				echo '</ul>';
 			echo '</div>';
@@ -1271,58 +1307,20 @@ if (isset($pers_gedcomnumber)){
 				echo '</b>';
 			}
 
+			// *** Search existing person as child ***
 			echo '<div class="confirm">';
+				echo '<form method="POST" action="'.$phpself.'" style="display : inline;" name="form4" id="form4">';
+					echo '<input type="hidden" name="page" value="'.$page.'">';
+					if (isset($_GET['children'])){
+						echo '<input type="hidden" name="children" value="'.$_GET['children'].'">';
+					}
+					echo '<input type="hidden" name="family_id" value="'.$_GET['family_id'].'">';
 
-			// *** Search for a child in database ***
-			echo '<form method="POST" action="'.$phpself.'?page=editor&family_id='.$_GET['family_id'];
-				if (isset($_GET['children'])){ echo '&children='.$_GET['children']; }
-				echo '&child_connect=1&add_person=1" style="display : inline;">';
-				// *** Search persons firstname/ lastname ***
-				$search_quicksearch_child='';
-				if (isset($_POST['search_quicksearch_child'])){ $search_quicksearch_child=$_POST['search_quicksearch_child']; }
-				print __('Child').':';
-				print ' <input class="fonts" type="text" name="search_quicksearch_child" value="'.$search_quicksearch_child.'" size="25">';
-				print ' <input class="fonts" type="submit" value="'.__('Search').'">';
-			echo '</form>';
+					echo __('Child').': <input class="fonts" type="text" name="child_connect2" value="" size="5">';
 
-			echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
-			echo '<input type="hidden" name="page" value="'.$page.'">';
-			if (isset($_GET['children'])){
-				echo '<input type="hidden" name="children" value="'.$_GET['children'].'">';
-			}
-			echo '<input type="hidden" name="family_id" value="'.$_GET['family_id'].'">';
-
-			if($search_quicksearch_child != '') {
-				// *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
-				$search_quicksearch_child=str_replace(' ', '%', $search_quicksearch_child);
-				// *** In case someone entered "Mons, Huub" using a comma ***
-				$search_quicksearch_child = str_replace(',','',$search_quicksearch_child);
-				$person_qry= "SELECT * FROM humo_persons
-					WHERE pers_tree_id='".$tree_id."'
-					AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname)
-					LIKE '%$search_quicksearch_child%'
-					OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname)
-					LIKE '%$search_quicksearch_child%' 
-					OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' '))
-					LIKE '%$search_quicksearch_child%' 
-					OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname)
-					LIKE '%$search_quicksearch_child%')
-					ORDER BY pers_lastname, pers_firstname";
-			}
-			else{
-				$person_qry= "SELECT * FROM humo_persons
-					WHERE pers_tree_id='".$tree_id."' AND pers_famc='' ORDER BY pers_lastname, pers_firstname";
-			}
-			$person_result = $dbh->query($person_qry);
-			echo __('Select child').' ';
-			echo '<select size="1" name="child_connect2" style="width: 250px">';
-				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
-					echo '<option value="'.$person->pers_gedcomnumber.'">'.
-						$editor_cls->show_selected_person($person).'</option>';
-				}
-			echo '</select>';
-			echo ' <input type="Submit" name="submit" value="'.__('Select').'">';
-			echo '</form>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+					echo ' <input type="Submit" name="dummy4" value="'.__('Select child').'">';
+				echo '</form><br>';
 			echo '</div>';
 			echo '<p>'.__('Or add a new child:').'<br>';
 		}
@@ -1414,7 +1412,214 @@ if (isset($pers_gedcomnumber)){
 		// *** Show mother and father with a link ***
 		//if (isset($_GET['add_parents2']) OR isset($_POST['search_quicksearch_parent']) AND $add_person==false){
 		if ($add_person==false){
-			print '<tr><th class="table_header_large" colspan="4">'.ucfirst(__('parents')).'</tr>';
+
+			// *** Update settings ***
+			if (isset($_POST['admin_online_search'])){
+				if ($_POST['admin_online_search']=='y' OR $_POST['admin_online_search']=='n'){
+					$result = $db_functions->update_settings('admin_online_search',$_POST["admin_online_search"]);
+					$humo_option["admin_online_search"]=$_POST['admin_online_search'];
+				}
+			}
+
+			// *** Open Archives ***
+			echo '<tr><th class="table_header_large" colspan="4">'.__('Open Archives');
+				echo '&nbsp;&nbsp;&nbsp;&nbsp;<select size="1" name="admin_online_search">';
+				echo '<option value="y">'.__('Online search enabled').'</option>';
+				$selected=''; if ($humo_option["admin_online_search"]!='y') $selected=' SELECTED';
+				echo '<option value="n"'.$selected.'>'.__('Online search disabled').'</option>';
+				echo "</select>";
+				echo ' <input type="Submit" name="online_search" value="'.__('Select').'">';
+
+
+
+				// *** Show archive list ***
+				// *** Change CSS links ***
+				echo '
+				<style>
+				.ltrsddm div a {
+					display:inline;
+					padding: 0px;
+				}
+				</style>';
+
+				// *** Show navigation pop-up ***
+				echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+					echo '<a href="#" style="display:inline" ';
+					echo 'onmouseover="mopen(event,\'archive_menu\',0,0)"';
+					echo 'onmouseout="mclosetime()">';
+					echo '['.__('Archives').']</a>';
+					//echo '<div class="sddm_fixed"
+					//	style="text-align:left; z-index:400; padding:4px;
+					//	direction:'.$rtlmarker.'"
+					//	id="browse_menu"
+					//	onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+					echo '<div class="sddm_fixed"
+						style="text-align:left; z-index:400; padding:4px; border: 1px solid rgb(153, 153, 153);
+						direction:'.$rtlmarker.'
+						box-shadow: 6px 6px 6px #999;
+						-moz-box-shadow: 6px 6px 6px #999;
+						-webkit-box-shadow: 6px 6px 6px #999;
+						-moz-border-radius: 6px 6px 6px 6px;
+						-webkit-border-radius: 6px 6px 6px 6px;
+						border-radius: 6px 6px 6px 6px;"
+						id="archive_menu"
+						onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+
+						// *** Show box with list link to archives ***
+						if ($add_person==false){
+							$OAfromyear='';
+							if ($person->pers_birth_date){
+								if (substr($person->pers_birth_date,-4)) $OAfromyear=substr($person->pers_birth_date,-4);
+							} elseif ($person->pers_bapt_date){
+								if (substr($person->pers_bapt_date,-4)) $OAfromyear=substr($person->pers_bapt_date,-4);
+							}
+
+							// *** Show person ***
+							//echo '<b>'.__('Person').'</b><br>';
+							//echo '<span style="font-weight:bold; font-size:12px">'.show_person($person->pers_gedcomnumber).'</span><br>';
+							//echo show_person($person->pers_gedcomnumber).'<br>';
+							echo show_person($person->pers_gedcomnumber,false,false).'<br><br>';
+
+							// GeneaNet
+							// https://nl.geneanet.org/fonds/individus/?size=10&nom=Heijnen&prenom=Andreas&prenom_operateur=or&place__0__=Wouw+Nederland&go=1
+							$link= 'https://geneanet.org/fonds/individus/?size=10&nom='.urlencode($person->pers_lastname).'&amp;prenom='.urlencode($person->pers_firstname);
+							//if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&birthdate_until='.$OAfromyear;
+							echo '<a href="'.$link.'&amp;go=1" target="_blank">Geneanet.org</a><br><br>';
+
+							// StamboomZoeker.nl
+							// UITLEG: https://www.stamboomzoeker.nl/page/16/zoekhulp
+							// sn: Familienaam
+							// fn: Voornaam
+							// bd: Twee geboortejaren met een streepje (-) er tussen
+							// bp: Geboorteplaats
+							// http://www.stamboomzoeker.nl/?a=search&fn=andreas&sn=heijnen&np=1&bd1=1655&bd2=1655&bp=wouw+nederland
+							$link= 'http://www.stamboomzoeker.nl/?a=search&amp;fn='.urlencode($person->pers_firstname).'&amp;sn='.urlencode($person->pers_lastname);
+							if ($OAfromyear!='') $link.='&amp;bd1='.$OAfromyear.'&amp;bd2='.$OAfromyear;
+							echo '<a href="'.$link.'" target="_blank">Familytreeseeker.com/ StamboomZoeker.nl</a><br><br>';
+
+							// GenealogieOnline
+							//https://www.genealogieonline.nl/zoeken/index.php?q=mons&vn=nikus&pn=harderwijk
+							$link= 'https://genealogieonline.nl/zoeken/index.php?q='.urlencode($person->pers_lastname).'&amp;vn='.urlencode($person->pers_firstname);
+							//if ($OAfromyear!='') $link.='&amp;bd1='.$OAfromyear.'&amp;bd2='.$OAfromyear;
+							echo '<a href="'.$link.'" target="_blank">Genealogyonline.nl/ Genealogieonline.nl</a><br><br>';
+
+							// GrafTombe
+							// http://www.graftombe.nl/names/search?forename=Andreas&surname=Heijnen&birthdate_from=1655
+							// &birthdate_until=1655&submit=Zoeken&r=names-search
+							$link= 'http://www.graftombe.nl/names/search?forename='.urlencode($person->pers_firstname).'&amp;surname='.urlencode($person->pers_lastname);
+							if ($OAfromyear!='') $link.='&amp;birthdate_from='.$OAfromyear.'&birthdate_until='.$OAfromyear;
+							echo '<a href="'.$link.'&amp;submit=Zoeken&r=names-search" target="_blank">Graftombe.nl</a><br><br>';
+
+
+							// FamilySearch
+							// https://www.familysearch.org/search/record/results?count=20&query=+givenname:Andreas~+surname:%22Heijnen%22
+
+							// WieWasWie
+							// https://www.wiewaswie.nl/nl/zoeken/?q=Andreas+Adriaensen+Heijnen
+
+							// StamboomOnderzoek
+							// https://www.stamboomonderzoek.com/default/search.php?
+							// myfirstname=Andreas&mylastname=Heijnen&lnqualify=startswith&mybool=AND&showdeath=1&tree=-x--all--x-
+						}
+
+					echo '</div>';
+				echo '</div>';
+				// *** End of archive list pop-up ***
+
+
+
+
+			echo '</th></tr>';
+
+			if ($humo_option["admin_online_search"]=='y'){
+
+				function openarchives_new($name,$year_or_period){
+					if(function_exists('curl_exec')){
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+						$OAapi='https://api.openarch.nl/1.0/records/search.json?name=';
+						$OAurl=$OAapi.urlencode($name.$year_or_period);   # via urlencode, zodat ook andere tekens dan spatie juist worden gecodeerd
+
+						curl_setopt($ch, CURLOPT_URL, $OAurl);
+						$result = curl_exec($ch);
+						curl_close($ch);
+
+						$jsonData=json_decode($result, TRUE);
+						echo '<tr class="humo_color"><td colspan="4">';
+							echo '<b>'.__('Search').': <a href="https://www.openarch.nl/search.php?name='.urlencode($name.$year_or_period).
+							'" target="_blank">https://www.openarch.nl/search.php?name='.$name.$year_or_period.'</a></b><br>';
+						echo '</td></tr>';
+						if(isset($jsonData["response"]["docs"]) AND count($jsonData["response"]["docs"])>0) {
+							foreach($jsonData["response"]["docs"] as $OAresult) {   # het voordeel van JSON/json_dcode is dat je er eenvoudig mee kunt werken (geen Iterator nodig)
+								$OAday=''; if (isset($OAresult["eventdate"]["day"])) $OAday=$OAresult["eventdate"]["day"];
+								//$OAmonthName=date('M', mktime(0, 0, 0, $OAresult["eventdate"]["archive"], 10));   # laat PHP zelf de maandnaam maken
+								$OAmonthName=''; if (isset($OAresult["eventdate"]["month"]))
+									$OAmonthName=date('M', mktime(0, 0, 0, $OAresult["eventdate"]["month"], 10));   # laat PHP zelf de maandnaam maken
+								$OAyear=''; if (isset($OAresult["eventdate"]["year"])) $OAyear=$OAresult["eventdate"]["year"];
+								$OAeventdate=join(" ",array($OAday,$OAmonthName,$OAyear));
+
+								echo '<tr><td colspan="4">';
+								echo '<a href="'.$OAresult["url"].'" target="openarch.nl">';   # geen aparte 'link' maar heeft de regel als link, door target steeds zelfde window
+								echo $OAresult["personname"].' ('.$OAresult["relationtype"].')';
+								echo ', '.$OAresult["eventtype"].' '.$OAeventdate.' '.$OAresult["eventplace"];
+								echo ', '.$OAresult["archive"].'/'.$OAresult["sourcetype"];
+								echo '</a></td></tr>';
+							 }
+						} else {
+							echo '<tr><td colspan="4">'.__('No results found').'</td></tr>';
+						}
+					}
+				}
+
+				# Bepaal te zoeken jaar of periode (waardoor er maar één zoekactie is benodigd)
+				$OAfromyear='';
+				if ($person->pers_birth_date){
+					if (substr($person->pers_birth_date,-4)) $OAfromyear=substr($person->pers_birth_date,-4);
+				} elseif ($person->pers_bapt_date){
+					if (substr($person->pers_bapt_date,-4)) $OAfromyear=substr($person->pers_bapt_date,-4);
+				}
+
+				$OAuntilyear='';
+				if ($person->pers_death_date){
+					if (substr($person->pers_death_date,-4)) $OAuntilyear=substr($person->pers_death_date,-4);
+				} elseif ($person->pers_buried_date){
+					if (substr($person->pers_buried_date,-4)) $OAuntilyear=substr($person->pers_buried_date,-4);
+				}
+
+				$OAsearchname=$person->pers_firstname.' '.$person->pers_lastname;
+
+				openarchives_new ($OAsearchname,' '.$OAfromyear);
+
+				if ($OAuntilyear){
+					openarchives_new ($OAsearchname,' '.$OAuntilyear);
+				}
+
+				if ($OAfromyear OR $OAuntilyear){
+					$OAyear_or_period='';
+					if ($OAfromyear!='' && $OAuntilyear=='') { $OAyear_or_period=' '.$OAfromyear.'-'.($OAfromyear+100); }
+					if ($OAfromyear=='' && $OAuntilyear!='') { $OAyear_or_period=' '.($OAuntilyear-100).'-'.$OAuntilyear; }
+					if ($OAfromyear!='' && $OAuntilyear!='') { $OAyear_or_period=' '.$OAfromyear.'-'.$OAuntilyear; }
+					if (isset($_POST['search_period'])){
+						openarchives_new ($OAsearchname,$OAyear_or_period);
+					}
+					else{
+						echo '<tr class="humo_color"><td colspan="4"><input type="Submit" name="search_period" value="'.__('Search using period').'">';
+						echo ' <b>'.__('Search').': <a href="https://www.openarch.nl/search.php?name='.urlencode($OAsearchname.$OAyear_or_period).
+							'" target="_blank">https://www.openarch.nl/search.php?name='.$OAsearchname.$OAyear_or_period.'</a></b><br>';
+						echo '</td></tr>';
+					}
+				}
+
+			}
+
+			// *** Empty line in table ***
+			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
+
+
+
+			echo '<tr><th class="table_header_large" colspan="4">'.ucfirst(__('parents')).'</tr>';
 
 			echo '<tr><td>'.ucfirst(__('parents')).'</td><td colspan="3">';
 			$parent_text='';
@@ -1486,9 +1691,9 @@ if (isset($pers_gedcomnumber)){
 			$fav_result = $dbh->query($fav_qry);
 			$rows = $fav_result->rowCount();
 			if ($rows>0)
-				echo '<a href="'.$phpself.'?page=editor&pers_favorite=0"><img src="'.CMS_ROOTPATH.'images/favorite_blue.png" style="border: 0px"></a>';
+				echo '<a href="'.$phpself.'?page=editor&amp;pers_favorite=0"><img src="'.CMS_ROOTPATH.'images/favorite_blue.png" style="border: 0px"></a>';
 			else
-				echo '<a href="'.$phpself.'?page=editor&pers_favorite=1"><img src="'.CMS_ROOTPATH.'images/favorite.png" style="border: 0px"></a>';
+				echo '<a href="'.$phpself.'?page=editor&amp;pers_favorite=1"><img src="'.CMS_ROOTPATH.'images/favorite.png" style="border: 0px"></a>';
 			echo '<br>';
 		}
 		echo '</th><td>';
@@ -1521,17 +1726,17 @@ if (isset($pers_gedcomnumber)){
 			
 			if($humo_option['admin_hebname']=="y" ) {  // user requested hebrew name field to be displayed here, not under "events"
 				echo '<br>';
-				$sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '".$person->pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
+				$sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '".$pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
 				$result = $dbh->query($sql);
 				
-				if($result->rowCount() > 0)	{
-					$hebnameDb=$result->fetch(PDO::FETCH_OBJ);	
-					$he_name =  $hebnameDb->event_event;    
+				if($result->rowCount() > 0) {
+					$hebnameDb=$result->fetch(PDO::FETCH_OBJ);
+					$he_name =  $hebnameDb->event_event;
 				}
 				else {
 					$he_name = "";
-				}			
-							
+				}
+
 				echo '<input type="text" name="even_hebname" value="'.htmlspecialchars($he_name).'" size="35" placeholder="'.ucfirst(__('Hebrew name')).'"> ';
 				echo __('For example: Joseph ben Hirsch Zvi');
 			}
@@ -1682,28 +1887,27 @@ if (isset($pers_gedcomnumber)){
 
 		// *** Birth declaration ***
 		if ($add_person==false) echo $event_cls->show_event('person',$pers_gedcomnumber,'birth_declaration');
-		
-		
-		// ****   BRIT MILA 
-		if($humo_option['admin_brit']=="y" AND $person->pers_sexe!="F") {
+
+		// **** BRIT MILA ***
+		if($humo_option['admin_brit']=="y" AND $pers_sexe!="F") {
 
 			echo '<tr>';
 			echo '<td><a href="#" onclick="hideShow(20);"><span id="hideshowlink20">'.__('[+]').'</span></a> ';
 			echo ucfirst(__('Brit Mila')).'</td>';
-			$sql = "SELECT * FROM humo_events WHERE event_gedcom = '_BRTM' AND event_connect_id = '".$person->pers_gedcomnumber."' AND event_connect_kind='person'";
+			$sql = "SELECT * FROM humo_events WHERE event_gedcom = '_BRTM' AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
 			$result = $dbh->query($sql);
 			
 			if($result->rowCount() > 0)	{
 				$britDb=$result->fetch(PDO::FETCH_OBJ);
-				$britdate =  $britDb->event_date;                                          
-				$britplace = $britDb->event_place;                                                      
-				$brittext =   $britDb->event_text;  
+				$britdate =  $britDb->event_date;
+				$britplace = $britDb->event_place;
+				$brittext =   $britDb->event_text;
 			}
 			else {
 				$britdate = "";
 				$britplace = "";
 				$brittext = "";
-			}			
+			}
 			
 			$britDb=$result->fetch(PDO::FETCH_OBJ);
 			echo '<td style="border-right:0px;">'.__('date').'<br>&nbsp;</td><td style="border-left:0px;">'.$editor_cls->date_show($britdate,'even_brit_date').' '.__('place').'  <input type="text" name="even_brit_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($britplace).'" size="'.$field_place.'">';
@@ -1732,19 +1936,17 @@ if (isset($pers_gedcomnumber)){
 			echo '<td style="border-left:0px;"><textarea rows="1" name="even_brit_text" '.$field_text.'>'.$editor_cls->text_show($brittext).'</textarea>';
 			echo '<td></td>';
 			echo '</td></tr>';
-
 		}
 
-		//***** BAR/BAT MITSVA
-
+		//*** BAR/BAT MITSVA ***
 		if($humo_option['admin_barm']=="y") {
 			echo '<tr>';
 			echo '<td><a href="#" onclick="hideShow(21);"><span id="hideshowlink21">'.__('[+]').'</span></a> ';
-			if($person->pers_sexe=="F") { echo __('Bat Mitzvah').'</td>'; }
+			if($pers_sexe=="F") { echo __('Bat Mitzvah').'</td>'; }
 			else { echo __('Bar Mitzvah').'</td>'; }
-			$sql = "SELECT * FROM humo_events WHERE (event_gedcom = 'BARM' OR event_gedcom = 'BASM') AND event_connect_id = '".$person->pers_gedcomnumber."' AND event_connect_kind='person'";
+			$sql = "SELECT * FROM humo_events WHERE (event_gedcom = 'BARM' OR event_gedcom = 'BASM') AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
 			$result = $dbh->query($sql);
-				
+			
 			if($result->rowCount() > 0)	{
 				$barmDb=$result->fetch(PDO::FETCH_OBJ);
 				$bardate =  $barmDb->event_date;
@@ -1782,7 +1984,7 @@ if (isset($pers_gedcomnumber)){
 				$editor_cls->text_show($bartext).'</textarea>';
 			echo '<td></td>';
 			echo '</td></tr>';
-		}		
+		}
 
 		
 
@@ -2312,7 +2514,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 //			// *** End of person form ***
 //			echo '</form>';
 
-			// *** Show unprocessed gedcom tags ***
+			// *** Show unprocessed GEDCOM tags ***
 			$tag_qry= "SELECT * FROM humo_unprocessed_tags
 				WHERE tag_tree_id='".$tree_id."'
 				AND tag_pers_id='".$person->pers_id."'";
@@ -2327,12 +2529,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 				echo '<a href="#humo_tags_pers" onclick="hideShow(61);"><span id="hideshowlink61">'.__('[+]').'</span></a> ';
 
-				echo __('Gedcom tags').'</td><td colspan="2">';
+				echo __('GEDCOM tags').'</td><td colspan="2">';
 				if ($tagDb->tag_tag){
-					printf(__('There are %d unprocessed gedcom tags.'), $num_rows);
+					printf(__('There are %d unprocessed GEDCOM tags.'), $num_rows);
 				}
 				else{
-					printf(__('There are %d unprocessed gedcom tags.'), 0);
+					printf(__('There are %d unprocessed GEDCOM tags.'), 0);
 				}
 				echo '</td><td></td></tr>';
 				//echo '<tr style="display:none;" class="row61" name="row61"><td></td>';
@@ -2481,7 +2683,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 						echo __('Or add relation with existing partner:').' <input class="fonts" type="text" name="relation_add2" value="" size="5">';
 
-						echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+						echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 						echo ' <input type="Submit" name="dummy4" value="'.__('Add relation').'">';
 					echo '</form>';
@@ -2590,7 +2792,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo __('Select person').': <input class="fonts" type="text" name="connect_man" value="'.$man_gedcomnumber.'" size="5">';
 
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=man&person='.$man_gedcomnumber.'&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=man&person='.$man_gedcomnumber.'&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			$person=$db_functions->get_person($man_gedcomnumber);
 
@@ -2617,7 +2819,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo __('Select person').': <input class="fonts" type="text" name="connect_woman" value="'.$woman_gedcomnumber.'" size="5">';
 
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=woman&person='.$woman_gedcomnumber.'&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person_item=woman&person='.$woman_gedcomnumber.'&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			$person=$db_functions->get_person($woman_gedcomnumber);
 
@@ -3059,7 +3261,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo '</form>';
 
-			// *** Show unprocessed gedcom tags ***
+			// *** Show unprocessed GEDCOM tags ***
 			$tag_qry= "SELECT * FROM humo_unprocessed_tags
 				WHERE tag_tree_id='".$tree_id."'
 				AND tag_rel_id='".$familyDb->fam_id."'";
@@ -3071,12 +3273,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				$num_rows=count($tags_array);
 				echo '<tr class="humo_tags_fam"><td>';
 				echo '<a href="#humo_tags_fam" onclick="hideShow(110);"><span id="hideshowlink110">'.__('[+]').'</span></a> ';
-				echo __('Gedcom tags').'</td><td colspan="2">';
+				echo __('GEDCOM tags').'</td><td colspan="2">';
 				if ($tagDb->tag_tag){
-					printf(__('There are %d unprocessed gedcom tags.'), $num_rows);
+					printf(__('There are %d unprocessed GEDCOM tags.'), $num_rows);
 				}
 				else{
-					printf(__('There are %d unprocessed gedcom tags.'), 0);
+					printf(__('There are %d unprocessed GEDCOM tags.'), 0);
 				}
 				echo '</td><td></td></tr>';
 				//echo '<tr style="display:none;" class="row110" name="row110"><td></td>';
@@ -3468,7 +3670,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '<td>'.'<input type="radio" id="prad2" name="add_fam_partner_sexe" value="F">'.'</td>';
 					echo '<td>'.'<input type="radio" id="prad3" name="add_fam_partner_sexe" value="" CHECKED>'.'</td>';
 					
-					echo '<td id="psearp"><a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=add_partner&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+					echo '<td id="psearp"><a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=add_partner&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
 					echo '<td id="ppref"><input type="text" name="add_fam_partner_prefix" value="" size="4" placeholder="'.ucfirst(__('prefix')).'"></td>';
 					echo '<td id="plsnm"><input type="text" id="add_fam_partner_lastname" name="add_fam_partner_lastname" value="" size="18" placeholder="'.ucfirst(__('lastname')).'"></td>';
 					echo '<td id="pfsnm"><input type="text" name="add_fam_partner_firstname" value=""  size="18" placeholder="'.ucfirst(__('firstname')).'"></td>';
@@ -3543,7 +3745,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						echo '<td>'.'<input type="radio" id="prad2_'.$x.'" name="add_fam_child_sexe_'.$x.'" value="F">'.'</td>';
 						echo '<td>'.'<input type="radio" id="prad3_'.$x.'" name="add_fam_child_sexe_'.$x.'" value=""'.' CHECKED'.'>'.'</td>';
 						$chosenfam = ""; if(isset($_POST['use_fam_value'])) { $chosenfam = $_POST['use_fam_value'];}
-						echo '<td id="psearp'.$x.'"><a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=add_child_'.$x.'&tree_prefix='.$tree_prefix.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
+						echo '<td id="psearp'.$x.'"><a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=add_child_'.$x.'&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td>';
 						echo '<td id="ppref'.$x.'"><input type="text" name="add_fam_child_prefix_'.$x.'" value="'.$prefix_value.'"  size="4" placeholder="'.ucfirst(__('prefix')).'"></td>';
 						echo '<td id="plsnm'.$x.'"><input type="text" name="add_fam_child_lastname_'.$x.'" value="'.$lastname_value.'"  size="18" placeholder="'.ucfirst(__('lastname')).'"></td>';
 						echo '<td id="pfsnm'.$x.'"><input type="text" name="add_fam_child_firstname_'.$x.'" value=""  size="18" placeholder="'.ucfirst(__('firstname')).'"></td>';
@@ -3561,15 +3763,16 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					
 					//echo '<div><br><button onclick="changeAction()" style="font-size:130%" name="save_entire_family">'.__('Save entire family').'</button><br><br>';
 					echo '<div><br><input type="submit" onclick="changeAction();" style="font-size:130%" value="'.__('Save entire family').'"  name="save_entire_family"><br><br>';
+
 					echo '
 					<script type="text/javascript">
 					function changeAction() { 
-						document.form_entire.action = "./index.php?page=editor&menu_tab=person&tree='.$_SESSION['admin_tree_prefix'].'&person='.$person->pers_gedcomnumber.'";
+						document.form_entire.action = "./index.php?page=editor&menu_tab=person&tree_id='.$tree_id.'&person='.$person->pers_gedcomnumber.'";
 					}
 					</script>
 					';
 
-//					echo '<button onclick="document.form_entire.submit();" style="font-size:130%" name="save_and_new_entire_family">'.__('Save entire family and add another').'</button><br><br>';
+					//echo '<button onclick="document.form_entire.submit();" style="font-size:130%" name="save_and_new_entire_family">'.__('Save entire family and add another').'</button><br><br>';
 					echo '<input type="submit" style="font-size:130%" value="'.__('Save entire family and add another').'"  name="save_and_new_entire_family"><br><br>';
 					echo '</form>';
 				} 
@@ -3821,6 +4024,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					@$repoDb->repo_gedcomnr.', '.$repoDb->repo_name.' '.$repoDb->repo_place.'</option>'."\n";
 				}
 				echo '</select>';
+				echo ' &nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=edit_repositories">'.__('Add repositories').'</a>';
 			echo '</td></tr>';
 
 			echo '<tr><td>'.__('Publication').'</td><td colspan="3"><input type="text" name="source_publ" value="'.htmlspecialchars($source_publ).'" size="60"> http://... '.__('will be shown as a link.').'</td></tr>';
@@ -3854,7 +4058,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Source example in IFRAME ***
 			if (!isset($_POST['add_source'])){
 				echo '<p>'.__('Preview').'<br>';
-				echo '<iframe src ="'.$sourcestring.'database='.$tree_prefix.'&amp;id='.$sourceDb->source_gedcomnr.'" class="iframe">';
+				echo '<iframe src ="'.$sourcestring.'tree_id='.$tree_id.'&amp;id='.$sourceDb->source_gedcomnr.'" class="iframe">';
 //TRANSLATE
 				echo '  <p>Your browser does not support iframes.</p>';
 				echo '</iframe>';
@@ -4067,7 +4271,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			if (!isset($_POST['add_repo'])){
 //TO DO: show repo in example frame.
 				//echo '<p>'.__('Preview').'<br>';
-				//echo '<iframe src ="'.$sourcestring.'database='.$tree_prefix.'&amp;id='.$repoDb->repo_gedcomnr.'" class="iframe">';
+				//echo '<iframe src ="'.$sourcestring.'tree_id='.$tree_id.'&amp;id='.$repoDb->repo_gedcomnr.'" class="iframe">';
 //TRANSLATE
 				//echo '  <p>Your browser does not support iframes.</p>';
 				//echo '</iframe>';
@@ -4328,7 +4532,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Example in IFRAME ***
 			if (!isset($_POST['add_address'])){
 				echo '<p>'.__('Preview').'<br>';
-				echo '<iframe src ="'.$addresstring.'database='.$tree_prefix.'&gedcomnumber='.$addressDb->address_gedcomnr.'" class="iframe">';
+				echo '<iframe src ="'.$addresstring.'tree_id='.$tree_id.'&gedcomnumber='.$addressDb->address_gedcomnr.'" class="iframe">';
 				echo '  <p>Your browser does not support iframes.</p>';
 				echo '</iframe>';
 			}

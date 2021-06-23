@@ -8,7 +8,7 @@
 // - invalid GEDCOM month entries (12 april 2003, 23 feb. 2003, 12 december 2003)
 // - prefixes before last (or only) date that are not BEF, AFT, ABT, EST, CAL, INT, AND, TO or valid combinations like EST ABT
 // - lack of BET or FROM in string if AND or TO (respectively) where found
-// - invalid gedcom entries such as use of dash (1845-1847) or slash (23/4/1990) etc
+// - invalid GEDCOM entries such as use of dash (1845-1847) or slash (23/4/1990) etc
 // - and of course any junk that was entered in the date field instead of elsewhere...   ;-)
 // - does not (yet) validate the first date in a "BET ... AND ..." or "FROM ... TO ..." two-date string. Maybe we'll add that later
 

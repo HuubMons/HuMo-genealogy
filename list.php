@@ -14,20 +14,7 @@ function show_person($personDb){
 	global $select_birth, $select_bapt, $select_place, $select_death, $select_buried;
 	global $selectsort;
 
-	$pers_tree_prefix=$personDb->pers_tree_prefix;
 	$db_functions->set_tree_id($personDb->pers_tree_id);
-
-	if (CMS_SPECIFIC=='Joomla'){
-		$start_url='index.php?option=com_humo-gen&amp;task=family&amp;database='.$pers_tree_prefix.
-			'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-	}
-	elseif ($humo_option["url_rewrite"]=="j"){	// *** url_rewrite ***
-		// *** $uri_path made in header.php ***
-		$start_url= $uri_path.'family/'.$pers_tree_prefix.'/'.$personDb->pers_indexnr.'/'.$personDb->pers_gedcomnumber.'/';
-	}
-	else{
-		$start_url=CMS_ROOTPATH.'family.php?database='.$pers_tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-	}
 
 	// *** Person class used for name and person pop-up data ***
 	$person_cls = New person_cls;
@@ -115,7 +102,7 @@ function show_person($personDb){
 			if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
 				preg_match("/($camps)/i",$personDb->pers_buried_place)!==0  OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE)  {
 				echo '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
-			}	
+			}
 	}
 	
 	// *** Add own icon by person, using a file name in own code ***
@@ -125,6 +112,7 @@ function show_person($personDb){
 	echo '</td><td style="border-left:0px;">';
 
 	// *** Show name of person ***
+	$start_url=$person_cls->person_url($personDb);	// *** Get link to family ***
 	echo ' <a href="'.$start_url.'">'.$index_name.'</a>';
 
 	//*** Show spouse/ partner ***
@@ -454,7 +442,7 @@ if (isset($_GET['part_firstname'])){
 	$_SESSION["save_selection"]=$selection;
 }
 
-// *** Pre-fix (names list and most frequent names in main menu.) ***
+// *** Prefix (names list and most frequent names in main menu.) ***
 $selection['pers_prefix']='';
 if (isset($_POST['pers_prefix'])){ $selection['pers_prefix']=$_POST['pers_prefix']; }
 if (isset($_GET['pers_prefix'])){

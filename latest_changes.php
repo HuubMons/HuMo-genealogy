@@ -70,7 +70,7 @@ if (isset($_POST["search_name"])){
 
 $person_result = $dbh->query($person_qry);
 
-echo '<h2 class="center">'.__('Recently changed and/or new persons').'</h2>';
+echo '<h2 class="center">'.__('Recently changed persons and new persons').'</h2>';
 
 // *** Search box ***
 echo '<div style="text-align: center; margin-bottom: 16px">';
@@ -109,7 +109,7 @@ while (@$person=$person_result->fetch(PDO::FETCH_OBJ)){
 		echo '<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
 	}
 
-	echo '<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$person->pers_indexnr.'&amp;main_person='.$person->pers_gedcomnumber.'">';
+	echo '<a href="'.CMS_ROOTPATH.'family.php?tree_id='.$person->pers_tree_id.'&amp;id='.$person->pers_indexnr.'&amp;main_person='.$person->pers_gedcomnumber.'">';
 	$name=$person_cls->person_name($person);
 	echo $name["standard_name"];
 	echo '</a>';

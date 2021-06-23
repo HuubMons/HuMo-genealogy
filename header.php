@@ -23,6 +23,8 @@ ini_set('url_rewriter.tags','');
 if (!CMS_SPECIFIC){
 	session_cache_limiter ('private, must-revalidate'); //tb edit
 	session_start();
+	// *** Regenerate session id regularly to prevent session hacking ***
+	session_regenerate_id();
 }
 
 if (isset($_GET['log_off'])){
@@ -38,6 +40,8 @@ if (isset($_GET['log_off'])){
 		session_destroy(); // *** Remove session ***
 		session_write_close();
 		session_start();
+		// *** Regenerate session id regularly to prevent session hacking ***
+		session_regenerate_id();
 	}
 }
 
@@ -336,7 +340,7 @@ else{
 		// *** Rescale standard HuMo-gen pages for mobile devices ***
 		echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
 
-		print "<title>".$head_text."</title>\n";
+		echo '<title>'.$head_text."</title>\n";
 
 		if ($humo_option["searchengine"]=="j"){ print $humo_option["robots_option"]; }
 	}
@@ -443,7 +447,7 @@ else{
 		$url_path2 = str_replace("/cms_pages/", "~!", $url_path2);
 		$url_position=strpos($url_path2,'!');
 		if ($url_position){
-			$urlpart1=substr($url_path2,$url_position+1,-1);   //    humo2_/F100/I10
+			$urlpart1=substr($url_path2,$url_position+1,-1);   // humo2_/F100/I10
 			$urlpart = explode("/", $urlpart1);
 		}
 	}
@@ -454,19 +458,36 @@ else{
 	if (isset($_GET["database"])) $database=$_GET["database"];
 	if (isset($_POST["database"])) $database=$_POST["database"];
 	if (isset($urlpart[0]) AND $urlpart[0]!='' AND $urlpart[0]!='standaard'){
+		// backwards compatible: humo2_
 		$database=$urlpart[0]; // *** url_rewrite ***
 		$_GET["database"]=$database; // *** Needed to check for CMS page if url-rewrite is used ***
+
+		// numeric value
+		if (is_numeric($urlpart[0])){
+			// *** Check if family tree really exists ***
+			$dataDb=$db_functions->get_tree($urlpart[0]);
+			if ($dataDb){
+				if ($urlpart[0]==$dataDb->tree_id){
+					$_SESSION['tree_prefix']=$dataDb->tree_prefix;
+					$database=$dataDb->tree_prefix;
+				}
+			}
+		}
 	}
 
-	// *** Future option, use database number: datase=1 ***
-	// *** $database wordt: $tree_id
-	//if (isset($database) AND is_numeric($database) AND $database){
-	//	// *** Check if family tree really exists ***
-	//	$dataDb=$db_functions->get_tree($database);
-	//	if ($dataDb){
-	//		if ($database==$dataDb->tree_id) $_SESSION['tree_prefix']=$dataDb->tree_prefix;
-	//	}
-	//}
+	// *** New option, use family tree number in the url: database=humo_2 changed into: tree_id=1 ***
+	if (isset($_GET["tree_id"])) $temp_tree_id=$_GET["tree_id"];
+	if (isset($_POST["tree_id"])) $temp_tree_id=$_POST["tree_id"];
+	if (isset($temp_tree_id) AND is_numeric($temp_tree_id) AND $temp_tree_id){
+		// *** Check if family tree really exists ***
+		$dataDb=$db_functions->get_tree($temp_tree_id);
+		if ($dataDb){
+			if ($temp_tree_id==$dataDb->tree_id){
+				$_SESSION['tree_prefix']=$dataDb->tree_prefix;
+				$database=$dataDb->tree_prefix;
+			}
+		}
+	}
 
 	// *** For example: database=humo2_ ***
 	if (isset($database) AND is_string($database) AND $database){

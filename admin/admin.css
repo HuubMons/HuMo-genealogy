@@ -16,6 +16,11 @@ body.humo {
 	width:0px; height:0px;
 }
 
+#top_website_name{
+	font-weight:bold;
+	font-size:22px;
+}
+
 a {text-decoration:none; }
 a:hover {text-decoration:underline; color:red;}
 
@@ -205,7 +210,7 @@ ul.humo_menu_item li:hover ul.humo_menu_item2 {
 	padding:10px 0px 10px 10px;
 }
 
-/* Progress bar for reading gedcom file */
+/* Progress bar for reading GEDCOM file */
 #progressbar{
 	/* Outer progress bar */
 	width:508px;

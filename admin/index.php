@@ -11,7 +11,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2019 Huub Mons,
+* Copyright (C) 2008-2020 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -43,7 +43,11 @@ if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
 if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "../");
 // *** When run from CMS, the path to the parent-map that contains this file should be given ***
 if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "");
-if (!CMS_SPECIFIC){ session_start(); }
+if (!CMS_SPECIFIC){
+	session_start();
+	// *** Regenerate session id regularly to prevent session hacking ***
+	session_regenerate_id();
+}
 
 $page='index';
 
@@ -55,6 +59,9 @@ global $treetext_name, $treetext_mainmenu_text, $treetext_mainmenu_source, $tree
 if (isset( $_SESSION['current_ip_address']) AND $_SESSION['current_ip_address'] != $_SERVER['REMOTE_ADDR']){
 	// *** Remove login session if IP address is changed ***
 	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
+		// *** Test ***
+		//echo '<br>'.$_SESSION['current_ip_address'].'<br>';
+		//echo $_SERVER['REMOTE_ADDR'];
 	session_unset();
 	session_destroy();
 	die();
@@ -449,10 +456,13 @@ else{
 $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:right" '; }
 echo '<div id="humo_top" '.$top_dir.'>';
 	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-small.gif" align="left" alt="logo">';
+	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
 
-	//echo '<span style="font-family: Baskerville Old Face; font-size: 150%; color:black;">HuMo-genealogy</span>';
+	echo '<span id="top_website_name">';
+		//echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-gen<span style="font-size:18px; color:#7F7F7F;">ealogy</span></a>';
+		echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-gen</a>';
+	echo '</span>';
 
-	echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
 	//if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
 	if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
 
@@ -644,18 +654,21 @@ echo '<div id="humo_top" '.$top_dir.'>';
 		}
 	}
 
-	// *** NEW DECEMBER 2019 ***
+	// *** NEW FEBRUARI 2020: centralised processing of tree_id and tree_prefix ***
 	// *** Selected family tree, using tree_id ***
-	/*
 	if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
-		$check_tree_id=''; $admin_tree_id=''; $admin_tree_prefix='';
-		// *** save_admin_tree_id must be numeric ***
-		if (isset($_SESSION['save_admin_tree_id']) AND is_numeric($_SESSION['save_admin_tree_id'])){
-			$check_tree_id=$_SESSION['save_admin_tree_id'];
+		$check_tree_id='';
+		// *** admin_tree_id must be numeric ***
+		if (isset($_SESSION['admin_tree_id']) AND is_numeric($_SESSION['admin_tree_id'])){
+			$check_tree_id=$_SESSION['admin_tree_id'];
 		}
 		// *** tree_id must be numeric ***
-		if (isset($_POST['change_admin_tree_id']) AND is_numeric($_POST['change_admin_tree_id'])){
-			$check_tree_id=$_POST['change_admin_tree_id'];
+		if (isset($_POST['tree_id']) AND is_numeric($_POST['tree_id'])){
+			$check_tree_id=$_POST['tree_id'];
+		}
+		// *** tree_id must be numeric ***
+		if (isset($_GET['tree_id']) AND is_numeric($_GET['tree_id'])){
+			$check_tree_id=$_GET['tree_id'];
 		}
 		// *** Just logged in, or no tree_id available: find first family tree ***
 		if ($check_tree_id==''){
@@ -663,16 +676,16 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			@$check_treeDb=$check_tree_sql->fetch(PDO::FETCH_OBJ);
 			$check_tree_id=$check_treeDb->tree_id;
 		}
-		// *** Double check tree_id ***
+		// *** Double check tree_id and save tree id in session ***
+		$tree_id=''; $tree_prefix='';
 		if ($check_tree_id AND $check_tree_id!=''){
 			$get_treeDb=$db_functions->get_tree($check_tree_id);
-			$admin_tree_id=$get_treeDb->tree_id;
-			$_SESSION['save_admin_tree_id']=$tree_id;
-			$admin_tree_prefix=$get_treeDb->tree_prefix;
+			$tree_id=$get_treeDb->tree_id;
+			$_SESSION['admin_tree_id']=$tree_id;
+			$tree_prefix=$get_treeDb->tree_prefix;
 		}
-		//echo 'test'.$admin_tree_id.' '.$admin_tree_prefix;
+		//echo 'test'.$tree_id.' '.$tree_prefix;
 	}
-	*/
 
 	// ******************
 	// *** START MENU ***
@@ -991,7 +1004,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			echo '</li>';
 		}
 		else{
-			// *** Set language if popup window is used ***
+			// *** Set language if pop-up window is used ***
 			include(CMS_ROOTPATH.'languages/'.$selected_language.'/language_data.php');
 			for ($i=0; $i<count($language_file); $i++){
 				if ($language_file[$i] != $selected_language) {

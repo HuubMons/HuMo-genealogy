@@ -18,6 +18,8 @@ include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."include/db_functions_cls.php");
 $db_functions = New db_functions;
 
+$person_cls = New person_cls;
+
 // *** Example, see: http://www.sitemaps.org/protocol.html ***
 /*
 <?xml version="1.0" encoding="UTF-8"?>
@@ -75,11 +77,13 @@ foreach($datasql as $dataDb){
 				$position=strrpos($_SERVER['PHP_SELF'],'/');
 				$uri_path= substr($_SERVER['PHP_SELF'],0,$position);
 				if ($humo_option["url_rewrite"]=="j"){
-					$person_url=$uri_path.'/family/'.$dataDb->tree_prefix.'/'.$personDb->fam_gedcomnumber.'/';
+					//$person_url=$uri_path.'/family/'.$dataDb->tree_prefix.'/'.$personDb->fam_gedcomnumber.'/';
+					$person_url=$uri_path.'/family/'.$dataDb->tree_id.'/'.$personDb->fam_gedcomnumber.'/';
 					//if ($personDb->pers_indexnr==''){ $person_url.=$personDb->pers_gedcomnumber.'/'; }
 				}
 				else{
-					$person_url=$uri_path.'/family.php?database='.$dataDb->tree_prefix.'&amp;id='.$personDb->fam_gedcomnumber;
+					//$person_url=$uri_path.'/family.php?database='.$dataDb->tree_prefix.'&amp;id='.$personDb->fam_gedcomnumber;
+					$person_url=$uri_path.'/family.php?tree_id='.$dataDb->tree_id.'&amp;id='.$personDb->fam_gedcomnumber;
 					//if ($personDb->pers_indexnr==''){ $person_url.='&amp;main_person='.$personDb->pers_gedcomnumber; }
 				}
 				echo "<url>\r\n<loc>".$person_url."</loc>\r\n</url>\r\n";
@@ -87,7 +91,7 @@ foreach($datasql as $dataDb){
 		}
 
 		// *** Get all single persons ***
-		$person_qry=$dbh->query("SELECT pers_indexnr, pers_gedcomnumber, pers_own_code FROM humo_persons
+		$person_qry=$dbh->query("SELECT pers_tree_id, pers_indexnr, pers_gedcomnumber, pers_own_code FROM humo_persons
 			WHERE pers_tree_id='".$dataDb->tree_id."' AND pers_indexnr=''");
 		while (@$personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
 			// *** Use class for privacy filter ***
@@ -109,14 +113,23 @@ foreach($datasql as $dataDb){
 				// *** First part of url (strip sitemap.php from path) ***
 				$position=strrpos($_SERVER['PHP_SELF'],'/');
 				$uri_path= substr($_SERVER['PHP_SELF'],0,$position);
+				
 				if ($humo_option["url_rewrite"]=="j"){
-					$person_url=$uri_path.'/family/'.$dataDb->tree_prefix.'/'.$personDb->pers_indexnr.'/'.$personDb->pers_gedcomnumber.'/';
-					//if ($personDb->pers_indexnr==''){ $person_url.=$personDb->pers_gedcomnumber.'/'; }
+					//$person_url=$uri_path.'/family/'.$dataDb->tree_prefix.'/'.$personDb->pers_indexnr.'/'.$personDb->pers_gedcomnumber.'/';
+					$person_url=$uri_path.'/family/'.$dataDb->tree_id.'/'.$personDb->pers_indexnr.'/'.$personDb->pers_gedcomnumber.'/';
 				}
 				else{
-					$person_url=$uri_path.'/family.php?database='.$dataDb->tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-					//if ($personDb->pers_indexnr==''){ $person_url.='&amp;main_person='.$personDb->pers_gedcomnumber; }
+					//$person_url=$uri_path.'/family.php?database='.$dataDb->tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
+					$person_url=$uri_path.'/family.php?tree_id='.$dataDb->tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
 				}
+				/*
+				if ($humo_option["url_rewrite"]=="j"){
+					$person_url=$person_cls->person_url($personDb);	// *** Get url to family ***
+				}
+				else{
+					$person_url=$uri_path.'/'.$person_cls->person_url($personDb);	// *** Get url to family ***
+				}
+				*/
 				echo "<url>\r\n<loc>".$person_url."</loc>\r\n</url>\r\n";
 			}
 		}

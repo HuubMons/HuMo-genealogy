@@ -547,7 +547,7 @@ echo '<div style="border:1px;z-index:80; position:absolute; top:'.$top_for_name.
 echo '<div style="padding:5px">';
 echo "<strong>".__('Fanchart')." - ".$treeid[1][0]."</strong>\n";
 
-	//======== HELP POPUP ========================
+	//======== HELP POP-UP ========================
 	echo '<div class='.$rtlmarker.'sddm>';
 		echo '<a href="#"';
 		echo ' style="display:inline" ';

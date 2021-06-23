@@ -17,8 +17,7 @@ echo '<p class="fonts">';
 	@$person_result= $dbh->query($person_qry);
 	while(@$personDb=$person_result->fetch(PDO::FETCH_OBJ)) {
 		if (CMS_SPECIFIC=='Joomla'){
-			$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;database='.
-			$_SESSION['tree_prefix'].'&amp;last_name='.$personDb->first_character;
+			$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id='.$tree_id.'&amp;last_name='.$personDb->first_character;
 		}
 		elseif ($humo_option["url_rewrite"]=="j"){
 			// *** url_rewrite ***
@@ -26,7 +25,7 @@ echo '<p class="fonts">';
 			$path_tmp=$uri_path.'list_names/'.$_SESSION['tree_prefix'].'/'.$personDb->first_character.'/';
 		}
 		else{
-			$path_tmp=CMS_ROOTPATH.'list_names.php?database='.$_SESSION['tree_prefix'].'&amp;last_name='.$personDb->first_character;
+			$path_tmp=CMS_ROOTPATH.'list_names.php?tree_id='.$tree_id.'&amp;last_name='.$personDb->first_character;
 		}
 		print ' <a href="'.$path_tmp.'">'.$personDb->first_character.'</a>';
 	}
@@ -75,12 +74,12 @@ function tablerow($nr,$lastcol=false) {
 	// displays one set of name & nr column items in the row
 	// $nr is the array number of the name set created in function last_names
 	// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
-	global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names;
+	global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $tree_id;
 	//if (CMS_SPECIFIC=='Joomla'){
-	//	$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
+	//	$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;tree_id='.$tree_id;
 	//}
 	//else{
-		$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
+		$path_tmp=CMS_ROOTPATH.'list.php?tree_id='.$tree_id;
 	//}
 	echo '<td class="namelst">';
 	if (isset($freq_last_names[$nr])) {

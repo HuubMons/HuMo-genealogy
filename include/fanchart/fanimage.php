@@ -1,5 +1,7 @@
 <?php
 session_start();
+// *** Regenerate session id regularly to prevent session hacking ***
+session_regenerate_id();
 
 /****************************************************************************
 * fanimage.php                                                              *

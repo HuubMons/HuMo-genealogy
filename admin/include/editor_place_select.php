@@ -38,7 +38,6 @@ echo'
 	</script>
 ';
 
-$tree_id=$_SESSION['admin_tree_id'];
 $query = "(SELECT pers_birth_place as place_order FROM humo_persons
 	WHERE pers_tree_id='".$tree_id."' AND pers_birth_place LIKE '_%' GROUP BY place_order)";
 

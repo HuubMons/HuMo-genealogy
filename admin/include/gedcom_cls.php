@@ -9,11 +9,11 @@ class gedcom_cls {
 // *** Process persons ***
 // ************************************************************************************************
 function process_person($person_array){
-	global $dbh, $tree_id, $not_processed, $gen_program;
+	global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program;
 	// *** Data for connection table ***
 	global $connect_nr, $connect;
 	global $processed, $level1, $level2, $level3, $level4;
-	// *** Add gedcom file to database ***
+	// *** Add GEDCOM file to database ***
 	global $largest_pers_ged, $largest_fam_ged, $largest_source_ged, $largest_text_ged, $largest_repo_ged, $largest_address_ged;
 	global $add_tree, $reassign;
 	// *** Google maps locations ***
@@ -189,7 +189,8 @@ function process_person($person_array){
 			//2 PEDI steph
 			//2 PEDI legal
 			//2 PEDI foster
-			if ($buffer7=='2 PEDI '){
+			//2 PEDI birth     is in use in Aldfaer 8.
+			if ($buffer7=='2 PEDI ' AND $buffer!='2 PEDI birth'){
 				// *** Adoption by person ***
 				$processed=1;
 				$pers_famc2=$famc; if($add_tree==true OR $reassign==true) { $pers_famc2= $this->reassign_ged($famc,'F'); }
@@ -220,7 +221,7 @@ function process_person($person_array){
 			$tempnr = substr($buffer,8,-1);
 			if($add_tree==true OR $reassign==true) { $tempnr = $this->reassign_ged($tempnr,'F'); }
 			$fams= $this->merge_texts($fams, ';', $tempnr);
-			// In gedcom file (FAMS is default, for own family):
+			// In GEDCOM file (FAMS is default, for own family):
 			// Aldfaer: first FAMC then FAMS
 			// Haza   : first FAMS then FAMC
 
@@ -320,11 +321,11 @@ function process_person($person_array){
 
 						// *** Three or more (never seen that) name parts: just use this as a last name and remove the / character in these parts ***
 						// BK: 1 NAME Hubertus  /Huub/ Patronym Mons
-						// Gedcom file from LDS website (3rd item is a TITLE): 1 NAME Richard /de Plaiz/ Lord Plaiz
+						// GEDCOM file from LDS website (3rd item is a TITLE): 1 NAME Richard /de Plaiz/ Lord Plaiz
 						$pers_lastname = str_replace("/", "", $pers_lastname); // *** Remove / character***
 					}
 					else {
-						// *** No slashes in name (probably a bug or just a bad gedcom file) ***
+						// *** No slashes in name (probably a bug or just a bad GEDCOM file) ***
 						// 1 NAME Hubertus [Huub] Mons
 						//$pers_firstname=substr($name,7);
 						$pers_firstname=rtrim(substr($name,7));
@@ -347,10 +348,10 @@ function process_person($person_array){
 				}
 			}
 
-			// *** Gedcom 5.5 lastname prefix: 2 SPFX Le ***
+			// *** GEDCOM 5.5 lastname prefix: 2 SPFX Le ***
 			if ($buffer6=='2 SPFX'){ $processed=1; $person["pers_prefix"]=substr($buffer,7).'_'; }
 
-			// *** Title in gedcom 5.5: 2 NPFX Prof. ***
+			// *** Title in GEDCOM 5.5: 2 NPFX Prof. ***
 			if ($buffer6=='2 NPFX'){
 				$processed=1; $event_nr++; $calculated_event_id++;
 				$event['connect_kind'][$event_nr]='person';
@@ -364,7 +365,7 @@ function process_person($person_array){
 				$event['place'][$event_nr]='';
 			}
 
-			// *** gedcom 5.5 name addition: 2 NSFX Jr. ***
+			// *** GEDCOM 5.5 name addition: 2 NSFX Jr. ***
 			if ($buffer6=='2 NSFX'){
 				$processed=1; $event_nr++; $calculated_event_id++;
 				$event['connect_kind'][$event_nr]='person';
@@ -1170,7 +1171,7 @@ function process_person($person_array){
 		// 3 CONC en nog meer tekst...
 
 		// *** Aldfaer pictures tested by: Jeroen Beemster ***
-		// *** Picture Aldfaer AND gedcom 5.5 ***
+		// *** Picture Aldfaer AND GEDCOM 5.5 ***
 		// 1 OBJE
 		// 2 FORM jpg
 		// 2 FILE C:\Documents and Settings\frans schwartz\Mijn documenten\lammert en tetje.jpg
@@ -1530,7 +1531,7 @@ function process_person($person_array){
 		}
 
 		// ********************************************************************************************
-		// *** Save non processed gedcom items ***
+		// *** Save non processed GEDCOM items ***
 		// ********************************************************************************************
 		$buffer=trim($buffer);
 		// Skip these lines
@@ -1605,7 +1606,7 @@ function process_person($person_array){
 	$sql="INSERT IGNORE INTO humo_persons SET
 	pers_gedcomnumber='".$this->text_process($pers_gedcomnumber)."',
 	pers_tree_id='".$tree_id."',
-	pers_tree_prefix='".$_SESSION['tree_prefix']."',
+	pers_tree_prefix='".$tree_prefix."',
 	pers_fams='".$this->text_process($fams)."',
 	pers_famc='".$this->text_process($pers_famc)."',
 	pers_indexnr='".$this->text_process($pers_indexnr)."',
@@ -1701,7 +1702,7 @@ function process_person($person_array){
 			location_lat DECIMAL(10,6),
 			location_lng DECIMAL(10,6),
 			location_status TEXT
-			)";
+			) DEFAULT CHARSET=utf8";
 			$dbh->query($locationtbl);
 		}
 		for($i=1; $i<=$geocode_nr; $i++) {
@@ -1711,14 +1712,14 @@ function process_person($person_array){
 				location_location='".$this->text_process($geocode_plac[$i])."',
 				location_lat='".$geocode_lati[$i]."',
 				location_lng='".$geocode_long[$i]."',
-				location_status='".$_SESSION['tree_prefix'].$geocode_type[$i]."'
+				location_status='".$tree_prefix.$geocode_type[$i]."'
 				";
 				$dbh->query($geosql);
 			}
 			elseif($loc_qry->rowCount() AND $geocode_type[$geocode_nr] !="") {   // location already exists, check if we need to add something in location_status
 				$loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
-				if(strpos($loc_qryDb->location_status,$_SESSION['tree_prefix'].$geocode_type[$i])===false) {
-					$dbh->query("UPDATE humo_location SET location_status = CONCAT(location_status,' ".$_SESSION['tree_prefix'].$geocode_type[$i]."') WHERE location_location = '".$this->text_process($geocode_plac[$i])."'");
+				if(strpos($loc_qryDb->location_status,$tree_prefix.$geocode_type[$i])===false) {
+					$dbh->query("UPDATE humo_location SET location_status = CONCAT(location_status,' ".$tree_prefix.$geocode_type[$i]."') WHERE location_location = '".$this->text_process($geocode_plac[$i])."'");
 				}
 			}
 		}
@@ -1782,7 +1783,7 @@ function process_person($person_array){
 		unset($event2);
 	}
 
-	// *** Add a general source to all persons in this gedcom file (source_id is temporary number!) ***
+	// *** Add a general source to all persons in this GEDCOM file (source_id is temporary number!) ***
 	if ($humo_option["gedcom_read_add_source"]=='y'){
 		// *** Used for general numbering of connections ***
 		$connect_nr++; $calculated_connect_id++;
@@ -1854,7 +1855,7 @@ function process_person($person_array){
 // *** Process families ***
 // ************************************************************************************************
 function process_family($family_array,$first_marr, $second_marr){ 
-	global $dbh, $tree_id, $gen_program, $not_processed;
+	global $dbh, $tree_id, $tree_prefix, $gen_program, $not_processed;
 	global $connect_nr, $connect;
 	global $processed, $level1, $level2, $level3, $level4;
 	global $largest_pers_ged, $largest_fam_ged, $largest_source_ged, $largest_text_ged, $largest_repo_ged, $largest_address_ged;
@@ -2857,7 +2858,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 				location_lat DECIMAL(10,6),
 				location_lng DECIMAL(10,6),
 				location_status TEXT
-			)";
+			) DEFAULT CHARSET=utf8";
 			$dbh->query($locationtbl);
 		}
 		for($i=1; $i<=$geocode_nr; $i++) {
@@ -2868,14 +2869,14 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 					location_location='".$this->text_process($geocode_plac[$i])."',
 					location_lat='".$geocode_lati[$i]."',
 					location_lng='".$geocode_long[$i]."',
-					location_status='".$_SESSION['tree_prefix'].$geocode_type[$i]."'
+					location_status='".$tree_prefix.$geocode_type[$i]."'
 					";
 				$dbh->query($geosql);
 			}
 			elseif($loc_qry->rowCount() AND $geocode_type[$geocode_nr] !="") {  // location already exists, check if we need to add something in location_status
 				$loc_qryDb = $loc_qry->fetch(PDO::FETCH_OBJ);
-				if(strpos($loc_qryDb->location_status,$_SESSION['tree_prefix'].$geocode_type[$i])===false) {
-					$dbh->query("UPDATE humo_location SET location_status = CONCAT(location_status,' ".$_SESSION['tree_prefix'].$geocode_type[$i]."') WHERE location_location = '".$this->text_process($geocode_plac[$i])."'");
+				if(strpos($loc_qryDb->location_status,$tree_prefix.$geocode_type[$i])===false) {
+					$dbh->query("UPDATE humo_location SET location_status = CONCAT(location_status,' ".$tree_prefix.$geocode_type[$i]."') WHERE location_location = '".$this->text_process($geocode_plac[$i])."'");
 				}
 			}
 		}
@@ -2960,10 +2961,10 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 }
 
 // ************************************************************************************************
-// *** Import gedcom texts ***
+// *** Import GEDCOM texts ***
 // ************************************************************************************************
 function process_text($text_array){
-	global $dbh, $tree_id, $not_processed, $gen_program;
+	global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program;
 	global $largest_pers_ged, $largest_fam_ged, $largest_source_ged, $largest_text_ged, $largest_repo_ged, $largest_address_ged;
 	global $add_tree, $reassign;
 	global $connect_nr, $connect;
@@ -3157,7 +3158,7 @@ function process_text($text_array){
 // *** Process sources ***
 // ************************************************************************************************
 function process_source($source_array){
-	global $dbh, $tree_id, $not_processed, $gen_program;
+	global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program;
 	global $largest_source_ged, $largest_text_ged, $largest_repo_ged, $add_tree, $reassign;
 	global $processed;
 
@@ -3404,7 +3405,7 @@ function process_source($source_array){
 
 	} //end explode
 
-	// *** Generate title if there is no title in gedcom file (BK etc.). ***
+	// *** Generate title if there is no title in GEDCOM file (BK etc.). ***
 	if ($source["source_title"]==''){
 		if ($source["source_auth"]){ $source["source_title"]=$source["source_auth"]; }
 		if ($source["source_subj"]){ $source["source_title"]=$source["source_subj"]; }
@@ -3504,7 +3505,7 @@ function process_source($source_array){
 // *** Process repository ***
 // ************************************************************************************************
 function process_repository($repo_array){
-	global $dbh, $tree_id, $not_processed, $gen_program;
+	global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program;
 	global $largest_text_ged, $largest_repo_ged, $add_tree, $reassign;
 	global $processed;
 
@@ -3519,7 +3520,7 @@ function process_repository($repo_array){
 	$repo["repo_new_date"]=""; $repo["repo_new_time"]=""; $repo["repo_changed_date"]=""; $repo["repo_changed_time"]="";
 
 	/*
-	Example of repository record in gedcom file:
+	Example of repository record in GEDCOM file:
 	0 @R2@ REPO
 	1 NAME Lakewood Cemetery
 	1 ADDR Lakewood Cemetery
@@ -3708,7 +3709,7 @@ function process_repository($repo_array){
 // *** Process addresses ***
 // ************************************************************************************************
 function process_address($address_array){
-	global $tree_id, $not_processed, $gen_program;
+	global $tree_id, $tree_prefix, $not_processed, $gen_program;
 	global $largest_text_ged, $largest_address_ged, $add_tree, $reassign;
 	global $processed, $dbh;
 
@@ -3858,7 +3859,7 @@ function process_address($address_array){
 // *** Process objects ***
 // ************************************************************************************************
 function process_object($object_array){
-	global $dbh, $tree_id, $not_processed, $gen_program, $largest_object_ged;
+	global $dbh, $tree_id, $tree_prefix, $not_processed, $gen_program, $largest_object_ged;
 	global $add_tree, $reassign, $processed;
 
 	$line=$object_array; $line2=explode("\n",$line);
@@ -4010,7 +4011,7 @@ function process_object($object_array){
 function non_processed_items($buffer){
 	global $not_processed, $level0, $level1, $level2, $level3, $level4;
 
-	// *** Not processed items for list by reading of gedcom ***
+	// *** Not processed items for list by reading of GEDCOM ***
 	$not_processed_tmp="0 $level0</td><td>1 $level1<br></td><td>";
 	if ($level2){ $not_processed_tmp.="2 $level2"; }
 	$not_processed_tmp.="<br></td><td>";
@@ -4161,7 +4162,7 @@ function reassign_ged($gednr,$letter) {
 
 // *** Process place ***
 function process_place($place) {
-	// *** Solve bug in Haza-data gedcom export, replace: Adelaide ,Australië by: Adelaide, Australië ***
+	// *** Solve bug in Haza-data GEDCOM export, replace: Adelaide ,AustraliÃ« by: Adelaide, AustraliÃ« *
 	$place = str_replace(" ,", ", ", $place);
 	return $place;
 }
@@ -4253,7 +4254,7 @@ function process_sources($connect_kind2,$connect_sub_kind2,$connect_connect_id2,
 		}
 	}
 
-	// *** Sources in gedcom test file ***
+	// *** Sources in GEDCOM test file ***
 	// 1 SOUR This source is embedded in the record instead of being a link to a
 	// 2 CONC separate SOURCE record.
 	// 2 CONT The source description can use any number of lines

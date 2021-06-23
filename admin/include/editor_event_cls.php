@@ -6,8 +6,8 @@ function utf8ize($d) {
 	foreach($d as $key => $value) {
 		$d[$key] = utf8_encode($value);
 	}
-       	return $d;  
-}  
+	return $d;
+}
 
 
 // *** Show event_kind text ***
@@ -66,7 +66,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	$picture_array2 = Array(); // declare, otherwise if not used gives error
 	// if subfolders exist for category files, list those too
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-	if($temp->rowCount()) {    // there is a category table
+	if($temp->rowCount()) { // there is a category table
 		$catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		if($catg->rowCount()) {
 			while($catDb = $catg->fetch(PDO::FETCH_OBJ)) { 

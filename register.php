@@ -34,12 +34,13 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 
 	if ($error==false){
 		$user_register_date=date("Y-m-d H:i");
+		$hashToStoreInDb = password_hash($_POST["register_password"], PASSWORD_DEFAULT);
 		$sql="INSERT INTO humo_users SET
 		user_name='".safe_text_db($_POST["register_name"])."',
 		user_remark='".safe_text_db($_POST["register_text"])."',
 		user_register_date='".safe_text_db($user_register_date)."',
 		user_mail='".safe_text_db($_POST["register_mail"])."',
-		user_password='".MD5($_POST["register_password"])."',
+		user_password_salted='".$hashToStoreInDb."',
 		user_group_id='".$humo_option["visitor_registration_group"]."';";
 		$result = $dbh->query($sql);
 		echo '<h2>'.__('Registration completed').'</h2>';

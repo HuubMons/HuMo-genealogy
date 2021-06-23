@@ -2192,38 +2192,40 @@ if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
 	}
 	else{
 		$name1=$man_cls->person_name($person_manDb);
-		$name2=$woman_cls->person_name($person_womanDb);
+		if (isset($person_womanDb)) $name2=$woman_cls->person_name($person_womanDb);
 	}
 
 	echo '<br><b>'.__('Citation for:').' '.__('Family Page').'</b><br>';
 
 	echo '<span class="citation">';
 		// *** Name of citation ***
-		echo '"'.__('Family Page').': '.$name1['name'].' &amp; '.$name2['name'].'."';
+		echo '"'.__('Family Page').': '.$name1['name'];
+		if (isset($name2['name'])) echo ' &amp; '.$name2['name'].'."';
 
 		// *** Link to family page ***
-		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].'family.php?id='.$family_id.'&amp;main_person='.$main_person;
-		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].'family.php';
-		//echo ' HuMo-gen - '.$humo_option["database_name"].' (http://'.$_SERVER['SERVER_NAME'].'/family.php?id='.$family_id.'&amp;main_person='.$main_person;
 		echo ' HuMo-gen - '.$humo_option["database_name"].' (';
+
 		// *** url_rewrite ***
 		if ($humo_option["url_rewrite"]=="j"){
 			// *** $uri_path is made header.php ***
-			echo $uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$family_id.'/'.$main_person;
+			echo $uri_path.'family/'.$tree_id.'/'.$family_id.'/'.$main_person;
 		}
 		else{
-			echo 'http://'.$_SERVER['SERVER_NAME'].'/family.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$family_id.'&amp;main_person='.$main_person;
+			echo 'http://'.$_SERVER['SERVER_NAME'].'/family.php?tree_id='.$tree_id.'&amp;id='.$family_id.'&amp;main_person='.$main_person;
 		}
+
+		//$url=$man_cls->person_url($row);	// *** Get link to family ***
+		//$url=$man_cls->person_url('','family',$tree_id,$family_id,$main_person);	// *** Get link to family ***
 
 		echo ' : '.__('accessed').' '.date("d F Y");
 		echo ')';
 
-		// *** Name and gedcom number of main person ***
+		// *** Name and GEDCOM number of main person ***
 		if ($person_manDb){
 			echo ' '.$name1['name'].' #'.$person_manDb->pers_gedcomnumber;
 
 			// *** Birth or baptise date ***
-			if (!$family_privacy){
+			if (isset($family_privacy) AND !$family_privacy){
 				if ($person_manDb->pers_birth_date OR $person_manDb->pers_birth_place){
 					echo ', '.__('born').' '.date_place($person_manDb->pers_birth_date,$person_manDb->pers_birth_place);
 				}
@@ -2377,7 +2379,7 @@ if($screen_mode=='') {
 					//echo '<a href="#add_info" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a>';
 					if ($humo_option["url_rewrite"]=="j"){
 						// *** $uri_path made in header.php ***
-						$start_url=$uri_path.'family/'.$dataDb->tree_prefix.'/'.$family_id.'/'.$main_person.'/#add_info';
+						$start_url=$uri_path.'family/'.$tree_id.'/'.$family_id.'/'.$main_person.'/#add_info';
 					}
 					else{
 						$start_url='#add_info';
