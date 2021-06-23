@@ -13,7 +13,7 @@ if(isset($_GET["id"])) { // source.php is called from show_sources.php, sources.
  *----------------------------------------------------------------
  */
 function source_display($sourcenum) {
-	global $dbh, $db_functions, $tree_id, $dataDb, $user, $pdf, $screen_mode, $language;
+	global $dbh, $db_functions, $tree_id, $dataDb, $user, $pdf, $screen_mode, $language, $humo_option;
 
 	if($screen_mode!="PDF") {
 		include_once("header.php"); //returns CMS_ROOTPATH constant
@@ -69,8 +69,8 @@ function source_display($sourcenum) {
 	}
 	if ($sourceDb->source_publ){
 		$source_publ=$sourceDb->source_publ;
-
-		$pdflink=0;
+		/*
+		$pdflink=1;
 		if (substr($source_publ,0,7)=='http://'){
 			$link=$source_publ;
 			$source_publ='<a href="'.$link.'">'.$link.'</a>';
@@ -81,12 +81,13 @@ function source_display($sourcenum) {
 			$source_publ='<a href="'.$link.'">'.$link.'</a>';
 			$pdflink=1;
 		}
-
+		*/
 		if($screen_mode=="PDF") {
 			$pdf->SetFont('Arial','B',10);
 			$pdf->Write(6,__('Publication').": ");
 			$pdf->SetFont('Arial','',10);
-			if($pdflink==1) {
+			//if($pdflink==1) {
+			if (substr($source_publ,0,7)=='http://' OR substr($source_publ,0,8)=='https://'){
 				$pdf->SetFont('Arial','U',10);  $pdf->SetTextColor(28,28,255);
 				$pdf->Write(6,strip_tags($source_publ)."\n",strip_tags($source_publ));
 				$pdf->SetFont('Arial','',10);  $pdf->SetTextColor(0);
@@ -96,7 +97,12 @@ function source_display($sourcenum) {
 			}
 		}
 		else {
-			print '<b>'.__('Publication').":</b> $source_publ<br>";
+			// *** Convert all url's in a text to clickable links ***
+			$source_publ = preg_replace("#(^|[ \n\r\t])www.([a-z\-0-9]+).([a-z]{2,4})($|[ \n\r\t])#mi", "\\1<a href=\"http://www.\\2.\\3\" target=\"_blank\">www.\\2.\\3</a>\\4", $source_publ);
+			//$source_publ = preg_replace("#(^|[ \n\r\t])(((ftp://)|(http://)|(https://))([a-z0-9\-\.,\?!%\*_\#:;~\\&$@\/=\+]+))#mi", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $source_publ);
+			$source_publ = preg_replace("#(^|[ \n\r\t])(((http://)|(https://))([a-z0-9\-\.,\?!%\*_\#:;~\\&$@\/=\+]+))#mi", "\\1<a href=\"\\2\" target=\"_blank\">\\2</a>", $source_publ);
+
+			echo '<b>'.__('Publication').':</b> '.$source_publ.'<br>';
 		}
 	}
 	if ($sourceDb->source_place){
@@ -237,8 +243,8 @@ function source_display($sourcenum) {
 								// in the pdf file so we'll take just the above details
 								// and leave references to persons
 
-	print '</td></tr>';
-	print '<tr><td>';
+	echo '</td></tr>';
+	echo '<tr><td>';
 
 		$person_cls = New person_cls;
 
@@ -385,9 +391,9 @@ function source_display($sourcenum) {
 			echo '<br>';
 		}
 
-	print '</td></tr>';
+	echo '</td></tr>';
 
-	print '</table>';
+	echo '</table>';
 
 	include_once(CMS_ROOTPATH."footer.php");
 

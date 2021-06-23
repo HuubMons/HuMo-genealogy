@@ -9,7 +9,6 @@ function utf8ize($d) {
 	return $d;
 }
 
-
 // *** Show event_kind text ***
 function event_text($event_kind){
 	global $language;
@@ -405,7 +404,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 			$count=$data_list_qry->rowCount();
 			if ($count>0)
-			$text.='<a href="#profession" onclick="hideShow(50);"><span id="hideshowlink50">'.__('[+]').'</span></a> '; 
+			$text.='<a href="#profession" onclick="hideShow(13);"><span id="hideshowlink13">'.__('[+]').'</span></a> '; 
 
 			$text.=__('Profession').'</td>';
 		$text.='<td style="border-right:0px;"></td>';
@@ -438,7 +437,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$count_qry=$dbh->query($qry);
 		$count=$count_qry->rowCount();
 		if ($count>0)
-		$text.='<a href="#picture" onclick="hideShow(53);"><span id="hideshowlink53">'.__('[+]').'</span></a> ';
+			$text.='<a href="#picture" onclick="hideShow(53);"><span id="hideshowlink53">'.__('[+]').'</span></a> ';
 
 		$text.=__('Picture/ Media').'</td>';
 		$text.='<td style="border-right:0px;"></td>';
@@ -510,43 +509,41 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$text.='</ul>';
 
 
-// DEC 2015: FOR NOW, ONLY SHOW NUMBER OF PICTURE-OBJECTS.
-// *** Search for all external connected objects by a person or a family ***
-if ($event_connect_kind=='person'){
-	$connect_qry="SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."'
-		AND connect_sub_kind='pers_object'
-		AND connect_connect_id='".$event_connect_id."'
-		ORDER BY connect_order";
-}
-elseif ($event_connect_kind=='family'){
-	$connect_qry="SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."'
-		AND connect_sub_kind='fam_object'
-		AND connect_connect_id='".$event_connect_id."'
-		ORDER BY connect_order";
-}
-if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
-	$media_nr=0;
-	$connect_sql=$dbh->query($connect_qry);
-	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-		$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-			AND event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
-			ORDER BY event_order");
-		while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
-			$media_nr++;
-			//$media_event_id[$media_nr]=$pictureDb->event_id;
-			//$media_event_event[$media_nr]=$pictureDb->event_event;
-			//$media_event_date[$media_nr]=$pictureDb->event_date;
-			//$media_event_text[$media_nr]=$pictureDb->event_text;
-			//$media_event_source[$media_nr]=$pictureDb->event_source;
-		}
-	}
-	if ($media_nr>0)
-		$text.='<div style="white-space: nowrap;"><b>'.$media_nr.' Picture-objects found. Editing not supported yet...</b></div>';
-}
-
-
+			// DEC 2015: FOR NOW, ONLY SHOW NUMBER OF PICTURE-OBJECTS.
+			// *** Search for all external connected objects by a person or a family ***
+			if ($event_connect_kind=='person'){
+				$connect_qry="SELECT * FROM humo_connections
+					WHERE connect_tree_id='".$tree_id."'
+					AND connect_sub_kind='pers_object'
+					AND connect_connect_id='".$event_connect_id."'
+					ORDER BY connect_order";
+			}
+			elseif ($event_connect_kind=='family'){
+				$connect_qry="SELECT * FROM humo_connections
+					WHERE connect_tree_id='".$tree_id."'
+					AND connect_sub_kind='fam_object'
+					AND connect_connect_id='".$event_connect_id."'
+					ORDER BY connect_order";
+			}
+			if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
+				$media_nr=0;
+				$connect_sql=$dbh->query($connect_qry);
+				while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+					$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+						AND event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
+						ORDER BY event_order");
+					while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
+						$media_nr++;
+						//$media_event_id[$media_nr]=$pictureDb->event_id;
+						//$media_event_event[$media_nr]=$pictureDb->event_event;
+						//$media_event_date[$media_nr]=$pictureDb->event_date;
+						//$media_event_text[$media_nr]=$pictureDb->event_text;
+						//$media_event_source[$media_nr]=$pictureDb->event_source;
+					}
+				}
+				if ($media_nr>0)
+					$text.='<div style="white-space: nowrap;"><b>'.$media_nr.' Picture-objects found. Editing not supported yet...</b></div>';
+			}
 
 			$data_list_qry=$dbh->query($qry);
 			$data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ);
@@ -731,7 +728,7 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 		if ($event_kind=='profession'){
 			//$change_bg_colour=' class="humo_color"';
 			$change_bg_colour='';
-			$expand_link=' style="display:none;" class="row50" name="row50"';
+			$expand_link=' style="display:none;" class="row13" name="row13"';
 			$internal_link='#profession';
 		}
 		if ($event_kind=='picture' OR $event_kind=='marriage_picture' OR $event_kind=='source_picture'){
@@ -797,13 +794,17 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 			$text.='</td>';
 
 			$text.='<td style="border-right:0px;">';
-			$text.=$this->event_text($data_listDb->event_kind);
 
-			$text.='<br>';
+			// ** Show name of this event ***
+			if ($data_listDb->event_kind!='picture'){
+				$text.=$this->event_text($data_listDb->event_kind);
+				$text.='<br>';
+			}
 
+			// *** Picture: show thumbnail ***
 			if ($data_listDb->event_kind=='picture'){
 				$thumb_prefix='';
-				
+
 				$tree_pict_path3 = $tree_pict_path;  // we change it only if category subfolders exist
 				$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 				if($temp->rowCount()) {  // there is a category table 
@@ -816,7 +817,7 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 						}
 					}
 				}
-				
+
 				if (file_exists($path_prefix.$tree_pict_path3.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
 
 				$extensions_check=substr($path_prefix.$tree_pict_path3.$data_listDb->event_event,-3,3);
@@ -877,7 +878,8 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 					else
 						$show_image= '<img src="../images/thumb_missing-image.jpg" height="100px">';
 
-					if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../images/thumb_missing-image.jpg" height="80px">';
+					//if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../images/thumb_missing-image.jpg" height="80px">';
+					if (!$data_listDb->event_event) $show_image= '<img src="../images/thumb_missing-image.jpg" height="80px">';
 					$text.=$show_image;
 				}
 			}
@@ -1246,13 +1248,14 @@ if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
 	}
 
 
-if(isset($_GET['add_person'])) {
+	// IS THIS CODE STILL IN USE?
+	if(isset($_GET['add_person'])) {
 		$text.='<input type="hidden" name="event_profession" value="">';
 
 		$change_bg_colour='';
 		$internal_link='#profession';
-		//$text.='<tr style="display:none;" class="row50" name="row50">';
-		$text.='<tr class="row50" name="row50">';
+		//$text.='<tr style="display:none;" class="row13" name="row13">';
+		$text.='<tr class="row13" name="row13">';
 		// *** Show name of event and [+] link ***
 		$text.='<td>';
 		//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;event_person=1&amp;add_person=1&amp;event_kind=profession&amp;event_drop=';
@@ -1276,7 +1279,7 @@ if(isset($_GET['add_person'])) {
 		$text.='<td>';
 		$text.='</td>';
 		$text.='</tr>';
-}
+	}
 
 	if ($event_kind=='picture'){
 		// *** Upload image ***
@@ -1356,7 +1359,7 @@ if(isset($_GET['add_person'])) {
 			if ($_GET['event_kind']=='baptism_witness') $link_id='3';
 			if ($_GET['event_kind']=='death_declaration') $link_id='4';
 			if ($_GET['event_kind']=='burial_witness') $link_id='5';
-			if ($_GET['event_kind']=='profession') $link_id='50';
+			if ($_GET['event_kind']=='profession') $link_id='13';
 			if ($_GET['event_kind']=='picture') $link_id='53';
 			if ($_GET['event_kind']=='marriage_witness') $link_id='8';
 			if ($_GET['event_kind']=='marriage_witness_rel') $link_id='10';
@@ -1373,7 +1376,7 @@ if(isset($_GET['add_person'])) {
 			if ($_GET['event_add']=='add_baptism_witness') $link_id='3';
 			if ($_GET['event_add']=='add_death_declaration') $link_id='4';
 			if ($_GET['event_add']=='add_burial_witness') $link_id='5';
-			if ($_GET['event_add']=='add_profession') $link_id='50';
+			if ($_GET['event_add']=='add_profession') $link_id='13';
 			if ($_GET['event_add']=='add_picture') $link_id='53';
 			if ($_GET['event_add']=='add_source_picture') $link_id='53';
 			if ($_GET['event_add']=='add_marriage_picture') $link_id='53';
@@ -1406,21 +1409,21 @@ if(isset($_GET['add_person'])) {
 }   // end class
 
 // javascript for "search by file name of picture" feature  
-echo 	'<script type="text/javascript">
-		function Search_pic(idnum, picnr, picarr){
-			var searchval = document.getElementById("inp_text_event" + idnum).value;
-			searchval = searchval.toLowerCase();
-			var countarr = 0;
-			// *** delete existing full list ***
-			document.getElementById("text_event" + idnum).options.length=0; 
-			for (var countpics=0; countpics<picnr; countpics++){
-				var picname = picarr[countpics].toLowerCase();
-				if(picname.indexOf(searchval) != -1) {
-					document.getElementById("text_event" + idnum).options[countarr]=new Option(picarr[countpics], picarr[countpics], true, false);
-					countarr++;
-				}
+echo '<script type="text/javascript">
+	function Search_pic(idnum, picnr, picarr){
+		var searchval = document.getElementById("inp_text_event" + idnum).value;
+		searchval = searchval.toLowerCase();
+		var countarr = 0;
+		// *** delete existing full list ***
+		document.getElementById("text_event" + idnum).options.length=0; 
+		for (var countpics=0; countpics<picnr; countpics++){
+			var picname = picarr[countpics].toLowerCase();
+			if(picname.indexOf(searchval) != -1) {
+				document.getElementById("text_event" + idnum).options[countarr]=new Option(picarr[countpics], picarr[countpics], true, false);
+				countarr++;
 			}
- 	 	}
- 	</script>';
- 
+		}
+	}
+	</script>';
+
 ?>

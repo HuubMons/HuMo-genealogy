@@ -11,6 +11,7 @@ function date_place($process_date, $process_place,$hebnight=""){
 			$hebdate=hebdate($process_date,$hebnight);
 	}
 	if ($process_place==" "){$process_place="";} // *** If there is no place ***
+
 	if ($user['group_place_date']=='j'){
 		$text="";
 		if ($user['group_places']=='j' AND $process_place){
@@ -44,7 +45,7 @@ function hebdate($datestr,$hebnight="") {
 	if($year!=NULL AND $month!=NULL AND $day!=NULL) {
 		
 		// if after  nightfall is marked, take next gregorian day
-		if($hebnight=="y") {    
+		if($hebnight=="y") {
 			if($month == "1" OR $month == "3" OR $month == "5" OR $month == "7" OR $month == "8" OR $month == "10" OR $month == "12") {
 				// months with 31 days
 				if($day <31) {

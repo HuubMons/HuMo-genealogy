@@ -3,7 +3,7 @@ class update_cls {
 
 function update_v3_1(){
 	// ********************************
-	// *** HuMo-gen update 1 (V3.1) ***
+	// *** HuMo-genealogy update 1 (V3.1) ***
 	// ********************************
 	global $dbh;
 	$update_check = @$dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
@@ -54,7 +54,7 @@ function update_v3_1(){
 
 function update_v4_6(){
 	// ********************************
-	// *** HuMo-gen update 4 (V4.6) ***
+	// *** HuMo-genealogy update 4 (V4.6) ***
 	// ********************************
 	global $dbh;
 	$update_check_sql = $dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
@@ -93,7 +93,7 @@ function update_v4_6(){
 
 function update_v4_2(){
 	// *********************************
-	// *** HuMo-gen update 3 (V 4.2) ***
+	// *** HuMo-genealogy update 3 (V 4.2) ***
 	// *********************************
 	global $dbh;
 	// *** Change names of languages in table humo_tree_texts ***
@@ -112,7 +112,7 @@ function update_v4_2(){
 
 function update_v3_2(){
 	// ********************************
-	// *** HuMo-gen update 2 (V3.2) ***
+	// *** HuMo-genealogy update 2 (V3.2) ***
 	// ********************************
 	global $dbh;
 	$update_check = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
@@ -202,7 +202,7 @@ function update_v3_2(){
 
 function update_v4_6_update_2(){
 	// ********************************
-	// *** HuMo-gen update 4 (V4.6) ***
+	// *** HuMo-genealogy update 4 (V4.6) ***
 	// ********************************
 	global $dbh;
 	$update_check_sql = $dbh->query("SELECT * FROM humo_settings LIMIT 0,1");
@@ -566,7 +566,7 @@ function update_v4_6_update_2(){
 function update_v4_6_update_3(){
 	global $dbh;
 	// *** Check for update version 4.6 ***
-	echo '<tr><td>HuMo-gen update V4.6</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V4.6</td><td style="background-color:#00FF00">';
 
 	// *** Read all family trees from database ***
 	$update_sql = $dbh->query("SELECT * FROM humo_trees
@@ -861,7 +861,7 @@ function update_v4_6_update_3(){
 
 
 
-		// *** HuMo-gen 4.7 updates ***
+		// *** HuMo-genealogy 4.7 updates ***
 		// *** UPDATE 1: Add pers_stillborn in ALL person tables ***
 		if (!isset($field['pers_stillborn'])){
 			$sql="ALTER TABLE ".$updateDb->tree_prefix."person
@@ -1159,7 +1159,7 @@ function update_v4_7(){
 	global $dbh;
 	$start_time=time();
 
-	echo '<tr><td>HuMo-gen update V4.7</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V4.7</td><td style="background-color:#00FF00">';
 
 	// *** Automatic installation or update ***
 	$update_check_sql = $dbh->query("SELECT * FROM humo_user_log LIMIT 0,1");
@@ -1276,7 +1276,7 @@ function update_v4_8(){
 	global $dbh, $updateDb;
 	$start_time=time();
 
-	echo '<tr><td>HuMo-gen update V4.8</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V4.8</td><td style="background-color:#00FF00">';
 
 	// *** Update sources by persons and families ***
 	function update_source($read_dB,$source_value,$connect_kind, $connect_sub_kind, $connect_connect_id) {
@@ -1596,7 +1596,7 @@ function update_v4_8_2(){
 
 	global $dbh;
 
-	echo '<tr><td>HuMo-gen update V4.8.2</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V4.8.2</td><td style="background-color:#00FF00">';
 
 	$db_update = $dbh->query("DROP TABLE humo_cms_menu");
 	print __('creating humo_cms_menu...').'<br>';
@@ -1634,7 +1634,7 @@ function update_v4_8_8(){
 
 	global $dbh;
 
-	echo '<tr><td>HuMo-gen update V4.8.8</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V4.8.8</td><td style="background-color:#00FF00">';
 
 	// *** Read all family trees from database ***
 	$update_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
@@ -1663,7 +1663,7 @@ function update_v4_8_9(){
 
 	global $dbh;
 
-	echo '<tr><td>HuMo-gen update V4.8.9</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V4.8.9</td><td style="background-color:#00FF00">';
 
 	// *** Read all family trees from database ***
 	$update_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
@@ -1781,7 +1781,7 @@ function update_v4_9_1(){
 
 	global $dbh;
 
-	echo '<tr><td>HuMo-gen update V4.9.1</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V4.9.1</td><td style="background-color:#00FF00">';
 	// *** Read all family trees from database ***
 	$update_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
 	while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
@@ -1803,7 +1803,7 @@ function update_v5_0(){
 
 	global $dbh;
 
-	echo '<tr><td>HuMo-gen update V5.0</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V5.0</td><td style="background-color:#00FF00">';
 
 	// *** Save GEDCOM file name and GEDCOM program in database ***
 	// *** Test for existing column, some users allready tried a new script including a database update ***
@@ -1847,7 +1847,7 @@ function update_v5_1(){
 
 	global $dbh;
 
-	echo '<tr><td>HuMo-gen update V5.1</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V5.1</td><td style="background-color:#00FF00">';
 
 	// *** Show update status ***
 	//echo __('Update in progress...').' <div id="information" style="display: inline; font-weight:bold;"></div><br>';
@@ -2811,7 +2811,7 @@ function update_v5_1_6(){
 
 	global $dbh;
 
-	echo '<tr><td>HuMo-gen update V5.1.6</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V5.1.6</td><td style="background-color:#00FF00">';
 
 	// *** Show update status ***
 	//echo __('Update in progress...').' <div id="information" style="display: inline; font-weight:bold;"></div><br>';
@@ -2882,7 +2882,7 @@ function update_v5_1_9(){
 
 	global $dbh;
 
-	echo '<tr><td>HuMo-gen update V5.1.9</td><td style="background-color:#00FF00">';
+	echo '<tr><td>HuMo-genealogy update V5.1.9</td><td style="background-color:#00FF00">';
 
 	// *** Show update status ***
 	//echo __('Update in progress...').' <div id="information" style="display: inline; font-weight:bold;"></div><br>';
@@ -3042,7 +3042,7 @@ function update_v5_2_5(){
 	global $dbh;
 
 	// *** Show update status ***
-	echo '<tr><td>HuMo-gen update V5.2.5</td>';
+	echo '<tr><td>HuMo-genealogy update V5.2.5</td>';
 	echo '<td style="background-color:#00FF00">'.__('Update in progress...').' <div id="information v5_2_5" style="display: inline; font-weight:bold;"></div></td></tr>';
 	ob_flush(); flush(); // IE
 

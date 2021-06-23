@@ -4,7 +4,7 @@
  * Maybe it's possible to combine these two lists later, but processing is different.
  * At this moment it's easier to just make a second index list...
  *
- * sep. 2014 Huub: added this script to HuMo-gen.
+ * sep. 2014 Huub: added this script to HuMo-genealogy.
  */
 
 include_once("header.php"); //returns CMS_ROOTPATH constant

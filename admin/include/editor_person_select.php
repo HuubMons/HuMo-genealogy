@@ -10,6 +10,10 @@ if ($_GET['person_item']=='woman'){ $place_item='connect_woman'; $form='form2'; 
 if ($_GET['person_item']=='relation_add2'){ $place_item='relation_add2'; $form='form4'; }
 if ($_GET['person_item']=='child_connect2'){ $place_item='child_connect2'; $form='form4'; }
 
+// *** Witnesses (=event, multiple witnesses possible) ***
+if ($_GET['person_item']=='person_witness'){ $place_item='text_event2'.$_GET['event_row']; $form='form1'; }
+if ($_GET['person_item']=='marriage_witness'){ $place_item='text_event2'.$_GET['event_row']; $form='form2'; }
+
 if ($_GET['person_item']=='add_partner'){ $form='form_entire'; }
 if (substr($_GET['person_item'],0,10)=='add_child_'){ $form='form_entire'; }
 
@@ -71,7 +75,9 @@ else {
 		</script>
 	';
 }
-echo '<form method="POST" action="index.php?page=editor_person_select&person_item='.$_GET['person_item'].'&person='.$_GET['person'].'&tree_id='.$tree_id.'" style="display : inline;">';
+echo '<form method="POST" action="index.php?page=editor_person_select&person_item='.$_GET['person_item'].'&person='.$_GET['person'];
+if (isset($_GET['event_row'])) echo '&event_row='.$_GET['event_row'];
+echo '&tree_id='.$tree_id.'" style="display : inline;">';
 	$search_quicksearch_man=''; if (isset($_POST['search_quicksearch_man'])){ $search_quicksearch_man=safe_text_db($_POST['search_quicksearch_man']); }
 	echo ' <input class="fonts" type="text" name="search_quicksearch_man" placeholder="'.__('Name').'" value="'.$search_quicksearch_man.'" size="15">';
 

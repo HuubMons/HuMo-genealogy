@@ -1,7 +1,7 @@
 <?php
 // *****************************************************
 // *** Process person data                           ***
-// *** Class for HuMo-gen program                    ***
+// *** Class for HuMo-genealogy program              ***
 // *** $templ_person is used for PDF reports         ***
 // *****************************************************
 //error_reporting(E_ALL);
@@ -26,7 +26,7 @@ function set_privacy($personDb){
 		$privacy_person="1";  // *** Standard: filter privacy data of person ***
 		// *** $personDb is empty by N.N. person ***
 		if ($personDb){
-			// *** HuMo-gen, Haza-data and Aldfaer alive/ deceased status ***
+			// *** HuMo-genealogy, Haza-data and Aldfaer alive/ deceased status ***
 
 			if ($user['group_alive']=="j"){
 				if ($personDb->pers_alive=='deceased'){ $privacy_person=''; }
@@ -402,27 +402,29 @@ function person_name($personDb){
 			}
 
 			// *** Is search is done for profession, show profession **
-			if ($selection['pers_profession']){
+			//if ($selection['pers_profession']){
+			if (isset ($selection['pers_profession']) AND $selection['pers_profession']){
 				if (isset($personDb->event_event) AND $personDb->event_event AND $personDb->event_kind=='profession'){
 					$name_array["index_name_extended"].=' ('.$personDb->event_event.')';}
 			}
 
 			// *** Is search is done for places, show place **
-			if ($selection['pers_place']){
+			if (isset ($selection['pers_place']) AND $selection['pers_place']){
 				if (isset($personDb->address_place)){
 					$name_array["index_name_extended"].=' ('.$personDb->address_place.')';
 				}
 			}
 
 			// *** Is search is done for places, show place **
-			if ($selection['zip_code']){
+			if (isset ($selection['zip_code']) AND $selection['zip_code']){
 				if (isset($personDb->address_zip)){
 					$name_array["index_name_extended"].=' ('.$personDb->address_zip.')';
 				}
 			}
 
 			// *** Is search is done for places, show place **
-			if ($selection['witness']){
+			//if ($selection['witness']){
+			if (isset($selection['witness']) AND $selection['witness']){
 				if (isset($personDb->event_event)){
 					$name_array["index_name_extended"].=' ('.$personDb->event_event.')';
 				}
@@ -1195,12 +1197,14 @@ function person_data($person_kind, $id){
 		if ($personDb->pers_gedcomnumber){
 			$eventnr=0;
 			$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'name');
+			// *** Can be used to hide $event_gedcom text ***
+			$previous_event_gedcom='';
 			foreach ($name_qry as $nameDb){
 				$eventnr++;
 				$text='';
 				if ($nameDb->event_gedcom=='_AKAN') $text.=__('Also known as').': ';
-				// *** MyHeritage Family Tree Builder ***
-				if ($nameDb->event_gedcom=='_AKA') $text.=__('Also known as').': ';
+				// *** MyHeritage Family Tree Builder. Only show 1st "Also know as" text ***
+				if ($previous_event_gedcom!='_AKA' AND $nameDb->event_gedcom=='_AKA') $text.=__('Also known as').': ';
 				if ($nameDb->event_gedcom=='NICK') $text.=__('Nickname').': ';
 				if ($nameDb->event_gedcom=='_ALIA') $text.=__('alias name').': ';	// For Pro-Gen
 				if ($nameDb->event_gedcom=='_SHON') $text.=__('Short name (for reports)').': ';
@@ -1219,6 +1223,7 @@ function person_data($person_kind, $id){
 				if ($nameDb->event_gedcom=='_RELN') $text.=__('Religious name').': ';
 				if ($nameDb->event_gedcom=='_OTHN') $text.=__('Other name').': ';
 				if ($nameDb->event_gedcom=='_RUFN') { } // don't do anything
+				$previous_event_gedcom=$nameDb->event_gedcom;
 
 				if ($eventnr>1 AND $nameDb->event_gedcom !='_RUFN'){
 					$templ_person["bknames".$eventnr]=', ';
@@ -1748,7 +1753,7 @@ function person_data($person_kind, $id){
 			}
 		}
 
-		// *** Extended addresses for HuMo-gen and dutch Haza-data program (Haza-data plus version) ***
+		// *** Extended addresses for HuMo-genealogy and dutch Haza-data program (Haza-data plus version) ***
 		if ($user['group_addresses']=='j'){
 			// *** Search for all connected addresses ***
 			$eventnr=0;

@@ -11,7 +11,11 @@ echo '<script type="text/javascript" src="include/popup_merge.js"></script>';
 echo '<form method="POST" action="" name="saveform" style="display : inline;">';
 echo '<div style="position:fixed;top:68px;left:0px;">';
 echo '<h1 align=center>'.__('Language editor').'</h1>';
-echo '<div style="margin:10px;padding:3px">'.__('This is the language editor of HuMo-gen. It\'s possible to change or edit language items in this editor. If you find language errors in a language, please contact the programmers. They will change this in a next version!').'&nbsp;';
+
+echo '<div style="margin:10px;padding:3px">';
+printf(__('This is the language editor of %s. It\'s possible to change or edit language items in this editor. If you find language errors in a language, please contact the programmers. They will change this in a next version!'),'HuMo-genealogy');
+echo '&nbsp;';
+
 echo __('Translate into the right column. The untranslated items appear first.').'</div>';
 
 echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
@@ -128,25 +132,25 @@ echo '<td style="width:50%;text-align:center;border-left:none;">';
 
 	$handle = @fopen($file, "r");
 	if ($handle) {
-		$count=0; $msgid=0; $msgstr=0; $note=0; $line_array= Array();  
+		$count=0; $msgid=0; $msgstr=0; $note=0; $line_array= Array();
 		while (($buffer = fgets($handle, 4096)) !== false) {
 			if(substr($buffer,0,5)=="msgid") {
 				$msgid=1; $msgstr=0; $note=0;
-				$line_array[$count]["msgid"] = substr($buffer,6);  
+				$line_array[$count]["msgid"] = substr($buffer,6);
 				$line_array[$count]["msgid_empty"] = 0;
 			}
 			elseif(substr($buffer,0,6)=="msgstr") {
 				$msgstr=1; $msgid=0; $note=0; 
-				$line_array[$count]["msgstr"] = substr($buffer,7);  
+				$line_array[$count]["msgstr"] = substr($buffer,7);
 				$line_array[$count]["msgstr_empty"] = 0;
 			}
 			elseif(substr($buffer,0,1)=="#") { 
 				if($note==0) { 
 					$note=1; $msgstr=0; $msgid=0; 
-					$line_array[$count]["note"] = $buffer;  
+					$line_array[$count]["note"] = $buffer;
 				}
 				else { 
-					$line_array[$count]["note"] .= $buffer;  
+					$line_array[$count]["note"] .= $buffer;
 				}
 /*				if(strpos("fuzzy",$buffer)!==false) {
 					$line_array[$count]["fuzzy"] = 1;
@@ -154,7 +158,7 @@ echo '<td style="width:50%;text-align:center;border-left:none;">';
 				else {
 					$line_array[$count]["fuzzy"] = 0;
 				}
-*/				
+*/
 			}
 			elseif(substr($buffer,0,1)=='"') {
 				if($msgid==1) { 
@@ -214,7 +218,7 @@ if(isset($_SESSION['langsearchtext']) AND $_SESSION['langsearchtext']!="") {
 			$search_lines++;
 		}
 	}
-}	
+}
 
 echo '<table class="humo" border="" cellspacing="0" width="98%" style="border-width:0px;margin-left:auto;margin-right:auto">';
 
@@ -295,14 +299,14 @@ include(CMS_ROOTPATH.'languages/'.$language_editor.'/language_data.php');
 echo '&nbsp;&nbsp;&nbsp;'.__('Translation into').' '.$language["name"];
 echo '</th></tr>';
 echo '</table>';
-	
+
 display_po_table();
 echo '</div></form>';
 
 //******** FUNCTION display_po_table() DISPLAYS THE PO-LIKE TABLE: LEFT THE TEMPLATE VALUES AND RIGHT THE TRANSLATION *********
 //******** (this is a table within the language editor table, so it can scroll under the header **********************
 
-function display_po_table() {  
+function display_po_table() {
 
 	echo '<div style="height:450px;overflow:auto">';
 	echo '<table class="humo" border="1" cellspacing="0" width="98%" style="margin-left:auto;margin-right:auto">';
@@ -423,21 +427,22 @@ function msgstr_display($string) {
  	if(substr($string,-1)==" ") { 
  	 	$string = rtrim($string," ")."&nbsp;"; 
  	}
-	$string = str_replace('\n','\n<br>',$string);  
+	$string = str_replace('\n','\n<br>',$string);
 	return $string;
 }
 
 function msgstr_save($string) {
 	// formats the displayed msgstr text for saving in .po file (text that is displayed)
 	$string = strip_tags($string);
-	if($string AND $string != "<br>") {  
+	if($string AND $string != "<br>") {
 		$string = htmlspecialchars_decode($string); 
-		if(get_magic_quotes_gpc() == 1) {
-			$find = array("\\'","\\`");
-			$replace = array("'","`");
-			$string = str_replace($find,$replace,$string); // but leave \"
-		}		
-		else $string = str_replace('"','\"',$string);  // we want the " with backslash since msgstr afterwards gets " around it!
+		//if(get_magic_quotes_gpc() == 1) {
+		//	$find = array("\\'","\\`");
+		//	$replace = array("'","`");
+		//	$string = str_replace($find,$replace,$string); // but leave \"
+		//}
+		//else
+		$string = str_replace('"','\"',$string);  // we want the " with backslash since msgstr afterwards gets " around it!
 		$find = array("\\n<br>","\r\n","&nbsp;","&#32;",'\\\\"');
 		$replace = array("\\n","\"\r\""," "," ",'\\"');
 		if(substr($string,-4)=="<br>") $string = substr($string,0,-4);

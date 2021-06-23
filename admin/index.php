@@ -1,6 +1,6 @@
 <?php
 /**
-* This is the admin web entry point for HuMo-gen.
+* This is the admin web entry point for HuMo-genealogy.
 *
 * If you are reading this in your web browser, your server is probably
 * not configured correctly to run PHP applications!
@@ -102,9 +102,14 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	$check_tables = $dbh->query("SELECT * FROM humo_settings");
 	if ($check_tables){
 		include_once(CMS_ROOTPATH."include/settings_global.php");
+
+		// *** Added may 2020, needed for some user settings in admin section ***
+		// *** At this moment there is no separation for front user and admin user... ***
+		include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
+
 		$show_menu_left=true;
 
-		// *** Debug HuMo-gen`admin pages ***
+		// *** Debug HuMo-genealogy`admin pages ***
 		if ($humo_option["debug_admin_pages"]=='y'){
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
@@ -126,7 +131,7 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	$check_update = @$dbh->query("SELECT * FROM humo_instellingen");
 	if ($check_update){ $page='update'; $show_menu_left=false; }
 
-	// *** Check HuMo-gen database status ***
+	// *** Check HuMo-genealogy database status ***
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])){
 		if ($humo_option["update_status"]<11){ $page='update'; $show_menu_left=false; }
@@ -368,7 +373,7 @@ if (!CMS_SPECIFIC){
 	echo "<head>\n";
 	echo '<meta http-equiv="content-type" content="text/html; charset=utf-8">'."\n";
 
-	// *** Rescale standard HuMo-gen pages for mobile devices ***
+	// *** Rescale standard HuMo-genealogy pages for mobile devices ***
 	echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
 
 	echo '<title>'.__('Administration').'</title>'."\n";
@@ -459,14 +464,14 @@ echo '<div id="humo_top" '.$top_dir.'>';
 	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
 
 	echo '<span id="top_website_name">';
-		//echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-gen<span style="font-size:18px; color:#7F7F7F;">ealogy</span></a>';
-		echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-gen</a>';
+		//echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy<span style="font-size:18px; color:#7F7F7F;">ealogy</span></a>';
+		echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy</a>';
 	echo '</span>';
 
 	//if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
 	if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
 
-		// *** Enable/ disable HuMo-gen update check ***
+		// *** Enable/ disable HuMo-genealogy update check ***
 		if (isset($_POST['enable_update_check_change'])){
 			if (isset($_POST['enable_update_check'])){
 				$update_last_check='2012-01-01';
@@ -475,7 +480,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			}
 			else{
 				$update_last_check='DISABLED';
-				$update_text= '  '.__('HuMo-gen update check is disabled.');
+				$update_text= '  '.__('update check is disabled.');
 				$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
 			}
 
@@ -511,10 +516,10 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				$link_name=str_replace(' ', '_', $_SERVER['SERVER_NAME']);
 				$link_versie=str_replace(' ', '_', $humo_option["version"]);
 
-				// *** Use update file directly from humo-gen website ***
+				// *** Use update file directly from humo-genealogy website ***
 				$update_file='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 
-				// *** Copy update data from humo-gen website to local website ***
+				// *** Copy update data from humo-genealogy website to local website ***
 				if(function_exists('curl_exec')){
 					$source='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 					$update_file='update/temp_update_check.php';
@@ -534,7 +539,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					}
 				}
 
-				// *** Copy HuMo-gen to server using file_get_contents ***
+				// *** Copy HuMo-genealogy to server using file_get_contents ***
 				/*
 				if (!file_exists('update/temp_update_check.php')){
 					$source='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
@@ -564,7 +569,7 @@ echo '<div id="humo_top" '.$top_dir.'>';
 				}
 				*/
 
-				// *** Copy HuMo-gen to server using copy ***
+				// *** Copy HuMo-genealogy to server using copy ***
 				// DISABLED BECAUSE MOST PROVIDERS BLOCK THIS COPY FUNCTION FOR OTHER WEBSITES...
 				//if (!file_exists('update/temp_update_check.php')){
 				//	$source='https://www.humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
@@ -577,12 +582,12 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					// *** Used for automatic update procedure ***
 					$update['up_to_date']='no';
 
-					// *** HuMo-gen version ***
+					// *** HuMo-genealogy version ***
 					$update['version']='';
 					$update['version_date']='';
 					$update['version_auto_download']='';
 
-					// *** HuMo-gen beta version ***
+					// *** HuMo-genealogy beta version ***
 					$update['beta_version']='';
 					$update['beta_version_date']='';
 					$update['beta_version_auto_download']='';
@@ -591,13 +596,13 @@ echo '<div id="humo_top" '.$top_dir.'>';
 						$update_data = fgets( $f, 4096 );
 						$update_array=explode("=",$update_data);
 
-						// *** HuMo-gen version ***
+						// *** HuMo-genealogy version ***
 						if ($update_array[0]=='version'){ $update['version']=trim($update_array[1]); }
 						if ($update_array[0]=='version_date'){ $update['version_date']=trim($update_array[1]); }
 						if ($update_array[0]=='version_download'){ $update['version_download']=trim($update_array[1]); }
 						if ($update_array[0]=='version_auto_download'){ $update['version_auto_download']=trim($update_array[1]); }
 
-						// *** HuMo-gen beta version ***
+						// *** HuMo-genealogy beta version ***
 						if ($update_array[0]=='beta_version'){ $update['beta_version']=trim($update_array[1]); }
 						if ($update_array[0]=='beta_version_date'){ $update['beta_version_date']=trim($update_array[1]); }
 						if ($update_array[0]=='beta_version_download'){ $update['beta_version_download']=trim($update_array[1]); }
@@ -605,12 +610,12 @@ echo '<div id="humo_top" '.$top_dir.'>';
 					}
 					fclose($f);
 
-					// *** 1) Standard text: HuMo-gen up-to-date ***
+					// *** 1) Standard text: HuMo-genealogy up-to-date ***
 					$update['up_to_date']='yes';
-					$update_text= '  '.__('HuMo-gen is up-to-date!');
+					$update_text= '  '.__('is up-to-date!');
 					$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
 
-					// *** 2) First priority: check for normal HuMo-gen update ***
+					// *** 2) First priority: check for normal HuMo-genealogy update ***
 					if (strtotime ($update['version_date'])-strtotime($humo_option["version_date"])>0){
 						$update['up_to_date']='no';
 						$update_text= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update available').' ('.$update['version'].')!</a>';
@@ -677,13 +682,15 @@ echo '<div id="humo_top" '.$top_dir.'>';
 		// *** Just logged in, or no tree_id available: find first family tree ***
 		if ($check_tree_id==''){
 			$check_tree_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order LIMIT 0,1");
-			@$check_treeDb=$check_tree_sql->fetch(PDO::FETCH_OBJ);
-			$check_tree_id=$check_treeDb->tree_id;
+			if ($check_tree_sql){
+				@$check_treeDb=$check_tree_sql->fetch(PDO::FETCH_OBJ);
+				$check_tree_id=$check_treeDb->tree_id;
+			}
 		}
 
 		// *** Double check tree_id and save tree id in session ***
 		$tree_id=''; $tree_prefix='';
-		if ($check_tree_id AND $check_tree_id!=''){
+		if (isset($check_tree_id) AND $check_tree_id AND $check_tree_id!=''){
 			$get_treeDb=$db_functions->get_tree($check_tree_id);
 			$tree_id=$get_treeDb->tree_id;
 			$_SESSION['admin_tree_id']=$tree_id;
@@ -988,7 +995,11 @@ echo '<div id="humo_top" '.$top_dir.'>';
 
 		if ($popup==false){
 			// *** Country flags ***
-			$hide_languages_array=explode(";",$humo_option["hide_languages"]);
+
+			// *** Check is needed for PHP 7.4 ***
+			if (isset($humo_option["hide_languages"]))
+				$hide_languages_array=explode(";",$humo_option["hide_languages"]);
+
 			$select_top='';
 			echo '<li>';
 			echo '<div class="'.$rtlmarker.'sddm">';

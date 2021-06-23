@@ -7,7 +7,7 @@ session_regenerate_id();
 * fanimage.php                                                              *
 * Based on original code from PhpGedView (GNU/GPL licence)                  *
 *                                                                           *
-* Rewritten and adapted for HuMo-gen by Yossi Beck  -  October 2009         *
+* Rewritten and adapted for HuMo-genealogy by Yossi Beck  -  October 2009   *
 *                                                                           *
 * This program is free software; you can redistribute it and/or modify      *
 * it under the terms of the GNU General Public License as published by      *

@@ -9,9 +9,9 @@ This credits screen is english only...
 
 <ul>
 <li>Huub Mons (project leader, programmer):
-	<ul><li>HuMo-gen
+	<ul><li>HuMo-genealogy
 	<li>Gedcom import and export, database.
-	<li>HuMo-gen layout, family screen.
+	<li>HuMo-genealogy layout, family screen.
 	<li>Genealogy editor.
 	<li>CMS editor.
 	<li>Index places, photobook.
@@ -61,12 +61,12 @@ This credits screen is english only...
 <li>Huych Constant:
 	<ul><li>Elegant Corsiva theme.</ul>
 <li>Tonko Boekhoud:
-	<ul><li>Changes to use HuMo-gen into CMS Made Simple.</ul>
+	<ul><li>Changes to use HuMo-genealogy into CMS Made Simple.</ul>
 </ul>
 
 <h2>Languages</h2>
 
-HuMo-gen uses <a href="https://www.transifex.com/organization/humo-gen" target="_blank">Transifex</a> for translations.
+HuMo-genealogy uses <a href="https://www.transifex.com/organization/humo-gen" target="_blank">Transifex</a> for translations.
 <ul>
 <li>Chinese by: Dongshan.</li>
 <li>Danish by: Erik Jensen.</li>

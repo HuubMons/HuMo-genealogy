@@ -316,7 +316,7 @@ if (isset($_POST['person_change'])){
 	}		
 	
 	// extra UPDATE queries if brit mila is displayed 
-	if($humo_option['admin_brit']=="y") {  
+	if($humo_option['admin_brit']=="y") {
 		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '_BRTM' AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
 		$result = $dbh->query($sql);
 		if($result->rowCount() != 0) {     // a brit mila already exists for this person: UPDATE 
@@ -371,7 +371,7 @@ if (isset($_POST['person_change'])){
 	}	
 
 	// extra UPDATE queries if Bar Mitsva  is displayed 
-	if($humo_option['admin_barm']=="y") {  
+	if($humo_option['admin_barm']=="y") {
 		if($_POST["pers_sexe"]=="F") {  $barmbasm="BASM"; }
 		else { $barmbasm = "BARM"; }
 		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '".$barmbasm."' AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
@@ -1495,7 +1495,10 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 if (isset($_POST['event_id'])){
 	foreach($_POST['event_id'] as $key=>$value){
 		$event_event=$editor_cls->text_process($_POST["text_event"][$key]);
-		if (isset($_POST["text_event2"][$key]) AND $_POST["text_event2"][$key]!=''){ $event_event=$editor_cls->text_process($_POST["text_event2"][$key]); }
+
+		// *** Replaced array function, because witness popup javascript doesn't work using an html-form-array ***
+		//if (isset($_POST["text_event2"][$key]) AND $_POST["text_event2"][$key]!=''){ $event_event=$editor_cls->text_process($_POST["text_event2"][$key]); }
+		if (isset($_POST["text_event2".$key]) AND $_POST["text_event2".$key]!=''){ $event_event='@'.$_POST["text_event2".$key].'@'; }
 
 		$sql="UPDATE humo_events SET
 			event_event='".$event_event."',

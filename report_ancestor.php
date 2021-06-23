@@ -103,22 +103,22 @@ if($screen_mode!='PDF' AND $screen_mode!='RTF' AND $screen_mode!="ancestor_sheet
 			//if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
 			if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 				// Show pdf button
-				print ' <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
-				print '<input type="hidden" name="id" value="'.$family_id.'">';
-				print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
-				print '<input type="hidden" name="screen_mode" value="PDF">';
-				print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
-				print '</form>';
+				echo ' <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
+				echo '<input type="hidden" name="id" value="'.$family_id.'">';
+				echo '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
+				echo '<input type="hidden" name="screen_mode" value="PDF">';
+				echo '<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
+				echo '</form>';
 			}
 
 			if($user["group_rtf_button"]=='y' AND $language["dir"]!="rtl") {
 				// Show rtf button
-				print ' <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
-				print '<input type="hidden" name="id" value="'.$family_id.'">';
-				print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
-				print '<input type="hidden" name="screen_mode" value="RTF">';
-				print '<input class="fonts" type="Submit" name="submit" value="'.__('RTF Report').'">';
-				print '</form>';
+				echo ' <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
+				echo '<input type="hidden" name="id" value="'.$family_id.'">';
+				echo '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
+				echo '<input type="hidden" name="screen_mode" value="RTF">';
+				echo '<input class="fonts" type="Submit" name="submit" value="'.__('RTF Report').'">';
+				echo '</form>';
 			}
 		}
 	echo '</div>';
@@ -1043,26 +1043,26 @@ echo '<div>';
 
 		// print names and details for each row in the table
 		function kwname($start,$end,$increment,$fontclass,$colspan,$type) {
-			print '<tr>';
+			echo '<tr>';
 			for($x=$start;$x<$end;$x+=$increment) {
 				if($colspan>1) {
-					//print '<td class="'.$fontclass.'" colspan='.$colspan.'>';
-					print '<td colspan='.$colspan.'>';
+					//echo '<td class="'.$fontclass.'" colspan='.$colspan.'>';
+					echo '<td colspan='.$colspan.'>';
 				}
 				else{
-					//print '<td class="'.$fontclass.'">';
-					print '<td>';
+					//echo '<td class="'.$fontclass.'">';
+					echo '<td>';
 				}
 				$kwpers=ancestor_chart_person($x,$type);
 				if($kwpers!='') {
-					print $kwpers;
+					echo $kwpers;
 				}
 				else {   // if we don't do this IE7 wil not print borders of cells
-					print '&nbsp;';
+					echo '&nbsp;';
 				}
-				print '</td>';
+				echo '</td>';
 			}
-			print '</tr>';
+			echo '</tr>';
 		}
 
 		// check if there is anyone in a generation so no empty and collapsed rows will be shown
@@ -1077,28 +1077,28 @@ echo '<div>';
 			return $is_gen;
 		}
 
-		print '<table class="humo ancestor_sheet">';
-		print '<tr><th class="ancestor_head" colspan="8">';  // adjusted for IE7
-		print __('Ancestor sheet').__(' of ').ancestor_chart_person(1,"ancestor_header");  
+		echo '<table class="humo ancestor_sheet">';
+		echo '<tr><th class="ancestor_head" colspan="8">';  // adjusted for IE7
+		echo __('Ancestor sheet').__(' of ').ancestor_chart_person(1,"ancestor_header");  
 
 			//if($language["dir"]!="rtl") {
 			if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 				// Show pdf button
-				print '&nbsp;&nbsp; <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
-				print '<input type="hidden" name="id" value="'.$family_id.'">';
-				print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
-				print '<input type="hidden" name="screen_mode" value="ASPDF">';
-				print '<input class="fonts" type="Submit" name="submit" value="PDF Report">';
-				print '</form>';
+				echo '&nbsp;&nbsp; <form method="POST" action="'.$uri_path.'report_ancestor.php?show_sources=1" style="display : inline;">';
+				echo '<input type="hidden" name="id" value="'.$family_id.'">';
+				echo '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
+				echo '<input type="hidden" name="screen_mode" value="ASPDF">';
+				echo '<input class="fonts" type="Submit" name="submit" value="PDF Report">';
+				echo '</form>';
 			}
 		
-		print '</th></tr>';
+		echo '</th></tr>';
 
 		$gen=0; $gen=check_gen(16,32); if($gen==1) {
 			kwname(16,32,2,"kw-small",1,"medium");
 			kwname(16,32,2,"kw-small",1,"ancestor_sheet_marr");
 			kwname(17,33,2,"kw-small",1,"medium");
-			print '<tr><td colspan=8 class="ancestor_devider">&nbsp;</td></tr>';  // adjusted for IE7
+			echo '<tr><td colspan=8 class="ancestor_devider">&nbsp;</td></tr>';  // adjusted for IE7
 		}
 		$gen=0; $gen=check_gen(8,16); if($gen==1) {
 			kwname(8,16,1,"kw-bigger",1,"medium");
@@ -1111,12 +1111,14 @@ echo '<div>';
 		kwname(2,4,1,"kw-big",4,"medium");
 		kwname(2,4,2,"kw-small",8,"ancestor_sheet_marr");
 		kwname(1,2,1,"kw-big",8,"medium");
-		print '</table>';
-		print '<br><div class="ancestor_legend">';
-		print '<b>'.__('Legend').'</b><br>';
-		print __('*').'  '.__('born').', '.__('&#134;').'  '.__('died').', '.__('X').'  '.__('married');
-		print '<br>'.__('Generated with HuMo-gen on ').date("d M Y - H:i");
-		print '</div>';
+		echo '</table>';
+		echo '<br><div class="ancestor_legend">';
+			echo '<b>'.__('Legend').'</b><br>';
+			echo __('*').'  '.__('born').', '.__('&#134;').'  '.__('died').', '.__('X').'  '.__('married');
+			echo '<br>';
+			$date=date("d M Y - H:i");
+			printf(__('Generated with %s on %s'),'HuMo-genealogy',$date);
+		echo '</div>';
 	}  // end of ancestor SHEET code
 
 	// Specific code for ancestor sheet PDF:
@@ -1504,7 +1506,7 @@ if($hourglass===false) {
 
 		$text='<br><br><form method="POST" action="'.$uri_path.'report_ancestor.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$family_id.'" style="display : inline;">';
 
-		print '<input type="hidden" name="screen_mode" value="">';
+		echo '<input type="hidden" name="screen_mode" value="">';
 
 		$text.='<input class="fonts" type="Submit" name="submit" value="'.__('Back').'">';
 		$text.='</form> ';

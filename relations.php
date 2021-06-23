@@ -4,7 +4,7 @@
 //=================================================================
 // relations.php - checks relationships between person X and person Y
 //
-// written by Yossi Beck - August 2010 for HuMo-gen
+// written by Yossi Beck - August 2010 for HuMo-genealogy
 // adjusted for several languages 2011-2015 by Yossi Beck
 // extended marital calculator added by Yossi Beck - February 2014
 //
@@ -1910,16 +1910,16 @@ function display () {
 		$bloodrel=1;
 		print __('BLOOD RELATIONSHIP: ');
 		echo "<br><br>"; 
-		if($selected_language=="cn" AND strpos($reltext,"notext")!==false) {  
+		if($selected_language=="cn" AND strpos($reltext,"notext")!==false) {
 			// don't display text if relation can't be phrased  
 		} 
 		else {
 			if($selected_language=="fi") { print 'Kuka: '; }   // who
-			print "&nbsp;&nbsp;<a class='relsearch' href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
+			print "&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
 			print $name1."</a>";
 			if($selected_language=="fi") { print '&nbsp;&nbsp;'.'Kenelle: '; }  // to whom
 			else { print $language_is.$reltext; }
-			print "<a class='relsearch' href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>".$reltext_nor."<p>";
+			print "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>".$reltext_nor."<p>";
 			print $dutchtext;
 			if($selected_language=="fi") { echo 'Sukulaisuus tai muu suhde: <b>'.$reltext.'</b>'; }
 			print '<hr style="width:100%;height:0.25em;color:darkblue;background-color:darkblue;"  >';
@@ -1996,17 +1996,17 @@ function display () {
 				$name=$pers_cls->person_name($spouseidDb);
 				$spousename=$name["name"];
 
-				print "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
+				print "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
 				//print $name1."</a> and ";
 				print $name1."</a> ".__('and').': ';
-				print "<a class='relsearch' href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
+				print "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
 				if($searchDb->pers_sexe == "M") {
 					echo ' '.__('are both husbands of').' ';
 				}
 				else {
 					print ' '.__('are both wifes of').' ';
 				}
-				print "<a href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$rel_arrayspouseX[$foundX_match][0]."'>".$spousename."</a></span><br>";
+				print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayspouseX[$foundX_match][0]."'>".$spousename."</a></span><br>";
 			}
 			elseif($reltext!="notext") {
 
@@ -2051,32 +2051,32 @@ function display () {
 
 				if($selected_language=="fi") {  // very different phrasing for correct grammar
 				print 'Kuka: ';
-					print "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
+					print "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
 					print $name1."</a>";
 					print '&nbsp;&nbsp;Kenelle: ';
-					print "<a class='relsearch' href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a></span><br>";
+					print "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a></span><br>";
 					print 'Sukulaisuus tai muu suhde: ';
 					if(!$special_spouseX AND !$special_spouseY AND $table!=7) {
 						if($spousetext2 != '' AND $spousetext1 == '') { // X is relative of spouse of Y
 							print '(';
-							print "<a href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a>";
+							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a>";
 							print ' - '.$spousenameY.'):&nbsp;&nbsp;'.$reltext.'<br>';
 							print $spousenameY.', '.$finnish_spouse2.' ';
-							print "<a href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
+							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
 						}
 						elseif ($spousetext1 != '' AND $spousetext2 == '') { // X is spouse of relative of Y
 							print '('.$spousenameX.' - ';
-							print "<a href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
+							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
 							print '):&nbsp;&nbsp;'.$reltext.'<br>';
 							print $spousenameX.', '.$finnish_spouse1.' ';
-							print "<a href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a>";
+							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a>";
 						}
 						else {   // X is spouse of relative of spouse of Y
 							print '('.$spousenameX.' - '.$spousenameY.'):&nbsp;&nbsp;'.$reltext.'<br>';
 							print $spousenameX.', '.$finnish_spouse1.' ';
-							print "<a href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a><br>";
+							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>".$name1."</a><br>";
 							print $spousenameY.', '.$finnish_spouse2.' ';
-							print "<a href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
+							print "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>";
 						}
 					}
 					elseif ($special_spouseX OR $special_spouseY) { // brother-in-law/sister-in-law/father-in-law/mother-in-law
@@ -2108,10 +2108,10 @@ function display () {
 						}
 					}
 					if($table==6 OR $table==7) { $reltext_nor = ''; }
-					print "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
+					print "<span>&nbsp;&nbsp;<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0]."'>";
 
 					print $name1."</a>".$language_is.$spousetext1.$reltext.$reltext_nor2.$spousetext2;
-					print "<a class='relsearch' href='".$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>".$reltext_nor."</span><br>";
+					print "<a class='relsearch' href='".$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0]."'>".$name2."</a>".$reltext_nor."</span><br>";
 
 				}
 
@@ -2167,6 +2167,7 @@ function display_table() {
 	global $table, $name1, $name2, $rel_arrayX, $rel_arrayY, $spouse, $rel_arrayspouseX, $rel_arrayspouseY, $famspouseX, $famspouseY;
 	global $famX, $famY, $gednr, $gednr2, $dirmark1, $dirmark2;
 	global $fampath;  // path to family.php for Joomla and regular
+	global $tree_id;
 
 	// *** Use person class to show names ***
 	$pers_cls = New person_cls;
@@ -2206,7 +2207,7 @@ function display_table() {
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 				
-				print '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath.'database='.safe_text_db($_SESSION['tree_prefix']).'&amp;id='.$famspouseX.'&amp;main_person='.$rel_arrayX[0][0].'">'.$personname.'</a></td>';
+				print '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath.'tree_id='.$tree_id.'&amp;id='.$famspouseX.'&amp;main_person='.$rel_arrayX[0][0].'">'.$personname.'</a></td>';
 
 				$persidDb=$db_functions->get_person($gednr);
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
@@ -2214,7 +2215,7 @@ function display_table() {
 
 				print '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
 				
-				print '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a></td>";
+				print '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a></td>";
 				print '</tr><tr>';
 				print '<td style="border:0px;">&#8593;</td>';
 				print '<td style="border:0px;">&nbsp;</td>';
@@ -2228,7 +2229,7 @@ function display_table() {
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 
-				print '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0].'">'.$name1."</a></td>";
+				print '<td class="'.$ext_cls.'"  style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$rel_arrayX[0][0].'">'.$name1."</a></td>";
 				if(($spouse==1 AND $table==2) OR ($spouse==2 AND $table==1)) {
 					print '<td style="border:0px;">&nbsp;</td>';
 					print '<td style="border:0px;">&nbsp;</td>';
@@ -2256,7 +2257,7 @@ function display_table() {
 					$fam=$persidDb->pers_famc;
 				}
 				print "<tr>";
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
+				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 				if($spouse==1 OR $spouse==2 OR $spouse==3) { 
 					print '<td style="border:0px;">&nbsp;</td>';
 				}
@@ -2279,7 +2280,7 @@ function display_table() {
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 				
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famspouseY."&amp;main_person=".$rel_arrayY[0][0].'">'.$personname."</a></td>";
+				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famspouseY."&amp;main_person=".$rel_arrayY[0][0].'">'.$personname."</a></td>";
 				
 				$persidDb=$db_functions->get_person($gednr2);
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
@@ -2287,14 +2288,14 @@ function display_table() {
 
 				print '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
 				
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
+				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
 			}
 			else { 
 				$persidDb=$db_functions->get_person($rel_arrayY[0][0]);
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0].'">'.$name2."</a></td>";
+				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$rel_arrayY[0][0].'">'.$name2."</a></td>";
 				if(($spouse==1 AND $table==1) OR ($spouse==2 AND $table==2)) {
 					print '<td style="border:0px;">&nbsp;</td>';
 					print '<td style="border:0px;">&nbsp;</td>';
@@ -2338,7 +2339,7 @@ function display_table() {
 		else {
 			$fam=$persidDb->pers_famc;
 		}
-		print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px" colspan='.$colspan.'><a href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a>";
+		print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px" colspan='.$colspan.'><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a>";
 
 		print "</td>";
 		if($spouse==2 OR $spouse==3) {
@@ -2385,7 +2386,7 @@ function display_table() {
 				else {
 					$fam=$persidDb->pers_famc;
 				}
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
+				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 				$countX=$rel_arrayX[$countX][2];
 			}
 			elseif($name1_done==0) { 
@@ -2411,17 +2412,17 @@ function display_table() {
 					if($persidDb2->pers_sexe == "M") $ext_cls = "extended_man ";
 					else $ext_cls = "extended_woman ";
 					
-					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a>";
+					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a>";
 					
 					print '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>'; 
 					
-					print '<td  class="'.$ext_cls2.'" style="width:200px;text-align:center;padding:2px" class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
+					print '<td  class="'.$ext_cls2.'" style="width:200px;text-align:center;padding:2px" class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 				}
 				else {
 					$persidDb2=$db_functions->get_person($gednr);
 					if($persidDb2->pers_sexe == "M") $ext_cls = "extended_man ";
 					else $ext_cls = "extended_woman ";
-					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a></td>";
+					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famX."&amp;main_person=".$gednr.'">'.$name1."</a></td>";
 				}
 				$name1_done=1;
 			}
@@ -2452,7 +2453,7 @@ function display_table() {
 				else {
 					$fam=$persidDb->pers_famc;
 				}
-				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
+				print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 				if($spouse==2 OR $spouse==3) {
 					print '<td style="border:0px;">&nbsp;</td>';
 					print '<td style="border:0px;">&nbsp;</td>';  
@@ -2479,7 +2480,7 @@ function display_table() {
 					else {
 						$fam=$persidDb->pers_famc;
 					}
-					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
+					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 					
 					print '<td style="border:0px;">&nbsp;&nbsp;X&nbsp;&nbsp;</td>';
 					
@@ -2487,7 +2488,7 @@ function display_table() {
 					if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 					else $ext_cls = "extended_woman ";
 					
-					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
+					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
 				}
 				else {
 					print '<td style="border:0px;width:70px">&nbsp;</td>';
@@ -2496,7 +2497,7 @@ function display_table() {
 					if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 					else $ext_cls = "extended_woman ";
 					
-					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."database=".safe_text_db($_SESSION['tree_prefix'])."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
+					print '<td class="'.$ext_cls.'" style="width:200px;text-align:center;padding:2px"><a class="search" href="'.$fampath."tree_id=".$tree_id."&amp;id=".$famY."&amp;main_person=".$gednr2.'">'.$name2."</a></td>";
 				}
 				print "</tr>";
 				$name2_done=1;
@@ -2835,13 +2836,13 @@ function display_result($result) {
 	// example: parI232;parI65;chdI2304;spoI212;parI304
 	// the par-chd-spo prefixes indicate if the person was called up by his parent, child or spouse so we can later create the graphical display
 
-	global $person, $person2, $db_functions;
+	global $person, $person2, $db_functions, $tree_id;
 
 	echo '<div class="print_version" style="padding:3px;width:auto;background-color:#eeeeee"><input type="submit" name="next_path" value="'.__('Try to find another path').'" style="font-size:115%;">';
 	echo '&nbsp;&nbsp;'.__('(With each consecutive search the path may get longer and computing time may increase!)').'</div>';
 
 	$fampath = CMS_ROOTPATH."family.php?";
-	$tree=safe_text_db($_SESSION['tree_prefix']);
+	//$tree=safe_text_db($_SESSION['tree_prefix']);
 	$map = array();	// array that will hold all data needed for the graphical display
 
 	$tracks = explode(";",$result); // $tracks is array with each person in the trail
@@ -2935,7 +2936,7 @@ function display_result($result) {
 					$pers_cls = New person_cls;
 					$name=$pers_cls->person_name($ancDb);
 					$personname=$name["name"];
-					echo "<a href='".$fampath."database=".$tree."&amp;id=".$ancDb->pers_indexnr."&amp;main_person=".$ancDb->pers_gedcomnumber."'>".$personname."</a>";
+					echo "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$ancDb->pers_indexnr."&amp;main_person=".$ancDb->pers_gedcomnumber."'>".$personname."</a>";
 					$colsp=true;
 				}
 

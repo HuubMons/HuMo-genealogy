@@ -100,7 +100,7 @@ function show_person($personDb){
 		$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
 
 			if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
-				preg_match("/($camps)/i",$personDb->pers_buried_place)!==0  OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE)  {
+				preg_match("/($camps)/i",$personDb->pers_buried_place)!==0  OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE) {
 				echo '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
 			}
 	}
@@ -705,7 +705,8 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$query.=$and."(pers_firstname ".name_qry($selection['pers_firstname'], $selection['part_firstname']);
 		//$query.=" OR event_event ".name_qry($selection['pers_firstname'], $selection['part_firstname']).')';
 		//$query.=" OR (event_kind='name' AND event_event ".name_qry($selection['pers_firstname'], $selection['part_firstname']).') )';
-		$query.=" OR (event_event ".name_qry($selection['pers_firstname'], $selection['part_firstname']).') )';
+		//$query.=" OR (event_event ".name_qry($selection['pers_firstname'], $selection['part_firstname']).') )';
+		$query.=" OR (event_kind='name' AND event_event ".name_qry($selection['pers_firstname'], $selection['part_firstname']).') )';
 		$and=" AND ";
 		$add_event_qry=true;
 	}
@@ -901,11 +902,13 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$query_select .= " FROM humo_persons";
 
 		if ($add_event_qry)
+			//$query_select .= " LEFT JOIN humo_events
+			//ON event_tree_id=pers_tree_id
+			//AND event_connect_id=pers_gedcomnumber
+			//AND event_kind='name'";
 			$query_select .= " LEFT JOIN humo_events
 			ON event_tree_id=pers_tree_id
-			AND event_connect_id=pers_gedcomnumber
-			AND event_kind='name'
-			";
+			AND event_connect_id=pers_gedcomnumber";
 		if ($add_address_qry)
 			$query_select .= " LEFT JOIN humo_connections
 			ON connect_tree_id=pers_tree_id

@@ -2130,7 +2130,8 @@ class Securimage
             $length = strlen($code['display']);
 
             for($i = 0; $i < $length; ++$i) {
-                $letter    = $code['display']{$i};
+                //$letter    = $code['display']{$i};
+                $letter    = $code['display']($i);
                 $letters[] = $letter;
             }
         }

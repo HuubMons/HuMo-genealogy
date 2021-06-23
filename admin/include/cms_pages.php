@@ -11,7 +11,7 @@ else
 
 echo '<h1 align=center>'.__('CMS Own pages').'</h1>';
 
-echo __('Here you can add your own pages to HuMo-gen! It\'s possible to use categories in the menu (like "Family history", "Family stories").');
+printf(__('Here you can add your own pages to %s! It\'s possible to use categories in the menu (like "Family history", "Family stories").'),'HuMo-genealogy');
 
 echo '<p><form method="post" action="'.$phpself.'" style="display : inline;">';
 	echo '<input type="hidden" name="page" value="'.$page.'">';
@@ -560,8 +560,8 @@ if ($cms_item=='settings'){
 
 		echo __('Path for pictures in CMS pages').':<br>';
 		//echo 'media/cms<br>';
-		echo __('To point the main humogen folder, use ../../../foldername<br>
-To point to a folder outside (and parallel to) the humogen folder, use ../../../../foldername');
+		echo __('To point the main humo-gen folder, use ../../../foldername<br>
+To point to a folder outside (and parallel to) the humo-gen folder, use ../../../../foldername');
 
 	echo '</td><td>';
 
@@ -584,8 +584,8 @@ To point to a folder outside (and parallel to) the humogen folder, use ../../../
 
 	echo '<tr><td>';
 
-		echo __('Select main homepage (welcome page for visitors) for HuMo-gen<br>
-<b>The selected CMS page will replace the main index!</b>');
+		printf(__('Select main homepage (welcome page for visitors) for %s<br>
+<b>The selected CMS page will replace the main index!</b>'),'HuMo-genealogy');
 
 	echo '</td><td>';
 

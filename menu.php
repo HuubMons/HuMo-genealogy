@@ -286,7 +286,9 @@ echo '<ul class="humo_menu_item">';
 				else{
 					$path_tmp=CMS_ROOTPATH.'info.php';
 				}
-				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('HuMo-gen info').'</a></li>';
+				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
+				printf(__('%s info'),'HuMo-genealogy');
+				echo '</a></li>';
 
 				$select_menu=''; if ($menu_choice=='credits'){ $select_menu=' id="current"'; }
 				if (CMS_SPECIFIC=='Joomla'){
@@ -295,7 +297,9 @@ echo '<ul class="humo_menu_item">';
 				else{
 					$path_tmp=CMS_ROOTPATH.'credits.php';
 				}
-				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('HuMo-gen credits').'</a></li>';
+				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
+				printf(__('%s credits'),'HuMo-genealogy');
+				echo '</a></li>';
 
 				if (!$bot_visit){
 					$select_menu=''; if ($menu_choice=='info_cookies'){ $select_menu=' id="current"'; }
@@ -305,7 +309,9 @@ echo '<ul class="humo_menu_item">';
 					else{
 						$path_tmp=CMS_ROOTPATH.'info_cookies.php';
 					}
-					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('HuMo-gen cookies').'</a></li>';
+					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
+					printf(__('%s cookies'),'HuMo-genealogy');
+					echo '</a></li>';
 				}
 
 			echo '</ul>';
@@ -637,7 +643,9 @@ echo '<ul class="humo_menu_item">';
 				else{
 					$path_tmp=CMS_ROOTPATH.'info.php';
 				}
-				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('HuMo-gen info').'</a></li>';
+				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
+				printf(__('%s info'),'HuMo-genealogy');
+				echo '</a></li>';
 
 				$select_menu=''; if ($menu_choice=='credits'){ $select_menu=' id="current"'; }
 				if (CMS_SPECIFIC=='Joomla'){
@@ -646,7 +654,9 @@ echo '<ul class="humo_menu_item">';
 				else{
 					$path_tmp=CMS_ROOTPATH.'credits.php';
 				}
-				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('HuMo-gen credits').'</a></li>';
+				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
+				printf(__('%s credits'),'HuMo-genealogy');
+				echo '</a></li>';
 
 				if (!$bot_visit){
 					$select_menu=''; if ($menu_choice=='info_cookies'){ $select_menu=' id="current"'; }
@@ -656,7 +666,9 @@ echo '<ul class="humo_menu_item">';
 					else{
 						$path_tmp=CMS_ROOTPATH.'info_cookies.php';
 					}
-					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('HuMo-gen cookies').'</a></li>';
+					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
+					printf(__('%s cookies'),'HuMo-genealogy');
+					echo '</a></li>';
 				}
 
 			echo '</ul>';

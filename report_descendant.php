@@ -633,7 +633,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		}
 
 		// *** Start person class and calculate privacy ***
-		if ($genarray[$w]["gednr"]){
+		if (isset($genarray[$w]["gednr"]) AND $genarray[$w]["gednr"]){
 			$man = $db_functions->get_person($genarray[$w]["gednr"]);
 			$man_cls= New person_cls;
 			$man_cls->construct($man);
@@ -645,7 +645,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		$bkgr="";  
 		if(($dna=="ydnamark" OR $dna=="mtdnamark" OR $dna=="ydna" OR $dna=="mtdna") AND $genarray[$w]["dna"]==1) { 
 			$bkgr = "border:3px solid #999999;background-color:".$backgr_col.";"; 
-			if($genarray[$w]["gednr"]==$base_person_gednr) {  // base person
+			if(isset($genarray[$w]["gednr"]) AND $genarray[$w]["gednr"]==$base_person_gednr) {  // base person
 				$bkgr = "border:3px solid red;background-color:".$backgr_col.";"; 
 			}
 		}
@@ -805,7 +805,8 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			}
 		}
 
-		echo $man_cls->person_popup_menu($man,true,$replacement_text,$extra_popup_text);
+		if (isset($man))
+			echo $man_cls->person_popup_menu($man,true,$replacement_text,$extra_popup_text);
 
 		echo '</div>';  // div of square
 

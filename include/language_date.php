@@ -112,6 +112,7 @@ function language_date($date_text){
 		$date_text=str_replace("BET", __('between'), $date_text);
 		$date_text=str_replace("EST", __('estimated'), $date_text);
 		$date_text=str_replace("CAL", __('calculated'), $date_text);
+		$date_text=str_replace("INT", __('interpreted'), $date_text);
 		$date_text=str_replace("AND", __('and'), $date_text);
 
 		// *** Aldfaer items ***

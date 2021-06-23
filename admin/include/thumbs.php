@@ -30,7 +30,7 @@ div.photobooktext{
 }</style>';
 
 if(CMS_SPECIFIC=="Joomla") {
-	$prefx = ''; // in joomla the base folder is the main joomla map - not the HuMo-gen admin map
+	$prefx = ''; // in joomla the base folder is the main joomla map - not the HuMo-genealogy admin map
 	$joomlastring="option=com_humo-gen&amp;task=admin&amp;";
 }
 else {
@@ -180,11 +180,10 @@ if ($show_table){
 
 				echo '<input type="text" name="tree_pict_path" value="'.$tree_pict_path.'" size="40" placeholder="../pictures/">';
 				echo ' <input type="Submit" name="change_tree_data" value="'.__('Change').'"><br>';
-				echo __('Example of picture path:<br>
-www.myhomepage.nl/humo-gen/ => folder for HuMo-gen files.<br>
+				printf(__('Example of picture path:<br>
+www.myhomepage.nl/humo-gen/ => folder for %s files.<br>
 www.myhomepage.nl/pictures/ => folder for pictures.<br>
-Use a relative path, exactly as shown here: <b>../pictures/</b>').'<br>';
-				//echo ' '.__('example: ../pictures/');
+Use a relative path, exactly as shown here: <b>../pictures/</b>'),'HuMo-genealogy');
 				echo '</form>';
 			echo '</td></tr>';
 

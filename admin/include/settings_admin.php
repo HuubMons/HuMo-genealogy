@@ -42,6 +42,26 @@ if (isset($_POST['save_option'])){
 	$result = $db_functions->update_settings('visitor_registration_group',$_POST["visitor_registration_group"]);
 	$result = $db_functions->update_settings('registration_use_spam_question',$_POST["registration_use_spam_question"]);
 
+	/*
+	***************************
+	Kai Mahnke 2020-04
+	Save email configuration settings 
+	****************************
+	*/
+	$result = $db_functions->update_settings('mail_auto',$_POST["mail_auto"]);
+	$result = $db_functions->update_settings('email_user',$_POST["email_user"]);
+	$result = $db_functions->update_settings('email_password',$_POST["email_password"]);
+	$result = $db_functions->update_settings('smtp_server',$_POST["smtp_server"]);
+	$result = $db_functions->update_settings('smtp_port',$_POST["smtp_port"]);
+	$result = $db_functions->update_settings('smtp_auth',$_POST["smtp_auth"]);
+	$result = $db_functions->update_settings('smtp_encryption',$_POST["smtp_encryption"]);
+	$result = $db_functions->update_settings('smtp_debug',$_POST["smtp_debug"]);
+	/*
+	***************************
+	End changes
+	***************************
+	*/
+
 	$result = $db_functions->update_settings('descendant_generations',$_POST["descendant_generations"]);
 
 	$result = $db_functions->update_settings('show_persons',$_POST["show_persons"]);
@@ -216,10 +236,12 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 				$select=''; if ($humo_option['default_skin']==$theme){ $select=' SELECTED'; }
 				echo '<option value="'.$theme.'"'.$select.'>'.$theme.'</option>';
 			}
-		echo '</select>';
+			echo '</select>';
 		echo '</td></tr>';
 
-		echo '<tr><td>'.__('Standard language HuMo-gen').'</td><td><select size="1" name="default_language">';
+		echo '<tr><td>';
+		printf(__('Standard language %s'),'HuMo-genealogy');
+		echo '</td><td><select size="1" name="default_language">';
 			if($langs) {
 				for($i=0; $i<count($langs); $i++) {
 					$select=''; if ($humo_option['default_language']==$langs[$i][1]){ $select=' SELECTED'; }
@@ -236,7 +258,7 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 					echo '<option value="'.$langs_admin[$i][1].'"'.$select.'>'.$langs_admin[$i][0].'</option>';
 				}
 			}
-		echo '</select>';
+			echo '</select>';
 		echo '</td></tr>';
 
 		echo '<tr><td>'.__('Text in footer for all pages').'</td><td>';
@@ -246,18 +268,24 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo '</td></tr>';
 
 		// *** Debug options ***
-		echo '<tr><td valign="top">'.__('Debug HuMo-gen front pages').'</td><td><select size="1" name="debug_front_pages">';
+		echo '<tr><td valign="top">';
+			printf(__('Debug %s front pages'),'HuMo-genealogy');
+		echo '</td><td><select size="1" name="debug_front_pages">';
 			$selected=''; if ($humo_option["debug_front_pages"]!='y') $selected=' SELECTED';
 			echo '<option value="y">'.__('Yes').'</option>';
 			echo '<option value="n"'.$selected.'>'.__('No').'</option>';
-			echo '</select> '.__('Only use this option to debug problems in HuMo-gen.');
+			echo '</select> ';
+			printf(__('Only use this option to debug problems in %s.'),'HuMo-genealogy');
 		echo '</td></tr>';
 
-		echo '<tr><td valign="top">'.__('Debug HuMo-gen admin pages').'</td><td><select size="1" name="debug_admin_pages">';
+		echo '<tr><td valign="top">';
+			printf(__('Debug %s admin pages'),'HuMo-genealogy');
+		echo '</td><td><select size="1" name="debug_admin_pages">';
 			$selected=''; if ($humo_option["debug_admin_pages"]!='y') $selected=' SELECTED';
 			echo '<option value="y">'.__('Yes').'</option>';
 			echo '<option value="n"'.$selected.'>'.__('No').'</option>';
-			echo '</select> '.__('Only use this option to debug problems in HuMo-gen.');
+			echo '</select> ';
+			printf(__('Only use this option to debug problems in %s.'),'HuMo-genealogy');
 		echo '</td></tr>';
 
 		echo '<tr class="table_header"><th colspan="2">'.__('Search engine settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
@@ -267,8 +295,8 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 			echo '<option value="j">'.__('Yes').'</option>';
 			echo '<option value="n"'.$selected.'>'.__('No').'</option>';
 			echo '</select> <b>'.__('ATTENTION: the Apache module "mod_rewrite" has to be installed!').'</b><br>';
-			echo 'URL&nbsp;&nbsp;: http://www.website.nl/humo-php/family.php?id=F12<br>';
-			echo __('becomes:').' http://www.website.nl/humo-php/family/F12/<br>';
+			echo 'URL&nbsp;&nbsp;: http://www.website.nl/humo-gen/family.php?id=F12<br>';
+			echo __('becomes:').' http://www.website.nl/humo-gen/family/F12/<br>';
 		echo '</td></tr>';
 
 		echo '<tr class="humo_color"><td>'.__('Stop search engines').'</td><td><select size="1" name="searchengine">';
@@ -280,34 +308,34 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo "<textarea cols=".$cols." rows=1 name=\"robots_option\" style='height: 20px;'>".htmlentities($humo_option["robots_option"],ENT_NOQUOTES)."</textarea></td></tr>";
 
 		echo '<tr class="humo_color"><td>'.__('Search engines:<br>Hide family tree (no indexing)<br>Show frontpage and CMS pages').'</td><td><select size="1" name="searchengine_cms_only">';
-		$selected=''; if ($humo_option["searchengine_cms_only"]!='y') $selected=' SELECTED';
-		echo '<option value="y">'.__('Yes').'</option>';
-		echo '<option value="n"'.$selected.'>'.__('No').'</option>';
+			$selected=''; if ($humo_option["searchengine_cms_only"]!='y') $selected=' SELECTED';
+			echo '<option value="y">'.__('Yes').'</option>';
+			echo '<option value="n"'.$selected.'>'.__('No').'</option>';
 		echo "</select><br></td></tr>";
 
 		echo '<tr class="table_header"><th colspan="2">'.__('Contact & registration form settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
 		echo '<tr><td>'.__('Block spam question').'<br>'.__('Block spam answer').'</td><td>';
-		echo '<input type="text" name="block_spam_question" value="'.htmlentities($humo_option["block_spam_question"],ENT_NOQUOTES).'" size="60"><br>';
-		echo '<input type="text" name="block_spam_answer" value="'.htmlentities($humo_option["block_spam_answer"],ENT_NOQUOTES).'" size="60">';
+			echo '<input type="text" name="block_spam_question" value="'.htmlentities($humo_option["block_spam_question"],ENT_NOQUOTES).'" size="60"><br>';
+			echo '<input type="text" name="block_spam_answer" value="'.htmlentities($humo_option["block_spam_answer"],ENT_NOQUOTES).'" size="60">';
 		echo '</td></tr>';
 
 		echo '<tr><td>'.__('Mail form: use spam question').'</td><td>';
-		echo '<select size="1" name="use_spam_question">';
-		$selected=''; if ($humo_option["use_spam_question"]!='y') $selected=' SELECTED';
-		echo '<option value="y">'.__('Yes').'</option>';
-		echo '<option value="n"'.$selected.'>'.__('No').'</option>';
-		echo '</select>';
+			echo '<select size="1" name="use_spam_question">';
+			$selected=''; if ($humo_option["use_spam_question"]!='y') $selected=' SELECTED';
+			echo '<option value="y">'.__('Yes').'</option>';
+			echo '<option value="n"'.$selected.'>'.__('No').'</option>';
+			echo '</select>';
 		echo '</td></tr>';
 
 		echo '<tr><td>'.__('Mail form: use newsletter question').'</td><td>';
-		echo '<a name="timeline_anchor">'; // this belongs to the timeline settings - placed here it makes the page reload with timeline line in middle of page
-		echo '<select size="1" name="use_newsletter_question">';
-		$selected=''; if ($humo_option["use_newsletter_question"]!='y') $selected=' SELECTED';
-		echo '<option value="y">'.__('Yes').'</option>';
-		echo '<option value="n"'.$selected.'>'.__('No').'</option>';
-		echo "</select> ";
-		echo __('Adds the question: "Receive newsletter: yes/ no" to the mailform.');
+			echo '<a name="timeline_anchor"></a>'; // this belongs to the timeline settings - placed here it makes the page reload with timeline line in middle of page
+			echo '<select size="1" name="use_newsletter_question">';
+			$selected=''; if ($humo_option["use_newsletter_question"]!='y') $selected=' SELECTED';
+			echo '<option value="y">'.__('Yes').'</option>';
+			echo '<option value="n"'.$selected.'>'.__('No').'</option>';
+			echo "</select> ";
+			echo __('Adds the question: "Receive newsletter: yes/ no" to the mailform.');
 		echo '</td></tr>';
 
 		echo '<tr class="humo_color"><td>'.__('Visitors can register').'</td><td><select size="1" name="visitor_registration">';
@@ -338,9 +366,89 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo '</select>';
 		echo '</td></tr>';
 
-		echo '<tr class="humo_color"><td>'.__('SMTP mails').'</td><td>';
-		echo '<b>'.__('Sometimes it\'s necessary to use SMTP to send e-mails. These settings can be changed in file: include/mail.php').'</b>';
+		/*
+		****************************
+		Kai Mahnke 2020-04
+		Added Email configuration settings that will be used in mail.php, mailform.php and registration.php
+		****************************
+		*/
+		echo '<tr class="table_header"><th colspan="2">'.__('Email Settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
+
+		echo '<tr><td>'.__('Email Settings').'</td>';
+		echo '<td>'.__('TIP: mail will work without changing these parameters at most hosting providers.').'</td></tr>';
+
+		echo '<tr><td style="white-space:nowrap;">'.__('Mail: configuration').'</td>';
+		echo '<td><select size="1" name="mail_auto">';
+		$selected=''; if ($humo_option["mail_auto"]== 'auto') $selected=' SELECTED';
+		echo '<option value="auto"'.$selected.'>'.__('auto').'</option>';
+		$selected=''; if ($humo_option["mail_auto"]== 'manual') $selected=' SELECTED';
+		echo '<option value="manual"'.$selected.'>'.__('manual').'</option>';
+		echo '</select><br>';
+		echo __('Setting: "auto" = use settings below.<br>Setting: "manual" = change settings in /include/mail.php');
 		echo '</td></tr>';
+
+		echo '<tr><td>'.__('Mail: username').'</td>';
+		echo '<td><input type="text" name="email_user" value="'.$humo_option["email_user"].'" size="32"> ';
+		echo __('Gmail: [email_address]@gmail.com');
+		echo '</td></tr>';
+
+		echo '<tr><td>'.__('Mail: password').'</td>';
+		echo '<td><input type="text" name="email_password" value="'.$humo_option["email_password"].'" size="32"></td></tr>';
+
+
+		echo '<tr><td>'.__('SMTP: mail server').'</td>';
+		echo '<td><input type="text" name="smtp_server" value="'.$humo_option["smtp_server"].'" size="32"> ';
+		echo __('Gmail: smtp.gmail.com');
+		echo '</td></tr>';
+
+		echo '<tr><td style="white-space:nowrap;">'.__('SMTP: port').'</td>';
+		echo '<td><select size="1" name="smtp_port">';
+		$selected=''; if ($humo_option["smtp_port"]== '25') $selected=' SELECTED';
+		echo '<option value="25"'.$selected.'>25</option>';
+		$selected=''; if ($humo_option["smtp_port"]== '465') $selected=' SELECTED';
+		echo '<option value="465"'.$selected.'>465</option>';
+		$selected=''; if ($humo_option["smtp_port"]== '587') $selected=' SELECTED';
+		echo '<option value="587"'.$selected.'>587</option>';
+		echo '</select> ';
+		echo __('Gmail: 587');
+		echo '</td></tr>';
+
+
+		echo '<tr><td style="white-space:nowrap;">'.__('SMTP: authentication').'</td>';
+		echo '<td><select size="1" name="smtp_auth">';
+		$selected=''; if ($humo_option["smtp_auth"]== 'true') $selected=' SELECTED';
+		echo '<option value="true"'.$selected.'>'.__('true').'</option>';
+		$selected=''; if ($humo_option["smtp_auth"]== 'false') $selected=' SELECTED';
+		echo '<option value="false"'.$selected.'>'.__('false').'</option>';
+		echo '</select> ';
+		echo __('Gmail: true');
+		echo '</td></tr>';
+
+		echo '<tr><td style="white-space:nowrap;">'.__('SMTP: encryption type').'</td>';
+		echo '<td><select size="1" name="smtp_encryption">';
+		$selected=''; if ($humo_option["smtp_encryption"]== 'tls') $selected=' SELECTED';
+		echo '<option value="tls"'.$selected.'>TLS</option>';
+		$selected=''; if ($humo_option["smtp_encryption"]== 'ssl') $selected=' SELECTED';
+		echo '<option value="ssl"'.$selected.'>SSL</option>';
+		echo '</select> ';
+		echo __('Gmail: TLS');
+		echo '</td></tr>';
+
+		echo '<tr><td style="white-space:nowrap;">'.__('SMTP: debugging').'</td>';
+		echo '<td><select size="1" name="smtp_debug">';
+		$selected=''; if ($humo_option["smtp_debug"]== '0') $selected=' SELECTED';
+		echo '<option value="0"'.$selected.'>'.__('Off').'</option>';
+		$selected=''; if ($humo_option["smtp_debug"]== '1') $selected=' SELECTED';
+		echo '<option value="1"'.$selected.'>'.__('Client').'</option>';
+		$selected=''; if ($humo_option["smtp_debug"]== '2') $selected=' SELECTED';
+		echo '<option value="2"'.$selected.'>'.__('Client and Server').'</option>';
+		echo '</select>';
+		echo '</td></tr>';
+		/*
+		***************************
+		End changes
+		***************************
+		*/
 
 		echo '<tr class="table_header"><th colspan="2">'.__('International settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
@@ -422,7 +530,7 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo '<td><input type="text" name="min_search_chars" value="'.$humo_option["min_search_chars"].'" size="4"> '.__('Minimum characters in search boxes (standard value=3. For Chinese set to 1).').'</td>';
 		echo "</tr>";
 
-		echo '<tr><td style="white-space:nowrap;">'.__('Date display').'</td>';  
+		echo '<tr><td style="white-space:nowrap;">'.__('Date display').'</td>';
 		echo '<td><select size="1" name="date_display">';
 		$selected=''; if ($humo_option["date_display"]== 'eu') $selected=' SELECTED';
 		echo '<option value="eu"'.$selected.'>'.__('Europe/Global - 5 Jan 1787').'</option>';
@@ -435,7 +543,7 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo '</select>'; 
 		echo "</td></tr>";
 
-		echo '<tr><td style="white-space:nowrap;">'.__('Order of names in reports').'</td>';  
+		echo '<tr><td style="white-space:nowrap;">'.__('Order of names in reports').'</td>';
 		echo '<td><select size="1" name="name_order">';
 		$selected=''; if ($humo_option["name_order"]== 'western') $selected=' SELECTED';
 		echo '<option value="western"'.$selected.'>'.__('Western').'</option>';
@@ -447,7 +555,27 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 
 		// timeline default
 		echo '<tr><td>'.__('Default timeline file (per language)').'</td><td>';
+
+		// *** First select language ***
+		if($langs) {
+			echo '<select onChange="window.location =\'index.php?page=settings&timeline_language=\' + this.value + \'#timeline_anchor\'; "  size="1" name="timeline_language">';
+			// *** Default language = english ***
+			echo '<option value="default_timelines"'.$select.'>English</option>'; // *** Don't add "English" in translation file! ***
+			for($i=0; $i<count($langs); $i++) { 
+				if(is_dir(CMS_ROOTPATH.'languages/'.$langs[$i][1].'/timelines/')) {
+					$select=''; if ($time_lang==$langs[$i][1]){ $select=' SELECTED'; }
+					echo '<option value="'.$langs[$i][1].'"'.$select.'>'.$langs[$i][0].'</option>';
+				}
+			}
+			echo '</select>';
+		}
+
+		echo "&nbsp;&nbsp;";
+
+		// *** First select language, then the timeline files of that language is shown ***
 		$folder=@opendir(CMS_ROOTPATH.'languages/'.$time_lang.'/timelines/');
+		// *** Default language = english ***
+		if ($time_lang=='default_timelines') $folder=@opendir(CMS_ROOTPATH.'languages/'.$time_lang);
 		if($folder !== false) {  // no use showing the option if we can't access the timeline folder
 			while (false!==($file = readdir($folder))) {
 				if (substr($file,-4,4)=='.txt') {
@@ -462,20 +590,11 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 				echo '<option value="'.$time_lang.'!'.$timeline.'@"'.$select.'>'.$timeline.'</option>';
 			}
 			echo '</select>';
+			echo "&nbsp;&nbsp;";
+			echo __('First select language, then select the default timeline for that language.');
 		}
 		@closedir($folder);
-		echo "&nbsp;&nbsp;";
 
-		if($langs) {
-			echo '<select onChange="window.location =\'index.php?page=settings&timeline_language=\' + this.value + \'#timeline_anchor\'; "  size="1" name="timeline_language">';
-			for($i=0; $i<count($langs); $i++) { 
-				if(is_dir(CMS_ROOTPATH.'languages/'.$langs[$i][1].'/timelines/')) {
-					$select=''; if ($time_lang==$langs[$i][1]){ $select=' SELECTED'; }
-					echo '<option value="'.$langs[$i][1].'"'.$select.'>'.$langs[$i][0].'</option>';
-				}
-			}
-			echo '</select>';
-		}
 		echo '</td></tr>';
 
 		echo '<tr class="table_header"><th colspan="2">'.__('Settings Main Menu').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
@@ -1080,18 +1199,10 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo '<br><input type="Submit" style="margin:3px" name="save_option3" value="'.__('Change').'">';
 		echo '</td></tr>';
 		echo '</form>';
-		/*
-			echo '<tr><td>'.__('&#134 => &infin;').'</td><td>';
-				echo '<b>'.__('Change all &#134; characters into &infin; characters in all language files.').'</b> <br>';
-				echo __('Some remarks about this option:<br>
-		If you want the &infin; characters, you have to click the link below everytime HuMo-gen is updated.<br>
-		It\'s not posssible to reverse this action, you have to re-install the language files!');
-				echo '<br><a href="../languages/change_all.php">'.__('Change all &#134; characters into &infin; characters in all language files.').'</a>';
-			echo '</td></tr>';
-		*/
+
 			echo '<tr><td>'.__('Sitemap').'</td><td>';
 				echo '<b>'.__('Sitemap').'</b> <br>';
-				echo __('A sitemap can be used for quick indexing of the HuMo-gen family screens by search engines. Add the sitemap link to a search engine (like Google), or add the link in a robots.txt file (in the root folder of your website). Example of robots.txt file, sitemap line:<br>
+				echo __('A sitemap can be used for quick indexing of the family screens by search engines. Add the sitemap link to a search engine (like Google), or add the link in a robots.txt file (in the root folder of your website). Example of robots.txt file, sitemap line:<br>
 		Sitemap: http://www.yourwebsite.com/humo-gen/sitemap.php');
 				echo '<br><a href="../sitemap.php">'.__('Sitemap').'</a>';
 			echo '</td></tr>';

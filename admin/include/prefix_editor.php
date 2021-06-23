@@ -15,10 +15,10 @@ if (isset($_POST['save_language'])){
 	$message='<b>'.__('Saved').' ';
 	if (file_exists($file)){
 		$language_text=$_POST['language_text'];
-		if (get_magic_quotes_gpc()==1) {
-			// *** magic quotes is activated, addslashes is used ***
-			$language_text = stripslashes($language_text);
-		}
+		//if (get_magic_quotes_gpc()==1) {
+		//	// *** magic quotes is activated, addslashes is used ***
+		//	$language_text = stripslashes($language_text);
+		//}
 		file_put_contents($file, $language_text);
 	}
 	else{
@@ -28,8 +28,9 @@ if (isset($_POST['save_language'])){
 
 echo '<h1 align=center>'.__('Prefix editor').'</h1>';
 
-echo '<p>'.__('This is the (name) prefix editor of HuMo-gen.<br>
-These prefixes are used to process name-prefixes if a GEDCOM file is read.');
+echo '<p>';
+printf(__('This is the (name) prefix editor.<br>
+These prefixes are used to process name-prefixes if a GEDCOM file is read.'),'HuMo-genealogy');
 
 echo '<form method="POST" action="'.$phpself2.'" style="display : inline;">';
 echo '<p><table class="humo" border="1" cellspacing="0">';

@@ -1,6 +1,6 @@
 ﻿<?php
 /**
- * php.mo 0.1 by Joss Crowcroft (http://www.josscrowcroft.com)
+ * php.mo 0.1 by Joss Crowcroft (http://www.josscrowcroft.com)	https://github.com/phpmo/php.mo/blob/master/php-mo.php
  *
  * Converts gettext translation '.po' files to binary '.mo' files in PHP.
  *
@@ -44,11 +44,24 @@ function phpmo_clean_helper($x) {
 			$x[$k] = phpmo_clean_helper($v);
 		}
 	} else {
+
+		// *** 23-05-2020 Huub: old code ***
+		//if ($x[0] == '"')
+		//	$x = substr($x, 1, -1);
+		//$x = str_replace("\"\n\"", '', $x);
+		//$x = str_replace('$', '\\$', $x);
+		//$x = @ eval ("return \"$x\";");
+
+		// *** 23-05-2020 Huub NEW Code from Github ***
+		$x = str_replace("\"\n\"", '', $x); // Remove string joints
+		$x = str_replace('\\"', '"', $x); // Unescape double quotes
+		$x = str_replace('\\\\', '\\', $x); // Unescape backslashes
+		$x = str_replace('\\n', "\n", $x); // Unescape new lines
+		$x = str_replace('$', '\\$', $x); // Escape $...
+		$x = preg_replace('/(%[0-9]+)\\\\\\$([sducoxXbgGeEfF])/', '\\1$\\2', $x); // ...except in placeholders
 		if ($x[0] == '"')
-			$x = substr($x, 1, -1);
-		$x = str_replace("\"\n\"", '', $x);
-		$x = str_replace('$', '\\$', $x);
-		$x = @ eval ("return \"$x\";");
+			$x = substr($x, 1, -1); // Remove double quotes at the beginning and at the end of the string
+
 	}
 	return $x;
 }
@@ -56,6 +69,7 @@ function phpmo_clean_helper($x) {
 /* Parse gettext .po files. */
 /* @link http://www.gnu.org/software/gettext/manual/gettext.html#PO-Files */
 function phpmo_parse_po_file($in) {
+
 	// read .po file
 	$fc = file_get_contents($in);
 
@@ -63,7 +77,6 @@ function phpmo_parse_po_file($in) {
 //	\n"
 //$fc = str_replace('\n"', '', $fc);
 
-	
 	// normalize newlines
 	$fc = str_replace(array (
 		"\r\n",
@@ -87,8 +100,23 @@ function phpmo_parse_po_file($in) {
 		if ($line === '')
 			continue;
 
-		@list ($key, $data) = explode(' ', $line, 2);
-
+		//@list ($key, $data) = explode(' ', $line, 2);
+		//list ($key, $data) = explode(' ', $line, 2);
+		//list ($key, $data) = array_pad(preg_split('/\s/', $line, 2), 2, null);
+		//$pairs = preg_split('/\s/', $line, 2); if (count($pairs) === 1) $pairs[] = ''; list ($key, $data) = $pairs; 
+		// *** 23 may 2020 Huub: solve undefined offset problem (solution found at github) ***
+		if( count(preg_split('/\s/', $line, 2)) > 1 ) {
+			list ($key, $data) = preg_split('/\s/', $line, 2);
+		}
+		else {
+			$key = $line;
+			$data = $line;
+		}
+		if ($data === '') {
+			continue;
+		}
+//echo $key.'<br>';
+//echo $line.'<br>';
 		switch ($key) {
 			case '#,' : // flag...
 				$fuzzy = in_array('fuzzy', preg_split('/,\s*/', $data));
@@ -113,6 +141,8 @@ function phpmo_parse_po_file($in) {
 				// context
 			case 'msgid' :
 				// untranslated-string
+				// 23-05-2020 Huub: added code from Github ***
+				//$last_msgid = $data;
 			case 'msgid_plural' :
 				// untranslated-string-plural
 				$state = $key;
@@ -164,7 +194,10 @@ function phpmo_parse_po_file($in) {
 			}
 		}
 		if($entry['msgstr'][0]=='') { $entry['msgstr'][0] = $entry['msgid'];  }
+		// *** 23-05-2020 Huub: changed code (from Github) ***
 		$hash[$entry['msgid']] = $entry;
+		//if (!empty($entry['msgid']) && implode('', $entry['msgstr']))
+		//	$hash[$entry['msgid'] . $entry['msgctxt']] = $entry;
 	}
 
 	return $hash;
@@ -233,7 +266,6 @@ function phpmo_write_mo_file($hash, $out) {
 	$mo .= $ids;
 	// strings
 	$mo .= $strings;
-
 	file_put_contents($out, $mo);
 }
 ?>

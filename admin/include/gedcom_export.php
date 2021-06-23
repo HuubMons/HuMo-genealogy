@@ -1,7 +1,7 @@
 <?php
 
 /**
-* This is the GEDCOM processing file for HuMo-gen.
+* This is the GEDCOM processing file for HuMo-genealogy.
 *
 * If you are reading this in your web browser, your server is probably
 * not configured correctly to run PHP applications!
@@ -425,8 +425,9 @@ if (isset($_POST['remove_gedcom'])){
 	echo '<h2>'.__('GEDCOM file is REMOVED.').'</h2>';
 }
 
-echo __('<b>Don\'t use a GEDCOM file as a backup for your genealogical data!</b> A GEDCOM file is only usefull to exchange genealogical data with other genealogical program\'s.
-Use "Database backup" for a proper backup.').'<br><br>';
+echo '<b>'.__('Don\'t use a GEDCOM file as a backup for your genealogical data!').'</b><br>';
+echo __('A GEDCOM file is only usefull to exchange genealogical data with other genealogical programs.').'<br>';
+echo __('Use "Database backup" for a proper backup.').'<br><br>';
 
 if (CMS_SPECIFIC=='Joomla'){
 	echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=export" style="display : inline;">';
@@ -650,7 +651,8 @@ echo '<tr><td>'.__('GEDCOM export').'</td><td>';
 	echo ' <input type="Submit" name="submit_button" value="'.__('Start export').'">';
 
 	// *** Show processed lines ***
-	if (isset($_POST["tree"]) AND isset($_POST['submit_button'])){
+	//if (isset($_POST["tree"]) AND isset($_POST['submit_button'])){
+	if (isset($_POST['submit_button'])){
 		$line_nr=0;
 		echo ' <div id="information" style="display: inline;"></div> '.__('Processed lines...');
 	}
@@ -695,10 +697,10 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 $buffer='';
 //if ($gedcom_char_set=='UTF-8') $buffer.= "\xEF\xBB\xBF"; // *** Add BOM header to UTF-8 file ***
 $buffer.="0 HEAD\r\n";
-$buffer.="1 SOUR HuMo-gen\r\n";
+$buffer.="1 SOUR HuMo-genealogy\r\n";
 $buffer.="2 VERS ".$humo_option["version"]."\r\n";
-$buffer.="2 NAME HuMo-gen\r\n";
-$buffer.="2 CORP HuMo-gen genealogical software\r\n";
+$buffer.="2 NAME HuMo-genealogy\r\n";
+$buffer.="2 CORP HuMo-genealogy software\r\n";
 $buffer.="3 ADDR http://www.humo-gen.com\r\n";
 $buffer.="1 SUBM @S1@\r\n";
 $buffer.="1 GEDC\r\n";
@@ -1043,12 +1045,12 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 		else { $buffer.='1 FAMC @'.$person->pers_famc."@\r\n"; }
 	}
 
-	// *** Privacy filter, HuMo-gen, Haza-data ***
+	// *** Privacy filter, HuMo-genealogy, Haza-data ***
 	if ($person->pers_alive == 'alive'){
 		$buffer.="1 EVEN\r\n";
 		$buffer.="2 TYPE living\r\n";
 	}
-	// *** Privacy filter option for HuMo-gen ***
+	// *** Privacy filter option for HuMo-genealogy ***
 	if ($person->pers_alive == 'deceased'){
 		$buffer.="1 EVEN\r\n";
 		$buffer.="2 TYPE deceased\r\n";
@@ -1141,7 +1143,7 @@ while($families=$families_qry->fetch(PDO::FETCH_OBJ)){
 		else { $buffer.='1 WIFE @'.$family->fam_woman."@\r\n"; }
 	}
 
-	// *** Pro-gen & HuMo-gen: Living together ***
+	// *** Pro-gen & HuMo-genealogy: Living together ***
 	if ($family->fam_relation_date OR $family->fam_relation_place OR $family->fam_relation_text){
 		$buffer.="1 _LIV\r\n";
 

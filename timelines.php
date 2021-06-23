@@ -7,7 +7,7 @@ include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
 $process_age = New calculate_year_cls;
 
 if(isset($_GET['id'])) $id=$_GET['id'];
-@$personDb = $db_functions->get_person($id);
+$personDb = $db_functions->get_person($id);
 
 $isborn=0; $isdeath=0; $ismarr=0; $ischild=0;
 $deathtext=''; $borntext=''; $bapttext=''; $burrtext=''; $marrtext= Array();
@@ -408,7 +408,7 @@ if(isset($_POST['step'])) $step=$_POST['step'];
 $tml = $filenames[0][1]; // if default is not set the first file will be checked
 if(isset($_POST['tml'])) $tml=$_POST['tml'];
 elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timeline']!="") {
-	
+
 	$str = explode("@",substr($humo_option['default_timeline'],0,-1));  // humo_option is: nl!europa@de!Sweitz@en!british  etc.
 	$val_arr = Array();
 	foreach($str AS $value) {
@@ -425,6 +425,15 @@ elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timelin
 	if(isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$val_arr[$selected_language].".txt")) {
 		$tml= $val_arr[$selected_language];
 	}
+
+// *** Use timeline file from default folder ***
+$selected_language2='default_timelines';
+//echo $val_arr[$selected_language2].'!!!!!';
+if(!isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language2].".txt")) {
+	$tml= $val_arr[$selected_language2];
+}
+
+
 }
 $default=false; if($tml==$filenames[0][1]) $default=true;
 
@@ -494,7 +503,7 @@ The timeline menu:<br>
 		$checked=false;
 		for ($i=0; $i<count($filenames); $i++){
 			echo '<span class="select_box"><input type="radio" name="tml" value="'.$filenames[$i][1].'"';
-			
+
 			if($i==0 AND $default == true) {
 				echo ' checked="checked"'; $checked=true;
 			}
@@ -502,6 +511,9 @@ The timeline menu:<br>
 				echo ' checked="checked"'; $checked=true;
 			}
 			elseif($checked==false AND isset($humo_option['default_timeline']) AND strpos($humo_option['default_timeline'],$selected_language."!".$filenames[$i][1]."@") !== false) {
+				echo ' checked="checked"'; $checked=true;
+			}
+			elseif($checked==false AND isset($humo_option['default_timeline']) AND strpos($humo_option['default_timeline'],$selected_language2."!".$filenames[$i][1]."@") !== false) {
 				echo ' checked="checked"';
 			}
 			echo ' >'.$filenames[$i][1].'</span>';
@@ -692,7 +704,9 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 	// DISPLAY YEAR/PERIOD (2nd column)
 	$period='';
 	if($step!=1) {
-		$period="-".($yr+$step)+1;
+		//$period="-".($yr+$step)+1;   // not allowed in PHP 7.4.
+		$tmp=($yr+$step)+1;
+		$period="-".$tmp;
 	}
 	echo "<td style='width:".$yearwidth."px;padding:4px;text-align:center;vertical-align:top;font-weight:bold;font-size:120%'>".$yr.$period."</td>";
 

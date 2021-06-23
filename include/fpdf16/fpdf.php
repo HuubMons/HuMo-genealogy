@@ -1073,8 +1073,8 @@ function _dochecks()
 	if(ini_get('mbstring.func_overload') & 2)
 		$this->Error('mbstring overloading must be disabled');
 	//Disable runtime magic quotes
-	if(get_magic_quotes_runtime())
-		@set_magic_quotes_runtime(0);
+	//if(get_magic_quotes_runtime())
+	//	@set_magic_quotes_runtime(0);
 }
 
 function _getpageformat($format)

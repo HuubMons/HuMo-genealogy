@@ -1,7 +1,7 @@
 <?php
 // *********************************************************************
 // *** Proces marriage data                                          ***
-// *** Class for HuMo-gen program                                    ***
+// *** Class for HuMo-genealogy program                              ***
 // *********************************************************************
 //error_reporting(E_ALL);
 class marriage_cls{
@@ -234,7 +234,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		$temp="wedd_text";
 		$temp_text.= $templ_relation["wedd_text"];
 	}
-	// *** Aldfaer/ HuMo-gen: show witnesses ***
+	// *** Aldfaer/ HuMo-genealogy: show witnesses ***
 	if ($marriageDb->fam_gedcomnumber){
 		$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness','family');
 		if ($temp_text2){
@@ -335,7 +335,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		$temp="chur_text";
 		$temp_text.= $templ_relation["chur_text"];
 	}
-	// *** Aldfaer/ HuMo-gen show witnesses ***
+	// *** Aldfaer/ HuMo-genealogy show witnesses ***
 	if ($marriageDb->fam_gedcomnumber){
 		$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness_rel','family');
 		if ($temp_text2){

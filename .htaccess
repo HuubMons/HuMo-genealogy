@@ -1,9 +1,3 @@
-# Remove # in next line to switch register_globals ON.
-#php_flag register_globals off
-
-# Remove # in next line to switch magic_qoutes_gpc ON.
-#php_flag magic_quotes_gpc on
-
 # Remove # in next line to suppress fault messages.
 #php_flag display_errors off
 

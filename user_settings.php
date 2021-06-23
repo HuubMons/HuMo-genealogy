@@ -42,13 +42,13 @@ if (isset($_POST['send_mail'])){
 		// *** Mail new registered user to the administrator ***
 		$register_address=$dataDb->tree_email;
 
-		$register_subject="HuMo-gen. ".__('Updated profile').": ".$userDb->user_name."\n";
+		$register_subject="HuMo-genealogy. ".__('Updated profile').": ".$userDb->user_name."\n";
 
 		// *** It's better to use plain text in the subject ***
 		$register_subject=strip_tags($register_subject,ENT_QUOTES);
 
-		$register_message =__('Message sent through HuMo-gen from the website.')."<br>\n";
-		$register_message .="<br>\n";
+		$register_message = sprintf(__('Message sent through %s from the website.'),'HuMo-genealogy');
+		$register_message .="<br><br>\n";
 		$register_message .=__('User updated his/ her profile')."<br>\n";
 		$register_message .=__('Name').':'.$userDb->user_name."<br>\n";
 		$register_message .=__('E-mail').": <a href='mailto:".$_POST['register_mail']."'>".$_POST['register_mail']."</a><br>\n";
