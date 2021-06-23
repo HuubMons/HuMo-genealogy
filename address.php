@@ -10,8 +10,11 @@ if ($user['group_addresses']!='j'){
 
 include_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/person_cls.php");
+include_once(CMS_ROOTPATH."include/show_sources.php");
+include_once(CMS_ROOTPATH."include/show_picture.php");
 
 echo '<table class="humo standard">';
+
 echo '<tr><td><h2>'.__('Address').'</h2>';
 
 $addressDb = $db_functions->get_address($_GET['gedcomnumber']);
@@ -24,10 +27,17 @@ if (@$addressDb->address_text){ echo '</td></tr><tr><td>'.nl2br($addressDb->addr
 
 // *** show pictures here ? ***
 
-$person_cls = New person_cls;
+// *** Show source by addresss ***
+$source='';
+$source=show_sources2("address","address_source",$addressDb->address_id).' ';
+if ($source){
+	echo '</td></tr><tr><td>';
+	echo '<b>'.__('Source').' '.$source;
+}
 
-echo "</td></tr><tr><td>";
+echo '</td></tr><tr><td>';
 
+	$person_cls = New person_cls;
 	// *** Search address in connections table ***
 	$event_qry = $db_functions->get_connections('person_address',$_GET['gedcomnumber']);
 	foreach($event_qry as $eventDb){
@@ -44,5 +54,13 @@ echo "</td></tr><tr><td>";
 	unset($event_qry); // *** If finished, remove data from memory ***
 
 echo '</td></tr></table>';
+
+
+// *** If source footnotes are selected, show them here ***
+if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_presentation']=='footnote'){
+	echo show_sources_footnotes();
+}
+
+
 include_once(CMS_ROOTPATH."footer.php");
 ?>

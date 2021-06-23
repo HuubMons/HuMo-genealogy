@@ -2264,6 +2264,7 @@ if (isset($_POST['change_address_id'])){
 			address_place='".$editor_cls->text_process($_POST["address_place_".$key])."',
 			address_text='".$editor_cls->text_process($_POST["address_text_".$key])."',
 			address_phone='".$editor_cls->text_process($_POST["address_phone_".$key])."',
+			address_zip='".$editor_cls->text_process($_POST["address_zip_".$key])."',
 			address_changed_user='".$username."',
 			address_changed_date='".$gedcom_date."',
 			address_changed_time='".$gedcom_time."'

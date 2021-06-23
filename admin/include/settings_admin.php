@@ -41,6 +41,7 @@ if (isset($_POST['save_option'])){
 	$result = $db_functions->update_settings('general_email',$_POST["general_email"]);
 	$result = $db_functions->update_settings('visitor_registration_group',$_POST["visitor_registration_group"]);
 	$result = $db_functions->update_settings('registration_use_spam_question',$_POST["registration_use_spam_question"]);
+	$result = $db_functions->update_settings('password_retreival',$_POST["password_retreival"]);
 
 	/*
 	***************************
@@ -365,6 +366,9 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo '<option value="n"'.$selected.'>'.__('No').'</option>';
 		echo '</select>';
 		echo '</td></tr>';
+
+		echo '<tr><td>'.__('Password forgotten e-mail address').'</td>';
+		echo '<td><input type="text" name="password_retreival" value="'.$humo_option["password_retreival"].'" size="40" placeholder="no-reply@your-website.com"> '.__('To enable password forgotten option: set a sender e-mail address.').'</td></tr>';
 
 		/*
 		****************************

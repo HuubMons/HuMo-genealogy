@@ -6,8 +6,20 @@ function update_v3_1(){
 	// *** HuMo-genealogy update 1 (V3.1) ***
 	// ********************************
 	global $dbh;
-	$update_check = @$dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
-	$update_check2 = @$dbh->query("SELECT * FROM humo_stambomen_tekst LIMIT 0,1");
+	$update_check=false;
+	try{
+		$update_check = @$dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
+	} catch (Exception $e) {
+		//
+	}
+
+	$update_check2=false;
+	try{
+		$update_check2 = @$dbh->query("SELECT * FROM humo_stambomen_tekst LIMIT 0,1");
+	} catch (Exception $e) {
+		//
+	}
+
 	if ($update_check OR $update_check2){
 		echo '<tr><td>Check table humo_tree_texts</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -57,7 +69,12 @@ function update_v4_6(){
 	// *** HuMo-genealogy update 4 (V4.6) ***
 	// ********************************
 	global $dbh;
-	$update_check_sql = $dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
+	$update_check_sql=false;
+	try{
+		$update_check_sql = $dbh->query("SELECT * FROM humo_tree_texts LIMIT 0,1");
+	} catch (Exception $e) {
+		//
+	}
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_tree_texts 2</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -115,8 +132,21 @@ function update_v3_2(){
 	// *** HuMo-genealogy update 2 (V3.2) ***
 	// ********************************
 	global $dbh;
-	$update_check = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
-	$update_check2 = $dbh->query("SELECT * FROM humo_stat_datum LIMIT 0,1");
+
+	$update_check=false;
+	try{
+		$update_check = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
+	} catch (Exception $e) {
+		//
+	}
+
+	$update_check2=false;
+	try{
+		$update_check2 = $dbh->query("SELECT * FROM humo_stat_datum LIMIT 0,1");
+	} catch (Exception $e) {
+		//
+	}
+
 	if ($update_check OR $update_check2) {
 		echo '<tr><td>Check table humo_stat_date</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -146,7 +176,12 @@ function update_v3_2(){
 		echo '</td></tr>';
 	}
 
-	$update_check_sql = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
+	$update_check_sql=false;
+	try{
+		$update_check_sql = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
+	} catch (Exception $e) {
+		//
+	}
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_stat_date 2</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -205,7 +240,13 @@ function update_v4_6_update_2(){
 	// *** HuMo-genealogy update 4 (V4.6) ***
 	// ********************************
 	global $dbh;
-	$update_check_sql = $dbh->query("SELECT * FROM humo_settings LIMIT 0,1");
+	$update_check_sql=false;
+	try{
+		$update_check_sql = $dbh->query("SELECT * FROM humo_settings LIMIT 0,1");
+	} catch (Exception $e) {
+		//
+	}
+
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_settings</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -253,7 +294,12 @@ function update_v4_6_update_2(){
 	$sql='UPDATE humo_settings SET setting_value="fr" WHERE setting_value="talen/taal-francais.php"';
 	$result=$dbh->query($sql);
 
-	$update_check_sql = $dbh->query("SELECT * FROM humo_trees LIMIT 0,1");
+	$update_check_sql=false;
+	try{
+		$update_check_sql = $dbh->query("SELECT * FROM humo_trees LIMIT 0,1");
+	} catch (Exception $e) {
+		//
+	}
 	if ($update_check_sql){
 		echo '<tr><td>Check table humo_trees</td><td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -337,7 +383,13 @@ function update_v4_6_update_2(){
 
 
 	echo '<tr><td>Check table humo_user_log</td>';
-	$update_check_sql = $dbh->query("SELECT * FROM humo_user_log LIMIT 0,1");
+	$update_check_sql=false;
+	try{
+		$update_check_sql = $dbh->query("SELECT * FROM humo_user_log LIMIT 0,1");
+	} catch (Exception $e) {
+		//
+	}
+
 	if ($update_check_sql){
 		echo '<td style="background-color:#00FF00">OK</td></tr>';
 	}
@@ -1314,7 +1366,11 @@ function update_v4_8(){
 			ADD source_repo_gedcomnr VARCHAR(20) CHARACTER SET utf8 DEFAULT '' AFTER source_repo_page";
 		$result=$dbh->query($sql);
 		// *** Repositories table ***
-		$tbldb = $dbh->query("DROP TABLE ".$updateDb->tree_prefix."repositories"); // Remove table.
+		try{
+			$tbldb = $dbh->query("DROP TABLE ".$updateDb->tree_prefix."repositories"); // Remove table.
+		} catch (Exception $e) {
+			//
+		}
 		// *** Generate new table ***
 		print '<br>'.__('creating repositories...').'<br>';
 		$tbldb = $dbh->query("CREATE TABLE ".$updateDb->tree_prefix."repositories (
@@ -1337,7 +1393,11 @@ function update_v4_8(){
 			repo_changed_time varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY (`repo_id`)) DEFAULT CHARSET=utf8");
 		// *** Sources connections table ***
-		$tbldb = $dbh->query("DROP TABLE ".$updateDb->tree_prefix."connections"); // Remove table.
+		try{
+			$tbldb = $dbh->query("DROP TABLE ".$updateDb->tree_prefix."connections"); // Remove table.
+		} catch (Exception $e) {
+			//
+		}
 		// *** Generate new table ***
 		print ' '.__('creating connections...');
 		$tbldb = $dbh->query("CREATE TABLE ".$updateDb->tree_prefix."connections (
@@ -1598,7 +1658,11 @@ function update_v4_8_2(){
 
 	echo '<tr><td>HuMo-genealogy update V4.8.2</td><td style="background-color:#00FF00">';
 
-	$db_update = $dbh->query("DROP TABLE humo_cms_menu");
+	try{
+		$db_update = $dbh->query("DROP TABLE humo_cms_menu");
+	} catch (Exception $e) {
+		//
+	}
 	print __('creating humo_cms_menu...').'<br>';
 	$db_update = $dbh->query("CREATE TABLE humo_cms_menu (
 		menu_id int(10) NOT NULL AUTO_INCREMENT,
@@ -1607,7 +1671,11 @@ function update_v4_8_2(){
 		menu_name varchar(25) CHARACTER SET utf8 DEFAULT '',
 		PRIMARY KEY (`menu_id`)
 		) DEFAULT CHARSET=utf8");
-	$db_update = $dbh->query("DROP TABLE humo_cms_pages");
+	try{
+		$db_update = $dbh->query("DROP TABLE humo_cms_pages");
+	} catch (Exception $e) {
+		//
+	}
 	print __('creating humo_cms_pages...').'<br>';
 	$db_update = $dbh->query("CREATE TABLE humo_cms_pages (
 		page_id int(10) NOT NULL AUTO_INCREMENT,
@@ -1683,7 +1751,7 @@ function update_v4_8_9(){
 		}
 
 		// *** Batch processing ***
-		$dbh->beginTransaction();
+		//$dbh->beginTransaction();
 
 			if (!isset($field['pers_unprocessed_tags'])){
 				// *** Update person table ***
@@ -1755,7 +1823,7 @@ function update_v4_8_9(){
 			$result=$dbh->query($sql);
 
 		// *** Commit data in database ***
-		$dbh->commit();
+		//$dbh->commit();
 	}
 
 	$sql="ALTER TABLE humo_users
@@ -2627,6 +2695,7 @@ function update_v5_1(){
 			$dbh->beginTransaction();
 				$sql_get=$dbh->query("SELECT * FROM ".$updateDb->tree_prefix."events");
 				while ($getDb=$sql_get->fetch(PDO::FETCH_OBJ)){
+//event_event='".$getDb->event_event."',
 					$sql_put="INSERT INTO humo_events SET
 					event_tree_id='".$updateDb->tree_id."',
 					event_gedcomnr='".$getDb->event_gedcomnr."',
@@ -2634,7 +2703,7 @@ function update_v5_1(){
 					event_person_id='".$getDb->event_person_id."',
 					event_family_id='".$getDb->event_family_id."',
 					event_kind='".$getDb->event_kind."',
-					event_event='".$getDb->event_event."',
+					event_event='".safe_text_db($getDb->event_event)."',
 					event_event_extra='".safe_text_db($getDb->event_event_extra)."',
 					event_gedcom='".$getDb->event_gedcom."',
 					event_date='".$getDb->event_date."',
@@ -3047,7 +3116,7 @@ function update_v5_2_5(){
 	ob_flush(); flush(); // IE
 
 	// *** Batch processing ***
-	$dbh->beginTransaction();
+	//$dbh->beginTransaction();
 
 		// *** Update for 2 TYPE including long text: "2 TYPE E-mail adres" ***
 		$sql="ALTER TABLE humo_events CHANGE event_gedcom event_gedcom VARCHAR(25) CHARACTER SET utf8,
@@ -3105,8 +3174,13 @@ function update_v5_2_5(){
 		// *** Show status of database update ***
 		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update connect table";</script>'; ob_flush(); flush(); // IE
 
-		$sql="ALTER TABLE humo_location CHANGE location_id location_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
-		$result=$dbh->query($sql);
+		try{
+			$sql="ALTER TABLE humo_location CHANGE location_id location_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
+			$result=$dbh->query($sql);
+		} catch (Exception $e) {
+			//
+		}
+
 		// *** Show status of database update ***
 		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update location table";</script>'; ob_flush(); flush(); // IE
 
@@ -3154,16 +3228,22 @@ function update_v5_2_5(){
 			CHANGE stat_gedcom_woman stat_gedcom_woman varchar(25) CHARACTER SET utf8";
 		$result=$dbh->query($sql);
 
-		$sql="ALTER TABLE humo_stat_date
-			CHANGE note_pers_gedcomnumber note_pers_gedcomnumber varchar(25) CHARACTER SET utf8,
-			CHANGE note_fam_gedcomnumber note_pers_gedcomnumber varchar(25) CHARACTER SET utf8";
-		$result=$dbh->query($sql);
+		// *** Table humo_users_notes isn't always available ***
+		try{
+			$sql="ALTER TABLE humo_users_notes
+				CHANGE note_pers_gedcomnumber note_pers_gedcomnumber varchar(25) CHARACTER SET utf8,
+				CHANGE note_fam_gedcomnumber note_fam_gedcomnumber varchar(25) CHARACTER SET utf8";
+			$result=$dbh->query($sql);
+		}
+		catch (Exception $e) {
+			//
+		}
 
 		// *** Update "update_status" to number 11 ***
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='11' WHERE setting_variable='update_status'");
 
 	// *** Commit data in database ***
-	$dbh->commit();
+	//$dbh->commit();
 
 	// *** Show status of database update ***
 	echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Database updated!";</script>'; ob_flush(); flush(); // IE
@@ -3172,7 +3252,7 @@ function update_v5_2_5(){
 
 function update_v5_6_1(){
 	// **************************************
-	// *** Update procedure version 5.2.5 ***
+	// *** Update procedure version 5.6.1 ***
 	// **************************************
 
 	global $dbh;
@@ -3183,7 +3263,7 @@ function update_v5_6_1(){
 	ob_flush(); flush(); // IE
 
 	// *** Batch processing ***
-	$dbh->beginTransaction();
+	//$dbh->beginTransaction();
 
 		// *** Add user_password_salted field to humo_users table ***
 		$result = $dbh->query("SHOW COLUMNS FROM `humo_users` LIKE 'user_password_salted'");
@@ -3296,7 +3376,7 @@ function update_v5_6_1(){
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='12' WHERE setting_variable='update_status'");
 
 	// *** Commit data in database ***
-	$dbh->commit();
+	//$dbh->commit();
 
 	// *** Show status of database update ***
 	echo '<script type="text/javascript">document.getElementById("information v5_6_1").innerHTML="Database updated!";</script>'; ob_flush(); flush(); // IE

@@ -409,7 +409,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$text.=__('Profession').'</td>';
 		$text.='<td style="border-right:0px;"></td>';
 		$text.='<td style="border-left:0px;">';
-	
+
 		if (isset($_GET['add_person'])){
 			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
 		}
@@ -1006,6 +1006,11 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$check=''; //if (isset($xx) AND $xx=='y'){ $check=' checked'; }
 			$text.='<br>'.__('Also change').' <input type="checkbox" name="pers_colour_desc['.$data_listDb->event_id.']" '.$check.'> '.__('Descendants');
 			$text.='<input type="checkbox" name="pers_colour_anc['.$data_listDb->event_id.']" '.$check.'> '.__('Ancestors');
+		}
+
+		// *** profession ***
+		elseif ($data_listDb->event_kind=='profession'){
+			$text.='<textarea rows="1" name="text_event['.$data_listDb->event_id.']" '.$field_text.' placeholder="'.__('Profession').'">'.$editor_cls->text_show($data_listDb->event_event).'</textarea>';
 		}
 
 		else{

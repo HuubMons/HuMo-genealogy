@@ -6,8 +6,6 @@ include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."menu.php");
 
 $captcha=false;
-//if(file_exists(CMS_ROOTPATH."securimage")) {
-//	require_once(CMS_ROOTPATH."securimage/securimage.php");
 if(file_exists("include/securimage")) {
 	require_once("include/securimage/securimage.php");
 	$captcha=true;
@@ -36,15 +34,16 @@ else {
 
 // form to enter username and mail in order to receive reset link
 if(isset($_POST['forgotpw'])) { 
-	print '<form name="pw_email_form" method="post" action="'.$path_tmp.'">';
-		print '<br><table class="humo" cellspacing="0" align="center">';
+	echo '<form name="pw_email_form" method="post" action="'.$path_tmp.'">';
+		echo '<br><table class="humo" cellspacing="0" align="center">';
 		echo '<tr class="table_headline"><th class="fonts" colspan="2">'.__('Password retrieval').'</th></tr>';
-		print '<tr><td>'.__('Username').':</td><td><input class="fonts" name="pw_username" type="text" size="20" maxlength="25"></td></tr>';
-		print '<tr><td>'.__('Email').':</td><td><input class="fonts" name="got_email" type="text" size="20" maxlength="50"></td></tr>';
-		if($captcha===true) {print '<tr><td>'.__('Captcha').':</td><td>'; echo Securimage::getCaptchaHtml(); echo '</td></tr>';}
-		print '<tr><td><br></td><td><input class="fonts" type="submit" name="Submit" value="'.__('Send').'"></td></tr>';
-		print '</table>';
-	print '</form>';
+		// *** An e-mail adres is necessary for password retreival, option Username is disabled ***
+		//print '<tr><td>'.__('Username').':</td><td><input class="fonts" name="pw_username" type="text" size="20" maxlength="25"></td></tr>';
+		echo '<tr><td>'.__('Email').':</td><td><input class="fonts" name="got_email" type="text" size="20" maxlength="50"></td></tr>';
+		if($captcha===true) { echo '<tr><td>'.__('Captcha').':</td><td>'; echo Securimage::getCaptchaHtml(); echo '</td></tr>';}
+		echo '<tr><td><br></td><td><input class="fonts" type="submit" name="Submit" value="'.__('Send').'"></td></tr>';
+		echo '</table>';
+	echo '</form>';
 }
 
 // process email address and username, create random key and mail its link to user
@@ -59,7 +58,6 @@ elseif(isset($_POST['got_email'])) {
 	$pw_table->execute();
 	
 	$email=safe_text_db($_POST['got_email']);
-	$pw_username = safe_text_db($_POST['pw_username']);
 
  	function getUrl() {
 		$url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
@@ -75,10 +73,10 @@ elseif(isset($_POST['got_email'])) {
 		$msg=__('Your email address is not correct')."<br>"; 
 		$status= "NOTOK";
 	}
-	if($pw_username==''){ 
-		$msg .=__('You have to enter your username')."<br>"; 
-		$status= "NOTOK";
-	}
+	//if($pw_username==''){ 
+	//	$msg .=__('You have to enter your username')."<br>"; 
+	//	$status= "NOTOK";
+	//}
 	if($captcha===true) {
 		$image = new Securimage();
 		if ($image->check($_POST['captcha_code']) !== true) {
@@ -90,43 +88,45 @@ elseif(isset($_POST['got_email'])) {
 
 	if($status=="OK"){
 
-		$countmail=$dbh->prepare("SELECT user_mail FROM humo_users WHERE user_mail = '".$email."'");
+		$countmail=$dbh->prepare("SELECT user_id, user_mail, user_name FROM humo_users WHERE user_mail = '".$email."'");
 		$countmail->execute();
+		$row = $countmail->fetch(PDO::FETCH_OBJ);
 		$no_mail=$countmail->rowCount();
 
-		$countuser=$dbh->prepare("SELECT user_name FROM humo_users WHERE user_name = '".$pw_username."'");
-		$countuser->execute();
-		$no_user=$countuser->rowCount();
+		//$countuser=$dbh->prepare("SELECT user_name FROM humo_users WHERE user_name = '".$pw_username."'");
+		//$countuser->execute();
+		//$no_user=$countuser->rowCount();
   
-		$count=$dbh->prepare("SELECT user_mail, user_name FROM humo_users WHERE user_name = '".$pw_username."' AND user_mail = '".$email."'");
-		$count->execute();
-		$row = $count->fetch(PDO::FETCH_OBJ);
-		$no=$count->rowCount();
+		//$count=$dbh->prepare("SELECT user_mail, user_name FROM humo_users WHERE user_name = '".$pw_username."' AND user_mail = '".$email."'");
+		//$count->execute();
+		//$row = $count->fetch(PDO::FETCH_OBJ);
+		//$no=$count->rowCount();
 
-		if ($no == 0) {  
+		if ($no_mail == 0) {
 			echo '<br><table class="humo" cellspacing="0" align="center">';
 			echo '<tr class="table_headline"><th class="fonts">'.__('Error').'</th></tr>';
 			echo '<tr><td style="font-weight:bold;color:red">';
-			if ($no_mail == 0 AND $no_user !=0) { // mail doesn't exist, username does
+			//if ($no_mail == 0 AND $no_user !=0) { // mail doesn't exist, username does
+			if ($no_mail == 0) { // mail doesn't exist, username does
 				echo __('This email address was not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
 			}
-			elseif ($no_mail != 0 AND $no_user ==0) { // username doesn't exist, mail does
-				echo __('This username was not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
-			}
-			elseif ($no_mail == 0 AND $no_user ==0) { // username and mail don't exist
-				echo __('This username and mail were not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
-			}
-			else  { // username and mail both exist, but not together
-				echo __('This combination of username and email was not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
-			}
+			//elseif ($no_mail != 0 AND $no_user ==0) { // username doesn't exist, mail does
+			//	echo __('This username was not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
+			//}
+			//elseif ($no_mail == 0 AND $no_user ==0) { // username and mail don't exist
+			//	echo __('This username and mail were not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
+			//}
+			//else  { // username and mail both exist, but not together
+			//	echo __('This combination of username and email was not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
+			//}
 			echo "</td></tr><tr><td style='text-align:center'><input type='button' value='".__('Retry')."' onClick='history.go(-1)'></td>"; 
 			echo "</tr></table>";
 			exit;
 		} 
 
-		// check if activation is pending 
+		// *** Check if activation is pending ***
 		$tm=time() - 86400; // Time in last 24 hours
-		$count=$dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval WHERE retrieval_userid = '".$row->user_name."' and retrieval_time > '".$tm."' and retrieval_status='pending'");
+		$count=$dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval WHERE retrieval_userid = '".$row->user_id."' and retrieval_time > '".$tm."' and retrieval_status='pending'");
 		$count->execute();
 		$no=$count->rowCount();
 		if($no==1){
@@ -140,57 +140,43 @@ elseif(isset($_POST['got_email'])) {
 
 		// function to generate random number 
 		function random_generator($digits){
-			srand ((double) microtime() * 10000000);
-			//Array of alphabets
-			$input = array ("A", "B", "C", "D", "E","F","G","H","I","J","K","L","M","N","O","P","Q",
-			"R","S","T","U","V","W","X","Y","Z");
-			$random_generator="";// Initialize the string to store random numbers
-			for($i=1;$i<$digits+1;$i++){ // Loop the number of times of required digits
-				if(rand(1,2) == 1){// to decide the digit should be numeric or alphabet
-					// Add one random alphabet 
-					$rand_index = array_rand($input);
-					$random_generator .=$input[$rand_index]; // One char is added
-
-				}
-				else{
-					// Add one numeric digit between 1 and 10
-					$random_generator .=rand(1,10); // one number is added
-				}
-			}
+			$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+			$random_generator=substr(str_shuffle($chars),0,10);
 			return $random_generator;
 		}
-
 
 		$key=random_generator(10);
 		$key=md5($key);
 		$tm=time();
-		$sql=$dbh->prepare("insert into humo_pw_retrieval(retrieval_userid, retrieval_pkey,retrieval_time,retrieval_status) values('$row->user_name','$key','$tm','pending')");
+		$sql=$dbh->prepare("insert into humo_pw_retrieval(retrieval_userid, retrieval_pkey,retrieval_time,retrieval_status) values('$row->user_id','$key','$tm','pending')");
 		$sql->execute();
 
 		include_once ('include/mail.php'); 
 
-		// get mail of admin
-		$get_admin_mail=$dbh->prepare("SELECT user_mail FROM humo_users WHERE user_id='1' AND user_group_id = '1'"); 
-		// user_id 1 should always be admin, but just to make sure we also checked that group is admin
-		$get_admin_mail->execute();
-		$adm_mailDb = $get_admin_mail->fetch(PDO::FETCH_OBJ);
-		$mail_address = $adm_mailDb->user_mail;
-		
+		// *** Get mail for password retreival ***
+		$mail_address=$humo_option["password_retreival"];
+
 		$mail_message = __('This is in response to your request for password reset at ').$site_url; 
 
-		$site_url=$site_url."?ak=$key&userid=$row->user_name";
+		$site_url=$site_url."?ak=$key&userid=$row->user_id";
 
 		$mail_message .= '<br>'.__('Username').":".$row->user_name.'<br>';
 		$mail_message .= __('To reset your password, please visit this link or copy and paste this link in your browser window ').":";
-		$mail_message .= '<br><br><a href="'.$site_url.'">'.$site_url.'</a><br>'.__('Thank You');
+		//$mail_message .= '<br><br><a href="'.$site_url.'">'.$site_url.'</a><br>'.__('Thank You');
+		$mail_message .= '<br><br><a href="'.$site_url.'">'.$site_url.'</a><br>';
+
 		// *** Set the reply address ***
 		$mail->AddReplyTo($mail_address, $mail_address); 
+
 		// *** Set who the message is sent from (this will automatically be set to your server's mail to prevent false "phishing" alarms)***
-		$mail->setFrom("",""); 
+		$mail->setFrom($mail_address, $mail_address);
+
 		// *** Set who the message is to be sent to ***
 		$mail->addAddress($email, $email);
+
 		// *** Set the subject line ***
 		$mail->Subject = __('Your request for password retrieval');
+
 		$mail->msgHTML($mail_message);
 		// *** Replace the plain text body with one created manually ***
 		//$mail->AltBody = 'This is a plain-text message body';
@@ -258,7 +244,7 @@ elseif(isset($_POST['ak']) AND $_POST['ak']!='') {
  
 	$tm=time()-86400;
 
-	$sql=$dbh->prepare("SELECT retrieval_userid  FROM humo_pw_retrieval
+	$sql=$dbh->prepare("SELECT retrieval_userid FROM humo_pw_retrieval
 		WHERE retrieval_pkey=:ak and retrieval_userid=:userid and retrieval_time > '$tm' and retrieval_status='pending'");
 	$sql->bindParam(':userid',$userid,PDO::PARAM_STR, 10);
 	$sql->bindParam(':ak',$ak,PDO::PARAM_STR, 32);
@@ -302,9 +288,9 @@ elseif(isset($_POST['ak']) AND $_POST['ak']!='') {
 			echo '<div style="font-family:Verdana;font-size:14px;text-align:center"><input type="button" value="'.__('Retry').'" onClick="history.go(-1)"></div>';
 		}
 		else{ // if all validations are passed.
-			// Update the new password now (and use salted password)  //
-			$hashToStoreInDb = password_hash(password, PASSWORD_DEFAULT);
-			$count=$dbh->prepare("update humo_users set user_password_salted='".$hashToStoreInDb."', user_password='' where user_name='".$userid."'");
+			// Update the new password now (and use salted password)
+			$hashToStoreInDb = password_hash($password, PASSWORD_DEFAULT);
+			$count=$dbh->prepare("update humo_users set user_password_salted='".$hashToStoreInDb."', user_password='' where user_id='".$userid."'");
 			$count->execute();
 			$no=$count->rowCount();
 			echo '<br><table class="humo" cellspacing="0" align="center">';
@@ -329,7 +315,7 @@ elseif(isset($_POST['ak']) AND $_POST['ak']!='') {
 }
 
 // show initial login screen with "Forgot password" button
-else { 
+else {
 
 	// *** No valid user found ***
 	if ($fault==true){
@@ -349,15 +335,11 @@ else {
 	print '</table>';
 	print '</form>';
 
-	// only display password retrieval button if admin has filled out a valid email address for himself...
-	$get_admin_mail=$dbh->prepare("SELECT user_mail FROM humo_users WHERE user_mail != '' AND user_id='1' AND user_group_id = '1'"); 
-	// user_id 1 should always be admin, but just to make sure we also checked that group is admin
-	$get_admin_mail->execute();
-	$no=$get_admin_mail->rowCount();
-	if($no !=0) { // admin mail found
-		$adm_mailDb = $get_admin_mail->fetch(PDO::FETCH_OBJ);
-		$mail_address = $adm_mailDb->user_mail;
-		if(filter_var($mail_address,FILTER_VALIDATE_EMAIL)) {  // admin mail is valid
+	// *** Only use password retreival option if sender mail is set in admin settings ***
+	if ($humo_option["password_retreival"]){
+		$mail_address=$humo_option["password_retreival"];
+		// *** Check if this is a valid a-mail address ***
+		if(filter_var($mail_address,FILTER_VALIDATE_EMAIL)) {
 			echo '<br><div class="center">'; 
 				echo '<form name="forget_form" method="post" action="'.$path_tmp.'">';
 					echo '<input class="fonts" type="submit" name="Submit" value="'.__('Forgot password').'">';

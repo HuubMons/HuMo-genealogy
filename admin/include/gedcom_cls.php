@@ -4162,12 +4162,14 @@ function cont($text1){
 }
 
 // CONC, Some programs need an extra space after CONC!
+// PRO-GEN 3.0b-p10: add extra space.
+// PRO-GEN 3.22: no extra space.
 function conc($text1){
-	global $gen_program;
+	global $gen_program, $gen_program_version;
 	$spacer='';
 	if ($gen_program=='HuMo-gen' OR $gen_program=='HuMo-genealogy'){ $spacer=' '; }
 	elseif ($gen_program=='Haza-Data'){ $spacer=' '; }
-	elseif ($gen_program=='PRO-GEN'){ $spacer=' '; }
+	elseif ($gen_program=='PRO-GEN' AND substr($gen_program_version,0,3)=='3.0') { $spacer=' '; }
 	elseif ($gen_program=='Family Tree Legends'){ $spacer=' '; }
 	$text=$spacer.$text1;
 	return $text;
@@ -4186,6 +4188,7 @@ function process_texts($text, $buffer, $number){
 		if ($text!=''){ $text.="|"; }
 		$processed=1; $text.=substr($buffer,7);
 	}
+	elseif ($buffer6==($number).' TITL'){ $processed=1; $text.=substr($buffer,7); }	// 1 OBJE -> 2 TITL 
 	elseif ($buffer6==($number+1).' CONT'){ $processed=1; $text.=$this->cont(substr($buffer,7)); }
 	elseif ($buffer6==($number+1).' CONC'){ $processed=1; $text.=$this->conc(substr($buffer,7)); }
 	return $text;
@@ -4569,12 +4572,15 @@ function process_picture($connect_kind, $connect_id, $picture, $buffer){
 			$event['event'][$event_nr]=$photo;
 	}
 
-	if ($buffer6==$test_number2.' TITL'){
+	// *** Aldfaer ***
+	// 2 TITL text
+	// 3 CONT text second line
+	if ($$test_level=='TITL'){
 		$processed=1;
 		if ($event_picture==true)
-			$event2['text'][$event2_nr]=substr($buffer,7);
+			$event2['text'][$event2_nr]=$this->process_texts($event2['text'][$event2_nr],$buffer,$test_number2);
 		else
-			$event['text'][$event_nr]=substr($buffer,7);
+			$event['text'][$event_nr]=$this->process_texts($event['text'][$event_nr],$buffer,$test_number2);
 	}
 
 	// *** 2 FORM jpeg ***

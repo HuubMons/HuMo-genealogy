@@ -31,14 +31,17 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// *** Don't leave page if there are unsaved items ***
+echo '<script src="include/areyousure/jquery.are-you-sure.js"></script>';
+echo '<script src="include/areyousure/ays-beforeunload-shim.js"></script>';
+
 // *** Only use Save button, don't use [Enter] ***
 echo '
 <script type="text/javascript">
 $(document).on("keypress", ":input:not(textarea)", function(event) {
-    return event.keyCode != 13;
+	return event.keyCode != 13;
 });
-</script>
-';
+</script>';
 
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
@@ -1316,26 +1319,31 @@ if (isset($pers_gedcomnumber)){
 		</script>';
 
 
-		// *** Show box with list of parents, person, marriages etc. ***
-		// REMOVED BOX here because of editing in smaller screens.
-
-
-		// *** Start of editor table ***
-		echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">';
-		echo '<input type="hidden" name="page" value="'.$page.'">';
-		//echo '<table class="humo" border="1" style="line-height: 180%;">';
-		echo '<table class="humo" border="1" style="line-height: 150%;">';
-
-		// *** Add child to family, 2nd option: add a new child ***
-		if (isset($_GET['child_connect'])){
-			echo '<input type="hidden" name="child_connect" value="'.$_GET['child_connect'].'">';
-			if (isset($_GET['children'])){
-				echo '<input type="hidden" name="children" value="'.$_GET['children'].'">';
-			}
-			echo '<input type="hidden" name="family_id" value="'.$_GET['family_id'].'">';
-		}
-
 		if ($menu_tab=='person'){
+
+			// *** Don't leave page if there are unsaved items ***
+			echo"
+			<script>
+			$(function() {
+				// Enable on selected forms
+				$('#form1').areYouSure();
+			});
+			</script>";
+
+			// *** Start of editor table ***
+			echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">';
+			echo '<input type="hidden" name="page" value="'.$page.'">';
+			//echo '<table class="humo" border="1" style="line-height: 180%;">';
+			echo '<table class="humo" border="1" style="line-height: 150%;">';
+
+			// *** Add child to family, 2nd option: add a new child ***
+			if (isset($_GET['child_connect'])){
+				echo '<input type="hidden" name="child_connect" value="'.$_GET['child_connect'].'">';
+				if (isset($_GET['children'])){
+					echo '<input type="hidden" name="children" value="'.$_GET['children'].'">';
+				}
+				echo '<input type="hidden" name="family_id" value="'.$_GET['family_id'].'">';
+			}
 
 		// *** Show mother and father with a link ***
 		//if (isset($_GET['add_parents2']) OR isset($_POST['search_quicksearch_parent']) AND $add_person==false){
@@ -1451,9 +1459,6 @@ if (isset($pers_gedcomnumber)){
 					echo '</div>';
 				echo '</div>';
 				// *** End of archive list pop-up ***
-
-
-
 
 			echo '</th></tr>';
 
@@ -1625,13 +1630,14 @@ if (isset($pers_gedcomnumber)){
 		}
 		echo '</th><td>';
 
-		if ($add_person==false){
-			echo '<input type="Submit" name="person_change" value="'.__('Save').'">';
-		}
-		else{
-			echo '<input type="Submit" name="person_add" value="'.__('Add').'">';
-		}
-	echo '</td></tr>';
+			if ($add_person==false){
+				echo '<input type="Submit" name="person_change" value="'.__('Save').'">';
+			}
+			else{
+				echo '<input type="Submit" name="person_add" value="'.__('Add').'">';
+			}
+
+		echo '</td></tr>';
 
 		// *** Name ***
 		echo '<tr><td>';
@@ -1737,9 +1743,9 @@ if (isset($pers_gedcomnumber)){
 
 		echo '</td><td></td></tr>';
 
-		// *** Sex ***
+		// *** Sexe ***
 		$colour='';
-		// *** If sex = unknown then show a red line (new person = other colour). ***
+		// *** If sexe = unknown then show a red line (new person = other colour). ***
 		if ($pers_sexe==''){ $colour=' bgcolor="#FF0000"'; }
 		if ($add_person==true AND $pers_sexe=='') $colour=' bgcolor="#CCFFFF"';
 		echo '<tr><td>'.__('Sex').'</td><td style="border-right:0px;"></td><td'.$colour.' style="border-left:0px;">';
@@ -1931,7 +1937,7 @@ if (isset($pers_gedcomnumber)){
 			echo '</td></tr>';
 		}
 
-		
+
 
 		// *** Baptise ***
 		echo '<tr>';
@@ -2155,7 +2161,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				if ($count>0)
 				echo '<a href="#places" onclick="hideShow(54);"><span id="hideshowlink54">'.__('[+]').'</span></a> ';
 
-				echo __('Places').'</td>';
+				echo __('Addresses').'</td>';
 			echo '<td style="border-right:0px;"></td>';
 			echo '<td style="border-left:0px;">';
 				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;pers_place=1&amp;living_place_add=1#places">['.__('Add').']</a> ';
@@ -2173,7 +2179,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<td></td>';
 			echo '</tr>';
 
-			// *** Show places by person ***
+			// *** Show addresses by person ***
 			$address_qry=$dbh->query("SELECT * FROM humo_addresses
 				WHERE address_tree_id='".$tree_id."'
 				AND address_connect_sub_kind='person'
@@ -2203,21 +2209,23 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 					}
 				echo '</td>';
-				echo '<td style="border-right:0px;">'.__('date').'<br>'.__('Address').'<br>'.__('text').'<br>'.__('Phone').'</td>';
+				echo '<td style="border-right:0px;">'.__('date').'<br>'.__('Address').'<br>'.__('Zip code').'<br>'.__('text').'</td>';
 				echo '<td style="border-left:0px;">';
 					echo $editor_cls->date_show($addressDb->address_date,'address_date',"[$addressDb->address_id]").' '.__('place').' <input type="text" name="address_place_'.$addressDb->address_id.'" placeholder="'.__('Place').'" value="'.$addressDb->address_place.'" size="'.$field_place.'">';
 					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=place&address_place='.$addressDb->address_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a><br>';
 
-					// *** New: also edit a address ***
-					echo '<input type="text" name="address_address_'.$addressDb->address_id.'" placeholder="'.__('Address').'" value="'.$addressDb->address_address.'"  style="width: 500px">';
+					// *** Edit address ***
+					echo '<input type="text" name="address_address_'.$addressDb->address_id.'" placeholder="'.__('Address').'" value="'.$addressDb->address_address.'"  style="width: 500px"><br>';
 
-					// *** New: also edit text ***
-					echo '<br>';
+					// *** Edit Zip code ***
+					echo '<input type="text" name="address_zip_'.$addressDb->address_id.'" placeholder="'.__('Zip code').'" value="'.$addressDb->address_zip.'"  style="width: 200px">';
+
+					// *** Edit phone ***
+					echo ' '.__('Phone').' <input type="text" name="address_phone_'.$addressDb->address_id.'" placeholder="'.__('Phone').'" value="'.$addressDb->address_phone.'"  style="width: 200px"><br>';
+
+					// *** Edit text ***
 					echo '<textarea rows="1" name="address_text_'.$addressDb->address_id.'"'.$field_text.' placeholder="'.__('Text').'"'.$field_text.'>'.
 					$editor_cls->text_show($addressDb->address_text).'</textarea>';
-
-					// *** New: also edit phone ***
-					echo '<input type="text" name="address_phone_'.$addressDb->address_id.'" placeholder="'.__('Phone').'" value="'.$addressDb->address_phone.'"  style="width: 500px">';
 
 				echo '</td>';
 				echo '<td>';
@@ -2353,11 +2361,42 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '<option value="">'.__('Select address').'</option>';
 					while ($address2Db=$addressqry->fetch(PDO::FETCH_OBJ)){
 						$selected='';
-						if ($addressDb->connect_item_id==$address2Db->address_gedcomnr){ $selected=' SELECTED'; }
+						if ($addressDb->connect_item_id==$address2Db->address_gedcomnr){
+							$selected=' SELECTED';
+
+
+						}
 						echo '<option value="'.$address2Db->address_gedcomnr.'"'.$selected.'>'.
 							@$address2Db->address_place.', '.$address2Db->address_address.' ['.@$address2Db->address_gedcomnr.']</option>';
 					}
 					echo '</select>';
+
+/*
+// *** Show addresses by person ***
+$address3_qry=$dbh->query("SELECT * FROM humo_addresses
+	WHERE address_tree_id='".$tree_id."'
+	AND address_gedcomnr='".$addressDb->connect_item_id."'");
+$address3Db=$address3_qry->fetch(PDO::FETCH_OBJ);
+echo '<br>';
+echo '<div style="border: 2px solid red;">';
+echo '<b>'.__('Selected address:').' '.$address3Db->address_gedcomnr.'</b> '.__('(can be connected to multiple persons and families).').'<br>';
+echo $editor_cls->date_show($address3Db->address_date,'address_date',"[$address3Db->address_id]").' '.__('place').' <input type="text" name="address_place_'.$address3Db->address_id.'" placeholder="'.__('Place').'" value="'.$address3Db->address_place.'" size="'.$field_place.'">';
+echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&place_item=place&address_place='.$address3Db->address_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a><br>';
+
+// *** Edit address ***
+echo '<input type="text" name="address_address_'.$address3Db->address_id.'" placeholder="'.__('Address').'" value="'.$address3Db->address_address.'"  style="width: 500px"><br>';
+
+// *** Edit Zip code ***
+echo '<input type="text" name="address_zip_'.$address3Db->address_id.'" placeholder="'.__('Zip code').'" value="'.$address3Db->address_zip.'"  style="width: 200px">';
+
+// *** Edit phone ***
+echo ' '.__('Phone').' <input type="text" name="address_phone_'.$address3Db->address_id.'" placeholder="'.__('Phone').'" value="'.$address3Db->address_phone.'"  style="width: 200px"><br>';
+
+// *** Edit text ***
+echo '<textarea rows="1" name="address_text_'.$address3Db->address_id.'"'.$field_text.' placeholder="'.__('Text').'"'.$field_text.'>'.
+$editor_cls->text_show($address3Db->address_text).'</textarea>';
+echo '</span>';
+*/
 
 				echo '</td>';
 				echo '<td></td>';
@@ -2540,12 +2579,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 		}
 
+			// *** End of person form ***
+			echo '</form>';
+
+			echo '</table><br>';
+
 		} // *** end of menu_tab ***
 
-		// *** End of person form ***
-		echo '</form>';
-
-		echo '</table><br>';
 
 		//if ($menu_tab=='marriage'){
 		if ($menu_tab=='marriage' OR $menu_tab=='children'){
@@ -2651,6 +2691,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		// *** Select marriage ***
 		//if ($person->pers_fams){
 		if ($menu_tab=='marriage' AND $person->pers_fams){
+
 			$familyDb = $db_functions->get_family($marriage);
 
 			$fam_kind=$familyDb->fam_kind;
@@ -2683,6 +2724,15 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Checkbox for no data by divorce ***
 			$fam_div_no_data=false; if ($fam_div_date OR $fam_div_place OR $fam_div_text) $fam_div_no_data=true;
 			$fam_text=$editor_cls->text_show($familyDb->fam_text);
+
+			// *** Don't leave page if there are unsaved items ***
+			echo"
+			<script>
+			$(function() {
+				// Enable on selected forms
+				$('#form2').areYouSure();
+			});
+			</script>";
 
 			//echo '<form method="POST" action="'.$phpself.'#marriage"  name="form2" id="form2">';
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data"  name="form2" id="form2">';
@@ -3077,7 +3127,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					// *** Calculate and show nr. of sources ***
 					$connect_qry="SELECT *
 						FROM humo_connections
-						WHERE connect_kind='".$tree_id."' AND connect_sub_kind='fam_text_source'
+						WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_text_source'
 						AND connect_connect_id='".$marriage."'";
 					$connect_sql=$dbh->query($connect_qry);
 					echo "&nbsp;<a href=\"#marriage\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=fam_text_source', '','width=800,height=500')\">".__('source');
@@ -3107,7 +3157,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo $event_cls->show_event('family',$marriage,'family');
 
 
-			// *** Show and edit places by family ***
+			// *** Show and edit addresses by family ***
 			echo '<tr class="humo_color">';
 			echo '<td style="border-right:0px;">';
 				echo '<a name="places"></a>';
@@ -3120,7 +3170,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				if ($count>0)
 				echo '<a href="#places" onclick="hideShow(54);"><span id="hideshowlink54">'.__('[+]').'</span></a> ';
 
-				echo __('Places').'</td>';
+				echo __('Addresses').'</td>';
 			echo '<td style="border-right:0px;"></td>';
 			echo '<td style="border-left:0px;">';
 				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=family&amp;fam_place=1&amp;living_place_add=1#places">['.__('Add').']</a> ';

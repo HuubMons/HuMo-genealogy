@@ -99,7 +99,13 @@ $popup=false;
 $update_message='';
 
 if (isset($database_check) AND @$database_check){  // otherwise we can't make $dbh statements
-	$check_tables = $dbh->query("SELECT * FROM humo_settings");
+	$check_tables=false;
+	try{
+		$check_tables = $dbh->query("SELECT * FROM humo_settings");
+	} catch (Exception $e) {
+		//
+	}
+
 	if ($check_tables){
 		include_once(CMS_ROOTPATH."include/settings_global.php");
 
@@ -128,8 +134,12 @@ if (isset($_POST['install_tables2'])){ $show_menu_left=true; }
 
 if (isset($database_check) AND @$database_check){  // otherwise we can't make $dbh statements
 	// *** Update to version 4.6, in older version there is a dutch-named table: humo_instellingen ***
-	$check_update = @$dbh->query("SELECT * FROM humo_instellingen");
-	if ($check_update){ $page='update'; $show_menu_left=false; }
+	try{
+		$check_update = @$dbh->query("SELECT * FROM humo_instellingen");
+		if ($check_update){ $page='update'; $show_menu_left=false; }
+	} catch (Exception $e) {
+		//
+	}
 
 	// *** Check HuMo-genealogy database status ***
 	// *** Change this value if the database must be updated ***
@@ -312,8 +322,13 @@ if(isset($database_check) AND $database_check) {
 	}
 	else{
 		// *** Logged in using PHP-MySQL ***
-		@$query = "SELECT * FROM humo_users";
-		@$result = $dbh->query($query);
+		$result=false;
+		try{
+			@$query = "SELECT * FROM humo_users";
+			@$result = $dbh->query($query);
+		} catch (Exception $e) {
+			//
+		}
 		if($result !== FALSE) {
 			if($result->rowCount() > 0) {
 				// *** humo-users table exists, check admin log in ***
@@ -496,12 +511,10 @@ echo '<div id="humo_top" '.$top_dir.'>';
 		if ($check_update AND $page!='login' AND $page!='update' AND $popup==false){
 
 			// *** Update check, once a day ***
-
 			// *** Manual check for update ***
 			if (isset($_GET['update_check']) AND $humo_option['update_last_check']!='DISABLED'){
 				// *** Update settings ***
 				$result = $db_functions->update_settings('update_last_check','2012-01-01');
-
 				$humo_option['update_last_check']='2012-01-01';
 			}
 
@@ -681,7 +694,12 @@ echo '<div id="humo_top" '.$top_dir.'>';
 		}
 		// *** Just logged in, or no tree_id available: find first family tree ***
 		if ($check_tree_id==''){
-			$check_tree_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order LIMIT 0,1");
+			$check_tree_sql=false;
+			try{
+				$check_tree_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order LIMIT 0,1");
+			} catch (Exception $e) {
+				//
+			}
 			if ($check_tree_sql){
 				@$check_treeDb=$check_tree_sql->fetch(PDO::FETCH_OBJ);
 				$check_tree_id=$check_treeDb->tree_id;
@@ -691,7 +709,11 @@ echo '<div id="humo_top" '.$top_dir.'>';
 		// *** Double check tree_id and save tree id in session ***
 		$tree_id=''; $tree_prefix='';
 		if (isset($check_tree_id) AND $check_tree_id AND $check_tree_id!=''){
-			$get_treeDb=$db_functions->get_tree($check_tree_id);
+			try{
+				$get_treeDb=$db_functions->get_tree($check_tree_id);
+			} catch (Exception $e) {
+				//
+			}
 			if (isset($get_treeDb)){
 				$tree_id=$get_treeDb->tree_id;
 				$_SESSION['admin_tree_id']=$tree_id;
@@ -1001,6 +1023,8 @@ echo '<div id="humo_top" '.$top_dir.'>';
 			// *** Check is needed for PHP 7.4 ***
 			if (isset($humo_option["hide_languages"]))
 				$hide_languages_array=explode(";",$humo_option["hide_languages"]);
+			else
+				$hide_languages_array[]='';
 
 			$select_top='';
 			echo '<li>';

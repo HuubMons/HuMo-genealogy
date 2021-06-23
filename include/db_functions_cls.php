@@ -718,10 +718,10 @@ function get_repository($repo_gedcomnr){
 function update_settings($setting_variable,$setting_value){
 	$qryDb=false;
 	try {
-		$this->query['update_settings']->bindValue(':setting_value', $setting_value, PDO::PARAM_STR);
 		$this->query['update_settings']->bindValue(':setting_variable', $setting_variable, PDO::PARAM_STR);
+		$this->query['update_settings']->bindValue(':setting_value', $setting_value, PDO::PARAM_STR);
 		$this->query['update_settings']->execute();
-		$qryDb=$this->query['update_settings']->fetch(PDO::FETCH_OBJ);
+		//DON'T USE FOR UPDATE QUERY: $qryDb=$this->query['update_settings']->fetch(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {
 		echo $e->getMessage() . "<br/>";
 	}

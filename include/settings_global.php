@@ -1,14 +1,14 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.6.1';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.6.2';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 28 nov. 2019';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-$humo_option["version_date"]='2020-11-29';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2020-12-25';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -53,7 +53,9 @@ while( @$row = $result->fetch(PDO::FETCH_NUM)){
 
 // *** Automatic installation or update ***
 
-if (!isset($humo_option["template_homepage"])){
+//if (!isset($humo_option["template_homepage"])){
+// THIS PART CAN BE MOVED TO DATABASE UPDATE IF NEEDED.
+if (!isset($humo_option["template_homepage"]) AND $humo_option["update_status"] > 10){
 	$order=1;
 	$sql="INSERT INTO humo_settings SET setting_variable='template_homepage', setting_value='active|left|select_family_tree', setting_order='".$order."'";
 	@$result=$dbh->query($sql);
@@ -210,6 +212,12 @@ if (!isset($humo_option["registration_use_spam_question"])){
 	@$result=$dbh->query($sql);
 }
 
+if (!isset($humo_option["password_retreival"])){
+	$humo_option["password_retreival"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='password_retreival', setting_value=''";
+	@$result=$dbh->query($sql);
+}
+
 if (!isset($humo_option["update_last_check"])){
 	$humo_option["update_last_check"]='2012_01_01';
 	$sql="INSERT INTO humo_settings SET setting_variable='update_last_check', setting_value='2012_01_01'";
@@ -327,7 +335,7 @@ if (!isset($humo_option["one_name_thename"])){
 	$humo_option["one_name_thename"]=''; $sql="INSERT INTO humo_settings SET setting_variable='one_name_thename', setting_value=''";
 	@$result=$dbh->query($sql);	
 }
-if (!isset($humo_option["geo_trees"])){  
+if (!isset($humo_option["geo_trees"])){
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 	if(!$temp->rowCount()) { 
 		// no humo_location table was created yet. just enter the geo_trees setting with empty value to be ready if needed in future

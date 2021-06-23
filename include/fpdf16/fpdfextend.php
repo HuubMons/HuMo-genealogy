@@ -244,7 +244,7 @@ function pdfdisplay($templ_personing,$person_kind) {
 							//$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
 							$len = strlen(__('Sources')) + 3;  // 'space','(','$lang[...]','space'
 							$num = substr($multitext[$i],$len,-1); // -1: take ) off the end
-							$ofs = $num - 1; // offset starts with 0
+							$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
 							if($ofs >= 0) {  // is footnote to source from global source list
 								$pdf->SetTextColor(28,28,255);
 								$pdf->subWrite(6,$multitext[$i],$pdf_footnotes[$ofs],9,4);
@@ -325,7 +325,8 @@ function pdfdisplay($templ_personing,$person_kind) {
 						for($i=0;$i<count($multitext);$i++) {
 							$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
 							$num = substr($multitext[$i],$len,-1); // -1: take ) off the end
-							$ofs = $num - 1; // offset starts with 0
+							//$ofs = $num - 1; // offset starts with 0
+							$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
 							if($ofs >= 0) {  // is footnote to source from global source list
 								$pdf->SetTextColor(28,28,255);
 								$pdf->subWrite(6,$multitext[$i],$pdf_footnotes[$ofs],9,4);
@@ -402,8 +403,9 @@ function pdfdisplay($templ_personing,$person_kind) {
 						//$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
 						$len = strlen(__('Sources')) + 3;  // 'space','(','$lang[...]','space'
 						$num = substr($multitext[$i],$len,-1); // -1: take ) off the end
-						$ofs = $num - 1; // offset starts with 0
-						if($ofs >= 0) {  // is footnote to source from global source list
+						$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
+						//if($ofs >= 0) {  // is footnote to source from global source list
+						if($ofs >= 0 AND isset($pdf_footnotes[$ofs])) {  // is footnote to source from global source list
 							$pdf->SetTextColor(28,28,255);
 							$pdf->subWrite(6,$multitext[$i],$pdf_footnotes[$ofs],9,4);
 						}
@@ -520,8 +522,10 @@ function displayrel ($templ_relation,$ancestor_report) {
 				for($i=0;$i<count($multitext);$i++) {
 					$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
 					$num = substr($multitext[$i],$len,-1); // -1: take ) off the end
-					$ofs = $num - 1; // offset starts with 0
-					if($ofs >= 0) {  // is footnote to source from global source list
+					//$ofs = $num - 1; // offset starts with 0
+					$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
+					//if($ofs >= 0) {  // is footnote to source from global source list
+					if($ofs >= 0 AND isset($pdf_footnotes[$ofs])) {  // is footnote to source from global source list
 						$pdf->SetTextColor(28,28,255);
 						$pdf->subWrite(6,$multitext[$i],$pdf_footnotes[$ofs],9,4);
 					}
@@ -539,7 +543,7 @@ function displayrel ($templ_relation,$ancestor_report) {
 					//if($user['group_sources']=='j' AND $pos) {
 					if($pos) { //source title as link to list at bottom
 						if($user['group_sources']=='j') { $pdf->SetTextColor(28,28,255); }
-						else { $pdf->SetTextColor(0); }
+							else { $pdf->SetTextColor(0); }
 						$ofs = substr($multitext[$i],$pos+2)-1;
 						$txt = substr($multitext[$i],0,$pos); // take off the !!2 source number at end
 						$pdf->Write(6,$txt,$pdf_footnotes[$ofs]);
@@ -651,11 +655,11 @@ function Rotate($angle,$x=-1,$y=-1){
 
 function _endpage(){
 	if($this->angle!=0){
-       	$this->angle=0;
+		$this->angle=0;
 		$this->_out('Q');
 	}
 	parent::_endpage();
-} 
+}
 
 function Header(){
 	global $title, $humo_option;
@@ -686,7 +690,7 @@ function RotatedText($x, $y, $txt, $angle){
 	$this->Text($x, $y, $txt);
 	$this->Rotate(0);
 }
- 
+
 
 /*   // original fpdf version - if ever needed
 function Header(){

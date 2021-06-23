@@ -51,7 +51,7 @@ include_once(CMS_ROOTPATH_ADMIN."include/gedcom_ansihtml.php");
 
 if(CMS_SPECIFIC=="Joomla") {
 	$phpself = "index.php?option=com_humo-gen&amp;task=admin";
-	global $gen_program, $not_processed;
+	global $gen_program, $gen_program_version, $not_processed;
 }
 else {
 	$phpself = 'index.php';
@@ -850,6 +850,7 @@ if (isset($_POST['step2'])){
 
 	// *** Reset gen_program ***
 	$gen_program=''; $_SESSION['save_gen_program']=$gen_program;
+	$gen_program_version=''; $_SESSION['save_gen_program_version']=$gen_program_version;
 
 	echo '<br><table><tr><td>';
 		echo '<form method="post" action="'.$phpself.'">';
@@ -1240,6 +1241,9 @@ if (isset($_POST['step3'])){
 	if (isset($_SESSION['save_gen_program'])) {
 		$gen_program=$_SESSION['save_gen_program'];
 	}
+	if (isset($_SESSION['save_gen_program_version'])) {
+		$gen_program_version=$_SESSION['save_gen_program_version'];
+	}
 
 	$level0='';
 	$last_pointer=0;
@@ -1384,19 +1388,35 @@ if (isset($_POST['step3'])){
 
 		// *** Save level0 ***
 		if (substr($buffer,0,1)=='0'){ $level0=substr($buffer,2,6); }
+
 		// *** 1 SOUR Haza-Data ***
-		if ($level0=='HEAD' AND substr($buffer,2,4)=='SOUR'){
-			$gen_program=substr($buffer,7);
-			$_SESSION['save_gen_program']=$gen_program;
-			echo '<br><br>'.__('GEDCOM file').': <b>'.$gen_program.'</b>, ';
+		//	0 HEAD
+		//	1 SOUR PRO-GEN
+		//	2 VERS 3.22
+		//
+		//	0 HEAD
+		//	1 SOUR Haza-Data
+		//	2 VERS 7.2
+		if ($level0=='HEAD'){
+			if (substr($buffer,2,4)=='SOUR'){
+				$gen_program=substr($buffer,7);
+				$_SESSION['save_gen_program']=$gen_program;
+				echo '<br><br>'.__('GEDCOM file').': <b>'.$gen_program.'</b>, ';
 
-			printf(__('this is an <b>%s</b> file'), $_POST["gedcom_accent"]);
-			echo '<br>';
+				printf(__('this is an <b>%s</b> file'), $_POST["gedcom_accent"]);
+				echo '<br>';
 
-			// Save tree <-> GEDCOM connection - write GEDCOM to "tree_gedcom" in relevant tree
-			$dbh->query("UPDATE humo_trees SET tree_gedcom='".$_POST["gedcom_file"]."',
-				tree_gedcom_program='".$gen_program."'
-				WHERE tree_prefix='".$tree_prefix."'");
+				// Save tree <-> GEDCOM connection - write GEDCOM to "tree_gedcom" in relevant tree
+				$dbh->query("UPDATE humo_trees SET tree_gedcom='".$_POST["gedcom_file"]."',
+					tree_gedcom_program='".$gen_program."'
+					WHERE tree_prefix='".$tree_prefix."'");
+			}
+
+			// *** First "VERS" normally is program version ***
+			if ($gen_program_version=='' AND substr($buffer,2,4)=='VERS'){
+				$gen_program_version=substr($buffer,7);
+				$_SESSION['save_gen_program_version']=$gen_program_version;
+			}
 		}
 
 		// *** progress bar ***
@@ -1559,6 +1579,7 @@ if (isset($_POST['step3'])){
 	echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 	echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 	echo '<input type="hidden" name="gen_program" value="'.$gen_program.'">';
+	echo '<input type="hidden" name="gen_program_version" value="'.$gen_program_version.'">';
 	echo '<input type="Submit" name="step4" value="'.__('Step').' 4">';
 	echo '</form>';
 
@@ -1572,6 +1593,7 @@ if (isset($_POST['step3'])){
 if (isset($_POST['step4'])){
 	$start_time=time();
 	$gen_program=$_POST['gen_program'];
+	$gen_program_version=$_POST['gen_program_version'];
 
 	echo '<b>'.__('STEP 4) Final database processing:').'</b><br>';
 
@@ -1581,6 +1603,7 @@ if (isset($_POST['step4'])){
 		echo '<input type="hidden" name="menu_admin" value="'.$menu_admin.'">';
 		echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 		echo '<input type="hidden" name="gen_program" value="'.$_POST['gen_program'].'">';
+		echo '<input type="hidden" name="gen_program_version" value="'.$_POST['gen_program_version'].'">';
 		//if (isset($_POST['check_processed'])){
 		//	echo '<input type="hidden" name="check_processed" value="'.$_POST['check_processed'].'">';
 		//}
