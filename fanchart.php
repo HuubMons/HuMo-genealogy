@@ -391,6 +391,7 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 				if ($gen==0) $tangle=0;
 
 				// calculate text position
+				$fontfile = realpath($fontfile); // *** Huub 04-01-2019: Necessary for PHP 7.2 ***
 				$bbox=ImageTtfBbox((double)$fontpx, 0, $fontfile, $text);
 				$textwidth = $bbox[4]; //4
 

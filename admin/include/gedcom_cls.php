@@ -46,7 +46,7 @@ function process_person($person_array){
 	$person["pers_quality"]='';
 	$person["pers_unprocessed_tags"]='';
 	$person["new_date"]=""; $person["new_time"]=""; $person["changed_date"]=""; $person["changed_time"]="";
-
+	$pers_birth_date_hebnight=''; $pers_death_date_hebnight=''; $pers_buried_date_hebnight=''; $pers_heb_flag='';
 	$pers_alive='';
 	if ($gen_program=='Haza-Data'){ $pers_alive='deceased'; }
 	//if ($gen_program=='HuMo-gen'){ $pers_alive='deceased'; }
@@ -761,7 +761,7 @@ function process_person($person_array){
 				//FTM and dorotree programs can have multiple birth dates, only first one is saved:
 				if (!$pers_birth_date){ $pers_birth_date=trim(substr($buffer, 7)); }
 			}
-
+			if ($buffer7=='2 _HNIT'){ $pers_heb_flag=1; $processed=1; $pers_birth_date_hebnight=substr($buffer, 8); }
 			// *** Aldfaer time ***
 			// 2 _ALDFAER_TIME 08:00:00
 			if (substr($buffer,0,15)=='2 _ALDFAER_TIME'){ $processed=1; $pers_birth_time=substr($buffer, 16); }
@@ -925,7 +925,7 @@ function process_person($person_array){
 				//dorotree programm can have multiple death dates, only first one is saved:
 				if (!$pers_death_date){ $pers_death_date=trim(substr($buffer, 7)); }
 			}
-
+			if ($buffer7=='2 _HNIT'){ $pers_heb_flag=1; $processed=1; $pers_death_date_hebnight=substr($buffer, 8); }
 			// *** Aldfaer time ***
 			// 2 _ALDFAER_TIME 08:00:00
 			if (substr($buffer,0,15)=='2 _ALDFAER_TIME'){ $processed=1; $pers_death_time=substr($buffer, 16); }
@@ -1006,7 +1006,7 @@ function process_person($person_array){
 				//dorotree programm can have multiple burial dates, only first one is saved:
 				if (!$pers_buried_date){ $pers_buried_date=trim(substr($buffer, 7)); }
 			}
-
+			if ($buffer7=='2 _HNIT'){ $pers_heb_flag=1; $processed=1; $pers_buried_date_hebnight=substr($buffer, 8); }
 			// *** Place ***
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $pers_buried_place=$this->process_place( substr($buffer, 7) ); }
@@ -1469,6 +1469,18 @@ function process_person($person_array){
 				if ($buffer=='2 TYPE Property'){
 					$processed=1; $event['gedcom'][$event_nr]='PROP';
 				}
+
+				// *** Aldfaer if 1 EVEN has no text, but 2 TYPE has text, use that for title of event  ***
+				// The name of the event will be displayed as-is, in the language as entered in the Gedcom
+				// 1 EVEN
+				// 2 TYPE E-mail adres
+				// 2 NOTE @N457@
+				// 1 EVEN
+				// 2 TYPE Telefoon
+				// 2 NOTE @N456@
+				if (substr($buffer, 7) AND $level1=='EVEN' AND $event['kind'][$event_nr]=='event' AND $event['event'][$event_nr]==''){
+					$processed=1; $event['gedcom'][$event_nr]= substr($buffer, 7).":";
+				}
 			}
 
 			if ($buffer6=='2 DATE'){ $processed=1; $event['date'][$event_nr]=substr($buffer, 7); }
@@ -1556,6 +1568,33 @@ function process_person($person_array){
 	// *** Process estimates/ calculated date for privacy filter ***
 	if ($pers_birth_date) $person["pers_cal_date"]=$pers_birth_date;
 	elseif ($pers_bapt_date) $person["pers_cal_date"]=$pers_bapt_date;
+	
+	// for Jewish dates after nightfall
+	$heb_qry = '';
+	if($pers_heb_flag==1) {  // At least one nightfall date is imported. We have to make sure the required tables exist and if not create them
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_persons');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (!isset($field['pers_birth_date_hebnight'])){
+			$sql="ALTER TABLE humo_persons
+				ADD pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_birth_date;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['pers_death_date_hebnight'])){
+			$sql="ALTER TABLE humo_persons
+				ADD pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_death_date;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['pers_buried_date_hebnight'])){
+			$sql="ALTER TABLE humo_persons
+				ADD pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_buried_date;";
+			$result=$dbh->query($sql);
+		}
+		// we have to add these values to the query below
+		$heb_qry .= "pers_birth_date_hebnight='".$pers_birth_date_hebnight."',pers_death_date_hebnight='".$pers_death_date_hebnight."',pers_buried_date_hebnight='".$pers_buried_date_hebnight."',";
+	}
 
 	// *** Save data ***
 	$sql="INSERT INTO humo_persons SET
@@ -1594,7 +1633,7 @@ function process_person($person_array){
 	pers_new_date='".$this->process_date($this->text_process($person["new_date"]))."',
 	pers_new_time='".$person["new_time"]."',
 	pers_changed_date='".$this->process_date($this->text_process($person["changed_date"]))."',
-	pers_changed_time='".$person["changed_time"]."',
+	pers_changed_time='".$person["changed_time"]."',".$heb_qry."
 	pers_alive='".$pers_alive."'";
 
 	if (isset($_POST['debug_mode']) AND $_SESSION['debug_person']<2){
@@ -1848,7 +1887,7 @@ function process_family($family_array,$first_marr, $second_marr){
 	$family["fam_cal_date"]="";
 	$family["fam_unprocessed_tags"]="";
 	$family["new_date"]=""; $family["new_time"]=""; $family["changed_date"]=""; $family["changed_time"]="";
-
+	$family["fam_marr_date_hebnight"]=""; $family["fam_marr_notice_date_hebnight"]=""; $family["fam_marr_church_date_hebnight"]=""; $family["fam_marr_church_notice_date_hebnight"]=""; $heb_flag="";
 	$fam_children=""; $fam_man=0; $fam_woman=0;
 
 	$event_status="";
@@ -2045,6 +2084,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		if ($level1=='MARB' AND $temp_kind=='religious'){
 			if ($buffer6=='1 MARB'){ $processed=1; }
 			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_marr_church_notice_date"])   $family["fam_marr_church_notice_date"]= trim(substr($buffer,7)); }
+			if ($buffer7=='2 _HNIT'){ $heb_flag=1; $processed=1; $family["fam_marr_church_notice_date_hebnight"]=substr($buffer, 8); }
 
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_church_notice_place"]= $this->process_place( substr($buffer,7) ); }
@@ -2071,12 +2111,13 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		// ******************************************************************************************
 		// *** Marriage license ***
 		// ******************************************************************************************
-		if ($level1=='MARB' AND $temp_kind!='religious'){
+		if ($level1=='MARB' AND $temp_kind!='religious'){  
 			// *** Type marriage / relation (civil or religious) ***
 			if ($buffer6=='2 TYPE'){ $processed=1; $temp_kind=strtolower(substr($buffer,7)); }
 			if ($buffer6=='1 MARB'){ $processed=1; }
 			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_marr_notice_date"])    $family["fam_marr_notice_date"]= trim(substr($buffer,7)); }
-
+			if ($buffer7=='2 _HNIT'){ $heb_flag=1; $processed=1; $family["fam_marr_notice_date_hebnight"]=substr($buffer, 8); }
+			
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_notice_place"]= $this->process_place( substr($buffer,7) ); }
 				$this->process_places($family["fam_marr_notice_place"],$buffer);
@@ -2211,6 +2252,7 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		if ($level1=='MARR' AND $temp_kind=='religious'){
 			if ($buffer6=='1 MARR'){ $processed=1; }
 			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_marr_church_date"])   $family["fam_marr_church_date"]= trim(substr($buffer,7)); }
+			if ($buffer7=='2 _HNIT'){ $heb_flag=1; $processed=1; $family["fam_marr_church_date_hebnight"]=substr($buffer, 8); }
 
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_church_place"]= $this->process_place( substr($buffer,7) ); }
@@ -2236,10 +2278,11 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 
 		// **********************************************************************************************
 		// *** Marriage ***
-		if ($level1=='MARR' AND $temp_kind!='religious' AND $gen_program!='SukuJutut'){
+		if ($level1=='MARR' AND $temp_kind!='religious' AND $gen_program!='SukuJutut'){    
 
 			if ($buffer6=='1 MARR'){ $processed=1; }
 			if ($buffer6=='2 DATE'){ $processed=1; if(!$family["fam_marr_date"])  $family["fam_marr_date"]= trim(substr($buffer,7)); }
+			if ($buffer7=='2 _HNIT'){ $heb_flag=1; $processed=1; $family["fam_marr_date_hebnight"]=substr($buffer, 8); }
 
 			if ($level2=='PLAC'){
 				if ($buffer6=='2 PLAC'){ $processed=1; $family["fam_marr_place"]= $this->process_place( substr($buffer,7) ); }
@@ -2697,6 +2740,38 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 	// *** Process estimates/ calculated date for privacy filter ***
 	if ($family["fam_marr_date"]) $family["fam_cal_date"]=$family["fam_marr_date"];
 	elseif ($family["fam_marr_church_date"]) $family["fam_cal_date"]=$family["fam_marr_church_date"];
+	
+	// for Jewish dates after nightfall
+	$heb_qry = '';
+	if($heb_flag==1) {  // At least one nightfall date is imported. We have to make sure the required tables exist and if not create them
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}		
+		if (!isset($field['fam_marr_notice_date_hebnight'])){
+			$sql="ALTER TABLE humo_families
+				ADD fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_notice_date;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['fam_marr_date_hebnight'])){
+			$sql="ALTER TABLE humo_families
+				ADD fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_date;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['fam_marr_church_notice_date_hebnight'])){
+			$sql="ALTER TABLE humo_families
+				ADD fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_church_notice_date;";
+			$result=$dbh->query($sql);
+		}
+		if (!isset($field['fam_marr_church_date_hebnight'])){
+			$sql="ALTER TABLE humo_families
+				ADD fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_church_date;";
+			$result=$dbh->query($sql);
+		}
+		// we have to add these values to the query below
+		$heb_qry .= "fam_marr_notice_date_hebnight='".$family["fam_marr_notice_date_hebnight"]."',fam_marr_date_hebnight='".$family["fam_marr_date_hebnight"]."',fam_marr_church_notice_date_hebnight='".$family["fam_marr_church_notice_date_hebnight"]."',fam_marr_church_date_hebnight='".$family["fam_marr_church_date_hebnight"]."',";
+	}	
 
 	$sql="INSERT INTO humo_families SET
 	fam_tree_id='".$tree_id."',
@@ -2733,8 +2808,9 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 	fam_cal_date='".$this->process_date($this->text_process($family["fam_cal_date"]))."',
 	fam_new_date='".$this->process_date($family["new_date"])."',
 	fam_new_time='".$family["new_time"]."',
-	fam_changed_date='".$this->process_date($family["changed_date"])."',
+	fam_changed_date='".$this->process_date($family["changed_date"])."',".$heb_qry."
 	fam_changed_time='".$family["changed_time"]."'";
+	
 	$result=$dbh->query($sql);
 
 	$fam_id=$dbh->lastInsertId();

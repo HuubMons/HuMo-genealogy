@@ -1,13 +1,14 @@
 <?php
 // *** Function to display date - place or place - date. ***
-function date_place($process_date, $process_place){
+function date_place($process_date, $process_place,$hebnight=""){
 	global $language, $user, $screen_mode, $dirmark1, $humo_option;
 	$self = $_SERVER['QUERY_STRING']; $hebdate='';
-	if($humo_option['date_display']=="is") {
+	if($humo_option['admin_hebdate']=="y") {
 		if(stripos($self,"star")===FALSE
+			AND stripos($self,"hour")===FALSE 
 			AND stripos($self,"ancestor_chart")===FALSE
 			AND stripos($self,"ancestor_sheet")===FALSE)
-			$hebdate=hebdate($process_date);
+			$hebdate=hebdate($process_date,$hebnight);
 	}
 	if ($process_place==" "){$process_place="";} // *** If there is no place ***
 	if ($user['group_place_date']=='j'){
@@ -17,7 +18,6 @@ function date_place($process_date, $process_place){
 			if (__('PLACE_AT ')!='PLACE_AT '){ $text=__('PLACE_AT '); }
 			$text.=$process_place." ";
 		}
-		//$text.=$dirmark1.language_date($process_date);
 		$text.=$dirmark1.language_date($process_date).$hebdate;
 	}
 	else{
@@ -32,7 +32,7 @@ function date_place($process_date, $process_place){
 	return $text;
 }
 
-function hebdate($datestr) {  
+function hebdate($datestr,$hebnight="") {  
 	global $language;
 	$hebdate='';
 	$year=NULL; $month=NULL; $day=NULL;
@@ -42,39 +42,91 @@ function hebdate($datestr) {
 		if($month) { $day = search_day($datestr); }
 	}
 	if($year!=NULL AND $month!=NULL AND $day!=NULL) {
-	$str = jdtojewish(gregoriantojd( $month, $day, $year),false);
-	$string = explode("/",$str); 
-	if($language["dir"]=="rtl") {
-		if($string[0]==1) $month = "תשרי";
-		if($string[0]==2) $month = "חשון";
-		if($string[0]==3) $month = "כסלו";
-		if($string[0]==4) $month = "טבת";
-		if($string[0]==5) $month = "שבט";
-		if($string[0]==6) $month = "אדר";
-		if($string[0]==7) $month = "אדר שני";
-		if($string[0]==8) $month = "ניסן";
-		if($string[0]==9) $month = "אייר";
-		if($string[0]==10) $month = "סיון";
-		if($string[0]==11) $month = "תמוז";
-		if($string[0]==12) $month = "אב";
-		if($string[0]==13) $month = "אלול";
-	}
-	else {
-		if($string[0]==1) $month = "Tishrei";
-		if($string[0]==2) $month = "Cheshvan";
-		if($string[0]==3) $month = "Kislev";
-		if($string[0]==4) $month = "Tevet";
-		if($string[0]==5) $month = "Shevat";
-		if($string[0]==6) $month = "Adar";
-		if($string[0]==7) $month = "Adar II";
-		if($string[0]==8) $month = "Nisan";
-		if($string[0]==9) $month = "Iyar";
-		if($string[0]==10) $month = "Sivan";
-		if($string[0]==11) $month = "Tamuz";
-		if($string[0]==12) $month = "Av";
-		if($string[0]==13) $month = "Ellul";
-	}
-	$hebdate = " (".$string[1]." ".$month." ".$string[2].")"; 
+		
+		// if after  nightfall is marked, take next gregorian day
+		if($hebnight=="y") {    
+			if($month == "1" OR $month == "3" OR $month == "5" OR $month == "7" OR $month == "8" OR $month == "10" OR $month == "12") {
+				// months with 31 days
+				if($day <31) {
+					$day = $day+1;
+				}
+				elseif($day==31) {
+					$day =1;
+					if($month != 12) {
+						$month = $month+1;
+					}
+					else {
+						$month=1;
+						$year = $year+1;						
+					}
+				}
+			}
+			elseif($month == "4" OR $month == "6" OR $month == "9" OR $month == "11" ) {
+				// months with 30 days
+				if($day <30) {
+					$day = $day+1;
+				}
+				elseif($day==30) {
+					$day =1;
+					$month = $month+1;
+				}
+			}
+			elseif($month == "2") {
+				// february
+				if(($year%4!=0) OR ($year%100==0 AND $year%400!=0)) {     // not leapyear
+					if($day <28) {
+						$day = $day+1;
+					}
+					elseif($day==28) {
+						$day =1;
+						$month = $month+1;
+					}
+				}
+				else {  // leapyear
+					if($day <29) {
+						$day = $day+1;
+					}
+					elseif($day==29) {
+						$day =1;
+						$month = $month+1;
+					}					
+				}
+			}						
+		}
+		
+		$str = jdtojewish(gregoriantojd( $month, $day, $year),false);
+		$string = explode("/",$str); 
+		if($language["dir"]=="rtl") {
+			if($string[0]==1) $month = "תשרי";
+			if($string[0]==2) $month = "חשון";
+			if($string[0]==3) $month = "כסלו";
+			if($string[0]==4) $month = "טבת";
+			if($string[0]==5) $month = "שבט";
+			if($string[0]==6) $month = "אדר";
+			if($string[0]==7) $month = "אדר שני";
+			if($string[0]==8) $month = "ניסן";
+			if($string[0]==9) $month = "אייר";
+			if($string[0]==10) $month = "סיון";
+			if($string[0]==11) $month = "תמוז";
+			if($string[0]==12) $month = "אב";
+			if($string[0]==13) $month = "אלול";
+		}
+		else {
+			if($string[0]==1) $month = "Tishrei";
+			if($string[0]==2) $month = "Cheshvan";
+			if($string[0]==3) $month = "Kislev";
+			if($string[0]==4) $month = "Tevet";
+			if($string[0]==5) $month = "Shevat";
+			if($string[0]==6) $month = "Adar";
+			if($string[0]==7) $month = "Adar II";
+			if($string[0]==8) $month = "Nisan";
+			if($string[0]==9) $month = "Iyar";
+			if($string[0]==10) $month = "Sivan";
+			if($string[0]==11) $month = "Tamuz";
+			if($string[0]==12) $month = "Av";
+			if($string[0]==13) $month = "Ellul";
+		}
+		$hebdate = " (".$string[1]." ".$month." ".$string[2].")"; 
 	}
 	return $hebdate;
 }

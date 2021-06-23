@@ -37,7 +37,6 @@ if (isset($_POST['change_user'])){
 				user_name='".safe_text_db($username)."',
 				user_mail='".safe_text_db($usermail)."', ";
 			if (isset($_POST[$userDb->user_id."password"]) AND $_POST[$userDb->user_id."password"]){
-				//$sql=$sql."user_password='".MD5($_POST[$userDb->user_id."password"]);
 				$sql=$sql."user_password='".MD5($_POST[$userDb->user_id."password"])."', ";
 			}
 			$sql=$sql."user_group_id='".safe_text_db($_POST[$userDb->user_id."group_id"]);
@@ -48,12 +47,21 @@ if (isset($_POST['change_user'])){
 }
 
 if (isset($_POST['add_user']) AND is_numeric($_POST["add_group_id"])){
-	$sql="INSERT INTO humo_users SET
-	user_name='".safe_text_db($_POST["add_username"])."',
-	user_mail='".safe_text_db($_POST["add_usermail"])."',
-	user_password='".MD5($_POST["add_password"])."',
-	user_group_id='".safe_text_db($_POST["add_group_id"])."';";
-	$result=$dbh->query($sql);
+	//$sql="INSERT INTO humo_users SET
+	//user_name='".safe_text_db($_POST["add_username"])."',
+	//user_mail='".safe_text_db($_POST["add_usermail"])."',
+	//user_password='".MD5($_POST["add_password"])."',
+	//user_group_id='".safe_text_db($_POST["add_group_id"])."';";
+	//$result=$dbh->query($sql);
+
+	$user_prep = $dbh->prepare("INSERT INTO humo_users SET
+		user_name=:add_username, user_mail=:add_usermail,
+		user_password=:add_password, user_group_id=:add_group_id");
+	$user_prep->bindValue(':add_username',$_POST["add_username"], PDO::PARAM_STR);
+	$user_prep->bindValue(':add_usermail',$_POST["add_usermail"]);
+	$user_prep->bindValue(':add_password',MD5($_POST["add_password"]));
+	$user_prep->bindValue(':add_group_id',$_POST["add_group_id"], PDO::PARAM_INT);
+	$user_prep->execute();
 }
 
 // *** Remove user ***
@@ -164,11 +172,11 @@ while ($userDb=$user->fetch(PDO::FETCH_OBJ)){
 	echo '</td>';
 
 	// *** Show statistics ***
-	$logbooksql='SELECT COUNT(log_date) as nr_login FROM humo_user_log WHERE log_username="'.$userDb->user_name.'"';
+	$logbooksql="SELECT COUNT(log_date) as nr_login FROM humo_user_log WHERE log_username='".safe_text_db($userDb->user_name)."'";
 	$logbook=$dbh->query($logbooksql);
 	$logbookDb=$logbook->fetch(PDO::FETCH_OBJ);
 
-	$logdatesql='SELECT log_date, log_ip_address FROM humo_user_log WHERE log_username="'.$userDb->user_name.'" ORDER BY log_date DESC LIMIT 0,1';
+	$logdatesql="SELECT log_date, log_ip_address FROM humo_user_log WHERE log_username='".safe_text_db($userDb->user_name)."' ORDER BY log_date DESC LIMIT 0,1";
 	$logdate=$dbh->query($logdatesql);
 	$logdateDb=$logdate->fetch(PDO::FETCH_OBJ);
 

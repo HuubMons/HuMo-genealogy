@@ -31,7 +31,7 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 	if(strlen($_POST["register_password"])<6) {
 		$error=__('ERROR: Password has to contain at least 6 characters');
 	}
-   
+
 	if ($error==false){
 		$user_register_date=date("Y-m-d H:i");
 		$sql="INSERT INTO humo_users SET

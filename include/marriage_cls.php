@@ -33,7 +33,7 @@ function set_privacy($privacy_man, $privacy_woman){
 // *** Show marriage                               ***
 // ***************************************************
 function marriage_data($marriageDb='', $number='0', $presentation='standard'){
-	global $dbh, $db_functions, $tree_prefix_quoted, $url_path, $dataDb, $uri_path;
+	global $dbh, $db_functions, $tree_prefix_quoted, $url_path, $dataDb, $uri_path, $humo_option;
 	global $language, $user, $screen_mode;
 	global $templ_person;
 
@@ -168,9 +168,9 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Married Notice ***
 	$temp_text='';
 	$temp='';
-	if ($marriageDb->fam_marr_notice_date OR $marriageDb->fam_marr_notice_place){
-		$temp_text.= date_place($marriageDb->fam_marr_notice_date,$marriageDb->fam_marr_notice_place);
-		$templ_relation["prew_date"]=date_place($marriageDb->fam_marr_notice_date,$marriageDb->fam_marr_notice_place);
+	if ($marriageDb->fam_marr_notice_date OR $marriageDb->fam_marr_notice_place){				$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_notice_date_hebnight; }		
+		$temp_text.= date_place($marriageDb->fam_marr_notice_date,$marriageDb->fam_marr_notice_place,$nightfall);
+		$templ_relation["prew_date"]=date_place($marriageDb->fam_marr_notice_date,$marriageDb->fam_marr_notice_place,$nightfall);
 		$temp="prew_date";
 	}
 	if ($user["group_texts_fam"]=='j' AND process_text($marriageDb->fam_marr_notice_text)){
@@ -209,8 +209,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Marriage ***
 	$temp_text='';
 	$temp='';
-	if ($marriageDb->fam_marr_date OR $marriageDb->fam_marr_place){
-		$templ_relation["wedd_date"]=date_place($marriageDb->fam_marr_date,$marriageDb->fam_marr_place);
+	if ($marriageDb->fam_marr_date OR $marriageDb->fam_marr_place){				$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_date_hebnight; }
+		$templ_relation["wedd_date"]=date_place($marriageDb->fam_marr_date,$marriageDb->fam_marr_place,$nightfall);
 		$temp="wedd_date";
 		$temp_text.= $templ_relation["wedd_date"];
 	}
@@ -279,8 +279,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Married church notice ***
 	$temp_text='';
 	$temp='';
-	if ($marriageDb->fam_marr_church_notice_date OR $marriageDb->fam_marr_church_notice_place){
-		$templ_relation["prec_date"]=date_place($marriageDb->fam_marr_church_notice_date,$marriageDb->fam_marr_church_notice_place);
+	if ($marriageDb->fam_marr_church_notice_date OR $marriageDb->fam_marr_church_notice_place){				$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_church_notice_date_hebnight; }
+		$templ_relation["prec_date"]=date_place($marriageDb->fam_marr_church_notice_date,$marriageDb->fam_marr_church_notice_place,$nightfall);
 		$temp="prec_date";
 		$temp_text.= $templ_relation["prec_date"];
 	}
@@ -319,8 +319,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	// *** Married church ***
 	$temp_text='';
 	$temp='';
-	if ($marriageDb->fam_marr_church_date OR $marriageDb->fam_marr_church_place){
-		$templ_relation["chur_date"]=date_place($marriageDb->fam_marr_church_date,$marriageDb->fam_marr_church_place);
+	if ($marriageDb->fam_marr_church_date OR $marriageDb->fam_marr_church_place){				$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_church_date_hebnight; }
+		$templ_relation["chur_date"]=date_place($marriageDb->fam_marr_church_date,$marriageDb->fam_marr_church_place,$nightfall);
 		$temp="chur_date";
 		$temp_text.= $templ_relation["chur_date"];
 	}

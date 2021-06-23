@@ -442,7 +442,7 @@ function get_text($text_gedcomnr){
 	$qryDb=false;
 	try {
 		$this->query['get_text']->bindValue(':text_tree_id', $this->tree_id, PDO::PARAM_INT);
-		$this->query['get_text']->bindValue(':text_gedcomnr', $text_gedcomnr, PDO::PARAM_INT);
+		$this->query['get_text']->bindValue(':text_gedcomnr', $text_gedcomnr, PDO::PARAM_STR);
 		$this->query['get_text']->execute();
 		$qryDb=$this->query['get_text']->fetch(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {

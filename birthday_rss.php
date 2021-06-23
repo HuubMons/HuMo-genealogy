@@ -1,12 +1,14 @@
 <?php
-// author: Louis Ywema
-// date: 31-07-2007
-// purpose: rssfeed present birthday's
-// RSS link in html-page:
-// <link rel="alternate" type="application/rss+xml" href="birthday_rss.php" title="RSS feed birthdays" >
+/*
+author: Louis Ywema
+date: 31-07-2007
+purpose: rssfeed present birthday's
+RSS link in html-page:
+<link rel="alternate" type="application/rss+xml" href="birthday_rss.php" title="RSS feed birthdays" >
 
-// Update by: Huub Mons.
-// Added multiple languages.
+Updated by: Huub Mons.
+Added multiple languages.
+*/
 
 session_start();
 

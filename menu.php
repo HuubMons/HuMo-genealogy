@@ -3,9 +3,9 @@ print '<div id="top_menu">';
 
 $rtlmark='ltr'; if($language["dir"]=="rtl") { $rtlmark='rtl'; }
 echo '<div id="top" style="direction:'.$rtlmark.';">';
-   echo '<div style="direction:ltr;">';
+	echo '<div style="direction:ltr;">';
 
-   echo '<span id="top_website_name">';
+	echo '<span id="top_website_name">';
 		echo '&nbsp;<a href="'.$humo_option["homepage"].'">'.$humo_option["database_name"].'</a>';
 	echo '</span>';
 
@@ -131,17 +131,18 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			if (isset($_SESSION["save_favorites"])){
 				sort ($_SESSION['save_favorites']);
 				foreach($_SESSION['save_favorites'] as $key=>$value){
-					$favorite_array2=explode("|",$value);
-					// *** Show only persons in selected family tree ***
-					if ($_SESSION['tree_prefix']==$favorite_array2['2']){
-						// *** Check if family tree is still the same family tree ***
-						$person_manDb=$db_functions->get_person($favorite_array2['3']);
+					if ($value){
+						$favorite_array2=explode("|",$value);
+						// *** Show only persons in selected family tree ***
+						if ($_SESSION['tree_prefix']==$favorite_array2['2']){
+							// *** Check if family tree is still the same family tree ***
+							$person_manDb=$db_functions->get_person($favorite_array2['3']);
 
-						// *** Proces man using a class ***
-						$test_favorite = $db_functions->get_person($favorite_array2['3']);
-						if ($test_favorite)
-							echo '<option value="'.$favorite_array2['1'].'|'.$favorite_array2['3'].'">'.$favorite_array2['0'].'</option>';
-
+							// *** Proces man using a class ***
+							$test_favorite = $db_functions->get_person($favorite_array2['3']);
+							if ($test_favorite)
+								echo '<option value="'.$favorite_array2['1'].'|'.$favorite_array2['3'].'">'.$favorite_array2['0'].'</option>';
+						}
 					}
 				}
 			}

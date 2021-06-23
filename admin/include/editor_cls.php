@@ -9,10 +9,10 @@ class editor_cls{
 // BET 1986 AND 1987 = bet 1986 and 1987
 
 // *** $multiple_rows = addition for editing in multiple rows. Example: name = "event_date[]" ***
-function date_show($process_date, $process_name, $multiple_rows='', $disabled=''){
+function date_show($process_date, $process_name, $multiple_rows='', $disabled='', $hebnight='n', $hebvar=''){
 
 	// *** Process BEF, ABT, AFT and BET in a easier pulldown menu ***
-	global $language, $field_date;
+	global $language, $field_date, $humo_option;
 	$text=''; $style=''; $placeholder = '';
 	if($disabled=='') {
 		$text='<select class="fonts" size="1" id="'.$process_name.'_prefix'.$multiple_rows.'"  name="'.$process_name.'_prefix'.$multiple_rows.'" '.$disabled.'>';
@@ -55,6 +55,11 @@ function date_show($process_date, $process_name, $multiple_rows='', $disabled=''
 		else { $text.=$process_date; }
 
 	$text.='" size="'.$field_date.'" '.$disabled.'>';
+
+	if($humo_option['admin_hebnight'] == "y" AND $hebnight != 'n')  {  // user wants checkbox for jewish setting of events after nightfall for specific events AND it is to be placed with this event
+		$checked = '';   if($hebnight=='y') { $checked = " checked "; }
+		$text.= '<span style="white-space: nowrap"><input type="checkbox" id="'.$hebvar.'" value="y" name="'.$hebvar.'" '.$checked.'>  <label for="'.$hebvar.'">'.__('After nightfall').'</label></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	}
 
 	return $text;
 }

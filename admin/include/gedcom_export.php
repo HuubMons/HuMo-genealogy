@@ -819,7 +819,10 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 	if ($person->pers_birth_date OR $person->pers_birth_place OR $person->pers_birth_text
 		OR 	(isset($person->pers_stillborn) AND $person->pers_stillborn=='y') ){
 		$buffer.="1 BIRT\r\n";
-		if ($person->pers_birth_date){ $buffer.='2 DATE '.$person->pers_birth_date."\r\n"; }
+		if ($person->pers_birth_date){ 
+			$buffer.='2 DATE '.$person->pers_birth_date."\r\n"; 
+			if (isset($person->pers_birth_date_hebnight) AND $person->pers_birth_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
+		}
 		if ($person->pers_birth_place){ $buffer.=process_place($person->pers_birth_place,2); }
 		if ($person->pers_birth_time){ $buffer.='2 TIME '.$person->pers_birth_time."\r\n"; }
 		if ($gedcom_sources=='yes'){
@@ -860,7 +863,10 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 	// *** Death data ***
 	if ($person->pers_death_date OR $person->pers_death_place OR $person->pers_death_text OR $person->pers_death_cause){
 		$buffer.="1 DEAT\r\n";
-		if ($person->pers_death_date) $buffer.='2 DATE '.$person->pers_death_date."\r\n";
+		if ($person->pers_death_date) {
+			$buffer.='2 DATE '.$person->pers_death_date."\r\n";
+			if (isset($person->pers_death_date_hebnight) AND $person->pers_death_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
+		}
 		if ($person->pers_death_place) $buffer.=process_place($person->pers_death_place,2);
 		if ($person->pers_death_time) $buffer.='2 TIME '.$person->pers_death_time."\r\n";
 		if ($gedcom_sources=='yes')
@@ -874,7 +880,10 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 	// *** Buried data ***
 	if ($person->pers_buried_date OR $person->pers_buried_place OR $person->pers_buried_text OR $person->pers_cremation){
 		$buffer.="1 BURI\r\n";
-		if ($person->pers_buried_date) $buffer.='2 DATE '.$person->pers_buried_date."\r\n";
+		if ($person->pers_buried_date) {
+			$buffer.='2 DATE '.$person->pers_buried_date."\r\n";
+			if (isset($person->pers_buried_date_hebnight) AND $person->pers_buried_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
+		}
 		if ($person->pers_buried_place) $buffer.=process_place($person->pers_buried_place,2);
 		if ($gedcom_sources=='yes')
 			sources_export('person','pers_buried_source',$person->pers_gedcomnumber,2);
@@ -1160,6 +1169,7 @@ while($families=$families_qry->fetch(PDO::FETCH_OBJ)){
 		$buffer.="2 TYPE civil\r\n";
 		if ($family->fam_marr_notice_date){
 			$buffer.='2 DATE '.$family->fam_marr_notice_date."\r\n";
+			if (isset($family->fam_marr_notice_date_hebnight) AND $family->fam_marr_notice_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
 		}
 		if ($family->fam_marr_notice_place){
 			$buffer.=process_place($family->fam_marr_notice_place,2);
@@ -1175,9 +1185,10 @@ while($families=$families_qry->fetch(PDO::FETCH_OBJ)){
 	// *** Marriage notice church ***
 	if ($family->fam_marr_church_notice_date OR $family->fam_marr_church_notice_place OR $family->fam_marr_church_notice_text){
 		$buffer.="1 MARB\r\n";
-		$buffer.="2 TYPE religous\r\n";
+		$buffer.="2 TYPE religious\r\n";
 		if ($family->fam_marr_church_notice_date){
 			$buffer.='2 DATE '.$family->fam_marr_church_notice_date."\r\n";
+			if (isset($family->fam_marr_church_notice_date_hebnight) AND $family->fam_marr_church_notice_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
 		}
 		if ($family->fam_marr_church_notice_place){
 			$buffer.=process_place($family->fam_marr_church_notice_place,2);
@@ -1193,7 +1204,10 @@ while($families=$families_qry->fetch(PDO::FETCH_OBJ)){
 	if ($family->fam_marr_date OR $family->fam_marr_place OR $family->fam_marr_text){
 		$buffer.="1 MARR\r\n";
 		$buffer.="2 TYPE civil\r\n";
-		if ($family->fam_marr_date){ $buffer.='2 DATE '.$family->fam_marr_date."\r\n"; }
+		if ($family->fam_marr_date){ 
+			$buffer.='2 DATE '.$family->fam_marr_date."\r\n"; 
+			if (isset($family->fam_marr_date_hebnight) AND $family->fam_marr_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
+		}
 		if ($family->fam_marr_place){ $buffer.=process_place($family->fam_marr_place,2); }
 		if ($gedcom_sources=='yes'){
 			sources_export('family','fam_marr_source',$family->fam_gedcomnumber,2);
@@ -1207,8 +1221,11 @@ while($families=$families_qry->fetch(PDO::FETCH_OBJ)){
 	// *** Marriage church ***
 	if ($family->fam_marr_church_date OR $family->fam_marr_church_place OR $family->fam_marr_church_text){
 		$buffer.="1 MARR\r\n";
-		$buffer.="2 TYPE religous\r\n";
-		if ($family->fam_marr_church_date){ $buffer.='2 DATE '.$family->fam_marr_church_date."\r\n"; }
+		$buffer.="2 TYPE religious\r\n";
+		if ($family->fam_marr_church_date){ 
+			$buffer.='2 DATE '.$family->fam_marr_church_date."\r\n"; 
+			if (isset($family->fam_marr_church_date_hebnight) AND $family->fam_marr_church_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
+		}
 		if ($family->fam_marr_church_place){ $buffer.=process_place($family->fam_marr_church_place,2); }
 		if ($gedcom_sources=='yes'){
 			sources_export('family','fam_marr_church_source',$family->fam_gedcomnumber,2);

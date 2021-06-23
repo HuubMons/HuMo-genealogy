@@ -94,7 +94,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 
 		$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key2; 
 		//echo $api_key." - ".$api_key2."<br>";
-		//echo $jsonurl."<br>";	
+		//echo $jsonurl."<br>";
 		//$json = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key2);
 		//echo $json;
  

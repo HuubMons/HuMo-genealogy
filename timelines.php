@@ -10,7 +10,7 @@ if(isset($_GET['id'])) $id=$_GET['id'];
 @$personDb = $db_functions->get_person($id);
 
 $isborn=0; $isdeath=0; $ismarr=0; $ischild=0;
-$deathtext=''; $borntext=''; $bapttext=''; $burrtext=''; $marrtext='';
+$deathtext=''; $borntext=''; $bapttext=''; $burrtext=''; $marrtext= Array();
 $privacy_filtered=false;
 
 function julgreg($date) {   // alters a julian/gregorian date entry such as 4 mar 1572/3 to use regular date for calculations
@@ -580,7 +580,7 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 		}
 		if(isset($spousedeathyear)) {
 			for($i=0;$i<count($spousedeathyear);$i++) {
-				if (@$spousedeathyear[$i]!='' AND $spousedeathyear[$i] == $tempyr) {
+				if ($spousedeathyear[$i]!='' AND $spousedeathyear[$i] == $tempyr) {
 					if($br_flag==1) { print "<br>"; }
 					print $spousedeathtext[$i];
 					$br_flag=1;
@@ -589,35 +589,41 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 		}
 		if(isset($chbornyear)) {
 			for($i=0; $i<count($marriages);$i++) {
-				for($m=0; $m<count($children[$i]);$m++) {
-					if (isset($chbornyear[$i][$m]) AND $chbornyear[$i][$m] == $tempyr) {
-						if($br_flag==1) { print "<br>"; }
-						print "<span style='color:green;font-weight:normal'>".$chborntext[$i][$m]."</span>";
-						$br_flag=1;
+				if(is_array($children[$i])) {
+					for($m=0; $m<count($children[$i]);$m++) {
+						if (isset($chbornyear[$i][$m]) AND $chbornyear[$i][$m] == $tempyr) {
+							if($br_flag==1) { print "<br>"; }
+							print "<span style='color:green;font-weight:normal'>".$chborntext[$i][$m]."</span>";
+							$br_flag=1;
+						}
 					}
 				}
 			}
 		}
 		if(isset($chdeathyear)) {
 			for($i=0; $i<count($marriages);$i++) {
-				for($m=0; $m<count($children[$i]);$m++) {
-					if (isset($chdeathyear[$i][$m]) AND $chdeathyear[$i][$m] == $tempyr) {
-						if($br_flag==1) { print "<br>"; }
-						print "<span style='color:green;font-weight:normal'>".$chdeathtext[$i][$m]."</span>";
-						$br_flag=1;
+				if(is_array($children[$i])) {
+					for($m=0; $m<count($children[$i]);$m++) {
+						if (isset($chdeathyear[$i][$m]) AND $chdeathyear[$i][$m] == $tempyr) {
+							if($br_flag==1) { print "<br>"; }
+							print "<span style='color:green;font-weight:normal'>".$chdeathtext[$i][$m]."</span>";
+							$br_flag=1;
+						}
 					}
 				}
 			}
 		}
 		if(isset($chmarryear)) {
 			for($i=0; $i<count($marriages);$i++) {
-				for($m=0; $m<count($children[$i]);$m++) {
-					if(isset($chmarriages[$i][$m])) {
-						for($p=0; $p<count($chmarriages[$i][$m]);$p++) {
-							if (isset($chmarryear[$i][$m][$p]) AND $chmarryear[$i][$m][$p]!='' AND $chmarryear[$i][$m][$p] == $tempyr) {
-								if($br_flag==1) { print "<br>"; }
-								print "<span style='color:green;font-weight:normal'>".$chmarrtext[$i][$m][$p]."</span>";
-								$br_flag=1;
+				if(is_array($children[$i])) {
+					for($m=0; $m<count($children[$i]);$m++) {
+						if(is_array($chmarriages[$i][$m])) {
+							for($p=0; $p<count($chmarriages[$i][$m]);$p++) {
+								if (isset($chmarryear[$i][$m][$p]) AND $chmarryear[$i][$m][$p]!='' AND $chmarryear[$i][$m][$p] == $tempyr) {
+									if($br_flag==1) { print "<br>"; }
+									print "<span style='color:green;font-weight:normal'>".$chmarrtext[$i][$m][$p]."</span>";
+									$br_flag=1;
+								}
 							}
 						}
 					}
@@ -626,38 +632,42 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 		}
 		if(isset($grchbornyear)) {
 			for($i=0; $i<count($marriages);$i++) {
-				for($m=0; $m<count($children[$i]);$m++) {
-					if(isset($chmarriages[$i][$m])) {
-					for($p=0; $p<count($chmarriages[$i][$m]);$p++) {
-						if(isset($grchildren[$i][$m][$p])) {
-						for($g=0; $g<count($grchildren[$i][$m][$p]);$g++) {
-							if (isset($grchbornyear[$i][$m][$p][$g]) AND $grchbornyear[$i][$m][$p][$g]!='' AND $grchbornyear[$i][$m][$p][$g] == $tempyr) {
-								if($br_flag==1) { print "<br>"; }
-								print "<span style='color:blue;font-weight:normal'>".$grchborntext[$i][$m][$p][$g]."</span>";
-								$br_flag=1;
+				if(is_array($children[$i])) {
+					for($m=0; $m<count($children[$i]);$m++) {
+						if(is_array($chmarriages[$i][$m])) {
+							for($p=0; $p<count($chmarriages[$i][$m]);$p++) {
+								if(is_array($grchildren[$i][$m][$p])) {
+									for($g=0; $g<count($grchildren[$i][$m][$p]);$g++) {
+										if (isset($grchbornyear[$i][$m][$p][$g]) AND $grchbornyear[$i][$m][$p][$g]!='' AND $grchbornyear[$i][$m][$p][$g] == $tempyr) {
+											if($br_flag==1) { print "<br>"; }
+											print "<span style='color:blue;font-weight:normal'>".$grchborntext[$i][$m][$p][$g]."</span>";
+											$br_flag=1;
+										}
+									}
+								}
 							}
 						}
-						}
-					}
 					}
 				}
 			}
 		}
 		if(isset($grchdeathyear)) {
 			for($i=0; $i<count($marriages);$i++) {
-				for($m=0; $m<count($children[$i]);$m++) {
-					if(isset($chmarriages[$i][$m])) {
-					for($p=0; $p<count($chmarriages[$i][$m]);$p++) {
-						if(isset($grchildren[$i][$m][$p])) {
-						for($g=0; $g<count($grchildren[$i][$m][$p]);$g++) {
-							if (isset($grchdeathyear[$i][$m][$p][$g]) AND $grchdeathyear[$i][$m][$p][$g]!='' AND $grchdeathyear[$i][$m][$p][$g] == $tempyr) {
-								if($br_flag==1) { print "<br>"; }
-								print "<span style='color:blue;font-weight:normal'>".$grchdeathtext[$i][$m][$p][$g]."</span>";
-								$br_flag=1;
+				if(is_array($children[$i])) {
+					for($m=0; $m<count($children[$i]);$m++) {
+						if(is_array($chmarriages[$i][$m])) {
+							for($p=0; $p<count($chmarriages[$i][$m]);$p++) {
+								if(is_array($grchildren[$i][$m][$p])) {
+									for($g=0; $g<count($grchildren[$i][$m][$p]);$g++) {
+										if (isset($grchdeathyear[$i][$m][$p][$g]) AND $grchdeathyear[$i][$m][$p][$g]!='' AND $grchdeathyear[$i][$m][$p][$g] == $tempyr) {
+											if($br_flag==1) { print "<br>"; }
+											print "<span style='color:blue;font-weight:normal'>".$grchdeathtext[$i][$m][$p][$g]."</span>";
+											$br_flag=1;
+										}
+									}
+								}
 							}
 						}
-						}
-					}
 					}
 				}
 			}

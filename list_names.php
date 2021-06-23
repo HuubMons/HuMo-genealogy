@@ -43,7 +43,7 @@ echo '<p class="fonts">';
 // *** Alphabet find first first_character of lastname ***
 $last_name='a'; // *** Default first_character ***
 // *** Search variables in: http://localhost/humo-gen/list/humo1_/M/ ***
-if (isset($urlpart[1])){  
+if (isset($urlpart[1])){
 	$last_name=urldecode(safe_text_db($urlpart[1]));   // without urldecode skandinavian letters don't work!
 }
 if (isset($_GET['last_name'])){
@@ -52,7 +52,7 @@ if (isset($_GET['last_name'])){
 
 // *** MAIN SETTINGS ***
 $maxcols = 5; // number of name & nr colums in table. For example 3 means 3x name col + nr col
-if(isset($_POST['maxcols'])) {
+if(isset($_POST['maxcols'])){
 	$maxcols = $_POST['maxcols'];
 	$_SESSION["save_maxcols"]=$maxcols;
 }
@@ -71,7 +71,7 @@ $start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
 $uri_path_string='list_names.php?';
 
 
-function tablerow($nr,$lastcol=false) {    
+function tablerow($nr,$lastcol=false) {
 	// displays one set of name & nr column items in the row
 	// $nr is the array number of the name set created in function last_names
 	// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
@@ -83,7 +83,7 @@ function tablerow($nr,$lastcol=false) {
 		$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
 	//}
 	echo '<td class="namelst">';
-	if (isset($freq_last_names[$nr])) { 
+	if (isset($freq_last_names[$nr])) {
 		$top_pers_lastname=''; if ($freq_pers_prefix[$nr]){ $top_pers_lastname=str_replace("_", " ", $freq_pers_prefix[$nr]); }
 		$top_pers_lastname.=$freq_last_names[$nr];
 		if ($user['group_kindindex']=="j"){
@@ -174,23 +174,25 @@ while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 	$freq_last_names[]=$personDb->pers_lastname;
 	$freq_pers_prefix[]=$personDb->pers_prefix;
 	$freq_count_last_names[]=$personDb->count_last_names;
-	if ($personDb->count_last_names > $number_high) $number_high=$personDb->count_last_names;
+	if ($personDb->count_last_names > $number_high){
+		$number_high=$personDb->count_last_names;
+	}
 }
-$row = ceil(count($freq_last_names)/$maxcols);
+@$row = ceil(count($freq_last_names)/$maxcols);
 
 // *** Total number of persons for multiple pages ***
-//if ($count_qry){  
+//if ($count_qry){
 	// *** Use MySQL COUNT command to calculate nr. of persons in simple queries (faster than php num_rows and in simple queries faster than SQL_CAL_FOUND_ROWS) ***
-	$result= $dbh->query($count_qry);
 	//@$resultDb = $result->fetch(PDO::FETCH_OBJ);
 	//$count_persons=@$resultDb->teller;
+	$result= $dbh->query($count_qry);
 	$count_persons=$result->rowCount();
 //}
-//else{  
+//else{
 //		// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
 //		$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
 //		$rows = $result->fetch();
-//		$count_persons = $rows['found_rows'];   
+//		$count_persons = $rows['found_rows'];
 //}
 
 
@@ -220,7 +222,7 @@ echo '<div style="text-align:center">';
 	echo '</form>';
 
 
-	//*** Show number of persons and pages *****************************************
+	//*** Show number of persons and pages *********************
 
 	// *** Check for search results ***
 	if (@$person->rowCount()==0) {
@@ -314,9 +316,9 @@ for(var i = 0; i < rws.length; i ++) {
 	var nms = rws[i].getElementsByClassName("namelst");
 	for(var x = 0; x < tbs.length; x ++) {
 		var percentage = parseInt(tbs[x].innerHTML, 10);
-		percentage = (percentage * 100)/baseperc;  
+		percentage = (percentage * 100)/baseperc;
 		if(percentage > 0.1) {
-			nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
+			nms[x].style.backgroundImage= "url(images/lightgray.png)";
 			nms[x].style.backgroundSize = percentage + "%" + " 100%";
 			nms[x].style.backgroundRepeat = "no-repeat";
 			nms[x].style.color = "rgb(0, 140, 200)";

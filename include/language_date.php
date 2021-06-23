@@ -36,7 +36,7 @@ function language_date($date_text){
 		$date_text=str_replace("FEB", __('February'), $date_text);
 		$date_text=str_replace("MAR", __('March'), $date_text);
 		$date_text=str_replace("APR", __('April'), $date_text);
-		$date_text=str_replace("MAY", __('May'), $date_text); // without capital that's how it is in the source file...
+		$date_text=str_replace("MAY", __('May'), $date_text);
 		$date_text=str_replace("JUN", __('June'), $date_text);
 		$date_text=str_replace("JUL", __('July'), $date_text);
 		$date_text=str_replace("AUG", __('August'), $date_text);

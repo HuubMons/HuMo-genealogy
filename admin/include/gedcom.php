@@ -309,11 +309,24 @@ if (isset($step1)){
 		echo '</select><br>';
 
 		// *** Option to add gedcom file to family tree if this family tree isn't empty ***
+//use this code?
+//$nr_persons=$db_functions->count_persons($tree_id);
+//if ($nr_persons>0){
 		$result = $dbh->query("SELECT tree_persons FROM humo_trees WHERE tree_prefix ='".$_SESSION['tree_prefix']."' LIMIT 1");
 		$resultDb=$result->fetch(PDO::FETCH_OBJ);
 		if ($resultDb->tree_persons != 0) {  // don't show if there is nothing in the database yet: this can't be a second gedcom!
-			echo "<br><input type='checkbox' name='add_tree'> ".__('Add this gedcom file to the existing tree')."<br>\n";
+			//echo "<br><input type='checkbox' name='add_tree'> ".__('Add this gedcom file to the existing tree')."<br>\n";
+			echo '<br><input type="checkbox" onchange="document.getElementById(\'step2\').disabled = !this.checked;" name="add_tree"> '.__('Add this gedcom file to the existing tree')."<br>\n";
 		}
+
+		//TEST
+		//$nr_persons=$db_functions->count_persons($tree_id);
+		//if ($nr_persons>0){
+		//	$checked1 = ''; $checked2 = ' checked';
+		//	echo '<br><input type="radio" value="no" name="add_tree" onchange="document.getElementById(\'step2\').disabled = this.checked;" '.$checked2.'> ';printf(__('Replace existing family tree with %s persons'), $nr_persons);
+		//	echo '<br>';
+		//	echo '<input type="radio" value="yes" name="add_tree" onchange="document.getElementById(\'step2\').disabled = !this.checked;" '.$checked1.'> '.__('Add this gedcom file to the existing tree').'<br>';
+		//}
 
 		echo '<br></tr><td>'.__('Gedcom process settings').'</td><td>';
 
@@ -351,7 +364,22 @@ if (isset($step1)){
 
 	echo '</td></tr></table>';
 
-	echo '<p><input type="Submit" name="step2" value="'.__('Step').' 2">';
+	// *** Show extra warning if there is an existing family tree ***
+	$nr_persons=$db_functions->count_persons($tree_id);
+	if ($nr_persons>0){
+		echo '<br><input type="checkbox" onchange="document.getElementById(\'step2\').disabled = !this.checked;" />';
+
+		$treetext=show_tree_text($tree_id, $selected_language);
+		$treetext2=''; if ($treetext['name']) $treetext2= $treetext['name'];
+		//printf(__('Yes, replace existing family tree "" with %s persons!'), $nr_persons);
+		printf(__('Yes, replace existing family tree: <b>"%1$s"</b> with %2$s persons!'), $treetext2, $nr_persons);
+
+		echo '<br><input type="Submit" name="step2" id="step2" disabled value="'.__('Step').' 2"><br>';
+	}
+	else{
+		echo '<p><input type="Submit" name="step2" value="'.__('Step').' 2"><br>';
+	}
+
 	echo '</form><br>';
 
 	if(CMS_SPECIFIC=="Joomla") {
@@ -862,7 +890,7 @@ if (isset($_POST['step2'])){
 		echo '<input type="Submit" name="step3" value="'.__('Step').' 3">';
 		echo '</form>';
 	echo '</td>';
-	if(isset($_POST['add_tree'])) { 
+	if(isset($_POST['add_tree'])) {
 		echo '<td>';
 		echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		echo '<form method="post" style="display:inline" action="'.$phpself.'">';
@@ -1107,8 +1135,7 @@ if (isset($_POST['step3'])){
 		$devider=50; // determines the steps in percentages - regular: 2%
 		if($total >200000) { $devider=100; } // 1% for larger files with over 200,000 lines
 		if($total > 1000000) { $devider = 200; } // 0.5% for very large files
-
-		$step = round($total/$devider); 
+		$step = round($total/$devider);
 	}
 	// *** END preparation of progress bar ***
 
@@ -1239,6 +1266,7 @@ if (isset($_POST['step3'])){
 		}
 
 // TEST: show memory usage
+//if (!isset($memory)) $memory=memory_get_usage();
 //$calc_memory=(memory_get_usage()-$memory);
 //if ($calc_memory>100){ echo '<b>'; }
 //	echo '<br>'.memory_get_usage().' '.$calc_memory.'@ ';
@@ -1279,6 +1307,16 @@ if (isset($_POST['step3'])){
 				$buffer2=encode($buffer2, $_POST["gedcom_accent"]);
 				$gedcom_cls -> process_person($buffer2);
 				$process_gedcom=""; $buffer2="";
+
+// TEST: show memory usage
+//if (!isset($memory)) $memory=memory_get_usage();
+//$calc_memory=(memory_get_usage()-$memory);
+//if ($calc_memory>100){ echo '<b>'; }
+//	echo '<br>'.memory_get_usage().' '.$calc_memory.'@ ';
+//	$memory=memory_get_usage();
+//	echo ' '.$buffer;
+//if ($calc_memory>100){ echo '!!</b>'; }
+
 			}
 
 			elseif ($process_gedcom=="family"){
@@ -1383,10 +1421,10 @@ if (isset($_POST['step3'])){
 				echo '<script language="javascript">';
 				echo 'document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#00CC00;\">&nbsp;</div>";';
 				echo 'document.getElementById("information").innerHTML="'.$i.' / '.$total.' '.__('lines processed').' ('.$percent.')";';
-				echo '</script>';    
+				echo '</script>';
 
 				// This is for the buffer achieve the minimum size in order to flush data
-				echo str_repeat(' ',1024*64);    
+				echo str_repeat(' ',1024*64);
 
 				// Send output to browser immediately
 				ob_flush();
@@ -1573,12 +1611,20 @@ if (isset($_POST['step4'])){
 
 	//echo '&gt;&gt;&gt; '.__('Processing single persons...');
 
-	// *** Check for seperate saved texts in database (used in Aldfaer program and Reunion) and store them as standard texts ***
-	$search_text_qry=$dbh->query("SELECT * FROM humo_texts WHERE text_tree_id='".$tree_id."'");
+	// *** Quick check for seperate saved texts in database (used in Aldfaer program and Reunion) and store them as standard texts ***
+	$search_text_qry=$dbh->query("SELECT * FROM humo_texts WHERE text_tree_id='".$tree_id."' LIMIT 0,1");
 	$count_text=$search_text_qry->rowCount();
+	//$count_text=0;		// *** UITSCHAKELEN VAN VERWERKEN HUMO_TEXTS TABEL ***
 	if ($count_text>0){
 
+		// *** Number of records in text table, used to show a status counter ***
+		$total_text_qry = $dbh->query("SELECT COUNT(*) FROM humo_texts WHERE text_tree_id='".$tree_id."'"); 
+		$total_text_db = $total_text_qry->fetch();
+		$total_texts=$total_text_db[0];
+		$total_processed_texts=0;
+
 		echo '<br>&gt;&gt;&gt; '.__('Processing of referenced texts into standard texts...');
+		echo ' ['.$total_texts.' text records].';
 
 		$db_functions->set_tree_id($tree_id);
 
@@ -1588,11 +1634,19 @@ if (isset($_POST['step4'])){
 		if ($commit_records>1){ $dbh->beginTransaction(); }
 
 		// *** Process texts in person table ***
-		$person_qry=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
-		while ($personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
+		//$person_qry=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
+		//while ($personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
+
+		// *** First only read pers_id, otherwise too much memory use ***
+		$person2_qry=$dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
+		while ($person2Db=$person2_qry->fetch(PDO::FETCH_OBJ)){
+
+			$person_qry=$dbh->query("SELECT * FROM humo_persons WHERE pers_id='".$person2Db->pers_id."'");
+			$personDb=$person_qry->fetch(PDO::FETCH_OBJ);
 
 			$pers_text=''; 
 			if (substr($personDb->pers_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($personDb->pers_text,1,-1));
 				if ($search_textDb){
 					$pers_text=$search_textDb->text_text;
@@ -1622,30 +1676,35 @@ if (isset($_POST['step4'])){
 
 			$pers_name_text=''; 
 			if (substr($personDb->pers_name_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($personDb->pers_name_text,1,-1));
 				if ($search_textDb) $pers_name_text=$search_textDb->text_text;
 			}
 
 			$pers_birth_text=''; 
 			if (substr($personDb->pers_birth_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($personDb->pers_birth_text,1,-1));
 				if ($search_textDb) $pers_birth_text=$search_textDb->text_text;
 			}
 
 			$pers_bapt_text='';
 			if (substr($personDb->pers_bapt_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($personDb->pers_bapt_text,1,-1));
 				if ($search_textDb) $pers_bapt_text=$search_textDb->text_text;
 			}
 
 			$pers_death_text=''; 
 			if (substr($personDb->pers_death_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($personDb->pers_death_text,1,-1));
 				if ($search_textDb) $pers_death_text=$search_textDb->text_text;
 			}
 
 			$pers_buried_text='';
 			if (substr($personDb->pers_buried_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($personDb->pers_buried_text,1,-1));
 				if ($search_textDb) $pers_buried_text=$search_textDb->text_text;
 			}
@@ -1683,7 +1742,9 @@ if (isset($_POST['step4'])){
 				// *** Update progress ***
 				$total++;
 				echo '<script language="javascript">';
-				echo 'document.getElementById("information").innerHTML="'.$total.' '.__('lines processed').'";';
+					//echo 'document.getElementById("information").innerHTML="'.$total.' '.__('lines processed').'";';
+					$status=' ['.__('persons').' '.($total_texts-$total_processed_texts).']';
+					echo 'document.getElementById("information").innerHTML="'.$total.' '.__('lines processed').$status.'";';
 				echo '</script>';
 				ob_flush();
 				flush(); // for IE
@@ -1714,29 +1775,40 @@ if (isset($_POST['step4'])){
 
 
 		// *** Process texts in family table ***
-		$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."'");
-		while ($famDb=$fam_qry->fetch(PDO::FETCH_OBJ)){
+		//$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."'");
+		//while ($famDb=$fam_qry->fetch(PDO::FETCH_OBJ)){
+
+		// *** Memory improvement, only read 1 full record at a time ***
+		$fam_qry2=$dbh->query("SELECT fam_id FROM humo_families WHERE fam_tree_id='".$tree_id."'");
+		while ($famDb2=$fam_qry2->fetch(PDO::FETCH_OBJ)){
+
+			$fam_qry=$dbh->query("SELECT * FROM humo_families WHERE fam_id='".$famDb2->fam_id."'");
+			$famDb=$fam_qry->fetch(PDO::FETCH_OBJ);
 
 			$fam_text=''; 
 			if (substr($famDb->fam_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($famDb->fam_text,1,-1));
 				if ($search_textDb) $fam_text=$search_textDb->text_text;
 			}
 
 			$fam_relation_text='';
 			if (substr($famDb->fam_relation_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($famDb->fam_relation_text,1,-1));
 				if ($search_textDb) $fam_relation_text=$search_textDb->text_text;
 			}
 
 			$fam_marr_notice_text='';
 			if (substr($famDb->fam_marr_notice_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($famDb->fam_marr_notice_text,1,-1));
 				if ($search_textDb) $fam_marr_notice_text=$search_textDb->text_text;
 			}
 
 			$fam_marr_text='';
 			if (substr($famDb->fam_marr_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($famDb->fam_marr_text,1,-1));
 				if ($search_textDb){
 					$fam_marr_text=$search_textDb->text_text;
@@ -1765,18 +1837,21 @@ if (isset($_POST['step4'])){
 
 			$fam_marr_church_notice_text='';
 			if (substr($famDb->fam_marr_church_notice_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($famDb->fam_marr_church_notice_text,1,-1));
 				if ($search_textDb) $fam_marr_church_notice_text=$search_textDb->text_text;
 			}
 
 			$fam_marr_church_text='';
 			if (substr($famDb->fam_marr_church_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($famDb->fam_marr_church_text,1,-1));
 				if ($search_textDb) $fam_marr_church_text=$search_textDb->text_text;
 			}
 
 			$fam_div_text='';
 			if (substr($famDb->fam_div_text, 0, 1)=='@'){
+				$total_processed_texts++;
 				$search_textDb=$db_functions->get_text(substr($famDb->fam_div_text,1,-1));
 				if ($search_textDb) $fam_div_text=$search_textDb->text_text;
 			}
@@ -1826,7 +1901,9 @@ if (isset($_POST['step4'])){
 				// *** Update progress ***
 				$total++;
 				echo '<script language="javascript">';
-				echo 'document.getElementById("information").innerHTML="'.$total.' '.__('lines processed').'";';
+					//echo 'document.getElementById("information").innerHTML="'.$total.' '.__('lines processed').'";';
+					$status=' ['.__('families').' '.($total_texts-$total_processed_texts).']';
+					echo 'document.getElementById("information").innerHTML="'.$total.' '.__('lines processed').$status.'";';
 				echo '</script>';
 				ob_flush();
 				flush(); // for IE
@@ -1858,8 +1935,11 @@ if (isset($_POST['step4'])){
 
 	// *** Process text by name etc. ***
 	echo '<br>&gt;&gt;&gt; '.__('Processing texts IN names...');
+	//$person_qry=$dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname
+	//	FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
 	$person_qry=$dbh->query("SELECT pers_id, pers_name_text, pers_firstname, pers_lastname
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
+		FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_name_text!=''");
+//echo 'AANTAL '.$person_qry->rowCount();
 	while ($personDb=$person_qry->fetch(PDO::FETCH_OBJ)){
 		//*** Haza-data option: text IN name where "*" is. ***
 		if ($personDb->pers_name_text){
@@ -1900,10 +1980,10 @@ if (isset($_POST['step4'])){
 			$dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
 		}
 		$all_loc = $dbh->query("SELECT location_location FROM humo_location");
-		while($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {  
+		while($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {
 			$loca_array[$all_locDb->location_location] = "";
 		}
-		$status_string = ""; 
+		$status_string = "";
 
 		$tree_id_string = " AND ( ";
 		$id_arr = explode(";",substr($humo_option['geo_trees'],0,-1)); // substr to remove trailing ;
@@ -1918,18 +1998,18 @@ if (isset($_POST['step4'])){
 
 			$result=$dbh->query("SELECT pers_birth_place, pers_bapt_place, pers_death_place, pers_buried_place FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
 
-			while($resultDb = $result->fetch(PDO::FETCH_OBJ)) { 
-				if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$tree_prefDb->tree_prefix."birth ")===false) { 
-					$loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix."birth ";  
+			while($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
+				if (isset($loca_array[$resultDb->pers_birth_place]) AND strpos($loca_array[$resultDb->pers_birth_place],$tree_prefDb->tree_prefix."birth ")===false) {
+					$loca_array[$resultDb->pers_birth_place] .= $tree_prefDb->tree_prefix."birth ";
 				}
-				if (isset($loca_array[$resultDb->pers_bapt_place]) AND strpos($loca_array[$resultDb->pers_bapt_place],$tree_prefDb->tree_prefix."bapt ")===false) {   
-					$loca_array[$resultDb->pers_bapt_place] .= $tree_prefDb->tree_prefix."bapt ";  
+				if (isset($loca_array[$resultDb->pers_bapt_place]) AND strpos($loca_array[$resultDb->pers_bapt_place],$tree_prefDb->tree_prefix."bapt ")===false) {
+					$loca_array[$resultDb->pers_bapt_place] .= $tree_prefDb->tree_prefix."bapt ";
 				}
-				if (isset($loca_array[$resultDb->pers_death_place]) AND strpos($loca_array[$resultDb->pers_death_place],$tree_prefDb->tree_prefix."death ")===false) {   
-					$loca_array[$resultDb->pers_death_place] .= $tree_prefDb->tree_prefix."death "; 
+				if (isset($loca_array[$resultDb->pers_death_place]) AND strpos($loca_array[$resultDb->pers_death_place],$tree_prefDb->tree_prefix."death ")===false) {
+					$loca_array[$resultDb->pers_death_place] .= $tree_prefDb->tree_prefix."death ";
 				}
-				if (isset($loca_array[$resultDb->pers_buried_place]) AND strpos($loca_array[$resultDb->pers_buried_place],$tree_prefDb->tree_prefix."buried ")===false) { 
-					$loca_array[$resultDb->pers_buried_place] .= $tree_prefDb->tree_prefix."buried ";  
+				if (isset($loca_array[$resultDb->pers_buried_place]) AND strpos($loca_array[$resultDb->pers_buried_place],$tree_prefDb->tree_prefix."buried ")===false) {
+					$loca_array[$resultDb->pers_buried_place] .= $tree_prefDb->tree_prefix."buried ";
 				}
 			}
 		}

@@ -12,7 +12,7 @@ if (isset($_SESSION['admin_tree_prefix'])){
 	$gedcom_date=strtoupper(date("d M Y"));
 	$gedcom_time=date("H:i:s");
 	$drag_kind=safe_text_db($_GET["drag_kind"]);
-	
+
 	if($drag_kind=="children") {
 		$chldstring = safe_text_db($_GET['chldstring']);
 		$sql="UPDATE humo_families SET
@@ -23,7 +23,7 @@ if (isset($_SESSION['admin_tree_prefix'])){
 		$result=$dbh->query($sql);
 	}
 	if($drag_kind=="media") {
-		$mediastring = safe_text_db($_GET['mediastring']);	
+		$mediastring = safe_text_db($_GET['mediastring']);
 		$media_arr = explode(";",$mediastring);
 		for($x = 0 ; $x<count($media_arr); $x++) {
 			$sql="UPDATE humo_events SET 
