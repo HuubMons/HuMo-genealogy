@@ -146,7 +146,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 								}
 							}
 							$select_item=''; if ($menu_admin==$row['photocat_prefix']){ $select_item=' pageTab-active'; }
-							echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="photoalbum.php?menu_photoalbum='.$row['photocat_prefix'].'&amp;tree_id='.$tree_id.'">'.$menutab_name."</a></div></li>";
+							echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="photoalbum.php?tree_id='.$tree_id.'&amp;menu_photoalbum='.$row['photocat_prefix'].'">'.$menutab_name."</a></div></li>";
 						}
 						
 					echo '</ul>';
@@ -286,7 +286,7 @@ function showthem ($pref) {
 		$albumpath='index.php?option=com_humo-gen&amp;task=photoalbum&amp;';
 	}
 	else {
-		$albumpath=$uri_path."photoalbum.php?";
+		$albumpath=$uri_path.'photoalbum.php?tree_id='.$tree_id.'&amp;';
 	}
 
 	$item=0; if (isset($_GET['item'])){ $item=$_GET['item']; }
@@ -364,10 +364,9 @@ function showthem ($pref) {
 		echo $line_pages;
 
 		// *** Search by photo name ***
-		//echo ' <form method="post" action="photoalbum.php" style="display:inline">';
 		$menu="";
 		if($categories===true) {
-			$menu = "?menu_photoalbum=".$pref;
+			$menu = '?menu_photoalbum='.$pref;
 		}
 		if(CMS_SPECIFIC=="Joomla") {   // cant use $albumpath here cause we don't need the &amp; for joomla or the ? for humogen
 			echo ' <form method="post" action="index.php?option=com_humo-gen&amp;task=photoalbum'.$menu.'" style="display:inline">';

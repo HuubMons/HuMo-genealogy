@@ -104,7 +104,8 @@ function show_media($event_connect_kind,$event_connect_id){
 				$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'images/pdf.jpeg" alt="PDF"></a>';
 			}
 			// *** Show DOC file ***
-			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="doc" OR substr($tree_pict_path.$event_event,-4,4)=="docx") {
+			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="doc" OR substr($tree_pict_path.$event_event,-4,4)=="docx")
+			{
 				//$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'/images/msdoc.gif" alt="DOC"></a>';
 				$picture='<a href="'.$tree_pict_path.$event_event.'"><img src="'.$picpath.'images/msdoc.gif" alt="DOC"></a>';
 			}
@@ -125,7 +126,7 @@ function show_media($event_connect_kind,$event_connect_id){
 			}
 			// *** Show MP4 Video file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="mp4") {
-				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'/images/video-file.png" alt="MP4"></a>';
+				$picture='<a href="'.$tree_pict_path.$event_event.'" target="_blank"><img src="'.$picpath.'images/video-file.png" alt="MP4"></a>';
 			}
 			// *** Show MOV Video file ***
 			elseif(strtolower(substr($tree_pict_path.$event_event,-3,3))=="mov") {

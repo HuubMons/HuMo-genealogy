@@ -106,7 +106,7 @@ if (isset($_POST["tree_id"])){
 // *** Editor icon for admin and editor: select family tree ***
 if (isset($tree_id) AND $tree_id) { $db_functions->set_tree_id($tree_id); }
 
-// *** Delete session id's for new person ***
+// *** Delete session variables for new person ***
 if (isset($_POST['person_add'])){
 	unset($_SESSION['admin_pers_gedcomnumber']);
 	unset($_SESSION['admin_fam_gedcomnumber']);
@@ -118,16 +118,20 @@ $pers_gedcomnumber='';
 if (isset($_POST["person"]) AND $_POST["person"]){
 	$pers_gedcomnumber=$_POST['person'];
 	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
+
+	$search_id=safe_text_db($_POST['person']);
+	$_SESSION['admin_search_id']=$search_id;
+	//$_SESSION['admin_search_name']='';
+	//$search_name='';
 }
 if (isset($_GET["person"])){
 	$pers_gedcomnumber=$_GET['person'];
 	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 
-	// if both name and ID given go by name
 	$search_id=safe_text_db($_GET['person']);
 	$_SESSION['admin_search_id']=$search_id;
-	$_SESSION['admin_search_quicksearch']='';
-	$search_quicksearch='';
+	$_SESSION['admin_search_name']='';
+	$search_name='';
 }
 if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['admin_pers_gedcomnumber']; }
 
@@ -205,10 +209,6 @@ if($humo_option['admin_hebnight'] == "y") {
 //~~~~~BEGIN NEW FOR PETER~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_family'])) {
-	//$userid = $_SESSION['user_id_admin'];
-	//$username = $_SESSION['user_name_admin'];
-	//$gedcom_date = strtoupper(date("d M Y"));
-	//$gedcom_time = date("H:i:s");
 	// save all data from the table
 	// *** Generate new pers_gedcomnumber, find highest gedcomnumber I100: strip I and order by numeric ***
 	$new_gednr_qry= "SELECT *, ABS(substring(pers_gedcomnumber, 2)) AS gednr
@@ -216,14 +216,14 @@ if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_fami
 	$new_gednr_result = $dbh->query($new_gednr_qry);
 	$new_gednr=$new_gednr_result->fetch(PDO::FETCH_OBJ);
 	$gednr_int = intval(substr($new_gednr->pers_gedcomnumber,1)); //echo $gednr_int."-"; // I234 ==> 234
-	
+
 	// *** Generate new fam_gedcomnumber, find highest gedcomnumber F100: strip I and order by numeric ***
 	$new_fgednr_qry= "SELECT *, ABS(substring(fam_gedcomnumber, 2)) AS fgednr
 		FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY fgednr DESC LIMIT 0,1";
 	$new_fgednr_result = $dbh->query($new_fgednr_qry);
 	$new_fgednr=$new_fgednr_result->fetch(PDO::FETCH_OBJ);
 	$fgednr_int = intval(substr($new_fgednr->fam_gedcomnumber,1)); //echo $fgednr_int."-"; // F234 ==> 234
-	
+
 	if(!isset($_POST['exist_partner'])) {
 		// we are in adding a whole new family: imports data for new relation and partner
 
@@ -241,31 +241,53 @@ if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_fami
 		
 		//if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
 			// we are not using an existing person from the database
+
 			$add_fam_partner_sexe = "";
+			if(isset($_POST['add_fam_partner_sexe']))
+				$add_fam_partner_sexe = $editor_cls->text_process($_POST['add_fam_partner_sexe']);
 			$add_fam_partner_lastname = "";
-			$add_fam_partner_prefix = "";
+			if(isset($_POST['add_fam_partner_lastname']))
+				$add_fam_partner_lastname = $editor_cls->text_process($_POST['add_fam_partner_lastname']);
 			$add_fam_partner_firstname = "";
+			if(isset($_POST['add_fam_partner_firstname']))
+				$add_fam_partner_firstname = $editor_cls->text_process($_POST['add_fam_partner_firstname']);
+			$add_fam_partner_prefix = "";
+			if(isset($_POST['add_fam_partner_prefix']))
+				$add_fam_partner_prefix = $editor_cls->text_process($_POST['add_fam_partner_prefix']);
+
+			// *** Better processing of dates in input in own language ***
 			$add_fam_partner_birthdate_prefix = "";
+			//if(isset($_POST['add_fam_partner_birthdate_prefix']))
+			//	$add_fam_partner_birthdate_prefix = $editor_cls->text_process($_POST['add_fam_partner_birthdate_prefix']);
 			$add_fam_partner_birthdate = "";
+			if(isset($_POST['add_fam_partner_birthdate'])){
+				//$add_fam_partner_birthdate = $editor_cls->text_process($_POST['add_fam_partner_birthdate']);
+				$add_fam_partner_birthdate = $editor_cls->date_process('add_fam_partner_birthdate');
+			}
+
 			$add_fam_partner_birthdate_hebnight = "";
+			if(isset($_POST['add_fam_partner_birthdate_hebnight']))
+				$add_fam_partner_birthdate_hebnight = $editor_cls->text_process($_POST['add_fam_partner_birthdate_hebnight']);
 			$add_fam_partner_birthplace = "";
+			if(isset($_POST['add_fam_partner_birthplace']))
+				$add_fam_partner_birthplace = $editor_cls->text_process($_POST['add_fam_partner_birthplace']);
+
+			// *** Better processing of dates in input in own language ***
 			$add_fam_partner_deathdate_prefix = "";
+			//if(isset($_POST['add_fam_partner_deathdate_prefix']))
+			//	$add_fam_partner_deathdate_prefix = $editor_cls->text_process($_POST['add_fam_partner_deathdate_prefix']);
 			$add_fam_partner_deathdate = "";
+			if(isset($_POST['add_fam_partner_deathdate'])){
+				//$add_fam_partner_deathdate = $editor_cls->text_process($_POST['add_fam_partner_deathdate']);
+				$add_fam_partner_deathdate = $editor_cls->date_process('add_fam_partner_deathdate');
+			}
+
 			$add_fam_partner_deathdate_hebnight = "";
+			if(isset($_POST['add_fam_partner_deathdate_hebnight']))
+				$add_fam_partner_deathdate_hebnight = $editor_cls->text_process($_POST['add_fam_partner_deathdate_hebnight']);
 			$add_fam_partner_deathplace = "";
-			
-			if(isset($_POST['add_fam_partner_sexe'])) $add_fam_partner_sexe = $editor_cls->text_process($_POST['add_fam_partner_sexe']);
-			if(isset($_POST['add_fam_partner_lastname'])) $add_fam_partner_lastname = $editor_cls->text_process($_POST['add_fam_partner_lastname']);
-			if(isset($_POST['add_fam_partner_firstname'])) $add_fam_partner_firstname = $editor_cls->text_process($_POST['add_fam_partner_firstname']);
-			if(isset($_POST['add_fam_partner_prefix'])) $add_fam_partner_prefix = $editor_cls->text_process($_POST['add_fam_partner_prefix']);
-			if(isset($_POST['add_fam_partner_birthdate_prefix'])) $add_fam_partner_birthdate_prefix = $editor_cls->text_process($_POST['add_fam_partner_birthdate_prefix']);
-			if(isset($_POST['add_fam_partner_birthdate'])) $add_fam_partner_birthdate = $editor_cls->text_process($_POST['add_fam_partner_birthdate']);
-			if(isset($_POST['add_fam_partner_birthdate_hebnight'])) $add_fam_partner_birthdate_hebnight = $editor_cls->text_process($_POST['add_fam_partner_birthdate_hebnight']);
-			if(isset($_POST['add_fam_partner_birthplace'])) $add_fam_partner_birthplace = $editor_cls->text_process($_POST['add_fam_partner_birthplace']);
-			if(isset($_POST['add_fam_partner_deathdate_prefix'])) $add_fam_partner_deathdate_prefix = $editor_cls->text_process($_POST['add_fam_partner_deathdate_prefix']);
-			if(isset($_POST['add_fam_partner_deathdate'])) $add_fam_partner_deathdate = $editor_cls->text_process($_POST['add_fam_partner_deathdate']);
-			if(isset($_POST['add_fam_partner_deathdate_hebnight'])) $add_fam_partner_deathdate_hebnight = $editor_cls->text_process($_POST['add_fam_partner_deathdate_hebnight']);
-			if(isset($_POST['add_fam_partner_deathplace'])) $add_fam_partner_deathplace = $editor_cls->text_process($_POST['add_fam_partner_deathplace']);
+			if(isset($_POST['add_fam_partner_deathplace']))
+				$add_fam_partner_deathplace = $editor_cls->text_process($_POST['add_fam_partner_deathplace']);
 		//}
 	}
 
@@ -274,40 +296,62 @@ if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_fami
 		// for adding to existing family: there were already children in this relation: get the total number of existing children
 		$x = $_POST['exist_children']+1; // the number of existing children + 1
 	}
-	
+
 	while(isset($_POST['add_fam_child_firstname_'.$x]) AND $_POST['add_fam_child_firstname_'.$x]!="") {
 		// as long as there are children's lines in the table with at least a firstname entered, collect their data
 		${'add_fam_child_sexe'.$x} = "";
-		if(isset($_POST['add_fam_child_sexe_'.$x])) ${'add_fam_child_sexe'.$x} = $editor_cls->text_process($_POST['add_fam_child_sexe_'.$x]);
+		if(isset($_POST['add_fam_child_sexe_'.$x]))
+			${'add_fam_child_sexe'.$x} = $editor_cls->text_process($_POST['add_fam_child_sexe_'.$x]);
 		${'add_fam_child_lastname'.$x} = "";
-		if(isset($_POST['add_fam_child_lastname_'.$x])) ${'add_fam_child_lastname'.$x} = $editor_cls->text_process($_POST['add_fam_child_lastname_'.$x]); 
+		if(isset($_POST['add_fam_child_lastname_'.$x]))
+			${'add_fam_child_lastname'.$x} = $editor_cls->text_process($_POST['add_fam_child_lastname_'.$x]); 
 		${'add_fam_child_firstname'.$x} = "";
-		if(isset($_POST['add_fam_child_firstname_'.$x])) ${'add_fam_child_firstname'.$x} = $editor_cls->text_process($_POST['add_fam_child_firstname_'.$x]);
+		if(isset($_POST['add_fam_child_firstname_'.$x]))
+			${'add_fam_child_firstname'.$x} = $editor_cls->text_process($_POST['add_fam_child_firstname_'.$x]);
 		${'add_fam_child_prefix'.$x} = "";
-		if(isset($_POST['add_fam_child_prefix_'.$x])) ${'add_fam_child_prefix'.$x} = $editor_cls->text_process($_POST['add_fam_child_prefix_'.$x]);
+		if(isset($_POST['add_fam_child_prefix_'.$x]))
+			${'add_fam_child_prefix'.$x} = $editor_cls->text_process($_POST['add_fam_child_prefix_'.$x]);
+
+		// *** Better processing of dates in input in own language ***
 		${'add_fam_child_birthdate'.$x.'_prefix'} = "";
-		if(isset($_POST['add_fam_child_birthdate_'.$x.'_prefix'])) ${'add_fam_child_birthdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x.'_prefix']);
+		//if(isset($_POST['add_fam_child_birthdate_'.$x.'_prefix']))
+		//	${'add_fam_child_birthdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x.'_prefix']);
 		${'add_fam_child_birthdate'.$x} = "";
-		if(isset($_POST['add_fam_child_birthdate_'.$x])) ${'add_fam_child_birthdate'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x]);
+		if(isset($_POST['add_fam_child_birthdate_'.$x])){
+			//${'add_fam_child_birthdate'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthdate_'.$x]);
+			${'add_fam_child_birthdate'.$x} = $editor_cls->date_process('add_fam_child_birthdate_'.$x);
+		}
+
 		${'add_fam_child_birthdate_hebnight'.$x} = "";
-		if(isset($_POST['add_fam_child_birthdate_hebnight_'.$x])) ${'add_fam_child_birthdate_hebnight'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthdate_hebnight_'.$x]);
+		if(isset($_POST['add_fam_child_birthdate_hebnight_'.$x]))
+			${'add_fam_child_birthdate_hebnight'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthdate_hebnight_'.$x]);
 		${'add_fam_child_birthplace'.$x} = "";
-		if(isset($_POST['add_fam_child_birthplace_'.$x])) ${'add_fam_child_birthplace'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthplace_'.$x]);
+		if(isset($_POST['add_fam_child_birthplace_'.$x]))
+			${'add_fam_child_birthplace'.$x} = $editor_cls->text_process($_POST['add_fam_child_birthplace_'.$x]);
+
+		// *** Better processing of dates in input in own language ***
 		${'add_fam_child_deathdate'.$x.'_prefix'} = "";
-		if(isset($_POST['add_fam_child_deathdate_'.$x.'_prefix'])) ${'add_fam_child_deathdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_deathdate_'.$x.'_prefix']);
+		//if(isset($_POST['add_fam_child_deathdate_'.$x.'_prefix']))
+		//	${'add_fam_child_deathdate'.$x.'_prefix'} = $editor_cls->text_process($_POST['add_fam_child_deathdate_'.$x.'_prefix']);
 		${'add_fam_child_deathdate'.$x} = "";
-		if(isset($_POST['add_fam_child_deathdate_'.$x])) ${'add_fam_child_deathdate'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathdate_'.$x]);
+		if(isset($_POST['add_fam_child_deathdate_'.$x])){
+			//${'add_fam_child_deathdate'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathdate_'.$x]);
+			${'add_fam_child_deathdate'.$x} = $editor_cls->date_process('add_fam_child_deathdate_'.$x);
+		}
+
 		${'add_fam_child_deathdate_hebnight'.$x} = "";
-		if(isset($_POST['add_fam_child_deathdate_hebnight_'.$x])) ${'add_fam_child_deathdate_hebnight'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathdate_hebnight_'.$x]);
+		if(isset($_POST['add_fam_child_deathdate_hebnight_'.$x]))
+			${'add_fam_child_deathdate_hebnight'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathdate_hebnight_'.$x]);
 		${'add_fam_child_deathplace'.$x} = "";
-		if(isset($_POST['add_fam_child_deathplace_'.$x])) ${'add_fam_child_deathplace'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathplace_'.$x]);
+		if(isset($_POST['add_fam_child_deathplace_'.$x]))
+			${'add_fam_child_deathplace'.$x} = $editor_cls->text_process($_POST['add_fam_child_deathplace_'.$x]);
 		$x++;
 	}
 	// now start writing the variables to the database...
 	//- 1. UPDATE person's pers_fams field in the humo_persons table
 	//- 2. INSERT the new fam_gedcomnumber,fam_man and fam_woman in the humo_families table
-	// 3. INSERT the partner and children in the humo_persons table
-	// 4. UPDATE the fam_children field in the humo_families table with new partner
+	//- 3. INSERT the partner and children in the humo_persons table
+	//- 4. UPDATE the fam_children field in the humo_families table with new partner
 	
 	if(!isset($_POST['exist_partner'])) {
 		// we are adding a new family: generate new (highest) pers_fams gedcomnumber
@@ -353,7 +397,10 @@ if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_fami
 	
 		$result = $dbh->query("INSERT INTO humo_families (fam_children,fam_relation_text,
 fam_marr_notice_date,fam_marr_notice_place,fam_marr_notice_text,fam_marr_text,fam_marr_authority,
-fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_notice_date,fam_marr_church_notice_place, fam_marr_church_notice_text,fam_religion,fam_div_date,fam_div_place,fam_div_text,fam_div_authority,fam_text,fam_changed_user,fam_changed_date,fam_changed_time,fam_new_user,fam_new_date,fam_new_time,fam_tree_id,fam_gedcomnumber,fam_man,fam_woman,fam_kind,fam_marr_date,fam_marr_place,fam_relation_date,fam_relation_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_id."','".$newfam_id."','".$manged."','".$womanged."','".$add_fam_marr_type."','".$fammarrdate."','".$fammarrplace."','".$famreldate."','".$famrelplace."')");
+fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_notice_date,fam_marr_church_notice_place, fam_marr_church_notice_text,fam_religion,fam_div_date,fam_div_place,fam_div_text,fam_div_authority,fam_text,
+fam_changed_user,fam_changed_date,fam_changed_time,
+fam_new_user,fam_new_date,fam_new_time,fam_tree_id,fam_gedcomnumber,fam_man,fam_woman,fam_kind,fam_marr_date,fam_marr_place,fam_relation_date,fam_relation_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','',
+'".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_id."','".$newfam_id."','".$manged."','".$womanged."','".$add_fam_marr_type."','".$fammarrdate."','".$fammarrplace."','".$famreldate."','".$famrelplace."')");
 
 		// for jewish dates
 		if($humo_option['admin_hebnight'] == "y") {  echo "@@@@@ ".$fammarrdate_hebnight." ######";
@@ -428,7 +475,7 @@ fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_
 	$x=1;
 	if(isset($_POST['exist_children'])) {
 		// we're adding to existing family - get pers_gedcomnumbers of children that were already listed with this family
-		$x = $_POST['exist_children']+1; 
+		$x = $_POST['exist_children']+1;
 		$newfam_id = $_POST['exist_partner'];
 
 		$famresultDb = $db_functions->get_family($_POST['exist_partner']);
@@ -442,15 +489,49 @@ fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_
 			// arrange proper prefix
 			
 			if(${'add_fam_child_prefix'.$x} != "" AND substr(${'add_fam_child_prefix'.$x},-1)!="_" AND substr(${'add_fam_child_prefix'.$x},-1)!="'") { ${'add_fam_child_prefix'.$x} .= "_"; }
-			
+
+			/*
 			// enter new child into humo_persons table
-			$result = $dbh->query("INSERT INTO humo_persons (pers_changed_user,pers_changed_date,pers_changed_time,pers_fams,pers_callname,pers_patronym,pers_name_text,pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time, pers_birth_text,	pers_stillborn,pers_bapt_date,pers_bapt_place,pers_bapt_text,pers_religion,pers_death_time,pers_death_text, pers_death_cause,pers_death_age,pers_buried_date,pers_buried_place,pers_buried_text,pers_new_user,pers_new_date,pers_new_time,pers_tree_prefix,pers_tree_id,pers_gedcomnumber,pers_famc,pers_indexnr,pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,pers_death_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_prefix."','".$tree_id."','".$childged."','".$newfam_id."','".$newfam_id."','".${'add_fam_child_sexe'.$x}."','".${'add_fam_child_firstname'.$x}."','".${'add_fam_child_prefix'.$x}."','".${'add_fam_child_lastname'.$x}."','".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."','".${'add_fam_child_birthplace'.$x}."','".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."','".${'add_fam_child_deathplace'.$x}."')");
-			
+			$result = $dbh->query("INSERT INTO humo_persons (
+			pers_changed_user,pers_changed_date,pers_changed_time,pers_fams,pers_callname,pers_patronym,pers_name_text,
+			pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time,pers_birth_text,pers_stillborn,
+			pers_bapt_date,pers_bapt_place,pers_bapt_text,pers_religion,pers_death_time,pers_death_text,pers_death_cause,
+			pers_death_age,pers_buried_date,pers_buried_place,pers_buried_text,
+			pers_new_user,pers_new_date,pers_new_time,pers_tree_prefix,pers_tree_id,pers_gedcomnumber,pers_famc,pers_indexnr,
+			pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,
+			pers_death_place)
+			VALUES ('','','','','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."',
+			'".$tree_prefix."','".$tree_id."','".$childged."','".$newfam_id."','".$newfam_id."',
+			'".${'add_fam_child_sexe'.$x}."','".${'add_fam_child_firstname'.$x}."','".${'add_fam_child_prefix'.$x}."',
+			'".${'add_fam_child_lastname'.$x}."','".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."','".${'add_fam_child_birthplace'.$x}."','".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."','".${'add_fam_child_deathplace'.$x}."')");
+			*/
+			//RENEWED QUERY:
+			$result = $dbh->query("INSERT INTO humo_persons SET
+				pers_new_user='".$username."',
+				pers_new_date='".$gedcom_date."',
+				pers_new_time='".$gedcom_time."',
+				pers_tree_prefix='".$tree_prefix."', 
+				pers_tree_id='".$tree_id."',
+				pers_gedcomnumber='".$childged."',
+				pers_famc='".$newfam_id."',
+				pers_indexnr='".$newfam_id."',
+				pers_sexe='".${'add_fam_child_sexe'.$x}."',
+				pers_firstname='".${'add_fam_child_firstname'.$x}."',
+				pers_prefix='".${'add_fam_child_prefix'.$x}."',
+				pers_lastname='".${'add_fam_child_lastname'.$x}."',
+				pers_birth_date='".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."',
+				pers_birth_place='".${'add_fam_child_birthplace'.$x}."',
+				pers_death_date='".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."',
+				pers_death_place='".${'add_fam_child_deathplace'.$x}."'");
+
 			// for jewish dates
 			if($humo_option['admin_hebnight'] == "y") {
-				$result = $dbh->query("UPDATE humo_persons SET pers_buried_date_hebnight='',pers_birth_date_hebnight='".${'add_fam_child_birthdate_hebnight'.$x}."',pers_death_date_hebnight='".${'add_fam_child_deathdate_hebnight'.$x}."' WHERE pers_gedcomnumber='".$childged."' AND pers_tree_id='".$tree_id."'");
+				$result = $dbh->query("UPDATE humo_persons SET
+				pers_buried_date_hebnight='',
+				pers_birth_date_hebnight='".${'add_fam_child_birthdate_hebnight'.$x}."',
+				pers_death_date_hebnight='".${'add_fam_child_deathdate_hebnight'.$x}."'
+				WHERE pers_gedcomnumber='".$childged."' AND pers_tree_id='".$tree_id."'");
 			}
-			
 			$x++;
 			$child_string .= $childged.";";
 		}
@@ -460,20 +541,21 @@ fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_
 			$chlresultDB = $chlresult->fetch(PDO::FETCH_OBJ);
 			if(${'add_fam_child_prefix'.$x} != "" AND substr(${'add_fam_child_prefix'.$x},-1)!="_" AND substr(${'add_fam_child_prefix'.$x},-1)!="'") { ${'add_fam_child_prefix'.$x} .= "_"; }
 			$indexset = ""; if(!isset($chlresultDB->pers_fams) OR $chlresultDB->pers_fams =="") { $indexset = ", pers_indexnr='".$newfam_id."' "; }
-			$result = $dbh->query("UPDATE humo_persons SET pers_changed_user='".$username."'
-				,pers_changed_time='".$gedcom_time."'
-				,pers_changed_date='".$gedcom_date."'
-				,pers_famc='".$newfam_id."' ".$indexset." 
-				,pers_firstname = '".${'add_fam_child_firstname'.$x}."' 
-				,pers_lastname = '".${'add_fam_child_lastname'.$x}."' 
-				,pers_prefix = '".${'add_fam_child_prefix'.$x}."' 
-				,pers_sexe = '".${'add_fam_child_sexe'.$x}."' 
-				,pers_birth_date = '".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."' 
-				,pers_birth_place = '".${'add_fam_child_birthplace'.$x}."' 
-				,pers_death_date = '".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."' 
-				,pers_death_place = '".${'add_fam_child_deathplace'.$x}."' 
-				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_child_exist_'.$x]."'");	
-				
+			$result = $dbh->query("UPDATE humo_persons SET
+				pers_changed_user='".$username."',
+				pers_changed_time='".$gedcom_time."',
+				pers_changed_date='".$gedcom_date."',
+				pers_famc='".$newfam_id."' ".$indexset.",
+				pers_firstname = '".${'add_fam_child_firstname'.$x}."', 
+				pers_lastname = '".${'add_fam_child_lastname'.$x}."',
+				pers_prefix = '".${'add_fam_child_prefix'.$x}."',
+				pers_sexe = '".${'add_fam_child_sexe'.$x}."',
+				pers_birth_date = '".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."',
+				pers_birth_place = '".${'add_fam_child_birthplace'.$x}."' ,
+				pers_death_date = '".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."',
+				pers_death_place = '".${'add_fam_child_deathplace'.$x}."' 
+				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_child_exist_'.$x]."'");
+
 			// for jewish dates
 			if($humo_option['admin_hebnight'] == "y") {
 			$result = $dbh->query("UPDATE  humo_persons SET
@@ -481,7 +563,6 @@ fam_marr_church_date,fam_marr_church_place,fam_marr_church_text,fam_marr_church_
 				pers_death_date_hebnight = '".${'add_fam_child_deathdate_hebnight'.$x}."'
 				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$_POST['add_fam_child_exist_'.$x]."'");
 			}
-			
 			$child_string .= $_POST['add_fam_child_exist_'.$x].";";
 			$x++;
 		}
@@ -558,7 +639,6 @@ if (isset($tree_id)){
 			AND setting_tree_id='".safe_text_db($tree_id)."' LIMIT 0,1";
 		$new_nr_result = $dbh->query($new_nr_qry);
 
-		//if (isset($new_nr->setting_value)){
 		if ($new_nr_result AND $new_nr_result->rowCount()){
 			@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 			$pers_gedcomnumber=$new_nr->setting_value;
@@ -583,32 +663,33 @@ if (isset($tree_id)){
 	}
 
 	// *** Select person ***
-	$search_quicksearch='';
+	$search_name='';
 	$search_id='';
 
 	if ($add_person==true){
-		$_SESSION['admin_search_quicksearch']='';
+		$_SESSION['admin_search_name']='';
 		$_SESSION['admin_search_id']='';
 	}
 
+	// *** Search person name ***
 	if (isset($_POST["search_quicksearch"])){
-		$search_quicksearch=safe_text_db($_POST['search_quicksearch']);
-		$_SESSION['admin_search_quicksearch']=$search_quicksearch;
-		$_SESSION['admin_search_id']='';
+		$search_name=safe_text_db($_POST['search_quicksearch']);
+		$_SESSION['admin_search_name']=$search_name;
+
 		$search_id='';
+		$_SESSION['admin_search_id']='';
 	}
-	if (isset($_SESSION['admin_search_quicksearch'])){
-		$search_quicksearch=$_SESSION['admin_search_quicksearch'];
+	if (isset($_SESSION['admin_search_name'])){
+		$search_name=$_SESSION['admin_search_name'];
 	}
 
-	//if (isset($_POST["search_id"])
-	//	AND (!isset($_POST["search_quicksearch"]) OR $_POST["search_quicksearch"]=='')){
+
+	// *** Search GEDCOM number ***
 	if (isset($_POST["search_id"])){
-		// if both name and ID given go by name
 		$search_id=safe_text_db($_POST['search_id']);
 		$_SESSION['admin_search_id']=$search_id;
-		$_SESSION['admin_search_quicksearch']='';
-		$search_quicksearch='';
+		$_SESSION['admin_search_name']='';
+		$search_name='';
 	}
 	if (isset($_SESSION['admin_search_id']))
 		$search_id=$_SESSION['admin_search_id'];
@@ -628,9 +709,7 @@ if (isset($tree_id)){
 					ORDER BY pers_lastname, pers_firstname";
 				$fav_result = $dbh->query($fav_qry);
 
-				//echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
-				// *** Use same seach field as in search for GEDCOM number (search_id) ***
-				echo '<select size="1" name="search_id" onChange="this.form.submit();" style="width: 200px">';
+				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
 
 				echo '<option value="">'.__('Favourites list').'</option>';
 				while ($favDb=$fav_result->fetch(PDO::FETCH_OBJ)){
@@ -655,11 +734,10 @@ if (isset($tree_id)){
 				$person_qry.= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,15";
 				$person_result = $dbh->query($person_qry);
 
-				// *** Use same seach field as in search for GEDCOM number (search_id) ***
-				echo '<select size="1" name="search_id" onChange="this.form.submit();" style="width: 200px">';
+				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
 				echo '<option value="">'.__('Latest changes').'</option>';
 				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
-					$selected=''; // Not in use.
+					//$selected=''; // Not in use.
 					//echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person).'</option>';
 
 					$person2_qry= "SELECT * FROM humo_persons WHERE pers_id='".$person->pers_id."'";
@@ -677,9 +755,6 @@ if (isset($tree_id)){
 		if ($confirm) echo $confirm;
 
 		if ($new_tree==false){
-		//echo '<br><br><table class="humo" style="text-align:center; width:90%; margin-left: auto; margin-right:auto;"><tr class="table_header_large"><td>';
-		//echo '<br><br><table class="humo" style="text-align:center; width:90%; margin-left: initial; margin-right: initial;"><tr class="table_header_large"><td>';
-		//echo '<br><br><table class="humo" style="text-align:left; width:98%; margin-left: initial; margin-right: initial;">';
 		echo '<br><table class="humo" style="text-align:left; width:98%; margin-left: initial; margin-right: initial;">';
 		echo '<tr class="table_header_large"><td>';
 
@@ -688,40 +763,25 @@ if (isset($tree_id)){
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 				echo __('Person').':';
-				echo ' <input class="fonts" type="text" name="search_quicksearch" placeholder="'.__('Name').'" value="'.$search_quicksearch.'" size="15"> ';
-
-				echo ' <input class="fonts" type="submit" value="'.__('Search').'">';
-			echo "</form>\n";
-
-			// *** Search persons firstname/ lastname ***
-			echo '&nbsp;<form method="POST" action="'.$phpself.'" style="display : inline;">';
-				echo '<input type="hidden" name="page" value="'.$page.'">';
-				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
-				//echo __('Person').':';
-				//echo ' <input class="fonts" type="text" name="search_quicksearch" placeholder="'.__('Name').'" value="'.$search_quicksearch.'" size="15"> ';
-
-				echo __('or ID:');
-				echo ' <input class="fonts" type="text" name="search_id" value="'.$search_id.'" size="17" placeholder="'.__('GEDCOM number (ID)').'">';
+				echo ' <input class="fonts" type="text" name="search_quicksearch" placeholder="'.__('Name').'" value="'.$search_name.'" size="15"> ';
 				echo ' <input class="fonts" type="submit" value="'.__('Search').'">';
 			echo "</form>\n";
 
 			unset($person_result);
-
 			$idsearch=false; // flag for search with ID;
-			//if($search_lastname != ''  OR $search_firstname != '' ) {
-			if($search_quicksearch != '') {
+			if($search_name != '') {
 				// *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
-				$search_quicksearch=str_replace(' ', '%', $search_quicksearch);
+				$search_name=str_replace(' ', '%', $search_name);
 
 				// *** In case someone entered "Mons, Huub" using a comma ***
-				$search_quicksearch = str_replace(',','',$search_quicksearch);
+				$search_name = str_replace(',','',$search_name);
 
 				//$person_qry= "SELECT * FROM humo_persons
 				//	WHERE pers_tree_id='".$tree_id."'
-				//	AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch%'
-				//	OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch%' 
-				//	OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch%' 
-				//	OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch%')
+				//	AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_name%'
+				//	OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_name%' 
+				//	OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_name%' 
+				//	OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_name%')
 				//	ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)";
 
 				$person_qry="
@@ -730,14 +790,14 @@ if (isset($tree_id)){
 					ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
 					WHERE pers_tree_id='".$tree_id."' AND
 						(
-						CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($search_quicksearch)."%'
-						OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text_db($search_quicksearch)."%' 
-						OR CONCAT(pers_patronym,pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_quicksearch)."%' 
-						OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text_db($search_quicksearch)."%'
-						OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_quicksearch)."%'
-						OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($search_quicksearch)."%' 
-						OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_quicksearch)."%' 
-						OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($search_quicksearch)."%'
+						CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+						OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text_db($search_name)."%' 
+						OR CONCAT(pers_patronym,pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
+						OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text_db($search_name)."%'
+						OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+						OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($search_name)."%' 
+						OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
+						OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($search_name)."%'
 						)
 						GROUP BY pers_id, event_event, event_kind
 						ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
@@ -748,56 +808,93 @@ if (isset($tree_id)){
 			}
 			elseif($search_id!='') {
 				if(substr($search_id,0,1)!="i" AND substr($search_id,0,1)!="I") { $search_id = "I".$search_id; } //make entry "48" into "I48"
-				$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$search_id."'";
-//echo $person_qry;
+				$person_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($search_id)."'";
+				//echo $person_qry;
 				$person_result = $dbh->query($person_qry);
+
+				$person=$person_result->fetch(PDO::FETCH_OBJ);
+				if ($person) $pers_gedcomnumber=$person->pers_gedcomnumber;
+
 				$idsearch=true;
 			}
 
-			if (isset($person_result)){
-				if($person_result->rowCount() ==0){
-					echo '<b>'.__('Person not found').'</b>';
+
+			if ($idsearch==false AND isset($person_result)){
+				$nr_persons=$person_result->rowCount();
+				// *** No person found ***
+				if($nr_persons==0){
+					echo '<b>'.__('Person not found').'</b> ';
 					$pers_gedcomnumber=''; // *** Don't show a person if there are no results ***
 				}
-				if($idsearch==true OR $person_result->rowCount()==0) { echo '<span style="display:none">'; }
-				//echo '<b>'.__('Found:').'</b> ';
-				echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
-				echo '<input type="hidden" name="page" value="'.$page.'">';
-				echo '<select size="1" name="person" style="width: 200px; background-color: #ffaa80;" onChange="this.form.submit();">';
-					echo '<option value="">'.__('Results').'</option>';
+				// *** Found 1 person ***
+				elseif($nr_persons==1) {
+					// *** Don't show pull-down menu if there is only 1 result ***
+					$person=$person_result->fetch(PDO::FETCH_OBJ);
 
-					$counter=0;
-					$nr_persons=$person_result->rowCount();
-					while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
-						$selected='';
-						if (isset($pers_gedcomnumber)){
-							if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
+					$pers_gedcomnumber=$person->pers_gedcomnumber;
+					$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
+					$selected=' SELECTED';
+
+					// *** Reset marriage number ***
+					$fams1=explode(";",$person->pers_fams);
+					$marriage=$fams1[0];
+					$_SESSION['admin_fam_gedcomnumber']=$marriage;
+				}
+				// *** Found multiple persons ***
+				elseif($nr_persons>0) {
+					//echo '<b>'.__('Found:').'</b> ';
+					echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+					echo '<input type="hidden" name="page" value="'.$page.'">';
+					echo '<select size="1" name="person" style="width: 200px; background-color: #ffaa80;" onChange="this.form.submit();">';
+						echo '<option value="">'.__('Results').'</option>';
+
+						$counter=0;
+						$nr_persons=$person_result->rowCount();
+						while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+							$selected='';
+							if (isset($pers_gedcomnumber)){
+								if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
+							}
+
+							// *** Directly select first founded person! ***
+							$counter++;
+							//if ($counter==1 AND isset($_POST["search_quicksearch"])){
+							if ($nr_persons==1){
+								$pers_gedcomnumber=$person->pers_gedcomnumber;
+								$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
+								$selected=' SELECTED';
+
+								// *** Reset marriage number ***
+								$fams1=explode(";",$person->pers_fams);
+								$marriage=$fams1[0];
+								$_SESSION['admin_fam_gedcomnumber']=$marriage;
+							}
+							echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
+								$editor_cls->show_selected_person($person).'</option>';
 						}
-
-						// *** Directly select first founded person! ***
-						$counter++;
-						//if ($counter==1 AND isset($_POST["search_quicksearch"])){
-						if ($nr_persons==1){
-							$pers_gedcomnumber=$person->pers_gedcomnumber;
-							$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
-							$selected=' SELECTED';
-
-							// *** Reset marriage number ***
-							$fams1=explode(";",$person->pers_fams);
-							$marriage=$fams1[0];
-							$_SESSION['admin_fam_gedcomnumber']=$marriage;
-						}
-						echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
-							$editor_cls->show_selected_person($person).'</option>';
-					}
-				echo '</select>';
-				//echo ' <input type="Submit" name="dummy1" value="'.__('Select').'">';
-				echo '</form>';
-				//if($idsearch==true OR $person_result->rowCount()==0) { echo '</span>'; }
-				if($idsearch==true OR $nr_persons==0) { echo '</span>'; }
+					echo '</select>';
+					echo '</form>';
+				}
 				// *** Don't show a person if there are multiple results ***
 				if ($nr_persons>1 AND isset($_POST["search_quicksearch"])) $pers_gedcomnumber='';
 			}
+
+
+			// *** Search person GEDCOM number ***
+			echo '&nbsp;<form method="POST" action="'.$phpself.'" style="display : inline;">';
+				echo '<input type="hidden" name="page" value="'.$page.'">';
+				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+				echo __('or ID:');
+				echo ' <input class="fonts" type="text" name="search_id" value="'.$search_id.'" size="17" placeholder="'.__('GEDCOM number (ID)').'">';
+				//echo ' <input class="fonts" type="text" name="person" value="'.$search_id.'" size="17" placeholder="'.__('GEDCOM number (ID)').'">';
+				echo ' <input class="fonts" type="submit" value="'.__('Search').'">';
+			echo "</form>\n";
+			// *** Show message if no person is found ***
+			if($search_id!='' AND $person_result->rowCount() ==0){
+				echo '<b>'.__('Person not found').'</b>';
+				$pers_gedcomnumber=''; // *** Don't show a person if there are no results ***
+			}
+
 
 			// *** Add new person ***
 			echo '&nbsp;&nbsp;&nbsp; <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1">
@@ -1716,8 +1813,9 @@ if (isset($pers_gedcomnumber)){
 		$colour='';
 		// *** If sexe = unknown then show a red line (new person = other colour). ***
 		//if ($pers_sexe==''){ $colour=' bgcolor="#FF0000"'; }
-		if ($pers_sexe==''){ $colour=' bgcolor="#ffaa80"'; }
-		if ($add_person==true AND $pers_sexe=='') $colour=' bgcolor="#FFA500"';
+		if ($pers_sexe==''){ $colour=' bgcolor="#FFAA80"'; }
+		//if ($add_person==true AND $pers_sexe=='') $colour=' bgcolor="#FFA500"';
+		if ($add_person==true AND $pers_sexe=='') $colour=' bgcolor="#FFAA80"';
 
 		echo '<tr><td>'.__('Sex').'</td><td style="border-right:0px;"></td><td'.$colour.' style="border-left:0px;">';
 			$selected=''; if ($pers_sexe=='M') $selected=' CHECKED';
@@ -3441,8 +3539,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<form method="POST" action="'.$phpself.'">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 
+			//$source_qry=$dbh->query("SELECT * FROM humo_sources
+			//	WHERE source_tree_id='".$tree_id."' AND source_shared='1' ORDER BY source_title");
 			$source_qry=$dbh->query("SELECT * FROM humo_sources
-				WHERE source_tree_id='".$tree_id."' AND source_shared='1' ORDER BY source_title");
+				WHERE source_tree_id='".$tree_id."' ORDER BY source_title");
 			echo __('Select source').': ';
 			echo '<select size="1" name="source_id" style="width: 300px" onChange="this.form.submit();">';
 			echo '<option value="">'.__('Select source').'</option>'; // *** For new source in new database... ***
@@ -3465,8 +3565,15 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					$source_id=$sourceDb->source_id;
 				}
 
+				if ($sourceDb->source_title){
+					$show_text=$sourceDb->source_title;
+				}
+				else{
+					$show_text=substr($sourceDb->source_text,0,40);
+					if (strlen($sourceDb->source_text)>40) $show_text.='...';
+				}
 				$restricted=''; if (@$sourceDb->source_status=='restricted') $restricted=' *'.__('restricted').'*';
-				echo '<option value="'.$sourceDb->source_id.'"'.$selected.'>'.@$sourceDb->source_title.
+				echo '<option value="'.$sourceDb->source_id.'"'.$selected.'>'.$show_text.
 					' ['.@$sourceDb->source_gedcomnr.$restricted.']</option>'."\n";
 			}
 			echo '</select>';
@@ -3531,7 +3638,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</td></tr>';
 
 			// *** "Required" because it's better to have a title in a shared sourve ***
-			echo '<tr><td>'.__('Title').'</td><td colspan="3"><input type="text" name="source_title" value="'.htmlspecialchars($source_title).'" size="60" required></td></tr>';
+			echo '<tr><td>'.__('Title').'</td><td colspan="3"><input type="text" name="source_title" value="'.htmlspecialchars($source_title).'" size="60"></td></tr>';
 
 			echo '<tr><td>'.__('Subject').'</td><td colspan="3"><input type="text" name="source_subj" value="'.htmlspecialchars($source_subj).'" size="60"></td></tr>';
 			echo '<tr><td>'.__('date').' - '.__('place').'</td><td colspan="3">'.$editor_cls->date_show($source_date,"source_date").' <input type="text" name="source_place" value="'.htmlspecialchars($source_place).'" placeholder='.ucfirst(__('place')).' size="50"></td></tr>';
@@ -3559,7 +3666,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<tr><td>'.__('Kind').'</td><td colspan="3"><input type="text" name="source_kind" value="'.$source_kind.'" size="60"></td></tr>';
 			echo '<tr><td>'.__('Archive').'</td><td colspan="3"><input type="text" name="source_repo_caln" value="'.$source_repo_caln.'" size="60"></td></tr>';
 			echo '<tr><td>'.__('Page').'</td><td colspan="3"><input type="text" name="source_repo_page" value="'.$source_repo_page.'" size="60"></td></tr>';
-			echo '<tr><td>'.__('text').'</td><td colspan="3"><textarea rows="6" cols="80" name="source_text" '.$field_text_large.'>'.$editor_cls->text_show($source_text).'</textarea></td></tr>';
+			echo '<tr><td>'.__('text').'</td><td colspan="3"><textarea rows="6" cols="80" name="source_text" '.$field_text_large.' required>'.$editor_cls->text_show($source_text).'</textarea></td></tr>';
 
 			// *** Picture by source ***
 			if (!isset($_POST['add_source']))

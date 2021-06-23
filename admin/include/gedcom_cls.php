@@ -3245,7 +3245,7 @@ function process_source($source_array){
 	$source["source_repo_page"]=""; $source["source_repo_gedcomnr"]="";
 	$source["source_unprocessed_tags"]="";
 	$source["new_date"]=''; $source["new_time"]=''; $source["changed_date"]=''; $source["changed_time"]='';
-	$source["source_shared"]="1";
+	//$source["source_shared"]="1";
 
 	//0 @S1@ SOUR
 	$source["id"]=substr($buffer,3,-6);
@@ -3533,10 +3533,10 @@ function process_source($source_array){
 	}
 
 	// *** Save sources ***
+	//source_shared='".$source["source_shared"]."',
 	$sql="INSERT IGNORE INTO humo_sources SET
 	source_tree_id='".$tree_id."',
 	source_gedcomnr='".$this->text_process($source["id"])."',
-	source_shared='".$source["source_shared"]."',
 	source_status='".$source["source_status"]."',
 	source_title='".$this->text_process($source["source_title"])."',
 	source_abbr='".$this->text_process($source["source_abbr"])."',

@@ -502,6 +502,7 @@ if (isset($_POST['database_check'])){
 	ob_flush();
 	flush(); // for IE
 
+	/*
 	// *** Check source table (only NON SHARED sources) ***
 	$source_qry_start= "SELECT source_id,source_gedcomnr FROM humo_sources
 		WHERE source_tree_id='".$tree_id."' AND source_shared!='1'";
@@ -552,6 +553,7 @@ if (isset($_POST['database_check'])){
 			}
 		}
 	}
+	*/
 
 	if ($wrong_indexnr==0){ echo '<tr><td>'.__('Checked all person index numbers').'</td><td></td><td>ok</td></tr>'; }
 	if ($wrong_fams==0){ echo '<tr><td>'.__('Checked all person - relation connections').'</td><td></td><td>ok</td></tr>'; }

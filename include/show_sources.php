@@ -132,8 +132,8 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				$combiner_check=$connectDb->connect_source_id.'_'.$connectDb->connect_role.'_'.$connectDb->connect_page.'_'.$connectDb->connect_date.' '.$connectDb->connect_place.' '.$connectDb->connect_text;
 
 				// *** Jan. 2021: No shared source. Footnotes can be combined! ***
-				//if ($sourceDb->source_title=='')
-				if ($sourceDb->source_shared=='')
+				//if ($sourceDb->source_shared=='')
+				if ($sourceDb->source_title=='')
 					$combiner_check=$connectDb->connect_role.'_'.$connectDb->connect_page.'_'.$connectDb->connect_date.' '.$connectDb->connect_place.' '.$sourceDb->source_text;
 
 				$check=false;
@@ -181,8 +181,9 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 					// *** Always show title of source, show link only after permission check ***
 
 					$source_link='';
-					// *** Only show link if there is a source_title. Source is only shared if there is a sourc_title ***
-					if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1'){
+					// *** Only show link if there is a source_title. Source is only shared if there is a source_title ***
+					//if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1'){
+					if ($user['group_sources']=='j' AND $sourceDb->source_title!=''){
 						//$source_link='<a href="'.$uri_path.'source.php?tree_id='.$tree_id.'&amp;id='.$sourceDb->source_gedcomnr.'">';
 						if ($humo_option["url_rewrite"]=="j"){
 							// *** $uri_path made in header.php ***
@@ -218,7 +219,8 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 						// *** Standard source without title ***
 						//else $text.=' '.$sourceDb->source_text;
 
-					if ($sourceDb->source_text AND $sourceDb->source_shared!='1')
+					//if ($sourceDb->source_text AND $sourceDb->source_shared!='1')
+					if ($sourceDb->source_text AND $sourceDb->source_title!='')
 						$text.=' '.process_text($sourceDb->source_text);
 
 					// *** User group option to only show title of source ***
@@ -230,7 +232,8 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 					}
 
 					// *** Only show link if there is a shared source ***
-					if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1') $text.= '</a>'; // *** End of link ***
+					//if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1') $text.= '</a>'; // *** End of link ***
+					if ($user['group_sources']=='j' AND $sourceDb->source_title!='') $text.= '</a>'; // *** End of link ***
 				} // *** End of shared source ***
 
 				// *** Show (extra) source text ***
@@ -272,7 +275,8 @@ function show_sources_footnotes(){
 				// *** Always show title of source, show link only after permission check ***
 				$text.='<a name="source_ref'.($j+1).'"><b>'.($j+1).')</b></a>';
 				//if ($user['group_sources']=='j'){
-				if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1'){
+				//if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1'){
+				if ($user['group_sources']=='j' AND $sourceDb->source_title!=''){
 
 					//$text.=' <a href="'.$uri_path.'source.php?tree_id='.$tree_id.
 					//	'&amp;id='.$sourceDb->source_gedcomnr.'">'.__('source').': ';

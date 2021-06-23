@@ -95,7 +95,7 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 			printf(__('%s version history'),'HuMo-genealogy');
 			echo '</h2>';
 
-			echo '<p><iframe height="300" width="80%" src="http://www.humo-gen.com/genforum/viewforum.php?f=19"></iframe>';
+			echo '<p><iframe height="300" width="80%" src="https://humo-gen.com/genforum/viewforum.php?f=19"></iframe>';
 		}
 
 		// *** STEP 1: Download humo-genealogy.zip and unzip to update folder ***

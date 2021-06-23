@@ -3023,7 +3023,10 @@ echo '</div>';
 
 if (isset($_SESSION['tree_prefix'])) { $tree_prefix=$_SESSION['tree_prefix'];}
 
-if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["calculator"]) AND !isset($_POST["switch"]) AND !isset($_POST["extended"]) AND !isset($_POST["next_path"]) AND !isset($_GET['pers_id'])) {
+if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["calculator"])
+	AND !isset($_POST["switch"]) AND !isset($_POST["extended"]) AND !isset($_POST["next_path"]) AND !isset($_GET['pers_id'])
+	AND !isset($_POST["search_id1"]) AND !isset($_POST["search_id2"])
+	) {
 	// no button pressed: this is a fresh entry from humogen's frontpage link: start clean search form
 	$_SESSION["search1"]=''; $_SESSION["search2"]='';
 	$_SESSION['rel_search_firstname']=''; $_SESSION['rel_search_lastname']='';
@@ -3072,10 +3075,10 @@ if(CMS_SPECIFIC == "Joomla") {
 else {
 	echo '<form method="POST" action="relations.php" style="display : inline;">';
 }
+echo '<input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
 
 echo '<br><table class="humo relmenu">';
 	echo '<tr class="table_headline">';
-		//echo '<th>&nbsp;</th>';
 
 		// *** HELP POPUP ***
 		echo '<th style="font-weight: normal;"><div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
@@ -3099,10 +3102,11 @@ Directions for use:<br>
 			//echo '</div>';
 		echo '</div></th>';
 
-		echo '<th>'.__('First name').'</th>';
-		echo '<th>'.__('Last name').'</th>';
+		//echo '<th>'.__('First name').'</th>';
+		//echo '<th>'.__('Last name').'</th>';
+		echo '<th>'.__('Name').'</th>';
 		echo '<th>'.__('or: ID').'</th>';
-		echo '<th>'.__('Search').'</th>';
+		//echo '<th>'.__('Search').'</th>';
 		echo '<th colspan=2>'.__('Pick a name from search results').'</th>';
 		echo '<th>'.__('Calculate relationships').'</th></tr>';
 
@@ -3133,21 +3137,31 @@ Directions for use:<br>
 	}
 	if (isset($_SESSION['rel_search_gednr'])){ $search_gednr=$_SESSION['rel_search_gednr']; }
 
-	echo '<td> <input type="text" class="fonts relboxes" name="search_firstname" value="'.safe_text_show($search_firstname).'" size="15"> ';
+	if (isset($_POST["search1"])){
+		$search_gednr='';
+	}
+	if (isset($_POST["search_id1"])){
+		$search_firstname='';
+		$search_lastname='';
+	}
+
+	echo '<td><input type="text" class="fonts relboxes" name="search_firstname" value="'.safe_text_show($search_firstname).'" size="15" placeholder="'.__('First name').'">';
+		echo '&nbsp;<input class="fonts relboxes" type="text" name="search_lastname" value="'.safe_text_show($search_lastname).'" size="15" placeholder="'.__('Last name').'">';
+		//echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
+
+		echo '&nbsp;<input class="fonts" type="submit" name="search1" value="'.__('Search').'">';
 	echo '</td>';
 
-	echo '<td>&nbsp; <input class="fonts relboxes" type="text" name="search_lastname" value="'.safe_text_show($search_lastname).'" size="15">';
-	echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
-	echo '</td><td>';
-	echo '&nbsp; <input class="fonts relboxes" type="text" name="search_gednr" value="'.safe_text_show($search_gednr).'" size="8">';
-	echo '</td>';
-	echo '<td>&nbsp; <input class="fonts" type="submit" name="search1" value="'.__('Search').'">';
-	echo '</td>';
+	echo '<td><input class="fonts relboxes" type="text" name="search_gednr" value="'.safe_text_show($search_gednr).'" size="8">';
+	echo '&nbsp;<input class="fonts" type="submit" name="search_id1" value="'.__('Search').'"></td>';
 
 	$len=230;  // length of name pulldown box
 	if(CMS_SPECIFIC == "Joomla") { $len = 180; } // for joomla keep it short....
 
+	echo '<td>';
 	if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
+		$search_qry= "SELECT * FROM humo_persons ORDER BY pers_lastname, pers_firstname";
+
 		if($search_lastname!='' OR $search_firstname!='') {
 			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
 				AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".$search_lastname."%'
@@ -3167,13 +3181,14 @@ Directions for use:<br>
 		$search_result = $dbh->query($search_qry);
 		if ($search_result){
 			if($search_result->rowCount()>0) {
-				echo '<td><select class="fonts" size="1" name="person"  style="width:'.$len.'px">';
+				echo '<select class="fonts" size="1" name="person"  style="width:'.$len.'px">';
 					while($searchDb=$search_result->fetch(PDO::FETCH_OBJ)) {
 						$name=$pers_cls->person_name($searchDb);
 						if ($name["show_name"]){
 							echo '<option';
 							if(isset($person)) {
-								if ($searchDb->pers_gedcomnumber==$person AND !(isset($_POST["search1"]) AND $search_lastname=='' AND $search_firstname=='' AND $search_gednr=='')){
+								if ($searchDb->pers_gedcomnumber==$person AND !(isset($_POST["search1"])
+									AND $search_lastname=='' AND $search_firstname=='' AND $search_gednr=='')){
 									echo ' SELECTED';
 								}
 							}
@@ -3186,17 +3201,21 @@ Directions for use:<br>
 								$birth=' '.__('*').' '.date_place($searchDb->pers_birth_date,'');
 							}
 							$search1_cls = New person_cls;
-							$search1_cls->construct($searchDb);	
-							if($search1_cls->privacy)	 { $birth = ''; }
+							$search1_cls->construct($searchDb);
+							if($search1_cls->privacy) { $birth = ''; }
 							echo ' value="'.$searchDb->pers_gedcomnumber.'">'.$name["index_name"].$birth.' ['.$searchDb->pers_gedcomnumber.']</option>';
 						}
 					}
 					echo '</select>';
 				}
-			else {echo '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>'; }
+			else {
+				echo '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>';
+			}
 		}
 	}
-	else {  echo '<select size="1" name="person" style="width:'.$len.'px"><option></option></select>'; }
+	else {
+		echo '<select size="1" name="person" style="width:'.$len.'px"><option></option></select>';
+	}
 	echo '</td>';
 	//echo '<td rowspan=2><input type="image" src="'.ROOTPATH.'images/turn_around.gif" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value="Submit" name="switch" >';
 	echo '<td rowspan=2><input type="submit" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value=" " name="switch" style="background: #fff url(\''.CMS_ROOTPATH.'images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
@@ -3229,17 +3248,28 @@ Directions for use:<br>
 	}
 	if (isset($_SESSION['rel_search_gednr2'])){ $search_gednr2=$_SESSION['rel_search_gednr2']; }
 
-	echo '<td> <input type="text" class="fonts relboxes" name="search_firstname2" value="'.safe_text_show($search_firstname2).'" size="15"> ';
-	echo '</td>';
-	echo '<td>&nbsp; <input class="fonts relboxes" type="text" name="search_lastname2" value="'.safe_text_show($search_lastname2).'" size="15">';
-	echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
-	echo '</td>';
-	echo '<td>&nbsp; <input class="fonts relboxes" type="text" name="search_gednr2" value="'.safe_text_show($search_gednr2).'" size="8">';
-	echo '</td>';
-	echo '<td>&nbsp; <input class="fonts" type="submit" name="search2" value="'.__('Search').'">';
+	if (isset($_POST["search2"])){
+		$search_gednr2='';
+	}
+	if (isset($_POST["search_id2"])){
+		$search_firstname2='';
+		$search_lastname2='';
+	}
+
+	echo '<td><input type="text" class="fonts relboxes" name="search_firstname2" value="'.safe_text_show($search_firstname2).'" size="15" placeholder="'.__('First name').'">';
+		echo '&nbsp;<input class="fonts relboxes" type="text" name="search_lastname2" value="'.safe_text_show($search_lastname2).'" size="15" placeholder="'.__('Last name').'">';
+		//echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
+
+		echo '&nbsp;<input class="fonts" type="submit" name="search2" value="'.__('Search').'">';
 	echo '</td>';
 
+	echo '<td><input class="fonts relboxes" type="text" name="search_gednr2" value="'.safe_text_show($search_gednr2).'" size="8">';
+	echo '&nbsp;<input class="fonts" type="submit" name="search_id2" value="'.__('Search').'"></td>';
+
+	echo '<td>';
 	if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
+		$search_qry= "SELECT * FROM humo_persons ORDER BY pers_lastname, pers_firstname";
+
 		if($search_lastname2!='' OR $search_firstname2!='') {
 			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
 				LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ORDER BY pers_lastname, pers_firstname";
@@ -3250,7 +3280,7 @@ Directions for use:<br>
 		$search_result2 = $dbh->query($search_qry);
 		if ($search_result2){
 			if($search_result2->rowCount()>0) {
-				echo '<td><select class="fonts" size="1" name="person2" style="width:'.$len.'px">';
+				echo '<select class="fonts" size="1" name="person2" style="width:'.$len.'px">';
 				while($searchDb2=$search_result2->fetch(PDO::FETCH_OBJ)) {
 					$name=$pers_cls->person_name($searchDb2);
 					if ($name["show_name"]){
@@ -3271,15 +3301,18 @@ Directions for use:<br>
 						$search2_cls->construct($searchDb2);
 						if($search2_cls->privacy){ $birth = ''; }
 						echo ' value="'.$searchDb2->pers_gedcomnumber.'">'.$name["index_name"].$birth.' ['.$searchDb2->pers_gedcomnumber.']</option>';
-						
 					}
 				}
 				echo '</select>';
 			}
-			else { echo '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>'; }
+			else {
+				echo '<select size="1" name="notfound" value="1" style="width:'.$len.'px"><option>'.__('Person not found').'</option></select>';
+			}
 		}
 	}
-	else { echo '<select size="1" name="person2" style="width:'.$len.'px"><option></option></select>'; }
+	else {
+		echo '<select size="1" name="person2" style="width:'.$len.'px"><option></option></select>';
+	}
 echo '</td></tr></table>';
 /* echo '</form>'; */
 //echo "</div>";

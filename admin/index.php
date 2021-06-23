@@ -957,7 +957,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 
 						// *** Sources ***
 						$menu_item=''; if ($page=='edit_sources'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_sources">* '.__('Shared sources')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_sources">* '.__('Sources')."</a>";
 
 						// *** Repositories ***
 						$menu_item=''; if ($page=='edit_repositories'){ $menu_item=' id="current"'; }
