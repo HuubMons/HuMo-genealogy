@@ -156,6 +156,11 @@ if (isset($_POST['person_remove2'])){
 	$sql="DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_connect_id='".$pers_gedcomnumber."'";
 	$result=$dbh->query($sql);
 
+	// *** Clear cache ***
+	$sql = "DELETE FROM humo_settings
+		WHERE setting_variable='cache_latest_changes' AND setting_tree_id='".safe_text_db($tree_id)."'";
+	$result = $dbh->query($sql);
+
 	$confirm.=__('Person is removed');
 
 	// *** Select new person ***
@@ -270,7 +275,7 @@ if (isset($_POST['person_change'])){
 	$result=$dbh->query($sql);
 	family_tree_update($tree_id);
 
-	// extra UPDATE queries if is jewish dates enabled
+	// extra UPDATE queries if jewish dates is enabled
 	if($humo_option['admin_hebnight']=="y") {
 		$per_bir_heb = ""; $per_bur_heb=""; $per_dea_heb="";
 		if(isset($_POST["pers_birth_date_hebnight"]))  $per_bir_heb = $_POST["pers_birth_date_hebnight"];
@@ -294,7 +299,7 @@ if (isset($_POST['person_change'])){
 			if($_POST["even_hebname"]=='') {  // empty entry: existing hebrew name was deleted so delete the event
 				$sql = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom='_HEBN'  AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."' AND event_kind='name' ";
 				$result=$dbh->query($sql);
-			}		
+			}
 			else {  // update or retain the entered value
 				//$hebnameDb=$result->fetch(PDO::FETCH_OBJ);
 				$sql="UPDATE `humo_events` SET 
@@ -446,7 +451,10 @@ if (isset($_POST['person_change'])){
 		family_tree_update($tree_id);
 	}
 
-
+	// *** Clear cache ***
+	$sql = "DELETE FROM humo_settings
+		WHERE setting_variable='cache_latest_changes' AND setting_tree_id='".safe_text_db($tree_id)."'";
+	$result = $dbh->query($sql);
 }
 
 if (isset($_GET['add_person'])){
@@ -569,6 +577,11 @@ if (isset($_POST['person_add'])){
 	if (isset($_POST['child_connect'])){
 		$_POST['child_connect2']=$new_gedcomnumber;
 	}
+
+	// *** Clear cache ***
+	$sql = "DELETE FROM humo_settings
+		WHERE setting_variable='cache_latest_changes' AND setting_tree_id='".safe_text_db($tree_id)."'";
+	$result = $dbh->query($sql);
 }
 
 // *** Family move down ***
@@ -753,8 +766,9 @@ if (isset($_GET['add_parents'])){
 	$fam_gedcomnumber='F'.$db_functions->generate_gedcomnr($tree_id,'family');
 
 	// *** Generate new GEDCOM number ***
-	$man_gedcomnumber='I'.$db_functions->generate_gedcomnr($tree_id,'person');
-	$woman_gedcomnumber='I'.$db_functions->generate_gedcomnr($tree_id,'person')+1;
+	$temp_number=$db_functions->generate_gedcomnr($tree_id,'person');
+	$man_gedcomnumber='I'.$temp_number;
+	$woman_gedcomnumber='I'.($temp_number+1);
 
 	$sql="INSERT INTO humo_families SET
 	fam_gedcomnumber='".$fam_gedcomnumber."',
@@ -794,8 +808,10 @@ if (isset($_GET['add_parents'])){
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
 		pers_death_date='', pers_death_place='', pers_death_time='', pers_death_text='', pers_death_cause='',
-		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', pers_new_user='".$username."',
-		pers_new_date='".$gedcom_date."', pers_new_time='".$gedcom_time."'";
+		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', 
+		pers_new_user='".$username."',
+		pers_new_date='".$gedcom_date."',
+		pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
 	
 	// only needed for jewish settings
@@ -817,8 +833,10 @@ if (isset($_GET['add_parents'])){
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
 		pers_death_date='', pers_death_place='', pers_death_time='', pers_death_text='', pers_death_cause='',
-		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', pers_new_user='".$username."',
-		pers_new_date='".$gedcom_date."', pers_new_time='".$gedcom_time."'";
+		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', 
+		pers_new_user='".$username."',
+		pers_new_date='".$gedcom_date."',
+		pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
 	
 	// only needed for jewish settings
@@ -1119,8 +1137,10 @@ if (isset($_GET['relation_add'])){
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
 		pers_death_date='', pers_death_place='', pers_death_time='', pers_death_text='', pers_death_cause='',
-		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='', pers_new_user='".$username."',
-		pers_new_date='".$gedcom_date."', pers_new_time='".$gedcom_time."'";
+		pers_buried_date='', pers_buried_place='', pers_buried_text='', pers_cremation='',
+		pers_new_user='".$username."',
+		pers_new_date='".$gedcom_date."',
+		pers_new_time='".$gedcom_time."'";
 	//echo $sql.'<br>';
 	$result=$dbh->query($sql);
 
@@ -2041,9 +2061,12 @@ if (isset($_POST['connect_change'])){
 		connect_role='".$editor_cls->text_process($_POST["connect_role"][$key])."',
 		connect_source_id='".safe_text_db($_POST['connect_source_id'][$key])."',";
 
-		if (isset($_POST['connect_date'][$key]) AND ($_POST['connect_date'][$key]))
+		//if (isset($_POST['connect_date'][$key]) AND ($_POST['connect_date'][$key]))
+		if (isset($_POST['connect_date'][$key]))
 			$sql.="connect_date='".$editor_cls->date_process("connect_date",$key)."',";
-		if (isset($_POST['connect_place'][$key]) AND ($_POST['connect_place'][$key]))
+
+		//if (isset($_POST['connect_place'][$key]) AND ($_POST['connect_place'][$key]))
+		if (isset($_POST['connect_place'][$key]))
 			$sql.="connect_place='".$editor_cls->text_process($_POST["connect_place"][$key])."',";
 
 		// *** Extra text for source ***
@@ -2051,7 +2074,8 @@ if (isset($_POST['connect_change'])){
 		if (isset($_POST['connect_text'][$key]))
 			$sql.="connect_text='".safe_text_db($_POST['connect_text'][$key])."',";
 
-		if (isset($_POST['connect_quality'][$key]) AND ($_POST['connect_quality'][$key] OR $_POST['connect_quality'][$key]=='0'))
+		//if (isset($_POST['connect_quality'][$key]) AND ($_POST['connect_quality'][$key] OR $_POST['connect_quality'][$key]=='0'))
+		if (isset($_POST['connect_quality'][$key]))
 			$sql.=" connect_quality='".safe_text_db($_POST['connect_quality'][$key])."',";
 
 		if (isset($_POST['connect_item_id'][$key]) AND ($_POST['connect_item_id'][$key]))
@@ -2116,13 +2140,14 @@ if (isset($_GET['connect_drop'])){
 		$event_link='&event_person=1';
 	if (isset($_POST['event_family']) OR isset($_GET['event_family']))
 		$event_link='&event_family=1';
-	$phpself2='index.php?page=editor_sources&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id;
+	//$phpself2='index.php?page=editor_sources&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id;
+	$phpself2='index.php?page='.$page.'&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id;
 	$phpself2.=$event_link;
 
 	echo '<div class="confirm">';
 	echo __('Are you sure you want to remove this event?');
 	echo ' <form method="post" action="'.$phpself2.'" style="display : inline;">';
-	echo '<input type="hidden" name="page" value="'.$_GET['page'].'">';
+	//echo '<input type="hidden" name="page" value="'.$_GET['page'].'">';
 	echo '<input type="hidden" name="connect_drop" value="'.$_GET['connect_drop'].'">';
 
 	// *** Needed for events!!! ***
@@ -2144,12 +2169,12 @@ if (isset($_GET['connect_drop'])){
 
 	echo ' <input type="Submit" name="connect_drop2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
 	echo ' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
+
 	echo '</form>';
 	echo '</div>';
 }
 // *** Delete source or address connection ***
 if (isset($_POST['connect_drop2'])){
-
 	$event_sql="SELECT * FROM humo_connections
 		WHERE connect_id='".safe_text_db($_POST['connect_drop'])."'";
 	$event_qry=$dbh->query($event_sql);

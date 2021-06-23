@@ -20,17 +20,18 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			//}
 			if ($nr_addresses=='1'){
 				$residence=__('residence');
-				if ($connect_kind=='person') $templ_person["flag_address"]=0;
-				if ($connect_kind=='family') $templ_relation["flag_address"]=0;
+				if ($connect_kind=='person') $templ_person["address_start"]=ucfirst(__('residence')).': ';
+				if ($connect_kind=='family') $templ_relation["address_start"]=ucfirst(__('residence')).': ';
 			}
 			else{
 				$residence=__('residences');
-				if ($connect_kind=='person') $templ_person["flag_address"]=1;
-				if ($connect_kind=='family') $templ_relation["flag_address"]=1;
+				if ($connect_kind=='person') $templ_person["address_start"]=ucfirst(__('residences')).': ';
+				if ($connect_kind=='family') $templ_relation["address_start"]=ucfirst(__('residences')).': ';
 			}
 
 			if($temp) { if ($connect_kind=='person') $templ_person[$temp].=". "; }
 			//if($temp) { if ($connect_kind=='family') $templ_relation[$temp].=". "; }
+
 			//$templ_person["address_exist"]=ucfirst($residence).': ';
 			//$temp="address_exist";
 			$text.='<b>'.ucfirst($residence).':</b> ';
@@ -89,7 +90,8 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 				else
 					$templ_person["address_address".$address_nr]=$connectDb->address_place;
 				// *** Add date ***
-				if ($connectDb->connect_date) $templ_person["address_address".$address_nr].= ' ('.date_place($connectDb->connect_date,'').')';
+				if ($connectDb->connect_date)
+					$templ_person["address_address".$address_nr].= ' ('.date_place($connectDb->connect_date,'').')';
 				if($templ_person["address_address".$address_nr]!='') $temp="address_address".$address_nr;
 			}
 			if ($connect_kind=='family'){
@@ -161,14 +163,20 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			if ($connect_kind=='person'){
 				//$templ_person["address_source".$address_nr]=' '.$source;
 				$templ_person["address_source".$address_nr]=$source;
-				// *** Don't use $temp. This will add a , character in the source ***
-				//if($templ_person["address_source".$address_nr]!='') $temp="address_source".$address_nr;
+
+				// *** Extra item, so it's possible to add a comma or space ***
+				if($templ_person["address_source".$address_nr]!=''){
+					$templ_person["address_add"]='';
+					$temp="address_add";
+				}
 			}
 			if ($connect_kind=='family'){
 				//$templ_relation["address_source"]=$connectDb->address_address.' '.$connectDb->address_source;
 				$templ_relation["address_source".$address_nr]=$source;
-				// *** Don't use $temp. This will add a , character in the source ***
-				//if($templ_relation["address_source".$address_nr]!='') $temp="address_source".$address_nr;
+
+				// *** Extra item, so it's possible to add a comma or space ***
+				$templ_relation["address_add"]='';
+				$temp="address_add";
 			}
 
 			$text.=$source;

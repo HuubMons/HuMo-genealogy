@@ -194,7 +194,6 @@ function topline(){
 	//$text.='</td><td class="table_header fonts" width="20%" style="text-align:center";>';
 
 		// *** PDF button ***
-		//if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl") {
 		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 			$text.=' <form method="POST" action="'.$uri_path.'family.php?show_sources=1" style="display:inline-block; vertical-align:middle;">';
 				$text.='<input type="hidden" name="id" value="'.$family_id.'">';
@@ -938,12 +937,15 @@ else{
 							if($screen_mode=='PDF') {
 								//  PDF rendering of name + details
 								unset ($templ_person);
+								unset ($templ_name);
 
 								// *** Name ***
 								$pdfdetails=$woman_cls->name_extended("parent1");
 								if($pdfdetails) {
 									//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
 									$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+// *** Resets line ***
+$pdf->MultiCell(0,8,'',0,"L");
 								}
 								$indent=$pdf->GetX();
 
@@ -959,14 +961,6 @@ else{
 							if($screen_mode=='RTF') {
 								// *** Start new line ***
 								$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
-
-								// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
-								if ($person_womanDb->pers_sexe=="M")
-									$sect->addImage('images/man.jpg', null);
-								elseif ($person_womanDb->pers_sexe=="F")
-									$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
-								else
-									$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
 
 								$rtf_text=strip_tags($woman_cls->name_extended("parent1"),"<b><i>");
 								//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
@@ -1050,12 +1044,15 @@ else{
 							if($screen_mode=='PDF') {
 								//  PDF rendering of name + details
 								unset ($templ_person);
+								unset ($templ_name);
 
 								// *** Name ***
 								$pdfdetails=$man_cls->name_extended("parent1");
 								if($pdfdetails) {
 									//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
 									$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+// *** Resets line ***
+$pdf->MultiCell(0,8,'',0,"L");
 								}
 								$indent=$pdf->GetX();
 
@@ -1071,14 +1068,6 @@ else{
 							if($screen_mode=='RTF') {
 								// *** Start new line ***
 								$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
-
-								// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
-								if ($person_manDb->pers_sexe=="M")
-									$sect->addImage('images/man.jpg', null);
-								elseif ($person_manDb->pers_sexe=="F")
-									$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
-								else
-									$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
 
 								$rtf_text=strip_tags($man_cls->name_extended("parent1"),"<b><i>");
 								//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
@@ -1167,11 +1156,16 @@ else{
 						if($screen_mode!='STAR') {
 							if ($change_main_person==true){
 								if($screen_mode=='PDF') {
+									unset ($templ_person);
+									unset ($templ_name);
+
 									// *** PDF rendering of name ***
 									$pdfdetails=$woman_cls->name_extended("parent1");
 									if($pdfdetails) {
 										//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"kort");
 										$pdf->write_name($templ_name,$pdf->GetX()+5,"kort");
+// *** Resets line ***
+$pdf->MultiCell(0,8,'',0,"L");
 									}
 									$indent=$pdf->GetX();
 								}
@@ -1185,11 +1179,16 @@ else{
 							}
 							else{
 								if($screen_mode=='PDF') {
+									unset ($templ_person);
+									unset ($templ_name);
+
 									// *** PDF rendering of name ***
 									$pdfdetails=$man_cls->name_extended("parent1");
 									if($pdfdetails) {
 										//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"kort");
 										$pdf->write_name($templ_name,$pdf->GetX()+5,"kort");
+// *** Resets line ***
+$pdf->MultiCell(0,8,'',0,"L");
 									}
 									$indent=$pdf->GetX();
 								}
@@ -1218,7 +1217,7 @@ else{
 				// *************************************************************
 				// *** Marriage                                              ***
 				// *************************************************************
-				if ($familyDb->fam_kind!='PRO-GEN'){  //onecht kind, wife without man
+				if ($familyDb->fam_kind!='PRO-GEN'){  // onecht kind, wife without man
 					if($screen_mode=='') {
 						echo '<br><div class="marriage fonts">';
 						// *** $family_privacy='1' = filter ***
@@ -1233,6 +1232,8 @@ else{
 					}
 					if($screen_mode=='PDF') {
 						//unset ($templ_person);
+//unset ($templ_relation);
+
 						if($family_privacy) {
 							$pdf_marriage=$marriage_cls->marriage_data($familyDb,'','short');
 							$pdf->SetLeftMargin($indent);
@@ -1291,6 +1292,8 @@ else{
 						if($pdfdetails) {
 							//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
 							$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+// *** Resets line ***
+$pdf->MultiCell(0,8,'',0,"L");
 						}
 						$indent=$pdf->GetX();
 
@@ -1305,14 +1308,6 @@ else{
 
 						// *** Start new line ***
 						$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
-
-						// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
-						if (isset($person_manDb->pers_sexe) AND $person_manDb->pers_sexe=="M")
-							$sect->addImage('images/man.jpg', null);
-						elseif (isset($person_manDb->pers_sexe) AND $person_manDb->pers_sexe=="F")
-							$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
-						else
-							$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
 
 						$rtf_text=strip_tags($man_cls->name_extended("parent2"),"<b><i>");
 						//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
@@ -1388,13 +1383,15 @@ else{
 						if($pdfdetails) {
 							//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
 							$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+// *** Resets line ***
+$pdf->MultiCell(0,8,'',0,"L");
 						}
 						$indent=$pdf->GetX();
 
 						$pdfdetails= $woman_cls->person_data("parent2", $id);
 						$pdf->SetLeftMargin($indent);
 						if($pdfdetails) {
-						$pdf->pdfdisplay($pdfdetails,"parent2");
+							$pdf->pdfdisplay($pdfdetails,"parent2");
 						}
 					}
 					if($screen_mode=='RTF') {
@@ -1402,14 +1399,6 @@ else{
 
 						// *** Start new line ***
 						$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
-
-						// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
-						if (isset($person_womanDb->pers_sexe) AND $person_womanDb->pers_sexe=="M")
-							$sect->addImage('images/man.jpg', null);
-						elseif (isset($person_womanDb->pers_sexe) AND $person_womanDb->pers_sexe=="F")
-							$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
-						else
-							$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
 
 						$rtf_text=strip_tags($woman_cls->name_extended("parent2"),"<b><i>");
 						//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
@@ -1475,6 +1464,8 @@ else{
 					echo '</div>';
 				}
 
+$temp='';
+
 				// *************************************************************
 				// *** Marriagetext                                          ***
 				// *************************************************************
@@ -1486,10 +1477,18 @@ else{
 						if ($user["group_texts_fam"]=='j' AND process_text($familyDb->fam_text)){
 							if($screen_mode=='PDF') {
 								// PDF rendering of marriage notes
-								$pdf->SetFont('Arial','I',11);
-								$pdf->Write(6,process_text($familyDb->fam_text)."\n");
-								$pdf->Write(6,show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber)."\n");
-								$pdf->SetFont('Arial','',12);
+								//$pdf->SetFont('Arial','I',11);
+								//$pdf->Write(6,process_text($familyDb->fam_text)."\n");
+								//$pdf->Write(6,show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber)."\n");
+								//$pdf->SetFont('Arial','',12);
+
+$templ_relation["fam_text"]=$familyDb->fam_text;
+$temp="fam_text";
+
+$source=show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber);
+$templ_relation["fam_text_source"]=$source;
+$temp="fam_text_source";
+
 							}
 							elseif($screen_mode=='RTF') {
 								$sect->addEmptyParagraph($fontSmall, $parBlack);
@@ -1510,15 +1509,16 @@ else{
 					// *** Show addresses by family ***
 					if ($user['group_living_place']=='j'){
 						if($screen_mode=='PDF') {
-							show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
+							//show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
+							$fam_address=show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
 						}
 //						elseif($screen_mode=='RTF') {
 //							//
 //						}
 						else{
-							$temp=show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
-							if ($temp){
-								echo '<br>'.$temp;
+							$fam_address=show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
+							if ($fam_address){
+								echo '<br>'.$fam_address;
 							}
 						}
 					}
@@ -1527,6 +1527,8 @@ else{
 					if($screen_mode=='PDF') {
 						$source=show_sources2("family","family_source",$familyDb->fam_gedcomnumber);
 						if ($source){
+							if ($temp) $templ_relation[$temp].='. ';
+
 							$templ_relation["fam_source"]=$source;
 							$temp="fam_source";
 							$pdf->displayrel($templ_relation,"dummy");
@@ -1578,6 +1580,8 @@ else{
 					}
 					if($screen_mode=='PDF') {
 						unset ($templ_person);
+						unset ($templ_name);
+
 						$pdf->SetLeftMargin(10);
 						$pdf->SetDrawColor(200);  // grey line
 						$pdf->Cell(0,2," ",'B',1);
@@ -1636,26 +1640,20 @@ else{
 							$pdf->SetLeftMargin($indent);
 							$pdf->Write(6,$childnr.'. ');
 
-							//unset ($templ_person);
+							unset ($templ_person);
 							unset ($templ_name);
 							$pdfdetails=$child_cls->name_extended("child");
 							if($pdfdetails) {
 								//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
 								$pdf->write_name($templ_name,$pdf->GetX()+5,"child");
+// *** Resets line ***
+//$pdf->MultiCell(0,8,'',0,"L");   // NOT IN USE WITH CHILD
 							}
 							//$indent=$pdf->GetX();
 						}
 						if($screen_mode=='RTF') {
 							$rtf_text=$childnr.'. ';
 							$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-
-							// *** RTF person pictures in JPG, because Word doesn't support GIF pictures... ***
-							if ($childDb->pers_sexe=="M")
-								$sect->addImage('images/man.jpg', null);
-							elseif ($childDb->pers_sexe=="F")
-								$sect->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
-							else
-								$sect->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
 
 							$rtf_text=strip_tags($child_cls->name_extended("child"),'<b><i>');
 							$sect->writeText($rtf_text, $arial12);
@@ -1772,6 +1770,8 @@ else{
 								// *** PDF rendering of child details ***
 								$pdf->Write(6,"\n");
 								unset ($templ_person);
+								unset ($templ_name);
+
 								$pdf_child=$child_cls->person_data("child", $id);
 								if($pdf_child) {
 									$pdf->SetLeftMargin($child_indent);
@@ -2166,7 +2166,7 @@ else{
     													$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
     												}
     											}
-										    }
+											}
 										}
 									}
 								}

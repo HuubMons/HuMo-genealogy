@@ -44,7 +44,7 @@ function check_date($date) {
 	return 1; 
 }
 
-function check_month($date) {  
+function check_month($date) {
 	$year = $this->check_year($date);
 	$strlen = strlen($year);
 	$month = substr($date, -($strlen+4),3); 
@@ -62,11 +62,11 @@ function check_month($date) {
 			elseif(strlen($date) > ($strlen + 4)) return null; // these texts should not have anything in front of them except EST or CAL!
 	 	 	else {return $month; } // flags valid 3 letter text with nothing in front
 	 	}
-	elseif ($month==" TO") { 
+	elseif ($month==" TO") {
 			if(substr($date,0,4) != "FROM") return null; // TO must have FROM up front!
 			else { return " TO"; } 
 	}
-	elseif ($month=="AND") { 
+	elseif ($month=="AND") {
 			if(substr($date,0,3) != "BET") return null; // AND must have BET up front
 			else {return "AND"; }  
 	}
@@ -113,7 +113,7 @@ function check_day($date) {
 					elseif(substr($month,5,3)=="APR" OR substr($month,5)=="JUN" 
 							OR substr($month,5)=="SEP" OR substr($month,5)=="NOV") { $max=30; }
 
-					if ($day>0 AND $day<=$max) { 
+					if ($day>0 AND $day<=$max) {
 						$strlen = $strlen + $day_len;
 						if($strlen==strlen($date)) { // nothing before the day digit(s)
 							return $day; 
@@ -128,7 +128,7 @@ function check_day($date) {
 
 			if (strlen($date) > $strlen) {  // now search for text in front of day or month: BEF 10 FEB 1935 or BEF FEB 1935
 			 	$text=substr($date, -($strlen+4), 3);
- 	 	 	 	if ($text=="EST" OR $text=="CAL") { 
+ 	 	 	 	if ($text=="EST" OR $text=="CAL") {
 					if(strlen($date) > ($strlen + 4)) return null; // EST and CAL should not have anything in front of them!
  	 	 			else {return $text; } // flags valid EST or CAL has nothing in front
  	 			}
@@ -140,7 +140,7 @@ function check_day($date) {
  	 	 			else {return $text; } 
 					// flags valid 3 letter text has nothing in front 
  	 			}
- 				elseif ($text==" TO") { 
+ 				elseif ($text==" TO") {
 					if(substr($date,0,4) != "FROM") return null; // TO must have FROM up front
 					else { return " TO"; } // must have text in front of it (FROM ... TO ...)
 				}
@@ -168,9 +168,9 @@ function check_year($date) {
 	// If year >= 100 and month is given this will also work.
 	// HOWEVER, if year is <100 and month is given this will go wrong: "2 mar 24" will give substr "r 24" and "2 mar 6" will give: "ar 6".
 	// Therefore:
-	if(substr($year,-2,1)==" " OR substr($year,-3,1)==" ") {  
+	if(substr($year,-2,1)==" " OR substr($year,-3,1)==" ") {
 		$temp = explode(" ",$year);
-		$year = $temp[1]; 
+		$year = $temp[1];
 	}
 	
 	// Now take care of 1741/42 cases (= valid GEDCOM)

@@ -3388,7 +3388,7 @@ function update_v5_7(){
 	// *** Update procedure version 5.7 ***
 	// ************************************
 
-	global $dbh;
+	global $dbh, $db_functions;
 
 	// *** Show update status ***
 	echo '<tr><td>HuMo-genealogy update V5.7</td>';
@@ -3430,22 +3430,13 @@ function update_v5_7(){
 		//ob_flush(); 
 		//flush(); // IE
 
-		// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-		$new_nr_qry= "SELECT *, ABS(substring(address_gedcomnr, 2)) AS gednr
-			FROM humo_addresses WHERE address_tree_id='".$updateDb->tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-		$new_nr_result = $dbh->query($new_nr_qry);
-		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-		$new_gedcomnumber='1';
-		if (isset($new_nr->address_gedcomnr)){
-			$new_gedcomnumber=substr($new_nr->address_gedcomnr,1);
-		}
+		// *** Generate new GEDCOM number ***
+		$new_gedcomnumber=$db_functions->generate_gedcomnr($updateDb->tree_id,'address');
 
 		$address_qry=$dbh->query("SELECT * FROM humo_addresses
 			WHERE address_tree_id='".$updateDb->tree_id."'
 			AND (address_connect_kind='person' OR address_connect_kind='family')");
 		while($addressDb=$address_qry->fetch(PDO::FETCH_OBJ)){
-			$new_gedcomnumber=$new_gedcomnumber+1;
-
 			//connect_order='".$count."',
 			//$address_connect_sub_kind='person_address';
 			$sql="INSERT INTO humo_connections SET
@@ -3473,6 +3464,8 @@ function update_v5_7(){
 				WHERE address_id='".$addressDb->address_id."'";
 			//echo $sql.'<br><br>';
 			$result=$dbh->query($sql);
+
+			$new_gedcomnumber++;
 		}
 
 		// *** Change ID for address by source into address GEDCOM number ***
@@ -3489,15 +3482,8 @@ function update_v5_7(){
 
 		// *** Update sources ***
 
-		// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
-		$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
-			FROM humo_sources WHERE source_tree_id='".$updateDb->tree_id."' ORDER BY gednr DESC LIMIT 0,1";
-		$new_nr_result = $dbh->query($new_nr_qry);
-		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-		$new_gedcomnumber='1';
-		if (isset($new_nr->address_gedcomnr)){
-			$new_gedcomnumber=substr($new_nr->address_gedcomnr,1);
-		}
+		// *** Generate new GEDCOM number ***
+		$new_gedcomnumber=$db_functions->generate_gedcomnr($updateDb->tree_id,'source');
 
 		// *** Batch processing ***
 		//$dbh->beginTransaction();
@@ -3507,8 +3493,6 @@ function update_v5_7(){
 			AND connect_source_id NOT LIKE '_%'";
 		$qry = $dbh->query($sql);
 		while ($qryDb=$qry->fetch(PDO::FETCH_OBJ)){
-			$new_gedcomnumber++;
-
 			//source_new_user='".$username."',
 			//source_new_date='".$gedcom_date."',
 			//source_new_time='".$gedcom_time."'
@@ -3540,6 +3524,7 @@ function update_v5_7(){
 			//echo $sql.'<br><br>';
 			$result=$dbh->query($sql);
 
+			$new_gedcomnumber++;
 		}
 		// *** Commit data in database ***
 		//$dbh->commit();
@@ -3553,7 +3538,8 @@ function update_v5_7(){
 	//$dbh->commit();
 
 	// *** Show status of database update ***
-	echo '<script type="text/javascript">document.getElementById("information v5_7").innerHTML="Database updated!";</script>'; ob_flush(); flush(); // IE
+	echo '<script type="text/javascript">document.getElementById("information v5_7").innerHTML="Database updated!";</script>';
+	ob_flush(); flush(); // IE
 }
 
 

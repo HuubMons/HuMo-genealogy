@@ -109,6 +109,10 @@ if($screen_mode!='PDF' AND $screen_mode!='RTF' AND $screen_mode!="ancestor_sheet
 				echo '<input type="hidden" name="id" value="'.$family_id.'">';
 				echo '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
 				echo '<input type="hidden" name="screen_mode" value="PDF">';
+
+				// *** needed to check PDF M/F/? icons ***
+				echo '<input type="hidden" name="ancestor_report" value="1">';
+
 				echo '<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
 				echo '</form>';
 			}
@@ -119,6 +123,10 @@ if($screen_mode!='PDF' AND $screen_mode!='RTF' AND $screen_mode!="ancestor_sheet
 				echo '<input type="hidden" name="id" value="'.$family_id.'">';
 				echo '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
 				echo '<input type="hidden" name="screen_mode" value="RTF">';
+
+				// *** needed to check RTF M/F/? icons ***
+				echo '<input type="hidden" name="ancestor_report" value="1">';
+
 				echo '<input class="fonts" type="Submit" name="submit" value="'.__('RTF Report').'">';
 				echo '</form>';
 			}
@@ -130,6 +138,7 @@ if($screen_mode=='PDF') {
 	//initialize pdf generation
 	$pdfdetails=array();
 	$pdf_marriage=array();
+
 	$pdf=new PDF();
 	@$persDb = $db_functions->get_person($family_id);
 	// *** Use person class ***
@@ -349,9 +358,6 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				$man_cls->construct($person_manDb);
 				$privacy_man=$man_cls->privacy;
 
-				// for pdf function pdf_ancestor_name() further along
-				//$sexe=$person_manDb->pers_sexe;
-
 				if (strtolower($person_manDb->pers_sexe)=='m' AND $ancestor_number[$i]>1){
 					@$familyDb = $db_functions->get_family($marriage_gedcomnumber[$i]);
 
@@ -393,14 +399,17 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					$rtf_text = $ancestor_number[$i]."(".floor($ancestor_number[$i]/2).")";
 					$cell = $table->getCell(1, 1);
 					$cell->writeText($rtf_text, $arial10, $parNames);
+
 					$rtf_text = strip_tags($man_cls->name_extended("child"),"<b><i>");
 					$cell = $table->getCell(1, 2);
+
 					if ($person_manDb->pers_sexe=="M")
 						$cell->addImage('images/man.jpg', null);
 					elseif ($person_manDb->pers_sexe=="F")
 						$cell->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
 					else
 						$cell->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
+
 					$cell = $table->getCell(1, 3);
 					$cell->writeText($rtf_text, $arial12, $parNames);
 					if ($listednr=='') {
@@ -452,12 +461,41 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 
 				}
 				else {
+					unset ($templ_person);
+
 					// pdf NUMBER + MAN NAME + DATA
-					$pdf->pdf_ancestor_name($ancestor_number[$i],$person_manDb->pers_sexe,$man_cls->name_extended("child"));
+//					$pdf->pdf_ancestor_name($ancestor_number[$i],$person_manDb->pers_sexe,$man_cls->name_extended("child"));
+//$pdf->SetX(10);
+$pdf->pdf_ancestor_name($ancestor_number[$i],$person_manDb->pers_sexe,'');
+
+					//$pdf->SetX($pdf->GetX()+3);
+					//$pdf->MultiCell(0,8,$man_cls->name_extended("child"),0,"L");
+					//$pdf->SetFont('Arial','',12);
+
+					//TEST WERKT (fout bij hogere nummers)
+					//$pdf->SetLeftMargin(38);
+					//$pdf->SetX($pdf->GetX()+3);
+					//$man_cls->name_extended("child");
+					//$pdf->Ln(7);
+
+// *** Name ***
+unset ($templ_person);
+unset ($templ_name);
+$pdfdetails=$man_cls->name_extended("child");
+if($pdfdetails) {
+	//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
+	$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+	// *** Resets line ***
+	//$pdf->MultiCell(0,8,'',0,"L");
+}
+
+
 					if($listednr=='') {
 						$pdfdetails= $man_cls->person_data("standard",$ancestor_array[$i]);
 						if($pdfdetails) {
+							$pdf->SetLeftMargin(38);
 							$pdf->pdfdisplay($pdfdetails,"ancestor");
+							$pdf->SetLeftMargin(10);
 						}
 						elseif ($ancestor_number[$i]>9999) {
 							$pdf->Ln(8); // (number) was placed under previous number
@@ -478,8 +516,13 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 						// and we are after writing the woman's details
 						// and there is at least one person of another family to come in this generation
 						// then place a devider line
+						//$pdf->Cell(0,1,"",'B',1);
+//						$pdf->Ln(1);
+// *** Added space ***
+$pdf->Ln(7);
 						$pdf->Cell(0,1,"",'B',1);
-						$pdf->Ln(1);
+// *** Added space ***
+$pdf->Ln(4);
 					}
 				}
 
@@ -573,7 +616,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				$man_cls->construct($person_manDb);
 				$privacy_man=$man_cls->privacy;
 
-				if($screen_mode!='PDF' AND $screen_mode!='RTF') {  
+				if($screen_mode!='PDF' AND $screen_mode!='RTF') {
 					echo '<tr><td valign="top" width="80" nowrap><b>'.$ancestor_number[$i].
 						'</b> ('.floor($ancestor_number[$i]/2).')</td>';
 
@@ -584,7 +627,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 						echo $man_cls->name_extended("child");
 						echo $man_cls->person_data("standard", $ancestor_array[$i]);
 					echo '</div>';
-					echo '</td></tr>';  
+					echo '</td></tr>';
 				}
 				elseif($screen_mode == "RTF") {
 					$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
@@ -596,12 +639,14 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					$cell = $table->getCell(1, 1);
 					$cell->writeText($rtf_text, $arial10, $parNames);
 					$cell = $table->getCell(1, 2);
+
 					if ($person_manDb AND $person_manDb->pers_sexe=="M")
 						$cell->addImage('images/man.jpg', null);
 					elseif ($person_manDb AND $person_manDb->pers_sexe=="F")
 						$cell->addImage(CMS_ROOTPATH.'images/woman.jpg', null);
 					else
 						$cell->addImage(CMS_ROOTPATH.'images/unknown.jpg', null);
+
 					$rtf_text = strip_tags($man_cls->name_extended("child"),"<b><i>");
 					$cell = $table->getCell(1, 3);
 					$cell->writeText($rtf_text, $arial12, $parNames);
@@ -610,10 +655,21 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					$cell->writeText($rtf_text, $arial12, $parNames);
 				}
 				else {
-					// pdf NUMBER + NAME + DATA  NN PERSON
+					unset ($templ_person);
 
-					//$pdf->pdf_ancestor_name($ancestor_number[$i],$person_manDb->pers_sexe,$man_cls->name_extended("child"));
-					$pdf->pdf_ancestor_name($ancestor_number[$i],'',__('N.N.'));
+					// pdf NUMBER + NAME + DATA  NN PERSON
+					//$pdf->pdf_ancestor_name($ancestor_number[$i],'',__('N.N.'));
+$pdf->SetX(10);
+					$pdf->pdf_ancestor_name($ancestor_number[$i],'','');
+					//$pdf->SetX($pdf->GetX()+3);
+					//$pdf->MultiCell(0,8,__('N.N.'),0,"L");
+					//$pdf->SetFont('Arial','',12);
+
+					$pdf->SetLeftMargin(38);
+					$pdf->SetX($pdf->GetX()+3);
+					$man_cls->name_extended("child");
+					$pdf->Ln(7);
+
 					$pdfdetails= $man_cls->person_data("standard",$ancestor_array[$i]);
 					if($pdfdetails) {
 						$pdf->pdfdisplay($pdfdetails,"ancestor");
@@ -632,7 +688,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 						$pdf->Cell(0,1,"",'B',1);
 						$pdf->Ln(1);
 					}
-				}   
+				}
 			}
 		}	// loop per generation
 		$generation++;
@@ -989,13 +1045,13 @@ echo '<div>';
 	// after generating the image, all those items are returned to their  previous state....
 	echo '<script type="text/javascript">';
 	echo "
-	function showimg() { 
+	function showimg() {
 		/*   document.getElementById('helppopup').style.visibility = 'hidden';
 		document.getElementById('menubox').style.visibility = 'hidden'; */
  		document.getElementById('imgbutton').style.visibility = 'hidden';
 		document.getElementById('png').style.width = '".$divlen."px';
 		document.getElementById('png').style.height= 'auto';
-		html2canvas( [ document.getElementById('png') ], {  
+		html2canvas( [ document.getElementById('png') ], {
 			onrendered: function( canvas ) {
 				var img = canvas.toDataURL();
 				/*   document.getElementById('helppopup').style.visibility = 'visible';
@@ -1125,7 +1181,7 @@ echo '<div>';
 
 	// Specific code for ancestor sheet PDF:
 
-	if($screen_mode=="ASPDF") {  
+	if($screen_mode=="ASPDF") {
 
 		// this function parses the input string to see how many lines it would take in the ancestor sheet box
 		// it forces linebreaks when max nr of chars is encountered

@@ -84,7 +84,7 @@ HuMo-genealogy uses <a href="https://www.transifex.com/organization/humo-gen" ta
 <li>Portugese: António Duarte</li>
 <li>Russian: Demian Nikonorov</li>
 <li>Slowak: dusbaj</li>
-<li>Spanish: Andres Maurer</li>
+<li>Spanish: jmmayoral, Andres Maurer</li>
 </ul>
 
 <h2>Testers</h2>

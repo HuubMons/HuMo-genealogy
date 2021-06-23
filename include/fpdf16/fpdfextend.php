@@ -14,6 +14,22 @@ class PDF extends FPDF{
 // it also places  "Born:"  "Died:" etc before their text (even though in the array they come after the text)
 //**********************************************************************************************
 
+// *** New function may 2021 ***
+// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+function show_text($text,$type,$person_kind){
+	global $pdf;
+	$size=12; if ($person_kind=='child') $size=11;
+	if (isset($_POST['ancestor_report'])) $size=12;
+
+	if($text){
+		if ($type=='bold') $letter_type='B';
+		if ($type=='italic') $letter_type='I';
+		$pdf->SetFont('Arial',$letter_type,$size);
+			$pdf->Write(6,html_entity_decode($text));
+		$pdf->SetFont('Arial','',$size);
+	}
+}
+
 function pdfdisplay($templ_personing,$person_kind) {
 	global $pdf, $language, $gen_lus;
 	global $romnr, $romannr, $parentchild, $parlink;
@@ -39,14 +55,17 @@ function pdfdisplay($templ_personing,$person_kind) {
 		$source_presentation=$_SESSION['save_source_presentation'];
 	}
 
-	// check if we have first occurance of birth, death etc. data, so we add "Born", "Died", etc.
-	$first=0; $own_code=0; $born=0; $bapt=0; $dead=0; $buri=0; $prof=0; $address=0;
+	// *** Check if we have first occurance of birth, death etc. data, so we add "Born", "Died", etc. ***
+	$own_code=0; $born=0; $bapt=0; $dead=0; $buri=0; $prof=0; $address=0; $source=0;
 
 	foreach ($templ_personing as $key => $value) {
 		$pdf->SetFont('Arial',$type,$font);
 
+		if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
+
 		if(strpos($key,"pic_path")!==false) {
-			if(strpos($value,".jpeg")!==false OR strpos($value,".jpg")!==false OR strpos($value,".gif")!==false OR strpos($value,".png")!==false) {
+			if(strpos($value,".jpeg")!==false OR strpos($value,".jpg")!==false
+				OR strpos($value,".gif")!==false OR strpos($value,".png")!==false) {
 				if(is_file($value)) {
 					if($numpics > 2) {continue;}  // no more than 3 pics
 					$presentpic=intval(substr($key,8));   //get the pic nr to compare later with txt nr
@@ -80,120 +99,67 @@ function pdfdisplay($templ_personing,$person_kind) {
 			continue;
 		}
 
-		// *** Skip showing of special flags ***
-		if(strpos($key,"flag_buri")!==false) continue;
-		if(strpos($key,"flag_prof")!==false) continue;
-		if(strpos($key,"flag_address")!==false) continue;
+		if(strpos($key,"own_code_start")!==false) continue;
+		if(!$own_code AND strpos($key,"own_code")!==false) {
+			//if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
 
-		if(!$own_code) {
-			if(strpos($key,"own_code")!==false) {
-				$pdf->SetFont('Arial','B',$font);
-				if(!$first) { $temp=__('Own code').': '; }
-					else $temp=', '.lcfirst(__('Own code')).': '; $first=1;
-				$pdf->Write(6,$temp);
-				$pdf->SetFont('Arial','',$font);
-				$own_code=1;
-			}
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_personing["own_code_start"],'bold',$person_kind);
+			$own_code=1;
 		}
 
-		if(!$born) {
-			if(strpos($key,"born")!==false) {
-				//$value=", ".__('born').' '.$value;
-				$pdf->SetFont('Arial','B',$font);
-				if(!$first) { $temp=ucfirst(__('born')).' '; }
-					else $temp=', '.__('born').' '; $first=1;
-				$pdf->Write(6,$temp);
-				$pdf->SetFont('Arial','',$font);
-				$born=1;
-			}
+		if(strpos($key,"born_start")!==false) continue;
+		if(!$born AND strpos($key,"born")!==false) {
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_personing["born_start"],'bold',$person_kind);
+			$born=1;
 		}
-		if(!$bapt) {
-			if(strpos($key,"bapt")!==false) {
-				//$value=", ".__('baptised').' '.$value;
-				$pdf->SetFont('Arial','B',$font);
-				if(!$first) { $temp=ucfirst(__('baptised')).' '; }
-					else $temp=', '.__('baptised').' '; $first=1;
-				$pdf->Write(6,$temp);
-				$pdf->SetFont('Arial','',$font);
-				$bapt=1;
-			}
+
+		if(strpos($key,"bapt_start")!==false) continue;
+		if(!$bapt AND strpos($key,"bapt")!==false) {
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_personing["bapt_start"],'bold',$person_kind);
+			$bapt=1;
 		}
-		if(!$dead) {
-			if(strpos($key,"dead")!==false) {
-				//$value=", ".__('died').' '.$value;
-				$pdf->SetFont('Arial','B',$font);
-				if(!$first) { $temp=ucfirst(__('died')).' '; }
-					else $temp=', '.__('died').' '; $first=1;
-				$pdf->Write(6,$temp);
-				$pdf->SetFont('Arial','',$font);
-				$dead=1;
-			}
+
+		if(strpos($key,"dead_start")!==false) continue;
+		if(!$dead AND strpos($key,"dead")!==false) {
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_personing["dead_start"],'bold',$person_kind);
+			$dead=1;
 		}
-		if(!$buri) {
-			if(strpos($key,"buri")!==false) {
-				if($templ_personing["flag_buri"]==1) {
-					//$value=", ".__('crem.').' '.$value;
-					$pdf->SetFont('Arial','B',$font);
-					if(!$first) { $temp=ucfirst(__('cremation')).' '; }
-						else $temp=', '.__('cremation').' '; $first=1;
-					$pdf->Write(6,$temp);
-					$pdf->SetFont('Arial','',$font);
-				}
-				else {
-					//$value=", ".__('buried').' '.$value;
-					$pdf->SetFont('Arial','B',$font);
-					if(!$first) { $temp=ucfirst(__('buried')).' '; }
-						else $temp=', '.__('buried').' '; $first=1;
-					$pdf->Write(6,$temp);
-					$pdf->SetFont('Arial','',$font);
-				}
+
+		if(strpos($key,"buri_start")!==false) continue;
+		if(!$buri AND strpos($key,"buri")!==false) {
+			//if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_personing["buri_start"],'bold',$person_kind);
 			$buri=1;
-			}
-		}
-		//if(!$first AND $value!='') {
-		//	if (substr($value,0,2)==', '){ $value=ucfirst(substr($value,2)); }
-		//	else {ucfirst($value); }
-		//	$first=1;
-		//}
-
-		if(!$prof){
-			if(strpos($key,"prof")!==false) {
-				if ($templ_personing["flag_prof"]==1)
-					$occupation=ucfirst(__('occupations')).': ';
-				else
-					$occupation=ucfirst(__('occupation')).': ';
-				$pdf->SetFont('Arial','B',$font);
-				$pdf->Write(6,$occupation);
-				$pdf->SetFont('Arial','',$font);
-				$prof=1;
-			}
 		}
 
-		if(!$address){
-			if(strpos($key,"address")!==false) {
-				if ($templ_personing["flag_address"]==1)
-					$residence=ucfirst(__('residences')).': ';
-				else
-					$residence=ucfirst(__('residence')).': ';
-				$pdf->SetFont('Arial','B',$font);
-				$pdf->Write(6,$residence);
-				$pdf->SetFont('Arial','',$font);
-				$address=1;
-			}
+		if(strpos($key,"prof_start")!==false) continue;
+		if(!$prof AND strpos($key,"prof")!==false) {
+			//if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_personing["prof_start"],'bold',$person_kind);
+			$prof=1;
 		}
 
-		// ** New jan. 2021 ***
-		//if (isset($templ_personing["flag_source"])){
-		if(strpos($key,"flag_source")!==false) {
-			if ($templ_personing["flag_source"]==1)
-				$source_text='. '.__('Sources for person');
-			else
-				$source_text='. '.__('Source for person');
-			$pdf->SetFont('Arial','B',$font);
-			$temp=$source_text.': ';
-			$pdf->Write(6,$temp);
-			$pdf->SetFont('Arial','',$font);
-			//$source=1;
+		if(strpos($key,"address_start")!==false) continue;
+		if(!$address AND strpos($key,"address")!==false) {
+			//if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_personing["address_start"],'bold',$person_kind);
+			$address=1;
+		}
+
+		// *** Only needed for source by person ***
+		if(strpos($key,"source_start")!==false) {
+		//if(!$source AND strpos($key,"source")!==false) {		// Don't use this line.
+			//if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_personing["source_start"],'bold',$person_kind);
+			$source=1;
 			continue; // *** Skip rest of loop, otherwise wrong items are shown ***
 		}
 
@@ -270,7 +236,6 @@ function pdfdisplay($templ_personing,$person_kind) {
 			}
 
 			elseif($person_kind=="ancestor") {
-
 				if(strpos($key,"got_pics")!==false) {
 					$keepY=$pdf->GetY()+7;  if(($keepY + $tallestpic) > 280) {$pdf->AddPage(); $keepY=20; }
 					$keepX=$pdf->GetX();
@@ -336,7 +301,6 @@ function pdfdisplay($templ_personing,$person_kind) {
 				//$pdf->SetFont('Times','',$font);
 				//$pdf->SetTextColor(28,28,255);
 				$this->PDFShowSources($value);
-
 				//$pdf->SetTextColor(0);
 			}
 			else {
@@ -360,7 +324,7 @@ function displayrel ($templ_relation,$ancestor_report) {
 	global $pdf, $language, $user, $pdf_footnotes, $pdf_count_notes;
 	$font=12;
 	$samw=0; $prew=0; $wedd=0; $prec=0; $chur=0; $devr=0;
-	$address=0;
+	$address=0; $sour=0;
 
 	$source_presentation='title';
 	if (isset($_SESSION['save_source_presentation'])){
@@ -375,67 +339,63 @@ function displayrel ($templ_relation,$ancestor_report) {
 
 		if($ancestor_report=="ancestor") { $pdf->SetLeftMargin(38); }
 
-		if(strpos($key,"samw")!==false AND $samw==0) {
-			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,html_entity_decode($templ_relation["marriage_exist"])); $samw=1;
-			$pdf->SetFont('Arial','',$font);
+		if(!$samw AND strpos($key,"marriage")!==false) {			// Living together
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			if (isset($templ_relation["marriage_exist"]))
+				$this->show_text($templ_relation["marriage_exist"],'bold','');
+			$samw=1;
 		}
-		if(strpos($key,"prew")!==false AND $prew==0) {
-			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,html_entity_decode($templ_relation["prew_exist"])); $prew=1;
-			$pdf->SetFont('Arial','',$font);
+		if(!$prew AND strpos($key,"prew")!==false) {
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			if (isset($templ_relation["prew_exist"]))
+				$this->show_text($templ_relation["prew_exist"],'bold','');
+			$prew=1;
 		}
-		if(strpos($key,"wedd")!==false AND $wedd==0) {
-			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,html_entity_decode($templ_relation["wedd_exist"])); $wedd=1;
-			$pdf->SetFont('Arial','',$font);
+		if(!$wedd AND strpos($key,"wedd")!==false) {
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_relation["wedd_exist"],'bold','');
+			$wedd=1;
 		}
-		if(strpos($key,"prec")!==false AND $prec==0) {
-			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,html_entity_decode($templ_relation["prec_exist"])); $prec=1;
-			$pdf->SetFont('Arial','',$font);
+		if(!$prec AND strpos($key,"prec")!==false) {
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_relation["prec_exist"],'bold','');
+			$prec=1;
 		}
-		if(strpos($key,"chur")!==false AND $chur==0) {
-			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,html_entity_decode($templ_relation["chur_exist"])); $chur=1;
-			$pdf->SetFont('Arial','',$font);
+		if(!$chur AND strpos($key,"chur")!==false) {
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_relation["chur_exist"],'bold','');
+			$chur=1;
 		}
-		if (isset($templ_relation["devr_exist"])){
-			if(strpos($key,"devr")!==false AND $devr==0) {
-				$pdf->SetFont('Arial','B',$font);
-				$pdf->Write(6,html_entity_decode($templ_relation["devr_exist"])); $devr=1;
-				$pdf->SetFont('Arial','',$font);
+		if(!$devr AND strpos($key,"devr")!==false) {
+			if (isset($templ_relation["devr_exist"])){
+				// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+				$this->show_text($templ_relation["devr_exist"],'bold','');
+				$devr=1;
 			}
 		}
 
 		// *** NEW 03-01-2021 added family address in PDF function ***
 		// *** Show text: "Residences (family): " ***
-		if(strpos($key,"flag_address")!==false) {
-			if ($templ_relation["flag_address"]==1)
-				$residence=__('Residences (family)').': ';
-			else
-				$residence=__('Residence (family)').': ';
-			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,$residence);
-			$pdf->SetFont('Arial','',$font);
-			//$address=1;
+		//if(strpos($key,"address_start")!==false) {
+		if(!$address AND strpos($key,"address")!==false) {
+
+// For now: just add newline.
+$pdf->Ln(4);
+
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_relation["address_start"],'bold','');
+			$address=1;
 			continue; // *** Skip rest of loop, otherwise wrong items are shown ***
 		}
 
-		// ** New jan. 2021 ***
-		//if (isset($templ_personing["flag_source"])){
-		if(strpos($key,"flag_source")!==false) {
-			if ($templ_relation["flag_source"]==1)
-				$source_text='. '.__('Sources for family').': ';
-			else
-				$source_text='. '.__('Source for family').': ';
-			$pdf->SetFont('Arial','B',$font);
-			$pdf->Write(6,$source_text);
-			$pdf->SetFont('Arial','',$font);
-			//$source=1;
+		// ** Source by family ***
+		if(strpos($key,"source_start")!==false) {
+		//if(!$sour AND strpos($key,"source")!==false) {  // Don't use this line. 
+			// Example: $pdf->show_text($standard_name,'bold',$person_kind);
+			$this->show_text($templ_relation["source_start"],'bold','');
+			$source=1;
 			continue; // *** Skip rest of loop, otherwise wrong items are shown ***
 		}
-
 
 		if(strpos($key,"text")!==false) {  $pdf->SetFont('Arial','I',$font-1); }
 		if(strpos($key,"witn")!==false) {  $pdf->SetFont('Times','',$font); }
@@ -452,6 +412,7 @@ function displayrel ($templ_relation,$ancestor_report) {
 	//$pdf_count_notes=0;
 	$pdf->Write(8,"\n");
 }
+
 
 //*******************************************************************
 //   09-01-2021 RENEWED function writename() to place the name of a person
@@ -471,7 +432,7 @@ function write_name($templ_name,$indentation,$length) {
 	foreach($templ_name as $key => $value) {
 		$value=html_entity_decode($value);
 
-		if(strpos($key,"name_sexe")!==false AND $sexe==0) {
+		if($sexe==0 AND strpos($key,"name_sexe")!==false) {
 			if($templ_name["name_sexe"]=="M") $pic="images/man.gif";
 				elseif ($templ_name["name_sexe"]=='F') $pic="images/woman.gif";
 				else $pic="images/unknown.gif";
@@ -490,7 +451,6 @@ function write_name($templ_name,$indentation,$length) {
 			}
 		}
 
-
 //$pdf->SetX($indentation);
 
 //$indent=$pdf->GetX();
@@ -499,7 +459,7 @@ function write_name($templ_name,$indentation,$length) {
 //$indent=$pdf->GetX();
 //$pdf->SetX($indentation);
 
-		if(strpos($key,"name_name")!==false AND $name==0) {
+		if($name==0 AND strpos($key,"name_name")!==false) {
 //$indentation=$pdf->GetX();
 //$pdf->SetX($indentation);
 			$pdf->SetFont('Arial','B',$size);
@@ -509,7 +469,7 @@ function write_name($templ_name,$indentation,$length) {
 			$name=1;
 		}
 
-		if(strpos($key,"name_text")!==false AND $name_text==0) {
+		if($name_text==0 AND strpos($key,"name_text")!==false) {
 //$indentation=$pdf->GetX();
 //$pdf->SetX($indentation);
 			$pdf->SetFont('Arial','I',$size);
@@ -519,7 +479,7 @@ function write_name($templ_name,$indentation,$length) {
 			$name_text=1;
 		}
 
-		if(strpos($key,"name_parents")!==false AND $name_parents==0) {
+		if($name_parents==0 AND strpos($key,"name_parents")!==false) {
 //$indentation=$pdf->GetX();
 //$pdf->SetX($indentation);
 			$pdf->SetFont('Arial','',$size);
@@ -538,10 +498,12 @@ function write_name($templ_name,$indentation,$length) {
 			//$pdf->SetTextColor(28,28,255);
 
 			$this->PDFShowSources($value);
+// *** If name-sexe-source is used, add a space ***
+$pdf->Write(8,' ');
 		}
 
 		// *** Show partner by child ***
-		if(strpos($key,"name_partner")!==false AND $name_partner==0) {
+		if($name_partner==0 AND strpos($key,"name_partner")!==false) {
 //$indentation=$pdf->GetX();
 //$pdf->SetX($indentation);
 			$pdf->SetFont('Arial','',$size);
@@ -558,7 +520,11 @@ function write_name($templ_name,$indentation,$length) {
 	//$pdf->SetLeftMargin(10);
 
 	// *** Resets line ***
-	if ($length!='child')
+//	if ($length!='child')
+//		$pdf->MultiCell(0,8,'',0,"L");
+
+	// NEW may 2021
+	if (isset($_POST['ancestor_report']))
 		$pdf->MultiCell(0,8,'',0,"L");
 
 	//unset($pdf_footnotes);
@@ -591,22 +557,24 @@ function pdf_ancestor_name($ancestor_reportnr,$sexe, $name) {
 	}
 
 	$pdf->SetFont('Arial','B',12);
-	$pdf->SetX(35);
-
+	//$pdf->SetX(35);
+	$pdf->SetLeftMargin(38);
+	/*
 	if($sexe=="M") {
 		$pdf->Image("images/man.gif",$pdf->GetX(),$pdf->GetY()+2,3.5,3.5);
 	}
 	elseif($sexe=="F") {
-
 		$pdf->Image("images/woman.gif",$pdf->GetX(),$pdf->GetY()+2,3.5,3.5);
 	}
 	else{
 		$pdf->Image("images/unknown.gif",$pdf->GetX(),$pdf->GetY()+2,3.5,3.5);
 	}
+	*/
+	// SOURCE by M/F/? icon.
 
-	$pdf->SetX($pdf->GetX()+3);
-	$pdf->MultiCell(0,8,$name,0,"L");
-	$pdf->SetFont('Arial','',12);
+	//$pdf->SetX($pdf->GetX()+3);
+	//$pdf->MultiCell(0,8,$name,0,"L");
+	//$pdf->SetFont('Arial','',12);
 }
 
 
@@ -614,6 +582,12 @@ function pdf_ancestor_name($ancestor_reportnr,$sexe, $name) {
 // *** REMARK: footnotes are shown in family.php script ***
 function PDFShowSources($value){
 	global $pdf,$font,$source_presentation,$user,$pdf_footnotes;
+
+// *** May 2021: moved these lines into this function ***
+	$source_presentation='title';
+	if (isset($_SESSION['save_source_presentation'])){
+		$source_presentation=$_SESSION['save_source_presentation'];
+	}
 
 	//$pdf->SetX($indentation);
 	$pdf->SetFont('Times','',$font);
@@ -638,8 +612,6 @@ function PDFShowSources($value){
 				$pdf->Write(6,$multitext[$i]);
 			}
 		}
-		// *** Add extra space ***
-		if ($value="name_sexe_source") $pdf->Write(6,' ');
 	}
 	elseif($user['group_sources']!='n')  {  // source title as link to list at end of doc
 		//TEST

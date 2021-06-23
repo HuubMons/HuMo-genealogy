@@ -47,7 +47,7 @@ echo '</th></tr><tr><td style="height:40px">';
 
 echo '<form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
 
-// *** RESTORE FROM HUMOGENEALOGY BACKUP ***
+// *** RESTORE FROM HUMO-GENEALOGY BACKUP ***
 if(isset($_POST['restore_server'])) {
 	// *** restore from backup on server made by HuMo-genealogy backup ***
 	echo '<span style="color:red">'.__('Starting to restore database. This may take some time. Please wait...').'</span><br>';

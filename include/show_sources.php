@@ -52,18 +52,14 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 					$pdf_source[safe_text_db($connectDb->connect_source_id)]=safe_text_db($connectDb->connect_source_id);
 				}
 
-				// *** Flag to show text "Source by person/Sources by person" ***
-				if ($connect_sub_kind=='person_source'){
-					if ($nr_sources>1)
-						$templ_person["flag_source"]=1;
-					else
-						$templ_person["flag_source"]=0;
+				// *** Show text "Source by person/Sources by person" ***
+				if ($nr_sources>1){
+					if ($connect_sub_kind=='person_source') $templ_person["source_start"]=__('Sources for person');
+					if ($connect_sub_kind=='family_source') $templ_relation["source_start"]=__('Sources for family');
 				}
-				if ($connect_sub_kind=='family_source'){
-					if ($nr_sources>1)
-						$templ_relation["flag_source"]=1;
-					else
-						$templ_relation["flag_source"]=0;
+				else{
+					if ($connect_sub_kind=='person_source') $templ_person["source_start"]=__('Source for person');
+					if ($connect_sub_kind=='family_source') $templ_relation["source_start"]=__('Source for family');
 				}
 
 				$source_check=false;
@@ -133,7 +129,8 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 				// *** Jan. 2021: No shared source. Footnotes can be combined! ***
 				//if ($sourceDb->source_shared=='')
-				if ($sourceDb->source_title=='')
+				//if ($sourceDb->source_title=='')
+				if (isset($sourceDb->source_title) AND $sourceDb->source_title=='')
 					$combiner_check=$connectDb->connect_role.'_'.$connectDb->connect_page.'_'.$connectDb->connect_date.' '.$connectDb->connect_place.' '.$sourceDb->source_text;
 
 				$check=false;
@@ -214,14 +211,12 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 					}
 
 					$text.= ': ';
-
-					if ($sourceDb->source_title){ $text.= ' '.trim($sourceDb->source_title); }
-						// *** Standard source without title ***
-						//else $text.=' '.$sourceDb->source_text;
-
-					//if ($sourceDb->source_text AND $sourceDb->source_shared!='1')
-					if ($sourceDb->source_text AND $sourceDb->source_title!='')
+					if ($sourceDb->source_title){
+						$text.= ' '.trim($sourceDb->source_title);
+					}
+					elseif ($sourceDb->source_text){
 						$text.=' '.process_text($sourceDb->source_text);
+					}
 
 					// *** User group option to only show title of source ***
 					if ($user['group_sources']!='t'){
@@ -288,15 +283,12 @@ function show_sources_footnotes(){
 						$url=$uri_path.'source.php?tree_id='.$tree_id.'&amp;id='.$sourceDb->source_gedcomnr;
 					}
 					$text.=' <a href="'.$url.'">'.__('source').': ';
+						if ($sourceDb->source_title){ $text.=' '.trim($sourceDb->source_title); }
+							// *** Standard source without title ***
+							else $text.=' '.$sourceDb->source_text;
 
-					if ($sourceDb->source_title){ $text.=' '.trim($sourceDb->source_title); }
-						// *** Standard source without title ***
-						else $text.=' '.$sourceDb->source_text;
-
-					//if ($sourceDb->source_text)
-					//	$text.=' '.process_text($sourceDb->source_text);
-
-
+						//if ($sourceDb->source_text)
+						//	$text.=' '.process_text($sourceDb->source_text);
 					$text.='</a>';
 				}
 				else{
@@ -304,7 +296,7 @@ function show_sources_footnotes(){
 						// *** Standard source without title ***
 						//else $text.=' '.$sourceDb->source_text;
 
-					if ($sourceDb->source_text)
+					if ($user['group_sources']!='t' AND $sourceDb->source_text)
 						$text.=' '.process_text($sourceDb->source_text);
 
 					// *** User group option to only show title of source ***

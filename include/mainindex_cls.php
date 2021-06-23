@@ -323,7 +323,7 @@ function owner(){
 
 //*** Most frequent names ***
 function last_names($columns,$rows){
-	global $dbh, $tree_id, $language, $user, $humo_option, $uri_path, $maxcols, $text;
+	global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $maxcols, $text;
 
 	// MAIN SETTINGS
 	$maxcols = 2; // number of name&nr colums in table. For example 3 means 3x name col + nr col
@@ -380,27 +380,73 @@ function last_names($columns,$rows){
 
 	if (!function_exists('last_names')) {
 		function last_names($max) {
-			global $dbh, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
-			/*
-			$personqry="SELECT pers_lastname, pers_prefix,
-				CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
-				FROM humo_persons
-				WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
-				GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,".$max;
-			*/
+			global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
 
-			// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-			$personqry="SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
-				FROM humo_persons
-				WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
-				GROUP BY pers_lastname, pers_prefix ORDER BY count_last_names DESC LIMIT 0,".$max;
+			// *** Read cache (only used in large family trees) ***
+			$cache=''; $cache_count=0; $cache_check=false; // *** Use cache for large family trees ***
+			$cacheqry = $dbh->query("SELECT * FROM humo_settings
+				WHERE setting_variable='cache_surnames' AND setting_tree_id='".$tree_id."'");
+			$cacheDb=$cacheqry->fetch(PDO::FETCH_OBJ);
+			if ($cacheDb){
+				$cache_array=explode("|",$cacheDb->setting_value);
+				foreach ($cache_array as $cache_line) {
+					$cacheDb = json_decode(unserialize($cache_line));
 
-			$person=$dbh->query($personqry);
-			while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
-				$freq_last_names[]=$personDb->pers_lastname;
-				$freq_pers_prefix[]=$personDb->pers_prefix;
-				$freq_count_last_names[]=$personDb->count_last_names;
+					$freq_last_names[]=$cacheDb->pers_lastname;
+					$freq_pers_prefix[]=$cacheDb->pers_prefix;
+					$freq_count_last_names[]=$cacheDb->count_last_names;
+
+					$cache_check=true;
+					$test_time=time()-7200; // *** 86400 = 1 day, 7200 = 2 hours ***
+					if($cacheDb->time < $test_time) $cache_check=false;
+				}
 			}
+
+			if ($cache_check==false){
+				//echo 'NO CACHE';
+
+				/*
+				$personqry="SELECT pers_lastname, pers_prefix,
+					CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
+					FROM humo_persons
+					WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
+					GROUP BY long_name ORDER BY count_last_names DESC LIMIT 0,".$max;
+				*/
+				// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
+				$personqry="SELECT pers_lastname, pers_prefix, count(pers_lastname) as count_last_names
+					FROM humo_persons
+					WHERE pers_tree_id='".$tree_id."' AND pers_lastname NOT LIKE ''
+					GROUP BY pers_lastname, pers_prefix ORDER BY count_last_names DESC LIMIT 0,".$max;
+				$person=$dbh->query($personqry);
+
+				while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
+					// *** Cache: only use cache if there are > 5.000 persons in database ***
+					if (isset($dataDb->tree_persons) AND $dataDb->tree_persons>5000){
+						$personDb->time=time(); // *** Add linux time to array ***
+						if ($cache) $cache.='|';
+						$cache.=serialize(json_encode($personDb));
+						$cache_count++;
+					}
+
+					$freq_last_names[]=$personDb->pers_lastname;
+					$freq_pers_prefix[]=$personDb->pers_prefix;
+					$freq_count_last_names[]=$personDb->count_last_names;
+				}
+
+			} // *** End of cache ***
+
+			// *** Add or renew cache in database (only if cache_count is valid) ***
+			if ($cache AND ($cache_count==$max)){
+				$sql = "DELETE FROM humo_settings
+					WHERE setting_variable='cache_surnames' AND setting_tree_id='".safe_text_db($tree_id)."'";
+				$result = $dbh->query($sql);
+				$sql = "INSERT INTO humo_settings SET
+					setting_variable='cache_surnames', setting_value='".safe_text_db($cache)."',
+					setting_tree_id='".safe_text_db($tree_id)."'";
+				$result = $dbh->query($sql);
+			}
+
+
 			$row=0;
 			if ($freq_last_names) $row = round(count($freq_last_names)/$maxcols);
 
@@ -416,7 +462,7 @@ function last_names($columns,$rows){
 				}
 				$text.='</tr>';
 			}
-			return $freq_count_last_names[0];
+			if (isset($freq_count_last_names)) return $freq_count_last_names[0];
 		}
 	}
 
@@ -574,8 +620,14 @@ function random_photo(){
 			$man_cls->construct($personmnDb);
 			$man_privacy=$man_cls->privacy;
 			if ($man_cls->privacy==''){
-				$text.='<div style="text-align: center;"><img src="'.$tree_pict_path.$picname.'" width="200 px"
-					style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"><br>';
+				$text.='<div style="text-align: center;">';
+
+				//$text.='<img src="'.$tree_pict_path.$picname.'" width="200 px"
+				//	style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"><br>';
+
+				// *** Show picture using GLightbox ***
+				$text.='<a href="'.$tree_pict_path.$picname.'" class="glightbox" data-glightbox="description: '.str_replace("&", "&amp;", $picqryDb->event_text).'"><img src="'.$tree_pict_path.$picname.'" width="200 px"
+					style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
 
 				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
 				$url=$man_cls->person_url($personmnDb->pers_tree_id,$personmnDb->pers_indexnr,$personmnDb->pers_gedcomnumber);
@@ -646,34 +698,82 @@ function extra_links(){
 
 // *** Alphabet line ***
 function alphabet(){
-	global $dbh, $tree_id, $language, $user, $humo_option, $uri_path;
+	global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path;
 	$text='';
 
 	//*** Find first first_character of last name ***
 	$text.=__('Surnames Index:')."<br>\n";
-	$personqry="SELECT UPPER(LEFT(pers_lastname,1)) as first_character FROM humo_persons
-		WHERE pers_tree_id='".$tree_id."' GROUP BY first_character ORDER BY first_character";
 
-	// *** If "van Mons" is selected, also check pers_prefix ***
-	if ($user['group_kindindex']=="j"){
-		$personqry="SELECT UPPER(LEFT(CONCAT(pers_prefix,pers_lastname),1)) as first_character FROM humo_persons
-			WHERE pers_tree_id='".$tree_id."' GROUP BY first_character ORDER BY first_character";
+	// *** Read cache (only used in large family trees) ***
+	$cache=''; $cache_count=0; $cache_check=false; // *** Use cache for large family trees ***
+	$cacheqry = $dbh->query("SELECT * FROM humo_settings
+		WHERE setting_variable='cache_alphabet' AND setting_tree_id='".$tree_id."'");
+	$cacheDb=$cacheqry->fetch(PDO::FETCH_OBJ);
+	if ($cacheDb){
+		$cache_array=explode("|",$cacheDb->setting_value);
+		foreach ($cache_array as $cache_line) {
+			$cacheDb = json_decode(unserialize($cache_line));
+
+			$first_character[]=$cacheDb->first_character;
+
+			$cache_check=true;
+			$test_time=time()-10800; // *** 86400 = 1 day, 7200 = 2 hours, 10800 = 3 hours ***
+			if($cacheDb->time < $test_time) $cache_check=false;
+		}
 	}
-	@$person=$dbh->query($personqry);
-	while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
+
+	if ($cache_check==false){
+		$personqry="SELECT UPPER(LEFT(pers_lastname,1)) as first_character FROM humo_persons
+			WHERE pers_tree_id='".$tree_id."' AND LEFT(CONCAT(pers_prefix,pers_lastname),1)!=''
+			GROUP BY first_character ORDER BY first_character";
+		// *** If "van Mons" is selected, also check pers_prefix ***
+		if ($user['group_kindindex']=="j"){
+			$personqry="SELECT UPPER(LEFT(CONCAT(pers_prefix,pers_lastname),1)) as first_character FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."' AND LEFT(CONCAT(pers_prefix,pers_lastname),1)!=''
+				GROUP BY first_character ORDER BY first_character";
+		}
+
+		@$person=$dbh->query($personqry);
+		$count_first_character=$person->rowCount();
+		while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
+			// *** Cache: only use cache if there are > 5.000 persons in database ***
+			if (isset($dataDb->tree_persons) AND $dataDb->tree_persons>5000){
+				$personDb->time=time(); // *** Add linux time to array ***
+				if ($cache) $cache.='|';
+				$cache.=serialize(json_encode($personDb));
+				$cache_count++;
+			}
+
+			$first_character[]=$personDb->first_character;
+		}
+	}
+
+	// *** Add or renew cache in database (only if cache_count is valid) ***
+	if ($cache AND ($cache_count==$count_first_character)){
+		$sql = "DELETE FROM humo_settings
+			WHERE setting_variable='cache_alphabet' AND setting_tree_id='".safe_text_db($tree_id)."'";
+		$result = $dbh->query($sql);
+		$sql = "INSERT INTO humo_settings SET
+			setting_variable='cache_alphabet', setting_value='".safe_text_db($cache)."',
+			setting_tree_id='".safe_text_db($tree_id)."'";
+		$result = $dbh->query($sql);
+	}
+
+	// *** Show character line ***
+	for ($i=0; $i<count($first_character); $i++){
 		if (CMS_SPECIFIC=='Joomla'){
 			$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id='.$tree_id.
-			'&amp;last_name='.$personDb->first_character;
+			'&amp;last_name='.$first_character[$i];
 		}
 		elseif ($humo_option["url_rewrite"]=="j"){
 			// *** url_rewrite ***
 			// *** $uri_path is gemaakt in header.php ***
-			$path_tmp=$uri_path.'list_names/'.$tree_id.'/'.$personDb->first_character.'/';
+			$path_tmp=$uri_path.'list_names/'.$tree_id.'/'.$first_character[$i].'/';
 		}
 		else{
-			$path_tmp=CMS_ROOTPATH.'list_names.php?tree_id='.$tree_id.'&amp;last_name='.$personDb->first_character;
+			$path_tmp=CMS_ROOTPATH.'list_names.php?tree_id='.$tree_id.'&amp;last_name='.$first_character[$i];
 		}
-		$text.=' <a href="'.$path_tmp.'">'.$personDb->first_character.'</a>';
+		$text.=' <a href="'.$path_tmp.'">'.$first_character[$i].'</a>';
 	}
 
 	//if (CMS_SPECIFIC=='Joomla'){
