@@ -314,9 +314,10 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 
 					$text.='<input type="hidden" name="source_id['.$connectDb->connect_id.']" value="'.$sourceDb->source_id.'">';
 
-					$checked=''; if ($sourceDb->source_shared) $checked=' checked';
-					$text.='<input type="checkbox" name="source_shared['.$connectDb->connect_id.']" value="no_data"'.$checked.'> '.__('Shared source');
+					//$checked=''; if ($sourceDb->source_shared) $checked=' checked';
+					//$text.='<input type="checkbox" name="source_shared['.$connectDb->connect_id.']" value="no_data"'.$checked.'> '.__('Shared source');
 
+					/*
 					// *** HELP POPUP for source ***
 					$rtlmarker="ltr";
 					$text.='&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
@@ -330,6 +331,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 							$text.='<b>'.__('A shared source can be connected to multiple persons, relations or other items.').'</b><br>';
 						$text.='</div>';
 					$text.='</div><br>';
+					*/
 
 					$text.='<input type="text" name="source_title['.$connectDb->connect_id.']" value="'.htmlspecialchars($sourceDb->source_title).'" size="60" placeholder="'.__('Title').'"><br>';
 
@@ -347,18 +349,39 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 
 				}
 				else{
+
+					$source_search=''; if (isset($_POST['source_search'])){ $source_search=safe_text_db($_POST['source_search']); }
+					$text.='<input type="text" class="fonts" name="source_search" value="'.$source_search.'" size="20" placeholder="'.__('Search existing source').'">';
+					$text.=' <input class="fonts" type="submit" value="'.__('Search').'">';
+
 					// *** Source: pull-down menu ***
-					$source_qry=$dbh->query("SELECT * FROM humo_sources
-						WHERE source_tree_id='".safe_text_db($tree_id)."' AND source_shared='1' ORDER BY source_title");
+					//$source_qry=$dbh->query("SELECT * FROM humo_sources
+					//	WHERE source_tree_id='".safe_text_db($tree_id)."' AND source_shared='1' ORDER BY source_title");
+					$qry="SELECT * FROM humo_sources
+						WHERE source_tree_id='".safe_text_db($tree_id)."'";
+					if (isset($_POST['source_search'])){
+						$qry.=" AND ( source_title LIKE '%".safe_text_db($_POST['source_search'])."%' OR (source_title='' AND source_text LIKE '%".safe_text_db($source_search)."%') )";
+					}
+					$qry.=" ORDER BY source_title";
+					$source_qry=$dbh->query($qry);
+
 					$text.='<select size="1" name="connect_source_id['.$connectDb->connect_id.']" style="width: 300px">';
-					$text.='<option value="">'.__('Select shared source').':</option>';
+					//$text.='<option value="">'.__('Select shared source').':</option>';
+					$text.='<option value="">'.__('Select existing source').':</option>';
 					while ($sourceDb=$source_qry->fetch(PDO::FETCH_OBJ)){
 						$selected='';
 						if($connectDb->connect_source_id != '') {
 							if ($sourceDb->source_gedcomnr==$connectDb->connect_source_id){ $selected=' SELECTED'; }
 						}
-						$text.='<option value="'.@$sourceDb->source_gedcomnr.'"'.$selected.'>'.
-							@$sourceDb->source_title.' ['.@$sourceDb->source_gedcomnr.']</option>'."\n";
+						$text.='<option value="'.@$sourceDb->source_gedcomnr.'"'.$selected.'>';
+							//@$sourceDb->source_title.' ['.@$sourceDb->source_gedcomnr.']</option>'."\n";
+							if ($sourceDb->source_title){
+								$text.=$sourceDb->source_title;
+							} else {
+								$text.=substr($sourceDb->source_text,0,40);
+								if (strlen($sourceDb->source_text)>40) $text.='...';
+							}
+							$text.=' ['.@$sourceDb->source_gedcomnr.']</option>'."\n";
 					}
 					$text.='</select>';
 

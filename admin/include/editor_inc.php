@@ -340,7 +340,7 @@ if (isset($_POST['person_change'])){
 			if($_POST["even_brit_date"]=='' AND $_POST["even_brit_place"]=='' AND $_POST["even_brit_text"]=='') {
 				$sql = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom='_BRTM'  AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."' AND event_kind='event' ";
 				$result=$dbh->query($sql);
-			}		
+			}
 			else {
 				//$britDb=$result->fetch(PDO::FETCH_OBJ);	echo $britDb->event_gedcom."---".$britDb->event_connect_id;
 				//WHERE event_tree_id='".$tree_id."' AND  event_gedcom='_BRTM' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'";
@@ -1512,18 +1512,20 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 			print "<FONT COLOR=red>$fault</FONT>";
 		}
 	}
-	elseif ( $_FILES['photo_upload']['type']=="audio/mpeg" || $_FILES['photo_upload']['type']=="audio/mpeg3" || 
-		$_FILES['photo_upload']['type']=="audio/x-mpeg" || $_FILES['photo_upload']['type']=="audio/x-mpeg3" || 
-		$_FILES['photo_upload']['type']=="audio/mpg" || $_FILES['photo_upload']['type']=="audio/mp3" || 
-		$_FILES['photo_upload']['type']=="audio/mid" || $_FILES['photo_upload']['type']=="audio/midi" || 
-		$_FILES['photo_upload']['type']=="audio/x-midi" || $_FILES['photo_upload']['type']=="audio/x-ms-wma" || 
-		$_FILES['photo_upload']['type']=="audio/wav" || $_FILES['photo_upload']['type']=="audio/x-wav" || 
-		$_FILES['photo_upload']['type']=="audio/x-pn-realaudio" || $_FILES['photo_upload']['type']=="audio/x-realaudio" || 
-		$_FILES['photo_upload']['type']=="application/pdf" || $_FILES['photo_upload']['type']=="application/msword" || 
+	elseif ( $_FILES['photo_upload']['type']=="audio/mpeg" || $_FILES['photo_upload']['type']=="audio/mpeg3" ||
+		$_FILES['photo_upload']['type']=="audio/x-mpeg" || $_FILES['photo_upload']['type']=="audio/x-mpeg3" ||
+		$_FILES['photo_upload']['type']=="audio/mpg" || $_FILES['photo_upload']['type']=="audio/mp3" ||
+		$_FILES['photo_upload']['type']=="audio/mid" || $_FILES['photo_upload']['type']=="audio/midi" ||
+		$_FILES['photo_upload']['type']=="audio/x-midi" || $_FILES['photo_upload']['type']=="audio/x-ms-wma" ||
+		$_FILES['photo_upload']['type']=="audio/wav" || $_FILES['photo_upload']['type']=="audio/x-wav" ||
+		$_FILES['photo_upload']['type']=="audio/x-pn-realaudio" || $_FILES['photo_upload']['type']=="audio/x-realaudio" ||
+		$_FILES['photo_upload']['type']=="application/pdf" || $_FILES['photo_upload']['type']=="application/msword" ||
 		$_FILES['photo_upload']['type']=="application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
 		$_FILES['photo_upload']['type']=="video/quicktime" || $_FILES['photo_upload']['type']=="video/x-ms-wmv" ||
-		$_FILES['photo_upload']['type']=="video/avi" || $_FILES['photo_upload']['type']=="video/x-msvideo" ||   
-		$_FILES['photo_upload']['type']=="video/msvideo" || $_FILES['photo_upload']['type']=="video/mpeg" 	){
+		$_FILES['photo_upload']['type']=="video/avi" || $_FILES['photo_upload']['type']=="video/x-msvideo" ||
+		$_FILES['photo_upload']['type']=="video/msvideo" || $_FILES['photo_upload']['type']=="video/mpeg" ||
+		$_FILES['photo_upload']['type']=="video/msvideo" || $_FILES['photo_upload']['type']=="video/mp4"
+		){
 		$fault="";
 		// 49MB
 		if($_FILES['photo_upload']['size']>49000000){ $fault=__('Media too large'); }
@@ -2114,10 +2116,12 @@ if (isset($_POST['connect_change'])){
 		if (isset($_POST['source_title'][$key])){
 			$username = $_SESSION['user_name_admin'];
 			//source_date='".safe_text_db($_POST['source_date'][$key])."',
-			$source_shared=''; if (isset($_POST['source_shared'][$key])) $source_shared='1';
+
+			//$source_shared=''; if (isset($_POST['source_shared'][$key])) $source_shared='1';
+			//source_shared='".$source_shared."',
+
 			$sql="UPDATE humo_sources SET
 			source_title='".$editor_cls->text_process($_POST['source_title'][$key])."',
-			source_shared='".$source_shared."',
 			source_text='".$editor_cls->text_process($_POST['source_text'][$key],true)."',
 			source_refn='".$editor_cls->text_process($_POST['source_refn'][$key])."',
 			source_date='".$editor_cls->date_process("source_date",$key)."',
@@ -2198,6 +2202,7 @@ if (isset($_POST['connect_drop2'])){
 	//echo $connect_kind.' '.$connect_sub_kind.' '.$connect_connect_id.'!!';
 
 	// *** Remove (NON-SHARED) source by all connections ***
+	/*
 	if ($eventDb->connect_source_id){
 		//DOESN'T WORK
 		//$sourceDb = $db_functions->get_source($eventDb->connect_source_id);
@@ -2213,6 +2218,7 @@ if (isset($_POST['connect_drop2'])){
 			$result=$dbh->query($sql);
 		}
 	}
+	*/
 
 	// *** Remove NON SHARED addresses ***
 	if ($connect_sub_kind=='person_address' OR $connect_sub_kind=='family_address'){
@@ -2321,10 +2327,10 @@ if (isset($_POST['source_add'])){
 		$new_gedcomnumber='S'.(substr($new_nr->source_gedcomnr,1)+1);
 	}
 
+	//source_shared='1',
 	$sql="INSERT INTO humo_sources SET
 		source_tree_id='".$tree_id."',
 		source_gedcomnr='".$new_gedcomnumber."',
-		source_shared='1',
 		source_status='".$editor_cls->text_process($_POST['source_status'])."',
 		source_title='".$editor_cls->text_process($_POST['source_title'])."',
 		source_date='".safe_text_db($_POST['source_date'])."',
@@ -2551,7 +2557,7 @@ if (isset($_POST['change_address_id'])){
 // *** Remove all sources from an item ***
 function remove_sources($tree_id,$connect_sub_kind,$connect_connect_id){
 	global $dbh;
-
+	/*
 	// *** Remove (NON-SHARED) source by all connections ***
 	$connect_source_sql="SELECT * FROM humo_connections LEFT JOIN humo_sources
 		ON source_gedcomnr=connect_source_id
@@ -2573,6 +2579,7 @@ function remove_sources($tree_id,$connect_sub_kind,$connect_connect_id){
 		//echo $sql.'<br>';
 		$result=$dbh->query($sql);
 	}
+	*/
 }
 
 ?>

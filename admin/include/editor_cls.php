@@ -99,8 +99,13 @@ function date_process($process_name, $multiple_rows=''){
 	$process_name_prefix=$process_name.'_prefix'; 
 
 	// *** Just for sure: remove spaces at beginning and end of date ***
-	if ($multiple_rows!='') { $post_date = trim($_POST[$process_name][$multiple_rows]); $pref = $_POST["$process_name_prefix"][$multiple_rows]; }
-	else { $post_date = trim($_POST[$process_name]); $pref = $_POST["$process_name_prefix"]; }
+	if ($multiple_rows!='') {
+		$post_date = trim($_POST[$process_name][$multiple_rows]); $pref = $_POST["$process_name_prefix"][$multiple_rows];
+	}
+	else {
+//echo $_POST[$process_name].'?';
+		$post_date = trim($_POST[$process_name]); $pref = $_POST["$process_name_prefix"];
+	}
 	$this_date="";
 
 	$post_date=str_replace(__(' and '),' AND ', $post_date); // *** Use selected language for text "and" ***
@@ -156,7 +161,7 @@ function valid_date($date) {
 	if(strpos($date,",")!==false) $date = str_replace(",", "-", $date);
 
 	// Use your own language for input, FULL MONTH NAMES
-	$search  = array(__('Januari'), __('Februari'), __('March'), __('April'), __('May'), __('June'), __('July'), __('August'), __('September'), __('October'), __('November'), __('December'));
+	$search  = array(__('January'), __('February'), __('March'), __('April'), __('May'), __('June'), __('July'), __('August'), __('September'), __('October'), __('November'), __('December'));
 	$replace = array('JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC');
 	$date=str_replace($search, $replace, ucwords($date));
 

@@ -216,7 +216,7 @@ function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$sta
 	//$connect_sql = $db_functions->get_connections_connect_id('person','person_address',$person->pers_gedcomnumber);
 	//foreach ($connect_sql as $connectDb){
 
-		if ($connectDb->source_shared=='1'){
+		//if ($connectDb->source_shared=='1'){
 			// *** Source contains title, can be connected to multiple items ***
 			// 0 @S2@ SOUR
 			// 1 ROLE ROL
@@ -234,7 +234,8 @@ function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$sta
 				$buffer.=($start_number+1)." DATA\r\n";
 				$buffer.=($start_number+2).' TEXT '.process_text($start_number+3,$connectDb->connect_text);
 			}
-		}
+		//}
+		/*
 		else{
 			//$buffer.=$start_number." SOUR\r\n";
 			$buffer.=$start_number." SOUR ".process_text($start_number+1,$connectDb->source_text);
@@ -250,6 +251,7 @@ function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$sta
 			if ($connectDb->source_date){ $buffer.=($start_number+1).' DATE '.$connectDb->source_date."\r\n"; }
 			if ($connectDb->source_place){ $buffer.=($start_number+1).' PLAC '.$connectDb->source_place."\r\n"; }
 		}
+		*/
 	}
 }
 
@@ -1516,9 +1518,11 @@ if($_POST['part_tree']=='part') {  // only include sources that are used by the 
 
 if ($gedcom_sources=='yes'){
 	// *** Only generate seperated sources if source is shared ***
+	//$family_qry=$dbh->query("SELECT * FROM humo_sources
+	//	WHERE source_tree_id='".$tree_id."'
+	//	AND source_shared='1'");
 	$family_qry=$dbh->query("SELECT * FROM humo_sources
-		WHERE source_tree_id='".$tree_id."'
-		AND source_shared='1'");
+		WHERE source_tree_id='".$tree_id."'");
 	while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
 		if($_POST['part_tree']=='part'  AND !in_array($family->source_gedcomnr,$source_array)) { continue; }
 

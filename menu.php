@@ -500,7 +500,8 @@ echo '<ul class="humo_menu_item">';
 					//if ($user['group_sources']=='j'){
 					if ($user['group_sources']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check if there are sources in the database ***
-						$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'AND source_shared='1'");
+						//$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'AND source_shared='1'");
+						$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'");
 						@$sourceDb=$source_qry->rowCount();
 						if ($sourceDb>0){
 							$select_menu=''; if ($menu_choice=='sources'){ $select_menu=' id="current"'; }

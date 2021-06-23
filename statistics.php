@@ -659,7 +659,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			$maxcols = $_POST['maxcols'];
 		}
 
-		function tablerow($nr,$lastcol=false) {    
+		function tablerow($nr,$lastcol=false) {
 			// displays one set of name & nr column items in the row
 			// $nr is the array number of the name set created in function last_names
 			// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
@@ -671,11 +671,11 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 				$path_tmp=CMS_ROOTPATH.'list.php?tree_id='.$tree_id;
 			}
 			echo '<td class="namelst">';
-			if(isset($freq_last_names[$nr])) { 
+			if(isset($freq_last_names[$nr])) {
 				$top_pers_lastname=''; 	if ($freq_pers_prefix[$nr]){ $top_pers_lastname=str_replace("_", " ", $freq_pers_prefix[$nr]); }
 				$top_pers_lastname.=$freq_last_names[$nr];
 				if ($user['group_kindindex']=="j"){
-					echo '<a href="'.$path_tmp.'&amp;pers_lastname='.str_replace("_", " ", $freq_pers_prefix[$nr]).str_replace("&", "|", $freq_last_names[$nr]); 
+					echo '<a href="'.$path_tmp.'&amp;pers_lastname='.str_replace("_", " ", $freq_pers_prefix[$nr]).str_replace("&", "|", $freq_last_names[$nr]);
 				}
 				else{
 					$top_pers_lastname=$freq_last_names[$nr];
@@ -808,7 +808,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			$f_first_names = array();
 
 			// men
-			$personqry="SELECT pers_firstname FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='M' AND pers_firstname NOT LIKE ''";  
+			$personqry="SELECT pers_firstname FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_sexe='M' AND pers_firstname NOT LIKE ''";
 
 			$person=$dbh->query($personqry);
 			while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
