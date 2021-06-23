@@ -183,33 +183,6 @@ if (isset($_POST["tree_id"])){
 	//unset ($pers_gedcomnumber);
 	$pers_gedcomnumber='';
 	unset ($_SESSION['admin_pers_gedcomnumber']);
-
-	// *** Code in this part is copied in other part of the script. Maybe not necesarry here anymore... ***
-	/*
-	unset ($_SESSION['admin_pers_gedcomnumber']);
-
-	// *** Select first person to show ***
-	$new_nr_qry = "SELECT * FROM humo_settings
-		WHERE setting_variable='admin_favourite'
-		AND setting_tree_id='".safe_text_db($tree_id)."' LIMIT 0,1";
-	$new_nr_result = $dbh->query($new_nr_qry);
-
-	//if (isset($new_nr->setting_value)){
-	if ($new_nr_result AND $new_nr_result->rowCount()){
-		@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-		$pers_gedcomnumber=$new_nr->setting_value;
-		$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
-	}
-	else{
-		$new_nr_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".safe_text_db($tree_id)."' LIMIT 0,1";
-		$new_nr_result = $dbh->query($new_nr_qry);
-		@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
-		if (isset($new_nr->pers_gedcomnumber)){
-			$pers_gedcomnumber=$new_nr->pers_gedcomnumber;
-			$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
-		}
-	}
-	*/
 }
 
 // *** Editor icon for admin and editor: select family tree ***
@@ -852,7 +825,7 @@ if (isset($tree_id)){
 				echo __('Person').':';
 				echo ' <input class="fonts" type="text" name="search_quicksearch" placeholder="'.__('Name').'" value="'.$search_quicksearch.'" size="15"> ';
 				echo __('or ID:');
-				echo ' <input class="fonts" type="text" name="search_id" value="'.$search_id.'" size="8">';
+				echo ' <input class="fonts" type="text" name="search_id" value="'.$search_id.'" size="17" placeholder="'.__('GEDCOM number (ID)').'">';
 				echo ' <input class="fonts" type="submit" value="'.__('Search').'">';
 			echo "</form>\n";
 			unset($person_result);
@@ -888,7 +861,7 @@ if (isset($tree_id)){
 				echo '<b>'.__('Found:').'</b> ';
 				echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
-				print '<select size="1" name="person" style="width: 200px">';
+				print '<select size="1" name="person" style="width: 200px" onChange="this.form.submit();">';
 				$counter=0;
 				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 					$selected='';
@@ -911,7 +884,7 @@ if (isset($tree_id)){
 						$editor_cls->show_selected_person($person).'</option>';
 				}
 				echo '</select>';
-				echo ' <input type="Submit" name="dummy1" value="'.__('Select').'">';
+				//echo ' <input type="Submit" name="dummy1" value="'.__('Select').'">';
 				echo '</form>';
 				if($idsearch==true OR $person_result->rowCount()==0) { echo '</span>'; }
 			}
@@ -937,7 +910,6 @@ if (isset($tree_id)){
 
 					echo '<img src="../images/search.png" border="0"> '.__('= click to open selection popup screen.').'<br>';
 					echo ' <b>[+]</b> '.__('= click to open extended editor items.');
-
 				echo '</div>';
 			echo '</div>';
 
@@ -1287,7 +1259,7 @@ if (isset($pers_gedcomnumber)){
 			if (isset($_GET['marriage_nr'])){ $marriage=$_GET['marriage_nr']; }
 		}
 
-		// *** Add child to family, 1st option: select a child from a pull-down list ***
+		// *** Add child to family, 1st option: select an existing person as a child ***
 		if (isset($_GET['child_connect'])){
 
 			if (isset($_GET['family_id'])){
@@ -1316,7 +1288,7 @@ if (isset($pers_gedcomnumber)){
 					}
 					echo '<input type="hidden" name="family_id" value="'.$_GET['family_id'].'">';
 
-					echo __('Child').': <input class="fonts" type="text" name="child_connect2" value="" size="5">';
+					echo __('Child').': <input class="fonts" type="text" name="child_connect2" value="" size="17" placeholder="'.__('GEDCOM number (ID)').'">';
 
 					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 					echo ' <input type="Submit" name="dummy4" value="'.__('Select child').'">';
@@ -1423,14 +1395,12 @@ if (isset($pers_gedcomnumber)){
 
 			// *** Open Archives ***
 			echo '<tr><th class="table_header_large" colspan="4">'.__('Open Archives');
-				echo '&nbsp;&nbsp;&nbsp;&nbsp;<select size="1" name="admin_online_search">';
+				echo '&nbsp;&nbsp;&nbsp;&nbsp;<select size="1" name="admin_online_search" onChange="this.form.submit();">';
 				echo '<option value="y">'.__('Online search enabled').'</option>';
 				$selected=''; if ($humo_option["admin_online_search"]!='y') $selected=' SELECTED';
 				echo '<option value="n"'.$selected.'>'.__('Online search disabled').'</option>';
 				echo "</select>";
-				echo ' <input type="Submit" name="online_search" value="'.__('Select').'">';
-
-
+				//echo ' <input type="Submit" name="online_search" value="'.__('Select').'">';
 
 				// *** Show archive list ***
 				// *** Change CSS links ***
@@ -1645,7 +1615,7 @@ if (isset($pers_gedcomnumber)){
 				echo __('Add new parents (N.N. & N.N.)').'</a></b><br>';
 				echo __('Or select an existing family as parents:').' ';
 
-				echo '<input class="fonts" type="text" name="add_parents" placeholder="'.__('gedcomnumber (ID)').'" value="" size="20">';
+				echo '<input class="fonts" type="text" name="add_parents" placeholder="'.__('GEDCOM number (ID)').'" value="" size="20">';
 
 				//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select&place_item=birth","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 				echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
@@ -1839,7 +1809,25 @@ if (isset($pers_gedcomnumber)){
 		echo '<tr class="humo_color"><td><a href="#" onclick="hideShow(2);"><span id="hideshowlink2">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('born')).'</td>';
 
-		echo '<td style="border-right:0px;">'.__('date').'</td>';
+		echo '<td style="border-right:0px;">'.__('date');
+
+			// HELP POPUP
+			//echo '<div class="fonts '.$rtlmarker.'sddm" style="border:1px solid #d8d8d8; margin-top:2px; display:inline;">';
+			echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+				echo '<a href="#" style="display:inline" ';
+				//echo 'onmouseover="mopen(event,\'help_date\',10,400)"';
+				echo 'onmouseover="mopen(event,\'help_date\')"';
+				echo 'onmouseout="mclosetime()">';
+				echo '<img src="../images/help.png" height="16" width="16">';
+				echo '</a>';
+				//echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_date" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+					echo __('Examples of date entries, using English month abbreviations: jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec or month numbers:').'<br>';
+					echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, between 1986 and 1987').', 13 oct 1100 BC.</b><br>';
+				echo '</div>';
+			echo '</div>';
+
+		echo '</td>';
 		echo '<td style="border-left:0px;">'.$editor_cls->date_show($pers_birth_date,'pers_birth_date','','',$pers_birth_date_hebnight,'pers_birth_date_hebnight').' ';
 		echo __('place').' <input type="text" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
 
@@ -2681,7 +2669,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo ' <form method="POST" style="display: inline;" action="'.$phpself.'#marriage" name="form4" id="form4">';
 						echo '<input type="hidden" name="page" value="'.$page.'">';
 
-						echo __('Or add relation with existing partner:').' <input class="fonts" type="text" name="relation_add2" value="" size="5">';
+						echo __('Or add relation with existing person:').' <input class="fonts" type="text" name="relation_add2" value="" size="17" placeholder="'.__('GEDCOM number (ID)').'">';
 
 						echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=relation_add2&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
@@ -3615,9 +3603,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '<td style="width:175px" rowspan=2>'.ucfirst(__('died')).'</td></tr>';
 					
 					echo '<tr style="text-align:center" class="table_header_large">';
-					echo '<td>'.__(' M ').'</td>';
-					echo '<td>'.__(' F ').'</td>';
-					echo '<td>'.__(' ? ').'</td>';
+					echo '<td> '.__('M').' </td>';
+					echo '<td> '.__('F').' </td>';
+					echo '<td> '.__('?').' </td>';
 					echo '</tr>';
 
 				if(isset($_POST['use_fam_value']) AND $_POST['use_fam_value'] != "" AND $_POST['use_fam_value'] != "newfam") {

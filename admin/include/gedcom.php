@@ -1609,6 +1609,16 @@ if (isset($_POST['step4'])){
 
 		// *** First only read pers_id, otherwise too much memory use ***
 		$person2_qry=$dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='".$tree_id."'");
+
+		//$person2_qry=$dbh->query("SELECT pers_id FROM humo_persons
+		//	WHERE pers_tree_id='".$tree_id."'
+		//	AND LEFT(pers_text,1)='@'");
+		//pers_name_text
+		//pers_birth_text
+		//pers_bapt_text
+		//pers_death_text
+		//pers_buried_text
+
 		while ($person2Db=$person2_qry->fetch(PDO::FETCH_OBJ)){
 
 			$person_qry=$dbh->query("SELECT * FROM humo_persons WHERE pers_id='".$person2Db->pers_id."'");

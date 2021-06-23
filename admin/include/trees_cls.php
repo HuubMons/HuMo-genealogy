@@ -861,11 +861,11 @@ this page will also show a "Continue duplicate merge" button so you can continue
 		echo '<tr class="table_header"><td>';
 		echo '&nbsp;';
 		echo '</td><td>';
-		echo __('First name').':';
+		echo __('First name');
 		echo '</td><td>';
-		echo __('Last name').':';
+		echo __('Last name');
 		echo '</td><td>';
-		echo __('GEDCOM no. ("I43")').':';
+		echo __('GEDCOM no. ("I43")');
 		echo '</td><td>';
 		echo __('Search');
 		echo '</td><td colspan=2>'.__('Pick a name from search results').'</td><td>';
@@ -874,7 +874,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 		echo '</td></tr><tr><td style="white-space:nowrap">';
 		$language_person=__('Person').' ';
 		if(CMS_SPECIFIC == "Joomla") { $language_person=''; }  // for joomla keep it short....
-		echo $language_person.'1:';
+		echo $language_person.'1';
 		echo '</td><td>';
 
 		$search_firstname='';
@@ -949,7 +949,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 		echo '</td></tr><tr><td  style="white-space:nowrap">';
 
 		// SECOND PERSON
-		echo $language_person.'2:';
+		echo $language_person.'2';
 		echo '</td><td>';
 
 		$search_firstname2='';

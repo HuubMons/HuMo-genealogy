@@ -106,25 +106,25 @@ echo '<div class=index_list1>'.$line_pages.'</div><br>';
 				$style=' style="background-color:#ffffa0"';
 				$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 			}
-			echo '<th><a href="sources.php?database='.$_SESSION['tree_prefix'].'&start=1&item=0&order_sources=title&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Title').' <img src="images/button3'.$img.'.png"></a></th>';
+			echo '<th><a href="sources.php?tree_id='.$tree_id.'&start=1&item=0&order_sources=title&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Title').' <img src="images/button3'.$img.'.png"></a></th>';
 
 			$style=''; $sort_reverse=$sort_desc; $img='';
 			if ($order_sources=="date"){
 				$style=' style="background-color:#ffffa0"';
 				$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 			}
-			echo '<th><a href="sources.php?database='.$_SESSION['tree_prefix'].'&start=1&item=0&order_sources=date&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Date').' <img src="images/button3'.$img.'.png"></a></th>';
+			echo '<th><a href="sources.php?tree_id='.$tree_id.'&start=1&item=0&order_sources=date&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Date').' <img src="images/button3'.$img.'.png"></a></th>';
 
 			$style=''; $sort_reverse=$sort_desc; $img='';
 			if ($order_sources=="place"){
 				$style=' style="background-color:#ffffa0"';
 				$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 			}
-			echo '<th><a href="sources.php?database='.$_SESSION['tree_prefix'].'&start=1&item=0&order_sources=place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Place').' <img src="images/button3'.$img.'.png"></a></th>';
+			echo '<th><a href="sources.php?tree_id='.$tree_id.'&start=1&item=0&order_sources=place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Place').' <img src="images/button3'.$img.'.png"></a></th>';
 		echo '</tr>';
 
 		while (@$sourceDb=$source->fetch(PDO::FETCH_OBJ)){
-			echo '<tr><td><a href="'.CMS_ROOTPATH.'source.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$sourceDb->source_gedcomnr.'">';
+			echo '<tr><td><a href="'.CMS_ROOTPATH.'source.php?tree_id='.$tree_id.'&amp;id='.$sourceDb->source_gedcomnr.'">';
 			// *** Aldfaer sources don't have a title! ***
 			if ($sourceDb->source_title){ echo $sourceDb->source_title; } else { echo $sourceDb->source_text; }
 			echo '</a></td>'; 

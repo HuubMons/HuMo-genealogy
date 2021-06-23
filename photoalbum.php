@@ -420,9 +420,10 @@ if($subsub==true) {
 				$person_cls = New person_cls;
 				$personDb=$db_functions->get_person($afbDb->event_connect_id);
 				$name=$person_cls->person_name($personDb);
-				$picture_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
-					'&amp;id='.$personDb->pers_indexnr.
-					'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
+
+				$url=$person_cls->person_url($personDb);
+				$picture_text.='<a href="'.$url.'">'.$name["standard_name"].'</a><br>';
+
 				$picture_text2.=$name["standard_name"];
 				$privacy=$person_cls->set_privacy($personDb);
 				if ($privacy){ $picture_privacy=true; }
@@ -444,8 +445,10 @@ if($subsub==true) {
 					$person_cls = New person_cls;
 					@$personDb=$db_functions->get_person($connectDb->connect_connect_id);
 					$name=$person_cls->person_name($personDb);
-					$picture_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
-					'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
+
+					$url=$person_cls->person_url($personDb);
+					$picture_text.='<a href="'.$url.'">'.$name["standard_name"].'</a><br>';
+
 					$picture_text2.=$name["standard_name"];
 					$privacy=$person_cls->set_privacy($personDb);
 					if ($privacy){ $picture_privacy=true; }
