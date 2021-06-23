@@ -63,16 +63,19 @@ function tree_main(){
 	echo '<td></td>';
 	echo '</tr>';
 
-	// *** New family tree number ***
+	// *** Check number of real family tree number, because last tree is not allowed to be removed ***
+	$count_trees=0;
+	$datasql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+	$count_trees=$datasql->rowCount();
+
 	$new_number='1';
 	$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
 	if ($datasql){
 	// *** Count lines in query ***
-	$count_trees=$datasql->rowCount();
+	$count_lines=$datasql->rowCount();
 	while ($dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
-		$style=''; if ($tree_id==$dataDb->tree_id){ $style=' bgcolor="#99CCFF"'; }
+		$style=''; if ($dataDb->tree_id==$tree_id){ $style=' bgcolor="#99CCFF"'; }
 		echo '<tr'.$style.'>';
-
 		echo '<td nowrap>';
 			if ($dataDb->tree_order<10){ echo '0'; }
 			echo $dataDb->tree_order;
@@ -81,17 +84,17 @@ function tree_main(){
 			if ($dataDb->tree_order!='1'){
 				echo ' <a href="'.$phpself2.'page='.$page.'&amp;up=1&amp;tree_order='.$dataDb->tree_order.
 				'&amp;id='.$dataDb->tree_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="up"></a>'; }
-			if ($dataDb->tree_order!=$count_trees){
+			if ($dataDb->tree_order!=$count_lines){
 				echo ' <a href="'.$phpself2.'page='.$page.'&amp;down=1&amp;tree_order='.$dataDb->tree_order.'&amp;id='.
 				$dataDb->tree_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>'; }
 		echo '</td>';
 
 		echo '<td>';
+			// *** Show/ Change family tree name ***
 			$treetext=show_tree_text($dataDb->tree_id, $language_tree);
 			if ($dataDb->tree_prefix=='EMPTY')
 				echo '* '.__('EMPTY LINE').' *';
 			else{
-				// *** Change family tree name ***
 				echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=tree_text&amp;tree_id='.$dataDb->tree_id.'"><img src="images/edit.jpg" title="edit" alt="edit"></a> '.$treetext['name'];
 			}
 		echo '</td>';
@@ -134,7 +137,7 @@ function tree_main(){
 
 		echo '<td nowrap>';
 			// *** If there is only one family tree, prevent it can be removed ***
-			if ($count_trees>1){
+			if ($count_trees>1 OR $dataDb->tree_prefix=='EMPTY'){
 				echo ' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;remove_tree='.$dataDb->tree_id.'&amp;treetext_name='.$treetext['name'].'">';
 				echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" alt="'.__('Remove tree').'" border="0"></a>';
 			}
@@ -821,7 +824,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 	elseif(isset($_POST['manual']) OR isset($_POST["search1"]) OR isset($_POST["search2"]) OR isset($_POST["switch"])) {
 
 		echo '<br>'.__('Pick the two persons you want to check for merging').'.';
-		echo ' '.__('You can enter names (or part of names) or gedcom no. (INDI), or leave boxes empty').'<br>';
+		echo ' '.__('You can enter names (or part of names) or GEDCOM no. (INDI), or leave boxes empty').'<br>';
 		echo __('<b>TIP: when you click "search" with all boxes left empty you will get a list with all persons in the database. (May take a few seconds)</b>').'<br><br>';
 
 		// ===== BEGIN SEARCH BOX SYSTEM
@@ -862,7 +865,7 @@ this page will also show a "Continue duplicate merge" button so you can continue
 		echo '</td><td>';
 		echo __('Last name').':';
 		echo '</td><td>';
-		echo __('gedcom no. ("I43")').':';
+		echo __('GEDCOM no. ("I43")').':';
 		echo '</td><td>';
 		echo __('Search');
 		echo '</td><td colspan=2>'.__('Pick a name from search results').'</td><td>';
@@ -1752,7 +1755,7 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 		echo '<td>';
 		if(is_array($l_ev) AND $l_ev!='') {
 			foreach($l_ev as $key => $value) {
-				if(substr($value,0,2)=='@I') {  // this is a person gedcom number, not plain text -> show the name
+				if(substr($value,0,2)=='@I') {  // this is a person GEDCOM number, not plain text -> show the name
 					$value = str_replace('@','',$value);
 					$result = $dbh->query("SELECT pers_lastname, pers_firstname
 						FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber = '".$value."'");
@@ -2559,7 +2562,7 @@ function merge_them($left,$right,$mode) {
 		AND event_connect_kind='person' AND event_connect_id ='".$result2Db->pers_gedcomnumber."'";
 	$dbh->query($qry);
 	// CLEANUP: This person's I may still exist in the humo_events table under "event_event",
-	// in case of birth/death declaration or bapt/burial witness. If so, change the gedcom to the left person's I:
+	// in case of birth/death declaration or bapt/burial witness. If so, change the GEDCOM to the left person's I:
 	$qry = "UPDATE humo_events
 		SET event_event = '@".$result1Db->pers_gedcomnumber."@'
 		WHERE event_tree_id='".$tree_id."' AND event_event ='@".$result2Db->pers_gedcomnumber."@'";

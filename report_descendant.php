@@ -22,7 +22,7 @@
 // "nam" = name of the person
 // "sps" = name of spouse
 // "fams"  = humogen family number (F345)
-// "gednr" = humogen gedcom number (I143)
+// "gednr" = humogen GEDCOM number (I143)
 // "non" = person with no own family (i.e. only child status)
 // *********************************************************************************************
 

@@ -67,7 +67,7 @@ function set_privacy($personDb){
 					elseif(substr($personDb->pers_cal_date,-2,1) == " " OR substr($personDb->pers_cal_date,-3,1) == " " )  {$privacy_person='';}  // calculated born between year 0 and 99
 					elseif (substr($personDb->pers_cal_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }  // calculated born from year 100 onwards but before $user["group_alive_date"]
 					else $privacy_person='1'; // *** overwrite pers_alive status ***
-				}								
+				}
 				
 				// *** Check if deceased persons should be filtered ***
 				
@@ -81,7 +81,7 @@ function set_privacy($personDb){
 				
 			}
 
-/*
+			/*
 			// *** Privacy filter: date ***
 			if ($user["group_death_date_act"]=="j"){
 				if ($personDb->pers_death_date){
@@ -93,7 +93,7 @@ function set_privacy($personDb){
 						else $privacy_person='1'; // *** overwrite pers_alive status ***
 				}
 			}
-*/
+			*/
 			// *** Privacy filter: date ***
 			if ($user["group_death_date_act"]=="j"){
 				if ($personDb->pers_death_date){
@@ -127,7 +127,7 @@ function set_privacy($personDb){
 				AND strpos(' '.$personDb->pers_own_code,$user["group_filter_pers_show"])>0){ $privacy_person=""; }
 			if ($user["group_filter_pers_hide_act"]=='j'
 				AND strpos(' '.$personDb->pers_own_code,$user["group_filter_pers_hide"])>0){ $privacy_person="1"; }  
-				
+			
 		}
 
 	}
@@ -146,6 +146,46 @@ function set_privacy($personDb){
 
 	return $privacy_person;
 }
+
+// *** NEW 29 februari 2020: URL construction in person_cls ***
+/*	Examples:
+ *	$url=$person_cls->person_url($record);	// *** Get url to family ***
+ *	$url=$person_cls->person_url('','family',$tree_id,$index_nr,$gedcomnumer);	// *** Get link to family ***
+ */
+function person_url($personDb='', $url_kind='family', $pers_tree_id2='', $pers_indexnr2='', $pers_gedcomnumber2=''){
+	global $humo_option, $uri_path;
+
+	$pers_gedcomnumber='';
+
+	if ($personDb!=''){
+		$pers_tree_id=$personDb->pers_tree_id;
+		$pers_indexnr=$personDb->pers_indexnr;
+		$pers_gedcomnumber=$personDb->pers_gedcomnumber;
+	}
+
+	if ($pers_tree_id2!='') $pers_tree_id=$pers_tree_id2;
+	if ($pers_indexnr2!='') $pers_indexnr=$pers_indexnr2;
+	if ($pers_gedcomnumber2!='') $pers_gedcomnumber=$pers_gedcomnumber2;
+
+	if ($url_kind=='family'){
+		if (CMS_SPECIFIC=='Joomla'){
+			$url='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$pers_tree_id.'&amp;id='.$pers_indexnr;
+			if ($pers_gedcomnumber) $url.='&amp;main_person='.$pers_gedcomnumber;
+		}
+		elseif ($humo_option["url_rewrite"]=="j"){
+			// *** $uri_path made in header.php ***
+			$url=$uri_path.'family/'.$pers_tree_id.'/'.$pers_indexnr;
+			if ($pers_gedcomnumber) $url.='/'.$pers_gedcomnumber.'/';
+		}
+		else{
+			$url=CMS_ROOTPATH.'family.php?tree_id='.$pers_tree_id.'&amp;id='.$pers_indexnr;
+			if ($pers_gedcomnumber) $url.='&amp;main_person='.$pers_gedcomnumber;
+		}
+	}
+
+	return $url;
+}
+
 
 // *************************************************************
 // *** Show person name standard                             ***
@@ -353,7 +393,7 @@ function person_name($personDb){
 
 			$name_array["index_name_extended"].=$prefix2;
 
-			if($humo_option['name_order']=="chinese") {  
+			if($humo_option['name_order']=="chinese") {
 				// for Chinese no commas or spaces
 				$name_array["name"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
 				$name_array["short_firstname"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
@@ -442,13 +482,13 @@ function person_name($personDb){
 
 
 // *************************************************************
-// *** Show person popup menu                                ***
+// *** Show person pop-up menu                               ***
 // *************************************************************
 // *** $extended=true; Show a full persons pop-up including picture and person data ***
 // *** $replacement_text='text'; Replace the pop-up icon by the replacement_text ***
-// *** $extra_popup_text=''; To add extra text in the pop-up screen ***
+// *** $extra_pop-up_text=''; To add extra text in the pop-up screen ***
 function person_popup_menu($personDb, $extended=false, $replacement_text='',$extra_popup_text=''){
-	global $dbh, $tree_prefix_quoted, $db_functions, $bot_visit, $humo_option, $uri_path, $user, $language;
+	global $dbh, $db_functions, $bot_visit, $humo_option, $uri_path, $user, $language;
 	global $screen_mode, $dirmark1, $dirmark2, $rtlmarker;
 	global $selected_language, $hourglass;
 	$text='';
@@ -458,51 +498,37 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 	if (!$bot_visit AND $screen_mode!="PDF" AND $screen_mode!="RTF") {
 
 		// *** Family tree for search in multiple family trees ***
-		$tree_prefix=safe_text_db($personDb->pers_tree_prefix);
 		$db_functions->set_tree_id($personDb->pers_tree_id);
-
-		if (CMS_SPECIFIC=='Joomla'){
-			$start_url='index.php?option=com_humo-gen&amp;task=family&amp;database='.$tree_prefix.
-				'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-		}
-		elseif ($humo_option["url_rewrite"]=="j"){
-			// *** $uri_path made in header.php ***
-			$start_url=$uri_path.'family/'.$tree_prefix.'/'.$personDb->pers_indexnr.'/'.$personDb->pers_gedcomnumber.'/';
-		}
-		else{
-			$start_url=CMS_ROOTPATH.'family.php?database='.$tree_prefix.
-			'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-		}
-
+		$start_url=$this->person_url($personDb);
 		$family_url=$start_url;
 
 		// *** Change start url for a person in a graphical ancestor report ***
 		if ($screen_mode=='ancestor_chart' AND $hourglass===false){
 			if (CMS_SPECIFIC=='Joomla'){
-				$start_url='index.php?option=com_humo-gen&amp;task=ancestor&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber.'&amp;screen_mode=ancestor_chart';
+				$start_url='index.php?option=com_humo-gen&amp;task=ancestor&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber.'&amp;screen_mode=ancestor_chart';
 			}
 			else{
-				$start_url=CMS_ROOTPATH.'report_ancestor.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber.'&amp;screen_mode=ancestor_chart';
+				$start_url=CMS_ROOTPATH.'report_ancestor.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber.'&amp;screen_mode=ancestor_chart';
 			}
 		}
 
 		// *** Change start url for a person in a graphical descendant report ***
 		if (($screen_mode=='STAR' OR $screen_mode=='STARSIZE') AND $hourglass===false) {
 			if (CMS_SPECIFIC=='Joomla'){
-				$start_url='index.php?option=com_humo-gen&amp;task=family&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
+				$start_url='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
 			}
 			else{
-				$start_url=CMS_ROOTPATH.'family.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
+				$start_url=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
 			}
 		}
 
 		// *** Change start url for a person in an hourglass chart ***
 		if (($screen_mode=='STAR' OR $screen_mode=='STARSIZE' OR $screen_mode=='ancestor_chart') AND $hourglass===true){ 
 			if (CMS_SPECIFIC=='Joomla'){
-				$start_url='index.php?option=com_humo-gen&amp;task=hourglass&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
+				$start_url='index.php?option=com_humo-gen&amp;task=hourglass&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
 			}
 			else{
-				$start_url=CMS_ROOTPATH.'hourglass.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
+				$start_url=CMS_ROOTPATH.'hourglass.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
 			}
 		}
 
@@ -557,20 +583,20 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					if ($check_children){
 
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;database='.$tree_prefix.
+							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.
 								'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;descendant_report=1';
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'family.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;descendant_report=1';
+							$path_tmp=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;descendant_report=1';
 						}
 						$text.='<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/descendant.gif" border="0" alt="'.__('Descendant report').'"> '.__('Descendant report').'</a>';
 
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=outline&amp;database='.$tree_prefix.
+							$path_tmp='index.php?option=com_humo-gen&amp;task=outline&amp;tree_id='.$personDb->pers_tree_id.
 								'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;descendant_report=1';
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'report_outline.php?database='.$tree_prefix.
+							$path_tmp=CMS_ROOTPATH.'report_outline.php?tree_id='.$personDb->pers_tree_id.
 				'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
 						}
 						$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/outline.gif" border="0" alt="'.__('Outline report').'"> '.__('Outline report').'</a>';
@@ -580,10 +606,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 				if  ($user['group_gen_protection']=='n' AND $personDb->pers_famc!='') {
 					// == Ancestor report: link & icons by Klaas de Winkel (www.dewinkelwaar.tk) ==
 					if (CMS_SPECIFIC=='Joomla'){
-						$path_tmp='index.php?option=com_humo-gen&amp;task=ancestor&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber;
+						$path_tmp='index.php?option=com_humo-gen&amp;task=ancestor&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
 					}
 					else{
-						$path_tmp=CMS_ROOTPATH.'report_ancestor.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber;
+						$path_tmp=CMS_ROOTPATH.'report_ancestor.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
 					}
 					$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/ancestor_report.gif" border="0" alt="'.__('Ancestor report').'"> '.__('Ancestor report').'</a>';
 
@@ -600,18 +626,18 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 				if  ($user['group_gen_protection']=='n' AND $personDb->pers_famc!='') {
 					// == added by Yossi Beck - FANCHART
 					if (CMS_SPECIFIC=='Joomla'){
-						$path_tmp='index.php?option=com_humo-gen&amp;task=fanchart&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber;
+						$path_tmp='index.php?option=com_humo-gen&amp;task=fanchart&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
 					}
 					else{
-						$path_tmp=CMS_ROOTPATH.'fanchart.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber;
+						$path_tmp=CMS_ROOTPATH.'fanchart.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
 					}
 					$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/fanchart.gif" border="0" alt="Fanchart"> '.__('Fanchart').'</a>';
 
 					if (CMS_SPECIFIC=='Joomla'){
-						$path_tmp='index.php?option=com_humo-gen&amp;task=ancestor&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber.'&amp;screen_mode=ancestor_chart';
+						$path_tmp='index.php?option=com_humo-gen&amp;task=ancestor&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber.'&amp;screen_mode=ancestor_chart';
 					}
 					else{
-						$path_tmp=CMS_ROOTPATH.'report_ancestor.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber.'&amp;screen_mode=ancestor_chart';
+						$path_tmp=CMS_ROOTPATH.'report_ancestor.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber.'&amp;screen_mode=ancestor_chart';
 					}
 					$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/ancestor_report.gif" border="0" alt="'.__('Ancestor chart').'"> '.__('Ancestor chart').'</a>';
 				}
@@ -619,10 +645,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					if ($check_children){
 
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
+							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'family.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
+							$path_tmp=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
 						}
 						$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/descendant.gif" border="0" alt="'.__('Descendant chart').'"> '.__('Descendant chart').'</a>';
 					}
@@ -635,10 +661,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					if($personDb->pers_sexe=="M") $charttype="ydna";
 					else $charttype="mtdna";
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
+							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'family.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
+							$path_tmp=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
 						}
 						$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/dna.png" border="0" alt="'.__('DNA Charts').'"> '.__('DNA Charts').'</a>';
 					//}
@@ -647,12 +673,12 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 				if  ($user['group_gen_protection']=='n' AND $personDb->pers_famc!='' AND $personDb->pers_fams!='' AND $check_children) {
 				// hourglass only if there is at least one generation of ancestors and of children.
 					if (CMS_SPECIFIC=='Joomla'){
-						//$path_tmp='index.php?option=com_humo-gen&amp;task=hourglass&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber;
-						$path_tmp='index.php?option=com_humo-gen&amp;task=hourglass&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
+						//$path_tmp='index.php?option=com_humo-gen&amp;task=hourglass&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
+						$path_tmp='index.php?option=com_humo-gen&amp;task=hourglass&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
 					}
 					else{
-						//$path_tmp=CMS_ROOTPATH.'hourglass.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber;
-						$path_tmp=CMS_ROOTPATH.'hourglass.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
+						//$path_tmp=CMS_ROOTPATH.'hourglass.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
+						$path_tmp=CMS_ROOTPATH.'hourglass.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
 					}
 					$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/hourglass.gif" border="0" alt="'.__('Hourglass chart').'"> '.__('Hourglass chart').'</a>';
 				}
@@ -679,10 +705,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					//if ($user['group_gen_protection']=='n' AND $tmlcounter>0 AND $tmldates==1) {
 					if ($user['group_gen_protection']=='n' AND $tmldates==1) {
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=timelines&amp;database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber;
+							$path_tmp='index.php?option=com_humo-gen&amp;task=timelines&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'timelines.php?database='.$tree_prefix.'&amp;id='.$personDb->pers_gedcomnumber;
+							$path_tmp=CMS_ROOTPATH.'timelines.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
 						}
 						$text.= '<a href="'.$path_tmp.'">';
 						$text.= '<img src="'.CMS_ROOTPATH.'images/timeline.gif" border="0" alt="'.__('Timeline').'"> '.__('Timeline').'</a>';
@@ -696,7 +722,8 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					// *** Administrator can always edit in all family trees ***
 					if ($user['group_admin']=='j' OR in_array($_SESSION['tree_id'], $edit_tree_array)) {
 						$text.= '<b>'.__('Admin').':</b>';
-						$path_tmp=CMS_ROOTPATH.'admin/index.php?page=editor&amp;tree='.$tree_prefix.'&amp;person='.$personDb->pers_gedcomnumber;
+						
+						$path_tmp=CMS_ROOTPATH.'admin/index.php?page=editor&amp;tree_id='.$personDb->pers_tree_id.'&amp;person='.$personDb->pers_gedcomnumber;
 						$text.= '<a href="'.$path_tmp.'" target="_blank">';
 						$text.= '<img src="'.CMS_ROOTPATH.'images/person_edit.gif" border="0" alt="'.__('Timeline').'"> '.__('Editor').'</a>';
 					}
@@ -743,7 +770,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 						}
 
 						// *** If needed add extra text in the pop-up box ***
-						if ($extra_popup_text){$text.=$extra_popup_text;}
+						if ($extra_popup_text){$text.='<br><br>'.$extra_popup_text;}
 
 					}
 					else{
@@ -782,7 +809,6 @@ function name_extended($person_kind){
 		$text_name= __('N.N.');
 	}
 	else{
-		$tree_prefix_quoted=$personDb->pers_tree_prefix;
 		$db_functions->set_tree_id($personDb->pers_tree_id);
 
 		// *** Show pop-up menu ***
@@ -811,9 +837,9 @@ function name_extended($person_kind){
 					if($humo_option['david_stars'] == "y") {
 						$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
 						if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
-							preg_match("/($camps)/i",$personDb->pers_buried_place)!==0 OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE)  {
+							preg_match("/($camps)/i",$personDb->pers_buried_place)!==0 OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE) {
 							$text_name .= '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
-						}					
+						}
 					}
 					// *** Add own icon by person, using a file name in own code ***
 					if($personDb->pers_own_code !='' AND is_file("images/".$personDb->pers_own_code.".gif"))
@@ -850,24 +876,11 @@ function name_extended($person_kind){
 
 		// *** No links if gen_protection is enabled ***
 		if ($user["group_gen_protection"]=='j'){ $person_kind=''; }
+
 		if (($person_kind=='child' OR $person_kind=='outline') AND $personDb->pers_fams){
-			$child_link=explode(";",$personDb->pers_fams);
-			// *** Link to 1st family of person ***
-			if(CMS_SPECIFIC=='Joomla') {
-				$standard_name='<a href="index.php?option=com_humo-gen&task=family&database='.$_SESSION['tree_prefix'].
-				'&amp;id='.$child_link[0].'&amp;main_person='.
-				$personDb->pers_gedcomnumber.'">'.$standard_name; // Link to 1st family of person
-			}
-			elseif ($humo_option["url_rewrite"]=="j"){
-				// *** $uri_path is made in header.php ***
-				$standard_name='<a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.
-				$child_link[0].'/'.$personDb->pers_gedcomnumber.'/">'.$standard_name;
-			}
-			else{
-				$standard_name='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].
-				'&amp;id='.$child_link[0].'&amp;main_person='.
-				$personDb->pers_gedcomnumber.'">'.$standard_name; // Link to 1st family of person
-			}
+			$url=$this->person_url($personDb);	// *** Get link to family ***
+			$standard_name='<a href="'.$url.'">'.$standard_name;
+
 			// *** Show name with link ***
 			$text_name=$text_name.$standard_name.'</a>';
 		}
@@ -949,25 +962,11 @@ function name_extended($person_kind){
 				$text.=$name["standard_name"];
 			}
 			else{ $text.=__('N.N.'); }
-
 			// *** Add link for parents ***
-			if(CMS_SPECIFIC=='Joomla') {
-				$text2='<a href="index.php?option=com_humo-gen&task=family&database='.$_SESSION['tree_prefix'].'&amp;id='.$personDb->pers_famc;
-				if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
-				$text2.='">';
-			}
-			elseif ($humo_option["url_rewrite"]=="j"){
-				// *** $uri_path is made in header.php ***
-				$text2='<a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$personDb->pers_famc;
-				// *** Added this number for better Google indexing links (otherwise too many links to index) ***
-				if (isset($fatherDb->pers_gedcomnumber)){ $text2.= '/'.$fatherDb->pers_gedcomnumber; }
-				$text2.='/">';
-			}
-			else{
-				$text2='<a href="'.$uri_path.'family.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$personDb->pers_famc;
-				if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
-				$text2.='">';
-			}
+			// *** Added this number for better Google indexing links (otherwise too many links to index) ***
+			$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
+			$url=$this->person_url('','family',$personDb->pers_tree_id,$personDb->pers_famc,$gedcomnumber);	// *** Get link to family ***
+			$text2='<a href="'.$url.'">';
 
 			// *** Add link ***
 			if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
@@ -1017,23 +1016,10 @@ function name_extended($person_kind){
 				}
 				else{ $text.=__('N.N.'); }
 
-				if(CMS_SPECIFIC=='Joomla') {
-					$text2='<a href="index.php?option=com_humo-gen&task=family&database='.$_SESSION['tree_prefix'].'&amp;id='.$famc_adoptiveDb->event_event;
-					if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
-					$text2.='">';
-				}
-				elseif ($humo_option["url_rewrite"]=="j"){
-					// *** $uri_path is gemaakt in header.php ***
-					$text2='<a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$famc_adoptiveDb->event_event;
-					// *** Dit nummer toegevoegd, anders krijgt Google heel veel te indexeren gezinnen ***
-					if (isset($fatherDb->pers_gedcomnumber)){ $text2.= '/'.$fatherDb->pers_gedcomnumber; }
-					$text2.='/">';
-				}
-				else{
-					$text2='<a href="'.$uri_path.'family.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$famc_adoptiveDb->event_event;
-					if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
-					$text2.='">';
-				}
+				// *** Added this number for better Google indexing links (otherwise too many links to index) ***
+				$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
+				$url=$this->person_url('','family',$personDb->pers_tree_id,$famc_adoptiveDb->event_event,$gedcomnumber);	// *** Get link to family ***
+				$text2='<a href="'.$url.'">';
 
 				// *** Add link ***
 				if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
@@ -1070,23 +1056,10 @@ function name_extended($person_kind){
 				//}
 
 				if (isset($fatherDb->pers_indexnr)){
-					if(CMS_SPECIFIC=='Joomla') {
-						$text2='<a href="index.php?option=com_humo-gen&task=family&database='.$_SESSION['tree_prefix'].'&amp;id='.$fatherDb->pers_indexnr;
-						if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
-						$text2.='">';
-					}
-					elseif ($humo_option["url_rewrite"]=="j"){
-						// *** $uri_path is made in header.php ***
-						$text2='<a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$fatherDb->pers_indexnr;
-						// *** Added number to prevent too much search engine index links ***
-						if (isset($fatherDb->pers_gedcomnumber)){ $text2.= '/'.$fatherDb->pers_gedcomnumber; }
-						$text2.='/">';
-					}
-					else{
-						$text2='<a href="'.$uri_path.'family.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$fatherDb->pers_indexnr;
-						if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
-						$text2.='">';
-					}
+					// *** Added this number for better Google indexing links (otherwise too many links to index) ***
+					$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
+					$url=$this->person_url('','family',$personDb->pers_tree_id,$fatherDb->pers_indexnr,$gedcomnumber);	// *** Get link to family ***
+					$text2='<a href="'.$url.'">';
 				}
 
 				// *** Add link ***
@@ -1138,20 +1111,8 @@ function name_extended($person_kind){
 				}
 
 				// *** Link for partner ***
-				if ($humo_option["url_rewrite"]=="j"){
-					// *** $uri_path is made in header.php ***
-					$text_link='<a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$famc;
-					// *** Added this number for better Google indexing links (otherwise too many links to index) ***
-					//if (isset($fatherDb->pers_gedcomnumber)){ $text2.= '/'.$fatherDb->pers_gedcomnumber; }
-					$text_link.= '/'.$pers_gedcomnumber;
-					$text_link.='/">';
-				}
-				else{
-					$text_link='<a href="'.$uri_path.'family.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$famc;
-					//if (isset($fatherDb->pers_gedcomnumber)){ $text2.='&amp;main_person='.$fatherDb->pers_gedcomnumber; }
-					$text_link.='&amp;main_person='.$pers_gedcomnumber;
-					$text_link.='">';
-				}
+				$url=$this->person_url('','family',$personDb->pers_tree_id,$famc,$pers_gedcomnumber);	// *** Get link to family ***
+				$text_link='<a href="'.$url.'">';
 				$name["standard_name"]=$text_link.$name["standard_name"].'</a>';
 
 				//$child_marriage.=' <span class="index_partner" style="font-size:10px;">';
@@ -1208,7 +1169,6 @@ function person_data($person_kind, $id){
 
 	// *** $personDb is empty by N.N. person ***
 	if ($personDb){
-	$tree_prefix_quoted=$personDb->pers_tree_prefix;
 	$db_functions->set_tree_id($personDb->pers_tree_id);
 
 	$process_text=''; $temp='';
@@ -1443,7 +1403,7 @@ function person_data($person_kind, $id){
 			$age=$process_age->calculate_age($personDb->pers_bapt_date,$personDb->pers_birth_date,'');
 			$templ_person["age_liv"]=$age;
 			if($templ_person["age_liv"]!='') $temp="age_liv";
-			$process_text.=$dirmark1.$age;  // *** komma and space already in $age
+			$process_text.=$dirmark1.$age;  // *** comma and space already in $age
 		}
 
 		// ******************
@@ -1862,14 +1822,11 @@ function person_data($person_kind, $id){
 				}
 				else{
 					$process_text.=', ';
-					// *** url_rewrite ***
-					if ($humo_option["url_rewrite"]=="j"){
-						// *** $uri_path is made header.php ***
-						$process_text.='<a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$marriage_array[$i].'/'.$personDb->pers_gedcomnumber.'/">';
-					}
-					else{
-						$process_text.='<a href="'.CMS_ROOTPATH.'family.php?database='.$_SESSION['tree_prefix'].'&amp;id='.$marriage_array[$i].'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
-					}
+
+					// *** Added this number for better Google indexing links (otherwise too many links to index) ***
+					$url=$this->person_url('','family',$personDb->pers_tree_id,$marriage_array[$i],$personDb->pers_gedcomnumber);	// *** Get link to family ***
+					$process_text.='<a href="'.$url.'">';
+
 					if(isset($parent2_marr_data)) {$process_text.=$dirmark1.$parent2_marr_data.' ';}
 					// *** $parent2Db is empty by N.N. person ***
 					if ($parent2Db){

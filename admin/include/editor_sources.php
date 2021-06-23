@@ -6,7 +6,6 @@ if (!defined('ADMIN_PAGE')){ exit; }
 include_once ("editor_cls.php");
 $editor_cls = New editor_cls;
 
-if (isset($_SESSION['admin_tree_id'])){ $tree_id=$_SESSION['admin_tree_id']; }
 if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['admin_pers_gedcomnumber']; }
 if (isset($_SESSION['admin_fam_gedcomnumber'])){ $marriage=$_SESSION['admin_fam_gedcomnumber']; }
 if (isset($_SESSION['admin_address_gedcomnumber'])){ $address_id=$_SESSION['admin_address_gedcomnumber']; }

@@ -392,6 +392,7 @@ if (isset($_POST['install_tables2'])){
 			user_trees text CHARACTER SET utf8,
 			user_remark text CHARACTER SET utf8,
 			user_password varchar(50) CHARACTER SET utf8,
+			user_password_salted VARCHAR(255) CHARACTER SET utf8,
 			user_status varchar(1) CHARACTER SET utf8,
 			user_group_id smallint(5),
 			user_hide_trees VARCHAR(200) NOT NULL DEFAULT '',
@@ -401,11 +402,17 @@ if (isset($_POST['install_tables2'])){
 			PRIMARY KEY  (`user_id`)
 			) DEFAULT CHARSET=utf8");
 		echo __('filling humo_users...').'<br>';
-		$db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password, user_group_id) values ('".$_POST['username_admin']."','".md5($_POST['password_admin'])."','1')");
+		$hashToStoreInDb = password_hash($_POST['password_admin'], PASSWORD_DEFAULT);
+		$db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password_salted, user_group_id)
+			values ('".$_POST['username_admin']."','".$hashToStoreInDb."','1')");
 
-		$db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password, user_group_id) values ('".$_POST['username_family']."','".md5($_POST['password_family'])."','2')");
+		$hashToStoreInDb = password_hash($_POST['password_family'], PASSWORD_DEFAULT);
+		$db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password_salted, user_group_id)
+			values ('".$_POST['username_family']."','".$hashToStoreInDb."','2')");
 
-		$db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password, user_group_id) values ('guest','".md5('guest')."','3')");
+		$hashToStoreInDb = password_hash('guest', PASSWORD_DEFAULT);
+		$db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password_salted, user_group_id)
+			values ('guest','".$hashToStoreInDb."','3')");
 	}
 
 	if (!$table_cms_menu){

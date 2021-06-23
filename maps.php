@@ -438,7 +438,7 @@ if(isset($_GET['anc_persged']) AND isset($_GET['anc_persfams'])) {
 	$myresultDb=$myresult->fetch(PDO::FETCH_OBJ);
 	$chosenname = $myresultDb->pers_firstname.' '.strtolower(str_replace('_','',$myresultDb->pers_prefix)).' '.$myresultDb->pers_lastname;
 
-	function find_anc($family_id) { // function to find all ancestors - family_id = person gedcom number
+	function find_anc($family_id) { // function to find all ancestors - family_id = person GEDCOM number
 		global $dbh, $db_functions, $anc_array;
 		global $language, $dirmark1, $dirmark1;
 		global $listed_array;
@@ -667,8 +667,8 @@ if(isset($_POST['descmap'])) {
 	echo '</form>';
 
 	?>
-	<script type="text/javascript">    
-	function findGednr (pers_id) { 
+	<script type="text/javascript">
+	function findGednr (pers_id) {
 		for(var i=1;i<desc_map.length-1;i++) {
 			if(desc_map.options[i].text.indexOf("[#" + pers_id + "]") != -1 || desc_map.options[i].text.indexOf("[#I" + pers_id + "]") != -1 ) { 
 				window.location = desc_map.options[i].value;
@@ -779,10 +779,10 @@ if(isset($_POST['ancmap'])) {
 	echo '</form>';
 
 	?>
-	<script type="text/javascript">    
-	function findGednr (pers_id) { 
+	<script type="text/javascript">
+	function findGednr (pers_id) {
 		for(var i=1;i<anc_map.length-1;i++) {
-			if(anc_map.options[i].text.indexOf("[#" + pers_id + "]") != -1 || anc_map.options[i].text.indexOf("[#I" + pers_id + "]") != -1 ) { 
+			if(anc_map.options[i].text.indexOf("[#" + pers_id + "]") != -1 || anc_map.options[i].text.indexOf("[#I" + pers_id + "]") != -1 ) {
 				window.location = anc_map.options[i].value;
 			}
 		}
@@ -801,7 +801,7 @@ echo '<div id="map_canvas" style="width:1000px; height:520px"></div>'; // placeh
 
 // function to read multiple values from location search bar and zoom to map location:
 ?>
-<script type="text/javascript">    
+<script type="text/javascript">
 function findPlace () {
 	infoWindow.close();
 	var e = document.getElementById("loc_search");

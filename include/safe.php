@@ -5,10 +5,10 @@ function safe_text_db($text_safe) {
 
 	// *** Strip magic_quotes from $_POST and $_GET, needed for some providers that uses this function ***
 	// *** Deprecated in PHP 5.4.0: will return FALSE ***
-	if (get_magic_quotes_gpc()==1) {
-		// *** magicquotes is activated, addslashes is used ***
-		$text_safe = stripslashes($text_safe);
-	}
+	//if (get_magic_quotes_gpc()==1) {
+	//	// *** magicquotes is activated, addslashes is used ***
+	//	$text_safe = stripslashes($text_safe);
+	//}
 	//else{
 	//  $text_safe = addslashes(trim($text_safe));
 	//}

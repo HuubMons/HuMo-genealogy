@@ -34,12 +34,11 @@ function statistics_line($familyDb){
 
 	if ($check==true){
 		if(CMS_SPECIFIC == "Joomla") {
-			print '<td><a href="index.php?option=com_humo-gen&amp;task=family&amp;id='.$familyDb->stat_gedcom_fam.'&amp;database='.$familyDb->tree_prefix.
+			echo '<td><a href="index.php?option=com_humo-gen&amp;task=family&amp;id='.$familyDb->stat_gedcom_fam.'&amp;tree_id='.$familyDb->tree_id.
 		'">'.__('Family').': </a>';
 		}
 		else {
-			print '<td><a href="../family.php?id='.$familyDb->stat_gedcom_fam.'&amp;database='.$familyDb->tree_prefix.
-		'">'.__('Family').': </a>';
+			echo '<td><a href="../family.php?id='.$familyDb->stat_gedcom_fam.'&amp;tree_id='.$familyDb->tree_id.'">'.__('Family').': </a>';
 		}
 
 		//*** Man ***
@@ -321,7 +320,7 @@ if (isset($_POST['statistics_screen']) AND $_POST['statistics_screen']=='date_st
 if (isset($_POST['statistics_screen']) AND $_POST['statistics_screen']=='visitors'){ $statistics_screen='visitors'; }
 if (isset($_POST['statistics_screen']) AND $_POST['statistics_screen']=='statistics_old'){ $statistics_screen='statistics_old'; }
 if (isset($_POST['statistics_screen']) AND $_POST['statistics_screen']=='remove'){ $statistics_screen='remove'; }
-if (isset($_GET['tree_prefix'])){ $statistics_screen='statistics_old'; }
+if (isset($_GET['tree_id'])){ $statistics_screen='statistics_old'; }
 
 // *** Show buttons ***
 if(CMS_SPECIFIC == "Joomla") {
@@ -572,7 +571,7 @@ if ($statistics_screen=='date_statistics'){
 			// *** Search oldest record in database***
 			$datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
 			$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
-			$first_year = date("Y",$dataDb->stat_date_linux);
+			if (isset($dataDb->stat_date_linux)) $first_year = date("Y",$dataDb->stat_date_linux);
 
 			$present_year = date("Y");
 			$year=$present_year;
@@ -651,7 +650,7 @@ if ($statistics_screen=='visitors'){
 			// *** Find oldest record in database ***
 			$datasql = $dbh->query("SELECT * FROM humo_stat_date ORDER BY stat_date_linux LIMIT 0,1");
 			$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
-			$first_year = date("Y",$dataDb->stat_date_linux);
+			if (isset($dataDb->stat_date_linux)) $first_year = date("Y",$dataDb->stat_date_linux);
 
 			$present_year = date("Y");
 			$year=$present_year;
@@ -717,21 +716,11 @@ if ($statistics_screen=='statistics_old'){
 	// *** OLD statistics ***
 	// *************************
 
-	// *** Change prefix ***
-	if (isset($_GET['tree_prefix'])){
-		$_SESSION['tree_prefix']=$_GET['tree_prefix'];
-	}
-	if (!isset($_SESSION["tree_prefix"])){
-		$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
-		@$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
-		$_SESSION['tree_prefix']=$dataDb->tree_prefix;
-	}
-
 	// *** Select database ***
 	@$datasql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order");
 	$num_rows = $datasql->rowCount();
 	if ($num_rows>1){
-		echo '<h2>'.__('Old statistics (numbers since last gedcom update)').'</h2>';
+		echo '<h2>'.__('Old statistics (numbers since last GEDCOM update)').'</h2>';
 
 		echo '<b>'.__('Select family tree').'</b><br>';
 		while (@$dataDb=$datasql->fetch(PDO::FETCH_OBJ)){
@@ -754,16 +743,15 @@ if ($statistics_screen=='statistics_old'){
 				$date=substr($date,8,2).$month.substr($date,0,4);
 
 				$treetext=show_tree_text($dataDb->tree_id, $selected_language);
-				if (isset($_SESSION['tree_prefix']) AND $_SESSION['tree_prefix']==$dataDb->tree_prefix){
+				if ($dataDb->tree_id==$tree_id){
 					echo '<b>'.$treetext['name'].'</b>';
-					$tree_id=$dataDb->tree_id;
 				}
 				else{
 					if(CMS_SPECIFIC == "Joomla") {
-						echo '<a href="index.php?option=com_humo-gen&amp;task=admin&amp;page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext['name'].'</a>';
+						echo '<a href="index.php?option=com_humo-gen&amp;task=admin&amp;page='.$page.'&amp;tree_id='.$dataDb->tree_id.'">'.$treetext['name'].'</a>';
 					}
 					else {
-						echo '<a href="index.php?page='.$page.'&amp;tree_prefix='.$dataDb->tree_prefix.'">'.$treetext['name'].'</a>';
+						echo '<a href="index.php?page='.$page.'&amp;tree_id='.$dataDb->tree_id.'">'.$treetext['name'].'</a>';
 					}
 				}
 				echo ' <font size=-1>('.$date.': '.$dataDb->tree_persons.' '.__('persons').", ".$dataDb->tree_families.' '.__('families').")</font>\n<br>";

@@ -29,7 +29,7 @@ if (isset($_POST['save_language'])){
 echo '<h1 align=center>'.__('Prefix editor').'</h1>';
 
 echo '<p>'.__('This is the (name) prefix editor of HuMo-gen.<br>
-These prefixes are used to process name-prefixes if a gedcom file is read.');
+These prefixes are used to process name-prefixes if a GEDCOM file is read.');
 
 echo '<form method="POST" action="'.$phpself2.'" style="display : inline;">';
 echo '<p><table class="humo" border="1" cellspacing="0">';

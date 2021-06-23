@@ -77,7 +77,7 @@ echo '<script type="text/javascript" src="include/jqueryui/js/html2canvas.js"></
 echo '<script type="text/javascript" src="include/jqueryui/js/jquery.plugin.html2canvas.js"></script>';
 echo '<div style="text-align:center;">';
 echo '<span style="font-size:130%">'.__('Ancestors')."&#8678;&#8678;&#8678;"; for($q=0;$q<25;$q++) { echo "&nbsp;"; } echo '</span>';
-echo '<input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow popup!)').'" onClick="showimg();">';
+echo '<input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow pop-up!)').'" onClick="showimg();">';
 echo '<span style="font-size:130%">'; for($q=0;$q<25;$q++) { echo "&nbsp;"; }  echo "&#8680;&#8680;&#8680;".__('Descendants'); echo '</span>';
 echo '</div>';
 
@@ -97,9 +97,9 @@ echo '<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:'.$alig
 echo __('<b>USE:</b>
 <p>The main person is displayed in the center of the chart.<br>
 Ancestors are displayed to his/her left, descendants are displayed to the right
-<p><b>Hover over square:</b> Display popup menu with details<br>
+<p><b>Hover over square:</b> Display pop-up menu with details<br>
 <b>Click on square:</b> Move this person to center of chart<br>
-<b>Click on name in popup menu:</b> Go to person\'s family page<br><br>
+<b>Click on name in pop-up menu:</b> Go to person\'s family page<br><br>
 <b>LEGEND:</b>');
 
 echo '<p><span style="background-image: linear-gradient(to bottom, #ffffff 0%, #81bef7 100%); border:1px brown solid;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'.__('Male').'<br>';
@@ -114,9 +114,9 @@ and 2 - 15 generation for descendants.
 (large number of generations will take longer to generate)<br>
 <b>Box size:</b> Use the slider to choose display size (10 steps): <br>
 step 1-4: small boxes with popup for details<br>
-step 5-7: larger boxes with initials of name + popup for details<br>
-step 8-9: boxes/rectangles with name inside + popup with further details<br>
-step 10:    large rectangles with name, birth and death details + popup with further details');
+step 5-7: larger boxes with initials of name + pop-up for details<br>
+step 8-9: boxes/rectangles with name inside + pop-up with further details<br>
+step 10:    large rectangles with name, birth and death details + pop-up with further details');
 
 echo '</div>';
 echo '</div>';

@@ -2,13 +2,11 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<html><head><title>'.__('Select parents').'</title></head><body>';
+//echo '<html><head><title>'.__('Select parents').'</title></head><body>';
 echo '<h1 align=center>'.__('Select parents').'</h1>';
 
 include ('include/editor_cls.php');
 $editor_cls = New editor_cls;
-
-$tree_id=$_SESSION['admin_tree_id'];
 
 $place_item='add_parents'; $form='form1';
 echo'
@@ -21,7 +19,6 @@ echo'
 	</script>
 ';
 
-//echo '<form method="POST" action="index.php?page=editor_relation_select&person_item='.$_GET['person_item'].'&person='.$_GET['person'].'&tree_prefix='.$_GET['tree_prefix'].'" style="display : inline;">';
 echo '<form method="POST" action="index.php?page=editor_relation_select" style="display : inline;">';
 	$search_quicksearch_parent=''; if (isset($_POST['search_quicksearch_parent'])){ $search_quicksearch_parent=safe_text_db($_POST['search_quicksearch_parent']); }
 	echo '<input class="fonts" type="text" name="search_quicksearch_parent" placeholder="'.__('Name').'" value="'.$search_quicksearch_parent.'" size="15">';

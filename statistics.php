@@ -226,7 +226,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 
 		// *** Men and women table ***
 		function show_person($row, $date='EMPTY') {
-			global $humo_option, $uri_path;
+			global $humo_option, $uri_path, $tree_id;
 			$person_cls = New person_cls;
 			$person_cls->construct($row);
 			$privacy=$person_cls->privacy;
@@ -235,19 +235,9 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			if ($privacy==''){
 				$line='';
 				if ($date!='EMPTY') $line="<td align='center'><i>".date_place($date,'')."</i></td>\n";
-				if(CMS_SPECIFIC=="Joomla") {
-					$line.='<td align="center"><a href="index.php?option=com_humo-gen&task=family&id='.$row->pers_indexnr.'"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
-				}
-				else {
-					if ($humo_option["url_rewrite"]=="j"){
-						// *** $uri_path generated in header.php ***
-						$line.='<td align="center"><a href="'.$uri_path.'family/'.$_SESSION['tree_prefix'].'/'.$row->pers_indexnr.
-						'/'.$row->pers_gedcomnumber.'/"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
-					}
-					else{
-						$line.='<td align="center"><a href="family.php?id='.$row->pers_indexnr.'"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
-					}
-				}
+
+				$url=$person_cls->person_url($row);	// *** Get link to family ***
+				$line.='<td align="center"><a href="'.$url.'"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
 			}
 			else{
 				$line='<td align="center">'.__('PRIVACY FILTER').'</td>';
@@ -668,12 +658,12 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			// displays one set of name & nr column items in the row
 			// $nr is the array number of the name set created in function last_names
 			// if $lastcol is set to true, the last right border of the number column will not be made thicker (as the other ones are to distinguish between the name&nr sets)
-			global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names;
+			global $user, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $tree_id;
 			if (CMS_SPECIFIC=='Joomla'){
-				$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
+				$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;tree_id='.$tree_id;
 			}
 			else{
-				$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
+				$path_tmp=CMS_ROOTPATH.'list.php?tree_id='.$tree_id;
 			}
 			echo '<td class="namelst">';
 			if(isset($freq_last_names[$nr])) { 
@@ -872,10 +862,10 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			);
 
 			if (CMS_SPECIFIC=='Joomla'){
-				$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'];
+				$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;tree_id='.$tree_id;
 			}
 			else{
-				$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'];
+				$path_tmp=CMS_ROOTPATH.'list.php?tree_id='.$tree_id;
 			}
 
 			count($m_first_names) < count($f_first_names) ? $most= count($f_first_names) : $most= count($m_first_names);

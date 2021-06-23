@@ -18,8 +18,9 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		$num_rows = $tree_search_result2->rowCount();
 		if ($num_rows>1){
 			echo ' <form method="POST" action="tree_index.php" style="display : inline;" id="top_tree_select">';
-			echo __('Family tree');
-			echo ': <select size=1 name="database" onChange="this.form.submit();" style="width: 150px; height:20px;">';
+			echo __('Family tree').': ';
+			//echo '<select size="1" name="database" onChange="this.form.submit();" style="width: 150px; height:20px;">';
+			echo '<select size="1" name="tree_id" onChange="this.form.submit();" style="width: 150px; height:20px;">';
 			echo '<option value="">'.__('Select a family tree:').'</option>';
 			$count=0;
 			while($tree_searchDb=$tree_search_result2->fetch(PDO::FETCH_OBJ)) {
@@ -35,7 +36,8 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 						if($count==0) { $_SESSION['tree_prefix'] = $tree_searchDb->tree_prefix; $selected=' SELECTED'; }
 					}
 					$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
-					echo '<option value="'.$tree_searchDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+					//echo '<option value="'.$tree_searchDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+					echo '<option value="'.$tree_searchDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
 					$count++;
 				}
 			}
@@ -184,11 +186,11 @@ echo '<ul class="humo_menu_item">';
 		$path_tmp='index.php?option=com_humo-gen';
 	}
 	elseif ($humo_option["url_rewrite"]=="j"){
-		$path_tmp='index/'.$_SESSION['tree_prefix']."/";
+		$path_tmp='index/'.$tree_id."/";
 		//$path_tmp='index/';
 	}
 	else{
-		$path_tmp=CMS_ROOTPATH.'index.php?database='.$_SESSION['tree_prefix'];
+		$path_tmp=CMS_ROOTPATH.'index.php?tree_id='.$tree_id;
 		//$path_tmp=CMS_ROOTPATH.'index.php';
 	}
 	echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'">'.__('Home')."</a></li>\n";
@@ -339,10 +341,10 @@ echo '<ul class="humo_menu_item">';
 			$select_menu=''; if ($menu_choice=='cms_pages'){ $select_menu=' id="current"'; }
 
 			if (CMS_SPECIFIC=='Joomla'){
-				$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages&amp;database='.$_SESSION['tree_prefix'];
+				$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages&amp;tree_id='.$tree_id;
 			}
 			else{
-				$path_tmp=CMS_ROOTPATH.'cms_pages.php?database='.$_SESSION['tree_prefix'];
+				$path_tmp=CMS_ROOTPATH.'cms_pages.php?tree_id='.$tree_id;
 			}
 			echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
 		}
@@ -364,16 +366,16 @@ echo '<ul class="humo_menu_item">';
 		echo '<div class="'.$rtlmarker.'sddm">';
 
 			if (CMS_SPECIFIC=='Joomla'){
-				$path_tmp='index.php?option=com_humo-gen&amp;task=tree_index&amp;database='.$_SESSION['tree_prefix'].'&amp;reset=1';
-				//$path_tmp='index.php?option=com_humo-gen&amp;task=index&amp;database='.$_SESSION['tree_prefix'].'&amp;reset=1';
+				$path_tmp='index.php?option=com_humo-gen&amp;task=tree_index&amp;tree_id='.$tree_id.'&amp;reset=1';
+				//$path_tmp='index.php?option=com_humo-gen&amp;task=index&amp;tree_id='.$tree_id.'&amp;reset=1';
 			}
 			elseif ($humo_option["url_rewrite"]=="j"){
-				$path_tmp='tree_index/'.$_SESSION['tree_prefix']."/";
-				//$path_tmp='index/'.$_SESSION['tree_prefix']."/";
+				$path_tmp='tree_index/'.$tree_id."/";
+				//$path_tmp='index/'.$tree_id."/";
 			}
 			else{
-				$path_tmp=CMS_ROOTPATH.'tree_index.php?database='.$_SESSION['tree_prefix'].'&amp;reset=1';
-				//$path_tmp=CMS_ROOTPATH.'index.php?database='.$_SESSION['tree_prefix'].'&amp;reset=1';
+				$path_tmp=CMS_ROOTPATH.'tree_index.php?tree_id='.$tree_id.'&amp;reset=1';
+				//$path_tmp=CMS_ROOTPATH.'index.php?tree_id='.$tree_id.'&amp;reset=1';
 			}
 
 			echo '<a href="'.$path_tmp.'"';
@@ -390,10 +392,10 @@ echo '<ul class="humo_menu_item">';
 					if ($user['group_menu_persons']=="j"){
 						$select_menu=''; if ($menu_choice=='persons'){ $select_menu=' id="current"'; }
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;database='.$_SESSION['tree_prefix'].'&amp;reset=1';
+							$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;tree_id='.$tree_id.'&amp;reset=1';
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'].'&amp;reset=1';
+							$path_tmp=CMS_ROOTPATH.'list.php?tree_id='.$tree_id.'&amp;reset=1';
 						}
 						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Persons').'</a></li>';
 					}
@@ -401,32 +403,34 @@ echo '<ul class="humo_menu_item">';
 					if ($user['group_menu_names']=="j"){
 						$select_menu=''; if ($menu_choice=='names'){ $select_menu=' id="current"'; }
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;database='.$_SESSION['tree_prefix'];
+							$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id='.$tree_id;
 						}
 						elseif ($humo_option["url_rewrite"]=="j"){
-							$path_tmp= 'list_names/'.$_SESSION['tree_prefix'].'/';
+							$path_tmp= 'list_names/'.$tree_id.'/';
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'list_names.php?database='.$_SESSION['tree_prefix'];
+							$path_tmp=CMS_ROOTPATH.'list_names.php?tree_id='.$tree_id;
 						}
 						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Names')."</a></li>\n";
 					}
+
+					// *** Places ***
 					if ($user['group_menu_places']=="j"){
 						$select_menu=''; if ($menu_choice=='places'){ $select_menu=' id="current"'; }
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;database='.$_SESSION['tree_prefix'].'&amp;task=list&amp;index_list=places&amp;reset=1';
+							$path_tmp='index.php?option=com_humo-gen&amp;tree_id='.$tree_id.'&amp;task=list&amp;index_list=places&amp;reset=1';
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'list.php?database='.$_SESSION['tree_prefix'].'&amp;index_list=places&amp;reset=1';
+							$path_tmp=CMS_ROOTPATH.'list.php?tree_id='.$tree_id.'&amp;index_list=places&amp;reset=1';
 						}
 						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Places (by persons)')."</a></li>\n";
 
 						$select_menu=''; if ($menu_choice=='places_families'){ $select_menu=' id="current"'; }
 						//if (CMS_SPECIFIC=='Joomla'){
-						//	$path_tmp='index.php?option=com_humo-gen&amp;database='.$_SESSION['tree_prefix'].'&amp;task=list&amp;index_list=places&amp;reset=1';
+						//	$path_tmp='index.php?option=com_humo-gen&amp;tree_id='.$tree_id.'&amp;task=list&amp;index_list=places&amp;reset=1';
 						//}
 						//else{
-							$path_tmp=CMS_ROOTPATH.'list_places_families.php?database='.$_SESSION['tree_prefix'].'&amp;index_list=places&amp;reset=1';
+							$path_tmp=CMS_ROOTPATH.'list_places_families.php?tree_id='.$tree_id.'&amp;index_list=places&amp;reset=1';
 						//}
 						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Places (by families)')."</a></li>\n";
 					}
@@ -434,10 +438,10 @@ echo '<ul class="humo_menu_item">';
 					if ($user['group_photobook']=='j'){
 						$select_menu=''; if ($menu_choice=='pictures'){ $select_menu=' id="current"'; }
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=photoalbum&amp;database='.$_SESSION['tree_prefix'];
+							$path_tmp='index.php?option=com_humo-gen&amp;task=photoalbum&amp;tree_id='.$tree_id;
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'photoalbum.php?database='.$_SESSION['tree_prefix'];
+							$path_tmp=CMS_ROOTPATH.'photoalbum.php?tree_id='.$tree_id;
 						}
 						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Photobook')."</a></li>\n";
 					}
@@ -450,10 +454,10 @@ echo '<ul class="humo_menu_item">';
 						if ($sourceDb>0){
 							$select_menu=''; if ($menu_choice=='sources'){ $select_menu=' id="current"'; }
 							if (CMS_SPECIFIC=='Joomla'){
-								$path_tmp='index.php?option=com_humo-gen&amp;task=sources&amp;database='.$_SESSION['tree_prefix'];
+								$path_tmp='index.php?option=com_humo-gen&amp;task=sources&amp;tree_id='.$tree_id;
 							}
 							else{
-								$path_tmp=CMS_ROOTPATH.'sources.php?database='.$_SESSION['tree_prefix'];
+								$path_tmp=CMS_ROOTPATH.'sources.php?tree_id='.$tree_id;
 							}
 							echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Sources')."</a></li>\n";
 						}
@@ -468,10 +472,10 @@ echo '<ul class="humo_menu_item">';
 						if ($addressDb>0){
 							$select_menu=''; if ($menu_choice=='addresses'){ $select_menu=' id="current"'; }
 							if (CMS_SPECIFIC=='Joomla'){
-								$path_tmp='index.php?option=com_humo-gen&amp;task=addresses&amp;database='.$_SESSION['tree_prefix'];
+								$path_tmp='index.php?option=com_humo-gen&amp;task=addresses&amp;tree_id='.$tree_id;
 							}
 							else{
-								$path_tmp=CMS_ROOTPATH.'addresses.php?database='.$_SESSION['tree_prefix'];
+								$path_tmp=CMS_ROOTPATH.'addresses.php?tree_id='.$tree_id;
 							}
 							echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Addresses')."</a></li>\n";
 						}

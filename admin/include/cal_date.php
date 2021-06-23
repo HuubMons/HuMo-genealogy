@@ -5,8 +5,6 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-if (isset($_POST['tree']) AND is_numeric($_POST['tree'])){ $tree=safe_text_db($_POST["tree"]); }
-
 echo '<h1 align=center>'.__('Calculated birth date').'</h1>';
 
 echo __('Calculated birth date is an estimated/ calculated date that is used for the privacy filter.<br>
@@ -21,18 +19,11 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 	echo '<td>';
 		echo '<form method="POST" action="index.php">';
 		echo '<input type="hidden" name="page" value="cal_date">';
-		echo '<select size="1" name="tree">';
+		echo '<select size="1" name="tree_id">';
 			$tree_result=$db_functions->get_trees();
 			foreach($tree_result as $treeDb){
 				$treetext=show_tree_text($treeDb->tree_id, $selected_language);
-				$selected='';
-				if (isset($tree) AND ($treeDb->tree_id==$tree)){
-					$selected=' SELECTED';
-					// *** Needed for submitter ***
-					//$tree_owner=$treeDb->tree_owner;
-					$tree_id=$treeDb->tree_id;
-					$db_functions->set_tree_id($tree_id);
-				}
+				$selected=''; if (isset($tree_id) AND ($treeDb->tree_id==$tree_id)){ $selected=' SELECTED'; }
 				echo '<option value="'.$treeDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
 			}
 		echo '</select>';
@@ -42,7 +33,8 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 
 	echo '</td></tr>';
 
-	if (isset($tree_id)){
+	if (isset($_POST['submit_button']) AND isset($tree_id)){
+		$db_functions->set_tree_id($tree_id);
 
 		function calculate_person($gedcomnumber){
 			global $db_functions;

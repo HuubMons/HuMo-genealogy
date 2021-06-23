@@ -29,19 +29,6 @@ function show_person($familyDb){
 		$selected_person1=$familyDb->fam_woman;
 	$personDb = $db_functions->get_person($selected_person1);
 
-	//if (CMS_SPECIFIC=='Joomla'){
-	//	$start_url='index.php?option=com_humo-gen&amp;task=family&amp;database='.$personDb->pers_tree_prefix.
-	//		'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-	//}
-	//else
-	if ($humo_option["url_rewrite"]=="j"){	// *** url_rewrite ***
-		// *** $uri_path made in header.php ***
-		$start_url= $uri_path.'family/'.$personDb->pers_tree_prefix.'/'.$personDb->pers_indexnr.'/'.$personDb->pers_gedcomnumber.'/';
-	}
-	else{
-		$start_url=CMS_ROOTPATH.'family.php?database='.$personDb->pers_tree_prefix.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
-	}
-
 	// *** Person class used for name and person pop-up data ***
 	$person_cls = New person_cls;
 	$person_cls->construct($personDb);
@@ -114,6 +101,7 @@ function show_person($familyDb){
 	echo '</td><td style="border-left:0px;">';
 
 	// *** Show name of person ***
+	$start_url=$person_cls->person_url($personDb);	// *** Get url to family ***
 	echo ' <a href="'.$start_url.'">'.rtrim($index_name).'</a>';
 
 	//*** Show spouse/ partner ***

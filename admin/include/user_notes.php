@@ -5,8 +5,6 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-if (isset($_POST['tree']) AND (is_numeric($_POST['tree']))){ $tree=safe_text_db($_POST["tree"]); }
-
 echo '<h1 align=center>'.__('User notes').'</h1>';
 
 echo '<table class="humo standard"  border="1">';
@@ -19,14 +17,13 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 		$tree_result = $dbh->query($tree_sql);
 		echo '<form method="POST" action="index.php">';
 		echo '<input type="hidden" name="page" value="user_notes">';
-		echo '<select size="1" name="tree">';
+		echo '<select size="1" name="tree_id">';
 			while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
 				$treetext=show_tree_text($treeDb->tree_id, $selected_language);
 				$selected='';
-				if (isset($tree) AND ($treeDb->tree_id==$tree)){
+				if (isset($tree_id) AND ($treeDb->tree_id==$tree_id)){
 					$selected=' SELECTED';
-					$tree_id=$treeDb->tree_id;
-					$note_tree_prefix=$treeDb->tree_prefix; // *** There is no note_tree_id at this moment ***
+					$note_tree_prefix=$treeDb->tree_prefix; // *** There is note_tree_id, but it's not used at this moment, no value available... ***
 					$db_functions->set_tree_id($tree_id);
 				}
 
@@ -38,7 +35,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 			}
 		echo '</select>';
 
-		echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';
+		echo ' <input type="Submit" name="submit_notes" value="'.__('Select').'">';
 		echo '</form>';
 
 	echo '</td></tr>';
@@ -67,7 +64,6 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 			echo '</form>';
 			echo '</div>';
 		}
-
 	}
 
 	if (isset($_POST['note_remove']) AND is_numeric($_POST["note_id"])){
@@ -75,7 +71,6 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 			// *** Delete source ***
 			$sql="DELETE FROM humo_user_notes WHERE note_id='".safe_text_db($_POST["note_id"])."'";
 			$result=$dbh->query($sql);
-
 			echo __('User note is removed.');
 		echo '</div>';
 	}
@@ -123,8 +118,8 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 				echo '<b>'.$noteDb->note_date.' '.$noteDb->note_time.' '.$userDb->user_name.'</b><br>';
 				//echo '<b>'.$noteDb->note_names.'</b><br>';
 
-				// index.php?page=editor&tree=humo2_&person=I313
-				echo '<b><a href="index.php?page=editor&tree='.$noteDb->note_tree_prefix.'&amp;person='.$noteDb->note_pers_gedcomnumber.'">'.$noteDb->note_pers_gedcomnumber.' '.$noteDb->note_names.'</a></b><br>';
+				// *** Link: index.php?page=editor&amp;tree_id=2_&amp;person=I313 ***
+				echo '<b><a href="index.php?page=editor&amp;tree_id='.$tree_id.'&amp;person='.$noteDb->note_pers_gedcomnumber.'">'.$noteDb->note_pers_gedcomnumber.' '.$noteDb->note_names.'</a></b><br>';
 
 				echo nl2br($noteDb->note_note);
 			echo '</td></tr>';

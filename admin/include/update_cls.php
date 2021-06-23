@@ -1805,7 +1805,7 @@ function update_v5_0(){
 
 	echo '<tr><td>HuMo-gen update V5.0</td><td style="background-color:#00FF00">';
 
-	// *** Save gedcom file name and gedcom program in database ***
+	// *** Save GEDCOM file name and GEDCOM program in database ***
 	// *** Test for existing column, some users allready tried a new script including a database update ***
 	$result = $dbh->query("SHOW COLUMNS FROM `humo_trees` LIKE 'tree_gedcom'");
 	if($result->rowCount() ==0) {

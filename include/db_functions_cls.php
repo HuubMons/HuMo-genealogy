@@ -61,9 +61,10 @@ function __construct() {
 		$sql = "SELECT * FROM humo_user_log WHERE log_ip_address=:log_ip_address ORDER BY log_date DESC LIMIT 0,11";
 		$this->query['check_visitor'] = $dbh->prepare( $sql );
 
-		$sql = "SELECT * FROM humo_users
-			WHERE (user_name=:user_name OR user_mail=:user_name) AND user_password=:user_password";
+		$sql = "SELECT * FROM humo_users WHERE (user_name=:user_name OR user_mail=:user_name) AND user_password_salted!=''";
 		$this->query['get_user'] = $dbh->prepare( $sql );
+		$sql = "SELECT * FROM humo_users WHERE (user_name=:user_name OR user_mail=:user_name) AND user_password=:user_password";
+		$this->query['get_user_no_salt'] = $dbh->prepare( $sql );
 
 		$sql = "SELECT * FROM humo_trees WHERE tree_prefix=:tree_prefix";
 		$this->query['get_tree_prefix'] = $dbh->prepare( $sql );
@@ -131,11 +132,11 @@ function __construct() {
 		$this->query['get_event'] = $dbh->prepare( $sql );
 
 		$sql = "SELECT * FROM humo_events
-		WHERE event_tree_id=:event_tree_id AND event_event=:event_event AND event_kind=:event_kind ORDER BY event_order";
+			WHERE event_tree_id=:event_tree_id AND event_event=:event_event AND event_kind=:event_kind ORDER BY event_order";
 		$this->query['get_events_kind'] = $dbh->prepare( $sql );
 
 		$sql = "SELECT * FROM humo_events
-		WHERE event_tree_id=:event_tree_id AND event_connect_kind=:event_connect_kind AND event_connect_id=:event_connect_id AND event_kind=:event_kind ORDER BY event_order";
+			WHERE event_tree_id=:event_tree_id AND event_connect_kind=:event_connect_kind AND event_connect_id=:event_connect_id AND event_kind=:event_kind ORDER BY event_order";
 		$this->query['get_events_connect'] = $dbh->prepare( $sql );
 
 		// *** Address queries ***
@@ -219,19 +220,45 @@ function check_visitor($ip_address,$block='total'){
 /*--------------------[get user]----------------------------------
  * FUNCTION	: Get user from database return false if it isn't.
  * QUERY	: SELECT * FROM humo_users
- *				WHERE user_name=:user_name AND user_password=:user_password
+ *				(user_name=:user_name OR user_mail=:user_name) AND user_password_salted!=''
+
+ * QUERY	: SELECT * FROM humo_users
+ *				(user_name=:user_name OR user_mail=:user_name) AND user_password=:user_password
  * RETURNS	: user data.
  *----------------------------------------------------------------
  */
 function get_user($user_name,$user_password){
+	global $dbh;
 	$qryDb=false;
-	try {
-		$this->query['get_user']->bindValue(':user_name', $user_name, PDO::PARAM_STR);
-		$this->query['get_user']->bindValue(':user_password', MD5($user_password), PDO::PARAM_STR);
-		$this->query['get_user']->execute();
-		$qryDb=$this->query['get_user']->fetch(PDO::FETCH_OBJ);
-	}catch (PDOException $e) {
-		echo $e->getMessage() . "<br/>";
+
+	// *** First check password method using salt ***
+	$this->query['get_user']->bindValue(':user_name', $user_name, PDO::PARAM_STR);
+	$this->query['get_user']->execute();
+	$qryDb=$this->query['get_user']->fetch(PDO::FETCH_OBJ);
+	$isPasswordCorrect=false;
+	//if (isset($qryDb)){
+	if (isset($qryDb->user_password_salted)){
+		$isPasswordCorrect = password_verify($user_password, $qryDb->user_password_salted);
+	}
+
+	if (!$isPasswordCorrect){
+		// *** Old method without salt, update to new method including salt ***
+		$qryDb=false;
+		try {
+			$this->query['get_user_no_salt']->bindValue(':user_name', $user_name, PDO::PARAM_STR);
+			$this->query['get_user_no_salt']->bindValue(':user_password', MD5($user_password), PDO::PARAM_STR);
+			$this->query['get_user_no_salt']->execute();
+			$qryDb=$this->query['get_user_no_salt']->fetch(PDO::FETCH_OBJ);
+
+			// *** Update to new method including salt ***
+			if ($qryDb){
+				$hashToStoreInDb = password_hash($user_password, PASSWORD_DEFAULT);
+				$sql="UPDATE humo_users SET user_password_salted='".$hashToStoreInDb."', user_password='' WHERE user_id=".$qryDb->user_id;
+				$result = $dbh->query($sql);
+			}
+		}catch (PDOException $e) {
+			echo $e->getMessage() . "<br/>";
+		}
 	}
 	return $qryDb;
 }

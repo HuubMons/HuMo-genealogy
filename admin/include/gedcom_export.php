@@ -1,7 +1,7 @@
 <?php
 
 /**
-* This is the gedcom processing file for HuMo-gen.
+* This is the GEDCOM processing file for HuMo-gen.
 *
 * If you are reading this in your web browser, your server is probably
 * not configured correctly to run PHP applications!
@@ -12,7 +12,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2009 Huub Mons,
+* Copyright (C) 2008-2020 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -38,7 +38,7 @@ global $selected_language;
 global $persids, $famsids; $noteids;
 $persids = array(); $famsids = array(); $noteids = array();
 
-echo '<H1 align=center>'.__('Gedcom file export').'</H1>';
+echo '<H1 align=center>'.__('GEDCOM file export').'</H1>';
 
 function decode($buffer){
 	//$buffer = html_entity_decode($buffer, ENT_NOQUOTES, 'ISO-8859-15');
@@ -48,7 +48,7 @@ function decode($buffer){
 	return $buffer;
 }
 
-// Official gedcom 5.5.1: 255 characters total (including tags).
+// Official GEDCOM 5.5.1: 255 characters total (including tags).
 // Character other programs: Aldfaer about 60 char., BK about 230.
 // ALDFAER:
 // 1 CONC Bla, bla text.
@@ -68,7 +68,7 @@ function process_text($level,$text,$extractnoteids=true){
 	}
 
 	$regel=explode("\n",$text);
-	// *** If text is too long split it, gedcom 5.5.1 specs: max. 255 characters including tag. ***
+	// *** If text is too long split it, GEDCOM 5.5.1 specs: max. 255 characters including tag. ***
 	$text=''; $text_processed='';
 	for ($j=0; $j<=(count($regel)-1); $j++){
 		$text=$regel[$j]."\r\n";
@@ -419,13 +419,13 @@ $myFile = CMS_ROOTPATH_ADMIN."backup_tmp/gedcom.ged";
 if (@file_exists("../../gedcom-bestanden")) $myFile="../../gedcom-bestanden/gedcom.ged";
 if (@file_exists("../../../gedcom-bestanden")) $myFile="../../../gedcom-bestanden/gedcom.ged";
 
-// *** Remove gedcom file ***
+// *** Remove GEDCOM file ***
 if (isset($_POST['remove_gedcom'])){
 	unlink($myFile);
-	echo '<h2>'.__('Gedcom file is REMOVED.').'</h2>';
+	echo '<h2>'.__('GEDCOM file is REMOVED.').'</h2>';
 }
 
-echo __('<b>Don\'t use a gedcom file as a backup for your genealogical data!</b> A gedcom file is only usefull to exchange genealogical data with other genealogical program\'s.
+echo __('<b>Don\'t use a GEDCOM file as a backup for your genealogical data!</b> A GEDCOM file is only usefull to exchange genealogical data with other genealogical program\'s.
 Use "Database backup" for a proper backup.').'<br><br>';
 
 if (CMS_SPECIFIC=='Joomla'){
@@ -449,20 +449,17 @@ echo '<td>';
 		echo '<input type="hidden" name="flag_newtree" value=\'0\'>';
 		$onchange = ' onChange="this.form.flag_newtree.value=\'1\';this.form.submit();" ';
 	}
-	echo '<select '.$onchange.' size="1" name="tree">';
+	echo '<select '.$onchange.' size="1" name="tree_id">';
 		while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
 			$treetext=show_tree_text($treeDb->tree_id, $selected_language);
 			$selected='';
-			if (isset($tree)){
-				if ($treeDb->tree_prefix==$tree){
-					$selected=' SELECTED';
-					// *** Needed for submitter ***
-					$tree_owner=$treeDb->tree_owner;
-					$tree_id=$treeDb->tree_id;
-					$db_functions->set_tree_id($tree_id);
-				}
+			if ($treeDb->tree_id==$tree_id){
+				$selected=' SELECTED';
+				// *** Needed for submitter ***
+				$tree_owner=$treeDb->tree_owner;
+				$db_functions->set_tree_id($tree_id);
 			}
-			echo '<option value="'.$treeDb->tree_prefix.'"'.$selected.'>'.@$treetext['name'].'</option>';
+			echo '<option value="'.$treeDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
 		}
 	echo '</select></td></tr><tr><td>';
 	echo __('Whole tree or part:').'</td><td>';
@@ -649,7 +646,7 @@ echo '<select size="1" name="gedcom_status">';
 echo '</select>';
 echo '</td></tr>';
 
-echo '<tr><td>'.__('Gedcom export').'</td><td>';
+echo '<tr><td>'.__('GEDCOM export').'</td><td>';
 	echo ' <input type="Submit" name="submit_button" value="'.__('Start export').'">';
 
 	// *** Show processed lines ***
@@ -662,7 +659,8 @@ echo '</td></tr>';
 echo '</table>';
 echo '</form>';
 
-if (isset($_POST["tree"]) AND isset($_POST['submit_button'])){
+//if (isset($_POST["tree"]) AND isset($_POST['submit_button'])){
+if (isset($tree_id) AND isset($_POST['submit_button'])){
 
 	if(isset($_POST['part_tree']) AND $_POST['part_tree']=='part' AND isset($_POST['kind_tree']) AND $_POST['kind_tree']=="descendant") {
 		// map descendants
@@ -687,13 +685,13 @@ if (isset($_POST["tree"]) AND isset($_POST['submit_button'])){
 		ancestors($anc_pers,$max_gens);
 	}
 
-	echo '<p>'.__('Gedcom file will be exported to backup_tmp/ folder').'<br>';
+	echo '<p>'.__('GEDCOM file will be exported to backup_tmp/ folder').'<br>';
 	$gedcom_texts=''; if (isset($_POST['gedcom_texts'])) $gedcom_texts=$_POST['gedcom_texts'];
 	$gedcom_sources=''; if (isset($_POST['gedcom_sources'])) $gedcom_sources=$_POST['gedcom_sources'];
 	$gedcom_char_set=''; if (isset($_POST['gedcom_char_set'])) $gedcom_char_set=$_POST['gedcom_char_set'];
 	$fh = fopen($myFile, 'w') or die("<b>ERROR: no permission to open a new file! Please check permissions of admin/backup_tmp folder!</b>");
 
-// *** Gedcom header ***
+// *** GEDCOM header ***
 $buffer='';
 //if ($gedcom_char_set=='UTF-8') $buffer.= "\xEF\xBB\xBF"; // *** Add BOM header to UTF-8 file ***
 $buffer.="0 HEAD\r\n";
@@ -916,7 +914,7 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 		}
 	}
 
-	// *** Shared address (no valid gedcom 5.5.1) ***
+	// *** Shared address (no valid GEDCOM 5.5.1) ***
 	$eventnr=0;
 	$connect_sql = $db_functions->get_connections_connect_id('person','person_address',$person->pers_gedcomnumber);
 	foreach ($connect_sql as $connectDb){
@@ -1674,10 +1672,10 @@ if ($gedcom_texts=='yes'){
 fwrite($fh, '0 TRLR');
 fclose($fh);
 
-echo '<p>'.__('Gedcom file is generated').'<br>';
+echo '<p>'.__('GEDCOM file is generated').'<br>';
 
 echo '<form method="POST" action="include/gedcom_download.php" target="_blank">';
-echo ' <input type="Submit" name="something" value="'.__('Download gedcom file').'">';
+echo ' <input type="Submit" name="something" value="'.__('Download GEDCOM file').'">';
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '</form><br>';
 
@@ -1688,7 +1686,7 @@ else {
 	echo '<form method="POST" action="index.php">';
 }
 
-echo ' <input type="Submit" name="remove_gedcom" value="'.__('Remove gedcom file').'">';
+echo ' <input type="Submit" name="remove_gedcom" value="'.__('Remove GEDCOM file').'">';
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '</form>';
 

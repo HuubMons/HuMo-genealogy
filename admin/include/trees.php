@@ -205,8 +205,23 @@ if (isset($_POST['remove_tree2']) AND is_numeric($_POST['tree_id']) ){
 
 	// *** Next lines to reset session items for editor pages ***
 	if (isset($_SESSION['admin_tree_prefix'])){ unset($_SESSION['admin_tree_prefix']); }
+	if (isset($_SESSION['admin_tree_id'])){ unset($_SESSION['admin_tree_id']); }
 	unset($_SESSION['admin_pers_gedcomnumber']);
 	unset($_SESSION['admin_fam_gedcomnumber']);
+
+	// *** Now select another family tree ***
+	$check_tree_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order LIMIT 0,1");
+	@$check_treeDb=$check_tree_sql->fetch(PDO::FETCH_OBJ);
+	$check_tree_id=$check_treeDb->tree_id;
+	// *** Double check tree_id and save tree id in session ***
+	$tree_id=''; $tree_prefix='';
+	$_SESSION['admin_tree_id']='';
+	if ($check_tree_id AND $check_tree_id!=''){
+		$get_treeDb=$db_functions->get_tree($check_tree_id);
+		$tree_id=$get_treeDb->tree_id;
+		$_SESSION['admin_tree_id']=$tree_id;
+		$tree_prefix=$get_treeDb->tree_prefix;
+	}
 }
 
 if (isset($_GET['up']) AND is_numeric($_GET['tree_order']) AND is_numeric($_GET['id']) ){
@@ -247,16 +262,20 @@ $tree_cls = New tree_cls;
 if (isset($_POST['add_tree_data'])){
 	// *** Select new family tree if a new family tree is added ***
 	$data2sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order DESC LIMIT 0,1");
+			$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
+			if ($data2Db){
+				$tree_id=$data2Db->tree_id;
+			}
 }
-else{
-	$data2sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order LIMIT 0,1");
-}
-$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
-if ($data2Db){
-	$tree_id=$data2Db->tree_id;
-}
-if (isset($_POST['tree_id']) AND is_numeric($_POST['tree_id']) ){ $tree_id=$_POST['tree_id']; }
-if (isset($_GET['tree_id']) AND is_numeric($_GET['tree_id']) ){ $tree_id=$_GET['tree_id']; }
+//else{
+//	$data2sql = $dbh->query("SELECT * FROM humo_trees ORDER BY tree_order LIMIT 0,1");
+//}
+//$data2Db=$data2sql->fetch(PDO::FETCH_OBJ);
+//if ($data2Db){
+//	$tree_id=$data2Db->tree_id;
+//}
+//if (isset($_POST['tree_id']) AND is_numeric($_POST['tree_id']) ){ $tree_id=$_POST['tree_id']; }
+//if (isset($_GET['tree_id']) AND is_numeric($_GET['tree_id']) ){ $tree_id=$_GET['tree_id']; }
 
 // ******************************************
 // *** Show texts of selected family tree ***
@@ -321,7 +340,7 @@ echo '<div class="pageHeading">';
 			$select_item=''; if ($menu_admin=='tree_data'){ $select_item=' pageTab-active'; }
 			echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=tree_data'.'&amp;tree_id='.$tree_id.'">'.__('Family tree data')."</a></div></li>";
 
-			// *** Read gedcom file ***
+			// *** Read GEDCOM file ***
 			$select_item=''; if ($menu_admin=='tree_gedcom'){ $select_item=' pageTab-active'; }
 			echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=tree_gedcom&amp;tree_id='.$tree_id.'&amp;tree_prefix='.$data2Db->tree_prefix.'&amp;step1=read_gedcom">'.__('Import Gedcom file')."</a></div></li>";
 

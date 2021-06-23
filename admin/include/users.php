@@ -33,7 +33,8 @@ if (isset($_POST['change_user'])){
 				user_name='".safe_text_db($username)."',
 				user_mail='".safe_text_db($usermail)."', ";
 			if (isset($_POST[$userDb->user_id."password"]) AND $_POST[$userDb->user_id."password"]){
-				$sql=$sql."user_password='".MD5($_POST[$userDb->user_id."password"])."', ";
+				$hashToStoreInDb = password_hash($_POST[$userDb->user_id."password"], PASSWORD_DEFAULT);
+				$sql=$sql."user_password_salted='".$hashToStoreInDb."', user_password='', ";
 			}
 			$sql=$sql."user_group_id='".safe_text_db($_POST[$userDb->user_id."group_id"]);
 			$sql=$sql."' WHERE user_id=".safe_text_db($_POST[$userDb->user_id."user_id"]);
@@ -43,19 +44,13 @@ if (isset($_POST['change_user'])){
 }
 
 if (isset($_POST['add_user']) AND is_numeric($_POST["add_group_id"])){
-	//$sql="INSERT INTO humo_users SET
-	//user_name='".safe_text_db($_POST["add_username"])."',
-	//user_mail='".safe_text_db($_POST["add_usermail"])."',
-	//user_password='".MD5($_POST["add_password"])."',
-	//user_group_id='".safe_text_db($_POST["add_group_id"])."';";
-	//$result=$dbh->query($sql);
-
 	$user_prep = $dbh->prepare("INSERT INTO humo_users SET
 		user_name=:add_username, user_mail=:add_usermail,
-		user_password=:add_password, user_group_id=:add_group_id");
+		user_password_salted=:add_password_salted, user_group_id=:add_group_id");
 	$user_prep->bindValue(':add_username',$_POST["add_username"], PDO::PARAM_STR);
 	$user_prep->bindValue(':add_usermail',$_POST["add_usermail"]);
-	$user_prep->bindValue(':add_password',MD5($_POST["add_password"]));
+	$hashToStoreInDb = password_hash($_POST["add_password"], PASSWORD_DEFAULT);
+	$user_prep->bindValue(':add_password_salted',$hashToStoreInDb);
 	$user_prep->bindValue(':add_group_id',$_POST["add_group_id"], PDO::PARAM_INT);
 	$user_prep->execute();
 }
@@ -88,11 +83,26 @@ if (isset($_GET['unblock_ip_address'])){
 // *************
 
 // *** Check for standard admin username and password ***
+/*
 $sql="SELECT * FROM humo_users WHERE user_name='admin' OR (user_name='admin' AND user_password='".MD5('humogen')."')";
 $check_login = $dbh->query($sql);
 $check_loginDb=$check_login->fetch(PDO::FETCH_OBJ);
 if ($check_loginDb)
 	echo '<b><span style="color:red">'.__('Standard admin username or admin password is used.').'</span></b>';
+*/
+
+// *** Check for standard admin username and password ***
+$check_admin=false;
+$sql="SELECT * FROM humo_users WHERE user_group_id='1'";
+$check_login = $dbh->query($sql);
+while ($check_loginDb=$check_login->fetch(PDO::FETCH_OBJ)){
+	if ($check_loginDb->user_name=='admin') $check_admin=true;
+	if ($check_loginDb->user_password==MD5('humogen')) $check_admin=true; // *** Check old password method ***
+	$check_password = password_verify('humogen', $check_loginDb->user_password_salted); if ($check_password) $check_admin=true;
+}
+if ($check_admin){
+	echo '<b><span style="color:red">'.__('Standard admin username or admin password is used.').'</span></b>';
+}
 
 if(CMS_SPECIFIC=="Joomla") {
 	echo "<form method=\"POST\" action=\"index.php?option=com_humo-gen&amp;task=admin&amp;page=users\">\n";

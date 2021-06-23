@@ -1,1 +1,1 @@
-directory for gedcom files.
+directory for GEDCOM files.

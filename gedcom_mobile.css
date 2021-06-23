@@ -28,17 +28,19 @@ body{
 }
 
 #top_tree_select{
-	position: relative;
-	float:right;
+	/* position: relative; */
+	/* float:right; */
+	right:5px;
+	top:20px;
 }
 
 #top_quicksearch {
 	right:150px;
-	top:40px;
+	top:45px;
 }
 #top_favorites_select {
 	right:5px;
-	top:40px;
+	top:45px;
 }
 
 /* #humo_menu = menu bar */

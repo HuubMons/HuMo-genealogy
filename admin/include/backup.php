@@ -22,7 +22,7 @@ else {
 
 	echo __('If you use HuMo-gen to edit in the family tree, then create multiple backups. Recommended backups:<br>
 <b>1) Best option: use PhpMyAdmin. Export all tables from the HuMo-gen database (TIP: use the zip option for a compressed file).</b><br>
-2) Just for sure: export a gedcom file. This is not a full family tree backup! But it will contain all basic genealogical data.<br>
+2) Just for sure: export a GEDCOM file. This is not a full family tree backup! But it will contain all basic genealogical data.<br>
 3) Use the HuMo-gen backup page.');
 	echo '<br><br>';
 

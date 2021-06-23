@@ -9,7 +9,7 @@
 // extended marital calculator added by Yossi Beck - February 2014
 //
 // contains the following functions:
-// create_rel_array      - creates $rel_array with gedcom nr and generation nr of ancestors of person X and Y
+// create_rel_array      - creates $rel_array with GEDCOM nr and generation nr of ancestors of person X and Y
 // compare_rel_array     - compares the $rel_array arrays of X and Y to find common ancestor (can be the persons themselves)
 // calculate_rel         - if found, determines the nature of the relation (siblings, ancestors, nephews etc.)
 // calculate_ancestor    - calculates the degree of relations (2nd great-grandfather)
@@ -22,7 +22,7 @@
 // display               - displays the result of comparison checks
 // display_table         - displays simple chart showing the found relationship
 // unset_var             - unsets the vital variables before searching marital relations
-// get_person            - retrieves person from MySQL database by gedcom nr
+// get_person            - retrieves person from MySQL database by GEDCOM nr
 // dutch_ancestor        - special algorithm to process complicated dutch terminology for distant ancestors
 //
 // the meaning of the value of the $table variable (for displaying table with lineage if a match is found):
@@ -42,7 +42,7 @@
 //
 // values in the genarray:
 // the genarray is an array of the ancestors of a base person (one of the two persons entered in the search or their spouses)
-// genarray[][0] = gedcom number of the person
+// genarray[][0] = GEDCOM number of the person
 // genarray[][1] = number of generations (counted from base person)
 // genarray[][2] = array number of child
 //
@@ -51,7 +51,7 @@
 // $special_spouseX (and Y) - flags situation where the regular text "spouse of" has to be changed:
 // ----- for example: "X is spouse of brother of Y" should become "X is sister-in-law of Y"
 // $sexe, $sexe2 - the sexe of persons X and Y
-// person, $person2 - gedcom nr of the searched persons X and Y
+// person, $person2 - GEDCOM nr of the searched persons X and Y
 //============================================================================================
 ini_set('max_execution_time', 600);
 
@@ -82,7 +82,7 @@ else {
 }
 
 function create_rel_array ($gednr)  {
-	// creates array of ancestors of person with gedcom nr. $gednr
+	// creates array of ancestors of person with GEDCOM nr. $gednr
 	global $dbh, $db_functions;
 
 	$family_id=$gednr;
@@ -1853,8 +1853,8 @@ global $rel_arrayspouseX, $rel_arrayspouseY, $spouse, $tree_prefix_quoted, $tree
 function search_bloodrel() {
 global $rel_arrayX, $rel_arrayY, $person, $person2, $foundX_match, $foundY_match, $reltext, $foundX_gen, $foundY_gen;
 	unset_vars();
-	$rel_arrayX = create_rel_array( $person ); // === gedcom nr of person X ===
-	$rel_arrayY = create_rel_array( $person2 ); // === gedcom nr of person Y ===
+	$rel_arrayX = create_rel_array( $person ); // === GEDCOM nr of person X ===
+	$rel_arrayY = create_rel_array( $person2 ); // === GEDCOM nr of person Y ===
 	if(isset($rel_arrayX) AND isset($rel_arrayY)) {
 		compare_rel_array ($rel_arrayX, $rel_arrayY, 0);
 	}

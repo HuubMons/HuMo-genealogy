@@ -1,8 +1,12 @@
 <?php
 session_start();
+// *** Regenerate session id regularly to prevent session hacking ***
+session_regenerate_id();
 //error_reporting(E_ALL);
 
-if (isset($_SESSION['admin_tree_prefix'])){
+//if (!defined('ADMIN_PAGE')){ exit; }
+
+if (isset($_SESSION['admin_tree_id'])){
 	if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "../../");
 
 	$ADMIN=TRUE; // *** Override "no database" message for admin ***
