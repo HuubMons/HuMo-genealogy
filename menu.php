@@ -84,56 +84,71 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 	//TEST Line to see all cookies...
 	//print_r($_COOKIE);
 
-	// *** Favorite list for families ***
+	// *** Favourite list for family pages ***
 	if (!$bot_visit){
+
+		//$favorites_array[]='';
+		// *** Use session if session is available ***
+		if (isset($_SESSION["save_favorites"]) AND $_SESSION["save_favorites"]){
+			$favorites_array=$_SESSION["save_favorites"];
+		}
+		else{
+			// *** Get favourites from cookie (only if session is empty) ***
+			if (isset($_COOKIE['humo_favorite'])) {
+				foreach ($_COOKIE['humo_favorite'] as $name => $value) {
+					$favorites_array[]=$value;
+				}
+				// *** Save cookie array in session ***
+				$_SESSION["save_favorites"]=$favorites_array;
+			}
+		}
+
+		// *** Add new favorite to list of favourites ***
+		if (isset($_POST['favorite'])){
+			// *** Add favourite to session ***
+			$favorites_array[]=$_POST['favorite'];
+			$_SESSION["save_favorites"]=$favorites_array;
+
+			// *** Add favourite to cookie ***
+			$favorite_array2=explode("|",$_POST['favorite']);
+			// *** Combine tree prefix and family number as unique array id, for example: humo_F4 ***
+			$i=$favorite_array2['2'].$favorite_array2['1'];
+			setcookie("humo_favorite[$i]", $_POST['favorite'], time()+60*60*24*365);
+		}
+
+		// *** Remove favourite from favorite list ***
+		if (isset($_POST['favorite_remove'])){
+			// *** Remove favourite from session ***
+			if (isset($_SESSION["save_favorites"])){
+				unset ($favorites_array);
+				foreach($_SESSION['save_favorites'] as $key=>$value){
+					if ($value!=$_POST['favorite_remove']){
+						$favorites_array[]=$value;
+					}
+				}
+				$_SESSION["save_favorites"]=$favorites_array;
+			}
+
+			// *** Remove cookie ***
+			if (isset($_COOKIE['humo_favorite'])) {
+				foreach ($_COOKIE['humo_favorite'] as $name => $value) {
+					if ($value==$_POST['favorite_remove']){
+						setcookie ("humo_favorite[$name]", "", time() - 3600);
+					}
+				}
+			}
+		}
+
+		// *** Show favorites in selection list ***
 		echo ' <form method="POST" action="'.$uri_path.'family.php'.'" style="display : inline;" id="top_favorites_select">';
 			echo '<img src="images/favorite_blue.png"> ';
 			echo '<select size=1 name="humo_favorite_id" onChange="this.form.submit();" style="width: 115px; height:20px;">';
 			echo '<option value="">'.__('Favourites list:').'</option>';
 
-			//$favorites_array='';
-			$favorites_array[]='';
-			// *** Use session if session is available ***
-			if (isset($_SESSION["save_favorites"]) AND $_SESSION["save_favorites"]){
-				//$favorites_array=$_SESSION["save_favorites"];
-				$favorites_array[]=$_SESSION["save_favorites"];
-			}
-			else{
-				// *** Get favorites from cookie (only if session is empty) ***
-				if (isset($_COOKIE['humo_favorite'])) {
-					foreach ($_COOKIE['humo_favorite'] as $name => $value) {
-						$favorites_array[]=$value;
-					}
-					// *** Save cookie values in session ***
-					$_SESSION["save_favorites"]=$favorites_array;
-				}
-			}
-
-			// *** Add new favorite to list of favorites ***
-			if (isset($_POST['favorite'])){
-				// *** Add value to array ***
-				$favorites_array[]=$_POST['favorite'];
-				$_SESSION["save_favorites"]=$favorites_array;
-			}
-
-			// *** Remove favorite from favorite list ***
-			if (isset($_POST['favorite_remove'])){
-				if (isset($_SESSION["save_favorites"])){
-					unset ($favorites_array);
-					foreach($_SESSION['save_favorites'] as $key=>$value){
-						if ($value!=$_POST['favorite_remove']){
-							$favorites_array[]=$value;
-						}
-					}
-					$_SESSION["save_favorites"]=$favorites_array;
-				}
-			}
-
-			// *** Show favorites in selection list ***
 			if (isset($_SESSION["save_favorites"])){
 				sort ($_SESSION['save_favorites']);
 				foreach($_SESSION['save_favorites'] as $key=>$value){
-					if ($value){
+					if (is_string($value) AND $value){
 						$favorite_array2=explode("|",$value);
 						// *** Show only persons in selected family tree ***
 						if ($_SESSION['tree_prefix']==$favorite_array2['2']){
@@ -148,7 +163,6 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 					}
 				}
 			}
-
 		echo '</select>';
 		echo '</form>';
 	}
@@ -273,15 +287,24 @@ echo '<ul class="humo_menu_item">';
 				if (CMS_SPECIFIC=='Joomla'){
 					$path_tmp='index.php?option=com_humo-gen&amp;task=help';
 				}
+				elseif ($humo_option["url_rewrite"]=="j"){
+					// *** $uri_path made in header.php ***
+					$path_tmp=$uri_path.'help';
+				}
 				else{
 					$path_tmp=CMS_ROOTPATH.'help.php';
 				}
 				$select_menu=''; if ($menu_choice=='help'){ $select_menu=' id="current"'; }
 				echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Help').'</a></li>';
 
+				// *** Info ***
 				$select_menu=''; if ($menu_choice=='info'){ $select_menu=' id="current"'; }
 				if (CMS_SPECIFIC=='Joomla'){
 					$path_tmp='index.php?option=com_humo-gen&amp;task=info';
+				}
+				elseif ($humo_option["url_rewrite"]=="j"){
+					// *** $uri_path made in header.php ***
+					$path_tmp=$uri_path.'info';
 				}
 				else{
 					$path_tmp=CMS_ROOTPATH.'info.php';
@@ -294,6 +317,10 @@ echo '<ul class="humo_menu_item">';
 				if (CMS_SPECIFIC=='Joomla'){
 					$path_tmp='index.php?option=com_humo-gen&amp;task=credits';
 				}
+				elseif ($humo_option["url_rewrite"]=="j"){
+					// *** $uri_path made in header.php ***
+					$path_tmp=$uri_path.'credits';
+				}
 				else{
 					$path_tmp=CMS_ROOTPATH.'credits.php';
 				}
@@ -304,10 +331,14 @@ echo '<ul class="humo_menu_item">';
 				if (!$bot_visit){
 					$select_menu=''; if ($menu_choice=='info_cookies'){ $select_menu=' id="current"'; }
 					if (CMS_SPECIFIC=='Joomla'){
-						$path_tmp='index.php?option=com_humo-gen&amp;task=info_cookies';
+						$path_tmp='index.php?option=com_humo-gen&amp;task=cookies';
+					}
+					elseif ($humo_option["url_rewrite"]=="j"){
+						// *** $uri_path made in header.php ***
+						$path_tmp=$uri_path.'cookies';
 					}
 					else{
-						$path_tmp=CMS_ROOTPATH.'info_cookies.php';
+						$path_tmp=CMS_ROOTPATH.'cookies.php';
 					}
 					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
 					printf(__('%s cookies'),'HuMo-genealogy');
@@ -455,13 +486,16 @@ echo '<ul class="humo_menu_item">';
 					//if ($user['group_sources']=='j'){
 					if ($user['group_sources']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check if there are sources in the database ***
-						$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'");
+						$source_qry=$dbh->query("SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'AND source_shared='1'");
 						@$sourceDb=$source_qry->rowCount();
 						if ($sourceDb>0){
 							$select_menu=''; if ($menu_choice=='sources'){ $select_menu=' id="current"'; }
 							if (CMS_SPECIFIC=='Joomla'){
 								$path_tmp='index.php?option=com_humo-gen&amp;task=sources&amp;tree_id='.$tree_id;
 							}
+							//elseif ($humo_option["url_rewrite"]=="j"){
+							//	$path_tmp= 'sources/'.$tree_id.'/';
+							//}
 							else{
 								$path_tmp=CMS_ROOTPATH.'sources.php?tree_id='.$tree_id;
 							}
@@ -472,7 +506,7 @@ echo '<ul class="humo_menu_item">';
 					if ($user['group_addresses']=='j' AND $tree_prefix_quoted!='' AND $tree_prefix_quoted!='EMPTY'){
 						// *** Check for addresses in the database ***
 						$address_qry=$dbh->query("SELECT * FROM humo_addresses
-							WHERE address_tree_id='".$tree_id."' AND address_gedcomnr LIKE '_%'");
+							WHERE address_tree_id='".$tree_id."' AND address_shared='1'");
 						@$addressDb=$address_qry->rowCount();
 						if ($addressDb>0){
 							$select_menu=''; if ($menu_choice=='addresses'){ $select_menu=' id="current"'; }
@@ -623,6 +657,10 @@ echo '<ul class="humo_menu_item">';
 		if (CMS_SPECIFIC=='Joomla'){
 			$path_tmp='index.php?option=com_humo-gen&amp;task=help';
 		}
+		elseif ($humo_option["url_rewrite"]=="j"){
+			// *** $uri_path made in header.php ***
+			$path_tmp=$uri_path.'help';
+		}
 		else{
 			$path_tmp=CMS_ROOTPATH.'help.php';
 		}
@@ -639,6 +677,10 @@ echo '<ul class="humo_menu_item">';
 				if (CMS_SPECIFIC=='Joomla'){
 					$path_tmp='index.php?option=com_humo-gen&amp;task=info';
 				}
+				elseif ($humo_option["url_rewrite"]=="j"){
+					// *** $uri_path made in header.php ***
+					$path_tmp=$uri_path.'info';
+				}
 				else{
 					$path_tmp=CMS_ROOTPATH.'info.php';
 				}
@@ -650,6 +692,10 @@ echo '<ul class="humo_menu_item">';
 				if (CMS_SPECIFIC=='Joomla'){
 					$path_tmp='index.php?option=com_humo-gen&amp;task=credits';
 				}
+				elseif ($humo_option["url_rewrite"]=="j"){
+					// *** $uri_path made in header.php ***
+					$path_tmp=$uri_path.'credits';
+				}
 				else{
 					$path_tmp=CMS_ROOTPATH.'credits.php';
 				}
@@ -660,10 +706,14 @@ echo '<ul class="humo_menu_item">';
 				if (!$bot_visit){
 					$select_menu=''; if ($menu_choice=='info_cookies'){ $select_menu=' id="current"'; }
 					if (CMS_SPECIFIC=='Joomla'){
-						$path_tmp='index.php?option=com_humo-gen&amp;task=info_cookies';
+						$path_tmp='index.php?option=com_humo-gen&amp;task=cookies';
+					}
+					elseif ($humo_option["url_rewrite"]=="j"){
+						// *** $uri_path made in header.php ***
+						$path_tmp=$uri_path.'cookies';
 					}
 					else{
-						$path_tmp=CMS_ROOTPATH.'info_cookies.php';
+						$path_tmp=CMS_ROOTPATH.'cookies.php';
 					}
 					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">';
 					printf(__('%s cookies'),'HuMo-genealogy');

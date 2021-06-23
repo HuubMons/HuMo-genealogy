@@ -126,7 +126,9 @@ function show_person($personDb){
 	echo '</td><td style="border-left:0px;">';
 
 	// *** Show name of person ***
-	$start_url=$person_cls->person_url($personDb);	// *** Get link to family ***
+	//$start_url=$person_cls->person_url($personDb);	// *** Get link to family ***
+	// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+	$start_url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
 	echo ' <a href="'.$start_url.'">'.$index_name.'</a>';
 
 	//*** Show spouse/ partner ***
@@ -1341,7 +1343,7 @@ if ($index_list=='patronym'){
 		echo '<tr>';
 
 		// *** ADVANCED SEARCH BOX ***
-		if ($adv_search==true){ 
+		if ($adv_search==true){
 
 			//echo '<td align="right" class="no_border" >'.__('First name').':';
 			echo '<td class="no_border" >'.__('First name').':<br>';
@@ -1602,6 +1604,8 @@ if ($index_list=='patronym'){
 			echo '<input type="hidden" name="search_database" value="all_trees">';
 		}
 		echo '&nbsp;&nbsp; <input type="submit" value="'.__('Search').'" name="B1">';
+		// *** Reset button doesn't work if values are allready added in Search form ***
+		//echo ' <input type="reset" value="'.__('Reset').'">';
 
 		if ($adv_search==true){
 

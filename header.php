@@ -282,25 +282,6 @@ if (isset($screen_mode) AND ($screen_mode=='PDF' OR $screen_mode=="ASPDF")){
 	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 }
 else{
-	// *** Save family-favourite in cookie ***
-	if (isset($_POST['favorite'])){
-		$favorite_array2=explode("|",$_POST['favorite']);
-		// *** Combine tree prefix and family number as unique array id, for example: humo_F4 ***
-		$i=$favorite_array2['2'].$favorite_array2['1'];
-		setcookie("humo_favorite[$i]", $_POST['favorite'], time()+60*60*24*365);
-	}
-	// *** Remove family-favourite cookie ***
-	if (isset($_POST['favorite_remove'])){
-		if (isset($_COOKIE['humo_favorite'])) {
-			foreach ($_COOKIE['humo_favorite'] as $name => $value) {
-				if ($value==$_POST['favorite_remove']){
-					setcookie ("humo_favorite[$name]", "", time() - 3600);
-				}
-			}
-		}
-	}
-
-
 	// *** Cookie for "show descendant chart below fanchart"
 
 	// Set default ("0" is OFF, "1" is ON):
@@ -402,6 +383,11 @@ else{
 		if (substr_count($uri_path, 'cms_pages')>0){
 			$uri_path = str_replace("cms_pages", "!", $uri_path);
 			$url_path='cms_pages';
+		}
+
+		if (substr_count($uri_path, 'source')>0){
+			$uri_path = str_replace("source", "!", $uri_path);
+			$url_path='source';
 		}
 
 		if (substr_count($uri_path, 'report_ancestor')>0){

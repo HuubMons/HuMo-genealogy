@@ -564,7 +564,8 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		if($langs) {
 			echo '<select onChange="window.location =\'index.php?page=settings&timeline_language=\' + this.value + \'#timeline_anchor\'; "  size="1" name="timeline_language">';
 			// *** Default language = english ***
-			echo '<option value="default_timelines"'.$select.'>English</option>'; // *** Don't add "English" in translation file! ***
+			//echo '<option value="default_timelines"'.$select.'>English</option>'; // *** Don't add "English" in translation file! ***
+			echo '<option value="default_timelines"'.$select.'>'.__('Default').'</option>'; // *** Don't add "English" in translation file! ***
 			for($i=0; $i<count($langs); $i++) { 
 				if(is_dir(CMS_ROOTPATH.'languages/'.$langs[$i][1].'/timelines/')) {
 					$select=''; if ($time_lang==$langs[$i][1]){ $select=' SELECTED'; }

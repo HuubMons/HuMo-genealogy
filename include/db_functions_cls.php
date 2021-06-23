@@ -1,7 +1,7 @@
 <?php 
 /*--------------------[database functions]----------------------------
  *
- * AUTHOR		: Huub Mons. jan. 2015.
+ * AUTHOR		: Huub Mons. Created: jan. 2015.
  * THANKS TO	: Michael.j.Falconer
  *
  * FUNCTIONS:
@@ -21,7 +21,7 @@
  *		get_events_connect			Get multiple events of a connected person, family etc. selecting one event_kind from database.
  *		get_source					Get a single source from database.
  *		get_address					Get a single address from database.
- *		get_addressses				Get a all adresses (places) by a person, family, etc.
+ *		get_addressses				Get all adresses (places) by a person, family, etc.
  *		get_connections				Get multiple connections (used for sources and addresses).
  *		get_connections_connect_id	Get multiple connections of a person or family.
  *		get_repository				Get a single repository from database.
@@ -143,11 +143,13 @@ function __construct() {
 		$sql = "SELECT * FROM humo_addresses WHERE address_tree_id=:address_tree_id AND address_gedcomnr=:address_gedcomnr";
 		$this->query['get_address'] = $dbh->prepare( $sql );
 
-		$sql = "SELECT * FROM humo_addresses
-			WHERE address_tree_id=:address_tree_id
-			AND address_connect_kind=:address_connect_kind
-			AND address_connect_id=:address_connect_id
-			ORDER BY address_order";
+		$sql="SELECT * FROM humo_connections
+			LEFT JOIN humo_addresses ON address_gedcomnr=connect_item_id
+			WHERE connect_tree_id=:connect_tree_id AND address_tree_id=:connect_tree_id
+			AND connect_kind=:connect_kind
+			AND connect_sub_kind=:connect_sub_kind
+			AND connect_connect_id=:connect_connect_id
+			ORDER BY connect_order";
 		$this->query['get_addresses'] = $dbh->prepare( $sql );
 
 		// *** Connection queries ***
@@ -621,19 +623,23 @@ function get_address($address_gedcomnr){
 
 /*--------------------[get addresses (places) ]-------
  * FUNCTION	: Get all places by a person, family etc. from database.
- * QUERY	: SELECT * FROM humo_addresses
- *				WHERE address_tree_id=:address_tree_id
- *				AND address_connect_kind=:address_connect_kind
- *				AND address_connect_id=:address_connect_id ORDER BY address_order
- * RETURNS	: all places by a person, family etc.
+  *			SELECT * FROM humo_connections
+ *				LEFT JOIN humo_addresses ON address_gedcomnr=connect_item_id
+ *				WHERE connect_tree_id=:connect_tree_id AND address_tree_id=:connect_tree_id
+ *				AND connect_kind=:connect_kind
+ *				AND connect_sub_kind=:connect_sub_kind
+ *				AND connect_connect_id=:connect_connect_connect_id
+ *				ORDER BY connect_order
+  * RETURNS	: all places by a person, family etc.
  *----------------------------------------------------------------
  */
-function get_addresses($address_connect_id,$address_connect_kind){
+function get_addresses($connect_kind, $connect_sub_kind, $connect_connect_id){
 	$result_array = array();
 	try {
-		$this->query['get_addresses']->bindValue(':address_tree_id', $this->tree_id, PDO::PARAM_STR);
-		$this->query['get_addresses']->bindValue(':address_connect_kind', $address_connect_kind, PDO::PARAM_STR);
-		$this->query['get_addresses']->bindValue(':address_connect_id', $address_connect_id, PDO::PARAM_STR);
+		$this->query['get_addresses']->bindValue(':connect_tree_id', $this->tree_id, PDO::PARAM_STR);
+		$this->query['get_addresses']->bindValue(':connect_kind', $connect_kind, PDO::PARAM_STR);
+		$this->query['get_addresses']->bindValue(':connect_sub_kind', $connect_sub_kind, PDO::PARAM_STR);
+		$this->query['get_addresses']->bindValue(':connect_connect_id', $connect_connect_id, PDO::PARAM_STR);
 		$this->query['get_addresses']->execute();
 		$result_array=$this->query['get_addresses']->fetchAll(PDO::FETCH_OBJ);
 	}catch (PDOException $e) {

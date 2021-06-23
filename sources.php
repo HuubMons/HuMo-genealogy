@@ -27,7 +27,8 @@ if(isset($_GET['order_sources'])) {
 }
 if($order_sources=="title") {
 	// *** Default querie: order by title ***
-	$querie="SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'";
+	//$querie="SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."' AND source_title LIKE '_%'";
+	$querie="SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."' AND source_shared='1'";
 	// *** Check user group is restricted sources can be shown ***
 	if ($user['group_show_restricted_source']=='n'){ $querie.=" AND (source_status!='restricted' OR source_status IS NULL)"; }
 	$querie.=" ORDER BY source_title".$desc_asc;
@@ -39,7 +40,7 @@ if($order_sources=="date") {
 		date_format( str_to_date( substring(source_date,4,3),'%b' ),'%m'),
 		date_format( str_to_date( left(source_date,2),'%d' ),'%d') )
 		as year
-	FROM humo_sources WHERE source_tree_id='".$tree_id."'";
+	FROM humo_sources WHERE source_tree_id='".$tree_id."' AND source_shared='1'";
 	if ($user['group_show_restricted_source']=='n'){ $querie.=" AND (source_status!='restricted' OR source_status IS NULL)"; }
 	$querie.=" ORDER BY year".$desc_asc;
 }
@@ -124,7 +125,18 @@ echo '<div class=index_list1>'.$line_pages.'</div><br>';
 		echo '</tr>';
 
 		while (@$sourceDb=$source->fetch(PDO::FETCH_OBJ)){
-			echo '<tr><td><a href="'.CMS_ROOTPATH.'source.php?tree_id='.$tree_id.'&amp;id='.$sourceDb->source_gedcomnr.'">';
+			echo '<tr><td>';
+
+			//echo '<a href="'.CMS_ROOTPATH.'source.php?tree_id='.$tree_id.'&amp;id='.$sourceDb->source_gedcomnr.'">';
+			if ($humo_option["url_rewrite"]=="j"){
+				// *** $uri_path made in header.php ***
+				$url=$uri_path.'source/'.$tree_id.'/'.$sourceDb->source_gedcomnr;
+			}
+			else{
+				$url=$uri_path.'source.php?tree_id='.$tree_id.'&amp;id='.$sourceDb->source_gedcomnr;
+			}
+			echo ' <a href="'.$url.'">'.__('source').': ';
+
 			// *** Aldfaer sources don't have a title! ***
 			if ($sourceDb->source_title){ echo $sourceDb->source_title; } else { echo $sourceDb->source_text; }
 			echo '</a></td>'; 

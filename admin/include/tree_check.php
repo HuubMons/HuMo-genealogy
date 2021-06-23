@@ -18,36 +18,37 @@ if(CMS_SPECIFIC=="Joomla") {
 else {
 	echo '<form method="POST" action="index.php" style="display : inline;">';
 }
+	echo '<input type="hidden" name="page" value="'.$page.'">';
 
-echo '<input type="hidden" name="page" value="'.$page.'">';
-
-echo '<span class="noprint">'.__('Choose tree:');  // class "noprint" hides it when printing
-	$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-	$tree_result = $dbh->query($tree_sql);
-	echo '<select size="1" name="tree_id">';
-		while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
-			$treetext=show_tree_text($treeDb->tree_id, $selected_language);
-			$selected='';
-			if ($treeDb->tree_id==$tree_id){
-				$selected=' SELECTED';
-				$db_functions->set_tree_id($tree_id);
+	echo '<span class="noprint">'.__('Choose tree:');  // class "noprint" hides it when printing
+		$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+		$tree_result = $dbh->query($tree_sql);
+		echo '<select size="1" name="tree_id">';
+			while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
+				$treetext=show_tree_text($treeDb->tree_id, $selected_language);
+				$selected='';
+				if ($treeDb->tree_id==$tree_id){
+					$selected=' SELECTED';
+					$db_functions->set_tree_id($tree_id);
+				}
+				echo '<option value="'.$treeDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
 			}
-			echo '<option value="'.$treeDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
-		}
-	echo '</select>';
-echo '</span>';
+		echo '</select>';
+	echo '</span>';
 
-// menu of data check page
-echo '<br><br><input type="hidden" name="page" value="'.$page.'">';
-echo '<span class="noprint">';
-//echo '<table class="humo" style="width:95%; text-align:center; border:1px solid black;"><tr class="table_header_large">';
-echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large">';
-echo '<td><input type="Submit" name="data_check" value="'.__('Check consistency of dates').'"></td>';
-echo '<td><input type="Submit" name="invalid_dates" value="'.__('Find invalid dates').'"></td>';
-echo '<td><input type="Submit" name="database_check" value="'.__('Check database integrity').'"></td>';
-echo '<td><input type="Submit" name="last_changes" value="'.__('View latest changes').'"></td>';
-echo '</tr></table>';
-echo '</span>';
+	// menu of data check page
+	echo '<br><br><input type="hidden" name="page" value="'.$page.'">';
+	echo '<span class="noprint">';
+	//echo '<table class="humo" style="width:95%; text-align:center; border:1px solid black;"><tr class="table_header_large">';
+	echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large">';
+	echo '<td><input type="Submit" name="data_check" value="'.__('Check consistency of dates').'"></td>';
+	echo '<td><input type="Submit" name="invalid_dates" value="'.__('Find invalid dates').'"></td>';
+	echo '<td><input type="Submit" name="database_check" value="'.__('Check database integrity').'"></td>';
+	echo '<td><input type="Submit" name="last_changes" value="'.__('View latest changes').'"></td>';
+	echo '</tr></table>';
+	echo '</span>';
+echo '</form>';
+
 
 //echo '<br><table class="humo" style="width:95%; text-align:center; border:1px solid black;"><tr><td>'; 
 echo '<br><table class="humo standard" style="text-align:center;"><tr><td>'; 
@@ -108,9 +109,9 @@ if (isset($_POST['last_changes'])){
 		echo $person->pers_firstname.' '.$person->pers_prefix.$person->pers_lastname;
 		echo '</a>';
 		echo '</td><td>';
-		echo '<nobr>'.strtolower($person->pers_changed_date).' '.$person->pers_changed_time.'</nobr>';
+		echo '<nobr>'.strtolower($person->pers_changed_date).' '.$person->pers_changed_time.' '.$person->pers_changed_user.'</nobr>';
 		echo '</td><td>';
-		echo '<nobr>'.strtolower($person->pers_new_date).' '.$person->pers_new_time.'</nobr>';
+		echo '<nobr>'.strtolower($person->pers_new_date).' '.$person->pers_new_time.' '.$person->pers_new_user.'</nobr>';
 		echo '</td>';
 		echo "</tr>\n";
 	}
@@ -132,9 +133,10 @@ if (isset($_POST['database_check'])){
 		echo '<form method="POST" action="index.php" style="display : inline;">';
 	}
 		echo '<input type="hidden" name="page" value="'.$page.'">';
-	$checked=''; if (isset($_POST['remove'])) $checked = " checked";
-	echo '<input type="checkbox" name="remove"'.$checked.'> '.__('Remove links to missing items from database (first make a database backup!)');
-		echo ' <input type="Submit" name="database_check" value="'.__('REMOVE').'">';
+		echo '<input type="hidden" name="database_check" value="'.$page.'">';
+
+		echo __('Remove links to missing items from database (first make a database backup!)');
+		echo ' <input type="Submit" name="remove" value="'.__('REMOVE').'">';
 	echo '</form>';
 
 	echo '<div style="height: 200px; overflow-y: scroll;">';
@@ -193,6 +195,10 @@ if (isset($_POST['database_check'])){
 					if ($famDb->fam_man==$person->pers_gedcomnumber){ $check_fams1=true; }
 					if ($famDb->fam_woman==$person->pers_gedcomnumber){ $check_fams1=true; }
 				}
+				else{
+					// *** Family not found in database ***
+					$check_fams1=false;
+				}
 
 				if ($check_fams1==false){
 					if (isset($_POST['remove'])){
@@ -209,8 +215,8 @@ if (isset($_POST['database_check'])){
 					}
 					$wrong_fams++;
 					echo '<tr><td><b>Missing marriage/ relation record</b></td>';
-					echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber;
-					echo '</td><td>Missing marriage/ relation gedcomnr: '.$fams[$i].$removed.'</td>';
+					echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber.'</td>';
+					echo '<td>Missing marriage/ relation gedcomnr: '.$fams[$i].$removed.'</td>';
 				}
 
 			}
@@ -257,6 +263,22 @@ if (isset($_POST['database_check'])){
 			}
 
 		}
+
+		// *** Check pers_index_place ***
+		$address_sql = $db_functions->get_addresses('person','person_address',$person->pers_gedcomnumber);
+		$nr_addresses=count($address_sql);
+		foreach ($address_sql as $addressDb){
+			if ($addressDb->connect_order==$nr_addresses AND ($addressDb->address_place!=$person->pers_place_index)  ){
+				$sql="UPDATE humo_persons SET
+					pers_place_index='".$addressDb->address_place."'
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($person->pers_gedcomnumber)."'";
+				$result=$dbh->query($sql);
+				echo '<tr><td><b>Restored place index by person</b></td>';
+				echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber.'</td>';
+				echo '<td>Missing place: '.$addressDb->address_place.'</td>';
+			}
+		}
+
 	}
 
 	// Send output to browser immediately for large family trees.
@@ -283,7 +305,7 @@ if (isset($_POST['database_check'])){
 				if (in_array($famDb->fam_gedcomnumber,$fams_array)) $check_item=true;
 				if ($check_item==false){
 					// *** Restore pers_fams ***
-					if ($person->pers_fams) $pers_fams.=$person->pers_fams.';'.$famDb->fam_gedcomnumber;
+					if ($person->pers_fams) $pers_fams=$person->pers_fams.';'.$famDb->fam_gedcomnumber;
 						else $pers_fams=$famDb->fam_gedcomnumber;
 					$sql="UPDATE humo_persons SET pers_fams='".$pers_fams."'
 						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'";
@@ -317,7 +339,7 @@ if (isset($_POST['database_check'])){
 				if (in_array($famDb->fam_gedcomnumber,$fams_array)) $check_item=true;
 				if ($check_item==false){
 					// *** Restore pers_fams ***
-					if ($person->pers_fams) $pers_fams.=$person->pers_fams.';'.$famDb->fam_gedcomnumber;
+					if ($person->pers_fams) $pers_fams=$person->pers_fams.';'.$famDb->fam_gedcomnumber;
 						else $pers_fams=$famDb->fam_gedcomnumber;
 					$sql="UPDATE humo_persons SET pers_fams='".$pers_fams."'
 						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->pers_gedcomnumber."'";
@@ -395,7 +417,7 @@ if (isset($_POST['database_check'])){
 		$connect=$connect_result->fetch(PDO::FETCH_OBJ);
 
 		// *** Check person ***
-		if ($connect->connect_kind=='person' AND $connect->connect_sub_kind!='pers_event_source'){
+		if ($connect->connect_kind=='person' AND $connect->connect_sub_kind!='pers_event_source' AND $connect->connect_sub_kind!='pers_address_source'){
 			$person=$db_functions->get_person($connect->connect_connect_id);
 			if (!$person){
 				if (isset($_POST['remove'])){
@@ -434,11 +456,11 @@ if (isset($_POST['database_check'])){
 	flush(); // for IE
 
 	// *** Check events table ***
-	$connect_qry= "SELECT event_id FROM humo_events WHERE event_tree_id='".$tree_id."'";
-	$connect_result = $dbh->query($connect_qry);
-	while ($connect=$connect_result->fetch(PDO::FETCH_OBJ)){
+	$connect_qry_start= "SELECT event_id FROM humo_events WHERE event_tree_id='".$tree_id."'";
+	$connect_result_start = $dbh->query($connect_qry_start);
+	while ($connect_start=$connect_result_start->fetch(PDO::FETCH_OBJ)){
 
-		$connect_qry= "SELECT * FROM humo_events WHERE event_id='".$connect->event_id."'";
+		$connect_qry= "SELECT * FROM humo_events WHERE event_id='".$connect_start->event_id."'";
 		$connect_result = $dbh->query($connect_qry);
 		$connect=$connect_result->fetch(PDO::FETCH_OBJ);
 
@@ -472,6 +494,61 @@ if (isset($_POST['database_check'])){
 				echo '<tr><td><b>Missing family record</b></td>';
 				echo '<td>Event record: '.$connect->event_id.'/ '.$connect->event_kind.'</td>';
 				echo '<td>Missing family gedcomnr: '.$connect->event_connect_id.'</td></tr>';
+			}
+		}
+	}
+
+	// Send output to browser immediately for large family trees.
+	ob_flush();
+	flush(); // for IE
+
+	// *** Check source table (only NON SHARED sources) ***
+	$source_qry_start= "SELECT source_id,source_gedcomnr FROM humo_sources
+		WHERE source_tree_id='".$tree_id."' AND source_shared!='1'";
+	$source_result_start = $dbh->query($source_qry_start);
+	while ($source_start=$source_result_start->fetch(PDO::FETCH_OBJ)){
+		//$source_qry= "SELECT * FROM humo_sources WHERE source_id='".$source_start->source_id."'";
+		//$source_result = $dbh->query($source_qry);
+		//$source=$source_result->fetch(PDO::FETCH_OBJ);
+
+		$connect_qry= "SELECT * FROM humo_connections WHERE connect_source_id='".$source_start->source_gedcomnr."'";
+		$connect_result = $dbh->query($connect_qry);
+		$connect=$connect_result->fetch(PDO::FETCH_OBJ);
+
+		if (!isset($connect->connect_id) OR !$connect->connect_id){
+			if (isset($_POST['remove'])){
+				$sql="DELETE FROM humo_sources
+					WHERE source_tree_id='".$tree_id."'
+					AND source_gedcomnr='".safe_text_db($source_start->source_gedcomnr)."'";
+				//echo $sql.'<br>';
+				$result=$dbh->query($sql);
+			}
+			echo '<tr><td><b>Source without connections</b></td>';
+			echo '<td>Source record: '.$source_start->source_id.'</td>';
+			echo '<td>Source gedcomnr: '.$source_start->source_gedcomnr.$removed.'</td></tr>';
+		}
+		elseif ($connect->connect_sub_kind=='pers_event_source' OR $connect->connect_sub_kind=='fam_event_source'){
+			$event_qry= "SELECT * FROM humo_events WHERE event_id='".$connect->connect_connect_id."'";
+			$event_result = $dbh->query($event_qry);
+			$event=$event_result->fetch(PDO::FETCH_OBJ);
+			if (!$event){
+
+				if (isset($_POST['remove'])){
+					$sql="DELETE FROM humo_sources
+						WHERE source_tree_id='".$tree_id."'
+						AND source_gedcomnr='".safe_text_db($source_start->source_gedcomnr)."'";
+					//echo $sql.'<br>';
+					$result=$dbh->query($sql);
+
+					$sql="DELETE FROM humo_connections WHERE connect_id='".safe_text_db($connect->connect_id)."'";
+					//echo $sql.'<br>';
+					$result=$dbh->query($sql);
+				}
+
+				echo '<tr><td><b>Source without event</b></td>';
+				echo '<td>Event record: '.$connect->connect_connect_id.'</td>';
+				echo '<td>Source gedcomnr: '.$source_start->source_gedcomnr.$removed.'</td></tr>';
+
 			}
 		}
 	}
@@ -595,6 +672,15 @@ if (isset($_POST['invalid_dates'])){
 //if (isset($_POST['tree']) AND (isset($_POST['data_check']) OR isset($_POST['unmark']) OR isset($_POST['mark_all']))){
 if ( (isset($_POST['data_check']) OR isset($_POST['unmark']) OR isset($_POST['mark_all']))){
 // displays menu for date consistency check
+
+
+	if(CMS_SPECIFIC=="Joomla") {
+		echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=check" style="display : inline;">';
+	}
+	else {
+		echo '<form method="POST" action="index.php" style="display : inline;">';
+	}
+	echo '<input type="hidden" name="page" value="'.$page.'">';
 
 	// easily set other defaults:
 	$b1_def    = 50;  //Birth date - more than X years after mother's birth

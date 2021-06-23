@@ -52,6 +52,20 @@ function date_show($process_date, $process_name, $multiple_rows='', $disabled=''
 
 	$text.= '<input type="text" name="'.$process_name.$multiple_rows.'" placeholder="'.$placeholder.'" style="direction:ltr'.$style.'" value="';
 
+		// *** Translate months ***
+		$process_date=str_replace("JAN", __('jan'), $process_date);
+		$process_date=str_replace("FEB", __('feb'), $process_date);
+		$process_date=str_replace("MAR", __('mar'), $process_date);
+		$process_date=str_replace("APR", __('apr'), $process_date);
+		$process_date=str_replace("MAY", __('may'), $process_date);
+		$process_date=str_replace("JUN", __('jun'), $process_date);
+		$process_date=str_replace("JUL", __('jul'), $process_date);
+		$process_date=str_replace("AUG", __('aug'), $process_date);
+		$process_date=str_replace("SEP", __('sep'), $process_date);
+		$process_date=str_replace("OCT", __('oct'), $process_date);
+		$process_date=str_replace("NOV", __('nov'), $process_date);
+		$process_date=str_replace("DEC", __('dec'), $process_date);
+
 		// *** BEF, ABT, AFT, etc. is shown in date_prefix ***
 		$process_date=strtolower($process_date);
 
@@ -82,14 +96,15 @@ function date_process($process_name, $multiple_rows=''){
 	// *** Save "before", "about", "after" texts before a date ***
 	$process_name_prefix=$process_name.'_prefix'; 
 
-	if ($multiple_rows!='') { $post_date = $_POST[$process_name][$multiple_rows]; $pref = $_POST["$process_name_prefix"][$multiple_rows]; }
-	else { $post_date = $_POST[$process_name]; $pref = $_POST["$process_name_prefix"]; }
+	// *** Just for sure: remove spaces at beginning and end of date ***
+	if ($multiple_rows!='') { $post_date = trim($_POST[$process_name][$multiple_rows]); $pref = $_POST["$process_name_prefix"][$multiple_rows]; }
+	else { $post_date = trim($_POST[$process_name]); $pref = $_POST["$process_name_prefix"]; }
 	$this_date="";
 	$pos = strpos(strtoupper($post_date),"AND");
-	if($pos!==false) { 
+	if($pos!==false) {
 		if($pref == "BET ") { // we've got "BET" and "AND"
-			$date1 = $this->valid_date(substr($post_date,0,$pos-1));  
-			$date2 = $this->valid_date(substr($post_date,$pos+4)); 
+			$date1 = $this->valid_date(substr($post_date,0,$pos-1));
+			$date2 = $this->valid_date(substr($post_date,$pos+4));
 			if($date1!=null AND $date2!=null) {
 				$this_date = $date1." AND ".$date2;
 			}
@@ -117,7 +132,7 @@ function date_process($process_name, $multiple_rows=''){
 		$process_date=$pref.$this_date;
 	else
 		//$process_date=$_POST["$process_name_prefix"].$_POST["$process_name"];
-		$process_date=$pref.$this_date; 
+		$process_date=$pref.$this_date;
 
 	// *** Invalid date, add a ! character after the date. Don't remove original date... ***
 	if (substr($post_date,-1)=='!') $process_date=$post_date;
@@ -135,6 +150,21 @@ function valid_date($date) {
 	// German date input: 01.02.2016 or Scandinavian input: 01,02,2016
 	if(strpos($date,".")!==false) $date = str_replace(".", "-", $date);
 	if(strpos($date,",")!==false) $date = str_replace(",", "-", $date);
+
+	// Use your own language for input
+	$date=str_replace(__('jan'),"JAN", $date);
+	$date=str_replace(__('feb'),"FEB", $date);
+	$date=str_replace(__('mar'),"MAR", $date);
+	$date=str_replace(__('apr'),"APR", $date);
+	$date=str_replace(__('may'),"MAY", $date);
+	$date=str_replace(__('jun'),"JUN", $date);
+	$date=str_replace(__('jul'),"JUL", $date);
+	$date=str_replace(__('aug'),"AUG", $date);
+	$date=str_replace(__('sep'),"SEP", $date);
+	$date=str_replace(__('oct'),"OCT", $date);
+	$date=str_replace(__('nov'),"NOV", $date);
+	$date=str_replace(__('dec'),"DEC", $date);
+
 	// date entered as 01-04-2013 or 01/04/2013
 	if((strpos($date,"-")!==false OR strpos($date,"/")!==false) AND strpos($date," ")===false) { // skips "2 mar 1741/42" and "mar 1741/42"
 		if(strpos($date,"-")!==false) { $delimiter = "-"; }

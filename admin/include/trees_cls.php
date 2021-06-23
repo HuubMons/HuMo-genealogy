@@ -879,21 +879,21 @@ this page will also show a "Continue duplicate merge" button so you can continue
 
 		$search_firstname='';
 		if (isset($_POST["search_firstname"]) AND !isset($_POST["switch"])){
-			$search_firstname=safe_text_db($_POST['search_firstname']);
+			$search_firstname=trim(safe_text_db($_POST['search_firstname']));
 			$_SESSION['rel_search_firstname']=$search_firstname;
 		}
 		if (isset($_SESSION['rel_search_firstname'])){ $search_firstname=$_SESSION['rel_search_firstname']; }
 
 		$search_lastname='';
 		if (isset($_POST["search_lastname"]) AND !isset($_POST["switch"])){
-			$search_lastname=safe_text_db($_POST['search_lastname']);
+			$search_lastname=trim(safe_text_db($_POST['search_lastname']));
 			$_SESSION['rel_search_lastname']=$search_lastname;
 		}
 		if (isset($_SESSION['rel_search_lastname'])){ $search_lastname=$_SESSION['rel_search_lastname']; }
 
 		$search_indi='';
 		if (isset($_POST["search_indi"]) AND !isset($_POST["switch"])){
-			$search_indi=safe_text_db($_POST['search_indi']);
+			$search_indi=trim(safe_text_db($_POST['search_indi']));
 			$_SESSION['search_indi']=$search_indi;
 		}
 		if (isset($_SESSION['search_indi'])){ $search_indi=$_SESSION['search_indi']; }
@@ -918,8 +918,10 @@ this page will also show a "Continue duplicate merge" button so you can continue
 				$indi = (substr($search_indi,0,1)=="I" OR substr($search_indi,0,1)=="i") ? strtoupper($search_indi) : "I".$search_indi;
 				$indi_string = " AND pers_gedcomnumber ='".$indi."' ";
 			}  
-			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)";
-			$search_qry.= " LIKE '%".$search_lastname."%' AND pers_firstname LIKE '%".$search_firstname."%' ".$indi_string." ORDER BY pers_lastname, pers_firstname";
+			$search_qry= "SELECT * FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
+				LIKE '%".$search_lastname."%' AND pers_firstname LIKE '%".$search_firstname."%' ".$indi_string."
+				ORDER BY pers_lastname, pers_firstname";
 			$search_result = $dbh->query($search_qry);
 			if ($search_result){ 
 				if($search_result->rowCount() >0) {
@@ -954,21 +956,21 @@ this page will also show a "Continue duplicate merge" button so you can continue
 
 		$search_firstname2='';
 		if (isset($_POST["search_firstname2"]) AND !isset($_POST["switch"])){
-			$search_firstname2=safe_text_db($_POST['search_firstname2']);
+			$search_firstname2=trim(safe_text_db($_POST['search_firstname2']));
 			$_SESSION['rel_search_firstname2']=$search_firstname2;
 		}
 		if (isset($_SESSION['rel_search_firstname2'])){ $search_firstname2=$_SESSION['rel_search_firstname2']; }
 
 		$search_lastname2='';
 		if (isset($_POST["search_lastname2"]) AND !isset($_POST["switch"])){
-			$search_lastname2=safe_text_db($_POST['search_lastname2']);
+			$search_lastname2=trim(safe_text_db($_POST['search_lastname2']));
 			$_SESSION['rel_search_lastname2']=$search_lastname2;
 		}
 		if (isset($_SESSION['rel_search_lastname2'])){ $search_lastname2=$_SESSION['rel_search_lastname2']; }
 
 		$search_indi2='';
 		if (isset($_POST["search_indi2"]) AND !isset($_POST["switch"])){
-			$search_indi2=safe_text_db($_POST['search_indi2']);
+			$search_indi2=trim(safe_text_db($_POST['search_indi2']));
 			$_SESSION['search_indi2']=$search_indi2;
 		}
 		if (isset($_SESSION['search_indi2'])){ $search_indi2=$_SESSION['search_indi2']; }
@@ -988,9 +990,11 @@ this page will also show a "Continue duplicate merge" button so you can continue
 				// make sure it works with "I436", "i436" and "436"
 				$indi2 = (substr($search_indi2,0,1)=="I" OR substr($search_indi2,0,1)=="i") ? strtoupper($search_indi2) : "I".$search_indi2;
 				$indi_string2 = " AND pers_gedcomnumber ='".$indi2."' ";
-			}  
-			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)";
-			$search_qry.= " LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ".$indi_string2." ORDER BY pers_lastname, pers_firstname";
+			}
+			$search_qry= "SELECT * FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."' AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname)
+				LIKE '%".$search_lastname2."%' AND pers_firstname LIKE '%".$search_firstname2."%' ".$indi_string2."
+				ORDER BY pers_lastname, pers_firstname";
 			$search_result2 = $dbh->query($search_qry);
 			if ($search_result2){
 				if($search_result2->rowCount() >0) {
@@ -1055,7 +1059,7 @@ You will be notified of results as the action is completed');
 			echo '<br>'.__('Please wait while the automatic merges are processed...').'<br>';
 			$merges=0;
 			$qry= "SELECT pers_id, pers_lastname, pers_firstname, pers_birth_date, pers_death_date, pers_famc
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."'
 				AND pers_lastname !=''
 				AND pers_firstname !=''
 				AND (pers_birth_date !='' OR pers_death_date !='')
@@ -1063,13 +1067,14 @@ You will be notified of results as the action is completed');
 				ORDER BY pers_id";
 			$pers = $dbh->query($qry);
 			while($persDb = $pers->fetch(PDO::FETCH_OBJ)) {
-				$qry2 = "SELECT pers_id, pers_lastname, pers_firstname, pers_birth_date, pers_death_date, pers_famc  FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+				$qry2 = "SELECT pers_id, pers_lastname, pers_firstname, pers_birth_date, pers_death_date, pers_famc FROM humo_persons
+				WHERE pers_tree_id='".$tree_id."'
 				AND pers_id > ".$persDb->pers_id."
-				AND (pers_lastname !='' AND pers_lastname = '".$persDb->pers_lastname."') AND
-				(pers_firstname !='' AND pers_firstname = '".$persDb->pers_firstname."') AND
-				((pers_birth_date !='' AND pers_birth_date ='".$persDb->pers_birth_date."') OR
-				(pers_death_date !='' AND pers_death_date ='".$persDb->pers_death_date."')) AND
-				pers_famc !=''
+				AND (pers_lastname !='' AND pers_lastname = '".$persDb->pers_lastname."')
+				AND (pers_firstname !='' AND pers_firstname = '".$persDb->pers_firstname."')
+				AND ((pers_birth_date !='' AND pers_birth_date ='".$persDb->pers_birth_date."')
+					OR (pers_death_date !='' AND pers_death_date ='".$persDb->pers_death_date."'))
+				AND pers_famc !=''
 				ORDER BY pers_id";
 
 				$pers2 = $dbh->query($qry2);
@@ -1685,10 +1690,16 @@ function show_events ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
 	$l_address = $l_picture = $l_profession = $l_source = $l_event = $l_birth_declaration = $l_baptism_witness = $l_death_declaration = $l_burial_witness = $l_name = $l_nobility = $l_title = $l_lordship = $l_URL = $l_else = Array();
 	$r_address = $r_picture = $r_profession = $r_source = $r_event = $r_birth_declaration = $r_baptism_witness = $r_death_declaration = $r_burial_witness = $r_name = $r_nobility = $r_title = $r_lordship = $r_URL = $r_else = Array();
-	$left_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-		AND event_connect_kind='person' AND event_connect_id ='".$left_ged."' ORDER BY event_kind ");
-	$right_events = $dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-		AND event_connect_kind='person' AND event_connect_id ='".$right_ged."' ORDER BY event_kind ");
+	$left_events = $dbh->query("SELECT * FROM humo_events
+		WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person'
+		AND event_connect_id ='".$left_ged."'
+		ORDER BY event_kind ");
+	$right_events = $dbh->query("SELECT * FROM humo_events
+		WHERE event_tree_id='".$tree_id."'
+		AND event_connect_kind='person'
+		AND event_connect_id ='".$right_ged."'
+		ORDER BY event_kind ");
 
 	if($right_events->rowCount() > 0) {  // no use doing this if right has no events at all...
 
@@ -1809,9 +1820,13 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 function show_sources ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
 	$left_sources = $dbh->query("SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."' AND LOCATE('source',connect_sub_kind)!=0 ORDER BY connect_sub_kind ");
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
+		AND LOCATE('source',connect_sub_kind)!=0
+		ORDER BY connect_sub_kind ");
 	$right_sources = $dbh->query("SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."' AND LOCATE('source',connect_sub_kind)!=0 ORDER BY connect_sub_kind ");
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
+		AND LOCATE('source',connect_sub_kind)!=0
+		ORDER BY connect_sub_kind ");
 
 	if($right_sources->rowCount() > 0) { // no use doing this if right has no sources
 		if($color=='#e6e6e6') { $color='#f2f2f2'; } else { $color='#e6e6e6'; }
@@ -1847,7 +1862,7 @@ function show_sources ($left_ged,$right_ged) {
 			}
 			else {
 				$title = "";
-			}			
+			}
 			echo '<input type="checkbox" name="r_source_'.$right_sourcesDb->connect_id.'" '.$checked.'>('.str_replace('_source',' ',$right_sourcesDb->connect_sub_kind).') '.$title.'<br>';
 		}
 		echo '</td></tr>';
@@ -1860,9 +1875,13 @@ function show_sources ($left_ged,$right_ged) {
 function show_addresses ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
 	$left_addresses = $dbh->query("SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."' AND LOCATE('address',connect_sub_kind)!=0 ORDER BY connect_sub_kind ");
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
+		AND LOCATE('address',connect_sub_kind)!=0
+		ORDER BY connect_sub_kind ");
 	$right_addresses = $dbh->query("SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."' AND LOCATE('address',connect_sub_kind)!=0 ORDER BY connect_sub_kind ");
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
+		AND LOCATE('address',connect_sub_kind)!=0
+		ORDER BY connect_sub_kind ");
 
 	if($right_addresses->rowCount() > 0) {  // no use doing this if right has no sources
 		if($color=='#e6e6e6') { $color='#f2f2f2'; } else { $color='#e6e6e6'; }

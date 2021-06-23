@@ -1106,9 +1106,33 @@ if (isset($_POST['step3'])){
 
 		$total=0;
 		if($_SESSION['save_total']=='0') { // only first time in session: count number of lines in gedcom
+
+			$address_high=1; $_SESSION['new_address_gedcomnr']=1;
+			$source_high=1; $_SESSION['new_source_gedcomnr']=1;
+
 			$handle = fopen($_POST["gedcom_file"], "r");
 			while(!feof($handle)){
 				$line = fgets($handle);
+				$line=trim($line);
+
+				// *** Find highest address gedcomnumber ***
+				// 0 @R1@ RESI
+				if (substr($line, -6, 6)=='@ RESI'){
+					$address_gedcomnr=substr($line,4,-6);
+					if ($address_gedcomnr>$address_high) $address_high=$address_gedcomnr;
+					$_SESSION['new_address_gedcomnr']=$address_high+1;
+					//echo 'ADDRESS: '.$address_gedcomnr.'!'.$address_high.' '.$_SESSION['new_address_gedcomnr'].'<br>';
+				}
+
+				// *** Find highest source gedcomnumber ***
+				// 0 @S189@ SOUR
+				if (substr($line, -6, 6)=='@ SOUR'){
+					$source_gedcomnr=substr($line,4,-6);
+					if ($source_gedcomnr>$source_high) $source_high=$source_gedcomnr;
+					$_SESSION['new_source_gedcomnr']=$source_high+1;
+					//echo 'SOURCE: '.$source_gedcomnr.'!'.$source_high.' '.$_SESSION['new_source_gedcomnr'].'<br>';
+				}
+
 				$total++;
 			}
 			$_SESSION['save_total']=$total;
@@ -1223,7 +1247,7 @@ if (isset($_POST['step3'])){
 	$result=$dbh->query($sql);
 	$calculated_connect_id = $dbh->lastInsertId();
 	$sql="DELETE FROM humo_connections WHERE connect_id='".$calculated_connect_id."'";
-//echo $sql.' '.$calculated_connect_id.'<br>';
+	//echo $sql.' '.$calculated_connect_id.'<br>';
 	$result=$dbh->query($sql);
 
 	// *****************
@@ -1279,7 +1303,9 @@ if (isset($_POST['step3'])){
 			if ($commit_counter>$humo_option["gedcom_read_commit_records"]){
 				$commit_counter=0;
 				// *** Save data in database ***
-				$dbh->commit();
+				if ($dbh->inTransaction()) {
+					$dbh->commit();
+				}
 				// *** Start next process batch ***
 				$dbh->beginTransaction();
 			}
@@ -2273,6 +2299,10 @@ if (isset($_POST['step4'])){
 		printf('<p><b>'.__('Ready! Now click %s to watch the family tree').'</b><br>', ' <a href="'.CMS_ROOTPATH.'index.php">index.php</a> ');
 		echo __('TIP: Use <a href="index.php?page=cal_date">"Calculated birth dates"</a> for a better privacy filter.');
 	}
+
+	// *** Reset selected person in editor ***
+	unset($_SESSION['admin_pers_gedcomnumber']);
+	unset($_SESSION['admin_fam_gedcomnumber']);
 
 } // end of read GEDCOM (step 4)
 ?>

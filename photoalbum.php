@@ -420,7 +420,9 @@ if($subsub==true) {
 				$person_cls = New person_cls;
 				$personDb=$db_functions->get_person($afbDb->event_connect_id);
 				$name=$person_cls->person_name($personDb);
-				$url=$person_cls->person_url($personDb);
+				//$url=$person_cls->person_url($personDb);
+				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+				$url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
 				$picture_text.='<a href="'.$url.'">'.$name["standard_name"].'</a><br>';
 
 				$picture_text2.=$name["standard_name"];
@@ -445,7 +447,9 @@ if($subsub==true) {
 					@$personDb=$db_functions->get_person($connectDb->connect_connect_id);
 					$name=$person_cls->person_name($personDb);
 
-					$url=$person_cls->person_url($personDb);
+					//$url=$person_cls->person_url($personDb);
+					// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
+					$url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
 					$picture_text.='<a href="'.$url.'">'.$name["standard_name"].'</a><br>';
 
 					$picture_text2.=$name["standard_name"];

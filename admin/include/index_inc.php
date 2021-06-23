@@ -414,10 +414,10 @@ The file .htpasswd will look something like this:<br>');
 
 	// *** display_errors ***
 	if (!ini_get('display_errors')){
-		echo '<tr><td class="line_item">display_errors</td><td class="line_ok">'.__('OK (option is OFF)').'</td></tr>';
+		echo '<tr><td class="line_item">'.__('Option "display_errors"').'</td><td class="line_ok">'.__('OK (option is OFF)').'</td></tr>';
 	}
 	else{
-		echo '<tr><td class="line_item">display_errors</td><td class="line_nok">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file.').'</td></tr>';
+		echo '<tr><td class="line_item">'.__('Option "display_errors"').'</td><td class="line_nok">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file.').'</td></tr>';
 	}
 
 	// *** HuMo-genealogy debug options ***

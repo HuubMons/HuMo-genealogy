@@ -3372,7 +3372,7 @@ function update_v5_6_1(){
 			$result=$dbh->query($sql);
 		}
 
-		// *** Update "update_status" to number 11 ***
+		// *** Update "update_status" to number 12 ***
 		$result = $dbh->query("UPDATE humo_settings SET setting_value='12' WHERE setting_variable='update_status'");
 
 	// *** Commit data in database ***
@@ -3381,6 +3381,181 @@ function update_v5_6_1(){
 	// *** Show status of database update ***
 	echo '<script type="text/javascript">document.getElementById("information v5_6_1").innerHTML="Database updated!";</script>'; ob_flush(); flush(); // IE
 }
+
+
+function update_v5_7(){
+	// ************************************
+	// *** Update procedure version 5.7 ***
+	// ************************************
+
+	global $dbh;
+
+	// *** Show update status ***
+	echo '<tr><td>HuMo-genealogy update V5.7</td>';
+	echo '<td style="background-color:#00FF00">'.__('Update in progress...').' <div id="information v5_7" style="display: inline; font-weight:bold;"></div></td></tr>';
+	ob_flush(); flush(); // IE
+
+	// *** Remove unwanted file from HuMo-genealogy ***
+	if (file_exists('gedcom_files/HuMo-gen 2020_05_02 UTF-8.ged')){
+		unlink ('gedcom_files/HuMo-gen 2020_05_02 UTF-8.ged');
+	}
+
+	$db_update = "ALTER TABLE humo_sources ADD source_shared varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER source_gedcomnr";
+	$update_Db = $dbh->query($db_update);
+
+	$db_update = "ALTER TABLE humo_addresses ADD address_shared varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER address_gedcomnr";
+	$update_Db = $dbh->query($db_update);
+
+	// *** Update ALL lines in humo_source table for all family trees ***
+	$sql="UPDATE humo_sources SET source_shared='1'";
+	$result=$dbh->query($sql);
+
+	// *** Update ALL lines in humo_address table for all family trees ***
+	$sql="UPDATE humo_addresses SET address_shared='1' WHERE address_gedcomnr LIKE '_%'";
+	$result=$dbh->query($sql);
+
+	// *** Batch processing ***
+	//$dbh->beginTransaction();
+
+	// *** Read all family trees from database ***
+	$update_sql = $dbh->query("SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order");
+	while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
+
+		// *** Show status of database update ***
+		//echo '<script type="text/javascript">';
+		//	echo 'document.getElementById("information").innerHTML="'.__('Update tree:').' '.$updateDb->tree_id.'";';
+		//echo '</script>';
+
+		//echo __('Update tree:').' '.$updateDb->tree_id.'<br>';
+		//ob_flush(); 
+		//flush(); // IE
+
+		// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
+		$new_nr_qry= "SELECT *, ABS(substring(address_gedcomnr, 2)) AS gednr
+			FROM humo_addresses WHERE address_tree_id='".$updateDb->tree_id."' ORDER BY gednr DESC LIMIT 0,1";
+		$new_nr_result = $dbh->query($new_nr_qry);
+		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
+		$new_gedcomnumber='1';
+		if (isset($new_nr->address_gedcomnr)){
+			$new_gedcomnumber=substr($new_nr->address_gedcomnr,1);
+		}
+
+		$address_qry=$dbh->query("SELECT * FROM humo_addresses
+			WHERE address_tree_id='".$updateDb->tree_id."'
+			AND (address_connect_kind='person' OR address_connect_kind='family')");
+		while($addressDb=$address_qry->fetch(PDO::FETCH_OBJ)){
+			$new_gedcomnumber=$new_gedcomnumber+1;
+
+			//connect_order='".$count."',
+			//$address_connect_sub_kind='person_address';
+			$sql="INSERT INTO humo_connections SET
+				connect_tree_id='".$updateDb->tree_id."',
+				connect_item_id='R".$new_gedcomnumber."',
+				connect_date='".$addressDb->address_date."',
+				connect_order='".$addressDb->address_order."',";
+				if ($addressDb->address_connect_kind=='person'){
+					$sql.="connect_kind='person', connect_sub_kind='person_address',";
+				}
+				else{
+					$sql.="connect_kind='family', connect_sub_kind='family_address',";
+				}
+				$sql.="connect_connect_id='".$addressDb->address_connect_id."'";
+			//echo $sql.'<br>';
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_addresses SET
+				address_gedcomnr='R".$new_gedcomnumber."',
+				address_order='',
+				address_date='',
+				address_connect_kind='',
+				address_connect_sub_kind='',
+				address_connect_id=''
+				WHERE address_id='".$addressDb->address_id."'";
+			//echo $sql.'<br><br>';
+			$result=$dbh->query($sql);
+		}
+
+		// *** Change ID for address by source into address GEDCOM number ***
+		$sql="SELECT * FROM humo_connections LEFT JOIN humo_addresses ON address_id=connect_connect_id
+			WHERE connect_tree_id='".$updateDb->tree_id."'
+			AND (connect_sub_kind='pers_address_source' OR connect_sub_kind='fam_address_source' OR connect_sub_kind='address_source')";
+		$qry = $dbh->query($sql);
+		while ($qryDb=$qry->fetch(PDO::FETCH_OBJ)){
+			$sql="UPDATE humo_connections SET connect_connect_id='".$qryDb->address_gedcomnr."'
+				WHERE connect_id='".$qryDb->connect_id."'";
+			//echo $sql.'<br><br>';
+			$result=$dbh->query($sql);
+		}
+
+		// *** Update sources ***
+
+		// *** Generate new gedcomnr, find highest gedcomnumber I100: strip I and order by numeric ***
+		$new_nr_qry= "SELECT *, ABS(substring(source_gedcomnr, 2)) AS gednr
+			FROM humo_sources WHERE source_tree_id='".$updateDb->tree_id."' ORDER BY gednr DESC LIMIT 0,1";
+		$new_nr_result = $dbh->query($new_nr_qry);
+		$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
+		$new_gedcomnumber='1';
+		if (isset($new_nr->address_gedcomnr)){
+			$new_gedcomnumber=substr($new_nr->address_gedcomnr,1);
+		}
+
+		// *** Batch processing ***
+		//$dbh->beginTransaction();
+		$sql="SELECT * FROM humo_connections
+			WHERE connect_tree_id='".$updateDb->tree_id."'
+			AND substring(connect_sub_kind, -7)='_source'
+			AND connect_source_id NOT LIKE '_%'";
+		$qry = $dbh->query($sql);
+		while ($qryDb=$qry->fetch(PDO::FETCH_OBJ)){
+			$new_gedcomnumber++;
+
+			//source_new_user='".$username."',
+			//source_new_date='".$gedcom_date."',
+			//source_new_time='".$gedcom_time."'
+			$sql="INSERT INTO humo_sources SET
+				source_tree_id='".$updateDb->tree_id."',
+				source_gedcomnr='S".$new_gedcomnumber."',
+				source_status='',
+				source_title='',
+				source_date='".$qryDb->connect_date."',
+				source_place='',
+				source_publ='',
+				source_refn='',
+				source_auth='',
+				source_subj='',
+				source_item='',
+				source_kind='',
+				source_repo_caln='',
+				source_repo_page='',
+				source_repo_gedcomnr='',
+				source_text='".safe_text_db($qryDb->connect_text)."'
+				";
+			//echo $sql.'<br>';
+			$result=$dbh->query($sql);
+
+			$sql="UPDATE humo_connections SET
+				connect_text='',
+				connect_source_id='S".$new_gedcomnumber."'
+				WHERE connect_id='".$qryDb->connect_id."'";
+			//echo $sql.'<br><br>';
+			$result=$dbh->query($sql);
+
+		}
+		// *** Commit data in database ***
+		//$dbh->commit();
+
+	}
+
+		// *** Update "update_status" to number 13 ***
+		$result = $dbh->query("UPDATE humo_settings SET setting_value='13' WHERE setting_variable='update_status'");
+
+	// *** Commit data in database ***
+	//$dbh->commit();
+
+	// *** Show status of database update ***
+	echo '<script type="text/javascript">document.getElementById("information v5_7").innerHTML="Database updated!";</script>'; ob_flush(); flush(); // IE
+}
+
 
 
 

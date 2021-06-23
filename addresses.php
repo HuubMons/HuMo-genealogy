@@ -119,8 +119,12 @@ echo '<div>';
 
 	echo '</tr>';
 
+	//$sql="SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."' 
+	//	AND address_gedcomnr LIKE '_%' AND address_address LIKE '_%'".
+	//	$where." ORDER BY ".$orderby;
 	$sql="SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."' 
-		AND address_gedcomnr LIKE '_%'  ".$where." ORDER BY ".$orderby;
+		AND address_shared='1'".
+		$where." ORDER BY ".$orderby;
 	$address = $dbh->query($sql);
 	
 	while(@$addressDb=$address->fetch(PDO::FETCH_OBJ)) {

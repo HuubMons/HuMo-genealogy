@@ -45,7 +45,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 
 	// If the locations are taken from one tree, add the id of this tree to humo_settings "geo_trees", if not already there
 	// so we can update correctly with the "REFRESH BIRTH/DEATH STATUS" option further on.
-	if($_SESSION['geo_tree']  != "all_geo_trees") {  // we add locations from one tree
+	if($_SESSION['geo_tree']  != "all_geo_trees") { // we add locations from one tree
 		if(strpos($humo_option['geo_trees'],"@".$_SESSION['geo_tree'].";")===false) { // this tree_id does not appear already
 			$result = $db_functions->update_settings('geo_trees',$humo_option['geo_trees']."@".$_SESSION['geo_tree']);
 			// add tree_prefix if not already present
@@ -66,6 +66,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 		$count_parsed++;
 		//if($count_parsed<110 OR $count_parsed > 125) continue;
 		$loc=urlencode($value);
+		
 		//echo "<br>".$value." - ".$loc."<br>";
 		/* This piece is outdated since Google's API revision. The second key (IP address restricted) has to be used and an https connection is mandatory.
  		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
@@ -92,15 +93,17 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 		if($api_key2 == "") { $api_key2 = $api_key; }  // if no second key is present, try to use first key.
 
 		$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key2; 
+
 		//echo $api_key." - ".$api_key2."<br>";
 		//echo $jsonurl."<br>";
 		//$json = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key2);
 		//echo $json;
  
 		$json = file_get_contents($jsonurl,0,null,null);
+
 		// file_get_contents won't work if "allow_url_fopen" is disabled by host for security considerations.
 		// in that case try the PHP "curl" extension that is installed on most hosts (but we still check...)
-		if(!$json) {
+		if(!$json) {     
 			if(extension_loaded('curl')) {
 				$ch = curl_init();
 				curl_setopt ($ch, CURLOPT_URL, $jsonurl);
@@ -139,9 +142,14 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 			$flag_stop=1;
 			break;  // out of foreach
 		}
+		elseif ($json_output['status']=="REQUEST_DENIED") {
+			echo "Error type: ".$json_output['status']."<br>";
+			echo "Error message: ".$json_output['error_message'];
+			$flag_stop=2;
+			break;
+		}
 		else {
-			// not a good situation. this is either "REQUEST_DENIED" which shouldn't happen,
-			// or "INVALID_REQUEST" that can't really happen, because this code is perfect....   ;-)
+			// could be // or "INVALID_REQUEST" but that can't really happen, because this code is perfect....   ;-)
 		}
 
 	} // end of foreach
@@ -159,6 +167,9 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 				echo $value."<br>";
 			}
 		}
+	}
+	elseif($flag_stop==2) {
+		// REQUEST DENIED - error message already displayed
 	}
 	else {  // the process was interrupted because of OVER_QUERY_LIMIT. Explain to the admin!
 		echo '<p style="color:red;font-size:120%"><b> '.__('The process was interrupted because Google limits to maximum 2500 queries within one day (counting is reset at midnight PST, which is 08:00 AM GMT)').'</b></p>';
@@ -560,6 +571,7 @@ else {  // main screen
 		else {
 			$_SESSION['add_locations']=$add_locations;
 			$new_locations = count($add_locations);
+			
 			$map_totalsecs = $new_locations * 1.25;
 			$map_mins = floor($map_totalsecs / 60);
 			$map_secs = $map_totalsecs % 60;
@@ -573,6 +585,11 @@ else {  // main screen
 			}
 			echo $one_tree;
 			printf(__('There are %s new unique birth/ death locations to add to the database.'), $new_locations);
+			echo '<br><br>';
+			
+foreach($add_locations AS $val) {
+		echo $val."<br>";
+}			
 			echo '<br>';
 			printf(__('This will take approximately <b>%1$d minutes and %2$d seconds.</b>'), $map_mins, $map_secs);
 			echo '<br>';

@@ -45,7 +45,9 @@ include_once(CMS_ROOTPATH."include/process_text.php");
 include_once(CMS_ROOTPATH."include/date_place.php");
 include_once(CMS_ROOTPATH."include/marriage_cls.php");
 include_once(CMS_ROOTPATH."include/show_sources.php");
+include_once(CMS_ROOTPATH."include/show_addresses.php");
 include_once(CMS_ROOTPATH."include/show_picture.php");
+include_once(CMS_ROOTPATH."include/show_quality.php");
 
 if($screen_mode!='PDF' AND $screen_mode!='ASPDF') {  //we can't have a menu in pdf...
 	include_once(CMS_ROOTPATH."menu.php");

@@ -2,6 +2,7 @@
 class PDF extends FPDF{
 
 //***********************************************************************************************
+// Updated functions for sources, addresses, and improved name: Huub Mons jan. 2021.
 // EXTRA FUNCTIONS FOR HUMO-GENEALOGY BY YOSSI BECK:
 // pdfdisplay() , displayrel() , writename(),  pdf_ancestor_name() and adjusted Header()
 //************************************************************************************************
@@ -149,7 +150,7 @@ function pdfdisplay($templ_personing,$person_kind) {
 			$buri=1;
 			}
 		}
-		//if(!$first AND $value!='') {  
+		//if(!$first AND $value!='') {
 		//	if (substr($value,0,2)==', '){ $value=ucfirst(substr($value,2)); }
 		//	else {ucfirst($value); }
 		//	$first=1;
@@ -158,12 +159,11 @@ function pdfdisplay($templ_personing,$person_kind) {
 		if(!$prof){
 			if(strpos($key,"prof")!==false) {
 				if ($templ_personing["flag_prof"]==1)
-					$occupation=ucfirst(__('occupations'));
+					$occupation=ucfirst(__('occupations')).': ';
 				else
-					$occupation=ucfirst(__('occupation'));
+					$occupation=ucfirst(__('occupation')).': ';
 				$pdf->SetFont('Arial','B',$font);
-				$temp=$occupation.': ';
-				$pdf->Write(6,$temp);
+				$pdf->Write(6,$occupation);
 				$pdf->SetFont('Arial','',$font);
 				$prof=1;
 			}
@@ -172,15 +172,29 @@ function pdfdisplay($templ_personing,$person_kind) {
 		if(!$address){
 			if(strpos($key,"address")!==false) {
 				if ($templ_personing["flag_address"]==1)
-					$residence=ucfirst(__('residences'));
+					$residence=ucfirst(__('residences')).': ';
 				else
-					$residence=ucfirst(__('residence'));
+					$residence=ucfirst(__('residence')).': ';
 				$pdf->SetFont('Arial','B',$font);
-				$temp=$residence.': ';
-				$pdf->Write(6,$temp);
+				$pdf->Write(6,$residence);
 				$pdf->SetFont('Arial','',$font);
 				$address=1;
 			}
+		}
+
+		// ** New jan. 2021 ***
+		//if (isset($templ_personing["flag_source"])){
+		if(strpos($key,"flag_source")!==false) {
+			if ($templ_personing["flag_source"]==1)
+				$source_text='. '.__('Sources for person');
+			else
+				$source_text='. '.__('Source for person');
+			$pdf->SetFont('Arial','B',$font);
+			$temp=$source_text.': ';
+			$pdf->Write(6,$temp);
+			$pdf->SetFont('Arial','',$font);
+			//$source=1;
+			continue; // *** Skip rest of loop, otherwise wrong items are shown ***
 		}
 
 		$value=html_entity_decode($value);
@@ -238,50 +252,13 @@ function pdfdisplay($templ_personing,$person_kind) {
 					$pdf->SetLeftMargin($child_indent);
 					$pdf->SetFont('Times','',$font);
 					$pdf->SetTextColor(28,28,255);
-					if($source_presentation=='footnote') {  // "source 1" as link to list at end of doc
-						$multitext = explode('~',$value);
-						for($i=0;$i<count($multitext);$i++) {
-							//$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
-							$len = strlen(__('Sources')) + 3;  // 'space','(','$lang[...]','space'
-							$num = substr($multitext[$i],$len,-1); // -1: take ) off the end
-							$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
-							if($ofs >= 0) {  // is footnote to source from global source list
-								$pdf->SetTextColor(28,28,255);
-								$pdf->subWrite(6,$multitext[$i],$pdf_footnotes[$ofs],9,4);
-							}
-							else { // "manual" source list as regular non-clickable text
-								$pdf->SetTextColor(0);
-								$pdf->Write(6,$multitext[$i]);
-							}
-						}
-					}
-					elseif($user['group_sources']!='n')  {  // source title as link to list at end of doc
-						// with multiple sources pdf string looks like:  ,firstsource!!12~,secondsource!!4~,thirdsource!!6
-						$multitext = explode('~',$value); // each key looks like: ,somesource!!34
-						for($i=0;$i<count($multitext);$i++) {
-							$pos = strpos($multitext[$i],'!!');
-							//if($user['group_sources']=='j' AND $pos) {
-							if($pos) { //source title as link to list at bottom
-								if($user['group_sources']=='j') { $pdf->SetTextColor(28,28,255); }
-								else { $pdf->SetTextColor(0); }
-								$ofs = substr($multitext[$i],$pos+2)-1;
-								$txt = substr($multitext[$i],0,$pos); // take off the !!2 source number at end
-								$pdf->Write(6,$txt,$pdf_footnotes[$ofs]);
-							}
-							else {  // source title as plain text
-								$pdf->SetTextColor(0);
-								$pdf->Write(6,$multitext[$i]);
-							}
-						}
-						if($pos) {$pdf->Write(6,'. ');	}
-					}
+
 					/*
-					else {
-						$pdf->SetTextColor(0);
-						$pdf->Write(6,$value);
-					}
+					$pdf->SetLeftMargin($child_indent);
+					$pdf->SetFont('Times','',$font);
+					$pdf->SetTextColor(28,28,255);
 					*/
-					$pdf->SetTextColor(0);
+					$this->PDFShowSources($value);
 					$pdf->SetLeftMargin($indent);
 				}
 
@@ -292,7 +269,7 @@ function pdfdisplay($templ_personing,$person_kind) {
 				}
 			}
 
-			elseif($person_kind=="ancestor")  {
+			elseif($person_kind=="ancestor") {
 
 				if(strpos($key,"got_pics")!==false) {
 					$keepY=$pdf->GetY()+7;  if(($keepY + $tallestpic) > 280) {$pdf->AddPage(); $keepY=20; }
@@ -317,54 +294,15 @@ function pdfdisplay($templ_personing,$person_kind) {
 				}
 				// source link with ancestor
 				elseif(strpos($key,"source")!==false AND $value != ''){   // make source link to end of document
+					/*
 					$pdf->SetLeftMargin(38);
 					$pdf->SetFont('Times','',$font);
 					$pdf->SetTextColor(28,28,255);
-					if($source_presentation=='footnote') {  // "source 1" as link to list at end of doc
-						$multitext = explode('~',$value);
-						for($i=0;$i<count($multitext);$i++) {
-							$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
-							$num = substr($multitext[$i],$len,-1); // -1: take ) off the end
-							//$ofs = $num - 1; // offset starts with 0
-							$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
-							if($ofs >= 0) {  // is footnote to source from global source list
-								$pdf->SetTextColor(28,28,255);
-								$pdf->subWrite(6,$multitext[$i],$pdf_footnotes[$ofs],9,4);
-							}
-							else { // "manual" source list as regular non-clickable text
-								$pdf->SetTextColor(0);
-								$pdf->Write(6,$multitext[$i]);
-							}
-						}
-					}
-					elseif($user['group_sources']!='n')  {  // source title as link to list at end of doc
-						// with multiple sources pdf string looks like:  ,firstsource!!12~,secondsource!!4~,thirdsource!!6
-						$multitext = explode('~',$value); // each key looks like: ,somesource!!34
-						for($i=0;$i<count($multitext);$i++) {
-							$pos = strpos($multitext[$i],'!!');
-							//if($user['group_sources']=='j' AND $pos) {
-							if($pos) { //source title as link to list at bottom
-								if($user['group_sources']=='j') { $pdf->SetTextColor(28,28,255); }
-								else { $pdf->SetTextColor(0); }
-								$ofs = substr($multitext[$i],$pos+2)-1;
-								$txt = substr($multitext[$i],0,$pos); // take off the !!2 source number at end
-								$pdf->Write(6,$txt,$pdf_footnotes[$ofs]);
-							}
-							else {  // source title as plain text
-								$pdf->SetTextColor(0);
-								$pdf->Write(6,$multitext[$i]);
-							}
-						}
-						if($pos) {$pdf->Write(6,'. ');	}
-					}
-					/*
-					else {
-						$pdf->SetTextColor(0);
-						$pdf->Write(6,$value);
-					}
 					*/
-					$pdf->SetTextColor(0);
-					$pdf->SetLeftMargin(10);
+					$this->PDFShowSources($value);
+
+					//$pdf->SetTextColor(0);
+					//$pdf->SetLeftMargin(10);
 				}
 				else {
 					$pdf->SetLeftMargin(38);
@@ -395,53 +333,11 @@ function pdfdisplay($templ_personing,$person_kind) {
 				}
 			}
 			elseif(strpos($key,"source")!==false AND $value != ''){   // make source link to end of document
-				$pdf->SetFont('Times','',$font);
-				$pdf->SetTextColor(28,28,255);
-				if($source_presentation=='footnote') {  // "source 1" as link to list at end of doc
-					$multitext = explode('~',$value);
-					for($i=0;$i<count($multitext);$i++) {
-						//$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
-						$len = strlen(__('Sources')) + 3;  // 'space','(','$lang[...]','space'
-						$num = substr($multitext[$i],$len,-1); // -1: take ) off the end
-						$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
-						//if($ofs >= 0) {  // is footnote to source from global source list
-						if($ofs >= 0 AND isset($pdf_footnotes[$ofs])) {  // is footnote to source from global source list
-							$pdf->SetTextColor(28,28,255);
-							$pdf->subWrite(6,$multitext[$i],$pdf_footnotes[$ofs],9,4);
-						}
-						else { // "manual" source list as regular non-clickable text
-							$pdf->SetTextColor(0);
-							$pdf->Write(6,$multitext[$i]);
-						}
-					}
-				}
-				elseif($user['group_sources']!='n')  {  // source title as link to list at end of doc
-					// with multiple sources pdf string looks like:  ,firstsource!!12~,secondsource!!4~,thirdsource!!6
-					$multitext = explode('~',$value); // each key looks like: ,somesource!!34
-					for($i=0;$i<count($multitext);$i++) {
-						$pos = strpos($multitext[$i],'!!');
-						//if($user['group_sources']=='j' AND $pos) {
-						if($pos) { //source title as link to list at bottom
-							if($user['group_sources']=='j') { $pdf->SetTextColor(28,28,255); }
-							else { $pdf->SetTextColor(0); }
-							$ofs = substr($multitext[$i],$pos+2)-1;
-							$txt = substr($multitext[$i],0,$pos); // take off the !!2 source number at end
-							$pdf->Write(6,$txt,$pdf_footnotes[$ofs]);
-						}
-						else {  // source title as plain text
-							$pdf->SetTextColor(0);
-							$pdf->Write(6,$multitext[$i]);
-						}
-					}
-					if($pos) {$pdf->Write(6,'. '); }
-				}
-				/*
-				else {  // manual source title as plain text
-					$pdf->SetTextColor(0);
-					$pdf->Write(6,$value.'RED');
-				}
-				*/
-				$pdf->SetTextColor(0);
+				//$pdf->SetFont('Times','',$font);
+				//$pdf->SetTextColor(28,28,255);
+				$this->PDFShowSources($value);
+
+				//$pdf->SetTextColor(0);
 			}
 			else {
 				$pdf->Write(6,$value);
@@ -463,7 +359,8 @@ function pdfdisplay($templ_personing,$person_kind) {
 function displayrel ($templ_relation,$ancestor_report) {
 	global $pdf, $language, $user, $pdf_footnotes, $pdf_count_notes;
 	$font=12;
-	$samw=0;  $prew=0; $wedd=0; $prec=0; $chur=0; $devr=0;
+	$samw=0; $prew=0; $wedd=0; $prec=0; $chur=0; $devr=0;
+	$address=0;
 
 	$source_presentation='title';
 	if (isset($_SESSION['save_source_presentation'])){
@@ -511,51 +408,41 @@ function displayrel ($templ_relation,$ancestor_report) {
 			}
 		}
 
+		// *** NEW 03-01-2021 added family address in PDF function ***
+		// *** Show text: "Residences (family): " ***
+		if(strpos($key,"flag_address")!==false) {
+			if ($templ_relation["flag_address"]==1)
+				$residence=__('Residences (family)').': ';
+			else
+				$residence=__('Residence (family)').': ';
+			$pdf->SetFont('Arial','B',$font);
+			$pdf->Write(6,$residence);
+			$pdf->SetFont('Arial','',$font);
+			//$address=1;
+			continue; // *** Skip rest of loop, otherwise wrong items are shown ***
+		}
+
+		// ** New jan. 2021 ***
+		//if (isset($templ_personing["flag_source"])){
+		if(strpos($key,"flag_source")!==false) {
+			if ($templ_relation["flag_source"]==1)
+				$source_text='. '.__('Sources for family').': ';
+			else
+				$source_text='. '.__('Source for family').': ';
+			$pdf->SetFont('Arial','B',$font);
+			$pdf->Write(6,$source_text);
+			$pdf->SetFont('Arial','',$font);
+			//$source=1;
+			continue; // *** Skip rest of loop, otherwise wrong items are shown ***
+		}
+
+
 		if(strpos($key,"text")!==false) {  $pdf->SetFont('Arial','I',$font-1); }
 		if(strpos($key,"witn")!==false) {  $pdf->SetFont('Times','',$font); }
 		if(strpos($key,"source")!==false){ $pdf->SetFont('Times','',$font); }
 
 		if (strpos($key,"source")!==false) {
-			$multitext = explode('~',$value);
-
-			if($source_presentation=='footnote') {  // "source 1" as link to list at end of doc
-				for($i=0;$i<count($multitext);$i++) {
-					$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
-					$num = substr($multitext[$i],$len,-1); // -1: take ) off the end
-					//$ofs = $num - 1; // offset starts with 0
-					$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
-					//if($ofs >= 0) {  // is footnote to source from global source list
-					if($ofs >= 0 AND isset($pdf_footnotes[$ofs])) {  // is footnote to source from global source list
-						$pdf->SetTextColor(28,28,255);
-						$pdf->subWrite(6,$multitext[$i],$pdf_footnotes[$ofs],9,4);
-					}
-					else { // "manual" source list as regular non-clickable text
-						$pdf->SetTextColor(0);
-						$pdf->Write(6,$multitext[$i]);
-					}
-				}
-			}
-
-			elseif($user['group_sources']!='n')  {  // source title as link to list at end of doc
-				// with multiple sources pdf string looks like:  ,firstsource!!12~,secondsource!!4~,thirdsource!!6
-				for($i=0;$i<count($multitext);$i++) {
-					$pos = strpos($multitext[$i],'!!');
-					//if($user['group_sources']=='j' AND $pos) {
-					if($pos) { //source title as link to list at bottom
-						if($user['group_sources']=='j') { $pdf->SetTextColor(28,28,255); }
-							else { $pdf->SetTextColor(0); }
-						$ofs = substr($multitext[$i],$pos+2)-1;
-						$txt = substr($multitext[$i],0,$pos); // take off the !!2 source number at end
-						$pdf->Write(6,$txt,$pdf_footnotes[$ofs]);
-					}
-					else {  // source title as plain text
-						$pdf->SetTextColor(0);
-						$pdf->Write(6,$multitext[$i]);
-					}
-				}
-				if($pos) {$pdf->Write(6,'. '); }
-			}
-			$pdf->SetTextColor(0);
+			$this->PDFShowSources($value);
 		}
 		else {
 			$pdf->Write(6,$value);
@@ -567,30 +454,121 @@ function displayrel ($templ_relation,$ancestor_report) {
 }
 
 //*******************************************************************
-//   function writename() to place the name of a person
+//   09-01-2021 RENEWED function writename() to place the name of a person
 //*******************************************************************
+function write_name($templ_name,$indentation,$length) {
+	global $ident;
+	global $pdf, $language, $user, $pdf_footnotes, $pdf_count_notes;
+	$sexe=0;$name=0;$name_text=0;$name_parents=0;$name_partner=0;
 
-function writename($sexe,$indentation,$name,$length) {
-	global $pdf, $language, $indent;
-	if($sexe=="M") $pic="images/man.gif";
-		elseif ($sexe=='F') $pic="images/woman.gif";
-		else $pic="images/unknown.gif";
-	$pdf->Image($pic,$indentation-4,$pdf->GetY()+2,3.5,3.5);
-	$pdf->SetX($indentation);
-	if($length=="long") {
-		$indent=$pdf->GetX();
+	$size=12; if ($length=='child') $size=11;
+
+	$source_presentation='title';
+	if (isset($_SESSION['save_source_presentation'])){
+		$source_presentation=$_SESSION['save_source_presentation'];
 	}
-	$pdf->SetFont('Arial','B',12);
-	//$pdf->Write(8,$name);
-	$pdf->MultiCell(0,8,$name,0,"L");
-	$pdf->SetFont('Arial','',12);
-	//$pdf->Write(8,"\n");
+
+	foreach($templ_name as $key => $value) {
+		$value=html_entity_decode($value);
+
+		if(strpos($key,"name_sexe")!==false AND $sexe==0) {
+			if($templ_name["name_sexe"]=="M") $pic="images/man.gif";
+				elseif ($templ_name["name_sexe"]=='F') $pic="images/woman.gif";
+				else $pic="images/unknown.gif";
+
+			if ($length!='child'){
+				$pdf->Image($pic,$indentation-4,$pdf->GetY()+2,3.5,3.5); $sexe=1;
+			}
+			else{
+				$pdf->Image($pic,$indentation-4,$pdf->GetY()+1,3.5,3.5); $sexe=1;
+				$pdf->SetX($pdf->GetX()+5);
+			}
+
+			$pdf->SetX($indentation);
+			if($length=="long") {
+				$indent=$pdf->GetX();
+			}
+		}
+
+
+//$pdf->SetX($indentation);
+
+//$indent=$pdf->GetX();
+//$pdf->SetLeftMargin($indent);
+
+//$indent=$pdf->GetX();
+//$pdf->SetX($indentation);
+
+		if(strpos($key,"name_name")!==false AND $name==0) {
+//$indentation=$pdf->GetX();
+//$pdf->SetX($indentation);
+			$pdf->SetFont('Arial','B',$size);
+			$pdf->Write(6,html_entity_decode($templ_name["name_name"]));
+			//$pdf->MultiCell(0,8,$templ_name["name_name"],0,"L");
+			$pdf->SetFont('Arial','',$size);
+			$name=1;
+		}
+
+		if(strpos($key,"name_text")!==false AND $name_text==0) {
+//$indentation=$pdf->GetX();
+//$pdf->SetX($indentation);
+			$pdf->SetFont('Arial','I',$size);
+			$pdf->Write(6,html_entity_decode($templ_name["name_text"]));
+			//$pdf->MultiCell(0,8,$templ_name["name_text"],0,"L");
+			$pdf->SetFont('Arial','',$size);
+			$name_text=1;
+		}
+
+		if(strpos($key,"name_parents")!==false AND $name_parents==0) {
+//$indentation=$pdf->GetX();
+//$pdf->SetX($indentation);
+			$pdf->SetFont('Arial','',$size);
+			$pdf->Write(6,html_entity_decode($templ_name["name_parents"]));
+			//$pdf->MultiCell(0,8,$templ_name["name_parents"],0,"L");
+			$pdf->SetFont('Arial','',$size);
+			$name_parents=1;
+		}
+
+		// *** Sources ***
+		//$font=12; $type='';
+		$font=11; $type='';
+		if(strpos($key,"source")!==false AND $value != ''){   // make source link to end of document
+			//$pdf->SetX($indentation);
+			//$pdf->SetFont('Times','',$font);
+			//$pdf->SetTextColor(28,28,255);
+
+			$this->PDFShowSources($value);
+		}
+
+		// *** Show partner by child ***
+		if(strpos($key,"name_partner")!==false AND $name_partner==0) {
+//$indentation=$pdf->GetX();
+//$pdf->SetX($indentation);
+			$pdf->SetFont('Arial','',$size);
+			$pdf->Write(6,html_entity_decode($templ_name["name_partner"]));
+			//$pdf->MultiCell(0,8,$templ_name["name_text"],0,"L");
+			$pdf->SetFont('Arial','',$size);
+			$name_partner=1;
+		}
+
+	}
+	//$indentation=$pdf->GetX();
+	//$pdf->SetX($indentation);
+	//$pdf->SetLeftMargin($indent);
+	//$pdf->SetLeftMargin(10);
+
+	// *** Resets line ***
+	if ($length!='child')
+		$pdf->MultiCell(0,8,'',0,"L");
+
+	//unset($pdf_footnotes);
 }
+
+
 
 //*******************************************************************
 // function pdf_ancestor_name()   writes names in ancestor report
 //*******************************************************************
-
 function pdf_ancestor_name($ancestor_reportnr,$sexe, $name) {
 	global $pdf, $language;
 
@@ -630,6 +608,73 @@ function pdf_ancestor_name($ancestor_reportnr,$sexe, $name) {
 	$pdf->MultiCell(0,8,$name,0,"L");
 	$pdf->SetFont('Arial','',12);
 }
+
+
+// *** 10 jan 2021 NEW FUNCTION ***
+// *** REMARK: footnotes are shown in family.php script ***
+function PDFShowSources($value){
+	global $pdf,$font,$source_presentation,$user,$pdf_footnotes;
+
+	//$pdf->SetX($indentation);
+	$pdf->SetFont('Times','',$font);
+	$pdf->SetTextColor(28,28,255);
+
+	if($source_presentation=='footnote') {  // "1)" as link to list at end of doc
+		$multitext = explode('~',$value);
+		//TEST
+		//$pdf->Write(6,$value);
+		//$pdf->Write(6,'SOURCE_1_TEST');
+		for($i=0;$i<count($multitext);$i++) {
+			$num = $multitext[$i];
+			$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
+			//if($ofs >= 0) {  // is footnote to source from global source list
+			if($ofs >= 0 AND isset($pdf_footnotes[$ofs])) {  // is footnote to source from global source list
+				$pdf->SetTextColor(28,28,255);
+				//$pdf->subWrite(6,$multitext[$i],$pdf_footnotes[$ofs],9,4);
+				$pdf->subWrite(6,' '.$multitext[$i].')',$pdf_footnotes[$ofs],9,4);
+			}
+			else { // "manual" source list as regular non-clickable text
+				$pdf->SetTextColor(0);
+				$pdf->Write(6,$multitext[$i]);
+			}
+		}
+		// *** Add extra space ***
+		if ($value="name_sexe_source") $pdf->Write(6,' ');
+	}
+	elseif($user['group_sources']!='n')  {  // source title as link to list at end of doc
+		//TEST
+		//$pdf->Write(6,$value);
+		//$pdf->Write(6,'SOURCE TEST');
+		// with multiple sources pdf string looks like:  ,firstsource!!12~,secondsource!!4~,thirdsource!!6
+		$multitext = explode('~',$value); // each key looks like: ,somesource!!34
+		for($i=0;$i<count($multitext);$i++) {
+			$pos = strpos($multitext[$i],'!!');
+			//if($user['group_sources']=='j' AND $pos) {
+			if($pos) { //source title as link to list at bottom
+				if($user['group_sources']=='j') { $pdf->SetTextColor(28,28,255); } else { $pdf->SetTextColor(0); }
+				//$num = $multitext[$i];
+				//$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
+				$ofs = substr($multitext[$i],$pos+2)-1;
+				$txt = substr($multitext[$i],0,$pos); // take off the !!2 source number at end
+				$pdf->Write(6,$txt,$pdf_footnotes[$ofs]);
+				//$pdf->subWrite(6,' '.$multitext[$i].')',$pdf_footnotes[$ofs],9,4);
+			}
+			else {  // source title as plain text
+				$pdf->SetTextColor(0);
+				$pdf->Write(6,$multitext[$i]);
+			}
+		}
+		if($pos) {$pdf->Write(6,'. '); }
+	}
+	/*
+	else {  // manual source title as plain text
+		$pdf->SetTextColor(0);
+		$pdf->Write(6,$value.'RED');
+	}
+	*/
+	$pdf->SetTextColor(0);
+}
+
 
 //***************************
  
