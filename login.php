@@ -48,7 +48,7 @@ if(isset($_POST['forgotpw'])) {
 }
 
 // process email address and username, create random key and mail its link to user
-elseif(isset($_POST['got_email'])) {  
+elseif(isset($_POST['got_email'])) {
 
 	$pw_table = $dbh->prepare("CREATE TABLE IF NOT EXISTS `humo_pw_retrieval` (
 	`retrieval_userid` varchar(20) NOT NULL,

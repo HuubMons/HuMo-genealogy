@@ -1,12 +1,15 @@
 body {
 	color: #000000;
 	background-image: url('images_sky_blue/background.gif');
-	font: 13px Verdana, tahoma, arial, sans-serif;
+	/* font: 13px Verdana, tahoma, arial, sans-serif; */
 	/* background-repeat: repeat; */
 }
 
 #top {
-	background:url(images_sky_blue/top.png) repeat left top
+	background:url(images_sky_blue/top.png) repeat left top;
+	/* background:none; */
+	/* background:inherit; */     /* Use #top_menu background! */
+	/* background:initial; */     /* Use #top_menu background! */
 }
 #top_website_name {
 	font-family: Delicious-Boldx, Verdana, Arial;
@@ -22,9 +25,6 @@ body {
 }
 
 #mainmenu_center{
-/*	float: left;
-	width: 46%;
-	margin-left: 19px; */
 }
 
 /* Links */
@@ -62,17 +62,15 @@ td.style_tree_text { background-color: #BDD7EF; }
 /* Switchform */
 #switchform { color: #333399; }
 
-/* Menu */
-#top_menu {
-	/* For IE - Voor IE: */
-	color: #6666aa;
-	background-color: #aaccee;
-}
 #humo_menu {
-	background-color:#bbeeff;
+	/* background-color:#bbeeff; */
 	background:url("images_sky_blue/blue.png") repeat left top;
+
 	border-top: solid 0px #61a0d9;
 	border-bottom: solid 1px #61a0d9;
+
+	/* background:none; */
+	/* background:inherit; */     /* Use #top_menu background! */
 }
 #humo_menu a { color: #111; }
 
@@ -100,6 +98,15 @@ ul.humo_menu_item2 li a{
 #humo_menu a:visited { color: #001155; }
 #humo_menu a:active {color: #2288dd;}
 #humo_menu a:hover {color: #001155;}
+
+/* Menu */
+#top_menu {
+	/* For IE - Voor IE: */
+	color: #6666aa;
+	/* background-color: #aaccee; */
+	/*	background:url("images_sky_blue/blue.png") repeat left top; */
+	/*background:url("images_sky_blue/top.png") repeat left top; */		 /* TEST LINE */
+}
 
 /* top bar in left - content - right boxes: only in main menu */
 .mainmenu_bar{

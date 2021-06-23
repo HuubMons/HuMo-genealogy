@@ -12,9 +12,9 @@ var randomsetting="3 days" //"eachtime", "sessiononly", or "x days (replace x wi
 // Added by Huub: code to show default skin, selected by administrator.
 var selectedtitle=getCookie("mysheet")
 if (document.getElementById && selectedtitle!=null) //load user chosen style sheet if there is one stored
-   setStylesheet(selectedtitle)
+	setStylesheet(selectedtitle)
 else
-   setStylesheet(defaultskin)
+	setStylesheet(defaultskin)
 
 function getCookie(Name) {
 	var re=new RegExp(Name+"=[^;]+", "i"); //construct RE to search for target name/value pair

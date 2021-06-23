@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(3000);
 @ini_set('memory_limit','-1');
-error_reporting(E_ALL);
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 

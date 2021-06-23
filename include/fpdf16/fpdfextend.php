@@ -240,7 +240,8 @@ function pdfdisplay($templ_personing,$person_kind) {
 					if($source_presentation=='footnote') {  // "source 1" as link to list at end of doc
 						$multitext = explode('~',$value);
 						for($i=0;$i<count($multitext);$i++) {
-							$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
+							//$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
+							$len = strlen(__('Sources')) + 3;  // 'space','(','$lang[...]','space'
 							$num = substr($multitext[$i],$len,-1); // -1: take ) off the end
 							$ofs = $num - 1; // offset starts with 0
 							if($ofs >= 0) {  // is footnote to source from global source list
@@ -397,7 +398,8 @@ function pdfdisplay($templ_personing,$person_kind) {
 				if($source_presentation=='footnote') {  // "source 1" as link to list at end of doc
 					$multitext = explode('~',$value);
 					for($i=0;$i<count($multitext);$i++) {
-						$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
+						//$len = strlen(__('Source')) + 3;  // 'space','(','$lang[...]','space'
+						$len = strlen(__('Sources')) + 3;  // 'space','(','$lang[...]','space'
 						$num = substr($multitext[$i],$len,-1); // -1: take ) off the end
 						$ofs = $num - 1; // offset starts with 0
 						if($ofs >= 0) {  // is footnote to source from global source list

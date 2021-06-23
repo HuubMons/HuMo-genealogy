@@ -46,7 +46,7 @@ function language_event($text_event){
 	$text_event=str_replace("_MEDC", __('Medical condition'), $text_event);
 	$text_event=str_replace("MILI", __('Military service'), $text_event);
 	$text_event=str_replace("NATI", __('Nationality'), $text_event);
-	$text_event=str_replace("NATU", __('Naturalized'), $text_event);
+	$text_event=str_replace("NATU", __('Naturalised'), $text_event);
 	$text_event=str_replace("NCHI0", __('No children'), $text_event); // Extra event...
 	$text_event=str_replace("NCHI", __('Nr. of children'), $text_event);
 	$text_event=str_replace("_NLIV", __('Not living'), $text_event);

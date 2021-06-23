@@ -1,13 +1,13 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.2.4';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.3';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 9 mrt. 2014';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
-$humo_option["version_date"]='2019-04-30';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -33,8 +33,7 @@ while($update_settingDb = $update_setting_qry->fetch(PDO::FETCH_OBJ)){
 	if ($update_settingDb->setting_variable=='personen_weergeven') { $setting='show_persons'; }
 
 	if ($setting){
-		$sql='UPDATE humo_settings SET setting_variable="'.$setting.'"
-		WHERE setting_variable="'.$update_settingDb->setting_variable.'"';
+		$sql='UPDATE humo_settings SET setting_variable="'.$setting.'" WHERE setting_variable="'.$update_settingDb->setting_variable.'"';
 		$update_Db = $dbh->query($sql);
 	}
 }
@@ -378,6 +377,28 @@ if (!isset($humo_option["admin_brit"])){
 if (!isset($humo_option["admin_barm"])){
 	$humo_option["admin_barm"]='n';
 	$sql="INSERT INTO humo_settings SET setting_variable='admin_barm', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["debug_front_pages"])){
+	$humo_option["debug_front_pages"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='debug_front_pages', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["debug_admin_pages"])){
+	$humo_option["debug_admin_pages"]='n';
+	$sql="INSERT INTO humo_settings SET setting_variable='debug_admin_pages', setting_value='n'";
+	@$result=$dbh->query($sql);
+}
+
+if (!isset($humo_option["hide_languages"])){
+	$humo_option["hide_languages"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='hide_languages', setting_value=''";
+	@$result=$dbh->query($sql);
+}
+
+if (!isset($humo_option["hide_themes"])){
+	$humo_option["hide_themes"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='hide_themes', setting_value=''";
 	@$result=$dbh->query($sql);
 }
 

@@ -102,8 +102,10 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	
 	// Don't show Brit Mila and/or Bar Mitzva if user set them to be displayed among person data
 	$hebtext='';
-	if($humo_option['admin_brit']=="y") {  $hebtext .= " AND event_gedcom!='_BRTM'  "; }
-	if($humo_option['admin_barm']=="y") {  $hebtext .= " AND event_gedcom!='BARM' AND event_gedcom!='BASM' "; }
+	//if($humo_option['admin_brit']=="y") {  $hebtext .= " AND event_gedcom!='_BRTM'  "; }
+	//if($humo_option['admin_barm']=="y") {  $hebtext .= " AND event_gedcom!='BARM' AND event_gedcom!='BASM' "; }
+	if($humo_option['admin_brit']=="y") {  $hebtext .= " AND (event_gedcom!='_BRTM'  OR event_gedcom IS NULL) "; }
+	if($humo_option['admin_barm']=="y") {  $hebtext .= " AND ((event_gedcom!='BARM' AND event_gedcom!='BASM') OR event_gedcom IS NULL) "; } 
 
 	if ($event_kind=='person'){
 		$qry="SELECT * FROM humo_events
@@ -218,9 +220,11 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		
 			// Don't show Brit Mila and/or Bar Mitzva in event list if user set them to be displayed among person data
 			$hebtext='';
-			if($humo_option['admin_brit']=="y") {     $hebtext .= " AND event_gedcom!='_BRTM'  "; }
-			if($humo_option['admin_barm']=="y") {  $hebtext .= " AND event_gedcom!='BARM' AND event_gedcom!='BASM'";	}
-			
+			//if($humo_option['admin_brit']=="y") {  $hebtext .= " AND event_gedcom!='_BRTM'  "; }
+			//if($humo_option['admin_barm']=="y") {  $hebtext .= " AND event_gedcom!='BARM' AND event_gedcom!='BASM'"; }
+			if($humo_option['admin_brit']=="y") {  $hebtext .= " AND (event_gedcom!='_BRTM'  OR event_gedcom IS NULL) "; }
+			if($humo_option['admin_barm']=="y") {  $hebtext .= " AND ((event_gedcom!='BARM' AND event_gedcom!='BASM') OR event_gedcom IS NULL) "; } 
+
 			$count_event=$dbh->query("SELECT * FROM humo_events
 				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."'
 				AND event_kind!='name'

@@ -631,7 +631,8 @@ else{
 
 	for ($descendant_loop=0; $descendant_loop<=$max_generation; $descendant_loop++){
 		$descendant_family_id2[]=0;
-		$descendant_main_person[2]=0;
+		//$descendant_main_person[2]=0;
+		$descendant_main_person2[]=0;
 		if (!isset($descendant_family_id2[1])){ break; }
 
 		// *** Copy array ***
@@ -682,7 +683,8 @@ else{
 			if($screen_mode=='STAR') {
 				while (isset($genarray[$arraynr]["non"]) AND $genarray[$arraynr]["non"]==1
 				AND isset($genarray[$arraynr]["gen"]) AND $genarray[$arraynr]["gen"]==$descendant_loop) {
-					$genarray[$arraynr]["nrc"]==0;
+					//$genarray[$arraynr]["nrc"]==0;
+					$genarray[$arraynr]["nrc"]=0;
 					$arraynr++;
 				}
 			}
@@ -821,6 +823,7 @@ else{
 					elseif($screen_mode=='RTF') {
 						$sect->addEmptyParagraph($fontSmall, $parBlack);
 
+						$treetext=show_tree_text($dataDb->tree_id, $selected_language);
 						$rtf_text=$treetext['family_top'];
 						if($rtf_text!='')
 							$sect->writeText($rtf_text, $arial14, $parHead);
@@ -2165,9 +2168,11 @@ if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_pres
 	if ($screen_mode=="RTF"){
 		//$rtf_text=strip_tags(show_sources_footnotes(),'<b>');
 		//$sect->writeText($rtf_text, $arial12);
-
 		$rtf_text=strip_tags(show_sources_footnotes());
-		$sect->addEndnote($rtf_text);
+// *** BUG: add Endnote doesn't show text in rtf file! ***
+		//$sect->addEndnote($rtf_text);
+		$sect->writeText('<br>');
+		$sect->writeText($rtf_text, $arial12);
 	}
 	else{
 		echo show_sources_footnotes();

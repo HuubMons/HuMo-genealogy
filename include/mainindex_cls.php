@@ -174,7 +174,8 @@ function tree_data(){
 
 	$tree_date=substr($tree_date,8,2).$month.substr($tree_date,0,4)." ".substr($tree_date,11,5);
 
-	return __('Latest update:').' '.$tree_date.', '.$dataDb->tree_persons.' '.__('persons').", ".$dataDb->tree_families.' '.__('families').'. <a href="'.CMS_ROOTPATH.'statistics.php">'.__('More statistics').'.</a>';
+	//return __('Latest update:').' '.$tree_date.', '.$dataDb->tree_persons.' '.__('persons').", ".$dataDb->tree_families.' '.__('families').'. <a href="'.CMS_ROOTPATH.'statistics.php">'.__('More statistics').'.</a>';
+	return __('Latest update:').' '.$tree_date.', '.$dataDb->tree_persons.' '.__('persons').", ".$dataDb->tree_families.' '.__('families');
 }
 
 // *** Owner family tree ***
@@ -312,14 +313,14 @@ function last_names(){
 	echo '</tr>';
 
 	$baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
-	//echo '<tr><td colspan="2" style="border-right-width:3px;"><a href="javascript:;" onClick=window.open("frequent_surnames.php","","width=970,height=600,top=40,left=60,scrollbars=yes");>'.__('More frequent surnames').'</a></td>';
-	echo '<tr class=table_headline><td colspan="2" style="border-right-width:3px;"><a href="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_surnames">'.__('More frequent surnames').'</a></td>';
-	//echo '<td colspan="2" style="border-right-width:3px;"><a href="javascript:;" onClick=window.open("frequent_firstnames.php","","width=1050,height=600,top=50,left=60,scrollbars=yes");>'.
-	//__('Frequent first names').'</a></td>';
-	//echo '<td colspan="2" style="border-right-width:3px;"><a href="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_firstnames">'.__('Frequent first names').'</a></td>';
-	echo '<td colspan="2"><a href="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_firstnames">'.__('Frequent first names').'</a></td>';
-	//echo '<td colspan="2"><a href="'.CMS_ROOTPATH.'statistics.php">'.__('Statistics').'</a></td></tr>';
-	echo '</tr>';
+
+	//echo '<tr class=table_headline>';
+	//	echo '<td colspan="2" style="border-right-width:3px;"><a href="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_surnames">'.__('More frequent surnames').'</a></td>';
+	//	echo '<td colspan="2"><a href="'.CMS_ROOTPATH.'statistics.php?menu_tab=stats_firstnames">'.__('Frequent first names').'</a></td>';
+	//echo '</tr>';
+
+	echo '<tr><td colspan="4" class=table_headline><a href="'.CMS_ROOTPATH.'statistics.php">'.__('More statistics').'</a></td></tr>';
+
 	echo '</table>';
 
 	echo '
@@ -329,16 +330,16 @@ function last_names(){
 	for(var i = 0; i < rws.length; i ++) {
 		var tbs =  rws[i].getElementsByClassName("namenr");
 		var nms = rws[i].getElementsByClassName("namelst");
-	  for(var x = 0; x < tbs.length; x ++) {
-		var percentage = parseInt(tbs[x].innerHTML, 10);
-		percentage = (percentage * 100)/baseperc;  
-		if(percentage > 0.1) {
-		   nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
-		   nms[x].style.backgroundSize = percentage + "%" + " 100%";
-		   nms[x].style.backgroundRepeat = "no-repeat";
-		   nms[x].style.color = "rgb(0, 140, 200)";
+		for(var x = 0; x < tbs.length; x ++) {
+			var percentage = parseInt(tbs[x].innerHTML, 10);
+			percentage = (percentage * 100)/baseperc;
+			if(percentage > 0.1) {
+				nms[x].style.backgroundImage= "url(images/lightgray.png)"; 
+				nms[x].style.backgroundSize = percentage + "%" + " 100%";
+				nms[x].style.backgroundRepeat = "no-repeat";
+				nms[x].style.color = "rgb(0, 140, 200)";
+			}
 		}
-	  }
 	}
 	</script>';
 

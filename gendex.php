@@ -27,8 +27,7 @@ foreach($datasql as $dataDb){
 	$hide_tree=false; if (in_array($dataDb->tree_id, $hide_tree_array)) $hide_tree=true;
 
 	if ($hide_tree==false){
-		$person_qry = $dbh->query("SELECT * FROM humo_persons
-			WHERE pers_tree_id='".$dataDb->tree_id."' ORDER BY pers_lastname");
+		$person_qry = $dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$dataDb->tree_id."' ORDER BY pers_lastname");
 		//GENDEX:
 		//person-URL|FAMILYNAME|Firstname /FAMILYNAME/|
 		//Birthdate|Birthplace|Deathdate|Deathplace|

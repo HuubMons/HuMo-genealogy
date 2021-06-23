@@ -324,7 +324,7 @@ if($privacy==1) {
 }
 
 if($isborn==0 AND $isdeath==0 AND $ismarr==0 AND $ischild==0) {   // no birth or death dates available
-	print "<br><br>".__('There are no dates available for this person. Timeline can not be calculated.');
+	echo "<br><br>".__('There are no dates available for this person. Timeline can not be calculated.');
 	exit();
 }
 if($isborn==1 AND $isdeath==0) {  // birth date but no death date: we show 80 years from birth
@@ -428,7 +428,8 @@ elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timelin
 $default=false; if($tml==$filenames[0][1]) $default=true;
 
 // **** SHOW MENU ****
-echo '<div class="left_box">';
+echo '<table align="center" class="humo index_table">';
+echo '<tr><td>';
 	if(CMS_SPECIFIC=="Joomla") {
 		echo '<form name="tmlstep" method="post" action="index.php?option=com_humo-gen&task=timelines&id='.$id.'&amp;database='.$database.'" style="display:inline;">';
 	}
@@ -445,7 +446,7 @@ echo '<div class="left_box">';
 		echo '<div class="fonts '.$rtlmarker.'sddm" style="display:inline">';
 		$popwidth="";
 	}
-	echo '<a href="#"';
+	echo '&nbsp;&nbsp;&nbsp;<a href="#"';
 	echo ' style="display:inline" ';
 	if(CMS_SPECIFIC=="Joomla") {
 		echo 'onmouseover="mopen(event,\'help_menu\',0,0)"';
@@ -454,7 +455,7 @@ echo '<div class="left_box">';
 		echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
 	}
 	echo 'onmouseout="mclosetime()">';
-	echo '&nbsp;&nbsp;&nbsp;<strong>'.__('Help').'</strong>';
+	echo '<strong>'.__('Help').'</strong>';
 	echo '</a>&nbsp;';
 	echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:40; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
@@ -475,42 +476,41 @@ The timeline menu:<br>
 			echo '</div>';
 	echo '</div><br>';
 	
-	//=================================
-	// Steps of years in display: 1, 5 or 10
-	print '<br>'.__('Steps:').'<br>';
-	print '<input type="radio" name="step" value="1"'; if ($step==1) print ' checked="checked"';
-	print ' >1 '.__('year');
-	print '<br><input type="radio" name="step" value="5"'; if ($step==5) print ' checked="checked"';
-	print ' >5 '.__('years');
-	print '<br><input type="radio" name="step" value="10"'; if ($step==10) print ' checked="checked"';
-	print ' >10 '.__('years');
+	// =============================================
+	// *** Steps of years in display: 1, 5 or 10 ***
+	echo '<br>'.__('Steps:').'<br>';
+	echo '<span class="select_box"><input type="radio" name="step" value="1"'; if ($step==1) echo ' checked="checked"';
+	echo ' >1 '.__('year').'</span>';
+	echo '<span class="select_box"><input type="radio" name="step" value="5"'; if ($step==5) echo ' checked="checked"';
+	echo ' >5 '.__('years').'</span>';
+	echo '<span class="select_box"><input type="radio" name="step" value="10"'; if ($step==10) echo ' checked="checked"';
+	echo ' >10 '.__('years').'</span>';
 
-	// Choice of timeline files available
-
+	// *** Choice of timeline files available ***
 	if(count($filenames) > 1) { // only show timelines menu if there are more than 1 timeline files
-		print '<br><br>'.__('Choose timeline');
-		print '<div style="direction:ltr">';
+		echo '<br><br>'.__('Choose timeline').':<br>';
+		//echo '<div style="direction:ltr">';
 		$checked=false;
 		for ($i=0; $i<count($filenames); $i++){
-			print '<input type="radio" name="tml" value="'.$filenames[$i][1].'"';
+			echo '<span class="select_box"><input type="radio" name="tml" value="'.$filenames[$i][1].'"';
 			
 			if($i==0 AND $default == true) {
-				print ' checked="checked"';    $checked=true;
+				echo ' checked="checked"'; $checked=true;
 			}
 			elseif($checked==false AND isset($_POST['tml']) AND $_POST['tml']==$filenames[$i][1]) {
-				print ' checked="checked"';      $checked=true;
+				echo ' checked="checked"'; $checked=true;
 			}
 			elseif($checked==false AND isset($humo_option['default_timeline']) AND strpos($humo_option['default_timeline'],$selected_language."!".$filenames[$i][1]."@") !== false) {
-				print ' checked="checked"';
+				echo ' checked="checked"';
 			}
-			print ' >'.$filenames[$i][1].'<br>';
+			echo ' >'.$filenames[$i][1].'</span>';
 		}
-		print '</div>';
+		//echo '</div>';
 	}
-	print '<br><input type="submit" value="'.__('Change Display').'" >';
-	print '</form>';
-//print '</td></tr></table>';
-print '</div>';
+	echo '<br clear="all"><br><input type="submit" value="'.__('Change Display').'" >';
+	echo '</form>';
+
+echo '</td></tr></table><br>';
 
 // **** END MENU ****
 if(file_exists($filenames[0][0])) {
@@ -530,23 +530,25 @@ $flag=0; // flags a first entry of timeline event in a specific year. is set to 
 
 // ****** DISPLAY
 
-print "<div style='position:absolute;top:30px;left:150px;right:10px'>";
+//echo "<div style='position:absolute;top:30px;left:150px;right:10px'>";
+//echo "<div style='position:absolute; left:150px; right:10px'>";
 
 if ($privacy_filtered==true){
 	echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***').'<br>';
 }
 
-print "<table id='timetable' class='humo' style='border:1px'>";
+//echo "<table id='timetable' class='humo' style='border:1px'>";
+echo '<table align="center" class="humo index_table">';
 
 $name=$person_cls->person_name($personDb);
-print "<tr class=table_headline><th colspan='3'>".$name["name"]."</th></tr>";
+echo "<tr class=table_headline><th colspan='3'>".$name["name"]."</th></tr>";
 
-print "<tr class=table_headline><th>".__('LIFE EVENTS')."</th>";
-print "<th>".__('YEAR')."</th>";
+echo "<tr class=table_headline><th>".__('Life events')."</th>";
+echo "<th>".__('Year')."</th>";
 $nofiles='';
 if(!file_exists($filenames[0][0]))
 	$nofiles="<br>".__('There are no timeline files available for this language.');
-print "<th>".__('HISTORIC EVENTS').$nofiles."</th></tr>";
+echo "<th>".__('Historic events').$nofiles."</th></tr>";
 
 $step==1?$yearwidth=60:$yearwidth=120; // when step is 1 the column can be much shorter
 $flag_isbuffer=0;
@@ -555,25 +557,25 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 
 	// DISPLAY LIFE EVENTS FOR THIS YEAR/PERIOD (1st column)
 
-	print "<tr><td style='width:250px;padding:4px;vertical-align:top;font-weight:bold;color:red'>";
+	echo "<tr><td style='width:250px;padding:4px;vertical-align:top;font-weight:bold;color:red'>";
 	$br_flag=0;
 	for($tempyr=$yr; $tempyr<$yr+$step; $tempyr++) {
 
 		if ($bornyear!='' AND $bornyear == $tempyr) {
-			if($br_flag==1) { print "<br>"; }
-			print $borntext;
+			if($br_flag==1) { echo "<br>"; }
+			echo $borntext;
 			$br_flag=1;
 		}
 		else if ($baptyear!='' AND $baptyear == $tempyr) {
-			if($br_flag==1) { print "<br>"; }
-			print $bapttext;
+			if($br_flag==1) { echo "<br>"; }
+			echo $bapttext;
 			$br_flag=1;
 		}
 		if(isset($marryear)) {
 			for($i=0;$i<count($marryear);$i++) {
 				if ($marryear[$i]!='' AND $marryear[$i] == $tempyr) {
-					if($br_flag==1) { print "<br>"; }
-					print $marrtext[$i];
+					if($br_flag==1) { echo "<br>"; }
+					echo $marrtext[$i];
 					$br_flag=1;
 				}
 			}
@@ -581,8 +583,8 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 		if(isset($spousedeathyear)) {
 			for($i=0;$i<count($spousedeathyear);$i++) {
 				if ($spousedeathyear[$i]!='' AND $spousedeathyear[$i] == $tempyr) {
-					if($br_flag==1) { print "<br>"; }
-					print $spousedeathtext[$i];
+					if($br_flag==1) { echo "<br>"; }
+					echo $spousedeathtext[$i];
 					$br_flag=1;
 				}
 			}
@@ -592,8 +594,8 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 				if(is_array($children[$i])) {
 					for($m=0; $m<count($children[$i]);$m++) {
 						if (isset($chbornyear[$i][$m]) AND $chbornyear[$i][$m] == $tempyr) {
-							if($br_flag==1) { print "<br>"; }
-							print "<span style='color:green;font-weight:normal'>".$chborntext[$i][$m]."</span>";
+							if($br_flag==1) { echo "<br>"; }
+							echo "<span style='color:green;font-weight:normal'>".$chborntext[$i][$m]."</span>";
 							$br_flag=1;
 						}
 					}
@@ -605,8 +607,8 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 				if(is_array($children[$i])) {
 					for($m=0; $m<count($children[$i]);$m++) {
 						if (isset($chdeathyear[$i][$m]) AND $chdeathyear[$i][$m] == $tempyr) {
-							if($br_flag==1) { print "<br>"; }
-							print "<span style='color:green;font-weight:normal'>".$chdeathtext[$i][$m]."</span>";
+							if($br_flag==1) { echo "<br>"; }
+							echo "<span style='color:green;font-weight:normal'>".$chdeathtext[$i][$m]."</span>";
 							$br_flag=1;
 						}
 					}
@@ -620,8 +622,8 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 						if(is_array($chmarriages[$i][$m])) {
 							for($p=0; $p<count($chmarriages[$i][$m]);$p++) {
 								if (isset($chmarryear[$i][$m][$p]) AND $chmarryear[$i][$m][$p]!='' AND $chmarryear[$i][$m][$p] == $tempyr) {
-									if($br_flag==1) { print "<br>"; }
-									print "<span style='color:green;font-weight:normal'>".$chmarrtext[$i][$m][$p]."</span>";
+									if($br_flag==1) { echo "<br>"; }
+									echo "<span style='color:green;font-weight:normal'>".$chmarrtext[$i][$m][$p]."</span>";
 									$br_flag=1;
 								}
 							}
@@ -639,8 +641,8 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 								if(is_array($grchildren[$i][$m][$p])) {
 									for($g=0; $g<count($grchildren[$i][$m][$p]);$g++) {
 										if (isset($grchbornyear[$i][$m][$p][$g]) AND $grchbornyear[$i][$m][$p][$g]!='' AND $grchbornyear[$i][$m][$p][$g] == $tempyr) {
-											if($br_flag==1) { print "<br>"; }
-											print "<span style='color:blue;font-weight:normal'>".$grchborntext[$i][$m][$p][$g]."</span>";
+											if($br_flag==1) { echo "<br>"; }
+											echo "<span style='color:blue;font-weight:normal'>".$grchborntext[$i][$m][$p][$g]."</span>";
 											$br_flag=1;
 										}
 									}
@@ -660,8 +662,8 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 								if(is_array($grchildren[$i][$m][$p])) {
 									for($g=0; $g<count($grchildren[$i][$m][$p]);$g++) {
 										if (isset($grchdeathyear[$i][$m][$p][$g]) AND $grchdeathyear[$i][$m][$p][$g]!='' AND $grchdeathyear[$i][$m][$p][$g] == $tempyr) {
-											if($br_flag==1) { print "<br>"; }
-											print "<span style='color:blue;font-weight:normal'>".$grchdeathtext[$i][$m][$p][$g]."</span>";
+											if($br_flag==1) { echo "<br>"; }
+											echo "<span style='color:blue;font-weight:normal'>".$grchdeathtext[$i][$m][$p][$g]."</span>";
 											$br_flag=1;
 										}
 									}
@@ -673,28 +675,28 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 			}
 		}
 		if ($deathyear!='' AND $deathyear == $tempyr) {
-			if($br_flag==1) { print "<br>"; }
-			print $deathtext;
+			if($br_flag==1) { echo "<br>"; }
+			echo $deathtext;
 			$br_flag=1;
 		}
 		else if ($burryear!='' AND $burryear == $tempyr) {
-			if($br_flag==1) { print "<br>"; }
-			print $burrtext;
+			if($br_flag==1) { echo "<br>"; }
+			echo $burrtext;
 			$br_flag=1;
 		}
 	} // end life events loop
 
-	print "</td>";
+	echo "</td>";
 
 	// DISPLAY YEAR/PERIOD (2nd column)
 	$period='';
 	if($step!=1) {
 		$period="-".($yr+$step)+1;
 	}
-	print "<td style='width:".$yearwidth."px;padding:4px;text-align:center;vertical-align:top;font-weight:bold;font-size:120%'>".$yr.$period."</td>";
+	echo "<td style='width:".$yearwidth."px;padding:4px;text-align:center;vertical-align:top;font-weight:bold;font-size:120%'>".$yr.$period."</td>";
 
 	// DISPLAY HISTORIC EVENTS FOR THIS YEAR/PERIOD (3rd column)
-	print "<td style='vertical-align:top'>";
+	echo "<td style='vertical-align:top'>";
 
 	if(file_exists($filenames[0][0])) {
 		$flag_br=0;
@@ -715,12 +717,12 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 				}
 				else if($temp >= $yr+$step) { // event year is beyond the year/period checked, flag existence of buffer and break out of while loop
 					$flag_isbuffer=1;
-					//print "</td></tr>";
+					//echo "</td></tr>";
 					break;
 				}
 				else if($temp>=$yr AND $temp<$yr+$step) {
 					if($flag_br==0) { // first entry in this year/period. if a "rtl" was read before the first text entry make direction rtl
-						print '<div style="direction:'.$eventdir.'">';
+						echo '<div style="direction:'.$eventdir.'">';
 					}
 					$thisyear='';
 					if($step!=1) {
@@ -731,15 +733,15 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 						if($temp2 >0 AND $temp2 < 2200) {
 							$tillyear=$temp2;
 							$eventdata="(".__('till')." ".$tillyear.") ".substr($buffer,10);
-							if($flag_br==1) { print "<br>"; }
-							print $thisyear.$eventdata;
+							if($flag_br==1) { echo "<br>"; }
+							echo $thisyear.$eventdata;
 							$flag_br=1;
 						}
 					}
 					else {
 						$eventdata=substr($buffer,5);
-						if($flag_br==1) { print "<br>"; }
-						print $thisyear.$eventdata;
+						if($flag_br==1) { echo "<br>"; }
+						echo $thisyear.$eventdata;
 						$flag_br=1;
 					}
 				}
@@ -753,15 +755,15 @@ for($yr=$beginyear; $yr<$endyear; $yr+=$step) {  // range of years for lifespan
 
 		} // end while loop
 		if($flag_br!=0) {
-			print '</div>';
+			echo '</div>';
 		}
 	}
-	print "</td></tr>";
+	echo "</td></tr>";
 } // end total lifespan loop
 
-print "</table>";
-print "<br><br><br><br>";
-print "</div>";
+echo "</table>";
+echo "<br><br><br><br>";
+//echo "</div>";
 
 // the following javascript reads height of table and adds a fake div with this height
 // so that the joomla page will stretch down to allow for the whole table

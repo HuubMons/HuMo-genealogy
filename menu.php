@@ -737,9 +737,10 @@ echo '<ul class="humo_menu_item">';
 			// In gedcom.css special adjustment (width) for m4x! ***
 			echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo '<ul class="humo_menu_item2">';
+					$hide_languages_array=explode(";",$humo_option["hide_languages"]);
 					for ($i=0; $i<count($language_file); $i++){
 						// *** Get language name ***
-						if ($language_file[$i] != $selected_language) {
+						if ($language_file[$i] != $selected_language AND !in_array($language_file[$i], $hide_languages_array)) {
 							include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
 							//echo '<li><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
 							echo '<li>';

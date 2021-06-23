@@ -1,5 +1,4 @@
 <?php 
-
 /* This file contains multiple parts:
  *
  * 1) First part: send standard mail.
@@ -11,15 +10,31 @@
  * 		Remove or disable first part if using third part!
  */
 
- 
+
 // *** PART 1: Settings to send standard PHP mail ***
-	require 'phpmailer/PHPMailerAutoload.php';
-	//Create a new PHPMailer instance
+	// *** Old code for PHPMailer 5.2.9 ***
+	//require 'phpmailer/PHPMailerAutoload.php';
+	// *** Create a new PHPMailer instance ***
+	//$mail = new PHPMailer;
+
+	// Import PHPMailer classes into the global namespace
+	// These must be at the top of your script, not inside a function
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\Exception;
+
+	require 'phpmailer/src/PHPMailer.php';
+	require 'phpmailer/src/Exception.php';
+	//require 'src/SMTP.php';
+
+	// *** Create a new PHPMailer instance ***
+	//$mail = new PHPMailer\PHPMailer\PHPMailer;
 	$mail = new PHPMailer;
 // *** End of part 1 ***
 
 
 /*
+	// *** 20 juli 2019 HM: This part was used for PHPMailer 5.2.9. To use SMTP for PHPMailer 6.x the code below must be updated ***
+
 	// *** PART 2: send mail using SMTP protocol ***
 	//SMTP needs accurate times, and the PHP time zone MUST be set
 	//This should be done in your php.ini, but this is how to do it if you don't have access to that
@@ -59,6 +74,8 @@
 
 
 /*
+	// *** 20 juli 2019 HM: This part was used for PHPMailer 5.2.9. To use SMTP for PHPMailer 6.x the code below must be updated ***
+
 	// *** PART 2: send mail using SMTP protocol with Gmail account ***
 	//SMTP needs accurate times, and the PHP time zone MUST be set
 	//This should be done in your php.ini, but this is how to do it if you don't have access to that

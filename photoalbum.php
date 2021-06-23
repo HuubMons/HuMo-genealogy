@@ -58,7 +58,7 @@ while($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
 }
 
 $categories = false; // is set true by following code if necessary
-$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");  
+$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 if($temp->rowCount()) {   // a humo_photocat table exists
 	$temp2 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none'");
 	if($temp2->rowCount() >= 1) { //  the table contains more than the default category (otherwise display regular photoalbum)

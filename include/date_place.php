@@ -57,7 +57,7 @@ function hebdate($datestr,$hebnight="") {
 					}
 					else {
 						$month=1;
-						$year = $year+1;						
+						$year = $year+1;
 					}
 				}
 			}
@@ -89,9 +89,9 @@ function hebdate($datestr,$hebnight="") {
 					elseif($day==29) {
 						$day =1;
 						$month = $month+1;
-					}					
+					}
 				}
-			}						
+			}
 		}
 		
 		$str = jdtojewish(gregoriantojd( $month, $day, $year),false);

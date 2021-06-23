@@ -360,7 +360,10 @@ if (isset($step1)){
 			echo '<b>'.__('Time-out detected! Controlled time-out setting is adjusted. Retry reading of gedcom with new setting.').'</b><br>';
 		}
 		echo '&nbsp;<input type="text" name="time_out" value="'.$time_out.'" size="2"> ';
-		echo __('seconds. Controlled time-out. Use this if the server has a time-out setting (set less seconds then server time-out). 0 = disable controlled time-out.')."<br>\n";
+		$max_time = ini_get("max_execution_time");
+		echo __('seconds. Controlled time-out, the gedcom script will restart and continue.<br>Use this if the server has a time-out setting (set less seconds then server time-out).<br>0 = disable controlled time-out.').' ';
+		printf(__('Your server time-out setting is: %s seconds.'), $max_time);
+		echo "<br>\n";
 
 	echo '</td></tr></table>';
 
@@ -1475,12 +1478,7 @@ if (isset($_POST['step3'])){
 				echo '</form><br><br>';
 
 				// *** Automatic reload after 5 seconds ***
-				echo '
-				<script type="text/javascript">
-					setTimeout(function () { location.reload(true); }, 5000);
-				</script>
-				';
-
+				echo '<script type="text/javascript">setTimeout(function () { location.reload(true); }, 5000);</script>';
 				exit();
 			}
 		}
@@ -1971,6 +1969,7 @@ if (isset($_POST['step4'])){
 	// if a humo_location table exists, refresh the location_status column
 	$res = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 	if ($humo_option["gedcom_read_process_geo_location"]=='y' AND $res->rowCount()) {
+
 		// after import, and ONLY for people with a humo_location table for googlemaps, refresh the location_status fields
 		// first, make sure the location_status column exists. If not create it
 		echo '<br>&gt;&gt;&gt; '.__('Updating location database...');
@@ -1979,6 +1978,7 @@ if (isset($_POST['step4'])){
 		if(!$exists) {
 			$dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
 		}
+
 		$all_loc = $dbh->query("SELECT location_location FROM humo_location");
 		while($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {
 			$loca_array[$all_locDb->location_location] = "";

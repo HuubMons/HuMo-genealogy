@@ -819,7 +819,7 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 	if ($person->pers_birth_date OR $person->pers_birth_place OR $person->pers_birth_text
 		OR 	(isset($person->pers_stillborn) AND $person->pers_stillborn=='y') ){
 		$buffer.="1 BIRT\r\n";
-		if ($person->pers_birth_date){ 
+		if ($person->pers_birth_date){
 			$buffer.='2 DATE '.$person->pers_birth_date."\r\n"; 
 			if (isset($person->pers_birth_date_hebnight) AND $person->pers_birth_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
 		}

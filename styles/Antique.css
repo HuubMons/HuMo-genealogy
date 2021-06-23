@@ -8,7 +8,7 @@ body {
 	color: #7e3517;
 	font-weight:normal;
 	font-family:"Monotype Corsiva","URW Chancery L",cursive,"Comic Sans MS", Tahoma,  Verdana;
-	font-size:150%;
+	/* font-size:150%; */
 }
 #top_website_name a:visited {
 	color: #7e3517;
