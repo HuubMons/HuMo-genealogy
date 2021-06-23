@@ -270,7 +270,7 @@ if (isset($_POST['database_check'])){
 		foreach ($address_sql as $addressDb){
 			if ($addressDb->connect_order==$nr_addresses AND ($addressDb->address_place!=$person->pers_place_index)  ){
 				$sql="UPDATE humo_persons SET
-					pers_place_index='".$addressDb->address_place."'
+					pers_place_index='".safe_text_db($addressDb->address_place)."'
 					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($person->pers_gedcomnumber)."'";
 				$result=$dbh->query($sql);
 				echo '<tr><td><b>Restored place index by person</b></td>';

@@ -122,6 +122,12 @@ if (isset($_POST["person"]) AND $_POST["person"]){
 if (isset($_GET["person"])){
 	$pers_gedcomnumber=$_GET['person'];
 	$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
+
+	// if both name and ID given go by name
+	$search_id=safe_text_db($_GET['person']);
+	$_SESSION['admin_search_id']=$search_id;
+	$_SESSION['admin_search_quicksearch']='';
+	$search_quicksearch='';
 }
 if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['admin_pers_gedcomnumber']; }
 
@@ -622,7 +628,10 @@ if (isset($tree_id)){
 					ORDER BY pers_lastname, pers_firstname";
 				$fav_result = $dbh->query($fav_qry);
 
-				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
+				//echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
+				// *** Use same seach field as in search for GEDCOM number (search_id) ***
+				echo '<select size="1" name="search_id" onChange="this.form.submit();" style="width: 200px">';
+
 				echo '<option value="">'.__('Favourites list').'</option>';
 				while ($favDb=$fav_result->fetch(PDO::FETCH_OBJ)){
 					$selected=''; if ($favDb->setting_value==$pers_gedcomnumber){ $selected=' SELECTED'; }
@@ -646,7 +655,8 @@ if (isset($tree_id)){
 				$person_qry.= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,15";
 				$person_result = $dbh->query($person_qry);
 
-				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
+				// *** Use same seach field as in search for GEDCOM number (search_id) ***
+				echo '<select size="1" name="search_id" onChange="this.form.submit();" style="width: 200px">';
 				echo '<option value="">'.__('Latest changes').'</option>';
 				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 					$selected=''; // Not in use.
@@ -658,6 +668,7 @@ if (isset($tree_id)){
 					echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).'</option>';
 				}
 				echo '</select>';
+
 			echo '</form>';
 
 		}
@@ -804,7 +815,7 @@ if (isset($tree_id)){
 				//echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo __('Examples of date entries:').'<br>';
-					echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.').'</b><br>';
+					echo '<b>'.__('13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.').'</b><br>';
 					echo __('In all text fields it\'s possible to add a hidden text/ own remarks by using # characters. Example: #Check birthday.#').'<br>';
 
 					echo '<img src="../images/search.png" border="0"> '.__('= click to open selection popup screen.').'<br>';
@@ -830,6 +841,7 @@ if (isset($pers_gedcomnumber)){
 
 	// *** Get person data to show name and calculate nr. of items ***
 	$person = $db_functions->get_person($pers_gedcomnumber);
+	if (!$person AND $new_tree==false AND $add_person==false) exit;
 
 	// *** Tab menu ***
 	$menu_tab='person';
@@ -1285,6 +1297,11 @@ if (isset($pers_gedcomnumber)){
 			// *** Start of editor table ***
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data" name="form1" id="form1">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
+
+			// *** Date needed to check if birth or baptise date is changed ***
+			echo '<input type="hidden" name="pers_birth_date_previous" value="'.$pers_birth_date.'">';
+			echo '<input type="hidden" name="pers_bapt_date_previous" value="'.$pers_bapt_date.'">';
+
 			//echo '<table class="humo" border="1" style="line-height: 180%;">';
 			echo '<table class="humo" border="1" style="line-height: 150%;">';
 
@@ -1740,7 +1757,7 @@ if (isset($pers_gedcomnumber)){
 				//echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_date" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo __('Examples of date entries:').'<br>';
-					echo '<b>'.__('13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.').'</b><br>';
+					echo '<b>'.__('13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.').'</b><br>';
 				echo '</div>';
 			echo '</div>';
 
@@ -2920,10 +2937,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$marriage."'");
 			$familyDb=$family->fetch(PDO::FETCH_OBJ);
 			if ($familyDb->fam_children){
-				
+				echo '<a name="children">';
 				echo __('Use this icon to order children (drag and drop)').': <img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0">';
 				
-				echo '<br>'.__('Or automatically order children:').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=children&amp;marriage_nr='.$marriage.'&amp;order_children=1">'.__('Automatic order children').'</a>';
+				//echo '<br>'.__('Or automatically order children:').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=children&amp;marriage_nr='.$marriage.'&amp;order_children=1">'.__('Automatic order children').'</a>';
+				echo '<br>'.__('Or automatically order children:').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage&amp;marriage_nr='.$marriage.'&amp;order_children=1#children">'.__('Automatic order children').'</a>';
 
 				if (isset($_GET['order_children'])) echo ' <b>'.__('Children are re-ordered.').'</b>';
 
@@ -2993,138 +3011,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		}	// End of menu_tab
 		//if ($menu_admin=='person' AND $menu_tab!='children') echo '</div>';
 
-		/*
-		// *** List of children of shown in seperate TAB menu ***
-		//if ($menu_tab=='marriage' and isset($familyDb)){
-		if ($menu_tab=='children' and $person->pers_fams){
+		// Moved children to relation part of the script.
 
-			// *** Automatic order of children ***
-			if (isset($_GET['order_children'])) {
-				function date_string($text) {
-					$text=str_replace("JAN", "01", $text);
-					$text=str_replace("FEB", "02", $text);
-					$text=str_replace("MAR", "03", $text);
-					$text=str_replace("APR", "04", $text);
-					$text=str_replace("MAY", "05", $text);
-					$text=str_replace("JUN", "06", $text);
-					$text=str_replace("JUL", "07", $text);
-					$text=str_replace("AUG", "08", $text);
-					$text=str_replace("SEP", "09", $text);
-					$text=str_replace("OCT", "10", $text);
-					$text=str_replace("NOV", "11", $text);
-					$text=str_replace("DEC", "12", $text);
-					$returnstring = substr($text,-4).substr(substr($text,-7),0,2).substr($text,0,2);
-					return $returnstring;
-					// Solve maybe later: date_string 2 mei is smaller then 10 may (2 birth in 1 month is rare...).
-				}
-
-				//echo '<br>&gt;&gt;&gt; '.__('Order children...');
-
-				$fam_qry=$dbh->query("SELECT * FROM humo_families
-					WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$marriage."'");
-				$famDb=$fam_qry->fetch(PDO::FETCH_OBJ); 
-				$child_array=explode(";",$famDb->fam_children);
-				$nr_children = count($child_array);
-				if ($nr_children > 1) {
-					unset ($children_array);
-					for ($i=0; $i<$nr_children; $i++){
-						@$childDb = $db_functions->get_person($child_array[$i]);
-
-						$child_array_nr=$child_array[$i];
-						if ($childDb->pers_birth_date){
-							$children_array[$child_array_nr]=date_string($childDb->pers_birth_date);
-						}
-						elseif ($childDb->pers_bapt_date){
-							$children_array[$child_array_nr]=date_string($childDb->pers_bapt_date);
-						}
-						else{
-							$children_array[$child_array_nr]='';
-						}
-					}
-
-					asort ($children_array);
-
-					$fam_children='';
-					foreach ($children_array as $key => $val) {
-						if ($fam_children!=''){ $fam_children.=';'; }
-						$fam_children.=$key;
-					}
-
-					if ($famDb->fam_children!=$fam_children){
-						$sql = "UPDATE humo_families SET fam_children='".$fam_children."'
-							WHERE fam_id='".$famDb->fam_id."'";
-						$dbh->query($sql);
-					}
-				}
-			}
-
-			// *** Show children ***
-			$family=$dbh->query("SELECT * FROM humo_families
-				WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$marriage."'");
-			$familyDb=$family->fetch(PDO::FETCH_OBJ);
-			if ($familyDb->fam_children){
-				
-				echo __('Use this icon to order children (drag and drop)').': <img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0">';
-				
-				echo '<br>'.__('Or automatically order children:').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=children&amp;marriage_nr='.$marriage.'&amp;order_children=1">'.__('Automatic order children').'</a>';
-
-				if (isset($_GET['order_children'])) echo ' <b>'.__('Children are re-ordered.').'</b>';
-
-				//echo __('Children').':<br>';
-				$fam_children_array=explode(";",$familyDb->fam_children);
-				$child_count=substr_count($familyDb->fam_children, ";");
-				echo '<ul id="sortable'.$i.'" class="sortable">';
-				for ($j=0; $j<=$child_count; $j++){
-				
-					// *** Create new children variabele, for disconnect child ***
-					$fam_children='';
-					for ($k=0; $k<=substr_count($familyDb->fam_children, ";"); $k++){
-						if ($k!=$j){ $fam_children.=$fam_children_array[$k].';'; }
-					}
-					$fam_children=substr($fam_children,0,-1); // *** strip last ; character ***
-					
-					echo '<li><span style="cursor:move;" id="'.$fam_children_array[$j].'" class="handle'.$i.'" ><img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0" title="'.__('Drag to change order (saves automatically)').'" alt="'.__('Drag to change order').'"></span>&nbsp;&nbsp;';
-					
-					echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_disconnect='.$fam_children.
-						'&amp;child_disconnect_gedcom='.$fam_children_array[$j].'">
-						<img src="'.CMS_ROOTPATH_ADMIN.'images/person_disconnect.gif" border="0" title="'.__('Disconnect child').'" alt="'.__('Disconnect child').'"></a>';
-					echo '&nbsp;&nbsp;<span id="chldnum'.$fam_children_array[$j].'">'.($j+1).'</span>. '.show_person($fam_children_array[$j],true).'</li>';
-				} 
-				echo '</ul>';
-			}
-
-			// *** Add child ***
-			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
-			if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
-			echo '&amp;child_connect=1&amp;add_person=1&amp;menu_tab=person"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"> '.__('Add child').'</a><br>';
-
-			// *** Order children using drag and drop ***
-			//already in index.php echo '<script src="../include/jqueryui/js/jquery-1.8.0.min.js"></script>';
-			//to index.php - echo '<script src="../include/jqueryui/js/jquery.sortable.min.js"></script>';
-			?>
-			<script>
-			$('#sortable'+'<?php echo $i; ?>').sortable({handle: '.handle'+'<?php echo $i; ?>'}).bind('sortupdate', function() {
-				var childstring = "";
-				var chld_arr = document.getElementsByClassName("handle"+"<?php echo $i; ?>");
-				for (var z = 0; z < chld_arr.length; z++) {
-					childstring = childstring + chld_arr[z].id + ";";
-					document.getElementById('chldnum'+chld_arr[z].id).innerHTML = (z+1);
-				}
-				childstring = childstring.substring(0, childstring.length-1);
-				$.ajax({ 
-					url: "include/drag.php?drag_kind=children&chldstring=" + childstring + "&family_id=" + "<?php echo $familyDb->fam_id; ?>" ,
-					success: function(data){
-					} ,
-					error: function (xhr, ajaxOptions, thrownError) {
-						alert(xhr.status);
-						alert(thrownError);
-					}
-				});
-			});
-			</script>
-			<?php
-		}
-		*/
 
 
 		// *** Bulk add family members ***
@@ -4036,31 +3924,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</div>';
 		}
 
-		/*
-		$connect_sub_kind='';
-		if (isset($_GET['connect_sub_kind'])){
-			$connect_sub_kind=$_GET['connect_sub_kind'];
-		}
-		if (isset($_POST['connect_sub_kind'])){
-			$connect_sub_kind=$_POST['connect_sub_kind'];
-		}
-		*/
 
-/*
-		if (isset($_POST["address_id"])){
-			$address_id=$_POST["address_id"];
-			$_SESSION['admin_address_gedcomnumber']=$address_id;
-		}
-		elseif (isset($_GET["connect_connect_id"])){
-			$address_id=$_GET["connect_connect_id"];
-			$_SESSION['admin_address_gedcomnumber']=$address_id;
-		}
-		elseif (isset($_POST["connect_connect_id"])){
-			$address_id=$_POST["connect_connect_id"];
-			$_SESSION['admin_address_gedcomnumber']=$address_id;
-		}
-*/
-
+		// *****************
+		// *** Addresses ***
+		// *****************
 		echo '<h2>'.__('Addresses').'</h2>';
 		echo __('These addresses can be connected to multiple persons, families and other items.');
 
@@ -4119,7 +3986,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo $die_message;
 				}
 				$address_gedcomnr=$addressDb->address_gedcomnr;
-$_SESSION['admin_address_gedcomnumber']=$address_gedcomnr;
+				$_SESSION['admin_address_gedcomnumber']=$address_gedcomnr; // *** Used for source ***
 
 				$address_address=$addressDb->address_address;
 				$address_date=$addressDb->address_date;
@@ -4158,7 +4025,7 @@ $_SESSION['admin_address_gedcomnumber']=$address_gedcomnr;
 						AND connect_kind='address' AND connect_sub_kind='address_source'
 						AND connect_connect_id='".$address_gedcomnr."'";
 					$connect_sql=$dbh->query($connect_qry);
-// Also add address_gedcomnumber to link?
+// Also add address_gedcomnumber to link? For now a session parameter is used: $_SESSION['admin_address_gedcomnumber']
 					echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&connect_sub_kind=address_source', '','width=800,height=500')\">".__('source');
 					echo ' ['.$connect_sql->rowCount().']</a>';
 				}

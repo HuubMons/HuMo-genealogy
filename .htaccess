@@ -4,16 +4,19 @@
 # Url_rewrite option
 RewriteEngine On
 
-RewriteRule ^tree_index/(.*)/ tree_index.php
-RewriteRule ^tree_index/(.*) tree_index.php
+RewriteRule ^tree_index/(.*)/ tree_index.php?tree_id=$1 [QSA]
+RewriteRule ^tree_index/(.*) tree_index.php?tree_id=$1 [QSA]
+# RewriteRule ^tree_index tree_index.php
 
 RewriteRule ^help help.php
 RewriteRule ^info info.php
 RewriteRule ^credits credits.php
 RewriteRule ^cookies cookies.php
 
-RewriteRule ^index/(.*)/ index.php
-RewriteRule ^index/(.*) index.php
+RewriteRule ^login login.php
+
+RewriteRule ^index/ index.php [QSA]
+RewriteRule ^index index.php [QSA]
 
 RewriteRule ^list/(.*)/ list.php
 RewriteRule ^list/(.*) list.php
@@ -22,24 +25,17 @@ RewriteRule ^list/(.*) list.php
 RewriteRule ^lijst/(.*)/ list.php
 RewriteRule ^lijst/(.*) list.php
 
-# RewriteRule ^list_names/(.*)/ list_names.php
-# RewriteRule ^list_names/(.*) list_names.php
 RewriteRule ^list_names/(.*)/(.*)/ list_names.php?tree_id=$1&last_name=$2 [QSA]
 RewriteRule ^list_names/(.*)/(.*) list_names.php?tree_id=$1&last_name=$2 [QSA]
 
-# TEST LINES
-# RewriteRule ^lijst_namen/(.*)/(.*)/ list_names.php?tree_id=$1&last_name=$2
-# RewriteRule ^lijst_namen/(.*)/(.*) list_names.php?tree_id=$1&last_name=$2
 # Backwards compatible lines
 RewriteRule ^lijst_namen/(.*)/ list_names.php
 RewriteRule ^lijst_namen/(.*) list_names.php
 
-RewriteRule ^cms_pages/(.*)/ cms_pages.php
-RewriteRule ^cms_pages/(.*) cms_pages.php
+RewriteRule ^cms_pages/(.*)/ cms_pages.php?select_page=$1
+RewriteRule ^cms_pages/(.*) cms_pages.php?select_page=$1
 RewriteRule ^cms_pages cms_pages.php
 
-# RewriteRule ^family/(.*)/ family.php
-# RewriteRule ^family/(.*) family.php
 # *** First (.*) = $1, second (.*) = $2. [QSA] = also read extra variables. ***
 RewriteRule ^family/(.*)/(.*)/ family.php?tree_id=$1&id=$2 [QSA]
 RewriteRule ^family/(.*)/(.*) family.php?tree_id=$1&id=$2 [QSA]

@@ -1521,12 +1521,12 @@ function process_person($person_array){
 	}  //end explode
 
 	if($add_tree==true OR $reassign==true) { 
-		$pers_name_text = $this->reassign_ged($pers_name_text,'N'); 
-		$person["pers_text"] = $this->reassign_ged($person["pers_text"],'N'); 
-		$pers_birth_text = $this->reassign_ged($pers_birth_text,'N'); 
-		$pers_bapt_text = $this->reassign_ged($pers_bapt_text,'N'); 
-		$pers_death_text = $this->reassign_ged($pers_death_text,'N'); 
-		$pers_buried_text = $this->reassign_ged($pers_buried_text,'N'); 
+		if ($pers_name_text) $pers_name_text = '@'.$this->reassign_ged($pers_name_text,'N').'@'; 
+		if ($person["pers_text"]) $person["pers_text"] = '@'.$this->reassign_ged($person["pers_text"],'N').'@'; 
+		if ($pers_birth_text) $pers_birth_text = '@'.$this->reassign_ged($pers_birth_text,'N').'@'; 
+		if ($pers_bapt_text) $pers_bapt_text = '@'.$this->reassign_ged($pers_bapt_text,'N').'@'; 
+		if ($pers_death_text) $pers_death_text = '@'.$this->reassign_ged($pers_death_text,'N').'@'; 
+		if ($pers_buried_text) $pers_buried_text = '@'.$this->reassign_ged($pers_buried_text,'N').'@'; 
 	}
 
 	// *** Process estimates/ calculated date for privacy filter ***
@@ -2720,14 +2720,28 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		// Sources and events...
 	}
 
- 	if($add_tree==true OR $reassign==true) { 
-		if(isset($family["fam_text"])) { $family["fam_text"] = $this->reassign_ged($family["fam_text"],'N');  }
-		if(isset($family["fam_marr_church_notice_text"])) { $family["fam_marr_church_notice_text"] = $this->reassign_ged($family["fam_marr_church_notice_text"],'N');  }
-		if(isset($family["fam_marr_church_text"])) { $family["fam_marr_church_text"] = $this->reassign_ged($family["fam_marr_church_text"],'N');}  
-		if(isset($family["fam_relation_text"])) { $family["fam_relation_text"] = $this->reassign_ged($family["fam_relation_text"],'N');  }
-		if(isset($family["fam_marr_notice_text"])) { $family["fam_marr_notice_text"] = $this->reassign_ged($family["fam_marr_notice_text"],'N'); } 
-		if(isset($family["fam_marr_text"])) { $family["fam_marr_text"] = $this->reassign_ged($family["fam_marr_text"],'N');  }
-		if(isset($family["fam_div_text"])) { $family["fam_div_text"] = $this->reassign_ged($family["fam_div_text"],'N');  }
+ 	if($add_tree==true OR $reassign==true) {
+		if($family["fam_text"]) {
+			$family["fam_text"] = '@'.$this->reassign_ged($family["fam_text"],'N').'@';
+		}
+		if($family["fam_marr_church_notice_text"]) {
+			$family["fam_marr_church_notice_text"] = '@'.$this->reassign_ged($family["fam_marr_church_notice_text"],'N').'@';
+		}
+		if($family["fam_marr_church_text"]) {
+			$family["fam_marr_church_text"] = '@'.$this->reassign_ged($family["fam_marr_church_text"],'N').'@';
+		}
+		if($family["fam_relation_text"]) {
+			$family["fam_relation_text"] = '@'.$this->reassign_ged($family["fam_relation_text"],'N').'@';
+		}
+		if($family["fam_marr_notice_text"]) {
+			$family["fam_marr_notice_text"] = '@'.$this->reassign_ged($family["fam_marr_notice_text"],'N').'@';
+		}
+		if($family["fam_marr_text"]) {
+			$family["fam_marr_text"] = '@'.$this->reassign_ged($family["fam_marr_text"],'N').'@';
+		}
+		if($family["fam_div_text"]) {
+			$family["fam_div_text"] = '@'.$this->reassign_ged($family["fam_div_text"],'N').'@';
+		}
 	}
 
 	// *** Save temporary text "DIVORCE" for a divorce without further data ***
@@ -2932,7 +2946,9 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 				$event_order=1;
 				$check_event_kind=$event['kind'][$i];
 			}
-			if($add_tree==true OR $reassign==true) { $event['text'][$i] = $this->reassign_ged($event['text'][$i],'N');  }
+			if($add_tree==true OR $reassign==true) {
+				if ($event['text'][$i]) $event['text'][$i] = '@'.$this->reassign_ged($event['text'][$i],'N').'@';
+			}
 
 			$gebeurtsql="INSERT IGNORE INTO humo_events SET
 				event_tree_id='".$tree_id."',
@@ -2973,7 +2989,10 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 				if (isset($connect['connect_order'][$i])) $connect_order=$connect['connect_order'][$i];
 			}
 
-			if($add_tree==true OR $reassign==true) { $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N');  }
+			if($add_tree==true OR $reassign==true) {
+				if ($connect['text'][$i]) $connect['text'][$i] = '@'.$this->reassign_ged($connect['text'][$i],'N').'@';
+			}
+
 			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
 				connect_tree_id='".$tree_id."',
 				connect_order='".$connect_order."',
@@ -3018,15 +3037,18 @@ function process_text($text_array){
 	// *** For source connect table ***
 	$connect_nr=0;
 
+
+	// 0 @N954@ NOTE
+	// *** Save as N954 ***
 	// *** Strpos: we can search for the character, ignoring anything before the offset ***
 	$second_char=strpos($buffer, '@', 3);
-
-	//0 @N954@ NOTE
-	// *** Save as N954 ***
 	//$text['text_gedcomnr']=substr($buffer, 2, $second_char-1);
 	$text['text_gedcomnr']=substr($buffer,3,$second_char-3);
 
-	if($add_tree==true OR $reassign==true) { $text['text_gedcomnr'] = $this->reassign_ged($text['text_gedcomnr'],'N');  }
+	if($add_tree==true OR $reassign==true) {
+		//$text['text_gedcomnr'] = $this->reassign_ged($text['text_gedcomnr'],'N');
+		$text['text_gedcomnr'] = $this->reassign_ged('@'.$text['text_gedcomnr'].'@','N');
+	}
 
 	// *** Check for text after "NOTE":
 	if (strlen($buffer) > $second_char+7){
@@ -3142,6 +3164,7 @@ function process_text($text_array){
 		text_changed_date='".$this->process_date($text['changed_date'])."',
 		text_changed_time='".$text['changed_time']."'
 		";
+	//echo $sql.'<br>';
 	$result=$dbh->query($sql);
 
 	// *** Save connections in seperate table (source connected to text) ***
@@ -3154,9 +3177,9 @@ function process_text($text_array){
 				$connect_order=1;
 				$check_connect=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i];
 			}
-// CHECK!!!!
+
 			//if($add_tree==true OR $reassign==true) { $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N');  }
-			$connect['text'][$i]=$text['text_gedcomnr'];
+			$connect['text'][$i]=$text['text_gedcomnr'];	// *** Allready re-assigned ***
 
 			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
 				connect_tree_id='".$tree_id."',
@@ -3467,7 +3490,9 @@ function process_source($source_array){
 	// *** If there is still no title, then use ... ***
 	if ($source["source_title"]==''){ $source["source_title"]="..."; }
 
-	if($add_tree==true OR $reassign==true) { $source["source_text"] = $this->reassign_ged($source["source_text"],'N');  }
+	if($add_tree==true OR $reassign==true) {
+		if ($source["source_text"]) $source["source_text"] = '@'.$this->reassign_ged($source["source_text"],'N').'@';
+	}
 
 	// *** Save events ***
 	if ($event_nr>0){
@@ -3480,7 +3505,10 @@ function process_source($source_array){
 				$event_order=1;
 				$check_event_kind=$event['kind'][$i];
 			}
-			if($add_tree==true OR $reassign==true) { $event['text'][$i] = $this->reassign_ged($event['text'][$i],'N');  }
+
+			if($add_tree==true OR $reassign==true) {
+				if ($event['text'][$i]) $event['text'][$i] = '@'.$this->reassign_ged($event['text'][$i],'N').'@';
+			}
 
 			$gebeurtsql="INSERT IGNORE INTO humo_events SET
 				event_tree_id='".$tree_id."',
@@ -3714,7 +3742,9 @@ function process_repository($repo_array){
 
 	} //end explode
 
-	if($add_tree==true OR $reassign==true) { $repo["repo_text"] = $this->reassign_ged($repo["repo_text"],'N');  }
+	if($add_tree==true OR $reassign==true) {
+		if ($repo["repo_text"]) $repo["repo_text"] = '@'.$this->reassign_ged($repo["repo_text"],'N').'@';
+	}
 
 	// *** Save repository ***
 	$sql="INSERT IGNORE INTO humo_repositories SET
@@ -4190,6 +4220,11 @@ function process_quality($buffer){
 
 function reassign_ged($gednr,$letter) {
 	global $new_gednum, $reassign_array;
+
+	// *** Notes ***
+	// 1 NOTE @N8647@	reference to note
+	// 0 @N8647@ NOTE	note
+
 	if($letter!='N' OR ($letter=='N' AND substr($gednr,0,2)=='@N')) {
 		$newged = ''; $tempged = '';
 		if(!isset($reassign_array[$gednr])) {
@@ -4200,9 +4235,13 @@ function reassign_ged($gednr,$letter) {
 		if($letter=="RP") { $letter="R"; } // after using repo array "RP" above (to differentiate from "R" for addresses) we change it back to "R"
 		$newged = $letter.$tempged;
 		//if(substr($gednr,0,1)=='@') { $newged = '@'.$newged.'@'; } // if the gedcomnumber was @N23@ it has to be returned as such with the adjusted number
+//if ($letter=='N') echo $gednr.'-'.$newged.'<br>';
+//if ($letter=='N') return '@'.$newged.'@';
 		return $newged;
 	}
 	else {
+//if ($letter=='N') echo $gednr.'-'.$newged.'!<br>';
+//if ($letter=='N') return '@'.$newged.'@';
 		return $gednr;
 	}
 }

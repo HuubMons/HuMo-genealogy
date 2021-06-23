@@ -2129,8 +2129,8 @@ function display () {
 	}
 
 	//if($bloodreltext=='' AND $reltext=='') { 
-	if($reltext=='') {  
-		if($bloodreltext=='') { 
+	if($reltext=='') {
+		if($bloodreltext=='') {
 			echo '<br><br><table class="ext"><tr><td>'; 
 			echo '<td style="text-align:left;border-left:0px;padding10px;vertical-align:text-top;width:800px">';
 			echo "<div style='font-weight:bold'>".__('No blood relation or direct marital relation found')."</div>";
@@ -3096,7 +3096,7 @@ Directions for use:<br>
 <li>If more than 1 person is found, select the one you want from the search result pulldown box. Repeat this for person 1 and 2.</li>
 <li>Now press the "Calculate relationships" button on the right.</li>
 <li><b>TIP: when you click "search" with empty first <u>and</u> last name boxes you will get a list with all persons in the database. (May take a few seconds)</b></li></ul>');
-			echo '</div>';
+			//echo '</div>';
 		echo '</div></th>';
 
 		echo '<th>'.__('First name').'</th>';
@@ -3107,10 +3107,10 @@ Directions for use:<br>
 		echo '<th>'.__('Calculate relationships').'</th></tr>';
 
 	echo '<tr><td>';
-	$language_person=__('Person').' ';
-	if(CMS_SPECIFIC == "Joomla") { $language_person=''; }  // for joomla keep it short....
-	echo $language_person.'1:';
-	echo '</td><td>';
+		$language_person=__('Person').' ';
+		if(CMS_SPECIFIC == "Joomla") { $language_person=''; }  // for joomla keep it short....
+		echo $language_person.'1:';
+	echo '</td>';
 
 	$search_firstname='';
 	if (isset($_POST["search_firstname"]) AND !isset($_POST["switch"])){
@@ -3133,16 +3133,16 @@ Directions for use:<br>
 	}
 	if (isset($_SESSION['rel_search_gednr'])){ $search_gednr=$_SESSION['rel_search_gednr']; }
 
-	echo ' <input type="text" class="fonts relboxes" name="search_firstname" value="'.safe_text_show($search_firstname).'" size="15"> ';
-	echo '</td><td>';
+	echo '<td> <input type="text" class="fonts relboxes" name="search_firstname" value="'.safe_text_show($search_firstname).'" size="15"> ';
+	echo '</td>';
 
-	echo '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname" value="'.safe_text_show($search_lastname).'" size="15">';
+	echo '<td>&nbsp; <input class="fonts relboxes" type="text" name="search_lastname" value="'.safe_text_show($search_lastname).'" size="15">';
 	echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
 	echo '</td><td>';
 	echo '&nbsp; <input class="fonts relboxes" type="text" name="search_gednr" value="'.safe_text_show($search_gednr).'" size="8">';
-	echo '</td><td>';
-	echo '&nbsp; <input class="fonts" type="submit" name="search1" value="'.__('Search').'">';
-	echo '</td><td>';
+	echo '</td>';
+	echo '<td>&nbsp; <input class="fonts" type="submit" name="search1" value="'.__('Search').'">';
+	echo '</td>';
 
 	$len=230;  // length of name pulldown box
 	if(CMS_SPECIFIC == "Joomla") { $len = 180; } // for joomla keep it short....
@@ -3167,7 +3167,7 @@ Directions for use:<br>
 		$search_result = $dbh->query($search_qry);
 		if ($search_result){
 			if($search_result->rowCount()>0) {
-				echo '<select class="fonts" size="1" name="person"  style="width:'.$len.'px">';
+				echo '<td><select class="fonts" size="1" name="person"  style="width:'.$len.'px">';
 					while($searchDb=$search_result->fetch(PDO::FETCH_OBJ)) {
 						$name=$pers_cls->person_name($searchDb);
 						if ($name["show_name"]){
@@ -3197,16 +3197,16 @@ Directions for use:<br>
 		}
 	}
 	else {  echo '<select size="1" name="person" style="width:'.$len.'px"><option></option></select>'; }
-	echo '</td><td rowspan=2>';
-	//echo '<input type="image" src="'.ROOTPATH.'images/turn_around.gif" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value="Submit" name="switch" >';
-	echo '<input type="submit" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value=" " name="switch" style="background: #fff url(\''.CMS_ROOTPATH.'images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
+	echo '</td>';
+	//echo '<td rowspan=2><input type="image" src="'.ROOTPATH.'images/turn_around.gif" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value="Submit" name="switch" >';
+	echo '<td rowspan=2><input type="submit" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value=" " name="switch" style="background: #fff url(\''.CMS_ROOTPATH.'images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
 	echo '</td><td rowspan=2>';
 	echo '<input type="submit" name="calculator" value="'.__('Calculate relationships').'" style="font-size:115%;">';
 	echo '</td></tr><tr><td>';
 
 	// SECOND PERSON
 	echo $language_person.'2:';
-	echo '</td><td>';
+	echo '</td>';
 
 	$search_firstname2='';
 	if (isset($_POST["search_firstname2"]) AND !isset($_POST["switch"])){
@@ -3229,15 +3229,15 @@ Directions for use:<br>
 	}
 	if (isset($_SESSION['rel_search_gednr2'])){ $search_gednr2=$_SESSION['rel_search_gednr2']; }
 
-	echo ' <input type="text" class="fonts relboxes" name="search_firstname2" value="'.safe_text_show($search_firstname2).'" size="15"> ';
-	echo '</td><td>';
-	echo '&nbsp; <input class="fonts relboxes" type="text" name="search_lastname2" value="'.safe_text_show($search_lastname2).'" size="15">';
+	echo '<td> <input type="text" class="fonts relboxes" name="search_firstname2" value="'.safe_text_show($search_firstname2).'" size="15"> ';
+	echo '</td>';
+	echo '<td>&nbsp; <input class="fonts relboxes" type="text" name="search_lastname2" value="'.safe_text_show($search_lastname2).'" size="15">';
 	echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
-	echo '</td><td>';
-	echo '&nbsp; <input class="fonts relboxes" type="text" name="search_gednr2" value="'.safe_text_show($search_gednr2).'" size="8">';
-	echo '</td><td>';
-	echo '&nbsp; <input class="fonts" type="submit" name="search2" value="'.__('Search').'">';
-	echo '</td><td>';
+	echo '</td>';
+	echo '<td>&nbsp; <input class="fonts relboxes" type="text" name="search_gednr2" value="'.safe_text_show($search_gednr2).'" size="8">';
+	echo '</td>';
+	echo '<td>&nbsp; <input class="fonts" type="submit" name="search2" value="'.__('Search').'">';
+	echo '</td>';
 
 	if(isset($_SESSION["search2"]) AND $_SESSION["search2"]==1) {
 		if($search_lastname2!='' OR $search_firstname2!='') {
@@ -3250,7 +3250,7 @@ Directions for use:<br>
 		$search_result2 = $dbh->query($search_qry);
 		if ($search_result2){
 			if($search_result2->rowCount()>0) {
-				echo '<select class="fonts" size="1" name="person2" style="width:'.$len.'px">';
+				echo '<td><select class="fonts" size="1" name="person2" style="width:'.$len.'px">';
 				while($searchDb2=$search_result2->fetch(PDO::FETCH_OBJ)) {
 					$name=$pers_cls->person_name($searchDb2);
 					if ($name["show_name"]){
@@ -3282,7 +3282,7 @@ Directions for use:<br>
 	else { echo '<select size="1" name="person2" style="width:'.$len.'px"><option></option></select>'; }
 echo '</td></tr></table>';
 /* echo '</form>'; */
-echo "</div>";
+//echo "</div>";
 // ===== END SEARCH BOX SYSTEM
 
 ob_end_flush(); 

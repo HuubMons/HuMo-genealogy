@@ -17,7 +17,17 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		$tree_search_result2 = $dbh->query($sql);
 		$num_rows = $tree_search_result2->rowCount();
 		if ($num_rows>1){
-			echo ' <form method="POST" action="tree_index.php" style="display : inline;" id="top_tree_select">';
+
+
+			if ($humo_option["url_rewrite"]=="j"){
+				// *** $uri_path made in header.php ***
+				//echo ' <form method="POST" action="'.$uri_path.'tree_index/'.$tree_id.'" style="display : inline;" id="top_tree_select">';
+				echo ' <form method="POST" action="'.$uri_path.'tree_index/" style="display : inline;" id="top_tree_select">';
+			}
+			else{
+				echo ' <form method="POST" action="tree_index.php" style="display : inline;" id="top_tree_select">';
+			}
+
 			echo __('Family tree').': ';
 			//echo '<select size="1" name="database" onChange="this.form.submit();" style="width: 150px; height:20px;">';
 			echo '<select size="1" name="tree_id" onChange="this.form.submit();" style="width: 150px; height:20px;">';
@@ -361,6 +371,10 @@ echo '<ul class="humo_menu_item">';
 			if (CMS_SPECIFIC=='Joomla'){
 				$path_tmp='index.php?option=com_humo-gen&amp;task=cms_pages';
 			}
+			elseif ($humo_option["url_rewrite"]=="j"){
+				// *** $uri_path made in header.php ***
+				$path_tmp=$uri_path.'cms_pages';
+			}
 			else{
 				$path_tmp=CMS_ROOTPATH.'cms_pages.php';
 			}
@@ -534,11 +548,10 @@ echo '<ul class="humo_menu_item">';
 	else{
 
 	// make sure at least one of the submenus is activated, otherwise don't show TOOLS menu
+	//	AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
+	//		AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0)
 	if ($user["group_birthday_list"]=='j' OR $user["group_showstatistics"]=='j' OR $user["group_relcalc"]=='j'
-	OR ($user["group_googlemaps"]=='j'
-		AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0
-		AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
-			AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0)
+	OR ($user["group_googlemaps"]=='j' AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount() > 0)
 	OR ($user["group_contact"]=='j'AND $dataDb->tree_owner AND $dataDb->tree_email )
 	OR $user["group_latestchanges"]=='j' ) {
 		// *** Javascript pull-down menu ***
@@ -596,12 +609,11 @@ echo '<ul class="humo_menu_item">';
 						$path_tmp=CMS_ROOTPATH.'relations.php';
 					}
 					echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Relationship calculator')."</a></li>\n";
-				}  
+				}
 				if ($user["group_googlemaps"]=='j' AND file_exists(CMS_ROOTPATH.'maps.php')){
-					if(!$bot_visit
-						AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0
-						AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
-							AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0) {  // this tree has been indexed
+					//	AND $dbh->query("SELECT * FROM humo_settings WHERE setting_variable ='geo_trees'
+					//		AND setting_value LIKE '%@".$tree_id.";%' ")->rowCount() > 0) {  // this tree has been indexed
+					if(!$bot_visit AND $dbh->query("SHOW TABLES LIKE 'humo_location'")->rowCount()>0) {
 						$select_menu=''; if ($menu_choice=='maps'){ $select_menu=' id="current"'; }
 						if (CMS_SPECIFIC=='Joomla'){
 							$path_tmp='index.php?option=com_humo-gen&amp;task=maps';
@@ -732,7 +744,12 @@ echo '<ul class="humo_menu_item">';
 			$select_menu=''; if ($menu_choice=='login'){ $select_menu=' id="current"'; }
 			if (CMS_SPECIFIC=='Joomla'){
 				$path_tmp='index.php?option=com_humo-gen&amp;task=login';
-			} else{
+			}
+			elseif ($humo_option["url_rewrite"]=="j"){
+				// *** $uri_path made in header.php ***
+				$path_tmp=$uri_path.'login';
+			}
+			else{
 				$path_tmp=CMS_ROOTPATH.'login.php';
 			}
 			print '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'">'.__('Login')."</a></li>\n";
@@ -742,10 +759,14 @@ echo '<ul class="humo_menu_item">';
 			echo '<li class="mobile_hidden">';
 			echo '<div class="'.$rtlmarker.'sddm">';
 				if (CMS_SPECIFIC=='Joomla'){
-					$path_tmp='index.php?option=com_humo-gen&amp;task=help';
+					$path_tmp='index.php?option=com_humo-gen&amp;task=index';
+				}
+				elseif ($humo_option["url_rewrite"]=="j"){
+					// *** $uri_path made in header.php ***
+					$path_tmp=$uri_path.'index';
 				}
 				else{
-					$path_tmp=CMS_ROOTPATH.'help.php';
+					$path_tmp=CMS_ROOTPATH.'index.php';
 				}
 				echo '<a href="'.$path_tmp.'"';
 				echo ' onmouseover="mopen(event,\'m3x\',\'?\',\'?\')"';
@@ -814,7 +835,16 @@ echo '<ul class="humo_menu_item">';
 							include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
 							//echo '<li><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
 							echo '<li>';
-								echo '<a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
+
+								if ($humo_option["url_rewrite"]=="j"){
+									// *** $uri_path made in header.php ***
+									//echo '<a href="'.CMS_ROOTPATH.'index?language='.$language_file[$i].'">';
+									echo '<a href="'.$uri_path.'index?language='.$language_file[$i].'">';
+								}
+								else{
+									echo '<a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
+								}
+
 								echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
 								echo $language["name"];
 								echo '</a>';

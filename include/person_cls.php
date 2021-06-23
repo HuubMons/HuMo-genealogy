@@ -1197,6 +1197,7 @@ function name_extended($person_kind){
 				}
 				else
 					$child_marriage.= ' ';
+
 				$child_marriage.= ' '.$relation_short.' '.$dirmark1.$name["standard_name"].$dirmark1;
 				//$child_marriage.='</span>';
 

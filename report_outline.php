@@ -52,7 +52,7 @@ else {
 
 // *** Family gedcomnumber ***
 $family_id='F1'; // *** Default: show 1st family ***
-if (isset($urlpart[1])){ $family_id=$urlpart[1]; }
+//if (isset($urlpart[1])){ $family_id=$urlpart[1]; }
 if (isset($_GET["id"])){ $family_id=$_GET["id"]; }
 if (isset($_POST["id"])){ $family_id=$_POST["id"]; }
 // *** Check if family gedcomnumber is valid ***
@@ -60,7 +60,7 @@ $db_functions->check_family($family_id);
 
 // *** Person gedcomnumber (backwards compatible) ***
 $main_person=''; // *** Mainperson of family ***
-if (isset($urlpart[2])){ $main_person=$urlpart[2];}
+//if (isset($urlpart[2])){ $main_person=$urlpart[2];}
 if (isset($_GET["main_person"])){ $main_person=$_GET["main_person"]; }
 if (isset($_POST["main_person"])){ $main_person=$_POST["main_person"]; }
 // *** Check if person gedcomnumber is valid ***

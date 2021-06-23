@@ -710,6 +710,9 @@ else{
 					if($pdf->GetY() > 250) { $pdf->AddPage(); $pdf->SetY(20); }
 					$pdf->Cell(0,8,pdf_convert(__('generation ')).$number_roman[$descendant_loop+1],0,1,'C',true);
 					$pdf->SetFont('Arial','',12);
+
+					// *** Added mar. 2021 ***
+					unset($templ_name);
 				}
 				elseif($screen_mode=='RTF') {
 					$rtf_text=__('generation ').$number_roman[$descendant_loop+1];
@@ -2342,10 +2345,16 @@ if($screen_mode=='') {
 			$userDb=$user_note->fetch(PDO::FETCH_OBJ);
 
 			// *** Name of selected person in family tree ***
-			if ($change_main_person==true)
+			if ($change_main_person==true){
 				$name = $woman_cls->person_name($person_womanDb);
-			else
+
+				$start_url=$woman_cls->person_url($tree_id,$family_id,$main_person);
+			}
+			else{
 				$name = $man_cls->person_name($person_manDb);
+
+				$start_url=$man_cls->person_url($tree_id,$family_id,$main_person);
+			}
 
 			if (isset($_POST['send_mail'])){
 				$gedcom_date=strtoupper(date("d M Y")); $gedcom_time=date("H:i:s");
@@ -2359,6 +2368,7 @@ if($screen_mode=='') {
 				note_note='".safe_text_db($_POST["user_note"])."',
 				note_fam_gedcomnumber='".safe_text_db($family_id)."',
 				note_pers_gedcomnumber='".safe_text_db($main_person)."',
+				note_tree_id='".$tree_id."',
 				note_tree_prefix='".$tree_prefix_quoted."',
 				note_names='".safe_text_db($name["standard_name"])."'
 				;";
@@ -2424,22 +2434,16 @@ if($screen_mode=='') {
 				}
 				</script>';
 
-				echo '<form method="POST" action="'.$uri_path.'family.php#add_info" style="display : inline;">';
+				//echo '<form method="POST" action="'.$uri_path.'family.php#add_info" style="display : inline;">';
+				echo '<form method="POST" action="'.$start_url.'#add_info" style="display : inline;">';
 				echo '<input type="hidden" name="id" value="'.$family_id.'">';
 				echo '<input type="hidden" name="main_person" value="'.$main_person.'">';
 
 				echo '<table align="center" class="humo" width="40%">';
 				echo '<tr><th class="fonts" colspan="2">';
 					echo '<a name="add_info"></a>';
-					//echo '<a href="#add_info" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a>';
-					if ($humo_option["url_rewrite"]=="j"){
-						// *** $uri_path made in header.php ***
-						$start_url=$uri_path.'family/'.$tree_id.'/'.$family_id.'/'.$main_person.'/#add_info';
-					}
-					else{
-						$start_url='#add_info';
-					}
-					echo '<a href="'.$start_url.'" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a>';
+
+					echo '<a href="'.$start_url.'#add_info" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a>';
 
 					echo ' '.__('Add information or remarks').'</th></tr>';
 

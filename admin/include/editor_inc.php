@@ -182,16 +182,32 @@ if (isset($_POST['person_remove2'])){
 }
 
 if (isset($_POST['person_change'])){
-	// *** If person is deceased, set alive setting ***
+
+	// *** Manual alive setting ***
 	@$pers_alive=safe_text_db($_POST["pers_alive"]);
+	// *** Only change alive setting if birth or bapise date is changed ***
+	if ($_POST["pers_birth_date_previous"] != $_POST["pers_birth_date"]){
+		if (is_numeric(substr($_POST["pers_birth_date"],-4))){
+			if (date("Y")-substr($_POST["pers_birth_date"],-4) > 120) $pers_alive='deceased';
+		}
+	}
+	if ($_POST["pers_bapt_date_previous"] != $_POST["pers_bapt_date"]){
+		if (is_numeric(substr($_POST["pers_bapt_date"],-4))){
+			if (date("Y")-substr($_POST["pers_bapt_date"],-4) > 120) $pers_alive='deceased';
+		}
+	}
+	// *** If person is deceased, set alive setting ***
 	if ($_POST["pers_death_date"] OR $_POST["pers_death_place"] OR $_POST["pers_buried_date"] OR $_POST["pers_buried_place"]){
 		$pers_alive='deceased';
 	}
 
+	$pers_prefix=$editor_cls->text_process($_POST["pers_prefix"]);
+	$pers_prefix=str_replace(' ','_',$pers_prefix);
+
 	$sql="UPDATE humo_persons SET
 	pers_firstname='".$editor_cls->text_process($_POST["pers_firstname"])."',
 	pers_callname='".$editor_cls->text_process($_POST["pers_callname"])."',
-	pers_prefix='".$editor_cls->text_process($_POST["pers_prefix"])."',
+	pers_prefix='".$pers_prefix."',
 	pers_lastname='".$editor_cls->text_process($_POST["pers_lastname"])."',
 	pers_patronym='".$editor_cls->text_process($_POST["pers_patronym"])."',
 	pers_name_text='".$editor_cls->text_process($_POST["pers_name_text"],true)."',
@@ -474,6 +490,9 @@ if (isset($_POST['person_add'])){
 	elseif ($_POST["pers_bapt_date"]) $pers_cal_date=$_POST["pers_bapt_date"];
 	$pers_cal_date=substr($pers_cal_date,-4);
 
+	$pers_prefix=$editor_cls->text_process($_POST["pers_prefix"]);
+	$pers_prefix=str_replace(' ','_',$pers_prefix);
+
 	$sql="INSERT INTO humo_persons SET
 		pers_tree_id='".$tree_id."',
 		pers_tree_prefix='".$tree_prefix."',
@@ -483,7 +502,7 @@ if (isset($_POST['person_add'])){
 		pers_gedcomnumber='".$new_gedcomnumber."',
 		pers_firstname='".$editor_cls->text_process($_POST["pers_firstname"])."',
 		pers_callname='".$editor_cls->text_process($_POST["pers_callname"])."',
-		pers_prefix='".$editor_cls->text_process($_POST["pers_prefix"])."',
+		pers_prefix='".$pers_prefix."',
 		pers_lastname='".$editor_cls->text_process($_POST["pers_lastname"])."',
 		pers_patronym='".$editor_cls->text_process($_POST["pers_patronym"])."',
 		pers_name_text='".$editor_cls->text_process($_POST["pers_name_text"])."',
@@ -2067,7 +2086,8 @@ if (isset($_POST['connect_change'])){
 			$sql.="connect_place='".$editor_cls->text_process($_POST["connect_place"][$key])."',";
 
 		// *** Extra text for source ***
-		if (isset($_POST['connect_text'][$key]) AND ($_POST['connect_text'][$key]))
+		//if (isset($_POST['connect_text'][$key]) AND ($_POST['connect_text'][$key]))
+		if (isset($_POST['connect_text'][$key]))
 			$sql.="connect_text='".safe_text_db($_POST['connect_text'][$key])."',";
 
 		if (isset($_POST['connect_quality'][$key]) AND ($_POST['connect_quality'][$key] OR $_POST['connect_quality'][$key]=='0'))

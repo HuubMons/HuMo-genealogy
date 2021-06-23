@@ -1911,7 +1911,7 @@ if (isset($_POST['step4'])){
 				$first_item=true;
 				// *** Remark: no need to check for fam_tree_id because fam_id is used ***
 				$sql="UPDATE humo_families SET ";
-					if ($fam_text){ $first_item=false; $sql.="fam_text='".safe_text_db($fam_text).'"'; }
+					if ($fam_text){ $first_item=false; $sql.="fam_text='".safe_text_db($fam_text)."'"; }
 
 					if ($fam_relation_text){
 						if (!$first_item) $sql.=", ";
