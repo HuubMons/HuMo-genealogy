@@ -462,8 +462,8 @@ function process_person($person_array){
 			if ($buffer7=='2 _RELN'){ $process_event=true; }
 			if ($buffer7=='2 _OTHN'){ $process_event=true; }
 
-			// *** For German _RUFNAME entries
-			if ($buffer7=='2 _RUFN'){ $process_event=true; }  // this needs the isset($buffer[10] check a few line below
+			// *** For German "2 _RUFN" entries. BK uses "2 _RUFNAME" ***
+			if ($buffer7=='2 _RUFN'){ $process_event=true; }  // this needs the isset($buffer[10] check a few lines below
 
 			if ($process_event){
 				$processed=1; $event_nr++; $calculated_event_id++;
@@ -2601,7 +2601,12 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 		}
 
 		// Other events (no BK?)
-		if ($buffer=='1 EVEN'){$processed=1; $event_status="1";}
+		//if ($buffer=='1 EVEN'){$processed=1; $event_status="1";}
+		if ($buffer6=='1 EVEN'){
+			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
+			$processed=1; $event_status="1";
+		}
+
 		if ($buffer=='1 SLGL'){$processed=1; $event_status="1";}
 
 		if ($event_status){
@@ -2639,7 +2644,6 @@ if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
 			if ($level[2]=='SOUR'){
 				$this->process_sources('family','fam_event_source',$calculated_event_id,$buffer,'2');
 			}
-
 		}
 
 		//*** Family source ***
@@ -3471,25 +3475,24 @@ function process_source($source_array){
 
 	} //end explode
 
+	// Don't use this anymore. Because HuMo-genealogy sources will be changed when using EXPORT and IMPORT of GEDCOM ***
 	// *** Generate title if there is no title in GEDCOM file (BK etc.). ***
-	if ($source["source_title"]==''){
-		if ($source["source_auth"]){ $source["source_title"]=$source["source_auth"]; }
-		if ($source["source_subj"]){ $source["source_title"]=$source["source_subj"]; }
-	}
-
-	// *** Aldfaer sources: not title, no subject ***
-	if ($source["source_title"]=='' AND $source["source_subj"]=='' AND $source["source_text"]){
-		$words = explode(" ", $source["source_text"]);
-		// Check for multiple words in text
-		$source["source_title"].=' '.$words[0];
-		if (isset($words[1])){ $source["source_title"].=' '.$words[1]; }
-		if (count($words)>2){ $source["source_title"].=' '.$words[2]; }
-		if (count($words)>3){ $source["source_title"].=' '.$words[3]; }
-		if (count($words)>2){ $source["source_title"].='...'; }
-	}
-
+	//if ($source["source_title"]==''){
+	//	if ($source["source_auth"]){ $source["source_title"]=$source["source_auth"]; }
+	//	if ($source["source_subj"]){ $source["source_title"]=$source["source_subj"]; }
+	//}
+	// *** Aldfaer sources: no title, no subject ***
+	//if ($source["source_title"]=='' AND $source["source_subj"]=='' AND $source["source_text"]){
+	//	$words = explode(" ", $source["source_text"]);
+	//	// Check for multiple words in text
+	//	$source["source_title"].=' '.$words[0];
+	//	if (isset($words[1])){ $source["source_title"].=' '.$words[1]; }
+	//	if (count($words)>2){ $source["source_title"].=' '.$words[2]; }
+	//	if (count($words)>3){ $source["source_title"].=' '.$words[3]; }
+	//	if (count($words)>2){ $source["source_title"].='...'; }
+	//}
 	// *** If there is still no title, then use ... ***
-	if ($source["source_title"]==''){ $source["source_title"]="..."; }
+	//if ($source["source_title"]==''){ $source["source_title"]="..."; }
 
 	if($add_tree==true OR $reassign==true) {
 		if ($source["source_text"]) $source["source_text"] = '@'.$this->reassign_ged($source["source_text"],'N').'@';
@@ -4982,9 +4985,10 @@ function process_picture($connect_kind, $connect_id, $picture, $buffer){
 		// no source by picture by event at this moment...
 	}
 	else{
-		if ($level[2]=='SOUR'){
+		//if ($level[2]=='SOUR'){
+		// *** Don't process a source by a object by a source. The script will stop with error ***
+		if ($level[2]=='SOUR' AND $level[3]!='OBJE'){
 			$this->process_sources('person','pers_event_source',$calculated_event_id,$buffer,$test_number2);
-//echo 'TEST<br>'.$connect_kind.' '.$connect_id.' '.$picture.' '.$buffer;
 		}
 	}
 }

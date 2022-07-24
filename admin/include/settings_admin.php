@@ -357,7 +357,8 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		//echo __('Add your e-mail address by family tree data!');
 		echo '</td></tr>';
 		echo '<tr class="humo_color"><td>'.__('Registration form: e-mail address').'</td>';
-		echo '<td><input type="text" name="general_email" value="'.$humo_option["general_email"].'" size="40"> '.__('Send registration form to this e-mail address.').'</td></tr>';
+		// *** Using HTML 5 email check ***
+		echo '<td><input type="email" name="general_email" value="'.$humo_option["general_email"].'" size="40"> '.__('Send registration form to this e-mail address.').'</td></tr>';
 
 		echo '<tr class="humo_color"><td>'.__('Visitor registration: use spam question').'</td><td>';
 		echo '<select size="1" name="registration_use_spam_question">';
@@ -368,7 +369,8 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo '</td></tr>';
 
 		echo '<tr><td>'.__('Password forgotten e-mail address').'</td>';
-		echo '<td><input type="text" name="password_retreival" value="'.$humo_option["password_retreival"].'" size="40" placeholder="no-reply@your-website.com"> '.__('To enable password forgotten option: set a sender e-mail address.').'</td></tr>';
+		// *** Using HTML 5 email check ***
+		echo '<td><input type="email" name="password_retreival" value="'.$humo_option["password_retreival"].'" size="40" placeholder="no-reply@your-website.com"> '.__('To enable password forgotten option: set a sender e-mail address.').'</td></tr>';
 
 		/*
 		****************************

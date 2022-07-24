@@ -1446,23 +1446,33 @@ function show_pair($left_id,$right_id,$mode) {
 			else {
 				$spouse_ged = $famDb->fam_man;
 			}
-			$spouse_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$spouse_ged."'";
-			$spouse = $dbh->query($spouse_qry);
-			$spouseDb = $spouse->fetch(PDO::FETCH_OBJ);
-			if($spouseDb) {
-				$spouses1 .= $spouseDb->pers_lastname.' '.$spouseDb->pers_firstname.'<br>';
-			}
+			//$spouse_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$spouse_ged."'";
+			//$spouse = $dbh->query($spouse_qry);
+			//$spouseDb = $spouse->fetch(PDO::FETCH_OBJ);
+			//if($spouseDb) {
+			//	$spouses1 .= $spouseDb->pers_lastname.' '.$spouseDb->pers_firstname.'<br>';
+			//}
+			$spouseDb=$db_functions->get_person($spouse_ged);
+			$name_cls = New person_cls;
+			$name=$name_cls->person_name($spouseDb);
+			$spouses1.=$name["standard_name"].'<br>';
+
 			if($famDb->fam_children) {
 				$child = explode(';',$famDb->fam_children);
 				foreach($child as $ch_value) {
-					$ch_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$ch_value."'";
-					$ch = $dbh->query($ch_qry);
-					$chDb = $ch->fetch(PDO::FETCH_OBJ);
-					if($chDb) {
-						$children1 .= $chDb->pers_firstname.'<br>';
-					}
+					//$ch_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$ch_value."'";
+					//$ch = $dbh->query($ch_qry);
+					//$chDb = $ch->fetch(PDO::FETCH_OBJ);
+					//if($chDb) {
+					//	$children1 .= $chDb->pers_firstname.'<br>';
+					//}
+					$childDb=$db_functions->get_person($ch_value);
+					$name_cls = New person_cls;
+					$name=$name_cls->person_name($childDb);
+					$children1.=$name["standard_name"].'<br>';
 				}
 			}
+
 		}
 		$spouses1 = substr($spouses1,0,-4); // take off last <br>
 		$children1 = substr($children1,0,-4); // take of last <br>
@@ -1474,18 +1484,26 @@ function show_pair($left_id,$right_id,$mode) {
 		$parents = $dbh->query($qry2);
 		$parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
-		$fath_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_man."'";
-		$fath = $dbh->query($fath_sql);
-		$fathDb = $fath->fetch(PDO::FETCH_OBJ);
-		if($fathDb) {
-			$father1 = $fathDb->pers_lastname.', '.$fathDb->pers_firstname;
-		}
+		//$fath_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_man."'";
+		//$fath = $dbh->query($fath_sql);
+		//$fathDb = $fath->fetch(PDO::FETCH_OBJ);
+		//if($fathDb) {
+		//	$father1 = $fathDb->pers_lastname.', '.$fathDb->pers_firstname;
+		//}
+		$fatherDb=$db_functions->get_person($parentsDb->fam_man);
+		$name_cls = New person_cls;
+		$name=$name_cls->person_name($fatherDb);
+		$father1.=$name["standard_name"].'<br>';
 
 		$moth_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_woman."'";
 		$moth = $dbh->query($moth_sql);
 		$mothDb = $moth->fetch(PDO::FETCH_OBJ);
 		if($mothDb) {
-			$mother1 = $mothDb->pers_lastname.', '.$mothDb->pers_firstname;
+			//$mother1 = $mothDb->pers_lastname.', '.$mothDb->pers_firstname;
+			$motherDb=$db_functions->get_person($parentsDb->fam_woman);
+			$name_cls = New person_cls;
+			$name=$name_cls->person_name($motherDb);
+			$mother1.=$name["standard_name"].'<br>';
 		}
 	}
 
@@ -1503,23 +1521,33 @@ function show_pair($left_id,$right_id,$mode) {
 			else {
 				$spouse_ged = $famDb->fam_man;
 			}
-			$spouse_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$spouse_ged."'";
-			$spouse = $dbh->query($spouse_qry);
-			$spouseDb = $spouse->fetch(PDO::FETCH_OBJ);
-			if($spouseDb) {
-				$spouses2 .= $spouseDb->pers_lastname.' '.$spouseDb->pers_firstname.'<br>';
-			}
+			//$spouse_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$spouse_ged."'";
+			//$spouse = $dbh->query($spouse_qry);
+			//$spouseDb = $spouse->fetch(PDO::FETCH_OBJ);
+			//if($spouseDb) {
+			//	$spouses2 .= $spouseDb->pers_lastname.' '.$spouseDb->pers_firstname.'<br>';
+			//}
+			$spouseDb=$db_functions->get_person($spouse_ged);
+			$name_cls = New person_cls;
+			$name=$name_cls->person_name($spouseDb);
+			$spouses2.=$name["standard_name"].'<br>';
+
 			if($famDb->fam_children) {
 				$child = explode(';',$famDb->fam_children);
 				foreach($child as $ch_value) {
-					$ch_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$ch_value."'";
-					$ch = $dbh->query($ch_qry);
-					$chDb = $ch->fetch(PDO::FETCH_OBJ);
-					if($chDb) {
-						$children2 .= $chDb->pers_firstname.'<br>';
-					}
+					//$ch_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$ch_value."'";
+					//$ch = $dbh->query($ch_qry);
+					//$chDb = $ch->fetch(PDO::FETCH_OBJ);
+					//if($chDb) {
+					//	$children2 .= $chDb->pers_firstname.'<br>';
+					//}
+					$childDb=$db_functions->get_person($ch_value);
+					$name_cls = New person_cls;
+					$name=$name_cls->person_name($childDb);
+					$children2.=$name["standard_name"].'<br>';
 				}
 			}
+
 		}
 		$spouses2 = substr($spouses2,0,-4); // take off last <br>
 		$children2 = substr($children2,0,-4); // take of last <br>
@@ -1531,19 +1559,27 @@ function show_pair($left_id,$right_id,$mode) {
 		$parents = $dbh->query($qry2);
 		$parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
-		$fath_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_man."'";
-		$fath = $dbh->query($fath_sql);
-		$fathDb = $fath->fetch(PDO::FETCH_OBJ);
-		if($fathDb) {
-			$father2 = $fathDb->pers_lastname.', '.$fathDb->pers_firstname;
-		}
+		//$fath_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_man."'";
+		//$fath = $dbh->query($fath_sql);
+		//$fathDb = $fath->fetch(PDO::FETCH_OBJ);
+		//if($fathDb) {
+		//	$father2 = $fathDb->pers_lastname.', '.$fathDb->pers_firstname;
+		//}
+		$fatherDb=$db_functions->get_person($parentsDb->fam_man);
+		$name_cls = New person_cls;
+		$name=$name_cls->person_name($fatherDb);
+		$father2.=$name["standard_name"].'<br>';
 
-		$moth_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_woman."'";
-		$moth = $dbh->query($moth_sql);
-		$mothDb = $moth->fetch(PDO::FETCH_OBJ);
-		if($mothDb) {
-			$mother2 = $mothDb->pers_lastname.', '.$mothDb->pers_firstname;
-		}
+		//$moth_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_woman."'";
+		//$moth = $dbh->query($moth_sql);
+		//$mothDb = $moth->fetch(PDO::FETCH_OBJ);
+		//if($mothDb) {
+		//	$mother2 = $mothDb->pers_lastname.', '.$mothDb->pers_firstname;
+		//}
+		$motherDb=$db_functions->get_person($parentsDb->fam_woman);
+		$name_cls = New person_cls;
+		$name=$name_cls->person_name($motherDb);
+		$mother2.=$name["standard_name"].'<br>';
 	}
 
 	echo '<table style="width:900px;border:2px solid #d8d8d8">';
@@ -1584,13 +1620,13 @@ function show_pair($left_id,$right_id,$mode) {
 	$this->show_regular($leftDb->pers_birth_date,$rightDb->pers_birth_date,__('birth date'),'b_date');
 	$this->show_regular($leftDb->pers_birth_place,$rightDb->pers_birth_place,__('birth place'),'b_place');
 	$this->show_regular($leftDb->pers_birth_time,$rightDb->pers_birth_time,__('birth time'),'b_time');
+	$this->show_regular($leftDb->pers_bapt_date,$rightDb->pers_bapt_date,__('baptism date'),'bp_date');
+	$this->show_regular($leftDb->pers_bapt_place,$rightDb->pers_bapt_place,__('baptism place'),'bp_place');
 	$this->show_regular($leftDb->pers_death_date,$rightDb->pers_death_date,__('death date'),'d_date');
 	$this->show_regular($leftDb->pers_death_place,$rightDb->pers_death_place,__('death place'),'d_place');
 	$this->show_regular($leftDb->pers_death_time,$rightDb->pers_death_time,__('death time'),'d_time');
 	$this->show_regular($leftDb->pers_death_cause,$rightDb->pers_death_cause,__('cause of death'),'d_cause');
 	$this->show_regular($leftDb->pers_cremation,$rightDb->pers_cremation,__('cremation'),'crem');
-	$this->show_regular($leftDb->pers_bapt_date,$rightDb->pers_bapt_date,__('baptism date'),'bp_date');
-	$this->show_regular($leftDb->pers_bapt_place,$rightDb->pers_bapt_place,__('baptism place'),'bp_place');
 	$this->show_regular($leftDb->pers_buried_date,$rightDb->pers_buried_date,__('burial date'),'br_date');
 	$this->show_regular($leftDb->pers_buried_place,$rightDb->pers_buried_place,__('burial place'),'br_place');
 	$this->show_regular($leftDb->pers_alive,$rightDb->pers_alive,__('alive'),'alive');

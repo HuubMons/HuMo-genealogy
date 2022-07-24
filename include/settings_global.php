@@ -1,14 +1,14 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.8.2';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.8.3';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 28 nov. 2019';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-$humo_option["version_date"]='2021-08-06';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2021-10-08';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
@@ -512,6 +512,28 @@ if (!isset($humo_option["smtp_encryption"])){
 if (!isset($humo_option["smtp_debug"])){
 	$humo_option["smtp_debug"]='0';
 	$sql="INSERT INTO humo_settings SET setting_variable='smtp_debug', setting_value='0'";
+	@$result=$dbh->query($sql);
+}
+
+// *** GEDCOM submitter ***
+if (!isset($humo_option["gedcom_submit_name"])){
+	$humo_option["gedcom_submit_name"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_submit_name', setting_value=''";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["gedcom_submit_address"])){
+	$humo_option["gedcom_submit_address"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_submit_address', setting_value=''";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["gedcom_submit_country"])){
+	$humo_option["gedcom_submit_country"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_submit_country', setting_value=''";
+	@$result=$dbh->query($sql);
+}
+if (!isset($humo_option["gedcom_submit_mail"])){
+	$humo_option["gedcom_submit_mail"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='gedcom_submit_mail', setting_value=''";
 	@$result=$dbh->query($sql);
 }
 ?>

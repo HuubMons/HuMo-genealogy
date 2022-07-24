@@ -77,11 +77,10 @@ if(isset($_POST['restore']) AND isset($_POST['select_bkfile']) AND $_POST['selec
 	echo __('This may take some time. Please wait...').'</span><br>';
 	if(is_file("./backup_tmp/".$_POST['select_bkfile'])) {
 		restore_tables('./backup_tmp/'.$_POST['select_bkfile']);
-		if(is_file("./backup_tmp/".$_POST['select_bkfile'])) {  
+		if(is_file("./backup_tmp/".$_POST['select_bkfile'])) {
 			// restore_tables should have deleted the file by now, but we want to make sure we clean up...
-			unlink('./backup_tmp/'.$_POST['select_bkfile']); 
+			unlink('./backup_tmp/'.$_POST['select_bkfile']);
 		}
-
 	}
 }
 
@@ -147,8 +146,7 @@ echo '</table>';
 
 
 // *** BACKUP FUNCTION ***
-function backup_tables()
-{
+function backup_tables(){
 	global $dbh;
 	echo '<div id="red_text" style="color:red">'.__('Creating backup file. This may take some time. Please wait...').'</div>';
 //ob_start();
@@ -158,51 +156,64 @@ function backup_tables()
 		$tables[] = $row[0];
 	}
 
-	//cycle through
+	// *** Cycle through ***
 	//$return = "";
 	$name = 'humo_backup.sql';
 	$handle = fopen($name,'w+');
 
-	foreach($tables as $table)
-	{
-		$return = "";
-		$result = $dbh->query('SELECT * FROM '.$table);
-		$num_fields = $result->columnCount();
+	foreach($tables as $table){
+		// *** Skip tables names that contains a space in it ***
+		if (strpos ($table, ' ')){
+			// *** Show progress ***
+			echo '&gt; <b>'.__('Skipped backup of table:').'</b> '.$table.'<br>';
+		}
+		else{
+			// *** Show progress ***
+			echo '&gt; '.$table.'<br>';
 
-		// *** Show progress ***
-		echo '&gt; '.$table.'<br>';
+			// *** The next line could cost a lot of memory. ***
+			// Maybe change into:
+			// - Get names of columns:
+			//	$sql = "SHOW COLUMNS FROM your-table";
+			//	$result = mysqli_query($conn,$sql);
+			//	while($row = mysqli_fetch_array($result)){
+			//		echo $row['Field']."<br>";
+			//	}
+			// - Only get first item, something like: $result = $dbh->query('SELECT [pers_id/fam_id etc] FROM '.$table);
+			// - In loop get all items.
+			$result = $dbh->query('SELECT * FROM '.$table);
+			//$result = $dbh->query('SELECT * FROM `'.$table.'`');
+			//$num_fields = $result->columnCount();
 
-		$row_result = $dbh->query('SHOW CREATE TABLE '.$table);
-		$row2 = $row_result->fetch(PDO::FETCH_NUM);
-		$return.= "\n\n".$row2[1].";\n\n";
-		fwrite($handle,$return);
-		unset($return); 
-		for ($i = 0; $i < $num_fields; $i++) 
-		{
-			while($row = $result->fetch(PDO::FETCH_NUM))
-			{
-				$return = "";
-				$return.= 'INSERT INTO '.$table.' VALUES(';
-				for($j=0; $j<$num_fields; $j++) 
-				{
-					$row[$j] = addslashes($row[$j]);
-					$row[$j] = str_replace("\n","\\n",$row[$j]);
-					if (isset($row[$j])) { $return.= '"'.$row[$j].'"' ; } else { $return.= '""'; }
-					if ($j<($num_fields-1)) { $return.= ','; }
-				}
-				$return.= ");\n";
+			$row_result = $dbh->query('SHOW CREATE TABLE '.$table);
+			//$row_result = $dbh->query('SHOW CREATE TABLE `'.$table.'`');
+			$row2 = $row_result->fetch(PDO::FETCH_NUM);
+			$return= "\n\n".$row2[1].";\n\n";
+			fwrite($handle,$return);
+			//unset($return); 
+			//for ($i = 0; $i < $num_fields; $i++){
+				while($row = $result->fetch(PDO::FETCH_NUM)){
+					$return = 'INSERT INTO '.$table.' VALUES(';
+					$num_fields=count($row);
+					for($j=0; $j<$num_fields; $j++) {
+						$row[$j] = addslashes($row[$j]);
+						$row[$j] = str_replace("\n","\\n",$row[$j]);
+						if (isset($row[$j])) { $return.= '"'.$row[$j].'"' ; } else { $return.= '""'; }
+						if ($j<($num_fields-1)) { $return.= ','; }
+					}
+					$return.= ");\n";
 // *** Show all lines in table ***
-//if ($table=='humo_persons'){
+//if ($table=='humo_persons 2021'){
 //	echo $return.'<br>';
 //}
-				fwrite($handle,$return);
-				unset($return); 
-			}
+					fwrite($handle,$return);
+					//unset($return); 
+				}
+			//}
+			$return="\n\n\n";
+			fwrite($handle,$return);
+			//unset($return);
 		}
-		$return = "";
-		$return.="\n\n\n";
-		fwrite($handle,$return);
-		unset($return);
 	}
 
 	//fwrite($handle,$return);

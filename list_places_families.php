@@ -393,31 +393,42 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 			//************** search places **************************************
 			//echo ' <form method="post" action="'.$list_var.'" style="display : inline;">';
 			echo ' <form method="post" action="'.$list_var.'">';
-				echo __('Find place').':<br><br>';
-
-				$checked=''; if ($select_marriage_notice=='1'){$checked='checked';}
-				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice" value="1" '.$checked.'> '.__('&infin;').' '.__('Marriage notice').'</span>';
-
-				$checked=''; if ($select_marriage=='1'){$checked='checked';}
-				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage" value="1" '.$checked.'> '.__('X').' '.__('Marriage').'</span>';
-
-				$checked=''; if ($select_marriage_notice_religious=='1'){$checked='checked';}
-				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice_religious" value="1" '.$checked.'> '.__('o').' '.__('Married notice (religious)').'</span>';
-
-				$checked=''; if ($select_marriage_religious=='1'){$checked='checked';}
-				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_religious" value="1" '.$checked.'> '.__('x').' '.__('Married (religious)').'</span><br><br clear="all">';
+				echo __('Find place').': ';
 				echo '<select name="part_place_name">';
-				echo '<option value="contains">'.__('Contains').'</option>';
+					echo '<option value="contains">'.__('Contains').'</option>';
 
-				$select_item=''; if ($part_place_name=='equals'){ $select_item=' selected'; }
-				echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
+					$select_item=''; if ($part_place_name=='equals'){ $select_item=' selected'; }
+					echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
 
-				$select_item=''; if ($part_place_name=='starts_with'){ $select_item=' selected'; }
-				echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
+					$select_item=''; if ($part_place_name=='starts_with'){ $select_item=' selected'; }
+					echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 				echo '</select>';
 
 				echo ' <input type="text" name="place_name" value="'.safe_text_show($place_name).'" size="15">';
-				echo ' <input type="submit" value="'.__('Search').'" name="B1">';echo '</div>';
+				echo ' <input type="submit" value="'.__('Search').'" name="B1">'; //echo '</div>';
+
+				echo '<br>';
+
+				$checked=''; if ($select_marriage_notice=='1'){$checked='checked';}
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice" value="1" '.$checked.'> ';
+					echo '<span class="place_index_selected" style="float:none;">'.__('&infin;').'</span>';
+				echo ' '.__('Marriage notice').'</span>';
+
+				$checked=''; if ($select_marriage=='1'){$checked='checked';}
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage" value="1" '.$checked.'> ';
+					echo '<span class="place_index_selected" style="float:none;">'.__('X').'</span>';
+				echo ' '.__('Marriage').'</span>';
+
+				$checked=''; if ($select_marriage_notice_religious=='1'){$checked='checked';}
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_notice_religious" value="1" '.$checked.'> ';
+					echo '<span class="place_index_selected" style="float:none;">'.__('o').'</span>';
+				echo ' '.__('Married notice (religious)').'</span>';
+
+				$checked=''; if ($select_marriage_religious=='1'){$checked='checked';}
+				echo '<span class="select_box" style="width:250px;"><input type="Checkbox" name="select_marriage_religious" value="1" '.$checked.'> ';
+					echo '<span class="place_index_selected" style="float:none;">'.__('x').'</span>';
+				echo ' '.__('Married (religious)').'</span><br clear="all">';
+
 			echo '</form>';
 		echo '</td></tr></table>';
 		//***************** end search of places **********************************

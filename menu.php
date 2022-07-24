@@ -431,7 +431,7 @@ echo '<ul class="humo_menu_item">';
 
 			echo '<a href="'.$path_tmp.'"';
 			echo ' onmouseover="mopen(event,\'mft\',\'?\',\'?\')"';
-			echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Family tree').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden" alt="pull_down"></a>';
+			echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Family tree').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
 
 			echo '<div id="mft" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo '<ul class="humo_menu_item2">';
@@ -576,7 +576,7 @@ echo '<ul class="humo_menu_item">';
 
 			echo '<a href="'.$path_tmp.'"';
 			echo ' onmouseover="mopen(event,\'m1x\',\'?\',\'?\')"';
-			echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Tools').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden" alt="pull_down"></a>';
+			echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Tools').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
 
 			echo '<div id="m1x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo '<ul class="humo_menu_item2">';
@@ -679,7 +679,7 @@ echo '<ul class="humo_menu_item">';
 		}
 		echo '<a href="'.$path_tmp.'"';
 		echo ' onmouseover="mopen(event,\'m2x\',\'?\',\'?\')"';
-		echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Help').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+		echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Help').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="pull_down_icon" alt="pull_down"></a>';
 
 		echo '<div id="m2x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			echo '<ul class="humo_menu_item2">';
@@ -771,7 +771,7 @@ echo '<ul class="humo_menu_item">';
 				}
 				echo '<a href="'.$path_tmp.'"';
 				echo ' onmouseover="mopen(event,\'m3x\',\'?\',\'?\')"';
-				echo ' onmouseout="mclosetime()"'.$select_top.'><span style="color:#0101DF; font-weight:bold;">['.ucfirst($_SESSION["user_name"]).']&nbsp;</span><img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+				echo ' onmouseout="mclosetime()"'.$select_top.'><span style="color:#0101DF; font-weight:bold;">['.ucfirst($_SESSION["user_name"]).']&nbsp;</span><img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="pull_down_icon" alt="pull_down"></a>';
 
 				echo '<div id="m3x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<ul class="humo_menu_item2">';
@@ -824,7 +824,7 @@ echo '<ul class="humo_menu_item">';
 			echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
 			$select_top='';
 
-			echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> <img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden" alt="pull_down"></a>';
+			echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> <img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
 
 			// In gedcom.css special adjustment (width) for m4x! ***
 			echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -878,7 +878,7 @@ echo '<ul class="humo_menu_item">';
 		}
 		$select_menu=''; if ($menu_choice=='settings'){ $select_menu=' id="current"'; }
 		//echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Settings')."</a></li>\n";
-		echo '<li'.$select_menu.'><a href="'.$path_tmp.'"><img src="images/settings.png" alt="'.   __('Settings').'"></a></li>';
+		echo '<li'.$select_menu.'><a href="'.$path_tmp.'"><img src="images/settings.png" alt="'.__('Settings').'"></a></li>';
 	}
 
 echo '</ul>';

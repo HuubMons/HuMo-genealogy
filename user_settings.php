@@ -28,7 +28,7 @@ if (isset($_POST['send_mail'])){
 		$sql.=" user_mail='".safe_text_db($_POST["register_mail"])."'";
 		if ($_POST["register_password"]!='')
 			$hashToStoreInDb = password_hash($_POST["register_password"], PASSWORD_DEFAULT);
-			$sql.=", user_password_salted='".$hashToStoreInDb."'";
+			if (isset($hashToStoreInDb)) $sql.=", user_password_salted='".$hashToStoreInDb."'";
 		$sql.=" WHERE user_id=".$userDb->user_id;
 		$result = $dbh->query($sql);
 		echo '<h2>'.__('Your settings are updated!').'</h2>';
@@ -83,6 +83,7 @@ if (isset($_POST['send_mail'])){
 }
 elseif (isset($userDb->user_name)){
 
+	/*
 	echo '<script type="text/javascript">';
 	echo '
 	function validate(form_id,register_mail) {
@@ -95,8 +96,10 @@ elseif (isset($userDb->user_name)){
 	}
 	';
 	echo '</script>';
+	*/
 
-	echo '<br><form id="form_id" method="post" action="user_settings.php" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
+	//echo '<br><form id="form_id" method="post" action="user_settings.php" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
+	echo '<br><form id="form_id" method="post" action="user_settings.php" accept-charset = "utf-8">';
 
 	echo '<table align="center" class="humo small">';
 	echo '<tr class=table_headline><th class="fonts" colspan="2">'.__('User settings').'</th></tr>';
@@ -114,7 +117,9 @@ elseif (isset($userDb->user_name)){
 		echo '<tr><td>'.__('Repeat password').'</td><td><input type="password" class="fonts" name="register_repeat_password" size="30" style="background-color:#FFFFFF" value="'.$register_repeat_password.'"></td></tr>';
 
 		$register_mail=$userDb->user_mail; if (isset($_POST['register_mail'])){ $register_mail=$_POST['register_mail']; }
-		echo '<tr><td>'.__('E-mail address').'</td><td><input type="text" class="fonts" id="register_mail" name="register_mail" value="'.$register_mail.'" size="30" style="background-color:#FFFFFF"> </td></tr>';
+		//echo '<tr><td>'.__('E-mail address').'</td><td><input type="text" class="fonts" id="register_mail" name="register_mail" value="'.$register_mail.'" size="30" style="background-color:#FFFFFF"> </td></tr>';
+		// *** Use HTML 5 e-mail check ***
+		echo '<tr><td>'.__('E-mail address').'</td><td><input type="email" class="fonts" id="register_mail" name="register_mail" value="'.$register_mail.'" size="30" style="background-color:#FFFFFF"> </td></tr>';
 
 		//$register_text=''; if (isset($_POST['register_text'])){ $register_text=$_POST['register_text']; }
 		//echo '<tr><td>'.__('Message: ').'</td><td><textarea name="register_text" ROWS="5" COLS="40" class="fonts">'.$register_text.'</textarea></td></tr>';

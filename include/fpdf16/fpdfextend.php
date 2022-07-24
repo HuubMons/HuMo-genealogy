@@ -67,7 +67,7 @@ function pdfdisplay($templ_personing,$person_kind) {
 			if(strpos($value,".jpeg")!==false OR strpos($value,".jpg")!==false
 				OR strpos($value,".gif")!==false OR strpos($value,".png")!==false) {
 				if(is_file($value)) {
-					if($numpics > 2) {continue;}  // no more than 3 pics
+					if($numpics > 14) {continue;}  // no more than 15 pics
 					$presentpic=intval(substr($key,8));   //get the pic nr to compare later with txt nr
 					$picarray[$numpics][0]=$value;
 					$size=getimagesize($value);
@@ -193,12 +193,21 @@ function pdfdisplay($templ_personing,$person_kind) {
 
 				// pic with child
 				if(strpos($key,"got_pics")!==false) {
-					$keepY=$pdf->GetY()+7;  if(($keepY + $tallestpic) > 280) {$pdf->AddPage(); $keepY=20; }
+					$keepY=$pdf->GetY()+7;  if(($keepY + $tallestpic + 5) > 280) {$pdf->AddPage(); $keepY=20; }
 					$keepX=$pdf->GetX();
 					if(isset($picarray[0][0])) {  // we got at least 1 pic
 						$pic_indent=34; $pictext_indent=34; $maxw = 180/3.87;
-						for($i=0; $i <3 ; $i++) {
+						for($i=0; $i <15 ; $i++) {
 							if(isset($picarray[$i][0])) {
+								if($i > 0 AND $i % 3 == 0) { 
+									$pic_indent=28; 	
+									$pictext_indent=28; 
+									$keepY += ($tallestpic+1);  
+									if(($keepY + $tallestpic + 5) > 280) {
+										$pdf->AddPage();
+										$keepY=20;
+									}
+								}
 								$pic_indent += (($maxw - $picarray[$i][1]) / 2);
 								$pdf->Image($picarray[$i][0],$pic_indent,$keepY,$picarray[$i][1] );
 								$pic_indent = $pictext_indent + $maxw + 5;
@@ -237,12 +246,21 @@ function pdfdisplay($templ_personing,$person_kind) {
 
 			elseif($person_kind=="ancestor") {
 				if(strpos($key,"got_pics")!==false) {
-					$keepY=$pdf->GetY()+7;  if(($keepY + $tallestpic) > 280) {$pdf->AddPage(); $keepY=20; }
+					$keepY=$pdf->GetY()+7;  if(($keepY + $tallestpic + 5) > 280) {$pdf->AddPage(); $keepY=20; }
 					$keepX=$pdf->GetX();
 					if(isset($picarray[0][0])) {  // we got at least 1 pic
 						$pic_indent=35; $pictext_indent=35; $maxw = 180/3.87;
-						for($i=0; $i <3 ; $i++) {
+						for($i=0; $i <15 ; $i++) {
 							if(isset($picarray[$i][0])) {
+								if($i > 0 AND $i % 3 == 0) { 
+									$pic_indent=28; 	
+									$pictext_indent=28; 
+									$keepY += ($tallestpic+1);  
+									if(($keepY + $tallestpic + 5) > 280) {
+										$pdf->AddPage();
+										$keepY=20;
+									}
+								}
 								$pic_indent += (($maxw - $picarray[$i][1]) / 2);
 								$pdf->Image($picarray[$i][0],$pic_indent,$keepY,$picarray[$i][1] );
 								$pic_indent = $pictext_indent + $maxw + 5;
@@ -277,12 +295,21 @@ function pdfdisplay($templ_personing,$person_kind) {
 			}
 
 			elseif(strpos($key,"got_pics")!==false) {
-				$keepY=$pdf->GetY()+7;  if(($keepY + $tallestpic) > 280) {$pdf->AddPage(); $keepY=20; }
+				$keepY=$pdf->GetY()+7;  if(($keepY + $tallestpic + 5) > 280) {$pdf->AddPage(); $keepY=20; }
 				$keepX=$pdf->GetX();
 				if(isset($picarray[0][0])) {  // we got at least 1 pic
 					$pic_indent=28; $pictext_indent=28; $maxw = 180/3.87;
-					for($i=0; $i <3 ; $i++) {
+					for($i=0; $i <15 ; $i++) {
 						if(isset($picarray[$i][0])) {
+							if($i > 0 AND $i % 3 == 0) { 
+								$pic_indent=28; 	
+								$pictext_indent=28; 
+								$keepY += ($tallestpic+1);  
+								if(($keepY + $tallestpic + 5) > 280) {
+									$pdf->AddPage();
+									$keepY=20;
+								}
+							}
 							$pic_indent += (($maxw - $picarray[$i][1]) / 2);
 							$pdf->Image($picarray[$i][0],$pic_indent,$keepY,$picarray[$i][1] );
 							$pic_indent = $pictext_indent + $maxw + 5;
@@ -325,6 +352,14 @@ function displayrel ($templ_relation,$ancestor_report) {
 	$font=12;
 	$samw=0; $prew=0; $wedd=0; $prec=0; $chur=0; $devr=0;
 	$address=0; $sour=0;
+	
+	$largest_height=0;
+	$pic=array();
+
+	$picarray=array();
+	$numpics=0;
+
+	$tallestpic=0; $tallesttext=0; 	
 
 	$source_presentation='title';
 	if (isset($_SESSION['save_source_presentation'])){
@@ -400,10 +435,76 @@ $pdf->Ln(4);
 		if(strpos($key,"text")!==false) {  $pdf->SetFont('Arial','I',$font-1); }
 		if(strpos($key,"witn")!==false) {  $pdf->SetFont('Times','',$font); }
 		if(strpos($key,"source")!==false){ $pdf->SetFont('Times','',$font); }
+		
+		if(strpos($key,"pic_path")!==false) {
+			if(strpos($value,".jpeg")!==false OR strpos($value,".jpg")!==false
+				OR strpos($value,".gif")!==false OR strpos($value,".png")!==false) {
+				if(is_file($value)) {
+					if($numpics > 14) {continue;}  // no more than 15 pics
+					$presentpic=intval(substr($key,8));   //get the pic nr to compare later with txt nr
+					$picarray[$numpics][0]=$value;
+					$size=getimagesize($value);
+					$height=$size[1];
+					$width=$size[0];
+					if($width > 180) {  //narrow and wide thumbs should not get height 120px - they will be far too long
+						$height*= 180/$width;
+						$width=180;
+					}
+					//if($height > $tallestpic) { $tallestpic=$height; }
+					$picarray[$numpics][1]=$width/3.87;  // turn px into mm for pdf
+					$picarray[$numpics][4]=$height/3.87; // turn px into mm for pdf
+					if($picarray[$numpics][4] > $tallestpic) { $tallestpic = $picarray[$numpics][4]; }
+					$numpics++;
+				}
+			}
+			continue;
+		}
+
+		if(strpos($key,"pic_text")!==false) {
+			if(isset($presentpic) AND $presentpic==intval(substr($key,8))) {
+				$picarray[$numpics-1][2]=$value;
+				if(isset($picarray[$numpics-1][2])) {
+					$textlines=ceil(strlen($value)/30);
+					$totalheight=($textlines*5) + ($picarray[$numpics-1][4]);
+					if( $totalheight > $tallestpic) { $tallestpic=$totalheight; }
+				}
+			}
+			continue;
+		}		
 
 		if (strpos($key,"source")!==false) {
 			$this->PDFShowSources($value);
 		}
+		elseif(strpos($key,"got_pics")!==false) {
+			$keepY=$pdf->GetY()+7;  if(($keepY + $tallestpic + 5) > 280) {$pdf->AddPage(); $keepY=20; }
+			$keepX=$pdf->GetX();
+			if(isset($picarray[0][0])) {  // we got at least 1 pic
+				$pic_indent=28; $pictext_indent=28; $maxw = 180/3.87;
+				for($i=0; $i <15 ; $i++) {
+					if(isset($picarray[$i][0])) {
+						if($i > 0 AND $i % 3 == 0) { 
+							$pic_indent=28; 	
+							$pictext_indent=28; 
+							$keepY += ($tallestpic+1);  
+							if(($keepY + $tallestpic + 5) > 280) {
+								$pdf->AddPage();
+								$keepY=20;
+							}
+						}
+						$pic_indent += (($maxw - $picarray[$i][1]) / 2);
+						$pdf->Image($picarray[$i][0],$pic_indent,$keepY,$picarray[$i][1] );
+						$pic_indent = $pictext_indent + $maxw + 5;
+						if(isset($picarray[$i][2])) {
+							$pdf->SetFont('Arial','',8);
+							$pdf->SetXY($pictext_indent,$keepY+$picarray[$i][4]+1);
+							$pdf->MultiCell($maxw,4,$picarray[$i][2],0,'C');
+						}
+						$pictext_indent += $maxw + 5;
+					}
+				}
+				$pdf->SetXY($keepX,$keepY+$tallestpic-7);
+			}
+		}  
 		else {
 			$pdf->Write(6,$value);
 		}

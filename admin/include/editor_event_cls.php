@@ -1022,6 +1022,12 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			//$text.='<td style="border-left:0px;">';
 			$text.='<select size="1" name="text_event['.$data_listDb->event_id.']" id="text_event'.$data_listDb->event_id.'">';
 				$text.='<option value=""></option>';
+
+				// *** If there is no file selected, select the new uploaded file (only shown if new file is a valid file) ***
+				if (!$data_listDb->event_event AND (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name'])){
+					$data_listDb->event_event=$_FILES['photo_upload']['name'];
+				}
+
 				for ($picture_nr=0; $picture_nr<$nr_pictures; $picture_nr++){
 					$selected=''; if ($picture_array[$picture_nr]==$data_listDb->event_event){ $selected=' SELECTED'; }
 					$text.='<option value="'.$picture_array[$picture_nr].'"'.$selected.'>'.$picture_array[$picture_nr].'</option>';

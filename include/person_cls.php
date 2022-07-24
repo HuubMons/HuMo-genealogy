@@ -68,9 +68,8 @@ function set_privacy($personDb){
 					elseif (substr($personDb->pers_cal_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }  // calculated born from year 100 onwards but before $user["group_alive_date"]
 					else $privacy_person='1'; // *** overwrite pers_alive status ***
 				}
-				
+
 				// *** Check if deceased persons should be filtered ***
-				
 				if ($user["group_filter_death"]=='n'){
 					// *** If person is deceased, filter is off ***
 					if ($personDb->pers_death_date or $personDb->pers_death_place){ $privacy_person=''; }
@@ -78,7 +77,7 @@ function set_privacy($personDb){
 					// *** pers_alive for deceased persons without date ***
 					if ($personDb->pers_alive=='deceased'){ $privacy_person=''; }
 				}
-				
+
 			}
 
 			/*
@@ -200,15 +199,18 @@ function person_name($personDb){
 		// *** Aldfaer: nobility (predikaat) by name ***
 		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'nobility');
 		foreach($name_qry as $nameDb) $nobility.=$nameDb->event_event.' ';
+		//foreach($name_qry as $nameDb) $nobility.=$nameDb->event_event.' <i>'.$nameDb->event_text.'</i> ';
 		unset($name_qry);
 
 		// *** Gedcom 5.5 title: NPFX ***
 		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'NPFX');
+		//foreach($name_qry as $nameDb) $title_before.=' '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i> ';
 		foreach($name_qry as $nameDb) $title_before.=' '.$nameDb->event_event.' ';
 		unset($name_qry);
 
 		// *** Gedcom 5.5 title: NSFX ***
 		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'NSFX');
+		//foreach($name_qry as $nameDb) $title_after.=' '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i> ';
 		foreach($name_qry as $nameDb) $title_after.=' '.$nameDb->event_event.' ';
 		unset($name_qry);
 
@@ -257,9 +259,12 @@ function person_name($personDb){
 			if ($nameDb->event_event=='barones'){ $title_position='between'; }
 			if ($nameDb->event_event=='ridder'){ $title_position='between'; }
 
+			//if ($title_position=='before') $title_before.=' '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i> ';
 			if ($title_position=='before') $title_before.=' '.$nameDb->event_event.' ';
+			//if ($title_position=='between') $title_between.=' '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i> ';
 			if ($title_position=='between') $title_between.=' '.$nameDb->event_event.' ';
-			if ($title_position=='after') $title_after.=', '.$nameDb->event_event;
+			//if ($title_position=='after') $title_after.=', '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i>';
+			if ($title_position=='after') $title_after.=', '.$nameDb->event_event.' ';
 		}
 		unset($name_qry);
 
@@ -272,7 +277,8 @@ function person_name($personDb){
 
 		// *** Aldfaer: lordship (heerlijkheid) after name ***
 		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'lordship');
-		foreach($name_qry as $nameDb) $lordship.=', '.$nameDb->event_event;
+		//foreach($name_qry as $nameDb) $lordship.=', '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i>';
+		foreach($name_qry as $nameDb) $lordship.=', '.$nameDb->event_event.' ';
 		unset($name_qry);
 
 		// *** Re-calculate privacy filter for witness names and parents ***
@@ -465,7 +471,7 @@ function person_name($personDb){
 			// *** Example: H.M. ***
 			$name_array["initials"]=substr($personDb->pers_firstname,0,1).'.'.substr($personDb->pers_lastname,0,1).'.';
 			
-			if($humo_option['name_order']=="chinese") {  
+			if($humo_option['name_order']=="chinese") {
 				// for Chinese no commas or spaces, anyway few characters
 				$name_array["initials"]= $personDb->pers_lastname." ".$personDb->pers_firstname;
 			}
@@ -1897,12 +1903,11 @@ function person_data($person_kind, $id){
 		// **************************
 		if ($personDb->pers_gedcomnumber){
 			$temp_previous=$temp;
+
+			$event_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'profession');
+			$nr_occupations = count($event_qry);
 			$eventnr=0;
-			$event_qry=$dbh->query("SELECT * FROM humo_events
-				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$personDb->pers_gedcomnumber."' AND event_kind='profession'
-				ORDER BY event_order");
-			$nr_occupations=$event_qry->rowCount();
-			while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
+			foreach ($event_qry as $eventDb){
 				$eventnr++;
 				if ($eventnr=='1'){
 					if ($nr_occupations=='1'){

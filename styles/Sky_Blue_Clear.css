@@ -97,6 +97,12 @@ ul.humo_menu_item li a{
 	border-right:0px;
 }
 
+/* Hide pull down icon */
+.pull_down_icon{
+	visibility:hidden;
+	width:0px; height:0px;
+}
+
 /* Pop-up menu */
 ul.humo_menu_item2 li a{
 	/* background-color:#999; */

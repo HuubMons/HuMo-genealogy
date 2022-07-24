@@ -125,8 +125,8 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			//$text.=date_place($connectDb->address_date,'').' ';
 			$text.=' ('.date_place($connectDb->connect_date,'').')';
 			// default, without place, place is processed later.
-//				$templ_person["address_date".$address_nr]=' ('.date_place($connectDb->connect_date,'').')';
-//				$temp="address_date".$address_nr;
+			//$templ_person["address_date".$address_nr]=' ('.date_place($connectDb->connect_date,'').')';
+			//$temp="address_date".$address_nr;
 		}
 
 		// *** Address text ***
