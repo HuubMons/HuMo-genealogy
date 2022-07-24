@@ -8,7 +8,8 @@ echo '<h1 align=center>'.__('Select person').'</h1>';
 $place_item='connect_man'; $form='form2';
 if ($_GET['person_item']=='woman'){ $place_item='connect_woman'; $form='form2'; }
 if ($_GET['person_item']=='relation_add2'){ $place_item='relation_add2'; $form='form4'; }
-if ($_GET['person_item']=='child_connect2'){ $place_item='child_connect2'; $form='form4'; }
+//if ($_GET['person_item']=='child_connect2'){ $place_item='child_connect2'; $form='form4'; }
+if ($_GET['person_item']=='child_connect2'){ $place_item='child_connect2'; $form='form7'; }
 
 // *** Witnesses (=event, multiple witnesses possible) ***
 if ($_GET['person_item']=='person_witness'){ $place_item='text_event2'.$_GET['event_row']; $form='form1'; }

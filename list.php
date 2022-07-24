@@ -126,9 +126,8 @@ function show_person($personDb){
 	echo '</td><td style="border-left:0px;">';
 
 	// *** Show name of person ***
-	//$start_url=$person_cls->person_url($personDb);	// *** Get link to family ***
-	// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-	$start_url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+	// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+	$start_url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
 	echo ' <a href="'.$start_url.'">'.$index_name.'</a>';
 
 	//*** Show spouse/ partner ***

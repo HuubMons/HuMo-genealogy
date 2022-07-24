@@ -347,6 +347,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='</tr>';
 	}
 
+
 	// *** Show NPFX Name prefix like: Lt. Cmndr. ***
 	if ($event_kind=='NPFX'){
 		$link='name';
@@ -745,93 +746,105 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$expand_link=''; $internal_link='#';
 		if ($event_kind=='person'){
 			//$change_bg_colour=' class="humo_color"';
-			$change_bg_colour='';
 			//$expand_link=' style="display:none;" class="row51" name="row51"';
 			$expand_link='';
+			$change_bg_colour='';
 			$internal_link='#event_person_link';
 		}
 		if ($event_kind=='family'){
 			//$change_bg_colour=' class="humo_color"';
-			$change_bg_colour='';
 			//$expand_link=' style="display:none;" class="row52" name="row52"';
 			$expand_link='';
+			$change_bg_colour='';
 			$internal_link='#event_family_link';
 		}
 		if ($event_kind=='name'){
 			//$change_bg_colour=' class="humo_color"';
+			//$expand_link=' style="display:none;" class="row1" name="row1"';
+			$expand_link='';
 			$change_bg_colour='';
-			$expand_link=' style="display:none;" class="row1" name="row1"';
 			$internal_link='#';
 		}
 		if ($event_kind=='NPFX'){
 			//$change_bg_colour=' class="humo_color"';
+			//$expand_link=' style="display:none;" class="row1" name="row1"';
+			$expand_link='';
 			$change_bg_colour='';
-			$expand_link=' style="display:none;" class="row1" name="row1"';
 		}
 		if ($event_kind=='NSFX'){
 			//$change_bg_colour=' class="humo_color"';
+			//$expand_link=' style="display:none;" class="row1" name="row1"';
+			$expand_link='';
 			$change_bg_colour='';
-			$expand_link=' style="display:none;" class="row1" name="row1"';
 		}
 		if ($event_kind=='nobility'){
 			//$change_bg_colour=' class="humo_color"';
+			//$expand_link=' style="display:none;" class="row1" name="row1"';
+			$expand_link='';
 			$change_bg_colour='';
-			$expand_link=' style="display:none;" class="row1" name="row1"';
 		}
 		if ($event_kind=='title'){
 			//$change_bg_colour=' class="humo_color"';
+			//$expand_link=' style="display:none;" class="row1" name="row1"';
+			$expand_link='';
 			$change_bg_colour='';
-			$expand_link=' style="display:none;" class="row1" name="row1"';
 		}
 		if ($event_kind=='lordship'){
 			//$change_bg_colour=' class="humo_color"';
+			//$expand_link=' style="display:none;" class="row1" name="row1"';
+			$expand_link='';
 			$change_bg_colour='';
-			$expand_link=' style="display:none;" class="row1" name="row1"';
 		}
 		if ($event_kind=='birth_declaration'){
+			//$expand_link=' style="display:none;" class="row2 humo_color" name="row2"';
+			$expand_link='';
 			//$change_bg_colour='';
 			$change_bg_colour=' class="humo_color"';
-			$expand_link=' style="display:none;" class="row2 humo_color" name="row2"';
 		}
 		if ($event_kind=='baptism_witness'){
+			//$expand_link=' style="display:none;" class="row3" name="row3"';
+			$expand_link='';
 			//$change_bg_colour=' class="humo_color"';
 			$change_bg_colour='';
-			$expand_link=' style="display:none;" class="row3" name="row3"';
 		}
 		if ($event_kind=='death_declaration'){
+			//$expand_link=' style="display:none;" class="row4 humo_color" name="row4"';
+			$expand_link='';
 			//$change_bg_colour='';
 			$change_bg_colour=' class="humo_color"';
-			$expand_link=' style="display:none;" class="row4 humo_color" name="row4"';
 		}
 		if ($event_kind=='burial_witness'){
+			//$expand_link=' style="display:none;" class="row5" name="row5"';
+			$expand_link='';
 			//$change_bg_colour=' class="humo_color"';
 			$change_bg_colour='';
-			$expand_link=' style="display:none;" class="row5" name="row5"';
 		}
 		if ($event_kind=='profession'){
-			//$change_bg_colour=' class="humo_color"';
-			$change_bg_colour='';
 			//$expand_link=' style="display:none;" class="row13" name="row13"';
 			$expand_link='';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
 			$internal_link='#profession';
 		}
 		if ($event_kind=='picture' OR $event_kind=='marriage_picture' OR $event_kind=='source_picture'){
-			//$change_bg_colour='';
-			$change_bg_colour=' class="humo_color"';
 			//$expand_link=' style="display:none;" id="pic_main_'.$data_listDb->event_id.'" class="pic_main row53 humo_color" name="row53"';
 			$expand_link='';
+			//$change_bg_colour='';
+			$change_bg_colour=' class="humo_color"';
 			$internal_link='#picture';
 		}
 		if ($event_kind=='marriage_witness'){
+			//$expand_link=' style="display:none;" class="row8 humo_color" name="row8"';
+			$expand_link='';
 			//$change_bg_colour='';
 			$change_bg_colour=' class="humo_color"';
-			$expand_link=' style="display:none;" class="row8 humo_color" name="row8"';
 			$internal_link='#event_family_link';
 		}
 		if ($event_kind=='marriage_witness_rel'){
+			//$expand_link=' style="display:none;" class="row10 humo_color" name="row10"';
+			$expand_link='';
 			//$change_bg_colour='';
 			$change_bg_colour=' class="humo_color"';
-			$expand_link=' style="display:none;" class="row10 humo_color" name="row10"';
 			$internal_link='#event_family_link';
 		}
 
@@ -859,11 +872,19 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 					$count_event=$dbh->query("SELECT * FROM humo_events
 						WHERE event_tree_id='".$tree_id."' AND event_connect_kind='family' AND event_connect_id='".$event_connect_id."' AND event_kind='".$data_listDb->event_kind."'");
 				}
+				// *** Edit picture by source in seperate source page ***
+				elseif ($event_connect_kind=='source'){
+					$count_event=$dbh->query("SELECT * FROM humo_events
+						WHERE event_tree_id='".$tree_id."' AND event_connect_kind='source' AND event_connect_id='".$event_connect_id."' AND event_kind='".$data_listDb->event_kind."'");
+				}
 				$count=$count_event->rowCount();
 
 				// *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
 				if ($data_listDb->event_order<$count){
-					$text.=' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;'.$event_group.'&amp;event_down='.$data_listDb->event_order.'&amp;event_kind='.$data_listDb->event_kind.'&amp;dummy='.$data_listDb->event_id.$internal_link.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>';
+					$text.=' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;'.$event_group.'&amp;event_down='.$data_listDb->event_order.'&amp;event_kind='.$data_listDb->event_kind;
+					// *** Edit picture by source in seperate source page ***
+					if ($event_kind=='source_picture') $text.='&amp;source_id='.$data_listDb->event_connect_id;
+					$text.='&amp;dummy='.$data_listDb->event_id.$internal_link.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>';
 				}
 				else{
 					$text.='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -871,7 +892,11 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 				// *** dummy is not really necessary, but otherwise it's not possible to click an arrow twice ***
 				if ($data_listDb->event_order>1){
-					$text.=' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;'.$event_group.'&amp;event_up='.$data_listDb->event_order.'&amp;event_kind='.$data_listDb->event_kind.'&amp;dummy='.$data_listDb->event_id.$internal_link.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="down"></a>';
+					$text.=' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;'.$event_group.'&amp;event_up='.$data_listDb->event_order.'&amp;event_kind='.$data_listDb->event_kind;
+					// *** Edit picture by source in seperate source page ***
+					if ($event_kind=='source_picture') $text.='&amp;source_id='.$data_listDb->event_connect_id;
+					$text.='&amp;dummy='.$data_listDb->event_id.$internal_link;
+					$text.='"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="down"></a>';
 				}
 				else{
 					$text.='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';

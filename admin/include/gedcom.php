@@ -470,6 +470,7 @@ if (isset($_POST['step2'])){
 		$dbh->commit();
 		*/
 		// *** Remove records in chunks because of InnoDb database... ***
+		ob_start(); // *** Added 06-08-2021, otherwise fault message in PHP8 ***
 		printf(__('Remove old family tree items from %s table...'), 'humo_persons');
 		echo ' ';
 		ob_flush(); flush(); // IE
@@ -1104,6 +1105,7 @@ if (isset($_POST['step3'])){
 		}
 		$total = $_SESSION['save_total'];
 
+		ob_start(); // *** Added 06-08-2021, otherwise fault message in PHP8 ***
 		// Javascript for initial display of the progress bar and information (or after timeout)
 		$percent=$perc."%"; if($perc==0) { $percent="0.5%"; } // show at least some green 
 		echo '<script language="javascript">';
@@ -2187,13 +2189,11 @@ if (isset($_POST['step4'])){
 				foreach ($fams as $key => $value) {
 					if ($fams[$key] != $familynr){ $fams2[]=$fams[$key]; }
 				}
-				$pers_indexnr=''; if ($person_db->pers_famc){ $pers_indexnr=$person_db->pers_famc; }
-				$fams3=''; if (isset($fams2[0])){
-					$fams3 = implode(";", $fams2); $pers_indexnr=$fams2[0];
+				$fams3='';
+				if (isset($fams2[0])){
+					$fams3 = implode(";", $fams2);
 				}
-				$sql="UPDATE humo_persons SET
-					pers_fams='".$fams3."', pers_indexnr='".$pers_indexnr."'
-					WHERE pers_id='".$person_db->pers_id."'";
+				$sql="UPDATE humo_persons SET pers_fams='".$fams3."' WHERE pers_id='".$person_db->pers_id."'";
 				$result=$dbh->query($sql);
 			}
 		}

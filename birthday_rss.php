@@ -111,7 +111,15 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 				$title = str_replace('&', '&amp;', $title);  // Los & teken niet toegestaan in RSS
 				$title.=$calculated_age.$death_date;
 
-				$url = CMS_ROOTPATH.'family.php?database='.$dataDb->tree_prefix.'&amp;id='.$record->pers_indexnr;
+				$pers_family='';
+				if ($record->pers_famc){ $pers_family=$record->pers_famc; }
+				if ($record->pers_fams){
+					$pers_fams=explode(';',$record->pers_fams);
+					$pers_family=$pers_fams[0];
+				}
+				$url = CMS_ROOTPATH.'family.php?tree_id='.$record->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$record->pers_gedcomnumber;
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				//$url=$person_cls->person_url2($record->pers_tree_id,$record->pers_famc,$record->pers_fams,$record->pers_gedcomnumber);
 
 				// show content
 				echo "<item>".$newline;

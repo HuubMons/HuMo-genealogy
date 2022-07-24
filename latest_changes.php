@@ -109,7 +109,10 @@ while (@$person=$person_result->fetch(PDO::FETCH_OBJ)){
 		echo '<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
 	}
 
-	echo '<a href="'.CMS_ROOTPATH.'family.php?tree_id='.$person->pers_tree_id.'&amp;id='.$person->pers_indexnr.'&amp;main_person='.$person->pers_gedcomnumber.'">';
+	// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+	$url=$person_cls->person_url2($person->pers_tree_id,$person->pers_famc,$person->pers_fams,$person->pers_gedcomnumber);
+	echo '<a href="'.$url.'">';
+
 	$name=$person_cls->person_name($person);
 	echo $name["standard_name"];
 	echo '</a>';

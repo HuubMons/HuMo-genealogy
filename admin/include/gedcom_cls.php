@@ -39,7 +39,7 @@ function process_person($person_array){
 
 	$pers_firstname=''; $pers_lastname=''; $pers_callname=''; $pers_name_text='';
 	$fams=""; $pers_famc="";
-	$pers_indexnr=""; $pers_place_index="";
+	$pers_place_index="";
 	$pers_birth_date=""; $pers_birth_time=""; $pers_birth_place=""; $pers_birth_text=""; $pers_stillborn='';
 	$pers_bapt_date=""; $pers_bapt_place=""; $pers_bapt_text=""; $pers_religion="";
 	$pers_death_date=""; $pers_death_time=""; $pers_death_place=""; $pers_death_text="";
@@ -185,7 +185,6 @@ function process_person($person_array){
 					// *** Normal parents ***
 					$pers_famc=substr($buffer,8,-1);
 					if($add_tree==true OR $reassign==true) { $pers_famc= $this->reassign_ged($pers_famc,'F'); }
-					if (!$pers_indexnr){$pers_indexnr=$pers_famc;}
 				}
 			}
 
@@ -212,7 +211,6 @@ function process_person($person_array){
 
 				if ($pers_famc==$famc){
 					$pers_famc='';
-					if ($famc==$pers_indexnr) $pers_indexnr='';
 				}
 			}
 
@@ -229,10 +227,6 @@ function process_person($person_array){
 			// In GEDCOM file (FAMS is default, for own family):
 			// Aldfaer: first FAMC then FAMS
 			// Haza   : first FAMS then FAMC
-
-			// Indexnr will be 1st family:
-			$first_family=explode(";",$fams);
-			$pers_indexnr=$first_family[0];
 		}
 
 		// *** Name ***
@@ -1573,7 +1567,6 @@ function process_person($person_array){
 	pers_tree_prefix='".$tree_prefix."',
 	pers_fams='".$this->text_process($fams)."',
 	pers_famc='".$this->text_process($pers_famc)."',
-	pers_indexnr='".$this->text_process($pers_indexnr)."',
 	pers_firstname='".$this->text_process($pers_firstname)."', pers_lastname='".$this->text_process($pers_lastname)."',
 	pers_callname='".$this->text_process($pers_callname)."',
 	pers_name_text='".$this->text_process($pers_name_text)."',
@@ -3231,6 +3224,9 @@ function process_source($source_array){
 	global $largest_source_ged, $largest_text_ged, $largest_repo_ged, $add_tree, $reassign;
 	global $processed;
 
+	global $connect_nr, $connect;
+	$connect_nr=0;
+
 	// *** Needed for picture function ***
 	global $event, $event_nr, $calculated_event_id, $calculated_connect_id;
 	$event_nr=0;
@@ -3416,7 +3412,7 @@ function process_source($source_array){
 			$processed=1;
 			if (substr($buffer,2,6)=='REPO @'){
 				$source["source_repo_gedcomnr"]=substr($buffer,8,-1);
-				if($add_tree==true OR $reassign==true) { $source["source_repo_gedcomnr"] = $this->reassign_ged($source["source_repo_gedcomnr"],'RP');  }
+				if($add_tree==true OR $reassign==true) { $source["source_repo_gedcomnr"] = $this->reassign_ged($source["source_repo_gedcomnr"],'RP'); }
 			}
 			else{
 				$source["source_repo_name"]=substr($buffer,7);
@@ -3536,6 +3532,53 @@ function process_source($source_array){
 		//$event=null;
 		//echo ' '.memory_get_usage().'@ ';
 	}
+
+
+	// *** NEW july 2021: Save connections in seperate table ***
+	if ($connect_nr>0){
+		$connect_order=0;
+		$check_connect=$connect['kind']['1'].$connect['sub_kind']['1'].$connect['connect_id']['1'];
+		for ($i=1; $i<=$connect_nr; $i++){
+			$connect_order++;
+			if ( $check_connect!=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i] ){
+				$connect_order=1;
+				$check_connect=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i];
+			}
+
+			// *** Process address order (because address and source by address) ***
+			//if ($connect['sub_kind'][$i]=='family_address'){
+			//	if (isset($connect['connect_order'][$i])) $connect_order=$connect['connect_order'][$i];
+			//}
+
+			if($add_tree==true OR $reassign==true) {
+				if ($connect['text'][$i]) $connect['text'][$i] = '@'.$this->reassign_ged($connect['text'][$i],'N').'@';
+			}
+
+			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
+				connect_tree_id='".$tree_id."',
+				connect_order='".$connect_order."',
+				connect_kind='".$connect['kind'][$i]."',
+				connect_sub_kind='".$connect['sub_kind'][$i]."',
+				connect_connect_id='".$this->text_process($connect['connect_id'][$i])."',
+				connect_source_id='".$this->text_process($connect['source_id'][$i])."',
+				connect_item_id='".$this->text_process($connect['item_id'][$i])."',
+				connect_text='".$this->text_process($connect['text'][$i])."',
+				connect_page='".$this->text_process($connect['page'][$i])."',
+				connect_role='".$this->text_process($connect['role'][$i])."',
+				connect_date='".$this->process_date($this->text_process($connect['date'][$i]))."',
+				connect_place='".$this->text_process($connect['place'][$i])."'
+				";
+			//echo $check_connect.' !! '.$gebeurtsql.'<br>';
+			$result=$dbh->query($gebeurtsql);
+		}
+
+		// *** Reset array to free memory ***
+		//echo '<br>====>>>>'.memory_get_usage().' RESET ';
+		unset ($event);
+		//$connect=null;
+		//echo ' '.memory_get_usage().'@ ';
+	}
+
 
 	// *** Save sources ***
 	//source_shared='".$source["source_shared"]."',
@@ -4754,6 +4797,8 @@ function process_sources($connect_kind2,$connect_sub_kind2,$connect_connect_id2,
  * if ($level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_birth', $buffer);
  * if ($level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_event_'.$calculated_event_id, $buffer);
  * if ($level[2]=='OBJE') $this->process_picture('family',$gedcomnumber,'picture_fam_marr_notice', $buffer);
+ * if ($level[3]=='OBJE' AND substr($buffer,7,1)!='@'){ $this->process_picture('connect',$calculated_connect_id,'picture', $buffer); }
+ * if ($level[1]=='OBJE') $this->process_picture('source',$source["id"],'picture', $buffer);
  */
 function process_picture($connect_kind, $connect_id, $picture, $buffer){
 	global $level, $processed;
@@ -4780,7 +4825,12 @@ function process_picture($connect_kind, $connect_id, $picture, $buffer){
 	// *** Picture by event ***
 	elseif (substr($picture,0,13)=='picture_event'){ $event_picture=true; $test_level='level3'; $test_number1='2'; $test_number2='3'; }
 
-	// *** Picture by standard source ***
+	// *** Picture by source ***
+	// 3 OBJE
+	// 4 TITL Multimedia link about this source
+	// 4 FORM jpeg
+	// 4 NOTE @N26@
+	// 4 FILE ImgFile.JPG
 	if ($connect_kind=='connect' AND $picture=='picture'){ $test_level='level4'; $test_number1='3'; $test_number2='4'; }
 
 	// *** External object/ image (could be multiple lines, they will be processed!) ***
@@ -4798,6 +4848,10 @@ function process_picture($connect_kind, $connect_id, $picture, $buffer){
 			$connect['kind'][$connect_nr]='family';
 			$connect['sub_kind'][$connect_nr]='fam_object';
 		}
+		elseif ($connect_kind=='source'){
+			$connect['kind'][$connect_nr]='source';
+			$connect['sub_kind'][$connect_nr]='source_object';
+		}
 
 		$connect['connect_id'][$connect_nr]=$connect_id;
 		$connect['text'][$connect_nr]='';
@@ -4806,6 +4860,7 @@ function process_picture($connect_kind, $connect_id, $picture, $buffer){
 		$connect['item_id'][$connect_nr]='';
 		//$connect['text'][$connect_nr]='';
 		if (substr($buffer,7,1)=='@'){
+// *** Saved as source_id in database, but connect_item_id is probably better... ***
 			$connect['source_id'][$connect_nr]=substr($buffer,8,-1);
 			if($add_tree==true OR $reassign==true) { $connect['source_id'][$connect_nr]= $this->reassign_ged(substr($buffer,8,-1),'O'); }
 		}

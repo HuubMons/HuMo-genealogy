@@ -32,7 +32,12 @@ function witness($gedcomnr, $event, $field='person'){
 					// *** Connected witness ***
 					$witness_nameDb = $db_functions->get_person(substr($witnessDb->event_event,1,-1));
 					$name=$witness_cls->person_name($witness_nameDb);
-					$text.='<a href="family.php?id='.$witness_nameDb->pers_indexnr.'&amp;main_person='.$witness_nameDb->pers_gedcomnumber.'">'.rtrim($name["standard_name"]).'</a>';
+
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$witness_cls->person_url2($witness_nameDb->pers_tree_id,$witness_nameDb->pers_famc,$witness_nameDb->pers_fams,$witness_nameDb->pers_gedcomnumber);
+
+					$text.='<a href="'.$url.'">'.rtrim($name["standard_name"]).'</a>';
+ 
 				}
 				else{
 					// *** Witness as text ***
@@ -127,7 +132,10 @@ function witness_by_events($gedcomnr){
 					$witness_nameDb = $db_functions->get_person($witnessDb->event_connect_id);
 					$name=$witness_cls->person_name($witness_nameDb);
 
-					$text.='<a href="family.php?id='.$witness_nameDb->pers_indexnr.'&amp;main_person='.$witness_nameDb->pers_gedcomnumber.'">'.rtrim($name["standard_name"]).'</a>';
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$witness_cls->person_url2($witness_nameDb->pers_tree_id,$witness_nameDb->pers_famc,$witness_nameDb->pers_fams,$witness_nameDb->pers_gedcomnumber);
+
+					$text.='<a href="'.$url.'">'.rtrim($name["standard_name"]).'</a>';
 				}
 
 			}

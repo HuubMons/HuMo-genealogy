@@ -44,18 +44,16 @@ foreach($datasql as $dataDb){
 			}
 			else{
 
-				$person_url=$personDb->pers_indexnr;
-				if ($person_url==''){
-					if($personDb->pers_famc){
-						// *** Person without own family ***
-						$person_url=$personDb->pers_famc;
-					}
-					else{
-						// *** Person without parents or own family ***	
-						$person_url='&main_person='.$personDb->pers_gedcomnumber;
-					}
+				$person_url='';
+				if ($personDb->pers_famc){ $person_url=$personDb->pers_famc; }
+				if ($personDb->pers_fams){
+					$pers_fams=explode(';',$personDb->pers_fams);
+					$person_url=$pers_fams[0];
 				}
-
+				if ($person_url==''){
+					// *** Person without parents or own family ***	
+					$person_url='&main_person='.$personDb->pers_gedcomnumber;
+				}
 				$text=$person_url.'&database='.$dataDb->tree_prefix.'|';
 
 				//$pers_lastname=strtoupper(str_replace("_", " ", $personDb->pers_prefix));

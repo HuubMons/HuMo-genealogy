@@ -2275,23 +2275,13 @@ function merge_them($left,$right,$mode) {
 			// left has no fams or fams with different spouses than right -> add fams to left
 
 			// add right's F to left's fams
-			$set_indexnr = "";
 			if($result1Db->pers_fams) {
 				$fam = $result1Db->pers_fams.";".$result2Db->pers_fams;
 			}
 			else {
 				$fam = $result2Db->pers_fams;
-				// since left didn't have a fams, pers_indexnr is still set to famc. We have to change that to the first fams from right
-				if(strpos($result2Db->pers_fams,";") !== false) { // right has more than one family: get the first of those
-					$fams_arr = explode(";",$result2Db->pers_fams);
-					$first_fam = $fams_arr[0];
-				}
-				else {
-					$first_fam = $result2Db->pers_fams;
-				}
- 				$set_indexnr = ", pers_indexnr = '".$first_fam."' ";
 			}
-			$qry = "UPDATE humo_persons SET pers_fams='".$fam."'".$set_indexnr."
+			$qry = "UPDATE humo_persons SET pers_fams='".$fam."'
 				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$result1Db->pers_gedcomnumber."'";
 			$dbh->query($qry);
 
@@ -2420,12 +2410,6 @@ function merge_them($left,$right,$mode) {
 				$qry = "UPDATE humo_persons SET pers_famc ='".$result2Db->pers_famc."'
 					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$result1Db->pers_gedcomnumber."'";
 				$dbh->query($qry);
-				if(!$result1Db->pers_fams AND !$result2Db->pers_fams) {
-					// neither has fams - the pers_indexnr has to be set to right person's famc which is now left's famc too
-					$qry = "UPDATE humo_persons SET pers_indexnr ='".$result2Db->pers_famc."'
-						WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$result1Db->pers_gedcomnumber."'";
-					$dbh->query($qry);
-				}
 			}
 		}
 		elseif ($result1Db->pers_famc AND $result1Db->pers_famc == $result2Db->pers_famc) {

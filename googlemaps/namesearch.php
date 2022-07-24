@@ -181,7 +181,9 @@ function mapbirthplace ($place) {
 			$privacy_man=$man_cls->privacy;
 			$name=$man_cls->person_name($maplistDb);
 			if ($name["show_name"]==true){
-				echo '<a href=family.php?database='.safe_text_db($_SESSION['tree_prefix']).'&amp;id='.$maplistDb->pers_indexnr.'&amp;main_person='.$maplistDb->pers_gedcomnumber.' target="blank">';
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$url=$man_cls->person_url2($maplistDb->pers_tree_id,$maplistDb->pers_famc,$maplistDb->pers_fams,$maplistDb->pers_gedcomnumber);
+				echo '<a href='.$url.' target="blank">';
 			}
 			if($_SESSION['type_birth']==1) {
 				echo $name["index_name"];

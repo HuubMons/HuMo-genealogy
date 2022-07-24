@@ -107,7 +107,6 @@ function topline(){
 				}
 				$url_add='&amp;';
 			}
-			//$settings_url=$db_functions->person_url($tree_id,$family_id,$main_person);
 
 			$text.= '<a href="'.$settings_url.'" style="display:inline" ';
 			$text.= 'onmouseover="mopen(event,\'help_menu\',0,0)"';
@@ -782,9 +781,20 @@ else{
 					$fam_counter_var = $fam_counter;
 					$fam_gednr_var = $id;
 					$old_stat_prep->execute();
-					// *** Extended statistics, first check if table exists ***
-					@$statistics = $dbh->query("SELECT * FROM humo_stat_date LIMIT 0,1");
-					if ($statistics AND $descendant_report==false AND $user['group_statistics']=='j'){
+
+					// *** Extended statistics ***
+					if ($descendant_report==false AND $user['group_statistics']=='j'){
+
+// *** Temporary update script, will be added in database update later ***
+$check_qry= "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.columns
+WHERE table_name = 'humo_stat_date'  AND COLUMN_NAME = 'stat_ip_address'";
+$check_result = $dbh->query($check_qry);
+$checkDb=$check_result->fetch(PDO::FETCH_OBJ);
+if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
+	$update_sql="ALTER TABLE `humo_stat_date` CHANGE `stat_ip_address` `stat_ip_address` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;";
+	$result = $dbh->query($update_sql);
+}
+
 						$stat_easy_id=$familyDb->fam_tree_id.'-'.$familyDb->fam_gedcomnumber.'-'.$familyDb->fam_man.'-'.$familyDb->fam_woman;
 						$update_sql="INSERT INTO humo_stat_date SET
 							stat_easy_id='".$stat_easy_id."',
@@ -796,6 +806,7 @@ else{
 							stat_gedcom_woman='".$familyDb->fam_woman."',
 							stat_date_stat='".date("Y-m-d H:i")."',
 							stat_date_linux='".time()."'";
+//echo $update_sql.'<br>';
 						$result = $dbh->query($update_sql);
 					}
 				}
@@ -2280,9 +2291,6 @@ if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
 			echo 'http://'.$_SERVER['SERVER_NAME'].'/family.php?tree_id='.$tree_id.'&amp;id='.$family_id.'&amp;main_person='.$main_person;
 		}
 
-		// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-		//$url=$person_cls->person_url($tree_id,$family_id,$main_person);
-
 		echo ' : '.__('accessed').' '.date("d F Y");
 		echo ')';
 
@@ -2356,12 +2364,14 @@ if($screen_mode=='') {
 			if ($change_main_person==true){
 				$name = $woman_cls->person_name($person_womanDb);
 
-				$start_url=$woman_cls->person_url($tree_id,$family_id,$main_person);
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$start_url=$woman_cls->person_url2($person_womanDb->pers_tree_id,$person_womanDb->pers_famc,$person_womanDb->pers_fams,$person_womanDb->pers_gedcomnumber);
 			}
 			else{
 				$name = $man_cls->person_name($person_manDb);
 
-				$start_url=$man_cls->person_url($tree_id,$family_id,$main_person);
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$start_url=$man_cls->person_url2($person_manDb->pers_tree_id,$person_manDb->pers_famc,$person_manDb->pers_fams,$person_manDb->pers_gedcomnumber);
 			}
 
 			if (isset($_POST['send_mail'])){

@@ -790,8 +790,9 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						$extra_popup_text.= '<a href="index.php?option=com_humo-gen&task=family&id='.$genarray[$w]["spfams"].'&amp;main_person='.$genarray[$w]["spgednr"].'">'.'<strong>'.$name["standard_name"].'</strong></a>';
 					}
 					else {
-						// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-						$url=$woman_cls->person_url($tree_id,$genarray[$w]["spfams"],$genarray[$w]["spgednr"]);
+						// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+						$url=$woman_cls->person_url2($woman->pers_tree_id,$woman->pers_famc,$woman->pers_fams,$woman->pers_gedcomnumber);
+
 						$extra_popup_text.= '<a href="'.$url.'">'.'<strong>'.$name["standard_name"].'</strong></a>';
 					}
 				}
