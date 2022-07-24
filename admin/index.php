@@ -145,7 +145,7 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	// *** Check HuMo-genealogy database status ***
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])){
-		if ($humo_option["update_status"]<13){ $page='update'; $show_menu_left=false; }
+		if ($humo_option["update_status"]<14){ $page='update'; $show_menu_left=false; }
 	}
 
 	if (isset($_GET['page'])

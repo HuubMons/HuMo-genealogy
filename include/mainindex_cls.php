@@ -302,7 +302,7 @@ function owner(){
 	global $language, $dataDb;
 	$tree_owner='';
 
-	if ($dataDb->tree_owner){
+	if (isset($dataDb->tree_owner) AND $dataDb->tree_owner){
 		$tree_owner=__('Owner family tree:').' ';
 		// *** Show owner e-mail address ***
 		if ($dataDb->tree_email){

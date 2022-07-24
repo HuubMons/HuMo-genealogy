@@ -194,9 +194,26 @@ function person_name($personDb,$show_name_texts=false){
 	$db_functions->set_tree_id($pers_tree_id);
 
 	$stillborn=''; $nobility=''; $lordship='';
-	$title_before=''; $title_between=''; $title_after='';
+	$nickname=''; $title_before=''; $title_between=''; $title_after='';
 
 	if (isset($personDb->pers_gedcomnumber) AND $personDb->pers_gedcomnumber){
+
+		// *** Show nicknames (shown as "Nickname") ***
+		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'name');
+		foreach($name_qry as $nameDb){
+			if ($nameDb->event_gedcom=='NICK'){
+				if ($nickname) $nickname.=', ';
+				$nickname.=$nameDb->event_event;
+
+				// *** If there is a date or text, an extra line is shown with these items!!!! ***
+				//if ($show_name_texts==true AND $nameDb->event_text){
+				//	if ($nickname) $nickname.=' ';
+				//	$nickname.=process_text($nameDb->event_text);
+				//}
+			}
+		}
+		unset($name_qry);
+
 		// *** Aldfaer: nobility (predikaat) by name ***
 		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'nobility');
 		foreach($name_qry as $nameDb){
@@ -206,6 +223,19 @@ function person_name($personDb,$show_name_texts=false){
 			if ($show_name_texts==true AND $nameDb->event_text){
 				if ($nobility) $nobility.=' ';
 				$nobility.=process_text($nameDb->event_text);
+			}
+		}
+		unset($name_qry);
+
+		// *** Aldfaer: lordship (heerlijkheid) after name ***
+		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'lordship');
+		foreach($name_qry as $nameDb){
+			if ($lordship) $lordship.=', ';
+			$lordship.=$nameDb->event_event;
+
+			if ($show_name_texts==true AND $nameDb->event_text){
+				if ($lordship) $lordship.=' ';
+				$lordship.=process_text($nameDb->event_text);
 			}
 		}
 		unset($name_qry);
@@ -318,19 +348,6 @@ function person_name($personDb,$show_name_texts=false){
 			else $stillborn.=__('stillborn child');
 		}
 
-		// *** Aldfaer: lordship (heerlijkheid) after name ***
-		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'lordship');
-		foreach($name_qry as $nameDb){
-			if ($lordship) $lordship.=', ';
-			$lordship.=$nameDb->event_event;
-
-			if ($show_name_texts==true AND $nameDb->event_text){
-				if ($lordship) $lordship.=' ';
-				$lordship.=process_text($nameDb->event_text);
-			}
-		}
-		unset($name_qry);
-
 		// *** Re-calculate privacy filter for witness names and parents ***
 		$privacy=$this->set_privacy($personDb);
 
@@ -351,7 +368,10 @@ function person_name($personDb,$show_name_texts=false){
 			foreach ($rufname_qry as $rufnameDb){
 				if($rufnameDb->event_gedcom == "_RUFN") {
 					//$pers_firstname = str_ireplace($rufnameDb->event_event,'<u>'.$rufnameDb->event_event.'</u>',$pers_firstname);
-					$pers_firstname .= '&quot;'.$rufnameDb->event_event.'&quot;';
+					//$pers_firstname .= '&quot;'.$rufnameDb->event_event.'&quot;';
+
+					if ($pers_firstname) $pers_firstname.=' ';
+					$pers_firstname.= '<u>'.$rufnameDb->event_event.'</u>'; // *** Show Rufname underlined... ***
 
 					if ($show_name_texts==true AND $rufnameDb->event_text){
 						if ($pers_firstname) $pers_firstname.=' ';
@@ -461,9 +481,11 @@ function person_name($personDb,$show_name_texts=false){
 				}
 
 				// *** Callname shown as "Huub" ***
-				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+				//if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+				if ($nickname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
 					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
-					$name_array["standard_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
+					//$name_array["standard_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
+					$name_array["standard_name"].= '&quot;'.$nickname.'&quot;';
 				}
 
 				if ($personDb->pers_lastname){
@@ -502,9 +524,11 @@ function person_name($personDb,$show_name_texts=false){
 				$name_array["standard_name"].=$title_between;
 
 				// *** Callname shown as "Huub" ***
-				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+				//if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+				if ($nickname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
 					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
-					$name_array["standard_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
+					//$name_array["standard_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
+					$name_array["standard_name"].= '&quot;'.$nickname.'&quot;';
 				}
 			}
 
@@ -556,9 +580,11 @@ function person_name($personDb,$show_name_texts=false){
 			}
 
 			// *** Callname shown as "Huub" ***
-			if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+			//if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+			if ($nickname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
 				if ($name_array["index_name"]) $name_array["index_name"].=' ';
-				$name_array["index_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
+				//$name_array["index_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
+				$name_array["index_name"].= '&quot;'.$nickname.'&quot;';
 			}
 			$name_array["index_name"].=$prefix2;
 
@@ -581,9 +607,11 @@ function person_name($personDb,$show_name_texts=false){
 			}
 
 			// *** Callname shown as "Huub" ***
-			if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+			//if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+			if ($nickname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
 				if ($name_array["index_name_extended"]) $name_array["index_name_extended"].=' ';
-				$name_array["index_name_extended"].= '&quot;'.$personDb->pers_callname.'&quot;';
+				//$name_array["index_name_extended"].= '&quot;'.$personDb->pers_callname.'&quot;';
+				$name_array["index_name_extended"].= '&quot;'.$nickname.'&quot;';
 			}
 
 			if ($title_after){
@@ -603,7 +631,9 @@ function person_name($personDb,$show_name_texts=false){
 
 			// *** If a special name is found in the results (event table), show it **
 			if (isset($personDb->event_event) AND $personDb->event_event AND $personDb->event_kind=='name'){
-				$name_array["index_name_extended"].=' ('.$personDb->event_event.')';
+				// *** Only shown special name if the name isn't shown as nickname: "Huub" ***
+				if ($personDb->event_event!=$nickname)
+					$name_array["index_name_extended"].=' ('.$personDb->event_event.')';
 			}
 
 			$name_array["index_name_extended"].=$prefix2;
@@ -777,8 +807,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 			//';
 
 			// *** Added style="z-index:40;" for ancestor and descendant report ***
+			//$text.= '<div style="z-index:40; border:1px solid #999999;" id="m1'.$random_nr.$personDb->pers_gedcomnumber.
+			//	'" class="sddm_fixed person_popup" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			$text.= '<div style="z-index:40; border:1px solid #999999;" id="m1'.$random_nr.$personDb->pers_gedcomnumber.
-				'" class="sddm_fixed person_popup" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				'" class="sddm_fixed" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
 				$name=$this->person_name($personDb);
 				$text.=$dirmark2.'<span style="font-size:13px; font-weight:bold; color:blue;">'.$name["standard_name"].$name["colour_mark"].'</span><br>';
@@ -1109,15 +1141,6 @@ function name_extended($person_kind,$show_name_texts=false){
 			$standard_name.= $dirmark1.' ['.$personDb->pers_gedcomnumber.']';
 		}
 
-		// *** Check privacy filter for callname ***
-		//if (($privacy AND $user['group_filter_name']=='n')
-		//	OR ($user["group_pers_hide_totally_act"]=='j' AND strpos($personDb->pers_own_code,$user["group_pers_hide_totally"])>0)){
-		//	//
-		//}
-		//else{
-		//	if ($personDb->pers_callname) $standard_name.= ', '.__('Nickname').': '.$personDb->pers_callname;
-		//}
-
 		// *** No links if gen_protection is enabled ***
 		if ($user["group_gen_protection"]=='j'){ $person_kind=''; }
 
@@ -1327,6 +1350,8 @@ function name_extended($person_kind,$show_name_texts=false){
 		if ($person_kind=='parent1' OR $person_kind=='parent2'){
 			$famc_adoptive_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'adoption_by_person');
 			foreach ($famc_adoptive_qry as $famc_adoptiveDb){
+				if (!isset($templ_name["name_parents"])) $templ_name["name_parents"]='';
+
 				if($famc_adoptiveDb->event_gedcom=='steph'){
 					$templ_name["name_parents"].=' '.ucfirst(__('stepparent')).': ';
 					$text_parents.=' '.ucfirst(__('stepparent')).': ';
@@ -1361,12 +1386,14 @@ function name_extended($person_kind,$show_name_texts=false){
 
 				//if (isset($fatherDb->pers_famc) OR isset($fatherDb->pers_fams)){
 					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-					$url=$this->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
+					if (isset($fatherDb->pers_tree_id))
+						$url=$this->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
 				//}
 
 				// *** Add link ***
 				//if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
-				if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
+				if (isset($url))
+					if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
 
 				//$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
 				$text_parents.='<span class="parents">'.$text.' </span>';
@@ -1565,9 +1592,23 @@ function person_data($person_kind, $id){
 				$eventnr++;
 				$text='';
 				if ($nameDb->event_gedcom=='_AKAN') $text.=__('Also known as').': ';
-				// *** MyHeritage Family Tree Builder. Only show 1st "Also know as" text ***
-				if ($previous_event_gedcom!='_AKA' AND $nameDb->event_gedcom=='_AKA') $text.=__('Also known as').':';
-				if ($nameDb->event_gedcom=='NICK') $text.=__('Nickname').': ';
+
+				// *** MyHeritage Family Tree Builder. Only show first "Also known as" text ***
+				if ($nameDb->event_gedcom=='_AKA' AND $previous_event_gedcom!='_AKA') $text.=__('Also known as').': ';
+
+				// *** December 2021: Nickname is allready shown as "Nickname".
+				//		Only show nickname here if there are extra items like date (place) and text. ***
+				if ($nameDb->event_gedcom=='NICK'){
+					if ($nameDb->event_date OR $nameDb->event_text){
+						$text.=__('Nickname').': ';
+					}
+					else{
+						// *** There is no date or text, skip NICK ***
+						$eventnr--;
+						continue;
+					}
+				}
+
 				if ($nameDb->event_gedcom=='_ALIA') $text.=__('alias name').': ';	// For Pro-Gen
 				if ($nameDb->event_gedcom=='_SHON') $text.=__('Short name (for reports)').': ';
 				if ($nameDb->event_gedcom=='_ADPN') $text.=__('Adopted name').': ';
@@ -1585,7 +1626,6 @@ function person_data($person_kind, $id){
 				if ($nameDb->event_gedcom=='_RELN') $text.=__('Religious name').': ';
 				if ($nameDb->event_gedcom=='_OTHN') $text.=__('Other name').': ';
 				// *** _RUFN is shown by name ***
-				//if ($nameDb->event_gedcom=='_RUFN') { } // don't do anything
 				if ($nameDb->event_gedcom=='_RUFN'){
 					$eventnr--;
 					continue; // *** Skip __RUFN in events ***

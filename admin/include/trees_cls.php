@@ -1615,7 +1615,7 @@ function show_pair($left_id,$right_id,$mode) {
 
 	$this->show_regular($leftDb->pers_lastname,$rightDb->pers_lastname,__('last name'),'l_name');
 	$this->show_regular($leftDb->pers_firstname,$rightDb->pers_firstname,__('first name'),'f_name');
-	$this->show_regular($leftDb->pers_callname,$rightDb->pers_callname,__('Nickname'),'c_name');
+	//$this->show_regular($leftDb->pers_callname,$rightDb->pers_callname,__('Nickname'),'c_name');
 	$this->show_regular($leftDb->pers_patronym,$rightDb->pers_patronym,__('patronym'),'patr');
 	$this->show_regular($leftDb->pers_birth_date,$rightDb->pers_birth_date,__('birth date'),'b_date');
 	$this->show_regular($leftDb->pers_birth_place,$rightDb->pers_birth_place,__('birth place'),'b_place');
@@ -2495,7 +2495,7 @@ function merge_them($left,$right,$mode) {
 		if($result1Db->pers_own_code=='' AND $result2Db->pers_own_code!='') { $code='2'; }
 		if($result1Db->pers_stillborn=='' AND $result2Db->pers_stillborn!='') { $stborn='2'; }
 		if($result1Db->pers_alive=='' AND $result2Db->pers_alive!='') { $alive='2'; }
-		if($result1Db->pers_callname=='' AND $result2Db->pers_callname!='') { $c_name='2'; }
+		//if($result1Db->pers_callname=='' AND $result2Db->pers_callname!='') { $c_name='2'; }
 		if($result1Db->pers_patronym=='' AND $result2Db->pers_patronym!='') { $patr='2'; }
 		if($result1Db->pers_name_text=='' AND $result2Db->pers_name_text!='') { $n_text='2'; }
 		if($result1Db->pers_text=='' AND $result2Db->pers_text!='') { $text='2'; }
@@ -2522,7 +2522,7 @@ function merge_them($left,$right,$mode) {
 	$this->check_regular('code',$code,'pers_own_code');
 	$this->check_regular('stborn',$stborn,'pers_stillborn');
 	$this->check_regular('alive',$alive,'pers_alive');
-	$this->check_regular('c_name',$c_name,'pers_callname');
+	//$this->check_regular('c_name',$c_name,'pers_callname');
 	$this->check_regular('patr',$patr,'pers_patronym');
 	$this->check_regular_text('n_text',$n_text,'pers_name_text');
 	$this->check_regular_text('text',$text,'pers_text');
@@ -2589,6 +2589,7 @@ function merge_them($left,$right,$mode) {
 	$dbh->query($sql);
 
 	// CLEANUP: delete this person's I from any other tables that refer to this person
+	// *** 2021: address_connect_xxxx is no longer in use. Will be removed later ***
 	$qry = "DELETE FROM humo_addresses
 		WHERE address_tree_id='".$tree_id."'
 		AND address_connect_sub_kind='person'

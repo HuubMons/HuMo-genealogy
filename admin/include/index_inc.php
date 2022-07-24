@@ -286,6 +286,73 @@ if ($install_status==true){
 		echo ' <a href="index.php?page=statistics">'.__('If needed remove old statistics.').'</a>';
 	echo '</td></tr>';
 
+	// *** Show size of database and optimize option ***
+	$size=0;
+	$sizeqry = $dbh->query('SHOW TABLE STATUS');
+	while($sizeDb=$sizeqry->fetch(PDO::FETCH_OBJ)){
+		if (is_numeric($sizeDb->Data_length)) $size += $sizeDb->Data_length;
+		if (is_numeric($sizeDb->Index_length)) $size += $sizeDb->Index_length;
+	}
+	$decimals = 2;
+	$mbytes = number_format($size/(1024*1024),$decimals);
+	echo '<tr><td class="line_item">';
+		echo __('Size of database').'</td><td class="line_ok">';
+
+		if (isset($_GET['optimize'])){
+			echo '<b>'.__('This may take some time. Please wait...').'</b><br>';
+			echo __('Optimize table...').' humo_persons<br>';
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_persons";
+			@$result=$dbh->query($sql);
+
+			echo __('Optimize table...').' humo_families<br>';
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_families";
+			@$result=$dbh->query($sql);
+
+			echo __('Optimize table...').' humo_unprocessed_tags<br>';
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_unprocessed_tags";
+			@$result=$dbh->query($sql);
+
+			echo __('Optimize table...').' humo_settings<br>';
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_settings";
+			@$result=$dbh->query($sql);
+
+			echo __('Optimize table...').' humo_repositories<br>';
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_repositories";
+			@$result=$dbh->query($sql);
+
+			echo __('Optimize table...').' humo_sources<br>';
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_sources";
+			@$result=$dbh->query($sql);
+
+			echo __('Optimize table...').' humo_texts<br>';
+			$sql="OPTIMIZE TABLE humo_texts";
+			@$result=$dbh->query($sql);
+
+			echo __('Optimize table...').' humo_connections<br>';
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_connections";
+			@$result=$dbh->query($sql);
+
+			echo __('Optimize table...').' humo_addresses<br>';
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_addresses";
+			@$result=$dbh->query($sql);
+
+			echo __('Optimize table...').' humo_events<br>';
+			ob_flush(); flush(); // IE
+			$sql="OPTIMIZE TABLE humo_events";
+			@$result=$dbh->query($sql);
+		}
+
+		echo $mbytes.' Mb <a href="index.php?optimize=1">'.__('Optimize database.').'</a>';
+	echo '</td></tr>';
+
 	echo '<tr class="table_header"><th colspan="2">';
 	printf(__('%s security items'),'HuMo-genealogy');
 	echo '</th></tr>';

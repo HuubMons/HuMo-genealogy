@@ -3531,8 +3531,8 @@ function update_v5_7(){
 
 	}
 
-		// *** Update "update_status" to number 13 ***
-		$result = $dbh->query("UPDATE humo_settings SET setting_value='13' WHERE setting_variable='update_status'");
+	// *** Update "update_status" to number 13 ***
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='13' WHERE setting_variable='update_status'");
 
 	// *** Commit data in database ***
 	//$dbh->commit();
@@ -3543,6 +3543,84 @@ function update_v5_7(){
 }
 
 
+function update_v5_9(){
+	// ************************************
+	// *** Update procedure version 5.9 ***
+	// ************************************
+
+	global $dbh, $db_functions;
+
+	// *** Show update status ***
+	echo '<tr><td>HuMo-genealogy update V5.9</td>';
+	echo '<td style="background-color:#00FF00">'.__('Update in progress...').' <div id="information v5_9" style="display: inline; font-weight:bold;"></div></td></tr>';
+	ob_flush(); flush(); // IE
+
+	// *** Add index to humo_addresses ***
+	$index_check = $dbh->query("SHOW KEYS FROM humo_addresses WHERE Key_name='address_gedcomnr'");
+	if ($index_check->rowCount() ==0){
+		$update_sql="ALTER TABLE `humo_addresses` ADD INDEX(`address_gedcomnr`);";
+		$result = $dbh->query($update_sql);
+	}
+
+	// *** Update for IPv6 ***
+	$check_qry= "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.columns
+		WHERE table_name = 'humo_stat_date'  AND COLUMN_NAME = 'stat_ip_address'";
+	$check_result = $dbh->query($check_qry);
+	$checkDb=$check_result->fetch(PDO::FETCH_OBJ);
+	if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
+		$update_sql="ALTER TABLE `humo_stat_date`
+			CHANGE `stat_ip_address` `stat_ip_address` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;";
+		$result = $dbh->query($update_sql);
+	}
+
+	// *** Add connect_new_user and connect_changed_user ***
+	$sql="ALTER TABLE humo_connections
+		ADD connect_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER connect_quality;";
+	$result=$dbh->query($sql);
+
+	$sql="ALTER TABLE humo_connections
+		ADD connect_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER connect_new_time;";
+	$result=$dbh->query($sql);
+
+	// *** Add text_new_user and text_changed_user ***
+	$sql="ALTER TABLE humo_texts
+		ADD text_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER text_quality;";
+	$result=$dbh->query($sql);
+
+	$sql="ALTER TABLE humo_texts
+		ADD text_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL AFTER text_new_time;";
+	$result=$dbh->query($sql);
+
+	// *** Move callname to event table ***
+	// *** Batch processing ***
+	//$dbh->beginTransaction();
+		$sql_get=$dbh->query("SELECT pers_gedcomnumber,pers_tree_id,pers_callname FROM humo_persons WHERE pers_callname LIKE '_%'");
+		while ($getDb=$sql_get->fetch(PDO::FETCH_OBJ)){
+			$sql_put="INSERT INTO humo_events SET
+			event_tree_id='".$getDb->pers_tree_id."',
+			event_order='1',
+			event_connect_kind='person',
+			event_connect_id='".$getDb->pers_gedcomnumber."',
+			event_kind='name',
+			event_event='".safe_text_db($getDb->pers_callname)."',
+			event_gedcom='NICK'";
+//echo $sql_put.'<br>';
+			$dbh->query($sql_put);
+			//$pers_id=$dbh->lastInsertId();
+		}
+	// *** Commit data in database ***
+	//$dbh->commit();
+
+	// *** Update "update_status" to number 14 ***
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='14' WHERE setting_variable='update_status'");
+
+	// *** Commit data in database ***
+	//$dbh->commit();
+
+	// *** Show status of database update ***
+	echo '<script type="text/javascript">document.getElementById("information v5_9").innerHTML="Database updated!";</script>';
+	ob_flush(); flush(); // IE
+}
 
 
 /*	*** UPDATE REMARKS ***

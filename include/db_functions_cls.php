@@ -120,7 +120,7 @@ function __construct() {
 			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
 		$this->query['get_family'] = $dbh->prepare( $sql );
 
-		$sql = "SELECT fam_man, fam_woman FROM humo_families
+		$sql = "SELECT fam_man, fam_woman, fam_children FROM humo_families
 			WHERE fam_tree_id=:fam_tree_id AND fam_gedcomnumber=:fam_gedcomnumber";
 		$this->query['get_family_man_woman'] = $dbh->prepare( $sql );
 

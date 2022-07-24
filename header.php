@@ -551,6 +551,13 @@ else{
 		$tree_id=$dataDb->tree_id;
 	}
 
+	// *** Guest or user has no permission to see any family tree ***
+	if (!isset($tree_id)){
+		$_SESSION['tree_prefix']='';
+		$_SESSION['tree_id']='';
+		$tree_id='';
+	}
+
 	// *** Set variabele for queries ***
 	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 

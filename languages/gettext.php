@@ -37,6 +37,7 @@ class StringReader {
 	}
 
 	function read($bytes) {
+		if (!isset($this->_pos)) $this->_pos=0; // *** Huub: added for PHP 8.1 ***
 		$data = substr($this->_str, $this->_pos, $bytes);
 		$this->_pos += $bytes;
 		if (strlen($this->_str)<$this->_pos)
@@ -201,7 +202,9 @@ class gettext_reader {
 
 		$this->STREAM = $Reader;
 		$magic = $this->readint();
-		if ($magic == ($MAGIC1 & 0xFFFFFFFF) || $magic == ($MAGIC3 & 0xFFFFFFFF)) { // to make sure it works for 64-bit platforms
+		//if ($magic == ($MAGIC1 & 0xFFFFFFFF) || $magic == ($MAGIC3 & 0xFFFFFFFF)) { // to make sure it works for 64-bit platforms
+		// *** Huub: changed for PHP 8.1 ***
+		if ($magic == ($MAGIC1) || $magic == ($MAGIC3)) {
 			$this->BYTEORDER = 0;
 		} elseif ($magic == ($MAGIC2 & 0xFFFFFFFF)) {
 			$this->BYTEORDER = 1;

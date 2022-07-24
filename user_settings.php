@@ -64,6 +64,7 @@ if (isset($_POST['send_mail'])){
 		//@$mail = mail($register_address, $register_subject, $register_message, $headers);
 
 		include_once ('include/mail.php');
+
 		// *** Set who the message is to be sent from ***
 		$mail->setFrom($_POST['register_mail'], $userDb->user_name);
 		// *** Set who the message is to be sent to ***

@@ -784,17 +784,6 @@ else{
 
 					// *** Extended statistics ***
 					if ($descendant_report==false AND $user['group_statistics']=='j'){
-
-// *** Temporary update script, will be added in database update later ***
-$check_qry= "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.columns
-WHERE table_name = 'humo_stat_date'  AND COLUMN_NAME = 'stat_ip_address'";
-$check_result = $dbh->query($check_qry);
-$checkDb=$check_result->fetch(PDO::FETCH_OBJ);
-if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
-	$update_sql="ALTER TABLE `humo_stat_date` CHANGE `stat_ip_address` `stat_ip_address` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;";
-	$result = $dbh->query($update_sql);
-}
-
 						$stat_easy_id=$familyDb->fam_tree_id.'-'.$familyDb->fam_gedcomnumber.'-'.$familyDb->fam_man.'-'.$familyDb->fam_woman;
 						$update_sql="INSERT INTO humo_stat_date SET
 							stat_easy_id='".$stat_easy_id."',
@@ -1957,7 +1946,7 @@ if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
 				if ($parent1Db->pers_birth_date OR $parent1Db->pers_birth_place){
 					echo ', '.__('born').' '.date_place($parent1Db->pers_birth_date,$parent1Db->pers_birth_place);
 				}
-				elseif ($parent1Db->pers_bapt_date OR $arent1Db->pers_bapt_place){
+				elseif ($parent1Db->pers_bapt_date OR $parent1Db->pers_bapt_place){
 					echo ', '.__('baptised').' '.date_place($parent1Db->pers_bapt_date,$parent1Db->pers_bapt_place);
 				}
 			}
@@ -2057,6 +2046,7 @@ if($screen_mode=='') {
 				'&amp;id='.$family_id.'&amp;main_person='.$main_person.'">'.safe_text_db($name["standard_name"]).'</a>';
 
 				include_once ('include/mail.php');
+
 				// *** Set who the message is to be sent from ***
 				$mail->setFrom($userDb->user_mail, $userDb->user_name);
 				// *** Set who the message is to be sent to ***
