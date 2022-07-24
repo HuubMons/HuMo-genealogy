@@ -1518,6 +1518,7 @@ function adresses_export($connect_kind,$connect_sub_kind,$connect_connect_id){
 	$connect_sql = $db_functions->get_connections_connect_id($connect_kind,$connect_sub_kind,$connect_connect_id);
 	foreach ($connect_sql as $connectDb){
 		$addressDb = $db_functions->get_address($connectDb->connect_item_id);
+		// *** Next items are only exported if Address is shared ***
 		if ($addressDb->address_shared=='1'){
 			// *** Shared address ***
 			// 1 RESI @R210@
@@ -1526,6 +1527,15 @@ function adresses_export($connect_kind,$connect_sub_kind,$connect_connect_id){
 			$buffer.='1 RESI @'.$connectDb->connect_item_id."@\r\n";
 			if ($connectDb->connect_date) $buffer.='2 DATE '.$connectDb->connect_date."\r\n";
 			if ($connectDb->connect_role){ $buffer.='2 ROLE '.$connectDb->connect_role."\r\n"; }
+
+			// *** Extra text by address ***
+			if ($connectDb->connect_text){
+				// 2 DATA
+				// 3 TEXT text .....
+				// 4 CONT ..........
+				$buffer.="2 DATA\r\n";
+				$buffer.='3 TEXT '.process_text(4,$connectDb->connect_text);
+			}
 
 			// *** Source by address ***
 			if ($gedcom_sources=='yes'){
@@ -1631,14 +1641,14 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 		echo __('No valid family number.');
 	}
 
-	$parent1=''; $parent2=''; $change_main_person=false;
+	$parent1=''; $parent2=''; $swap_parent1_parent2=false;
 
 	// *** Standard main_person is the man ***
 	if ($familyDb->fam_man){ $parent1=$familyDb->fam_man; }
 	// *** If woman is selected, woman will be main_person ***
 	if ($familyDb->fam_woman==$main_person){
 		$parent1=$familyDb->fam_woman;
-		$change_main_person=true;
+		$swap_parent1_parent2=true;
 	}
 
 	// *** Check family with parent1: N.N. ***
@@ -1666,7 +1676,7 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 			if ($family_nr==1){
 				// *** Show data of man ***
 
-				if ($change_main_person==true){
+				if ($swap_parent1_parent2==true){
 					// store I and Fs
 					$persids[] = $familyDb->fam_woman;
 					$families = explode(';',$personDb->pers_fams);
@@ -1690,7 +1700,7 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 		// *** Parent2 (normally the mother)                         ***
 		// *************************************************************
 		if(isset($_POST['desc_spouses'])) {
-			if ($change_main_person==true){
+			if ($swap_parent1_parent2==true){
 				$persids[] = $familyDb->fam_man;
 				$desc_sp = $familyDb->fam_man;
 			}

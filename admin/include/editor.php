@@ -1193,9 +1193,11 @@ if ($check_person){
 									echo '<br><br>';
 								}
 								else{
+									echo __('There are no parents.').'<br>';
+									// Parents can be added in family editor.
 									// *** Add parents ***
-									echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;add_parents2=1&amp;menu_tab=person">';
-									echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Add parents').'" alt="'.__('Add parents').'"> '.__('Add parents').'</a><br>';
+									//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;add_parents2=1&amp;menu_tab=person">';
+									//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/family_connect.gif" border="0" title="'.__('Add parents').'" alt="'.__('Add parents').'"> '.__('Add parents').'</a><br>';
 								}
 
 								// *** Show person ***
@@ -1786,17 +1788,93 @@ if ($check_person){
 			}
 			else{
 				// *** Add existing or new parents ***
-				echo '<b>'.__('There are no parents.').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_parents=1">';
-				//echo __('Add new parents (N.N. & N.N.)').'</a></b> '.__('or select an existing family as parents.').'<br>';
-				echo __('Add new parents (N.N. & N.N.)').'</a></b><br>';
-				echo __('Or select an existing family as parents:').' ';
+				echo '<b>'.__('There are no parents.').'</b><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_parents=1">';
 
-				echo '<input class="fonts" type="text" name="add_parents" placeholder="'.__('GEDCOM number (ID)').'" value="" size="20">';
+				$hideshow=701;
+				echo ' <a href="#" onclick="hideShow('.$hideshow.');">'.__('Add parents').'</a>';
+				echo '<span  class="humo row701" style="margin-left:0px; display:none;">'; 
+					echo '<table class="humo" style="margin-left:0px;">';
+						echo '<tr class="table_header"><th></th><th>'.__('Father').'</th><th>'.__('Mother').'</th></tr>';
 
-				//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select&amp;place_item=birth","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
-				echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+						echo '<tr><td>'.__('firstname').'</td>';
+						echo '<td><input type="text" name="pers_firstname1" value="" size="35" placeholder="'.ucfirst(__('firstname')).'"></td>';
+						echo '<td><input type="text" name="pers_firstname2" value="" size="35" placeholder="'.ucfirst(__('firstname')).'"></td>';
+						echo '</tr>';
 
-				echo ' <input type="Submit" name="dummy2" value="'.__('Select').'">';
+						// *** Prefix ***
+						echo '<tr><td>'.__('prefix').'</td>';
+						echo '<td><input type="text" name="pers_prefix1" value="'.$pers_prefix.'" size="10" placeholder="'.ucfirst(__('prefix')).'">';
+							// *** HELP POPUP for prefix ***
+							echo ' <div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+								echo '<a href="#" style="display:inline" ';
+								echo 'onmouseover="mopen(event,\'help_prefix\',100,400)"';
+								echo 'onmouseout="mclosetime()">';
+									echo '<img src="../images/help.png" height="16" width="16">';
+								echo '</a>';
+								echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_prefix" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+									echo '<b>'.__("For example: d\' or:  van_ (use _ for a space)").'</b><br>';
+								echo '</div>';
+							echo '</div></td>';
+						echo '<td><input type="text" name="pers_prefix2" value="" size="10" placeholder="'.ucfirst(__('prefix')).'">';
+							// *** HELP POPUP for prefix ***
+							echo ' <div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+								echo '<a href="#" style="display:inline" ';
+								echo 'onmouseover="mopen(event,\'help_prefix\',100,400)"';
+								echo 'onmouseout="mclosetime()">';
+									echo '<img src="../images/help.png" height="16" width="16">';
+								echo '</a>';
+								//echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_prefix" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+								//	echo '<b>'.__("For example: d\' or:  van_ (use _ for a space)").'</b><br>';
+								//echo '</div>';
+							echo '</div></td>';
+						echo '</tr>';
+
+						// *** Lastname ***
+						echo '<tr><td>'.__('lastname').'</td><td>';
+						echo '<input type="text" name="pers_lastname1" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'">';
+						echo '</td><td><input type="text" name="pers_lastname2" value="" size="35" placeholder="'.ucfirst(__('lastname')).'"></td>';
+						echo '</tr>';
+
+						// *** Privacy filter ***
+						echo '<tr><td>'.__('Privacy filter').'</td><td>';
+							echo ' <input type="radio" name="pers_alive1" value="alive"> '.__('alive');
+							echo ' <input type="radio" name="pers_alive1" value="deceased"> '.__('deceased');
+						echo '</td><td>';
+							echo '<input type="radio" name="pers_alive2" value="alive"> '.__('alive');
+							echo ' <input type="radio" name="pers_alive2" value="deceased"> '.__('deceased');
+						echo '</td></tr>';
+
+						echo '<tr><td>'.__('Sex').'</td><td>';
+							$pers_sexe1='M';
+							$selected=''; if ($pers_sexe1=='M') $selected=' CHECKED';
+							echo '<input type="radio" name="pers_sexe1" value="M"'.$selected.'> '.__('male');
+							$selected=''; if ($pers_sexe1=='F') $selected=' CHECKED';
+							echo ' <input type="radio" name="pers_sexe1" value="F"'.$selected.'> '.__('female');
+							$selected=''; if ($pers_sexe1=='') $selected=' CHECKED';
+							echo ' <input type="radio" name="pers_sexe1" value=""'.$selected.'> ?';
+						echo '</td><td>';
+							$pers_sexe2='F';
+							$selected=''; if ($pers_sexe2=='M') $selected=' CHECKED';
+							echo '<input type="radio" name="pers_sexe2" value="M"'.$selected.'> '.__('male');
+							$selected=''; if ($pers_sexe2=='F') $selected=' CHECKED';
+							echo ' <input type="radio" name="pers_sexe2" value="F"'.$selected.'> '.__('female');
+							$selected=''; if ($pers_sexe2=='') $selected=' CHECKED';
+							echo ' <input type="radio" name="pers_sexe2" value=""'.$selected.'> ?</td>';
+						echo '</tr>';
+
+						echo '<tr class="humo_color"><td colspan="3"><input type="Submit" name="add_parents2" value="'.__('Add parents').'"></td></tr>';
+					echo '</table><br>';
+
+					echo __('Or select an existing family as parents:').' ';
+
+					echo '<input class="fonts" type="text" name="add_parents" placeholder="'.__('GEDCOM number (ID)').'" value="" size="20">';
+
+					//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select&amp;place_item=birth","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+
+					echo ' <input type="Submit" name="dummy2" value="'.__('Select').'">';
+
+				echo '</span>'; // End of hide item
 			}
 
 			echo $parent_text.'</td></tr>';
@@ -4710,18 +4788,12 @@ function add_person($person_kind,$pers_sexe){
 	echo '<input type="hidden" name="pers_name_text" value="">';
 	echo '<input type="hidden" name="pers_birth_time" value="">';
 	echo '<input type="hidden" name="pers_birth_text" value="">';
-	echo '<input type="hidden" name="pers_bapt_date_prefix" value="">';
-	echo '<input type="hidden" name="pers_bapt_date" value="">';
-	echo '<input type="hidden" name="pers_bapt_place" value="">';
 	echo '<input type="hidden" name="pers_bapt_text" value="">';
 	echo '<input type="hidden" name="pers_religion" value="">';
 	echo '<input type="hidden" name="pers_death_cause" value="">';
 	echo '<input type="hidden" name="pers_death_time" value="">';
 	echo '<input type="hidden" name="pers_death_age" value="">';
 	echo '<input type="hidden" name="pers_death_text" value="">';
-	echo '<input type="hidden" name="pers_buried_date_prefix" value="">';
-	echo '<input type="hidden" name="pers_buried_date" value="">';
-	echo '<input type="hidden" name="pers_buried_place" value="">';
 	echo '<input type="hidden" name="pers_buried_text" value="">';
 	echo '<input type="hidden" name="pers_cremation" value="">';
 	echo '<input type="hidden" name="person_text" value="">';
@@ -4770,24 +4842,41 @@ function add_person($person_kind,$pers_sexe){
 			echo ' <input type="radio" name="pers_sexe" value=""'.$selected.'> ?</td></tr>';
 
 		if ($person_kind=='partner'){
-			$place_item='birth_relation';
-			$place_item2='death_relation';
+			$place_item_birth='birth_relation';
+			$place_item_baptise='baptise_relation';
+			$place_item_death='death_relation';
+			$place_item_buried='buried_relation';
 		}
 		else{
-			$place_item='birth_child';
-			$place_item2='death_child';
+			$place_item_birth='birth_child';
+			$place_item_baptise='baptise_child';
+			$place_item_death='death_child';
+			$place_item_buried='buried_child';
 		}
 
 		// *** Born ***
 		echo '<tr><td>'.ucfirst(__('born')).'</td><td>';
-		echo __('date').' '.$editor_cls->date_show('','pers_birth_date','','','','pers_birth_date_hebnight').' ';
-		echo __('place').' <input type="text" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="" size="'.$field_place.'">';
-		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item='.$place_item.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td></tr>';
+		echo $editor_cls->date_show('','pers_birth_date','','','','pers_birth_date_hebnight').' ';
+		echo ' <input type="text" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="" size="'.$field_place.'">';
+		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item='.$place_item_birth.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td></tr>';
+
+		// *** Baptise ***
+		echo '<tr><td>'.ucfirst(__('baptised')).'</td><td>';
+		echo $editor_cls->date_show('','pers_bapt_date','','','','pers_bapt_date_hebnight').' ';
+		echo ' <input type="text" name="pers_bapt_place" placeholder="'.ucfirst(__('place')).'" value="" size="'.$field_place.'">';
+		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item='.$place_item_baptise.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td></tr>';
 
 		// *** Died ***
 		echo '<tr><td>'.ucfirst(__('died')).'</td><td>';
-		echo __('date').' '.$editor_cls->date_show('','pers_death_date','','','','pers_death_date_hebnight').' '.__('place').'  <input type="text" name="pers_death_place" placeholder="'.ucfirst(__('place')).'" value="" size="'.$field_place.'">';
-		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item='.$place_item2.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td></tr>';
+		echo $editor_cls->date_show('','pers_death_date','','','','pers_death_date_hebnight').' ';
+		echo '  <input type="text" name="pers_death_place" placeholder="'.ucfirst(__('place')).'" value="" size="'.$field_place.'">';
+		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item='.$place_item_death.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td></tr>';
+
+		// *** Buried ***
+		echo '<tr><td>'.ucfirst(__('buried')).'</td><td>';
+		echo $editor_cls->date_show('','pers_buried_date','','','','pers_buried_date_hebnight').' ';
+		echo '  <input type="text" name="pers_buried_place" placeholder="'.ucfirst(__('place')).'" value="" size="'.$field_place.'">';
+		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item='.$place_item_buried.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td></tr>';
 
 		if ($person_kind=='partner'){
 			echo '<tr class="humo_color"><td></td><td><input type="Submit" name="relation_add" value="'.__('Add relation').'"></td></tr>';
@@ -4951,7 +5040,8 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			__('Street').'<br>'.
 			__('Zip code').'<br>'.
 			__('text').'<br>'.
-			__('date').'</td>';
+			__('date').'<br>'.
+			__('Extra text').'</td>';
 		echo '<td style="border-left:0px; vertical-align:top">';
 			// *** Source ***
 			// There is no source used in the CONNECTION. Only at the address.
@@ -5066,6 +5156,9 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			echo $editor_cls->date_show($addressDb->connect_date,'connect_date',"[$addressDb->connect_id]");
 			echo ' '.__('Addressrole').' <input type="text" name="connect_role['.$key.']" value="'.htmlspecialchars($addressDb->connect_role).'" size="6">';
 
+			// *** Extra text by address ***
+			$field_text='style="height: 20px; width:550px"';
+			echo '<br><textarea name="connect_text['.$addressDb->connect_id.']" placeholder="'.__('Extra text by address').'" '.$field_text.'>'.$editor_cls->text_show($addressDb->connect_text).'</textarea>';
 
 		echo '</td>';
 		echo '<td>';

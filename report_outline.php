@@ -287,7 +287,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 	// *** Count marriages of man ***
 	// *** YB: if needed show woman as main_person ***
 	@$familyDb = $db_functions->get_family($family_id,'man-woman');
-	$parent1=''; $parent2='';	$change_main_person=false;
+	$parent1=''; $parent2='';	$swap_parent1_parent2=false;
 
 	// *** Standard main_person is the father ***
 	if ($familyDb->fam_man){
@@ -296,7 +296,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 	// *** If mother is selected, mother will be main_person ***
 	if ($familyDb->fam_woman==$main_person){
 		$parent1=$familyDb->fam_woman;
-		$change_main_person=true;
+		$swap_parent1_parent2=true;
 	}
 
 	// *** Check family with parent1: N.N. ***
@@ -352,7 +352,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 					$pdf->Write(8,"\n");
 					$pdf->Write(8,$gn.'  ');
 				}
-				if ($change_main_person==true){
+				if ($swap_parent1_parent2==true){
 					if($screen_mode != "PDF") {
 						echo $woman_cls->name_extended("outline");
 						if($show_details AND !$privacy_woman) { echo $woman_cls->person_data("outline",$familyDb->fam_gedcomnumber); }
@@ -437,7 +437,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 			$pdf->Write(8,"\n");
 			$pdf->Write(8,'x  ');
 		}
-		if ($change_main_person==true){
+		if ($swap_parent1_parent2==true){
 			if($screen_mode != "PDF") {
 				if($show_details) { echo "&nbsp;&nbsp;&nbsp;&nbsp;"; }
 				echo $man_cls->name_extended("outline");

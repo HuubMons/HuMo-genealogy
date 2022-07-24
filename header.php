@@ -111,6 +111,7 @@ while (false!==($file = readdir($language_folder))) {
 		elseif ($file=='fa') $language_order[]='Persian';
 		elseif ($file=='fi') $language_order[]='Suomi';
 		elseif ($file=='fr') $language_order[]='French';
+		elseif ($file=='fur') $language_order[]='Furlan';
 		elseif ($file=='he') $language_order[]='Hebrew';
 		elseif ($file=='id') $language_order[]='Indonesian';
 		elseif ($file=='hu') $language_order[]='Magyar';
@@ -118,12 +119,13 @@ while (false!==($file = readdir($language_folder))) {
 		elseif ($file=='es_mx') $language_order[]='Mexicano';
 		elseif ($file=='nl') $language_order[]='Nederlands';
 		elseif ($file=='no') $language_order[]='Norsk';
+		elseif ($file=='pl') $language_order[]='Polish';
 		elseif ($file=='pt') $language_order[]='Portuguese';
 		elseif ($file=='ru') $language_order[]='Russian';
 		elseif ($file=='sk') $language_order[]='Slovensky';
 		elseif ($file=='sv') $language_order[]='Swedish';
+		elseif ($file=='tr') $language_order[]='Turkish';
 		elseif ($file=='zh') $language_order[]='Chinese_traditional';
-		elseif ($file=='pl') $language_order[]='Polish';
 		else $language_order[]=$file;
 
 		// *** Save choice of language ***

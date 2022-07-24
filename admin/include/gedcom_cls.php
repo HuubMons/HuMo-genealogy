@@ -4453,6 +4453,23 @@ function process_addresses($connect_kind,$connect_sub_kind,$connect_id,$buffer){
 			if ($buffer6=='2 DATE'){
 				$processed=1; $connect['date'][$connect_nr]=substr($buffer, 7);
 			}
+			// *** Extra text by address in HuMo-genealogy ***
+			// 2 DATA
+			// 3 TEXT text ..... => Extra text by address...
+			// 4 CONT ..........
+			if ($buffer6=='2 DATA'){
+				$processed=1; //$connect['text'][$connect_nr]=substr($buffer, 7);
+			}
+			if ($buffer6=='3 TEXT'){
+				if ($connect['text'][$connect_nr]){ $connect['text'][$connect_nr].='<br>'; }
+				$processed=1; $connect['text'][$connect_nr].=substr($buffer, 7);
+			}
+			if ($buffer6=='4 CONT'){
+				$processed=1; $connect['text'][$connect_nr].=$this->cont(substr($buffer, 7)) ;
+			}
+			if ($buffer6=='4 CONC'){
+				$processed=1; $connect['text'][$connect_nr].=$this->conc(substr($buffer,7)) ;
+			}
 
 			//SOURCE (used in HuMo-genealogy)?
 		}

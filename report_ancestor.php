@@ -351,7 +351,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				// and no additional ancestors will be looked for, to prevent duplicated branches
 			}
 			if($listednr=='') {  //if not listed yet, add person to array
-				$listed_array[$ancestor_number[$i]]=$ancestor_array[$i];  
+				$listed_array[$ancestor_number[$i]]=$ancestor_array[$i];
 			}
 
 			if ($ancestor_array[$i]!='0'){
@@ -1092,7 +1092,7 @@ echo '<div>';
 			element.onscroll= function() {
 				scrollbar.scrollLeft= element.scrollLeft;
 			};
-			element.parentNode.insertBefore(scrollbar, element);                                 
+			element.parentNode.insertBefore(scrollbar, element);
 		}
 
 		DoubleScroll(document.getElementById('doublescroll'));
@@ -1195,7 +1195,7 @@ echo '<div>';
 		// $str = the input string
 		// $width = width of box (in characters)
 
-		function parse_line($str,$width,$trunc,$bold="") {  
+		function parse_line($str,$width,$trunc,$bold="") {
 			global $pdf;
 			//$result_array = $array();
 			$count=1; //counts lines;
@@ -1203,20 +1203,20 @@ echo '<div>';
 			if($bold=="B") $width -= 5;
 			$w=$width; 
 			$nl=0;
-			for($x=0;$x<strlen($str);$x++) {   
+			for($x=0;$x<strlen($str);$x++) {
 				if($str[$x]==' ') { $pos = $x;}
-				if(ceil($pdf->GetStringWidth(substr($str,$nl,($x-$nl)+1))) >=$w) {  
+				if(ceil($pdf->GetStringWidth(substr($str,$nl,($x-$nl)+1))) >=$w) {
 					$count++;
-				 	if($trunc!=0 AND $count>$trunc) { 
+				 	if($trunc!=0 AND $count>$trunc) {
 						$result_array[0] = $trunc;
 						$result_array[1] = substr($str,0,$x-1);
 						return $result_array;
-					}     
+					}
 					$str[$pos]="\n"; 
 					$x = $pos+1; 
-					$nl = $pos+1;    
-				}    
-			}  
+					$nl = $pos+1;
+				}
+			}
 			$result_array[0] = $count;
 			$result_array[1] = $str;
 			return $result_array;
@@ -1232,7 +1232,7 @@ echo '<div>';
 		if(__('&#134;') == '&#134;' OR __('&#134;') == "†") { $dsign = "†"; }
 		else $dsign = "~";
 
-		function data_array($id,$width,$height) {     
+		function data_array($id,$width,$height) {
 			global $dbh, $db_functions, $tree_prefix_quoted, $data_array, $gedcomnumber, $dsign;   
 
 			if (isset($gedcomnumber[$id]) AND $gedcomnumber[$id]!=""){
@@ -1321,7 +1321,7 @@ echo '<div>';
 							$data_array[$id][3]=$result[0];
 						}
 					}
-				}  
+				}
 				
 				if($birth_len < 3) {
 					$data_array[$id][1]= $birth;
@@ -1356,7 +1356,7 @@ echo '<div>';
 						$data_array[$id][2]=$result[1];
 						$data_array[$id][5]=$result[0];
 					}
-				}  
+				}
 
 			}
 			else {

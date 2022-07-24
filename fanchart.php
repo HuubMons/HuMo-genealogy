@@ -206,7 +206,7 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr) {
 		}
 		$text .= "$line";
 	}
-				// $text.=$wlen;
+	// $text.=$wlen;
 	return $text;
 }
 
@@ -556,7 +556,7 @@ else { // "auto" or invalid entry - reset to 100%
 }
 $realwidth=(840*$tmp_width)/100; // realwidth needed for next line (top text)
 
-// Text on Top: Name of base person and print-help link
+// *** Text on Top: Name of base person and print-help link ***
 $top_for_name=20;
 if(CMS_SPECIFIC == "Joomla") {
 	$top_for_name=45; // lower to get out of the way of possible scrollbar
@@ -621,7 +621,7 @@ if($fan_width=="auto" OR $fan_width=="") {  // if someone cleared the field allt
 		if (CMS_SPECIFIC == "Joomla") { $fan_width=78; }
 	}
 }
-else if($fan_width >50 AND $fan_width <300) {  // valid entry by user
+else if($fan_width >49 AND $fan_width <301) {  // valid entry by user
 	$menu_fan = $fan_width;
 }
 else { // invalid entry! reset it.
@@ -631,16 +631,16 @@ else { // invalid entry! reset it.
 }
 
 if(CMS_SPECIFIC == "Joomla") {
-		if($fan_style==3) { $thisheight = ($fan_width*3.5)/4; }   // (default) 3/4 circle
-		else if($fan_style==2) { $thisheight = $fan_width/1.6; }  // half circle
-		else { $thisheight = $fan_width; }  // full circle
+	if($fan_style==3) { $thisheight = ($fan_width*3.5)/4; }   // (default) 3/4 circle
+	else if($fan_style==2) { $thisheight = $fan_width/1.6; }  // half circle
+	else { $thisheight = $fan_width; }  // full circle
 
-		$thisheight = 840*$thisheight/100 + 100;
+	$thisheight = 840*$thisheight/100 + 100;
 
-		echo '<style type="text/css">';
-		echo '#doublescroll { position:relative; width:100%; height:'.$thisheight.'px; overflow: auto; overflow-y: hidden; }';
-		echo '</style>';
-		echo '<div id="doublescroll">';
+	echo '<style type="text/css">';
+	echo '#doublescroll { position:relative; width:100%; height:'.$thisheight.'px; overflow: auto; overflow-y: hidden; }';
+	echo '</style>';
+	echo '<div id="doublescroll">';
 }
 
 // Semi-transparant MENU BOX on the left
@@ -648,7 +648,6 @@ echo '<div class="fanmenu1">';
 echo '<div class="fanmenu2">';
 echo '<div class="fanmenu3"></div>';
 echo '<div style="position:absolute; left:0; top:0; color: #000000">';
-
 	//echo '<div style="border: 2px solid #000077; padding:10px">';
 
 	if (CMS_SPECIFIC == "Joomla") {
@@ -657,24 +656,23 @@ echo '<div style="position:absolute; left:0; top:0; color: #000000">';
 	else {
 		echo "<form name=\"people\" method=\"post\" action=\"fanchart.php?id=".$person_id."\" style=\"display:inline;\">";
 	}
-	//echo "<br>";
 	echo "<input type=\"submit\" value=\"" .__('View'). "\">";
 
 	// Fan style
 	echo '<br><hr style="width:110px">';
 	echo __('Fan style')."<br>";
 	echo '<div style="text-align:'.$alignmarker.';margin-left:15%;margin-right:15%">';
-	echo "<input type=\"radio\" name=\"fan_style\" value=\"2\"";
-	if ($fan_style==2) echo " checked=\"checked\"";
+		echo "<input type=\"radio\" name=\"fan_style\" value=\"2\"";
+		if ($fan_style==2) echo " checked=\"checked\"";
 
-	echo ">".__('half');
+		echo ">".__('half');
 
-	echo "<br><input type=\"radio\" name=\"fan_style\" value=\"3\"";
-	if ($fan_style==3) echo " checked=\"checked\"";
-	echo "> 3/4";
-	echo "<br><input type=\"radio\" name=\"fan_style\" value=\"4\"";
-	if ($fan_style==4) echo " checked=\"checked\"";
-	echo ">".__('full');
+		echo "<br><input type=\"radio\" name=\"fan_style\" value=\"3\"";
+		if ($fan_style==3) echo " checked=\"checked\"";
+		echo "> 3/4";
+		echo "<br><input type=\"radio\" name=\"fan_style\" value=\"4\"";
+		if ($fan_style==4) echo " checked=\"checked\"";
+		echo ">".__('full');
 	echo '</div>';
 
 	// Nr. of generations
@@ -704,17 +702,17 @@ echo '<div style="position:absolute; left:0; top:0; color: #000000">';
 	echo __('Date display').":<br>";
 
 	echo '<div style="text-align:'.$alignmarker.';margin-left:5%;margin-right:5%">';
-	echo "<input type=\"radio\" name=\"date_display\" value=\"1\"";
-	if ($date_display=="1") echo " checked=\"checked\"";
-	echo '>'.__('No dates');
+		echo "<input type=\"radio\" name=\"date_display\" value=\"1\"";
+		if ($date_display=="1") echo " checked=\"checked\"";
+		echo '>'.__('No dates');
 
-	echo "<br><input type=\"radio\" name=\"date_display\" value=\"2\"";
-	if ($date_display=="2") echo " checked=\"checked\"";
-	echo ">".__('Years only');
+		echo "<br><input type=\"radio\" name=\"date_display\" value=\"2\"";
+		if ($date_display=="2") echo " checked=\"checked\"";
+		echo ">".__('Years only');
 
-	echo "<br><input type=\"radio\" name=\"date_display\" value=\"3\"";
-	if ($date_display=="3") echo " checked=\"checked\"";
-	echo ">".__('Full dates');
+		echo "<br><input type=\"radio\" name=\"date_display\" value=\"3\"";
+		if ($date_display=="3") echo " checked=\"checked\"";
+		echo ">".__('Full dates');
 	echo '</div>';
 
 	// Fan width in percentages
@@ -735,55 +733,51 @@ echo '<div style="position:absolute; left:0; top:0; color: #000000">';
 		if ($printing==2) echo " checked=\"checked\"";
 		echo "> <span style=\"font-size:10px;\">".__('white')."</span>";
 	echo '</div>';
-	 
-	//NEW
+
 	echo '<hr style="width:110px">';
 	echo '<div style="text-align:'.$alignmarker.';margin-left:5%;margin-right:5%">';
-	echo '<input type="hidden" name="show_desc" value="0">';
-	echo '<input type="checkbox" name="show_desc" value="1"';
-	if ($showdesc=="1") echo ' checked="checked"';
-	echo '> <span style="font-size:10px;">'.__('descendants').'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.__('under fanchart').'</span>';
+		echo '<input type="hidden" name="show_desc" value="0">';
+		echo '<input type="checkbox" name="show_desc" value="1"';
+		if ($showdesc=="1") echo ' checked="checked"';
+		echo '> <span style="font-size:10px;">'.__('descendants').'<br>&nbsp;&nbsp;&nbsp;&nbsp;'.__('under fanchart').'</span>';
 	echo '</div>';
-	//END NEW
-	 
+
 	echo "</form>";
 echo "</div></div></div>";
 
-//  Container for fanchart
-//echo '<div style="position:absolute; top:60px; left:135px; width:'.$fan_width.'">';
+// *** Container for fanchart ***
 echo '<div style="position:absolute; top:60px; left:135px; width:'.(840*$fan_width/100).'px">';
-if(CMS_SPECIFIC != "Joomla") {
 	echo '<div style="padding:5px">';
-}
-$china_message=0;
-print_fan_chart($treeid, 840*$fan_width/100, $fan_style*90);
-
-echo '</div></div>';
-// end container for fanchart
+		$china_message=0;
+		print_fan_chart($treeid, 840*$fan_width/100, $fan_style*90);
+	echo '</div>';
+echo '</div>';
+// ** End container for fanchart ***
 
 if(CMS_SPECIFIC == "Joomla") {
 	echo '</div>'; // end of horizontal scrollbar div
 }
+
 if($china_message==1) {
 	echo '<div style="border:2px solid red;background-color:white;padding:5px;position:relative;
 	length:300px;margin-left:30%;margin-right:30%;top:90px;font-weight:bold;color:red;
-	font-size:120%;text-align:center;">'.
-	__('No Chinese ttf font file found').
-	"<br>".__('Download link').': <a href="http://humogen.com/download.php?file=simplified-wts47.zip">Simplified 简体中文 </a>'.__('or').
-	' <a href="http://humogen.com/download.php?file=traditional-wt011.zip">Traditional 繁體中文</a><br>'.
-	__('Unzip and place in "include/fanchart/chinese/" folder').'</div>';
+	font-size:120%;text-align:center;">';
+		echo __('No Chinese ttf font file found').'<br>'.__('Download link');
+		echo ': <a href="http://humogen.com/download.php?file=simplified-wts47.zip">Simplified 简体中文 </a>'.__('or');
+		echo ' <a href="http://humogen.com/download.php?file=traditional-wt011.zip">Traditional 繁體中文</a><br>';
+		echo __('Unzip and place in "include/fanchart/chinese/" folder');
+	echo '</div>';
 }
 
+// *** Show descendants ***
 if($showdesc=="1" ) {
 	$fan_w =  9.3*$fan_width;
 	if($fan_style==2) $top_pos = $fan_w/2 + 165;
 	elseif($fan_style==3) $top_pos = 0.856*$fan_w;
 	elseif($fan_style==4) $top_pos = $fan_w;
-
 	echo '<iframe src="family.php?database='.safe_text_db($_SESSION['tree_prefix']).'&amp;id='.$indexnr.'&amp;main_person='.$person_id.'&amp;screen_mode=STAR&amp;menu=1" id="iframe1"  style="position:absolute;top:'.$top_pos.'px;left:0px;width:100%;height:700px;" ;" >';
 	echo '</iframe>';
 }
-
 
 echo '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>';
 if(CMS_SPECIFIC == "Joomla") {
@@ -812,5 +806,6 @@ if(CMS_SPECIFIC == "Joomla") {
 	<?php
 }
 
+echo '<div style="left:135px; height:520px; width:10px"></div>';
 include_once(CMS_ROOTPATH."footer.php");
 ?>

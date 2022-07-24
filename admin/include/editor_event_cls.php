@@ -1299,6 +1299,11 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			if ($event_connect_kind=='person'){
 				if (!isset($link)) $link='';
 				$text.=source_link2('10'.$data_listDb->event_id,$data_listDb->event_id,'pers_event_source',$link);
+
+				// *** Could be used to connect a picture in a text field (Geneanet doesnt have constant GEDCOM numbers or an own text field) ***
+				if ($event_kind=='picture')
+					$text.='<br>&nbsp;<span style="font-size:smaller;">'.__('ID').': '.$data_listDb->event_id.'</span>';
+
 			}
 			elseif ($event_connect_kind=='family'){
 				if (!isset($link)) $link='';

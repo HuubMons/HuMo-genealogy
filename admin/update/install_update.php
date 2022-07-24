@@ -148,7 +148,7 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 				echo __('Automatic download successfull!').'<br>';
 				// *** Unzip downloaded file ***
 				$zip = new ZipArchive;
-				if ($zip->open("update/humo-gen_update.zip") === TRUE) { 
+				if ($zip->open("update/humo-gen_update.zip") === TRUE) {
 					$zip->extractTo('update/humo-gen_update');
 					$zip->close();
 					echo __('File successfully unzipped!').'<br>';
@@ -158,7 +158,7 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 					if (isset($_GET['re_install'])){ echo '&re_install=1'; }
 					echo '">'.__('Check files').'</a><br>';
 				}
-				else {  
+				else {
 					echo 'ERROR: unzip failed!<br>';
 				}
 			}
@@ -177,7 +177,7 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 				global $update_dir_files, $update_dir, $update_files;
 				$ffs = scandir($dir);
 				foreach($ffs as $ff){
-					if(is_array($exclude) and !in_array($ff,$exclude)){ 
+					if(is_array($exclude) and !in_array($ff,$exclude)){
 						if($ff != '.' && $ff != '..'){
 							// *** Skip media files in ../media/, ../media/cms/ etc.
 							if (substr($dir,0,8)=='../media' AND !is_dir($dir.'/'.$ff) AND $ff != 'readme.txt'){
