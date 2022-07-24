@@ -1,4 +1,4 @@
-version=5.13
+version=5.13test
 // Version date yyyy-mm-dd
 version_date=2022-06-26
 version_download=http://sourceforge.net/projects/humo-gen
