@@ -1750,6 +1750,7 @@ if (isset($_POST['step4'])){
 
 				// *** Update progress ***
 				$total++;
+				ob_start(); // *** Added 24-09-2021, otherwise fault message in PHP8 ***
 				echo '<script language="javascript">';
 					//echo 'document.getElementById("information").innerHTML="'.$total.' '.__('lines processed').'";';
 					$status=' ['.__('persons').' '.($total_texts-$total_processed_texts).']';

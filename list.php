@@ -11,7 +11,7 @@ function show_person($personDb){
 	global $dbh, $db_functions, $index_list, $selected_place, $language, $user;
 	global $bot_visit, $humo_option, $uri_path, $search_database, $list_expanded;
 	global $selected_language, $privacy, $dirmark1, $dirmark2, $rtlmarker;
-	global $select_birth, $select_bapt, $select_place, $select_death, $select_buried;
+	global $select_birth, $select_bapt, $select_place, $select_death, $select_buried, $select_event;
 	global $selectsort;
 
 	$db_functions->set_tree_id($personDb->pers_tree_id);
@@ -41,10 +41,11 @@ function show_person($personDb){
 	if ($index_list=='places'){
 
 		if ($selected_place!=$personDb->place_order)
-			echo '<td colspan="7"><b>'.$dirmark2."$personDb->place_order</b></td></tr><tr>";
+			echo '<td colspan="7"><b>'.$dirmark2.$personDb->place_order.'</b></td></tr><tr>';
 		$selected_place=$personDb->place_order;
 
-		echo '<td valign="top" style="white-space:nowrap;width:90px">';
+		//echo '<td valign="top" style="white-space:nowrap;width:90px">';
+		echo '<td valign="top" style="white-space:nowrap;width:105px">';
 
 		if ($select_birth=='1'){
 			if ($selected_place==$personDb->pers_birth_place)
@@ -61,7 +62,17 @@ function show_person($personDb){
 		}
 
 		if ($select_place=='1'){
-			if ($selected_place==$personDb->pers_place_index)
+			// *** Check if this is the living place of a person. Can't be checked using query variables... ***
+			$query= "SELECT address_place FROM humo_addresses, humo_connections
+				WHERE address_tree_id='".$personDb->pers_tree_id."' AND connect_tree_id='".$personDb->pers_tree_id."'
+				AND connect_connect_id='".$personDb->pers_gedcomnumber."'
+				AND connect_item_id=address_gedcomnr
+				AND address_place='".safe_text_db($personDb->place_order)."'";
+			$result= $dbh->query($query);
+			@$resultDb = $result->fetch(PDO::FETCH_OBJ);
+
+			//if ($selected_place==$personDb->pers_place_index)
+			if (@$resultDb->address_place==$personDb->place_order AND $selected_place==$personDb->place_order)
 				echo '<span class="place_index place_index_selected">'.__('^').'</span>';
 			else
 				echo '<span class="place_index">&nbsp;</span>';
@@ -77,6 +88,21 @@ function show_person($personDb){
 		if ($select_buried=='1'){
 			if ($selected_place==$personDb->pers_buried_place)
 				echo '<span class="place_index place_index_selected">'.__('[]').'</span>';
+			else
+				echo '<span class="place_index">&nbsp;</span>';
+		}
+
+		// *** Places by events like occupations etc. ***
+		if ($select_event=='1'){
+			// *** Check if this is the living place of a person. Can't be checked using query variables... ***
+			$query= "SELECT event_place FROM humo_events
+				WHERE event_tree_id='".$personDb->pers_tree_id."' AND event_connect_id='".$personDb->pers_gedcomnumber."'
+				AND event_place='".safe_text_db($personDb->place_order)."'";
+			$result= $dbh->query($query);
+			@$resultDb = $result->fetch(PDO::FETCH_OBJ);
+
+			if (@$resultDb->event_place==$personDb->place_order AND $selected_place==$personDb->place_order)
+				echo '<span class="place_index place_index_selected">'.substr(__('Events'),0,1).'</span>';
 			else
 				echo '<span class="place_index">&nbsp;</span>';
 		}
@@ -99,10 +125,10 @@ function show_person($personDb){
 	if($humo_option['david_stars'] == "y") {
 		$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
 
-			if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
-				preg_match("/($camps)/i",$personDb->pers_buried_place)!==0  OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE) {
-				echo '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
-			}
+		if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
+			preg_match("/($camps)/i",$personDb->pers_buried_place)!==0  OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE) {
+			echo '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
+		}
 	}
 
 	// *** Add own icon by person, using a file name in own code ***
@@ -604,7 +630,7 @@ if (isset($_POST['adv_search'])){
 
 // *** For index places ***
 $place_name='';
-$select_birth='0'; $select_bapt='0'; $select_place='0'; $select_death='0'; $select_buried='0';
+$select_birth='0'; $select_bapt='0'; $select_place='0'; $select_death='0'; $select_buried='0'; $select_event='0';
 if (isset($_POST['place_name'])){
 	$place_name=$_POST['place_name'];
 	//$place_name=htmlentities($_POST['place_name'],ENT_QUOTES,'UTF-8');
@@ -620,6 +646,8 @@ if (isset($_POST['place_name'])){
 		else{ $_SESSION["save_select_death"]='0'; }
 	if (isset($_POST['select_buried'])){ $select_buried='1'; $_SESSION["save_select_buried"]='1'; }
 		else{ $_SESSION["save_select_buried"]='0'; }
+	if (isset($_POST['select_event'])){ $select_event='1'; $_SESSION["save_select_event"]='1'; }
+		else{ $_SESSION["save_select_event"]='0'; }
 }
 $part_place_name='';
 if (isset($_POST['part_place_name'])){
@@ -649,6 +677,7 @@ if ($index_list=='places'){
 		$select_place='1'; $_SESSION["save_select_place"]='1';
 		$select_death='1'; $_SESSION["save_select_death"]='1';
 		$select_buried='1'; $_SESSION["save_select_buried"]='1';
+		$select_event='1'; $_SESSION["save_select_event"]='1';
 	}
 	else{
 		// *** Read and set select boxes for multiple pages ***
@@ -657,6 +686,7 @@ if ($index_list=='places'){
 		if (isset($_SESSION["save_select_place"])){ $select_place=$_SESSION["save_select_place"]; }
 		if (isset($_SESSION["save_select_death"])){ $select_death=$_SESSION["save_select_death"]; }
 		if (isset($_SESSION["save_select_buried"])){ $select_buried=$_SESSION["save_select_buried"]; }
+		if (isset($_SESSION["save_select_event"])){ $select_event=$_SESSION["save_select_event"]; }
 	}
 }
 
@@ -784,6 +814,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	if ($selection['own_code']){
 		$query.=$and."pers_own_code ".name_qry($selection['own_code'], $selection['part_own_code']); $and=" AND ";
 	}
+
 	if ($selection['gednr']){
 		if(strtoupper(substr($_POST['gednr'],0,1)) != 'I'){
 			$selection['gednr']='I'.$_POST['gednr']; // if only number was entered - add "I" before
@@ -827,10 +858,11 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$and=" AND ";
 		$add_event_qry=true;
 	}
-	
+
 	// *** Change query if searched for spouse ***
 	if ($selection['spouse_firstname'] OR $selection['spouse_lastname']) {
-		$query.=$and."pers_fams!=''"; $and=" AND ";
+		$query.=$and."pers_fams!=''";
+		$and=" AND ";
 	}
 
 
@@ -881,7 +913,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	$query_select .= $make_date." FROM humo_persons";
 
 	if ($add_event_qry)
-		$query_select .= " LEFT JOIN humo_events ON event_tree_id=pers_tree_id AND event_connect_id=pers_gedcomnumber";
+		$query_select .= " 	humo_events ON event_tree_id=pers_tree_id AND event_connect_id=pers_gedcomnumber";
 	if ($add_address_qry)
 		$query_select .= " LEFT JOIN humo_connections ON connect_tree_id=pers_tree_id AND connect_connect_id=pers_gedcomnumber
 			AND connect_sub_kind='person_address'
@@ -918,7 +950,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		if ($add_address_qry) $query_select .= ", address_place, address_zip";
 		$query_select .= " FROM humo_persons";
 
-		if ($add_event_qry)
+		if ($add_event_qry){
 			//$query_select .= " LEFT JOIN humo_events
 			//ON event_tree_id=pers_tree_id
 			//AND event_connect_id=pers_gedcomnumber
@@ -927,7 +959,9 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 			$query_select .= " LEFT JOIN humo_events
 			ON event_tree_id=pers_tree_id
 			AND event_connect_id=pers_gedcomnumber";
-		if ($add_address_qry)
+		}
+
+		if ($add_address_qry){
 			$query_select .= " LEFT JOIN humo_connections
 			ON connect_tree_id=pers_tree_id
 			AND connect_connect_id=pers_gedcomnumber
@@ -939,6 +973,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 			OR address_gedcomnr=connect_item_id
 			AND address_tree_id=connect_tree_id
 			AND connect_connect_id=pers_gedcomnumber";
+		}
 
 		$query_select.=" WHERE (".$multi_tree.") ".$query." GROUP BY pers_id";
 		// *** This line IS DISABLED because it will give multiple lines for one person if there are multiple events. ***
@@ -1090,7 +1125,7 @@ if ($index_list=='places'){
 				FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 		else{
-			$query = "(SELECT SQL_CALC_FOUND_ROWS *, pers_birth_place as place_order 
+			$query = "(SELECT SQL_CALC_FOUND_ROWS *, pers_birth_place as place_order
 				FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
 
@@ -1138,18 +1173,37 @@ if ($index_list=='places'){
 			$calc='SQL_CALC_FOUND_ROWS ';
 		}
 		if ($user['group_kindindex']=="j"){
-			$query.= "(SELECT ".$calc."*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_place_index as place_order
-			FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
+			//$query.= "(SELECT ".$calc."*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, pers_place_index as place_order
+			//FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
+
+			$query.= "(SELECT ".$calc."humo_persons.*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, humo_addresses.address_place as place_order
+				FROM humo_persons, humo_connections, humo_addresses
+				WHERE connect_connect_id=pers_gedcomnumber
+				AND connect_tree_id=pers_tree_id
+				AND address_gedcomnr=connect_item_id AND address_tree_id=pers_tree_id
+				AND pers_tree_id='".$tree_id."'
+				";
 		}
 		else{
-			$query.= "(SELECT ".$calc."*, pers_place_index as place_order 
-				FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
+			//$query.= "(SELECT ".$calc."*, pers_place_index as place_order 
+			//	FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
+
+			$query.= "(SELECT ".$calc."humo_persons.*, humo_addresses.address_place as place_order
+				FROM humo_persons, humo_connections, humo_addresses
+				WHERE connect_connect_id=pers_gedcomnumber
+				AND connect_tree_id=pers_tree_id
+				AND address_gedcomnr=connect_item_id AND address_tree_id=pers_tree_id
+				AND pers_tree_id='".$tree_id."'
+				";
 		}
+
 		if($place_name) {
-			$query.= " AND pers_place_index ".name_qry($place_name,$part_place_name);
+			//$query.= " AND pers_place_index ".name_qry($place_name,$part_place_name);
+			$query.= " AND address_place ".name_qry($place_name,$part_place_name);
 		}
 		else {
-			$query .= " AND pers_place_index LIKE '_%'";
+			//$query .= " AND pers_place_index LIKE '_%'";
+			$query .= " AND address_place LIKE '_%'";
 		}
 		$query.=')';
 		$start=true;
@@ -1206,6 +1260,42 @@ if ($index_list=='places'){
 		$query.=')';
 		$start=true;
 	}
+
+	// *** NEW oct. 2021: Search for place in events like occupation ***
+	if ($select_place=='1'){
+		if ($start==true){
+			$query.=' UNION '; $calc='';
+		}
+		else{
+			$calc='SQL_CALC_FOUND_ROWS ';
+		}
+		if ($user['group_kindindex']=="j"){
+			$query.= "(SELECT ".$calc."humo_persons.*, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, humo_events.event_place as place_order
+				FROM humo_persons, humo_events
+				WHERE event_connect_id=pers_gedcomnumber
+				AND event_tree_id=pers_tree_id
+				AND pers_tree_id='".$tree_id."'
+				";
+		}
+		else{
+			$query.= "(SELECT ".$calc."humo_persons.*, humo_events.event_place as place_order
+				FROM humo_persons, humo_events
+				WHERE event_connect_id=pers_gedcomnumber
+				AND event_tree_id=pers_tree_id
+				AND pers_tree_id='".$tree_id."'
+				";
+		}
+
+		if($place_name) {
+			$query.= " AND event_place ".name_qry($place_name,$part_place_name);
+		}
+		else {
+			$query .= " AND event_place LIKE '_%'";
+		}
+		$query.=')';
+		$start=true;
+	}
+
 
 	// *** Order by place and name: "Mons, van" or: "van Mons" ***
 	if ($user['group_kindindex']=="j"){
@@ -1294,36 +1384,56 @@ if ($index_list=='patronym'){
 			//************** search places **************************************
 			//echo ' <form method="post" action="'.$list_var.'" style="display : inline;">';
 			echo ' <form method="post" action="'.$list_var.'">';
-				echo __('Find place').':<br><br>';
+				echo __('Find place').': ';
 
-				$checked=''; if ($select_birth=='1'){$checked='checked';}
-				echo '<span class="select_box"><input type="Checkbox" name="select_birth" value="1" '.$checked.'> '.__('*').' '.__('birth pl.').'</span>';
+				echo '<select name="part_place_name">';
+					echo '<option value="contains">'.__('Contains').'</option>';
 
-				$checked=''; if ($select_bapt=='1'){$checked='checked';}
-				echo '<span class="select_box"><input type="Checkbox" name="select_bapt" value="1" '.$checked.'> '.__('~').' '.__('bapt pl.').'</span>';
+					$select_item=''; if ($part_place_name=='equals'){ $select_item=' selected'; }
+					echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
 
-				$checked=''; if ($select_place=='1'){$checked='checked';}
-				echo '<span class="select_box"><input type="Checkbox" name="select_place" value="1" '.$checked.'> '.__('^').' '.__('residence').'</span>';
-
-				$checked=''; if ($select_death=='1'){$checked='checked';}
-				echo '<span class="select_box"><input type="Checkbox" name="select_death" value="1" '.$checked.'> '.__('&#134;').' '.__('death pl.').'</span>';
-
-				$checked=''; if ($select_buried=='1'){$checked='checked';}
-				echo '<input type="Checkbox" name="select_buried" value="1" '.$checked.'> '.__('[]').' '.__('bur pl.');
-
-				echo '<br><br><select name="part_place_name">';
-				echo '<option value="contains">'.__('Contains').'</option>';
-
-				$select_item=''; if ($part_place_name=='equals'){ $select_item=' selected'; }
-				echo '<option value="equals"'.$select_item.'>'.__('Equals').'</option>';
-
-				$select_item=''; if ($part_place_name=='starts_with'){ $select_item=' selected'; }
-				echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
+					$select_item=''; if ($part_place_name=='starts_with'){ $select_item=' selected'; }
+					echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 				echo '</select>';
 
 				echo ' <input type="text" name="place_name" value="'.safe_text_show($place_name).'" size="15">';
 				echo '<input type="hidden" name="index_list" value="'.$index_list.'">';
 				echo ' <input type="submit" value="'.__('Search').'" name="B1">';
+
+				echo '<br>';
+
+				$checked=''; if ($select_birth=='1'){$checked='checked';}
+				echo '<span class="select_box"><input type="Checkbox" name="select_birth" value="1" '.$checked.'> ';
+					echo '<span class="place_index_selected" style="float:none;">'.__('*').'</span>';
+				echo ' '.__('birth pl.').'</span>';
+
+				$checked=''; if ($select_bapt=='1'){$checked='checked';}
+				echo '<span class="select_box"><input type="Checkbox" name="select_bapt" value="1" '.$checked.'> ';
+					echo '<span class="place_index_selected" style="float:none;">'.__('~').'</span>';
+				echo ' '.__('bapt pl.').'</span>';
+
+				$checked=''; if ($select_place=='1'){$checked='checked';}
+				echo '<span class="select_box"><input type="Checkbox" name="select_place" value="1" '.$checked.'> ';
+					echo '<span class="place_index_selected" style="float:none;">'.__('^').'</span>';
+				echo ' '.__('residence').'</span>';
+
+				$checked=''; if ($select_death=='1'){$checked='checked';}
+				echo '<span class="select_box"><input type="Checkbox" name="select_death" value="1" '.$checked.'> ';
+					echo '<span class="place_index_selected" style="float:none;">'.__('&#134;').'</span>';
+				echo ' '.__('death pl.').'</span>';
+
+				$checked=''; if ($select_buried=='1'){$checked='checked';}
+				//echo '<span class="select_box"><input type="Checkbox" name="select_buried" value="1" '.$checked.'> '.__('[]').' '.__('bur pl.').'</span>';
+				echo '<span class="select_box"><input type="Checkbox" name="select_buried" value="1" '.$checked.'> ';
+					echo '<span class="place_index_selected" style="float:none;">'.__('[]').'</span>';
+				echo ' '.__('bur pl.').'</span>';
+
+				// *** Places by events (like occupations etc.).
+				$checked=''; if ($select_event=='1'){$checked='checked';}
+				echo '<input type="Checkbox" name="select_event" value="1" '.$checked.'> ';
+				echo '<span class="place_index_selected" style="float:none;">'.substr(__('Events'),0,1).'</span>';
+				echo ' '.__('Events');
+
 			echo '</form>';
 
 		echo '</td></tr></table>';
@@ -1567,7 +1677,7 @@ if ($index_list=='patronym'){
 			echo '</select>';
 			echo ' <input type="text" name="gednr" value="'.safe_text_show($selection['gednr']).'" size="15" placeholder="'.ucfirst(__('gedcomnumber (ID)')).'">';
 
-			//~~~~~~~~~~~~~~~~~~~
+			//==================================
 			//echo '</td><td colspan="2" align="center" class="no_border">'.__('Research status:');
 			echo '</td><td colspan="2" align="center" class="no_border">'.__('Research status:').'<br>';
 			$check=''; if ($selection['parent_status']=='noparents'){ $check=' checked'; }
@@ -1580,7 +1690,7 @@ if ($index_list=='patronym'){
 			//echo '<input type="radio" name="parent_status" value="bothparents"'.$check.'>'.__('Both parents').'&nbsp;&nbsp;';	
 			$check=''; if ($selection['parent_status']=="" OR $selection['parent_status']=='allpersons'){ $check=' checked'; }
 			echo '<input type="radio" name="parent_status" value="allpersons"'.$check.'>'.__('All').'&nbsp;&nbsp;';
-			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			//==================================
 			//echo '</td><td>';
 			echo '</td>';
 			echo '</tr>';
@@ -1836,7 +1946,7 @@ if ($index_list=='patronym'){
 			document.getElementById("found_div").innerHTML = "'.__('Loading...').'";
 			</script>';
 	}
-	
+
 	while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
 
 		//TEST MYSQL 5.7

@@ -47,6 +47,25 @@ $today=strtolower($today);
 $year = date("Y");
 
 $url_start='<a href="'.CMS_ROOTPATH.'birthday_list.php?month=';
+
+$url_end='';
+if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] == 'wedding'){
+	$url_end='&amp;ann_choice=wedding';
+	if(isset($_POST['civil'])) $url_end.='&amp;civil=civil';
+	if(isset($_POST['relig'])) $url_end.='&amp;relig=relig';
+}
+
+if(isset($_GET['ann_choice']) AND $_GET['ann_choice'] == 'wedding'){
+	$url_end='&amp;ann_choice=wedding';
+	if(isset($_GET['civil'])) $url_end.='&amp;civil=civil';
+	if(isset($_GET['relig'])) $url_end.='&amp;relig=relig';
+}
+
+// *** If month is clicked, also set $_POST ***
+if (isset($_GET['ann_choice'])) $_POST['ann_choice']='wedding';
+if (isset($_GET['civil'])){ $_POST['ann_choice']='wedding'; $_POST['civil']='wedding'; }
+if (isset($_GET['relig'])){ $_POST['ann_choice']='wedding'; $_POST['relig']='relig'; }
+
 $spacer='&nbsp;&#124;&nbsp;';
 $newline ="\n";
 $max_age = '110';
@@ -57,54 +76,53 @@ echo "<div class='fonts center'>";
 
 // *** Show navigation ***
 echo '[ ';
-echo ($url_start.'jan">'.__('jan')."</a>").$spacer.$newline;
-echo ($url_start.'feb">'.__('feb')."</a>").$spacer.$newline;
-echo ($url_start.'mar">'.__('mar')."</a>").$spacer.$newline;
-echo ($url_start.'apr">'.__('apr')."</a>").$spacer.$newline;
-echo ($url_start.'may">'.__('may')."</a>").$spacer.$newline;
-echo ($url_start.'jun">'.__('jun')."</a>").$spacer.$newline;
-echo ($url_start.'jul">'.__('jul')."</a>").$spacer.$newline;
-echo ($url_start.'aug">'.__('aug')."</a>").$spacer.$newline;
-echo ($url_start.'sep">'.__('sep')."</a>").$spacer.$newline;
-echo ($url_start.'oct">'.__('oct')."</a>").$spacer.$newline;
-echo ($url_start.'nov">'.__('nov')."</a>").$spacer.$newline;
-echo ($url_start.'dec">'.__('dec')."</a>");
+echo ($url_start.'jan'.$url_end.'">'.__('jan')."</a>").$spacer.$newline;
+echo ($url_start.'feb'.$url_end.'">'.__('feb')."</a>").$spacer.$newline;
+echo ($url_start.'mar'.$url_end.'">'.__('mar')."</a>").$spacer.$newline;
+echo ($url_start.'apr'.$url_end.'">'.__('apr')."</a>").$spacer.$newline;
+echo ($url_start.'may'.$url_end.'">'.__('may')."</a>").$spacer.$newline;
+echo ($url_start.'jun'.$url_end.'">'.__('jun')."</a>").$spacer.$newline;
+echo ($url_start.'jul'.$url_end.'">'.__('jul')."</a>").$spacer.$newline;
+echo ($url_start.'aug'.$url_end.'">'.__('aug')."</a>").$spacer.$newline;
+echo ($url_start.'sep'.$url_end.'">'.__('sep')."</a>").$spacer.$newline;
+echo ($url_start.'oct'.$url_end.'">'.__('oct')."</a>").$spacer.$newline;
+echo ($url_start.'nov'.$url_end.'">'.__('nov')."</a>").$spacer.$newline;
+echo ($url_start.'dec'.$url_end.'">'.__('dec')."</a>");
 echo " ]\n";
 
 // *** Show month and year ***
 echo "<div class='standard_header'>".ucfirst(language_date($month))." ".$year."</div>";
 
 echo "<div>";
-
 echo "<form name='anniv' id='anniv' action='".CMS_ROOTPATH."birthday_list.php?month=".$month."' method='post'>";
-echo "<table class='humo' style='text-align:center;width:40%;margin-left:auto;margin-right:auto;border:1px solid black;'><tr>";
-$check = " checked"; 
-if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] != 'birthdays') $check = "";
-echo "<td style='border:none'><input id='birthd' onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='birthdays'".$check.">".__('Birthdays')."</td>";
-//echo "&nbsp;&nbsp;&nbsp;";
-$check = ""; 
-if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] == 'wedding') $check = " checked";
-echo "<td style='border:none'><input id='wedd' onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='wedding'".$check.">".__('Wedding anniversaries')."&nbsp;&nbsp;";
-$check= " checked";
-if(isset($_POST['ann_choice']) AND !isset($_POST['civil'])) $check = "";
-echo "<span style='font-size:90%'>(<input type='checkbox' onClick='document.getElementById(\"wedd\").checked = true;document.getElementById(\"anniv\").submit();' name='civil' id='civil' value='civil'".$check.">".__('Civil');
-$check= "";
-if(isset($_POST['ann_choice']) AND isset($_POST['relig'])) $check = " checked";
-echo "&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"wedd\").checked = true;document.getElementById(\"anniv\").submit();' name='relig' id='relig' value='relig'".$check.">".__('Religious').")</span></td>";
-//echo "</td>";
-/*
-$check = ""; 
-if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] == 'wedding') $check = " checked";
-echo "<td style='border:none'><input onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='wedding'".$check.">".__('Wedding anniversaries')."</td></tr>";
-$check= " checked";
-if(isset($_POST['ann_choice']) AND !isset($_POST['civil'])) $check = "";
-echo "<tr><td style='border:none'></td>,<td style='border:none'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"anniv\").submit();' name='civil' id='civil' value='civil'".$check.">".__('Civil');
-$check= "";
-if(isset($_POST['ann_choice']) AND isset($_POST['relig'])) $check = " checked";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"anniv\").submit();' name='relig' id='relig' value='relig'".$check.">".__('Religious')."</td>";
-echo "</td>";
-*/
-echo "</tr></table>";
+	echo "<table class='humo' style='text-align:center;width:40%;margin-left:auto;margin-right:auto;border:1px solid black;'><tr>";
+	$check = " checked"; 
+	if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] != 'birthdays') $check = "";
+	echo "<td style='border:none'><input id='birthd' onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='birthdays'".$check.">".__('Birthdays')."</td>";
+	//echo "&nbsp;&nbsp;&nbsp;";
+	$check = ""; 
+	if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] == 'wedding') $check = " checked";
+	echo "<td style='border:none'><input id='wedd' onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='wedding'".$check.">".__('Wedding anniversaries')."&nbsp;&nbsp;";
+	$check= " checked";
+	if(isset($_POST['ann_choice']) AND !isset($_POST['civil'])) $check = "";
+	echo "<span style='font-size:90%'>(<input type='checkbox' onClick='document.getElementById(\"wedd\").checked = true;document.getElementById(\"anniv\").submit();' name='civil' id='civil' value='civil'".$check.">".__('Civil');
+	$check= "";
+	if(isset($_POST['ann_choice']) AND isset($_POST['relig'])) $check = " checked";
+	echo "&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"wedd\").checked = true;document.getElementById(\"anniv\").submit();' name='relig' id='relig' value='relig'".$check.">".__('Religious').")</span></td>";
+	//echo "</td>";
+	/*
+	$check = ""; 
+	if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] == 'wedding') $check = " checked";
+	echo "<td style='border:none'><input onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='wedding'".$check.">".__('Wedding anniversaries')."</td></tr>";
+	$check= " checked";
+	if(isset($_POST['ann_choice']) AND !isset($_POST['civil'])) $check = "";
+	echo "<tr><td style='border:none'></td>,<td style='border:none'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"anniv\").submit();' name='civil' id='civil' value='civil'".$check.">".__('Civil');
+	$check= "";
+	if(isset($_POST['ann_choice']) AND isset($_POST['relig'])) $check = " checked";
+	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"anniv\").submit();' name='relig' id='relig' value='relig'".$check.">".__('Religious')."</td>";
+	echo "</td>";
+	*/
+	echo "</tr></table>";
 echo "</form>";
 echo "</div>";
 

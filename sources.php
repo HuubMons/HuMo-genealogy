@@ -187,8 +187,13 @@ echo '</div><br>';
 				if ($sourceDb->source_title){
 					echo $sourceDb->source_title;
 				} else {
-					echo substr($sourceDb->source_text,0,40);
-					if (strlen($sourceDb->source_text)>40) echo '...';
+					if ($sourceDb->source_text){
+						echo substr($sourceDb->source_text,0,40);
+						if (strlen($sourceDb->source_text)>40) echo '...';
+					}
+					else
+						// *** No title, no text. Could be an empty source ***
+						echo '...';
 				}
 			echo '</a></td>'; 
 

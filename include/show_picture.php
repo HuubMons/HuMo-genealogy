@@ -257,7 +257,7 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 	if($temp->rowCount()) {  // there is a category table 
 		$cat1 = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");
 		if($cat1->rowCount()) { 
-			while($catDb = $cat1->fetch(PDO::FETCH_OBJ)) {  
+			while($catDb = $cat1->fetch(PDO::FETCH_OBJ)) {
 				if(substr($picture_org,0,3)==$catDb->photocat_prefix AND is_dir($picture_path.'/'.substr($picture_org,0,2)))  {  // there is a subfolder of this prefix
 					$picture_path .= substr($picture_org,0,2).'/';  // look in that subfolder
 				}

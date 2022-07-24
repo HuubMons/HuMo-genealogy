@@ -496,6 +496,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	//$text.=show_media('family',$marriageDb->fam_gedcomnumber); // *** This function can be found in file: show_picture.php! ***
 	$result = show_media('family',$marriageDb->fam_gedcomnumber); // *** This function can be found in file: show_picture.php! ***
 	$text.= $result[0];
+	if (isset($templ_relation)) $templ_relation = array_merge((array)$templ_relation,(array)$result[1]);
+		else $templ_relation=$result[1];
 	//if (isset($templ_person))
 	//	$templ_person = array_merge((array)$templ_person,(array)$result[1]);
 	//else
@@ -644,7 +646,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($addition) $text.='<b>'.$addition.'</b>';
 
 	$templ_relation["relnr_rel"]=$relation_number.$relation_kind;
-	$templ_relation["rel_add"]=$addition;
+	$templ_relation["rel_add"]="\n".$addition;
 	if($screen_mode!="PDF") {
 		return $text;
 	}

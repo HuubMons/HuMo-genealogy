@@ -54,14 +54,14 @@ else{
 //echo 'TEST'.$_GET['last_name'].'!'.$last_name.'!';
 
 // *** MAIN SETTINGS ***
-$maxcols = 5; // number of name & nr colums in table. For example 3 means 3x name col + nr col
+$maxcols = 2; // number of name & nr colums in table. For example 3 means 3x name col + nr col
 if(isset($_POST['maxcols'])){
 	$maxcols = $_POST['maxcols'];
 	$_SESSION["save_maxcols"]=$maxcols;
 }
 if (isset($_SESSION["save_maxcols"])) $maxcols=$_SESSION["save_maxcols"];
 
-$maxnames = 201;
+$maxnames = 100;
 if(isset($_POST['freqsurnames'])) {
 	$maxnames = $_POST['freqsurnames'];
 	$_SESSION["save_maxnames"]=$maxnames;
@@ -181,7 +181,7 @@ while (@$personDb=$person->fetch(PDO::FETCH_OBJ)){
 		$number_high=$personDb->count_last_names;
 	}
 }
-@$row = ceil(count($freq_last_names)/$maxcols);
+if (isset($freq_last_names)) $row = ceil(count($freq_last_names)/$maxcols);
 
 // *** Total number of persons for multiple pages ***
 //if ($count_qry){
@@ -242,6 +242,7 @@ echo '<div style="text-align:center">';
 		//echo '<br><div class="center">'.__('No names found.').'</div>';
 	}
 	else{
+		$show_line_pages=false;
 		$line_pages=__('Page');
 
 		if ($humo_option["url_rewrite"]=="j"){
@@ -254,6 +255,7 @@ echo '<div style="text-align:center">';
 
 		// "<="
 		if ($start>1){
+			$show_line_pages=true;
 			$start2=$start-20;
 			$calculated=($start-2)*$nr_persons;
 			$line_pages.= ' <a href="'.$uri_path_string.
@@ -268,9 +270,10 @@ echo '<div style="text-align:center">';
 			$calculated=($i-1)*$nr_persons;
 			if ($calculated<$count_persons){
 				if ($item==$calculated){
-					$line_pages.=  " <b>$i</b>";
+					$line_pages.=  ' <b>'.$i.'</b>';
 				}
 				else {
+					$show_line_pages=true;
 					$line_pages.= ' <a href="'.$uri_path_string.
 					"start=".$start.
 					"&amp;item=".$calculated.
@@ -282,13 +285,16 @@ echo '<div style="text-align:center">';
 		// "=>"
 		$calculated=($i-1)*$nr_persons;
 		if ($calculated<$count_persons){
+			$show_line_pages=true;
 			$line_pages.= ' <a href="'.$uri_path_string.
 			"start=".$i.
 			"&amp;item=".$calculated.
 			'"> =&gt;</a>';
 		}
 	}
-	echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$line_pages;
+	//echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$line_pages;
+	if (isset($show_line_pages) AND $show_line_pages) echo '<br>';
+	if (isset($line_pages)) echo $line_pages;
 
 echo '</div>';
 
@@ -342,7 +348,7 @@ for(var i = 0; i < rws.length; i ++) {
 		}
 	}
 }
-</script>';
+</script><br>';
 
 include_once(CMS_ROOTPATH."footer.php");
 ?>

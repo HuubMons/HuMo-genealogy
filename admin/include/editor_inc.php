@@ -764,7 +764,7 @@ if (isset($_GET['add_parents'])){
 	fam_kind='',
 	fam_man='".safe_text_db($man_gedcomnumber)."',
 	fam_woman='".safe_text_db($woman_gedcomnumber)."',
-	fam_children='".safe_text_db($pers_gedcomnumber)."';
+	fam_children='".safe_text_db($pers_gedcomnumber)."',
 	fam_relation_date='', fam_relation_place='', fam_relation_text='',
 	fam_marr_notice_date='', fam_marr_notice_place='', fam_marr_notice_text='',
 	fam_marr_date='', fam_marr_place='', fam_marr_text='', fam_marr_authority='',
@@ -1071,7 +1071,7 @@ if (isset($_POST['relation_add'])){
 	fam_tree_id='".$tree_id."',
 	fam_gedcomnumber='".$fam_gedcomnumber."', fam_kind='',
 	fam_man='".safe_text_db($man_gedcomnumber)."', fam_woman='".safe_text_db($woman_gedcomnumber)."',
-	fam_children='';
+	fam_children='',
 	fam_relation_date='', fam_relation_place='', fam_relation_text='',
 	fam_marr_notice_date='', fam_marr_notice_place='', fam_marr_notice_text='',
 	fam_marr_date='', fam_marr_place='', fam_marr_text='', fam_marr_authority='',
@@ -1082,6 +1082,7 @@ if (isset($_POST['relation_add'])){
 	fam_new_user='".$username."',
 	fam_new_date='".$gedcom_date."',
 	fam_new_time='".$gedcom_time."'";
+//echo $sql;
 	$result=$dbh->query($sql);
 	
 	// only needed for jewish settings
@@ -1158,7 +1159,7 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 	fam_tree_id='".$tree_id."',
 	fam_gedcomnumber='".$fam_gedcomnumber."', fam_kind='',
 	fam_man='".safe_text_db($man_gedcomnumber)."', fam_woman='".safe_text_db($woman_gedcomnumber)."',
-	fam_children='';
+	fam_children='',
 	fam_relation_date='', fam_relation_place='', fam_relation_text='',
 	fam_marr_notice_date='', fam_marr_notice_place='', fam_marr_notice_text='',
 	fam_marr_date='', fam_marr_place='', fam_marr_text='', fam_marr_authority='',

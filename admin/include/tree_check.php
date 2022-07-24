@@ -158,7 +158,9 @@ if (isset($_POST['database_check'])){
 	while($person_startDb=$person_start->fetch()){
 
 		// *** Now get all data for one person at a time ***
-		$person = $dbh->query("SELECT pers_gedcomnumber,pers_famc,pers_fams,pers_place_index FROM humo_persons
+		//$person = $dbh->query("SELECT pers_gedcomnumber,pers_famc,pers_fams,pers_place_index FROM humo_persons
+		//	WHERE pers_id='".$person_startDb['pers_id']."'");
+		$person = $dbh->query("SELECT pers_gedcomnumber,pers_famc,pers_fams FROM humo_persons
 			WHERE pers_id='".$person_startDb['pers_id']."'");
 		$person=$person->fetch(PDO::FETCH_OBJ);
 
@@ -260,6 +262,7 @@ if (isset($_POST['database_check'])){
 			}
 		}
 		*/
+/*
 		// *** Do NOT use function get_adresses, because it will slow down this script EXTREMELY ***
 		$connect_qry= "SELECT connect_item_id FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 			AND connect_kind='person' AND connect_sub_kind='person_address' AND connect_connect_id='".$person->pers_gedcomnumber."'
@@ -281,7 +284,7 @@ if (isset($_POST['database_check'])){
 				echo '<td>Missing place: '.$addressDb->address_place.'</td></tr>';
 			}
 		}
-
+*/
 	}
 
 //echo '<tr><td>!!'.time()-$processing_time.'</td><td></td><td></td></tr>';
@@ -683,7 +686,7 @@ if (isset($_POST['invalid_dates'])){
 		if(isset($sourcedateDb['source_date']) AND $sourcedateDb['source_date']!='')
 			$result = invalid($sourcedateDb['source_date'],$sourcedateDb['source_gedcomnr'],'source_date');
 			if($result===true) {$found = true; }
-	}  
+	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 	echo '</table>';
 }
@@ -848,14 +851,14 @@ if (isset($_POST['final_check'])){
 						$spouses =  $dbh->query("SELECT pers_birth_date FROM humo_persons 
 							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$marriagesDb->fam_man."'");
 					}
-					else {  
+					else {
 						$spouses =  $dbh->query("SELECT pers_birth_date FROM humo_persons 
 							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$marriagesDb->fam_woman."'");
 					}
 					$spousesDb = $spouses->fetch(PDO::FETCH_OBJ);
 					if(isset($spousesDb->pers_birth_date)) $spouse_dates[] = $spousesDb->pers_birth_date; 
 				}
-			} 
+			}
 		}
 	 
 		// parents' dates
@@ -866,7 +869,7 @@ if (isset($_POST['final_check'])){
 		$m_fams=''; // marriage(s) of mother (to find previous sibling)
 		$m_fams_arr = array(); // marriage(s) array of mother (to find previous sibling)
 		
-		if(isset($personDb['pers_famc'])) { 
+		if(isset($personDb['pers_famc'])) {
 			$parents = $dbh->query("SELECT fam_gedcomnumber, fam_man, fam_woman, fam_children, fam_marr_date, fam_marr_church_date, fam_marr_notice_date, fam_relation_date
 				FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber ='".$personDb['pers_famc']."'");
 			$parentsDb=$parents->fetch(PDO::FETCH_OBJ);
@@ -876,15 +879,15 @@ if (isset($_POST['final_check'])){
 			}
 			elseif(isset($parentsDb->fam_marr_church_date)) { // if no civil date try religious marriage
 				$par_marr_date = $parentsDb->fam_marr_church_date;
-			} 
+			}
 			elseif(isset($parentsDb->fam_marr_notice_date)) { // if no civil or religious date, try notice date
 				$par_marr_date = $parentsDb->fam_marr_notice_date;
-			} 
+			}
 			elseif(isset($parentsDb->fam_marr_relation_date)) { // if non of above try relation date
 				$par_marr_date = $parentsDb->fam_relation_date;
-			} 
+			}
 //END NEW
-			if(isset($parentsDb->fam_woman)) {  
+			if(isset($parentsDb->fam_woman)) {
 				$mother = $dbh->query("SELECT pers_birth_date, pers_fams FROM humo_persons
 					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber = '".$parentsDb->fam_woman."'");
 				$motherDb=$mother->fetch(PDO::FETCH_OBJ);
@@ -894,14 +897,14 @@ if (isset($_POST['final_check'])){
 					$m_fams_arr = explode(";",$m_fams);
 				}
 			}
-			if(isset($parentsDb->fam_man)) {  
+			if(isset($parentsDb->fam_man)) {
 				$father = $dbh->query("SELECT pers_birth_date FROM humo_persons 
 					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber = '".$parentsDb->fam_man."'");
 				$fatherDb=$father->fetch(PDO::FETCH_OBJ);
 				if(isset($fatherDb->pers_birth_date)) $f_b_date = $fatherDb->pers_birth_date;
 			}
 //NEW - find previous born sibling
-			if(isset($parentsDb->fam_children)) {   
+			if(isset($parentsDb->fam_children)) {
 				$ch_array = explode(";",$parentsDb->fam_children);
 				$num_ch = count($ch_array); // number of children
 				$first_ch = 0;
@@ -922,7 +925,7 @@ if (isset($_POST['final_check'])){
 					elseif($count==0) { $first_ch=1; }	// this is first child in own fam
 				}
 				if($num_ch==1 OR $first_ch==1) { // if this only or first child in this marriage - look for previous marriage of mother
-					if(isset($m_fams_arr) AND count($m_fams_arr)>1 AND $m_fams_arr[0]!=$parentsDb->fam_gedcomnumber) { 
+					if(isset($m_fams_arr) AND count($m_fams_arr)>1 AND $m_fams_arr[0]!=$parentsDb->fam_gedcomnumber) {
 						// if mother has more than one marriage and this is not the first, then look for last child in previous marriage
 						$count=0;
 						while($m_fams_arr[$count]!=$parentsDb->fam_gedcomnumber) {
@@ -938,7 +941,7 @@ if (isset($_POST['final_check'])){
 							$prev_ch_ged = $prev_ch_arr[$prev_ch_num-1]; // last child
 
 							$sibDb=$db_functions->get_person($prev_ch_ged);
-							if(isset($sibDb->pers_birth_date) AND $sibDb->pers_birth_date!='' ) { 
+							if(isset($sibDb->pers_birth_date) AND $sibDb->pers_birth_date!='' ) {
 								$sib_b_date = $sibDb->pers_birth_date; 
 							}
 						}
@@ -954,9 +957,8 @@ if (isset($_POST['final_check'])){
 		}
 
 		if($b_date!='') {
-			 
-			// ID 1 -  Birth date - after bapt/marr/death/burial date
 
+			// ID 1 -  Birth date - after bapt/marr/death/burial date
 			if(isset($_POST["birth_date1"]) AND $_POST["birth_date1"]=="1") {
 				if($bp_date!='' AND compare_seq($b_date,$bp_date)=="2") {
 					write_pers($name, "1",$b_date,$bp_date,__("birth date"),__("baptism date"),0);
@@ -969,17 +971,16 @@ if (isset($_POST['final_check'])){
 				if($bu_date!='' AND compare_seq($b_date,$bu_date)=="2") {
 					write_pers($name, "1",$b_date,$bu_date,__("birth date"),__("burial date"),0);
 					$results_found++;
-				}  
+				}
 				for($i=0;$i<count($marr_dates);$i++) {
 					if(isset($marr_dates[$i]) AND compare_seq($b_date,$marr_dates[$i])=="2") {
 						write_pers($name, "1",$b_date,$marr_dates[$i],__("birth date"),__("marriage"),0);
 						$results_found++;
 					}
-				}  
+				}
 			}
-			   
-			// ID 3 - Birth date more than X years after mother's birth date
 
+			// ID 3 - Birth date more than X years after mother's birth date
 			if(isset($_POST["birth_date3"]) AND $_POST["birth_date3"]=="1") {
 				if($m_b_date!='') {
 					$gap = compare_gap($m_b_date,$b_date);
@@ -989,9 +990,8 @@ if (isset($_POST['final_check'])){
 					}
 				}
 			}
-			 
-			// ID 4 - Birth date more than X years after father's birth date
 
+			// ID 4 - Birth date more than X years after father's birth date
 			if(isset($_POST["birth_date4"]) AND $_POST["birth_date4"]=="1") {
 				if($f_b_date!='') {
 					$gap = compare_gap($f_b_date,$b_date);
@@ -1001,9 +1001,8 @@ if (isset($_POST['final_check'])){
 					}
 				}
 			}
-			  
-			// ID 5 - Birth date less than X years after mother's birth date
 
+			// ID 5 - Birth date less than X years after mother's birth date
 			if(isset($_POST["birth_date5"]) AND $_POST["birth_date5"]=="1") {
 				if($m_b_date!='') {
 					$gap = compare_gap($m_b_date,$b_date);
@@ -1013,9 +1012,8 @@ if (isset($_POST['final_check'])){
 					}
 				}
 			}
-			  
-			// ID 6 - Birth date less than X years after father's birth date
 
+			// ID 6 - Birth date less than X years after father's birth date
 			if(isset($_POST["birth_date6"]) AND $_POST["birth_date6"]=="1") {
 				if($f_b_date!='') {
 					$gap = compare_gap($f_b_date,$b_date);
@@ -1025,11 +1023,9 @@ if (isset($_POST['final_check'])){
 					}
 				}
 			}
-			
-//NEW
+
 			// ID 23 - Birth date less than X months after parents' wedding date
- 
-			if(isset($_POST["birth_date7"]) AND $_POST["birth_date7"]=="1") {
+ 			if(isset($_POST["birth_date7"]) AND $_POST["birth_date7"]=="1") {
 				if($par_marr_date!='' AND compare_seq($par_marr_date,$b_date)!="2") {
 					$gap = compare_month_gap($par_marr_date,$b_date,$_POST["birth_date7_nr"]);
 					if($gap!==false) {
@@ -1037,19 +1033,17 @@ if (isset($_POST['final_check'])){
 						$results_found++;
 					}
 				}
-			}  
- 			
-			// ID 24 - Birth date before parents' wedding date
+			}
 
+			// ID 24 - Birth date before parents' wedding date
 			if(isset($_POST["birth_date8"]) AND $_POST["birth_date8"]=="1") {
 				if($par_marr_date!='' AND compare_seq($par_marr_date,$b_date)=="2") {
 					write_pers($name, "24",$b_date,$par_marr_date,__("birth date"),__("parents wedding date"),0);
 					$results_found++;
 				}
-			}  
-			
-			// ID 25 - Birth date less than 9 months after previous child of the mother
+			}
 
+			// ID 25 - Birth date less than 9 months after previous child of the mother
 			if(isset($_POST["birth_date9"]) AND $_POST["birth_date9"]=="1") {
 				if($sib_b_date !='' AND compare_seq($sib_b_date,$b_date)=="1") {
 					$gap = compare_month_gap($sib_b_date,$b_date,$_POST["birth_date9_nr"]);
@@ -1065,9 +1059,8 @@ if (isset($_POST['final_check'])){
 		} // end if b_date!=''
 
 		if($bp_date!='') {
-			  
+			
 			// ID 7 - Baptism date - after death/burial date
-
 			if(isset($_POST["baptism_date1"]) AND $_POST["baptism_date1"]=="1") {
 				if($d_date!='' AND compare_seq($bp_date,$d_date)=="2") {
 					write_pers($name, "7",$bp_date,$d_date,__("baptism date"),__("death date"),0);
@@ -1082,11 +1075,10 @@ if (isset($_POST['final_check'])){
 			// ID 8    CANCELLED - was joined with age check ID 2
 
 			// ID 9 - Baptism date more than X years after mother's birth date
-
 			if(isset($_POST["baptism_date3"]) AND $_POST["baptism_date3"]=="1") {
 				if($m_b_date!='') {
 					$gap = compare_gap($m_b_date,$bp_date);
-					if($gap!==false AND $gap > $_POST["baptism_date3_nr"]) {  
+					if($gap!==false AND $gap > $_POST["baptism_date3_nr"]) {
 						write_pers($name, "9",$bp_date,$m_b_date,__("baptism date"),__('mother'),$_POST["baptism_date3_nr"]);
 						$results_found++;
 					}
@@ -1094,19 +1086,17 @@ if (isset($_POST['final_check'])){
 			}
  
 			// ID 10  - Baptism date more than X years after father's birth date
-
 			if(isset($_POST["baptism_date4"]) AND $_POST["baptism_date4"]=="1") {
 				if($f_b_date!='') {
 					$gap = compare_gap($f_b_date,$bp_date);
-					if($gap!==false AND $gap > $_POST["baptism_date4_nr"]) {  
+					if($gap!==false AND $gap > $_POST["baptism_date4_nr"]) {
 						write_pers($name, "10",$bp_date,$f_b_date,__("baptism date"),__('father'),$_POST["baptism_date4_nr"]);
 						$results_found++;
 					}
 				}
 			}
- 
-			// ID 11  - Baptism date less than X years after mother's birth date
 
+			// ID 11  - Baptism date less than X years after mother's birth date
 			if(isset($_POST["baptism_date5"]) AND $_POST["baptism_date5"]=="1") {
 				if($m_b_date!='') {
 					$gap = compare_gap($m_b_date,$bp_date);
@@ -1116,13 +1106,12 @@ if (isset($_POST['final_check'])){
 					}
 				}
 			}
-  
-			// ID 12  - Baptism date less than X years after father's birth date
 
-			if(isset($_POST["baptism_date6"]) AND $_POST["baptism_date6"]=="1") { 
-				if($f_b_date!='') {  
+			// ID 12  - Baptism date less than X years after father's birth date
+			if(isset($_POST["baptism_date6"]) AND $_POST["baptism_date6"]=="1") {
+				if($f_b_date!='') {
 					$gap = compare_gap($f_b_date,$bp_date);
-					if($gap!==false AND $gap < $_POST["baptism_date6_nr"]) {  
+					if($gap!==false AND $gap < $_POST["baptism_date6_nr"]) {
 						write_pers($name, "12",$bp_date,$f_b_date,__("baptism date"),__('father'),$_POST["baptism_date6_nr"]);
 						$results_found++;
 					}
@@ -1133,11 +1122,10 @@ if (isset($_POST['final_check'])){
 		if(isset($personDb['pers_fams'])) {
 
 			// ID 13 - Marriage date after death/burial date
-
-			if(isset($_POST["marriage_date1"]) AND $_POST["marriage_date1"]=="1") {	
+			if(isset($_POST["marriage_date1"]) AND $_POST["marriage_date1"]=="1") {
 				for($i=0;$i<count($marr_dates);$i++) {
 					if($marr_dates[$i]!='') {
-						if($d_date!='' AND compare_seq($marr_dates[$i],$d_date)=="2") {  
+						if($d_date!='' AND compare_seq($marr_dates[$i],$d_date)=="2") {
 							write_pers($name, "13",$marr_dates[$i],$d_date,__("marriage"),__("death date"),0);
 							$results_found++;
 						}
@@ -1147,8 +1135,8 @@ if (isset($_POST['final_check'])){
 						}
 					}
 
-					if($marr_notice_dates[$i]!='') { 
-						if($d_date!='' AND compare_seq($marr_notice_dates[$i],$d_date)=="2") {  
+					if($marr_notice_dates[$i]!='') {
+						if($d_date!='' AND compare_seq($marr_notice_dates[$i],$d_date)=="2") {
 							write_pers($name, "13",$marr_notice_dates[$i],$d_date,__("marriage notice"),__("death date"),0);
 							$results_found++;
 						}
@@ -1156,9 +1144,9 @@ if (isset($_POST['final_check'])){
 							write_pers($name, "13",$marr_notice_dates[$i],$bu_date,__("marriage notice"),__("burial date"),0);
 							$results_found++;
 						}
-					}  
-					if($marr_church_dates[$i]!='') { 
-						if($d_date!='' AND compare_seq($marr_church_dates[$i],$d_date)=="2") {  
+					}
+					if($marr_church_dates[$i]!='') {
+						if($d_date!='' AND compare_seq($marr_church_dates[$i],$d_date)=="2") {
 							write_pers($name, "13",$marr_church_dates[$i],$d_date,__("church marriage"),__("death date"),0);
 							$results_found++;
 						}
@@ -1168,7 +1156,7 @@ if (isset($_POST['final_check'])){
 						}
 					}
 					if($marr_church_notice_dates[$i]!='') { 
-						if($d_date!='' AND compare_seq($marr_church_notice_dates[$i],$d_date)=="2") {  
+						if($d_date!='' AND compare_seq($marr_church_notice_dates[$i],$d_date)=="2") {
 							write_pers($name, "13",$marr_church_notice_dates[$i],$d_date,__("church marriage notice"),__("death date"),0);
 							$results_found++;
 						}
@@ -1176,17 +1164,16 @@ if (isset($_POST['final_check'])){
 							write_pers($name, "13",$marr_church_notice_dates[$i],$bu_date,__("church marriage notice"),__("burial date"),0);
 							$results_found++;
 						}
-					}  
-				}  
+					}
+				}
 			}
 
 			// ID 14 - Marriage date less than X years after birth date
-
 			if(isset($_POST["marriage_date2"]) AND $_POST["marriage_date2"]=="1") {
 				for($i=0;$i<count($marr_dates);$i++) {
-					if($marr_dates[$i]!='' AND $b_date!='') { 
+					if($marr_dates[$i]!='' AND $b_date!='') {
 						$gap = compare_gap($b_date,$marr_dates[$i]);
-						if($gap!==false AND $gap>=0 AND $gap < $_POST["marriage_date2_nr"]) {  
+						if($gap!==false AND $gap>=0 AND $gap < $_POST["marriage_date2_nr"]) {
 							write_pers($name,"14",$marr_dates[$i],$b_date,__("marriage"),__('birth date'), $_POST["marriage_date2_nr"]);
 							$results_found++;
 						}
@@ -1198,16 +1185,16 @@ if (isset($_POST['final_check'])){
 							$results_found++;
 						}
 					}
-					if($marr_church_dates[$i]!='' AND $b_date!='') { 
+					if($marr_church_dates[$i]!='' AND $b_date!='') {
 						$gap = compare_gap($b_date,$marr_church_dates[$i]);
-						if($gap!==false AND $gap>=0 AND $gap < $_POST["marriage_date2_nr"]) {  
+						if($gap!==false AND $gap>=0 AND $gap < $_POST["marriage_date2_nr"]) {
 							write_pers($name,"14",$marr_church_dates[$i],$b_date,__("church marriage"),__('birth date'), $_POST["marriage_date2_nr"]);
 							$results_found++;
 						}
 					}
-					if($marr_church_notice_dates[$i]!='' AND $b_date!='') { 
+					if($marr_church_notice_dates[$i]!='' AND $b_date!='') {
 						$gap = compare_gap($b_date,$marr_church_notice_dates[$i]);
-						if($gap!==false AND $gap>=0 AND $gap < $_POST["marriage_date2_nr"]) {  
+						if($gap!==false AND $gap>=0 AND $gap < $_POST["marriage_date2_nr"]) {
 							write_pers($name,"14",$marr_church_notice_dates[$i],$b_date,__("church marriage notice"),__('birth date'), $_POST["marriage_date2_nr"]);
 							$results_found++;
 						}
@@ -1216,45 +1203,41 @@ if (isset($_POST['final_check'])){
 			}
 
 			// ID 15 - More than X years age difference between spouses
-
 			if(isset($_POST["marriage_age"]) AND $_POST["marriage_age"]=="1") {
-				for($i=0;$i<count($spouse_dates);$i++) {  
-					if($spouse_dates[$i]!='' AND $b_date!='') { 
+				for($i=0;$i<count($spouse_dates);$i++) {
+					if($spouse_dates[$i]!='' AND $b_date!='') {
 						$gap = compare_gap($b_date,$spouse_dates[$i]);
 						if($gap!==false AND
-						   abs($gap) > $_POST["marriage_age_nr"]) {  
+						   abs($gap) > $_POST["marriage_age_nr"]) {
 							write_pers($name,"15",$spouse_dates[$i],$b_date,__("birth date"),__("Spouse"), $_POST["marriage_age_nr"]);
 							$results_found++;
 						}
 					}
 				}
-			}   
+			}
 		} // end if pers_fams
  
 		if($d_date!='') {
 
 			// ID 16 - Death date after burial date
-
 			if(isset($_POST["death_date1"]) AND $_POST["death_date1"]=="1") {
-				if($bu_date!='' AND compare_seq($d_date,$bu_date)=="2") {  
+				if($bu_date!='' AND compare_seq($d_date,$bu_date)=="2") {
 					write_pers($name,"16",$d_date,$bu_date,__("death date"),__("burial date"),0);
 					$results_found++;
 				}
 			}
  
 			// ID 17 - Death date before mother's birth date
-
 			if(isset($_POST["death_date2"]) AND $_POST["death_date2"]=="1") {
-				if($m_b_date!='' AND compare_seq($d_date,$m_b_date)=="1") {  
+				if($m_b_date!='' AND compare_seq($d_date,$m_b_date)=="1") {
 					write_pers($name,"17",$d_date,$m_b_date,__("death date"),__("mother"),0);
 					$results_found++;
 				}
-			}  
-  
-			// ID 18 - Death date before father's birth date
+			}
 
+			// ID 18 - Death date before father's birth date
 			if(isset($_POST["death_date3"]) AND $_POST["death_date3"]=="1") {
-				if($f_b_date!='' AND compare_seq($d_date,$f_b_date)=="1") {  
+				if($f_b_date!='' AND compare_seq($d_date,$f_b_date)=="1") {
 					write_pers($name,"18",$d_date,$f_b_date,__("death date"),__("father"),0);
 					$results_found++;
 				}
@@ -1264,18 +1247,16 @@ if (isset($_POST['final_check'])){
 
 		if($bu_date!='') {
 			// ID 19 - Burial date before mother's birth date
-
 			if(isset($_POST["burial_date1"]) AND $_POST["burial_date1"]=="1") {
-				if($m_b_date!='' AND compare_seq($bu_date,$m_b_date)=="1") {  
+				if($m_b_date!='' AND compare_seq($bu_date,$m_b_date)=="1") {
 					write_pers($name,"19",$bu_date,$m_b_date,__("burial date"),__("mother"),0);
 					$results_found++;
 				}
-			} 
- 
-			// ID 20 - Burial date before father's birth date
+			}
 
+			// ID 20 - Burial date before father's birth date
 			if(isset($_POST["burial_date2"]) AND $_POST["burial_date2"]=="1") {
-				if($f_b_date!='' AND compare_seq($bu_date,$f_b_date)=="1") {  
+				if($f_b_date!='' AND compare_seq($bu_date,$f_b_date)=="1") {
 					write_pers($name,"20",$bu_date,$f_b_date,__("burial date"),__("father"),0);
 					$results_found++;
 				}
@@ -1286,27 +1267,25 @@ if (isset($_POST['final_check'])){
 		if($b_date!='' OR $bp_date!='') {
  
 			// ID 21 - Age by death date
-
 			if(isset($_POST["age1"]) AND $_POST["age1"]=="1") { 
-				if($d_date!='') { 
-					if($b_date !='') { $start_date = $b_date; $txt= __("birth date"); } 
+				if($d_date!='') {
+					if($b_date !='') { $start_date = $b_date; $txt= __("birth date"); }
 					else { $start_date=$bp_date; $txt= __("baptism date"); }
 					$gap = compare_gap($start_date,$d_date);
-					if($gap!==false AND $gap > $_POST["age1_nr"]) {  
+					if($gap!==false AND $gap > $_POST["age1_nr"]) {
 						write_pers($name,"21",$start_date,$d_date,$txt,__('death date'),$_POST["age1_nr"]);
 						$results_found++;
 					}
 				}
 			}
-	 
-			// ID 22 - Age by burial date
 
-			if(isset($_POST["age2"]) AND $_POST["age2"]=="1") { 
-				if($bu_date!='') { 
-					if($b_date !='') { $start_date = $b_date; $txt= __("birth date"); } 
+			// ID 22 - Age by burial date
+			if(isset($_POST["age2"]) AND $_POST["age2"]=="1") {
+				if($bu_date!='') {
+					if($b_date !='') { $start_date = $b_date; $txt= __("birth date"); }
 					else { $start_date=$bp_date; $txt= __("baptism date"); }
 					$gap = compare_gap($start_date,$bu_date);
-					if($gap!==false AND $gap > $_POST["age1_nr"]) {  
+					if($gap!==false AND $gap > $_POST["age1_nr"]) {
 						write_pers($name,"22",$start_date,$bu_date,$txt,__('burial date'),$_POST["age2_nr"]);
 						$results_found++;
 					}
@@ -1314,16 +1293,15 @@ if (isset($_POST['final_check'])){
 			}
  
 			// ID 2 - Age up till today (no death/burial date)
-
-			if(isset($_POST["birth_date2"]) AND $_POST["birth_date2"]=="1") {  
+			if(isset($_POST["birth_date2"]) AND $_POST["birth_date2"]=="1") {
 				$alive=''; if(isset($personDb['pers_alive'])) $alive = $personDb['pers_alive'];
 				$d_place=''; if(isset($personDb['pers_death_place'])) $d_place = $personDb['pers_death_place'];
-				$bu_place=''; if(isset($personDb['pers_buried_place'])) $bu_place = $personDb['pers_buried_place']; 
-				if($d_date=='' AND $bu_date==''  AND $d_place=='' AND $bu_place=='' AND $alive!="deceased") {   
-					if($b_date !='') { $start_date = $b_date; $txt= __("birth date"); } 
+				$bu_place=''; if(isset($personDb['pers_buried_place'])) $bu_place = $personDb['pers_buried_place'];
+				if($d_date=='' AND $bu_date==''  AND $d_place=='' AND $bu_place=='' AND $alive!="deceased") {
+					if($b_date !='') { $start_date = $b_date; $txt= __("birth date"); }
 					else { $start_date=$bp_date; $txt= __("baptism date"); }
 					$gap = compare_gap($start_date,date("j M Y"));
-					if($gap!==false AND $gap > $_POST["birth_date2_nr"]) {  
+					if($gap!==false AND $gap > $_POST["birth_date2_nr"]) {
 						write_pers($name, "2",$start_date,'',$txt,'',$_POST["birth_date2_nr"]);
 						$results_found++;
 					}
@@ -1359,7 +1337,7 @@ function compare_seq($first_date,$second_date) {
 	$day1 = $process_date->search_day($first_date);
 	$year2 = $process_date->search_year($second_date);
 	$month2 = $process_date->search_month($second_date);
-	$day2 = $process_date->search_day($second_date);   
+	$day2 = $process_date->search_day($second_date);
 
 	if($year1 AND $year2) {  
 		if($year1 > $year2) return "2"; // a > b
@@ -1393,14 +1371,14 @@ function compare_month_gap($first_date,$second_date,$monthgap) {
 	if (strpos($second_date,'/')>0){ $temp=explode ('/',$second_date); $second_date=$temp[0]; }
 	$first_date=strtoupper($first_date); // $process_date->search_month uses upppercase months: DEC, FEB
 	$second_date=strtoupper($second_date);
-	$year1 = $process_date->search_year($first_date); 
-	$month1 = $process_date->search_month($first_date);  
-	$day1 = $process_date->search_day($first_date);  
-	$year2 = $process_date->search_year($second_date);  
-	$month2 = $process_date->search_month($second_date);  
-	$day2 = $process_date->search_day($second_date);    
+	$year1 = $process_date->search_year($first_date);
+	$month1 = $process_date->search_month($first_date);
+	$day1 = $process_date->search_day($first_date);
+	$year2 = $process_date->search_year($second_date);
+	$month2 = $process_date->search_month($second_date);
+	$day2 = $process_date->search_day($second_date);
 
-	if($year1 AND $year2 AND $month1 AND $month2) {  
+	if($year1 AND $year2 AND $month1 AND $month2) {
 		if($year1 == $year2) {  // dates in same year - we can deduct month1 from month2
 			if(($month2 - $month1) < $monthgap) return $month2 - $month1;
 			else return false;

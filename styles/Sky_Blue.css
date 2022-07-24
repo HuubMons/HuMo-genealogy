@@ -83,6 +83,13 @@ ul.humo_menu_item li a{
 	text-decoration:none;
 	color:#333;
 	/* border-right:1px solid #61a0d9; */
+	border-right:0px;
+}
+
+/* Hide pull down icon */
+.pull_down_icon{
+	visibility:hidden;
+	width:0px; height:0px;
 }
 
 /* Pop-up menu */

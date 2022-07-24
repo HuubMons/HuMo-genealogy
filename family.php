@@ -983,43 +983,7 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 
 								// *** Show RTF media ***
 								if ($woman_cls->privacy==''){
-									$result = show_media('person',$person_womanDb->pers_gedcomnumber); 
-									if(isset($result[1]) AND count($result[1])>0) { 
-										$break=0; $textarr = Array(); $goodpics=FALSE;
-										foreach($result[1] as $key => $value) {
-											if (strpos($key,"path")!==FALSE) {
-												$type = substr($result[1][$key],-3); 
-												if($type=="jpg" OR $type=="png") {
-													if($goodpics==FALSE) { //found 1st pic - make table
-														$table = $sect->addTable();
-														$table->addRow(0.1);
-														$table->addColumnsList(array(5,5,5));
-														$goodpics=TRUE;
-													}
-													$break++;
-													$cell = $table->getCell(1,$break);
-													$imageFile = $value;
-													$image = $cell->addImage($imageFile);
-													$txtkey = str_replace("pic_path","pic_text",$key); 
-													if(isset($result[1][$txtkey])) {
-														$textarr[]=$result[1][$txtkey];
-													}
-													else { $textarr[]="&nbsp;"; }
-												}
-				
-											}
-											if($break==3) break; // max 3 pics
-										} 
-										$break1=0;
-										if(count($textarr)>0) {
-											$table->addRow(0.1); //add row only if there is photo text
-											foreach($textarr as $value) {
-												$break1++;
-												$cell = $table->getCell(2, $break1);
-												$cell->writeText($value);
-											}
-										}  
-									}
+									show_rtf_media('person',$person_womanDb->pers_gedcomnumber);
 								}
 							}
 
@@ -1091,43 +1055,7 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 
 								// *** Show RTF media ***
 								if ($man_cls->privacy==''){
-									$result = show_media('person',$person_manDb->pers_gedcomnumber); 
-									if(isset($result[1]) AND count($result[1])>0) { 
-										$break=0; $textarr = Array(); $goodpics=FALSE;
-										foreach($result[1] as $key => $value) {
-											if (strpos($key,"path")!==FALSE) {
-												$type = substr($result[1][$key],-3); 
-												if($type=="jpg" OR $type=="png") {
-													if($goodpics==FALSE) { //found 1st pic - make table
-														$table = $sect->addTable();
-														$table->addRow(0.1);
-														$table->addColumnsList(array(5,5,5));
-														$goodpics=TRUE;
-													}
-													$break++;
-													$cell = $table->getCell(1,$break);
-													$imageFile = $value;
-													$image = $cell->addImage($imageFile);
-													$txtkey = str_replace("pic_path","pic_text",$key); 
-													if(isset($result[1][$txtkey])) {
-														$textarr[]=$result[1][$txtkey];
-													}
-													else { $textarr[]="&nbsp;"; }
-												}
-				
-											}
-											if($break==3) break; // max 3 pics
-										} 
-										$break1=0;
-										if(count($textarr)>0) {
-											$table->addRow(0.1); //add row only if there is photo text
-											foreach($textarr as $value) {
-												$break1++;
-												$cell = $table->getCell(2, $break1);
-												$cell->writeText($value);
-											}
-										}  
-									}
+									show_rtf_media('person',$person_manDb->pers_gedcomnumber);
 								}
 							}
 
@@ -1275,6 +1203,9 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 						else{
 							$rtf_text=strip_tags($marriage_cls->marriage_data(),"<b><i>");
 							$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+
+							// *** Show RTF media ***
+							show_rtf_media('family',$familyDb->fam_gedcomnumber);
 						}
 					}
 
@@ -1334,43 +1265,7 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 
 						// *** Show RTF media ***
 						if ($man_cls->privacy==''){
-							$result = show_media('person',$person_manDb->pers_gedcomnumber); 
-							if(isset($result[1]) AND count($result[1])>0) { 
-								$break=0; $textarr = Array(); $goodpics=FALSE;
-								foreach($result[1] as $key => $value) {
-									if (strpos($key,"path")!==FALSE) {
-										$type = substr($result[1][$key],-3); 
-										if($type=="jpg" OR $type=="png") {
-											if($goodpics==FALSE) { //found 1st pic - make table
-												$table = $sect->addTable();
-												$table->addRow(0.1);
-												$table->addColumnsList(array(5,5,5));
-												$goodpics=TRUE;
-											}
-											$break++;
-											$cell = $table->getCell(1,$break);
-											$imageFile = $value;
-											$image = $cell->addImage($imageFile);
-											$txtkey = str_replace("pic_path","pic_text",$key); 
-											if(isset($result[1][$txtkey])) {
-												$textarr[]=$result[1][$txtkey];
-											}
-											else { $textarr[]="&nbsp;"; }
-										}
-		
-									}
-									if($break==3) break; // max 3 pics
-								} 
-								$break1=0;
-								if(count($textarr)>0) {
-									$table->addRow(0.1); //add row only if there is photo text
-									foreach($textarr as $value) {
-										$break1++;
-										$cell = $table->getCell(2, $break1);
-										$cell->writeText($value);
-									}
-								}  
-							}
+							show_rtf_media('person',$person_manDb->pers_gedcomnumber);
 						}
 					}
 					if($screen_mode=='STAR') {
@@ -1426,43 +1321,7 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 
 						// *** Show RTF media ***
 						if ($woman_cls->privacy==''){
-							$result = show_media('person',$person_womanDb->pers_gedcomnumber);
-							if(isset($result[1]) AND count($result[1])>0) { 
-								$break=0; $textarr = Array(); $goodpics=FALSE;
-								foreach($result[1] as $key => $value) {
-									if (strpos($key,"path")!==FALSE) {
-										$type = substr($result[1][$key],-3); 
-										if($type=="jpg" OR $type=="png") {
-											if($goodpics==FALSE) { //found 1st pic - make table
-												$table = $sect->addTable();
-												$table->addRow(0.1);
-												$table->addColumnsList(array(5,5,5));
-												$goodpics=TRUE;
-											}
-											$break++;
-											$cell = $table->getCell(1,$break);
-											$imageFile = $value;
-											$image = $cell->addImage($imageFile);
-											$txtkey = str_replace("pic_path","pic_text",$key); 
-											if(isset($result[1][$txtkey])) {
-												$textarr[]=$result[1][$txtkey];
-											}
-											else { $textarr[]="&nbsp;"; }
-										}
-		
-									}
-									if($break==3) break; // max 3 pics
-								} 
-								$break1=0;
-								if(count($textarr)>0) {
-									$table->addRow(0.1); //add row only if there is photo text
-									foreach($textarr as $value) {
-										$break1++;
-										$cell = $table->getCell(2, $break1);
-										$cell->writeText($value);
-									}
-								}  
-							}
+							show_rtf_media('person',$person_womanDb->pers_gedcomnumber);
 						}
 					}
 					if($screen_mode=='STAR') {
@@ -1804,43 +1663,7 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 
 								// *** Show RTF media ***
 								if ($child_cls->privacy==''){
-									$result = show_media('person',$childDb->pers_gedcomnumber); 
-									if(isset($result[1]) AND count($result[1])>0) { 
-										$break=0; $textarr = Array(); $goodpics=FALSE;
-										foreach($result[1] as $key => $value) {
-											if (strpos($key,"path")!==FALSE) {
-												$type = substr($result[1][$key],-3); 
-												if($type=="jpg" OR $type=="png") {
-													if($goodpics==FALSE) { //found 1st pic - make table
-														$table = $sect->addTable();
-														$table->addRow(0.1);
-														$table->addColumnsList(array(5,5,5));
-														$goodpics=TRUE;
-													}
-													$break++;
-													$cell = $table->getCell(1,$break);
-													$imageFile = $value;
-													$image = $cell->addImage($imageFile);
-													$txtkey = str_replace("pic_path","pic_text",$key); 
-													if(isset($result[1][$txtkey])) {
-														$textarr[]=$result[1][$txtkey];
-													}
-													else { $textarr[]="&nbsp;"; }
-												}
-
-											}
-											if($break==3) break; // max 3 pics
-										} 
-										$break1=0;
-										if(count($textarr)>0) {
-											$table->addRow(0.1); //add row only if there is photo text
-											foreach($textarr as $value) {
-												$break1++;
-												$cell = $table->getCell(2, $break1);
-												$cell->writeText($value);
-											}
-										}  
-									}
+									show_rtf_media('person',$childDb->pers_gedcomnumber);
 								}
 							}
 							if($screen_mode=='STAR') {
@@ -1990,23 +1813,23 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 								if ($man_cls->privacy==''){
 									$location_var = $person_manDb->pers_birth_place; 
 									if($location_var !='') {
-    									$short=__('BORN_SHORT');
-    									if($location_var=='') { 
-    										$location_var = $person_manDb->pers_bapt_place; 
-    										$short=__('BAPTISED_SHORT');
-    									}
-    									$location_prep->execute();
-    									$man_birth_result = $location_prep->rowCount();
-    									if($man_birth_result >0) {
-    										$info = $location_prep->fetch();
-    										$name=$man_cls->person_name($person_manDb);
-    										$google_name=$name["standard_name"];
-    
-    										$location_array[]=$location_var;
-    										$lat_array[]=$info['location_lat'];
-    										$lon_array[]=$info['location_lng'];
-    										$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
-    									}
+										$short=__('BORN_SHORT');
+										if($location_var=='') { 
+											$location_var = $person_manDb->pers_bapt_place; 
+											$short=__('BAPTISED_SHORT');
+										}
+										$location_prep->execute();
+										$man_birth_result = $location_prep->rowCount();
+										if($man_birth_result >0) {
+											$info = $location_prep->fetch();
+											$name=$man_cls->person_name($person_manDb);
+											$google_name=$name["standard_name"];
+
+											$location_array[]=$location_var;
+											$lat_array[]=$info['location_lat'];
+											$lon_array[]=$info['location_lng'];
+											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
+										}
 									}
 								}
 
@@ -2014,28 +1837,28 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 								if ($woman_cls->privacy==''){
 									$location_var = $person_womanDb->pers_birth_place;
 									if($location_var !='') {
-    									$short=__('BORN_SHORT');
-    									if($location_var=='') {
-    										$location_var = $person_womanDb->pers_bapt_place;
-    										$short=__('BAPTISED_SHORT');
-    									}
-    									$location_prep->execute();
-    									$woman_birth_result = $location_prep->rowCount();
-    									if($woman_birth_result >0) {
-    										$info = $location_prep->fetch();
-    										$name=$woman_cls->person_name($person_womanDb);
-    										$google_name=$name["standard_name"];
-    										$key = array_search($location_var , $location_array);
-    										if (isset($key) AND $key>0){
-    											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
-    										}
-    										else{
-    											$location_array[]=$location_var ;
-    											$lat_array[]=$info['location_lat'];
-    											$lon_array[]=$info['location_lng'];
-    											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
-    										}
-    									}
+										$short=__('BORN_SHORT');
+										if($location_var=='') {
+											$location_var = $person_womanDb->pers_bapt_place;
+											$short=__('BAPTISED_SHORT');
+										}
+										$location_prep->execute();
+										$woman_birth_result = $location_prep->rowCount();
+										if($woman_birth_result >0) {
+											$info = $location_prep->fetch();
+											$name=$woman_cls->person_name($person_womanDb);
+											$google_name=$name["standard_name"];
+											$key = array_search($location_var , $location_array);
+											if (isset($key) AND $key>0){
+												$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
+											}
+											else{
+												$location_array[]=$location_var ;
+												$lat_array[]=$info['location_lat'];
+												$lon_array[]=$info['location_lng'];
+												$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
+											}
+										}
 									}
 								}
 
@@ -2047,26 +1870,26 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 										$location_var = $person_manDb->pers_buried_place;
 										$short = __('BURIED_SHORT');
 									}
-    								if($location_var !='') {
-    									$location_prep->execute();
-    									$man_death_result = $location_prep->rowCount();
+									if($location_var !='') {
+										$location_prep->execute();
+										$man_death_result = $location_prep->rowCount();
+
+										if($man_death_result >0) {
+											$info = $location_prep->fetch();
 	
-    									if($man_death_result >0) {
-    										$info = $location_prep->fetch();
-    
-    										$name=$man_cls->person_name($person_manDb);
-    										$google_name=$name["standard_name"];
-    										$key = array_search($location_var, $location_array);
-    										if (isset($key) AND $key>0){
-    											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var);
-    										}
-    										else{
-    											$location_array[]=$location_var;
-    											$lat_array[]=$info['location_lat'];
-    											$lon_array[]=$info['location_lng'];
-    											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var);
-    										}
-    									}
+											$name=$man_cls->person_name($person_manDb);
+											$google_name=$name["standard_name"];
+											$key = array_search($location_var, $location_array);
+											if (isset($key) AND $key>0){
+												$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var);
+											}
+											else{
+												$location_array[]=$location_var;
+												$lat_array[]=$info['location_lat'];
+												$lon_array[]=$info['location_lng'];
+												$text_array[]=addslashes($google_name.", ".$short.' '.$location_var);
+											}
+										}
 								    }
 								}
 
@@ -2079,55 +1902,55 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 										$short = __('BURIED_SHORT');
 									}
 									if($location_var !='') {
-    									$location_prep->execute();
-    									$woman_death_result = $location_prep->rowCount();
-    									if($woman_death_result >0) {
-    										$info = $location_prep->fetch();
-    
-    										$name=$woman_cls->person_name($person_womanDb);
-    										$google_name=$name["standard_name"];
-    										$key = array_search($location_var , $location_array);
-    										if (isset($key) AND $key>0){
-    											$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
-    										}
-    										else{
-    											$location_array[]=$location_var ;
-    											$lat_array[]=$info['location_lat'];
-    											$lon_array[]=$info['location_lng'];
-    											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
-    										}
-    									}
+										$location_prep->execute();
+										$woman_death_result = $location_prep->rowCount();
+										if($woman_death_result >0) {
+											$info = $location_prep->fetch();
+
+											$name=$woman_cls->person_name($person_womanDb);
+											$google_name=$name["standard_name"];
+											$key = array_search($location_var , $location_array);
+											if (isset($key) AND $key>0){
+												$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
+											}
+											else{
+												$location_array[]=$location_var ;
+												$lat_array[]=$info['location_lat'];
+												$lon_array[]=$info['location_lng'];
+												$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
+											}
+										}
 									}
 								}
 
 								// MARRIED
 								$location_var = $familyDb->fam_marr_place;
 								if($location_var !='') {
-    								$location_prep->execute();
-    								$marriage_result = $location_prep->rowCount();
-    									
-    								if($marriage_result >0) {
-    									$info = $location_prep->fetch();
-    
-    									$name=$man_cls->person_name($person_manDb);
-    									$google_name=$name["standard_name"];
-    
-    									$name=$woman_cls->person_name($person_womanDb);
-    									$google_name.=' & '.$name["standard_name"];
-    
-    									if ($man_cls->privacy=='' AND $woman_cls->privacy==''){
-    										$key = array_search($familyDb->fam_marr_place, $location_array);
-    										if (isset($key) AND $key>0){
-    											$text_array[$key].="\\n".addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
-    										}
-    										else{
-    											$location_array[]=$familyDb->fam_marr_place;
-    											$lat_array[]=$info['location_lat'];
-    											$lon_array[]=$info['location_lng'];
-    											$text_array[]=addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
-    										}
-    									}
-    								}
+									$location_prep->execute();
+									$marriage_result = $location_prep->rowCount();
+										
+									if($marriage_result >0) {
+										$info = $location_prep->fetch();
+
+										$name=$man_cls->person_name($person_manDb);
+										$google_name=$name["standard_name"];
+
+										$name=$woman_cls->person_name($person_womanDb);
+										$google_name.=' & '.$name["standard_name"];
+
+										if ($man_cls->privacy=='' AND $woman_cls->privacy==''){
+											$key = array_search($familyDb->fam_marr_place, $location_array);
+											if (isset($key) AND $key>0){
+												$text_array[$key].="\\n".addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
+											}
+											else{
+												$location_array[]=$familyDb->fam_marr_place;
+												$lat_array[]=$info['location_lat'];
+												$lon_array[]=$info['location_lng'];
+												$text_array[]=addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
+											}
+										}
+									}
 								}
 
 
@@ -2143,48 +1966,48 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 											// *** Child birth ***
 											$location_var = $childDb->pers_birth_place;
 											if($location_var !='') {
-    											$location_prep->execute();
-    											$child_result = $location_prep->rowCount();
-    
-    											if($child_result >0) {
-    												$info = $location_prep->fetch();
-    
-    												$name=$person_cls->person_name($childDb);
-    												$google_name=$name["standard_name"];
-    												$key = array_search($childDb->pers_birth_place, $location_array);
-    												if (isset($key) AND $key>0){
-    													$text_array[$key].="\\n".addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
-    												}
-    												else{
-    													$location_array[]=$childDb->pers_birth_place;
-    													$lat_array[]=$info['location_lat'];
-    													$lon_array[]=$info['location_lng'];
-    													$text_array[]=addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
-    												}
-    											}
-										    }
+												$location_prep->execute();
+												$child_result = $location_prep->rowCount();
+
+												if($child_result >0) {
+													$info = $location_prep->fetch();
+
+													$name=$person_cls->person_name($childDb);
+													$google_name=$name["standard_name"];
+													$key = array_search($childDb->pers_birth_place, $location_array);
+													if (isset($key) AND $key>0){
+														$text_array[$key].="\\n".addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
+													}
+													else{
+														$location_array[]=$childDb->pers_birth_place;
+														$lat_array[]=$info['location_lat'];
+														$lon_array[]=$info['location_lng'];
+														$text_array[]=addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
+													}
+												}
+											}
 											// *** Child death ***
 											$location_var = $childDb->pers_death_place;
 											if($location_var !='') {
-    											$location_prep->execute();
-    											$child_result = $location_prep->rowCount();
-    											
-    											if($child_result >0) {
-    												$info = $location_prep->fetch();
-    
-    												$name=$person_cls->person_name($childDb);
-    												$google_name=$name["standard_name"];
-    												$key = array_search($childDb->pers_death_place, $location_array);
-    												if (isset($key) AND $key>0){
-    													$text_array[$key].="\\n".addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
-    												}
-    												else{
-    													$location_array[]=$childDb->pers_death_place;
-    													$lat_array[]=$info['location_lat'];
-    													$lon_array[]=$info['location_lng'];
-    													$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
-    												}
-    											}
+												$location_prep->execute();
+												$child_result = $location_prep->rowCount();
+												
+												if($child_result >0) {
+													$info = $location_prep->fetch();
+
+													$name=$person_cls->person_name($childDb);
+													$google_name=$name["standard_name"];
+													$key = array_search($childDb->pers_death_place, $location_array);
+													if (isset($key) AND $key>0){
+														$text_array[$key].="\\n".addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
+													}
+													else{
+														$location_array[]=$childDb->pers_death_place;
+														$lat_array[]=$info['location_lat'];
+														$lon_array[]=$info['location_lng'];
+														$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
+													}
+												}
 											}
 										}
 									}
@@ -2371,7 +2194,9 @@ if($screen_mode=='') {
 				$name = $man_cls->person_name($person_manDb);
 
 				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-				$start_url=$man_cls->person_url2($person_manDb->pers_tree_id,$person_manDb->pers_famc,$person_manDb->pers_fams,$person_manDb->pers_gedcomnumber);
+				$start_url='';
+				if (isset($person_manDb->pers_tree_id))
+					$start_url=$man_cls->person_url2($person_manDb->pers_tree_id,$person_manDb->pers_famc,$person_manDb->pers_fams,$person_manDb->pers_gedcomnumber);
 			}
 
 			if (isset($_POST['send_mail'])){
@@ -2561,6 +2386,65 @@ if($hourglass===false) { // in hourglass there's more code after family.php is i
 	}
 	else {
 		$pdf->Output($title.".pdf","I");
+	}
+}
+
+function show_rtf_media($media_kind,$gedcomnumber){
+	// *** Show RTF media ***
+	global $sect;
+
+	$result = show_media($media_kind,$gedcomnumber);
+	if(isset($result[1]) AND count($result[1])>0) {
+		$break=0; $textarr = Array(); $goodpics=FALSE;
+		foreach($result[1] as $key => $value) {
+			if (strpos($key,"path")!==FALSE) {
+				$type = substr($result[1][$key],-3);
+				if($type=="jpg" OR $type=="png") {
+					if($goodpics==FALSE) { //found 1st pic - make table
+						$table = $sect->addTable();
+						$table->addRow(0.1);
+						$table->addColumnsList(array(5,5,5));
+						$goodpics=TRUE;
+					}
+					$break++;
+					$cell = $table->getCell(1,$break);
+					$imageFile = $value;
+					$image = $cell->addImage($imageFile);
+					$txtkey = str_replace("pic_path","pic_text",$key); 
+					if(isset($result[1][$txtkey])) {
+						$textarr[]=$result[1][$txtkey];
+					}
+					else { $textarr[]="&nbsp;"; }
+				}
+			}
+
+			//if($break==3) break; // max 3 pics
+			// *** Process multiple pictures ***
+			if($break==3){
+				$break1=0;
+				if(count($textarr)>0) {
+					$table->addRow(0.1); //add row only if there is photo text
+					foreach($textarr as $value) {
+						$break1++;
+						$cell = $table->getCell(2, $break1);
+						$cell->writeText($value);
+					}
+				}
+				unset($textarr);
+				$goodpics=FALSE;
+				$break=0;
+			}
+
+		}
+		$break1=0;
+		if(count($textarr)>0) {
+			$table->addRow(0.1); //add row only if there is photo text
+			foreach($textarr as $value) {
+				$break1++;
+				$cell = $table->getCell(2, $break1);
+				$cell->writeText($value);
+			}
+		}
 	}
 }
 
