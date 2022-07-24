@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-25 17:23+0200\n"
-"PO-Revision-Date: 2021-06-25 17:23+0200\n"
+"POT-Creation-Date: 2021-08-01 10:19+0200\n"
+"PO-Revision-Date: 2021-08-01 10:19+0200\n"
 "Last-Translator: Nagy-Vajda Domokos <nagydomi@yahoo.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/humo-gen/humo-gen/"
 "language/hu/)\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0\n"
 "X-Launchpad-Export-Date: 2012-03-21 21:20+0000\n"
 "X-Poedit-Basepath: ../..\n"
 "X-Poedit-KeywordsList: __\n"
@@ -29,34 +29,34 @@ msgstr ""
 msgid "You are not authorised to see this page."
 msgstr "Nincs jogosultsága az oldal megtekintéséhez."
 
-#: address.php:18 admin/include/editor.php:3928 admin/include/editor.php:4675
-#: admin/include/editor.php:4755 admin/include/editor_sources.php:102
+#: address.php:18 admin/include/editor.php:4150 admin/include/editor.php:4897
+#: admin/include/editor.php:4977 admin/include/editor_sources.php:102
 #: admin/include/editor_sources.php:156 admin/include/editor_sources.php:162
 #: admin/include/trees_cls.php:1741 header.php:255 source.php:234
 msgid "Address"
 msgstr "Cím"
 
 #: address.php:22 addresses.php:78 addresses.php:118
-#: admin/include/editor.php:4170 admin/include/editor.php:4677
-#: admin/include/editor.php:4738
+#: admin/include/editor.php:4392 admin/include/editor.php:4899
+#: admin/include/editor.php:4960
 msgid "Street"
 msgstr "Utca"
 
-#: address.php:23 admin/include/editor.php:3930 admin/include/editor.php:4172
-#: admin/include/editor.php:4678 admin/include/editor.php:4741 list.php:1510
-#: list.php:1518 source.php:233
+#: address.php:23 admin/include/editor.php:4152 admin/include/editor.php:4394
+#: admin/include/editor.php:4900 admin/include/editor.php:4963 list.php:1509
+#: list.php:1517 source.php:233
 msgid "Zip code"
 msgstr "Irányítószám"
 
-#: address.php:24 admin/include/editor.php:4167 admin/include/editor.php:4676
-#: admin/include/editor.php:4718 list.php:1435 list.php:1467 list.php:1498
-#: list.php:1506 list.php:1815 list.php:1827 source.php:111 source.php:116
+#: address.php:24 admin/include/editor.php:4389 admin/include/editor.php:4898
+#: admin/include/editor.php:4940 list.php:1434 list.php:1466 list.php:1497
+#: list.php:1505 list.php:1814 list.php:1826 source.php:111 source.php:116
 #: source.php:238 sources.php:170
 msgid "Place"
 msgstr "Helység"
 
-#: address.php:25 admin/include/editor.php:3934 admin/include/editor.php:4174
-#: admin/include/editor.php:4744
+#: address.php:25 admin/include/editor.php:4156 admin/include/editor.php:4396
+#: admin/include/editor.php:4966
 msgid "Phone"
 msgstr "Telefon"
 
@@ -74,11 +74,11 @@ msgstr "Telefon"
 msgid "Source"
 msgstr "Forrás"
 
-#: address.php:48
+#: address.php:51
 msgid "Address by person"
 msgstr "Cím személy szerint"
 
-#: addresses.php:68 admin/include/editor.php:4089 admin/include/editor.php:4590
+#: addresses.php:68 admin/include/editor.php:4311 admin/include/editor.php:4812
 #: admin/include/trees_cls.php:1888 menu.php:534
 msgid "Addresses"
 msgstr "Címek"
@@ -87,10 +87,10 @@ msgstr "Címek"
 msgid "City"
 msgstr "Város"
 
-#: addresses.php:80 admin/include/editor.php:804 admin/include/editor.php:933
-#: admin/include/editor.php:1630 admin/include/editor.php:1688
-#: admin/include/editor.php:3349 admin/include/editor_event_cls.php:1009
-#: admin/include/editor_person_select.php:87
+#: addresses.php:80 admin/include/editor.php:835 admin/include/editor.php:965
+#: admin/include/editor.php:1668 admin/include/editor.php:1726
+#: admin/include/editor_event_cls.php:1021
+#: admin/include/editor_person_select.php:88
 #: admin/include/editor_relation_select.php:29
 #: admin/include/editor_sources.php:364 admin/include/gedcom_export.php:574
 #: admin/include/language_editor.php:274 admin/include/make_db_maps.php:947
@@ -98,9 +98,9 @@ msgstr "Város"
 #: admin/include/trees_cls.php:870 admin/include/trees_cls.php:908
 #: admin/include/trees_cls.php:984 include/mainindex_cls.php:41
 #: include/mainindex_cls.php:129 include/mainindex_cls.php:590
-#: latest_changes.php:79 list.php:1327 list.php:1606
-#: list_places_families.php:422 menu.php:90 photoalbum.php:378
-#: relations.php:3168 relations.php:3172 relations.php:3289 relations.php:3293
+#: latest_changes.php:79 list.php:1326 list.php:1605
+#: list_places_families.php:420 menu.php:90 photoalbum.php:378
+#: relations.php:3171 relations.php:3175 relations.php:3292 relations.php:3296
 #: sources.php:138
 msgid "Search"
 msgstr "Keresés"
@@ -230,8 +230,8 @@ msgstr ""
 msgid "no file chosen"
 msgstr ""
 
-#: admin/include/backup.php:116 admin/include/editor_event_cls.php:1334
-#: admin/include/editor_event_cls.php:1343 admin/update/install_update.php:463
+#: admin/include/backup.php:116 admin/include/editor_event_cls.php:1346
+#: admin/include/editor_event_cls.php:1355 admin/update/install_update.php:463
 msgid "Upload"
 msgstr "Feltöltés"
 
@@ -283,7 +283,7 @@ msgstr ""
 msgid "Creating backup file. This may take some time. Please wait..."
 msgstr "Biztonsági mentés készül. Ez felvehet egy kis időt. Kérjük, várjon..."
 
-#: admin/include/backup.php:210
+#: admin/include/backup.php:217
 msgid ""
 "A backup file was saved to the server. We strongly suggest you download a "
 "copy to your computer in case you might need it later."
@@ -292,20 +292,20 @@ msgstr ""
 "töltsön le egy másolatot számítógépére, arra az esetre, ha szüksége lenne rá "
 "később."
 
-#: admin/include/backup.php:225
+#: admin/include/backup.php:232
 msgid "Download backup file"
 msgstr "Biztonsági mentés letöltése"
 
-#: admin/include/backup.php:265 admin/include/gedcom_export.php:732
+#: admin/include/backup.php:272 admin/include/gedcom_export.php:732
 msgid "Processed lines..."
 msgstr "Feldolgozott sorok..."
 
-#: admin/include/backup.php:322
+#: admin/include/backup.php:329
 msgid "Database has been restored successfully!"
 msgstr "Az adatbázist sikeresen visszaállítottuk!"
 
 #: admin/include/cal_date.php:8 admin/include/cal_date.php:16
-#: admin/include/editor.php:1882 admin/index.php:1001
+#: admin/include/editor.php:1920 admin/index.php:1001
 msgid "Calculated birth date"
 msgstr "Kiszámított születési dátum"
 
@@ -333,14 +333,14 @@ msgstr ""
 msgid "Choose family tree"
 msgstr "Család kiválasztása"
 
-#: admin/include/cal_date.php:31 admin/include/editor.php:1733
-#: admin/include/editor.php:4378 admin/include/editor_sources.php:399
+#: admin/include/cal_date.php:31 admin/include/editor.php:1771
+#: admin/include/editor.php:4600 admin/include/editor_sources.php:399
 #: admin/include/statistics.php:588 admin/include/statistics.php:667
 #: admin/include/user_notes.php:115
 msgid "Select"
 msgstr "Kiválasztás"
 
-#: admin/include/cal_date.php:119 fanchart.php:691
+#: admin/include/cal_date.php:119 fanchart.php:709
 msgid "No dates"
 msgstr "Nincs dátum"
 
@@ -395,11 +395,11 @@ msgid "Are you sure you want to remove this page?"
 msgstr "Biztosan törli ezt az oldalt?"
 
 #: admin/include/cms_pages.php:107 admin/include/cms_pages.php:176
-#: admin/include/editor.php:3545 admin/include/editor.php:3828
-#: admin/include/editor.php:4033 admin/include/editor_inc.php:50
-#: admin/include/editor_inc.php:695 admin/include/editor_inc.php:921
-#: admin/include/editor_inc.php:996 admin/include/editor_inc.php:1716
-#: admin/include/editor_inc.php:2170 admin/include/editor_user_settings.php:74
+#: admin/include/editor.php:3767 admin/include/editor.php:4050
+#: admin/include/editor.php:4255 admin/include/editor_inc.php:50
+#: admin/include/editor_inc.php:686 admin/include/editor_inc.php:902
+#: admin/include/editor_inc.php:972 admin/include/editor_inc.php:1689
+#: admin/include/editor_inc.php:2120 admin/include/editor_user_settings.php:74
 #: admin/include/gedcom.php:185 admin/include/gedcom_export.php:677
 #: admin/include/gedcom_export.php:685 admin/include/gedcom_export.php:696
 #: admin/include/gedcom_export.php:719 admin/include/groups.php:170
@@ -409,7 +409,7 @@ msgstr "Biztosan törli ezt az oldalt?"
 #: admin/include/settings_admin.php:313 admin/include/settings_admin.php:327
 #: admin/include/settings_admin.php:336 admin/include/settings_admin.php:344
 #: admin/include/settings_admin.php:365 admin/include/settings_admin.php:652
-#: admin/include/settings_admin.php:1138 admin/include/thumbs.php:702
+#: admin/include/settings_admin.php:1138 admin/include/thumbs.php:705
 #: admin/include/trees.php:117 admin/include/trees_cls.php:1269
 #: admin/include/trees_cls.php:1274 admin/include/trees_cls.php:1285
 #: admin/include/trees_cls.php:1290 admin/include/trees_cls.php:1301
@@ -420,11 +420,11 @@ msgid "Yes"
 msgstr "Igen"
 
 #: admin/include/cms_pages.php:108 admin/include/cms_pages.php:177
-#: admin/include/editor.php:3546 admin/include/editor.php:3829
-#: admin/include/editor.php:4034 admin/include/editor_inc.php:51
-#: admin/include/editor_inc.php:696 admin/include/editor_inc.php:922
-#: admin/include/editor_inc.php:997 admin/include/editor_inc.php:1717
-#: admin/include/editor_inc.php:2171 admin/include/editor_user_settings.php:76
+#: admin/include/editor.php:3768 admin/include/editor.php:4051
+#: admin/include/editor.php:4256 admin/include/editor_inc.php:51
+#: admin/include/editor_inc.php:687 admin/include/editor_inc.php:903
+#: admin/include/editor_inc.php:973 admin/include/editor_inc.php:1690
+#: admin/include/editor_inc.php:2121 admin/include/editor_user_settings.php:76
 #: admin/include/gedcom.php:186 admin/include/gedcom_export.php:678
 #: admin/include/gedcom_export.php:686 admin/include/gedcom_export.php:697
 #: admin/include/gedcom_export.php:718 admin/include/groups.php:171
@@ -434,7 +434,7 @@ msgstr "Igen"
 #: admin/include/settings_admin.php:314 admin/include/settings_admin.php:328
 #: admin/include/settings_admin.php:337 admin/include/settings_admin.php:345
 #: admin/include/settings_admin.php:366 admin/include/settings_admin.php:653
-#: admin/include/settings_admin.php:1139 admin/include/thumbs.php:703
+#: admin/include/settings_admin.php:1139 admin/include/thumbs.php:706
 #: admin/include/trees.php:118 admin/include/trees_cls.php:1270
 #: admin/include/trees_cls.php:1273 admin/include/trees_cls.php:1286
 #: admin/include/trees_cls.php:1289 admin/include/trees_cls.php:1302
@@ -507,11 +507,11 @@ msgid "Published"
 msgstr "Közzétéve"
 
 #: admin/include/cms_pages.php:368 admin/include/cms_pages.php:371
-#: admin/include/cms_pages.php:464 admin/include/editor.php:1782
-#: admin/include/editor.php:2419 admin/include/editor.php:2630
-#: admin/include/editor.php:3009 admin/include/editor.php:3743
-#: admin/include/editor.php:3949 admin/include/editor.php:4200
-#: admin/include/editor.php:4397 admin/include/editor_sources.php:293
+#: admin/include/cms_pages.php:464 admin/include/editor.php:1820
+#: admin/include/editor.php:2457 admin/include/editor.php:2752
+#: admin/include/editor.php:3131 admin/include/editor.php:3965
+#: admin/include/editor.php:4171 admin/include/editor.php:4422
+#: admin/include/editor.php:4619 admin/include/editor_sources.php:293
 #: admin/include/language_editor.php:285 admin/include/make_db_maps.php:295
 #: admin/include/make_db_maps.php:336 admin/include/make_db_maps.php:356
 #: admin/include/make_db_maps.php:370 admin/include/make_db_maps.php:411
@@ -540,10 +540,10 @@ msgstr "Menü / kategória elem"
 msgid "Remove menu"
 msgstr "Menü eltávolítása"
 
-#: admin/include/cms_pages.php:475 admin/include/editor.php:1785
-#: admin/include/editor.php:2422 admin/include/editor.php:3740
-#: admin/include/editor.php:3946 admin/include/editor.php:4197
-#: admin/include/editor.php:4598 admin/include/editor.php:4787
+#: admin/include/cms_pages.php:475 admin/include/editor.php:1823
+#: admin/include/editor.php:2460 admin/include/editor.php:3962
+#: admin/include/editor.php:4168 admin/include/editor.php:4419
+#: admin/include/editor.php:4820 admin/include/editor.php:5009
 #: admin/include/editor_event_cls.php:343
 #: admin/include/editor_event_cls.php:358
 #: admin/include/editor_event_cls.php:371
@@ -636,80 +636,80 @@ msgstr "Standard fő index"
 msgid "Set per language"
 msgstr "Nyelvenkénti beállítás"
 
-#: admin/include/editor.php:596 admin/include/editor_user_settings.php:61
+#: admin/include/editor.php:627 admin/include/editor_user_settings.php:61
 #: admin/include/groups.php:628 admin/include/make_db_maps.php:584
 #: admin/include/trees.php:316 help.php:48 help.php:51 help.php:54 help.php:57
-#: list.php:1787 menu.php:31 menu.php:434 statistics.php:53
+#: list.php:1786 menu.php:31 menu.php:434 statistics.php:53
 msgid "Family tree"
 msgstr "Családfa"
 
-#: admin/include/editor.php:600 maps.php:39 menu.php:34
+#: admin/include/editor.php:631 maps.php:39 menu.php:34
 msgid "Select a family tree:"
 msgstr "Válasszon családfát:"
 
-#: admin/include/editor.php:707
+#: admin/include/editor.php:738
 #, fuzzy
 #| msgid "Favourites list:"
 msgid "Favourites list"
 msgstr "Kedvencek lista:"
 
-#: admin/include/editor.php:775 admin/include/tree_check.php:76
+#: admin/include/editor.php:806 admin/include/tree_check.php:76
 #: admin/include/tree_check.php:91 header.php:261 help.php:78 menu.php:652
 msgid "Latest changes"
 msgstr "Legutóbbi változások"
 
-#: admin/include/editor.php:802 admin/include/editor.php:1017
-#: admin/include/editor.php:1151 admin/include/gedcom_export.php:570
-#: admin/include/tree_check.php:825 admin/include/trees_cls.php:875
-#: family.php:2458 relations.php:3130
+#: admin/include/editor.php:833 admin/include/editor.php:1049
+#: admin/include/editor.php:1183 admin/include/gedcom_export.php:570
+#: admin/include/tree_check.php:799 admin/include/trees_cls.php:875
+#: family.php:2468 relations.php:3133
 msgid "Person"
 msgstr "Személy"
 
-#: admin/include/editor.php:803 admin/include/editor.php:1792
+#: admin/include/editor.php:834 admin/include/editor.php:1830
 #: admin/include/editor_event_cls.php:23 admin/include/editor_event_cls.php:341
-#: admin/include/editor_inc.php:1318 admin/include/editor_person_select.php:82
+#: admin/include/editor_inc.php:1291 admin/include/editor_person_select.php:83
 #: admin/include/editor_relation_select.php:24
-#: admin/include/gedcom_export.php:571 birthday_list.php:119 family.php:2395
-#: family.php:2460 include/mainindex_cls.php:573 include/mainindex_cls.php:903
-#: list.php:1784 list_names.php:307 list_names.php:309 mailform.php:28
+#: admin/include/gedcom_export.php:571 birthday_list.php:119 family.php:2405
+#: family.php:2470 include/mainindex_cls.php:573 include/mainindex_cls.php:906
+#: list.php:1783 list_names.php:307 list_names.php:309 mailform.php:28
 #: mailform.php:118 menu.php:89 register.php:62 register.php:124
-#: relations.php:3123 user_settings.php:53
+#: relations.php:3126 user_settings.php:53
 msgid "Name"
 msgstr "Név"
 
-#: admin/include/editor.php:867 admin/include/editor.php:937
+#: admin/include/editor.php:898 admin/include/editor.php:969
 #: admin/include/trees_cls.php:943 admin/include/trees_cls.php:1016
-#: relations.php:3238 relations.php:3345
+#: relations.php:3241 relations.php:3348
 msgid "Person not found"
 msgstr "Nem találtunk személyt"
 
-#: admin/include/editor.php:892 admin/include/tree_check.php:822
+#: admin/include/editor.php:923 admin/include/tree_check.php:796
 msgid "Results"
 msgstr "Találatok"
 
-#: admin/include/editor.php:930 admin/include/editor_person_select.php:85
+#: admin/include/editor.php:962 admin/include/editor_person_select.php:86
 #: admin/include/editor_relation_select.php:27
 #: admin/include/gedcom_export.php:572
 msgid "or ID:"
 msgstr "vagy azonosító:"
 
-#: admin/include/editor.php:931 admin/include/editor.php:1380
-#: admin/include/editor.php:1728 admin/include/editor.php:2523
-#: admin/include/editor.php:4521
+#: admin/include/editor.php:963 admin/include/editor.php:1766
+#: admin/include/editor.php:2645 admin/include/editor.php:3345
+#: admin/include/editor.php:4743
 #, fuzzy
 #| msgid "gedcom no. (\"I43\")"
 msgid "GEDCOM number (ID)"
 msgstr "gedcom no. (\"I43\")"
 
-#: admin/include/editor.php:943 admin/include/editor.php:944
+#: admin/include/editor.php:975 admin/include/editor.php:976
 msgid "Add person"
 msgstr "Személy hozzáadása"
 
-#: admin/include/editor.php:956 admin/include/editor.php:1929
+#: admin/include/editor.php:988 admin/include/editor.php:1967
 msgid "Examples of date entries:"
 msgstr ""
 
-#: admin/include/editor.php:957 admin/include/editor.php:1930
+#: admin/include/editor.php:989 admin/include/editor.php:1968
 #, fuzzy
 #| msgid "13 oct 1813, 13-10-1813, 13/10/1813, between 1986 and 1987"
 msgid ""
@@ -717,7 +717,7 @@ msgid ""
 "13,10,1813, between 1986 and 1987, 13 oct 1100 BC."
 msgstr "13 oct 1813, 13-10-1813, 13/10/1813, between 1986 and 1987"
 
-#: admin/include/editor.php:958
+#: admin/include/editor.php:990
 msgid ""
 "In all text fields it's possible to add a hidden text/ own remarks by using "
 "# characters. Example: #Check birthday.#"
@@ -726,372 +726,352 @@ msgstr ""
 "hozzáadására a # karakterek használatával. Például: #Ellenőrizd a születés "
 "napját.#"
 
-#: admin/include/editor.php:960
+#: admin/include/editor.php:992
 msgid "= click to open selection popup screen."
 msgstr "= kattintson a felugró képernyő megnyitásához."
 
-#: admin/include/editor.php:961
+#: admin/include/editor.php:993
 msgid "= click to open extended editor items."
 msgstr "= kattintson a kiterjesztett szerkesztői elemek megjelenítéséhez."
 
-#: admin/include/editor.php:1033 admin/include/statistics.php:38
+#: admin/include/editor.php:1065 admin/include/statistics.php:38
 #: admin/include/statistics.php:41 admin/include/statistics.php:771
-#: admin/include/statistics.php:774 list_places_families.php:552
+#: admin/include/statistics.php:774 list_places_families.php:550
 msgid "Family"
 msgstr "Család"
 
-#: admin/include/editor.php:1042 admin/include/editor.php:1223
-#: admin/include/editor.php:3194
-msgid "Bulk add family members"
-msgstr ""
-
-#: admin/include/editor.php:1097
+#: admin/include/editor.php:1129
 msgid "Browse"
 msgstr ""
 
-#: admin/include/editor.php:1127 admin/include/editor_person_select.php:124
+#: admin/include/editor.php:1159 admin/include/editor_person_select.php:125
 #: report_ancestor.php:240
 msgid "Parents"
 msgstr "Szülők"
 
 # Nomen Nescio: unknown name.
-#: admin/include/editor.php:1134 admin/include/editor.php:1140
-#: admin/include/editor.php:1361 admin/include/editor.php:1367
-#: admin/include/editor.php:3229 admin/include/editor.php:3397
-#: admin/include/editor.php:4548 admin/include/editor_cls.php:254
-#: admin/include/editor_event_cls.php:1027
-#: admin/include/editor_event_cls.php:1036 admin/include/editor_inc.php:806
-#: admin/include/editor_inc.php:831 admin/include/editor_inc.php:1135
-#: admin/include/statistics.php:780 admin/include/statistics.php:792
-#: include/person_cls.php:462 include/person_cls.php:464
-#: include/person_cls.php:465 include/person_cls.php:466
-#: include/person_cls.php:467 include/person_cls.php:804
-#: include/person_cls.php:805 include/person_cls.php:986
-#: include/person_cls.php:987 include/person_cls.php:1012
-#: include/person_cls.php:1013 include/person_cls.php:1055
-#: include/person_cls.php:1057 include/person_cls.php:1077
-#: include/person_cls.php:1078 include/person_cls.php:1199
-#: include/person_cls.php:1995 include/person_cls.php:2013
-#: include/person_cls.php:2026 include/witness.php:111 include/witness.php:117
-#: list.php:159 list_places_families.php:139 report_ancestor.php:1253
-#: report_ancestor.php:1363 report_descendant.php:816
+#: admin/include/editor.php:1166 admin/include/editor.php:1172
+#: admin/include/editor.php:4770 admin/include/editor_cls.php:254
+#: admin/include/editor_event_cls.php:1039
+#: admin/include/editor_event_cls.php:1048 admin/include/editor_inc.php:794
+#: admin/include/editor_inc.php:819 admin/include/statistics.php:780
+#: admin/include/statistics.php:792 include/person_cls.php:504
+#: include/person_cls.php:506 include/person_cls.php:507
+#: include/person_cls.php:508 include/person_cls.php:509
+#: include/person_cls.php:854 include/person_cls.php:855
+#: include/person_cls.php:1038 include/person_cls.php:1039
+#: include/person_cls.php:1066 include/person_cls.php:1067
+#: include/person_cls.php:1104 include/person_cls.php:1106
+#: include/person_cls.php:1126 include/person_cls.php:1127
+#: include/person_cls.php:1249 include/person_cls.php:2043
+#: include/person_cls.php:2060 include/person_cls.php:2073
+#: include/witness.php:116 include/witness.php:122 list.php:158
+#: list_places_families.php:137 report_ancestor.php:1253
+#: report_ancestor.php:1363 report_descendant.php:817
 msgid "N.N."
 msgstr "N.N."
 
-#: admin/include/editor.php:1136 admin/include/editor.php:1191
-#: admin/include/editor.php:1363 admin/include/editor.php:1715
-#: admin/include/editor.php:2499 admin/include/editor.php:2628
-#: admin/include/editor.php:2662 admin/include/editor.php:3223
-#: admin/include/editor_event_cls.php:1029
+#: admin/include/editor.php:1168 admin/include/editor.php:1223
+#: admin/include/editor.php:1753 admin/include/editor.php:2537
+#: admin/include/editor.php:2750 admin/include/editor.php:2784
+#: admin/include/editor_event_cls.php:1041
 #: admin/include/editor_relation_select.php:107
-#: admin/include/tree_check.php:1529 include/language_date.php:88
+#: admin/include/tree_check.php:1503 include/language_date.php:88
 #: include/language_date.php:93 include/language_date.php:98
-#: include/language_date.php:116 include/person_cls.php:994
-#: include/person_cls.php:995 include/person_cls.php:1062
-#: include/person_cls.php:1063 relations.php:2005
+#: include/language_date.php:116 include/person_cls.php:1046
+#: include/person_cls.php:1047 include/person_cls.php:1111
+#: include/person_cls.php:1112 relations.php:2005
 msgid "and"
 msgstr "és"
 
-#: admin/include/editor.php:1147
+#: admin/include/editor.php:1179
 msgid "Add parents"
 msgstr "Szülők hozzáadása"
 
-#: admin/include/editor.php:1165 admin/include/editor.php:2638
-#: admin/include/editor.php:2754 admin/include/editor.php:3266
-#: admin/include/editor.php:3267 admin/include/editor.php:3330
-#: admin/include/editor.php:3331 include/marriage_cls.php:612
+#: admin/include/editor.php:1197 admin/include/editor.php:2760
+#: admin/include/editor.php:2876 include/marriage_cls.php:612
 msgid "marriage/ relation"
 msgstr "házasság/ kapcsolat"
 
-#: admin/include/editor.php:1171 admin/include/editor.php:2802
-#: admin/include/editor.php:3274 include/marriage_cls.php:280
-#: include/marriage_cls.php:281 include/marriage_cls.php:282
-#: include/marriage_cls.php:289 include/marriage_cls.php:290
+#: admin/include/editor.php:1203 admin/include/editor.php:2924
+#: include/marriage_cls.php:280 include/marriage_cls.php:281
+#: include/marriage_cls.php:282 include/marriage_cls.php:289
+#: include/marriage_cls.php:290
 msgid "Married"
 msgstr "Házasságot kötött"
 
-#: admin/include/editor.php:1199 admin/include/trees_cls.php:1622
-#: family.php:1584 family.php:1603
+#: admin/include/editor.php:1231 admin/include/trees_cls.php:1622
+#: family.php:1595 family.php:1614
 msgid "Children"
 msgstr "Gyermekek"
 
-#: admin/include/editor.php:1211 admin/include/editor.php:3123
+#: admin/include/editor.php:1243
 msgid "Connect child"
 msgstr "Gyermek kapcsolása"
 
-#: admin/include/editor.php:1211 admin/include/editor.php:3123
+#: admin/include/editor.php:1243 admin/include/editor.php:3290
+#: admin/include/editor.php:3332
 msgid "Add child"
 msgstr "Gyermek hozzáadása"
 
-#: admin/include/editor.php:1219
+#: admin/include/editor.php:1251
 msgid "Add marriage/ relation"
 msgstr "Házasság / kapcsolat hozzáadása"
 
-#: admin/include/editor.php:1227
+#: admin/include/editor.php:1255
+msgid "Bulk add family members"
+msgstr ""
+
+#: admin/include/editor.php:1259
 #, php-format
 msgid "Editing in %s? <b>Always backup your data!</b>"
 msgstr ""
 
-#: admin/include/editor.php:1236 admin/include/editor.php:3756
-#: admin/include/editor.php:4211
+#: admin/include/editor.php:1271 admin/include/editor.php:3978
+#: admin/include/editor.php:4433
 msgid "Preview"
 msgstr "Előnézet"
 
-#: admin/include/editor.php:1358
-msgid "Add child to family:"
-msgstr "Gyermek hozzáadása a családhoz:"
-
-#: admin/include/editor.php:1380 admin/include/editor.php:3449
-#: admin/include/editor.php:3485 family.php:1581 family.php:1599
-msgid "Child"
-msgstr "Gyermek"
-
-#: admin/include/editor.php:1383
-msgid "Select child"
-msgstr "Gyermek kiválasztása"
-
-#: admin/include/editor.php:1386
-msgid "Or add a new child:"
-msgstr "Vagy új gyermek hozzáadása:"
-
-#: admin/include/editor.php:1501
+#: admin/include/editor.php:1539
 msgid "Open Archives"
 msgstr ""
 
-#: admin/include/editor.php:1503
+#: admin/include/editor.php:1541
 msgid "Online search enabled"
 msgstr ""
 
-#: admin/include/editor.php:1505
+#: admin/include/editor.php:1543
 msgid "Online search disabled"
 msgstr ""
 
-#: admin/include/editor.php:1524
+#: admin/include/editor.php:1562
 msgid "Archives"
 msgstr ""
 
-#: admin/include/editor.php:1650 admin/include/language_editor.php:385
+#: admin/include/editor.php:1688 admin/include/language_editor.php:385
 msgid "No results found"
 msgstr "Nem találtunk eredményt"
 
-#: admin/include/editor.php:1687
+#: admin/include/editor.php:1725
 msgid "Search using period"
 msgstr ""
 
-#: admin/include/editor.php:1704
+#: admin/include/editor.php:1742
 msgid "parents"
 msgstr "szülők"
 
-#: admin/include/editor.php:1723
+#: admin/include/editor.php:1761
 msgid "There are no parents."
 msgstr "Nincsenek szülők."
 
-#: admin/include/editor.php:1725
+#: admin/include/editor.php:1763
 msgid "Add new parents (N.N. & N.N.)"
 msgstr "Új szülők hozzáadása (N.N. & N.N.)"
 
-#: admin/include/editor.php:1726
+#: admin/include/editor.php:1764
 msgid "Or select an existing family as parents:"
 msgstr ""
 
 # Buried
-#: admin/include/editor.php:1745 admin/include/editor.php:1791
-#: admin/include/editor.php:1913 admin/include/editor.php:1984
-#: admin/include/editor.php:2025 admin/include/editor.php:2067
-#: admin/include/editor.php:2105 admin/include/editor.php:2197
-#: admin/include/editor.php:2350 admin/include/editor.php:2376
-#: admin/include/editor.php:2615 admin/include/editor.php:2697
-#: admin/include/editor.php:2729 admin/include/editor.php:2752
+#: admin/include/editor.php:1783 admin/include/editor.php:1829
+#: admin/include/editor.php:1951 admin/include/editor.php:2022
+#: admin/include/editor.php:2063 admin/include/editor.php:2105
+#: admin/include/editor.php:2143 admin/include/editor.php:2235
+#: admin/include/editor.php:2388 admin/include/editor.php:2414
+#: admin/include/editor.php:2737 admin/include/editor.php:2819
 #: admin/include/editor.php:2851 admin/include/editor.php:2874
-#: admin/include/editor.php:2906 admin/include/editor.php:2989 family.php:2454
+#: admin/include/editor.php:2973 admin/include/editor.php:2996
+#: admin/include/editor.php:3028 admin/include/editor.php:3111 family.php:2464
 msgid "[+]"
 msgstr "[+]"
 
-#: admin/include/editor.php:1745 admin/include/editor.php:2615
-#: admin/include/gedcom_export.php:652 list.php:1487 list.php:1583
-#: list_names.php:225 statistics.php:747 statistics.php:930
+#: admin/include/editor.php:1783 admin/include/editor.php:2737
+#: admin/include/gedcom_export.php:652 list.php:1486 list.php:1582
+#: list_names.php:225 statistics.php:748 statistics.php:931
 msgid "All"
 msgstr "Minden"
 
-#: admin/include/editor.php:1748
+#: admin/include/editor.php:1786
 msgid "Delete person"
 msgstr "Személy törlése"
 
-#: admin/include/editor.php:1794 admin/include/editor.php:1798
-#: admin/include/editor.php:3352 admin/include/editor.php:3417
-#: admin/include/editor.php:3493 list.php:1797
+#: admin/include/editor.php:1832 admin/include/editor.php:1836
+#: admin/include/editor.php:2594 admin/include/editor.php:3292 list.php:1796
 msgid "firstname"
 msgstr "keresztnév"
 
-#: admin/include/editor.php:1794 admin/include/editor.php:1801
-#: admin/include/editor.php:3350 admin/include/editor.php:3415
-#: admin/include/editor.php:3491 list.php:1363
+#: admin/include/editor.php:1832 admin/include/editor.php:1839
+#: admin/include/editor.php:2597 admin/include/editor.php:3295 list.php:1362
 msgid "prefix"
 msgstr "előtag"
 
-#: admin/include/editor.php:1794 admin/include/editor.php:1804
-#: admin/include/editor.php:3351 admin/include/editor.php:3416
-#: admin/include/editor.php:3492 list.php:1803
+#: admin/include/editor.php:1832 admin/include/editor.php:1842
+#: admin/include/editor.php:2611 admin/include/editor.php:3309 list.php:1802
 msgid "lastname"
 msgstr "családnév"
 
-#: admin/include/editor.php:1796 admin/include/editor.php:1820
+#: admin/include/editor.php:1834 admin/include/editor.php:1858
 #: admin/include/editor_event_cls.php:344
-#: admin/include/editor_event_cls.php:1213 include/person_cls.php:1350
+#: admin/include/editor_event_cls.php:1225 include/person_cls.php:1398
 msgid "Hebrew name"
 msgstr "Héber név"
 
-#: admin/include/editor.php:1798 admin/include/editor_event_cls.php:344
-#: admin/include/editor_event_cls.php:1200 admin/include/trees_cls.php:1582
-#: include/person_cls.php:1346
+#: admin/include/editor.php:1836 admin/include/editor_event_cls.php:344
+#: admin/include/editor_event_cls.php:1212 admin/include/trees_cls.php:1582
+#: include/person_cls.php:1394
 msgid "Nickname"
 msgstr "Más név"
 
-#: admin/include/editor.php:1801
+#: admin/include/editor.php:1839 admin/include/editor.php:2606
+#: admin/include/editor.php:3304
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr "Például: d' vagy:  van_ (használjon _ hézaghoz)"
 
-#: admin/include/editor.php:1805
+#: admin/include/editor.php:1843
 msgid "patronymic"
 msgstr "patronimikon"
 
-#: admin/include/editor.php:1821
+#: admin/include/editor.php:1859
 msgid "For example: Joseph ben Hirsch Zvi"
 msgstr ""
 
-#: admin/include/editor.php:1840 admin/include/editor.php:1972
-#: admin/include/editor.php:2016 admin/include/editor.php:2057
-#: admin/include/editor.php:2094 admin/include/editor.php:2189
-#: admin/include/editor.php:2244 admin/include/editor.php:2723
-#: admin/include/editor.php:2747 admin/include/editor.php:2843
-#: admin/include/editor.php:2869 admin/include/editor.php:2893
-#: admin/include/editor.php:2939 admin/include/editor.php:3733
-#: admin/include/editor.php:3938 admin/include/editor.php:4193
-#: admin/include/editor.php:4679 admin/include/editor_event_cls.php:1263
-#: admin/include/editor_event_cls.php:1321 admin/include/editor_sources.php:90
+#: admin/include/editor.php:1878 admin/include/editor.php:2010
+#: admin/include/editor.php:2054 admin/include/editor.php:2095
+#: admin/include/editor.php:2132 admin/include/editor.php:2227
+#: admin/include/editor.php:2282 admin/include/editor.php:2845
+#: admin/include/editor.php:2869 admin/include/editor.php:2965
+#: admin/include/editor.php:2991 admin/include/editor.php:3015
+#: admin/include/editor.php:3061 admin/include/editor.php:3955
+#: admin/include/editor.php:4160 admin/include/editor.php:4415
+#: admin/include/editor.php:4901 admin/include/editor_event_cls.php:1275
+#: admin/include/editor_event_cls.php:1333 admin/include/editor_sources.php:90
 #: admin/include/editor_sources.php:144 admin/include/gedcom.php:1543
 msgid "text"
 msgstr "szöveg"
 
-#: admin/include/editor.php:1870 admin/include/groups.php:498
+#: admin/include/editor.php:1908 admin/include/groups.php:498
 msgid "Privacy filter"
 msgstr "Adatvédelmi szűrő"
 
-#: admin/include/editor.php:1874 admin/include/trees_cls.php:1596
+#: admin/include/editor.php:1912 admin/include/trees_cls.php:1596
 msgid "alive"
 msgstr "életben van"
 
-#: admin/include/editor.php:1877
+#: admin/include/editor.php:1915
 msgid "deceased"
 msgstr "elhunyt"
 
-#: admin/include/editor.php:1895 admin/include/editor.php:3347
-#: admin/include/editor_sources.php:60
+#: admin/include/editor.php:1933 admin/include/editor.php:2616
+#: admin/include/editor.php:3311 admin/include/editor_sources.php:60
 msgid "Sex"
 msgstr "Nem"
 
-#: admin/include/editor.php:1897 report_ancestor.php:1503
+#: admin/include/editor.php:1935 admin/include/editor.php:2618
+#: admin/include/editor.php:3313 report_ancestor.php:1503
 msgid "male"
 msgstr "férfi"
 
-#: admin/include/editor.php:1899 report_ancestor.php:1500
+#: admin/include/editor.php:1937 admin/include/editor.php:2620
+#: admin/include/editor.php:3315 report_ancestor.php:1500
 msgid "female"
 msgstr "nő"
 
-#: admin/include/editor.php:1914 admin/include/editor.php:3353
-#: admin/include/editor.php:3354 admin/include/editor_sources.php:66
-#: birthday_list.php:118 family.php:2296 googlemaps/namesearch.php:189
-#: include/mainindex_cls.php:845 include/mainindex_cls.php:848
-#: include/person_cls.php:1510 include/person_cls.php:1512
-#: include/person_cls.php:1517 include/person_cls.php:1520 list.php:1420
-#: list.php:1427 list.php:1785 maps.php:627 maps.php:736
-#: report_ancestor.php:1181 report_ancestor.php:1496 report_descendant.php:807
+#: admin/include/editor.php:1952 admin/include/editor.php:2625
+#: admin/include/editor.php:3321 admin/include/editor_sources.php:66
+#: birthday_list.php:118 family.php:2304 googlemaps/namesearch.php:191
+#: include/mainindex_cls.php:847 include/mainindex_cls.php:850
+#: include/person_cls.php:1558 include/person_cls.php:1560
+#: include/person_cls.php:1565 include/person_cls.php:1568 list.php:1419
+#: list.php:1426 list.php:1784 maps.php:627 maps.php:736
+#: report_ancestor.php:1181 report_ancestor.php:1496 report_descendant.php:808
 msgid "born"
 msgstr "született"
 
-#: admin/include/editor.php:1916 admin/include/editor.php:2002
-#: admin/include/editor.php:2042 admin/include/editor.php:2069
-#: admin/include/editor.php:2107 admin/include/editor.php:2199
-#: admin/include/editor.php:2700 admin/include/editor.php:2731
-#: admin/include/editor.php:2755 admin/include/editor.php:2853
-#: admin/include/editor.php:2876 admin/include/editor.php:2908
-#: admin/include/editor.php:3708 admin/include/editor.php:3932
-#: admin/include/editor.php:4680 admin/include/editor_cls.php:50
+#: admin/include/editor.php:1954 admin/include/editor.php:2040
+#: admin/include/editor.php:2080 admin/include/editor.php:2107
+#: admin/include/editor.php:2145 admin/include/editor.php:2237
+#: admin/include/editor.php:2626 admin/include/editor.php:2632
+#: admin/include/editor.php:2822 admin/include/editor.php:2853
+#: admin/include/editor.php:2877 admin/include/editor.php:2975
+#: admin/include/editor.php:2998 admin/include/editor.php:3030
+#: admin/include/editor.php:3322 admin/include/editor.php:3328
+#: admin/include/editor.php:3930 admin/include/editor.php:4154
+#: admin/include/editor.php:4902 admin/include/editor_cls.php:50
 msgid "date"
 msgstr "dátum"
 
-#: admin/include/editor.php:1936 admin/include/editor.php:2002
-#: admin/include/editor.php:2042 admin/include/editor.php:2069
-#: admin/include/editor.php:2107 admin/include/editor.php:2199
-#: admin/include/editor.php:2700 admin/include/editor.php:2731
-#: admin/include/editor.php:2755 admin/include/editor.php:2853
-#: admin/include/editor.php:2876 admin/include/editor.php:2908
-#: admin/include/editor.php:3306 admin/include/editor.php:3419
-#: admin/include/editor.php:3422 admin/include/editor.php:3495
-#: admin/include/editor.php:3498 admin/include/editor.php:3708
-#: admin/include/editor.php:3932 admin/include/editor_event_cls.php:1260
-#: admin/include/editor_event_cls.php:1318 admin/include/editor_sources.php:350
+#: admin/include/editor.php:1974 admin/include/editor.php:2040
+#: admin/include/editor.php:2080 admin/include/editor.php:2107
+#: admin/include/editor.php:2145 admin/include/editor.php:2237
+#: admin/include/editor.php:2627 admin/include/editor.php:2632
+#: admin/include/editor.php:2822 admin/include/editor.php:2853
+#: admin/include/editor.php:2877 admin/include/editor.php:2975
+#: admin/include/editor.php:2998 admin/include/editor.php:3030
+#: admin/include/editor.php:3323 admin/include/editor.php:3328
+#: admin/include/editor.php:3930 admin/include/editor.php:4154
+#: admin/include/editor_event_cls.php:1272
+#: admin/include/editor_event_cls.php:1330 admin/include/editor_sources.php:350
 #: admin/include/editor_sources.php:471
 msgid "place"
 msgstr "helység"
 
-#: admin/include/editor.php:1962 admin/include/trees_cls.php:1586
+#: admin/include/editor.php:2000 admin/include/trees_cls.php:1586
 msgid "birth time"
 msgstr "születés ideje"
 
-#: admin/include/editor.php:1965 include/person_cls.php:262
+#: admin/include/editor.php:2003 include/person_cls.php:270
 msgid "stillborn child"
 msgstr "halva született gyermek"
 
-#: admin/include/editor.php:1985 include/language_event.php:16
+#: admin/include/editor.php:2023 include/language_event.php:16
 msgid "Brit Mila"
 msgstr "Brit Mila"
 
-#: admin/include/editor.php:2003 admin/include/editor.php:2043
+#: admin/include/editor.php:2041 admin/include/editor.php:2081
 msgid ""
 "To display this, the option \"Show events\" has to be checked in \"Users -> "
 "Groups\""
 msgstr ""
 
-#: admin/include/editor.php:2026 include/language_event.php:14
+#: admin/include/editor.php:2064 include/language_event.php:14
 msgid "Bat Mitzvah"
 msgstr "Bat Mitzvah"
 
-#: admin/include/editor.php:2027 include/language_event.php:13
+#: admin/include/editor.php:2065 include/language_event.php:13
 msgid "Bar Mitzvah"
 msgstr "Bar Mitzvah"
 
-#: admin/include/editor.php:2068 admin/include/editor_sources.php:72
-#: family.php:2299 googlemaps/namesearch.php:192 include/mainindex_cls.php:856
-#: include/mainindex_cls.php:859 include/person_cls.php:1597
-#: include/person_cls.php:1599 include/person_cls.php:1604
-#: include/person_cls.php:1607 list.php:1420 list.php:1427 list.php:1785
+#: admin/include/editor.php:2106 admin/include/editor_sources.php:72
+#: family.php:2307 googlemaps/namesearch.php:194 include/mainindex_cls.php:858
+#: include/mainindex_cls.php:861 include/person_cls.php:1645
+#: include/person_cls.php:1647 include/person_cls.php:1652
+#: include/person_cls.php:1655 list.php:1419 list.php:1426 list.php:1784
 #: maps.php:630 maps.php:739 timelines.php:40
 msgid "baptised"
 msgstr "keresztelve"
 
-#: admin/include/editor.php:2086 admin/include/trees_cls.php:1597
-#: include/person_cls.php:1551 include/person_cls.php:1553
+#: admin/include/editor.php:2124 admin/include/trees_cls.php:1597
+#: include/person_cls.php:1599 include/person_cls.php:1601
 msgid "religion"
 msgstr "vallás"
 
-#: admin/include/editor.php:2106 admin/include/editor.php:3355
-#: admin/include/editor.php:3356 admin/include/editor_sources.php:78
-#: birthday_list.php:120 googlemaps/namesearch.php:198
-#: include/mainindex_cls.php:867 include/mainindex_cls.php:870
-#: include/person_cls.php:1739 include/person_cls.php:1741
-#: include/person_cls.php:1745 include/person_cls.php:1746 list.php:1452
-#: list.php:1459 list.php:1786 maps.php:633 maps.php:742
+#: admin/include/editor.php:2144 admin/include/editor.php:2631
+#: admin/include/editor.php:3327 admin/include/editor_sources.php:78
+#: birthday_list.php:120 googlemaps/namesearch.php:200
+#: include/mainindex_cls.php:869 include/mainindex_cls.php:872
+#: include/person_cls.php:1787 include/person_cls.php:1789
+#: include/person_cls.php:1793 include/person_cls.php:1794 list.php:1451
+#: list.php:1458 list.php:1785 maps.php:633 maps.php:742
 #: report_ancestor.php:1181 report_ancestor.php:1496
 msgid "died"
 msgstr "meghalt"
 
-#: admin/include/editor.php:2111 admin/include/editor.php:2773
-#: admin/include/editor.php:2777
+#: admin/include/editor.php:2149 admin/include/editor.php:2895
+#: admin/include/editor.php:2899
 msgid "Age"
 msgstr "Életkor"
 
-#: admin/include/editor.php:2120
+#: admin/include/editor.php:2158
 msgid ""
 "If death year and age are used, then birth year is calculated automatically "
 "(when empty)."
@@ -1099,118 +1079,118 @@ msgstr ""
 "Ha az elhalálozási év és életkor ismert, a születési évet automatikusan "
 "kiszámoljuk (amikor üres)"
 
-#: admin/include/editor.php:2137 admin/include/trees_cls.php:1589
+#: admin/include/editor.php:2175 admin/include/trees_cls.php:1589
 msgid "death time"
 msgstr "elhalálozás ideje"
 
-#: admin/include/editor.php:2139
+#: admin/include/editor.php:2177
 msgid "cause"
 msgstr "ok"
 
-#: admin/include/editor.php:2145 include/person_cls.php:1675
-#: include/person_cls.php:1703
+#: admin/include/editor.php:2183 include/person_cls.php:1723
+#: include/person_cls.php:1751
 msgid "murdered"
 msgstr "gyilkosság áldozata"
 
-#: admin/include/editor.php:2148 include/person_cls.php:1676
+#: admin/include/editor.php:2186 include/person_cls.php:1724
 msgid "drowned"
 msgstr "fulladás"
 
-#: admin/include/editor.php:2151 include/person_cls.php:1677
+#: admin/include/editor.php:2189 include/person_cls.php:1725
 msgid "perished"
 msgstr "elpusztult"
 
-#: admin/include/editor.php:2154 include/person_cls.php:1678
+#: admin/include/editor.php:2192 include/person_cls.php:1726
 msgid "killed in action"
 msgstr "bevetés közben elhunyt"
 
-#: admin/include/editor.php:2157 include/person_cls.php:1679
+#: admin/include/editor.php:2195 include/person_cls.php:1727
 msgid "being missed"
 msgstr "elveszett"
 
-#: admin/include/editor.php:2160 include/person_cls.php:1680
+#: admin/include/editor.php:2198 include/person_cls.php:1728
 msgid "committed suicide"
 msgstr "öngyilkosságot követett el"
 
-#: admin/include/editor.php:2163 include/person_cls.php:1681
+#: admin/include/editor.php:2201 include/person_cls.php:1729
 msgid "executed"
 msgstr "kivégezték"
 
-#: admin/include/editor.php:2166 include/person_cls.php:1682
+#: admin/include/editor.php:2204 include/person_cls.php:1730
 msgid "died young"
 msgstr "fiatalon halt meg"
 
-#: admin/include/editor.php:2169 include/person_cls.php:1683
+#: admin/include/editor.php:2207 include/person_cls.php:1731
 msgid "died unmarried"
 msgstr "nőtlenként / hajadonként hunyt el"
 
-#: admin/include/editor.php:2172 include/person_cls.php:1684
+#: admin/include/editor.php:2210 include/person_cls.php:1732
 msgid "registration"
 msgstr "regisztráció"
 
-#: admin/include/editor.php:2175 include/person_cls.php:1685
+#: admin/include/editor.php:2213 include/person_cls.php:1733
 msgid "declared death"
 msgstr "holttá nyilvánítva"
 
-#: admin/include/editor.php:2179 admin/include/editor.php:3644
-#: admin/include/editor.php:3745 admin/include/editor.php:3880
-#: admin/include/editor.php:3951 admin/include/editor.php:4115
-#: admin/include/editor.php:4201 admin/include/editor.php:4527
-#: admin/include/index_inc.php:477 admin/include/thumbs.php:640
-#: fanchart.php:754 include/calculate_age_cls.php:218
+#: admin/include/editor.php:2217 admin/include/editor.php:3866
+#: admin/include/editor.php:3967 admin/include/editor.php:4102
+#: admin/include/editor.php:4173 admin/include/editor.php:4337
+#: admin/include/editor.php:4423 admin/include/editor.php:4749
+#: admin/include/index_inc.php:477 admin/include/thumbs.php:643
+#: fanchart.php:772 include/calculate_age_cls.php:218
 #: include/calculate_age_cls.php:244 include/calculate_age_cls.php:333
 #: include/calculate_age_cls.php:359
 msgid "or"
 msgstr "vagy"
 
-#: admin/include/editor.php:2198
+#: admin/include/editor.php:2236
 msgid "Buried"
 msgstr "Temetve"
 
-#: admin/include/editor.php:2216
+#: admin/include/editor.php:2254
 msgid "method of burial"
 msgstr ""
 
-#: admin/include/editor.php:2223 admin/include/editor_sources.php:84
-#: googlemaps/namesearch.php:201 include/person_cls.php:1816 list.php:1452
-#: list.php:1459 list.php:1786 maps.php:636 maps.php:745 timelines.php:64
+#: admin/include/editor.php:2261 admin/include/editor_sources.php:84
+#: googlemaps/namesearch.php:203 include/person_cls.php:1864 list.php:1451
+#: list.php:1458 list.php:1785 maps.php:636 maps.php:745 timelines.php:64
 msgid "buried"
 msgstr "temetve"
 
-#: admin/include/editor.php:2226 admin/include/trees_cls.php:1591
-#: include/person_cls.php:1804
+#: admin/include/editor.php:2264 admin/include/trees_cls.php:1591
+#: include/person_cls.php:1852
 msgid "cremation"
 msgstr "hamvasztva"
 
-#: admin/include/editor.php:2229 include/person_cls.php:1807
+#: admin/include/editor.php:2267 include/person_cls.php:1855
 #, fuzzy
 #| msgid "estimated"
 msgid "resomated"
 msgstr "körülbelül"
 
-#: admin/include/editor.php:2232 include/person_cls.php:1810
+#: admin/include/editor.php:2270 include/person_cls.php:1858
 msgid "sailor's grave"
 msgstr ""
 
-#: admin/include/editor.php:2235 include/person_cls.php:1813
+#: admin/include/editor.php:2273 include/person_cls.php:1861
 msgid "donated to science"
 msgstr ""
 
-#: admin/include/editor.php:2254
+#: admin/include/editor.php:2292
 msgid "Text for person"
 msgstr "Jegyzet a személyhez"
 
-#: admin/include/editor.php:2269 include/show_sources.php:61
+#: admin/include/editor.php:2307 include/show_sources.php:61
 #: include/show_sources.php:162 include/show_sources.php:200
 msgid "Source for person"
 msgstr "Forrás a személyhez"
 
-#: admin/include/editor.php:2279 admin/include/trees_cls.php:1598
+#: admin/include/editor.php:2317 admin/include/trees_cls.php:1598
 #: include/show_sources.php:224 include/show_sources.php:305
 msgid "own code"
 msgstr "saját kód"
 
-#: admin/include/editor.php:2290
+#: admin/include/editor.php:2328
 msgid ""
 "Use own code for your own remarks.<br>\n"
 "It's possible to use own code for special privacy options, see Admin > Users "
@@ -1225,110 +1205,112 @@ msgstr ""
 "képek mappában pl. 'szemely.gif', majd a 'szemely'-t írja be a saját kód "
 "mezőbe."
 
-#: admin/include/editor.php:2352 admin/include/editor.php:2990
+#: admin/include/editor.php:2390 admin/include/editor.php:3112
 msgid "GEDCOM tags"
 msgstr ""
 
-#: admin/include/editor.php:2354 admin/include/editor.php:2357
-#: admin/include/editor.php:2992 admin/include/editor.php:2995
+#: admin/include/editor.php:2392 admin/include/editor.php:2395
+#: admin/include/editor.php:3114 admin/include/editor.php:3117
 #, fuzzy, php-format
 #| msgid "There are %d unprocessed gedcom tags."
 msgid "There are %d unprocessed GEDCOM tags."
 msgstr "%d feldolgozatlan gedcom címke van."
 
-#: admin/include/editor.php:2377 admin/include/user_notes.php:8
+#: admin/include/editor.php:2415 admin/include/user_notes.php:8
 #: admin/include/user_notes.php:12 admin/include/user_notes.php:87
-#: admin/index.php:995 family.php:2324
+#: admin/index.php:995 family.php:2332
 msgid "User notes"
 msgstr "Felhasználói jegyzetek"
 
-#: admin/include/editor.php:2379 admin/include/editor.php:2381
+#: admin/include/editor.php:2417 admin/include/editor.php:2419
 #: admin/include/user_notes.php:89 admin/include/user_notes.php:91
-#: family.php:2326 family.php:2328
+#: family.php:2334 family.php:2336
 #, php-format
 msgid "There are %d user added notes."
 msgstr "%d felhasználói jegyzet van."
 
-#: admin/include/editor.php:2402
+#: admin/include/editor.php:2440
 msgid "Added by"
 msgstr ""
 
-#: admin/include/editor.php:2407
+#: admin/include/editor.php:2445
 msgid "Changed by"
 msgstr ""
 
-#: admin/include/editor.php:2477
+#: admin/include/editor.php:2515
 #, fuzzy
 #| msgid "Select family tree"
 msgid "Select family"
 msgstr "Családfa kiválasztása"
 
-#: admin/include/editor.php:2481 admin/include/tree_check.php:1001
-#: admin/include/tree_check.php:1167 admin/include/tree_check.php:1171
-#: admin/include/tree_check.php:1216 include/marriage_cls.php:584
+#: admin/include/editor.php:2519 admin/include/tree_check.php:975
+#: admin/include/tree_check.php:1141 admin/include/tree_check.php:1145
+#: admin/include/tree_check.php:1190 include/marriage_cls.php:584
 #: report_ancestor.php:1496 timelines.php:109 timelines.php:217
 msgid "marriage"
 msgstr "házasság"
 
-#: admin/include/editor.php:2514 admin/include/editor.php:2527
+#: admin/include/editor.php:2553 admin/include/editor.php:2592
+#: admin/include/editor.php:2635 admin/include/editor.php:2649
 msgid "Add relation"
 msgstr "Kapcsolat hozzáadása"
 
-#: admin/include/editor.php:2518
-msgid "Add relation with new partner (N.N.)"
-msgstr "Kapcsolat hozzáadása új partnerrel (N.N.)"
+#: admin/include/editor.php:2553
+#, fuzzy
+#| msgid "or add relation with existing person as partner."
+msgid "Add new relation to this person"
+msgstr "vagy partneri kapcsolat hozzáadása létező személlyel."
 
-#: admin/include/editor.php:2523
+#: admin/include/editor.php:2645
 #, fuzzy
 #| msgid "or add relation with existing person as partner."
 msgid "Or add relation with existing person:"
 msgstr "vagy partneri kapcsolat hozzáadása létező személlyel."
 
-#: admin/include/editor.php:2619
+#: admin/include/editor.php:2741
 msgid "Delete relation"
 msgstr "Kapcsolat törlése"
 
-#: admin/include/editor.php:2642
+#: admin/include/editor.php:2764
 #, fuzzy
 #| msgid "Select person"
 msgid "Select person 1"
 msgstr "Személy kiválasztása"
 
-#: admin/include/editor.php:2669
+#: admin/include/editor.php:2791
 #, fuzzy
 #| msgid "Select person"
 msgid "Select person 2"
 msgstr "Személy kiválasztása"
 
-#: admin/include/editor.php:2699 admin/include/editor.php:2805
-#: admin/include/editor.php:3277 admin/include/editor_sources.php:108
-#: include/marriage_cls.php:52 include/marriage_cls.php:132
-#: include/marriage_cls.php:133 include/marriage_cls.php:134
-#: include/person_cls.php:1174
+#: admin/include/editor.php:2821 admin/include/editor.php:2927
+#: admin/include/editor_sources.php:108 include/marriage_cls.php:52
+#: include/marriage_cls.php:132 include/marriage_cls.php:133
+#: include/marriage_cls.php:134 include/person_cls.php:1223
 msgid "Living together"
 msgstr "Élettársi kapcsolat"
 
-#: admin/include/editor.php:2717
+#: admin/include/editor.php:2839
 msgid "End date"
 msgstr "Befejezés időpontja"
 
-#: admin/include/editor.php:2730 admin/include/editor_sources.php:114
+#: admin/include/editor.php:2852 admin/include/editor_sources.php:114
 msgid "Notice of Marriage"
 msgstr "Házassági hirdetés"
 
-#: admin/include/editor.php:2773
+#: admin/include/editor.php:2895
 #, fuzzy
 #| msgid "Add person"
 msgid "Age person 1"
 msgstr "Személy hozzáadása"
 
-#: admin/include/editor.php:2777
+#: admin/include/editor.php:2899
 #, fuzzy
 #| msgid "Add person"
 msgid "Age person 2"
 msgstr "Személy hozzáadása"
 
-#: admin/include/editor.php:2787
+#: admin/include/editor.php:2909
 msgid ""
 "If birth year of man or woman is empty it will be calculated automatically "
 "using age by marriage."
@@ -1336,293 +1318,264 @@ msgstr ""
 "Amennyiben agy férfi vagy nő születési éve üres, automatikusan kiszámoljuk "
 "azt, a házasságkötési életkor alapján."
 
-#: admin/include/editor.php:2796 admin/include/editor.php:3265
-#: admin/include/editor.php:3329
+#: admin/include/editor.php:2918
 msgid "Relation Type"
 msgstr "Kapcsolat típusa"
 
-#: admin/include/editor.php:2799 admin/include/editor.php:3271
-#: admin/include/editor.php:3318
+#: admin/include/editor.php:2921
 msgid "Marriage/ Related"
 msgstr "Hásasság/ kapcsolat"
 
-#: admin/include/editor.php:2808 admin/include/editor.php:3280
-#: include/marriage_cls.php:55 include/person_cls.php:1175
+#: admin/include/editor.php:2930 include/marriage_cls.php:55
+#: include/person_cls.php:1224
 msgid "Living apart together"
 msgstr "Különélés élettársi kapcsolatban"
 
-#: admin/include/editor.php:2811 admin/include/editor.php:3283
-#: include/marriage_cls.php:58 include/person_cls.php:1176
+#: admin/include/editor.php:2933 include/marriage_cls.php:58
+#: include/person_cls.php:1225
 msgid "Intentionally unmarried mother"
 msgstr "Szándékosan egyedülálló anya"
 
-#: admin/include/editor.php:2814 admin/include/editor.php:3286
-#: include/marriage_cls.php:62 include/person_cls.php:1177
+#: admin/include/editor.php:2936 include/marriage_cls.php:62
+#: include/person_cls.php:1226
 msgid "Homosexual"
 msgstr "Homoszexuális"
 
-#: admin/include/editor.php:2817 admin/include/editor.php:3289
+#: admin/include/editor.php:2939
 msgid "Non_marital"
 msgstr "Nem_házassági"
 
-#: admin/include/editor.php:2820 admin/include/editor.php:3292
-#: include/marriage_cls.php:69 include/marriage_cls.php:75
-#: include/person_cls.php:1179 include/person_cls.php:1180
+#: admin/include/editor.php:2942 include/marriage_cls.php:69
+#: include/marriage_cls.php:75 include/person_cls.php:1228
+#: include/person_cls.php:1229
 msgid "Extramarital"
 msgstr "Házasságon kívüli"
 
-#: admin/include/editor.php:2823 admin/include/editor.php:3295
-#: admin/include/editor.php:3380 admin/include/editor.php:3409
-#: include/marriage_cls.php:81 include/person_cls.php:1181
+#: admin/include/editor.php:2945 include/marriage_cls.php:81
+#: include/person_cls.php:1230
 msgid "Partner"
 msgstr "Házastárs"
 
-#: admin/include/editor.php:2826 admin/include/editor.php:3298
-#: include/marriage_cls.php:84 include/person_cls.php:1182
+#: admin/include/editor.php:2948 include/marriage_cls.php:84
+#: include/person_cls.php:1231
 msgid "Registered"
 msgstr "Bejegyzett"
 
-#: admin/include/editor.php:2829 admin/include/editor.php:3301
-#: include/marriage_cls.php:87 include/person_cls.php:1183
+#: admin/include/editor.php:2951 include/marriage_cls.php:87
+#: include/person_cls.php:1232
 msgid "Unknown relation"
 msgstr "Ismeretlen kapcsolat"
 
-#: admin/include/editor.php:2837 admin/include/editor.php:2932
+#: admin/include/editor.php:2959 admin/include/editor.php:3054
 msgid "Registrar"
 msgstr "Anyakönyvvezető"
 
-#: admin/include/editor.php:2852 admin/include/editor_sources.php:126
+#: admin/include/editor.php:2974 admin/include/editor_sources.php:126
 msgid "Religious Notice of Marriage"
 msgstr "Egyházi házassági hirdetés"
 
-#: admin/include/editor.php:2875 admin/include/editor_sources.php:132
+#: admin/include/editor.php:2997 admin/include/editor_sources.php:132
 msgid "Religious Marriage"
 msgstr "Egyházi házasság"
 
-#: admin/include/editor.php:2902
+#: admin/include/editor.php:3024
 msgid "Religion"
 msgstr "Vallás"
 
-#: admin/include/editor.php:2907 admin/include/editor_sources.php:138
+#: admin/include/editor.php:3029 admin/include/editor_sources.php:138
 msgid "Divorce"
 msgstr "Válás"
 
-#: admin/include/editor.php:2926
+#: admin/include/editor.php:3048
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr ""
 "Válás (használja ezt a jelölőnégyzetet a minden további adat nélküli válások "
 "esetében)."
 
-#: admin/include/editor.php:2944
+#: admin/include/editor.php:3066
 msgid "Text by marriage"
 msgstr "Házassági jegyzetek"
 
-#: admin/include/editor.php:2960
+#: admin/include/editor.php:3082
 msgid "Source by marriage"
 msgstr "Forrás házassághoz"
 
-#: admin/include/editor.php:3090
+#: admin/include/editor.php:3212
 msgid "Use this icon to order children (drag and drop)"
 msgstr "Használja ezt az ikont a gyermekek rendezéséhez (húzd és ejtsd)"
 
-#: admin/include/editor.php:3093
+#: admin/include/editor.php:3215
 msgid "Or automatically order children:"
 msgstr "Vagy rendezze automatikusan a gyermekeket:"
 
-#: admin/include/editor.php:3093
+#: admin/include/editor.php:3215
 msgid "Automatic order children"
 msgstr "Gyermekek automatikus rendezése"
 
-#: admin/include/editor.php:3095
+#: admin/include/editor.php:3217
 msgid "Children are re-ordered."
 msgstr "A gyermekek újrarendezve."
 
-#: admin/include/editor.php:3110
+#: admin/include/editor.php:3232
 msgid "Drag to change order (saves automatically)"
 msgstr "Sorrend változtatása húzással (automatikus  mentés)"
 
-#: admin/include/editor.php:3110
+#: admin/include/editor.php:3232
 msgid "Drag to change order"
 msgstr "Sorrend változtatása húzással"
 
-#: admin/include/editor.php:3114
+#: admin/include/editor.php:3236
 msgid "Disconnect child"
 msgstr "Gyermek leválasztása"
 
-#: admin/include/editor.php:3203
-msgid "Add new partner and children"
-msgstr ""
+#: admin/include/editor.php:3345
+#, fuzzy
+#| msgid "or add relation with existing person as partner."
+msgid "Or add existing person as a child:"
+msgstr "vagy partneri kapcsolat hozzáadása létező személlyel."
 
-#: admin/include/editor.php:3222
-msgid "Add children to existing relation:"
-msgstr ""
+#: admin/include/editor.php:3348
+msgid "Select child"
+msgstr "Gyermek kiválasztása"
 
-#: admin/include/editor.php:3261
-msgid "Add new family to this person"
-msgstr ""
-
-#: admin/include/editor.php:3325
-msgid "Add children to this family"
-msgstr ""
-
-#: admin/include/editor.php:3359
-msgid "M"
-msgstr ""
-
-#: admin/include/editor.php:3360
-msgid "F"
-msgstr ""
-
-#: admin/include/editor.php:3361
-msgid "?"
-msgstr ""
-
-#: admin/include/editor.php:3508
-msgid "Save entire family"
-msgstr ""
-
-#: admin/include/editor.php:3521
-msgid "Save entire family and add another"
-msgstr ""
-
-#: admin/include/editor.php:3540
+#: admin/include/editor.php:3762
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr ""
 "Biztosan el kívnja távolítani ezt a forrást és az ÖSSZES forráshivatkozást?"
 
-#: admin/include/editor.php:3583
+#: admin/include/editor.php:3805
 msgid "Source is removed!"
 msgstr "Forrás eltávolítva!"
 
-#: admin/include/editor.php:3588 admin/include/groups.php:431
-#: admin/include/trees_cls.php:1833 admin/index.php:1040 family.php:138
-#: family.php:2485 header.php:254 help.php:60 include/show_sources.php:260
+#: admin/include/editor.php:3810 admin/include/groups.php:431
+#: admin/include/trees_cls.php:1833 admin/index.php:1040 family.php:137
+#: family.php:2495 header.php:254 help.php:60 include/show_sources.php:260
 #: menu.php:517 report_ancestor.php:1515 source.php:37
 msgid "Sources"
 msgstr "Források"
 
-#: admin/include/editor.php:3589
+#: admin/include/editor.php:3811
 msgid ""
 "These sources can be connected to multiple persons, families, events and "
 "other items."
 msgstr ""
 
-#: admin/include/editor.php:3609 admin/include/editor.php:3611
+#: admin/include/editor.php:3831 admin/include/editor.php:3833
 msgid "Select source"
 msgstr "Forrás kiválasztása"
 
-#: admin/include/editor.php:3638 admin/include/editor.php:3701
+#: admin/include/editor.php:3860 admin/include/editor.php:3923
 msgid "restricted"
 msgstr "bizalmas"
 
-#: admin/include/editor.php:3646 admin/include/editor_sources.php:531
+#: admin/include/editor.php:3868 admin/include/editor_sources.php:531
 msgid "Add source"
 msgstr "Forrás hozzáadása"
 
-#: admin/include/editor.php:3669 source.php:43 source.php:46
+#: admin/include/editor.php:3891 source.php:43 source.php:46
 msgid "No valid source number."
 msgstr "Érvénytelen forrás szám."
 
-#: admin/include/editor.php:3693 admin/include/editor.php:3924
-#: admin/include/editor.php:4163
+#: admin/include/editor.php:3915 admin/include/editor.php:4146
+#: admin/include/editor.php:4385
 msgid "Option"
 msgstr "Beállítás"
 
-#: admin/include/editor.php:3693 admin/include/editor.php:3924
-#: admin/include/editor.php:4163
+#: admin/include/editor.php:3915 admin/include/editor.php:4146
+#: admin/include/editor.php:4385
 msgid "Value"
 msgstr "Érték"
 
-#: admin/include/editor.php:3695
+#: admin/include/editor.php:3917
 msgid "Status:"
 msgstr "Állapot:"
 
-#: admin/include/editor.php:3698
+#: admin/include/editor.php:3920
 msgid "publish"
 msgstr "közzététel"
 
-#: admin/include/editor.php:3702
+#: admin/include/editor.php:3924
 msgid "restricted = only visible for selected user groups"
 msgstr "bizalmas = csak kiválasztott felhasználói csoportok láthatják"
 
-#: admin/include/editor.php:3705 admin/include/editor.php:3926
+#: admin/include/editor.php:3927 admin/include/editor.php:4148
 #: admin/include/editor_event_cls.php:27 admin/include/editor_event_cls.php:395
-#: admin/include/editor_inc.php:1326 admin/include/editor_sources.php:301
+#: admin/include/editor_inc.php:1299 admin/include/editor_sources.php:301
 #: admin/include/editor_sources.php:345 admin/include/trees_cls.php:1751
 #: source.php:51 source.php:56 source.php:229 sources.php:156
 msgid "Title"
 msgstr "Cím"
 
-#: admin/include/editor.php:3707 source.php:144 source.php:149
+#: admin/include/editor.php:3929 source.php:144 source.php:149
 msgid "Subject"
 msgstr "Tárgy"
 
-#: admin/include/editor.php:3710 source.php:227
+#: admin/include/editor.php:3932 source.php:227
 msgid "Repository"
 msgstr "Lelőhely"
 
-#: admin/include/editor.php:3723
+#: admin/include/editor.php:3945
 msgid "Add repositories"
 msgstr ""
 
-#: admin/include/editor.php:3726 source.php:87 source.php:105
+#: admin/include/editor.php:3948 source.php:87 source.php:105
 msgid "Publication"
 msgstr "Kiadvány"
 
-#: admin/include/editor.php:3726
+#: admin/include/editor.php:3948
 msgid "will be shown as a link."
 msgstr "hiperhivatkozásként lesz látható."
 
-#: admin/include/editor.php:3727 admin/include/editor_sources.php:322
-#: admin/include/settings_admin.php:1067 include/person_cls.php:1419
-#: include/person_cls.php:1421 include/person_cls.php:1424
-#: include/person_cls.php:1427 list.php:1438 list.php:1446 source.php:122
+#: admin/include/editor.php:3949 admin/include/editor_sources.php:322
+#: admin/include/settings_admin.php:1067 include/person_cls.php:1467
+#: include/person_cls.php:1469 include/person_cls.php:1472
+#: include/person_cls.php:1475 list.php:1437 list.php:1445 source.php:122
 #: source.php:127
 msgid "Own code"
 msgstr "Saját azonosító"
 
-#: admin/include/editor.php:3728 source.php:133 source.php:138
+#: admin/include/editor.php:3950 source.php:133 source.php:138
 msgid "Author"
 msgstr "Szerző"
 
-#: admin/include/editor.php:3729 source.php:155 source.php:160
+#: admin/include/editor.php:3951 source.php:155 source.php:160
 msgid "Nr."
 msgstr "Sz."
 
-#: admin/include/editor.php:3730 source.php:166 source.php:171
+#: admin/include/editor.php:3952 source.php:166 source.php:171
 msgid "Kind"
 msgstr "Típus"
 
-#: admin/include/editor.php:3731 source.php:177 source.php:182
+#: admin/include/editor.php:3953 source.php:177 source.php:182
 msgid "Archive"
 msgstr "Levéltár"
 
-#: admin/include/editor.php:3732 admin/include/editor_sources.php:440
-#: list.php:1656 list_names.php:245 list_places_families.php:437
+#: admin/include/editor.php:3954 admin/include/editor_sources.php:440
+#: list.php:1655 list_names.php:245 list_places_families.php:435
 #: photoalbum.php:295 source.php:187 source.php:192 sources.php:97
 msgid "Page"
 msgstr "Oldal"
 
-#: admin/include/editor.php:3746 admin/include/editor.php:3952
-#: admin/include/editor.php:4202 admin/include/make_db_maps.php:325
+#: admin/include/editor.php:3968 admin/include/editor.php:4174
+#: admin/include/editor.php:4424 admin/include/make_db_maps.php:325
 #: admin/include/make_db_maps.php:349 admin/include/make_db_maps.php:400
 #: admin/include/make_db_maps.php:424
 msgid "Delete"
 msgstr "Törlés"
 
-#: admin/include/editor.php:3824
+#: admin/include/editor.php:4046
 msgid "Really remove repository with all repository links?"
 msgstr "Valóban törli a lelőhelyet és az összes lelőhely hiperhivatkozást?"
 
-#: admin/include/editor.php:3850
+#: admin/include/editor.php:4072
 msgid "Repository is removed!"
 msgstr "Lelőhely törölve!"
 
-#: admin/include/editor.php:3857 admin/index.php:1044
+#: admin/include/editor.php:4079 admin/index.php:1044
 msgid "Repositories"
 msgstr "Lelőhelyek"
 
-#: admin/include/editor.php:3858
+#: admin/include/editor.php:4080
 #, fuzzy
 #| msgid ""
 #| "A repository can be connected to an extended source. Edit an extended "
@@ -1634,135 +1587,135 @@ msgstr ""
 "Kiterjesztett forráshoz lelőhelyet társíthat. Szerkesszen egy kiterjesztett "
 "forrást lelőhelyhez való csatoláshoz. "
 
-#: admin/include/editor.php:3867 admin/include/editor.php:3869
+#: admin/include/editor.php:4089 admin/include/editor.php:4091
 msgid "Select repository"
 msgstr "Lelőhely kiválasztása"
 
-#: admin/include/editor.php:3881
+#: admin/include/editor.php:4103
 msgid "Add repository"
 msgstr "Lelőhely hozzáadása"
 
-#: admin/include/editor.php:3897
+#: admin/include/editor.php:4119
 msgid "No valid repository number."
 msgstr "Nincs érvényes lelőhely szám."
 
-#: admin/include/editor.php:3941 mailform.php:29 register.php:63
+#: admin/include/editor.php:4163 mailform.php:29 register.php:63
 #: user_settings.php:54
 msgid "E-mail"
 msgstr "E-mail"
 
-#: admin/include/editor.php:3943 admin/include/editor_event_cls.php:30
+#: admin/include/editor.php:4165 admin/include/editor_event_cls.php:30
 #: admin/include/editor_event_cls.php:258
 msgid "URL/ Internet link"
 msgstr "URL/ Internetes hiperhivatkozás"
 
-#: admin/include/editor.php:4028
+#: admin/include/editor.php:4250
 msgid ""
 "Are you sure you want to remove this address and ALL address references?"
 msgstr "Biztosan törli ezt a címet és MINDEN hivatkozást a címre?"
 
-#: admin/include/editor.php:4081
+#: admin/include/editor.php:4303
 msgid "Address has been removed!"
 msgstr "A címet eltávolítottuk!"
 
-#: admin/include/editor.php:4090
+#: admin/include/editor.php:4312
 msgid ""
 "These addresses can be connected to multiple persons, families and other "
 "items."
 msgstr ""
 
-#: admin/include/editor.php:4102 admin/include/editor.php:4104
-#: admin/include/editor.php:4757
+#: admin/include/editor.php:4324 admin/include/editor.php:4326
+#: admin/include/editor.php:4979
 msgid "Select address"
 msgstr "Cím kiválasztása"
 
-#: admin/include/editor.php:4116
+#: admin/include/editor.php:4338
 msgid "Add address"
 msgstr "Cím hozzáadása"
 
-#: admin/include/editor.php:4138
+#: admin/include/editor.php:4360
 msgid "No valid address number."
 msgstr "Nincs érvényes cím szám."
 
-#: admin/include/editor.php:4179 admin/include/editor.php:4188
-#: admin/include/editor.php:4474 admin/include/editor_sources.php:90
+#: admin/include/editor.php:4401 admin/include/editor.php:4410
+#: admin/include/editor.php:4696 admin/include/editor_sources.php:90
 #: admin/include/editor_sources.php:171 admin/include/editor_sources.php:179
 #: include/show_sources.php:106 include/show_sources.php:196
 #: include/show_sources.php:285
 msgid "source"
 msgstr "forrás"
 
-#: admin/include/editor.php:4227 admin/index.php:1052
+#: admin/include/editor.php:4449 admin/index.php:1052
 msgid "Rename places"
 msgstr "Helységek átnevezése"
 
-#: admin/include/editor.php:4356 header.php:252 help.php:54 list.php:1783
-#: list_places_families.php:551
+#: admin/include/editor.php:4578 header.php:252 help.php:54 list.php:1782
+#: list_places_families.php:549
 msgid "Places"
 msgstr "Helységek"
 
-#: admin/include/editor.php:4357
+#: admin/include/editor.php:4579
 msgid "Select location"
 msgstr "Válasszon helységet"
 
-#: admin/include/editor.php:4372
+#: admin/include/editor.php:4594
 msgid "Person places"
 msgstr ""
 
-#: admin/include/editor.php:4374
+#: admin/include/editor.php:4596
 msgid "Family places"
 msgstr ""
 
-#: admin/include/editor.php:4376
+#: admin/include/editor.php:4598
 msgid "Other places (sources, events, addresses, etc.)"
 msgstr ""
 
-#: admin/include/editor.php:4386 admin/include/editor.php:4395
+#: admin/include/editor.php:4608 admin/include/editor.php:4617
 msgid "Change location"
 msgstr "Helység módosítása"
 
-#: admin/include/editor.php:4396
+#: admin/include/editor.php:4618
 msgid "Also change Google Maps table."
 msgstr "Változtasson Google Maps táblát is."
 
-#: admin/include/editor.php:4697
+#: admin/include/editor.php:4919
 #, fuzzy
 #| msgid "gedcom no. (\"I43\")"
 msgid "Address GEDCOM number:"
 msgstr "gedcom no. (\"I43\")"
 
-#: admin/include/editor.php:4701
+#: admin/include/editor.php:4923
 #, fuzzy
 #| msgid "Add address"
 msgid "Shared address"
 msgstr "Cím hozzáadása"
 
-#: admin/include/editor.php:4712
+#: admin/include/editor.php:4934
 #, fuzzy
 #| msgid "Address list, these addresses can be connected to multiple persons."
 msgid "A shared address can be connected to multiple persons or relations."
 msgstr "Cím lista, ezek a címek több személyhez is kapcsolhatók. "
 
-#: admin/include/editor.php:4747 admin/include/editor_sources.php:303
+#: admin/include/editor.php:4969 admin/include/editor_sources.php:303
 #: admin/include/editor_sources.php:354 admin/include/groups.php:537
 #: admin/include/groups.php:542 admin/include/groups.php:547
 #: admin/include/settings_admin.php:838 admin/include/settings_admin.php:902
-#: admin/include/settings_admin.php:964 family.php:2467
-#: include/process_text.php:90 include/process_text.php:92 list.php:1471
+#: admin/include/settings_admin.php:964 family.php:2477
+#: include/process_text.php:90 include/process_text.php:92 list.php:1470
 msgid "Text"
 msgstr "Szöveg"
 
-#: admin/include/editor.php:4766
+#: admin/include/editor.php:4988
 #, fuzzy
 #| msgid "Add address"
 msgid "Or: add new address"
 msgstr "Cím hozzáadása"
 
-#: admin/include/editor.php:4793
+#: admin/include/editor.php:5015
 msgid "Addressrole"
 msgstr "Cím szerep"
 
-#: admin/include/editor_cls.php:22 admin/include/tree_check.php:1487
+#: admin/include/editor_cls.php:22 admin/include/tree_check.php:1461
 #: include/language_date.php:55 include/language_date.php:69
 #: include/language_date.php:110
 msgid "before"
@@ -1774,7 +1727,7 @@ msgstr "előtt"
 msgid "&#177;"
 msgstr "&#177;"
 
-#: admin/include/editor_cls.php:28 admin/include/tree_check.php:1481
+#: admin/include/editor_cls.php:28 admin/include/tree_check.php:1455
 #: include/language_date.php:53 include/language_date.php:69
 #: include/language_date.php:108
 msgid "after"
@@ -1887,7 +1840,7 @@ msgid "dec"
 msgstr "Dec."
 
 #: admin/include/editor_cls.php:68 admin/include/editor_cls.php:111
-#: statistics.php:132 statistics.php:138
+#: statistics.php:131 statistics.php:138
 msgid " and "
 msgstr " és "
 
@@ -1968,30 +1921,30 @@ msgid "December"
 msgstr "december"
 
 # Birth
-#: admin/include/editor_cls.php:267 include/person_cls.php:748 list.php:51
-#: list.php:182 list.php:191 list.php:1301 relations.php:3223
-#: relations.php:3330 report_ancestor.php:806 report_ancestor.php:1181
+#: admin/include/editor_cls.php:267 include/person_cls.php:798 list.php:51
+#: list.php:181 list.php:190 list.php:1300 relations.php:3226
+#: relations.php:3333 report_ancestor.php:806 report_ancestor.php:1181
 #: report_ancestor.php:1266 report_ancestor.php:1496 report_descendant.php:715
 msgid "*"
 msgstr "*"
 
 # Baptise
-#: admin/include/editor_cls.php:269 include/person_cls.php:752 list.php:58
-#: list.php:180 list.php:189 list.php:1304 relations.php:3220
-#: relations.php:3327 report_ancestor.php:810 report_descendant.php:720
+#: admin/include/editor_cls.php:269 include/person_cls.php:802 list.php:58
+#: list.php:179 list.php:188 list.php:1303 relations.php:3223
+#: relations.php:3330 report_ancestor.php:810 report_descendant.php:720
 msgid "~"
 msgstr "~"
 
 # Death sign
-#: admin/include/editor_cls.php:272 include/person_cls.php:757 list.php:72
-#: list.php:200 list.php:209 list.php:1310 report_ancestor.php:815
+#: admin/include/editor_cls.php:272 include/person_cls.php:807 list.php:72
+#: list.php:199 list.php:208 list.php:1309 report_ancestor.php:815
 #: report_ancestor.php:1181 report_ancestor.php:1232 report_descendant.php:726
 msgid "&#134;"
 msgstr "&#134;"
 
 # Buried
-#: admin/include/editor_cls.php:276 include/person_cls.php:761 list.php:79
-#: list.php:198 list.php:207 list.php:1313 report_ancestor.php:819
+#: admin/include/editor_cls.php:276 include/person_cls.php:811 list.php:79
+#: list.php:197 list.php:206 list.php:1312 report_ancestor.php:819
 #: report_descendant.php:731
 msgid "[]"
 msgstr "[]"
@@ -2002,9 +1955,9 @@ msgid "Picture/ Media"
 msgstr "Kép/ Média"
 
 #: admin/include/editor_event_cls.php:17 admin/include/editor_event_cls.php:479
-#: admin/include/editor_event_cls.php:1108
-#: admin/include/editor_event_cls.php:1311 admin/include/editor_inc.php:1338
-#: admin/include/trees_cls.php:1743 list.php:1382 list.php:1390
+#: admin/include/editor_event_cls.php:1120
+#: admin/include/editor_event_cls.php:1323 admin/include/editor_inc.php:1311
+#: admin/include/trees_cls.php:1743 list.php:1381 list.php:1389
 msgid "Profession"
 msgstr "Foglalkozás"
 
@@ -2014,48 +1967,48 @@ msgstr "Foglalkozás"
 #: admin/include/editor_event_cls.php:302
 #: admin/include/editor_event_cls.php:326 admin/include/editor_sources.php:171
 #: admin/include/editor_sources.php:179 admin/include/trees_cls.php:1744
-#: include/mainindex_cls.php:903
+#: include/mainindex_cls.php:906
 msgid "Event"
 msgstr "Esemény"
 
 #: admin/include/editor_event_cls.php:19 admin/include/editor_event_cls.php:420
-#: admin/include/editor_inc.php:1330 admin/include/trees_cls.php:1745
-#: include/person_cls.php:1500 include/witness.php:98
+#: admin/include/editor_inc.php:1303 admin/include/trees_cls.php:1745
+#: include/person_cls.php:1548 include/witness.php:103
 msgid "birth declaration"
 msgstr "születés bejelentése"
 
 #: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:433
-#: admin/include/editor_inc.php:1332 admin/include/trees_cls.php:1746
-#: include/person_cls.php:1576 include/person_cls.php:1578
-#: include/witness.php:99
+#: admin/include/editor_inc.php:1305 admin/include/trees_cls.php:1746
+#: include/person_cls.php:1624 include/person_cls.php:1626
+#: include/witness.php:104
 msgid "baptism witness"
 msgstr "keresztelési tanú "
 
 #: admin/include/editor_event_cls.php:21 admin/include/editor_event_cls.php:446
-#: admin/include/editor_inc.php:1334 admin/include/trees_cls.php:1747
-#: include/person_cls.php:1729 include/person_cls.php:1731
-#: include/witness.php:100
+#: admin/include/editor_inc.php:1307 admin/include/trees_cls.php:1747
+#: include/person_cls.php:1777 include/person_cls.php:1779
+#: include/witness.php:105
 msgid "death declaration"
 msgstr "elhalálozás bejelentése"
 
 #: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:459
-#: admin/include/editor_inc.php:1336 admin/include/trees_cls.php:1748
-#: include/person_cls.php:1794 include/witness.php:101
+#: admin/include/editor_inc.php:1309 admin/include/trees_cls.php:1748
+#: include/person_cls.php:1842 include/witness.php:106
 msgid "burial witness"
 msgstr "temetési tanú"
 
 #: admin/include/editor_event_cls.php:24 admin/include/editor_event_cls.php:356
-#: admin/include/editor_inc.php:1320
+#: admin/include/editor_inc.php:1293
 msgid "Prefix"
 msgstr ""
 
 #: admin/include/editor_event_cls.php:25 admin/include/editor_event_cls.php:369
-#: admin/include/editor_inc.php:1322
+#: admin/include/editor_inc.php:1295
 msgid "Suffix"
 msgstr ""
 
 #: admin/include/editor_event_cls.php:26 admin/include/editor_event_cls.php:382
-#: admin/include/editor_inc.php:1324 admin/include/trees_cls.php:1750
+#: admin/include/editor_inc.php:1297 admin/include/trees_cls.php:1750
 msgid "Title of Nobility"
 msgstr "Nemesi cím"
 
@@ -2064,7 +2017,7 @@ msgid "Adoption"
 msgstr "Örökbefogadás"
 
 #: admin/include/editor_event_cls.php:29 admin/include/editor_event_cls.php:407
-#: admin/include/editor_inc.php:1328 admin/include/trees_cls.php:1752
+#: admin/include/editor_inc.php:1301 admin/include/trees_cls.php:1752
 msgid "Title of Lordship"
 msgstr "Főnemesi cím"
 
@@ -2073,14 +2026,14 @@ msgid "Colour mark by person"
 msgstr "Színkód személyenként"
 
 #: admin/include/editor_event_cls.php:32 admin/include/editor_event_cls.php:720
-#: admin/include/editor_inc.php:1342 include/marriage_cls.php:252
-#: include/marriage_cls.php:255 include/witness.php:102
+#: admin/include/editor_inc.php:1315 include/marriage_cls.php:252
+#: include/marriage_cls.php:255 include/witness.php:107
 msgid "marriage witness"
 msgstr "házassági tanú"
 
 #: admin/include/editor_event_cls.php:33 admin/include/editor_event_cls.php:733
-#: admin/include/editor_inc.php:1344 include/marriage_cls.php:366
-#: include/marriage_cls.php:368 include/witness.php:103
+#: admin/include/editor_inc.php:1317 include/marriage_cls.php:366
+#: include/marriage_cls.php:368 include/witness.php:108
 msgid "marriage witness (religious)"
 msgstr "házassági tanú (egyházi)"
 
@@ -2123,188 +2076,188 @@ msgid "Marriage license"
 msgstr "Házassági engedély"
 
 #: admin/include/editor_event_cls.php:344
-#: admin/include/editor_event_cls.php:1203 include/person_cls.php:1347
+#: admin/include/editor_event_cls.php:1215 include/person_cls.php:1395
 msgid "alias name"
 msgstr "álnév"
 
 #: admin/include/editor_event_cls.php:344
-#: admin/include/editor_event_cls.php:1209 include/person_cls.php:1349
+#: admin/include/editor_event_cls.php:1221 include/person_cls.php:1397
 msgid "Adopted name"
 msgstr "Adoptív név"
 
 #: admin/include/editor_event_cls.php:358
-#: admin/include/editor_event_cls.php:1116
+#: admin/include/editor_event_cls.php:1128
 msgid "e.g. Lt. Cmndr."
 msgstr ""
 
 #: admin/include/editor_event_cls.php:371
-#: admin/include/editor_event_cls.php:1117
+#: admin/include/editor_event_cls.php:1129
 msgid "e.g. Jr."
 msgstr ""
 
 #: admin/include/editor_event_cls.php:384
-#: admin/include/editor_event_cls.php:1118
+#: admin/include/editor_event_cls.php:1130
 msgid "e.g. Jhr., Jkvr."
 msgstr "pl. Jhr., Jkvr."
 
 #: admin/include/editor_event_cls.php:397
-#: admin/include/editor_event_cls.php:1119
+#: admin/include/editor_event_cls.php:1131
 msgid "e.g. Prof., Dr."
 msgstr "pl. Prof., Dr."
 
 #: admin/include/editor_event_cls.php:409
-#: admin/include/editor_event_cls.php:1120
+#: admin/include/editor_event_cls.php:1132
 msgid "e.g. Lord of Amsterdam"
 msgstr "pl. Amsterdam hercege"
 
-#: admin/include/editor_event_cls.php:1006
+#: admin/include/editor_event_cls.php:1018
 msgid "Search filename"
 msgstr ""
 
-#: admin/include/editor_event_cls.php:1011
+#: admin/include/editor_event_cls.php:1023
 msgid "Category files are displayed at bottom of list"
 msgstr "A kategória állományok a lista alján láthatók"
 
-#: admin/include/editor_event_cls.php:1017
+#: admin/include/editor_event_cls.php:1029
 msgid "* Select adoption parents *"
 msgstr "* Válasszon örökbefogadó szülőt *"
 
-#: admin/include/editor_event_cls.php:1052
+#: admin/include/editor_event_cls.php:1064
 msgid "Change colour mark by person"
 msgstr "Személyek színkódjának módosítása"
 
-#: admin/include/editor_event_cls.php:1054
+#: admin/include/editor_event_cls.php:1066
 msgid "Colour 1"
 msgstr "1. szín"
 
-#: admin/include/editor_event_cls.php:1056
+#: admin/include/editor_event_cls.php:1068
 msgid "Colour 2"
 msgstr "2. szín"
 
-#: admin/include/editor_event_cls.php:1058
+#: admin/include/editor_event_cls.php:1070
 msgid "Colour 3"
 msgstr "3. szín"
 
-#: admin/include/editor_event_cls.php:1060
+#: admin/include/editor_event_cls.php:1072
 msgid "Colour 4"
 msgstr "4. szín"
 
-#: admin/include/editor_event_cls.php:1062
+#: admin/include/editor_event_cls.php:1074
 msgid "Colour 5"
 msgstr "5. szín"
 
-#: admin/include/editor_event_cls.php:1064
+#: admin/include/editor_event_cls.php:1076
 msgid "Colour 6"
 msgstr "6. szín"
 
-#: admin/include/editor_event_cls.php:1066
+#: admin/include/editor_event_cls.php:1078
 msgid "Colour 7"
 msgstr "7. szín"
 
-#: admin/include/editor_event_cls.php:1068
+#: admin/include/editor_event_cls.php:1080
 msgid "Colour 8"
 msgstr "8. szín"
 
-#: admin/include/editor_event_cls.php:1070
+#: admin/include/editor_event_cls.php:1082
 msgid "Colour 9"
 msgstr "9. szín"
 
-#: admin/include/editor_event_cls.php:1072
+#: admin/include/editor_event_cls.php:1084
 msgid "Colour 10"
 msgstr "10. szín"
 
-#: admin/include/editor_event_cls.php:1074
+#: admin/include/editor_event_cls.php:1086
 msgid "Colour 11"
 msgstr "11. szín"
 
-#: admin/include/editor_event_cls.php:1076
+#: admin/include/editor_event_cls.php:1088
 msgid "Colour 12"
 msgstr "12. szín"
 
-#: admin/include/editor_event_cls.php:1078
+#: admin/include/editor_event_cls.php:1090
 msgid "Colour 13"
 msgstr "13. szín"
 
-#: admin/include/editor_event_cls.php:1080
+#: admin/include/editor_event_cls.php:1092
 msgid "Colour 14"
 msgstr "14. szín"
 
-#: admin/include/editor_event_cls.php:1098
+#: admin/include/editor_event_cls.php:1110
 msgid "Selected colour"
 msgstr "Kiválasztott szín"
 
-#: admin/include/editor_event_cls.php:1102
+#: admin/include/editor_event_cls.php:1114
 msgid "Also change"
 msgstr "Módosítsa is"
 
-#: admin/include/editor_event_cls.php:1102 admin/include/editor_inc.php:1712
+#: admin/include/editor_event_cls.php:1114 admin/include/editor_inc.php:1685
 #: admin/include/gedcom_export.php:660 hourglass.php:81
 msgid "Descendants"
 msgstr "Leszármazottak"
 
-#: admin/include/editor_event_cls.php:1103 admin/include/editor_inc.php:1713
+#: admin/include/editor_event_cls.php:1115 admin/include/editor_inc.php:1686
 #: admin/include/gedcom_export.php:666 hourglass.php:79
 msgid "Ancestors"
 msgstr "Ősök"
 
-#: admin/include/editor_event_cls.php:1197 include/person_cls.php:1343
-#: include/person_cls.php:1345
+#: admin/include/editor_event_cls.php:1209 include/person_cls.php:1391
+#: include/person_cls.php:1393
 msgid "Also known as"
 msgstr "Más ismert neve"
 
-#: admin/include/editor_event_cls.php:1206 include/person_cls.php:1348
+#: admin/include/editor_event_cls.php:1218 include/person_cls.php:1396
 msgid "Short name (for reports)"
 msgstr "Rövid név (jelentésekhez)"
 
-#: admin/include/editor_event_cls.php:1217 include/person_cls.php:1351
+#: admin/include/editor_event_cls.php:1229 include/person_cls.php:1399
 msgid "Census name"
 msgstr "Népszámlálási név"
 
-#: admin/include/editor_event_cls.php:1220 include/person_cls.php:1352
+#: admin/include/editor_event_cls.php:1232 include/person_cls.php:1400
 msgid "Married name"
 msgstr "Házassági név"
 
-#: admin/include/editor_event_cls.php:1223 include/person_cls.php:1353
+#: admin/include/editor_event_cls.php:1235 include/person_cls.php:1401
 msgid "Given name"
 msgstr ""
 
-#: admin/include/editor_event_cls.php:1226 include/person_cls.php:1354
+#: admin/include/editor_event_cls.php:1238 include/person_cls.php:1402
 msgid "Farm name"
 msgstr "Farm neve"
 
-#: admin/include/editor_event_cls.php:1229 include/person_cls.php:1355
+#: admin/include/editor_event_cls.php:1241 include/person_cls.php:1403
 msgid "Birth name"
 msgstr "Születési név"
 
-#: admin/include/editor_event_cls.php:1232 include/person_cls.php:1356
+#: admin/include/editor_event_cls.php:1244 include/person_cls.php:1404
 msgid "Indian name"
 msgstr "Indián név"
 
-#: admin/include/editor_event_cls.php:1235 include/person_cls.php:1357
+#: admin/include/editor_event_cls.php:1247 include/person_cls.php:1405
 msgid "Formal name"
 msgstr "Hivatalos név"
 
-#: admin/include/editor_event_cls.php:1238 include/person_cls.php:1358
+#: admin/include/editor_event_cls.php:1250 include/person_cls.php:1406
 msgid "Current name"
 msgstr "Jelenlegi név"
 
-#: admin/include/editor_event_cls.php:1241 include/person_cls.php:1359
+#: admin/include/editor_event_cls.php:1253 include/person_cls.php:1407
 msgid "Soldier name"
 msgstr "Katonai név"
 
-#: admin/include/editor_event_cls.php:1244 include/person_cls.php:1361
+#: admin/include/editor_event_cls.php:1256 include/person_cls.php:1409
 msgid "Religious name"
 msgstr "Vallási név"
 
-#: admin/include/editor_event_cls.php:1247 include/person_cls.php:1362
+#: admin/include/editor_event_cls.php:1259 include/person_cls.php:1410
 msgid "Other name"
 msgstr "Más név"
 
-#: admin/include/editor_event_cls.php:1250 include/person_cls.php:1360
+#: admin/include/editor_event_cls.php:1262 include/person_cls.php:1408
 msgid "Formerly known as"
 msgstr "Azelőtt használt név"
 
-#: admin/include/editor_event_cls.php:1253
+#: admin/include/editor_event_cls.php:1265
 msgid "German Rufname"
 msgstr ""
 
@@ -2320,35 +2273,35 @@ msgstr ""
 msgid "Also remove ALL RELATED PERSONS (including all items)"
 msgstr "Töröljön MINDEN KAPCSOLÓDÓ SZEMÉLYT (minden elemet beleértve)"
 
-#: admin/include/editor_inc.php:91 admin/include/editor_inc.php:120
+#: admin/include/editor_inc.php:86 admin/include/editor_inc.php:110
 msgid "Person disconnected from marriage(s)."
 msgstr "A személyt leválasztottuk a házasság(ok)ról."
 
-#: admin/include/editor_inc.php:142
+#: admin/include/editor_inc.php:132
 msgid "Person disconnected from parents."
 msgstr "A személyt leválasztottuk a szülőkről."
 
-#: admin/include/editor_inc.php:164
+#: admin/include/editor_inc.php:154
 msgid "Person is removed"
 msgstr "A személy törölve"
 
-#: admin/include/editor_inc.php:690
+#: admin/include/editor_inc.php:681
 msgid "If you continue, ALL children will be disconnected automatically!"
 msgstr "Ha folytatja, MINDEN gyerek automatikusan le lesz választva!"
 
-#: admin/include/editor_inc.php:691
+#: admin/include/editor_inc.php:682
 msgid "Are you sure to remove this mariage?"
 msgstr "Biztosan törli ezt a házasságot?"
 
-#: admin/include/editor_inc.php:750
+#: admin/include/editor_inc.php:738
 msgid "Marriage is removed!"
 msgstr "Házasság törölve!"
 
-#: admin/include/editor_inc.php:900
+#: admin/include/editor_inc.php:881
 msgid "Parents are selected!"
 msgstr "Szülők kiválasztva!"
 
-#: admin/include/editor_inc.php:915
+#: admin/include/editor_inc.php:896
 #, fuzzy
 #| msgid "Are you sure you want to disconnect this child?"
 msgid ""
@@ -2356,35 +2309,35 @@ msgid ""
 "child?"
 msgstr "Biztosan leválasztja ezt a gyermeket?"
 
-#: admin/include/editor_inc.php:990
+#: admin/include/editor_inc.php:966
 msgid "Are you sure you want to disconnect this child?"
 msgstr "Biztosan leválasztja ezt a gyermeket?"
 
-#: admin/include/editor_inc.php:1454
+#: admin/include/editor_inc.php:1427
 msgid "Photo too large"
 msgstr "Fénykép túl nagy"
 
-#: admin/include/editor_inc.php:1459
+#: admin/include/editor_inc.php:1432
 msgid "Photo upload failed, check folder rights"
 msgstr "A fotó feltöltése nem sikerült, ellenőrizze a mappa jogosultságait."
 
-#: admin/include/editor_inc.php:1510
+#: admin/include/editor_inc.php:1483
 msgid "Media too large"
 msgstr "A média túl nagy"
 
-#: admin/include/editor_inc.php:1514
+#: admin/include/editor_inc.php:1487
 msgid "Media upload failed, check folder rights"
 msgstr "Média feltöltése nem sikerült, ellenőrizze a mappa jogosultságait"
 
-#: admin/include/editor_inc.php:1532
+#: admin/include/editor_inc.php:1505
 msgid "No valid picture, media or document file"
 msgstr "Nincs érvényes fénykép, média vagy dokumentum fájl"
 
-#: admin/include/editor_inc.php:1698 admin/include/editor_inc.php:2148
+#: admin/include/editor_inc.php:1671 admin/include/editor_inc.php:2098
 msgid "Are you sure you want to remove this event?"
 msgstr "Biztosan törli ezt az eseményt?"
 
-#: admin/include/editor_inc.php:1711
+#: admin/include/editor_inc.php:1684
 msgid "Also remove colour marks of"
 msgstr "Távolítsa el a színjeleket innen:"
 
@@ -2413,7 +2366,7 @@ msgstr "Név forrás"
 msgid "person"
 msgstr "személy"
 
-#: admin/include/editor_sources.php:120 list_places_families.php:404
+#: admin/include/editor_sources.php:120 list_places_families.php:402
 msgid "Marriage"
 msgstr "Házasság"
 
@@ -2423,8 +2376,8 @@ msgid "family"
 msgstr "család"
 
 #: admin/include/editor_sources.php:302 admin/include/editor_sources.php:306
-#: include/mainindex_cls.php:903 list.php:1421 list.php:1423 list.php:1453
-#: list.php:1455 list.php:1809 list.php:1821 source.php:62 source.php:67
+#: include/mainindex_cls.php:906 list.php:1420 list.php:1422 list.php:1452
+#: list.php:1454 list.php:1808 list.php:1820 source.php:62 source.php:67
 #: source.php:237 sources.php:163
 msgid "Date"
 msgstr "Időpont"
@@ -2982,25 +2935,25 @@ msgstr "Gyermekek rendezése..."
 msgid "Order families..."
 msgstr ""
 
-#: admin/include/gedcom.php:2230
+#: admin/include/gedcom.php:2228
 msgid "Counting persons and families and enter into database..."
 msgstr "Személyek és családok számolása valamint hozzáadása az adatbázishoz..."
 
-#: admin/include/gedcom.php:2253
+#: admin/include/gedcom.php:2251
 #, php-format
 msgid "Processing took: %d seconds"
 msgstr "Feldolgozás időtartama: %d másodperc"
 
-#: admin/include/gedcom.php:2254
+#: admin/include/gedcom.php:2252
 msgid "No error messages? In this case the database is ready for use!"
 msgstr "Nincs hibaüzenet? Ebben az esetben az adatbázis használatra kész!"
 
-#: admin/include/gedcom.php:2257 admin/include/gedcom.php:2262
+#: admin/include/gedcom.php:2255 admin/include/gedcom.php:2260
 #, php-format
 msgid "Ready! Now click %s to watch the family tree"
 msgstr "Kész! Kattintson %s családfája megtekintéséhez"
 
-#: admin/include/gedcom.php:2263
+#: admin/include/gedcom.php:2261
 msgid ""
 "TIP: Use <a href=\"index.php?page=cal_date\">\"Calculated birth dates\"</a> "
 "for a better privacy filter."
@@ -3127,25 +3080,25 @@ msgstr "Gedcom exportálása"
 msgid "Start export"
 msgstr "Exportálás elkezdése"
 
-#: admin/include/gedcom_export.php:765
+#: admin/include/gedcom_export.php:766
 #, fuzzy
 #| msgid "Gedcom file will be exported to backup_tmp/ folder"
 msgid "GEDCOM file will be exported to backup_tmp/ folder"
 msgstr "A gedcom fájlt a backup_tmp/ mappába fogjuk exportálni"
 
-#: admin/include/gedcom_export.php:1751
+#: admin/include/gedcom_export.php:1752
 #, fuzzy
 #| msgid "Gedcom file is generated"
 msgid "GEDCOM file is generated"
 msgstr "A gedcom állomány készen van"
 
-#: admin/include/gedcom_export.php:1754
+#: admin/include/gedcom_export.php:1755
 #, fuzzy
 #| msgid "Download backup file"
 msgid "Download GEDCOM file"
 msgstr "Biztonsági mentés letöltése"
 
-#: admin/include/gedcom_export.php:1765
+#: admin/include/gedcom_export.php:1766
 #, fuzzy
 #| msgid "Remove gedcom file"
 msgid "Remove GEDCOM file"
@@ -3298,7 +3251,7 @@ msgstr ""
 msgid "General"
 msgstr "Általános"
 
-#: admin/include/groups.php:347 family.php:172
+#: admin/include/groups.php:347 family.php:171
 msgid "Show pictures"
 msgstr "Képek megjelenítése"
 
@@ -3352,12 +3305,12 @@ msgstr "Saját kód megjelenítése"
 msgid "Default presentation of family page"
 msgstr "Családi lap alapértelmezett megjelenítése"
 
-#: admin/include/groups.php:392 family.php:131
+#: admin/include/groups.php:392 family.php:130
 msgid "Compact view"
 msgstr "Kompakt nézet"
 
-#: admin/include/groups.php:394 family.php:133 list.php:1742
-#: list_places_families.php:517
+#: admin/include/groups.php:394 family.php:132 list.php:1741
+#: list_places_families.php:515
 msgid "Expanded view"
 msgstr "Kiterjesztett nézet"
 
@@ -3365,11 +3318,11 @@ msgstr "Kiterjesztett nézet"
 msgid "Default presentation of Google maps in family page"
 msgstr "Google térkép alapértelmezett megjelenítése a családi lapon"
 
-#: admin/include/groups.php:400 family.php:160
+#: admin/include/groups.php:400 family.php:159
 msgid "Show Google maps"
 msgstr "Google-térkép megjelenítése"
 
-#: admin/include/groups.php:402 family.php:162
+#: admin/include/groups.php:402 family.php:161
 msgid "Hide Google maps"
 msgstr "Google-térkép elrejtése"
 
@@ -3418,19 +3371,19 @@ msgstr "Források és menü források megjelenítése"
 msgid "Default presentation of source"
 msgstr "A forrás alapértelmezett megjelenítése"
 
-#: admin/include/groups.php:449 family.php:142
+#: admin/include/groups.php:449 family.php:141
 #, fuzzy
 #| msgid "Show source title"
 msgid "Show source"
 msgstr "Forrás megnevezésének megjelenítése"
 
-#: admin/include/groups.php:451 family.php:145
+#: admin/include/groups.php:451 family.php:144
 #, fuzzy
 #| msgid "Show source title as footnote"
 msgid "Show source as footnote"
 msgstr "Mutasd a forrás megnevezését lábjegyzetben"
 
-#: admin/include/groups.php:453 family.php:148
+#: admin/include/groups.php:453 family.php:147
 msgid "Hide sources"
 msgstr "Forrás elrejtése"
 
@@ -3438,7 +3391,7 @@ msgstr "Forrás elrejtése"
 msgid "Show restricted source"
 msgstr "Korlátozott forrás megjelenítése"
 
-#: admin/include/groups.php:460 family.php:179
+#: admin/include/groups.php:460 family.php:178
 msgid "Texts"
 msgstr "Szövegek"
 
@@ -3446,15 +3399,15 @@ msgstr "Szövegek"
 msgid "Default presentation of text"
 msgstr "Jegyzetek alapértelmezett megjelenítése"
 
-#: admin/include/groups.php:466 family.php:181
+#: admin/include/groups.php:466 family.php:180
 msgid "Show texts"
 msgstr "Szövegek megjelenítése"
 
-#: admin/include/groups.php:468 family.php:184
+#: admin/include/groups.php:468 family.php:183
 msgid "Show texts in popup screen"
 msgstr "Szövegek megjelenítése felugró ablakban"
 
-#: admin/include/groups.php:470 family.php:187
+#: admin/include/groups.php:470 family.php:186
 msgid "Hide texts"
 msgstr "Szövegek elrejtése"
 
@@ -3583,7 +3536,7 @@ msgid "Hide or show family trees per user group."
 msgstr "Családfák megjelenítése vagy rejtése felhasználói csoportonként."
 
 #: admin/include/groups.php:624 admin/include/index_inc.php:479
-#: admin/index.php:1029 include/person_cls.php:721
+#: admin/index.php:1029 include/person_cls.php:771
 msgid "Editor"
 msgstr "Szerkesztés"
 
@@ -3601,7 +3554,7 @@ msgstr "Ezeket felhasználónként is beállíthatja!"
 msgid "Hide or show photo categories per user group."
 msgstr "Fénykép kategóriák elrejtése vagy mutatása felhasználói csoportonként."
 
-#: admin/include/groups.php:704 admin/include/thumbs.php:604
+#: admin/include/groups.php:704 admin/include/thumbs.php:607
 msgid "Category prefix"
 msgstr "Kategória előtag"
 
@@ -4165,7 +4118,7 @@ msgstr ""
 "meg."
 
 #: admin/include/language_editor.php:32 admin/include/language_editor.php:115
-#: admin/include/thumbs.php:607 admin/include/trees_cls.php:302
+#: admin/include/thumbs.php:610 admin/include/trees_cls.php:302
 msgid "Language"
 msgstr "Nyelv"
 
@@ -4360,7 +4313,7 @@ msgid ""
 "locations were recognized by geocoding and have been saved in the database."
 msgstr "helységet geokódoltunk és mentettünk el az adatbázisban."
 
-#: admin/include/make_db_maps.php:200 family.php:2545 report_ancestor.php:1575
+#: admin/include/make_db_maps.php:200 family.php:2555 report_ancestor.php:1575
 msgid "Back"
 msgstr "Vissza"
 
@@ -4512,11 +4465,11 @@ msgstr ""
 "mennyi ideig tart az indexelés."
 
 #: admin/include/make_db_maps.php:635 include/mainindex_cls.php:583
-#: list.php:1599
+#: list.php:1598
 msgid "All family trees"
 msgstr "Minden családfa"
 
-#: admin/include/make_db_maps.php:658 admin/include/tree_check.php:750
+#: admin/include/make_db_maps.php:658 admin/include/tree_check.php:724
 msgid "Check"
 msgstr "Ellenőrzés"
 
@@ -4679,8 +4632,8 @@ msgstr ""
 
 #: admin/include/make_db_maps.php:993 admin/include/settings_admin.php:5
 #: admin/include/settings_admin.php:188 admin/include/trees_cls.php:1252
-#: admin/include/trees_cls.php:1418 admin/index.php:942 family.php:115
-#: family.php:2463 header.php:268 menu.php:881
+#: admin/include/trees_cls.php:1418 admin/index.php:942 family.php:114
+#: family.php:2473 header.php:268 menu.php:881
 msgid "Settings"
 msgstr "Beállítások"
 
@@ -5032,7 +4985,7 @@ msgstr ""
 "Minimum leütés keresőmezőkben (standard érték=3. Kínai nyelvez állítsa 1-"
 "re )."
 
-#: admin/include/settings_admin.php:537 fanchart.php:686
+#: admin/include/settings_admin.php:537 fanchart.php:704
 msgid "Date display"
 msgstr "Dátum megjelenítése"
 
@@ -5080,7 +5033,7 @@ msgstr "Magyar - jelentések és listák: Smith John"
 msgid "Default timeline file (per language)"
 msgstr "Alapértelmezett idővonal állomány (nyelvenként)"
 
-#: admin/include/settings_admin.php:568 admin/include/thumbs.php:641
+#: admin/include/settings_admin.php:568 admin/include/thumbs.php:644
 #: admin/include/trees_cls.php:33 admin/include/trees_cls.php:303
 msgid "Default"
 msgstr "Alapértelmezett"
@@ -5188,7 +5141,7 @@ msgid "Position"
 msgstr ""
 
 #: admin/include/settings_admin.php:766 admin/include/statistics.php:461
-#: admin/include/tree_check.php:144 statistics.php:86 statistics.php:263
+#: admin/include/tree_check.php:141 statistics.php:86 statistics.php:264
 msgid "Item"
 msgstr "Elem"
 
@@ -5218,7 +5171,7 @@ msgid "Select family tree"
 msgstr "Családfa kiválasztása"
 
 #: admin/include/settings_admin.php:817 admin/include/settings_admin.php:957
-#: include/mainindex_cls.php:218 include/mainindex_cls.php:580 list.php:1597
+#: include/mainindex_cls.php:218 include/mainindex_cls.php:580 list.php:1596
 msgid "Selected family tree"
 msgstr "kiválasztott családfa"
 
@@ -5228,12 +5181,12 @@ msgid "Names"
 msgstr "Nevek"
 
 #: admin/include/settings_admin.php:826 admin/include/settings_admin.php:960
-#: include/mainindex_cls.php:883
+#: include/mainindex_cls.php:886
 msgid "Today in history"
 msgstr ""
 
 #: admin/include/settings_admin.php:829 admin/include/settings_admin.php:961
-#: include/mainindex_cls.php:688
+#: include/mainindex_cls.php:690
 msgid "Favourites"
 msgstr ""
 
@@ -5271,7 +5224,7 @@ msgstr ""
 msgid "Show text from CMS system."
 msgstr ""
 
-#: admin/include/settings_admin.php:920 fanchart.php:643
+#: admin/include/settings_admin.php:920 fanchart.php:661
 msgid "View"
 msgstr "Nézet"
 
@@ -5490,7 +5443,7 @@ msgid "Visited families in the past 12 months"
 msgstr "Az utóbbi 12 hónapban meglátogatott családok"
 
 #: admin/include/statistics.php:258 admin/include/statistics.php:299
-#: family.php:1372 family.php:1464 list.php:1493
+#: family.php:1383 family.php:1475 list.php:1492
 msgid "Unknown"
 msgstr "Ismeretlen"
 
@@ -5699,19 +5652,19 @@ msgstr ""
 msgid "into filename:"
 msgstr ""
 
-#: admin/include/thumbs.php:484 admin/include/thumbs.php:558
+#: admin/include/thumbs.php:487 admin/include/thumbs.php:561
 msgid "Change filename"
 msgstr ""
 
-#: admin/include/thumbs.php:577
+#: admin/include/thumbs.php:580
 msgid "This folder does not exists!"
 msgstr "Ez a mappa nem létezik!"
 
-#: admin/include/thumbs.php:598
+#: admin/include/thumbs.php:601
 msgid "Create categories for your photo albums"
 msgstr "Hozzon létre kategóriát fotóalbumaihoz"
 
-#: admin/include/thumbs.php:601
+#: admin/include/thumbs.php:604
 msgid ""
 "Here you can create categories for all your photo albums.</li><li><b>A "
 "category will not be displayed in the photobook menu unless there is at "
@@ -5742,19 +5695,19 @@ msgstr ""
 "ilyenformán: <b>sp_</b>John Smith.jpg</li><li>Azokat a képeket, amelyeket az "
 "alapértelmezett kategóriába szeretné helyezni, nem kell előtaggal ellátni. "
 
-#: admin/include/thumbs.php:604
+#: admin/include/thumbs.php:607
 msgid "Category name"
 msgstr "Kategória név"
 
-#: admin/include/thumbs.php:687
+#: admin/include/thumbs.php:690
 msgid "default - without prefix"
 msgstr "alapértelmezett - előtag nélkül"
 
-#: admin/include/thumbs.php:701
+#: admin/include/thumbs.php:704
 msgid "Do you really want to delete category:"
 msgstr "Tényleg törölni akarja ezt a kategóriát:"
 
-#: admin/include/thumbs.php:708
+#: admin/include/thumbs.php:711
 msgid "Save changes"
 msgstr "Változások mentése"
 
@@ -5767,7 +5720,7 @@ msgid "Choose tree:"
 msgstr "Fa kiválasztása:"
 
 #: admin/include/tree_check.php:44 admin/include/tree_check.php:61
-#: admin/include/tree_check.php:748
+#: admin/include/tree_check.php:722
 msgid "Check consistency of dates"
 msgstr "Adatok következetességének ellenőrzése"
 
@@ -5903,88 +5856,88 @@ msgstr "Módosítás időpontja"
 msgid "When added"
 msgstr "Hozzáadás időpontja"
 
-#: admin/include/tree_check.php:126
+#: admin/include/tree_check.php:123
 msgid "Checking database tables..."
 msgstr "Adatbázis tábláinak ellenőrzése..."
 
-#: admin/include/tree_check.php:138
+#: admin/include/tree_check.php:135
 msgid ""
 "Remove links to missing items from database (first make a database backup!)"
 msgstr ""
 
-#: admin/include/tree_check.php:139
+#: admin/include/tree_check.php:136
 msgid "REMOVE"
 msgstr ""
 
-#: admin/include/tree_check.php:144
+#: admin/include/tree_check.php:141
 msgid "Check item"
 msgstr ""
 
-#: admin/include/tree_check.php:144
+#: admin/include/tree_check.php:141
 msgid "Result"
 msgstr ""
 
-#: admin/include/tree_check.php:601
+#: admin/include/tree_check.php:575
 msgid "Checked all person index numbers"
 msgstr ""
 
-#: admin/include/tree_check.php:602
+#: admin/include/tree_check.php:576
 msgid "Checked all person - relation connections"
 msgstr ""
 
-#: admin/include/tree_check.php:603
+#: admin/include/tree_check.php:577
 msgid "Checked all child - parent connections"
 msgstr ""
 
-#: admin/include/tree_check.php:604
+#: admin/include/tree_check.php:578
 msgid "Checked all parent - child connections"
 msgstr ""
 
-#: admin/include/tree_check.php:615 admin/include/tree_check.php:826
+#: admin/include/tree_check.php:589 admin/include/tree_check.php:800
 msgid "ID"
 msgstr "Azonosító"
 
-#: admin/include/tree_check.php:616
+#: admin/include/tree_check.php:590
 msgid "Edit invalid date"
 msgstr "Érvénytelen dátum szerkesztése"
 
-#: admin/include/tree_check.php:617 admin/include/tree_check.php:828
+#: admin/include/tree_check.php:591 admin/include/tree_check.php:802
 msgid "Details"
 msgstr "Részletek"
 
-#: admin/include/tree_check.php:618
+#: admin/include/tree_check.php:592
 msgid "Invalid date"
 msgstr "Érvénytelen dátum"
 
-#: admin/include/tree_check.php:619
+#: admin/include/tree_check.php:593
 msgid "Invalid person dates:"
 msgstr "Érvénytelen személyi dátumok:"
 
-#: admin/include/tree_check.php:639
+#: admin/include/tree_check.php:613
 msgid "Invalid family dates:"
 msgstr "Érvénytelen családi dátumok:"
 
-#: admin/include/tree_check.php:664
+#: admin/include/tree_check.php:638
 msgid "Invalid event dates:"
 msgstr "Érvénytelen esemény dátumok:"
 
-#: admin/include/tree_check.php:674
+#: admin/include/tree_check.php:648
 msgid "Invalid connection dates:"
 msgstr "Érvénytelen kapcsolási dátumok:"
 
-#: admin/include/tree_check.php:684
+#: admin/include/tree_check.php:658
 msgid "Invalid address dates:"
 msgstr "Érvénytelen cím dátumok:"
 
-#: admin/include/tree_check.php:694
+#: admin/include/tree_check.php:668
 msgid "Invalid repository dates:"
 msgstr "Érvénytelen lelőhely dátumok:"
 
-#: admin/include/tree_check.php:705
+#: admin/include/tree_check.php:679
 msgid "Invalid source dates:"
 msgstr "Érvénytelen forrás dátumok:"
 
-#: admin/include/tree_check.php:749
+#: admin/include/tree_check.php:723
 msgid ""
 "You can mark or unmark any of the check options and change defaults. Then "
 "press "
@@ -5992,7 +5945,7 @@ msgstr ""
 "Bármelyik jelölőnégyzetet bejelölheti és megváltoztathatja az "
 "alapértelmezett beállításokat. Azután nyomja meg"
 
-#: admin/include/tree_check.php:751
+#: admin/include/tree_check.php:725
 msgid ""
 "(with default settings a full check may take between 12-15 seconds per "
 "10,000 persons)"
@@ -6000,307 +5953,307 @@ msgstr ""
 "(alapértelmezett beállításokkal egy teljes ellenőrzés felvehet 12-15 "
 "másodpercet 10,000 személyenként)"
 
-#: admin/include/tree_check.php:754
+#: admin/include/tree_check.php:728
 msgid "Unmark all options"
 msgstr "Minden jelölés törlése"
 
-#: admin/include/tree_check.php:755
+#: admin/include/tree_check.php:729
 msgid "Mark all options"
 msgstr "Minden opció jelölése"
 
-#: admin/include/tree_check.php:756
+#: admin/include/tree_check.php:730
 msgid "Birth date - after bapt/marr/death/burial date"
 msgstr "Születési dátum - ker/ház/hal/tem dátuma után"
 
-#: admin/include/tree_check.php:758 admin/include/tree_check.php:761
+#: admin/include/tree_check.php:732 admin/include/tree_check.php:735
 msgid "Birth date - more than "
 msgstr "Születési dátum - több, mint"
 
-#: admin/include/tree_check.php:760 admin/include/tree_check.php:766
-#: admin/include/tree_check.php:783 admin/include/tree_check.php:789
+#: admin/include/tree_check.php:734 admin/include/tree_check.php:740
+#: admin/include/tree_check.php:757 admin/include/tree_check.php:763
 msgid " years after mother's birth"
 msgstr "évvel az anya születése után"
 
-#: admin/include/tree_check.php:763 admin/include/tree_check.php:769
-#: admin/include/tree_check.php:786 admin/include/tree_check.php:792
+#: admin/include/tree_check.php:737 admin/include/tree_check.php:743
+#: admin/include/tree_check.php:760 admin/include/tree_check.php:766
 msgid " years after father's birth"
 msgstr "évvel az apa születése után"
 
-#: admin/include/tree_check.php:764 admin/include/tree_check.php:767
-#: admin/include/tree_check.php:771 admin/include/tree_check.php:775
+#: admin/include/tree_check.php:738 admin/include/tree_check.php:741
+#: admin/include/tree_check.php:745 admin/include/tree_check.php:749
 msgid "Birth date - less than "
 msgstr "Születési dátum - kevesebb, mint"
 
-#: admin/include/tree_check.php:773
+#: admin/include/tree_check.php:747
 msgid " months after wedding parents"
 msgstr "hónappal a szülők házasságkötése után"
 
-#: admin/include/tree_check.php:774
+#: admin/include/tree_check.php:748
 msgid "Birth date - before wedding parents"
 msgstr "Születési dátum - szülők házasságkötése előtt"
 
-#: admin/include/tree_check.php:777
+#: admin/include/tree_check.php:751
 msgid " months after previous child of mother"
 msgstr "hónappal az anya előző gyereke előtt"
 
-#: admin/include/tree_check.php:779
+#: admin/include/tree_check.php:753
 msgid "Baptism date - after death/burial date"
 msgstr "Keresztelés dátuma - elhalálozás / temetés dátuma után"
 
-#: admin/include/tree_check.php:781 admin/include/tree_check.php:784
+#: admin/include/tree_check.php:755 admin/include/tree_check.php:758
 msgid "Baptism date - more than "
 msgstr "Keresztelés dátuma - több, mint"
 
-#: admin/include/tree_check.php:787 admin/include/tree_check.php:790
+#: admin/include/tree_check.php:761 admin/include/tree_check.php:764
 msgid "Baptism date - less than "
 msgstr "Keresztelés dátuma - több, mint"
 
-#: admin/include/tree_check.php:794
+#: admin/include/tree_check.php:768
 msgid "Marriage date(s) - after death/burial date"
 msgstr "Házassági dátum(ok) - elhalálozás / temetés dátuma után"
 
-#: admin/include/tree_check.php:795
+#: admin/include/tree_check.php:769
 msgid "Marriage date(s) - less than "
 msgstr "Házassági dátum(ok) - kevesebb, mint"
 
-#: admin/include/tree_check.php:797
+#: admin/include/tree_check.php:771
 msgid " years after birth date"
 msgstr "évvel a születés dátuma után"
 
-#: admin/include/tree_check.php:798
+#: admin/include/tree_check.php:772
 msgid "Marriage age - age difference of more than "
 msgstr "Házassági életkor - a korkülönbség több, mint"
 
-#: admin/include/tree_check.php:800
+#: admin/include/tree_check.php:774
 msgid " years between partners"
 msgstr "év a házastársak között"
 
-#: admin/include/tree_check.php:801
+#: admin/include/tree_check.php:775
 msgid "Death date - after burial date"
 msgstr "Elhalálozás dátuma - temetés dátuma után"
 
-#: admin/include/tree_check.php:802
+#: admin/include/tree_check.php:776
 msgid "Death date - bef birth of mother"
 msgstr "Elhalálozás dátuma - az anya szül. előtt"
 
-#: admin/include/tree_check.php:803
+#: admin/include/tree_check.php:777
 msgid "Death date - bef birth of father"
 msgstr "Elhalálozás dátuma - az apa születése előtt"
 
-#: admin/include/tree_check.php:804
+#: admin/include/tree_check.php:778
 msgid "Burial date - bef birth of mother"
 msgstr "Temetés dátuma - az anya születése előtt"
 
-#: admin/include/tree_check.php:805
+#: admin/include/tree_check.php:779
 msgid "Burial date - bef birth of father"
 msgstr "Temetés dátuma - az apa születése előtt"
 
-#: admin/include/tree_check.php:806
+#: admin/include/tree_check.php:780
 msgid "Age (by death date) - more than "
 msgstr "Age (by death date) - more than "
 
-#: admin/include/tree_check.php:808 admin/include/tree_check.php:811
+#: admin/include/tree_check.php:782 admin/include/tree_check.php:785
 msgid " years"
 msgstr "év"
 
-#: admin/include/tree_check.php:809
+#: admin/include/tree_check.php:783
 msgid "Age (by burial date) - more than "
 msgstr "Életkor (temetés dátuma szerint) - több, mint"
 
-#: admin/include/tree_check.php:813
+#: admin/include/tree_check.php:787
 msgid "Age (up till today) - more than "
 msgstr "Életkor (a mai naphoz viszonyítva) - több, mint"
 
-#: admin/include/tree_check.php:815
+#: admin/include/tree_check.php:789
 msgid " years <b>(may give long list!)"
 msgstr "év <b>(a lista hosszú lehet!)"
 
-#: admin/include/tree_check.php:827
+#: admin/include/tree_check.php:801
 msgid "Possible consistency problems"
 msgstr "Lehetséges következetlenségi hibák"
 
-#: admin/include/tree_check.php:988 admin/include/tree_check.php:992
-#: admin/include/tree_check.php:996 admin/include/tree_check.php:1001
-#: admin/include/tree_check.php:1013 admin/include/tree_check.php:1025
-#: admin/include/tree_check.php:1037 admin/include/tree_check.php:1049
-#: admin/include/tree_check.php:1062 admin/include/tree_check.php:1072
-#: admin/include/tree_check.php:1083 admin/include/tree_check.php:1216
-#: admin/include/tree_check.php:1223 admin/include/tree_check.php:1230
-#: admin/include/tree_check.php:1237 admin/include/tree_check.php:1252
-#: admin/include/tree_check.php:1318 admin/include/tree_check.php:1332
-#: admin/include/tree_check.php:1349 admin/include/tree_check.php:1467
-#: admin/include/tree_check.php:1471 admin/include/tree_check.php:1482
-#: admin/include/tree_check.php:1484 admin/include/tree_check.php:1487
+#: admin/include/tree_check.php:962 admin/include/tree_check.php:966
+#: admin/include/tree_check.php:970 admin/include/tree_check.php:975
+#: admin/include/tree_check.php:987 admin/include/tree_check.php:999
+#: admin/include/tree_check.php:1011 admin/include/tree_check.php:1023
+#: admin/include/tree_check.php:1036 admin/include/tree_check.php:1046
+#: admin/include/tree_check.php:1057 admin/include/tree_check.php:1190
+#: admin/include/tree_check.php:1197 admin/include/tree_check.php:1204
+#: admin/include/tree_check.php:1211 admin/include/tree_check.php:1226
+#: admin/include/tree_check.php:1292 admin/include/tree_check.php:1306
+#: admin/include/tree_check.php:1323 admin/include/tree_check.php:1441
+#: admin/include/tree_check.php:1445 admin/include/tree_check.php:1456
+#: admin/include/tree_check.php:1458 admin/include/tree_check.php:1461
 #: admin/include/trees_cls.php:1584
 msgid "birth date"
 msgstr "születési dátum"
 
-#: admin/include/tree_check.php:988 admin/include/tree_check.php:1099
-#: admin/include/tree_check.php:1103 admin/include/tree_check.php:1116
-#: admin/include/tree_check.php:1128 admin/include/tree_check.php:1140
-#: admin/include/tree_check.php:1152 admin/include/tree_check.php:1319
-#: admin/include/tree_check.php:1333 admin/include/tree_check.php:1350
-#: admin/include/tree_check.php:1468 admin/include/tree_check.php:1472
+#: admin/include/tree_check.php:962 admin/include/tree_check.php:1073
+#: admin/include/tree_check.php:1077 admin/include/tree_check.php:1090
+#: admin/include/tree_check.php:1102 admin/include/tree_check.php:1114
+#: admin/include/tree_check.php:1126 admin/include/tree_check.php:1293
+#: admin/include/tree_check.php:1307 admin/include/tree_check.php:1324
+#: admin/include/tree_check.php:1442 admin/include/tree_check.php:1446
 #: admin/include/trees_cls.php:1592
 msgid "baptism date"
 msgstr "keresztelési dátum"
 
-#: admin/include/tree_check.php:992 admin/include/tree_check.php:1099
-#: admin/include/tree_check.php:1167 admin/include/tree_check.php:1178
-#: admin/include/tree_check.php:1188 admin/include/tree_check.php:1198
-#: admin/include/tree_check.php:1266 admin/include/tree_check.php:1275
-#: admin/include/tree_check.php:1284 admin/include/tree_check.php:1322
-#: admin/include/tree_check.php:1469 admin/include/tree_check.php:1473
+#: admin/include/tree_check.php:966 admin/include/tree_check.php:1073
+#: admin/include/tree_check.php:1141 admin/include/tree_check.php:1152
+#: admin/include/tree_check.php:1162 admin/include/tree_check.php:1172
+#: admin/include/tree_check.php:1240 admin/include/tree_check.php:1249
+#: admin/include/tree_check.php:1258 admin/include/tree_check.php:1296
+#: admin/include/tree_check.php:1443 admin/include/tree_check.php:1447
 #: admin/include/trees_cls.php:1587
 msgid "death date"
 msgstr "elhalálozási dátum"
 
-#: admin/include/tree_check.php:996 admin/include/tree_check.php:1103
-#: admin/include/tree_check.php:1171 admin/include/tree_check.php:1182
-#: admin/include/tree_check.php:1192 admin/include/tree_check.php:1202
-#: admin/include/tree_check.php:1266 admin/include/tree_check.php:1296
-#: admin/include/tree_check.php:1305 admin/include/tree_check.php:1336
-#: admin/include/tree_check.php:1470 admin/include/tree_check.php:1474
+#: admin/include/tree_check.php:970 admin/include/tree_check.php:1077
+#: admin/include/tree_check.php:1145 admin/include/tree_check.php:1156
+#: admin/include/tree_check.php:1166 admin/include/tree_check.php:1176
+#: admin/include/tree_check.php:1240 admin/include/tree_check.php:1270
+#: admin/include/tree_check.php:1279 admin/include/tree_check.php:1310
+#: admin/include/tree_check.php:1444 admin/include/tree_check.php:1448
 #: admin/include/trees_cls.php:1594
 msgid "burial date"
 msgstr "temetési dátum"
 
-#: admin/include/tree_check.php:1013 admin/include/tree_check.php:1037
-#: admin/include/tree_check.php:1116 admin/include/tree_check.php:1140
-#: admin/include/tree_check.php:1275 admin/include/tree_check.php:1296
+#: admin/include/tree_check.php:987 admin/include/tree_check.php:1011
+#: admin/include/tree_check.php:1090 admin/include/tree_check.php:1114
+#: admin/include/tree_check.php:1249 admin/include/tree_check.php:1270
 #: relations.php:340
 msgid "mother"
 msgstr "anya"
 
-#: admin/include/tree_check.php:1025 admin/include/tree_check.php:1049
-#: admin/include/tree_check.php:1128 admin/include/tree_check.php:1152
-#: admin/include/tree_check.php:1284 admin/include/tree_check.php:1305
+#: admin/include/tree_check.php:999 admin/include/tree_check.php:1023
+#: admin/include/tree_check.php:1102 admin/include/tree_check.php:1126
+#: admin/include/tree_check.php:1258 admin/include/tree_check.php:1279
 #: relations.php:337 relations.php:356 relations.php:382 relations.php:394
 msgid "father"
 msgstr "apja"
 
-#: admin/include/tree_check.php:1062 admin/include/tree_check.php:1072
+#: admin/include/tree_check.php:1036 admin/include/tree_check.php:1046
 msgid "parents wedding date"
 msgstr "szülők házassági dátuma"
 
-#: admin/include/tree_check.php:1083
+#: admin/include/tree_check.php:1057
 msgid "previous child of mother"
 msgstr "az anya előző gyermeke"
 
-#: admin/include/tree_check.php:1178 admin/include/tree_check.php:1182
-#: admin/include/tree_check.php:1223 timelines.php:117 timelines.php:225
+#: admin/include/tree_check.php:1152 admin/include/tree_check.php:1156
+#: admin/include/tree_check.php:1197 timelines.php:117 timelines.php:225
 msgid "marriage notice"
 msgstr "házasság hirdetése"
 
-#: admin/include/tree_check.php:1188 admin/include/tree_check.php:1192
-#: admin/include/tree_check.php:1230 timelines.php:113 timelines.php:221
+#: admin/include/tree_check.php:1162 admin/include/tree_check.php:1166
+#: admin/include/tree_check.php:1204 timelines.php:113 timelines.php:221
 msgid "church marriage"
 msgstr "egyházi házasságkötés"
 
-#: admin/include/tree_check.php:1198 admin/include/tree_check.php:1202
-#: admin/include/tree_check.php:1237 timelines.php:121 timelines.php:229
+#: admin/include/tree_check.php:1172 admin/include/tree_check.php:1176
+#: admin/include/tree_check.php:1211 timelines.php:121 timelines.php:229
 msgid "church marriage notice"
 msgstr "egyházi házasság hirdetése"
 
-#: admin/include/tree_check.php:1252 admin/include/trees_cls.php:1613
+#: admin/include/tree_check.php:1226 admin/include/trees_cls.php:1613
 msgid "Spouse"
 msgstr "Házastárs"
 
-#: admin/include/tree_check.php:1467 admin/include/tree_check.php:1471
-#: admin/include/tree_check.php:1482 admin/include/tree_check.php:1484
-#: admin/include/tree_check.php:1487 admin/include/tree_check.php:1490
-#: family.php:1982 family.php:2006 family.php:2145 family.php:2151
+#: admin/include/tree_check.php:1441 admin/include/tree_check.php:1445
+#: admin/include/tree_check.php:1456 admin/include/tree_check.php:1458
+#: admin/include/tree_check.php:1461 admin/include/tree_check.php:1464
+#: family.php:1993 family.php:2017 family.php:2156 family.php:2162
 msgid "BORN_SHORT"
 msgstr "szül."
 
-#: admin/include/tree_check.php:1468 admin/include/tree_check.php:1472
-#: family.php:1985 family.php:2009
+#: admin/include/tree_check.php:1442 admin/include/tree_check.php:1446
+#: family.php:1996 family.php:2020
 msgid "BAPTISED_SHORT"
 msgstr "ker."
 
-#: admin/include/tree_check.php:1469 admin/include/tree_check.php:1473
-#: family.php:2034 family.php:2065 family.php:2168 family.php:2174
+#: admin/include/tree_check.php:1443 admin/include/tree_check.php:1447
+#: family.php:2045 family.php:2076 family.php:2179 family.php:2185
 msgid "DIED_SHORT"
 msgstr "megh."
 
-#: admin/include/tree_check.php:1470 admin/include/tree_check.php:1474
-#: family.php:2037 family.php:2068
+#: admin/include/tree_check.php:1444 admin/include/tree_check.php:1448
+#: family.php:2048 family.php:2079
 msgid "BURIED_SHORT"
 msgstr "tem."
 
-#: admin/include/tree_check.php:1482
+#: admin/include/tree_check.php:1456
 #, php-format
 msgid "%s more than %d years after %s"
 msgstr "%s több, mint %d évvel ezután: %s"
 
-#: admin/include/tree_check.php:1484
+#: admin/include/tree_check.php:1458
 #, php-format
 msgid "%s before or less than %d years after %s"
 msgstr "%s előtt vagy kevesebb, mint %d évvel ezután: %s"
 
-#: admin/include/tree_check.php:1486
+#: admin/include/tree_check.php:1460
 #, php-format
 msgid "%s less than %d years after %s"
 msgstr "%s kevesebb, mint %d évvel ezután: %s"
 
-#: admin/include/tree_check.php:1488
+#: admin/include/tree_check.php:1462
 #, php-format
 msgid "age (up till today) more than %d years (age: %d)"
 msgstr "életkor (a mai napig) több, mint  %d év (életkor: %d)"
 
-#: admin/include/tree_check.php:1489
+#: admin/include/tree_check.php:1463
 #, php-format
 msgid "age (by %s) more than %d years (age: %d)"
 msgstr "életkor (%s szerint) több, mint %d év (életkor: %d)"
 
-#: admin/include/tree_check.php:1490
+#: admin/include/tree_check.php:1464
 #, php-format
 msgid "age difference of more than %d years with spouse (%d)"
 msgstr "korkülönbség a házastárshoz viszonyítva több, mint %d év (%d)"
 
-#: admin/include/tree_check.php:1491
+#: admin/include/tree_check.php:1465
 #, php-format
 msgid "%s less than %d months after %s"
 msgstr "%s kevesebb, mint %d hónap ezután: %s"
 
-#: admin/include/tree_check.php:1492
+#: admin/include/tree_check.php:1466
 #, php-format
 msgid "%s before %s"
 msgstr "%s ez előtt: %s"
 
-#: admin/include/tree_check.php:1541
+#: admin/include/tree_check.php:1515
 msgid "Click events by person"
 msgstr "Kattintson a személy életének eseményeire "
 
-#: admin/include/tree_check.php:1559
+#: admin/include/tree_check.php:1533
 msgid "Click events by marriage"
 msgstr "Kattintson a házasság eseményeire"
 
-#: admin/include/tree_check.php:1570
+#: admin/include/tree_check.php:1544
 msgid "Click relevant person source"
 msgstr "Kattintson a releváns forrásra"
 
-#: admin/include/tree_check.php:1573 admin/include/tree_check.php:1631
+#: admin/include/tree_check.php:1547 admin/include/tree_check.php:1605
 msgid "Click addresses"
 msgstr "Kattintson a címekre"
 
-#: admin/include/tree_check.php:1591
+#: admin/include/tree_check.php:1565
 msgid "Click relevant family source"
 msgstr "Kattintson a releváns családi forrásra"
 
-#: admin/include/tree_check.php:1620
+#: admin/include/tree_check.php:1594
 msgid "Click relevant event source"
 msgstr "Kattintson a releváns esemény forrásra"
 
-#: admin/include/tree_check.php:1633
+#: admin/include/tree_check.php:1607
 msgid "Address editor"
 msgstr "Címszerkesztő"
 
-#: admin/include/tree_check.php:1639
+#: admin/include/tree_check.php:1613
 msgid "Source editor"
 msgstr "Forrás szerkesztő"
 
-#: admin/include/tree_check.php:1643
+#: admin/include/tree_check.php:1617
 msgid "Repository editor"
 msgstr "Lelőhely szerkesztő"
 
@@ -6368,7 +6321,7 @@ msgstr "Üres sor hozzáadása a családfák listájában"
 msgid "Collation"
 msgstr "Egyeztetés"
 
-#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2463
+#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2473
 #: register.php:127 user_settings.php:117
 msgid "E-mail address"
 msgstr "E-mail cím"
@@ -6503,7 +6456,7 @@ msgid "You cannot merge persons of opposite sex. Please try again"
 msgstr "Nem egyesíthet ellentétes nemű személyeket. Próbálja újra"
 
 #: admin/include/trees_cls.php:528 admin/include/trees_cls.php:538
-#: admin/include/trees_cls.php:568 admin/include/trees_cls.php:2665
+#: admin/include/trees_cls.php:568 admin/include/trees_cls.php:2649
 msgid "Choose another pair"
 msgstr "Válasszon másik párt"
 
@@ -6581,7 +6534,7 @@ msgstr ""
 "<b>Ne feledje, hogy a duplák generálása egy kis időbe telik, a fa méretétől "
 "függően.</b>"
 
-#: admin/include/trees_cls.php:729 admin/include/trees_cls.php:2655
+#: admin/include/trees_cls.php:729 admin/include/trees_cls.php:2639
 msgid "Continue duplicate merge"
 msgstr "Duplák egyesítésének folytatása"
 
@@ -6643,14 +6596,14 @@ msgstr ""
 "<b>TIPP: amikor a \"keresésre\" kattint úgy, hogy minden mező üres, egy "
 "listát kap az adatbázis összes személyével (Felvehet néhány másodpercet)</b>"
 
-#: admin/include/trees_cls.php:864 list.php:1349 list.php:1357 list.php:1532
-#: relations.php:3164 relations.php:3285 statistics.php:949 statistics.php:950
-#: statistics.php:951 statistics.php:952
+#: admin/include/trees_cls.php:864 list.php:1348 list.php:1356 list.php:1531
+#: relations.php:3167 relations.php:3288 statistics.php:950 statistics.php:951
+#: statistics.php:952 statistics.php:953
 msgid "First name"
 msgstr "Keresztnév"
 
-#: admin/include/trees_cls.php:866 list.php:1360 list.php:1372 list.php:1375
-#: list.php:1543 relations.php:3165 relations.php:3286
+#: admin/include/trees_cls.php:866 list.php:1359 list.php:1371 list.php:1374
+#: list.php:1542 relations.php:3168 relations.php:3289
 msgid "Last name"
 msgstr "Családi név"
 
@@ -6660,7 +6613,7 @@ msgstr "Családi név"
 msgid "GEDCOM no. (\"I43\")"
 msgstr "gedcom no. (\"I43\")"
 
-#: admin/include/trees_cls.php:871 relations.php:3126
+#: admin/include/trees_cls.php:871 relations.php:3129
 msgid "Pick a name from search results"
 msgstr "Válasszon egy nevet a keresési találatok közül"
 
@@ -6668,7 +6621,7 @@ msgstr "Válasszon egy nevet a keresési találatok közül"
 msgid "Show details"
 msgstr "Részletek megjelenítése"
 
-#: admin/include/trees_cls.php:948 relations.php:3247
+#: admin/include/trees_cls.php:948 relations.php:3250
 msgid "Switch persons"
 msgstr "Személyek cseréje"
 
@@ -6732,7 +6685,7 @@ msgstr ""
 "egyesítések érinthetnek."
 
 #: admin/include/trees_cls.php:1154 admin/include/trees_cls.php:1374
-#: admin/include/trees_cls.php:1378 admin/include/trees_cls.php:2645
+#: admin/include/trees_cls.php:1378 admin/include/trees_cls.php:2629
 msgid "Relatives merge"
 msgstr "Rokonok egyesítése"
 
@@ -6959,8 +6912,8 @@ msgstr "Környező rokonok ellenőrzése"
 msgid "Nr. "
 msgstr "Sz."
 
-#: admin/include/trees_cls.php:1563 family.php:435 family.php:438
-#: family.php:495 family.php:498 family.php:633 family.php:636 family.php:1150
+#: admin/include/trees_cls.php:1563 family.php:434 family.php:437
+#: family.php:494 family.php:497 family.php:632 family.php:635 family.php:1161
 #: hourglass.php:73 relations.php:363 relations.php:374 relations.php:386
 #: relations.php:389 relations.php:391 relations.php:397 relations.php:404
 #: relations.php:408 relations.php:410 relations.php:413 relations.php:414
@@ -7041,11 +6994,11 @@ msgstr "születési hely"
 msgid "death place"
 msgstr "elhalálozás helye"
 
-#: admin/include/trees_cls.php:1590 include/person_cls.php:1675
-#: include/person_cls.php:1676 include/person_cls.php:1677
-#: include/person_cls.php:1680 include/person_cls.php:1681
-#: include/person_cls.php:1694 include/person_cls.php:1696
-#: include/person_cls.php:1703
+#: admin/include/trees_cls.php:1590 include/person_cls.php:1723
+#: include/person_cls.php:1724 include/person_cls.php:1725
+#: include/person_cls.php:1728 include/person_cls.php:1729
+#: include/person_cls.php:1742 include/person_cls.php:1744
+#: include/person_cls.php:1751
 msgid "cause of death"
 msgstr ""
 
@@ -7119,11 +7072,11 @@ msgstr "Más nevek"
 msgid "Internet link / URL"
 msgstr "Internetes hivatkozás / URL"
 
-#: admin/include/trees_cls.php:2628
+#: admin/include/trees_cls.php:2612
 msgid " was successfully merged into "
 msgstr "sikeresen egyesítettük ezzel:"
 
-#: admin/include/trees_cls.php:2632
+#: admin/include/trees_cls.php:2616
 #, php-format
 msgid ""
 "After this merge there are %d surrounding relatives to be checked for "
@@ -7131,7 +7084,7 @@ msgid ""
 msgstr ""
 "Az egyesítés után %d környező rokont kell ellenőrizni egyesítés céljából!"
 
-#: admin/include/trees_cls.php:2636
+#: admin/include/trees_cls.php:2620
 msgid ""
 "<b>You are strongly advised to move to \"Relatives merge\" mode to check all "
 "surrounding persons who may have to be checked for merging.</b><br>\n"
@@ -7146,11 +7099,11 @@ msgstr ""
 "kerül számításba.<br>\n"
 "Ez a legegyszerűbb mód arra, hogy senki ne maradjon ki a folyamatból."
 
-#: admin/include/trees_cls.php:2652
+#: admin/include/trees_cls.php:2636
 msgid "Continue manual merge"
 msgstr "Kézi egyesítés folytatása"
 
-#: admin/include/trees_cls.php:2668
+#: admin/include/trees_cls.php:2652
 msgid "Continue with next pair"
 msgstr "Folytassa a következő párral"
 
@@ -7310,7 +7263,7 @@ msgstr "Kijelentkezés"
 msgid "Control"
 msgstr "Vezérlő"
 
-#: admin/index.php:960 family.php:157 header.php:260 help.php:72 menu.php:625
+#: admin/index.php:960 family.php:156 header.php:260 help.php:72 menu.php:625
 msgid "Google maps"
 msgstr "Google térkép"
 
@@ -7632,14 +7585,14 @@ msgstr ""
 msgid "Day"
 msgstr "Nap"
 
-#: birthday_list.php:184 birthday_list.php:191 birthday_list.php:347
+#: birthday_list.php:184 birthday_list.php:191 birthday_list.php:349
 #: report_ancestor.php:795 report_ancestor.php:798 report_descendant.php:709
-#: report_descendant.php:803
+#: report_descendant.php:804
 msgid " PRIVACY FILTER"
 msgstr "ADATVÉDELMI SZŰRŐ"
 
-#: birthday_list.php:201 birthday_list.php:366 include/mainindex_cls.php:918
-#: include/mainindex_cls.php:942 list.php:1964 list_places_families.php:584
+#: birthday_list.php:201 birthday_list.php:368 include/mainindex_cls.php:921
+#: include/mainindex_cls.php:945 list.php:1963 list_places_families.php:582
 msgid " persons are not shown due to privacy settings"
 msgstr " személy nincs megjelenítve adatvédelmi beállítások miatt"
 
@@ -7655,7 +7608,7 @@ msgstr ""
 msgid "Spouses"
 msgstr ""
 
-#: birthday_list.php:362
+#: birthday_list.php:364
 msgid "No results found for this month"
 msgstr ""
 
@@ -7672,7 +7625,7 @@ msgstr "Kinek van ma születésnapja?"
 msgid "En-en"
 msgstr "En-en"
 
-#: birthday_rss.php:132
+#: birthday_rss.php:140
 msgid "No results found."
 msgstr "Nincs találat."
 
@@ -7738,129 +7691,133 @@ msgstr ""
 "létrehozza ezeket a sütiket, egyszerűen ne változtassa a fenti jellemzők "
 "alapértelmezett értékeit.</p>"
 
-#: family.php:121
+#: family.php:120
 msgid "Settings family screen"
 msgstr "Beállítások - család nézet"
 
-#: family.php:126 family.php:933 family.php:1041 family.php:2264
-#: family.php:2268
+#: family.php:125 family.php:944 family.php:1052 family.php:2275
+#: family.php:2279
 msgid "Family Page"
 msgstr "Család oldal"
 
-#: family.php:169
+#: family.php:168
 msgid "Pictures"
 msgstr "Képek"
 
-#: family.php:174
+#: family.php:173
 msgid "Hide pictures"
 msgstr "Képek elrejtése"
 
-#: family.php:208
+#: family.php:207
 msgid "PDF"
 msgstr ""
 
-#: family.php:223
+#: family.php:222
 msgid "RTF"
 msgstr ""
 
-#: family.php:254 family.php:258
+#: family.php:253 family.php:257
 msgid "Add to favourite list"
 msgstr "Hozzáadás a kedvencek listájához"
 
-#: family.php:435 family.php:495 family.php:633 help.php:22
-#: include/person_cls.php:585
+#: family.php:434 family.php:494 family.php:632 help.php:22
+#: include/person_cls.php:635
 msgid "Descendant report"
 msgstr "Leszármazási jelentés"
 
-#: family.php:438 family.php:498 family.php:580 family.php:636 family.php:870
-#: family.php:882 include/person_cls.php:565
+#: family.php:437 family.php:497 family.php:579 family.php:635 family.php:881
+#: family.php:893 include/person_cls.php:615
 msgid "Family group sheet"
 msgstr "Családi csoportlap"
 
-#: family.php:605 family.php:888
+#: family.php:604 family.php:899
 #, php-format
 msgid "TIP: use %s for other (ancestor and descendant) reports."
 msgstr ""
 "TIPP: (felmenői és leszármazási) jelentésekhez  és családfákhoz vigye a "
 "kurzort a  %s fölé  "
 
-#: family.php:710 family.php:717 family.php:721 report_ancestor.php:314
+#: family.php:709 family.php:716 family.php:720 report_ancestor.php:314
 #: report_ancestor.php:323 report_ancestor.php:333 report_ancestor.php:337
 msgid "generation "
 msgstr "generáció "
 
-#: family.php:1750 family.php:1756 family.php:1768
+#: family.php:1592 family.php:1610
+msgid "Child"
+msgstr "Gyermek"
+
+#: family.php:1761 family.php:1767 family.php:1779
 msgid "follows"
 msgstr "következik"
 
-#: family.php:1865 family.php:1883 family.php:1902
+#: family.php:1876 family.php:1894 family.php:1913
 msgid "Adopted child:"
 msgstr "Örökbefogadott gyermek:"
 
-#: family.php:1880 family.php:1899
+#: family.php:1891 family.php:1910
 msgid "Stepchild"
 msgstr "Mostohagyermek"
 
-#: family.php:1881 family.php:1900
+#: family.php:1892 family.php:1911
 msgid "Legal child"
 msgstr "Törvényes gyermek"
 
-#: family.php:1882 family.php:1901
+#: family.php:1893 family.php:1912
 msgid "Foster child"
 msgstr "Foster child"
 
-#: family.php:2110 family.php:2116 include/calculate_age_cls.php:375
+#: family.php:2121 family.php:2127 include/calculate_age_cls.php:375
 #: include/calculate_age_cls.php:378 report_ancestor.php:1181
 msgid "married"
 msgstr "házasságot kötött"
 
-#: family.php:2206
+#: family.php:2217
 msgid "Family events"
 msgstr "Családi események"
 
-#: family.php:2264
+#: family.php:2275
 msgid "Citation for:"
 msgstr ""
 
-#: family.php:2286
+#: family.php:2294
 msgid "accessed"
 msgstr ""
 
-#: family.php:2387 family.php:2394
+#: family.php:2397 family.php:2404
 msgid "New user note"
 msgstr "Új felhasználói megjegyzés"
 
-#: family.php:2392 mailform.php:24 register.php:59 user_settings.php:50
+#: family.php:2402 mailform.php:24 register.php:59 user_settings.php:50
 #, fuzzy, php-format
 #| msgid "Message sent through HuMo-gen from the website."
 msgid "Message sent through %s from the website."
 msgstr "Üzenet elküldve a webhely részéről a HuMo-gen rendszerén keresztül."
 
-#: family.php:2399
+#: family.php:2409
 msgid "User note by family"
 msgstr "Felhasználói megjegyzés család szerint"
 
-#: family.php:2419
+#: family.php:2429
 msgid "Your information is saved and will be reviewed by the webmaster."
 msgstr "Információit mentettük, a webmester hamarosan átnézi. "
 
-#: family.php:2456
+#: family.php:2466
 msgid "Add information or remarks"
 msgstr "Információ vagy megjegyzés hozzáadása"
 
-#: family.php:2463
+#: family.php:2473
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "Hiányzó e-meil cím. Kérjük, e-mail címét itt adja meg: "
 
-#: family.php:2469 login.php:44 mailform.php:142 register.php:148
+#: family.php:2479 login.php:44 mailform.php:142 register.php:148
 msgid "Send"
 msgstr "Küldés"
 
-#: family.php:2534 report_ancestor.php:1568
+#: family.php:2544 report_ancestor.php:1568
 msgid "Download RTF report."
 msgstr "RTF jelentés letöltése."
 
-#: family.php:2535 report_ancestor.php:1569
+#: family.php:2545 report_ancestor.php:1569
 msgid ""
 "TIP: Don't use Wordpad to open this file (the lay-out will be wrong!). It's "
 "better to use a text processor like Word or OpenOffice Writer."
@@ -7869,19 +7826,19 @@ msgstr ""
 "szövegelrendezés hibás lehet!). Jobb, ha a Word- vagy OpenOffice Writer-hez "
 "hasonló szövegszerkesztőt használ."
 
-#: fanchart.php:485
+#: fanchart.php:503
 msgid "RELOAD FANCHART WITH 'VIEW' BUTTON ON THE LEFT"
 msgstr "LEGYEZŐ DIAGRAM ÚJRATÖLTÉSE A BALOLDALI \"VIEW\" / \"NÉZET\" GOMBBAL"
 
-#: fanchart.php:548 help.php:25 include/person_cls.php:627
+#: fanchart.php:566 help.php:25 include/person_cls.php:677
 msgid "Fanchart"
 msgstr "Legyező diagram"
 
-#: fanchart.php:556
+#: fanchart.php:574
 msgid "How to print the chart"
 msgstr "Hogyan nyomtassuk ki a diagramot"
 
-#: fanchart.php:559
+#: fanchart.php:577
 msgid ""
 "<u>Internet Explorer:</u><br>\n"
 "1. Set background to \"white\" on the menu and press \"View\"<br>\n"
@@ -7896,7 +7853,7 @@ msgstr ""
 "3. Mentse a lemezre a \"Save picture as\" lehetőséggel<br>\n"
 "4. Nyomtassa ki a lementett képet"
 
-#: fanchart.php:565
+#: fanchart.php:583
 msgid ""
 "<p><u>All other browsers:</u><br>\n"
 "Just print the page .... ;-)<br>\n"
@@ -7905,74 +7862,74 @@ msgid ""
 "(for regular charts 85%-90% of screen size)"
 msgstr ""
 
-#: fanchart.php:647
+#: fanchart.php:665
 msgid "Fan style"
 msgstr "Legyező stílus"
 
-#: fanchart.php:652
+#: fanchart.php:670
 msgid "half"
 msgstr "fél"
 
-#: fanchart.php:659
+#: fanchart.php:677
 msgid "full"
 msgstr "teljes"
 
-#: fanchart.php:664
+#: fanchart.php:682
 msgid "Generations"
 msgstr "Generációk"
 
-#: fanchart.php:675
+#: fanchart.php:693
 msgid "Font size"
 msgstr "Betűméret"
 
-#: fanchart.php:695
+#: fanchart.php:713
 msgid "Years only"
 msgstr "Csak évek"
 
-#: fanchart.php:699
+#: fanchart.php:717
 msgid "Full dates"
 msgstr "Teljes dátumok"
 
-#: fanchart.php:704
+#: fanchart.php:722
 msgid "Fan width:"
 msgstr "Legyező szélessége:"
 
-#: fanchart.php:706
+#: fanchart.php:724
 msgid ""
 "\"auto\" for automatic resizing for best display, or value between 50-300"
 msgstr ""
 "\"auto\" a legjobb megjelenítéshez való automatikus átméretezésért, vagy "
 "50-300 közötti érték "
 
-#: fanchart.php:710
+#: fanchart.php:728
 msgid "Background"
 msgstr "Háttér"
 
-#: fanchart.php:715
+#: fanchart.php:733
 msgid "transparent"
 msgstr "áttetsző"
 
-#: fanchart.php:718
+#: fanchart.php:736
 msgid "white"
 msgstr "fehér"
 
-#: fanchart.php:727
+#: fanchart.php:745
 msgid "descendants"
 msgstr "leszármazottak"
 
-#: fanchart.php:727
+#: fanchart.php:745
 msgid "under fanchart"
 msgstr "legyező diagram alatt"
 
-#: fanchart.php:753
+#: fanchart.php:771
 msgid "No Chinese ttf font file found"
 msgstr "Nincs Chinese ttf betűtípus"
 
-#: fanchart.php:754
+#: fanchart.php:772
 msgid "Download link"
 msgstr "Letöltés hiperhivatkozás"
 
-#: fanchart.php:756
+#: fanchart.php:774
 msgid "Unzip and place in \"include/fanchart/chinese/\" folder"
 msgstr "Csomagolja ki és helyezze át az \"include/fanchart/chinese/\" mappába"
 
@@ -8028,7 +7985,7 @@ msgstr "Személyek"
 msgid "Photobook"
 msgstr "Fotóalbum"
 
-#: header.php:258 help.php:69 include/person_cls.php:613 menu.php:612
+#: header.php:258 help.php:69 include/person_cls.php:663 menu.php:612
 msgid "Relationship calculator"
 msgstr "Rokonság-számoló"
 
@@ -8036,7 +7993,7 @@ msgstr "Rokonság-számoló"
 msgid "Mail form"
 msgstr "Űrlap elküldése"
 
-#: header.php:262 hourglass.php:92 list.php:1622 maps.php:226 menu.php:308
+#: header.php:262 hourglass.php:92 list.php:1621 maps.php:226 menu.php:308
 #: menu.php:682 menu.php:687 report_descendant.php:424 timelines.php:465
 msgid "Help"
 msgstr "Súgó"
@@ -8077,7 +8034,7 @@ msgid ""
 "is a list of those icons and their meaning."
 msgstr ""
 
-#: help.php:20 include/person_cls.php:607 report_ancestor.php:103
+#: help.php:20 include/person_cls.php:657 report_ancestor.php:103
 #: report_ancestor.php:148 report_ancestor.php:157 report_ancestor.php:208
 msgid "Ancestor report"
 msgstr "Ősfa jelentés"
@@ -8102,7 +8059,7 @@ msgid ""
 "descendant report."
 msgstr ""
 
-#: help.php:23 include/person_cls.php:595 report_outline.php:97
+#: help.php:23 include/person_cls.php:645 report_outline.php:97
 #: report_outline.php:106 report_outline.php:112
 msgid "Outline report"
 msgstr "Vázlatos jelentés"
@@ -8113,7 +8070,7 @@ msgid ""
 "his/her partners), where each generation gets its own (ascending) number."
 msgstr ""
 
-#: help.php:24 include/person_cls.php:609 report_ancestor.php:1146
+#: help.php:24 include/person_cls.php:659 report_ancestor.php:1146
 #: report_ancestor.php:1448 report_ancestor.php:1463
 msgid "Ancestor sheet"
 msgstr "Ősök lapja"
@@ -8133,7 +8090,7 @@ msgid ""
 "some other settings may be adjusted from the menu to the left of the chart."
 msgstr ""
 
-#: help.php:26 include/person_cls.php:707 include/person_cls.php:721
+#: help.php:26 include/person_cls.php:757 include/person_cls.php:771
 msgid "Timeline"
 msgstr "idővonal"
 
@@ -8368,7 +8325,7 @@ msgid ""
 "Search!&quot;"
 msgstr ""
 
-#: hourglass.php:73 include/person_cls.php:676
+#: hourglass.php:73 include/person_cls.php:726
 msgid "Hourglass chart"
 msgstr "Homokóra diagram"
 
@@ -8388,13 +8345,13 @@ msgid ""
 "<b>LEGEND:</b>"
 msgstr ""
 
-#: hourglass.php:105 list.php:1489 report_descendant.php:436 statistics.php:263
-#: statistics.php:948
+#: hourglass.php:105 list.php:1488 report_descendant.php:436 statistics.php:264
+#: statistics.php:949
 msgid "Male"
 msgstr "Férfi"
 
-#: hourglass.php:106 list.php:1491 report_descendant.php:437 statistics.php:263
-#: statistics.php:948
+#: hourglass.php:106 list.php:1490 report_descendant.php:437 statistics.php:264
+#: statistics.php:949
 msgid "Female"
 msgstr "Nő"
 
@@ -8456,9 +8413,9 @@ msgstr "hozzávetőlegesen"
 #: include/calculate_age_cls.php:327 include/calculate_age_cls.php:333
 #: include/calculate_age_cls.php:338 include/calculate_age_cls.php:346
 #: include/calculate_age_cls.php:352 include/calculate_age_cls.php:359
-#: include/calculate_age_cls.php:364 statistics.php:604 statistics.php:613
-#: statistics.php:624 statistics.php:628 statistics.php:637 statistics.php:641
-#: statistics.php:644 statistics.php:646 timelines.php:492 timelines.php:494
+#: include/calculate_age_cls.php:364 statistics.php:605 statistics.php:614
+#: statistics.php:625 statistics.php:629 statistics.php:638 statistics.php:642
+#: statistics.php:645 statistics.php:647 timelines.php:492 timelines.php:494
 msgid "years"
 msgstr "év"
 
@@ -8753,13 +8710,13 @@ msgid "Owner family tree:"
 msgstr "Családfa tulajdonos:"
 
 #: include/mainindex_cls.php:487 include/mainindex_cls.php:489
-#: statistics.php:772 statistics.php:774
+#: statistics.php:773 statistics.php:775
 msgid "Surname"
 msgstr ""
 
 #: include/mainindex_cls.php:487 include/mainindex_cls.php:489
-#: list_names.php:307 list_names.php:309 statistics.php:772 statistics.php:774
-#: statistics.php:949 statistics.php:950 statistics.php:951 statistics.php:952
+#: list_names.php:307 list_names.php:309 statistics.php:773 statistics.php:775
+#: statistics.php:950 statistics.php:951 statistics.php:952 statistics.php:953
 msgid "Total"
 msgstr "Összesen"
 
@@ -8767,11 +8724,11 @@ msgstr "Összesen"
 msgid "More statistics"
 msgstr ""
 
-#: include/mainindex_cls.php:561 list.php:1397
+#: include/mainindex_cls.php:561 list.php:1396
 msgid "Enter name or part of name"
 msgstr "Írja be a nevet vagy a név egy részét"
 
-#: include/mainindex_cls.php:562 list.php:1401
+#: include/mainindex_cls.php:562 list.php:1400
 msgid "Enter private name"
 msgstr ""
 
@@ -8779,28 +8736,28 @@ msgstr ""
 msgid "Minimum: 3 characters."
 msgstr "Legkevesebb: 3 betű."
 
-#: include/mainindex_cls.php:585 list.php:1601
+#: include/mainindex_cls.php:585 list.php:1600
 msgid "All but selected tree"
 msgstr "Minden fa, kivéve a kiválasztott"
 
-#: include/mainindex_cls.php:597 list.php:1641
+#: include/mainindex_cls.php:597 list.php:1640
 msgid "Advanced search"
 msgstr "Haladó keresés"
 
-#: include/mainindex_cls.php:705
+#: include/mainindex_cls.php:707
 msgid "Surnames Index:"
 msgstr "Vezetéknév index: "
 
-#: include/mainindex_cls.php:790
+#: include/mainindex_cls.php:792
 msgid "Patronyms"
 msgstr "Patronimikon"
 
-#: include/mainindex_cls.php:956
+#: include/mainindex_cls.php:959
 #, php-format
 msgid "This database is made by %s, a freeware genealogical  program"
 msgstr "Ez az adatbázis a  %s ingyenes genealógiai programmal készült."
 
-#: include/mainindex_cls.php:968
+#: include/mainindex_cls.php:971
 #, fuzzy, php-format
 #| msgid "European law: %s HuMo-gen cookie information"
 msgid "European law: %s cookie information"
@@ -8817,7 +8774,7 @@ msgstr "Európai törvény: %s HuMo-gen süti információ"
 msgid " to: "
 msgstr " vele: "
 
-#: include/marriage_cls.php:65 include/person_cls.php:1178
+#: include/marriage_cls.php:65 include/person_cls.php:1227
 msgid "Non marital"
 msgstr "Nem házassági"
 
@@ -8826,19 +8783,19 @@ msgid "End living together"
 msgstr "Együttélés vége"
 
 #: include/marriage_cls.php:214 include/marriage_cls.php:215
-#: include/marriage_cls.php:216 list_places_families.php:401
+#: include/marriage_cls.php:216 list_places_families.php:399
 msgid "Marriage notice"
 msgstr "Házasság hiretése"
 
 #: include/marriage_cls.php:337 include/marriage_cls.php:338
-#: include/marriage_cls.php:339 list_places_families.php:407
-#: list_places_families.php:553
+#: include/marriage_cls.php:339 list_places_families.php:405
+#: list_places_families.php:551
 msgid "Married notice (religious)"
 msgstr "Házasság hirdetése (egyházi)"
 
 #: include/marriage_cls.php:392 include/marriage_cls.php:393
-#: include/marriage_cls.php:394 list_places_families.php:410
-#: list_places_families.php:554
+#: include/marriage_cls.php:394 list_places_families.php:408
+#: list_places_families.php:552
 msgid "Married (religious)"
 msgstr "Házasságot kötött (egyházi)"
 
@@ -8860,25 +8817,25 @@ msgstr "elvált"
 msgid "Married/ Related"
 msgstr ""
 
-#: include/marriage_cls.php:577 include/person_cls.php:1211 list.php:166
-#: list_places_families.php:149
+#: include/marriage_cls.php:577 include/person_cls.php:1259 list.php:165
+#: list_places_families.php:147
 msgid "1st"
 msgstr "1."
 
-#: include/marriage_cls.php:578 include/person_cls.php:1212 list.php:167
-#: list_places_families.php:150 relations.php:546 relations.php:813
+#: include/marriage_cls.php:578 include/person_cls.php:1260 list.php:166
+#: list_places_families.php:148 relations.php:546 relations.php:813
 #: relations.php:911 relations.php:1025 relations.php:1333
 msgid "2nd"
 msgstr "2."
 
-#: include/marriage_cls.php:579 include/person_cls.php:1213 list.php:168
-#: list_places_families.php:151 relations.php:547 relations.php:814
+#: include/marriage_cls.php:579 include/person_cls.php:1261 list.php:167
+#: list_places_families.php:149 relations.php:547 relations.php:814
 #: relations.php:912 relations.php:1026 relations.php:1334
 msgid "3rd"
 msgstr "3."
 
-#: include/marriage_cls.php:580 include/person_cls.php:1214 list.php:169
-#: list_places_families.php:152 relations.php:377 relations.php:549
+#: include/marriage_cls.php:580 include/person_cls.php:1262 list.php:168
+#: list_places_families.php:150 relations.php:377 relations.php:549
 #: relations.php:816 relations.php:1240 relations.php:1271 relations.php:1336
 #: relations.php:1716 relations.php:1719
 msgid "th"
@@ -8896,135 +8853,135 @@ msgstr "rokon"
 msgid "married/ related"
 msgstr ""
 
-#: include/person_cls.php:260
+#: include/person_cls.php:268
 msgid "stillborn boy"
 msgstr "halva született fiú"
 
-#: include/person_cls.php:261
+#: include/person_cls.php:269
 msgid "stillborn girl"
 msgstr "halva született lány"
 
-#: include/person_cls.php:295 include/person_cls.php:299 list.php:27
+#: include/person_cls.php:303 include/person_cls.php:307 list.php:27
 #: list_places_families.php:42
 msgid "Name filtered"
 msgstr "Szűrt név"
 
-#: include/person_cls.php:564
+#: include/person_cls.php:614
 msgid "Text reports"
 msgstr "Szöveges jelentések"
 
-#: include/person_cls.php:617
+#: include/person_cls.php:667
 msgid "Charts"
 msgstr "Diagramok"
 
-#: include/person_cls.php:635 report_ancestor.php:100
+#: include/person_cls.php:685 report_ancestor.php:100
 msgid "Ancestor chart"
 msgstr "Ősfa diagram"
 
-#: include/person_cls.php:646 report_descendant.php:458
+#: include/person_cls.php:696 report_descendant.php:458
 msgid "Descendant chart"
 msgstr "Leszármazási diagram"
 
-#: include/person_cls.php:662
+#: include/person_cls.php:712
 msgid "DNA Charts"
 msgstr "DNS Diagramok"
 
-#: include/person_cls.php:717 menu.php:278 menu.php:804
+#: include/person_cls.php:767 menu.php:278 menu.php:804
 msgid "Admin"
 msgstr "Admin"
 
-#: include/person_cls.php:770 include/person_cls.php:1320
-#: include/person_cls.php:1322 list.php:183 list.php:192 list.php:201
-#: list.php:210 list_places_families.php:169 list_places_families.php:178
-#: list_places_families.php:187 list_places_families.php:196 photoalbum.php:489
+#: include/person_cls.php:820 include/person_cls.php:1368
+#: include/person_cls.php:1370 list.php:182 list.php:191 list.php:200
+#: list.php:209 list_places_families.php:167 list_places_families.php:176
+#: list_places_families.php:185 list_places_families.php:194 photoalbum.php:488
 #: report_ancestor.php:1261 report_ancestor.php:1278 report_ancestor.php:1279
-#: report_ancestor.php:1411 statistics.php:248 statistics.php:249
+#: report_ancestor.php:1411 statistics.php:249 statistics.php:250
 #: timelines.php:322
 msgid "PRIVACY FILTER"
 msgstr "ADATVÉDELMI SZŰRŐ"
 
-#: include/person_cls.php:951
+#: include/person_cls.php:1001
 msgid "son of"
 msgstr "szülei:"
 
-#: include/person_cls.php:952
+#: include/person_cls.php:1002
 msgid "daughter of"
 msgstr "szülei:"
 
-#: include/person_cls.php:953
+#: include/person_cls.php:1003
 msgid "child of"
 msgstr "szülei:"
 
-#: include/person_cls.php:1036 include/person_cls.php:1037
+#: include/person_cls.php:1085 include/person_cls.php:1086
 msgid "adoption parents"
 msgstr "örökbe fogadott szülei "
 
-#: include/person_cls.php:1103 include/person_cls.php:1104
+#: include/person_cls.php:1155 include/person_cls.php:1156
 msgid "stepparent"
 msgstr "mostohaszülő"
 
-#: include/person_cls.php:1107 include/person_cls.php:1108
+#: include/person_cls.php:1159 include/person_cls.php:1160
 msgid "legal parent"
 msgstr "törvényes szülő"
 
-#: include/person_cls.php:1111 include/person_cls.php:1112
+#: include/person_cls.php:1163 include/person_cls.php:1164
 msgid "foster parent"
 msgstr "nevelőszülő"
 
-#: include/person_cls.php:1115 include/person_cls.php:1116
+#: include/person_cls.php:1167 include/person_cls.php:1168
 msgid "adoptive parent"
 msgstr ""
 
-#: include/person_cls.php:1166
+#: include/person_cls.php:1215
 msgid "relationship with"
 msgstr "kapcsolat vele:"
 
-#: include/person_cls.php:1169
+#: include/person_cls.php:1218
 msgid "married to"
 msgstr "házasságot kötött vele:"
 
-#: include/person_cls.php:1170
+#: include/person_cls.php:1219
 msgid "marriage with"
 msgstr "házasság vele:"
 
-#: include/person_cls.php:1187
+#: include/person_cls.php:1236
 msgid "divorced from"
 msgstr "elvált ettől:"
 
-#: include/person_cls.php:1188
+#: include/person_cls.php:1237
 msgid "marriage (divorced) with"
 msgstr "házasság (elvált) ezzel:"
 
-#: include/person_cls.php:1453 include/person_cls.php:1455
-#: include/person_cls.php:1458 include/person_cls.php:1649
+#: include/person_cls.php:1501 include/person_cls.php:1503
+#: include/person_cls.php:1506 include/person_cls.php:1697
 msgid "at"
 msgstr " "
 
-#: include/person_cls.php:1453 include/person_cls.php:1455
-#: include/person_cls.php:1458 include/person_cls.php:1649
+#: include/person_cls.php:1501 include/person_cls.php:1503
+#: include/person_cls.php:1506 include/person_cls.php:1697
 msgid "hour"
 msgstr "óra"
 
-#: include/person_cls.php:1587 include/person_cls.php:1589
+#: include/person_cls.php:1635 include/person_cls.php:1637
 #, fuzzy
 #| msgid "father"
 msgid "godfather"
 msgstr "apja"
 
-#: include/person_cls.php:1839
+#: include/person_cls.php:1887
 msgid "ash dispersion"
 msgstr "hamvak szétszórása"
 
-#: include/person_cls.php:1860
+#: include/person_cls.php:1908
 msgid "occupation"
 msgstr "foglalkozás"
 
-#: include/person_cls.php:1863
+#: include/person_cls.php:1911
 msgid "occupations"
 msgstr "foglalkozások"
 
 #: include/show_addresses.php:22 include/show_addresses.php:23
-#: include/show_addresses.php:24 list.php:1307
+#: include/show_addresses.php:24 list.php:1306
 msgid "residence"
 msgstr "lakhely"
 
@@ -9033,7 +8990,7 @@ msgstr "lakhely"
 msgid "residences"
 msgstr "lakhelyek"
 
-#: include/show_picture.php:223
+#: include/show_picture.php:227
 msgid "Missing image"
 msgstr ""
 
@@ -9076,7 +9033,7 @@ msgstr "szerep"
 msgid "page"
 msgstr ""
 
-#: include/witness.php:94
+#: include/witness.php:99
 msgid "This person was witness at:"
 msgstr ""
 
@@ -9098,140 +9055,140 @@ msgid "Recently changed persons and new persons"
 msgstr ""
 
 # Residence
-#: list.php:65 list.php:1307
+#: list.php:65 list.php:1306
 msgid "^"
 msgstr "^"
 
-#: list.php:147 list_places_families.php:125
+#: list.php:146 list_places_families.php:123
 msgid "&amp;"
 msgstr "&amp;"
 
 # Married
-#: list.php:149 list_places_families.php:75 list_places_families.php:127
-#: list_places_families.php:186 list_places_families.php:195
-#: list_places_families.php:404 report_ancestor.php:829 report_ancestor.php:840
+#: list.php:148 list_places_families.php:75 list_places_families.php:125
+#: list_places_families.php:184 list_places_families.php:193
+#: list_places_families.php:402 report_ancestor.php:829 report_ancestor.php:840
 #: report_ancestor.php:841 report_ancestor.php:865 report_ancestor.php:1181
 #: report_ancestor.php:1414 report_ancestor.php:1496 report_descendant.php:739
 msgid "X"
 msgstr "X"
 
 # Divorse
-#: list.php:151 list_places_families.php:129
+#: list.php:150 list_places_families.php:127
 msgid ") ("
 msgstr ") ("
 
-#: list.php:695 list.php:1876
+#: list.php:694 list.php:1875
 msgid "..."
 msgstr "..."
 
-#: list.php:1298 list_places_families.php:398
+#: list.php:1297 list_places_families.php:396
 msgid "Find place"
 msgstr "Helység keresése"
 
-#: list.php:1301
+#: list.php:1300
 msgid "birth pl."
 msgstr "szül. hely."
 
-#: list.php:1304
+#: list.php:1303
 msgid "bapt pl."
 msgstr "ker. hely."
 
-#: list.php:1310
+#: list.php:1309
 msgid "death pl."
 msgstr "hal. hely."
 
-#: list.php:1313
+#: list.php:1312
 msgid "bur pl."
 msgstr "tem. hely."
 
-#: list.php:1316 list.php:1351 list.php:1366 list.php:1384 list.php:1429
-#: list.php:1440 list.php:1461 list.php:1473 list.php:1500 list.php:1512
-#: list.php:1526 list.php:1537 list.php:1549 list.php:1565
-#: list_places_families.php:412
+#: list.php:1315 list.php:1350 list.php:1365 list.php:1383 list.php:1428
+#: list.php:1439 list.php:1460 list.php:1472 list.php:1499 list.php:1511
+#: list.php:1525 list.php:1536 list.php:1548 list.php:1564
+#: list_places_families.php:410
 msgid "Contains"
 msgstr "Tartalmazza"
 
-#: list.php:1319 list.php:1353 list.php:1368 list.php:1386 list.php:1431
-#: list.php:1442 list.php:1463 list.php:1475 list.php:1502 list.php:1514
-#: list.php:1528 list.php:1539 list.php:1551 list.php:1563
-#: list_places_families.php:415
+#: list.php:1318 list.php:1352 list.php:1367 list.php:1385 list.php:1430
+#: list.php:1441 list.php:1462 list.php:1474 list.php:1501 list.php:1513
+#: list.php:1527 list.php:1538 list.php:1550 list.php:1562
+#: list_places_families.php:413
 msgid "Equals"
 msgstr "Egyenlő"
 
-#: list.php:1322 list.php:1355 list.php:1370 list.php:1388 list.php:1433
-#: list.php:1444 list.php:1465 list.php:1477 list.php:1504 list.php:1516
-#: list.php:1530 list.php:1541 list.php:1553 list.php:1567
-#: list_places_families.php:418
+#: list.php:1321 list.php:1354 list.php:1369 list.php:1387 list.php:1432
+#: list.php:1443 list.php:1464 list.php:1476 list.php:1503 list.php:1515
+#: list.php:1529 list.php:1540 list.php:1552 list.php:1566
+#: list_places_families.php:416
 msgid "Starts with"
 msgstr "Ezzel kezdődik"
 
-#: list.php:1398
+#: list.php:1397
 msgid ""
 "\"John Jones\", \"Jones John\", \"John of Jones\", \"of Jones, John\", "
 "\"Jones, John of\", \"Jones of, John\""
 msgstr ""
 
-#: list.php:1413 menu.php:89
+#: list.php:1412 menu.php:89
 msgid "Minimum:"
 msgstr "Minimum:"
 
-#: list.php:1413 menu.php:89
+#: list.php:1412 menu.php:89
 msgid "characters"
 msgstr "betűk"
 
-#: list.php:1422 list.php:1454
+#: list.php:1421 list.php:1453
 msgid "till:"
 msgstr "eddig:"
 
-#: list.php:1479
+#: list.php:1478
 msgid "Text by person"
 msgstr "Szöveg személy szerint"
 
-#: list.php:1485
+#: list.php:1484
 msgid "Choose sex:"
 msgstr "Válassza ki a nemet:"
 
-#: list.php:1524
+#: list.php:1523
 msgid "Partner firstname"
 msgstr "Házastárs keresztneve"
 
-#: list.php:1535
+#: list.php:1534
 msgid "Partner lastname"
 msgstr "Házastárs családi neve"
 
-#: list.php:1547 list.php:1555
+#: list.php:1546 list.php:1554
 msgid "witness"
 msgstr "tanú"
 
-#: list.php:1561 list.php:1569
+#: list.php:1560 list.php:1568
 msgid "gedcomnumber (ID)"
 msgstr ""
 
-#: list.php:1573
+#: list.php:1572
 msgid "Research status:"
 msgstr ""
 
-#: list.php:1575
+#: list.php:1574
 msgid "parents unknown"
 msgstr ""
 
-#: list.php:1577
+#: list.php:1576
 msgid "father unknown"
 msgstr ""
 
-#: list.php:1579
+#: list.php:1578
 msgid "mother unknown"
 msgstr ""
 
-#: list.php:1613
+#: list.php:1612
 msgid "Standard search"
 msgstr "Alapvető keresés"
 
-#: list.php:1625
+#: list.php:1624
 msgid "Tip"
 msgstr "Tipp"
 
-#: list.php:1628
+#: list.php:1627
 msgid ""
 "With Advanced Search you can easily create lists like: all persons with "
 "surname <b>Schaap</b> who were born <b>between 1820 and 1840</b> in "
@@ -9239,7 +9196,7 @@ msgid ""
 "<b>died in 1901</b> in <b>Amstelveen.</b>"
 msgstr ""
 
-#: list.php:1632
+#: list.php:1631
 msgid ""
 "Note:</td><td>When you use the birth and/ or death search boxes please note "
 "this:<br>1. Persons for whom no birth/ death data exist in the database, "
@@ -9248,23 +9205,23 @@ msgid ""
 "be found by searching by name and/ or surname only."
 msgstr ""
 
-#: list.php:1702 list.php:1992
+#: list.php:1701 list.php:1991
 msgid " persons found."
 msgstr " személyt találtunk."
 
-#: list.php:1738 list_places_families.php:513
+#: list.php:1737 list_places_families.php:511
 msgid "Concise view"
 msgstr "Tömör nézet"
 
-#: list.php:1754 list_places_families.php:525
+#: list.php:1753 list_places_families.php:523
 msgid "No names found."
 msgstr "Nem találtunk neveket."
 
-#: list.php:1797
+#: list.php:1796
 msgid "Sort by:"
 msgstr "Rendezze a következő szerint:"
 
-#: list.php:1837
+#: list.php:1836
 msgid "Loading..."
 msgstr ""
 
@@ -9272,30 +9229,30 @@ msgstr ""
 msgid "All names"
 msgstr "Összes név"
 
-#: list_names.php:217 statistics.php:739
+#: list_names.php:217 statistics.php:740
 msgid "Number of displayed surnames"
 msgstr "Megjelenített személynevek száma"
 
-#: list_names.php:228 statistics.php:750
+#: list_names.php:228 statistics.php:751
 msgid "Number of columns"
 msgstr "Oszlopok száma"
 
-#: list_places_families.php:61 list_places_families.php:167
-#: list_places_families.php:177 list_places_families.php:401
+#: list_places_families.php:61 list_places_families.php:165
+#: list_places_families.php:175 list_places_families.php:399
 msgid "&infin;"
 msgstr "&#134;"
 
-#: list_places_families.php:68 list_places_families.php:165
-#: list_places_families.php:175 list_places_families.php:407
+#: list_places_families.php:68 list_places_families.php:163
+#: list_places_families.php:173 list_places_families.php:405
 msgid "o"
 msgstr "o"
 
-#: list_places_families.php:82 list_places_families.php:184
-#: list_places_families.php:193 list_places_families.php:410
+#: list_places_families.php:82 list_places_families.php:182
+#: list_places_families.php:191 list_places_families.php:408
 msgid "x"
 msgstr "x"
 
-#: list_places_families.php:480
+#: list_places_families.php:478
 msgid "families found."
 msgstr "családot találtunk."
 
@@ -9944,11 +9901,11 @@ msgstr ""
 "(Minden egymást követő kereséssel az útvonal hosszabbá válik és a számolási "
 "idő megnőhet!)"
 
-#: relations.php:3085
+#: relations.php:3088
 msgid "Calculating relations"
 msgstr ""
 
-#: relations.php:3107
+#: relations.php:3110
 msgid ""
 "This calculator will find the following relationships:<br>\n"
 "<ul><li>Any blood relationship between X and Y (\"X is great-grandfather of Y"
@@ -9993,22 +9950,22 @@ msgstr ""
 "családnév keresőmezőkkel, listát fog kapni minden személlyel, aki az "
 "adatbázisban szerepel. (Ez felvehet néhány másodpercet)</b></li></ul>"
 
-#: relations.php:3124
+#: relations.php:3127
 msgid "or: ID"
 msgstr "vagy: ID"
 
-#: relations.php:3127 relations.php:3249
+#: relations.php:3130 relations.php:3252
 msgid "Calculate relationships"
 msgstr "Rokoni kapcsolat kiszámítása"
 
-#: relations.php:3233 relations.php:3340
+#: relations.php:3236 relations.php:3343
 #, fuzzy
 #| msgid "Results are limited, use search to find more parents."
 msgid "Results are limited, use search to find more persons."
 msgstr ""
 "Találatok korlátozottak, használja a keresést, hogy több szülőt találjon."
 
-#: relations.php:3446
+#: relations.php:3449
 msgid ""
 "You have to search and than choose Person 1 and Person 2 from the search "
 "result pulldown"
@@ -10237,7 +10194,7 @@ msgstr ""
 "A diagram képének megjelenítése nyomtatáshoz (engedélyezze a felugró "
 "ablakokat!)"
 
-#: report_ancestor.php:1070 report_descendant.php:931 report_descendant.php:950
+#: report_ancestor.php:1070 report_descendant.php:932 report_descendant.php:951
 msgid ""
 "Right click on the image below and save it as a .png file to your computer."
 "<br>You can then print it over multiple pages with dedicated third-party "
@@ -10247,7 +10204,7 @@ msgstr ""
 "számítógépére. <br>Később kinyomtathatja több oldalra egy megfelelő "
 "programmal, mint az ingyenes: "
 
-#: report_ancestor.php:1070 report_descendant.php:931 report_descendant.php:950
+#: report_ancestor.php:1070 report_descendant.php:932 report_descendant.php:951
 msgid ""
 "If you have a plotter you can use its software to print the image on one "
 "large sheet."
@@ -10358,7 +10315,7 @@ msgstr "Csak mtDNS hordozó"
 msgid "mtDNA Mark carriers"
 msgstr "mtDNA Marker hordozó"
 
-#: report_descendant.php:811
+#: report_descendant.php:812
 msgid "died "
 msgstr "meghalt "
 
@@ -10498,51 +10455,51 @@ msgstr "Családok sz."
 msgid "Most children in family"
 msgstr "Legtöbb gyerek egy családban"
 
-#: statistics.php:147 statistics.php:470
+#: statistics.php:147 statistics.php:471
 msgid "No. of persons"
 msgstr "Személyek sz. "
 
-#: statistics.php:480
+#: statistics.php:481
 msgid "Oldest birth date"
 msgstr "Legkorábbi születési dátum"
 
-#: statistics.php:500
+#: statistics.php:501
 msgid "Youngest birth date"
 msgstr "Legutóbbi születési dátum"
 
-#: statistics.php:520
+#: statistics.php:521
 msgid "Oldest baptism date"
 msgstr ""
 
-#: statistics.php:540
+#: statistics.php:541
 msgid "Youngest baptism date"
 msgstr ""
 
-#: statistics.php:561
+#: statistics.php:562
 msgid "Oldest death date"
 msgstr "Legrégebbi elhalálozási dátum"
 
-#: statistics.php:581
+#: statistics.php:582
 msgid "Youngest death date"
 msgstr "Legutóbbi elhalálozási dátum"
 
-#: statistics.php:600
+#: statistics.php:601
 msgid "Longest living person"
 msgstr "Leghosszabb élettartam"
 
-#: statistics.php:620
+#: statistics.php:621
 msgid "Average age"
 msgstr "Átlagéletkor"
 
-#: statistics.php:632
+#: statistics.php:633
 msgid "Average age married persons"
 msgstr "Házasságban élő személyek átlagéletkora"
 
-#: statistics.php:643
+#: statistics.php:644
 msgid "Lifespan range of married individuals"
 msgstr ""
 
-#: statistics.php:922
+#: statistics.php:923
 msgid "Number of displayed first names"
 msgstr "Megjelenített keresztnevek száma"
 
@@ -10706,6 +10663,15 @@ msgstr "Válasszon színsémát (egy sütit fogunk használni a séma megjegyzs�
 #: user_settings.php:155 user_settings.php:159
 msgid "Standard-colours"
 msgstr "Alapértelmezett színek"
+
+#~ msgid "Add child to family:"
+#~ msgstr "Gyermek hozzáadása a családhoz:"
+
+#~ msgid "Or add a new child:"
+#~ msgstr "Vagy új gyermek hozzáadása:"
+
+#~ msgid "Add relation with new partner (N.N.)"
+#~ msgstr "Kapcsolat hozzáadása új partnerrel (N.N.)"
 
 #~ msgid "Select marriage"
 #~ msgstr "Házasság kiválasztása"

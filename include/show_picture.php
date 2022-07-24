@@ -33,14 +33,17 @@ function show_media($event_connect_kind,$event_connect_id){
 			//$media_event_source[$media_nr]=$pictureDb->event_source;
 		}
 
-		// *** Search for all external connected objects by a person or a family ***
+		// *** Search for all external connected objects by a person, family or source ***
 		if ($event_connect_kind=='person'){
 			$connect_sql = $db_functions->get_connections_connect_id('person','pers_object',$event_connect_id);
 		}
 		elseif ($event_connect_kind=='family'){
 			$connect_sql = $db_functions->get_connections_connect_id('family','fam_object',$event_connect_id);
 		}
-		if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
+		elseif ($event_connect_kind=='source'){
+			$connect_sql = $db_functions->get_connections_connect_id('source','source_object',$event_connect_id);
+		}
+		if ($event_connect_kind=='person' OR $event_connect_kind=='family'  OR $event_connect_kind=='source'){
 			foreach ($connect_sql as $connectDb){
 				$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 					AND event_gedcomnr='".safe_text_db($connectDb->connect_source_id)."' AND event_kind='object'

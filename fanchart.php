@@ -18,7 +18,7 @@
 //error_reporting(E_ALL);
 @set_time_limit(3000);
 
-global $maxperson, $treeid, $chosengen, $fontsize, $date_display, $family_id, $printing, $fan_style, $fanw, $fanh, $indexnr;
+global $maxperson, $treeid, $chosengen, $fontsize, $date_display, $person_id, $printing, $fan_style, $fanw, $fanh, $indexnr;
 
 include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."include/language_date.php");
@@ -28,12 +28,11 @@ include_once(CMS_ROOTPATH."include/person_cls.php");
 include_once(CMS_ROOTPATH."menu.php");
 require_once(CMS_ROOTPATH."include/fanchart/persian_log2vis.php");
 
-// *** CHECK: $family_id is actually a person_id... ***
-$family_id='I1'; // *** Show 1st family if file is called directly. ***
-if (isset($_GET["id"])){ $family_id=$_GET["id"]; }
-if (isset($_POST["id"])){ $family_id=$_POST["id"]; }
+$person_id='I1'; // *** Show 1st person if file is called directly. ***
+if (isset($_GET["id"])){ $person_id=$_GET["id"]; }
+if (isset($_POST["id"])){ $person_id=$_POST["id"]; }
 // *** Check if person gedcomnumber is valid ***
-$db_functions->check_person($family_id);
+$db_functions->check_person($person_id);
 
 $chosengen=5;
 if (isset($_GET["chosengen"])){ $chosengen=$_GET["chosengen"]; }
@@ -100,13 +99,23 @@ function fillarray ($nr, $famid) {
 			$treeid[$nr][4]='';
 		}
 
-		//NEW
-		if($nr==1) $indexnr = $personmnDb->pers_indexnr; // need this for desc chart at bottom, if selected
+		if($nr==1){
+			// *** If selected, show descendant chart at bottom of page ***
+			$indexnr='';
+			if ($personmnDb->pers_famc){ $indexnr=$personmnDb->pers_famc; }
+			if ($personmnDb->pers_fams){
+				$pers_fams=explode(';',$personmnDb->pers_fams);
+				$indexnr=$pers_fams[0];
+			}
+		}
 
-		$pos=strpos($personmnDb->pers_fams,";");
-		if($pos===false) { $treeid[$nr][2]=$personmnDb->pers_fams; }
-		else {$treeid[$nr][2]=substr($personmnDb->pers_fams,0,$pos);}
+		//$pos=strpos($personmnDb->pers_fams,";");
+		//if($pos===false) { $treeid[$nr][2]=$personmnDb->pers_fams; }
+		//	else {$treeid[$nr][2]=substr($personmnDb->pers_fams,0,$pos);}
+		$treeid[$nr][2]=$personmnDb->pers_fams;
+
 		$treeid[$nr][3]=$famid;
+
 		$treeid[$nr][5]=$personmnDb->pers_sexe;
 
 		if ($personmnDb->pers_famc){
@@ -118,10 +127,14 @@ function fillarray ($nr, $famid) {
 				fillarray ($nr*2+1, $record_family->fam_woman);
 			}
 		}
+
+		// *** famc ***
+		$treeid[$nr][6]=$personmnDb->pers_famc;
+
 	}
 } //END FUNCTION FILLARRAY
 
-fillarray(1, $family_id);
+fillarray(1, $person_id);
 
 /* split and center text by lines
 * @param string $data input string
@@ -205,7 +218,7 @@ function split_align_text($data, $maxlen, $rtlflag, $nameflag, $gennr) {
 */
 function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 	global $dbh, $tree_id, $db_functions, $fontsize, $date_display;
-	global $fan_style, $family_id;
+	global $fan_style, $person_id;
 	global $printing, $language, $selected_language;
 	global $pers_var, $tree_prefix_quoted;
 	global $china_message;
@@ -443,14 +456,19 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 				$ty=round($cy - $mr * -sin($rad));
 				$imagemap .= "$tx, $ty";
 
-				if (CMS_SPECIFIC == "Joomla") {
-					$imagemap .= "\" href=\"index.php?option=com_humo-gen&amp;task=family&amp;id=".$treeid[$sosa][2]."&amp;main_person=".$treeid[$sosa][3]."\"";
-				}
-				else {
-					$imagemap .= "\" href=\"family.php?id=".$treeid[$sosa][2]."&amp;main_person=".$treeid[$sosa][3]."\"";
-				}
+				//if (CMS_SPECIFIC == "Joomla") {
+				//	$imagemap .= "\" href=\"index.php?option=com_humo-gen&amp;task=family&amp;id=".$treeid[$sosa][2]."&amp;main_person=".$treeid[$sosa][3]."\"";
+				//}
+				//else {
+					//$imagemap .= "\" href=\"family.php?tree_id=".$tree_id."&amp;id=".$treeid[$sosa][2]."&amp;main_person=".$treeid[$sosa][3]."\"";
 
-				//NEW - add first spouse to base person's tooltip
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$person_cls = New person_cls;
+					$url=$person_cls->person_url2($tree_id,$treeid[$sosa][6],$treeid[$sosa][2],$treeid[$sosa][3]);
+					$imagemap .= "\" href=\"".$url."\"";
+				//}
+
+				// *** Add first spouse to base person's tooltip ***
 				$spousename=""; 
 				if($gen==0 AND $treeid[1][2] != "") { // base person and has spouse
 					if($treeid[1][5]=="F") { $spouse="fam_man";} else { $spouse="fam_woman"; }
@@ -634,10 +652,10 @@ echo '<div style="position:absolute; left:0; top:0; color: #000000">';
 	//echo '<div style="border: 2px solid #000077; padding:10px">';
 
 	if (CMS_SPECIFIC == "Joomla") {
-		echo "<form name=\"people\" method=\"post\" action=\"index.php?option=com_humo-gen&task=fanchart&id=".$family_id."\" style=\"display:inline;\">";
+		echo "<form name=\"people\" method=\"post\" action=\"index.php?option=com_humo-gen&task=fanchart&id=".$person_id."\" style=\"display:inline;\">";
 	}
 	else {
-		echo "<form name=\"people\" method=\"post\" action=\"fanchart.php?id=".$family_id."\" style=\"display:inline;\">";
+		echo "<form name=\"people\" method=\"post\" action=\"fanchart.php?id=".$person_id."\" style=\"display:inline;\">";
 	}
 	//echo "<br>";
 	echo "<input type=\"submit\" value=\"" .__('View'). "\">";
@@ -755,7 +773,6 @@ if($china_message==1) {
 	' <a href="http://humogen.com/download.php?file=traditional-wt011.zip">Traditional 繁體中文</a><br>'.
 	__('Unzip and place in "include/fanchart/chinese/" folder').'</div>';
 }
-//NEW
 
 if($showdesc=="1" ) {
 	$fan_w =  9.3*$fan_width;
@@ -763,10 +780,10 @@ if($showdesc=="1" ) {
 	elseif($fan_style==3) $top_pos = 0.856*$fan_w;
 	elseif($fan_style==4) $top_pos = $fan_w;
 
-	echo '<iframe src="family.php?database='.safe_text_db($_SESSION['tree_prefix']).'&amp;id='.$indexnr.'&amp;main_person='.$family_id.'&amp;screen_mode=STAR&amp;menu=1" id="iframe1"  style="position:absolute;top:'.$top_pos.'px;left:0px;width:100%;height:700px;" ;" >';
+	echo '<iframe src="family.php?database='.safe_text_db($_SESSION['tree_prefix']).'&amp;id='.$indexnr.'&amp;main_person='.$person_id.'&amp;screen_mode=STAR&amp;menu=1" id="iframe1"  style="position:absolute;top:'.$top_pos.'px;left:0px;width:100%;height:700px;" ;" >';
 	echo '</iframe>';
 }
-//END NEW
+
 
 echo '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>';
 if(CMS_SPECIFIC == "Joomla") {

@@ -146,8 +146,8 @@ if(!isset($_POST['ann_choice']) OR $_POST['ann_choice']=="birthdays") {
 		$person_cls->construct($record);
 
 		if (!$person_cls->privacy){
-			// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-			$url=$person_cls->person_url($record->pers_tree_id,$record->pers_indexnr,$record->pers_gedcomnumber);
+			// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+			$url=$person_cls->person_url2($record->pers_tree_id,$record->pers_famc,$record->pers_fams,$record->pers_gedcomnumber);
 
 			$person_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 
@@ -303,9 +303,10 @@ else {
 				$man_name='N.N.';
 			else{
 				$name=$man_cls->person_name($manDb);
-				//$url=$man_cls->person_url($manDb);
-				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-				$url=$man_cls->person_url($manDb->pers_tree_id,$manDb->pers_indexnr,$manDb->pers_gedcomnumber);
+
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$url=$man_cls->person_url2($manDb->pers_tree_id,$manDb->pers_famc,$manDb->pers_fams,$manDb->pers_gedcomnumber);
+
 				$man_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 			}
 
@@ -317,10 +318,11 @@ else {
 			if (!$value['woman'])
 				$woman_name='N.N.';
 			else{
-				$name=$man_cls->person_name($womanDb);
-				//$url=$man_cls->person_url($womanDb);
-				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-				$url=$man_cls->person_url($womanDb->pers_tree_id,$womanDb->pers_indexnr,$womanDb->pers_gedcomnumber);
+				$name=$woman_cls->person_name($womanDb);
+
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$url=$woman_cls->person_url2($womanDb->pers_tree_id,$womanDb->pers_famc,$womanDb->pers_fams,$womanDb->pers_gedcomnumber);
+
 				$woman_name='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 			}
 

@@ -469,9 +469,10 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 							$person_cls = New person_cls;
 							$personDb=$db_functions->get_person($afbDb->event_connect_id);
 							$name=$person_cls->person_name($personDb);
-							$picture_text.='<br><a href="'.CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.
-								'&amp;id='.$personDb->pers_indexnr.
-								'&amp;main_person='.$personDb->pers_gedcomnumber.'">'.$name["standard_name"].'</a><br>';
+
+							// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+							$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+							$picture_text.='<br><a href="'.CMS_ROOTPATH.$url.'">'.$name["standard_name"].'</a><br>';
 						}
 						echo $picture_text;
 

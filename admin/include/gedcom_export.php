@@ -744,11 +744,12 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		$desc_fams='';
 		$desc_pers = $_POST['person'];
 		$max_gens = $_POST['generations'];
-		$fam_search = $dbh->query("SELECT pers_fams, pers_indexnr
+
+		$fam_search = $dbh->query("SELECT pers_fams, pers_famc
 			FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$desc_pers."'");
 		$fam_searchDb = $fam_search->fetch(PDO::FETCH_OBJ);
 		if($fam_searchDb->pers_fams != '') { $desc_fams = $fam_searchDb->pers_fams; }
-		else { $desc_fams = $fam_searchDb->pers_indexnr; }
+			else { $desc_fams = $fam_searchDb->pers_famc; }
 		$gn=0;
 
 		// *** Only use first marriage of selected person to avoid error. Other marriages will be processed in the function! ***

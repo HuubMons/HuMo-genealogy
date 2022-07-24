@@ -147,32 +147,40 @@ function set_privacy($personDb){
 	return $privacy_person;
 }
 
-// *** NEW 29 februari 2020: URL construction in person_cls ***
-/*	Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
- *	$url=$person_cls->person_url($tree_id,$index_nr,$gedcomnumer);
+/*	*** Get person url ***
+ *	16-07-2021: Removed variable: pers_indexnr.
+ *	29-02-2020: URL construction in person_cls
+ *	*** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+ *	$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
  */
-function person_url($pers_tree_id='', $pers_indexnr='', $pers_gedcomnumber=''){
+function person_url2($pers_tree_id,$pers_famc,$pers_fams,$pers_gedcomnumber=''){
 	global $humo_option, $uri_path;
 
+	$pers_family='';
+	if ($pers_famc){ $pers_family=$pers_famc; }
+	if ($pers_fams){
+		$pers_fams=explode(';',$pers_fams);
+		$pers_family=$pers_fams[0];
+	}
+
 	if (CMS_SPECIFIC=='Joomla'){
-		$url='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$pers_tree_id.'&amp;id='.$pers_indexnr;
+		$url='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$pers_tree_id.'&amp;id='.$pers_family;
 		if ($pers_gedcomnumber) $url.='&amp;main_person='.$pers_gedcomnumber;
 	}
 	elseif ($humo_option["url_rewrite"]=="j"){
 		// *** $uri_path made in header.php ***
-		//$url=$uri_path.'family/'.$pers_tree_id.'/'.$pers_indexnr.'/';
+		//$url=$uri_path.'family/'.$pers_tree_id.'/'.$pers_family.'/';
 		//if ($pers_gedcomnumber) $url.=$pers_gedcomnumber.'/';
-		$url=$uri_path.'family/'.$pers_tree_id.'/'.$pers_indexnr;
+		$url=$uri_path.'family/'.$pers_tree_id.'/'.$pers_family;
 		if ($pers_gedcomnumber) $url.='?main_person='.$pers_gedcomnumber;
 	}
 	else{
-		$url=CMS_ROOTPATH.'family.php?tree_id='.$pers_tree_id.'&amp;id='.$pers_indexnr;
+		$url=CMS_ROOTPATH.'family.php?tree_id='.$pers_tree_id.'&amp;id='.$pers_family;
 		if ($pers_gedcomnumber) $url.='&amp;main_person='.$pers_gedcomnumber;
 	}
 
 	return $url;
 }
-
 
 // *************************************************************
 // *** Show person name standard                             ***
@@ -315,28 +323,56 @@ function person_name($personDb){
 			$name_array["firstname"]=$pers_firstname;
 
 			// *** Firstname, patronym, prefix and lastname ***
-			$name_array["name"]=$pers_firstname." ";
-			// *** feb 2016: added patronym ***
-			if ($personDb->pers_patronym) $name_array["name"].=$personDb->pers_patronym." ";
-			$name_array["name"].=str_replace("_", " ", $personDb->pers_prefix);
-			$name_array["name"].=$personDb->pers_lastname;
+			if($humo_option['name_order']!="chinese") {
+				$name_array["name"]=$pers_firstname.' ';
+				// *** feb 2016: added patronym ***
+				if ($personDb->pers_patronym) $name_array["name"].=$personDb->pers_patronym.' ';
+				$name_array["name"].=str_replace("_", " ", $personDb->pers_prefix);
+				$name_array["name"].=$personDb->pers_lastname;
+			}
+			else{
+				// *** For Chinese no commas or spaces, example: Janssen Jan ***
+				$name_array["name"]=str_replace("_", " ", $personDb->pers_prefix);
+				$name_array["name"].=$personDb->pers_lastname;
+				$name_array["name"].=' '.$pers_firstname;
+				if ($personDb->pers_patronym) $name_array["name"].=' '.$personDb->pers_patronym;
+			}
 
 			// *** Short firstname, prefix and lastname ***
-			$name_array["short_firstname"]=substr ($personDb->pers_firstname, 0, 1)." ";
-			$name_array["short_firstname"].=str_replace("_", " ", $personDb->pers_prefix);
-			$name_array["short_firstname"].=$personDb->pers_lastname;
+			if($humo_option['name_order']!="chinese") {
+				$name_array["short_firstname"]=substr ($personDb->pers_firstname, 0, 1).' ';
+				$name_array["short_firstname"].=str_replace("_", " ", $personDb->pers_prefix);
+				$name_array["short_firstname"].=$personDb->pers_lastname;
+			}
+			else{
+				$name_array["short_firstname"]=str_replace("_", " ", $personDb->pers_prefix);
+				$name_array["short_firstname"].=$personDb->pers_lastname;
+				$name_array["short_firstname"].=' '.substr ($personDb->pers_firstname, 0, 1).' ';
+			}
 
 			// *** $name_array["standard_name"] ***
 			// *** Example: Predikaat Hubertus [Huub] van Mons, Title, 2nd title ***
-			$name_array["standard_name"]=$nobility.$title_before.$pers_firstname." ";
-			if ($personDb->pers_patronym) $name_array["standard_name"].=" ".$personDb->pers_patronym." ";
-			$name_array["standard_name"].=$title_between;
+			if($humo_option['name_order']!="chinese") {
+				$name_array["standard_name"]=$nobility.$title_before.$pers_firstname.' ';
+				if ($personDb->pers_patronym) $name_array["standard_name"].=" ".$personDb->pers_patronym.' ';
+				$name_array["standard_name"].=$title_between;
 				// *** Callname shown as "Huub" ***
-				//if ($personDb->pers_callname AND $privacy=='') $name_array["standard_name"].= ' "'.$personDb->pers_callname.'" ';
 				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
 					$name_array["standard_name"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
-			$name_array["standard_name"].=str_replace("_", " ", $personDb->pers_prefix);
-			$name_array["standard_name"].=$personDb->pers_lastname;
+				$name_array["standard_name"].=str_replace("_", " ", $personDb->pers_prefix);
+				$name_array["standard_name"].=$personDb->pers_lastname;
+			}
+			else{
+				// *** For Chinese no commas or spaces, example: Janssen Jan ***
+				$name_array["standard_name"]=str_replace("_", " ", $personDb->pers_prefix);
+				$name_array["standard_name"].=$personDb->pers_lastname.' ';
+				$name_array["standard_name"].=$nobility.$title_before.$pers_firstname.' ';
+				if ($personDb->pers_patronym) $name_array["standard_name"].=" ".$personDb->pers_patronym.' ';
+				$name_array["standard_name"].=$title_between;
+				// *** Callname shown as "Huub" ***
+				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
+					$name_array["standard_name"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
+			}
 			if ($title_after){ $name_array["standard_name"].=$title_after; }
 			$name_array["standard_name"].=$stillborn;
 			$name_array["standard_name"].=$lordship;
@@ -353,11 +389,16 @@ function person_name($personDb){
 				$prefix2=" ".str_replace("_"," ",$personDb->pers_prefix);
 			}
 
+			// *** index_name ***
 			$name_array["index_name"]=$prefix1;
-			$name_array["index_name_extended"]=$prefix1;
 			if ($personDb->pers_lastname){
-				$name_array["index_name"].=$personDb->pers_lastname.', ';
-				$name_array["index_name_extended"].=$personDb->pers_lastname.', ';
+				if($humo_option['name_order']!="chinese") {
+					$name_array["index_name"].=$personDb->pers_lastname.', ';
+				}
+				else{
+					// *** For Chinese no commas or spaces, example: Janssen Jan ***
+					$name_array["index_name"].=$personDb->pers_lastname.' ';
+				}
 			}
 			$name_array["index_name"].=$pers_firstname;
 				// *** Callname shown as "Huub" ***
@@ -366,29 +407,30 @@ function person_name($personDb){
 					$name_array["index_name"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
 			$name_array["index_name"].=$prefix2;
 
+			// *** index_name_extended ***
+			$name_array["index_name_extended"]=$prefix1;
+			if ($personDb->pers_lastname){
+				if($humo_option['name_order']!="chinese") {
+					$name_array["index_name_extended"].=$personDb->pers_lastname.', ';
+				}
+				else{
+					// *** For Chinese no commas or spaces, example: Janssen Jan ***
+					$name_array["index_name_extended"].=$personDb->pers_lastname.' ';
+				}
+			}
 			$name_array["index_name_extended"].=$pers_firstname;
-				// *** Callname shown as "Huub" ***
-				//if ($personDb->pers_callname AND $privacy=='') $name_array["index_name_extended"].= ' "'.$personDb->pers_callname.'" ';
-				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
-					$name_array["index_name_extended"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
+			// *** Callname shown as "Huub" ***
+			//if ($personDb->pers_callname AND $privacy=='') $name_array["index_name_extended"].= ' "'.$personDb->pers_callname.'" ';
+			if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
+				$name_array["index_name_extended"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
 			if ($title_after){ $name_array["index_name_extended"].=$title_after; }
-
 			if ($personDb->pers_patronym){ $name_array["index_name_extended"].=' '.$personDb->pers_patronym;}
 			$name_array["index_name_extended"].=$stillborn;
 			// *** If a special name is found in the results (event table), show it **
 			if (isset($personDb->event_event) AND $personDb->event_event AND $personDb->event_kind=='name'){
 				$name_array["index_name_extended"].=' ('.$personDb->event_event.')';
 			}
-
 			$name_array["index_name_extended"].=$prefix2;
-
-			if($humo_option['name_order']=="chinese") {
-				// for Chinese no commas or spaces
-				$name_array["name"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
-				$name_array["short_firstname"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
-				$name_array["standard_name"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
-				$name_array["index_name_extended"].= $personDb->pers_lastname." ".$personDb->pers_firstname;
-			}
 
 			// *** If search is done for profession, show profession **
 			//if ($selection['pers_profession']){
@@ -490,10 +532,18 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 
 		// *** Family tree for search in multiple family trees ***
 		$db_functions->set_tree_id($personDb->pers_tree_id);
-		//$start_url=$this->person_url($personDb);
-		// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-		$start_url=$this->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+
+		// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+		$start_url=$this->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
 		$family_url=$start_url;
+
+		// *** Link to own family or parents ***
+		$pers_family='';
+		if ($personDb->pers_famc){ $pers_family=$personDb->pers_famc; }
+		if ($personDb->pers_fams){
+			$pers_fams=explode(';',$personDb->pers_fams);
+			$pers_family=$pers_fams[0];
+		}
 
 		// *** Change start url for a person in a graphical ancestor report ***
 		if ($screen_mode=='ancestor_chart' AND $hourglass===false){
@@ -508,20 +558,20 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 		// *** Change start url for a person in a graphical descendant report ***
 		if (($screen_mode=='STAR' OR $screen_mode=='STARSIZE') AND $hourglass===false) {
 			if (CMS_SPECIFIC=='Joomla'){
-				$start_url='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
+				$start_url='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
 			}
 			else{
-				$start_url=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
+				$start_url=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
 			}
 		}
 
 		// *** Change start url for a person in an hourglass chart ***
 		if (($screen_mode=='STAR' OR $screen_mode=='STARSIZE' OR $screen_mode=='ancestor_chart') AND $hourglass===true){ 
 			if (CMS_SPECIFIC=='Joomla'){
-				$start_url='index.php?option=com_humo-gen&amp;task=hourglass&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
+				$start_url='index.php?option=com_humo-gen&amp;task=hourglass&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
 			}
 			else{
-				$start_url=CMS_ROOTPATH.'hourglass.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
+				$start_url=CMS_ROOTPATH.'hourglass.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
 			}
 		}
 
@@ -577,20 +627,20 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 
 						if (CMS_SPECIFIC=='Joomla'){
 							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.
-								'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;descendant_report=1';
+								'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;descendant_report=1';
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;descendant_report=1';
+							$path_tmp=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;descendant_report=1';
 						}
 						$text.='<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/descendant.gif" border="0" alt="'.__('Descendant report').'"> '.__('Descendant report').'</a>';
 
 						if (CMS_SPECIFIC=='Joomla'){
 							$path_tmp='index.php?option=com_humo-gen&amp;task=outline&amp;tree_id='.$personDb->pers_tree_id.
-								'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;descendant_report=1';
+								'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;descendant_report=1';
 						}
 						else{
 							$path_tmp=CMS_ROOTPATH.'report_outline.php?tree_id='.$personDb->pers_tree_id.
-				'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber;
+				'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber;
 						}
 						$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/outline.gif" border="0" alt="'.__('Outline report').'"> '.__('Outline report').'</a>';
 					}
@@ -638,10 +688,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					if ($check_children){
 
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
+							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
+							$path_tmp=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR';
 						}
 						$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/descendant.gif" border="0" alt="'.__('Descendant chart').'"> '.__('Descendant chart').'</a>';
 					}
@@ -654,10 +704,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					if($personDb->pers_sexe=="M") $charttype="ydna";
 					else $charttype="mtdna";
 						if (CMS_SPECIFIC=='Joomla'){
-							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
+							$path_tmp='index.php?option=com_humo-gen&amp;task=family&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
 						}
 						else{
-							$path_tmp=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
+							$path_tmp=CMS_ROOTPATH.'family.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=STAR&amp;dnachart='.$charttype;
 						}
 						$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/dna.png" border="0" alt="'.__('DNA Charts').'"> '.__('DNA Charts').'</a>';
 					//}
@@ -667,11 +717,11 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 				// hourglass only if there is at least one generation of ancestors and of children.
 					if (CMS_SPECIFIC=='Joomla'){
 						//$path_tmp='index.php?option=com_humo-gen&amp;task=hourglass&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
-						$path_tmp='index.php?option=com_humo-gen&amp;task=hourglass&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
+						$path_tmp='index.php?option=com_humo-gen&amp;task=hourglass&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
 					}
 					else{
 						//$path_tmp=CMS_ROOTPATH.'hourglass.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
-						$path_tmp=CMS_ROOTPATH.'hourglass.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
+						$path_tmp=CMS_ROOTPATH.'hourglass.php?tree_id='.$personDb->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber.'&amp;screen_mode=HOUR';
 					}
 					$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/hourglass.gif" border="0" alt="'.__('Hourglass chart').'"> '.__('Hourglass chart').'</a>';
 				}
@@ -716,7 +766,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					if ($user['group_admin']=='j' OR in_array($_SESSION['tree_id'], $edit_tree_array)) {
 						$text.= '<b>'.__('Admin').':</b>';
 						
-						$path_tmp=CMS_ROOTPATH.'admin/index.php?page=editor&amp;tree_id='.$personDb->pers_tree_id.'&amp;person='.$personDb->pers_gedcomnumber;
+						$path_tmp=CMS_ROOTPATH.'admin/index.php?page=editor&amp;menu_tab=person&amp;tree_id='.$personDb->pers_tree_id.'&amp;person='.$personDb->pers_gedcomnumber;
 						$text.= '<a href="'.$path_tmp.'" target="_blank">';
 						$text.= '<img src="'.CMS_ROOTPATH.'images/person_edit.gif" border="0" alt="'.__('Timeline').'"> '.__('Editor').'</a>';
 					}
@@ -897,12 +947,14 @@ function name_extended($person_kind){
 		// *** No links if gen_protection is enabled ***
 		if ($user["group_gen_protection"]=='j'){ $person_kind=''; }
 
-		if (($person_kind=='child' OR $person_kind=='outline') AND $personDb->pers_fams){
+		//if (($person_kind=='child' OR $person_kind=='outline') AND $personDb->pers_fams){
+		// *** 02-08-2021: also add link to partner in family screen ***
+		if (($person_kind=='child' OR $person_kind=='outline' OR $person_kind=='parent2') AND $personDb->pers_fams){
 			$templ_name["name_name"]=$standard_name;
 
-			//$url=$this->person_url($personDb);	// *** Get link to family ***
-			// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-			$url=$this->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+			// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+			$url=$this->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+
 			$standard_name='<a href="'.$url.'">'.$standard_name;
 			// *** Show name with link ***
 			$text_name=$text_name.$standard_name.'</a>';
@@ -974,8 +1026,10 @@ function name_extended($person_kind){
 
 				// *** Seperate father/mother links ***
 				$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
-				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-				$url=$this->person_url($personDb->pers_tree_id,$personDb->pers_famc,$gedcomnumber);
+
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$url=$this->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
+
 				// *** Add link ***
 				if ($user['group_gen_protection']=='n') $text='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 
@@ -1002,8 +1056,10 @@ function name_extended($person_kind){
 
 				// *** Seperate father/mother links ***
 				$gedcomnumber=''; if (isset($motherDb->pers_gedcomnumber)){ $gedcomnumber=$motherDb->pers_gedcomnumber; }
-				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-				$url=$this->person_url($personDb->pers_tree_id,$personDb->pers_famc,$gedcomnumber);
+
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$url=$this->person_url2($motherDb->pers_tree_id,$motherDb->pers_famc,$motherDb->pers_fams,$motherDb->pers_gedcomnumber);
+
 				// *** Add link ***
 				if ($user['group_gen_protection']=='n'){ $text.='<a href="'.$url.'">'.$name["standard_name"].'</a>'; }
 
@@ -1012,12 +1068,6 @@ function name_extended($person_kind){
 				$templ_name["name_parents"].=__('N.N.');
 				$text.=__('N.N.');
 			}
-
-			// *** Add link for parents ***
-			// *** Added this number for better Google indexing links (otherwise too many links to index) ***
-			//$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
-			// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-			//$url=$this->person_url($personDb->pers_tree_id,$personDb->pers_famc,$gedcomnumber);
 
 			// *** Add link ***
 			//if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
@@ -1033,6 +1083,7 @@ function name_extended($person_kind){
 		if ($person_kind=='parent1' OR $person_kind=='parent2'){
 			$famc_adoptive_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'adoption');
 			foreach ($famc_adoptive_qry as $famc_adoptiveDb){
+				if (!isset($templ_name["name_parents"])) $templ_name["name_parents"]='';
 				$templ_name["name_parents"].=' '.ucfirst(__('adoption parents')).': ';
 				$text_parents.=' '.ucfirst(__('adoption parents')).': ';
 
@@ -1078,14 +1129,17 @@ function name_extended($person_kind){
 					$text.=__('N.N.');
 				}
 
-				// *** Added this number for better Google indexing links (otherwise too many links to index) ***
-				$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
-				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-				$url=$this->person_url($personDb->pers_tree_id,$famc_adoptiveDb->event_event,$gedcomnumber);
-				//$text2='<a href="'.$url.'">';
+				$url='';
+				if ($parents_familyDb->fam_man){
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$this->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
+				}
+				elseif ($parents_familyDb->fam_woman){
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$this->person_url2($motherDb->pers_tree_id,$motherDb->pers_famc,$motherDb->pers_fams,$motherDb->pers_gedcomnumber);
+				}
 
 				// *** Add link ***
-				//if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
 				if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
 
 				//$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
@@ -1131,13 +1185,10 @@ function name_extended($person_kind){
 					//$temp="parents";
 				//}
 
-				if (isset($fatherDb->pers_indexnr)){
-					// *** Added this number for better Google indexing links (otherwise too many links to index) ***
-					$gedcomnumber=''; if (isset($fatherDb->pers_gedcomnumber)){ $gedcomnumber=$fatherDb->pers_gedcomnumber; }
-					// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-					$url=$this->person_url($personDb->pers_tree_id,$fatherDb->pers_indexnr,$gedcomnumber);
-					//$text2='<a href="'.$url.'">';
-				}
+				//if (isset($fatherDb->pers_famc) OR isset($fatherDb->pers_fams)){
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$this->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
+				//}
 
 				// *** Add link ***
 				//if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
@@ -1192,18 +1243,17 @@ function name_extended($person_kind){
 					$partnerDb=$db_functions->get_person($partner_id);
 					$partner_cls = New person_cls;
 					$name=$partner_cls->person_name($partnerDb);
-					$famc=$partnerDb->pers_indexnr; // *** Used for partner link ***
-					$pers_gedcomnumber=$partnerDb->pers_gedcomnumber;
+
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$this->person_url2($partnerDb->pers_tree_id,$partnerDb->pers_famc,$partnerDb->pers_fams,$partnerDb->pers_gedcomnumber);
 				}
 				else{
 					$name["standard_name"]=__('N.N.');
-					$famc=$personDb->pers_indexnr; // *** For partner link, if partner is N.N. ***
-					$pers_gedcomnumber=$personDb->pers_gedcomnumber;
-				}
 
-				// *** Link for partner ***
-				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-				$url=$this->person_url($personDb->pers_tree_id,$famc,$pers_gedcomnumber);
+					// *** Link for N.N. partner, not in database ***
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$this->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+				}
 				$name["standard_name"]='<a href="'.$url.'">'.$name["standard_name"].'</a>';
 
 				//$child_marriage.=' <span class="index_partner" style="font-size:10px;">';
@@ -1732,7 +1782,6 @@ function person_data($person_kind, $id){
 			}
 		}
 
-
 		// *** Check for death items, if needed use a new line ***
 		if ($text){
 			if (!$temp_previous)
@@ -1790,8 +1839,8 @@ function person_data($person_kind, $id){
 		if ($personDb->pers_gedcomnumber){
 			$temp_text=witness($personDb->pers_gedcomnumber, 'burial_witness');
 			if ($temp_text){
-				$templ_person[$temp].=" (";
-				$templ_person["buri_witn"]= __('burial witness').' '.$temp_text.')';
+				if($temp) { $templ_person[$temp].=' '; }
+				$templ_person["buri_witn"]= ' ('.__('burial witness').': '.$temp_text.')';
 				$temp="buri_witn";
 				$text.= $templ_person["buri_witn"];
 			}
@@ -1998,9 +2047,8 @@ function person_data($person_kind, $id){
 				else{
 					$process_text.=', ';
 
-					// *** Added this number for better Google indexing links (otherwise too many links to index) ***
-					// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-					$url=$this->person_url($personDb->pers_tree_id,$marriage_array[$i],$personDb->pers_gedcomnumber);
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$this->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
 					$process_text.='<a href="'.$url.'">';
 
 					if(isset($parent2_marr_data)) {$process_text.=$dirmark1.$parent2_marr_data.' ';}

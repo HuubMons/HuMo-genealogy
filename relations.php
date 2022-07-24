@@ -2940,7 +2940,10 @@ function display_result($result) {
 					$pers_cls = New person_cls;
 					$name=$pers_cls->person_name($ancDb);
 					$personname=$name["name"];
-					echo "<a href='".$fampath."tree_id=".$tree_id."&amp;id=".$ancDb->pers_indexnr."&amp;main_person=".$ancDb->pers_gedcomnumber."'>".$personname."</a>";
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$pers_cls->person_url2($ancDb->pers_tree_id,$ancDb->pers_famc,$ancDb->pers_fams,$ancDb->pers_gedcomnumber);
+					echo "<a href='".$url."'>".$personname."</a>";
+
 					$colsp=true;
 				}
 

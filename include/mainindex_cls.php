@@ -607,6 +607,7 @@ function random_photo(){
 
 	$tree_pict_path=$dataDb->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
 
+	// *** Loop through pictures and find first available picture without privacy filter ***
 	$qry="SELECT * FROM humo_events
 		WHERE event_tree_id='".$tree_id."' AND event_kind='picture' AND event_connect_kind='person' AND event_connect_id NOT LIKE ''
 		ORDER BY RAND()";
@@ -629,8 +630,9 @@ function random_photo(){
 				$text.='<a href="'.$tree_pict_path.$picname.'" class="glightbox" data-glightbox="description: '.str_replace("&", "&amp;", $picqryDb->event_text).'"><img src="'.$tree_pict_path.$picname.'" width="200 px"
 					style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
 
-				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-				$url=$man_cls->person_url($personmnDb->pers_tree_id,$personmnDb->pers_indexnr,$personmnDb->pers_gedcomnumber);
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$url=$man_cls->person_url2($personmnDb->pers_tree_id,$personmnDb->pers_famc,$personmnDb->pers_fams,$personmnDb->pers_gedcomnumber);
+
 				$text.='<a href="'.$url.'">'.$picqryDb->event_text.'</a></div><br>';
 
 				// *** Show first available picture without privacy restrictions ***
@@ -672,8 +674,8 @@ function extra_links(){
 			if (in_array ($personDb->pers_own_code,$pers_own_code) ){
 				$person_cls = New person_cls;
 
-				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-				$path_tmp=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$path_tmp=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
 
 				$name=$person_cls->person_name($personDb);
 				$text_nr=array_search ($personDb->pers_own_code,$pers_own_code);
@@ -871,9 +873,10 @@ function today_in_history($view='with_table'){
 					$history['date'][]=date_place($record->pers_death_date,'');
 				}
 			}
-			//$url=$person_cls->person_url($record);
-			// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-			$url=$person_cls->person_url($record->pers_tree_id,$record->pers_indexnr,$record->pers_gedcomnumber);
+
+			// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+			$url=$person_cls->person_url2($record->pers_tree_id,$record->pers_famc,$record->pers_fams,$record->pers_gedcomnumber);
+
 			$history['name'][]='<td><a href="'.$url.'">'.$name["standard_name"].'</a></td>';
 		}
 		else

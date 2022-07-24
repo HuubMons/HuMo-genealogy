@@ -45,8 +45,11 @@ echo '</td></tr><tr><td>';
 		if ($eventDb->connect_connect_id){
 			$personDb=$db_functions->get_person($eventDb->connect_connect_id);
 			$name=$person_cls->person_name($personDb);
-			echo __('Address by person').': <a href="family.php?id='.$personDb->pers_indexnr.'&amp;main_person='.$personDb->pers_gedcomnumber.'">';
-			echo $name["standard_name"].'</a>';
+
+			// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+			$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+			echo __('Address by person').': <a href="'.$url.'">'.$name["standard_name"].'</a>';
+
 			if ($eventDb->connect_role){ echo ' '.$eventDb->connect_role; }
 			echo '<br>';
 		}
@@ -60,5 +63,6 @@ if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_pres
 	echo show_sources_footnotes();
 }
 
+echo '<br>';
 include_once(CMS_ROOTPATH."footer.php");
 ?>

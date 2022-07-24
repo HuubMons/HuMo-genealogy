@@ -151,7 +151,7 @@ function backup_tables()
 {
 	global $dbh;
 	echo '<div id="red_text" style="color:red">'.__('Creating backup file. This may take some time. Please wait...').'</div>';
-ob_start();
+//ob_start();
 	$tables = array();
 	$result = $dbh->query('SHOW TABLES');
 	while($row = $result->fetch(PDO::FETCH_NUM)){
@@ -168,6 +168,9 @@ ob_start();
 		$return = "";
 		$result = $dbh->query('SELECT * FROM '.$table);
 		$num_fields = $result->columnCount();
+
+		// *** Show progress ***
+		echo '&gt; '.$table.'<br>';
 
 		$row_result = $dbh->query('SHOW CREATE TABLE '.$table);
 		$row2 = $row_result->fetch(PDO::FETCH_NUM);
@@ -188,6 +191,10 @@ ob_start();
 					if ($j<($num_fields-1)) { $return.= ','; }
 				}
 				$return.= ");\n";
+// *** Show all lines in table ***
+//if ($table=='humo_persons'){
+//	echo $return.'<br>';
+//}
 				fwrite($handle,$return);
 				unset($return); 
 			}

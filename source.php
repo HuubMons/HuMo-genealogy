@@ -289,8 +289,8 @@ function source_display($sourcenum) {
 
 						echo __('Source for:');
 
-						// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-						$url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+						// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+						$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
 						$name=$person_cls->person_name($personDb);
 						echo ' <a href="'.$url.'">'.$name["standard_name"].'</a>';
 
@@ -314,8 +314,8 @@ function source_display($sourcenum) {
 						$name=$person_cls->person_name($personDb);
 						echo __('Source by address (person):');
 
-						// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-						$url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+						// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+						$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
 						$name=$person_cls->person_name($personDb);
 						echo ' <a href="'.$url.'">'.$name["standard_name"].'</a>';
 					}
@@ -323,8 +323,8 @@ function source_display($sourcenum) {
 				else{
 					$personDb=$db_functions->get_person ($connectDb->connect_connect_id);
 
-					// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-					$url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
 					$name=$person_cls->person_name($personDb);
 					echo ' <a href="'.$url.'">'.$name["standard_name"].'</a>';
 				}
@@ -369,8 +369,8 @@ function source_display($sourcenum) {
 						$familyDb=$db_functions->get_family ($event_Db->event_connect_id);
 						$personDb=person_data($familyDb);
 
-						// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-						$url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+						// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+						$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
 						$name=$person_cls->person_name($personDb);
 						echo ' <a href="'.$url.'">'.$name["standard_name"].'</a>';
 
@@ -393,8 +393,8 @@ function source_display($sourcenum) {
 						$familyDb=$db_functions->get_family ($addressDb->connect_connect_id);
 						$personDb=person_data($familyDb);
 
-						// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-						$url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+						// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+						$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
 						$name=$person_cls->person_name($personDb);
 						echo ' <a href="'.$url.'">'.$name["standard_name"].'</a>';
 					}
@@ -403,8 +403,8 @@ function source_display($sourcenum) {
 					$familyDb=$db_functions->get_family ($connectDb->connect_connect_id);
 					$personDb=person_data($familyDb);
 
-					// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-					$url=$person_cls->person_url($personDb->pers_tree_id,$personDb->pers_indexnr,$personDb->pers_gedcomnumber);
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
 					$name=$person_cls->person_name($personDb);
 					echo ' <a href="'.$url.'">'.$name["standard_name"].'</a>';
 				}

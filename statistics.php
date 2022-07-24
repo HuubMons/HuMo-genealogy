@@ -120,7 +120,6 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			$person_cls->construct($record);
 			$name=$person_cls->person_name($record);
 			$man=$name["standard_name"];
-			$index = @$record->pers_indexnr;
 
 			@$record=$db_functions->get_person($woman_gedcomnumber);
 			$person_cls = New person_cls;
@@ -132,9 +131,10 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 				echo '<td align="center"><a href="index.php?option=com_humo-gen&task=family&id='.$fam_gedcomnumber.'"><i><b>'.$man.__(' and ').$woman.'</b></i> </a></td></tr>';
 			}
 			else{
-				//echo '<td align="center"><a href="family.php?id='.@$fam_gedcomnumber.'"><i><b>'.$man.__(' and ').$woman.'</b></i> </a></td></tr>';
-				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-				$url=$person_cls->person_url($tree_id,$fam_gedcomnumber);
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				//$url=$person_cls->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
+				$url=$person_cls->person_url2($tree_id,$fam_gedcomnumber,'','');
+
 				echo '<td align="center"><a href="'.$url.'"><i><b>'.$man.__(' and ').$woman.'</b></i> </a></td></tr>';
 
 			}
@@ -240,8 +240,9 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 				$line='';
 				if ($date!='EMPTY') $line="<td align='center'><i>".date_place($date,'')."</i></td>\n";
 
-				// *** Person url example (I23 optional): http://localhost/humo-genealogy/family/2/F10/I23/ ***
-				$url=$person_cls->person_url($row->pers_tree_id,$row->pers_indexnr,$row->pers_gedcomnumber);
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$url=$person_cls->person_url2($row->pers_tree_id,$row->pers_famc,$row->pers_fams,$row->pers_gedcomnumber);
+
 				$line.='<td align="center"><a href="'.$url.'"><i><b>'.$name["standard_name"].'</b></i> </a> </td>';
 			}
 			else{
