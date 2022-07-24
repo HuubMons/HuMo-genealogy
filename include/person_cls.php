@@ -7,8 +7,8 @@
 //error_reporting(E_ALL);
 class person_cls{
 
-var $personDb='';  // Database record
-var $privacy='';  // Person privacy
+public $personDb='';  // Database record
+public $privacy=false;  // Person privacy
 
 // *** Simple constructor, will work in all PHP versions, I hope :-)) ***
 function construct($personDb){
@@ -17,65 +17,65 @@ function construct($personDb){
 }
 
 // ***************************************************
-// *** Privacy person                             ***
+// *** Privacy person                              ***
 // ***************************************************
 function set_privacy($personDb){
 	global $user, $dataDb;
-	$privacy_person='';  // *** Standard: show all persons ***
+	$privacy_person=false;  // *** Standard: show all persons ***
 	if ($user['group_privacy']=='n'){
-		$privacy_person="1";  // *** Standard: filter privacy data of person ***
+		$privacy_person=true;  // *** Standard: filter privacy data of person ***
 		// *** $personDb is empty by N.N. person ***
 		if ($personDb){
 			// *** HuMo-genealogy, Haza-data and Aldfaer alive/ deceased status ***
 
 			if ($user['group_alive']=="j"){
-				if ($personDb->pers_alive=='deceased'){ $privacy_person=''; }
-				if ($personDb->pers_alive=='alive'){ $privacy_person='1'; }
+				if ($personDb->pers_alive=='deceased'){ $privacy_person=false; }
+				if ($personDb->pers_alive=='alive'){ $privacy_person=true; }
 			}
 
 			// *** Privacy filter: date ***
 			if ($user["group_alive_date_act"]=="j"){
 				/*
 				if ($personDb->pers_birth_date){
-					if (substr($personDb->pers_birth_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }
-						else $privacy_person='1'; // *** overwrite pers_alive status ***
+					if (substr($personDb->pers_birth_date,-4) < $user["group_alive_date"]){ $privacy_person=false; }
+						else $privacy_person=true; // *** overwrite pers_alive status ***
 				}
 				if ($personDb->pers_bapt_date){
-					if (substr($personDb->pers_bapt_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }
-						else $privacy_person='1'; // *** overwrite pers_alive status ***
+					if (substr($personDb->pers_bapt_date,-4) < $user["group_alive_date"]){ $privacy_person=false; }
+						else $privacy_person=true; // *** overwrite pers_alive status ***
 				}
 				if ($personDb->pers_cal_date){
-					if (substr($personDb->pers_cal_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }
-						else $privacy_person='1'; // *** overwrite pers_alive status ***
+					if (substr($personDb->pers_cal_date,-4) < $user["group_alive_date"]){ $privacy_person=false; }
+						else $privacy_person=true; // *** overwrite pers_alive status ***
 				}
 				*/
 				
 				if ($personDb->pers_birth_date){
-					if (substr($personDb->pers_birth_date,-2) == "BC") {$privacy_person='';}  // born before year 0
-					elseif(substr($personDb->pers_birth_date,-2,1) == " " OR substr($personDb->pers_birth_date,-3,1) == " " )  {$privacy_person='';}  // born between year 0 and 99
-					elseif (substr($personDb->pers_birth_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }  // born from year 100 onwards but before $user["group_alive_date"]
-					else $privacy_person='1'; // *** overwrite pers_alive status ***
+					if (substr($personDb->pers_birth_date,-2) == "BC") {$privacy_person=false;}  // born before year 0
+					elseif(substr($personDb->pers_birth_date,-2,1) == " " OR substr($personDb->pers_birth_date,-3,1) == " " )  {$privacy_person=false;}  // born between year 0 and 99
+					elseif (substr($personDb->pers_birth_date,-4) < $user["group_alive_date"]){ $privacy_person=false; }  // born from year 100 onwards but before $user["group_alive_date"]
+					else $privacy_person=true; // *** overwrite pers_alive status ***
 				}
 				if ($personDb->pers_bapt_date){
-					if (substr($personDb->pers_bapt_date,-2) == "BC") {$privacy_person='';}  // baptized before year 0
-					elseif(substr($personDb->pers_bapt_date,-2,1) == " " OR substr($personDb->pers_bapt_date,-3,1) == " " )  {$privacy_person='';}  // baptized between year 0 and 99
-					elseif (substr($personDb->pers_bapt_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }  // baptized from year 100 onwards but before $user["group_alive_date"]
-					else $privacy_person='1'; // *** overwrite pers_alive status ***
+					if (substr($personDb->pers_bapt_date,-2) == "BC") {$privacy_person=false;}  // baptized before year 0
+					elseif(substr($personDb->pers_bapt_date,-2,1) == " " OR substr($personDb->pers_bapt_date,-3,1) == " " )  {$privacy_person=false;}  // baptized between year 0 and 99
+					elseif (substr($personDb->pers_bapt_date,-4) < $user["group_alive_date"]){ $privacy_person=false; }  // baptized from year 100 onwards but before $user["group_alive_date"]
+					else $privacy_person=true; // *** overwrite pers_alive status ***
 				}
 				if ($personDb->pers_cal_date){
-					if (substr($personDb->pers_cal_date,-2) == "BC") {$privacy_person='';}  // calculated born before year 0
-					elseif(substr($personDb->pers_cal_date,-2,1) == " " OR substr($personDb->pers_cal_date,-3,1) == " " )  {$privacy_person='';}  // calculated born between year 0 and 99
-					elseif (substr($personDb->pers_cal_date,-4) < $user["group_alive_date"]){ $privacy_person=''; }  // calculated born from year 100 onwards but before $user["group_alive_date"]
-					else $privacy_person='1'; // *** overwrite pers_alive status ***
+					if (substr($personDb->pers_cal_date,-2) == "BC") {$privacy_person=false;}  // calculated born before year 0
+					elseif(substr($personDb->pers_cal_date,-2,1) == " " OR substr($personDb->pers_cal_date,-3,1) == " " )  {$privacy_person=false;}  // calculated born between year 0 and 99
+					elseif (substr($personDb->pers_cal_date,-4) < $user["group_alive_date"]){ $privacy_person=false; }  // calculated born from year 100 onwards but before $user["group_alive_date"]
+					else $privacy_person=true; // *** overwrite pers_alive status ***
 				}
 
 				// *** Check if deceased persons should be filtered ***
 				if ($user["group_filter_death"]=='n'){
 					// *** If person is deceased, filter is off ***
-					if ($personDb->pers_death_date or $personDb->pers_death_place){ $privacy_person=''; }
-					if ($personDb->pers_buried_date or $personDb->pers_buried_place){ $privacy_person=''; }
+					if ($personDb->pers_death_date or $personDb->pers_death_place){ $privacy_person=false; }
+					if ($personDb->pers_buried_date or $personDb->pers_buried_place){ $privacy_person=false; }
 					// *** pers_alive for deceased persons without date ***
-					if ($personDb->pers_alive=='deceased'){ $privacy_person=''; }
+					if ($personDb->pers_alive=='deceased'){ $privacy_person=false; }
 				}
 
 			}
@@ -84,28 +84,28 @@ function set_privacy($personDb){
 			// *** Privacy filter: date ***
 			if ($user["group_death_date_act"]=="j"){
 				if ($personDb->pers_death_date){
-					if (substr($personDb->pers_death_date,-4) < $user["group_death_date"]){ $privacy_person=''; }
-						else $privacy_person='1'; // *** overwrite pers_alive status ***
+					if (substr($personDb->pers_death_date,-4) < $user["group_death_date"]){ $privacy_person=false; }
+						else $privacy_person=true; // *** overwrite pers_alive status ***
 				}
 				if ($personDb->pers_buried_date){
-					if (substr($personDb->pers_buried_date,-4) < $user["group_death_date"]){ $privacy_person=''; }
-						else $privacy_person='1'; // *** overwrite pers_alive status ***
+					if (substr($personDb->pers_buried_date,-4) < $user["group_death_date"]){ $privacy_person=false; }
+						else $privacy_person=true; // *** overwrite pers_alive status ***
 				}
 			}
 			*/
 			// *** Privacy filter: date ***
 			if ($user["group_death_date_act"]=="j"){
 				if ($personDb->pers_death_date){
-					if(substr($personDb->pers_death_date,-2)=="BC") { $privacy_person=''; } // person died BC
-					elseif(substr($personDb->pers_death_date,-2,1) == " " OR substr($personDb->pers_death_date,-3,1) == " ") { $privacy_person=''; } // person died between year 0 and 99
-					elseif (substr($personDb->pers_death_date,-4) < $user["group_death_date"]){ $privacy_person=''; } // person died after year 100 until $user["group_death_date"]
-						else $privacy_person='1'; // *** overwrite pers_alive status ***
+					if(substr($personDb->pers_death_date,-2)=="BC") { $privacy_person=false; } // person died BC
+					elseif(substr($personDb->pers_death_date,-2,1) == " " OR substr($personDb->pers_death_date,-3,1) == " ") { $privacy_person=false; } // person died between year 0 and 99
+					elseif (substr($personDb->pers_death_date,-4) < $user["group_death_date"]){ $privacy_person=false; } // person died after year 100 until $user["group_death_date"]
+						else $privacy_person=true; // *** overwrite pers_alive status ***
 				}
 				if ($personDb->pers_buried_date){
-					if(substr($personDb->pers_buried_date,-2)=="BC") { $privacy_person=''; } // person buried BC
-					elseif(substr($personDb->pers_buried_date,-2,1) == " " OR substr($personDb->pers_buried_date,-3,1) == " ") { $privacy_person=''; } // person buried between year 0 and 99
-					elseif (substr($personDb->pers_buried_date,-4) < $user["group_death_date"]){ $privacy_person=''; } // person buried after year 100 until $user["group_death_date"]
-						else $privacy_person='1'; // *** overwrite pers_alive status ***
+					if(substr($personDb->pers_buried_date,-2)=="BC") { $privacy_person=false; } // person buried BC
+					elseif(substr($personDb->pers_buried_date,-2,1) == " " OR substr($personDb->pers_buried_date,-3,1) == " ") { $privacy_person=false; } // person buried between year 0 and 99
+					elseif (substr($personDb->pers_buried_date,-4) < $user["group_death_date"]){ $privacy_person=false; } // person buried after year 100 until $user["group_death_date"]
+						else $privacy_person=true; // *** overwrite pers_alive status ***
 				}
 			}
 
@@ -116,16 +116,16 @@ function set_privacy($personDb){
 				AND $personDb->pers_death_date=='' AND $personDb->pers_buried_date==''
 				AND $personDb->pers_cal_date=='' AND $personDb->pers_cal_date==''
 				){
-					$privacy_person='';
+					$privacy_person=false;
 				}
 			}
 
 
 			// *** Privacy filter exceptions (added a space for single character check) ***
 			if ($user["group_filter_pers_show_act"]=='j'
-				AND strpos(' '.$personDb->pers_own_code,$user["group_filter_pers_show"])>0){ $privacy_person=""; }
+				AND strpos(' '.$personDb->pers_own_code,$user["group_filter_pers_show"])>0){ $privacy_person=false; }
 			if ($user["group_filter_pers_hide_act"]=='j'
-				AND strpos(' '.$personDb->pers_own_code,$user["group_filter_pers_hide"])>0){ $privacy_person="1"; }  
+				AND strpos(' '.$personDb->pers_own_code,$user["group_filter_pers_hide"])>0){ $privacy_person=true; }
 			
 		}
 
@@ -134,13 +134,13 @@ function set_privacy($personDb){
 	// *** Completely filter a person, if option "completely filter a person" is activated ***
 	if ($personDb){
 		if ($user["group_pers_hide_totally_act"]=='j'
-			AND strpos(' '.$personDb->pers_own_code,$user["group_pers_hide_totally"])>0){ $privacy_person="1"; }
+			AND strpos(' '.$personDb->pers_own_code,$user["group_pers_hide_totally"])>0){ $privacy_person=true; }
 	}
 
 	// *** Privacy filter for whole family tree ***
 	if (isset($dataDb->tree_privacy)){
-		if ($dataDb->tree_privacy=='filter_persons'){ $privacy_person="1"; }
-		if ($dataDb->tree_privacy=='show_persons'){ $privacy_person=""; }
+		if ($dataDb->tree_privacy=='filter_persons'){ $privacy_person=true; }
+		if ($dataDb->tree_privacy=='show_persons'){ $privacy_person=false; }
 	}
 
 	return $privacy_person;
@@ -481,8 +481,8 @@ function person_name($personDb,$show_name_texts=false){
 				}
 
 				// *** Callname shown as "Huub" ***
-				//if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
-				if ($nickname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+				//if ($personDb->pers_callname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
+				if ($nickname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
 					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
 					//$name_array["standard_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
 					$name_array["standard_name"].= '&quot;'.$nickname.'&quot;';
@@ -524,8 +524,8 @@ function person_name($personDb,$show_name_texts=false){
 				$name_array["standard_name"].=$title_between;
 
 				// *** Callname shown as "Huub" ***
-				//if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
-				if ($nickname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+				//if ($personDb->pers_callname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
+				if ($nickname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
 					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
 					//$name_array["standard_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
 					$name_array["standard_name"].= '&quot;'.$nickname.'&quot;';
@@ -580,8 +580,8 @@ function person_name($personDb,$show_name_texts=false){
 			}
 
 			// *** Callname shown as "Huub" ***
-			//if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
-			if ($nickname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+			//if ($personDb->pers_callname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
+			if ($nickname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
 				if ($name_array["index_name"]) $name_array["index_name"].=' ';
 				//$name_array["index_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
 				$name_array["index_name"].= '&quot;'.$nickname.'&quot;';
@@ -607,8 +607,8 @@ function person_name($personDb,$show_name_texts=false){
 			}
 
 			// *** Callname shown as "Huub" ***
-			//if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
-			if ($nickname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+			//if ($personDb->pers_callname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
+			if ($nickname AND (!$privacy OR ($privacy AND $user['group_filter_name']=='j')) ){
 				if ($name_array["index_name_extended"]) $name_array["index_name_extended"].=' ';
 				//$name_array["index_name_extended"].= '&quot;'.$personDb->pers_callname.'&quot;';
 				$name_array["index_name_extended"].= '&quot;'.$nickname.'&quot;';
@@ -932,7 +932,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/hourglass.gif" border="0" alt="'.__('Hourglass chart').'"> '.__('Hourglass chart').'</a>';
 				}
 				// check for timeline folder and tml files
-				if ($privacy==''){
+				if (!$privacy){
 					// *** Disabled check for timelines files in language folder. If no files are found, default files will be used ***
 					/*
 					$tmlcounter=0;
@@ -999,7 +999,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					}
 
 					// *** Pop-up tekst ***
-					if ($privacy==''){
+					if (!$privacy){
 						if ($personDb->pers_birth_date OR $personDb->pers_birth_place){
 							$text.=__('*').$dirmark1.' '.
 								date_place($personDb->pers_birth_date,$personDb->pers_birth_place);
@@ -1344,9 +1344,9 @@ function name_extended($person_kind,$show_name_texts=false){
 			}
 		}
 
-		// ********************************************************
-		// *** Check for adoptive parent ESPECIALLY FOR ALDFAER ***
-		// ********************************************************
+		// ***********************************************************************
+		// *** Check for adoptive parent ESPECIALLY FOR ALDFAER and MyHeritage ***
+		// ***********************************************************************
 		if ($person_kind=='parent1' OR $person_kind=='parent2'){
 			$famc_adoptive_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'adoption_by_person');
 			foreach ($famc_adoptive_qry as $famc_adoptiveDb){
@@ -1364,36 +1364,70 @@ function name_extended($person_kind,$show_name_texts=false){
 					$templ_name["name_parents"].=' '.ucfirst(__('foster parent')).': ';
 					$text_parents.=' '.ucfirst(__('foster parent')).': ';
 				}
+				elseif (substr($famc_adoptiveDb->event_event,0,1)=='F'){
+					// *** MyHeritage ***
+					$templ_name["name_parents"].=' '.ucfirst(__('adoptive parents')).': ';
+					$text_parents.=' '.ucfirst(__('adoptive parents')).': ';
+				}
 				else{
 					$templ_name["name_parents"].=' '.ucfirst(__('adoptive parent')).': ';
 					$text_parents.=' '.ucfirst(__('adoptive parent')).': ';
 				}
 
-				//*** Father ***
-				//if ($parents_familyDb->fam_man){
+				if (substr($famc_adoptiveDb->event_event,0,1)=='F'){
+					// *** GEDCOM: MyHeritage ***
+					// *** Search for parents ***
+					$family_parents2Db = $db_functions->get_family($famc_adoptiveDb->event_event,'man-woman');
+
+					//*** Father ***
+					if ($family_parents2Db->fam_man){
+						$fatherDb=$db_functions->get_person($family_parents2Db->fam_man);
+						$name=$this->person_name($fatherDb);
+						$templ_name["name_parents"].=$name["standard_name"];
+						$text=$name["standard_name"];
+
+						$url=$this->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
+						// *** Add link ***
+						if (isset($url))
+							if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
+
+					}
+					else $text.=__('N.N.');
+
+					$templ_name["name_parents"].=' '.__('and');
+					$text.=' '.__('and');
+
+					//*** Mother ***
+					if ($family_parents2Db->fam_woman){
+						$motherDb=$db_functions->get_person($family_parents2Db->fam_woman);
+						$name=$this->person_name($motherDb);
+						$templ_name["name_parents"].=' '.$name["standard_name"];
+
+						$url=$this->person_url2($motherDb->pers_tree_id,$motherDb->pers_famc,$motherDb->pers_fams,$motherDb->pers_gedcomnumber);
+						// *** Add link ***
+						if (isset($url))
+							if ($user['group_gen_protection']=='n'){ $name["standard_name"]='<a href="'.$url.'">'.$name["standard_name"].'</a>'; }
+
+						$text.=' '.$name["standard_name"];
+					}
+					else $text.=__('N.N.');
+				}
+				else{
+					// *** Aldfaer ***
 					$fatherDb=$db_functions->get_person($famc_adoptiveDb->event_event);
 					$name=$this->person_name($fatherDb);
-					$templ_name["name_parents"].$name["standard_name"];
+					$templ_name["name_parents"].=$name["standard_name"];
 					$text=$name["standard_name"];
 					//$templ_name["parents"]=$name["standard_name"];
 					//$temp="parents";
-				//}
-				//else{
-				//	$text=__('N.N.');
-					//$templ_name["parents"]=__('N.N.');
-					//$temp="parents";
-				//}
 
-				//if (isset($fatherDb->pers_famc) OR isset($fatherDb->pers_fams)){
 					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
 					if (isset($fatherDb->pers_tree_id))
 						$url=$this->person_url2($fatherDb->pers_tree_id,$fatherDb->pers_famc,$fatherDb->pers_fams,$fatherDb->pers_gedcomnumber);
-				//}
-
-				// *** Add link ***
-				//if ($user['group_gen_protection']=='n'){ $text=$text2.$text.'</a>'; }
-				if (isset($url))
-					if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
+					// *** Add link ***
+					if (isset($url))
+						if ($user['group_gen_protection']=='n'){ $text='<a href="'.$url.'">'.$text.'</a>'; }
+				}
 
 				//$text_parents.='<span class="parents">'.$text.$dirmark2.' </span>';
 				$text_parents.='<span class="parents">'.$text.' </span>';

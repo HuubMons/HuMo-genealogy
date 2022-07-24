@@ -839,6 +839,9 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 						$selected=''; if ($lijst[2]=='text') $selected=' SELECTED';
 						echo '<option value="text"'.$selected.'>'.__('Text').'</option>';
 
+						//$selected=''; if ($lijst[2]=='own_script') $selected=' SELECTED';
+						//echo '<option value="own_script"'.$selected.'>'.__('Own script').'</option>';
+
 						$selected=''; if ($lijst[2]=='cms_page') $selected=' SELECTED';
 						echo '<option value="cms_page"'.$selected.'>'.__('CMS Own pages').'</option>';
 
@@ -906,6 +909,15 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 							echo __('Show text block, HTML codes can be used.');
 						}
 
+						//if ($lijst[2]=='own_script'){
+						//	// *** Header text ***
+						//	$header=''; if (isset($lijst[3])) $header=$lijst[3];
+						//	echo '<input type="text" placeholder="'.__('Header').'" name="'.$dataDb->setting_id.'module_option_1" value="'.$header.'" size="30"><br>';
+						//	$module_text='';if (isset ($lijst[4])) $module_text=$lijst[4];
+						//	echo '<input type="text" placeholder="'.__('File name').'" name="'.$dataDb->setting_id.'module_option_2" value="'.$module_text.'" size="30"><br>';
+						//	echo __('File name (full path) of the file with own script.');
+						//}
+
 						if ($lijst[2]=='cms_page'){
 							echo ' <select size="1" name="'.$dataDb->setting_id.'module_option_1">';
 							$qry=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order");
@@ -964,6 +976,7 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 						echo '<option value="alphabet">'.__('Surnames Index').'</option>';
 						echo '<option value="random_photo">'.__('Random photo').'</option>';
 						echo '<option value="text">'.__('Text').'</option>';
+						//echo '<option value="own_script">'.__('Own script').'</option>';
 						echo '<option value="cms_page">'.__('CMS Own pages').'</option>';
 						echo '<option value="empty_line">'.__('EMPTY LINE').'</option>';
 						echo '</select>';

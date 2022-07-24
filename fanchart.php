@@ -87,7 +87,7 @@ function fillarray ($nr, $famid) {
 		$treeid[$nr][0]=html_entity_decode($name["standard_name"]);
 
 		// *** Privacy filter ***
-		if ($man_privacy==''){
+		if (!$man_privacy){
 			if ($personmnDb->pers_birth_date) $treeid[$nr][1]=$personmnDb->pers_birth_date;
 				else $treeid[$nr][1]=$personmnDb->pers_bapt_date;
 

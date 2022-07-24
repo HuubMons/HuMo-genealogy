@@ -187,19 +187,41 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'),'HuMo-genealog
 				echo '</form>';
 			echo '</td></tr>';
 
-			// *** Status of picture path ***
-			$path_status='';
-			$tree_pict_path=$data2Db->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
-			//if ($data2Db->tree_pict_path!='' AND file_exists($prefx.$data2Db->tree_pict_path))
-			if ($tree_pict_path!='' AND file_exists($prefx.$tree_pict_path))
-				$path_status = __('Picture path exists.');
-			else
-				$path_status = '<span class="line_nok"><b>'.__('Picture path doesn\'t exist!').'</b></span>';
+			// *** Show subdirectories ***
+			function get_media_files($first,$prefx,$path){
+				$ignore = array( 'cms','slideshow','thumbs','.','..' );
+				$dh = opendir($prefx.$path);
+				while (false !== ($filename = readdir($dh))) {
+					if(!in_array($filename,$ignore)){
+						if (is_dir($prefx.$path.$filename)){
+							if ($first==false){
+								echo ' '.__('Subdirectories:');
+								$first=true;
+							}
+							echo '<br>'.$path.$filename.'/';
+							get_media_files($first,$prefx,$path.$filename.'/');
+						}
+					}
+				}
+				closedir($dh);
+			}
 
+			// *** Status of picture path ***
 			echo '<tr><td class="line_item">';
 				echo __('Status of picture path');
 			echo '</td><td>';
-				echo $path_status;
+				$tree_pict_path=$data2Db->tree_pict_path; if (substr($tree_pict_path,0,1)=='|') $tree_pict_path='media/';
+				//if ($data2Db->tree_pict_path!='' AND file_exists($prefx.$data2Db->tree_pict_path))
+				if ($tree_pict_path!='' AND file_exists($prefx.$tree_pict_path)){
+					echo __('Picture path exists.');
+
+					// *** Show subdirectories ***
+					$first=false;
+					get_media_files($first,$prefx,$tree_pict_path);
+				}
+				else{
+					echo '<span class="line_nok"><b>'.__('Picture path doesn\'t exist!').'</b></span>';
+				}
 			echo '</td></tr>';
 
 			// *** Create thumbnails ***
@@ -281,7 +303,6 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 		$dbh->query("UPDATE humo_photocat SET photocat_order = 'temp' WHERE photocat_order ='".safe_text_db($_GET['cat_up'])."'");  // set present one to temp
 		$dbh->query("UPDATE humo_photocat SET photocat_order = '".$_GET['cat_up']."' WHERE photocat_order ='".(safe_text_db($_GET['cat_up']) - 1)."'");  // move the one above down
 		$dbh->query("UPDATE humo_photocat SET photocat_order = '".(safe_text_db($_GET['cat_up']) - 1)."' WHERE photocat_order = 'temp'");  // move this one up
-		
 	}
 	if(isset($_GET['cat_down']) AND !isset($_POST['save_cat'])) {
 		// move category down
@@ -323,7 +344,7 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 				}
 			}
 		}
-		
+
 		// save new category
 		if(isset($_POST['new_cat_prefix']) AND isset($_POST['new_cat_name'])) {
 			if($_POST['new_cat_prefix']!="") {
@@ -356,7 +377,7 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 					}
 				}
 			}
-		}	
+		}
 	}
 
 	categories();
@@ -385,7 +406,7 @@ if (isset($_POST['filename'])){
 			$picture_path_new = substr($picture_path_new,0,-3);  // move from subfolder to main folder
 		}
 	}
-	
+
 	if (file_exists($picture_path_old.$_POST['filename_old'])){
 		rename ($picture_path_old.$_POST['filename_old'],$picture_path_new.$_POST['filename']);
 		echo '<b>'.__('Changed filename:').'</b> '.$picture_path_old.$_POST['filename_old'].' <b>'.__('into filename:').'</b> '.$picture_path_new.$_POST['filename'].'<br>';
@@ -408,172 +429,123 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 	$pict_path=$data2Db->tree_pict_path; if (substr($pict_path,0,1)=='|') $pict_path='media/';
 
 	@set_time_limit(3000);
-	$selected_picture_folder=$prefx.$pict_path;
+
+	//$selected_picture_folder=$prefx.$pict_path;
+	$array_picture_folder[]=$prefx.$pict_path;
 
 	// *** Extra safety check if folder exists ***
-	if (file_exists($selected_picture_folder)){
-
-		$dh  = opendir($selected_picture_folder);
-		$gd=gd_info(); // certain versions of GD don't handle gifs
-		while (false !== ($filename = readdir($dh))) {
-			$imgtype = strtolower(substr($filename, -3));
-			if ($imgtype == "jpg"
-			OR $imgtype == "png"
-			OR ($imgtype == "gif" AND $gd["GIF Read Support"]==TRUE AND $gd["GIF Create Support"]==TRUE)){
-				$pict_path_original=$prefx.$pict_path."/".$filename;    //ORIGINEEL
-				$pict_path_thumb=$prefx.$pict_path."/thumb_".$filename; //THUMB
-
-				//*** Create a thumbnail ***
-				if (substr ($filename, 0, 5)!='thumb' AND !isset($_POST['change_filename'])){
-					// *** Get size of original picture ***
-					list($width, $height) = getimagesize($pict_path_original);
-
-					// *** Calculate format ***
-					$newheight=$thumb_height;
-					$factor=$height/$newheight;
-					$newwidth=$width/$factor;
-
-					// *** Picture folder must be writable!!!
-					// Sometimes it's necessary to remove ; in php.ini before this line:
-					// extension=php.gd2.dll
-
-					// $thumb = imagecreate($newwidth, $newheight);
-					$thumb = imagecreatetruecolor($newwidth, $newheight);
-					if ($imgtype == "jpg") { $source = imagecreatefromjpeg($pict_path_original); }
-					elseif ($imgtype == "png") { $source = imagecreatefrompng($pict_path_original); }
-					else { $source = imagecreatefromgif($pict_path_original); }
-
-					// *** Resize ***
-					imagecopyresized($thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-					if ($imgtype == "jpg") { @imagejpeg($thumb, $pict_path_thumb); }
-					elseif ($imgtype == "png") { @imagepng($thumb, $pict_path_thumb); }
-					else { @imagegif($thumb, $pict_path_thumb); }
-				}
-
-				// *** Show thumbnails ***
-				if (substr ($filename, 0, 5)!='thumb'){
-					//echo '<img src="'.$pict_path_thumb.'">';
-
-					echo '<div class="photobook">';
-						echo '<img src="'.$pict_path_thumb.'" title="'.$pict_path_thumb.'">';
-
-						// *** Show name of connected persons ***
-						include_once('../include/person_cls.php');
-						$picture_text='';
-						$sql="SELECT * FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."'
-							AND event_connect_kind='person' AND event_kind='picture'
-							AND LOWER(event_event)='".strtolower($filename)."'";
-						$afbqry= $dbh->query($sql);
-						$picture_privacy=false;
-						while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
-							$person_cls = New person_cls;
-							$personDb=$db_functions->get_person($afbDb->event_connect_id);
-							$name=$person_cls->person_name($personDb);
-
-							// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-							$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
-							$picture_text.='<br><a href="'.CMS_ROOTPATH.$url.'">'.$name["standard_name"].'</a><br>';
-						}
-						echo $picture_text;
-
-						if (isset($_POST['change_filename'])){
-							echo '<form method="POST" action="index.php">';
-							echo '<input type="hidden" name="page" value="thumbs">';
-							echo '<input type="hidden" name="menu_admin" value="picture_show">';
-							echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
-							echo '<input type="hidden" name="picture_path" value="'.$prefx.$pict_path.'">';
-							echo '<input type="hidden" name="filename_old" value="'.$filename.'">';
-							echo '<input type="text" name="filename" value="'.$filename.'" size="20">';
-							echo '<input type="Submit" name="change_filename" value="'.__('Change filename').'">';
-							echo '</form>';
-						}
-						else{
-							echo '<div class="photobooktext">'.$filename.'</div>';
-						}
-					echo '</div>';
-				}
-
-			}
-		}
-		closedir($dh);
-		
-		// if category subfolders exist do the same there...
-		$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
-		if($temp->rowCount()) {   // there is a category table
-			//$catg = $dbh->query("SELECT * FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
-			// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
-			$catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");  
-			if($catg->rowCount()) {
-				while($catDb = $catg->fetch(PDO::FETCH_OBJ)) {   
-					if(is_dir($selected_picture_folder.substr($catDb->photocat_prefix,0,2)))  {    // there is a subfolder for this prefix
-						$cat_dir = $selected_picture_folder.substr($catDb->photocat_prefix,0,2);
-						$dh2  = opendir($cat_dir);
-						$gd=gd_info(); // certain versions of GD don't handle gifs
-						while (false !== ($filename = readdir($dh2))) {
-							$imgtype = strtolower(substr($filename, -3));
-							if ($imgtype == "jpg" OR $imgtype == "png" OR ($imgtype == "gif" AND $gd["GIF Read Support"]==TRUE AND $gd["GIF Create Support"]==TRUE)){   
-								//$pict_path_original=$prefx.$pict_path."/".$filename;        //ORIGINEEL
-								//$pict_path_thumb=$prefx.$pict_path."/thumb_".$filename; //THUMB
-								$pict_path_original=$cat_dir."/".$filename;        //ORIGINEEL
-								$pict_path_thumb=$cat_dir."/thumb_".$filename; //THUMB
-								//*** Create a thumbnail ***
-								//if (substr ($filename, 0, 5)!='thumb'){
-								if (substr ($filename, 0, 5)!='thumb' AND !isset($_POST['change_filename'])){
-									// *** Get size of original picture ***
-									list($width, $height) = getimagesize($pict_path_original);
-
-									// *** Calculate format ***
-									$newheight=$thumb_height;
-									$factor=$height/$newheight;
-									$newwidth=$width/$factor;
-
-									// *** Picture folder must be writable!!!
-									// Sometimes it's necessary to remove ; in php.ini before this line:
-									// extension=php.gd2.dll
-
-									// $thumb = imagecreate($newwidth, $newheight);
-									$thumb = imagecreatetruecolor($newwidth, $newheight);
-									if ($imgtype == "jpg") { $source = imagecreatefromjpeg($pict_path_original); }
-									elseif ($imgtype == "png") { $source = imagecreatefrompng($pict_path_original); }
-									else { $source = imagecreatefromgif($pict_path_original); }
-
-									// *** Resize ***
-									imagecopyresized($thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-									if ($imgtype == "jpg") { @imagejpeg($thumb, $pict_path_thumb); }
-									elseif ($imgtype == "png") { @imagepng($thumb, $pict_path_thumb); }
-									else { @imagegif($thumb, $pict_path_thumb); }
-								}
-
-								// *** Show thumbnails ***
-								if (substr ($filename, 0, 5)!='thumb'){
-									//echo "<img src=\"$pict_path_thumb\">";
-
-									echo '<div class="photobook">';
-										echo '<img src="'.$pict_path_thumb.'" title="'.$pict_path_thumb.'">';
-										if (isset($_POST['change_filename'])){
-											echo '<form method="POST" action="index.php">';
-											echo '<input type="hidden" name="page" value="thumbs">';
-											echo '<input type="hidden" name="menu_admin" value="picture_show">';
-											echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
-											echo '<input type="hidden" name="picture_path" value="'.$cat_dir.'/">';
-											echo '<input type="hidden" name="filename_old" value="'.$filename.'">';
-											echo '<input type="text" name="filename" value="'.$filename.'" size="20">';
-											echo '<input type="Submit" name="change_filename" value="'.__('Change filename').'">';
-											echo '</form>';
-										}
-										else
-											echo '<div class="photobooktext">'.$filename.'</div>';
-									echo '</div>';  
-								}
-							}
-						}
-
-						closedir($dh2);
+	//if (file_exists($selected_picture_folder)){
+	if (file_exists($array_picture_folder[0])){
+		// *** Get all subdirectories ***
+		function get_dirs($prefx,$path){
+			global $array_picture_folder;
+			$ignore = array( 'cms','slideshow','thumbs','.','..' );
+			$dh = opendir($prefx.$path);
+			while (false !== ($filename = readdir($dh))) {
+				if(!in_array($filename,$ignore)){
+					if (is_dir($prefx.$path.$filename)){
+						$array_picture_folder[]=$prefx.$path.$filename.'/';
+						get_dirs($prefx,$path.$filename.'/');
 					}
 				}
 			}
+			closedir($dh);
 		}
 
+		get_dirs($prefx,$pict_path);
+
+		foreach($array_picture_folder as $selected_picture_folder){
+			echo '<br style="clear: both">';
+			echo '<h3>'.$selected_picture_folder.'</h3>';
+
+			$dh = opendir($selected_picture_folder);
+			$gd=gd_info(); // certain versions of GD don't handle gifs
+			while (false !== ($filename = readdir($dh))) {
+				$imgtype = strtolower(substr($filename, -3));
+				if ($imgtype == "jpg"
+				OR $imgtype == "png"
+				OR ($imgtype == "gif" AND $gd["GIF Read Support"]==TRUE AND $gd["GIF Create Support"]==TRUE)){
+					//$pict_path_original=$prefx.$pict_path."/".$filename;    //ORIGINEEL
+					//$pict_path_thumb=$prefx.$pict_path."/thumb_".$filename; //THUMB
+
+					$pict_path_original=$selected_picture_folder.$filename;        //ORIGINEEL
+					$pict_path_thumb=$selected_picture_folder.'thumb_'.$filename; //THUMB
+
+					//*** Create a thumbnail ***
+					if (substr ($filename, 0, 5)!='thumb' AND !isset($_POST['change_filename'])){
+						// *** Get size of original picture ***
+						list($width, $height) = getimagesize($pict_path_original);
+
+						// *** Calculate format ***
+						$newheight=$thumb_height;
+						$factor=$height/$newheight;
+						$newwidth=$width/$factor;
+
+						// *** Picture folder must be writable!!!
+						// Sometimes it's necessary to remove ; in php.ini before this line:
+						// extension=php.gd2.dll
+
+						// $thumb = imagecreate($newwidth, $newheight);
+						$thumb = imagecreatetruecolor($newwidth, $newheight);
+						if ($imgtype == "jpg") { $source = imagecreatefromjpeg($pict_path_original); }
+						elseif ($imgtype == "png") { $source = imagecreatefrompng($pict_path_original); }
+						else { $source = imagecreatefromgif($pict_path_original); }
+
+						// *** Resize ***
+						imagecopyresized($thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+						if ($imgtype == "jpg") { @imagejpeg($thumb, $pict_path_thumb); }
+						elseif ($imgtype == "png") { @imagepng($thumb, $pict_path_thumb); }
+						else { @imagegif($thumb, $pict_path_thumb); }
+					}
+
+					// *** Show thumbnails ***
+					if (substr ($filename, 0, 5)!='thumb'){
+						//echo '<img src="'.$pict_path_thumb.'">';
+
+						echo '<div class="photobook">';
+							echo '<img src="'.$pict_path_thumb.'" title="'.$pict_path_thumb.'">';
+
+							// *** Show name of connected persons ***
+							include_once('../include/person_cls.php');
+							$picture_text='';
+							$sql="SELECT * FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."'
+								AND event_connect_kind='person' AND event_kind='picture'
+								AND LOWER(event_event)='".strtolower($filename)."'";
+							$afbqry= $dbh->query($sql);
+							$picture_privacy=false;
+							while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
+								$person_cls = New person_cls;
+								$personDb=$db_functions->get_person($afbDb->event_connect_id);
+								$name=$person_cls->person_name($personDb);
+
+								// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+								$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+								$picture_text.='<br><a href="'.CMS_ROOTPATH.$url.'">'.$name["standard_name"].'</a><br>';
+							}
+							echo $picture_text;
+
+							if (isset($_POST['change_filename'])){
+								echo '<form method="POST" action="index.php">';
+								echo '<input type="hidden" name="page" value="thumbs">';
+								echo '<input type="hidden" name="menu_admin" value="picture_show">';
+								echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
+								//echo '<input type="hidden" name="picture_path" value="'.$prefx.$pict_path.'">';
+								echo '<input type="hidden" name="picture_path" value="'.$selected_picture_folder.'">';
+								echo '<input type="hidden" name="filename_old" value="'.$filename.'">';
+								echo '<input type="text" name="filename" value="'.$filename.'" size="20">';
+								echo '<input type="Submit" name="change_filename" value="'.__('Change filename').'">';
+								echo '</form>';
+							}
+							else{
+								echo '<div class="photobooktext">'.$filename.'</div>';
+							}
+						echo '</div>';
+					}
+
+				}
+			}
+			closedir($dh);
+		}
 	}
 	else{
 		// *** Normally this is not used ***
@@ -602,6 +574,7 @@ function categories(){
 
 	echo '<tr><td style="text-align:left" colspan="5">';
 		echo '<ul><li>'.__('Here you can create categories for all your photo albums.</li><li><b>A category will not be displayed in the photobook menu unless there is at least one picture for it.</b></li><li>Click "Default" to create one default name in all languages. Choose a language from the list to set a specific name for that language.<br><b>TIP:</b> First set an English name as default for all languages, then create specific names for those languages that you know. That way no tabs will display without a name in any language. In any case, setting a default name will not overwrite names for specific languages that you have already set.</li><li>The category prefix has to be made up of two letters and an underscore (like: <b>sp_</b> or <b>ws_</b>).</li><li>Pictures that you want to appear in a specific category have to be named with that prefix like: <b>sp_</b>John Smith.jpg</li><li>Pictures that you want to be displayed in the default photo category don\'t need a prefix.');
+		echo '<li>'.__('A (sub)directory could also be a category. Example: category prefix = ab_, the directory name = ab.').'</li>';
 	echo '</li></ul></td></tr>';
 
 	echo '<tr><td style="border-bottom:0px;width:5%"></td><td style="border-bottom:0px;width:5%"></td><td style="border-bottom:0px;width:5%"></td><td style="font-size:120%;border-bottom:0px;width:25%" white-space:nowrap;"><b>'.__('Category prefix').'</b></td><td style="font-size:120%;border-bottom:0px;width:60%"><b>'.__('Category name').'</b><br></td></tr>';

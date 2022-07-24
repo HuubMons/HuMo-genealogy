@@ -79,14 +79,14 @@ if(@$personDb->pers_fams) {
 			$spouse=$familyDb->fam_man;
 		}
 		@$spouse2Db = $db_functions->get_person($spouse);
-		$privacy='1';
+		$privacy=true;
 		if ($spouse2Db){
 			$person_cls = New person_cls;
 			$person_cls->construct($spouse2Db);
 			$privacy=$person_cls->privacy;
 			$name=$person_cls->person_name($spouse2Db);
 		}
-		if ($privacy==''){
+		if (!$privacy){
 			if(isset($spouse2Db->pers_death_date) AND $spouse2Db->pers_death_date) {
 				$spousedeathname[$i]=''; $spousedeathyear[$i]=''; $spousedeathtext[$i]='';
 				$spousedeathdate[$i]=julgreg($spouse2Db->pers_death_date);
@@ -161,7 +161,7 @@ if(@$personDb->pers_fams) {
 				$person2_cls->construct($chldDb);
 				$privacy=$person2_cls->privacy;
 				$name=$person2_cls->person_name($chldDb);
-				if ($privacy==''){
+				if (!$privacy){
 					$chbornyear[$i][$m]=''; $chborndate[$i][$m]=''; $chborntext[$i][$m]='';
 					$chdeathyear[$i][$m]=''; $chdeathdate[$i][$m]=''; $chdeathtext[$i][$m]='';
 					$temp='';
@@ -211,7 +211,7 @@ if(@$personDb->pers_fams) {
 						$person_cls->construct($chspouse2Db);
 						$privacy=$person_cls->privacy;
 						$name=$person_cls->person_name($chspouse2Db);
-						if ($privacy==''){
+						if (!$privacy){
 							if ($chfamilyDb->fam_marr_date) {
 								$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_date);
 								$chtext=ucfirst(__('marriage')).' ';
@@ -265,7 +265,7 @@ if(@$personDb->pers_fams) {
 								$person3_cls->construct($grchldDb);
 								$privacy=$person3_cls->privacy;
 								$name=$person3_cls->person_name($grchldDb);
-								if ($privacy==''){
+								if (!$privacy){
 
 									$grchbornyear[$i][$m][$p][$g]=''; $grchborndate[$i][$m][$p][$g]=''; $grchborntext[$i][$m][$p][$g]='';
 									$grchdeathyear[$i][$m][$p][$g]=''; $grchdeathdate[$i][$m][$p][$g]=''; $grchdeathtext[$i][$m][$p][$g]='';
@@ -318,7 +318,7 @@ if(@$personDb->pers_fams) {
 $person_cls = New person_cls;
 $person_cls->construct($personDb);
 $privacy=$person_cls->privacy;
-if($privacy==1) {
+if($privacy) {
 	echo '<br><br>'.__('PRIVACY FILTER');
 	exit();
 }

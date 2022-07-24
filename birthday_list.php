@@ -356,13 +356,13 @@ else {
 					echo "<tr>\n";
 				}
 				if ($calendar_day==$last_cal_day)
-					echo "<td><br></td>";
+					echo '<td><br></td>';
 				else
 					echo "<td>$calendar_day $month</td>";
 
 				$last_cal_day=$calendar_day;
 				if (!$man_cls->privacy AND !$woman_cls->privacy)
-					echo "<td>".$value['maryr']."</td>";
+					echo '<td>'.$value['maryr'].'</td>';
 				else
 					echo '<td>'.__(' PRIVACY FILTER').'</td>';
 

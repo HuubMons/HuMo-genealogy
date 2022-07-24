@@ -150,6 +150,13 @@ function show_tree_index(){
 				$temp.=$cms_pagesDb->page_text;
 			}
 
+			// *** Own script ***
+			//if ($module_item[$i]=='own_script' AND is_file($module_option_2[$i])){
+			//	if ($module_option_1[$i]) $temp.='<div class="mainmenu_bar fonts">'.__($module_option_1[$i]).'</div>';
+			//	$codefile=$module_option_2[$i];
+			//	$temp.=file_get_contents($codefile.'?language='.$selected_language);
+			//}
+
 			// *** Empty line ***
 			if ($module_item[$i]=='empty_line'){ $temp.='<br>'; }
 
@@ -392,19 +399,24 @@ function last_names($columns,$rows){
 				foreach ($cache_array as $cache_line) {
 					$cacheDb = json_decode(unserialize($cache_line));
 
-					$freq_last_names[]=$cacheDb->pers_lastname;
-					$freq_pers_prefix[]=$cacheDb->pers_prefix;
-					$freq_count_last_names[]=$cacheDb->count_last_names;
-
 					$cache_check=true;
 					$test_time=time()-7200; // *** 86400 = 1 day, 7200 = 2 hours ***
-					if($cacheDb->time < $test_time) $cache_check=false;
+// TEST LINE
+//$test_time=time()-20; // *** 86400 = 1 day, 7200 = 2 hours ***
+					if($cacheDb->time < $test_time){
+						$cache_check=false;
+					}
+					else{
+						$freq_last_names[]=$cacheDb->pers_lastname;
+						$freq_pers_prefix[]=$cacheDb->pers_prefix;
+						$freq_count_last_names[]=$cacheDb->count_last_names;
+					}
 				}
 			}
 
 			if ($cache_check==false){
-				//echo 'NO CACHE';
-
+// TEST LINE
+//echo 'NO CACHE';
 				/*
 				$personqry="SELECT pers_lastname, pers_prefix,
 					CONCAT(pers_prefix,pers_lastname) as long_name, count(pers_lastname) as count_last_names
@@ -716,11 +728,16 @@ function alphabet(){
 		foreach ($cache_array as $cache_line) {
 			$cacheDb = json_decode(unserialize($cache_line));
 
-			$first_character[]=$cacheDb->first_character;
-
 			$cache_check=true;
 			$test_time=time()-10800; // *** 86400 = 1 day, 7200 = 2 hours, 10800 = 3 hours ***
-			if($cacheDb->time < $test_time) $cache_check=false;
+// TEST LINE
+//$test_time=time()-20; // *** 86400 = 1 day, 7200 = 2 hours, 10800 = 3 hours ***
+			if($cacheDb->time < $test_time){
+				$cache_check=false;
+			}
+			else{
+				$first_character[]=$cacheDb->first_character;
+			}
 		}
 	}
 
@@ -838,7 +855,7 @@ function today_in_history($view='with_table'){
 		$person_cls = New person_cls;
 		$name=$person_cls->person_name($record);
 		$person_cls->construct($record);
-		if ($person_cls->privacy==''){
+		if (!$person_cls->privacy){
 			if (trim(substr($record->pers_birth_date,0,6))==$today OR substr($record->pers_birth_date,0,6)==$today2){
 				//$history['order'][]=substr($record->pers_birth_date,-4);
 				// *** First order birth, using C ***

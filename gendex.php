@@ -64,7 +64,7 @@ foreach($datasql as $dataDb){
 				$text.=$pers_lastname.'|';
 				$text.=$personDb->pers_firstname.' /'.$pers_lastname.'/|';
 
-				if($privacy!=1) { // Privacy restricted person
+				if(!$privacy) { // Privacy restricted person
 					$birth_bapt_date="";
 					if ($personDb->pers_bapt_date){ $birth_bapt_date=$personDb->pers_bapt_date; }
 					if ($personDb->pers_birth_date){ $birth_bapt_date=$personDb->pers_birth_date; }

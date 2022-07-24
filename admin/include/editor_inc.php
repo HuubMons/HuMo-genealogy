@@ -280,7 +280,7 @@ if (isset($_POST['person_change'])){
 		family_tree_update($tree_id);
 	}
 	
-	// extra UPDATE queries if Hebrew name is displayed in main Name section (and not under name event)
+	// Extra UPDATE queries if Hebrew name is displayed in main Name section (and not under name event)
 	if($humo_option['admin_hebname']=="y") {
 		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '_HEBN' AND event_connect_id = '".$pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
 		$result = $dbh->query($sql);
@@ -330,12 +330,11 @@ if (isset($_POST['person_change'])){
 		family_tree_update($tree_id);
 	}
 
-	// extra UPDATE queries if brit mila is displayed 
+	// Extra UPDATE queries if brit mila is displayed 
 	if($humo_option['admin_brit']=="y") {
 		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '_BRTM' AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
 		$result = $dbh->query($sql);
 		if($result->rowCount() != 0) {     // a brit mila already exists for this person: UPDATE 
-		
 			if($_POST["even_brit_date"]=='' AND $_POST["even_brit_place"]=='' AND $_POST["even_brit_text"]=='') {
 				$sql = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom='_BRTM'  AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."' AND event_kind='event' ";
 				$result=$dbh->query($sql);
@@ -354,8 +353,9 @@ if (isset($_POST['person_change'])){
 				$doit=$dbh->query($sql);
 			}
 		}
-		elseif($_POST["even_brit_date"]!='' OR $_POST["even_brit_place"]!='' OR $_POST["even_brit_text"]!='') {  // new brit mila event: INSERT
-		
+		elseif((isset($_POST["even_brit_date"]) AND $_POST["even_brit_date"]!='')
+			OR (isset($_POST["even_brit_place"]) AND $_POST["even_brit_place"]!='')
+			OR (isset($_POST["even_brit_text"]) AND $_POST["even_brit_text"]!='')) {  // new brit mila event: INSERT
 			// *** Generate new order number ***
 			$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 				AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'
@@ -381,11 +381,10 @@ if (isset($_POST['person_change'])){
 			event_new_time='".$gedcom_time."'";
 			$result = $dbh->query($sql);
 		}
-		
 		family_tree_update($tree_id);
 	}
 
-	// extra UPDATE queries if Bar Mitsva is displayed 
+	// Extra UPDATE queries if Bar Mitsva is displayed 
 	if($humo_option['admin_barm']=="y") {
 		if($_POST["pers_sexe"]=="F") { $barmbasm="BASM"; }
 		else { $barmbasm = "BARM"; }
@@ -1307,7 +1306,17 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 $new_event=false;
 if (!isset($_GET['add_person'])){
 	if (isset($_GET['event_add'])){ $new_event=true; $event_add=$_GET['event_add']; }
+
+	// *** Add Nickname ***
 	if (isset($_POST['event_add_name'])){ $new_event=true; $event_add='add_name'; }
+	// *** If "Save" is clicked, also save event names ***
+	if (isset($_POST['event_event_name']) AND $_POST['event_event_name']!=''){ $new_event=true; $event_add='add_name'; }
+
+	// *** Add profession ***
+	if (isset($_POST['event_add_profession'])){ $new_event=true; $event_add='add_profession'; }
+	// *** If "Save" is clicked, also save event names ***
+	if (isset($_POST['event_event_profession']) AND $_POST['event_event_profession']!=''){ $new_event=true; $event_add='add_profession'; }
+
 	if (isset($_POST['event_add_npfx'])){ $new_event=true; $event_add='add_npfx'; }
 	if (isset($_POST['event_add_nsfx'])){ $new_event=true; $event_add='add_nsfx'; }
 	if (isset($_POST['event_add_nobility'])){ $new_event=true; $event_add='add_nobility'; }
@@ -1345,7 +1354,11 @@ if ($new_event){
 		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='burial_witness'; $event_event=__('burial witness'); $event_gedcom=''; }
 
 	if ($event_add=='add_profession'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='profession'; $event_event=__('Profession'); $event_gedcom=''; }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='profession'; $event_gedcom='';
+		//$event_event=__('Profession');
+		$event_event=$_POST['event_event_profession'];
+	}
+
 	if ($event_add=='add_picture'){
 		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='picture'; $event_event=''; $event_gedcom=''; }
 	if ($event_add=='add_marriage_witness'){
@@ -1547,28 +1560,52 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 // *** Change event ***
 if (isset($_POST['event_id'])){
 	foreach($_POST['event_id'] as $key=>$value){
-		$event_event=$editor_cls->text_process($_POST["text_event"][$key]);
+
+		$event_event='';
+		if (isset($_POST["text_event"][$key]))
+			$event_event=$editor_cls->text_process($_POST["text_event"][$key]);
 
 		// *** Replaced array function, because witness popup javascript doesn't work using an html-form-array ***
-		//if (isset($_POST["text_event2"][$key]) AND $_POST["text_event2"][$key]!=''){ $event_event=$editor_cls->text_process($_POST["text_event2"][$key]); }
 		if (isset($_POST["text_event2".$key]) AND $_POST["text_event2".$key]!=''){ $event_event='@'.$_POST["text_event2".$key].'@'; }
 
-		//event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
-		$sql="UPDATE humo_events SET
-			event_event='".$event_event."',
-			event_date='".$editor_cls->date_process("event_date",$key)."',
-			event_place='".$editor_cls->text_process($_POST["event_place".$key])."',
-			event_changed_user='".$username."',
-			event_changed_date='".$gedcom_date."', ";
+		// *** Media selection pop-up option *** 
+		if (isset($_POST["text_event".$key]) AND $_POST["text_event".$key]!=''){ $event_event=$editor_cls->text_process($_POST["text_event".$key]); }
+
+
+		// *** Only update if there are changed values! Otherwise all event_change variables will be changed... ***
+		$event_changed=false;
+		if ($event_event!=$_POST["event_event_old"][$key]) $event_changed=true;
+		// *** Compare date case-insensitive ***
+		if (strcasecmp($_POST["event_date_prefix"][$key].$_POST["event_date"][$key], $_POST["event_date_old"][$key]) != 0) $event_changed=true;
+		if ($_POST["event_place".$key]!=$_POST["event_place_old"][$key]) $event_changed=true;
 		if (isset($_POST["event_gedcom"][$key])){
-			$sql.="event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."',";
+			if ($_POST["event_gedcom"][$key]!=$_POST["event_gedcom_old"][$key]) $event_changed=true;
 		}
 		if (isset($_POST["event_text"][$key])){
-			$sql.="event_text='".$editor_cls->text_process($_POST["event_text"][$key])."',";
+			if ($_POST["event_text"][$key]!=$_POST["event_text_old"][$key]) $event_changed=true;
 		}
-		$sql.=" event_changed_time='".$gedcom_time."'";
-		$sql.=" WHERE event_id='".safe_text_db($_POST["event_id"][$key])."'";
-		$result=$dbh->query($sql);
+
+		if ($event_changed){
+			//event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
+			$sql="UPDATE humo_events SET
+				event_event='".$event_event."'
+				, event_date='".$editor_cls->date_process("event_date",$key)."'
+				, event_place='".$editor_cls->text_process($_POST["event_place".$key])."'";
+			if (isset($_POST["event_gedcom"][$key])){
+				$sql.=", event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."'";
+			}
+			if (isset($_POST["event_text"][$key])){
+				$sql.=", event_text='".$editor_cls->text_process($_POST["event_text"][$key])."'";
+			}
+
+			$sql.=", event_changed_user='".$username."'
+			, event_changed_date='".$gedcom_date."'
+			, event_changed_time='".$gedcom_time."'";
+
+			$sql.=" WHERE event_id='".safe_text_db($_POST["event_id"][$key])."'";
+//echo '<br>'.$sql.'<br>';
+			$result=$dbh->query($sql);
+		}
 
 		// *** Also change person colors by descendants of selected person ***
 		if (isset($_POST["pers_colour_desc"][$key])){
@@ -2047,39 +2084,48 @@ if (isset($_POST['connect_add'])){
 if (isset($_POST['connect_change'])){
 	foreach($_POST['connect_change'] as $key=>$value){
 		$username = $_SESSION['user_name_admin'];
-		$sql="UPDATE humo_connections SET
-		connect_kind='".safe_text_db($_POST['connect_kind'][$key])."',
-		connect_sub_kind='".safe_text_db($_POST['connect_sub_kind'][$key])."',
-		connect_page='".$editor_cls->text_process($_POST["connect_page"][$key])."',
-		connect_role='".$editor_cls->text_process($_POST["connect_role"][$key])."',
-		connect_source_id='".safe_text_db($_POST['connect_source_id'][$key])."',";
 
-		//if (isset($_POST['connect_date'][$key]) AND ($_POST['connect_date'][$key]))
-		if (isset($_POST['connect_date'][$key]))
-			$sql.="connect_date='".$editor_cls->date_process("connect_date",$key)."',";
+		// *** Only update if there are changed values! Otherwise all connect_change variables will be changed... ***
+		$connect_changed=true;
+		if (isset($_POST['connect_date_old'][$key])){
+			$connect_changed=false;
+			// *** Compare date case-insensitive ***
+			if (strcasecmp($_POST["connect_date_prefix"][$key].$_POST["connect_date"][$key], $_POST["connect_date_old"][$key]) != 0) $connect_changed=true;
+			if ($_POST["connect_role"][$key]!=$_POST["connect_role_old"][$key]) $connect_changed=true;
+			if ($_POST['connect_text'][$key]!=$_POST["connect_text_old"][$key]) $connect_changed=true;
+		}
 
-		//if (isset($_POST['connect_place'][$key]) AND ($_POST['connect_place'][$key]))
-		if (isset($_POST['connect_place'][$key]))
-			$sql.="connect_place='".$editor_cls->text_process($_POST["connect_place"][$key])."',";
+		if ($connect_changed){
+			$sql="UPDATE humo_connections SET
+			connect_kind='".safe_text_db($_POST['connect_kind'][$key])."',
+			connect_sub_kind='".safe_text_db($_POST['connect_sub_kind'][$key])."',
+			connect_page='".$editor_cls->text_process($_POST["connect_page"][$key])."',
+			connect_role='".$editor_cls->text_process($_POST["connect_role"][$key])."',
+			connect_source_id='".safe_text_db($_POST['connect_source_id'][$key])."',";
 
-		// *** Extra text for source ***
-		//if (isset($_POST['connect_text'][$key]) AND ($_POST['connect_text'][$key]))
-		if (isset($_POST['connect_text'][$key]))
-			$sql.="connect_text='".safe_text_db($_POST['connect_text'][$key])."',";
+			if (isset($_POST['connect_date'][$key]))
+				$sql.="connect_date='".$editor_cls->date_process("connect_date",$key)."',";
 
-		//if (isset($_POST['connect_quality'][$key]) AND ($_POST['connect_quality'][$key] OR $_POST['connect_quality'][$key]=='0'))
-		if (isset($_POST['connect_quality'][$key]))
-			$sql.=" connect_quality='".safe_text_db($_POST['connect_quality'][$key])."',";
+			if (isset($_POST['connect_place'][$key]))
+				$sql.="connect_place='".$editor_cls->text_process($_POST["connect_place"][$key])."',";
 
-		if (isset($_POST['connect_item_id'][$key]) AND ($_POST['connect_item_id'][$key]))
-			$sql.=" connect_item_id='".safe_text_db($_POST['connect_item_id'][$key])."',";
+			// *** Extra text for source ***
+			if (isset($_POST['connect_text'][$key]))
+				$sql.="connect_text='".safe_text_db($_POST['connect_text'][$key])."',";
 
-		$sql.=" connect_changed_user='".$username."', ";
-		$sql.=" connect_changed_date='".$gedcom_date."', ";
-		$sql.=" connect_changed_time='".$gedcom_time."'";
-		$sql.=" WHERE connect_id='".safe_text_db($_POST["connect_change"][$key])."'";
+			if (isset($_POST['connect_quality'][$key]))
+				$sql.=" connect_quality='".safe_text_db($_POST['connect_quality'][$key])."',";
+
+			if (isset($_POST['connect_item_id'][$key]) AND ($_POST['connect_item_id'][$key]))
+				$sql.=" connect_item_id='".safe_text_db($_POST['connect_item_id'][$key])."',";
+
+			$sql.=" connect_changed_user='".$username."', ";
+			$sql.=" connect_changed_date='".$gedcom_date."', ";
+			$sql.=" connect_changed_time='".$gedcom_time."'";
+			$sql.=" WHERE connect_id='".safe_text_db($_POST["connect_change"][$key])."'";
 //echo $sql.'<br>';
-		$result=$dbh->query($sql);
+			$result=$dbh->query($sql);
+		}
 
 		//source_status='".$editor_cls->text_process($_POST['source_status'][$key])."',
 		//source_publ='".$editor_cls->text_process($_POST['source_publ'][$key])."',
@@ -2489,23 +2535,36 @@ if (isset($_GET['address_add2'])){
 // *** Change address ***
 if (isset($_POST['change_address_id'])){
 	foreach($_POST['change_address_id'] as $key=>$value){
+
 		// *** Date for address is processed in connection table ***
 		//address_date='".$editor_cls->date_process("address_date",$key)."',
 		$address_shared=''; if (isset($_POST["address_shared_".$key])) $address_shared='1';
-		$sql="UPDATE humo_addresses SET
-			address_shared='".$address_shared."',
-			address_address='".$editor_cls->text_process($_POST["address_address_".$key])."',
-			address_place='".$editor_cls->text_process($_POST["address_place_".$key])."',
-			address_text='".$editor_cls->text_process($_POST["address_text_".$key])."',
-			address_phone='".$editor_cls->text_process($_POST["address_phone_".$key])."',
-			address_zip='".$editor_cls->text_process($_POST["address_zip_".$key])."',
-			address_changed_user='".$username."',
-			address_changed_date='".$gedcom_date."',
-			address_changed_time='".$gedcom_time."'
-		WHERE address_id='".safe_text_db($_POST["change_address_id"][$key])."'";
-		$result=$dbh->query($sql);
-		//echo $sql.'<br>';
-		family_tree_update($tree_id);
+
+		// *** Only update if there are changed values! Otherwise all address_change variables will be changed... ***
+		$address_changed=false;
+		if ($address_shared!=$_POST["address_shared_old"][$key]) $address_changed=true;
+		if ($_POST["address_address_".$key]!=$_POST["address_address_old"][$key]) $address_changed=true;
+		if ($_POST["address_place_".$key]!=$_POST["address_place_old"][$key]) $address_changed=true;
+		if ($_POST["address_text_".$key]!=$_POST["address_text_old"][$key]) $address_changed=true;
+		if ($_POST["address_phone_".$key]!=$_POST["address_phone_old"][$key]) $address_changed=true;
+		if ($_POST["address_zip_".$key]!=$_POST["address_zip_old"][$key]) $address_changed=true;
+
+		if ($address_changed){
+			$sql="UPDATE humo_addresses SET
+				address_shared='".$address_shared."',
+				address_address='".$editor_cls->text_process($_POST["address_address_".$key])."',
+				address_place='".$editor_cls->text_process($_POST["address_place_".$key])."',
+				address_text='".$editor_cls->text_process($_POST["address_text_".$key])."',
+				address_phone='".$editor_cls->text_process($_POST["address_phone_".$key])."',
+				address_zip='".$editor_cls->text_process($_POST["address_zip_".$key])."',
+				address_changed_user='".$username."',
+				address_changed_date='".$gedcom_date."',
+				address_changed_time='".$gedcom_time."'
+			WHERE address_id='".safe_text_db($_POST["change_address_id"][$key])."'";
+			$result=$dbh->query($sql);
+			//echo $sql.'<br>';
+			family_tree_update($tree_id);
+		}
 	}
 }
 

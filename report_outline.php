@@ -418,10 +418,10 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 		// *************************************************************
 		if($screen_mode != "PDF") {
 			echo '<div class="'.$indent.'" style="font-style:italic">';
-			if(!$show_details) { 	
-				echo ' x '.$dirmark1; 
+			if(!$show_details) {
+				echo ' x '.$dirmark1;
 			}
-			else { 
+			else {
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				if($parent1_marr==0) {
 					if($familylevend) {echo $marriage_cls->marriage_data($familyDb,'','short')."<br>"; }
@@ -502,7 +502,6 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 
 			for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
 				@$childDb = $db_functions->get_person($child_array[$i]);
-				$child_privacy="";
 				$child_cls = New person_cls;
 				$child_cls->construct($childDb);
 				$child_privacy=$child_cls->privacy;

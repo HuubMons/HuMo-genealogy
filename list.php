@@ -205,7 +205,7 @@ function show_person($personDb){
 			$info=__('~').' '.date_place($personDb->pers_bapt_date, '');
 		if ($personDb->pers_birth_date)
 			$info=__('*').' '.date_place($personDb->pers_birth_date, '');
-		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
+		if ($privacy and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
 	echo '</td><td>';
@@ -214,7 +214,7 @@ function show_person($personDb){
 			$info=__('~').' '.$personDb->pers_bapt_place;
 		if ($personDb->pers_birth_place)
 			$info=__('*').' '.$personDb->pers_birth_place;
-		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
+		if ($privacy and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
 	echo '</td><td style="white-space:nowrap;">';
@@ -223,7 +223,7 @@ function show_person($personDb){
 			$info=__('[]').' '.date_place($personDb->pers_buried_date, '');
 		if ($personDb->pers_death_date)
 			$info=__('&#134;').' '.date_place($personDb->pers_death_date, '');
-		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
+		if ($privacy and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
 	echo '</td><td>';
@@ -232,7 +232,7 @@ function show_person($personDb){
 			$info=__('[]').' '.$personDb->pers_buried_place;
 		if ($personDb->pers_death_place)
 			$info=__('&#134;').' '.$personDb->pers_death_place;
-		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
+		if ($privacy and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
 		// *** Show name of family tree, if search in multiple family trees is used ***
@@ -308,7 +308,7 @@ if(isset($_GET['sort'])) {
 }
 
 if ($selectsort){
-	if($selectsort=="sort_lastname")  {
+	if($selectsort=="sort_lastname") {
 		$orderby = $last_or_patronym.$desc_asc.", pers_firstname ".$desc_asc;
 		if ($user['group_kindindex']=="j" AND $index_list!='patronym'){ $orderby = " concat_name ".$desc_asc; }
 	}
@@ -390,12 +390,24 @@ if ($selectsort){
 						'EST ',''),
 					'CAL ',''),
 				'AND ','       ')
-				END AS year";
- 
-		$orderby = " CONCAT( substring(year,-4),
-			date_format( str_to_date( substring(year,-8,3),'%b' ) ,'%m'),
-			date_format( str_to_date( substring(year,-11,2),'%d' ),'%d')
+				END AS order_date";
+
+		// DOESN'T WORK:
+		// Use a sort of ucfirst by month? Should be: Jan, Feb, etc.
+		// Something like: LOWER(SUBSTRING(name,2)))
+		$orderby = " CONCAT( substring(order_date,-4),
+			date_format( str_to_date( substring(order_date,-8,3),'%b' ) ,'%m'),
+			date_format( str_to_date( substring(order_date,-11,2),'%d' ),'%d')
 			) ".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
+		// DOESN'T WORK AT WEBSITE:
+		//$orderby = " CONCAT( substring(order_date,-4),
+		//	date_format( str_to_date(
+		//		LOWER(SUBSTRING(
+		//			substring(order_date,-8,3)
+		//		,2))
+		//	,'%b' ) ,'%m'),
+		//	date_format( str_to_date( substring(order_date,-11,2),'%d' ),'%d')
+		//	) ".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
 	}
 	if($selectsort=="sort_birthplace") {
 		//$orderby = " pers_birth_place ".$desc_asc.",".$last_or_patronym.$desc_asc;
@@ -412,17 +424,64 @@ if ($selectsort){
 		//$orderby = " year".$desc_asc.", month".$desc_asc.", day".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
 
 		// *** Replace ABT, AFT, BEF items and sort by death or buried date ***
+		$make_date= ", CASE
+			WHEN pers_death_date = '' AND SUBSTR(CONCAT(' ',pers_buried_date),-4,1)= ' ' THEN replace(
+				replace(
+					replace(
+						replace(
+							replace(
+								UPPER(
+									CONVERT(
+										CONCAT(
+											SUBSTR(pers_buried_date,1,LENGTH(pers_buried_date)-3),'0',SUBSTR(pers_buried_date,-3)) USING latin1)
+								),'ABT ',''
+							),'AFT ',''
+						),'BEF ',''
+					),'EST ',''
+				),'AND ','       '
+			)
+			WHEN pers_death_date = '' AND SUBSTR(CONCAT(' ',pers_buried_date),-4,1)!= ' ' THEN replace(
+				replace(
+					replace(
+						replace(
+							replace(
+								UPPER(
+									CONVERT(pers_buried_date USING latin1)
+								),'ABT ',''
+							),'AFT ',''
+						),'BEF ',''
+					),'EST ',''
+				),'AND ','       '
+			)
+			WHEN pers_death_date != '' AND SUBSTR(CONCAT(' ',pers_death_date),-4,1)= ' ' THEN replace(
+				replace(
+					replace(
+						replace(
+							replace(
+								UPPER(
+									CONVERT(CONCAT(SUBSTR(pers_death_date,1,LENGTH(pers_death_date)-3),'0',SUBSTR(pers_death_date,-3)) USING latin1)
+								),'ABT ',''
+							),'AFT ',''
+						),'BEF ',''
+					),'EST ',''
+				),'AND ','       '
+			)
+			WHEN pers_death_date != '' AND SUBSTR(CONCAT(' ',pers_death_date),-4,1)!= ' ' THEN 	replace(
+				replace(
+					replace(
+						replace(
+							replace(
+								UPPER(
+									CONVERT(pers_death_date USING latin1)),'ABT ',''),'AFT ',''
+						),'BEF ',''
+					),'EST ',''
+				),'AND ','       '
+			)
+			END AS order_date";
 
- 		$make_date= ", CASE
-			WHEN pers_death_date = '' AND SUBSTR(CONCAT(' ',pers_buried_date),-4,1)= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(CONCAT(SUBSTR(pers_buried_date,1,LENGTH(pers_buried_date)-3),'0',SUBSTR(pers_buried_date,-3)) USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
-			WHEN pers_death_date = '' AND SUBSTR(CONCAT(' ',pers_buried_date),-4,1)!= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(pers_buried_date USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ')
-			WHEN pers_death_date != '' AND SUBSTR(CONCAT(' ',pers_death_date),-4,1)= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(CONCAT(SUBSTR(pers_death_date,1,LENGTH(pers_death_date)-3),'0',SUBSTR(pers_death_date,-3)) USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
-			WHEN pers_death_date != '' AND SUBSTR(CONCAT(' ',pers_death_date),-4,1)!= ' ' THEN replace(replace(replace(replace(replace(UPPER(CONVERT(pers_death_date USING latin1)),'ABT ',''),'AFT ',''),'BEF ',''),'EST ',''),'AND ','       ') 
-			END AS year";
-
-		$orderby = " CONCAT( right(year,4),
-			date_format( str_to_date( substring(year,-8,3),'%b' ) ,'%m'),
-			date_format( str_to_date( substring(year,-11,2),'%d' ),'%d')
+		$orderby = " CONCAT( right(order_date,4),
+			date_format( str_to_date( substring(order_date,-8,3),'%b' ) ,'%m'),
+			date_format( str_to_date( substring(order_date,-11,2),'%d' ),'%d')
 			)".$desc_asc.", ".$last_or_patronym." ASC , pers_firstname ASC";
 	}
 	if($selectsort=="sort_deathplace") {
@@ -449,7 +508,6 @@ if ($selectsort){
 	*/
 }
 //************* END SORT CHOICES *********************
-
 
 // *** Search in 1 or more family trees ***
 //$search_database='';
@@ -2042,7 +2100,7 @@ if ($index_list=='patronym'){
 			$person_cls = New person_cls;
 			$person_cls->construct($personDb);
 			$privacy=$person_cls->privacy;
-			if($privacy==1) { // Privacy restricted person
+			if($privacy) { // Privacy restricted person
 				if($selection['birth_place']=='' AND $selection['birth_year']=='' AND $selection['death_place']=='' AND $selection['death_year']=='') {
 					// No search using birth/death place and/or date
 
