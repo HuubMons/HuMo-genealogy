@@ -39,7 +39,7 @@ function event_text($event_kind){
 // *** Show events ***
 // *** REMARK: queries can be found in editor_inc.php! ***
 function show_event($event_connect_kind,$event_connect_id,$event_kind){
- 	global $dbh, $tree_id, $page, $field_date, $field_place, $field_text, $joomlastring;
+	global $dbh, $tree_id, $page, $field_date, $field_place, $field_text, $field_text_medium, $joomlastring;
 	global $editor_cls, $path_prefix, $tree_pict_path, $humo_option;
 
 	$text='';
@@ -60,7 +60,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		closedir($dh);
 	}
 	@usort($picture_array,'strnatcasecmp');   // sorts case insensitive and with digits as numbers: pic1, pic3, pic11
-	
+
 	$is_cat=false; // flags there are category files (for use later on)
 	$picture_array2 = Array(); // declare, otherwise if not used gives error
 	// if subfolders exist for category files, list those too
@@ -342,6 +342,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='<td style="border-right:0px;">'.__('Name').'</td>';
 		$text.='<td style="border-left:0px;">';
 			// *** Nickname, alias, adopted name, hebrew name, etc. ***
+			// *** Remark: in editor_inc.php a check is done for event_event_name, so this will also be saved if "Save" is clicked ***
 			$text.='<input type="text" name="event_event_name" placeholder="'.__('Nickname').'" value="" size="35">';
 			$text.=' <select size="1" name="event_gedcom_add" style="width: 150px">';
 				$text.=event_selection('');
@@ -493,7 +494,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		//$text.='<tr class="humo_color">';
 		$text.='<tr class="table_header_large">';
 		$text.='<td style="border-right:0px;">';
-
 			$text.='<a name="profession"></a>';
 			$link='profession';
 
@@ -509,8 +509,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		//	//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
 		//}
 		//else {
-			$text.='<a href="index.php?'.$joomlastring.'page='.$page.
-			'&amp;menu_admin=person&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
+		//	$text.='<a href="index.php?'.$joomlastring.'page='.$page.
+		//	'&amp;menu_admin=person&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
 		//}
 
 		//$temp_text='';
@@ -519,6 +519,10 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		//	$temp_text.=$data_listDb->event_event;
 		//}
 		//$text.=$temp_text;
+
+		// *** Remark: in editor_inc.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
+		$text.='<input type="text" name="event_event_profession" placeholder="'.__('Profession').'" value="" size="35">';
+		$text.=' <input type="Submit" name="event_add_profession" value="'.__('Add').'">';
 
 		$text.='</td>';
 		$text.='<td></td>';
@@ -766,6 +770,13 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 
 		$text.='<input type="hidden" name="event_id['.$data_listDb->event_id.']" value="'.$data_listDb->event_id.'">';
+
+		// *** Send old values, so changes of values can be detected ***
+		$text.='<input type="hidden" name="event_event_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_event.'">';
+		$text.='<input type="hidden" name="event_date_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_date.'">';
+		$text.='<input type="hidden" name="event_place_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_place.'">';
+		$text.='<input type="hidden" name="event_gedcom_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_gedcom.'">';
+		$text.='<input type="hidden" name="event_text_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_text.'">';
 
 		$expand_link=''; $internal_link='#';
 		if ($event_kind=='person'){
@@ -1042,6 +1053,13 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		}
 
 		elseif ($data_listDb->event_kind=='picture'){
+			// *** Use text box for pictures and pop-up window ***
+			// *** To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id ***
+			$text.='<input type="text" name="text_event'.$data_listDb->event_id.'" placeholder="'.__('Picture/ Media').'" value="'.$data_listDb->event_event.'" style="width: 500px">';
+			$form=1; if ($event_connect_kind=='family') $form=2;
+			$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form='.$form.'&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+
+			/*
 			// *** Show pull-down list pictures ***
 			//$text.='<td style="border-left:0px;">';
 			$text.='<select size="1" name="text_event['.$data_listDb->event_id.']" id="text_event'.$data_listDb->event_id.'">';
@@ -1060,10 +1078,10 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 			$text.= '&nbsp&nbsp&nbsp'.__('Search filename').'&nbsp'.'<input type="text" name="searchpic" id="inp_text_event'.$data_listDb->event_id.'" size="15">';
 			$jsonarr = json_encode($this->utf8ize($picture_array)); 
-			//$text.= '<input type=\'button\' onclick=\'Search_pic('.$data_listDb->event_id.','.$nr_pictures.','.$jsonarr.')\' value=\'Search\'>';
 			$text.= '<input type=\'button\' onclick=\'Search_pic('.$data_listDb->event_id.','.$nr_pictures.','.$jsonarr.')\' value=\''.__('Search').'\'>';
  
 			if($is_cat==true) { $text.='<br>'.__('Category files are displayed at bottom of list'); }
+			*/
 		}
 
 		elseif ($data_listDb->event_kind=='adoption'){
@@ -1264,7 +1282,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 
 		// *** Text by event ***
-		$text.='<br><textarea rows="1" name="event_text['.$data_listDb->event_id.']" '.$field_text.' placeholder="'.__('text').'">'.$editor_cls->text_show($data_listDb->event_text).'</textarea>';
+		$field_text_selected=$field_text; if (preg_match('/\R/',$data_listDb->event_text)) $field_text_selected=$field_text_medium;
+		$text.='<br><textarea rows="1" name="event_text['.$data_listDb->event_id.']" '.$field_text_selected.' placeholder="'.__('text').'">'.$editor_cls->text_show($data_listDb->event_text).'</textarea>';
 		$text.='</td>';
 
 		$text.='<td>';
@@ -1488,7 +1507,9 @@ function event_selection($event_gedcom){
 	return $text;
 }
 
-// javascript for "search by file name of picture" feature  
+// *** Javascript for "search by file name of picture" feature ***
+// March 2022: no longer in use
+/*
 echo '<script type="text/javascript">
 	function Search_pic(idnum, picnr, picarr){
 		var searchval = document.getElementById("inp_text_event" + idnum).value;
@@ -1505,5 +1526,13 @@ echo '<script type="text/javascript">
 		}
 	}
 	</script>';
+*/
+
+// *** If profession is added, jump to profession part of screen ***
+if (isset($_POST['event_event_profession']) AND $_POST['event_event_profession']!=''){
+	echo '<script type="text/javascript">
+		window.location = window.location.origin + window.location.pathname + "#profession";
+	</script>';
+}
 
 ?>

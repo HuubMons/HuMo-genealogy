@@ -236,7 +236,7 @@ echo '<div style="background-color:white; height:500px; padding:10px;">';
 			$privacy=$person_cls->privacy;
 
 			$name=$person_cls->person_name($row);
-			if ($privacy==''){
+			if (!$privacy){
 				$line='';
 				if ($date!='EMPTY') $line="<td align='center'><i>".date_place($date,'')."</i></td>\n";
 

@@ -6,8 +6,8 @@
 //error_reporting(E_ALL);
 class marriage_cls{
 
-var $cls_marriage_Db='';  // Database record
-var $privacy='';  // Privacy van persoon
+public $cls_marriage_Db='';  // Database record
+public $privacy=false;  // Privacy van persoon
 
 // *** Simple constructor, will work in all PHP versions, I hope :-)) ***
 function construct($familyDb, $privacy_man, $privacy_woman){
@@ -21,10 +21,10 @@ function construct($familyDb, $privacy_man, $privacy_woman){
 //  Privacy filter for marriage (if man OR woman privacy filter is set)
 function set_privacy($privacy_man, $privacy_woman){
 	global $user;
-	$privacy_marriage='';
+	$privacy_marriage=false;
 	if ($user["group_privacy"]=='n'){
-		if ($privacy_man){ $privacy_marriage=1; }
-		if ($privacy_woman){ $privacy_marriage=1; }
+		if ($privacy_man){ $privacy_marriage=true; }
+		if ($privacy_woman){ $privacy_marriage=true; }
 	}
 	return $privacy_marriage;
 }

@@ -87,7 +87,7 @@ function date_show($process_date, $process_name, $multiple_rows='', $disabled=''
 	$text.='" size="'.$field_date.'" '.$disabled.'>';
 
 	if($humo_option['admin_hebnight'] == "y" AND $hebnight != 'n')  {  // user wants checkbox for jewish setting of events after nightfall for specific events AND it is to be placed with this event
-		$checked = '';   if($hebnight=='y') { $checked = " checked "; }
+		$checked = ''; if($hebnight=='y') { $checked = " checked "; }
 		$text.= '<span style="white-space: nowrap"><input type="checkbox" id="'.$hebvar.'" value="y" name="'.$hebvar.'" '.$checked.'>  <label for="'.$hebvar.'">'.__('After nightfall').'</label></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 	}
 

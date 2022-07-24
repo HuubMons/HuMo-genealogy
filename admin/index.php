@@ -153,6 +153,7 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 			OR $_GET['page']=='editor_place_select'
 			OR $_GET['page']=='editor_person_select'
 			OR $_GET['page']=='editor_relation_select'
+			OR $_GET['page']=='editor_media_select'
 			OR $_GET['page']=='editor_user_settings')){
 		$show_menu_left=false;
 		$popup=true;
@@ -1205,6 +1206,7 @@ else{
 	elseif ($page=='editor_place_select'){ $_GET['menu_admin']='places'; include_once ("include/editor_place_select.php"); }
 	elseif ($page=='editor_person_select'){ $_GET['menu_admin']='marriage'; include_once ("include/editor_person_select.php"); }
 	elseif ($page=='editor_relation_select'){ $_GET['menu_admin']='relation'; include_once ("include/editor_relation_select.php"); }
+	elseif ($page=='editor_media_select'){ $_GET['menu_admin']='menu'; include_once ("include/editor_media_select.php"); }
 
 	elseif ($page=='check'){ include_once ("include/tree_check.php"); }
 	elseif ($page=='gedcom'){ include_once ("include/gedcom.php"); }

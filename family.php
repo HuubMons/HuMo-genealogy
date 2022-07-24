@@ -976,7 +976,7 @@ else{
 							$sect->writeText($rtf_text, $arial12, $parSimple);
 
 							// *** Show RTF media ***
-							if ($parent1_cls->privacy==''){
+							if (!$parent1_cls->privacy){
 								show_rtf_media('person',$parent1Db->pers_gedcomnumber);
 							}
 						}
@@ -1163,7 +1163,7 @@ else{
 					$sect->writeText($rtf_text, $arial12, $parSimple);
 
 					// *** Show RTF media ***
-					if ($parent2_cls->privacy==''){
+					if (!$parent2_cls->privacy){
 						show_rtf_media('person',$parent2Db->pers_gedcomnumber);
 					}
 				}
@@ -1490,7 +1490,7 @@ else{
 								$sect->writeText($rtf_text, $arial12, $par_child_text);
 
 								// *** Show RTF media ***
-								if ($child_cls->privacy==''){
+								if (!$child_cls->privacy){
 									show_rtf_media('person',$childDb->pers_gedcomnumber);
 								}
 							}
@@ -1638,7 +1638,7 @@ else{
 								$text_array[]='';
 
 								// BIRTH man
-								if ($parent1_cls->privacy==''){
+								if (!$parent1_cls->privacy){
 									$location_var = $parent1Db->pers_birth_place; 
 									if($location_var !='') {
 										$short=__('BORN_SHORT');
@@ -1662,7 +1662,7 @@ else{
 								}
 
 								// BIRTH woman
-								if ($parent2_cls->privacy==''){
+								if (!$parent2_cls->privacy){
 									$location_var = $parent2Db->pers_birth_place;
 									if($location_var !='') {
 										$short=__('BORN_SHORT');
@@ -1691,7 +1691,7 @@ else{
 								}
 
 								// DEATH man
-								if ($parent1_cls->privacy==''){
+								if (!$parent1_cls->privacy){
 									$location_var = $parent1Db->pers_death_place;
 									$short = __('DIED_SHORT');
 									if($location_var=='') {
@@ -1722,7 +1722,7 @@ else{
 								}
 
 								// DEATH woman
-								if ($parent2_cls->privacy==''){
+								if (!$parent2_cls->privacy){
 									$location_var = $parent2Db->pers_death_place;
 									$short = __('DIED_SHORT');
 									if($location_var=='') {
@@ -1766,7 +1766,7 @@ else{
 										$name=$parent2_cls->person_name($parent2Db);
 										$google_name.=' & '.$name["standard_name"];
 
-										if ($parent1_cls->privacy=='' AND $parent2_cls->privacy==''){
+										if (!$parent1_cls->privacy AND !$parent2_cls->privacy){
 											$key = array_search($familyDb->fam_marr_place, $location_array);
 											if (isset($key) AND $key>0){
 												$text_array[$key].="\\n".addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
@@ -1789,7 +1789,7 @@ else{
 										// *** Use person class ***
 										$person_cls = New person_cls;
 										$person_cls->construct($childDb);
-										if ($person_cls->privacy==''){
+										if (!$person_cls->privacy){
 
 											// *** Child birth ***
 											$location_var = $childDb->pers_birth_place;

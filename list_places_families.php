@@ -164,7 +164,7 @@ function show_person($familyDb){
 		if ($familyDb->fam_marr_notice_date)
 			$info=__('&infin;').' '.date_place($familyDb->fam_marr_notice_date, '');
 		//echo "<span style='font-size:90%'>".$info.$dirmark1."</span>";
-		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
+		if ($privacy and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
 	echo '</td><td>';
@@ -173,7 +173,7 @@ function show_person($familyDb){
 			$info=__('o').' '.$familyDb->fam_marr_church_notice_place;
 		if ($familyDb->fam_marr_notice_place)
 			$info=__('&infin;').' '.$familyDb->fam_marr_notice_place;
-		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
+		if ($privacy and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
 	echo '</td><td style="white-space:nowrap;">';
@@ -182,7 +182,7 @@ function show_person($familyDb){
 			$info=__('x').' '.date_place($familyDb->fam_marr_church_date, '');
 		if ($familyDb->fam_marr_date)
 			$info=__('X').' '.date_place($familyDb->fam_marr_date, '');
-		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
+		if ($privacy and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
 
 	echo '</td><td>';
@@ -191,7 +191,7 @@ function show_person($familyDb){
 			$info=__('x').' '.$familyDb->fam_marr_church_place;
 		if ($familyDb->fam_marr_place)
 			$info=__('X').' '.$familyDb->fam_marr_place;
-		if ($privacy==1 and $info) echo ' '.__('PRIVACY FILTER');
+		if ($privacy and $info) echo ' '.__('PRIVACY FILTER');
 			else echo $info;
  
 	echo '</td></tr>';
@@ -581,7 +581,7 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 		$marriage_cls->construct($familyDb, $man_cls->privacy, $woman_cls->privacy);
 		$family_privacy=$marriage_cls->privacy;
 
-		// *** $family_privacy='1' = filter ***
+		// *** $family_privacy=true => filter ***
 		if ($family_privacy)
 			$privcount++;
 		else

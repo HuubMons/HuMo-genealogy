@@ -55,8 +55,8 @@
 class db_functions{
 
 private $query = array();
-var $tree_id='';
-var $tree_prefix='';
+public $tree_id='';
+public $tree_prefix='';
 
 function __construct() {
 	global $dbh;

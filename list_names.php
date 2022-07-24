@@ -198,6 +198,8 @@ if (isset($freq_last_names)) $row = ceil(count($freq_last_names)/$maxcols);
 //		$count_persons = $rows['found_rows'];
 //}
 
+// *** If number of displayed surnames is "ALL" change value into number of surnames ***
+if ($nr_persons=='ALL') $nr_persons=$count_persons;
 
 //echo '<div class="standard_header">'.__('Frequency of Surnames').'</div>';
 
@@ -292,9 +294,9 @@ echo '<div style="text-align:center">';
 			'"> =&gt;</a>';
 		}
 	}
-	//echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$line_pages;
-	if (isset($show_line_pages) AND $show_line_pages) echo '<br>';
-	if (isset($line_pages)) echo $line_pages;
+	//if (isset($show_line_pages) AND $show_line_pages) echo '<br>';
+	//if (isset($line_pages)) echo $line_pages;
+	if (isset($show_line_pages) AND $show_line_pages AND isset($line_pages)) echo '<br>'.$line_pages;
 
 echo '</div>';
 

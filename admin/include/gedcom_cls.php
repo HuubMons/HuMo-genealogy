@@ -162,10 +162,10 @@ function process_person($person_array){
 			// 1 FAMC @F1@
 			if ($buffer8=='1 FAMC @'){
 				if ($pers_famc){
+					// *** Second famc, used for adoptive parents ***
 					$processed=1;
 					$famc=substr($buffer,8,-1); // Needed for Aldfaer adoptive parents
 					if ($gen_program!='ALDFAER'){
-						// *** Second famc, used for adoptive parents ***
 						$pers_famc2=substr($buffer,8,-1);
 						if($add_tree==true OR $reassign==true) { $pers_famc2= $this->reassign_ged($pers_famc2,'F'); }
 						$event_nr++; $calculated_event_id++;
@@ -181,9 +181,9 @@ function process_person($person_array){
 					}
 				}
 				else{
+					// *** Normal parents ***
 					$processed=1;
 					$famc=substr($buffer,8,-1); // Needed for Aldfaer adoptive parents
-					// *** Normal parents ***
 					$pers_famc=substr($buffer,8,-1);
 					if($add_tree==true OR $reassign==true) { $pers_famc= $this->reassign_ged($pers_famc,'F'); }
 				}
@@ -203,6 +203,7 @@ function process_person($person_array){
 				$event['connect_kind'][$event_nr]='person';
 				$event['connect_id'][$event_nr]=$pers_gedcomnumber;
 				$event['kind'][$event_nr]='adoption_by_person';
+				// *** BE AWARE: in gedcom.php step 4 further processing is done, famc is converted into a peron number!!! ***
 				$event['event'][$event_nr]=$pers_famc2;
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]=substr($buffer,7); // *** adopted, steph, legal or foster. ***
@@ -2097,31 +2098,31 @@ function process_family($family_array,$first_marr, $second_marr){
 			}
 
 
-// *** Adoption by person, used in Legacy and RootsMagic ***
-// 2 _FREL Adopted ===>>> Adopted by father.
-// 2 _MREL Adopted ===>>> Adopted by mother.
-/*
-if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
-	$processed=1;
-	$child_array=explode(";",$fam_children); $count_children=count($child_array);
+			// *** Adoption by person, used in Legacy and RootsMagic ***
+			// 2 _FREL Adopted ===>>> Adopted by father.
+			// 2 _MREL Adopted ===>>> Adopted by mother.
+			/*
+			if ($buffer7=='2 _FREL' OR $buffer7=='2 _MREL'){
+				$processed=1;
+				$child_array=explode(";",$fam_children); $count_children=count($child_array);
 
-	$event_nr++; $calculated_event_id++;
-	$event['connect_kind'][$event_nr]='person';
-	$event['connect_id'][$event_nr]=$child_array[$count_children-1];
-	$event['kind'][$event_nr]='adoption_by_person';
-	$event['event'][$event_nr]=$gedcomnumber;
-	$event['event_extra'][$event_nr]='';
-	$event['gedcom'][$event_nr]=substr($buffer,8); // *** adopted, steph, legal or foster. ***
-	$event['date'][$event_nr]='';
-	//$event['source'][$event_nr]='';
-	$event['text'][$event_nr]='';
-	$event['place'][$event_nr]='';
+				$event_nr++; $calculated_event_id++;
+				$event['connect_kind'][$event_nr]='person';
+				$event['connect_id'][$event_nr]=$child_array[$count_children-1];
+				$event['kind'][$event_nr]='adoption_by_person';
+				$event['event'][$event_nr]=$gedcomnumber;
+				$event['event_extra'][$event_nr]='';
+				$event['gedcom'][$event_nr]=substr($buffer,8); // *** adopted, steph, legal or foster. ***
+				$event['date'][$event_nr]='';
+				//$event['source'][$event_nr]='';
+				$event['text'][$event_nr]='';
+				$event['place'][$event_nr]='';
 
-	// *** Child is adopted child, so remove child from children array *** 
-	//array_pop($child_array); // *** Remove last item from array ***
-	//$fam_children=implode(";", $child_array);
-}
-*/
+				// *** Child is adopted child, so remove child from children array *** 
+				//array_pop($child_array); // *** Remove last item from array ***
+				//$fam_children=implode(";", $child_array);
+			}
+			*/
 
 		}
 

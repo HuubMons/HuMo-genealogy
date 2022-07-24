@@ -15,7 +15,6 @@
 class validate_date_cls{
 
 function check_date($date) {
-
 	// *** Remove B.C. (before christ) addition, for further tests of date ***
 	//if (substr($date,-3)==' BC' OR substr($date,-5)==' B.C.') return "finished";
 	if (substr($date,-3)==' BC' OR substr($date,-5)==' B.C.'){

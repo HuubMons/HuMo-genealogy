@@ -88,7 +88,7 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 			$person_cls1 = New person_cls;
 			$person_cls1->construct($record);
 			$privacy=$person_cls1->privacy;
-			if($privacy!=1) {
+			if(!$privacy) {
 				$death_date = $record->pers_death_date;
 				$calculated_age='';
 				if ($death_date !=''){
