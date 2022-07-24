@@ -46,7 +46,7 @@ function clickFunc(e){
 function mopen(e,id,x,y){
 	// cancel close timer
 	mcancelclosetime();
-   
+
 	// close old layer
 	if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
 
@@ -69,7 +69,7 @@ function mopen(e,id,x,y){
 		var divHeight;
 		if(ddmenuitem.offsetHeight) {divHeight=ddmenuitem.offsetHeight;}
 		else if(ddmenuitem.style.pixelHeight){divHeight=ddmenuitem.style.pixelHeight;}
-    
+
 		var divWidth;
 		if(ddmenuitem.offsetWidth) {divWidth=ddmenuitem.offsetWidth;}
 		else if(ddmenuitem.style.pixelWidth){divWidth=ddmenuitem.style.pixelWidth;}
@@ -81,20 +81,21 @@ function mopen(e,id,x,y){
 			posx+=15;
 			if(posx>600)    //if towards right of screen, show to left of mouse (600 is a bit arbitrary !!!)
 				posx-=(divWidth+30);
-                
-				if((posx + divWidth) > win_width) {
-				//menu would fall off the screen...	
+
+			if((posx + divWidth) > win_width) {
+				//menu would fall off the screen...
 				posx=win_width - divWidth;
-				if(posx < 0)
-					posx = 0;
 			}
+			if(posx < 0)
+				posx = 0;
+
 			if((posy + divHeight) > win_height) {
 				//menu would fall off the screen...	
 				posy=win_height - divHeight;
-				if(posy < 0)
-					posy = 0;
 			}
-            
+			if(posy < 0)
+				posy = 0;
+
 			ddmenuitem.style.left=posx + 'px';
 			ddmenuitem.style.top=posy + 'px';
 		}

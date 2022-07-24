@@ -487,7 +487,8 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		$buffer.='/'.str_replace("_", " ", $person->pers_prefix);
 		$buffer.=$person->pers_lastname."/\r\n";
 
-		if ($person->pers_callname) $buffer.='2 NICK '.$person->pers_callname."\r\n";
+		// *** december 2021: pers_callname no longer in use ***
+		//if ($person->pers_callname) $buffer.='2 NICK '.$person->pers_callname."\r\n";
 
 		// Prefix is exported by name!
 		//if ($person->pers_prefix) $buffer.='2 SPFX '.$person->pers_prefix."\r\n";

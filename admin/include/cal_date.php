@@ -114,6 +114,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</
 			}
 
 			echo '<span style="width:80px; display:inline-block;">'.$person_db->pers_gedcomnumber.'</span> ';
+//use class to show name.
 			echo $person_db->pers_firstname.' '.strtolower(str_replace("_"," ",$person_db->pers_prefix)).$person_db->pers_lastname;
 			echo ' '.$pers_cal_date;
 			if ($pers_cal_date=='') echo '<b>'.__('No dates').'</b>';

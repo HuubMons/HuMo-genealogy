@@ -52,15 +52,7 @@ if (isset($_POST['send_mail']) AND $mail_allowed==true){
 	//echo __('Message: ').'<br>'.$_POST['mail_text'];
 
 	// *** Use PhpMailer to send mail ***
-	/********************************************************************
-	Change Kai Mahnke April 2020: if admin settings "Mail: Configuration" indicates "auto" 
-	the new routine in mail_auto.php will be called,
-	otherwise the existing mail.php will be used to preserve backward compatibility
-	******************************************************************** */
-	if ($humo_option["mail_auto"]=='auto'){
-		include_once ('include/mail_auto.php');}
-	else{
-		include_once ('include/mail.php');}
+	include_once ('include/mail.php');
 
 	// *** Set who the message is to be sent from ***
 	$mail->setFrom($_POST['mail_sender'], $_POST['mail_name']);

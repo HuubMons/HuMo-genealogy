@@ -2,43 +2,35 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-//echo '<html><head><title>'.__('Select place').'</title></head><body>';
 echo '<h1 align=center>'.__('Select place').'</h1>';
 
-$place_item='pers_birth_place'; $form='form1';
-if (isset($_GET['place_item'])){
-	// *** Places by person ***
-	if ($_GET['place_item']=='baptise'){ $place_item='pers_bapt_place'; $form='form1'; }
-	if ($_GET['place_item']=='death'){ $place_item='pers_death_place'; $form='form1'; }
-	if ($_GET['place_item']=='buried'){ $place_item='pers_buried_place'; $form='form1'; }
-	if ($_GET['place_item']=='place_person'){ $place_item='address_place_'.$_GET['address_place']; $form='form1'; }
-	if ($_GET['place_item']=='place_relation'){ $place_item='address_place_'.$_GET['address_place']; $form='form2'; }
+$place_item=''; $form='';
+if (isset($_GET['form'])){
+	$check_array = array("1", "2", "5", "6");
+	if (in_array($_GET['form'], $check_array)) $form='form'.$_GET['form'];
 
-	// *** Places by family ***
-	if ($_GET['place_item']=='relation'){ $place_item='fam_relation_place'; $form='form2'; }
-	if ($_GET['place_item']=='marr_notice'){ $place_item='fam_marr_notice_place'; $form='form2'; }
-	if ($_GET['place_item']=='marr'){ $place_item='fam_marr_place'; $form='form2'; }
-	if ($_GET['place_item']=='fam_marr_church_notice'){ $place_item='fam_marr_church_notice_place'; $form='form2'; }
-	if ($_GET['place_item']=='fam_marr_church'){ $place_item='fam_marr_church_place'; $form='form2'; }
-	if ($_GET['place_item']=='fam_div'){ $place_item='fam_div_place'; $form='form2'; }
+	$check_array = array("pers_birth_place", "pers_bapt_place", "pers_death_place", "pers_buried_place",
+		"fam_relation_place", "fam_marr_notice_place", "fam_marr_place", "fam_marr_church_notice_place", "fam_marr_church_place", "fam_div_place",
+		"address_place",
+		"event_place");
+	if (in_array($_GET['place_item'], $check_array)) $place_item=$_GET['place_item'];
 
-	// *** Add relation in relation page ***
-	if ($_GET['place_item']=='birth_relation'){ $place_item='pers_birth_place'; $form='form5'; }
-	if ($_GET['place_item']=='baptise_relation'){ $place_item='pers_bapt_place'; $form='form5'; }
-	if ($_GET['place_item']=='death_relation'){ $place_item='pers_death_place'; $form='form5'; }
-	if ($_GET['place_item']=='buried_relation'){ $place_item='pers_buried_place'; $form='form5'; }
+	// *** Multiple places/ addresses: add address_id ***
+	if (isset($_GET['address_id']) AND is_numeric($_GET['address_id'])){
+		$place_item.='_'.$_GET['address_id'];
+	}
 
-	// *** Add relation in child page ***
-	if ($_GET['place_item']=='birth_child'){ $place_item='pers_birth_place'; $form='form6'; }
-	if ($_GET['place_item']=='baptise_child'){ $place_item='pers_bapt_place'; $form='form6'; }
-	if ($_GET['place_item']=='death_child'){ $place_item='pers_death_place'; $form='form6'; }
-	if ($_GET['place_item']=='buried_child'){ $place_item='pers_buried_place'; $form='form6'; }
+	// *** Multiple events: add event_id ***
+	if (isset($_GET['event_id']) AND is_numeric($_GET['event_id'])){
+		$place_item.=$_GET['event_id'];
+	}
 }
 
-if(strpos($_GET['place_item'],"add_fam")!== false ) {
-	$form = "form_entire";
-	$place_item = $_GET['place_item'];
-}
+// *** January 2022: no longer in use? ***
+//if(strpos($_GET['place_item'],"add_fam")!== false ) {
+//	$form = "form_entire";
+//	$place_item = $_GET['place_item'];
+//}
 
 echo'
 	<script type="text/javascript">
@@ -59,6 +51,9 @@ $query.= " UNION (SELECT pers_bapt_place as place_order FROM humo_persons
 
 //$query.= " UNION (SELECT pers_place_index as place_order FROM humo_persons
 //	WHERE pers_tree_id='".$tree_id."' AND pers_place_index LIKE '_%' GROUP BY place_order)";
+
+$query.= " UNION (SELECT event_place as place_order FROM humo_events
+	WHERE event_tree_id='".$tree_id."' AND event_place LIKE '_%' GROUP BY place_order)";
 
 $query.= " UNION (SELECT pers_death_place as place_order FROM humo_persons
 	WHERE pers_tree_id='".$tree_id."' AND pers_death_place LIKE '_%' GROUP BY place_order)";

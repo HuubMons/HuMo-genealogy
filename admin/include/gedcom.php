@@ -529,7 +529,7 @@ if (isset($_POST['step2'])){
 			ob_flush(); flush(); // IE
 			$sql="OPTIMIZE TABLE humo_families";
 			@$result=$dbh->query($sql);
-			}
+		}
 		echo '<br>';
 
 		// *** Batch processing ***
@@ -758,7 +758,7 @@ if (isset($_POST['step2'])){
 
 			echo ' '.__('Optimize table...');
 			ob_flush(); flush(); // IE
-			$sql="OPTIMIZE TABLE humo_address";
+			$sql="OPTIMIZE TABLE humo_addresses";
 			@$result=$dbh->query($sql);
 		}
 		echo '<br>';

@@ -103,7 +103,7 @@ if (isset($_POST['tree_collation'])){
 	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_lastname` `pers_lastname` VARCHAR(50) COLLATE ".$tree_collation.";");
 	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_firstname` `pers_firstname` VARCHAR(50) COLLATE ".$tree_collation.";");
 	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_prefix` `pers_prefix` VARCHAR(20) COLLATE ".$tree_collation.";");
-	$dbh->query("ALTER TABLE humo_persons CHANGE `pers_callname` `pers_callname` VARCHAR(20) COLLATE ".$tree_collation.";");
+	//$dbh->query("ALTER TABLE humo_persons CHANGE `pers_callname` `pers_callname` VARCHAR(20) COLLATE ".$tree_collation.";");
 	$dbh->query("ALTER TABLE humo_events CHANGE `event_event` `event_event` TEXT COLLATE ".$tree_collation.";");
 }
 

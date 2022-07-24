@@ -737,6 +737,11 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 							if ($ownfam->fam_marr_date){
 								//$replacement_text.= '<br>'.__('X').$dirmark1.' '.date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
 								$replacement_text.= '<br>'.__('X').$dirmark1.' '.date_place($ownfam->fam_marr_date,'');
+								// *** Jan. 2022: Show spouse ***
+								if(isset($genarray[$w]["sps"]) AND $genarray[$w]["sps"] != '') {
+									$replacement_text.= "&nbsp;".__(' to: ')."<br>";
+									$replacement_text.= "<i>".$genarray[$w]["sps"]."</i>";
+								}
 							}
 						}
 					}

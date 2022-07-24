@@ -37,7 +37,8 @@ function process_person($person_array){
 	$person["pers_patronym"]=""; $person["pers_prefix"]="";
 	$person["pers_text"]=""; $person["pers_own_code"]="";
 
-	$pers_firstname=''; $pers_lastname=''; $pers_callname=''; $pers_name_text='';
+	//$pers_callname='';
+	$pers_firstname=''; $pers_lastname=''; $pers_name_text='';
 	$fams=""; $pers_famc="";
 	$pers_place_index="";
 	$pers_birth_date=""; $pers_birth_time=""; $pers_birth_place=""; $pers_birth_text=""; $pers_stillborn='';
@@ -304,18 +305,34 @@ function process_person($person_array){
 
 				// *** Second line "1 NAME" is a callname ***
 				if ($pers_firstname){
+					//$pers_callname_org=$pers_callname; // *** If "2 TYPE aka" is used, $pers_callname can be restored ***
+					//$pers_aka=substr($name,7); // *** If "2 TYPE aka" is used
 
-					$pers_callname_org=$pers_callname; // *** If "2 TYPE aka" is used, $pers_callname can be restored ***
-					$pers_aka=substr($name,7); // *** If "2 TYPE aka" is used
+					//if ($pers_callname){
+					//	$pers_callname=$pers_callname.", ".substr($name,7);
+					//} else {
+					//	$pers_callname=substr($name,7);
+					//}
+					//$pers_callname=str_replace("/", " ", $pers_callname);
+					//$pers_callname=str_replace("  ", " ", $pers_callname);
+					//$pers_callname=rtrim($pers_callname);
 
-					if ($pers_callname){
-						$pers_callname=$pers_callname.", ".substr($name,7);
-					} else {
-						$pers_callname=substr($name,7);
-					}
-					$pers_callname=str_replace("/", " ", $pers_callname);
-					$pers_callname=str_replace("  ", " ", $pers_callname);
-					$pers_callname=rtrim($pers_callname);
+					$processed=1;
+					$pers_aka=substr($name,7);
+					$pers_aka=str_replace("/", " ", $pers_aka);
+					$pers_aka=str_replace("  ", " ", $pers_aka);
+					$pers_aka=rtrim($pers_aka);
+
+					$processed=1; $event_nr++; $calculated_event_id++;
+					$event['connect_kind'][$event_nr]='person';
+					$event['connect_id'][$event_nr]=$pers_gedcomnumber;
+					$event['kind'][$event_nr]='name';
+					$event['event'][$event_nr]=$pers_aka;
+					$event['event_extra'][$event_nr]='';
+					$event['gedcom'][$event_nr]='NICK';
+					$event['date'][$event_nr]='';
+					$event['text'][$event_nr]='';
+					$event['place'][$event_nr]='';
 				}
 				else{
 					$position = strpos($name,"/");
@@ -356,30 +373,34 @@ function process_person($person_array){
 			}
 
 			// *** 2 TYPE aka: also know as. ***
+			// MyHeritage Family Tree Builder???????????
 			// 1 NAME Sijpkje Sipkes /Visser/
-			// 1 NAME Sijpkje /Visser/		Was already saved as $pers_callname.
+			// 1 NAME Sijpkje /Visser/
 			// 2 TYPE aka
 			// 1 NAME Sijke /Visser/
 			// 2 TYPE aka
 			// 1 NAME Sipkje /Visser/
 			// 2 TYPE aka
+			// *** Change "NICK" into "_AKA" ***
 			if (strtoupper($buffer)=='2 TYPE AKA'){
-				$pers_aka=str_replace("/", " ", $pers_aka);
-				$pers_aka=str_replace("  ", " ", $pers_aka);
-				$pers_aka=rtrim($pers_aka);
+				//$processed=1;
+				//$pers_aka=str_replace("/", " ", $pers_aka);
+				//$pers_aka=str_replace("  ", " ", $pers_aka);
+				//$pers_aka=rtrim($pers_aka);
 
-				$processed=1; $event_nr++; $calculated_event_id++;
-				$event['connect_kind'][$event_nr]='person';
-				$event['connect_id'][$event_nr]=$pers_gedcomnumber;
-				$event['kind'][$event_nr]='name';
-				$event['event'][$event_nr]=$pers_aka;
-				$event['event_extra'][$event_nr]='';
+				//$processed=1; $event_nr++; $calculated_event_id++;
+				//$event['connect_kind'][$event_nr]='person';
+				//$event['connect_id'][$event_nr]=$pers_gedcomnumber;
+				//$event['kind'][$event_nr]='name';
+				//$event['event'][$event_nr]=$pers_aka;
+				//$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]='_AKA';
-				$event['date'][$event_nr]='';
-				$event['text'][$event_nr]='';
-				$event['place'][$event_nr]='';
+				//$event['date'][$event_nr]='';
+				//$event['text'][$event_nr]='';
+				//$event['place'][$event_nr]='';
+
 				// *** Empty original pers_call_name ***
-				$pers_callname=$pers_callname_org;
+				//$pers_callname=$pers_callname_org;
 			}
 
 			// *** GEDCOM 5.5 lastname prefix: 2 SPFX Le ***
@@ -438,10 +459,9 @@ function process_person($person_array){
 				$buffer=rtrim($buffer);
 			}
 
-			// *** BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
+			// *** HuMo-genealogy (roepnaam), BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
 			// *** Users can change nickname for BK in language file! ***
-			// UPDATE 23-12-2017: 2 NICK will now be processed as callname!
-			//if ($buffer6=='2 NICK'){ $process_event=true; }
+			if ($buffer6=='2 NICK'){ $process_event=true; }
 
 			// *** PG: 2 _ALIA ***
 			if ($buffer7=='2 _ALIA'){ $process_event=true; }
@@ -463,7 +483,7 @@ function process_person($person_array){
 			if ($buffer7=='2 _OTHN'){ $process_event=true; }
 
 			// *** For German "2 _RUFN" entries. BK uses "2 _RUFNAME" ***
-			if ($buffer7=='2 _RUFN'){ $process_event=true; }  // this needs the isset($buffer[10] check a few lines below
+			if ($buffer7=='2 _RUFN'){ $process_event=true; }  // 2 _RUFNAME needs the isset($buffer[10] check a few lines below
 
 			if ($process_event){
 				$processed=1; $event_nr++; $calculated_event_id++;
@@ -485,7 +505,6 @@ function process_person($person_array){
 				elseif (isset($buffer[7]) AND $buffer[7]==' ') {$event['event'][$event_nr]=substr($buffer,8);}
 				// *** X _MARNM ??  MyHeritage ***
 				elseif (isset($buffer[8]) AND $buffer[8]==' ') {$event['event'][$event_nr]=substr($buffer,9);}
-
 
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]=trim(substr($buffer, 2, 5));
@@ -536,19 +555,38 @@ function process_person($person_array){
 		if ($buffer6=='1 REFN'){ $processed=1; $person["pers_own_code"]=substr($buffer,7); }
 
 		// *** Finnish genealogy program SukuJutut (and some other genealogical programs) ***
+		// 1 ALIA Frederik Hektor /McLean/
 		if ($buffer6=='1 ALIA'){
+			//$processed=1;
+			//$buffer = str_replace("/", "", $buffer);  // *** Remove / from alias: 1 ALIA Frederik Hektor /McLean/ ***
+			//if ($pers_callname){
+			//	$pers_callname=$pers_callname.", ".substr($buffer, 7);
+			//}
+			//else {
+			//	$pers_callname=substr($buffer,7);
+			//}
+			//$pers_callname=rtrim($pers_callname);
+
 			$processed=1;
-			$buffer = str_replace("/", "", $buffer);  // *** Remove / from alias: 1 ALIA Frederik Hektor /McLean/ ***
-			if ($pers_callname){
-				$pers_callname=$pers_callname.", ".substr($buffer, 7);
-			}
-			else {
-				$pers_callname=substr($buffer,7);
-			}
-			$pers_callname=rtrim($pers_callname);
+			$pers_aka=substr($buffer,7);
+			$pers_aka=str_replace("/", "", $pers_aka);  // *** Remove / from alias: 1 ALIA Frederik Hektor /McLean/ ***
+			$pers_aka=rtrim($pers_aka);
+
+			$processed=1; $event_nr++; $calculated_event_id++;
+			$event['connect_kind'][$event_nr]='person';
+			$event['connect_id'][$event_nr]=$pers_gedcomnumber;
+			$event['kind'][$event_nr]='name';
+			$event['event'][$event_nr]=$pers_aka;
+			$event['event_extra'][$event_nr]='';
+			$event['gedcom'][$event_nr]='NICK';
+			$event['date'][$event_nr]='';
+			$event['text'][$event_nr]='';
+			$event['place'][$event_nr]='';
 		}
 
+		// *** December 2021: now processed as event **
 		// *** HuMo-genealogy (roepnaam), BK (als bijnaam) and PG (als roepnaam): 2 NICK name ***
+		/*
 		if ($buffer6=='2 NICK'){
 			$processed=1;
 			if ($pers_callname){
@@ -559,6 +597,7 @@ function process_person($person_array){
 			}
 			$pers_callname=rtrim($pers_callname);
 		}
+		*/
 
 		// *** Text(s) by person ***
 		if ($level[1]=='NOTE'){
@@ -1476,7 +1515,9 @@ function process_person($person_array){
 			// 3 _PRIM Y
 			// 3 _TYPE PHOTO
 			// *** Picture is connected to event_id column (=$calculated_event_id) ***
-			if ($level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_event_'.$calculated_event_id, $buffer);
+			if ($level[2]=='OBJE'){
+				$this->process_picture('person',$pers_gedcomnumber,'picture_event_'.$calculated_event_id, $buffer);
+			}
 		}
 
 		// Process here because of: 2 TYPE living
@@ -1561,6 +1602,7 @@ function process_person($person_array){
 	}
 
 	// *** Save data ***
+	//pers_callname='".$this->text_process($pers_callname)."',
 	$sql="INSERT IGNORE INTO humo_persons SET
 	pers_gedcomnumber='".$this->text_process($pers_gedcomnumber)."',
 	pers_tree_id='".$tree_id."',
@@ -1568,7 +1610,6 @@ function process_person($person_array){
 	pers_fams='".$this->text_process($fams)."',
 	pers_famc='".$this->text_process($pers_famc)."',
 	pers_firstname='".$this->text_process($pers_firstname)."', pers_lastname='".$this->text_process($pers_lastname)."',
-	pers_callname='".$this->text_process($pers_callname)."',
 	pers_name_text='".$this->text_process($pers_name_text)."',
 	pers_prefix='".$this->text_process($person["pers_prefix"])."',
 	pers_patronym='".$this->text_process($person["pers_patronym"])."',
@@ -4251,6 +4292,10 @@ function humo_basename($photo){
 		$photo = str_replace('\\', '/', $photo);
 	}
 
+	// **** SteveP modded 15 Jan 2022 :- Added 1 Line of Code to remove Drive designator if present ***
+	// **** example Drive designator format x:/ where x can be A to Z or a to z ***
+	if (strpos($photo,":/")==1) $photo=substr($photo,3,strlen($photo)-3);
+
 	return $photo;
 }
 
@@ -4964,7 +5009,8 @@ function process_picture($connect_kind, $connect_id, $picture, $buffer){
 	// *** Aldfaer ***
 	// 2 TITL text
 	// 3 CONT text second line
-	if ($level[2]=='TITL'){
+	//if ($level[2]=='TITL'){
+	if ($level[$test_number2]=='TITL'){
 		$processed=1;
 		if ($event_picture==true)
 			$event2['text'][$event2_nr]=$this->process_texts($event2['text'][$event2_nr],$buffer,$test_number2);
@@ -4973,7 +5019,8 @@ function process_picture($connect_kind, $connect_id, $picture, $buffer){
 	}
 
 	// *** 2 FORM jpeg ***
-	if ($level[2]=='FORM'){
+	//if ($level[2]=='FORM'){
+	if ($level[$test_number2]=='FORM'){
 		$processed=1;
 		if ($event_picture==true)
 			$event2['event_extra'][$event2_nr]=substr($buffer,7);

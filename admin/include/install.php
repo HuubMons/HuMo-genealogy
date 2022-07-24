@@ -231,7 +231,7 @@ if (isset($_POST['install_tables2'])){
 		// *** Other settings are saved in the table in file: settings_global.php ***
 
 		// *** Update status number. Number must be: update_status+1! ***
-		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','13')");
+		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('update_status','14')");
 	}
 
 	if (!$table_stat_date){
@@ -246,7 +246,7 @@ if (isset($_POST['install_tables2'])){
 		$db_update = $dbh->query("CREATE TABLE humo_stat_date (
 			stat_id int(10) NOT NULL auto_increment,
 			stat_easy_id varchar(100) CHARACTER SET utf8,
-			stat_ip_address varchar(20) CHARACTER SET utf8,
+			stat_ip_address varchar(40) CHARACTER SET utf8,
 			stat_user_agent varchar(255) CHARACTER SET utf8,
 			stat_tree_id varchar(5) CHARACTER SET utf8,
 			stat_gedcom_fam varchar(25) CHARACTER SET utf8,
@@ -634,9 +634,9 @@ if (isset($_POST['install_tables2'])){
 			pers_cal_date varchar(35) CHARACTER SET utf8,
 			pers_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
 			pers_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
-			pers_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			pers_new_date varchar(35) CHARACTER SET utf8,
 			pers_new_time varchar(25) CHARACTER SET utf8,
+			pers_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			pers_changed_date varchar(35) CHARACTER SET utf8,
 			pers_changed_time varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY (`pers_id`),
@@ -692,9 +692,9 @@ if (isset($_POST['install_tables2'])){
 			fam_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
 			fam_counter mediumint(7),
 			fam_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
-			fam_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			fam_new_date varchar(35) CHARACTER SET utf8,
 			fam_new_time varchar(25) CHARACTER SET utf8,
+			fam_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			fam_changed_date varchar(35) CHARACTER SET utf8,
 			fam_changed_time varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY (`fam_id`),
@@ -763,9 +763,9 @@ if (isset($_POST['install_tables2'])){
 			repo_url varchar(150) CHARACTER SET utf8,
 			repo_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
 			repo_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
-			repo_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			repo_new_date varchar(35) CHARACTER SET utf8,
 			repo_new_time varchar(25) CHARACTER SET utf8,
+			repo_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			repo_changed_date varchar(35) CHARACTER SET utf8,
 			repo_changed_time varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY (`repo_id`),
@@ -805,9 +805,9 @@ if (isset($_POST['install_tables2'])){
 			source_repo_gedcomnr varchar(25) CHARACTER SET utf8,
 			source_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
 			source_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
-			source_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			source_new_date varchar(35) CHARACTER SET utf8,
 			source_new_time varchar(25) CHARACTER SET utf8,
+			source_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			source_changed_date varchar(35) CHARACTER SET utf8,
 			source_changed_time varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY (`source_id`),
@@ -828,8 +828,10 @@ if (isset($_POST['install_tables2'])){
 			text_gedcomnr varchar(25) CHARACTER SET utf8,
 			text_text text CHARACTER SET utf8,
 			text_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
+			text_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			text_new_date varchar(35) CHARACTER SET utf8,
 			text_new_time varchar(25) CHARACTER SET utf8,
+			text_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			text_changed_date varchar(35) CHARACTER SET utf8,
 			text_changed_time varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY (text_id),
@@ -861,8 +863,10 @@ if (isset($_POST['install_tables2'])){
 			connect_item_id varchar(25) CHARACTER SET utf8,
 			connect_status varchar(10) CHARACTER SET utf8,
 			connect_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
+			connect_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			connect_new_date varchar(35) CHARACTER SET utf8,
 			connect_new_time varchar(25) CHARACTER SET utf8,
+			connect_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			connect_changed_date varchar(35) CHARACTER SET utf8,
 			connect_changed_time varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY (`connect_id`),
@@ -895,13 +899,14 @@ if (isset($_POST['install_tables2'])){
 			address_text text CHARACTER SET utf8,
 			address_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
 			address_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
-			address_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			address_new_date varchar(35) CHARACTER SET utf8,
 			address_new_time varchar(25) CHARACTER SET utf8,
+			address_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			address_changed_date varchar(35) CHARACTER SET utf8,
 			address_changed_time varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY (`address_id`),
-			KEY (address_tree_id)
+			KEY (address_tree_id),
+			KEY (address_gedcomnr)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 
 		// *** Events ***
@@ -929,9 +934,9 @@ if (isset($_POST['install_tables2'])){
 			event_text text CHARACTER SET utf8,
 			event_quality varchar(1) CHARACTER SET utf8 DEFAULT '',
 			event_new_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
-			event_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			event_new_date varchar(35) CHARACTER SET utf8,
 			event_new_time varchar(25) CHARACTER SET utf8,
+			event_changed_user varchar(200) CHARACTER SET utf8 DEFAULT NULL,
 			event_changed_date varchar(35) CHARACTER SET utf8,
 			event_changed_time varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY (`event_id`),

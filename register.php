@@ -71,8 +71,8 @@ if (isset($_POST['send_mail']) AND $register_allowed==true){
 		//$headers .= "From: \"".$_POST['register_name']."\" <".$_POST['register_mail'].">\n";
 
 		//@$mail = mail($register_address, $register_subject, $register_message, $headers);
-
 		include_once ('include/mail.php');
+
 		// *** Set who the message is to be sent from ***
 		$mail->setFrom($_POST['register_mail'], $_POST['register_name']);
 		// *** Set who the message is to be sent to ***

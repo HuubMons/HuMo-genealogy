@@ -201,7 +201,7 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 				}
 			}
 
-			// *** Find all existing HuMo-gen files, skip humo-gen_update.zip, humo-gen_update folder and ip_files folders. ***
+			// *** Find all existing HuMo-genealogy files, skip humo-gen_update.zip, humo-gen_update folder and ip_files folders. ***
 			listFolderFiles('..',array('humo-gen_update.zip','humo-gen_update','ip_files'),'existing_files');
 
 			// *** Find all update HuMo-genealogy files, a__ is just some random text (skip items)... ***
