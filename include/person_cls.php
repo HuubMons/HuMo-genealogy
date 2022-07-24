@@ -829,43 +829,6 @@ function name_extended($person_kind){
 // SOURCE IS MISSING
 			}
 
-			/*
-			// *** New in this script may 2021 (from fpdfextend.php) ***
-			elseif($screen_mode=="PDF" AND !isset($_POST['ancestor_report'])) {
-			//elseif($screen_mode=="PDF") {
-				$indentation=$pdf->GetX()+5;
-				if (isset($_POST['ancestor_report'])) $indentation=$pdf->GetX();
-
-				if($personDb->pers_sexe=="M") $pic="images/man.gif";
-					elseif ($personDb->pers_sexe=='F') $pic="images/woman.gif";
-					else $pic="images/unknown.gif";
-
-				if ($person_kind!='child'){
-					$pdf->Image($pic,$indentation-4,$pdf->GetY()+2,3.5,3.5);
-				}
-				else{
-					$pdf->Image($pic,$indentation-4,$pdf->GetY()+1,3.5,3.5);
-					$pdf->SetX($pdf->GetX()+5);
-				}
-
-				$pdf->SetX($indentation);
-				if($person_kind=="parent1" OR $person_kind=="parent2") {
-					$indent=$pdf->GetX();
-				}
-
-				// *** Source by sexe ***
-				$source='';
-				if ($person_kind != 'outline') $source=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber);
-				if ($source){
-					$templ_name["name_sexe_source"]=$source;
-
-					// *** Show source ***
-					//$pdf->PDFShowSources($source);
-					//$pdf->Write(6,' ');
-				}
-			}
-			*/
-
 			else{
 				$text_name.= $dirmark1;
 				if ($personDb->pers_sexe=="M"){
@@ -1035,8 +998,6 @@ function name_extended($person_kind){
 			if ($parents_familyDb->fam_woman){
 				$motherDb=$db_functions->get_person($parents_familyDb->fam_woman);
 				$name=$this->person_name($motherDb);
-				//$templ_name["parents"].=$name["standard_name"];
-				//$text.=$name["standard_name"];
 				$templ_name["name_parents"].=$name["standard_name"];
 
 				// *** Seperate father/mother links ***
@@ -1084,15 +1045,17 @@ function name_extended($person_kind){
 				if ($parents_familyDb->fam_man){
 					$fatherDb=$db_functions->get_person($parents_familyDb->fam_man);
 					$name=$this->person_name($fatherDb);
+
 					$templ_name["name_parents"].=$name["standard_name"];
 					$text=$name["standard_name"];
-					//$templ_name["parents"]=$name["standard_name"];
+
 					$temp="parents";
 				}
 				else{
 					$templ_name["name_parents"].=__('N.N.');
+
 					$text=__('N.N.');
-					//$templ_name["parents"]=__('N.N.');
+
 					$temp="parents";
 				}
 
@@ -1675,12 +1638,17 @@ function person_data($person_kind, $id){
 		// *** Death time ***
 		if (isset($personDb->pers_death_time) AND $personDb->pers_death_time){
 			//$templ_person["dead_dateplacetime"]=' '.$personDb->pers_death_time;
-			if ($templ_person["dead_dateplacetime"])
-				$templ_person["dead_dateplacetime"].=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
-			else
-				$templ_person["dead_dateplacetime"]=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
-			$temp="dead_dateplacetime";
-			$text.=$templ_person["dead_dateplacetime"];
+//			if ($templ_person["dead_dateplacetime"])
+//				$templ_person["dead_dateplacetime"].=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
+//			else
+//				$templ_person["dead_dateplacetime"]=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
+//			$temp="dead_dateplacetime";
+//			$text.=$templ_person["dead_dateplacetime"];
+
+
+			$templ_person["dead_time"]=' '.__('at').' '.$personDb->pers_death_time.' '.__('hour');
+			$temp="dead_time";
+			$text.=$templ_person["dead_time"];
 		}
 
 		if ($user["group_texts_pers"]=='j'){
@@ -1832,25 +1800,34 @@ function person_data($person_kind, $id){
 
 		// *** Check for burial items, if needed use a new line ***
 		if ($text){
-			if ($personDb->pers_cremation){
-				$buried_cremation=__('cremation');
+			if ($personDb->pers_cremation=='1'){
+				$method_of_burial=__('cremation');
+			}
+			elseif ($personDb->pers_cremation=='R'){
+				$method_of_burial=__('resomated');
+			}
+			elseif ($personDb->pers_cremation=='S'){
+				$method_of_burial=__('sailor\'s grave');
+			}
+			elseif ($personDb->pers_cremation=='D'){
+				$method_of_burial=__('donated to science');
 			}
 			else {
-				$buried_cremation=__('buried');
+				$method_of_burial=__('buried');
 			}
 
 			if (!$temp_previous)
-				$templ_person["buri_start"]=ucfirst($buried_cremation).' ';
+				$templ_person["buri_start"]=ucfirst($method_of_burial).' ';
 			else{
-				$templ_person["buri_start"]=$buried_cremation.' ';
+				$templ_person["buri_start"]=$method_of_burial.' ';
 				if($temp_previous) { $templ_person[$temp_previous].=', '; }
 			}
 
 			if (!$process_text OR $family_expanded==true){
-				$text='<b>'.ucfirst($buried_cremation).'</b> '.$text;
+				$text='<b>'.ucfirst($method_of_burial).'</b> '.$text;
 			}
 			else{
-				$text=', <b>'.$buried_cremation.'</b> '.$text;
+				$text=', <b>'.$method_of_burial.'</b> '.$text;
 			}
 			if ($process_text AND $family_expanded==true){ $text='<br>'.$text; }
 			$process_text.=$text;
@@ -1891,8 +1868,6 @@ function person_data($person_kind, $id){
 					else{
 						if ($process_text){ $process_text.='. <span class="profession">'; }
 						$process_text.='<b>'.ucfirst($occupation).':</b> ';
-//						if($temp) { $templ_person[$temp].=". "; }
-//						$temp="prof_exist";
 					}
 
 					if($temp) { $templ_person[$temp].=". "; }
@@ -1901,7 +1876,6 @@ function person_data($person_kind, $id){
 				if ($eventnr>1){
 					$process_text.=', ';
 					if($temp) { $templ_person[$temp].=", "; }
-//$templ_person["profession"]=', ';
 				}
 
 				// *** Show profession ***
@@ -1968,7 +1942,7 @@ function person_data($person_kind, $id){
 		$source=show_sources2("person","person_source",$personDb->pers_gedcomnumber);
 		if ($source){
 			if($screen_mode=='PDF') {
-if ($temp) $templ_person[$temp].='. ';
+				if ($temp) $templ_person[$temp].='. ';
 
 				$templ_person["pers_source"]=$source;
 				$temp="pers_source";

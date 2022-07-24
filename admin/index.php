@@ -555,23 +555,20 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 				$link_name=str_replace(' ', '_', $_SERVER['SERVER_NAME']);
 				$link_versie=str_replace(' ', '_', $humo_option["version"]);
 
-				// *** Use update file directly from humo-genealogy website ***
-				$update_file='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
-
-				// *** Copy update data from humo-genealogy website to local website ***
+				// *** Read update data from HuMo-genealogy website ***
 				if(function_exists('curl_exec')){
 					// *** Used for automatic update procedure ***
-					$update['up_to_date']='no';
+					//$update['up_to_date']='no';
 
 					// *** HuMo-genealogy version ***
-					$update['version']='';
-					$update['version_date']='';
-					$update['version_auto_download']='';
+					//$update['version']='';
+					//$update['version_date']='';
+					//$update['version_auto_download']='';
 
 					// *** HuMo-genealogy beta version ***
-					$update['beta_version']='';
-					$update['beta_version_date']='';
-					$update['beta_version_auto_download']='';
+					//$update['beta_version']='';
+					//$update['beta_version_date']='';
+					//$update['beta_version_auto_download']='';
 
 					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 					//$update_file='update/temp_update_check.php';
@@ -597,17 +594,17 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 				// *** If provider or curl blocks https link: DISABLE SSL and recheck ***
 				if (!isset($content_array)){
 					// *** Used for automatic update procedure ***
-					$update['up_to_date']='no';
+					//$update['up_to_date']='no';
 
 					// *** HuMo-genealogy version ***
-					$update['version']='';
-					$update['version_date']='';
-					$update['version_auto_download']='';
+					//$update['version']='';
+					//$update['version_date']='';
+					//$update['version_auto_download']='';
 
 					// *** HuMo-genealogy beta version ***
-					$update['beta_version']='';
-					$update['beta_version_date']='';
-					$update['beta_version_auto_download']='';
+					//$update['beta_version']='';
+					//$update['beta_version_date']='';
+					//$update['beta_version_auto_download']='';
 
 					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
 					//$update_file='update/temp_update_check.php';
@@ -732,8 +729,9 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					//if (file_exists('update/temp_update_check.php')) unlink ('update/temp_update_check.php');
 				}
 				else{
-					$update_text= '  '.__('Online version check unavailable.');
+					//$update_text= '  '.__('Online version check unavailable.');
 					//$update_text.= ' <a href="'.$path_tmp.'page=install_update&update_check=1">'.__('Update options').'</a>';
+					$update_text= ' <a href="'.$path_tmp.'page=install_update&amp;update_check=1">'.__('Online version check unavailable.').'</a>';
 
 					if(!function_exists('curl_exec')) $update_text.=' Extension php_curl.dll is disabled.';
 					elseif (!is_writable('update')) $update_text.=' Folder admin/update/ is read only.';
@@ -885,6 +883,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 			echo '</div>';
 			echo '</li>';
 		}
+		/*
 		elseif ($page=='editor_sources'){
 			// *** Pop-up screen is shown, show button to close pop-up screen ***
 			$select_top='';
@@ -910,6 +909,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 			echo '</div>';
 			echo '</li>';
 		}
+		*/
 
 		if ($show_menu_left==true and $page!='login'){
 

@@ -82,6 +82,7 @@ function show_media($event_connect_kind,$event_connect_id){
 			// in case subfolders are made for photobook categories and this was not already set in $picture_path,  look there
 			// (if the $picture_path is already set with subfolder this anyway gives false and so the $picture_path given will work)
 			$temp_path = $tree_pict_path; // store original so we can reset after using for subfolder path for this picture.
+
 			$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 			if($temp->rowCount()) {   // there is a category table 
 				$catg = $dbh->query("SELECT photocat_prefix FROM humo_photocat WHERE photocat_prefix != 'none' GROUP BY photocat_prefix");

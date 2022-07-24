@@ -310,7 +310,8 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 		if($screen_mode!='PDF' AND $screen_mode!='RTF') {
 			echo '</table>';
 
-				echo '<div class="standard_header fonts">'.__('generation ').$rom_nr[$generation];
+				if (isset($rom_nr[$generation]))
+					echo '<div class="standard_header fonts">'.__('generation ').$rom_nr[$generation];
 				if (isset($language["gen".$generation]) AND $language["gen".$generation]){
 					echo ' ('.$language["gen".$generation].')';
 				}
@@ -332,7 +333,8 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				$pdf->Cell(0,8,pdf_convert(__('generation ').$rom_nr[$generation].' ('.$language["gen".$generation].')'),0,1,'C',true);
 			}
 			else {
-				$pdf->Cell(0,8,pdf_convert(__('generation ').$rom_nr[$generation]),0,1,'C',true);
+				if (isset($rom_nr[$generation]))
+					$pdf->Cell(0,8,pdf_convert(__('generation ').$rom_nr[$generation]),0,1,'C',true);
 			}
 			$pdf->SetFont('Arial','',12);
 		}
@@ -464,9 +466,10 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					unset ($templ_person);
 
 					// pdf NUMBER + MAN NAME + DATA
-//					$pdf->pdf_ancestor_name($ancestor_number[$i],$person_manDb->pers_sexe,$man_cls->name_extended("child"));
-//$pdf->SetX(10);
-$pdf->pdf_ancestor_name($ancestor_number[$i],$person_manDb->pers_sexe,'');
+					// *** May 2021: changed, only number is shown **
+					//$pdf->pdf_ancestor_name($ancestor_number[$i],$person_manDb->pers_sexe,$man_cls->name_extended("child"));
+					$pdf->SetX(10);
+					$pdf->pdf_ancestor_name($ancestor_number[$i],$person_manDb->pers_sexe,'');
 
 					//$pdf->SetX($pdf->GetX()+3);
 					//$pdf->MultiCell(0,8,$man_cls->name_extended("child"),0,"L");
@@ -478,17 +481,16 @@ $pdf->pdf_ancestor_name($ancestor_number[$i],$person_manDb->pers_sexe,'');
 					//$man_cls->name_extended("child");
 					//$pdf->Ln(7);
 
-// *** Name ***
-unset ($templ_person);
-unset ($templ_name);
-$pdfdetails=$man_cls->name_extended("child");
-if($pdfdetails) {
-	//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
-	$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
-	// *** Resets line ***
-	//$pdf->MultiCell(0,8,'',0,"L");
-}
-
+					// *** Name ***
+					unset ($templ_person);
+					unset ($templ_name);
+					$pdfdetails=$man_cls->name_extended("child");
+					if($pdfdetails) {
+						//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
+						$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+						// *** Resets line ***
+						//$pdf->MultiCell(0,8,'',0,"L");
+					}
 
 					if($listednr=='') {
 						$pdfdetails= $man_cls->person_data("standard",$ancestor_array[$i]);
@@ -517,12 +519,15 @@ if($pdfdetails) {
 						// and there is at least one person of another family to come in this generation
 						// then place a devider line
 						//$pdf->Cell(0,1,"",'B',1);
-//						$pdf->Ln(1);
-// *** Added space ***
-$pdf->Ln(7);
+						//$pdf->Ln(1);
+
+						// *** Added space ***
+						$pdf->Ln(7);
+
 						$pdf->Cell(0,1,"",'B',1);
-// *** Added space ***
-$pdf->Ln(4);
+
+						// *** Added space ***
+						$pdf->Ln(4);
 					}
 				}
 
@@ -658,8 +663,9 @@ $pdf->Ln(4);
 					unset ($templ_person);
 
 					// pdf NUMBER + NAME + DATA  NN PERSON
+					// *** May 2021: changed, only number is shown **
 					//$pdf->pdf_ancestor_name($ancestor_number[$i],'',__('N.N.'));
-$pdf->SetX(10);
+					$pdf->SetX(10);
 					$pdf->pdf_ancestor_name($ancestor_number[$i],'','');
 					//$pdf->SetX($pdf->GetX()+3);
 					//$pdf->MultiCell(0,8,__('N.N.'),0,"L");

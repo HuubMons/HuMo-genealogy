@@ -400,13 +400,13 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 	}
 	else{
 
-	if (isset($humo_option["version"])){
-		printf(__('Current %s version:'),'HuMo-genealogy');
-		echo ' '.$humo_option["version"].'.<br>';
+		if (isset($humo_option["version"])){
+			printf(__('Current %s version:'),'HuMo-genealogy');
+			echo ' '.$humo_option["version"].'.<br>';
 
-		printf(__('Available %s version:'),'HuMo-genealogy');
-		echo ' '.$update['version'].'.<br><br>';
-	}
+			printf(__('Available %s version:'),'HuMo-genealogy');
+			echo ' '.$update['version'].'.<br><br>';
+		}
 
 		echo __('There are 2 update methods: automatic and manually.');
 
@@ -436,6 +436,55 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 
 else{
 	echo __('Online version check unavailable.');
+
+	// *** Semi-automatic update ***
+	// *** REMARK: to test this, just disable two lines "$content_array" in index.php ***
+	echo '<h2>'.__('Semi-automatic update').'</h2>';
+	echo __('In some cases the automatic update doesn\'t work. Then use this semi-automatic update method.').'<br>';
+	printf(__('1. Download a new version of %s.'),'HuMo-genealogy');
+	echo '<br>'.__('2. Rename the zip file into: humo-gen_update.zip').'<br>';
+
+
+	// *** Upload file ***
+	if (isset($_FILES['update_file']) AND $_FILES['update_file']['name']){
+		$fault="";
+		// 100000=100kb.
+		//if($_FILES['photo_upload']['size']>2000000){ $fault=__('File large'); }
+		if (!$fault){
+			//$update_new=$dir.$_FILES['photo_upload']['name'];
+			$update_new='update/humo-gen_update.zip';
+			if (!move_uploaded_file($_FILES['update_file']['tmp_name'],$update_new)){
+				echo __('Upload failed, check folder rights');
+			}
+		}
+	}
+	echo '<form method="POST" action="'.$path_tmp.'page=install_update" style="display : inline;" enctype="multipart/form-data"  name="formx" id="formx">';
+		echo __('3. Upload humo-gen_update.zip:').' <input type="file" name="update_file">';
+		echo '<input type="submit" name="submit" title="submit" value="'.__('Upload').'">';
+	echo '</form><br>';
+	echo '&nbsp;&nbsp;&nbsp;&nbsp;'.__('OR: manually upload the file to folder: admin/update/').'<br>';
+
+	// *** Start update ***
+	echo __('4. Then click:');
+	echo ' <a href="'.$path_tmp.'page=install_update&auto=1&step=1&update_check=1';
+	//if (isset($_GET['install_beta'])){ echo '&install_beta=1'; }
+	if (isset($_GET['re_install'])){ echo '&re_install=1'; }
+	// *** Force update ***
+	echo '&re_install=1';
+	echo '">';
+	printf(__('start update of %s.'),'HuMo-genealogy');
+	echo '</a><br>';
+
+
+
+	// *** Show version ***
+	echo '<h2>';
+	printf(__('%s version history'),'HuMo-genealogy');
+	echo '</h2>';
+	printf(__('%s version'),'HuMo-genealogy');
+	echo ' '.$humo_option["version"];
+	echo '<p><iframe height="300" width="80%" src="https://humo-gen.com/genforum/viewforum.php?f=19"></iframe>';
+
 
 	// *** Check for HuMo-genealogy beta version SAME CODE AS CODE ABOVE ***
 	$check=' checked'; if ($humo_option['update_last_check']=='DISABLED') $check='';

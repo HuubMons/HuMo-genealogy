@@ -152,13 +152,18 @@ if (isset($_POST['database_check'])){
 	$wrong_fams=0;
 	$removed=''; if (isset($_POST['remove'])) $removed=' <b>Link is removed.</b>';
 
+// Test line to show processing time
+//$processing_time=time();
+
 	// *** Check person table ***
 	// *** First get pers_id, otherwise there will be a memory problem if a large family tree is used ***
 	$person_start = $dbh->query("SELECT pers_id FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY pers_lastname,pers_firstname");
 	while($person_startDb=$person_start->fetch()){
 
 		// *** Now get all data for one person at a time ***
-		$person = $dbh->query("SELECT * FROM humo_persons WHERE pers_id='".$person_startDb['pers_id']."'");
+		//$person = $dbh->query("SELECT * FROM humo_persons WHERE pers_id='".$person_startDb['pers_id']."'");
+		$person = $dbh->query("SELECT pers_gedcomnumber,pers_famc,pers_fams,pers_indexnr,pers_place_index FROM humo_persons
+			WHERE pers_id='".$person_startDb['pers_id']."'");
 		$person=$person->fetch(PDO::FETCH_OBJ);
 
 		$check=false;
@@ -175,7 +180,7 @@ if (isset($_POST['database_check'])){
 
 			echo '<tr><td><b>Wrong person indexnumber</b></td>';
 			echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber.'</td>';
-			echo '<td>famc: '.$person->pers_famc.', fams: '.$person->pers_fams.'. <b>Is restored!</b></td>';
+			echo '<td>famc: '.$person->pers_famc.', fams: '.$person->pers_fams.'. <b>Is restored!</b></td></tr>';
 
 			// *** Restore pers_indexnr ***
 			$sql="UPDATE humo_persons SET pers_indexnr='".$pers_indexnr."'
@@ -216,7 +221,7 @@ if (isset($_POST['database_check'])){
 					$wrong_fams++;
 					echo '<tr><td><b>Missing marriage/ relation record</b></td>';
 					echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber.'</td>';
-					echo '<td>Missing marriage/ relation gedcomnr: '.$fams[$i].$removed.'</td>';
+					echo '<td>Missing marriage/ relation gedcomnr: '.$fams[$i].$removed.'</td></tr>';
 				}
 
 			}
@@ -245,7 +250,7 @@ if (isset($_POST['database_check'])){
 					$check_children=true;
 					echo '<tr><td><b>Missing child nr.</b></td>';
 					echo '<td>Fam gedcomnr: '.$person->pers_famc.'</td>';
-					echo '<td>Missing child gedcomnr: '.$person->pers_gedcomnumber.'. <b>Is restored.</b></td>';
+					echo '<td>Missing child gedcomnr: '.$person->pers_gedcomnumber.'. <b>Is restored.</b></td></tr>';
 				}
 				else{
 					if (isset($_POST['remove'])){
@@ -265,6 +270,8 @@ if (isset($_POST['database_check'])){
 		}
 
 		// *** Check pers_index_place ***
+		/*
+		// *** CHANGED THIS CODE because this code was VERY SLOW!!!!!!!! *** 
 		$address_sql = $db_functions->get_addresses('person','person_address',$person->pers_gedcomnumber);
 		$nr_addresses=count($address_sql);
 		foreach ($address_sql as $addressDb){
@@ -275,11 +282,36 @@ if (isset($_POST['database_check'])){
 				$result=$dbh->query($sql);
 				echo '<tr><td><b>Restored place index by person</b></td>';
 				echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber.'</td>';
-				echo '<td>Missing place: '.$addressDb->address_place.'</td>';
+				echo '<td>Missing place: '.$addressDb->address_place.'</td></tr>';
+			}
+		}
+		*/
+		// ** Do NOT use function get_adresses, because it will slow down this script EXTREMELY ***
+		$connect_qry= "SELECT connect_item_id FROM humo_connections WHERE connect_tree_id='".$tree_id."'
+			AND connect_kind='person' AND connect_sub_kind='person_address' AND connect_connect_id='".$person->pers_gedcomnumber."'
+			ORDER BY connect_order DESC LIMIT 1;";
+		$connect_result = $dbh->query($connect_qry);
+		$connectDb=$connect_result->fetch(PDO::FETCH_OBJ);
+		if ($connectDb){
+			$address_qry= "SELECT address_place FROM humo_addresses WHERE address_tree_id='".$tree_id."'
+			AND address_gedcomnr='".$connectDb->connect_item_id."'";
+			$address_result = $dbh->query($address_qry);
+			$addressDb=$address_result->fetch(PDO::FETCH_OBJ);
+			if ($addressDb->address_place!=$person->pers_place_index) {
+				$sql="UPDATE humo_persons SET
+					pers_place_index='".safe_text_db($addressDb->address_place)."'
+					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($person->pers_gedcomnumber)."'";
+				$result=$dbh->query($sql);
+				echo '<tr><td><b>Restored place index by person</b></td>';
+				echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber.'</td>';
+				echo '<td>Missing place: '.$addressDb->address_place.'</td></tr>';
 			}
 		}
 
 	}
+
+//echo '<tr><td>!!'.time()-$processing_time.'</td><td></td><td></td></tr>';
+//$processing_time=time();
 
 	// Send output to browser immediately for large family trees.
 	//ob_flush();
@@ -403,6 +435,9 @@ if (isset($_POST['database_check'])){
 
 	}
 
+//echo '<tr><td>!!'.time()-$processing_time.'</td><td></td><td></td></tr>';
+//$processing_time=time();
+
 	// Send output to browser immediately for large family trees.
 	//ob_flush();
 	//flush(); // for IE
@@ -451,6 +486,9 @@ if (isset($_POST['database_check'])){
 
 	}
 
+//echo '<tr><td>!!'.time()-$processing_time.'</td><td></td><td></td></tr>';
+//$processing_time=time();
+
 	// Send output to browser immediately for large family trees.
 	//ob_flush();
 	//flush(); // for IE
@@ -466,6 +504,7 @@ if (isset($_POST['database_check'])){
 
 		// *** Check person ***
 		if ($connect->event_connect_kind=='person' AND $connect->event_connect_id){
+// Use function check_person?
 			$person=$db_functions->get_person($connect->event_connect_id);
 			if (!$person){
 				if (isset($_POST['remove'])){
@@ -481,6 +520,7 @@ if (isset($_POST['database_check'])){
 
 		// *** Check family ***
 		if ($connect->event_connect_kind=='family' AND $connect->event_connect_id){
+// Create function check_family?
 			$person_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."'
 				AND fam_gedcomnumber='".$connect->event_connect_id."'";
 			$person_result = $dbh->query($person_qry);
@@ -497,6 +537,9 @@ if (isset($_POST['database_check'])){
 			}
 		}
 	}
+
+//echo '<tr><td>!!'.time()-$processing_time.'</td><td></td><td></td></tr>';
+//$processing_time=time();
 
 	// Send output to browser immediately for large family trees.
 	//ob_flush();

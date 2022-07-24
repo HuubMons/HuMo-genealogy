@@ -990,8 +990,13 @@ function process_person($person_array){
 				$this->process_sources('person','pers_buried_source',$pers_gedcomnumber,$buffer,'2');
 			}
 
-			// *** Cremation ***
+			// *** Method of burial ***
 			if (substr($buffer,0,16)=='2 TYPE cremation'){ $processed=1; $pers_cremation='1'; }
+			if (substr($buffer,0,16)=='2 TYPE resomated'){ $processed=1; $pers_cremation='R'; }
+			// 2 TYPE sailor's grave in GEDOM file
+			if (substr($buffer,0,13)=='2 TYPE sailor'){ $processed=1; $pers_cremation='S'; }
+			// 2 TYPE donated to science in GEDCOM file
+			if (substr($buffer,0,14)=='2 TYPE donated'){ $processed=1; $pers_cremation='D'; }
 
 			if ($level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_buried', $buffer);
 		}

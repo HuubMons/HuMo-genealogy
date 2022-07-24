@@ -113,7 +113,7 @@ if ($show_table){
 	echo $table_header_text;
 	echo '</th></tr>';
 
-		echo '<tr><td class="line_item">'.__('Choose family').'</td>';
+		echo '<tr><td class="line_item">'.__('Choose family tree').'</td>';
 		echo '<td>';
 			$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 			$tree_result = $dbh->query($tree_sql);
@@ -417,7 +417,9 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 		$gd=gd_info(); // certain versions of GD don't handle gifs
 		while (false !== ($filename = readdir($dh))) {
 			$imgtype = strtolower(substr($filename, -3));
-			if ($imgtype == "jpg" OR $imgtype == "png" OR ($imgtype == "gif" AND $gd["GIF Read Support"]==TRUE AND $gd["GIF Create Support"]==TRUE)){  
+			if ($imgtype == "jpg"
+			OR $imgtype == "png"
+			OR ($imgtype == "gif" AND $gd["GIF Read Support"]==TRUE AND $gd["GIF Create Support"]==TRUE)){
 				$pict_path_original=$prefx.$pict_path."/".$filename;    //ORIGINEEL
 				$pict_path_thumb=$prefx.$pict_path."/thumb_".$filename; //THUMB
 

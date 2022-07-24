@@ -2930,7 +2930,7 @@ function display_result($result) {
 					}
 					elseif(isset($map[$x][3]) AND $map[$x][3]=="chd") {
 						$nextline .="&#8593;@";  // up arrow
-						echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px">';	
+						echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px">';
 					}
 					else {
 						$nextline .= "&nbsp;@";  // empty box
@@ -2944,7 +2944,7 @@ function display_result($result) {
 					$colsp=true;
 				}
 
-			}	
+			}
 			if($colsp==false) {
 				if(isset($marrsign[$b]) AND $marrsign[$b]==$a) {  // display the X sign between two married people
 					echo '<td style="font-weight:bold;font-size:130%;width:10px;text-align:center;border:0px;padding:0px">X';

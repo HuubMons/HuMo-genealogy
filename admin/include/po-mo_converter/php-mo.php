@@ -127,6 +127,10 @@ function phpmo_parse_po_file($in) {
 			case '#' : // translator-comments
 			case '#.' : // extracted-comments
 			case '#:' : // reference...
+
+			// *** Added by Yossi ***
+			case '#~|' : // ??
+
 			case '#|' : // msgid previous-untranslated-string
 				// start a new entry
 				if (sizeof($temp) && array_key_exists('msgid', $temp) && array_key_exists('msgstr', $temp)) {

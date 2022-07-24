@@ -15,7 +15,7 @@ echo '<table class="humo standard" style="width:800px;" border="1">';
 
 echo '<tr class="table_header"><th colspan="2">'.__('Calculated birth date').'</th></tr>';
 
-	echo '<tr><td>'.__('Choose family').'</td>';
+	echo '<tr><td>'.__('Choose family tree').'</td>';
 	echo '<td>';
 		echo '<form method="POST" action="index.php">';
 		echo '<input type="hidden" name="page" value="cal_date">';

@@ -45,117 +45,121 @@ include_once ("editor_inc.php");
 // **************************
 // *** Show source editor ***
 // **************************
+function show_source_header($source_header){
+	//echo '<h2>'.$source_header.'</h2>';
+	echo '<b>'.$source_header.'</b>';
+}
 
 if ($connect_sub_kind=='pers_name_source'){
-	echo '<h2>'.__('Name source').'</h2>';
+	show_source_header(__('Name source'));
 	echo source_edit("person","pers_name_source",$pers_gedcomnumber);
 }
 
 // *** Edit source by sex ***
 if ($connect_sub_kind=='pers_sexe_source'){
-	echo '<h2>'.__('Source').' - '.__('Sex').'</h2>';
+	show_source_header(__('Source').' - '.__('Sex'));
 	echo source_edit("person","pers_sexe_source",$pers_gedcomnumber);
 }
 
 // *** Edit source by birth ***
 if ($connect_sub_kind=='pers_birth_source'){
-	echo '<h2>'.__('Source').' - '.ucfirst(__('born')).'</h2>';
+	show_source_header(__('Source').' - '.ucfirst(__('born')));
 	echo source_edit("person","pers_birth_source",$pers_gedcomnumber);
 }
 
 // *** Edit source by baptise ***
 if ($connect_sub_kind=='pers_bapt_source'){
-	echo '<h2>'.__('Source').' - '.ucfirst(__('baptised')).'</h2>';
+	show_source_header(__('Source').' - '.ucfirst(__('baptised')));
 	echo source_edit("person","pers_bapt_source",$pers_gedcomnumber);
 }
 
 // *** Edit source by death ***
 if ($connect_sub_kind=='pers_death_source'){
-	echo '<h2>'.__('Source').' - '.ucfirst(__('died')).'</h2>';
+	show_source_header(__('Source').' - '.ucfirst(__('died')));
 	echo source_edit("person","pers_death_source",$pers_gedcomnumber);
 }
 
 // *** Edit source by buried ***
 if ($connect_sub_kind=='pers_buried_source'){
-	echo '<h2>'.__('Source').' - '.ucfirst(__('buried')).'</h2>';
+	show_source_header(__('Source').' - '.ucfirst(__('buried')));
 	echo source_edit("person","pers_buried_source",$pers_gedcomnumber);
 }
 
 // *** Edit source by text ***
 if ($connect_sub_kind=='pers_text_source'){
-	echo '<h2>'.__('text').' - '.__('source').'</h2>';
+	show_source_header(__('text').' - '.__('source'));
 	echo source_edit("person","pers_text_source",$pers_gedcomnumber);
 }
 
 // *** Edit source by person ***
 if ($connect_sub_kind=='person_source'){
-	echo '<h2>'.__('Source').' - '.__('person').'</h2>';
+	show_source_header(__('Source').' - '.__('person'));
 	echo source_edit("person","person_source",$pers_gedcomnumber);
 }
 
 // *** Edit source by address by person ***
 if ($connect_sub_kind=='pers_address_source'){
-	echo '<h2>'.__('Source').' - '.__('Address').'</h2>';
+	show_source_header(__('Source').' - '.__('Address'));
 	echo source_edit("person","pers_address_source",$connect_connect_id);
 }
 
-// *** Edit source by relation ***
+// *** Edit source by living together ***
 if ($connect_sub_kind=='fam_relation_source'){
-	echo '<h2>'.__('Source').' - '.__('Living together').'</h2>';
+	show_source_header(__('Source').' - '.__('Living together'));
 	echo source_edit("family","fam_relation_source",$marriage);
 }
 
 // *** Edit source by fam_marr_notice ***
 if ($connect_sub_kind=='fam_marr_notice_source'){
-	echo '<h2>'.__('Source').' - '.__('Notice of Marriage').'</h2>';
+	show_source_header(__('Source').' - '.__('Notice of Marriage'));
 	echo source_edit("family","fam_marr_notice_source",$marriage);
 }
 
 // *** Edit source by fam_marr ***
 if ($connect_sub_kind=='fam_marr_source'){
-	echo '<h2>'.__('Source').' - '.__('Marriage').'</h2>';
+	show_source_header(__('Source').' - '.__('Marriage'));
 	echo source_edit("family","fam_marr_source",$marriage);
 }
 
 // *** Edit source by fam_church_notice ***
 if ($connect_sub_kind=='fam_marr_church_notice_source'){
-	echo '<h2>'.__('Source').' - '.__('Religious Notice of Marriage').'</h2>';
+	show_source_header(__('Source').' - '.__('Religious Notice of Marriage'));
 	echo source_edit("family","fam_marr_church_notice_source",$marriage);
 }
 
 // *** Edit source by fam_marr_church ***
 if ($connect_sub_kind=='fam_marr_church_source'){
-	echo '<h2>'.__('Source').' - '.__('Religious Marriage').'</h2>';
+	show_source_header(__('Source').' - '.__('Religious Marriage'));
 	echo source_edit("family","fam_marr_church_source",$marriage);
 }
 
 // *** Edit source by fam_div ***
 if ($connect_sub_kind=='fam_div_source'){
-	echo '<h2>'.__('Source').' - '.__('Divorce').'</h2>';
+	show_source_header(__('Source').' - '.__('Divorce'));
 	echo source_edit("family","fam_div_source",$marriage);
 }
 
 // *** Edit source by fam_text ***
 if ($connect_sub_kind=='fam_text_source'){
-	echo '<h2>'.__('Source').' - '.__('text').'</h2>';
+	show_source_header(__('Source').' - '.__('text'));
 	echo source_edit("family","fam_text_source",$marriage);
 }
 
 // *** Edit source by family ***
 if ($connect_sub_kind=='family_source'){
-	echo '<h2>'.__('Source').' - '.__('family').'</h2>';
+	show_source_header(__('Source').' - '.__('family'));
 	echo source_edit("family","family_source",$marriage);
 }
 
 // *** Edit source by address by family ***
 if ($connect_sub_kind=='fam_address_source'){
-	echo '<h2>'.__('Source').' - '.__('Address').'</h2>';
+	show_source_header(__('Source').' - '.__('Address'));
 	echo source_edit("family","fam_address_source",$connect_connect_id);
 }
 
 // *** Edit source by address ***
 if ($connect_sub_kind=='address_source'){
-	echo '<h2>'.__('Source').' - '.__('Address').': </h2>';
+	show_source_header(__('Source').' - '.__('Address'));
 	echo source_edit("address","address_source",$address_gedcomnr);
 	echo '<p>';
 }
@@ -164,7 +168,7 @@ if ($connect_sub_kind=='address_source'){
 //if ($connect_sub_kind=='person_event_source' OR ($connect_kind=='person' AND $connect_sub_kind=='event_source')){
 //if ($connect_sub_kind=='person_event_source'){
 if ($connect_sub_kind=='pers_event_source'){
-	echo '<h2>'.__('source').' - '.__('Event').'</h2>';
+	show_source_header(__('source').' - '.__('Event'));
 	echo source_edit("person","pers_event_source",$connect_connect_id);
 	echo '<p>';
 }
@@ -172,7 +176,7 @@ if ($connect_sub_kind=='pers_event_source'){
 // *** Edit source by family event ***
 //if ($connect_sub_kind=='fam_event_source' OR ($connect_kind=='family' AND $connect_sub_kind=='event_source')){
 if ($connect_sub_kind=='fam_event_source'){
-	echo '<h2>'.__('source').' - '.__('Event').'</h2>';
+	show_source_header(__('source').' - '.__('Event'));
 	echo source_edit("family","fam_event_source",$connect_connect_id);
 	echo '<p>';
 }
@@ -185,7 +189,8 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 	global $db_functions;
 	$db_functions->set_tree_id($tree_id);
 
-	$text='<p>'.__('<b>Sourcerole</b>: e.g. Writer, Brother, Sister, Father. <b>Page</b>: page in source.');
+	//$text='<p>'.__('<b>Sourcerole</b>: e.g. Writer, Brother, Sister, Father. <b>Page</b>: page in source.');
+	$text='';
 
 	//$text.= '<table class="humo standard" border="1">';
 	$text.= '<table class="humo" border="1">';
@@ -296,8 +301,8 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 				$text.='<div style="margin-top:3px;">'.__('Title').'</div>';
 				$text.='<div style="margin-top:3px;">'.__('Date').'</div>';
 				$text.='<div style="margin-top:3px;">'.__('Text').'</div>';
-				$text.='<div style="margin-top:50px;">'.__('Own code').'</div>';
-				$text.='<div style="margin-top:3px;">'.__('Sourcerole').'</div>';
+				//$text.='<div style="margin-top:50px;">'.__('Own code').'</div>';
+				$text.='<div style="margin-top:50px;">'.__('Sourcerole').'</div>';
 				$text.='<div style="margin-top:3px;">'.__('Date').'</div>';
 				$text.='<div style="margin-top:3px;">'.__('Extra text').'</div>';
 			$text.='</td>';
@@ -313,6 +318,8 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 					$text.=__('Source GEDCOM number:').' '.$connectDb->connect_source_id.'.&nbsp;&nbsp;&nbsp;&nbsp;';
 
 					$sourceDb=$db_functions->get_source ($connectDb->connect_source_id);
+
+					$text.=__('Own code').' <input type="text" name="source_refn['.$connectDb->connect_id.']" placeholder="'.__('Own code').'" value="'.htmlspecialchars($sourceDb->source_refn).'" size="15">';
 
 					$text.='<input type="hidden" name="source_id['.$connectDb->connect_id.']" value="'.$sourceDb->source_id.'">';
 
@@ -335,7 +342,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 					$text.='</div><br>';
 					*/
 
-					$text.='<input type="text" name="source_title['.$connectDb->connect_id.']" value="'.htmlspecialchars($sourceDb->source_title).'" size="60" placeholder="'.__('Title').'"><br>';
+					$text.='<br><input type="text" name="source_title['.$connectDb->connect_id.']" value="'.htmlspecialchars($sourceDb->source_title).'" size="60" placeholder="'.__('Title').'"><br>';
 
 					$field_date=12; // Size of date field.
 					$text.= $editor_cls->date_show($sourceDb->source_date,'source_date',"[$connectDb->connect_id]");
@@ -347,7 +354,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 					$text.= '<textarea rows="2" name="source_text['.$connectDb->connect_id.']" '.$field_text.' placeholder="'.__('Text').'">'.
 						$editor_cls->text_show($sourceDb->source_text).'</textarea><br>';
 
-					$text.='<input type="text" name="source_refn['.$connectDb->connect_id.']" placeholder="'.__('Own code').'" value="'.htmlspecialchars($sourceDb->source_refn).'" size="15">';
+					//$text.='<input type="text" name="source_refn['.$connectDb->connect_id.']" placeholder="'.__('Own code').'" value="'.htmlspecialchars($sourceDb->source_refn).'" size="15">';
 
 				}
 				else{
@@ -414,9 +421,37 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 
 			if ($connectDb->connect_source_id!=''){
 
-				$text.=' <input type="text" name="connect_role['.$connectDb->connect_id.']" placeholder="'.__('Sourcerole').'" value="'.htmlspecialchars($connectDb->connect_role).'" size="6"> ';
+				$text.=' <input type="text" name="connect_role['.$connectDb->connect_id.']" placeholder="'.__('Sourcerole').'" value="'.htmlspecialchars($connectDb->connect_role).'" size="6">';
+				// *** HELP POPUP ***
+				$rtlmarker="ltr";
+				$text.='<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+					$text.='<a href="#" style="display:inline" ';
+					//$text.='onmouseover="mopen(event,\''.$connectDb->connect_id.'help_sourcerole\',100,400)"';
+					$text.='onmouseover="mopen(event,\''.$connectDb->connect_id.'help_sourcerole\',1,150)"';
+					$text.='onmouseout="mclosetime()">';
+						$text.='<img src="../images/help.png" height="16" width="16">';
+					$text.='</a>';
+					//$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+					$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="'.$connectDb->connect_id.'help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+						$text.=__('e.g. Writer, Brother, Sister, Father.').'<br>';
+					$text.='</div>';
+				$text.='</div>';
 
-				$text.=__('Page').' <input type="text" name="connect_page['.$connectDb->connect_id.']" placeholder="'.__('Page').'" value="'.$connectDb->connect_page.'" size="6">';
+				$text.=' '.__('Page').' <input type="text" name="connect_page['.$connectDb->connect_id.']" placeholder="'.__('Page').'" value="'.$connectDb->connect_page.'" size="6">';
+				// *** HELP POPUP ***
+				$rtlmarker="ltr";
+				$text.='<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+					$text.='<a href="#" style="display:inline" ';
+					//$text.='onmouseover="mopen(event,\''.$connectDb->connect_id.'help_sourcerole\',100,400)"';
+					$text.='onmouseover="mopen(event,\''.$connectDb->connect_id.'help_sourcepage\',1,150)"';
+					$text.='onmouseout="mclosetime()">';
+						$text.='<img src="../images/help.png" height="16" width="16">';
+					$text.='</a>';
+					//$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+					$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="'.$connectDb->connect_id.'help_sourcepage" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+						$text.=__('Page in source.').'<br>';
+					$text.='</div>';
+				$text.='</div>';
 
 				// *** Quality ***
 				$text.=' <select size="1" name="connect_quality['.$connectDb->connect_id.']" style="width: 300px">';

@@ -254,7 +254,7 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 		}
 		if($age) { $age=", ".$age;}
 
-		if ($calculated_age>100){ $age=''; }
+		if ($calculated_age>120){ $age=''; }
 
 		if ($age_check==true){ $age=$calculated_age; }
 		return($age);
