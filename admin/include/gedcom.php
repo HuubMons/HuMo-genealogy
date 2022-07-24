@@ -790,9 +790,8 @@ if (isset($_POST['step2'])){
 		if ($nr_records>0){
 			$loop=$nr_records/$limit;
 			for ($i=0; $i<=$loop; $i++){
-
 				if ($humo_option["gedcom_read_save_pictures"]=='y')
-					$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)." AND event_kind!='picture' LIMIT ".$limit;
+					$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."' AND event_kind!='picture' LIMIT ".$limit;
 				else
 					$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."' LIMIT ".$limit;
 
@@ -801,7 +800,7 @@ if (isset($_POST['step2'])){
 				ob_flush(); flush(); // IE
 			}
 			if ($humo_option["gedcom_read_save_pictures"]=='y')
-				$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)." AND event_kind!='picture'";
+				$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."' AND event_kind!='picture'";
 			else
 				$sql="DELETE FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."'";
 			@$result=$dbh->query($sql);

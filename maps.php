@@ -324,7 +324,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 		$family_nr=1; //*** Process multiple families ***
 
 		$familyDb = $db_functions->get_family($family_id,'man-woman');
-		$parent1=''; $parent2=''; $change_main_person=false;
+		$parent1=''; $parent2=''; $swap_parent1_parent2=false;
 
 		// *** Standard main_person is the father ***
 		if ($familyDb->fam_man){
@@ -333,7 +333,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 		// *** If mother is selected, mother will be main_person ***
 		if ($familyDb->fam_woman==$main_person){
 			$parent1=$familyDb->fam_woman;
-			$change_main_person=true;
+			$swap_parent1_parent2=true;
 		}
 
 		// *** Check family with parent1: N.N. ***
@@ -363,7 +363,7 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 				if ($family_nr==1){
 				// *** Show data of man ***
 
-					if ($change_main_person==true){
+					if ($swap_parent1_parent2==true){
 						if($person_womanDb->pers_birth_place OR $person_womanDb->pers_bapt_place) {
 							$desc_array[]=$person_womanDb->pers_gedcomnumber;
 						}

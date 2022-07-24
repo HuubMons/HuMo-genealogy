@@ -185,7 +185,8 @@ function person_url2($pers_tree_id,$pers_famc,$pers_fams,$pers_gedcomnumber=''){
 // *** Show person name standard                             ***
 // *************************************************************
 // *** Remark: it's necessary to use $personDb because of witnesses, parents etc. ***
-function person_name($personDb){
+//function person_name($personDb){
+function person_name($personDb,$show_name_texts=false){
 	global $dbh, $db_functions, $user, $language, $screen_mode, $selection;
 	global $humo_option;
 
@@ -198,20 +199,41 @@ function person_name($personDb){
 	if (isset($personDb->pers_gedcomnumber) AND $personDb->pers_gedcomnumber){
 		// *** Aldfaer: nobility (predikaat) by name ***
 		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'nobility');
-		foreach($name_qry as $nameDb) $nobility.=$nameDb->event_event.' ';
-		//foreach($name_qry as $nameDb) $nobility.=$nameDb->event_event.' <i>'.$nameDb->event_text.'</i> ';
+		foreach($name_qry as $nameDb){
+			if ($nobility) $nobility.=' ';
+			$nobility.=$nameDb->event_event;
+
+			if ($show_name_texts==true AND $nameDb->event_text){
+				if ($nobility) $nobility.=' ';
+				$nobility.=process_text($nameDb->event_text);
+			}
+		}
 		unset($name_qry);
 
 		// *** Gedcom 5.5 title: NPFX ***
 		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'NPFX');
-		//foreach($name_qry as $nameDb) $title_before.=' '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i> ';
-		foreach($name_qry as $nameDb) $title_before.=' '.$nameDb->event_event.' ';
+		foreach($name_qry as $nameDb){
+			if ($title_before) $title_before.=' ';
+			$title_before.=$nameDb->event_event;
+
+			if ($show_name_texts==true AND $nameDb->event_text){
+				if ($title_before) $title_before.=' ';
+				$title_before.=process_text($nameDb->event_text);
+			}
+		}
 		unset($name_qry);
 
 		// *** Gedcom 5.5 title: NSFX ***
 		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'NSFX');
-		//foreach($name_qry as $nameDb) $title_after.=' '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i> ';
-		foreach($name_qry as $nameDb) $title_after.=' '.$nameDb->event_event.' ';
+		foreach($name_qry as $nameDb){
+			if ($title_after) $title_after.=' ';
+			$title_after.=$nameDb->event_event;
+
+			if ($show_name_texts==true AND $nameDb->event_text){
+				if ($title_after) $title_after.=' ';
+				$title_after.=process_text($nameDb->event_text);
+			}
+		}
 		unset($name_qry);
 
 		// *** Aldfaer: title by name ***
@@ -259,26 +281,54 @@ function person_name($personDb){
 			if ($nameDb->event_event=='barones'){ $title_position='between'; }
 			if ($nameDb->event_event=='ridder'){ $title_position='between'; }
 
-			//if ($title_position=='before') $title_before.=' '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i> ';
-			if ($title_position=='before') $title_before.=' '.$nameDb->event_event.' ';
-			//if ($title_position=='between') $title_between.=' '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i> ';
-			if ($title_position=='between') $title_between.=' '.$nameDb->event_event.' ';
-			//if ($title_position=='after') $title_after.=', '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i>';
-			if ($title_position=='after') $title_after.=', '.$nameDb->event_event.' ';
+			if ($title_position=='before'){
+				if ($title_before) $title_before.=' ';
+				$title_before.=$nameDb->event_event;
+
+				if ($show_name_texts==true AND $nameDb->event_text){
+					if ($title_before) $title_before.=' ';
+					$title_before.=process_text($nameDb->event_text);
+				}
+			}
+			if ($title_position=='between'){
+				if ($title_between) $title_between.=' ';
+				$title_between.=$nameDb->event_event;
+
+				if ($show_name_texts==true AND $nameDb->event_text){
+					if ($title_between) $title_between.=' ';
+					$title_between.=process_text($nameDb->event_text);
+				}
+			}
+			if ($title_position=='after'){
+				if ($title_after) $title_after.=' ';
+				$title_after.=$nameDb->event_event;
+
+				if ($show_name_texts==true AND $nameDb->event_text){
+					if ($title_after) $title_after.=' ';
+					$title_after.=process_text($nameDb->event_text);
+				}
+			}
 		}
 		unset($name_qry);
 
 		// ***Still born child ***
 		if (isset($personDb->pers_stillborn) AND $personDb->pers_stillborn=="y"){
-			if ($personDb->pers_sexe=='M'){$stillborn.=' '.__('stillborn boy');}
-			elseif ($personDb->pers_sexe=='F'){$stillborn.=' '.__('stillborn girl');}
-			else $stillborn.=' '.__('stillborn child');
+			if ($personDb->pers_sexe=='M'){ $stillborn.=__('stillborn boy'); }
+			elseif ($personDb->pers_sexe=='F'){ $stillborn.=__('stillborn girl'); }
+			else $stillborn.=__('stillborn child');
 		}
 
 		// *** Aldfaer: lordship (heerlijkheid) after name ***
 		$name_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'lordship');
-		//foreach($name_qry as $nameDb) $lordship.=', '.$nameDb->event_event.' <i>'.$nameDb->event_text.'</i>';
-		foreach($name_qry as $nameDb) $lordship.=', '.$nameDb->event_event.' ';
+		foreach($name_qry as $nameDb){
+			if ($lordship) $lordship.=', ';
+			$lordship.=$nameDb->event_event;
+
+			if ($show_name_texts==true AND $nameDb->event_text){
+				if ($lordship) $lordship.=' ';
+				$lordship.=process_text($nameDb->event_text);
+			}
+		}
 		unset($name_qry);
 
 		// *** Re-calculate privacy filter for witness names and parents ***
@@ -289,10 +339,10 @@ function person_name($personDb){
 
 		if ($pers_firstname!='N.N.' AND $privacy AND $user['group_filter_name']=='i'){
 			$names = explode(' ', $personDb->pers_firstname);
-			$pers_firstname = "";
+			$pers_firstname = '';
 			foreach($names as $character){
 				if (substr($character, 0,1)!='(' AND substr($character, 0,1)!='['){
-					$pers_firstname .= ucfirst(substr($character, 0,1)).". ";
+					$pers_firstname .= ucfirst(substr($character, 0,1)).'.';
 				}
 			}
 		}
@@ -301,7 +351,13 @@ function person_name($personDb){
 			foreach ($rufname_qry as $rufnameDb){
 				if($rufnameDb->event_gedcom == "_RUFN") {
 					//$pers_firstname = str_ireplace($rufnameDb->event_event,'<u>'.$rufnameDb->event_event.'</u>',$pers_firstname);
-					$pers_firstname .= ' &quot;'.$rufnameDb->event_event.'&quot;';
+					$pers_firstname .= '&quot;'.$rufnameDb->event_event.'&quot;';
+
+					if ($show_name_texts==true AND $rufnameDb->event_text){
+						if ($pers_firstname) $pers_firstname.=' ';
+						$pers_firstname.=process_text($rufnameDb->event_text);
+					}
+
 				}
 			}
 		}
@@ -330,58 +386,144 @@ function person_name($personDb){
 
 			// *** Firstname, patronym, prefix and lastname ***
 			if($humo_option['name_order']!="chinese") {
-				$name_array["name"]=$pers_firstname.' ';
-				// *** feb 2016: added patronym ***
-				if ($personDb->pers_patronym) $name_array["name"].=$personDb->pers_patronym.' ';
-				$name_array["name"].=str_replace("_", " ", $personDb->pers_prefix);
-				$name_array["name"].=$personDb->pers_lastname;
+				$name_array["name"]=$pers_firstname;
+
+				if ($personDb->pers_patronym){
+					if ($name_array["name"]) $name_array["name"].=' ';
+					$name_array["name"].=$personDb->pers_patronym;
+				}
+
+				if ($personDb->pers_lastname){
+					if ($name_array["name"]) $name_array["name"].=' ';
+					$name_array["name"].=str_replace("_", " ", $personDb->pers_prefix);
+					$name_array["name"].=$personDb->pers_lastname;
+				}
+
 			}
 			else{
 				// *** For Chinese no commas or spaces, example: Janssen Jan ***
 				$name_array["name"]=str_replace("_", " ", $personDb->pers_prefix);
 				$name_array["name"].=$personDb->pers_lastname;
-				$name_array["name"].=' '.$pers_firstname;
-				if ($personDb->pers_patronym) $name_array["name"].=' '.$personDb->pers_patronym;
+
+				if ($pers_firstname){
+					if ($name_array["name"]) $name_array["name"].=' ';
+					$name_array["name"].=$pers_firstname;
+				}
+				if ($personDb->pers_patronym){
+					if ($name_array["name"]) $name_array["name"].=' ';
+					$name_array["name"].=$personDb->pers_patronym;
+				}
 			}
 
 			// *** Short firstname, prefix and lastname ***
 			if($humo_option['name_order']!="chinese") {
-				$name_array["short_firstname"]=substr ($personDb->pers_firstname, 0, 1).' ';
-				$name_array["short_firstname"].=str_replace("_", " ", $personDb->pers_prefix);
-				$name_array["short_firstname"].=$personDb->pers_lastname;
+				$name_array["short_firstname"]=substr ($personDb->pers_firstname, 0, 1);
+
+				if ($personDb->pers_lastname){
+					if ($name_array["short_firstname"])$name_array["short_firstname"].=' ';
+					$name_array["short_firstname"].=str_replace("_", " ", $personDb->pers_prefix);
+					$name_array["short_firstname"].=$personDb->pers_lastname;
+				}
 			}
 			else{
 				$name_array["short_firstname"]=str_replace("_", " ", $personDb->pers_prefix);
 				$name_array["short_firstname"].=$personDb->pers_lastname;
-				$name_array["short_firstname"].=' '.substr ($personDb->pers_firstname, 0, 1).' ';
+
+				if ($personDb->pers_firstname){
+					if ($name_array["short_firstname"])$name_array["short_firstname"].=' ';
+					$name_array["short_firstname"].=substr ($personDb->pers_firstname, 0, 1);
+				}
 			}
 
 			// *** $name_array["standard_name"] ***
 			// *** Example: Predikaat Hubertus [Huub] van Mons, Title, 2nd title ***
 			if($humo_option['name_order']!="chinese") {
-				$name_array["standard_name"]=$nobility.$title_before.$pers_firstname.' ';
-				if ($personDb->pers_patronym) $name_array["standard_name"].=" ".$personDb->pers_patronym.' ';
-				$name_array["standard_name"].=$title_between;
+				$name_array["standard_name"]=$nobility;
+
+				if ($title_before){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].=$title_before;
+				}
+
+				if ($pers_firstname){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].=$pers_firstname;
+				}
+
+				if ($personDb->pers_patronym){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].=$personDb->pers_patronym;
+				}
+
+				if ($title_between){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].=$title_between;
+				}
+
 				// *** Callname shown as "Huub" ***
-				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
-					$name_array["standard_name"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
-				$name_array["standard_name"].=str_replace("_", " ", $personDb->pers_prefix);
-				$name_array["standard_name"].=$personDb->pers_lastname;
+				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
+				}
+
+				if ($personDb->pers_lastname){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].=str_replace("_", " ", $personDb->pers_prefix);
+					$name_array["standard_name"].=$personDb->pers_lastname;
+				}
 			}
 			else{
 				// *** For Chinese no commas or spaces, example: Janssen Jan ***
-				$name_array["standard_name"]=str_replace("_", " ", $personDb->pers_prefix);
-				$name_array["standard_name"].=$personDb->pers_lastname.' ';
-				$name_array["standard_name"].=$nobility.$title_before.$pers_firstname.' ';
-				if ($personDb->pers_patronym) $name_array["standard_name"].=" ".$personDb->pers_patronym.' ';
+				if ($personDb->pers_lastname){
+					$name_array["standard_name"]=str_replace("_", " ", $personDb->pers_prefix);
+					$name_array["standard_name"].=$personDb->pers_lastname;
+				}
+
+				if ($nobility){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].=$nobility;
+				}
+
+				if ($title_before){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].=$title_before;
+				}
+
+				if ($pers_firstname){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].=$pers_firstname;
+				}
+
+				if ($personDb->pers_patronym){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].=$personDb->pers_patronym;
+				}
+
 				$name_array["standard_name"].=$title_between;
+
 				// *** Callname shown as "Huub" ***
-				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
-					$name_array["standard_name"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
+				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+					if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+					$name_array["standard_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
+				}
 			}
-			if ($title_after){ $name_array["standard_name"].=$title_after; }
-			$name_array["standard_name"].=$stillborn;
-			$name_array["standard_name"].=$lordship;
+
+			if ($title_after){
+				if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+				$name_array["standard_name"].=$title_after;
+			}
+
+			if ($stillborn){
+				if ($name_array["standard_name"]) $name_array["standard_name"].=' ';
+				$name_array["standard_name"].=$stillborn;
+			}
+
+			// $lordship starts using a comma ", lordship".
+			if ($lordship){
+				if ($name_array["standard_name"]) $name_array["standard_name"].=', ';
+				$name_array["standard_name"].=$lordship;
+			}
+
 			$name_array["standard_name"]=trim($name_array["standard_name"]);
 
 			// *** Name for indexes or search results in lastname order ***
@@ -392,50 +534,78 @@ function person_name($personDb){
 				$prefix1=str_replace("_"," ",$personDb->pers_prefix);
 			}
 			else {
-				$prefix2=" ".str_replace("_"," ",$personDb->pers_prefix);
+				$prefix2=' '.str_replace("_"," ",$personDb->pers_prefix);
 			}
 
-			// *** index_name ***
+			// *** Name for indexes. "index_name" is used in relationship calculator ***
 			$name_array["index_name"]=$prefix1;
 			if ($personDb->pers_lastname){
-				if($humo_option['name_order']!="chinese") {
-					$name_array["index_name"].=$personDb->pers_lastname.', ';
-				}
-				else{
-					// *** For Chinese no commas or spaces, example: Janssen Jan ***
-					$name_array["index_name"].=$personDb->pers_lastname.' ';
-				}
+				$name_array["index_name"].=$personDb->pers_lastname;
 			}
-			$name_array["index_name"].=$pers_firstname;
-				// *** Callname shown as "Huub" ***
-				//if ($personDb->pers_callname  AND $privacy=='') $name_array["index_name"].= ' "'.$personDb->pers_callname.'" ';
-				if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
-					$name_array["index_name"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
+			if ($pers_firstname){
+				if ($name_array["index_name"]){
+					if($humo_option['name_order']!="chinese") {
+						$name_array["index_name"].=', ';
+					}
+					else{
+						// *** For Chinese no commas or spaces, example: Janssen Jan ***
+						$name_array["index_name"].=' ';
+					}
+				}
+				$name_array["index_name"].=$pers_firstname;
+			}
+
+			// *** Callname shown as "Huub" ***
+			if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+				if ($name_array["index_name"]) $name_array["index_name"].=' ';
+				$name_array["index_name"].= '&quot;'.$personDb->pers_callname.'&quot;';
+			}
 			$name_array["index_name"].=$prefix2;
 
 			// *** index_name_extended ***
 			$name_array["index_name_extended"]=$prefix1;
 			if ($personDb->pers_lastname){
-				if($humo_option['name_order']!="chinese") {
-					$name_array["index_name_extended"].=$personDb->pers_lastname.', ';
-				}
-				else{
-					// *** For Chinese no commas or spaces, example: Janssen Jan ***
-					$name_array["index_name_extended"].=$personDb->pers_lastname.' ';
-				}
+				$name_array["index_name_extended"].=$personDb->pers_lastname;
 			}
-			$name_array["index_name_extended"].=$pers_firstname;
+			if ($pers_firstname){
+				if ($name_array["index_name_extended"]){
+					if($humo_option['name_order']!="chinese") {
+						$name_array["index_name_extended"].=', ';
+					}
+					else{
+						// *** For Chinese no commas or spaces, example: Janssen Jan ***
+						$name_array["index_name_extended"].=' ';
+					}
+				}
+				$name_array["index_name_extended"].=$pers_firstname;
+			}
+
 			// *** Callname shown as "Huub" ***
-			//if ($personDb->pers_callname AND $privacy=='') $name_array["index_name_extended"].= ' "'.$personDb->pers_callname.'" ';
-			if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) )
-				$name_array["index_name_extended"].= ' &quot;'.$personDb->pers_callname.'&quot; ';
-			if ($title_after){ $name_array["index_name_extended"].=$title_after; }
-			if ($personDb->pers_patronym){ $name_array["index_name_extended"].=' '.$personDb->pers_patronym;}
-			$name_array["index_name_extended"].=$stillborn;
+			if ($personDb->pers_callname AND ($privacy=='' OR ($privacy AND $user['group_filter_name']=='j')) ){
+				if ($name_array["index_name_extended"]) $name_array["index_name_extended"].=' ';
+				$name_array["index_name_extended"].= '&quot;'.$personDb->pers_callname.'&quot;';
+			}
+
+			if ($title_after){
+				if ($name_array["index_name_extended"]) $name_array["index_name_extended"].=' ';
+				$name_array["index_name_extended"].=$title_after;
+			}
+
+			if ($personDb->pers_patronym){
+				if ($name_array["index_name_extended"]) $name_array["index_name_extended"].=' ';
+				$name_array["index_name_extended"].=$personDb->pers_patronym;
+			}
+
+			if ($stillborn){
+				if ($name_array["index_name_extended"]) $name_array["index_name_extended"].=' ';
+				$name_array["index_name_extended"].=$stillborn;
+			}
+
 			// *** If a special name is found in the results (event table), show it **
 			if (isset($personDb->event_event) AND $personDb->event_event AND $personDb->event_kind=='name'){
 				$name_array["index_name_extended"].=' ('.$personDb->event_event.')';
 			}
+
 			$name_array["index_name_extended"].=$prefix2;
 
 			// *** If search is done for profession, show profession **
@@ -460,7 +630,6 @@ function person_name($personDb){
 			}
 
 			// *** If search is done for places, show place **
-			//if ($selection['witness']){
 			if (isset($selection['witness']) AND $selection['witness']){
 				if (isset($personDb->event_event)){
 					$name_array["index_name_extended"].=' ('.$personDb->event_event.')';
@@ -470,10 +639,10 @@ function person_name($personDb){
 			// *** $name["initials"] used in report_descendant.php ***
 			// *** Example: H.M. ***
 			$name_array["initials"]=substr($personDb->pers_firstname,0,1).'.'.substr($personDb->pers_lastname,0,1).'.';
-			
+
 			if($humo_option['name_order']=="chinese") {
 				// for Chinese no commas or spaces, anyway few characters
-				$name_array["initials"]= $personDb->pers_lastname." ".$personDb->pers_firstname;
+				$name_array["initials"]= $personDb->pers_lastname.' '.$personDb->pers_firstname;
 			}
 		}
 
@@ -612,7 +781,6 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 				'" class="sddm_fixed person_popup" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
 				$name=$this->person_name($personDb);
-				//$text.=$dirmark2.'<span style="font-size:14px; font-weight:bold; color:blue;">'.$name["standard_name"].$name["colour_mark"].'</span><br>';
 				$text.=$dirmark2.'<span style="font-size:13px; font-weight:bold; color:blue;">'.$name["standard_name"].$name["colour_mark"].'</span><br>';
 				if ($extended)
 					$text.='<table><tr><td style="width:auto; border: solid 0px; border-right:solid 1px #999999;">';
@@ -646,13 +814,13 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 						}
 						else{
 							$path_tmp=CMS_ROOTPATH.'report_outline.php?tree_id='.$personDb->pers_tree_id.
-				'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber;
+							'&amp;id='.$pers_family.'&amp;main_person='.$personDb->pers_gedcomnumber;
 						}
 						$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/outline.gif" border="0" alt="'.__('Outline report').'"> '.__('Outline report').'</a>';
 					}
 				}
 
-				if  ($user['group_gen_protection']=='n' AND $personDb->pers_famc!='') {
+				if ($user['group_gen_protection']=='n' AND $personDb->pers_famc!='') {
 					// == Ancestor report: link & icons by Klaas de Winkel (www.dewinkelwaar.tk) ==
 					if (CMS_SPECIFIC=='Joomla'){
 						$path_tmp='index.php?option=com_humo-gen&amp;task=ancestor&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;
@@ -843,7 +1011,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 // ***                                                                  ***
 // *** Oct. 2013: added name of parents after the name of a person.     ***
 // ************************************************************************
-function name_extended($person_kind){
+function name_extended($person_kind,$show_name_texts=false){
 	global $dbh, $db_functions, $humo_option, $uri_path, $user, $language;
 	global $screen_mode, $dirmark1, $dirmark2, $rtlmarker;
 	global $selected_language, $family_expanded, $bot_visit;
@@ -933,7 +1101,7 @@ function name_extended($person_kind){
 
 		}
 
-		$name=$this->person_name($personDb);
+		$name=$this->person_name($personDb,$show_name_texts);
 		$standard_name= $name["standard_name"].$dirmark2;
 
 		// *** Show full gedcomnummer as [I5] (because of Heredis GEDCOM file, that shows: 5I) ***
@@ -1351,7 +1519,7 @@ if(strpos($key,"own_code")!==false) {
 // ***************************************************************************************
 function person_data($person_kind, $id){
 	global $dbh, $db_functions, $tree_id, $dataDb, $user, $language, $humo_option, $family_id, $uri_path;
-	global $family_expanded, $change_main_person;
+	global $family_expanded, $swap_parent1_parent2;
 	global $childnr, $screen_mode, $dirmark1, $dirmark2;
 	global $temp, $templ_person;
 	global $sect, $arial12; // *** RTF export ***
@@ -2029,7 +2197,7 @@ function person_data($person_kind, $id){
 					$pdf_marriage=$parent2_marr_cls->marriage_data($parent2_famDb,$marriagenr,'short');
 				}
 
-				if ($change_main_person==true){
+				if ($swap_parent1_parent2==true){
 					$parent2Db = $db_functions->get_person($parent2_famDb->fam_woman);
 				}
 				else{

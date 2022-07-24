@@ -38,13 +38,13 @@ function descendants($family_id,$main_person,$gn,$nr_generations) {
 	// *** Count marriages of main person (man) ***
 	// *** YB: if needed show woman as main_person ***
 	@$familyDb = $db_functions->get_family($family_id,'man-woman');
-	$parent1=''; $parent2=''; $change_main_person=false;
+	$parent1=''; $parent2=''; $swap_parent1_parent2=false;
 	// *** Standard main_person is the father ***
 	if ($familyDb->fam_man) $parent1=$familyDb->fam_man;
 	// *** If mother is selected, mother will be main_person ***
 	if ($familyDb->fam_woman==$main_person){
 		$parent1=$familyDb->fam_woman;
-		$change_main_person=true;
+		$swap_parent1_parent2=true;
 	}
 
 	// *** Check family with parent1: N.N. ***

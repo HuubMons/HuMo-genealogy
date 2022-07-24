@@ -70,9 +70,8 @@ include_once(CMS_ROOTPATH."include/show_quality.php");
 function topline(){
 	global $dataDb, $bot_visit, $descendant_loop, $parent1_marr, $rtlmarker, $family_id, $main_person;
 	global $alignmarker, $language, $uri_path, $descendant_report, $family_expanded;
-	global $user, $source_presentation, $change_main_person, $maps_presentation, $picture_presentation, $text_presentation;
-	global $database, $man_cls, $person_manDb;
-	global $woman_cls, $person_womanDb, $selected_language;
+	global $user, $source_presentation, $swap_parent1_parent2, $maps_presentation, $picture_presentation, $text_presentation;
+	global $database, $parent1_cls, $parent1Db, $parent2_cls, $parent2Db, $selected_language;
 	global $tree_id,$humo_option;
 
 	//$text='<tr class="table_headline"><td class="table_header" width="65%">';
@@ -227,14 +226,16 @@ function topline(){
 
 		// *** Add family to favourite list ***
 		// If there is a N.N. father, then use mother in favourite icon.
-		if ($change_main_person==true OR !isset($person_manDb->pers_gedcomnumber)){
-			$name=$woman_cls->person_name($person_womanDb);
-			$favorite_gedcomnumber=' ['.$person_womanDb->pers_gedcomnumber.']';
+		//if ($swap_parent1_parent2==true OR !isset($parent1Db->pers_gedcomnumber)){
+		if (!isset($parent1Db->pers_gedcomnumber)){
+			$name=$parent2_cls->person_name($parent2Db);
+			$favorite_gedcomnumber=' ['.$parent2Db->pers_gedcomnumber.']';
 		}
 		else{
-			$name=$man_cls->person_name($person_manDb);
-			$favorite_gedcomnumber=' ['.$person_manDb->pers_gedcomnumber.']';
+			$name=$parent1_cls->person_name($parent1Db);
+			$favorite_gedcomnumber=' ['.$parent1Db->pers_gedcomnumber.']';
 		}
+
 		if ($name){
 			$favorite_values=$name['name'].$favorite_gedcomnumber.'|'.$family_id.'|'.$_SESSION['tree_prefix'].'|'.$main_person;
 			$check=false;
@@ -559,10 +560,10 @@ if($screen_mode=='STAR') {
 if (!$family_id){
 	// starfieldchart is never called when there is no own fam so no need to mark this out
 	// *** Privacy filter ***
-	@$person_manDb = $db_functions->get_person($main_person);
+	@$parent1Db = $db_functions->get_person($main_person);
 	// *** Use class to show person ***
-	$man_cls = New person_cls;
-	$man_cls->construct($person_manDb);
+	$parent1_cls = New person_cls;
+	$parent1_cls->construct($parent1Db);
 
 	if($screen_mode=='PDF') {
 		// *** Show familysheet name: user's choice or default ***
@@ -580,20 +581,20 @@ if (!$family_id){
 		}
 
 		$pdf->SetFont('Arial','B',12);
-		$pdf->Write(8,$man_cls->name_extended("parent1"));
+		$pdf->Write(8,$parent1_cls->name_extended("parent1"));
 		$pdf->SetFont('Arial','',12);
 		$pdf->Write(8,"\n");
 		$id='';
-		//$pdfdetails= pdf_convert($man_cls->person_data("parent1", $id));
-		$pdfdetails= $man_cls->person_data("parent1", $id);
+		//$pdfdetails= pdf_convert($parent1_cls->person_data("parent1", $id));
+		$pdfdetails= $parent1_cls->person_data("parent1", $id);
 		if($pdfdetails) $pdf->pdfdisplay($pdfdetails,"parent");
 	}
 
 	elseif($screen_mode=='RTF') {
-		$rtf_text=strip_tags($man_cls->name_extended("parent1"),"<b><i>");
+		$rtf_text=strip_tags($parent1_cls->name_extended("parent1"),"<b><i>");
 		$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
 		$id='';
-		$rtf_text=strip_tags($man_cls->person_data("parent1", $id),"<b><i>");
+		$rtf_text=strip_tags($parent1_cls->person_data("parent1", $id),"<b><i>");
 		$sect->writeText($rtf_text, $arial12, $parSimple);
 	}
 
@@ -612,9 +613,9 @@ if (!$family_id){
 
 		echo '<tr><td colspan="4">';
 			//*** Show person data ***
-			echo '<span class="parent1 fonts">'.$man_cls->name_extended("parent1");
+			echo '<span class="parent1 fonts">'.$parent1_cls->name_extended("parent1");
 			$id='';
-			echo $man_cls->person_data("parent1", $id).'</span>';
+			echo $parent1_cls->person_data("parent1", $id).'</span>';
 		echo '</td></tr>';
 		echo '</table>';
 	} // end if not pdf
@@ -745,7 +746,7 @@ else{
 
 			// *** Count marriages of man ***
 			$familyDb = $db_functions->get_family($family_id_loop);
-			$parent1=''; $parent2=''; $change_main_person=false;
+			$parent1=''; $parent2=''; $swap_parent1_parent2=false;
 			// *** Standard main person is the father ***
 			if ($familyDb->fam_man){
 				$parent1=$familyDb->fam_man;
@@ -753,14 +754,13 @@ else{
 			// *** After clicking the mother, the mother is main person ***
 			if ($familyDb->fam_woman==$main_person){
 				$parent1=$familyDb->fam_woman;
-				$change_main_person=true;
+				$swap_parent1_parent2=true;
 			}
 
 			// *** Check for parent1: N.N. ***
 			if ($parent1){
-				// *** Save man families in array ***
+				// *** Save parent1 families in array ***
 				$personDb = $db_functions->get_person($parent1);
-
 				$marriage_array=explode(";",$personDb->pers_fams);
 				$count_marr=substr_count($personDb->pers_fams, ";");
 			}
@@ -806,28 +806,34 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 							stat_gedcom_woman='".$familyDb->fam_woman."',
 							stat_date_stat='".date("Y-m-d H:i")."',
 							stat_date_linux='".time()."'";
-//echo $update_sql.'<br>';
 						$result = $dbh->query($update_sql);
 					}
 				}
 
-				// *** Privacy filter man and woman ***
-				@$person_manDb = $db_functions->get_person($familyDb->fam_man);
+				// Oct. 2021 New method:
+				if ($swap_parent1_parent2==true){
+					$parent1=$familyDb->fam_woman;
+					$parent2=$familyDb->fam_man;
+				}
+				else{
+					$parent1=$familyDb->fam_man;
+					$parent2=$familyDb->fam_woman;
+				}
+				@$parent1Db = $db_functions->get_person($parent1);
+				// *** Proces parent1 using a class ***
+				$parent1_cls = New person_cls;
+				$parent1_cls->construct($parent1Db);
 
-				// *** Proces man using a class ***
-				$man_cls = New person_cls;
-				$man_cls->construct($person_manDb);
-
-				@$person_womanDb = $db_functions->get_person($familyDb->fam_woman);
-
-				// *** Proces woman using a clas ***
-				$woman_cls = New person_cls;
-				$woman_cls->construct($person_womanDb);
+				@$parent2Db = $db_functions->get_person($parent2);
+				// *** Proces parent2 using a class ***
+				$parent2_cls = New person_cls;
+				$parent2_cls->construct($parent2Db);
 
 				// *** Proces marriage using a class ***
 				$marriage_cls = New marriage_cls;
-				$marriage_cls->construct($familyDb, $man_cls->privacy, $woman_cls->privacy);
+				$marriage_cls->construct($familyDb, $parent1_cls->privacy, $parent2_cls->privacy);
 				$family_privacy=$marriage_cls->privacy;
+
 
 				// *******************************************************************
 				// *** Show family                                                 ***
@@ -915,236 +921,138 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 				// *************************************************************
 				if ($familyDb->fam_kind!='PRO-GEN'){  //onecht kind, woman without man
 					if ($family_nr==1){
-						//*** Show data of man ***
+						//*** Show data of parent1 ***
 						if($screen_mode=='') {
 							echo '<div class="parent1 fonts">';
-							// *** Show roman number in descendant_report ***
-							if ($descendant_report==true){
-								echo '<b>'.$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1].'</b> '; }
+								// *** Show roman number in descendant_report ***
+								if ($descendant_report==true){
+									echo '<b>'.$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1].'</b> ';
+								}
+
+								$show_name_texts=true;
+								echo $parent1_cls->name_extended("parent1",$show_name_texts);
+								echo $parent1_cls->person_data("parent1", $id);
+
+								// *** Change page title ***
+								if ($descendant_loop==0 AND $descendant_loop2==0){
+									echo '<script type="text/javascript">';
+										$name = $parent1_cls->person_name($parent1Db);
+										echo 'document.title = "'.__('Family Page').': '.$name["index_name"].'";';
+									echo '</script>';
+								}
+							echo '</div>';
 						}
-						if($screen_mode=='PDF') {
+						elseif($screen_mode=='PDF') {
 							if ($descendant_report==true) {
-								$pdf->Write(8,$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1]." "); }
+								$pdf->Write(8,$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1]." ");
+							}
+
+							//  PDF rendering of name + details
+							unset ($templ_person);
+							unset ($templ_name);
+
+							// *** Name ***
+							$pdfdetails=$parent1_cls->name_extended("parent1");
+							if($pdfdetails) {
+								//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
+								$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+
+								// *** Resets line ***
+								$pdf->MultiCell(0,8,'',0,"L");
+							}
+							$indent=$pdf->GetX();
+
+							// *** Person data ***
+							$pdf->SetLeftMargin($indent);
+							$pdfdetails= $parent1_cls->person_data("parent1", $id);
+							if($pdfdetails) {
+								$pdf->pdfdisplay($pdfdetails,"parent1");
+							}
+							$pdf->SetLeftMargin($indent-5);
+
 						}
-						if($screen_mode=='RTF') {
+						elseif($screen_mode=='RTF') {
 							$rtf_text=' <b>'.$number_roman[$descendant_loop+1].'-'.$number_generation[$descendant_loop2+1].'</b> ';
 							//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
 							$sect->writeText($rtf_text, $arial12);
+
+							// *** Start new line ***
+							$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
+
+							$rtf_text=strip_tags($parent1_cls->name_extended("parent1"),"<b><i>");
+							//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+							$sect->writeText($rtf_text, $arial12);
+							$id='';
+							$rtf_text=strip_tags($parent1_cls->person_data("parent1", $id),"<b><i>");
+							$sect->writeText($rtf_text, $arial12, $parSimple);
+
+							// *** Show RTF media ***
+							if ($parent1_cls->privacy==''){
+								show_rtf_media('person',$parent1Db->pers_gedcomnumber);
+							}
 						}
+						elseif($screen_mode=='STAR') {
+							if($descendant_loop==0) {
+								$name=$parent1_cls->person_name($parent1Db);
+								$genarray[$arraynr]["nam"]=$name["standard_name"];
+								if (isset ($name["colour_mark"]))
+									$genarray[$arraynr]["nam"].=$name["colour_mark"];
+								$genarray[$arraynr]["init"]=$name["initials"];
+								$genarray[$arraynr]["short"]=$name["short_firstname"];
+								$genarray[$arraynr]["fams"]=$id;
+								if (isset($parent1Db->pers_gedcomnumber))
+									$genarray[$arraynr]["gednr"]=$parent1Db->pers_gedcomnumber;
+								$genarray[$arraynr]["2nd"]=0;
 
-						if ($change_main_person==true){
-							if($screen_mode=='') {
-								echo $woman_cls->name_extended("parent1");
-								echo $woman_cls->person_data("parent1", $id);
-
-								// *** Change page title ***
-								if ($descendant_loop==0 AND $descendant_loop2==0){
-									echo '<script type="text/javascript">';
-										$name = $woman_cls->person_name($person_womanDb);
-										echo 'document.title = "'.__('Family Page').': '.$name["index_name"].'";';
-									echo '</script>';
-								}
-							}
-							if($screen_mode=='PDF') {
-								//  PDF rendering of name + details
-								unset ($templ_person);
-								unset ($templ_name);
-
-								// *** Name ***
-								$pdfdetails=$woman_cls->name_extended("parent1");
-								if($pdfdetails) {
-									//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
-									$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
-
-									// *** Resets line ***
-									$pdf->MultiCell(0,8,'',0,"L");
-								}
-								$indent=$pdf->GetX();
-
-								// *** Person data ***
-								$pdf->SetLeftMargin($indent);
-								$pdfdetails= $woman_cls->person_data("parent1", $id);
-								if($pdfdetails) {
-									$pdf->pdfdisplay($pdfdetails,"parent1");
-								}
-								$pdf->SetLeftMargin($indent-5);
-							}
-
-							if($screen_mode=='RTF') {
-								// *** Start new line ***
-								$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
-
-								$rtf_text=strip_tags($woman_cls->name_extended("parent1"),"<b><i>");
-								//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-								$sect->writeText($rtf_text, $arial12);
-								$id='';
-								$rtf_text=strip_tags($woman_cls->person_data("parent1", $id),"<b><i>");
-								$sect->writeText($rtf_text, $arial12, $parSimple);
-
-								// *** Show RTF media ***
-								if ($woman_cls->privacy==''){
-									show_rtf_media('person',$person_womanDb->pers_gedcomnumber);
-								}
-							}
-
-							if($screen_mode=='STAR') {
-								if($descendant_loop==0) {
-									$name=$woman_cls->person_name($person_womanDb);
-									$genarray[$arraynr]["nam"]=$name["standard_name"];
-										if (isset ($name["colour_mark"])) $genarray[$arraynr]["nam"].=$name["colour_mark"];
-									$genarray[$arraynr]["init"]=$name["initials"];
-									$genarray[$arraynr]["short"]=$name["short_firstname"];
+								if ($swap_parent1_parent2==true){
 									$genarray[$arraynr]["sex"]="v";
-									$genarray[$arraynr]["fams"]=$id;
-									if (isset($person_womanDb->pers_gedcomnumber))
-										$genarray[$arraynr]["gednr"]=$person_womanDb->pers_gedcomnumber;
-									$genarray[$arraynr]["2nd"]=0;
 									if($dna=="mtdnamark" OR $dna=="mtdna") { $genarray[$arraynr]["dna"]=1; }
-									else $genarray[$arraynr]["dna"]="no";
+										else $genarray[$arraynr]["dna"]="no";
 								}
-							}
-						}
-						else{
-							if($screen_mode=='') {
-								echo $man_cls->name_extended("parent1");
-								echo $man_cls->person_data("parent1", $id);
-
-								// *** Change page title ***
-								if ($descendant_loop==0 AND $descendant_loop2==0){
-									echo '<script type="text/javascript">';
-										$name = $man_cls->person_name($person_manDb);
-										echo 'document.title = "'.__('Family Page').': '.$name["index_name"].'";';
-									echo '</script>';
-								}
-							}
-							if($screen_mode=='PDF') {
-								//  PDF rendering of name + details
-								unset ($templ_person);
-								unset ($templ_name);
-
-								// *** Name ***
-								$pdfdetails=$man_cls->name_extended("parent1");
-								if($pdfdetails) {
-									//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
-									$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
-
-									// *** Resets line ***
-									$pdf->MultiCell(0,8,'',0,"L");
-								}
-								$indent=$pdf->GetX();
-
-								// *** Person data ***
-								$pdf->SetLeftMargin($indent);
-								$pdfdetails= $man_cls->person_data("parent1", $id);
-								if($pdfdetails) {
-									$pdf->pdfdisplay($pdfdetails,"parent1");
-								}
-								$pdf->SetLeftMargin($indent-5);
-							}
-
-							if($screen_mode=='RTF') {
-								// *** Start new line ***
-								$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
-
-								$rtf_text=strip_tags($man_cls->name_extended("parent1"),"<b><i>");
-								//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-								$sect->writeText($rtf_text, $arial12);
-								$id='';
-								$rtf_text=strip_tags($man_cls->person_data("parent1", $id),"<b><i>");
-								$sect->writeText($rtf_text, $arial12, $parSimple);
-
-								// *** Show RTF media ***
-								if ($man_cls->privacy==''){
-									show_rtf_media('person',$person_manDb->pers_gedcomnumber);
-								}
-							}
-
-							if($screen_mode=='STAR') {
-								if($descendant_loop==0) {
-									$name=$man_cls->person_name($person_manDb);
-									$genarray[$arraynr]["nam"]=$name["standard_name"].$name["colour_mark"];
-									$genarray[$arraynr]["init"]=$name["initials"];
-									$genarray[$arraynr]["short"]=$name["short_firstname"];
+								else{
 									$genarray[$arraynr]["sex"]="m";
-									$genarray[$arraynr]["fams"]=$id;
-									$genarray[$arraynr]["gednr"]=$person_manDb->pers_gedcomnumber;
-									$genarray[$arraynr]["2nd"]=0;
 									if($dna=="ydnamark" OR $dna=="ydna" OR $dna=="mtdnamark" OR $dna=="mtdna") { $genarray[$arraynr]["dna"]=1; }
-									else $genarray[$arraynr]["dna"]="no";
+										else $genarray[$arraynr]["dna"]="no";
 								}
 							}
 						}
-
-						if($screen_mode=='') {  echo '</div>';}
 						//$family_nr++;
 					}
 					else{
-						// *** Show standard marriage text ***
+						// *** Show standard marriage text and name in 2nd, 3rd, etc. marriage ***
 						if($screen_mode=='') {
 							echo $marriage_cls->marriage_data($familyDb,$family_nr,'shorter').' ';
+
+							echo '<br>'.$parent1_cls->name_extended("parent1").'<br>';
 						}
-						if($screen_mode=='PDF') {
+						elseif($screen_mode=='PDF') {
 							$pdf->SetLeftMargin($indent);
 							$pdf_marriage=$marriage_cls->marriage_data($familyDb,$family_nr,'shorter');
 							$pdf->Write(8,$pdf_marriage["relnr_rel"].__(' of ')."\n");
+
+							unset ($templ_person);
+							unset ($templ_name);
+
+							// *** PDF rendering of name ***
+							$pdfdetails=$parent1_cls->name_extended("parent1");
+							if($pdfdetails) {
+								//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"kort");
+								$pdf->write_name($templ_name,$pdf->GetX()+5,"kort");
+
+								// *** Resets line ***
+								$pdf->MultiCell(0,8,'',0,"L");
+							}
+							$indent=$pdf->GetX();
+
 						}
-						if($screen_mode=='RTF') {
+						elseif($screen_mode=='RTF') {
 							$rtf_text=strip_tags($marriage_cls->marriage_data($familyDb,$family_nr,'shorter'),"<b><i>");
 							$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+
+							$rtf_text=strip_tags($parent1_cls->name_extended("parent1"),"<b><i>");
+							$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
 						}
-
-						// *** Only show name in 2nd, 3rd, etc. marriage ***
-						if($screen_mode!='STAR') {
-							if ($change_main_person==true){
-								if($screen_mode=='PDF') {
-									unset ($templ_person);
-									unset ($templ_name);
-
-									// *** PDF rendering of name ***
-									$pdfdetails=$woman_cls->name_extended("parent1");
-									if($pdfdetails) {
-										//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"kort");
-										$pdf->write_name($templ_name,$pdf->GetX()+5,"kort");
-
-										// *** Resets line ***
-										$pdf->MultiCell(0,8,'',0,"L");
-									}
-									$indent=$pdf->GetX();
-								}
-								elseif($screen_mode=='RTF') {
-									$rtf_text=strip_tags($woman_cls->name_extended("parent1"),"<b><i>");
-									$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-								}
-								else {
-									echo '<br>'.$woman_cls->name_extended("parent1").'<br>';
-								}
-							}
-							else{
-								if($screen_mode=='PDF') {
-									unset ($templ_person);
-									unset ($templ_name);
-
-									// *** PDF rendering of name ***
-									$pdfdetails=$man_cls->name_extended("parent1");
-									if($pdfdetails) {
-										//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"kort");
-										$pdf->write_name($templ_name,$pdf->GetX()+5,"kort");
-
-										// *** Resets line ***
-										$pdf->MultiCell(0,8,'',0,"L");
-									}
-									$indent=$pdf->GetX();
-								}
-								elseif($screen_mode=='RTF') {
-									$rtf_text=strip_tags($man_cls->name_extended("parent1"),"<b><i>");
-									$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-								}
-								else {
-									echo '<br>'.$man_cls->name_extended("parent1").'<br>';
-								}
-							}
-						}
-						else { //screenmode is STAR
+						elseif($screen_mode=='STAR') {
 							if($descendant_loop==0) {
 								$genarray[$arraynr]=$genarray[$arraynr-1];
 								$genarray[$arraynr]["2nd"]=1;
@@ -1153,6 +1061,7 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 							$genarray[$arraynr]["huw"]=$marriage_cls->marriage_data($familyDb,$family_nr,'shorter');
 							$genarray[$arraynr]["fams"]=$id;
 						}
+
 					}
 					$family_nr++;
 				} // *** End check of PRO-GEN ***
@@ -1224,122 +1133,65 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 				// *************************************************************
 				if($screen_mode=='') {
 					echo '<div class="parent2 fonts">';
-				}
-				if ($change_main_person==true){
-					if($screen_mode=='') {
-						echo $man_cls->name_extended("parent2");
-						echo $man_cls->person_data("parent2", $id);
-					}
-					if($screen_mode=='PDF') {
-						unset ($templ_person);
-						unset ($templ_name);
-						// PDF rendering of name + details
-						$pdf->Write(8," "); // IMPORTANT - otherwise at bottom of page man/woman.gif image will print, but name may move to following page!
-						$pdfdetails=$man_cls->name_extended("parent2");
-						if($pdfdetails) {
-							//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
-							$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
-
-							// *** Resets line ***
-							$pdf->MultiCell(0,8,'',0,"L");
-						}
-						$indent=$pdf->GetX();
-
-						$pdfdetails= $man_cls->person_data("parent2", $id);
-						$pdf->SetLeftMargin($indent);
-						if($pdfdetails) {
-							$pdf->pdfdisplay($pdfdetails,"parent2");
-						}
-					}
-					if($screen_mode=='RTF') {
-						$sect->addEmptyParagraph($fontSmall, $parBlack);
-
-						// *** Start new line ***
-						$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
-
-						$rtf_text=strip_tags($man_cls->name_extended("parent2"),"<b><i>");
-						//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-						$sect->writeText($rtf_text, $arial12);
-						$rtf_text=strip_tags($man_cls->person_data("parent2",$id),"<b><i>");
-						$sect->writeText($rtf_text, $arial12, $parSimple);
-
-						// *** Show RTF media ***
-						if ($man_cls->privacy==''){
-							show_rtf_media('person',$person_manDb->pers_gedcomnumber);
-						}
-					}
-					if($screen_mode=='STAR') {
-						if($person_manDb) {
-							$name=$man_cls->person_name($person_manDb);
-							$genarray[$arraynr]["sps"]=$name["standard_name"];
-							$genarray[$arraynr]["spgednr"]=$person_manDb->pers_gedcomnumber;
-						}
-						else {
-							$genarray[$arraynr]["sps"]= __('Unknown');
-							$genarray[$arraynr]["spgednr"]=''; // this is a non existing NN spouse!
-						}
-						$genarray[$arraynr]["spfams"]=$id;
-					}
-				}
-				else{
-					if($screen_mode=='') {
-						echo $woman_cls->name_extended("parent2");
-						echo $woman_cls->person_data("parent2", $id);
-					}
-					if($screen_mode=='PDF'){
-						unset ($templ_person);
-						unset ($templ_name);
-						// PDF rendering of name + details
-						$pdf->Write(8," ");   // IMPORTANT - otherwise at bottom of page man/woman.gif image will print, but name may move to following page!
-						$pdfdetails=$woman_cls->name_extended("parent2");
-						if($pdfdetails) {
-							//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
-							$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
-
-							// *** Resets line ***
-							$pdf->MultiCell(0,8,'',0,"L");
-						}
-						$indent=$pdf->GetX();
-
-						$pdfdetails= $woman_cls->person_data("parent2", $id);
-						$pdf->SetLeftMargin($indent);
-						if($pdfdetails) {
-							$pdf->pdfdisplay($pdfdetails,"parent2");
-						}
-					}
-					if($screen_mode=='RTF') {
-						$sect->addEmptyParagraph($fontSmall, $parBlack);
-
-						// *** Start new line ***
-						$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
-
-						$rtf_text=strip_tags($woman_cls->name_extended("parent2"),"<b><i>");
-						//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-						$sect->writeText($rtf_text, $arial12);
-						$rtf_text=strip_tags($woman_cls->person_data("parent2",$id),"<b><i>");
-						$sect->writeText($rtf_text, $arial12, $parSimple);
-
-						// *** Show RTF media ***
-						if ($woman_cls->privacy==''){
-							show_rtf_media('person',$person_womanDb->pers_gedcomnumber);
-						}
-					}
-					if($screen_mode=='STAR') {
-						if($person_womanDb) {
-							$name=$woman_cls->person_name($person_womanDb);
-							$genarray[$arraynr]["sps"]=$name["standard_name"];
-							$genarray[$arraynr]["spgednr"]=$person_womanDb->pers_gedcomnumber;
-						}
-						else {
-							$genarray[$arraynr]["sps"]= __('Unknown');
-							$genarray[$arraynr]["spgednr"]=''; // this is a non existing NN spouse!
-						}
-						$genarray[$arraynr]["spfams"]=$id;
-					}
-				}
-				if($screen_mode=='') {
+						$show_name_texts=true;
+						echo $parent2_cls->name_extended("parent2",$show_name_texts);
+						echo $parent2_cls->person_data("parent2", $id);
 					echo '</div>';
 				}
+
+				elseif($screen_mode=='PDF') {
+					unset ($templ_person);
+					unset ($templ_name);
+					// PDF rendering of name + details
+					$pdf->Write(8," "); // IMPORTANT - otherwise at bottom of page man/woman.gif image will print, but name may move to following page!
+					$pdfdetails=$parent2_cls->name_extended("parent2");
+					if($pdfdetails) {
+						//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
+						$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+
+						// *** Resets line ***
+						$pdf->MultiCell(0,8,'',0,"L");
+					}
+					$indent=$pdf->GetX();
+
+					$pdfdetails= $parent2_cls->person_data("parent2", $id);
+					$pdf->SetLeftMargin($indent);
+					if($pdfdetails) {
+						$pdf->pdfdisplay($pdfdetails,"parent2");
+					}
+				}
+
+				elseif($screen_mode=='RTF') {
+					$sect->addEmptyParagraph($fontSmall, $parBlack);
+
+					// *** Start new line ***
+					$sect->writeText('', $arial12, new PHPRtfLite_ParFormat());
+
+					$rtf_text=strip_tags($parent2_cls->name_extended("parent2"),"<b><i>");
+					//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+					$sect->writeText($rtf_text, $arial12);
+					$rtf_text=strip_tags($parent2_cls->person_data("parent2",$id),"<b><i>");
+					$sect->writeText($rtf_text, $arial12, $parSimple);
+
+					// *** Show RTF media ***
+					if ($parent2_cls->privacy==''){
+						show_rtf_media('person',$parent2Db->pers_gedcomnumber);
+					}
+				}
+
+				elseif($screen_mode=='STAR') {
+					if($parent2Db) {
+						$name=$parent2_cls->person_name($parent2Db);
+						$genarray[$arraynr]["sps"]=$name["standard_name"];
+						$genarray[$arraynr]["spgednr"]=$parent2Db->pers_gedcomnumber;
+					}
+					else {
+						$genarray[$arraynr]["sps"]= __('Unknown');
+						$genarray[$arraynr]["spgednr"]=''; // this is a non existing NN spouse!
+					}
+					$genarray[$arraynr]["spfams"]=$id;
+				}
+
 
 				// *************************************************************
 				// *** Marriagetext                                          ***
@@ -1480,22 +1332,9 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 						if($dna=="ydna" OR $dna=="mtdna") {
 							$countdna = 0;
 							for($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
-//if (isset($genarray[$arraynr]["sex"]) AND isset($genarray[$arraynr]["dna"] )){
-
-								//TEST
-								//echo $familyDb->fam_gedcomnumber;
-								//echo $genarray[$arraynr]["nam"].$familyDb->fam_children.'<br>';
-
-								//TEST
-								//$name=$man_cls->person_name($person_manDb);
-								//echo $name["standard_name"].' ';
-								//$name= $woman_cls->person_name($person_womanDb);
-								//echo $name["standard_name"].'<br>';
-
 								@$childDb = $db_functions->get_person($child_array[$i]);
 								if($dna=="ydna" AND $childDb->pers_sexe == "M" AND $genarray[$arraynr]["sex"]=="m" AND $genarray[$arraynr]["dna"]==1) $countdna++;
 								elseif($dna=="mtdna" AND $genarray[$arraynr]["sex"]=="v" AND $genarray[$arraynr]["dna"]==1) $countdna++;
-//}
 							} 
 							$genarray[$arraynr]["nrc"]=$countdna;
 						}
@@ -1810,19 +1649,19 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 								$text_array[]='';
 
 								// BIRTH man
-								if ($man_cls->privacy==''){
-									$location_var = $person_manDb->pers_birth_place; 
+								if ($parent1_cls->privacy==''){
+									$location_var = $parent1Db->pers_birth_place; 
 									if($location_var !='') {
 										$short=__('BORN_SHORT');
-										if($location_var=='') { 
-											$location_var = $person_manDb->pers_bapt_place; 
+										if($location_var=='') {
+											$location_var = $parent1Db->pers_bapt_place; 
 											$short=__('BAPTISED_SHORT');
 										}
 										$location_prep->execute();
 										$man_birth_result = $location_prep->rowCount();
 										if($man_birth_result >0) {
 											$info = $location_prep->fetch();
-											$name=$man_cls->person_name($person_manDb);
+											$name=$parent1_cls->person_name($parent1Db);
 											$google_name=$name["standard_name"];
 
 											$location_array[]=$location_var;
@@ -1834,19 +1673,19 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 								}
 
 								// BIRTH woman
-								if ($woman_cls->privacy==''){
-									$location_var = $person_womanDb->pers_birth_place;
+								if ($parent2_cls->privacy==''){
+									$location_var = $parent2Db->pers_birth_place;
 									if($location_var !='') {
 										$short=__('BORN_SHORT');
 										if($location_var=='') {
-											$location_var = $person_womanDb->pers_bapt_place;
+											$location_var = $parent2Db->pers_bapt_place;
 											$short=__('BAPTISED_SHORT');
 										}
 										$location_prep->execute();
 										$woman_birth_result = $location_prep->rowCount();
 										if($woman_birth_result >0) {
 											$info = $location_prep->fetch();
-											$name=$woman_cls->person_name($person_womanDb);
+											$name=$parent2_cls->person_name($parent2Db);
 											$google_name=$name["standard_name"];
 											$key = array_search($location_var , $location_array);
 											if (isset($key) AND $key>0){
@@ -1863,11 +1702,11 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 								}
 
 								// DEATH man
-								if ($man_cls->privacy==''){
-									$location_var = $person_manDb->pers_death_place;
+								if ($parent1_cls->privacy==''){
+									$location_var = $parent1Db->pers_death_place;
 									$short = __('DIED_SHORT');
 									if($location_var=='') {
-										$location_var = $person_manDb->pers_buried_place;
+										$location_var = $parent1Db->pers_buried_place;
 										$short = __('BURIED_SHORT');
 									}
 									if($location_var !='') {
@@ -1877,7 +1716,7 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 										if($man_death_result >0) {
 											$info = $location_prep->fetch();
 	
-											$name=$man_cls->person_name($person_manDb);
+											$name=$parent1_cls->person_name($parent1Db);
 											$google_name=$name["standard_name"];
 											$key = array_search($location_var, $location_array);
 											if (isset($key) AND $key>0){
@@ -1890,15 +1729,15 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 												$text_array[]=addslashes($google_name.", ".$short.' '.$location_var);
 											}
 										}
-								    }
+									}
 								}
 
 								// DEATH woman
-								if ($woman_cls->privacy==''){
-									$location_var = $person_womanDb->pers_death_place;
+								if ($parent2_cls->privacy==''){
+									$location_var = $parent2Db->pers_death_place;
 									$short = __('DIED_SHORT');
 									if($location_var=='') {
-										$location_var = $person_womanDb->pers_buried_place;
+										$location_var = $parent2Db->pers_buried_place;
 										$short = __('BURIED_SHORT');
 									}
 									if($location_var !='') {
@@ -1907,7 +1746,7 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 										if($woman_death_result >0) {
 											$info = $location_prep->fetch();
 
-											$name=$woman_cls->person_name($person_womanDb);
+											$name=$parent2_cls->person_name($parent2Db);
 											$google_name=$name["standard_name"];
 											$key = array_search($location_var , $location_array);
 											if (isset($key) AND $key>0){
@@ -1928,17 +1767,17 @@ if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
 								if($location_var !='') {
 									$location_prep->execute();
 									$marriage_result = $location_prep->rowCount();
-										
+									
 									if($marriage_result >0) {
 										$info = $location_prep->fetch();
 
-										$name=$man_cls->person_name($person_manDb);
+										$name=$parent1_cls->person_name($parent1Db);
 										$google_name=$name["standard_name"];
 
-										$name=$woman_cls->person_name($person_womanDb);
+										$name=$parent2_cls->person_name($parent2Db);
 										$google_name.=' & '.$name["standard_name"];
 
-										if ($man_cls->privacy=='' AND $woman_cls->privacy==''){
+										if ($parent1_cls->privacy=='' AND $parent2_cls->privacy==''){
 											$key = array_search($familyDb->fam_marr_place, $location_array);
 											if (isset($key) AND $key>0){
 												$text_array[$key].="\\n".addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
@@ -2084,23 +1923,15 @@ if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_pres
 "Family Page: Bethel, Catherine Ann Charles." database, Dolly Mae Alpha Index - Wyannie Malone Historical Museum (http://subscriber.bahamasgenealogyrecor ... son=I52982 : accessed 17 April 2016, Catherine Anne Charles Bethel, born 19 feb 1809 at New Providence, Bahamas; citing Christ Church Cathedral - Baptismal Register. Book 2, Whites -Page 99, item 21. for period Feb. 7, 1802 to Dec. 22, 1840.
 */
 if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
-
-	// If there is a N.N. father, then use mother in favourite icon.
-	if ($change_main_person==true OR !isset($person_manDb->pers_gedcomnumber)){
-		$name1=$woman_cls->person_name($person_womanDb);
-		$name2=$man_cls->person_name($person_manDb);
-	}
-	else{
-		$name1=$man_cls->person_name($person_manDb);
-		if (isset($person_womanDb)) $name2=$woman_cls->person_name($person_womanDb);
-	}
+	$name1=$parent1_cls->person_name($parent1Db);
+	if (isset($parent2Db)) $name2=$parent2_cls->person_name($parent2Db);
 
 	echo '<br><b>'.__('Citation for:').' '.__('Family Page').'</b><br>';
 
 	echo '<span class="citation">';
 		// *** Name of citation ***
 		echo '"'.__('Family Page').': '.$name1['name'];
-		if (isset($name2['name'])) echo ' &amp; '.$name2['name'].'."';
+		if (isset($name2['name']) AND $name2['name']) echo ' &amp; '.$name2['name'].'."';
 
 		// *** Link to family page ***
 		echo ' HuMo-genealogy - '.$humo_option["database_name"].' (';
@@ -2118,16 +1949,16 @@ if ($screen_mode=='' AND $user['group_citation_generation']=='y'){
 		echo ')';
 
 		// *** Name and GEDCOM number of main person ***
-		if ($person_manDb){
-			echo ' '.$name1['name'].' #'.$person_manDb->pers_gedcomnumber;
+		if ($parent1Db){
+			echo ' '.$name1['name'].' #'.$parent1Db->pers_gedcomnumber;
 
 			// *** Birth or baptise date ***
 			if (isset($family_privacy) AND !$family_privacy){
-				if ($person_manDb->pers_birth_date OR $person_manDb->pers_birth_place){
-					echo ', '.__('born').' '.date_place($person_manDb->pers_birth_date,$person_manDb->pers_birth_place);
+				if ($parent1Db->pers_birth_date OR $parent1Db->pers_birth_place){
+					echo ', '.__('born').' '.date_place($parent1Db->pers_birth_date,$parent1Db->pers_birth_place);
 				}
-				elseif ($person_manDb->pers_bapt_date OR $person_manDb->pers_bapt_place){
-					echo ', '.__('baptised').' '.date_place($person_manDb->pers_bapt_date,$person_manDb->pers_bapt_place);
+				elseif ($parent1Db->pers_bapt_date OR $arent1Db->pers_bapt_place){
+					echo ', '.__('baptised').' '.date_place($parent1Db->pers_bapt_date,$parent1Db->pers_bapt_place);
 				}
 			}
 		}
@@ -2184,20 +2015,11 @@ if($screen_mode=='') {
 			$userDb=$user_note->fetch(PDO::FETCH_OBJ);
 
 			// *** Name of selected person in family tree ***
-			if ($change_main_person==true){
-				$name = $woman_cls->person_name($person_womanDb);
-
-				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-				$start_url=$woman_cls->person_url2($person_womanDb->pers_tree_id,$person_womanDb->pers_famc,$person_womanDb->pers_fams,$person_womanDb->pers_gedcomnumber);
-			}
-			else{
-				$name = $man_cls->person_name($person_manDb);
-
-				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-				$start_url='';
-				if (isset($person_manDb->pers_tree_id))
-					$start_url=$man_cls->person_url2($person_manDb->pers_tree_id,$person_manDb->pers_famc,$person_manDb->pers_fams,$person_manDb->pers_gedcomnumber);
-			}
+			$name = $parent1_cls->person_name($parent1Db);
+			// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+			$start_url='';
+			if (isset($parent1Db->pers_tree_id))
+				$start_url=$parent1_cls->person_url2($parent1Db->pers_tree_id,$parent1Db->pers_famc,$parent1Db->pers_fams,$parent1Db->pers_gedcomnumber);
 
 			if (isset($_POST['send_mail'])){
 				$gedcom_date=strtoupper(date("d M Y")); $gedcom_time=date("H:i:s");
@@ -2437,7 +2259,8 @@ function show_rtf_media($media_kind,$gedcomnumber){
 
 		}
 		$break1=0;
-		if(count($textarr)>0) {
+
+		if(isset($textarr) AND count($textarr)>0) {
 			$table->addRow(0.1); //add row only if there is photo text
 			foreach($textarr as $value) {
 				$break1++;
@@ -2445,6 +2268,7 @@ function show_rtf_media($media_kind,$gedcomnumber){
 				$cell->writeText($value);
 			}
 		}
+
 	}
 }
 

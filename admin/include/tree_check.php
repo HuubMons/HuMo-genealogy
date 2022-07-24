@@ -262,8 +262,8 @@ if (isset($_POST['database_check'])){
 			}
 		}
 		*/
-/*
-		// *** Do NOT use function get_adresses, because it will slow down this script EXTREMELY ***
+		/*
+		// *** OLD CHECK METHOD: Do NOT use function get_adresses, because it will slow down this script EXTREMELY ***
 		$connect_qry= "SELECT connect_item_id FROM humo_connections WHERE connect_tree_id='".$tree_id."'
 			AND connect_kind='person' AND connect_sub_kind='person_address' AND connect_connect_id='".$person->pers_gedcomnumber."'
 			ORDER BY connect_order DESC LIMIT 1;";
@@ -284,7 +284,7 @@ if (isset($_POST['database_check'])){
 				echo '<td>Missing place: '.$addressDb->address_place.'</td></tr>';
 			}
 		}
-*/
+		*/
 	}
 
 //echo '<tr><td>!!'.time()-$processing_time.'</td><td></td><td></td></tr>';

@@ -42,7 +42,7 @@ if (isset($_POST['person_remove'])){
 	$disabled=' DISABLED';
 	$confirm.='<span style="color:#6D7B8D;">';
 		$selected=''; //if ($selected_alive=='alive'){ $selected=' CHECKED'; }
-		$confirm.=' <input type="checkbox" name="pers_alive" value="alive"'.$selected.$disabled.'> '.__('Also remove ALL RELATED PERSONS (including all items)').'<br>';
+		$confirm.=' <input type="checkbox" name="XXXXX" value="XXXXX"'.$selected.$disabled.'> '.__('Also remove ALL RELATED PERSONS (including all items)').'<br>';
 	$confirm.='</span>';
 
 	$confirm.=' <form method="post" action="'.$phpself.'" style="display : inline;">';
@@ -385,9 +385,9 @@ if (isset($_POST['person_change'])){
 		family_tree_update($tree_id);
 	}	
 
-	// extra UPDATE queries if Bar Mitsva  is displayed 
+	// extra UPDATE queries if Bar Mitsva is displayed 
 	if($humo_option['admin_barm']=="y") {
-		if($_POST["pers_sexe"]=="F") {  $barmbasm="BASM"; }
+		if($_POST["pers_sexe"]=="F") { $barmbasm="BASM"; }
 		else { $barmbasm = "BARM"; }
 		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '".$barmbasm."' AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
 		$result = $dbh->query($sql);
@@ -748,8 +748,8 @@ if (isset($_POST['fam_remove2'])){
 	$_SESSION['admin_fam_gedcomnumber']=$marriage;
 }
 
-// *** Add NEW N.N. parents to a child ***
-if (isset($_GET['add_parents'])){
+// *** Add NEW parents to a child ***
+if (isset($_POST['add_parents2'])){
 	// *** Generate new GEDCOM number ***
 	$fam_gedcomnumber='F'.$db_functions->generate_gedcomnr($tree_id,'family');
 
@@ -776,7 +776,7 @@ if (isset($_GET['add_parents'])){
 	fam_new_date='".$gedcom_date."',
 	fam_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
-	
+
 	// only needed for jewish settings
 	if($humo_option['admin_hebnight']=="y") {
 		$sql="UPDATE humo_families SET 
@@ -785,14 +785,22 @@ if (isset($_GET['add_parents'])){
 		$result=$dbh->query($sql);
 	}
 
-	// *** Add N.N. father ***
+	// *** Add father ***
+	$pers_alive1=''; if (isset($_POST['pers_alive1'])) $pers_alive1=safe_text_db($_POST['pers_alive1']);
+	$pers_sexe1=''; if (isset($_POST['pers_sexe1'])) $pers_sexe1=safe_text_db($_POST['pers_sexe1']);
 	$sql="INSERT INTO humo_persons SET
 		pers_gedcomnumber='".$man_gedcomnumber."',
 		pers_tree_id='".$tree_id."',
 		pers_tree_prefix='".$tree_prefix."',
 		pers_famc='', pers_fams='".safe_text_db($fam_gedcomnumber)."',
-		pers_firstname='".__('N.N.')."', pers_callname='', pers_prefix='', pers_lastname='', pers_patronym='', pers_name_text='',
-		pers_alive='alive', pers_sexe='M', pers_own_code='', pers_place_index='', pers_text='',
+		pers_firstname='".safe_text_db($_POST['pers_firstname1'])."',
+		pers_callname='',
+		pers_prefix='".safe_text_db($_POST['pers_prefix1'])."',
+		pers_lastname='".safe_text_db($_POST['pers_lastname1'])."',
+		pers_patronym='', pers_name_text='',
+		pers_alive='".$pers_alive1."',
+		pers_sexe='".$pers_sexe1."',
+		pers_own_code='', pers_place_index='', pers_text='',
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
 		pers_death_date='', pers_death_place='', pers_death_time='', pers_death_text='', pers_death_cause='',
@@ -801,7 +809,7 @@ if (isset($_GET['add_parents'])){
 		pers_new_date='".$gedcom_date."',
 		pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
-	
+
 	// only needed for jewish settings
 	if($humo_option['admin_hebnight']=="y") {
 		$sql="UPDATE humo_persons SET 
@@ -810,14 +818,22 @@ if (isset($_GET['add_parents'])){
 		$result=$dbh->query($sql);
 	}
 
-	// *** Add N.N. mother ***
+	// *** Add mother ***
+	$pers_alive2=''; if (isset($_POST['pers_alive2'])) $pers_alive2=safe_text_db($_POST['pers_alive2']);
+	$pers_sexe2=''; if (isset($_POST['pers_sexe2'])) $pers_sexe2=safe_text_db($_POST['pers_sexe2']);
 	$sql="INSERT INTO humo_persons SET
 		pers_gedcomnumber='".$woman_gedcomnumber."',
 		pers_tree_id='".$tree_id."',
 		pers_tree_prefix='".$tree_prefix."',
 		pers_famc='', pers_fams='".safe_text_db($fam_gedcomnumber)."',
-		pers_firstname='".__('N.N.')."', pers_callname='', pers_prefix='', pers_lastname='', pers_patronym='', pers_name_text='',
-		pers_alive='alive', pers_sexe='F', pers_own_code='', pers_place_index='', pers_text='',
+		pers_firstname='".safe_text_db($_POST['pers_firstname2'])."',
+		pers_callname='',
+		pers_prefix='".safe_text_db($_POST['pers_prefix2'])."',
+		pers_lastname='".safe_text_db($_POST['pers_lastname2'])."',
+		pers_patronym='', pers_name_text='',
+		pers_alive='".$pers_alive2."',
+		pers_sexe='".$pers_sexe2."',
+		pers_own_code='', pers_place_index='', pers_text='',
 		pers_birth_date='', pers_birth_place='', pers_birth_time='', pers_birth_text='', pers_stillborn='',
 		pers_bapt_date='', pers_bapt_place='', pers_bapt_text='', pers_religion='',
 		pers_death_date='', pers_death_place='', pers_death_time='', pers_death_text='', pers_death_cause='',
@@ -826,7 +842,7 @@ if (isset($_GET['add_parents'])){
 		pers_new_date='".$gedcom_date."',
 		pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
-	
+
 	// only needed for jewish settings
 	if($humo_option['admin_hebnight']=="y") {
 		$sql="UPDATE humo_persons SET 

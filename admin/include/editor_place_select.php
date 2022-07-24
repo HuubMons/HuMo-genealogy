@@ -24,11 +24,15 @@ if (isset($_GET['place_item'])){
 
 	// *** Add relation in relation page ***
 	if ($_GET['place_item']=='birth_relation'){ $place_item='pers_birth_place'; $form='form5'; }
+	if ($_GET['place_item']=='baptise_relation'){ $place_item='pers_bapt_place'; $form='form5'; }
 	if ($_GET['place_item']=='death_relation'){ $place_item='pers_death_place'; $form='form5'; }
+	if ($_GET['place_item']=='buried_relation'){ $place_item='pers_buried_place'; $form='form5'; }
 
 	// *** Add relation in child page ***
 	if ($_GET['place_item']=='birth_child'){ $place_item='pers_birth_place'; $form='form6'; }
+	if ($_GET['place_item']=='baptise_child'){ $place_item='pers_bapt_place'; $form='form6'; }
 	if ($_GET['place_item']=='death_child'){ $place_item='pers_death_place'; $form='form6'; }
+	if ($_GET['place_item']=='buried_child'){ $place_item='pers_buried_place'; $form='form6'; }
 }
 
 if(strpos($_GET['place_item'],"add_fam")!== false ) {

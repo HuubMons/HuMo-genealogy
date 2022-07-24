@@ -183,6 +183,7 @@ while (false!==($file = readdir($map))) {
 			elseif ($file=='fa') $language_order[]='Persian';
 			elseif ($file=='fi') $language_order[]='Suomi';
 			elseif ($file=='fr') $language_order[]='French';
+			elseif ($file=='fur') $language_order[]='Furlan';
 			elseif ($file=='he') $language_order[]='Hebrew';
 			elseif ($file=='hu') $language_order[]='Magyar';
 			elseif ($file=='id') $language_order[]='Indonesian';
@@ -194,6 +195,7 @@ while (false!==($file = readdir($map))) {
 			elseif ($file=='ru') $language_order[]='Russian';
 			elseif ($file=='sk') $language_order[]='Slovensky';
 			elseif ($file=='sv') $language_order[]='Swedish';
+			elseif ($file=='tr') $language_order[]='Turkish';
 			elseif ($file=='zh') $language_order[]='Chinese_traditional';
 			elseif ($file=='pl') $language_order[]='Polish';
 			else $language_order[]=$file;
@@ -570,7 +572,9 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					//$update['beta_version_date']='';
 					//$update['beta_version_auto_download']='';
 
-					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+					// *** Oct. 2021: Added random number to prevent CURL cache problems ***
+					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie.'&random='.rand();
+
 					//$update_file='update/temp_update_check.php';
 					$resource = curl_init();
 					curl_setopt($resource, CURLOPT_URL, $source);
@@ -579,6 +583,10 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					//curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 20);
 					// *** BE AWARE: for provider Hostinger this must be a low value, otherwise the $dbh connection will be disconnected! ***
 					curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 15);
+
+					// *** Oct 2021: Don't use CURL cache ***
+					curl_setopt($resource, CURLOPT_FRESH_CONNECT, true); // don't use a cached version of the url
+
 					$content = curl_exec($resource);
 					curl_close($resource);
 
@@ -606,7 +614,9 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					//$update['beta_version_date']='';
 					//$update['beta_version_auto_download']='';
 
-					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie;
+					// *** Oct. 2021: Added random number to prevent CURL cache problems ***
+					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie.'&random='.rand();
+
 					//$update_file='update/temp_update_check.php';
 					$resource = curl_init();
 					curl_setopt($resource, CURLOPT_URL, $source);
@@ -615,6 +625,9 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					//curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 20);
 					// *** BE AWARE: for provider Hostinger this must be a low value, otherwise the $dbh connection will be disconnected! ***
 					curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 15);
+
+					// *** Oct 2021: Don't use CURL cache ***
+					curl_setopt($resource, CURLOPT_FRESH_CONNECT, true); // don't use a cached version of the url
 
 					// *********************************************************************
 					// *** EXTRA SETTINGS TO DISABLE SSL CHECK NEEDED FOR SOME PROVIDERS ***
@@ -755,7 +768,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 		}
 	}
 
-	// *** NEW FEBRUARI 2020: centralised processing of tree_id and tree_prefix ***
+	// *** Feb. 2020: centralised processing of tree_id and tree_prefix ***
 	// *** Selected family tree, using tree_id ***
 
 

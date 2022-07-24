@@ -152,6 +152,35 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			}
 		}
 
+		// *** Address extra text (connection table) ***
+		if ($connectDb->connect_text) {
+			$work_text=process_text($connectDb->connect_text);
+			if ($work_text){
+				//if($temp) { $templ_person[$temp].=", "; }
+				//$templ_person["address_text".$address_nr]=$work_text;
+				//$temp="address_text".$address_nr;
+				//$text.=', '.$work_text;
+
+				// *** PDF export ***
+				if ($connect_kind=='person'){
+					if (isset($templ_person["address_text".$address_nr]))
+						$templ_person["address_text".$address_nr].=', '.$connectDb->connect_text;
+					else
+						$templ_person["address_text".$address_nr]=' '.$connectDb->connect_text;
+					if($templ_person["address_text".$address_nr]!='') $temp="address_text".$address_nr;
+				}
+				if ($connect_kind=='family'){
+					if (isset($templ_relation["address_text".$address_nr]))
+						$templ_relation["address_text".$address_nr].=', '.$connectDb->connect_text;
+					else
+						$templ_relation["address_text".$address_nr]=' '.$connectDb->connect_text;
+					if($templ_relation["address_text".$address_nr]!='') $temp="address_text".$address_nr;
+				}
+
+				$text.=' '.$work_text;
+			}
+		}
+
 		if ($connect_kind=='person'){
 			$source=show_sources2("person","pers_address_source",$connectDb->address_gedcomnr);
 		}
