@@ -11,7 +11,7 @@ echo '<table class="humo standard"  border="1">';
 
 echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 
-	echo '<tr><td>'.__('Choose family').'</td>';
+	echo '<tr><td>'.__('Choose family tree').'</td>';
 	echo '<td>';
 		$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 		$tree_result = $dbh->query($tree_sql);

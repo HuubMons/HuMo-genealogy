@@ -1604,7 +1604,7 @@ function show_pair($left_id,$right_id,$mode) {
 	$this->show_regular_text($leftDb->pers_death_text,$rightDb->pers_death_text,__('death text'),'d_text');
 	$this->show_regular_text($leftDb->pers_buried_text,$rightDb->pers_buried_text,__('burial text'),'br_text');
 
-	// functions that deal with showing the events, sources and addresses
+	// *** functions to show events, sources and addresses ***
 	$this->show_events($leftDb->pers_gedcomnumber,$rightDb->pers_gedcomnumber);
 	$this->show_sources($leftDb->pers_gedcomnumber,$rightDb->pers_gedcomnumber);
 	$this->show_addresses($leftDb->pers_gedcomnumber,$rightDb->pers_gedcomnumber);

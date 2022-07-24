@@ -964,7 +964,10 @@ while ($persons=$persons_result->fetch(PDO::FETCH_OBJ)){
 			sources_export('person','pers_buried_source',$person->pers_gedcomnumber,2);
 		if ($gedcom_texts=='yes' AND $person->pers_buried_text)
 			$buffer.='2 NOTE '.process_text(3,$person->pers_buried_text);
-		if ($person->pers_cremation) $buffer.='2 TYPE cremation'."\r\n";
+		if ($person->pers_cremation=='1') $buffer.='2 TYPE cremation'."\r\n";
+		if ($person->pers_cremation=='R') $buffer.='2 TYPE resomated'."\r\n";
+		if ($person->pers_cremation=='S') $buffer.='2 TYPE sailor\'s grave'."\r\n";
+		if ($person->pers_cremation=='D') $buffer.='2 TYPE donated to science'."\r\n";
 	}
 
 	// *** Addresses (shared addresses are no valid GEDCOM 5.5.1 but is used in some genealogical programs) ***

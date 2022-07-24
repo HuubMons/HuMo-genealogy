@@ -944,8 +944,9 @@ else{
 								if($pdfdetails) {
 									//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
 									$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
-// *** Resets line ***
-$pdf->MultiCell(0,8,'',0,"L");
+
+									// *** Resets line ***
+									$pdf->MultiCell(0,8,'',0,"L");
 								}
 								$indent=$pdf->GetX();
 
@@ -1051,8 +1052,9 @@ $pdf->MultiCell(0,8,'',0,"L");
 								if($pdfdetails) {
 									//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
 									$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
-// *** Resets line ***
-$pdf->MultiCell(0,8,'',0,"L");
+
+									// *** Resets line ***
+									$pdf->MultiCell(0,8,'',0,"L");
 								}
 								$indent=$pdf->GetX();
 
@@ -1164,8 +1166,9 @@ $pdf->MultiCell(0,8,'',0,"L");
 									if($pdfdetails) {
 										//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"kort");
 										$pdf->write_name($templ_name,$pdf->GetX()+5,"kort");
-// *** Resets line ***
-$pdf->MultiCell(0,8,'',0,"L");
+
+										// *** Resets line ***
+										$pdf->MultiCell(0,8,'',0,"L");
 									}
 									$indent=$pdf->GetX();
 								}
@@ -1187,8 +1190,9 @@ $pdf->MultiCell(0,8,'',0,"L");
 									if($pdfdetails) {
 										//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"kort");
 										$pdf->write_name($templ_name,$pdf->GetX()+5,"kort");
-// *** Resets line ***
-$pdf->MultiCell(0,8,'',0,"L");
+
+										// *** Resets line ***
+										$pdf->MultiCell(0,8,'',0,"L");
 									}
 									$indent=$pdf->GetX();
 								}
@@ -1214,6 +1218,7 @@ $pdf->MultiCell(0,8,'',0,"L");
 					$family_nr++;
 				} // *** End check of PRO-GEN ***
 
+
 				// *************************************************************
 				// *** Marriage                                              ***
 				// *************************************************************
@@ -1232,7 +1237,7 @@ $pdf->MultiCell(0,8,'',0,"L");
 					}
 					if($screen_mode=='PDF') {
 						//unset ($templ_person);
-//unset ($templ_relation);
+						//unset ($templ_relation);
 
 						if($family_privacy) {
 							$pdf_marriage=$marriage_cls->marriage_data($familyDb,'','short');
@@ -1292,8 +1297,9 @@ $pdf->MultiCell(0,8,'',0,"L");
 						if($pdfdetails) {
 							//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
 							$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
-// *** Resets line ***
-$pdf->MultiCell(0,8,'',0,"L");
+
+							// *** Resets line ***
+							$pdf->MultiCell(0,8,'',0,"L");
 						}
 						$indent=$pdf->GetX();
 
@@ -1383,8 +1389,9 @@ $pdf->MultiCell(0,8,'',0,"L");
 						if($pdfdetails) {
 							//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
 							$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
-// *** Resets line ***
-$pdf->MultiCell(0,8,'',0,"L");
+
+							// *** Resets line ***
+							$pdf->MultiCell(0,8,'',0,"L");
 						}
 						$indent=$pdf->GetX();
 
@@ -1464,11 +1471,11 @@ $pdf->MultiCell(0,8,'',0,"L");
 					echo '</div>';
 				}
 
-$temp='';
-
 				// *************************************************************
 				// *** Marriagetext                                          ***
 				// *************************************************************
+				$temp='';
+
 				if($screen_mode!='STAR') {
 					if ($family_privacy){
 						// No marriage data
@@ -1482,12 +1489,12 @@ $temp='';
 								//$pdf->Write(6,show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber)."\n");
 								//$pdf->SetFont('Arial','',12);
 
-$templ_relation["fam_text"]=$familyDb->fam_text;
-$temp="fam_text";
+								$templ_relation["fam_text"]=$familyDb->fam_text;
+								$temp="fam_text";
 
-$source=show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber);
-$templ_relation["fam_text_source"]=$source;
-$temp="fam_text_source";
+								$source=show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber);
+								$templ_relation["fam_text_source"]=$source;
+								$temp="fam_text_source";
 
 							}
 							elseif($screen_mode=='RTF') {
@@ -1646,8 +1653,9 @@ $temp="fam_text_source";
 							if($pdfdetails) {
 								//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
 								$pdf->write_name($templ_name,$pdf->GetX()+5,"child");
-// *** Resets line ***
-//$pdf->MultiCell(0,8,'',0,"L");   // NOT IN USE WITH CHILD
+
+								// *** Resets line ***
+								//$pdf->MultiCell(0,8,'',0,"L");   // NOT IN USE WITH CHILD
 							}
 							//$indent=$pdf->GetX();
 						}

@@ -208,9 +208,12 @@ if($humo_option['admin_hebnight'] == "y") {
 // end jewish settings
 
 
-// ~~~~~BEGIN NEW FOR PETER~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// *** Save entire family ***
+if(isset($_SESSION['submit_entirefamily']) AND isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_family'])) {
 
-if(isset($_POST['save_entire_family']) OR isset($_POST['save_and_new_entire_family'])) {
+	// *** Prevent double click***
+	$_SESSION['submit_entirefamily']=false;
+
 	// save all data from the table
 
 	// *** Generate new GEDCOM number ***
@@ -408,7 +411,7 @@ fam_new_user,fam_new_date,fam_new_time,fam_tree_id,fam_gedcomnumber,fam_man,fam_
 		if(!isset($_POST['add_fam_partner_exist']) OR $_POST['add_fam_partner_exist']=="") {
 			if($add_fam_partner_prefix!="" AND substr($add_fam_partner_prefix,-1)!="_" AND substr($add_fam_partner_prefix,-1)!="'") { $add_fam_partner_prefix .= "_";  }
 
-			$result = $dbh->query("INSERT INTO humo_persons (pers_famc,pers_callname,pers_patronym,pers_name_text,pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time,pers_birth_text,	pers_stillborn, pers_bapt_date,pers_bapt_place,pers_bapt_text, pers_religion,pers_death_time,pers_death_text,pers_death_cause,pers_death_age,	pers_buried_date,pers_buried_place,pers_buried_text,pers_new_user,pers_new_date,pers_new_time,pers_tree_id,pers_tree_prefix, pers_gedcomnumber,pers_fams,pers_indexnr,pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,pers_death_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_id."','".$tree_prefix."','".$newpartner_id."','".$newfam_id."','".$newfam_id."','".$add_fam_partner_sexe."','".$add_fam_partner_firstname."','".$add_fam_partner_prefix."','".$add_fam_partner_lastname."','".$add_fam_partner_birthdate_prefix.$add_fam_partner_birthdate."','".$add_fam_partner_birthplace."','".$add_fam_partner_deathdate_prefix.$add_fam_partner_deathdate."','".$add_fam_partner_deathplace."')");
+			$result = $dbh->query("INSERT INTO humo_persons (pers_famc,pers_callname,pers_patronym,pers_name_text,pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time,pers_birth_text, pers_stillborn, pers_bapt_date,pers_bapt_place,pers_bapt_text, pers_religion,pers_death_time,pers_death_text,pers_death_cause,pers_death_age, pers_buried_date,pers_buried_place,pers_buried_text,pers_new_user,pers_new_date,pers_new_time,pers_tree_id,pers_tree_prefix, pers_gedcomnumber,pers_fams,pers_indexnr,pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,pers_death_place) VALUES ('','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."','".$tree_id."','".$tree_prefix."','".$newpartner_id."','".$newfam_id."','".$newfam_id."','".$add_fam_partner_sexe."','".$add_fam_partner_firstname."','".$add_fam_partner_prefix."','".$add_fam_partner_lastname."','".$add_fam_partner_birthdate_prefix.$add_fam_partner_birthdate."','".$add_fam_partner_birthplace."','".$add_fam_partner_deathdate_prefix.$add_fam_partner_deathdate."','".$add_fam_partner_deathplace."')");
 			
 			// for jewish dates
 			if($humo_option['admin_hebnight'] == "y") {
@@ -487,22 +490,7 @@ fam_new_user,fam_new_date,fam_new_time,fam_tree_id,fam_gedcomnumber,fam_man,fam_
 			
 			if(${'add_fam_child_prefix'.$x} != "" AND substr(${'add_fam_child_prefix'.$x},-1)!="_" AND substr(${'add_fam_child_prefix'.$x},-1)!="'") { ${'add_fam_child_prefix'.$x} .= "_"; }
 
-			/*
 			// enter new child into humo_persons table
-			$result = $dbh->query("INSERT INTO humo_persons (
-			pers_changed_user,pers_changed_date,pers_changed_time,pers_fams,pers_callname,pers_patronym,pers_name_text,
-			pers_alive,pers_own_code,pers_place_index,pers_text,pers_birth_time,pers_birth_text,pers_stillborn,
-			pers_bapt_date,pers_bapt_place,pers_bapt_text,pers_religion,pers_death_time,pers_death_text,pers_death_cause,
-			pers_death_age,pers_buried_date,pers_buried_place,pers_buried_text,
-			pers_new_user,pers_new_date,pers_new_time,pers_tree_prefix,pers_tree_id,pers_gedcomnumber,pers_famc,pers_indexnr,
-			pers_sexe,pers_firstname,pers_prefix,pers_lastname,pers_birth_date,pers_birth_place,pers_death_date,
-			pers_death_place)
-			VALUES ('','','','','','','','','','','','','','','','','','','','','','','','','','".$username."','".$gedcom_date."','".$gedcom_time."',
-			'".$tree_prefix."','".$tree_id."','".$childged."','".$newfam_id."','".$newfam_id."',
-			'".${'add_fam_child_sexe'.$x}."','".${'add_fam_child_firstname'.$x}."','".${'add_fam_child_prefix'.$x}."',
-			'".${'add_fam_child_lastname'.$x}."','".${'add_fam_child_birthdate'.$x.'_prefix'}.${'add_fam_child_birthdate'.$x}."','".${'add_fam_child_birthplace'.$x}."','".${'add_fam_child_deathdate'.$x.'_prefix'}.${'add_fam_child_deathdate'.$x}."','".${'add_fam_child_deathplace'.$x}."')");
-			*/
-			//RENEWED QUERY:
 			$result = $dbh->query("INSERT INTO humo_persons SET
 				pers_new_user='".$username."',
 				pers_new_date='".$gedcom_date."',
@@ -575,10 +563,6 @@ fam_new_user,fam_new_date,fam_new_time,fam_tree_id,fam_gedcomnumber,fam_man,fam_
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if (isset($person->pers_fams) AND $person->pers_fams){
-	$fams1=explode(";",$person->pers_fams);
-	$marriage=$fams1[0];
-	$_SESSION['admin_fam_gedcomnumber']=$marriage;
-
 	if (isset($_POST["marriage_nr"]) AND $_POST["marriage_nr"]){
 		$marriage=$_POST['marriage_nr'];
 		$_SESSION['admin_fam_gedcomnumber']=$marriage;
@@ -588,13 +572,20 @@ if (isset($person->pers_fams) AND $person->pers_fams){
 		$_SESSION['admin_fam_gedcomnumber']=$marriage;
 	}
 
+	// *** Get marriage number, also used for 2nd, 3rd etc. relation ***
 	if (isset($_SESSION['admin_fam_gedcomnumber'])){
 		$marriage=$_SESSION['admin_fam_gedcomnumber'];
 	}
+	else{
+		// *** Just in case there is no marriage variable found ***
+		$fams1=explode(";",$person->pers_fams);
+		$marriage=$fams1[0];
+		$_SESSION['admin_fam_gedcomnumber']=$marriage;
+	}
 
-//test
-//$marriage=$_SESSION['admin_fam_gedcomnumber'];
-//echo $marriage;
+	// *** test line ***
+	//$marriage=$_SESSION['admin_fam_gedcomnumber'];
+	//echo $marriage;
 }
 
 
@@ -782,14 +773,16 @@ if (isset($tree_id)){
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
 				echo '<select size="1" name="person" onChange="this.form.submit();" style="width: 200px">';
 					echo '<option value="">'.__('Latest changes').'</option>';
-					for ($i=0; $i<count($pers_id); $i++){
-						//$selected=''; // Not in use.
-						//echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person).'</option>';
+					if (isset($pers_id)){
+						for ($i=0; $i<count($pers_id); $i++){
+							//$selected=''; // Not in use.
+							//echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person).'</option>';
 
-						$person2_qry= "SELECT * FROM humo_persons WHERE pers_id='".$pers_id[$i]."'";
-						$person2_result = $dbh->query($person2_qry);
-						$person2=$person2_result->fetch(PDO::FETCH_OBJ);
-						echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).'</option>';
+							$person2_qry= "SELECT * FROM humo_persons WHERE pers_id='".$pers_id[$i]."'";
+							$person2_result = $dbh->query($person2_qry);
+							$person2=$person2_result->fetch(PDO::FETCH_OBJ);
+							echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).'</option>';
+						}
 					}
 				echo '</select>';
 			echo '</form>';
@@ -902,7 +895,8 @@ if (isset($tree_id)){
 						$nr_persons=$person_result->rowCount();
 						while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
 							$selected='';
-							if (isset($pers_gedcomnumber)){
+							//if (isset($pers_gedcomnumber)){
+							if (!isset($_POST["search_quicksearch"]) AND isset($pers_gedcomnumber)){
 								if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
 							}
 
@@ -1029,7 +1023,16 @@ if ($check_person){
 						//echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'"><a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage">'.__('Marriage(s) and children');
 						echo '<li class="pageTabItem"><div tabindex="0" class="pageTab'.$select_item.'">';
 						//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage">'.ucfirst(__('marriage/ relation'));
-						echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage">'.ucfirst(__('marriage')).'/ '.__('Children');
+						//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage">'.ucfirst(__('marriage')).'/ '.__('Children');
+
+						// *** Add familynumber in link (needed for multiple relations/ marriages) ***
+						//$fams1=explode(";",$person->pers_fams); $first_marriage=$fams1[0];
+						//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;marriage_nr='.$first_marriage.
+						//'&amp;menu_tab=marriage">'.ucfirst(__('marriage')).'/ '.__('Children');
+						$fams1=explode(";",$person->pers_fams); $first_marriage=$fams1[0];
+						echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;marriage_nr='.$first_marriage.
+						'&amp;menu_tab=marriage">'.__('Family');
+
 						//if (isset($marriage)) echo ' *';
 						echo "</a></div></li>";
 
@@ -1249,6 +1252,15 @@ if ($check_person){
 	// *****************
 	// *** Show data ***
 	// *****************
+
+	// *** Source iframe size ***
+	echo '
+	<style>
+	.source_iframe {
+		width:800px;
+		height:300px;
+	}
+	</style>';
 
 	// *** Text area size ***
 	$field_date=10;
@@ -1777,8 +1789,7 @@ if ($check_person){
 		echo '</td></tr>';
 
 		// *** Name ***
-		echo '<tr><td>';
-			echo '<a href="#" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a> ';
+		echo '<tr><td><a name="name"></a><a href="#" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a> ';
 			echo __('Name').'</td>';
 
 			echo '<td style="border-right:0px;"><b><span style="white-space: nowrap">'.__('firstname').'</span></b><br><span style="white-space: nowrap">'.__('prefix').'</span><br><b><span style="white-space: nowrap">'.__('lastname').'</span></b>';
@@ -1816,14 +1827,13 @@ if ($check_person){
 			echo '<td>';
 			if (!isset($_GET['add_person'])){
 				// *** Source by name ***
-				source_link('individual',$pers_gedcomnumber,'pers_name_source');
+				//source_link('individual',$pers_gedcomnumber,'pers_name_source');
+				echo source_link2('500',$pers_gedcomnumber,'pers_name_source','name');
 			}
 		echo '</td></tr>';
 
-		//echo '<tr><td style="border-right:0px;">'.__('prefix').'</td><td style="border-left:0px;"><input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10" placeholder="'.ucfirst(__('prefix')).'">'.__("For example: d\' or:  van_ (use _ for a space)").'</td></tr>';
-
-		//echo '<tr><td style="border-right:0px;"><b>'.__('lastname').'</b></td><td style="border-left:0px;"><input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'"> ';
-		//echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20" placeholder="'.ucfirst(__('patronymic')).'"></td></tr>';
+		// *** Show source by name in iframe ***
+		echo iframe_source('500','','pers_name_source','');
 
 		// *** Person text by name ***
 		echo '<tr style="display:none;" class="row1">';
@@ -1850,6 +1860,7 @@ if ($check_person){
 			// *** Lordship ***
 			echo $event_cls->show_event('person',$pers_gedcomnumber,'lordship');
 		}
+
 
 		// *** Alive ***
 
@@ -1882,7 +1893,7 @@ if ($check_person){
 		//if ($add_person==true AND $pers_sexe=='') $colour=' bgcolor="#FFA500"';
 		if ($add_person==true AND $pers_sexe=='') $colour=' bgcolor="#FFAA80"';
 
-		echo '<tr><td>'.__('Sex').'</td><td style="border-right:0px;"></td><td'.$colour.' style="border-left:0px;">';
+		echo '<tr><td><a name="sex"></a>'.__('Sex').'</td><td style="border-right:0px;"></td><td'.$colour.' style="border-left:0px;">';
 			$selected=''; if ($pers_sexe=='M') $selected=' CHECKED';
 			echo '<input type="radio" name="pers_sexe" value="M"'.$selected.'> '.__('male');
 			$selected=''; if ($pers_sexe=='F') $selected=' CHECKED';
@@ -1892,12 +1903,15 @@ if ($check_person){
 		echo '</td><td>';
 
 		if (!isset($_GET['add_person'])){
-			source_link('individual',$pers_gedcomnumber,'pers_sexe_source');
+			//source_link('individual',$pers_gedcomnumber,'pers_sexe_source');
+			echo source_link2('501',$pers_gedcomnumber,'pers_sexe_source','sex');
 		}
 		echo '</td></tr>';
+		// *** Show source by sexe in iframe ***
+		echo iframe_source('501','','pers_sexe_source','');
 
-		// *** Birth ***
-		echo '<tr class="humo_color"><td><a href="#" onclick="hideShow(2);"><span id="hideshowlink2">'.__('[+]').'</span></a> ';
+		// *** Born ***
+		echo '<tr class="humo_color"><td><a name="born"></a><a href="#" onclick="hideShow(2);"><span id="hideshowlink2">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('born')).'</td>';
 
 		echo '<td style="border-right:0px;">'.__('date');
@@ -1935,10 +1949,13 @@ if ($check_person){
 		// *** Source by birth ***
 		echo '<td>';
 		if (!isset($_GET['add_person'])){
-			source_link('individual',$pers_gedcomnumber,'pers_birth_source');
+			//source_link('individual',$pers_gedcomnumber,'pers_birth_source');
+			echo source_link2('502',$pers_gedcomnumber,'pers_birth_source','born');
 		}
 
 		echo '</td></tr>';
+		// *** Show source by birth in iframe ***
+		echo iframe_source('502','','pers_birth_source','');
 
 		//echo '<tr class="humo_color row2" style="display:none;" name="row2">';
 		echo '<tr class="humo_color row2" style="display:none;">';
@@ -2048,8 +2065,7 @@ if ($check_person){
 
 
 		// *** Baptise ***
-		echo '<tr>';
-		echo '<td><a href="#" onclick="hideShow(3);"><span id="hideshowlink3">'.__('[+]').'</span></a> ';
+		echo '<tr><td><a name="baptised"></a><a href="#" onclick="hideShow(3);"><span id="hideshowlink3">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('baptised')).'</td>';
 		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_bapt_date,'pers_bapt_date').' '.__('place').'  <input type="text" name="pers_bapt_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_bapt_place).'" size="'.$field_place.'">';
 		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=baptise","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
@@ -2058,9 +2074,12 @@ if ($check_person){
 		// *** Source by baptise ***
 		echo '<td>';
 		if (!isset($_GET['add_person'])){
-			source_link('individual',$pers_gedcomnumber,'pers_bapt_source');
+			//source_link('individual',$pers_gedcomnumber,'pers_bapt_source');
+			echo source_link2('503',$pers_gedcomnumber,'pers_bapt_source','baptised');
 		}
 		echo '</td></tr>';
+		// *** Show source by baptise in iframe ***
+		echo iframe_source('503','','pers_bapt_source','');
 
 		//echo '<tr style="display:none;" class="row3" name="row3">';
 		echo '<tr style="display:none;" class="row3">';
@@ -2082,8 +2101,8 @@ if ($check_person){
 		// *** Baptism Witness ***
 		if ($add_person==false) echo $event_cls->show_event('person',$pers_gedcomnumber,'baptism_witness');
 		
-		// *** Death ***
-		echo '<tr class="humo_color"><td>';
+		// *** Died ***
+		echo '<tr class="humo_color"><td><a name="died"></a>';
 		echo '<a href="#" onclick="hideShow(4);"><span id="hideshowlink4">'.__('[+]').'</span></a> ';
 		echo ucfirst(__('died')).'</td>';
 		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_death_date,'pers_death_date','','',$pers_death_date_hebnight,'pers_death_date_hebnight').' '.__('place').'  <input type="text" name="pers_death_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_death_place).'" size="'.$field_place.'">';
@@ -2106,9 +2125,12 @@ if ($check_person){
 		// *** Source by death ***
 		echo '</td><td>';
 		if (!isset($_GET['add_person'])){
-			source_link('individual',$pers_gedcomnumber,'pers_death_source');
+			//source_link('individual',$pers_gedcomnumber,'pers_death_source');
+			echo source_link2('504',$pers_gedcomnumber,'pers_death_source','died');
 		}
 		echo '</td></tr>';
+		// *** Show source by death in iframe ***
+		echo iframe_source('504','','pers_death_source','');
 
 		//echo '<tr class="humo_color row4" style="display:none;" name="row4">';
 		echo '<tr class="humo_color row4" style="display:none;">';
@@ -2172,9 +2194,8 @@ if ($check_person){
 		// *** Death Declaration ***
 		if ($add_person==false) echo $event_cls->show_event('person',$pers_gedcomnumber,'death_declaration');
 
-		// *** Burial ***
-		echo '<tr>';
-		echo '<td><a href="#" onclick="hideShow(5);"><span id="hideshowlink5">'.__('[+]').'</span></a> ';
+		// *** Buried ***
+		echo '<tr><td><a name="buried"></a><a href="#" onclick="hideShow(5);"><span id="hideshowlink5">'.__('[+]').'</span></a> ';
 		echo __('Buried').'</td>';
 		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_buried_date,'pers_buried_date','','',$pers_buried_date_hebnight,'pers_buried_date_hebnight').' '.__('place').' <input type="text" name="pers_buried_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_buried_place).'" size="'.$field_place.'">';
 		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;place_item=buried","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
@@ -2182,18 +2203,38 @@ if ($check_person){
 		// *** Source by burial ***
 		echo '</td><td>';
 		if (!isset($_GET['add_person'])){
-			source_link('individual',$pers_gedcomnumber,'pers_buried_source');
+			//source_link('individual',$pers_gedcomnumber,'pers_buried_source');
+			echo source_link2('505',$pers_gedcomnumber,'pers_buried_source','buried');
 		}
 		echo '</td></tr>';
+		// *** Show source by burial in iframe ***
+		echo iframe_source('505','','pers_buried_source','');
 
 		//echo '<tr style="display:none;" class="row5" name="row5">';
 		echo '<tr style="display:none;" class="row5">';
 		echo '<td></td>';
-		echo '<td style="border-right:0px;">'.__('Buried').'/ '.__('cremation').'</td><td style="border-left:0px;">';
-			$selected=''; if ($pers_cremation==''){ $selected=' CHECKED'; }
-			echo '<input type="radio" name="pers_cremation" value=""'.$selected.'> '.__('buried');
-			$selected=''; if ($pers_cremation=='1'){ $selected=' CHECKED'; }
-			echo ' <input type="radio" name="pers_cremation" value="1"'.$selected.'> '.__('cremation');
+		//echo '<td style="border-right:0px;">'.__('Buried').'/ '.__('cremation').'</td><td style="border-left:0px;">';
+		echo '<td style="border-right:0px;">'.__('method of burial').'</td><td style="border-left:0px;">';
+			//$selected=''; if ($pers_cremation==''){ $selected=' CHECKED'; }
+			//echo '<input type="radio" name="pers_cremation" value=""'.$selected.'> '.__('buried');
+			//$selected=''; if ($pers_cremation=='1'){ $selected=' CHECKED'; }
+			//echo ' <input type="radio" name="pers_cremation" value="1"'.$selected.'> '.__('cremation');
+
+			echo '<select size="1" name="pers_cremation">';
+				echo '<option value="">'.__('buried').'</option>';
+
+				$selected=''; if ($pers_cremation=='1'){ $selected=' SELECTED'; }
+				echo '<option value="1"'.$selected.'>'.__('cremation').'</option>';
+
+				$selected=''; if ($pers_cremation=='R'){ $selected=' SELECTED'; }
+				echo '<option value="R"'.$selected.'>'.__('resomated').'</option>';
+
+				$selected=''; if ($pers_cremation=='S'){ $selected=' SELECTED'; }
+				echo '<option value="S"'.$selected.'>'.__('sailor\'s grave').'</option>';
+
+				$selected=''; if ($pers_cremation=='D'){ $selected=' SELECTED'; }
+				echo '<option value="D"'.$selected.'>'.__('donated to science').'</option>';
+			echo '</select>';
 		echo '</td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -2209,6 +2250,31 @@ if ($check_person){
 
 		// *** Burial Witness ***
 		if ($add_person==false) echo $event_cls->show_event('person',$pers_gedcomnumber,'burial_witness');
+
+		// *** General text by person ***
+		echo '<tr class="humo_color"><td><a name="text_person"></a>'.__('Text for person').'</td>';
+		echo '<td style="border-right:0px;"></td>';
+		echo '<td style="border-left:0px;"><textarea rows="1" name="person_text"'.$field_text_large.'>'.$editor_cls->text_show($person_text).'</textarea>';
+		echo '</td><td>';
+		// *** Source by text ***
+		if (!isset($_GET['add_person'])){
+			//source_link('individual',$pers_gedcomnumber,'pers_text_source');
+			echo source_link2('506',$pers_gedcomnumber,'pers_text_source','text_person');
+		}
+		echo '</td></tr>';
+		// *** Show source by person tekst in iframe ***
+		echo iframe_source('506','','pers_text_source','');
+
+		if (!isset($_GET['add_person'])){
+			// *** Person sources in new person editor screen ***
+			echo '<tr><td><a name="source_person"></a>'.__('Source for person').'</td><td colspan="2"></td>';
+			echo '<td>';
+				//source_link('individual',$pers_gedcomnumber,'person_source');
+				echo source_link2('507',$pers_gedcomnumber,'person_source','source_person');
+			echo '</td></tr>';
+			// *** Show source by person in iframe ***
+			echo iframe_source('507','','person_source','');
+		}
 
 		// *** Own code ***
 		echo '<tr class="humo_color"><td>'.ucfirst(__('own code')).'</td><td style="border-right:0px;"></td>';
@@ -2228,11 +2294,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</div>';
 		echo '</div>';
 		echo '</td><td></td></tr>';
-		
-		if (isset($_GET['add_person'])){
+
+		//if (isset($_GET['add_person'])){
 			// *** Profession(s) ***
 			//echo $event_cls->show_event('person',$new_gedcomnumber,'profession');
-		}
+		//}
 		if (!isset($_GET['add_person'])){
 			// *** Profession(s) ***
 			echo $event_cls->show_event('person',$pers_gedcomnumber,'profession');
@@ -2241,30 +2307,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			edit_addresses('person','person_address',$pers_gedcomnumber);
 		} // *** End of check for new person ***
 
-		// *** General text by person ***
-		echo '<tr class="humo_color"><td>'.__('Text for person').'</td>';
-		echo '<td style="border-right:0px;"></td>';
-		echo '<td style="border-left:0px;"><textarea rows="1" name="person_text"'.$field_text_large.'>'.$editor_cls->text_show($person_text).'</textarea>';
-		echo '</td><td>';
-		// *** Source by text ***
 		if (!isset($_GET['add_person'])){
-			source_link('individual',$pers_gedcomnumber,'pers_text_source');
-		}
-		echo '</td></tr>';
-
-		if (!isset($_GET['add_person'])){
-
-			// *** Person sources in new person editor screen ***
-			echo '<tr><td>'.__('Source for person').'</td><td colspan="2"></td>';
-			echo '<td>';
-				source_link('individual',$pers_gedcomnumber,'person_source');
-			echo '</td></tr>';
-
-			// *** Picture ***
-			echo $event_cls->show_event('person',$pers_gedcomnumber,'picture');
 
 			// *** Person event editor ***
 			echo $event_cls->show_event('person',$pers_gedcomnumber,'person');
+
+			// *** Picture ***
+			echo $event_cls->show_event('person',$pers_gedcomnumber,'picture');
 
 			// *** Quality ***
 			// Disabled quality by person. Quality officially belongs to a source...
@@ -2362,6 +2411,21 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 		}
 
+
+		// *** Extra "Save" line ***
+		echo '<tr class="table_header_large">';
+			echo '<td></td><td></td><td></td>';
+			echo '<td style="border-left: none; text-align:left; font-size: 1.5em;">';
+			if ($add_person==false){
+				echo '<input type="Submit" name="person_change" value="'.__('Save').'">';
+			}
+			else{
+				echo '<input type="Submit" name="person_add" value="'.__('Add').'">';
+			}
+			echo '</td>';
+		echo '</tr>';
+
+
 			echo '</table><br>';
 
 			// *** End of person form ***
@@ -2402,12 +2466,16 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 							WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fams1[$i]."'");
 						$familyDb=$family->fetch(PDO::FETCH_OBJ);
 
-						echo '<tr><td id="chtd1">';
+						// *** Highlight selected relation if there are multiple relations ***
+						$line_selected='';
+						if ($fam_count>1 AND $familyDb->fam_gedcomnumber==$marriage) $line_selected=' bgcolor="#99ccff"';
+
+						echo '<tr'.$line_selected.'><td id="chtd1">';
 							if ($fam_count>1){
 								echo '<form method="POST" action="'.$phpself.'">';
 								echo '<input type="hidden" name="page" value="'.$page.'">';
 								echo '<input type="hidden" name="marriage_nr" value="'.$familyDb->fam_gedcomnumber.'">';
-								echo ' <input type="Submit" name="dummy3" value="'.__('Select marriage').' '.($i+1).'">';
+								echo ' <input type="Submit" name="dummy3" value="'.__('Select family').' '.($i+1).'">';
 								echo '</form>';
 							}
 							else{
@@ -2627,8 +2695,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			}
 
 			// *** Living together ***
-			echo '<tr class="humo_color">';
-			echo '<td><a href="#marriage" onclick="hideShow(6);"><span id="hideshowlink6">'.__('[+]').'</span></a> ';
+			echo '<tr class="humo_color"><td><a name="relation"></a><a href="#marriage" onclick="hideShow(6);"><span id="hideshowlink6">'.__('[+]').'</span></a> ';
 
 			echo __('Living together').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_relation_date,'fam_relation_date').' '.__('place').' <input type="text" name="fam_relation_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_relation_place).'" size="'.$field_place.'">';
@@ -2637,9 +2704,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</td><td>';
 				// *** Source by relation ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					source_link('relation',$marriage,'fam_relation_source');
+					//source_link('relation',$marriage,'fam_relation_source');
+					echo source_link2('600',$marriage,'fam_relation_source','relation');
 				}
 			echo '</td></tr>';
+			// *** Show source by relation in iframe ***
+			echo iframe_source('600','','fam_relation_source','');
 
 			// *** End of living together ***
 			//echo '<tr style="display:none;" class="row6" name="row6">';
@@ -2656,7 +2726,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</td></tr>';
 
 			// *** Marriage notice ***
-			echo '<tr><td>';
+			echo '<tr><td><a name="marr_notice"></a>';
 			echo '<a href="#marriage" onclick="hideShow(7);"><span id="hideshowlink7">'.__('[+]').'</span></a> ';
 			echo __('Notice of Marriage').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_notice_date,"fam_marr_notice_date","","",$fam_marr_notice_date_hebnight,"fam_marr_notice_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_notice_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_notice_place).'" size="'.$field_place.'">';
@@ -2665,9 +2735,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</td><td>';
 				// *** Source by fam_marr_notice ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					source_link('relation',$marriage,'fam_marr_notice_source');
+					//source_link('relation',$marriage,'fam_marr_notice_source');
+					echo source_link2('601',$marriage,'fam_marr_notice_source','marr_notice');
 				}
 			echo '</td></tr>';
+			// *** Show source by relation in iframe ***
+			echo iframe_source('601','','fam_marr_notice_source','');
 
 			//echo '<tr class="humo_color row7" style="display:none;" name="row7">';
 			echo '<tr class="row7" style="display:none;">';
@@ -2676,7 +2749,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<td></td></tr>';
 
 			// *** Marriage ***
-			echo '<tr class="humo_color"><td>';
+			echo '<tr class="humo_color"><td><a name="marriage_relation"></a>';
 			echo '<a href="#marriage" onclick="hideShow(8);"><span id="hideshowlink8">'.__('[+]').'</span></a> ';
 			//echo __('Marriage').'</td>';
 			echo ucfirst(__('marriage/ relation')).'</td>';
@@ -2687,10 +2760,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			// *** Source by fam_marr ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					source_link('relation',$marriage,'fam_marr_source');
+					//source_link('relation',$marriage,'fam_marr_source');
+					echo source_link2('602',$marriage,'fam_marr_source','marriage_relation');
 				}
 
 			echo '</td></tr>';
+			// *** Show source by relation in iframe ***
+			echo iframe_source('602','','fam_marr_source','');
 
 			echo '<tr class="humo_color"><td>';
 			echo '<td style="border-right:0px;"><br></td><td style="border-left:0px;">';
@@ -2772,7 +2848,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo $event_cls->show_event('family',$marriage,'marriage_witness');
 
 			// *** Religious marriage notice ***
-			echo '<tr><td>';
+			echo '<tr><td><a name="marr_church_notice"></a>';
 			echo '<a href="#marriage" onclick="hideShow(9);"><span id="hideshowlink9">'.__('[+]').'</span></a> ';
 			echo __('Religious Notice of Marriage').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_notice_date,"fam_marr_church_notice_date","","",$fam_marr_church_notice_date_hebnight,"fam_marr_church_notice_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_church_notice_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_church_notice_place).'" size="'.$field_place.'">';
@@ -2781,9 +2857,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '</td><td>';
 				// *** Source by fam_marr_church_notice ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					source_link('relation',$marriage,'fam_marr_church_notice_source');
+					//source_link('relation',$marriage,'fam_marr_church_notice_source');
+					echo source_link2('603',$marriage,'fam_marr_church_notice_source','marr_church_notice');
 				}
 			echo '</td></tr>';
+			// *** Show source by relation in iframe ***
+			echo iframe_source('603','','fam_marr_church_notice_source','');
 
 			//echo '<tr class="humo_color row9" style="display:none;" name="row9">';
 			echo '<tr class="row9" style="display:none;">';
@@ -2792,7 +2871,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<td></td></tr>';
 
 			// *** Church marriage ***
-			echo '<tr class="humo_color"><td>';
+			echo '<tr class="humo_color"><td><a name="marr_church"></a>';
 			echo '<a href="#marriage" onclick="hideShow(10);"><span id="hideshowlink10">'.__('[+]').'</span></a> ';
 			echo __('Religious Marriage').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_date,"fam_marr_church_date","","",$fam_marr_church_date_hebnight,"fam_marr_church_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_church_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_church_place).'" size="'.$field_place.'">';
@@ -2801,10 +2880,13 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</td><td>';
 			// *** Source by fam_marr_church ***
 			if (isset($marriage) AND !isset($_GET['add_marriage'])){
-				source_link('relation',$marriage,'fam_marr_church_source');
+				//source_link('relation',$marriage,'fam_marr_church_source');
+				echo source_link2('604',$marriage,'fam_marr_church_source','marr_church');
 			}
 
 			echo '</td></tr>';
+			// *** Show source by relation in iframe ***
+			echo iframe_source('604','','fam_marr_church_source','');
 
 			//echo '<tr style="display:none;" class="row10" name="row10">';
 			echo '<tr style="display:none;" class="row10 humo_color">';
@@ -2821,7 +2903,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<td style="border-right:0px;">'.__('Religion').'</td><td style="border-left:0px;"><input type="text" name="fam_religion" value="'.htmlspecialchars($fam_religion).'" size="60"></td><td></td></tr>';
 
 			// *** divorce ***
-			echo '<tr><td>';
+			echo '<tr><td><a name="divorce"></a>';
 			echo '<a href="#marriage" onclick="hideShow(11);"><span id="hideshowlink11">'.__('[+]').'</span></a> ';
 			echo __('Divorce').'</td>';
 			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_div_date,"fam_div_date").' '.__('place').' <input type="text" name="fam_div_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_div_place).'" size="'.$field_place.'">';
@@ -2830,9 +2912,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</td><td>';
 				// *** Source by fam_div ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					source_link('relation',$marriage,'fam_div_source');
+					//source_link('relation',$marriage,'fam_div_source');
+					echo source_link2('605',$marriage,'fam_div_source','divorce');
 				}
 			echo '</td></tr>';
+			// *** Show source by relation in iframe ***
+			echo iframe_source('605','','fam_div_source','');
 
 			// *** Use checkbox for divorse without further data ***
 			echo '<tr><td></td>';
@@ -2857,24 +2942,30 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<td></td></tr>';
 
 			// *** General text by marriage ***
-			echo '<tr class="humo_color"><td>'.__('Text by marriage').'</td>';
+			echo '<tr class="humo_color"><td><a name="fam_text"></a>'.__('Text by marriage').'</td>';
 			echo '<td style="border-right:0px;"></td>';
 			echo '<td style="border-left:0px;">';
 			echo '<textarea rows="1" name="fam_text"'.$field_text_large.'>'.$fam_text.'</textarea>';
 				echo '</td><td>';
 				// *** Source by text ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
-					source_link('relation',$marriage,'fam_text_source');
+					//source_link('relation',$marriage,'fam_text_source');
+					echo source_link2('606',$marriage,'fam_text_source','fam_text');
 				}
 			echo '</td></tr>';
+			// *** Show source by relation in iframe ***
+			echo iframe_source('606','','fam_text_source','');
 
 			// *** Family sources in new person editor screen ***
 			if (isset($marriage) AND !isset($_GET['add_marriage'])){
-				echo '<tr><td>'.__('Source by marriage').'</td><td colspan="2">';
+				echo '<tr><td><a name="fam_source"></a>'.__('Source by marriage').'</td><td colspan="2">';
 				echo '</td><td>';
-					source_link('relation',$marriage,'family_source');
+					//source_link('relation',$marriage,'family_source');
+					echo source_link2('607',$marriage,'family_source','fam_source');
 				echo '</td></tr>';
 			}
+			// *** Show source by relation in iframe ***
+			echo iframe_source('607','','family_source','');
 
 			// *** Picture ***
 			echo $event_cls->show_event('family',$marriage,'marriage_picture');
@@ -2910,6 +3001,16 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '<td colspan="2">'.$tagDb->tag_tag.'</td>';
 				echo '<td></td></tr>';
 			}
+
+
+			// *** Extra "Save" line ***
+			echo '<tr class="table_header_large">';
+				echo '<td></td><td></td><td></td>';
+				echo '<td style="border-left: none; text-align:left; font-size: 1.5em;">';
+					echo '<input type="Submit" name="marriage_change" value="'.__('Save').'">';
+				echo '</td>';
+			echo '</tr>';
+
 
 			echo '</table><br>'."\n";
 
@@ -3063,9 +3164,14 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		// Moved children to relation part of the script.
 
 
-
+		// *******************************
 		// *** Bulk add family members ***
+		// *******************************
 		if ($menu_tab=='entirefamily') {
+
+			// *** Prevent double click of save button ***
+			$_SESSION['submit_entirefamily'] = true;
+
 			for($y=5;$y<15;$y++) {
 				echo '
 				<script type="text/javascript">
@@ -3077,7 +3183,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				</script>
 				';
 			}
-		
+
 			if(isset($_GET['add_family']) OR isset($_POST['add_family']) OR isset($_POST['save_and_new_entire_family'])) {
 
 				// if main person already has family, show choices whether to add to existing fam or add new fam
@@ -3124,16 +3230,17 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 							echo ' <b>'.__('N.N.').'</b></span>';
 
 						echo "</td></tr>";
-						
+
 					}
 					echo "</table></form>";
- 					
+ 
 				}
-				
+
 				else {
 					// person has no family yet or we want to add children to existing family
 					// show the mask table (form name: form_entire)
 					echo '<form method="POST" action="'.$phpself.'" name="form_entire" id="form_entire">';
+
 					echo '<input type="hidden" name="page" value="'.$page.'">';
 
 					if(isset($_POST['use_fam_value']) AND substr($_POST['use_fam_value'],0,1)=="F") { 
@@ -3398,18 +3505,22 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo '</tr></tbody></table>';
 					
 					//echo '<div><br><button onclick="changeAction()" style="font-size:130%" name="save_entire_family">'.__('Save entire family').'</button><br><br>';
+					// *** Changeaction: change link, so 2 seperate buttons can be used ***
 					echo '<div><br><input type="submit" onclick="changeAction();" style="font-size:130%" value="'.__('Save entire family').'"  name="save_entire_family"><br><br>';
 
+					// *** Javascript,so it's possible to have to seperate save buttons ***
 					echo '
 					<script type="text/javascript">
-					function changeAction() { 
-						document.form_entire.action = "./index.php?page=editor&amp;menu_tab=person&amp;tree_id='.$tree_id.'&amp;person='.$person->pers_gedcomnumber.'";
+					function changeAction() {
+						// *** Don\'t use &amp; in the link!!!!! ***
+						document.form_entire.action = "./index.php?page=editor&menu_tab=person&tree_id='.$tree_id.'&person='.$person->pers_gedcomnumber.'";
 					}
 					</script>
 					';
 
 					//echo '<button onclick="document.form_entire.submit();" style="font-size:130%" name="save_and_new_entire_family">'.__('Save entire family and add another').'</button><br><br>';
 					echo '<input type="submit" style="font-size:130%" value="'.__('Save entire family and add another').'"  name="save_and_new_entire_family"><br><br>';
+
 					echo '</form>';
 				} 
 			}
@@ -4321,7 +4432,8 @@ function event_option($event_gedcom,$event){
 	return '<option value="'.$event.'"'.$selected.'>'.language_event($event).'</option>';
 }
 
-// *** Show link to sources ***
+// *** Show link to sources, using pop-up screen ***
+/*
 function source_link($item,$connect_connect_id, $connect_sub_kind){
 	global $tree_id, $dbh;
 
@@ -4337,10 +4449,49 @@ function source_link($item,$connect_connect_id, $connect_sub_kind){
 
 	echo '&nbsp;';
 	if ($source_error) echo '<span style="background-color:#FFAA80">';
-		$relation='';if ($item=='relation') $relation='mariage';
-		echo "<a href=\"#'.$relation.'\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=".$connect_sub_kind."', '','width=800,height=500')\">".__('source');
+		$relation='';if ($item=='relation') $relation='marriage';
+		echo "<a href=\"#".$relation."\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=".$connect_sub_kind."', '','width=800,height=500')\">".__('source');
 		echo ' ['.$source_count.']</a>';
 	if ($source_error) echo '</span>';
+}
+*/
+// *** Show link to sources (version 2 )***
+function source_link2($hideshow,$connect_connect_id,$connect_sub_kind,$link=''){
+	global $tree_id, $dbh;
+
+	$connect_qry="SELECT connect_connect_id, connect_source_id FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."'
+		AND connect_sub_kind='".$connect_sub_kind."' AND connect_connect_id='".$connect_connect_id."'";
+	$connect_sql=$dbh->query($connect_qry);
+	$source_count=$connect_sql->rowCount();
+	$source_error=false;
+	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+		if (!$connectDb->connect_source_id) $source_error=true;
+	}
+
+	$text='&nbsp;';
+	if ($source_error) $text.='<span style="background-color:#FFAA80">';
+		//$text.='<a href="#" onclick="hideShow('.$hideshow.');">'.__('source').' <span id="hideshowlink30">'.__('[+]').'</span></a> ';
+		$text.='<a href="#'.$link.'" onclick="hideShow('.$hideshow.');">'.__('source').' ['.$source_count.']</a> ';
+	if ($source_error) $text.='</span>';
+	return $text;
+}
+// *** Source in iframe ***
+function iframe_source($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id){
+	// *** Example ***
+	//src="index.php?page=editor_sources&'.
+	//$event_group.'&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id.'">
+
+	$text='<tr style="display:none;" class="row'.$hideshow.'"><td></td><td colspan="3">
+	<iframe id="source_iframe" class="source_iframe" title="source_iframe"
+		src="index.php?page=editor_sources';
+		if ($connect_kind) $text.='&connect_kind='.$connect_kind;
+		$text.='&connect_sub_kind='.$connect_sub_kind;
+		if ($connect_connect_id) $text.='&connect_connect_id='.$connect_connect_id;
+		$text.='">
+	</iframe>
+	</td></tr>';
+	return $text;
 }
 
 function witness_edit($witness, $multiple_rows=''){
@@ -4423,17 +4574,19 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 	// ****************************************************
 	// *** Show and edit addresses/residences by person ***
 	// ****************************************************
-	echo '<tr>';
+	//echo '<tr class="humo_color">';
+	echo '<tr class="table_header_large">';
+
 	echo '<td style="border-right:0px;">';
 		echo '<a name="addresses"></a>';
 
-		$connect_sql="SELECT * FROM humo_connections
-			WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='".$connect_sub_kind."'
-			AND connect_connect_id='".safe_text_db($connect_connect_id)."'";
-		$connect_qry=$dbh->query($connect_sql);
-		$count=$connect_qry->rowCount();
-		if ($count>0)
-		echo '<a href="#addresses" onclick="hideShow(55);"><span id="hideshowlink55">'.__('[+]').'</span></a> ';
+		//$connect_sql="SELECT * FROM humo_connections
+		//	WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='".$connect_sub_kind."'
+		//	AND connect_connect_id='".safe_text_db($connect_connect_id)."'";
+		//$connect_qry=$dbh->query($connect_sql);
+		//$count=$connect_qry->rowCount();
+		//if ($count>0)
+		//echo '<a href="#addresses" onclick="hideShow(55);"><span id="hideshowlink55">'.__('[+]').'</span></a> ';
 
 		echo __('Addresses').'</td>';
 	echo '<td style="border-right:0px;"></td>';
@@ -4444,19 +4597,19 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			else
 				echo 'family_place_address=1&amp;';
 			echo 'address_add=1#addresses">['.__('Add').']</a> ';
-		$text='';
-		$connect_qry="SELECT * FROM humo_connections LEFT JOIN humo_addresses
-			ON (address_gedcomnr=connect_item_id AND address_tree_id=connect_tree_id)
-			WHERE connect_tree_id='".$tree_id."'
-			AND connect_sub_kind='".$connect_sub_kind."'
-			AND connect_connect_id='".safe_text_db($connect_connect_id)."'
-			ORDER BY connect_order";
-		$connect_sql=$dbh->query($connect_qry);
-		while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-			if ($text) $text.=', ';
-			$text.=@$connectDb->address_place;
-		}
-		echo $text;
+		//$text='';
+		//$connect_qry="SELECT * FROM humo_connections LEFT JOIN humo_addresses
+		//	ON (address_gedcomnr=connect_item_id AND address_tree_id=connect_tree_id)
+		//	WHERE connect_tree_id='".$tree_id."'
+		//	AND connect_sub_kind='".$connect_sub_kind."'
+		//	AND connect_connect_id='".safe_text_db($connect_connect_id)."'
+		//	ORDER BY connect_order";
+		//$connect_sql=$dbh->query($connect_qry);
+		//while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
+		//	if ($text) $text.=', ';
+		//	$text.=@$connectDb->address_place;
+		//}
+		//echo $text;
 		//echo ' '.__('(shared address by a person)');
 	echo '</td>';
 	echo '<td></td>';
@@ -4483,7 +4636,8 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 		echo '<input type="hidden" name="connect_place['.$key.']" value="">';
 
 		//echo '<tr style="display:none;" class="row55" name="row55">';
-		echo '<tr style="display:none;" class="row55">';
+		//echo '<tr style="display:none;" class="row55">';
+		echo '<tr class="humo_color">';
 		echo '<td style="border-right:0px;">&nbsp;&nbsp;&nbsp;';
 
 			// *** Remove address ***
@@ -4518,26 +4672,20 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 				$text.= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			}
 			echo $text;
-
 		echo '</td>';
-		echo '<td style="border-right:0px; vertical-align:top">'.__('date').
-			'<br><br>'.__('Place').
-			'<br>'.__('Street').
-			'<br>'.__('Zip code').
-			'<br>'.__('text').
-			'</td>';
+		echo '<td style="border-right:0px; vertical-align:top"><div style="margin-top:5px;"></div>'.__('Address').'<br>'.
+			__('Place').'<br>'.
+			__('Street').'<br>'.
+			__('Zip code').'<br>'.
+			__('text').'<br>'.
+			__('date').'</td>';
 		echo '<td style="border-left:0px; vertical-align:top">';
-			echo $editor_cls->date_show($addressDb->connect_date,'connect_date',"[$addressDb->connect_id]");
-
-			echo ' '.__('Addressrole').' <input type="text" name="connect_role['.$key.']" value="'.htmlspecialchars($addressDb->connect_role).'" size="6">';
-
 			// *** Source ***
 			// There is no source used in the CONNECTION. Only at the address.
 			echo '<input type="hidden" name="connect_source_id['.$key.']" value="">';
-
 			echo '<input type="hidden" name="connect_text['.$key.']" value="">';
 
-			echo '<br><div style="border: 2px solid red">';
+			echo '<div style="border: 2px solid red">';
 
 				// *** Show addresses by person or relation ***
 				$address3_qry=$dbh->query("SELECT * FROM humo_addresses
@@ -4547,7 +4695,6 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 				if ($address3Db){
 					echo '<input type="hidden" name="change_address_id['.$address3Db->address_id.']" value="'.$address3Db->address_id.'">';
-
 					echo __('Address GEDCOM number:').' '.$address3Db->address_gedcomnr.'&nbsp;&nbsp;&nbsp;&nbsp;';
 
 					// *** Shared address, to connect address to multiple persons or relations ***
@@ -4642,6 +4789,10 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 				}
 
 			echo '</div>';
+			// *** Edit address date and address role ***
+			echo $editor_cls->date_show($addressDb->connect_date,'connect_date',"[$addressDb->connect_id]");
+			echo ' '.__('Addressrole').' <input type="text" name="connect_role['.$key.']" value="'.htmlspecialchars($addressDb->connect_role).'" size="6">';
+
 
 		echo '</td>';
 		echo '<td>';
@@ -4650,18 +4801,20 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 				if ($connect_kind=='person') $connect_sub_kind2='pers_address_source';
 					else $connect_sub_kind2='fam_address_source';
 
-				$connect2_qry="SELECT *
-					FROM humo_connections
-					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='".$connect_sub_kind2."'
-					AND connect_connect_id='".$address3Db->address_gedcomnr."'";
-				$connect2_sql=$dbh->query($connect2_qry);
-
-				echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=".
-				$connect_sub_kind2."&connect_connect_id=".$address3Db->address_gedcomnr."', '','width=800,height=500')\">".__('source');
-				echo ' ['.$connect2_sql->rowCount().']</a>';
+				//function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
+				echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,$connect_sub_kind2,'addresses');
 			}
 		echo '</td>';
 		echo '</tr>';
+
+		if (isset($address3Db->address_gedcomnr) AND $connect_kind=='person'){
+			// *** Show iframe source ***
+			echo iframe_source('20'.$addressDb->connect_id,'person','pers_address_source',$address3Db->address_gedcomnr);
+		}
+		elseif (isset($address3Db->address_gedcomnr)){
+			// *** Show iframe source ***
+			echo iframe_source('20'.$addressDb->connect_id,'family','fam_address_source',$address3Db->address_gedcomnr);
+		}
 	}
 
 	// *** Show places or addresses if save or arrow links are used ***

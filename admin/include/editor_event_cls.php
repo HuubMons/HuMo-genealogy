@@ -92,6 +92,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// *** Change line colour ***
 	$change_bg_colour=' class="humo_color3"';
 
+// 2021: No longer in use (only needed if source is edited in a pop-up screen)?
 	//$event_group='event_person=1';
 	if ($event_connect_kind=='person') $event_group='event_person=1';
 	if ($event_connect_kind=='family') $event_group='event_family=1';
@@ -167,13 +168,13 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$qry="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND event_kind='profession' ORDER BY event_order";
 	}
-/*
+	/*
 	elseif ($event_kind=='picture'){
 		$qry="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND
 			event_kind='picture' ORDER BY event_order";
 	}
-*/
+	*/
 	elseif ($event_kind=='picture'){
 		$search_picture = ""; $searchpic="";
 		if(isset($_POST['searchpic'])) { $search_picture = $_POST['searchpic']; }
@@ -211,37 +212,69 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show events by person ***
 	if ($event_kind=='person'){
-		$text.='<tr><td style="border-right:0px;"><a name="event_person_link"></a><a href="#event_person_link" onclick="hideShow(51);"><span id="hideshowlink51">'.__('[+]').'</span></a> '.__('Events').'</td>';
-		//$text.='<tr><td style="border-right:0px;"><a name="event_person_link"></a>'.__('Events').'</td>';
+		//$text.='<tr><td style="border-right:0px;"><a name="event_person_link"></a><a href="#event_person_link" onclick="hideShow(51);"><span id="hideshowlink51">'.__('[+]').'</span></a> '.__('Events').'</td>';
+		$link='event_person_link';
+		$text.='<tr class="table_header_large"><td style="border-right:0px;"><a name="event_person_link"></a>'.__('Events').'</td>';
 		$text.='<td style="border-right:0px;">';
 			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
 		$text.='</td><td style="border-left:0px;">';
-		
-			// Don't show Brit Mila and/or Bar Mitzva in event list if user set them to be displayed among person data
-			$hebtext='';
-			//if($humo_option['admin_brit']=="y") {  $hebtext .= " AND event_gedcom!='_BRTM'  "; }
-			//if($humo_option['admin_barm']=="y") {  $hebtext .= " AND event_gedcom!='BARM' AND event_gedcom!='BASM'"; }
-			if($humo_option['admin_brit']=="y") {  $hebtext .= " AND (event_gedcom!='_BRTM'  OR event_gedcom IS NULL) "; }
-			if($humo_option['admin_barm']=="y") {  $hebtext .= " AND ((event_gedcom!='BARM' AND event_gedcom!='BASM') OR event_gedcom IS NULL) "; } 
 
-			$count_event=$dbh->query("SELECT * FROM humo_events
-				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."'
-				AND event_kind!='name'
-				AND event_kind!='NPFX'
-				AND event_kind!='NSFX'
-				AND event_kind!='nobility'
-				AND event_kind!='title'
-				AND event_kind!='lordship'
-				AND event_kind!='birth_declaration'
-				AND event_kind!='baptism_witness'
-				AND event_kind!='death_declaration'
-				AND event_kind!='burial_witness'
-				AND event_kind!='profession'
-				AND event_kind!='picture' ".$hebtext."
-				ORDER BY event_kind, event_order");
-			$count=$count_event->rowCount();
-			$text.=$count.' x '.__('Events');
-		$text.='. '.__('For items like:').' '.__('Event').', '.__('baptized as child').', '.__('depart').' '.__('etc.');
+			// Don't show Brit Mila and/or Bar Mitzva in event list if user set them to be displayed among person data
+			//$hebtext='';
+			//if($humo_option['admin_brit']=="y") {  $hebtext .= " AND (event_gedcom!='_BRTM'  OR event_gedcom IS NULL) "; }
+			//if($humo_option['admin_barm']=="y") {  $hebtext .= " AND ((event_gedcom!='BARM' AND event_gedcom!='BASM') OR event_gedcom IS NULL) "; } 
+			//$count_event=$dbh->query("SELECT * FROM humo_events
+			//	WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."'
+			//	AND event_kind!='name'
+			//	AND event_kind!='NPFX'
+			//	AND event_kind!='NSFX'
+			//	AND event_kind!='nobility'
+			//	AND event_kind!='title'
+			//	AND event_kind!='lordship'
+			//	AND event_kind!='birth_declaration'
+			//	AND event_kind!='baptism_witness'
+			//	AND event_kind!='death_declaration'
+			//	AND event_kind!='burial_witness'
+			//	AND event_kind!='profession'
+			//	AND event_kind!='picture' ".$hebtext."
+			//	ORDER BY event_kind, event_order");
+			//$count=$count_event->rowCount();
+			//$text.=$count.' x '.__('Events').'. ';
+
+		// *** Add person event ***
+		$text.='<select size="1" name="event_kind">';
+			//$text.='<option value="profession">'.__('Profession').'</option>';
+			//$text.='<option value="picture">'.__('Picture/ Media').'</option>';
+			$text.='<option value="event">'.__('Event').'</option>';
+			//$text.='<option value="birth_declaration">'.__('Birth Declaration').'</option>';
+			//$text.='<option value="baptism_witness">'.__('Baptism Witness').'</option>';
+			//$text.='<option value="death_declaration">'.__('Death Declaration').'</option>';
+			//$text.='<option value="burial_witness">'.__('Burial Witness').'</option>';
+			//$text.='<option value="name">'.__('Name').'</option>';
+			//$text.='<option value="nobility">'.__('Title of Nobility').'</option>';
+			//$text.='<option value="title">'.__('Title').'</option>';
+			$text.='<option value="adoption">'.__('Adoption').'</option>';
+			//$text.='<option value="lordship">'.__('Title of Lordship').'</option>';
+			$text.='<option value="URL">'.__('URL/ Internet link').'</option>';
+			$text.='<option value="person_colour_mark">'.__('Colour mark by person').'</option>';
+		$text.='</select>';
+		$text.=' <input type="Submit" name="person_event_add" value="'.__('Add event').'">';
+
+		//$text.=__('For items like:').' '.__('Event').', '.__('baptized as child').', '.__('depart').' '.__('etc.');
+		// *** HELP POPUP for source ***
+		$rtlmarker="ltr";
+		$text.= '&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+			$text.= '<a href="#" style="display:inline" ';
+			//echo='onmouseover="mopen(event,\'help_source_shared\',100,250)"';
+			$text.= 'onmouseover="mopen(event,\'help_event_person\',0,0)"';
+			$text.= 'onmouseout="mclosetime()">';
+				$text.= '<img src="../images/help.png" height="16" width="16">';
+			$text.= '</a>';
+			$text.= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_event_person" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				$text.= __('For items like:').' '.__('Event').', '.__('baptized as child').', '.__('depart').' '.__('etc.');
+			$text.= '</div>';
+		$text.= '</div><br>';
+
 		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
@@ -249,26 +282,51 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show events by family ***
 	if ($event_kind=='family'){
-		$text.='<tr><td style="border-right:0px;"><a name="event_family_link"></a><a href="#event_family_link" onclick="hideShow(52);"><span id="hideshowlink52">'.__('[+]').'</span></a> '.__('Events').'</td>';
-		//$text.='<tr><td style="border-right:0px;"><a name="event_family_link"></a>'.__('Events').'</td>';
+		$link='event_family_link';
+		//$text.='<tr><td style="border-right:0px;"><a name="event_family_link"></a><a href="#event_family_link" onclick="hideShow(52);"><span id="hideshowlink52">'.__('[+]').'</span></a> '.__('Events').'</td>';
+		$text.='<tr class="table_header_large"><td style="border-right:0px;"><a name="event_family_link"></a>'.__('Events').'</td>';
 		$text.='<td style="border-right:0px;">';
 			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
 		$text.='</td><td style="border-left:0px;">';
-			$count_event=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-				AND event_connect_kind='family' AND event_connect_id='".$event_connect_id."'
-				AND event_kind!='marriage_witness'
-				AND event_kind!='marriage_witness_rel'
-				AND event_kind!='picture'
-				ORDER BY event_kind, event_order");
-			$count=$count_event->rowCount();
-			$text.=$count.' x '.__('Events');
-			$text.='. '.__('For items like:').' '.__('Event').', '.__('Marriage contract').', '.__('Marriage license').', '.__('etc.');
+			//$count_event=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			//	AND event_connect_kind='family' AND event_connect_id='".$event_connect_id."'
+			//	AND event_kind!='marriage_witness'
+			//	AND event_kind!='marriage_witness_rel'
+			//	AND event_kind!='picture'
+			//	ORDER BY event_kind, event_order");
+			//$count=$count_event->rowCount();
+			//$text.=$count.' x '.__('Events').'. ';
+
+			$text.='<select size="1" name="event_kind">';
+				//$text.='<option value="picture">Picture</option>';
+				$text.='<option value="event">'.__('Event').'</option>';
+				//$text.='<option value="marriage_witness">'.__('Marriage Witness').'</option>';
+				//$text.='<option value="marriage_witness_rel">'.__('marriage witness (religious)').'</option>';
+			$text.='</select>';
+			$text.=' <input type="Submit" name="marriage_event_add" value="'.__('Add event').'">';
+
+			//$text.=__('For items like:').' '.__('Event').', '.__('Marriage contract').', '.__('Marriage license').', '.__('etc.');
 			//	__('Marriage settlement')
 			//	__('Marriage bond')
 			//	__('Divorce filed')
 			//	__('Annulled')
 			//	__('Engaged')
 			//	__('Sealed to spouse LDS')
+
+			// *** HELP POPUP for source ***
+			$rtlmarker="ltr";
+			$text.= '&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+				$text.= '<a href="#" style="display:inline" ';
+				//echo='onmouseover="mopen(event,\'help_source_shared\',100,250)"';
+				$text.= 'onmouseover="mopen(event,\'help_event_family\',0,0)"';
+				$text.= 'onmouseout="mclosetime()">';
+					$text.= '<img src="../images/help.png" height="16" width="16">';
+				$text.= '</a>';
+				$text.= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_event_family" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+					$text.= __('For items like:').' '.__('Event').', '.__('Marriage contract').', '.__('Marriage license').', '.__('etc.');
+				$text.= '</div>';
+			$text.= '</div><br>';
+
 		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
@@ -276,6 +334,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show name by person ***
 	if ($event_kind=='name'){
+		$link='name';
 		//$text.='<tr style="display:none;" class="row1" name="row1">';
 		$text.='<tr style="display:none;" class="row1">';
 		$text.='<td></td>';
@@ -290,6 +349,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show NPFX Name prefix like: Lt. Cmndr. ***
 	if ($event_kind=='NPFX'){
+		$link='name';
 		//$text.='<tr style="display:none;" class="row1" name="row1">';
 		$text.='<tr style="display:none;" class="row1">';
 		$text.='<td></td>';
@@ -302,6 +362,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show NSFX Name suffix like: jr. ***
 	if ($event_kind=='NSFX'){
+		$link='name';
 		//$text.='<tr style="display:none;" class="row1" name="row1">';
 		$text.='<tr style="display:none;" class="row1">';
 		$text.='<td></td>';
@@ -314,6 +375,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show nobility by person ***
 	if ($event_kind=='nobility'){
+		$link='name';
 		//$text.='<tr style="display:none;" class="row1" name="row1">';
 		$text.='<tr style="display:none;" class="row1">';
 		$text.='<td></td>';
@@ -326,6 +388,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show title by person ***
 	if ($event_kind=='title'){
+		$link='name';
 		$text.='<tr style="display:none;" class="row1" name="row1">';
 		//$text.='<tr class="table_header" style="display:none;" id="row1" name="row1">';
 		$text.='<td></td>';
@@ -338,6 +401,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show lordship by person ***
 	if ($event_kind=='lordship'){
+		$link='name';
 		$text.='<tr style="display:none;" class="row1" name="row1">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('Title of Lordship').'</td>';
@@ -349,6 +413,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show birth declaration by person ***
 	if ($event_kind=='birth_declaration'){
+		$link='born';
 		$text.='<tr class="humo_color row2" style="display:none;" name="row2">';
 		//$text.='<tr class="table_header" style="display:none;" id="row2" name="row2">';
 		$text.='<td></td>';
@@ -361,6 +426,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show baptism witness by person ***
 	if ($event_kind=='baptism_witness'){
+		$link='baptised';
 		$text.='<tr style="display:none;" class="row3" name="row3">';
 		//$text.='<tr class="table_header" style="display:none;" id="row3" name="row3">';
 		$text.='<td></td>';
@@ -373,6 +439,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show death declaration by person ***
 	if ($event_kind=='death_declaration'){
+		$link='died';
 		$text.='<tr class="humo_color row4" style="display:none;" name="row4">';
 		//$text.='<tr class="table_header" style="display:none;" id="row4" name="row4">';
 		$text.='<td></td>';
@@ -385,6 +452,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show burial witness by person ***
 	if ($event_kind=='burial_witness'){
+		$link='buried';
 		$text.='<tr style="display:none;" class="row5" name="row5">';
 		//$text.='<tr class="table_header" style="display:none;" id="row5" name="row5">';
 		$text.='<td></td>';
@@ -398,31 +466,35 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// *** Show profession by person ***
 	if ($event_kind=='profession'){
 		//$text.='<tr class="humo_color">';
-		$text.='<tr>';
+		$text.='<tr class="table_header_large">';
 		$text.='<td style="border-right:0px;">';
-			$text.='<a name="profession"></a>';
 
-			$count=$data_list_qry->rowCount();
-			if ($count>0)
-			$text.='<a href="#profession" onclick="hideShow(13);"><span id="hideshowlink13">'.__('[+]').'</span></a> '; 
+			$text.='<a name="profession"></a>';
+			$link='profession';
+
+			//$count=$data_list_qry->rowCount();
+			//if ($count>0)
+			//$text.='<a href="#profession" onclick="hideShow(13);"><span id="hideshowlink13">'.__('[+]').'</span></a> '; 
 
 			$text.=__('Profession').'</td>';
 		$text.='<td style="border-right:0px;"></td>';
 		$text.='<td style="border-left:0px;">';
 
-		if (isset($_GET['add_person'])){
-			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
-		}
-		else {
+		//if (isset($_GET['add_person'])){
+		//	//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
+		//}
+		//else {
 			$text.='<a href="index.php?'.$joomlastring.'page='.$page.
 			'&amp;menu_admin=person&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
-		}
-		$temp_text='';
-		while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
-			if ($temp_text) $temp_text.=', ';
-			$temp_text.=$data_listDb->event_event;
-		}
-		$text.=$temp_text;
+		//}
+
+		//$temp_text='';
+		//while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
+		//	if ($temp_text) $temp_text.=', ';
+		//	$temp_text.=$data_listDb->event_event;
+		//}
+		//$text.=$temp_text;
+
 		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
@@ -430,14 +502,17 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show pictures by person, family and (shared) source ***
 	if ($event_kind=='picture' OR $event_kind=='marriage_picture' OR $event_kind=='source_picture'){
-		$text.='<tr class="humo_color">';
+		//$text.='<tr class="humo_color">';
+		$text.='<tr class="table_header_large">';
+
 		$text.='<td style="border-right:0px;">';
 		$text.='<a name="picture"></a>';
+		$link='picture';
 
 		$count_qry=$dbh->query($qry);
 		$count=$count_qry->rowCount();
-		if ($count>0)
-			$text.='<a href="#picture" onclick="hideShow(53);"><span id="hideshowlink53">'.__('[+]').'</span></a> ';
+		//if ($count>0)
+		//	$text.='<a href="#picture" onclick="hideShow(53);"><span id="hideshowlink53">'.__('[+]').'</span></a> ';
 
 		$text.=__('Picture/ Media').'</td>';
 		$text.='<td style="border-right:0px;"></td>';
@@ -452,6 +527,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			else
 				$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add='.$event_add.'#picture">['.__('Add').']</a> ';
 
+			/*
+			// *** JUNE 2021: disabled drag and drop to get a clearer editor page ***
 			if ($count>1) { $text.="&nbsp;&nbsp;".__('(Drag pictures to change display order)'); }
 			$text.='&nbsp;&nbsp;&nbsp;<a href="index.php?page=thumbs">'.__('Pictures/ create thumbnails').'.</a>';
 
@@ -507,7 +584,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				$text.='</li>';
 			} 
 			$text.='</ul>';
-
+			*/
 
 			// DEC 2015: FOR NOW, ONLY SHOW NUMBER OF PICTURE-OBJECTS.
 			// *** Search for all external connected objects by a person or a family ***
@@ -636,6 +713,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show marriage witness by family ***
 	if ($event_kind=='marriage_witness'){
+		$link='marriage_relation';
 		$text.='<tr style="display:none;" class="row8 humo_color" name="row8">';
 		//$text.='<tr class="table_header" style="display:none;" id="row8" name="row8">';
 		$text.='<td></td>';
@@ -648,6 +726,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show marriage witness (religious) by family ***
 	if ($event_kind=='marriage_witness_rel'){
+		$link='marr_church';
 		$text.='<tr style="display:none;" class="row10 humo_color" name="row10">';
 		//$text.='<tr class="table_header" style="display:none;" id="row10" name="row10">';
 		$text.='<td></td>';
@@ -666,12 +745,16 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$expand_link=''; $internal_link='#';
 		if ($event_kind=='person'){
 			//$change_bg_colour=' class="humo_color"';
-			$expand_link=' style="display:none;" class="row51" name="row51"';
+			$change_bg_colour='';
+			//$expand_link=' style="display:none;" class="row51" name="row51"';
+			$expand_link='';
 			$internal_link='#event_person_link';
 		}
 		if ($event_kind=='family'){
 			//$change_bg_colour=' class="humo_color"';
-			$expand_link=' style="display:none;" class="row52" name="row52"';
+			$change_bg_colour='';
+			//$expand_link=' style="display:none;" class="row52" name="row52"';
+			$expand_link='';
 			$internal_link='#event_family_link';
 		}
 		if ($event_kind=='name'){
@@ -728,13 +811,15 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		if ($event_kind=='profession'){
 			//$change_bg_colour=' class="humo_color"';
 			$change_bg_colour='';
-			$expand_link=' style="display:none;" class="row13" name="row13"';
+			//$expand_link=' style="display:none;" class="row13" name="row13"';
+			$expand_link='';
 			$internal_link='#profession';
 		}
 		if ($event_kind=='picture' OR $event_kind=='marriage_picture' OR $event_kind=='source_picture'){
 			//$change_bg_colour='';
 			$change_bg_colour=' class="humo_color"';
-			$expand_link=' style="display:none;" id="pic_main_'.$data_listDb->event_id.'" class="pic_main row53 humo_color" name="row53"';
+			//$expand_link=' style="display:none;" id="pic_main_'.$data_listDb->event_id.'" class="pic_main row53 humo_color" name="row53"';
+			$expand_link='';
 			$internal_link='#picture';
 		}
 		if ($event_kind=='marriage_witness'){
@@ -750,20 +835,21 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$internal_link='#event_family_link';
 		}
 
-		$text.='<tr'.$expand_link.'>';
+		//$text.='<tr'.$expand_link.'>';
+		$text.='<tr'.$expand_link.$change_bg_colour.'>';
 
 		// *** Show name of event and [+] link ***
 		$text.='<td>';
 			//$text.='&nbsp;&nbsp;&nbsp;<a href="'.$internal_link.'" onclick="hideShow('.$data_listDb->event_id.'00);"><span id="hideshowlink'.$data_listDb->event_id.'00">'.__('[+]').'</span></a>';
 			//$text.=' #'.$data_listDb->event_order;
 			$newpers = ""; if(isset($_GET['add_person'])) { $newpers = "&amp;add_person=1"; }
-			$text.='<a href="index.php?'.$joomlastring.'page='.$page.$newpers.'&amp;'.$event_group.'&amp;event_kind='.$data_listDb->event_kind.'&amp;event_drop='.
-				$data_listDb->event_order;
+			$text.='<a href="index.php?'.$joomlastring.'page='.$page.$newpers.'&amp;'.$event_group.
+				'&amp;event_kind='.$data_listDb->event_kind.'&amp;event_drop='.$data_listDb->event_order;
 			// *** Remove picture by source ***
 			if ($event_kind=='source_picture') $text.='&amp;source_id='.$data_listDb->event_connect_id;
 			$text.='"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" border="0" alt="down"></a>';
 
-			if ($data_listDb->event_kind !='picture'){
+			//if ($data_listDb->event_kind !='picture'){
 				// *** Count number of events ***
 				if ($event_connect_kind=='person'){
 					$count_event=$dbh->query("SELECT * FROM humo_events
@@ -790,7 +876,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				else{
 					$text.='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 				}
-			}
+			//}
 			$text.='</td>';
 
 			$text.='<td style="border-right:0px;">';
@@ -873,13 +959,21 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				}
 				else{
 					$show_image='';
-					if (file_exists($path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event))
-						$show_image= '<img src="'.$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event.'" width="100px">';
+
+					$picture=$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event;
+					if ($data_listDb->event_event AND file_exists($picture)){
+						// *** Get size of original picture ***
+						list($width, $height) = getimagesize($picture);
+						$size=' style="width:100px"';
+						if ($height>$width) $size=' style="height:80px"';
+						$show_image= '<img src="'.$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event.'"'.$size.'>';
+					}
 					else
-						$show_image= '<img src="../images/thumb_missing-image.jpg" height="100px">';
+						$show_image= '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
+//Check line above. If thumb if missing, missing picture is shown...
 
 					//if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../images/thumb_missing-image.jpg" height="80px">';
-					if (!$data_listDb->event_event) $show_image= '<img src="../images/thumb_missing-image.jpg" height="80px">';
+					if (!$data_listDb->event_event) $show_image= '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
 					$text.=$show_image;
 				}
 			}
@@ -1167,90 +1261,35 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 		// *** Text by event ***
 		$text.='<br><textarea rows="1" name="event_text['.$data_listDb->event_id.']" '.$field_text.' placeholder="'.__('text').'">'.$editor_cls->text_show($data_listDb->event_text).'</textarea>';
-
 		$text.='</td>';
+
 		$text.='<td>';
 			// *** Source by event ***
 			if ($event_connect_kind=='person'){
-				// *** Calculate and show nr. of sources ***
-				$connect_qry="SELECT *
-					FROM humo_connections
-					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='pers_event_source'
-					AND connect_connect_id='".$data_listDb->event_id."'";
-				$connect_sql=$dbh->query($connect_qry);
-
-				$text.="&nbsp;<a href=\"".$internal_link."\" onClick=\"window.open('index.php?page=editor_sources&".$event_group."&connect_kind=person&connect_sub_kind=pers_event_source&connect_connect_id=".$data_listDb->event_id."', '','width=800,height=500')\">".__('source');
+				if (!isset($link)) $link='';
+				$text.=source_link2('10'.$data_listDb->event_id,$data_listDb->event_id,'pers_event_source',$link);
 			}
-			//else{
 			elseif ($event_connect_kind=='family'){
-				// *** Calculate and show nr. of sources ***
-				$connect_qry="SELECT *
-					FROM humo_connections
-					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='fam_event_source'
-					AND connect_connect_id='".$data_listDb->event_id."'";
-				$connect_sql=$dbh->query($connect_qry);
-
-				$text.="&nbsp;<a href=\"".$internal_link."\" onClick=\"window.open('index.php?page=editor_sources&event_family=1&connect_kind=family&connect_sub_kind=fam_event_source&connect_connect_id=".$data_listDb->event_id."', '','width=800,height=500')\">".__('source');
+				if (!isset($link)) $link='';
+				$text.=source_link2('20'.$data_listDb->event_id,$data_listDb->event_id,'fam_event_source',$link);
 			}
 			// *** Source by picture by source... ***
-			elseif ($event_connect_kind=='source'){
-				// *** Calculate and show nr. of sources ***
-				$connect_qry="SELECT *
-					FROM humo_connections
-					WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='source_event_source'
-					AND connect_connect_id='".$data_listDb->event_id."'";
-				$connect_sql=$dbh->query($connect_qry);
-// DISABLED... Not sure if it's necessary to use a source by a picture by a source...
-//				$text.="&nbsp;<a href=\"".$internal_link."\" onClick=\"window.open('index.php?page=editor_sources&event_family=1&connect_kind=family&connect_sub_kind=fam_event_source&connect_connect_id=".$data_listDb->event_id."', '','width=800,height=500')\">".__('source');
-			}
-
-			$text.=' ['.$connect_sql->rowCount().']</a>';
+			// DISABLED... Not sure if it's necessary to use a source by a picture by a source...
+			//elseif ($event_connect_kind=='source'){
+			//	// *** Calculate and show nr. of sources ***
+			//	$text.=source_link2('30'.$data_listDb->event_id,$data_listDb->event_id,'fam_event_source');
+			//}
 		$text.='</td>';
-
-
 		$text.='</tr>';
 
-		/*
-		// *** Date and place line ***
-		//$internal_link1='style="display:none;" id="row'.$data_listDb->event_id.'00" name="row'.$data_listDb->event_id.'00"';
-		$pic_row1 = ""; 
-		if ($event_kind=='picture' OR $event_kind=='marriage_picture' OR $event_kind=='source_picture'){ 
-			$pic_row1 = ' id="pic_row1_'.$data_listDb->event_id.'"'; 
-			$change_bg_colour = ' class="humo_color pic_row1 row'.$data_listDb->event_id.'00"';
+		if ($event_connect_kind=='person'){
+			// *** Show iframe source ***
+			$text.=iframe_source('10'.$data_listDb->event_id,'person','pers_event_source',$data_listDb->event_id);
 		}
-		else{
-			// *** Date and place line for other events like profession and witnesses etc. ***
-			if($change_bg_colour != '') { $change_bg_colour = substr($change_bg_colour,0,-1).' row'.$data_listDb->event_id.'00"'; }
-			else { $change_bg_colour = ' class="row'.$data_listDb->event_id.'00"';}	
+		elseif ($event_connect_kind=='family'){
+			// *** Show iframe source ***
+			$text.=iframe_source('20'.$data_listDb->event_id,'family','fam_event_source',$data_listDb->event_id);
 		}
-		$internal_link1='style="display:none;" '.$pic_row1.' name="row'.$data_listDb->event_id.'00"';
-		$text.='<tr'.$change_bg_colour.' '.$internal_link1.'><td></td>';
-			$text.='<td style="border-right:0px;">'.__('date').'</td>';
-			$text.='<td style="border-left:0px;">';
-			$text.=$editor_cls->date_show($data_listDb->event_date,'event_date',"[$data_listDb->event_id]").' '.__('place').' <input type="text" name="event_place['.$data_listDb->event_id.']" placeholder="'.__('place').'" value="'.$data_listDb->event_place.'" size="'.$field_date.'">';
-			$text.='</td><td>';
-		$text.='</td></tr>';
-
-		// *** Text by event ***
-		$pic_row2 = ""; 
-		if ($event_kind=='picture' OR $event_kind=='marriage_picture' OR $event_kind=='source_picture'){ 
-			$pic_row2 = ' id="pic_row2_'.$data_listDb->event_id.'"'; 
-			$change_bg_colour = ' class="humo_color pic_row2 row'.$data_listDb->event_id.'00"';
-		}
-		else{
-			// *** Date and place line for other events like profession and witnesses etc. ***
-			if($change_bg_colour != '') { $change_bg_colour = substr($change_bg_colour,0,-1).' row'.$data_listDb->event_id.'00"'; }
-			else { $change_bg_colour = ' class="row'.$data_listDb->event_id.'00"'; }
-		}
-		$internal_link2='style="display:none;" '.$pic_row2.' name="row'.$data_listDb->event_id.'00"';
-		$text.='<tr'.$change_bg_colour.' '.$internal_link2.'><td></td>';
-		$text.='<td style="border-right:0px;">';
-		$text.=__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="event_text['.$data_listDb->event_id.']" '.$field_text.' placeholder="'.__('text').'">'.$editor_cls->text_show($data_listDb->event_text).'</textarea>';
-		$text.='</td><td></td></tr>';
-
-		if ($change_bg_colour!=' class="humo_color3"'){ $change_bg_colour=' class="humo_color3"'; }
-			else{ $change_bg_colour=' class="humo_color2"'; }
-		*/
 	}
 
 
@@ -1305,46 +1344,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='</td></tr>';
 	}
 
-	// *** Add person event ***
-	if ($event_kind=='person'){
-		// *** Add person event ***
-		//$text.='<tr bgcolor="#CCFFFF" style="display:none;" class="row51" name="row51"><td>'.__('Add event').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
-		$text.='<tr><td><br></td><td style="border-right:0px;"></td><td style="border-left:0px;">';
-			$text.='<select size="1" name="event_kind">';
-				//$text.='<option value="profession">'.__('Profession').'</option>';
-				//$text.='<option value="picture">'.__('Picture/ Media').'</option>';
-				$text.='<option value="event">'.__('Event').'</option>';
-				//$text.='<option value="birth_declaration">'.__('Birth Declaration').'</option>';
-				//$text.='<option value="baptism_witness">'.__('Baptism Witness').'</option>';
-				//$text.='<option value="death_declaration">'.__('Death Declaration').'</option>';
-				//$text.='<option value="burial_witness">'.__('Burial Witness').'</option>';
-				//$text.='<option value="name">'.__('Name').'</option>';
-				//$text.='<option value="nobility">'.__('Title of Nobility').'</option>';
-				//$text.='<option value="title">'.__('Title').'</option>';
-				$text.='<option value="adoption">'.__('Adoption').'</option>';
-				//$text.='<option value="lordship">'.__('Title of Lordship').'</option>';
-				$text.='<option value="URL">'.__('URL/ Internet link').'</option>';
-				$text.='<option value="person_colour_mark">'.__('Colour mark by person').'</option>';
-			$text.='</select>';
-			$text.=' <input type="Submit" name="person_event_add" value="'.__('Add event').'">';
-		//$text.='</td><td><input type="Submit" name="person_event_add" value="'.__('Add').'"></td><tr>';
-		$text.='</td><td><br></td></tr>';
-	}
-
-	// *** Add event ***
-	if ($event_kind=='family'){
-		//$text.='<tr bgcolor="#CCFFFF" style="display:none;" class="row52" name="row52"></td><td>'.__('Add event').'</td><td style="border-right:0px;"></td><td style="border-left:0px;">';
-		$text.='<tr></td><td><br></td><td style="border-right:0px;"></td><td style="border-left:0px;">';
-			$text.='<select size="1" name="event_kind">';
-				//$text.='<option value="picture">Picture</option>';
-				$text.='<option value="event">'.__('Event').'</option>';
-				//$text.='<option value="marriage_witness">'.__('Marriage Witness').'</option>';
-				//$text.='<option value="marriage_witness_rel">'.__('marriage witness (religious)').'</option>';
-			$text.='</select>';
-			$text.='<input type="Submit" name="marriage_event_add" value="'.__('Add event').'">';
-		//$text.='</td><td><input type="Submit" name="marriage_event_add" value="'.__('Add').'"></td><tr>';
-		$text.='</td><td><br></td><tr>';
-	}
 
 	// *** Show events if save or arrow links are used ***
 	if (isset($_GET['event_person']) OR isset($_GET['event_family']) OR isset($_GET['event_add'])){
