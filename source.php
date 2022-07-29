@@ -298,27 +298,23 @@ function source_display($sourcenum) {
 
 					}
 				}
-				elseif ($connectDb->connect_sub_kind=='pers_address_source'){
+				// *** Show person-address connection ***
+				elseif ($connectDb->connect_sub_kind=='pers_address_connect_source'){
 					// *** connect_sub_kind=pers_address_source/connect_connect_id=Rxx/connect_source_id=Sxx.
 					// *** connect_sub_kind=person_address/connect_connect_id=Ixx/connect_item_id=Rxx
 					$address_qry="SELECT * FROM humo_connections
-						WHERE connect_tree_id='".$connectDb->connect_tree_id."'
-						AND connect_kind='person'
-						AND connect_sub_kind='person_address'
-						AND connect_item_id='".$connectDb->connect_connect_id."'
-						ORDER BY connect_order";
+						WHERE connect_id='".$connectDb->connect_connect_id."'";
 					$address_sql=$dbh->query($address_qry);
-					while($addressDb=$address_sql->fetch(PDO::FETCH_OBJ)){
-						// Show person that has connected address.
-						$personDb=$db_functions->get_person ($addressDb->connect_connect_id);
-						$name=$person_cls->person_name($personDb);
-						echo __('Source by address (person):');
+					$addressDb=$address_sql->fetch(PDO::FETCH_OBJ);
+					// Show person that has connected address.
+					$personDb=$db_functions->get_person ($addressDb->connect_connect_id);
+					$name=$person_cls->person_name($personDb);
+					echo __('Source by address (person):');
 
-						// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-						$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
-						$name=$person_cls->person_name($personDb);
-						echo ' <a href="'.$url.'">'.$name["standard_name"].'</a>';
-					}
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+					$name=$person_cls->person_name($personDb);
+					echo ' <a href="'.$url.'">'.$name["standard_name"].'</a>';
 				}
 				else{
 					$personDb=$db_functions->get_person ($connectDb->connect_connect_id);
@@ -377,27 +373,23 @@ function source_display($sourcenum) {
 						if ($event_Db->event_event){ echo ' ['.$event_Db->event_event.']'; }
 					}
 				}
-				elseif ($connectDb->connect_sub_kind=='fam_address_source'){
+				// *** Show person-address connection ***
+				elseif ($connectDb->connect_sub_kind=='fam_address_connect_source'){
 					// *** connect_sub_kind=fam_address_source/connect_connect_id=Rxx/connect_source_id=Sxx.
 					// *** connect_sub_kind=family_address/connect_connect_id=Fxx/connect_item_id=Rxx
 					$address_qry="SELECT * FROM humo_connections
-						WHERE connect_tree_id='".$connectDb->connect_tree_id."'
-						AND connect_kind='family'
-						AND connect_sub_kind='family_address'
-						AND connect_item_id='".$connectDb->connect_connect_id."'
-						ORDER BY connect_order";
+						WHERE connect_id='".$connectDb->connect_connect_id."'";
 					$address_sql=$dbh->query($address_qry);
-					while($addressDb=$address_sql->fetch(PDO::FETCH_OBJ)){
-						// Show family that has connected address.
-						echo __('Source by adres (family):');
-						$familyDb=$db_functions->get_family ($addressDb->connect_connect_id);
-						$personDb=person_data($familyDb);
+					$addressDb=$address_sql->fetch(PDO::FETCH_OBJ);
+					// Show family that has connected address.
+					echo __('Source by adres (family):');
+					$familyDb=$db_functions->get_family ($addressDb->connect_connect_id);
+					$personDb=person_data($familyDb);
 
-						// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-						$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
-						$name=$person_cls->person_name($personDb);
-						echo ' <a href="'.$url.'">'.$name["standard_name"].'</a>';
-					}
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+					$name=$person_cls->person_name($personDb);
+					echo ' <a href="'.$url.'">'.$name["standard_name"].'</a>';
 				}
 				else{
 					$familyDb=$db_functions->get_family ($connectDb->connect_connect_id);
@@ -416,7 +408,8 @@ function source_display($sourcenum) {
 				$sql="SELECT * FROM humo_addresses
 					WHERE address_tree_id='".$connectDb->connect_tree_id."' AND address_gedcomnr='".$connectDb->connect_connect_id."'";
 				$address_sql=$dbh->query($sql); $addressDb=$address_sql->fetch(PDO::FETCH_OBJ);
-				if ($addressDb->address_address) $text=$addressDb->address_address;
+				$text='';
+				if ($addressDb->address_address) $text.=$addressDb->address_address;
 				if ($addressDb->address_place) $text.=' '.$addressDb->address_place;
 
 				echo __('Source for address:');

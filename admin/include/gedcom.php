@@ -303,7 +303,7 @@ if (isset($step1)){
 
 		$check=''; if ($humo_option["gedcom_read_save_pictures"]=='y'){ $check=' checked'; }
 		echo '<input type="checkbox" name="save_pictures"'.$check.'> '.__('Don\'t remove picture links from database (only needed for Geneanet GEDCOM file).')."<br>\n";
-
+		echo __('In Geneanet add HuMo-genealogy picture id in the source by a person. Using this example: #media1254,media13454#')."<br>\n";
 
 		// *** Option to add GEDCOM file to family tree if this family tree isn't empty ***
 //use this code?
@@ -2223,6 +2223,38 @@ if (isset($_POST['step4'])){
 
 			$sql="DELETE FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fam."'";
 			$result=$dbh->query($sql);
+		}
+	}
+
+	// *** Try to proces picture (added in source) from Geneanet. HuMo-genealogy media number must be added in Geneanet source by person ***
+	// *** Example: 1 media item #media12354#
+	// *** Multiple media items: #media1235,media3345#
+	if ($humo_option["gedcom_read_save_pictures"]=='y'){
+		$connect_qry=$dbh->query("SELECT * FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='person_source'");
+		while($connectDb=$connect_qry->fetch(PDO::FETCH_OBJ)){
+			// *** Get source ***
+			if ($connectDb->connect_source_id){
+				$db_functions->set_tree_id($tree_id);
+				$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
+
+				// *** Process multiple media items by a person ***
+				// *** Added a '!' sign to prevent '0' detection. The routine will stop then! ***
+				$media_items='!'.$sourceDb->source_text;
+				$first=strpos($media_items,'#');
+				if ($first){
+					$media_items=substr($media_items,$first+1);
+					$second=strpos($media_items,'#');
+					$media_items=substr($media_items,0,$second);
+
+					$media_items_array=explode(',',$media_items);
+					for ($i=0; $i<count($media_items_array); $i++){
+						$event_sql="UPDATE humo_events SET
+							event_connect_id='".$connectDb->connect_connect_id."'
+							WHERE event_id='".substr($media_items_array[$i],5)."'";
+						$result=$dbh->query($event_sql);
+					}
+				}
+			}
 		}
 	}
 

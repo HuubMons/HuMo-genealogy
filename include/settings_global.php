@@ -1,14 +1,14 @@
 <?php
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='5.11';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='5.12';  // Version line, DO NOT CHANGE THIS LINE
 // *** Beta (not stable enough for production, but it's functional ***
 //$humo_option["version"]='BETA version 28 nov. 2019';  // Version line, DO NOT CHANGE THIS LINE
 //$humo_option["version"]='TEST version 11 oct. 2011';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-$humo_option["version_date"]='2022-04-23';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2022-05-26';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 
 // *** Test lines for update procedure ***
 //$humo_option["version_date"]='2012-01-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE

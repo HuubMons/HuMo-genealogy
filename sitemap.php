@@ -75,7 +75,15 @@ foreach($datasql as $dataDb){
 
 				// *** First part of url (strip sitemap.php from path) ***
 				$position=strrpos($_SERVER['PHP_SELF'],'/');
-				$uri_path= substr($_SERVER['PHP_SELF'],0,$position);
+
+				//$uri_path= substr($_SERVER['PHP_SELF'],0,$position);
+				// *** April 2022: Using full path: http://localhost/humo-genealogy/sitemap.php ***
+				if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+					$uri_path= 'https://'.$_SERVER['SERVER_NAME'].substr($_SERVER['PHP_SELF'],0,$position);
+				}
+				else{
+					$uri_path= 'http://'.$_SERVER['SERVER_NAME'].substr($_SERVER['PHP_SELF'],0,$position);
+				}
 
 				if ($humo_option["url_rewrite"]=="j"){
 					$person_url=$uri_path.'/family/'.$dataDb->tree_id.'/'.$personDb->fam_gedcomnumber.'/';
@@ -110,7 +118,15 @@ foreach($datasql as $dataDb){
 
 				// *** First part of url (strip sitemap.php from path) ***
 				$position=strrpos($_SERVER['PHP_SELF'],'/');
-				$uri_path= substr($_SERVER['PHP_SELF'],0,$position);
+
+				//$uri_path= substr($_SERVER['PHP_SELF'],0,$position);
+				// *** April 2022: Using full path: http://localhost/humo-genealogy/sitemap.php ***
+				if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+					$uri_path= 'https://'.$_SERVER['SERVER_NAME'].substr($_SERVER['PHP_SELF'],0,$position);
+				}
+				else{
+					$uri_path= 'http://'.$_SERVER['SERVER_NAME'].substr($_SERVER['PHP_SELF'],0,$position);
+				}
 
 				$pers_family='';
 				if ($personDb->pers_famc){ $pers_family=$personDb->pers_famc; }

@@ -665,7 +665,16 @@ if (isset($pers_gedcomnumber)){
 
 	// *** Get person data to show name and calculate nr. of items ***
 	$person = $db_functions->get_person($pers_gedcomnumber);
-	if ($person) $check_person=true;
+	if ($person){
+		$check_person=true;
+
+		// *** Also set $marriage, this could be another family (needed to calculate ancestors used by colour event) ***
+		if (isset($person->pers_fams) AND $person->pers_fams){
+			$marriage_array=explode(";",$person->pers_fams);
+			$marriage=$marriage_array[0];
+			$_SESSION['admin_fam_gedcomnumber']=$marriage;
+		}
+	}
 	if (!$person AND $new_tree==false AND $add_person==false) $check_person=false;
 }
 if ($new_tree) $check_person=true;
@@ -3259,7 +3268,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				$source_repo_gedcomnr=$sourceDb->source_repo_gedcomnr;
 			}
 
-			echo '<form method="POST" action="'.$phpself.'">';
+			echo '<form method="POST" action="'.$phpself.'" name="form3" id="form3">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 			echo '<input type="hidden" name="source_id" value="'.$source_id.'">';
 			echo '<input type="hidden" name="source_gedcomnr" value="'.$source_gedcomnr.'">';
@@ -3722,7 +3731,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					echo $die_message;
 				}
 				$address_gedcomnr=$addressDb->address_gedcomnr;
-				$_SESSION['admin_address_gedcomnumber']=$address_gedcomnr; // *** Used for source ***
+				//OLD CODE
+				//$_SESSION['admin_address_gedcomnumber']=$address_gedcomnr; // *** Used for source ***
 
 				$address_address=$addressDb->address_address;
 				$address_date=$addressDb->address_date;
@@ -3758,17 +3768,14 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Source by address ***
 			echo '<tr><td>'.ucfirst(__('source')).'</td><td>';
 				if (isset($addressDb->address_id)){
-					// *** Calculate and show nr. of sources ***
-					$connect_qry="SELECT * FROM humo_connections
-						WHERE connect_tree_id='".$tree_id."'
-						AND connect_kind='address' AND connect_sub_kind='address_source'
-						AND connect_connect_id='".$address_gedcomnr."'";
-					$connect_sql=$dbh->query($connect_qry);
-// Also add address_gedcomnumber to link? For now a session parameter is used: $_SESSION['admin_address_gedcomnumber']
-					echo "&nbsp;<a href=\"#\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=address_source', '','width=800,height=500')\">".__('source');
-					echo ' ['.$connect_sql->rowCount().']</a>';
+					echo source_link2('20'.'',$addressDb->address_gedcomnr,'address_source','addresses');
 				}
 			echo '</td></tr>';
+			// *** Show source by address ***
+			if (isset($addressDb->address_gedcomnr)){
+				//iframe_source($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)
+				echo iframe_source('20'.'','address','address_source',$addressDb->address_gedcomnr);
+			}
 
 			echo '<tr><td>'.ucfirst(__('text')).'</td><td><textarea rows="1" name="address_text" '.$field_text_large.'>'.
 			$editor_cls->text_show($address_text).'</textarea></td></tr>';
@@ -4011,29 +4018,6 @@ function event_option($event_gedcom,$event){
 	return '<option value="'.$event.'"'.$selected.'>'.language_event($event).'</option>';
 }
 
-// *** Show link to sources, using pop-up screen ***
-/*
-function source_link($item,$connect_connect_id, $connect_sub_kind){
-	global $tree_id, $dbh;
-
-	$connect_qry="SELECT connect_connect_id, connect_source_id FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."'
-		AND connect_sub_kind='".$connect_sub_kind."' AND connect_connect_id='".$connect_connect_id."'";
-	$connect_sql=$dbh->query($connect_qry);
-	$source_count=$connect_sql->rowCount();
-	$source_error=false;
-	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-		if (!$connectDb->connect_source_id) $source_error=true;
-	}
-
-	echo '&nbsp;';
-	if ($source_error) echo '<span style="background-color:#FFAA80">';
-		$relation='';if ($item=='relation') $relation='marriage';
-		echo "<a href=\"#".$relation."\" onClick=\"window.open('index.php?page=editor_sources&amp;connect_sub_kind=".$connect_sub_kind."', '','width=800,height=500')\">".__('source');
-		echo ' ['.$source_count.']</a>';
-	if ($source_error) echo '</span>';
-}
-*/
 // *** Show link to sources (version 2 )***
 function source_link2($hideshow,$connect_connect_id,$connect_sub_kind,$link=''){
 	global $tree_id, $dbh;
@@ -4470,6 +4454,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 						//	else $connect_sub_kind2='fam_address_source';
 						////function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
 						//echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,$connect_sub_kind2,'addresses');
+
 						echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,'address_source','addresses');
 					}
 					echo '<br>';
@@ -4542,7 +4527,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 		echo '</td>';
 		echo '<td style="vertical-align:bottom;">';
-			// *** Source by address ***
+			// *** Source by address-connection ***
 			if ($address3Db){
 				// *** This part is moved to the red address box ***
 				//if ($connect_kind=='person') $connect_sub_kind2='pers_address_source';
@@ -4552,6 +4537,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 				if ($connect_kind=='person') $connect_sub_kind2='pers_address_connect_source';
 					else $connect_sub_kind2='fam_address_connect_source';
+				//function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
 				echo source_link2('21'.$addressDb->connect_id,$addressDb->connect_id,$connect_sub_kind2,'addresses');
 			}
 		echo '</td>';
@@ -4560,7 +4546,8 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 		// *** Show source by address ***
 		if (isset($address3Db->address_gedcomnr)){
 			//iframe_source($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)
-			echo iframe_source('20'.$addressDb->connect_id,'address','address_source2',$address3Db->address_gedcomnr);
+			//echo iframe_source('20'.$addressDb->connect_id,'address','address_source2',$address3Db->address_gedcomnr);
+			echo iframe_source('20'.$addressDb->connect_id,'address','address_source',$address3Db->address_gedcomnr);
 		}
 
 		// *** Show source by address-connection ***
@@ -4570,7 +4557,6 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 			// *** Source connect to link person-address ***
 			echo iframe_source('21'.$addressDb->connect_id,'person','pers_address_connect_source',$addressDb->connect_id);
-
 		}
 		elseif (isset($address3Db->address_gedcomnr)){
 			// *** Show iframe source ***

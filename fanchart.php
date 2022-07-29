@@ -50,7 +50,6 @@ $printing=1;
 if (isset($_GET["printing"])){ $printing=$_GET["printing"]; }
 if (isset($_POST["printing"])){ $printing=$_POST["printing"]; }
 
-//NEW
 if(!isset($_POST['show_desc'])) {  // first entry into page - check cookie or session
 	if(isset($_COOKIE["humogen_showdesc"])) { 
 		$showdesc=$_COOKIE["humogen_showdesc"];
