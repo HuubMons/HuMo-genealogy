@@ -168,20 +168,21 @@ function valid_date($date) {
 	$replace = array('JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC');
 	$date=str_replace($search, $replace, ucwords($date));
 
-	$date=strtolower($date);
+	// $date=strtolower($date); // Do NOT change case of $date because of German date using a first uppercase: Dez
+	// 21-06-2022: Changed str_replace by str_ireplace.
 	// Use your own language for input, SHORT MONTH NAMES
-	$date=str_replace(__('jan'),"JAN", $date);
-	$date=str_replace(__('feb'),"FEB", $date);
-	$date=str_replace(__('mar'),"MAR", $date);
-	$date=str_replace(__('apr'),"APR", $date);
-	$date=str_replace(__('may'),"MAY", $date);
-	$date=str_replace(__('jun'),"JUN", $date);
-	$date=str_replace(__('jul'),"JUL", $date);
-	$date=str_replace(__('aug'),"AUG", $date);
-	$date=str_replace(__('sep'),"SEP", $date);
-	$date=str_replace(__('oct'),"OCT", $date);
-	$date=str_replace(__('nov'),"NOV", $date);
-	$date=str_replace(__('dec'),"DEC", $date);
+	$date=str_ireplace(__('jan'),"JAN", $date);
+	$date=str_ireplace(__('feb'),"FEB", $date);
+	$date=str_ireplace(__('mar'),"MAR", $date);
+	$date=str_ireplace(__('apr'),"APR", $date);
+	$date=str_ireplace(__('may'),"MAY", $date);
+	$date=str_ireplace(__('jun'),"JUN", $date);
+	$date=str_ireplace(__('jul'),"JUL", $date);
+	$date=str_ireplace(__('aug'),"AUG", $date);
+	$date=str_ireplace(__('sep'),"SEP", $date);
+	$date=str_ireplace(__('oct'),"OCT", $date);
+	$date=str_ireplace(__('nov'),"NOV", $date);
+	$date=str_ireplace(__('dec'),"DEC", $date);
 
 	// date entered as 01-04-2013 or 01/04/2013
 	if((strpos($date,"-")!==false OR strpos($date,"/")!==false) AND strpos($date," ")===false) { // skips "2 mar 1741/42" and "mar 1741/42"

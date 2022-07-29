@@ -984,6 +984,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		if ($family->fam_children){
 			$child=explode(";",$family->fam_children);
 			for ($i=0; $i<=substr_count($family->fam_children, ";"); $i++){
+//foreach ($child_array as $i => $value){
 				if($_POST['part_tree']=='part' AND !in_array($child[$i],$persids))  { continue; }
 				$buffer.='1 CHIL @'.$child[$i]."@\r\n";
 			}
@@ -1722,6 +1723,7 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 	// *** Check family with parent1: N.N. ***
 	if ($parent1){
 		// *** Save man's families in array ***
+//check query
 		$personDb=$db_functions->get_person($parent1);
 
 		$marriage_array=explode(";",$personDb->pers_fams);
@@ -1792,15 +1794,13 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 		// *** Children                                              ***
 		// *************************************************************
 		if ($familyDb->fam_children){
-			$childnr=1;
+			//$childnr=1;
 			$child_array=explode(";",$familyDb->fam_children);
-
-//$nr_children=count($child_array); $nr_children--;
-//for ($i=0; $i<=$nr_children; $i++){
-			for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
+			foreach ($child_array as $i => $value){
 				$child=$dbh->query("SELECT * FROM humo_persons
 					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$child_array[$i]."'");
 				@$childDb=$child->fetch(PDO::FETCH_OBJ);
+//@$childDb = $db_functions->get_person($child_array[$i]);
 				if($child->rowCount()>0) {
 					// *** Build descendant_report ***
 					if ($childDb->pers_fams){
@@ -1815,7 +1815,7 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 							$persids[] = $childDb->pers_gedcomnumber;
 						}
 					}
-					$childnr++;
+					//$childnr++;
 				}
 			}
 		}

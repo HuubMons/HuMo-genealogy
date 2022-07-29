@@ -300,30 +300,9 @@ if (isset($step1)){
 			echo '<option value="full_path"'.$selected.'>'.__('Process full picture path. For example: picture_path&#92;picture.jpg').'</option>';
 		echo '</select><br>';
 
-
 		$check=''; if ($humo_option["gedcom_read_save_pictures"]=='y'){ $check=' checked'; }
 		echo '<input type="checkbox" name="save_pictures"'.$check.'> '.__('Don\'t remove picture links from database (only needed for Geneanet GEDCOM file).')."<br>\n";
 		echo __('In Geneanet add HuMo-genealogy picture id in the source by a person. Using this example: #media1254,media13454#')."<br>\n";
-
-		// *** Option to add GEDCOM file to family tree if this family tree isn't empty ***
-//use this code?
-//$nr_persons=$db_functions->count_persons($tree_id);
-//if ($nr_persons>0){
-		$result = $dbh->query("SELECT tree_persons FROM humo_trees WHERE tree_prefix ='".$tree_prefix."' LIMIT 1");
-		$resultDb=$result->fetch(PDO::FETCH_OBJ);
-		if ($resultDb->tree_persons != 0) {  // don't show if there is nothing in the database yet: this can't be a second gedcom!
-			//echo "<br><input type='checkbox' name='add_tree'> ".__('Add this GEDCOM file to the existing tree')."<br>\n";
-			echo '<br><input type="checkbox" onchange="document.getElementById(\'step2\').disabled = !this.checked;" name="add_tree"> '.__('Add this GEDCOM file to the existing tree')."<br>\n";
-		}
-
-		//TEST
-		//$nr_persons=$db_functions->count_persons($tree_id);
-		//if ($nr_persons>0){
-		//	$checked1 = ''; $checked2 = ' checked';
-		//	echo '<br><input type="radio" value="no" name="add_tree" onchange="document.getElementById(\'step2\').disabled = this.checked;" '.$checked2.'> ';printf(__('Replace existing family tree with %s persons'), $nr_persons);
-		//	echo '<br>';
-		//	echo '<input type="radio" value="yes" name="add_tree" onchange="document.getElementById(\'step2\').disabled = !this.checked;" '.$checked1.'> '.__('Add this GEDCOM file to the existing tree').'<br>';
-		//}
 
 		echo '<br></tr><td>'.__('GEDCOM process settings').'</td><td>';
 
@@ -367,12 +346,14 @@ if (isset($step1)){
 	// *** Show extra warning if there is an existing family tree ***
 	$nr_persons=$db_functions->count_persons($tree_id);
 	if ($nr_persons>0){
-		echo '<br><input type="checkbox" onchange="document.getElementById(\'step2\').disabled = !this.checked;" />';
-
+		// *** Option to add GEDCOM file to family tree if this family tree isn't empty ***
 		$treetext=show_tree_text($tree_id, $selected_language);
 		$treetext2=''; if ($treetext['name']) $treetext2= $treetext['name'];
-		//printf(__('Yes, replace existing family tree "" with %s persons!'), $nr_persons);
+		$checked1 = ''; $checked2 = '';
+		echo '<br><input type="radio" value="no" name="add_tree" onchange="document.getElementById(\'step2\').disabled = !this.checked;" '.$checked2.'> ';
 		printf(__('Yes, replace existing family tree: <b>"%1$s"</b> with %2$s persons!'), $treetext2, $nr_persons);
+		echo '<br>';
+		echo '<input type="radio" value="yes" name="add_tree" onchange="document.getElementById(\'step2\').disabled = !this.checked;" '.$checked1.'> '.__('Add this GEDCOM file to the existing tree').'<br>';
 
 		echo '<br><input type="Submit" name="step2" id="step2" disabled value="'.__('Step').' 2"><br>';
 	}
@@ -424,7 +405,7 @@ if (isset($_POST['step2'])){
 		$result = $db_functions->update_settings('gedcom_read_time_out',$_POST['time_out']);
 	}
 
-	if(!isset($_POST['add_tree'])) {
+	if(!isset($_POST['add_tree']) OR (isset($_POST['add_tree']) AND $_POST['add_tree']=='no')) {
 		$_SESSION['add_tree']=false; 
 		$limit=2500;
 		if(CMS_SPECIFIC=="Joomla") {

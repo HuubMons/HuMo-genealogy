@@ -671,8 +671,12 @@ if (isset($pers_gedcomnumber)){
 		// *** Also set $marriage, this could be another family (needed to calculate ancestors used by colour event) ***
 		if (isset($person->pers_fams) AND $person->pers_fams){
 			$marriage_array=explode(";",$person->pers_fams);
-			$marriage=$marriage_array[0];
-			$_SESSION['admin_fam_gedcomnumber']=$marriage;
+			// *** Don't change if a second marriage is selected in the editor ***
+			//if (!in_array($marriage, $marriage_array)){
+			if (!isset($marriage) OR !in_array($marriage, $marriage_array)){
+				$marriage=$marriage_array[0];
+				$_SESSION['admin_fam_gedcomnumber']=$marriage;
+			}
 		}
 	}
 	if (!$person AND $new_tree==false AND $add_person==false) $check_person=false;
@@ -849,8 +853,6 @@ if ($check_person){
 								echo '<table><tr><td style="vertical-align: top; width:auto; border: solid 0px; border-right:solid 1px #999999;">';
 
 									// *** Show person ***
-									//echo '<b>'.__('Person').'</b><br>';
-									//echo show_person($person->pers_gedcomnumber).'<br>';
 									echo '<span style="font-weight:bold; font-size:1.1em">'.show_person($person->pers_gedcomnumber,false,false).'</span><br>';
 
 									// *** Show marriages and children ***
@@ -890,13 +892,6 @@ if ($check_person){
 
 											echo __(' to: ');
 
-											//echo '<br>';
-
-											// *** Name of selected person ***
-											//echo show_person($person->pers_gedcomnumber);
-
-											//echo ' '.__('and').' ';
-
 											if ($person->pers_gedcomnumber==$familyDb->fam_man)
 												echo show_person($familyDb->fam_woman).'<br>';
 											else
@@ -904,11 +899,9 @@ if ($check_person){
 
 											if ($familyDb->fam_children){
 												echo '<b>'.__('Children').'</b><br>';
-												$fam_children_array=explode(";",$familyDb->fam_children);
-												$child_count=substr_count($familyDb->fam_children, ";");
-												for ($j=0; $j<=$child_count; $j++){
-													echo ($j+1).'. ';
-													echo show_person($fam_children_array[$j]).'<br>';
+												$child_array=explode(";",$familyDb->fam_children);
+												foreach ($child_array as $j => $value){
+													echo ($j+1).'. '.show_person($child_array[$j]).'<br>';
 												}
 											}
 
@@ -939,10 +932,10 @@ if ($check_person){
 										// *** Siblings (brothers and sisters) ***
 										if ($family_parentsDb->fam_children){
 											$fam_children_array=explode(";",$family_parentsDb->fam_children);
-											$child_count=substr_count($family_parentsDb->fam_children, ";");
+											$child_count=count($fam_children_array);
 											if ($child_count>1){
 												echo '<b>'.__('Siblings').'</b><br>';
-												for ($j=0; $j<=$child_count; $j++){
+												foreach ($fam_children_array as $j => $value){
 													echo ($j+1).'. ';
 													if ($fam_children_array[$j]==$person->pers_gedcomnumber){
 														// *** Don't show link ***
@@ -3015,27 +3008,24 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			if ($familyDb->fam_children){
 				echo '<a name="children"></a>';
 				echo __('Use this icon to order children (drag and drop)').': <img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0">';
-				
-				//echo '<br>'.__('Or automatically order children:').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=children&amp;marriage_nr='.$marriage.'&amp;order_children=1">'.__('Automatic order children').'</a>';
+
 				echo '<br>'.__('Or automatically order children:').' <a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_tab=marriage&amp;marriage_nr='.$marriage.'&amp;order_children=1#children">'.__('Automatic order children').'</a>';
 
 				if (isset($_GET['order_children'])) echo ' <b>'.__('Children are re-ordered.').'</b>';
 
 				//echo __('Children').':<br>';
 				$fam_children_array=explode(";",$familyDb->fam_children);
-				$child_count=substr_count($familyDb->fam_children, ";");
 				echo '<ul id="sortable'.$i.'" class="sortable">';
-				for ($j=0; $j<=$child_count; $j++){
-				
+				foreach ($fam_children_array as $j => $value){
 					// *** Create new children variabele, for disconnect child ***
 					$fam_children='';
-					for ($k=0; $k<=substr_count($familyDb->fam_children, ";"); $k++){
+					foreach ($fam_children_array as $k => $value){
 						if ($k!=$j){ $fam_children.=$fam_children_array[$k].';'; }
 					}
 					$fam_children=substr($fam_children,0,-1); // *** strip last ; character ***
-					
+
 					echo '<li><span style="cursor:move;" id="'.$fam_children_array[$j].'" class="handle'.$i.'" ><img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" border="0" title="'.__('Drag to change order (saves automatically)').'" alt="'.__('Drag to change order').'"></span>&nbsp;&nbsp;';
-					
+
 					echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_id.'&amp;child_disconnect='.$fam_children.
 						'&amp;child_disconnect_gedcom='.$fam_children_array[$j].'">
 						<img src="'.CMS_ROOTPATH_ADMIN.'images/person_disconnect.gif" border="0" title="'.__('Disconnect child').'" alt="'.__('Disconnect child').'"></a>';
@@ -3043,11 +3033,6 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				} 
 				echo '</ul>';
 			}
-
-			// *** Add child ***
-			//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;family_id='.$familyDb->fam_gedcomnumber;
-			//if ($familyDb->fam_children){ echo '&amp;children='.$familyDb->fam_children; }
-			//echo '&amp;child_connect=1&amp;add_person=1&amp;menu_tab=person"><img src="'.CMS_ROOTPATH_ADMIN.'images/person_connect.gif" border="0" title="'.__('Connect child').'" alt="'.__('Connect child').'"> '.__('Add child').'</a><br>';
 
 			// *** Add child ***
 			$pers_sexe='';

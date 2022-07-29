@@ -1170,6 +1170,9 @@ if ($index_list=='quicksearch'){
 	ON humo_persons1.pers_id = humo_persons2.pers_id
 	";
 
+	// *** Prevent double results (if there are multiple nick names) ***
+	$query.=" GROUP BY humo_persons1.pers_id";
+
 	$query.=" ORDER BY ".$orderby;
 }
 
@@ -1410,7 +1413,7 @@ if ($index_list=='patronym'){
 	$nr_persons=$humo_option['show_persons'];
 
 	if(!$selection['spouse_firstname'] AND !$selection['spouse_lastname'] AND $selection['parent_status']!="motheronly" AND $selection['parent_status']!="fatheronly") {
-	
+
 		$person_result = $dbh->query($query." LIMIT ".$item.",".$nr_persons);
  
 		if ($count_qry){

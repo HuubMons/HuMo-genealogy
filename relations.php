@@ -359,7 +359,7 @@ function calculate_ancestor($pers) {
 			}
 		}
 		$reltext = $parent.__(' of ');
-		if($selected_language=="da") {  
+		if($selected_language=="da") {
 			$reltext = $parent.' til ';
 		}
 		if($selected_language=="cn") {
@@ -492,7 +492,7 @@ function calculate_ancestor($pers) {
 			if ($pers > 3)  {
 				// 2nd great-grandfather
 				$persidDb3=$db_functions->get_person($relarr[$ancsarr[$arrnum-3]][0]);
-				$parsexe3 = $persidDb3->pers_sexe;    
+				$parsexe3 = $persidDb3->pers_sexe;
 				if($parsexe3=="M") {
 					if($parsexe2=="M") {
 						if($parsexe=="M") $se_2ndgr_grandpar = 'farfars far'.$parent;
@@ -759,7 +759,7 @@ global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseX, $langu
 		if ($pers > 3)  {
 			// 2nd great-grandchild
 			$persidDb3=$db_functions->get_person($relarr[$ancsarr[2]][0]);
-			$parsexe3 = $persidDb3->pers_sexe;    
+			$parsexe3 = $persidDb3->pers_sexe;
 			if($parsexe3=="M") {
 				if($parsexe2=="M") {
 					if($parsexe=="M") $se_2ndgr_grandch = 'sonsons son'.$child;
@@ -786,10 +786,10 @@ global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseX, $langu
 		if ($pers == 3) { $reltext = $se_gr_grandch.__(' of '); }
 		if ($pers == 4) { $reltext = $se_2ndgr_grandch.__(' of '); }
 		$gennr=$pers;
-		if ($pers >  4) { $reltext = $gennr.':e generations barn'.__(' of '); } 
+		if ($pers >  4) { $reltext = $gennr.':e generations barn'.__(' of '); }
 	}
 	elseif($selected_language=="cn") {	// instead of A is grandson of B we say: A's granfather is B
-		if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) { 
+		if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) {
 		//if($sexe2=="m") { // grandfather, great-grandfather etc
 			if ($pers == 2) { $reltext = '祖父'; }
 			if ($pers == 3) { $reltext = '曾祖父'; }
@@ -1056,7 +1056,7 @@ global  $rel_arrayspouseX, $rel_arrayX, $foundX_nr; // for Chinese
 			$persidDbY=$db_functions->get_person($relarrY[$parnumberY][0]);
 			$parsexeY = $persidDbY->pers_sexe;
 			if($parsexeY=="M") { // is child of brother
-				if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) { 
+				if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) {
 					$uncleaunt = '姪子是';
 				}
 				else {
@@ -1064,7 +1064,7 @@ global  $rel_arrayspouseX, $rel_arrayX, $foundX_nr; // for Chinese
 				}
 			}
 			else { // is child of sister - term depends also on sex of A
-				if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) { 
+				if(($sexe2=='m' AND $spouse!=2 AND $spouse!=3) OR ($sexe2=='f' AND ($spouse==2 OR $spouse==3))) {
 					if($sexe=="m") $uncleaunt = '外甥是'; // son of sister (A is male)
 					else $uncleaunt = '姨甥是'; // son of sister (A is female)
 				}
@@ -1116,7 +1116,7 @@ global  $rel_arrayspouseX, $rel_arrayX, $foundX_nr; // for Chinese
 			if ($generY > 2) {
 				// granduncle
 				$persidDb2=$db_functions->get_person($relarr[$ancsarr[$arrnum-2]][0]);
-				$parsexe2 = $persidDb2->pers_sexe;    
+				$parsexe2 = $persidDb2->pers_sexe;
 				if($parsexe2=="M") {
 					if($parsexe=="M") $se_granduncleaunt = 'fars farbror';
 					else $se_granduncleaunt = 'mors farbror';
@@ -1130,7 +1130,7 @@ global  $rel_arrayspouseX, $rel_arrayX, $foundX_nr; // for Chinese
 			if ($generY > 3)  {
 				// great-granduncle
 				$persidDb3=$db_functions->get_person($relarr[$ancsarr[$arrnum-3]][0]);
-				$parsexe3 = $persidDb3->pers_sexe;    
+				$parsexe3 = $persidDb3->pers_sexe;
 				if($parsexe3=="M") {
 					if($parsexe2=="M") {
 						if($parsexe=="M") $se_gr_granduncleaunt = 'farfars farbror';
@@ -1575,8 +1575,8 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 	
 		$gendiff = abs($generX - $generY);
 		$degreediff = min($generX,$generY);
-		if($gendiff == 0 AND $degreediff == 2) { 
-			// deals with first cousins not removed only. 
+		if($gendiff == 0 AND $degreediff == 2) {
+			// deals with first cousins not removed only.
 			// Unfortunately we miss the Chinese terminology for 2nd, 3rd cousins and "removed" sequence...
 			if($spouse=="1") { // left person is spouse of X, not X
 				$relarrX = $rel_arrayspouseX;
@@ -1711,7 +1711,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian
 		if($degreediff > 4)  {
 			$degreediff-=1;
 			$degree = $degreediff.__('th').' ';
-			if($selected_language=="nl") { 
+			if($selected_language=="nl") {
 				$degreediff--;  // 5th cousin is in dutch "4de achterneef"
 				$degree = $degreediff.__('th').' '.__('2nd [COUSIN]'); // in Dutch cousins are counted with 2nd cousin as base
 			}
@@ -2096,7 +2096,7 @@ function display () {
 				else {
 					if($spousetext2=='') { $reltext_nor2=''; }  // Norwegian grammar...
 					else { $reltext_nor = ''; }
-					if($selected_language=="cn") { 
+					if($selected_language=="cn") {
 						$language_is = '的';
 						if($reltext==" ") { // A's husband/wife is B
 							$reltext="是";
@@ -2129,7 +2129,7 @@ function display () {
 
 	}
 
-	//if($bloodreltext=='' AND $reltext=='') { 
+	//if($bloodreltext=='' AND $reltext=='') {
 	if($reltext=='') {
 		if($bloodreltext=='') {
 			echo '<br><br><table class="ext"><tr><td>'; 
@@ -2268,7 +2268,7 @@ function display_table() {
 
 			echo "</tr><tr>";
 
-			if(($spouse==1 AND $table==2) OR ($spouse==2 AND $table==1) OR $spouse==3) { 
+			if(($spouse==1 AND $table==2) OR ($spouse==2 AND $table==1) OR $spouse==3) {
 				$persidDb=$db_functions->get_person($rel_arrayY[0][0]);
 				$name=$pers_cls->person_name($persidDb);
 				$personname=$name["name"];
@@ -2305,7 +2305,7 @@ function display_table() {
 			echo "</tr></table>";
 		}
 	}
-	if($table==3 OR $table==4 OR $table==5 OR $table==6 ) { 
+	if($table==3 OR $table==4 OR $table==5 OR $table==6 ) {
 		$rowcount=max($foundX_gen,$foundY_gen);
 		$countX=$foundX_nr;
 		$countY=$foundY_nr;
@@ -2376,8 +2376,8 @@ function display_table() {
 
 				echo "<tr>";
 				if($spouse==1 OR $spouse==3) {
-					echo '<td style="border:0px;">&nbsp;</td>';  
-					echo '<td style="border:0px;">&nbsp;</td>'; 
+					echo '<td style="border:0px;">&nbsp;</td>';
+					echo '<td style="border:0px;">&nbsp;</td>';
 				}
 				if($persidDb->pers_fams) {
 					$fams=$persidDb->pers_fams;
@@ -2390,7 +2390,7 @@ function display_table() {
 				echo '<td class="'.$ext_cls.'" style="width:200px;text-align:center;'.$border.'padding:2px"><a href="'.$fampath."tree_id=".$tree_id."&amp;id=".$fam."&amp;main_person=".$persidDb->pers_gedcomnumber.'">'.$personname."</a></td>";
 				$countX=$rel_arrayX[$countX][2];
 			}
-			elseif($name1_done==0) { 
+			elseif($name1_done==0) {
 				echo "<tr>";
 				if($spouse==1 OR $spouse==3) {
 					$persidDb=$db_functions->get_person($rel_arrayX[0][0]);
@@ -2428,7 +2428,7 @@ function display_table() {
 				$name1_done=1;
 			}
 			else { 
-				echo "<tr>";
+				echo '<tr>';
 				if($spouse==1 OR $spouse==3) {
 					echo '<td style="border:0px;">&nbsp;</td>'; 
 					echo '<td style="border:0px;">&nbsp;</td>'; 
@@ -2436,7 +2436,7 @@ function display_table() {
 				echo '<td style="border:0px;">&nbsp;</td>';
 			}
 
-			if($countY!=0) { 
+			if($countY!=0) {
 				$persidDb=$db_functions->get_person($rel_arrayY[$countY][0]);
 				$name=$pers_cls->person_name($persidDb);
 				$personname=$name["name"];
@@ -2462,7 +2462,7 @@ function display_table() {
 				echo "</tr>";
 				$countY=$rel_arrayY[$countY][2];
 			}
-			elseif($name2_done==0) { 
+			elseif($name2_done==0) {
 				if($spouse==2 OR $spouse==3) {
 					$persidDb=$db_functions->get_person($rel_arrayY[0][0]);
 					$name=$pers_cls->person_name($persidDb);
@@ -2513,9 +2513,9 @@ function display_table() {
 				echo "</tr>";
 			}
 
-				echo "<tr>";
+				echo '<tr>';
 				if($spouse==1 OR $spouse==3) {
-					echo '<td style="border:0px;">&nbsp;</td>';  
+					echo '<td style="border:0px;">&nbsp;</td>';
 					echo '<td style="width=50px;border:0px;">&nbsp;</td>'; 
 				}
 				if($name1_done==0) { echo '<td style="border:0px;">&#8593;</td>'; } else { echo '<td style="border:0px;">&nbsp;</td>';  }
@@ -2535,7 +2535,7 @@ function display_table() {
 
 /* the extended marital calculator computation */
 
-function map_tree($pers_array, $pers_array2) {    
+function map_tree($pers_array, $pers_array2) {
 	// in first loop $pers_array and $pers_array2 hold persons A and B
 	// in the next loop it will contain the parents, children and spouses of persons A and B, where they exist etc
 	// the algorithm starts simultaneously from person A and person B in expanding circles until a common person is found (= connection found)
@@ -2568,20 +2568,20 @@ function map_tree($pers_array, $pers_array2) {
 
 		if($refer=="fst") { $globaltrack .= $persDb->pers_gedcomnumber."@"; }
 		// find parents
-		if(isset($persDb->pers_famc) AND $persDb->pers_famc!="" AND $refer!="par") {  
+		if(isset($persDb->pers_famc) AND $persDb->pers_famc!="" AND $refer!="par") {
 			$famcDb=$db_functions->get_family($persDb->pers_famc);
 			if ($famcDb==false){ echo "NO SUCH FAMILY"; return; }
 
-			if(isset($famcDb->fam_man) AND $famcDb->fam_man!="" AND $famcDb->fam_man!="0" AND strpos($globaltrack,$famcDb->fam_man."@")===false) { 
+			if(isset($famcDb->fam_man) AND $famcDb->fam_man!="" AND $famcDb->fam_man!="0" AND strpos($globaltrack,$famcDb->fam_man."@")===false) {
 					if(strpos($_SESSION['next_path'],$famcDb->fam_man."@")===false) {
 						$work_array[] = $famcDb->fam_man."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_man; 
 						$global_array[] = $famcDb->fam_man."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_man;
 					}
 					$count++;
-					$globaltrack .= $famcDb->fam_man."@";  
+					$globaltrack .= $famcDb->fam_man."@";
 			}
-			if(isset($famcDb->fam_woman) AND $famcDb->fam_woman!="" AND $famcDb->fam_woman!="0" AND strpos($globaltrack,$famcDb->fam_woman."@")===false) {  
-				if(strpos($_SESSION['next_path'],$famcDb->fam_woman."@")===false) { 
+			if(isset($famcDb->fam_woman) AND $famcDb->fam_woman!="" AND $famcDb->fam_woman!="0" AND strpos($globaltrack,$famcDb->fam_woman."@")===false) {
+				if(strpos($_SESSION['next_path'],$famcDb->fam_woman."@")===false) {
 					$work_array[] = $famcDb->fam_woman."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_woman;
 					$global_array[] = $famcDb->fam_woman."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_woman;
 				}
@@ -2590,10 +2590,10 @@ function map_tree($pers_array, $pers_array2) {
 			}
 		}
 		
-		if(isset($persDb->pers_fams) AND $persDb->pers_fams!="") {  
+		if(isset($persDb->pers_fams) AND $persDb->pers_fams!="") {
 			$famsarray = explode(";",$persDb->pers_fams); 
 			
-			foreach($famsarray as $value) {   
+			foreach($famsarray as $value) {
 				if($refer=="spo" AND $value == $callged) continue;
 				if($refer=="fst" AND $_SESSION['couple']==$value) continue;
 				$famsDb = $db_functions->get_family($value);
@@ -2602,7 +2602,7 @@ function map_tree($pers_array, $pers_array2) {
 	 			if(isset($famsDb->fam_children) AND $famsDb->fam_children!="") {
 	 				$childarray = explode(";",$famsDb->fam_children);
 					foreach($childarray as $value) {
-						if($refer=="chd" AND $callarray[0] == $value) continue;  
+						if($refer=="chd" AND $callarray[0] == $value) continue;
 						if(strpos($globaltrack,$value."@")===false) {  
 							if(strpos($_SESSION['next_path'],$value."@")===false) {
 								$work_array[] = $value."@par@".$persged."@".$pathway.";"."par".$value;
@@ -2644,7 +2644,7 @@ function map_tree($pers_array, $pers_array2) {
 		}
 	}
 	// build closest circle around person B (parents, children, spouse(s))
-	foreach($pers_array2 as $value) {   
+	foreach($pers_array2 as $value) {
 		$params = explode("@",$value);
 		$persged = $params[0];
 		$refer = $params[1];
@@ -2652,7 +2652,7 @@ function map_tree($pers_array, $pers_array2) {
 		$pathway = $params[3];
 
 		if($refer=="chd"){
-			$callarray = explode(";",$callged);	
+			$callarray = explode(";",$callged);
 		}
 		else { $callarray[0] = $callged; }
 
@@ -2663,36 +2663,36 @@ function map_tree($pers_array, $pers_array2) {
 
 		if($refer=="fst") { $globaltrack2 .= $persDb->pers_gedcomnumber."@"; }
 
-		if(isset($persDb->pers_famc) AND $persDb->pers_famc!="" AND $refer!="par") {  
+		if(isset($persDb->pers_famc) AND $persDb->pers_famc!="" AND $refer!="par") {
 			$famcDb = $db_functions->get_family($persDb->pers_famc);
 			if ($famcDb==false){ echo "NO SUCH FAMILY"; return; }
-			if(isset($famcDb->fam_man) AND $famcDb->fam_man!="" AND $famcDb->fam_man!="0") { 
+			if(isset($famcDb->fam_man) AND $famcDb->fam_man!="" AND $famcDb->fam_man!="0") {
 				$var1=strpos($_SESSION['next_path'],$famcDb->fam_man."@");
-				if(strpos($globaltrack,$famcDb->fam_man."@")!== false  AND $var1===false) {  
-					$totalpath=join_path($global_array,$pathway,$famcDb->fam_man,"chd"); 
+				if(strpos($globaltrack,$famcDb->fam_man."@")!== false  AND $var1===false) {
+					$totalpath=join_path($global_array,$pathway,$famcDb->fam_man,"chd");
 					$_SESSION['next_path'] .= $famcDb->fam_man."@"; 
 					display_result($totalpath);
-					return($famcDb->fam_man);  
+					return($famcDb->fam_man);
 				}
-				if(strpos($globaltrack2,$famcDb->fam_man."@")===false) { 
+				if(strpos($globaltrack2,$famcDb->fam_man."@")===false) {
 					if($var1===false) {
-						$work_array2[] = $famcDb->fam_man."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_man; 
+						$work_array2[] = $famcDb->fam_man."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_man;
 					}
 					$count++;
 					$globaltrack2 .= $famcDb->fam_man."@"; 
 				}
 			}
-			if(isset($famcDb->fam_woman) AND $famcDb->fam_woman!="" AND $famcDb->fam_woman!="0") {  
+			if(isset($famcDb->fam_woman) AND $famcDb->fam_woman!="" AND $famcDb->fam_woman!="0") {
 				$var2 = strpos($_SESSION['next_path'],$famcDb->fam_woman."@");
-				if(strpos($globaltrack,$famcDb->fam_woman."@")!== false AND $var2===false) {  
-					$totalpath=join_path($global_array,$pathway,$famcDb->fam_woman,"chd"); 
-					$_SESSION['next_path'] .= $famcDb->fam_woman."@";  
+				if(strpos($globaltrack,$famcDb->fam_woman."@")!== false AND $var2===false) {
+					$totalpath=join_path($global_array,$pathway,$famcDb->fam_woman,"chd");
+					$_SESSION['next_path'] .= $famcDb->fam_woman."@";
 					display_result($totalpath);
 					return($famcDb->fam_woman);  
 				}
-				if(strpos($globaltrack2,$famcDb->fam_woman."@")===false) {  
+				if(strpos($globaltrack2,$famcDb->fam_woman."@")===false) {
 					if($var2===false) {
-						$work_array2[] = $famcDb->fam_woman."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_woman; 	
+						$work_array2[] = $famcDb->fam_woman."@chd@".$persged.";".$persDb->pers_famc."@".$pathway.";"."chd".$famcDb->fam_woman;
 					}
 					$count++;
 					$globaltrack2 .= $famcDb->fam_woman."@";
@@ -2700,25 +2700,25 @@ function map_tree($pers_array, $pers_array2) {
 			}
 		}
 
-		if(isset($persDb->pers_fams) AND $persDb->pers_fams!="") {  
+		if(isset($persDb->pers_fams) AND $persDb->pers_fams!="") {
 			$famsarray = explode(";",$persDb->pers_fams); 
-			foreach($famsarray as $value) {   
+			foreach($famsarray as $value) {
 				if($refer=="spo" AND $value == $callged) continue;
 				if($refer=="fst" AND $_SESSION['couple']==$value) continue;
 				$famsDb = $db_functions->get_family($value);
 				if($refer=="chd" AND $famsDb->fam_woman==$persDb->pers_gedcomnumber AND isset($famsDb->fam_man) AND $famsDb->fam_man!="" AND $famsDb->fam_gedcomnumber==$callarray[1]) { continue; }
-	 			if(isset($famsDb->fam_children) AND $famsDb->fam_children!="")	{
-	 				$childarray = explode(";",$famsDb->fam_children);	
+	 			if(isset($famsDb->fam_children) AND $famsDb->fam_children!=""){
+	 				$childarray = explode(";",$famsDb->fam_children);
 					foreach($childarray as $value) {
-						if($refer=="chd" AND $callarray[0] == $value) continue;  
+						if($refer=="chd" AND $callarray[0] == $value) continue;
 						$var3 = strpos($_SESSION['next_path'],$value."@");
-						if(strpos($globaltrack,$value."@")!== false AND $var3===false) {   
+						if(strpos($globaltrack,$value."@")!== false AND $var3===false) {
 							$totalpath=join_path($global_array,$pathway,$value,"par"); 
 							$_SESSION['next_path'] .= $value."@";
 							display_result($totalpath);
 							return($value);
 						}
-						if(strpos($globaltrack2,$value."@")===false) {  
+						if(strpos($globaltrack2,$value."@")===false) {
 							if($var3===false) {
 								$work_array2[] = $value."@par@".$persged."@".$pathway.";"."par".$value;
 							}
@@ -2728,21 +2728,21 @@ function map_tree($pers_array, $pers_array2) {
 					}
 				}
 			}  
-			foreach($famsarray as $value) {  
+			foreach($famsarray as $value) {
 				if($refer=="chd" AND $value == $callarray[1]) continue;
 				if($refer=="spo" AND $value == $callged) continue;
 				if($refer=="fst" AND $_SESSION['couple']==$value) { continue; }
 				$famsDb = $db_functions->get_family($value);
-	 			if($famsDb->fam_man == $persDb->pers_gedcomnumber) { 
-					if(isset($famsDb->fam_woman) AND $famsDb->fam_woman!="" AND $famsDb->fam_woman!="0") { 
+	 			if($famsDb->fam_man == $persDb->pers_gedcomnumber) {
+					if(isset($famsDb->fam_woman) AND $famsDb->fam_woman!="" AND $famsDb->fam_woman!="0") {
 						$var4 = strpos($_SESSION['next_path'],$famsDb->fam_woman."@");
-						if(strpos($globaltrack,$famsDb->fam_woman."@")!== false AND $var4===false) {   
+						if(strpos($globaltrack,$famsDb->fam_woman."@")!== false AND $var4===false) {
 							$totalpath=join_path($global_array,$pathway,$famsDb->fam_woman,"spo");
 							$_SESSION['next_path'] .= $famsDb->fam_woman."@"; 
 							display_result($totalpath);
 							return($famsDb->fam_woman);
 						}
-						if(strpos($globaltrack2,$famsDb->fam_woman."@")===false){ 
+						if(strpos($globaltrack2,$famsDb->fam_woman."@")===false){
 							if($var4===false) {
 								$work_array2[] = $famsDb->fam_woman."@spo@".$value."@".$pathway.";"."spo".$famsDb->fam_woman;
 							}
@@ -2751,18 +2751,18 @@ function map_tree($pers_array, $pers_array2) {
 						}
 					}
 				}
-				elseif($famsDb->fam_woman == $persDb->pers_gedcomnumber) { 
-					if(isset($famsDb->fam_man) AND $famsDb->fam_man!="" AND $famsDb->fam_man!="0") { 
+				elseif($famsDb->fam_woman == $persDb->pers_gedcomnumber) {
+					if(isset($famsDb->fam_man) AND $famsDb->fam_man!="" AND $famsDb->fam_man!="0") {
 						$var5 = strpos($_SESSION['next_path'],$famsDb->fam_man."@");
-						if(strpos($globaltrack,$famsDb->fam_man."@")!== false AND $var5===false) {  
+						if(strpos($globaltrack,$famsDb->fam_man."@")!== false AND $var5===false) {
 							$totalpath=join_path($global_array,$pathway,$famsDb->fam_man,"spo");
 							$_SESSION['next_path'] .= $famsDb->fam_man."@"; 
 							display_result($totalpath);
-							return($famsDb->fam_man);  
+							return($famsDb->fam_man);
 						}
-						if(strpos($globaltrack2,$famsDb->fam_man."@")===false) { 
+						if(strpos($globaltrack2,$famsDb->fam_man."@")===false) {
 							if($var5===false) {
-								$work_array2[] = $famsDb->fam_man."@spo@".$value."@".$pathway.";"."spo".$famsDb->fam_man;;
+								$work_array2[] = $famsDb->fam_man."@spo@".$value."@".$pathway.";"."spo".$famsDb->fam_man;
 							}
 							$count++;
 							$globaltrack2 .= $famsDb->fam_man."@";
@@ -2772,11 +2772,11 @@ function map_tree($pers_array, $pers_array2) {
 			}
 		}
 	}
-	if(isset($work_array[0]) AND isset($work_array2[0])) { 
+	if(isset($work_array[0]) AND isset($work_array2[0])) {
 		// no common person was found but both A and B still have a wider circle to expand -> call this function again
 		map_tree($work_array,$work_array2);
 	}
-	elseif(!isset($_SESSION['next_path'])) { 
+	elseif(!isset($_SESSION['next_path'])) {
 		echo "<br><span style='font-weight:bold;font-size:120%'>&nbsp;&nbsp;".__("These persons are not related in any way.")."&nbsp;&nbsp;<br><br>";
 	}
 	else {
@@ -2784,7 +2784,7 @@ function map_tree($pers_array, $pers_array2) {
 	}
 }
 
-function join_path($workarr,$path2,$pers2,$ref) {  
+function join_path($workarr,$path2,$pers2,$ref) {
 	// we have two trails. one from person A to the common person and one from person B to the common person (A ---> common <---- B)
 	// we have to create one trail from A to B
 	// since the second trail is reverse (from B to the common person) it first has to be turned around, including changing the relation to previous and next person
@@ -2792,7 +2792,7 @@ function join_path($workarr,$path2,$pers2,$ref) {
 	// $workarr is the array with all trails from person A 
 	// we have to find the trail that contains the common person ($pers2)
 	foreach($workarr as $value) {  
-		if(strpos($value.";",$pers2.";")===false) { 
+		if(strpos($value.";",$pers2.";")===false) {
 			continue;
 		}
 		$path1 = substr($value,strrpos($value,"@")+1);  // found the right trail
@@ -2804,7 +2804,7 @@ function join_path($workarr,$path2,$pers2,$ref) {
 	$new_path2 = "";
 	$changepath = array();
 	$commonpers = ";".$fstcommon.$pers2; 
-	if($ref=="par" AND $fstcommon=="par") { 
+	if($ref=="par" AND $fstcommon=="par") {
 		// the common person is a child of both sides - discard child and make right person spouse of left!
 		$changepath[count($secpath)-1] = "spo".substr($secpath[count($secpath)-1],3);
 		$commonpers = "";
@@ -2873,14 +2873,14 @@ function display_result($result) {
 			$map[$x][0]=$xval; $map[$x][1]=$yval; 
 
 		}
-		if($cal=="chd") { 
-			$yval--; 
+		if($cal=="chd") {
+			$yval--;
 			if($yval<$miny) $miny=$yval;
 			$map[$x][0]=$xval; $map[$x][1]=$yval; 
 			if(isset($map[$x+1]) AND $map[$x+1][3]=="par") $map[$x][2]=2;
 		}
 		if($cal=="par") {
-			$yval++; 
+			$yval++;
 			if($yval>$maxy) $maxy=$yval;
 			if($map[$x-1][3]=="chd") $xval++;
 			$map[$x][0]=$xval; $map[$x][1]=$yval; 
@@ -3043,8 +3043,6 @@ if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["ca
 $person=''; if (isset($_POST["person"])){ $person=$_POST['person']; }
 $person2=''; if (isset($_POST["person2"])){ $person2=$_POST['person2']; }
 
-//if (isset($_POST["search1"])){ $_SESSION["search1"]=1; }
-//if (isset($_POST["search2"])){ $_SESSION["search2"]=1; }
 if (isset($_POST["search1"]) OR isset($_POST["search_id1"])){ $_SESSION["search1"]=1; }
 if (isset($_POST["search2"]) OR isset($_POST["search_id2"])){ $_SESSION["search2"]=1; }
 

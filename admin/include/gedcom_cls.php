@@ -1247,35 +1247,123 @@ function process_person($person_array){
 		// *** Aldfaer not married ***
 		if ($buffer=='1 _NOPARTNER'){ $buffer='1 _NMAR'; $buffer7='1 _NMAR'; $level[1]='_NMAR'; }
 
-		if ($buffer6=='1 ADOP'){ $processed=1; $event_status='1';} // Adopted
-		if ($buffer7=='1 _ADPF'){ $processed=1; $event_status='1';} // Adopted by father
-		if ($buffer7=='1 _ADPM'){ $processed=1; $event_status='1';} // Adopted by mother
-		if ($buffer6=='1 BAPL'){ $processed=1; $event_status='1';} // LDS baptised
-		if ($buffer6=='1 BARM'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 BASM'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 BLES'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 CENS'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 CHRA'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 CONF'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 CONL'){ $processed=1; $event_status="1"; if (substr($buffer, 7)) $event_temp=substr($buffer, 7);}
-		if ($buffer6=='1 EMIG'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 ENDL'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 FCOM'){ $processed=1; $event_status="1";}
-		if ($buffer7=='1 _FNRL'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 GRAD'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 IMMI'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 NATU'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 ORDN'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 PROB'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 RETI'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 SLGC'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 WILL'){ $processed=1; $event_status='1';} // Will
-		if ($buffer7=='1 _YART'){ $processed=1; $event_status="1";}
-		if ($buffer7=='1 _INTE'){ $processed=1; $event_status="1";}
-		if ($buffer7=='1 _BRTM'){ $processed=1; $event_status="1";}
-		if ($buffer7=='1 _NLIV'){ $processed=1; $event_status="1";}
-		if ($buffer7=='1 _NMAR'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 NCHI'){ $processed=1; $event_status="1";}
+// ALL ITEMS: process text by item, like: if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		if ($buffer6=='1 ADOP'){ // Adopted
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer7=='1 _ADPF'){ // Adopted by father
+			$processed=1; $event_status='1';
+			if (substr($buffer, 8)) $event_temp=substr($buffer, 8);
+		}
+		if ($buffer7=='1 _ADPM'){ // Adopted by mother
+			$processed=1; $event_status='1';
+			if (substr($buffer, 8)) $event_temp=substr($buffer, 8);
+		}
+		if ($buffer6=='1 BAPL'){ // LDS baptised
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 BARM'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 BASM'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 BLES'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 CENS'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 CHRA'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 CONF'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 CONL'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 EMIG'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 ENDL'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 FCOM'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer7=='1 _FNRL'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 8)) $event_temp=substr($buffer, 8);
+		}
+		if ($buffer6=='1 GRAD'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 IMMI'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 NATU'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 ORDN'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 PROB'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 RETI'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 SLGC'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 WILL'){ // Will
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer7=='1 _YART'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 8)) $event_temp=substr($buffer, 8);
+		}
+		if ($buffer7=='1 _INTE'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 8)) $event_temp=substr($buffer, 8);
+		}
+		if ($buffer7=='1 _BRTM'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 8)) $event_temp=substr($buffer, 8);
+		}
+		if ($buffer7=='1 _NLIV'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 8)) $event_temp=substr($buffer, 8);
+		}
+		if ($buffer7=='1 _NMAR'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 8)) $event_temp=substr($buffer, 8);
+		}
+		if ($buffer6=='1 NCHI'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 		// BK
 		//1 _MILT militaire dienst  Location: Amsterdam
 		//2 DATE 3 APR 1996
@@ -1288,77 +1376,115 @@ function process_person($person_array){
 			$level[1]='MILI';
 		}
 		if ($buffer6=='1 MILI'){
-			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
 			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
 		}
 		//RELI Religion
 		if ($buffer6=='1 EDUC'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
-			$processed=1; $event_status='1';}
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 		if ($buffer6=='1 NATI'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
-			$processed=1; $event_status='1';}
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 		if ($buffer6=='1 CAST'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
-			$processed=1; $event_status='1';}
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 		//REFN Ref. nr.  (oown code)
 		if ($buffer5=='1 AFN'){
+			$processed=1; $event_status='1';
 			if (substr($buffer, 6)){ $event_temp=substr($buffer, 6); }
-			$processed=1; $event_status='1';}
+		}
 		if ($buffer5=='1 SSN'){
+			$processed=1; $event_status='1';
 			if (substr($buffer, 6)){ $event_temp=substr($buffer, 6); }
-			$processed=1; $event_status='1';}
+		}
 		if ($buffer7=='1 _PRMN'){
+			$processed=1; $event_status='1';
 			if (substr($buffer, 8)){ $event_temp=substr($buffer, 8); }
-			$processed=1; $event_status='1';}
+		}
 		if ($buffer6=='1 IDNO'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
-			$processed=1; $event_status='1';}
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 		if ($buffer7=='1 _HEIG'){
+			$processed=1; $event_status='1';
 			if (substr($buffer, 8)){ $event_temp=substr($buffer, 8); }
-			$processed=1; $event_status='1';}
+		}
 		if ($buffer7=='1 _WEIG'){
+			$processed=1; $event_status='1';
 			if (substr($buffer, 8)){ $event_temp=substr($buffer, 8); }
-			$processed=1; $event_status='1';}
+		}
 		if ($buffer7=='1 _EYEC'){
+			$processed=1; $event_status='1';
 			if (substr($buffer, 8)){ $event_temp=substr($buffer, 8); }
-			$processed=1; $event_status='1';}
+		}
 		if ($buffer7=='1 _HAIR'){
+			$processed=1; $event_status='1';
 			if (substr($buffer, 8)){ $event_temp=substr($buffer, 8); }
-			$processed=1; $event_status='1';}
+		}
 		if ($buffer6=='1 DSCR'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
-			$processed=1; $event_status='1';}
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 		if ($buffer7=='1 _MEDC'){
+			$processed=1; $event_status='1';
 			if (substr($buffer, 8)){ $event_temp=substr($buffer, 8); }
-			$processed=1; $event_status='1';}
+		}
 		if ($buffer6=='1 NCHI'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
-			$processed=1; $event_status='1';}
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 		if ($buffer6=='1 ANCI'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
-			$processed=1; $event_status='1';}
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 		if ($buffer6=='1 DESI'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
-			$processed=1; $event_status='1';}
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 		if ($buffer6=='1 PROP'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
-			$processed=1; $event_status='1';}
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 
 		// *** Other events (no BK?) ***
-		if ($buffer6=='1 ARVL'){ $processed=1; $event_status='1';} // arrived
-		if ($buffer6=='1 BAPM'){ $processed=1; $event_status='1';} // baptised as child
-		if ($buffer6=='1 DIVF'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 DPRT'){ $processed=1; $event_status="1";}
+		if ($buffer6=='1 ARVL'){ // arrived
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 BAPM'){ // baptised as child
+			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 DIVF'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+			}
+		if ($buffer6=='1 DPRT'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 
-		if ($buffer6=='1 LEGI'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 SLGL'){ $processed=1; $event_status="1";}
-		if ($buffer6=='1 TXPY'){ $processed=1; $event_status="1";}
+		if ($buffer6=='1 LEGI'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 SLGL'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
+		if ($buffer6=='1 TXPY'){
+			$processed=1; $event_status="1";
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
+		}
 
 		// *** Aldfaer, title by name: 1 TITL Ir. ***
 		if ($buffer6=='1 TITL'){
-			if (substr($buffer, 7)){ $event_temp=substr($buffer, 7); }
 			$processed=1; $event_status='1';
+			if (substr($buffer, 7)) $event_temp=substr($buffer, 7);
 		}
 
 		// *** Aldfaer ***
@@ -1557,13 +1683,13 @@ function process_person($person_array){
 
 	}  //end explode
 
-	if($add_tree==true OR $reassign==true) { 
-		if ($pers_name_text) $pers_name_text = '@'.$this->reassign_ged($pers_name_text,'N').'@'; 
-		if ($person["pers_text"]) $person["pers_text"] = '@'.$this->reassign_ged($person["pers_text"],'N').'@'; 
-		if ($pers_birth_text) $pers_birth_text = '@'.$this->reassign_ged($pers_birth_text,'N').'@'; 
-		if ($pers_bapt_text) $pers_bapt_text = '@'.$this->reassign_ged($pers_bapt_text,'N').'@'; 
-		if ($pers_death_text) $pers_death_text = '@'.$this->reassign_ged($pers_death_text,'N').'@'; 
-		if ($pers_buried_text) $pers_buried_text = '@'.$this->reassign_ged($pers_buried_text,'N').'@'; 
+	if($add_tree==true OR $reassign==true) {
+		if ($pers_name_text) $pers_name_text = $this->reassign_ged($pers_name_text,'N');
+		if ($person["pers_text"]) $person["pers_text"] = $this->reassign_ged($person["pers_text"],'N');
+		if ($pers_birth_text) $pers_birth_text = $this->reassign_ged($pers_birth_text,'N');
+		if ($pers_bapt_text) $pers_bapt_text = $this->reassign_ged($pers_bapt_text,'N');
+		if ($pers_death_text) $pers_death_text = $this->reassign_ged($pers_death_text,'N');
+		if ($pers_buried_text) $pers_buried_text = $this->reassign_ged($pers_buried_text,'N');
 	}
 
 	// *** Process estimates/ calculated date for privacy filter ***
@@ -2069,7 +2195,7 @@ function process_family($family_array,$first_marr, $second_marr){
 		if ($buffer8=='1 HUSB @'){
 			$processed=1;
 			$fam_man=substr($buffer,8,-1);
-			if($add_tree==true OR $reassign==true) { $fam_man = $this->reassign_ged($fam_man,'I');  }
+			if($add_tree==true OR $reassign==true) { $fam_man = $this->reassign_ged($fam_man,'I'); }
 			if($second_marr > 0) {  $dbh->query("UPDATE humo_persons SET pers_fams = CONCAT(pers_fams,';','".$gedcomnumber."')
 				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber = '".$fam_man."'"); }
 		}
@@ -2078,7 +2204,7 @@ function process_family($family_array,$first_marr, $second_marr){
 		if ($buffer8=='1 WIFE @'){
 			$processed=1;
 			$fam_woman=substr($buffer,8,-1);
-			if($add_tree==true OR $reassign==true) { $fam_woman = $this->reassign_ged($fam_woman,'I');  }
+			if($add_tree==true OR $reassign==true) { $fam_woman = $this->reassign_ged($fam_woman,'I'); }
 			if($second_marr > 0) {  $dbh->query("UPDATE humo_persons SET pers_fams = CONCAT(pers_fams,';','".$gedcomnumber."')
 				WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber = '".$fam_woman."'"); }
 		}
@@ -2089,7 +2215,7 @@ function process_family($family_array,$first_marr, $second_marr){
 			if ($buffer8=='1 CHIL @'){
 				$processed=1;
 				$tempnum = substr($buffer,8,-1);
-				if($add_tree==true OR $reassign==true) { $tempnum = $this->reassign_ged($tempnum,'I');  }
+				if($add_tree==true OR $reassign==true) { $tempnum = $this->reassign_ged($tempnum,'I'); }
 				$fam_children= $this->merge_texts($fam_children,';', $tempnum);
 			}
 
@@ -2762,25 +2888,25 @@ function process_family($family_array,$first_marr, $second_marr){
 
  	if($add_tree==true OR $reassign==true) {
 		if($family["fam_text"]) {
-			$family["fam_text"] = '@'.$this->reassign_ged($family["fam_text"],'N').'@';
+			$family["fam_text"] = $this->reassign_ged($family["fam_text"],'N');
 		}
 		if($family["fam_marr_church_notice_text"]) {
-			$family["fam_marr_church_notice_text"] = '@'.$this->reassign_ged($family["fam_marr_church_notice_text"],'N').'@';
+			$family["fam_marr_church_notice_text"] = $this->reassign_ged($family["fam_marr_church_notice_text"],'N');
 		}
 		if($family["fam_marr_church_text"]) {
-			$family["fam_marr_church_text"] = '@'.$this->reassign_ged($family["fam_marr_church_text"],'N').'@';
+			$family["fam_marr_church_text"] = $this->reassign_ged($family["fam_marr_church_text"],'N');
 		}
 		if($family["fam_relation_text"]) {
-			$family["fam_relation_text"] = '@'.$this->reassign_ged($family["fam_relation_text"],'N').'@';
+			$family["fam_relation_text"] = $this->reassign_ged($family["fam_relation_text"],'N');
 		}
 		if($family["fam_marr_notice_text"]) {
-			$family["fam_marr_notice_text"] = '@'.$this->reassign_ged($family["fam_marr_notice_text"],'N').'@';
+			$family["fam_marr_notice_text"] = $this->reassign_ged($family["fam_marr_notice_text"],'N');
 		}
 		if($family["fam_marr_text"]) {
-			$family["fam_marr_text"] = '@'.$this->reassign_ged($family["fam_marr_text"],'N').'@';
+			$family["fam_marr_text"] = $this->reassign_ged($family["fam_marr_text"],'N');
 		}
 		if($family["fam_div_text"]) {
-			$family["fam_div_text"] = '@'.$this->reassign_ged($family["fam_div_text"],'N').'@';
+			$family["fam_div_text"] = $this->reassign_ged($family["fam_div_text"],'N');
 		}
 	}
 
@@ -2987,7 +3113,7 @@ function process_family($family_array,$first_marr, $second_marr){
 				$check_event_kind=$event['kind'][$i];
 			}
 			if($add_tree==true OR $reassign==true) {
-				if ($event['text'][$i]) $event['text'][$i] = '@'.$this->reassign_ged($event['text'][$i],'N').'@';
+				if ($event['text'][$i]) $event['text'][$i] = $this->reassign_ged($event['text'][$i],'N');
 			}
 
 			$gebeurtsql="INSERT IGNORE INTO humo_events SET
@@ -3030,7 +3156,7 @@ function process_family($family_array,$first_marr, $second_marr){
 			}
 
 			if($add_tree==true OR $reassign==true) {
-				if ($connect['text'][$i]) $connect['text'][$i] = '@'.$this->reassign_ged($connect['text'][$i],'N').'@';
+				if ($connect['text'][$i]) $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N');
 			}
 
 			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
@@ -3086,8 +3212,7 @@ function process_text($text_array){
 	$text['text_gedcomnr']=substr($buffer,3,$second_char-3);
 
 	if($add_tree==true OR $reassign==true) {
-		//$text['text_gedcomnr'] = $this->reassign_ged($text['text_gedcomnr'],'N');
-		$text['text_gedcomnr'] = $this->reassign_ged('@'.$text['text_gedcomnr'].'@','N');
+		$text['text_gedcomnr'] = $this->reassign_ged($text['text_gedcomnr'],'N');
 	}
 
 	// *** Check for text after "NOTE":
@@ -3218,7 +3343,7 @@ function process_text($text_array){
 				$check_connect=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i];
 			}
 
-			//if($add_tree==true OR $reassign==true) { $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N');  }
+			//if($add_tree==true OR $reassign==true) { $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N'); }
 			$connect['text'][$i]=$text['text_gedcomnr'];	// *** Allready re-assigned ***
 
 			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
@@ -3533,7 +3658,7 @@ function process_source($source_array){
 	//if ($source["source_title"]==''){ $source["source_title"]="..."; }
 
 	if($add_tree==true OR $reassign==true) {
-		if ($source["source_text"]) $source["source_text"] = '@'.$this->reassign_ged($source["source_text"],'N').'@';
+		if ($source["source_text"]) $source["source_text"] = $this->reassign_ged($source["source_text"],'N');
 	}
 
 	// *** Save events ***
@@ -3549,7 +3674,7 @@ function process_source($source_array){
 			}
 
 			if($add_tree==true OR $reassign==true) {
-				if ($event['text'][$i]) $event['text'][$i] = '@'.$this->reassign_ged($event['text'][$i],'N').'@';
+				if ($event['text'][$i]) $event['text'][$i] = $this->reassign_ged($event['text'][$i],'N');
 			}
 
 			$gebeurtsql="INSERT IGNORE INTO humo_events SET
@@ -3591,7 +3716,7 @@ function process_source($source_array){
 			//}
 
 			if($add_tree==true OR $reassign==true) {
-				if ($connect['text'][$i]) $connect['text'][$i] = '@'.$this->reassign_ged($connect['text'][$i],'N').'@';
+				if ($connect['text'][$i]) $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N');
 			}
 
 			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
@@ -3831,7 +3956,7 @@ function process_repository($repo_array){
 	} //end explode
 
 	if($add_tree==true OR $reassign==true) {
-		if ($repo["repo_text"]) $repo["repo_text"] = '@'.$this->reassign_ged($repo["repo_text"],'N').'@';
+		if ($repo["repo_text"]) $repo["repo_text"] = $this->reassign_ged($repo["repo_text"],'N');
 	}
 
 	// *** Save repository ***
@@ -3897,7 +4022,7 @@ function process_address($line){
 	$address["address_place"]=""; $address["address_phone"]="";
 	$address["address_text"]="";
 	$address["address_gedcomnr"]=substr($buffer,3,-6);
-	if($add_tree==true OR $reassign==true) { $address["address_gedcomnr"] = $this->reassign_ged($address["address_gedcomnr"],'R');  }
+	if($add_tree==true OR $reassign==true) { $address["address_gedcomnr"] = $this->reassign_ged($address["address_gedcomnr"],'R'); }
 	$address["address_unprocessed_tags"]="";
 	$address["new_date"]=''; $address["new_time"]='';
 	$address["changed_date"]=''; $address["changed_time"]='';
@@ -4013,7 +4138,7 @@ function process_address($line){
 			//}
 
 			if($add_tree==true OR $reassign==true) {
-				if ($connect['text'][$i]) $connect['text'][$i] = '@'.$this->reassign_ged($connect['text'][$i],'N').'@';
+				if ($connect['text'][$i]) $connect['text'][$i] = $this->reassign_ged($connect['text'][$i],'N');
 			}
 
 			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
@@ -4093,7 +4218,7 @@ function process_object($object_array){
 	// 3 TIME 09:19:50
 
 	$event['gedcomnr']=substr($buffer,3,-6);
-	if($add_tree==true OR $reassign==true) { $event['gedcomnr'] = $this->reassign_ged($event['gedcomnr'],'O');  }
+	if($add_tree==true OR $reassign==true) { $event['gedcomnr'] = $this->reassign_ged($event['gedcomnr'],'O'); }
 	$event['event']=''; $event['event_extra']='';
 	$event['date']=''; $event['place']='';
 	$event['text']=''; // $event['source']='';
@@ -4185,7 +4310,7 @@ function process_object($object_array){
 
 	} //end explode
 
-	if($add_tree==true OR $reassign==true) { $event['text'] = $this->reassign_ged($event['text'],'O');  }
+	if($add_tree==true OR $reassign==true) { $event['text'] = $this->reassign_ged($event['text'],'O'); }
 	// *** Save object ***
 	$eventsql="INSERT IGNORE INTO humo_events SET
 		event_tree_id='".$tree_id."',
@@ -4371,7 +4496,12 @@ function reassign_ged($gednr,$letter) {
 	// 1 NOTE @N8647@	reference to note
 	// 0 @N8647@ NOTE	note
 
-	if($letter!='N' OR ($letter=='N' AND substr($gednr,0,2)=='@N')) {
+	// 1 NOTE Text		skip text without reference.
+
+	// *** GEDCOM numbering must be numeric ***
+	//if (is_numeric(substr($gednr,1)) AND $letter!='N' OR ($letter=='N' AND substr($gednr,0,2)=='@N')) {
+	if (is_numeric(substr($gednr,1))) {
+//echo $gednr.' '.$letter.'<br>';
 		$newged = ''; $tempged = '';
 		if(!isset($reassign_array[$gednr])) {
 			$reassign_array[$gednr] = $new_gednum[$letter];
@@ -4381,13 +4511,13 @@ function reassign_ged($gednr,$letter) {
 		if($letter=="RP") { $letter="R"; } // after using repo array "RP" above (to differentiate from "R" for addresses) we change it back to "R"
 		$newged = $letter.$tempged;
 		//if(substr($gednr,0,1)=='@') { $newged = '@'.$newged.'@'; } // if the gedcomnumber was @N23@ it has to be returned as such with the adjusted number
-//if ($letter=='N') echo $gednr.'-'.$newged.'<br>';
-//if ($letter=='N') return '@'.$newged.'@';
+		//if ($letter=='N') echo $gednr.'-'.$newged.'<br>';
+		//if ($letter=='N') return '@'.$newged.'@';
 		return $newged;
 	}
 	else {
-//if ($letter=='N') echo $gednr.'-'.$newged.'!<br>';
-//if ($letter=='N') return '@'.$newged.'@';
+	//	//if ($letter=='N') echo $gednr.'-'.$newged.'!<br>';
+	//	//if ($letter=='N') return '@'.$newged.'@';
 		return $gednr;
 	}
 }
@@ -4456,9 +4586,7 @@ function process_addresses($connect_kind,$connect_sub_kind,$connect_id,$buffer){
 	//1 ADDR Heerhugowaard
 	if ($buffer6=='1 ADDR'){
 		$address_gedcomnr='R'.$_SESSION['new_address_gedcomnr'];
-		if($add_tree==true OR $reassign==true) {
-			$address_gedcomnr = $this->reassign_ged('R'.$_SESSION['new_address_gedcomnr'],'R');
-		}
+		if($add_tree==true OR $reassign==true) { $address_gedcomnr = $this->reassign_ged('R'.$_SESSION['new_address_gedcomnr'],'R'); }
 		$_SESSION['address_gedcomnr']=$address_gedcomnr;
 		$nraddress2++;
 		$address_array["gedcomnr"][$nraddress2]=$address_gedcomnr;
@@ -4651,6 +4779,9 @@ function process_addresses($connect_kind,$connect_sub_kind,$connect_id,$buffer){
 				$processed=1;
 				//echo substr($buffer,6).'<br>';
 				$address_gedcomnr='R'.substr($buffer,6);
+
+				if($add_tree==true OR $reassign==true) { $address_gedcomnr = $this->reassign_ged($address_gedcomnr,'R'); }
+
 				$address_array["gedcomnr"][$nraddress2]=$address_gedcomnr;
 				$connect['item_id'][$connect_nr]=$address_gedcomnr;
 				$_SESSION['address_gedcomnr']=$address_gedcomnr;

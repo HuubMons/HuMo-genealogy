@@ -457,7 +457,14 @@ if($screen_mode=='PDF') {  //initialize pdf generation
 
 	$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 	$pdf->AddPage();
-	$pdf->SetFont('Arial','',12);
+
+	// add utf8 fonts
+	$pdf->AddFont('DejaVu', '', 'DejaVuSansCondensed.ttf', true);
+	$pdf->AddFont('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', true);
+	$pdf->AddFont('DejaVu', 'I', 'DejaVuSansCondensed-Oblique.ttf', true);
+	$pdf->AddFont('DejaVu', 'BI', 'DejaVuSansCondensed-BoldOblique.ttf', true);
+
+	$pdf->SetFont($pdf_font,'',12);
 } // end if pdfmode
 
 if($screen_mode=='RTF') {  // initialize rtf generation
@@ -584,7 +591,7 @@ if (!$family_id){
 	if($screen_mode=='PDF') {
 		// *** Show familysheet name: user's choice or default ***
 		$pdf->Cell(0,2," ",0,1);
-		$pdf->SetFont('Arial','BI',12);
+		$pdf->SetFont($pdf_font,'BI',12);
 		$pdf->SetFillColor(196,242,107);
 
 		$treetext=show_tree_text($dataDb->tree_id, $selected_language);
@@ -596,10 +603,10 @@ if (!$family_id){
 			$pdf->Cell(0,6,pdf_convert(__('Family group sheet')),0,1,'L',true);
 		}
 
-		$pdf->SetFont('Arial','B',12);
+		$pdf->SetFont($pdf_font,'B',12);
 		$pdf->Write(8,$parent1_cls->name_extended("parent1"));
 
-		$pdf->SetFont('Arial','',12);
+		$pdf->SetFont($pdf_font,'',12);
 		$pdf->Write(8,"\n");
 		$id='';
 		//$pdfdetails= pdf_convert($parent1_cls->person_data("parent1", $id));
@@ -643,17 +650,17 @@ if (!$family_id){
 // *******************
 else{
 	if($screen_mode=='PDF') {
-		$pdf->SetFont('Arial','B',15);
+		$pdf->SetFont($pdf_font,'B',15);
 		$pdf->Ln(4);
 		$name=$pers_cls->person_name($persDb);
 		if(!$descendant_report==false) {
-			$pdf->MultiCell(0,10,__('Descendant report').__(' of ').$name["standard_name"],0,'C');
+			$pdf->MultiCell(0,10,__('Descendant report').__(' of ').str_replace("&quot;",'"',$name["standard_name"]),0,'C');
 		}
 		else {
-			$pdf->MultiCell(0,10,__('Family group sheet').__(' of ').$name["standard_name"],0,'C');
+			$pdf->MultiCell(0,10,__('Family group sheet').__(' of ').str_replace("&quot;",'"',$name["standard_name"]),0,'C');
 		}
 		$pdf->Ln(4);
-		$pdf->SetFont('Arial','',12);
+		$pdf->SetFont($pdf_font,'',12);
 	}
 	if($screen_mode!='STARSIZE') {
 		$descendant_family_id2[]=$family_id;
@@ -721,11 +728,11 @@ else{
 				if($screen_mode=='PDF') {
 					$pdf->SetLeftMargin(10);
 					$pdf->Cell(0,2,"",0,1);
-					$pdf->SetFont('Arial','BI',14);
+					$pdf->SetFont($pdf_font,'BI',14);
 					$pdf->SetFillColor(200,220,255);
 					if($pdf->GetY() > 250) { $pdf->AddPage(); $pdf->SetY(20); }
 					$pdf->Cell(0,8,pdf_convert(__('generation ')).$number_roman[$descendant_loop+1],0,1,'C',true);
-					$pdf->SetFont('Arial','',12);
+					$pdf->SetFont($pdf_font,'',12);
 
 					// *** Added mar. 2021 ***
 					unset($templ_name);
@@ -879,7 +886,7 @@ else{
 							// is already checked so no need here
 							$pdf->AddPage(); $pdf->SetY(20);
 						}
-						$pdf->SetFont('Arial','BI',12);
+						$pdf->SetFont($pdf_font,'BI',12);
 						$pdf->SetFillColor(186,244,193);
 
 						$treetext=show_tree_text($dataDb->tree_id, $selected_language);
@@ -892,7 +899,7 @@ else{
 							$pdf->SetLeftMargin(10);
 							$pdf->Cell(0,6,pdf_convert(__('Family group sheet')),0,1,'L',true);
 						}
-						$pdf->SetFont('Arial','',12);
+						$pdf->SetFont($pdf_font,'',12);
 					}
 					elseif($screen_mode=='RTF') {
 						$sect->addEmptyParagraph($fontSmall, $parBlack);
@@ -1212,10 +1219,10 @@ else{
 						if ($user["group_texts_fam"]=='j' AND process_text($familyDb->fam_text)){
 							if($screen_mode=='PDF') {
 								// PDF rendering of marriage notes
-								//$pdf->SetFont('Arial','I',11);
+								//$pdf->SetFont($pdf_font,'I',11);
 								//$pdf->Write(6,process_text($familyDb->fam_text)."\n");
 								//$pdf->Write(6,show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber)."\n");
-								//$pdf->SetFont('Arial','',12);
+								//$pdf->SetFont($pdf_font,'',12);
 
 								$templ_relation["fam_text"]=$familyDb->fam_text;
 								$temp="fam_text";
@@ -1337,7 +1344,7 @@ else{
 						// dna -> count only man or women
 						if($dna=="ydna" OR $dna=="mtdna") {
 							$countdna = 0;
-							for($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
+							foreach ($child_array as $i => $value){
 								@$childDb = $db_functions->get_person($child_array[$i]);
 								if($dna=="ydna" AND $childDb->pers_sexe == "M" AND $genarray[$arraynr]["sex"]=="m" AND $genarray[$arraynr]["dna"]==1) $countdna++;
 								elseif($dna=="mtdna" AND $genarray[$arraynr]["sex"]=="v" AND $genarray[$arraynr]["dna"]==1) $countdna++;
@@ -1345,7 +1352,8 @@ else{
 							$genarray[$arraynr]["nrc"]=$countdna;
 						}
 					}
-					for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
+
+					foreach ($child_array as $i => $value){
 						@$childDb = $db_functions->get_person($child_array[$i]);
 						// *** Use person class ***
 						$child_cls = New person_cls;
@@ -1358,7 +1366,7 @@ else{
 						}
 						if($screen_mode=='PDF') {
 							// *** PDF rendering of name and details ***
-							$pdf->SetFont('Arial','B',11);
+							$pdf->SetFont($pdf_font,'B',11);
 							$pdf->SetLeftMargin($indent);
 							$pdf->Write(6,$childnr.'. ');
 
@@ -1472,9 +1480,9 @@ else{
 								$search_nr=array_search($child_family[0], $check_double);
 								$romnr=$follows_array[$search_nr];
 								$link[$romnr]=$pdf->AddLink();
-								$pdf->SetFont('Arial','U',11);  $pdf->SetTextColor(28,28,255);
+								$pdf->SetFont($pdf_font,'B',11);  $pdf->SetTextColor(28,28,255); // "B" was "U" . Underscore doesn't exist in tfpdf
 								$pdf->Write(6,$romnr."\n",$link[$romnr]);
-								$pdf->SetFont('Arial','',12); $pdf->SetTextColor(0);
+								$pdf->SetFont($pdf_font,'',12); $pdf->SetTextColor(0);
 								$parentchild[$romnr]=$id;
 							}
 
@@ -1497,6 +1505,7 @@ else{
 
 								$pdf_child=$child_cls->person_data("child", $id);
 								if($pdf_child) {
+									$child_indent = $indent+5;
 									$pdf->SetLeftMargin($child_indent);
 									$pdf->pdfdisplay($pdf_child,"child");
 									$pdf->SetLeftMargin($indent);
@@ -1526,7 +1535,7 @@ else{
 						$nrchldingen += ($childnr-1);
 					}
 					if($screen_mode=='PDF') {
-						$pdf->SetFont('Arial','',12);
+						$pdf->SetFont($pdf_font,'',12);
 					}
 				}
 
@@ -1807,33 +1816,36 @@ else{
 
 						// *** OpenStreetMap ***
 						if(isset($humo_option["use_world_map"]) AND $humo_option["use_world_map"]=='OpenStreetMap') {
-							echo '<link rel="stylesheet" href="include/leaflet/leaflet.css" />';
-							echo '<script src="include/leaflet/leaflet.js"></script>';
-
-							// *** Show map ***
-// *** Only show OpenStreetMap once ***
-if ($family_nr==2)
-							echo '<div id="map" style="width: 600px; height: 300px;"></div>';
+							if ($family_nr==2){ // *** Only include once ***
+								echo '<link rel="stylesheet" href="include/leaflet/leaflet.css" />';
+								echo '<script src="include/leaflet/leaflet.js"></script>';
+							}
+							// *** Show openstreetmap by every family ***
+							$map='map'.$family_nr;
+							$markers='markers'.$family_nr;
+							$group='group'.$family_nr;
+							echo '<div id="'.$map.'" style="width: 600px; height: 300px;"></div>';
 
 							// *** Map using fitbound (all markers visible) ***
 							echo '<script type="text/javascript">
-								var map = L.map("map").setView([48.85, 2.35], 10);
-								var markers = [';
+								var '.$map.' = L.map("'.$map.'").setView([48.85, 2.35], 10);
+								var '.$markers.' = [';
 
 							// *** Add all markers from array ***
 							for ($i=1; $i<count($location_array); $i++){
 								if ($i>1) echo ',';
 								echo 'L.marker(['.$lat_array[$i].', '.$lon_array[$i].']) .bindPopup(\''.$text_array[$i].'\')';
+								echo "\n";
 							}
 
 							echo '];
-								var group = L.featureGroup(markers).addTo(map);
+								var '.$group.' = L.featureGroup('.$markers.').addTo('.$map.');
 								setTimeout(function () {
-								  map.fitBounds(group.getBounds());
+									'.$map.'.fitBounds('.$group.'.getBounds());
 								}, 1000);
 								L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
-								  attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
-								}).addTo(map);
+									attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
+								}).addTo('.$map.');
 							</script>';
 
 						}
@@ -1923,7 +1935,7 @@ if ($family_nr==2)
 								echo __('Family events').'<br>';
 
 								echo '<div style="width: 600px; height: 300px; border: 0px; padding: 0px;" id="'.$family_nr.'"></div>';
-								
+						
 								echo '<script type="text/javascript">
 									initMap'.$family_nr.'('.$family_nr.');
 								</script>
@@ -2183,9 +2195,9 @@ if($screen_mode=='') {
 if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footnote' OR $user['group_sources']=='j') ) {
 	include_once(CMS_ROOTPATH."source.php");
 	$pdf->AddPage(); // appendix on new page
-	$pdf->SetFont('Arial',"B",14);
+	$pdf->SetFont($pdf_font,"B",14);
 	$pdf->Write(8,__('Sources')."\n\n");
-	$pdf->SetFont('Arial','',10);
+	$pdf->SetFont($pdf_font,'',10);
 	// the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
 	$count=0;
 
@@ -2193,7 +2205,7 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 		$count++;
 		if(isset($pdf_source[$key])) {
 			$pdf->SetLink($pdf_footnotes[$count-1],-1);
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont($pdf_font,'B',10);
 			$pdf->Write(6,$count.". ");
 			if($user['group_sources']=='j') {
 				source_display($pdf_source[$key]);  // function source_display from source.php, called with source nr.
@@ -2201,9 +2213,9 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 			elseif ($user['group_sources']=='t') {
 				$sourceDb = $db_functions->get_source($pdf_source[$key]);
 				if ($sourceDb->source_title OR $sourceDb->source_text){
-					//$pdf->SetFont('Arial','B',10);
+					//$pdf->SetFont($pdf_font,'B',10);
 					//$pdf->Write(6,__('Title').": ");
-					$pdf->SetFont('Arial','',10);
+					$pdf->SetFont($pdf_font,'',10);
 
 					if (trim($sourceDb->source_title))
 						$txt = ' '.trim($sourceDb->source_title);

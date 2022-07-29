@@ -102,7 +102,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$temp_text.= ' ';
 			if($temp) { $templ_relation[$temp].=' '; }
 		}
-		$templ_relation["marriage_text"]=process_text($marriageDb->fam_relation_text);
+		$templ_relation["marriage_text"]=strip_tags(process_text($marriageDb->fam_relation_text));
 		$temp="marriage_text";
 		$temp_text.= $templ_relation["marriage_text"];
 	}
@@ -187,7 +187,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
 		$temp_text.=process_text($marriageDb->fam_marr_notice_text);
-		$templ_relation["prew_text"]=process_text($marriageDb->fam_marr_notice_text);
+		$templ_relation["prew_text"]=strip_tags(process_text($marriageDb->fam_marr_notice_text));
 		$temp="prew_text";
 	}
 
@@ -237,7 +237,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$temp_text.= ' ';
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
-		$templ_relation["wedd_text"]=process_text($marriageDb->fam_marr_text);
+		$templ_relation["wedd_text"]=strip_tags(process_text($marriageDb->fam_marr_text));
 
 		// *** Source by family text ***
 		$templ_relation["wedd_text"].=show_sources2("family","family_text",$marriageDb->fam_gedcomnumber);
@@ -310,7 +310,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$temp_text.= ' ';
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
-		$templ_relation["prec_text"]= process_text($marriageDb->fam_marr_church_notice_text);
+		$templ_relation["prec_text"]= strip_tags(process_text($marriageDb->fam_marr_church_notice_text));
 		$temp="prec_text";
 		$temp_text.= $templ_relation["prec_text"];
 	}
@@ -355,7 +355,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$temp_text.= ' ';
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
-		$templ_relation["chur_text"]=process_text($marriageDb->fam_marr_church_text);
+		$templ_relation["chur_text"]=strip_tags(process_text($marriageDb->fam_marr_church_text));
 		$temp="chur_text";
 		$temp_text.= $templ_relation["chur_text"];
 	}
@@ -420,7 +420,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$temp_text.= ' ';
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
-		$templ_relation["devr_text"]=process_text($marriageDb->fam_div_text);
+		$templ_relation["devr_text"]=strip_tags(process_text($marriageDb->fam_div_text));
 		$temp="devr_text";
 		$temp_text.= $templ_relation["devr_text"];
 	}
@@ -468,6 +468,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			// *** Check death date of husband ***
 			@$person_manDb=$db_functions->get_person($marriageDb->fam_man);
 			if (isset($person_manDb->pers_death_date) AND $person_manDb->pers_death_date) $end_date=$person_manDb->pers_death_date;
+			elseif (isset($person_manDb->pers_buried_date) AND $person_manDb->pers_buried_date) {
+			    // if no death date, try burial date
+			    $end_date=$person_manDb->pers_buried_date;
+			}
 
 			// *** Check death date of wife ***
 			@$person_womanDb=$db_functions->get_person($marriageDb->fam_woman);
@@ -479,14 +483,23 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 				// *** Man still living or no date available  ***
 				if ($end_date=='') $end_date=$person_womanDb->pers_death_date;
 			}
+			elseif (isset($person_womanDb->pers_buried_date) AND $person_womanDb->pers_buried_date){
+			    // if no death date, try burial date
+				// *** Check if men died earlier then woman (AT THIS MOMENT ONLY CHECK YEAR) ***
+				if ($end_date AND substr($end_date,-4) > substr($person_womanDb->pers_buried_date,-4)){
+					$end_date=$person_womanDb->pers_buried_date;
+				}
+				// *** Man still living or no date available  ***
+				if ($end_date=='') $end_date=$person_womanDb->pers_buried_date;
+			}			
 
-			// *** End of marriage by divorse ***
+			// *** End of marriage by divorce ***
 			if ($marriageDb->fam_div_date){ $end_date=$marriageDb->fam_div_date; }
 
 			$marr_years = New calculate_year_cls;
 			$age=$marr_years->calculate_marriage($marriageDb->fam_marr_church_date,$marriageDb->fam_marr_date,$end_date);
 
-			$text.=$age;  // Space and komma in $age
+			$text.=$age;  // Space and comma in $age
 			//PDF?
 		}
 
@@ -569,7 +582,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	}
 
 	// **********************************
-	// *** Concacenate marriage texts ***
+	// *** Concatenate marriage texts ***
 	// **********************************
 
 	// Process english 1st, 2nd, 3rd and 4th marriage.

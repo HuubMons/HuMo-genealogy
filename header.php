@@ -272,15 +272,23 @@ if ($menu_choice=='settings'){ $head_text.=' - '.__('Settings'); }
 // *** For PDF reports: remove html tags en decode ' characters ***
 function pdf_convert($text){
 	$text=html_entity_decode(strip_tags($text),ENT_QUOTES);
-	$text=@iconv("UTF-8","cp1252//IGNORE//TRANSLIT",$text);
+	//$text=@iconv("UTF-8","cp1252//IGNORE//TRANSLIT",$text);	// Only needed if FPDF is used. We now use TFPDF.
 	return $text;
 }
 
+// *** Set default PDF font ***
+$pdf_font='DejaVu';
+
 // *** Don't generate a HTML header in a PDF report ***
-//if (isset($screen_mode) AND $screen_mode=='PDF'){
 if (isset($screen_mode) AND ($screen_mode=='PDF' OR $screen_mode=="ASPDF")){
-	require(CMS_ROOTPATH.'include/fpdf16/fpdf.php');
-	require(CMS_ROOTPATH.'include/fpdf16/fpdfextend.php');
+	//require(CMS_ROOTPATH.'include/fpdf/fpdf.php');
+	//require(CMS_ROOTPATH.'include/fpdf/fpdfextend.php');
+
+	// *** june 2022: FPDF supports romanian and greek characters ***
+	//define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
+	require(CMS_ROOTPATH.'include/tfpdf/tfpdf.php');
+	require(CMS_ROOTPATH.'include/tfpdf/tfpdfextend.php');
+
 	// *** Set variabele for queries ***
 	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
 }

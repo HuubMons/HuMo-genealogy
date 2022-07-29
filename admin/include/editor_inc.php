@@ -696,7 +696,7 @@ if (isset($_POST['fam_remove2'])){
 	// *** Disconnect ALL children from marriage ***
 	if ($new_nr->fam_children){
 		$child_gedcomnumber=explode(";",$new_nr->fam_children);
-		for($i=0; $i<=substr_count($new_nr->fam_children, ";"); $i++){
+		foreach ($child_gedcomnumber as $i => $value){
 			// *** Find child data ***
 			$resultDb=$db_functions->get_person($child_gedcomnumber[$i]);
 

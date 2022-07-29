@@ -145,18 +145,27 @@ if($screen_mode=='PDF') {
 	$pers_cls = New person_cls;
 	$pers_cls->construct($persDb);
 	$name=$pers_cls->person_name($persDb);
-	$title=pdf_convert(__('Ancestor report').__(' of ').$name["standard_name"]);
+
+	// $title not in use?
+	//$title=pdf_convert(__('Ancestor report').__(' of ').str_replace("&quot;",'"',$name["standard_name"]),0,'C');
+	$title=pdf_convert(__('Ancestor report').__(' of ').pdf_convert($name["standard_name"]),0,'C');
 
 	$pdf->SetTitle($title);
 	$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 	$pdf->AddPage();
 
-	$pdf->SetFont('Arial','B',15);
+	$pdf->AddFont('DejaVu', '', 'DejaVuSansCondensed.ttf', true);
+	$pdf->AddFont('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', true);
+	$pdf->AddFont('DejaVu', 'I', 'DejaVuSansCondensed-Oblique.ttf', true);
+	$pdf->AddFont('DejaVu', 'BI', 'DejaVuSansCondensed-BoldOblique.ttf', true);
+
+	$pdf->SetFont($pdf_font,'B',15);
 	$pdf->Ln(4);
 	$name=$pers_cls->person_name($persDb);
-	$pdf->MultiCell(0,10,__('Ancestor report').__(' of ').$name["standard_name"],0,'C');
+	//$pdf->MultiCell(0,10,__('Ancestor report').__(' of ').$name["standard_name"],0,'C');
+	$pdf->MultiCell(0,10,__('Ancestor report').__(' of ').pdf_convert($name["standard_name"]),0,'C');
 	$pdf->Ln(4);
-	$pdf->SetFont('Arial','',12);
+	$pdf->SetFont($pdf_font,'',12);
 }
 if($screen_mode=='RTF') {  // initialize rtf generation
 	require_once 'include/phprtflite/lib/PHPRtfLite.php';
@@ -326,7 +335,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 		else {
 			//echo 'pdf generation<br>';
 			$pdf->Cell(0,2,"",0,1);
-			$pdf->SetFont('Arial','BI',14);
+			$pdf->SetFont($pdf_font,'BI',14);
 			$pdf->SetFillColor(200,220,255);
 			if($pdf->GetY() > 260) { $pdf->AddPage(); $pdf->SetY(20); }
 			if (isset($language["gen".$generation]) AND $language["gen".$generation]){
@@ -336,7 +345,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 				if (isset($rom_nr[$generation]))
 					$pdf->Cell(0,8,pdf_convert(__('generation ').$rom_nr[$generation]),0,1,'C',true);
 			}
-			$pdf->SetFont('Arial','',12);
+			$pdf->SetFont($pdf_font,'',12);
 		}
 
 		// *** Loop per generation ***
@@ -473,7 +482,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 
 					//$pdf->SetX($pdf->GetX()+3);
 					//$pdf->MultiCell(0,8,$man_cls->name_extended("child"),0,"L");
-					//$pdf->SetFont('Arial','',12);
+					//$pdf->SetFont($pdf_font,'',12);
 
 					//TEST WERKT (fout bij hogere nummers)
 					//$pdf->SetLeftMargin(38);
@@ -669,7 +678,7 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 					$pdf->pdf_ancestor_name($ancestor_number[$i],'','');
 					//$pdf->SetX($pdf->GetX()+3);
 					//$pdf->MultiCell(0,8,__('N.N.'),0,"L");
-					//$pdf->SetFont('Arial','',12);
+					//$pdf->SetFont($pdf_font,'',12);
 
 					$pdf->SetLeftMargin(38);
 					$pdf->SetX($pdf->GetX()+3);
@@ -1366,18 +1375,18 @@ echo '<div>';
 				$data_array[$id][3] = 1;
 				$data_array[$id][4] = 0;
 				$data_array[$id][5] = 0;
-			}     
+			}
 		}
 
 		function place_cells($type,$begin,$end,$increment,$maxchar,$numrows,$cellwidth) {
-			global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $data_array,$posy,$posx,$marr_date_array, $marr_place_array, $sexe, $gedcomnumber;
+			global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $pdf_font, $data_array,$posy,$posx,$marr_date_array, $marr_place_array, $sexe, $gedcomnumber;
 
 			$pdf->SetLeftMargin(16);
 			$marg = 16;
 			for($m=$begin;$m<=$end;$m+=$increment) {
 				if($type=="pers") { // person's name & details
 					data_array($m,$maxchar,$numrows);
-					$pdf->SetFont('Arial','B',8);
+					$pdf->SetFont($pdf_font,'B',8);
 					if($m%2==0 OR ($m==1 AND $sexe[$m]=="M")) { // male
 						$pdf->SetFillColor(191,239,255);
 					}
@@ -1386,7 +1395,7 @@ echo '<div>';
 					}
 					$pdf->MultiCell($cellwidth,4,$data_array[$m][0],"LTR","C",true);
 					$marg += $cellwidth; 
-					$pdf->SetFont('Arial','',8);
+					$pdf->SetFont($pdf_font,'',8);
 					$nstring=''; $used = $data_array[$m][3]+$data_array[$m][4]+$data_array[$m][5];
 				}
 				else {  // marr date & place
@@ -1423,11 +1432,11 @@ echo '<div>';
 				if($type=="pers") {
 					$breakln=''; if($data_array[$m][1]!='' AND $data_array[$m][2]!='') { $breakln = "\n"; }
 					if($data_array[$m][4]==0 AND $data_array[$m][5]==0) { $nstring=substr($nstring,0,strlen($nstring)-1); }
-					$pdf->SetFont('Arial','',8);
+					$pdf->SetFont($pdf_font,'',8);
 					$pdf->MultiCell($cellwidth,4,$data_array[$m][1].$breakln.$data_array[$m][2].$nstring,"LRB","C",true);
 				}
 				else {
-					$pdf->SetFont('Arial','I',8);
+					$pdf->SetFont($pdf_font,'I',8);
 					$pdf->MultiCell($cellwidth,4,$result[1].$nstring,"LR","C",false);
 				}
 				if($m < $end) {
@@ -1437,6 +1446,7 @@ echo '<div>';
 			}
 			$pdf->SetX($posx);
 			$posy = $pdf->GetY();
+			
 		}
 
 		//initialize pdf generation
@@ -1455,14 +1465,20 @@ echo '<div>';
 		//$pdf->SetLineWidth(3);
 		//$pdf->AddPage();
 		$pdf->AddPage("L");	
+
+		$pdf->AddFont($pdf_font, '', 'DejaVuSansCondensed.ttf', true);
+		$pdf->AddFont($pdf_font, 'B', 'DejaVuSansCondensed-Bold.ttf', true);
+		$pdf->AddFont($pdf_font, 'I', 'DejaVuSansCondensed-Oblique.ttf', true);
+		$pdf->AddFont($pdf_font, 'BI', 'DejaVuSansCondensed-BoldOblique.ttf', true);
+		
 		$pdf->SetLeftMargin(16);
 		$pdf->SetRightMargin(16);
-		$pdf->SetFont('Arial','B',12);
+		$pdf->SetFont($pdf_font,'B',12);
 		$pdf->Ln(2);
 		$name=$pers_cls->person_name($persDb);
-		$pdf->MultiCell(0,10,__('Ancestor sheet').__(' of ').$name["standard_name"],0,'C');
+		$pdf->MultiCell(0,10,__('Ancestor sheet').__(' of ').str_replace("&quot;",'"',$name["standard_name"]),0,'C');
 		$pdf->Ln(2);
-		$pdf->SetFont('Arial','',8);
+		$pdf->SetFont($pdf_font,'',8);
  
 		// Output the cells:
 		$posy = $pdf->GetY();
@@ -1511,9 +1527,9 @@ echo '<div>';
 if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footnote' OR $user['group_sources']=='j') ) {
 	include_once(CMS_ROOTPATH."source.php");
 	$pdf->AddPage(); // appendix on new page
-	$pdf->SetFont('Arial',"B",14);
+	$pdf->SetFont($pdf_font,"B",14);
 	$pdf->Write(8,__('Sources')."\n\n");
-	$pdf->SetFont('Arial','',10);
+	$pdf->SetFont($pdf_font,'',10);
 	// the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
 	$count=0;
 
@@ -1521,7 +1537,7 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 		$count++;
 		if(isset($pdf_source[$key])) {
 			$pdf->SetLink($pdf_footnotes[$count-1],-1);
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont($pdf_font,'B',10);
 			$pdf->Write(6,$count.". ");
 			if($user['group_sources']=='j') {
 				source_display($pdf_source[$key]);  // function source_display from source.php, called with source nr.
@@ -1529,9 +1545,9 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 			elseif ($user['group_sources']=='t') {
 				$db_functions->get_source($pdf_source[$key]);
 				if ($sourceDb->source_title){
-					$pdf->SetFont('Arial','B',10);
+					$pdf->SetFont($pdf_font,'B',10);
 					$pdf->Write(6,__('Title:')." ");
-					$pdf->SetFont('Arial','',10);
+					$pdf->SetFont($pdf_font,'',10);
 					$txt = ' '.trim($sourceDb->source_title);
 					if ($sourceDb->source_date or $sourceDb->source_place){ $txt.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
 					$pdf->Write(6,$txt."\n");
