@@ -918,8 +918,8 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 						$text.= '<a href="'.$path_tmp.'"><img src="'.CMS_ROOTPATH.'images/dna.png" border="0" alt="'.__('DNA Charts').'"> '.__('DNA Charts').'</a>';
 					//}
 				}
-				
-				if  ($user['group_gen_protection']=='n' AND $personDb->pers_famc!='' AND $personDb->pers_fams!='' AND $check_children) {
+
+				if ($user['group_gen_protection']=='n' AND $personDb->pers_famc!='' AND $personDb->pers_fams!='' AND $check_children) {
 				// hourglass only if there is at least one generation of ancestors and of children.
 					if (CMS_SPECIFIC=='Joomla'){
 						//$path_tmp='index.php?option=com_humo-gen&amp;task=hourglass&amp;tree_id='.$personDb->pers_tree_id.'&amp;id='.$personDb->pers_gedcomnumber;

@@ -1665,7 +1665,8 @@ if ($check_person){
 		echo '<tr'.$style.'><td></td>';
 
 		//$field_text_selected=$field_text; if ($text) $field_text_selected=$field_text_medium;
-		$field_text_selected=$field_text; if (preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+		// *** Check if there are multiple lines in text ***
+		$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
 		echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="pers_name_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
 		echo '<td></td></tr>';
 
@@ -1799,7 +1800,8 @@ if ($check_person){
 		echo '<tr'.$style.'>';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
-		$field_text_selected=$field_text; if (preg_match('/\R/',$pers_birth_text)) $field_text_selected=$field_text_medium;
+		// *** Check if there are multiple lines in text ***
+		$field_text_selected=$field_text; if ($pers_birth_text AND preg_match('/\R/',$pers_birth_text)) $field_text_selected=$field_text_medium;
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_birth_text" '.$field_text_selected.'>'.
 			$editor_cls->text_show($pers_birth_text).'</textarea></td>';
 		echo '<td></td></tr>';
@@ -1848,7 +1850,8 @@ if ($check_person){
 			echo '<tr'.$style.'>';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td>';
-			$field_text_selected=$field_text; if (preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+			// *** Check if there are multiple lines in text ***
+			$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
 			echo '<td style="border-left:0px;"><textarea rows="1" name="even_brit_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
 			echo '<td></td>';
 			echo '</td></tr>';
@@ -1894,7 +1897,8 @@ if ($check_person){
 			echo '<tr'.$style.'>';
 			echo '<td></td>';
 			echo '<td style="border-right:0px;">'.__('text').'</td>';
-			$field_text_selected=$field_text; if (preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+			// *** Check if there are multiple lines in text ***
+			$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
 			echo '<td style="border-left:0px;"><textarea rows="1" name="even_barm_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
 			echo '<td></td>';
 			echo '</td></tr>';
@@ -1935,7 +1939,8 @@ if ($check_person){
 		echo '<tr'.$style.'>';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
-		$field_text_selected=$field_text; if (preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+		// *** Check if there are multiple lines in text ***
+		$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_bapt_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -2035,7 +2040,8 @@ if ($check_person){
 		//echo '<tr class="humo_color row4" style="display:none;">';
 		echo '<tr'.$style.'>';
 		echo '<td></td>';
-		$field_text_selected=$field_text; if (preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+		// *** Check if there are multiple lines in text ***
+		$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
 		echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="pers_death_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -2098,7 +2104,8 @@ if ($check_person){
 		echo '<tr'.$style.'>';
 		echo '<td></td>';
 		echo '<td style="border-right:0px;">'.__('text').'</td>';
-		$field_text_selected=$field_text; if (preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+		// *** Check if there are multiple lines in text ***
+		$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
 		echo '<td style="border-left:0px;"><textarea rows="1" name="pers_buried_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
 		echo '<td></td>';
 		echo '</tr>';
@@ -2592,7 +2599,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			//echo '<tr style="display:none;" class="row6 humo_color">';
 			echo '<tr'.$style.'>';
 			echo '<td></td>';
-			$field_text_selected=$field_text; if (preg_match('/\R/',$fam_relation_text)) $field_text_selected=$field_text_medium;
+			// *** Check if there are multiple lines in text ***
+			$field_text_selected=$field_text; if ($fam_relation_text AND preg_match('/\R/',$fam_relation_text)) $field_text_selected=$field_text_medium;
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_relation_text" '.$field_text_selected.'>'.$fam_relation_text.'</textarea></td>';
 			echo '<td></td>';
 			echo '</td></tr>';
@@ -2619,7 +2627,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			//echo '<tr class="row7" style="display:none;">';
 			echo '<tr'.$style.'>';
 			echo '<td></td>';
-			$field_text_selected=$field_text; if (preg_match('/\R/',$fam_marr_notice_text)) $field_text_selected=$field_text_medium;
+			// *** Check if there are multiple lines in text ***
+			$field_text_selected=$field_text; if ($fam_marr_notice_text AND preg_match('/\R/',$fam_marr_notice_text)) $field_text_selected=$field_text_medium;
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_notice_text" '.$field_text_selected.'>'.$fam_marr_notice_text.'</textarea></td>';
 			echo '<td></td></tr>';
 
@@ -2720,7 +2729,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			//echo '<tr style="display:none;" class="row8 humo_color">';
 			echo '<tr'.$style.'>';
 			echo '<td></td>';
-			$field_text_selected=$field_text; if (preg_match('/\R/',$fam_marr_text)) $field_text_selected=$field_text_medium;
+			// *** Check if there are multiple lines in text ***
+			$field_text_selected=$field_text; if ($fam_marr_text AND preg_match('/\R/',$fam_marr_text)) $field_text_selected=$field_text_medium;
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_text" '.$field_text_selected.'>'.$fam_marr_text.'</textarea></td>';
 			echo '<td></td></tr>';
 
@@ -2750,7 +2760,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			//echo '<tr class="row9" style="display:none;">';
 			echo '<tr'.$style.'>';
 			echo '<td></td>';
-			$field_text_selected=$field_text; if (preg_match('/\R/',$fam_marr_church_notice_text)) $field_text_selected=$field_text_medium;
+			// *** Check if there are multiple lines in text ***
+			$field_text_selected=$field_text; if ($fam_marr_church_notice_text AND preg_match('/\R/',$fam_marr_church_notice_text)) $field_text_selected=$field_text_medium;
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_church_notice_text" '.$field_text_selected.'>'.$fam_marr_church_notice_text.'</textarea></td>';
 			echo '<td></td></tr>';
 
@@ -2777,7 +2788,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			//echo '<tr style="display:none;" class="row10 humo_color">';
 			echo '<tr'.$style.'>';
 			echo '<td></td>';
-			$field_text_selected=$field_text; if (preg_match('/\R/',$fam_marr_church_text)) $field_text_selected=$field_text_medium;
+			// *** Check if there are multiple lines in text ***
+			$field_text_selected=$field_text; if ($fam_marr_church_text AND preg_match('/\R/',$fam_marr_church_text)) $field_text_selected=$field_text_medium;
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" name="fam_marr_church_text" '.$field_text_selected.'>'.$fam_marr_church_text.'</textarea></td>';
 			echo '<td></td></tr>';
 
@@ -2815,7 +2827,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '<input type="checkbox" name="fam_div_no_data" value="no_data"'.$checked.'> '.__('Divorce (use this checkbox for a divorce without further data).');
 			echo '</td><td></td></tr>';
 
-			$text=htmlspecialchars($fam_div_authority);
+			$text=''; if ($fam_div_authority) $text=htmlspecialchars($fam_div_authority);
 			$style=''; if (!$text) $style=' style="display:none;" class="row11"';
 			//echo '<tr style="display:none;" class="row11" name="row11">';
 			//echo '<tr style="display:none;" class="row11">';
@@ -2830,7 +2842,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<tr'.$style.'>';
 			echo '<td></td>';
 			if ($fam_div_text=='DIVORCE') $fam_div_text=''; // *** Hide this text, it's a hidden value for a divorce without data ***
-			$field_text_selected=$field_text; if (preg_match('/\R/',$fam_div_text)) $field_text_selected=$field_text_medium;
+			// *** Check if there are multiple lines in text ***
+			$field_text_selected=$field_text; if ($fam_div_text AND preg_match('/\R/',$fam_div_text)) $field_text_selected=$field_text_medium;
 			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;">
 				<textarea rows="1" name="fam_div_text" '.$field_text_selected.'>'.$fam_div_text.'</textarea></td>';
 			echo '<td></td></tr>';
@@ -4042,6 +4055,7 @@ function source_link2($hideshow,$connect_connect_id,$connect_sub_kind,$link=''){
 	if ($source_error) $text.='</span>';
 	return $text;
 }
+
 // *** Source in iframe ***
 function iframe_source($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id){
 	// *** Example ***
@@ -4368,12 +4382,20 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			}
 			echo $text;
 		echo '</td>';
-		echo '<td style="border-right:0px; vertical-align:top"><div style="margin-top:5px;"></div>'.__('Address').'<br>'.
-			__('Place').'<br>'.
-			__('Street').'<br>'.
-			__('Zip code').'<br>'.
-			__('text').'<br>'.
-			__('date').'<br>'.
+		// *** Show addresses by person or relation ***
+		$address3_qry=$dbh->query("SELECT * FROM humo_addresses
+			WHERE address_tree_id='".$tree_id."'
+			AND address_gedcomnr='".$addressDb->connect_item_id."'");
+		$address3Db=$address3_qry->fetch(PDO::FETCH_OBJ);
+		echo '<td style="border-right:0px; vertical-align:top"><div style="margin-top:5px;"></div>'.__('Address').'<br>';
+			if ($address3Db){
+				echo
+				__('Place').'<br>'.
+				__('Street').'<br>'.
+				__('Zip code').'<br>'.
+				__('text').'<br>';
+			}
+			echo __('date').'<br>'.
 			__('Extra text').'</td>';
 		echo '<td style="border-left:0px; vertical-align:top">';
 			// *** Source ***
@@ -4382,13 +4404,6 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			echo '<input type="hidden" name="connect_text['.$key.']" value="">';
 
 			echo '<div style="border: 2px solid red">';
-
-				// *** Show addresses by person or relation ***
-				$address3_qry=$dbh->query("SELECT * FROM humo_addresses
-					WHERE address_tree_id='".$tree_id."'
-					AND address_gedcomnr='".$addressDb->connect_item_id."'");
-				$address3Db=$address3_qry->fetch(PDO::FETCH_OBJ);
-
 				if ($address3Db){
 					echo '<input type="hidden" name="change_address_id['.$address3Db->address_id.']" value="'.$address3Db->address_id.'">';
 
@@ -4399,6 +4414,8 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 					echo '<input type="hidden" name="address_text_old['.$address3Db->address_id.']" value="'.$address3Db->address_text.'">';
 					echo '<input type="hidden" name="address_phone_old['.$address3Db->address_id.']" value="'.$address3Db->address_phone.'">';
 					echo '<input type="hidden" name="address_zip_old['.$address3Db->address_id.']" value="'.$address3Db->address_zip.'">';
+
+					echo '<input type="hidden" name="connect_item_id_old['.$address3Db->address_id.']" value="'.$addressDb->connect_item_id.'">';
 
 					echo __('Address GEDCOM number:').' '.$address3Db->address_gedcomnr.'&nbsp;&nbsp;&nbsp;&nbsp;';
 
@@ -4416,6 +4433,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 						echo '</a>';
 						echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_address_shared" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 							echo '<b>'.__('A shared address can be connected to multiple persons or relations.').'</b><br>';
+							echo '<b>'.__('A shared address is only supported by the Haza-data and HuMo-genealogy programs.').'</b><br>';
 						echo '</div>';
 					echo '</div><br>';
 
@@ -4430,7 +4448,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 						$form=2;
 						//$place_item='place_relation';
 					}
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form='.$form.'&amp;place_item=address_place&amp;address_id='.$address3Db->address_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a><br>';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form='.$form.'&amp;place_item=address_place&amp;address_id='.$address3Db->address_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 					// *** Save latest place in table humo_persons as person_place_index (in use for place index) ***
 					if ($connect_kind=='person'){
@@ -4443,6 +4461,18 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 							$result=$dbh->query($sql);
 						}
 					}
+
+					// *** Source by address (now shown in red box, so it's clear it belongs to the address) ***
+					if ($address3Db){
+						echo '&nbsp;&nbsp;'.__('Source').' ';
+
+						//if ($connect_kind=='person') $connect_sub_kind2='pers_address_source';
+						//	else $connect_sub_kind2='fam_address_source';
+						////function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
+						//echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,$connect_sub_kind2,'addresses');
+						echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,'address_source','addresses');
+					}
+					echo '<br>';
 
 					// *** Edit address ***
 					echo '<input type="text" name="address_address_'.$address3Db->address_id.'" placeholder="'.__('Street').'" value="'.$address3Db->address_address.'"  style="width: 500px"><br>';
@@ -4511,25 +4541,43 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			echo '<br><textarea name="connect_text['.$addressDb->connect_id.']" placeholder="'.__('Extra text by address').'" '.$field_text.'>'.$editor_cls->text_show($addressDb->connect_text).'</textarea>';
 
 		echo '</td>';
-		echo '<td>';
+		echo '<td style="vertical-align:bottom;">';
 			// *** Source by address ***
 			if ($address3Db){
-				if ($connect_kind=='person') $connect_sub_kind2='pers_address_source';
-					else $connect_sub_kind2='fam_address_source';
-
+				// *** This part is moved to the red address box ***
+				//if ($connect_kind=='person') $connect_sub_kind2='pers_address_source';
+				//	else $connect_sub_kind2='fam_address_source';
 				//function source_link2($hideshow,$connect_connect_id, $connect_sub_kind){
-				echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,$connect_sub_kind2,'addresses');
+				//echo source_link2('20'.$addressDb->connect_id,$address3Db->address_gedcomnr,$connect_sub_kind2,'addresses');
+
+				if ($connect_kind=='person') $connect_sub_kind2='pers_address_connect_source';
+					else $connect_sub_kind2='fam_address_connect_source';
+				echo source_link2('21'.$addressDb->connect_id,$addressDb->connect_id,$connect_sub_kind2,'addresses');
 			}
 		echo '</td>';
 		echo '</tr>';
 
+		// *** Show source by address ***
+		if (isset($address3Db->address_gedcomnr)){
+			//iframe_source($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)
+			echo iframe_source('20'.$addressDb->connect_id,'address','address_source2',$address3Db->address_gedcomnr);
+		}
+
+		// *** Show source by address-connection ***
 		if (isset($address3Db->address_gedcomnr) AND $connect_kind=='person'){
 			// *** Show iframe source ***
-			echo iframe_source('20'.$addressDb->connect_id,'person','pers_address_source',$address3Db->address_gedcomnr);
+			//echo iframe_source('20'.$addressDb->connect_id,'person','pers_address_source',$address3Db->address_gedcomnr);
+
+			// *** Source connect to link person-address ***
+			echo iframe_source('21'.$addressDb->connect_id,'person','pers_address_connect_source',$addressDb->connect_id);
+
 		}
 		elseif (isset($address3Db->address_gedcomnr)){
 			// *** Show iframe source ***
-			echo iframe_source('20'.$addressDb->connect_id,'family','fam_address_source',$address3Db->address_gedcomnr);
+			//echo iframe_source('20'.$addressDb->connect_id,'family','fam_address_source',$address3Db->address_gedcomnr);
+
+			// *** Source connect to link family-address ***
+			echo iframe_source('21'.$addressDb->connect_id,'family','fam_address_connect_source',$addressDb->connect_id);
 		}
 	}
 

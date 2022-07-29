@@ -61,7 +61,7 @@ if($flag_namesearch!='') {
 	$namesearch_string = substr($namesearch_string,0,-3).")"; // take off last "OR "
 }
 
-if($flag_desc_search==1 AND $desc_array != '') {  
+if($flag_desc_search==1 AND $desc_array != '') {
 	//for($i=0; $i<count($desc_array); $i++) {
 	foreach($desc_array as $value) {
 		if($_SESSION['type_birth']==1) {
@@ -119,8 +119,8 @@ if($flag_desc_search==1 AND $desc_array != '') {
 					$locarray[$place][13]++ ; // array of all people incl without birth date
 				}
 			}
-		}     // end if($personDb)
-	}   	// end for
+		}		// end if($personDb)
+	}		// end for
 }
 elseif($flag_anc_search==1 AND $anc_array != '') {
 //elseif(1==3) {
@@ -181,8 +181,8 @@ elseif($flag_anc_search==1 AND $anc_array != '') {
 					$locarray[$place][13]++ ; // array of all people incl without birth date
 				}
 			}
-		}     // end if($personDb)
-	}   	// end for
+		}	// end if($personDb)
+	}		// end for
 }
 else  {
 	if($_SESSION['type_birth']==1) {
@@ -240,6 +240,7 @@ else  {
 		}
 	}
 }
+
 $nr=0;
 echo 'var j = new Array();'; // 1 letter array name to keep download as short as possible!
 foreach ($locarray as $key => $value) {

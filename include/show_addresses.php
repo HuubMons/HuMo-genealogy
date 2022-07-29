@@ -181,18 +181,18 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			}
 		}
 
-		if ($connect_kind=='person'){
-			$source=show_sources2("person","pers_address_source",$connectDb->address_gedcomnr);
-		}
-		else{
-			$source=show_sources2("family","fam_address_source",$connectDb->address_gedcomnr);
-		}
+		// *** Show source by address ***
+		//if ($connect_kind=='person'){
+		//	$source=show_sources2("person","pers_address_source",$connectDb->address_gedcomnr);
+		//}
+		//else{
+		//	$source=show_sources2("family","fam_address_source",$connectDb->address_gedcomnr);
+		//}
+		$source=show_sources2("address","address_source",$connectDb->address_gedcomnr);
 		if ($source){
 			// *** PDF export ***
 			if ($connect_kind=='person'){
-				//$templ_person["address_source".$address_nr]=' '.$source;
 				$templ_person["address_source".$address_nr]=$source;
-
 				// *** Extra item, so it's possible to add a comma or space ***
 				if($templ_person["address_source".$address_nr]!=''){
 					$templ_person["address_add"]='';
@@ -200,14 +200,37 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 				}
 			}
 			if ($connect_kind=='family'){
-				//$templ_relation["address_source"]=$connectDb->address_address.' '.$connectDb->address_source;
 				$templ_relation["address_source".$address_nr]=$source;
-
 				// *** Extra item, so it's possible to add a comma or space ***
 				$templ_relation["address_add"]='';
 				$temp="address_add";
 			}
+			$text.=$source;
+		}
 
+		// *** April 2022: Show source by person/family-address-connection ***
+		if ($connect_kind=='person'){
+			$source=show_sources2("person","pers_address_connect_source",$connectDb->connect_id);
+		}
+		else{
+			$source=show_sources2("family","fam_address_connect_source",$connectDb->connect_id);
+		}
+		if ($source){
+			// *** PDF export ***
+			if ($connect_kind=='person'){
+				$templ_person["address_source".$address_nr]=$source;
+				// *** Extra item, so it's possible to add a comma or space ***
+				if($templ_person["address_source".$address_nr]!=''){
+					$templ_person["address_add"]='';
+					$temp="address_add";
+				}
+			}
+			if ($connect_kind=='family'){
+				$templ_relation["address_source".$address_nr]=$source;
+				// *** Extra item, so it's possible to add a comma or space ***
+				$templ_relation["address_add"]='';
+				$temp="address_add";
+			}
 			$text.=$source;
 		}
 

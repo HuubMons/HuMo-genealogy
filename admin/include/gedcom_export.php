@@ -12,7 +12,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2021 Huub Mons,
+* Copyright (C) 2008-2022 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -642,7 +642,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			$buffer.="1 OBJE\r\n";
 			$buffer.="2 FORM jpg\r\n";
 			$buffer.='2 FILE '.$sourceDb->event_event."\r\n";
-			$buffer.='2 DATE '.$sourceDb->event_date."\r\n";
+			if ($sourceDb->event_date) $buffer.='2 DATE '.$sourceDb->event_date."\r\n";
 
 			if ($gedcom_texts=='yes' AND $sourceDb->event_text){
 				$buffer.='2 NOTE '.process_text(3,$sourceDb->event_text); }
@@ -676,28 +676,53 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		while($eventDb=$event_qry->fetch(PDO::FETCH_OBJ)){
 			$process_event=false; $process_event2=false;
 			if ($eventDb->event_gedcom=='ADOP'){ $process_event2=true; $event_gedcom='1 ADOP'; }
+			if ($eventDb->event_gedcom=='_ADPF'){ $process_event2=true; $event_gedcom='1 _ADPF'; }
+			if ($eventDb->event_gedcom=='_ADPM'){ $process_event2=true; $event_gedcom='1 _ADPM'; }
+			if ($eventDb->event_gedcom=='AFN'){ $process_event2=true; $event_gedcom='1 AFN'; }
+			if ($eventDb->event_gedcom=='ARVL'){ $process_event2=true; $event_gedcom='1 ARVL'; }
 			if ($eventDb->event_gedcom=='BAPM'){ $process_event2=true; $event_gedcom='1 BAPM'; }
 			if ($eventDb->event_gedcom=='BAPL'){ $process_event2=true; $event_gedcom='1 BAPL'; }
 			if ($eventDb->event_gedcom=='BARM'){ $process_event2=true; $event_gedcom='1 BARM'; }
 			if ($eventDb->event_gedcom=='BASM'){ $process_event2=true; $event_gedcom='1 BASM'; }
 			if ($eventDb->event_gedcom=='BLES'){ $process_event2=true; $event_gedcom='1 BLES'; }
+			if ($eventDb->event_gedcom=='_BRTM'){ $process_event2=true; $event_gedcom='1 _BRTM'; }
+			if ($eventDb->event_gedcom=='CAST'){ $process_event2=true; $event_gedcom='1 CAST'; }
 			if ($eventDb->event_gedcom=='CENS'){ $process_event2=true; $event_gedcom='1 CENS'; }
 			if ($eventDb->event_gedcom=='CHRA'){ $process_event2=true; $event_gedcom='1 CHRA'; }
 			if ($eventDb->event_gedcom=='CONF'){ $process_event2=true; $event_gedcom='1 CONF'; }
 			if ($eventDb->event_gedcom=='CONL'){ $process_event2=true; $event_gedcom='1 CONL'; }
+			if ($eventDb->event_gedcom=='DPRT'){ $process_event2=true; $event_gedcom='1 DPRT'; }
+			if ($eventDb->event_gedcom=='EDUC'){ $process_event2=true; $event_gedcom='1 EDUC'; }
 			if ($eventDb->event_gedcom=='EMIG'){ $process_event2=true; $event_gedcom='1 EMIG'; }
 			if ($eventDb->event_gedcom=='ENDL'){ $process_event2=true; $event_gedcom='1 ENDL'; }
 			if ($eventDb->event_gedcom=='EVEN'){ $process_event2=true; $event_gedcom='1 EVEN'; }
+			if ($eventDb->event_gedcom=='_EYEC'){ $process_event2=true; $event_gedcom='1 _EYEC'; }
 			if ($eventDb->event_gedcom=='FCOM'){ $process_event2=true; $event_gedcom='1 FCOM'; }
+			if ($eventDb->event_gedcom=='_FNRL'){ $process_event2=true; $event_gedcom='1 _FNRL'; }
 			if ($eventDb->event_gedcom=='GRAD'){ $process_event2=true; $event_gedcom='1 GRAD'; }
+			if ($eventDb->event_gedcom=='_HAIR'){ $process_event2=true; $event_gedcom='1 _HAIR'; }
+			if ($eventDb->event_gedcom=='_HEIG'){ $process_event2=true; $event_gedcom='1 _HEIG'; }
+			if ($eventDb->event_gedcom=='IDNO'){ $process_event2=true; $event_gedcom='1 IDNO'; }
 			if ($eventDb->event_gedcom=='IMMI'){ $process_event2=true; $event_gedcom='1 IMMI'; }
+			if ($eventDb->event_gedcom=='_INTE'){ $process_event2=true; $event_gedcom='1 _INTE'; }
+			if ($eventDb->event_gedcom=='LEGI'){ $process_event2=true; $event_gedcom='1 LEGI'; }
+			if ($eventDb->event_gedcom=='_MEDC'){ $process_event2=true; $event_gedcom='1 _MEDC'; }
 			if ($eventDb->event_gedcom=='MILI'){ $process_event=true; $event_gedcom='1 _MILT'; }
 			if ($eventDb->event_gedcom=='NATU'){ $process_event2=true; $event_gedcom='1 NATU'; }
+			if ($eventDb->event_gedcom=='NATI'){ $process_event2=true; $event_gedcom='1 NATI'; }
+			if ($eventDb->event_gedcom=='NCHI'){ $process_event2=true; $event_gedcom='1 NCHI'; }
+			if ($eventDb->event_gedcom=='_NMAR'){ $process_event2=true; $event_gedcom='1 _NMAR'; }
 			if ($eventDb->event_gedcom=='ORDN'){ $process_event2=true; $event_gedcom='1 ORDN'; }
 			if ($eventDb->event_gedcom=='PROB'){ $process_event2=true; $event_gedcom='1 PROB'; }
+			if ($eventDb->event_gedcom=='PROP'){ $process_event2=true; $event_gedcom='1 PROP'; }
 			if ($eventDb->event_gedcom=='RETI'){ $process_event2=true; $event_gedcom='1 RETI'; }
 			if ($eventDb->event_gedcom=='SLGC'){ $process_event2=true; $event_gedcom='1 SLGC'; }
+			if ($eventDb->event_gedcom=='SLGL'){ $process_event2=true; $event_gedcom='1 SLGL'; }
+			if ($eventDb->event_gedcom=='SSN'){ $process_event2=true; $event_gedcom='1 SSN'; }
+			if ($eventDb->event_gedcom=='TXPY'){ $process_event2=true; $event_gedcom='1 TXPY'; }
+			if ($eventDb->event_gedcom=='_WEIG'){ $process_event2=true; $event_gedcom='1 _WEIG'; }
 			if ($eventDb->event_gedcom=='WILL'){ $process_event2=true; $event_gedcom='1 WILL'; }
+			if ($eventDb->event_gedcom=='_YART'){ $process_event2=true; $event_gedcom='1 _YART'; }
 
 			// *** Text is added in the first line: 1 _MILT military items. ***
 			if ($process_event){
@@ -967,6 +992,24 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 
 		// *** Addresses (shared addresses are no valid GEDCOM 5.5.1) ***
 		adresses_export('family','family_address',$family->fam_gedcomnumber);
+
+		// *** Family pictures ***
+		$sourceqry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='family' AND event_connect_id='".$family->fam_gedcomnumber."'
+			AND event_kind='picture' ORDER BY event_order");
+		while($sourceDb=$sourceqry->fetch(PDO::FETCH_OBJ)){	
+			$buffer.="1 OBJE\r\n";
+			$buffer.="2 FORM jpg\r\n";
+			$buffer.='2 FILE '.$sourceDb->event_event."\r\n";
+			if ($sourceDb->event_date) $buffer.='2 DATE '.$sourceDb->event_date."\r\n";
+
+			if ($gedcom_texts=='yes' AND $sourceDb->event_text){
+				$buffer.='2 NOTE '.process_text(3,$sourceDb->event_text); }
+
+			if ($gedcom_sources=='yes'){
+				sources_export('family','fam_event_source',$sourceDb->event_id,2);
+			}
+		}
 
 		// *** Family Note ***
 		if ($gedcom_texts=='yes' AND $family->fam_text){
@@ -1315,7 +1358,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		if ($family->address_place){ $buffer.='1 PLAC '.$family->address_place."\r\n"; }
 		if ($family->address_phone){ $buffer.='1 PHON '.$family->address_phone."\r\n"; }
 		if ($gedcom_sources=='yes'){
-			//SOURCE
+			sources_export('address','address_source',$family->address_gedcomnr,2);
 		}
 		if ($family->address_text){ $buffer.='1 NOTE '.process_text(2,$family->address_text); }
 
@@ -1540,12 +1583,19 @@ function adresses_export($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 			// *** Source by address ***
 			if ($gedcom_sources=='yes'){
+				//if ($connect_kind=='person'){
+				//	//$buffer.='2 SOUR '.process_text(3,$addressDb->address_source);
+				//	sources_export('person','pers_address_source',$addressDb->address_id,2);
+				//}
+				//else{
+				//	sources_export('family','fam_address_source',$addressDb->address_id,2);
+				//}
+
 				if ($connect_kind=='person'){
-					//$buffer.='2 SOUR '.process_text(3,$addressDb->address_source);
-					sources_export('person','pers_address_source',$addressDb->address_id,2);
+					sources_export('person','pers_address_connect_source',$connectDb->connect_id,2);
 				}
 				else{
-					sources_export('family','fam_address_source',$addressDb->address_id,2);
+					sources_export('family','fam_address_connect_source',$connectDb->connect_id,2);
 				}
 			}
 
@@ -1557,6 +1607,10 @@ function adresses_export($connect_kind,$connect_sub_kind,$connect_connect_id){
 			// 1 RESI
 			// 2 ADDR Slikkerveer
 			$buffer.="1 RESI\r\n";
+
+			// *** Export HuMo-genealogy address GEDCOM numbers ***
+			$buffer.='2 RIN '.substr($connectDb->connect_item_id,1)."\r\n";
+
 			$buffer.='2 ADDR';
 				if ($addressDb->address_address){ $buffer.=' '.$addressDb->address_address; }
 				$buffer.="\r\n";
@@ -1569,13 +1623,22 @@ function adresses_export($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 			// *** Source by address ***
 			if ($gedcom_sources=='yes'){
+				//if ($connect_kind=='person'){
+				//	//$buffer.='2 SOUR '.process_text(3,$addressDb->address_source);
+				//	sources_export('person','pers_address_source',$addressDb->address_gedcomnr,2);
+				//}
+				//else{
+				//	sources_export('family','fam_address_source',$addressDb->address_gedcomnr,2);
+				//}
+
 				if ($connect_kind=='person'){
-					//$buffer.='2 SOUR '.process_text(3,$addressDb->address_source);
-					sources_export('person','pers_address_source',$addressDb->address_gedcomnr,2);
+					sources_export('person','pers_address_connect_source',$connectDb->connect_id,2);
 				}
 				else{
-					sources_export('family','fam_address_source',$addressDb->address_gedcomnr,2);
+					sources_export('family','fam_address_connect_source',$connectDb->connect_id,2);
 				}
+
+				sources_export('address','address_source',$addressDb->address_gedcomnr,2);
 			}
 
 		}

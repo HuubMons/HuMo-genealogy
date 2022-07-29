@@ -1,10 +1,15 @@
 <?php
+/*
+April 2022: Added OpenStreetMap by Huub.
+Original script: Yossi.
+*/
+
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 //error_reporting(E_ALL);
 @set_time_limit(3000);
 
-echo '<h1 align=center>'.__('Google maps administration').'</h1>';
+echo '<h1 align=center>'.__('World map administration').'</h1>';
 echo '<table class="humo standard" border="1" style="width:900px;">';
 
 if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the location database
@@ -66,90 +71,106 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 		$count_parsed++;
 		//if($count_parsed<110 OR $count_parsed > 125) continue;
 		$loc=urlencode($value);
-		
-		//echo "<br>".$value." - ".$loc."<br>";
-		/* This piece is outdated since Google's API revision. The second key (IP address restricted) has to be used and an https connection is mandatory.
- 		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
- 			$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key; 
 
- 		}
- 		else {
- 
- 			$jsonurl = "http://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key;
- 		}
-		*/
-
-		$api_key = ''; 
-		// Key is meant for showing maps and should be set to restriction: "HTTP referrers". This key will only be used here if no second key is present.
-		// This key will only work here if admin temporarily set it to restriction "None" or to "IP addresses" with server IP.
-		if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
-			$api_key = "&key=".$humo_option['google_api_key'];
-		} 
-
-		$api_key2 = ''; // Key meant for geolocation. Is protected by "IP addresses" restriction.
-		if(isset($humo_option['google_api_key2']) AND $humo_option['google_api_key2']!='') {
-			$api_key2 = "&key=".$humo_option['google_api_key2'];
-		} 
-		if($api_key2 == "") { $api_key2 = $api_key; }  // if no second key is present, try to use first key.
-
-		$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key2; 
-
-		//echo $api_key." - ".$api_key2."<br>";
-		//echo $jsonurl."<br>";
-		//$json = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key2);
-		//echo $json;
- 
-		$json = file_get_contents($jsonurl,0,null,null);
-
-		// file_get_contents won't work if "allow_url_fopen" is disabled by host for security considerations.
-		// in that case try the PHP "curl" extension that is installed on most hosts (but we still check...)
-		if(!$json) {     
-			if(extension_loaded('curl')) {
-				$ch = curl_init();
-				curl_setopt ($ch, CURLOPT_URL, $jsonurl);
-				curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-//curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
-				$json = curl_exec($ch);
-				curl_close($ch);
+		// *** OpenStreetMap, use GeoKeo to get geolocation data ***
+		if(isset($humo_option["use_world_map"]) AND $humo_option["use_world_map"]=='OpenStreetMap') {
+			$url = "https://geokeo.com/geocode/v1/search.php?q=".$loc."&api=".$humo_option['geokeo_api_key'];
+			$json = file_get_contents($url);
+			$json = json_decode($json);
+			//if(array_key_exists('status',$json)){
+				if($json->status=='ok'){
+					$map_count_found++;
+					//$address = $json->results[0]->formatted_address;
+					$latitude = $json->results[0]->geometry->location->lat;
+					$longitude = $json->results[0]->geometry->location->lng;
+					$dbh->query("INSERT INTO humo_location SET location_location='".$loc."', location_lat='".$latitude."', location_lng='".$longitude."'");
+				}
+			//}
+		}
+		else{
+			// *** Google Maps ***
+			//echo "<br>".$value." - ".$loc."<br>";
+			/* This piece is outdated since Google's API revision. The second key (IP address restricted) has to be used and an https connection is mandatory.
+			if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+				$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key; 
 			}
 			else {
-				echo __('<b>A location database could not be created.</b>
+				$jsonurl = "http://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key;
+			}
+			*/
+
+			$api_key = ''; 
+			// Key is meant for showing maps and should be set to restriction: "HTTP referrers". This key will only be used here if no second key is present.
+			// This key will only work here if admin temporarily set it to restriction "None" or to "IP addresses" with server IP.
+			if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
+				$api_key = "&key=".$humo_option['google_api_key'];
+			} 
+
+			$api_key2 = ''; // Key meant for geolocation. Is protected by "IP addresses" restriction.
+			if(isset($humo_option['google_api_key2']) AND $humo_option['google_api_key2']!='') {
+				$api_key2 = "&key=".$humo_option['google_api_key2'];
+			} 
+			if($api_key2 == "") { $api_key2 = $api_key; }  // if no second key is present, try to use first key.
+
+			$jsonurl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key2; 
+
+			//echo $api_key." - ".$api_key2."<br>";
+			//echo $jsonurl."<br>";
+			//$json = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?address=".$loc.$api_key2);
+			//echo $json;
+
+			$json = file_get_contents($jsonurl,0,null,null);
+			// file_get_contents won't work if "allow_url_fopen" is disabled by host for security considerations.
+			// in that case try the PHP "curl" extension that is installed on most hosts (but we still check...)
+			if(!$json) {
+				if(extension_loaded('curl')) {
+					$ch = curl_init();
+					curl_setopt ($ch, CURLOPT_URL, $jsonurl);
+					curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+	//curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
+					$json = curl_exec($ch);
+					curl_close($ch);
+				}
+				else {
+					echo __('<b>A location database could not be created.</b>
 <p>This could mean that the PHP function "allow_url_fopen" was disabled by your webhost for security considerations and the PHP extension "curl" (which is an alternative to allow_url_fopen) is not loaded on the server.
 <p>You could contact your webhost and request to either have "allow_url_fopen" enabled or "curl" loaded.');
-				exit();
+					exit();
+				}
 			}
-		}
 
-		echo '*';  // show progress by simple progress bar of *******
-		if($count_parsed % 100 == 0) { echo '<br>'; }
+			echo '*';  // show progress by simple progress bar of *******
+			if($count_parsed % 100 == 0) { echo '<br>'; }
 
-		$json_output = json_decode($json, true); 
-		if ($json_output['status']=="OK") {
-			$map_count_found++;
-			$lat=$json_output['results'][0]['geometry']['location']['lat'];
-			$lng=$json_output['results'][0]['geometry']['location']['lng'];
-			$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".safe_text_db($value)."', '".$lat."', '".$lng."') ");
+			$json_output = json_decode($json, true); 
+			if ($json_output['status']=="OK") {
+				$map_count_found++;
+				$lat=$json_output['results'][0]['geometry']['location']['lat'];
+				$lng=$json_output['results'][0]['geometry']['location']['lng'];
+				$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".safe_text_db($value)."', '".$lat."', '".$lng."') ");
 
-			sleep(1);  // crucial, otherwise google kicks you out after a few queries
-		}
-		elseif ($json_output['status']=="ZERO_RESULTS") { // store locations that were not found by google geocoding
-			$map_notfound_array[]= $json_output['status'].' - '.$value;
-			$map_count_notfound++;
-			$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text_db($value)."') ");
-			sleep(1);  // crucial, otherwise google kicks you out after a few queries
-		}
-		elseif ($json_output['status']=="OVER_QUERY_LIMIT") {
-			$flag_stop=1;
-			break;  // out of foreach
-		}
-		elseif ($json_output['status']=="REQUEST_DENIED") {
-			echo "Error type: ".$json_output['status']."<br>";
-			echo "Error message: ".$json_output['error_message'];
-			$flag_stop=2;
-			break;
-		}
-		else {
-			// could be // or "INVALID_REQUEST" but that can't really happen, because this code is perfect....   ;-)
+				sleep(1);  // crucial, otherwise google kicks you out after a few queries
+			}
+			elseif ($json_output['status']=="ZERO_RESULTS") { // store locations that were not found by google geocoding
+				$map_notfound_array[]= $json_output['status'].' - '.$value;
+				$map_count_notfound++;
+				$dbh->query("INSERT INTO humo_no_location (no_location_location) VALUES('".safe_text_db($value)."') ");
+				sleep(1);  // crucial, otherwise google kicks you out after a few queries
+			}
+			elseif ($json_output['status']=="OVER_QUERY_LIMIT") {
+				$flag_stop=1;
+				break;  // out of foreach
+			}
+			elseif ($json_output['status']=="REQUEST_DENIED") {
+				echo "Error type: ".$json_output['status']."<br>";
+				echo "Error message: ".$json_output['error_message'];
+				$flag_stop=2;
+				break;
+			}
+			else {
+				// could be // or "INVALID_REQUEST" but that can't really happen, because this code is perfect....   ;-)
+			}
+
 		}
 
 	} // end of foreach
@@ -244,12 +265,42 @@ else {  // main screen
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CHECK FOR GOOGLE MAPS API KEY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	echo '<tr class="table_header"><th>'.__('Google maps API Key').'</th>';
+	echo '<tr class="table_header"><th>'.__('World map API Keys').'</th>';
 	echo '<tr><td>';
-	echo __('As of Jun 22, 2016 Google has changed its API policy and all queries to the Google maps API now require a site-specific key.')."<br>";
-	echo __('For now, it seems that installations that started API queries prior to June 22, 2016 will continue to work also without a key.')."<br>";
-	echo __('If however you start activating the Google map feature after this date, you are likely to encounter error messages concerning a missing key if you do not first enter and save a key here.')."<br>";
-	echo __('If you don\'t have a Google account, first create one. Once logged into your Google account, go to:');
+
+	$use_world_map='Google';
+	$use_world_query = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'use_world_map'");
+	$use_worldDb = $use_world_query->fetch(PDO::FETCH_OBJ);
+	if ($use_worldDb){
+		$use_world_map=$use_worldDb->setting_value;
+		// *** Update value ***
+		if (isset($_POST['use_world_map']) AND ($_POST['use_world_map']=='OpenStreetMap' OR $_POST['use_world_map']=='Google')){
+			$temp = $dbh->query("UPDATE humo_settings SET setting_value='".$_POST['use_world_map']."' WHERE setting_variable='use_world_map'");
+			$use_world_map=$_POST['use_world_map'];
+		}
+	}
+	else{
+		// *** No value in database, add new value ***
+		if (isset($_POST['use_world_map']) AND $_POST['use_world_map']=='OpenStreetMap'){
+			$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='use_world_map', setting_value='OpenStreetMap'");
+			$use_world_map=$_POST['use_world_map'];
+		}
+	}
+	echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
+		$selected=''; if ($use_world_map=='Google') $selected=' CHECKED';
+		echo '<input type="radio" name="use_world_map" value="Google"'.$selected.'> '.__('Use Google Maps').'<br>';
+		$selected=''; if ($use_world_map=='OpenStreetMap') $selected=' CHECKED';
+		echo '<input type="radio" name="use_world_map" value="OpenStreetMap"'.$selected.'> '.__('Use OpenStreetMap').'<br>';
+		echo '<input type="submit" style="font-size:14px" value="'.__('Save').'" name="api_save">';
+	echo '</form>';
+
+	echo '<h3>'.__('Google Maps API Keys').'</h3>';
+	//echo __('As of Jun 22, 2016 Google has changed its API policy and all queries to the Google maps API now require a site-specific key.')."<br>";
+	//echo __('For now, it seems that installations that started API queries prior to June 22, 2016 will continue to work also without a key.')."<br>";
+	//echo __('If however you start activating the Google map feature after this date, you are likely to encounter error messages concerning a missing key if you do not first enter and save a key here.')."<br>";
+
+	echo __('To use the Google maps options, you need a Google account.');
+	echo ' '.__('If you don\'t have a Google account, first create one. Once logged into your Google account, go to:');
 	echo ' <a href="https://developers.google.com/maps/documentation/javascript/get-api-key#get-an-api-key" target="_blank">'.__('Get API key').'</a> ';
 	echo __('and follow the instructions.')."<br>";
 	echo "<strong>".__('Create two keys').":</strong><br><ul><li>";
@@ -283,11 +334,76 @@ else {  // main screen
 		echo __('Your server also has an IPv6 address. If the above IP doesn\'t work, try the IPv6 which would seem to be:')." <strong>".$ipv6[0]['ipv6']."</strong><br>";
 	}
 	echo __('If this doesn\'t work, contact your provider and try to obtain the proper IP address from them.')."<br>";
-	echo __('Once you receive the keys enter them in the two fields below and save.')."<br><br>";
+	echo __('Once you receive the keys enter them in the two fields below and save.')."<br></li></ul>";
+
+
+	$api_1='';
+	// *** Admin requested to delete the existing key - show field to enter updated key ***
+	if (isset($_POST['delete_api_1'])){
+		$temp = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'google_api_key'");
+	}
 	$api_query = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'google_api_key'");
-	$apiDb = $api_query->fetch(PDO::FETCH_OBJ);   
+	$apiDb = $api_query->fetch(PDO::FETCH_OBJ);
+	if ($apiDb){
+		$api_1=$apiDb->setting_value;
+		// *** Update value ***
+		if (isset($_POST['api_1'])){
+			$temp = $dbh->query("UPDATE humo_settings SET setting_value='".$_POST['api_1']."' WHERE setting_variable='google_api_key'");
+			$api_1=$_POST['api_1'];
+		}
+	}
+	else{
+		// *** No value in database, add new value ***
+		if (isset($_POST['api_1'])){
+			$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key', setting_value='".$_POST['api_1']."'");
+			$api_1=$_POST['api_1'];
+		}
+	}
+
+	$api_2='';
+	// *** Admin requested to delete the existing key - show field to enter updated key ***
+	if (isset($_POST['delete_api_2'])){
+		$temp = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'google_api_key2'");
+	}
+	$api_query = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'google_api_key2'");
+	$api_2Db = $api_query->fetch(PDO::FETCH_OBJ);
+	if ($api_2Db){
+		$api_2=$api_2Db->setting_value;
+		// *** Update value ***
+		if (isset($_POST['api_2'])){
+			$temp = $dbh->query("UPDATE humo_settings SET setting_value='".$_POST['api_2']."' WHERE setting_variable='google_api_key2'");
+			$api_2=$_POST['api_2'];
+		}
+	}
+	else{
+		// *** No value in database, add new value ***
+		if (isset($_POST['api_2'])){
+			$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='google_api_key2', setting_value='".$_POST['api_2']."'");
+			$api_2=$_POST['api_2'];
+		}
+	}
+
+	echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
+		echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
+		echo '<input type="text" id="api_1" name="api_1" value="'.$api_1.'" size="40" >';
+		echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="api_save">';
+	echo '</form>';
+	echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
+		if ($api_1) echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api_1">';
+	echo '</form><br>';
+
+	echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
+		echo __('API key')." 2 (restriction: <strong>IP addresses</strong>): ";
+		echo '&nbsp;&nbsp;&nbsp;<input type="text" id="api_2" name="api_2" value="'.$api_2.'" size="40" >';
+		echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="api2_save">';
+	echo '</form>';
+	echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
+		if ($api_2) echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api_2">';
+	echo '</form><br>';
+
+	/*
 	if($api_query->rowCount() > 0) { // there is an api key 1 setting in the database
-		if(isset($_POST['change_api']) OR $apiDb->setting_value=='') {  
+		if(isset($_POST['change_api']) OR $apiDb->setting_value=='') {
 			// admin requested to change the existing key OR key setting in database is empty - show field to enter updated key
 			echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
 			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
@@ -295,8 +411,7 @@ else {  // main screen
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="api_save">';
 			echo '</form><br>';
 		}
-
-		elseif(isset($_POST['delete_api'])) {  
+		elseif(isset($_POST['delete_api'])) {
 			// admin requested to delete the existing key - show field to enter updated key
 			$temp = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'google_api_key'");
 			echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
@@ -305,10 +420,9 @@ else {  // main screen
 			echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Change').'" name="change_api">';
 			echo '</form><br>';
 		}
-		
 		else  {
 			// fresh page called OR updated key entered
-			if(isset($_POST['new_api']) AND $_POST['new_api']!="") {  
+			if(isset($_POST['new_api']) AND $_POST['new_api']!="") {
 				// admin enter updated key
 				$result = $db_functions->update_settings('google_api_key',$_POST['new_api']);
 				echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): "; 
@@ -328,7 +442,7 @@ else {  // main screen
 
 	}
 	else  { // no API key 1 variable found in database
-		if(!isset($_POST['new_api'])) { 
+		if(!isset($_POST['new_api'])) {
 			// fresh page when no api key 1 variable exists - show field to enter key 1
  			echo __('API key')." 1 (restriction: <strong>HTTP referrers</strong>): ";
 			echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
@@ -360,7 +474,7 @@ else {  // main screen
 	}
 	echo '<br>';
 	$api_query2 = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'google_api_key2'");
-	$apiDb2 = $api_query2->fetch(PDO::FETCH_OBJ);   
+	$apiDb2 = $api_query2->fetch(PDO::FETCH_OBJ);
 	if($api_query2->rowCount() > 0) { // there is an api key 1 setting in the database
 		if(isset($_POST['change_api2']) OR $apiDb2->setting_value=='') {  
 			// admin requested to change the existing key OR key setting in database is empty - show field to enter updated key
@@ -433,6 +547,46 @@ else {  // main screen
 			}
 		}
 	}
+	*/
+
+	echo '<h3>'.__('OpenStreetMap API Keys').'</h3>';
+	echo __('To use OpenStreetMap we need geolocation data of all places. Go to <a href="https://geokeo.com" target="_blank">https://geokeo.com</a> and create an account to get the API key.');
+
+	echo '<br>'; 
+
+	$api_geokeo='';
+	// *** Admin requested to delete the existing key - show field to enter updated key ***
+	if (isset($_POST['delete_api_geokeo'])){
+		$temp = $dbh->query("DELETE FROM humo_settings WHERE setting_variable = 'geokeo_api_key'");
+	}
+	$api_query = $dbh->query("SELECT * FROM humo_settings WHERE setting_variable = 'geokeo_api_key'");
+	$api_2Db = $api_query->fetch(PDO::FETCH_OBJ);
+	if ($api_2Db){
+		$api_geokeo=$api_2Db->setting_value;
+		// *** Update value ***
+		if (isset($_POST['api_geokeo'])){
+			$temp = $dbh->query("UPDATE humo_settings SET setting_value='".$_POST['api_geokeo']."' WHERE setting_variable='geokeo_api_key'");
+			$api_geokeo=$_POST['api_geokeo'];
+		}
+	}
+	else{
+		// *** No value in database, add new value ***
+		if (isset($_POST['api_geokeo'])){
+			$temp = $dbh->query("INSERT INTO humo_settings SET setting_variable='geokeo_api_key', setting_value='".$_POST['api_geokeo']."'");
+			$api_geokeo=$_POST['api_geokeo'];
+		}
+	}
+
+	echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
+		echo __('API key')." Geokeo: ";
+		echo '<input type="text" id="api_geokeo" name="api_geokeo" value="'.$api_geokeo.'" size="40" >';
+		echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Save').'" name="api_save">';
+	echo '</form>';
+	echo '<form action="index.php?page=google_maps" method="post" style="display:inline">';
+		if ($api_geokeo) echo '&nbsp;&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Delete').'" name="delete_api_geokeo">';
+	echo '</form><br>';
+
+
 
 	echo '<br></td></tr>';
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CREATE/UPDATE GEOLOCATION DATABASE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -441,7 +595,6 @@ else {  // main screen
 
 	echo '<tr><td>';
 	if(isset($_POST['check_new'])) { // the "Check" button was pressed
-	
 		$unionstring='';
 
 		if(isset($_SESSION['geo_tree']) AND $_SESSION['geo_tree'] != "all_geo_trees") {   
@@ -466,7 +619,7 @@ else {  // main screen
 			FROM (".$unionstring.") AS x GROUP BY pers_birth_place ");
 
 		$add_locations = array();
-		
+
 		// make array of all existing locations in database	
 		$exist_locs = array();
 		$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
@@ -589,7 +742,8 @@ else {  // main screen
 			
 foreach($add_locations AS $val) {
 		echo $val."<br>";
-}			
+}
+
 			echo '<br>';
 			printf(__('This will take approximately <b>%1$d minutes and %2$d seconds.</b>'), $map_mins, $map_secs);
 			echo '<br>';
@@ -703,13 +857,15 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				$dbh->query("DELETE FROM humo_location WHERE location_id = ".$_POST['loc_del_id']);
 				$result = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
 			}
-			else { 
+			else {
 				// page was newly entered -- so show map+marker for first on list
 				$result = $dbh->query("SELECT * FROM humo_location ORDER BY location_location");
 			}
-			$row = $result->fetch();
-			$lat = $row['location_lat'];
-			$lng = $row['location_lng'];
+			if($result->rowCount()>0) { // doesn't exist yet
+				$row = $result->fetch();
+				$lat = $row['location_lat'];
+				$lng = $row['location_lng'];
+			}
 		}
 
 		$api_key = '';
@@ -917,25 +1073,32 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		}
 		else {
 			// default: show the location that was selected with the pull down box
-			$result = $dbh->query("SELECT * FROM humo_location WHERE location_id = ".$_POST['loc_find']);
+			if (isset($_POST['loc_find']))
+				$result = $dbh->query("SELECT * FROM humo_location WHERE location_id = ".$_POST['loc_find']);
 		}
 		$resultDb=$result->fetch(PDO::FETCH_OBJ);
 
+		$location_id=''; if ($resultDb) $location_id=$resultDb->location_id;
+		$location_location=''; if ($resultDb) $location_location=$resultDb->location_location;
+		$location_lat=''; if ($resultDb) $location_lat=$resultDb->location_lat;
+		$location_lng=''; if ($resultDb) $location_lng=$resultDb->location_lng;
+
 		echo '<form method="POST" name="delform" action="index.php?page=google_maps" style="display : inline;">';
 		echo '<tr><th colspan="2">'.__('Details from the database').'</th></tr>';
-		echo '<tr><td>'.__('Location').':</td><td><input type="text" id="loc_name" name="loc_name" value="'.$resultDb->location_location.'" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
-		echo '<tr><td>'.__('Latitude').':</td><td><input type="text" id="loc_lat" name="loc_lat" value="'.$resultDb->location_lat.'" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
-		echo '<tr><td>'.__('Longitude').':</td><td><input type="text" id="loc_lng" name="loc_lng" value="'.$resultDb->location_lng.'" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
+		echo '<tr><td>'.__('Location').':</td><td><input type="text" id="loc_name" name="loc_name" value="'.$location_location.'" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
+		echo '<tr><td>'.__('Latitude').':</td><td><input type="text" id="loc_lat" name="loc_lat" value="'.$location_lat.'" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
+		echo '<tr><td>'.__('Longitude').':</td><td><input type="text" id="loc_lng" name="loc_lng" value="'.$location_lng.'" size="20" style="background-color:#d8d8d8;color:#585858" READONLY></td></tr>';
 		echo '<tr><td align="center" colspan="2">';
-		echo '<input type="hidden" name="loc_del_id" value="'.$resultDb->location_id.'">';
-		echo '<input type="hidden" name="loc_del_name" value="'.$resultDb->location_location.'">';
+		echo '<input type="hidden" name="loc_del_id" value="'.$location_id.'">';
+		echo '<input type="hidden" name="loc_del_name" value="'.$location_location.'">';
 		echo '<input type="Submit" style="color:red;font-weight:bold" name="loc_delete" value="'.__('Delete this location').'"></td></tr>';
 		//echo '</form>';
 
 		//echo '<form method="POST" name="searchform" action="index.php?page=google_maps" style="display : inline;">';
-		$search_name = $resultDb->location_location;
-		$search_lat = $resultDb->location_lat;
-		$search_lng = $resultDb->location_lng;
+		$search_name = $location_location;
+		$search_lat = $location_lat;
+		$search_lng = $location_lng;
+
 		if($leave_bottom === true) {
 			$search_name = $_POST['add_name'];
 			$search_lat =  $_POST['add_lat'];
@@ -951,6 +1114,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 		echo '<input type="Submit" name="loc_change" value="'.__('Change this location').'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		echo '<input type="Submit" name="loc_add" value="'.__('Add this location').'"></td></tr>';
 		echo '</form>';
+
 		echo '</table>';
 
 		echo '</td></tr>';

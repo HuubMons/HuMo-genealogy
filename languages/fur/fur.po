@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-26 19:05+0100\n"
-"PO-Revision-Date: 2022-03-26 19:05+0100\n"
+"POT-Creation-Date: 2022-04-17 21:08+0200\n"
+"PO-Revision-Date: 2022-04-17 21:08+0200\n"
 "Last-Translator: Vittorino Lepore <vlepore47@libero.it>\n"
 "Language-Team: Friulian (http://www.transifex.com/humo-gen/humo-gen/language/"
 "fur/)\n"
@@ -28,48 +28,50 @@ msgstr ""
 msgid "You are not authorised to see this page."
 msgstr "No tu sês autorizzât a viodi cheste pagjne."
 
-#: address.php:18 admin/include/editor.php:3490 admin/include/editor.php:4371
-#: admin/include/editor.php:4465 admin/include/editor_sources.php:102
-#: admin/include/editor_sources.php:156 admin/include/editor_sources.php:162
-#: admin/include/gedcom_export.php:280 admin/include/gedcom_export.php:282
-#: admin/include/trees_cls.php:1777 header.php:257 source.php:234
+#: address.php:18 admin/include/editor.php:3503 admin/include/editor.php:4390
+#: admin/include/editor.php:4495 admin/include/editor_sources.php:107
+#: admin/include/editor_sources.php:166 admin/include/editor_sources.php:172
+#: admin/include/editor_sources.php:178 admin/include/gedcom_export.php:280
+#: admin/include/gedcom_export.php:282 admin/include/trees_cls.php:1777
+#: header.php:257 source.php:234
 msgid "Address"
 msgstr "Indirìs"
 
 #: address.php:22 addresses.php:78 addresses.php:117
-#: admin/include/editor.php:3737 admin/include/editor.php:4373
-#: admin/include/editor.php:4448
+#: admin/include/editor.php:3750 admin/include/editor.php:4394
+#: admin/include/editor.php:4478
 msgid "Street"
 msgstr "Vie"
 
-#: address.php:23 admin/include/editor.php:3492 admin/include/editor.php:3739
-#: admin/include/editor.php:4374 admin/include/editor.php:4451 list.php:1686
+#: address.php:23 admin/include/editor.php:3505 admin/include/editor.php:3752
+#: admin/include/editor.php:4395 admin/include/editor.php:4481 list.php:1686
 #: list.php:1694 source.php:233
 msgid "Zip code"
 msgstr "Codiç Postâl"
 
-#: address.php:24 admin/include/editor.php:3734 admin/include/editor.php:4372
-#: admin/include/editor.php:4424 list.php:1611 list.php:1643 list.php:1674
+#: address.php:24 admin/include/editor.php:3747 admin/include/editor.php:4393
+#: admin/include/editor.php:4442 list.php:1611 list.php:1643 list.php:1674
 #: list.php:1682 list.php:1991 list.php:2003 source.php:111 source.php:116
 #: source.php:238 sources.php:170
 msgid "Place"
 msgstr "Lûc"
 
-#: address.php:25 admin/include/editor.php:3496 admin/include/editor.php:3741
-#: admin/include/editor.php:4454
+#: address.php:25 admin/include/editor.php:3509 admin/include/editor.php:3754
+#: admin/include/editor.php:4484
 msgid "Phone"
 msgstr "Telefon"
 
-#: address.php:35 admin/include/editor_sources.php:60
-#: admin/include/editor_sources.php:66 admin/include/editor_sources.php:72
-#: admin/include/editor_sources.php:78 admin/include/editor_sources.php:84
-#: admin/include/editor_sources.php:96 admin/include/editor_sources.php:102
-#: admin/include/editor_sources.php:108 admin/include/editor_sources.php:114
-#: admin/include/editor_sources.php:120 admin/include/editor_sources.php:126
-#: admin/include/editor_sources.php:132 admin/include/editor_sources.php:138
-#: admin/include/editor_sources.php:144 admin/include/editor_sources.php:150
-#: admin/include/editor_sources.php:156 admin/include/editor_sources.php:162
-#: admin/include/editor_sources.php:229 admin/include/editor_sources.php:300
+#: address.php:35 admin/include/editor.php:4467
+#: admin/include/editor_sources.php:60 admin/include/editor_sources.php:66
+#: admin/include/editor_sources.php:72 admin/include/editor_sources.php:78
+#: admin/include/editor_sources.php:84 admin/include/editor_sources.php:96
+#: admin/include/editor_sources.php:107 admin/include/editor_sources.php:113
+#: admin/include/editor_sources.php:119 admin/include/editor_sources.php:125
+#: admin/include/editor_sources.php:131 admin/include/editor_sources.php:137
+#: admin/include/editor_sources.php:143 admin/include/editor_sources.php:149
+#: admin/include/editor_sources.php:155 admin/include/editor_sources.php:166
+#: admin/include/editor_sources.php:172 admin/include/editor_sources.php:178
+#: admin/include/editor_sources.php:246 admin/include/editor_sources.php:317
 #: sources.php:144
 msgid "Source"
 msgstr "Provenience"
@@ -78,7 +80,7 @@ msgstr "Provenience"
 msgid "Address by person"
 msgstr "Indiris da persone"
 
-#: addresses.php:68 admin/include/editor.php:3651 admin/include/editor.php:4281
+#: addresses.php:68 admin/include/editor.php:3664 admin/include/editor.php:4295
 #: admin/include/trees_cls.php:1924 menu.php:534
 msgid "Addresses"
 msgstr "Indiris"
@@ -92,25 +94,25 @@ msgstr "Citât"
 #: admin/include/editor_media_select.php:81
 #: admin/include/editor_person_select.php:88
 #: admin/include/editor_relation_select.php:29
-#: admin/include/editor_sources.php:364 admin/include/gedcom_export.php:132
-#: admin/include/language_editor.php:274 admin/include/make_db_maps.php:947
-#: admin/include/settings_admin.php:822 admin/include/settings_admin.php:960
+#: admin/include/editor_sources.php:381 admin/include/gedcom_export.php:132
+#: admin/include/language_editor.php:274 admin/include/make_db_maps.php:1110
+#: admin/include/settings_admin.php:823 admin/include/settings_admin.php:973
 #: admin/include/trees_cls.php:870 admin/include/trees_cls.php:908
 #: admin/include/trees_cls.php:984 include/mainindex_cls.php:41
-#: include/mainindex_cls.php:129 include/mainindex_cls.php:595
+#: include/mainindex_cls.php:129 include/mainindex_cls.php:602
 #: latest_changes.php:79 list.php:1468 list.php:1782
-#: list_places_families.php:408 menu.php:90 photoalbum.php:353
+#: list_places_families.php:408 menu.php:90 photoalbum.php:356
 #: relations.php:3224 relations.php:3228 relations.php:3316 relations.php:3320
 #: sources.php:138
 msgid "Search"
 msgstr "Cîr"
 
-#: addresses.php:119 admin/include/editor.php:4457
-#: admin/include/editor_sources.php:303 admin/include/editor_sources.php:354
+#: addresses.php:119 admin/include/editor.php:4487
+#: admin/include/editor_sources.php:320 admin/include/editor_sources.php:371
 #: admin/include/groups.php:537 admin/include/groups.php:542
-#: admin/include/groups.php:547 admin/include/settings_admin.php:840
-#: admin/include/settings_admin.php:904 admin/include/settings_admin.php:966
-#: family.php:2114 include/process_text.php:90 include/process_text.php:92
+#: admin/include/groups.php:547 admin/include/settings_admin.php:841
+#: admin/include/settings_admin.php:908 admin/include/settings_admin.php:979
+#: family.php:2171 include/process_text.php:90 include/process_text.php:92
 #: list.php:1647
 msgid "Text"
 msgstr "Test"
@@ -306,7 +308,7 @@ msgid "Database has been restored successfully!"
 msgstr "Il database al è stât ripristinât correttamentri!"
 
 #: admin/include/cal_date.php:8 admin/include/cal_date.php:16
-#: admin/include/editor.php:1711 admin/index.php:1015
+#: admin/include/editor.php:1712 admin/index.php:1024
 msgid "Calculated birth date"
 msgstr "Date di nassite calcolade"
 
@@ -332,7 +334,7 @@ msgid "Choose family tree"
 msgstr "Sielz l'arbul gjenealogjic"
 
 #: admin/include/cal_date.php:31 admin/include/editor.php:1555
-#: admin/include/editor.php:3945 admin/include/editor_sources.php:399
+#: admin/include/editor.php:3958 admin/include/editor_sources.php:416
 #: admin/include/statistics.php:588 admin/include/statistics.php:667
 #: admin/include/user_notes.php:115
 msgid "Select"
@@ -350,8 +352,8 @@ msgstr ""
 "Il calcul das datis di nassite al è completât. A voltis, se il culcul al ven  "
 "rifat, a puedin sei calcoladis datis diferentis!"
 
-#: admin/include/cms_pages.php:12 admin/include/settings_admin.php:843
-#: admin/include/settings_admin.php:967 admin/index.php:962
+#: admin/include/cms_pages.php:12 admin/include/settings_admin.php:847
+#: admin/include/settings_admin.php:981 admin/index.php:971
 msgid "CMS Own pages"
 msgstr "Pagjinis CMS personâl"
 
@@ -389,11 +391,11 @@ msgid "Are you sure you want to remove this page?"
 msgstr "Sestu sigûr di volei tirâ vie chwste pagjine?"
 
 #: admin/include/cms_pages.php:107 admin/include/cms_pages.php:176
-#: admin/include/editor.php:3107 admin/include/editor.php:3390
-#: admin/include/editor.php:3595 admin/include/editor_inc.php:50
+#: admin/include/editor.php:3120 admin/include/editor.php:3403
+#: admin/include/editor.php:3608 admin/include/editor_inc.php:50
 #: admin/include/editor_inc.php:685 admin/include/editor_inc.php:917
 #: admin/include/editor_inc.php:987 admin/include/editor_inc.php:1766
-#: admin/include/editor_inc.php:2210 admin/include/editor_user_settings.php:74
+#: admin/include/editor_inc.php:2220 admin/include/editor_user_settings.php:74
 #: admin/include/gedcom.php:185 admin/include/gedcom_export.php:299
 #: admin/include/gedcom_export.php:307 admin/include/gedcom_export.php:318
 #: admin/include/gedcom_export.php:341 admin/include/groups.php:170
@@ -402,8 +404,8 @@ msgstr "Sestu sigûr di volei tirâ vie chwste pagjine?"
 #: admin/include/settings_admin.php:296 admin/include/settings_admin.php:305
 #: admin/include/settings_admin.php:313 admin/include/settings_admin.php:327
 #: admin/include/settings_admin.php:336 admin/include/settings_admin.php:344
-#: admin/include/settings_admin.php:366 admin/include/settings_admin.php:654
-#: admin/include/settings_admin.php:1140 admin/include/thumbs.php:678
+#: admin/include/settings_admin.php:366 admin/include/settings_admin.php:655
+#: admin/include/settings_admin.php:1154 admin/include/thumbs.php:678
 #: admin/include/trees.php:117 admin/include/trees_cls.php:1269
 #: admin/include/trees_cls.php:1274 admin/include/trees_cls.php:1285
 #: admin/include/trees_cls.php:1290 admin/include/trees_cls.php:1301
@@ -414,11 +416,11 @@ msgid "Yes"
 msgstr "Si"
 
 #: admin/include/cms_pages.php:108 admin/include/cms_pages.php:177
-#: admin/include/editor.php:3108 admin/include/editor.php:3391
-#: admin/include/editor.php:3596 admin/include/editor_inc.php:51
+#: admin/include/editor.php:3121 admin/include/editor.php:3404
+#: admin/include/editor.php:3609 admin/include/editor_inc.php:51
 #: admin/include/editor_inc.php:686 admin/include/editor_inc.php:918
 #: admin/include/editor_inc.php:988 admin/include/editor_inc.php:1767
-#: admin/include/editor_inc.php:2211 admin/include/editor_user_settings.php:76
+#: admin/include/editor_inc.php:2221 admin/include/editor_user_settings.php:76
 #: admin/include/gedcom.php:186 admin/include/gedcom_export.php:300
 #: admin/include/gedcom_export.php:308 admin/include/gedcom_export.php:319
 #: admin/include/gedcom_export.php:340 admin/include/groups.php:171
@@ -427,8 +429,8 @@ msgstr "Si"
 #: admin/include/settings_admin.php:297 admin/include/settings_admin.php:306
 #: admin/include/settings_admin.php:314 admin/include/settings_admin.php:328
 #: admin/include/settings_admin.php:337 admin/include/settings_admin.php:345
-#: admin/include/settings_admin.php:367 admin/include/settings_admin.php:655
-#: admin/include/settings_admin.php:1141 admin/include/thumbs.php:679
+#: admin/include/settings_admin.php:367 admin/include/settings_admin.php:656
+#: admin/include/settings_admin.php:1155 admin/include/thumbs.php:679
 #: admin/include/trees.php:118 admin/include/trees_cls.php:1270
 #: admin/include/trees_cls.php:1273 admin/include/trees_cls.php:1286
 #: admin/include/trees_cls.php:1289 admin/include/trees_cls.php:1302
@@ -502,14 +504,13 @@ msgstr "Publicât"
 
 #: admin/include/cms_pages.php:368 admin/include/cms_pages.php:371
 #: admin/include/cms_pages.php:464 admin/include/editor.php:1606
-#: admin/include/editor.php:2271 admin/include/editor.php:2498
-#: admin/include/editor.php:2914 admin/include/editor.php:3305
-#: admin/include/editor.php:3511 admin/include/editor.php:3767
-#: admin/include/editor.php:3964 admin/include/editor_sources.php:293
-#: admin/include/language_editor.php:285 admin/include/make_db_maps.php:295
-#: admin/include/make_db_maps.php:336 admin/include/make_db_maps.php:356
-#: admin/include/make_db_maps.php:370 admin/include/make_db_maps.php:411
-#: admin/include/make_db_maps.php:431 admin/include/prefix_editor.php:40
+#: admin/include/editor.php:2278 admin/include/editor.php:2505
+#: admin/include/editor.php:2927 admin/include/editor.php:3318
+#: admin/include/editor.php:3524 admin/include/editor.php:3780
+#: admin/include/editor.php:3977 admin/include/editor_sources.php:310
+#: admin/include/language_editor.php:285 admin/include/make_db_maps.php:294
+#: admin/include/make_db_maps.php:389 admin/include/make_db_maps.php:398
+#: admin/include/make_db_maps.php:583 admin/include/prefix_editor.php:40
 #: admin/include/trees_cls.php:1333
 msgid "Save"
 msgstr "Salve"
@@ -535,9 +536,9 @@ msgid "Remove menu"
 msgstr "Elimine il menu"
 
 #: admin/include/cms_pages.php:475 admin/include/editor.php:1609
-#: admin/include/editor.php:2274 admin/include/editor.php:3302
-#: admin/include/editor.php:3508 admin/include/editor.php:3764
-#: admin/include/editor.php:4289 admin/include/editor.php:4502
+#: admin/include/editor.php:2281 admin/include/editor.php:3315
+#: admin/include/editor.php:3521 admin/include/editor.php:3777
+#: admin/include/editor.php:4303 admin/include/editor.php:4532
 #: admin/include/editor_event_cls.php:350 admin/include/editor_event_cls.php:368
 #: admin/include/editor_event_cls.php:386 admin/include/editor_event_cls.php:403
 #: admin/include/editor_event_cls.php:419 admin/include/editor_event_cls.php:435
@@ -545,9 +546,9 @@ msgstr "Elimine il menu"
 #: admin/include/editor_event_cls.php:474 admin/include/editor_event_cls.php:487
 #: admin/include/editor_event_cls.php:525 admin/include/editor_event_cls.php:554
 #: admin/include/editor_event_cls.php:557 admin/include/editor_event_cls.php:751
-#: admin/include/editor_event_cls.php:764 admin/include/editor_sources.php:506
-#: admin/include/log.php:184 admin/include/settings_admin.php:974
-#: admin/include/settings_admin.php:1107 admin/include/users.php:222
+#: admin/include/editor_event_cls.php:764 admin/include/editor_sources.php:523
+#: admin/include/log.php:184 admin/include/settings_admin.php:988
+#: admin/include/settings_admin.php:1121 admin/include/users.php:222
 msgid "Add"
 msgstr "Zonte"
 
@@ -558,17 +559,14 @@ msgstr "Zonte"
 #: admin/include/groups.php:460 admin/include/groups.php:498
 #: admin/include/groups.php:585 admin/include/groups.php:628
 #: admin/include/groups.php:704 admin/include/log.php:172
-#: admin/include/make_db_maps.php:305 admin/include/make_db_maps.php:322
-#: admin/include/make_db_maps.php:346 admin/include/make_db_maps.php:380
-#: admin/include/make_db_maps.php:397 admin/include/make_db_maps.php:421
-#: admin/include/make_db_maps.php:1011 admin/include/settings_admin.php:221
+#: admin/include/make_db_maps.php:1175 admin/include/settings_admin.php:221
 #: admin/include/settings_admin.php:292 admin/include/settings_admin.php:317
 #: admin/include/settings_admin.php:381 admin/include/settings_admin.php:459
-#: admin/include/settings_admin.php:607 admin/include/settings_admin.php:624
-#: admin/include/settings_admin.php:636 admin/include/settings_admin.php:650
-#: admin/include/settings_admin.php:663 admin/include/settings_admin.php:769
-#: admin/include/settings_admin.php:1070 admin/include/settings_admin.php:1133
-#: admin/include/settings_admin.php:1206 admin/include/thumbs.php:182
+#: admin/include/settings_admin.php:608 admin/include/settings_admin.php:625
+#: admin/include/settings_admin.php:637 admin/include/settings_admin.php:651
+#: admin/include/settings_admin.php:664 admin/include/settings_admin.php:770
+#: admin/include/settings_admin.php:1084 admin/include/settings_admin.php:1147
+#: admin/include/settings_admin.php:1220 admin/include/thumbs.php:182
 #: admin/include/trees_cls.php:273 admin/include/trees_cls.php:358
 #: admin/include/trees_cls.php:361 admin/include/users.php:116
 #: user_settings.php:129
@@ -616,13 +614,13 @@ msgid "Set per language"
 msgstr "Set pa lenghe"
 
 #: admin/include/editor.php:251 admin/include/editor_user_settings.php:61
-#: admin/include/groups.php:628 admin/include/make_db_maps.php:584
+#: admin/include/groups.php:628 admin/include/make_db_maps.php:737
 #: admin/include/trees.php:316 help.php:48 help.php:51 help.php:54 help.php:57
 #: list.php:1963 menu.php:31 menu.php:434 statistics.php:53
 msgid "Family tree"
 msgstr "Arbui gjenealogjics"
 
-#: admin/include/editor.php:255 maps.php:39 menu.php:34
+#: admin/include/editor.php:255 maps.php:45 menu.php:34
 msgid "Select a family tree:"
 msgstr "Sielz un Arbul Gjenealogjic:"
 
@@ -631,23 +629,23 @@ msgid "Favourites list"
 msgstr "Liste das preferencis"
 
 #: admin/include/editor.php:439 admin/include/tree_check.php:76
-#: admin/include/tree_check.php:91 header.php:263 help.php:78 menu.php:652
+#: admin/include/tree_check.php:91 header.php:263 help.php:78 menu.php:653
 msgid "Latest changes"
 msgstr "Ultims cambiaments"
 
-#: admin/include/editor.php:450 admin/include/editor.php:2254
-#: admin/include/editor.php:2901
+#: admin/include/editor.php:450 admin/include/editor.php:2261
+#: admin/include/editor.php:2914
 msgid "Added by"
 msgstr "Zontât da"
 
-#: admin/include/editor.php:451 admin/include/editor.php:2259
-#: admin/include/editor.php:2906
+#: admin/include/editor.php:451 admin/include/editor.php:2266
+#: admin/include/editor.php:2919
 msgid "Changed by"
 msgstr "Modificât da"
 
 #: admin/include/editor.php:470 admin/include/editor.php:701
 #: admin/include/gedcom_export.php:128 admin/include/tree_check.php:802
-#: admin/include/trees_cls.php:875 family.php:2105 relations.php:3116
+#: admin/include/trees_cls.php:875 family.php:2162 relations.php:3116
 msgid "Person"
 msgstr "Persone"
 
@@ -657,8 +655,8 @@ msgstr "Persone"
 #: admin/include/editor_person_select.php:83
 #: admin/include/editor_relation_select.php:24
 #: admin/include/gedcom_export.php:129 admin/include/gedcom_export.php:274
-#: admin/include/gedcom_export.php:278 birthday_list.php:137 family.php:2041
-#: family.php:2107 include/mainindex_cls.php:578 include/mainindex_cls.php:916
+#: admin/include/gedcom_export.php:278 birthday_list.php:137 family.php:2098
+#: family.php:2164 include/mainindex_cls.php:585 include/mainindex_cls.php:923
 #: list.php:1960 list_names.php:315 list_names.php:317 mailform.php:28
 #: mailform.php:110 menu.php:89 register.php:62 register.php:124
 #: relations.php:3109 user_settings.php:53
@@ -682,8 +680,8 @@ msgid "or ID:"
 msgstr "o ID:"
 
 #: admin/include/editor.php:615 admin/include/editor.php:1550
-#: admin/include/editor.php:2391 admin/include/editor.php:3042
-#: admin/include/editor.php:4076
+#: admin/include/editor.php:2398 admin/include/editor.php:3055
+#: admin/include/editor.php:4090
 msgid "GEDCOM number (ID)"
 msgstr "Numar GEDCOM (ID)"
 
@@ -691,11 +689,11 @@ msgstr "Numar GEDCOM (ID)"
 msgid "Add person"
 msgstr "Zonte une persone"
 
-#: admin/include/editor.php:640 admin/include/editor.php:1757
+#: admin/include/editor.php:640 admin/include/editor.php:1758
 msgid "Examples of date entries:"
 msgstr "Esempli di inseriment da date:"
 
-#: admin/include/editor.php:641 admin/include/editor.php:1758
+#: admin/include/editor.php:641 admin/include/editor.php:1759
 msgid ""
 "13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, "
 "between 1986 and 1987, 13 oct 1100 BC."
@@ -719,7 +717,7 @@ msgstr "= fai clic par vierzi la schermade popup selezionde."
 msgid "= click to open extended editor items."
 msgstr "= fai clic par vierzi ducj i elements dal editor slargjât."
 
-#: admin/include/editor.php:717 admin/include/editor.php:2334
+#: admin/include/editor.php:717 admin/include/editor.php:2341
 #: admin/include/statistics.php:38 admin/include/statistics.php:41
 #: admin/include/statistics.php:771 admin/include/statistics.php:774
 #: list_places_families.php:561
@@ -730,12 +728,12 @@ msgstr "Famee"
 msgid "Browse"
 msgstr "Viôt"
 
-#: admin/include/editor.php:857 admin/include/editor.php:2506
-#: admin/include/editor.php:2630 include/marriage_cls.php:614
+#: admin/include/editor.php:857 admin/include/editor.php:2513
+#: admin/include/editor.php:2639 include/marriage_cls.php:614
 msgid "marriage/ relation"
 msgstr "matrimoni"
 
-#: admin/include/editor.php:863 admin/include/editor.php:2678
+#: admin/include/editor.php:863 admin/include/editor.php:2687
 #: include/marriage_cls.php:280 include/marriage_cls.php:281
 #: include/marriage_cls.php:282 include/marriage_cls.php:289
 #: include/marriage_cls.php:290
@@ -754,8 +752,8 @@ msgstr "Sposât/ade"
 msgid " to: "
 msgstr " cun: "
 
-#: admin/include/editor.php:897 admin/include/trees_cls.php:1658 family.php:1295
-#: family.php:1314
+#: admin/include/editor.php:897 admin/include/trees_cls.php:1658 family.php:1296
+#: family.php:1315
 msgid "Children"
 msgstr "Fîs"
 
@@ -766,7 +764,7 @@ msgstr "Gjenitôrs"
 
 # Nomen Nescio: unknown name.
 #: admin/include/editor.php:920 admin/include/editor.php:926
-#: admin/include/editor.php:4239 admin/include/editor_cls.php:254
+#: admin/include/editor.php:4253 admin/include/editor_cls.php:254
 #: admin/include/editor_event_cls.php:1100
 #: admin/include/editor_event_cls.php:1109 admin/include/statistics.php:780
 #: admin/include/statistics.php:792 include/person_cls.php:709
@@ -787,8 +785,8 @@ msgid "N.N."
 msgstr "N.N."
 
 #: admin/include/editor.php:922 admin/include/editor.php:1463
-#: admin/include/editor.php:2352 admin/include/editor.php:2496
-#: admin/include/editor.php:2530 admin/include/editor_event_cls.php:1102
+#: admin/include/editor.php:2359 admin/include/editor.php:2503
+#: admin/include/editor.php:2537 admin/include/editor_event_cls.php:1102
 #: admin/include/editor_relation_select.php:107
 #: admin/include/tree_check.php:1481 include/language_date.php:88
 #: include/language_date.php:93 include/language_date.php:98
@@ -814,8 +812,8 @@ msgstr "No son indicâts i gjenitôrs."
 msgid "Editing in %s? <b>Always backup your data!</b>"
 msgstr "Modifiche cun %s? <b>Prin met simpri in salf i tiei datos! </b>"
 
-#: admin/include/editor.php:980 admin/include/editor.php:3318
-#: admin/include/editor.php:3778
+#: admin/include/editor.php:980 admin/include/editor.php:3331
+#: admin/include/editor.php:3791
 msgid "Preview"
 msgstr "Anteprime"
 
@@ -861,56 +859,56 @@ msgstr "Mâri"
 
 #: admin/include/editor.php:1479 admin/include/editor.php:1480
 #: admin/include/editor.php:1481 admin/include/editor.php:1618
-#: admin/include/editor.php:1623 admin/include/editor.php:4143 list.php:1973
+#: admin/include/editor.php:1623 admin/include/editor.php:4157 list.php:1973
 msgid "firstname"
 msgstr "non"
 
 #: admin/include/editor.php:1485 admin/include/editor.php:1486
 #: admin/include/editor.php:1498 admin/include/editor.php:1618
-#: admin/include/editor.php:1626 admin/include/editor.php:4146 list.php:1539
+#: admin/include/editor.php:1626 admin/include/editor.php:4160 list.php:1539
 msgid "prefix"
 msgstr "prefis"
 
 #: admin/include/editor.php:1495 admin/include/editor.php:1626
-#: admin/include/editor.php:4155
+#: admin/include/editor.php:4169
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr "Par esempli: dell' oppure: De_ (dopre _ come spazi)"
 
 #: admin/include/editor.php:1513 admin/include/editor.php:1514
 #: admin/include/editor.php:1515 admin/include/editor.php:1618
-#: admin/include/editor.php:1629 admin/include/editor.php:4160 list.php:1979
+#: admin/include/editor.php:1629 admin/include/editor.php:4174 list.php:1979
 msgid "lastname"
 msgstr "cognon"
 
-#: admin/include/editor.php:1519 admin/include/editor.php:1699
-#: admin/include/editor.php:4163 admin/include/groups.php:498
+#: admin/include/editor.php:1519 admin/include/editor.php:1700
+#: admin/include/editor.php:4177 admin/include/groups.php:498
 msgid "Privacy filter"
 msgstr "Filtri da privacy"
 
 #: admin/include/editor.php:1520 admin/include/editor.php:1523
-#: admin/include/editor.php:1703 admin/include/editor.php:4164
+#: admin/include/editor.php:1704 admin/include/editor.php:4178
 #: admin/include/trees_cls.php:1632
 msgid "alive"
 msgstr "vivent"
 
 #: admin/include/editor.php:1521 admin/include/editor.php:1524
-#: admin/include/editor.php:1706 admin/include/editor.php:4165
+#: admin/include/editor.php:1707 admin/include/editor.php:4179
 msgid "deceased"
 msgstr "muart"
 
-#: admin/include/editor.php:1527 admin/include/editor.php:1724
-#: admin/include/editor.php:4168 admin/include/editor_sources.php:60
+#: admin/include/editor.php:1527 admin/include/editor.php:1725
+#: admin/include/editor.php:4182 admin/include/editor_sources.php:60
 msgid "Sex"
 msgstr "Ses"
 
 #: admin/include/editor.php:1530 admin/include/editor.php:1538
-#: admin/include/editor.php:1726 admin/include/editor.php:4170
+#: admin/include/editor.php:1727 admin/include/editor.php:4184
 #: report_ancestor.php:1503
 msgid "male"
 msgstr "mascjo"
 
 #: admin/include/editor.php:1532 admin/include/editor.php:1540
-#: admin/include/editor.php:1728 admin/include/editor.php:4172
+#: admin/include/editor.php:1729 admin/include/editor.php:4186
 #: report_ancestor.php:1500
 msgid "female"
 msgstr "femine"
@@ -921,18 +919,18 @@ msgstr "O pûr sielz una Famee benzà presint tant che Gjenitôrs:"
 
 # Buried
 #: admin/include/editor.php:1569 admin/include/editor.php:1615
-#: admin/include/editor.php:1742 admin/include/editor.php:1814
-#: admin/include/editor.php:1860 admin/include/editor.php:1904
-#: admin/include/editor.php:1948 admin/include/editor.php:2047
-#: admin/include/editor.php:2202 admin/include/editor.php:2228
-#: admin/include/editor.php:2483 admin/include/editor.php:2565
-#: admin/include/editor.php:2602 admin/include/editor.php:2628
-#: admin/include/editor.php:2732 admin/include/editor.php:2759
-#: admin/include/editor.php:2794 admin/include/editor.php:2884 family.php:2101
+#: admin/include/editor.php:1743 admin/include/editor.php:1816
+#: admin/include/editor.php:1863 admin/include/editor.php:1908
+#: admin/include/editor.php:1953 admin/include/editor.php:2053
+#: admin/include/editor.php:2209 admin/include/editor.php:2235
+#: admin/include/editor.php:2490 admin/include/editor.php:2572
+#: admin/include/editor.php:2610 admin/include/editor.php:2637
+#: admin/include/editor.php:2742 admin/include/editor.php:2770
+#: admin/include/editor.php:2806 admin/include/editor.php:2897 family.php:2158
 msgid "[+]"
 msgstr "[+]"
 
-#: admin/include/editor.php:1569 admin/include/editor.php:2483
+#: admin/include/editor.php:1569 admin/include/editor.php:2490
 #: admin/include/gedcom_export.php:209 list.php:1663 list.php:1759
 #: list_names.php:227 statistics.php:748 statistics.php:931
 msgid "All"
@@ -955,70 +953,70 @@ msgstr "patronimic"
 msgid "For example: Joseph ben Hirsch Zvi"
 msgstr "Par esempli: Joseph ben Hirsch Zvi"
 
-#: admin/include/editor.php:1669 admin/include/editor.php:1801
-#: admin/include/editor.php:1850 admin/include/editor.php:1896
-#: admin/include/editor.php:1937 admin/include/editor.php:2039
-#: admin/include/editor.php:2100 admin/include/editor.php:2596
-#: admin/include/editor.php:2623 admin/include/editor.php:2724
-#: admin/include/editor.php:2754 admin/include/editor.php:2781
-#: admin/include/editor.php:2834 admin/include/editor.php:3295
-#: admin/include/editor.php:3500 admin/include/editor.php:3760
-#: admin/include/editor.php:4375 admin/include/editor_event_cls.php:1286
+#: admin/include/editor.php:1670 admin/include/editor.php:1802
+#: admin/include/editor.php:1852 admin/include/editor.php:1899
+#: admin/include/editor.php:1941 admin/include/editor.php:2045
+#: admin/include/editor.php:2106 admin/include/editor.php:2604
+#: admin/include/editor.php:2632 admin/include/editor.php:2734
+#: admin/include/editor.php:2765 admin/include/editor.php:2793
+#: admin/include/editor.php:2847 admin/include/editor.php:3308
+#: admin/include/editor.php:3513 admin/include/editor.php:3773
+#: admin/include/editor.php:4396 admin/include/editor_event_cls.php:1286
 #: admin/include/editor_event_cls.php:1349 admin/include/editor_sources.php:90
-#: admin/include/editor_sources.php:144 admin/include/gedcom.php:1544
+#: admin/include/editor_sources.php:149 admin/include/gedcom.php:1544
 msgid "text"
 msgstr "test"
 
-#: admin/include/editor.php:1743 admin/include/editor.php:4186
-#: admin/include/editor_sources.php:66 birthday_list.php:136 family.php:1947
-#: googlemaps/namesearch.php:191 include/mainindex_cls.php:857
-#: include/mainindex_cls.php:860 include/person_cls.php:1808
+#: admin/include/editor.php:1744 admin/include/editor.php:4200
+#: admin/include/editor_sources.php:66 birthday_list.php:136 family.php:2004
+#: googlemaps/namesearch.php:198 include/mainindex_cls.php:864
+#: include/mainindex_cls.php:867 include/person_cls.php:1808
 #: include/person_cls.php:1810 include/person_cls.php:1815
 #: include/person_cls.php:1818 list.php:1596 list.php:1603 list.php:1961
-#: maps.php:627 maps.php:736 report_ancestor.php:1181 report_ancestor.php:1496
+#: maps.php:643 maps.php:752 report_ancestor.php:1181 report_ancestor.php:1496
 #: report_descendant.php:813
 msgid "born"
 msgstr "nassût"
 
-#: admin/include/editor.php:1745 admin/include/editor.php:1832
-#: admin/include/editor.php:1877 admin/include/editor.php:1906
-#: admin/include/editor.php:1950 admin/include/editor.php:2049
-#: admin/include/editor.php:2568 admin/include/editor.php:2604
-#: admin/include/editor.php:2631 admin/include/editor.php:2734
-#: admin/include/editor.php:2761 admin/include/editor.php:2796
-#: admin/include/editor.php:3270 admin/include/editor.php:3494
-#: admin/include/editor.php:4376 admin/include/editor_cls.php:50
+#: admin/include/editor.php:1746 admin/include/editor.php:1834
+#: admin/include/editor.php:1880 admin/include/editor.php:1910
+#: admin/include/editor.php:1955 admin/include/editor.php:2055
+#: admin/include/editor.php:2575 admin/include/editor.php:2612
+#: admin/include/editor.php:2640 admin/include/editor.php:2744
+#: admin/include/editor.php:2772 admin/include/editor.php:2808
+#: admin/include/editor.php:3283 admin/include/editor.php:3507
+#: admin/include/editor.php:4398 admin/include/editor_cls.php:50
 msgid "date"
 msgstr "date"
 
-#: admin/include/editor.php:1763 admin/include/editor.php:1833
-#: admin/include/editor.php:1878 admin/include/editor.php:1906
-#: admin/include/editor.php:1951 admin/include/editor.php:2050
-#: admin/include/editor.php:2568 admin/include/editor.php:2604
-#: admin/include/editor.php:2631 admin/include/editor.php:2734
-#: admin/include/editor.php:2761 admin/include/editor.php:2796
-#: admin/include/editor.php:3270 admin/include/editor.php:3494
-#: admin/include/editor.php:4188 admin/include/editor.php:4194
-#: admin/include/editor.php:4200 admin/include/editor.php:4206
+#: admin/include/editor.php:1764 admin/include/editor.php:1835
+#: admin/include/editor.php:1881 admin/include/editor.php:1910
+#: admin/include/editor.php:1956 admin/include/editor.php:2056
+#: admin/include/editor.php:2575 admin/include/editor.php:2612
+#: admin/include/editor.php:2640 admin/include/editor.php:2744
+#: admin/include/editor.php:2772 admin/include/editor.php:2808
+#: admin/include/editor.php:3283 admin/include/editor.php:3507
+#: admin/include/editor.php:4202 admin/include/editor.php:4208
+#: admin/include/editor.php:4214 admin/include/editor.php:4220
 #: admin/include/editor_event_cls.php:1279
-#: admin/include/editor_event_cls.php:1346 admin/include/editor_sources.php:350
-#: admin/include/editor_sources.php:471
+#: admin/include/editor_event_cls.php:1346 admin/include/editor_sources.php:367
+#: admin/include/editor_sources.php:488
 msgid "place"
 msgstr "lûc"
 
-#: admin/include/editor.php:1789 admin/include/trees_cls.php:1622
+#: admin/include/editor.php:1790 admin/include/trees_cls.php:1622
 msgid "birth time"
 msgstr "ore di nassite"
 
-#: admin/include/editor.php:1792 include/person_cls.php:348
+#: admin/include/editor.php:1793 include/person_cls.php:348
 msgid "stillborn child"
 msgstr "fî nassût muart"
 
-#: admin/include/editor.php:1815 include/language_event.php:16
+#: admin/include/editor.php:1817 include/language_event.php:16
 msgid "Brit Mila"
 msgstr "Brit Mila"
 
-#: admin/include/editor.php:1834 admin/include/editor.php:1879
+#: admin/include/editor.php:1836 admin/include/editor.php:1882
 msgid ""
 "To display this, the option \"Show events\" has to be checked in \"Users -> "
 "Groups\""
@@ -1026,45 +1024,45 @@ msgstr ""
 "Par visualizâlu, si à di selezionâ la opzion \"Mostre eventts\" in \"Utents -"
 "> Grups\""
 
-#: admin/include/editor.php:1861 include/language_event.php:14
+#: admin/include/editor.php:1864 include/language_event.php:14
 msgid "Bat Mitzvah"
 msgstr "Bat Mitzvah"
 
-#: admin/include/editor.php:1862 include/language_event.php:13
+#: admin/include/editor.php:1865 include/language_event.php:13
 msgid "Bar Mitzvah"
 msgstr "Bat Mitzvah"
 
-#: admin/include/editor.php:1905 admin/include/editor.php:4192
-#: admin/include/editor_sources.php:72 family.php:1950
-#: googlemaps/namesearch.php:194 include/mainindex_cls.php:868
-#: include/mainindex_cls.php:871 include/person_cls.php:1895
+#: admin/include/editor.php:1909 admin/include/editor.php:4206
+#: admin/include/editor_sources.php:72 family.php:2007
+#: googlemaps/namesearch.php:201 include/mainindex_cls.php:875
+#: include/mainindex_cls.php:878 include/person_cls.php:1895
 #: include/person_cls.php:1897 include/person_cls.php:1902
 #: include/person_cls.php:1905 list.php:1596 list.php:1603 list.php:1961
-#: maps.php:630 maps.php:739 timelines.php:40
+#: maps.php:646 maps.php:755 timelines.php:40
 msgid "baptised"
 msgstr "batiât"
 
-#: admin/include/editor.php:1926 admin/include/trees_cls.php:1633
+#: admin/include/editor.php:1930 admin/include/trees_cls.php:1633
 #: include/person_cls.php:1849 include/person_cls.php:1851
 msgid "religion"
 msgstr "religjion"
 
-#: admin/include/editor.php:1949 admin/include/editor.php:4198
+#: admin/include/editor.php:1954 admin/include/editor.php:4212
 #: admin/include/editor_sources.php:78 birthday_list.php:138
-#: googlemaps/namesearch.php:200 include/mainindex_cls.php:879
-#: include/mainindex_cls.php:882 include/person_cls.php:2036
+#: googlemaps/namesearch.php:207 include/mainindex_cls.php:886
+#: include/mainindex_cls.php:889 include/person_cls.php:2036
 #: include/person_cls.php:2038 include/person_cls.php:2042
 #: include/person_cls.php:2043 list.php:1628 list.php:1635 list.php:1962
-#: maps.php:633 maps.php:742 report_ancestor.php:1181 report_ancestor.php:1496
+#: maps.php:649 maps.php:758 report_ancestor.php:1181 report_ancestor.php:1496
 msgid "died"
 msgstr "muart"
 
-#: admin/include/editor.php:1955 admin/include/editor.php:2649
-#: admin/include/editor.php:2653
+#: admin/include/editor.php:1960 admin/include/editor.php:2658
+#: admin/include/editor.php:2662
 msgid "Age"
 msgstr "Etât"
 
-#: admin/include/editor.php:1964
+#: admin/include/editor.php:1969
 msgid ""
 "If death year and age are used, then birth year is calculated automatically "
 "(when empty)."
@@ -1072,116 +1070,116 @@ msgstr ""
 "Se si indiche l'etât e l'an di muart, l'an di nassite al ven calcolât "
 "automaticamentri (se a no l'è indicât)."
 
-#: admin/include/editor.php:1983 admin/include/trees_cls.php:1627
+#: admin/include/editor.php:1988 admin/include/trees_cls.php:1627
 msgid "death time"
 msgstr "ore da muart"
 
-#: admin/include/editor.php:1985
+#: admin/include/editor.php:1990
 msgid "cause"
 msgstr "cause"
 
-#: admin/include/editor.php:1991 include/person_cls.php:1973
+#: admin/include/editor.php:1996 include/person_cls.php:1973
 #: include/person_cls.php:2001
 msgid "murdered"
 msgstr "sassinât"
 
-#: admin/include/editor.php:1994 include/person_cls.php:1974
+#: admin/include/editor.php:1999 include/person_cls.php:1974
 msgid "drowned"
 msgstr "neât"
 
-#: admin/include/editor.php:1997 include/person_cls.php:1975
+#: admin/include/editor.php:2002 include/person_cls.php:1975
 msgid "perished"
 msgstr "muart"
 
-#: admin/include/editor.php:2000 include/person_cls.php:1976
+#: admin/include/editor.php:2005 include/person_cls.php:1976
 msgid "killed in action"
 msgstr "copât in azion"
 
-#: admin/include/editor.php:2003 include/person_cls.php:1977
+#: admin/include/editor.php:2008 include/person_cls.php:1977
 msgid "being missed"
 msgstr "al è mancjât"
 
-#: admin/include/editor.php:2006 include/person_cls.php:1978
+#: admin/include/editor.php:2011 include/person_cls.php:1978
 msgid "committed suicide"
 msgstr "si è suicidât"
 
-#: admin/include/editor.php:2009 include/person_cls.php:1979
+#: admin/include/editor.php:2014 include/person_cls.php:1979
 msgid "executed"
 msgstr "justiziât"
 
-#: admin/include/editor.php:2012 include/person_cls.php:1980
+#: admin/include/editor.php:2017 include/person_cls.php:1980
 msgid "died young"
 msgstr "muart zovin"
 
-#: admin/include/editor.php:2015 include/person_cls.php:1981
+#: admin/include/editor.php:2020 include/person_cls.php:1981
 msgid "died unmarried"
 msgstr "muart no maridâde/ât"
 
-#: admin/include/editor.php:2018 include/person_cls.php:1982
+#: admin/include/editor.php:2023 include/person_cls.php:1982
 msgid "registration"
 msgstr "registrazion"
 
-#: admin/include/editor.php:2021 include/person_cls.php:1983
+#: admin/include/editor.php:2026 include/person_cls.php:1983
 msgid "declared death"
 msgstr "muart presumude"
 
-#: admin/include/editor.php:2025 admin/include/editor.php:3206
-#: admin/include/editor.php:3307 admin/include/editor.php:3442
-#: admin/include/editor.php:3513 admin/include/editor.php:3682
-#: admin/include/editor.php:3768 admin/include/editor.php:4082
+#: admin/include/editor.php:2030 admin/include/editor.php:3219
+#: admin/include/editor.php:3320 admin/include/editor.php:3455
+#: admin/include/editor.php:3526 admin/include/editor.php:3695
+#: admin/include/editor.php:3781 admin/include/editor.php:4096
 #: admin/include/index_inc.php:544 admin/include/thumbs.php:616 fanchart.php:766
 #: include/calculate_age_cls.php:218 include/calculate_age_cls.php:244
 #: include/calculate_age_cls.php:333 include/calculate_age_cls.php:359
 msgid "or"
 msgstr "o"
 
-#: admin/include/editor.php:2048
+#: admin/include/editor.php:2054
 msgid "Buried"
 msgstr "Sepulît"
 
-#: admin/include/editor.php:2069
+#: admin/include/editor.php:2075
 msgid "method of burial"
 msgstr "modalitât di sepulture"
 
-#: admin/include/editor.php:2076 admin/include/editor.php:4204
-#: admin/include/editor_sources.php:84 googlemaps/namesearch.php:203
+#: admin/include/editor.php:2082 admin/include/editor.php:4218
+#: admin/include/editor_sources.php:84 googlemaps/namesearch.php:210
 #: include/person_cls.php:2113 list.php:1628 list.php:1635 list.php:1962
-#: maps.php:636 maps.php:745 timelines.php:64
+#: maps.php:652 maps.php:761 timelines.php:64
 msgid "buried"
 msgstr "inumazion"
 
-#: admin/include/editor.php:2079 admin/include/trees_cls.php:1629
+#: admin/include/editor.php:2085 admin/include/trees_cls.php:1629
 #: include/person_cls.php:2101
 msgid "cremation"
 msgstr "cremazion"
 
-#: admin/include/editor.php:2082 include/person_cls.php:2104
+#: admin/include/editor.php:2088 include/person_cls.php:2104
 msgid "resomated"
 msgstr "dissepulît"
 
-#: admin/include/editor.php:2085 include/person_cls.php:2107
+#: admin/include/editor.php:2091 include/person_cls.php:2107
 msgid "sailor's grave"
 msgstr "sepulît in mâr"
 
-#: admin/include/editor.php:2088 include/person_cls.php:2110
+#: admin/include/editor.php:2094 include/person_cls.php:2110
 msgid "donated to science"
 msgstr "donât a la sience"
 
-#: admin/include/editor.php:2110
+#: admin/include/editor.php:2117
 msgid "Text for person"
 msgstr "Test pa persone"
 
-#: admin/include/editor.php:2125 include/show_sources.php:61
+#: admin/include/editor.php:2132 include/show_sources.php:61
 #: include/show_sources.php:162 include/show_sources.php:200
 msgid "Source for person"
 msgstr "Font pa la persone"
 
-#: admin/include/editor.php:2135 admin/include/trees_cls.php:1634
+#: admin/include/editor.php:2142 admin/include/trees_cls.php:1634
 #: include/show_sources.php:224 include/show_sources.php:305
 msgid "own code"
 msgstr "codiç personâl"
 
-#: admin/include/editor.php:2146
+#: admin/include/editor.php:2153
 msgid ""
 "Use own code for your own remarks.<br>\n"
 "It's possible to use own code for special privacy options, see Admin > Users "
@@ -1196,82 +1194,82 @@ msgstr ""
 "l'icona nella cartella delle immagini, ad es. \"person.gif\" e aggiungi "
 "\"persona\" nel proprio campo di codiç."
 
-#: admin/include/editor.php:2204 admin/include/editor.php:2885
+#: admin/include/editor.php:2211 admin/include/editor.php:2898
 msgid "GEDCOM tags"
 msgstr "Tags GEDCOM"
 
-#: admin/include/editor.php:2206 admin/include/editor.php:2209
-#: admin/include/editor.php:2887 admin/include/editor.php:2890
+#: admin/include/editor.php:2213 admin/include/editor.php:2216
+#: admin/include/editor.php:2900 admin/include/editor.php:2903
 #, php-format
 msgid "There are %d unprocessed GEDCOM tags."
 msgstr "A son %d tag GEDCOM no elaborâts."
 
-#: admin/include/editor.php:2229 admin/include/user_notes.php:8
+#: admin/include/editor.php:2236 admin/include/user_notes.php:8
 #: admin/include/user_notes.php:12 admin/include/user_notes.php:87
-#: admin/index.php:1009 family.php:1975
+#: admin/index.php:1018 family.php:2032
 msgid "User notes"
 msgstr "Notis da l'utent"
 
-#: admin/include/editor.php:2231 admin/include/editor.php:2233
+#: admin/include/editor.php:2238 admin/include/editor.php:2240
 #: admin/include/user_notes.php:89 admin/include/user_notes.php:91
-#: family.php:1977 family.php:1979
+#: family.php:2034 family.php:2036
 #, php-format
 msgid "There are %d user added notes."
 msgstr "A son presintis %d notis zontadis da l'utent."
 
-#: admin/include/editor.php:2329
+#: admin/include/editor.php:2336
 msgid "Select family"
 msgstr "Selezione la Famee"
 
-#: admin/include/editor.php:2368 admin/include/editor.php:2395
-#: admin/include/editor.php:4137 admin/include/editor.php:4210
+#: admin/include/editor.php:2375 admin/include/editor.php:2402
+#: admin/include/editor.php:4151 admin/include/editor.php:4224
 msgid "Add relation"
 msgstr "Zonte une relazion"
 
-#: admin/include/editor.php:2368
+#: admin/include/editor.php:2375
 msgid "Add new relation to this person"
 msgstr "Zonte une gnove relazion a cheste persone"
 
-#: admin/include/editor.php:2391
+#: admin/include/editor.php:2398
 msgid "Or add relation with existing person:"
 msgstr "O ben zonte une relazion cun t'une persone za presint:"
 
-#: admin/include/editor.php:2487
+#: admin/include/editor.php:2494
 msgid "Delete relation"
 msgstr "Cancele la relazion"
 
-#: admin/include/editor.php:2510
+#: admin/include/editor.php:2517
 msgid "Select person 1"
 msgstr "Selezione la persone 1"
 
-#: admin/include/editor.php:2537
+#: admin/include/editor.php:2544
 msgid "Select person 2"
 msgstr "Selezione la persone 2"
 
-#: admin/include/editor.php:2567 admin/include/editor.php:2681
-#: admin/include/editor_sources.php:108 include/marriage_cls.php:52
+#: admin/include/editor.php:2574 admin/include/editor.php:2690
+#: admin/include/editor_sources.php:113 include/marriage_cls.php:52
 #: include/marriage_cls.php:132 include/marriage_cls.php:133
 #: include/marriage_cls.php:134 include/person_cls.php:1460
 msgid "Living together"
 msgstr "Coabitazion"
 
-#: admin/include/editor.php:2587
+#: admin/include/editor.php:2594
 msgid "End date"
 msgstr "Date di fin"
 
-#: admin/include/editor.php:2603 admin/include/editor_sources.php:114
+#: admin/include/editor.php:2611 admin/include/editor_sources.php:119
 msgid "Notice of Marriage"
 msgstr "Anunzi di Matrimoni"
 
-#: admin/include/editor.php:2649
+#: admin/include/editor.php:2658
 msgid "Age person 1"
 msgstr "Etât da Persone 1"
 
-#: admin/include/editor.php:2653
+#: admin/include/editor.php:2662
 msgid "Age person 2"
 msgstr "Etât da Persone 2"
 
-#: admin/include/editor.php:2663
+#: admin/include/editor.php:2672
 msgid ""
 "If birth year of man or woman is empty it will be calculated automatically "
 "using age by marriage."
@@ -1279,140 +1277,140 @@ msgstr ""
 "Se l'an di nassite da l'omp o da femine no l'è indicât, al sarà calcolât "
 "automaticamentri doprant l'etât al matrimoni."
 
-#: admin/include/editor.php:2672
+#: admin/include/editor.php:2681
 msgid "Relation Type"
 msgstr "Tipo di relazion"
 
-#: admin/include/editor.php:2675
+#: admin/include/editor.php:2684
 msgid "Marriage/ Related"
 msgstr "Coniugâts"
 
-#: admin/include/editor.php:2684 include/marriage_cls.php:55
+#: admin/include/editor.php:2693 include/marriage_cls.php:55
 #: include/person_cls.php:1461
 msgid "Living apart together"
 msgstr "Vivi separâts ta stesse cjase"
 
-#: admin/include/editor.php:2687 include/marriage_cls.php:58
+#: admin/include/editor.php:2696 include/marriage_cls.php:58
 #: include/person_cls.php:1462
 msgid "Intentionally unmarried mother"
 msgstr "Mâri volutamentri no sposade"
 
-#: admin/include/editor.php:2690 include/marriage_cls.php:62
+#: admin/include/editor.php:2699 include/marriage_cls.php:62
 #: include/person_cls.php:1463
 msgid "Homosexual"
 msgstr "Omosessual"
 
-#: admin/include/editor.php:2693
+#: admin/include/editor.php:2702
 msgid "Non_marital"
 msgstr "Relazion_no_coniugâl"
 
-#: admin/include/editor.php:2696 include/marriage_cls.php:69
+#: admin/include/editor.php:2705 include/marriage_cls.php:69
 #: include/marriage_cls.php:75 include/person_cls.php:1465
 #: include/person_cls.php:1466
 msgid "Extramarital"
 msgstr "Extraconiugâl"
 
-#: admin/include/editor.php:2699 include/marriage_cls.php:81
+#: admin/include/editor.php:2708 include/marriage_cls.php:81
 #: include/person_cls.php:1467
 msgid "Partner"
 msgstr "Compagn"
 
-#: admin/include/editor.php:2702 include/marriage_cls.php:84
+#: admin/include/editor.php:2711 include/marriage_cls.php:84
 #: include/person_cls.php:1468
 msgid "Registered"
 msgstr "Regjistrât"
 
-#: admin/include/editor.php:2705 include/marriage_cls.php:87
+#: admin/include/editor.php:2714 include/marriage_cls.php:87
 #: include/person_cls.php:1469
 msgid "Unknown relation"
 msgstr "Relazion scognossude"
 
-#: admin/include/editor.php:2715 admin/include/editor.php:2824
+#: admin/include/editor.php:2724 admin/include/editor.php:2836
 msgid "Registrar"
 msgstr "Regjstrât"
 
-#: admin/include/editor.php:2733 admin/include/editor_sources.php:126
+#: admin/include/editor.php:2743 admin/include/editor_sources.php:131
 msgid "Religious Notice of Marriage"
 msgstr "Pubblicazion di matrimoni religjiôs"
 
-#: admin/include/editor.php:2760 admin/include/editor_sources.php:132
+#: admin/include/editor.php:2771 admin/include/editor_sources.php:137
 msgid "Religious Marriage"
 msgstr "Matrimoni religjiôs"
 
-#: admin/include/editor.php:2790
+#: admin/include/editor.php:2802
 msgid "Religion"
 msgstr "Religjion"
 
-#: admin/include/editor.php:2795 admin/include/editor_sources.php:138
+#: admin/include/editor.php:2807 admin/include/editor_sources.php:143
 msgid "Divorce"
 msgstr "Divorzi"
 
-#: admin/include/editor.php:2815
+#: admin/include/editor.php:2827
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr ""
 "Divorzi (doprâ cheste casele di control pal divorzi cence altris notizis)."
 
-#: admin/include/editor.php:2839
+#: admin/include/editor.php:2852
 msgid "Text by marriage"
 msgstr "Test pal matrimoni"
 
-#: admin/include/editor.php:2855
+#: admin/include/editor.php:2868
 msgid "Source by marriage"
 msgstr "Font pal matrimoni"
 
-#: admin/include/editor.php:2995
+#: admin/include/editor.php:3008
 msgid "Use this icon to order children (drag and drop)"
 msgstr "Dopre chest boton par meti in ordin i fîs (strissine e mole)"
 
-#: admin/include/editor.php:2998
+#: admin/include/editor.php:3011
 msgid "Or automatically order children:"
 msgstr "O pûr ordenâ automaticamentri i fîs:"
 
-#: admin/include/editor.php:2998
+#: admin/include/editor.php:3011
 msgid "Automatic order children"
 msgstr "Ordene automaticamentri i fîs"
 
-#: admin/include/editor.php:3000
+#: admin/include/editor.php:3013
 msgid "Children are re-ordered."
 msgstr "I fîs a son stâs reordinâts."
 
-#: admin/include/editor.php:3015
+#: admin/include/editor.php:3028
 msgid "Drag to change order (saves automatically)"
 msgstr "Strissine par cambiâ ordin (salve automaticamentri)"
 
-#: admin/include/editor.php:3015
+#: admin/include/editor.php:3028
 msgid "Drag to change order"
 msgstr "Strissine par cambiâ ordin"
 
-#: admin/include/editor.php:3019
+#: admin/include/editor.php:3032
 msgid "Disconnect child"
 msgstr "Discoleghe il fî"
 
-#: admin/include/editor.php:3042
+#: admin/include/editor.php:3055
 msgid "Or add existing person as a child:"
 msgstr "O pûr zonte une persone za presint come fî:"
 
-#: admin/include/editor.php:3045
+#: admin/include/editor.php:3058
 msgid "Select child"
 msgstr "Selezione fî"
 
-#: admin/include/editor.php:3102
+#: admin/include/editor.php:3115
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr ""
 "Sestu sugûr di volè eliminâ cheste font e ducj i riferiments su la origjine?"
 
-#: admin/include/editor.php:3145
+#: admin/include/editor.php:3158
 msgid "Source is removed!"
 msgstr "La font a je eliminade!"
 
-#: admin/include/editor.php:3150 admin/include/groups.php:431
-#: admin/include/trees_cls.php:1869 admin/index.php:1054 family.php:136
-#: family.php:2132 header.php:256 help.php:60 include/show_sources.php:260
+#: admin/include/editor.php:3163 admin/include/groups.php:431
+#: admin/include/trees_cls.php:1869 admin/index.php:1063 family.php:136
+#: family.php:2189 header.php:256 help.php:60 include/show_sources.php:260
 #: menu.php:517 report_ancestor.php:1515 source.php:37
 msgid "Sources"
 msgstr "Font"
 
-#: admin/include/editor.php:3151
+#: admin/include/editor.php:3164
 msgid ""
 "These sources can be connected to multiple persons, families, events and "
 "other items."
@@ -1420,122 +1418,121 @@ msgstr ""
 "Chestis fonts a puedin jessi collegadis a plui personis, fameis, events e "
 "altris elements."
 
-#: admin/include/editor.php:3171 admin/include/editor.php:3173
+#: admin/include/editor.php:3184 admin/include/editor.php:3186
 msgid "Select source"
 msgstr "Selezione la font"
 
-#: admin/include/editor.php:3200 admin/include/editor.php:3263
+#: admin/include/editor.php:3213 admin/include/editor.php:3276
 msgid "restricted"
 msgstr "riservât"
 
-#: admin/include/editor.php:3208 admin/include/editor_sources.php:531
+#: admin/include/editor.php:3221 admin/include/editor_sources.php:548
 msgid "Add source"
 msgstr "Zonte une Font"
 
-#: admin/include/editor.php:3231 source.php:43 source.php:46
+#: admin/include/editor.php:3244 source.php:43 source.php:46
 msgid "No valid source number."
 msgstr "Numar da font invalit."
 
-#: admin/include/editor.php:3255 admin/include/editor.php:3486
-#: admin/include/editor.php:3730
+#: admin/include/editor.php:3268 admin/include/editor.php:3499
+#: admin/include/editor.php:3743
 msgid "Option"
 msgstr "Opzion"
 
-#: admin/include/editor.php:3255 admin/include/editor.php:3486
-#: admin/include/editor.php:3730
+#: admin/include/editor.php:3268 admin/include/editor.php:3499
+#: admin/include/editor.php:3743
 msgid "Value"
 msgstr "Valôr"
 
-#: admin/include/editor.php:3257
+#: admin/include/editor.php:3270
 msgid "Status:"
 msgstr "Condizion:"
 
-#: admin/include/editor.php:3260
+#: admin/include/editor.php:3273
 msgid "publish"
 msgstr "public"
 
-#: admin/include/editor.php:3264
+#: admin/include/editor.php:3277
 msgid "restricted = only visible for selected user groups"
 msgstr "aree riservade = visibil dome par grups di utents autorizzâs"
 
-#: admin/include/editor.php:3267 admin/include/editor.php:3488
+#: admin/include/editor.php:3280 admin/include/editor.php:3501
 #: admin/include/editor_event_cls.php:27 admin/include/editor_event_cls.php:414
-#: admin/include/editor_event_cls.php:418 admin/include/editor_sources.php:301
-#: admin/include/editor_sources.php:345 admin/include/trees_cls.php:1787
+#: admin/include/editor_event_cls.php:418 admin/include/editor_sources.php:318
+#: admin/include/editor_sources.php:362 admin/include/trees_cls.php:1787
 #: source.php:51 source.php:56 source.php:229 sources.php:156
 msgid "Title"
 msgstr "Titul"
 
-#: admin/include/editor.php:3269 source.php:144 source.php:149
+#: admin/include/editor.php:3282 source.php:144 source.php:149
 msgid "Subject"
 msgstr "Sogjet"
 
-#: admin/include/editor.php:3272 source.php:227
+#: admin/include/editor.php:3285 source.php:227
 msgid "Repository"
 msgstr "Repository"
 
-#: admin/include/editor.php:3285
+#: admin/include/editor.php:3298
 msgid "Add repositories"
 msgstr "Zonte un repository"
 
-#: admin/include/editor.php:3288 source.php:87 source.php:105
+#: admin/include/editor.php:3301 source.php:87 source.php:105
 msgid "Publication"
 msgstr "Publicazion"
 
-#: admin/include/editor.php:3288
+#: admin/include/editor.php:3301
 msgid "will be shown as a link."
 msgstr "al sarà mostrât come un link."
 
-#: admin/include/editor.php:3289 admin/include/editor_sources.php:322
-#: admin/include/settings_admin.php:1069 include/person_cls.php:1717
+#: admin/include/editor.php:3302 admin/include/editor_sources.php:339
+#: admin/include/settings_admin.php:1083 include/person_cls.php:1717
 #: include/person_cls.php:1719 include/person_cls.php:1722
 #: include/person_cls.php:1725 list.php:1614 list.php:1622 source.php:122
 #: source.php:127
 msgid "Own code"
 msgstr "Codiç proprietari"
 
-#: admin/include/editor.php:3290 source.php:133 source.php:138
+#: admin/include/editor.php:3303 source.php:133 source.php:138
 msgid "Author"
 msgstr "Autôr"
 
-#: admin/include/editor.php:3291 source.php:155 source.php:160
+#: admin/include/editor.php:3304 source.php:155 source.php:160
 msgid "Nr."
 msgstr "Nr."
 
-#: admin/include/editor.php:3292 source.php:166 source.php:171
+#: admin/include/editor.php:3305 source.php:166 source.php:171
 msgid "Kind"
 msgstr "Tipologje"
 
-#: admin/include/editor.php:3293 source.php:177 source.php:182
+#: admin/include/editor.php:3306 source.php:177 source.php:182
 msgid "Archive"
 msgstr "Archivi"
 
-#: admin/include/editor.php:3294 admin/include/editor_sources.php:440
+#: admin/include/editor.php:3307 admin/include/editor_sources.php:457
 #: list.php:1832 list_names.php:248 list_places_families.php:446
-#: photoalbum.php:271 source.php:187 source.php:192 sources.php:97
+#: photoalbum.php:273 source.php:187 source.php:192 sources.php:97
 msgid "Page"
 msgstr "Pagjine"
 
-#: admin/include/editor.php:3308 admin/include/editor.php:3514
-#: admin/include/editor.php:3769 admin/include/make_db_maps.php:325
-#: admin/include/make_db_maps.php:349 admin/include/make_db_maps.php:400
-#: admin/include/make_db_maps.php:424
+#: admin/include/editor.php:3321 admin/include/editor.php:3527
+#: admin/include/editor.php:3782 admin/include/make_db_maps.php:392
+#: admin/include/make_db_maps.php:401 admin/include/make_db_maps.php:586
 msgid "Delete"
 msgstr "Cancele"
 
-#: admin/include/editor.php:3386
+#: admin/include/editor.php:3399
 msgid "Really remove repository with all repository links?"
 msgstr "Ustu propri eliminâ il repository cun ducj i link dal archivi?"
 
-#: admin/include/editor.php:3412
+#: admin/include/editor.php:3425
 msgid "Repository is removed!"
 msgstr "Il repository al è eliminât!"
 
-#: admin/include/editor.php:3419 admin/index.php:1058
+#: admin/include/editor.php:3432 admin/index.php:1067
 msgid "Repositories"
 msgstr "Repository"
 
-#: admin/include/editor.php:3420
+#: admin/include/editor.php:3433
 msgid ""
 "A repository can be connected to a source. Edit a source to connect a "
 "repository."
@@ -1543,38 +1540,38 @@ msgstr ""
 "Un archivi al pues jessi collegât a une font. Segnalâ une font par collegâ un "
 "repository."
 
-#: admin/include/editor.php:3429 admin/include/editor.php:3431
+#: admin/include/editor.php:3442 admin/include/editor.php:3444
 msgid "Select repository"
 msgstr "Selezione il repository"
 
-#: admin/include/editor.php:3443
+#: admin/include/editor.php:3456
 msgid "Add repository"
 msgstr "Zonte il repository"
 
-#: admin/include/editor.php:3459
+#: admin/include/editor.php:3472
 msgid "No valid repository number."
 msgstr "Numar di repository invalit."
 
-#: admin/include/editor.php:3503 admin/include/gedcom_export.php:288
+#: admin/include/editor.php:3516 admin/include/gedcom_export.php:288
 #: admin/include/gedcom_export.php:291 mailform.php:29 register.php:63
 #: user_settings.php:54
 msgid "E-mail"
 msgstr "E-mail"
 
-#: admin/include/editor.php:3505 admin/include/editor_event_cls.php:30
+#: admin/include/editor.php:3518 admin/include/editor_event_cls.php:30
 #: admin/include/editor_event_cls.php:258
 msgid "URL/ Internet link"
 msgstr "Link internet/ URL/"
 
-#: admin/include/editor.php:3590
+#: admin/include/editor.php:3603
 msgid "Are you sure you want to remove this address and ALL address references?"
 msgstr "Sestu sigûr di volè eliminâ chest indiriz e ducj i indiriz riferenziâs?"
 
-#: admin/include/editor.php:3643
+#: admin/include/editor.php:3656
 msgid "Address has been removed!"
 msgstr "L'indiriz al è stât eliminât!"
 
-#: admin/include/editor.php:3652
+#: admin/include/editor.php:3665
 msgid ""
 "These addresses can be connected to multiple persons, families and other "
 "items."
@@ -1582,94 +1579,100 @@ msgstr ""
 "Chescj indiriz a puedin sei collegats a plui personis, fameis e altris "
 "elements."
 
-#: admin/include/editor.php:3664 admin/include/editor.php:3666
-#: admin/include/editor.php:4467
+#: admin/include/editor.php:3677 admin/include/editor.php:3679
+#: admin/include/editor.php:4497
 msgid "Select address"
 msgstr "Selezione l'indiriz"
 
-#: admin/include/editor.php:3683
+#: admin/include/editor.php:3696
 msgid "Add address"
 msgstr "Zonte l'indiriz"
 
-#: admin/include/editor.php:3705
+#: admin/include/editor.php:3718
 msgid "No valid address number."
 msgstr "Numar di indiriz invelid."
 
-#: admin/include/editor.php:3746 admin/include/editor.php:3755
-#: admin/include/editor.php:4041 admin/include/editor_sources.php:90
-#: admin/include/editor_sources.php:171 admin/include/editor_sources.php:179
+#: admin/include/editor.php:3759 admin/include/editor.php:3768
+#: admin/include/editor.php:4054 admin/include/editor_sources.php:90
+#: admin/include/editor_sources.php:188 admin/include/editor_sources.php:196
 #: include/show_sources.php:106 include/show_sources.php:196
 #: include/show_sources.php:285
 msgid "source"
 msgstr "font"
 
-#: admin/include/editor.php:3794 admin/index.php:1066
+#: admin/include/editor.php:3807 admin/index.php:1075
 msgid "Rename places"
 msgstr "Torne a nomenâ i lûcs"
 
-#: admin/include/editor.php:3923 header.php:254 help.php:54 list.php:1959
+#: admin/include/editor.php:3936 header.php:254 help.php:54 list.php:1959
 #: list_places_families.php:560
 msgid "Places"
 msgstr "Lûcs"
 
-#: admin/include/editor.php:3924
+#: admin/include/editor.php:3937
 msgid "Select location"
 msgstr "Selezione il pais"
 
-#: admin/include/editor.php:3939
+#: admin/include/editor.php:3952
 msgid "Person places"
 msgstr "Lûcs pa la persone"
 
-#: admin/include/editor.php:3941
+#: admin/include/editor.php:3954
 msgid "Family places"
 msgstr "Lûcs pa la famee"
 
-#: admin/include/editor.php:3943
+#: admin/include/editor.php:3956
 msgid "Other places (sources, events, addresses, etc.)"
 msgstr "Altris localitâs (par fonts, events, indiriz, e vie indenant)"
 
-#: admin/include/editor.php:3953 admin/include/editor.php:3962
+#: admin/include/editor.php:3966 admin/include/editor.php:3975
 msgid "Change location"
 msgstr "Cambie localitât"
 
-#: admin/include/editor.php:3963
+#: admin/include/editor.php:3976
 msgid "Also change Google Maps table."
 msgstr "Modifiche ancje lis taulis di Google Maps."
 
-#: admin/include/editor.php:4140 admin/include/editor.php:4213
+#: admin/include/editor.php:4154 admin/include/editor.php:4227
 msgid "Add child"
 msgstr "Zonte un fî"
 
-#: admin/include/editor.php:4229 admin/include/trees.php:301
-#: include/show_tree_text.php:6 photoalbum.php:217
+#: admin/include/editor.php:4243 admin/include/trees.php:301
+#: include/show_tree_text.php:6 photoalbum.php:219
 msgid "NO NAME"
 msgstr "CENCE NON"
 
-#: admin/include/editor.php:4377 admin/include/editor_sources.php:307
+#: admin/include/editor.php:4399 admin/include/editor_sources.php:324
 msgid "Extra text"
 msgstr "Test extra"
 
-#: admin/include/editor.php:4403
+#: admin/include/editor.php:4420
 msgid "Address GEDCOM number:"
 msgstr "Indiriz Numar GEDCOM:"
 
-#: admin/include/editor.php:4407
+#: admin/include/editor.php:4424
 msgid "Shared address"
 msgstr "Indiriz condividût"
 
-#: admin/include/editor.php:4418
+#: admin/include/editor.php:4435
 msgid "A shared address can be connected to multiple persons or relations."
 msgstr "Un indiriz condividût al pues jessi colegât a plui personis o parincj."
 
-#: admin/include/editor.php:4481
+#: admin/include/editor.php:4436
+msgid ""
+"A shared address is only supported by the Haza-data and HuMo-genealogy "
+"programs."
+msgstr ""
+
+#: admin/include/editor.php:4511
 msgid "Or: add new address"
 msgstr "O pûr: Zonte un gnûf indiriz"
 
-#: admin/include/editor.php:4508
+#: admin/include/editor.php:4538
 msgid "Addressrole"
 msgstr "Prin indiriz"
 
-#: admin/include/editor.php:4511
+#: admin/include/editor.php:4541
 #, fuzzy
 #| msgid "Extra text by source"
 msgid "Extra text by address"
@@ -1716,84 +1719,84 @@ msgstr "calcolât"
 #: admin/include/editor_cls.php:56 admin/include/editor_cls.php:171
 #: admin/include/statistics.php:202 admin/include/trees_cls.php:116
 #: birthday_list.php:79 include/language_date.php:21
-#: include/mainindex_cls.php:282 statistics.php:24
+#: include/mainindex_cls.php:289 statistics.php:24
 msgid "jan"
 msgstr "gen"
 
 #: admin/include/editor_cls.php:57 admin/include/editor_cls.php:172
 #: admin/include/statistics.php:203 admin/include/trees_cls.php:117
 #: birthday_list.php:80 include/language_date.php:22
-#: include/mainindex_cls.php:283 statistics.php:25
+#: include/mainindex_cls.php:290 statistics.php:25
 msgid "feb"
 msgstr "fev"
 
 #: admin/include/editor_cls.php:58 admin/include/editor_cls.php:173
 #: admin/include/statistics.php:204 admin/include/trees_cls.php:118
 #: birthday_list.php:81 include/language_date.php:23
-#: include/mainindex_cls.php:284 statistics.php:26
+#: include/mainindex_cls.php:291 statistics.php:26
 msgid "mar"
 msgstr "mar"
 
 #: admin/include/editor_cls.php:59 admin/include/editor_cls.php:174
 #: admin/include/statistics.php:205 admin/include/trees_cls.php:119
 #: birthday_list.php:82 include/language_date.php:24
-#: include/mainindex_cls.php:285 statistics.php:27
+#: include/mainindex_cls.php:292 statistics.php:27
 msgid "apr"
 msgstr "avr"
 
 #: admin/include/editor_cls.php:60 admin/include/editor_cls.php:175
 #: admin/include/statistics.php:206 admin/include/trees_cls.php:120
 #: birthday_list.php:83 include/language_date.php:25
-#: include/mainindex_cls.php:286 statistics.php:28
+#: include/mainindex_cls.php:293 statistics.php:28
 msgid "may"
 msgstr "maj"
 
 #: admin/include/editor_cls.php:61 admin/include/editor_cls.php:176
 #: admin/include/statistics.php:207 admin/include/trees_cls.php:121
 #: birthday_list.php:84 include/language_date.php:26
-#: include/mainindex_cls.php:287 statistics.php:29
+#: include/mainindex_cls.php:294 statistics.php:29
 msgid "jun"
 msgstr "jug"
 
 #: admin/include/editor_cls.php:62 admin/include/editor_cls.php:177
 #: admin/include/statistics.php:208 admin/include/trees_cls.php:122
 #: birthday_list.php:85 include/language_date.php:27
-#: include/mainindex_cls.php:288 statistics.php:30
+#: include/mainindex_cls.php:295 statistics.php:30
 msgid "jul"
 msgstr "luj"
 
 #: admin/include/editor_cls.php:63 admin/include/editor_cls.php:178
 #: admin/include/statistics.php:209 admin/include/trees_cls.php:123
 #: birthday_list.php:86 include/language_date.php:28
-#: include/mainindex_cls.php:289 statistics.php:31
+#: include/mainindex_cls.php:296 statistics.php:31
 msgid "aug"
 msgstr "avo"
 
 #: admin/include/editor_cls.php:64 admin/include/editor_cls.php:179
 #: admin/include/statistics.php:210 admin/include/trees_cls.php:124
 #: birthday_list.php:87 include/language_date.php:29
-#: include/mainindex_cls.php:290 statistics.php:32
+#: include/mainindex_cls.php:297 statistics.php:32
 msgid "sep"
 msgstr "set"
 
 #: admin/include/editor_cls.php:65 admin/include/editor_cls.php:180
 #: admin/include/statistics.php:211 admin/include/trees_cls.php:125
 #: birthday_list.php:88 include/language_date.php:30
-#: include/mainindex_cls.php:291 statistics.php:33
+#: include/mainindex_cls.php:298 statistics.php:33
 msgid "oct"
 msgstr "otu"
 
 #: admin/include/editor_cls.php:66 admin/include/editor_cls.php:181
 #: admin/include/statistics.php:212 admin/include/trees_cls.php:126
 #: birthday_list.php:89 include/language_date.php:31
-#: include/mainindex_cls.php:292 statistics.php:34
+#: include/mainindex_cls.php:299 statistics.php:34
 msgid "nov"
 msgstr "nov"
 
 #: admin/include/editor_cls.php:67 admin/include/editor_cls.php:182
 #: admin/include/statistics.php:213 admin/include/trees_cls.php:127
 #: birthday_list.php:90 include/language_date.php:32
-#: include/mainindex_cls.php:293 statistics.php:35
+#: include/mainindex_cls.php:300 statistics.php:35
 msgid "dec"
 msgstr "dic"
 
@@ -1925,9 +1928,9 @@ msgstr "Profesion"
 #: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:248
 #: admin/include/editor_event_cls.php:274 admin/include/editor_event_cls.php:302
 #: admin/include/editor_event_cls.php:326
-#: admin/include/editor_event_cls.php:1187 admin/include/editor_sources.php:171
-#: admin/include/editor_sources.php:179 admin/include/trees_cls.php:1780
-#: include/mainindex_cls.php:916
+#: admin/include/editor_event_cls.php:1187 admin/include/editor_sources.php:188
+#: admin/include/editor_sources.php:196 admin/include/trees_cls.php:1780
+#: include/mainindex_cls.php:923
 msgid "Event"
 msgstr "Event"
 
@@ -2288,7 +2291,7 @@ msgstr "Trasferiment no vignût ben, controle i dirits da cartele"
 msgid "No valid picture, media or document file"
 msgstr "Immagjine, media o document no valids"
 
-#: admin/include/editor_inc.php:1748 admin/include/editor_inc.php:2188
+#: admin/include/editor_inc.php:1748 admin/include/editor_inc.php:2198
 msgid "Are you sure you want to remove this event?"
 msgstr "Sestu sigûr di sicuro di volê elimunâ chest event?"
 
@@ -2327,79 +2330,79 @@ msgstr "Non da font"
 msgid "person"
 msgstr "persone"
 
-#: admin/include/editor_sources.php:120 list_places_families.php:420
+#: admin/include/editor_sources.php:125 list_places_families.php:420
 msgid "Marriage"
 msgstr "Matrimoni"
 
-#: admin/include/editor_sources.php:150 admin/include/statistics.php:513
+#: admin/include/editor_sources.php:155 admin/include/statistics.php:513
 #: admin/include/statistics.php:526
 msgid "family"
 msgstr "famee"
 
-#: admin/include/editor_sources.php:302 admin/include/editor_sources.php:306
-#: include/mainindex_cls.php:916 list.php:1597 list.php:1599 list.php:1629
+#: admin/include/editor_sources.php:319 admin/include/editor_sources.php:323
+#: include/mainindex_cls.php:923 list.php:1597 list.php:1599 list.php:1629
 #: list.php:1631 list.php:1985 list.php:1997 source.php:62 source.php:67
 #: source.php:237 sources.php:163
 msgid "Date"
 msgstr "Date"
 
-#: admin/include/editor_sources.php:305 admin/include/editor_sources.php:424
+#: admin/include/editor_sources.php:322 admin/include/editor_sources.php:441
 msgid "Sourcerole"
 msgstr "Tipologje di font"
 
-#: admin/include/editor_sources.php:318
+#: admin/include/editor_sources.php:335
 msgid "Source GEDCOM number:"
 msgstr "Numar originâl GEDCOM:"
 
-#: admin/include/editor_sources.php:363
+#: admin/include/editor_sources.php:380
 msgid "Search existing source"
 msgstr "Cîr une Font za presint"
 
-#: admin/include/editor_sources.php:381
+#: admin/include/editor_sources.php:398
 msgid "Select existing source"
 msgstr "Selezione une Font za presint"
 
-#: admin/include/editor_sources.php:402
+#: admin/include/editor_sources.php:419
 msgid "Or:"
 msgstr "O pûr:"
 
-#: admin/include/editor_sources.php:416
+#: admin/include/editor_sources.php:433
 msgid "add new source"
 msgstr "zonte unw gnove Font"
 
-#: admin/include/editor_sources.php:436
+#: admin/include/editor_sources.php:453
 msgid "e.g. Writer, Brother, Sister, Father."
 msgstr "par es. Scritôr, Fradi, Sûr, Pâri."
 
-#: admin/include/editor_sources.php:452
+#: admin/include/editor_sources.php:469
 msgid "Page in source."
 msgstr "Pagjine da Font."
 
-#: admin/include/editor_sources.php:458
+#: admin/include/editor_sources.php:475
 msgid "quality: default"
 msgstr "qualitât: predefinide"
 
-#: admin/include/editor_sources.php:460 include/show_quality.php:5
+#: admin/include/editor_sources.php:477 include/show_quality.php:5
 msgid "quality: unreliable evidence or estimated data"
 msgstr "qualitât: provis no atendibile o dâts a stime"
 
-#: admin/include/editor_sources.php:462 include/show_quality.php:6
+#: admin/include/editor_sources.php:479 include/show_quality.php:6
 msgid "quality: questionable reliability of evidence"
 msgstr "qualitât: afidabilitât discutibil das provis"
 
-#: admin/include/editor_sources.php:464 include/show_quality.php:7
+#: admin/include/editor_sources.php:481 include/show_quality.php:7
 msgid "quality: data from secondary evidence"
 msgstr "qualitât: dâts da provis secondaris"
 
-#: admin/include/editor_sources.php:466 include/show_quality.php:8
+#: admin/include/editor_sources.php:483 include/show_quality.php:8
 msgid "quality: data from direct source"
 msgstr "qualitât: dâts di prime man"
 
-#: admin/include/editor_sources.php:475
+#: admin/include/editor_sources.php:492
 msgid "Extra text by source"
 msgstr "Test extra pa la font"
 
-#: admin/include/editor_sources.php:528
+#: admin/include/editor_sources.php:545
 msgid "Add another source"
 msgstr "Zonte une gnove Font"
 
@@ -2433,7 +2436,7 @@ msgid "Use user-group setting"
 msgstr "Dopre lis impostazions par Utents / Grups"
 
 #: admin/include/extensions.php:5 admin/include/extensions.php:60
-#: admin/index.php:953
+#: admin/index.php:962
 msgid "Extensions"
 msgstr "Estensions"
 
@@ -2727,8 +2730,8 @@ msgid ""
 msgstr ""
 "I dâts di chest GEDCOM a saran zontâs a chei za presints in chest arbul!"
 
-#: admin/include/gedcom.php:895 admin/include/make_db_maps.php:855 maps.php:572
-#: maps.php:681 maps.php:793
+#: admin/include/gedcom.php:895 admin/include/make_db_maps.php:1011 maps.php:587
+#: maps.php:697 maps.php:809
 msgid "Cancel"
 msgstr "Cancele"
 
@@ -2809,13 +2812,13 @@ msgstr "Elaborazion dai tescj di riferiment in tescj standard..."
 
 #: admin/include/gedcom.php:1755 admin/include/index_inc.php:532
 #: admin/include/statistics.php:757 admin/include/trees_cls.php:130
-#: include/mainindex_cls.php:297
+#: include/mainindex_cls.php:304
 msgid "persons"
 msgstr "personis"
 
 #: admin/include/gedcom.php:1914 admin/include/index_inc.php:532
 #: admin/include/statistics.php:757 admin/include/trees_cls.php:130
-#: include/mainindex_cls.php:297
+#: include/mainindex_cls.php:304
 msgid "families"
 msgstr "fameis"
 
@@ -2938,11 +2941,11 @@ msgstr "Mitent dal Gedcom"
 msgid "Country"
 msgstr "Paîs"
 
-#: admin/include/gedcom_export.php:295 admin/include/make_db_maps.php:993
+#: admin/include/gedcom_export.php:295 admin/include/make_db_maps.php:1157
 #: admin/include/settings_admin.php:5 admin/include/settings_admin.php:188
 #: admin/include/trees_cls.php:1252 admin/include/trees_cls.php:1418
-#: admin/index.php:956 family.php:113 family.php:2110 header.php:270
-#: menu.php:881
+#: admin/index.php:965 family.php:113 family.php:2167 header.php:270
+#: menu.php:882
 msgid "Settings"
 msgstr "Impostazions"
 
@@ -2982,19 +2985,19 @@ msgstr "Comence la esportazion"
 msgid "GEDCOM file will be exported to backup_tmp/ folder"
 msgstr "Il file GEDCOM al sarà esportât ta cartele backup_tmp/‎"
 
-#: admin/include/gedcom_export.php:1392
+#: admin/include/gedcom_export.php:1411
 msgid "GEDCOM file is generated"
 msgstr "‎Il file GEDCOM‎ al è stât creât"
 
-#: admin/include/gedcom_export.php:1395
+#: admin/include/gedcom_export.php:1414
 msgid "Download GEDCOM file"
 msgstr "Scjarie il file GEDCOM‎"
 
-#: admin/include/gedcom_export.php:1406
+#: admin/include/gedcom_export.php:1425
 msgid "Remove GEDCOM file"
 msgstr "Elimine il file GEDCOM"
 
-#: admin/include/gedcom_export.php:1642
+#: admin/include/gedcom_export.php:1677
 msgid "No valid family number."
 msgstr "Numar di famee no valid."
 
@@ -3150,7 +3153,7 @@ msgstr ""
 "tal sottomenu\" a je disabilitade)"
 
 #: admin/include/groups.php:349 admin/include/trees_cls.php:259
-#: admin/index.php:1006
+#: admin/index.php:1015
 msgid "Pictures/ create thumbnails"
 msgstr "Immagjinis / crê miniaturis"
 
@@ -3203,11 +3206,11 @@ msgstr "Visualizazion slargjade"
 msgid "Default presentation of Google maps in family page"
 msgstr "Presentazion predefinide das mapis di Google ta pagjine da famee"
 
-#: admin/include/groups.php:400 family.php:158
+#: admin/include/groups.php:400
 msgid "Show Google maps"
 msgstr "Mostre lis mapis di Google"
 
-#: admin/include/groups.php:402 family.php:160
+#: admin/include/groups.php:402
 msgid "Hide Google maps"
 msgstr "Nascuint lis mapis di Google"
 
@@ -3405,7 +3408,7 @@ msgid "Hide or show family trees per user group."
 msgstr "Nascuint o mostre i arbui gjenealogjics a un grup di utents."
 
 #: admin/include/groups.php:624 admin/include/index_inc.php:546
-#: admin/index.php:1043 include/person_cls.php:977
+#: admin/index.php:1052 include/person_cls.php:977
 msgid "Editor"
 msgstr "Editor"
 
@@ -3434,7 +3437,7 @@ msgstr "Mostrâ la categorie?"
 msgid "No photo categories available."
 msgstr "No je disponibil nissune categorie di imagjinis."
 
-#: admin/include/index_inc.php:5 admin/index.php:403 admin/index.php:872
+#: admin/include/index_inc.php:5 admin/index.php:412 admin/index.php:881
 msgid "Administration"
 msgstr "Aministrazion"
 
@@ -3567,8 +3570,8 @@ msgstr "Sì, instale ancje il database"
 msgid "NO"
 msgstr "NO"
 
-#: admin/include/index_inc.php:195 admin/include/make_db_maps.php:598
-#: admin/include/make_db_maps.php:853
+#: admin/include/index_inc.php:195 admin/include/make_db_maps.php:752
+#: admin/include/make_db_maps.php:1009
 msgid "YES"
 msgstr "SI"
 
@@ -3773,7 +3776,7 @@ msgstr "Debug das pagjinis %s"
 msgid "UNSAFE (option is ON)."
 msgstr "NO SIGÛR (opzion a je ative)"
 
-#: admin/include/index_inc.php:512 admin/index.php:996 admin/index.php:1002
+#: admin/include/index_inc.php:512 admin/index.php:1005 admin/index.php:1011
 msgid "Family trees"
 msgstr "Arbui gjenealogjics"
 
@@ -3795,7 +3798,7 @@ msgid "Trees table"
 msgstr "Tabelis dai Arbui"
 
 #: admin/include/install.php:5 admin/include/install.php:155
-#: admin/include/install.php:161 admin/index.php:950
+#: admin/include/install.php:161 admin/index.php:959
 msgid "Install"
 msgstr "Instale"
 
@@ -3936,11 +3939,11 @@ msgid "All updates completed, click at \"Mainmenu\""
 msgstr "Dutis lis Atualizazions a son completadis, cliche su \"Menu Principâl\""
 
 #: admin/include/install.php:952 admin/include/update.php:251
-#: admin/index.php:872
+#: admin/index.php:881
 msgid "Main menu"
 msgstr "Menu Principâl"
 
-#: admin/include/language_editor.php:13 admin/index.php:966
+#: admin/include/language_editor.php:13 admin/index.php:975
 msgid "Language editor"
 msgstr "Editor das lenghis"
 
@@ -4021,7 +4024,7 @@ msgstr "Utent/ Amministratôr"
 msgid "IP address"
 msgstr "Indiriz IP"
 
-#: admin/include/log.php:61 admin/include/settings_admin.php:768
+#: admin/include/log.php:61 admin/include/settings_admin.php:769
 msgid "Status"
 msgstr "Stât"
 
@@ -4032,7 +4035,7 @@ msgid ""
 msgstr "Liste nêre IP: l'acès a %s al sarà blocât par chescj indiriz IP."
 
 #: admin/include/log.php:150 admin/include/log.php:183
-#: admin/include/settings_admin.php:1069 include/language_event.php:26
+#: admin/include/settings_admin.php:1083 include/language_event.php:26
 msgid "Description"
 msgstr "Descrizion"
 
@@ -4044,8 +4047,8 @@ msgstr "Cambie/Zonte"
 msgid "IP Address"
 msgstr "Indiriz IP"
 
-#: admin/include/log.php:189 admin/include/settings_admin.php:978
-#: admin/include/settings_admin.php:1111
+#: admin/include/log.php:189 admin/include/settings_admin.php:992
+#: admin/include/settings_admin.php:1125
 msgid "Database is not yet available."
 msgstr "Il database no l'è ancjemò disponibil."
 
@@ -4058,31 +4061,33 @@ msgid "Username or e-mail address"
 msgstr "Utent o indiriz e-mail"
 
 #: admin/include/login.php:16 header.php:268 help.php:82 login.php:331
-#: login.php:334 menu.php:257 menu.php:756
+#: login.php:334 menu.php:257 menu.php:757
 msgid "Login"
 msgstr "Jentre"
 
-#: admin/include/make_db_maps.php:7
-msgid "Google maps administration"
+#: admin/include/make_db_maps.php:12
+#, fuzzy
+#| msgid "Google maps administration"
+msgid "World map administration"
 msgstr "Gestion Google maps"
 
-#: admin/include/make_db_maps.php:11
+#: admin/include/make_db_maps.php:16
 msgid "Creating/ updating database"
 msgstr "Crê / Atualize database"
 
-#: admin/include/make_db_maps.php:25
+#: admin/include/make_db_maps.php:30
 msgid "Creating location database"
 msgstr "Crê database das localitâs"
 
-#: admin/include/make_db_maps.php:42
+#: admin/include/make_db_maps.php:47
 msgid "Started adding to data base."
 msgstr "Inizi da l'Atualizazion dal DB."
 
-#: admin/include/make_db_maps.php:43
+#: admin/include/make_db_maps.php:48
 msgid "Starting time"
 msgstr "Ore di inizi"
 
-#: admin/include/make_db_maps.php:116
+#: admin/include/make_db_maps.php:135
 msgid ""
 "<b>A location database could not be created.</b>\n"
 "<p>This could mean that the PHP function \"allow_url_fopen\" was disabled by "
@@ -4098,19 +4103,19 @@ msgstr ""
 "server.<p>Al è pusibil metisi in contat cul webhost e domandâ che "
 "\"allow_url_fopen\" al vegni abilitât o \"curl \" al vegni cjaricât."
 
-#: admin/include/make_db_maps.php:159
+#: admin/include/make_db_maps.php:180
 msgid "Finished updating geo-location database"
 msgstr "Finît l'Atualizazion dal DB di geo-localizazion"
 
-#: admin/include/make_db_maps.php:160
+#: admin/include/make_db_maps.php:181
 msgid "Finish time"
 msgstr "Ore di fin"
 
-#: admin/include/make_db_maps.php:161
+#: admin/include/make_db_maps.php:182
 msgid "locations were successfully mapped."
 msgstr "i Lûcs a son stâts coretamentri mapas."
 
-#: admin/include/make_db_maps.php:164 admin/include/make_db_maps.php:182
+#: admin/include/make_db_maps.php:185 admin/include/make_db_maps.php:203
 #, php-format
 msgid ""
 "The following %d new locations were passed for query, but were not found. "
@@ -4119,7 +4124,7 @@ msgstr ""
 "A son stadis inoltradis chestis %d gnovis posizions pa la query, ma no son "
 "stadis cjatadis. Miôr verificâ la lôr validitât."
 
-#: admin/include/make_db_maps.php:175
+#: admin/include/make_db_maps.php:196
 msgid ""
 "The process was interrupted because Google limits to maximum 2500 queries "
 "within one day (counting is reset at midnight PST, which is 08:00 AM GMT)"
@@ -4127,14 +4132,14 @@ msgstr ""
 "Il proces al è stât interot di Google che al limite a un massimo di 2500 "
 "domandis al dì (il cont al ven azerât as 08:00 ore locâl)"
 
-#: admin/include/make_db_maps.php:176
+#: admin/include/make_db_maps.php:197
 #, php-format
 msgid "In total %1$d out of %2$d new locations were passed for query to Google."
 msgstr ""
 "In totâl a son stadis cjatadis %1$d su %2$d gnovis localizazions cu la "
 "ricercje di Google."
 
-#: admin/include/make_db_maps.php:177
+#: admin/include/make_db_maps.php:198
 msgid ""
 "Tomorrow you can run this process again to add the locations that were not "
 "passed for geocoding today."
@@ -4142,48 +4147,44 @@ msgstr ""
 "Doman tu puedis continuâ la ricercje par zontâ lis localitâs che a no son "
 "stadis passadis uê pa la geocodifiche."
 
-#: admin/include/make_db_maps.php:178
+#: admin/include/make_db_maps.php:199
 msgid ""
 "locations were recognized by geocoding and have been saved in the database."
 msgstr ""
 "localitâs a son stadis ricognossudi da geocodifiche e a son stadis salvadis "
 "tal database."
 
-#: admin/include/make_db_maps.php:200 family.php:2192 report_ancestor.php:1575
+#: admin/include/make_db_maps.php:221 family.php:2249 report_ancestor.php:1575
 msgid "Back"
 msgstr "Indaûr"
 
-#: admin/include/make_db_maps.php:247
-msgid "Google maps API Key"
+#: admin/include/make_db_maps.php:268
+#, fuzzy
+#| msgid "Google maps API Key"
+msgid "World map API Keys"
 msgstr "API Key di Google maps"
 
-#: admin/include/make_db_maps.php:249
-msgid ""
-"As of Jun 22, 2016 Google has changed its API policy and all queries to the "
-"Google maps API now require a site-specific key."
-msgstr ""
-"Dal 22 di giugn 2016 Google al à cambiât la so politiche API e dutis lis "
-"richiestis a l'API di Google Maps. Cumò a covente une clâf specifiche dal sît."
+#: admin/include/make_db_maps.php:291
+#, fuzzy
+#| msgid "Hide Google maps"
+msgid "Use Google Maps"
+msgstr "Nascuint lis mapis di Google"
 
-#: admin/include/make_db_maps.php:250
-msgid ""
-"For now, it seems that installations that started API queries prior to June "
-"22, 2016 will continue to work also without a key."
+#: admin/include/make_db_maps.php:293
+msgid "Use OpenStreetMap"
 msgstr ""
-"Par cumò, al semee che lis instalazion che a jan comenzât a doprâ la query "
-"API prime dal 22 giugn 2016 a continueran a funzionâ ancje cence clâf."
 
-#: admin/include/make_db_maps.php:251
-msgid ""
-"If however you start activating the Google map feature after this date, you "
-"are likely to encounter error messages concerning a missing key if you do not "
-"first enter and save a key here."
+#: admin/include/make_db_maps.php:297
+#, fuzzy
+#| msgid "Google maps API Key"
+msgid "Google Maps API Keys"
+msgstr "API Key di Google maps"
+
+#: admin/include/make_db_maps.php:302
+msgid "To use the Google maps options, you need a Google account."
 msgstr ""
-"Se tu tachis cumò a doprâ la funzion Google Maps, al è probabil che si "
-"incuintri cualchi messaç di erôr pa mancjance di une clâf se no si inseris "
-"achì e si salve une clâfdomandade a Google."
 
-#: admin/include/make_db_maps.php:252
+#: admin/include/make_db_maps.php:303
 msgid ""
 "If you don't have a Google account, first create one. Once logged into your "
 "Google account, go to:"
@@ -4191,19 +4192,19 @@ msgstr ""
 "Si no tu âs un account Google, crêilu. Une volte jentrât cul to account "
 "Google, vai a:"
 
-#: admin/include/make_db_maps.php:253
+#: admin/include/make_db_maps.php:304
 msgid "Get API key"
 msgstr "Domande la API key"
 
-#: admin/include/make_db_maps.php:254
+#: admin/include/make_db_maps.php:305
 msgid "and follow the instructions."
 msgstr "e sta daûr as istruzions."
 
-#: admin/include/make_db_maps.php:255
+#: admin/include/make_db_maps.php:306
 msgid "Create two keys"
 msgstr "Crê dôs clâs"
 
-#: admin/include/make_db_maps.php:256
+#: admin/include/make_db_maps.php:307
 msgid ""
 "For the first key, set restriction to <strong>\"HTTP referrers\"</strong> and "
 "enter your website domain name."
@@ -4211,15 +4212,15 @@ msgstr ""
 "Pa la prime clâf, stabilìs la restrizion su <strong> \\ \"HTTP Referrer \" </ "
 "strong> e inseris il none dal dominio dal to sît web."
 
-#: admin/include/make_db_maps.php:256
+#: admin/include/make_db_maps.php:307
 msgid "If your domain looks like 'www.mydomain.com', enter:"
 msgstr "Se il to domini al è simil a \"www.mydomain.com\", inseris:"
 
-#: admin/include/make_db_maps.php:256
+#: admin/include/make_db_maps.php:307
 msgid "If your domain looks like 'mydomain.com', enter:"
 msgstr "Se il to domini al è simil a \"mydomain.com\", inseris:"
 
-#: admin/include/make_db_maps.php:280
+#: admin/include/make_db_maps.php:331
 msgid ""
 "For the second key, set restriction to <strong>\"IP addresses\"</strong> and "
 "enter your server IP."
@@ -4227,15 +4228,15 @@ msgstr ""
 "Pa la seconde clâf, stabilìs la restrizion su <strong> \\ \"Indiriz IP \" </ "
 "strong> e inseris l'IP dal to server."
 
-#: admin/include/make_db_maps.php:280
+#: admin/include/make_db_maps.php:331
 msgid "Not your computer's IP!"
 msgstr "Nol è l'IP dal to computer!"
 
-#: admin/include/make_db_maps.php:281
+#: admin/include/make_db_maps.php:332
 msgid "Your server IP would seem to be:"
 msgstr "Nol è l'IP dal to computer:"
 
-#: admin/include/make_db_maps.php:283
+#: admin/include/make_db_maps.php:334
 msgid ""
 "Your server also has an IPv6 address. If the above IP doesn't work, try the "
 "IPv6 which would seem to be:"
@@ -4243,41 +4244,43 @@ msgstr ""
 "Il to server al à ancje un indiriz IPv6. Se l'IP di prin nol funzione, prove "
 "l'IPv6 che al vares di jessi:"
 
-#: admin/include/make_db_maps.php:285
+#: admin/include/make_db_maps.php:336
 msgid ""
 "If this doesn't work, contact your provider and try to obtain the proper IP "
 "address from them."
 msgstr ""
 "Se chest nol funzione, contate il to provider e domandi l'indiriz IP coret."
 
-#: admin/include/make_db_maps.php:286
+#: admin/include/make_db_maps.php:337
 msgid "Once you receive the keys enter them in the two fields below and save."
 msgstr ""
 "Cuant che tu âs lis dos clâs, inserissilis tai doi cjamps chi sot e salve."
 
-#: admin/include/make_db_maps.php:292 admin/include/make_db_maps.php:302
-#: admin/include/make_db_maps.php:314 admin/include/make_db_maps.php:318
-#: admin/include/make_db_maps.php:333 admin/include/make_db_maps.php:343
-#: admin/include/make_db_maps.php:353 admin/include/make_db_maps.php:367
-#: admin/include/make_db_maps.php:377 admin/include/make_db_maps.php:389
-#: admin/include/make_db_maps.php:393 admin/include/make_db_maps.php:408
-#: admin/include/make_db_maps.php:418 admin/include/make_db_maps.php:428
+#: admin/include/make_db_maps.php:387 admin/include/make_db_maps.php:396
+#: admin/include/make_db_maps.php:581
 msgid "API key"
 msgstr "API key"
 
-#: admin/include/make_db_maps.php:303 admin/include/make_db_maps.php:378
-msgid "has been deleted"
-msgstr "al è stât cancelât"
+#: admin/include/make_db_maps.php:552
+msgid "OpenStreetMap API Keys"
+msgstr ""
 
-#: admin/include/make_db_maps.php:440
+#: admin/include/make_db_maps.php:553
+msgid ""
+"To use OpenStreetMap we need geolocation data of all places. Go to <a href="
+"\"https://geokeo.com\" target=\"_blank\">https://geokeo.com</a> and create an "
+"account to get the API key."
+msgstr ""
+
+#: admin/include/make_db_maps.php:594
 msgid "Create or update geolocation database"
 msgstr "Crê o Atualize database di geolocalizazion"
 
-#: admin/include/make_db_maps.php:560
+#: admin/include/make_db_maps.php:713
 msgid "No new locations were found to add to the database"
 msgstr "No son stadis cjatadis gnovis localitâs di zontâ al database"
 
-#: admin/include/make_db_maps.php:563 admin/include/make_db_maps.php:603
+#: admin/include/make_db_maps.php:716 admin/include/make_db_maps.php:757
 #, php-format
 msgid ""
 "The following %d locations are already known as non-indexable by Google. "
@@ -4286,29 +4289,29 @@ msgstr ""
 "Lis %d Localitâs elencadis a no son cognossudis da Google. Controle la lôr "
 "validitât."
 
-#: admin/include/make_db_maps.php:587
+#: admin/include/make_db_maps.php:740
 #, php-format
 msgid "There are %s new unique birth/ death locations to add to the database."
 msgstr "A son %s gnovis localitâs di nassite/muart di zontâ tal database."
 
-#: admin/include/make_db_maps.php:594
+#: admin/include/make_db_maps.php:748
 #, php-format
 msgid "This will take approximately <b>%1$d minutes and %2$d seconds.</b>"
 msgstr "Chest al richiederà un <b>%1$d minûs e %2$d seconts.</b>"
 
-#: admin/include/make_db_maps.php:596
+#: admin/include/make_db_maps.php:750
 msgid "Do you wish to add these locations to the database database now?"
 msgstr "Ustu zontâ cumò chestis localitâs al database?"
 
-#: admin/include/make_db_maps.php:614
+#: admin/include/make_db_maps.php:768
 msgid "A geolocation database exists."
 msgstr "Al è za presint un database di geolocalizazion."
 
-#: admin/include/make_db_maps.php:617
+#: admin/include/make_db_maps.php:771
 msgid "No geolocation database found."
 msgstr "No l'è presint nissun database di geolocalizazion."
 
-#: admin/include/make_db_maps.php:619
+#: admin/include/make_db_maps.php:773
 msgid ""
 "Check how many new locations have to be indexed and how long the indexing may "
 "take (approximately)."
@@ -4316,27 +4319,27 @@ msgstr ""
 "Control dal numar di gnovis localitâs che a jan di sei indicizadis e trop "
 "timp (a stim) l'indicizazion a pues richiedi."
 
-#: admin/include/make_db_maps.php:635 include/mainindex_cls.php:588
+#: admin/include/make_db_maps.php:789 include/mainindex_cls.php:595
 #: list.php:1775
 msgid "All family trees"
 msgstr "Ducj i arbui gjenealogjics"
 
-#: admin/include/make_db_maps.php:658 admin/include/tree_check.php:727
+#: admin/include/make_db_maps.php:812 admin/include/tree_check.php:727
 msgid "Check"
 msgstr "Controle"
 
-#: admin/include/make_db_maps.php:667
+#: admin/include/make_db_maps.php:821
 msgid "Refresh birth/ death status and tree affiliation of all locations"
 msgstr ""
 "Ricontrole dutis lis localitâs di nassite/muart e il lôr leamp a un arbul"
 
-#: admin/include/make_db_maps.php:672
+#: admin/include/make_db_maps.php:826
 msgid "The birth/ death status and tree affiliation has been refreshed."
 msgstr ""
 "Lis localitâs di nassite e muart e il lôr leamp a un arbul al è stât "
 "controlât."
 
-#: admin/include/make_db_maps.php:676
+#: admin/include/make_db_maps.php:830
 #, php-format
 msgid ""
 "The \"Find a location on the map\" pull-down displays a list according to the "
@@ -4366,78 +4369,78 @@ msgstr ""
 "dutis lis posizions c'a son deventadis inutil (marche la casele disot) </li></"
 "ul></p>"
 
-#: admin/include/make_db_maps.php:678
+#: admin/include/make_db_maps.php:832
 msgid ""
 "Also delete all locations that have become obsolete (not connected to any "
 "persons anymore)"
 msgstr ""
 "Elimine ancje dutis lis localitâs che no son plui colegadis a cualchi persone."
 
-#: admin/include/make_db_maps.php:679
+#: admin/include/make_db_maps.php:833
 msgid "Refresh"
 msgstr "Atualize"
 
-#: admin/include/make_db_maps.php:686
+#: admin/include/make_db_maps.php:840
 msgid "Edit geolocation database"
 msgstr "Modifiche DB di geolocalizazion"
 
-#: admin/include/make_db_maps.php:830
+#: admin/include/make_db_maps.php:986
 msgid "Deleted location:"
 msgstr "Cancele localitât:"
 
-#: admin/include/make_db_maps.php:838
+#: admin/include/make_db_maps.php:994
 msgid "Changed location:"
 msgstr "Modifiche localitât:"
 
-#: admin/include/make_db_maps.php:866
+#: admin/include/make_db_maps.php:1022
 msgid "Added location:"
 msgstr "Zonte localitât:"
 
-#: admin/include/make_db_maps.php:925
+#: admin/include/make_db_maps.php:1087
 msgid "Details from the database"
 msgstr "Detais dal DB"
 
-#: admin/include/make_db_maps.php:926
+#: admin/include/make_db_maps.php:1088
 msgid "Location"
 msgstr "Localitât"
 
-#: admin/include/make_db_maps.php:927 admin/include/make_db_maps.php:948
+#: admin/include/make_db_maps.php:1089 admin/include/make_db_maps.php:1111
 msgid "Latitude"
 msgstr "Latitudin"
 
-#: admin/include/make_db_maps.php:928 admin/include/make_db_maps.php:949
+#: admin/include/make_db_maps.php:1090 admin/include/make_db_maps.php:1112
 msgid "Longitude"
 msgstr "Longjitudin"
 
-#: admin/include/make_db_maps.php:932
+#: admin/include/make_db_maps.php:1094
 msgid "Delete this location"
 msgstr "Cancele cheste localitât"
 
-#: admin/include/make_db_maps.php:945
+#: admin/include/make_db_maps.php:1108
 msgid "Change or add locations"
 msgstr "Cancele cheste localitât"
 
-#: admin/include/make_db_maps.php:945
+#: admin/include/make_db_maps.php:1108
 msgid "(You can also drag the marker!)"
 msgstr "(Al è pussibil strissinâ l'indicatôr!)"
 
-#: admin/include/make_db_maps.php:951
+#: admin/include/make_db_maps.php:1114
 msgid "Change this location"
 msgstr "Cambie cheste localitât"
 
-#: admin/include/make_db_maps.php:952
+#: admin/include/make_db_maps.php:1115
 msgid "Add this location"
 msgstr "Zonte cheste localitât"
 
-#: admin/include/make_db_maps.php:960
+#: admin/include/make_db_maps.php:1124
 msgid "Delete geolocation database"
 msgstr "Cancele il DB das geolocalizazions"
 
-#: admin/include/make_db_maps.php:964
+#: admin/include/make_db_maps.php:1128
 msgid "Database was deleted!"
 msgstr "Il DB al è stât cancelât!"
 
-#: admin/include/make_db_maps.php:968
+#: admin/include/make_db_maps.php:1132
 #, php-format
 msgid ""
 "Here you can delete your entire geolocation database (%d entries).<br>If you "
@@ -4446,15 +4449,15 @@ msgstr ""
 "Chi al è pussibil eliminâ dut il database di geolocalizazion (%d vôs).<br>Se "
 "tu seis sigûrs di volei cancelâlu, cliche il boton chi sot."
 
-#: admin/include/make_db_maps.php:970
+#: admin/include/make_db_maps.php:1134
 msgid "DELETE ENTIRE GEOLOCATION DATABASE"
 msgstr "CANCELE DUTE LA GEOLOCALIZAZION DAL DATABASE"
 
-#: admin/include/make_db_maps.php:974
+#: admin/include/make_db_maps.php:1138
 msgid "List of non-indexable locations was refreshed!"
 msgstr "La liste das localitâs scognossudis al è stât Atualizât!"
 
-#: admin/include/make_db_maps.php:982
+#: admin/include/make_db_maps.php:1146
 #, php-format
 msgid ""
 "Here you can refresh the list of %d non-indexable locations that was stored "
@@ -4467,11 +4470,11 @@ msgstr ""
 "precedent.<br>Miôr fâlu se tu âs coret, zontât o cancelât localitâs, o "
 "impuartât un gedcom Atualizât."
 
-#: admin/include/make_db_maps.php:984
+#: admin/include/make_db_maps.php:1148
 msgid "REFRESH LIST OF NON-INDEXABLE LOCATIONS"
 msgstr "RICONTROLE ELENC DAS LOCALITÂS SCOGNOSSUDIS"
 
-#: admin/include/make_db_maps.php:996
+#: admin/include/make_db_maps.php:1160
 msgid ""
 "The slider has 10 steps. By default the starting year is 1560 with 9 "
 "intervals of 50 years up till 2010 and beyond.<br>You can set the starting "
@@ -4487,47 +4490,47 @@ msgstr ""
 "di ancj di parenze cun intervai regolârs:<br>1110 (intv. 100), 1560 (intv. "
 "50), 1695 (intv. 35), 1740 (intv. 30), 1785 (intv. 25), 1830 (intv. 20)"
 
-#: admin/include/make_db_maps.php:1008
+#: admin/include/make_db_maps.php:1172
 msgid "Name of tree"
 msgstr "Non dal arbul"
 
-#: admin/include/make_db_maps.php:1008
+#: admin/include/make_db_maps.php:1172
 msgid "Starting year"
 msgstr "A partî dal an"
 
-#: admin/include/make_db_maps.php:1009
+#: admin/include/make_db_maps.php:1173
 msgid "Interval"
 msgstr "Interval"
 
-#: admin/include/make_db_maps.php:1047
+#: admin/include/make_db_maps.php:1211
 msgid "Default slider position"
 msgstr "Posizion predefinide da scjale"
 
-#: admin/include/make_db_maps.php:1075
+#: admin/include/make_db_maps.php:1239
 msgid "OFF position (leftmost position)"
 msgstr "Posizion OFF (posizion plui a sinistre)"
 
-#: admin/include/make_db_maps.php:1077
+#: admin/include/make_db_maps.php:1241
 msgid "Show all periods (rightmost position)"
 msgstr "Mostre ducj i intervai (posizion plui a gjestre)"
 
-#: admin/include/make_db_maps.php:1082
+#: admin/include/make_db_maps.php:1246
 msgid "Default map type"
 msgstr "Tip di mape predefinide"
 
-#: admin/include/make_db_maps.php:1110
+#: admin/include/make_db_maps.php:1274
 msgid "Regular map (ROADMAP)"
 msgstr "Mape normâl (MAPE STRADÂL)"
 
-#: admin/include/make_db_maps.php:1112
+#: admin/include/make_db_maps.php:1276
 msgid "Satellite map with roads and places (HYBRID)"
 msgstr "Mape satelitâr cun stradis e lûcs (IBRIDA)"
 
-#: admin/include/make_db_maps.php:1115
+#: admin/include/make_db_maps.php:1279
 msgid "Default zoom"
 msgstr "Zoom predefinît"
 
-#: admin/include/prefix_editor.php:29 admin/index.php:970
+#: admin/include/prefix_editor.php:29 admin/index.php:979
 msgid "Prefix editor"
 msgstr "Editor dai Prefis dai Nons"
 
@@ -4540,11 +4543,11 @@ msgstr ""
 "Cheste liste di prefis a ven doprade par individuâ i prefis dai nons cuant "
 "che al let un file GEDCOM."
 
-#: admin/include/settings_admin.php:192 admin/index.php:959
+#: admin/include/settings_admin.php:192 admin/index.php:968
 msgid "Homepage"
 msgstr "Homepage"
 
-#: admin/include/settings_admin.php:196 admin/include/settings_admin.php:1181
+#: admin/include/settings_admin.php:196 admin/include/settings_admin.php:1195
 msgid "Special settings"
 msgstr "Impostazions particolârs"
 
@@ -4853,199 +4856,199 @@ msgstr ""
 "Par prin selezione la lenghe, podopo tu puedis selezionâ la timeline "
 "predefinide par chê lenghe."
 
-#: admin/include/settings_admin.php:607
+#: admin/include/settings_admin.php:608
 msgid "Settings Main Menu"
 msgstr "Impostazions dal menu principâl"
 
-#: admin/include/settings_admin.php:609
+#: admin/include/settings_admin.php:610
 msgid "Website name"
 msgstr "Impostazions dal menu principâl"
 
-#: admin/include/settings_admin.php:612
+#: admin/include/settings_admin.php:613
 msgid "Link homepage"
 msgstr "Link da Homepage"
 
-#: admin/include/settings_admin.php:612 admin/include/settings_admin.php:1146
-#: admin/include/settings_admin.php:1152 admin/include/settings_admin.php:1158
-#: admin/include/settings_admin.php:1164
+#: admin/include/settings_admin.php:613 admin/include/settings_admin.php:1160
+#: admin/include/settings_admin.php:1166 admin/include/settings_admin.php:1172
+#: admin/include/settings_admin.php:1178
 msgid "Link description"
 msgstr "Descrizion dal link"
 
-#: admin/include/settings_admin.php:613 admin/include/settings_admin.php:620
+#: admin/include/settings_admin.php:614 admin/include/settings_admin.php:621
 msgid "(link to this site including http://)"
 msgstr "(met il link cun ancje https://)"
 
-#: admin/include/settings_admin.php:618
+#: admin/include/settings_admin.php:619
 msgid "Link for birthdays RSS"
 msgstr "Link pai compleans RSS"
 
-#: admin/include/settings_admin.php:621
+#: admin/include/settings_admin.php:622
 msgid "This option can be turned on or off in the user groups."
 msgstr "Cheste opzion a pues jessi ativade o disativade in Grups di Utents."
 
-#: admin/include/settings_admin.php:624
+#: admin/include/settings_admin.php:625
 msgid "Settings family page"
 msgstr "Impostazions da pagjine da famee"
 
-#: admin/include/settings_admin.php:626
+#: admin/include/settings_admin.php:627
 msgid "Number of generations in descendant report"
 msgstr "Impostazions da pagjine da famee"
 
-#: admin/include/settings_admin.php:627
+#: admin/include/settings_admin.php:628
 msgid "Show number of generation in descendant report (standard value=4)."
 msgstr ""
 "Mostre il numar di gjenerazions ta relazion dissendent (valôr standard = 4)."
 
-#: admin/include/settings_admin.php:630
+#: admin/include/settings_admin.php:631
 msgid "Number of persons in search results"
 msgstr "Numar di person tai risultâts das ricercjis"
 
-#: admin/include/settings_admin.php:631
+#: admin/include/settings_admin.php:632
 msgid "Show number of persons in search results (standard value=30)."
 msgstr ""
 "Mostre il numar di person tai risultâts das ricercjis (valôr standard = 30)."
 
-#: admin/include/settings_admin.php:636 admin/include/settings_admin.php:637
+#: admin/include/settings_admin.php:637 admin/include/settings_admin.php:638
 msgid "Watermark text in PDF file"
 msgstr "Test in filigrane tai files PDF"
 
-#: admin/include/settings_admin.php:638
+#: admin/include/settings_admin.php:639
 msgid "Watermark text (clear to remove watermark)"
 msgstr "Test da filigrane (lasse vueit par stampâ cence filigrane)"
 
-#: admin/include/settings_admin.php:640
+#: admin/include/settings_admin.php:641
 msgid "Watermark RGB text color"
 msgstr "Colôr RGB dal test in filigrane"
 
-#: admin/include/settings_admin.php:645
+#: admin/include/settings_admin.php:646
 msgid "Default values: R = 224, G = 224, B = 224."
 msgstr "Valôrs predefinîts: R = 224, G = 224, B = 224 (grîs clâr)"
 
-#: admin/include/settings_admin.php:650
+#: admin/include/settings_admin.php:651
 msgid "Display for One Name Study web sites"
 msgstr "Mostre il sît per un Studi Monografic"
 
-#: admin/include/settings_admin.php:651
+#: admin/include/settings_admin.php:652
 msgid "One Name Study display"
 msgstr "Mostre un Studi Monografic"
 
-#: admin/include/settings_admin.php:658
+#: admin/include/settings_admin.php:659
 msgid "Enter the One Name of this site"
 msgstr "Inseris il Nom dal Studi Monografic di chest sît"
 
-#: admin/include/settings_admin.php:663
+#: admin/include/settings_admin.php:664
 msgid "Save settings"
 msgstr "Inseris il Nom dal Studi Monografic di chest sît"
 
-#: admin/include/settings_admin.php:764
+#: admin/include/settings_admin.php:765
 msgid "Homepage template"
 msgstr "Scheme pa la Pagjine Iniziâl"
 
-#: admin/include/settings_admin.php:765
+#: admin/include/settings_admin.php:766
 msgid "Default settings"
 msgstr "Impostazions predefinidis"
 
-#: admin/include/settings_admin.php:768
+#: admin/include/settings_admin.php:769
 msgid "Position"
 msgstr "Posizion"
 
-#: admin/include/settings_admin.php:768 admin/include/statistics.php:461
+#: admin/include/settings_admin.php:769 admin/include/statistics.php:461
 #: admin/include/tree_check.php:141 statistics.php:86 statistics.php:264
 msgid "Item"
 msgstr "Vôs"
 
-#: admin/include/settings_admin.php:792 admin/include/settings_admin.php:946
+#: admin/include/settings_admin.php:793 admin/include/settings_admin.php:959
 msgid "Active"
 msgstr "Ative"
 
-#: admin/include/settings_admin.php:794 admin/include/settings_admin.php:947
+#: admin/include/settings_admin.php:795 admin/include/settings_admin.php:960
 msgid "Inactive"
 msgstr "No Ative"
 
-#: admin/include/settings_admin.php:799 admin/include/settings_admin.php:952
+#: admin/include/settings_admin.php:800 admin/include/settings_admin.php:965
 msgid "Left"
 msgstr "Sinistre"
 
-#: admin/include/settings_admin.php:801 admin/include/settings_admin.php:953
+#: admin/include/settings_admin.php:802 admin/include/settings_admin.php:966
 msgid "Center"
 msgstr "Centri"
 
-#: admin/include/settings_admin.php:803 admin/include/settings_admin.php:954
+#: admin/include/settings_admin.php:804 admin/include/settings_admin.php:967
 msgid "Right"
 msgstr "Gjestre"
 
-#: admin/include/settings_admin.php:816 admin/include/settings_admin.php:958
+#: admin/include/settings_admin.php:817 admin/include/settings_admin.php:971
 #: admin/include/statistics.php:725
 msgid "Select family tree"
 msgstr "Sielz un Arbul Gjenealogjic"
 
-#: admin/include/settings_admin.php:819 admin/include/settings_admin.php:959
-#: include/mainindex_cls.php:218 include/mainindex_cls.php:585 list.php:1773
+#: admin/include/settings_admin.php:820 admin/include/settings_admin.php:972
+#: include/mainindex_cls.php:225 include/mainindex_cls.php:592 list.php:1773
 msgid "Selected family tree"
 msgstr "Arbul Gjenealogjic sielt"
 
-#: admin/include/settings_admin.php:825 admin/include/settings_admin.php:961
-#: header.php:253 help.php:51 include/mainindex_cls.php:475 menu.php:465
+#: admin/include/settings_admin.php:826 admin/include/settings_admin.php:974
+#: header.php:253 help.php:51 include/mainindex_cls.php:482 menu.php:465
 msgid "Names"
 msgstr "Cognons"
 
-#: admin/include/settings_admin.php:828 admin/include/settings_admin.php:962
-#: include/mainindex_cls.php:896
+#: admin/include/settings_admin.php:829 admin/include/settings_admin.php:975
+#: include/mainindex_cls.php:903
 msgid "Today in history"
 msgstr "Vuê ta storie"
 
-#: admin/include/settings_admin.php:831 admin/include/settings_admin.php:963
-#: include/mainindex_cls.php:695
+#: admin/include/settings_admin.php:832 admin/include/settings_admin.php:976
+#: include/mainindex_cls.php:702
 msgid "Favourites"
 msgstr "Preferîs"
 
-#: admin/include/settings_admin.php:834 admin/include/settings_admin.php:964
+#: admin/include/settings_admin.php:835 admin/include/settings_admin.php:977
 msgid "Surnames Index"
 msgstr "Indiç dai Cognons"
 
-#: admin/include/settings_admin.php:837 admin/include/settings_admin.php:965
+#: admin/include/settings_admin.php:838 admin/include/settings_admin.php:978
 #: include/mainindex_cls.php:135
 msgid "Random photo"
 msgstr "Une Foto a siorte"
 
-#: admin/include/settings_admin.php:846 admin/include/settings_admin.php:968
+#: admin/include/settings_admin.php:850 admin/include/settings_admin.php:982
 #: admin/include/trees_cls.php:96
 msgid "EMPTY LINE"
 msgstr "LINIE VUEITE"
 
-#: admin/include/settings_admin.php:859
+#: admin/include/settings_admin.php:863
 msgid "Columns"
 msgstr "Colonis"
 
-#: admin/include/settings_admin.php:870
+#: admin/include/settings_admin.php:874
 msgid "Rows"
 msgstr "Rîs"
 
-#: admin/include/settings_admin.php:901
+#: admin/include/settings_admin.php:905
 msgid "Header"
 msgstr "Intestazion"
 
-#: admin/include/settings_admin.php:906
+#: admin/include/settings_admin.php:910
 msgid "Show text block, HTML codes can be used."
 msgstr "Mostre il bloc di test, si puedin utilizâ codiçs HTML."
 
-#: admin/include/settings_admin.php:918
+#: admin/include/settings_admin.php:931
 msgid "Show text from CMS system."
 msgstr "Mostre il test dal sisteme CMS."
 
-#: admin/include/settings_admin.php:922 fanchart.php:659
+#: admin/include/settings_admin.php:935 fanchart.php:659
 msgid "View"
 msgstr "Viste"
 
-#: admin/include/settings_admin.php:924
+#: admin/include/settings_admin.php:937
 msgid "with table"
 msgstr "cu la tabele"
 
-#: admin/include/settings_admin.php:927
+#: admin/include/settings_admin.php:940
 msgid "without table"
 msgstr "cence tabele"
 
-#: admin/include/settings_admin.php:983
+#: admin/include/settings_admin.php:997
 msgid ""
 "If the left column isn't used, the center column will be made large "
 "automatically."
@@ -5053,23 +5056,23 @@ msgstr ""
 "Se la colone a çampe no ven utilizade, la colone centrâl a ven ingrandide "
 "automaticamentri."
 
-#: admin/include/settings_admin.php:989
+#: admin/include/settings_admin.php:1003
 msgid "Homepage favourites"
 msgstr "Preferîts su la homepage"
 
-#: admin/include/settings_admin.php:1067
+#: admin/include/settings_admin.php:1081
 msgid "Show list of favourites in homepage"
 msgstr "Mostre la liste dai Preferîts ta homepage"
 
-#: admin/include/settings_admin.php:1085
+#: admin/include/settings_admin.php:1099
 msgid "Link"
 msgstr "Link"
 
-#: admin/include/settings_admin.php:1106 admin/include/trees_cls.php:230
+#: admin/include/settings_admin.php:1120 admin/include/trees_cls.php:230
 msgid "Owner of tree"
 msgstr "Proprietari dal arbul"
 
-#: admin/include/settings_admin.php:1115
+#: admin/include/settings_admin.php:1129
 msgid ""
 "Own code is the code that has to be entered in your genealogy program under "
 "\"own code or REFN\"\n"
@@ -5089,11 +5092,11 @@ msgstr ""
 "\t\t‎3) Dopo vei elaborât il file GEDCOM, al comparirà un link extra tal menu "
 "principâl, ven a stâi al Capostipite!‎<br>"
 
-#: admin/include/settings_admin.php:1133
+#: admin/include/settings_admin.php:1147
 msgid "Slideshow on the homepage"
 msgstr "Sequenze di Immagjinis su la pagjine principâl"
 
-#: admin/include/settings_admin.php:1134
+#: admin/include/settings_admin.php:1148
 msgid ""
 "This option shows a slideshow at the homepage. Put the images in the media/"
 "slideshow/ folder at the website.<br>Example of image link:"
@@ -5102,58 +5105,58 @@ msgstr ""
 "cartele media/slideshow/  dal sito Web. <br> Esempli di collegament das "
 "imagjinis:"
 
-#: admin/include/settings_admin.php:1135
+#: admin/include/settings_admin.php:1149
 msgid "Images size should be about:"
 msgstr "Lis dimensions das imagjinis a varessin di jessi cirche:"
 
-#: admin/include/settings_admin.php:1137
+#: admin/include/settings_admin.php:1151
 msgid "Show slideshow on the homepage"
 msgstr "Mostre la secuence di Imagjinis su la pagjine principâl"
 
-#: admin/include/settings_admin.php:1146 admin/include/settings_admin.php:1152
-#: admin/include/settings_admin.php:1158 admin/include/settings_admin.php:1164
+#: admin/include/settings_admin.php:1160 admin/include/settings_admin.php:1166
+#: admin/include/settings_admin.php:1172 admin/include/settings_admin.php:1178
 msgid "Link to image"
 msgstr "Collegament a la imagjine"
 
-#: admin/include/settings_admin.php:1187
+#: admin/include/settings_admin.php:1201
 msgid "Jewish settings"
 msgstr "Impostazions ebraichis"
 
-#: admin/include/settings_admin.php:1188
+#: admin/include/settings_admin.php:1202
 msgid "Display settings"
 msgstr "Impostazions di visualizazion"
 
-#: admin/include/settings_admin.php:1190
+#: admin/include/settings_admin.php:1204
 msgid ""
 "Change all &#134; characters into &infin; characters in all language files"
 msgstr ""
 "Cambie il caratar &#134; tal caratar &infin; in ducj i files das Lenghis"
 
-#: admin/include/settings_admin.php:1190
+#: admin/include/settings_admin.php:1204
 msgid "unchecking and saving will revert to the cross sign"
 msgstr "deselezione e salve par torneâ al segno di crôs"
 
-#: admin/include/settings_admin.php:1192
+#: admin/include/settings_admin.php:1206
 msgid "Display Hebrew date after Gregorian date: 23 Dec 1980 (16 Tevet 5741)"
 msgstr ""
 "Mostre la date ebraiche dopo chê gregoriane: 23 dic 1980 (16 Tevet 5741)"
 
-#: admin/include/settings_admin.php:1194
+#: admin/include/settings_admin.php:1208
 msgid ""
 "Place yellow Stars of David before holocaust victims in lists and reports"
 msgstr ""
 "Plaçe la stele zale di David davant das vitimis dal olocaust tai elencs e tas "
 "schedis"
 
-#: admin/include/settings_admin.php:1196
+#: admin/include/settings_admin.php:1210
 msgid "Add: \"cause of death: murdered\" to holocaust victims"
 msgstr "Zonte: \"cause da muart: assassinât\" aa dutis lis vitimis dal olocaust"
 
-#: admin/include/settings_admin.php:1197
+#: admin/include/settings_admin.php:1211
 msgid "Editor settings"
 msgstr "Impostazions dal editor"
 
-#: admin/include/settings_admin.php:1199
+#: admin/include/settings_admin.php:1213
 msgid ""
 "Add \"night\" checkbox next to Gregorian dates to calculate Hebrew date "
 "correctly"
@@ -5161,7 +5164,7 @@ msgstr ""
 "Zonte un checkbox \"night\" dongje das datis gregorianis par calcolâ in "
 "maniere corete la date ebraiche"
 
-#: admin/include/settings_admin.php:1201
+#: admin/include/settings_admin.php:1215
 msgid ""
 "Add field for Hebrew name in name section of editor (instead of in \"events\" "
 "list)"
@@ -5169,14 +5172,14 @@ msgstr ""
 "Zonte il cjamp pal non ebraic in ta sezion dal non dal editor (invezit che ta "
 "la liste \"events\")"
 
-#: admin/include/settings_admin.php:1203
+#: admin/include/settings_admin.php:1217
 msgid ""
 "Add field for Brit Mila under birth fields (instead of in \"events\" list)"
 msgstr ""
 "Zonte un cjamp pal il Brit Mila sot i cjamps di nassite (pluitost che ta "
 "liste \"events\")"
 
-#: admin/include/settings_admin.php:1205
+#: admin/include/settings_admin.php:1219
 msgid ""
 "Add field for Bar/ Bat Mitsva before baptise fields (instead of in \"events\" "
 "list)"
@@ -5184,12 +5187,12 @@ msgstr ""
 "Zonte un cjamp pal il Bar/ Bat Mitzva devant dai cjamps dal batesim (pluitost "
 "che ta liste \"events\")"
 
-#: admin/include/settings_admin.php:1210 admin/include/settings_admin.php:1211
-#: admin/include/settings_admin.php:1214
+#: admin/include/settings_admin.php:1224 admin/include/settings_admin.php:1225
+#: admin/include/settings_admin.php:1228
 msgid "Sitemap"
 msgstr "Mape dal sît"
 
-#: admin/include/settings_admin.php:1212
+#: admin/include/settings_admin.php:1226
 msgid ""
 "A sitemap can be used for quick indexing of the family screens by search "
 "engines. Add the sitemap link to a search engine (like Google), or add the "
@@ -5204,7 +5207,7 @@ msgstr ""
 "\t\tSitemap: http://www.yourwebsite.com/humo-gen/sitemap.php"
 
 #: admin/include/statistics.php:10 admin/include/users.php:114
-#: admin/index.php:1024 header.php:259 help.php:66 menu.php:602
+#: admin/index.php:1033 header.php:259 help.php:66 menu.php:602
 msgid "Statistics"
 msgstr "Statistichis"
 
@@ -5250,7 +5253,7 @@ msgid "Visited families in the past 12 months"
 msgstr "Fameis visitatdis tai ultins 12 mês"
 
 #: admin/include/statistics.php:258 admin/include/statistics.php:299
-#: family.php:1178 list.php:1669
+#: family.php:1179 list.php:1669
 msgid "Unknown"
 msgstr "No cognossût"
 
@@ -5980,25 +5983,25 @@ msgstr "Spôs"
 #: admin/include/tree_check.php:1419 admin/include/tree_check.php:1423
 #: admin/include/tree_check.php:1434 admin/include/tree_check.php:1436
 #: admin/include/tree_check.php:1439 admin/include/tree_check.php:1442
-#: family.php:1644 family.php:1668 family.php:1807 family.php:1813
+#: family.php:1591 family.php:1615 family.php:1754 family.php:1760
 msgid "BORN_SHORT"
 msgstr "nas."
 
 # Enter a short text for baptise, like: bapt.
 #: admin/include/tree_check.php:1420 admin/include/tree_check.php:1424
-#: family.php:1647 family.php:1671
+#: family.php:1594 family.php:1618
 msgid "BAPTISED_SHORT"
 msgstr "bat."
 
 # Enter a short text for died here. There is no short text for died in
 # english.
 #: admin/include/tree_check.php:1421 admin/include/tree_check.php:1425
-#: family.php:1696 family.php:1727 family.php:1830 family.php:1836
+#: family.php:1643 family.php:1674 family.php:1777 family.php:1783
 msgid "DIED_SHORT"
 msgstr "Muart"
 
 #: admin/include/tree_check.php:1422 admin/include/tree_check.php:1426
-#: family.php:1699 family.php:1730
+#: family.php:1646 family.php:1677
 msgid "BURIED_SHORT"
 msgstr "sep."
 
@@ -6136,7 +6139,7 @@ msgstr "Zonte une rie vueite ta liste dai Arbui gjenealogjcs"
 msgid "Collation"
 msgstr "Confront"
 
-#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2110
+#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2167
 #: register.php:127 user_settings.php:123
 msgid "E-mail address"
 msgstr "Indiris E-mail"
@@ -6254,7 +6257,7 @@ msgstr "Salte a la prossime"
 msgid "Skip to nr: "
 msgstr "Salte al numar: "
 
-#: admin/include/trees_cls.php:482 maps.php:680 maps.php:792
+#: admin/include/trees_cls.php:482 maps.php:696 maps.php:808
 msgid "Go!"
 msgstr "Va!"
 
@@ -6715,7 +6718,7 @@ msgid "Nr. "
 msgstr "Nr. "
 
 #: admin/include/trees_cls.php:1599 family.php:435 family.php:438 family.php:495
-#: family.php:498 family.php:633 family.php:636 family.php:1020 hourglass.php:73
+#: family.php:498 family.php:634 family.php:637 family.php:1021 hourglass.php:73
 #: relations.php:361 relations.php:372 relations.php:384 relations.php:387
 #: relations.php:389 relations.php:395 relations.php:402 relations.php:406
 #: relations.php:408 relations.php:411 relations.php:412 relations.php:413
@@ -6987,7 +6990,7 @@ msgstr "Gnûf"
 msgid "Approved"
 msgstr "Aprovât"
 
-#: admin/include/users.php:5 admin/index.php:1083 admin/index.php:1088
+#: admin/include/users.php:5 admin/index.php:1092 admin/index.php:1097
 msgid "Users"
 msgstr "Utent"
 
@@ -7011,71 +7014,73 @@ msgstr "nol covente fâ il login"
 msgid "Unblock IP address"
 msgstr "Sbloche l'indiriz IP"
 
-#: admin/index.php:288
+#: admin/index.php:297
 msgid "Please enter a valid username or password. "
 msgstr "Inseris un non utent o la password valids. "
 
-#: admin/index.php:523 admin/index.php:528 admin/index.php:725
+#: admin/index.php:532 admin/index.php:537 admin/index.php:734
 msgid "Update options"
 msgstr "Opzions di Atualizazion"
 
-#: admin/index.php:527
+#: admin/index.php:536
 msgid "update check is disabled."
 msgstr "il control da l'Atualizazion al è disabilitât."
 
-#: admin/index.php:724
+#: admin/index.php:733
 msgid "is up-to-date!"
 msgstr "al è Atualizât!"
 
-#: admin/index.php:730
+#: admin/index.php:739
 msgid "Update available"
 msgstr "Atualizazion a disposizion"
 
-#: admin/index.php:735
+#: admin/index.php:744
 msgid "Beta version available"
 msgstr "Version beta disponibil"
 
-#: admin/index.php:748 admin/update/install_update.php:438
+#: admin/index.php:757 admin/update/install_update.php:438
 msgid "Online version check unavailable."
 msgstr "Control online da Version no je disponibil."
 
-#: admin/index.php:882
+#: admin/index.php:891
 msgid "Website"
 msgstr "Sît web"
 
-#: admin/index.php:892 menu.php:266 menu.php:785
+#: admin/index.php:901 menu.php:266 menu.php:786
 msgid "Logoff"
 msgstr "Iès"
 
-#: admin/index.php:945
+#: admin/index.php:954
 msgid "Control"
 msgstr "Control"
 
-#: admin/index.php:974 family.php:155 header.php:262 help.php:72 menu.php:625
-msgid "Google maps"
+#: admin/index.php:983 help.php:72 menu.php:626
+#, fuzzy
+#| msgid "Google maps"
+msgid "World map"
 msgstr "Mapis di Google"
 
-#: admin/index.php:1012
+#: admin/index.php:1021
 msgid "Data check"
 msgstr "Control dâts"
 
-#: admin/index.php:1018
+#: admin/index.php:1027
 msgid "Gedcom export"
 msgstr "Esporte Gedcom"
 
-#: admin/index.php:1021
+#: admin/index.php:1030
 msgid "Database backup"
 msgstr "Salvataç Database"
 
-#: admin/index.php:1062
+#: admin/index.php:1071
 msgid "Shared addresses"
 msgstr "Indiris condividûts"
 
-#: admin/index.php:1091
+#: admin/index.php:1100
 msgid "Groups"
 msgstr "Grups"
 
-#: admin/index.php:1094
+#: admin/index.php:1103
 msgid "Log"
 msgstr "Log"
 
@@ -7356,8 +7361,8 @@ msgstr "Dì"
 msgid " PRIVACY FILTER"
 msgstr " FILTRI DA PRIVACY"
 
-#: birthday_list.php:219 birthday_list.php:386 include/mainindex_cls.php:931
-#: include/mainindex_cls.php:955 list.php:2138 list_places_families.php:593
+#: birthday_list.php:219 birthday_list.php:386 include/mainindex_cls.php:938
+#: include/mainindex_cls.php:962 list.php:2138 list_places_families.php:593
 msgid " persons are not shown due to privacy settings"
 msgstr " personis no son visualizadis pas impostazions di privacy"
 
@@ -7439,9 +7444,27 @@ msgstr ""
 msgid "Settings family screen"
 msgstr "Impostazions da la schermade da famee"
 
-#: family.php:124 family.php:929 family.php:1918 family.php:1922
+#: family.php:124 family.php:930 family.php:1975 family.php:1979
 msgid "Family Page"
 msgstr "Pagjine da famee"
+
+#: family.php:155
+#, fuzzy
+#| msgid "Family Page"
+msgid "Family map"
+msgstr "Pagjine da famee"
+
+#: family.php:158
+#, fuzzy
+#| msgid "Show Google maps"
+msgid "Show family map"
+msgstr "Mostre lis mapis di Google"
+
+#: family.php:160
+#, fuzzy
+#| msgid "Hide Google maps"
+msgid "Hide family map"
+msgstr "Nascuint lis mapis di Google"
 
 #: family.php:167
 msgid "Pictures"
@@ -7463,102 +7486,102 @@ msgstr "RTF"
 msgid "Add to favourite list"
 msgstr "Zonte ta liste dai preferîts"
 
-#: family.php:435 family.php:495 family.php:633 help.php:22
+#: family.php:435 family.php:495 family.php:634 help.php:22
 #: include/person_cls.php:841
 msgid "Descendant report"
 msgstr "Relazion dai dissendents"
 
-#: family.php:438 family.php:498 family.php:580 family.php:636 family.php:876
-#: family.php:888 include/person_cls.php:821
+#: family.php:438 family.php:498 family.php:580 family.php:637 family.php:877
+#: family.php:889 include/person_cls.php:821
 msgid "Family group sheet"
 msgstr "Schede grup di famee"
 
-#: family.php:605 family.php:894
+#: family.php:606 family.php:895
 #, php-format
 msgid "TIP: use %s for other (ancestor and descendant) reports."
 msgstr "Sugjeriment: use %s par altris relazions (antenâts e dissendents)."
 
-#: family.php:710 family.php:717 family.php:721 report_ancestor.php:314
+#: family.php:711 family.php:718 family.php:722 report_ancestor.php:314
 #: report_ancestor.php:323 report_ancestor.php:333 report_ancestor.php:337
 msgid "generation "
 msgstr "gjenerazion "
 
-#: family.php:1292 family.php:1310
+#: family.php:1293 family.php:1311
 msgid "Child"
 msgstr "Fî"
 
-#: family.php:1448 family.php:1454 family.php:1466
+#: family.php:1449 family.php:1455 family.php:1467
 msgid "follows"
 msgstr "a seguis"
 
-#: family.php:1527 family.php:1545 family.php:1564
+#: family.php:1528 family.php:1546 family.php:1565
 msgid "Adopted child:"
 msgstr "Frut adottât:"
 
-#: family.php:1542 family.php:1561
+#: family.php:1543 family.php:1562
 msgid "Stepchild"
 msgstr "Fiastri/e"
 
-#: family.php:1543 family.php:1562
+#: family.php:1544 family.php:1563
 msgid "Legal child"
 msgstr "Fî legjitim"
 
-#: family.php:1544 family.php:1563
+#: family.php:1545 family.php:1564
 msgid "Foster child"
 msgstr "Fî adotif"
 
-#: family.php:1772 family.php:1778 include/calculate_age_cls.php:375
+#: family.php:1719 family.php:1725 include/calculate_age_cls.php:375
 #: include/calculate_age_cls.php:378 report_ancestor.php:1181
 msgid "married"
 msgstr "sposât/de"
 
-#: family.php:1868
+#: family.php:1925
 msgid "Family events"
 msgstr "Events di famee"
 
-#: family.php:1918
+#: family.php:1975
 msgid "Citation for:"
 msgstr "Citazion par:"
 
-#: family.php:1937
+#: family.php:1994
 msgid "accessed"
 msgstr "date di acès"
 
-#: family.php:2033 family.php:2040
+#: family.php:2090 family.php:2097
 msgid "New user note"
 msgstr "Gnove note utent"
 
-#: family.php:2038 mailform.php:24 register.php:59 user_settings.php:50
+#: family.php:2095 mailform.php:24 register.php:59 user_settings.php:50
 #, php-format
 msgid "Message sent through %s from the website."
 msgstr "Messaç inviât da %s dal sît web."
 
-#: family.php:2045
+#: family.php:2102
 msgid "User note by family"
 msgstr "Note di un utent pa famee"
 
-#: family.php:2066
+#: family.php:2123
 msgid "Your information is saved and will be reviewed by the webmaster."
 msgstr ""
 "Lis tôs informazions a vegnin salvadis e a saran esaminadis dal aministratôr."
 
-#: family.php:2103
+#: family.php:2160
 msgid "Add information or remarks"
 msgstr "Zonte informazions o coments"
 
-#: family.php:2110
+#: family.php:2167
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "Al mancje il to indiriz e-mail. Zonte il to indiriz achi: "
 
-#: family.php:2116 login.php:44 mailform.php:134 register.php:148
+#: family.php:2173 login.php:44 mailform.php:134 register.php:148
 msgid "Send"
 msgstr "Invie"
 
-#: family.php:2181 report_ancestor.php:1568
+#: family.php:2238 report_ancestor.php:1568
 msgid "Download RTF report."
 msgstr "Scjarîe il report RTF."
 
-#: family.php:2182 report_ancestor.php:1569
+#: family.php:2239 report_ancestor.php:1569
 msgid ""
 "TIP: Don't use Wordpad to open this file (the lay-out will be wrong!). It's "
 "better to use a text processor like Word or OpenOffice Writer."
@@ -7679,43 +7702,43 @@ msgstr "Link par scjariâ"
 msgid "Unzip and place in \"include/fanchart/chinese/\" folder"
 msgstr "Scompate e inserìs ta cartele \"include/fanchart/chinese/\""
 
-#: googlemaps/google_initiate.php:334
+#: googlemaps/google_initiate.php:335
 msgid "today "
 msgstr "vuê "
 
-#: googlemaps/google_initiate.php:382
+#: googlemaps/google_initiate.php:383
 msgid "Location: "
 msgstr "Lûc: "
 
-#: googlemaps/google_initiate.php:384
+#: googlemaps/google_initiate.php:385
 msgid "For a list of persons born here until "
 msgstr "Per une liste di dutis lis personis nassudis chi fin al "
 
-#: googlemaps/google_initiate.php:387
+#: googlemaps/google_initiate.php:388
 msgid "For a list of all people that died here until "
 msgstr "Per une liste di dutis lis personis muartis chi fin al "
 
-#: googlemaps/google_initiate.php:389
+#: googlemaps/google_initiate.php:390
 msgid " click here"
 msgstr " cliche achi"
 
-#: googlemaps/google_initiate.php:390
+#: googlemaps/google_initiate.php:391
 msgid "Read about this location in "
 msgstr "Lei cheste localizzazion in "
 
-#: googlemaps/namesearch.php:134
+#: googlemaps/namesearch.php:135
 msgid "All persons born here: "
 msgstr "Dutis lis peronis che a son nassudis achi: "
 
-#: googlemaps/namesearch.php:141
+#: googlemaps/namesearch.php:142
 msgid "Persons born here until "
 msgstr "Peronis che a son nassudis achi fin al "
 
-#: googlemaps/namesearch.php:155
+#: googlemaps/namesearch.php:156
 msgid "All persons that died here: "
 msgstr "Dutis lis peronis che a son muartis achi: "
 
-#: googlemaps/namesearch.php:165
+#: googlemaps/namesearch.php:166
 msgid "Persons that died here until "
 msgstr "Peronis che a son muartis achi fin al "
 
@@ -7739,8 +7762,12 @@ msgstr "Calcul da Parentele"
 msgid "Mail form"
 msgstr "Mail"
 
-#: header.php:264 hourglass.php:92 list.php:1798 maps.php:226 menu.php:308
-#: menu.php:682 menu.php:687 report_descendant.php:424 timelines.php:465
+#: header.php:262
+msgid "Google maps"
+msgstr "Mapis di Google"
+
+#: header.php:264 hourglass.php:92 list.php:1798 maps.php:238 menu.php:308
+#: menu.php:683 menu.php:688 report_descendant.php:424 timelines.php:465
 msgid "Help"
 msgstr "Aiût"
 
@@ -7756,7 +7783,7 @@ msgstr "Incredits"
 msgid "Cookie information"
 msgstr "Informazions sui cookies"
 
-#: header.php:269 menu.php:292 menu.php:816
+#: header.php:269 menu.php:292 menu.php:817
 msgid "Register"
 msgstr "Registrâsi"
 
@@ -8044,14 +8071,18 @@ msgstr ""
 "cambi passâ di une persone a chê altre ."
 
 #: help.php:73
+#, fuzzy
+#| msgid ""
+#| "This will display a googlemap relating to the people present in the "
+#| "database, with ability to map by births or deaths."
 msgid ""
-"This will display a googlemap relating to the people present in the database, "
+"This will display a world map relating to the people present in the database, "
 "with ability to map by births or deaths."
 msgstr ""
 "Chest al mostre une mape di Google cu lis personis dal Arbul, cu la "
 "posibilitàt di visualizâlis par nascite o mmuart."
 
-#: help.php:76 menu.php:639
+#: help.php:76 menu.php:640
 msgid "Contact"
 msgstr "Contats"
 
@@ -8567,64 +8598,64 @@ msgstr "Studi Monografic su di un Cognon"
 msgid "Select a family tree"
 msgstr "Sielz un Arbul Gjenealogjic"
 
-#: include/mainindex_cls.php:297
+#: include/mainindex_cls.php:304
 msgid "Latest update:"
 msgstr "Ultime Atualizazion:"
 
-#: include/mainindex_cls.php:306
+#: include/mainindex_cls.php:313
 msgid "Owner family tree:"
 msgstr "Dats Gjenealogjic tirâs dongje di:"
 
-#: include/mainindex_cls.php:492 include/mainindex_cls.php:494
+#: include/mainindex_cls.php:499 include/mainindex_cls.php:501
 #: statistics.php:773 statistics.php:775
 msgid "Surname"
 msgstr "Cognon"
 
-#: include/mainindex_cls.php:492 include/mainindex_cls.php:494
+#: include/mainindex_cls.php:499 include/mainindex_cls.php:501
 #: list_names.php:315 list_names.php:317 statistics.php:773 statistics.php:775
 #: statistics.php:950 statistics.php:951 statistics.php:952 statistics.php:953
 msgid "Total"
 msgstr "Totâl"
 
-#: include/mainindex_cls.php:504
+#: include/mainindex_cls.php:511
 msgid "More statistics"
 msgstr "Altris statistichis"
 
-#: include/mainindex_cls.php:566 list.php:1573
+#: include/mainindex_cls.php:573 list.php:1573
 msgid "Enter name or part of name"
 msgstr "Inseris il non o une part dal non"
 
-#: include/mainindex_cls.php:567 list.php:1577
+#: include/mainindex_cls.php:574 list.php:1577
 msgid "Enter private name"
 msgstr "Inseris il non privât"
 
-#: include/mainindex_cls.php:578
+#: include/mainindex_cls.php:585
 msgid "Minimum: 3 characters."
 msgstr "Minim: 3 caratars."
 
-#: include/mainindex_cls.php:590 list.php:1777
+#: include/mainindex_cls.php:597 list.php:1777
 msgid "All but selected tree"
 msgstr "Ducj gjavant l'arbul selezionât"
 
-#: include/mainindex_cls.php:602 list.php:1817
+#: include/mainindex_cls.php:609 list.php:1817
 msgid "Advanced search"
 msgstr "Ricercje avanzade"
 
-#: include/mainindex_cls.php:712
+#: include/mainindex_cls.php:719
 msgid "Surnames Index:"
 msgstr "Indiç dai Cognons:"
 
-#: include/mainindex_cls.php:802
+#: include/mainindex_cls.php:809
 msgid "Patronyms"
 msgstr "Patronimic"
 
-#: include/mainindex_cls.php:969
+#: include/mainindex_cls.php:976
 #, php-format
 msgid "This database is made by %s, a freeware genealogical  program"
 msgstr ""
 "Chest database al è stât svilupât cun %s, un program di gjenealogjie gratuit"
 
-#: include/mainindex_cls.php:981
+#: include/mainindex_cls.php:988
 #, php-format
 msgid "European law: %s cookie information"
 msgstr "Legislazion Europee: Informazions sui cookies di %s"
@@ -8741,7 +8772,7 @@ msgstr "Grafic dai dissendents"
 msgid "DNA Charts"
 msgstr "Mape DNA"
 
-#: include/person_cls.php:973 menu.php:278 menu.php:804
+#: include/person_cls.php:973 menu.php:278 menu.php:805
 msgid "Admin"
 msgstr "Aministratôr"
 
@@ -9318,51 +9349,51 @@ msgstr "Rispueste sbaliade a la domande bloche-spam! Riprove..."
 msgid "The e-mail function has been switched off!"
 msgstr "La funzion e-mail a je stade disativade!"
 
-#: maps.php:22
+#: maps.php:28
 msgid "Display birth or death locations across different time periods"
 msgstr "Mostre i lûcs di nassite o di muart in diferents intervai di timp"
 
-#: maps.php:78
+#: maps.php:84
 msgid "Display:"
 msgstr "Visualize:"
 
-#: maps.php:82
+#: maps.php:88
 msgid "Birth locations"
 msgstr "Lûcs di nassite"
 
-#: maps.php:84
+#: maps.php:90
 msgid "Death locations"
 msgstr "Lûcs di muart"
 
-#: maps.php:95
+#: maps.php:107
 msgid "Filters:"
 msgstr "Filtri:"
 
-#: maps.php:156
+#: maps.php:168
 msgid "Display births until: "
 msgstr "Mostre i nassûts fin tal: "
 
-#: maps.php:159
+#: maps.php:171
 msgid "Display deaths until: "
 msgstr "Mostre i muars fin tal: "
 
-#: maps.php:171
+#: maps.php:183
 msgid "Filter by specific family name(s)"
 msgstr "Filtri par un specific cognon"
 
-#: maps.php:176
+#: maps.php:188
 msgid "Filter by descendants"
 msgstr "Filtri pai Dissendents"
 
-#: maps.php:184
+#: maps.php:196
 msgid "Filter by ancestors"
 msgstr "Filtri pai Antenâts"
 
-#: maps.php:194
+#: maps.php:206
 msgid "Other tools:"
 msgstr "Altris struments:"
 
-#: maps.php:230
+#: maps.php:242
 msgid ""
 "<b>Top menu line:</b>\n"
 "<ul><li>Choose family tree. On sites with multiple family trees here you can "
@@ -9436,67 +9467,67 @@ msgstr ""
 " <li> I nons in chest elenc si puedis selezionâ e si vierzarà une gnove "
 "schede dal browser cu la pagjine di famiee di cheste persone. </li></ul>|n"
 
-#: maps.php:272
+#: maps.php:284
 msgid "Find location on the map"
 msgstr "Cjate la localitât su la mape"
 
-#: maps.php:292
+#: maps.php:305
 msgid "Mapping with specific name(s): "
 msgstr "Mape di un specific non(s): "
 
-#: maps.php:303
+#: maps.php:316
 msgid "Switch name filter off"
 msgstr "Filtri disativât pai nons"
 
-#: maps.php:418
+#: maps.php:431
 msgid "Filter by descendants of: "
 msgstr "Filtri pai dissendents di: "
 
-#: maps.php:418
+#: maps.php:431
 msgid "Switch descendant filter off"
 msgstr "Filtri disattivât pai dissendents"
 
-#: maps.php:421
+#: maps.php:434
 msgid "No known birth places amongst descendants"
 msgstr "No son cognossûs i lûcs di nassite dai dissendents"
 
-#: maps.php:421 maps.php:535
+#: maps.php:434 maps.php:548
 msgid "Close"
 msgstr "Siere"
 
-#: maps.php:532
+#: maps.php:545
 msgid "Filter by ancestors of: "
 msgstr "Filtra pai Antenâts di: "
 
-#: maps.php:532
+#: maps.php:545
 msgid "Switch ancestor filter off"
 msgstr "Disative il filtri pai Antenâts"
 
-#: maps.php:535
+#: maps.php:548
 msgid "No known birth places amongst ancestors"
 msgstr "Nissun lûc di nassite cognossût tra i antenâts"
 
-#: maps.php:558
+#: maps.php:573
 msgid "Mark checkbox next to name(s)"
 msgstr "Disponte la casele dongje dal non(s)"
 
-#: maps.php:570
+#: maps.php:585
 msgid "Choose"
 msgstr "Sielz"
 
-#: maps.php:598
+#: maps.php:614
 msgid "Filter by descendants of a person"
 msgstr "Filtri pai Dissendents di une persone"
 
-#: maps.php:599 maps.php:708
+#: maps.php:615 maps.php:724
 msgid "Pick a name or enter ID:"
 msgstr "Sielz un non o inseris un ID:"
 
-#: maps.php:602 maps.php:711
+#: maps.php:618 maps.php:727
 msgid "Pick a name from the pulldown list"
 msgstr "Sielz un non ta la liste"
 
-#: maps.php:707
+#: maps.php:723
 msgid "Filter by ancestors of a person"
 msgstr "Filtri pai Antenâts di une persone"
 
@@ -9504,17 +9535,17 @@ msgstr "Filtri pai Antenâts di une persone"
 msgid "Favourites list:"
 msgstr "Liste dai preferîts:"
 
-#: menu.php:323 menu.php:701
+#: menu.php:323 menu.php:702
 #, php-format
 msgid "%s info"
 msgstr "%s informazions"
 
-#: menu.php:338 menu.php:716
+#: menu.php:338 menu.php:717
 #, php-format
 msgid "%s credits"
 msgstr "%s incredits"
 
-#: menu.php:354 menu.php:732
+#: menu.php:354 menu.php:733
 #, php-format
 msgid "%s cookies"
 msgstr "%s cookies"
@@ -9527,7 +9558,7 @@ msgstr "Lûcs (par personis)"
 msgid "Places (by families)"
 msgstr "Lûcs (par fameis)"
 
-#: photoalbum.php:244 timelines.php:556
+#: photoalbum.php:246 timelines.php:556
 msgid ""
 "*** Privacy filter is active, one or more items are filtered. Please login to "
 "see all items ***"
@@ -9535,7 +9566,7 @@ msgstr ""
 "*** Filtri da privacy atîf, un o plui elements son stâts oscurâts. Effettua "
 "il login par viodi ducj i dâts ***"
 
-#: photoalbum.php:328
+#: photoalbum.php:330
 msgid "Photo's per page"
 msgstr "Fotos par pagjine"
 
@@ -10570,6 +10601,33 @@ msgstr "Sielz un colôr pal tema (un cookie al sarà doprât par visasi il tema)
 #: user_settings.php:161 user_settings.php:165
 msgid "Standard-colours"
 msgstr "Colors standard"
+
+#~ msgid ""
+#~ "As of Jun 22, 2016 Google has changed its API policy and all queries to "
+#~ "the Google maps API now require a site-specific key."
+#~ msgstr ""
+#~ "Dal 22 di giugn 2016 Google al à cambiât la so politiche API e dutis lis "
+#~ "richiestis a l'API di Google Maps. Cumò a covente une clâf specifiche dal "
+#~ "sît."
+
+#~ msgid ""
+#~ "For now, it seems that installations that started API queries prior to "
+#~ "June 22, 2016 will continue to work also without a key."
+#~ msgstr ""
+#~ "Par cumò, al semee che lis instalazion che a jan comenzât a doprâ la query "
+#~ "API prime dal 22 giugn 2016 a continueran a funzionâ ancje cence clâf."
+
+#~ msgid ""
+#~ "If however you start activating the Google map feature after this date, "
+#~ "you are likely to encounter error messages concerning a missing key if you "
+#~ "do not first enter and save a key here."
+#~ msgstr ""
+#~ "Se tu tachis cumò a doprâ la funzion Google Maps, al è probabil che si "
+#~ "incuintri cualchi messaç di erôr pa mancjance di une clâf se no si inseris "
+#~ "achì e si salve une clâfdomandade a Google."
+
+#~ msgid "has been deleted"
+#~ msgstr "al è stât cancelât"
 
 #~ msgid "Search filename"
 #~ msgstr "Cîr il non dal file"

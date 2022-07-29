@@ -2093,6 +2093,16 @@ if (isset($_POST['connect_change'])){
 			if (strcasecmp($_POST["connect_date_prefix"][$key].$_POST["connect_date"][$key], $_POST["connect_date_old"][$key]) != 0) $connect_changed=true;
 			if ($_POST["connect_role"][$key]!=$_POST["connect_role_old"][$key]) $connect_changed=true;
 			if ($_POST['connect_text'][$key]!=$_POST["connect_text_old"][$key]) $connect_changed=true;
+
+			// *** Save shared address (even if role or extra text isn't used ***
+			if (isset($_POST['connect_item_id'][$key])){
+				if (isset($_POST["connect_item_id_old"][$key])){
+					if ($_POST['connect_item_id'][$key]!==$_POST["connect_item_id_old"][$key]) $connect_changed=true;
+				}
+				else{
+					$connect_changed=true;
+				}
+			}
 		}
 
 		if ($connect_changed){

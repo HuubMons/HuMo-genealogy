@@ -649,9 +649,14 @@ else{
 
 	// *** Added in mar. 2022: disable NO_ZERO_DATE and NO_ZERO_IN_DATE. To solve sorting problems in dates. ***
 	// *** Maybe also add ONLY_FULL_GROUP_BY variable? ***
-	$result= $dbh->query("SET GLOBAL sql_mode=(SELECT
+	//$result= $dbh->query("SET GLOBAL sql_mode=(SELECT
+	//	REPLACE(
+	//		REPLACE(@@sql_mode,'NO_ZERO_DATE','')
+	//	,'NO_ZERO_IN_DATE',''));");
+	// *** This query is probably better ***
+	$result= $dbh->query("SET SESSION sql_mode=(SELECT
 		REPLACE(
-			REPLACE(@@sql_mode,'NO_ZERO_DATE','')
+			REPLACE(@@SESSION.sql_mode,'NO_ZERO_DATE','')
 		,'NO_ZERO_IN_DATE',''));");
 
 	echo '<div class="silverbody">';
