@@ -395,10 +395,9 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 			// *** Children                                              ***
 			// *************************************************************
 			if ($familyDb->fam_children){
-				$childnr=1;
+				//$childnr=1;
 				$child_array=explode(";",$familyDb->fam_children);
-
-				for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
+				foreach ($child_array as $i => $value){
 					@$childDb = $db_functions->get_person($child_array[$i]);
 
 					// *** Build descendant_report ***
@@ -414,14 +413,16 @@ if(isset($_GET['persged']) AND isset($_GET['persfams'])) {
 						}
 					}
 				}
-					$childnr++;
+				//$childnr++;
 			}
 
 		} // Show  multiple marriages
 	} // End of outline function
 
 	// ******* Start function here - recursive if started ******
-	$desc_array = '';
+	//$desc_array = '';
+	$desc_array = []; // Needed for PHP 7.x: creates an array
+
 	outline($persfams_arr[0], $chosenperson, $gn);
 	if($desc_array != '') {
 		$desc_array = array_unique($desc_array); // removes duplicate persons (because of related ancestors)
@@ -449,6 +450,7 @@ if(isset($_GET['anc_persged']) AND isset($_GET['anc_persfams'])) {
 	$myresult = $dbh->query("SELECT pers_lastname, pers_firstname, pers_prefix FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$chosenperson."'");
 	$myresultDb=$myresult->fetch(PDO::FETCH_OBJ);
+//also check privacy
 	$chosenname = $myresultDb->pers_firstname.' '.strtolower(str_replace('_','',$myresultDb->pers_prefix)).' '.$myresultDb->pers_lastname;
 
 	function find_anc($family_id) { // function to find all ancestors - family_id = person GEDCOM number
@@ -516,7 +518,7 @@ if(isset($_GET['anc_persged']) AND isset($_GET['anc_persfams'])) {
 							$marriage_gedcomnumber2[]=$person_manDb->pers_famc;
 						}
 					}
-				} 
+				}
 				else{
 					// *** Show N.N. person ***
 					@$person_manDb = $db_functions->get_person($ancestor_array[$i]);
@@ -533,7 +535,7 @@ if(isset($_GET['anc_persged']) AND isset($_GET['anc_persfams'])) {
 	$listed_array=array();
 	find_anc($chosenperson);
 	foreach($listed_array as $value) {
-	$anc_array[] = $value;  
+		$anc_array[] = $value;
 	}
 /*	if($anc_array != '') {
 		$anc_array = array_unique($anc_array); // removes duplicate persons (because of related ancestors)

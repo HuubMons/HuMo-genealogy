@@ -62,7 +62,6 @@ if($flag_namesearch!='') {
 }
 
 if($flag_desc_search==1 AND $desc_array != '') {
-	//for($i=0; $i<count($desc_array); $i++) {
 	foreach($desc_array as $value) {
 		if($_SESSION['type_birth']==1) {
 			$persoon=$dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
@@ -124,7 +123,6 @@ if($flag_desc_search==1 AND $desc_array != '') {
 }
 elseif($flag_anc_search==1 AND $anc_array != '') {
 //elseif(1==3) {
-	//for($i=0; $i<count($desc_array); $i++) {
 	foreach($anc_array as $value) {
 		if($_SESSION['type_birth']==1) {
 			$persoon=$dbh->query("SELECT pers_firstname, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date

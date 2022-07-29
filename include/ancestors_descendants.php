@@ -23,11 +23,8 @@
 $gn=0;	// *** Generation number ***
 $descendant_id=0;
 function descendants($family_id,$main_person,$gn,$nr_generations) {
-	//global $nr_generations;
 	global $dbh, $db_functions;
 	global $descendant_id, $descendant_array;
-
-	//$family_nr=1; //*** Process multiple families ***
 
 	// *** Selected person ***
 	$descendant_id++;
@@ -73,8 +70,7 @@ function descendants($family_id,$main_person,$gn,$nr_generations) {
 		// *************************************************************
 		if ($familyDb->fam_children){
 			$child_array=explode(";",$familyDb->fam_children);
-			$nr_children=count($child_array); $nr_children--;
-			for ($i=0; $i<=$nr_children; $i++){
+			foreach ($child_array as $i => $value){
 				@$childDb = $db_functions->get_person($child_array[$i]);
 				if ($childDb->pers_fams){
 					// *** 1st family of child ***
@@ -111,11 +107,10 @@ function ancestors($main_person){
 	global $ancestor_array;
 
 	// *** person 1 ***
-//check query (only need famc):
-	$personDb = $db_functions->get_person($main_person);
+	$personDb = $db_functions->get_person($main_person,'famc-fams');
+	// *** Get parents ***
 	if ($personDb->pers_famc){
-//only need man/woman
-		$parentDb = $db_functions->get_family($personDb->pers_famc);
+		$parentDb = $db_functions->get_family($personDb->pers_famc,'man-woman');
 		$ancestor_array[2]=$parentDb->fam_man; $ancestor_array[3]=$parentDb->fam_woman ;
 	}
 	// end of person 1
@@ -125,13 +120,11 @@ function ancestors($main_person){
 
 	for ($counter = 2; $counter < $count_max; $counter++){
 		if (isset($ancestor_array[$counter])){
-//check query (only need famc):
-//$personDb = $db_functions->get_person($ancestor_array[$counter],'famc-fams');
-			$personDb = $db_functions->get_person($ancestor_array[$counter]);
+			$personDb = $db_functions->get_person($ancestor_array[$counter],'famc-fams');
+			// *** Get parents ***
 			if (isset($personDb->pers_famc) AND $personDb->pers_famc){
 				$father_counter=$counter*2; $mother_counter=$father_counter+1;
-//check query (only need man/ woman):
-				$parentDb = $db_functions->get_family($personDb->pers_famc);
+				$parentDb = $db_functions->get_family($personDb->pers_famc,'man-woman');
 				$ancestor_array[$father_counter]=$parentDb->fam_man; $ancestor_array[$mother_counter]=$parentDb->fam_woman;
 				// *** Raise counter ***
 				if ($father_counter>$count_max) $count_max=$father_counter;

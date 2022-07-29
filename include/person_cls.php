@@ -824,8 +824,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					// *** Only show a descendant_report icon if there are children ***
 					$check_children=false;
 					$check_family=explode(";",$personDb->pers_fams);
-					for ($i=0; $i<=substr_count($personDb->pers_fams, ";"); $i++){
-						//@$check_childrenDb=$db_functions->get_family($check_family[$i]);
+					foreach ($check_family as $i => $value){
 						@$check_childrenDb=$db_functions->get_family($check_family[$i]);
 						if ($check_childrenDb->fam_children){ $check_children=true; }
 					}
@@ -1105,7 +1104,7 @@ function name_extended($person_kind,$show_name_texts=false){
 
 				// *** Source by sexe ***
 				$source='';
-				if ($person_kind != 'outline') $source=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber);
+				if ($person_kind != 'outline' AND $person_kind != 'outline_pdf') $source=show_sources2("person","pers_sexe_source",$personDb->pers_gedcomnumber);
 				if ($source){
 					//$text_name.=$source.' ';
 					$start_name.=$source.' ';
@@ -1146,7 +1145,7 @@ function name_extended($person_kind,$show_name_texts=false){
 
 		//if (($person_kind=='child' OR $person_kind=='outline') AND $personDb->pers_fams){
 		// *** 02-08-2021: also add link to partner in family screen ***
-		if (($person_kind=='child' OR $person_kind=='outline' OR $person_kind=='parent2') AND $personDb->pers_fams){
+		if (($person_kind=='child' OR $person_kind=='outline' OR $person_kind=='parent2') AND $personDb->pers_fams AND $screen_mode!="PDF"){
 			$templ_name["name_name"]=$standard_name;
 
 			// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
@@ -1180,7 +1179,7 @@ function name_extended($person_kind,$show_name_texts=false){
 
 			// *** Source by name ***
 			$source='';
-			if ($person_kind != 'outline') $source=show_sources2("person","pers_name_source",$personDb->pers_gedcomnumber);
+			if ($person_kind != 'outline' AND $person_kind != 'outline_pdf') $source=show_sources2("person","pers_name_source",$personDb->pers_gedcomnumber);
 			if ($source){
 				if($screen_mode=='PDF') {
 					$templ_name["name_name_source"]=$source;
@@ -1519,6 +1518,8 @@ function name_extended($person_kind,$show_name_texts=false){
 
 	if ($screen_mode=='RTF')
 		return '<b>'.$text_name.$dirmark1.'</b>'.$text_name2.$text_colour.$text_parents.$child_marriage;
+	elseif($screen_mode=='PDF') 
+		return $text_name;
 	else
 		return $start_name.'<span class="pers_name">'.$text_name.$dirmark1.'</span>'.$text_name2.$text_colour.$text_parents.$child_marriage;
 
@@ -1760,7 +1761,7 @@ function person_data($person_kind, $id){
 			$work_text=process_text($personDb->pers_birth_text);
 			if ($work_text){
 				//$templ_person["born_text"]=", ".$work_text;
-				$templ_person["born_text"]=" ".$work_text;
+				$templ_person["born_text"]=" ".strip_tags($work_text);
 				$temp="born_text";
 				$text.=$templ_person["born_text"];
 			}
@@ -1838,7 +1839,7 @@ function person_data($person_kind, $id){
 			if ($work_text){
 				//if($temp) { $templ_person[$temp].=", "; }
 				//$templ_person["bapt_text"]=$work_text;
-				$templ_person["bapt_text"]=' '.$work_text;
+				$templ_person["bapt_text"]=' '.strip_tags($work_text);
 				$temp="bapt_text";
 				//$text.=", ".$work_text;
 				$text.=$templ_person["bapt_text"];
@@ -1954,7 +1955,7 @@ function person_data($person_kind, $id){
 			if ($work_text){
 				//$text.=", ".$work_text;
 				//if($temp) { $templ_person[$temp].=", "; }
-				$templ_person["dead_text"]=' '.$work_text;
+				$templ_person["dead_text"]=' '.strip_tags($work_text);
 				$temp="dead_text";
 				$text.=$templ_person["dead_text"];
 			}
@@ -2061,7 +2062,7 @@ function person_data($person_kind, $id){
 			$work_text=process_text($personDb->pers_buried_text);
 			if ($work_text){
 				//if($temp) { $templ_person[$temp].=", "; }
-				$templ_person["buri_text"]=' '.$work_text;
+				$templ_person["buri_text"]=' '.strip_tags($work_text);
 				$temp="buri_text";
 				//$text.=", ".$work_text;
 				$text.=$templ_person["buri_text"];
@@ -2191,7 +2192,7 @@ function person_data($person_kind, $id){
 					if ($work_text){
 						//if($temp) { $templ_person[$temp].=", "; }
 						if($temp) { $templ_person[$temp].=" "; }
-						$templ_person["prof_text".$eventnr]=$work_text;
+						$templ_person["prof_text".$eventnr]=strip_tags($work_text);
 						$temp="prof_text".$eventnr;
 
 						//$process_text.=", ".$work_text;
@@ -2257,7 +2258,7 @@ function person_data($person_kind, $id){
 	if ($person_kind=='parent2'){
 		$marriage_array=explode(";",$personDb->pers_fams);
 		if (isset($marriage_array[1])){
-			for ($i=0; $i<=substr_count($personDb->pers_fams, ";"); $i++){
+			foreach ($marriage_array as $i => $value){
 				$marriagenr=$i+1;
 				$parent2_famDb = $db_functions->get_family($marriage_array[$i]);
 				// *** Use a class for marriage ***
@@ -2365,7 +2366,9 @@ function person_data($person_kind, $id){
 
 			if ($work_text){
 				$process_text.='<br>'.$work_text."\n";
-				$templ_person["pers_text"]="\n".$work_text;
+				// clean html tags
+				$tx = strip_tags($work_text);
+				$templ_person["pers_text"]="\n".$tx;
 				$temp="pers_text";
 			}
 		}

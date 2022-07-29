@@ -2,7 +2,7 @@
 class mainindex_cls{
 
 function show_tree_index(){
-	global $dbh, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
+	global $dbh, $tree_id, $tree_prefix_quoted, $dataDb, $selected_language, $treetext_name, $dirmark2, $bot_visit, $humo_option, $db_functions;
 
 	include_once(CMS_ROOTPATH."include/person_cls.php");
 
@@ -693,6 +693,8 @@ function extra_links(){
 				$text_nr=array_search ($personDb->pers_own_code,$pers_own_code);
 
 				$link_order2=$link_order[$text_nr];
+				// *** Only needed for PJCS, can't be used in other installations ***
+				//$link_text2[$link_order2]='<a href="'.$path_tmp.'">'.$name["standard_name"].'</a> '.__($link_text[$text_nr]);
 				$link_text2[$link_order2]='<a href="'.$path_tmp.'">'.$name["standard_name"].'</a> '.$link_text[$text_nr];
 			}
 		}

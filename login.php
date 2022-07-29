@@ -33,7 +33,7 @@ else {
 }
 
 // form to enter username and mail in order to receive reset link
-if(isset($_POST['forgotpw'])) { 
+if(isset($_POST['forgotpw'])) {
 	echo '<form name="pw_email_form" method="post" action="'.$path_tmp.'">';
 		echo '<br><table class="humo" cellspacing="0" align="center">';
 		echo '<tr class="table_headline"><th class="fonts" colspan="2">'.__('Password retrieval').'</th></tr>';
@@ -61,7 +61,8 @@ elseif(isset($_POST['got_email'])) {
 
  	function getUrl() {
 		$url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
-		$url .= ( $_SERVER["SERVER_PORT"] !== 80 ) ? ":".$_SERVER["SERVER_PORT"] : "";
+		// *** May 2022: removed port. For some reason port 80 was always shown ***
+		//$url .= ( $_SERVER["SERVER_PORT"] !== 80 ) ? ":".$_SERVER["SERVER_PORT"] : "";
 		$url .= $_SERVER["REQUEST_URI"];
 		return $url;
 	} 

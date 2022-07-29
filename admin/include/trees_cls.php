@@ -1460,12 +1460,6 @@ function show_pair($left_id,$right_id,$mode) {
 			if($famDb->fam_children) {
 				$child = explode(';',$famDb->fam_children);
 				foreach($child as $ch_value) {
-					//$ch_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$ch_value."'";
-					//$ch = $dbh->query($ch_qry);
-					//$chDb = $ch->fetch(PDO::FETCH_OBJ);
-					//if($chDb) {
-					//	$children1 .= $chDb->pers_firstname.'<br>';
-					//}
 					$childDb=$db_functions->get_person($ch_value);
 					$name_cls = New person_cls;
 					$name=$name_cls->person_name($childDb);
@@ -1535,12 +1529,6 @@ function show_pair($left_id,$right_id,$mode) {
 			if($famDb->fam_children) {
 				$child = explode(';',$famDb->fam_children);
 				foreach($child as $ch_value) {
-					//$ch_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$ch_value."'";
-					//$ch = $dbh->query($ch_qry);
-					//$chDb = $ch->fetch(PDO::FETCH_OBJ);
-					//if($chDb) {
-					//	$children2 .= $chDb->pers_firstname.'<br>';
-					//}
 					$childDb=$db_functions->get_person($ch_value);
 					$name_cls = New person_cls;
 					$name=$name_cls->person_name($childDb);
@@ -1694,7 +1682,7 @@ function show_regular_text ($left_item,$right_item,$title,$name) {
 		echo '<tr style="background-color:'.$color.'"><td style="font-weight:bold">'.$title.':</td><td>';
 		$checked=''; $showtext='';
 		if($left_item) {
-			$checked=" CHECKED"; $showtext="&nbsp;&nbsp;[ ".__('Read text')." ]";
+			$checked=" CHECKED"; $showtext="[".__('Read text')."]";
 			echo '<input type="checkbox" name="'.$name.'_l" '.$checked.'>';
 			if(substr($left_item,0,2)=="@N") {  // not plain text but @N23@ -> look it up in humo_texts
 				$notes = $dbh->query("SELECT text_text FROM humo_texts
@@ -1707,7 +1695,7 @@ function show_regular_text ($left_item,$right_item,$title,$name) {
 		}
 		else { echo __('(no data)'); }
 		$checked=''; $showtext=''; if(!$left_item) { $checked=" CHECKED"; }
-		$showtext="&nbsp;&nbsp;[ ".__('Read text')." ]";
+		$showtext="[".__('Read text')."]";
 		echo '</td><td><input type="checkbox" name="'.$name.'_r" '.$checked.'>';
 		if(substr($right_item,0,2)=="@N") {  // not plain text but @N23@ -> look it up in humo_texts
 			$notes = $dbh->query("SELECT text_text FROM humo_texts
@@ -1814,7 +1802,7 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 					$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 					$tree_pict_path=$dataDb->tree_pict_path;
 					$dir='../'.$tree_pict_path;
-					$value = $value.'<a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;'.$dir.$value.'&quot;>\',\'150px\');" href="#">'.' [ Show ]'.'</a>';
+					$value = $value.' <a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;'.$dir.$value.'&quot;>\',\'150px\');" href="#">['.__('Show').']</a>';
 				}
 				echo '<input type="checkbox" name="l_'.$this_event.'_'.$key.'" checked>'.$value.'<br>';
 			}
@@ -1838,7 +1826,7 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 					$dataDb=$datasql->fetch(PDO::FETCH_OBJ);
 					$tree_pict_path=$dataDb->tree_pict_path;
 					$dir='../'.$tree_pict_path;
-					$value = $value.'<a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;'.$dir.$value.'&quot;>\',\'150px\');" href="#">'.' [ Show ]'.'</a>';
+					$value = $value.' <a onmouseover="popup(\'<img width=&quot;150px&quot; src=&quot;'.$dir.$value.'&quot;>\',\'150px\');" href="#">['.__('Show').']</a>';
 				}
 				echo '<input type="checkbox" name="r_'.$this_event.'_'.$key.'" '.$checked.'>'.$value.'<br>';
 			}
@@ -1855,6 +1843,7 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 //**********************************************************************************************************************
 function show_sources ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
+	/*
 	$left_sources = $dbh->query("SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
 		AND LOCATE('source',connect_sub_kind)!=0
@@ -1863,6 +1852,15 @@ function show_sources ($left_ged,$right_ged) {
 		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
 		AND LOCATE('source',connect_sub_kind)!=0
 		ORDER BY connect_sub_kind ");
+	*/
+	$left_sources = $dbh->query("SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
+		AND connect_sub_kind='person_source'
+		ORDER BY connect_order");
+	$right_sources = $dbh->query("SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
+		AND connect_sub_kind='person_source'
+		ORDER BY connect_order");
 
 	if($right_sources->rowCount() > 0) { // no use doing this if right has no sources
 		if($color=='#e6e6e6') { $color='#f2f2f2'; } else { $color='#e6e6e6'; }
@@ -1874,13 +1872,14 @@ function show_sources ($left_ged,$right_ged) {
 					WHERE source_tree_id='".$tree_id."' AND source_gedcomnr='".$left_sourcesDb->connect_source_id."'");
 				$result = $l_source->fetch(PDO::FETCH_OBJ);
 				if(isset($result->source_title)) {
-					if(strlen($result->source_title) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->source_title).'\');" href="#">'.'&nbsp;[ Show source ]'.'</a>'; }
+					if(strlen($result->source_title) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->source_title).'\');" href="#"> ['.__('Show').']</a>'; }
 					else { $title = $result->source_title; }
 				}
 				else {
 					$title = "";
 				}
-				echo '<input type="checkbox" name="l_source_'.$left_sourcesDb->connect_id.'" '.'checked'.'>('.str_replace('_source',' ',$left_sourcesDb->connect_sub_kind).') '.$title.'<br>';
+				//echo '<input type="checkbox" name="l_source_'.$left_sourcesDb->connect_id.'" '.'checked'.'>('.str_replace('_source',' ',$left_sourcesDb->connect_sub_kind).') '.$title.'<br>';
+				echo '<input type="checkbox" name="l_source_'.$left_sourcesDb->connect_id.'" '.'checked'.'>'.$title.'<br>';
 			}
 		}
 		else {
@@ -1893,13 +1892,14 @@ function show_sources ($left_ged,$right_ged) {
 				WHERE source_tree_id='".$tree_id."' AND source_gedcomnr='".$right_sourcesDb->connect_source_id."'");
 			$result = $r_source->fetch(PDO::FETCH_OBJ);
 			if(isset($result->source_title)) {
-				if(strlen($result->source_title) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->source_title).'\');" href="#">'.'&nbsp;[ Show source ]'.'</a>'; }
+				if(strlen($result->source_title) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->source_title).'\');" href="#"> ['.__('Show').']</a>'; }
 				else { $title = $result->source_title; }
 			}
 			else {
 				$title = "";
 			}
-			echo '<input type="checkbox" name="r_source_'.$right_sourcesDb->connect_id.'" '.$checked.'>('.str_replace('_source',' ',$right_sourcesDb->connect_sub_kind).') '.$title.'<br>';
+			//echo '<input type="checkbox" name="r_source_'.$right_sourcesDb->connect_id.'" '.$checked.'>('.str_replace('_source',' ',$right_sourcesDb->connect_sub_kind).') '.$title.'<br>';
+			echo '<input type="checkbox" name="r_source_'.$right_sourcesDb->connect_id.'" '.$checked.'>'.$title.'<br>';
 		}
 		echo '</td></tr>';
 	}
@@ -1910,6 +1910,7 @@ function show_sources ($left_ged,$right_ged) {
 //**********************************************************************************************************************
 function show_addresses ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
+	/*
 	$left_addresses = $dbh->query("SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
 		AND LOCATE('address',connect_sub_kind)!=0
@@ -1917,6 +1918,15 @@ function show_addresses ($left_ged,$right_ged) {
 	$right_addresses = $dbh->query("SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
 		AND LOCATE('address',connect_sub_kind)!=0
+		ORDER BY connect_sub_kind ");
+	*/
+	$left_addresses = $dbh->query("SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
+		AND connect_sub_kind='person_address'
+		ORDER BY connect_sub_kind ");
+	$right_addresses = $dbh->query("SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
+		AND connect_sub_kind='person_address'
 		ORDER BY connect_sub_kind ");
 
 	if($right_addresses->rowCount() > 0) {  // no use doing this if right has no sources
@@ -1928,9 +1938,10 @@ function show_addresses ($left_ged,$right_ged) {
 				$l_address= $dbh->query("SELECT address_address, address_place FROM humo_addresses
 					WHERE address_tree_id='".$tree_id."' AND address_gedcomnr='".$left_addressesDb->connect_item_id."'");
 				$result = $l_address->fetch(PDO::FETCH_OBJ);
-				if(strlen($result->address_address.' '.$result->address_place) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->address_address.' '.$result->address_place).'\');" href="#">'.'&nbsp;[ Show address ]'.'</a>'; }
+				if(strlen($result->address_address.' '.$result->address_place) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->address_address.' '.$result->address_place).'\');" href="#"> ['.__('Show').']</a>'; }
 				else { $title = $result->address_address.' '.$result->address_place; }
-				echo '<input type="checkbox" name="l_address_'.$left_addressesDb->connect_id.'" '.'checked'.'>('.str_replace('_address',' ',$left_addressesDb->connect_sub_kind).') '.$title.'<br>';
+				//echo '<input type="checkbox" name="l_address_'.$left_addressesDb->connect_id.'" checked>('.str_replace('_address',' ',$left_addressesDb->connect_sub_kind).') '.$title.'<br>';
+				echo '<input type="checkbox" name="l_address_'.$left_addressesDb->connect_id.'" checked>'.$title.'<br>';
 			}
 		}
 		else {
@@ -1943,9 +1954,10 @@ function show_addresses ($left_ged,$right_ged) {
 				WHERE address_tree_id='".$tree_id."' AND address_gedcomnr='".$right_addressesDb->connect_item_id."'");
 
 			$result = $r_address->fetch(PDO::FETCH_OBJ);
-			if(strlen($result->address_address.' '.$result->address_place) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->address_address.' '.$result->address_place).'\');" href="#">'.'&nbsp;[ Show address ]'.'</a>'; }
+			if(strlen($result->address_address.' '.$result->address_place) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->address_address.' '.$result->address_place).'\');" href="#"> ['.__('Show').']</a>'; }
 			else { $title = $result->address_address.' '.$result->address_place; }
-			echo '<input type="checkbox" name="r_address_'.$right_addressesDb->connect_id.'" '.$checked.'>('.str_replace('_address',' ',$right_addressesDb->connect_sub_kind).') '.$title.'<br>';
+			//echo '<input type="checkbox" name="r_address_'.$right_addressesDb->connect_id.'" '.$checked.'>('.str_replace('_address',' ',$right_addressesDb->connect_sub_kind).') '.$title.'<br>';
+			echo '<input type="checkbox" name="r_address_'.$right_addressesDb->connect_id.'" '.$checked.'>'.$title.'<br>';
 		}
 		echo '</td></tr>';
 	}
@@ -2053,11 +2065,13 @@ function merge_them($left,$right,$mode) {
 								$allch1 = explode(';',$f1[$i]->fam_children);
 								$allch2 = explode(';',$rightchld);
 								for($z=0; $z < count($allch1); $z++) {
+//only need pers_firstname, pers_lastname?
 									$qry = "SELECT * FROM humo_persons
 										WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$allch1[$z]."'";
 									$chl1 = $dbh->query($qry);
 									$chl1Db = $chl1->fetch(PDO::FETCH_OBJ);
 									for($y=0; $y < count($allch2); $y++) {
+//only need pers_firstname, pers_lastname?
 										$qry = "SELECT * FROM humo_persons
 											WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$allch2[$y]."'";
 										$chl2 = $dbh->query($qry);
@@ -2226,7 +2240,7 @@ function merge_them($left,$right,$mode) {
 							$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_marr_church_source'";
 							$dbh->query($qry3);
 						}
-						
+
 					}
 					$qry = "SELECT * FROM humo_connections WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
 					$sourDb = $dbh->query($qry);
@@ -2273,7 +2287,7 @@ function merge_them($left,$right,$mode) {
 						$fam1 = $dbh->query($qry);
 						$fam1Db = $fam1->fetch(PDO::FETCH_OBJ);
 						$sp_ged = $fam1Db->fam_woman;
-						if($result1Db->pers_sexe == "F") { $sp_ged = $fam1Db->fam_man;   }
+						if($result1Db->pers_sexe == "F") { $sp_ged = $fam1Db->fam_man; }
 
 						$qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$sp_ged."'";
 						$spo1 = $dbh->query($qry);

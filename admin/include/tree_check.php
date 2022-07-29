@@ -158,8 +158,6 @@ if (isset($_POST['database_check'])){
 	while($person_startDb=$person_start->fetch()){
 
 		// *** Now get all data for one person at a time ***
-		//$person = $dbh->query("SELECT pers_gedcomnumber,pers_famc,pers_fams,pers_place_index FROM humo_persons
-		//	WHERE pers_id='".$person_startDb['pers_id']."'");
 		$person = $dbh->query("SELECT pers_gedcomnumber,pers_famc,pers_fams FROM humo_persons
 			WHERE pers_id='".$person_startDb['pers_id']."'");
 		$person=$person->fetch(PDO::FETCH_OBJ);
@@ -168,7 +166,9 @@ if (isset($_POST['database_check'])){
 		if ($person->pers_fams){
 			$check_fams1=false;
 			$fams=explode(";", $person->pers_fams);
+//foreach ($fams as $i => $value){
 			for ($i=0; $i<=count($fams)-1; $i++){
+// only need fam_man, fam_woman
 				$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fams[$i]."'";
 				$fam_result = $dbh->query($fam_qry);
 				$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
@@ -205,6 +205,7 @@ if (isset($_POST['database_check'])){
 
 		// *** Parents ***
 		if ($person->pers_famc){
+// don't need * in query. Needed: children
 			$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$person->pers_famc."'";
 			$fam_result = $dbh->query($fam_qry);
 			$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
@@ -245,46 +246,6 @@ if (isset($_POST['database_check'])){
 
 		}
 
-		// *** Check pers_index_place ***
-		/*
-		// *** CHANGED THIS CODE because this code was VERY SLOW!!!!!!!! *** 
-		$address_sql = $db_functions->get_addresses('person','person_address',$person->pers_gedcomnumber);
-		$nr_addresses=count($address_sql);
-		foreach ($address_sql as $addressDb){
-			if ($addressDb->connect_order==$nr_addresses AND ($addressDb->address_place!=$person->pers_place_index)  ){
-				$sql="UPDATE humo_persons SET
-					pers_place_index='".safe_text_db($addressDb->address_place)."'
-					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($person->pers_gedcomnumber)."'";
-				$result=$dbh->query($sql);
-				echo '<tr><td><b>Restored place index by person</b></td>';
-				echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber.'</td>';
-				echo '<td>Missing place: '.$addressDb->address_place.'</td></tr>';
-			}
-		}
-		*/
-		/*
-		// *** OLD CHECK METHOD: Do NOT use function get_adresses, because it will slow down this script EXTREMELY ***
-		$connect_qry= "SELECT connect_item_id FROM humo_connections WHERE connect_tree_id='".$tree_id."'
-			AND connect_kind='person' AND connect_sub_kind='person_address' AND connect_connect_id='".$person->pers_gedcomnumber."'
-			ORDER BY connect_order DESC LIMIT 1;";
-		$connect_result = $dbh->query($connect_qry);
-		$connectDb=$connect_result->fetch(PDO::FETCH_OBJ);
-		if ($connectDb){
-			$address_qry= "SELECT address_place FROM humo_addresses WHERE address_tree_id='".$tree_id."'
-			AND address_gedcomnr='".$connectDb->connect_item_id."'";
-			$address_result = $dbh->query($address_qry);
-			$addressDb=$address_result->fetch(PDO::FETCH_OBJ);
-			if ($addressDb->address_place!=$person->pers_place_index) {
-				$sql="UPDATE humo_persons SET
-					pers_place_index='".safe_text_db($addressDb->address_place)."'
-					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($person->pers_gedcomnumber)."'";
-				$result=$dbh->query($sql);
-				echo '<tr><td><b>Restored place index by person</b></td>';
-				echo '<td>Person gedcomnr: '.$person->pers_gedcomnumber.'</td>';
-				echo '<td>Missing place: '.$addressDb->address_place.'</td></tr>';
-			}
-		}
-		*/
 	}
 
 //echo '<tr><td>!!'.time()-$processing_time.'</td><td></td><td></td></tr>';
@@ -300,6 +261,7 @@ if (isset($_POST['database_check'])){
 	$fam_result_start = $dbh->query($fam_qry_start);
 	while($famDb_start=$fam_result_start->fetch(PDO::FETCH_OBJ)){
 
+// check query
 		$fam_qry= "SELECT * FROM humo_families WHERE fam_id='".$famDb_start->fam_id."'";
 		$fam_result = $dbh->query($fam_qry);
 		$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
@@ -375,7 +337,7 @@ if (isset($_POST['database_check'])){
 		// *** Check children ***
 		if ($famDb->fam_children){
 			$children=explode(";", $famDb->fam_children);
-			for ($i=0; $i<=count($children)-1; $i++){
+			foreach ($children as $i => $value){
 				$person=$db_functions->get_person($children[$i]);
 				if ($person){
 					if ($person->pers_famc==''){
@@ -390,7 +352,7 @@ if (isset($_POST['database_check'])){
 				else{
 					if (isset($_POST['remove'])){
 						$new_children='';
-						for ($j=0; $j<=count($children)-1; $j++){
+						foreach ($children as $j => $value){
 							if ($children[$j]!=$children[$i]){
 								if ($new_children!='') $new_children.=';';
 								$new_children.=$children[$j];
@@ -444,7 +406,8 @@ if (isset($_POST['database_check'])){
 		}
 
 		// *** Check family ***
-		if ($connect->connect_kind=='family' AND $connect->connect_sub_kind!='fam_event_source'){
+		//if ($connect->connect_kind=='family' AND $connect->connect_sub_kind!='fam_event_source'){
+		if ($connect->connect_kind=='family' AND $connect->connect_sub_kind!='fam_event_source' AND $connect->connect_sub_kind!='fam_address_connect_source'){
 			$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$connect->connect_connect_id."'";
 			$fam_result = $dbh->query($fam_qry);
 			$fam=$fam_result->fetch(PDO::FETCH_OBJ);

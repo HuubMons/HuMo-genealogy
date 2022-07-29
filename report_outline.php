@@ -33,7 +33,7 @@ include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
 
 if($screen_mode!='PDF') {  //we can't have a menu in pdf...
 	include_once(CMS_ROOTPATH."menu.php");
-} 
+}
 else {
 	if (isset($_SESSION['tree_prefix'])){
 		$dataqry = "SELECT * FROM humo_trees LEFT JOIN humo_tree_texts
@@ -85,7 +85,7 @@ $nr_generations=($humo_option["descendant_generations"]-1);
 if (isset($_GET["nr_generations"])){ $nr_generations=$_GET["nr_generations"];}
 if (isset($_POST["nr_generations"])){ $nr_generations=$_POST["nr_generations"];}
 
-if($screen_mode=='PDF') {  
+if($screen_mode=='PDF') {
 	//initialize pdf generation
 	$pdfdetails=array();
 	$pdf_marriage=array();
@@ -94,18 +94,24 @@ if($screen_mode=='PDF') {
 	$pers_cls = New person_cls;
 	$pers_cls->construct($persDb);
 	$name=$pers_cls->person_name($persDb);
-	$title=pdf_convert(__('Outline report').__(' of ').$name["standard_name"]);
+	$title=pdf_convert(__('Outline report').__(' of ').pdf_convert($name["standard_name"]));
 
 	$pdf=new PDF();
 	$pdf->SetTitle($title);
 	$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 	if(isset($_POST["screen_mode"]) AND $_POST["screen_mode"]=="PDF-L") { $pdf->AddPage("L"); } 
 	else { $pdf->AddPage("P"); }
-	$pdf->SetFont('Arial','B',15);
+
+	$pdf->AddFont('DejaVu', '', 'DejaVuSansCondensed.ttf', true);
+	$pdf->AddFont('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', true);
+	$pdf->AddFont('DejaVu', 'I', 'DejaVuSansCondensed-Oblique.ttf', true);
+	$pdf->AddFont('DejaVu', 'BI', 'DejaVuSansCondensed-BoldOblique.ttf', true);
+
+	$pdf->SetFont($pdf_font,'B',15);
 	$pdf->Ln(4);
-	$pdf->MultiCell(0,10,__('Outline report').__(' of ').$name["standard_name"],0,'C');
+	$pdf->MultiCell(0,10,__('Outline report').__(' of ').pdf_convert($name["standard_name"]),0,'C');
 	$pdf->Ln(4);
-	$pdf->SetFont('Arial','',12);
+	$pdf->SetFont($pdf_font,'',12);
 }
 
 if($screen_mode != "PDF") {
@@ -120,25 +126,25 @@ if($screen_mode != "PDF") {
 	if(CMS_SPECIFIC=='Joomla') {
 		$qstr='';
 		if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
-		print '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
+		echo '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
 	}
 	else {
-		//print '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
-		print '<form method="POST" action="report_outline.php" style="display : inline;">';
+		//echo '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+		echo '<form method="POST" action="report_outline.php" style="display : inline;">';
 	}
-	print '<input type="hidden" name="id" value="'.$family_id.'">';
-	print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
-	print '<input type="hidden" name="main_person" value="'.$main_person.'">';
+	echo '<input type="hidden" name="id" value="'.$family_id.'">';
+	echo '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
+	echo '<input type="hidden" name="main_person" value="'.$main_person.'">';
 
 	if ($show_details==true){
-		print '<input type="hidden" name="show_details" value="0">';
-		print '<input class="fonts" type="Submit" name="submit" value="'.__('Hide full details').'">';
+		echo '<input type="hidden" name="show_details" value="0">';
+		echo '<input class="fonts" type="Submit" name="submit" value="'.__('Hide full details').'">';
 	}
 	else{
-		print '<input type="hidden" name="show_details" value="1">';
-		print '<input class="fonts" type="Submit" name="submit" value="'.__('Show full details').'">';
+		echo '<input type="hidden" name="show_details" value="1">';
+		echo '<input class="fonts" type="Submit" name="submit" value="'.__('Show full details').'">';
 	}
-	print '</form>&nbsp;';
+	echo '</form>&nbsp;';
 
 	if(!$show_details) {
 	   
@@ -149,25 +155,25 @@ if($screen_mode != "PDF") {
 		if(CMS_SPECIFIC=='Joomla') {
 			$qstr='';
 			if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
-			print '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
+			echo '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
 		}
 		else {
-			//print '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
-			print '<form method="POST" action="report_outline.php" style="display : inline;">';
+			//echo '<form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+			echo '<form method="POST" action="report_outline.php" style="display : inline;">';
 		}
-		print '<input type="hidden" name="id" value="'.$family_id.'">';
-		print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
-		print '<input type="hidden" name="main_person" value="'.$main_person.'">';
+		echo '<input type="hidden" name="id" value="'.$family_id.'">';
+		echo '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
+		echo '<input type="hidden" name="main_person" value="'.$main_person.'">';
 
 		if ($show_date==true){
-			print '<input type="hidden" name="show_date" value="0">';
-			print '<input class="fonts" type="Submit" name="submit" value="'.__('Hide dates').'">';
+			echo '<input type="hidden" name="show_date" value="0">';
+			echo '<input class="fonts" type="Submit" name="submit" value="'.__('Hide dates').'">';
 		}
 		else{
-			print '<input type="hidden" name="show_date" value="1">';
-			print '<input class="fonts" type="Submit" name="submit" value="'.__('Show dates').'">';
+			echo '<input type="hidden" name="show_date" value="1">';
+			echo '<input class="fonts" type="Submit" name="submit" value="'.__('Show dates').'">';
 		}
-		print '</form>';
+		echo '</form>';
 
 		// *****************************************************************
 		// ******** Show button: date after or below each other ************
@@ -176,24 +182,24 @@ if($screen_mode != "PDF") {
 		if(CMS_SPECIFIC=='Joomla') {
 			$qstr='';
 			if($_SERVER['QUERY_STRING'] != '') { $qstr='?'.$_SERVER['QUERY_STRING']; }
-			print '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
+			echo '<form method="POST" action="report_outline.php'.$qstr.'" style="display : inline;">';
 		}
 		else {
-			print ' <form method="POST" action="report_outline.php" style="display : inline;">';
+			echo ' <form method="POST" action="report_outline.php" style="display : inline;">';
 		}
-		print '<input type="hidden" name="id" value="'.$family_id.'">';
-		print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
-		print '<input type="hidden" name="main_person" value="'.$main_person.'">';
+		echo '<input type="hidden" name="id" value="'.$family_id.'">';
+		echo '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
+		echo '<input type="hidden" name="main_person" value="'.$main_person.'">';
 
 		if ($dates_behind_names=="1"){
-			print '<input type="hidden" name="dates_behind_names" value="0">';
-			print '<input type="Submit" class="fonts" name="submit" value="'.__('Dates below names').'">';
+			echo '<input type="hidden" name="dates_behind_names" value="0">';
+			echo '<input type="Submit" class="fonts" name="submit" value="'.__('Dates below names').'">';
 		}
 		else{
-			print '<input type="hidden" name="dates_behind_names" value="1">';
-			print '<input type="Submit" class="fonts" name="submit" value="'.__('Dates beside names').'">';
+			echo '<input type="hidden" name="dates_behind_names" value="1">';
+			echo '<input type="Submit" class="fonts" name="submit" value="'.__('Dates beside names').'">';
 		}
-		print '</form>';
+		echo '</form>';
 	}
 
 	// ********************************************************
@@ -233,16 +239,16 @@ if($screen_mode != "PDF") {
 		//if($language["dir"]!="rtl") {
 		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 			//Show pdf button
-			print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
-			print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
-			print '<input type="hidden" name="screen_mode" value="PDF-P">';
-			print '<input type="hidden" name="id" value="'.$family_id.'">';
-			print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
-			print '<input type="hidden" name="dates_behind_names" value="'.$dates_behind_names.'">';
-			print '<input type="hidden" name="show_date" value="'.$show_date.'">';
-			print '<input type="hidden" name="main_person" value="'.$main_person.'">';
-			print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF (Portrait)').'">';
-			print '</form>';
+			echo ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+			echo '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
+			echo '<input type="hidden" name="screen_mode" value="PDF-P">';
+			echo '<input type="hidden" name="id" value="'.$family_id.'">';
+			echo '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
+			echo '<input type="hidden" name="dates_behind_names" value="'.$dates_behind_names.'">';
+			echo '<input type="hidden" name="show_date" value="'.$show_date.'">';
+			echo '<input type="hidden" name="main_person" value="'.$main_person.'">';
+			echo '<input class="fonts" type="Submit" name="submit" value="'.__('PDF (Portrait)').'">';
+			echo '</form>';
 		}
 
 		echo '</span>';
@@ -251,16 +257,16 @@ if($screen_mode != "PDF") {
 		//if($language["dir"]!="rtl") {
 		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
 			//Show pdf button
-			print ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
-			print '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
-			print '<input type="hidden" name="screen_mode" value="PDF-L">';
-			print '<input type="hidden" name="id" value="'.$family_id.'">';
-			print '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
-			print '<input type="hidden" name="dates_behind_names" value="'.$dates_behind_names.'">';
-			print '<input type="hidden" name="show_date" value="'.$show_date.'">';
-			print '<input type="hidden" name="main_person" value="'.$main_person.'">';
-			print '<input class="fonts" type="Submit" name="submit" value="'.__('PDF (Landscape)').'">';
-			print '</form>';
+			echo ' <form method="POST" action="'.$uri_path.'report_outline.php" style="display : inline;">';
+			echo '<input type="hidden" name="database" value="'.$_SESSION['tree_prefix'].'">';
+			echo '<input type="hidden" name="screen_mode" value="PDF-L">';
+			echo '<input type="hidden" name="id" value="'.$family_id.'">';
+			echo '<input type="hidden" name="nr_generations" value="'.$nr_generations.'">';
+			echo '<input type="hidden" name="dates_behind_names" value="'.$dates_behind_names.'">';
+			echo '<input type="hidden" name="show_date" value="'.$show_date.'">';
+			echo '<input type="hidden" name="main_person" value="'.$main_person.'">';
+			echo '<input class="fonts" type="Submit" name="submit" value="'.__('PDF (Landscape)').'">';
+			echo '</form>';
 		}
 		echo '</span>';
 	}
@@ -276,7 +282,7 @@ $gn=0;   // generatienummer
 // *************************************
 
 function outline($family_id,$main_person,$gn,$nr_generations) {
-	global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $show_details, $show_date, $dates_behind_names, $nr_generations;
+	global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $pdf_font, $show_details, $show_date, $dates_behind_names, $nr_generations;
 	global $language, $dirmark1, $dirmark1, $screen_mode;
 
 	$family_nr=1; //*** Process multiple families ***
@@ -358,9 +364,9 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 						if($show_details AND !$privacy_woman) { echo $woman_cls->person_data("outline",$familyDb->fam_gedcomnumber); }
 					}
 					else {
-						$pdf->SetFont('Arial','B',12);
-						$pdf->Write(8,$woman_cls->name_extended("outline"));
-						$pdf->SetFont('Arial','',12);
+						$pdf->SetFont($pdf_font,'B',12);
+						$pdf->Write(8,pdf_convert($woman_cls->name_extended("outline")));
+						$pdf->SetFont($pdf_font,'',12);
 					}
 					if ($show_date=="1" AND !$privacy_woman AND !$show_details) {
 						if($screen_mode != "PDF") {
@@ -385,9 +391,9 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 
 					}
 					else {
-						$pdf->SetFont('Arial','B',12);
-						$pdf->Write(8,$man_cls->name_extended("outline"));
-						$pdf->SetFont('Arial','',12);
+						$pdf->SetFont($pdf_font,'B',12);
+						$pdf->Write(8,pdf_convert($man_cls->name_extended("outline")));
+						$pdf->SetFont($pdf_font,'',12);
 					}
 					if ($show_date=="1" AND !$privacy_man AND !$show_details) {
 						if($screen_mode != "PDF") {
@@ -444,9 +450,9 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 				if($show_details AND !$privacy_man) { echo $man_cls->person_data("outline",$familyDb->fam_gedcomnumber); }
 			}
 			else {
-				$pdf->SetFont('Arial','BI',12);
-				$pdf->Write(8,$man_cls->name_extended("outline"));
-				$pdf->SetFont('Arial','',12);
+				$pdf->SetFont($pdf_font,'BI',12);
+				$pdf->Write(8,pdf_convert($man_cls->name_extended("outline")));
+				$pdf->SetFont($pdf_font,'',12);
 			}
 			if ($show_date=="1" AND !$privacy_man AND !$show_details) {
 				if($screen_mode != "PDF") {
@@ -470,9 +476,9 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 				if($show_details AND !$privacy_woman) { echo $woman_cls->person_data("outline",$familyDb->fam_gedcomnumber); }
 			}
 			else {
-				$pdf->SetFont('Arial','BI',12);
-				$pdf->Write(8,$woman_cls->name_extended("outline"));
-				$pdf->SetFont('Arial','',12);
+				$pdf->SetFont($pdf_font,'BI',12);
+				$pdf->Write(8,pdf_convert($woman_cls->name_extended("outline")));
+				$pdf->SetFont($pdf_font,'',12);
 			}
 			if ($show_date=="1" AND !$privacy_woman AND !$show_details) {
 				if($screen_mode != "PDF") {
@@ -499,8 +505,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 		if ($familyDb->fam_children){
 			$childnr=1;
 			$child_array=explode(";",$familyDb->fam_children);
-
-			for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
+			foreach ($child_array as $i => $value){
 				@$childDb = $db_functions->get_person($child_array[$i]);
 				$child_cls = New person_cls;
 				$child_cls->construct($childDb);
@@ -527,9 +532,9 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 							$pdf->SetLeftMargin($childgn*10);
 							$pdf->Write(8,"\n");
 							$pdf->Write(8,$childgn.'  ');
-							$pdf->SetFont('Arial','B',12);
-							$pdf->Write(8,$child_cls->name_extended("outline"));
-							$pdf->SetFont('Arial','',12);
+							$pdf->SetFont($pdf_font,'B',12);
+							$pdf->Write(8,pdf_convert($child_cls->name_extended("outline")));
+							$pdf->SetFont($pdf_font,'',12);
 						}
 						if ($show_date=="1" AND !$child_privacy AND !$show_details) {
 							if($screen_mode != "PDF") {

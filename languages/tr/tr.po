@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-26 09:34+0200\n"
-"PO-Revision-Date: 2022-05-26 09:34+0200\n"
+"POT-Creation-Date: 2022-06-24 09:47+0200\n"
+"PO-Revision-Date: 2022-06-24 09:47+0200\n"
 "Last-Translator: Osman Öz <osmanoz50@gmail.com>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/humo-gen/humo-gen/"
 "language/tr_TR/)\n"
@@ -29,39 +29,39 @@ msgstr ""
 msgid "You are not authorised to see this page."
 msgstr "Bu sayfayı görme yetkiniz yok."
 
-#: address.php:18 admin/include/editor.php:3512 admin/include/editor.php:4374
-#: admin/include/editor.php:4480 admin/include/editor_sources.php:102
+#: address.php:18 admin/include/editor.php:3497 admin/include/editor.php:4359
+#: admin/include/editor.php:4465 admin/include/editor_sources.php:102
 #: admin/include/editor_sources.php:156 admin/include/editor_sources.php:162
 #: admin/include/gedcom_export.php:280 admin/include/gedcom_export.php:282
-#: admin/include/trees_cls.php:1777 header.php:257 source.php:234
+#: admin/include/trees_cls.php:1765 header.php:257 source.php:234
 msgid "Address"
 msgstr "Adres"
 
 #: address.php:22 addresses.php:78 addresses.php:117
-#: admin/include/editor.php:3760 admin/include/editor.php:4378
-#: admin/include/editor.php:4463
+#: admin/include/editor.php:3745 admin/include/editor.php:4363
+#: admin/include/editor.php:4448
 msgid "Street"
 msgstr "Sokak"
 
-#: address.php:23 admin/include/editor.php:3514 admin/include/editor.php:3762
-#: admin/include/editor.php:4379 admin/include/editor.php:4466 list.php:1686
-#: list.php:1694 source.php:233
+#: address.php:23 admin/include/editor.php:3499 admin/include/editor.php:3747
+#: admin/include/editor.php:4364 admin/include/editor.php:4451 list.php:1689
+#: list.php:1697 source.php:233
 msgid "Zip code"
 msgstr "Posta kodu"
 
-#: address.php:24 admin/include/editor.php:3757 admin/include/editor.php:4377
-#: admin/include/editor.php:4426 list.php:1611 list.php:1643 list.php:1674
-#: list.php:1682 list.php:1991 list.php:2003 source.php:111 source.php:116
+#: address.php:24 admin/include/editor.php:3742 admin/include/editor.php:4362
+#: admin/include/editor.php:4411 list.php:1614 list.php:1646 list.php:1677
+#: list.php:1685 list.php:1994 list.php:2006 source.php:111 source.php:116
 #: source.php:238 sources.php:170
 msgid "Place"
 msgstr "Yer"
 
-#: address.php:25 admin/include/editor.php:3518 admin/include/editor.php:3764
-#: admin/include/editor.php:4469
+#: address.php:25 admin/include/editor.php:3503 admin/include/editor.php:3749
+#: admin/include/editor.php:4454
 msgid "Phone"
 msgstr "Telefon"
 
-#: address.php:35 admin/include/editor.php:4451
+#: address.php:35 admin/include/editor.php:4436
 #: admin/include/editor_sources.php:60 admin/include/editor_sources.php:66
 #: admin/include/editor_sources.php:72 admin/include/editor_sources.php:78
 #: admin/include/editor_sources.php:84 admin/include/editor_sources.php:96
@@ -79,8 +79,8 @@ msgstr "Kaynak"
 msgid "Address by person"
 msgstr "Kişiye göre adres"
 
-#: addresses.php:68 admin/include/editor.php:3673 admin/include/editor.php:4279
-#: admin/include/trees_cls.php:1924 menu.php:534
+#: addresses.php:68 admin/include/editor.php:3658 admin/include/editor.php:4264
+#: admin/include/trees_cls.php:1934 menu.php:534
 msgid "Addresses"
 msgstr "Adresler"
 
@@ -89,7 +89,7 @@ msgid "City"
 msgstr "Şehir"
 
 #: addresses.php:80 admin/include/editor.php:472 admin/include/editor.php:617
-#: admin/include/editor.php:1387 admin/include/editor.php:1445
+#: admin/include/editor.php:1380 admin/include/editor.php:1438
 #: admin/include/editor_media_select.php:81
 #: admin/include/editor_person_select.php:88
 #: admin/include/editor_relation_select.php:29
@@ -99,20 +99,20 @@ msgstr "Şehir"
 #: admin/include/trees_cls.php:870 admin/include/trees_cls.php:908
 #: admin/include/trees_cls.php:984 include/mainindex_cls.php:41
 #: include/mainindex_cls.php:129 include/mainindex_cls.php:602
-#: latest_changes.php:79 list.php:1468 list.php:1782
+#: latest_changes.php:79 list.php:1471 list.php:1785
 #: list_places_families.php:408 menu.php:90 photoalbum.php:356
-#: relations.php:3224 relations.php:3228 relations.php:3316 relations.php:3320
+#: relations.php:3222 relations.php:3226 relations.php:3314 relations.php:3318
 #: sources.php:138
 msgid "Search"
 msgstr "Arama"
 
-#: addresses.php:119 admin/include/editor.php:4472
+#: addresses.php:119 admin/include/editor.php:4457
 #: admin/include/editor_sources.php:314 admin/include/editor_sources.php:365
 #: admin/include/groups.php:537 admin/include/groups.php:542
 #: admin/include/groups.php:547 admin/include/settings_admin.php:841
 #: admin/include/settings_admin.php:908 admin/include/settings_admin.php:979
-#: family.php:2169 include/process_text.php:90 include/process_text.php:92
-#: list.php:1647
+#: family.php:2173 include/process_text.php:90 include/process_text.php:92
+#: list.php:1650
 msgid "Text"
 msgstr "Metin"
 
@@ -310,7 +310,7 @@ msgid "Database has been restored successfully!"
 msgstr "Veritabanı başarıyla geri yüklendi!"
 
 #: admin/include/cal_date.php:8 admin/include/cal_date.php:16
-#: admin/include/editor.php:1721 admin/index.php:1024
+#: admin/include/editor.php:1714 admin/index.php:1024
 msgid "Calculated birth date"
 msgstr "Hesaplanan doğum tarihi"
 
@@ -335,8 +335,8 @@ msgstr ""
 msgid "Choose family tree"
 msgstr "Aile ağacı seçin"
 
-#: admin/include/cal_date.php:31 admin/include/editor.php:1564
-#: admin/include/editor.php:3965 admin/include/editor_sources.php:410
+#: admin/include/cal_date.php:31 admin/include/editor.php:1557
+#: admin/include/editor.php:3950 admin/include/editor_sources.php:410
 #: admin/include/statistics.php:588 admin/include/statistics.php:667
 #: admin/include/user_notes.php:115
 msgid "Select"
@@ -393,8 +393,8 @@ msgid "Are you sure you want to remove this page?"
 msgstr "Bu sayfayı kaldırmak istediğinizden emin misiniz?"
 
 #: admin/include/cms_pages.php:106 admin/include/cms_pages.php:176
-#: admin/include/editor.php:3129 admin/include/editor.php:3412
-#: admin/include/editor.php:3617 admin/include/editor_inc.php:50
+#: admin/include/editor.php:3114 admin/include/editor.php:3397
+#: admin/include/editor.php:3602 admin/include/editor_inc.php:50
 #: admin/include/editor_inc.php:685 admin/include/editor_inc.php:917
 #: admin/include/editor_inc.php:987 admin/include/editor_inc.php:1767
 #: admin/include/editor_inc.php:2221 admin/include/editor_user_settings.php:74
@@ -418,8 +418,8 @@ msgid "Yes"
 msgstr "Evet"
 
 #: admin/include/cms_pages.php:107 admin/include/cms_pages.php:177
-#: admin/include/editor.php:3130 admin/include/editor.php:3413
-#: admin/include/editor.php:3618 admin/include/editor_inc.php:51
+#: admin/include/editor.php:3115 admin/include/editor.php:3398
+#: admin/include/editor.php:3603 admin/include/editor_inc.php:51
 #: admin/include/editor_inc.php:686 admin/include/editor_inc.php:918
 #: admin/include/editor_inc.php:988 admin/include/editor_inc.php:1768
 #: admin/include/editor_inc.php:2222 admin/include/editor_user_settings.php:76
@@ -504,11 +504,11 @@ msgid "Published"
 msgstr "Yayınlandı"
 
 #: admin/include/cms_pages.php:350 admin/include/cms_pages.php:353
-#: admin/include/cms_pages.php:446 admin/include/editor.php:1615
-#: admin/include/editor.php:2287 admin/include/editor.php:2514
-#: admin/include/editor.php:2936 admin/include/editor.php:3327
-#: admin/include/editor.php:3533 admin/include/editor.php:3787
-#: admin/include/editor.php:3984 admin/include/editor_sources.php:304
+#: admin/include/cms_pages.php:446 admin/include/editor.php:1608
+#: admin/include/editor.php:2280 admin/include/editor.php:2507
+#: admin/include/editor.php:2929 admin/include/editor.php:3312
+#: admin/include/editor.php:3518 admin/include/editor.php:3772
+#: admin/include/editor.php:3969 admin/include/editor_sources.php:304
 #: admin/include/language_editor.php:285 admin/include/make_db_maps.php:294
 #: admin/include/make_db_maps.php:389 admin/include/make_db_maps.php:398
 #: admin/include/make_db_maps.php:583 admin/include/prefix_editor.php:40
@@ -536,10 +536,10 @@ msgstr "Menü öğesi/ kategori"
 msgid "Remove menu"
 msgstr "Menüyü kaldır"
 
-#: admin/include/cms_pages.php:457 admin/include/editor.php:1618
-#: admin/include/editor.php:2290 admin/include/editor.php:3324
-#: admin/include/editor.php:3530 admin/include/editor.php:3784
-#: admin/include/editor.php:4287 admin/include/editor.php:4517
+#: admin/include/cms_pages.php:457 admin/include/editor.php:1611
+#: admin/include/editor.php:2283 admin/include/editor.php:3309
+#: admin/include/editor.php:3515 admin/include/editor.php:3769
+#: admin/include/editor.php:4272 admin/include/editor.php:4502
 #: admin/include/editor_event_cls.php:350
 #: admin/include/editor_event_cls.php:368
 #: admin/include/editor_event_cls.php:386
@@ -624,7 +624,7 @@ msgstr "Dil başına ayarla"
 #: admin/include/editor.php:251 admin/include/editor_user_settings.php:61
 #: admin/include/groups.php:628 admin/include/make_db_maps.php:737
 #: admin/include/trees.php:316 help.php:48 help.php:51 help.php:54 help.php:57
-#: list.php:1963 menu.php:31 menu.php:434 statistics.php:53
+#: list.php:1966 menu.php:31 menu.php:434 statistics.php:53
 msgid "Family tree"
 msgstr "Aile ağacı"
 
@@ -641,43 +641,43 @@ msgstr "Sık kullanılanlar listesi"
 msgid "Latest changes"
 msgstr "Son değişiklikler"
 
-#: admin/include/editor.php:450 admin/include/editor.php:2270
-#: admin/include/editor.php:2923
+#: admin/include/editor.php:450 admin/include/editor.php:2263
+#: admin/include/editor.php:2916
 msgid "Added by"
 msgstr "Tarafından eklendi"
 
-#: admin/include/editor.php:451 admin/include/editor.php:2275
-#: admin/include/editor.php:2928
+#: admin/include/editor.php:451 admin/include/editor.php:2268
+#: admin/include/editor.php:2921
 msgid "Changed by"
 msgstr "Tarafından değiştirildi"
 
-#: admin/include/editor.php:470 admin/include/editor.php:710
-#: admin/include/gedcom_export.php:128 admin/include/tree_check.php:802
-#: admin/include/trees_cls.php:875 family.php:2160 relations.php:3116
+#: admin/include/editor.php:470 admin/include/editor.php:714
+#: admin/include/gedcom_export.php:128 admin/include/tree_check.php:765
+#: admin/include/trees_cls.php:875 family.php:2164 relations.php:3114
 msgid "Person"
 msgstr "Kişi"
 
-#: admin/include/editor.php:471 admin/include/editor.php:1625
+#: admin/include/editor.php:471 admin/include/editor.php:1618
 #: admin/include/editor_event_cls.php:23 admin/include/editor_event_cls.php:342
 #: admin/include/editor_media_select.php:80
 #: admin/include/editor_person_select.php:83
 #: admin/include/editor_relation_select.php:24
 #: admin/include/gedcom_export.php:129 admin/include/gedcom_export.php:274
-#: admin/include/gedcom_export.php:278 birthday_list.php:137 family.php:2096
-#: family.php:2162 include/mainindex_cls.php:585 include/mainindex_cls.php:923
-#: list.php:1960 list_names.php:315 list_names.php:317 mailform.php:28
+#: admin/include/gedcom_export.php:278 birthday_list.php:137 family.php:2100
+#: family.php:2166 include/mainindex_cls.php:585 include/mainindex_cls.php:925
+#: list.php:1963 list_names.php:315 list_names.php:317 mailform.php:28
 #: mailform.php:110 menu.php:89 register.php:62 register.php:124
-#: relations.php:3109 user_settings.php:53
+#: relations.php:3107 user_settings.php:53
 msgid "Name"
 msgstr "İsim"
 
 #: admin/include/editor.php:550 admin/include/editor.php:621
 #: admin/include/trees_cls.php:943 admin/include/trees_cls.php:1016
-#: relations.php:3294 relations.php:3379
+#: relations.php:3292 relations.php:3377
 msgid "Person not found"
 msgstr "Kişi bulunamadı"
 
-#: admin/include/editor.php:575 admin/include/tree_check.php:799
+#: admin/include/editor.php:575 admin/include/tree_check.php:762
 msgid "Results"
 msgstr "Sonuçlar"
 
@@ -687,9 +687,9 @@ msgstr "Sonuçlar"
 msgid "or ID:"
 msgstr "veya Kimlik:"
 
-#: admin/include/editor.php:615 admin/include/editor.php:1559
-#: admin/include/editor.php:2407 admin/include/editor.php:3064
-#: admin/include/editor.php:4074
+#: admin/include/editor.php:615 admin/include/editor.php:1552
+#: admin/include/editor.php:2400 admin/include/editor.php:3049
+#: admin/include/editor.php:4059
 msgid "GEDCOM number (ID)"
 msgstr "GEDCOM numarası (kimlik)"
 
@@ -697,11 +697,11 @@ msgstr "GEDCOM numarası (kimlik)"
 msgid "Add person"
 msgstr "Kişi ekle"
 
-#: admin/include/editor.php:640 admin/include/editor.php:1767
+#: admin/include/editor.php:640 admin/include/editor.php:1760
 msgid "Examples of date entries:"
 msgstr "Tarih girişlerine örnekler:"
 
-#: admin/include/editor.php:641 admin/include/editor.php:1768
+#: admin/include/editor.php:641 admin/include/editor.php:1761
 msgid ""
 "13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, "
 "13,10,1813, between 1986 and 1987, 13 oct 1100 BC."
@@ -725,30 +725,30 @@ msgstr "= seçim açılır ekranını açmak için tıklayın."
 msgid "= click to open extended editor items."
 msgstr "= genişletilmiş düzenleyici öğelerini açmak için tıklayın."
 
-#: admin/include/editor.php:726 admin/include/editor.php:2350
+#: admin/include/editor.php:730 admin/include/editor.php:2343
 #: admin/include/statistics.php:38 admin/include/statistics.php:41
 #: admin/include/statistics.php:771 admin/include/statistics.php:774
 #: list_places_families.php:561
 msgid "Family"
 msgstr "Aile"
 
-#: admin/include/editor.php:819
+#: admin/include/editor.php:823
 msgid "Browse"
 msgstr "Göz at"
 
-#: admin/include/editor.php:866 admin/include/editor.php:2522
-#: admin/include/editor.php:2648 include/marriage_cls.php:614
+#: admin/include/editor.php:868 admin/include/editor.php:2515
+#: admin/include/editor.php:2641 include/marriage_cls.php:614
 msgid "marriage/ relation"
 msgstr "evlilik/ ilişki"
 
-#: admin/include/editor.php:872 admin/include/editor.php:2696
+#: admin/include/editor.php:874 admin/include/editor.php:2689
 #: include/marriage_cls.php:280 include/marriage_cls.php:281
 #: include/marriage_cls.php:282 include/marriage_cls.php:289
 #: include/marriage_cls.php:290
 msgid "Married"
 msgstr "Evli"
 
-#: admin/include/editor.php:891 include/marriage_cls.php:48
+#: admin/include/editor.php:893 include/marriage_cls.php:48
 #: include/marriage_cls.php:127 include/marriage_cls.php:212
 #: include/marriage_cls.php:278 include/marriage_cls.php:288
 #: include/marriage_cls.php:335 include/marriage_cls.php:390
@@ -760,271 +760,271 @@ msgstr "Evli"
 msgid " to: "
 msgstr " ile: "
 
-#: admin/include/editor.php:906 admin/include/trees_cls.php:1658
-#: family.php:1312 family.php:1331
+#: admin/include/editor.php:901 admin/include/trees_cls.php:1646
+#: family.php:1314 family.php:1333
 msgid "Children"
 msgstr "Çocuklar"
 
-#: admin/include/editor.php:922 admin/include/editor_person_select.php:125
+#: admin/include/editor.php:915 admin/include/editor_person_select.php:125
 #: report_ancestor.php:240
 msgid "Parents"
 msgstr "Ebeveynler"
 
 # Nomen Nescio: unknown name.
-#: admin/include/editor.php:929 admin/include/editor.php:935
-#: admin/include/editor.php:4237 admin/include/editor_cls.php:256
+#: admin/include/editor.php:922 admin/include/editor.php:928
+#: admin/include/editor.php:4222 admin/include/editor_cls.php:257
 #: admin/include/editor_event_cls.php:1112
 #: admin/include/editor_event_cls.php:1121 admin/include/statistics.php:780
 #: admin/include/statistics.php:792 include/person_cls.php:709
 #: include/person_cls.php:711 include/person_cls.php:712
 #: include/person_cls.php:713 include/person_cls.php:714
-#: include/person_cls.php:1060 include/person_cls.php:1061
-#: include/person_cls.php:1237 include/person_cls.php:1238
-#: include/person_cls.php:1265 include/person_cls.php:1266
-#: include/person_cls.php:1303 include/person_cls.php:1305
-#: include/person_cls.php:1325 include/person_cls.php:1326
-#: include/person_cls.php:1395 include/person_cls.php:1413
-#: include/person_cls.php:1486 include/person_cls.php:2291
-#: include/person_cls.php:2308 include/person_cls.php:2321
+#: include/person_cls.php:1059 include/person_cls.php:1060
+#: include/person_cls.php:1235 include/person_cls.php:1236
+#: include/person_cls.php:1263 include/person_cls.php:1264
+#: include/person_cls.php:1301 include/person_cls.php:1303
+#: include/person_cls.php:1323 include/person_cls.php:1324
+#: include/person_cls.php:1393 include/person_cls.php:1411
+#: include/person_cls.php:1484 include/person_cls.php:2289
+#: include/person_cls.php:2306 include/person_cls.php:2319
 #: include/witness.php:116 include/witness.php:122 list.php:184
 #: list_places_families.php:137 report_ancestor.php:1253
 #: report_ancestor.php:1363 report_descendant.php:822
 msgid "N.N."
 msgstr "İsimsiz."
 
-#: admin/include/editor.php:931 admin/include/editor.php:1472
-#: admin/include/editor.php:2368 admin/include/editor.php:2512
-#: admin/include/editor.php:2546 admin/include/editor_event_cls.php:1114
+#: admin/include/editor.php:924 admin/include/editor.php:1465
+#: admin/include/editor.php:2361 admin/include/editor.php:2505
+#: admin/include/editor.php:2539 admin/include/editor_event_cls.php:1114
 #: admin/include/editor_relation_select.php:107
-#: admin/include/tree_check.php:1481 include/language_date.php:88
+#: admin/include/tree_check.php:1444 include/language_date.php:88
 #: include/language_date.php:93 include/language_date.php:98
-#: include/language_date.php:116 include/person_cls.php:1245
-#: include/person_cls.php:1246 include/person_cls.php:1310
-#: include/person_cls.php:1311 include/person_cls.php:1397
-#: include/person_cls.php:1398 relations.php:2002
+#: include/language_date.php:116 include/person_cls.php:1243
+#: include/person_cls.php:1244 include/person_cls.php:1308
+#: include/person_cls.php:1309 include/person_cls.php:1395
+#: include/person_cls.php:1396 relations.php:2002
 msgid "and"
 msgstr "ve"
 
-#: admin/include/editor.php:944
+#: admin/include/editor.php:937
 #, fuzzy
 #| msgid "Settings"
 msgid "Siblings"
 msgstr "Ayarlar"
 
-#: admin/include/editor.php:960 admin/include/editor.php:1480
+#: admin/include/editor.php:953 admin/include/editor.php:1473
 msgid "There are no parents."
 msgstr "Ebeveynler yok."
 
-#: admin/include/editor.php:968
+#: admin/include/editor.php:961
 #, php-format
 msgid "Editing in %s? <b>Always backup your data!</b>"
 msgstr "%s içinde düzenlensin mi? <b>Her zaman verilerinizi yedekleyin!</b>"
 
-#: admin/include/editor.php:989 admin/include/editor.php:3340
-#: admin/include/editor.php:3798
+#: admin/include/editor.php:982 admin/include/editor.php:3325
+#: admin/include/editor.php:3783
 msgid "Preview"
 msgstr "Önizleme"
 
-#: admin/include/editor.php:1258
+#: admin/include/editor.php:1251
 msgid "Open Archives"
 msgstr "Arşivleri Aç"
 
-#: admin/include/editor.php:1260
+#: admin/include/editor.php:1253
 msgid "Online search enabled"
 msgstr "Çevrimiçi arama etkin"
 
-#: admin/include/editor.php:1262
+#: admin/include/editor.php:1255
 msgid "Online search disabled"
 msgstr "Çevrimiçi arama devre dışı"
 
-#: admin/include/editor.php:1281
+#: admin/include/editor.php:1274
 msgid "Archives"
 msgstr "Arşivler"
 
-#: admin/include/editor.php:1407 admin/include/language_editor.php:385
+#: admin/include/editor.php:1400 admin/include/language_editor.php:385
 msgid "No results found"
 msgstr "Sonuç bulunamadı"
 
-#: admin/include/editor.php:1444
+#: admin/include/editor.php:1437
 msgid "Search using period"
 msgstr "Periyodu kullanarak ara"
 
-#: admin/include/editor.php:1461
+#: admin/include/editor.php:1454
 msgid "parents"
 msgstr "ebeveynler"
 
-#: admin/include/editor.php:1483 admin/include/editor.php:1554
+#: admin/include/editor.php:1476 admin/include/editor.php:1547
 msgid "Add parents"
 msgstr "Ebeveynler ekle"
 
-#: admin/include/editor.php:1486 admin/include/trees_cls.php:1652
+#: admin/include/editor.php:1479 admin/include/trees_cls.php:1640
 msgid "Father"
 msgstr "Baba"
 
-#: admin/include/editor.php:1486 admin/include/trees_cls.php:1655
+#: admin/include/editor.php:1479 admin/include/trees_cls.php:1643
 msgid "Mother"
 msgstr "Anne"
 
-#: admin/include/editor.php:1488 admin/include/editor.php:1489
-#: admin/include/editor.php:1490 admin/include/editor.php:1627
-#: admin/include/editor.php:1632 admin/include/editor.php:4141 list.php:1973
+#: admin/include/editor.php:1481 admin/include/editor.php:1482
+#: admin/include/editor.php:1483 admin/include/editor.php:1620
+#: admin/include/editor.php:1625 admin/include/editor.php:4126 list.php:1976
 msgid "firstname"
 msgstr "adı"
 
-#: admin/include/editor.php:1494 admin/include/editor.php:1495
-#: admin/include/editor.php:1507 admin/include/editor.php:1627
-#: admin/include/editor.php:1635 admin/include/editor.php:4144 list.php:1539
+#: admin/include/editor.php:1487 admin/include/editor.php:1488
+#: admin/include/editor.php:1500 admin/include/editor.php:1620
+#: admin/include/editor.php:1628 admin/include/editor.php:4129 list.php:1542
 msgid "prefix"
 msgstr "önek"
 
-#: admin/include/editor.php:1504 admin/include/editor.php:1635
-#: admin/include/editor.php:4153
+#: admin/include/editor.php:1497 admin/include/editor.php:1628
+#: admin/include/editor.php:4138
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr "Örneğin: d\\' veya: van_ (boşluk için _ kullanın)"
 
-#: admin/include/editor.php:1522 admin/include/editor.php:1523
-#: admin/include/editor.php:1524 admin/include/editor.php:1627
-#: admin/include/editor.php:1638 admin/include/editor.php:4158 list.php:1979
+#: admin/include/editor.php:1515 admin/include/editor.php:1516
+#: admin/include/editor.php:1517 admin/include/editor.php:1620
+#: admin/include/editor.php:1631 admin/include/editor.php:4143 list.php:1982
 msgid "lastname"
 msgstr "soyadı"
 
-#: admin/include/editor.php:1528 admin/include/editor.php:1709
-#: admin/include/editor.php:4161 admin/include/groups.php:498
+#: admin/include/editor.php:1521 admin/include/editor.php:1702
+#: admin/include/editor.php:4146 admin/include/groups.php:498
 msgid "Privacy filter"
 msgstr "Gizlilik filtresi"
 
-#: admin/include/editor.php:1529 admin/include/editor.php:1532
-#: admin/include/editor.php:1713 admin/include/editor.php:4162
-#: admin/include/trees_cls.php:1632
+#: admin/include/editor.php:1522 admin/include/editor.php:1525
+#: admin/include/editor.php:1706 admin/include/editor.php:4147
+#: admin/include/trees_cls.php:1620
 msgid "alive"
 msgstr "canlı"
 
-#: admin/include/editor.php:1530 admin/include/editor.php:1533
-#: admin/include/editor.php:1716 admin/include/editor.php:4163
+#: admin/include/editor.php:1523 admin/include/editor.php:1526
+#: admin/include/editor.php:1709 admin/include/editor.php:4148
 msgid "deceased"
 msgstr "ölü"
 
-#: admin/include/editor.php:1536 admin/include/editor.php:1734
-#: admin/include/editor.php:4166 admin/include/editor_sources.php:60
+#: admin/include/editor.php:1529 admin/include/editor.php:1727
+#: admin/include/editor.php:4151 admin/include/editor_sources.php:60
 msgid "Sex"
 msgstr "Cinsiyet"
 
-#: admin/include/editor.php:1539 admin/include/editor.php:1547
-#: admin/include/editor.php:1736 admin/include/editor.php:4168
+#: admin/include/editor.php:1532 admin/include/editor.php:1540
+#: admin/include/editor.php:1729 admin/include/editor.php:4153
 #: report_ancestor.php:1503
 msgid "male"
 msgstr "erkek"
 
-#: admin/include/editor.php:1541 admin/include/editor.php:1549
-#: admin/include/editor.php:1738 admin/include/editor.php:4170
+#: admin/include/editor.php:1534 admin/include/editor.php:1542
+#: admin/include/editor.php:1731 admin/include/editor.php:4155
 #: report_ancestor.php:1500
 msgid "female"
 msgstr "kadın"
 
-#: admin/include/editor.php:1557
+#: admin/include/editor.php:1550
 msgid "Or select an existing family as parents:"
 msgstr "Veya mevcut bir aileyi ebeveyn olarak seçin:"
 
 # Buried
-#: admin/include/editor.php:1578 admin/include/editor.php:1624
-#: admin/include/editor.php:1752 admin/include/editor.php:1825
-#: admin/include/editor.php:1872 admin/include/editor.php:1917
-#: admin/include/editor.php:1962 admin/include/editor.php:2062
-#: admin/include/editor.php:2218 admin/include/editor.php:2244
-#: admin/include/editor.php:2499 admin/include/editor.php:2581
-#: admin/include/editor.php:2619 admin/include/editor.php:2646
-#: admin/include/editor.php:2751 admin/include/editor.php:2779
-#: admin/include/editor.php:2815 admin/include/editor.php:2906 family.php:2156
+#: admin/include/editor.php:1571 admin/include/editor.php:1617
+#: admin/include/editor.php:1745 admin/include/editor.php:1818
+#: admin/include/editor.php:1865 admin/include/editor.php:1910
+#: admin/include/editor.php:1955 admin/include/editor.php:2055
+#: admin/include/editor.php:2211 admin/include/editor.php:2237
+#: admin/include/editor.php:2492 admin/include/editor.php:2574
+#: admin/include/editor.php:2612 admin/include/editor.php:2639
+#: admin/include/editor.php:2744 admin/include/editor.php:2772
+#: admin/include/editor.php:2808 admin/include/editor.php:2899 family.php:2160
 msgid "[+]"
 msgstr "[+]"
 
-#: admin/include/editor.php:1578 admin/include/editor.php:2499
-#: admin/include/gedcom_export.php:209 list.php:1663 list.php:1759
+#: admin/include/editor.php:1571 admin/include/editor.php:2492
+#: admin/include/gedcom_export.php:209 list.php:1666 list.php:1762
 #: list_names.php:227 statistics.php:748 statistics.php:931
 msgid "All"
 msgstr "Tümü"
 
-#: admin/include/editor.php:1581
+#: admin/include/editor.php:1574
 msgid "Delete person"
 msgstr "Kişiyi sil"
 
-#: admin/include/editor.php:1629 admin/include/editor.php:1654
-#: admin/include/editor_event_cls.php:1476 include/person_cls.php:1649
+#: admin/include/editor.php:1622 admin/include/editor.php:1647
+#: admin/include/editor_event_cls.php:1476 include/person_cls.php:1647
 msgid "Hebrew name"
 msgstr "İbranice adı"
 
-#: admin/include/editor.php:1639
+#: admin/include/editor.php:1632
 msgid "patronymic"
 msgstr "aile adı"
 
-#: admin/include/editor.php:1655
+#: admin/include/editor.php:1648
 msgid "For example: Joseph ben Hirsch Zvi"
 msgstr "Örneğin: Joseph ben Hirsch Zvi"
 
-#: admin/include/editor.php:1679 admin/include/editor.php:1811
-#: admin/include/editor.php:1861 admin/include/editor.php:1908
-#: admin/include/editor.php:1950 admin/include/editor.php:2054
-#: admin/include/editor.php:2115 admin/include/editor.php:2613
-#: admin/include/editor.php:2641 admin/include/editor.php:2743
-#: admin/include/editor.php:2774 admin/include/editor.php:2802
-#: admin/include/editor.php:2856 admin/include/editor.php:3317
-#: admin/include/editor.php:3522 admin/include/editor.php:3780
-#: admin/include/editor.php:4380 admin/include/editor_event_cls.php:1301
+#: admin/include/editor.php:1672 admin/include/editor.php:1804
+#: admin/include/editor.php:1854 admin/include/editor.php:1901
+#: admin/include/editor.php:1943 admin/include/editor.php:2047
+#: admin/include/editor.php:2108 admin/include/editor.php:2606
+#: admin/include/editor.php:2634 admin/include/editor.php:2736
+#: admin/include/editor.php:2767 admin/include/editor.php:2795
+#: admin/include/editor.php:2849 admin/include/editor.php:3302
+#: admin/include/editor.php:3507 admin/include/editor.php:3765
+#: admin/include/editor.php:4365 admin/include/editor_event_cls.php:1301
 #: admin/include/editor_event_cls.php:1364 admin/include/editor_sources.php:90
-#: admin/include/editor_sources.php:144 admin/include/gedcom.php:1544
+#: admin/include/editor_sources.php:144 admin/include/gedcom.php:1525
 msgid "text"
 msgstr "metin"
 
-#: admin/include/editor.php:1753 admin/include/editor.php:4184
-#: admin/include/editor_sources.php:66 birthday_list.php:136 family.php:2002
-#: googlemaps/namesearch.php:198 include/mainindex_cls.php:864
-#: include/mainindex_cls.php:867 include/person_cls.php:1808
-#: include/person_cls.php:1810 include/person_cls.php:1815
-#: include/person_cls.php:1818 list.php:1596 list.php:1603 list.php:1961
-#: maps.php:643 maps.php:752 report_ancestor.php:1181 report_ancestor.php:1496
+#: admin/include/editor.php:1746 admin/include/editor.php:4169
+#: admin/include/editor_sources.php:66 birthday_list.php:136 family.php:2006
+#: googlemaps/namesearch.php:198 include/mainindex_cls.php:866
+#: include/mainindex_cls.php:869 include/person_cls.php:1806
+#: include/person_cls.php:1808 include/person_cls.php:1813
+#: include/person_cls.php:1816 list.php:1599 list.php:1606 list.php:1964
+#: maps.php:645 maps.php:754 report_ancestor.php:1181 report_ancestor.php:1496
 #: report_descendant.php:813
 msgid "born"
 msgstr "doğmuş"
 
-#: admin/include/editor.php:1755 admin/include/editor.php:1843
-#: admin/include/editor.php:1889 admin/include/editor.php:1919
-#: admin/include/editor.php:1964 admin/include/editor.php:2064
-#: admin/include/editor.php:2584 admin/include/editor.php:2621
-#: admin/include/editor.php:2649 admin/include/editor.php:2753
-#: admin/include/editor.php:2781 admin/include/editor.php:2817
-#: admin/include/editor.php:3292 admin/include/editor.php:3516
-#: admin/include/editor.php:4382 admin/include/editor_cls.php:52
+#: admin/include/editor.php:1748 admin/include/editor.php:1836
+#: admin/include/editor.php:1882 admin/include/editor.php:1912
+#: admin/include/editor.php:1957 admin/include/editor.php:2057
+#: admin/include/editor.php:2577 admin/include/editor.php:2614
+#: admin/include/editor.php:2642 admin/include/editor.php:2746
+#: admin/include/editor.php:2774 admin/include/editor.php:2810
+#: admin/include/editor.php:3277 admin/include/editor.php:3501
+#: admin/include/editor.php:4367 admin/include/editor_cls.php:52
 msgid "date"
 msgstr "tarih"
 
-#: admin/include/editor.php:1773 admin/include/editor.php:1844
-#: admin/include/editor.php:1890 admin/include/editor.php:1919
-#: admin/include/editor.php:1965 admin/include/editor.php:2065
-#: admin/include/editor.php:2584 admin/include/editor.php:2621
-#: admin/include/editor.php:2649 admin/include/editor.php:2753
-#: admin/include/editor.php:2781 admin/include/editor.php:2817
-#: admin/include/editor.php:3292 admin/include/editor.php:3516
-#: admin/include/editor.php:4186 admin/include/editor.php:4192
-#: admin/include/editor.php:4198 admin/include/editor.php:4204
+#: admin/include/editor.php:1766 admin/include/editor.php:1837
+#: admin/include/editor.php:1883 admin/include/editor.php:1912
+#: admin/include/editor.php:1958 admin/include/editor.php:2058
+#: admin/include/editor.php:2577 admin/include/editor.php:2614
+#: admin/include/editor.php:2642 admin/include/editor.php:2746
+#: admin/include/editor.php:2774 admin/include/editor.php:2810
+#: admin/include/editor.php:3277 admin/include/editor.php:3501
+#: admin/include/editor.php:4171 admin/include/editor.php:4177
+#: admin/include/editor.php:4183 admin/include/editor.php:4189
 #: admin/include/editor_event_cls.php:1291
 #: admin/include/editor_event_cls.php:1361 admin/include/editor_sources.php:361
 #: admin/include/editor_sources.php:482
 msgid "place"
 msgstr "yer"
 
-#: admin/include/editor.php:1799 admin/include/trees_cls.php:1622
+#: admin/include/editor.php:1792 admin/include/trees_cls.php:1610
 msgid "birth time"
 msgstr "doğum zamanı"
 
-#: admin/include/editor.php:1802 include/person_cls.php:348
+#: admin/include/editor.php:1795 include/person_cls.php:348
 msgid "stillborn child"
 msgstr "ölü doğan çocuk"
 
-#: admin/include/editor.php:1826 include/language_event.php:16
+#: admin/include/editor.php:1819 include/language_event.php:16
 msgid "Brit Mila"
 msgstr "Sünnet Sözleşmesi"
 
-#: admin/include/editor.php:1845 admin/include/editor.php:1891
+#: admin/include/editor.php:1838 admin/include/editor.php:1884
 msgid ""
 "To display this, the option \"Show events\" has to be checked in \"Users -> "
 "Groups\""
@@ -1032,45 +1032,45 @@ msgstr ""
 "Bunu görüntülemek için, \"Kullanıcılar -> Gruplar\" bölümünde \"Etkinlikleri "
 "göster\" seçeneği işaretlenmelidir."
 
-#: admin/include/editor.php:1873 include/language_event.php:14
+#: admin/include/editor.php:1866 include/language_event.php:14
 msgid "Bat Mitzvah"
 msgstr "Bat Mitzvah"
 
-#: admin/include/editor.php:1874 include/language_event.php:13
+#: admin/include/editor.php:1867 include/language_event.php:13
 msgid "Bar Mitzvah"
 msgstr "Bar Mitzvah"
 
-#: admin/include/editor.php:1918 admin/include/editor.php:4190
-#: admin/include/editor_sources.php:72 family.php:2005
-#: googlemaps/namesearch.php:201 include/mainindex_cls.php:875
-#: include/mainindex_cls.php:878 include/person_cls.php:1895
-#: include/person_cls.php:1897 include/person_cls.php:1902
-#: include/person_cls.php:1905 list.php:1596 list.php:1603 list.php:1961
-#: maps.php:646 maps.php:755 timelines.php:40
+#: admin/include/editor.php:1911 admin/include/editor.php:4175
+#: admin/include/editor_sources.php:72 family.php:2009
+#: googlemaps/namesearch.php:201 include/mainindex_cls.php:877
+#: include/mainindex_cls.php:880 include/person_cls.php:1893
+#: include/person_cls.php:1895 include/person_cls.php:1900
+#: include/person_cls.php:1903 list.php:1599 list.php:1606 list.php:1964
+#: maps.php:648 maps.php:757 timelines.php:40
 msgid "baptised"
 msgstr "vaftiz edilmiş"
 
-#: admin/include/editor.php:1939 admin/include/trees_cls.php:1633
-#: include/person_cls.php:1849 include/person_cls.php:1851
+#: admin/include/editor.php:1932 admin/include/trees_cls.php:1621
+#: include/person_cls.php:1847 include/person_cls.php:1849
 msgid "religion"
 msgstr "din"
 
-#: admin/include/editor.php:1963 admin/include/editor.php:4196
+#: admin/include/editor.php:1956 admin/include/editor.php:4181
 #: admin/include/editor_sources.php:78 birthday_list.php:138
-#: googlemaps/namesearch.php:207 include/mainindex_cls.php:886
-#: include/mainindex_cls.php:889 include/person_cls.php:2036
-#: include/person_cls.php:2038 include/person_cls.php:2042
-#: include/person_cls.php:2043 list.php:1628 list.php:1635 list.php:1962
-#: maps.php:649 maps.php:758 report_ancestor.php:1181 report_ancestor.php:1496
+#: googlemaps/namesearch.php:207 include/mainindex_cls.php:888
+#: include/mainindex_cls.php:891 include/person_cls.php:2034
+#: include/person_cls.php:2036 include/person_cls.php:2040
+#: include/person_cls.php:2041 list.php:1631 list.php:1638 list.php:1965
+#: maps.php:651 maps.php:760 report_ancestor.php:1181 report_ancestor.php:1496
 msgid "died"
 msgstr "öldü"
 
-#: admin/include/editor.php:1969 admin/include/editor.php:2667
-#: admin/include/editor.php:2671
+#: admin/include/editor.php:1962 admin/include/editor.php:2660
+#: admin/include/editor.php:2664
 msgid "Age"
 msgstr "Yaş"
 
-#: admin/include/editor.php:1978
+#: admin/include/editor.php:1971
 msgid ""
 "If death year and age are used, then birth year is calculated automatically "
 "(when empty)."
@@ -1078,63 +1078,63 @@ msgstr ""
 "Ölüm yılı ve yaşı kullanılıyorsa, doğum yılı otomatik olarak hesaplanır (boş "
 "olduğunda)."
 
-#: admin/include/editor.php:1997 admin/include/trees_cls.php:1627
+#: admin/include/editor.php:1990 admin/include/trees_cls.php:1615
 msgid "death time"
 msgstr "ölüm zamanı"
 
-#: admin/include/editor.php:1999
+#: admin/include/editor.php:1992
 msgid "cause"
 msgstr "nedeni"
 
-#: admin/include/editor.php:2005 include/person_cls.php:1973
-#: include/person_cls.php:2001
+#: admin/include/editor.php:1998 include/person_cls.php:1971
+#: include/person_cls.php:1999
 msgid "murdered"
 msgstr "öldürüldü"
 
-#: admin/include/editor.php:2008 include/person_cls.php:1974
+#: admin/include/editor.php:2001 include/person_cls.php:1972
 msgid "drowned"
 msgstr "boğuldu"
 
-#: admin/include/editor.php:2011 include/person_cls.php:1975
+#: admin/include/editor.php:2004 include/person_cls.php:1973
 msgid "perished"
 msgstr "mahvoldu"
 
-#: admin/include/editor.php:2014 include/person_cls.php:1976
+#: admin/include/editor.php:2007 include/person_cls.php:1974
 msgid "killed in action"
 msgstr "eylemde öldürüldü"
 
-#: admin/include/editor.php:2017 include/person_cls.php:1977
+#: admin/include/editor.php:2010 include/person_cls.php:1975
 msgid "being missed"
 msgstr "kayboldu"
 
-#: admin/include/editor.php:2020 include/person_cls.php:1978
+#: admin/include/editor.php:2013 include/person_cls.php:1976
 msgid "committed suicide"
 msgstr "intihar etti"
 
-#: admin/include/editor.php:2023 include/person_cls.php:1979
+#: admin/include/editor.php:2016 include/person_cls.php:1977
 msgid "executed"
 msgstr "infaz edildi"
 
-#: admin/include/editor.php:2026 include/person_cls.php:1980
+#: admin/include/editor.php:2019 include/person_cls.php:1978
 msgid "died young"
 msgstr "genç yaşta öldü"
 
-#: admin/include/editor.php:2029 include/person_cls.php:1981
+#: admin/include/editor.php:2022 include/person_cls.php:1979
 msgid "died unmarried"
 msgstr "evlenmeden öldü"
 
-#: admin/include/editor.php:2032 include/person_cls.php:1982
+#: admin/include/editor.php:2025 include/person_cls.php:1980
 msgid "registration"
 msgstr "kayıtlı"
 
-#: admin/include/editor.php:2035 include/person_cls.php:1983
+#: admin/include/editor.php:2028 include/person_cls.php:1981
 msgid "declared death"
 msgstr "ölüm ilan edildi"
 
-#: admin/include/editor.php:2039 admin/include/editor.php:3228
-#: admin/include/editor.php:3329 admin/include/editor.php:3464
-#: admin/include/editor.php:3535 admin/include/editor.php:3704
-#: admin/include/editor.php:3788 admin/include/editor.php:4080
+#: admin/include/editor.php:2032 admin/include/editor.php:3213
+#: admin/include/editor.php:3314 admin/include/editor.php:3449
+#: admin/include/editor.php:3520 admin/include/editor.php:3689
+#: admin/include/editor.php:3773 admin/include/editor.php:4065
 #: admin/include/index_inc.php:544 admin/include/thumbs.php:616
 #: fanchart.php:765 include/calculate_age_cls.php:218
 #: include/calculate_age_cls.php:244 include/calculate_age_cls.php:333
@@ -1142,53 +1142,53 @@ msgstr "ölüm ilan edildi"
 msgid "or"
 msgstr "veya"
 
-#: admin/include/editor.php:2063
+#: admin/include/editor.php:2056
 msgid "Buried"
 msgstr "Defnedildi"
 
-#: admin/include/editor.php:2084
+#: admin/include/editor.php:2077
 msgid "method of burial"
 msgstr "defin yöntemi"
 
-#: admin/include/editor.php:2091 admin/include/editor.php:4202
+#: admin/include/editor.php:2084 admin/include/editor.php:4187
 #: admin/include/editor_sources.php:84 googlemaps/namesearch.php:210
-#: include/person_cls.php:2113 list.php:1628 list.php:1635 list.php:1962
-#: maps.php:652 maps.php:761 timelines.php:64
+#: include/person_cls.php:2111 list.php:1631 list.php:1638 list.php:1965
+#: maps.php:654 maps.php:763 timelines.php:64
 msgid "buried"
 msgstr "gömüldü"
 
-#: admin/include/editor.php:2094 admin/include/trees_cls.php:1629
-#: include/person_cls.php:2101
+#: admin/include/editor.php:2087 admin/include/trees_cls.php:1617
+#: include/person_cls.php:2099
 msgid "cremation"
 msgstr "ölüsü yakıldı"
 
-#: admin/include/editor.php:2097 include/person_cls.php:2104
+#: admin/include/editor.php:2090 include/person_cls.php:2102
 msgid "resomated"
 msgstr "kireçle yakıldı"
 
-#: admin/include/editor.php:2100 include/person_cls.php:2107
+#: admin/include/editor.php:2093 include/person_cls.php:2105
 msgid "sailor's grave"
 msgstr "denizcinin mezarı"
 
-#: admin/include/editor.php:2103 include/person_cls.php:2110
+#: admin/include/editor.php:2096 include/person_cls.php:2108
 msgid "donated to science"
 msgstr "bilime bağışlandı"
 
-#: admin/include/editor.php:2126
+#: admin/include/editor.php:2119
 msgid "Text for person"
 msgstr "Kişi için metin"
 
-#: admin/include/editor.php:2141 include/show_sources.php:61
+#: admin/include/editor.php:2134 include/show_sources.php:61
 #: include/show_sources.php:162 include/show_sources.php:200
 msgid "Source for person"
 msgstr "Kişi için kaynak"
 
-#: admin/include/editor.php:2151 admin/include/trees_cls.php:1634
+#: admin/include/editor.php:2144 admin/include/trees_cls.php:1622
 #: include/show_sources.php:224 include/show_sources.php:305
 msgid "own code"
 msgstr "kendi kodu"
 
-#: admin/include/editor.php:2162
+#: admin/include/editor.php:2155
 msgid ""
 "Use own code for your own remarks.<br>\n"
 "It's possible to use own code for special privacy options, see Admin > Users "
@@ -1202,82 +1202,82 @@ msgstr ""
 "de mümkündür! Simgeyi resimler klasörüne ekleyin, örn. 'kişi.gif' ve kendi "
 "kod alanına 'kişi' ekleyin."
 
-#: admin/include/editor.php:2220 admin/include/editor.php:2907
+#: admin/include/editor.php:2213 admin/include/editor.php:2900
 msgid "GEDCOM tags"
 msgstr "GEDCOM etiketleri"
 
-#: admin/include/editor.php:2222 admin/include/editor.php:2225
-#: admin/include/editor.php:2909 admin/include/editor.php:2912
+#: admin/include/editor.php:2215 admin/include/editor.php:2218
+#: admin/include/editor.php:2902 admin/include/editor.php:2905
 #, php-format
 msgid "There are %d unprocessed GEDCOM tags."
 msgstr "%d işlenmemiş GEDCOM etiketi var."
 
-#: admin/include/editor.php:2245 admin/include/user_notes.php:8
+#: admin/include/editor.php:2238 admin/include/user_notes.php:8
 #: admin/include/user_notes.php:12 admin/include/user_notes.php:87
-#: admin/index.php:1018 family.php:2030
+#: admin/index.php:1018 family.php:2034
 msgid "User notes"
 msgstr "Kullanıcı notları"
 
-#: admin/include/editor.php:2247 admin/include/editor.php:2249
+#: admin/include/editor.php:2240 admin/include/editor.php:2242
 #: admin/include/user_notes.php:89 admin/include/user_notes.php:91
-#: family.php:2032 family.php:2034
+#: family.php:2036 family.php:2038
 #, php-format
 msgid "There are %d user added notes."
 msgstr "%d kullanıcı tarafından eklenen not var."
 
-#: admin/include/editor.php:2345
+#: admin/include/editor.php:2338
 msgid "Select family"
 msgstr "Aile seçin"
 
-#: admin/include/editor.php:2384 admin/include/editor.php:2411
-#: admin/include/editor.php:4135 admin/include/editor.php:4208
+#: admin/include/editor.php:2377 admin/include/editor.php:2404
+#: admin/include/editor.php:4120 admin/include/editor.php:4193
 msgid "Add relation"
 msgstr "İlişki ekle"
 
-#: admin/include/editor.php:2384
+#: admin/include/editor.php:2377
 msgid "Add new relation to this person"
 msgstr "Bu kişiye yeni bir ilişki ekle"
 
-#: admin/include/editor.php:2407
+#: admin/include/editor.php:2400
 msgid "Or add relation with existing person:"
 msgstr "Veya mevcut kişiyle ilişki ekle:"
 
-#: admin/include/editor.php:2503
+#: admin/include/editor.php:2496
 msgid "Delete relation"
 msgstr "İlişkiyi sil"
 
-#: admin/include/editor.php:2526
+#: admin/include/editor.php:2519
 msgid "Select person 1"
 msgstr "1. kişiyi seçin"
 
-#: admin/include/editor.php:2553
+#: admin/include/editor.php:2546
 msgid "Select person 2"
 msgstr "2. kişiyi seçin"
 
-#: admin/include/editor.php:2583 admin/include/editor.php:2699
+#: admin/include/editor.php:2576 admin/include/editor.php:2692
 #: admin/include/editor_sources.php:108 include/marriage_cls.php:52
 #: include/marriage_cls.php:132 include/marriage_cls.php:133
-#: include/marriage_cls.php:134 include/person_cls.php:1460
+#: include/marriage_cls.php:134 include/person_cls.php:1458
 msgid "Living together"
 msgstr "Birlikte yaşama"
 
-#: admin/include/editor.php:2603
+#: admin/include/editor.php:2596
 msgid "End date"
 msgstr "Bitiş tarihi"
 
-#: admin/include/editor.php:2620 admin/include/editor_sources.php:114
+#: admin/include/editor.php:2613 admin/include/editor_sources.php:114
 msgid "Notice of Marriage"
 msgstr "Evlilik Bildirimi"
 
-#: admin/include/editor.php:2667
+#: admin/include/editor.php:2660
 msgid "Age person 1"
 msgstr "1. kişinin yaşı"
 
-#: admin/include/editor.php:2671
+#: admin/include/editor.php:2664
 msgid "Age person 2"
 msgstr "2. kişinin yaşı"
 
-#: admin/include/editor.php:2681
+#: admin/include/editor.php:2674
 msgid ""
 "If birth year of man or woman is empty it will be calculated automatically "
 "using age by marriage."
@@ -1285,141 +1285,141 @@ msgstr ""
 "Erkek veya kadının doğum yılı boşsa, evlilik yaşı kullanılarak otomatik "
 "olarak hesaplanacaktır."
 
-#: admin/include/editor.php:2690
+#: admin/include/editor.php:2683
 msgid "Relation Type"
 msgstr "İlişki Türü"
 
-#: admin/include/editor.php:2693
+#: admin/include/editor.php:2686
 msgid "Marriage/ Related"
 msgstr "Evlilik/ İlgili"
 
-#: admin/include/editor.php:2702 include/marriage_cls.php:55
-#: include/person_cls.php:1461
+#: admin/include/editor.php:2695 include/marriage_cls.php:55
+#: include/person_cls.php:1459
 msgid "Living apart together"
 msgstr "Birlikte ayrı yaşama"
 
-#: admin/include/editor.php:2705 include/marriage_cls.php:58
-#: include/person_cls.php:1462
+#: admin/include/editor.php:2698 include/marriage_cls.php:58
+#: include/person_cls.php:1460
 msgid "Intentionally unmarried mother"
 msgstr "Kasıtlı olarak evlenmemiş anne"
 
-#: admin/include/editor.php:2708 include/marriage_cls.php:62
-#: include/person_cls.php:1463
+#: admin/include/editor.php:2701 include/marriage_cls.php:62
+#: include/person_cls.php:1461
 msgid "Homosexual"
 msgstr "Eşcinsel"
 
-#: admin/include/editor.php:2711
+#: admin/include/editor.php:2704
 msgid "Non_marital"
 msgstr "Evlilikle ilgili değil"
 
-#: admin/include/editor.php:2714 include/marriage_cls.php:69
-#: include/marriage_cls.php:75 include/person_cls.php:1465
-#: include/person_cls.php:1466
+#: admin/include/editor.php:2707 include/marriage_cls.php:69
+#: include/marriage_cls.php:75 include/person_cls.php:1463
+#: include/person_cls.php:1464
 msgid "Extramarital"
 msgstr "Evlilik dışı"
 
-#: admin/include/editor.php:2717 include/marriage_cls.php:81
-#: include/person_cls.php:1467
+#: admin/include/editor.php:2710 include/marriage_cls.php:81
+#: include/person_cls.php:1465
 msgid "Partner"
 msgstr "Eş"
 
-#: admin/include/editor.php:2720 include/marriage_cls.php:84
-#: include/person_cls.php:1468
+#: admin/include/editor.php:2713 include/marriage_cls.php:84
+#: include/person_cls.php:1466
 msgid "Registered"
 msgstr "Kayıtlı"
 
-#: admin/include/editor.php:2723 include/marriage_cls.php:87
-#: include/person_cls.php:1469
+#: admin/include/editor.php:2716 include/marriage_cls.php:87
+#: include/person_cls.php:1467
 msgid "Unknown relation"
 msgstr "Bilinmeyen ilişki"
 
-#: admin/include/editor.php:2733 admin/include/editor.php:2845
+#: admin/include/editor.php:2726 admin/include/editor.php:2838
 msgid "Registrar"
 msgstr "Kayıt memuru"
 
-#: admin/include/editor.php:2752 admin/include/editor_sources.php:126
+#: admin/include/editor.php:2745 admin/include/editor_sources.php:126
 msgid "Religious Notice of Marriage"
 msgstr "Evliliğin Dini Bildirimi"
 
-#: admin/include/editor.php:2780 admin/include/editor_sources.php:132
+#: admin/include/editor.php:2773 admin/include/editor_sources.php:132
 msgid "Religious Marriage"
 msgstr "Dini Evlilik"
 
-#: admin/include/editor.php:2811
+#: admin/include/editor.php:2804
 msgid "Religion"
 msgstr "Din"
 
-#: admin/include/editor.php:2816 admin/include/editor_sources.php:138
+#: admin/include/editor.php:2809 admin/include/editor_sources.php:138
 msgid "Divorce"
 msgstr "Boşanma"
 
-#: admin/include/editor.php:2836
+#: admin/include/editor.php:2829
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr ""
 "Boşanma (daha fazla veri olmadan boşanma için bu onay kutusunu kullanın)."
 
-#: admin/include/editor.php:2861
+#: admin/include/editor.php:2854
 msgid "Text by marriage"
 msgstr "Evliliğe göre metin"
 
-#: admin/include/editor.php:2877
+#: admin/include/editor.php:2870
 msgid "Source by marriage"
 msgstr "Evliliğe göre kaynak"
 
-#: admin/include/editor.php:3017
+#: admin/include/editor.php:3010
 msgid "Use this icon to order children (drag and drop)"
 msgstr "Çocukları sıralamak için bu simgeyi kullanın (sürükle ve bırak)"
 
-#: admin/include/editor.php:3020
+#: admin/include/editor.php:3012
 msgid "Or automatically order children:"
 msgstr "Veya çocukları otomatik olarak sıralayın:"
 
-#: admin/include/editor.php:3020
+#: admin/include/editor.php:3012
 msgid "Automatic order children"
 msgstr "Çocukları otomatik sırala"
 
-#: admin/include/editor.php:3022
+#: admin/include/editor.php:3014
 msgid "Children are re-ordered."
 msgstr "Çocuklar yeniden sıralanır."
 
-#: admin/include/editor.php:3037
+#: admin/include/editor.php:3027
 msgid "Drag to change order (saves automatically)"
 msgstr "Sırayı değiştirmek için sürükleyin (otomatik olarak kaydeder)"
 
-#: admin/include/editor.php:3037
+#: admin/include/editor.php:3027
 msgid "Drag to change order"
 msgstr "Sırayı değiştirmek için sürükleyin"
 
-#: admin/include/editor.php:3041
+#: admin/include/editor.php:3031
 msgid "Disconnect child"
 msgstr "Çocuğun bağlantısını kes"
 
-#: admin/include/editor.php:3064
+#: admin/include/editor.php:3049
 msgid "Or add existing person as a child:"
 msgstr "Veya mevcut kişiyi çocuk olarak ekleyin:"
 
-#: admin/include/editor.php:3067
+#: admin/include/editor.php:3052
 msgid "Select child"
 msgstr "Çocuk seç"
 
-#: admin/include/editor.php:3124
+#: admin/include/editor.php:3109
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr ""
 "Bu kaynağı ve TÜM kaynak referanslarını kaldırmak istediğinizden emin "
 "misiniz?"
 
-#: admin/include/editor.php:3167
+#: admin/include/editor.php:3152
 msgid "Source is removed!"
 msgstr "Kaynak kaldırıldı!"
 
-#: admin/include/editor.php:3172 admin/include/groups.php:431
-#: admin/include/trees_cls.php:1869 admin/index.php:1063 family.php:136
-#: family.php:2187 header.php:256 help.php:60 include/show_sources.php:260
+#: admin/include/editor.php:3157 admin/include/groups.php:431
+#: admin/include/trees_cls.php:1867 admin/index.php:1063 family.php:136
+#: family.php:2191 header.php:256 help.php:60 include/show_sources.php:260
 #: menu.php:517 report_ancestor.php:1515 source.php:37
 msgid "Sources"
 msgstr "Kaynaklar"
 
-#: admin/include/editor.php:3173
+#: admin/include/editor.php:3158
 msgid ""
 "These sources can be connected to multiple persons, families, events and "
 "other items."
@@ -1427,121 +1427,121 @@ msgstr ""
 "Bu kaynaklar birden fazla kişiye, aileye, etkinliğe ve diğer öğelere "
 "bağlanabilir."
 
-#: admin/include/editor.php:3193 admin/include/editor.php:3195
+#: admin/include/editor.php:3178 admin/include/editor.php:3180
 msgid "Select source"
 msgstr "Kaynak Seç"
 
-#: admin/include/editor.php:3222 admin/include/editor.php:3285
+#: admin/include/editor.php:3207 admin/include/editor.php:3270
 msgid "restricted"
 msgstr "kısıtlı"
 
-#: admin/include/editor.php:3230 admin/include/editor_sources.php:542
+#: admin/include/editor.php:3215 admin/include/editor_sources.php:542
 msgid "Add source"
 msgstr "Kaynak ekle"
 
-#: admin/include/editor.php:3253 source.php:43 source.php:46
+#: admin/include/editor.php:3238 source.php:43 source.php:46
 msgid "No valid source number."
 msgstr "Geçerli kaynak numarası yok."
 
-#: admin/include/editor.php:3277 admin/include/editor.php:3508
-#: admin/include/editor.php:3753
+#: admin/include/editor.php:3262 admin/include/editor.php:3493
+#: admin/include/editor.php:3738
 msgid "Option"
 msgstr "Seçenek"
 
-#: admin/include/editor.php:3277 admin/include/editor.php:3508
-#: admin/include/editor.php:3753
+#: admin/include/editor.php:3262 admin/include/editor.php:3493
+#: admin/include/editor.php:3738
 msgid "Value"
 msgstr "Değer"
 
-#: admin/include/editor.php:3279
+#: admin/include/editor.php:3264
 msgid "Status:"
 msgstr "Durum:"
 
-#: admin/include/editor.php:3282
+#: admin/include/editor.php:3267
 msgid "publish"
 msgstr "yayınla"
 
-#: admin/include/editor.php:3286
+#: admin/include/editor.php:3271
 msgid "restricted = only visible for selected user groups"
 msgstr "kısıtlı = yalnızca seçili kullanıcı grupları için görünür"
 
-#: admin/include/editor.php:3289 admin/include/editor.php:3510
+#: admin/include/editor.php:3274 admin/include/editor.php:3495
 #: admin/include/editor_event_cls.php:27 admin/include/editor_event_cls.php:414
 #: admin/include/editor_event_cls.php:418 admin/include/editor_sources.php:312
-#: admin/include/editor_sources.php:356 admin/include/trees_cls.php:1787
+#: admin/include/editor_sources.php:356 admin/include/trees_cls.php:1775
 #: source.php:51 source.php:56 source.php:229 sources.php:156
 msgid "Title"
 msgstr "Başlık"
 
-#: admin/include/editor.php:3291 source.php:144 source.php:149
+#: admin/include/editor.php:3276 source.php:144 source.php:149
 msgid "Subject"
 msgstr "Konu"
 
-#: admin/include/editor.php:3294 source.php:227
+#: admin/include/editor.php:3279 source.php:227
 msgid "Repository"
 msgstr "Depo"
 
-#: admin/include/editor.php:3307
+#: admin/include/editor.php:3292
 msgid "Add repositories"
 msgstr "Depolar ekle"
 
-#: admin/include/editor.php:3310 source.php:87 source.php:105
+#: admin/include/editor.php:3295 source.php:87 source.php:105
 msgid "Publication"
 msgstr "Yayın"
 
-#: admin/include/editor.php:3310
+#: admin/include/editor.php:3295
 msgid "will be shown as a link."
 msgstr "bağlantı olarak gösterilecektir."
 
-#: admin/include/editor.php:3311 admin/include/editor_sources.php:333
-#: admin/include/settings_admin.php:1083 include/person_cls.php:1717
-#: include/person_cls.php:1719 include/person_cls.php:1722
-#: include/person_cls.php:1725 list.php:1614 list.php:1622 source.php:122
+#: admin/include/editor.php:3296 admin/include/editor_sources.php:333
+#: admin/include/settings_admin.php:1083 include/person_cls.php:1715
+#: include/person_cls.php:1717 include/person_cls.php:1720
+#: include/person_cls.php:1723 list.php:1617 list.php:1625 source.php:122
 #: source.php:127
 msgid "Own code"
 msgstr "Kendi kodu"
 
-#: admin/include/editor.php:3312 source.php:133 source.php:138
+#: admin/include/editor.php:3297 source.php:133 source.php:138
 msgid "Author"
 msgstr "Yazar"
 
-#: admin/include/editor.php:3313 source.php:155 source.php:160
+#: admin/include/editor.php:3298 source.php:155 source.php:160
 msgid "Nr."
 msgstr "No."
 
-#: admin/include/editor.php:3314 source.php:166 source.php:171
+#: admin/include/editor.php:3299 source.php:166 source.php:171
 msgid "Kind"
 msgstr "Tür"
 
-#: admin/include/editor.php:3315 source.php:177 source.php:182
+#: admin/include/editor.php:3300 source.php:177 source.php:182
 msgid "Archive"
 msgstr "Arşiv"
 
-#: admin/include/editor.php:3316 admin/include/editor_sources.php:451
-#: list.php:1832 list_names.php:248 list_places_families.php:446
+#: admin/include/editor.php:3301 admin/include/editor_sources.php:451
+#: list.php:1835 list_names.php:248 list_places_families.php:446
 #: photoalbum.php:273 source.php:187 source.php:192 sources.php:97
 msgid "Page"
 msgstr "Sayfa"
 
-#: admin/include/editor.php:3330 admin/include/editor.php:3536
-#: admin/include/editor.php:3789 admin/include/make_db_maps.php:392
+#: admin/include/editor.php:3315 admin/include/editor.php:3521
+#: admin/include/editor.php:3774 admin/include/make_db_maps.php:392
 #: admin/include/make_db_maps.php:401 admin/include/make_db_maps.php:586
 msgid "Delete"
 msgstr "Sil"
 
-#: admin/include/editor.php:3408
+#: admin/include/editor.php:3393
 msgid "Really remove repository with all repository links?"
 msgstr "Tüm depo bağlantılarıyla birlikte depo gerçekten kaldırılsın mı?"
 
-#: admin/include/editor.php:3434
+#: admin/include/editor.php:3419
 msgid "Repository is removed!"
 msgstr "Depo kaldırıldı!"
 
-#: admin/include/editor.php:3441 admin/index.php:1067
+#: admin/include/editor.php:3426 admin/index.php:1067
 msgid "Repositories"
 msgstr "Depolar"
 
-#: admin/include/editor.php:3442
+#: admin/include/editor.php:3427
 msgid ""
 "A repository can be connected to a source. Edit a source to connect a "
 "repository."
@@ -1549,144 +1549,144 @@ msgstr ""
 "Bir depo bir kaynağa bağlanabilir. Bir depoyu bağlamak için bir kaynağı "
 "düzenleyin."
 
-#: admin/include/editor.php:3451 admin/include/editor.php:3453
+#: admin/include/editor.php:3436 admin/include/editor.php:3438
 msgid "Select repository"
 msgstr "Depo seçin"
 
-#: admin/include/editor.php:3465
+#: admin/include/editor.php:3450
 msgid "Add repository"
 msgstr "Depo ekle"
 
-#: admin/include/editor.php:3481
+#: admin/include/editor.php:3466
 msgid "No valid repository number."
 msgstr "Geçerli depo numarası yok."
 
-#: admin/include/editor.php:3525 admin/include/gedcom_export.php:288
+#: admin/include/editor.php:3510 admin/include/gedcom_export.php:288
 #: admin/include/gedcom_export.php:291 mailform.php:29 register.php:63
 #: user_settings.php:54
 msgid "E-mail"
 msgstr "E-posta"
 
-#: admin/include/editor.php:3527 admin/include/editor_event_cls.php:30
+#: admin/include/editor.php:3512 admin/include/editor_event_cls.php:30
 #: admin/include/editor_event_cls.php:258
 msgid "URL/ Internet link"
 msgstr "URL/ İnternet bağlantısı"
 
-#: admin/include/editor.php:3612
+#: admin/include/editor.php:3597
 msgid ""
 "Are you sure you want to remove this address and ALL address references?"
 msgstr ""
 "Bu adresi ve TÜM adres referanslarını kaldırmak istediğinizden emin misiniz?"
 
-#: admin/include/editor.php:3665
+#: admin/include/editor.php:3650
 msgid "Address has been removed!"
 msgstr "Adres kaldırıldı!"
 
-#: admin/include/editor.php:3674
+#: admin/include/editor.php:3659
 msgid ""
 "These addresses can be connected to multiple persons, families and other "
 "items."
 msgstr "Bu adresler birden fazla kişiye, aileye ve diğer öğelere bağlanabilir."
 
-#: admin/include/editor.php:3686 admin/include/editor.php:3688
-#: admin/include/editor.php:4482
+#: admin/include/editor.php:3671 admin/include/editor.php:3673
+#: admin/include/editor.php:4467
 msgid "Select address"
 msgstr "Adres seçin"
 
-#: admin/include/editor.php:3705
+#: admin/include/editor.php:3690
 msgid "Add address"
 msgstr "Adres ekle"
 
-#: admin/include/editor.php:3727
+#: admin/include/editor.php:3712
 msgid "No valid address number."
 msgstr "Geçerli adres numarası yok."
 
-#: admin/include/editor.php:3769 admin/include/editor.php:4038
+#: admin/include/editor.php:3754 admin/include/editor.php:4023
 #: admin/include/editor_sources.php:90 admin/include/editor_sources.php:182
 #: admin/include/editor_sources.php:190 include/show_sources.php:106
 #: include/show_sources.php:196 include/show_sources.php:285
 msgid "source"
 msgstr "kaynak"
 
-#: admin/include/editor.php:3814 admin/index.php:1075
+#: admin/include/editor.php:3799 admin/index.php:1075
 msgid "Rename places"
 msgstr "Yerleri yeniden adlandır"
 
-#: admin/include/editor.php:3943 header.php:254 help.php:54 list.php:1959
+#: admin/include/editor.php:3928 header.php:254 help.php:54 list.php:1962
 #: list_places_families.php:560
 msgid "Places"
 msgstr "Yerler"
 
-#: admin/include/editor.php:3944
+#: admin/include/editor.php:3929
 msgid "Select location"
 msgstr "Konum seçin"
 
-#: admin/include/editor.php:3959
+#: admin/include/editor.php:3944
 msgid "Person places"
 msgstr "Kişi yerleri"
 
-#: admin/include/editor.php:3961
+#: admin/include/editor.php:3946
 msgid "Family places"
 msgstr "Aile yerleri"
 
-#: admin/include/editor.php:3963
+#: admin/include/editor.php:3948
 msgid "Other places (sources, events, addresses, etc.)"
 msgstr "Diğer yerler (kaynaklar, etkinlikler, adresler vb.)"
 
-#: admin/include/editor.php:3973 admin/include/editor.php:3982
+#: admin/include/editor.php:3958 admin/include/editor.php:3967
 msgid "Change location"
 msgstr "Konumu değiştir"
 
-#: admin/include/editor.php:3983
+#: admin/include/editor.php:3968
 msgid "Also change Google Maps table."
 msgstr "Ayrıca Google Haritalar tablosunu değiştirin."
 
-#: admin/include/editor.php:4138 admin/include/editor.php:4211
+#: admin/include/editor.php:4123 admin/include/editor.php:4196
 msgid "Add child"
 msgstr "Çocuk ekle"
 
-#: admin/include/editor.php:4227 admin/include/trees.php:301
+#: admin/include/editor.php:4212 admin/include/trees.php:301
 #: include/show_tree_text.php:6 photoalbum.php:219
 msgid "NO NAME"
 msgstr "İSİM YOK"
 
-#: admin/include/editor.php:4383 admin/include/editor_sources.php:318
+#: admin/include/editor.php:4368 admin/include/editor_sources.php:318
 msgid "Extra text"
 msgstr "Ekstra metin"
 
-#: admin/include/editor.php:4404
+#: admin/include/editor.php:4389
 msgid "Address GEDCOM number:"
 msgstr "Adres GEDCOM numarası:"
 
-#: admin/include/editor.php:4408
+#: admin/include/editor.php:4393
 msgid "Shared address"
 msgstr "Paylaşılan adres"
 
-#: admin/include/editor.php:4419
+#: admin/include/editor.php:4404
 msgid "A shared address can be connected to multiple persons or relations."
 msgstr "Paylaşılan bir adres birden fazla kişiye veya ilişkiye bağlanabilir."
 
-#: admin/include/editor.php:4420
+#: admin/include/editor.php:4405
 msgid ""
 "A shared address is only supported by the Haza-data and HuMo-genealogy "
 "programs."
 msgstr ""
 
-#: admin/include/editor.php:4496
+#: admin/include/editor.php:4481
 msgid "Or: add new address"
 msgstr "Veya: yeni adres ekle"
 
-#: admin/include/editor.php:4523
+#: admin/include/editor.php:4508
 msgid "Addressrole"
 msgstr "Adres rol"
 
-#: admin/include/editor.php:4526
+#: admin/include/editor.php:4511
 #, fuzzy
 #| msgid "Extra text by source"
 msgid "Extra text by address"
 msgstr "Kaynağa göre ekstra metin"
 
-#: admin/include/editor_cls.php:24 admin/include/tree_check.php:1439
+#: admin/include/editor_cls.php:24 admin/include/tree_check.php:1402
 #: include/language_date.php:55 include/language_date.php:69
 #: include/language_date.php:110
 msgid "before"
@@ -1698,7 +1698,7 @@ msgstr "önce"
 msgid "&#177;"
 msgstr "&#177;"
 
-#: admin/include/editor_cls.php:30 admin/include/tree_check.php:1433
+#: admin/include/editor_cls.php:30 admin/include/tree_check.php:1396
 #: include/language_date.php:53 include/language_date.php:69
 #: include/language_date.php:108
 msgid "after"
@@ -1724,84 +1724,84 @@ msgstr "tahmini"
 msgid "calculated"
 msgstr "hesaplanmış"
 
-#: admin/include/editor_cls.php:58 admin/include/editor_cls.php:173
+#: admin/include/editor_cls.php:58 admin/include/editor_cls.php:174
 #: admin/include/statistics.php:202 admin/include/trees_cls.php:116
 #: birthday_list.php:79 include/language_date.php:21
 #: include/mainindex_cls.php:289 statistics.php:24
 msgid "jan"
 msgstr "oca"
 
-#: admin/include/editor_cls.php:59 admin/include/editor_cls.php:174
+#: admin/include/editor_cls.php:59 admin/include/editor_cls.php:175
 #: admin/include/statistics.php:203 admin/include/trees_cls.php:117
 #: birthday_list.php:80 include/language_date.php:22
 #: include/mainindex_cls.php:290 statistics.php:25
 msgid "feb"
 msgstr "şub"
 
-#: admin/include/editor_cls.php:60 admin/include/editor_cls.php:175
+#: admin/include/editor_cls.php:60 admin/include/editor_cls.php:176
 #: admin/include/statistics.php:204 admin/include/trees_cls.php:118
 #: birthday_list.php:81 include/language_date.php:23
 #: include/mainindex_cls.php:291 statistics.php:26
 msgid "mar"
 msgstr "mar"
 
-#: admin/include/editor_cls.php:61 admin/include/editor_cls.php:176
+#: admin/include/editor_cls.php:61 admin/include/editor_cls.php:177
 #: admin/include/statistics.php:205 admin/include/trees_cls.php:119
 #: birthday_list.php:82 include/language_date.php:24
 #: include/mainindex_cls.php:292 statistics.php:27
 msgid "apr"
 msgstr "nis"
 
-#: admin/include/editor_cls.php:62 admin/include/editor_cls.php:177
+#: admin/include/editor_cls.php:62 admin/include/editor_cls.php:178
 #: admin/include/statistics.php:206 admin/include/trees_cls.php:120
 #: birthday_list.php:83 include/language_date.php:25
 #: include/mainindex_cls.php:293 statistics.php:28
 msgid "may"
 msgstr "may"
 
-#: admin/include/editor_cls.php:63 admin/include/editor_cls.php:178
+#: admin/include/editor_cls.php:63 admin/include/editor_cls.php:179
 #: admin/include/statistics.php:207 admin/include/trees_cls.php:121
 #: birthday_list.php:84 include/language_date.php:26
 #: include/mainindex_cls.php:294 statistics.php:29
 msgid "jun"
 msgstr "haz"
 
-#: admin/include/editor_cls.php:64 admin/include/editor_cls.php:179
+#: admin/include/editor_cls.php:64 admin/include/editor_cls.php:180
 #: admin/include/statistics.php:208 admin/include/trees_cls.php:122
 #: birthday_list.php:85 include/language_date.php:27
 #: include/mainindex_cls.php:295 statistics.php:30
 msgid "jul"
 msgstr "tem"
 
-#: admin/include/editor_cls.php:65 admin/include/editor_cls.php:180
+#: admin/include/editor_cls.php:65 admin/include/editor_cls.php:181
 #: admin/include/statistics.php:209 admin/include/trees_cls.php:123
 #: birthday_list.php:86 include/language_date.php:28
 #: include/mainindex_cls.php:296 statistics.php:31
 msgid "aug"
 msgstr "ağu"
 
-#: admin/include/editor_cls.php:66 admin/include/editor_cls.php:181
+#: admin/include/editor_cls.php:66 admin/include/editor_cls.php:182
 #: admin/include/statistics.php:210 admin/include/trees_cls.php:124
 #: birthday_list.php:87 include/language_date.php:29
 #: include/mainindex_cls.php:297 statistics.php:32
 msgid "sep"
 msgstr "eyl"
 
-#: admin/include/editor_cls.php:67 admin/include/editor_cls.php:182
+#: admin/include/editor_cls.php:67 admin/include/editor_cls.php:183
 #: admin/include/statistics.php:211 admin/include/trees_cls.php:125
 #: birthday_list.php:88 include/language_date.php:30
 #: include/mainindex_cls.php:298 statistics.php:33
 msgid "oct"
 msgstr "eki"
 
-#: admin/include/editor_cls.php:68 admin/include/editor_cls.php:183
+#: admin/include/editor_cls.php:68 admin/include/editor_cls.php:184
 #: admin/include/statistics.php:212 admin/include/trees_cls.php:126
 #: birthday_list.php:89 include/language_date.php:31
 #: include/mainindex_cls.php:299 statistics.php:34
 msgid "nov"
 msgstr "kas"
 
-#: admin/include/editor_cls.php:69 admin/include/editor_cls.php:184
+#: admin/include/editor_cls.php:69 admin/include/editor_cls.php:185
 #: admin/include/statistics.php:213 admin/include/trees_cls.php:127
 #: birthday_list.php:90 include/language_date.php:32
 #: include/mainindex_cls.php:300 statistics.php:35
@@ -1890,30 +1890,30 @@ msgid "December"
 msgstr "Aralık"
 
 # Birth
-#: admin/include/editor_cls.php:269 include/person_cls.php:1004 list.php:52
-#: list.php:207 list.php:216 list.php:1474 relations.php:3279
-#: relations.php:3364 report_ancestor.php:806 report_ancestor.php:1181
+#: admin/include/editor_cls.php:270 include/person_cls.php:1003 list.php:52
+#: list.php:207 list.php:216 list.php:1477 relations.php:3277
+#: relations.php:3362 report_ancestor.php:806 report_ancestor.php:1181
 #: report_ancestor.php:1266 report_ancestor.php:1496 report_descendant.php:715
 msgid "*"
 msgstr "*"
 
 # Baptise
-#: admin/include/editor_cls.php:271 include/person_cls.php:1008 list.php:59
-#: list.php:205 list.php:214 list.php:1479 relations.php:3276
-#: relations.php:3361 report_ancestor.php:810 report_descendant.php:720
+#: admin/include/editor_cls.php:272 include/person_cls.php:1007 list.php:59
+#: list.php:205 list.php:214 list.php:1482 relations.php:3274
+#: relations.php:3359 report_ancestor.php:810 report_descendant.php:720
 msgid "~"
 msgstr "~"
 
 # Death sign
-#: admin/include/editor_cls.php:274 include/person_cls.php:1013 list.php:83
-#: list.php:225 list.php:234 list.php:1489 report_ancestor.php:815
+#: admin/include/editor_cls.php:275 include/person_cls.php:1012 list.php:83
+#: list.php:225 list.php:234 list.php:1492 report_ancestor.php:815
 #: report_ancestor.php:1181 report_ancestor.php:1232 report_descendant.php:726
 msgid "&#134;"
 msgstr "&#134;"
 
 # Buried
-#: admin/include/editor_cls.php:278 include/person_cls.php:1017 list.php:90
-#: list.php:223 list.php:232 list.php:1495 report_ancestor.php:819
+#: admin/include/editor_cls.php:279 include/person_cls.php:1016 list.php:90
+#: list.php:223 list.php:232 list.php:1498 report_ancestor.php:819
 #: report_descendant.php:731
 msgid "[]"
 msgstr "[]"
@@ -1927,8 +1927,8 @@ msgstr "Resim/ Medya"
 #: admin/include/editor_event_cls.php:17 admin/include/editor_event_cls.php:504
 #: admin/include/editor_event_cls.php:524
 #: admin/include/editor_event_cls.php:1193
-#: admin/include/editor_event_cls.php:1354 admin/include/trees_cls.php:1779
-#: list.php:1558 list.php:1566
+#: admin/include/editor_event_cls.php:1354 admin/include/trees_cls.php:1767
+#: list.php:1561 list.php:1569
 msgid "Profession"
 msgstr "Meslek"
 
@@ -1938,34 +1938,34 @@ msgstr "Meslek"
 #: admin/include/editor_event_cls.php:302
 #: admin/include/editor_event_cls.php:326
 #: admin/include/editor_event_cls.php:1199 admin/include/editor_sources.php:182
-#: admin/include/editor_sources.php:190 admin/include/trees_cls.php:1780
-#: include/mainindex_cls.php:923
+#: admin/include/editor_sources.php:190 admin/include/trees_cls.php:1768
+#: include/mainindex_cls.php:925
 msgid "Event"
 msgstr "Etkinlik"
 
 #: admin/include/editor_event_cls.php:19 admin/include/editor_event_cls.php:446
-#: admin/include/editor_inc.php:1348 admin/include/trees_cls.php:1781
-#: include/person_cls.php:1798 include/witness.php:103
+#: admin/include/editor_inc.php:1348 admin/include/trees_cls.php:1769
+#: include/person_cls.php:1796 include/witness.php:103
 msgid "birth declaration"
 msgstr "doğum beyanı"
 
 #: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:459
-#: admin/include/editor_inc.php:1350 admin/include/trees_cls.php:1782
-#: include/person_cls.php:1874 include/person_cls.php:1876
+#: admin/include/editor_inc.php:1350 admin/include/trees_cls.php:1770
+#: include/person_cls.php:1872 include/person_cls.php:1874
 #: include/witness.php:104
 msgid "baptism witness"
 msgstr "vaftiz tanığı"
 
 #: admin/include/editor_event_cls.php:21 admin/include/editor_event_cls.php:472
-#: admin/include/editor_inc.php:1352 admin/include/trees_cls.php:1783
-#: include/person_cls.php:2027 include/person_cls.php:2029
+#: admin/include/editor_inc.php:1352 admin/include/trees_cls.php:1771
+#: include/person_cls.php:2025 include/person_cls.php:2027
 #: include/witness.php:105
 msgid "death declaration"
 msgstr "ölüm ilanı"
 
 #: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:485
-#: admin/include/editor_inc.php:1354 admin/include/trees_cls.php:1784
-#: include/person_cls.php:2091 include/witness.php:106
+#: admin/include/editor_inc.php:1354 admin/include/trees_cls.php:1772
+#: include/person_cls.php:2089 include/witness.php:106
 msgid "burial witness"
 msgstr "defin tanığı"
 
@@ -1980,7 +1980,7 @@ msgid "Suffix"
 msgstr "Sonek"
 
 #: admin/include/editor_event_cls.php:26 admin/include/editor_event_cls.php:398
-#: admin/include/editor_event_cls.php:402 admin/include/trees_cls.php:1786
+#: admin/include/editor_event_cls.php:402 admin/include/trees_cls.php:1774
 msgid "Title of Nobility"
 msgstr "Asalet Unvanı"
 
@@ -1989,7 +1989,7 @@ msgid "Adoption"
 msgstr "Evlat edinme"
 
 #: admin/include/editor_event_cls.php:29 admin/include/editor_event_cls.php:430
-#: admin/include/editor_event_cls.php:434 admin/include/trees_cls.php:1788
+#: admin/include/editor_event_cls.php:434 admin/include/trees_cls.php:1776
 msgid "Title of Lordship"
 msgstr "Lordluk Unvanı"
 
@@ -2011,8 +2011,8 @@ msgstr "evlilik tanığı (dini)"
 
 # Language indicator, used for birthday RSS
 #: admin/include/editor_event_cls.php:217
-#: admin/include/editor_event_cls.php:287 list.php:105 list.php:1501
-#: list.php:1502
+#: admin/include/editor_event_cls.php:287 list.php:105 list.php:1504
+#: list.php:1505
 msgid "Events"
 msgstr "Etkinlikler"
 
@@ -2048,7 +2048,7 @@ msgid "Marriage license"
 msgstr "Evlilik cüzdanı"
 
 #: admin/include/editor_event_cls.php:346
-#: admin/include/editor_event_cls.php:1460 include/person_cls.php:1637
+#: admin/include/editor_event_cls.php:1460 include/person_cls.php:1635
 msgid "Nickname"
 msgstr "Takma ad"
 
@@ -2159,8 +2159,8 @@ msgstr "Torunlar"
 msgid "Ancestors"
 msgstr "Atalar"
 
-#: admin/include/editor_event_cls.php:1312 admin/include/tree_check.php:592
-#: admin/include/tree_check.php:803
+#: admin/include/editor_event_cls.php:1312 admin/include/tree_check.php:555
+#: admin/include/tree_check.php:766
 msgid "ID"
 msgstr "KİMLİK"
 
@@ -2169,68 +2169,68 @@ msgstr "KİMLİK"
 msgid "Upload new image. Picture max: %1$d MB or media max: %2$d MB."
 msgstr ""
 
-#: admin/include/editor_event_cls.php:1463 include/person_cls.php:1628
-#: include/person_cls.php:1631
+#: admin/include/editor_event_cls.php:1463 include/person_cls.php:1626
+#: include/person_cls.php:1629
 msgid "Also known as"
 msgstr "Ayrıca şöyle bilinir"
 
-#: admin/include/editor_event_cls.php:1466 include/person_cls.php:1646
+#: admin/include/editor_event_cls.php:1466 include/person_cls.php:1644
 msgid "alias name"
 msgstr "takma ad"
 
-#: admin/include/editor_event_cls.php:1469 include/person_cls.php:1647
+#: admin/include/editor_event_cls.php:1469 include/person_cls.php:1645
 msgid "Short name (for reports)"
 msgstr "Kısa ad (raporlar için)"
 
-#: admin/include/editor_event_cls.php:1472 include/person_cls.php:1648
+#: admin/include/editor_event_cls.php:1472 include/person_cls.php:1646
 msgid "Adopted name"
 msgstr "Kabul edilen isim"
 
-#: admin/include/editor_event_cls.php:1480 include/person_cls.php:1650
+#: admin/include/editor_event_cls.php:1480 include/person_cls.php:1648
 msgid "Census name"
 msgstr "Nüfus sayımı adı"
 
-#: admin/include/editor_event_cls.php:1483 include/person_cls.php:1651
+#: admin/include/editor_event_cls.php:1483 include/person_cls.php:1649
 msgid "Married name"
 msgstr "Evlilik adı"
 
-#: admin/include/editor_event_cls.php:1486 include/person_cls.php:1652
+#: admin/include/editor_event_cls.php:1486 include/person_cls.php:1650
 msgid "Given name"
 msgstr "Adı"
 
-#: admin/include/editor_event_cls.php:1489 include/person_cls.php:1653
+#: admin/include/editor_event_cls.php:1489 include/person_cls.php:1651
 msgid "Farm name"
 msgstr "Çiftlik adı"
 
-#: admin/include/editor_event_cls.php:1492 include/person_cls.php:1654
+#: admin/include/editor_event_cls.php:1492 include/person_cls.php:1652
 msgid "Birth name"
 msgstr "Doğum adı"
 
-#: admin/include/editor_event_cls.php:1495 include/person_cls.php:1655
+#: admin/include/editor_event_cls.php:1495 include/person_cls.php:1653
 msgid "Indian name"
 msgstr "Hint adı"
 
-#: admin/include/editor_event_cls.php:1498 include/person_cls.php:1656
+#: admin/include/editor_event_cls.php:1498 include/person_cls.php:1654
 msgid "Formal name"
 msgstr "Resmi adı"
 
-#: admin/include/editor_event_cls.php:1501 include/person_cls.php:1657
+#: admin/include/editor_event_cls.php:1501 include/person_cls.php:1655
 msgid "Current name"
 msgstr "Geçerli adı"
 
-#: admin/include/editor_event_cls.php:1504 include/person_cls.php:1658
+#: admin/include/editor_event_cls.php:1504 include/person_cls.php:1656
 msgid "Soldier name"
 msgstr "Askeri adı"
 
-#: admin/include/editor_event_cls.php:1507 include/person_cls.php:1660
+#: admin/include/editor_event_cls.php:1507 include/person_cls.php:1658
 msgid "Religious name"
 msgstr "Dini adı"
 
-#: admin/include/editor_event_cls.php:1510 include/person_cls.php:1661
+#: admin/include/editor_event_cls.php:1510 include/person_cls.php:1659
 msgid "Other name"
 msgstr "Diğer adı"
 
-#: admin/include/editor_event_cls.php:1513 include/person_cls.php:1659
+#: admin/include/editor_event_cls.php:1513 include/person_cls.php:1657
 msgid "Formerly known as"
 msgstr "Daha önce ... olarak bilinen"
 
@@ -2359,8 +2359,8 @@ msgid "family"
 msgstr "aile"
 
 #: admin/include/editor_sources.php:313 admin/include/editor_sources.php:317
-#: include/mainindex_cls.php:923 list.php:1597 list.php:1599 list.php:1629
-#: list.php:1631 list.php:1985 list.php:1997 source.php:62 source.php:67
+#: include/mainindex_cls.php:925 list.php:1600 list.php:1602 list.php:1632
+#: list.php:1634 list.php:1988 list.php:2000 source.php:62 source.php:67
 #: source.php:237 sources.php:163
 msgid "Date"
 msgstr "Tarih"
@@ -2617,7 +2617,7 @@ msgstr "Yalnızca resim dosyası adını işleyin. Örneğin: resim.jpg [VARSAYI
 msgid "Process full picture path. For example: picture_path&#92;picture.jpg"
 msgstr "Tam resim yolunu işleyin. Örneğin: resim_yolu&#92;resim.jpg"
 
-#: admin/include/gedcom.php:305
+#: admin/include/gedcom.php:304
 msgid ""
 "Don't remove picture links from database (only needed for Geneanet GEDCOM "
 "file)."
@@ -2625,54 +2625,50 @@ msgstr ""
 "Resim bağlantılarını veritabanından kaldırmayın (yalnızca Geneanet GEDCOM "
 "dosyası için gereklidir)."
 
-#: admin/include/gedcom.php:306
+#: admin/include/gedcom.php:305
 msgid ""
 "In Geneanet add HuMo-genealogy picture id in the source by a person. Using "
 "this example: #media1254,media13454#"
 msgstr ""
 
-#: admin/include/gedcom.php:316
-msgid "Add this GEDCOM file to the existing tree"
-msgstr "Bu GEDCOM dosyasını mevcut ağaca ekleyin"
-
-#: admin/include/gedcom.php:328
+#: admin/include/gedcom.php:307
 msgid "GEDCOM process settings"
 msgstr "GEDCOM işlem ayarları"
 
-#: admin/include/gedcom.php:330
+#: admin/include/gedcom.php:309
 msgid "Show non-processed items when processing GEDCOM (can be a long list!"
 msgstr "GEDCOM işlenirken işlenmemiş öğeleri göster (uzun bir liste olabilir!"
 
-#: admin/include/gedcom.php:331
+#: admin/include/gedcom.php:310
 msgid ""
 "Show all numbers when processing GEDCOM (useful when a time-out occurs!)"
 msgstr ""
 "GEDCOM işlenirken tüm sayıları göster (bir zaman aşımı oluştuğunda "
 "kullanışlıdır!)"
 
-#: admin/include/gedcom.php:332
+#: admin/include/gedcom.php:311
 msgid "Debug mode"
 msgstr "Hata ayıklama modu"
 
-#: admin/include/gedcom.php:334
+#: admin/include/gedcom.php:313
 msgid "Batch processing"
 msgstr "Toplu işleme"
 
-#: admin/include/gedcom.php:335
+#: admin/include/gedcom.php:314
 msgid "1 record (slow processing, but needs less server-memory)"
 msgstr "1 kayıt (yavaş işleme, ancak daha az sunucu belleğine ihtiyaç duyar)"
 
-#: admin/include/gedcom.php:337 admin/include/gedcom.php:339
-#: admin/include/gedcom.php:341 admin/include/gedcom.php:343
-#: admin/include/gedcom.php:345 admin/include/gedcom.php:347
+#: admin/include/gedcom.php:316 admin/include/gedcom.php:318
+#: admin/include/gedcom.php:320 admin/include/gedcom.php:322
+#: admin/include/gedcom.php:324 admin/include/gedcom.php:326
 msgid "records per batch"
 msgstr "toplu iş başına kayıtlar"
 
-#: admin/include/gedcom.php:349
+#: admin/include/gedcom.php:328
 msgid "ALL records (fast processing, but needs server-memory)"
 msgstr "TÜM kayıtlar (hızlı işleme, ancak sunucu belleğine ihtiyaç duyar)"
 
-#: admin/include/gedcom.php:357
+#: admin/include/gedcom.php:336
 msgid ""
 "Time-out detected! Controlled time-out setting is adjusted. Retry reading of "
 "GEDCOM with new setting."
@@ -2680,7 +2676,7 @@ msgstr ""
 "Zaman aşımı algılandı! Kontrollü zaman aşımı ayarı ayarlanır. GEDCOM'u yeni "
 "ayarlarla yeniden okumayı deneyin."
 
-#: admin/include/gedcom.php:361
+#: admin/include/gedcom.php:340
 msgid ""
 "seconds. Controlled time-out, the GEDCOM script will restart and continue."
 "<br>Use this if the server has a time-out setting (set less seconds then "
@@ -2691,46 +2687,50 @@ msgstr ""
 "zaman aşımından daha az saniye ayarlayın).<br>0 = kontrollü zaman aşımını "
 "devre dışı bırak."
 
-#: admin/include/gedcom.php:362
+#: admin/include/gedcom.php:341
 #, php-format
 msgid "Your server time-out setting is: %s seconds."
 msgstr "Sunucu zaman aşımı ayarınız: %s saniye."
 
-#: admin/include/gedcom.php:375
+#: admin/include/gedcom.php:354
 #, php-format
 msgid "Yes, replace existing family tree: <b>\"%1$s\"</b> with %2$s persons!"
 msgstr "Evet, mevcut soy ağacını değiştirin: <b>\"%1$s\"</b>  %2$s kişi ile!"
 
-#: admin/include/gedcom.php:377 admin/include/gedcom.php:380
-#: admin/include/gedcom.php:456 admin/include/gedcom.php:886
-#: admin/include/gedcom.php:1478 admin/include/gedcom.php:1568
-#: admin/include/gedcom.php:1601
+#: admin/include/gedcom.php:356
+msgid "Add this GEDCOM file to the existing tree"
+msgstr "Bu GEDCOM dosyasını mevcut ağaca ekleyin"
+
+#: admin/include/gedcom.php:358 admin/include/gedcom.php:361
+#: admin/include/gedcom.php:437 admin/include/gedcom.php:867
+#: admin/include/gedcom.php:1459 admin/include/gedcom.php:1549
+#: admin/include/gedcom.php:1582
 msgid "Step"
 msgstr "Adım"
 
-#: admin/include/gedcom.php:437
+#: admin/include/gedcom.php:418
 msgid "STEP 2) Remove old family tree:"
 msgstr "ADIM 2) Eski soy ağacını kaldırın:"
 
-#: admin/include/gedcom.php:455 admin/include/gedcom.php:1051
-#: admin/include/gedcom.php:1601
+#: admin/include/gedcom.php:436 admin/include/gedcom.php:1032
+#: admin/include/gedcom.php:1582
 msgid "ONLY use in case of a time-out, to continue click:"
 msgstr "SADECE zaman aşımı durumunda kullanın, devam etmek için tıklayın:"
 
-#: admin/include/gedcom.php:474 admin/include/gedcom.php:512
-#: admin/include/gedcom.php:554 admin/include/gedcom.php:580
-#: admin/include/gedcom.php:592 admin/include/gedcom.php:621
-#: admin/include/gedcom.php:660 admin/include/gedcom.php:702
-#: admin/include/gedcom.php:741 admin/include/gedcom.php:784
+#: admin/include/gedcom.php:455 admin/include/gedcom.php:493
+#: admin/include/gedcom.php:535 admin/include/gedcom.php:561
+#: admin/include/gedcom.php:573 admin/include/gedcom.php:602
+#: admin/include/gedcom.php:641 admin/include/gedcom.php:683
+#: admin/include/gedcom.php:722 admin/include/gedcom.php:765
 #, php-format
 msgid "Remove old family tree items from %s table..."
 msgstr "Eski soy ağacı öğelerini %s tablosundan kaldırın..."
 
-#: admin/include/gedcom.php:491 admin/include/gedcom.php:528
-#: admin/include/gedcom.php:571 admin/include/gedcom.php:585
-#: admin/include/gedcom.php:597 admin/include/gedcom.php:638
-#: admin/include/gedcom.php:677 admin/include/gedcom.php:719
-#: admin/include/gedcom.php:759 admin/include/gedcom.php:808
+#: admin/include/gedcom.php:472 admin/include/gedcom.php:509
+#: admin/include/gedcom.php:552 admin/include/gedcom.php:566
+#: admin/include/gedcom.php:578 admin/include/gedcom.php:619
+#: admin/include/gedcom.php:658 admin/include/gedcom.php:700
+#: admin/include/gedcom.php:740 admin/include/gedcom.php:789
 #: admin/include/index_inc.php:303 admin/include/index_inc.php:308
 #: admin/include/index_inc.php:313 admin/include/index_inc.php:318
 #: admin/include/index_inc.php:323 admin/include/index_inc.php:328
@@ -2739,21 +2739,21 @@ msgstr "Eski soy ağacı öğelerini %s tablosundan kaldırın..."
 msgid "Optimize table..."
 msgstr "Tabloyu en iyileştir..."
 
-#: admin/include/gedcom.php:816
+#: admin/include/gedcom.php:797
 msgid "No error messages above? In that case the tables have been created!"
 msgstr "Yukarıda hata mesajı yok mu? Bu durumda tablolar oluşturuldu!"
 
-#: admin/include/gedcom.php:820
+#: admin/include/gedcom.php:801
 msgid ""
 "The data in this GEDCOM will be appended to the existing data in this tree!"
 msgstr "Bu GEDCOM'daki veriler, bu ağaçtaki mevcut verilere eklenecektir!"
 
-#: admin/include/gedcom.php:895 admin/include/make_db_maps.php:1011
-#: maps.php:587 maps.php:697 maps.php:809
+#: admin/include/gedcom.php:876 admin/include/make_db_maps.php:1011
+#: maps.php:589 maps.php:699 maps.php:811
 msgid "Cancel"
 msgstr "İptal"
 
-#: admin/include/gedcom.php:1005
+#: admin/include/gedcom.php:986
 msgid ""
 "<b>STEP 3) Processing GEDCOM file:</b>\n"
 "<p>The following lines have to be processed without error messages...<br>\n"
@@ -2763,36 +2763,36 @@ msgstr ""
 "<p>Aşağıdaki satırların hata iletileri olmadan işlenmesi gerekir...<br>\n"
 "<b>İşleme biraz zaman alabilir!!</b>"
 
-#: admin/include/gedcom.php:1051
+#: admin/include/gedcom.php:1032
 msgid "Restart"
 msgstr "Yeniden başlat"
 
-#: admin/include/gedcom.php:1052
+#: admin/include/gedcom.php:1033
 msgid "Restarts reading of GEDCOM using a controlled time-out."
 msgstr ""
 "Kontrollü bir zaman aşımı kullanarak GEDCOM okumasını yeniden başlatır."
 
-#: admin/include/gedcom.php:1112 admin/include/gedcom.php:1429
-#: admin/include/gedcom.php:1557 admin/include/gedcom.php:1756
-#: admin/include/gedcom.php:1915
+#: admin/include/gedcom.php:1093 admin/include/gedcom.php:1410
+#: admin/include/gedcom.php:1538 admin/include/gedcom.php:1737
+#: admin/include/gedcom.php:1896
 msgid "lines processed"
 msgstr "işlenmiş hatlar"
 
-#: admin/include/gedcom.php:1395
+#: admin/include/gedcom.php:1376
 msgid "GEDCOM file"
 msgstr "GEDCOM dosyası"
 
-#: admin/include/gedcom.php:1397
+#: admin/include/gedcom.php:1378
 #, php-format
 msgid "this is an <b>%s</b> file"
 msgstr "bu bir <b>%s</b> dosyasıdır"
 
-#: admin/include/gedcom.php:1478
+#: admin/include/gedcom.php:1459
 msgid "Controlled time-out to continue reading of GEDCOM file, click:"
 msgstr ""
 "GEDCOM dosyasını okumaya devam etmek için kontrollü zaman aşımı, tıklayın:"
 
-#: admin/include/gedcom.php:1479
+#: admin/include/gedcom.php:1460
 #, php-format
 msgid ""
 "Or wait %s seconds for automatic continuation. Some browsers will give a "
@@ -2801,82 +2801,82 @@ msgstr ""
 "Veya otomatik devam için %s saniye bekleyin. Bazı tarayıcılar yeniden "
 "yükleme mesajı verir..."
 
-#: admin/include/gedcom.php:1505 admin/include/gedcom.php:1517
+#: admin/include/gedcom.php:1486 admin/include/gedcom.php:1498
 msgid "Persons added by GEDCOM import."
 msgstr "GEDCOM içe aktarması tarafından eklenen kişiler."
 
-#: admin/include/gedcom.php:1537
+#: admin/include/gedcom.php:1518
 #, php-format
 msgid "Reading in the file took: %d seconds"
 msgstr "Dosyada okuma işlemi: %d saniye sürdü"
 
-#: admin/include/gedcom.php:1543
+#: admin/include/gedcom.php:1524
 msgid "Non-processed items"
 msgstr "İşlenmemiş öğeler"
 
-#: admin/include/gedcom.php:1544
+#: admin/include/gedcom.php:1525
 msgid "Level"
 msgstr "Seviye"
 
-#: admin/include/gedcom.php:1549
+#: admin/include/gedcom.php:1530
 msgid "All items have been processed!"
 msgstr "Tüm öğeler işlendi!"
 
-#: admin/include/gedcom.php:1583
+#: admin/include/gedcom.php:1564
 msgid "STEP 4) Final database processing:"
 msgstr "ADIM 4) Son veritabanı işleme:"
 
-#: admin/include/gedcom.php:1624
+#: admin/include/gedcom.php:1605
 msgid "Processing of referenced texts into standard texts..."
 msgstr "Referans alınan metinlerin standart metinlere işlenmesi..."
 
-#: admin/include/gedcom.php:1755 admin/include/index_inc.php:532
+#: admin/include/gedcom.php:1736 admin/include/index_inc.php:532
 #: admin/include/statistics.php:757 admin/include/trees_cls.php:130
 #: include/mainindex_cls.php:304
 msgid "persons"
 msgstr "kişiler"
 
-#: admin/include/gedcom.php:1914 admin/include/index_inc.php:532
+#: admin/include/gedcom.php:1895 admin/include/index_inc.php:532
 #: admin/include/statistics.php:757 admin/include/trees_cls.php:130
 #: include/mainindex_cls.php:304
 msgid "families"
 msgstr "aileler"
 
-#: admin/include/gedcom.php:1946
+#: admin/include/gedcom.php:1927
 msgid "Processing texts IN names..."
 msgstr "İsimlerdeki metinler işleniyor..."
 
-#: admin/include/gedcom.php:1986
+#: admin/include/gedcom.php:1967
 msgid "Updating location database..."
 msgstr "Konum veritabanı güncelleniyor..."
 
-#: admin/include/gedcom.php:2058
+#: admin/include/gedcom.php:2039
 msgid "Order children..."
 msgstr "Çocukları sırala..."
 
-#: admin/include/gedcom.php:2123
+#: admin/include/gedcom.php:2104
 msgid "Order families..."
 msgstr "Aileleri sırala..."
 
-#: admin/include/gedcom.php:2262
+#: admin/include/gedcom.php:2243
 msgid "Counting persons and families and enter into database..."
 msgstr "Kişiler ve aileler sayılıyor ve veri tabanına ekleniyor..."
 
-#: admin/include/gedcom.php:2285
+#: admin/include/gedcom.php:2266
 #, php-format
 msgid "Processing took: %d seconds"
 msgstr "İşleme süresi: %d saniye"
 
-#: admin/include/gedcom.php:2286
+#: admin/include/gedcom.php:2267
 msgid "No error messages? In this case the database is ready for use!"
 msgstr "Hata mesajı yok mu? Bu durumda veritabanı kullanıma hazırdır!"
 
-#: admin/include/gedcom.php:2289 admin/include/gedcom.php:2294
+#: admin/include/gedcom.php:2270 admin/include/gedcom.php:2275
 #, php-format
 msgid "Ready! Now click %s to watch the family tree"
 msgstr "Hazır! Şimdi soy ağacını izlemek için %s'e tıklayın"
 
-#: admin/include/gedcom.php:2295
+#: admin/include/gedcom.php:2276
 msgid ""
 "TIP: Use <a href=\"index.php?page=cal_date\">\"Calculated birth dates\"</a> "
 "for a better privacy filter."
@@ -2964,7 +2964,7 @@ msgstr "Ülke"
 #: admin/include/gedcom_export.php:295 admin/include/make_db_maps.php:1157
 #: admin/include/settings_admin.php:5 admin/include/settings_admin.php:188
 #: admin/include/trees_cls.php:1252 admin/include/trees_cls.php:1418
-#: admin/index.php:965 family.php:113 family.php:2165 header.php:270
+#: admin/index.php:965 family.php:113 family.php:2169 header.php:270
 #: menu.php:882
 msgid "Settings"
 msgstr "Ayarlar"
@@ -3005,19 +3005,19 @@ msgstr "Dışa aktarmayı başlat"
 msgid "GEDCOM file will be exported to backup_tmp/ folder"
 msgstr "GEDCOM dosyası backup_tmp/ klasörüne aktarılacak"
 
-#: admin/include/gedcom_export.php:1439
+#: admin/include/gedcom_export.php:1440
 msgid "GEDCOM file is generated"
 msgstr "GEDCOM dosyası oluşturuldu"
 
-#: admin/include/gedcom_export.php:1442
+#: admin/include/gedcom_export.php:1443
 msgid "Download GEDCOM file"
 msgstr "GEDCOM dosyasını indir"
 
-#: admin/include/gedcom_export.php:1453
+#: admin/include/gedcom_export.php:1454
 msgid "Remove GEDCOM file"
 msgstr "GEDCOM dosyasını kaldır"
 
-#: admin/include/gedcom_export.php:1709
+#: admin/include/gedcom_export.php:1710
 msgid "No valid family number."
 msgstr "Geçerli bir aile numarası yok."
 
@@ -3217,7 +3217,7 @@ msgstr "Aile sayfasının varsayılan sunumu"
 msgid "Compact view"
 msgstr "Kompakt görünüm"
 
-#: admin/include/groups.php:394 family.php:131 list.php:1918
+#: admin/include/groups.php:394 family.php:131 list.php:1921
 #: list_places_families.php:526
 msgid "Expanded view"
 msgstr "Genişletilmiş görünüm"
@@ -3432,7 +3432,7 @@ msgid "Hide or show family trees per user group."
 msgstr "Kullanıcı grubu başına aile ağaçlarını gizleyin veya gösterin."
 
 #: admin/include/groups.php:624 admin/include/index_inc.php:546
-#: admin/index.php:1052 include/person_cls.php:977
+#: admin/index.php:1052 include/person_cls.php:976
 msgid "Editor"
 msgstr "Düzenleyici"
 
@@ -3865,11 +3865,11 @@ msgstr ""
 msgid "User"
 msgstr "Kullanıcı"
 
-#: admin/include/install.php:123 login.php:163 user_settings.php:110
+#: admin/include/install.php:123 login.php:164 user_settings.php:110
 msgid "Username"
 msgstr "Kullanıcı adı"
 
-#: admin/include/install.php:123 admin/include/login.php:15 login.php:333
+#: admin/include/install.php:123 admin/include/login.php:15 login.php:334
 #: register.php:130 user_settings.php:115
 msgid "Password"
 msgstr "Şifre"
@@ -4089,12 +4089,12 @@ msgstr "Veritabanı henüz mevcut değil."
 msgid "Administration menu login"
 msgstr "Yönetim menüsüne giriş"
 
-#: admin/include/login.php:14 login.php:332
+#: admin/include/login.php:14 login.php:333
 msgid "Username or e-mail address"
 msgstr "Kullanıcı adı veya e-posta adresi"
 
-#: admin/include/login.php:16 header.php:268 help.php:82 login.php:331
-#: login.php:334 menu.php:257 menu.php:757
+#: admin/include/login.php:16 header.php:268 help.php:82 login.php:332
+#: login.php:335 menu.php:257 menu.php:757
 msgid "Login"
 msgstr "Oturum aç"
 
@@ -4186,7 +4186,7 @@ msgid ""
 "locations were recognized by geocoding and have been saved in the database."
 msgstr "konumlar coğrafi kodlama ile tanındı ve veritabanına kaydedildi."
 
-#: admin/include/make_db_maps.php:221 family.php:2247 report_ancestor.php:1575
+#: admin/include/make_db_maps.php:221 family.php:2251 report_ancestor.php:1575
 msgid "Back"
 msgstr "Geri"
 
@@ -4352,11 +4352,11 @@ msgstr ""
 "sürebileceğini (yaklaşık olarak) kontrol edin."
 
 #: admin/include/make_db_maps.php:789 include/mainindex_cls.php:595
-#: list.php:1775
+#: list.php:1778
 msgid "All family trees"
 msgstr "Tüm aile ağaçları"
 
-#: admin/include/make_db_maps.php:812 admin/include/tree_check.php:727
+#: admin/include/make_db_maps.php:812 admin/include/tree_check.php:690
 msgid "Check"
 msgstr "Kontrol et"
 
@@ -5010,7 +5010,7 @@ msgid "Select family tree"
 msgstr "Aile ağacını seçin"
 
 #: admin/include/settings_admin.php:820 admin/include/settings_admin.php:972
-#: include/mainindex_cls.php:225 include/mainindex_cls.php:592 list.php:1773
+#: include/mainindex_cls.php:225 include/mainindex_cls.php:592 list.php:1776
 msgid "Selected family tree"
 msgstr "Seçilen aile ağacı"
 
@@ -5020,12 +5020,12 @@ msgid "Names"
 msgstr "Adlar"
 
 #: admin/include/settings_admin.php:829 admin/include/settings_admin.php:975
-#: include/mainindex_cls.php:903
+#: include/mainindex_cls.php:905
 msgid "Today in history"
 msgstr "Tarihte bugün"
 
 #: admin/include/settings_admin.php:832 admin/include/settings_admin.php:976
-#: include/mainindex_cls.php:702
+#: include/mainindex_cls.php:704
 msgid "Favourites"
 msgstr "Sık kullanılanlar"
 
@@ -5296,7 +5296,7 @@ msgid "Visited families in the past 12 months"
 msgstr "Son 12 ayda aileleri ziyaret etti"
 
 #: admin/include/statistics.php:258 admin/include/statistics.php:299
-#: family.php:1195 list.php:1669
+#: family.php:1197 list.php:1672
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
@@ -5584,7 +5584,7 @@ msgid "Choose tree:"
 msgstr "Ağaç seçin:"
 
 #: admin/include/tree_check.php:44 admin/include/tree_check.php:61
-#: admin/include/tree_check.php:725
+#: admin/include/tree_check.php:688
 msgid "Check consistency of dates"
 msgstr "Tarihlerin tutarlılığını kontrol edin"
 
@@ -5736,63 +5736,63 @@ msgstr "Öğeyi kontrol et"
 msgid "Result"
 msgstr "Sonuç"
 
-#: admin/include/tree_check.php:578
+#: admin/include/tree_check.php:541
 msgid "Checked all person index numbers"
 msgstr "Tüm kişi dizin numaraları kontrol edildi"
 
-#: admin/include/tree_check.php:579
+#: admin/include/tree_check.php:542
 msgid "Checked all person - relation connections"
 msgstr "Tüm kişi - ilişki bağlantıları kontrol edildi"
 
-#: admin/include/tree_check.php:580
+#: admin/include/tree_check.php:543
 msgid "Checked all child - parent connections"
 msgstr "Tüm çocuk - ebeveyn bağlantıları kontrol edildi"
 
-#: admin/include/tree_check.php:581
+#: admin/include/tree_check.php:544
 msgid "Checked all parent - child connections"
 msgstr "Tüm ebeveyn - çocuk bağlantıları kontrol edildi"
 
-#: admin/include/tree_check.php:593
+#: admin/include/tree_check.php:556
 msgid "Edit invalid date"
 msgstr "Geçersiz tarihi düzenle"
 
-#: admin/include/tree_check.php:594 admin/include/tree_check.php:805
+#: admin/include/tree_check.php:557 admin/include/tree_check.php:768
 msgid "Details"
 msgstr "Detaylar"
 
-#: admin/include/tree_check.php:595
+#: admin/include/tree_check.php:558
 msgid "Invalid date"
 msgstr "Geçersiz tarih"
 
-#: admin/include/tree_check.php:596
+#: admin/include/tree_check.php:559
 msgid "Invalid person dates:"
 msgstr "Geçersiz kişi tarihleri:"
 
-#: admin/include/tree_check.php:616
+#: admin/include/tree_check.php:579
 msgid "Invalid family dates:"
 msgstr "Geçersiz aile tarihleri:"
 
-#: admin/include/tree_check.php:641
+#: admin/include/tree_check.php:604
 msgid "Invalid event dates:"
 msgstr "Geçersiz etkinlik tarihleri:"
 
-#: admin/include/tree_check.php:651
+#: admin/include/tree_check.php:614
 msgid "Invalid connection dates:"
 msgstr "Geçersiz bağlantı tarihleri:"
 
-#: admin/include/tree_check.php:661
+#: admin/include/tree_check.php:624
 msgid "Invalid address dates:"
 msgstr "Geçersiz adres tarihleri:"
 
-#: admin/include/tree_check.php:671
+#: admin/include/tree_check.php:634
 msgid "Invalid repository dates:"
 msgstr "Geçersiz depo tarihleri:"
 
-#: admin/include/tree_check.php:682
+#: admin/include/tree_check.php:645
 msgid "Invalid source dates:"
 msgstr "Geçersiz kaynak tarihleri:"
 
-#: admin/include/tree_check.php:726
+#: admin/include/tree_check.php:689
 msgid ""
 "You can mark or unmark any of the check options and change defaults. Then "
 "press "
@@ -5800,7 +5800,7 @@ msgstr ""
 "Kontrol seçeneklerinden herhangi birini işaretleyebilir veya işaretini "
 "kaldırabilir ve varsayılanları değiştirebilirsiniz. Sonra tuşuna basın "
 
-#: admin/include/tree_check.php:728
+#: admin/include/tree_check.php:691
 msgid ""
 "(with default settings a full check may take between 12-15 seconds per "
 "10,000 persons)"
@@ -5808,318 +5808,318 @@ msgstr ""
 "(varsayılan ayarlarla tam kontrol her 10.000 kişi için 12-15 saniye "
 "sürebilir)"
 
-#: admin/include/tree_check.php:731
+#: admin/include/tree_check.php:694
 msgid "Unmark all options"
 msgstr "Tüm seçeneklerin işaretini kaldır"
 
-#: admin/include/tree_check.php:732
+#: admin/include/tree_check.php:695
 msgid "Mark all options"
 msgstr "Tüm seçenekleri işaretle"
 
-#: admin/include/tree_check.php:733
+#: admin/include/tree_check.php:696
 msgid "Birth date - after bapt/marr/death/burial date"
 msgstr "Doğum tarihi - vaftiz/evlilik/ölüm/defin tarihinden sonra"
 
-#: admin/include/tree_check.php:735 admin/include/tree_check.php:738
+#: admin/include/tree_check.php:698 admin/include/tree_check.php:701
 msgid "Birth date - more than "
 msgstr "Doğum tarihi - daha fazla "
 
-#: admin/include/tree_check.php:737 admin/include/tree_check.php:743
-#: admin/include/tree_check.php:760 admin/include/tree_check.php:766
+#: admin/include/tree_check.php:700 admin/include/tree_check.php:706
+#: admin/include/tree_check.php:723 admin/include/tree_check.php:729
 msgid " years after mother's birth"
 msgstr " annenin doğumundan yıllar sonra"
 
-#: admin/include/tree_check.php:740 admin/include/tree_check.php:746
-#: admin/include/tree_check.php:763 admin/include/tree_check.php:769
+#: admin/include/tree_check.php:703 admin/include/tree_check.php:709
+#: admin/include/tree_check.php:726 admin/include/tree_check.php:732
 msgid " years after father's birth"
 msgstr " babanın doğumundan yıllar sonra"
 
-#: admin/include/tree_check.php:741 admin/include/tree_check.php:744
-#: admin/include/tree_check.php:748 admin/include/tree_check.php:752
+#: admin/include/tree_check.php:704 admin/include/tree_check.php:707
+#: admin/include/tree_check.php:711 admin/include/tree_check.php:715
 msgid "Birth date - less than "
 msgstr "Doğum tarihi - daha az "
 
-#: admin/include/tree_check.php:750
+#: admin/include/tree_check.php:713
 msgid " months after wedding parents"
 msgstr " düğünden aylar sonra ebeveynler"
 
-#: admin/include/tree_check.php:751
+#: admin/include/tree_check.php:714
 msgid "Birth date - before wedding parents"
 msgstr "Doğum tarihi - düğünden önce ebeveynler"
 
-#: admin/include/tree_check.php:754
+#: admin/include/tree_check.php:717
 msgid " months after previous child of mother"
 msgstr " annenin önceki çocuğundan aylar sonra"
 
-#: admin/include/tree_check.php:756
+#: admin/include/tree_check.php:719
 msgid "Baptism date - after death/burial date"
 msgstr "Vaftiz tarihi - ölüm/defin tarihinden sonra"
 
-#: admin/include/tree_check.php:758 admin/include/tree_check.php:761
+#: admin/include/tree_check.php:721 admin/include/tree_check.php:724
 msgid "Baptism date - more than "
 msgstr "Vaftiz tarihi - daha fazla "
 
-#: admin/include/tree_check.php:764 admin/include/tree_check.php:767
+#: admin/include/tree_check.php:727 admin/include/tree_check.php:730
 msgid "Baptism date - less than "
 msgstr "Vaftiz tarihi - daha az "
 
-#: admin/include/tree_check.php:771
+#: admin/include/tree_check.php:734
 msgid "Marriage date(s) - after death/burial date"
 msgstr "Evlilik tarih(ler)i - ölüm/defin tarihinden sonra"
 
-#: admin/include/tree_check.php:772
+#: admin/include/tree_check.php:735
 msgid "Marriage date(s) - less than "
 msgstr "Evlilik tarih(ler)i - daha az "
 
-#: admin/include/tree_check.php:774
+#: admin/include/tree_check.php:737
 msgid " years after birth date"
 msgstr " doğum tarihinden yıllar sonra"
 
-#: admin/include/tree_check.php:775
+#: admin/include/tree_check.php:738
 msgid "Marriage age - age difference of more than "
 msgstr "Evlilik yaşı - yaş farkı daha fazla "
 
-#: admin/include/tree_check.php:777
+#: admin/include/tree_check.php:740
 msgid " years between partners"
 msgstr " eşler arasında yıllar"
 
-#: admin/include/tree_check.php:778
+#: admin/include/tree_check.php:741
 msgid "Death date - after burial date"
 msgstr "Ölüm tarihi - defin tarihinden sonra"
 
-#: admin/include/tree_check.php:779
+#: admin/include/tree_check.php:742
 msgid "Death date - bef birth of mother"
 msgstr "Ölüm tarihi - annenin doğumundan önce"
 
-#: admin/include/tree_check.php:780
+#: admin/include/tree_check.php:743
 msgid "Death date - bef birth of father"
 msgstr "Ölüm tarihi - babanın doğumundan önce"
 
-#: admin/include/tree_check.php:781
+#: admin/include/tree_check.php:744
 msgid "Burial date - bef birth of mother"
 msgstr "Defin tarihi - annenin doğumundan önce"
 
-#: admin/include/tree_check.php:782
+#: admin/include/tree_check.php:745
 msgid "Burial date - bef birth of father"
 msgstr "Defin tarihi - babanın doğumundan önce"
 
-#: admin/include/tree_check.php:783
+#: admin/include/tree_check.php:746
 msgid "Age (by death date) - more than "
 msgstr "Yaş (ölüm tarihine göre) - daha fazla "
 
-#: admin/include/tree_check.php:785 admin/include/tree_check.php:788
+#: admin/include/tree_check.php:748 admin/include/tree_check.php:751
 msgid " years"
 msgstr " yıllar"
 
-#: admin/include/tree_check.php:786
+#: admin/include/tree_check.php:749
 msgid "Age (by burial date) - more than "
 msgstr "Yaş (defin tarihine göre) - daha fazla "
 
-#: admin/include/tree_check.php:790
+#: admin/include/tree_check.php:753
 msgid "Age (up till today) - more than "
 msgstr "Yaş (bugüne kadar) - daha fazla "
 
-#: admin/include/tree_check.php:792
+#: admin/include/tree_check.php:755
 msgid " years <b>(may give long list!)"
 msgstr " yıl <b>(uzun bir liste verebilir!)"
 
-#: admin/include/tree_check.php:804
+#: admin/include/tree_check.php:767
 msgid "Possible consistency problems"
 msgstr "Olası tutarlılık sorunları"
 
-#: admin/include/tree_check.php:964 admin/include/tree_check.php:968
-#: admin/include/tree_check.php:972 admin/include/tree_check.php:977
-#: admin/include/tree_check.php:988 admin/include/tree_check.php:999
-#: admin/include/tree_check.php:1010 admin/include/tree_check.php:1021
-#: admin/include/tree_check.php:1032 admin/include/tree_check.php:1041
-#: admin/include/tree_check.php:1051 admin/include/tree_check.php:1177
-#: admin/include/tree_check.php:1184 admin/include/tree_check.php:1191
-#: admin/include/tree_check.php:1198 admin/include/tree_check.php:1212
-#: admin/include/tree_check.php:1272 admin/include/tree_check.php:1285
-#: admin/include/tree_check.php:1301 admin/include/tree_check.php:1419
-#: admin/include/tree_check.php:1423 admin/include/tree_check.php:1434
-#: admin/include/tree_check.php:1436 admin/include/tree_check.php:1439
-#: admin/include/trees_cls.php:1620
+#: admin/include/tree_check.php:927 admin/include/tree_check.php:931
+#: admin/include/tree_check.php:935 admin/include/tree_check.php:940
+#: admin/include/tree_check.php:951 admin/include/tree_check.php:962
+#: admin/include/tree_check.php:973 admin/include/tree_check.php:984
+#: admin/include/tree_check.php:995 admin/include/tree_check.php:1004
+#: admin/include/tree_check.php:1014 admin/include/tree_check.php:1140
+#: admin/include/tree_check.php:1147 admin/include/tree_check.php:1154
+#: admin/include/tree_check.php:1161 admin/include/tree_check.php:1175
+#: admin/include/tree_check.php:1235 admin/include/tree_check.php:1248
+#: admin/include/tree_check.php:1264 admin/include/tree_check.php:1382
+#: admin/include/tree_check.php:1386 admin/include/tree_check.php:1397
+#: admin/include/tree_check.php:1399 admin/include/tree_check.php:1402
+#: admin/include/trees_cls.php:1608
 msgid "birth date"
 msgstr "doğum tarihi"
 
-#: admin/include/tree_check.php:964 admin/include/tree_check.php:1066
-#: admin/include/tree_check.php:1070 admin/include/tree_check.php:1082
-#: admin/include/tree_check.php:1093 admin/include/tree_check.php:1104
-#: admin/include/tree_check.php:1115 admin/include/tree_check.php:1273
-#: admin/include/tree_check.php:1286 admin/include/tree_check.php:1302
-#: admin/include/tree_check.php:1420 admin/include/tree_check.php:1424
-#: admin/include/trees_cls.php:1623
+#: admin/include/tree_check.php:927 admin/include/tree_check.php:1029
+#: admin/include/tree_check.php:1033 admin/include/tree_check.php:1045
+#: admin/include/tree_check.php:1056 admin/include/tree_check.php:1067
+#: admin/include/tree_check.php:1078 admin/include/tree_check.php:1236
+#: admin/include/tree_check.php:1249 admin/include/tree_check.php:1265
+#: admin/include/tree_check.php:1383 admin/include/tree_check.php:1387
+#: admin/include/trees_cls.php:1611
 msgid "baptism date"
 msgstr "vaftiz tarihi"
 
-#: admin/include/tree_check.php:968 admin/include/tree_check.php:1066
-#: admin/include/tree_check.php:1129 admin/include/tree_check.php:1140
-#: admin/include/tree_check.php:1150 admin/include/tree_check.php:1160
-#: admin/include/tree_check.php:1225 admin/include/tree_check.php:1233
-#: admin/include/tree_check.php:1241 admin/include/tree_check.php:1276
-#: admin/include/tree_check.php:1421 admin/include/tree_check.php:1425
-#: admin/include/trees_cls.php:1625
+#: admin/include/tree_check.php:931 admin/include/tree_check.php:1029
+#: admin/include/tree_check.php:1092 admin/include/tree_check.php:1103
+#: admin/include/tree_check.php:1113 admin/include/tree_check.php:1123
+#: admin/include/tree_check.php:1188 admin/include/tree_check.php:1196
+#: admin/include/tree_check.php:1204 admin/include/tree_check.php:1239
+#: admin/include/tree_check.php:1384 admin/include/tree_check.php:1388
+#: admin/include/trees_cls.php:1613
 msgid "death date"
 msgstr "ölüm tarihi"
 
-#: admin/include/tree_check.php:972 admin/include/tree_check.php:1070
-#: admin/include/tree_check.php:1133 admin/include/tree_check.php:1144
-#: admin/include/tree_check.php:1154 admin/include/tree_check.php:1164
-#: admin/include/tree_check.php:1225 admin/include/tree_check.php:1252
-#: admin/include/tree_check.php:1260 admin/include/tree_check.php:1289
-#: admin/include/tree_check.php:1422 admin/include/tree_check.php:1426
-#: admin/include/trees_cls.php:1630
+#: admin/include/tree_check.php:935 admin/include/tree_check.php:1033
+#: admin/include/tree_check.php:1096 admin/include/tree_check.php:1107
+#: admin/include/tree_check.php:1117 admin/include/tree_check.php:1127
+#: admin/include/tree_check.php:1188 admin/include/tree_check.php:1215
+#: admin/include/tree_check.php:1223 admin/include/tree_check.php:1252
+#: admin/include/tree_check.php:1385 admin/include/tree_check.php:1389
+#: admin/include/trees_cls.php:1618
 msgid "burial date"
 msgstr "defin tarihi"
 
-#: admin/include/tree_check.php:977 admin/include/tree_check.php:1129
-#: admin/include/tree_check.php:1133 admin/include/tree_check.php:1177
+#: admin/include/tree_check.php:940 admin/include/tree_check.php:1092
+#: admin/include/tree_check.php:1096 admin/include/tree_check.php:1140
 #: include/marriage_cls.php:586 report_ancestor.php:1496 timelines.php:109
 #: timelines.php:217
 msgid "marriage"
 msgstr "evlilik"
 
-#: admin/include/tree_check.php:988 admin/include/tree_check.php:1010
-#: admin/include/tree_check.php:1082 admin/include/tree_check.php:1104
-#: admin/include/tree_check.php:1233 admin/include/tree_check.php:1252
+#: admin/include/tree_check.php:951 admin/include/tree_check.php:973
+#: admin/include/tree_check.php:1045 admin/include/tree_check.php:1067
+#: admin/include/tree_check.php:1196 admin/include/tree_check.php:1215
 #: relations.php:338
 msgid "mother"
 msgstr "anne"
 
-#: admin/include/tree_check.php:999 admin/include/tree_check.php:1021
-#: admin/include/tree_check.php:1093 admin/include/tree_check.php:1115
-#: admin/include/tree_check.php:1241 admin/include/tree_check.php:1260
+#: admin/include/tree_check.php:962 admin/include/tree_check.php:984
+#: admin/include/tree_check.php:1056 admin/include/tree_check.php:1078
+#: admin/include/tree_check.php:1204 admin/include/tree_check.php:1223
 #: relations.php:335 relations.php:354 relations.php:380 relations.php:392
 msgid "father"
 msgstr "baba"
 
-#: admin/include/tree_check.php:1032 admin/include/tree_check.php:1041
+#: admin/include/tree_check.php:995 admin/include/tree_check.php:1004
 msgid "parents wedding date"
 msgstr "ebeveynlerin düğün tarihi"
 
-#: admin/include/tree_check.php:1051
+#: admin/include/tree_check.php:1014
 msgid "previous child of mother"
 msgstr "annenin önceki çocuğu"
 
-#: admin/include/tree_check.php:1140 admin/include/tree_check.php:1144
-#: admin/include/tree_check.php:1184 timelines.php:117 timelines.php:225
+#: admin/include/tree_check.php:1103 admin/include/tree_check.php:1107
+#: admin/include/tree_check.php:1147 timelines.php:117 timelines.php:225
 msgid "marriage notice"
 msgstr "evlilik bildirimi"
 
-#: admin/include/tree_check.php:1150 admin/include/tree_check.php:1154
-#: admin/include/tree_check.php:1191 timelines.php:113 timelines.php:221
+#: admin/include/tree_check.php:1113 admin/include/tree_check.php:1117
+#: admin/include/tree_check.php:1154 timelines.php:113 timelines.php:221
 msgid "church marriage"
 msgstr "kilise evliliği"
 
-#: admin/include/tree_check.php:1160 admin/include/tree_check.php:1164
-#: admin/include/tree_check.php:1198 timelines.php:121 timelines.php:229
+#: admin/include/tree_check.php:1123 admin/include/tree_check.php:1127
+#: admin/include/tree_check.php:1161 timelines.php:121 timelines.php:229
 msgid "church marriage notice"
 msgstr "kilise evlilik bildirimi"
 
-#: admin/include/tree_check.php:1212 admin/include/trees_cls.php:1649
+#: admin/include/tree_check.php:1175 admin/include/trees_cls.php:1637
 msgid "Spouse"
 msgstr "Eş"
 
 # Enter a short text for born (there is no short text for born in english).
-#: admin/include/tree_check.php:1419 admin/include/tree_check.php:1423
-#: admin/include/tree_check.php:1434 admin/include/tree_check.php:1436
-#: admin/include/tree_check.php:1439 admin/include/tree_check.php:1442
-#: family.php:1607 family.php:1631 family.php:1770 family.php:1776
+#: admin/include/tree_check.php:1382 admin/include/tree_check.php:1386
+#: admin/include/tree_check.php:1397 admin/include/tree_check.php:1399
+#: admin/include/tree_check.php:1402 admin/include/tree_check.php:1405
+#: family.php:1610 family.php:1634 family.php:1773 family.php:1779
 msgid "BORN_SHORT"
 msgstr "DOĞAN_KISA"
 
 # Enter a short text for baptise, like: bapt.
-#: admin/include/tree_check.php:1420 admin/include/tree_check.php:1424
-#: family.php:1610 family.php:1634
+#: admin/include/tree_check.php:1383 admin/include/tree_check.php:1387
+#: family.php:1613 family.php:1637
 msgid "BAPTISED_SHORT"
 msgstr "VAFTİZ_KISA"
 
 # Enter a short text for died here. There is no short text for died in
 # english.
-#: admin/include/tree_check.php:1421 admin/include/tree_check.php:1425
-#: family.php:1659 family.php:1690 family.php:1793 family.php:1799
+#: admin/include/tree_check.php:1384 admin/include/tree_check.php:1388
+#: family.php:1662 family.php:1693 family.php:1796 family.php:1802
 msgid "DIED_SHORT"
 msgstr "ÖLDÜ_KISA"
 
-#: admin/include/tree_check.php:1422 admin/include/tree_check.php:1426
-#: family.php:1662 family.php:1693
+#: admin/include/tree_check.php:1385 admin/include/tree_check.php:1389
+#: family.php:1665 family.php:1696
 msgid "BURIED_SHORT"
 msgstr "DENEDİLDİ_KISA"
 
-#: admin/include/tree_check.php:1434
+#: admin/include/tree_check.php:1397
 #, php-format
 msgid "%s more than %d years after %s"
 msgstr "%s sonra %d yıldan fazla %s"
 
-#: admin/include/tree_check.php:1436
+#: admin/include/tree_check.php:1399
 #, php-format
 msgid "%s before or less than %d years after %s"
 msgstr "%s önce veya %d yıldan az sonra %s"
 
-#: admin/include/tree_check.php:1438
+#: admin/include/tree_check.php:1401
 #, php-format
 msgid "%s less than %d years after %s"
 msgstr "%s sonra %d yıldan daha az %s"
 
-#: admin/include/tree_check.php:1440
+#: admin/include/tree_check.php:1403
 #, php-format
 msgid "age (up till today) more than %d years (age: %d)"
 msgstr "yaş (bugüne kadar) %d yıldan daha fazla (yaş: %d)"
 
-#: admin/include/tree_check.php:1441
+#: admin/include/tree_check.php:1404
 #, php-format
 msgid "age (by %s) more than %d years (age: %d)"
 msgstr "yaş (%s ile) %d yıldan daha fazla (yaş: %d)"
 
-#: admin/include/tree_check.php:1442
+#: admin/include/tree_check.php:1405
 #, php-format
 msgid "age difference of more than %d years with spouse (%d)"
 msgstr "eş ile %d yıldan daha fazla yaş farkı (%d)"
 
-#: admin/include/tree_check.php:1443
+#: admin/include/tree_check.php:1406
 #, php-format
 msgid "%s less than %d months after %s"
 msgstr "%s sonra %d aydan daha az %s"
 
-#: admin/include/tree_check.php:1444
+#: admin/include/tree_check.php:1407
 #, php-format
 msgid "%s before %s"
 msgstr "%s'den önce %s"
 
-#: admin/include/tree_check.php:1493
+#: admin/include/tree_check.php:1456
 msgid "Click events by person"
 msgstr "Kişiye göre etkinlikleri tıklayın"
 
-#: admin/include/tree_check.php:1511
+#: admin/include/tree_check.php:1474
 msgid "Click events by marriage"
 msgstr "Evliliğe göre etkinlikleri tıklayın"
 
-#: admin/include/tree_check.php:1522
+#: admin/include/tree_check.php:1485
 msgid "Click relevant person source"
 msgstr "İlgili kişi kaynağını tıklayın"
 
-#: admin/include/tree_check.php:1525 admin/include/tree_check.php:1583
+#: admin/include/tree_check.php:1488 admin/include/tree_check.php:1546
 msgid "Click addresses"
 msgstr "Adresleri tıklayın"
 
-#: admin/include/tree_check.php:1543
+#: admin/include/tree_check.php:1506
 msgid "Click relevant family source"
 msgstr "İlgili aile kaynağını tıklayın"
 
-#: admin/include/tree_check.php:1572
+#: admin/include/tree_check.php:1535
 msgid "Click relevant event source"
 msgstr "İlgili etkinlik kaynağını tıklayın"
 
-#: admin/include/tree_check.php:1585
+#: admin/include/tree_check.php:1548
 msgid "Address editor"
 msgstr "Adres düzenleyici"
 
-#: admin/include/tree_check.php:1591
+#: admin/include/tree_check.php:1554
 msgid "Source editor"
 msgstr "Kaynak düzenleyici"
 
-#: admin/include/tree_check.php:1595
+#: admin/include/tree_check.php:1558
 msgid "Repository editor"
 msgstr "Depo düzenleyici"
 
@@ -6183,7 +6183,7 @@ msgstr "Aile ağaçları listesine boş satır ekle"
 msgid "Collation"
 msgstr "Harmanlama"
 
-#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2165
+#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2169
 #: register.php:127 user_settings.php:123
 msgid "E-mail address"
 msgstr "E-posta adresi"
@@ -6299,7 +6299,7 @@ msgstr "Sonrakine atla"
 msgid "Skip to nr: "
 msgstr "No'ya atla: "
 
-#: admin/include/trees_cls.php:482 maps.php:696 maps.php:808
+#: admin/include/trees_cls.php:482 maps.php:698 maps.php:810
 msgid "Go!"
 msgstr "Git!"
 
@@ -6317,7 +6317,7 @@ msgid "You cannot merge persons of opposite sex. Please try again"
 msgstr "Karşı cinsten kişileri birleştiremezsiniz. Lütfen tekrar deneyin"
 
 #: admin/include/trees_cls.php:528 admin/include/trees_cls.php:538
-#: admin/include/trees_cls.php:568 admin/include/trees_cls.php:2686
+#: admin/include/trees_cls.php:568 admin/include/trees_cls.php:2700
 msgid "Choose another pair"
 msgstr "Başka bir çift seçin"
 
@@ -6398,7 +6398,7 @@ msgstr ""
 "<b>Ağacın boyutuna bağlı olarak çiftlerin oluşturulmasının biraz zaman "
 "alabileceğini lütfen unutmayın.</b>"
 
-#: admin/include/trees_cls.php:729 admin/include/trees_cls.php:2676
+#: admin/include/trees_cls.php:729 admin/include/trees_cls.php:2690
 msgid "Continue duplicate merge"
 msgstr "Çift birleştirmeye devam et"
 
@@ -6455,14 +6455,14 @@ msgstr ""
 "veritabanındaki tüm kişilerin bir listesini alırsınız. (Birkaç saniye "
 "sürebilir)</b>"
 
-#: admin/include/trees_cls.php:864 list.php:1525 list.php:1533 list.php:1708
-#: relations.php:3220 relations.php:3312 statistics.php:950 statistics.php:951
+#: admin/include/trees_cls.php:864 list.php:1528 list.php:1536 list.php:1711
+#: relations.php:3218 relations.php:3310 statistics.php:950 statistics.php:951
 #: statistics.php:952 statistics.php:953
 msgid "First name"
 msgstr "İlk adı"
 
-#: admin/include/trees_cls.php:866 list.php:1536 list.php:1548 list.php:1551
-#: list.php:1719 relations.php:3221 relations.php:3313
+#: admin/include/trees_cls.php:866 list.php:1539 list.php:1551 list.php:1554
+#: list.php:1722 relations.php:3219 relations.php:3311
 msgid "Last name"
 msgstr "Soyadı"
 
@@ -6470,7 +6470,7 @@ msgstr "Soyadı"
 msgid "GEDCOM no. (\"I43\")"
 msgstr "GEDCOM no. (\"I43\")"
 
-#: admin/include/trees_cls.php:871 relations.php:3112
+#: admin/include/trees_cls.php:871 relations.php:3110
 msgid "Pick a name from search results"
 msgstr "Arama sonuçlarından bir ad seçin"
 
@@ -6478,7 +6478,7 @@ msgstr "Arama sonuçlarından bir ad seçin"
 msgid "Show details"
 msgstr "Detayları göster"
 
-#: admin/include/trees_cls.php:948 relations.php:3303
+#: admin/include/trees_cls.php:948 relations.php:3301
 msgid "Switch persons"
 msgstr "Kişileri değiştir"
 
@@ -6540,7 +6540,7 @@ msgstr ""
 "düşünmek için <b>\"Akraba birleştirme\"</b> ile devam edilmesi önerilir."
 
 #: admin/include/trees_cls.php:1154 admin/include/trees_cls.php:1374
-#: admin/include/trees_cls.php:1378 admin/include/trees_cls.php:2666
+#: admin/include/trees_cls.php:1378 admin/include/trees_cls.php:2680
 msgid "Relatives merge"
 msgstr "Akraba birleştirme"
 
@@ -6550,12 +6550,12 @@ msgstr ""
 "Çift birleştirme veya el ile birleştirme ile devam etmek isteyebilirsiniz."
 
 #: admin/include/trees_cls.php:1165 admin/include/trees_cls.php:1264
-#: admin/include/trees_cls.php:1393 admin/include/trees_cls.php:1588
+#: admin/include/trees_cls.php:1393 admin/include/trees_cls.php:1576
 msgid "Duplicate merge"
 msgstr "Çift birleştirme"
 
 #: admin/include/trees_cls.php:1172 admin/include/trees_cls.php:1407
-#: admin/include/trees_cls.php:1594
+#: admin/include/trees_cls.php:1582
 msgid "Manual merge"
 msgstr "Manuel birleştirme"
 
@@ -6761,16 +6761,16 @@ msgstr ""
 "Burada farklı birleştirme seçenekleri için varsayılan filtreleri "
 "değiştirebilirsiniz."
 
-#: admin/include/trees_cls.php:1591
+#: admin/include/trees_cls.php:1579
 msgid "Surrounding relatives check"
 msgstr "Çevredeki akrabaları kontrol et"
 
-#: admin/include/trees_cls.php:1599
+#: admin/include/trees_cls.php:1587
 msgid "Nr. "
 msgstr "No. "
 
-#: admin/include/trees_cls.php:1599 family.php:451 family.php:454
-#: family.php:511 family.php:514 family.php:650 family.php:653 family.php:1037
+#: admin/include/trees_cls.php:1587 family.php:451 family.php:454
+#: family.php:511 family.php:514 family.php:651 family.php:654 family.php:1039
 #: hourglass.php:73 relations.php:361 relations.php:372 relations.php:384
 #: relations.php:387 relations.php:389 relations.php:395 relations.php:402
 #: relations.php:406 relations.php:408 relations.php:411 relations.php:412
@@ -6815,117 +6815,123 @@ msgstr "No. "
 msgid " of "
 msgstr " ile ilgili "
 
-#: admin/include/trees_cls.php:1604
+#: admin/include/trees_cls.php:1592
 msgid " relatives to check"
 msgstr " kontrol edilecek akrabalar"
 
-#: admin/include/trees_cls.php:1609
+#: admin/include/trees_cls.php:1597
 msgid "Person 1: "
 msgstr "Kişi 1: "
 
-#: admin/include/trees_cls.php:1610
+#: admin/include/trees_cls.php:1598
 msgid "Person 2: "
 msgstr "Kişi 2: "
 
-#: admin/include/trees_cls.php:1612
+#: admin/include/trees_cls.php:1600
 msgid "Gedcom number:"
 msgstr "Gedcom numarası:"
 
-#: admin/include/trees_cls.php:1616
+#: admin/include/trees_cls.php:1604
 msgid "last name"
 msgstr "soyadı"
 
-#: admin/include/trees_cls.php:1617
+#: admin/include/trees_cls.php:1605
 msgid "first name"
 msgstr "ilk adı"
 
-#: admin/include/trees_cls.php:1619
+#: admin/include/trees_cls.php:1607
 msgid "patronym"
 msgstr "aile adı"
 
-#: admin/include/trees_cls.php:1621
+#: admin/include/trees_cls.php:1609
 msgid "birth place"
 msgstr "doğum yeri"
 
-#: admin/include/trees_cls.php:1624
+#: admin/include/trees_cls.php:1612
 msgid "baptism place"
 msgstr "vaftiz yeri"
 
-#: admin/include/trees_cls.php:1626
+#: admin/include/trees_cls.php:1614
 msgid "death place"
 msgstr "ölüm yeri"
 
-#: admin/include/trees_cls.php:1628 include/person_cls.php:1973
-#: include/person_cls.php:1974 include/person_cls.php:1975
-#: include/person_cls.php:1978 include/person_cls.php:1979
-#: include/person_cls.php:1992 include/person_cls.php:1994
-#: include/person_cls.php:2001
+#: admin/include/trees_cls.php:1616 include/person_cls.php:1971
+#: include/person_cls.php:1972 include/person_cls.php:1973
+#: include/person_cls.php:1976 include/person_cls.php:1977
+#: include/person_cls.php:1990 include/person_cls.php:1992
+#: include/person_cls.php:1999
 msgid "cause of death"
 msgstr "ölüm sebebi"
 
-#: admin/include/trees_cls.php:1631
+#: admin/include/trees_cls.php:1619
 msgid "burial place"
 msgstr "defin yeri"
 
-#: admin/include/trees_cls.php:1635
+#: admin/include/trees_cls.php:1623
 msgid "stillborn"
 msgstr "ölü doğmuş"
 
-#: admin/include/trees_cls.php:1636
+#: admin/include/trees_cls.php:1624
 msgid "general text"
 msgstr "genel metin"
 
-#: admin/include/trees_cls.php:1637
+#: admin/include/trees_cls.php:1625
 msgid "name text"
 msgstr "isim metni"
 
-#: admin/include/trees_cls.php:1638
+#: admin/include/trees_cls.php:1626
 msgid "birth text"
 msgstr "doğum metni"
 
-#: admin/include/trees_cls.php:1639
+#: admin/include/trees_cls.php:1627
 msgid "baptism text"
 msgstr "vaftiz metni"
 
-#: admin/include/trees_cls.php:1640
+#: admin/include/trees_cls.php:1628
 msgid "death text"
 msgstr "ölüm metni"
 
-#: admin/include/trees_cls.php:1641
+#: admin/include/trees_cls.php:1629
 msgid "burial text"
 msgstr "defin metni"
 
-#: admin/include/trees_cls.php:1648
+#: admin/include/trees_cls.php:1636
 msgid "Relatives"
 msgstr "Akraba"
 
-#: admin/include/trees_cls.php:1697 admin/include/trees_cls.php:1710
+#: admin/include/trees_cls.php:1685 admin/include/trees_cls.php:1698
 msgid "Read text"
 msgstr "Metni oku"
 
-#: admin/include/trees_cls.php:1708 admin/include/trees_cls.php:1823
-#: admin/include/trees_cls.php:1847 admin/include/trees_cls.php:1887
-#: admin/include/trees_cls.php:1937
+#: admin/include/trees_cls.php:1696 admin/include/trees_cls.php:1811
+#: admin/include/trees_cls.php:1835 admin/include/trees_cls.php:1886
+#: admin/include/trees_cls.php:1948
 msgid "(no data)"
 msgstr "(veri yok)"
 
-#: admin/include/trees_cls.php:1778
+#: admin/include/trees_cls.php:1766
 msgid "Picture"
 msgstr "Resim"
 
-#: admin/include/trees_cls.php:1785
+#: admin/include/trees_cls.php:1773
 msgid "Other names"
 msgstr "Diğer isimler"
 
-#: admin/include/trees_cls.php:1789
+#: admin/include/trees_cls.php:1777
 msgid "Internet link / URL"
 msgstr "İnternet bağlantısı / URL"
 
-#: admin/include/trees_cls.php:2649
+#: admin/include/trees_cls.php:1805 admin/include/trees_cls.php:1829
+#: admin/include/trees_cls.php:1875 admin/include/trees_cls.php:1895
+#: admin/include/trees_cls.php:1941 admin/include/trees_cls.php:1957
+msgid "Show"
+msgstr ""
+
+#: admin/include/trees_cls.php:2663
 msgid " was successfully merged into "
 msgstr " başarıyla birleştirildi "
 
-#: admin/include/trees_cls.php:2653
+#: admin/include/trees_cls.php:2667
 #, php-format
 msgid ""
 "After this merge there are %d surrounding relatives to be checked for "
@@ -6934,7 +6940,7 @@ msgstr ""
 "Bu birleştirmeden sonra, birleşme için kontrol edilmesi gereken %d "
 "çevreleyen akrabası var!"
 
-#: admin/include/trees_cls.php:2657
+#: admin/include/trees_cls.php:2671
 msgid ""
 "<b>You are strongly advised to move to \"Relatives merge\" mode to check all "
 "surrounding persons who may have to be checked for merging.</b><br>\n"
@@ -6949,11 +6955,11 @@ msgstr ""
 "birleşmeye ihtiyaç duyabilecek kişiler otomatik olarak eklenecektir.\n"
 "Bu, kimseyi unutmadığınızdan emin olmanın en kolay yoludur."
 
-#: admin/include/trees_cls.php:2673
+#: admin/include/trees_cls.php:2687
 msgid "Continue manual merge"
 msgstr "Manuel birleştirmeye devam et"
 
-#: admin/include/trees_cls.php:2689
+#: admin/include/trees_cls.php:2703
 msgid "Continue with next pair"
 msgstr "Sonraki çift ile devam et"
 
@@ -7419,8 +7425,8 @@ msgstr "Gün"
 msgid " PRIVACY FILTER"
 msgstr " GİZLİLİK FİLTRESİ"
 
-#: birthday_list.php:219 birthday_list.php:386 include/mainindex_cls.php:938
-#: include/mainindex_cls.php:962 list.php:2138 list_places_families.php:593
+#: birthday_list.php:219 birthday_list.php:386 include/mainindex_cls.php:940
+#: include/mainindex_cls.php:964 list.php:2141 list_places_families.php:593
 msgid " persons are not shown due to privacy settings"
 msgstr " gizlilik ayarları nedeniyle kişiler gösterilmiyor"
 
@@ -7503,7 +7509,7 @@ msgstr ""
 msgid "Settings family screen"
 msgstr "Aile ekranı ayarları"
 
-#: family.php:124 family.php:946 family.php:1973 family.php:1977
+#: family.php:124 family.php:948 family.php:1977 family.php:1981
 msgid "Family Page"
 msgstr "Aile Sayfası"
 
@@ -7545,101 +7551,101 @@ msgstr "RTF"
 msgid "Add to favourite list"
 msgstr "Sık kullanılanlar listesine ekle"
 
-#: family.php:451 family.php:511 family.php:650 help.php:22
-#: include/person_cls.php:841
+#: family.php:451 family.php:511 family.php:651 help.php:22
+#: include/person_cls.php:840
 msgid "Descendant report"
 msgstr "Soyundan Gelenlerin Raporu"
 
-#: family.php:454 family.php:514 family.php:596 family.php:653 family.php:893
-#: family.php:905 include/person_cls.php:821
+#: family.php:454 family.php:514 family.php:596 family.php:654 family.php:895
+#: family.php:907 include/person_cls.php:821
 msgid "Family group sheet"
 msgstr "Aile Grubu Sayfası"
 
-#: family.php:622 family.php:911
+#: family.php:622 family.php:913
 #, php-format
 msgid "TIP: use %s for other (ancestor and descendant) reports."
 msgstr "İPUCU: Ata ve soydan raporlar ve grafikler için %s'in üzerine gelin."
 
-#: family.php:727 family.php:734 family.php:738 report_ancestor.php:314
+#: family.php:729 family.php:736 family.php:740 report_ancestor.php:314
 #: report_ancestor.php:323 report_ancestor.php:333 report_ancestor.php:337
 msgid "generation "
 msgstr "kuşak "
 
-#: family.php:1309 family.php:1327
+#: family.php:1311 family.php:1329
 msgid "Child"
 msgstr "Çocuk"
 
-#: family.php:1465 family.php:1471 family.php:1483
+#: family.php:1468 family.php:1474 family.php:1486
 msgid "follows"
 msgstr "takip eder"
 
-#: family.php:1544 family.php:1562 family.php:1581
+#: family.php:1547 family.php:1565 family.php:1584
 msgid "Adopted child:"
 msgstr "Evlatlık çocuk:"
 
-#: family.php:1559 family.php:1578
+#: family.php:1562 family.php:1581
 msgid "Stepchild"
 msgstr "Üvey çocuk"
 
-#: family.php:1560 family.php:1579
+#: family.php:1563 family.php:1582
 msgid "Legal child"
 msgstr "Yasal çocuk"
 
-#: family.php:1561 family.php:1580
+#: family.php:1564 family.php:1583
 msgid "Foster child"
 msgstr "Koruyucu çocuk"
 
-#: family.php:1735 family.php:1741 include/calculate_age_cls.php:375
+#: family.php:1738 family.php:1744 include/calculate_age_cls.php:375
 #: include/calculate_age_cls.php:378 report_ancestor.php:1181
 msgid "married"
 msgstr "evli"
 
-#: family.php:1923
+#: family.php:1927
 msgid "Family events"
 msgstr "Aile etkinlikleri"
 
-#: family.php:1973
+#: family.php:1977
 msgid "Citation for:"
 msgstr "Şunun için alıntı:"
 
-#: family.php:1992
+#: family.php:1996
 msgid "accessed"
 msgstr "erişildi"
 
-#: family.php:2088 family.php:2095
+#: family.php:2092 family.php:2099
 msgid "New user note"
 msgstr "Yeni kullanıcı notu"
 
-#: family.php:2093 mailform.php:24 register.php:59 user_settings.php:50
+#: family.php:2097 mailform.php:24 register.php:59 user_settings.php:50
 #, php-format
 msgid "Message sent through %s from the website."
 msgstr "İleti, web sitesinden %s aracılığıyla gönderildi."
 
-#: family.php:2100
+#: family.php:2104
 msgid "User note by family"
 msgstr "Aile tarafından kullanıcı notu"
 
-#: family.php:2121
+#: family.php:2125
 msgid "Your information is saved and will be reviewed by the webmaster."
 msgstr "Bilgileriniz kaydedilir ve web yöneticisi tarafından incelenir."
 
-#: family.php:2158
+#: family.php:2162
 msgid "Add information or remarks"
 msgstr "Bilgi veya açıklama ekleyin"
 
-#: family.php:2165
+#: family.php:2169
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "E-posta adresiniz eksik. Lütfen mail adresinizi buraya ekleyin: "
 
-#: family.php:2171 login.php:44 mailform.php:134 register.php:148
+#: family.php:2175 login.php:44 mailform.php:134 register.php:148
 msgid "Send"
 msgstr "Gönder"
 
-#: family.php:2236 report_ancestor.php:1568
+#: family.php:2240 report_ancestor.php:1568
 msgid "Download RTF report."
 msgstr "RTF raporunu indirin."
 
-#: family.php:2237 report_ancestor.php:1569
+#: family.php:2241 report_ancestor.php:1569
 msgid ""
 "TIP: Don't use Wordpad to open this file (the lay-out will be wrong!). It's "
 "better to use a text processor like Word or OpenOffice Writer."
@@ -7651,7 +7657,7 @@ msgstr ""
 msgid "RELOAD FANCHART WITH 'VIEW' BUTTON ON THE LEFT"
 msgstr "SOLDAKİ 'GÖRÜNÜM' DÜĞMESİYLE FAN GRAFİĞİNİ YENİDEN YÜKLE"
 
-#: fanchart.php:565 help.php:25 include/person_cls.php:883
+#: fanchart.php:565 help.php:25 include/person_cls.php:882
 msgid "Fanchart"
 msgstr "Fan grafiği"
 
@@ -7759,27 +7765,27 @@ msgid "Unzip and place in \"include/fanchart/chinese/\" folder"
 msgstr ""
 "Sıkıştırmayı açın ve \"include/fanchart/chinese/\" klasörüne yerleştirin"
 
-#: googlemaps/google_initiate.php:335
+#: googlemaps/google_initiate.php:333
 msgid "today "
 msgstr "bugün "
 
-#: googlemaps/google_initiate.php:383
+#: googlemaps/google_initiate.php:381
 msgid "Location: "
 msgstr "Konum: "
 
-#: googlemaps/google_initiate.php:385
+#: googlemaps/google_initiate.php:383
 msgid "For a list of persons born here until "
 msgstr "Buraya kadar doğmuş kişilerin listesi için "
 
-#: googlemaps/google_initiate.php:388
+#: googlemaps/google_initiate.php:386
 msgid "For a list of all people that died here until "
 msgstr "Buraya kadar ölen tüm insanların listesi için "
 
-#: googlemaps/google_initiate.php:390
+#: googlemaps/google_initiate.php:388
 msgid " click here"
 msgstr " buraya tıklayın"
 
-#: googlemaps/google_initiate.php:391
+#: googlemaps/google_initiate.php:389
 msgid "Read about this location in "
 msgstr "Bu konum hakkında bilgi edinin "
 
@@ -7811,7 +7817,7 @@ msgstr "Kişiler"
 msgid "Photobook"
 msgstr "Fotoğraf kitabı"
 
-#: header.php:260 help.php:69 include/person_cls.php:869 menu.php:612
+#: header.php:260 help.php:69 include/person_cls.php:868 menu.php:612
 msgid "Relationship calculator"
 msgstr "İlişki hesaplayıcı"
 
@@ -7823,7 +7829,7 @@ msgstr "Posta formu"
 msgid "Google maps"
 msgstr "Google haritaları"
 
-#: header.php:264 hourglass.php:92 list.php:1798 maps.php:238 menu.php:308
+#: header.php:264 hourglass.php:92 list.php:1801 maps.php:238 menu.php:308
 #: menu.php:683 menu.php:688 report_descendant.php:424 timelines.php:465
 msgid "Help"
 msgstr "Yardım"
@@ -7868,7 +7874,7 @@ msgstr ""
 "simgelerin tam sayısı, ataların ve/veya soyundan gelenlerin varlığına göre "
 "değişir). Aşağıda bu simgelerin ve anlamlarının bir listesi bulunmaktadır."
 
-#: help.php:20 include/person_cls.php:863 report_ancestor.php:103
+#: help.php:20 include/person_cls.php:862 report_ancestor.php:103
 #: report_ancestor.php:148 report_ancestor.php:157 report_ancestor.php:208
 msgid "Ancestor report"
 msgstr "Ata Raporu"
@@ -7903,7 +7909,7 @@ msgstr ""
 "diğer soyundan gelenlerin soy raporudur. <br>Açılır menüdeki simgeler "
 "arasından, soyundan gelenler raporunun grafik görüntüsünü de seçebilirsiniz."
 
-#: help.php:23 include/person_cls.php:851 report_outline.php:97
+#: help.php:23 include/person_cls.php:850 report_outline.php:97
 #: report_outline.php:106 report_outline.php:112
 msgid "Outline report"
 msgstr "Anahat Raporu"
@@ -7916,7 +7922,7 @@ msgstr ""
 "Anahat raporu, her neslin kendi (artan) numarasını aldığı bir kişinin (ve "
 "ortaklarının) tüm soyundan gelenlerin açık bir özetidir."
 
-#: help.php:24 include/person_cls.php:865 report_ancestor.php:1146
+#: help.php:24 include/person_cls.php:864 report_ancestor.php:1146
 #: report_ancestor.php:1448 report_ancestor.php:1463
 msgid "Ancestor sheet"
 msgstr "Ata Sayfası"
@@ -7943,7 +7949,7 @@ msgstr ""
 "hızlı erişim sağlamak için tıklanabilir. <br> Fan grafiğinin boyutu ve diğer "
 "bazı ayarlar grafiğin solundaki menüden ayarlanabilir."
 
-#: help.php:26 include/person_cls.php:963 include/person_cls.php:977
+#: help.php:26 include/person_cls.php:962 include/person_cls.php:976
 msgid "Timeline"
 msgstr "Zaman çizelgesi"
 
@@ -8259,7 +8265,7 @@ msgstr ""
 "seçenek arasından seçim yapabilirsiniz: \"içerir\", \"eşittir\" ve \"ile "
 "başlar\". Not: arama düğmesinin yanında  &quot;Gelişmiş Arama!&quot;"
 
-#: hourglass.php:73 include/person_cls.php:932
+#: hourglass.php:73 include/person_cls.php:931
 msgid "Hourglass chart"
 msgstr "Kum saati grafiği"
 
@@ -8288,12 +8294,12 @@ msgstr ""
 "<b>Açılır menüde isme tıklayın:</b> Kişinin aile sayfasına gidin<br><br>\n"
 "<b>GÖSTERGE:</b>"
 
-#: hourglass.php:105 list.php:1665 report_descendant.php:436 statistics.php:264
+#: hourglass.php:105 list.php:1668 report_descendant.php:436 statistics.php:264
 #: statistics.php:949
 msgid "Male"
 msgstr "Erkek"
 
-#: hourglass.php:106 list.php:1667 report_descendant.php:437 statistics.php:264
+#: hourglass.php:106 list.php:1670 report_descendant.php:437 statistics.php:264
 #: statistics.php:949
 msgid "Female"
 msgstr "Kadın"
@@ -8681,11 +8687,11 @@ msgstr "Toplam"
 msgid "More statistics"
 msgstr "Daha fazla istatistik"
 
-#: include/mainindex_cls.php:573 list.php:1573
+#: include/mainindex_cls.php:573 list.php:1576
 msgid "Enter name or part of name"
 msgstr "Adı veya adın bir kısmını girin"
 
-#: include/mainindex_cls.php:574 list.php:1577
+#: include/mainindex_cls.php:574 list.php:1580
 msgid "Enter private name"
 msgstr "Özel ad girin"
 
@@ -8693,34 +8699,34 @@ msgstr "Özel ad girin"
 msgid "Minimum: 3 characters."
 msgstr "En az: 3 karakter."
 
-#: include/mainindex_cls.php:597 list.php:1777
+#: include/mainindex_cls.php:597 list.php:1780
 msgid "All but selected tree"
 msgstr "Seçilen ağaç hariç tümü"
 
-#: include/mainindex_cls.php:609 list.php:1817
+#: include/mainindex_cls.php:609 list.php:1820
 msgid "Advanced search"
 msgstr "Gelişmiş arama"
 
-#: include/mainindex_cls.php:719
+#: include/mainindex_cls.php:721
 msgid "Surnames Index:"
 msgstr "Soyadı Dizini:"
 
-#: include/mainindex_cls.php:809
+#: include/mainindex_cls.php:811
 msgid "Patronyms"
 msgstr "Aile adları"
 
-#: include/mainindex_cls.php:976
+#: include/mainindex_cls.php:978
 #, php-format
 msgid "This database is made by %s, a freeware genealogical  program"
 msgstr ""
 "Bu veritabanı, ücretsiz bir soybilim programı olan %s tarafından yapılmıştır"
 
-#: include/mainindex_cls.php:988
+#: include/mainindex_cls.php:990
 #, php-format
 msgid "European law: %s cookie information"
 msgstr "Avrupa hukuku: %s çerez bilgileri"
 
-#: include/marriage_cls.php:65 include/person_cls.php:1464
+#: include/marriage_cls.php:65 include/person_cls.php:1462
 msgid "Non marital"
 msgstr "Evlilik dışı"
 
@@ -8763,24 +8769,24 @@ msgstr "boşanmış"
 msgid "Married/ Related"
 msgstr "Evli/ İlişkili"
 
-#: include/marriage_cls.php:579 include/person_cls.php:1496 list.php:191
+#: include/marriage_cls.php:579 include/person_cls.php:1494 list.php:191
 #: list_places_families.php:147
 msgid "1st"
 msgstr "1."
 
-#: include/marriage_cls.php:580 include/person_cls.php:1497 list.php:192
+#: include/marriage_cls.php:580 include/person_cls.php:1495 list.php:192
 #: list_places_families.php:148 relations.php:544 relations.php:810
 #: relations.php:908 relations.php:1022 relations.php:1330
 msgid "2nd"
 msgstr "2."
 
-#: include/marriage_cls.php:581 include/person_cls.php:1498 list.php:193
+#: include/marriage_cls.php:581 include/person_cls.php:1496 list.php:193
 #: list_places_families.php:149 relations.php:545 relations.php:811
 #: relations.php:909 relations.php:1023 relations.php:1331
 msgid "3rd"
 msgstr "3."
 
-#: include/marriage_cls.php:582 include/person_cls.php:1499 list.php:194
+#: include/marriage_cls.php:582 include/person_cls.php:1497 list.php:194
 #: list_places_families.php:150 relations.php:375 relations.php:547
 #: relations.php:813 relations.php:1237 relations.php:1268 relations.php:1333
 #: relations.php:1713 relations.php:1716
@@ -8816,28 +8822,28 @@ msgstr "Ad filtrelendi"
 msgid "Text reports"
 msgstr "Metin raporları"
 
-#: include/person_cls.php:873
+#: include/person_cls.php:872
 msgid "Charts"
 msgstr "Grafikler"
 
-#: include/person_cls.php:891 report_ancestor.php:100
+#: include/person_cls.php:890 report_ancestor.php:100
 msgid "Ancestor chart"
 msgstr "Ata Grafiği"
 
-#: include/person_cls.php:902 report_descendant.php:458
+#: include/person_cls.php:901 report_descendant.php:458
 msgid "Descendant chart"
 msgstr "Soyundan Gelen Grafiği"
 
-#: include/person_cls.php:918
+#: include/person_cls.php:917
 msgid "DNA Charts"
 msgstr "DNA Grafikleri"
 
-#: include/person_cls.php:973 menu.php:278 menu.php:805
+#: include/person_cls.php:972 menu.php:278 menu.php:805
 msgid "Admin"
 msgstr "Yönetici"
 
-#: include/person_cls.php:1026 include/person_cls.php:1605
-#: include/person_cls.php:1607 list.php:208 list.php:217 list.php:226
+#: include/person_cls.php:1025 include/person_cls.php:1603
+#: include/person_cls.php:1605 list.php:208 list.php:217 list.php:226
 #: list.php:235 list_places_families.php:167 list_places_families.php:176
 #: list_places_families.php:185 list_places_families.php:194
 #: report_ancestor.php:1261 report_ancestor.php:1278 report_ancestor.php:1279
@@ -8846,92 +8852,92 @@ msgstr "Yönetici"
 msgid "PRIVACY FILTER"
 msgstr "GİZLİLİK FİLTRESİ"
 
-#: include/person_cls.php:1200
+#: include/person_cls.php:1199
 msgid "son of"
 msgstr "oğlu"
 
-#: include/person_cls.php:1201
+#: include/person_cls.php:1200
 msgid "daughter of"
 msgstr "kızı"
 
-#: include/person_cls.php:1202
+#: include/person_cls.php:1201
 msgid "child of"
 msgstr "çocuğu"
 
-#: include/person_cls.php:1284 include/person_cls.php:1285
+#: include/person_cls.php:1282 include/person_cls.php:1283
 msgid "adoption parents"
 msgstr "evlat edinen ebeveynler"
 
-#: include/person_cls.php:1356 include/person_cls.php:1357
+#: include/person_cls.php:1354 include/person_cls.php:1355
 msgid "stepparent"
 msgstr "üvey ebeveyn"
 
-#: include/person_cls.php:1360 include/person_cls.php:1361
+#: include/person_cls.php:1358 include/person_cls.php:1359
 msgid "legal parent"
 msgstr "yasal ebeveyn"
 
-#: include/person_cls.php:1364 include/person_cls.php:1365
+#: include/person_cls.php:1362 include/person_cls.php:1363
 msgid "foster parent"
 msgstr "koruyucu ebeveyn"
 
-#: include/person_cls.php:1369 include/person_cls.php:1370
+#: include/person_cls.php:1367 include/person_cls.php:1368
 #, fuzzy
 #| msgid "adoptive parent"
 msgid "adoptive parents"
 msgstr "evlat edinen ebeveyn"
 
-#: include/person_cls.php:1373 include/person_cls.php:1374
+#: include/person_cls.php:1371 include/person_cls.php:1372
 msgid "adoptive parent"
 msgstr "evlat edinen ebeveyn"
 
-#: include/person_cls.php:1452
+#: include/person_cls.php:1450
 msgid "relationship with"
 msgstr "ile ilişki"
 
-#: include/person_cls.php:1455
+#: include/person_cls.php:1453
 msgid "married to"
 msgstr "ile evli"
 
-#: include/person_cls.php:1456
+#: include/person_cls.php:1454
 msgid "marriage with"
 msgstr "ile evlilik"
 
-#: include/person_cls.php:1473
+#: include/person_cls.php:1471
 msgid "divorced from"
 msgstr "ile boşandı"
 
-#: include/person_cls.php:1474
+#: include/person_cls.php:1472
 msgid "marriage (divorced) with"
 msgstr "ile evlilik (boşanmış)"
 
-#: include/person_cls.php:1751 include/person_cls.php:1753
-#: include/person_cls.php:1756 include/person_cls.php:1947
+#: include/person_cls.php:1749 include/person_cls.php:1751
+#: include/person_cls.php:1754 include/person_cls.php:1945
 msgid "at"
 msgstr "yanında"
 
-#: include/person_cls.php:1751 include/person_cls.php:1753
-#: include/person_cls.php:1756 include/person_cls.php:1947
+#: include/person_cls.php:1749 include/person_cls.php:1751
+#: include/person_cls.php:1754 include/person_cls.php:1945
 msgid "hour"
 msgstr "saat"
 
-#: include/person_cls.php:1885 include/person_cls.php:1887
+#: include/person_cls.php:1883 include/person_cls.php:1885
 msgid "godfather"
 msgstr "vaftiz babası"
 
-#: include/person_cls.php:2136
+#: include/person_cls.php:2134
 msgid "ash dispersion"
 msgstr "kül dağılımı"
 
-#: include/person_cls.php:2156
+#: include/person_cls.php:2154
 msgid "occupation"
 msgstr "meslek"
 
-#: include/person_cls.php:2159
+#: include/person_cls.php:2157
 msgid "occupations"
 msgstr "meslekler"
 
 #: include/show_addresses.php:22 include/show_addresses.php:23
-#: include/show_addresses.php:24 list.php:1485
+#: include/show_addresses.php:24 list.php:1488
 msgid "residence"
 msgstr "ikametgah"
 
@@ -9002,7 +9008,7 @@ msgid "Recently changed persons and new persons"
 msgstr "Yakın zamanda değiştirilen kişiler ve yeni kişiler"
 
 # Residence
-#: list.php:76 list.php:1484
+#: list.php:76 list.php:1487
 msgid "^"
 msgstr "^"
 
@@ -9024,52 +9030,52 @@ msgstr "X"
 msgid ") ("
 msgstr ") ("
 
-#: list.php:782 list.php:2052
+#: list.php:782 list.php:2055
 msgid "..."
 msgstr "..."
 
-#: list.php:1454 list_places_families.php:396
+#: list.php:1457 list_places_families.php:396
 msgid "Find place"
 msgstr "Yer bul"
 
-#: list.php:1457 list.php:1527 list.php:1542 list.php:1560 list.php:1605
-#: list.php:1616 list.php:1637 list.php:1649 list.php:1676 list.php:1688
-#: list.php:1702 list.php:1713 list.php:1725 list.php:1741
+#: list.php:1460 list.php:1530 list.php:1545 list.php:1563 list.php:1608
+#: list.php:1619 list.php:1640 list.php:1652 list.php:1679 list.php:1691
+#: list.php:1705 list.php:1716 list.php:1728 list.php:1744
 #: list_places_families.php:398
 msgid "Contains"
 msgstr "İçerir"
 
-#: list.php:1460 list.php:1529 list.php:1544 list.php:1562 list.php:1607
-#: list.php:1618 list.php:1639 list.php:1651 list.php:1678 list.php:1690
-#: list.php:1704 list.php:1715 list.php:1727 list.php:1739
+#: list.php:1463 list.php:1532 list.php:1547 list.php:1565 list.php:1610
+#: list.php:1621 list.php:1642 list.php:1654 list.php:1681 list.php:1693
+#: list.php:1707 list.php:1718 list.php:1730 list.php:1742
 #: list_places_families.php:401
 msgid "Equals"
 msgstr "Eşittir"
 
-#: list.php:1463 list.php:1531 list.php:1546 list.php:1564 list.php:1609
-#: list.php:1620 list.php:1641 list.php:1653 list.php:1680 list.php:1692
-#: list.php:1706 list.php:1717 list.php:1729 list.php:1743
+#: list.php:1466 list.php:1534 list.php:1549 list.php:1567 list.php:1612
+#: list.php:1623 list.php:1644 list.php:1656 list.php:1683 list.php:1695
+#: list.php:1709 list.php:1720 list.php:1732 list.php:1746
 #: list_places_families.php:404
 msgid "Starts with"
 msgstr "İle başlar"
 
-#: list.php:1475
+#: list.php:1478
 msgid "birth pl."
 msgstr "doğum yeri"
 
-#: list.php:1480
+#: list.php:1483
 msgid "bapt pl."
 msgstr "vaftiz yeri"
 
-#: list.php:1490
+#: list.php:1493
 msgid "death pl."
 msgstr "ölüm yeri"
 
-#: list.php:1496
+#: list.php:1499
 msgid "bur pl."
 msgstr "defin yeri"
 
-#: list.php:1574
+#: list.php:1577
 msgid ""
 "\"John Jones\", \"Jones John\", \"John of Jones\", \"of Jones, John\", "
 "\"Jones, John of\", \"Jones of, John\""
@@ -9077,67 +9083,67 @@ msgstr ""
 "\"John Jones\", \"Jones John\", \"Jones'un John'u\", \"Jones'un, John\", "
 "\"Jones, John'un\", \"Jones'un, John\""
 
-#: list.php:1589 menu.php:89
+#: list.php:1592 menu.php:89
 msgid "Minimum:"
 msgstr "En az:"
 
-#: list.php:1589 menu.php:89
+#: list.php:1592 menu.php:89
 msgid "characters"
 msgstr "karakterler"
 
-#: list.php:1598 list.php:1630
+#: list.php:1601 list.php:1633
 msgid "till:"
 msgstr "kadar:"
 
-#: list.php:1655
+#: list.php:1658
 msgid "Text by person"
 msgstr "Kişiye göre metin"
 
-#: list.php:1661
+#: list.php:1664
 msgid "Choose sex:"
 msgstr "Cinsiyet seçin:"
 
-#: list.php:1700
+#: list.php:1703
 msgid "Partner firstname"
 msgstr "Eşin adı"
 
-#: list.php:1711
+#: list.php:1714
 msgid "Partner lastname"
 msgstr "Eşin soyadı"
 
-#: list.php:1723 list.php:1731
+#: list.php:1726 list.php:1734
 msgid "witness"
 msgstr "tanık"
 
-#: list.php:1737 list.php:1745
+#: list.php:1740 list.php:1748
 msgid "gedcomnumber (ID)"
 msgstr "gedcom numarası (kimlik)"
 
-#: list.php:1749
+#: list.php:1752
 msgid "Research status:"
 msgstr "Araştırma durumu:"
 
-#: list.php:1751
+#: list.php:1754
 msgid "parents unknown"
 msgstr "ebeveynler bilinmiyor"
 
-#: list.php:1753
+#: list.php:1756
 msgid "father unknown"
 msgstr "baba bilinmiyor"
 
-#: list.php:1755
+#: list.php:1758
 msgid "mother unknown"
 msgstr "anne bilinmiyor"
 
-#: list.php:1789
+#: list.php:1792
 msgid "Standard search"
 msgstr "Standart arama"
 
-#: list.php:1801
+#: list.php:1804
 msgid "Tip"
 msgstr "İpucu"
 
-#: list.php:1804
+#: list.php:1807
 msgid ""
 "With Advanced Search you can easily create lists like: all persons with "
 "surname <b>Schaap</b> who were born <b>between 1820 and 1840</b> in "
@@ -9149,7 +9155,7 @@ msgstr ""
 "soyadına sahip tüm kişiler. <br>Ayrıca isimsiz arama yapabilirsiniz: "
 "<b>1901</b>'de <b>Amstelveen</b>'de ölen tüm kişiler"
 
-#: list.php:1808
+#: list.php:1811
 msgid ""
 "Note:</td><td>When you use the birth and/ or death search boxes please note "
 "this:<br>1. Persons for whom no birth/ death data exist in the database, "
@@ -9163,23 +9169,23 @@ msgstr ""
 "ayarlarına sahip kişiler gösterilmeyecektir. <br>Bu kişilere sadece isim ve/ "
 "veya soyadı ile arama yapılarak ulaşılabilir."
 
-#: list.php:1878 list.php:2166
+#: list.php:1881 list.php:2169
 msgid " persons found."
 msgstr "kişi bulundu."
 
-#: list.php:1914 list_places_families.php:522
+#: list.php:1917 list_places_families.php:522
 msgid "Concise view"
 msgstr "Özlü görünüm"
 
-#: list.php:1930 list_places_families.php:534
+#: list.php:1933 list_places_families.php:534
 msgid "No names found."
 msgstr "İsim bulunamadı."
 
-#: list.php:1973
+#: list.php:1976
 msgid "Sort by:"
 msgstr "Şuna göre sırala:"
 
-#: list.php:2013
+#: list.php:2016
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
@@ -9222,40 +9228,40 @@ msgstr "Şifre kurtarma"
 msgid "Email"
 msgstr "E-posta"
 
-#: login.php:43 login.php:232
+#: login.php:43 login.php:233
 msgid "Captcha"
 msgstr "Captcha"
 
-#: login.php:73
+#: login.php:74
 msgid "Your email address is not correct"
 msgstr "E-posta adresiniz doğru değil"
 
-#: login.php:83 login.php:281
+#: login.php:84 login.php:282
 msgid "Sorry, wrong captcha code"
 msgstr "Üzgünüm, yanlış captcha kodu"
 
-#: login.php:107 login.php:186 login.php:198 login.php:255 login.php:308
-#: login.php:323
+#: login.php:108 login.php:187 login.php:199 login.php:256 login.php:309
+#: login.php:324
 msgid "Error"
 msgstr "Hata"
 
-#: login.php:111
+#: login.php:112
 msgid "This email address was not found in our database."
 msgstr "Bu e-posta adresi veritabanımızda bulunamadı."
 
-#: login.php:111 login.php:188 login.php:257 login.php:310
+#: login.php:112 login.php:189 login.php:258 login.php:311
 msgid "Please contact the site owner."
 msgstr "Lütfen site sahibiyle iletişime geçin."
 
-#: login.php:122 login.php:200 login.php:288
+#: login.php:123 login.php:201 login.php:289
 msgid "Retry"
 msgstr "Yeniden dene"
 
-#: login.php:134
+#: login.php:135
 msgid "Notice"
 msgstr "Dikkat"
 
-#: login.php:136
+#: login.php:137
 msgid ""
 "Your password activation key was already sent to your email address, please "
 "check your inbox and spam folder"
@@ -9263,11 +9269,11 @@ msgstr ""
 "Şifre aktivasyon anahtarınız e-posta adresinize zaten gönderildi, lütfen "
 "gelen kutunuzu ve spam klasörünüzü kontrol edin"
 
-#: login.php:159
+#: login.php:160
 msgid "This is in response to your request for password reset at "
 msgstr "Bu, adresindeki parola sıfırlama isteğinize yanıt olarak "
 
-#: login.php:164
+#: login.php:165
 msgid ""
 "To reset your password, please visit this link or copy and paste this link "
 "in your browser window "
@@ -9275,22 +9281,22 @@ msgstr ""
 "Şifrenizi sıfırlamak için lütfen bu bağlantıyı ziyaret edin veya bu "
 "bağlantıyı kopyalayıp tarayıcınızın penceresine yapıştırın "
 
-#: login.php:178
+#: login.php:179
 msgid "Your request for password retrieval"
 msgstr "Şifre kurtarma isteğiniz"
 
-#: login.php:188
+#: login.php:189
 msgid ""
 "We encountered a system problem in sending reset link to your email address."
 msgstr ""
 "E-posta adresinize sıfırlama bağlantısı gönderirken bir sistem sorunuyla "
 "karşılaştık."
 
-#: login.php:191 login.php:303
+#: login.php:192 login.php:304
 msgid "Success"
 msgstr "Başarılı"
 
-#: login.php:193
+#: login.php:194
 msgid ""
 "Your reset link was sent to your email address. Please check your mail in a "
 "few minutes."
@@ -9298,51 +9304,51 @@ msgstr ""
 "Sıfırlama bağlantınız e-posta adresinize gönderildi. Lütfen birkaç dakika "
 "içinde postanızı kontrol edin."
 
-#: login.php:218
+#: login.php:219
 msgid "Activation failed"
 msgstr "Etkinleştirme başarısız oldu"
 
-#: login.php:227 login.php:228
+#: login.php:228 login.php:229
 msgid "New Password"
 msgstr "Yeni Şifre"
 
-#: login.php:230
+#: login.php:231
 msgid "Re-enter new Password"
 msgstr "Yeni şifreyi tekrar giriniz"
 
-#: login.php:233
+#: login.php:234
 msgid "Submit new Password"
 msgstr "Yeni Şifre Gönder"
 
-#: login.php:233
+#: login.php:234
 msgid "Clear fields"
 msgstr "Alanları temizle"
 
-#: login.php:257
+#: login.php:258
 msgid "Password activation failed."
 msgstr "Şifre etkinleştirme başarısız oldu."
 
-#: login.php:269
+#: login.php:270
 msgid "Password must be at least 4 char and maximum 15 char long"
 msgstr "Şifre en az 4 karakter ve en fazla 15 karakter uzunluğunda olmalıdır"
 
-#: login.php:274
+#: login.php:275
 msgid "The passwords don't match!"
 msgstr "Şifreler uyuşmuyor!"
 
-#: login.php:305
+#: login.php:306
 msgid "Your new password has been stored successfully"
 msgstr "Yeni şifreniz başarıyla saklandı"
 
-#: login.php:310
+#: login.php:311
 msgid "Failed to store new password."
 msgstr "Yeni şifre saklanamadı."
 
-#: login.php:325
+#: login.php:326
 msgid "No valid username or password."
 msgstr "Geçerli kullanıcı adı veya şifre yok."
 
-#: login.php:345
+#: login.php:346
 msgid "Forgot password"
 msgstr "Şifremi unuttum"
 
@@ -9548,59 +9554,59 @@ msgstr "Belirli ad(lar) ile eşle: "
 msgid "Switch name filter off"
 msgstr "Ad filtresini kapat"
 
-#: maps.php:431
+#: maps.php:432
 msgid "Filter by descendants of: "
 msgstr "Soyundan gelenlere göre filtrele: "
 
-#: maps.php:431
+#: maps.php:432
 msgid "Switch descendant filter off"
 msgstr "Soyundan gelenler filtresini kapat"
 
-#: maps.php:434
+#: maps.php:435
 msgid "No known birth places amongst descendants"
 msgstr "Soyundan gelenler arasında bilinen doğum yeri yok"
 
-#: maps.php:434 maps.php:548
+#: maps.php:435 maps.php:550
 msgid "Close"
 msgstr "Kapat"
 
-#: maps.php:545
+#: maps.php:547
 msgid "Filter by ancestors of: "
 msgstr "Atalara göre filtrele: "
 
-#: maps.php:545
+#: maps.php:547
 msgid "Switch ancestor filter off"
 msgstr "Ata filtresini kapat"
 
-#: maps.php:548
+#: maps.php:550
 msgid "No known birth places amongst ancestors"
 msgstr "Atalar arasında bilinen doğum yeri yok"
 
-#: maps.php:573
+#: maps.php:575
 msgid "Mark checkbox next to name(s)"
 msgstr "Ad(lar)ın yanındaki onay kutusunu işaretleyin"
 
-#: maps.php:585
+#: maps.php:587
 msgid "Choose"
 msgstr "Seç"
 
-#: maps.php:614
+#: maps.php:616
 msgid "Filter by descendants of a person"
 msgstr "Bir kişinin soyundan gelenlerine göre filtrele"
 
-#: maps.php:615 maps.php:724
+#: maps.php:617 maps.php:726
 msgid "Pick a name or enter ID:"
 msgstr "Bir ad seçin veya kimliği girin:"
 
-#: maps.php:618 maps.php:727
+#: maps.php:620 maps.php:729
 msgid "Pick a name from the pulldown list"
 msgstr "Açılır listeden bir isim seçin"
 
-#: maps.php:723
+#: maps.php:725
 msgid "Filter by ancestors of a person"
 msgstr "Bir kişinin atalarına göre filtrele"
 
-#: maps.php:913
+#: maps.php:915
 msgid "Results are limited."
 msgstr ""
 
@@ -9918,11 +9924,11 @@ msgid ""
 "increase!)"
 msgstr "(Her ardışık aramada yol uzayabilir ve hesaplama süresi artabilir!)"
 
-#: relations.php:3071
+#: relations.php:3069
 msgid "Calculating relations"
 msgstr "İlişkilerin hesaplanması"
 
-#: relations.php:3093
+#: relations.php:3091
 msgid ""
 "This calculator will find the following relationships:<br>\n"
 "<ul><li>Any blood relationship between X and Y (\"X is great-grandfather of Y"
@@ -9964,19 +9970,19 @@ msgstr ""
 "veritabanındaki tüm kişilerin bulunduğu bir liste elde edersiniz. (Birkaç "
 "saniye sürebilir)</b></li></ul>"
 
-#: relations.php:3110
+#: relations.php:3108
 msgid "or: ID"
 msgstr "veya: Kimlik"
 
-#: relations.php:3113 relations.php:3305
+#: relations.php:3111 relations.php:3303
 msgid "Calculate relationships"
 msgstr "İlişkileri hesapla"
 
-#: relations.php:3289 relations.php:3374
+#: relations.php:3287 relations.php:3372
 msgid "Results are limited, use search to find more persons."
 msgstr "Sonuçlar sınırlıdır, daha fazla kişi bulmak için aramayı kullanın."
 
-#: relations.php:3480
+#: relations.php:3478
 msgid ""
 "You have to search and than choose Person 1 and Person 2 from the search "
 "result pulldown"
@@ -10328,39 +10334,39 @@ msgstr "mtDNA İşareti taşıyıcıları"
 msgid "died "
 msgstr "öldü "
 
-#: report_outline.php:135
+#: report_outline.php:134
 msgid "Hide full details"
 msgstr "Tam ayrıntıları gizle"
 
-#: report_outline.php:139
+#: report_outline.php:138
 msgid "Show full details"
 msgstr "Tam ayrıntıları göster"
 
-#: report_outline.php:164
+#: report_outline.php:163
 msgid "Hide dates"
 msgstr "Tarihleri gizle"
 
-#: report_outline.php:168
+#: report_outline.php:167
 msgid "Show dates"
 msgstr "Tarihleri göster"
 
-#: report_outline.php:190
+#: report_outline.php:189
 msgid "Dates below names"
 msgstr "İsimlerin altındaki tarihler"
 
-#: report_outline.php:194
+#: report_outline.php:193
 msgid "Dates beside names"
 msgstr "İsimlerin yanında tarihler"
 
-#: report_outline.php:203
+#: report_outline.php:202
 msgid "Choose number of generations to display"
 msgstr "Görüntülenecek nesil sayısını seçin"
 
-#: report_outline.php:244
+#: report_outline.php:243
 msgid "PDF (Portrait)"
 msgstr "PDF (Dikey)"
 
-#: report_outline.php:262
+#: report_outline.php:261
 msgid "PDF (Landscape)"
 msgstr "PDF (Yatay)"
 
