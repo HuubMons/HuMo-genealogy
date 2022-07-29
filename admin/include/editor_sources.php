@@ -98,9 +98,14 @@ if ($connect_sub_kind=='person_source'){
 }
 
 // *** Edit source by address by person ***
-if ($connect_sub_kind=='pers_address_source'){
+//if ($connect_sub_kind=='pers_address_source'){
+//	show_source_header(__('Source').' - '.__('Address'));
+//	echo source_edit("person","pers_address_source",$connect_connect_id);
+//}
+// *** Edit source by person-address connection by person ***
+if ($connect_sub_kind=='pers_address_connect_source'){
 	show_source_header(__('Source').' - '.__('Address'));
-	echo source_edit("person","pers_address_source",$connect_connect_id);
+	echo source_edit("person","pers_address_connect_source",$connect_connect_id);
 }
 
 // *** Edit source by living together ***
@@ -152,15 +157,27 @@ if ($connect_sub_kind=='family_source'){
 }
 
 // *** Edit source by address by family ***
-if ($connect_sub_kind=='fam_address_source'){
+//if ($connect_sub_kind=='fam_address_source'){
+//	show_source_header(__('Source').' - '.__('Address'));
+//	echo source_edit("family","fam_address_source",$connect_connect_id);
+//}
+// *** Edit source by family-address connection by family ***
+if ($connect_sub_kind=='fam_address_connect_source'){
 	show_source_header(__('Source').' - '.__('Address'));
-	echo source_edit("family","fam_address_source",$connect_connect_id);
+	echo source_edit("family","fam_address_connect_source",$connect_connect_id);
 }
 
-// *** Edit source by address ***
+// *** Edit source by address (in address editor) ***
 if ($connect_sub_kind=='address_source'){
 	show_source_header(__('Source').' - '.__('Address'));
 	echo source_edit("address","address_source",$address_gedcomnr);
+	echo '<p>';
+}
+// *** Edit source by address (in person/ family editor) ***
+if ($connect_sub_kind=='address_source2'){
+	show_source_header(__('Source').' - '.__('Address'));
+	//echo source_edit("address","address_source",$address_gedcomnr);
+	echo source_edit("address","address_source",$connect_connect_id);
 	echo '<p>';
 }
 

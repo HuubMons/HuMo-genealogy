@@ -622,7 +622,8 @@ echo '<ul class="humo_menu_item">';
 						else{
 							$path_tmp=CMS_ROOTPATH.'maps.php';
 						}
-						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Google maps')."</a></li>\n";
+						//echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Google maps')."</a></li>\n";
+						echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('World map')."</a></li>\n";
 					}
 				}
 				if ($user["group_contact"]=='j' AND file_exists(CMS_ROOTPATH.'mailform.php')){

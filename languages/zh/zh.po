@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-26 19:06+0100\n"
-"PO-Revision-Date: 2022-03-26 19:06+0100\n"
+"POT-Creation-Date: 2022-04-17 21:09+0200\n"
+"PO-Revision-Date: 2022-04-17 21:09+0200\n"
 "Last-Translator: joenpeng <peng@myway.com>\n"
 "Language-Team: Chinese (Mandarin) (http://www.transifex.com/projects/p/humo-gen/language/cmn/)\n"
 "Language: cmn\n"
@@ -28,40 +28,41 @@ msgstr ""
 msgid "You are not authorised to see this page."
 msgstr "未經授權，不能瀏覽本頁 "
 
-#: address.php:18 admin/include/editor.php:3490 admin/include/editor.php:4371 admin/include/editor.php:4465
-#: admin/include/editor_sources.php:102 admin/include/editor_sources.php:156 admin/include/editor_sources.php:162
-#: admin/include/gedcom_export.php:280 admin/include/gedcom_export.php:282 admin/include/trees_cls.php:1777
-#: header.php:257 source.php:234
+#: address.php:18 admin/include/editor.php:3503 admin/include/editor.php:4390 admin/include/editor.php:4495
+#: admin/include/editor_sources.php:107 admin/include/editor_sources.php:166 admin/include/editor_sources.php:172
+#: admin/include/editor_sources.php:178 admin/include/gedcom_export.php:280 admin/include/gedcom_export.php:282
+#: admin/include/trees_cls.php:1777 header.php:257 source.php:234
 msgid "Address"
 msgstr "地址"
 
-#: address.php:22 addresses.php:78 addresses.php:117 admin/include/editor.php:3737 admin/include/editor.php:4373
-#: admin/include/editor.php:4448
+#: address.php:22 addresses.php:78 addresses.php:117 admin/include/editor.php:3750 admin/include/editor.php:4394
+#: admin/include/editor.php:4478
 msgid "Street"
 msgstr ""
 
-#: address.php:23 admin/include/editor.php:3492 admin/include/editor.php:3739 admin/include/editor.php:4374
-#: admin/include/editor.php:4451 list.php:1686 list.php:1694 source.php:233
+#: address.php:23 admin/include/editor.php:3505 admin/include/editor.php:3752 admin/include/editor.php:4395
+#: admin/include/editor.php:4481 list.php:1686 list.php:1694 source.php:233
 msgid "Zip code"
 msgstr "郵政編碼"
 
-#: address.php:24 admin/include/editor.php:3734 admin/include/editor.php:4372 admin/include/editor.php:4424
+#: address.php:24 admin/include/editor.php:3747 admin/include/editor.php:4393 admin/include/editor.php:4442
 #: list.php:1611 list.php:1643 list.php:1674 list.php:1682 list.php:1991 list.php:2003 source.php:111
 #: source.php:116 source.php:238 sources.php:170
 msgid "Place"
 msgstr "位于"
 
-#: address.php:25 admin/include/editor.php:3496 admin/include/editor.php:3741 admin/include/editor.php:4454
+#: address.php:25 admin/include/editor.php:3509 admin/include/editor.php:3754 admin/include/editor.php:4484
 msgid "Phone"
 msgstr "電話"
 
-#: address.php:35 admin/include/editor_sources.php:60 admin/include/editor_sources.php:66
-#: admin/include/editor_sources.php:72 admin/include/editor_sources.php:78 admin/include/editor_sources.php:84
-#: admin/include/editor_sources.php:96 admin/include/editor_sources.php:102 admin/include/editor_sources.php:108
-#: admin/include/editor_sources.php:114 admin/include/editor_sources.php:120 admin/include/editor_sources.php:126
-#: admin/include/editor_sources.php:132 admin/include/editor_sources.php:138 admin/include/editor_sources.php:144
-#: admin/include/editor_sources.php:150 admin/include/editor_sources.php:156 admin/include/editor_sources.php:162
-#: admin/include/editor_sources.php:229 admin/include/editor_sources.php:300 sources.php:144
+#: address.php:35 admin/include/editor.php:4467 admin/include/editor_sources.php:60
+#: admin/include/editor_sources.php:66 admin/include/editor_sources.php:72 admin/include/editor_sources.php:78
+#: admin/include/editor_sources.php:84 admin/include/editor_sources.php:96 admin/include/editor_sources.php:107
+#: admin/include/editor_sources.php:113 admin/include/editor_sources.php:119 admin/include/editor_sources.php:125
+#: admin/include/editor_sources.php:131 admin/include/editor_sources.php:137 admin/include/editor_sources.php:143
+#: admin/include/editor_sources.php:149 admin/include/editor_sources.php:155 admin/include/editor_sources.php:166
+#: admin/include/editor_sources.php:172 admin/include/editor_sources.php:178 admin/include/editor_sources.php:246
+#: admin/include/editor_sources.php:317 sources.php:144
 msgid "Source"
 msgstr "源碼"
 
@@ -69,7 +70,7 @@ msgstr "源碼"
 msgid "Address by person"
 msgstr "個人地址"
 
-#: addresses.php:68 admin/include/editor.php:3651 admin/include/editor.php:4281 admin/include/trees_cls.php:1924
+#: addresses.php:68 admin/include/editor.php:3664 admin/include/editor.php:4295 admin/include/trees_cls.php:1924
 #: menu.php:534
 msgid "Addresses"
 msgstr "地址"
@@ -81,19 +82,19 @@ msgstr ""
 #: addresses.php:80 admin/include/editor.php:472 admin/include/editor.php:617 admin/include/editor.php:1378
 #: admin/include/editor.php:1436 admin/include/editor_media_select.php:81
 #: admin/include/editor_person_select.php:88 admin/include/editor_relation_select.php:29
-#: admin/include/editor_sources.php:364 admin/include/gedcom_export.php:132 admin/include/language_editor.php:274
-#: admin/include/make_db_maps.php:947 admin/include/settings_admin.php:822 admin/include/settings_admin.php:960
+#: admin/include/editor_sources.php:381 admin/include/gedcom_export.php:132 admin/include/language_editor.php:274
+#: admin/include/make_db_maps.php:1110 admin/include/settings_admin.php:823 admin/include/settings_admin.php:973
 #: admin/include/trees_cls.php:870 admin/include/trees_cls.php:908 admin/include/trees_cls.php:984
-#: include/mainindex_cls.php:41 include/mainindex_cls.php:129 include/mainindex_cls.php:595 latest_changes.php:79
-#: list.php:1468 list.php:1782 list_places_families.php:408 menu.php:90 photoalbum.php:353 relations.php:3224
+#: include/mainindex_cls.php:41 include/mainindex_cls.php:129 include/mainindex_cls.php:602 latest_changes.php:79
+#: list.php:1468 list.php:1782 list_places_families.php:408 menu.php:90 photoalbum.php:356 relations.php:3224
 #: relations.php:3228 relations.php:3316 relations.php:3320 sources.php:138
 msgid "Search"
 msgstr "搜索"
 
-#: addresses.php:119 admin/include/editor.php:4457 admin/include/editor_sources.php:303
-#: admin/include/editor_sources.php:354 admin/include/groups.php:537 admin/include/groups.php:542
-#: admin/include/groups.php:547 admin/include/settings_admin.php:840 admin/include/settings_admin.php:904
-#: admin/include/settings_admin.php:966 family.php:2114 include/process_text.php:90 include/process_text.php:92
+#: addresses.php:119 admin/include/editor.php:4487 admin/include/editor_sources.php:320
+#: admin/include/editor_sources.php:371 admin/include/groups.php:537 admin/include/groups.php:542
+#: admin/include/groups.php:547 admin/include/settings_admin.php:841 admin/include/settings_admin.php:908
+#: admin/include/settings_admin.php:979 family.php:2171 include/process_text.php:90 include/process_text.php:92
 #: list.php:1647
 msgid "Text"
 msgstr "本文 "
@@ -258,7 +259,7 @@ msgstr "處理過的數據文句"
 msgid "Database has been restored successfully!"
 msgstr "數據庫已成功恢復！"
 
-#: admin/include/cal_date.php:8 admin/include/cal_date.php:16 admin/include/editor.php:1711 admin/index.php:1015
+#: admin/include/cal_date.php:8 admin/include/cal_date.php:16 admin/include/editor.php:1712 admin/index.php:1024
 msgid "Calculated birth date"
 msgstr "計算出的出生日期"
 
@@ -277,8 +278,8 @@ msgstr ""
 msgid "Choose family tree"
 msgstr "選擇家庭"
 
-#: admin/include/cal_date.php:31 admin/include/editor.php:1555 admin/include/editor.php:3945
-#: admin/include/editor_sources.php:399 admin/include/statistics.php:588 admin/include/statistics.php:667
+#: admin/include/cal_date.php:31 admin/include/editor.php:1555 admin/include/editor.php:3958
+#: admin/include/editor_sources.php:416 admin/include/statistics.php:588 admin/include/statistics.php:667
 #: admin/include/user_notes.php:115
 msgid "Select"
 msgstr "選擇"
@@ -291,8 +292,8 @@ msgstr "沒有日期"
 msgid "Calculation of birth dates is completed. Sometimes more dates will be found if calculation is restarted!"
 msgstr ""
 
-#: admin/include/cms_pages.php:12 admin/include/settings_admin.php:843 admin/include/settings_admin.php:967
-#: admin/index.php:962
+#: admin/include/cms_pages.php:12 admin/include/settings_admin.php:847 admin/include/settings_admin.php:981
+#: admin/index.php:971
 msgid "CMS Own pages"
 msgstr "CMS 擁有的網頁"
 
@@ -327,17 +328,17 @@ msgstr "此網頁被選定為主頁！"
 msgid "Are you sure you want to remove this page?"
 msgstr "你確定要刪除這個網頁？"
 
-#: admin/include/cms_pages.php:107 admin/include/cms_pages.php:176 admin/include/editor.php:3107
-#: admin/include/editor.php:3390 admin/include/editor.php:3595 admin/include/editor_inc.php:50
+#: admin/include/cms_pages.php:107 admin/include/cms_pages.php:176 admin/include/editor.php:3120
+#: admin/include/editor.php:3403 admin/include/editor.php:3608 admin/include/editor_inc.php:50
 #: admin/include/editor_inc.php:685 admin/include/editor_inc.php:917 admin/include/editor_inc.php:987
-#: admin/include/editor_inc.php:1766 admin/include/editor_inc.php:2210 admin/include/editor_user_settings.php:74
+#: admin/include/editor_inc.php:1766 admin/include/editor_inc.php:2220 admin/include/editor_user_settings.php:74
 #: admin/include/gedcom.php:185 admin/include/gedcom_export.php:299 admin/include/gedcom_export.php:307
 #: admin/include/gedcom_export.php:318 admin/include/gedcom_export.php:341 admin/include/groups.php:170
 #: admin/include/groups.php:557 admin/include/install.php:156 admin/include/settings_admin.php:276
 #: admin/include/settings_admin.php:286 admin/include/settings_admin.php:296 admin/include/settings_admin.php:305
 #: admin/include/settings_admin.php:313 admin/include/settings_admin.php:327 admin/include/settings_admin.php:336
-#: admin/include/settings_admin.php:344 admin/include/settings_admin.php:366 admin/include/settings_admin.php:654
-#: admin/include/settings_admin.php:1140 admin/include/thumbs.php:678 admin/include/trees.php:117
+#: admin/include/settings_admin.php:344 admin/include/settings_admin.php:366 admin/include/settings_admin.php:655
+#: admin/include/settings_admin.php:1154 admin/include/thumbs.php:678 admin/include/trees.php:117
 #: admin/include/trees_cls.php:1269 admin/include/trees_cls.php:1274 admin/include/trees_cls.php:1285
 #: admin/include/trees_cls.php:1290 admin/include/trees_cls.php:1301 admin/include/trees_cls.php:1306
 #: admin/include/trees_cls.php:1319 admin/include/trees_cls.php:1324 admin/include/user_notes.php:62
@@ -345,17 +346,17 @@ msgstr "你確定要刪除這個網頁？"
 msgid "Yes"
 msgstr "是"
 
-#: admin/include/cms_pages.php:108 admin/include/cms_pages.php:177 admin/include/editor.php:3108
-#: admin/include/editor.php:3391 admin/include/editor.php:3596 admin/include/editor_inc.php:51
+#: admin/include/cms_pages.php:108 admin/include/cms_pages.php:177 admin/include/editor.php:3121
+#: admin/include/editor.php:3404 admin/include/editor.php:3609 admin/include/editor_inc.php:51
 #: admin/include/editor_inc.php:686 admin/include/editor_inc.php:918 admin/include/editor_inc.php:988
-#: admin/include/editor_inc.php:1767 admin/include/editor_inc.php:2211 admin/include/editor_user_settings.php:76
+#: admin/include/editor_inc.php:1767 admin/include/editor_inc.php:2221 admin/include/editor_user_settings.php:76
 #: admin/include/gedcom.php:186 admin/include/gedcom_export.php:300 admin/include/gedcom_export.php:308
 #: admin/include/gedcom_export.php:319 admin/include/gedcom_export.php:340 admin/include/groups.php:171
 #: admin/include/groups.php:559 admin/include/install.php:157 admin/include/settings_admin.php:277
 #: admin/include/settings_admin.php:287 admin/include/settings_admin.php:297 admin/include/settings_admin.php:306
 #: admin/include/settings_admin.php:314 admin/include/settings_admin.php:328 admin/include/settings_admin.php:337
-#: admin/include/settings_admin.php:345 admin/include/settings_admin.php:367 admin/include/settings_admin.php:655
-#: admin/include/settings_admin.php:1141 admin/include/thumbs.php:679 admin/include/trees.php:118
+#: admin/include/settings_admin.php:345 admin/include/settings_admin.php:367 admin/include/settings_admin.php:656
+#: admin/include/settings_admin.php:1155 admin/include/thumbs.php:679 admin/include/trees.php:118
 #: admin/include/trees_cls.php:1270 admin/include/trees_cls.php:1273 admin/include/trees_cls.php:1286
 #: admin/include/trees_cls.php:1289 admin/include/trees_cls.php:1302 admin/include/trees_cls.php:1305
 #: admin/include/trees_cls.php:1320 admin/include/trees_cls.php:1323 admin/include/user_notes.php:63
@@ -416,12 +417,12 @@ msgid "Published"
 msgstr ""
 
 #: admin/include/cms_pages.php:368 admin/include/cms_pages.php:371 admin/include/cms_pages.php:464
-#: admin/include/editor.php:1606 admin/include/editor.php:2271 admin/include/editor.php:2498
-#: admin/include/editor.php:2914 admin/include/editor.php:3305 admin/include/editor.php:3511
-#: admin/include/editor.php:3767 admin/include/editor.php:3964 admin/include/editor_sources.php:293
-#: admin/include/language_editor.php:285 admin/include/make_db_maps.php:295 admin/include/make_db_maps.php:336
-#: admin/include/make_db_maps.php:356 admin/include/make_db_maps.php:370 admin/include/make_db_maps.php:411
-#: admin/include/make_db_maps.php:431 admin/include/prefix_editor.php:40 admin/include/trees_cls.php:1333
+#: admin/include/editor.php:1606 admin/include/editor.php:2278 admin/include/editor.php:2505
+#: admin/include/editor.php:2927 admin/include/editor.php:3318 admin/include/editor.php:3524
+#: admin/include/editor.php:3780 admin/include/editor.php:3977 admin/include/editor_sources.php:310
+#: admin/include/language_editor.php:285 admin/include/make_db_maps.php:294 admin/include/make_db_maps.php:389
+#: admin/include/make_db_maps.php:398 admin/include/make_db_maps.php:583 admin/include/prefix_editor.php:40
+#: admin/include/trees_cls.php:1333
 msgid "Save"
 msgstr "保存"
 
@@ -445,9 +446,9 @@ msgstr "選單   項目／類別"
 msgid "Remove menu"
 msgstr "移除選單"
 
-#: admin/include/cms_pages.php:475 admin/include/editor.php:1609 admin/include/editor.php:2274
-#: admin/include/editor.php:3302 admin/include/editor.php:3508 admin/include/editor.php:3764
-#: admin/include/editor.php:4289 admin/include/editor.php:4502 admin/include/editor_event_cls.php:350
+#: admin/include/cms_pages.php:475 admin/include/editor.php:1609 admin/include/editor.php:2281
+#: admin/include/editor.php:3315 admin/include/editor.php:3521 admin/include/editor.php:3777
+#: admin/include/editor.php:4303 admin/include/editor.php:4532 admin/include/editor_event_cls.php:350
 #: admin/include/editor_event_cls.php:368 admin/include/editor_event_cls.php:386
 #: admin/include/editor_event_cls.php:403 admin/include/editor_event_cls.php:419
 #: admin/include/editor_event_cls.php:435 admin/include/editor_event_cls.php:448
@@ -455,8 +456,8 @@ msgstr "移除選單"
 #: admin/include/editor_event_cls.php:487 admin/include/editor_event_cls.php:525
 #: admin/include/editor_event_cls.php:554 admin/include/editor_event_cls.php:557
 #: admin/include/editor_event_cls.php:751 admin/include/editor_event_cls.php:764
-#: admin/include/editor_sources.php:506 admin/include/log.php:184 admin/include/settings_admin.php:974
-#: admin/include/settings_admin.php:1107 admin/include/users.php:222
+#: admin/include/editor_sources.php:523 admin/include/log.php:184 admin/include/settings_admin.php:988
+#: admin/include/settings_admin.php:1121 admin/include/users.php:222
 msgid "Add"
 msgstr "增加"
 
@@ -464,14 +465,12 @@ msgstr "增加"
 #: admin/include/extensions.php:96 admin/include/groups.php:255 admin/include/groups.php:276
 #: admin/include/groups.php:345 admin/include/groups.php:431 admin/include/groups.php:460
 #: admin/include/groups.php:498 admin/include/groups.php:585 admin/include/groups.php:628
-#: admin/include/groups.php:704 admin/include/log.php:172 admin/include/make_db_maps.php:305
-#: admin/include/make_db_maps.php:322 admin/include/make_db_maps.php:346 admin/include/make_db_maps.php:380
-#: admin/include/make_db_maps.php:397 admin/include/make_db_maps.php:421 admin/include/make_db_maps.php:1011
+#: admin/include/groups.php:704 admin/include/log.php:172 admin/include/make_db_maps.php:1175
 #: admin/include/settings_admin.php:221 admin/include/settings_admin.php:292 admin/include/settings_admin.php:317
-#: admin/include/settings_admin.php:381 admin/include/settings_admin.php:459 admin/include/settings_admin.php:607
-#: admin/include/settings_admin.php:624 admin/include/settings_admin.php:636 admin/include/settings_admin.php:650
-#: admin/include/settings_admin.php:663 admin/include/settings_admin.php:769 admin/include/settings_admin.php:1070
-#: admin/include/settings_admin.php:1133 admin/include/settings_admin.php:1206 admin/include/thumbs.php:182
+#: admin/include/settings_admin.php:381 admin/include/settings_admin.php:459 admin/include/settings_admin.php:608
+#: admin/include/settings_admin.php:625 admin/include/settings_admin.php:637 admin/include/settings_admin.php:651
+#: admin/include/settings_admin.php:664 admin/include/settings_admin.php:770 admin/include/settings_admin.php:1084
+#: admin/include/settings_admin.php:1147 admin/include/settings_admin.php:1220 admin/include/thumbs.php:182
 #: admin/include/trees_cls.php:273 admin/include/trees_cls.php:358 admin/include/trees_cls.php:361
 #: admin/include/users.php:116 user_settings.php:129
 msgid "Change"
@@ -522,12 +521,12 @@ msgid "Set per language"
 msgstr "每種語言的設定"
 
 #: admin/include/editor.php:251 admin/include/editor_user_settings.php:61 admin/include/groups.php:628
-#: admin/include/make_db_maps.php:584 admin/include/trees.php:316 help.php:48 help.php:51 help.php:54 help.php:57
+#: admin/include/make_db_maps.php:737 admin/include/trees.php:316 help.php:48 help.php:51 help.php:54 help.php:57
 #: list.php:1963 menu.php:31 menu.php:434 statistics.php:53
 msgid "Family tree"
 msgstr "家譜"
 
-#: admin/include/editor.php:255 maps.php:39 menu.php:34
+#: admin/include/editor.php:255 maps.php:45 menu.php:34
 msgid "Select a family tree:"
 msgstr "選擇要用的家譜表"
 
@@ -538,20 +537,20 @@ msgid "Favourites list"
 msgstr "我的愛好列表"
 
 #: admin/include/editor.php:439 admin/include/tree_check.php:76 admin/include/tree_check.php:91 header.php:263
-#: help.php:78 menu.php:652
+#: help.php:78 menu.php:653
 msgid "Latest changes"
 msgstr "最新的改變"
 
-#: admin/include/editor.php:450 admin/include/editor.php:2254 admin/include/editor.php:2901
+#: admin/include/editor.php:450 admin/include/editor.php:2261 admin/include/editor.php:2914
 msgid "Added by"
 msgstr ""
 
-#: admin/include/editor.php:451 admin/include/editor.php:2259 admin/include/editor.php:2906
+#: admin/include/editor.php:451 admin/include/editor.php:2266 admin/include/editor.php:2919
 msgid "Changed by"
 msgstr ""
 
 #: admin/include/editor.php:470 admin/include/editor.php:701 admin/include/gedcom_export.php:128
-#: admin/include/tree_check.php:802 admin/include/trees_cls.php:875 family.php:2105 relations.php:3116
+#: admin/include/tree_check.php:802 admin/include/trees_cls.php:875 family.php:2162 relations.php:3116
 msgid "Person"
 msgstr "個人"
 
@@ -559,8 +558,8 @@ msgstr "個人"
 #: admin/include/editor_event_cls.php:342 admin/include/editor_media_select.php:80
 #: admin/include/editor_person_select.php:83 admin/include/editor_relation_select.php:24
 #: admin/include/gedcom_export.php:129 admin/include/gedcom_export.php:274 admin/include/gedcom_export.php:278
-#: birthday_list.php:137 family.php:2041 family.php:2107 include/mainindex_cls.php:578
-#: include/mainindex_cls.php:916 list.php:1960 list_names.php:315 list_names.php:317 mailform.php:28
+#: birthday_list.php:137 family.php:2098 family.php:2164 include/mainindex_cls.php:585
+#: include/mainindex_cls.php:923 list.php:1960 list_names.php:315 list_names.php:317 mailform.php:28
 #: mailform.php:110 menu.php:89 register.php:62 register.php:124 relations.php:3109 user_settings.php:53
 msgid "Name"
 msgstr "名字"
@@ -579,8 +578,8 @@ msgstr "結果"
 msgid "or ID:"
 msgstr "或 ID："
 
-#: admin/include/editor.php:615 admin/include/editor.php:1550 admin/include/editor.php:2391
-#: admin/include/editor.php:3042 admin/include/editor.php:4076
+#: admin/include/editor.php:615 admin/include/editor.php:1550 admin/include/editor.php:2398
+#: admin/include/editor.php:3055 admin/include/editor.php:4090
 #, fuzzy
 #| msgid "gedcom no. (\"I43\")"
 msgid "GEDCOM number (ID)"
@@ -590,11 +589,11 @@ msgstr "gedcom 數目. (\"I43\")"
 msgid "Add person"
 msgstr "加上個人"
 
-#: admin/include/editor.php:640 admin/include/editor.php:1757
+#: admin/include/editor.php:640 admin/include/editor.php:1758
 msgid "Examples of date entries:"
 msgstr ""
 
-#: admin/include/editor.php:641 admin/include/editor.php:1758
+#: admin/include/editor.php:641 admin/include/editor.php:1759
 #, fuzzy
 #| msgid "13 oct 1813, 13-10-1813, 13/10/1813, between 1986 and 1987"
 msgid ""
@@ -616,7 +615,7 @@ msgstr "＝點擊以便打開 選擇好的彈出屏幕"
 msgid "= click to open extended editor items."
 msgstr "點擊以便打開多出的編輯項目"
 
-#: admin/include/editor.php:717 admin/include/editor.php:2334 admin/include/statistics.php:38
+#: admin/include/editor.php:717 admin/include/editor.php:2341 admin/include/statistics.php:38
 #: admin/include/statistics.php:41 admin/include/statistics.php:771 admin/include/statistics.php:774
 #: list_places_families.php:561
 msgid "Family"
@@ -626,12 +625,12 @@ msgstr " 家庭"
 msgid "Browse"
 msgstr ""
 
-#: admin/include/editor.php:857 admin/include/editor.php:2506 admin/include/editor.php:2630
+#: admin/include/editor.php:857 admin/include/editor.php:2513 admin/include/editor.php:2639
 #: include/marriage_cls.php:614
 msgid "marriage/ relation"
 msgstr "婚姻 ／關係"
 
-#: admin/include/editor.php:863 admin/include/editor.php:2678 include/marriage_cls.php:280
+#: admin/include/editor.php:863 admin/include/editor.php:2687 include/marriage_cls.php:280
 #: include/marriage_cls.php:281 include/marriage_cls.php:282 include/marriage_cls.php:289
 #: include/marriage_cls.php:290
 msgid "Married"
@@ -646,7 +645,7 @@ msgstr "已婚"
 msgid " to: "
 msgstr "到："
 
-#: admin/include/editor.php:897 admin/include/trees_cls.php:1658 family.php:1295 family.php:1314
+#: admin/include/editor.php:897 admin/include/trees_cls.php:1658 family.php:1296 family.php:1315
 msgid "Children"
 msgstr "孩子們"
 
@@ -655,7 +654,7 @@ msgid "Parents"
 msgstr "家長"
 
 # Nomen Nescio: unknown name.
-#: admin/include/editor.php:920 admin/include/editor.php:926 admin/include/editor.php:4239
+#: admin/include/editor.php:920 admin/include/editor.php:926 admin/include/editor.php:4253
 #: admin/include/editor_cls.php:254 admin/include/editor_event_cls.php:1100
 #: admin/include/editor_event_cls.php:1109 admin/include/statistics.php:780 admin/include/statistics.php:792
 #: include/person_cls.php:709 include/person_cls.php:711 include/person_cls.php:712 include/person_cls.php:713
@@ -668,8 +667,8 @@ msgstr "家長"
 msgid "N.N."
 msgstr "無名"
 
-#: admin/include/editor.php:922 admin/include/editor.php:1463 admin/include/editor.php:2352
-#: admin/include/editor.php:2496 admin/include/editor.php:2530 admin/include/editor_event_cls.php:1102
+#: admin/include/editor.php:922 admin/include/editor.php:1463 admin/include/editor.php:2359
+#: admin/include/editor.php:2503 admin/include/editor.php:2537 admin/include/editor_event_cls.php:1102
 #: admin/include/editor_relation_select.php:107 admin/include/tree_check.php:1481 include/language_date.php:88
 #: include/language_date.php:93 include/language_date.php:98 include/language_date.php:116
 #: include/person_cls.php:1245 include/person_cls.php:1246 include/person_cls.php:1310 include/person_cls.php:1311
@@ -692,7 +691,7 @@ msgstr "沒有家長"
 msgid "Editing in %s? <b>Always backup your data!</b>"
 msgstr ""
 
-#: admin/include/editor.php:980 admin/include/editor.php:3318 admin/include/editor.php:3778
+#: admin/include/editor.php:980 admin/include/editor.php:3331 admin/include/editor.php:3791
 msgid "Preview"
 msgstr ""
 
@@ -737,51 +736,51 @@ msgid "Mother"
 msgstr "母親"
 
 #: admin/include/editor.php:1479 admin/include/editor.php:1480 admin/include/editor.php:1481
-#: admin/include/editor.php:1618 admin/include/editor.php:1623 admin/include/editor.php:4143 list.php:1973
+#: admin/include/editor.php:1618 admin/include/editor.php:1623 admin/include/editor.php:4157 list.php:1973
 msgid "firstname"
 msgstr "名字"
 
 #: admin/include/editor.php:1485 admin/include/editor.php:1486 admin/include/editor.php:1498
-#: admin/include/editor.php:1618 admin/include/editor.php:1626 admin/include/editor.php:4146 list.php:1539
+#: admin/include/editor.php:1618 admin/include/editor.php:1626 admin/include/editor.php:4160 list.php:1539
 msgid "prefix"
 msgstr "字首"
 
-#: admin/include/editor.php:1495 admin/include/editor.php:1626 admin/include/editor.php:4155
+#: admin/include/editor.php:1495 admin/include/editor.php:1626 admin/include/editor.php:4169
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr "舉個例子：d'   or：van_ (  用_當作空白）"
 
 #: admin/include/editor.php:1513 admin/include/editor.php:1514 admin/include/editor.php:1515
-#: admin/include/editor.php:1618 admin/include/editor.php:1629 admin/include/editor.php:4160 list.php:1979
+#: admin/include/editor.php:1618 admin/include/editor.php:1629 admin/include/editor.php:4174 list.php:1979
 msgid "lastname"
 msgstr "姓氏"
 
-#: admin/include/editor.php:1519 admin/include/editor.php:1699 admin/include/editor.php:4163
+#: admin/include/editor.php:1519 admin/include/editor.php:1700 admin/include/editor.php:4177
 #: admin/include/groups.php:498
 msgid "Privacy filter"
 msgstr ""
 
-#: admin/include/editor.php:1520 admin/include/editor.php:1523 admin/include/editor.php:1703
-#: admin/include/editor.php:4164 admin/include/trees_cls.php:1632
+#: admin/include/editor.php:1520 admin/include/editor.php:1523 admin/include/editor.php:1704
+#: admin/include/editor.php:4178 admin/include/trees_cls.php:1632
 msgid "alive"
 msgstr "活生生的"
 
-#: admin/include/editor.php:1521 admin/include/editor.php:1524 admin/include/editor.php:1706
-#: admin/include/editor.php:4165
+#: admin/include/editor.php:1521 admin/include/editor.php:1524 admin/include/editor.php:1707
+#: admin/include/editor.php:4179
 msgid "deceased"
 msgstr " 已過世了"
 
-#: admin/include/editor.php:1527 admin/include/editor.php:1724 admin/include/editor.php:4168
+#: admin/include/editor.php:1527 admin/include/editor.php:1725 admin/include/editor.php:4182
 #: admin/include/editor_sources.php:60
 msgid "Sex"
 msgstr "性別"
 
-#: admin/include/editor.php:1530 admin/include/editor.php:1538 admin/include/editor.php:1726
-#: admin/include/editor.php:4170 report_ancestor.php:1503
+#: admin/include/editor.php:1530 admin/include/editor.php:1538 admin/include/editor.php:1727
+#: admin/include/editor.php:4184 report_ancestor.php:1503
 msgid "male"
 msgstr "男性"
 
-#: admin/include/editor.php:1532 admin/include/editor.php:1540 admin/include/editor.php:1728
-#: admin/include/editor.php:4172 report_ancestor.php:1500
+#: admin/include/editor.php:1532 admin/include/editor.php:1540 admin/include/editor.php:1729
+#: admin/include/editor.php:4186 report_ancestor.php:1500
 msgid "female"
 msgstr "女性"
 
@@ -790,16 +789,16 @@ msgid "Or select an existing family as parents:"
 msgstr ""
 
 # Buried
-#: admin/include/editor.php:1569 admin/include/editor.php:1615 admin/include/editor.php:1742
-#: admin/include/editor.php:1814 admin/include/editor.php:1860 admin/include/editor.php:1904
-#: admin/include/editor.php:1948 admin/include/editor.php:2047 admin/include/editor.php:2202
-#: admin/include/editor.php:2228 admin/include/editor.php:2483 admin/include/editor.php:2565
-#: admin/include/editor.php:2602 admin/include/editor.php:2628 admin/include/editor.php:2732
-#: admin/include/editor.php:2759 admin/include/editor.php:2794 admin/include/editor.php:2884 family.php:2101
+#: admin/include/editor.php:1569 admin/include/editor.php:1615 admin/include/editor.php:1743
+#: admin/include/editor.php:1816 admin/include/editor.php:1863 admin/include/editor.php:1908
+#: admin/include/editor.php:1953 admin/include/editor.php:2053 admin/include/editor.php:2209
+#: admin/include/editor.php:2235 admin/include/editor.php:2490 admin/include/editor.php:2572
+#: admin/include/editor.php:2610 admin/include/editor.php:2637 admin/include/editor.php:2742
+#: admin/include/editor.php:2770 admin/include/editor.php:2806 admin/include/editor.php:2897 family.php:2158
 msgid "[+]"
 msgstr "註"
 
-#: admin/include/editor.php:1569 admin/include/editor.php:2483 admin/include/gedcom_export.php:209 list.php:1663
+#: admin/include/editor.php:1569 admin/include/editor.php:2490 admin/include/gedcom_export.php:209 list.php:1663
 #: list.php:1759 list_names.php:227 statistics.php:748 statistics.php:931
 msgid "All"
 msgstr "全部"
@@ -821,204 +820,204 @@ msgstr "父系的 "
 msgid "For example: Joseph ben Hirsch Zvi"
 msgstr ""
 
-#: admin/include/editor.php:1669 admin/include/editor.php:1801 admin/include/editor.php:1850
-#: admin/include/editor.php:1896 admin/include/editor.php:1937 admin/include/editor.php:2039
-#: admin/include/editor.php:2100 admin/include/editor.php:2596 admin/include/editor.php:2623
-#: admin/include/editor.php:2724 admin/include/editor.php:2754 admin/include/editor.php:2781
-#: admin/include/editor.php:2834 admin/include/editor.php:3295 admin/include/editor.php:3500
-#: admin/include/editor.php:3760 admin/include/editor.php:4375 admin/include/editor_event_cls.php:1286
+#: admin/include/editor.php:1670 admin/include/editor.php:1802 admin/include/editor.php:1852
+#: admin/include/editor.php:1899 admin/include/editor.php:1941 admin/include/editor.php:2045
+#: admin/include/editor.php:2106 admin/include/editor.php:2604 admin/include/editor.php:2632
+#: admin/include/editor.php:2734 admin/include/editor.php:2765 admin/include/editor.php:2793
+#: admin/include/editor.php:2847 admin/include/editor.php:3308 admin/include/editor.php:3513
+#: admin/include/editor.php:3773 admin/include/editor.php:4396 admin/include/editor_event_cls.php:1286
 #: admin/include/editor_event_cls.php:1349 admin/include/editor_sources.php:90
-#: admin/include/editor_sources.php:144 admin/include/gedcom.php:1544
+#: admin/include/editor_sources.php:149 admin/include/gedcom.php:1544
 msgid "text"
 msgstr "詞句"
 
-#: admin/include/editor.php:1743 admin/include/editor.php:4186 admin/include/editor_sources.php:66
-#: birthday_list.php:136 family.php:1947 googlemaps/namesearch.php:191 include/mainindex_cls.php:857
-#: include/mainindex_cls.php:860 include/person_cls.php:1808 include/person_cls.php:1810
-#: include/person_cls.php:1815 include/person_cls.php:1818 list.php:1596 list.php:1603 list.php:1961 maps.php:627
-#: maps.php:736 report_ancestor.php:1181 report_ancestor.php:1496 report_descendant.php:813
+#: admin/include/editor.php:1744 admin/include/editor.php:4200 admin/include/editor_sources.php:66
+#: birthday_list.php:136 family.php:2004 googlemaps/namesearch.php:198 include/mainindex_cls.php:864
+#: include/mainindex_cls.php:867 include/person_cls.php:1808 include/person_cls.php:1810
+#: include/person_cls.php:1815 include/person_cls.php:1818 list.php:1596 list.php:1603 list.php:1961 maps.php:643
+#: maps.php:752 report_ancestor.php:1181 report_ancestor.php:1496 report_descendant.php:813
 msgid "born"
 msgstr "生下"
 
-#: admin/include/editor.php:1745 admin/include/editor.php:1832 admin/include/editor.php:1877
-#: admin/include/editor.php:1906 admin/include/editor.php:1950 admin/include/editor.php:2049
-#: admin/include/editor.php:2568 admin/include/editor.php:2604 admin/include/editor.php:2631
-#: admin/include/editor.php:2734 admin/include/editor.php:2761 admin/include/editor.php:2796
-#: admin/include/editor.php:3270 admin/include/editor.php:3494 admin/include/editor.php:4376
+#: admin/include/editor.php:1746 admin/include/editor.php:1834 admin/include/editor.php:1880
+#: admin/include/editor.php:1910 admin/include/editor.php:1955 admin/include/editor.php:2055
+#: admin/include/editor.php:2575 admin/include/editor.php:2612 admin/include/editor.php:2640
+#: admin/include/editor.php:2744 admin/include/editor.php:2772 admin/include/editor.php:2808
+#: admin/include/editor.php:3283 admin/include/editor.php:3507 admin/include/editor.php:4398
 #: admin/include/editor_cls.php:50
 msgid "date"
 msgstr "日期"
 
-#: admin/include/editor.php:1763 admin/include/editor.php:1833 admin/include/editor.php:1878
-#: admin/include/editor.php:1906 admin/include/editor.php:1951 admin/include/editor.php:2050
-#: admin/include/editor.php:2568 admin/include/editor.php:2604 admin/include/editor.php:2631
-#: admin/include/editor.php:2734 admin/include/editor.php:2761 admin/include/editor.php:2796
-#: admin/include/editor.php:3270 admin/include/editor.php:3494 admin/include/editor.php:4188
-#: admin/include/editor.php:4194 admin/include/editor.php:4200 admin/include/editor.php:4206
+#: admin/include/editor.php:1764 admin/include/editor.php:1835 admin/include/editor.php:1881
+#: admin/include/editor.php:1910 admin/include/editor.php:1956 admin/include/editor.php:2056
+#: admin/include/editor.php:2575 admin/include/editor.php:2612 admin/include/editor.php:2640
+#: admin/include/editor.php:2744 admin/include/editor.php:2772 admin/include/editor.php:2808
+#: admin/include/editor.php:3283 admin/include/editor.php:3507 admin/include/editor.php:4202
+#: admin/include/editor.php:4208 admin/include/editor.php:4214 admin/include/editor.php:4220
 #: admin/include/editor_event_cls.php:1279 admin/include/editor_event_cls.php:1346
-#: admin/include/editor_sources.php:350 admin/include/editor_sources.php:471
+#: admin/include/editor_sources.php:367 admin/include/editor_sources.php:488
 msgid "place"
 msgstr "地方"
 
-#: admin/include/editor.php:1789 admin/include/trees_cls.php:1622
+#: admin/include/editor.php:1790 admin/include/trees_cls.php:1622
 msgid "birth time"
 msgstr "出生時間"
 
-#: admin/include/editor.php:1792 include/person_cls.php:348
+#: admin/include/editor.php:1793 include/person_cls.php:348
 msgid "stillborn child"
 msgstr "胎死腹中的孩子"
 
-#: admin/include/editor.php:1815 include/language_event.php:16
+#: admin/include/editor.php:1817 include/language_event.php:16
 msgid "Brit Mila"
 msgstr "猶太宗教包皮環切儀式"
 
-#: admin/include/editor.php:1834 admin/include/editor.php:1879
+#: admin/include/editor.php:1836 admin/include/editor.php:1882
 msgid "To display this, the option \"Show events\" has to be checked in \"Users -> Groups\""
 msgstr ""
 
-#: admin/include/editor.php:1861 include/language_event.php:14
+#: admin/include/editor.php:1864 include/language_event.php:14
 msgid "Bat Mitzvah"
 msgstr "女成年禮"
 
-#: admin/include/editor.php:1862 include/language_event.php:13
+#: admin/include/editor.php:1865 include/language_event.php:13
 msgid "Bar Mitzvah"
 msgstr "男成年禮"
 
-#: admin/include/editor.php:1905 admin/include/editor.php:4192 admin/include/editor_sources.php:72 family.php:1950
-#: googlemaps/namesearch.php:194 include/mainindex_cls.php:868 include/mainindex_cls.php:871
+#: admin/include/editor.php:1909 admin/include/editor.php:4206 admin/include/editor_sources.php:72 family.php:2007
+#: googlemaps/namesearch.php:201 include/mainindex_cls.php:875 include/mainindex_cls.php:878
 #: include/person_cls.php:1895 include/person_cls.php:1897 include/person_cls.php:1902 include/person_cls.php:1905
-#: list.php:1596 list.php:1603 list.php:1961 maps.php:630 maps.php:739 timelines.php:40
+#: list.php:1596 list.php:1603 list.php:1961 maps.php:646 maps.php:755 timelines.php:40
 msgid "baptised"
 msgstr "受洗後"
 
-#: admin/include/editor.php:1926 admin/include/trees_cls.php:1633 include/person_cls.php:1849
+#: admin/include/editor.php:1930 admin/include/trees_cls.php:1633 include/person_cls.php:1849
 #: include/person_cls.php:1851
 msgid "religion"
 msgstr "宗教"
 
-#: admin/include/editor.php:1949 admin/include/editor.php:4198 admin/include/editor_sources.php:78
-#: birthday_list.php:138 googlemaps/namesearch.php:200 include/mainindex_cls.php:879 include/mainindex_cls.php:882
+#: admin/include/editor.php:1954 admin/include/editor.php:4212 admin/include/editor_sources.php:78
+#: birthday_list.php:138 googlemaps/namesearch.php:207 include/mainindex_cls.php:886 include/mainindex_cls.php:889
 #: include/person_cls.php:2036 include/person_cls.php:2038 include/person_cls.php:2042 include/person_cls.php:2043
-#: list.php:1628 list.php:1635 list.php:1962 maps.php:633 maps.php:742 report_ancestor.php:1181
+#: list.php:1628 list.php:1635 list.php:1962 maps.php:649 maps.php:758 report_ancestor.php:1181
 #: report_ancestor.php:1496
 msgid "died"
 msgstr "死亡"
 
-#: admin/include/editor.php:1955 admin/include/editor.php:2649 admin/include/editor.php:2653
+#: admin/include/editor.php:1960 admin/include/editor.php:2658 admin/include/editor.php:2662
 msgid "Age"
 msgstr "年齡"
 
-#: admin/include/editor.php:1964
+#: admin/include/editor.php:1969
 msgid "If death year and age are used, then birth year is calculated automatically (when empty)."
 msgstr "如果死亡年代和年齡被引用,那出生年代就會自動計算 (當空白時)."
 
-#: admin/include/editor.php:1983 admin/include/trees_cls.php:1627
+#: admin/include/editor.php:1988 admin/include/trees_cls.php:1627
 msgid "death time"
 msgstr "死亡時間"
 
-#: admin/include/editor.php:1985
+#: admin/include/editor.php:1990
 msgid "cause"
 msgstr "原因"
 
-#: admin/include/editor.php:1991 include/person_cls.php:1973 include/person_cls.php:2001
+#: admin/include/editor.php:1996 include/person_cls.php:1973 include/person_cls.php:2001
 msgid "murdered"
 msgstr "被謀殺"
 
-#: admin/include/editor.php:1994 include/person_cls.php:1974
+#: admin/include/editor.php:1999 include/person_cls.php:1974
 msgid "drowned"
 msgstr "溺水"
 
-#: admin/include/editor.php:1997 include/person_cls.php:1975
+#: admin/include/editor.php:2002 include/person_cls.php:1975
 msgid "perished"
 msgstr "喪生"
 
-#: admin/include/editor.php:2000 include/person_cls.php:1976
+#: admin/include/editor.php:2005 include/person_cls.php:1976
 msgid "killed in action"
 msgstr "陣亡 "
 
-#: admin/include/editor.php:2003 include/person_cls.php:1977
+#: admin/include/editor.php:2008 include/person_cls.php:1977
 msgid "being missed"
 msgstr "一直認定失蹤"
 
-#: admin/include/editor.php:2006 include/person_cls.php:1978
+#: admin/include/editor.php:2011 include/person_cls.php:1978
 msgid "committed suicide"
 msgstr "自殺"
 
-#: admin/include/editor.php:2009 include/person_cls.php:1979
+#: admin/include/editor.php:2014 include/person_cls.php:1979
 msgid "executed"
 msgstr "被行刑"
 
-#: admin/include/editor.php:2012 include/person_cls.php:1980
+#: admin/include/editor.php:2017 include/person_cls.php:1980
 msgid "died young"
 msgstr "早逝"
 
-#: admin/include/editor.php:2015 include/person_cls.php:1981
+#: admin/include/editor.php:2020 include/person_cls.php:1981
 msgid "died unmarried"
 msgstr "未婚而逝"
 
-#: admin/include/editor.php:2018 include/person_cls.php:1982
+#: admin/include/editor.php:2023 include/person_cls.php:1982
 msgid "registration"
 msgstr "註冊"
 
-#: admin/include/editor.php:2021 include/person_cls.php:1983
+#: admin/include/editor.php:2026 include/person_cls.php:1983
 msgid "declared death"
 msgstr "宣告死亡"
 
-#: admin/include/editor.php:2025 admin/include/editor.php:3206 admin/include/editor.php:3307
-#: admin/include/editor.php:3442 admin/include/editor.php:3513 admin/include/editor.php:3682
-#: admin/include/editor.php:3768 admin/include/editor.php:4082 admin/include/index_inc.php:544
+#: admin/include/editor.php:2030 admin/include/editor.php:3219 admin/include/editor.php:3320
+#: admin/include/editor.php:3455 admin/include/editor.php:3526 admin/include/editor.php:3695
+#: admin/include/editor.php:3781 admin/include/editor.php:4096 admin/include/index_inc.php:544
 #: admin/include/thumbs.php:616 fanchart.php:766 include/calculate_age_cls.php:218
 #: include/calculate_age_cls.php:244 include/calculate_age_cls.php:333 include/calculate_age_cls.php:359
 msgid "or"
 msgstr "或"
 
-#: admin/include/editor.php:2048
+#: admin/include/editor.php:2054
 msgid "Buried"
 msgstr "埋葬"
 
-#: admin/include/editor.php:2069
+#: admin/include/editor.php:2075
 msgid "method of burial"
 msgstr ""
 
-#: admin/include/editor.php:2076 admin/include/editor.php:4204 admin/include/editor_sources.php:84
-#: googlemaps/namesearch.php:203 include/person_cls.php:2113 list.php:1628 list.php:1635 list.php:1962
-#: maps.php:636 maps.php:745 timelines.php:64
+#: admin/include/editor.php:2082 admin/include/editor.php:4218 admin/include/editor_sources.php:84
+#: googlemaps/namesearch.php:210 include/person_cls.php:2113 list.php:1628 list.php:1635 list.php:1962
+#: maps.php:652 maps.php:761 timelines.php:64
 msgid "buried"
 msgstr "埋藏"
 
-#: admin/include/editor.php:2079 admin/include/trees_cls.php:1629 include/person_cls.php:2101
+#: admin/include/editor.php:2085 admin/include/trees_cls.php:1629 include/person_cls.php:2101
 msgid "cremation"
 msgstr "火葬"
 
-#: admin/include/editor.php:2082 include/person_cls.php:2104
+#: admin/include/editor.php:2088 include/person_cls.php:2104
 #, fuzzy
 #| msgid "estimated"
 msgid "resomated"
 msgstr "估計"
 
-#: admin/include/editor.php:2085 include/person_cls.php:2107
+#: admin/include/editor.php:2091 include/person_cls.php:2107
 msgid "sailor's grave"
 msgstr ""
 
-#: admin/include/editor.php:2088 include/person_cls.php:2110
+#: admin/include/editor.php:2094 include/person_cls.php:2110
 msgid "donated to science"
 msgstr ""
 
-#: admin/include/editor.php:2110
+#: admin/include/editor.php:2117
 msgid "Text for person"
 msgstr "個人的文句"
 
-#: admin/include/editor.php:2125 include/show_sources.php:61 include/show_sources.php:162
+#: admin/include/editor.php:2132 include/show_sources.php:61 include/show_sources.php:162
 #: include/show_sources.php:200
 msgid "Source for person"
 msgstr "個人的來源"
 
-#: admin/include/editor.php:2135 admin/include/trees_cls.php:1634 include/show_sources.php:224
+#: admin/include/editor.php:2142 admin/include/trees_cls.php:1634 include/show_sources.php:224
 #: include/show_sources.php:305
 msgid "own code"
 msgstr "自己的數碼"
 
-#: admin/include/editor.php:2146
+#: admin/include/editor.php:2153
 msgid ""
 "Use own code for your own remarks.<br>\n"
 "It's possible to use own code for special privacy options, see Admin > Users > Groups.<br>\n"
@@ -1026,466 +1025,469 @@ msgid ""
 "add 'person' in the own code field."
 msgstr ""
 
-#: admin/include/editor.php:2204 admin/include/editor.php:2885
+#: admin/include/editor.php:2211 admin/include/editor.php:2898
 msgid "GEDCOM tags"
 msgstr ""
 
-#: admin/include/editor.php:2206 admin/include/editor.php:2209 admin/include/editor.php:2887
-#: admin/include/editor.php:2890
+#: admin/include/editor.php:2213 admin/include/editor.php:2216 admin/include/editor.php:2900
+#: admin/include/editor.php:2903
 #, fuzzy, php-format
 #| msgid "There are %d unprocessed gedcom tags."
 msgid "There are %d unprocessed GEDCOM tags."
 msgstr "這些 %d 尚未處理家譜標籤"
 
-#: admin/include/editor.php:2229 admin/include/user_notes.php:8 admin/include/user_notes.php:12
-#: admin/include/user_notes.php:87 admin/index.php:1009 family.php:1975
+#: admin/include/editor.php:2236 admin/include/user_notes.php:8 admin/include/user_notes.php:12
+#: admin/include/user_notes.php:87 admin/index.php:1018 family.php:2032
 msgid "User notes"
 msgstr "使用者的筆記  "
 
-#: admin/include/editor.php:2231 admin/include/editor.php:2233 admin/include/user_notes.php:89
-#: admin/include/user_notes.php:91 family.php:1977 family.php:1979
+#: admin/include/editor.php:2238 admin/include/editor.php:2240 admin/include/user_notes.php:89
+#: admin/include/user_notes.php:91 family.php:2034 family.php:2036
 #, php-format
 msgid "There are %d user added notes."
 msgstr "這些 %d 使用者加上的筆記"
 
-#: admin/include/editor.php:2329
+#: admin/include/editor.php:2336
 #, fuzzy
 #| msgid "Select family tree"
 msgid "Select family"
 msgstr "選家譜"
 
-#: admin/include/editor.php:2368 admin/include/editor.php:2395 admin/include/editor.php:4137
-#: admin/include/editor.php:4210
+#: admin/include/editor.php:2375 admin/include/editor.php:2402 admin/include/editor.php:4151
+#: admin/include/editor.php:4224
 msgid "Add relation"
 msgstr "加上關係"
 
-#: admin/include/editor.php:2368
+#: admin/include/editor.php:2375
 #, fuzzy
 #| msgid "or add relation with existing person as partner."
 msgid "Add new relation to this person"
 msgstr "或者加上現有人員當作夥伴的關係"
 
-#: admin/include/editor.php:2391
+#: admin/include/editor.php:2398
 #, fuzzy
 #| msgid "or add relation with existing person as partner."
 msgid "Or add relation with existing person:"
 msgstr "或者加上現有人員當作夥伴的關係"
 
-#: admin/include/editor.php:2487
+#: admin/include/editor.php:2494
 msgid "Delete relation"
 msgstr "移除關係"
 
-#: admin/include/editor.php:2510
+#: admin/include/editor.php:2517
 #, fuzzy
 #| msgid "Select person"
 msgid "Select person 1"
 msgstr "選擇人員"
 
-#: admin/include/editor.php:2537
+#: admin/include/editor.php:2544
 #, fuzzy
 #| msgid "Select person"
 msgid "Select person 2"
 msgstr "選擇人員"
 
-#: admin/include/editor.php:2567 admin/include/editor.php:2681 admin/include/editor_sources.php:108
+#: admin/include/editor.php:2574 admin/include/editor.php:2690 admin/include/editor_sources.php:113
 #: include/marriage_cls.php:52 include/marriage_cls.php:132 include/marriage_cls.php:133
 #: include/marriage_cls.php:134 include/person_cls.php:1460
 msgid "Living together"
 msgstr "住在一起"
 
-#: admin/include/editor.php:2587
+#: admin/include/editor.php:2594
 msgid "End date"
 msgstr "終止日期"
 
-#: admin/include/editor.php:2603 admin/include/editor_sources.php:114
+#: admin/include/editor.php:2611 admin/include/editor_sources.php:119
 msgid "Notice of Marriage"
 msgstr "婚姻告示"
 
-#: admin/include/editor.php:2649
+#: admin/include/editor.php:2658
 #, fuzzy
 #| msgid "Add person"
 msgid "Age person 1"
 msgstr "加上個人"
 
-#: admin/include/editor.php:2653
+#: admin/include/editor.php:2662
 #, fuzzy
 #| msgid "Add person"
 msgid "Age person 2"
 msgstr "加上個人"
 
-#: admin/include/editor.php:2663
+#: admin/include/editor.php:2672
 msgid "If birth year of man or woman is empty it will be calculated automatically using age by marriage."
 msgstr ""
 
-#: admin/include/editor.php:2672
+#: admin/include/editor.php:2681
 msgid "Relation Type"
 msgstr "關係的類別"
 
-#: admin/include/editor.php:2675
+#: admin/include/editor.php:2684
 msgid "Marriage/ Related"
 msgstr "婚姻／相關的"
 
-#: admin/include/editor.php:2684 include/marriage_cls.php:55 include/person_cls.php:1461
+#: admin/include/editor.php:2693 include/marriage_cls.php:55 include/person_cls.php:1461
 msgid "Living apart together"
 msgstr "在一起但不同住"
 
-#: admin/include/editor.php:2687 include/marriage_cls.php:58 include/person_cls.php:1462
+#: admin/include/editor.php:2696 include/marriage_cls.php:58 include/person_cls.php:1462
 msgid "Intentionally unmarried mother"
 msgstr "蓄意的未婚媽媽"
 
-#: admin/include/editor.php:2690 include/marriage_cls.php:62 include/person_cls.php:1463
+#: admin/include/editor.php:2699 include/marriage_cls.php:62 include/person_cls.php:1463
 msgid "Homosexual"
 msgstr "同性戀"
 
-#: admin/include/editor.php:2693
+#: admin/include/editor.php:2702
 msgid "Non_marital"
 msgstr "非婚姻"
 
-#: admin/include/editor.php:2696 include/marriage_cls.php:69 include/marriage_cls.php:75
+#: admin/include/editor.php:2705 include/marriage_cls.php:69 include/marriage_cls.php:75
 #: include/person_cls.php:1465 include/person_cls.php:1466
 msgid "Extramarital"
 msgstr "婚外的"
 
-#: admin/include/editor.php:2699 include/marriage_cls.php:81 include/person_cls.php:1467
+#: admin/include/editor.php:2708 include/marriage_cls.php:81 include/person_cls.php:1467
 msgid "Partner"
 msgstr "伴侶"
 
-#: admin/include/editor.php:2702 include/marriage_cls.php:84 include/person_cls.php:1468
+#: admin/include/editor.php:2711 include/marriage_cls.php:84 include/person_cls.php:1468
 msgid "Registered"
 msgstr "註冊過的"
 
-#: admin/include/editor.php:2705 include/marriage_cls.php:87 include/person_cls.php:1469
+#: admin/include/editor.php:2714 include/marriage_cls.php:87 include/person_cls.php:1469
 msgid "Unknown relation"
 msgstr "未明關係"
 
-#: admin/include/editor.php:2715 admin/include/editor.php:2824
+#: admin/include/editor.php:2724 admin/include/editor.php:2836
 msgid "Registrar"
 msgstr "註冊單位"
 
-#: admin/include/editor.php:2733 admin/include/editor_sources.php:126
+#: admin/include/editor.php:2743 admin/include/editor_sources.php:131
 msgid "Religious Notice of Marriage"
 msgstr "宗教上的婚告示"
 
-#: admin/include/editor.php:2760 admin/include/editor_sources.php:132
+#: admin/include/editor.php:2771 admin/include/editor_sources.php:137
 msgid "Religious Marriage"
 msgstr "宗教儀式的婚姻"
 
-#: admin/include/editor.php:2790
+#: admin/include/editor.php:2802
 msgid "Religion"
 msgstr "宗教"
 
-#: admin/include/editor.php:2795 admin/include/editor_sources.php:138
+#: admin/include/editor.php:2807 admin/include/editor_sources.php:143
 msgid "Divorce"
 msgstr "離婚"
 
-#: admin/include/editor.php:2815
+#: admin/include/editor.php:2827
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr "離婚（用這選框表示了離婚不再有以後的說明）"
 
-#: admin/include/editor.php:2839
+#: admin/include/editor.php:2852
 msgid "Text by marriage"
 msgstr "有關婚姻的文句"
 
-#: admin/include/editor.php:2855
+#: admin/include/editor.php:2868
 msgid "Source by marriage"
 msgstr "有關婚姻的來源"
 
-#: admin/include/editor.php:2995
+#: admin/include/editor.php:3008
 msgid "Use this icon to order children (drag and drop)"
 msgstr ""
 
-#: admin/include/editor.php:2998
+#: admin/include/editor.php:3011
 msgid "Or automatically order children:"
 msgstr ""
 
-#: admin/include/editor.php:2998
+#: admin/include/editor.php:3011
 msgid "Automatic order children"
 msgstr ""
 
-#: admin/include/editor.php:3000
+#: admin/include/editor.php:3013
 msgid "Children are re-ordered."
 msgstr ""
 
-#: admin/include/editor.php:3015
+#: admin/include/editor.php:3028
 msgid "Drag to change order (saves automatically)"
 msgstr "拖動以更改次序（會自動保存）"
 
-#: admin/include/editor.php:3015
+#: admin/include/editor.php:3028
 msgid "Drag to change order"
 msgstr "拖動以更改次序"
 
-#: admin/include/editor.php:3019
+#: admin/include/editor.php:3032
 msgid "Disconnect child"
 msgstr "不聯絡孩子"
 
-#: admin/include/editor.php:3042
+#: admin/include/editor.php:3055
 #, fuzzy
 #| msgid "or add relation with existing person as partner."
 msgid "Or add existing person as a child:"
 msgstr "或者加上現有人員當作夥伴的關係"
 
-#: admin/include/editor.php:3045
+#: admin/include/editor.php:3058
 msgid "Select child"
 msgstr "  選擇孩子"
 
-#: admin/include/editor.php:3102
+#: admin/include/editor.php:3115
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr "你確定你想要把這來源和所有來源的引用出處移走嗎？"
 
-#: admin/include/editor.php:3145
+#: admin/include/editor.php:3158
 msgid "Source is removed!"
 msgstr "來源移走了"
 
-#: admin/include/editor.php:3150 admin/include/groups.php:431 admin/include/trees_cls.php:1869
-#: admin/index.php:1054 family.php:136 family.php:2132 header.php:256 help.php:60 include/show_sources.php:260
+#: admin/include/editor.php:3163 admin/include/groups.php:431 admin/include/trees_cls.php:1869
+#: admin/index.php:1063 family.php:136 family.php:2189 header.php:256 help.php:60 include/show_sources.php:260
 #: menu.php:517 report_ancestor.php:1515 source.php:37
 msgid "Sources"
 msgstr "本源"
 
-#: admin/include/editor.php:3151
+#: admin/include/editor.php:3164
 msgid "These sources can be connected to multiple persons, families, events and other items."
 msgstr ""
 
-#: admin/include/editor.php:3171 admin/include/editor.php:3173
+#: admin/include/editor.php:3184 admin/include/editor.php:3186
 msgid "Select source"
 msgstr "選擇來源"
 
-#: admin/include/editor.php:3200 admin/include/editor.php:3263
+#: admin/include/editor.php:3213 admin/include/editor.php:3276
 msgid "restricted"
 msgstr "有限制的"
 
-#: admin/include/editor.php:3208 admin/include/editor_sources.php:531
+#: admin/include/editor.php:3221 admin/include/editor_sources.php:548
 msgid "Add source"
 msgstr "增加來源"
 
-#: admin/include/editor.php:3231 source.php:43 source.php:46
+#: admin/include/editor.php:3244 source.php:43 source.php:46
 msgid "No valid source number."
 msgstr "無效的本源數字"
 
-#: admin/include/editor.php:3255 admin/include/editor.php:3486 admin/include/editor.php:3730
+#: admin/include/editor.php:3268 admin/include/editor.php:3499 admin/include/editor.php:3743
 msgid "Option"
 msgstr "選項"
 
-#: admin/include/editor.php:3255 admin/include/editor.php:3486 admin/include/editor.php:3730
+#: admin/include/editor.php:3268 admin/include/editor.php:3499 admin/include/editor.php:3743
 msgid "Value"
 msgstr "值數"
 
-#: admin/include/editor.php:3257
+#: admin/include/editor.php:3270
 msgid "Status:"
 msgstr "狀態"
 
-#: admin/include/editor.php:3260
+#: admin/include/editor.php:3273
 msgid "publish"
 msgstr "出版"
 
-#: admin/include/editor.php:3264
+#: admin/include/editor.php:3277
 msgid "restricted = only visible for selected user groups"
 msgstr "有限制的 ＝ 只對有些用戶群顯示"
 
-#: admin/include/editor.php:3267 admin/include/editor.php:3488 admin/include/editor_event_cls.php:27
+#: admin/include/editor.php:3280 admin/include/editor.php:3501 admin/include/editor_event_cls.php:27
 #: admin/include/editor_event_cls.php:414 admin/include/editor_event_cls.php:418
-#: admin/include/editor_sources.php:301 admin/include/editor_sources.php:345 admin/include/trees_cls.php:1787
+#: admin/include/editor_sources.php:318 admin/include/editor_sources.php:362 admin/include/trees_cls.php:1787
 #: source.php:51 source.php:56 source.php:229 sources.php:156
 msgid "Title"
 msgstr "標題"
 
-#: admin/include/editor.php:3269 source.php:144 source.php:149
+#: admin/include/editor.php:3282 source.php:144 source.php:149
 msgid "Subject"
 msgstr "主題"
 
-#: admin/include/editor.php:3272 source.php:227
+#: admin/include/editor.php:3285 source.php:227
 msgid "Repository"
 msgstr "儲藏所在"
 
-#: admin/include/editor.php:3285
+#: admin/include/editor.php:3298
 msgid "Add repositories"
 msgstr ""
 
-#: admin/include/editor.php:3288 source.php:87 source.php:105
+#: admin/include/editor.php:3301 source.php:87 source.php:105
 msgid "Publication"
 msgstr "出版刊物"
 
-#: admin/include/editor.php:3288
+#: admin/include/editor.php:3301
 msgid "will be shown as a link."
 msgstr "會被當作一個鏈接顯示"
 
-#: admin/include/editor.php:3289 admin/include/editor_sources.php:322 admin/include/settings_admin.php:1069
+#: admin/include/editor.php:3302 admin/include/editor_sources.php:339 admin/include/settings_admin.php:1083
 #: include/person_cls.php:1717 include/person_cls.php:1719 include/person_cls.php:1722 include/person_cls.php:1725
 #: list.php:1614 list.php:1622 source.php:122 source.php:127
 msgid "Own code"
 msgstr "自己的代碼"
 
-#: admin/include/editor.php:3290 source.php:133 source.php:138
+#: admin/include/editor.php:3303 source.php:133 source.php:138
 msgid "Author"
 msgstr "作者"
 
-#: admin/include/editor.php:3291 source.php:155 source.php:160
+#: admin/include/editor.php:3304 source.php:155 source.php:160
 msgid "Nr."
 msgstr "數目"
 
-#: admin/include/editor.php:3292 source.php:166 source.php:171
+#: admin/include/editor.php:3305 source.php:166 source.php:171
 msgid "Kind"
 msgstr "種類"
 
-#: admin/include/editor.php:3293 source.php:177 source.php:182
+#: admin/include/editor.php:3306 source.php:177 source.php:182
 msgid "Archive"
 msgstr "存檔 "
 
-#: admin/include/editor.php:3294 admin/include/editor_sources.php:440 list.php:1832 list_names.php:248
-#: list_places_families.php:446 photoalbum.php:271 source.php:187 source.php:192 sources.php:97
+#: admin/include/editor.php:3307 admin/include/editor_sources.php:457 list.php:1832 list_names.php:248
+#: list_places_families.php:446 photoalbum.php:273 source.php:187 source.php:192 sources.php:97
 msgid "Page"
 msgstr "頁"
 
-#: admin/include/editor.php:3308 admin/include/editor.php:3514 admin/include/editor.php:3769
-#: admin/include/make_db_maps.php:325 admin/include/make_db_maps.php:349 admin/include/make_db_maps.php:400
-#: admin/include/make_db_maps.php:424
+#: admin/include/editor.php:3321 admin/include/editor.php:3527 admin/include/editor.php:3782
+#: admin/include/make_db_maps.php:392 admin/include/make_db_maps.php:401 admin/include/make_db_maps.php:586
 msgid "Delete"
 msgstr "刪除"
 
-#: admin/include/editor.php:3386
+#: admin/include/editor.php:3399
 msgid "Really remove repository with all repository links?"
 msgstr "真的要刪除存儲庫以及所有存儲庫的接鏈嗎？"
 
-#: admin/include/editor.php:3412
+#: admin/include/editor.php:3425
 msgid "Repository is removed!"
 msgstr "存儲庫被刪除了"
 
-#: admin/include/editor.php:3419 admin/index.php:1058
+#: admin/include/editor.php:3432 admin/index.php:1067
 msgid "Repositories"
 msgstr "存儲庫群"
 
-#: admin/include/editor.php:3420
+#: admin/include/editor.php:3433
 #, fuzzy
 #| msgid "A repository can be connected to an extended source. Edit an extended source to connect a repository."
 msgid "A repository can be connected to a source. Edit a source to connect a repository."
 msgstr "存儲庫可以連接到一個擴展來源。編輯擴展來源以便連接存儲庫。"
 
-#: admin/include/editor.php:3429 admin/include/editor.php:3431
+#: admin/include/editor.php:3442 admin/include/editor.php:3444
 msgid "Select repository"
 msgstr "選擇存儲庫"
 
-#: admin/include/editor.php:3443
+#: admin/include/editor.php:3456
 msgid "Add repository"
 msgstr "加上存儲庫"
 
-#: admin/include/editor.php:3459
+#: admin/include/editor.php:3472
 msgid "No valid repository number."
 msgstr "無有效的存儲庫號碼"
 
-#: admin/include/editor.php:3503 admin/include/gedcom_export.php:288 admin/include/gedcom_export.php:291
+#: admin/include/editor.php:3516 admin/include/gedcom_export.php:288 admin/include/gedcom_export.php:291
 #: mailform.php:29 register.php:63 user_settings.php:54
 msgid "E-mail"
 msgstr "電子郵件"
 
-#: admin/include/editor.php:3505 admin/include/editor_event_cls.php:30 admin/include/editor_event_cls.php:258
+#: admin/include/editor.php:3518 admin/include/editor_event_cls.php:30 admin/include/editor_event_cls.php:258
 msgid "URL/ Internet link"
 msgstr "URL/網接鏈"
 
-#: admin/include/editor.php:3590
+#: admin/include/editor.php:3603
 msgid "Are you sure you want to remove this address and ALL address references?"
 msgstr "真的要刪除住址以及所有住址的接鏈嗎？"
 
-#: admin/include/editor.php:3643
+#: admin/include/editor.php:3656
 msgid "Address has been removed!"
 msgstr "住址被刪除了"
 
-#: admin/include/editor.php:3652
+#: admin/include/editor.php:3665
 msgid "These addresses can be connected to multiple persons, families and other items."
 msgstr ""
 
-#: admin/include/editor.php:3664 admin/include/editor.php:3666 admin/include/editor.php:4467
+#: admin/include/editor.php:3677 admin/include/editor.php:3679 admin/include/editor.php:4497
 msgid "Select address"
 msgstr "選擇地址"
 
-#: admin/include/editor.php:3683
+#: admin/include/editor.php:3696
 msgid "Add address"
 msgstr "增加住址"
 
-#: admin/include/editor.php:3705
+#: admin/include/editor.php:3718
 msgid "No valid address number."
 msgstr "無有效的住址數目"
 
-#: admin/include/editor.php:3746 admin/include/editor.php:3755 admin/include/editor.php:4041
-#: admin/include/editor_sources.php:90 admin/include/editor_sources.php:171 admin/include/editor_sources.php:179
+#: admin/include/editor.php:3759 admin/include/editor.php:3768 admin/include/editor.php:4054
+#: admin/include/editor_sources.php:90 admin/include/editor_sources.php:188 admin/include/editor_sources.php:196
 #: include/show_sources.php:106 include/show_sources.php:196 include/show_sources.php:285
 msgid "source"
 msgstr " 來源"
 
-#: admin/include/editor.php:3794 admin/index.php:1066
+#: admin/include/editor.php:3807 admin/index.php:1075
 msgid "Rename places"
 msgstr "重新命名地分名字"
 
-#: admin/include/editor.php:3923 header.php:254 help.php:54 list.php:1959 list_places_families.php:560
+#: admin/include/editor.php:3936 header.php:254 help.php:54 list.php:1959 list_places_families.php:560
 msgid "Places"
 msgstr "地點"
 
-#: admin/include/editor.php:3924
+#: admin/include/editor.php:3937
 msgid "Select location"
 msgstr "選擇地方"
 
-#: admin/include/editor.php:3939
+#: admin/include/editor.php:3952
 msgid "Person places"
 msgstr ""
 
-#: admin/include/editor.php:3941
+#: admin/include/editor.php:3954
 msgid "Family places"
 msgstr ""
 
-#: admin/include/editor.php:3943
+#: admin/include/editor.php:3956
 msgid "Other places (sources, events, addresses, etc.)"
 msgstr ""
 
-#: admin/include/editor.php:3953 admin/include/editor.php:3962
+#: admin/include/editor.php:3966 admin/include/editor.php:3975
 msgid "Change location"
 msgstr "更改地方"
 
-#: admin/include/editor.php:3963
+#: admin/include/editor.php:3976
 msgid "Also change Google Maps table."
 msgstr "同時也更改GoogleMap畫面"
 
-#: admin/include/editor.php:4140 admin/include/editor.php:4213
+#: admin/include/editor.php:4154 admin/include/editor.php:4227
 msgid "Add child"
 msgstr "加上孩子"
 
-#: admin/include/editor.php:4229 admin/include/trees.php:301 include/show_tree_text.php:6 photoalbum.php:217
+#: admin/include/editor.php:4243 admin/include/trees.php:301 include/show_tree_text.php:6 photoalbum.php:219
 msgid "NO NAME"
 msgstr "無名"
 
-#: admin/include/editor.php:4377 admin/include/editor_sources.php:307
+#: admin/include/editor.php:4399 admin/include/editor_sources.php:324
 #, fuzzy
 #| msgid "Export texts"
 msgid "Extra text"
 msgstr "輸出文句"
 
-#: admin/include/editor.php:4403
+#: admin/include/editor.php:4420
 #, fuzzy
 #| msgid "gedcom no. (\"I43\")"
 msgid "Address GEDCOM number:"
 msgstr "gedcom 數目. (\"I43\")"
 
-#: admin/include/editor.php:4407
+#: admin/include/editor.php:4424
 #, fuzzy
 #| msgid "Add address"
 msgid "Shared address"
 msgstr "增加住址"
 
-#: admin/include/editor.php:4418
+#: admin/include/editor.php:4435
 #, fuzzy
 #| msgid "Address list, these addresses can be connected to multiple persons."
 msgid "A shared address can be connected to multiple persons or relations."
 msgstr "住址名單，這些住址可被鏈接到眾多個體上"
 
-#: admin/include/editor.php:4481
+#: admin/include/editor.php:4436
+msgid "A shared address is only supported by the Haza-data and HuMo-genealogy programs."
+msgstr ""
+
+#: admin/include/editor.php:4511
 #, fuzzy
 #| msgid "Add address"
 msgid "Or: add new address"
 msgstr "增加住址"
 
-#: admin/include/editor.php:4508
+#: admin/include/editor.php:4538
 msgid "Addressrole"
 msgstr "地址的角色"
 
-#: admin/include/editor.php:4511
+#: admin/include/editor.php:4541
 #, fuzzy
 #| msgid "Export sources"
 msgid "Extra text by address"
@@ -1527,73 +1529,73 @@ msgid "calculated"
 msgstr ""
 
 #: admin/include/editor_cls.php:56 admin/include/editor_cls.php:171 admin/include/statistics.php:202
-#: admin/include/trees_cls.php:116 birthday_list.php:79 include/language_date.php:21 include/mainindex_cls.php:282
+#: admin/include/trees_cls.php:116 birthday_list.php:79 include/language_date.php:21 include/mainindex_cls.php:289
 #: statistics.php:24
 msgid "jan"
 msgstr "一月"
 
 #: admin/include/editor_cls.php:57 admin/include/editor_cls.php:172 admin/include/statistics.php:203
-#: admin/include/trees_cls.php:117 birthday_list.php:80 include/language_date.php:22 include/mainindex_cls.php:283
+#: admin/include/trees_cls.php:117 birthday_list.php:80 include/language_date.php:22 include/mainindex_cls.php:290
 #: statistics.php:25
 msgid "feb"
 msgstr "二月"
 
 #: admin/include/editor_cls.php:58 admin/include/editor_cls.php:173 admin/include/statistics.php:204
-#: admin/include/trees_cls.php:118 birthday_list.php:81 include/language_date.php:23 include/mainindex_cls.php:284
+#: admin/include/trees_cls.php:118 birthday_list.php:81 include/language_date.php:23 include/mainindex_cls.php:291
 #: statistics.php:26
 msgid "mar"
 msgstr "三月"
 
 #: admin/include/editor_cls.php:59 admin/include/editor_cls.php:174 admin/include/statistics.php:205
-#: admin/include/trees_cls.php:119 birthday_list.php:82 include/language_date.php:24 include/mainindex_cls.php:285
+#: admin/include/trees_cls.php:119 birthday_list.php:82 include/language_date.php:24 include/mainindex_cls.php:292
 #: statistics.php:27
 msgid "apr"
 msgstr "四月"
 
 #: admin/include/editor_cls.php:60 admin/include/editor_cls.php:175 admin/include/statistics.php:206
-#: admin/include/trees_cls.php:120 birthday_list.php:83 include/language_date.php:25 include/mainindex_cls.php:286
+#: admin/include/trees_cls.php:120 birthday_list.php:83 include/language_date.php:25 include/mainindex_cls.php:293
 #: statistics.php:28
 msgid "may"
 msgstr "五月"
 
 #: admin/include/editor_cls.php:61 admin/include/editor_cls.php:176 admin/include/statistics.php:207
-#: admin/include/trees_cls.php:121 birthday_list.php:84 include/language_date.php:26 include/mainindex_cls.php:287
+#: admin/include/trees_cls.php:121 birthday_list.php:84 include/language_date.php:26 include/mainindex_cls.php:294
 #: statistics.php:29
 msgid "jun"
 msgstr "六月"
 
 #: admin/include/editor_cls.php:62 admin/include/editor_cls.php:177 admin/include/statistics.php:208
-#: admin/include/trees_cls.php:122 birthday_list.php:85 include/language_date.php:27 include/mainindex_cls.php:288
+#: admin/include/trees_cls.php:122 birthday_list.php:85 include/language_date.php:27 include/mainindex_cls.php:295
 #: statistics.php:30
 msgid "jul"
 msgstr "七月"
 
 #: admin/include/editor_cls.php:63 admin/include/editor_cls.php:178 admin/include/statistics.php:209
-#: admin/include/trees_cls.php:123 birthday_list.php:86 include/language_date.php:28 include/mainindex_cls.php:289
+#: admin/include/trees_cls.php:123 birthday_list.php:86 include/language_date.php:28 include/mainindex_cls.php:296
 #: statistics.php:31
 msgid "aug"
 msgstr "八月"
 
 #: admin/include/editor_cls.php:64 admin/include/editor_cls.php:179 admin/include/statistics.php:210
-#: admin/include/trees_cls.php:124 birthday_list.php:87 include/language_date.php:29 include/mainindex_cls.php:290
+#: admin/include/trees_cls.php:124 birthday_list.php:87 include/language_date.php:29 include/mainindex_cls.php:297
 #: statistics.php:32
 msgid "sep"
 msgstr "九月"
 
 #: admin/include/editor_cls.php:65 admin/include/editor_cls.php:180 admin/include/statistics.php:211
-#: admin/include/trees_cls.php:125 birthday_list.php:88 include/language_date.php:30 include/mainindex_cls.php:291
+#: admin/include/trees_cls.php:125 birthday_list.php:88 include/language_date.php:30 include/mainindex_cls.php:298
 #: statistics.php:33
 msgid "oct"
 msgstr "十月"
 
 #: admin/include/editor_cls.php:66 admin/include/editor_cls.php:181 admin/include/statistics.php:212
-#: admin/include/trees_cls.php:126 birthday_list.php:89 include/language_date.php:31 include/mainindex_cls.php:292
+#: admin/include/trees_cls.php:126 birthday_list.php:89 include/language_date.php:31 include/mainindex_cls.php:299
 #: statistics.php:34
 msgid "nov"
 msgstr "十一月"
 
 #: admin/include/editor_cls.php:67 admin/include/editor_cls.php:182 admin/include/statistics.php:213
-#: admin/include/trees_cls.php:127 birthday_list.php:90 include/language_date.php:32 include/mainindex_cls.php:293
+#: admin/include/trees_cls.php:127 birthday_list.php:90 include/language_date.php:32 include/mainindex_cls.php:300
 #: statistics.php:35
 msgid "dec"
 msgstr "十二月"
@@ -1707,8 +1709,8 @@ msgstr "職業"
 #: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:248
 #: admin/include/editor_event_cls.php:274 admin/include/editor_event_cls.php:302
 #: admin/include/editor_event_cls.php:326 admin/include/editor_event_cls.php:1187
-#: admin/include/editor_sources.php:171 admin/include/editor_sources.php:179 admin/include/trees_cls.php:1780
-#: include/mainindex_cls.php:916
+#: admin/include/editor_sources.php:188 admin/include/editor_sources.php:196 admin/include/trees_cls.php:1780
+#: include/mainindex_cls.php:923
 msgid "Event"
 msgstr "事件"
 
@@ -2052,7 +2054,7 @@ msgstr "無法上載媒體介質，請檢查文件夾權限"
 msgid "No valid picture, media or document file"
 msgstr "無有效的圖片，媒體介質和文件夾"
 
-#: admin/include/editor_inc.php:1748 admin/include/editor_inc.php:2188
+#: admin/include/editor_inc.php:1748 admin/include/editor_inc.php:2198
 msgid "Are you sure you want to remove this event?"
 msgstr "你確定要移除這事件嗎？"
 
@@ -2090,91 +2092,91 @@ msgstr "名稱的來源"
 msgid "person"
 msgstr "個人"
 
-#: admin/include/editor_sources.php:120 list_places_families.php:420
+#: admin/include/editor_sources.php:125 list_places_families.php:420
 msgid "Marriage"
 msgstr "婚姻"
 
-#: admin/include/editor_sources.php:150 admin/include/statistics.php:513 admin/include/statistics.php:526
+#: admin/include/editor_sources.php:155 admin/include/statistics.php:513 admin/include/statistics.php:526
 msgid "family"
 msgstr "家庭"
 
-#: admin/include/editor_sources.php:302 admin/include/editor_sources.php:306 include/mainindex_cls.php:916
+#: admin/include/editor_sources.php:319 admin/include/editor_sources.php:323 include/mainindex_cls.php:923
 #: list.php:1597 list.php:1599 list.php:1629 list.php:1631 list.php:1985 list.php:1997 source.php:62 source.php:67
 #: source.php:237 sources.php:163
 msgid "Date"
 msgstr "日期"
 
-#: admin/include/editor_sources.php:305 admin/include/editor_sources.php:424
+#: admin/include/editor_sources.php:322 admin/include/editor_sources.php:441
 msgid "Sourcerole"
 msgstr "來源的成分"
 
-#: admin/include/editor_sources.php:318
+#: admin/include/editor_sources.php:335
 #, fuzzy
 #| msgid "gedcom no. (\"I43\")"
 msgid "Source GEDCOM number:"
 msgstr "gedcom 數目. (\"I43\")"
 
-#: admin/include/editor_sources.php:363
+#: admin/include/editor_sources.php:380
 #, fuzzy
 #| msgid "Search engine settings"
 msgid "Search existing source"
 msgstr "搜索引擎的設定"
 
-#: admin/include/editor_sources.php:381
+#: admin/include/editor_sources.php:398
 #, fuzzy
 #| msgid "Select extended source"
 msgid "Select existing source"
 msgstr "選擇更廣的來源"
 
-#: admin/include/editor_sources.php:402
+#: admin/include/editor_sources.php:419
 msgid "Or:"
 msgstr ""
 
-#: admin/include/editor_sources.php:416
+#: admin/include/editor_sources.php:433
 #, fuzzy
 #| msgid "Or add a new child:"
 msgid "add new source"
 msgstr "或加一個新的孩子"
 
-#: admin/include/editor_sources.php:436
+#: admin/include/editor_sources.php:453
 #, fuzzy
 #| msgid "e.g. Writer, Brother, Sister, Father"
 msgid "e.g. Writer, Brother, Sister, Father."
 msgstr "例如：作者，兄弟，姐妹，父親"
 
-#: admin/include/editor_sources.php:452
+#: admin/include/editor_sources.php:469
 #, fuzzy
 #| msgid "page in source"
 msgid "Page in source."
 msgstr "來源的頁數"
 
-#: admin/include/editor_sources.php:458
+#: admin/include/editor_sources.php:475
 msgid "quality: default"
 msgstr "質量：默認"
 
-#: admin/include/editor_sources.php:460 include/show_quality.php:5
+#: admin/include/editor_sources.php:477 include/show_quality.php:5
 msgid "quality: unreliable evidence or estimated data"
 msgstr "信息的質量：不可靠的證據或估計的數據"
 
-#: admin/include/editor_sources.php:462 include/show_quality.php:6
+#: admin/include/editor_sources.php:479 include/show_quality.php:6
 msgid "quality: questionable reliability of evidence"
 msgstr " 信息的質量：證據的可靠性值得懷疑"
 
-#: admin/include/editor_sources.php:464 include/show_quality.php:7
+#: admin/include/editor_sources.php:481 include/show_quality.php:7
 msgid "quality: data from secondary evidence"
 msgstr "  信息的質量 ;數據是從輔助證源來的"
 
-#: admin/include/editor_sources.php:466 include/show_quality.php:8
+#: admin/include/editor_sources.php:483 include/show_quality.php:8
 msgid "quality: data from direct source"
 msgstr "信息的質量 ;數據是從直接證源來的"
 
-#: admin/include/editor_sources.php:475
+#: admin/include/editor_sources.php:492
 #, fuzzy
 #| msgid "Export sources"
 msgid "Extra text by source"
 msgstr "輸出本碼"
 
-#: admin/include/editor_sources.php:528
+#: admin/include/editor_sources.php:545
 #, fuzzy
 #| msgid "Or add a new child:"
 msgid "Add another source"
@@ -2204,7 +2206,7 @@ msgstr "編輯家譜嗎？"
 msgid "Use user-group setting"
 msgstr ""
 
-#: admin/include/extensions.php:5 admin/include/extensions.php:60 admin/index.php:953
+#: admin/include/extensions.php:5 admin/include/extensions.php:60 admin/index.php:962
 msgid "Extensions"
 msgstr ""
 
@@ -2484,7 +2486,7 @@ msgstr "沒有錯誤消息出現？在這種情況下，表就可創建！"
 msgid "The data in this GEDCOM will be appended to the existing data in this tree!"
 msgstr "在這個GEDCOM的數據將會被追加到該家譜已有的數據中！"
 
-#: admin/include/gedcom.php:895 admin/include/make_db_maps.php:855 maps.php:572 maps.php:681 maps.php:793
+#: admin/include/gedcom.php:895 admin/include/make_db_maps.php:1011 maps.php:587 maps.php:697 maps.php:809
 msgid "Cancel"
 msgstr "取消"
 
@@ -2565,12 +2567,12 @@ msgid "Processing of referenced texts into standard texts..."
 msgstr ""
 
 #: admin/include/gedcom.php:1755 admin/include/index_inc.php:532 admin/include/statistics.php:757
-#: admin/include/trees_cls.php:130 include/mainindex_cls.php:297
+#: admin/include/trees_cls.php:130 include/mainindex_cls.php:304
 msgid "persons"
 msgstr "個人們"
 
 #: admin/include/gedcom.php:1914 admin/include/index_inc.php:532 admin/include/statistics.php:757
-#: admin/include/trees_cls.php:130 include/mainindex_cls.php:297
+#: admin/include/trees_cls.php:130 include/mainindex_cls.php:304
 msgid "families"
 msgstr "家庭們"
 
@@ -2697,9 +2699,9 @@ msgstr "gedcom 數目. (\"I43\")"
 msgid "Country"
 msgstr "計數器"
 
-#: admin/include/gedcom_export.php:295 admin/include/make_db_maps.php:993 admin/include/settings_admin.php:5
+#: admin/include/gedcom_export.php:295 admin/include/make_db_maps.php:1157 admin/include/settings_admin.php:5
 #: admin/include/settings_admin.php:188 admin/include/trees_cls.php:1252 admin/include/trees_cls.php:1418
-#: admin/index.php:956 family.php:113 family.php:2110 header.php:270 menu.php:881
+#: admin/index.php:965 family.php:113 family.php:2167 header.php:270 menu.php:882
 msgid "Settings"
 msgstr "設置"
 
@@ -2743,25 +2745,25 @@ msgstr "開始輸出"
 msgid "GEDCOM file will be exported to backup_tmp/ folder"
 msgstr "Gedcom 文件將被輸出到backup_tmp/ 的文件夾中"
 
-#: admin/include/gedcom_export.php:1392
+#: admin/include/gedcom_export.php:1411
 #, fuzzy
 #| msgid "Gedcom file is generated"
 msgid "GEDCOM file is generated"
 msgstr "Gedcom 文件被生成了"
 
-#: admin/include/gedcom_export.php:1395
+#: admin/include/gedcom_export.php:1414
 #, fuzzy
 #| msgid "Download backup file"
 msgid "Download GEDCOM file"
 msgstr "下載備份文件"
 
-#: admin/include/gedcom_export.php:1406
+#: admin/include/gedcom_export.php:1425
 #, fuzzy
 #| msgid "Remove gedcom file"
 msgid "Remove GEDCOM file"
 msgstr "移除gedcom 文件"
 
-#: admin/include/gedcom_export.php:1642
+#: admin/include/gedcom_export.php:1677
 msgid "No valid family number."
 msgstr "沒有有效的家庭數字。"
 
@@ -2900,7 +2902,7 @@ msgstr "展示圖片  "
 msgid "(option can only be disabled if option \"Show photobook in submenu\" is disabled)"
 msgstr ""
 
-#: admin/include/groups.php:349 admin/include/trees_cls.php:259 admin/index.php:1006
+#: admin/include/groups.php:349 admin/include/trees_cls.php:259 admin/index.php:1015
 msgid "Pictures/ create thumbnails"
 msgstr "圖片/ 創建縮略圖"
 
@@ -2954,11 +2956,11 @@ msgstr "擴展式視圖"
 msgid "Default presentation of Google maps in family page"
 msgstr "家譜頁面的默認谷歌地圖呈現頁面"
 
-#: admin/include/groups.php:400 family.php:158
+#: admin/include/groups.php:400
 msgid "Show Google maps"
 msgstr "展示谷歌地圖"
 
-#: admin/include/groups.php:402 family.php:160
+#: admin/include/groups.php:402
 msgid "Hide Google maps"
 msgstr "隱藏谷歌地圖"
 
@@ -3142,7 +3144,7 @@ msgstr "保留所有的更改"
 msgid "Hide or show family trees per user group."
 msgstr "對每個使用群者隱藏或展示家譜"
 
-#: admin/include/groups.php:624 admin/include/index_inc.php:546 admin/index.php:1043 include/person_cls.php:977
+#: admin/include/groups.php:624 admin/include/index_inc.php:546 admin/index.php:1052 include/person_cls.php:977
 msgid "Editor"
 msgstr "編輯者"
 
@@ -3170,7 +3172,7 @@ msgstr ""
 msgid "No photo categories available."
 msgstr ""
 
-#: admin/include/index_inc.php:5 admin/index.php:403 admin/index.php:872
+#: admin/include/index_inc.php:5 admin/index.php:412 admin/index.php:881
 msgid "Administration"
 msgstr "行政管理"
 
@@ -3295,7 +3297,7 @@ msgstr "是的, 也請安裝資料庫"
 msgid "NO"
 msgstr "不"
 
-#: admin/include/index_inc.php:195 admin/include/make_db_maps.php:598 admin/include/make_db_maps.php:853
+#: admin/include/index_inc.php:195 admin/include/make_db_maps.php:752 admin/include/make_db_maps.php:1009
 msgid "YES"
 msgstr "是"
 
@@ -3502,7 +3504,7 @@ msgstr ""
 msgid "UNSAFE (option is ON)."
 msgstr ""
 
-#: admin/include/index_inc.php:512 admin/index.php:996 admin/index.php:1002
+#: admin/include/index_inc.php:512 admin/index.php:1005 admin/index.php:1011
 msgid "Family trees"
 msgstr "家譜樹"
 
@@ -3522,7 +3524,7 @@ msgstr "輸入家譜特定文件"
 msgid "Trees table"
 msgstr "家譜桌表"
 
-#: admin/include/install.php:5 admin/include/install.php:155 admin/include/install.php:161 admin/index.php:950
+#: admin/include/install.php:5 admin/include/install.php:155 admin/include/install.php:161 admin/index.php:959
 msgid "Install"
 msgstr "安裝"
 
@@ -3638,11 +3640,11 @@ msgstr "以上沒有錯誤? 這表示資料庫已經被處理過了"
 msgid "All updates completed, click at \"Mainmenu\""
 msgstr "所有更新已完成, 點擊到 \"Mainmenu\""
 
-#: admin/include/install.php:952 admin/include/update.php:251 admin/index.php:872
+#: admin/include/install.php:952 admin/include/update.php:251 admin/index.php:881
 msgid "Main menu"
 msgstr "主選單"
 
-#: admin/include/language_editor.php:13 admin/index.php:966
+#: admin/include/language_editor.php:13 admin/index.php:975
 msgid "Language editor"
 msgstr "語言編輯器"
 
@@ -3724,7 +3726,7 @@ msgstr "使用者/ 管理者"
 msgid "IP address"
 msgstr "IP 住址"
 
-#: admin/include/log.php:61 admin/include/settings_admin.php:768
+#: admin/include/log.php:61 admin/include/settings_admin.php:769
 msgid "Status"
 msgstr ""
 
@@ -3733,7 +3735,7 @@ msgstr ""
 msgid "IP Blacklist: access to %s will be totally blocked for these IP addresses."
 msgstr ""
 
-#: admin/include/log.php:150 admin/include/log.php:183 admin/include/settings_admin.php:1069
+#: admin/include/log.php:150 admin/include/log.php:183 admin/include/settings_admin.php:1083
 #: include/language_event.php:26
 msgid "Description"
 msgstr "說明"
@@ -3746,7 +3748,7 @@ msgstr "更改 / 增加"
 msgid "IP Address"
 msgstr ""
 
-#: admin/include/log.php:189 admin/include/settings_admin.php:978 admin/include/settings_admin.php:1111
+#: admin/include/log.php:189 admin/include/settings_admin.php:992 admin/include/settings_admin.php:1125
 msgid "Database is not yet available."
 msgstr "資料庫還不能使用"
 
@@ -3758,31 +3760,33 @@ msgstr "管理部門選單登錄"
 msgid "Username or e-mail address"
 msgstr ""
 
-#: admin/include/login.php:16 header.php:268 help.php:82 login.php:331 login.php:334 menu.php:257 menu.php:756
+#: admin/include/login.php:16 header.php:268 help.php:82 login.php:331 login.php:334 menu.php:257 menu.php:757
 msgid "Login"
 msgstr "登錄"
 
-#: admin/include/make_db_maps.php:7
-msgid "Google maps administration"
+#: admin/include/make_db_maps.php:12
+#, fuzzy
+#| msgid "Google maps administration"
+msgid "World map administration"
 msgstr "谷歌地圖管理"
 
-#: admin/include/make_db_maps.php:11
+#: admin/include/make_db_maps.php:16
 msgid "Creating/ updating database"
 msgstr "正在建立/ 更新 資料庫"
 
-#: admin/include/make_db_maps.php:25
+#: admin/include/make_db_maps.php:30
 msgid "Creating location database"
 msgstr "正在建立所在地的資料庫"
 
-#: admin/include/make_db_maps.php:42
+#: admin/include/make_db_maps.php:47
 msgid "Started adding to data base."
 msgstr "開始加入資料庫中"
 
-#: admin/include/make_db_maps.php:43
+#: admin/include/make_db_maps.php:48
 msgid "Starting time"
 msgstr "開始時間"
 
-#: admin/include/make_db_maps.php:116
+#: admin/include/make_db_maps.php:135
 msgid ""
 "<b>A location database could not be created.</b>\n"
 "<p>This could mean that the PHP function \"allow_url_fopen\" was disabled by your webhost for security "
@@ -3795,189 +3799,193 @@ msgstr ""
 "上加載 (這是一種替代 \"allow_url_fopen\" 的選項）\n"
 "<p>你可以聯繫您的虛擬主機提供商並要求 \"allow_url_fopen\" 考慮使用或  在服務器上加載\"curl\" "
 
-#: admin/include/make_db_maps.php:159
+#: admin/include/make_db_maps.php:180
 msgid "Finished updating geo-location database"
 msgstr "完成更新 家譜所在地的資料庫"
 
-#: admin/include/make_db_maps.php:160
+#: admin/include/make_db_maps.php:181
 msgid "Finish time"
 msgstr "完成的時間"
 
-#: admin/include/make_db_maps.php:161
+#: admin/include/make_db_maps.php:182
 msgid "locations were successfully mapped."
 msgstr "所在地成功地加入地圖"
 
-#: admin/include/make_db_maps.php:164 admin/include/make_db_maps.php:182
+#: admin/include/make_db_maps.php:185 admin/include/make_db_maps.php:203
 #, php-format
 msgid "The following %d new locations were passed for query, but were not found. Please check their validity."
 msgstr ""
 
-#: admin/include/make_db_maps.php:175
+#: admin/include/make_db_maps.php:196
 msgid ""
 "The process was interrupted because Google limits to maximum 2500 queries within one day (counting is reset at "
 "midnight PST, which is 08:00 AM GMT)"
 msgstr "該過程被中斷因為谷歌限制最多在一天之內只能查詢 2500 次 (計數重置在午夜 PST也就是08:00 AM GMT)"
 
-#: admin/include/make_db_maps.php:176
+#: admin/include/make_db_maps.php:197
 #, php-format
 msgid "In total %1$d out of %2$d new locations were passed for query to Google."
 msgstr "在  %2$d 個新的地點內用谷歌共查詢 %1$d 個。"
 
-#: admin/include/make_db_maps.php:177
+#: admin/include/make_db_maps.php:198
 msgid "Tomorrow you can run this process again to add the locations that were not passed for geocoding today."
 msgstr "明天你就可以再次運行谷歌查詢 以便添加了今天未通過 的地理編碼的所在位置。"
 
-#: admin/include/make_db_maps.php:178
+#: admin/include/make_db_maps.php:199
 msgid "locations were recognized by geocoding and have been saved in the database."
 msgstr "地理編碼的所在位置已被認出所以可保留在資料庫中 "
 
-#: admin/include/make_db_maps.php:200 family.php:2192 report_ancestor.php:1575
+#: admin/include/make_db_maps.php:221 family.php:2249 report_ancestor.php:1575
 msgid "Back"
 msgstr "後"
 
-#: admin/include/make_db_maps.php:247
-msgid "Google maps API Key"
+#: admin/include/make_db_maps.php:268
+msgid "World map API Keys"
 msgstr ""
 
-#: admin/include/make_db_maps.php:249
-msgid ""
-"As of Jun 22, 2016 Google has changed its API policy and all queries to the Google maps API now require a site-"
-"specific key."
+#: admin/include/make_db_maps.php:291
+#, fuzzy
+#| msgid "Hide Google maps"
+msgid "Use Google Maps"
+msgstr "隱藏谷歌地圖"
+
+#: admin/include/make_db_maps.php:293
+msgid "Use OpenStreetMap"
 msgstr ""
 
-#: admin/include/make_db_maps.php:250
-msgid ""
-"For now, it seems that installations that started API queries prior to June 22, 2016 will continue to work also "
-"without a key."
+#: admin/include/make_db_maps.php:297
+#, fuzzy
+#| msgid "Google maps"
+msgid "Google Maps API Keys"
+msgstr "谷歌地圖"
+
+#: admin/include/make_db_maps.php:302
+msgid "To use the Google maps options, you need a Google account."
 msgstr ""
 
-#: admin/include/make_db_maps.php:251
-msgid ""
-"If however you start activating the Google map feature after this date, you are likely to encounter error "
-"messages concerning a missing key if you do not first enter and save a key here."
-msgstr ""
-
-#: admin/include/make_db_maps.php:252
+#: admin/include/make_db_maps.php:303
 msgid "If you don't have a Google account, first create one. Once logged into your Google account, go to:"
 msgstr ""
 
-#: admin/include/make_db_maps.php:253
+#: admin/include/make_db_maps.php:304
 msgid "Get API key"
 msgstr ""
 
-#: admin/include/make_db_maps.php:254
+#: admin/include/make_db_maps.php:305
 msgid "and follow the instructions."
 msgstr ""
 
-#: admin/include/make_db_maps.php:255
+#: admin/include/make_db_maps.php:306
 msgid "Create two keys"
 msgstr ""
 
-#: admin/include/make_db_maps.php:256
+#: admin/include/make_db_maps.php:307
 msgid ""
 "For the first key, set restriction to <strong>\"HTTP referrers\"</strong> and enter your website domain name."
 msgstr ""
 
-#: admin/include/make_db_maps.php:256
+#: admin/include/make_db_maps.php:307
 msgid "If your domain looks like 'www.mydomain.com', enter:"
 msgstr ""
 
-#: admin/include/make_db_maps.php:256
+#: admin/include/make_db_maps.php:307
 msgid "If your domain looks like 'mydomain.com', enter:"
 msgstr ""
 
-#: admin/include/make_db_maps.php:280
+#: admin/include/make_db_maps.php:331
 msgid "For the second key, set restriction to <strong>\"IP addresses\"</strong> and enter your server IP."
 msgstr ""
 
-#: admin/include/make_db_maps.php:280
+#: admin/include/make_db_maps.php:331
 msgid "Not your computer's IP!"
 msgstr ""
 
-#: admin/include/make_db_maps.php:281
+#: admin/include/make_db_maps.php:332
 msgid "Your server IP would seem to be:"
 msgstr ""
 
-#: admin/include/make_db_maps.php:283
+#: admin/include/make_db_maps.php:334
 msgid "Your server also has an IPv6 address. If the above IP doesn't work, try the IPv6 which would seem to be:"
 msgstr ""
 
-#: admin/include/make_db_maps.php:285
+#: admin/include/make_db_maps.php:336
 msgid "If this doesn't work, contact your provider and try to obtain the proper IP address from them."
 msgstr ""
 
-#: admin/include/make_db_maps.php:286
+#: admin/include/make_db_maps.php:337
 msgid "Once you receive the keys enter them in the two fields below and save."
 msgstr ""
 
-#: admin/include/make_db_maps.php:292 admin/include/make_db_maps.php:302 admin/include/make_db_maps.php:314
-#: admin/include/make_db_maps.php:318 admin/include/make_db_maps.php:333 admin/include/make_db_maps.php:343
-#: admin/include/make_db_maps.php:353 admin/include/make_db_maps.php:367 admin/include/make_db_maps.php:377
-#: admin/include/make_db_maps.php:389 admin/include/make_db_maps.php:393 admin/include/make_db_maps.php:408
-#: admin/include/make_db_maps.php:418 admin/include/make_db_maps.php:428
+#: admin/include/make_db_maps.php:387 admin/include/make_db_maps.php:396 admin/include/make_db_maps.php:581
 msgid "API key"
 msgstr ""
 
-#: admin/include/make_db_maps.php:303 admin/include/make_db_maps.php:378
-msgid "has been deleted"
+#: admin/include/make_db_maps.php:552
+msgid "OpenStreetMap API Keys"
 msgstr ""
 
-#: admin/include/make_db_maps.php:440
+#: admin/include/make_db_maps.php:553
+msgid ""
+"To use OpenStreetMap we need geolocation data of all places. Go to <a href=\"https://geokeo.com\" target="
+"\"_blank\">https://geokeo.com</a> and create an account to get the API key."
+msgstr ""
+
+#: admin/include/make_db_maps.php:594
 msgid "Create or update geolocation database"
 msgstr "建立或更改所在地的資料庫"
 
-#: admin/include/make_db_maps.php:560
+#: admin/include/make_db_maps.php:713
 msgid "No new locations were found to add to the database"
 msgstr "沒有發現新的所在地可加入在資料庫內"
 
-#: admin/include/make_db_maps.php:563 admin/include/make_db_maps.php:603
+#: admin/include/make_db_maps.php:716 admin/include/make_db_maps.php:757
 #, php-format
 msgid "The following %d locations are already known as non-indexable by Google. Please check their validity."
 msgstr ""
 
-#: admin/include/make_db_maps.php:587
+#: admin/include/make_db_maps.php:740
 #, php-format
 msgid "There are %s new unique birth/ death locations to add to the database."
 msgstr "有 %s 新的獨特的出生/死亡的地點添加到在資料庫中."
 
-#: admin/include/make_db_maps.php:594
+#: admin/include/make_db_maps.php:748
 #, php-format
 msgid "This will take approximately <b>%1$d minutes and %2$d seconds.</b>"
 msgstr "這將需要大約<b>%1$d 分鐘 %2$d 秒.</b>"
 
-#: admin/include/make_db_maps.php:596
+#: admin/include/make_db_maps.php:750
 msgid "Do you wish to add these locations to the database database now?"
 msgstr "現在你想要將這些所在地加入在資料庫中嗎？"
 
-#: admin/include/make_db_maps.php:614
+#: admin/include/make_db_maps.php:768
 msgid "A geolocation database exists."
 msgstr "現有個 所在地資料庫"
 
-#: admin/include/make_db_maps.php:617
+#: admin/include/make_db_maps.php:771
 msgid "No geolocation database found."
 msgstr "沒有發現所在地資料庫"
 
-#: admin/include/make_db_maps.php:619
+#: admin/include/make_db_maps.php:773
 msgid "Check how many new locations have to be indexed and how long the indexing may take (approximately)."
 msgstr "檢查新的所在地有多少被索引並且檢查索引可能會花費多長時間(大約)"
 
-#: admin/include/make_db_maps.php:635 include/mainindex_cls.php:588 list.php:1775
+#: admin/include/make_db_maps.php:789 include/mainindex_cls.php:595 list.php:1775
 msgid "All family trees"
 msgstr "所有的家譜"
 
-#: admin/include/make_db_maps.php:658 admin/include/tree_check.php:727
+#: admin/include/make_db_maps.php:812 admin/include/tree_check.php:727
 msgid "Check"
 msgstr "檢查"
 
-#: admin/include/make_db_maps.php:667
+#: admin/include/make_db_maps.php:821
 msgid "Refresh birth/ death status and tree affiliation of all locations"
 msgstr "刷新所有所在地的 出生/死亡狀態和所屬的家譜"
 
-#: admin/include/make_db_maps.php:672
+#: admin/include/make_db_maps.php:826
 msgid "The birth/ death status and tree affiliation has been refreshed."
 msgstr "所有所在地的 出生/死亡狀態和所屬的家譜已被刷新"
 
-#: admin/include/make_db_maps.php:676
+#: admin/include/make_db_maps.php:830
 #, fuzzy, php-format
 #| msgid ""
 #| "The \"Find a location on the map\" pull-down displays a list according to the chosen tree and the birth/ "
@@ -4005,75 +4013,75 @@ msgstr ""
 "geolocation database”也將刷新現有位置狀態)<P><B>當使用這個按鈕：</ B><ul> <li>如果你直接用HuMo-gen在你自己電腦"
 "</ li><li>如果你想刪除已過時的所有位置(標記下面的方框)</ li></ ul></ P>"
 
-#: admin/include/make_db_maps.php:678
+#: admin/include/make_db_maps.php:832
 msgid "Also delete all locations that have become obsolete (not connected to any persons anymore)"
 msgstr ""
 
-#: admin/include/make_db_maps.php:679
+#: admin/include/make_db_maps.php:833
 msgid "Refresh"
 msgstr ""
 
-#: admin/include/make_db_maps.php:686
+#: admin/include/make_db_maps.php:840
 msgid "Edit geolocation database"
 msgstr "編輯所在地的資料庫"
 
-#: admin/include/make_db_maps.php:830
+#: admin/include/make_db_maps.php:986
 msgid "Deleted location:"
 msgstr "被刪除的所在地"
 
-#: admin/include/make_db_maps.php:838
+#: admin/include/make_db_maps.php:994
 msgid "Changed location:"
 msgstr "被更改的所在地"
 
-#: admin/include/make_db_maps.php:866
+#: admin/include/make_db_maps.php:1022
 msgid "Added location:"
 msgstr "被添加的所在地"
 
-#: admin/include/make_db_maps.php:925
+#: admin/include/make_db_maps.php:1087
 msgid "Details from the database"
 msgstr "資料庫的詳細信息"
 
-#: admin/include/make_db_maps.php:926
+#: admin/include/make_db_maps.php:1088
 msgid "Location"
 msgstr "所在地"
 
-#: admin/include/make_db_maps.php:927 admin/include/make_db_maps.php:948
+#: admin/include/make_db_maps.php:1089 admin/include/make_db_maps.php:1111
 msgid "Latitude"
 msgstr "緯度"
 
-#: admin/include/make_db_maps.php:928 admin/include/make_db_maps.php:949
+#: admin/include/make_db_maps.php:1090 admin/include/make_db_maps.php:1112
 msgid "Longitude"
 msgstr "經度"
 
-#: admin/include/make_db_maps.php:932
+#: admin/include/make_db_maps.php:1094
 msgid "Delete this location"
 msgstr "刪除這所在地"
 
-#: admin/include/make_db_maps.php:945
+#: admin/include/make_db_maps.php:1108
 msgid "Change or add locations"
 msgstr "更改或添加所在地"
 
-#: admin/include/make_db_maps.php:945
+#: admin/include/make_db_maps.php:1108
 msgid "(You can also drag the marker!)"
 msgstr "(你可以移動這標記!)"
 
-#: admin/include/make_db_maps.php:951
+#: admin/include/make_db_maps.php:1114
 msgid "Change this location"
 msgstr "更改這所在地"
 
-#: admin/include/make_db_maps.php:952
+#: admin/include/make_db_maps.php:1115
 msgid "Add this location"
 msgstr "添加這所在地"
 
-#: admin/include/make_db_maps.php:960
+#: admin/include/make_db_maps.php:1124
 msgid "Delete geolocation database"
 msgstr "刪除地理所在的資料庫"
 
-#: admin/include/make_db_maps.php:964
+#: admin/include/make_db_maps.php:1128
 msgid "Database was deleted!"
 msgstr "資料庫已被移除"
 
-#: admin/include/make_db_maps.php:968
+#: admin/include/make_db_maps.php:1132
 #, fuzzy, php-format
 #| msgid ""
 #| "Here you can delete your entire geolocation database (%d entries).<br>\n"
@@ -4085,15 +4093,15 @@ msgstr ""
 "這裡你看刪除整個地理資料庫 (%d 項).<br>\n"
 "如果你絕對肯定的話, 按下面的按鈕."
 
-#: admin/include/make_db_maps.php:970
+#: admin/include/make_db_maps.php:1134
 msgid "DELETE ENTIRE GEOLOCATION DATABASE"
 msgstr "刪除整個地理資料庫"
 
-#: admin/include/make_db_maps.php:974
+#: admin/include/make_db_maps.php:1138
 msgid "List of non-indexable locations was refreshed!"
 msgstr ""
 
-#: admin/include/make_db_maps.php:982
+#: admin/include/make_db_maps.php:1146
 #, php-format
 msgid ""
 "Here you can refresh the list of %d non-indexable locations that was stored in your database after previous "
@@ -4101,11 +4109,11 @@ msgid ""
 "updated gedcoms and some of these locations may no longer appear in your data."
 msgstr ""
 
-#: admin/include/make_db_maps.php:984
+#: admin/include/make_db_maps.php:1148
 msgid "REFRESH LIST OF NON-INDEXABLE LOCATIONS"
 msgstr ""
 
-#: admin/include/make_db_maps.php:996
+#: admin/include/make_db_maps.php:1160
 #, fuzzy
 #| msgid ""
 #| "The slider has 10 steps. By default the starting year is 1560 with 9 intervals of 50 years up till 2010 and "
@@ -4124,47 +4132,47 @@ msgstr ""
 "它將自動計算9間隔:例如有些年開始以零開始<br>\n"
 "1110 (intv. 100), 1560 (intv. 50), 1695 (intv. 35),1740 (intv. 30), 1785 (intv. 25), 1830 (intv. 20)"
 
-#: admin/include/make_db_maps.php:1008
+#: admin/include/make_db_maps.php:1172
 msgid "Name of tree"
 msgstr "家譜的名字"
 
-#: admin/include/make_db_maps.php:1008
+#: admin/include/make_db_maps.php:1172
 msgid "Starting year"
 msgstr "開始年度"
 
-#: admin/include/make_db_maps.php:1009
+#: admin/include/make_db_maps.php:1173
 msgid "Interval"
 msgstr "間隔"
 
-#: admin/include/make_db_maps.php:1047
+#: admin/include/make_db_maps.php:1211
 msgid "Default slider position"
 msgstr "在正常情況下滑塊的位置"
 
-#: admin/include/make_db_maps.php:1075
+#: admin/include/make_db_maps.php:1239
 msgid "OFF position (leftmost position)"
 msgstr "OFF 位置 (最左位置)  "
 
-#: admin/include/make_db_maps.php:1077
+#: admin/include/make_db_maps.php:1241
 msgid "Show all periods (rightmost position)"
 msgstr "顯示所有時段(最右邊的位置)"
 
-#: admin/include/make_db_maps.php:1082
+#: admin/include/make_db_maps.php:1246
 msgid "Default map type"
 msgstr ""
 
-#: admin/include/make_db_maps.php:1110
+#: admin/include/make_db_maps.php:1274
 msgid "Regular map (ROADMAP)"
 msgstr ""
 
-#: admin/include/make_db_maps.php:1112
+#: admin/include/make_db_maps.php:1276
 msgid "Satellite map with roads and places (HYBRID)"
 msgstr ""
 
-#: admin/include/make_db_maps.php:1115
+#: admin/include/make_db_maps.php:1279
 msgid "Default zoom"
 msgstr ""
 
-#: admin/include/prefix_editor.php:29 admin/index.php:970
+#: admin/include/prefix_editor.php:29 admin/index.php:979
 msgid "Prefix editor"
 msgstr " 字首編輯器"
 
@@ -4180,11 +4188,11 @@ msgstr ""
 "這是HuMo-gen 的 (名字) 字首編輯器<br>如果一個 gedcom 被輸入\n"
 "這些字首編輯器 是用來處理名字的字首"
 
-#: admin/include/settings_admin.php:192 admin/index.php:959
+#: admin/include/settings_admin.php:192 admin/index.php:968
 msgid "Homepage"
 msgstr ""
 
-#: admin/include/settings_admin.php:196 admin/include/settings_admin.php:1181
+#: admin/include/settings_admin.php:196 admin/include/settings_admin.php:1195
 msgid "Special settings"
 msgstr "特別的設定"
 
@@ -4483,212 +4491,212 @@ msgstr "默認"
 msgid "First select language, then select the default timeline for that language."
 msgstr ""
 
-#: admin/include/settings_admin.php:607
+#: admin/include/settings_admin.php:608
 msgid "Settings Main Menu"
 msgstr "設定的主選單"
 
-#: admin/include/settings_admin.php:609
+#: admin/include/settings_admin.php:610
 msgid "Website name"
 msgstr "網絡的名字"
 
-#: admin/include/settings_admin.php:612
+#: admin/include/settings_admin.php:613
 msgid "Link homepage"
 msgstr "鏈接的主頁"
 
-#: admin/include/settings_admin.php:612 admin/include/settings_admin.php:1146
-#: admin/include/settings_admin.php:1152 admin/include/settings_admin.php:1158
-#: admin/include/settings_admin.php:1164
+#: admin/include/settings_admin.php:613 admin/include/settings_admin.php:1160
+#: admin/include/settings_admin.php:1166 admin/include/settings_admin.php:1172
+#: admin/include/settings_admin.php:1178
 msgid "Link description"
 msgstr "鏈接的說明"
 
-#: admin/include/settings_admin.php:613 admin/include/settings_admin.php:620
+#: admin/include/settings_admin.php:614 admin/include/settings_admin.php:621
 msgid "(link to this site including http://)"
 msgstr "(鏈接到這網頁包括 http://)"
 
-#: admin/include/settings_admin.php:618
+#: admin/include/settings_admin.php:619
 msgid "Link for birthdays RSS"
 msgstr "鏈接到生日 RSS"
 
-#: admin/include/settings_admin.php:621
+#: admin/include/settings_admin.php:622
 msgid "This option can be turned on or off in the user groups."
 msgstr "在使用者群這選項可打開或關閉"
 
-#: admin/include/settings_admin.php:624
+#: admin/include/settings_admin.php:625
 msgid "Settings family page"
 msgstr "設定家譜網頁"
 
-#: admin/include/settings_admin.php:626
+#: admin/include/settings_admin.php:627
 msgid "Number of generations in descendant report"
 msgstr "在後代報告裡世代的數目"
 
-#: admin/include/settings_admin.php:627
+#: admin/include/settings_admin.php:628
 msgid "Show number of generation in descendant report (standard value=4)."
 msgstr "展示在後代報告裡世代的數目(標準數字=4)."
 
-#: admin/include/settings_admin.php:630
+#: admin/include/settings_admin.php:631
 msgid "Number of persons in search results"
 msgstr "在搜索結果裡個人的數目"
 
-#: admin/include/settings_admin.php:631
+#: admin/include/settings_admin.php:632
 msgid "Show number of persons in search results (standard value=30)."
 msgstr "展示在搜索結果裡個人的數 目(標準數字=30)."
 
-#: admin/include/settings_admin.php:636 admin/include/settings_admin.php:637
+#: admin/include/settings_admin.php:637 admin/include/settings_admin.php:638
 msgid "Watermark text in PDF file"
 msgstr "在 PDF 文件裡 有水印的文句"
 
-#: admin/include/settings_admin.php:638
+#: admin/include/settings_admin.php:639
 msgid "Watermark text (clear to remove watermark)"
 msgstr "有水印的文句(明確移除水印)"
 
-#: admin/include/settings_admin.php:640
+#: admin/include/settings_admin.php:641
 msgid "Watermark RGB text color"
 msgstr "有水印的RGB 文句 顏色"
 
-#: admin/include/settings_admin.php:645
+#: admin/include/settings_admin.php:646
 msgid "Default values: R = 224, G = 224, B = 224."
 msgstr "默認值: R = 224, G = 224, B = 224."
 
-#: admin/include/settings_admin.php:650
+#: admin/include/settings_admin.php:651
 msgid "Display for One Name Study web sites"
 msgstr ""
 
-#: admin/include/settings_admin.php:651
+#: admin/include/settings_admin.php:652
 msgid "One Name Study display"
 msgstr ""
 
-#: admin/include/settings_admin.php:658
+#: admin/include/settings_admin.php:659
 msgid "Enter the One Name of this site"
 msgstr ""
 
-#: admin/include/settings_admin.php:663
+#: admin/include/settings_admin.php:664
 msgid "Save settings"
 msgstr "保留設定"
 
-#: admin/include/settings_admin.php:764
+#: admin/include/settings_admin.php:765
 msgid "Homepage template"
 msgstr ""
 
-#: admin/include/settings_admin.php:765
+#: admin/include/settings_admin.php:766
 msgid "Default settings"
 msgstr ""
 
-#: admin/include/settings_admin.php:768
+#: admin/include/settings_admin.php:769
 msgid "Position"
 msgstr ""
 
-#: admin/include/settings_admin.php:768 admin/include/statistics.php:461 admin/include/tree_check.php:141
+#: admin/include/settings_admin.php:769 admin/include/statistics.php:461 admin/include/tree_check.php:141
 #: statistics.php:86 statistics.php:264
 msgid "Item"
 msgstr "統計的"
 
-#: admin/include/settings_admin.php:792 admin/include/settings_admin.php:946
+#: admin/include/settings_admin.php:793 admin/include/settings_admin.php:959
 msgid "Active"
 msgstr ""
 
-#: admin/include/settings_admin.php:794 admin/include/settings_admin.php:947
+#: admin/include/settings_admin.php:795 admin/include/settings_admin.php:960
 msgid "Inactive"
 msgstr ""
 
-#: admin/include/settings_admin.php:799 admin/include/settings_admin.php:952
+#: admin/include/settings_admin.php:800 admin/include/settings_admin.php:965
 msgid "Left"
 msgstr ""
 
-#: admin/include/settings_admin.php:801 admin/include/settings_admin.php:953
+#: admin/include/settings_admin.php:802 admin/include/settings_admin.php:966
 msgid "Center"
 msgstr ""
 
-#: admin/include/settings_admin.php:803 admin/include/settings_admin.php:954
+#: admin/include/settings_admin.php:804 admin/include/settings_admin.php:967
 msgid "Right"
 msgstr ""
 
-#: admin/include/settings_admin.php:816 admin/include/settings_admin.php:958 admin/include/statistics.php:725
+#: admin/include/settings_admin.php:817 admin/include/settings_admin.php:971 admin/include/statistics.php:725
 msgid "Select family tree"
 msgstr "選家譜"
 
-#: admin/include/settings_admin.php:819 admin/include/settings_admin.php:959 include/mainindex_cls.php:218
-#: include/mainindex_cls.php:585 list.php:1773
+#: admin/include/settings_admin.php:820 admin/include/settings_admin.php:972 include/mainindex_cls.php:225
+#: include/mainindex_cls.php:592 list.php:1773
 msgid "Selected family tree"
 msgstr "被選好的家譜"
 
-#: admin/include/settings_admin.php:825 admin/include/settings_admin.php:961 header.php:253 help.php:51
-#: include/mainindex_cls.php:475 menu.php:465
+#: admin/include/settings_admin.php:826 admin/include/settings_admin.php:974 header.php:253 help.php:51
+#: include/mainindex_cls.php:482 menu.php:465
 msgid "Names"
 msgstr "姓名"
 
-#: admin/include/settings_admin.php:828 admin/include/settings_admin.php:962 include/mainindex_cls.php:896
+#: admin/include/settings_admin.php:829 admin/include/settings_admin.php:975 include/mainindex_cls.php:903
 msgid "Today in history"
 msgstr ""
 
-#: admin/include/settings_admin.php:831 admin/include/settings_admin.php:963 include/mainindex_cls.php:695
+#: admin/include/settings_admin.php:832 admin/include/settings_admin.php:976 include/mainindex_cls.php:702
 msgid "Favourites"
 msgstr ""
 
-#: admin/include/settings_admin.php:834 admin/include/settings_admin.php:964
+#: admin/include/settings_admin.php:835 admin/include/settings_admin.php:977
 msgid "Surnames Index"
 msgstr ""
 
-#: admin/include/settings_admin.php:837 admin/include/settings_admin.php:965 include/mainindex_cls.php:135
+#: admin/include/settings_admin.php:838 admin/include/settings_admin.php:978 include/mainindex_cls.php:135
 msgid "Random photo"
 msgstr ""
 
-#: admin/include/settings_admin.php:846 admin/include/settings_admin.php:968 admin/include/trees_cls.php:96
+#: admin/include/settings_admin.php:850 admin/include/settings_admin.php:982 admin/include/trees_cls.php:96
 msgid "EMPTY LINE"
 msgstr "空行"
 
-#: admin/include/settings_admin.php:859
+#: admin/include/settings_admin.php:863
 msgid "Columns"
 msgstr ""
 
-#: admin/include/settings_admin.php:870
+#: admin/include/settings_admin.php:874
 msgid "Rows"
 msgstr ""
 
-#: admin/include/settings_admin.php:901
+#: admin/include/settings_admin.php:905
 msgid "Header"
 msgstr ""
 
-#: admin/include/settings_admin.php:906
+#: admin/include/settings_admin.php:910
 msgid "Show text block, HTML codes can be used."
 msgstr ""
 
-#: admin/include/settings_admin.php:918
+#: admin/include/settings_admin.php:931
 msgid "Show text from CMS system."
 msgstr ""
 
-#: admin/include/settings_admin.php:922 fanchart.php:659
+#: admin/include/settings_admin.php:935 fanchart.php:659
 msgid "View"
 msgstr "視"
 
-#: admin/include/settings_admin.php:924
+#: admin/include/settings_admin.php:937
 msgid "with table"
 msgstr ""
 
-#: admin/include/settings_admin.php:927
+#: admin/include/settings_admin.php:940
 msgid "without table"
 msgstr ""
 
-#: admin/include/settings_admin.php:983
+#: admin/include/settings_admin.php:997
 msgid "If the left column isn't used, the center column will be made large automatically."
 msgstr ""
 
-#: admin/include/settings_admin.php:989
+#: admin/include/settings_admin.php:1003
 msgid "Homepage favourites"
 msgstr ""
 
-#: admin/include/settings_admin.php:1067
+#: admin/include/settings_admin.php:1081
 msgid "Show list of favourites in homepage"
 msgstr ""
 
-#: admin/include/settings_admin.php:1085
+#: admin/include/settings_admin.php:1099
 msgid "Link"
 msgstr "鏈接"
 
-#: admin/include/settings_admin.php:1106 admin/include/trees_cls.php:230
+#: admin/include/settings_admin.php:1120 admin/include/trees_cls.php:230
 msgid "Owner of tree"
 msgstr "家譜的所有者"
 
-#: admin/include/settings_admin.php:1115
+#: admin/include/settings_admin.php:1129
 #, fuzzy
 #| msgid ""
 #| "\"Own code\" is the code that has to be entered in your genealogy program under \"own code or REFN\"\n"
@@ -4708,83 +4716,83 @@ msgstr ""
 "2) 輸入於下表中的相同的代碼 (多個代碼也是可能的)<br>\n"
 "3) 處理gedcom文件後  一個額外的鏈接將出現在主選單中, 也就是族長!"
 
-#: admin/include/settings_admin.php:1133
+#: admin/include/settings_admin.php:1147
 msgid "Slideshow on the homepage"
 msgstr ""
 
-#: admin/include/settings_admin.php:1134
+#: admin/include/settings_admin.php:1148
 msgid ""
 "This option shows a slideshow at the homepage. Put the images in the media/slideshow/ folder at the website."
 "<br>Example of image link:"
 msgstr ""
 
-#: admin/include/settings_admin.php:1135
+#: admin/include/settings_admin.php:1149
 msgid "Images size should be about:"
 msgstr ""
 
-#: admin/include/settings_admin.php:1137
+#: admin/include/settings_admin.php:1151
 msgid "Show slideshow on the homepage"
 msgstr ""
 
-#: admin/include/settings_admin.php:1146 admin/include/settings_admin.php:1152
-#: admin/include/settings_admin.php:1158 admin/include/settings_admin.php:1164
+#: admin/include/settings_admin.php:1160 admin/include/settings_admin.php:1166
+#: admin/include/settings_admin.php:1172 admin/include/settings_admin.php:1178
 msgid "Link to image"
 msgstr ""
 
-#: admin/include/settings_admin.php:1187
+#: admin/include/settings_admin.php:1201
 msgid "Jewish settings"
 msgstr ""
 
-#: admin/include/settings_admin.php:1188
+#: admin/include/settings_admin.php:1202
 msgid "Display settings"
 msgstr ""
 
-#: admin/include/settings_admin.php:1190
+#: admin/include/settings_admin.php:1204
 msgid "Change all &#134; characters into &infin; characters in all language files"
 msgstr ""
 
-#: admin/include/settings_admin.php:1190
+#: admin/include/settings_admin.php:1204
 msgid "unchecking and saving will revert to the cross sign"
 msgstr ""
 
-#: admin/include/settings_admin.php:1192
+#: admin/include/settings_admin.php:1206
 msgid "Display Hebrew date after Gregorian date: 23 Dec 1980 (16 Tevet 5741)"
 msgstr ""
 
-#: admin/include/settings_admin.php:1194
+#: admin/include/settings_admin.php:1208
 msgid "Place yellow Stars of David before holocaust victims in lists and reports"
 msgstr ""
 
-#: admin/include/settings_admin.php:1196
+#: admin/include/settings_admin.php:1210
 msgid "Add: \"cause of death: murdered\" to holocaust victims"
 msgstr ""
 
-#: admin/include/settings_admin.php:1197
+#: admin/include/settings_admin.php:1211
 msgid "Editor settings"
 msgstr ""
 
-#: admin/include/settings_admin.php:1199
+#: admin/include/settings_admin.php:1213
 msgid "Add \"night\" checkbox next to Gregorian dates to calculate Hebrew date correctly"
 msgstr ""
 
-#: admin/include/settings_admin.php:1201
+#: admin/include/settings_admin.php:1215
 msgid "Add field for Hebrew name in name section of editor (instead of in \"events\" list)"
 msgstr ""
 
-#: admin/include/settings_admin.php:1203
+#: admin/include/settings_admin.php:1217
 msgid "Add field for Brit Mila under birth fields (instead of in \"events\" list)"
 msgstr ""
 
-#: admin/include/settings_admin.php:1205
+#: admin/include/settings_admin.php:1219
 msgid "Add field for Bar/ Bat Mitsva before baptise fields (instead of in \"events\" list)"
 msgstr ""
 
-#: admin/include/settings_admin.php:1210 admin/include/settings_admin.php:1211
-#: admin/include/settings_admin.php:1214
+#: admin/include/settings_admin.php:1224 admin/include/settings_admin.php:1225
+#: admin/include/settings_admin.php:1228
 msgid "Sitemap"
 msgstr "網頁地圖"
 
-#: admin/include/settings_admin.php:1212
+#: admin/include/settings_admin.php:1226
 #, fuzzy
 #| msgid ""
 #| "A sitemap can be used for quick indexing of the HuMo-gen family screens by search engines. Add the sitemap "
@@ -4801,7 +4809,7 @@ msgstr ""
 "( 在你的網站的 家譜根文件夾裡）的鏈接。例如 robots.txt文件，網站地圖網站地圖   <br> http://www.yourwebsite.com/"
 "humo-gen/sitemap.php"
 
-#: admin/include/statistics.php:10 admin/include/users.php:114 admin/index.php:1024 header.php:259 help.php:66
+#: admin/include/statistics.php:10 admin/include/users.php:114 admin/index.php:1033 header.php:259 help.php:66
 #: menu.php:602
 msgid "Statistics"
 msgstr "統計"
@@ -4846,7 +4854,7 @@ msgstr "訪問者"
 msgid "Visited families in the past 12 months"
 msgstr "在過去十二個月內訪問過的家庭"
 
-#: admin/include/statistics.php:258 admin/include/statistics.php:299 family.php:1178 list.php:1669
+#: admin/include/statistics.php:258 admin/include/statistics.php:299 family.php:1179 list.php:1669
 msgid "Unknown"
 msgstr "未知"
 
@@ -5497,20 +5505,20 @@ msgstr "配偶 "
 
 #: admin/include/tree_check.php:1419 admin/include/tree_check.php:1423 admin/include/tree_check.php:1434
 #: admin/include/tree_check.php:1436 admin/include/tree_check.php:1439 admin/include/tree_check.php:1442
-#: family.php:1644 family.php:1668 family.php:1807 family.php:1813
+#: family.php:1591 family.php:1615 family.php:1754 family.php:1760
 msgid "BORN_SHORT"
 msgstr "生"
 
-#: admin/include/tree_check.php:1420 admin/include/tree_check.php:1424 family.php:1647 family.php:1671
+#: admin/include/tree_check.php:1420 admin/include/tree_check.php:1424 family.php:1594 family.php:1618
 msgid "BAPTISED_SHORT"
 msgstr "受洗"
 
-#: admin/include/tree_check.php:1421 admin/include/tree_check.php:1425 family.php:1696 family.php:1727
-#: family.php:1830 family.php:1836
+#: admin/include/tree_check.php:1421 admin/include/tree_check.php:1425 family.php:1643 family.php:1674
+#: family.php:1777 family.php:1783
 msgid "DIED_SHORT"
 msgstr "死亡"
 
-#: admin/include/tree_check.php:1422 admin/include/tree_check.php:1426 family.php:1699 family.php:1730
+#: admin/include/tree_check.php:1422 admin/include/tree_check.php:1426 family.php:1646 family.php:1677
 msgid "BURIED_SHORT"
 msgstr "埋藏"
 
@@ -5643,7 +5651,7 @@ msgstr "添加空行在家譜素的名單上"
 msgid "Collation"
 msgstr "整理"
 
-#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2110 register.php:127
+#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2167 register.php:127
 #: user_settings.php:123
 msgid "E-mail address"
 msgstr "電子郵件地址"
@@ -5743,7 +5751,7 @@ msgstr "跳過到下一個"
 msgid "Skip to nr: "
 msgstr "跳過到nr:"
 
-#: admin/include/trees_cls.php:482 maps.php:680 maps.php:792
+#: admin/include/trees_cls.php:482 maps.php:696 maps.php:808
 msgid "Go!"
 msgstr "上 !"
 
@@ -6113,8 +6121,8 @@ msgstr "檢查周圍親戚"
 msgid "Nr. "
 msgstr "數目"
 
-#: admin/include/trees_cls.php:1599 family.php:435 family.php:438 family.php:495 family.php:498 family.php:633
-#: family.php:636 family.php:1020 hourglass.php:73 relations.php:361 relations.php:372 relations.php:384
+#: admin/include/trees_cls.php:1599 family.php:435 family.php:438 family.php:495 family.php:498 family.php:634
+#: family.php:637 family.php:1021 hourglass.php:73 relations.php:361 relations.php:372 relations.php:384
 #: relations.php:387 relations.php:389 relations.php:395 relations.php:402 relations.php:406 relations.php:408
 #: relations.php:411 relations.php:412 relations.php:413 relations.php:414 relations.php:416 relations.php:518
 #: relations.php:519 relations.php:520 relations.php:522 relations.php:542 relations.php:543 relations.php:544
@@ -6356,7 +6364,7 @@ msgstr "新"
 msgid "Approved"
 msgstr "許可了"
 
-#: admin/include/users.php:5 admin/index.php:1083 admin/index.php:1088
+#: admin/include/users.php:5 admin/index.php:1092 admin/index.php:1097
 msgid "Users"
 msgstr "使用者"
 
@@ -6380,75 +6388,77 @@ msgstr "不必登錄"
 msgid "Unblock IP address"
 msgstr ""
 
-#: admin/index.php:288
+#: admin/index.php:297
 msgid "Please enter a valid username or password. "
 msgstr "請輸入一個有效的使用者名字或密碼"
 
-#: admin/index.php:523 admin/index.php:528 admin/index.php:725
+#: admin/index.php:532 admin/index.php:537 admin/index.php:734
 msgid "Update options"
 msgstr "更新的選項"
 
-#: admin/index.php:527
+#: admin/index.php:536
 #, fuzzy
 #| msgid "HuMo-gen update check is disabled."
 msgid "update check is disabled."
 msgstr "HuMo-gen 更新的檢查功能已被禁用"
 
-#: admin/index.php:724
+#: admin/index.php:733
 #, fuzzy
 #| msgid "HuMo-gen is up-to-date!"
 msgid "is up-to-date!"
 msgstr "HuMo-gen 是在最新狀態 "
 
-#: admin/index.php:730
+#: admin/index.php:739
 msgid "Update available"
 msgstr "可以使用更新功能"
 
-#: admin/index.php:735
+#: admin/index.php:744
 msgid "Beta version available"
 msgstr "可以使用試用版"
 
-#: admin/index.php:748 admin/update/install_update.php:438
+#: admin/index.php:757 admin/update/install_update.php:438
 msgid "Online version check unavailable."
 msgstr "在線版本的檢查功能不能用。"
 
-#: admin/index.php:882
+#: admin/index.php:891
 msgid "Website"
 msgstr "網站"
 
-#: admin/index.php:892 menu.php:266 menu.php:785
+#: admin/index.php:901 menu.php:266 menu.php:786
 msgid "Logoff"
 msgstr "登錄出"
 
-#: admin/index.php:945
+#: admin/index.php:954
 msgid "Control"
 msgstr "控制"
 
-#: admin/index.php:974 family.php:155 header.php:262 help.php:72 menu.php:625
-msgid "Google maps"
+#: admin/index.php:983 help.php:72 menu.php:626
+#, fuzzy
+#| msgid "Google maps"
+msgid "World map"
 msgstr "谷歌地圖"
 
-#: admin/index.php:1012
+#: admin/index.php:1021
 msgid "Data check"
 msgstr "資料檢查"
 
-#: admin/index.php:1018
+#: admin/index.php:1027
 msgid "Gedcom export"
 msgstr "GEDCOM輸出"
 
-#: admin/index.php:1021
+#: admin/index.php:1030
 msgid "Database backup"
 msgstr "後備的資料庫"
 
-#: admin/index.php:1062
+#: admin/index.php:1071
 msgid "Shared addresses"
 msgstr ""
 
-#: admin/index.php:1091
+#: admin/index.php:1100
 msgid "Groups"
 msgstr "群體"
 
-#: admin/index.php:1094
+#: admin/index.php:1103
 msgid "Log"
 msgstr "日誌"
 
@@ -6737,7 +6747,7 @@ msgstr "日"
 msgid " PRIVACY FILTER"
 msgstr "隱私過濾"
 
-#: birthday_list.php:219 birthday_list.php:386 include/mainindex_cls.php:931 include/mainindex_cls.php:955
+#: birthday_list.php:219 birthday_list.php:386 include/mainindex_cls.php:938 include/mainindex_cls.php:962
 #: list.php:2138 list_places_families.php:593
 msgid " persons are not shown due to privacy settings"
 msgstr "有些人因隱私設置不被選示"
@@ -6821,9 +6831,27 @@ msgstr ""
 msgid "Settings family screen"
 msgstr "設置: 家族畫面"
 
-#: family.php:124 family.php:929 family.php:1918 family.php:1922
+#: family.php:124 family.php:930 family.php:1975 family.php:1979
 msgid "Family Page"
 msgstr "家族網頁"
+
+#: family.php:155
+#, fuzzy
+#| msgid "Family Page"
+msgid "Family map"
+msgstr "家族網頁"
+
+#: family.php:158
+#, fuzzy
+#| msgid "Show Google maps"
+msgid "Show family map"
+msgstr "展示谷歌地圖"
+
+#: family.php:160
+#, fuzzy
+#| msgid "Hide Google maps"
+msgid "Hide family map"
+msgstr "隱藏谷歌地圖"
 
 #: family.php:167
 msgid "Pictures"
@@ -6845,101 +6873,101 @@ msgstr ""
 msgid "Add to favourite list"
 msgstr "列入愛好名單上"
 
-#: family.php:435 family.php:495 family.php:633 help.php:22 include/person_cls.php:841
+#: family.php:435 family.php:495 family.php:634 help.php:22 include/person_cls.php:841
 msgid "Descendant report"
 msgstr "個人後裔報告"
 
-#: family.php:438 family.php:498 family.php:580 family.php:636 family.php:876 family.php:888
+#: family.php:438 family.php:498 family.php:580 family.php:637 family.php:877 family.php:889
 #: include/person_cls.php:821
 msgid "Family group sheet"
 msgstr "家庭組群表格"
 
-#: family.php:605 family.php:894
+#: family.php:606 family.php:895
 #, php-format
 msgid "TIP: use %s for other (ancestor and descendant) reports."
 msgstr "提示: 將鼠標懸停在 %s 祖先和後裔報告以及圖表上."
 
-#: family.php:710 family.php:717 family.php:721 report_ancestor.php:314 report_ancestor.php:323
+#: family.php:711 family.php:718 family.php:722 report_ancestor.php:314 report_ancestor.php:323
 #: report_ancestor.php:333 report_ancestor.php:337
 msgid "generation "
 msgstr "代"
 
-#: family.php:1292 family.php:1310
+#: family.php:1293 family.php:1311
 msgid "Child"
 msgstr "孩子"
 
-#: family.php:1448 family.php:1454 family.php:1466
+#: family.php:1449 family.php:1455 family.php:1467
 msgid "follows"
 msgstr "如下"
 
-#: family.php:1527 family.php:1545 family.php:1564
+#: family.php:1528 family.php:1546 family.php:1565
 msgid "Adopted child:"
 msgstr " 被收養的孩子 "
 
-#: family.php:1542 family.php:1561
+#: family.php:1543 family.php:1562
 msgid "Stepchild"
 msgstr "繼子女"
 
-#: family.php:1543 family.php:1562
+#: family.php:1544 family.php:1563
 msgid "Legal child"
 msgstr "法定子女"
 
-#: family.php:1544 family.php:1563
+#: family.php:1545 family.php:1564
 msgid "Foster child"
 msgstr "養子女"
 
-#: family.php:1772 family.php:1778 include/calculate_age_cls.php:375 include/calculate_age_cls.php:378
+#: family.php:1719 family.php:1725 include/calculate_age_cls.php:375 include/calculate_age_cls.php:378
 #: report_ancestor.php:1181
 msgid "married"
 msgstr "結婚了"
 
-#: family.php:1868
+#: family.php:1925
 msgid "Family events"
 msgstr "家庭活動"
 
-#: family.php:1918
+#: family.php:1975
 msgid "Citation for:"
 msgstr ""
 
-#: family.php:1937
+#: family.php:1994
 msgid "accessed"
 msgstr ""
 
-#: family.php:2033 family.php:2040
+#: family.php:2090 family.php:2097
 msgid "New user note"
 msgstr "新用戶按語 "
 
-#: family.php:2038 mailform.php:24 register.php:59 user_settings.php:50
+#: family.php:2095 mailform.php:24 register.php:59 user_settings.php:50
 #, fuzzy, php-format
 #| msgid "Message sent through HuMo-gen from the website."
 msgid "Message sent through %s from the website."
 msgstr "消息通過HuMo-gen根從網站發送。"
 
-#: family.php:2045
+#: family.php:2102
 msgid "User note by family"
 msgstr "(家庭)用戶按語 "
 
-#: family.php:2066
+#: family.php:2123
 msgid "Your information is saved and will be reviewed by the webmaster."
 msgstr "您的信息將被保存，並通過網站管理員審核。"
 
-#: family.php:2103
+#: family.php:2160
 msgid "Add information or remarks"
 msgstr "添加信息或言論"
 
-#: family.php:2110
+#: family.php:2167
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "沒有您的E-mail地址。請在這裡添加您的郵件地址："
 
-#: family.php:2116 login.php:44 mailform.php:134 register.php:148
+#: family.php:2173 login.php:44 mailform.php:134 register.php:148
 msgid "Send"
 msgstr "發送了"
 
-#: family.php:2181 report_ancestor.php:1568
+#: family.php:2238 report_ancestor.php:1568
 msgid "Download RTF report."
 msgstr "下載RTF格式的報告"
 
-#: family.php:2182 report_ancestor.php:1569
+#: family.php:2239 report_ancestor.php:1569
 msgid ""
 "TIP: Don't use Wordpad to open this file (the lay-out will be wrong!). It's better to use a text processor like "
 "Word or OpenOffice Writer."
@@ -7049,43 +7077,43 @@ msgstr "下載鏈接"
 msgid "Unzip and place in \"include/fanchart/chinese/\" folder"
 msgstr "解開並且放置在 \"include/fanchart/chinese/\" 文件夾中"
 
-#: googlemaps/google_initiate.php:334
+#: googlemaps/google_initiate.php:335
 msgid "today "
 msgstr "今日"
 
-#: googlemaps/google_initiate.php:382
+#: googlemaps/google_initiate.php:383
 msgid "Location: "
 msgstr "地點"
 
-#: googlemaps/google_initiate.php:384
+#: googlemaps/google_initiate.php:385
 msgid "For a list of persons born here until "
 msgstr "出生在這裡的人們名單一直到"
 
-#: googlemaps/google_initiate.php:387
+#: googlemaps/google_initiate.php:388
 msgid "For a list of all people that died here until "
 msgstr "死亡在這裡的人們名單一直到"
 
-#: googlemaps/google_initiate.php:389
+#: googlemaps/google_initiate.php:390
 msgid " click here"
 msgstr "點擊這裡"
 
-#: googlemaps/google_initiate.php:390
+#: googlemaps/google_initiate.php:391
 msgid "Read about this location in "
 msgstr "解讀這地點在"
 
-#: googlemaps/namesearch.php:134
+#: googlemaps/namesearch.php:135
 msgid "All persons born here: "
 msgstr "所有出生在這裡的人："
 
-#: googlemaps/namesearch.php:141
+#: googlemaps/namesearch.php:142
 msgid "Persons born here until "
 msgstr "出生在這裡的人一直到"
 
-#: googlemaps/namesearch.php:155
+#: googlemaps/namesearch.php:156
 msgid "All persons that died here: "
 msgstr "所有死亡在這裡的人："
 
-#: googlemaps/namesearch.php:165
+#: googlemaps/namesearch.php:166
 msgid "Persons that died here until "
 msgstr "死亡在這裡的人一直到"
 
@@ -7109,7 +7137,11 @@ msgstr "關係計算器"
 msgid "Mail form"
 msgstr "郵件形式"
 
-#: header.php:264 hourglass.php:92 list.php:1798 maps.php:226 menu.php:308 menu.php:682 menu.php:687
+#: header.php:262
+msgid "Google maps"
+msgstr "谷歌地圖"
+
+#: header.php:264 hourglass.php:92 list.php:1798 maps.php:238 menu.php:308 menu.php:683 menu.php:688
 #: report_descendant.php:424 timelines.php:465
 msgid "Help"
 msgstr "協助"
@@ -7126,7 +7158,7 @@ msgstr "歸功於"
 msgid "Cookie information"
 msgstr "cookie的信息"
 
-#: header.php:269 menu.php:292 menu.php:816
+#: header.php:269 menu.php:292 menu.php:817
 msgid "Register"
 msgstr "註冊"
 
@@ -7320,11 +7352,11 @@ msgstr ""
 
 #: help.php:73
 msgid ""
-"This will display a googlemap relating to the people present in the database, with ability to map by births or "
+"This will display a world map relating to the people present in the database, with ability to map by births or "
 "deaths."
 msgstr ""
 
-#: help.php:76 menu.php:639
+#: help.php:76 menu.php:640
 msgid "Contact"
 msgstr "聯繫"
 
@@ -7768,62 +7800,62 @@ msgstr ""
 msgid "Select a family tree"
 msgstr "選擇個家譜樹"
 
-#: include/mainindex_cls.php:297
+#: include/mainindex_cls.php:304
 msgid "Latest update:"
 msgstr "最新的更正"
 
-#: include/mainindex_cls.php:306
+#: include/mainindex_cls.php:313
 msgid "Owner family tree:"
 msgstr "家譜樹的擁有者："
 
-#: include/mainindex_cls.php:492 include/mainindex_cls.php:494 statistics.php:773 statistics.php:775
+#: include/mainindex_cls.php:499 include/mainindex_cls.php:501 statistics.php:773 statistics.php:775
 msgid "Surname"
 msgstr ""
 
-#: include/mainindex_cls.php:492 include/mainindex_cls.php:494 list_names.php:315 list_names.php:317
+#: include/mainindex_cls.php:499 include/mainindex_cls.php:501 list_names.php:315 list_names.php:317
 #: statistics.php:773 statistics.php:775 statistics.php:950 statistics.php:951 statistics.php:952
 #: statistics.php:953
 msgid "Total"
 msgstr ""
 
-#: include/mainindex_cls.php:504
+#: include/mainindex_cls.php:511
 msgid "More statistics"
 msgstr ""
 
-#: include/mainindex_cls.php:566 list.php:1573
+#: include/mainindex_cls.php:573 list.php:1573
 msgid "Enter name or part of name"
 msgstr "輸入名字 或名字 的一部分"
 
-#: include/mainindex_cls.php:567 list.php:1577
+#: include/mainindex_cls.php:574 list.php:1577
 msgid "Enter private name"
 msgstr ""
 
-#: include/mainindex_cls.php:578
+#: include/mainindex_cls.php:585
 msgid "Minimum: 3 characters."
 msgstr "至少3個字符。"
 
-#: include/mainindex_cls.php:590 list.php:1777
+#: include/mainindex_cls.php:597 list.php:1777
 msgid "All but selected tree"
 msgstr "被選好以外的所有家譜"
 
-#: include/mainindex_cls.php:602 list.php:1817
+#: include/mainindex_cls.php:609 list.php:1817
 msgid "Advanced search"
 msgstr "更進一步的搜索"
 
-#: include/mainindex_cls.php:712
+#: include/mainindex_cls.php:719
 msgid "Surnames Index:"
 msgstr "姓氏索引："
 
-#: include/mainindex_cls.php:802
+#: include/mainindex_cls.php:809
 msgid "Patronyms"
 msgstr "父系"
 
-#: include/mainindex_cls.php:969
+#: include/mainindex_cls.php:976
 #, php-format
 msgid "This database is made by %s, a freeware genealogical  program"
 msgstr "這資料庫是從 %s  組成的, a一個免費的家譜樹程序"
 
-#: include/mainindex_cls.php:981
+#: include/mainindex_cls.php:988
 #, fuzzy, php-format
 #| msgid "European law: %s HuMo-gen cookie information"
 msgid "European law: %s cookie information"
@@ -7933,7 +7965,7 @@ msgstr "後裔圖版"
 msgid "DNA Charts"
 msgstr "DNA 圖版"
 
-#: include/person_cls.php:973 menu.php:278 menu.php:804
+#: include/person_cls.php:973 menu.php:278 menu.php:805
 msgid "Admin"
 msgstr "管理"
 
@@ -8468,51 +8500,51 @@ msgstr "錯誤答案，再試一次回答阻塞-垃圾郵件-問題"
 msgid "The e-mail function has been switched off!"
 msgstr "電子郵件的功能已經關閉！"
 
-#: maps.php:22
+#: maps.php:28
 msgid "Display birth or death locations across different time periods"
 msgstr "在不同時段顯示出生或死亡地點"
 
-#: maps.php:78
+#: maps.php:84
 msgid "Display:"
 msgstr "顯示"
 
-#: maps.php:82
+#: maps.php:88
 msgid "Birth locations"
 msgstr "出生地點"
 
-#: maps.php:84
+#: maps.php:90
 msgid "Death locations"
 msgstr "死亡地點"
 
-#: maps.php:95
+#: maps.php:107
 msgid "Filters:"
 msgstr "篩選"
 
-#: maps.php:156
+#: maps.php:168
 msgid "Display births until: "
 msgstr "顯示出生直到： "
 
-#: maps.php:159
+#: maps.php:171
 msgid "Display deaths until: "
 msgstr "顯示死亡直到："
 
-#: maps.php:171
+#: maps.php:183
 msgid "Filter by specific family name(s)"
 msgstr "通過特定的姓氏篩選 "
 
-#: maps.php:176
+#: maps.php:188
 msgid "Filter by descendants"
 msgstr ""
 
-#: maps.php:184
+#: maps.php:196
 msgid "Filter by ancestors"
 msgstr ""
 
-#: maps.php:194
+#: maps.php:206
 msgid "Other tools:"
 msgstr "其他功能工具"
 
-#: maps.php:230
+#: maps.php:242
 msgid ""
 "<b>Top menu line:</b>\n"
 "<ul><li>Choose family tree. On sites with multiple family trees here you can choose which tree to map.</li>\n"
@@ -8545,67 +8577,67 @@ msgid ""
 "li>"
 msgstr ""
 
-#: maps.php:272
+#: maps.php:284
 msgid "Find location on the map"
 msgstr ""
 
-#: maps.php:292
+#: maps.php:305
 msgid "Mapping with specific name(s): "
 msgstr ""
 
-#: maps.php:303
+#: maps.php:316
 msgid "Switch name filter off"
 msgstr ""
 
-#: maps.php:418
+#: maps.php:431
 msgid "Filter by descendants of: "
 msgstr "用後代信息篩選："
 
-#: maps.php:418
+#: maps.php:431
 msgid "Switch descendant filter off"
 msgstr "開關後代信息篩選功具"
 
-#: maps.php:421
+#: maps.php:434
 msgid "No known birth places amongst descendants"
 msgstr "在眾多後裔沒有任何已知的出生地點"
 
-#: maps.php:421 maps.php:535
+#: maps.php:434 maps.php:548
 msgid "Close"
 msgstr "封閉"
 
-#: maps.php:532
+#: maps.php:545
 msgid "Filter by ancestors of: "
 msgstr ""
 
-#: maps.php:532
+#: maps.php:545
 msgid "Switch ancestor filter off"
 msgstr ""
 
-#: maps.php:535
+#: maps.php:548
 msgid "No known birth places amongst ancestors"
 msgstr ""
 
-#: maps.php:558
+#: maps.php:573
 msgid "Mark checkbox next to name(s)"
 msgstr "在名稱旁邊的 複選框 作簽"
 
-#: maps.php:570
+#: maps.php:585
 msgid "Choose"
 msgstr "選擇"
 
-#: maps.php:598
+#: maps.php:614
 msgid "Filter by descendants of a person"
 msgstr "通過個人的後裔篩選 "
 
-#: maps.php:599 maps.php:708
+#: maps.php:615 maps.php:724
 msgid "Pick a name or enter ID:"
 msgstr "選擇一個名稱或輸入ID："
 
-#: maps.php:602 maps.php:711
+#: maps.php:618 maps.php:727
 msgid "Pick a name from the pulldown list"
 msgstr "由下拉列表中選擇一個名稱"
 
-#: maps.php:707
+#: maps.php:723
 msgid "Filter by ancestors of a person"
 msgstr ""
 
@@ -8613,18 +8645,18 @@ msgstr ""
 msgid "Favourites list:"
 msgstr "我的愛好列表"
 
-#: menu.php:323 menu.php:701
+#: menu.php:323 menu.php:702
 #, php-format
 msgid "%s info"
 msgstr ""
 
-#: menu.php:338 menu.php:716
+#: menu.php:338 menu.php:717
 #, fuzzy, php-format
 #| msgid "Credits"
 msgid "%s credits"
 msgstr "歸功於"
 
-#: menu.php:354 menu.php:732
+#: menu.php:354 menu.php:733
 #, fuzzy, php-format
 #| msgid "HuMo-gen cookies"
 msgid "%s cookies"
@@ -8638,11 +8670,11 @@ msgstr "地點_按人"
 msgid "Places (by families)"
 msgstr "地點_按家庭"
 
-#: photoalbum.php:244 timelines.php:556
+#: photoalbum.php:246 timelines.php:556
 msgid "*** Privacy filter is active, one or more items are filtered. Please login to see all items ***"
 msgstr ""
 
-#: photoalbum.php:328
+#: photoalbum.php:330
 msgid "Photo's per page"
 msgstr "每頁的照片"
 

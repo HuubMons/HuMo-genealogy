@@ -78,7 +78,8 @@ function process_person($person_array){
 	// 0 @I1@ INDI
 	// *** Process 1st line ***
 	$buffer=$line2[0];
-	$buffer = str_replace("_", "", $buffer); //Aldfaer numbers
+	// Old code: it is alowed to read tags like: I_1;
+	//$buffer = str_replace("_", "", $buffer); //Aldfaer numbers
 	$pers_gedcomnumber=substr($buffer,3,-6);
 	if($add_tree==true OR $reassign==true) { $pers_gedcomnumber= $this->reassign_ged($pers_gedcomnumber,'I'); }
 	if (isset($_POST['show_gedcomnumbers'])){ print "$pers_gedcomnumber "; }
@@ -3578,7 +3579,6 @@ function process_source($source_array){
 		//echo ' '.memory_get_usage().'@ ';
 	}
 
-
 	// *** NEW july 2021: Save connections in seperate table ***
 	if ($connect_nr>0){
 		$connect_order=0;
@@ -3879,6 +3879,9 @@ function process_address($line){
 	global $largest_text_ged, $largest_address_ged, $add_tree, $reassign;
 	global $processed, $dbh;
 
+	global $connect_nr, $connect;
+	$connect_nr=0;
+
 	$line2=explode("\n",$line);
 	$buffer=$line2[0];
 
@@ -3949,6 +3952,11 @@ function process_address($line){
 		// *** Text by address ***
 		$address["address_text"]=$this->process_texts($address["address_text"],$buffer,'1');
 
+		// *** Source by shared address ***
+		if ($level[2]=='SOUR'){
+			$this->process_sources('address','address_source',$address["address_gedcomnr"],$buffer,'2');
+		}
+
 		//1 PHOTO @#APLAATJES\AKTEMONS.GIF GIF@
 		//if ($buffer7=='1 PHOTO'){
 		//	$processed=1; $address["address_photo"]=$this->merge_texts($address["address_photo"], ';', substr($buffer,11,-5)); }
@@ -3992,6 +4000,52 @@ function process_address($line){
 		}
 
 	} //end explode
+
+	// *** NEW april 2022: Save connections in seperate table ***
+	if ($connect_nr>0){
+		$connect_order=0;
+		$check_connect=$connect['kind']['1'].$connect['sub_kind']['1'].$connect['connect_id']['1'];
+		for ($i=1; $i<=$connect_nr; $i++){
+			$connect_order++;
+			if ( $check_connect!=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i] ){
+				$connect_order=1;
+				$check_connect=$connect['kind'][$i].$connect['sub_kind'][$i].$connect['connect_id'][$i];
+			}
+
+			// *** Process address order (because address and source by address) ***
+			//if ($connect['sub_kind'][$i]=='family_address'){
+			//	if (isset($connect['connect_order'][$i])) $connect_order=$connect['connect_order'][$i];
+			//}
+
+			if($add_tree==true OR $reassign==true) {
+				if ($connect['text'][$i]) $connect['text'][$i] = '@'.$this->reassign_ged($connect['text'][$i],'N').'@';
+			}
+
+			$gebeurtsql="INSERT IGNORE INTO humo_connections SET
+				connect_tree_id='".$tree_id."',
+				connect_order='".$connect_order."',
+				connect_kind='".$connect['kind'][$i]."',
+				connect_sub_kind='".$connect['sub_kind'][$i]."',
+				connect_connect_id='".$this->text_process($connect['connect_id'][$i])."',
+				connect_source_id='".$this->text_process($connect['source_id'][$i])."',
+				connect_item_id='".$this->text_process($connect['item_id'][$i])."',
+				connect_text='".$this->text_process($connect['text'][$i])."',
+				connect_page='".$this->text_process($connect['page'][$i])."',
+				connect_role='".$this->text_process($connect['role'][$i])."',
+				connect_date='".$this->process_date($this->text_process($connect['date'][$i]))."',
+				connect_place='".$this->text_process($connect['place'][$i])."'
+				";
+			//echo $check_connect.' !! '.$gebeurtsql.'<br>';
+			$result=$dbh->query($gebeurtsql);
+		}
+
+		// *** Reset array to free memory ***
+		//echo '<br>====>>>>'.memory_get_usage().' RESET ';
+		unset ($event);
+		//$connect=null;
+		//echo ' '.memory_get_usage().'@ ';
+	}
+
 
 	// *** Save addressses ***
 	$sql="INSERT IGNORE INTO humo_addresses SET
@@ -4459,7 +4513,7 @@ function process_addresses($connect_kind,$connect_sub_kind,$connect_id,$buffer){
 		//2 ROLE landbouwer op
 
 		// *** Use connection table to store addresses ***
-		// *** Check for address links, @R34@ links.
+		// *** Check for address links (shared addresses), @R34@ links ***
 		if (substr($level['1a'],0,8)=='1 RESI @'){
 			if ($buffer6=='1 RESI'){
 				$processed=1;
@@ -4517,7 +4571,15 @@ function process_addresses($connect_kind,$connect_sub_kind,$connect_id,$buffer){
 				$processed=1; $connect['text'][$connect_nr].=$this->conc(substr($buffer,7)) ;
 			}
 
-			//SOURCE (used in HuMo-genealogy)?
+			if ($level[2]=='SOUR'){
+				if ($connect_kind=='person'){
+					$this->process_sources('person','pers_address_connect_source',$calculated_connect_id,$buffer,'2');
+				}
+				else{
+					$this->process_sources('family','fam_address_connect_source',$calculated_connect_id,$buffer,'2');
+				}
+			}
+
 		}
 
 		// BK
@@ -4585,6 +4647,23 @@ function process_addresses($connect_kind,$connect_sub_kind,$connect_id,$buffer){
 		// 2 CONC Lane.
 		if ($level[2]=='CONC'){ $processed=1; $address_array["address"][$nraddress2].=substr($buffer,7); }
 		if ($level[2]=='CONT'){ $processed=1; $address_array["address"][$nraddress2].="\n".substr($buffer,7); }
+
+		// *** Restore HuMo-genealogy address GEDCOM numbers ***
+		// 1 RESI
+		// 2 RIN 1 (GEDCOM number without R).
+		if ($gen_program=='HuMo-gen' OR $gen_program=='HuMo-genealogy'){
+			if ($level[2]=='RIN '){
+				$processed=1;
+				//echo substr($buffer,6).'<br>';
+				$address_gedcomnr='R'.substr($buffer,6);
+				$address_array["gedcomnr"][$nraddress2]=$address_gedcomnr;
+				$connect['item_id'][$connect_nr]=$address_gedcomnr;
+				$_SESSION['address_gedcomnr']=$address_gedcomnr;
+
+				// *** Reset address GEDCOM number ***
+				$_SESSION['new_address_gedcomnr']=$_SESSION['new_address_gedcomnr']-1;
+			}
+		}
 
 		// *** Street Aldfaer/ Pro-gen ***
 		//1 RESI
@@ -4666,12 +4745,22 @@ function process_addresses($connect_kind,$connect_sub_kind,$connect_id,$buffer){
 		// *** Source by address ***
 		// *** Source also uses the connect table, so an extra SESSION is needed to store the address GEDCOM number ***
 		if ($level[2]=='SOUR'){
+			//if ($connect_kind=='person'){
+			//	$this->process_sources('person','pers_address_source',$_SESSION['address_gedcomnr'],$buffer,'2');
+			//}
+			//else{
+			//	$this->process_sources('family','fam_address_source',$_SESSION['address_gedcomnr'],$buffer,'2');
+			//}
+
 			if ($connect_kind=='person'){
-				$this->process_sources('person','pers_address_source',$_SESSION['address_gedcomnr'],$buffer,'2');
+				$this->process_sources('person','pers_address_connect_source',$calculated_connect_id,$buffer,'2');
 			}
 			else{
-				$this->process_sources('family','fam_address_source',$_SESSION['address_gedcomnr'],$buffer,'2');
+				$this->process_sources('family','fam_address_connect_source',$calculated_connect_id,$buffer,'2');
 			}
+
+			// *** Source by address ***
+			//$this->process_sources('address','address_source',$calculated_connect_id,$buffer,'2');
 		}
 	}
 }

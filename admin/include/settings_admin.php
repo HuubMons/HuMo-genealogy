@@ -600,7 +600,8 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 			echo "&nbsp;&nbsp;";
 			echo __('First select language, then select the default timeline for that language.');
 		}
-		@closedir($folder);
+		//@closedir($folder);
+		if($folder !== false) @closedir($folder);
 
 		echo '</td></tr>';
 

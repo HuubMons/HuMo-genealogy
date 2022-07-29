@@ -10,9 +10,15 @@ include_once(CMS_ROOTPATH."include/date_place.php");
 //echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'googlemaps/gslider.js"></script>';
 echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'googlemaps/namesearch.js"></script>';
 
-//cover map with loading animation + half opaque background till page is fully loaded
-//using the slider/button before complete page load goes wrong
-echo '<div id="wait" style="background:url(images/loader.gif) no-repeat center center; opacity:0.6; filter:alpha(opacity=60); position:fixed; top:70px; margin-left:auto; margin-right:auto; height:610px; width:1000px; background-color:#000000; z-index:100"></div>';
+// *** OpenStreetMap ***
+if(isset($humo_option["use_world_map"]) AND $humo_option["use_world_map"]=='OpenStreetMap') {
+	//dummy
+}
+else{
+	//cover map with loading animation + half opaque background till page is fully loaded
+	//using the slider/button before complete page load goes wrong
+	echo '<div id="wait" style="background:url(images/loader.gif) no-repeat center center; opacity:0.6; filter:alpha(opacity=60); position:fixed; top:70px; margin-left:auto; margin-right:auto; height:610px; width:1000px; background-color:#000000; z-index:100"></div>';
+}
 
 echo '<div style="position:relative"> ';  // div with table for all menu bars (2 + optional third)
 echo '<table>';
@@ -86,6 +92,12 @@ echo '</select>';
 echo '</form>';
 
 echo '</td></tr>';
+
+// *** OpenStreetMap ***
+if(isset($humo_option["use_world_map"]) AND $humo_option["use_world_map"]=='OpenStreetMap') {
+	//dummy
+}
+else{
 
 // 2nd MENU BAR
 echo '<tr><td style="border:1px solid #bdbdbd; width:995px; background-color:#d8d8d8">';
@@ -278,6 +290,7 @@ echo '</select>';
 echo '</form>';
 
 echo '</td></tr>';
+
 
 // OPTIONAL 4th (YELLOW) NOTIFICATION MENU BAR
 echo '<tr><td style="border:1px solid #bdbdbd; width:995px; background-color:#d8d8d8">';
@@ -539,6 +552,8 @@ if(isset($_GET['anc_persged']) AND isset($_GET['anc_persfams'])) {
 // END NEW =========================
 
 echo '</td></tr>';
+}  // *** Hide these items for OpenStreetMap ***
+
 echo '</table>';
 echo '</div>';
 // END MENU
@@ -573,6 +588,7 @@ echo '<input type="button" name="cancelfam" onclick="document.getElementById(\'n
 echo '</td></tr></table>';
 echo '</form>';
 echo '</div>';
+
 
 // FIXED WINDOW WITH LIST TO CHOOSE PERSON TO MAP WITH DESCENDANTS
 if(isset($_POST['descmap'])) {
@@ -796,75 +812,228 @@ if(isset($_POST['ancmap'])) {
 // END NEW~~~~~~~~~~~~~~~~~~~~~~
 
 
-// GOOGLE MAP
-echo '<div id="map_canvas" style="width:1000px; height:520px"></div>'; // placeholder div for map generated below
 
-// function to read multiple values from location search bar and zoom to map location:
-?>
-<script type="text/javascript">
-function findPlace () {
-	infoWindow.close();
-	var e = document.getElementById("loc_search");
-	var locSearch = e.options[e.selectedIndex].value;
-	if(locSearch != "toptext") {   // if not default text "find location on map"
-		var opt_array = new Array();
-		opt_array = locSearch.split(",",3);
-		map.setZoom(11);
-		var ltln = new google.maps.LatLng(opt_array[1],opt_array[2]);
-		map.setCenter(ltln);
+// *** OpenStreetMap ***
+if(isset($humo_option["use_world_map"]) AND $humo_option["use_world_map"]=='OpenStreetMap') {
+	$location_array[]=''; $lat_array[]=''; $lon_array[]=''; $text_array[]='';
+	$text_count_array[]='';
+
+	$location=$dbh->query("SELECT location_id, location_location, location_lat, location_lng FROM humo_location");
+	while (@$locationDb=$location->fetch(PDO::FETCH_OBJ)){
+		//$locarray[$locationDb->location_location][0] = $locationDb->location_location;
+		$locarray[$locationDb->location_location][0] = htmlspecialchars($locationDb->location_location);
+		$locarray[$locationDb->location_location][1] = $locationDb->location_lat;
+		$locarray[$locationDb->location_location][2] = $locationDb->location_lng;
+		//$locarray[$locationDb->location_location][3] = 0;    // till starting year  (depending on settings)
+		//$locarray[$locationDb->location_location][4] = 0;    // + 1 interval
+		//$locarray[$locationDb->location_location][5] = 0;    // + 2 intervals
+		//$locarray[$locationDb->location_location][6] = 0;    // + 3 intervals
+		//$locarray[$locationDb->location_location][7] = 0;    // + 4 intervals
+		//$locarray[$locationDb->location_location][8] = 0;    // + 5 intervals
+		//$locarray[$locationDb->location_location][9] = 0;    // + 6 intervals
+		//$locarray[$locationDb->location_location][10] = 0;   // + 7 intervals
+		//$locarray[$locationDb->location_location][11] = 0;   // + 8 intervals
+		//$locarray[$locationDb->location_location][12] = 0;   // till today (=2010 and beyond)
+		//$locarray[$locationDb->location_location][13] = 0;   // all
+
+		//TEST add all location in maps...
+		//$location_array[]=htmlspecialchars($locationDb->location_location);
+		//$lat_array[]=$locationDb->location_lat;
+		//$lon_array[]=$locationDb->location_lng;
+		//$text_array[]='test';
 	}
-}
-</script>
-
-<?php
-
-$api_key = '';
-if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
-	$api_key = "?key=".$humo_option['google_api_key']; //echo "http://maps.googleapis.com/maps/api/js".$api_key;
-}
-if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-	echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
-}
-else {
-	echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
-}
-$maptype = "ROADMAP";
-if(isset($humo_option['google_map_type'])) { 
-	$maptype = $humo_option['google_map_type']; 
-}
-
-echo '
-<script type="text/javascript">
-	var map;
-	function initialize() {
-		var latlng = new google.maps.LatLng(22, -350);
-		var myOptions = {
-			zoom: 2,
-			center: latlng,
-			mapTypeId: google.maps.MapTypeId.'.$maptype.'
-		};
-		map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	$namesearch_string='';
+	if($_SESSION['type_birth']==1) {
+		//$persoon=$dbh->query("SELECT pers_tree_id, pers_birth_place, pers_birth_date, pers_bapt_place, pers_bapt_date
+		//	FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+		//	AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
+		$persoon=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			AND (pers_birth_place !='' OR (pers_birth_place ='' AND pers_bapt_place !='')) ".$namesearch_string);
 	}
-</script>';
-?>
-<script type="text/javascript">
-	initialize();
-</script>
-
-<script type="text/javascript">
-	function hide() {
-		document.getElementById('wait').style.display = "none";
+	elseif($_SESSION['type_death']==1) {
+		//$persoon=$dbh->query("SELECT pers_tree_id, pers_death_place, pers_death_date, pers_buried_place, pers_buried_date
+		//	FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+		//	AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
+		$persoon=$dbh->query("SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			AND (pers_death_place !='' OR (pers_death_place ='' AND pers_buried_place !='')) ".$namesearch_string);
 	}
-</script>
+	while (@$personDb=$persoon->fetch(PDO::FETCH_OBJ)){
 
-<?php
-include_once(CMS_ROOTPATH."googlemaps/google_initiate.php");
-?>
+		if($_SESSION['type_birth']==1) {
+			$place=$personDb->pers_birth_place;
+			$date =$personDb->pers_birth_date;
+			if(!$personDb->pers_birth_place AND $personDb->pers_bapt_place) {
+				$place=$personDb->pers_bapt_place;
+			}
+			if(!$personDb->pers_birth_date AND $personDb->pers_bapt_date) {
+				$date =$personDb->pers_bapt_date;
+			}
+		}
+		elseif($_SESSION['type_death']==1) {
+			$place=$personDb->pers_death_place;
+			$date =$personDb->pers_death_date;
+			if(!$personDb->pers_death_place AND $personDb->pers_buried_place) {
+				$place=$personDb->pers_buried_place;
+			}
+			if(!$personDb->pers_death_date AND $personDb->pers_buried_date) {
+				$date =$personDb->pers_buried_date;
+			}
+		}
 
-<script type="text/javascript">
-	window.onload = hide;
-</script>
+		if(isset($locarray[$place])) { // birthplace exists in location database
+			if($date) {
+				$year = substr($date,-4);
 
-<?php
+				//if($year > 1 AND $year < $realmin) {  $locarray[$place][3]++; }
+				//if($year > 1 AND $year < ($realmin+ $step)) {  $locarray[$place][4]++; }
+				//if($year > 1 AND $year < ($realmin+ (2*$step))) {  $locarray[$place][5]++; }
+				//if($year > 1 AND $year < ($realmin+ (3*$step))) {  $locarray[$place][6]++; }
+				//if($year > 1 AND $year < ($realmin+ (4*$step))) {  $locarray[$place][7]++; }
+				//if($year > 1 AND $year < ($realmin+ (5*$step))) {  $locarray[$place][8]++; }
+				//if($year > 1 AND $year < ($realmin+ (6*$step))) {  $locarray[$place][9]++; }
+				//if($year > 1 AND $year < ($realmin+ (7*$step))) {  $locarray[$place][10]++; }
+				//if($year > 1 AND $year < ($realmin+ (8*$step))) {  $locarray[$place][11]++; }
+				//if($year > 1 AND $year < 2050) {  $locarray[$place][12]++; }
+				//$locarray[$place][13]++;  // array of all people incl without birth date
+
+				// *** Use person class ***
+				$person_cls = New person_cls;
+				$person_cls->construct($personDb);
+				$name=$person_cls->person_name($personDb);
+
+
+				$key = array_search($locarray[$place][0], $location_array);
+				if (isset($key) AND $key>0){
+					// *** Check the number of lines of the text_array ***
+					$text_count_array[$key]++;
+// *** For now: limited results in text box of OpenStreetMap ***
+					if ($text_count_array[$key]<26)
+						$text_array[$key].='<br>'.addslashes($name["standard_name"].' '.$locarray[$place][0]);
+					if ($text_count_array[$key]==26)
+						$text_array[$key].='<br>'.__('Results are limited.');
+				}
+				else{
+					$location_array[]=htmlspecialchars($locarray[$place][0]);
+					$lat_array[]=$locarray[$place][1];
+					$lon_array[]=$locarray[$place][2];
+
+					$text_array[]=addslashes($name["standard_name"].' '.$locarray[$place][0]);
+					$text_count_array[]=1; // *** Number of text lines ***
+				}
+			}
+			else {
+				//$locarray[$place][13]++ ; // array of all people incl without birth date
+			}
+	//echo $locarray[$place][1].'!'.$locarray[$place][2];
+		}
+	}
+
+	//echo '<script type="text/javascript">
+	//	function hide() {
+	//		document.getElementById(\'wait\').style.display = "none";
+	//	}
+	//</script>';
+
+	echo '<link rel="stylesheet" href="include/leaflet/leaflet.css" />';
+	echo '<script src="include/leaflet/leaflet.js"></script>';
+
+	// *** Show map ***
+	echo '<div id="map" style="width:1000px; height:520px"></div>';
+
+	// *** Map using fitbound (all markers visible) ***
+	echo '<script type="text/javascript">
+		var map = L.map("map").setView([48.85, 2.35], 10);
+		var markers = [';
+
+//echo 'L.marker([51,5, -0.09]) .bindPopup(\'Test\')';
+
+
+//include_once(CMS_ROOTPATH."googlemaps/google_initiate.php");
+
+	// *** Add all markers from array ***
+	for ($i=1; $i<count($location_array); $i++){
+		if ($i>1) echo ',';
+		echo 'L.marker(['.$lat_array[$i].', '.$lon_array[$i].']) .bindPopup(\''.$text_array[$i].'\')';
+	}
+
+	echo '];
+		var group = L.featureGroup(markers).addTo(map);
+		setTimeout(function () {
+		  map.fitBounds(group.getBounds());
+		}, 1000);
+		L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
+		  attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
+		}).addTo(map);
+	</script>';
+}
+else{
+
+	// *** Google Maps ***
+	echo '<div id="map_canvas" style="width:1000px; height:520px"></div>'; // placeholder div for map generated below
+
+	// function to read multiple values from location search bar and zoom to map location:
+	echo '
+	<script type="text/javascript">
+	function findPlace () {
+		infoWindow.close();
+		var e = document.getElementById("loc_search");
+		var locSearch = e.options[e.selectedIndex].value;
+		if(locSearch != "toptext") {   // if not default text "find location on map"
+			var opt_array = new Array();
+			opt_array = locSearch.split(",",3);
+			map.setZoom(11);
+			var ltln = new google.maps.LatLng(opt_array[1],opt_array[2]);
+			map.setCenter(ltln);
+		}
+	}
+	</script>';
+
+
+	$api_key = '';
+	if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
+		$api_key = "?key=".$humo_option['google_api_key']; //echo "http://maps.googleapis.com/maps/api/js".$api_key;
+	}
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+		echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
+	}
+	else {
+		echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
+	}
+	$maptype = "ROADMAP";
+	if(isset($humo_option['google_map_type'])) { 
+		$maptype = $humo_option['google_map_type']; 
+	}
+
+	echo '
+	<script type="text/javascript">
+		var map;
+		function initialize() {
+			var latlng = new google.maps.LatLng(22, -350);
+			var myOptions = {
+				zoom: 2,
+				center: latlng,
+				mapTypeId: google.maps.MapTypeId.'.$maptype.'
+			};
+			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+		}
+	</script>';
+	
+	echo '<script type="text/javascript">
+		initialize();
+	</script>';
+
+	echo '<script type="text/javascript">
+		function hide() {
+			document.getElementById(\'wait\').style.display = "none";
+		}
+	</script>';
+
+	include_once(CMS_ROOTPATH."googlemaps/google_initiate.php");
+
+	echo '<script type="text/javascript">
+		window.onload = hide;
+	</script>';
+}
+
 include_once(CMS_ROOTPATH."footer.php");
 ?>

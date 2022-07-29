@@ -11,7 +11,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2021 Huub Mons,
+* Copyright (C) 2008-2022 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -127,6 +127,15 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 			echo 'Access to website is blocked.';
 			exit;
 		}
+
+		// *** TEMPORARY DATABASE UPDATE ***
+		// *** Change pers_address_source and fam_address_source into: address_source ***
+		$sql_get=$dbh->query("SELECT * FROM humo_connections WHERE connect_sub_kind='pers_address_source' OR connect_sub_kind='fam_address_source'");
+		while ($getDb=$sql_get->fetch(PDO::FETCH_OBJ)){
+			$sql_put="UPDATE humo_connections SET connect_kind='address', connect_sub_kind='address_source' WHERE connect_id=".$getDb->connect_id;
+			$dbh->query($sql_put);
+		}
+
 	}
 }
 
@@ -971,7 +980,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 
 						// *** Language Editor ***
 						$menu_item=''; if ($page=='google_maps'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=google_maps">'.__('Google maps').'</a></li>';
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=google_maps">'.__('World map').'</a></li>';
 
 					echo '</ul>';
 					echo '</div>';

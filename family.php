@@ -146,18 +146,18 @@ function topline(){
 					$text.='<input type="radio" name="keuze1" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'source_presentation=hide'.$desc_rep.'&xx=\'+this.value"'.$selected.'>'.__('Hide sources')."<br>\n";
 				}
 
-				// *** Show/ hide Google maps ***
-				if($descendant_report==false) {
-					// *** Only show selection if there is a Google maps database ***
+				// *** Show/ hide maps ***
+				if($user["group_googlemaps"]=='j' AND $descendant_report==false) {
+					// *** Only show selection if there is a location database ***
 					global $dbh;
 					$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 					if($temp->rowCount()) {
-						$text.='<hr><b>'.__('Google maps').'</b><br>';
+						$text.='<hr><b>'.__('Family map').'</b><br>';
 						$selected=''; $selected2=''; if ($maps_presentation=='hide') $selected2=' CHECKED'; else $selected=' CHECKED';
 
-						$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'maps_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show Google maps')."<br>\n";
+						$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'maps_presentation=show&xx=\'+this.value"'.$selected.'>'.__('Show family map')."<br>\n";
 
-						$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'maps_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide Google maps')."<br>\n";
+						$text.='<input type="radio" name="keuze2" value="" onclick="javascript: document.location.href=\''.$settings_url.$url_add.'maps_presentation=hide&xx=\'+this.value"'.$selected2.'>'.__('Hide family map')."<br>\n";
 					}
 				}
 
@@ -582,6 +582,7 @@ if (!$family_id){
 
 		$pdf->SetFont('Arial','B',12);
 		$pdf->Write(8,$parent1_cls->name_extended("parent1"));
+
 		$pdf->SetFont('Arial','',12);
 		$pdf->Write(8,"\n");
 		$id='';
@@ -1571,312 +1572,368 @@ else{
 				//if($screen_mode=='') {
 					echo "</table><br>\n";
 
-					// *** Show Google map ***
-					if ($descendant_report==false AND $maps_presentation=='show') {
-						$show_google_map=false;
-						// *** Only show main javascript once ***
-						if ($family_nr==2){
+					// *** Show Google or OpenStreetMap map ***
+					if ($user["group_googlemaps"]=='j' AND $descendant_report==false AND $maps_presentation=='show') {
+						unset($location_array); unset($lat_array); unset($lon_array);
+						unset($text_array);
 
-							$api_key = '';
-							if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
-								$api_key = "&key=".$humo_option['google_api_key'];
-							}
+						$location_array[]=''; $lat_array[]=''; $lon_array[]='';
+						$text_array[]='';
 
-							if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-								echo '<script src="https://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
-							}
-							else {
-								echo '<script src="http://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
-							}
+						$newline="\\n";
+						if(isset($humo_option["use_world_map"]) AND $humo_option["use_world_map"]=='OpenStreetMap') $newline='<br>';
 
-							echo '<script type="text/javascript">
-								var center = null;
-								var map=new Array();
-								var currentPopup;
-								var bounds = new google.maps.LatLngBounds();
-							</script>';
 
-							echo '<script type="text/javascript">
-								function addMarker(family_nr, lat, lng, info, icon) {
-									var pt = new google.maps.LatLng(lat, lng);
-									var fam_nr=family_nr;
-									bounds.extend(pt);
-									//bounds(fam_nr).extend(pt);
-									var marker = new google.maps.Marker({
-										position: pt,
-										icon: icon,
-										title: info,
-										map: map[fam_nr]
-									});
+						// BIRTH man
+						if (!$parent1_cls->privacy){
+							$location_var = $parent1Db->pers_birth_place; 
+							if($location_var !='') {
+								$short=__('BORN_SHORT');
+								if($location_var=='') {
+									$location_var = $parent1Db->pers_bapt_place; 
+									$short=__('BAPTISED_SHORT');
 								}
-							</script>';
+								$location_prep->execute();
+								$man_birth_result = $location_prep->rowCount();
+								if($man_birth_result >0) {
+									$info = $location_prep->fetch();
+									$name=$parent1_cls->person_name($parent1Db);
+									$google_name=$name["standard_name"];
+
+									$location_array[]=$location_var;
+									$lat_array[]=$info['location_lat'];
+									$lon_array[]=$info['location_lng'];
+									$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
+								}
+							}
 						}
 
-						$maptype = "ROADMAP";
-						if(isset($humo_option['google_map_type'])) {
-							$maptype = $humo_option['google_map_type']; 
+						// BIRTH woman
+						if (!$parent2_cls->privacy){
+							$location_var = $parent2Db->pers_birth_place;
+							if($location_var !='') {
+								$short=__('BORN_SHORT');
+								if($location_var=='') {
+									$location_var = $parent2Db->pers_bapt_place;
+									$short=__('BAPTISED_SHORT');
+								}
+								$location_prep->execute();
+								$woman_birth_result = $location_prep->rowCount();
+								if($woman_birth_result >0) {
+									$info = $location_prep->fetch();
+									$name=$parent2_cls->person_name($parent2Db);
+									$google_name=$name["standard_name"];
+									$key = array_search($location_var , $location_array);
+									if (isset($key) AND $key>0){
+										$text_array[$key].=$newline.addslashes($google_name.", ".$short.' '.$location_var );
+									}
+									else{
+										$location_array[]=$location_var ;
+										$lat_array[]=$info['location_lat'];
+										$lon_array[]=$info['location_lng'];
+										$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
+									}
+								}
+							}
 						}
-						echo '<script type="text/javascript">
 
-							function initMap'.$family_nr.'(family_nr) {
-								var fam_nr=family_nr;
-								map[fam_nr] = new google.maps.Map(document.getElementById(fam_nr), {
-									center: new google.maps.LatLng(50.917293, 5.974782),
-									maxZoom: 16,
-									mapTypeId: google.maps.MapTypeId.'.$maptype.',
-									mapTypeControl: true,
-									mapTypeControlOptions: {
-										style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
+						// DEATH man
+						if (!$parent1_cls->privacy){
+							$location_var = $parent1Db->pers_death_place;
+							$short = __('DIED_SHORT');
+							if($location_var=='') {
+								$location_var = $parent1Db->pers_buried_place;
+								$short = __('BURIED_SHORT');
+							}
+							if($location_var !='') {
+								$location_prep->execute();
+								$man_death_result = $location_prep->rowCount();
+
+								if($man_death_result >0) {
+									$info = $location_prep->fetch();
+
+									$name=$parent1_cls->person_name($parent1Db);
+									$google_name=$name["standard_name"];
+									$key = array_search($location_var, $location_array);
+									if (isset($key) AND $key>0){
+										$text_array[$key].=$newline.addslashes($google_name.", ".$short.' '.$location_var);
 									}
-								});
-								';
-
-								unset($location_array); unset($lat_array); unset($lon_array);
-								unset($text_array);
-
-								$location_array[]=''; $lat_array[]=''; $lon_array[]='';
-								$text_array[]='';
-
-								// BIRTH man
-								if (!$parent1_cls->privacy){
-									$location_var = $parent1Db->pers_birth_place; 
-									if($location_var !='') {
-										$short=__('BORN_SHORT');
-										if($location_var=='') {
-											$location_var = $parent1Db->pers_bapt_place; 
-											$short=__('BAPTISED_SHORT');
-										}
-										$location_prep->execute();
-										$man_birth_result = $location_prep->rowCount();
-										if($man_birth_result >0) {
-											$info = $location_prep->fetch();
-											$name=$parent1_cls->person_name($parent1Db);
-											$google_name=$name["standard_name"];
-
-											$location_array[]=$location_var;
-											$lat_array[]=$info['location_lat'];
-											$lon_array[]=$info['location_lng'];
-											$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
-										}
+									else{
+										$location_array[]=$location_var;
+										$lat_array[]=$info['location_lat'];
+										$lon_array[]=$info['location_lng'];
+										$text_array[]=addslashes($google_name.", ".$short.' '.$location_var);
 									}
 								}
+							}
+						}
 
-								// BIRTH woman
-								if (!$parent2_cls->privacy){
-									$location_var = $parent2Db->pers_birth_place;
-									if($location_var !='') {
-										$short=__('BORN_SHORT');
-										if($location_var=='') {
-											$location_var = $parent2Db->pers_bapt_place;
-											$short=__('BAPTISED_SHORT');
-										}
-										$location_prep->execute();
-										$woman_birth_result = $location_prep->rowCount();
-										if($woman_birth_result >0) {
-											$info = $location_prep->fetch();
-											$name=$parent2_cls->person_name($parent2Db);
-											$google_name=$name["standard_name"];
-											$key = array_search($location_var , $location_array);
-											if (isset($key) AND $key>0){
-												$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
-											}
-											else{
-												$location_array[]=$location_var ;
-												$lat_array[]=$info['location_lat'];
-												$lon_array[]=$info['location_lng'];
-												$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
-											}
-										}
+						// DEATH woman
+						if (!$parent2_cls->privacy){
+							$location_var = $parent2Db->pers_death_place;
+							$short = __('DIED_SHORT');
+							if($location_var=='') {
+								$location_var = $parent2Db->pers_buried_place;
+								$short = __('BURIED_SHORT');
+							}
+							if($location_var !='') {
+								$location_prep->execute();
+								$woman_death_result = $location_prep->rowCount();
+								if($woman_death_result >0) {
+									$info = $location_prep->fetch();
+
+									$name=$parent2_cls->person_name($parent2Db);
+									$google_name=$name["standard_name"];
+									$key = array_search($location_var , $location_array);
+									if (isset($key) AND $key>0){
+										$text_array[$key].=$newline.addslashes($google_name.", ".$short.' '.$location_var );
+									}
+									else{
+										$location_array[]=$location_var ;
+										$lat_array[]=$info['location_lat'];
+										$lon_array[]=$info['location_lng'];
+										$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
 									}
 								}
+							}
+						}
 
-								// DEATH man
-								if (!$parent1_cls->privacy){
-									$location_var = $parent1Db->pers_death_place;
-									$short = __('DIED_SHORT');
-									if($location_var=='') {
-										$location_var = $parent1Db->pers_buried_place;
-										$short = __('BURIED_SHORT');
-									}
-									if($location_var !='') {
-										$location_prep->execute();
-										$man_death_result = $location_prep->rowCount();
-
-										if($man_death_result >0) {
-											$info = $location_prep->fetch();
-	
-											$name=$parent1_cls->person_name($parent1Db);
-											$google_name=$name["standard_name"];
-											$key = array_search($location_var, $location_array);
-											if (isset($key) AND $key>0){
-												$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var);
-											}
-											else{
-												$location_array[]=$location_var;
-												$lat_array[]=$info['location_lat'];
-												$lon_array[]=$info['location_lng'];
-												$text_array[]=addslashes($google_name.", ".$short.' '.$location_var);
-											}
-										}
-									}
-								}
-
-								// DEATH woman
-								if (!$parent2_cls->privacy){
-									$location_var = $parent2Db->pers_death_place;
-									$short = __('DIED_SHORT');
-									if($location_var=='') {
-										$location_var = $parent2Db->pers_buried_place;
-										$short = __('BURIED_SHORT');
-									}
-									if($location_var !='') {
-										$location_prep->execute();
-										$woman_death_result = $location_prep->rowCount();
-										if($woman_death_result >0) {
-											$info = $location_prep->fetch();
-
-											$name=$parent2_cls->person_name($parent2Db);
-											$google_name=$name["standard_name"];
-											$key = array_search($location_var , $location_array);
-											if (isset($key) AND $key>0){
-												$text_array[$key].="\\n".addslashes($google_name.", ".$short.' '.$location_var );
-											}
-											else{
-												$location_array[]=$location_var ;
-												$lat_array[]=$info['location_lat'];
-												$lon_array[]=$info['location_lng'];
-												$text_array[]=addslashes($google_name.", ".$short.' '.$location_var );
-											}
-										}
-									}
-								}
-
-								// MARRIED
-								$location_var = $familyDb->fam_marr_place;
-								if($location_var !='') {
-									$location_prep->execute();
-									$marriage_result = $location_prep->rowCount();
-									
-									if($marriage_result >0) {
-										$info = $location_prep->fetch();
-
-										$name=$parent1_cls->person_name($parent1Db);
-										$google_name=$name["standard_name"];
-
-										$name=$parent2_cls->person_name($parent2Db);
-										$google_name.=' & '.$name["standard_name"];
-
-										if (!$parent1_cls->privacy AND !$parent2_cls->privacy){
-											$key = array_search($familyDb->fam_marr_place, $location_array);
-											if (isset($key) AND $key>0){
-												$text_array[$key].="\\n".addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
-											}
-											else{
-												$location_array[]=$familyDb->fam_marr_place;
-												$lat_array[]=$info['location_lat'];
-												$lon_array[]=$info['location_lng'];
-												$text_array[]=addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
-											}
-										}
-									}
-								}
-
-
-								$child_array=explode(";",$familyDb->fam_children);
-								for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
-									@$childDb = $db_functions->get_person($child_array[$i]);
-									if ($childDb !== false) {  // no error in query
-										// *** Use person class ***
-										$person_cls = New person_cls;
-										$person_cls->construct($childDb);
-										if (!$person_cls->privacy){
-
-											// *** Child birth ***
-											$location_var = $childDb->pers_birth_place;
-											if($location_var !='') {
-												$location_prep->execute();
-												$child_result = $location_prep->rowCount();
-
-												if($child_result >0) {
-													$info = $location_prep->fetch();
-
-													$name=$person_cls->person_name($childDb);
-													$google_name=$name["standard_name"];
-													$key = array_search($childDb->pers_birth_place, $location_array);
-													if (isset($key) AND $key>0){
-														$text_array[$key].="\\n".addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
-													}
-													else{
-														$location_array[]=$childDb->pers_birth_place;
-														$lat_array[]=$info['location_lat'];
-														$lon_array[]=$info['location_lng'];
-														$text_array[]=addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
-													}
-												}
-											}
-											// *** Child death ***
-											$location_var = $childDb->pers_death_place;
-											if($location_var !='') {
-												$location_prep->execute();
-												$child_result = $location_prep->rowCount();
-												
-												if($child_result >0) {
-													$info = $location_prep->fetch();
-
-													$name=$person_cls->person_name($childDb);
-													$google_name=$name["standard_name"];
-													$key = array_search($childDb->pers_death_place, $location_array);
-													if (isset($key) AND $key>0){
-														$text_array[$key].="\\n".addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
-													}
-													else{
-														$location_array[]=$childDb->pers_death_place;
-														$lat_array[]=$info['location_lat'];
-														$lon_array[]=$info['location_lng'];
-														$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
-													}
-												}
-											}
-										}
-									}
-								}
-
-
-								// *** Add all markers from array ***
-								for ($i=1; $i<count($location_array); $i++){
-									$show_google_map=true;
-
-									$api_key = '';
-									if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
-										$api_key = "&key=".$humo_option['google_api_key'];
-									}
-
-									if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'https://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|".$api_key."');\n");
-									}
-									else {
-										echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'http://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|".$api_key."');\n");
-									}
-								}
-
-								echo 'center = bounds.getCenter();';
-								echo 'map[fam_nr].fitBounds(bounds);';
-							echo '}
-						</script>';
-
-						if ($show_google_map==true){
-							echo __('Family events').'<br>';
-
-							echo '<div style="width: 600px; height: 300px; border: 0px; padding: 0px;" id="'.$family_nr.'"></div>';
+						// MARRIED
+						$location_var = $familyDb->fam_marr_place;
+						if($location_var !='') {
+							$location_prep->execute();
+							$marriage_result = $location_prep->rowCount();
 							
-							echo '<script type="text/javascript">
-								initMap'.$family_nr.'('.$family_nr.');
-							</script>
-							';
+							if($marriage_result >0) {
+								$info = $location_prep->fetch();
+
+								$name=$parent1_cls->person_name($parent1Db);
+								$google_name=$name["standard_name"];
+
+								$name=$parent2_cls->person_name($parent2Db);
+								$google_name.=' & '.$name["standard_name"];
+
+								if (!$parent1_cls->privacy AND !$parent2_cls->privacy){
+									$key = array_search($familyDb->fam_marr_place, $location_array);
+									if (isset($key) AND $key>0){
+										$text_array[$key].=$newline.addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
+									}
+									else{
+										$location_array[]=$familyDb->fam_marr_place;
+										$lat_array[]=$info['location_lat'];
+										$lon_array[]=$info['location_lng'];
+										$text_array[]=addslashes($google_name.", ".__('married').' '.$familyDb->fam_marr_place);
+									}
+								}
+							}
 						}
 
-					}
 
+						$child_array=explode(";",$familyDb->fam_children);
+						for ($i=0; $i<=substr_count($familyDb->fam_children, ";"); $i++){
+							@$childDb = $db_functions->get_person($child_array[$i]);
+							if ($childDb !== false) {  // no error in query
+								// *** Use person class ***
+								$person_cls = New person_cls;
+								$person_cls->construct($childDb);
+								if (!$person_cls->privacy){
+
+									// *** Child birth ***
+									$location_var = $childDb->pers_birth_place;
+									if($location_var !='') {
+										$location_prep->execute();
+										$child_result = $location_prep->rowCount();
+
+										if($child_result >0) {
+											$info = $location_prep->fetch();
+
+											$name=$person_cls->person_name($childDb);
+											$google_name=$name["standard_name"];
+											$key = array_search($childDb->pers_birth_place, $location_array);
+											if (isset($key) AND $key>0){
+												$text_array[$key].=$newline.addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
+											}
+											else{
+												$location_array[]=$childDb->pers_birth_place;
+												$lat_array[]=$info['location_lat'];
+												$lon_array[]=$info['location_lng'];
+												$text_array[]=addslashes($google_name.", ".__('BORN_SHORT').' '.$childDb->pers_birth_place);
+											}
+										}
+									}
+									// *** Child death ***
+									$location_var = $childDb->pers_death_place;
+									if($location_var !='') {
+										$location_prep->execute();
+										$child_result = $location_prep->rowCount();
+										
+										if($child_result >0) {
+											$info = $location_prep->fetch();
+
+											$name=$person_cls->person_name($childDb);
+											$google_name=$name["standard_name"];
+											$key = array_search($childDb->pers_death_place, $location_array);
+											if (isset($key) AND $key>0){
+												$text_array[$key].=$newline.addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
+											}
+											else{
+												$location_array[]=$childDb->pers_death_place;
+												$lat_array[]=$info['location_lat'];
+												$lon_array[]=$info['location_lng'];
+												$text_array[]=addslashes($google_name.", ".__('DIED_SHORT').' '.$childDb->pers_death_place);
+											}
+										}
+									}
+								}
+							}
+						}
+
+
+						// *** OpenStreetMap ***
+						if(isset($humo_option["use_world_map"]) AND $humo_option["use_world_map"]=='OpenStreetMap') {
+							echo '<link rel="stylesheet" href="include/leaflet/leaflet.css" />';
+							echo '<script src="include/leaflet/leaflet.js"></script>';
+
+							// *** Show map ***
+// *** Only show OpenStreetMap once ***
+if ($family_nr==2)
+							echo '<div id="map" style="width: 600px; height: 300px;"></div>';
+							/*
+							echo '<script type="text/javascript">
+								var map = L.map(\'map\').setView([51.505, -0.09], 13);
+
+								L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
+									attribution: \'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors\'
+								}).addTo(map);
+
+								L.marker([51.5, -0.09]).addTo(map)
+									.bindPopup(\'Test 1.\')
+									.openPopup();
+
+								L.marker([51.6, -0.09]).addTo(map)
+									.bindPopup(\'Test 2.\')
+									.openPopup();
+							</script>';
+							*/
+
+							// *** Map using fitbound (all markers visible) ***
+							echo '<script type="text/javascript">
+								var map = L.map("map").setView([48.85, 2.35], 10);
+								var markers = [';
+
+							// *** Add all markers from array ***
+							for ($i=1; $i<count($location_array); $i++){
+								if ($i>1) echo ',';
+								echo 'L.marker(['.$lat_array[$i].', '.$lon_array[$i].']) .bindPopup(\''.$text_array[$i].'\')';
+							}
+
+							echo '];
+								var group = L.featureGroup(markers).addTo(map);
+								setTimeout(function () {
+								  map.fitBounds(group.getBounds());
+								}, 1000);
+								L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
+								  attribution: \'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors\'
+								}).addTo(map);
+							</script>';
+
+						}
+						else{
+
+
+							$show_google_map=false;
+							// *** Only show main javascript once ***
+							if ($family_nr==2){
+
+								$api_key = '';
+								if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
+									$api_key = "&key=".$humo_option['google_api_key'];
+								}
+
+								if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+									echo '<script src="https://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
+								}
+								else {
+									echo '<script src="http://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
+								}
+
+								echo '<script type="text/javascript">
+									var center = null;
+									var map=new Array();
+									var currentPopup;
+									var bounds = new google.maps.LatLngBounds();
+								</script>';
+
+								echo '<script type="text/javascript">
+									function addMarker(family_nr, lat, lng, info, icon) {
+										var pt = new google.maps.LatLng(lat, lng);
+										var fam_nr=family_nr;
+										bounds.extend(pt);
+										//bounds(fam_nr).extend(pt);
+										var marker = new google.maps.Marker({
+											position: pt,
+											icon: icon,
+											title: info,
+											map: map[fam_nr]
+										});
+									}
+								</script>';
+							}
+
+							$maptype = "ROADMAP";
+							if(isset($humo_option['google_map_type'])) {
+								$maptype = $humo_option['google_map_type']; 
+							}
+							echo '<script type="text/javascript">
+
+								function initMap'.$family_nr.'(family_nr) {
+									var fam_nr=family_nr;
+									map[fam_nr] = new google.maps.Map(document.getElementById(fam_nr), {
+										center: new google.maps.LatLng(50.917293, 5.974782),
+										maxZoom: 16,
+										mapTypeId: google.maps.MapTypeId.'.$maptype.',
+										mapTypeControl: true,
+										mapTypeControlOptions: {
+											style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR
+										}
+									});
+									';
+
+									// *** Add all markers from array ***
+									for ($i=1; $i<count($location_array); $i++){
+										$show_google_map=true;
+
+										$api_key = '';
+										if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
+											$api_key = "&key=".$humo_option['google_api_key'];
+										}
+
+										if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+											echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'https://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|".$api_key."');\n");
+										}
+										else {
+											echo ("addMarker($family_nr,$lat_array[$i], $lon_array[$i], '".$text_array[$i]."', 'http://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|f7fe2e|10|_|".$api_key."');\n");
+										}
+									}
+
+									echo 'center = bounds.getCenter();';
+									echo 'map[fam_nr].fitBounds(bounds);';
+								echo '}
+							</script>';
+
+							if ($show_google_map==true){
+								echo __('Family events').'<br>';
+
+								echo '<div style="width: 600px; height: 300px; border: 0px; padding: 0px;" id="'.$family_nr.'"></div>';
+								
+								echo '<script type="text/javascript">
+									initMap'.$family_nr.'('.$family_nr.');
+								</script>
+								';
+							}
+
+						}
+					}
 
 				}
 				if($screen_mode=='STAR') {

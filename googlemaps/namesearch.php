@@ -66,6 +66,7 @@ if($language["dir"]=="rtl") {
 	$alignmarker="right";
 }
 
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
 // start of the namesearch part
 
@@ -182,8 +183,14 @@ function mapbirthplace ($place) {
 			$name=$man_cls->person_name($maplistDb);
 			if ($name["show_name"]==true){
 				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-				$url=$man_cls->person_url2($maplistDb->pers_tree_id,$maplistDb->pers_famc,$maplistDb->pers_fams,$maplistDb->pers_gedcomnumber);
-				echo '<a href='.$url.' target="blank">';
+				//echo '<a href=family.php?database='.safe_text_db($_SESSION['tree_prefix']).'&amp;id='.$maplistDb->pers_indexnr.'&amp;main_person='.$maplistDb->pers_gedcomnumber.' target="blank">';
+
+				// *** This sometimes doesn't work, because $uri_path is empty. Not generated? ***
+				//$url=$man_cls->person_url2($maplistDb->pers_tree_id,$maplistDb->pers_famc,$maplistDb->pers_fams,$maplistDb->pers_gedcomnumber);
+				//echo '<a href='.$url.' target="blank">';
+
+				//http://localhost/family.php?tree_id=11&id=F1&main_person=I3
+				echo '<a href=family.php?tree_id='.safe_text_db($_SESSION['tree_prefix']).'&amp;id='.$maplistDb->pers_indexnr.'&amp;main_person='.$maplistDb->pers_gedcomnumber.' target="blank">';
 			}
 			if($_SESSION['type_birth']==1) {
 				echo $name["index_name"];

@@ -171,18 +171,20 @@ while($picqryDb = $picqry->fetch(PDO::FETCH_OBJ)) {
 	//	$show_categories=true; // *** There are categories ***
 	//	$category_enabled[substr($picname,0,3)]=true; // *** This categorie will be shown ***
 	//}
-	foreach($category_array as $test_category){
-		// *** Check if media belongs to category ***
-		// *** Example in subdir: subdir1/subdir2/ak_akte_mons.gif ***
-		if (strpos($picname,$test_category)!==false){
-			$show_categories=true; // *** There are categories ***
-			$category_enabled[$test_category]=true; // *** This categorie will be shown ***
-		}
+	if (isset($category_array)){
+		foreach($category_array as $test_category){
+			// *** Check if media belongs to category ***
+			// *** Example in subdir: subdir1/subdir2/ak_akte_mons.gif ***
+			if (strpos($picname,$test_category)!==false){
+				$show_categories=true; // *** There are categories ***
+				$category_enabled[$test_category]=true; // *** This categorie will be shown ***
+			}
 
-		// *** Check if directory belongs to category, example: xy/picture.jpg ***
-		if (strpos($picname,substr($test_category,0,2).'/')!==false){
-			$show_categories=true; // *** There are categories ***
-			$category_enabled[$test_category]=true; // *** This categorie will be shown ***
+			// *** Check if directory belongs to category, example: xy/picture.jpg ***
+			if (strpos($picname,substr($test_category,0,2).'/')!==false){
+				$show_categories=true; // *** There are categories ***
+				$category_enabled[$test_category]=true; // *** This categorie will be shown ***
+			}
 		}
 	}
 }
@@ -328,9 +330,10 @@ function show_media_files($pref) {
 		echo __('Photo\'s per page');
 		echo ' <select name="show_pictures" onChange="window.location=this.value">';
 		for ($i=4; $i<=60; $i++) {
+			//sub='.$subpage
 			echo '<option value="'.$albumpath.
 				'show_pictures='.$i.'
-				&amp;start=0&amp;item=0&amp;sub='.$subpage.'&amp;select_category='.$chosen_tab.'"';
+				&amp;start=0&amp;item=0&amp;select_category='.$chosen_tab.'"';
 			if ($i == $show_pictures) echo ' selected="selected"';
 			echo ">".$i."</option>\n";
 		}

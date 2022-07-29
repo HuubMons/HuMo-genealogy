@@ -510,7 +510,7 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 							$picture_text='';
 							$sql="SELECT * FROM humo_events WHERE event_tree_id='".safe_text_db($tree_id)."'
 								AND event_connect_kind='person' AND event_kind='picture'
-								AND LOWER(event_event)='".strtolower($filename)."'";
+								AND LOWER(event_event)='".safe_text_db(strtolower($filename))."'";
 							$afbqry= $dbh->query($sql);
 							$picture_privacy=false;
 							while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
