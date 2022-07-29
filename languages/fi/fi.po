@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-gen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-17 21:08+0200\n"
-"PO-Revision-Date: 2022-04-17 21:08+0200\n"
+"POT-Creation-Date: 2022-05-26 09:33+0200\n"
+"PO-Revision-Date: 2022-05-26 09:33+0200\n"
 "Last-Translator: Huub Mons\n"
 "Language-Team: Finnish (http://www.transifex.com/humo-gen/humo-gen/language/"
 "fi/)\n"
@@ -28,51 +28,49 @@ msgstr ""
 msgid "You are not authorised to see this page."
 msgstr "Oikeutesi eivät riitä tähän sivustoon."
 
-#: address.php:18 admin/include/editor.php:3503 admin/include/editor.php:4390
-#: admin/include/editor.php:4495 admin/include/editor_sources.php:107
-#: admin/include/editor_sources.php:166 admin/include/editor_sources.php:172
-#: admin/include/editor_sources.php:178 admin/include/gedcom_export.php:280
-#: admin/include/gedcom_export.php:282 admin/include/trees_cls.php:1777
-#: header.php:257 source.php:234
+#: address.php:18 admin/include/editor.php:3512 admin/include/editor.php:4374
+#: admin/include/editor.php:4480 admin/include/editor_sources.php:102
+#: admin/include/editor_sources.php:156 admin/include/editor_sources.php:162
+#: admin/include/gedcom_export.php:280 admin/include/gedcom_export.php:282
+#: admin/include/trees_cls.php:1777 header.php:257 source.php:234
 msgid "Address"
 msgstr "Osoite"
 
 #: address.php:22 addresses.php:78 addresses.php:117
-#: admin/include/editor.php:3750 admin/include/editor.php:4394
-#: admin/include/editor.php:4478
+#: admin/include/editor.php:3760 admin/include/editor.php:4378
+#: admin/include/editor.php:4463
 msgid "Street"
 msgstr "Katuosoite"
 
-#: address.php:23 admin/include/editor.php:3505 admin/include/editor.php:3752
-#: admin/include/editor.php:4395 admin/include/editor.php:4481 list.php:1686
+#: address.php:23 admin/include/editor.php:3514 admin/include/editor.php:3762
+#: admin/include/editor.php:4379 admin/include/editor.php:4466 list.php:1686
 #: list.php:1694 source.php:233
 msgid "Zip code"
 msgstr "Postinro"
 
-#: address.php:24 admin/include/editor.php:3747 admin/include/editor.php:4393
-#: admin/include/editor.php:4442 list.php:1611 list.php:1643 list.php:1674
+#: address.php:24 admin/include/editor.php:3757 admin/include/editor.php:4377
+#: admin/include/editor.php:4426 list.php:1611 list.php:1643 list.php:1674
 #: list.php:1682 list.php:1991 list.php:2003 source.php:111 source.php:116
 #: source.php:238 sources.php:170
 msgid "Place"
 msgstr "Paikka"
 
-#: address.php:25 admin/include/editor.php:3509 admin/include/editor.php:3754
-#: admin/include/editor.php:4484
+#: address.php:25 admin/include/editor.php:3518 admin/include/editor.php:3764
+#: admin/include/editor.php:4469
 msgid "Phone"
 msgstr "Puhelin"
 
-#: address.php:35 admin/include/editor.php:4467
+#: address.php:35 admin/include/editor.php:4451
 #: admin/include/editor_sources.php:60 admin/include/editor_sources.php:66
 #: admin/include/editor_sources.php:72 admin/include/editor_sources.php:78
 #: admin/include/editor_sources.php:84 admin/include/editor_sources.php:96
-#: admin/include/editor_sources.php:107 admin/include/editor_sources.php:113
-#: admin/include/editor_sources.php:119 admin/include/editor_sources.php:125
-#: admin/include/editor_sources.php:131 admin/include/editor_sources.php:137
-#: admin/include/editor_sources.php:143 admin/include/editor_sources.php:149
-#: admin/include/editor_sources.php:155 admin/include/editor_sources.php:166
-#: admin/include/editor_sources.php:172 admin/include/editor_sources.php:178
-#: admin/include/editor_sources.php:246 admin/include/editor_sources.php:317
-#: sources.php:144
+#: admin/include/editor_sources.php:102 admin/include/editor_sources.php:108
+#: admin/include/editor_sources.php:114 admin/include/editor_sources.php:120
+#: admin/include/editor_sources.php:126 admin/include/editor_sources.php:132
+#: admin/include/editor_sources.php:138 admin/include/editor_sources.php:144
+#: admin/include/editor_sources.php:150 admin/include/editor_sources.php:156
+#: admin/include/editor_sources.php:162 admin/include/editor_sources.php:240
+#: admin/include/editor_sources.php:311 sources.php:144
 msgid "Source"
 msgstr "Lähde"
 
@@ -80,7 +78,7 @@ msgstr "Lähde"
 msgid "Address by person"
 msgstr "Henkilön osoite"
 
-#: addresses.php:68 admin/include/editor.php:3664 admin/include/editor.php:4295
+#: addresses.php:68 admin/include/editor.php:3673 admin/include/editor.php:4279
 #: admin/include/trees_cls.php:1924 menu.php:534
 msgid "Addresses"
 msgstr "Osoitteet"
@@ -90,11 +88,11 @@ msgid "City"
 msgstr "Postitoimipaikka"
 
 #: addresses.php:80 admin/include/editor.php:472 admin/include/editor.php:617
-#: admin/include/editor.php:1378 admin/include/editor.php:1436
+#: admin/include/editor.php:1387 admin/include/editor.php:1445
 #: admin/include/editor_media_select.php:81
 #: admin/include/editor_person_select.php:88
 #: admin/include/editor_relation_select.php:29
-#: admin/include/editor_sources.php:381 admin/include/gedcom_export.php:132
+#: admin/include/editor_sources.php:375 admin/include/gedcom_export.php:132
 #: admin/include/language_editor.php:274 admin/include/make_db_maps.php:1110
 #: admin/include/settings_admin.php:823 admin/include/settings_admin.php:973
 #: admin/include/trees_cls.php:870 admin/include/trees_cls.php:908
@@ -107,12 +105,12 @@ msgstr "Postitoimipaikka"
 msgid "Search"
 msgstr "Etsi"
 
-#: addresses.php:119 admin/include/editor.php:4487
-#: admin/include/editor_sources.php:320 admin/include/editor_sources.php:371
+#: addresses.php:119 admin/include/editor.php:4472
+#: admin/include/editor_sources.php:314 admin/include/editor_sources.php:365
 #: admin/include/groups.php:537 admin/include/groups.php:542
 #: admin/include/groups.php:547 admin/include/settings_admin.php:841
 #: admin/include/settings_admin.php:908 admin/include/settings_admin.php:979
-#: family.php:2171 include/process_text.php:90 include/process_text.php:92
+#: family.php:2169 include/process_text.php:90 include/process_text.php:92
 #: list.php:1647
 msgid "Text"
 msgstr "Teksti"
@@ -239,8 +237,8 @@ msgstr ""
 msgid "no file chosen"
 msgstr ""
 
-#: admin/include/backup.php:115 admin/include/editor_event_cls.php:1362
-#: admin/include/editor_event_cls.php:1371 admin/update/install_update.php:463
+#: admin/include/backup.php:115 admin/include/editor_event_cls.php:1380
+#: admin/include/editor_event_cls.php:1382 admin/update/install_update.php:463
 msgid "Upload"
 msgstr "Lataa"
 
@@ -315,7 +313,7 @@ msgid "Database has been restored successfully!"
 msgstr "Tietokanta on palautettu onnistuneesti."
 
 #: admin/include/cal_date.php:8 admin/include/cal_date.php:16
-#: admin/include/editor.php:1712 admin/index.php:1024
+#: admin/include/editor.php:1721 admin/index.php:1024
 msgid "Calculated birth date"
 msgstr "Laskettu syntymäpäivä"
 
@@ -342,14 +340,14 @@ msgstr ""
 msgid "Choose family tree"
 msgstr "Valitse perhe"
 
-#: admin/include/cal_date.php:31 admin/include/editor.php:1555
-#: admin/include/editor.php:3958 admin/include/editor_sources.php:416
+#: admin/include/cal_date.php:31 admin/include/editor.php:1564
+#: admin/include/editor.php:3965 admin/include/editor_sources.php:410
 #: admin/include/statistics.php:588 admin/include/statistics.php:667
 #: admin/include/user_notes.php:115
 msgid "Select"
 msgstr "Valitse"
 
-#: admin/include/cal_date.php:120 fanchart.php:707
+#: admin/include/cal_date.php:120 fanchart.php:706
 msgid "No dates"
 msgstr "Ei päivämääriä"
 
@@ -390,24 +388,24 @@ msgstr "Lisää sivu"
 msgid "Menu"
 msgstr "Valikko"
 
-#: admin/include/cms_pages.php:22 admin/include/cms_pages.php:557
+#: admin/include/cms_pages.php:22 admin/include/cms_pages.php:539
 msgid "CMS Settings"
 msgstr "CMS-asetukset"
 
-#: admin/include/cms_pages.php:98
+#: admin/include/cms_pages.php:97
 msgid "This page is selected as homepage!"
 msgstr "Tämä sivu on valittu kotisivuksi!"
 
-#: admin/include/cms_pages.php:102
+#: admin/include/cms_pages.php:101
 msgid "Are you sure you want to remove this page?"
 msgstr "Oletko varma, että haluat poistaa tämän sivun?"
 
-#: admin/include/cms_pages.php:107 admin/include/cms_pages.php:176
-#: admin/include/editor.php:3120 admin/include/editor.php:3403
-#: admin/include/editor.php:3608 admin/include/editor_inc.php:50
+#: admin/include/cms_pages.php:106 admin/include/cms_pages.php:176
+#: admin/include/editor.php:3129 admin/include/editor.php:3412
+#: admin/include/editor.php:3617 admin/include/editor_inc.php:50
 #: admin/include/editor_inc.php:685 admin/include/editor_inc.php:917
-#: admin/include/editor_inc.php:987 admin/include/editor_inc.php:1766
-#: admin/include/editor_inc.php:2220 admin/include/editor_user_settings.php:74
+#: admin/include/editor_inc.php:987 admin/include/editor_inc.php:1767
+#: admin/include/editor_inc.php:2221 admin/include/editor_user_settings.php:74
 #: admin/include/gedcom.php:185 admin/include/gedcom_export.php:299
 #: admin/include/gedcom_export.php:307 admin/include/gedcom_export.php:318
 #: admin/include/gedcom_export.php:341 admin/include/groups.php:170
@@ -427,12 +425,12 @@ msgstr "Oletko varma, että haluat poistaa tämän sivun?"
 msgid "Yes"
 msgstr "Kyllä"
 
-#: admin/include/cms_pages.php:108 admin/include/cms_pages.php:177
-#: admin/include/editor.php:3121 admin/include/editor.php:3404
-#: admin/include/editor.php:3609 admin/include/editor_inc.php:51
+#: admin/include/cms_pages.php:107 admin/include/cms_pages.php:177
+#: admin/include/editor.php:3130 admin/include/editor.php:3413
+#: admin/include/editor.php:3618 admin/include/editor_inc.php:51
 #: admin/include/editor_inc.php:686 admin/include/editor_inc.php:918
-#: admin/include/editor_inc.php:988 admin/include/editor_inc.php:1767
-#: admin/include/editor_inc.php:2221 admin/include/editor_user_settings.php:76
+#: admin/include/editor_inc.php:988 admin/include/editor_inc.php:1768
+#: admin/include/editor_inc.php:2222 admin/include/editor_user_settings.php:76
 #: admin/include/gedcom.php:186 admin/include/gedcom_export.php:300
 #: admin/include/gedcom_export.php:308 admin/include/gedcom_export.php:319
 #: admin/include/gedcom_export.php:340 admin/include/groups.php:171
@@ -464,28 +462,27 @@ msgstr ""
 msgid "Are you sure you want to remove this menu?"
 msgstr "Oletko varma, että haluat poistaa tämän valikon?"
 
-#: admin/include/cms_pages.php:219
+#: admin/include/cms_pages.php:248
 msgid "Pages, click to edit:"
 msgstr "Sivut, klikkaa muokataksesi:"
 
-#: admin/include/cms_pages.php:228 admin/include/cms_pages.php:259
-#: admin/include/cms_pages.php:286
-msgid "Remove page"
-msgstr "Poista sivu"
-
-#: admin/include/cms_pages.php:241
-msgid "No page title"
-msgstr ""
-
-#: admin/include/cms_pages.php:278 admin/include/cms_pages.php:356
+#: admin/include/cms_pages.php:256 admin/include/cms_pages.php:338
 msgid "Hide page in menu"
 msgstr "Piilota sivu valikosta"
 
-#: admin/include/cms_pages.php:326
+#: admin/include/cms_pages.php:269
+msgid "Remove page"
+msgstr "Poista sivu"
+
+#: admin/include/cms_pages.php:279
+msgid "No page title"
+msgstr ""
+
+#: admin/include/cms_pages.php:307
 msgid "Page title"
 msgstr "Sivun otsikko"
 
-#: admin/include/cms_pages.php:332
+#: admin/include/cms_pages.php:313
 msgid ""
 "To edit the pages the CKEditor is used. For help about this editor, go to: "
 "<a href=\"http://ckeditor.com\" target=\"_blank\">ckeditor.com</a>."
@@ -493,7 +490,7 @@ msgstr ""
 "Sivujen muokkaamiseen käytetään editoria CKEditor. Lisätietoja editorista: "
 "<a href=\"http://ckeditor.com\" target=\"_blank\">ckeditor.com</a>."
 
-#: admin/include/cms_pages.php:333
+#: admin/include/cms_pages.php:314
 msgid ""
 "\"Hide page in menu\" is a special option. These pages can be accessed using "
 "a direct link."
@@ -501,24 +498,24 @@ msgstr ""
 "\"Piilota sivu valikosta\" on erikoisoptio. Piilotettuihin sivuihin pääsee "
 "edelleen suorilla linkeilä."
 
-#: admin/include/cms_pages.php:342
+#: admin/include/cms_pages.php:323
 msgid "This page can be accessed using this link: "
 msgstr "Tähän sivulle pääsee tästä linkistä: "
 
-#: admin/include/cms_pages.php:354
+#: admin/include/cms_pages.php:336
 msgid "No menu selected"
 msgstr "Ei valikkoa valittuna"
 
-#: admin/include/cms_pages.php:365
+#: admin/include/cms_pages.php:347
 msgid "Published"
 msgstr "Julkaistu"
 
-#: admin/include/cms_pages.php:368 admin/include/cms_pages.php:371
-#: admin/include/cms_pages.php:464 admin/include/editor.php:1606
-#: admin/include/editor.php:2278 admin/include/editor.php:2505
-#: admin/include/editor.php:2927 admin/include/editor.php:3318
-#: admin/include/editor.php:3524 admin/include/editor.php:3780
-#: admin/include/editor.php:3977 admin/include/editor_sources.php:310
+#: admin/include/cms_pages.php:350 admin/include/cms_pages.php:353
+#: admin/include/cms_pages.php:446 admin/include/editor.php:1615
+#: admin/include/editor.php:2287 admin/include/editor.php:2514
+#: admin/include/editor.php:2936 admin/include/editor.php:3327
+#: admin/include/editor.php:3533 admin/include/editor.php:3787
+#: admin/include/editor.php:3984 admin/include/editor_sources.php:304
 #: admin/include/language_editor.php:285 admin/include/make_db_maps.php:294
 #: admin/include/make_db_maps.php:389 admin/include/make_db_maps.php:398
 #: admin/include/make_db_maps.php:583 admin/include/prefix_editor.php:40
@@ -526,30 +523,30 @@ msgstr "Julkaistu"
 msgid "Save"
 msgstr "Talleta"
 
-#: admin/include/cms_pages.php:374
+#: admin/include/cms_pages.php:356
 msgid "Visitors counter"
 msgstr "Vieraslaskuri"
 
-#: admin/include/cms_pages.php:432
+#: admin/include/cms_pages.php:414
 msgid "Add and edit menu/ category items:"
 msgstr "Lisää ja muokkaa valikkon/kategorian osia"
 
-#: admin/include/cms_pages.php:436 admin/include/trees_cls.php:23
+#: admin/include/cms_pages.php:418 admin/include/trees_cls.php:23
 msgid "Order"
 msgstr "Järjestys"
 
-#: admin/include/cms_pages.php:436
+#: admin/include/cms_pages.php:418
 msgid "Menu item/ category"
 msgstr "Valikon osa/kategoria"
 
-#: admin/include/cms_pages.php:453
+#: admin/include/cms_pages.php:435
 msgid "Remove menu"
 msgstr "Poista valikko"
 
-#: admin/include/cms_pages.php:475 admin/include/editor.php:1609
-#: admin/include/editor.php:2281 admin/include/editor.php:3315
-#: admin/include/editor.php:3521 admin/include/editor.php:3777
-#: admin/include/editor.php:4303 admin/include/editor.php:4532
+#: admin/include/cms_pages.php:457 admin/include/editor.php:1618
+#: admin/include/editor.php:2290 admin/include/editor.php:3324
+#: admin/include/editor.php:3530 admin/include/editor.php:3784
+#: admin/include/editor.php:4287 admin/include/editor.php:4517
 #: admin/include/editor_event_cls.php:350
 #: admin/include/editor_event_cls.php:368
 #: admin/include/editor_event_cls.php:386
@@ -564,13 +561,13 @@ msgstr "Poista valikko"
 #: admin/include/editor_event_cls.php:554
 #: admin/include/editor_event_cls.php:557
 #: admin/include/editor_event_cls.php:751
-#: admin/include/editor_event_cls.php:764 admin/include/editor_sources.php:523
+#: admin/include/editor_event_cls.php:764 admin/include/editor_sources.php:517
 #: admin/include/log.php:184 admin/include/settings_admin.php:988
 #: admin/include/settings_admin.php:1121 admin/include/users.php:222
 msgid "Add"
 msgstr "Lisää"
 
-#: admin/include/cms_pages.php:557 admin/include/editor_user_settings.php:61
+#: admin/include/cms_pages.php:539 admin/include/editor_user_settings.php:61
 #: admin/include/extensions.php:72 admin/include/extensions.php:96
 #: admin/include/groups.php:255 admin/include/groups.php:276
 #: admin/include/groups.php:345 admin/include/groups.php:431
@@ -591,11 +588,11 @@ msgstr "Lisää"
 msgid "Change"
 msgstr "Muuta"
 
-#: admin/include/cms_pages.php:561
+#: admin/include/cms_pages.php:543
 msgid "Path for pictures in CMS pages"
 msgstr "CMS-sivujen kuvien polku"
 
-#: admin/include/cms_pages.php:563
+#: admin/include/cms_pages.php:545
 #, fuzzy
 #| msgid ""
 #| "To point the main humogen folder, use ../../../foldername<br>\n"
@@ -610,12 +607,12 @@ msgstr ""
 "Osoittaaksesi muihin tai rinnakkaisiin humogen-kansioihin, käytä ../../../../"
 "kansionimi"
 
-#: admin/include/cms_pages.php:578 admin/include/thumbs.php:178
+#: admin/include/cms_pages.php:560 admin/include/thumbs.php:178
 #: admin/include/trees_cls.php:249
 msgid "Use default picture path:"
 msgstr "Kuvien hakemistopolku (oletus)"
 
-#: admin/include/cms_pages.php:587
+#: admin/include/cms_pages.php:569
 #, fuzzy, php-format
 #| msgid ""
 #| "Select main homepage (welcome page for visitors) for HuMo-gen<br>\n"
@@ -627,15 +624,15 @@ msgstr ""
 "Valitse kotisivu (tervetuloa-sivu vierailijoille) HuMo-geniin<br>\n"
 "<b>Valittu CMS sivu korvaa päävalikon!</b>"
 
-#: admin/include/cms_pages.php:604
+#: admin/include/cms_pages.php:586
 msgid "Use for all languages"
 msgstr "Käytä kaikille kieliversioille"
 
-#: admin/include/cms_pages.php:606 admin/include/cms_pages.php:632
+#: admin/include/cms_pages.php:588 admin/include/cms_pages.php:614
 msgid "Standard main index"
 msgstr "Vakio päävalikko"
 
-#: admin/include/cms_pages.php:613
+#: admin/include/cms_pages.php:595
 msgid "Set per language"
 msgstr "Aseta kielikohtaisesti"
 
@@ -661,30 +658,30 @@ msgstr "Suosikkilista:"
 msgid "Latest changes"
 msgstr "Viimeiset muutokset"
 
-#: admin/include/editor.php:450 admin/include/editor.php:2261
-#: admin/include/editor.php:2914
+#: admin/include/editor.php:450 admin/include/editor.php:2270
+#: admin/include/editor.php:2923
 msgid "Added by"
 msgstr ""
 
-#: admin/include/editor.php:451 admin/include/editor.php:2266
-#: admin/include/editor.php:2919
+#: admin/include/editor.php:451 admin/include/editor.php:2275
+#: admin/include/editor.php:2928
 msgid "Changed by"
 msgstr ""
 
-#: admin/include/editor.php:470 admin/include/editor.php:701
+#: admin/include/editor.php:470 admin/include/editor.php:710
 #: admin/include/gedcom_export.php:128 admin/include/tree_check.php:802
-#: admin/include/trees_cls.php:875 family.php:2162 relations.php:3116
+#: admin/include/trees_cls.php:875 family.php:2160 relations.php:3116
 msgid "Person"
 msgstr "Henkilö"
 
-#: admin/include/editor.php:471 admin/include/editor.php:1616
+#: admin/include/editor.php:471 admin/include/editor.php:1625
 #: admin/include/editor_event_cls.php:23 admin/include/editor_event_cls.php:342
 #: admin/include/editor_media_select.php:80
 #: admin/include/editor_person_select.php:83
 #: admin/include/editor_relation_select.php:24
 #: admin/include/gedcom_export.php:129 admin/include/gedcom_export.php:274
-#: admin/include/gedcom_export.php:278 birthday_list.php:137 family.php:2098
-#: family.php:2164 include/mainindex_cls.php:585 include/mainindex_cls.php:923
+#: admin/include/gedcom_export.php:278 birthday_list.php:137 family.php:2096
+#: family.php:2162 include/mainindex_cls.php:585 include/mainindex_cls.php:923
 #: list.php:1960 list_names.php:315 list_names.php:317 mailform.php:28
 #: mailform.php:110 menu.php:89 register.php:62 register.php:124
 #: relations.php:3109 user_settings.php:53
@@ -707,9 +704,9 @@ msgstr "Tulokset"
 msgid "or ID:"
 msgstr "tai ID:"
 
-#: admin/include/editor.php:615 admin/include/editor.php:1550
-#: admin/include/editor.php:2398 admin/include/editor.php:3055
-#: admin/include/editor.php:4090
+#: admin/include/editor.php:615 admin/include/editor.php:1559
+#: admin/include/editor.php:2407 admin/include/editor.php:3064
+#: admin/include/editor.php:4074
 #, fuzzy
 #| msgid "gedcom no. (\"I43\")"
 msgid "GEDCOM number (ID)"
@@ -719,11 +716,11 @@ msgstr "gedcom no. (\"I43\")"
 msgid "Add person"
 msgstr "Lisää henkilö"
 
-#: admin/include/editor.php:640 admin/include/editor.php:1758
+#: admin/include/editor.php:640 admin/include/editor.php:1767
 msgid "Examples of date entries:"
 msgstr ""
 
-#: admin/include/editor.php:641 admin/include/editor.php:1759
+#: admin/include/editor.php:641 admin/include/editor.php:1768
 #, fuzzy
 #| msgid ""
 #| "13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, between 1986 and 1987"
@@ -748,30 +745,30 @@ msgstr "= klikkaa avataksesi valintaikkunan."
 msgid "= click to open extended editor items."
 msgstr "= klikkaa avataksesi laajennetut muokkauskohteet."
 
-#: admin/include/editor.php:717 admin/include/editor.php:2341
+#: admin/include/editor.php:726 admin/include/editor.php:2350
 #: admin/include/statistics.php:38 admin/include/statistics.php:41
 #: admin/include/statistics.php:771 admin/include/statistics.php:774
 #: list_places_families.php:561
 msgid "Family"
 msgstr "Perhe"
 
-#: admin/include/editor.php:810
+#: admin/include/editor.php:819
 msgid "Browse"
 msgstr ""
 
-#: admin/include/editor.php:857 admin/include/editor.php:2513
-#: admin/include/editor.php:2639 include/marriage_cls.php:614
+#: admin/include/editor.php:866 admin/include/editor.php:2522
+#: admin/include/editor.php:2648 include/marriage_cls.php:614
 msgid "marriage/ relation"
 msgstr "puoliso/kumppani"
 
-#: admin/include/editor.php:863 admin/include/editor.php:2687
+#: admin/include/editor.php:872 admin/include/editor.php:2696
 #: include/marriage_cls.php:280 include/marriage_cls.php:281
 #: include/marriage_cls.php:282 include/marriage_cls.php:289
 #: include/marriage_cls.php:290
 msgid "Married"
 msgstr "Naimisissa"
 
-#: admin/include/editor.php:882 include/marriage_cls.php:48
+#: admin/include/editor.php:891 include/marriage_cls.php:48
 #: include/marriage_cls.php:127 include/marriage_cls.php:212
 #: include/marriage_cls.php:278 include/marriage_cls.php:288
 #: include/marriage_cls.php:335 include/marriage_cls.php:390
@@ -783,21 +780,21 @@ msgstr "Naimisissa"
 msgid " to: "
 msgstr " : "
 
-#: admin/include/editor.php:897 admin/include/trees_cls.php:1658
-#: family.php:1296 family.php:1315
+#: admin/include/editor.php:906 admin/include/trees_cls.php:1658
+#: family.php:1312 family.php:1331
 msgid "Children"
 msgstr "Lapset"
 
-#: admin/include/editor.php:913 admin/include/editor_person_select.php:125
+#: admin/include/editor.php:922 admin/include/editor_person_select.php:125
 #: report_ancestor.php:240
 msgid "Parents"
 msgstr "Vanhemmat"
 
 # Nomen Nescio: unknown name.
-#: admin/include/editor.php:920 admin/include/editor.php:926
-#: admin/include/editor.php:4253 admin/include/editor_cls.php:254
-#: admin/include/editor_event_cls.php:1100
-#: admin/include/editor_event_cls.php:1109 admin/include/statistics.php:780
+#: admin/include/editor.php:929 admin/include/editor.php:935
+#: admin/include/editor.php:4237 admin/include/editor_cls.php:256
+#: admin/include/editor_event_cls.php:1112
+#: admin/include/editor_event_cls.php:1121 admin/include/statistics.php:780
 #: admin/include/statistics.php:792 include/person_cls.php:709
 #: include/person_cls.php:711 include/person_cls.php:712
 #: include/person_cls.php:713 include/person_cls.php:714
@@ -815,9 +812,9 @@ msgstr "Vanhemmat"
 msgid "N.N."
 msgstr "N.N."
 
-#: admin/include/editor.php:922 admin/include/editor.php:1463
-#: admin/include/editor.php:2359 admin/include/editor.php:2503
-#: admin/include/editor.php:2537 admin/include/editor_event_cls.php:1102
+#: admin/include/editor.php:931 admin/include/editor.php:1472
+#: admin/include/editor.php:2368 admin/include/editor.php:2512
+#: admin/include/editor.php:2546 admin/include/editor_event_cls.php:1114
 #: admin/include/editor_relation_select.php:107
 #: admin/include/tree_check.php:1481 include/language_date.php:88
 #: include/language_date.php:93 include/language_date.php:98
@@ -828,178 +825,178 @@ msgstr "N.N."
 msgid "and"
 msgstr "ja"
 
-#: admin/include/editor.php:935
+#: admin/include/editor.php:944
 #, fuzzy
 #| msgid "Settings"
 msgid "Siblings"
 msgstr "Asetukset"
 
-#: admin/include/editor.php:951 admin/include/editor.php:1471
+#: admin/include/editor.php:960 admin/include/editor.php:1480
 msgid "There are no parents."
 msgstr "Vanhempia ei ole."
 
-#: admin/include/editor.php:959
+#: admin/include/editor.php:968
 #, php-format
 msgid "Editing in %s? <b>Always backup your data!</b>"
 msgstr ""
 
-#: admin/include/editor.php:980 admin/include/editor.php:3331
-#: admin/include/editor.php:3791
+#: admin/include/editor.php:989 admin/include/editor.php:3340
+#: admin/include/editor.php:3798
 msgid "Preview"
 msgstr "Esikatselu"
 
-#: admin/include/editor.php:1249
+#: admin/include/editor.php:1258
 msgid "Open Archives"
 msgstr ""
 
-#: admin/include/editor.php:1251
+#: admin/include/editor.php:1260
 msgid "Online search enabled"
 msgstr ""
 
-#: admin/include/editor.php:1253
+#: admin/include/editor.php:1262
 msgid "Online search disabled"
 msgstr ""
 
-#: admin/include/editor.php:1272
+#: admin/include/editor.php:1281
 msgid "Archives"
 msgstr ""
 
-#: admin/include/editor.php:1398 admin/include/language_editor.php:385
+#: admin/include/editor.php:1407 admin/include/language_editor.php:385
 msgid "No results found"
 msgstr "Ei hakutuloksia"
 
-#: admin/include/editor.php:1435
+#: admin/include/editor.php:1444
 msgid "Search using period"
 msgstr ""
 
-#: admin/include/editor.php:1452
+#: admin/include/editor.php:1461
 msgid "parents"
 msgstr "vanhemmat"
 
-#: admin/include/editor.php:1474 admin/include/editor.php:1545
+#: admin/include/editor.php:1483 admin/include/editor.php:1554
 msgid "Add parents"
 msgstr "Lisää vanhemmat"
 
-#: admin/include/editor.php:1477 admin/include/trees_cls.php:1652
+#: admin/include/editor.php:1486 admin/include/trees_cls.php:1652
 msgid "Father"
 msgstr "Isä"
 
-#: admin/include/editor.php:1477 admin/include/trees_cls.php:1655
+#: admin/include/editor.php:1486 admin/include/trees_cls.php:1655
 msgid "Mother"
 msgstr "Äiti"
 
-#: admin/include/editor.php:1479 admin/include/editor.php:1480
-#: admin/include/editor.php:1481 admin/include/editor.php:1618
-#: admin/include/editor.php:1623 admin/include/editor.php:4157 list.php:1973
+#: admin/include/editor.php:1488 admin/include/editor.php:1489
+#: admin/include/editor.php:1490 admin/include/editor.php:1627
+#: admin/include/editor.php:1632 admin/include/editor.php:4141 list.php:1973
 msgid "firstname"
 msgstr "etunimi"
 
-#: admin/include/editor.php:1485 admin/include/editor.php:1486
-#: admin/include/editor.php:1498 admin/include/editor.php:1618
-#: admin/include/editor.php:1626 admin/include/editor.php:4160 list.php:1539
+#: admin/include/editor.php:1494 admin/include/editor.php:1495
+#: admin/include/editor.php:1507 admin/include/editor.php:1627
+#: admin/include/editor.php:1635 admin/include/editor.php:4144 list.php:1539
 msgid "prefix"
 msgstr "etuliite"
 
-#: admin/include/editor.php:1495 admin/include/editor.php:1626
-#: admin/include/editor.php:4169
+#: admin/include/editor.php:1504 admin/include/editor.php:1635
+#: admin/include/editor.php:4153
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr "Esimerkiksi: d\\'  tai:  van_ (käytä _ välilyöntinä)"
 
-#: admin/include/editor.php:1513 admin/include/editor.php:1514
-#: admin/include/editor.php:1515 admin/include/editor.php:1618
-#: admin/include/editor.php:1629 admin/include/editor.php:4174 list.php:1979
+#: admin/include/editor.php:1522 admin/include/editor.php:1523
+#: admin/include/editor.php:1524 admin/include/editor.php:1627
+#: admin/include/editor.php:1638 admin/include/editor.php:4158 list.php:1979
 msgid "lastname"
 msgstr "sukunimi"
 
-#: admin/include/editor.php:1519 admin/include/editor.php:1700
-#: admin/include/editor.php:4177 admin/include/groups.php:498
+#: admin/include/editor.php:1528 admin/include/editor.php:1709
+#: admin/include/editor.php:4161 admin/include/groups.php:498
 msgid "Privacy filter"
 msgstr "Yksityisyyden suodatus"
 
-#: admin/include/editor.php:1520 admin/include/editor.php:1523
-#: admin/include/editor.php:1704 admin/include/editor.php:4178
+#: admin/include/editor.php:1529 admin/include/editor.php:1532
+#: admin/include/editor.php:1713 admin/include/editor.php:4162
 #: admin/include/trees_cls.php:1632
 msgid "alive"
 msgstr "elossa"
 
-#: admin/include/editor.php:1521 admin/include/editor.php:1524
-#: admin/include/editor.php:1707 admin/include/editor.php:4179
+#: admin/include/editor.php:1530 admin/include/editor.php:1533
+#: admin/include/editor.php:1716 admin/include/editor.php:4163
 msgid "deceased"
 msgstr "kuollut"
 
-#: admin/include/editor.php:1527 admin/include/editor.php:1725
-#: admin/include/editor.php:4182 admin/include/editor_sources.php:60
+#: admin/include/editor.php:1536 admin/include/editor.php:1734
+#: admin/include/editor.php:4166 admin/include/editor_sources.php:60
 msgid "Sex"
 msgstr "Sukupuoli"
 
-#: admin/include/editor.php:1530 admin/include/editor.php:1538
-#: admin/include/editor.php:1727 admin/include/editor.php:4184
+#: admin/include/editor.php:1539 admin/include/editor.php:1547
+#: admin/include/editor.php:1736 admin/include/editor.php:4168
 #: report_ancestor.php:1503
 msgid "male"
 msgstr "mies"
 
-#: admin/include/editor.php:1532 admin/include/editor.php:1540
-#: admin/include/editor.php:1729 admin/include/editor.php:4186
+#: admin/include/editor.php:1541 admin/include/editor.php:1549
+#: admin/include/editor.php:1738 admin/include/editor.php:4170
 #: report_ancestor.php:1500
 msgid "female"
 msgstr "nainen"
 
-#: admin/include/editor.php:1548
+#: admin/include/editor.php:1557
 msgid "Or select an existing family as parents:"
 msgstr ""
 
 # Buried
-#: admin/include/editor.php:1569 admin/include/editor.php:1615
-#: admin/include/editor.php:1743 admin/include/editor.php:1816
-#: admin/include/editor.php:1863 admin/include/editor.php:1908
-#: admin/include/editor.php:1953 admin/include/editor.php:2053
-#: admin/include/editor.php:2209 admin/include/editor.php:2235
-#: admin/include/editor.php:2490 admin/include/editor.php:2572
-#: admin/include/editor.php:2610 admin/include/editor.php:2637
-#: admin/include/editor.php:2742 admin/include/editor.php:2770
-#: admin/include/editor.php:2806 admin/include/editor.php:2897 family.php:2158
+#: admin/include/editor.php:1578 admin/include/editor.php:1624
+#: admin/include/editor.php:1752 admin/include/editor.php:1825
+#: admin/include/editor.php:1872 admin/include/editor.php:1917
+#: admin/include/editor.php:1962 admin/include/editor.php:2062
+#: admin/include/editor.php:2218 admin/include/editor.php:2244
+#: admin/include/editor.php:2499 admin/include/editor.php:2581
+#: admin/include/editor.php:2619 admin/include/editor.php:2646
+#: admin/include/editor.php:2751 admin/include/editor.php:2779
+#: admin/include/editor.php:2815 admin/include/editor.php:2906 family.php:2156
 msgid "[+]"
 msgstr "[+]"
 
-#: admin/include/editor.php:1569 admin/include/editor.php:2490
+#: admin/include/editor.php:1578 admin/include/editor.php:2499
 #: admin/include/gedcom_export.php:209 list.php:1663 list.php:1759
 #: list_names.php:227 statistics.php:748 statistics.php:931
 msgid "All"
 msgstr "Kaikki"
 
-#: admin/include/editor.php:1572
+#: admin/include/editor.php:1581
 msgid "Delete person"
 msgstr "Poista henkilö"
 
-#: admin/include/editor.php:1620 admin/include/editor.php:1645
-#: admin/include/editor_event_cls.php:1465 include/person_cls.php:1649
+#: admin/include/editor.php:1629 admin/include/editor.php:1654
+#: admin/include/editor_event_cls.php:1476 include/person_cls.php:1649
 msgid "Hebrew name"
 msgstr "Heprealainen nimi"
 
-#: admin/include/editor.php:1630
+#: admin/include/editor.php:1639
 msgid "patronymic"
 msgstr "patronyymi"
 
-#: admin/include/editor.php:1646
+#: admin/include/editor.php:1655
 msgid "For example: Joseph ben Hirsch Zvi"
 msgstr ""
 
-#: admin/include/editor.php:1670 admin/include/editor.php:1802
-#: admin/include/editor.php:1852 admin/include/editor.php:1899
-#: admin/include/editor.php:1941 admin/include/editor.php:2045
-#: admin/include/editor.php:2106 admin/include/editor.php:2604
-#: admin/include/editor.php:2632 admin/include/editor.php:2734
-#: admin/include/editor.php:2765 admin/include/editor.php:2793
-#: admin/include/editor.php:2847 admin/include/editor.php:3308
-#: admin/include/editor.php:3513 admin/include/editor.php:3773
-#: admin/include/editor.php:4396 admin/include/editor_event_cls.php:1286
-#: admin/include/editor_event_cls.php:1349 admin/include/editor_sources.php:90
-#: admin/include/editor_sources.php:149 admin/include/gedcom.php:1544
+#: admin/include/editor.php:1679 admin/include/editor.php:1811
+#: admin/include/editor.php:1861 admin/include/editor.php:1908
+#: admin/include/editor.php:1950 admin/include/editor.php:2054
+#: admin/include/editor.php:2115 admin/include/editor.php:2613
+#: admin/include/editor.php:2641 admin/include/editor.php:2743
+#: admin/include/editor.php:2774 admin/include/editor.php:2802
+#: admin/include/editor.php:2856 admin/include/editor.php:3317
+#: admin/include/editor.php:3522 admin/include/editor.php:3780
+#: admin/include/editor.php:4380 admin/include/editor_event_cls.php:1301
+#: admin/include/editor_event_cls.php:1364 admin/include/editor_sources.php:90
+#: admin/include/editor_sources.php:144 admin/include/gedcom.php:1544
 msgid "text"
 msgstr "teksti"
 
-#: admin/include/editor.php:1744 admin/include/editor.php:4200
-#: admin/include/editor_sources.php:66 birthday_list.php:136 family.php:2004
+#: admin/include/editor.php:1753 admin/include/editor.php:4184
+#: admin/include/editor_sources.php:66 birthday_list.php:136 family.php:2002
 #: googlemaps/namesearch.php:198 include/mainindex_cls.php:864
 #: include/mainindex_cls.php:867 include/person_cls.php:1808
 #: include/person_cls.php:1810 include/person_cls.php:1815
@@ -1009,60 +1006,60 @@ msgstr "teksti"
 msgid "born"
 msgstr "syntynyt"
 
-#: admin/include/editor.php:1746 admin/include/editor.php:1834
-#: admin/include/editor.php:1880 admin/include/editor.php:1910
-#: admin/include/editor.php:1955 admin/include/editor.php:2055
-#: admin/include/editor.php:2575 admin/include/editor.php:2612
-#: admin/include/editor.php:2640 admin/include/editor.php:2744
-#: admin/include/editor.php:2772 admin/include/editor.php:2808
-#: admin/include/editor.php:3283 admin/include/editor.php:3507
-#: admin/include/editor.php:4398 admin/include/editor_cls.php:50
+#: admin/include/editor.php:1755 admin/include/editor.php:1843
+#: admin/include/editor.php:1889 admin/include/editor.php:1919
+#: admin/include/editor.php:1964 admin/include/editor.php:2064
+#: admin/include/editor.php:2584 admin/include/editor.php:2621
+#: admin/include/editor.php:2649 admin/include/editor.php:2753
+#: admin/include/editor.php:2781 admin/include/editor.php:2817
+#: admin/include/editor.php:3292 admin/include/editor.php:3516
+#: admin/include/editor.php:4382 admin/include/editor_cls.php:52
 msgid "date"
 msgstr "päiväys"
 
-#: admin/include/editor.php:1764 admin/include/editor.php:1835
-#: admin/include/editor.php:1881 admin/include/editor.php:1910
-#: admin/include/editor.php:1956 admin/include/editor.php:2056
-#: admin/include/editor.php:2575 admin/include/editor.php:2612
-#: admin/include/editor.php:2640 admin/include/editor.php:2744
-#: admin/include/editor.php:2772 admin/include/editor.php:2808
-#: admin/include/editor.php:3283 admin/include/editor.php:3507
-#: admin/include/editor.php:4202 admin/include/editor.php:4208
-#: admin/include/editor.php:4214 admin/include/editor.php:4220
-#: admin/include/editor_event_cls.php:1279
-#: admin/include/editor_event_cls.php:1346 admin/include/editor_sources.php:367
-#: admin/include/editor_sources.php:488
+#: admin/include/editor.php:1773 admin/include/editor.php:1844
+#: admin/include/editor.php:1890 admin/include/editor.php:1919
+#: admin/include/editor.php:1965 admin/include/editor.php:2065
+#: admin/include/editor.php:2584 admin/include/editor.php:2621
+#: admin/include/editor.php:2649 admin/include/editor.php:2753
+#: admin/include/editor.php:2781 admin/include/editor.php:2817
+#: admin/include/editor.php:3292 admin/include/editor.php:3516
+#: admin/include/editor.php:4186 admin/include/editor.php:4192
+#: admin/include/editor.php:4198 admin/include/editor.php:4204
+#: admin/include/editor_event_cls.php:1291
+#: admin/include/editor_event_cls.php:1361 admin/include/editor_sources.php:361
+#: admin/include/editor_sources.php:482
 msgid "place"
 msgstr "paikka"
 
-#: admin/include/editor.php:1790 admin/include/trees_cls.php:1622
+#: admin/include/editor.php:1799 admin/include/trees_cls.php:1622
 msgid "birth time"
 msgstr "syntymäaika"
 
-#: admin/include/editor.php:1793 include/person_cls.php:348
+#: admin/include/editor.php:1802 include/person_cls.php:348
 msgid "stillborn child"
 msgstr "kuolleena syntynyt lapsi"
 
-#: admin/include/editor.php:1817 include/language_event.php:16
+#: admin/include/editor.php:1826 include/language_event.php:16
 msgid "Brit Mila"
 msgstr "Brit Mila"
 
-#: admin/include/editor.php:1836 admin/include/editor.php:1882
+#: admin/include/editor.php:1845 admin/include/editor.php:1891
 msgid ""
 "To display this, the option \"Show events\" has to be checked in \"Users -> "
 "Groups\""
 msgstr ""
 
-#: admin/include/editor.php:1864 include/language_event.php:14
+#: admin/include/editor.php:1873 include/language_event.php:14
 msgid "Bat Mitzvah"
 msgstr "Bat Mitzvah"
 
-#: admin/include/editor.php:1865 include/language_event.php:13
+#: admin/include/editor.php:1874 include/language_event.php:13
 msgid "Bar Mitzvah"
 msgstr "Bar Mitzvah"
 
-#: admin/include/editor.php:1909 admin/include/editor.php:4206
-#: admin/include/editor_sources.php:72 family.php:2007
+#: admin/include/editor.php:1918 admin/include/editor.php:4190
+#: admin/include/editor_sources.php:72 family.php:2005
 #: googlemaps/namesearch.php:201 include/mainindex_cls.php:875
 #: include/mainindex_cls.php:878 include/person_cls.php:1895
 #: include/person_cls.php:1897 include/person_cls.php:1902
@@ -1071,12 +1068,12 @@ msgstr "Bar Mitzvah"
 msgid "baptised"
 msgstr "kastettu"
 
-#: admin/include/editor.php:1930 admin/include/trees_cls.php:1633
+#: admin/include/editor.php:1939 admin/include/trees_cls.php:1633
 #: include/person_cls.php:1849 include/person_cls.php:1851
 msgid "religion"
 msgstr "uskonto"
 
-#: admin/include/editor.php:1954 admin/include/editor.php:4212
+#: admin/include/editor.php:1963 admin/include/editor.php:4196
 #: admin/include/editor_sources.php:78 birthday_list.php:138
 #: googlemaps/namesearch.php:207 include/mainindex_cls.php:886
 #: include/mainindex_cls.php:889 include/person_cls.php:2036
@@ -1086,12 +1083,12 @@ msgstr "uskonto"
 msgid "died"
 msgstr "kuollut"
 
-#: admin/include/editor.php:1960 admin/include/editor.php:2658
-#: admin/include/editor.php:2662
+#: admin/include/editor.php:1969 admin/include/editor.php:2667
+#: admin/include/editor.php:2671
 msgid "Age"
 msgstr "Ikä"
 
-#: admin/include/editor.php:1969
+#: admin/include/editor.php:1978
 msgid ""
 "If death year and age are used, then birth year is calculated automatically "
 "(when empty)."
@@ -1099,119 +1096,119 @@ msgstr ""
 "Jos kuolinvuosi ja ikä on annettu, syntymävuosi lasketaan automaattisesti "
 "(jos sitä ei ole)."
 
-#: admin/include/editor.php:1988 admin/include/trees_cls.php:1627
+#: admin/include/editor.php:1997 admin/include/trees_cls.php:1627
 msgid "death time"
 msgstr "kuolinaika"
 
-#: admin/include/editor.php:1990
+#: admin/include/editor.php:1999
 msgid "cause"
 msgstr "kuolinsyy"
 
-#: admin/include/editor.php:1996 include/person_cls.php:1973
+#: admin/include/editor.php:2005 include/person_cls.php:1973
 #: include/person_cls.php:2001
 msgid "murdered"
 msgstr "murhattu"
 
-#: admin/include/editor.php:1999 include/person_cls.php:1974
+#: admin/include/editor.php:2008 include/person_cls.php:1974
 msgid "drowned"
 msgstr "hukkunut"
 
-#: admin/include/editor.php:2002 include/person_cls.php:1975
+#: admin/include/editor.php:2011 include/person_cls.php:1975
 msgid "perished"
 msgstr "menehtynyt"
 
-#: admin/include/editor.php:2005 include/person_cls.php:1976
+#: admin/include/editor.php:2014 include/person_cls.php:1976
 msgid "killed in action"
 msgstr "kaatunut sodassa"
 
-#: admin/include/editor.php:2008 include/person_cls.php:1977
+#: admin/include/editor.php:2017 include/person_cls.php:1977
 msgid "being missed"
 msgstr "kadonnut"
 
-#: admin/include/editor.php:2011 include/person_cls.php:1978
+#: admin/include/editor.php:2020 include/person_cls.php:1978
 msgid "committed suicide"
 msgstr "tehnyt itsemurhan"
 
-#: admin/include/editor.php:2014 include/person_cls.php:1979
+#: admin/include/editor.php:2023 include/person_cls.php:1979
 msgid "executed"
 msgstr "teloitettu"
 
-#: admin/include/editor.php:2017 include/person_cls.php:1980
+#: admin/include/editor.php:2026 include/person_cls.php:1980
 msgid "died young"
 msgstr "kuollut nuorena"
 
-#: admin/include/editor.php:2020 include/person_cls.php:1981
+#: admin/include/editor.php:2029 include/person_cls.php:1981
 msgid "died unmarried"
 msgstr "kuollut naimattomana"
 
-#: admin/include/editor.php:2023 include/person_cls.php:1982
+#: admin/include/editor.php:2032 include/person_cls.php:1982
 msgid "registration"
 msgstr "rekisteröinti"
 
-#: admin/include/editor.php:2026 include/person_cls.php:1983
+#: admin/include/editor.php:2035 include/person_cls.php:1983
 msgid "declared death"
 msgstr "julistettu kuolleeksi"
 
-#: admin/include/editor.php:2030 admin/include/editor.php:3219
-#: admin/include/editor.php:3320 admin/include/editor.php:3455
-#: admin/include/editor.php:3526 admin/include/editor.php:3695
-#: admin/include/editor.php:3781 admin/include/editor.php:4096
+#: admin/include/editor.php:2039 admin/include/editor.php:3228
+#: admin/include/editor.php:3329 admin/include/editor.php:3464
+#: admin/include/editor.php:3535 admin/include/editor.php:3704
+#: admin/include/editor.php:3788 admin/include/editor.php:4080
 #: admin/include/index_inc.php:544 admin/include/thumbs.php:616
-#: fanchart.php:766 include/calculate_age_cls.php:218
+#: fanchart.php:765 include/calculate_age_cls.php:218
 #: include/calculate_age_cls.php:244 include/calculate_age_cls.php:333
 #: include/calculate_age_cls.php:359
 msgid "or"
 msgstr "tai"
 
-#: admin/include/editor.php:2054
+#: admin/include/editor.php:2063
 msgid "Buried"
 msgstr "Haudattu"
 
-#: admin/include/editor.php:2075
+#: admin/include/editor.php:2084
 msgid "method of burial"
 msgstr ""
 
-#: admin/include/editor.php:2082 admin/include/editor.php:4218
+#: admin/include/editor.php:2091 admin/include/editor.php:4202
 #: admin/include/editor_sources.php:84 googlemaps/namesearch.php:210
 #: include/person_cls.php:2113 list.php:1628 list.php:1635 list.php:1962
 #: maps.php:652 maps.php:761 timelines.php:64
 msgid "buried"
 msgstr "haudattu"
 
-#: admin/include/editor.php:2085 admin/include/trees_cls.php:1629
+#: admin/include/editor.php:2094 admin/include/trees_cls.php:1629
 #: include/person_cls.php:2101
 msgid "cremation"
 msgstr "tuhkaus"
 
-#: admin/include/editor.php:2088 include/person_cls.php:2104
+#: admin/include/editor.php:2097 include/person_cls.php:2104
 #, fuzzy
 #| msgid "estimated"
 msgid "resomated"
 msgstr "arvioitu"
 
-#: admin/include/editor.php:2091 include/person_cls.php:2107
+#: admin/include/editor.php:2100 include/person_cls.php:2107
 msgid "sailor's grave"
 msgstr ""
 
-#: admin/include/editor.php:2094 include/person_cls.php:2110
+#: admin/include/editor.php:2103 include/person_cls.php:2110
 msgid "donated to science"
 msgstr ""
 
-#: admin/include/editor.php:2117
+#: admin/include/editor.php:2126
 msgid "Text for person"
 msgstr "Henkilöteksti"
 
-#: admin/include/editor.php:2132 include/show_sources.php:61
+#: admin/include/editor.php:2141 include/show_sources.php:61
 #: include/show_sources.php:162 include/show_sources.php:200
 msgid "Source for person"
 msgstr "Henkilötietojen lähde"
 
-#: admin/include/editor.php:2142 admin/include/trees_cls.php:1634
+#: admin/include/editor.php:2151 admin/include/trees_cls.php:1634
 #: include/show_sources.php:224 include/show_sources.php:305
 msgid "own code"
 msgstr "oma koodi"
 
-#: admin/include/editor.php:2153
+#: admin/include/editor.php:2162
 msgid ""
 "Use own code for your own remarks.<br>\n"
 "It's possible to use own code for special privacy options, see Admin > Users "
@@ -1225,97 +1222,97 @@ msgstr ""
 "Voit myös lisätä kullekin henkilölle oman ikonin! Lisää ikoni kuvakansioon, "
 "esim.  'henkilo.gif', ja lisää 'henkilo' oma koodin kenttään."
 
-#: admin/include/editor.php:2211 admin/include/editor.php:2898
+#: admin/include/editor.php:2220 admin/include/editor.php:2907
 msgid "GEDCOM tags"
 msgstr ""
 
-#: admin/include/editor.php:2213 admin/include/editor.php:2216
-#: admin/include/editor.php:2900 admin/include/editor.php:2903
+#: admin/include/editor.php:2222 admin/include/editor.php:2225
+#: admin/include/editor.php:2909 admin/include/editor.php:2912
 #, fuzzy, php-format
 #| msgid "There are %d unprocessed gedcom tags."
 msgid "There are %d unprocessed GEDCOM tags."
 msgstr "On vielä %d käsittelemätöntä gedcom tagia."
 
-#: admin/include/editor.php:2236 admin/include/user_notes.php:8
+#: admin/include/editor.php:2245 admin/include/user_notes.php:8
 #: admin/include/user_notes.php:12 admin/include/user_notes.php:87
-#: admin/index.php:1018 family.php:2032
+#: admin/index.php:1018 family.php:2030
 msgid "User notes"
 msgstr "Käyttäjähuomautukset"
 
-#: admin/include/editor.php:2238 admin/include/editor.php:2240
+#: admin/include/editor.php:2247 admin/include/editor.php:2249
 #: admin/include/user_notes.php:89 admin/include/user_notes.php:91
-#: family.php:2034 family.php:2036
+#: family.php:2032 family.php:2034
 #, php-format
 msgid "There are %d user added notes."
 msgstr "On %d käyttäjien lisäämää huomautusta."
 
-#: admin/include/editor.php:2336
+#: admin/include/editor.php:2345
 #, fuzzy
 #| msgid "Select family tree"
 msgid "Select family"
 msgstr "Valitse sukupuu"
 
-#: admin/include/editor.php:2375 admin/include/editor.php:2402
-#: admin/include/editor.php:4151 admin/include/editor.php:4224
+#: admin/include/editor.php:2384 admin/include/editor.php:2411
+#: admin/include/editor.php:4135 admin/include/editor.php:4208
 msgid "Add relation"
 msgstr "Lisää yhteys"
 
-#: admin/include/editor.php:2375
+#: admin/include/editor.php:2384
 #, fuzzy
 #| msgid "Add new family to this person"
 msgid "Add new relation to this person"
 msgstr "Lisää tälle henkilölle uusi perhe"
 
-#: admin/include/editor.php:2398
+#: admin/include/editor.php:2407
 #, fuzzy
 #| msgid "or add relation with existing person as partner."
 msgid "Or add relation with existing person:"
 msgstr "tai lisää olemassa oleva henkilö kumppaniksi."
 
-#: admin/include/editor.php:2494
+#: admin/include/editor.php:2503
 msgid "Delete relation"
 msgstr "Poista yhteys"
 
-#: admin/include/editor.php:2517
+#: admin/include/editor.php:2526
 #, fuzzy
 #| msgid "Select person"
 msgid "Select person 1"
 msgstr "Valitse henkilö"
 
-#: admin/include/editor.php:2544
+#: admin/include/editor.php:2553
 #, fuzzy
 #| msgid "Select person"
 msgid "Select person 2"
 msgstr "Valitse henkilö"
 
-#: admin/include/editor.php:2574 admin/include/editor.php:2690
-#: admin/include/editor_sources.php:113 include/marriage_cls.php:52
+#: admin/include/editor.php:2583 admin/include/editor.php:2699
+#: admin/include/editor_sources.php:108 include/marriage_cls.php:52
 #: include/marriage_cls.php:132 include/marriage_cls.php:133
 #: include/marriage_cls.php:134 include/person_cls.php:1460
 msgid "Living together"
 msgstr "Avoliitto"
 
-#: admin/include/editor.php:2594
+#: admin/include/editor.php:2603
 msgid "End date"
 msgstr "Päättymispäivä"
 
-#: admin/include/editor.php:2611 admin/include/editor_sources.php:119
+#: admin/include/editor.php:2620 admin/include/editor_sources.php:114
 msgid "Notice of Marriage"
 msgstr "Vihkitodistus"
 
-#: admin/include/editor.php:2658
+#: admin/include/editor.php:2667
 #, fuzzy
 #| msgid "Add person"
 msgid "Age person 1"
 msgstr "Lisää henkilö"
 
-#: admin/include/editor.php:2662
+#: admin/include/editor.php:2671
 #, fuzzy
 #| msgid "Add person"
 msgid "Age person 2"
 msgstr "Lisää henkilö"
 
-#: admin/include/editor.php:2672
+#: admin/include/editor.php:2681
 msgid ""
 "If birth year of man or woman is empty it will be calculated automatically "
 "using age by marriage."
@@ -1323,141 +1320,141 @@ msgstr ""
 "Jos miehen tai naisen syntymävuotta ei ole annettu, sen lasketaan "
 "automaattisesti vihkimisiästä."
 
-#: admin/include/editor.php:2681
+#: admin/include/editor.php:2690
 msgid "Relation Type"
 msgstr "Suhteen tyyppi"
 
-#: admin/include/editor.php:2684
+#: admin/include/editor.php:2693
 msgid "Marriage/ Related"
 msgstr "Puoliso/Kumppani"
 
-#: admin/include/editor.php:2693 include/marriage_cls.php:55
+#: admin/include/editor.php:2702 include/marriage_cls.php:55
 #: include/person_cls.php:1461
 msgid "Living apart together"
 msgstr "Asuvat erillään"
 
-#: admin/include/editor.php:2696 include/marriage_cls.php:58
+#: admin/include/editor.php:2705 include/marriage_cls.php:58
 #: include/person_cls.php:1462
 msgid "Intentionally unmarried mother"
 msgstr "Tarkoituksella vihkimätön äiti"
 
-#: admin/include/editor.php:2699 include/marriage_cls.php:62
+#: admin/include/editor.php:2708 include/marriage_cls.php:62
 #: include/person_cls.php:1463
 msgid "Homosexual"
 msgstr "Rekisteröity parisuhde"
 
-#: admin/include/editor.php:2702
+#: admin/include/editor.php:2711
 msgid "Non_marital"
 msgstr "Lapsen isä/äiti"
 
-#: admin/include/editor.php:2705 include/marriage_cls.php:69
+#: admin/include/editor.php:2714 include/marriage_cls.php:69
 #: include/marriage_cls.php:75 include/person_cls.php:1465
 #: include/person_cls.php:1466
 msgid "Extramarital"
 msgstr "Avioliiton ulkopuolinen"
 
-#: admin/include/editor.php:2708 include/marriage_cls.php:81
+#: admin/include/editor.php:2717 include/marriage_cls.php:81
 #: include/person_cls.php:1467
 msgid "Partner"
 msgstr "Kumppani"
 
-#: admin/include/editor.php:2711 include/marriage_cls.php:84
+#: admin/include/editor.php:2720 include/marriage_cls.php:84
 #: include/person_cls.php:1468
 msgid "Registered"
 msgstr "Rekisteröity"
 
-#: admin/include/editor.php:2714 include/marriage_cls.php:87
+#: admin/include/editor.php:2723 include/marriage_cls.php:87
 #: include/person_cls.php:1469
 msgid "Unknown relation"
 msgstr "Tuntematon suhde"
 
-#: admin/include/editor.php:2724 admin/include/editor.php:2836
+#: admin/include/editor.php:2733 admin/include/editor.php:2845
 msgid "Registrar"
 msgstr "Rekisteröity"
 
-#: admin/include/editor.php:2743 admin/include/editor_sources.php:131
+#: admin/include/editor.php:2752 admin/include/editor_sources.php:126
 msgid "Religious Notice of Marriage"
 msgstr "Avioliittolupa"
 
-#: admin/include/editor.php:2771 admin/include/editor_sources.php:137
+#: admin/include/editor.php:2780 admin/include/editor_sources.php:132
 msgid "Religious Marriage"
 msgstr "Uskonnollinen vihkiminen"
 
-#: admin/include/editor.php:2802
+#: admin/include/editor.php:2811
 msgid "Religion"
 msgstr "Uskonto"
 
-#: admin/include/editor.php:2807 admin/include/editor_sources.php:143
+#: admin/include/editor.php:2816 admin/include/editor_sources.php:138
 msgid "Divorce"
 msgstr "Ero"
 
-#: admin/include/editor.php:2827
+#: admin/include/editor.php:2836
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr "Eronnut (käytä tätä merkitäksesi eron ilman enempiätietoja)"
 
-#: admin/include/editor.php:2852
+#: admin/include/editor.php:2861
 msgid "Text by marriage"
 msgstr "Vihkimisteksti"
 
-#: admin/include/editor.php:2868
+#: admin/include/editor.php:2877
 msgid "Source by marriage"
 msgstr "Vihkimystiedon lähde"
 
-#: admin/include/editor.php:3008
+#: admin/include/editor.php:3017
 msgid "Use this icon to order children (drag and drop)"
 msgstr "Järjestä lapset tällä kuvakkeelle (vedä ja pudota)"
 
-#: admin/include/editor.php:3011
+#: admin/include/editor.php:3020
 msgid "Or automatically order children:"
 msgstr "Tai järjestä lapset automaattisesti:"
 
-#: admin/include/editor.php:3011
+#: admin/include/editor.php:3020
 msgid "Automatic order children"
 msgstr "Järjestä lapset automaattisesti"
 
-#: admin/include/editor.php:3013
+#: admin/include/editor.php:3022
 msgid "Children are re-ordered."
 msgstr "Lapset järjestetty uudelleen."
 
-#: admin/include/editor.php:3028
+#: admin/include/editor.php:3037
 msgid "Drag to change order (saves automatically)"
 msgstr "Vedä hiirellä vaihtaaksesi järjestystä (tallettuu automaattisesti)"
 
-#: admin/include/editor.php:3028
+#: admin/include/editor.php:3037
 msgid "Drag to change order"
 msgstr "Vedä hiirellä vaihtaaksesi järjestystä"
 
-#: admin/include/editor.php:3032
+#: admin/include/editor.php:3041
 msgid "Disconnect child"
 msgstr "Pura lapsen yhteys"
 
-#: admin/include/editor.php:3055
+#: admin/include/editor.php:3064
 #, fuzzy
 #| msgid "or add relation with existing person as partner."
 msgid "Or add existing person as a child:"
 msgstr "tai lisää olemassa oleva henkilö kumppaniksi."
 
-#: admin/include/editor.php:3058
+#: admin/include/editor.php:3067
 msgid "Select child"
 msgstr "Valitse lapsi"
 
-#: admin/include/editor.php:3115
+#: admin/include/editor.php:3124
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr ""
 "Oletko varma, että haluat poistaa tämän lähteen ja KAIKKI lähdeviittaukset?"
 
-#: admin/include/editor.php:3158
+#: admin/include/editor.php:3167
 msgid "Source is removed!"
 msgstr "Lähde on poistettu!"
 
-#: admin/include/editor.php:3163 admin/include/groups.php:431
+#: admin/include/editor.php:3172 admin/include/groups.php:431
 #: admin/include/trees_cls.php:1869 admin/index.php:1063 family.php:136
-#: family.php:2189 header.php:256 help.php:60 include/show_sources.php:260
+#: family.php:2187 header.php:256 help.php:60 include/show_sources.php:260
 #: menu.php:517 report_ancestor.php:1515 source.php:37
 msgid "Sources"
 msgstr "Lähteet"
 
-#: admin/include/editor.php:3164
+#: admin/include/editor.php:3173
 msgid ""
 "These sources can be connected to multiple persons, families, events and "
 "other items."
@@ -1465,73 +1462,73 @@ msgstr ""
 "Nämä lähteet voidaan yhdistää useaan henkilöön, perheeseen, tapahtumaan tai "
 "muuhun kohteeseen."
 
-#: admin/include/editor.php:3184 admin/include/editor.php:3186
+#: admin/include/editor.php:3193 admin/include/editor.php:3195
 msgid "Select source"
 msgstr "Valitse lähde"
 
-#: admin/include/editor.php:3213 admin/include/editor.php:3276
+#: admin/include/editor.php:3222 admin/include/editor.php:3285
 msgid "restricted"
 msgstr "rajoitettu"
 
-#: admin/include/editor.php:3221 admin/include/editor_sources.php:548
+#: admin/include/editor.php:3230 admin/include/editor_sources.php:542
 msgid "Add source"
 msgstr "Lisää lähde"
 
-#: admin/include/editor.php:3244 source.php:43 source.php:46
+#: admin/include/editor.php:3253 source.php:43 source.php:46
 msgid "No valid source number."
 msgstr "Kelpaamaton lähdenumero"
 
-#: admin/include/editor.php:3268 admin/include/editor.php:3499
-#: admin/include/editor.php:3743
+#: admin/include/editor.php:3277 admin/include/editor.php:3508
+#: admin/include/editor.php:3753
 msgid "Option"
 msgstr "Optio"
 
-#: admin/include/editor.php:3268 admin/include/editor.php:3499
-#: admin/include/editor.php:3743
+#: admin/include/editor.php:3277 admin/include/editor.php:3508
+#: admin/include/editor.php:3753
 msgid "Value"
 msgstr "Arvo"
 
-#: admin/include/editor.php:3270
+#: admin/include/editor.php:3279
 msgid "Status:"
 msgstr "Tila:"
 
-#: admin/include/editor.php:3273
+#: admin/include/editor.php:3282
 msgid "publish"
 msgstr "julkaise"
 
-#: admin/include/editor.php:3277
+#: admin/include/editor.php:3286
 msgid "restricted = only visible for selected user groups"
 msgstr "rajoitettu = näkyy vain osalle käyttäjäryhmistä"
 
-#: admin/include/editor.php:3280 admin/include/editor.php:3501
+#: admin/include/editor.php:3289 admin/include/editor.php:3510
 #: admin/include/editor_event_cls.php:27 admin/include/editor_event_cls.php:414
-#: admin/include/editor_event_cls.php:418 admin/include/editor_sources.php:318
-#: admin/include/editor_sources.php:362 admin/include/trees_cls.php:1787
+#: admin/include/editor_event_cls.php:418 admin/include/editor_sources.php:312
+#: admin/include/editor_sources.php:356 admin/include/trees_cls.php:1787
 #: source.php:51 source.php:56 source.php:229 sources.php:156
 msgid "Title"
 msgstr "Arvonimi"
 
-#: admin/include/editor.php:3282 source.php:144 source.php:149
+#: admin/include/editor.php:3291 source.php:144 source.php:149
 msgid "Subject"
 msgstr "Aihe"
 
-#: admin/include/editor.php:3285 source.php:227
+#: admin/include/editor.php:3294 source.php:227
 msgid "Repository"
 msgstr "Tietolähde"
 
-#: admin/include/editor.php:3298
+#: admin/include/editor.php:3307
 msgid "Add repositories"
 msgstr ""
 
-#: admin/include/editor.php:3301 source.php:87 source.php:105
+#: admin/include/editor.php:3310 source.php:87 source.php:105
 msgid "Publication"
 msgstr "Julkaisu"
 
-#: admin/include/editor.php:3301
+#: admin/include/editor.php:3310
 msgid "will be shown as a link."
 msgstr "näytetään linkkinä."
 
-#: admin/include/editor.php:3302 admin/include/editor_sources.php:339
+#: admin/include/editor.php:3311 admin/include/editor_sources.php:333
 #: admin/include/settings_admin.php:1083 include/person_cls.php:1717
 #: include/person_cls.php:1719 include/person_cls.php:1722
 #: include/person_cls.php:1725 list.php:1614 list.php:1622 source.php:122
@@ -1539,47 +1536,47 @@ msgstr "näytetään linkkinä."
 msgid "Own code"
 msgstr "Oma koodi"
 
-#: admin/include/editor.php:3303 source.php:133 source.php:138
+#: admin/include/editor.php:3312 source.php:133 source.php:138
 msgid "Author"
 msgstr "Kirjoittaja"
 
-#: admin/include/editor.php:3304 source.php:155 source.php:160
+#: admin/include/editor.php:3313 source.php:155 source.php:160
 msgid "Nr."
 msgstr "Nr."
 
-#: admin/include/editor.php:3305 source.php:166 source.php:171
+#: admin/include/editor.php:3314 source.php:166 source.php:171
 msgid "Kind"
 msgstr "Tyyppi"
 
-#: admin/include/editor.php:3306 source.php:177 source.php:182
+#: admin/include/editor.php:3315 source.php:177 source.php:182
 msgid "Archive"
 msgstr "Arkisto"
 
-#: admin/include/editor.php:3307 admin/include/editor_sources.php:457
+#: admin/include/editor.php:3316 admin/include/editor_sources.php:451
 #: list.php:1832 list_names.php:248 list_places_families.php:446
 #: photoalbum.php:273 source.php:187 source.php:192 sources.php:97
 msgid "Page"
 msgstr "Sivu"
 
-#: admin/include/editor.php:3321 admin/include/editor.php:3527
-#: admin/include/editor.php:3782 admin/include/make_db_maps.php:392
+#: admin/include/editor.php:3330 admin/include/editor.php:3536
+#: admin/include/editor.php:3789 admin/include/make_db_maps.php:392
 #: admin/include/make_db_maps.php:401 admin/include/make_db_maps.php:586
 msgid "Delete"
 msgstr "Poista"
 
-#: admin/include/editor.php:3399
+#: admin/include/editor.php:3408
 msgid "Really remove repository with all repository links?"
 msgstr "Haluatko varmasti poistaa lähteen ja kaikki lähdeviittaukset?"
 
-#: admin/include/editor.php:3425
+#: admin/include/editor.php:3434
 msgid "Repository is removed!"
 msgstr "Lähde on poistettu!"
 
-#: admin/include/editor.php:3432 admin/index.php:1067
+#: admin/include/editor.php:3441 admin/index.php:1067
 msgid "Repositories"
 msgstr "Tietolähteet"
 
-#: admin/include/editor.php:3433
+#: admin/include/editor.php:3442
 #, fuzzy
 #| msgid ""
 #| "A repository can be connected to a shared source. Edit a shared source to "
@@ -1591,40 +1588,40 @@ msgstr ""
 "Säilytyspaikka voidaan yhdistää yhteiseen lähteeseen. Muokkaa yhteistä "
 "lähdettä yhdistääksesi sen säilytyspaikkaan."
 
-#: admin/include/editor.php:3442 admin/include/editor.php:3444
+#: admin/include/editor.php:3451 admin/include/editor.php:3453
 msgid "Select repository"
 msgstr "Valitse säilytyspaikka"
 
-#: admin/include/editor.php:3456
+#: admin/include/editor.php:3465
 msgid "Add repository"
 msgstr "Lisää tietolähde"
 
-#: admin/include/editor.php:3472
+#: admin/include/editor.php:3481
 msgid "No valid repository number."
 msgstr "Kelpaamaton lähdenumero."
 
-#: admin/include/editor.php:3516 admin/include/gedcom_export.php:288
+#: admin/include/editor.php:3525 admin/include/gedcom_export.php:288
 #: admin/include/gedcom_export.php:291 mailform.php:29 register.php:63
 #: user_settings.php:54
 msgid "E-mail"
 msgstr "Email"
 
-#: admin/include/editor.php:3518 admin/include/editor_event_cls.php:30
+#: admin/include/editor.php:3527 admin/include/editor_event_cls.php:30
 #: admin/include/editor_event_cls.php:258
 msgid "URL/ Internet link"
 msgstr "URL/ Internet link"
 
-#: admin/include/editor.php:3603
+#: admin/include/editor.php:3612
 msgid ""
 "Are you sure you want to remove this address and ALL address references?"
 msgstr ""
 "Oletko varma, että haluat poistaa tämän osoitteen ja KAIKKI osoiteviitaukset?"
 
-#: admin/include/editor.php:3656
+#: admin/include/editor.php:3665
 msgid "Address has been removed!"
 msgstr "Osoite on poistettu!"
 
-#: admin/include/editor.php:3665
+#: admin/include/editor.php:3674
 msgid ""
 "These addresses can be connected to multiple persons, families and other "
 "items."
@@ -1632,88 +1629,87 @@ msgstr ""
 "Nämä osoitteet voidaan yhdistää useaan henkilöön, perheeseen, tapahtumaan "
 "tai muuhun kohteeseen."
 
-#: admin/include/editor.php:3677 admin/include/editor.php:3679
-#: admin/include/editor.php:4497
+#: admin/include/editor.php:3686 admin/include/editor.php:3688
+#: admin/include/editor.php:4482
 msgid "Select address"
 msgstr "Valitse osoite"
 
-#: admin/include/editor.php:3696
+#: admin/include/editor.php:3705
 msgid "Add address"
 msgstr "Lisää osoite"
 
-#: admin/include/editor.php:3718
+#: admin/include/editor.php:3727
 msgid "No valid address number."
 msgstr "Kelpaamaton osoitenumero."
 
-#: admin/include/editor.php:3759 admin/include/editor.php:3768
-#: admin/include/editor.php:4054 admin/include/editor_sources.php:90
-#: admin/include/editor_sources.php:188 admin/include/editor_sources.php:196
-#: include/show_sources.php:106 include/show_sources.php:196
-#: include/show_sources.php:285
+#: admin/include/editor.php:3769 admin/include/editor.php:4038
+#: admin/include/editor_sources.php:90 admin/include/editor_sources.php:182
+#: admin/include/editor_sources.php:190 include/show_sources.php:106
+#: include/show_sources.php:196 include/show_sources.php:285
 msgid "source"
 msgstr "lähde"
 
-#: admin/include/editor.php:3807 admin/index.php:1075
+#: admin/include/editor.php:3814 admin/index.php:1075
 msgid "Rename places"
 msgstr "Nimeä paikat uudelleen"
 
-#: admin/include/editor.php:3936 header.php:254 help.php:54 list.php:1959
+#: admin/include/editor.php:3943 header.php:254 help.php:54 list.php:1959
 #: list_places_families.php:560
 msgid "Places"
 msgstr "Paikat"
 
-#: admin/include/editor.php:3937
+#: admin/include/editor.php:3944
 msgid "Select location"
 msgstr "Valitse paikka"
 
-#: admin/include/editor.php:3952
+#: admin/include/editor.php:3959
 msgid "Person places"
 msgstr ""
 
-#: admin/include/editor.php:3954
+#: admin/include/editor.php:3961
 msgid "Family places"
 msgstr ""
 
-#: admin/include/editor.php:3956
+#: admin/include/editor.php:3963
 msgid "Other places (sources, events, addresses, etc.)"
 msgstr ""
 
-#: admin/include/editor.php:3966 admin/include/editor.php:3975
+#: admin/include/editor.php:3973 admin/include/editor.php:3982
 msgid "Change location"
 msgstr "Muuta paikkaa"
 
-#: admin/include/editor.php:3976
+#: admin/include/editor.php:3983
 msgid "Also change Google Maps table."
 msgstr "Muuta myös paikkaa Goople Mapsissa"
 
-#: admin/include/editor.php:4154 admin/include/editor.php:4227
+#: admin/include/editor.php:4138 admin/include/editor.php:4211
 msgid "Add child"
 msgstr "Lisää lapsi"
 
-#: admin/include/editor.php:4243 admin/include/trees.php:301
+#: admin/include/editor.php:4227 admin/include/trees.php:301
 #: include/show_tree_text.php:6 photoalbum.php:219
 msgid "NO NAME"
 msgstr "NIMETÖN"
 
-#: admin/include/editor.php:4399 admin/include/editor_sources.php:324
+#: admin/include/editor.php:4383 admin/include/editor_sources.php:318
 #, fuzzy
 #| msgid "Export texts"
 msgid "Extra text"
 msgstr "Tulostustekstit"
 
-#: admin/include/editor.php:4420
+#: admin/include/editor.php:4404
 #, fuzzy
 #| msgid "gedcom no. (\"I43\")"
 msgid "Address GEDCOM number:"
 msgstr "gedcom no. (\"I43\")"
 
-#: admin/include/editor.php:4424
+#: admin/include/editor.php:4408
 #, fuzzy
 #| msgid "Shared addresses"
 msgid "Shared address"
 msgstr "Jaetut osoitteet"
 
-#: admin/include/editor.php:4435
+#: admin/include/editor.php:4419
 #, fuzzy
 #| msgid ""
 #| "These addresses can be connected to multiple persons, families and other "
@@ -1723,235 +1719,235 @@ msgstr ""
 "Nämä osoitteet voidaan yhdistää useaan henkilöön, perheeseen, tapahtumaan "
 "tai muuhun kohteeseen."
 
-#: admin/include/editor.php:4436
+#: admin/include/editor.php:4420
 msgid ""
 "A shared address is only supported by the Haza-data and HuMo-genealogy "
 "programs."
 msgstr ""
 
-#: admin/include/editor.php:4511
+#: admin/include/editor.php:4496
 #, fuzzy
 #| msgid "Add address"
 msgid "Or: add new address"
 msgstr "Lisää osoite"
 
-#: admin/include/editor.php:4538
+#: admin/include/editor.php:4523
 msgid "Addressrole"
 msgstr "Osoiterooli"
 
-#: admin/include/editor.php:4541
+#: admin/include/editor.php:4526
 #, fuzzy
 #| msgid "Export sources"
 msgid "Extra text by address"
 msgstr "Tulosta lähteet"
 
-#: admin/include/editor_cls.php:22 admin/include/tree_check.php:1439
+#: admin/include/editor_cls.php:24 admin/include/tree_check.php:1439
 #: include/language_date.php:55 include/language_date.php:69
 #: include/language_date.php:110
 msgid "before"
 msgstr "ennen"
 
 # plus-minus character
-#: admin/include/editor_cls.php:25 include/language_date.php:54
+#: admin/include/editor_cls.php:27 include/language_date.php:54
 #: include/language_date.php:109
 msgid "&#177;"
 msgstr "&#177;"
 
-#: admin/include/editor_cls.php:28 admin/include/tree_check.php:1433
+#: admin/include/editor_cls.php:30 admin/include/tree_check.php:1433
 #: include/language_date.php:53 include/language_date.php:69
 #: include/language_date.php:108
 msgid "after"
 msgstr "jälkeen"
 
-#: admin/include/editor_cls.php:31 include/language_date.php:88
+#: admin/include/editor_cls.php:33 include/language_date.php:88
 #: include/language_date.php:93 include/language_date.php:98
 #: include/language_date.php:112
 msgid "between"
 msgstr "välillä"
 
-#: admin/include/editor_cls.php:35 include/language_date.php:115
+#: admin/include/editor_cls.php:37 include/language_date.php:115
 #, fuzzy
 #| msgid "Interred"
 msgid "interpreted"
 msgstr "Interred"
 
-#: admin/include/editor_cls.php:38 include/language_date.php:56
+#: admin/include/editor_cls.php:40 include/language_date.php:56
 #: include/language_date.php:73 include/language_date.php:113
 msgid "estimated"
 msgstr "arvioitu"
 
-#: admin/include/editor_cls.php:41 include/language_date.php:57
+#: admin/include/editor_cls.php:43 include/language_date.php:57
 #: include/language_date.php:114
 msgid "calculated"
 msgstr "laskettu"
 
-#: admin/include/editor_cls.php:56 admin/include/editor_cls.php:171
+#: admin/include/editor_cls.php:58 admin/include/editor_cls.php:173
 #: admin/include/statistics.php:202 admin/include/trees_cls.php:116
 #: birthday_list.php:79 include/language_date.php:21
 #: include/mainindex_cls.php:289 statistics.php:24
 msgid "jan"
 msgstr "tammik."
 
-#: admin/include/editor_cls.php:57 admin/include/editor_cls.php:172
+#: admin/include/editor_cls.php:59 admin/include/editor_cls.php:174
 #: admin/include/statistics.php:203 admin/include/trees_cls.php:117
 #: birthday_list.php:80 include/language_date.php:22
 #: include/mainindex_cls.php:290 statistics.php:25
 msgid "feb"
 msgstr "helmik."
 
-#: admin/include/editor_cls.php:58 admin/include/editor_cls.php:173
+#: admin/include/editor_cls.php:60 admin/include/editor_cls.php:175
 #: admin/include/statistics.php:204 admin/include/trees_cls.php:118
 #: birthday_list.php:81 include/language_date.php:23
 #: include/mainindex_cls.php:291 statistics.php:26
 msgid "mar"
 msgstr "maalisk."
 
-#: admin/include/editor_cls.php:59 admin/include/editor_cls.php:174
+#: admin/include/editor_cls.php:61 admin/include/editor_cls.php:176
 #: admin/include/statistics.php:205 admin/include/trees_cls.php:119
 #: birthday_list.php:82 include/language_date.php:24
 #: include/mainindex_cls.php:292 statistics.php:27
 msgid "apr"
 msgstr "huhtik."
 
-#: admin/include/editor_cls.php:60 admin/include/editor_cls.php:175
+#: admin/include/editor_cls.php:62 admin/include/editor_cls.php:177
 #: admin/include/statistics.php:206 admin/include/trees_cls.php:120
 #: birthday_list.php:83 include/language_date.php:25
 #: include/mainindex_cls.php:293 statistics.php:28
 msgid "may"
 msgstr "toukok."
 
-#: admin/include/editor_cls.php:61 admin/include/editor_cls.php:176
+#: admin/include/editor_cls.php:63 admin/include/editor_cls.php:178
 #: admin/include/statistics.php:207 admin/include/trees_cls.php:121
 #: birthday_list.php:84 include/language_date.php:26
 #: include/mainindex_cls.php:294 statistics.php:29
 msgid "jun"
 msgstr "kesäk."
 
-#: admin/include/editor_cls.php:62 admin/include/editor_cls.php:177
+#: admin/include/editor_cls.php:64 admin/include/editor_cls.php:179
 #: admin/include/statistics.php:208 admin/include/trees_cls.php:122
 #: birthday_list.php:85 include/language_date.php:27
 #: include/mainindex_cls.php:295 statistics.php:30
 msgid "jul"
 msgstr "heinäk."
 
-#: admin/include/editor_cls.php:63 admin/include/editor_cls.php:178
+#: admin/include/editor_cls.php:65 admin/include/editor_cls.php:180
 #: admin/include/statistics.php:209 admin/include/trees_cls.php:123
 #: birthday_list.php:86 include/language_date.php:28
 #: include/mainindex_cls.php:296 statistics.php:31
 msgid "aug"
 msgstr "elok."
 
-#: admin/include/editor_cls.php:64 admin/include/editor_cls.php:179
+#: admin/include/editor_cls.php:66 admin/include/editor_cls.php:181
 #: admin/include/statistics.php:210 admin/include/trees_cls.php:124
 #: birthday_list.php:87 include/language_date.php:29
 #: include/mainindex_cls.php:297 statistics.php:32
 msgid "sep"
 msgstr "syysk."
 
-#: admin/include/editor_cls.php:65 admin/include/editor_cls.php:180
+#: admin/include/editor_cls.php:67 admin/include/editor_cls.php:182
 #: admin/include/statistics.php:211 admin/include/trees_cls.php:125
 #: birthday_list.php:88 include/language_date.php:30
 #: include/mainindex_cls.php:298 statistics.php:33
 msgid "oct"
 msgstr "lokak."
 
-#: admin/include/editor_cls.php:66 admin/include/editor_cls.php:181
+#: admin/include/editor_cls.php:68 admin/include/editor_cls.php:183
 #: admin/include/statistics.php:212 admin/include/trees_cls.php:126
 #: birthday_list.php:89 include/language_date.php:31
 #: include/mainindex_cls.php:299 statistics.php:34
 msgid "nov"
 msgstr "marrask."
 
-#: admin/include/editor_cls.php:67 admin/include/editor_cls.php:182
+#: admin/include/editor_cls.php:69 admin/include/editor_cls.php:184
 #: admin/include/statistics.php:213 admin/include/trees_cls.php:127
 #: birthday_list.php:90 include/language_date.php:32
 #: include/mainindex_cls.php:300 statistics.php:35
 msgid "dec"
 msgstr "jouluk."
 
-#: admin/include/editor_cls.php:68 admin/include/editor_cls.php:111
+#: admin/include/editor_cls.php:70 admin/include/editor_cls.php:113
 #: statistics.php:131 statistics.php:138
 msgid " and "
 msgstr " ja "
 
-#: admin/include/editor_cls.php:91
+#: admin/include/editor_cls.php:93
 msgid "After nightfall"
 msgstr ""
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:76
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:76
 #: admin/include/statistics.php:544 admin/include/statistics.php:623
 #: include/language_date.php:35
 msgid "January"
 msgstr "Tammikuu"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:77
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:77
 #: admin/include/statistics.php:546 admin/include/statistics.php:625
 #: include/language_date.php:36
 msgid "February"
 msgstr "Helmikuu"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:78
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:78
 #: admin/include/statistics.php:548 admin/include/statistics.php:627
 #: include/language_date.php:37
 msgid "March"
 msgstr "Maaliskuu"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:79
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:79
 #: admin/include/statistics.php:550 admin/include/statistics.php:629
 #: include/language_date.php:38
 msgid "April"
 msgstr "Huhtikuu"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:80
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:80
 #: admin/include/statistics.php:552 admin/include/statistics.php:631
 #: include/language_date.php:39
 msgid "May"
 msgstr "May"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:81
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:81
 #: admin/include/statistics.php:554 admin/include/statistics.php:633
 #: include/language_date.php:40
 msgid "June"
 msgstr "Kesäkuu"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:82
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:82
 #: admin/include/statistics.php:556 admin/include/statistics.php:635
 #: include/language_date.php:41
 msgid "July"
 msgstr "Heinäkuu"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:83
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:83
 #: admin/include/statistics.php:558 admin/include/statistics.php:637
 #: include/language_date.php:42
 msgid "August"
 msgstr "Elokuu"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:84
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:84
 #: admin/include/statistics.php:560 admin/include/statistics.php:639
 #: include/language_date.php:43
 msgid "September"
 msgstr "Syyskuu"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:85
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:85
 #: admin/include/statistics.php:562 admin/include/statistics.php:641
 #: include/language_date.php:44
 msgid "October"
 msgstr "Lokakuu"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:86
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:86
 #: admin/include/statistics.php:564 admin/include/statistics.php:643
 #: include/language_date.php:45
 msgid "November"
 msgstr "Marraskuu"
 
-#: admin/include/editor_cls.php:165 admin/include/statistics.php:87
+#: admin/include/editor_cls.php:167 admin/include/statistics.php:87
 #: admin/include/statistics.php:566 admin/include/statistics.php:645
 #: include/language_date.php:46
 msgid "December"
 msgstr "Joulukuu"
 
 # Birth
-#: admin/include/editor_cls.php:267 include/person_cls.php:1004 list.php:52
+#: admin/include/editor_cls.php:269 include/person_cls.php:1004 list.php:52
 #: list.php:207 list.php:216 list.php:1474 relations.php:3279
 #: relations.php:3364 report_ancestor.php:806 report_ancestor.php:1181
 #: report_ancestor.php:1266 report_ancestor.php:1496 report_descendant.php:715
@@ -1959,21 +1955,21 @@ msgid "*"
 msgstr "*"
 
 # Baptise
-#: admin/include/editor_cls.php:269 include/person_cls.php:1008 list.php:59
+#: admin/include/editor_cls.php:271 include/person_cls.php:1008 list.php:59
 #: list.php:205 list.php:214 list.php:1479 relations.php:3276
 #: relations.php:3361 report_ancestor.php:810 report_descendant.php:720
 msgid "~"
 msgstr "~"
 
 # Death sign
-#: admin/include/editor_cls.php:272 include/person_cls.php:1013 list.php:83
+#: admin/include/editor_cls.php:274 include/person_cls.php:1013 list.php:83
 #: list.php:225 list.php:234 list.php:1489 report_ancestor.php:815
 #: report_ancestor.php:1181 report_ancestor.php:1232 report_descendant.php:726
 msgid "&#134;"
 msgstr "&#134;"
 
 # Buried
-#: admin/include/editor_cls.php:276 include/person_cls.php:1017 list.php:90
+#: admin/include/editor_cls.php:278 include/person_cls.php:1017 list.php:90
 #: list.php:223 list.php:232 list.php:1495 report_ancestor.php:819
 #: report_descendant.php:731
 msgid "[]"
@@ -1981,14 +1977,14 @@ msgstr "[]"
 
 #: admin/include/editor_event_cls.php:16 admin/include/editor_event_cls.php:34
 #: admin/include/editor_event_cls.php:546
-#: admin/include/editor_event_cls.php:1058
+#: admin/include/editor_event_cls.php:1068
 msgid "Picture/ Media"
 msgstr "Kuva / Media"
 
 #: admin/include/editor_event_cls.php:17 admin/include/editor_event_cls.php:504
 #: admin/include/editor_event_cls.php:524
-#: admin/include/editor_event_cls.php:1181
-#: admin/include/editor_event_cls.php:1339 admin/include/trees_cls.php:1779
+#: admin/include/editor_event_cls.php:1193
+#: admin/include/editor_event_cls.php:1354 admin/include/trees_cls.php:1779
 #: list.php:1558 list.php:1566
 msgid "Profession"
 msgstr "Ammatti"
@@ -1998,8 +1994,8 @@ msgstr "Ammatti"
 #: admin/include/editor_event_cls.php:274
 #: admin/include/editor_event_cls.php:302
 #: admin/include/editor_event_cls.php:326
-#: admin/include/editor_event_cls.php:1187 admin/include/editor_sources.php:188
-#: admin/include/editor_sources.php:196 admin/include/trees_cls.php:1780
+#: admin/include/editor_event_cls.php:1199 admin/include/editor_sources.php:182
+#: admin/include/editor_sources.php:190 admin/include/trees_cls.php:1780
 #: include/mainindex_cls.php:923
 msgid "Event"
 msgstr "Tapahtuma"
@@ -2109,188 +2105,193 @@ msgid "Marriage license"
 msgstr "Aviolupa"
 
 #: admin/include/editor_event_cls.php:346
-#: admin/include/editor_event_cls.php:1449 include/person_cls.php:1637
+#: admin/include/editor_event_cls.php:1460 include/person_cls.php:1637
 msgid "Nickname"
 msgstr "myöhempi sukunimi"
 
 #: admin/include/editor_event_cls.php:368
-#: admin/include/editor_event_cls.php:1190
+#: admin/include/editor_event_cls.php:1202
 msgid "e.g. Lt. Cmndr."
 msgstr "esim. insevl"
 
 #: admin/include/editor_event_cls.php:386
-#: admin/include/editor_event_cls.php:1191
+#: admin/include/editor_event_cls.php:1203
 msgid "e.g. Jr."
 msgstr "esim. Jr."
 
 #: admin/include/editor_event_cls.php:403
-#: admin/include/editor_event_cls.php:1192
+#: admin/include/editor_event_cls.php:1204
 msgid "e.g. Jhr., Jkvr."
 msgstr "esim. vapaaherra"
 
 #: admin/include/editor_event_cls.php:419
-#: admin/include/editor_event_cls.php:1193
+#: admin/include/editor_event_cls.php:1205
 msgid "e.g. Prof., Dr."
 msgstr "esim. Prof. Tri."
 
 #: admin/include/editor_event_cls.php:435
-#: admin/include/editor_event_cls.php:1194
+#: admin/include/editor_event_cls.php:1206
 msgid "e.g. Lord of Amsterdam"
 msgstr "esim. Amsterdamin lordi"
 
-#: admin/include/editor_event_cls.php:1090
+#: admin/include/editor_event_cls.php:1102
 msgid "* Select adoption parents *"
 msgstr "* Valitse adoptiovanhemmat *"
 
-#: admin/include/editor_event_cls.php:1125
+#: admin/include/editor_event_cls.php:1137
 msgid "Change colour mark by person"
 msgstr "Vaihda henkilön värimerkkiä"
 
-#: admin/include/editor_event_cls.php:1127
+#: admin/include/editor_event_cls.php:1139
 msgid "Colour 1"
 msgstr "Väri 1"
 
-#: admin/include/editor_event_cls.php:1129
+#: admin/include/editor_event_cls.php:1141
 msgid "Colour 2"
 msgstr "Väri 2"
 
-#: admin/include/editor_event_cls.php:1131
+#: admin/include/editor_event_cls.php:1143
 msgid "Colour 3"
 msgstr "Väri 3"
 
-#: admin/include/editor_event_cls.php:1133
+#: admin/include/editor_event_cls.php:1145
 msgid "Colour 4"
 msgstr "Väri 4"
 
-#: admin/include/editor_event_cls.php:1135
+#: admin/include/editor_event_cls.php:1147
 msgid "Colour 5"
 msgstr "Väri 5"
 
-#: admin/include/editor_event_cls.php:1137
+#: admin/include/editor_event_cls.php:1149
 msgid "Colour 6"
 msgstr "Väri 6"
 
-#: admin/include/editor_event_cls.php:1139
+#: admin/include/editor_event_cls.php:1151
 msgid "Colour 7"
 msgstr "Väri 7"
 
-#: admin/include/editor_event_cls.php:1141
+#: admin/include/editor_event_cls.php:1153
 msgid "Colour 8"
 msgstr "Väri 8"
 
-#: admin/include/editor_event_cls.php:1143
+#: admin/include/editor_event_cls.php:1155
 msgid "Colour 9"
 msgstr "Väri 9"
 
-#: admin/include/editor_event_cls.php:1145
+#: admin/include/editor_event_cls.php:1157
 msgid "Colour 10"
 msgstr "Väri 10"
 
-#: admin/include/editor_event_cls.php:1147
+#: admin/include/editor_event_cls.php:1159
 msgid "Colour 11"
 msgstr "Väri 11"
 
-#: admin/include/editor_event_cls.php:1149
+#: admin/include/editor_event_cls.php:1161
 msgid "Colour 12"
 msgstr "Väri 12"
 
-#: admin/include/editor_event_cls.php:1151
+#: admin/include/editor_event_cls.php:1163
 msgid "Colour 13"
 msgstr "Väri 13"
 
-#: admin/include/editor_event_cls.php:1153
+#: admin/include/editor_event_cls.php:1165
 msgid "Colour 14"
 msgstr "Väri 14"
 
-#: admin/include/editor_event_cls.php:1171
+#: admin/include/editor_event_cls.php:1183
 msgid "Selected colour"
 msgstr "Valitse väri"
 
-#: admin/include/editor_event_cls.php:1175
+#: admin/include/editor_event_cls.php:1187
 msgid "Also change"
 msgstr "Myös muutos"
 
-#: admin/include/editor_event_cls.php:1175 admin/include/editor_inc.php:1762
+#: admin/include/editor_event_cls.php:1187 admin/include/editor_inc.php:1763
 #: admin/include/gedcom_export.php:218 hourglass.php:81
 msgid "Descendants"
 msgstr "Jälkeläiset"
 
-#: admin/include/editor_event_cls.php:1176 admin/include/editor_inc.php:1763
+#: admin/include/editor_event_cls.php:1188 admin/include/editor_inc.php:1764
 #: admin/include/gedcom_export.php:224 hourglass.php:79
 msgid "Ancestors"
 msgstr "Esivanhemmat"
 
-#: admin/include/editor_event_cls.php:1297 admin/include/tree_check.php:592
+#: admin/include/editor_event_cls.php:1312 admin/include/tree_check.php:592
 #: admin/include/tree_check.php:803
 msgid "ID"
 msgstr "ID"
 
-#: admin/include/editor_event_cls.php:1452 include/person_cls.php:1628
+#: admin/include/editor_event_cls.php:1377
+#, php-format
+msgid "Upload new image. Picture max: %1$d MB or media max: %2$d MB."
+msgstr ""
+
+#: admin/include/editor_event_cls.php:1463 include/person_cls.php:1628
 #: include/person_cls.php:1631
 msgid "Also known as"
 msgstr "Tunnettu myös nimellä"
 
-#: admin/include/editor_event_cls.php:1455 include/person_cls.php:1646
+#: admin/include/editor_event_cls.php:1466 include/person_cls.php:1646
 msgid "alias name"
 msgstr "salanimi"
 
-#: admin/include/editor_event_cls.php:1458 include/person_cls.php:1647
+#: admin/include/editor_event_cls.php:1469 include/person_cls.php:1647
 msgid "Short name (for reports)"
 msgstr "Lyhyt nimi (raportteihin)"
 
-#: admin/include/editor_event_cls.php:1461 include/person_cls.php:1648
+#: admin/include/editor_event_cls.php:1472 include/person_cls.php:1648
 msgid "Adopted name"
 msgstr "Adoptoitu nimi"
 
-#: admin/include/editor_event_cls.php:1469 include/person_cls.php:1650
+#: admin/include/editor_event_cls.php:1480 include/person_cls.php:1650
 msgid "Census name"
 msgstr "Nimi väestölaskennassa"
 
-#: admin/include/editor_event_cls.php:1472 include/person_cls.php:1651
+#: admin/include/editor_event_cls.php:1483 include/person_cls.php:1651
 msgid "Married name"
 msgstr "Vihitty nimi"
 
-#: admin/include/editor_event_cls.php:1475 include/person_cls.php:1652
+#: admin/include/editor_event_cls.php:1486 include/person_cls.php:1652
 msgid "Given name"
 msgstr "Etunimi"
 
-#: admin/include/editor_event_cls.php:1478 include/person_cls.php:1653
+#: admin/include/editor_event_cls.php:1489 include/person_cls.php:1653
 msgid "Farm name"
 msgstr "Talon nimi"
 
-#: admin/include/editor_event_cls.php:1481 include/person_cls.php:1654
+#: admin/include/editor_event_cls.php:1492 include/person_cls.php:1654
 msgid "Birth name"
 msgstr "Syntymänimi"
 
-#: admin/include/editor_event_cls.php:1484 include/person_cls.php:1655
+#: admin/include/editor_event_cls.php:1495 include/person_cls.php:1655
 msgid "Indian name"
 msgstr "Intialainen nimi"
 
-#: admin/include/editor_event_cls.php:1487 include/person_cls.php:1656
+#: admin/include/editor_event_cls.php:1498 include/person_cls.php:1656
 msgid "Formal name"
 msgstr "Virallinen nimi"
 
-#: admin/include/editor_event_cls.php:1490 include/person_cls.php:1657
+#: admin/include/editor_event_cls.php:1501 include/person_cls.php:1657
 msgid "Current name"
 msgstr "Nykyinen nimi"
 
-#: admin/include/editor_event_cls.php:1493 include/person_cls.php:1658
+#: admin/include/editor_event_cls.php:1504 include/person_cls.php:1658
 msgid "Soldier name"
 msgstr "Sotilasnimi"
 
-#: admin/include/editor_event_cls.php:1496 include/person_cls.php:1660
+#: admin/include/editor_event_cls.php:1507 include/person_cls.php:1660
 msgid "Religious name"
 msgstr "Luostarinimi"
 
-#: admin/include/editor_event_cls.php:1499 include/person_cls.php:1661
+#: admin/include/editor_event_cls.php:1510 include/person_cls.php:1661
 msgid "Other name"
 msgstr "Muu nimi"
 
-#: admin/include/editor_event_cls.php:1502 include/person_cls.php:1659
+#: admin/include/editor_event_cls.php:1513 include/person_cls.php:1659
 msgid "Formerly known as"
 msgstr "Virallisesti tunnettu nimellä"
 
-#: admin/include/editor_event_cls.php:1505
+#: admin/include/editor_event_cls.php:1516
 msgid "German Rufname"
 msgstr "Kutsumanimi"
 
@@ -2366,11 +2367,11 @@ msgstr "Median lataaminen epäonnistui, tarkista kansion käyttöoikeudet"
 msgid "No valid picture, media or document file"
 msgstr "Kuva, media tai dokumentti ei kelpaa"
 
-#: admin/include/editor_inc.php:1748 admin/include/editor_inc.php:2198
+#: admin/include/editor_inc.php:1749 admin/include/editor_inc.php:2199
 msgid "Are you sure you want to remove this event?"
 msgstr "Oletko varma, että haluat poistaa tämän tapahtuman?"
 
-#: admin/include/editor_inc.php:1761
+#: admin/include/editor_inc.php:1762
 msgid "Also remove colour marks of"
 msgstr "Poista myös värimerkinnät:"
 
@@ -2404,93 +2405,93 @@ msgstr "Nimen lähde"
 msgid "person"
 msgstr "henkilö"
 
-#: admin/include/editor_sources.php:125 list_places_families.php:420
+#: admin/include/editor_sources.php:120 list_places_families.php:420
 msgid "Marriage"
 msgstr "Vihkiminen"
 
-#: admin/include/editor_sources.php:155 admin/include/statistics.php:513
+#: admin/include/editor_sources.php:150 admin/include/statistics.php:513
 #: admin/include/statistics.php:526
 msgid "family"
 msgstr "perhe"
 
-#: admin/include/editor_sources.php:319 admin/include/editor_sources.php:323
+#: admin/include/editor_sources.php:313 admin/include/editor_sources.php:317
 #: include/mainindex_cls.php:923 list.php:1597 list.php:1599 list.php:1629
 #: list.php:1631 list.php:1985 list.php:1997 source.php:62 source.php:67
 #: source.php:237 sources.php:163
 msgid "Date"
 msgstr "Päivä"
 
-#: admin/include/editor_sources.php:322 admin/include/editor_sources.php:441
+#: admin/include/editor_sources.php:316 admin/include/editor_sources.php:435
 msgid "Sourcerole"
 msgstr "Lähderooli"
 
-#: admin/include/editor_sources.php:335
+#: admin/include/editor_sources.php:329
 #, fuzzy
 #| msgid "gedcom no. (\"I43\")"
 msgid "Source GEDCOM number:"
 msgstr "gedcom no. (\"I43\")"
 
-#: admin/include/editor_sources.php:380
+#: admin/include/editor_sources.php:374
 #, fuzzy
 #| msgid "Search engine settings"
 msgid "Search existing source"
 msgstr "Hakukoneasetukset"
 
-#: admin/include/editor_sources.php:398
+#: admin/include/editor_sources.php:392
 #, fuzzy
 #| msgid "Select source"
 msgid "Select existing source"
 msgstr "Valitse lähde"
 
-#: admin/include/editor_sources.php:419
+#: admin/include/editor_sources.php:413
 msgid "Or:"
 msgstr ""
 
-#: admin/include/editor_sources.php:433
+#: admin/include/editor_sources.php:427
 #, fuzzy
 #| msgid "Or add a new child:"
 msgid "add new source"
 msgstr "TAI lisää uusi lapsi:"
 
-#: admin/include/editor_sources.php:453
+#: admin/include/editor_sources.php:447
 #, fuzzy
 #| msgid "e.g. Writer, Brother, Sister, Father"
 msgid "e.g. Writer, Brother, Sister, Father."
 msgstr "esim. kirjailija, veli, sisko, isä"
 
-#: admin/include/editor_sources.php:469
+#: admin/include/editor_sources.php:463
 #, fuzzy
 #| msgid "page in source"
 msgid "Page in source."
 msgstr "lähteen sivu"
 
-#: admin/include/editor_sources.php:475
+#: admin/include/editor_sources.php:469
 msgid "quality: default"
 msgstr "laatu: oletus"
 
-#: admin/include/editor_sources.php:477 include/show_quality.php:5
+#: admin/include/editor_sources.php:471 include/show_quality.php:5
 msgid "quality: unreliable evidence or estimated data"
 msgstr "laatu: epäluotettava tai arvioitu tieto"
 
-#: admin/include/editor_sources.php:479 include/show_quality.php:6
+#: admin/include/editor_sources.php:473 include/show_quality.php:6
 msgid "quality: questionable reliability of evidence"
 msgstr "laatu: epävarma tieto"
 
-#: admin/include/editor_sources.php:481 include/show_quality.php:7
+#: admin/include/editor_sources.php:475 include/show_quality.php:7
 msgid "quality: data from secondary evidence"
 msgstr "laatu: tieto toissijaisesta lähteestä"
 
-#: admin/include/editor_sources.php:483 include/show_quality.php:8
+#: admin/include/editor_sources.php:477 include/show_quality.php:8
 msgid "quality: data from direct source"
 msgstr "laatu: tieto alkuperäisestä lähteestä"
 
-#: admin/include/editor_sources.php:492
+#: admin/include/editor_sources.php:486
 #, fuzzy
 #| msgid "Export sources"
 msgid "Extra text by source"
 msgstr "Tulosta lähteet"
 
-#: admin/include/editor_sources.php:545
+#: admin/include/editor_sources.php:539
 #, fuzzy
 #| msgid "Or add a new child:"
 msgid "Add another source"
@@ -2708,6 +2709,12 @@ msgstr ""
 msgid ""
 "Don't remove picture links from database (only needed for Geneanet GEDCOM "
 "file)."
+msgstr ""
+
+#: admin/include/gedcom.php:306
+msgid ""
+"In Geneanet add HuMo-genealogy picture id in the source by a person. Using "
+"this example: #media1254,media13454#"
 msgstr ""
 
 #: admin/include/gedcom.php:316
@@ -2965,25 +2972,25 @@ msgstr "Järjestää lapset..."
 msgid "Order families..."
 msgstr ""
 
-#: admin/include/gedcom.php:2230
+#: admin/include/gedcom.php:2262
 msgid "Counting persons and families and enter into database..."
 msgstr "Lasketaan henkilöt ja perheet ja siirretään tietokantaan..."
 
-#: admin/include/gedcom.php:2253
+#: admin/include/gedcom.php:2285
 #, php-format
 msgid "Processing took: %d seconds"
 msgstr "Muodostaminen kesti: %d sekuntia"
 
-#: admin/include/gedcom.php:2254
+#: admin/include/gedcom.php:2286
 msgid "No error messages? In this case the database is ready for use!"
 msgstr "Ei virheilmoituksia? Siinä tapauksessa tietokanta on käyttövalmis!"
 
-#: admin/include/gedcom.php:2257 admin/include/gedcom.php:2262
+#: admin/include/gedcom.php:2289 admin/include/gedcom.php:2294
 #, php-format
 msgid "Ready! Now click %s to watch the family tree"
 msgstr "Valmis! Klikkaa nyt %s katsoaksesi sukupuuta"
 
-#: admin/include/gedcom.php:2263
+#: admin/include/gedcom.php:2295
 msgid ""
 "TIP: Use <a href=\"index.php?page=cal_date\">\"Calculated birth dates\"</a> "
 "for a better privacy filter."
@@ -3083,7 +3090,7 @@ msgstr "Laskuri"
 #: admin/include/gedcom_export.php:295 admin/include/make_db_maps.php:1157
 #: admin/include/settings_admin.php:5 admin/include/settings_admin.php:188
 #: admin/include/trees_cls.php:1252 admin/include/trees_cls.php:1418
-#: admin/index.php:965 family.php:113 family.php:2167 header.php:270
+#: admin/index.php:965 family.php:113 family.php:2165 header.php:270
 #: menu.php:882
 msgid "Settings"
 msgstr "Asetukset"
@@ -3128,25 +3135,25 @@ msgstr "Aloita tiedoston tuonti"
 msgid "GEDCOM file will be exported to backup_tmp/ folder"
 msgstr "Gedcom-tiedosto tulostetaan kansioon backup_tmp/"
 
-#: admin/include/gedcom_export.php:1411
+#: admin/include/gedcom_export.php:1439
 #, fuzzy
 #| msgid "Gedcom file is generated"
 msgid "GEDCOM file is generated"
 msgstr "Gedcom-tiedosto on muodostettu"
 
-#: admin/include/gedcom_export.php:1414
+#: admin/include/gedcom_export.php:1442
 #, fuzzy
 #| msgid "Download backup file"
 msgid "Download GEDCOM file"
 msgstr "Ladataan varmuuskopiotiedosto"
 
-#: admin/include/gedcom_export.php:1425
+#: admin/include/gedcom_export.php:1453
 #, fuzzy
 #| msgid "Remove gedcom file"
 msgid "Remove GEDCOM file"
 msgstr "Poista gedcom-tiedosto"
 
-#: admin/include/gedcom_export.php:1677
+#: admin/include/gedcom_export.php:1709
 msgid "No valid family number."
 msgstr "Perhenumero ei kelpaa"
 
@@ -4348,7 +4355,7 @@ msgid ""
 "locations were recognized by geocoding and have been saved in the database."
 msgstr "paikat tunnistettiin ja lisättiin tietokantaan."
 
-#: admin/include/make_db_maps.php:221 family.php:2249 report_ancestor.php:1575
+#: admin/include/make_db_maps.php:221 family.php:2247 report_ancestor.php:1575
 msgid "Back"
 msgstr "Takaisin"
 
@@ -5031,7 +5038,7 @@ msgid ""
 "Minimum characters in search boxes (standard value=3. For Chinese set to 1)."
 msgstr "Minimimäärä merkkejä hakuikkunassa (oletus=3, kiinankielessä käytä 1)."
 
-#: admin/include/settings_admin.php:539 fanchart.php:702
+#: admin/include/settings_admin.php:539 fanchart.php:701
 msgid "Date display"
 msgstr "Päivämäärien näyttö"
 
@@ -5242,6 +5249,12 @@ msgstr ""
 msgid "Random photo"
 msgstr ""
 
+#: admin/include/settings_admin.php:844 admin/include/settings_admin.php:980
+#, fuzzy
+#| msgid "Link description"
+msgid "Own script"
+msgstr "Linkin kuvaus"
+
 #: admin/include/settings_admin.php:850 admin/include/settings_admin.php:982
 #: admin/include/trees_cls.php:96
 msgid "EMPTY LINE"
@@ -5255,7 +5268,7 @@ msgstr ""
 msgid "Rows"
 msgstr ""
 
-#: admin/include/settings_admin.php:905
+#: admin/include/settings_admin.php:905 admin/include/settings_admin.php:916
 msgid "Header"
 msgstr ""
 
@@ -5263,11 +5276,21 @@ msgstr ""
 msgid "Show text block, HTML codes can be used."
 msgstr ""
 
+#: admin/include/settings_admin.php:918
+#, fuzzy
+#| msgid "Given name"
+msgid "File name"
+msgstr "Etunimi"
+
+#: admin/include/settings_admin.php:919
+msgid "File name (full path) of the file with own script."
+msgstr ""
+
 #: admin/include/settings_admin.php:931
 msgid "Show text from CMS system."
 msgstr ""
 
-#: admin/include/settings_admin.php:935 fanchart.php:659
+#: admin/include/settings_admin.php:935 fanchart.php:658
 msgid "View"
 msgstr "Näyttö"
 
@@ -5488,7 +5511,7 @@ msgid "Visited families in the past 12 months"
 msgstr "Katsotut perheet viimeisen 12 kuukauden ajalta"
 
 #: admin/include/statistics.php:258 admin/include/statistics.php:299
-#: family.php:1179 list.php:1669
+#: family.php:1195 list.php:1669
 msgid "Unknown"
 msgstr "Ei tiedossa"
 
@@ -6221,22 +6244,22 @@ msgstr "Puoliso"
 #: admin/include/tree_check.php:1419 admin/include/tree_check.php:1423
 #: admin/include/tree_check.php:1434 admin/include/tree_check.php:1436
 #: admin/include/tree_check.php:1439 admin/include/tree_check.php:1442
-#: family.php:1591 family.php:1615 family.php:1754 family.php:1760
+#: family.php:1607 family.php:1631 family.php:1770 family.php:1776
 msgid "BORN_SHORT"
 msgstr "Syntynyt"
 
 #: admin/include/tree_check.php:1420 admin/include/tree_check.php:1424
-#: family.php:1594 family.php:1618
+#: family.php:1610 family.php:1634
 msgid "BAPTISED_SHORT"
 msgstr "Kastettu"
 
 #: admin/include/tree_check.php:1421 admin/include/tree_check.php:1425
-#: family.php:1643 family.php:1674 family.php:1777 family.php:1783
+#: family.php:1659 family.php:1690 family.php:1793 family.php:1799
 msgid "DIED_SHORT"
 msgstr "Kuollut"
 
 #: admin/include/tree_check.php:1422 admin/include/tree_check.php:1426
-#: family.php:1646 family.php:1677
+#: family.php:1662 family.php:1693
 msgid "BURIED_SHORT"
 msgstr "Haudattu"
 
@@ -6376,7 +6399,7 @@ msgstr "Lisää tyhjä rivi sukupuulistaan"
 msgid "Collation"
 msgstr "Vertailu"
 
-#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2167
+#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2165
 #: register.php:127 user_settings.php:123
 msgid "E-mail address"
 msgstr "Sähköpostiosoite"
@@ -6962,8 +6985,8 @@ msgstr "Läheisten sukulaisten tarkastus"
 msgid "Nr. "
 msgstr "Nro. "
 
-#: admin/include/trees_cls.php:1599 family.php:435 family.php:438
-#: family.php:495 family.php:498 family.php:634 family.php:637 family.php:1021
+#: admin/include/trees_cls.php:1599 family.php:451 family.php:454
+#: family.php:511 family.php:514 family.php:650 family.php:653 family.php:1037
 #: hourglass.php:73 relations.php:361 relations.php:372 relations.php:384
 #: relations.php:387 relations.php:389 relations.php:395 relations.php:402
 #: relations.php:406 relations.php:408 relations.php:411 relations.php:412
@@ -7707,7 +7730,7 @@ msgstr ""
 msgid "Settings family screen"
 msgstr "Perhesivun asetukset"
 
-#: family.php:124 family.php:930 family.php:1975 family.php:1979
+#: family.php:124 family.php:946 family.php:1973 family.php:1977
 msgid "Family Page"
 msgstr "Perhesivu"
 
@@ -7749,103 +7772,103 @@ msgstr "RTF"
 msgid "Add to favourite list"
 msgstr "Lisää suosikkeihisi"
 
-#: family.php:435 family.php:495 family.php:634 help.php:22
+#: family.php:451 family.php:511 family.php:650 help.php:22
 #: include/person_cls.php:841
 msgid "Descendant report"
 msgstr "Jälkeläisraportti"
 
-#: family.php:438 family.php:498 family.php:580 family.php:637 family.php:877
-#: family.php:889 include/person_cls.php:821
+#: family.php:454 family.php:514 family.php:596 family.php:653 family.php:893
+#: family.php:905 include/person_cls.php:821
 msgid "Family group sheet"
 msgstr "Perheryhmäsivu"
 
-#: family.php:606 family.php:895
+#: family.php:622 family.php:911
 #, php-format
 msgid "TIP: use %s for other (ancestor and descendant) reports."
 msgstr ""
 "Vihje: Käytä %s katsoaksesi muita (esipolvi- ja jälkipolvi) raportteja."
 
-#: family.php:711 family.php:718 family.php:722 report_ancestor.php:314
+#: family.php:727 family.php:734 family.php:738 report_ancestor.php:314
 #: report_ancestor.php:323 report_ancestor.php:333 report_ancestor.php:337
 msgid "generation "
 msgstr "sukupolvi "
 
-#: family.php:1293 family.php:1311
+#: family.php:1309 family.php:1327
 msgid "Child"
 msgstr "Lapsi"
 
-#: family.php:1449 family.php:1455 family.php:1467
+#: family.php:1465 family.php:1471 family.php:1483
 msgid "follows"
 msgstr "seuraavat"
 
-#: family.php:1528 family.php:1546 family.php:1565
+#: family.php:1544 family.php:1562 family.php:1581
 msgid "Adopted child:"
 msgstr "Adoptoitu lapsi"
 
-#: family.php:1543 family.php:1562
+#: family.php:1559 family.php:1578
 msgid "Stepchild"
 msgstr "Lapsipuoli"
 
-#: family.php:1544 family.php:1563
+#: family.php:1560 family.php:1579
 msgid "Legal child"
 msgstr "Juridinen lapsi"
 
-#: family.php:1545 family.php:1564
+#: family.php:1561 family.php:1580
 msgid "Foster child"
 msgstr "Sijaislapsi"
 
-#: family.php:1719 family.php:1725 include/calculate_age_cls.php:375
+#: family.php:1735 family.php:1741 include/calculate_age_cls.php:375
 #: include/calculate_age_cls.php:378 report_ancestor.php:1181
 msgid "married"
 msgstr "vihitty"
 
-#: family.php:1925
+#: family.php:1923
 msgid "Family events"
 msgstr "Perhetapahtumat"
 
-#: family.php:1975
+#: family.php:1973
 msgid "Citation for:"
 msgstr "Lainaus: "
 
-#: family.php:1994
+#: family.php:1992
 msgid "accessed"
 msgstr "päästetty"
 
-#: family.php:2090 family.php:2097
+#: family.php:2088 family.php:2095
 msgid "New user note"
 msgstr "Uuden käyttäjän huomautus"
 
-#: family.php:2095 mailform.php:24 register.php:59 user_settings.php:50
+#: family.php:2093 mailform.php:24 register.php:59 user_settings.php:50
 #, fuzzy, php-format
 #| msgid "Message sent through HuMo-gen from the website."
 msgid "Message sent through %s from the website."
 msgstr "Viesti lähetetty HuMo-genin kautta websivulta."
 
-#: family.php:2102
+#: family.php:2100
 msgid "User note by family"
 msgstr "Käyttäjän kommentti perhetietoihin"
 
-#: family.php:2123
+#: family.php:2121
 msgid "Your information is saved and will be reviewed by the webmaster."
 msgstr "Antamasi tiedot on talletettu webmasterin hyväksyttäväksi."
 
-#: family.php:2160
+#: family.php:2158
 msgid "Add information or remarks"
 msgstr "Lisää tietoa tai huomautuksia"
 
-#: family.php:2167
+#: family.php:2165
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "Sähköpostiosoitteesi puuttuu. Ole hyvä ja lisää osoitteesi tähän: "
 
-#: family.php:2173 login.php:44 mailform.php:134 register.php:148
+#: family.php:2171 login.php:44 mailform.php:134 register.php:148
 msgid "Send"
 msgstr "Lähetä"
 
-#: family.php:2238 report_ancestor.php:1568
+#: family.php:2236 report_ancestor.php:1568
 msgid "Download RTF report."
 msgstr "Lataa RTF-raporttu."
 
-#: family.php:2239 report_ancestor.php:1569
+#: family.php:2237 report_ancestor.php:1569
 msgid ""
 "TIP: Don't use Wordpad to open this file (the lay-out will be wrong!). It's "
 "better to use a text processor like Word or OpenOffice Writer."
@@ -7853,19 +7876,19 @@ msgstr ""
 "VIHJE: Älä käytä Wordpadia (vast) avatessasi tämän tiedoston (asettelu menee "
 "pieleen!). Käytä tekstinkäsittelyohjelmaa, kuten Word tai OpenOffice Writer."
 
-#: fanchart.php:503
+#: fanchart.php:502
 msgid "RELOAD FANCHART WITH 'VIEW' BUTTON ON THE LEFT"
 msgstr "LATAA FANCHART-KUVAAJA UUDELLEEN PAINIKKEELLA 'VIEW' VASEMMALLA"
 
-#: fanchart.php:566 help.php:25 include/person_cls.php:883
+#: fanchart.php:565 help.php:25 include/person_cls.php:883
 msgid "Fanchart"
 msgstr "Sektorikuvaaja"
 
-#: fanchart.php:574
+#: fanchart.php:573
 msgid "How to print the chart"
 msgstr "Kuinka kaavion voi tulostaa..."
 
-#: fanchart.php:577
+#: fanchart.php:576
 msgid ""
 "<u>Internet Explorer:</u><br>\n"
 "1. Set background to \"white\" on the menu and press \"View\"<br>\n"
@@ -7880,7 +7903,7 @@ msgstr ""
 "3. Tallenna levylle valinnalla Tallenna nimellä... (Save picture as)\"<br>\n"
 "4. Tulosta talletettu kaavio erikseen"
 
-#: fanchart.php:583
+#: fanchart.php:582
 msgid ""
 "<p><u>All other browsers:</u><br>\n"
 "Just print the page .... ;-)<br>\n"
@@ -7894,73 +7917,73 @@ msgstr ""
 "ja säädä tulosteen koko sovittaaksesi sen sivulle<br>\n"
 "(tavanomaisesti kuvaaja on 85%-90% näytön koosta)"
 
-#: fanchart.php:663
+#: fanchart.php:662
 msgid "Fan style"
 msgstr "Viuhkan tyyli"
 
-#: fanchart.php:668
+#: fanchart.php:667
 msgid "half"
 msgstr "puolikas"
 
-#: fanchart.php:675
+#: fanchart.php:674
 msgid "full"
 msgstr "täysi"
 
-#: fanchart.php:680
+#: fanchart.php:679
 msgid "Generations"
 msgstr "Sukupolvet"
 
-#: fanchart.php:691
+#: fanchart.php:690
 msgid "Font size"
 msgstr "Kirjasimen koko"
 
-#: fanchart.php:711
+#: fanchart.php:710
 msgid "Years only"
 msgstr "Vain vuodet"
 
-#: fanchart.php:715
+#: fanchart.php:714
 msgid "Full dates"
 msgstr "Täydet päivämääräät"
 
-#: fanchart.php:720
+#: fanchart.php:719
 msgid "Fan width:"
 msgstr "Viuhkan leveys:"
 
-#: fanchart.php:722
+#: fanchart.php:721
 msgid ""
 "\"auto\" for automatic resizing for best display, or value between 50-300"
 msgstr ""
 "valinta \"auto\" asettaa näyttöön sopivan tai valitse arvo väliltä 50-300"
 
-#: fanchart.php:726
+#: fanchart.php:725
 msgid "Background"
 msgstr "Tausta"
 
-#: fanchart.php:731
+#: fanchart.php:730
 msgid "transparent"
 msgstr "läpinäkyvä"
 
-#: fanchart.php:734
+#: fanchart.php:733
 msgid "white"
 msgstr "valkoinen"
 
-#: fanchart.php:742
+#: fanchart.php:741
 msgid "descendants"
 msgstr "jälkeläiset"
 
-#: fanchart.php:742
+#: fanchart.php:741
 msgid "under fanchart"
 msgstr "fanchart-kaavio"
 
-#: fanchart.php:765
+#: fanchart.php:764
 msgid "No Chinese ttf font file found"
 msgstr "Kiinalaista ttf-fonttitiedostoa ei löydy"
 
-#: fanchart.php:765
+#: fanchart.php:764
 msgid "Download link"
 msgstr "Lataa linkki"
 
-#: fanchart.php:768
+#: fanchart.php:767
 msgid "Unzip and place in \"include/fanchart/chinese/\" folder"
 msgstr "Pura ja sijoita kansioon \"include/fanchart/chinese/\""
 
@@ -9055,11 +9078,11 @@ msgstr "lähdeteksti"
 msgid "extra text"
 msgstr "Tulostustekstit"
 
-#: include/show_sources.php:335 source.php:432
+#: include/show_sources.php:335 source.php:425
 msgid "role"
 msgstr "rooli"
 
-#: include/show_sources.php:340 source.php:436
+#: include/show_sources.php:340 source.php:429
 msgid "page"
 msgstr "sivu"
 
@@ -9666,6 +9689,10 @@ msgstr "Poimi nimi alasvetovalikosta"
 #: maps.php:723
 msgid "Filter by ancestors of a person"
 msgstr "Suodata henkilön esivanhemmat"
+
+#: maps.php:913
+msgid "Results are limited."
+msgstr ""
 
 #: menu.php:156
 msgid "Favourites list:"
@@ -10464,51 +10491,51 @@ msgstr "Lähteen teksti"
 msgid "Source for sex:"
 msgstr "Sukupuolen lähde:"
 
-#: source.php:315
+#: source.php:312
 #, fuzzy
 #| msgid "Source for address:"
 msgid "Source by address (person):"
 msgstr "Osoitelähde:"
 
-#: source.php:336 source.php:368
+#: source.php:332 source.php:364
 msgid "Source for family:"
 msgstr "Perhetiedon lähde:"
 
-#: source.php:339
+#: source.php:335
 msgid "Source for cohabitation:"
 msgstr "Kastetiedon lähde:"
 
-#: source.php:342
+#: source.php:338
 msgid "Source for marriage notice:"
 msgstr "Avioliittotiedon lähde"
 
-#: source.php:345
+#: source.php:341
 msgid "Source for marriage:"
 msgstr "Avioliittotiedon lähde:"
 
-#: source.php:348
+#: source.php:344
 msgid "Source for marriage notice (church):"
 msgstr "Vihki-ilmoituksen lähde (seurakunta):"
 
-#: source.php:351
+#: source.php:347
 msgid "Source for marriage (church):"
 msgstr "Vihkimistiedon lähde (seurakunta):"
 
-#: source.php:354
+#: source.php:350
 msgid "Source for divorce:"
 msgstr "Eroamistiedon lähde:"
 
-#: source.php:357
+#: source.php:353
 msgid "Source for family text:"
 msgstr "Perhetekstin lähde"
 
-#: source.php:392
+#: source.php:385
 #, fuzzy
 #| msgid "Source for family:"
 msgid "Source by adres (family):"
 msgstr "Perhetiedon lähde:"
 
-#: source.php:422
+#: source.php:415
 msgid "Source for address:"
 msgstr "Osoitelähde:"
 

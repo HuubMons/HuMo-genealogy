@@ -25,24 +25,33 @@ echo '</form>';
 
 // *** Save or add page ***
 if (isset($_POST['add_page']) OR isset($_POST['change_page'])){
-	$page_status="";
-	//if (isset($_POST['page_status'])){ $page_status=$_POST['page_status']; }
-	if (isset($_POST['page_status']) AND !empty($_POST['page_status'])){ $page_status='1'; }
+	$page_status=""; if (isset($_POST['page_status']) AND !empty($_POST['page_status'])){ $page_status='1'; }
+	$page_menu_id=$_POST['page_menu_id'];
+
+	// *** Generate new order numer, needed for new page or moved page ***
+	$page_order='1';
+	$ordersql = $dbh->query("SELECT page_order FROM humo_cms_pages ORDER BY page_order DESC LIMIT 0,1");
+	if ($ordersql){
+		$orderDb=$ordersql->fetch(PDO::FETCH_OBJ);
+		$page_order=$orderDb->page_order+1;
+	}
 
 	if (isset($_POST['add_page'])){
-		$page_order='1';
-		$ordersql = $dbh->query("SELECT page_order FROM humo_cms_pages ORDER BY page_order DESC LIMIT 0,1");
-		if ($ordersql){
-			$orderDb=$ordersql->fetch(PDO::FETCH_OBJ);
-			$page_order=$orderDb->page_order+1;
-		}
 		$sql="INSERT INTO humo_cms_pages SET page_order='".$page_order."', ";
 	}
 	else{
 		$sql="UPDATE humo_cms_pages SET ";
+
+		// *** If menu/ category is changed, use new page_order. Ordering for old category is restored later in script ***
+		$page_menu_id='0'; if ($_POST['page_menu_id']) $page_menu_id=$_POST['page_menu_id'];
+		if ($page_menu_id!=$_POST['page_menu_id_old']){
+			// *** Page is moved to another category, use new page_order ***
+			$sql.="page_order='".$page_order."',";
+		}
 	}
+
 	$sql.="page_status='".$page_status."',
-	page_menu_id='".safe_text_db($_POST['page_menu_id'])."',
+	page_menu_id='".safe_text_db($page_menu_id)."',
 	page_title='".safe_text_db($_POST['page_title'])."',
 	page_text='".safe_text_db($_POST['page_text'])."'
 	";
@@ -53,7 +62,6 @@ if (isset($_POST['add_page']) OR isset($_POST['change_page'])){
 		$_GET["select_page"]=safe_text_db($_POST['page_id']);
 	}
 
-	//echo $sql;
 	$result=$dbh->query($sql);
 
 	if (isset($_POST['add_page'])){
@@ -64,35 +72,26 @@ if (isset($_POST['add_page']) OR isset($_POST['change_page'])){
 	}
 }
 
-// *** Move pages ***
-if (isset($_GET['page_up'])){
+// *** Move pages. Only numeric values alowed ***
+if (isset($_GET['page_up']) AND is_numeric($_GET['page_up']) AND is_numeric($_GET['select_page'])){
 	$sql="UPDATE humo_cms_pages as table1, humo_cms_pages as table2
 		SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
-		WHERE table1.page_id='".safe_text_db($_GET['page_up'])."' AND table2.page_id='".safe_text_db($_GET['select_page'])."'";
+		WHERE table1.page_id='".$_GET['page_up']."' AND table2.page_id='".$_GET['select_page']."'";
 	//echo $sql;
 	$result=$dbh->query($sql);
 }
-if (isset($_GET['page_down'])){
-	$qry2=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".safe_text_db($_GET['menu_id'])."' ORDER BY page_order");
-	$search_page=false;
-	while($cms_pagesDb=$qry2->fetch(PDO::FETCH_OBJ)){
-		if ($search_page==true){
-			$page2=$cms_pagesDb->page_id;
-			$search_page=false;
-		}
-		if ($cms_pagesDb->page_id==safe_text_db($_GET['select_page'])){
-			$search_page=true;
-		}
-	}
-
+// *** Page up, only allow numeric values ***
+if (isset($_GET['page_down']) AND is_numeric($_GET['page_down']) AND is_numeric($_GET['menu_id'])){
 	$sql="UPDATE humo_cms_pages as table1, humo_cms_pages as table2
 		SET table1.page_order=table2.page_order, table2.page_order=table1.page_order
-		WHERE table1.page_id='".safe_text_db($_GET['select_page'])."' AND table2.page_id='".$page2."'";
+		WHERE table1.page_order='".safe_text_db($_GET['page_down'])."' AND table1.page_menu_id='".$_GET['menu_id']."'
+		AND table2.page_order='".safe_text_db($_GET['page_down']+1)."'  AND table2.page_menu_id='".$_GET['menu_id']."'";
 	//echo $sql;
 	$result=$dbh->query($sql);
 }
 
-if (isset($_GET['page_remove'])){
+// *** Remove page, only allow numeric values ***
+if (isset($_GET['page_remove']) AND is_numeric($_GET['page_remove'])){
 	echo '<div class="confirm">';
 	if (isset($humo_option["main_page_cms_id"]) AND $humo_option["main_page_cms_id"]==$_GET['page_remove']){
 		echo __('This page is selected as homepage!');
@@ -110,8 +109,9 @@ if (isset($_GET['page_remove'])){
 	}
 	echo '</div>';
 }
-if (isset($_POST['page_remove2'])){
-	$sql="DELETE FROM humo_cms_pages WHERE page_id='".safe_text_db($_POST['page_id'])."'";
+// *** Only allow numeric values ***
+if (isset($_POST['page_remove2']) AND is_numeric($_POST['page_id'])){
+	$sql="DELETE FROM humo_cms_pages WHERE page_id='".$_POST['page_id']."'";
 	@$result=$dbh->query($sql);
 }
 
@@ -212,100 +212,81 @@ if (isset($_POST['cms_settings'])) $cms_item='settings';
 // *** Show and edit pages ***
 //if (isset($_POST['cms_pages']) OR isset($_GET["select_page"])){
 if ($cms_item=='pages'){
+	// *** Count number of pages in categories (so correct down arrows can be shown) ***
+	// *** Also restore order numbering (if page is moved to another category) ***
+	$page_nr=0;
+	$page_menu_id=0;
+	$qry=$dbh->query("SELECT page_id,page_menu_id,page_order FROM humo_cms_pages ORDER BY page_menu_id, page_order");
+	while($cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ)){
+		if (!isset($pages_in_category[$cms_pagesDb->page_menu_id])){
+			$pages_in_category[$cms_pagesDb->page_menu_id]='1';
+		}
+		else{
+			$pages_in_category[$cms_pagesDb->page_menu_id]++;
+		}
+
+		if ($cms_pagesDb->page_menu_id>0 AND $page_menu_id!=$cms_pagesDb->page_menu_id){
+			$page_nr=0;
+			$page_menu_id=$cms_pagesDb->page_menu_id;
+		}
+		$page_nr++;
+
+		// *** Restore order numbering (if page is moved to another category) ***
+//		echo '!'.$page_nr.' '.$cms_pagesDb->page_order.'<br>';
+		if ($page_nr!=$cms_pagesDb->page_order){
+			$sql="UPDATE humo_cms_pages
+				SET page_order='".$page_nr."'
+				WHERE page_id='".$cms_pagesDb->page_id."'";
+//		echo $sql.'<br>';
+			$result=$dbh->query($sql);
+		}
+	}
 
 	echo '<table style="border-top: solid 1px #999999;"><tr><td valign="top" style="border-right: solid 1px #999999;">';
 
 		// *** List of pages ***
 		echo __('Pages, click to edit:').'<br>';
 		echo '<table>';
-			$qry=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='0' ORDER BY page_order");
-			$count_pages=$qry->rowCount();
+			$qry=$dbh->query("SELECT * FROM humo_cms_pages ORDER BY page_menu_id, page_order");
 			$page_nr=0;
+			$page_menu_id=0;
 			while($cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ)){
+				// ** Show name of menu/ category ***
+				if ($cms_pagesDb->page_menu_id=='9999'){
+					echo '<tr><td colspan="2"><b>* '.__('Hide page in menu').' *</b></td></tr>';
+					$page_nr=0;
+				}
+				elseif ($cms_pagesDb->page_menu_id>0 AND $page_menu_id!=$cms_pagesDb->page_menu_id){
+					$qry_menu=$dbh->query("SELECT * FROM humo_cms_menu WHERE menu_id='".$cms_pagesDb->page_menu_id."'");
+					$cmsDb=$qry_menu->fetch(PDO::FETCH_OBJ);
+					echo '<tr><td colspan="2"><b>'.$cmsDb->menu_name.'</b></td></tr>';
+					$page_nr=0;
+					$page_menu_id=$cms_pagesDb->page_menu_id;
+				}
+
 				$page_nr++;
 				echo '<tr><td width="60px">';
-
 					echo '<a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'&amp;page_remove='.$cms_pagesDb->page_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" alt="'.__('Remove page').'" border="0"></a>';
 
 					// *** Show ID numbers for test ***
-					//if ($cms_pagesDb->page_order<10){ echo '0'; }
-					//echo $cms_pagesDb->page_order;
-					//if ($cms_pagesDb->page_order!='1'){
 					if ($page_nr!='1'){
 						echo ' <a href="index.php?page='.$page.'&amp;page_up='.$previous_page.'&amp;select_page='.$cms_pagesDb->page_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="up"></a>';
 					}
-					//if ($cms_pagesDb->page_order!=$count_pages){
-					if ($page_nr!=$count_pages){
-						echo ' <a href="index.php?page='.$page.'&amp;page_down='.$cms_pagesDb->page_order.'&amp;select_page='.$cms_pagesDb->page_id.'&amp;menu_id='.$cms_pagesDb->page_menu_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>'; }
+					if ($page_nr!=$pages_in_category[$cms_pagesDb->page_menu_id]){
+						echo ' <a href="index.php?page='.$page.'&amp;page_down='.$cms_pagesDb->page_order.'&amp;select_page='.$cms_pagesDb->page_id.'&amp;menu_id='.$cms_pagesDb->page_menu_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>';
+					}
 				echo '</td><td>';
 					$page_title='['.__('No page title').']'; if ($cms_pagesDb->page_title) $page_title=$cms_pagesDb->page_title;
 					echo ' <a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'">'.$page_title.'</a><br>';
 				echo '</td></tr>';
 				$previous_page=$cms_pagesDb->page_id;
 			}
-
-
-			$qry=$dbh->query("SELECT * FROM humo_cms_menu ORDER BY menu_order");
-			while($cmsDb=$qry->fetch(PDO::FETCH_OBJ)){
-				echo '<tr><td colspan="2"><b>'.$cmsDb->menu_name.'</b></td></tr>';
-
-				$qry2=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='".$cmsDb->menu_id."' ORDER BY page_order");
-				$count_pages=$qry2->rowCount();
-				$page_nr=0;
-				while($cms_pagesDb=$qry2->fetch(PDO::FETCH_OBJ)){
-					$page_nr++;
-					echo '<tr><td>';
-					
-						echo '<a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'&amp;page_remove='.$cms_pagesDb->page_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" alt="'.__('Remove page').'" border="0"></a>';
-
-						// *** Show ID numbers for test ***
-						//if ($cms_pagesDb->page_order<10){ echo '0'; }
-						//echo $cms_pagesDb->page_order;
-						//if ($cms_pagesDb->page_order!='1'){
-						if ($page_nr!='1'){
-							echo ' <a href="index.php?page='.$page.'&amp;page_up='.$previous_page.'&amp;select_page='.$cms_pagesDb->page_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="up"></a>'; }
-						//if ($cms_pagesDb->page_order!=$count_pages){
-						if ($page_nr!=$count_pages){
-							echo ' <a href="index.php?page='.$page.'&amp;page_down='.$cms_pagesDb->page_order.'&amp;select_page='.$cms_pagesDb->page_id.'&amp;menu_id='.$cms_pagesDb->page_menu_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>'; }
-					echo '</td><td>';
-						echo ' <a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
-					echo '</td></tr>';
-					$previous_page=$cms_pagesDb->page_id;
-				}
-			
-			}
-
-			echo '<tr><td colspan="2"><b>* '.__('Hide page in menu').' *</b></td></tr>';
-			$qry=$dbh->query("SELECT * FROM humo_cms_pages WHERE page_menu_id='9999' ORDER BY page_order");
-			$count_pages=$qry->rowCount();
-			$page_nr=0;
-			while($cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ)) {
-				$page_nr++;
-				echo '<tr><td>';
-
-					echo '<a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'&amp;page_remove='.$cms_pagesDb->page_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" alt="'.__('Remove page').'" border="0"></a>';
-
-					// *** Show ID numbers for test ***
-					//if ($cms_pagesDb->page_order<10){ echo '0'; }
-					//echo $cms_pagesDb->page_order;
-					//if ($cms_pagesDb->page_order!='1'){
-					if ($page_nr!='1'){
-						echo ' <a href="index.php?page='.$page.'&amp;page_up='.$previous_page.'&amp;select_page='.$cms_pagesDb->page_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_up.gif" border="0" alt="up"></a>';
-					}
-					//if ($cms_pagesDb->page_order!=$count_pages){
-					if ($page_nr!=$count_pages){
-						echo ' <a href="index.php?page='.$page.'&amp;page_down='.$cms_pagesDb->page_order.'&amp;select_page='.$cms_pagesDb->page_id.'&amp;menu_id='.$cms_pagesDb->page_menu_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/arrow_down.gif" border="0" alt="down"></a>'; }
-				echo '</td><td>';
-					echo ' <a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'">'.$cms_pagesDb->page_title.'</a><br>';
-				echo '</td></tr>';
-				$previous_page=$cms_pagesDb->page_id;
-			}
 		echo '</table>';
 
 	echo '</td><td valign="top">';
-
-		if (isset($_GET["select_page"])){
-			$sql="SELECT * FROM humo_cms_pages WHERE page_id=".safe_text_db($_GET["select_page"]);
+		// *** Only numeric values alowed ***
+		if (isset($_GET["select_page"]) AND is_numeric($_GET["select_page"])){
+			$sql="SELECT * FROM humo_cms_pages WHERE page_id=".$_GET["select_page"];
 			$qry=$dbh->query($sql);
 			$cms_pagesDb=$qry->fetch(PDO::FETCH_OBJ);
 			//if ($memosoort2Db->website_id==$memosoortDb->menu_website_id){
@@ -350,6 +331,7 @@ if ($cms_item=='pages'){
 
 		echo ' <input type="text" name="page_title" value="'.$page_title.'" size=25> ';
 
+		echo '<input type="hidden" name="page_menu_id_old" value="'.$page_menu_id.'">';
 		echo '<select size="1" name="page_menu_id">';
 			echo "<option value=''>* ".__('No menu selected')." *</option>\n";
 			$select=''; if ($page_menu_id=='9999'){ $select=' SELECTED'; }

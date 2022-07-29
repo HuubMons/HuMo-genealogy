@@ -809,7 +809,7 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 			// *** Added style="z-index:40;" for ancestor and descendant report ***
 			//$text.= '<div style="z-index:40; border:1px solid #999999;" id="m1'.$random_nr.$personDb->pers_gedcomnumber.
 			//	'" class="sddm_fixed person_popup" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-			$text.= '<div style="z-index:40; border:1px solid #999999;" id="m1'.$random_nr.$personDb->pers_gedcomnumber.
+			$text.= '<div style="z-index:500; border:1px solid #999999;" id="m1'.$random_nr.$personDb->pers_gedcomnumber.
 				'" class="sddm_fixed" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 
 				$name=$this->person_name($personDb);

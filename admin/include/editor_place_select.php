@@ -6,7 +6,7 @@ echo '<h1 align=center>'.__('Select place').'</h1>';
 
 $place_item=''; $form='';
 if (isset($_GET['form'])){
-	$check_array = array("1", "2", "5", "6");
+	$check_array = array("1", "2", "3", "5", "6");
 	if (in_array($_GET['form'], $check_array)) $form='form'.$_GET['form'];
 
 	$check_array = array("pers_birth_place", "pers_bapt_place", "pers_death_place", "pers_buried_place",

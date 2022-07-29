@@ -1560,7 +1560,6 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 // *** Change event ***
 if (isset($_POST['event_id'])){
 	foreach($_POST['event_id'] as $key=>$value){
-
 		$event_event='';
 		if (isset($_POST["text_event"][$key]))
 			$event_event=$editor_cls->text_process($_POST["text_event"][$key]);
@@ -1612,8 +1611,10 @@ if (isset($_POST['event_id'])){
 			// EXAMPLE: descendants($family_id,$main_person,$gn,$nr_generations);
 			descendants($marriage,$pers_gedcomnumber,0,20);
 			// *** Starts with 2nd descendant, skip main person (that's already processed above this code)! ***
+			// *** $descendant_array[0]= not in use ***
+			// *** $descendant_array[1]= main person ***
+			//for ($i=2; $i<=$descendant_id; $i++){
 			for ($i=2; $i<=$descendant_id; $i++){
-
 				// *** Check if descendant already has this colour ***
 				$event_sql="SELECT * FROM humo_events
 					WHERE event_tree_id='".$tree_id."'

@@ -7,7 +7,7 @@ echo '<h1 align=center>'.__('Select media').'</h1>';
 $place_item='';
 $form='';
 if (isset($_GET['form'])){
-	$check_array = array("1", "2", "5", "6");
+	$check_array = array("1", "2", "3", "5", "6");
 	$selected_form='';
 	if (in_array($_GET['form'], $check_array)){
 		$form='form'.$_GET['form'];

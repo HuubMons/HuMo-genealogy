@@ -151,11 +151,11 @@ function show_tree_index(){
 			}
 
 			// *** Own script ***
-			//if ($module_item[$i]=='own_script' AND is_file($module_option_2[$i])){
-			//	if ($module_option_1[$i]) $temp.='<div class="mainmenu_bar fonts">'.__($module_option_1[$i]).'</div>';
-			//	$codefile=$module_option_2[$i];
-			//	$temp.=file_get_contents($codefile.'?language='.$selected_language);
-			//}
+			if ($module_item[$i]=='own_script' AND strpos($module_option_2[$i], $_SERVER['HTTP_HOST'])){
+				if ($module_option_1[$i]) $temp.='<div class="mainmenu_bar fonts">'.__($module_option_1[$i]).'</div>';
+				$codefile=$module_option_2[$i];
+				$temp.=file_get_contents($codefile.'?language='.$selected_language);
+			}
 
 			// *** Empty line ***
 			if ($module_item[$i]=='empty_line'){ $temp.='<br>'; }

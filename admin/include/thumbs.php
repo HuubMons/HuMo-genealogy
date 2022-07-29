@@ -317,8 +317,8 @@ if (isset($menu_admin) AND $menu_admin=='picture_categories'){
 		//$qry = "SELECT * FROM humo_photocat GROUP BY photocat_prefix";
 		// *** Renewed query because of ONLY_FULL_GROUP_BY setting in MySQL 5.7 (otherwise query will stop) ***
 		$qry = "SELECT photocat_prefix, photocat_order FROM humo_photocat GROUP BY photocat_prefix, photocat_order";
-		$result = $dbh->query($qry);  
-		
+		$result = $dbh->query($qry);
+
 		while($resultDb = $result->fetch(PDO::FETCH_OBJ)) {
 			if(isset($_POST[$resultDb->photocat_prefix])) {
 				if($language_tree != "default") {

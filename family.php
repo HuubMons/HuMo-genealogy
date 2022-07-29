@@ -14,7 +14,7 @@ if (isset($_GET["screen_mode"]) AND $_GET["screen_mode"]=='HOURSTARSIZE'){ $scre
 
 $pdf_source= array();  // is set in show_sources.php with sourcenr as key to be used in source appendix
 // see end of this code
-global $chosengen, $genarray, $size, $keepfamily_id, $keepmain_person, $direction;
+global $dbh, $chosengen, $genarray, $size, $keepfamily_id, $keepmain_person, $direction;
 global $pdf_footnotes;
 
 //global $temp,$templ_person;
@@ -376,42 +376,58 @@ if($screen_mode!='STAR' AND $screen_mode!='STARSIZE') {
 		$family_expanded=false;
 	if (isset($_SESSION['save_family_expanded'])) $family_expanded=$_SESSION['save_family_expanded'];
 
-	// *** Source presentation selected by user (title/ footnote/ hide) ***
-	if (isset($_GET['source_presentation'])){
-		$_SESSION['save_source_presentation']=safe_text_db($_GET["source_presentation"]);
+	// *** Source presentation selected by user, only valid values are: title/ footnote/ hide ***
+	$source_presentation_array=array('title','footnote','hide');
+	if (isset($_GET['source_presentation']) AND in_array($_GET['source_presentation'],$source_presentation_array)){
+		$_SESSION['save_source_presentation']=$_GET["source_presentation"];
 	}
 	// *** Default setting is selected by administrator ***
 	$source_presentation=$user['group_source_presentation'];
-	if (isset($_SESSION['save_source_presentation'])) $source_presentation=$_SESSION['save_source_presentation'];
+	if (isset($_SESSION['save_source_presentation']) AND in_array($_SESSION['save_source_presentation'],$source_presentation_array)){
+		$source_presentation=$_SESSION['save_source_presentation'];
+	}
 	else{
 		// *** Extra saving of setting in session (if no choice is made, this is admin default setting, needed for show_sources.php!!!) ***
 		$_SESSION['save_source_presentation']=safe_text_db($source_presentation);
 	}
 
 	// *** Show/ hide Google maps ***
-	if (isset($_GET['maps_presentation'])) $_SESSION['save_maps_presentation']=safe_text_db($_GET["maps_presentation"]);
+	$maps_presentation_array=array('show','hide');
+	if (isset($_GET['maps_presentation']) AND in_array($_GET['maps_presentation'],$maps_presentation_array)){
+		$_SESSION['save_maps_presentation']=$_GET["maps_presentation"];
+	}
 	// *** Default setting is selected by administrator ***
 	$maps_presentation=$user['group_maps_presentation'];
-	//if ($user['group_maps_presentation']=='sources') $maps_presentation='hide'; // *** sources = backwards compatible!! *** 
-	if (isset($_SESSION['save_maps_presentation'])) $maps_presentation=$_SESSION['save_maps_presentation'];
+	if (isset($_SESSION['save_maps_presentation']) AND in_array($_SESSION['save_maps_presentation'],$maps_presentation_array)){
+		$maps_presentation=$_SESSION['save_maps_presentation'];
+	}
 	// *** Only show selection if there is a Google maps database ***
-	global $dbh;
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_location'");
 	if(!$temp->rowCount()) {
 		$maps_presentation='hide';
 	}
 
 	// *** Show/ hide pictures ***
-	if (isset($_GET['picture_presentation'])) $_SESSION['save_picture_presentation']=safe_text_db($_GET["picture_presentation"]);
+	$picture_presentation_array=array('show','hide');
+	if (isset($_GET['picture_presentation']) AND in_array($_GET['picture_presentation'],$picture_presentation_array)){
+		$_SESSION['save_picture_presentation']=$_GET["picture_presentation"];
+	}
 	// *** Default setting is selected by administrator ***
 	//$picture_presentation=$user['group_picture_presentation'];
-	if (isset($_SESSION['save_picture_presentation'])) $picture_presentation=$_SESSION['save_picture_presentation'];
+	if (isset($_SESSION['save_picture_presentation']) AND in_array($_SESSION['save_picture_presentation'],$picture_presentation_array)){
+		$picture_presentation=$_SESSION['save_picture_presentation'];
+	}
 
 	// *** Show/ hide texts ***
-	if (isset($_GET['text_presentation'])) $_SESSION['save_text_presentation']=safe_text_db($_GET["text_presentation"]);
+	$text_presentation_array=array('show','hide','popup');
+	if (isset($_GET['text_presentation']) AND in_array($_GET['text_presentation'],$text_presentation_array)){
+		$_SESSION['save_text_presentation']=$_GET["text_presentation"];
+	}
 	// *** Default setting is selected by administrator ***
 	$text_presentation=$user['group_text_presentation'];
-	if (isset($_SESSION['save_text_presentation'])) $text_presentation=$_SESSION['save_text_presentation'];
+	if (isset($_SESSION['save_text_presentation']) AND in_array($_SESSION['save_text_presentation'],$text_presentation_array)){
+		$text_presentation=$_SESSION['save_text_presentation'];
+	}
 }
 if($screen_mode=='STAR') {
 	$descendant_report=true;
@@ -1798,23 +1814,6 @@ else{
 // *** Only show OpenStreetMap once ***
 if ($family_nr==2)
 							echo '<div id="map" style="width: 600px; height: 300px;"></div>';
-							/*
-							echo '<script type="text/javascript">
-								var map = L.map(\'map\').setView([51.505, -0.09], 13);
-
-								L.tileLayer(\'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\', {
-									attribution: \'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors\'
-								}).addTo(map);
-
-								L.marker([51.5, -0.09]).addTo(map)
-									.bindPopup(\'Test 1.\')
-									.openPopup();
-
-								L.marker([51.6, -0.09]).addTo(map)
-									.bindPopup(\'Test 2.\')
-									.openPopup();
-							</script>';
-							*/
 
 							// *** Map using fitbound (all markers visible) ***
 							echo '<script type="text/javascript">
@@ -1839,7 +1838,6 @@ if ($family_nr==2)
 
 						}
 						else{
-
 
 							$show_google_map=false;
 							// *** Only show main javascript once ***

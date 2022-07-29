@@ -707,7 +707,8 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			if ($eventDb->event_gedcom=='_INTE'){ $process_event2=true; $event_gedcom='1 _INTE'; }
 			if ($eventDb->event_gedcom=='LEGI'){ $process_event2=true; $event_gedcom='1 LEGI'; }
 			if ($eventDb->event_gedcom=='_MEDC'){ $process_event2=true; $event_gedcom='1 _MEDC'; }
-			if ($eventDb->event_gedcom=='MILI'){ $process_event=true; $event_gedcom='1 _MILT'; }
+			//if ($eventDb->event_gedcom=='MILI'){ $process_event=true; $event_gedcom='1 _MILT'; }
+			if ($eventDb->event_gedcom=='MILI'){ $process_event2=true; $event_gedcom='1 _MILT'; }
 			if ($eventDb->event_gedcom=='NATU'){ $process_event2=true; $event_gedcom='1 NATU'; }
 			if ($eventDb->event_gedcom=='NATI'){ $process_event2=true; $event_gedcom='1 NATI'; }
 			if ($eventDb->event_gedcom=='NCHI'){ $process_event2=true; $event_gedcom='1 NCHI'; }
@@ -724,18 +725,21 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			if ($eventDb->event_gedcom=='WILL'){ $process_event2=true; $event_gedcom='1 WILL'; }
 			if ($eventDb->event_gedcom=='_YART'){ $process_event2=true; $event_gedcom='1 _YART'; }
 
+			/* No longer in use
 			// *** Text is added in the first line: 1 _MILT military items. ***
 			if ($process_event){
 				if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
 				if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
 				if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
 			}
+			*/
 
 			// *** No text behind first line, add text at second NOTE line ***
 			if ($process_event2){
 				$buffer.=$event_gedcom;
-					if ($eventDb->event_event) $buffer.=' '.$eventDb->event_event;
-					$buffer.="\r\n";
+				// *** Add text behind GEDCOM tag ***
+				if ($eventDb->event_event) $buffer.=' '.$eventDb->event_event;
+				$buffer.="\r\n";
 				if ($eventDb->event_text) $buffer.='2 NOTE '.process_text(3,$eventDb->event_text);
 				if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
 				if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
@@ -1791,6 +1795,8 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 			$childnr=1;
 			$child_array=explode(";",$familyDb->fam_children);
 
+//$nr_children=count($child_array); $nr_children--;
+//for ($i=0; $i<=$nr_children; $i++){
 			for ($i=0; $i<=substr_count("$familyDb->fam_children", ";"); $i++){
 				$child=$dbh->query("SELECT * FROM humo_persons
 					WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$child_array[$i]."'");

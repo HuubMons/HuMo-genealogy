@@ -949,7 +949,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 			// *** Picture: show thumbnail ***
 			if ($data_listDb->event_kind=='picture'){
-				$thumb_prefix='';
 
 				$tree_pict_path3 = $tree_pict_path;  // we change it only if category subfolders exist
 				$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
@@ -963,8 +962,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 						}
 					}
 				}
-
-				if (file_exists($path_prefix.$tree_pict_path3.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
 
 				$extensions_check=substr($path_prefix.$tree_pict_path3.$data_listDb->event_event,-3,3);
 				if(strtolower($extensions_check)=="pdf") {
@@ -1020,19 +1017,32 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				else{
 					$show_image='';
 
+					// *** No subdirectory: show piture/ thumbnail ***
+					$thumb_prefix='';
+					if (file_exists($path_prefix.$tree_pict_path3.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
 					$picture=$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event;
+
+					// *** Check if picture is in subdirectory ***
+					// Example: subdir1_test/xy/2022_02_12 Scheveningen.jpg
+					if ($thumb_prefix==''){
+						$dirname=dirname($data_listDb->event_event); // subdir1_test/xy/2022_02_12
+						$basename=basename($data_listDb->event_event); // 2022_02_12 Scheveningen.jpg
+						if (file_exists($path_prefix.$tree_pict_path3.$dirname.'/thumb_'.$basename)){ $thumb_prefix='thumb_'; }
+						$picture=$path_prefix.$tree_pict_path3.$dirname.'/'.$thumb_prefix.$basename;
+					}
+
 					if ($data_listDb->event_event AND file_exists($picture)){
 						// *** Get size of original picture ***
 						list($width, $height) = getimagesize($picture);
 						$size=' style="width:100px"';
 						if ($height>$width) $size=' style="height:80px"';
-						$show_image= '<img src="'.$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event.'"'.$size.'>';
+						//$show_image= '<img src="'.$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event.'"'.$size.'>';
+						$show_image= '<img src="'.$picture.'"'.$size.'>';
 					}
 					else
 						$show_image= '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
 //Check line above. If thumb if missing, missing picture is shown...
 
-					//if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../images/thumb_missing-image.jpg" height="80px">';
 					if (!$data_listDb->event_event) $show_image= '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
 					$text.=$show_image;
 				}
@@ -1056,7 +1066,9 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			// *** Use text box for pictures and pop-up window ***
 			// *** To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id ***
 			$text.='<input type="text" name="text_event'.$data_listDb->event_id.'" placeholder="'.__('Picture/ Media').'" value="'.$data_listDb->event_event.'" style="width: 500px">';
-			$form=1; if ($event_connect_kind=='family') $form=2;
+			$form=1;
+			if ($event_connect_kind=='family') $form=2;
+			if ($event_connect_kind=='source') $form=3;
 			$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form='.$form.'&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 			/*
@@ -1277,12 +1289,15 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 		// *** To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id ***
 		$text.=' '.__('place').' <input type="text" name="event_place'.$data_listDb->event_id.'" placeholder="'.__('place').'" value="'.$data_listDb->event_place.'" size="'.$field_place.'">';
-		$form=1; if ($event_connect_kind=='family') $form=2;
+		$form=1;
+		if ($event_connect_kind=='family') $form=2;
+		if ($event_connect_kind=='source') $form=3;
 		$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form='.$form.'&amp;place_item=event_place&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 
 
 		// *** Text by event ***
-		$field_text_selected=$field_text; if (preg_match('/\R/',$data_listDb->event_text)) $field_text_selected=$field_text_medium;
+		$field_text_selected=$field_text;
+		if ($data_listDb->event_text AND preg_match('/\R/',$data_listDb->event_text)) $field_text_selected=$field_text_medium;
 		$text.='<br><textarea rows="1" name="event_text['.$data_listDb->event_id.']" '.$field_text_selected.' placeholder="'.__('text').'">'.$editor_cls->text_show($data_listDb->event_text).'</textarea>';
 		$text.='</td>';
 
@@ -1354,21 +1369,17 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='</tr>';
 	}
 
-	if ($event_kind=='picture'){
+	if ($event_kind=='picture' OR $event_kind=='marriage_picture'){
 		// *** Upload image ***
 		//$text.='<tr style="display:none;" class="row53" name="row53"><td class="table_header_large" colspan="4">';
 		$text.='<tr><td class="table_header_large" colspan="4">';
-			$text.='Upload new image (max: pic 2MB) or media (max: 49 MB):'.' <input type="file" name="photo_upload">';
-			$text.='<input type="submit" name="person_event_change" title="submit" value="'.__('Upload').'">';
-		$text.='</td></tr>';
-	}
-
-	if ($event_kind=='marriage_picture'){ 
-		// *** Upload image ***
-		//$text.='<tr style="display:none;" class="row53" name="row53"><td class="table_header_large" colspan="4">';
-		$text.='<tr><td class="table_header_large" colspan="4">';
-			$text.='Upload new image (max: pic 2MB) or media (max: 49 MB):'.' <input type="file" name="photo_upload">';
-			$text.='<input type="submit" name="marriage_event_change" title="submit" value="'.__('Upload').'">';
+			//$text.=__('Upload new image (max: pic 2MB) or media (max: 49 MB):').' <input type="file" name="photo_upload">';
+			$text.=sprintf(__('Upload new image. Picture max: %1$d MB or media max: %2$d MB.'), '2', '49');
+			$text.=' <input type="file" name="photo_upload">';
+			if ($event_kind=='picture')
+				$text.='<input type="submit" name="person_event_change" title="submit" value="'.__('Upload').'">';
+			else
+				$text.='<input type="submit" name="marriage_event_change" title="submit" value="'.__('Upload').'">';
 		$text.='</td></tr>';
 	}
 

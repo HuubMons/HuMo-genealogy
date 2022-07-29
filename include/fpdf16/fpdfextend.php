@@ -199,10 +199,10 @@ function pdfdisplay($templ_personing,$person_kind) {
 						$pic_indent=34; $pictext_indent=34; $maxw = 180/3.87;
 						for($i=0; $i <15 ; $i++) {
 							if(isset($picarray[$i][0])) {
-								if($i > 0 AND $i % 3 == 0) { 
-									$pic_indent=28; 	
-									$pictext_indent=28; 
-									$keepY += ($tallestpic+1);  
+								if($i > 0 AND $i % 3 == 0) {
+									$pic_indent=28;
+									$pictext_indent=28;
+									$keepY += ($tallestpic+1);
 									if(($keepY + $tallestpic + 5) > 280) {
 										$pdf->AddPage();
 										$keepY=20;
@@ -252,10 +252,10 @@ function pdfdisplay($templ_personing,$person_kind) {
 						$pic_indent=35; $pictext_indent=35; $maxw = 180/3.87;
 						for($i=0; $i <15 ; $i++) {
 							if(isset($picarray[$i][0])) {
-								if($i > 0 AND $i % 3 == 0) { 
-									$pic_indent=28; 	
-									$pictext_indent=28; 
-									$keepY += ($tallestpic+1);  
+								if($i > 0 AND $i % 3 == 0) {
+									$pic_indent=28;
+									$pictext_indent=28;
+									$keepY += ($tallestpic+1);
 									if(($keepY + $tallestpic + 5) > 280) {
 										$pdf->AddPage();
 										$keepY=20;
@@ -301,10 +301,10 @@ function pdfdisplay($templ_personing,$person_kind) {
 					$pic_indent=28; $pictext_indent=28; $maxw = 180/3.87;
 					for($i=0; $i <15 ; $i++) {
 						if(isset($picarray[$i][0])) {
-							if($i > 0 AND $i % 3 == 0) { 
-								$pic_indent=28; 	
-								$pictext_indent=28; 
-								$keepY += ($tallestpic+1);  
+							if($i > 0 AND $i % 3 == 0) {
+								$pic_indent=28;
+								$pictext_indent=28;
+								$keepY += ($tallestpic+1);
 								if(($keepY + $tallestpic + 5) > 280) {
 									$pdf->AddPage();
 									$keepY=20;
@@ -482,10 +482,10 @@ $pdf->Ln(4);
 				$pic_indent=28; $pictext_indent=28; $maxw = 180/3.87;
 				for($i=0; $i <15 ; $i++) {
 					if(isset($picarray[$i][0])) {
-						if($i > 0 AND $i % 3 == 0) { 
-							$pic_indent=28; 	
-							$pictext_indent=28; 
-							$keepY += ($tallestpic+1);  
+						if($i > 0 AND $i % 3 == 0) {
+							$pic_indent=28;
+							$pictext_indent=28;
+							$keepY += ($tallestpic+1);
 							if(($keepY + $tallestpic + 5) > 280) {
 								$pdf->AddPage();
 								$keepY=20;

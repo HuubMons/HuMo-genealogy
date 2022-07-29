@@ -401,7 +401,7 @@ else{
 		$url_position=strpos($uri_path,'!');
 		if ($url_position){
 			//$uri_path= 'http://'.$_SERVER['SERVER_NAME'].substr($uri_path,0,$url_position);
-			if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+			if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 				$uri_path= 'https://'.$_SERVER['SERVER_NAME'].substr($uri_path,0,$url_position);
 			}
 			else{
@@ -413,7 +413,7 @@ else{
 			$url_path=$uri_path.$url_path;
 		}
 		else{
-			// *** Use Standard uri ***
+			// *** Use standard uri ***
 			$uri_path= substr($_SERVER['PHP_SELF'],0,$position).'/';
 		}
 	}

@@ -10,6 +10,8 @@ class editor_cls{
 
 // *** $multiple_rows = addition for editing in multiple rows. Example: name = "event_date[]" ***
 function date_show($process_date, $process_name, $multiple_rows='', $disabled='', $hebnight='n', $hebvar=''){
+	// *** Prevent error in PHP 8.1.1 ***
+	if (!isset($process_date)) $process_date='';
 
 	// *** Process BEF, ABT, AFT and BET in a easier pulldown menu ***
 	global $language, $field_date, $humo_option;

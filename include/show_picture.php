@@ -82,7 +82,7 @@ function show_media($event_connect_kind,$event_connect_id){
 			//$event_event = html_entity_decode($pictureDb->event_event, ENT_NOQUOTES, 'ISO-8859-15');
 			$event_event=$media_event_event[$i];
 			
-			// in case subfolders are made for photobook categories and this was not already set in $picture_path,  look there
+			// in case subfolders are made for photobook categories and this was not already set in $picture_path, look there
 			// (if the $picture_path is already set with subfolder this anyway gives false and so the $picture_path given will work)
 			$temp_path = $tree_pict_path; // store original so we can reset after using for subfolder path for this picture.
 
@@ -264,7 +264,7 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 			}
 		}
 	}
-	
+
 	$picture["path"]=$picture_path; // *** Standard picture path. Will be overwritten if picture is removed ***
 	$picture["picture"]=$picture_org;
 	$found_picture=false; // *** Check if picture still exists ***
@@ -290,6 +290,18 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 	if (file_exists($picture["path"].'thumb_'.$picture['picture'])){
 		$found_picture=true;
 		$picture['thumb']='thumb_';
+	}
+
+	// *** Check if picture is in subdirectory ***
+	// Example: subdir1_test/xy/2022_02_12 Scheveningen.jpg
+	if ($picture['thumb']==''){
+		$dirname=dirname($picture['picture']); // subdir1_test/xy/2022_02_12
+		$basename=basename($picture['picture']); // 2022_02_12 Scheveningen.jpg
+		if (file_exists($picture["path"].$dirname.'/thumb_'.$basename)){
+			$picture["path"]=$picture["path"].$dirname.'/'; // *** Add subdirectory to path ***
+			$picture['thumb']='thumb_';
+			$picture['picture']=$basename;
+		}
 	}
 
 	// *** No picture selected yet (in editor) ***

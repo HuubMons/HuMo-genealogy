@@ -41,7 +41,6 @@ echo '<div id="mainmenu_centerbox">';
 		//	$select_page=$urlpart[0];
 		//}
 		else{
-			//$page_qry = $dbh->query("SELECT * FROM humo_cms_pages WHERE page_status!='' ORDER BY page_menu_id, page_order ASC LIMIT 0,1");
 			// *** First page in a menu ***
 			$page_qry = $dbh->query("SELECT * FROM humo_cms_menu, humo_cms_pages
 				WHERE page_status!='' AND page_menu_id=menu_id

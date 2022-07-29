@@ -493,20 +493,15 @@ function process_person($person_array){
 				$event['connect_id'][$event_nr]=$pers_gedcomnumber;
 				$event['kind'][$event_nr]='name';
 
-				// OLD CODE
-				// *** Cater for longer tags such as MyHeritage _MARNM ***
-				// *** This maybe is a problem for texts like: "1 tekst" or "A text". ***
-				//if (isset($buffer[8]) AND $buffer[8]==' ') {$event['event'][$event_nr]=substr($buffer,8);}
-				//elseif (isset($buffer[10]) AND $buffer[10]==' ') {$event['event'][$event_nr]=substr($buffer,11);}
-				//else {$event['event'][$event_nr]=substr($buffer,7);}
-
 				// *** $buffer[7] = check 8th character.***
+				// *** There maybe is a problem for texts like: "1 tekst" or "A text". ***
 				// *** 2 _AKA Also known as ***
 				if (isset($buffer[6]) AND $buffer[6]==' ') {$event['event'][$event_nr]=substr($buffer,7);}
 				// *** 2 _ALIA Alias ***
 				elseif (isset($buffer[7]) AND $buffer[7]==' ') {$event['event'][$event_nr]=substr($buffer,8);}
 				// *** X _MARNM ??  MyHeritage ***
 				elseif (isset($buffer[8]) AND $buffer[8]==' ') {$event['event'][$event_nr]=substr($buffer,9);}
+				//elseif (isset($buffer[10]) AND $buffer[10]==' ') {$event['event'][$event_nr]=substr($buffer,11);}
 
 				$event['event_extra'][$event_nr]='';
 				$event['gedcom'][$event_nr]=trim(substr($buffer, 2, 5));
@@ -1429,7 +1424,7 @@ function process_person($person_array){
 				// *** Aldfaer, title by name: 1 TITL Ir. ***
 				if ($level[1]=='TITL'){ $event['kind'][$event_nr]='title'; }
 
-				// Text by event:
+				// Text by GEDCOM TAG of event:
 				//1 _MILT militaire dienst  Location: Amsterdam
 				if (isset($event_temp)){
 					//$event['text'][$event_nr]=$this->merge_texts ($event['text'][$event_nr],', ',$event_temp);

@@ -419,8 +419,10 @@ function show_media_files($pref) {
 
 			$picture2=show_picture($dir,$filename,175,120);
 			// *** Check if media exists ***
-			if (file_exists($dir.$picture2['thumb'].$picture2['picture'])){
-				$picture='<img src="'.$dir.$picture2['thumb'].$picture2['picture'].'" width="'.$picture2['width'].'" alt="'.$filename.'"></a>';
+			//if (file_exists($dir.$picture2['thumb'].$picture2['picture'])){
+			if (file_exists($picture2['path'].$picture2['thumb'].$picture2['picture'])){
+				//$picture='<img src="'.$dir.$picture2['thumb'].$picture2['picture'].'" width="'.$picture2['width'].'" alt="'.$filename.'"></a>';
+				$picture='<img src="'.$picture2['path'].$picture2['thumb'].$picture2['picture'].'" width="'.$picture2['width'].'" alt="'.$filename.'"></a>';
 			}
 			else{
 				$picture='<img src="images/missing-image.jpg" width="'.$picture2['width'].'" alt="'.$filename.'"></a>';

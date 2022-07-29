@@ -8,7 +8,7 @@ $editor_cls = New editor_cls;
 
 if (isset($_SESSION['admin_pers_gedcomnumber'])){ $pers_gedcomnumber=$_SESSION['admin_pers_gedcomnumber']; }
 if (isset($_SESSION['admin_fam_gedcomnumber'])){ $marriage=$_SESSION['admin_fam_gedcomnumber']; }
-if (isset($_SESSION['admin_address_gedcomnumber'])){ $address_gedcomnr=$_SESSION['admin_address_gedcomnumber']; }
+//if (isset($_SESSION['admin_address_gedcomnumber'])){ $address_gedcomnr=$_SESSION['admin_address_gedcomnumber']; }
 
 
 //echo '<br>'.$pers_gedcomnumber;
@@ -97,11 +97,6 @@ if ($connect_sub_kind=='person_source'){
 	echo source_edit("person","person_source",$pers_gedcomnumber);
 }
 
-// *** Edit source by address by person ***
-//if ($connect_sub_kind=='pers_address_source'){
-//	show_source_header(__('Source').' - '.__('Address'));
-//	echo source_edit("person","pers_address_source",$connect_connect_id);
-//}
 // *** Edit source by person-address connection by person ***
 if ($connect_sub_kind=='pers_address_connect_source'){
 	show_source_header(__('Source').' - '.__('Address'));
@@ -156,30 +151,29 @@ if ($connect_sub_kind=='family_source'){
 	echo source_edit("family","family_source",$marriage);
 }
 
-// *** Edit source by address by family ***
-//if ($connect_sub_kind=='fam_address_source'){
-//	show_source_header(__('Source').' - '.__('Address'));
-//	echo source_edit("family","fam_address_source",$connect_connect_id);
-//}
 // *** Edit source by family-address connection by family ***
 if ($connect_sub_kind=='fam_address_connect_source'){
 	show_source_header(__('Source').' - '.__('Address'));
 	echo source_edit("family","fam_address_connect_source",$connect_connect_id);
 }
 
-// *** Edit source by address (in address editor) ***
+// *** Edit source by address (in address editor) AND ADD ADDRES-SOURCE IN PERSON/ FAMILY SCREEN ***
 if ($connect_sub_kind=='address_source'){
 	show_source_header(__('Source').' - '.__('Address'));
-	echo source_edit("address","address_source",$address_gedcomnr);
+	//echo source_edit("address","address_source",$address_gedcomnr);
+	echo source_edit("address","address_source",$connect_connect_id);
 	echo '<p>';
 }
-// *** Edit source by address (in person/ family editor) ***
+/*
+OLD CODE
+// *** Edit source by address (in person/ family editor in iframe) ***
 if ($connect_sub_kind=='address_source2'){
 	show_source_header(__('Source').' - '.__('Address'));
 	//echo source_edit("address","address_source",$address_gedcomnr);
 	echo source_edit("address","address_source",$connect_connect_id);
 	echo '<p>';
 }
+*/
 
 // *** Edit source by person event ***
 //if ($connect_sub_kind=='person_event_source' OR ($connect_kind=='person' AND $connect_sub_kind=='event_source')){
