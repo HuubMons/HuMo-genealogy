@@ -18,7 +18,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 	global $source_combiner;
 	global $temp,$templ_person,$templ_relation; // *** PDF export ***
 	global $family_expanded;
-	$text=false;
+	$source_array['text']='';
 
 	$source_presentation='title';
 	if (isset($_SESSION['save_source_presentation'])){
@@ -54,75 +54,61 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 				// *** Show text "Source by person/Sources by person" ***
 				if ($nr_sources>1){
-					if ($connect_sub_kind=='person_source') $templ_person["source_start"]=__('Sources for person');
-					if ($connect_sub_kind=='family_source') $templ_relation["source_start"]=__('Sources for family');
+					if ($connect_sub_kind=='person_source') $templ_person["source_start"]=__('Sources for person').': ';
+					elseif ($connect_sub_kind=='family_source') $templ_relation["source_start"]=__('Sources for family').': ';
 				}
 				else{
-					if ($connect_sub_kind=='person_source') $templ_person["source_start"]=__('Source for person');
-					if ($connect_sub_kind=='family_source') $templ_relation["source_start"]=__('Source for family');
+					if ($connect_sub_kind=='person_source') $templ_person["source_start"]=__('Source for person').': ';
+					elseif ($connect_sub_kind=='family_source') $templ_relation["source_start"]=__('Source for family').': ';
 				}
 
-				$source_check=false;
-				for ($j=0; $j<=(count($source_footnotes)-1); $j++){
-					// *** Check for allready used sources in footnotes ***
-					if ($sourceDb->source_id==$source_footnotes[$j]){
-						if($source_presentation=='footnote') {
-							//$text.=' ('.__('sources').' '.($j+1).')';
-							//$text.=' '.($j+1).')';
-							if ($text) $text.='~'; // delimiter
-							$text.=($j+1);
-							//$text.='~'; // delimiter
-						}
-						else {
-							//$text.=', '.__('source').': ';
-							//if ($sourceDb->source_title){ $text.= " ".trim($sourceDb->source_title); }
-							if ($sourceDb->source_title)
-								$text.= trim($sourceDb->source_title);
-								// *** Standard source without title ***
-							else $text.=$sourceDb->source_text;
-
-							// *** User group option to only show title of source ***
-							if ($user['group_sources']!='t'){
-								if ($sourceDb->source_date or $sourceDb->source_place) {
-									$text.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
-							}
-
-							// append num of source in list for use with fpdf_extend.php to add the right link:
-							$text .= "!!".($j+1).'~'; // ~ is delimiter for multiple sources
-						}
-						$source_check=true;
-					}
-				}
-				// *** New source (in footnotes) ***
-				if ($source_check!=true){
-					if($source_presentation=='footnote') {
-						//$text.=' ('.__('sources').' '.($j+1).')';
-						//$text.=' '.($j+1).')';
-						if ($text) $text.='~'; // delimiter
-						$text.=($j+1);
-						//$text.='~'; // delimiter
-					}
-					else {
-						$text.=', '.__('source').': ';
-						//$text.=', ';
-						if ($sourceDb->source_title)
-							$text.= trim($sourceDb->source_title);
-						// *** Standard source without title ***
-						else $text.=$sourceDb->source_text;
-
-						// *** User group option to only show title of source ***
-						if ($user['group_sources']!='t'){
-							if ($sourceDb->source_date or $sourceDb->source_place) { $text.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
-							// append num of source in list as !!3 for use with fpdf_extend.php to add the right link:
-						}
-
-						$text .= "!!".($j+1).'~'; // ~ is delimiter for multiple sources
-					}
+				// *** Check if source is allready listed in the sourcelist ***
+				$j=array_search($sourceDb->source_id, $source_footnotes);
+				if (!$j){
+					// *** Add source in sourcelist ***
 					$pdf_source[safe_text_db($connectDb->connect_source_id)]=safe_text_db($connectDb->connect_source_id);
 					$pdf_footnotes[] = $pdf->AddLink();
 					$source_footnotes[]=$sourceDb->source_id;
+
+					$j=array_key_last($source_footnotes);
 				}
+				else{
+					$j=$j++;
+				}
+
+				// *** New source (in footnotes) ***
+				if($source_presentation=='footnote') {
+					if ($source_array['text']) $source_array['text'].='~'; // delimiter
+					$source_array['text'].=$j;
+				}
+				else {
+					// *** Texts for all sources, except person_source and family_source ***
+					if ($connect_sub_kind!='person_source' AND $connect_sub_kind!='family_source'){
+						if ($nr_sources>1){
+							if ($connectDb->connect_order=='1') $source_array['text'].=', '.__('sources').': ';
+						}
+						else{
+							$source_array['text'].=', '.__('source').': ';
+						}
+					}
+
+					if ($sourceDb->source_title)
+						$source_array['text'].= trim($sourceDb->source_title);
+					// *** Standard source without title ***
+					else $source_array['text'].=$sourceDb->source_text;
+
+					// *** User group option to only show title of source ***
+					if ($user['group_sources']!='t'){
+						if ($sourceDb->source_date or $sourceDb->source_place) {
+							$source_array['text'].=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
+					}
+
+					// append num of source in list as !!3 for use with fpdf_extend.php to add the right link:
+					$source_array['text'] .= "!!".$j.'~'; // ~ is delimiter for multiple sources
+				}
+
 			} // END PDF
+
 			elseif ($source_presentation=='footnote' AND $source_status=='publish'){
 				// *** Combine footnotes with the same source including the same source role and source page... ***
 				$combiner_check=$connectDb->connect_source_id.'_'.$connectDb->connect_role.'_'.$connectDb->connect_page.'_'.$connectDb->connect_date.' '.$connectDb->connect_place.' '.$connectDb->connect_text;
@@ -150,26 +136,26 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 					$j2=count($source_footnote_connect_id);
 				}
 				// *** Test line for footnotes ***
-				//$text.=' '.$combiner_check.' ';
+				//$source_array['text'].=' '.$combiner_check.' ';
 
 				// *** Add text "Source for person/ family". Otherwise it isn't clear which source it is ***
 				$rtf_text='';
 				if ($connect_sub_kind=='person_source'){
 					if ($nr_sources>1){
-						if ($connectDb->connect_order=='1') $text.= '. <b>'.__('Sources for person').'</b> ';
+						if ($connectDb->connect_order=='1') $source_array['text'].= '. <b>'.__('Sources for person').'</b> ';
 					}
 					else
-						$text.= '. <b>'.__('Source for person').'</b> ';
+						$source_array['text'].= '. <b>'.__('Source for person').'</b> ';
 				}
 				elseif ($connect_sub_kind=='family_source'){
 					if ($nr_sources>1){
-						if ($connectDb->connect_order=='1') $text.= '. <b>'.__('Sources for family').'</b> ';
+						if ($connectDb->connect_order=='1') $source_array['text'].= '. <b>'.__('Sources for family').'</b> ';
 					}
 					else
-						$text.= '. <b>'.__('Source for family').'</b> ';
+						$source_array['text'].= '. <b>'.__('Source for family').'</b> ';
 				}
 				elseif ($screen_mode=='RTF') $rtf_text=__('sources').' ';
-				$text.=' <a href="'.str_replace("&","&amp;",$_SERVER['REQUEST_URI']).'#source_ref'.$j2.'"><sup>'.$rtf_text.$j2.')</sup></a>';
+				$source_array['text'].=' <a href="'.str_replace("&","&amp;",$_SERVER['REQUEST_URI']).'#source_ref'.$j2.'"><sup>'.$rtf_text.$j2.')</sup></a>';
 			}
 			else{
 				// *** Link to shared source ***
@@ -193,58 +179,93 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 					}
 
 					if ($connect_sub_kind!='person_source' AND $connect_sub_kind!='family_source'){
-						$text.= ', '.$source_link.__('source');
+						//$source_array['text'].= ', '.__('source').': '.$source_link;
+						$source_array['text'].= ', ';
+						if ($nr_sources>1){
+							// *** Only show text once ***
+							if ($connectDb->connect_order=='1') $source_array['text'].= __('sources').': ';
+						}
+						else{
+							$source_array['text'].= __('source').': ';
+						}
+						$source_array['text'].=$source_link;
 					}
 					elseif ($connect_sub_kind=='person_source'){
-						if ($family_expanded==true) $text.= '<br>'; else $text.='. ';
-						$text.= '<b>'.__('Source for person').'</b>'.$source_link;
+						if ($connectDb->connect_order=='1'){
+							if ($family_expanded==true) $source_array['text'].= '<br>'; else $source_array['text'].='. ';
+						}
+						else $source_array['text'].=', ';
+
+						if ($nr_sources>1){
+							// *** Only show text once ***
+							if ($connectDb->connect_order=='1') $source_array['text'].= '<b>'.__('Sources for person').'</b>: ';
+						}
+						else{
+							$source_array['text'].= '<b>'.__('Source for person').'</b>: ';
+						}
+						$source_array['text'].=$source_link;
 					}
 					elseif ($connect_sub_kind=='family_source'){
-						if ($family_expanded==true) $text.= '<br>'; else $text.='. ';
-						$text.= '<b>'.__('Source for family').'</b>'.$source_link;
+						if ($connectDb->connect_order=='1'){
+							if ($family_expanded==true) $source_array['text'].= '<br>'; else $source_array['text'].='. ';
+						}
+						else $source_array['text'].=', ';
+
+						//$source_array['text'].= '<b>'.__('Source for family').'</b>'.$source_link;
+						if ($nr_sources>1){
+							// *** Only show text once ***
+							if ($connectDb->connect_order=='1') $source_array['text'].= '<b>'.__('Sources for family').'</b>: ';
+						}
+						else{
+							$source_array['text'].= '<b>'.__('Source for family').'</b>: ';
+						}
+						$source_array['text'].=$source_link;
 					}
 
 					// *** Quality (function show_quality can be found in script: family.php) ***
 					if ($connectDb->connect_quality=='0' or $connectDb->connect_quality){
 						$quality_text=show_quality($connectDb->connect_quality);
-						$text.= ' <i>('.$quality_text.')</i>';
+						//$source_array['text'].= ' <i>('.$quality_text.')</i>';
+						$source_array['text'].= ' <i>('.$quality_text.')</i>: ';
 					}
 
-					$text.= ': ';
+					//$source_array['text'].= ': ';
 					if ($sourceDb->source_title){
-						$text.= ' '.trim($sourceDb->source_title);
+						$source_array['text'].= ' '.trim($sourceDb->source_title);
 					}
 					elseif ($sourceDb->source_text){
-						$text.=' '.process_text($sourceDb->source_text);
+						$source_array['text'].=' '.process_text($sourceDb->source_text);
 					}
 
 					// *** User group option to only show title of source ***
 					if ($user['group_sources']!='t'){
 						// *** Show own code if there are no footnotes ***
-						if ($sourceDb->source_refn) $text.=', '.__('own code').': '.$sourceDb->source_refn;
+						if ($sourceDb->source_refn) $source_array['text'].=', '.__('own code').': '.$sourceDb->source_refn;
 
-						if ($sourceDb->source_date or $sourceDb->source_place){ $text.=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
+						if ($sourceDb->source_date or $sourceDb->source_place){ $source_array['text'].=" ".date_place($sourceDb->source_date, $sourceDb->source_place); }
 					}
 
 					// *** Only show link if there is a shared source ***
-					//if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1') $text.= '</a>'; // *** End of link ***
-					if ($user['group_sources']=='j' AND $sourceDb->source_title!='') $text.= '</a>'; // *** End of link ***
+					//if ($user['group_sources']=='j' AND $sourceDb->source_shared=='1') $source_array['text'].= '</a>'; // *** End of link ***
+					if ($user['group_sources']=='j' AND $sourceDb->source_title!='') $source_array['text'].= '</a>'; // *** End of link ***
 				} // *** End of shared source ***
 
 				// *** Show (extra) source text ***
 				if ($connectDb->connect_text AND $source_status=='publish'){
-					$text.=', '.__('source text').': '.nl2br($connectDb->connect_text);
+					$source_array['text'].=', '.__('source text').': '.nl2br($connectDb->connect_text);
 				}
 
 				// *** Show picture by source ***
 				$result = show_media('connect',$connectDb->connect_id); // *** This function can be found in file: show_picture.php! ***
-				$text.= $result[0];
+				$source_array['text'].= $result[0];
 			}
 
 		} // *** Loop multiple source ***
 
 	} // *** End of show sources ***
-	return $text;
+
+	//return $source_array;
+	if ($source_array['text']) return $source_array; else return '';
 }
 
 
@@ -335,9 +356,13 @@ function show_sources_footnotes(){
 				$text.=', <b>'.__('role').'</b>: '.$connectDb->connect_role;
 			}
 
-			// *** Source page ***
+			// *** Source page (connection table) ***
 			if ($connectDb->connect_page){
 				$text.=', <b>'.__('page').'</b>: '.$connectDb->connect_page;
+			}
+			// *** Page by source ***
+			if (isset($sourceDb->source_repo_page) AND $sourceDb->source_repo_page){
+				$text.=', <b>'.__('page').'</b>: '.$sourceDb->source_repo_page;
 			}
 
 			// *** Show picture by source ***

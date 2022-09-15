@@ -7,7 +7,6 @@ include_once(CMS_ROOTPATH.'include/person_cls.php');
 include_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/date_place.php");
 
-//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'googlemaps/gslider.js"></script>';
 echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'googlemaps/namesearch.js"></script>';
 
 // *** OpenStreetMap ***
@@ -83,12 +82,12 @@ if(isset($_POST['map_type']) AND $_POST['map_type']=="type_death" ) { $_SESSION[
 // PULL-DOWN: births/bapt OR death/burial
 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.__('Display:').'&nbsp;';
 echo '<form name="type_form" method="POST" action="" style="display : inline;">';
-echo '<select style="max-width:200px" size="1" onChange="document.type_form.submit()" id="map_type" name="map_type">';
-$selected=''; if(isset($_SESSION['type_birth']) AND $_SESSION['type_birth']==1 ) { $selected = ' selected '; }
-echo '<option value="type_birth" '.$selected.'>'.__('Birth locations').'</option>';
-$selected=''; if(isset($_SESSION['type_death']) AND $_SESSION['type_death']==1 )  { $selected = ' selected '; }
-echo '<option value="type_death" '.$selected.'>'.__('Death locations').'</option>';
-echo '</select>';
+	echo '<select style="max-width:200px" size="1" onChange="document.type_form.submit()" id="map_type" name="map_type">';
+	$selected=''; if(isset($_SESSION['type_birth']) AND $_SESSION['type_birth']==1 ) { $selected = ' selected '; }
+	echo '<option value="type_birth" '.$selected.'>'.__('Birth locations').'</option>';
+	$selected=''; if(isset($_SESSION['type_death']) AND $_SESSION['type_death']==1 )  { $selected = ' selected '; }
+	echo '<option value="type_death" '.$selected.'>'.__('Death locations').'</option>';
+	echo '</select>';
 echo '</form>';
 
 echo '</td></tr>';
@@ -104,7 +103,7 @@ echo '<tr><td style="border:1px solid #bdbdbd; width:995px; background-color:#d8
 
 if($language['dir']!="rtl") { echo '<div style="margin-top:4px;font-size:110%;float:left">'; }  // div tree choice
 else { echo '<div style="font-size:110%;float:right">'; }
-echo '&nbsp;&nbsp;'.__('Filters:').'&nbsp;&nbsp;';
+	echo '&nbsp;&nbsp;'.__('Filters:').'&nbsp;&nbsp;';
 echo '</div>';
 
 if($language['dir']!="rtl") {echo '<div style="float:left">'; } // div slider text + year box
@@ -139,10 +138,11 @@ else {
 	$defaultyr = $yr; $default_display = $defaultyr; $makesel = " makeSelection(3); ";  // slider at rightmost position (default)
 }
 
-echo ' 
-	<script> 
-	var minval = '.$minval.'; 
-	$(function() { 
+echo '
+	<script>
+	var minval = '.$minval.';
+	$(function() {
+		// Set default slider setting
 		'.$makesel.'
 		$( "#slider" ).slider({
 			value: '.$defaultyr.',
@@ -156,14 +156,25 @@ echo '
 			}
 		});
 		$( "#amount" ).val("'.$default_display.'");
-	});
 
+		// Only change map if value is changed.
+		startPos = $("#slider").slider("value");
+		$("#slider").on("slidestop", function(event, ui) {
+			endPos = ui.value;
+			if (startPos != endPos) {
+				// Change map. This script can be found in: google_initiate.php.
+				makeSelection(endPos);
+			}
+			startPos = endPos;
+		});
+
+	});
 	</script>
 ';
 
 // SLIDER
-if($language['dir']!="rtl") {echo '<div style="float:left">'; } // div slider text + year box
-else { echo '<div style="float:right">'; }
+if($language['dir']!="rtl") { echo '<div style="float:left">'; } // div slider text + year box
+	else { echo '<div style="float:right">'; }
 if($_SESSION['type_birth']==1) {
 	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.__('Display births until: ').'&nbsp;';
 }
@@ -173,9 +184,8 @@ elseif($_SESSION['type_death']==1) {
 
 echo '<input type="text" id="amount" disabled="disabled" size="4" style="border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
 echo '&nbsp;&nbsp;&nbsp;&nbsp;</div>';
-
 if($language['dir']!="rtl"){ echo '<div id="slider" style="float:left;width:170px;margin-top:7px;margin-right:15px;">'; }
-else { echo '<div id="slider" style="float:right;direction:ltr;width:150px;margin-top:7px;margin-right:15px;">'; }
+	else { echo '<div id="slider" style="float:right;direction:ltr;width:150px;margin-top:7px;margin-right:15px;">'; }
 
 echo '</div>';
 
@@ -184,16 +194,16 @@ echo ' <input type="Submit" style="font-size:110%;" name="anything" onclick="doc
 
 // BUTTON: SEARCH BY DESCENDANTS
 echo '<form method="POST" style="display:inline" name="descform" action="maps.php">';
-echo '<input type="hidden" name="descmap" value="1">';
-echo '&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anything" value="'.__('Filter by descendants').'">';
+	echo '<input type="hidden" name="descmap" value="1">';
+	echo '&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anything" value="'.__('Filter by descendants').'">';
 echo '</form>';
 
 //echo '</td></tr>';
 
 // BUTTON: SEARCH BY ANCESTORS
 echo '<form method="POST" style="display:inline" name="ancform" action="maps.php">';
-echo '<input type="hidden" name="ancmap" value="1">';
-echo '&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anythingelse" value="'.__('Filter by ancestors').'">';
+	echo '<input type="hidden" name="ancmap" value="1">';
+	echo '&nbsp;&nbsp;&nbsp;<input type="Submit" style="font-size:110%;" name="anythingelse" value="'.__('Filter by ancestors').'">';
 echo '</form>';
 
 echo '</td></tr>';
@@ -266,26 +276,26 @@ echo '</div>';
 // PULL-DOWN: FIND LOCATION
 echo  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 $result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-if($result->rowCount()>0) { 
-	if($_SESSION['type_birth']==1) { 
+if($result->rowCount()>0) {
+	if($_SESSION['type_birth']==1) {
 		$loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%".$tree_prefix_quoted."birth%' OR location_status LIKE '%".$tree_prefix_quoted."bapt%' OR location_status = '' ORDER BY location_location";
 	}
-	if($_SESSION['type_death']==1) { 
+	if($_SESSION['type_death']==1) {
 		$loc_search = "SELECT * FROM humo_location WHERE location_status LIKE '%".$tree_prefix_quoted."death%' OR location_status LIKE '%".$tree_prefix_quoted."buried%' OR location_status = '' ORDER BY location_location";
 	}
 }
-else {  
+else {
 	// this is for backward compatibility - if someone doesn't yet have a location_status column: show all locations as until now
 	$loc_search = "SELECT * FROM humo_location ORDER BY location_location";
 }
 $loc_search_result = $dbh->query($loc_search); if($loc_search_result !== false) 
 echo '<form method="POST" action="" style="display : inline;">';
-echo '<select style="max-width:250px" onChange="findPlace()" size="1" id="loc_search" name="loc_search">';
-echo '<option value="toptext">'.__('Find location on the map').'</option>';
-while($loc_searchDb=$loc_search_result->fetch(PDO::FETCH_OBJ)) {
-	echo '<option value="'.$loc_searchDb->location_id.','.$loc_searchDb->location_lat.','.$loc_searchDb->location_lng.'">'.$loc_searchDb->location_location.'</option>';
-	$count++;
-}
+	echo '<select style="max-width:250px" onChange="findPlace()" size="1" id="loc_search" name="loc_search">';
+		echo '<option value="toptext">'.__('Find location on the map').'</option>';
+		while($loc_searchDb=$loc_search_result->fetch(PDO::FETCH_OBJ)) {
+			echo '<option value="'.$loc_searchDb->location_id.','.$loc_searchDb->location_lat.','.$loc_searchDb->location_lng.'">'.$loc_searchDb->location_location.'</option>';
+			$count++;
+		}
 echo '</select>';
 echo '</form>';
 
@@ -571,24 +581,24 @@ $fam_search = "SELECT CONCAT(pers_lastname,'_',LOWER(SUBSTRING_INDEX(pers_prefix
 	AND (pers_birth_place != '' OR (pers_birth_place='' AND pers_bapt_place != '')) AND pers_lastname != '' GROUP BY totalname ";
 $fam_search_result = $dbh->query($fam_search);
 echo '<div id="namemapping" style="display:none; z-index:100; position:absolute; top:90px; margin-left:10px; height:460px; width:250px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;">';
-echo '<form method="POST" action="maps.php" name="yossi" style="display : inline;">';
-echo '<table style="z-index:200;"><tr><td style="text-align:center">'.__('Mark checkbox next to name(s)');
-echo '</td></tr><tr><td>';
-echo '<div style="z-index:110;height: 400px; width:241px; overflow: auto; border: 1px solid #000; background: #eee; color: #000; "> ';
-while($fam_searchDb=$fam_search_result->fetch(PDO::FETCH_OBJ)) {
-	$pos = strpos($fam_searchDb->totalname,'_');
-	$pref=''; $last='';
-	$last = substr($fam_searchDb->totalname,0,$pos);
-	$pref = substr($fam_searchDb->totalname,$pos+1); if($pref!='') { $pref = ', '.$pref; }
-	echo '<input type="checkbox" name="items[]" value="'.$fam_searchDb->totalname.'">'.$last.$pref.'<br>';
-}
-echo '</div>';
-echo '</td></tr><tr><td style="text-align:center">';
-echo '<input type="Submit" name="submit" value="'.__('Choose').'">';
-echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-echo '<input type="button" name="cancelfam" onclick="document.getElementById(\'namemapping\').style.display=\'none\';"  value="'.__('Cancel').'">';
-echo '</td></tr></table>';
-echo '</form>';
+	echo '<form method="POST" action="maps.php" name="yossi" style="display : inline;">';
+		echo '<table style="z-index:200;"><tr><td style="text-align:center">'.__('Mark checkbox next to name(s)');
+		echo '</td></tr><tr><td>';
+		echo '<div style="z-index:110;height: 400px; width:241px; overflow: auto; border: 1px solid #000; background: #eee; color: #000; "> ';
+		while($fam_searchDb=$fam_search_result->fetch(PDO::FETCH_OBJ)) {
+			$pos = strpos($fam_searchDb->totalname,'_');
+			$pref=''; $last='';
+			$last = substr($fam_searchDb->totalname,0,$pos);
+			$pref = substr($fam_searchDb->totalname,$pos+1); if($pref!='') { $pref = ', '.$pref; }
+			echo '<input type="checkbox" name="items[]" value="'.$fam_searchDb->totalname.'">'.$last.$pref.'<br>';
+		}
+		echo '</div>';
+		echo '</td></tr><tr><td style="text-align:center">';
+		echo '<input type="Submit" name="submit" value="'.__('Choose').'">';
+		echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		echo '<input type="button" name="cancelfam" onclick="document.getElementById(\'namemapping\').style.display=\'none\';"  value="'.__('Cancel').'">';
+		echo '</td></tr></table>';
+	echo '</form>';
 echo '</div>';
 
 
@@ -609,7 +619,7 @@ if(isset($_POST['descmap'])) {
 
 	echo '<div id="descmapping" style="display:block; z-index:100; position:absolute; top:90px; margin-left:140px; height:'.$select_height.'; width:400px; border:1px solid #000; background:#d8d8d8; color:#000; margin-bottom:1.5em;z-index:20">';
 	if($user['group_kindindex']=="j") { $orderlast = "CONCAT(pers_prefix,pers_lastname)"; }
-	else { $orderlast = "pers_lastname"; }
+		else { $orderlast = "pers_lastname"; }
 	$desc_search = "SELECT * FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_fams !='' ORDER BY ".$orderlast.", pers_firstname";
 	$desc_search_result = $dbh->query($desc_search);
@@ -995,15 +1005,15 @@ else{
 	if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
 		$api_key = "?key=".$humo_option['google_api_key']; //echo "http://maps.googleapis.com/maps/api/js".$api_key;
 	}
-	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 		echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
 	}
 	else {
 		echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
 	}
 	$maptype = "ROADMAP";
-	if(isset($humo_option['google_map_type'])) { 
-		$maptype = $humo_option['google_map_type']; 
+	if(isset($humo_option['google_map_type'])) {
+		$maptype = $humo_option['google_map_type'];
 	}
 
 	echo '
@@ -1019,7 +1029,7 @@ else{
 			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 		}
 	</script>';
-	
+
 	echo '<script type="text/javascript">
 		initialize();
 	</script>';

@@ -16,6 +16,7 @@ $pdf_source= array();  // is set in show_sources.php with sourcenr as key to be 
 // see end of this code
 global $dbh, $chosengen, $genarray, $size, $keepfamily_id, $keepmain_person, $direction;
 global $pdf_footnotes;
+global $parent1Db, $parent2Db;
 
 //global $temp,$templ_person;
 //global $templ_relation;
@@ -304,7 +305,7 @@ if($screen_mode=='STAR' OR $screen_mode=='STARSIZE') {
 	$chosengenanc=4;  // for hourglass -- no. of generations of ancestors
 	if (isset($_GET["chosengenanc"])){ $chosengenanc=$_GET["chosengenanc"]; }
 	if (isset($_POST["chosengenanc"])){ $chosengenanc=$_POST["chosengenanc"]; }
-	if(isset($_SESSION['chartsize'])) { $size=$_SESSION['chartsize']; } 
+	if(isset($_SESSION['chartsize'])) { $size=$_SESSION['chartsize']; }
 	else { $size=50; if($dna!="none") $size=25;} // in DNA chart by default zoom position 4
 	if (isset($_GET["chosensize"])){ $size=$_GET["chosensize"]; }
 	if (isset($_POST["chosensize"])){ $size=$_POST["chosensize"]; }
@@ -436,7 +437,9 @@ if($screen_mode=='STAR') {
 }
 
 if($screen_mode=='PDF') {  //initialize pdf generation
+	// *** No expanded view in PDF export ***
 	$family_expanded=false;
+
 	$pdfdetails=array();
 	$pdf_marriage=array();
 	$pdf=new PDF();
@@ -453,7 +456,7 @@ if($screen_mode=='PDF') {  //initialize pdf generation
 	else {
 		$title=pdf_convert(__('Family group sheet').__(' of ').$name["standard_name"]);
 	}
-	$pdf->SetTitle($title);
+	$pdf->SetTitle($title,true);
 
 	$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 	$pdf->AddPage();
@@ -603,11 +606,22 @@ if (!$family_id){
 			$pdf->Cell(0,6,pdf_convert(__('Family group sheet')),0,1,'L',true);
 		}
 
-		$pdf->SetFont($pdf_font,'B',12);
-		$pdf->Write(8,$parent1_cls->name_extended("parent1"));
+		//$pdf->SetFont($pdf_font,'B',12);
+		//$pdf->Write(8,str_replace("&quot;",'"',$parent1_cls->name_extended("parent1")));
 
-		$pdf->SetFont($pdf_font,'',12);
-		$pdf->Write(8,"\n");
+		// *** Name ***
+		$pdfdetails=$parent1_cls->name_extended("parent1");
+		if($pdfdetails) {
+			//$pdf->write_name($pdfdetails,$pdf->GetX()+5,"long");
+			$pdf->write_name($templ_name,$pdf->GetX()+5,"long");
+
+			// *** Resets line ***
+			$pdf->MultiCell(0,8,'',0,"L");
+		}
+		$indent=$pdf->GetX();
+
+		//$pdf->SetFont($pdf_font,'',12);
+		//$pdf->Write(8,"\n");
 		$id='';
 		//$pdfdetails= pdf_convert($parent1_cls->person_data("parent1", $id));
 		$pdfdetails= $parent1_cls->person_data("parent1", $id);
@@ -1084,22 +1098,30 @@ else{
 				// *** Marriage                                              ***
 				// *************************************************************
 				if ($familyDb->fam_kind!='PRO-GEN'){  // onecht kind, wife without man
+
+					// *** Check if marriage data must be hidden (also hidden if privacy filter is active) ***
+					if ($user["group_pers_hide_totally_act"]=='j' AND isset ($parent1Db->pers_own_code)
+						AND strpos(' '.$parent1Db->pers_own_code,$user["group_pers_hide_totally"])>0){
+						$family_privacy=true;
+					}
+					if ($user["group_pers_hide_totally_act"]=='j' AND isset($parent2Db->pers_own_code)
+						AND strpos(' '.$parent2Db->pers_own_code,$user["group_pers_hide_totally"])>0){
+						$family_privacy=true;
+					}
+
 					if($screen_mode=='') {
 						echo '<br><div class="marriage fonts">';
-						// *** $family_privacy='1' = filter ***
-						if ($family_privacy){
-							// *** Show standard marriage data ***
-							echo $marriage_cls->marriage_data($familyDb,'','short');
-						}
-						else{
-							echo $marriage_cls->marriage_data();
-						}
+							// *** $family_privacy='1' = filter ***
+							if ($family_privacy){
+								// *** Show standard marriage data ***
+								echo $marriage_cls->marriage_data($familyDb,'','short');
+							}
+							else{
+								echo $marriage_cls->marriage_data();
+							}
 						echo '</div><br>';
 					}
 					if($screen_mode=='PDF') {
-						//unset ($templ_person);
-						//unset ($templ_relation);
-
 						if($family_privacy) {
 							$pdf_marriage=$marriage_cls->marriage_data($familyDb,'','short');
 							$pdf->SetLeftMargin($indent);
@@ -1146,9 +1168,15 @@ else{
 				// *************************************************************
 				if($screen_mode=='') {
 					echo '<div class="parent2 fonts">';
-						$show_name_texts=true;
-						echo $parent2_cls->name_extended("parent2",$show_name_texts);
-						echo $parent2_cls->person_data("parent2", $id);
+						// *** Person must be totally hidden ***
+						if ($user["group_pers_hide_totally_act"]=='j' AND isset($parent2Db->pers_own_code) AND strpos(' '.$parent2Db->pers_own_code,$user["group_pers_hide_totally"])>0){
+							echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***').'<br>';
+						}
+						else{
+							$show_name_texts=true;
+							echo $parent2_cls->name_extended("parent2",$show_name_texts);
+							echo $parent2_cls->person_data("parent2", $id);
+						}
 					echo '</div>';
 				}
 
@@ -1227,23 +1255,33 @@ else{
 								$templ_relation["fam_text"]=$familyDb->fam_text;
 								$temp="fam_text";
 
-								$source=show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber);
-								$templ_relation["fam_text_source"]=$source;
-								$temp="fam_text_source";
-
+								$source_array=show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber);
+								if ($source_array){
+									$templ_relation["fam_text_source"]=$source_array['text'];
+									$temp="fam_text_source";
+								}
 							}
 							elseif($screen_mode=='RTF') {
 								$sect->addEmptyParagraph($fontSmall, $parBlack);
 
 								$rtf_text=strip_tags(process_text($familyDb->fam_text),"<b><i>");
 								$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
-								$rtf_text=strip_tags(show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber),"<b><i>");
-								$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+
+								$source_array=show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber);
+								if ($source_array){
+									$rtf_text=strip_tags($source_array['text'],"<b><i>");
+									//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+									$sect->writeText($rtf_text, $arial12, null);
+								}
 							}
 							else {
 								echo '<br>'.process_text($familyDb->fam_text, 'family');
+
 								// *** BK: source by family text ***
-								echo show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber);
+								$source_array=show_sources2("family","fam_text_source",$familyDb->fam_gedcomnumber);
+								if ($source_array){
+									echo $source_array['text'];
+								}
 							}
 						}
 					}
@@ -1254,9 +1292,13 @@ else{
 							//show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
 							$fam_address=show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
 						}
-//						elseif($screen_mode=='RTF') {
-//							//
-//						}
+						elseif($screen_mode=='RTF') {
+							$fam_address=show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
+							if ($fam_address){
+								$rtf_text=strip_tags($fam_address,"<b><i>");
+								$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+							}
+						}
 						else{
 							$fam_address=show_addresses('family','family_address',$familyDb->fam_gedcomnumber);
 							if ($fam_address){
@@ -1266,22 +1308,21 @@ else{
 					}
 
 					// *** Family source ***
-					if($screen_mode=='PDF') {
-						$source=show_sources2("family","family_source",$familyDb->fam_gedcomnumber);
-						if ($source){
-							if ($temp) $templ_relation[$temp].='. ';
+					$source_array=show_sources2("family","family_source",$familyDb->fam_gedcomnumber);
+					if($source_array AND $screen_mode=='PDF') {
+						if ($temp) $templ_relation[$temp].='. ';
 
-							$templ_relation["fam_source"]=$source;
-							$temp="fam_source";
-							$pdf->displayrel($templ_relation,"dummy");
-						}
+						$templ_relation["fam_source"]=$source_array['text'];
+						$temp="fam_source";
+						$pdf->displayrel($templ_relation,"dummy");
 					}
-					elseif($screen_mode=='RTF') {
-						$rtf_text=strip_tags(show_sources2("family","family_source",$familyDb->fam_gedcomnumber),"<b><i>");
-						$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+					elseif($source_array AND $screen_mode=='RTF') {
+						$rtf_text=strip_tags($source_array['text'],"<b><i>");
+						//$sect->writeText($rtf_text, $arial12, new PHPRtfLite_ParFormat());
+						$sect->writeText($rtf_text, $arial12, null);
 					}
-					else {
-						echo show_sources2("family","family_source",$familyDb->fam_gedcomnumber);
+					elseif ($source_array) {
+						echo $source_array['text'];
 					}
 
 				} //end "if not STAR"
@@ -1348,16 +1389,30 @@ else{
 								@$childDb = $db_functions->get_person($child_array[$i]);
 								if($dna=="ydna" AND $childDb->pers_sexe == "M" AND $genarray[$arraynr]["sex"]=="m" AND $genarray[$arraynr]["dna"]==1) $countdna++;
 								elseif($dna=="mtdna" AND $genarray[$arraynr]["sex"]=="v" AND $genarray[$arraynr]["dna"]==1) $countdna++;
+
 							} 
 							$genarray[$arraynr]["nrc"]=$countdna;
 						}
 					}
 
+					$show_privacy_text=false;
 					foreach ($child_array as $i => $value){
 						@$childDb = $db_functions->get_person($child_array[$i]);
 						// *** Use person class ***
 						$child_cls = New person_cls;
 						$child_cls->construct($childDb);
+
+						// For now don't use this code in DNA and other graphical charts. Because they will be corrupted.
+						if($screen_mode!='STAR') {
+							// *** Person must be totally hidden ***
+							if ($user["group_pers_hide_totally_act"]=='j' AND strpos(' '.$childDb->pers_own_code,$user["group_pers_hide_totally"])>0){
+								if(!$show_privacy_text AND $screen_mode=='') {
+									echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***').'<br>';
+								}
+								$show_privacy_text=true;
+								continue;
+							}
+						}
 
 						if($screen_mode=='') {
 							echo '<div class="children">';

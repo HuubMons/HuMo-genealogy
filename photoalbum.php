@@ -368,7 +368,7 @@ function show_media_files($pref) {
 			//$sql="SELECT * FROM humo_events
 			//	WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_kind='picture' AND LOWER(event_event)='".strtolower($filename)."'";
 			$sql="SELECT * FROM humo_events
-				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND LEFT(event_kind,7)='picture' AND LOWER(event_event)='".strtolower($filename)."'";
+				WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND LEFT(event_kind,7)='picture' AND LOWER(event_event)='".safe_text_db(strtolower($filename))."'";
 			$afbqry= $dbh->query($sql);
 			if(!$afbqry->rowCount()) { $picture_text = substr($filename,0,-4); }
 			while($afbDb=$afbqry->fetch(PDO::FETCH_OBJ)) {
@@ -405,6 +405,7 @@ function show_media_files($pref) {
 					if (!$privacy){
 						// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
 						$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
+						if ($picture_text) $picture_text.='<br>';
 						$picture_text.='<a href="'.$url.'">'.$name["standard_name"].'</a><br>';
 						$picture_text2.=$name["standard_name"];
 					}

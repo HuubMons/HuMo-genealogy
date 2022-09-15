@@ -91,7 +91,7 @@ function create_rel_array ($gednr)  {
 	$marriage_number2[] = 0;
 	$generation = 1;
 	$genarray_count = 0;
-	
+
 	$trackfamc = array();
 
 	// *** Loop ancestor report ***
@@ -113,12 +113,11 @@ function create_rel_array ($gednr)  {
 		for ($i=0; $i<$kwcount; $i++) {
 
 			if ($ancestor_id[$i]!='0'){
-			
 				$person_manDb=$db_functions->get_person($ancestor_id[$i]);
+				/*
 				$man_cls = New person_cls;
 				$man_cls->construct($person_manDb);
 				$man_privacy=$man_cls->privacy;
-
 				if (strtolower($person_manDb->pers_sexe)=='m' AND $ancestor_number[$i]>1){
 					@$familyDb=$db_functions->get_family($marriage_number[$i]);
 
@@ -133,6 +132,7 @@ function create_rel_array ($gednr)  {
 					$marriage_cls->construct($familyDb, $man_privacy, $woman_privacy);
 					$family_privacy=$marriage_cls->privacy;
 				}
+				*/
 
 				//*** Show person data ***
 				$genarray[$genarray_count][0]= $ancestor_id[$i];
@@ -140,8 +140,7 @@ function create_rel_array ($gednr)  {
 				$genarray_count++; // increase by one
 
 				// *** Check for parents ***
-				if ($person_manDb->pers_famc AND !in_array($person_manDb->pers_famc,$trackfamc)){ 
-				
+				if ($person_manDb->pers_famc AND !in_array($person_manDb->pers_famc,$trackfamc)){
 					$trackfamc[] = $person_manDb->pers_famc;
 
 					@$familyDb = $db_functions->get_family($person_manDb->pers_famc);
@@ -3033,8 +3032,9 @@ if(!isset($_POST["search1"]) AND !isset($_POST["search2"]) AND !isset($_POST["ca
 	) {
 	// no button pressed: this is a fresh entry from humogen's frontpage link: start clean search form
 	$_SESSION["search1"]=''; $_SESSION["search2"]='';
-	$_SESSION['rel_search_firstname']=''; $_SESSION['rel_search_lastname']='';
-	$_SESSION['rel_search_firstname2']=''; $_SESSION['rel_search_lastname2']='';
+	//$_SESSION['rel_search_firstname']=''; $_SESSION['rel_search_lastname']='';
+	//$_SESSION['rel_search_firstname2']=''; $_SESSION['rel_search_lastname2']='';
+	$_SESSION['rel_search_name']=''; $_SESSION['rel_search_name2']='';
 	$_SESSION['rel_search_gednr']=''; $_SESSION['rel_search_gednr2']='';
 	unset($_SESSION["search_pers_id"]);
 	unset($_SESSION["search_pers_id2"]);
@@ -3051,7 +3051,8 @@ if (isset($_GET['pers_id'])){
 	$_SESSION["search1"]=1;
 	$_SESSION["search_pers_id"]=safe_text_db($_GET['pers_id']);
 	unset($_SESSION["search_pers_id2"]);
-	$_SESSION['rel_search_firstname']=''; $_SESSION['rel_search_lastname']='';
+	//$_SESSION['rel_search_firstname']=''; $_SESSION['rel_search_lastname']='';
+	$_SESSION['rel_search_name']='';
 }
 
 
@@ -3102,11 +3103,8 @@ Directions for use:<br>
 			//echo '</div>';
 		echo '</div></th>';
 
-		//echo '<th>'.__('First name').'</th>';
-		//echo '<th>'.__('Last name').'</th>';
 		echo '<th>'.__('Name').'</th>';
 		echo '<th>'.__('or: ID').'</th>';
-		//echo '<th>'.__('Search').'</th>';
 		echo '<th colspan=2>'.__('Pick a name from search results').'</th>';
 		echo '<th>'.__('Calculate relationships').'</th></tr>';
 
@@ -3117,19 +3115,19 @@ Directions for use:<br>
 	echo '</td>';
 
 	// *** Person 1 ***
-	$search_firstname='';
-	if (isset($_POST["search_firstname"]) AND !isset($_POST["switch"])){
-		$search_firstname=safe_text_db($_POST['search_firstname']);
-		$_SESSION['rel_search_firstname']=$search_firstname;
+	$search_name='';
+	if (isset($_POST["search_name"]) AND !isset($_POST["switch"])){
+		$search_name=safe_text_db($_POST['search_name']);
+		$_SESSION['rel_search_name']=$search_name;
 	}
-	if (isset($_SESSION['rel_search_firstname'])){ $search_firstname=$_SESSION['rel_search_firstname']; }
+	if (isset($_SESSION['rel_search_name'])){ $search_name=$_SESSION['rel_search_name']; }
 
-	$search_lastname='';
-	if (isset($_POST["search_lastname"]) AND !isset($_POST["switch"])){
-		$search_lastname=safe_text_db($_POST['search_lastname']);
-		$_SESSION['rel_search_lastname']=$search_lastname;
-	}
-	if (isset($_SESSION['rel_search_lastname'])){ $search_lastname=$_SESSION['rel_search_lastname']; }
+	//$search_lastname='';
+	//if (isset($_POST["search_lastname"]) AND !isset($_POST["switch"])){
+	//	$search_lastname=safe_text_db($_POST['search_lastname']);
+	//	$_SESSION['rel_search_lastname']=$search_lastname;
+	//}
+	//if (isset($_SESSION['rel_search_lastname'])){ $search_lastname=$_SESSION['rel_search_lastname']; }
 
 	$search_gednr='';
 	if (isset($_POST["search_gednr"]) AND !isset($_POST["switch"])){
@@ -3142,24 +3140,24 @@ Directions for use:<br>
 		$search_gednr='';
 	}
 	if (isset($_POST["search_id1"])){
-		$search_firstname='';
-		$search_lastname='';
+		$search_name='';
+		//$search_lastname='';
 	}
 
 	// *** Person 2 ***
-	$search_firstname2='';
-	if (isset($_POST["search_firstname2"]) AND !isset($_POST["switch"])){
-		$search_firstname2=safe_text_db($_POST['search_firstname2']);
-		$_SESSION['rel_search_firstname2']=$search_firstname2;
+	$search_name2='';
+	if (isset($_POST["search_name2"]) AND !isset($_POST["switch"])){
+		$search_name2=safe_text_db($_POST['search_name2']);
+		$_SESSION['rel_search_name2']=$search_name2;
 	}
-	if (isset($_SESSION['rel_search_firstname2'])){ $search_firstname2=$_SESSION['rel_search_firstname2']; }
+	if (isset($_SESSION['rel_search_name2'])){ $search_name2=$_SESSION['rel_search_name2']; }
 
-	$search_lastname2='';
-	if (isset($_POST["search_lastname2"]) AND !isset($_POST["switch"])){
-		$search_lastname2=safe_text_db($_POST['search_lastname2']);
-		$_SESSION['rel_search_lastname2']=$search_lastname2;
-	}
-	if (isset($_SESSION['rel_search_lastname2'])){ $search_lastname2=$_SESSION['rel_search_lastname2']; }
+	//$search_lastname2='';
+	//if (isset($_POST["search_lastname2"]) AND !isset($_POST["switch"])){
+	//	$search_lastname2=safe_text_db($_POST['search_lastname2']);
+	//	$_SESSION['rel_search_lastname2']=$search_lastname2;
+	//}
+	//if (isset($_SESSION['rel_search_lastname2'])){ $search_lastname2=$_SESSION['rel_search_lastname2']; }
 
 	$search_gednr2='';
 	if (isset($_POST["search_gednr2"]) AND !isset($_POST["switch"])){
@@ -3172,19 +3170,19 @@ Directions for use:<br>
 		$search_gednr2='';
 	}
 	if (isset($_POST["search_id2"])){
-		$search_firstname2='';
-		$search_lastname2='';
+		$search_name2='';
+		//$search_lastname2='';
 	}
 
 	// *** Switch person 1 and 2 ***
 	if(isset($_POST["switch"])) {
-		$temp=$search_firstname;
-		$search_firstname=$search_firstname2; $_SESSION['rel_search_firstname']=$search_firstname;
-		$search_firstname2=$temp; $_SESSION['rel_search_firstname2']=$search_firstname2;
+		$temp=$search_name;
+		$search_name=$search_name2; $_SESSION['rel_search_name']=$search_name;
+		$search_name2=$temp; $_SESSION['rel_search_name2']=$search_name2;
 
-		$temp=$search_lastname;
-		$search_lastname=$search_lastname2; $_SESSION['rel_search_lastname']=$search_lastname;
-		$search_lastname2=$temp; $_SESSION['rel_search_lastname2']=$search_lastname2;
+		//$temp=$search_lastname;
+		//$search_lastname=$search_lastname2; $_SESSION['rel_search_lastname']=$search_lastname;
+		//$search_lastname2=$temp; $_SESSION['rel_search_lastname2']=$search_lastname2;
 
 		$temp=$search_gednr;
 		$search_gednr=$search_gednr2; $_SESSION['rel_search_gednr']=$search_gednr;
@@ -3199,7 +3197,7 @@ Directions for use:<br>
 			$search1=$search2; $_SESSION['search1']=$search1;
 			$search2=$temp; $_SESSION['search2']=$search2;
 		}
-		
+
 		// *** Link from person pop-up menu ***
 		if (isset($_SESSION["search_pers_id"])){
 			$_SESSION["search_pers_id2"]=$_SESSION["search_pers_id"];
@@ -3213,12 +3211,11 @@ Directions for use:<br>
 	}
 
 
-
 	// *** Start selection form ***
-	echo '<td><input type="text" class="fonts relboxes" name="search_firstname" value="'.safe_text_show($search_firstname).'" size="15" placeholder="'.__('First name').'">';
-		echo '&nbsp;<input class="fonts relboxes" type="text" name="search_lastname" value="'.safe_text_show($search_lastname).'" size="15" placeholder="'.__('Last name').'">';
-		//echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
-
+	echo '<td>';
+		//echo '<input type="text" class="fonts relboxes" name="search_firstname" value="'.safe_text_show($search_firstname).'" size="15" placeholder="'.__('First name').'">';
+		//echo '&nbsp;<input class="fonts relboxes" type="text" name="search_lastname" value="'.safe_text_show($search_lastname).'" size="15" placeholder="'.__('Last name').'">';
+		echo '<input type="text" class="fonts relboxes" name="search_name" value="'.safe_text_show($search_name).'" size="20" placeholder="'.__('Name').'">';
 		echo '&nbsp;<input class="fonts" type="submit" name="search1" value="'.__('Search').'">';
 	echo '</td>';
 
@@ -3236,11 +3233,36 @@ Directions for use:<br>
 	if(isset($_SESSION["search1"]) AND $_SESSION["search1"]==1) {
 		$search_qry= "SELECT * FROM humo_persons ORDER BY pers_lastname, pers_firstname LIMIT 0,".$limit;
 
-		if($search_lastname!='' OR $search_firstname!='') {
-			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-				AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".$search_lastname."%'
-				AND pers_firstname LIKE '%".$search_firstname."%'
-				ORDER BY pers_lastname, pers_firstname LIMIT 0,".$limit;
+		//if($search_lastname!='' OR $search_firstname!='') {
+		if($search_name!='') {
+			//$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			//	AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".$search_lastname."%'
+			//	AND pers_firstname LIKE '%".$search_firstname."%'
+			//	ORDER BY pers_lastname, pers_firstname LIMIT 0,".$limit;
+
+			// *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
+			$search_name=str_replace(' ', '%', $search_name);
+			// *** In case someone entered "Mons, Huub" using a comma ***
+			$search_name = str_replace(',','',$search_name);
+			// *** August 2022: new query ***
+			$search_qry="
+				SELECT * FROM humo_persons
+				LEFT JOIN humo_events
+				ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
+				WHERE pers_tree_id='".$tree_id."' AND
+					(
+					CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+					OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".safe_text_db($search_name)."%' 
+					OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
+					OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".safe_text_db($search_name)."%'
+					OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+					OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($search_name)."%' 
+					OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
+					OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($search_name)."%'
+					)
+					GROUP BY pers_id, event_event, event_kind, event_id
+					ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0,".$limit;
+
 		}
 		elseif($search_gednr!='') {
 			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
@@ -3263,8 +3285,9 @@ Directions for use:<br>
 						if ($name["show_name"]){
 							echo '<option';
 							if(isset($person)) {
-								if ($searchDb->pers_gedcomnumber==$person AND !(isset($_POST["search1"])
-									AND $search_lastname=='' AND $search_firstname=='' AND $search_gednr=='')){
+								//if ($searchDb->pers_gedcomnumber==$person AND !(isset($_POST["search1"])
+								//	AND $search_lastname=='' AND $search_firstname=='' AND $search_gednr=='')){
+								if ($searchDb->pers_gedcomnumber==$person AND !(isset($_POST["search1"]) AND $search_name=='' AND $search_gednr=='')){
 									echo ' SELECTED';
 								}
 							}
@@ -3307,10 +3330,10 @@ Directions for use:<br>
 	echo $language_person.'2:';
 	echo '</td>';
 
-	echo '<td><input type="text" class="fonts relboxes" name="search_firstname2" value="'.safe_text_show($search_firstname2).'" size="15" placeholder="'.__('First name').'">';
-		echo '&nbsp;<input class="fonts relboxes" type="text" name="search_lastname2" value="'.safe_text_show($search_lastname2).'" size="15" placeholder="'.__('Last name').'">';
-		//echo ' <input type="hidden" name="tree_prefix" value="'.$tree_prefix.'">';
-
+	echo '<td>';
+		//echo '<input type="text" class="fonts relboxes" name="search_firstname2" value="'.safe_text_show($search_firstname2).'" size="15" placeholder="'.__('First name').'">';
+		//echo '&nbsp;<input class="fonts relboxes" type="text" name="search_lastname2" value="'.safe_text_show($search_lastname2).'" size="15" placeholder="'.__('Last name').'">';
+		echo '<input type="text" class="fonts relboxes" name="search_name2" value="'.safe_text_show($search_name2).'" size="20" placeholder="'.__('Name').'">';
 		echo '&nbsp;<input class="fonts" type="submit" name="search2" value="'.__('Search').'">';
 	echo '</td>';
 
@@ -3322,11 +3345,36 @@ Directions for use:<br>
 
 		$search_qry= "SELECT * FROM humo_persons ORDER BY pers_lastname, pers_firstname LIMIT 0,".$limit;
 
-		if($search_lastname2!='' OR $search_firstname2!='') {
-			$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-				AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".$search_lastname2."%'
-				AND pers_firstname LIKE '%".$search_firstname2."%'
-				ORDER BY pers_lastname, pers_firstname LIMIT 0,".$limit;
+		//if($search_lastname2!='' OR $search_firstname2!='') {
+		if($search_name2!='') {
+			//$search_qry= "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+			//	AND CONCAT(REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".$search_lastname2."%'
+			//	AND pers_firstname LIKE '%".$search_firstname2."%'
+			//	ORDER BY pers_lastname, pers_firstname LIMIT 0,".$limit;
+
+			// *** Replace space by % to find first AND lastname in one search "Huub Mons" ***
+			$search_name2=str_replace(' ', '%', $search_name2);
+			// *** In case someone entered "Mons, Huub" using a comma ***
+			$search_name2 = str_replace(',','',$search_name2);
+			// *** August 2022: new query ***
+			$search_qry="
+				SELECT * FROM humo_persons
+				LEFT JOIN humo_events
+				ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
+				WHERE pers_tree_id='".$tree_id."' AND
+					(
+					CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($search_name2)."%'
+					OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".safe_text_db($search_name2)."%' 
+					OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name2)."%' 
+					OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".safe_text_db($search_name2)."%'
+					OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_name2)."%'
+					OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($search_name2)."%' 
+					OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name2)."%' 
+					OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($search_name2)."%'
+					)
+					GROUP BY pers_id, event_event, event_kind, event_id
+					ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0,".$limit;
+
 		}
 		elseif($search_gednr2!='') {
 			$search_qry= "SELECT * FROM humo_persons
@@ -3350,7 +3398,8 @@ Directions for use:<br>
 					if ($name["show_name"]){
 						echo '<option';
 						if(isset($person2)) {
-							if ($searchDb2->pers_gedcomnumber==$person2 AND !(isset($_POST["search2"]) AND $search_lastname2=='' AND $search_firstname2=='' AND $search_gednr2=='')){
+							//if ($searchDb2->pers_gedcomnumber==$person2 AND !(isset($_POST["search2"]) AND $search_lastname2=='' AND $search_firstname2=='' AND $search_gednr2=='')){
+							if ($searchDb2->pers_gedcomnumber==$person2 AND !(isset($_POST["search2"]) AND $search_name2=='' AND $search_gednr2=='')){
 								echo ' SELECTED';
 							}
 						}

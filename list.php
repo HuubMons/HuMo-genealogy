@@ -1769,6 +1769,10 @@ if ($index_list=='patronym'){
 
 		// *** Check for multiple family trees ***
 		echo '<tr><td colspan="3" class="no_border center">';
+
+		// *** Reset form ***
+		echo '<input type="reset" value="'.__('Clear fields').'">&nbsp;&nbsp;';
+
 		$datasql2 = $dbh->query("SELECT * FROM humo_trees");
 		$num_rows2 = $datasql2->rowCount();
 		if ($num_rows2>1 AND $humo_option['one_name_study']=='n'){

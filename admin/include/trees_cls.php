@@ -1839,7 +1839,7 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 }
 
 //**********************************************************************************************************************
-//******  "show_sources" is the function that places the sources in the comparison table (if right has a value)     *****
+//******  "show_sources" is the function that places the sources in the comparison table (if right has a value)     ****
 //**********************************************************************************************************************
 function show_sources ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
@@ -1906,7 +1906,7 @@ function show_sources ($left_ged,$right_ged) {
 }
 
 //**********************************************************************************************************************
-//******  "show_addresses" is the function that places the addresses in the comparison table (if right has a value) *****
+//******  "show_addresses" is the function that places the addresses in the comparison table (if right has a value) ****
 //**********************************************************************************************************************
 function show_addresses ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
@@ -1938,7 +1938,9 @@ function show_addresses ($left_ged,$right_ged) {
 				$l_address= $dbh->query("SELECT address_address, address_place FROM humo_addresses
 					WHERE address_tree_id='".$tree_id."' AND address_gedcomnr='".$left_addressesDb->connect_item_id."'");
 				$result = $l_address->fetch(PDO::FETCH_OBJ);
-				if(strlen($result->address_address.' '.$result->address_place) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->address_address.' '.$result->address_place).'\');" href="#"> ['.__('Show').']</a>'; }
+				if(strlen($result->address_address.' '.$result->address_place) > 30) {
+					$title = '<a onmouseover="popup(\''.$this->popclean($result->address_address.' '.$result->address_place).'\');" href="#"> ['.__('Show').']</a>';
+				}
 				else { $title = $result->address_address.' '.$result->address_place; }
 				//echo '<input type="checkbox" name="l_address_'.$left_addressesDb->connect_id.'" checked>('.str_replace('_address',' ',$left_addressesDb->connect_sub_kind).') '.$title.'<br>';
 				echo '<input type="checkbox" name="l_address_'.$left_addressesDb->connect_id.'" checked>'.$title.'<br>';
@@ -1954,7 +1956,9 @@ function show_addresses ($left_ged,$right_ged) {
 				WHERE address_tree_id='".$tree_id."' AND address_gedcomnr='".$right_addressesDb->connect_item_id."'");
 
 			$result = $r_address->fetch(PDO::FETCH_OBJ);
-			if(strlen($result->address_address.' '.$result->address_place) > 30) { $title = '<a onmouseover="popup(\''.$this->popclean($result->address_address.' '.$result->address_place).'\');" href="#"> ['.__('Show').']</a>'; }
+			if(strlen($result->address_address.' '.$result->address_place) > 30) {
+				$title = '<a onmouseover="popup(\''.$this->popclean($result->address_address.' '.$result->address_place).'\');" href="#"> ['.__('Show').']</a>';
+			}
 			else { $title = $result->address_address.' '.$result->address_place; }
 			//echo '<input type="checkbox" name="r_address_'.$right_addressesDb->connect_id.'" '.$checked.'>('.str_replace('_address',' ',$right_addressesDb->connect_sub_kind).') '.$title.'<br>';
 			echo '<input type="checkbox" name="r_address_'.$right_addressesDb->connect_id.'" '.$checked.'>'.$title.'<br>';
@@ -2126,6 +2130,8 @@ function merge_them($left,$right,$mode) {
 					$qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$sp1[$i]."'";
 					$sp_data = $dbh->query($qry);
 					$sp_dataDb = $sp_data->fetch(PDO::FETCH_OBJ);
+// only need 2 items?
+//$sp_dataDb=$db_functions->get_person($sp1[$i]);
 					if(isset($sp_dataDb)) {
 						$sp_string = $sp_dataDb->pers_fams.';';
 						$sp_string = str_replace($f2[$i]->fam_gedcomnumber.';' ,'',$sp_string);

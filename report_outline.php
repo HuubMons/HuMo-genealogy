@@ -97,7 +97,7 @@ if($screen_mode=='PDF') {
 	$title=pdf_convert(__('Outline report').__(' of ').pdf_convert($name["standard_name"]));
 
 	$pdf=new PDF();
-	$pdf->SetTitle($title);
+	$pdf->SetTitle($title,true);
 	$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 	if(isset($_POST["screen_mode"]) AND $_POST["screen_mode"]=="PDF-L") { $pdf->AddPage("L"); } 
 	else { $pdf->AddPage("P"); }
@@ -283,9 +283,11 @@ $gn=0;   // generatienummer
 
 function outline($family_id,$main_person,$gn,$nr_generations) {
 	global $dbh, $db_functions, $tree_prefix_quoted, $pdf, $pdf_font, $show_details, $show_date, $dates_behind_names, $nr_generations;
-	global $language, $dirmark1, $dirmark1, $screen_mode;
+	global $language, $dirmark1, $dirmark1, $screen_mode, $user;
 
 	$family_nr=1; //*** Process multiple families ***
+
+	$show_privacy_text=false;
 
 	if($nr_generations<$gn) {return;}
 	$gn++;
@@ -334,7 +336,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 
 		$marriage_cls = New marriage_cls;
 		$marriage_cls->construct($familyDb, $privacy_man, $privacy_woman);
-		$familylevend=$marriage_cls->privacy;
+		$family_privacy=$marriage_cls->privacy;
 
 		// *************************************************************
 		// *** Parent1 (normally the father)                         ***
@@ -422,6 +424,24 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 		// *************************************************************
 		// *** Parent2 (normally the mother)                         ***
 		// *************************************************************
+
+		// *** Totally hide parent2 if setting is active ***
+		$show_parent2=true;
+		if ($swap_parent1_parent2){
+			if ($user["group_pers_hide_totally_act"]=='j' AND strpos(' '.$person_manDb->pers_own_code,$user["group_pers_hide_totally"])>0){
+				$show_privacy_text=true;
+				$family_privacy=true;
+				$show_parent2=false;
+			}
+		}
+		else{
+			if ($user["group_pers_hide_totally_act"]=='j' AND strpos(' '.$person_womanDb->pers_own_code,$user["group_pers_hide_totally"])>0){
+				$show_privacy_text=true;
+				$family_privacy=true;
+				$show_parent2=false;
+			}
+		}
+
 		if($screen_mode != "PDF") {
 			echo '<div class="'.$indent.'" style="font-style:italic">';
 			if(!$show_details) {
@@ -430,8 +450,8 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 			else {
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				if($parent1_marr==0) {
-					if($familylevend) {echo $marriage_cls->marriage_data($familyDb,'','short')."<br>"; }
-					else { echo $marriage_cls->marriage_data()."<br>";  }
+					if($family_privacy) {echo $marriage_cls->marriage_data($familyDb,'','short')."<br>"; }
+					else { echo $marriage_cls->marriage_data()."<br>"; }
 				}
 				else {
 					echo $marriage_cls->marriage_data($familyDb,$parent1_marr+1,'shorter').' <br>';
@@ -443,7 +463,8 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 			$pdf->Write(8,"\n");
 			$pdf->Write(8,'x  ');
 		}
-		if ($swap_parent1_parent2==true){
+
+		if ($show_parent2 AND $swap_parent1_parent2){
 			if($screen_mode != "PDF") {
 				if($show_details) { echo "&nbsp;&nbsp;&nbsp;&nbsp;"; }
 				echo $man_cls->name_extended("outline");
@@ -456,9 +477,9 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 			}
 			if ($show_date=="1" AND !$privacy_man AND !$show_details) {
 				if($screen_mode != "PDF") {
- 					echo $dirmark1.',';
- 					if($dates_behind_names==false) {echo '<br>';}
- 					echo ' &nbsp; ('.@language_date($person_manDb->pers_birth_date).' - '.@language_date($person_manDb->pers_death_date).')';
+					echo $dirmark1.',';
+					if($dates_behind_names==false) {echo '<br>';}
+					echo ' &nbsp; ('.@language_date($person_manDb->pers_birth_date).' - '.@language_date($person_manDb->pers_death_date).')';
 				}
 				else {
 					if($dates_behind_names==false) {
@@ -469,7 +490,7 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 				}
 			}
 		}
-		else{
+		elseif ($show_parent2){
 			if($screen_mode != "PDF") {
 				if($show_details) { echo "&nbsp;&nbsp;&nbsp;&nbsp;"; }
 				echo $woman_cls->name_extended("outline");
@@ -495,6 +516,10 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 				}
 			}
 		}
+		elseif ($screen_mode != "PDF"){
+			// *** No permission to show parent2 ***
+			echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***').'<br>';
+		}
 		if($screen_mode != "PDF") {
 			echo '</div>';
 		}
@@ -507,6 +532,16 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 			$child_array=explode(";",$familyDb->fam_children);
 			foreach ($child_array as $i => $value){
 				@$childDb = $db_functions->get_person($child_array[$i]);
+
+				// *** Totally hide children if setting is active ***
+				if ($user["group_pers_hide_totally_act"]=='j' AND strpos(' '.$childDb->pers_own_code,$user["group_pers_hide_totally"])>0){
+					if($screen_mode != "PDF" AND !$show_privacy_text) {
+						echo __('*** Privacy filter is active, one or more items are filtered. Please login to see all items ***').'<br>';
+						$show_privacy_text=true;
+					}
+					continue;
+				}
+
 				$child_cls = New person_cls;
 				$child_cls->construct($childDb);
 				$child_privacy=$child_cls->privacy;

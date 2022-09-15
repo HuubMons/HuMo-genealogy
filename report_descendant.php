@@ -29,8 +29,7 @@
 //error_reporting(E_ALL);
 
 // for png image generating
-echo '<script type="text/javascript" src="include/jqueryui/js/html2canvas.js"></script>';
-echo '<script type="text/javascript" src="include/jqueryui/js/jquery.plugin.html2canvas.js"></script>';
+echo '<script type="text/javascript" src="include/html2canvas/html2canvas.min.js"></script>';
 
 global $hsize;  // horizontal length of box
 global $vsize;  // vertical height of box
@@ -463,7 +462,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		elseif($dna=="mtdna" OR $dna=="mtdnamark") {
 			echo '<div class="standard_header fonts" style="align:center; text-align: center;"><b>'.__('Same mtDNA as ').$base_person_name.'</b>';
 		}
-		echo '<br><input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow popup!)').'" onClick="showimg();">';
+			echo '<br><input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow popup!)').'" onClick="showimg();">';
 		echo '</div>';
 
 		if ($direction==0) {
@@ -482,52 +481,53 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		echo '#doublescroll { position:relative; width:auto; height:'.$the_height.'px; overflow: auto; overflow-y: hidden;z-index:10; }';
 		echo '</style>';
 
-		//print '<div class="wrapper" style="position:relative; direction:'.$rtlmarker.';">';
-		//print '<div id="doublescroll" class="wrapper" style="direction:'.$rtlmarker.';"><br style="line-height:50%">';
+		//echo '<div class="wrapper" style="position:relative; direction:'.$rtlmarker.';">';
+		//echo '<div id="doublescroll" class="wrapper" style="direction:'.$rtlmarker.';"><br style="line-height:50%">';
 
-		print '<div id="doublescroll" class="wrapper" style="direction:'.$rtlmarker.';">';
+		echo '<div id="doublescroll" class="wrapper" style="direction:'.$rtlmarker.';">';
 
 		// generation and size choice box:
-		if($dna=="none") { $boxwidth="520"; } // regular descendant chart
-		else { $boxwidth="730"; } // DNA charts
+		if($dna=="none") { $boxwidth="640"; } // regular descendant chart
+		else { $boxwidth="750"; } // DNA charts
 		echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:'.$boxwidth.'px; text-align:left;">';
 
-		print '<div style="display:inline;">';
+		echo '<div style="display:inline;">';
 		if(CMS_SPECIFIC=='Joomla') {
-			print '<form method="POST" name="desc_form" action="index.php?option=com_humo-gen&task=family&chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
+			echo '<form method="POST" name="desc_form" action="index.php?option=com_humo-gen&task=family&chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
 		}	else {
-			print '<form method="POST" name="desc_form" action="'.CMS_ROOTPATH.'family.php?chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
+			echo '<form method="POST" name="desc_form" action="'.CMS_ROOTPATH.'family.php?chosensize='.$size.'&amp;screen_mode=STARSIZE" style="display : inline;">';
 		}
-		print '<input type="hidden" name="id" value="'.$keepfamily_id.'">';
-		print '<input type="hidden" name="chosengen" value="'.$chosengen.'">';
-		print '<input type="hidden" name="main_person" value="'.$keepmain_person.'">';
-		print '<input type="hidden" name="database" value="'.$database.'">';
+		echo '<input type="hidden" name="id" value="'.$keepfamily_id.'">';
+		echo '<input type="hidden" name="chosengen" value="'.$chosengen.'">';
+		echo '<input type="hidden" name="main_person" value="'.$keepmain_person.'">';
+		echo '<input type="hidden" name="database" value="'.$database.'">';
 		if($dna!="none") {
-			print '<input type="hidden" name="dnachart" value="'.$dna.'">';
-			print '<input type="hidden" name="bf" value="'.$base_person_famc.'">';
-			print '<input type="hidden" name="bs" value="'.$base_person_sexe.'">';
-			print '<input type="hidden" name="bn" value="'.$base_person_name.'">';
-			print '<input type="hidden" name="bg" value="'.$base_person_gednr.'">';
+			echo '<input type="hidden" name="dnachart" value="'.$dna.'">';
+			echo '<input type="hidden" name="bf" value="'.$base_person_famc.'">';
+			echo '<input type="hidden" name="bs" value="'.$base_person_sexe.'">';
+			echo '<input type="hidden" name="bn" value="'.$base_person_name.'">';
+			echo '<input type="hidden" name="bg" value="'.$base_person_gednr.'">';
 		}
 
-		print '<input id="dirval" type="hidden" name="direction" value="">';  // will be filled in next lines
+		echo '<input id="dirval" type="hidden" name="direction" value="">';  // will be filled in next lines
 		if ($direction=="1"){ // horizontal
-			print '<input type="button" name="dummy" value="'.__('vertical').'" onClick=\'document.desc_form.direction.value="0";document.desc_form.submit();\'>';
+			echo '<input type="button" name="dummy" value="'.__('vertical').'" onClick=\'document.desc_form.direction.value="0";document.desc_form.submit();\'>';
 		}
 		else{
-			print '<input type="button" name="dummy" value="'.__('horizontal').'" onClick=\'document.desc_form.direction.value="1";document.desc_form.submit();\'>';
+			echo '<input type="button" name="dummy" value="'.__('horizontal').'" onClick=\'document.desc_form.direction.value="1";document.desc_form.submit();\'>';
 		}
-		print '</form>'; 
+		echo '</form>';
+
 		$result=$dbh->query("SELECT pers_sexe FROM humo_persons
 			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$keepmain_person."'");
 		$resultDb=$result->fetch(PDO::FETCH_OBJ);
 		if($dna!="none") {
 			echo "&nbsp;&nbsp;".__('DNA: '); 
 			echo '<select name="dnachart" style="width:150px" onChange="window.location=this.value">';
-	//		echo $selected="selected"; if($dna!="none") $selected="";
-	//		echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
-	//				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."none".'&amp;chosensize='.
-	//				$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('All').'</option>';
+			//echo $selected="selected"; if($dna!="none") $selected="";
+			//echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
+			//		$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='."none".'&amp;chosensize='.
+			//		$size.'&amp;chosengen='.$chosengen.'&amp;screen_mode=STAR" '.$selected.'>'.__('All').'</option>';
 			if($base_person_sexe=="M") {		// only show Y-DNA option if base person is male
 				//echo $selected=""; if($dna=="ydna") $selected="selected";
 				echo $selected="selected"; if($dna!="ydna")  $selected=""; 
@@ -555,47 +555,48 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			}
 			echo '</select>';
 		}
-		print '</div>';
-		print '&nbsp;&nbsp;';
-		print '&nbsp;'.__('Nr. generations').': ';
-		print '<select name="chosengen" onChange="window.location=this.value">';
+		echo '</div>';
 
-		for ($i=2; $i<=15; $i++) {
-			if(CMS_SPECIFIC=='Joomla') {
-				print '<option value="index.php?option=com_humo-gen&task=family&id='.$keepfamily_id.'&amp;main_person='.
-				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='.$dna.'&amp;chosensize='.
-				$size.'&amp;chosengen='.$i.'&amp;screen_mode=STAR" ';
+		echo '&nbsp;&nbsp;';
+		echo '&nbsp;'.__('Nr. generations').': ';
+		echo '<select name="chosengen" onChange="window.location=this.value">';
+			for ($i=2; $i<=15; $i++) {
+				if(CMS_SPECIFIC=='Joomla') {
+					echo '<option value="index.php?option=com_humo-gen&task=family&id='.$keepfamily_id.'&amp;main_person='.
+					$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='.$dna.'&amp;chosensize='.
+					$size.'&amp;chosengen='.$i.'&amp;screen_mode=STAR" ';
+				}
+				else{
+					echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
+					$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='.$dna.'&amp;chosensize='.
+					$size.'&amp;chosengen='.$i.'&amp;screen_mode=STAR" ';
+				}
+				if ($i == $chosengen) echo "selected=\"selected\" ";
+				echo ">".$i."</option>";
 			}
-			else{
-				print '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
-				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='.$dna.'&amp;chosensize='.
-				$size.'&amp;chosengen='.$i.'&amp;screen_mode=STAR" ';
-			}
-			if ($i == $chosengen) print "selected=\"selected\" ";
-			print ">".$i."</option>";
-		}
 
-		//NEW - option "All" for all generations
-		print '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
-		$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='.$dna.'&amp;chosensize='.
-		$size.'&amp;chosengen=All&amp;screen_mode=STAR" ';
-		if ($chosengen=="All") print "selected=\"selected\" ";
-		print ">"."All"."</option>";
- 
+			//NEW - option "All" for all generations
+			echo '<option value="'.$uri_path.'family.php?id='.$keepfamily_id.'&amp;main_person='.
+			$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;dnachart='.$dna.'&amp;chosensize='.
+			$size.'&amp;chosengen=All&amp;screen_mode=STAR" ';
+			if ($chosengen=="All") echo "selected=\"selected\" ";
+			echo ">"."All"."</option>";
+		echo '</select>';
 
-		print '</select>';
-		print '&nbsp;&nbsp;';
+		echo '&nbsp;&nbsp;';
 		$dna_params="";
 		if($dna!="none") {
-			$dna_params = '
-					bn: "'.$base_person_name.'",
-					bs: "'.$base_person_sexe.'",
-					bf: "'.$base_person_famc.'",
-					bg: "'.$base_person_gednr.'",';
+			//$dna_params = '
+			//	bn: "'.$base_person_name.'",
+			//	bs: "'.$base_person_sexe.'",
+			//	bf: "'.$base_person_famc.'",
+			//	bg: "'.$base_person_gednr.'",';
+			$dna_params = '&bn='.$base_person_name.'&bs='.$base_person_sexe.'&bf='.$base_person_famc.'&bg='.$base_person_gednr;
 		}
-		
+
+		/*
 		//NEW min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
-		echo ' 
+		echo '
 			<script>
 			$(function() {
 				$( "#slider" ).slider({
@@ -618,13 +619,45 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 			});
 			</script>
 		';
+		*/
+
+		// *** 20-08-2022: renewed jQuery and jQueryUI scripts ***
+		echo '
+			<script>
+			$(function() {
+				$( "#slider" ).slider({
+					value: '.(($size/5)-1).',
+					min: 0,
+					max: 9,
+					step: 1,
+					slide: function( event, ui ) {
+						$( "#amount" ).val(ui.value+1);
+					}
+				});
+				$( "#amount" ).val($( "#slider" ).slider( "value" )+1 );
+
+				// *** Only reload page if value is changed ***
+				startPos = $("#slider").slider("value");
+				$("#slider").on("slidestop", function(event, ui) {
+					endPos = ui.value;
+					if (startPos != endPos) {
+						window.location.href = "family.php?tree_id='.$tree_id.'&id='.$keepfamily_id.'&main_person='.$keepmain_person.
+							'&screen_mode=STAR&chosensize="+((endPos+1)*5)+"&chosengen='.$chosengen.
+							'&direction='.$direction.'&dnachart='.$dna.'&screen_mode=STARSIZE'.$dna_params.'";
+					}
+					startPos = endPos;
+				});
+
+			});
+
+			</script>
+		';
 
 		//echo '<label for="amount">Zoom in/out:</label>';
 		echo '<label for="amount">'.__('Zoom level:').'</label> ';
 		echo '<input type="text" id="amount" disabled="disabled" style="width:20px;border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
 		echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
 		echo '</div>';
-
 
 	} // end if not hourglass
 
@@ -665,7 +698,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 		if($genarray[$w]["gen"]==0 AND $hourglass===true) { 
 			$bkgr = "background-color:".$backgr_col.";"; 
 		}
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="'.$bkgr.'position:absolute; height:'.$vsize.'px; width:'.$hsize.'px; left:'.$xvalue.'px; top:'.$yvalue.'px;">';
+		echo '<div class="ancestorName'.$sexe_colour.'" style="'.$bkgr.'position:absolute; height:'.$vsize.'px; width:'.$hsize.'px; left:'.$xvalue.'px; top:'.$yvalue.'px;">';
 
 		$replacement_text='';
 		if($size>=25) {
@@ -834,21 +867,21 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 				$startx=$genarray[$w-1]["posx"]+$hsize+2;
 					$starty=$genarray[$w-1]["posy"]+($vsize/2);
 				$width=($genarray[$w]["posx"]) - ($genarray[$w-1]["posx"]+$hsize)-2;
-				print  '<div style="position:absolute;border:1px blue dashed;height:2px;width:'.$width.'px;left:'.$startx.'px;top:'.$starty.'px"></div>';
+				echo  '<div style="position:absolute;border:1px blue dashed;height:2px;width:'.$width.'px;left:'.$startx.'px;top:'.$starty.'px"></div>';
 			}
 
 			// draw line to children
 			if($genarray[$w]["nrc"]!=0) {
 				$startx=$genarray[$w]["posx"]+($hsize/2);
 					$starty=$genarray[$w]["posy"]+$vsize+2;
-				print  '<div class="chart_line" style="position:absolute; height:'.(($vdist/2)-2).'px; width:1px; left:'.$startx.'px; top:'.$starty.'px"></div>';
+				echo  '<div class="chart_line" style="position:absolute; height:'.(($vdist/2)-2).'px; width:1px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 			}
 
 			// draw line to parent
 			if($genarray[$w]["gen"]!=0 AND $genarray[$w]["2nd"]!=1) {
 				$startx=$genarray[$w]["posx"]+($hsize/2);
 				$starty=$genarray[$w]["posy"]-($vdist/2);
-				print '<div class="chart_line" style="position:absolute; height:'.($vdist/2).'px;width:1px;left:'.$startx.'px;top:'.$starty.'px"></div>';
+				echo '<div class="chart_line" style="position:absolute; height:'.($vdist/2).'px;width:1px;left:'.$startx.'px;top:'.$starty.'px"></div>';
 			}
 
 			// draw horizontal line from 1st child in fam to last child in fam
@@ -862,7 +895,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						$startx=$genarray[$parent]["fst"]+($hsize/2);
 						$starty=$genarray[$z]["posy"]-($vdist/2);
 						$width=$genarray[$z]["posx"] - $genarray[$parent]["fst"];
-						print '<div class="chart_line" style="position:absolute; height:1px; width:'.$width.'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
+						echo '<div class="chart_line" style="position:absolute; height:1px; width:'.$width.'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 				}
 			}
 		} // end if vertical
@@ -873,21 +906,21 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 				$starty=$genarray[$w-1]["posy"]+$vsize+2;
 				$startx=$genarray[$w-1]["posx"]+($hsize/2);
 				$height=($genarray[$w]["posy"]) - ($genarray[$w-1]["posy"]+$vsize)-2;
-				print  '<div style="position:absolute;border:1px blue dashed;height:'.$height.'px; width:3px; left:'.$startx.'px;top:'.$starty.'px"></div>';
+				echo  '<div style="position:absolute;border:1px blue dashed;height:'.$height.'px; width:3px; left:'.$startx.'px;top:'.$starty.'px"></div>';
 			}
 
 			// draw line to children
 			if($genarray[$w]["nrc"]!=0) {
 				$starty=$genarray[$w]["posy"]+($vsize/2);
 				$startx=$genarray[$w]["posx"]+$hsize+3;
-				print '<div class="chart_line" style="position:absolute; height:1px; width:'.(($hdist/2)-2).'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
+				echo '<div class="chart_line" style="position:absolute; height:1px; width:'.(($hdist/2)-2).'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 			}
 
 			// draw line to parent
 			if($genarray[$w]["gen"]!=0 AND $genarray[$w]["2nd"]!=1) {
 				$starty=$genarray[$w]["posy"]+($vsize/2);
 				$startx=$genarray[$w]["posx"]-($hdist/2);
-				print '<div class="chart_line" style="position:absolute; width:'.($hdist/2).'px; height:1px; left:'.$startx.'px; top:'.$starty.'px"></div>';
+				echo '<div class="chart_line" style="position:absolute; width:'.($hdist/2).'px; height:1px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 			}
 
 			// draw vertical line from 1st child in fam to last child in fam
@@ -901,7 +934,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 					$starty=$genarray[$parent]["fst"]+($vsize/2);
 					$startx=$genarray[$z]["posx"]-($hdist/2);
 					$height=$genarray[$z]["posy"] - $genarray[$parent]["fst"];
-					print '<div class="chart_line" style="position:absolute; width:1px; height:'.$height.'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
+					echo '<div class="chart_line" style="position:absolute; width:1px; height:'.$height.'px; left:'.$startx.'px; top:'.$starty.'px"></div>';
 				}
 			}
 
@@ -909,54 +942,86 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 	}
 
 	echo '</div>'; // id=png
-	print "<br><br></div>"; // id=doublescroll
+	echo "<br><br></div>"; // id=doublescroll
 
 	// YB:
 	// before creating the image we want to hide unnecessary items such as the help link, the menu box etc
 	// we also have to set the width and height of the "png" div (this can't be set before because then the double scrollbars won't work
-	// after generating the image, all those items are returned to their  previous state....
+	// after generating the image, all those items are returned to their previous state....
+	// *** 19-08-2022: script updated by Huub ***
 	echo '<script type="text/javascript">';
-	if($hourglass===false) { 
+	if($hourglass===false) {
+
 		echo "
-		function showimg() { 
+		function showimg() {
 			document.getElementById('helppopup').style.visibility = 'hidden';
 			document.getElementById('menubox').style.visibility = 'hidden';
 			document.getElementById('imgbutton').style.visibility = 'hidden';
 			document.getElementById('png').style.width = '".$divlen."px';
 			document.getElementById('png').style.height= '".$divhi."px';
-			html2canvas( [ document.getElementById('png') ], {  
-				onrendered: function( canvas ) {
+
+			// *** Change ancestorName class, DO NOT USE A _ CHARACTER IN CLASS NAME ***
+			const el = document.querySelectorAll('.ancestorName');
+			el.forEach((elItem) => {
+				//elItem.style.setProperty('border-radius', 'none', 'important');
+				elItem.style.setProperty('box-shadow', 'none', 'important');
+			});
+
+			// *** Previous version of html2canvas ***
+			//html2canvas( [ document.getElementById('png') ], {
+			//	onrendered: function( canvas ) {
+
+				html2canvas(document.querySelector('#png')).then(canvas => {
+					var img = canvas.toDataURL();
+
+					// *** Show image at the same page ***
+					//document.body.appendChild(canvas);
+
 					document.getElementById('helppopup').style.visibility = 'visible';
 					document.getElementById('menubox').style.visibility = 'visible';
 					document.getElementById('imgbutton').style.visibility = 'visible';
-					var img = canvas.toDataURL();
 					document.getElementById('png').style.width = 'auto';
 					document.getElementById('png').style.height= 'auto';
+
 					var newWin = window.open();
-		newWin.document.open();
-		newWin.document.write('<!DOCTYPE html><head></head><body>".__('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ')."<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>".__('If you have a plotter you can use its software to print the image on one large sheet.')."<br><br><img src=\"' + img + '\"></body></html>');
-		newWin.document.close();
+					newWin.document.open();
+					newWin.document.write('<!DOCTYPE html><head></head><body>".__('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ')."<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>".__('If you have a plotter you can use its software to print the image on one large sheet.')."<br><br><img src=\"' + img + '\"></body></html>');
+					newWin.document.close();
 				}
-			});
+
+			//}
+			);
 		}
 		";
 	}
-	else { 
+	else {
+		// *** Printscreen of hourglass page ***
 		echo "
-		function showimg() { 
+		function showimg() {
 			document.getElementById('png').style.width = '".$divlen."px';
 			document.getElementById('png').style.height= '".$divhi."px';
-			html2canvas( [ document.getElementById('png') ], {  
-				onrendered: function( canvas ) {
+
+			// *** Change ancestorName class, DO NOT USE A _ CHARACTER IN CLASS NAME ***
+			const el = document.querySelectorAll('.ancestorName');
+			el.forEach((elItem) => {
+				//elItem.style.setProperty('border-radius', 'none', 'important');
+				elItem.style.setProperty('box-shadow', 'none', 'important');
+			});
+
+			//html2canvas( [ document.getElementById('png') ], {
+			//	onrendered: function( canvas ) {
+			html2canvas(document.querySelector('#png')).then(canvas => {
 				var img = canvas.toDataURL();
 				document.getElementById('png').style.width = 'auto';
 				document.getElementById('png').style.height= 'auto';
+
 				var newWin = window.open();
-		newWin.document.open();
-		newWin.document.write('<!DOCTYPE html><head></head><body>".__('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ')."<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>".__('If you have a plotter you can use its software to print the image on one large sheet.')."<br><br><img src=\"' + img + '\"></body></html>');
-		newWin.document.close();
+				newWin.document.open();
+				newWin.document.write('<!DOCTYPE html><head></head><body>".__('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ')."<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>".__('If you have a plotter you can use its software to print the image on one large sheet.')."<br><br><img src=\"' + img + '\"></body></html>');
+				newWin.document.close();
 				}
-			});
+			//}
+			);
 		}
 		";
 	}
@@ -988,7 +1053,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 	// here place div at bottom so there is some space under last boxes
 	$last=count($genarray)-1;
 	$putit=$genarray[$last]["posy"]+130;
-	print '<div style="position:absolute;left:1px;top:'.$putit.'px;">&nbsp; </div>';
+	echo '<div style="position:absolute;left:1px;top:'.$putit.'px;">&nbsp; </div>';
 
 }
 ?>

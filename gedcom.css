@@ -677,18 +677,23 @@ table.index_table{
 
 /* Ancestor graphical (also used in graphical descendant report) */
 /* Used for box */
-div.ancestor_name{
+/* No _ character allowed in name of CSS class because of javascript */
+div.ancestorName{
 	font-family: "Arial";
 	position: absolute;
 	border: 1px solid #AAA;
 	padding-left: 2px;
 	line-height: 10px;
 	border-radius: 4px;
+	/*
+	Disabled, doesn't work properly for html2canvas script.
 	-moz-border-radius: 4px;
 	-moz-box-shadow: 3px 3px 6px #bbb;
 	-webkit-box-shadow: 3px 3px 6px #bbb;
+	*/
 	box-shadow: 3px 3px 6px #bbb;
 }
+
 div.ancestor_man{
 	/* background-color:#eaf0ff; */
 	background-image: linear-gradient(to bottom, #FFFFFF 0%, #81BEF7 100%);

@@ -28,11 +28,11 @@ if (@$addressDb->address_text){ echo '</td></tr><tr><td>'.nl2br($addressDb->addr
 // *** show pictures here ? ***
 
 // *** Show source by addresss ***
-$source='';
-$source=show_sources2("address","address_source",$addressDb->address_gedcomnr).' ';
-if ($source){
+$source_array='';
+$source_array=show_sources2("address","address_source",$addressDb->address_gedcomnr).' ';
+if ($source_array){
 	echo '</td></tr><tr><td>';
-	echo '<b>'.__('Source').' '.$source;
+	echo '<b>'.__('Source').' '.$source_array['text'];
 }
 
 echo '</td></tr><tr><td>';

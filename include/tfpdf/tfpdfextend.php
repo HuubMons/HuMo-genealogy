@@ -151,10 +151,22 @@ function pdfdisplay($templ_personing,$person_kind) {
 			$this->show_text($templ_personing["address_start"],'B',$font_size);
 			$address=1;
 		}
+		if(strpos($key,"event_ged")!==false) {
+			$pdf->SetFont($pdf_font,'B',$font_size);
+		}
 
-		// *** Only needed for source by person ***
-		if(strpos($key,"source_start")!==false) {
+		if(strpos($key,"marr_more")!==false) {
+			$temp = explode(":",$value);
+			$pdf->SetFont($pdf_font,'B',$font_size);
+			$this->show_text($temp[0].":",'B',$font_size);
+			$pdf->SetFont($pdf_font,'',$font_size);	
+			$this->show_text($temp[1],'',$font_size);
+			continue;
+		}
+
+		// *** Only needed for source by person and family ***
 		//if(!$source AND strpos($key,"source")!==false) {		// Don't use this line.
+		if(strpos($key,"source_start")!==false) {
 			//if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
 			// Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
 			$this->show_text($templ_personing["source_start"],'B',$font_size);
@@ -349,7 +361,7 @@ function pdfdisplay($templ_personing,$person_kind) {
 function displayrel ($templ_relation,$ancestor_report) {
 	global $pdf, $pdf_font, $language, $user, $pdf_footnotes, $pdf_count_notes;
 	$font_size=12;
-	$samw=0; $prew=0; $wedd=0; $prec=0; $chur=0; $devr=0;
+	$samw=0; $prew=0; $wedd=0; $prec=0; $chur=0; $devr=0; $more=0;
 	$address=0; $sour=0;
 	
 	$largest_height=0;
@@ -407,7 +419,7 @@ function displayrel ($templ_relation,$ancestor_report) {
 				$devr=1;
 			}
 		}
- 
+
 		// *** NEW 03-01-2021 added family address in PDF function ***
 		// *** Show text: "Residences (family): " ***
 		//if(strpos($key,"address_start")!==false) {
@@ -434,7 +446,7 @@ $pdf->Ln(4);
 		if(strpos($key,"text")!==false) {  $pdf->SetFont($pdf_font,'I',$font_size-1); }
 		if(strpos($key,"witn")!==false) {  $pdf->SetFont($pdf_font,'',$font_size); }
 		if(strpos($key,"source")!==false){ $pdf->SetFont($pdf_font,'',$font_size); }
-		
+
 		if(strpos($key,"pic_path")!==false) {
 			if(strpos($value,".jpeg")!==false OR strpos($value,".jpg")!==false
 				OR strpos($value,".gif")!==false OR strpos($value,".png")!==false) {
@@ -469,7 +481,7 @@ $pdf->Ln(4);
 				}
 			}
 			continue;
-		}		
+		}
 
 		if (strpos($key,"source")!==false) {
 			$this->PDFShowSources($value);
@@ -520,7 +532,7 @@ $pdf->Ln(4);
 function write_name($templ_name,$indentation,$length) {
 	global $ident;
 	global $pdf, $pdf_font, $language, $user, $pdf_footnotes, $pdf_count_notes;
-	$sexe=0;$name=0;$name_text=0;$name_parents=0;$name_partner=0;
+	$sexe=0;$name=0;$name_text=0;$name_parents=0;$name_partner=0;$name_wedd_age=0;
 
 	$font_size=12; if ($length=='child') $font_size=11;
 
@@ -584,6 +596,12 @@ function write_name($templ_name,$indentation,$length) {
 			// Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
 			$this->show_text($templ_name["name_text"],'I',$font_size);
 			$name_text=1;
+		}
+
+		if($name_wedd_age==0 AND strpos($key,"name_wedd_age")!==false) {
+			// Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
+			$this->show_text($templ_name["name_wedd_age"],'',$font_size);
+			$name_wedd_age=1;
 		}
 
 		if($name_parents==0 AND strpos($key,"name_parents")!==false) {
@@ -695,9 +713,9 @@ function pdf_ancestor_name($ancestor_reportnr,$sexe, $name) {
 // *** 10 jan 2021 NEW FUNCTION ***
 // *** REMARK: footnotes are shown in family.php script ***
 function PDFShowSources($value){
-	global $pdf,$pdf_font, $font_size,$source_presentation,$user,$pdf_footnotes;
+	global $pdf,$pdf_font,$font_size,$source_presentation,$user,$pdf_footnotes;
 
-// *** May 2021: moved these lines into this function ***
+	// *** May 2021: moved these lines into this function ***
 	$source_presentation='title';
 	if (isset($_SESSION['save_source_presentation'])){
 		$source_presentation=$_SESSION['save_source_presentation'];
@@ -712,7 +730,7 @@ function PDFShowSources($value){
 		//TEST
 		//$pdf->Write(6,$value);
 		//$pdf->Write(6,'SOURCE_1_TEST');
-		for($i=0;$i<count($multitext);$i++) {
+		foreach ($multitext as $i => $value){
 			$num = $multitext[$i];
 			$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
 			//if($ofs >= 0) {  // is footnote to source from global source list
@@ -733,10 +751,17 @@ function PDFShowSources($value){
 		//$pdf->Write(6,'SOURCE TEST');
 		// with multiple sources pdf string looks like:  ,firstsource!!12~,secondsource!!4~,thirdsource!!6
 		$multitext = explode('~',$value); // each key looks like: ,somesource!!34
-		for($i=0;$i<count($multitext);$i++) {
+		foreach ($multitext as $i => $value){
 			$pos = strpos($multitext[$i],'!!');
 			//if($user['group_sources']=='j' AND $pos) {
 			if($pos) { //source title as link to list at bottom
+
+				// *** Multiple sources, show a comma ***
+				if ($i>0){
+					$pdf->SetTextColor(0);
+					$pdf->Write(6,', ');
+				}
+
 				if($user['group_sources']=='j') { $pdf->SetTextColor(28,28,255); } else { $pdf->SetTextColor(0); }
 				//$num = $multitext[$i];
 				//$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
@@ -846,7 +871,7 @@ function Header(){
 */
 
 function Footer(){
-	global $pdf_font;
+	global $pdf_font, $language_date;
 	//Position at 1.5 cm from bottom
 	$this->SetY(-15);
 	//Arial italic 8
@@ -854,7 +879,11 @@ function Footer(){
 	//Text color in gray
 	$this->SetTextColor(128);
 	//Page number
-	$this->Cell(0,10,'PDF Created with HuMo-genealogy    Page '.$this->PageNo(),0,0,'C');
+	//$this->Cell(0,10,'PDF Created with HuMo-genealogy    Page '.$this->PageNo(),0,0,'C');
+
+	$text=sprintf(__('PDF Created with %s on'),'HuMo-genealogy').' ';
+	$date_part1=language_date(date("j M Y")); // *** Translate first part of date (05 JUL 2022) using HuMo-genealogy language_date script ***
+	$this->Cell(0,10,$text.$date_part1.' '.date("g:i a").'. '.__('Page').' '.$this->PageNo(),0,0,'C');
 }
 
 // function to make super- or subscript

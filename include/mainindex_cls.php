@@ -154,7 +154,7 @@ function show_tree_index(){
 			if ($module_item[$i]=='own_script' AND strpos($module_option_2[$i], $_SERVER['HTTP_HOST'])){
 				if ($module_option_1[$i]) $temp.='<div class="mainmenu_bar fonts">'.__($module_option_1[$i]).'</div>';
 				$codefile=$module_option_2[$i];
-				$temp.=file_get_contents($codefile.'?language='.$selected_language);
+				$temp.=file_get_contents($codefile.'?language='.$selected_language.'&treeid='.$tree_id);
 			}
 
 			// *** Empty line ***

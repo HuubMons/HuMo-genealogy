@@ -7,11 +7,10 @@
  *
  * See the manual for basic setup instructions
  *
- * http://www.huubmons.nl/software/
- *
+ * https://humo-gen.com
  * ----------
  *
- * Copyright (C) 2008-2016 Huub Mons,
+ * Copyright (C) 2008-2022 Huub Mons,
  * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
  * Reni Janssen, Yossi Beck
  * and others.

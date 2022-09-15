@@ -64,7 +64,9 @@ function show_media($event_connect_kind,$event_connect_id){
 		// ******************
 		// *** Show media ***
 		// ******************
-		if ($media_nr > 0){ $process_text.='<br>'; }
+		if ($media_nr > 0){
+			if($screen_mode=="RTF") $process_text .= "\n"; else $process_text.='<br>';
+		}
 
 		if(CMS_SPECIFIC=="Joomla") {
 			$picpath=CMS_ROOTPATH;
@@ -72,8 +74,6 @@ function show_media($event_connect_kind,$event_connect_id){
 		else {
 			$picpath=$uri_path;
 		}
-
-		if($screen_mode=="RTF") { $process_text .= "\n"; }
 
 		for ($i=1; $i<($media_nr+1); $i++) {
 			// *** If possible show a thumb ***
@@ -213,14 +213,14 @@ function show_media($event_connect_kind,$event_connect_id){
 
 			if ($screen_mode!='RTF'){
 				// *** Show source by picture ***
-				$source='';
+				$source_array='';
 				if ($event_connect_kind=='person'){
-					$source=show_sources2("person","pers_event_source",$media_event_id[$i]);
+					$source_array=show_sources2("person","pers_event_source",$media_event_id[$i]);
 				}
 				else{
-					$source=show_sources2("family","fam_event_source",$media_event_id[$i]);
+					$source_array=show_sources2("family","fam_event_source",$media_event_id[$i]);
 				}
-				if ($source) $picture_text.=$source;
+				if ($source_array) $picture_text.=$source_array['text'];
 
 				$process_text.='<div class="photo">';
 					$process_text.=$picture;

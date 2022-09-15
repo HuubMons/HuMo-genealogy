@@ -25,6 +25,7 @@ function witness($gedcomnr, $event, $field='person'){
 			$witness_qry = $db_functions->get_events_connect('person',$gedcomnr,$event);
 		else
 			$witness_qry = $db_functions->get_events_connect('family',$gedcomnr,$event);
+
 		foreach ($witness_qry as $witnessDb){
 			$counter++; if ($counter>1){ $text.=', '; }
 			if ($witnessDb->event_event){
@@ -37,7 +38,6 @@ function witness($gedcomnr, $event, $field='person'){
 					$url=$witness_cls->person_url2($witness_nameDb->pers_tree_id,$witness_nameDb->pers_famc,$witness_nameDb->pers_fams,$witness_nameDb->pers_gedcomnumber);
 
 					$text.='<a href="'.$url.'">'.rtrim($name["standard_name"]).'</a>';
- 
 				}
 				else{
 					// *** Witness as text ***
@@ -51,14 +51,27 @@ function witness($gedcomnr, $event, $field='person'){
 			}
 
 			if ($witnessDb->event_text){
-				$text.=' <i>'.process_text($witnessDb->event_text).'</i>';
+				$text.=' '.process_text($witnessDb->event_text);
 			}
 
-			$source=show_sources2($field,"pers_event_source",$witnessDb->event_id);
-			if ($source) $text.=$source;
+			$text_array['text']=$text;
+
+			// *** Show sources by witnesses ***
+			if ($field=='person'){
+				$source_array=show_sources2($field,"pers_event_source",$witnessDb->event_id);
+			}
+			else{
+				$source_array=show_sources2($field,"fam_event_source",$witnessDb->event_id);
+			}
+			if ($source_array){ $text_array['source']=$source_array['text']; }
 		}
+
 	}
-	return $text;
+	//	return $text;
+	if (isset($text_array))
+		return $text_array;
+	else
+		return '';
 }
 
 /*
@@ -77,7 +90,7 @@ function witness($gedcomnr, $event, $field='person'){
 // * function witness_by_events (person gedcomnumber, $event item, database field);
 // ********************************************************************************
 function witness_by_events($gedcomnr){
-	global $dbh, $db_functions, $tree_id;
+	global $dbh, $db_functions, $tree_id, $screen_mode;
 	$counter=0; $text='';
 	if ($gedcomnr){
 		$witness_cls = New person_cls;
@@ -96,7 +109,15 @@ function witness_by_events($gedcomnr){
 
 		$source_prep->execute();
 		while($witnessDb = $source_prep->fetch(PDO::FETCH_OBJ)){
-			if ($counter==0) $text='<br>'.__('This person was witness at:').'<br>';
+			if ($counter==0) {
+				//$text='<br>'.__('This person was witness at:').'<br>';
+				if($screen_mode=="PDF") {
+					$text= __('This person was witness at:')."\n";
+				}
+				else {
+					$text='<br>'.__('This person was witness at:').'<br>';
+				}
+			}
 			$counter++; if ($counter>1){ $text.=', '; }
 			if ($witnessDb->event_event){
 
@@ -141,8 +162,8 @@ function witness_by_events($gedcomnr){
 			}
 			if ($witnessDb->event_date){ $text.=' '.date_place($witnessDb->event_date,''); } // *** Use date_place function, there is no place here... ***
 
-			//$source=show_sources2($field,"pers_event_source",$witnessDb->event_id);
-			//if ($source) $text.=$source;
+			//$source_array=show_sources2($field,"pers_event_source",$witnessDb->event_id);
+			//if ($source) $text.=$source_array['text'];
 		}
 	}
 	return $text;

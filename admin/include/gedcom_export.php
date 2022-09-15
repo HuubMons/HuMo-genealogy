@@ -758,8 +758,8 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		// *** FAMS ***
 		if ($person->pers_fams){
 			$pers_fams=explode(";",$person->pers_fams);
-			for ($i=0; $i<=substr_count($person->pers_fams, ";"); $i++){
-				if($_POST['part_tree']=='part' AND !in_array($pers_fams[$i],$famsids)) { continue; }
+			foreach ($pers_fams as $i => $value){
+			if($_POST['part_tree']=='part' AND !in_array($pers_fams[$i],$famsids)) { continue; }
 				$buffer.='1 FAMS @'.$pers_fams[$i]."@\r\n";
 			}
 		}
@@ -983,8 +983,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 
 		if ($family->fam_children){
 			$child=explode(";",$family->fam_children);
-			for ($i=0; $i<=substr_count($family->fam_children, ";"); $i++){
-//foreach ($child_array as $i => $value){
+			foreach ($child as $i => $value){
 				if($_POST['part_tree']=='part' AND !in_array($child[$i],$persids))  { continue; }
 				$buffer.='1 CHIL @'.$child[$i]."@\r\n";
 			}
@@ -1794,7 +1793,6 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 		// *** Children                                              ***
 		// *************************************************************
 		if ($familyDb->fam_children){
-			//$childnr=1;
 			$child_array=explode(";",$familyDb->fam_children);
 			foreach ($child_array as $i => $value){
 				$child=$dbh->query("SELECT * FROM humo_persons
@@ -1815,7 +1813,6 @@ function descendants($family_id,$main_person,$gn,$max_generations) {
 							$persids[] = $childDb->pers_gedcomnumber;
 						}
 					}
-					//$childnr++;
 				}
 			}
 		}
@@ -1848,7 +1845,7 @@ function ancestors($person_id,$max_generations) {
 
 		// *** Loop per generation ***
 		for ($i=0; $i<count($ancestor_array); $i++) {
-
+//foreach ($ancestor_array as $i => $value){
 			$listednr='';
 			foreach ($listed_array as $key => $value) {
 				if($value==$ancestor_array[$i]) {$listednr=$key;}

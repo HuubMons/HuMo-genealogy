@@ -73,12 +73,12 @@ echo '<div class="standard_header fonts" style="align:center; text-align: center
 echo '<b>'.__('Hourglass chart').__(' of ').$genarray[0]["nam"].'</b>';
 echo '</div>';
 
-echo '<script type="text/javascript" src="include/jqueryui/js/html2canvas.js"></script>';
-echo '<script type="text/javascript" src="include/jqueryui/js/jquery.plugin.html2canvas.js"></script>';
+echo '<script type="text/javascript" src="include/html2canvas/html2canvas.min.js"></script>';
+
 echo '<div style="text-align:center;">';
-echo '<span style="font-size:130%">'.__('Ancestors')."&#8678;&#8678;&#8678;"; for($q=0;$q<25;$q++) { echo "&nbsp;"; } echo '</span>';
-echo '<input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow pop-up!)').'" onClick="showimg();">';
-echo '<span style="font-size:130%">'; for($q=0;$q<25;$q++) { echo "&nbsp;"; }  echo "&#8680;&#8680;&#8680;".__('Descendants'); echo '</span>';
+	echo '<span style="font-size:130%">'.__('Ancestors')."&#8678;&#8678;&#8678;"; for($q=0;$q<25;$q++) { echo "&nbsp;"; } echo '</span>';
+	echo '<input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow pop-up!)').'" onClick="showimg();">';
+	echo '<span style="font-size:130%">'; for($q=0;$q<25;$q++) { echo "&nbsp;"; }  echo "&#8680;&#8680;&#8680;".__('Descendants'); echo '</span>';
 echo '</div>';
 
 // START HELP POPUP - displayed at upper left corner of screen
@@ -123,60 +123,65 @@ echo '</div>';
 
 // MENU BAR - no. of generations, zoom
 
-	echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:600px; text-align:left;">';
+	echo '<div id="menubox" class="search_bar" style="margin-top:5px; direction:ltr; z-index:20; width:700px; text-align:left;">';
 
-	print '&nbsp;'.__('Nr. generations').': '.__('Anc.').'&nbsp;';
-	print '<select name="chosengenanc" onChange="window.location=this.value">';
+	echo '&nbsp;'.__('Nr. generations').': '.__('Anc.').'&nbsp;';
+	echo '<select name="chosengenanc" onChange="window.location=this.value">';
 
 	for ($i=2; $i<=12; $i++) {
-		if(CMS_SPECIFIC=='Joomla') {  
-			print '<option value="index.php?option=com_humo-gen&task=hourglass&id='.$keepfamily_id.'&amp;main_person='.
+		if(CMS_SPECIFIC=='Joomla') {
+			echo '<option value="index.php?option=com_humo-gen&task=hourglass&id='.$keepfamily_id.'&amp;main_person='.
 			$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
 			$size.'&amp;chosengen='.$chosengen.'&amp;chosengenanc='.$i.'&amp;screen_mode=HOUR" ';
 		}
 		else{
-			print '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
+			echo '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
 			$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
 			$size.'&amp;chosengen='.$chosengen.'&amp;chosengenanc='.$i.'&amp;screen_mode=HOUR" ';
 		}
-		if ($i == $chosengenanc) print "selected=\"selected\" ";
-		print ">".$i."</option>";
+		if ($i == $chosengenanc) echo "selected=\"selected\" ";
+		echo ">".$i."</option>";
 	}
 
-	print '</select>';
+	echo '</select>';
 
-	print '&nbsp;&nbsp;'.__('Desc.').'&nbsp;';
-	print '<select name="chosengen" onChange="window.location=this.value">';
-
-	for ($i=2; $i<=15; $i++) {
-		if(CMS_SPECIFIC=='Joomla') {  
-			print '<option value="index.php?option=com_humo-gen&task=hourglass&id='.$keepfamily_id.'&amp;main_person='.
-			$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
-			$size.'&amp;chosengen='.$i.'&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
+	echo '&nbsp;&nbsp;'.__('Desc.').'&nbsp;';
+	echo '<select name="chosengen" onChange="window.location=this.value">';
+		for ($i=2; $i<=15; $i++) {
+			if(CMS_SPECIFIC=='Joomla') {
+				echo '<option value="index.php?option=com_humo-gen&task=hourglass&id='.$keepfamily_id.'&amp;main_person='.
+				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+				$size.'&amp;chosengen='.$i.'&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
+			}
+			else{
+				echo '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
+				$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+				$size.'&amp;chosengen='.$i.'&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
+			}
+			if ($i == $chosengen) echo "selected=\"selected\" ";
+			echo ">".$i."</option>";
 		}
-		else{
-			print '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
-			$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
-			$size.'&amp;chosengen='.$i.'&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
-		}
-		if ($i == $chosengen) print "selected=\"selected\" ";
-		print ">".$i."</option>";
-	}
 
-	//NEW - option "All" for all generations
-	print '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
-	$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
-	$size.'&amp;chosengen=All&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
-	if ($chosengen=="All") print "selected=\"selected\" ";
-	print ">"."All"."</option>";
+		//NEW - option "All" for all generations
+		echo '<option value="'.$uri_path.'hourglass.php?id='.$keepfamily_id.'&amp;main_person='.
+		$keepmain_person.'&amp;direction='.$direction.'&amp;database='.$database.'&amp;chosensize='.
+		$size.'&amp;chosengen=All&amp;chosengenanc='.$chosengenanc.'&amp;screen_mode=HOUR" ';
+		if ($chosengen=="All") echo "selected=\"selected\" ";
+		echo ">"."All"."</option>";
+	echo '</select>';
 
-
-	print '</select>';
-
-
-	print '&nbsp;&nbsp;';
+	echo '&nbsp;&nbsp;';
 	//NEW min:0 (for extra first step - now 10 steps: 0-9), then twice value +1 so on display first step is shown as 1, not 0
-	echo ' 
+	/* OLD VALUES
+	database: "'.$database.'",
+	main_person: "'.$keepmain_person.'",
+	id: "'.$keepfamily_id.'",
+	chosengen: "'.$chosengen.'",
+	chosengenanc: "'.$chosengenanc.'",
+	direction: "'.$direction.'",
+	chart_type: "hour",
+	*/
+	echo '
 		<script>
 		$(function() {
 			$( "#slider" ).slider({
@@ -184,23 +189,28 @@ echo '</div>';
 				min: 0,
 				max: 9,
 				step: 1,
-				database: "'.$database.'",
-				main_person: "'.$keepmain_person.'",
-				id: "'.$keepfamily_id.'",
-				chosengen: "'.$chosengen.'",
-				chosengenanc: "'.$chosengenanc.'",
-				direction: "'.$direction.'",
-				chart_type: "hour",
 				slide: function( event, ui ) {
 					$( "#amount" ).val(ui.value+1);
 				}
 			});
 			$( "#amount" ).val($( "#slider" ).slider( "value" )+1 );
+
+			// *** Only reload page if value is changed ***
+			startPos = $("#slider").slider("value");
+			$("#slider").on("slidestop", function(event, ui) {
+				endPos = ui.value;
+				if (startPos != endPos) {
+					window.location.href = "hourglass.php?tree_id='.$tree_id.'&id='.$keepfamily_id.'&main_person='.$keepmain_person.
+						'&screen_mode=HOUR&chosensize="+((endPos+1)*5)+"&chosengen='.$chosengen.'&chosengenanc='.$chosengenanc.
+						'&direction='.$direction.'";
+				}
+				startPos = endPos;
+			});
+
 		});
 		</script>
 	';
 
-	//echo '<label for="amount">Zoom in/out:</label>';
 	echo '<label for="amount">'.__('Zoom level:').'</label> ';
 	echo '<input type="text" id="amount" disabled="disabled" style="width:18px;border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
 	echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
@@ -263,7 +273,7 @@ for($x=$chosengenanc;$x>1;$x--) {
 		else { // empty square - give it background so lines won't show through
 			$sexe_colour=' ancestor_none'; 
 		}
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.$this_top.'px; left: '.$left.'px; height: '.$height.'px; width:'.$width.'px;';
+		echo '<div class="ancestorName'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.$this_top.'px; left: '.$left.'px; height: '.$height.'px; width:'.$width.'px;';
 		echo '">';
 		if(isset($sexe[$i+$blocks]) AND $sexe[$i+$blocks]!="" ) { 
 			echo ancestor_chart_person($i+$blocks,'hour'.$size);
@@ -274,7 +284,7 @@ for($x=$chosengenanc;$x>1;$x--) {
 		echo '</div>';
 		$this_top += $incr;
 	}
-	
+
 	// *** long vertical line ***
 	$this_top = $top+$line_drop; 
 	for ($i=0; $i <$blocks/2; $i++){
@@ -307,11 +317,10 @@ for($x=$chosengenanc;$x>1;$x--) {
 }
 
 // SET CHART DIMENSIONS AND CAPTIONS ^^^^^
-
-if($size==50 OR $size==45) { 
+if($size==50 OR $size==45) {
 	if($chosengenanc>2) { $anc_len = (2*($width + 20)) + (($chosengenanc-3)*(($size/2)+40)); }
 	else { $anc_len = $width + 20; }
-} 
+}
 else { $anc_len = ($chosengenanc-1) * ($width + 20); }
 
 if($size==50) { $desc_len = $chosengen * ($width + 60); }
@@ -321,7 +330,6 @@ else $desc_len = $chosengen * ($width + $size);
 $divlen = 10 + $anc_len + $desc_len;
  
 // PRINT THE DESCENDANT CHART ^^^^^^^^^^^^^
-
 printchart();
  
 include_once(CMS_ROOTPATH."footer.php");

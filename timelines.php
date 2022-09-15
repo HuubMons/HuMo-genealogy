@@ -153,6 +153,12 @@ if(@$personDb->pers_fams) {
 				$chmarriages[$i][$m]=''; // enter value so we wont get error messages
 				@$chldDb = $db_functions->get_person($children[$i][$m]);
 
+				// *** Check if child must be hidden ***
+				if ($user["group_pers_hide_totally_act"]=='j' AND isset ($chldDb->pers_own_code)
+					AND strpos(' '.$chldDb->pers_own_code,$user["group_pers_hide_totally"])>0){
+					continue;
+				}
+
 				if($chldDb->pers_sexe=="M") { $child=__('son'); }
 				else if ($chldDb->pers_sexe=="F") { $child=__('daughter'); }
 				else { $child=__('child '); }
@@ -161,6 +167,7 @@ if(@$personDb->pers_fams) {
 				$person2_cls->construct($chldDb);
 				$privacy=$person2_cls->privacy;
 				$name=$person2_cls->person_name($chldDb);
+
 				if (!$privacy){
 					$chbornyear[$i][$m]=''; $chborndate[$i][$m]=''; $chborntext[$i][$m]='';
 					$chdeathyear[$i][$m]=''; $chdeathdate[$i][$m]=''; $chdeathtext[$i][$m]='';
@@ -224,19 +231,19 @@ if(@$personDb->pers_fams) {
 							$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_notice_date);
 								$chtext=ucfirst(__('marriage notice')).' ';
 							}
-							elseif	($chfamilyDb->fam_marr_church_notice_date) {
+							elseif ($chfamilyDb->fam_marr_church_notice_date) {
 								$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_marr_church_notice_date);
 								$chtext=ucfirst(__('church marriage notice')).' ';
 							}
-							elseif	($chfamilyDb->fam_relation_date) {
+							elseif ($chfamilyDb->fam_relation_date) {
 								$chmarrdate[$i][$m][$p]=julgreg($chfamilyDb->fam_relation_date);
 								$chtext=ucfirst(__('partnership')).' ';
 							}
-							if	($chmarrdate[$i][$m][$p]) {
+							if ($chmarrdate[$i][$m][$p]) {
 								$temp=substr($chmarrdate[$i][$m][$p],-4);
 							}
-							if	($temp AND $temp > 0 AND $temp < 2200) {
-								//if	(isset($chspouse2Db->pers_firstname) AND $chspouse2Db->pers_firstname) {
+							if ($temp AND $temp > 0 AND $temp < 2200) {
+								//if (isset($chspouse2Db->pers_firstname) AND $chspouse2Db->pers_firstname) {
 								if ($name["firstname"]){
 									$chspousename=$name["firstname"];
 									$chspousetext=__('with ').$chspousename;
@@ -416,19 +423,19 @@ elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timelin
 		$val_arr[$str2[0]] = $str2[1];   //  $val_arr[nl]='europa'
 	}
 
-	// *** Use timeline file from default folder ***
-	if(isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language].".txt")) {
-		$tml= $val_arr[$selected_language];
-	}
+	$selected_language2='default_timelines'; // *** Timelines default folder ***
 
-	// *** Use timeline from language folder ***
+	// *** 1st Use timeline from language folder ***
 	if(isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$val_arr[$selected_language].".txt")) {
 		$tml= $val_arr[$selected_language];
 	}
-
+	// *** 2nd Use timeline file from default folder ***
+	elseif(isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language].".txt")) {
+		$tml= $val_arr[$selected_language];
+	}
 	// *** Use timeline file from default folder ***
-	$selected_language2='default_timelines';
-	if(!isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language2].".txt")) {
+	//if(!isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language2].".txt")) {
+	elseif(isset($val_arr[$selected_language2]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language2].".txt")) {
 		$tml= $val_arr[$selected_language2];
 	}
 }
@@ -482,7 +489,7 @@ The timeline menu:<br>
 
 			echo '</div>';
 	echo '</div><br>';
-	
+
 	// =============================================
 	// *** Steps of years in display: 1, 5 or 10 ***
 	echo '<br>'.__('Steps:').'<br>';
@@ -515,6 +522,10 @@ The timeline menu:<br>
 				}
 				// *** humo_option is: nl!europa@de!Sweitz@en!british  etc. ***
 				elseif(isset($humo_option['default_timeline']) AND strpos($humo_option['default_timeline'],$selected_language2."!".$filenames[$i][1]."@") !== false) {
+					$checked=" checked";
+				}
+				// *** There are no default settings, and no selection is made ***
+				elseif ($tml==$filenames[$i][1]){
 					$checked=" checked";
 				}
 			}
