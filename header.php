@@ -102,6 +102,7 @@ while (false!==($file = readdir($language_folder))) {
 
 		// *** Order of languages ***
 		if ($file=='cn') $language_order[]='Chinese';
+		elseif ($file=='cs') $language_order[]='Czech';
 		elseif ($file=='da') $language_order[]='Dansk';
 		elseif ($file=='de') $language_order[]='Deutsch';
 		elseif ($file=='en') $language_order[]='English';
@@ -437,10 +438,14 @@ else{
 
 	if (CMS_SPECIFIC!='CMSMS') {
 		echo '<link href="'.CMS_ROOTPATH.'print.css" rel="stylesheet" type="text/css" media="print">';
-		//echo '<link rel="shortcut icon" href="'.CMS_ROOTPATH.'images/favicon.ico" type="image/x-icon">';
-		echo '<link rel="shortcut icon" href="'.CMS_ROOTPATH.'favicon.ico" type="image/x-icon">';
+
+		// *** Use your own favicon.ico in media folder ***
+		if (file_exists('media/favicon.ico'))
+			echo '<link rel="shortcut icon" href="'.CMS_ROOTPATH.'media/favicon.ico" type="image/x-icon">';
+		else
+			echo '<link rel="shortcut icon" href="'.CMS_ROOTPATH.'favicon.ico" type="image/x-icon">';
 	}
-	
+
 	if (isset($user["group_birthday_rss"]) AND $user["group_birthday_rss"]=="j"){
 		$language_rss='en'; if (isset($_SESSION["language_humo"])){ $language_rss=$_SESSION["language_humo"]; }
 		echo '<link rel="alternate" type="application/rss+xml" title="Birthdaylist" href="'.CMS_ROOTPATH.'birthday_rss.php?lang='.$language_rss.'" >';
@@ -579,35 +584,25 @@ else{
 	print "</style>";
 	*/
 
-	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/sliderbar/slider.js"></script>';
-
 	//if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR
 	//	strpos($_SERVER['REQUEST_URI'],"maps")!== false OR
 	//	strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR
 	//	$user['group_pictures']=='j') {
-	if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR
-		strpos($_SERVER['REQUEST_URI'],"maps")!== false OR
-		strpos($_SERVER['REQUEST_URI'],"HOUR")!== false) {
-		// if lightbox activated or descendant chart or hourglass chart or google maps is used --> load jquery
-		echo '	<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script> ';
-	}
+	//if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR
+	//	strpos($_SERVER['REQUEST_URI'],"maps")!== false OR
+	//	strpos($_SERVER['REQUEST_URI'],"HOUR")!== false) {
+	//	// if (lightbox activated or) descendant chart or hourglass chart or google maps is used --> load jquery
+	//		echo '	<script src="'.CMS_ROOTPATH.'include/jquery/jquery.min.js"></script> ';
+	//}
 	if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR
 		strpos($_SERVER['REQUEST_URI'],"HOUR")!== false OR
 		strpos($_SERVER['REQUEST_URI'],"maps")!== false) {
-		// if descendant chart or hourglass chart or google maps used --> load additional jquery modules for slider
-		echo ' <link rel="stylesheet" href="'.CMS_ROOTPATH.'include/jqueryui/css/hot-sneaks/jquery-ui-1.8.23.custom.css"> ';
-		echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script> ';
-		echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/minified/jquery.ui.widget.min.js"></script> ';
-		echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/minified/jquery.ui.mouse.min.js"></script> ';
-		if(strpos($_SERVER['REQUEST_URI'],"STAR")!== false OR strpos($_SERVER['REQUEST_URI'],"HOUR")!== false) { // load slider for desc./hourglass chart
-			echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/jquery.ui.slider.js"></script> ';
-		}
-		if(strpos($_SERVER['REQUEST_URI'],"maps")!== false) { // load slider for google maps
-			echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/development-bundle/ui/jquery.ui.gslider.js"></script> ';
-		}
-		echo ' <script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery.ui.touch-punch.min.js"></script> ';
+			echo '<script src="'.CMS_ROOTPATH.'include/jquery/jquery.min.js"></script> ';
+			echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/jqueryui/jquery-ui.min.css"> ';
+			echo '<script src="'.CMS_ROOTPATH.'include/jqueryui/jquery-ui.min.js"></script>';
 	}
  
+ // Not in use anymore?
 	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'fontsize.js"></script>';
 
 	// *** Style sheet select ***

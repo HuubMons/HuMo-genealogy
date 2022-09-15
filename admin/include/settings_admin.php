@@ -95,6 +95,43 @@ if (isset($_POST['save_option'])){
 		$time_str = implode("@",$time_arr)."@";
 		$result = $db_functions->update_settings('default_timeline',$time_str);
 	}
+
+	// *** Upload favicon icon to folder /media ***
+	if (isset($_FILES['upload_favicon']) AND $_FILES['upload_favicon']['name']){
+		if ( $_FILES['upload_favicon']['type']=="image/x-icon" || $_FILES['upload_favicon']['type']=="image/png" || $_FILES['upload_favicon']['type']=="image/jpeg"){
+			$fault="";
+			// 100000=100kb.
+			if($_FILES['upload_favicon']['size']>100000){ $fault=__('Photo too large'); }
+			if (!$fault){
+				$picture_original='../media/favicon'.substr($_FILES['upload_favicon']['name'],-4);
+				if (move_uploaded_file($_FILES['upload_favicon']['tmp_name'],$picture_original)){
+					echo __('Changed favicon icon.');
+				}
+				else{
+					echo __('Photo upload failed, check folder rights');
+				}
+			}
+		}
+	}
+
+	// *** Upload logo to folder /media ***
+	if (isset($_FILES['upload_logo']) AND $_FILES['upload_logo']['name']){
+		if ( $_FILES['upload_logo']['type']=="image/png" || $_FILES['upload_logo']['type']=="image/jpeg"){
+			$fault="";
+			// 100000=100kb.
+			if($_FILES['upload_logo']['size']>1000000){ $fault=__('Photo too large'); }
+			if (!$fault){
+				$picture_original='../media/logo'.substr($_FILES['upload_logo']['name'],-4);
+				if (move_uploaded_file($_FILES['upload_logo']['tmp_name'],$picture_original)){
+					echo __('Changed logo.');
+				}
+				else{
+					echo __('Photo upload failed, check folder rights');
+				}
+			}
+		}
+	}
+
 }
 
 // *** Homepage ***
@@ -208,10 +245,10 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 	if (isset($menu_admin) AND $menu_admin=='settings'){
 
 		//if(CMS_SPECIFIC == "Joomla") {
-		//	echo '<form method="post" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=settings">';
+		//	echo '<form method="post" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=settings" enctype="multipart/form-data">';
 		//}
 		//else {
-			echo '<form method="post" action="index.php">';
+			echo '<form method="post" action="index.php" enctype="multipart/form-data">';
 		//}
 		echo '<input type="hidden" name="page" value="'.$page.'">';
 
@@ -260,6 +297,18 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 				}
 			}
 			echo '</select>';
+		echo '</td></tr>';
+
+		// Upload your own favorite icon and logo
+		// From internet:
+		// The favicon is supposed to be a set of 16x16, 32x32 and 48x48 pictures in ICO format.
+		// ICO format is different than PNG. Non-square pictures are not supported.
+		// A .ico file could include multiple favicon icons, so it could be a large file.
+		// The format of the image must be one of PNG (a W3C standard), GIF, or ICO.
+		echo '<tr><td>'.__('Change favicon icon').'</td><td>';
+			echo sprintf(__('Upload favicon.ico file. File size max: %1$d kB.'), '100');
+			echo ' <input type="file" name="upload_favicon">';
+			echo '<input type="submit" name="save_option" title="submit" value="'.__('Upload').'">';
 		echo '</td></tr>';
 
 		echo '<tr><td>'.__('Text in footer for all pages').'</td><td>';
@@ -609,6 +658,13 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 
 		echo '<tr><td>'.__('Website name').'</td>';
 		echo '<td><input type="text" name="database_name" value="'.$humo_option["database_name"].'" size="40"></td></tr>';
+
+		// *** Upload logo. Recommended size: 167 x 25px ***
+		echo '<tr><td>'.__('Use logo image instead of text').'</td><td>';
+			echo sprintf(__('Upload logo image. Recommended size: 165 x 25 px. Picture max: %1$d MB.'), '1');
+			echo ' <input type="file" name="upload_logo">';
+			echo '<input type="submit" name="save_option" title="submit" value="'.__('Upload').'">';
+		echo '</td></tr>';
 
 		echo '<tr><td>'.__('Link homepage').'<br>'.__('Link description').'</td>';
 		echo '<td><input type="text" name="homepage" value="'.$humo_option["homepage"].'" size="40"> <span style="white-space:nowrap;">'.__('(link to this site including http://)').'</span><br>';

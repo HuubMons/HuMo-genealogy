@@ -738,39 +738,77 @@ if ($check_person){
 
 					if ($person){
 						// *** Browser through persons: previous button ***
-						// *** First do a quick check, much faster for large family trees!!!!! ***
-						$check_pers_gedcomnumber=(substr($person->pers_gedcomnumber,1)-1);
-						$check_pers_gedcomnumber='I'.$check_pers_gedcomnumber;
-						$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons
-							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$check_pers_gedcomnumber."'";
-						$previous_result = $dbh->query($previous_qry);
-						$previousDb=$previous_result->fetch(PDO::FETCH_OBJ);
-						if (!$previousDb){
-							// *** Browser through persons: previous button ***
-							// *** VERY SLOW in large family trees ***
-							$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-								AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."'
-								ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
-							// BLADEREN WERKT NIET GOED:
-							//$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
-							//	AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."'
-							//	ORDER BY pers_gedcomnumber DESC LIMIT 0,1";
+						if (substr($person->pers_gedcomnumber,1)>1){
+							// *** First do a quick check, much faster for large family trees!!!!! ***
+							$check_pers_gedcomnumber=(substr($person->pers_gedcomnumber,1)-1);
+							$check_pers_gedcomnumber='I'.$check_pers_gedcomnumber;
+							$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons
+								WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$check_pers_gedcomnumber."'";
 							$previous_result = $dbh->query($previous_qry);
 							$previousDb=$previous_result->fetch(PDO::FETCH_OBJ);
-							//if ($previousDb){
-							//	echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
-							//		echo '<input type="hidden" name="page" value="'.$page.'">';
-							//		echo '<input type="hidden" name="person" value="'.$previousDb->pers_gedcomnumber.'">';
-							//		echo ' <input type="submit" value="<">';
-							//	echo '</form>';
-							//}
-						}
-						if ($previousDb){
+
+							// *** Second quick check ***
+							if (!$previousDb){
+								$check_pers_gedcomnumber=(substr($person->pers_gedcomnumber,1)-2);
+								$check_pers_gedcomnumber='I'.$check_pers_gedcomnumber;
+								$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons
+									WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$check_pers_gedcomnumber."'";
+								$previous_result = $dbh->query($previous_qry);
+								$previousDb=$previous_result->fetch(PDO::FETCH_OBJ);
+							}
+
+							if (!$previousDb){
+								// *** Browser through persons: previous button ***
+								// *** VERY SLOW in large family trees ***
+								$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+									AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."'
+									ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
+								// BLADEREN WERKT NIET GOED:
+								//$previous_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+								//	AND CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) < '".substr($person->pers_gedcomnumber,1)."'
+								//	ORDER BY pers_gedcomnumber DESC LIMIT 0,1";
+								$previous_result = $dbh->query($previous_qry);
+								$previousDb=$previous_result->fetch(PDO::FETCH_OBJ);
+								//if ($previousDb){
+								//	echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
+								//		echo '<input type="hidden" name="page" value="'.$page.'">';
+								//		echo '<input type="hidden" name="person" value="'.$previousDb->pers_gedcomnumber.'">';
+								//		echo ' <input type="submit" value="<">';
+								//	echo '</form>';
+								//}
+							}
+
+							// *** Link to first GEDCOM number in database ***
+							// *** First do a quick check for I1 ***
+							$first_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='I1'";
+							$first_result = $dbh->query($first_qry);
+							$firstDb=$first_result->fetch(PDO::FETCH_OBJ);
+							// *** Second quick check (GEDCOM number I1 could be missing, this wil increase speed) ***
+							if (!$firstDb){
+								$first_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='I2'";
+								$first_result = $dbh->query($first_qry);
+								$firstDb=$first_result->fetch(PDO::FETCH_OBJ);
+							}
+							if (!$firstDb){
+								// *** VERY SLOW in large family trees ***
+								$first_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+									ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) LIMIT 0,1";
+								$first_result = $dbh->query($first_qry);
+								$firstDb=$first_result->fetch(PDO::FETCH_OBJ);
+							}
 							echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
 								echo '<input type="hidden" name="page" value="'.$page.'">';
-								echo '<input type="hidden" name="person" value="'.$previousDb->pers_gedcomnumber.'">';
-								echo ' <input type="submit" value="<">';
+								echo '<input type="hidden" name="person" value="'.$firstDb->pers_gedcomnumber.'">';
+								echo ' <input type="submit" value="<<">';
 							echo '</form>';
+
+							if ($previousDb){
+								echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
+									echo '<input type="hidden" name="page" value="'.$page.'">';
+									echo '<input type="hidden" name="person" value="'.$previousDb->pers_gedcomnumber.'">';
+									echo ' <input type="submit" value="<">';
+								echo '</form>';
+							}
 						}
 
 						// *** Browser through persons: previous button ***
@@ -781,6 +819,17 @@ if ($check_person){
 							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$check_pers_gedcomnumber."'";
 						$next_result = $dbh->query($next_qry);
 						$nextDb=$next_result->fetch(PDO::FETCH_OBJ);
+
+						// *** Second quick check (a GEDCOM number could be missing, this wil increase speed) ***
+						if (!$nextDb){
+							$check_pers_gedcomnumber=(substr($person->pers_gedcomnumber,1)+2);
+							$check_pers_gedcomnumber='I'.$check_pers_gedcomnumber;
+							$next_qry = "SELECT pers_gedcomnumber FROM humo_persons
+								WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$check_pers_gedcomnumber."'";
+							$next_result = $dbh->query($next_qry);
+							$nextDb=$next_result->fetch(PDO::FETCH_OBJ);
+						}
+
 						if (!$nextDb){
 							// *** Next button ***
 							// *** VERY SLOW in large family trees ***
@@ -802,6 +851,24 @@ if ($check_person){
 								echo ' <input type="submit" value=">">';
 							echo '</form>';
 						}
+
+						// *** Link to last GEDCOM number in database ***
+						// *** VERY SLOW in large family trees (so it's disabled for large family trees) ***
+						$nr_persons=$db_functions->count_persons($tree_id);
+						if ($nr_persons<100000){ // *** Disabled for large family trees ***
+							$last_qry = "SELECT pers_gedcomnumber FROM humo_persons WHERE pers_tree_id='".$tree_id."'
+								ORDER BY CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED) DESC LIMIT 0,1";
+							$last_result = $dbh->query($last_qry);
+							$lastDb=$last_result->fetch(PDO::FETCH_OBJ);
+							if (substr($lastDb->pers_gedcomnumber,2) > substr($person->pers_gedcomnumber,2)){
+								echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
+									echo '<input type="hidden" name="page" value="'.$page.'">';
+									echo '<input type="hidden" name="person" value="'.$lastDb->pers_gedcomnumber.'">';
+									echo ' <input type="submit" value=">>">';
+								echo '</form>';
+							}
+						}
+
 					}
 
 					// *** Browse ***
@@ -1544,6 +1611,19 @@ if ($check_person){
 							echo ' <input type="radio" name="pers_sexe2" value=""'.$selected.'> ?</td>';
 						echo '</tr>';
 
+						// *** Profession ***
+						echo '<tr>';
+							echo '<td>'.__('Profession').'</td>';
+							echo '<td>';
+								// *** Profession ***
+								echo '<input type="text" name="event_profession1" placeholder="'.__('Profession').'" value="" size="35">';
+							echo '</td>';
+							echo '<td>';
+								// *** Profession ***
+								echo '<input type="text" name="event_profession2" placeholder="'.__('Profession').'" value="" size="35">';
+							echo '</td>';
+						echo '</tr>';
+
 						echo '<tr class="humo_color"><td colspan="3"><input type="Submit" name="add_parents2" value="'.__('Add parents').'"></td></tr>';
 					echo '</table><br>';
 
@@ -1561,8 +1641,23 @@ if ($check_person){
 
 			echo $parent_text.'</td></tr>';
 
-			// *** Empty line in table ***
-			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
+			// *** Show message if age < 0 or > 120 ***
+			$error_color='';
+			$show_message='&nbsp;';
+			if (($person->pers_bapt_date OR $person->pers_birth_date) AND $person->pers_death_date){
+				include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
+				$process_age = New calculate_year_cls;
+				$age=$process_age->calculate_age($person->pers_bapt_date,$person->pers_birth_date,$person->pers_death_date,true);
+				if ($age AND ($age<0 OR $age>120)){
+					$error_color='background-color:#FFAA80;';
+					$show_message='&nbsp;'.__('age').' '.$age.' '.__('year');
+				}
+			}
+			// *** Show empty line or error message in table ***
+			//echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
+			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white; '.$error_color.'">';
+				echo $show_message;
+			echo '</td></tr>';
 		}
 
 	echo '<tr class="table_header_large">';
@@ -2159,10 +2254,10 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		echo '</div>';
 		echo '</td><td></td></tr>';
 
-		if (!isset($_GET['add_person'])){
-			// *** Profession(s) ***
-			echo $event_cls->show_event('person',$pers_gedcomnumber,'profession');
+		// *** Profession(s) ***
+		echo $event_cls->show_event('person',$pers_gedcomnumber,'profession');
 
+		if (!isset($_GET['add_person'])){
 			// *** Show and edit places by person ***
 			edit_addresses('person','person_address',$pers_gedcomnumber);
 		} // *** End of check for new person ***
@@ -2368,7 +2463,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				}
 			}
 
-			// *** Add new marriage ***
+			// *** Add new relation ***
 			//if (isset($_GET['add_marriage2'])){
 			//if (!$person->pers_fams OR isset($_GET['add_marriage2'])){
 			if ($menu_tab!='children'){
@@ -2438,7 +2533,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			$fam_div_date=$familyDb->fam_div_date; $fam_div_place=$familyDb->fam_div_place;
 			$fam_div_text=$editor_cls->text_show($familyDb->fam_div_text);
 			$fam_div_authority=$editor_cls->text_show($familyDb->fam_div_authority);
-			
+
 			$fam_marr_notice_date_hebnight=''; $fam_marr_date_hebnight=''; $fam_marr_church_notice_date_hebnight=''; $fam_marr_church_date_hebnight='';
 			if($humo_option['admin_hebnight']=="y") {
 				if(isset($familyDb->fam_marr_notice_date_hebnight)) {  $fam_marr_notice_date_hebnight= $familyDb->fam_marr_notice_date_hebnight; }
@@ -3053,9 +3148,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '</form><br>';
 			//echo '<p>'.__('Or add a new child:').'<br>';
 
-			// *** Order children using drag and drop ***
-			//already in index.php echo '<script src="../include/jqueryui/js/jquery-1.8.0.min.js"></script>';
-			//to index.php - echo '<script src="../include/jqueryui/js/jquery.sortable.min.js"></script>';
+			// *** Order children using drag and drop ùsing jquery and jqueryui ***
 			?>
 			<script>
 			$('#sortable'+'<?php echo $i; ?>').sortable({handle: '.handle'+'<?php echo $i; ?>'}).bind('sortupdate', function() {
@@ -3655,7 +3748,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		// *****************
 		// *** Addresses ***
 		// *****************
-		echo '<h2>'.__('Addresses').'</h2>';
+		echo '<h2>'.__('Shared addresses').'</h2>';
 		echo __('These addresses can be connected to multiple persons, families and other items.');
 
 		$address_id='';
@@ -4005,20 +4098,29 @@ function event_option($event_gedcom,$event){
 
 // *** Show link to sources (version 2 )***
 function source_link2($hideshow,$connect_connect_id,$connect_sub_kind,$link=''){
-	global $tree_id, $dbh;
+	global $tree_id, $dbh, $db_functions;
 
 	$connect_qry="SELECT connect_connect_id, connect_source_id FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."'
 		AND connect_sub_kind='".$connect_sub_kind."' AND connect_connect_id='".$connect_connect_id."'";
 	$connect_sql=$dbh->query($connect_qry);
 	$source_count=$connect_sql->rowCount();
-	$source_error=false;
+	$source_error=0;
 	while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-		if (!$connectDb->connect_source_id) $source_error=true;
+		if (!$connectDb->connect_source_id){
+			$source_error=1;
+		}
+		else{
+			// *** Check if source is empty ***
+			$sourceDb=$db_functions->get_source ($connectDb->connect_source_id);
+			if (!$sourceDb->source_title AND !$sourceDb->source_text
+				AND !$sourceDb->source_date AND !$sourceDb->source_place AND !$sourceDb->source_refn) $source_error=2;
+		}
 	}
 
 	$text='&nbsp;';
-	if ($source_error) $text.='<span style="background-color:#FFAA80">';
+	if ($source_error=='1') $text.='<span style="background-color:#FFAA80">'; // *** No source connected, colour = orange ***
+	if ($source_error=='2') $text.='<span style="background-color:#FFFF00">'; // *** Source is empty, colour = yellow ***
 		//$text.='<a href="#" onclick="hideShow('.$hideshow.');">'.__('source').' <span id="hideshowlink30">'.__('[+]').'</span></a> ';
 		$text.='<a href="#'.$link.'" onclick="hideShow('.$hideshow.');">'.__('source').' ['.$source_count.']</a> ';
 	if ($source_error) $text.='</span>';
@@ -4188,6 +4290,14 @@ function add_person($person_kind,$pers_sexe){
 		echo $editor_cls->date_show('','pers_buried_date','','','','pers_buried_date_hebnight').' ';
 		echo '  <input type="text" name="pers_buried_place" placeholder="'.ucfirst(__('place')).'" value="" size="'.$field_place.'">';
 		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form='.$form.'&amp;place_item=pers_buried_place","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a></td></tr>';
+
+		// *** Profession ***
+		echo '<tr>';
+			echo '<td>'.__('Profession').'</td>';
+			echo '<td>';
+				echo '<input type="text" name="event_profession" placeholder="'.__('Profession').'" value="" size="35">';
+			echo '</td>';
+		echo '</tr>';
 
 		if ($person_kind=='partner'){
 			echo '<tr class="humo_color"><td></td><td><input type="Submit" name="relation_add" value="'.__('Add relation').'"></td></tr>';
@@ -4576,7 +4686,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 	}
 }
 
-// *** Set width of table columns ***
+// *** Set same width of columns (in 2 different tables) in tab family ***
 echo '
 <script>
 $("#chtd1").width($("#target1").width());

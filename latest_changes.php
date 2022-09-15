@@ -19,11 +19,9 @@ $person_cls = New person_cls;
 $person_qry= "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
 	FROM humo_persons
 	WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')";
-
 $person_qry.= " UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
 	FROM humo_persons
 	WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NULL)";
-
 $person_qry.= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,100";
 
 $search_name='';

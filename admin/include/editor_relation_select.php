@@ -36,25 +36,6 @@ if($search_quicksearch_parent != '') {
 	// *** In case someone entered "Mons, Huub" using a comma ***
 	$search_quicksearch_parent = str_replace(',','',$search_quicksearch_parent);
 
-	/*
-	// *** Search for man ***
-	$parents= "(SELECT * FROM humo_families, humo_persons
-		WHERE fam_man=pers_gedcomnumber AND pers_tree_id='".$tree_id."' AND fam_tree_id='".$tree_id."'
-		AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch_parent%'
-		OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch_parent%'
-		OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch_parent%'
-		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch_parent%'))";
-
-	// *** Search for woman ***
-	$parents.= " UNION (SELECT * FROM humo_families, humo_persons
-		WHERE fam_woman=pers_gedcomnumber AND pers_tree_id='".$tree_id."' AND fam_tree_id='".$tree_id."'
-		AND (CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%$search_quicksearch_parent%'
-		OR CONCAT(pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%$search_quicksearch_parent%'
-		OR CONCAT(pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%$search_quicksearch_parent%'
-		OR CONCAT(REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%$search_quicksearch_parent%'))
-		ORDER BY fam_gedcomnumber";
-	*/
-
 	// *** Search for man and woman ***
 	$parents= "(SELECT * FROM humo_families, humo_persons
 		WHERE

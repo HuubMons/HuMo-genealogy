@@ -150,7 +150,7 @@ if($screen_mode=='PDF') {
 	//$title=pdf_convert(__('Ancestor report').__(' of ').str_replace("&quot;",'"',$name["standard_name"]),0,'C');
 	$title=pdf_convert(__('Ancestor report').__(' of ').pdf_convert($name["standard_name"]),0,'C');
 
-	$pdf->SetTitle($title);
+	$pdf->SetTitle($title,true);
 	$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 	$pdf->AddPage();
 
@@ -546,7 +546,6 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 						echo '<tr><td>&nbsp;</td><td>';
 						echo '<span class="marriage">';
 					}
-					// *** $family_privacy='1' betekent filteren ***
 					if ($family_privacy){
 						if($screen_mode!='PDF' AND $screen_mode!='RTF') {
 							echo __(' to: ');
@@ -579,6 +578,9 @@ if ($screen_mode!='ancestor_chart' AND $screen_mode!='ancestor_sheet' AND $scree
 						//}
 					}
 					else{
+// To calculate age by marriage.
+$parent1Db=$person_manDb;
+$parent2Db=$person_womanDb;
 						if($screen_mode!='PDF' AND $screen_mode!='RTF' ) {
 							echo $marriage_cls->marriage_data();
 						}
@@ -908,8 +910,8 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	// Specific code for ancestor chart:
 
 	if($screen_mode!="ancestor_sheet" AND $screen_mode!= "ASPDF" AND $hourglass===false) {
-		echo '<script type="text/javascript" src="include/jqueryui/js/html2canvas.js"></script>';
-		echo '<script type="text/javascript" src="include/jqueryui/js/jquery.plugin.html2canvas.js"></script>';
+		echo '<script type="text/javascript" src="include/html2canvas/html2canvas.min.js"></script>';
+
 		echo '<div style="text-align:center;">';
 		echo '<br><input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow popup!)').'" onClick="showimg();">';
 		echo '</div>';
@@ -938,9 +940,9 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	//if ($sexe[1] == 'M'){ $sexe_colour=' ancestor_man'; }
 	if ($sexe[1] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0"; }
 	if ($sexe[1] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
-	//echo '<div class="ancestor_name'.$sexe_colour.'" style="top: 520px; left: '.$left.'px; height: 80px; width:180px;';
-	//echo '<div class="ancestor_name'.$sexe_colour.'" align="left" style="top: 520px; left: '.$left.'px; height: 80px; width:200px;';
-	echo '<div class="ancestor_name'.$sexe_colour.'" align="left" style="background-color:'.$backgr_col.'; top: 520px; left: '.$left.'px; height: 80px; width:200px;';
+	//echo '<div class="ancestorName'.$sexe_colour.'" style="top: 520px; left: '.$left.'px; height: 80px; width:180px;';
+	// *** No _ character allowed in name of CSS class because of javascript ***
+	echo '<div class="ancestorName'.$sexe_colour.'" align="left" style="background-color:'.$backgr_col.'; top: 520px; left: '.$left.'px; height: 80px; width:200px;';
 	echo '">';
 	echo ancestor_chart_person('1', 'large');
 	echo '</div>';
@@ -957,7 +959,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		//if ($sexe[$i+1] == 'M'){ $sexe_colour=' ancestor_man'; }
 		if ($sexe[$i+1] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0"; }
 		if ($sexe[$i+1] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top-520)+($i*480)).'px; left: '.($left+8).'px; height: 80px; width:200px;';
+		echo '<div class="ancestorName'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top-520)+($i*480)).'px; left: '.($left+8).'px; height: 80px; width:200px;';
 		echo '">';
 		echo ancestor_chart_person($i+1, 'large');
 		echo '</div>';
@@ -977,7 +979,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		//if ($sexe[$i+3] == 'M'){ $sexe_colour=' ancestor_man'; }
 		if ($sexe[$i+3] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0";}
 		if ($sexe[$i+3] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top-279)+($i*240)).'px; left: '.($left+40).'px; height: 80px; width:200px;';
+		echo '<div class="ancestorName'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top-279)+($i*240)).'px; left: '.($left+40).'px; height: 80px; width:200px;';
 		echo '">';
 		echo ancestor_chart_person($i+3, 'large');
 		echo '</div>';
@@ -1000,7 +1002,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		//if ($sexe[$i+7] == 'M'){ $sexe_colour=' ancestor_man'; }
 		if ($sexe[$i+7] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0";}
 		if ($sexe[$i+7] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top+265)+($i*120)).'px; left: '.($left+40).'px; height: 80px; width:200px;';
+		echo '<div class="ancestorName'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top+265)+($i*120)).'px; left: '.($left+40).'px; height: 80px; width:200px;';
 		echo '">';
 		echo ancestor_chart_person($i+7, 'large');
 		echo '</div>';
@@ -1023,7 +1025,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		//if ($sexe[$i+15] == 'M'){ $sexe_colour=' ancestor_man'; }
 		if ($sexe[$i+15] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0";}
 		if ($sexe[$i+15] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top+125)+($i*60)).'px; left: '.($left+40).'px; height: 50px; width:200px;';
+		echo '<div class="ancestorName'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top+125)+($i*60)).'px; left: '.($left+40).'px; height: 50px; width:200px;';
 		echo '">';
 		echo ancestor_chart_person($i+15, 'medium');
 		echo '</div>';
@@ -1046,7 +1048,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 		//if ($sexe[$i+31] == 'M'){ $sexe_colour=' ancestor_man'; }
 		if ($sexe[$i+31] == 'F'){ $sexe_colour=' ancestor_woman'; $backgr_col = "#FBDEC0"; }
 		if ($sexe[$i+31] == 'M'){ $sexe_colour=' ancestor_man'; $backgr_col =  "#C0F9FC";}
-		echo '<div class="ancestor_name'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top+66)+($i*30)).'px; left: '.($left+40).'px; height:16px; width:200px;';
+		echo '<div class="ancestorName'.$sexe_colour.'" style="background-color:'.$backgr_col.'; top: '.(($top+66)+($i*30)).'px; left: '.($left+40).'px; height:16px; width:200px;';
 		echo '">';
 		echo ancestor_chart_person($i+31, 'small');
 		echo '</div>';
@@ -1058,6 +1060,7 @@ echo '<div>';
 	// before creating the image we want to hide unnecessary items such as the help link, the menu box etc
 	// we also have to set the width and height of the "png" div (this can't be set before because then the double scrollbars won't work
 	// after generating the image, all those items are returned to their  previous state....
+	// *** 19-08-2022: script updated by Huub ***
 	echo '<script type="text/javascript">';
 	echo "
 	function showimg() {
@@ -1066,8 +1069,19 @@ echo '<div>';
  		document.getElementById('imgbutton').style.visibility = 'hidden';
 		document.getElementById('png').style.width = '".$divlen."px';
 		document.getElementById('png').style.height= 'auto';
-		html2canvas( [ document.getElementById('png') ], {
-			onrendered: function( canvas ) {
+
+		// *** Change ancestorName class, DO NOT USE A _ CHARACTER IN CLASS NAME ***
+		const el = document.querySelectorAll('.ancestorName');
+		el.forEach((elItem) => {
+			//elItem.style.setProperty('border-radius', 'none', 'important');
+			//elItem.style.setProperty('border-radius', '0px', 'important');
+			elItem.style.setProperty('box-shadow', 'none', 'important');
+		});
+
+		//html2canvas( [ document.getElementById('png') ], {
+		//	onrendered: function( canvas ) {
+
+		html2canvas(document.querySelector('#png')).then(canvas => {
 				var img = canvas.toDataURL();
 				/*   document.getElementById('helppopup').style.visibility = 'visible';
 				document.getElementById('menubox').style.visibility = 'visible'; */
@@ -1079,10 +1093,11 @@ echo '<div>';
 				newWin.document.write('<!DOCTYPE html><head></head><body>".__('Right click on the image below and save it as a .png file to your computer.<br>You can then print it over multiple pages with dedicated third-party programs, such as the free: ')."<a href=\"http://posterazor.sourceforge.net/index.php?page=download&lang=english\" target=\"_blank\">\"PosteRazor\"</a><br>".__('If you have a plotter you can use its software to print the image on one large sheet.')."<br><br><img src=\"' + img + '\"></body></html>');
 				newWin.document.close();
 				}
-		});
+		//}
+		);
 	}
 	";
-	echo "</script>";
+	echo '</script>';
 
 ?>
 	<script type="text/javascript">
@@ -1446,7 +1461,6 @@ echo '<div>';
 			}
 			$pdf->SetX($posx);
 			$posy = $pdf->GetY();
-			
 		}
 
 		//initialize pdf generation
@@ -1458,7 +1472,7 @@ echo '<div>';
 		$title=pdf_convert(__('Ancestor sheet').__(' of ').$name["standard_name"]);
 
 		$pdf=new PDF();
-		$pdf->SetTitle($title);
+		$pdf->SetTitle($title, true);
 		$pdf->SetAuthor('Huub Mons (pdf: Yossi Beck)');
 		$pdf->SetTopMargin(4);
 		$pdf->SetAutoPageBreak(false);

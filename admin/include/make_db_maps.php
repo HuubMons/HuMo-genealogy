@@ -83,7 +83,8 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 					//$address = $json->results[0]->formatted_address;
 					$latitude = $json->results[0]->geometry->location->lat;
 					$longitude = $json->results[0]->geometry->location->lng;
-					$dbh->query("INSERT INTO humo_location SET location_location='".$loc."', location_lat='".$latitude."', location_lng='".$longitude."'");
+					//$dbh->query("INSERT INTO humo_location SET location_location='".$loc."', location_lat='".$latitude."', location_lng='".$longitude."'");
+					$dbh->query("INSERT INTO humo_location SET location_location='".safe_text_db($value)."', location_lat='".$latitude."', location_lng='".$longitude."'");
 				}
 			//}
 		}
@@ -248,7 +249,7 @@ else {  // main screen
 		while (@$no_locationDb=$no_location->fetch(PDO::FETCH_OBJ)){
 			$non_exist_locs[] = $no_locationDb->no_location_location; 
 		}
-		
+
 		while (@$personDb=$map_person->fetch(PDO::FETCH_OBJ)){ // loop thru all locations in database
 			foreach($non_exist_locs AS $value) {  // loop thru stored list of non-indexable loactions
 				if($value == $personDb->pers_birth_place) { // check if this non-indexable location indeed still exists in the birth/death places in database
@@ -724,7 +725,7 @@ else {  // main screen
 		else {
 			$_SESSION['add_locations']=$add_locations;
 			$new_locations = count($add_locations);
-			
+
 			$map_totalsecs = $new_locations * 1.25;
 			$map_mins = floor($map_totalsecs / 60);
 			$map_secs = $map_totalsecs % 60;
@@ -739,10 +740,11 @@ else {  // main screen
 			echo $one_tree;
 			printf(__('There are %s new unique birth/ death locations to add to the database.'), $new_locations);
 			echo '<br><br>';
-			
-foreach($add_locations AS $val) {
-		echo $val."<br>";
-}
+
+			// *** Show list of locations to add to the database ***
+			foreach($add_locations AS $val) {
+				echo $val."<br>";
+			}
 
 			echo '<br>';
 			printf(__('This will take approximately <b>%1$d minutes and %2$d seconds.</b>'), $map_mins, $map_secs);
@@ -1016,9 +1018,9 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			//  we added new location
 			//  make sure this location doesn't exist yet! otherwise we get doubles
 			//  if the location already exists do as if "change" was pressed.
-			@$result = $dbh->query("SELECT location_location FROM humo_location WHERE location_location = '".$_POST['add_name']."'");
+			@$result = $dbh->query("SELECT location_location FROM humo_location WHERE location_location = '".safe_text_db($_POST['add_name'])."'");
 			if($result->rowCount()==0) { // doesn't exist yet
-				$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".$_POST['add_name']."','".floatval($_POST['add_lat'])."','".floatval($_POST['add_lng'])."') ");
+				$dbh->query("INSERT INTO humo_location (location_location, location_lat, location_lng) VALUES('".safe_text_db($_POST['add_name'])."','".floatval($_POST['add_lat'])."','".floatval($_POST['add_lng'])."') ");
 				echo '<span style="color:red;font-weight:bold;">'.__('Added location:').' '.str_replace("\'","'",safe_text_db($_POST['add_name'])).'</span><br>';
 			}
 			else { // location already exists, just update the lat/lng
@@ -1043,7 +1045,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 				if($loc_listDb->location_location == $_POST['loc_del_name']) {
 					$selected=" SELECTED";
 				}
-			}	
+			}
 			elseif(isset($_POST['loc_add'])) {
 				if($loc_listDb->location_location == $_POST['add_name']) {
 					$selected=" SELECTED";
@@ -1064,7 +1066,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 
 		if(isset($_POST['loc_add'])) {
 			// we have added or changed a location - so show that location after page load
-			$result = $dbh->query("SELECT * FROM humo_location WHERE location_location = '".$_POST['add_name']."'");
+			$result = $dbh->query("SELECT * FROM humo_location WHERE location_location = '".safe_text_db($_POST['add_name'])."'");
 		}
 		elseif(isset($_POST['loc_change']) OR isset($_POST['yes_change']) OR isset($_POST['cancel_change'])) {
 			// we have changed a location by "Change" or by "YES" - so show that location after page load

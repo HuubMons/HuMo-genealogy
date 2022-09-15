@@ -19,22 +19,28 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			//	if ($family_expanded==true){ $text.='<br>'; } else{ $text.='. '; }
 			//}
 			if ($nr_addresses=='1'){
-				$residence=__('residence');
+				$residence=ucfirst(__('residence'));
 				if ($connect_kind=='person') $templ_person["address_start"]=ucfirst(__('residence')).': ';
-				if ($connect_kind=='family') $templ_relation["address_start"]=ucfirst(__('residence')).': ';
+				if ($connect_kind=='family'){
+					$templ_relation["address_start"]=__('Residence (family)').': ';
+					$residence=__('Residence (family)');
+				}
 			}
 			else{
-				$residence=__('residences');
+				$residence=ucfirst(__('residences'));
 				if ($connect_kind=='person') $templ_person["address_start"]=ucfirst(__('residences')).': ';
-				if ($connect_kind=='family') $templ_relation["address_start"]=ucfirst(__('residences')).': ';
+				if ($connect_kind=='family'){
+					$templ_relation["address_start"]=__('Residences (family)').': ';
+					$residence=__('Residence (family)');
+				}
 			}
 
 			if($temp) { if ($connect_kind=='person') $templ_person[$temp].=". "; }
 			//if($temp) { if ($connect_kind=='family') $templ_relation[$temp].=". "; }
 
-			//$templ_person["address_exist"]=ucfirst($residence).': ';
+			//$templ_person["address_exist"]=$residence.': ';
 			//$temp="address_exist";
-			$text.='<b>'.ucfirst($residence).':</b> ';
+			$text.='<b>'.$residence.':</b> ';
 		}
 		if ($address_nr>1){
 			$text.=', ';
@@ -46,6 +52,7 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 		if ($connectDb->address_shared=='1')
 			$text.='<a href="'.$uri_path.'address.php?gedcomnumber='.$connectDb->connect_item_id.'">';
 
+			// *** Address ***
 			//if ($user['group_addresses']=='j' AND $connectDb->address_address){
 			if ($user['group_living_place']=='j' AND $connectDb->address_address){
 				$text.=' '.$connectDb->address_address.' ';
@@ -61,6 +68,7 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 				}
 			}
 
+			// *** Zip code ***
 			if ($connectDb->address_zip){
 				$text.=' '.$connectDb->address_zip.' ';
 
@@ -81,8 +89,8 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 				}
 			}
 
+			// *** Place ***
 			$text.=$connectDb->address_place;
-
 			// *** PDF export ***
 			if ($connect_kind=='person'){
 				if (isset($templ_person["address_address".$address_nr]))
@@ -108,9 +116,16 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 		if ($connectDb->address_shared=='1')
 			$text.="</a>";
 
+		// *** Phone number ***
 		if ($connectDb->address_phone){
-			$text.=', '.$connectDb->address_phone;
-//PDF
+			//$text.=', '.$connectDb->address_phone;
+			$text.=', '.__('phone').' '.$connectDb->address_phone;
+
+			// *** PDF export ***
+			if (isset($templ_relation["address_phone".$address_nr]))
+				$templ_person["address_phone".$address_nr].=', '.__('phone').' '.$connectDb->address_phone;
+			else
+				$templ_person["address_phone".$address_nr]=', '.__('phone').' '.$connectDb->address_phone;
 		}
 
 		// *** Don't use address_date. Using connect_date for all adresses ***
@@ -183,16 +198,16 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 		// *** Show source by address ***
 		//if ($connect_kind=='person'){
-		//	$source=show_sources2("person","pers_address_source",$connectDb->address_gedcomnr);
+		//	$source_array=show_sources2("person","pers_address_source",$connectDb->address_gedcomnr);
 		//}
 		//else{
-		//	$source=show_sources2("family","fam_address_source",$connectDb->address_gedcomnr);
+		//	$source_array=show_sources2("family","fam_address_source",$connectDb->address_gedcomnr);
 		//}
-		$source=show_sources2("address","address_source",$connectDb->address_gedcomnr);
-		if ($source){
+		$source_array=show_sources2("address","address_source",$connectDb->address_gedcomnr);
+		if ($source_array){
 			// *** PDF export ***
 			if ($connect_kind=='person'){
-				$templ_person["address_source".$address_nr]=$source;
+				$templ_person["address_source".$address_nr]=$source_array['text'];
 				// *** Extra item, so it's possible to add a comma or space ***
 				if($templ_person["address_source".$address_nr]!=''){
 					$templ_person["address_add"]='';
@@ -200,25 +215,26 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 				}
 			}
 			if ($connect_kind=='family'){
-				$templ_relation["address_source".$address_nr]=$source;
+				$templ_relation["address_source".$address_nr]=$source_array['text'];
 				// *** Extra item, so it's possible to add a comma or space ***
 				$templ_relation["address_add"]='';
 				$temp="address_add";
 			}
-			$text.=$source;
+			$text.=$source_array['text'];
 		}
 
 		// *** April 2022: Show source by person/family-address-connection ***
 		if ($connect_kind=='person'){
-			$source=show_sources2("person","pers_address_connect_source",$connectDb->connect_id);
+			$source_array=show_sources2("person","pers_address_connect_source",$connectDb->connect_id);
 		}
 		else{
-			$source=show_sources2("family","fam_address_connect_source",$connectDb->connect_id);
+			$source_array=show_sources2("family","fam_address_connect_source",$connectDb->connect_id);
 		}
-		if ($source){
+		if ($source_array){
 			// *** PDF export ***
 			if ($connect_kind=='person'){
-				$templ_person["address_source".$address_nr]=$source;
+				$templ_person["address_source".$address_nr]=$source_array['text'];
+
 				// *** Extra item, so it's possible to add a comma or space ***
 				if($templ_person["address_source".$address_nr]!=''){
 					$templ_person["address_add"]='';
@@ -226,12 +242,13 @@ function show_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 				}
 			}
 			if ($connect_kind=='family'){
-				$templ_relation["address_source".$address_nr]=$source;
+				$templ_relation["address_source".$address_nr]=$source_array['text'];
+
 				// *** Extra item, so it's possible to add a comma or space ***
 				$templ_relation["address_add"]='';
 				$temp="address_add";
 			}
-			$text.=$source;
+			$text.=$source_array['text'];
 		}
 
 	}

@@ -99,7 +99,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_connect_kind=='source') $event_group='event_source=1';
 
 	// *** Show all events EXCEPT for events already processed by person data (profession etc.) ***
-	
+
 	// Don't show Brit Mila and/or Bar Mitzva if user set them to be displayed among person data
 	$hebtext='';
 	//if($humo_option['admin_brit']=="y") {  $hebtext .= " AND event_gedcom!='_BRTM'  "; }
@@ -520,9 +520,13 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		//}
 		//$text.=$temp_text;
 
-		// *** Remark: in editor_inc.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
-		$text.='<input type="text" name="event_event_profession" placeholder="'.__('Profession').'" value="" size="35">';
-		$text.=' <input type="Submit" name="event_add_profession" value="'.__('Add').'">';
+		// *** Skip for newly added person ***
+		if (!isset($_GET['add_person'])){
+			// *** Remark: in editor_inc.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
+			$text.='<input type="text" name="event_event_profession" placeholder="'.__('Profession').'" value="" size="35">';
+
+			$text.=' <input type="Submit" name="event_add_profession" value="'.__('Add').'">';
+		}
 
 		$text.='</td>';
 		$text.='<td></td>';
@@ -768,7 +772,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	$data_list_qry=$dbh->query($qry);
 	while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
-
 		$text.='<input type="hidden" name="event_id['.$data_listDb->event_id.']" value="'.$data_listDb->event_id.'">';
 
 		// *** Send old values, so changes of values can be detected ***
@@ -1335,37 +1338,22 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		}
 	}
 
-
-	// IS THIS CODE STILL IN USE?
+	// *** Directly add a first profession for new person ***
 	if(isset($_GET['add_person'])) {
-		$text.='<input type="hidden" name="event_profession" value="">';
+		$text.='<tr>';
+			$text.='<td></td>';
+			$text.='<td style="border-right:0px;">'.__('Profession').'</td>';
+			$text.='<td>';
+				// *** Profession ***
+				$text.='<input type="text" name="event_profession" placeholder="'.__('Profession').'" value="" size="60"><br>';
 
-		$change_bg_colour='';
-		$internal_link='#profession';
-		//$text.='<tr style="display:none;" class="row13" name="row13">';
-		$text.='<tr class="row13" name="row13">';
-		// *** Show name of event and [+] link ***
-		$text.='<td>';
-		//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;event_person=1&amp;add_person=1&amp;event_kind=profession&amp;event_drop=';
-		//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
-		//$text.='"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" border="0" alt="down"></a>';
-		$text.='</td>';
-		$text.='<td style="border-right:0px;">';
-		$text.=__('Profession');
-		$text.='<br>';
-		$text.='</td>';
-		$text.='<td style="border-left:solid 2px #0000FF;">';
-		$text.='<input type="text" name="event_profession" value="" size="60">';
+				// *** Date and place by event ***
+				$text.=$editor_cls->date_show("","event_date_profession","").' '.__('place').' <input type="text" name="event_place_profession" placeholder="'.__('place').'" value="" size="'.$field_date.'"><br>';
 
-		// *** Date and place by event ***
-		$text.='<br>'.$editor_cls->date_show("","event_date_profession","").' '.__('place').' <input type="text" name="event_place_profession" placeholder="'.__('place').'" value="" size="'.$field_date.'">';
-
-		// *** Text by event ***
-		$text.='<br><textarea rows="1" name="event_text_profession" '.$field_text.' placeholder="'.__('text').'">'.$editor_cls->text_show("").'</textarea>';
-
-		$text.='</td>';
-		$text.='<td>';
-		$text.='</td>';
+				// *** Text by event ***
+				$text.='<textarea rows="1" name="event_text_profession" '.$field_text.' placeholder="'.__('text').'">'.$editor_cls->text_show("").'</textarea>';
+			$text.='</td>';
+			$text.='<td></td>';
 		$text.='</tr>';
 	}
 

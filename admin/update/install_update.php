@@ -36,6 +36,7 @@ if (isset($update['up_to_date']) AND $update['up_to_date']=='yes'){
 	else{
 		echo __('no version number available...');
 	}
+	echo ' ';
 	printf(__('%s is up-to-date!'),'HuMo-genealogy');
 	echo ' <a href="'.$path_tmp.'page=install_update&re_install=1&auto=1&update_check=1">';
 	printf(__('If needed: re-install all or some of the %s files'),'HuMo-genealogy');
@@ -132,6 +133,34 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 							$download=true;
 						}
 					}
+
+					// *** Download failed from humo-gen.com, now try GitHub ***
+					if ($download==false){
+						//$source=$update['version_auto_download'];
+						$source='https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip';
+						$destination='update/humo-gen_update.zip';
+						$resource = curl_init();
+						curl_setopt($resource, CURLOPT_URL, $source);
+						curl_setopt($resource, CURLOPT_HEADER, false);
+						curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
+						curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
+
+						// *** Added for GitHub ***
+						curl_setopt($resource, CURLOPT_FOLLOWLOCATION, true);
+						curl_setopt($resource, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+
+						$content = curl_exec($resource);
+						curl_close($resource);
+						if($content != ''){
+							$fp = fopen($destination, 'w');
+							$fw = fwrite($fp, $content);
+							fclose($fp);
+							if($fw != false){
+								$download=true;
+							}
+						}
+					}
+
 				}
 				// *** copy HuMo-genealogy to server using copy ***
 				else{
@@ -152,6 +181,15 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 					$zip->extractTo('update/humo-gen_update');
 					$zip->close();
 					echo __('File successfully unzipped!').'<br>';
+
+					// *** July 2022: Archive from GitHub contains master folder ***
+					// Change folder: update/humo-gen_update/HuMo-genealogy-master
+					// Into: update/humo-gen_update
+					if (is_dir('update/humo-gen_update/HuMo-genealogy-master')){
+						rename ('update/humo-gen_update','update/humo-gen_update_temp');
+						rename ('update/humo-gen_update_temp/HuMo-genealogy-master','update/humo-gen_update');
+						rmdir ('update/humo-gen_update_temp');
+					}
 
 					echo '<br>'.__('Step 2)').' <a href="'.$path_tmp.'page=install_update&auto=1&step=2&update_check=1';
 					if (isset($_GET['install_beta'])){ echo '&install_beta=1'; }
@@ -302,7 +340,7 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 
 			if ($_GET['step']=='3' AND DATABASE_HOST){
 				echo '<br>'.__('Update new db_login.php file...').'<br>';
-				
+
 				$login_file=CMS_ROOTPATH."include/db_login.php";
 				if (!is_writable($login_file)) {
 					$result_message='<b> *** '.__('The configuration file is not writable! Please change the include/db_login.php file manually.').' ***</b>';

@@ -48,10 +48,10 @@ td.style_tree_text a {color: #6600cc;}
 .standard_header { color: #eeeeee; }
 
 /* Ancestor graphical */
-div.ancestor_name { 
+div.ancestorName {
 	border-color: #ddddff;
 	color: #5555bb; font-family: "arial narrow"; font-size: 75%; }
-div.ancestor_name a {
+div.ancestorName a {
 	color: #222222;
 	font-weight: bold; } /* Link */
 div.ancestor_line {

@@ -451,7 +451,6 @@ if (isset($_GET['add_person'])){
 	$new_gedcomnumber='I'.$db_functions->generate_gedcomnr($tree_id,'person');
 }
 
-//if (isset($_POST['person_add'])){
 if (isset($_POST['person_add']) OR isset($_POST['relation_add'])){
 	// *** Added new person in relation, store original person gedcomnumber ***
 	if (isset($_POST['relation_add'])){
@@ -551,10 +550,10 @@ if (isset($_POST['person_add']) OR isset($_POST['relation_add'])){
 			event_connect_kind='person',
 			event_connect_id='".$new_gedcomnumber."',
 			event_kind='profession',
-			event_event='".$_POST["event_profession"]."',
+			event_event='".safe_text_db($_POST["event_profession"])."',
 			event_order='1',
-			event_place='".$event_place."',
-			event_text='".$event_text."',
+			event_place='".safe_text_db($event_place)."',
+			event_text='".safe_text_db($event_text)."',
 			event_date='".$event_date."',
 			event_new_user='".$username."',
 			event_new_date='".$gedcom_date."',
@@ -809,6 +808,30 @@ if (isset($_POST['add_parents2'])){
 		pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
 
+	// *** At this moment only event_profession1 is used. ***
+	if(isset($_POST["event_profession1"]) AND $_POST["event_profession1"]!="" AND $_POST["event_profession1"]!= "Profession") {
+		$event_text="";
+		$event_date="";
+		$event_place="";
+		if(isset($_POST["event_text_profession1"]))  $event_text=$_POST["event_text_profession1"];
+		if(isset($_POST["event_date_profession1"]))  $event_date=$_POST["event_date_profession1"];
+		if(isset($_POST["event_place_profession1"])) $event_place=$_POST["event_place_profession1"];
+		$sql="INSERT INTO humo_events SET
+			event_tree_id='".$tree_id."',
+			event_connect_kind='person',
+			event_connect_id='".$man_gedcomnumber."',
+			event_kind='profession',
+			event_event='".safe_text_db($_POST["event_profession1"])."',
+			event_order='1',
+			event_place='".safe_text_db($event_place)."',
+			event_text='".safe_text_db($event_text)."',
+			event_date='".safe_text_db($event_date)."',
+			event_new_user='".$username."',
+			event_new_date='".$gedcom_date."',
+			event_new_time='".$gedcom_time."'";
+		$result=$dbh->query($sql);
+	}
+
 	// only needed for jewish settings
 	if($humo_option['admin_hebnight']=="y") {
 		$sql="UPDATE humo_persons SET 
@@ -841,6 +864,30 @@ if (isset($_POST['add_parents2'])){
 		pers_new_date='".$gedcom_date."',
 		pers_new_time='".$gedcom_time."'";
 	$result=$dbh->query($sql);
+
+	// *** At this moment only event_profession1 is used. ***
+	if(isset($_POST["event_profession2"]) AND $_POST["event_profession2"]!="" AND $_POST["event_profession2"]!= "Profession") {
+		$event_text="";
+		$event_date="";
+		$event_place="";
+		if(isset($_POST["event_text_profession2"]))  $event_text=$_POST["event_text_profession2"];
+		if(isset($_POST["event_date_profession2"]))  $event_date=$_POST["event_date_profession2"];
+		if(isset($_POST["event_place_profession2"])) $event_place=$_POST["event_place_profession2"];
+		$sql="INSERT INTO humo_events SET
+			event_tree_id='".$tree_id."',
+			event_connect_kind='person',
+			event_connect_id='".$woman_gedcomnumber."',
+			event_kind='profession',
+			event_event='".safe_text_db($_POST["event_profession2"])."',
+			event_order='1',
+			event_place='".safe_text_db($event_place)."',
+			event_text='".safe_text_db($event_text)."',
+			event_date='".safe_text_db($event_date)."',
+			event_new_user='".$username."',
+			event_new_date='".$gedcom_date."',
+			event_new_time='".$gedcom_time."'";
+		$result=$dbh->query($sql);
+	}
 
 	// only needed for jewish settings
 	if($humo_option['admin_hebnight']=="y") {
@@ -1059,7 +1106,6 @@ if (isset($_GET['child_up'])){
 
 
 // *** Add new family with new partner ***
-//if (isset($_GET['relation_add'])){
 if (isset($_POST['relation_add'])){
 	// *** Generate new GEDCOM number ***
 	$fam_gedcomnumber='F'.$db_functions->generate_gedcomnr($tree_id,'family');
@@ -1099,7 +1145,7 @@ if (isset($_POST['relation_add'])){
 	fam_new_time='".$gedcom_time."'";
 //echo $sql;
 	$result=$dbh->query($sql);
-	
+
 	// only needed for jewish settings
 	if($humo_option['admin_hebnight']=="y") {
 		$sql="UPDATE humo_families SET 
@@ -1130,15 +1176,15 @@ if (isset($_POST['relation_add'])){
 	*/
 	// *** Update fams for new added partner ***
 	$sql="UPDATE humo_persons SET
-	pers_famc='', pers_fams='".safe_text_db($fam_gedcomnumber)."'
-	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($partner_gedcomnumber)."'";
+		pers_famc='', pers_fams='".safe_text_db($fam_gedcomnumber)."'
+		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($partner_gedcomnumber)."'";
 	$result=$dbh->query($sql);
 
 	// extra UPDATE queries if jewish dates enabled
 	if($humo_option['admin_hebnight']=="y") {
 		$sql="UPDATE humo_persons SET 
-		pers_birth_date_hebnight='', pers_death_date_hebnight='', pers_buried_date_hebnight='' 
-		WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($partner_gedcomnumber)."'";
+			pers_birth_date_hebnight='', pers_death_date_hebnight='', pers_buried_date_hebnight='' 
+			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($partner_gedcomnumber)."'";
 		$result=$dbh->query($sql);
 	}
 
@@ -1274,7 +1320,7 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 		fam_changed_time='".$gedcom_time."'
 		WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".safe_text_db($_POST['marriage'])."'";
 		$result=$dbh->query($sql);
-		
+
 		// only needed for jewish settings
 		if($humo_option['admin_hebnight']=="y") {
 			$f_m_n_d_h = ""; $f_m_d_h = ""; $f_m_c_d_h = ""; $f_m_c_n_d_h="";

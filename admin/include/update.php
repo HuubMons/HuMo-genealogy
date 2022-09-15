@@ -236,6 +236,7 @@ else{
 	ob_flush();
 	flush(); // IE
 
+
 	/*	END OF MAIN UPDATE SCRIPT
 		*** VERY IMPORTANT REMARKS FOR PROGRAMMERS ***
 		* 1) Change update_status in install.php

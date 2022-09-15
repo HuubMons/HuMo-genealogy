@@ -47,9 +47,9 @@ function source_display($sourcenum) {
 
 	if ($sourceDb->source_title){
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Title').": ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Write(6,$sourceDb->source_title."\n");
 		}
 		else {
@@ -58,9 +58,9 @@ function source_display($sourcenum) {
 	}
 	if ($sourceDb->source_date){
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Date').": ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Write(6,language_date(strtolower($sourceDb->source_date))."\n");
 		}
 		else {
@@ -83,14 +83,14 @@ function source_display($sourcenum) {
 		}
 		*/
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Publication').": ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			//if($pdflink==1) {
 			if (substr($source_publ,0,7)=='http://' OR substr($source_publ,0,8)=='https://'){
-				$pdf->SetFont('Arial','U',10);  $pdf->SetTextColor(28,28,255);
+				$pdf->SetFont('DejaVu','B',10);  $pdf->SetTextColor(28,28,255);
 				$pdf->Write(6,strip_tags($source_publ)."\n",strip_tags($source_publ));
-				$pdf->SetFont('Arial','',10);  $pdf->SetTextColor(0);
+				$pdf->SetFont('DejaVu','',10);  $pdf->SetTextColor(0);
 			}
 			else {
 				$pdf->Write(6,strip_tags($source_publ)."\n");
@@ -107,9 +107,9 @@ function source_display($sourcenum) {
 	}
 	if ($sourceDb->source_place){
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Place').": ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Write(6,$sourceDb->source_place."\n");
 		}
 		else {
@@ -118,9 +118,9 @@ function source_display($sourcenum) {
 	}
 	if ($sourceDb->source_refn){
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Own code').": ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Write(6,$sourceDb->source_refn."\n");
 		}
 		else {
@@ -129,9 +129,9 @@ function source_display($sourcenum) {
 	}
 	if ($sourceDb->source_auth){
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Author').": ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Write(6,$sourceDb->source_auth."\n");
 		}
 		else {
@@ -140,9 +140,9 @@ function source_display($sourcenum) {
 	}
 	if ($sourceDb->source_subj){
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Subject').": ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Write(6,$sourceDb->source_subj."\n");
 		}
 		else {
@@ -151,9 +151,9 @@ function source_display($sourcenum) {
 	}
 	if ($sourceDb->source_item){
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Nr.').": ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Write(6,$sourceDb->source_item."\n");
 		}
 		else {
@@ -162,9 +162,9 @@ function source_display($sourcenum) {
 	}
 	if ($sourceDb->source_kind){
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Kind').": ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Write(6,$sourceDb->source_kind."\n");
 		}
 		else {
@@ -173,9 +173,9 @@ function source_display($sourcenum) {
 	}
 	if ($sourceDb->source_repo_caln){
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Archive')." ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Write(6,$sourceDb->source_repo_caln."\n");
 		}
 		else {
@@ -183,9 +183,9 @@ function source_display($sourcenum) {
 		}
 	if ($sourceDb->source_repo_page){
 		if($screen_mode=="PDF") {
-			$pdf->SetFont('Arial','B',10);
+			$pdf->SetFont('DejaVu','B',10);
 			$pdf->Write(6,__('Page')." ");
-			$pdf->SetFont('Arial','',10);
+			$pdf->SetFont('DejaVu','',10);
 			$pdf->Write(6,$sourceDb->source_repo_page."\n");
 		}
 		else {
@@ -361,7 +361,8 @@ function source_display($sourcenum) {
 					// *** Sources by event ***
 					$event_Db=$db_functions->get_event ($connectDb->connect_connect_id);
 					// *** Family source ***
-					if (isset($event_Db->event_connect_kind) AND $event_Db->event_connect_kind=='family' AND $event_Db->event_connect_id){						print __('Source for family:');
+					if (isset($event_Db->event_connect_kind) AND $event_Db->event_connect_kind=='family' AND $event_Db->event_connect_id){
+						echo __('Source for family:');
 						$familyDb=$db_functions->get_family ($event_Db->event_connect_id);
 						$personDb=person_data($familyDb);
 

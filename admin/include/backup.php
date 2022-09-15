@@ -99,18 +99,17 @@ else {
 		}
 	} 
 	echo '1.&nbsp;a.&nbsp;<label for="files"  class="btn" style="padding-top:3px;padding-bottom:3px;padding-left:8px;padding-right:8px;border:0.5px solid #939393;background-image: url('.CMS_ROOTPATH.'images/lightgray.png)">'.__('Select a file').'</label>';
-	echo '<span id="fake_field" style="font-size:95%;padding-left:3px;padding-right:3px;display:inline-block">'.__('no file chosen').'</span>';	
+	echo '<span id="fake_field" style="font-size:95%;padding-left:3px;padding-right:3px;display:inline-block">'.__('no file chosen').'</span>';
 	echo "<input style='margin-top:8px;visibility:hidden' type='file' id='files' name='upload_file'>";
-	echo '
-		<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script>
-		<script>
-		$("#files").change(function() {
-		  filename = this.files[0].name;
-		  $("#fake_field").text(filename);
 
+	// *** jQuery function. This script changes text "no file chosen" into the name of the uploaded file ***
+	// jQueryui is allready included in admin/index.php.
+	echo '<script>
+		$("#files").change(function() {
+			filename = this.files[0].name;
+			$("#fake_field").text(filename);
 		});
-		</script>
-	';
+		</script>';
 
 	echo "<br>&nbsp;&nbsp;&nbsp;&nbsp;b.&nbsp;<input type='submit' style='margin-top:4px' name='upload_the_file' value='".__('Upload')."'>&nbsp;&nbsp;(".__('File will be deleted after successful restore').")<br>";
 	echo '2.&nbsp;<select size="1" style="margin-top:4px;"  name="select_bkfile">';

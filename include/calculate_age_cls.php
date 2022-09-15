@@ -126,7 +126,7 @@ function process_special_text($date1, $date2, $baptism) {
 }
 
 // *** $age_check=false/true. true=show short age text. ***
-function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false) {
+function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false, $age_event='') {
 	global $language;
 
 	// *** handle person born and died BC ***
@@ -193,6 +193,7 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 			}
 			else {
 				if($special_text!=-1) {
+					// *** Used for text like: approximately 1 years married ***
 					$age=$special_text.__('1 years');
 				}
 			}
@@ -252,13 +253,22 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 				}
 			}
 		}
-		if($age) { $age=", ".$age;}
-
+		if($age) {
+			if ($age_event==''){
+				//$age=", ".$age;
+				$age=", ".__('age').' '.$age;
+				// *** Probably needed for some languages, so it's possible to change order of items. ***
+				// *** Problem, texts like: age under 1 year old ***
+				//$age=', '.sprintf('age %s', $age);
+			}
+			else{
+				$age=", ".__('age by marriage').' '.$age;
+			}
+		}
 		if ($calculated_age>120){ $age=''; }
 
 		if ($age_check==true){ $age=$calculated_age; }
 		return($age);
-
 	}
 }
 
@@ -366,6 +376,7 @@ function calculate_marriage($church_marr_date, $marr_date, $end_date, $age_check
 				}
 			}
 		}
+
 		//if($age) {
 		//	$age=" (".$age.' '.__('married').')';
 		//}

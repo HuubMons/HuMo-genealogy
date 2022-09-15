@@ -7,7 +7,7 @@
 *
 * See the manual for basic setup instructions
 *
-* https://www.humo-gen.com
+* https://humo-gen.com
 *
 * ----------
 *
@@ -114,6 +114,135 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 		// *** At this moment there is no separation for front user and admin user... ***
 		include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
 
+		// *** Aug. 2022: Cleanup old HuMo-genealogy files ***
+		if (!isset($humo_option['cleanup_status'])){
+			global $update_dir, $update_files;
+
+			function listFolderFiles2($dir,$exclude,$file_array){
+				global $update_dir, $update_files;
+				$ffs = scandir($dir);
+				foreach($ffs as $ff){
+					if(is_array($exclude) and !in_array($ff,$exclude)){
+						if($ff != '.' && $ff != '..'){
+							// *** Skip media files in ../media/, ../media/cms/ etc.
+							//if (substr($dir,0,8)=='../media' AND !is_dir($dir.'/'.$ff) AND $ff != 'readme.txt'){
+							//	// skip media files
+							//}
+							//else{
+								$update_dir[]=$dir;
+								$update_files[]=$ff;
+								if(is_dir($dir.'/'.$ff)) listFolderFiles2($dir.'/'.$ff,$exclude,$file_array); 
+							//}
+						}
+					}
+				}
+			}
+
+			// *** Remove old files ***
+			$remove_file[]='../admin/include/ckeditor/.htaccess';
+			$remove_file[]='../admin/include/kcfinder/.htaccess';
+			$remove_file[]='gedcom_files/HuMo-gen 2020_05_02 UTF-8.ged';
+			$remove_file[]='gedcom_files/HuMo-gen test gedcomfile.ged'; // *** File is renamed to HuMo-genealogy ***
+			$remove_file[]='../include/.htaccess'; // *** This file blocks loading of several js scripts ***
+			$remove_file[]='../languages/.htaccess'; // *** This file blocks showing of language flag icons ***
+			$remove_file[]='../styles/Blauw.css';
+			$remove_file[]='../styles/Blue.css';
+			$remove_file[]='../styles/Brown.css';
+			$remove_file[]='../styles/Clear White.css';
+			$remove_file[]='../styles/Donkerbruin.css';
+			$remove_file[]='../styles/Elegant Blue.css';
+			$remove_file[]='../styles/Elegant Corsiva.css';
+			$remove_file[]='../styles/Elegant Green.css';
+			$remove_file[]='../styles/Elegant Mauve.css';
+			$remove_file[]='../styles/Elegant_Blue.css';
+			$remove_file[]='../styles/Elegant_Green.css';
+			$remove_file[]='../styles/Experiment_HTML5.css';
+			$remove_file[]='../styles/Green.css';
+			$remove_file[]='../styles/Groen.css';
+			$remove_file[]='../styles/Heelal.css';
+			$remove_file[]='../styles/Mauve fixed menu.css';
+			$remove_file[]='../styles/Mauve left menu.css';
+			$remove_file[]='../styles/Orange.css';
+			$remove_file[]='../styles/Oranje.css';
+			$remove_file[]='../styles/Paars.css';
+			$remove_file[]='../styles/Purple.css';
+
+			foreach($remove_file as $rfile){
+				if (file_exists($rfile)){
+//echo $rfile.'<br>';
+					unlink ($rfile);
+				}
+			}
+
+			// *** Remove old folders ***
+			$remove_folders[]='../fanchart';
+			$remove_folders[]='../fpdf16';
+			$remove_folders[]='../humo_mobile';
+			$remove_folders[]='../include/fpdf16';
+			$remove_folders[]='../include/jqueryui/css';
+			$remove_folders[]='../include/jqueryui/development-bundle';
+			$remove_folders[]='../include/jqueryui/js';
+			$remove_folders[]='../include/lightbox';
+			$remove_folders[]='../include/sliderbar';
+			$remove_folders[]='../languages/fa DISABLED';
+			$remove_folders[]='../lightbox';
+			$remove_folders[]='../menu';
+			$remove_folders[]='../popup_menu';
+			$remove_folders[]='../sliderbar';
+			$remove_folders[]='../styles/images_blue';
+			$remove_folders[]='../styles/images_green';
+			$remove_folders[]='../styles/imagesantique';
+			$remove_folders[]='../styles/imagesblauw';
+			$remove_folders[]='../styles/imagesdonkerbruin';
+			$remove_folders[]='../styles/imagesgroen';
+			$remove_folders[]='../styles/imagesheelal';
+			$remove_folders[]='../styles/imagesoranje';
+			$remove_folders[]='../styles/imagesoriginal';
+			$remove_folders[]='../styles/imagespaars';
+			$remove_folders[]='../styles/imagessilverline';
+			$remove_folders[]='../styles/imageswhite';
+			$remove_folders[]='../styles/imagesyossi';
+			$remove_folders[]='../talen';
+			$remove_folders[]='include/kcfinder/themes/oxygen';
+			$remove_folders[]='languages';		// admin/languages
+			$remove_folders[]='menu';			// admin/languages
+			$remove_folders[]='statistieken';	// admin/statistieken
+
+//echo '<br><br><br><br><br><br><br>';
+			foreach($remove_folders as $rf){
+				unset ($update_dir,$update_files);
+//echo $rf.' folder<br>';
+				if (is_dir($rf)){
+					// *** Remove these old HuMo-genealogy files, a__ is just some random text (skip items)... ***
+					listFolderFiles2($rf,array('a__','a__'),'update_files');
+
+					// *** Count down, because files must be removed first before removing directories ***
+					if (is_array($update_files)){
+						for ($i=count($update_files)-1; $i>=0; $i--){
+							if (!is_dir($update_dir[$i].'/'.$update_files[$i])){
+								unlink ($update_dir[$i].'/'.$update_files[$i]);
+							}
+							else{
+								rmdir ($update_dir[$i].'/'.$update_files[$i]);
+							}
+//echo $update_dir[$i].'/'.$update_files[$i].'<br>';
+						}
+					}
+					rmdir ($rf);
+				}
+			}
+
+			// *** First cleanup, insert cleanup status into settings ***
+			$sql="INSERT INTO humo_settings SET
+				setting_variable='cleanup_status',
+				setting_value='1'";
+			@$dbh->query($sql);
+		}
+		// *** For next cleanup: update cleanup status ***
+		// *** Update "update_status" to number 2 ***
+		//$result = $dbh->query("UPDATE humo_settings SET setting_value='2' WHERE setting_variable='cleanup_status'");
+
+
 		$show_menu_left=true;
 
 		// *** Debug HuMo-genealogy`admin pages ***
@@ -184,6 +313,7 @@ while (false!==($file = readdir($map))) {
 			$language_file[]=$file;
 			// *** Order of languages ***
 			if ($file=='cn') $language_order[]='Chinese';
+			elseif ($file=='cs') $language_order[]='Czech';
 			elseif ($file=='da') $language_order[]='Dansk';
 			elseif ($file=='de') $language_order[]='Deutsch';
 			elseif ($file=='en') $language_order[]='English';
@@ -410,8 +540,13 @@ if (!CMS_SPECIFIC){
 	echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
 
 	echo '<title>'.__('Administration').'</title>'."\n";
-	//echo '<link href="'.CMS_ROOTPATH.'images/favicon.ico" rel="shortcut icon" type="image/x-icon">';
-	echo '<link href="'.CMS_ROOTPATH.'favicon.ico" rel="shortcut icon" type="image/x-icon">';
+
+	// *** Use your own favicon.ico in media folder ***
+	if (file_exists('../media/favicon.ico'))
+		echo '<link rel="shortcut icon" href="../media/favicon.ico" type="image/x-icon">';
+	else
+		echo '<link href="'.CMS_ROOTPATH.'favicon.ico" rel="shortcut icon" type="image/x-icon">';
+
 	echo '<link href="admin.css" rel="stylesheet" type="text/css">';
 	echo '<link href="statistics/style.css" rel="stylesheet" type="text/css">'; // STYLE SHEET VOOR GRAFIEK
 	echo '<link href="admin_print.css" rel="stylesheet" type="text/css" media="print">';
@@ -419,17 +554,12 @@ if (!CMS_SPECIFIC){
 	// *** CSS changes for mobile devices ***
 	echo '<link rel="stylesheet" media="(max-width: 640px)" href="admin_mobile.css">';
 
-	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/jquery.min.js"></script>';
-
-	echo '<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery-1.8.0.min.js"></script> ';
-	echo '<script src="'.CMS_ROOTPATH.'include/jqueryui/js/jquery.sortable.min.js"></script>';
-	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/slimbox2.js"></script>';
-	//echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/lightbox/css/slimbox2.css" type="text/css" media="screen">';
+	echo '<script src="'.CMS_ROOTPATH.'include/jquery/jquery.min.js"></script> ';
+	echo '<script src="'.CMS_ROOTPATH.'include/jqueryui/jquery-ui.min.js"></script>';
 
 	echo '<script type="text/javascript" src="include/popup_merge.js"></script>';
 
 	// *** Main menu pull-down ***
-	//echo '<link rel="stylesheet" type="text/css" href="../popup_menu/popup_menu.css">';
 	echo '<link rel="stylesheet" type="text/css" href="'.CMS_ROOTPATH.'include/popup_menu/popup_menu.css">';
 
 	// *** Pop-up menu ***
@@ -523,7 +653,6 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 
 	//if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
 	if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
-
 		// *** Enable/ disable HuMo-genealogy update check ***
 		if (isset($_POST['enable_update_check_change'])){
 			if (isset($_POST['enable_update_check'])){
@@ -564,24 +693,12 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 			// 86400 = 1 day. yyyy-mm-dd
 			//if (strtotime ("now") - strtotime($humo_option['update_last_check']) > 86400 ){
 			if ($humo_option['update_last_check']!='DISABLED' AND strtotime ("now") - strtotime($humo_option['update_last_check']) > 86400 ){
+//if ($humo_option['update_last_check']!='DISABLED' AND strtotime ("now") - strtotime($humo_option['update_last_check']) > 3600 ){
 				$link_name=str_replace(' ', '_', $_SERVER['SERVER_NAME']);
 				$link_versie=str_replace(' ', '_', $humo_option["version"]);
 
 				// *** Read update data from HuMo-genealogy website ***
 				if(function_exists('curl_exec')){
-					// *** Used for automatic update procedure ***
-					//$update['up_to_date']='no';
-
-					// *** HuMo-genealogy version ***
-					//$update['version']='';
-					//$update['version_date']='';
-					//$update['version_auto_download']='';
-
-					// *** HuMo-genealogy beta version ***
-					//$update['beta_version']='';
-					//$update['beta_version_date']='';
-					//$update['beta_version_auto_download']='';
-
 					// *** Oct. 2021: Added random number to prevent CURL cache problems ***
 					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie.'&random='.rand();
 
@@ -607,23 +724,37 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					//	$fw = @fwrite($fp, $content);
 					//	@fclose($fp);
 					//}
+
+					// *** July 2022: Use GitHub to check version ***
+					if (empty($content_array)){
+						// *** Oct. 2021: Added random number to prevent CURL cache problems ***
+						$source='https://raw.githubusercontent.com/HuubMons/HuMo-genealogy/master/admin/update/version_check.txt?random='.rand();
+
+						$resource = curl_init();
+						curl_setopt($resource, CURLOPT_URL, $source);
+						curl_setopt($resource, CURLOPT_HEADER, false);
+						curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
+						//curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 20);
+						// *** BE AWARE: for provider Hostinger this must be a low value, otherwise the $dbh connection will be disconnected! ***
+						curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 15);
+
+						// *** Oct 2021: Don't use CURL cache ***
+						curl_setopt($resource, CURLOPT_FRESH_CONNECT, true); // don't use a cached version of the url
+
+						// *** Added for GitHub ***
+						curl_setopt($resource, CURLOPT_FOLLOWLOCATION, true);
+						curl_setopt($resource, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+
+						$content = curl_exec($resource);
+						curl_close($resource);
+
+						$content_array=explode(PHP_EOL,$content); // *** Split array into seperate lines ***
+					}
+
 				}
 
 				// *** If provider or curl blocks https link: DISABLE SSL and recheck ***
 				if (!isset($content_array)){
-					// *** Used for automatic update procedure ***
-					//$update['up_to_date']='no';
-
-					// *** HuMo-genealogy version ***
-					//$update['version']='';
-					//$update['version_date']='';
-					//$update['version_auto_download']='';
-
-					// *** HuMo-genealogy beta version ***
-					//$update['beta_version']='';
-					//$update['beta_version_date']='';
-					//$update['beta_version_auto_download']='';
-
 					// *** Oct. 2021: Added random number to prevent CURL cache problems ***
 					$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_versie.'&random='.rand();
 
@@ -781,7 +912,6 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 	// *** Feb. 2020: centralised processing of tree_id and tree_prefix ***
 	// *** Selected family tree, using tree_id ***
 
-
 	// *** Don't check for group_administrator, because of family tree editors ***
 	//if (isset($database_check) AND $database_check AND $group_administrator=='j') { // Otherwise we can't make $dbh statements
 	if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
@@ -798,6 +928,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 		if (isset($_GET['tree_id']) AND is_numeric($_GET['tree_id'])){
 			$check_tree_id=$_GET['tree_id'];
 		}
+
 		// *** Just logged in, or no tree_id available: find first family tree ***
 		if ($check_tree_id==''){
 			$check_tree_sql=false;
@@ -815,15 +946,19 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 		// *** Double check tree_id and save tree id in session ***
 		$tree_id=''; $tree_prefix='';
 		if (isset($check_tree_id) AND $check_tree_id AND $check_tree_id!=''){
-			try{
-				$get_treeDb=$db_functions->get_tree($check_tree_id);
-			} catch (Exception $e) {
-				//
-			}
-			if (isset($get_treeDb) AND $get_treeDb){
-				$tree_id=$get_treeDb->tree_id;
-				$_SESSION['admin_tree_id']=$tree_id;
-				$tree_prefix=$get_treeDb->tree_prefix;
+			// *** New installation: table doesn't exist and could generate an error ***
+			$temp = $dbh->query("SHOW TABLES LIKE 'humo_trees'");
+			if($temp->rowCount() >0) {
+				try{
+					$get_treeDb=$db_functions->get_tree($check_tree_id);
+				} catch (Exception $e) {
+					//
+				}
+				if (isset($get_treeDb) AND $get_treeDb){
+					$tree_id=$get_treeDb->tree_id;
+					$_SESSION['admin_tree_id']=$tree_id;
+					$tree_prefix=$get_treeDb->tree_prefix;
+				}
 			}
 		}
 
@@ -967,6 +1102,9 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 						$menu_item=''; if ($page=='favorites'){ $menu_item=' id="current"'; }
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=settings&amp;menu_admin=settings_homepage">'.__('Homepage').'</a></li>';
 
+						$menu_item=''; if ($page=='favorites'){ $menu_item=' id="current"'; }
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=settings&amp;menu_admin=settings_special">'.__('Special settings').'</a></li>';
+
 						$menu_item=''; if ($page=='cms_pages'){ $menu_item=' id="current"'; }
 						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cms_pages">'.__('CMS Own pages').'</a></li>';
 
@@ -1018,7 +1156,10 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=user_notes">'.__('User notes').'</a>';
 
 							$menu_item=''; if ($page=='check'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=check">'.__('Data check').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=check">'.__('Family tree data check').'</a>';
+
+							$menu_item=''; if ($page=='check'){ $menu_item=' id="current"'; }
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=view_latest_changes">'.__('View latest changes').'</a>';
 
 							$menu_item=''; if ($page=='cal_date'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=cal_date">'.__('Calculated birth date').'</a>';
@@ -1049,30 +1190,29 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 			echo '<div class="'.$rtlmarker.'sddm">';
 				echo '<a href="'.$path_tmp.'page=editor"';
 				echo ' onmouseover="mopen(event,\'m3xa\',\'?\',\'?\')"';
-				$editor_text=__('Editor');
-				echo ' onmouseout="mclosetime()"'.$select_top.'>'.$editor_text.'</a>';
+				echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Editor').'</a>';
 
 				echo '<div id="m3xa" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<ul class="humo_menu_item2">';
 
 						$menu_item=''; if ($page=='editor'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=editor">'.$editor_text.'</a>';
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=editor">'.__('Persons and families').'</a>';
 
 						// *** Sources ***
 						$menu_item=''; if ($page=='edit_sources'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_sources">* '.__('Sources')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_sources">'.__('Sources')."</a>";
 
 						// *** Repositories ***
 						$menu_item=''; if ($page=='edit_repositories'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_repositories">* '.__('Repositories')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_repositories">'.__('Repositories')."</a>";
 
 						// *** Addresses ***
 						$menu_item=''; if ($page=='edit_addresses'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_addresses">* '.__('Shared addresses')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_addresses">'.__('Shared addresses')."</a>";
 
 						// *** Place editor ***
 						$menu_item=''; if ($page=='edit_places'){ $menu_item=' id="current"'; }
-						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_places">* '.__('Rename places')."</a>";
+						echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=edit_places">'.__('Rename places')."</a>";
 
 					echo '</ul>';
 				echo '</div>';
@@ -1218,6 +1358,7 @@ else{
 	elseif ($page=='editor_media_select'){ $_GET['menu_admin']='menu'; include_once ("include/editor_media_select.php"); }
 
 	elseif ($page=='check'){ include_once ("include/tree_check.php"); }
+	elseif ($page=='view_latest_changes'){ $_POST['last_changes']='View latest changes'; include_once ("include/tree_check.php"); }
 	elseif ($page=='gedcom'){ include_once ("include/gedcom.php"); }
 	elseif ($page=='settings'){ include_once ("include/settings_admin.php"); }
 	elseif ($page=='thumbs'){ include_once ("include/thumbs.php"); }

@@ -35,7 +35,7 @@ function set_privacy($privacy_man, $privacy_woman){
 function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	global $dbh, $db_functions, $tree_prefix_quoted, $url_path, $dataDb, $uri_path, $humo_option;
 	global $language, $user, $screen_mode;
-	global $templ_person;
+	global $templ_person, $parent1Db, $parent2Db;
 
 	if ($marriageDb==''){ $marriageDb=$this->cls_marriage_Db; }
 
@@ -102,20 +102,21 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$temp_text.= ' ';
 			if($temp) { $templ_relation[$temp].=' '; }
 		}
-		$templ_relation["marriage_text"]=strip_tags(process_text($marriageDb->fam_relation_text));
+		//$templ_relation["marriage_text"]=strip_tags(process_text($marriageDb->fam_relation_text));
+		$templ_relation["marriage_text"]=process_text($marriageDb->fam_relation_text);
 		$temp="marriage_text";
 		$temp_text.= $templ_relation["marriage_text"];
 	}
 
 	// *** Living together source ***
-	$source=show_sources2("family","fam_relation_source",$marriageDb->fam_gedcomnumber);
-	if ($source){
+	$source_array=show_sources2("family","fam_relation_source",$marriageDb->fam_gedcomnumber);
+	if ($source_array){
 		if($screen_mode=='PDF') {
-			$templ_relation["marriage_source"]=$source;
+			$templ_relation["marriage_source"]=$source_array['text'];
 			$temp="marriage_source";
 		}
 		else
-			$temp_text.=$source;
+			$temp_text.=$source_array['text'];
 
 		// *** Extra item, so it's possible to add a comma or space ***
 		$templ_person["marriage_add"]='';
@@ -187,19 +188,20 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
 		$temp_text.=process_text($marriageDb->fam_marr_notice_text);
-		$templ_relation["prew_text"]=strip_tags(process_text($marriageDb->fam_marr_notice_text));
+		//$templ_relation["prew_text"]=strip_tags(process_text($marriageDb->fam_marr_notice_text));
+		$templ_relation["prew_text"]=process_text($marriageDb->fam_marr_notice_text);
 		$temp="prew_text";
 	}
 
 	// *** Married notice source ***
-	$source=show_sources2("family","fam_marr_notice_source",$marriageDb->fam_gedcomnumber);
-	if ($source){
+	$source_array=show_sources2("family","fam_marr_notice_source",$marriageDb->fam_gedcomnumber);
+	if ($source_array){
 		if($screen_mode=='PDF') {
-			$templ_relation["prew_source"]=$source;
+			$templ_relation["prew_source"]=$source_array['text'];
 			$temp="prew_source";
 		}
 		else {
-			$temp_text.=$source;
+			$temp_text.=$source_array['text'];
 		}
 
 		// *** Extra item, so it's possible to add a comma or space ***
@@ -222,9 +224,16 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($marriageDb->fam_marr_date OR $marriageDb->fam_marr_place){
 		$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_date_hebnight; }
 		$templ_relation["wedd_date"]=date_place($marriageDb->fam_marr_date,$marriageDb->fam_marr_place,$nightfall);
+
+		// *** Show age of parent1 when married ***
+		$process_age = New calculate_year_cls;
+		$age=$process_age->calculate_age($parent1Db->pers_bapt_date,$parent1Db->pers_birth_date,$marriageDb->fam_marr_date);
+		$templ_relation["wedd_date"].=$age;
+
 		$temp="wedd_date";
 		$temp_text.= $templ_relation["wedd_date"];
 	}
+
 	if ($marriageDb->fam_marr_authority){
 		$templ_relation["wedd_authority"]=" [".$marriageDb->fam_marr_authority."]";
 		$temp="wedd_authority";
@@ -237,35 +246,57 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$temp_text.= ' ';
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
-		$templ_relation["wedd_text"]=strip_tags(process_text($marriageDb->fam_marr_text));
+		//$templ_relation["wedd_text"]=strip_tags(process_text($marriageDb->fam_marr_text));
+		$templ_relation["wedd_text"]=process_text($marriageDb->fam_marr_text);
 
 		// *** Source by family text ***
-		$templ_relation["wedd_text"].=show_sources2("family","family_text",$marriageDb->fam_gedcomnumber);
+		$source_array=show_sources2("family","family_text",$marriageDb->fam_gedcomnumber);
+		if ($source_array)
+			$templ_relation["wedd_text"].=$source_array['text'];
 
 		$temp="wedd_text";
 		$temp_text.= $templ_relation["wedd_text"];
 	}
 	// *** Aldfaer/ HuMo-genealogy: show witnesses ***
 	if ($marriageDb->fam_gedcomnumber){
-		$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness','family');
-		if ($temp_text2){
-			$temp_text.= ' ('.__('marriage witness').' '.$temp_text2.')';
-
-			if($temp) { $templ_relation[$temp].=" ("; }
-			$templ_relation["wedd_witn"]= __('marriage witness').' '.$temp_text2.')';
+		//$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness','family');
+		//if ($temp_text2){
+		//	$temp_text.= ' ('.__('marriage witness').' '.$temp_text2.')';
+		//	if($temp) { $templ_relation[$temp].=" ("; }
+		//	$templ_relation["wedd_witn"]= __('marriage witness').' '.$temp_text2.')';
+		//	$temp="wedd_witn";
+		//}
+		$text_array=witness($marriageDb->fam_gedcomnumber, 'marriage_witness','family');
+		if ($text_array){
+			if($temp) { $templ_relation[$temp].=' '; }
+			$templ_relation["wedd_witn"]= '('.__('marriage witness').': '.$text_array['text'];
 			$temp="wedd_witn";
+			$temp_text.=' '.$templ_relation["wedd_witn"];
+			if (isset($text_array['source'])){
+				$templ_relation["wedd_witn_source"]=$text_array['source'];
+				$temp="wedd_witn_source";
+
+				// *** Extra item, so it's possible to add a comma or space ***
+				$templ_relation["wedd_witn_add"]='';
+				$temp="wedd_witn_add";
+
+				$temp_text.=$text_array['source'];
+			}
+			//$templ_relation["wedd_witn"].=')';
+			$templ_relation[$temp].=')';
+			$temp_text.=')';
 		}
 	}
 
 	// *** Marriage source ***
-	$source=show_sources2("family","fam_marr_source",$marriageDb->fam_gedcomnumber);
-	if ($source){
+	$source_array=show_sources2("family","fam_marr_source",$marriageDb->fam_gedcomnumber);
+	if ($source_array){
 		if($screen_mode=='PDF') {
-			$templ_relation["wedd_source"]=$source;
+			$templ_relation["wedd_source"]=$source_array['text'];
 			$temp="wedd_source";
 		}
 		else {
-			$temp_text.=$source;
+			$temp_text.=$source_array['text'];
 		}
 
 		// *** Extra item, so it's possible to add a comma or space ***
@@ -278,9 +309,15 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		$addition=__(' to: ');
 		if ($text!=''){ $text.="<br>\n"; $templ_relation["wedd_exist"]="\n"; }
 		$text.='<b>'.__('Married').'</b> '.$temp_text;
-		if(isset($templ_relation["wedd_exist"])) {$templ_relation["wedd_exist"].=__('Married').' ';}
-		else {$templ_relation["wedd_exist"]=__('Married').' ';}
-	}
+		if(isset($templ_relation["wedd_exist"])) {
+			if($relation_kind != '') $templ_relation["wedd_exist"].= $relation_kind.' ';
+				else $templ_relation["wedd_exist"].=__('Married').' ';
+		}
+		else {
+			if($relation_kind != '') $templ_relation["wedd_exist"] = $relation_kind.' ';
+				else $templ_relation["wedd_exist"]=__('Married').' ';
+		}
+	} 
 	else{
 		// *** Marriage without further data (date or place) ***
 		if ($marriageDb->fam_kind=='civil'){
@@ -288,6 +325,11 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$addition=__(' to: ');
 			$text.='<b>'.__('Married').'</b>';
 			$templ_relation["wedd_exist"]=__('Married');
+			$templ_relation["wedd_dummy"] = "&nbsp;"; // we need this, otherwise tfpdfextend ignores the wedd_exist value !
+		}
+		elseif($relation_kind != '') {
+			$templ_relation["wedd_exist"] = $relation_kind;
+			$templ_relation["wedd_dummy"] = "&nbsp;";
 		}
 	}
 
@@ -310,20 +352,21 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$temp_text.= ' ';
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
-		$templ_relation["prec_text"]= strip_tags(process_text($marriageDb->fam_marr_church_notice_text));
+		//$templ_relation["prec_text"]= strip_tags(process_text($marriageDb->fam_marr_church_notice_text));
+		$templ_relation["prec_text"]= process_text($marriageDb->fam_marr_church_notice_text);
 		$temp="prec_text";
 		$temp_text.= $templ_relation["prec_text"];
 	}
 
 	// *** Married church notice source ***
-	$source=show_sources2("family","fam_marr_church_notice_source",$marriageDb->fam_gedcomnumber);
-	if ($source){
+	$source_array=show_sources2("family","fam_marr_church_notice_source",$marriageDb->fam_gedcomnumber);
+	if ($source_array){
 		if($screen_mode=='PDF') {
-			$templ_relation["prec_source"]=$source;
+			$templ_relation["prec_source"]=$source_array['text'];
 			$temp="prec_source";
 		}
 		else
-			$temp_text.=$source;
+			$temp_text.=$source_array['text'];
 
 		// *** Extra item, so it's possible to add a comma or space ***
 		$templ_person["prec_source_add"]='';
@@ -355,30 +398,51 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$temp_text.= ' ';
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
-		$templ_relation["chur_text"]=strip_tags(process_text($marriageDb->fam_marr_church_text));
+		//$templ_relation["chur_text"]=strip_tags(process_text($marriageDb->fam_marr_church_text));
+		$templ_relation["chur_text"]=process_text($marriageDb->fam_marr_church_text);
 		$temp="chur_text";
 		$temp_text.= $templ_relation["chur_text"];
 	}
 	// *** Aldfaer/ HuMo-genealogy show witnesses ***
 	if ($marriageDb->fam_gedcomnumber){
-		$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness_rel','family');
-		if ($temp_text2){
-			$temp_text.= ' ('.__('marriage witness (religious)').' '.$temp_text2.')';
-			if($temp) { $templ_relation[$temp].=" ("; }
-			$templ_relation["chur_witn"]=__('marriage witness (religious)').' '.$temp_text2.')';
+		//$temp_text2=witness($marriageDb->fam_gedcomnumber, 'marriage_witness_rel','family');
+		//if ($temp_text2){
+		//	$temp_text.= ' ('.__('marriage witness (religious)').' '.$temp_text2.')';
+		//	if($temp) { $templ_relation[$temp].=" ("; }
+		//	$templ_relation["chur_witn"]=__('marriage witness (religious)').' '.$temp_text2.')';
+		//	$temp="chur_witn";
+		//}
+		$text_array=witness($marriageDb->fam_gedcomnumber, 'marriage_witness_rel','family');
+		if ($text_array){
+			if($temp) { $templ_relation[$temp].=' '; }
+			$templ_relation["chur_witn"]= '('.__('marriage witness (religious)').': '.$text_array['text'];
 			$temp="chur_witn";
+			$temp_text.=' '.$templ_relation["chur_witn"];
+			if (isset($text_array['source'])){
+				$templ_relation["chur_witn_source"]=$text_array['source'];
+				$temp="chur_witn_source";
+
+				// *** Extra item, so it's possible to add a comma or space ***
+				$templ_relation["chur_witn_add"]='';
+				$temp="chur_witn_add";
+
+				$temp_text.=$text_array['source'];
+			}
+			//$templ_relation["chur_witn"].=')';
+			$templ_relation[$temp].=')';
+			$temp_text.=')';
 		}
 	}
 
 	// *** Married church source ***
-	$source=show_sources2("family","fam_marr_church_source",$marriageDb->fam_gedcomnumber);
-	if ($source){
+	$source_array=show_sources2("family","fam_marr_church_source",$marriageDb->fam_gedcomnumber);
+	if ($source_array){
 		if($screen_mode=='PDF') {
-			$templ_relation["chur_source"]=$source;
+			$templ_relation["chur_source"]=$source_array['text'];
 			$temp="chur_source";
 		}
 		else
-			$temp_text.=$source;
+			$temp_text.=$source_array['text'];
 
 		// *** Extra item, so it's possible to add a comma or space ***
 		$templ_person["chur_source_add"]='';
@@ -420,26 +484,27 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$temp_text.= ' ';
 			if($temp) { $templ_relation[$temp].=" "; }
 		}
-		$templ_relation["devr_text"]=strip_tags(process_text($marriageDb->fam_div_text));
+		//$templ_relation["devr_text"]=strip_tags(process_text($marriageDb->fam_div_text));
+		$templ_relation["devr_text"]=process_text($marriageDb->fam_div_text);
 		$temp="devr_text";
 		$temp_text.= $templ_relation["devr_text"];
 	}
 
 	// *** Divorse source ***
-	$source=show_sources2("family","fam_div_source",$marriageDb->fam_gedcomnumber);
-	if ($source){
+	$source_array=show_sources2("family","fam_div_source",$marriageDb->fam_gedcomnumber);
+	if ($source_array){
 		if($screen_mode=='PDF') {
-			$templ_relation["devr_source"]=$source;
+			$templ_relation["devr_source"]=$source_array['text'];
 			$temp="devr_source";
 		}
 		else
-			$temp_text.=$source;
+			$temp_text.=$source_array['text'];
 
 		// *** Extra item, so it's possible to add a comma or space ***
 		$templ_person["devr_source_add"]='';
 		$temp="devr_source_add";
 	}
-
+ 
 	//if ($temp_text){
 	// *** div_text "DIVORCE" is used for divorce without further data! ***
 	if ($temp_text OR $marriageDb->fam_div_text=='DIVORCE'){
@@ -449,6 +514,9 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		$text.='<span class="divorse"><b>'.ucfirst(__('divorced')).'</b> '.$temp_text.'</span>';
 		if(isset($templ_relation["devr_exist"])) {$templ_relation["devr_exist"].=ucfirst(__('divorced')).' ';}
 		else {$templ_relation["devr_exist"]=ucfirst(__('divorced')).' ';}
+		if($marriageDb->fam_div_text=='DIVORCE') {
+			$templ_relation["devr_dummy"] = "&nbsp;"; // if we don't create at least one "devr" element in the $templ_relation array besides ["devr_exist"], then tfpdfextend will not display the  ["devr_exist"]. 
+		}
 	}
 
 	// *** No relation data (marriage without date), show standard text ***
@@ -466,32 +534,32 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			$end_date='';
 
 			// *** Check death date of husband ***
-			@$person_manDb=$db_functions->get_person($marriageDb->fam_man);
-			if (isset($person_manDb->pers_death_date) AND $person_manDb->pers_death_date) $end_date=$person_manDb->pers_death_date;
-			elseif (isset($person_manDb->pers_buried_date) AND $person_manDb->pers_buried_date) {
-			    // if no death date, try burial date
-			    $end_date=$person_manDb->pers_buried_date;
+			//@$person_manDb=$db_functions->get_person($marriageDb->fam_man);
+			if (isset($parent1Db->pers_death_date) AND $parent1Db->pers_death_date) $end_date=$parent1Db->pers_death_date;
+			elseif (isset($parent1Db->pers_buried_date) AND $parent1Db->pers_buried_date) {
+				// if no death date, try burial date
+				$end_date=$parent1Db->pers_buried_date;
 			}
 
 			// *** Check death date of wife ***
-			@$person_womanDb=$db_functions->get_person($marriageDb->fam_woman);
-			if (isset($person_womanDb->pers_death_date) AND $person_womanDb->pers_death_date){
+			//@$person_womanDb=$db_functions->get_person($marriageDb->fam_woman);
+			if (isset($parent2Db->pers_death_date) AND $parent2Db->pers_death_date){
 				// *** Check if men died earlier then woman (AT THIS MOMENT ONLY CHECK YEAR) ***
-				if ($end_date AND substr($end_date,-4) > substr($person_womanDb->pers_death_date,-4)){
-					$end_date=$person_womanDb->pers_death_date;
+				if ($end_date AND substr($end_date,-4) > substr($parent2Db->pers_death_date,-4)){
+					$end_date=$parent2Db->pers_death_date;
 				}
 				// *** Man still living or no date available  ***
-				if ($end_date=='') $end_date=$person_womanDb->pers_death_date;
+				if ($end_date=='') $end_date=$parent2Db->pers_death_date;
 			}
-			elseif (isset($person_womanDb->pers_buried_date) AND $person_womanDb->pers_buried_date){
-			    // if no death date, try burial date
+			elseif (isset($parent2Db->pers_buried_date) AND $parent2Db->pers_buried_date){
+				// if no death date, try burial date
 				// *** Check if men died earlier then woman (AT THIS MOMENT ONLY CHECK YEAR) ***
-				if ($end_date AND substr($end_date,-4) > substr($person_womanDb->pers_buried_date,-4)){
-					$end_date=$person_womanDb->pers_buried_date;
+				if ($end_date AND substr($end_date,-4) > substr($parent2Db->pers_buried_date,-4)){
+					$end_date=$parent2Db->pers_buried_date;
 				}
 				// *** Man still living or no date available  ***
-				if ($end_date=='') $end_date=$person_womanDb->pers_buried_date;
-			}			
+				if ($end_date=='') $end_date=$parent2Db->pers_buried_date;
+			}
 
 			// *** End of marriage by divorce ***
 			if ($marriageDb->fam_div_date){ $end_date=$marriageDb->fam_div_date; }
@@ -562,14 +630,14 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 				}
 
 				// *** Sources by a family event ***
-				$source=show_sources2("family","fam_event_source",$eventDb->event_id);
-				if ($source){
+				$source_array=show_sources2("family","fam_event_source",$eventDb->event_id);
+				if ($source_array){
 					if($screen_mode=='PDF') {
-					//	$templ_relation["event_source"]=show_sources2("family","fam_event_source",$eventDb->event_id);
-					//	$temp="fam_event_source";
+						//$templ_relation["event_source"]=show_sources2("family","fam_event_source",$eventDb->event_id);
+						//$temp="fam_event_source";
 					}
 					else
-						$text.=$source;
+						$text.=$source_array['text'];
 				}
 
 			}
@@ -644,9 +712,11 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	if ($presentation=='short' OR $presentation=='shorter'){
 		$text='<b>'.$relation_number.$relation_kind.'</b>';
 		$templ_relation = array();  //reset array - don't need it
+		$templ_relation['relnr_rel'] = $relation_number.$relation_kind;
 		// *** Show divorse if privacy filter is set ***
 		if ($marriageDb->fam_div_date OR $marriageDb->fam_div_place OR $marriageDb->fam_div_text){
 			$text.= ' <span class="divorse">('.__('divorced').')</span>';
+			$templ_relation['relnr_rel'] .= " (".__('divorced').")";
 		}
 		// Show end of relation here?
 
@@ -658,13 +728,24 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	}
 	if ($addition) $text.='<b>'.$addition.'</b>';
 
-	$templ_relation["relnr_rel"]=$relation_number.$relation_kind;
-	$templ_relation["rel_add"]="\n".$addition;
+	//$templ_relation["relnr_rel"]=$relation_number.$relation_kind;
+	if ($presentation=='short' OR $presentation=='shorter'){
+		$templ_relation["rel_add"]=" ".$addition;
+	}
+	else {
+		$templ_relation["rel_add"]="\n".$addition;
+	}
 	if($screen_mode!="PDF") {
 		return $text;
 	}
 	else {
-		return $templ_relation;
+		//return $templ_relation;
+		if(isset($templ_relation)) {
+			foreach($templ_relation AS $key => $val) {
+				$templ_relation[$key] = strip_tags($val);
+			}
+			return $templ_relation;
+		}
 	}
 
 } // *** End of marriage ***

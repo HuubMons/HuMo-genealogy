@@ -6,7 +6,15 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 	echo '<div style="direction:ltr;">';
 
 	echo '<span id="top_website_name">';
+
+	// *** Show logo or name of website ***
+	if (is_file('media/logo.png'))
+		echo '&nbsp;<a href="'.$humo_option["homepage"].'"><img src="media/logo.png"></a>';
+	elseif (is_file('media/logo.jpg'))
+		echo '&nbsp;<a href="'.$humo_option["homepage"].'"><img src="media/logo.jpg"></a>';
+	else
 		echo '&nbsp;<a href="'.$humo_option["homepage"].'">'.$humo_option["database_name"].'</a>';
+
 	echo '</span>';
 
 	echo '&nbsp;&nbsp;';

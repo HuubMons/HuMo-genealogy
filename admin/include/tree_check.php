@@ -18,12 +18,13 @@ if(CMS_SPECIFIC=="Joomla") {
 else {
 	echo '<form method="POST" action="index.php" style="display : inline;">';
 }
+	$page='check'; // *** Otherwise the direct link to page "Latest changes" doesn't work properly ***
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 
 	echo '<span class="noprint">'.__('Choose tree:');  // class "noprint" hides it when printing
 		$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 		$tree_result = $dbh->query($tree_sql);
-		echo '<select size="1" name="tree_id">';
+		echo ' <select size="1" name="tree_id" onChange="this.form.submit();">';
 			while ($treeDb=$tree_result->fetch(PDO::FETCH_OBJ)){
 				$treetext=show_tree_text($treeDb->tree_id, $selected_language);
 				$selected='';
@@ -80,43 +81,196 @@ if(!isset($_POST['last_changes']) AND !isset($_POST['database_check']) AND !isse
 
 //if (isset($_POST['tree']) AND isset($_POST['last_changes'])){
 if (isset($_POST['last_changes'])){
-	// *** Show latest changes and additions ***
-	$person_qry= "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS datum
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."')
-		UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS datum
-		FROM humo_persons WHERE pers_tree_id='".$tree_id."')
-		ORDER BY datum DESC, pers_changed_time DESC LIMIT 0,50";
+	$editor=''; if (isset($_POST['editor'])) $editor=safe_text_db($_POST['editor']);
+	$limit=50; if (isset($_POST['limit']) AND is_numeric($_POST['limit'])) $limit=safe_text_db($_POST['limit']);
 
-	$person_result = $dbh->query($person_qry);
-	echo '<h3>'.__('Latest changes').'</h3>';
-	echo '<div style="margin-left:auto;margin-right:auto;height:350px;width:60%; overflow-y: scroll;">';
-	echo '<table class="humo" style="width:100%">';
-
-	echo '<tr>';
-	echo '<th style="font-size: 90%; text-align: center">'.__('Changed/ Added').'</th>';
-	echo '<th style="font-size: 90%; text-align: center">'.__('When changed').'</th>';
-	echo '<th style="font-size: 90%; text-align: center">'.__('When added').'</th>';
-	echo '</tr>';
+	$show_persons=false;
+	$show_families= false;
+	if (isset($_POST['show_persons']) AND $_POST['show_persons']=='1') $show_persons=true;
+	if (isset($_POST['show_families']) AND $_POST['show_families']=='1') $show_families=true;
+	// *** Select persons if no choice is made (first time opening this page) ***
+	if (!$show_persons AND !$show_families) $show_persons=true;
 
 	$person_cls = New person_cls;
+	$row=0;
 
-	while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
-		echo '<tr><td>';
+	if ($show_persons){
+		if($editor){
+			// *** Show latest changes and additions: editor is selected ***
+			// *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
+			$person_qry= "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NOT NULL AND pers_changed_date!='' AND pers_changed_user='".$editor."')
+				UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NULL AND pers_new_user='".$editor."')
+				ORDER BY changed_date DESC, changed_time DESC LIMIT 0,".$limit;
+				//LIMIT 0,".$limit;
+		}
+		else{
+			// *** Show latest changes and additions ***
+			// *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
+			$person_qry= "(SELECT *, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')
+				UNION (SELECT *, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
+				FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NULL)
+				ORDER BY changed_date DESC, changed_time DESC LIMIT 0,".$limit;
+				//LIMIT 0,".$limit;
+				//FROM humo_persons WHERE pers_tree_id='".$tree_id."')
+		}
+
+		$person_result = $dbh->query($person_qry);
+		while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+			$result_array[$row][0]=__('Person');
+
 			// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
 			$url=$person_cls->person_url2($person->pers_tree_id,$person->pers_famc,$person->pers_fams,$person->pers_gedcomnumber);
-			echo '<a href="'.CMS_ROOTPATH.$url.'">'.$person->pers_firstname.' '.$person->pers_prefix.$person->pers_lastname.'</a>';
-		echo '</td><td>';
-			echo '<nobr>'.strtolower($person->pers_changed_date).' '.$person->pers_changed_time.' '.$person->pers_changed_user.'</nobr>';
-		echo '</td><td>';
-			echo '<nobr>'.strtolower($person->pers_new_date).' '.$person->pers_new_time.' '.$person->pers_new_user.'</nobr>';
-		echo '</td>';
-		echo "</tr>\n";
+			$text='<a href="'.CMS_ROOTPATH.$url.'">'.$person->pers_firstname.' '.$person->pers_prefix.$person->pers_lastname.'</a>';
+
+			$result_array[$row][1]=$text;
+
+			$text='<nobr>'.strtolower($person->pers_changed_date).' '.$person->pers_changed_time.' '.$person->pers_changed_user.'</nobr>';
+			$result_array[$row][2]=$text;
+
+			$text='<nobr>'.strtolower($person->pers_new_date).' '.$person->pers_new_time.' '.$person->pers_new_user.'</nobr>';
+			$result_array[$row][3]=$text;
+
+			// *** Used for ordering by date - time ***
+			$result_array[$row][4]=$person->changed_date.' '.$person->changed_time;
+			$row++;
+		}
 	}
+
+	if ($show_families){
+		if($editor){
+			// *** Show latest changes and additions: editor is selected ***
+			// *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
+			$person_qry= "(SELECT *, STR_TO_DATE(fam_changed_date,'%d %b %Y') AS changed_date, fam_changed_time as changed_time
+				FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_changed_date IS NOT NULL AND fam_changed_date!='' AND fam_changed_user='".$editor."')
+				UNION (SELECT *, STR_TO_DATE(fam_new_date,'%d %b %Y') AS changed_date, fam_new_time as changed_time
+				FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_changed_date IS NULL AND fam_new_user='".$editor."')
+				ORDER BY changed_date DESC, changed_time DESC LIMIT 0,".$limit;
+		}
+		else{
+			// *** Show latest changes and additions ***
+			// *** Remark: ordering is done in the array, but also needed here to get good results if $limit is a low value ***
+			$person_qry= "(SELECT *, STR_TO_DATE(fam_changed_date,'%d %b %Y') AS changed_date, fam_changed_time as changed_time
+				FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_changed_date IS NOT NULL AND fam_changed_date!='')
+				UNION (SELECT *, STR_TO_DATE(fam_new_date,'%d %b %Y') AS changed_date, fam_new_time as changed_time
+				FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_changed_date IS NULL)
+				ORDER BY changed_date DESC, changed_time DESC LIMIT 0,".$limit;
+		}
+
+		$person_result = $dbh->query($person_qry);
+		while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+// check if standard functions can be used.
+//$personDb=$db_functions->get_person($parent1);
+			$person2_qry= "(SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".$person->fam_man."')";
+			$person2_result = $dbh->query($person2_qry);
+			$person2=$person2_result->fetch(PDO::FETCH_OBJ);
+
+			if (isset($person2->pers_tree_id)){
+				$result_array[$row][0]=__('Family');
+
+				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$url=$person_cls->person_url2($person2->pers_tree_id,$person2->pers_famc,$person2->pers_fams,$person2->pers_gedcomnumber);
+				$text='<a href="'.CMS_ROOTPATH.$url.'">'.$person2->pers_firstname.' '.$person2->pers_prefix.$person2->pers_lastname.'</a>';
+				$result_array[$row][1]=$text;
+
+				$text='<nobr>'.strtolower($person->fam_changed_date).' '.$person->fam_changed_time.' '.$person->fam_changed_user.'</nobr>';
+				$result_array[$row][2]=$text;
+
+				$text='<nobr>'.strtolower($person->fam_new_date).' '.$person->fam_new_time.' '.$person->fam_new_user.'</nobr>';
+				$result_array[$row][3]=$text;
+
+				// *** Used for ordering by date - time ***
+				$result_array[$row][4]=$person->changed_date.' '.$person->changed_time;
+				$row++;
+			}
+		}
+	}
+
+	echo '<h3>'.__('Latest changes').'</h3>';
+
+	// *** Select editor ***
+	$editor=''; if (isset($_POST['editor'])) $editor=safe_text_db($_POST['editor']);
+	echo '<form method="POST" action="index.php" style="display : inline;">';
+		echo '<input type="hidden" name="page" value="'.$page.'">';
+		echo __('Select editor:');  // class "noprint" hides it when printing
+
+		// *** List of editors, depending of selected items (persons and/ or families) ***
+		$changes_qry="(SELECT pers_new_user AS user FROM humo_persons WHERE pers_tree_id='".$tree_id."')
+			UNION (SELECT pers_changed_user AS user FROM humo_persons WHERE pers_tree_id='".$tree_id."')";
+		if ($show_families){
+			$changes_qry.=" UNION (SELECT fam_new_user AS user FROM humo_families WHERE fam_tree_id='".$tree_id."')";
+			$changes_qry.=" UNION (SELECT fam_changed_user AS user FROM humo_families WHERE fam_tree_id='".$tree_id."')";
+		}
+		$changes_qry.=" ORDER BY user DESC LIMIT 0,50";
+
+		$changes_result = $dbh->query($changes_qry);
+		echo ' <select size="1" name="editor">';
+			echo '<option value="">'.__('All editors').'</option>';
+			while ($changeDb=$changes_result->fetch(PDO::FETCH_OBJ)){
+				if ($changeDb->user){
+					$selected=''; if ($changeDb->user==$editor){ $selected=' SELECTED'; }
+					echo '<option value="'.$changeDb->user.'"'.$selected.'>'.$changeDb->user.'</option>';
+				}
+			}
+		echo '</select>';
+
+		// *** Number of results in list ***
+		echo ' '.__('Results').': <select size="1" name="limit">';
+			echo '<option value="50">50</option>';
+			$selected=''; if ($limit==100){ $selected=' SELECTED'; }
+			echo '<option value="100"'.$selected.'>100</option>';
+			$selected=''; if ($limit==200){ $selected=' SELECTED'; }
+			echo '<option value="200"'.$selected.'>200</option>';
+			$selected=''; if ($limit==500){ $selected=' SELECTED'; }
+			echo '<option value="500"'.$selected.'>500</option>';
+		echo '</select>';
+
+		// *** Select item ***
+		$checked = ''; if($show_persons) $checked=' checked';
+		echo ' <input type="checkbox" id="1" name="show_persons" value="1" '.$checked.'>'.__('Persons');
+		$checked = ''; if($show_families) $checked=' checked';
+		echo ' <input type="checkbox" id="1" name="show_families" value="1" '.$checked.'>'.__('Families');
+		/*
+		$checked = ''; //if($show_sources) $checked=' checked';
+		echo ' <input type="checkbox" id="1" name="show_sources" value="1" '.$checked.'>'.__('Sources');
+		$checked = ''; //if($show_addresses) $checked=' checked';
+		echo ' <input type="checkbox" id="1" name="show_addresses" value="1" '.$checked.'>'.__('Addresses');
+		*/
+
+		echo ' <input type="Submit" name="last_changes" value="'.__('Select').'">';
+	echo '</form><br><br>';
+
+	// *** Show results ***
+	echo '<div style="margin-left:auto;margin-right:auto;height:350px;width:60%; overflow-y: scroll;">';
+	echo '<table class="humo" style="width:100%">';
+		echo '<tr>';
+		echo '<th style="font-size: 90%; text-align: center">'.__('Item').'</th>';
+		echo '<th style="font-size: 90%; text-align: center">'.__('Changed/ Added').'</th>';
+		echo '<th style="font-size: 90%; text-align: center">'.__('When changed').'</th>';
+		echo '<th style="font-size: 90%; text-align: center">'.__('When added').'</th>';
+		echo '</tr>';
+
+		// *** Order array ***
+		function cmp($a, $b)
+		{
+			//return strcmp($a[4], $b[4]);	// ascending
+			return strcmp($b[4], $a[4]);	// descending
+		}
+		usort($result_array, "cmp");
+
+		// *** Show results ***
+		for ($row = 0; $row < count($result_array); $row++) {
+			//echo '<tr><td>!'.$result_array[$row][4].' '.$result_array[$row][0].'</td><td>'.$result_array[$row][1].'</td>';
+			echo '<tr><td>'.$result_array[$row][0].'</td><td>'.$result_array[$row][1].'</td>';
+			echo '<td>'.$result_array[$row][2].'</td><td>'.$result_array[$row][3].'</td></tr>';
+		}
+
 	echo '</table><br><br>';
 	echo '</div>';
 }
 
-//if (isset($_POST['tree']) AND isset($_POST['database_check'])){
 if (isset($_POST['database_check'])){
 	// *** Check tables for wrongly connected id's etc. ***
 	//echo '<h3>'.__('Checking database tables...').'<br>'.__('Please wait till finished').'.</h3>';
@@ -166,10 +320,8 @@ if (isset($_POST['database_check'])){
 		if ($person->pers_fams){
 			$check_fams1=false;
 			$fams=explode(";", $person->pers_fams);
-//foreach ($fams as $i => $value){
-			for ($i=0; $i<=count($fams)-1; $i++){
-// only need fam_man, fam_woman
-				$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fams[$i]."'";
+			foreach ($fams as $i => $value){
+				$fam_qry= "SELECT fam_man,fam_woman FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$fams[$i]."'";
 				$fam_result = $dbh->query($fam_qry);
 				$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
 				if ($famDb){
@@ -205,8 +357,7 @@ if (isset($_POST['database_check'])){
 
 		// *** Parents ***
 		if ($person->pers_famc){
-// don't need * in query. Needed: children
-			$fam_qry= "SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$person->pers_famc."'";
+			$fam_qry= "SELECT fam_children FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$person->pers_famc."'";
 			$fam_result = $dbh->query($fam_qry);
 			$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
 
@@ -260,9 +411,7 @@ if (isset($_POST['database_check'])){
 	$fam_qry_start= "SELECT fam_id FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_children LIKE '_%'";
 	$fam_result_start = $dbh->query($fam_qry_start);
 	while($famDb_start=$fam_result_start->fetch(PDO::FETCH_OBJ)){
-
-// check query
-		$fam_qry= "SELECT * FROM humo_families WHERE fam_id='".$famDb_start->fam_id."'";
+		$fam_qry= "SELECT fam_gedcomnumber,fam_man,fam_woman,fam_children FROM humo_families WHERE fam_id='".$famDb_start->fam_id."'";
 		$fam_result = $dbh->query($fam_qry);
 		$famDb=$fam_result->fetch(PDO::FETCH_OBJ);
 
@@ -391,7 +540,8 @@ if (isset($_POST['database_check'])){
 		$connect=$connect_result->fetch(PDO::FETCH_OBJ);
 
 		// *** Check person ***
-		if ($connect->connect_kind=='person' AND $connect->connect_sub_kind!='pers_event_source' AND $connect->connect_sub_kind!='pers_address_source'){
+		//if ($connect->connect_kind=='person' AND $connect->connect_sub_kind!='pers_event_source' AND $connect->connect_sub_kind!='pers_address_source'){
+		if ($connect->connect_kind=='person' AND $connect->connect_sub_kind!='pers_event_source' AND $connect->connect_sub_kind!='pers_address_connect_source'){
 			$person=$db_functions->get_person($connect->connect_connect_id);
 			if (!$person){
 				if (isset($_POST['remove'])){
@@ -603,52 +753,46 @@ if (isset($_POST['invalid_dates'])){
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid event dates:').'</td></tr>';
 	$found = false;
-	$event = $dbh->query("SELECT event_id, event_date FROM humo_events WHERE event_tree_id='".$tree_id."'");
-	while($eventdateDb=$event->fetch()){ 
-		if(isset($eventdateDb['event_date']) AND $eventdateDb['event_date']!='')
- 	 		$result = invalid($eventdateDb['event_date'],$eventdateDb['event_id'],'event_date');
-			if($result===true) {$found = true; }
+	$event = $dbh->query("SELECT event_id, event_date FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_date NOT LIKE ''");
+	while($eventdateDb=$event->fetch()){
+ 		$result = invalid($eventdateDb['event_date'],$eventdateDb['event_id'],'event_date');
+		if($result===true) {$found = true; }
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid connection dates:').'</td></tr>';
 	$found = false;
-	$connection = $dbh->query("SELECT connect_id, connect_date FROM humo_connections WHERE connect_tree_id='".$tree_id."'");
+	$connection = $dbh->query("SELECT connect_id, connect_date FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_date NOT LIKE ''");
 	while($connectdateDb=$connection->fetch()){
-		if(isset($connectdateDb['connect_date']) AND $connectdateDb['connect_date']!='')
-			$result = invalid($connectdateDb['connect_date'],$connectdateDb['connect_id'],'connect_date');
-			if($result===true) {$found = true; }
+		$result = invalid($connectdateDb['connect_date'],$connectdateDb['connect_id'],'connect_date');
+		if($result===true) {$found = true; }
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid address dates:').'</td></tr>';
 	$found = false;
-	$address = $dbh->query("SELECT address_id, address_date FROM humo_addresses WHERE address_tree_id='".$tree_id."'");
+	$address = $dbh->query("SELECT address_id, address_date FROM humo_addresses WHERE address_tree_id='".$tree_id."' AND address_date NOT LIKE ''");
 	while($addressdateDb=$address->fetch()){
-		if(isset($addressdateDb['address_date']) AND $addressdateDb['address_date']!='')
-			$result = invalid($addressdateDb['address_date'],$addressdateDb['address_id'],'address_date');
-			if($result===true) {$found = true; }
+		$result = invalid($addressdateDb['address_date'],$addressdateDb['address_id'],'address_date');
+		if($result===true) {$found = true; }
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid repository dates:').'</td></tr>';
 	$found = false;
-	$repo = $dbh->query("SELECT repo_gedcomnr, repo_date FROM humo_repositories
-		WHERE repo_tree_id='".$tree_id."'");
+	$repo = $dbh->query("SELECT repo_gedcomnr, repo_date FROM humo_repositories WHERE repo_tree_id='".$tree_id."' AND repo_date NOT LIKE ''");
 	while($repodateDb=$repo->fetch()){ 
-		if(isset($repodateDb['repo_date']) AND $repodateDb['repo_date']!='')  
-			$result = invalid($repodateDb['repo_date'],$repodateDb['repo_gedcomnr'],'repo_date');
-			if($result===true) {$found = true; }
+		$result = invalid($repodateDb['repo_date'],$repodateDb['repo_gedcomnr'],'repo_date');
+		if($result===true) {$found = true; }
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 
 	echo '<tr><td colspan="4" style="text-align:'.$direction.';font-weight:bold">'.__('Invalid source dates:').'</td></tr>';
 	$found = false;
-	$sources = $dbh->query("SELECT source_gedcomnr, source_date FROM humo_sources WHERE source_tree_id='".$tree_id."'");
+	$sources = $dbh->query("SELECT source_gedcomnr, source_date FROM humo_sources WHERE source_tree_id='".$tree_id."' AND source_date NOT LIKE ''");
 	while($sourcedateDb=$sources->fetch()){
-		if(isset($sourcedateDb['source_date']) AND $sourcedateDb['source_date']!='')
-			$result = invalid($sourcedateDb['source_date'],$sourcedateDb['source_gedcomnr'],'source_date');
-			if($result===true) {$found = true; }
+		$result = invalid($sourcedateDb['source_date'],$sourcedateDb['source_gedcomnr'],'source_date');
+		if($result===true) {$found = true; }
 	}
 	if($found===false) echo '<tr><td colspan=4 style="color:red">No invalid dates found</td></tr>';
 	echo '</table>';
@@ -745,7 +889,7 @@ if ( (isset($_POST['data_check']) OR isset($_POST['unmark']) OR isset($_POST['ma
 	echo '<input type="checkbox" id="20" name="burial_date2" value="1" '.$checked.'>'.__('Burial date - bef birth of father').'<br>';
 	echo '<input type="checkbox" id="21" name="age1" value="1" '.$checked.'>'.__('Age (by death date) - more than ');
 	echo '<input type="text" name="age1_nr" style="width:30px" value="'.$age1_def.'">';
-	echo __(' years').'<br>';	
+	echo __(' years').'<br>';
 	echo '<input type="checkbox" id="22" name="age2" value="1" '.$checked.'>'.__('Age (by burial date) - more than ');
 	echo '<input type="text" name="age2_nr" style="width:30px" value="'.$age2_def.'">';
 	echo __(' years').'<br>';  
@@ -789,7 +933,7 @@ if (isset($_POST['final_check'])){
 		$bp_date=''; if(isset($personDb['pers_bapt_date'])) $bp_date = $personDb['pers_bapt_date'];
 		$d_date='';  if(isset($personDb['pers_death_date'])) $d_date = $personDb['pers_death_date'];
 		$bu_date=''; if(isset($personDb['pers_buried_date'])) $bu_date = $personDb['pers_buried_date'];
-	 
+
 		// marriage(s) dates and spouses birth date
 		if(isset($personDb['pers_fams'])) {
 			$marr_dates = array(); // marriage dates array
@@ -823,7 +967,7 @@ if (isset($_POST['final_check'])){
 				}
 			}
 		}
-	 
+
 		// parents' dates
 		$m_b_date=''; // mother's birth date
 		$f_b_date=''; // father's birth date
@@ -831,7 +975,7 @@ if (isset($_POST['final_check'])){
 		$sib_b_date=''; // previous sibling birth date
 		$m_fams=''; // marriage(s) of mother (to find previous sibling)
 		$m_fams_arr = array(); // marriage(s) array of mother (to find previous sibling)
-		
+
 		if(isset($personDb['pers_famc'])) {
 			$parents = $dbh->query("SELECT fam_gedcomnumber, fam_man, fam_woman, fam_children, fam_marr_date, fam_marr_church_date, fam_marr_notice_date, fam_relation_date
 				FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber ='".$personDb['pers_famc']."'");
@@ -879,9 +1023,9 @@ if (isset($_POST['final_check'])){
 					if($count>0) {  // person is not first child
 						$prev_sib_gednr = $ch_array[$count-1]; // gedcomnumber of previous sibling
 						$sib = $dbh->query("SELECT pers_birth_date FROM humo_persons
-							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$prev_sib_gednr."'");
+							WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$prev_sib_gednr."' AND pers_birth_date NOT LIKE ''");
 						$sibDb = $sib->fetch(PDO::FETCH_OBJ);
-						if(isset($sibDb->pers_birth_date) AND $sibDb->pers_birth_date!='' ) {
+						if(isset($sibDb->pers_birth_date)) {
 							$sib_b_date = $sibDb->pers_birth_date;
 						}
 					}
@@ -896,9 +1040,9 @@ if (isset($_POST['final_check'])){
 						}
 						$prev_marr_ged = $m_fams_arr[$count-1];
 						$prev_marr = $dbh->query("SELECT * FROM humo_families
-							WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$prev_marr_ged."'");
+							WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$prev_marr_ged."' AND fam_children NOT LIKE ''");
 						$prev_marrDb = $prev_marr->fetch(PDO::FETCH_OBJ);
-						if(isset($prev_marrDb->fam_children)) { 
+						if(isset($prev_marrDb->fam_children)) {
 							$prev_ch_arr = explode(";",$prev_marrDb->fam_children);
 							$prev_ch_num = count($prev_ch_arr);
 							$prev_ch_ged = $prev_ch_arr[$prev_ch_num-1]; // last child
@@ -1285,7 +1429,7 @@ echo "</form>\n";
 
 function compare_seq($first_date,$second_date) {
 // checks sequence of 2 dates (which is the earlier date)
-	include_once (CMS_ROOTPATH.'include/calculate_age_cls.php');  
+	include_once (CMS_ROOTPATH.'include/calculate_age_cls.php');
 	$process_date = New calculate_year_cls;
 
 	// take care of combined julian/gregorian dates (1678/9)
@@ -1302,7 +1446,7 @@ function compare_seq($first_date,$second_date) {
 	$month2 = $process_date->search_month($second_date);
 	$day2 = $process_date->search_day($second_date);
 
-	if($year1 AND $year2) {  
+	if($year1 AND $year2) {
 		if($year1 > $year2) return "2"; // a > b
 		elseif($year1 < $year2) return "1"; // a < b
 		elseif($year1 == $year2) {
@@ -1431,7 +1575,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 			echo '<tr><td style="text-align:'.$direction.'">'.$gednr.'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree_id='.$tree_id.'&person='.$personDb->pers_gedcomnumber.'" target=\'_blank\'>'.$name.'</a></td><td style="text-align:'.$direction.'">'.$table.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>'; 
 		}
 		if(substr($table,0,3) =="fam") {
-			$fam = $dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$gednr."'");
+			$fam = $dbh->query("SELECT fam_man,fam_woman FROM humo_families WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$gednr."'");
 			$famDb=$fam->fetch();
 
 			$spouse1Db=$db_functions->get_person($famDb['fam_man']);
@@ -1456,8 +1600,8 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				echo '<tr><td style="text-align:'.$direction.'">'.$persDb->pers_gedcomnumber.'</td><td style="text-align:'.$direction.'"><a href="../admin/index.php?page=editor&tree_id='.$tree_id.'&person='.$persDb->pers_gedcomnumber.'" target=\'_blank\'>'.$fullname.'</a> ('.__('Click events by person').')</td><td style="text-align:'.$direction.'">'.$evDb['event_kind'].$evdetail.'</td><td style="text-align:'.$direction.'">'.$dirmark2.$date.'</td></tr>';  
 			}
 			elseif($evDb['event_connect_kind']=='family' AND $evDb['event_connect_id']!='') { 
-				$fam = $dbh->query("SELECT * FROM humo_families
-					WHERE pers_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$evDb['event_connect_id']."'");
+				$fam = $dbh->query("SELECT fam_gedcomnumber,fam_man,fam_woman FROM humo_families
+					WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$evDb['event_connect_id']."'");
 				$famDb=$fam->fetch();
 
 				$spouse1Db=$db_functions->get_person($famDb['fam_man']);
@@ -1490,8 +1634,8 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 				$gedcomnr = $persDb->pers_gedcomnumber;
 			}
 			if(substr($connectDb['connect_sub_kind'],0,3)=='fam') {
-				$fam = $dbh->query("SELECT * FROM humo_families
-					WHERE pers_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$connectDb['connect_connect_id']."'");
+				$fam = $dbh->query("SELECT fam_gedcomnumber,fam_man,fam_woman FROM humo_families
+					WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$connectDb['connect_connect_id']."'");
 				$famDb=$fam->fetch();
 
 				$spouse1Db=$db_functions->get_person($famDb['fam_man']);
@@ -1517,7 +1661,7 @@ function invalid($date,$gednr,$table) {  // checks validity with validate_cls.ph
 					$name = $persDb->pers_firstname.' '.str_replace("_"," ",$persDb->pers_prefix).' '.$persDb->pers_lastname;
 				}
 				if($evDb['event_connect_kind']=='family' AND $evDb['event_connect_id']!='') {
-					$fam = $dbh->query("SELECT * FROM humo_families
+					$fam = $dbh->query("SELECT fam_gedcomnumber,fam_man,fam_woman FROM humo_families
 						WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber = '".$evDb['event_connect_id']."'");
 					$famDb=$fam->fetch();
 

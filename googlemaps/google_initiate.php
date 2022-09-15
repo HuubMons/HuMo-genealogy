@@ -319,7 +319,6 @@ function setfontsize(total) {
 }
 
 function makeSelection(sel) {
-
 	clearOverlays();
 
 	var max = sel;     // max is used for the "what" and "until" variables for the url_querystring to namesearch.php
@@ -350,7 +349,7 @@ function makeSelection(sel) {
 		return temp.firstChild.nodeValue;
 	}
 
-   	var i;
+	var i;
 
 	for(i = 0; i < j.length; i++) {
 

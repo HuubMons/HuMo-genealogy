@@ -83,10 +83,10 @@ td.style_tree_text { background-color: #eeeeff; }
 .standard_header { color: #000066; margin-top:10px; }
 
 /* Ancestor graphical */
-div.ancestor_name {
+div.ancestorName {
 border-color: #000066;
-color: #000000; font-family: "arial narrow"; font-size: 75%; } /* Tekst */
-div.ancestor_name a { color: #222222; font-weight: bold; }
+color: #000000; font-family: "arial narrow"; font-size: 75%; } /* Text */
+div.ancestorName a { color: #222222; font-weight: bold; }
 div.ancestor_line{ border-bottom-color: #000066; border-top-color: #000066;}
 div.ancestor_split{ border-left-color: #000066; border-bottom-color: #000066; border-top-color: #000066; }
 div.hour_ancestor_split{
@@ -94,7 +94,7 @@ div.hour_ancestor_split{
 	width: 8px;
 	border-right: 1px solid #000066; border-bottom: 1px solid #000066; border-top: 1px solid #000066;
 }
-.ancestor_name { line-height:100%; }
+.ancestorName { line-height:100%; }
 .chart_line { background-color:#000066; border:0px; }
 
 /* table header  */
