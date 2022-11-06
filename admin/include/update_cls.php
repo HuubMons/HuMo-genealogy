@@ -278,19 +278,19 @@ function update_v4_6_update_2(){
 	// *** Change default languages in table humo_settings ***
 	$sql='UPDATE humo_settings SET setting_value="nl" WHERE setting_value="languages/nederlands.php"';
 	$result=$dbh->query($sql);
-	
+
 	$sql='UPDATE humo_settings SET setting_value="nl" WHERE setting_value="talen/taal-nederlands.php"';
 	$result=$dbh->query($sql);
-	
+
 	$sql='UPDATE humo_settings SET setting_value="en" WHERE setting_value="languages/english.php"';
 	$result=$dbh->query($sql);
-	
+
 	$sql='UPDATE humo_settings SET setting_value="en" WHERE setting_value="talen/taal-english.php"';
 	$result=$dbh->query($sql);
-	
+
 	$sql='UPDATE humo_settings SET setting_value="de" WHERE setting_value="talen/taal-deutsch.php"';
 	$result=$dbh->query($sql);
-	
+
 	$sql='UPDATE humo_settings SET setting_value="fr" WHERE setting_value="talen/taal-francais.php"';
 	$result=$dbh->query($sql);
 
@@ -3564,7 +3564,7 @@ function update_v5_9(){
 
 	// *** Update for IPv6 ***
 	$check_qry= "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.columns
-		WHERE table_name = 'humo_stat_date'  AND COLUMN_NAME = 'stat_ip_address'";
+		WHERE table_name = 'humo_stat_date' AND COLUMN_NAME = 'stat_ip_address'";
 	$check_result = $dbh->query($check_qry);
 	$checkDb=$check_result->fetch(PDO::FETCH_OBJ);
 	if ($checkDb->CHARACTER_MAXIMUM_LENGTH==20){
@@ -3619,6 +3619,92 @@ function update_v5_9(){
 
 	// *** Show status of database update ***
 	echo '<script type="text/javascript">document.getElementById("information v5_9").innerHTML="Database updated!";</script>';
+	ob_flush(); flush(); // IE
+}
+
+
+function update_v6_0_1(){
+	// **************************************
+	// *** Update procedure version 6.0.1 ***
+	// **************************************
+
+	global $dbh, $db_functions;
+
+	// *** Show update status ***
+	echo '<tr><td>HuMo-genealogy update V6.0.1</td>';
+	echo '<td style="background-color:#00FF00">'.__('Update in progress...').' <div id="information v6_0_1" style="display: inline; font-weight:bold;"></div></td></tr>';
+	ob_flush(); flush(); // IE
+
+	// *** Change pers_address_source and fam_address_source into: address_source ***
+	$sql_get=$dbh->query("SELECT * FROM humo_connections WHERE connect_sub_kind='pers_address_source' OR connect_sub_kind='fam_address_source'");
+	while ($getDb=$sql_get->fetch(PDO::FETCH_OBJ)){
+		$sql_put="UPDATE humo_connections SET connect_kind='address', connect_sub_kind='address_source' WHERE connect_id=".$getDb->connect_id;
+		$dbh->query($sql_put);
+	}
+	// *** Update humo_settings (needed larger ID, because of bug in scripts) ***
+	$sql_put="ALTER TABLE humo_settings CHANGE setting_id setting_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
+	$dbh->query($sql_put);
+
+	// *** Add 2FA in user table ***
+	$sql="ALTER TABLE humo_users ADD user_2fa_enabled varchar(1) CHARACTER SET utf8 DEFAULT '' AFTER user_password_salted;";
+	$result=$dbh->query($sql);
+	$sql="ALTER TABLE humo_users ADD user_2fa_auth_secret varchar(50) CHARACTER SET utf8 DEFAULT '' AFTER user_2fa_enabled;";
+	$result=$dbh->query($sql);
+
+	// *** Change place fields into 120 characters ***
+	$sql="ALTER TABLE humo_persons
+		CHANGE pers_birth_place pers_birth_place VARCHAR(120) CHARACTER SET utf8,
+		CHANGE pers_bapt_place pers_bapt_place VARCHAR(120) CHARACTER SET utf8,
+		CHANGE pers_death_place pers_death_place VARCHAR(120) CHARACTER SET utf8,
+		CHANGE pers_buried_place pers_buried_place VARCHAR(120) CHARACTER SET utf8";
+	$result=$dbh->query($sql);
+
+	$sql="ALTER TABLE humo_families
+		CHANGE fam_relation_place fam_relation_place varchar(120) CHARACTER SET utf8,
+		CHANGE fam_marr_notice_place fam_marr_notice_place varchar(120) CHARACTER SET utf8,
+		CHANGE fam_marr_place fam_marr_place varchar(120) CHARACTER SET utf8,
+		CHANGE fam_marr_church_notice_place fam_marr_church_notice_place varchar(120) CHARACTER SET utf8,
+		CHANGE fam_marr_church_place fam_marr_church_place varchar(120) CHARACTER SET utf8,
+		CHANGE fam_div_place fam_div_place varchar(120) CHARACTER SET utf8";
+	$result=$dbh->query($sql);
+
+	$sql="ALTER TABLE humo_repositories CHANGE repo_place repo_place varchar(120) CHARACTER SET utf8";
+	$result=$dbh->query($sql);
+
+	$sql="ALTER TABLE humo_connections CHANGE connect_place connect_place varchar(120) CHARACTER SET utf8";
+	$result=$dbh->query($sql);
+
+	$sql="ALTER TABLE humo_addresses CHANGE address_place address_place varchar(120) CHARACTER SET utf8";
+	$result=$dbh->query($sql);
+
+	$sql="ALTER TABLE humo_events CHANGE event_place event_place varchar(120) CHARACTER SET utf8";
+	$result=$dbh->query($sql);
+
+	$tempqry = $dbh->query("SHOW TABLES LIKE 'humo_location'");
+	if ($tempqry->rowCount()) {
+		$sql="ALTER TABLE humo_location CHANGE location_location location_location VARCHAR(120) CHARACTER SET utf8";
+		$result=$dbh->query($sql);
+
+		$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
+		$exists = $result->rowCount();
+		if(!$exists) {
+			$dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
+		}
+	}
+	$tempqry = $dbh->query("SHOW TABLES LIKE 'humo_no_location'");
+	if ($tempqry->rowCount()) {
+		$sql="ALTER TABLE humo_no_location CHANGE no_location_location no_location_location VARCHAR(120) CHARACTER SET utf8";
+		$result=$dbh->query($sql);
+	}
+
+	// *** Update "update_status" to number 15 ***
+	$result = $dbh->query("UPDATE humo_settings SET setting_value='15' WHERE setting_variable='update_status'");
+
+	// *** Commit data in database ***
+	//$dbh->commit();
+
+	// *** Show status of database update ***
+	echo '<script type="text/javascript">document.getElementById("information v6_0_1").innerHTML="Database updated!";</script>';
 	ob_flush(); flush(); // IE
 }
 

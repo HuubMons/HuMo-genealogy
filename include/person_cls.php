@@ -1178,10 +1178,14 @@ function name_extended($person_kind,$show_name_texts=false){
 		// *** Add colour marks to person ***
 		$text_colour=$name["colour_mark"];
 
-		// *** Show age of parent2 when married ***
-		if (!$privacy AND $person_kind=='parent2'){
+		// *** Show age of parent2 when married (don't show age if it's an relation) ***
+		global $relation_check;
+		if (!$privacy AND $person_kind=='parent2' AND $familyDb->fam_marr_date != ''){
 			$process_age = New calculate_year_cls;
-			$age=$process_age->calculate_age($personDb->pers_bapt_date,$personDb->pers_birth_date,$familyDb->fam_marr_date,false,'marriage');
+			if ($relation_check==true)
+				$age=$process_age->calculate_age($personDb->pers_bapt_date,$personDb->pers_birth_date,$familyDb->fam_marr_date,false,'relation');
+			else
+				$age=$process_age->calculate_age($personDb->pers_bapt_date,$personDb->pers_birth_date,$familyDb->fam_marr_date,false,'marriage');
 			$templ_name["name_wedd_age"]=$age;
 			$text_name2.=$age;
 		}

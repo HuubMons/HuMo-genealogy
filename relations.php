@@ -2271,12 +2271,12 @@ function display_table() {
 				$persidDb=$db_functions->get_person($rel_arrayY[0][0]);
 				$name=$pers_cls->person_name($persidDb);
 				$personname=$name["name"];
-/*				
+/*
 				echo '<td style="border:0px;">&#8593;</td>';
 				echo '<td style="border:0px;">&nbsp;</td>';
 				echo '<td style="border:0px;">&nbsp;</td>';
 				echo '</tr><tr>';
-*/				
+*/
 				if($persidDb->pers_sexe == "M") $ext_cls = "extended_man ";
 				else $ext_cls = "extended_woman ";
 				

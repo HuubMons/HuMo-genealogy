@@ -126,7 +126,7 @@ echo '<div>';
 		AND address_shared='1'".
 		$where." ORDER BY ".$orderby;
 	$address = $dbh->query($sql);
-	
+
 	while(@$addressDb=$address->fetch(PDO::FETCH_OBJ)) {
 		echo '<tr>';
 			//echo '<td style="padding-left:5px;padding-right:5px">';

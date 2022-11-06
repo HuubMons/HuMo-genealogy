@@ -293,6 +293,39 @@ echo '</td></tr>';
 
 
 echo '<tr class="table_header"><th colspan="2">'.__('Settings').'</th>';
+
+echo '<tr><td>'.__('GEDCOM version').'</td><td>';
+	$selected=''; if (isset($_POST['gedcom_version']) AND $_POST['gedcom_version']=='70'){
+		$selected=' SELECTED';
+
+		// *** GEDCOM 7.0 is selected, always use UTF-8 character set ***
+		$_POST['gedcom_char_set']='UTF-8';
+	}
+	echo '<select size="1" name="gedcom_version">';
+		echo '<option value="551">'.__('GEDCOM 5.5.1').'</option>';
+		echo '<option value="70"'.$selected.' disabled>'.__('GEDCOM 7.0').'</option>';
+//echo '<option value="70"'.$selected.'>'.__('GEDCOM 7.0').'</option>';
+	echo '</select>';
+
+//UNDER CONSTRUCTION TEXT
+echo ' GEDCOM 7.0 export: under construction!';
+
+echo '</td></tr>';
+
+echo '<tr><td>'.__('Character set').'</td><td>';
+	echo '<select size="1" name="gedcom_char_set">';
+		$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='UTF-8'){ $selected=' SELECTED'; }
+		echo '<option value="UTF-8"'.$selected.'>'.__('UTF-8 (recommended character set)').'</option>';
+
+		$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='ANSI'){ $selected=' SELECTED'; }
+		echo '<option value="ANSI"'.$selected.'>ANSI</option>';
+
+		$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='ASCII'){ $selected=' SELECTED'; }
+		echo '<option value="ASCII"'.$selected.'>ASCII</option>';
+	echo '</select> ';
+	echo __('GEDCOM 7.0 always uses the UTF-8 character set.');
+echo '</td></tr>';
+
 echo '<tr><td>'.__('Export texts').'</td><td>';
 	$selected=''; if (isset($_POST['gedcom_texts']) AND $_POST['gedcom_texts']=='no'){ $selected=' SELECTED'; }
 	echo '<select size="1" name="gedcom_texts">';
@@ -321,17 +354,24 @@ if($temp->rowCount() > 0) {
 	echo '</td></tr>';
 }
 
-echo '<tr><td>'.__('Character set').'</td><td>';
-	echo '<select size="1" name="gedcom_char_set">';
-		$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='UTF-8'){ $selected=' SELECTED'; }
-		echo '<option value="UTF-8"'.$selected.'>'.__('UTF-8 (recommended character set)').'</option>';
 
-		$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='ANSI'){ $selected=' SELECTED'; }
-		echo '<option value="ANSI"'.$selected.'>ANSI</option>';
-
-		$selected=''; if (isset($_POST['gedcom_char_set']) AND $_POST['gedcom_char_set']=='ASCII'){ $selected=' SELECTED'; }
-		echo '<option value="ASCII"'.$selected.'>ASCII</option>';
-	echo '</select>';
+// Can _LOC tag be used in GEDCOM 7.x?
+// *** Shared adresses are not GEDCOM compatible. Add an option for export ***
+echo '<tr><td>'.__('Shared addresses').'</td><td>';
+	$sql="SELECT * FROM humo_addresses WHERE address_tree_id='".$tree_id."' AND address_shared='1' LIMIT 0,1";
+	$address = $dbh->query($sql);
+	if($address->rowCount() >0){
+		$selected=''; if (isset($_POST['gedcom_shared_addresses']) AND $_POST['gedcom_shared_addresses']=='standard'){ $selected=' SELECTED'; }
+		echo '<select size="1" name="gedcom_shared_addresses">';
+			echo '<option value="non_standard">'.__('Export shared addresses').'</option>';
+			echo '<option value="standard"'.$selected.'>'.__('Convert all shared addresses as single addresses').'</option>';
+		echo '</select><br>';
+		echo __('"Shared addresses" is <b>only compatible</b> with HuMo-genealogy and Haza-21 programs.<br>
+Other programs: convert shared addresses. The "shared address" option will be lost.');
+	}
+	else{
+		echo __('There are no shared addresses, standard GEDCOM export is used.');
+	}
 echo '</td></tr>';
 
 echo '<tr><td>'.__('Show export status').'</td><td>';
@@ -385,28 +425,55 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 	}
 
 	echo '<p>'.__('GEDCOM file will be exported to backup_tmp/ folder').'<br>';
+	$gedcom_version='551'; if (isset($_POST['gedcom_version'])) $gedcom_version=$_POST['gedcom_version'];
+	$gedcom_char_set=''; if (isset($_POST['gedcom_char_set'])) $gedcom_char_set=$_POST['gedcom_char_set'];
 	$gedcom_texts=''; if (isset($_POST['gedcom_texts'])) $gedcom_texts=$_POST['gedcom_texts'];
 	$gedcom_sources=''; if (isset($_POST['gedcom_sources'])) $gedcom_sources=$_POST['gedcom_sources'];
-	$gedcom_char_set=''; if (isset($_POST['gedcom_char_set'])) $gedcom_char_set=$_POST['gedcom_char_set'];
 	$fh = fopen($myFile, 'w') or die("<b>ERROR: no permission to open a new file! Please check permissions of admin/backup_tmp folder!</b>");
 
 	// *** GEDCOM header ***
 	$buffer='';
-	//if ($gedcom_char_set=='UTF-8') $buffer.= "\xEF\xBB\xBF"; // *** Add BOM header to UTF-8 file ***
-	$buffer.="0 HEAD\r\n";
-	$buffer.="1 SOUR HuMo-genealogy\r\n";
-	$buffer.="2 VERS ".$humo_option["version"]."\r\n";
-	$buffer.="2 NAME HuMo-genealogy\r\n";
-	$buffer.="2 CORP HuMo-genealogy software\r\n";
-	$buffer.="3 ADDR http://www.humo-gen.com\r\n";
-	$buffer.="1 SUBM @S1@\r\n";
-	$buffer.="1 GEDC\r\n";
-	$buffer.="2 VERS 5.5.1\r\n";
-	$buffer.="2 FORM Lineage-Linked\r\n";
 
-	if ($gedcom_char_set=='UTF-8') $buffer.="1 CHAR UTF-8\r\n";
-	elseif ($gedcom_char_set=='ANSI') $buffer.="1 CHAR ANSI\r\n";
-	else $buffer.="1 CHAR ASCII\r\n";
+	if ($gedcom_version=='551'){
+		// *** GEDCOM 5.5.1 ***
+		//if ($gedcom_char_set=='UTF-8') $buffer.= "\xEF\xBB\xBF"; // *** Add BOM header to UTF-8 file ***
+		$buffer.="0 HEAD\r\n";
+		$buffer.="1 SOUR HuMo-genealogy\r\n";
+		$buffer.="2 VERS ".$humo_option["version"]."\r\n";
+		$buffer.="2 NAME HuMo-genealogy\r\n";
+		$buffer.="2 CORP HuMo-genealogy software\r\n";
+		$buffer.="3 ADDR https://humo-gen.com\r\n";
+		$buffer.="1 SUBM @S1@\r\n";
+		$buffer.="1 GEDC\r\n";
+		$buffer.="2 VERS 5.5.1\r\n";
+		$buffer.="2 FORM Lineage-Linked\r\n";
+
+		if ($gedcom_char_set=='UTF-8') $buffer.="1 CHAR UTF-8\r\n";
+		elseif ($gedcom_char_set=='ANSI') $buffer.="1 CHAR ANSI\r\n";
+		else $buffer.="1 CHAR ASCII\r\n";
+	}
+	else{
+		// *** GEDCOM 7.0 ***
+		/*
+		0 HEAD
+		1 GEDC
+		2 VERS 7.0
+		1 SCHMA
+		2 TAG _SKYPEID http://xmlns.com/foaf/0.1/skypeID
+		2 TAG _JABBERID http://xmlns.com/foaf/0.1/jabberID
+		1 SOUR https://gedcom.io/
+		2 VERS 0.3
+		2 NAME GEDCOM Steering Committee
+		2 CORP FamilySearch
+		*/
+		$buffer.="0 HEAD\r\n";
+		$buffer.="1 GEDC\r\n";
+		$buffer.="2 VERS 7.0\r\n";
+		$buffer.="1 SOUR https://humo-gen.com\r\n";
+		$buffer.="2 VERS ".$humo_option["version"]."\r\n";
+		$buffer.="2 NAME HuMo-genealogy\r\n";
+		$buffer.="2 CORP HuMo-genealogy software\r\n";
+	}
 
 	// 0 @S1@ SUBM
 	// 1 NAME Huub Mons
@@ -510,7 +577,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			// *** 2 _RUFNAME is only used in BK, HuMo-genealogy uses 2 _RUFN ***
 			//if($nameDb->event_gedcom == "_RUFN") $eventgedcom = '_RUFNAME';
 			$buffer.='2 '.$eventgedcom.' '.$nameDb->event_event."\r\n";
-			if ($nameDb->event_date) $buffer.='3 DATE '.$nameDb->event_date."\r\n";
+			if ($nameDb->event_date) $buffer.='3 DATE '.process_date($nameDb->event_date)."\r\n";
 			if ($gedcom_sources=='yes')
 				sources_export('person','pers_event_source',$nameDb->event_id,3);
 			if ($gedcom_texts=='yes' AND $nameDb->event_text){
@@ -527,7 +594,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			OR 	(isset($person->pers_stillborn) AND $person->pers_stillborn=='y') ){
 			$buffer.="1 BIRT\r\n";
 			if ($person->pers_birth_date){
-				$buffer.='2 DATE '.$person->pers_birth_date."\r\n"; 
+				$buffer.='2 DATE '.process_date($person->pers_birth_date)."\r\n"; 
 				if (isset($person->pers_birth_date_hebnight) AND $person->pers_birth_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
 			}
 			if ($person->pers_birth_place){ $buffer.=process_place($person->pers_birth_place,2); }
@@ -547,7 +614,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		// *** Christened data ***
 		if ($person->pers_bapt_date OR $person->pers_bapt_place OR $person->pers_bapt_text){
 			$buffer.="1 CHR\r\n";
-			if ($person->pers_bapt_date){ $buffer.='2 DATE '.$person->pers_bapt_date."\r\n"; }
+			if ($person->pers_bapt_date){ $buffer.='2 DATE '.process_date($person->pers_bapt_date)."\r\n"; }
 			if ($person->pers_bapt_place){ $buffer.=process_place($person->pers_bapt_place,2); }
 			if ($gedcom_sources=='yes'){
 				sources_export('person','pers_bapt_source',$person->pers_gedcomnumber,2);
@@ -571,7 +638,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		if ($person->pers_death_date OR $person->pers_death_place OR $person->pers_death_text OR $person->pers_death_cause){
 			$buffer.="1 DEAT\r\n";
 			if ($person->pers_death_date) {
-				$buffer.='2 DATE '.$person->pers_death_date."\r\n";
+				$buffer.='2 DATE '.process_date($person->pers_death_date)."\r\n";
 				if (isset($person->pers_death_date_hebnight) AND $person->pers_death_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
 			}
 			if ($person->pers_death_place) $buffer.=process_place($person->pers_death_place,2);
@@ -588,7 +655,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		if ($person->pers_buried_date OR $person->pers_buried_place OR $person->pers_buried_text OR $person->pers_cremation){
 			$buffer.="1 BURI\r\n";
 			if ($person->pers_buried_date) {
-				$buffer.='2 DATE '.$person->pers_buried_date."\r\n";
+				$buffer.='2 DATE '.process_date($person->pers_buried_date)."\r\n";
 				if (isset($person->pers_buried_date_hebnight) AND $person->pers_buried_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
 			}
 			if ($person->pers_buried_place) $buffer.=process_place($person->pers_buried_place,2);
@@ -617,7 +684,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		while($professionDb=$professionqry->fetch(PDO::FETCH_OBJ)){
 			$buffer.='1 OCCU '.$professionDb->event_event."\r\n";
 
-			if ($professionDb->event_date) $buffer.='2 DATE '.$professionDb->event_date."\r\n";
+			if ($professionDb->event_date) $buffer.='2 DATE '.process_date($professionDb->event_date)."\r\n";
 			if ($professionDb->event_place) $buffer.='2 PLAC '.$professionDb->event_place."\r\n";
 			if ($gedcom_texts=='yes' AND $professionDb->event_text){
 				$buffer.='2 NOTE '.process_text(3,$professionDb->event_text);
@@ -642,7 +709,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			$buffer.="1 OBJE\r\n";
 			$buffer.="2 FORM jpg\r\n";
 			$buffer.='2 FILE '.$sourceDb->event_event."\r\n";
-			if ($sourceDb->event_date) $buffer.='2 DATE '.$sourceDb->event_date."\r\n";
+			if ($sourceDb->event_date) $buffer.='2 DATE '.process_date($sourceDb->event_date)."\r\n";
 
 			if ($gedcom_texts=='yes' AND $sourceDb->event_text){
 				$buffer.='2 NOTE '.process_text(3,$sourceDb->event_text); }
@@ -729,7 +796,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			// *** Text is added in the first line: 1 _MILT military items. ***
 			if ($process_event){
 				if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
-				if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
+				if ($eventDb->event_date) $buffer.='2 DATE '.process_date($eventDb->event_date)."\r\n";
 				if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
 			}
 			*/
@@ -741,7 +808,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 				if ($eventDb->event_event) $buffer.=' '.$eventDb->event_event;
 				$buffer.="\r\n";
 				if ($eventDb->event_text) $buffer.='2 NOTE '.process_text(3,$eventDb->event_text);
-				if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
+				if ($eventDb->event_date) $buffer.='2 DATE '.process_date($eventDb->event_date)."\r\n";
 				if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
 			}
 
@@ -883,7 +950,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			$buffer.="1 _LIV\r\n";
 
 			// *** Relation start date ***
-			if ($family->fam_relation_date) $buffer.='2 DATE '.$family->fam_relation_date."\r\n";
+			if ($family->fam_relation_date) $buffer.='2 DATE '.process_date($family->fam_relation_date)."\r\n";
 
 			// *** Relation end date ***
 			// How to export this date?
@@ -903,7 +970,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			$buffer.="1 MARB\r\n";
 			$buffer.="2 TYPE civil\r\n";
 			if ($family->fam_marr_notice_date){
-				$buffer.='2 DATE '.$family->fam_marr_notice_date."\r\n";
+				$buffer.='2 DATE '.process_date($family->fam_marr_notice_date)."\r\n";
 				if (isset($family->fam_marr_notice_date_hebnight) AND $family->fam_marr_notice_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
 			}
 			if ($family->fam_marr_notice_place){
@@ -922,7 +989,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			$buffer.="1 MARB\r\n";
 			$buffer.="2 TYPE religious\r\n";
 			if ($family->fam_marr_church_notice_date){
-				$buffer.='2 DATE '.$family->fam_marr_church_notice_date."\r\n";
+				$buffer.='2 DATE '.process_date($family->fam_marr_church_notice_date)."\r\n";
 				if (isset($family->fam_marr_church_notice_date_hebnight) AND $family->fam_marr_church_notice_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
 			}
 			if ($family->fam_marr_church_notice_place){
@@ -940,7 +1007,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			$buffer.="1 MARR\r\n";
 			$buffer.="2 TYPE civil\r\n";
 			if ($family->fam_marr_date){ 
-				$buffer.='2 DATE '.$family->fam_marr_date."\r\n"; 
+				$buffer.='2 DATE '.process_date($family->fam_marr_date)."\r\n"; 
 				if (isset($family->fam_marr_date_hebnight) AND $family->fam_marr_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
 			}
 			if ($family->fam_marr_place){ $buffer.=process_place($family->fam_marr_place,2); }
@@ -958,7 +1025,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			$buffer.="1 MARR\r\n";
 			$buffer.="2 TYPE religious\r\n";
 			if ($family->fam_marr_church_date){ 
-				$buffer.='2 DATE '.$family->fam_marr_church_date."\r\n"; 
+				$buffer.='2 DATE '.process_date($family->fam_marr_church_date)."\r\n";
 				if (isset($family->fam_marr_church_date_hebnight) AND $family->fam_marr_church_date_hebnight=='y'){ $buffer.='2 _HNIT y'."\r\n"; }
 			}
 			if ($family->fam_marr_church_place){ $buffer.=process_place($family->fam_marr_church_place,2); }
@@ -972,7 +1039,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		// *** Divorced ***
 		if ($family->fam_div_date OR $family->fam_div_place OR $family->fam_div_text){
 			$buffer.="1 DIV\r\n";
-			if ($family->fam_div_date){ $buffer.='2 DATE '.$family->fam_div_date."\r\n"; }
+			if ($family->fam_div_date){ $buffer.='2 DATE '.process_date($family->fam_div_date)."\r\n"; }
 			if ($family->fam_div_place){ $buffer.=process_place($family->fam_div_place,2); }
 			if ($gedcom_sources=='yes'){
 				sources_export('family','fam_div_source',$family->fam_gedcomnumber,2);
@@ -1005,7 +1072,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			$buffer.="1 OBJE\r\n";
 			$buffer.="2 FORM jpg\r\n";
 			$buffer.='2 FILE '.$sourceDb->event_event."\r\n";
-			if ($sourceDb->event_date) $buffer.='2 DATE '.$sourceDb->event_date."\r\n";
+			if ($sourceDb->event_date) $buffer.='2 DATE '.process_date($sourceDb->event_date)."\r\n";
 
 			if ($gedcom_texts=='yes' AND $sourceDb->event_text){
 				$buffer.='2 NOTE '.process_text(3,$sourceDb->event_text); }
@@ -1040,7 +1107,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			// *** Text is added in the first line: 1 _MILT military items. ***
 			//if ($process_event){
 			//	if ($eventDb->event_text) $buffer.=$event_gedcom.' '.process_text(2,$eventDb->event_text);
-			//	if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
+			//	if ($eventDb->event_date) $buffer.='2 DATE '.process_date($eventDb->event_date)."\r\n";
 			//	if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
 			//}
 
@@ -1050,7 +1117,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 					if ($eventDb->event_event) $buffer.=' '.$eventDb->event_event;
 					$buffer.="\r\n";
 				if ($eventDb->event_text) $buffer.='2 NOTE '.process_text(3,$eventDb->event_text);
-				if ($eventDb->event_date) $buffer.='2 DATE '.$eventDb->event_date."\r\n";
+				if ($eventDb->event_date) $buffer.='2 DATE '.process_date($eventDb->event_date)."\r\n";
 				if ($eventDb->event_place) $buffer.='2 PLAC '.$eventDb->event_place."\r\n";
 			}
 		}
@@ -1211,7 +1278,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			if (isset($_POST['gedcom_status']) AND $_POST['gedcom_status']=='yes') echo $family->source_gedcomnr. ' ';
 			if ($family->source_title){ $buffer.='1 TITL '.$family->source_title."\r\n"; }
 			if ($family->source_abbr){ $buffer.='1 ABBR '.$family->source_abbr."\r\n"; }
-			if ($family->source_date){ $buffer.='1 DATE '.$family->source_date."\r\n"; }
+			if ($family->source_date){ $buffer.='1 DATE '.process_date($family->source_date)."\r\n"; }
 			if ($family->source_place){ $buffer.='1 PLAC '.$family->source_place."\r\n"; }
 			if ($family->source_publ){ $buffer.='1 PUBL '.$family->source_publ."\r\n"; }
 			if ($family->source_refn){ $buffer.='1 REFN '.$family->source_refn."\r\n"; }
@@ -1230,7 +1297,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 				$buffer.="1 OBJE\r\n";
 				$buffer.="2 FORM jpg\r\n";
 				$buffer.='2 FILE '.$sourceDb->event_event."\r\n";
-				if ($sourceDb->event_date) $buffer.='2 DATE '.$sourceDb->event_date."\r\n";
+				if ($sourceDb->event_date) $buffer.='2 DATE '.process_date($sourceDb->event_date)."\r\n";
 
 				if ($gedcom_texts=='yes' AND $sourceDb->event_text){
 					$buffer.='2 NOTE '.process_text(3,$sourceDb->event_text);
@@ -1285,7 +1352,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 
 		/*
 		repo_place='".$editor_cls->text_process($_POST['repo_place'])."',
-		repo_date='".$editor_cls->date_process('repo_date')."',
+		repo_date='".process_date('repo_date')."',
 		repo_mail='".safe_text_db($_POST['repo_mail'])."',
 		repo_url='".safe_text_db($_POST['repo_url'])."',
 		*/
@@ -1309,7 +1376,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			// 3 TIME 13:39:58
 			if ($repoDb->repo_new_date){
 				$buffer.="1 _NEW\r\n";
-				$buffer.="2 DATE ".$repoDb->repo_new_date."\r\n";
+				$buffer.="2 DATE ".process_date($repoDb->repo_new_date)."\r\n";
 				if ($repoDb->repo_new_time) $buffer.="3 TIME ".$repoDb->repo_new_time."\r\n";
 			}
 
@@ -1319,7 +1386,7 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			// 3 TIME 13:39:58
 			if ($repoDb->repo_changed_date){
 				$buffer.="1 CHAN\r\n";
-				$buffer.="2 DATE ".$repoDb->repo_changed_date."\r\n";
+				$buffer.="2 DATE ".process_date($repoDb->repo_changed_date)."\r\n";
 				if ($repoDb->repo_changed_time) $buffer.="3 TIME ".$repoDb->repo_changed_time."\r\n";
 			}
 
@@ -1349,31 +1416,35 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 	// 1 ZIP
 	// 1 PLAC Plaats
 	// 1 PHON
-	$family_qry=$dbh->query("SELECT * FROM humo_addresses
-		WHERE address_tree_id='".$tree_id."'
-		AND address_shared='1'");
-	while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
-		// 0 @I1181@ INDI *** Gedcomnumber ***
-		$buffer='0 @'.$family->address_gedcomnr."@ RESI\r\n";
+	$export_addresses=true;
+	if (isset($_POST['gedcom_shared_addresses']) AND $_POST['gedcom_shared_addresses']=='standard') $export_addresses=false;
+	if ($export_addresses){
+		$family_qry=$dbh->query("SELECT * FROM humo_addresses
+			WHERE address_tree_id='".$tree_id."'
+			AND address_shared='1'");
+		while($family=$family_qry->fetch(PDO::FETCH_OBJ)){
+			// 0 @R1@ RESI *** Gedcomnumber ***
+			$buffer='0 @'.$family->address_gedcomnr."@ RESI\r\n";
 
-		if ($family->address_address){ $buffer.='1 ADDR '.$family->address_address."\r\n"; }
-		if ($family->address_zip){ $buffer.='1 ZIP '.$family->address_zip."\r\n"; }
-		if ($family->address_date){ $buffer.='1 DATE '.$family->address_date."\r\n"; }
-		if ($family->address_place){ $buffer.='1 PLAC '.$family->address_place."\r\n"; }
-		if ($family->address_phone){ $buffer.='1 PHON '.$family->address_phone."\r\n"; }
-		if ($gedcom_sources=='yes'){
-			sources_export('address','address_source',$family->address_gedcomnr,2);
+			if ($family->address_address){ $buffer.='1 ADDR '.$family->address_address."\r\n"; }
+			if ($family->address_zip){ $buffer.='1 ZIP '.$family->address_zip."\r\n"; }
+			if ($family->address_date){ $buffer.='1 DATE '.process_date($family->address_date)."\r\n"; }
+			if ($family->address_place){ $buffer.='1 PLAC '.$family->address_place."\r\n"; }
+			if ($family->address_phone){ $buffer.='1 PHON '.$family->address_phone."\r\n"; }
+			if ($gedcom_sources=='yes'){
+				sources_export('address','address_source',$family->address_gedcomnr,2);
+			}
+			if ($family->address_text){ $buffer.='1 NOTE '.process_text(2,$family->address_text); }
+
+			// photo
+
+			// *** Write source data ***
+			$buffer=decode($buffer);
+			fwrite($fh, $buffer);
+			// *** Show source data on screen ***
+			//$buffer = str_replace("\r\n", "<br>", $buffer);
+			//echo $buffer;
 		}
-		if ($family->address_text){ $buffer.='1 NOTE '.process_text(2,$family->address_text); }
-
-		// photo
-
-		// *** Write source data ***
-		$buffer=decode($buffer);
-		fwrite($fh, $buffer);
-		// *** Show source data on screen ***
-		//$buffer = str_replace("\r\n", "<br>", $buffer);
-		//echo $buffer;
 	}
 
 	// *** Notes ***
@@ -1466,6 +1537,26 @@ function decode($buffer){
 	return $buffer;
 }
 
+function process_date($text){
+	global $gedcom_version;
+	if ($gedcom_version=='551'){
+		//
+	}
+	else{
+		// *** Remove extra 0 for GEDCOM 7 export ***
+		$text=str_replace('01 ', '1 ', $text);
+		$text=str_replace('02 ', '2 ', $text);
+		$text=str_replace('03 ', '3 ', $text);
+		$text=str_replace('04 ', '4 ', $text);
+		$text=str_replace('05 ', '5 ', $text);
+		$text=str_replace('06 ', '6 ', $text);
+		$text=str_replace('07 ', '7 ', $text);
+		$text=str_replace('08 ', '8 ', $text);
+		$text=str_replace('09 ', '9 ', $text);
+	}
+	return $text;
+}
+
 // Official GEDCOM 5.5.1: 255 characters total (including tags).
 // Character other programs: Aldfaer about 60 char., BK about 230.
 // ALDFAER:
@@ -1475,7 +1566,7 @@ function decode($buffer){
 // 1 CONC Bla bla text etc.
 // Don't process first part, add if processed (can be: 2 NOTE or 3 NOTE)
 function process_text($level,$text,$extractnoteids=true){
-	global $noteids;
+	global $noteids, $gedcom_version;
 
 	$text = str_replace("<br>", "", $text);
 	$text = str_replace("\r", "", $text);
@@ -1490,22 +1581,26 @@ function process_text($level,$text,$extractnoteids=true){
 	$text=''; $text_processed='';
 	for ($j=0; $j<=(count($regel)-1); $j++){
 		$text=$regel[$j]."\r\n";
-		if (strlen($regel[$j])>150){
-			$line_length=strlen($regel[$j]);
-			$words = explode(" ", $regel[$j]);
-			$new_line=''; $new_line2=''; $characters=0;
-			for ($x=0; $x<=(count($words)-1); $x++){
-				if($x>0){ $new_line.=' '; $new_line2.=' '; }
-				$new_line.=$words[$x]; $new_line2.=$words[$x];
-				$characters=(strlen($new_line2));
-				//if ($characters>145){
-				// *** Break line if there are >5 characters left AND there are >145 characters ***
-				if ($characters>145 AND $line_length-$characters>5){
-					$new_line.="\r\n".$level." CONC";
-					$new_line2=''; $line_length=$line_length-$characters;
+
+		// *** CONC isn't allowed in GEDCOM 7.0 ***
+		if ($gedcom_version=='551'){
+			if (strlen($regel[$j])>150){
+				$line_length=strlen($regel[$j]);
+				$words = explode(" ", $regel[$j]);
+				$new_line=''; $new_line2=''; $characters=0;
+				for ($x=0; $x<=(count($words)-1); $x++){
+					if($x>0){ $new_line.=' '; $new_line2.=' '; }
+					$new_line.=$words[$x]; $new_line2.=$words[$x];
+					$characters=(strlen($new_line2));
+					//if ($characters>145){
+					// *** Break line if there are >5 characters left AND there are >145 characters ***
+					if ($characters>145 AND $line_length-$characters>5){
+						$new_line.="\r\n".$level." CONC";
+						$new_line2=''; $line_length=$line_length-$characters;
+					}
 				}
+				$text=$new_line."\r\n";
 			}
-			$text=$new_line."\r\n";
 		}
 
 		// *** First line is x NOTE, use CONT at other lines ***
@@ -1567,13 +1662,17 @@ function adresses_export($connect_kind,$connect_sub_kind,$connect_connect_id){
 	foreach ($connect_sql as $connectDb){
 		$addressDb = $db_functions->get_address($connectDb->connect_item_id);
 		// *** Next items are only exported if Address is shared ***
-		if ($addressDb->address_shared=='1'){
+
+		$export_addresses=false; if ($addressDb->address_shared=='1') $export_addresses=true;
+		if (isset($_POST['gedcom_shared_addresses']) AND $_POST['gedcom_shared_addresses']=='standard') $export_addresses=false;
+		//if ($addressDb->address_shared=='1'){
+		if ($export_addresses){
 			// *** Shared address ***
 			// 1 RESI @R210@
 			// 2 DATE 1 JAN 2021
 			// 2 ROLE ROL
 			$buffer.='1 RESI @'.$connectDb->connect_item_id."@\r\n";
-			if ($connectDb->connect_date) $buffer.='2 DATE '.$connectDb->connect_date."\r\n";
+			if ($connectDb->connect_date) $buffer.='2 DATE '.process_date($connectDb->connect_date)."\r\n";
 			if ($connectDb->connect_role){ $buffer.='2 ROLE '.$connectDb->connect_role."\r\n"; }
 
 			// *** Extra text by address ***
@@ -1621,8 +1720,8 @@ function adresses_export($connect_kind,$connect_sub_kind,$connect_connect_id){
 			if ($addressDb->address_place){ $buffer.='3 CITY '.$addressDb->address_place."\r\n"; }
 			if ($addressDb->address_zip){ $buffer.='3 POST '.$addressDb->address_zip."\r\n"; }
 			if ($addressDb->address_phone){ $buffer.='2 PHON '.$addressDb->address_phone."\r\n"; }
-			//if ($addressDb->address_date){ $buffer.='2 DATE '.$addressDb->address_date."\r\n"; }
-			if ($connectDb->connect_date) $buffer.='2 DATE '.$connectDb->connect_date."\r\n";
+			//if ($addressDb->address_date){ $buffer.='2 DATE '.process_date($addressDb->address_date)."\r\n"; }
+			if ($connectDb->connect_date) $buffer.='2 DATE '.process_date($connectDb->connect_date)."\r\n";
 			if ($addressDb->address_text){ $buffer.='2 NOTE '.process_text(3,$addressDb->address_text); }
 
 			// *** Source by address ***
@@ -1682,7 +1781,7 @@ function sources_export($connect_kind,$connect_sub_kind,$connect_connect_id,$sta
 			$buffer.=($start_number+2).' TEXT '.process_text($start_number+3,$connectDb->connect_text);
 		}
 
-		if ($connectDb->source_date){ $buffer.=($start_number+1).' DATE '.$connectDb->connect_date."\r\n"; }
+		if ($connectDb->source_date){ $buffer.=($start_number+1).' DATE '.process_date($connectDb->connect_date)."\r\n"; }
 		if ($connectDb->source_place){ $buffer.=($start_number+1).' PLAC '.$connectDb->connect_place."\r\n"; }
 	}
 }

@@ -67,7 +67,7 @@ echo '<p class="help_text">'.__('Tools').' - '.__('Statistics').'<br>';
 echo '<span class="help_explanation">'.__('The information given in the statistics table doesnt warrant further explanation.').'</span><br>';
 
 echo '<p class="help_text">'.__('Tools').' - '.__('Relationship calculator').'<br>';
-echo '<span class="help_explanation">'.__('With the relationship calculator you can establish blood and/or marital relations between two people. In the search fields "First Name" and "Last Name" you can enter names, part of names or leave a field empty. Then you can click "search" and consequently pick a name from the result list. Once two names have been selected, you can click "Calculate relationship" and if a relationship is found it will be listed together with a graphical representation. You can press the change symbol to switch between the persons.').'</span><br>';
+echo '<span class="help_explanation">'.__('With the relationship calculator you can establish blood and/or marital relations between two people. In the search field "Name" you can enter a name. For example first name, last name, call name, part of name or leave a field empty. Then you can click "search" and consequently pick a name from the result list. Once two names have been selected, you can click "Calculate relationship" and if a relationship is found it will be listed together with a graphical representation. You can press the change symbol to switch between the persons.').'</span><br>';
 
 echo '<p class="help_text">'.__('Tools').' - '.__('World map').'<br>';
 echo '<span class="help_explanation">'.__('This will display a world map relating to the people present in the database, with ability to map by births or deaths.').'</span><br>';

@@ -1,6 +1,8 @@
 <?php
 include_once("header.php");
 include_once (CMS_ROOTPATH."menu.php");
+include_once (CMS_ROOTPATH."include/2fa_authentication/authenticator.php");
+$two_fa_change=false;
 
 if (isset($_SESSION['user_id']) AND is_numeric($_SESSION['user_id'])){
 	@$qry = "SELECT * FROM humo_users LEFT JOIN humo_groups
@@ -12,31 +14,72 @@ if (isset($_SESSION['user_id']) AND is_numeric($_SESSION['user_id'])){
 	}
 }
 
-if (isset($_POST['send_mail'])){
-	$error='';
+if (isset($_POST['update_settings'])){
+	$result_message='';
 	if ($_POST["register_password"]!=$_POST["register_repeat_password"]){
-		$error=__('ERROR: No identical passwords');
+		$result_message=__('ERROR: No identical passwords');
 	}
 
-	if ($error==false){
+	if ($result_message==''){
 		$user_register_date=date("Y-m-d H:i");
 		//user_name='".safe_text_db($_POST["register_name"])."',
 		//user_remark='".safe_text_db($_POST["register_text"])."',
 		//user_register_date='".safe_text_db($user_register_date)."',
 		//user_group_id='".$humo_option["visitor_registration_group"]."'
-		$sql="UPDATE humo_users SET";
-		$sql.=" user_mail='".safe_text_db($_POST["register_mail"])."'";
+		$sql="UPDATE humo_users SET user_mail='".safe_text_db($_POST["register_mail"])."'";
 		if ($_POST["register_password"]!='')
 			$hashToStoreInDb = password_hash($_POST["register_password"], PASSWORD_DEFAULT);
 			if (isset($hashToStoreInDb)) $sql.=", user_password_salted='".$hashToStoreInDb."'";
 		$sql.=" WHERE user_id=".$userDb->user_id;
 		$result = $dbh->query($sql);
-		echo '<h2>'.__('Your settings are updated!').'</h2>';
-	}
-	else{
-		echo '<h2>'.$error.'</h2>';
-	}
 
+		$result_message=__('Your settings are updated!');
+
+		// *** Only update 2FA settings if database is updated and 2FA settings are changed ***
+		if (isset($userDb->user_2fa_enabled) AND isset($_POST['user_2fa_check'])){
+			// *** 2FA Authenticator (2fa_code = code from 2FA authenticator) ***
+			if (!isset($_POST['user_2fa_enabled']) AND $userDb->user_2fa_enabled){
+				// *** Disable 2FA ***
+				$sql="UPDATE humo_users SET user_2fa_enabled='' WHERE user_id=".$userDb->user_id;
+				$result = $dbh->query($sql);
+				$two_fa_change=true;
+			}
+			if (isset($_POST['user_2fa_enabled']) AND !$userDb->user_2fa_enabled){
+				$two_fa_change=true;
+				if ($_POST['2fa_code'] AND is_numeric($_POST['2fa_code'])){
+					$Authenticator = new Authenticator();
+					$checkResult = $Authenticator->verifyCode($userDb->user_2fa_auth_secret,$_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
+					if (!$checkResult) {
+						$result_message=__('Wrong 2FA code. Please enter valid 2FA code to enable 2FA authentication.').'<br>';
+					}
+					else{
+						$sql="UPDATE humo_users SET user_2fa_enabled='1' WHERE user_id=".$userDb->user_id;
+						$result = $dbh->query($sql);
+						$result_message=__('Enabled 2FA authentication.').'<br>';
+					}
+				}
+				else{
+					// *** No 2FA code entered ***
+					$result_message=__('Wrong 2FA code. Please enter valid 2FA code to enable 2FA authentication.').'<br>';
+				}
+			}
+		}
+
+		// *** Reload user settings (especially needed for 2FA settings) ***
+		@$qry = "SELECT * FROM humo_users LEFT JOIN humo_groups
+			ON humo_users.user_group_id=humo_groups.group_id
+			WHERE humo_users.user_id='".$_SESSION['user_id']."'";
+		@$result = $dbh->query($qry);
+		if($result->rowCount() > 0) {
+			@$userDb=$result->fetch(PDO::FETCH_OBJ);
+		}
+
+		//echo '<h2>'.__('Your settings are updated!').'</h2>';
+	}
+	//else{
+	//	echo '<h2>'.$error.'</h2>';
+	//}
+	echo '<h2>'.$result_message.'</h2>';
 
 	if ($dataDb->tree_email){
 		// *** Mail new registered user to the administrator ***
@@ -82,27 +125,13 @@ if (isset($_POST['send_mail'])){
 
 	}
 }
-elseif (isset($userDb->user_name)){
-
-	/*
-	echo '<script type="text/javascript">';
-	echo '
-	function validate(form_id,register_mail) {
-		var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-		var address = document.forms[form_id].elements[register_mail].value;
-		if(reg.test(address) == false) {
-			alert(\'Invalid Email Address\');
-			return false;
-		}
-	}
-	';
-	echo '</script>';
-	*/
-
+//elseif (isset($userDb->user_name)){
+if (isset($userDb->user_name)){
 	//echo '<br><form id="form_id" method="post" action="user_settings.php" accept-charset = "utf-8" onsubmit="javascript:return validate(\'form_id\',\'register_mail\');">';
 	echo '<br><form id="form_id" method="post" action="user_settings.php" accept-charset = "utf-8">';
 
-	echo '<table align="center" class="humo small">';
+	//echo '<table align="center" class="humo small">';
+	echo '<table align="center" class="humo small" style="width:80%;">';
 	echo '<tr class=table_headline><th class="fonts" colspan="2">'.__('User settings').'</th></tr>';
 
 	$register_name=$userDb->user_name; if (isset($_POST['register_name'])){ $register_name=$_POST['register_name']; }
@@ -118,15 +147,93 @@ elseif (isset($userDb->user_name)){
 		echo '<tr><td>'.__('Repeat password').'</td><td><input type="password" class="fonts" name="register_repeat_password" size="30" style="background-color:#FFFFFF" value="'.$register_repeat_password.'"></td></tr>';
 
 		$register_mail=$userDb->user_mail; if (isset($_POST['register_mail'])){ $register_mail=$_POST['register_mail']; }
-		//echo '<tr><td>'.__('E-mail address').'</td><td><input type="text" class="fonts" id="register_mail" name="register_mail" value="'.$register_mail.'" size="30" style="background-color:#FFFFFF"> </td></tr>';
 		// *** Use HTML 5 e-mail check ***
 		echo '<tr><td>'.__('E-mail address').'</td><td><input type="email" class="fonts" id="register_mail" name="register_mail" value="'.$register_mail.'" size="30" style="background-color:#FFFFFF"> </td></tr>';
+
+		// *** Only check 2FA is database is updated ***
+		if (isset($userDb->user_2fa_auth_secret)){
+			// *** 2FA Two factor authentification ***
+			$Authenticator = new Authenticator();
+			if ($userDb->user_2fa_auth_secret){
+				$user_2fa_auth_secret=$userDb->user_2fa_auth_secret;
+			}
+			else{
+				$user_2fa_auth_secret = $Authenticator->generateRandomSecret();
+
+				// *** Save auth_secret, so it's not changed anymore ***
+				$sql="UPDATE humo_users SET user_2fa_auth_secret='".safe_text_db($user_2fa_auth_secret)."' WHERE user_id=".$userDb->user_id;
+				$result = $dbh->query($sql);
+			}
+
+			echo '<tr><td>';
+				echo __('Two factor authentication (2FA)');
+			echo '</td><td>';
+				//$hideshow=1; echo '<a href="#" onclick="hideShow('.$hideshow.');">'.__('Two factor authentication (2FA)').'</a> ';
+				echo '<a href="user_settings.php?2fa=1">'.__('Two factor authentication (2FA)').'</a> ';
+			echo '</td></tr>';
+
+			//$style=' style="display:none;"';
+			//if ($two_fa_change) $style=''; // *** If 2FA is changed, show the 2FA items ***
+			//echo '<tr'.$style.' class="row'.$hideshow.'"><td>';
+			if (isset($_GET['2fa']) AND $_GET['2fa']=='1'){
+				//$siteusernamestr= "Your Sites Unique String";
+				$siteusernamestr='HuMo-genealogy '.$_SERVER['SERVER_NAME'];
+				$qrCodeUrl = $Authenticator->getQR($siteusernamestr, $user_2fa_auth_secret);
+
+				echo '<tr><td>';
+					echo __('Highly recommended:<br>Enable "Two Factor Authentication" (2FA).').'<br>';
+					echo __('Use a 2FA app (like Microsoft or Google authenticator) to generate a secure code to login.').'<br>';
+					echo __('More information about 2FA can be found at internet.');
+				echo '</td><td>';
+					printf(__('1) Install a 2FA app, and add %s in the app using this QR code:'),'HuMo-genealogy');
+						echo '<br>';
+					echo '<img style="text-align: center;" class="img-fluid" src="'.$qrCodeUrl.'" alt="Verify this Google Authenticator"><br><br>';
+
+					echo __('2) Use 2FA code from app and enable 2FA login:').'<br>';
+					echo '<input type="text" class="fonts" id="2fa_code" name="2fa_code" placeholder="'.__('2FA code from app').'" size="30" style="background-color:#FFFFFF">';
+
+					$checked=''; if ($userDb->user_2fa_enabled==1) $checked=' checked="true"';
+					echo ' <input type="checkbox" name="user_2fa_enabled"'.$checked.'>'.__('Enable 2FA login');
+
+					echo '<input type="hidden" name="user_2fa_check">';
+
+					//echo '<br>'.$qrCodeUrl;
+					//echo '<br>'.$url_path.' '.$uri_path;
+					//echo '<br>'.$_SERVER['SERVER_NAME'];
+				echo '</td></tr>';
+			}
+
+			// *** Script voor expand and collapse of items ***
+			/*
+			echo '
+			<script type="text/javascript">
+			function hideShow(el_id){
+				// *** Hide or show item ***
+				var arr = document.getElementsByClassName(\'row\'+el_id);
+				for (i=0; i<arr.length; i++){
+					if(arr[i].style.display!="none"){
+						arr[i].style.display="none";
+					}else{
+						arr[i].style.display="";
+					}
+				}
+
+				// *** Change [+] into [-] or reverse ***
+				if (document.getElementById(\'hideshowlink\'+el_id).innerHTML == "[+]")
+					document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[-]";
+				else
+					document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[+]";
+			}
+			</script>
+			';
+			*/
+		}
 
 		//$register_text=''; if (isset($_POST['register_text'])){ $register_text=$_POST['register_text']; }
 		//echo '<tr><td>'.__('Message: ').'</td><td><textarea name="register_text" ROWS="5" COLS="40" class="fonts">'.$register_text.'</textarea></td></tr>';
 
 		//echo '<tr><td></td><td style="font-weight:bold;" class="fonts" align="left">'.__('Please enter a full and valid email address,<br>otherwise I cannot respond to your e-mail!').'</td></tr>';
-		echo '<tr><td></td><td><input class="fonts" type="submit" name="send_mail" value="'.__('Change').'"></td></tr>';
+		echo '<tr><td></td><td><input class="fonts" type="submit" name="update_settings" value="'.__('Change').'"></td></tr>';
 	}
 
 	echo '</table>';

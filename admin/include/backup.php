@@ -59,7 +59,7 @@ if(isset($_POST['restore_server'])) {
 	}
 }
 
-elseif(is_file('humo_backup.sql.zip')) { 
+elseif(is_file('humo_backup.sql.zip')) {
 	echo '<input type="submit" style="font-size:14px" name="restore_server" value="'.__('Restore database').'"> ';
 	echo __(' from backup created on ').date("d-M-Y, H:i:s",filemtime('humo_backup.sql.zip'));
 }
@@ -69,7 +69,7 @@ echo '</td></tr></table><br>';
 
 // *** RESTORE FROM FILE ON COMPUTER ***
 echo '<table style="width:750px;margin-left:auto;margin-right:auto"><tr><th style="text-align:left">'.__('Option 2: Restore from backup file on your computer').'</th></tr><tr><td>';
-echo '<form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">'; 
+echo '<form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
 
 if(isset($_POST['restore']) AND isset($_POST['select_bkfile']) AND $_POST['select_bkfile'] != "none") {
 	// restore from uploaded .sql.zip or .sql file
@@ -159,6 +159,10 @@ function backup_tables(){
 	//$return = "";
 	$name = 'humo_backup.sql';
 	$handle = fopen($name,'w+');
+
+	// *** 22-10-2022: Needed for PHP 8.0 ***
+	$return= "\n\n".'SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";'."\n\n";
+	fwrite($handle,$return);
 
 	foreach($tables as $table){
 		// *** Skip tables names that contains a space in it ***
@@ -266,9 +270,9 @@ function restore_tables($filename) {
 			$zip_success=0;
 		}
 	}
- 
+
 	// Read in entire file
-	if($zip_success==1 AND is_file($filename) AND substr($filename,-4)==".sql") { 
+	if($zip_success==1 AND is_file($filename) AND substr($filename,-4)==".sql") {
 		// wipe contents of database (we don't do this until we know we've got a proper backup file to work with...
 		$result = $dbh->query("show tables"); // run the query and assign the result to $result
 		while($table = $result->fetch()) { // go through each row that was returned in $result
@@ -286,6 +290,7 @@ function restore_tables($filename) {
 
 		//foreach ($lines as $line) {
 		$handle = fopen($filename, "r");
+
 		while(!feof($handle)){
 			$line = fgets($handle);
 
@@ -319,22 +324,25 @@ function restore_tables($filename) {
 
 			// *** Commit data every x lines in database ***
 			if ($commit_data>500){
-				$dbh->commit(); $dbh->beginTransaction();
 				$commit_data=0;
+				if ($dbh->inTransaction()) {
+					$dbh->commit();
+				}
+				$dbh->beginTransaction();
 			}
 			$commit_data++;
 		}
-		$dbh->commit();
+		if ($dbh->inTransaction() AND $commit_data>1) $dbh->commit();
 		fclose($handle);
 
-		if($original_name != 'humo_backup.sql.zip') { 
-			// if a file was uploaded to backup_tmp in order to restore, delete it now. 
+		if($original_name != 'humo_backup.sql.zip') {
+			// if a file was uploaded to backup_tmp in order to restore, delete it now.
 			// if however the restore was made from the last humogen backup (humo_backup.sql.zip) it should always stay in /admin, until replaced by next backup
 			unlink($original_name);
 		}
 		if($original_name != $filename) {
 			// the original was a zip file, so we also have to delete the unzipped file
-			unlink($filename); 
+			unlink($filename);
 		}
 		echo '<span style="color:red;font-weight:bold">'.__('Database has been restored successfully!').'</span><br>';
 	}

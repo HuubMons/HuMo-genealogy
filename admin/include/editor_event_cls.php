@@ -40,7 +40,7 @@ function event_text($event_kind){
 // *** REMARK: queries can be found in editor_inc.php! ***
 function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	global $dbh, $tree_id, $page, $field_date, $field_place, $field_text, $field_text_medium, $joomlastring;
-	global $editor_cls, $path_prefix, $tree_pict_path, $humo_option;
+	global $editor_cls, $path_prefix, $tree_pict_path, $humo_option,$field_popup;
 
 	$text='';
 
@@ -208,7 +208,23 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$qry="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='source' AND event_connect_id='".$event_connect_id."' AND event_kind='picture' ORDER BY event_order";
 	}
+
 	$data_list_qry=$dbh->query($qry);
+
+
+	// *** If there are events, also show add line ***
+	// Doesn't work:
+	//$show_event_add=' style="display:none;"';
+	//if ($data_list_qry) $show_event_add='';
+
+	//$show_event_add=' style="display:none;"';
+	//$count=$data_list_qry->rowCount();
+	//if ($count>0) $show_event_add='';
+
+	$show_event_add=false;
+	$count=$data_list_qry->rowCount();
+	if ($count>0) $show_event_add=true;
+
 
 	// *** Show events by person ***
 	if ($event_kind=='person'){
@@ -343,8 +359,10 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='<td style="border-left:0px;">';
 			// *** Nickname, alias, adopted name, hebrew name, etc. ***
 			// *** Remark: in editor_inc.php a check is done for event_event_name, so this will also be saved if "Save" is clicked ***
-			$text.='<input type="text" name="event_event_name" placeholder="'.__('Nickname').'" value="" size="35">';
-			$text.=' <select size="1" name="event_gedcom_add" style="width: 150px">';
+			//$text.='<input type="text" name="event_event_name" placeholder="'.__('Nickname').'" value="" size="35">';
+			$text.='<input type="text" name="event_event_name" placeholder="'.__('Nickname').' - '.__('Prefix').' - '.__('Suffix').' - '.__('Title').'" value="" size="35">';
+			//$text.=' <select size="1" name="event_gedcom_add" style="width: 150px">';
+			$text.=' <select size="1" name="event_gedcom_add" style="width: 200px">';
 				$text.=event_selection('');
 			$text.='</select>';
 			$text.=' <input type="Submit" name="event_add_name" value="'.__('Add').'">';
@@ -353,95 +371,11 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='</tr>';
 	}
 
-	// *** Show NPFX Name prefix like: Lt. Cmndr. ***
-	if ($event_kind=='NPFX'){
-		$link='name';
-		//$text.='<tr style="display:none;" class="row1" name="row1">';
-		//$text.='<tr style="display:none;" class="row1">';
-		$text.='<tr style="display:none;" class="row1 table_header_large">';
-		$text.='<td></td>';
-		$text.='<td style="border-right:0px;">'.__('Prefix').'</td>';
-		$text.='<td style="border-left:0px;">';
-			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_npfx">['.__('Add').']</a> '.__('e.g. Lt. Cmndr.').'</td>';
-
-			$text.='<input type="text" name="event_event_npfx" placeholder="'.__('Prefix').'" value="" size="35">';
-			$text.=' <input type="Submit" name="event_add_npfx" value="'.__('Add').'"> '.__('e.g. Lt. Cmndr.').'</td>';
-
-		$text.='<td></td>';
-		$text.='</tr>';
-	}
-
-	// *** Show NSFX Name suffix like: jr. ***
-	if ($event_kind=='NSFX'){
-		$link='name';
-		//$text.='<tr style="display:none;" class="row1" name="row1">';
-		//$text.='<tr style="display:none;" class="row1">';
-		$text.='<tr style="display:none;" class="row1 table_header_large">';
-		$text.='<td></td>';
-		$text.='<td style="border-right:0px;">'.__('Suffix').'</td>';
-		$text.='<td style="border-left:0px;">';
-			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_nsfx">['.__('Add').']</a> '.__('e.g. Jr.').'</td>';
-
-			$text.='<input type="text" name="event_event_nsfx" placeholder="'.__('Suffix').'" value="" size="35">';
-			$text.=' <input type="Submit" name="event_add_nsfx" value="'.__('Add').'"> '.__('e.g. Jr.').'</td>';
-		$text.='<td></td>';
-		$text.='</tr>';
-	}
-
-	// *** Show nobility by person ***
-	if ($event_kind=='nobility'){
-		$link='name';
-		//$text.='<tr style="display:none;" class="row1" name="row1">';
-		//$text.='<tr style="display:none;" class="row1">';
-		$text.='<tr style="display:none;" class="row1 table_header_large">';
-		$text.='<td></td>';
-		$text.='<td style="border-right:0px;">'.__('Title of Nobility').'</td>';
-		$text.='<td style="border-left:0px;">';
-			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_nobility">['.__('Add').']</a> '.__('e.g. Jhr., Jkvr.').'</td>';
-
-			$text.='<input type="text" name="event_event_nobility" placeholder="'.__('Title of Nobility').'" value="" size="35">';
-			$text.=' <input type="Submit" name="event_add_nobility" value="'.__('Add').'"> '.__('e.g. Jhr., Jkvr.').'</td>';
-		$text.='<td></td>';
-		$text.='</tr>';
-	}
-
-	// *** Show title by person ***
-	if ($event_kind=='title'){
-		$link='name';
-		//$text.='<tr style="display:none;" class="row1" name="row1">';
-		$text.='<tr style="display:none;" class="row1 table_header_large" name="row1">';
-		$text.='<td></td>';
-		$text.='<td style="border-right:0px;">'.__('Title').'</td>';
-		$text.='<td style="border-left:0px;">';
-			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_title">['.__('Add').']</a> '.__('e.g. Prof., Dr.').'</td>';
-
-			$text.='<input type="text" name="event_event_title" placeholder="'.__('Title').'" value="" size="35">';
-			$text.=' <input type="Submit" name="event_add_title" value="'.__('Add').'"> '.__('e.g. Prof., Dr.').'</td>';
-		$text.='<td></td>';
-		$text.='</tr>';
-	}
-
-	// *** Show lordship by person ***
-	if ($event_kind=='lordship'){
-		$link='name';
-		//$text.='<tr style="display:none;" class="row1" name="row1">';
-		$text.='<tr style="display:none;" class="row1 table_header_large"" name="row1">';
-		$text.='<td></td>';
-		$text.='<td style="border-right:0px;">'.__('Title of Lordship').'</td>';
-		$text.='<td style="border-left:0px;">';
-			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_lordship">['.__('Add').']</a> '.__('e.g. Lord of Amsterdam').'</td>';
-
-			$text.='<input type="text" name="event_event_lordship" placeholder="'.__('Title of Lordship').'" value="" size="35">';
-			$text.=' <input type="Submit" name="event_add_lordship" value="'.__('Add').'"> '.__('e.g. Lord of Amsterdam').'</td>';
-		$text.='<td></td>';
-		$text.='</tr>';
-	}
-
 	// *** Show birth declaration by person ***
 	if ($event_kind=='birth_declaration'){
 		$link='born';
 		$text.='<tr class="humo_color row2" style="display:none;" name="row2">';
-		//$text.='<tr class="table_header" style="display:none;" id="row2" name="row2">';
+		//$text.='<tr'.$show_event_add.' class="humo_color row2" name="row2">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('birth declaration').'</td>';
 		$text.='<td style="border-left:0px;">';
@@ -453,8 +387,9 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// *** Show baptism witness by person ***
 	if ($event_kind=='baptism_witness'){
 		$link='baptised';
-		$text.='<tr style="display:none;" class="row3" name="row3">';
 		//$text.='<tr class="table_header" style="display:none;" id="row3" name="row3">';
+		$text.='<tr style="display:none;" class="row3" name="row3">';
+		//$text.='<tr'.$show_event_add.' class="row3" name="row3">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('baptism witness').'</td>';
 		$text.='<td style="border-left:0px;">';
@@ -466,8 +401,9 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// *** Show death declaration by person ***
 	if ($event_kind=='death_declaration'){
 		$link='died';
-		$text.='<tr class="humo_color row4" style="display:none;" name="row4">';
 		//$text.='<tr class="table_header" style="display:none;" id="row4" name="row4">';
+		$text.='<tr style="display:none;" class="humo_color row4" name="row4">';
+		//$text.='<tr'.$show_event_add.' class="humo_color row4" name="row4">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('death declaration').'</td>';
 		$text.='<td style="border-left:0px;">';
@@ -479,8 +415,9 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// *** Show burial witness by person ***
 	if ($event_kind=='burial_witness'){
 		$link='buried';
-		$text.='<tr style="display:none;" class="row5" name="row5">';
 		//$text.='<tr class="table_header" style="display:none;" id="row5" name="row5">';
+		$text.='<tr style="display:none;" class="row5" name="row5">';
+		//$text.='<tr'.$show_event_add.' class="row5" name="row5">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('burial witness').'</td>';
 		$text.='<td style="border-left:0px;">';
@@ -542,8 +479,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='<a name="picture"></a>';
 		$link='picture';
 
-		$count_qry=$dbh->query($qry);
-		$count=$count_qry->rowCount();
+		//$count_qry=$dbh->query($qry);
+		//$count=$count_qry->rowCount();
 		//if ($count>0)
 		//	$text.='<a href="#picture" onclick="hideShow(53);"><span id="hideshowlink53">'.__('[+]').'</span></a> ';
 
@@ -587,7 +524,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 						}
 					}
 				}
-				
+
 				$thumb_prefix='';
 				if (file_exists($path_prefix.$tree_pict_path2.'thumb_'.$data_listDb->event_event)){ $thumb_prefix='thumb_'; }
 				$extensions_check=substr($path_prefix.$tree_pict_path2.$data_listDb->event_event,-3,3);
@@ -655,8 +592,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 					$text.='<div style="white-space: nowrap;"><b>'.$media_nr.' Picture-objects found. Editing not supported yet...</b></div>';
 			}
 
-			$data_list_qry=$dbh->query($qry);
-			$data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ);
+			//$data_list_qry=$dbh->query($qry);
+			//$data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ);
 
 			/*
 			$text.= '
@@ -747,8 +684,9 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// *** Show marriage witness by family ***
 	if ($event_kind=='marriage_witness'){
 		$link='marriage_relation';
-		$text.='<tr style="display:none;" class="row8 humo_color" name="row8">';
 		//$text.='<tr class="table_header" style="display:none;" id="row8" name="row8">';
+		$text.='<tr style="display:none;" class="row8 humo_color" name="row8">';
+		//$text.='<tr'.$show_event_add.' class="row8 humo_color" name="row8">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('marriage witness').'</td>';
 		$text.='<td style="border-left:0px;">';
@@ -760,8 +698,9 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// *** Show marriage witness (religious) by family ***
 	if ($event_kind=='marriage_witness_rel'){
 		$link='marr_church';
-		$text.='<tr style="display:none;" class="row10 humo_color" name="row10">';
 		//$text.='<tr class="table_header" style="display:none;" id="row10" name="row10">';
+		$text.='<tr style="display:none;" class="row10 humo_color" name="row10">';
+		//$text.='<tr '.$show_event_add.' class="row10 humo_color" name="row10">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('marriage witness (religious)').'</td>';
 		$text.='<td style="border-left:0px;">';
@@ -1062,7 +1001,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		OR $data_listDb->event_kind=='marriage_witness' OR $data_listDb->event_kind=='marriage_witness_rel')
 		{
 			//$text.='<td style="border-left:0px;">';
-			$text.=witness_edit($data_listDb->event_event,'['.$data_listDb->event_id.']');
+			$event_text=$this->event_text($data_listDb->event_kind);
+			$text.=witness_edit($event_text,$data_listDb->event_event,'['.$data_listDb->event_id.']');
 		}
 
 		elseif ($data_listDb->event_kind=='picture'){
@@ -1072,7 +1012,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$form=1;
 			if ($event_connect_kind=='family') $form=2;
 			if ($event_connect_kind=='source') $form=3;
-			$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form='.$form.'&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			//$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form='.$form.'&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+			$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form='.$form.'&amp;event_id='.$data_listDb->event_id.'","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
 
 			/*
 			// *** Show pull-down list pictures ***
@@ -1199,7 +1140,10 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		// *** General name of event ***
 		else{
 			//$text.='<td style="border-left:0px;">';
-			$text.='<input type="text" name="text_event['.$data_listDb->event_id.']" placeholder="'.__('Event').'" value="'.$data_listDb->event_event.'" size="60">';
+
+			// *** Check if event has text ***
+			$style=''; if (!$data_listDb->event_event) $style='style="background-color:#FFAA80"';
+			$text.='<input type="text" '.$style.' name="text_event['.$data_listDb->event_id.']" placeholder="'.__('Event').'" value="'.$data_listDb->event_event.'" size="60">';
 		}
 
 		if ($data_listDb->event_kind=='NPFX'){ $text.=' '.__('e.g. Lt. Cmndr.'); }
@@ -1295,8 +1239,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$form=1;
 		if ($event_connect_kind=='family') $form=2;
 		if ($event_connect_kind=='source') $form=3;
-		$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form='.$form.'&amp;place_item=event_place&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
-
+		//$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form='.$form.'&amp;place_item=event_place&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+		$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form='.$form.'&amp;place_item=event_place&amp;event_id='.$data_listDb->event_id.'","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
 
 		// *** Text by event ***
 		$field_text_selected=$field_text;
@@ -1395,7 +1339,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			if ($_GET['event_kind']=='marriage_witness') $link_id='8';
 			if ($_GET['event_kind']=='marriage_witness_rel') $link_id='10';
 		}
-		
+
 		if (isset($_GET['event_add'])){
 			if ($_GET['event_add']=='add_name') $link_id='1';
 			if ($_GET['event_add']=='add_npfx') $link_id='1';
@@ -1443,6 +1387,25 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 function event_selection($event_gedcom){
 	global $humo_option;
 	$text='';
+
+	if (!$event_gedcom){
+		$text.='<optgroup label="'.__('Prefix').' - '.__('Suffix').' - '.__('Title').'">';
+			$text.='<option value="NPFX">'.__('Prefix').': '.__('e.g. Lt. Cmndr.').'</option>';
+
+			$event='NSFX'; $selected=''; if ($event_gedcom==$event){ $selected=' SELECTED'; }
+			$text.='<option value="NSFX"'.$selected.'>'.__('Suffix').': '.__('e.g. Jr.').'</option>';
+
+			$event='nobility'; $selected=''; if ($event_gedcom==$event){ $selected=' SELECTED'; }
+			$text.='<option value="nobility"'.$selected.'>'.__('Title of Nobility').': '.__('e.g. Jhr., Jkvr.').'</option>';
+
+			$event='title'; $selected=''; if ($event_gedcom==$event){ $selected=' SELECTED'; }
+			$text.='<option value="title"'.$selected.'>'.__('Title').': '.__('e.g. Prof., Dr.').'</option>';
+
+			$event='lordship'; $selected=''; if ($event_gedcom==$event){ $selected=' SELECTED'; }
+			$text.='<option value="lordship"'.$selected.'>'.__('Title of Lordship').': '.__('e.g. Lord of Amsterdam').'</option>';
+		$text.='</optgroup>';
+		$text.='<optgroup label="'.__('Name').'">';
+	}
 
 	$event='NICK'; $selected=''; if ($event_gedcom==$event){ $selected=' SELECTED'; }
 	$text.='<option value="'.$event.'"'.$selected.'>NICK '.__('Nickname').'</option>';
@@ -1502,6 +1465,10 @@ function event_selection($event_gedcom){
 
 	$event='_RUFN'; $selected=''; if ($event_gedcom==$event){ $selected=' SELECTED'; }
 	$text.='<option value="'.$event.'"'.$selected.'>_RUFN '.__('German Rufname').'</option>';
+
+	if (!$event_gedcom){
+		$text.='</optgroup>';
+	}
 
 	return $text;
 }

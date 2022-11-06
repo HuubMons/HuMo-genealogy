@@ -96,6 +96,16 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			}
 			echo '<input type="text" name="quicksearch" placeholder="'.__('Name').'" value="'.$quicksearch.'" size="10" '.$pattern.' title="'.__('Minimum:').$min_chars.__('characters').'">';
 			echo ' <input type="submit" value="'.__('Search').'">';
+
+			// *** Link for extended search form ***
+			if (CMS_SPECIFIC=='Joomla'){
+				$path_tmp='index.php?option=com_humo-gen&amp;task=list&amp;adv_search=1&index_list=search';
+			}
+			else{
+				$path_tmp=CMS_ROOTPATH.'list.php?adv_search=1&index_list=search';
+			}
+			echo ' <a href="'.$path_tmp.'"><img src="images/advanced-search.jpg" width="17px"></a>';
+
 		echo "</form>";
 	}
 
