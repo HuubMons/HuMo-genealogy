@@ -805,7 +805,8 @@ if (isset($_POST['step2'])){
 	$handle = fopen($_POST["gedcom_file"], "r");
 
 	// *** Get character set from GEDCOM file ***
-	$accent='';
+	//$accent='';
+	$accent='UTF-8';  // *** Default for GEDCOM 7 = UTF-8 ***
 	while (!feof($handle)) {
 		$buffer = fgets($handle, 4096);
 		//$buffer=rtrim($buffer,"\n\r");  // *** Strip newline ***
@@ -1215,7 +1216,7 @@ if (isset($_POST['step3'])){
 		$gen_program_version=$_SESSION['save_gen_program_version'];
 	}
 
-	$level0='';
+	$level0=''; $level1='';
 	$last_pointer=0;
 
 	while (!feof($handle)) {
@@ -1360,6 +1361,7 @@ if (isset($_POST['step3'])){
 
 		// *** Save level0 ***
 		if (substr($buffer,0,1)=='0'){ $level0=substr($buffer,2,6); }
+		if (substr($buffer,0,1)=='1'){ $level1=substr($buffer,2,6); }
 
 		// *** 1 SOUR Haza-Data ***
 		//	0 HEAD
@@ -1370,7 +1372,8 @@ if (isset($_POST['step3'])){
 		//	1 SOUR Haza-Data
 		//	2 VERS 7.2
 		if ($level0=='HEAD'){
-			if (substr($buffer,2,4)=='SOUR'){
+			//if (substr($buffer,2,4)=='SOUR'){
+			if (substr($buffer,0,6)=='1 SOUR'){
 				$gen_program=substr($buffer,7);
 				$_SESSION['save_gen_program']=$gen_program;
 				echo '<br><br>'.__('GEDCOM file').': <b>'.$gen_program.'</b>, ';
@@ -1389,6 +1392,13 @@ if (isset($_POST['step3'])){
 				$gen_program_version=substr($buffer,7);
 				$_SESSION['save_gen_program_version']=$gen_program_version;
 			}
+
+			// *** Get GEDCOM version (only for GEDCOM 7!) ***
+			// 1 GEDC
+			// 2 VERS 7.0
+			//if ($level1=='GEDC' AND substr($buffer,2,4)=='VERS'){
+			//	//echo $buffer.'??';
+			//}
 		}
 
 		// *** progress bar ***
@@ -1963,13 +1973,15 @@ if (isset($_POST['step4'])){
 	if ($humo_option["gedcom_read_process_geo_location"]=='y' AND $res->rowCount()) {
 
 		// after import, and ONLY for people with a humo_location table for googlemaps, refresh the location_status fields
-		// first, make sure the location_status column exists. If not create it
 		echo '<br>&gt;&gt;&gt; '.__('Updating location database...');
-		$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
-		$exists = $result->rowCount();
-		if(!$exists) {
-			$dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
-		}
+
+		// *** THIS PART IS MOVED TO THE GENERAL DATABASE UPDATE ***
+		// first, make sure the location_status column exists. If not create it
+		//$result = $dbh->query("SHOW COLUMNS FROM `humo_location` LIKE 'location_status'");
+		//$exists = $result->rowCount();
+		//if(!$exists) {
+		//	$dbh->query("ALTER TABLE humo_location ADD location_status TEXT AFTER location_lng");
+		//}
 
 		$all_loc = $dbh->query("SELECT location_location FROM humo_location");
 		while($all_locDb = $all_loc->fetch(PDO::FETCH_OBJ)) {

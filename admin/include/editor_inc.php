@@ -146,10 +146,8 @@ if (isset($_POST['person_remove2'])){
 	$sql="DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_connect_id='".$pers_gedcomnumber."'";
 	$result=$dbh->query($sql);
 
-	// *** Clear cache ***
-	$sql = "DELETE FROM humo_settings
-		WHERE setting_variable='cache_latest_changes' AND setting_tree_id='".safe_text_db($tree_id)."'";
-	$result = $dbh->query($sql);
+	// *** Update cache for list of latest changes ***
+	cache_latest_changes(true);
 
 	$confirm.=__('Person is removed');
 
@@ -263,7 +261,6 @@ if (isset($_POST['person_change'])){
 	pers_changed_time='".$gedcom_time."'
 	WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($pers_gedcomnumber)."'";
 	$result=$dbh->query($sql);
-	family_tree_update($tree_id);
 
 	// extra UPDATE queries if jewish dates is enabled
 	if($humo_option['admin_hebnight']=="y") {
@@ -277,9 +274,8 @@ if (isset($_POST['person_change'])){
 			pers_buried_date_hebnight='".safe_text_db($per_bur_heb)."'
 			WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber='".safe_text_db($pers_gedcomnumber)."'";
 		$result=$dbh->query($sql);
-		family_tree_update($tree_id);
 	}
-	
+
 	// Extra UPDATE queries if Hebrew name is displayed in main Name section (and not under name event)
 	if($humo_option['admin_hebname']=="y") {
 		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '_HEBN' AND event_connect_id = '".$pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
@@ -302,7 +298,7 @@ if (isset($_POST['person_change'])){
 			}
 		}
 		elseif($_POST["even_hebname"]!='') {  // new Hebrew name event: INSERT
-		
+
 			// *** Generate new order number ***
 			$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 				AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'
@@ -326,8 +322,6 @@ if (isset($_POST['person_change'])){
 			event_new_time='".$gedcom_time."'";
 			$result = $dbh->query($sql);
 		}
-
-		family_tree_update($tree_id);
 	}
 
 	// Extra UPDATE queries if brit mila is displayed 
@@ -365,7 +359,7 @@ if (isset($_POST['person_change'])){
 			$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
 			$event_order=1;
 			if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; $event_order++; }
-		
+
 			$sql = "INSERT INTO humo_events SET
 			event_date='".safe_text_db($_POST["even_brit_date"])."',
 			event_place='".safe_text_db($_POST["even_brit_place"])."',
@@ -381,7 +375,6 @@ if (isset($_POST['person_change'])){
 			event_new_time='".$gedcom_time."'";
 			$result = $dbh->query($sql);
 		}
-		family_tree_update($tree_id);
 	}
 
 	// Extra UPDATE queries if Bar Mitsva is displayed 
@@ -420,7 +413,7 @@ if (isset($_POST['person_change'])){
 			$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
 			$event_order=1;
 			if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; $event_order++;}
-		
+
 			$sql = "INSERT INTO humo_events SET
 			event_date='".safe_text_db($_POST["even_barm_date"])."',
 			event_place='".safe_text_db($_POST["even_barm_place"])."',
@@ -436,14 +429,12 @@ if (isset($_POST['person_change'])){
 			event_new_time='".$gedcom_time."'";
 			$result = $dbh->query($sql);
 		}
-
-		family_tree_update($tree_id);
 	}
 
-	// *** Clear cache ***
-	$sql = "DELETE FROM humo_settings
-		WHERE setting_variable='cache_latest_changes' AND setting_tree_id='".safe_text_db($tree_id)."'";
-	$result = $dbh->query($sql);
+	family_tree_update($tree_id);
+
+	// *** Update cache for list of latest changes ***
+	cache_latest_changes(true);
 }
 
 if (isset($_GET['add_person'])){
@@ -574,10 +565,8 @@ if (isset($_POST['person_add']) OR isset($_POST['relation_add'])){
 		$_POST['child_connect2']=$new_gedcomnumber;
 	}
 
-	// *** Clear cache ***
-	$sql = "DELETE FROM humo_settings
-		WHERE setting_variable='cache_latest_changes' AND setting_tree_id='".safe_text_db($tree_id)."'";
-	$result = $dbh->query($sql);
+	// *** Update cache for list of latest changes ***
+	cache_latest_changes(true);
 }
 
 // *** Family move down ***
@@ -1362,59 +1351,54 @@ if (!isset($_GET['add_person'])){
 	if (isset($_POST['event_add_profession'])){ $new_event=true; $event_add='add_profession'; }
 	// *** If "Save" is clicked, also save event names ***
 	if (isset($_POST['event_event_profession']) AND $_POST['event_event_profession']!=''){ $new_event=true; $event_add='add_profession'; }
-
-	if (isset($_POST['event_add_npfx'])){ $new_event=true; $event_add='add_npfx'; }
-	if (isset($_POST['event_add_nsfx'])){ $new_event=true; $event_add='add_nsfx'; }
-	if (isset($_POST['event_add_nobility'])){ $new_event=true; $event_add='add_nobility'; }
-	if (isset($_POST['event_add_title'])){ $new_event=true; $event_add='add_title'; }
-	if (isset($_POST['event_add_lordship'])){ $new_event=true; $event_add='add_lordship'; }
 }
 if ($new_event){
 	if ($event_add=='add_name'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='name';
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber;
+		$event_kind='name';
+
+		if ($_POST['event_gedcom_add']=='NPFX') $event_kind='NPFX';
+		if ($_POST['event_gedcom_add']=='NSFX') $event_kind='NSFX';
+		if ($_POST['event_gedcom_add']=='nobility') $event_kind='nobility';
+		if ($_POST['event_gedcom_add']=='title') $event_kind='title';
+		if ($_POST['event_gedcom_add']=='lordship') $event_kind='lordship';
+
 		$event_event=$_POST['event_event_name']; $event_gedcom=$_POST['event_gedcom_add'];
 	}
-	if ($event_add=='add_npfx'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='NPFX';
-		$event_event=$_POST['event_event_npfx']; $event_gedcom='NPFX'; }
-	if ($event_add=='add_nsfx'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='NSFX';
-		$event_event=$_POST['event_event_nsfx']; $event_gedcom='NSFX'; }
-	if ($event_add=='add_nobility'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='nobility';
-		$event_event=$_POST['event_event_nobility']; $event_gedcom=''; }
-	if ($event_add=='add_title'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='title';
-		$event_event=$_POST['event_event_title']; $event_gedcom=''; }
-	if ($event_add=='add_lordship'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='lordship';
-		$event_event=$_POST['event_event_lordship']; $event_gedcom=''; }
 
 	if ($event_add=='add_birth_declaration'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='birth_declaration'; $event_event=__('birth declaration'); $event_gedcom=''; }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='birth_declaration'; $event_event=''; $event_gedcom='';
+	}
 	if ($event_add=='add_baptism_witness'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='baptism_witness'; $event_event=__('baptism witness'); $event_gedcom=''; }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='baptism_witness'; $event_event=''; $event_gedcom='';
+	}
 	if ($event_add=='add_death_declaration'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='death_declaration'; $event_event=__('death declaration'); $event_gedcom=''; }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='death_declaration'; $event_event=''; $event_gedcom='';
+	}
 	if ($event_add=='add_burial_witness'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='burial_witness'; $event_event=__('burial witness'); $event_gedcom=''; }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='burial_witness'; $event_event=''; $event_gedcom='';
+	}
 
 	if ($event_add=='add_profession'){
 		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='profession'; $event_gedcom='';
-		//$event_event=__('Profession');
 		$event_event=$_POST['event_event_profession'];
 	}
 
 	if ($event_add=='add_picture'){
-		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='picture'; $event_event=''; $event_gedcom=''; }
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='picture'; $event_event=''; $event_gedcom='';
+	}
 	if ($event_add=='add_marriage_witness'){
-		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='marriage_witness'; $event_event=__('marriage witness'); $event_gedcom=''; }
+		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='marriage_witness'; $event_event=''; $event_gedcom='';
+	}
 	if ($event_add=='add_marriage_witness_rel'){
-		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='marriage_witness_rel'; $event_event=__('marriage witness (religious)'); $event_gedcom=''; }
+		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='marriage_witness_rel'; $event_event=''; $event_gedcom='';
+	}
 	if ($event_add=='add_marriage_picture'){
-		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='picture'; $event_event=''; $event_gedcom=''; }
+		$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='picture'; $event_event=''; $event_gedcom='';
+	}
 	if ($event_add=='add_source_picture'){
-		$event_connect_kind='source'; $event_connect_id=$_GET['source_id']; $event_kind='picture'; $event_event=''; $event_gedcom=''; }
+		$event_connect_kind='source'; $event_connect_id=$_GET['source_id']; $event_kind='picture'; $event_event=''; $event_gedcom='';
+	}
 
 	// *** Generate new order number ***
 	$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'

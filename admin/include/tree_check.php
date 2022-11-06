@@ -122,8 +122,11 @@ if (isset($_POST['last_changes'])){
 			$result_array[$row][0]=__('Person');
 
 			// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+			$uri_path='../'; // *** Needed if url_rewrite is enabled ***
 			$url=$person_cls->person_url2($person->pers_tree_id,$person->pers_famc,$person->pers_fams,$person->pers_gedcomnumber);
-			$text='<a href="'.CMS_ROOTPATH.$url.'">'.$person->pers_firstname.' '.$person->pers_prefix.$person->pers_lastname.'</a>';
+
+			//$text='<a href="'.CMS_ROOTPATH.$url.'">'.$person->pers_firstname.' '.$person->pers_prefix.$person->pers_lastname.'</a>';
+			$text='<a href="'.$url.'">'.$person->pers_firstname.' '.$person->pers_prefix.$person->pers_lastname.'</a>';
 
 			$result_array[$row][1]=$text;
 
@@ -171,8 +174,11 @@ if (isset($_POST['last_changes'])){
 				$result_array[$row][0]=__('Family');
 
 				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+				$uri_path='../'; // *** Needed if url_rewrite is enabled ***
 				$url=$person_cls->person_url2($person2->pers_tree_id,$person2->pers_famc,$person2->pers_fams,$person2->pers_gedcomnumber);
-				$text='<a href="'.CMS_ROOTPATH.$url.'">'.$person2->pers_firstname.' '.$person2->pers_prefix.$person2->pers_lastname.'</a>';
+
+				//$text='<a href="'.CMS_ROOTPATH.$url.'">'.$person2->pers_firstname.' '.$person2->pers_prefix.$person2->pers_lastname.'</a>';
+				$text='<a href="'.$url.'">'.$person2->pers_firstname.' '.$person2->pers_prefix.$person2->pers_lastname.'</a>';
 				$result_array[$row][1]=$text;
 
 				$text='<nobr>'.strtolower($person->fam_changed_date).' '.$person->fam_changed_time.' '.$person->fam_changed_user.'</nobr>';

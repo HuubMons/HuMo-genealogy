@@ -31,7 +31,7 @@ if(isset($_POST['makedatabase'])) {  // the user decided to add locations to the
 
 		$locationtbl="CREATE TABLE humo_location (
 			location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			location_location VARCHAR(100) CHARACTER SET utf8,
+			location_location VARCHAR(120) CHARACTER SET utf8,
 			location_lat FLOAT(10,6),
 			location_lng FLOAT(10,6),
 			location_status TEXT
@@ -658,7 +658,7 @@ else {  // main screen
 				//     2. name of location
 				$nolocationtbl="CREATE TABLE humo_no_location (
 					no_location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-					no_location_location VARCHAR(100) CHARACTER SET utf8
+					no_location_location VARCHAR(120) CHARACTER SET utf8
 				)";
 				$dbh->query($nolocationtbl);
 			}

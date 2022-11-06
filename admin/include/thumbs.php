@@ -519,8 +519,10 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 								$name=$person_cls->person_name($personDb);
 
 								// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+								$uri_path='../'; // *** Needed if url_rewrite is enabled ***
 								$url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
-								$picture_text.='<br><a href="'.CMS_ROOTPATH.$url.'">'.$name["standard_name"].'</a><br>';
+								//$picture_text.='<br><a href="'.CMS_ROOTPATH.$url.'">'.$name["standard_name"].'</a><br>';
+								$picture_text.='<br><a href="'.$url.'">'.$name["standard_name"].'</a><br>';
 							}
 							echo $picture_text;
 

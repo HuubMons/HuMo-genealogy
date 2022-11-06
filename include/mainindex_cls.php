@@ -390,11 +390,12 @@ function last_names($columns,$rows){
 			global $dbh, $dataDb, $tree_id, $language, $user, $humo_option, $uri_path, $freq_last_names, $freq_pers_prefix, $freq_count_last_names, $maxcols, $text;
 
 			// *** Read cache (only used in large family trees) ***
-			$cache=''; $cache_count=0; $cache_check=false; // *** Use cache for large family trees ***
+			$cache=''; $cache_count=0; $cache_exists=false; $cache_check=false; // *** Use cache for large family trees ***
 			$cacheqry = $dbh->query("SELECT * FROM humo_settings
 				WHERE setting_variable='cache_surnames' AND setting_tree_id='".$tree_id."'");
 			$cacheDb=$cacheqry->fetch(PDO::FETCH_OBJ);
 			if ($cacheDb){
+				$cache_exists=true;
 				$cache_array=explode("|",$cacheDb->setting_value);
 				foreach ($cache_array as $cache_line) {
 					$cacheDb = json_decode(unserialize($cache_line));
@@ -445,19 +446,24 @@ function last_names($columns,$rows){
 					$freq_count_last_names[]=$personDb->count_last_names;
 				}
 
+				// *** Add or renew cache in database (only if cache_count is valid) ***
+				if ($cache AND ($cache_count==$max)){
+					if ($cache_exists){
+						// *** Update existing cache item ***
+						$sql = "UPDATE humo_settings SET
+							setting_variable='cache_surnames', setting_value='".safe_text_db($cache)."'
+							WHERE setting_tree_id='".safe_text_db($tree_id)."'";
+						$result = $dbh->query($sql);
+					}
+					else{
+						// *** Add new cache item ***
+						$sql = "INSERT INTO humo_settings SET
+							setting_variable='cache_surnames', setting_value='".safe_text_db($cache)."',
+							setting_tree_id='".safe_text_db($tree_id)."'";
+						$result = $dbh->query($sql);
+					}
+				}
 			} // *** End of cache ***
-
-			// *** Add or renew cache in database (only if cache_count is valid) ***
-			if ($cache AND ($cache_count==$max)){
-				$sql = "DELETE FROM humo_settings
-					WHERE setting_variable='cache_surnames' AND setting_tree_id='".safe_text_db($tree_id)."'";
-				$result = $dbh->query($sql);
-				$sql = "INSERT INTO humo_settings SET
-					setting_variable='cache_surnames', setting_value='".safe_text_db($cache)."',
-					setting_tree_id='".safe_text_db($tree_id)."'";
-				$result = $dbh->query($sql);
-			}
-
 
 			$row=0;
 			if ($freq_last_names) $row = round(count($freq_last_names)/$maxcols);
@@ -606,7 +612,7 @@ function search_box(){
 	else{
 		$path_tmp=CMS_ROOTPATH.'list.php?adv_search=1&index_list=search';
 	}
-	$text.='<p><a href="'.$path_tmp.'">'.__('Advanced search').'</a></p>';
+	$text.='<p><a href="'.$path_tmp.'"><img src="images/advanced-search.jpg" width="25px"> '.__('Advanced search').'</a></p>';
 
 	$text.="</form>\n";
 	return $text;
@@ -721,11 +727,12 @@ function alphabet(){
 	$text.=__('Surnames Index:')."<br>\n";
 
 	// *** Read cache (only used in large family trees) ***
-	$cache=''; $cache_count=0; $cache_check=false; // *** Use cache for large family trees ***
+	$cache=''; $cache_count=0; $cache_exists=false; $cache_check=false; // *** Use cache for large family trees ***
 	$cacheqry = $dbh->query("SELECT * FROM humo_settings
 		WHERE setting_variable='cache_alphabet' AND setting_tree_id='".$tree_id."'");
 	$cacheDb=$cacheqry->fetch(PDO::FETCH_OBJ);
 	if ($cacheDb){
+		$cache_exists=true;
 		$cache_array=explode("|",$cacheDb->setting_value);
 		foreach ($cache_array as $cache_line) {
 			$cacheDb = json_decode(unserialize($cache_line));
@@ -767,17 +774,23 @@ function alphabet(){
 
 			$first_character[]=$personDb->first_character;
 		}
-	}
 
-	// *** Add or renew cache in database (only if cache_count is valid) ***
-	if ($cache AND ($cache_count==$count_first_character)){
-		$sql = "DELETE FROM humo_settings
-			WHERE setting_variable='cache_alphabet' AND setting_tree_id='".safe_text_db($tree_id)."'";
-		$result = $dbh->query($sql);
-		$sql = "INSERT INTO humo_settings SET
-			setting_variable='cache_alphabet', setting_value='".safe_text_db($cache)."',
-			setting_tree_id='".safe_text_db($tree_id)."'";
-		$result = $dbh->query($sql);
+		// *** Add or renew cache in database (only if cache_count is valid) ***
+		if ($cache AND ($cache_count==$count_first_character)){
+			if ($cache_exists){
+				$sql = "UPDATE humo_settings SET
+					setting_variable='cache_alphabet', setting_value='".safe_text_db($cache)."'
+					WHERE setting_tree_id='".safe_text_db($tree_id)."'";
+				$result = $dbh->query($sql);
+			}
+			else{
+				$sql = "INSERT INTO humo_settings SET
+					setting_variable='cache_alphabet', setting_value='".safe_text_db($cache)."',
+					setting_tree_id='".safe_text_db($tree_id)."'";
+				$result = $dbh->query($sql);
+			}
+		}
+
 	}
 
 	// *** Show character line ***

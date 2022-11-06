@@ -261,6 +261,9 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 				// *** Problem, texts like: age under 1 year old ***
 				//$age=', '.sprintf('age %s', $age);
 			}
+			elseif ($age_event=='relation'){
+				$age=", ".__('age by relation').' '.$age;
+			}
 			else{
 				$age=", ".__('age by marriage').' '.$age;
 			}
@@ -377,17 +380,28 @@ function calculate_marriage($church_marr_date, $marr_date, $end_date, $age_check
 			}
 		}
 
-		//if($age) {
-		//	$age=" (".$age.' '.__('married').')';
-		//}
-		// *** Maybe something like this code is better: $age=printf(__('married %d'), $age);
 		if($age) {
-			if($selected_language=="sv" OR $selected_language=="no" OR $selected_language=="da") {
-				$age=" (".__('married').' '.$age.')';
-			}
-			else {
-				$age=" (".$age.' '.__('married').')';
-			}
+			//OLD METHOD:
+			//if($selected_language=="sv" OR $selected_language=="no" OR $selected_language=="da") {
+			//	$age=' ('.__('married').' '.$age.')';
+			//}
+			//else {
+			//	$age=' ('.$age.' '.__('married').')';
+			//}
+
+			$age=' ('.sprintf(__('married %s'), $age).')';
+
+/*
+// TEST: must be checked fot type of relation. $age is filtered in marriage_cls.php line 574.
+global $relation_check;
+if ($relation_check==true){
+	$age=' ('.sprintf(__('relation %s'), $age).')';
+}
+else{
+	$age=' ('.sprintf(__('married %s'), $age).')';
+}
+*/
+
 		}
 
 		if ($calculated_age>80){ $age=''; }

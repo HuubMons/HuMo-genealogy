@@ -57,7 +57,6 @@ else{
 
 		// ***************************************************************
 		// *** Update procedure version 4.7 and update_status set to 1 ***
-		// *** ...
 		// ***************************************************************
 		$update_cls -> update_v4_7();
 	}
@@ -69,7 +68,6 @@ else{
 
 	// ************************************
 	// *** Update procedure version 4.8 ***
-	// *** ...
 	// ************************************
 	if ($humo_option["update_status"]>'1'){
 		echo '<tr><td>HuMo-genealogy update V4.8</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -82,7 +80,6 @@ else{
 
 	// **************************************
 	// *** Update procedure version 4.8.2 ***
-	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'2'){
 		echo '<tr><td>HuMo-genealogy update V4.8.2</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -95,7 +92,6 @@ else{
 
 	// **************************************
 	// *** Update procedure version 4.8.8 ***
-	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'3'){
 		echo '<tr><td>HuMo-genealogy update V4.8.8</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -108,7 +104,6 @@ else{
 
 	// **************************************
 	// *** Update procedure version 4.8.9 ***
-	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'4'){
 		echo '<tr><td>HuMo-genealogy update V4.8.9</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -121,7 +116,6 @@ else{
 
 	// **************************************
 	// *** Update procedure version 4.9.1 ***
-	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'5'){
 		echo '<tr><td>HuMo-genealogy update V4.9.1</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -134,7 +128,6 @@ else{
 
 	// ************************************
 	// *** Update procedure version 5.0 ***
-	// *** ...
 	// ************************************
 	if ($humo_option["update_status"]>'6'){
 		echo '<tr><td>HuMo-genealogy update V5.0</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -147,7 +140,6 @@ else{
 
 	// ************************************
 	// *** Update procedure version 5.1 ***
-	// *** ...
 	// ************************************
 	if ($humo_option["update_status"]>'7'){
 		echo '<tr><td>HuMo-genealogy update V5.1</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -160,7 +152,6 @@ else{
 
 	// **************************************
 	// *** Update procedure version 5.1.6 ***
-	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'8'){
 		echo '<tr><td>HuMo-genealogy update V5.1.6</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -173,7 +164,6 @@ else{
 
 	// **************************************
 	// *** Update procedure version 5.1.9 ***
-	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'9'){
 		echo '<tr><td>HuMo-genealogy update V5.1.9</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -186,7 +176,6 @@ else{
 
 	// **************************************
 	// *** Update procedure version 5.2.5 ***
-	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'10'){
 		echo '<tr><td>HuMo-genealogy update V5.2.5</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -199,7 +188,6 @@ else{
 
 	// **************************************
 	// *** Update procedure version 5.6.1 ***
-	// *** ...
 	// **************************************
 	if ($humo_option["update_status"]>'11'){
 		echo '<tr><td>HuMo-genealogy update V5.6.1</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -212,7 +200,6 @@ else{
 
 	// ************************************
 	// *** Update procedure version 5.7 ***
-	// *** ...
 	// ************************************
 	if ($humo_option["update_status"]>'12'){
 		echo '<tr><td>HuMo-genealogy update V5.7</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -225,7 +212,6 @@ else{
 
 	// ************************************
 	// *** Update procedure version 5.9 ***
-	// *** ...
 	// ************************************
 	if ($humo_option["update_status"]>'13'){
 		echo '<tr><td>HuMo-genealogy update V5.9</td><td style="background-color:#00FF00">OK</td></tr>';
@@ -236,6 +222,17 @@ else{
 	ob_flush();
 	flush(); // IE
 
+	// **************************************
+	// *** Update procedure version 6.0.1 ***
+	// **************************************
+	if ($humo_option["update_status"]>'14'){
+		echo '<tr><td>HuMo-genealogy update V6.0.1</td><td style="background-color:#00FF00">OK</td></tr>';
+	}
+	else{
+		$update_cls -> update_v6_0_1();
+	}
+	ob_flush();
+	flush(); // IE
 
 	/*	END OF MAIN UPDATE SCRIPT
 		*** VERY IMPORTANT REMARKS FOR PROGRAMMERS ***

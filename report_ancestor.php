@@ -849,7 +849,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 						if ($marr_date){
 							//$replacement_text=__('X').$dirmark1.' '.date_place($marr_date,$marr_place); }
 							$replacement_text=__('X').$dirmark1.' '.date_place($marr_date,''); }
-							else $replacement_text=__('X'); // if no details in the row we don't want the row to collapse         
+							else $replacement_text=__('X'); // if no details in the row we don't want the row to collapse
 					}
 					if ($box_appearance=='ancestor_header'){
 						$replacement_text='';
@@ -1126,20 +1126,32 @@ echo '<div>';
 	}   // end of ancestor CHART code
 
 	// Specific code for ancestor SHEET:
-
 	if($screen_mode=="ancestor_sheet" AND $screen_mode != "ASPDF") {
 
 		// print names and details for each row in the table
 		function kwname($start,$end,$increment,$fontclass,$colspan,$type) {
+			global $sexe;
+
 			echo '<tr>';
 			for($x=$start;$x<$end;$x+=$increment) {
+				// *** Added coloured boxes in november 2022 ***
+				$sexe_colour='';
+				if ($type!='ancestor_sheet_marr'){
+					if ($sexe[$x] == 'F'){
+						$sexe_colour=' style=" background-image: linear-gradient(to bottom, #FFFFFF 0%, #F5BCA9 100%);"';
+					}
+					if ($sexe[$x] == 'M'){
+						$sexe_colour=' style="background-image: linear-gradient(to bottom, #FFFFFF 0%, #81BEF7 100%);"';
+					}
+				}
+
 				if($colspan>1) {
 					//echo '<td class="'.$fontclass.'" colspan='.$colspan.'>';
-					echo '<td colspan='.$colspan.'>';
+					echo '<td colspan='.$colspan.$sexe_colour.'>';
 				}
 				else{
 					//echo '<td class="'.$fontclass.'">';
-					echo '<td>';
+					echo '<td'.$sexe_colour.'>';
 				}
 				$kwpers=ancestor_chart_person($x,$type);
 				if($kwpers!='') {
@@ -1179,7 +1191,7 @@ echo '<div>';
 				echo '<input class="fonts" type="Submit" name="submit" value="PDF Report">';
 				echo '</form>';
 			}
-		
+
 		echo '</th></tr>';
 
 		$gen=0; $gen=check_gen(16,32); if($gen==1) {
@@ -1363,7 +1375,7 @@ echo '<div>';
 						$data_array[$id][1]=$result[1];
 						$data_array[$id][4]=$result[0];
 					}
-				}  
+				}
 
 				if($death_len < 3) {
 					$data_array[$id][2]= $death;

@@ -132,6 +132,12 @@ function process_person($person_array){
 		elseif ($buffer1=='2'){
 			$level[2]=substr($buffer,2,4);
 			$level[3]=""; $level[4]="";
+
+			// *** Possible bug in Haza-21 program: 2 @S167@ SOUR. Rebuild to: 2 SOUR @S167@ ***
+			if ($gen_program=='Haza-21' AND substr($buffer,-4)=='SOUR'){
+				$buffer=substr($buffer,0,2).'SOUR '.substr($buffer,2,-5);
+				$level[2]=substr($buffer,2,4);
+			}
 		}
 		// *** Save level3 ***
 		elseif ($buffer1=='3'){ $level[3]=substr($buffer,2,4); $level[4]=""; }
@@ -3069,7 +3075,7 @@ function process_family($family_array,$first_marr, $second_marr){
 		if(!$temp->rowCount()) {
 			$locationtbl="CREATE TABLE humo_location (
 				location_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-				location_location VARCHAR(100) CHARACTER SET utf8,
+				location_location VARCHAR(120) CHARACTER SET utf8,
 				location_lat DECIMAL(10,6),
 				location_lng DECIMAL(10,6),
 				location_status TEXT

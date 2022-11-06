@@ -256,15 +256,6 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 			echo 'Access to website is blocked.';
 			exit;
 		}
-
-		// *** TEMPORARY DATABASE UPDATE ***
-		// *** Change pers_address_source and fam_address_source into: address_source ***
-		$sql_get=$dbh->query("SELECT * FROM humo_connections WHERE connect_sub_kind='pers_address_source' OR connect_sub_kind='fam_address_source'");
-		while ($getDb=$sql_get->fetch(PDO::FETCH_OBJ)){
-			$sql_put="UPDATE humo_connections SET connect_kind='address', connect_sub_kind='address_source' WHERE connect_id=".$getDb->connect_id;
-			$dbh->query($sql_put);
-		}
-
 	}
 }
 
@@ -283,7 +274,7 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 	// *** Check HuMo-genealogy database status ***
 	// *** Change this value if the database must be updated ***
 	if (isset($humo_option["update_status"])){
-		if ($humo_option["update_status"]<14){ $page='update'; $show_menu_left=false; }
+		if ($humo_option["update_status"]<15){ $page='update'; $show_menu_left=false; }
 	}
 
 	if (isset($_GET['page'])
@@ -332,6 +323,7 @@ while (false!==($file = readdir($map))) {
 			elseif ($file=='nl') $language_order[]='Nederlands';
 			elseif ($file=='no') $language_order[]='Norsk';
 			elseif ($file=='pt') $language_order[]='Portuguese';
+			elseif ($file=='ro') $language_order[]='Romanian';
 			elseif ($file=='ru') $language_order[]='Russian';
 			elseif ($file=='sk') $language_order[]='Slovensky';
 			elseif ($file=='sv') $language_order[]='Swedish';
@@ -387,10 +379,12 @@ if($language["dir"]=="rtl") {
 }
 
 // *** Process login form ***
-$fault='';
-if (isset($_POST['username'])){
+$fault=false;
+$valid_user=false;
+if (isset($_POST["username"]) && isset($_POST["password"])){
 	$resultDb = $db_functions->get_user($_POST["username"],$_POST["password"]);
 	if ($resultDb){
+		$valid_user=true;
 
 		// *** FIRST CHECK IF USER IS ADMIN OR EDITOR ***
 		// *** Edit family trees [GROUP SETTING] ***
@@ -404,27 +398,46 @@ if (isset($_POST['username'])){
 		}
 		if ($groepDb->group_admin!='j' AND $group_edit_trees==''){
 			// *** User is not an administrator or editor ***
-			echo 'Access to admin is not allowed.';
+			echo __('Access to admin pages is not allowed.');
 			exit;
 		}
 
-		$_SESSION['user_name_admin'] = $resultDb->user_name;
-		$_SESSION['user_id_admin'] = $resultDb->user_id;
-		$_SESSION['group_id_admin'] = $resultDb->user_group_id;
+		// *** 2FA is enabled, so check 2FA code ***
+		if (isset($resultDb->user_2fa_enabled) AND $resultDb->user_2fa_enabled){
+			$valid_user=false;
+			$fault=true;
+			include_once (CMS_ROOTPATH."include/2fa_authentication/authenticator.php");
 
-		// *** Add login in logbook ***
-		$log_date=date("Y-m-d H:i");
-		$sql="INSERT INTO humo_user_log SET
-			log_date='$log_date',
-			log_username='".$resultDb->user_name."',
-			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
-			log_user_admin='admin',
-			log_status='success'";
-		@$dbh->query($sql);
+			if ($_POST['2fa_code'] AND is_numeric($_POST['2fa_code'])){
+				$Authenticator = new Authenticator();
+				$checkResult = $Authenticator->verifyCode($resultDb->user_2fa_auth_secret,$_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
+				if ($checkResult) {
+					$valid_user=true;
+					$fault=false;
+				}
+			}
+		}
+
+		if ($valid_user){
+			$_SESSION['user_name_admin'] = $resultDb->user_name;
+			$_SESSION['user_id_admin'] = $resultDb->user_id;
+			$_SESSION['group_id_admin'] = $resultDb->user_group_id;
+
+			// *** Add login in logbook ***
+			$log_date=date("Y-m-d H:i");
+			$sql="INSERT INTO humo_user_log SET
+				log_date='$log_date',
+				log_username='".$resultDb->user_name."',
+				log_ip_address='".$_SERVER['REMOTE_ADDR']."',
+				log_user_admin='admin',
+				log_status='success'";
+			@$dbh->query($sql);
+		}
 	}
 	else{
 		// *** No valid user or password ***
-		$fault='<p align="center"><font color="red">'.__('Please enter a valid username or password. ').'</font>';
+//		$fault='<p align="center"><font color="red">'.__('Please enter a valid username or password. ').'</font>';
+$fault=true;
 
 		// *** Save log! ***
 		$sql="INSERT INTO humo_user_log SET

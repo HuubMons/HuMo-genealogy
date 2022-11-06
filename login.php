@@ -11,7 +11,7 @@ if(file_exists("include/securimage")) {
 	$captcha=true;
 }
 
-//print '<div class="standard_header fonts">'.__('Login').'</div>';
+//echo '<div class="standard_header fonts">'.__('Login').'</div>';
 
 // *** Check if visitor is allowed ***
 if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'])){
@@ -38,7 +38,7 @@ if(isset($_POST['forgotpw'])) {
 		echo '<br><table class="humo" cellspacing="0" align="center">';
 		echo '<tr class="table_headline"><th class="fonts" colspan="2">'.__('Password retrieval').'</th></tr>';
 		// *** An e-mail adres is necessary for password retreival, option Username is disabled ***
-		//print '<tr><td>'.__('Username').':</td><td><input class="fonts" name="pw_username" type="text" size="20" maxlength="25"></td></tr>';
+		//echo '<tr><td>'.__('Username').':</td><td><input class="fonts" name="pw_username" type="text" size="20" maxlength="25"></td></tr>';
 		echo '<tr><td>'.__('Email').':</td><td><input class="fonts" name="got_email" type="text" size="20" maxlength="50"></td></tr>';
 		if($captcha===true) { echo '<tr><td>'.__('Captcha').':</td><td>'; echo Securimage::getCaptchaHtml(); echo '</td></tr>';}
 		echo '<tr><td><br></td><td><input class="fonts" type="submit" name="Submit" value="'.__('Send').'"></td></tr>';
@@ -59,7 +59,7 @@ elseif(isset($_POST['got_email'])) {
 	
 	$email=safe_text_db($_POST['got_email']);
 
- 	function getUrl() {
+	function getUrl() {
 		$url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
 		// *** May 2022: removed port. For some reason port 80 was always shown ***
 		//$url .= ( $_SERVER["SERVER_PORT"] !== 80 ) ? ":".$_SERVER["SERVER_PORT"] : "";
@@ -67,7 +67,7 @@ elseif(isset($_POST['got_email'])) {
 		return $url;
 	} 
 	$site_url=getUrl();
- 
+
 	$status = "OK";
 	$msg="";
 	if(!filter_var($email,FILTER_VALIDATE_EMAIL)){ 
@@ -320,21 +320,22 @@ else {
 
 	// *** No valid user found ***
 	if ($fault==true){
-		echo '<br><table class="humo" cellspacing="0" align="center">';	
+		echo '<br><table class="humo" cellspacing="0" align="center">';
 		echo '<tr class="table_headline"><th class="fonts">'.__('Error').'</th></tr>';
 		echo '<tr><td style="font-weight:bold;color:red">';	
 		echo __('No valid username or password.');
 		echo '</td></tr></table>';
 	}
 
-	print '<form name="form1" method="post" action="'.$path_tmp.'">';
-	print '<br><table class="humo" cellspacing="0" align="center">';
+	echo '<form name="form1" method="post" action="'.$path_tmp.'">';
+	echo '<br><table class="humo" cellspacing="0" align="center">';
 	echo '<tr class="table_headline"><th class="fonts" colspan="2">'.__('Login').'</th></tr>';
-	print '<tr><td>'.__('Username or e-mail address').':</td><td><input class="fonts" name="username" type="text" size="20" maxlength="25"></td></tr>';
-	print '<tr><td>'.__('Password').':</td><td><input class="fonts" name="password" type="password" size="20" maxlength="50"></td></tr>';
-	print '<tr><td><br></td><td><input class="fonts" type="submit" name="Submit" value="'.__('Login').'"></td></tr>';
-	print '</table>';
-	print '</form>';
+	echo '<tr><td>'.__('Username or e-mail address').':</td><td><input class="fonts" name="username" type="text" size="20" maxlength="25"></td></tr>';
+	echo '<tr><td>'.__('Password').':</td><td><input class="fonts" name="password" type="password" size="20" maxlength="50"></td></tr>';
+	echo '<tr><td>'.__('Two factor authentication (2FA) code if needed').':</td><td><input class="fonts" name="2fa_code" type="text" size="20" maxlength="25"></td></tr>';
+	echo '<tr><td><br></td><td><input class="fonts" type="submit" name="Submit" value="'.__('Login').'"></td></tr>';
+	echo '</table>';
+	echo '</form>';
 
 	// *** Only use password retreival option if sender mail is set in admin settings ***
 	if ($humo_option["password_retreival"]){

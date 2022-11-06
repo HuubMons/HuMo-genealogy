@@ -122,6 +122,7 @@ while (false!==($file = readdir($language_folder))) {
 		elseif ($file=='no') $language_order[]='Norsk';
 		elseif ($file=='pl') $language_order[]='Polish';
 		elseif ($file=='pt') $language_order[]='Portuguese';
+		elseif ($file=='ro') $language_order[]='Romanian';
 		elseif ($file=='ru') $language_order[]='Russian';
 		elseif ($file=='sk') $language_order[]='Slovensky';
 		elseif ($file=='sv') $language_order[]='Swedish';
@@ -146,31 +147,52 @@ array_multisort($language_order, $language_file);
 
 
 // *** Log in ***
+$valid_user=false;
 if (isset($_POST["username"]) && isset($_POST["password"])){
 	$resultDb = $db_functions->get_user($_POST["username"],$_POST["password"]);
 	if ($resultDb){
-		$_SESSION['user_name'] = $resultDb->user_name;
-		$_SESSION['user_id'] = $resultDb->user_id;
-		$_SESSION['user_group_id'] = $resultDb->user_group_id;
+		$valid_user=true;
 
-		// *** Save succesful login into log! ***
-		$sql="INSERT INTO humo_user_log SET
-			log_date='".date("Y-m-d H:i")."',
-			log_username='".$resultDb->user_name."',
-			log_ip_address='".$_SERVER['REMOTE_ADDR']."',
-			log_user_admin='user',
-			log_status='success'";
-		$dbh->query($sql);
-		
-		// *** Send to secured page ***
-		if (CMS_SPECIFIC=='Joomla'){
-			header("Location: index.php?option=com_humo-gen&amp;menu_choice=main_index");
-		}
-		else{
-			header("Location: ".CMS_ROOTPATH."index.php?menu_choice=main_index");
+		// *** 2FA is enabled, so check 2FA code ***
+		if (isset($resultDb->user_2fa_enabled) AND $resultDb->user_2fa_enabled){
+			$valid_user=false;
+			$fault=true;
+			include_once (CMS_ROOTPATH."include/2fa_authentication/authenticator.php");
+
+			if ($_POST['2fa_code'] AND is_numeric($_POST['2fa_code'])){
+				$Authenticator = new Authenticator();
+				$checkResult = $Authenticator->verifyCode($resultDb->user_2fa_auth_secret,$_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
+				if ($checkResult) {
+					$valid_user=true;
+					$fault=false;
+				}
+			}
 		}
 
-		exit();
+		if ($valid_user){
+			$_SESSION['user_name'] = $resultDb->user_name;
+			$_SESSION['user_id'] = $resultDb->user_id;
+			$_SESSION['user_group_id'] = $resultDb->user_group_id;
+
+			// *** Save succesful login into log! ***
+			$sql="INSERT INTO humo_user_log SET
+				log_date='".date("Y-m-d H:i")."',
+				log_username='".$resultDb->user_name."',
+				log_ip_address='".$_SERVER['REMOTE_ADDR']."',
+				log_user_admin='user',
+				log_status='success'";
+			$dbh->query($sql);
+
+			// *** Send to secured page ***
+			if (CMS_SPECIFIC=='Joomla'){
+				header("Location: index.php?option=com_humo-gen&amp;menu_choice=main_index");
+			}
+			else{
+				header("Location: ".CMS_ROOTPATH."index.php?menu_choice=main_index");
+			}
+			exit();
+		}
+
 	}
 	else{
 		// *** No valid user found ***

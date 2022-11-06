@@ -29,7 +29,8 @@ function show_media($event_connect_kind,$event_connect_id){
 			$media_event_date[$media_nr]=$pictureDb->event_date;
 			$media_event_text[$media_nr]=$pictureDb->event_text;
 			// *** Remove last seperator ***
-			if(substr(rtrim($media_event_text[$media_nr]),-1)=="|") $media_event_text[$media_nr] = substr($media_event_text[$media_nr],0,-1);
+			if($media_event_text[$media_nr] AND substr(rtrim($media_event_text[$media_nr]),-1)=="|")
+				$media_event_text[$media_nr] = substr($media_event_text[$media_nr],0,-1);
 			//$media_event_source[$media_nr]=$pictureDb->event_source;
 		}
 
@@ -174,7 +175,7 @@ function show_media($event_connect_kind,$event_connect_id){
 				// *** But: reverse change of / character (if sub folders are used) ***
 				//$picture_array['picture'] = rawurlencode($picture_array['picture']);
 				$picture_array['picture'] = str_ireplace("%2F","/",rawurlencode($picture_array['picture']));
-				$line_pos = strpos($media_event_text[$i],"|");
+				if ($media_event_text[$i]) $line_pos = strpos($media_event_text[$i],"|");
 				//$title_txt=''; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
 				$title_txt=$media_event_text[$i]; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
 

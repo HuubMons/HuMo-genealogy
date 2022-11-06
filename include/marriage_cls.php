@@ -36,6 +36,8 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	global $dbh, $db_functions, $tree_prefix_quoted, $url_path, $dataDb, $uri_path, $humo_option;
 	global $language, $user, $screen_mode;
 	global $templ_person, $parent1Db, $parent2Db;
+	global $relation_check;
+
 
 	if ($marriageDb==''){ $marriageDb=$this->cls_marriage_Db; }
 
@@ -81,7 +83,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		$relation_check=true; $relation_kind= __('Partner').' ';
 	}
 	if ($marriageDb->fam_kind=='registered'){
-		$relation_check=true; $relation_kind= __('Registered').' ';
+		$relation_check=true; $relation_kind= __('Registered partnership').' ';
 	}
 	if ($marriageDb->fam_kind=='unknown'){
 		$relation_check=true; $relation_kind= __('Unknown relation').' ';
@@ -226,9 +228,11 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		$templ_relation["wedd_date"]=date_place($marriageDb->fam_marr_date,$marriageDb->fam_marr_place,$nightfall);
 
 		// *** Show age of parent1 when married ***
-		$process_age = New calculate_year_cls;
-		$age=$process_age->calculate_age($parent1Db->pers_bapt_date,$parent1Db->pers_birth_date,$marriageDb->fam_marr_date);
-		$templ_relation["wedd_date"].=$age;
+		if (isset($parent1Db->pers_bapt_date) OR isset($parent1Db->pers_birth_date)){
+			$process_age = New calculate_year_cls;
+			$age=$process_age->calculate_age($parent1Db->pers_bapt_date,$parent1Db->pers_birth_date,$marriageDb->fam_marr_date);
+			$templ_relation["wedd_date"].=$age;
+		}
 
 		$temp="wedd_date";
 		$temp_text.= $templ_relation["wedd_date"];
@@ -308,7 +312,10 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		$marriage_check=true;
 		$addition=__(' to: ');
 		if ($text!=''){ $text.="<br>\n"; $templ_relation["wedd_exist"]="\n"; }
-		$text.='<b>'.__('Married').'</b> '.$temp_text;
+
+		if($relation_kind=='') $text.='<b>'.__('Married').'</b> ';
+		$text.=$temp_text;
+
 		if(isset($templ_relation["wedd_exist"])) {
 			if($relation_kind != '') $templ_relation["wedd_exist"].= $relation_kind.' ';
 				else $templ_relation["wedd_exist"].=__('Married').' ';
@@ -317,6 +324,7 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			if($relation_kind != '') $templ_relation["wedd_exist"] = $relation_kind.' ';
 				else $templ_relation["wedd_exist"]=__('Married').' ';
 		}
+
 	} 
 	else{
 		// *** Marriage without further data (date or place) ***
@@ -527,14 +535,16 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 	}
 	else{
 		// *** Years of marriage ***
-		if (($marriageDb->fam_marr_church_date OR $marriageDb->fam_marr_date)
+		//if (($marriageDb->fam_marr_church_date OR $marriageDb->fam_marr_date)
+		//	AND $marriageDb->fam_div_text!='DIVORCE'
+		//	AND !($temp_text AND $marriageDb->fam_div_date==''))
+		if ((($marriageDb->fam_marr_church_date AND $marriageDb->fam_marr_church_date!='') OR ($marriageDb->fam_marr_date AND $marriageDb->fam_marr_date!=''))
 			AND $marriageDb->fam_div_text!='DIVORCE'
 			AND !($temp_text AND $marriageDb->fam_div_date==''))
 		{
 			$end_date='';
 
 			// *** Check death date of husband ***
-			//@$person_manDb=$db_functions->get_person($marriageDb->fam_man);
 			if (isset($parent1Db->pers_death_date) AND $parent1Db->pers_death_date) $end_date=$parent1Db->pers_death_date;
 			elseif (isset($parent1Db->pers_buried_date) AND $parent1Db->pers_buried_date) {
 				// if no death date, try burial date
@@ -542,7 +552,6 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			}
 
 			// *** Check death date of wife ***
-			//@$person_womanDb=$db_functions->get_person($marriageDb->fam_woman);
 			if (isset($parent2Db->pers_death_date) AND $parent2Db->pers_death_date){
 				// *** Check if men died earlier then woman (AT THIS MOMENT ONLY CHECK YEAR) ***
 				if ($end_date AND substr($end_date,-4) > substr($parent2Db->pers_death_date,-4)){
@@ -564,11 +573,14 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 			// *** End of marriage by divorce ***
 			if ($marriageDb->fam_div_date){ $end_date=$marriageDb->fam_div_date; }
 
-			$marr_years = New calculate_year_cls;
-			$age=$marr_years->calculate_marriage($marriageDb->fam_marr_church_date,$marriageDb->fam_marr_date,$end_date);
-
-			$text.=$age;  // Space and comma in $age
-			//PDF?
+			// *** Only show marriage years if there is a marriage (don't show for other relations at this moment) ***
+			if ($relation_check==false){
+				$marr_years = New calculate_year_cls;
+				$age=$marr_years->calculate_marriage($marriageDb->fam_marr_church_date,$marriageDb->fam_marr_date,$end_date);
+				$text.=$age;  // Space and comma in $age
+				//*** PDF ***
+				$templ_relation["marr_years"]=$age;
+			}
 		}
 
 	}

@@ -82,6 +82,7 @@ HuMo-genealogy uses <a href="https://www.transifex.com/organization/humo-gen" ta
 <li>Persian by: Dr. Maleki</li>
 <li>Polish by: Jaroslaw Bochenek</li>
 <li>Portugese: António Duarte</li>
+<li>Romanian: Alexandru</li>
 <li>Russian: Demian Nikonorov</li>
 <li>Slowak: dusbaj</li>
 <li>Spanish: jmmayoral, Andres Maurer</li>
