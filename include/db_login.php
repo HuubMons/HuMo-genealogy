@@ -1,10 +1,40 @@
 <?php
 // *** To make HuMo-genealogy work, fill these lines properly! ***
 // *** Om HuMo-genealogy werkend te krijgen onderstaande regels GOED invullen! ***
-define("DATABASE_HOST",     'localhost');
-define("DATABASE_USERNAME", 'root');
-define("DATABASE_PASSWORD", '');
-define("DATABASE_NAME",     'humo-gen');
+$DATABASE_HOST=    'localhost';
+$DATABASE_USERNAME='root';
+$DATABASE_PASSWORD='';
+$DATABASE_NAME=    'humo-gen';
+$USE_ENV_FOR_DB=   true;
+
+// *** Override the database connection values with environment variables ***
+$temp_db_value = getenv("MYSQL_HOST", true);
+if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
+  define("DATABASE_HOST", $temp_db_value);
+} else {
+  define("DATABASE_HOST", $DATABASE_HOST);
+}
+
+$temp_db_value = getenv("MYSQL_USER", true);
+if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
+  define("DATABASE_USERNAME", $temp_db_value);
+} else {
+  define("DATABASE_USERNAME", $DATABASE_USERNAME);
+}
+
+$temp_db_value = getenv("MYSQL_PASSWORD", true);
+if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
+  define("DATABASE_PASSWORD", $temp_db_value);
+} else {
+  define("DATABASE_PASSWORD", $DATABASE_PASSWORD);
+}
+
+$temp_db_value = getenv("MYSQL_DATABASE", true);
+if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
+  define("DATABASE_NAME", $temp_db_value);
+} else {
+  define("DATABASE_NAME", $DATABASE_NAME);
+}
 
 // *** DON'T CHANGE ANYTHING BELOW THIS LINE! ***
 // *** HIERONDER NIETS WIJZIGEN! ***
