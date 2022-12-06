@@ -1,0 +1,31 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    volumes:
+      - ./mysql:/var/lib/mysql
+    restart: always
+    expose:
+      - 3306
+    env_file:
+      - .env
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+
+  nginx:
+    build:
+      context: ..
+      dockerfile: Docker/nginx/Dockerfile
+    restart: always
+    ports:
+      - 0.0.0.0:1980:80
+
+  fpm:
+    build:
+      context: ..
+      dockerfile: Docker/fpm/Dockerfile
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_HOST: db
