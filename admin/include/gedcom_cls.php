@@ -752,13 +752,6 @@ function process_person($person_array){
 		//  if (level1='XXX') and (copy(buf,1,6)='2 PLAC') then doopgetuigen:=copy(buf,8,length(buf));
 		//end;
 
-		// *** BK, FTM & Aldfaer: 1 RELI RK ***
-		if ($buffer6=='1 RELI'){
-			//$level[1]='CHR';
-			//$buffer='2 RELI '.substr($buffer,7);
-			$processed=1; $pers_religion=substr($buffer, 7);
-		}
-
 		// Geneanet/ Geneweb
 		// 1 BAPM
 		// 2 DATE 23 APR 1658
@@ -889,7 +882,7 @@ function process_person($person_array){
 				}
 			}
 
-			// *** Religion ***
+			// *** Religion (1 RELI = event) ***
 			if ($buffer6=='2 RELI'){ $processed=1; $pers_religion=substr($buffer, 7); }
 
 			if ($level[2]=='OBJE') $this->process_picture('person',$pers_gedcomnumber,'picture_bapt', $buffer);
@@ -1155,6 +1148,47 @@ function process_person($person_array){
 			}
 
 			if ($buffer6=='2 DATE'){ $processed=1; $event['date'][$event_nr]=substr($buffer, 7); } // BK
+			if ($buffer6=='2 PLAC'){ $processed=1; $event['place'][$event_nr]=substr($buffer, 7); }
+
+			// *** Source by person occupation ***
+			if ($level[2]=='SOUR'){
+				$this->process_sources('person','pers_event_source',$calculated_event_id,$buffer,'2');
+			}
+		}
+
+		// *** BK, FTM, HuMo-genealogy & Aldfaer: 1 RELI RK ***
+		// *** Nov. 2022 religion now saved as event ***
+		if ($level[1]=='RELI'){
+			if ($buffer6=='1 RELI'){
+				//$processed=1; $pers_religion=substr($buffer, 7);
+
+				$processed=1; $event_nr++; $calculated_event_id++;
+				$event['connect_kind'][$event_nr]='person';
+				$event['connect_id'][$event_nr]=$pers_gedcomnumber;
+				$event['kind'][$event_nr]='religion';
+				$event['event'][$event_nr]=substr($buffer,7);
+				$event['event_extra'][$event_nr]='';
+				$event['gedcom'][$event_nr]='RELI';
+				$event['date'][$event_nr]='';
+				$event['text'][$event_nr]='';
+				$event['place'][$event_nr]='';
+			}
+
+			if ($buffer6=='2 CONT'){
+				$processed=1; $event['event'][$event_nr].=$this->cont(substr($buffer,7));
+				$buffer=""; // to prevent use of this text in other text!
+			}
+			if ($buffer6=='2 CONC'){
+				$processed=1; $event['event'][$event_nr].=$this->conc(substr($buffer,7));
+				$buffer=""; // to prevent use of this text in other text!
+			}
+
+			// *** Text by occupation ***
+			if ($level[2]=='NOTE'){
+				$event['text'][$event_nr]=$this->process_texts($event['text'][$event_nr],$buffer,'2');
+			}
+
+			if ($buffer6=='2 DATE'){ $processed=1; $event['date'][$event_nr]=substr($buffer, 7); }
 			if ($buffer6=='2 PLAC'){ $processed=1; $event['place'][$event_nr]=substr($buffer, 7); }
 
 			// *** Source by person occupation ***

@@ -1089,34 +1089,6 @@ if ($index_list=='quicksearch'){
 		******************************************
 	*/
 
-	// *** TEST MYSQL 5.7. If result is found in humo_events, now the extra text is missing... ***
-	/*
-	$query.="
-	SELECT SQL_CALC_FOUND_ROWS CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, humo_persons2.*, humo_persons1.pers_id
-	".$make_date."
-	FROM humo_persons as humo_persons2
-	RIGHT JOIN 
-	(
-		SELECT pers_id
-		FROM humo_persons
-		LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
-		WHERE (".$multi_tree.")
-			AND 
-			( CONCAT(pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
-			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname,pers_callname) LIKE '%".safe_text_db($quicksearch)."%' 
-			OR CONCAT(pers_patronym,pers_lastname,pers_firstname,pers_callname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
-			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname,pers_callname) LIKE '%".safe_text_db($quicksearch)."%'
-			OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
-			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($quicksearch)."%' 
-			OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
-			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($quicksearch)."%'
-			)
-		GROUP BY pers_id
-	) as humo_persons1
-	ON humo_persons1.pers_id = humo_persons2.pers_id
-	";
-	*/
-
 	/*
 	$query.="
 	SELECT SQL_CALC_FOUND_ROWS CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, humo_persons2.*, humo_persons1.pers_id, event_event, event_kind
@@ -1145,6 +1117,7 @@ if ($index_list=='quicksearch'){
 	*/
 
 	// *** December 2021: remove pers_callname ***
+	/*
 	$query.="
 	SELECT SQL_CALC_FOUND_ROWS CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, humo_persons2.*, humo_persons1.pers_id, event_event, event_kind
 	".$make_date."
@@ -1157,6 +1130,33 @@ if ($index_list=='quicksearch'){
 		WHERE (".$multi_tree.")
 			AND 
 			( CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
+			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".safe_text_db($quicksearch)."%'
+			OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
+			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
+			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($quicksearch)."%'
+			)
+		GROUP BY pers_id, event_event, event_kind
+	) as humo_persons1
+	ON humo_persons1.pers_id = humo_persons2.pers_id
+	";
+	*/
+
+	// *** Nov. 2022: changed first patronymic line ***
+	$query.="
+	SELECT SQL_CALC_FOUND_ROWS CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, humo_persons2.*, humo_persons1.pers_id, event_event, event_kind
+	".$make_date."
+	FROM humo_persons as humo_persons2
+	RIGHT JOIN 
+	(
+		SELECT pers_id, event_event, event_kind
+		FROM humo_persons
+		LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
+		WHERE (".$multi_tree.")
+			AND 
+			( CONCAT(pers_firstname,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
 			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".safe_text_db($quicksearch)."%' 
 			OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
 			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".safe_text_db($quicksearch)."%'

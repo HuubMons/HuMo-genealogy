@@ -1,22 +1,49 @@
 version: '3'
 services:
-  db:
-    image: mysql:latest
-    volumes:
-      - ./mysql:/var/lib/mysql
+  #db:
+  #  image: mysql:latest
+  #  volumes:
+  #    - ./mysql:/var/lib/mysql
+  #  restart: always
+  #  expose:
+  #    - 3306
+  #  env_file:
+  #    - .env
+  #  environment:
+  #    MYSQL_RANDOM_ROOT_PASSWORD: "true"
+
+  mariadb:
+    image: linuxserver/mariadb:latest
+    container_name:
+      mariadb_humo
     restart: always
-    expose:
-      - 3306
-    env_file:
-      - .env
+    volumes:
+      - .mysql:/config/databases
+    #env_file:
+    #  - .env
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      TZ: Europe/Amsterdam
+      MYSQL_DATABASE: humo-gen
+      MYSQL_USER: humo-gen
+      MYSQL_PASSWORD: humo-gen
+      PUID: 1000
+      PGID: 1000
+    ports:
+      - 3306:3306
 
   nginx:
     build:
       context: ..
       dockerfile: Docker/nginx/Dockerfile
+    container_name:
+      nginx_humo
     restart: always
+    #user: root
+    #NOT TESTED, probably not good: user: 1000:1000
+    #volumes:
+    #  - .gedcom_files:/var/www/html/admin/gedcom_files
+    #  - .media:/var/www/html/media
     ports:
       - 0.0.0.0:1980:80
 
@@ -24,8 +51,23 @@ services:
     build:
       context: ..
       dockerfile: Docker/fpm/Dockerfile
+    container_name:
+      fpm_humo
     restart: always
     env_file:
       - .env
     environment:
       MYSQL_HOST: db
+
+  # Can be used to login database
+  #phpmyadmin:
+  #  #image: phpmyadmin/phpmyadmin:latest
+  #  image: arm32v7/phpmyadmin
+  #  container_name:
+  #    phpmyadmin_humo
+  #  restart:
+  #    always
+  #  ports:
+  #    - 8000:80
+  #  environment:
+  #    - PMA_ARBITRARY=1

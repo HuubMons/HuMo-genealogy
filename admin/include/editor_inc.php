@@ -281,7 +281,6 @@ if (isset($_POST['person_change'])){
 		$sql = "SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom = '_HEBN' AND event_connect_id = '".$pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
 		$result = $dbh->query($sql);
 		if($result->rowCount() != 0) {     // a Hebrew name entry already exists for this person: UPDATE 
-		
 			if($_POST["even_hebname"]=='') {  // empty entry: existing hebrew name was deleted so delete the event
 				$sql = "DELETE FROM humo_events WHERE event_tree_id='".$tree_id."' AND event_gedcom='_HEBN'  AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."' AND event_kind='name' ";
 				$result=$dbh->query($sql);
@@ -298,29 +297,9 @@ if (isset($_POST['person_change'])){
 			}
 		}
 		elseif($_POST["even_hebname"]!='') {  // new Hebrew name event: INSERT
-
-			// *** Generate new order number ***
-			$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-				AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'
-				AND event_kind='name' 
-				ORDER BY event_order DESC LIMIT 0,1";
-			$event_qry=$dbh->query($event_sql);
-			$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
-			$event_order=1;
-			if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; $event_order++; }
-		
-			$sql = "INSERT INTO humo_events SET
-			event_event='".safe_text_db($_POST["even_hebname"])."',
-			event_tree_id='".$tree_id."',
-			event_connect_kind='person',
-			event_gedcom='_HEBN',
-			event_connect_id='".$pers_gedcomnumber."',
-			event_kind='name',
-			event_order='".$event_order."',
-			event_new_user='".$username."',
-			event_new_date='".$gedcom_date."',
-			event_new_time='".$gedcom_time."'";
-			$result = $dbh->query($sql);
+			// *** Add event. If event is new, use: $new_event=true. ***
+			// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+			add_event(false,'person',$pers_gedcomnumber,'name',$_POST["even_hebname"],'_HEBN','','','');
 		}
 	}
 
@@ -334,12 +313,11 @@ if (isset($_POST['person_change'])){
 				$result=$dbh->query($sql);
 			}
 			else {
-				//$britDb=$result->fetch(PDO::FETCH_OBJ);	echo $britDb->event_gedcom."---".$britDb->event_connect_id;
-				//WHERE event_tree_id='".$tree_id."' AND  event_gedcom='_BRTM' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'";
-				$sql="UPDATE `humo_events` SET 
-				`event_date`='".safe_text_db($_POST["even_brit_date"])."', 
-				`event_place`='".safe_text_db($_POST["even_brit_place"])."',
-				`event_text`='".safe_text_db($_POST["even_brit_text"])."',
+				//$britDb=$result->fetch(PDO::FETCH_OBJ); echo $britDb->event_gedcom."---".$britDb->event_connect_id;
+				$sql="UPDATE humo_events SET
+				event_date='".$editor_cls->date_process("even_brit_date")."',
+				event_place='".safe_text_db($_POST["even_brit_place"])."',
+				event_text='".safe_text_db($_POST["even_brit_text"])."',
 				event_changed_user='".$username."',
 				event_changed_date='".$gedcom_date."',
 				event_changed_time='".$gedcom_time."'
@@ -350,30 +328,10 @@ if (isset($_POST['person_change'])){
 		elseif((isset($_POST["even_brit_date"]) AND $_POST["even_brit_date"]!='')
 			OR (isset($_POST["even_brit_place"]) AND $_POST["even_brit_place"]!='')
 			OR (isset($_POST["even_brit_text"]) AND $_POST["even_brit_text"]!='')) {  // new brit mila event: INSERT
-			// *** Generate new order number ***
-			$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-				AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'
-				AND event_kind='event' 
-				ORDER BY event_order DESC LIMIT 0,1";
-			$event_qry=$dbh->query($event_sql);
-			$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
-			$event_order=1;
-			if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; $event_order++; }
 
-			$sql = "INSERT INTO humo_events SET
-			event_date='".safe_text_db($_POST["even_brit_date"])."',
-			event_place='".safe_text_db($_POST["even_brit_place"])."',
-			event_text='".safe_text_db($_POST["even_brit_text"])."',
-			event_tree_id='".$tree_id."',
-			event_connect_kind='person',
-			event_gedcom='_BRTM',
-			event_connect_id='".$pers_gedcomnumber."',
-			event_kind='event',
-			event_order='".$event_order."',
-			event_new_user='".$username."',
-			event_new_date='".$gedcom_date."',
-			event_new_time='".$gedcom_time."'";
-			$result = $dbh->query($sql);
+			// *** Add event. If event is new, use: $new_event=true. ***
+			// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+			add_event(false,'person',$pers_gedcomnumber,'event','','_BRTM','even_brit_date',$_POST["even_brit_place"],$_POST["even_brit_text"]);
 		}
 	}
 
@@ -391,10 +349,10 @@ if (isset($_POST['person_change'])){
 			}
 			else {
 				//$barmDb=$result->fetch(PDO::FETCH_OBJ);
-				$sql="UPDATE `humo_events` SET 
-				`event_date`='".safe_text_db($_POST["even_barm_date"])."', 
-				`event_place`='".safe_text_db($_POST["even_barm_place"])."',
-				`event_text`='".safe_text_db($_POST["even_barm_text"])."',
+				$sql="UPDATE humo_events SET 
+				event_date='".$editor_cls->date_process("even_barm_date")."',
+				event_place='".safe_text_db($_POST["even_barm_place"])."',
+				event_text='".safe_text_db($_POST["even_barm_text"])."',
 				event_changed_user='".$username."',
 				event_changed_date='".$gedcom_date."',
 				event_changed_time='".$gedcom_time."'
@@ -404,30 +362,9 @@ if (isset($_POST['person_change'])){
 		}
 		elseif($_POST["even_barm_date"]!='' OR $_POST["even_barm_place"]!='' OR $_POST["even_barm_text"]!='') {  // new BAR/BAT MITSVA event: INSERT
 
-			// *** Generate new order number ***
-			$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-				AND event_connect_kind='person' AND event_connect_id='".safe_text_db($pers_gedcomnumber)."'
-				AND event_kind='event' 
-				ORDER BY event_order DESC LIMIT 0,1";
-			$event_qry=$dbh->query($event_sql);
-			$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
-			$event_order=1;
-			if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; $event_order++;}
-
-			$sql = "INSERT INTO humo_events SET
-			event_date='".safe_text_db($_POST["even_barm_date"])."',
-			event_place='".safe_text_db($_POST["even_barm_place"])."',
-			event_text='".safe_text_db($_POST["even_barm_text"])."',
-			event_tree_id='".$tree_id."',
-			event_connect_kind='person',
-			event_gedcom='".$barmbasm."',
-			event_connect_id='".$pers_gedcomnumber."',
-			event_kind='event',
-			event_order='".$event_order."',
-			event_new_user='".$username."',
-			event_new_date='".$gedcom_date."',
-			event_new_time='".$gedcom_time."'";
-			$result = $dbh->query($sql);
+			// *** Add event. If event is new, use: $new_event=true. ***
+			// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+			add_event(false,'person',$pers_gedcomnumber,'event','',$barmbasm,'even_barm_date',$_POST["even_barm_place"],$_POST["even_barm_text"]);
 		}
 	}
 
@@ -529,27 +466,24 @@ if (isset($_POST['person_add']) OR isset($_POST['relation_add'])){
 		$result=$dbh->query($sql);
 	}
 
+	// *** New person: add profession ***
 	if(isset($_POST["event_profession"]) AND $_POST["event_profession"]!="" AND $_POST["event_profession"]!= "Profession") {
-		$event_text="";
-		$event_date="";
-		$event_place="";
-		if(isset($_POST["event_text_profession"]))  $event_text=$_POST["event_text_profession"];
-		if(isset($_POST["event_date_profession"]))  $event_date=$_POST["event_date_profession"];
-		if(isset($_POST["event_place_profession"])) $event_place=$_POST["event_place_profession"];
-		$sql="INSERT INTO humo_events SET
-			event_tree_id='".$tree_id."',
-			event_connect_kind='person',
-			event_connect_id='".$new_gedcomnumber."',
-			event_kind='profession',
-			event_event='".safe_text_db($_POST["event_profession"])."',
-			event_order='1',
-			event_place='".safe_text_db($event_place)."',
-			event_text='".safe_text_db($event_text)."',
-			event_date='".$event_date."',
-			event_new_user='".$username."',
-			event_new_date='".$gedcom_date."',
-			event_new_time='".$gedcom_time."'";
-		$result=$dbh->query($sql);
+		$event_place=""; if(isset($_POST["event_place_profession"])) $event_place=$_POST["event_place_profession"];
+		$event_text=""; if(isset($_POST["event_text_profession"]))  $event_text=$_POST["event_text_profession"];
+
+		// *** Add event. If event is new, use: $new_event=true. ***
+		// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+		add_event(true,'person',$new_gedcomnumber,'profession',$_POST["event_profession"],'','event_date_profession',$event_place,$event_text);
+	}
+
+	// *** New person: add religion ***
+	if(isset($_POST["event_religion"]) AND $_POST["event_religion"]!="" AND $_POST["event_religion"]!= "Religion") {
+		$event_place=""; if(isset($_POST["event_place_religion"])) $event_place=$_POST["event_place_religion"];
+		$event_text=""; if(isset($_POST["event_text_religion"]))  $event_text=$_POST["event_text_religion"];
+
+		// *** Add event. If event is new, use: $new_event=true. ***
+		// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+		add_event(true,'person',$new_gedcomnumber,'religion',$_POST["event_religion"],'RELI','event_date_religion',$event_place,$event_text);
 	}
 
 	if (!isset($_POST['child_connect'])){
@@ -784,7 +718,8 @@ if (isset($_POST['add_parents2'])){
 		pers_firstname='".safe_text_db($_POST['pers_firstname1'])."',
 		pers_prefix='".safe_text_db($_POST['pers_prefix1'])."',
 		pers_lastname='".safe_text_db($_POST['pers_lastname1'])."',
-		pers_patronym='', pers_name_text='',
+		pers_patronym='".safe_text_db($_POST['pers_patronym1'])."',
+		pers_name_text='',
 		pers_alive='".$pers_alive1."',
 		pers_sexe='".$pers_sexe1."',
 		pers_own_code='', pers_place_index='', pers_text='',
@@ -799,26 +734,12 @@ if (isset($_POST['add_parents2'])){
 
 	// *** At this moment only event_profession1 is used. ***
 	if(isset($_POST["event_profession1"]) AND $_POST["event_profession1"]!="" AND $_POST["event_profession1"]!= "Profession") {
-		$event_text="";
-		$event_date="";
-		$event_place="";
-		if(isset($_POST["event_text_profession1"]))  $event_text=$_POST["event_text_profession1"];
-		if(isset($_POST["event_date_profession1"]))  $event_date=$_POST["event_date_profession1"];
-		if(isset($_POST["event_place_profession1"])) $event_place=$_POST["event_place_profession1"];
-		$sql="INSERT INTO humo_events SET
-			event_tree_id='".$tree_id."',
-			event_connect_kind='person',
-			event_connect_id='".$man_gedcomnumber."',
-			event_kind='profession',
-			event_event='".safe_text_db($_POST["event_profession1"])."',
-			event_order='1',
-			event_place='".safe_text_db($event_place)."',
-			event_text='".safe_text_db($event_text)."',
-			event_date='".safe_text_db($event_date)."',
-			event_new_user='".$username."',
-			event_new_date='".$gedcom_date."',
-			event_new_time='".$gedcom_time."'";
-		$result=$dbh->query($sql);
+		$event_place=""; if(isset($_POST["event_place_profession1"])) $event_place=$_POST["event_place_profession1"];
+		$event_text=""; if(isset($_POST["event_text_profession1"]))  $event_text=$_POST["event_text_profession1"];
+
+		// *** Add event. If event is new, use: $new_event=true. ***
+		// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+		add_event(true,'person',$man_gedcomnumber,'profession',$_POST["event_profession1"],'','',$event_place,$event_text);
 	}
 
 	// only needed for jewish settings
@@ -841,7 +762,8 @@ if (isset($_POST['add_parents2'])){
 		pers_firstname='".safe_text_db($_POST['pers_firstname2'])."',
 		pers_prefix='".safe_text_db($_POST['pers_prefix2'])."',
 		pers_lastname='".safe_text_db($_POST['pers_lastname2'])."',
-		pers_patronym='', pers_name_text='',
+		pers_patronym='".safe_text_db($_POST['pers_patronym2'])."',
+		pers_name_text='',
 		pers_alive='".$pers_alive2."',
 		pers_sexe='".$pers_sexe2."',
 		pers_own_code='', pers_place_index='', pers_text='',
@@ -852,30 +774,17 @@ if (isset($_POST['add_parents2'])){
 		pers_new_user='".$username."',
 		pers_new_date='".$gedcom_date."',
 		pers_new_time='".$gedcom_time."'";
+//echo $sql;
 	$result=$dbh->query($sql);
 
 	// *** At this moment only event_profession1 is used. ***
 	if(isset($_POST["event_profession2"]) AND $_POST["event_profession2"]!="" AND $_POST["event_profession2"]!= "Profession") {
-		$event_text="";
-		$event_date="";
-		$event_place="";
-		if(isset($_POST["event_text_profession2"]))  $event_text=$_POST["event_text_profession2"];
-		if(isset($_POST["event_date_profession2"]))  $event_date=$_POST["event_date_profession2"];
-		if(isset($_POST["event_place_profession2"])) $event_place=$_POST["event_place_profession2"];
-		$sql="INSERT INTO humo_events SET
-			event_tree_id='".$tree_id."',
-			event_connect_kind='person',
-			event_connect_id='".$woman_gedcomnumber."',
-			event_kind='profession',
-			event_event='".safe_text_db($_POST["event_profession2"])."',
-			event_order='1',
-			event_place='".safe_text_db($event_place)."',
-			event_text='".safe_text_db($event_text)."',
-			event_date='".safe_text_db($event_date)."',
-			event_new_user='".$username."',
-			event_new_date='".$gedcom_date."',
-			event_new_time='".$gedcom_time."'";
-		$result=$dbh->query($sql);
+		$event_place=""; if(isset($_POST["event_place_profession2"])) $event_place=$_POST["event_place_profession2"];
+		$event_text=""; if(isset($_POST["event_text_profession2"]))  $event_text=$_POST["event_text_profession2"];
+
+		// *** Add event. If event is new, use: $new_event=true. ***
+		// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+		add_event(true,'person',$woman_gedcomnumber,'profession',$_POST["event_profession2"],'','',$event_place,$event_text);
 	}
 
 	// only needed for jewish settings
@@ -1223,7 +1132,7 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 	fam_new_time='".$gedcom_time."'";
 	//echo $sql.'<br>';
 	$result=$dbh->query($sql);
-	
+
 	// only needed for jewish settings
 	if($humo_option['admin_hebnight']=="y") {
 		$sql="UPDATE humo_families SET 
@@ -1262,7 +1171,7 @@ if (isset($_POST['relation_add2']) AND $_POST['relation_add2']!=''){
 
 		// *** Man is changed in marriage ***
 		if ($_POST["connect_man"]!=$_POST["connect_man_old"]){
-			fams_remove($_POST['connect_man_old'], $_POST['marriage']);	
+			fams_remove($_POST['connect_man_old'], $_POST['marriage']);
 			fams_add($_POST['connect_man'], $_POST['marriage']);
 		}
 		// *** Woman is changed in marriage ***
@@ -1351,6 +1260,11 @@ if (!isset($_GET['add_person'])){
 	if (isset($_POST['event_add_profession'])){ $new_event=true; $event_add='add_profession'; }
 	// *** If "Save" is clicked, also save event names ***
 	if (isset($_POST['event_event_profession']) AND $_POST['event_event_profession']!=''){ $new_event=true; $event_add='add_profession'; }
+
+	// *** Add religion ***
+	if (isset($_POST['event_add_religion'])){ $new_event=true; $event_add='add_religion'; }
+	// *** If "Save" is clicked, also save event names ***
+	if (isset($_POST['event_event_religion']) AND $_POST['event_event_religion']!=''){ $new_event=true; $event_add='add_religion'; }
 }
 if ($new_event){
 	if ($event_add=='add_name'){
@@ -1384,6 +1298,11 @@ if ($new_event){
 		$event_event=$_POST['event_event_profession'];
 	}
 
+	if ($event_add=='add_religion'){
+		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='religion'; $event_gedcom='RELI';
+		$event_event=$_POST['event_event_religion'];
+	}
+
 	if ($event_add=='add_picture'){
 		$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='picture'; $event_event=''; $event_gedcom='';
 	}
@@ -1400,81 +1319,23 @@ if ($new_event){
 		$event_connect_kind='source'; $event_connect_id=$_GET['source_id']; $event_kind='picture'; $event_event=''; $event_gedcom='';
 	}
 
-	// *** Generate new order number ***
-	$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
-		AND event_connect_kind='".$event_connect_kind."' AND event_connect_id='".$event_connect_id."'
-		AND event_kind='".$event_kind."'
-		ORDER BY event_order DESC LIMIT 0,1";
-	$event_qry=$dbh->query($event_sql);
-	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
-	$event_order=0;
-	if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
-	$event_order++;
-
-	$sql="INSERT INTO humo_events SET
-		event_tree_id='".$tree_id."',
-		event_connect_kind='".$event_connect_kind."',
-		event_connect_id='".safe_text_db($event_connect_id)."',
-		event_kind='".$event_kind."',
-		event_event='".safe_text_db($event_event)."',
-		event_gedcom='".safe_text_db($event_gedcom)."',
-		event_order='".$event_order."',
-		event_new_user='".$username."',
-		event_new_date='".$gedcom_date."',
-		event_new_time='".$gedcom_time."'";
-	$result=$dbh->query($sql);
+	// *** Add event. If event is new, use: $new_event=true. ***
+	// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+	add_event(false,$event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,'','','');
 }
 
 // *** Add person event ***
 if (isset($_POST['person_event_add'])){
-	// *** Generate new order number ***
-	$event_sql="SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."'
-		AND event_connect_kind='person' AND event_connect_id='".$pers_gedcomnumber."'
-		AND event_kind='".$_POST["event_kind"]."'
-		ORDER BY event_order DESC LIMIT 0,1";
-	$event_qry=$dbh->query($event_sql);
-	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
-	$event_order=0;
-	if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
-	$event_order++;
-
-	$sql="INSERT INTO humo_events SET
-		event_tree_id='".$tree_id."',
-		event_connect_kind='person',
-		event_connect_id='".$pers_gedcomnumber."',
-		event_kind='".$_POST["event_kind"]."',
-		event_order='".$event_order."',
-		event_new_user='".$username."',
-		event_new_date='".$gedcom_date."',
-		event_new_time='".$gedcom_time."'";
-	$result=$dbh->query($sql);
+	// *** Add event. If event is new, use: $new_event=true. ***
+	// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+	add_event(false,'person',$pers_gedcomnumber,$_POST["event_kind"],'','','','','');
 }
 
 // *** Add marriage event ***
 if (isset($_POST['marriage_event_add'])){
-	// *** Generate new order number ***
-	$event_sql="SELECT * FROM humo_events
-		WHERE event_tree_id='".$tree_id."'
-		AND event_connect_kind='family' AND event_connect_id='".$marriage."'
-		AND event_kind='".$_POST["event_kind"]."'
-		ORDER BY event_order DESC LIMIT 0,1";
-	$event_qry=$dbh->query($event_sql);
-	$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
-	$event_order=0;
-	if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
-	$event_order++;
-
-	$sql="INSERT INTO humo_events SET
-		event_tree_id='".$tree_id."',
-		event_connect_kind='family',
-		event_connect_id='".$marriage."',
-		event_kind='".$_POST["event_kind"]."',
-		event_order='".$event_order."',
-		event_new_user='".$username."',
-		event_new_date='".$gedcom_date."',
-		event_new_time='".$gedcom_time."'";
-	$result=$dbh->query($sql);
+	// *** Add event. If event is new, use: $new_event=true. ***
+	// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+	add_event(false,'family',$marriage,$_POST["event_kind"],'','','','','');
 }
 
 
@@ -1588,6 +1449,7 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 
 
 // *** Change event ***
+//also check is_numeric
 if (isset($_POST['event_id'])){
 	foreach($_POST['event_id'] as $key=>$value){
 		$event_event='';
@@ -1600,40 +1462,49 @@ if (isset($_POST['event_id'])){
 		// *** Media selection pop-up option *** 
 		if (isset($_POST["text_event".$key]) AND $_POST["text_event".$key]!=''){ $event_event=$editor_cls->text_process($_POST["text_event".$key]); }
 
-
 		// *** Only update if there are changed values! Otherwise all event_change variables will be changed... ***
-		$event_changed=false;
-		if ($event_event!=$_POST["event_event_old"][$key]) $event_changed=true;
-		// *** Compare date case-insensitive ***
-		if (strcasecmp($_POST["event_date_prefix"][$key].$_POST["event_date"][$key], $_POST["event_date_old"][$key]) != 0) $event_changed=true;
-		if ($_POST["event_place".$key]!=$_POST["event_place_old"][$key]) $event_changed=true;
-		if (isset($_POST["event_gedcom"][$key])){
-			if ($_POST["event_gedcom"][$key]!=$_POST["event_gedcom_old"][$key]) $event_changed=true;
-		}
-		if (isset($_POST["event_text"][$key])){
-			if ($_POST["event_text"][$key]!=$_POST["event_text_old"][$key]) $event_changed=true;
-		}
+		$event_id=$_POST["event_id"][$key];
+		if (is_numeric($event_id)){
+			// *** Read old values ***
+			$event_qry= "SELECT * FROM humo_events WHERE event_id='".$event_id."'";
+			$event_result = $dbh->query($event_qry);
+			$eventDb=$event_result->fetch(PDO::FETCH_OBJ);
+			$event_changed=false;
 
-		if ($event_changed){
-			//event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
-			$sql="UPDATE humo_events SET
-				event_event='".$event_event."'
-				, event_date='".$editor_cls->date_process("event_date",$key)."'
-				, event_place='".$editor_cls->text_process($_POST["event_place".$key])."'";
+			if ($event_event!=$eventDb->event_event) $event_changed=true;
+			// *** Compare date case-insensitive (for PHP 8.1 check if variabele is used) ***
+			//if (isset($_POST["event_date_prefix"][$key]) OR isset($_POST["event_date"][$key])){
+			if ($_POST["event_date_prefix"][$key] OR $_POST["event_date"][$key]){
+				if (strcasecmp($_POST["event_date_prefix"][$key].$_POST["event_date"][$key], $eventDb->event_date) != 0) $event_changed=true;
+			}
+			if ($_POST["event_place".$key]!=$eventDb->event_place) $event_changed=true;
 			if (isset($_POST["event_gedcom"][$key])){
-				$sql.=", event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."'";
+				if ($_POST["event_gedcom"][$key]!=$eventDb->event_gedcom) $event_changed=true;
 			}
 			if (isset($_POST["event_text"][$key])){
-				$sql.=", event_text='".$editor_cls->text_process($_POST["event_text"][$key])."'";
+				if ($_POST["event_text"][$key]!=$eventDb->event_text) $event_changed=true;
 			}
 
-			$sql.=", event_changed_user='".$username."'
-			, event_changed_date='".$gedcom_date."'
-			, event_changed_time='".$gedcom_time."'";
+			if ($event_changed){
+				$sql="UPDATE humo_events SET
+					event_event='".$event_event."',
+					event_date='".$editor_cls->date_process("event_date",$key)."',
+					event_place='".$editor_cls->text_process($_POST["event_place".$key])."',";
+				if (isset($_POST["event_gedcom"][$key])){
+					$sql.="event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."',";
+				}
+				if (isset($_POST["event_text"][$key])){
+					$sql.="event_text='".$editor_cls->text_process($_POST["event_text"][$key])."',";
+				}
+				$sql.="event_changed_user='".$username."',
+					event_changed_date='".$gedcom_date."',
+					event_changed_time='".$gedcom_time."'";
 
-			$sql.=" WHERE event_id='".safe_text_db($_POST["event_id"][$key])."'";
+				//$sql.=" WHERE event_id='".safe_text_db($_POST["event_id"][$key])."'";
+				$sql.=" WHERE event_id='".$event_id."'";
 //echo '<br>'.$sql.'<br>';
-			$result=$dbh->query($sql);
+				$result=$dbh->query($sql);
+			}
 		}
 
 		// *** Also change person colors by descendants of selected person ***
@@ -1643,7 +1514,6 @@ if (isset($_POST['event_id'])){
 			// *** Starts with 2nd descendant, skip main person (that's already processed above this code)! ***
 			// *** $descendant_array[0]= not in use ***
 			// *** $descendant_array[1]= main person ***
-			//for ($i=2; $i<=$descendant_id; $i++){
 			for ($i=2; $i<=$descendant_id; $i++){
 				// *** Check if descendant already has this colour ***
 				$event_sql="SELECT * FROM humo_events
@@ -1655,50 +1525,28 @@ if (isset($_POST['event_id'])){
 				$event_qry=$dbh->query($event_sql);
 				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
 
+				$event_gedcom=''; if (isset($_POST["event_gedcom"][$key])) $event_gedcom=$_POST["event_gedcom"][$key];
+				$event_text=''; if (isset($_POST["event_text"][$key])) $event_text=$_POST["event_text"][$key];
+
 				// *** Descendant already has this color, change it ***
 				if (isset($eventDb->event_event)){
-					//event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
 					$sql="UPDATE humo_events SET
 						event_event='".$event_event."',
 						event_date='".$editor_cls->date_process("event_date",$key)."',
 						event_place='".$editor_cls->text_process($_POST["event_place".$key])."',
 						event_changed_user='".$username."',
-						event_changed_date='".$gedcom_date."', ";
-					if (isset($_POST["event_gedcom"][$key])){
-						$sql.="event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."',";
-					}
-					if (isset($_POST["event_text"][$key])){
-						$sql.="event_text='".$editor_cls->text_process($_POST["event_text"][$key])."',";
-					}
-					$sql.=" event_changed_time='".$gedcom_time."'";
-					$sql.=" WHERE event_id='".$eventDb->event_id."'";
+						event_changed_date='".$gedcom_date."',
+						event_gedcom='".$editor_cls->text_process($event_gedcom)."',
+						event_text='".$editor_cls->text_process($event_text)."',
+						event_changed_time='".$gedcom_time."'
+						WHERE event_id='".$eventDb->event_id."'";
 					$result=$dbh->query($sql);
 				}
 				else{
 					// *** Add person event for descendants ***
-					// *** Generate new order number ***
-					$event_sql="SELECT * FROM humo_events
-						WHERE event_tree_id='".$tree_id."'
-						AND event_connect_kind='person'
-						AND event_connect_id='".$descendant_array[$i]."'
-						AND event_kind='person_colour_mark'
-						ORDER BY event_order DESC LIMIT 0,1";
-					$event_qry=$dbh->query($event_sql);
-					$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
-					$event_order=0;
-					if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
-					$event_order++;
-					$sql="INSERT INTO humo_events SET
-						event_tree_id='".$tree_id."',
-						event_connect_kind='person',
-						event_connect_id='".$descendant_array[$i]."',
-						event_kind='person_colour_mark',
-						event_event='".$event_event."',
-						event_order='".$event_order."',
-						event_new_user='".$username."',
-						event_new_date='".$gedcom_date."',
-						event_new_time='".$gedcom_time."'";
-					$result=$dbh->query($sql);
+					// *** Add event. If event is new, use: $new_event=true. ***
+					// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+					add_event(false,'person',$descendant_array[$i],'person_colour_mark',$event_event,$event_gedcom,'event_date',$_POST["event_place".$key],$event_text,$key);
 				}
 
 			}
@@ -1721,49 +1569,28 @@ if (isset($_POST['event_id'])){
 				$event_qry=$dbh->query($event_sql);
 				$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
 
+				$event_gedcom=''; if (isset($_POST["event_gedcom"][$key])) $event_gedcom=$_POST["event_gedcom"][$key];
+				$event_text=''; if (isset($_POST["event_text"][$key])) $event_text=$_POST["event_text"][$key];
+
 				// *** Ancestor already has this color, change it ***
 				if (isset($eventDb->event_event)){
-					//event_place='".$editor_cls->text_process($_POST["event_place"][$key])."',
 					$sql="UPDATE humo_events SET
 						event_event='".$event_event."',
 						event_date='".$editor_cls->date_process("event_date",$key)."',
 						event_place='".$editor_cls->text_process($_POST["event_place".$key])."',
 						event_changed_user='".$username."',
-						event_changed_date='".$gedcom_date."', ";
-					if (isset($_POST["event_gedcom"][$key])){
-						$sql.="event_gedcom='".$editor_cls->text_process($_POST["event_gedcom"][$key])."',";
-					}
-					if (isset($_POST["event_text"][$key])){
-						$sql.="event_text='".$editor_cls->text_process($_POST["event_text"][$key])."',";
-					}
-					$sql.=" event_changed_time='".$gedcom_time."'";
-					$sql.=" WHERE event_id='".$eventDb->event_id."'";
+						event_changed_date='".$gedcom_date."',
+						event_gedcom='".$editor_cls->text_process($event_gedcom)."',
+						event_text='".$editor_cls->text_process($event_text)."',
+						event_changed_time='".$gedcom_time."'
+						WHERE event_id='".$eventDb->event_id."'";
 					$result=$dbh->query($sql);
 				}
 				else{
-					// *** Add person event for descendants ***
-					// *** Generate new order number ***
-					$event_sql="SELECT * FROM humo_events
-						WHERE event_tree_id='".$tree_id."'
-						AND event_connect_kind='person' AND event_connect_id='".$selected_ancestor."'
-						AND event_kind='person_colour_mark'
-						ORDER BY event_order DESC LIMIT 0,1";
-					$event_qry=$dbh->query($event_sql);
-					$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);	
-					$event_order=0;
-					if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
-					$event_order++;
-					$sql="INSERT INTO humo_events SET
-						event_tree_id='".$tree_id."',
-						event_connect_kind='person',
-						event_connect_id='".$selected_ancestor."',
-						event_kind='person_colour_mark',
-						event_event='".$event_event."',
-						event_order='".$event_order."',
-						event_new_user='".$username."',
-						event_new_date='".$gedcom_date."',
-						event_new_time='".$gedcom_time."'";
-					$result=$dbh->query($sql);
+					// *** Add person event for ancestors ***
+					// *** Add event. If event is new, use: $new_event=true. ***
+					// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+					add_event(false,'person',$selected_ancestor,'person_colour_mark',$event_event,$event_gedcom,'event_date',$_POST["event_place".$key],$event_text,$key);
 				}
 
 			}
@@ -1885,7 +1712,6 @@ if (isset($_POST['event_drop2'])){
 					WHERE event_id='".$eventDb->event_id."'";
 					$result=$dbh->query($sql);
 				}
-
 
 			}
 		}
@@ -2521,7 +2347,6 @@ if (isset($_POST['living_place_drop2'])){
 		AND address_connect_sub_kind='".$address_connect_sub_kind."'
 		AND address_connect_id='".$address_connect_id."'
 		AND address_order='".$living_place_order."'";
-//echo $sql;
 	$result=$dbh->query($sql);
 
 	$address_sql="SELECT * FROM humo_addresses
@@ -2583,6 +2408,7 @@ if (isset($_POST['change_address_id'])){
 
 		// *** Only update if there are changed values! Otherwise all address_change variables will be changed... ***
 		$address_changed=false;
+// Or: get old values out of the database. See editor notes (below in this script).
 		if ($address_shared!=$_POST["address_shared_old"][$key]) $address_changed=true;
 		if ($_POST["address_address_".$key]!=$_POST["address_address_old"][$key]) $address_changed=true;
 		if ($_POST["address_place_".$key]!=$_POST["address_place_old"][$key]) $address_changed=true;
@@ -2607,6 +2433,87 @@ if (isset($_POST['change_address_id'])){
 			family_tree_update($tree_id);
 		}
 	}
+}
+
+// *** Add editor note ***
+if (isset($_GET['note_add']) AND $_GET['note_add']){
+	$gedcom_date=strtoupper(date("d M Y")); $gedcom_time=date("H:i:s");
+
+	// *** $note_connect_kind = person or family ***
+	$note_connect_kind='person';
+	if ($_GET['note_add']=='family') $note_connect_kind='family';
+
+	// *** $note_connect_id = I123 or F123 ***
+	$note_connect_id=$pers_gedcomnumber;
+	if ($note_connect_kind=='family') $note_connect_id=$marriage;
+
+	// *** Name of selected person in family tree ***
+	@$persDb = $db_functions->get_person($pers_gedcomnumber);
+	// *** Use class to process person ***
+	$pers_cls = New person_cls;
+	$pers_cls->construct($persDb);
+	$name=$pers_cls->person_name($persDb);
+	$note_names=safe_text_db($name["standard_name"]);
+
+	//note_connect_kind='person',
+	$sql="INSERT INTO humo_user_notes SET
+	note_new_date='".$gedcom_date."',
+	note_new_time='".$gedcom_time."',
+	note_new_user_id='".$userid."',
+	note_note='',
+	note_kind='editor',
+	note_status='Not started',
+	note_priority='Normal',
+	note_connect_kind='".$note_connect_kind."',
+	note_connect_id='".safe_text_db($note_connect_id)."',
+	note_names='".safe_text_db($note_names)."',
+	note_tree_id='".$tree_id."';";
+	$result=$dbh->query($sql);
+}
+// *** Change editor note ***
+if (isset($_POST['note_id'])){
+	foreach($_POST['note_id'] as $key=>$value){
+		$note_id=$_POST["note_id"][$key];
+		if (is_numeric($note_id)){
+			// *** Read old values ***
+			$note_qry= "SELECT * FROM humo_user_notes WHERE note_id='".$note_id."'";
+			$note_result = $dbh->query($note_qry);
+			$noteDb=$note_result->fetch(PDO::FETCH_OBJ);
+			$note_changed=false;
+			if ($noteDb->note_status!=$_POST["note_status"][$key]) $note_changed=true;
+			if ($noteDb->note_priority!=$_POST["note_priority"][$key]) $note_changed=true;
+			if ($noteDb->note_note!=$_POST["note_note"][$key]) $note_changed=true;
+
+			if ($note_changed){
+				$gedcom_date=strtoupper(date("d M Y")); $gedcom_time=date("H:i:s");
+				$sql="UPDATE humo_user_notes SET
+					note_note='".$editor_cls->text_process($_POST["note_note"][$key])."',
+					note_status='".$editor_cls->text_process($_POST["note_status"][$key])."',
+					note_priority='".$editor_cls->text_process($_POST["note_priority"][$key])."',
+					note_changed_user_id='".$userid."',
+					note_changed_date='".$gedcom_date."',
+					note_changed_time='".$gedcom_time."'
+					WHERE note_id='".$note_id."'";
+				$result=$dbh->query($sql);
+			}
+		}
+	}
+}
+// *** Remove editor note ***
+if (isset($_GET['note_drop']) AND is_numeric($_GET['note_drop'])){
+	$confirm.='<div class="confirm">';
+		$confirm.=__('Are you sure you want to remove this event?');
+		$confirm.=' <form method="post" action="'.$phpself.'" style="display : inline;">';
+			$confirm.='<input type="hidden" name="page" value="'.$_GET['page'].'">';
+			$confirm.='<input type="hidden" name="note_drop" value="'.$_GET['note_drop'].'">';
+			$confirm.=' <input type="Submit" name="note_drop2" value="'.__('Yes').'" style="color : red; font-weight: bold;">';
+			$confirm.=' <input type="Submit" name="submit" value="'.__('No').'" style="color : blue; font-weight: bold;">';
+		$confirm.='</form>';
+	$confirm.='</div>';
+}
+if (isset($_POST['note_drop2']) AND is_numeric($_POST['note_drop'])){
+	$sql="DELETE FROM humo_user_notes WHERE note_id='".safe_text_db($_POST['note_drop'])."'";
+	$result=$dbh->query($sql);
 }
 
 // *** Remove all sources from an item ***
@@ -2637,4 +2544,41 @@ function remove_sources($tree_id,$connect_sub_kind,$connect_connect_id){
 	*/
 }
 
+// *** Add event. $new_event=false/true ***
+// $event_date='event_date'
+function add_event($new_event,$event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text,$multiple_rows=''){
+	global $dbh,$tree_id,$username,$gedcom_date,$gedcom_time,$editor_cls;
+
+	// *** Generate new order number ***
+	$event_order=1;
+	if (!$new_event){
+		$event_sql="SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='".$event_connect_kind."' AND event_connect_id='".$event_connect_id."'
+			AND event_kind='".$event_kind."'
+			ORDER BY event_order DESC LIMIT 0,1";
+		$event_qry=$dbh->query($event_sql);
+		$eventDb=$event_qry->fetch(PDO::FETCH_OBJ);
+		$event_order=0;
+		if (isset($eventDb->event_order)){ $event_order=$eventDb->event_order; }
+		$event_order++;
+	}
+
+	$sql="INSERT INTO humo_events SET
+		event_tree_id='".$tree_id."',
+		event_connect_kind='".$event_connect_kind."',
+		event_connect_id='".safe_text_db($event_connect_id)."',
+		event_kind='".$event_kind."',
+		event_event='".safe_text_db($event_event)."',
+		event_gedcom='".safe_text_db($event_gedcom)."',";
+		if ($event_date){
+			$sql.=" event_date='".$editor_cls->date_process($event_date,$multiple_rows)."',";
+		}
+		$sql.=" event_place='".safe_text_db($event_place)."',
+		event_text='".safe_text_db($event_text)."',
+		event_order='".$event_order."',
+		event_new_user='".$username."',
+		event_new_date='".$gedcom_date."',
+		event_new_time='".$gedcom_time."'";
+	$result=$dbh->query($sql);
+}
 ?>

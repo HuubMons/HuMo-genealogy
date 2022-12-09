@@ -794,20 +794,22 @@ function alphabet(){
 	}
 
 	// *** Show character line ***
-	for ($i=0; $i<count($first_character); $i++){
-		if (CMS_SPECIFIC=='Joomla'){
-			$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id='.$tree_id.
-			'&amp;last_name='.$first_character[$i];
+	if (isset($first_character)){
+		for ($i=0; $i<count($first_character); $i++){
+			if (CMS_SPECIFIC=='Joomla'){
+				$path_tmp='index.php?option=com_humo-gen&amp;task=list_names&amp;tree_id='.$tree_id.
+				'&amp;last_name='.$first_character[$i];
+			}
+			elseif ($humo_option["url_rewrite"]=="j"){
+				// *** url_rewrite ***
+				// *** $uri_path is gemaakt in header.php ***
+				$path_tmp=$uri_path.'list_names/'.$tree_id.'/'.$first_character[$i].'/';
+			}
+			else{
+				$path_tmp=CMS_ROOTPATH.'list_names.php?tree_id='.$tree_id.'&amp;last_name='.$first_character[$i];
+			}
+			$text.=' <a href="'.$path_tmp.'">'.$first_character[$i].'</a>';
 		}
-		elseif ($humo_option["url_rewrite"]=="j"){
-			// *** url_rewrite ***
-			// *** $uri_path is gemaakt in header.php ***
-			$path_tmp=$uri_path.'list_names/'.$tree_id.'/'.$first_character[$i].'/';
-		}
-		else{
-			$path_tmp=CMS_ROOTPATH.'list_names.php?tree_id='.$tree_id.'&amp;last_name='.$first_character[$i];
-		}
-		$text.=' <a href="'.$path_tmp.'">'.$first_character[$i].'</a>';
 	}
 
 	//if (CMS_SPECIFIC=='Joomla'){

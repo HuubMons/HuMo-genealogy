@@ -86,14 +86,13 @@ td.style_tree_text { background-color: #BDD7EF; }
 #humo_menu a:hover {
 	/* background:url("images_sky_blue/blue_hover.png") repeat left top; */
 }
-ul.humo_menu_item li { border-left: none; border-right: none; }
+ul.humo_menu_item li {
+	border-left: none; border-right: none;
+}
 ul.humo_menu_item li a{
 	display:block;
-	/* up, right, bottom */
-	padding:8px 5px 7px 5px;
 	text-decoration:none;
 	color:#333;
-	/* border-right:1px solid #61a0d9; */
 	border-right:0px;
 }
 
@@ -105,9 +104,7 @@ ul.humo_menu_item li a{
 
 /* Pop-up menu */
 ul.humo_menu_item2 li a{
-	/* background-color:#999; */
 	background:url("images_sky_blue/blue.png") repeat left top;
-	/* background:none; */
 }
 
 #humo_menu #current a, #humo_menu #current_top {

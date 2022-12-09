@@ -372,16 +372,17 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 					}
 					if ($show_date=="1" AND !$privacy_woman AND !$show_details) {
 						if($screen_mode != "PDF") {
- 							echo $dirmark1.',';
- 							if($dates_behind_names==false) {echo '<br>';}
- 							echo ' &nbsp; ('.language_date($person_womanDb->pers_birth_date).' - '.language_date($person_womanDb->pers_death_date).')';
+							echo $dirmark1.',';
+							if($dates_behind_names==false) {echo '<br>';}
+							echo ' &nbsp; ('.language_date($person_womanDb->pers_birth_date).' - '.language_date($person_womanDb->pers_death_date).')';
 						}
 						else {
 							if($dates_behind_names==false) {
 								$pdf->SetLeftMargin($gn*10+4);
 								$pdf->Write(8,"\n");
 							}
-							$pdf->Write(8,' ('.language_date($person_womanDb->pers_birth_date).' - '.language_date($person_womanDb->pers_death_date).')');
+							$pdf_text=language_date($person_womanDb->pers_birth_date).' - '.language_date($person_womanDb->pers_death_date);
+							$pdf->Write(8,' ('.pdf_convert($pdf_text).')');
 						}
 					}
 
@@ -390,7 +391,6 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 					if($screen_mode != "PDF") {
 						echo $man_cls->name_extended("outline");
 						if($show_details AND !$privacy_man) { echo $man_cls->person_data("outline",$familyDb->fam_gedcomnumber); }
-
 					}
 					else {
 						$pdf->SetFont($pdf_font,'B',12);
@@ -399,16 +399,17 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 					}
 					if ($show_date=="1" AND !$privacy_man AND !$show_details) {
 						if($screen_mode != "PDF") {
- 							echo $dirmark1.',';
- 							if($dates_behind_names==false) {echo '<br>';}
- 							echo ' &nbsp; ('.language_date($person_manDb->pers_birth_date).' - '.language_date($person_manDb->pers_death_date).')';
+							echo $dirmark1.',';
+							if($dates_behind_names==false) {echo '<br>';}
+							echo ' &nbsp; ('.language_date($person_manDb->pers_birth_date).' - '.language_date($person_manDb->pers_death_date).')';
 						}
 						else {
 							if($dates_behind_names==false) {
 								$pdf->SetLeftMargin($gn*10+4);
 								$pdf->Write(8,"\n");
 							}
-							$pdf->Write(8,' ('.language_date($person_manDb->pers_birth_date).' - '.language_date($person_manDb->pers_death_date).')');
+							$pdf_text=language_date($person_manDb->pers_birth_date).' - '.language_date($person_manDb->pers_death_date);
+							$pdf->Write(8,' ('.pdf_convert($pdf_text).')');
 						}
 					}
 
@@ -486,7 +487,8 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 						$pdf->SetLeftMargin($gn*10+4);
 						$pdf->Write(8,"\n");
 					}
-					$pdf->Write(8,' ('.@language_date($person_manDb->pers_birth_date).' - '.@language_date($person_manDb->pers_death_date).')');
+					$pdf_text=language_date($person_manDb->pers_birth_date).' - '.language_date($person_manDb->pers_death_date);
+					$pdf->Write(8,' ('.pdf_convert($pdf_text).')');
 				}
 			}
 		}
@@ -512,7 +514,8 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 						$pdf->SetLeftMargin($gn*10+4);
 						$pdf->Write(8,"\n");
 					}
-					$pdf->Write(8,' ('.@language_date($person_womanDb->pers_birth_date).' - '.@language_date($person_womanDb->pers_death_date).')');
+					$pdf_text=language_date($person_womanDb->pers_birth_date).' - '.language_date($person_womanDb->pers_death_date);
+					$pdf->Write(8,' ('.pdf_convert($pdf_text).')');
 				}
 			}
 		}
@@ -582,7 +585,8 @@ function outline($family_id,$main_person,$gn,$nr_generations) {
 									$pdf->SetLeftMargin($childgn*10+4);
 									$pdf->Write(8,"\n");
 								}
-								$pdf->Write(8,' ('.language_date($childDb->pers_birth_date).' - '.language_date($childDb->pers_death_date).')');
+								$pdf_text=language_date($childDb->pers_birth_date).' - '.language_date($childDb->pers_death_date);
+								$pdf->Write(8,' ('.pdf_convert($pdf_text).')');
 							}
 						}
 						if($screen_mode != "PDF") {

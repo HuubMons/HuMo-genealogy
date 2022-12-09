@@ -114,6 +114,74 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 		// *** At this moment there is no separation for front user and admin user... ***
 		include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables
 
+		// **** Temporary update scripts ***
+
+		// *** Check table user_notes ***
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_user_notes');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		// *** Automatic update ***
+		if (!isset($field['note_order'])){
+			$sql="ALTER TABLE humo_user_notes CHANGE note_date note_new_date varchar(20) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+			$sql="ALTER TABLE humo_user_notes CHANGE note_time note_new_time varchar(25) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+			$sql="ALTER TABLE humo_user_notes CHANGE note_user_id note_new_user_id smallint(5);";
+			$result=$dbh->query($sql);
+
+			$sql="ALTER TABLE humo_user_notes ADD note_changed_date varchar(20) CHARACTER SET utf8 AFTER note_new_user_id;";
+			$result=$dbh->query($sql);
+			$sql="ALTER TABLE humo_user_notes ADD note_changed_time varchar(25) CHARACTER SET utf8 AFTER note_changed_date;";
+			$result=$dbh->query($sql);
+			$sql="ALTER TABLE humo_user_notes ADD note_changed_user_id smallint(5) AFTER note_changed_time;";
+			$result=$dbh->query($sql);
+
+			$sql="ALTER TABLE humo_user_notes ADD note_priority varchar(15) CHARACTER SET utf8 AFTER note_status;";
+			$result=$dbh->query($sql);
+
+			$sql="ALTER TABLE humo_user_notes CHANGE note_status note_status varchar(15) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+
+			// *** Add note_order ***
+			$sql="ALTER TABLE humo_user_notes ADD note_order smallint(5) AFTER note_id;";
+			$result=$dbh->query($sql);
+
+			// *** Add note_connect_kind = person/ family/ source/ repository ***
+			$sql="ALTER TABLE humo_user_notes ADD note_connect_kind varchar(20) CHARACTER SET utf8 AFTER note_tree_id;";
+			$result=$dbh->query($sql);
+
+			// *** Add note_kind = user/ editor ***
+			$sql="ALTER TABLE humo_user_notes ADD note_kind varchar(10) CHARACTER SET utf8 AFTER note_tree_id;";
+			$result=$dbh->query($sql);
+
+			// *** Change all existing note_connect_kind items into 'person' ***
+			$sql="UPDATE humo_user_notes SET note_connect_kind='person';";
+			$result=$dbh->query($sql);
+
+			// *** Change note_pers_gedcomnumber into: note_connect_id ***
+			$sql="ALTER TABLE humo_user_notes CHANGE note_pers_gedcomnumber note_connect_id VARCHAR(25) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+
+			// *** Update tree_id, could be missing in some cases ***
+			$sql="SELECT * FROM humo_user_notes LEFT JOIN humo_trees ON note_tree_prefix=tree_prefix ORDER BY note_id;";
+			$qry = $dbh->query($sql);
+			while ($qryDb=$qry->fetch(PDO::FETCH_OBJ)){
+				$sql2="UPDATE humo_user_notes SET note_tree_id='".$qryDb->tree_id."', note_kind='user' WHERE note_id='".$qryDb->note_id."'";
+				$result=$dbh->query($sql2);
+			}
+
+			// *** Remove note_fam_gedcomnumber ***
+			$sql="ALTER TABLE humo_user_notes DROP note_fam_gedcomnumber;";
+			$result=$dbh->query($sql);
+
+			// *** Remove note_fam_gedcomnumber ***
+			$sql="ALTER TABLE humo_user_notes DROP note_tree_prefix;";
+			$result=$dbh->query($sql);
+		}
+
+
 		// *** Aug. 2022: Cleanup old HuMo-genealogy files ***
 		if (!isset($humo_option['cleanup_status'])){
 			global $update_dir, $update_files;

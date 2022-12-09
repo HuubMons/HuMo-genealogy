@@ -41,7 +41,6 @@ function date_show($process_date, $process_name, $multiple_rows='', $disabled=''
 
 			$selected=''; if (substr($process_date,0,4)=='CAL '){ $selected=' selected'; }
 			$text.='<option value="CAL "'.$selected.'>'.__('calculated').'</option>';
-
 		$text.='</select>';
 
 		// *** '!' is added after an invalid date, change background color if date is invalid ***

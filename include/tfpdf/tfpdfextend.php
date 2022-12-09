@@ -55,7 +55,7 @@ function pdfdisplay($templ_personing,$person_kind) {
 	}
 
 	// *** Check if we have first occurance of birth, death etc. data, so we add "Born", "Died", etc. ***
-	$own_code=0; $born=0; $bapt=0; $dead=0; $buri=0; $prof=0; $address=0; $source=0;
+	$own_code=0; $born=0; $bapt=0; $dead=0; $buri=0; $prof=0; $religion=0; $address=0; $source=0;
 
 	foreach ($templ_personing as $key => $value) {
 		$pdf->SetFont($pdf_font,$type,$font_size);
@@ -142,6 +142,14 @@ function pdfdisplay($templ_personing,$person_kind) {
 			// Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
 			$this->show_text($templ_personing["prof_start"],'B',$font_size);
 			$prof=1;
+		}
+
+		if(strpos($key,"religion_start")!==false) continue;
+		if(!$religion AND strpos($key,"religion")!==false) {
+			//if ($person_kind=='ancestor') $pdf->SetLeftMargin(38);
+			// Example: $pdf->show_text($text,'B',$font_size);  // B=Bold, I=Italic
+			$this->show_text($templ_personing["religion_start"],'B',$font_size);
+			$religion=1;
 		}
 
 		if(strpos($key,"address_start")!==false) continue;
@@ -542,7 +550,7 @@ function write_name($templ_name,$indentation,$length) {
 	}
 
 	foreach($templ_name as $key => $value) {
-		$value=html_entity_decode($value);
+		$value=''; if (isset($value)) $value=html_entity_decode($value);
 
 		if($sexe==0 AND strpos($key,"name_sexe")!==false) {
 			if($templ_name["name_sexe"]=="M") $pic="images/man.gif";

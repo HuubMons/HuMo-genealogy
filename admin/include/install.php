@@ -221,7 +221,11 @@ if (isset($_POST['install_tables2'])){
 			setting_tree_id smallint(5),
 			PRIMARY KEY (`setting_id`)
 			) DEFAULT CHARSET=utf8");
-		echo __('fill humo_settings... <font color=red>Standard settings are saved in database!</font>').'<br>';
+
+		//echo __('fill humo_settings... <font color=red>Standard settings are saved in database!</font>').'<br>';
+		printf(__('filling table: %s.'), 'humo_settings');
+		echo '<br>';
+
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('database_name','Web Site')");
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage','http://www.humo-gen.com')");
 		$db_update = $dbh->query("INSERT INTO humo_settings (setting_variable,setting_value) values ('homepage_description','Website')");
@@ -335,7 +339,9 @@ if (isset($_POST['install_tables2'])){
 		) DEFAULT CHARSET=utf8");
 		//group_editor varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 
-		echo __('filling humo_groups...').'<br>';
+		//echo __('filling humo_groups...').'<br>';
+		printf(__('filling table: %s.'), 'humo_groups');
+		echo '<br>';
 
 		$sql="INSERT INTO humo_groups SET group_name='admin', group_privacy='j', group_menu_places='j', group_admin='j',
 		group_sources='j', group_pictures='j', group_gedcomnr='j', group_living_place='j', group_places='j', group_religion='j',
@@ -420,7 +426,11 @@ if (isset($_POST['install_tables2'])){
 			user_last_visit varchar(25) CHARACTER SET utf8,
 			PRIMARY KEY  (`user_id`)
 			) DEFAULT CHARSET=utf8");
-		echo __('filling humo_users...').'<br>';
+
+		//echo __('filling humo_users...').'<br>';
+		printf(__('filling table: %s.'), 'humo_users');
+		echo '<br>';
+
 		$hashToStoreInDb = password_hash($_POST['password_admin'], PASSWORD_DEFAULT);
 		$db_update = $dbh->query("INSERT INTO humo_users (user_name, user_password_salted, user_group_id)
 			values ('".$_POST['username_admin']."','".$hashToStoreInDb."','1')");
@@ -435,6 +445,11 @@ if (isset($_POST['install_tables2'])){
 	}
 
 	if (!$table_cms_menu){
+		try{
+			$db_update = $dbh->query("DROP TABLE humo_cms_menu");
+		} catch (Exception $e) {
+			//
+		}
 		printf(__('create table: %s.'), 'humo_cms_menu');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_cms_menu (
@@ -495,22 +510,26 @@ if (isset($_POST['install_tables2'])){
 		} catch (Exception $e) {
 			//
 		}
-		//echo __('creating humo_notes...').'<br>';
-		printf(__('create table: %s.'), 'humo_notes');
+		printf(__('create table: %s.'), 'humo_user_notes');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_user_notes (
 			note_id smallint(5) unsigned NOT NULL auto_increment,
-			note_date varchar(20) CHARACTER SET utf8,
-			note_time varchar(25) CHARACTER SET utf8,
-			note_user_id smallint(5),
+			note_order smallint(5),
+			note_new_date varchar(20) CHARACTER SET utf8,
+			note_new_time varchar(25) CHARACTER SET utf8,
+			note_new_user_id smallint(5),
+			note_changed_date varchar(20) CHARACTER SET utf8,
+			note_changed_time varchar(25) CHARACTER SET utf8,
+			note_changed_user_id smallint(5),
 			note_guest_name varchar(25) CHARACTER SET utf8 DEFAULT NULL,
 			note_guest_mail varchar(25) CHARACTER SET utf8 DEFAULT NULL,
 			note_note text CHARACTER SET utf8,
-			note_status varchar(10) CHARACTER SET utf8,
+			note_status varchar(15) CHARACTER SET utf8,
+			note_priority varchar(15) CHARACTER SET utf8,
 			note_tree_id mediumint(7),
-			note_tree_prefix varchar(25) CHARACTER SET utf8,
-			note_pers_gedcomnumber varchar(25) CHARACTER SET utf8,
-			note_fam_gedcomnumber varchar(25) CHARACTER SET utf8,
+			note_kind varchar(10) CHARACTER SET utf8,
+			note_connect_kind varchar(20) CHARACTER SET utf8,
+			note_connect_id varchar(25) CHARACTER SET utf8,
 			note_names text CHARACTER SET utf8,
 			PRIMARY KEY  (`note_id`)
 			) DEFAULT CHARSET=utf8");
@@ -524,7 +543,6 @@ if (isset($_POST['install_tables2'])){
 		} catch (Exception $e) {
 			//
 		}
-		//echo __('creating humo_trees').'<br>';
 		printf(__('create table: %s.'), 'humo_trees');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_trees (
@@ -563,7 +581,6 @@ if (isset($_POST['install_tables2'])){
 		} catch (Exception $e) {
 			//
 		}
-		//echo __('creating humo_trees').'<br>';
 		printf(__('create table: %s.'), 'humo_tree_texts');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_tree_texts (
@@ -747,7 +764,6 @@ if (isset($_POST['install_tables2'])){
 		} catch (Exception $e) {
 			//
 		}
-		//echo __('creating humo_repositories...').'<br>';
 		printf(__('create table: %s.'), 'humo_repositories');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_repositories (
@@ -780,7 +796,6 @@ if (isset($_POST['install_tables2'])){
 		} catch (Exception $e) {
 			//
 		}
-		//echo __('creating humo_sources...').'<br>';
 		printf(__('create table: %s.'), 'humo_sources');
 		echo '<br>';
 		$db_update = $dbh->query("CREATE TABLE humo_sources (

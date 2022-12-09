@@ -227,8 +227,9 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 		$nightfall=""; if($humo_option['admin_hebnight']=="y") { $nightfall=$marriageDb->fam_marr_date_hebnight; }
 		$templ_relation["wedd_date"]=date_place($marriageDb->fam_marr_date,$marriageDb->fam_marr_place,$nightfall);
 
-		// *** Show age of parent1 when married ***
-		if (isset($parent1Db->pers_bapt_date) OR isset($parent1Db->pers_birth_date)){
+		// *** Show age of parent1 when married. Only show age if dates are available. ***
+		//if (isset($parent1Db->pers_bapt_date) OR isset($parent1Db->pers_birth_date)){
+		if ($marriageDb->fam_marr_date AND ($parent1Db->pers_bapt_date OR $parent1Db->pers_birth_date)){
 			$process_age = New calculate_year_cls;
 			$age=$process_age->calculate_age($parent1Db->pers_bapt_date,$parent1Db->pers_birth_date,$marriageDb->fam_marr_date);
 			$templ_relation["wedd_date"].=$age;

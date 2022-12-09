@@ -2085,8 +2085,9 @@ if($screen_mode=='') {
 		echo $treetext['family_footer'];
 
 		if ($user['group_user_notes_show']=='y'){
-			$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_prefix='".$tree_prefix_quoted."'
-			AND note_fam_gedcomnumber='".$family_id."' AND note_pers_gedcomnumber='".$main_person."' AND note_status = 'approved'";
+			$note_qry= "SELECT * FROM humo_user_notes
+			WHERE note_tree_id='".$tree_id."'
+			AND note_connect_kind='person' AND note_connect_id='".$main_person."' AND note_kind='user' AND note_status = 'approved'";
 			$note_result = $dbh->query($note_qry);
 			$num_rows = $note_result->rowCount();
 
@@ -2103,12 +2104,12 @@ if($screen_mode=='') {
 
 			while($noteDb=$note_result->fetch(PDO::FETCH_OBJ)){
 				$user_qry = "SELECT * FROM humo_users
-					WHERE user_id='".$noteDb->note_user_id."'";
+					WHERE user_id='".$noteDb->note_new_user_id."'";
 				$user_result = $dbh->query($user_qry);
 				$userDb=$user_result->fetch(PDO::FETCH_OBJ);
 
 				echo '<tr class="humo_color"><td valign="top">';
-					echo $noteDb->note_date.' '.$noteDb->note_time.' '.$userDb->user_name.'<br>';
+					echo language_date($noteDb->note_new_date).' '.$noteDb->note_new_time.' '.$userDb->user_name.'<br>';
 					//echo $noteDb->note_names;
 				echo '</td><td>';
 					echo nl2br($noteDb->note_note);
@@ -2136,18 +2137,16 @@ if($screen_mode=='') {
 				$gedcom_date=strtoupper(date("d M Y")); $gedcom_time=date("H:i:s");
 
 				// *** note_status show/ hide/ moderate options ***
-				$user_register_date=date("Y-m-d H:i");
 				$sql="INSERT INTO humo_user_notes SET
-				note_date='".$gedcom_date."',
-				note_time='".$gedcom_time."',
-				note_user_id='".safe_text_db($_SESSION['user_id'])."',
+				note_new_date='".$gedcom_date."',
+				note_new_time='".$gedcom_time."',
+				note_new_user_id='".safe_text_db($_SESSION['user_id'])."',
+				note_kind='user',
 				note_note='".safe_text_db($_POST["user_note"])."',
-				note_fam_gedcomnumber='".safe_text_db($family_id)."',
-				note_pers_gedcomnumber='".safe_text_db($main_person)."',
+				note_connect_kind='person',
+				note_connect_id='".safe_text_db($main_person)."',
 				note_tree_id='".$tree_id."',
-				note_tree_prefix='".$tree_prefix_quoted."',
-				note_names='".safe_text_db($name["standard_name"])."'
-				;";
+				note_names='".safe_text_db($name["standard_name"])."';";
 				$result=$dbh->query($sql);
 
 				// *** Mail new user note to the administrator ***
