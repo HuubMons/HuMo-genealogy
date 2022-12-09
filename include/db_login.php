@@ -1,40 +1,17 @@
 <?php
 // *** To make HuMo-genealogy work, fill these lines properly! ***
 // *** Om HuMo-genealogy werkend te krijgen onderstaande regels GOED invullen! ***
-$DATABASE_HOST=    'localhost';
-$DATABASE_USERNAME='root';
+define("DATABASE_HOST",     'localhost');
+define("DATABASE_USERNAME", 'root');
+define("DATABASE_PASSWORD", '');
+define("DATABASE_NAME",     'humo-gen');
+
+// *** Needed for Docker ***
+$DATABASE_HOST= '';
+$DATABASE_USERNAME='';
 $DATABASE_PASSWORD='';
-$DATABASE_NAME=    'humo-gen';
-$USE_ENV_FOR_DB=   true;
-
-// *** Override the database connection values with environment variables ***
-$temp_db_value = getenv("MYSQL_HOST", true);
-if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
-  define("DATABASE_HOST", $temp_db_value);
-} else {
-  define("DATABASE_HOST", $DATABASE_HOST);
-}
-
-$temp_db_value = getenv("MYSQL_USER", true);
-if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
-  define("DATABASE_USERNAME", $temp_db_value);
-} else {
-  define("DATABASE_USERNAME", $DATABASE_USERNAME);
-}
-
-$temp_db_value = getenv("MYSQL_PASSWORD", true);
-if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
-  define("DATABASE_PASSWORD", $temp_db_value);
-} else {
-  define("DATABASE_PASSWORD", $DATABASE_PASSWORD);
-}
-
-$temp_db_value = getenv("MYSQL_DATABASE", true);
-if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
-  define("DATABASE_NAME", $temp_db_value);
-} else {
-  define("DATABASE_NAME", $DATABASE_NAME);
-}
+$DATABASE_NAME= '';
+$USE_ENV_FOR_DB= true;
 
 // *** DON'T CHANGE ANYTHING BELOW THIS LINE! ***
 // *** HIERONDER NIETS WIJZIGEN! ***
@@ -60,28 +37,75 @@ if (!defined('PDO::ATTR_DRIVER_NAME')) {
 	exit();
 }
 
-// *** Open database using PDO **
-//$conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME;
-$conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME.';charset=utf8';
-try {
-	//$dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-	$dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);
-	@$database_check=1; 
-} catch (PDOException $e) {
-	unset($database_check);
-	//echo $e->getMessage() . "<br/>";
-	if(!isset($ADMIN)) {
-		echo '<br><font color=red><b>
-		Database is not yet installed! Possible problems:<br>
-		- Login file not yet configured.<br>
-		- Database not yet installed.<br>
-		Go to the <a href="admin">administration area</a> to solve this problem.
-		<p>De database is nog niet bereikbaar! Mogelijke oorzaken:<br>
-		- Het login bestand is niet goed ingevuld.<br>
-		- De database is nog niet gemaakt.<br>
-		Ga naar het <a href="admin">administratie scherm</a> om dit probleem op te lossen.
-		</b></font>';
-		exit();
+// *** Override the database connection values with environment variables ***
+$temp_db_value = getenv("MYSQL_DATABASE", true);
+if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
+	$DATABASE_NAME=$temp_db_value;
+
+	//$temp_db_value = getenv("MYSQL_HOST", true);
+	//if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
+	//	$DATABASE_HOST=$temp_db_value;
+	$DATABASE_HOST='mariadb';
+
+	$temp_db_value = getenv("MYSQL_USER", true);
+	if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
+		$DATABASE_USERNAME=$temp_db_value;
 	}
+
+	$temp_db_value = getenv("MYSQL_PASSWORD", true);
+	if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
+		$DATABASE_PASSWORD=$temp_db_value;
+	}
+
+	// *** Open database using PDO **
+	$conn = 'mysql:host='.$DATABASE_HOST.';dbname='.$DATABASE_NAME.';charset=utf8';
+	try {
+		$dbh = new PDO($conn,$DATABASE_USERNAME,$DATABASE_PASSWORD);
+		@$database_check=1; 
+	} catch (PDOException $e) {
+		unset($database_check);
+		if(!isset($ADMIN)) {
+			echo '<br><font color=red><b>
+			Database is not yet installed! Possible problems:<br>
+			- Login file not yet configured.<br>
+			- Database not yet installed.<br>
+			Go to the <a href="admin">administration area</a> to solve this problem.
+			<p>De database is nog niet bereikbaar! Mogelijke oorzaken:<br>
+			- Het login bestand is niet goed ingevuld.<br>
+			- De database is nog niet gemaakt.<br>
+			Ga naar het <a href="admin">administratie scherm</a> om dit probleem op te lossen.
+			</b></font>';
+			exit();
+		}
+	}
+
+}
+else{
+
+	// *** Open database using PDO **
+	//$conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME;
+	$conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME.';charset=utf8';
+	try {
+		//$dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+		$dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);
+		@$database_check=1; 
+	} catch (PDOException $e) {
+		unset($database_check);
+		//echo $e->getMessage() . "<br/>";
+		if(!isset($ADMIN)) {
+			echo '<br><font color=red><b>
+			Database is not yet installed! Possible problems:<br>
+			- Login file not yet configured.<br>
+			- Database not yet installed.<br>
+			Go to the <a href="admin">administration area</a> to solve this problem.
+			<p>De database is nog niet bereikbaar! Mogelijke oorzaken:<br>
+			- Het login bestand is niet goed ingevuld.<br>
+			- De database is nog niet gemaakt.<br>
+			Ga naar het <a href="admin">administratie scherm</a> om dit probleem op te lossen.
+			</b></font>';
+			exit();
+		}
+	}
+
 }
 ?>

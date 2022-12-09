@@ -356,11 +356,10 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 					$check_config=false;
 					$bestand_config = fopen($login_file,"w");
 					for ($i=0; $i<=(count($buffer)-1); $i++) {
-
 						// *** Use ' character to prevent problems with $ character in password ***
 						//define("DATABASE_HOST",     'localhost');
 						//define("DATABASE_USERNAME", 'root');
-						//define("DATABASE_PASSWORD", 'usbw');
+						//define("DATABASE_PASSWORD", '');
 						//define("DATABASE_NAME",     'humo-gen');
 
 						//if (substr($buffer[$i],0,21)=='define("DATABASE_HOST'){

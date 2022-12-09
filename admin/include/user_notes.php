@@ -5,6 +5,8 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
+include_once (CMS_ROOTPATH."include/language_date.php");
+
 echo '<h1 align=center>'.__('User notes').'</h1>';
 
 echo '<table class="humo standard"  border="1">';
@@ -23,11 +25,14 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 				$selected='';
 				if (isset($tree_id) AND ($treeDb->tree_id==$tree_id)){
 					$selected=' SELECTED';
-					$note_tree_prefix=$treeDb->tree_prefix; // *** There is note_tree_id, but it's not used at this moment, no value available... ***
+					$note_tree_id=$treeDb->tree_id;
 					$db_functions->set_tree_id($tree_id);
 				}
 
-				$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_prefix='".$treeDb->tree_prefix."'";
+				$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$treeDb->tree_id."' AND note_status!='editor'";
+				//$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$treeDb->tree_id."' AND (note_status IN ('new','approved') OR note_status IS NULL)";
+				$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$treeDb->tree_id."' AND note_kind='user'";
+
 				$note_result = $dbh->query($note_qry);
 				$num_rows = $note_result->rowCount();
 
@@ -76,8 +81,9 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 	}
 
 	// *** Show user added notes ***
-	if (isset($note_tree_prefix)){
-		$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_prefix='".$note_tree_prefix."'";
+	if (isset($note_tree_id)){
+		//$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$note_tree_id."'";
+		$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$note_tree_id."' AND note_kind='user'";
 		$note_result = $dbh->query($note_qry);
 		$num_rows = $note_result->rowCount();
 
@@ -92,7 +98,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 		echo '</td></tr>';
 
 		while($noteDb=$note_result->fetch(PDO::FETCH_OBJ)){
-			$user_qry = "SELECT * FROM humo_users WHERE user_id='".$noteDb->note_user_id."'";
+			$user_qry = "SELECT * FROM humo_users WHERE user_id='".$noteDb->note_new_user_id."'";
 			$user_result = $dbh->query($user_qry);
 			$userDb=$user_result->fetch(PDO::FETCH_OBJ);
 
@@ -115,11 +121,14 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 				echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';
 				echo '</form>';
 			echo '</td><td>';
-				echo '<b>'.$noteDb->note_date.' '.$noteDb->note_time.' '.$userDb->user_name.'</b><br>';
+				//echo '<b>'.language_date($noteDb->note_date).' '.$noteDb->note_time.' '.$userDb->user_name.'</b><br>';
+				echo __('Added by').' <b>'.$userDb->user_name.'</b> ('.language_date($noteDb->note_new_date).' '.$noteDb->note_new_time.')<br>';
+
 				//echo '<b>'.$noteDb->note_names.'</b><br>';
 
 				// *** Link: index.php?page=editor&amp;tree_id=2_&amp;person=I313 ***
-				echo '<b><a href="index.php?page=editor&amp;tree_id='.$tree_id.'&amp;person='.$noteDb->note_pers_gedcomnumber.'">'.$noteDb->note_pers_gedcomnumber.' '.$noteDb->note_names.'</a></b><br>';
+				//echo '<b><a href="index.php?page=editor&amp;tree_id='.$tree_id.'&amp;person='.$noteDb->note_pers_gedcomnumber.'">'.$noteDb->note_pers_gedcomnumber.' '.$noteDb->note_names.'</a></b><br>';
+				echo '<b><a href="index.php?page=editor&amp;tree_id='.$tree_id.'&amp;person='.$noteDb->note_connect_id.'">'.$noteDb->note_connect_id.' '.$noteDb->note_names.'</a></b><br>';
 
 				echo nl2br($noteDb->note_note);
 			echo '</td></tr>';

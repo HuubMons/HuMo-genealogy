@@ -612,10 +612,14 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		}
 
 		// *** Christened data ***
-		if ($person->pers_bapt_date OR $person->pers_bapt_place OR $person->pers_bapt_text){
+		if ($person->pers_bapt_date OR $person->pers_bapt_place OR $person->pers_bapt_text OR $person->pers_religion){
 			$buffer.="1 CHR\r\n";
 			if ($person->pers_bapt_date){ $buffer.='2 DATE '.process_date($person->pers_bapt_date)."\r\n"; }
 			if ($person->pers_bapt_place){ $buffer.=process_place($person->pers_bapt_place,2); }
+
+			// *** Person religion. This is 1 CHR -> 2 RELI! 1 RELI is exported as event (after profession) ***
+			if ($person->pers_religion) $buffer.='2 RELI '.$person->pers_religion."\r\n";
+
 			if ($gedcom_sources=='yes'){
 				sources_export('person','pers_bapt_source',$person->pers_gedcomnumber,2);
 			}
@@ -630,9 +634,6 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 				$buffer.='2 WITN '.$witnessDb->event_event."\r\n";
 			}
 		}
-
-		// *** Person religion ***
-		if ($person->pers_religion) $buffer.='1 RELI '.$person->pers_religion."\r\n";
 
 		// *** Death data ***
 		if ($person->pers_death_date OR $person->pers_death_place OR $person->pers_death_text OR $person->pers_death_cause){
@@ -691,6 +692,25 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 			}
 
 			// *** Source by occupation ***
+			if ($gedcom_sources=='yes'){
+				sources_export('person','pers_event_source',$professionDb->event_id,2);
+			}
+		}
+
+		// *** Religion. REMARK: this is religion event 1 RELI. Baptise religion is saved as 1 CHR -> 2 RELI. ***
+		$professionqry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
+			AND event_connect_kind='person' AND event_connect_id='$person->pers_gedcomnumber'
+			AND event_kind='religion' ORDER BY event_order");
+		while($professionDb=$professionqry->fetch(PDO::FETCH_OBJ)){
+			$buffer.='1 RELI '.$professionDb->event_event."\r\n";
+
+			if ($professionDb->event_date) $buffer.='2 DATE '.process_date($professionDb->event_date)."\r\n";
+			if ($professionDb->event_place) $buffer.='2 PLAC '.$professionDb->event_place."\r\n";
+			if ($gedcom_texts=='yes' AND $professionDb->event_text){
+				$buffer.='2 NOTE '.process_text(3,$professionDb->event_text);
+			}
+
+			// *** Source by religion ***
 			if ($gedcom_sources=='yes'){
 				sources_export('person','pers_event_source',$professionDb->event_id,2);
 			}

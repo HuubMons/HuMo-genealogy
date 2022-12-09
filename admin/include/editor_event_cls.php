@@ -92,7 +92,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// *** Change line colour ***
 	$change_bg_colour=' class="humo_color3"';
 
-// 2021: No longer in use (only needed if source is edited in a pop-up screen)?
+	// 2021: No longer in use (only needed if source is edited in a pop-up screen)?
 	//$event_group='event_person=1';
 	if ($event_connect_kind=='person') $event_group='event_person=1';
 	if ($event_connect_kind=='family') $event_group='event_family=1';
@@ -108,6 +108,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if($humo_option['admin_barm']=="y") {  $hebtext .= " AND ((event_gedcom!='BARM' AND event_gedcom!='BASM') OR event_gedcom IS NULL) "; } 
 
 	if ($event_kind=='person'){
+		/*
 		$qry="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."'
 			AND event_kind!='name'
@@ -121,7 +122,16 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			AND event_kind!='death_declaration'
 			AND event_kind!='burial_witness'
 			AND event_kind!='profession'
+			AND event_kind!='religion'
 			AND event_kind!='picture' ".$hebtext."
+			ORDER BY event_kind, event_order";
+		*/
+		// *** Filter several events, allready shown in seperate lines in editor ***
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."'
+			AND event_kind NOT IN ('name','NPFX','NSFX','nobility','title','lordship','birth_declaration','baptism_witness',
+				'death_declaration','burial_witness','profession','religion','picture')
+			".$hebtext."
 			ORDER BY event_kind, event_order";
 	}
 	elseif ($event_kind=='name'){
@@ -167,6 +177,10 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	elseif ($event_kind=='profession'){
 		$qry="SELECT * FROM humo_events
 			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND event_kind='profession' ORDER BY event_order";
+	}
+	elseif ($event_kind=='religion'){
+		$qry="SELECT * FROM humo_events
+			WHERE event_tree_id='".$tree_id."' AND event_connect_kind='person' AND event_connect_id='".$event_connect_id."' AND event_kind='religion' ORDER BY event_order";
 	}
 	/*
 	elseif ($event_kind=='picture'){
@@ -252,13 +266,14 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			//	AND event_kind!='death_declaration'
 			//	AND event_kind!='burial_witness'
 			//	AND event_kind!='profession'
+			//	AND event_kind!='religion'
 			//	AND event_kind!='picture' ".$hebtext."
 			//	ORDER BY event_kind, event_order");
 			//$count=$count_event->rowCount();
 			//$text.=$count.' x '.__('Events').'. ';
 
 		// *** Add person event ***
-		$text.='<select size="1" name="event_kind">';
+		$text.='<select size="1" name="event_kind" style="width: 150px">';
 			//$text.='<option value="profession">'.__('Profession').'</option>';
 			//$text.='<option value="picture">'.__('Picture/ Media').'</option>';
 			$text.='<option value="event">'.__('Event').'</option>';
@@ -428,41 +443,41 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show profession by person ***
 	if ($event_kind=='profession'){
-		//$text.='<tr class="humo_color">';
 		$text.='<tr class="table_header_large">';
 		$text.='<td style="border-right:0px;">';
 			$text.='<a name="profession"></a>';
 			$link='profession';
-
-			//$count=$data_list_qry->rowCount();
-			//if ($count>0)
-			//$text.='<a href="#profession" onclick="hideShow(13);"><span id="hideshowlink13">'.__('[+]').'</span></a> '; 
-
 			$text.=__('Profession').'</td>';
 		$text.='<td style="border-right:0px;"></td>';
 		$text.='<td style="border-left:0px;">';
-
-		//if (isset($_GET['add_person'])){
-		//	//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;add_person=1&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
-		//}
-		//else {
-		//	$text.='<a href="index.php?'.$joomlastring.'page='.$page.
-		//	'&amp;menu_admin=person&amp;event_add=add_profession#profession">['.__('Add').']</a> ';
-		//}
-
-		//$temp_text='';
-		//while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
-		//	if ($temp_text) $temp_text.=', ';
-		//	$temp_text.=$data_listDb->event_event;
-		//}
-		//$text.=$temp_text;
 
 		// *** Skip for newly added person ***
 		if (!isset($_GET['add_person'])){
 			// *** Remark: in editor_inc.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
 			$text.='<input type="text" name="event_event_profession" placeholder="'.__('Profession').'" value="" size="35">';
-
 			$text.=' <input type="Submit" name="event_add_profession" value="'.__('Add').'">';
+		}
+
+		$text.='</td>';
+		$text.='<td></td>';
+		$text.='</tr>';
+	}
+
+	// *** Show religion by person ***
+	if ($event_kind=='religion'){
+		$text.='<tr class="table_header_large">';
+		$text.='<td style="border-right:0px;">';
+			$text.='<a name="religion"></a>';
+			$link='religion';
+			$text.=__('Religion').'</td>';
+		$text.='<td style="border-right:0px;"></td>';
+		$text.='<td style="border-left:0px;">';
+
+		// *** Skip for newly added person ***
+		if (!isset($_GET['add_person'])){
+			// *** Remark: in editor_inc.php a check is done for event_event_religion, so this will also be saved if "Save" is clicked ***
+			$text.='<input type="text" name="event_event_religion" placeholder="'.__('Religion').'" value="" size="35">';
+			$text.=' <input type="Submit" name="event_add_religion" value="'.__('Add').'">';
 		}
 
 		$text.='</td>';
@@ -709,16 +724,10 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='</tr>';
 	}
 
+	if (!isset($_GET['add_person'])) {
 	$data_list_qry=$dbh->query($qry);
 	while($data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ)){
 		$text.='<input type="hidden" name="event_id['.$data_listDb->event_id.']" value="'.$data_listDb->event_id.'">';
-
-		// *** Send old values, so changes of values can be detected ***
-		$text.='<input type="hidden" name="event_event_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_event.'">';
-		$text.='<input type="hidden" name="event_date_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_date.'">';
-		$text.='<input type="hidden" name="event_place_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_place.'">';
-		$text.='<input type="hidden" name="event_gedcom_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_gedcom.'">';
-		$text.='<input type="hidden" name="event_text_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_text.'">';
 
 		$expand_link=''; $internal_link='#';
 		if ($event_kind=='person'){
@@ -802,6 +811,13 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			//$change_bg_colour=' class="humo_color"';
 			$change_bg_colour='';
 			$internal_link='#profession';
+		}
+		if ($event_kind=='religion'){
+			//$expand_link=' style="display:none;" class="row13" name="row13"';
+			$expand_link='';
+			//$change_bg_colour=' class="humo_color"';
+			$change_bg_colour='';
+			$internal_link='#religion';
 		}
 		if ($event_kind=='picture' OR $event_kind=='marriage_picture' OR $event_kind=='source_picture'){
 			//$expand_link=' style="display:none;" id="pic_main_'.$data_listDb->event_id.'" class="pic_main row53 humo_color" name="row53"';
@@ -1137,6 +1153,11 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$text.='<textarea rows="1" name="text_event['.$data_listDb->event_id.']" '.$field_text.' placeholder="'.__('Profession').'">'.$editor_cls->text_show($data_listDb->event_event).'</textarea>';
 		}
 
+		// *** religion ***
+		elseif ($data_listDb->event_kind=='religion'){
+			$text.='<textarea rows="1" name="text_event['.$data_listDb->event_id.']" '.$field_text.' placeholder="'.__('Religion').'">'.$editor_cls->text_show($data_listDb->event_event).'</textarea>';
+		}
+
 		// *** General name of event ***
 		else{
 			//$text.='<td style="border-left:0px;">';
@@ -1157,54 +1178,89 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$text.=' <select size="1" name="event_gedcom['.$data_listDb->event_id.']" style="width: 150px">';
 
 			if ($event_kind=='person'){
-				$text.=event_option($data_listDb->event_gedcom,'EVEN');
-				$text.=event_option($data_listDb->event_gedcom,'ARVL');
-				$text.=event_option($data_listDb->event_gedcom,'BAPM');
-				$text.=event_option($data_listDb->event_gedcom,'DPRT');
-				$text.=event_option($data_listDb->event_gedcom,'LEGI');
-				$text.=event_option($data_listDb->event_gedcom,'MILI');
-				$text.=event_option($data_listDb->event_gedcom,'SLGL');
-				$text.=event_option($data_listDb->event_gedcom,'TXPY');
-				$text.=event_option($data_listDb->event_gedcom,'ADOP');
-				$text.=event_option($data_listDb->event_gedcom,'_ADPF');
-				$text.=event_option($data_listDb->event_gedcom,'_ADPM');
-				$text.=event_option($data_listDb->event_gedcom,'BAPL');
-				$text.=event_option($data_listDb->event_gedcom,'BARM');
-				$text.=event_option($data_listDb->event_gedcom,'BASM');
-				$text.=event_option($data_listDb->event_gedcom,'BLES');
-				$text.=event_option($data_listDb->event_gedcom,'CENS');
-				$text.=event_option($data_listDb->event_gedcom,'CHRA');
-				$text.=event_option($data_listDb->event_gedcom,'CONF');
-				$text.=event_option($data_listDb->event_gedcom,'CONL');
-				$text.=event_option($data_listDb->event_gedcom,'EMIG');
-				$text.=event_option($data_listDb->event_gedcom,'ENDL');
-				$text.=event_option($data_listDb->event_gedcom,'FCOM');
-				$text.=event_option($data_listDb->event_gedcom,'_FNRL');
-				$text.=event_option($data_listDb->event_gedcom,'GRAD');
-				$text.=event_option($data_listDb->event_gedcom,'IMMI');
-				$text.=event_option($data_listDb->event_gedcom,'NATU');
-				$text.=event_option($data_listDb->event_gedcom,'ORDN');
-				$text.=event_option($data_listDb->event_gedcom,'PROB');
-				$text.=event_option($data_listDb->event_gedcom,'RETI');
-				$text.=event_option($data_listDb->event_gedcom,'SLGC');
-				$text.=event_option($data_listDb->event_gedcom,'WILL');
-				$text.=event_option($data_listDb->event_gedcom,'_YART');
-				$text.=event_option($data_listDb->event_gedcom,'_INTE');
-				$text.=event_option($data_listDb->event_gedcom,'_BRTM');
-				$text.=event_option($data_listDb->event_gedcom,'_NMAR');
-				$text.=event_option($data_listDb->event_gedcom,'NCHI');
-				$text.=event_option($data_listDb->event_gedcom,'EDUC');
-				$text.=event_option($data_listDb->event_gedcom,'NATI');
-				$text.=event_option($data_listDb->event_gedcom,'CAST');
-				$text.=event_option($data_listDb->event_gedcom,'AFN');
-				$text.=event_option($data_listDb->event_gedcom,'SSN');
-				$text.=event_option($data_listDb->event_gedcom,'IDNO');
-				$text.=event_option($data_listDb->event_gedcom,'_HEIG');
-				$text.=event_option($data_listDb->event_gedcom,'_WEIG');
-				$text.=event_option($data_listDb->event_gedcom,'_EYEC');
-				$text.=event_option($data_listDb->event_gedcom,'_HAIR');
-				$text.=event_option($data_listDb->event_gedcom,'_MEDC');
-				$text.=event_option($data_listDb->event_gedcom,'PROP');
+				$text.='<optgroup label="'.__('Events').'">';
+					$text.=event_option($data_listDb->event_gedcom,'EVEN');
+					$text.=event_option($data_listDb->event_gedcom,'_NMAR');
+					$text.=event_option($data_listDb->event_gedcom,'NCHI');
+					$text.=event_option($data_listDb->event_gedcom,'MILI');
+					$text.=event_option($data_listDb->event_gedcom,'TXPY');
+					$text.=event_option($data_listDb->event_gedcom,'CENS');
+					$text.=event_option($data_listDb->event_gedcom,'RETI');
+					$text.=event_option($data_listDb->event_gedcom,'CAST');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('Baptise').'">';
+					$text.=event_option($data_listDb->event_gedcom,'BAPM');
+					$text.=event_option($data_listDb->event_gedcom,'CHRA');
+					$text.=event_option($data_listDb->event_gedcom,'LEGI');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('Adoption').'">';
+					$text.=event_option($data_listDb->event_gedcom,'ADOP');
+					$text.=event_option($data_listDb->event_gedcom,'_ADPF');
+					$text.=event_option($data_listDb->event_gedcom,'_ADPM');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('Settling').'">';
+					$text.=event_option($data_listDb->event_gedcom,'ARVL');
+					$text.=event_option($data_listDb->event_gedcom,'DPRT');
+					$text.=event_option($data_listDb->event_gedcom,'IMMI');
+					$text.=event_option($data_listDb->event_gedcom,'EMIG');
+					$text.=event_option($data_listDb->event_gedcom,'NATU');
+					$text.=event_option($data_listDb->event_gedcom,'NATI');
+					$text.=event_option($data_listDb->event_gedcom,'PROP');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('Characteristics').'">';
+					$text.=event_option($data_listDb->event_gedcom,'_HEIG');
+					$text.=event_option($data_listDb->event_gedcom,'_WEIG');
+					$text.=event_option($data_listDb->event_gedcom,'_EYEC');
+					$text.=event_option($data_listDb->event_gedcom,'_HAIR');
+					$text.=event_option($data_listDb->event_gedcom,'_MEDC');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('Buried').'">';
+					$text.=event_option($data_listDb->event_gedcom,'_FNRL');
+					$text.=event_option($data_listDb->event_gedcom,'_INTE');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('Will').'">';
+					$text.=event_option($data_listDb->event_gedcom,'PROB');
+					$text.=event_option($data_listDb->event_gedcom,'WILL');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('Religious').'">';
+					$text.=event_option($data_listDb->event_gedcom,'CONF');
+					$text.=event_option($data_listDb->event_gedcom,'BLES');
+					$text.=event_option($data_listDb->event_gedcom,'FCOM');
+					$text.=event_option($data_listDb->event_gedcom,'ORDN');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('Education').'">';
+					$text.=event_option($data_listDb->event_gedcom,'GRAD');
+					$text.=event_option($data_listDb->event_gedcom,'EDUC');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('Social').'">';
+					$text.=event_option($data_listDb->event_gedcom,'AFN');
+					$text.=event_option($data_listDb->event_gedcom,'SSN');
+					$text.=event_option($data_listDb->event_gedcom,'IDNO');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('LDS').'">';
+					$text.=event_option($data_listDb->event_gedcom,'BAPL');
+					$text.=event_option($data_listDb->event_gedcom,'CONL');
+					$text.=event_option($data_listDb->event_gedcom,'ENDL');
+					$text.=event_option($data_listDb->event_gedcom,'SLGC');
+					$text.=event_option($data_listDb->event_gedcom,'SLGL');
+				$text.='</optgroup>';
+
+				$text.='<optgroup label="'.__('Jewish').'">';
+					$text.=event_option($data_listDb->event_gedcom,'BARM');
+					$text.=event_option($data_listDb->event_gedcom,'BASM');
+					$text.=event_option($data_listDb->event_gedcom,'_BRTM');
+					$text.=event_option($data_listDb->event_gedcom,'_YART');
+				$text.='</optgroup>';
 			}
 
 			if ($event_kind=='family'){
@@ -1281,24 +1337,45 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			$text.=iframe_source('20'.$data_listDb->event_id,'family','fam_event_source',$data_listDb->event_id);
 		}
 	}
+	} // *** Don't use this block for newly added person ***
+
 
 	// *** Directly add a first profession for new person ***
 	if(isset($_GET['add_person'])) {
-		$text.='<tr>';
-			$text.='<td></td>';
-			$text.='<td style="border-right:0px;">'.__('Profession').'</td>';
-			$text.='<td>';
-				// *** Profession ***
-				$text.='<input type="text" name="event_profession" placeholder="'.__('Profession').'" value="" size="60"><br>';
+		if ($event_kind=='profession'){
+			$text.='<tr>';
+				$text.='<td></td>';
+				$text.='<td style="border-right:0px;">'.__('Profession').'</td>';
+				$text.='<td>';
+					// *** Profession ***
+					$text.='<input type="text" name="event_profession" placeholder="'.__('Profession').'" value="" size="60"><br>';
 
-				// *** Date and place by event ***
-				$text.=$editor_cls->date_show("","event_date_profession","").' '.__('place').' <input type="text" name="event_place_profession" placeholder="'.__('place').'" value="" size="'.$field_date.'"><br>';
+					// *** Date and place by event ***
+					$text.=$editor_cls->date_show("","event_date_profession","").' '.__('place').' <input type="text" name="event_place_profession" placeholder="'.__('place').'" value="" size="'.$field_date.'"><br>';
 
-				// *** Text by event ***
-				$text.='<textarea rows="1" name="event_text_profession" '.$field_text.' placeholder="'.__('text').'">'.$editor_cls->text_show("").'</textarea>';
-			$text.='</td>';
-			$text.='<td></td>';
-		$text.='</tr>';
+					// *** Text by event ***
+					$text.='<textarea rows="1" name="event_text_profession" '.$field_text.' placeholder="'.__('text').'">'.$editor_cls->text_show("").'</textarea>';
+				$text.='</td>';
+				$text.='<td></td>';
+			$text.='</tr>';
+		}
+		elseif ($event_kind=='religion'){
+			$text.='<tr>';
+				$text.='<td></td>';
+				$text.='<td style="border-right:0px;">'.__('Religion').'</td>';
+				$text.='<td>';
+					// *** Religion ***
+					$text.='<input type="text" name="event_religion" placeholder="'.__('Religion').'" value="" size="60"><br>';
+
+					// *** Date and place by event ***
+					$text.=$editor_cls->date_show("","event_date_religion","").' '.__('place').' <input type="text" name="event_place_religion" placeholder="'.__('place').'" value="" size="'.$field_date.'"><br>';
+
+					// *** Text by event ***
+					$text.='<textarea rows="1" name="event_text_religion" '.$field_text.' placeholder="'.__('text').'">'.$editor_cls->text_show("").'</textarea>';
+				$text.='</td>';
+				$text.='<td></td>';
+			$text.='</tr>';
+		}
 	}
 
 	if ($event_kind=='picture' OR $event_kind=='marriage_picture'){
@@ -1335,6 +1412,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			if ($_GET['event_kind']=='death_declaration') $link_id='4';
 			if ($_GET['event_kind']=='burial_witness') $link_id='5';
 			if ($_GET['event_kind']=='profession') $link_id='13';
+			if ($_GET['event_kind']=='religion') $link_id='14';
 			if ($_GET['event_kind']=='picture') $link_id='53';
 			if ($_GET['event_kind']=='marriage_witness') $link_id='8';
 			if ($_GET['event_kind']=='marriage_witness_rel') $link_id='10';
@@ -1352,6 +1430,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			if ($_GET['event_add']=='add_death_declaration') $link_id='4';
 			if ($_GET['event_add']=='add_burial_witness') $link_id='5';
 			if ($_GET['event_add']=='add_profession') $link_id='13';
+			if ($_GET['event_add']=='add_religion') $link_id='14';
 			if ($_GET['event_add']=='add_picture') $link_id='53';
 			if ($_GET['event_add']=='add_source_picture') $link_id='53';
 			if ($_GET['event_add']=='add_marriage_picture') $link_id='53';
@@ -1498,6 +1577,13 @@ echo '<script type="text/javascript">
 if (isset($_POST['event_event_profession']) AND $_POST['event_event_profession']!=''){
 	echo '<script type="text/javascript">
 		window.location = window.location.origin + window.location.pathname + "#profession";
+	</script>';
+}
+
+// *** If religion is added, jump to religion part of screen ***
+if (isset($_POST['event_event_religion']) AND $_POST['event_event_religion']!=''){
+	echo '<script type="text/javascript">
+		window.location = window.location.origin + window.location.pathname + "#religion";
 	</script>';
 }
 

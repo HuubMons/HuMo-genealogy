@@ -177,7 +177,9 @@ function show_media($event_connect_kind,$event_connect_id){
 				$picture_array['picture'] = str_ireplace("%2F","/",rawurlencode($picture_array['picture']));
 				if ($media_event_text[$i]) $line_pos = strpos($media_event_text[$i],"|");
 				//$title_txt=''; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
-				$title_txt=$media_event_text[$i]; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
+				$title_txt=$media_event_text[$i];
+				//if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
+				if(isset($line_pos)) $title_txt = substr($media_event_text[$i],0,$line_pos);
 
 				// *** Old Slimbox lightbox ***
 				//$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $title_txt).'">';

@@ -148,7 +148,7 @@ if (isset($pers_gedcomnumber) AND $pers_gedcomnumber){
 	}
 }
 
-$userid = $_SESSION['user_id_admin'];
+$userid=false; if (is_numeric($_SESSION['user_id_admin'])) $userid = $_SESSION['user_id_admin'];
 $username = $_SESSION['user_name_admin'];
 $gedcom_date = strtoupper(date("d M Y"));
 $gedcom_time = date("H:i:s");
@@ -1495,7 +1495,7 @@ if ($check_person){
 					echo '<table class="humo" style="margin-left:0px;">';
 						echo '<tr class="table_header"><th></th><th>'.__('Father').'</th><th>'.__('Mother').'</th></tr>';
 
-						echo '<tr><td>'.__('firstname').'</td>';
+						echo '<tr><td><b>'.__('firstname').'</b></td>';
 						echo '<td><input type="text" name="pers_firstname1" value="" size="35" placeholder="'.ucfirst(__('firstname')).'"></td>';
 						echo '<td><input type="text" name="pers_firstname2" value="" size="35" placeholder="'.ucfirst(__('firstname')).'"></td>';
 						echo '</tr>';
@@ -1529,9 +1529,15 @@ if ($check_person){
 						echo '</tr>';
 
 						// *** Lastname ***
-						echo '<tr><td>'.__('lastname').'</td><td>';
+						echo '<tr><td><b>'.__('lastname').'</b></td><td>';
 						echo '<input type="text" name="pers_lastname1" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'">';
 						echo '</td><td><input type="text" name="pers_lastname2" value="" size="35" placeholder="'.ucfirst(__('lastname')).'"></td>';
+						echo '</tr>';
+
+						// *** Patronym ***
+						echo '<tr><td>'.__('patronymic').'</td><td>';
+						echo '<input type="text" name="pers_patronym1" value="'.$pers_patronym.'" size="35" placeholder="'.ucfirst(__('patronymic')).'">';
+						echo '</td><td><input type="text" name="pers_patronym2" value="" size="35" placeholder="'.ucfirst(__('patronymic')).'"></td>';
 						echo '</tr>';
 
 						// *** Privacy filter ***
@@ -1673,15 +1679,15 @@ if ($check_person){
 			// *** Prefix ***
 			echo '<input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10" placeholder="'.ucfirst(__('prefix')).'"> '.__("For example: d\' or:  van_ (use _ for a space)").'<br>';
 
-			// *** Lastname/ prefix ***
+			// *** Lastname/ patronym ***
 			echo '<input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'"> ';
 			echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20" placeholder="'.ucfirst(__('patronymic')).'">';
-			
+
 			if($humo_option['admin_hebname']=="y" ) {  // user requested hebrew name field to be displayed here, not under "events"
 				echo '<br>';
 				$sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '".$pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
 				$result = $dbh->query($sql);
-				
+
 				if($result->rowCount() > 0) {
 					$hebnameDb=$result->fetch(PDO::FETCH_OBJ);
 					$he_name =  $hebnameDb->event_event;
@@ -1693,7 +1699,7 @@ if ($check_person){
 				echo '<input type="text" name="even_hebname" value="'.htmlspecialchars($he_name).'" size="35" placeholder="'.ucfirst(__('Hebrew name')).'"> ';
 				echo __('For example: Joseph ben Hirsch Zvi');
 			}
-			
+
 			echo '</td>';
 
 			echo '<td>';
@@ -1757,7 +1763,8 @@ if ($check_person){
 			// *** Estimated/ calculated (birth) date, can be used for privacy filter ***
 			if (!$pers_cal_date) $pers_cal_date='dd mmm yyyy';
 			echo '<span style="color:#6D7B8D;">';
-			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date">'.__('Calculated birth date').':</a> '.$pers_cal_date;
+			//echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date">'.__('Calculated birth date').':</a> '.$pers_cal_date;
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.php?page=cal_date">'.__('Calculated birth date').':</a> '.language_date($pers_cal_date);
 			echo '</span>';
 
 		echo '</td><td></td></tr>';
@@ -1868,18 +1875,17 @@ if ($check_person){
 
 		// **** BRIT MILA ***
 		if($humo_option['admin_brit']=="y" AND $pers_sexe!="F") {
-
 			echo '<tr>';
 			echo '<td><a href="#" onclick="hideShow(20);"><span id="hideshowlink20">'.__('[+]').'</span></a> ';
 			echo ucfirst(__('Brit Mila')).'</td>';
 			$sql = "SELECT * FROM humo_events WHERE event_gedcom = '_BRTM' AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
 			$result = $dbh->query($sql);
 
-			if($result->rowCount() > 0)	{
+			if($result->rowCount() > 0) {
 				$britDb=$result->fetch(PDO::FETCH_OBJ);
-				$britdate =  $britDb->event_date;
+				$britdate = $britDb->event_date;
 				$britplace = $britDb->event_place;
-				$brittext =   $britDb->event_text;
+				$brittext = $britDb->event_text;
 			}
 			else {
 				$britdate = "";
@@ -2232,6 +2238,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		// *** Profession(s) ***
 		echo $event_cls->show_event('person',$pers_gedcomnumber,'profession');
 
+		// *** Religion ***
+		echo $event_cls->show_event('person',$pers_gedcomnumber,'religion');
+
 		if (!isset($_GET['add_person'])){
 			// *** Show and edit places by person ***
 			edit_addresses('person','person_address',$pers_gedcomnumber);
@@ -2294,15 +2303,19 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '<td></td></tr>';
 			}
 
+			// *** Show editor notes ***
+			show_editor_notes('person');
+
 			// *** Show user added notes ***
 			$note_qry= "SELECT * FROM humo_user_notes
-				WHERE note_tree_prefix='".$tree_prefix."'
-				AND note_pers_gedcomnumber='".$pers_gedcomnumber."'";
+				WHERE note_tree_id='".$tree_id."'
+				AND note_kind='user' AND note_connect_kind='person' AND note_connect_id='".$pers_gedcomnumber."'";
 			$note_result = $dbh->query($note_qry);
 			$num_rows = $note_result->rowCount();
 
-			//echo '<tr class="humo_user_notes humo_color"><td>';
-			echo '<tr class="humo_user_notes"><td>';
+			//echo '<tr class="humo_user_notes"><td>';
+			//echo '<tr><td>';
+			echo '<tr class="table_header_large"><td>';
 				if ($num_rows)
 					echo '<a href="#humo_user_notes" onclick="hideShow(62);"><span id="hideshowlink62">'.__('[+]').'</span></a> ';
 				echo __('User notes').'</td><td colspan="2">';
@@ -2311,32 +2324,36 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				else
 					printf(__('There are %d user added notes.'), 0);
 			echo '</td><td></td></tr>';
-
 			while($noteDb=$note_result->fetch(PDO::FETCH_OBJ)){
 				$user_qry = "SELECT * FROM humo_users
-					WHERE user_id='".$noteDb->note_user_id."'";
+					WHERE user_id='".$noteDb->note_new_user_id."'";
 				$user_result = $dbh->query($user_qry);
 				$userDb=$user_result->fetch(PDO::FETCH_OBJ);
 
-				//echo '<tr class="humo_color row62" style="display:none;" name="row62"><td></td>';
-				echo '<tr class="humo_color row62" style="display:none;"><td></td>';
-					echo '<td colspan="2">';
-					echo '<b>'.$noteDb->note_date.' '.$noteDb->note_time.' '.$userDb->user_name.'</b><br>';
+				//echo '<tr class="humo_color row62" style="display:none;"><td></td>';
+				echo '<tr class="row62" style="display:none;"><td></td><td style="border-right:0px;"></td>';
+					echo '<td style="border-left:0px;">';
+
+					echo __('Added by').' <b>'.$userDb->user_name.'</b> ('.language_date($noteDb->note_new_date).' '.$noteDb->note_new_time.')<br>';
+
 					echo '<b>'.$noteDb->note_names.'</b><br>';
-					echo nl2br($noteDb->note_note);
+
+					echo '<textarea readonly rows="1" placeholder="'.__('Text').'" '.$field_text_large.'>'.$editor_cls->text_show($noteDb->note_note).'</textarea>';
+
 					echo '</td>';
 				echo '<td></td></tr>';
 			}
 
 			// *** Person added by user ***
 			if ($person->pers_new_user){
-				echo '<tr><td>'.__('Added by').'</td>';
-				echo '<td colspan="2">'.$person->pers_new_user.' ('.$person->pers_new_date.' '.$person->pers_new_time.')</td><td></td></tr>';
+				echo '<tr class="table_header_large"><td>'.__('Added by').'</td>';
+				//echo '<td colspan="2">'.$person->pers_new_user.' ('.$person->pers_new_date.' '.$person->pers_new_time.')</td><td></td></tr>';
+				echo '<td colspan="2">'.$person->pers_new_user.' ('.language_date($person->pers_new_date).' '.$person->pers_new_time.')</td><td></td></tr>';
 			}
 			// *** Person changed by user ***
 			if ($person->pers_changed_user){
-				echo '<tr><td>'.__('Changed by').'</td>';
-				echo '<td colspan="2">'.$person->pers_changed_user.' ('.$person->pers_changed_date.' '.$person->pers_changed_time.')</td><td></td></tr>';
+				echo '<tr class="table_header_large"><td>'.__('Changed by').'</td>';
+				echo '<td colspan="2">'.$person->pers_changed_user.' ('.language_date($person->pers_changed_date).' '.$person->pers_changed_time.')</td><td></td></tr>';
 			}
 
 		}
@@ -2495,18 +2512,25 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			$man_gedcomnumber=$familyDb->fam_man; $woman_gedcomnumber=$familyDb->fam_woman;
 			$fam_gedcomnumber=$familyDb->fam_gedcomnumber;
 			$fam_relation_date=$familyDb->fam_relation_date; $fam_relation_end_date=$familyDb->fam_relation_end_date;
-			$fam_relation_place=$familyDb->fam_relation_place; $fam_relation_text=$editor_cls->text_show($familyDb->fam_relation_text); 
-			$fam_marr_notice_date=$familyDb->fam_marr_notice_date; $fam_marr_notice_place=$familyDb->fam_marr_notice_place; 
+			// *** Check if variabele exists, needed for PHP 8.1 ***
+			$fam_relation_place=''; if (isset($familyDb->fam_relation_place)) $fam_relation_place=$familyDb->fam_relation_place;
+			$fam_relation_text=$editor_cls->text_show($familyDb->fam_relation_text); 
+			$fam_marr_notice_date=$familyDb->fam_marr_notice_date;
+			$fam_marr_notice_place=''; if (isset($familyDb->fam_marr_notice_place)) $fam_marr_notice_place=$familyDb->fam_marr_notice_place; 
 			$fam_marr_notice_text=$editor_cls->text_show($familyDb->fam_marr_notice_text);
-			$fam_marr_date=$familyDb->fam_marr_date; $fam_marr_place=$familyDb->fam_marr_place;
+			$fam_marr_date=$familyDb->fam_marr_date;
+			$fam_marr_place=''; if (isset($familyDb->fam_marr_place)) $fam_marr_place=$familyDb->fam_marr_place;
 			$fam_marr_text=$editor_cls->text_show($familyDb->fam_marr_text); $fam_marr_authority=$editor_cls->text_show($familyDb->fam_marr_authority);
 			$fam_man_age=$familyDb->fam_man_age; $fam_woman_age=$familyDb->fam_woman_age;
-			$fam_marr_church_notice_date=$familyDb->fam_marr_church_notice_date; $fam_marr_church_notice_place=$familyDb->fam_marr_church_notice_place;
+			$fam_marr_church_notice_date=$familyDb->fam_marr_church_notice_date;
+			$fam_marr_church_notice_place=''; if (isset($familyDb->fam_marr_church_notice_place)) $fam_marr_church_notice_place=$familyDb->fam_marr_church_notice_place;
 			$fam_marr_church_notice_text=$editor_cls->text_show($familyDb->fam_marr_church_notice_text); 
-			$fam_marr_church_date=$familyDb->fam_marr_church_date; $fam_marr_church_place=$familyDb->fam_marr_church_place; 
+			$fam_marr_church_date=$familyDb->fam_marr_church_date;
+			$fam_marr_church_place=''; if (isset($familyDb->fam_marr_church_place)) $fam_marr_church_place=$familyDb->fam_marr_church_place; 
 			$fam_marr_church_text=$editor_cls->text_show($familyDb->fam_marr_church_text);
-			$fam_religion=$familyDb->fam_religion;
-			$fam_div_date=$familyDb->fam_div_date; $fam_div_place=$familyDb->fam_div_place;
+			$fam_religion=''; if (isset($familyDb->fam_religion)) $fam_religion=$familyDb->fam_religion;
+			$fam_div_date=$familyDb->fam_div_date;
+			$fam_div_place=''; if (isset($familyDb->fam_div_place)) $fam_div_place=$familyDb->fam_div_place;
 			$fam_div_text=$editor_cls->text_show($familyDb->fam_div_text);
 			$fam_div_authority=$editor_cls->text_show($familyDb->fam_div_authority);
 
@@ -2980,15 +3004,20 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				echo '<td></td></tr>';
 			}
 
+			// *** Show editor notes ***
+			show_editor_notes('family');
+
 			// *** Relation added by user ***
 			if ($familyDb->fam_new_user){
-				echo '<tr><td>'.__('Added by').'</td>';
-				echo '<td colspan="2">'.$familyDb->fam_new_user.' ('.$familyDb->fam_new_date.' '.$familyDb->fam_new_time.')</td><td></td></tr>';
+				echo '<tr class="table_header_large"><td>'.__('Added by').'</td>';
+				//echo '<td colspan="2">'.$familyDb->fam_new_user.' ('.$familyDb->fam_new_date.' '.$familyDb->fam_new_time.')</td><td></td></tr>';
+				echo '<td colspan="2">'.$familyDb->fam_new_user.' ('.language_date($familyDb->fam_new_date).' '.$familyDb->fam_new_time.')</td><td></td></tr>';
 			}
 			// *** Relation changed by user ***
 			if ($familyDb->fam_changed_user){
-				echo '<tr><td>'.__('Changed by').'</td>';
-				echo '<td colspan="2">'.$familyDb->fam_changed_user.' ('.$familyDb->fam_changed_date.' '.$familyDb->fam_changed_time.')</td><td></td></tr>';
+				echo '<tr class="table_header_large"><td>'.__('Changed by').'</td>';
+				//echo '<td colspan="2">'.$familyDb->fam_changed_user.' ('.$familyDb->fam_changed_date.' '.$familyDb->fam_changed_time.')</td><td></td></tr>';
+				echo '<td colspan="2">'.$familyDb->fam_changed_user.' ('.language_date($familyDb->fam_changed_date).' '.$familyDb->fam_changed_time.')</td><td></td></tr>';
 			}
 
 			// *** Extra "Save" line ***
@@ -4153,11 +4182,12 @@ function witness_edit($event_text, $witness, $multiple_rows=''){
 
 // *** New function aug. 2021: Add partner or child ***
 function add_person($person_kind,$pers_sexe){
-	global $phpself,$page,$rtlmarker,$editor_cls,$field_place;
+	global $phpself,$page,$rtlmarker,$editor_cls,$field_place,$field_date;
 	global $familyDb,$marriage, $db_functions, $field_popup;
 
 	$pers_prefix='';
 	$pers_lastname='';
+	$pers_patronym='';
 
 	if ($person_kind=='partner'){
 		echo ' <form method="POST" style="display: inline;" action="'.$phpself.'#marriage" name="form5" id="form5">';
@@ -4177,15 +4207,15 @@ function add_person($person_kind,$pers_sexe){
 			$personDb = $db_functions->get_person($familyDb->fam_man);
 			$pers_prefix=$personDb->pers_prefix;
 			$pers_lastname=$personDb->pers_lastname;
+			$pers_patronym=$personDb->pers_patronym;
 		}
 	}
 
 	echo '<input type="hidden" name="page" value="'.$page.'">';
 
 	//echo '<input type="hidden" name="pers_callname" value="">';
-	echo '<input type="hidden" name="pers_patronym" value="">';
+	//echo '<input type="hidden" name="pers_patronym" value="">';
 	echo '<input type="hidden" name="pers_name_text" value="">';
-	echo '<input type="hidden" name="pers_birth_time" value="">';
 	echo '<input type="hidden" name="pers_birth_text" value="">';
 	echo '<input type="hidden" name="pers_bapt_text" value="">';
 	echo '<input type="hidden" name="pers_religion" value="">';
@@ -4207,24 +4237,27 @@ function add_person($person_kind,$pers_sexe){
 			echo '<tr class="table_header"><th colspan="2">'.__('Add child').'</th></tr>';
 		}
 
-		echo '<tr><td>'.__('firstname').'</td><td><input type="text" name="pers_firstname" value=""  size="35" placeholder="'.ucfirst(__('firstname')).'"></td></tr>';
+		echo '<tr><td><b>'.__('firstname').'</b></td><td><input type="text" name="pers_firstname" value=""  size="35" placeholder="'.ucfirst(__('firstname')).'"></td></tr>';
 
 		// *** Prefix ***
 		echo '<tr><td>'.__('prefix').'</td><td><input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10" placeholder="'.ucfirst(__('prefix')).'">';
 		// *** HELP POPUP for age by marriage ***
 		echo ' <div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
-			echo '<a href="#" style="display:inline" ';
-			echo 'onmouseover="mopen(event,\'help_prefix\',100,400)"';
-			echo 'onmouseout="mclosetime()">';
-				echo '<img src="../images/help.png" height="16" width="16">';
-			echo '</a>';
-			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_prefix" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-				echo '<b>'.__("For example: d\' or:  van_ (use _ for a space)").'</b><br>';
-			echo '</div>';
+			//echo '<a href="#" style="display:inline" ';
+			//echo 'onmouseover="mopen(event,\'help_prefix\',100,400)"';
+			//echo 'onmouseout="mclosetime()">';
+			//	echo '<img src="../images/help.png" height="16" width="16">';
+			//echo '</a>';
+			//echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_prefix" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+				echo __("For example: d\' or:  van_ (use _ for a space)").'<br>';
+			//echo '</div>';
 		echo '</div></td></tr>';
 
-		// *** Lastname ***
-		echo '<tr><td>'.__('lastname').'</td><td><input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'"></td></tr>';
+		// *** Lastname/ patronym ***
+		echo '<tr><td><b>'.__('lastname').'</b></td><td>';
+			echo '<input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'">';
+			echo ' '.__('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20" placeholder="'.ucfirst(__('patronymic')).'">';
+		echo '</td></tr>';
 
 		// *** Privacy filter ***
 		echo '<tr><td>'.__('Privacy filter').'</td><td>';
@@ -4254,6 +4287,16 @@ function add_person($person_kind,$pers_sexe){
 		echo $editor_cls->date_show('','pers_birth_date','','','','pers_birth_date_hebnight').' ';
 		echo ' <input type="text" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="" size="'.$field_place.'">';
 		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form='.$form.'&amp;place_item=pers_birth_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a></td></tr>';
+
+		// *** Birth time and stillborn option ***
+		if ($person_kind=='child'){
+			echo '<tr><td style="border-right:0px;">'.__('birth time').'</td><td style="border-left:0px;"><input type="text" placeholder="'.__('birth time').'" name="pers_birth_time" value="" size="'.$field_date.'">';
+				echo '<input type="checkbox" name="pers_stillborn"> '.__('stillborn child');
+			echo '</td></tr>';
+		}
+		else{
+			echo '<input type="hidden" name="pers_birth_time" value="">';
+		}
 
 		// *** Baptise ***
 		echo '<tr><td>'.ucfirst(__('baptised')).'</td><td>';
@@ -4733,6 +4776,89 @@ function cache_latest_changes($force_update=false){
 	}
 }
 
+// *** Show editor notes. $note_connect_kind=person/family ***
+function show_editor_notes($note_connect_kind){
+	global $dbh,$tree_id,$pers_gedcomnumber,$field_text_large,$editor_cls,$marriage;
+
+	// *** $note_connect_id = I123 or F123 ***
+	$note_connect_id=$pers_gedcomnumber;
+	if ($note_connect_kind=='family') $note_connect_id=$marriage;
+
+	$note_qry= "SELECT * FROM humo_user_notes
+		WHERE note_tree_id='".$tree_id."'
+		AND note_kind='editor' AND note_connect_kind='".$note_connect_kind."' AND note_connect_id='".$note_connect_id."'";
+	$note_result = $dbh->query($note_qry);
+	$num_rows = $note_result->rowCount();
+
+	echo '<tr class="table_header_large">';
+		echo '<td><a name="editor_notes"></a>'.__('Editor notes').'</td>';
+		echo '<td style="border-right:0px;"></td><td style="border-left:0px;">';
+
+		echo '<a href="index.php?page=editor&amp;menu_admin=person&amp;note_add='.$note_connect_kind.'#editor_notes">['.__('Add').']</a> ';
+
+		if ($num_rows)
+			printf(__('There are %d editor notes.'), $num_rows);
+		else
+			printf(__('There are %d editor notes.'), 0);
+
+	echo '</td><td></td></tr>';
+	while($noteDb=$note_result->fetch(PDO::FETCH_OBJ)){
+		echo '<tr>';
+			echo '<td>';
+
+			// *** Link to remove note ***
+			echo'<a href="index.php?page=editor&amp;menu_admin=person&amp;note_drop='.$noteDb->note_id.'">';
+			echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" border="0" alt="down"></a>';
+
+			echo '</td><td style="border-right:0px;"></td>';
+			echo '<td style="border-left:0px;">';
+			echo '<input type="hidden" name="note_id['.$noteDb->note_id.']" value="'.$noteDb->note_id.'">';
+			echo '<input type="hidden" name="note_connect_kind['.$noteDb->note_id.']" value="'.$note_connect_kind.'">';
+
+			$user_result = $dbh->query("SELECT * FROM humo_users WHERE user_id='".$noteDb->note_new_user_id."'");
+			$userDb=$user_result->fetch(PDO::FETCH_OBJ);
+			echo __('Added by').' <b>'.$userDb->user_name.'</b> ('.language_date($noteDb->note_new_date).' '.$noteDb->note_new_time.')<br>';
+
+			if ($noteDb->note_changed_user_id){
+				$user_result = $dbh->query("SELECT * FROM humo_users WHERE user_id='".$noteDb->note_changed_user_id."'");
+				$userDb=$user_result->fetch(PDO::FETCH_OBJ);
+				echo __('Changed by').' <b>'.$userDb->user_name.'</b> ('.language_date($noteDb->note_changed_date).' '.$noteDb->note_changed_time.')<br>';
+			}
+
+			echo '<b>'.$noteDb->note_names.'</b><br>';
+
+			echo '<textarea rows="1" placeholder="'.__('Text').'" name="note_note['.$noteDb->note_id.']"'.$field_text_large.'>'.$editor_cls->text_show($noteDb->note_note).'</textarea><br>';
+
+			echo __('Priority').' <select size="1" name="note_priority['.$noteDb->note_id.']">';
+				echo '<option value="Low">'.__('Low').' </option>';
+
+				$selected=''; if ($noteDb->note_priority=='Normal'){ $selected=' selected'; }
+				echo '<option value="Normal"'.$selected.'>'.__('Normal').'</option>';
+
+				$selected=''; if ($noteDb->note_priority=='High'){ $selected=' selected'; }
+				echo '<option value="High"'.$selected.'>'.__('High').'</option>';
+			echo '</select>';
+
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;'.__('Status').' <select size="1" name="note_status['.$noteDb->note_id.']">';
+				echo '<option value="Not started">'.__('Not started').' </option>';
+
+				$selected=''; if ($noteDb->note_status=='In progress'){ $selected=' selected'; }
+				echo '<option value="In progress"'.$selected.'>'.__('In progress').'</option>';
+
+				$selected=''; if ($noteDb->note_status=='Completed'){ $selected=' selected'; }
+				echo '<option value="Completed"'.$selected.'>'.__('Completed').'</option>';
+
+				$selected=''; if ($noteDb->note_status=='Postponed'){ $selected=' selected'; }
+				echo '<option value="Postponed"'.$selected.'>'.__('Postponed').'</option>';
+
+				$selected=''; if ($noteDb->note_status=='Cancelled'){ $selected=' selected'; }
+				echo '<option value="Cancelled"'.$selected.'>'.__('Cancelled').'</option>';
+			echo '</select>';
+
+			echo '</td>';
+		echo '<td></td></tr>';
+	}
+}
 
 // *** Set same width of columns (in 2 different tables) in tab family ***
 echo '

@@ -99,7 +99,9 @@ if (file_exists($array_picture_folder[0])){
 			}
 			else{
 				if (!in_array($filename,$ignore) AND substr($filename,0,6)!='thumb_'){
-					if ($search_quicksearch=='' OR ($search_quicksearch!='' AND strpos($filename,$search_quicksearch)!==false)){
+					//if ($search_quicksearch=='' OR ($search_quicksearch!='' AND strpos($filename,$search_quicksearch)!==false)){
+					// *** stripos = case-insensitive search ***
+					if ($search_quicksearch=='' OR ($search_quicksearch!='' AND stripos($filename,$search_quicksearch)!==false)){
 						// *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
 						$sub_dir=substr($selected_picture_folder,$dirname_start);
 						echo '<a href="" onClick=\'return select_item("'.$sub_dir.str_replace("'","&prime;",$filename).'")\'>'.$sub_dir.$filename.'</a><br>';

@@ -1,7 +1,7 @@
 // HuMo-genealogy version check.
-version=6.0.1
+version=6.0.2
 // Version date yyyy-mm-dd
-version_date=2022-11-06
+version_date=2022-12-09
 version_download=http://sourceforge.net/projects/humo-gen
 version_auto_download=http://humo-gen.com/update/humo-gen_update.zip
 

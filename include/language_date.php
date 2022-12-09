@@ -1,8 +1,9 @@
 <?php
 function language_date($date_text){
 	global $language, $humo_option, $selected_language;
+	if (!isset($date_text)) $date_text=''; // *** To prevent errors in PHP 8.1 ***
 	$date_text=strtoupper($date_text);
-	
+
 	if($humo_option["date_display"]=="ch" AND $selected_language!="hu") {
 		$date_text=str_replace("JAN", "01", $date_text);
 		$date_text=str_replace("FEB", "02", $date_text);

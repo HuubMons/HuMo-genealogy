@@ -635,7 +635,6 @@ function person_name($personDb,$show_name_texts=false){
 			$name_array["index_name_extended"].=$prefix2;
 
 			// *** If search is done for profession, show profession **
-			//if ($selection['pers_profession']){
 			if (isset ($selection['pers_profession']) AND $selection['pers_profession']){
 				if (isset($personDb->event_event) AND $personDb->event_event AND $personDb->event_kind=='profession'){
 					$name_array["index_name_extended"].=' ('.$personDb->event_event.')';}
@@ -2316,9 +2315,84 @@ function person_data($person_kind, $id){
 						$templ_person["prof_add"]='';
 						$temp="prof_add";
 				}
-
 			}
+			if ($eventnr>0){ $process_text.='</span>'; }
+		}
 
+		// ***********************
+		// *** Show religion   ***
+		// ***********************
+		if ($personDb->pers_gedcomnumber){
+			$temp_previous=$temp;
+
+			$event_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'religion');
+			$nr_occupations = count($event_qry);
+			$eventnr=0;
+			foreach ($event_qry as $eventDb){
+				$eventnr++;
+				if ($eventnr=='1'){
+					if ($nr_occupations=='1'){
+						$religion=__('religion');
+					}
+					else{
+						$religion=__('religions');
+					}
+					if ($family_expanded==true){
+						$process_text.='<br><span class="religion"><b>'.ucfirst($religion).':</b> ';
+					}
+					else{
+						if ($process_text){ $process_text.='. <span class="religion">'; }
+						$process_text.='<b>'.ucfirst($religion).':</b> ';
+					}
+
+					if($temp) { $templ_person[$temp].=". "; }
+					$templ_person["religion_start"]=ucfirst($religion).': ';
+				}
+				if ($eventnr>1){
+					$process_text.=', ';
+					if($temp) { $templ_person[$temp].=", "; }
+				}
+
+				// *** Show religion ***
+				$process_text.=$eventDb->event_event;
+				$templ_person["religion_religion".$eventnr]=$eventDb->event_event;
+				$temp="religion_religion".$eventnr;
+
+				// *** Religion date and place ***
+				if ($eventDb->event_date OR $eventDb->event_place){
+					$templ_person["religion_date".$eventnr]=' ('.date_place($eventDb->event_date,$eventDb->event_place).')';
+					$temp="religion_date".$eventnr;
+					$process_text.=$templ_person["religion_date".$eventnr];
+				}
+
+				if ($eventDb->event_text) {
+					$work_text=process_text($eventDb->event_text);
+					if ($work_text){
+						//if($temp) { $templ_person[$temp].=", "; }
+						if($temp) { $templ_person[$temp].=" "; }
+						$templ_person["religion_text".$eventnr]=strip_tags($work_text);
+						$temp="religion_text".$eventnr;
+
+						//$process_text.=", ".$work_text;
+						$process_text.=" ".$work_text;
+					}
+				}
+
+				// *** Religion source ***
+				$source_array=show_sources2("person","pers_event_source",$eventDb->event_id);
+				if ($source_array){
+					//if($screen_mode=='PDF') {
+						$templ_person["religion_source"]=$source_array['text'];
+						$temp="religion_source";
+					//}
+					//else
+						$process_text.=$source_array['text'];
+
+						// *** Extra item, so it's possible to add a comma or space ***
+						$templ_person["religion_add"]='';
+						$temp="religion_add";
+				}
+			}
 			if ($eventnr>0){ $process_text.='</span>'; }
 		}
 

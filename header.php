@@ -62,12 +62,23 @@ $db_functions = New db_functions;
 // *** Use UTF-8 database connection ***
 //$dbh->query("SET NAMES 'utf8'");
 
-// *** Show a message at NEW installation. ***
-$result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
-if (!$result OR $result->rowCount() ==0) {
-	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
-	exit();
+// *** Show a message at NEW installation. Use "try" for PHP 8.1. ***
+//$result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
+//if (!$result OR $result->rowCount() ==0) {
+//	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
+//	exit();
+//}
+try {
+	$result = $dbh->query("SELECT COUNT(*) FROM humo_settings");
+	//if (!$result OR $result->rowCount() ==0) {
+	//	echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
+	//	exit();
+	//}
+}catch (PDOException $e) {
+		echo "Installation of HuMo-genealogy is not yet completed.<br>Installatie van HuMo-genealogy is nog niet voltooid.";
+		exit();
 }
+
 include_once(CMS_ROOTPATH."include/safe.php");
 include_once(CMS_ROOTPATH."include/settings_global.php"); //Variables
 include_once(CMS_ROOTPATH."include/settings_user.php"); // USER variables

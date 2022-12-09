@@ -4,6 +4,8 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 global $selected_language;
 
+include_once (CMS_ROOTPATH."include/language_date.php");
+
 echo '<h1 align=center>'.__('Family tree data check').'</h1>';
 
 @set_time_limit(3000);
@@ -130,10 +132,12 @@ if (isset($_POST['last_changes'])){
 
 			$result_array[$row][1]=$text;
 
-			$text='<nobr>'.strtolower($person->pers_changed_date).' '.$person->pers_changed_time.' '.$person->pers_changed_user.'</nobr>';
+			//$text='<nobr>'.strtolower($person->pers_changed_date).' '.$person->pers_changed_time.' '.$person->pers_changed_user.'</nobr>';
+			$text='<nobr>'.language_date($person->pers_changed_date).' '.$person->pers_changed_time.' '.$person->pers_changed_user.'</nobr>';
 			$result_array[$row][2]=$text;
 
-			$text='<nobr>'.strtolower($person->pers_new_date).' '.$person->pers_new_time.' '.$person->pers_new_user.'</nobr>';
+			//$text='<nobr>'.strtolower($person->pers_new_date).' '.$person->pers_new_time.' '.$person->pers_new_user.'</nobr>';
+			$text='<nobr>'.language_date($person->pers_new_date).' '.$person->pers_new_time.' '.$person->pers_new_user.'</nobr>';
 			$result_array[$row][3]=$text;
 
 			// *** Used for ordering by date - time ***
@@ -181,10 +185,12 @@ if (isset($_POST['last_changes'])){
 				$text='<a href="'.$url.'">'.$person2->pers_firstname.' '.$person2->pers_prefix.$person2->pers_lastname.'</a>';
 				$result_array[$row][1]=$text;
 
-				$text='<nobr>'.strtolower($person->fam_changed_date).' '.$person->fam_changed_time.' '.$person->fam_changed_user.'</nobr>';
+				//$text='<nobr>'.strtolower($person->fam_changed_date).' '.$person->fam_changed_time.' '.$person->fam_changed_user.'</nobr>';
+				$text='<nobr>'.language_date($person->fam_changed_date).' '.$person->fam_changed_time.' '.$person->fam_changed_user.'</nobr>';
 				$result_array[$row][2]=$text;
 
-				$text='<nobr>'.strtolower($person->fam_new_date).' '.$person->fam_new_time.' '.$person->fam_new_user.'</nobr>';
+				//$text='<nobr>'.strtolower($person->fam_new_date).' '.$person->fam_new_time.' '.$person->fam_new_user.'</nobr>';
+				$text='<nobr>'.language_date($person->fam_new_date).' '.$person->fam_new_time.' '.$person->fam_new_user.'</nobr>';
 				$result_array[$row][3]=$text;
 
 				// *** Used for ordering by date - time ***

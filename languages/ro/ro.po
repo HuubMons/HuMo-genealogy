@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-29 16:58+0200\n"
-"PO-Revision-Date: 2022-11-06 10:01+0100\n"
+"POT-Creation-Date: 2022-12-05 17:51+0100\n"
+"PO-Revision-Date: 2022-12-08 09:42+0100\n"
 "Last-Translator: Alexandru L, 2022\n"
 "Language-Team: Romanian (http://www.transifex.com/humo-gen/humo-gen/language/ro/)\n"
 "MIME-Version: 1.0\n"
@@ -27,27 +27,27 @@ msgstr ""
 msgid "You are not authorised to see this page."
 msgstr "Nu sunteți autorizat să vedeți această pagină."
 
-#: address.php:18 admin/include/editor.php:3544 admin/include/editor.php:4424 admin/include/editor.php:4530 admin/include/editor_sources.php:102 admin/include/editor_sources.php:156 admin/include/editor_sources.php:162 admin/include/gedcom_export.php:280 admin/include/gedcom_export.php:282 admin/include/trees_cls.php:1765 header.php:280 source.php:234
+#: address.php:18 admin/include/editor.php:3595 admin/include/editor.php:4494 admin/include/editor.php:4600 admin/include/editor_sources.php:102 admin/include/editor_sources.php:156 admin/include/editor_sources.php:162 admin/include/gedcom_export.php:280 admin/include/gedcom_export.php:282 admin/include/trees_cls.php:1765 header.php:291 source.php:234
 msgid "Address"
 msgstr "Adresa"
 
-#: address.php:22 addresses.php:78 addresses.php:117 admin/include/editor.php:3792 admin/include/editor.php:4428 admin/include/editor.php:4513
+#: address.php:22 addresses.php:78 addresses.php:117 admin/include/editor.php:3843 admin/include/editor.php:4498 admin/include/editor.php:4583
 msgid "Street"
 msgstr "Strada"
 
-#: address.php:23 admin/include/editor.php:3546 admin/include/editor.php:3794 admin/include/editor.php:4429 admin/include/editor.php:4516 list.php:1689 list.php:1697 source.php:233
+#: address.php:23 admin/include/editor.php:3597 admin/include/editor.php:3845 admin/include/editor.php:4499 admin/include/editor.php:4586 list.php:1689 list.php:1697 source.php:233
 msgid "Zip code"
 msgstr "Cod poștal"
 
-#: address.php:24 admin/include/editor.php:3789 admin/include/editor.php:4427 admin/include/editor.php:4476 list.php:1614 list.php:1646 list.php:1677 list.php:1685 list.php:1998 list.php:2010 source.php:111 source.php:116 source.php:238 sources.php:170
+#: address.php:24 admin/include/editor.php:3840 admin/include/editor.php:4497 admin/include/editor.php:4546 list.php:1614 list.php:1646 list.php:1677 list.php:1685 list.php:1998 list.php:2010 source.php:111 source.php:116 source.php:238 sources.php:170
 msgid "Place"
 msgstr "Locul"
 
-#: address.php:25 admin/include/editor.php:3550 admin/include/editor.php:3796 admin/include/editor.php:4519
+#: address.php:25 admin/include/editor.php:3601 admin/include/editor.php:3847 admin/include/editor.php:4589
 msgid "Phone"
 msgstr "Telefon"
 
-#: address.php:34 admin/include/editor.php:4501 admin/include/editor_sources.php:60 admin/include/editor_sources.php:66 admin/include/editor_sources.php:72 admin/include/editor_sources.php:78 admin/include/editor_sources.php:84 admin/include/editor_sources.php:96 admin/include/editor_sources.php:102 admin/include/editor_sources.php:108 admin/include/editor_sources.php:114 admin/include/editor_sources.php:120 admin/include/editor_sources.php:126 admin/include/editor_sources.php:132 admin/include/editor_sources.php:138 admin/include/editor_sources.php:144 admin/include/editor_sources.php:150 admin/include/editor_sources.php:156 admin/include/editor_sources.php:162 admin/include/editor_sources.php:240 admin/include/editor_sources.php:311 sources.php:144
+#: address.php:34 admin/include/editor.php:4571 admin/include/editor_sources.php:60 admin/include/editor_sources.php:66 admin/include/editor_sources.php:72 admin/include/editor_sources.php:78 admin/include/editor_sources.php:84 admin/include/editor_sources.php:96 admin/include/editor_sources.php:102 admin/include/editor_sources.php:108 admin/include/editor_sources.php:114 admin/include/editor_sources.php:120 admin/include/editor_sources.php:126 admin/include/editor_sources.php:132 admin/include/editor_sources.php:138 admin/include/editor_sources.php:144 admin/include/editor_sources.php:150 admin/include/editor_sources.php:156 admin/include/editor_sources.php:162 admin/include/editor_sources.php:240 admin/include/editor_sources.php:311 sources.php:144
 msgid "Source"
 msgstr "Sursa"
 
@@ -55,7 +55,7 @@ msgstr "Sursa"
 msgid "Address by person"
 msgstr "Adresa de persoană"
 
-#: addresses.php:68 admin/include/editor.php:4329 admin/include/trees_cls.php:1934 menu.php:552
+#: addresses.php:68 admin/include/editor.php:4399 admin/include/trees_cls.php:1934 menu.php:552
 msgid "Addresses"
 msgstr "Adrese"
 
@@ -67,7 +67,7 @@ msgstr "Oraș"
 msgid "Search"
 msgstr "Căutare"
 
-#: addresses.php:119 admin/include/editor.php:4522 admin/include/editor_sources.php:314 admin/include/editor_sources.php:365 admin/include/groups.php:537 admin/include/groups.php:542 admin/include/groups.php:547 admin/include/settings_admin.php:897 admin/include/settings_admin.php:964 admin/include/settings_admin.php:1035 family.php:2236 include/process_text.php:90 include/process_text.php:92 list.php:1650
+#: addresses.php:119 admin/include/editor.php:2341 admin/include/editor.php:4592 admin/include/editor.php:4823 admin/include/editor_sources.php:314 admin/include/editor_sources.php:365 admin/include/groups.php:537 admin/include/groups.php:542 admin/include/groups.php:547 admin/include/settings_admin.php:897 admin/include/settings_admin.php:964 admin/include/settings_admin.php:1035 family.php:2235 include/process_text.php:90 include/process_text.php:92 list.php:1650
 msgid "Text"
 msgstr "Text"
 
@@ -163,7 +163,7 @@ msgstr "Selectați un fișier"
 msgid "no file chosen"
 msgstr "niciun fișier ales"
 
-#: admin/include/backup.php:114 admin/include/editor_event_cls.php:1369 admin/include/editor_event_cls.php:1371 admin/include/settings_admin.php:311 admin/include/settings_admin.php:666 admin/update/install_update.php:501
+#: admin/include/backup.php:114 admin/include/editor_event_cls.php:1389 admin/include/editor_event_cls.php:1391 admin/include/settings_admin.php:311 admin/include/settings_admin.php:666 admin/update/install_update.php:501
 msgid "Upload"
 msgstr "Încărcare"
 
@@ -206,7 +206,7 @@ msgstr "Un fișier de rezervă a fost salvat pe server. Vă sugerăm insistent s
 msgid "Download backup file"
 msgstr "Descărcați fișierul de rezervă"
 
-#: admin/include/backup.php:286 admin/include/gedcom_export.php:391
+#: admin/include/backup.php:286 admin/include/gedcom_export.php:394
 msgid "Processed lines..."
 msgstr "Linii prelucrate..."
 
@@ -214,7 +214,7 @@ msgstr "Linii prelucrate..."
 msgid "Database has been restored successfully!"
 msgstr "Baza de date a fost restaurată cu succes!"
 
-#: admin/include/cal_date.php:8 admin/include/cal_date.php:16 admin/include/editor.php:1760 admin/index.php:1178
+#: admin/include/cal_date.php:8 admin/include/cal_date.php:16 admin/include/editor.php:1767 admin/index.php:1246
 msgid "Calculated birth date"
 msgstr "Data nașterii calculată"
 
@@ -224,27 +224,27 @@ msgid ""
 "These calculated dates will be used for persons where all dates are missing (no birth, baptise, death or burial dates).<br>\n"
 "Calculation will be done using birth, baptise, death, burial and marriage dates of persons and these dates of parents and children."
 msgstr ""
-"Data de naștere calculată este o dată estimată/calculată care este utilizată pentru filtru de confidențialitate.<br>\n"
+"Data de naștere calculată este o dată estimată/calculată care este utilizată pentru filtrul de confidențialitate.<br>\n"
 "Aceste date calculate vor fi folosite pentru persoanele la care toate datele lipsesc (fără date de naștere, botez, deces sau înmormântare).<br>\n"
-"Calculul se va face folosind datele de naștere, botez, moarte, înmormântare și căsătorie a persoanelor și aceste date ale părinților și copiilor."
+"Calculul se va face folosind datele de naștere, botez, deces, înmormântare și căsătorie a persoanelor și aceste date ale părinților și copiilor."
 
-#: admin/include/cal_date.php:18 admin/include/thumbs.php:116 admin/include/user_notes.php:14
+#: admin/include/cal_date.php:18 admin/include/thumbs.php:116 admin/include/user_notes.php:16
 msgid "Choose family tree"
-msgstr "Alege arborele genealogic"
+msgstr "Alegeți arborele genealogic"
 
-#: admin/include/cal_date.php:31 admin/include/editor.php:1588 admin/include/editor.php:3997 admin/include/editor_sources.php:410 admin/include/statistics.php:588 admin/include/statistics.php:667 admin/include/tree_check.php:248 admin/include/user_notes.php:115
+#: admin/include/cal_date.php:31 admin/include/editor.php:1594 admin/include/editor.php:4048 admin/include/editor_sources.php:410 admin/include/statistics.php:588 admin/include/statistics.php:667 admin/include/tree_check.php:254 admin/include/user_notes.php:121
 msgid "Select"
 msgstr "Selectare"
 
 #: admin/include/cal_date.php:120 fanchart.php:706
 msgid "No dates"
-msgstr "Fără date"
+msgstr "Nu există date"
 
 #: admin/include/cal_date.php:127
 msgid "Calculation of birth dates is completed. Sometimes more dates will be found if calculation is restarted!"
 msgstr "Calculul datelor de naștere este finalizat. Uneori se vor găsi mai multe date dacă se reia calculul!"
 
-#: admin/include/cms_pages.php:12 admin/include/settings_admin.php:903 admin/include/settings_admin.php:1037 admin/index.php:1122
+#: admin/include/cms_pages.php:12 admin/include/settings_admin.php:903 admin/include/settings_admin.php:1037 admin/index.php:1190
 msgid "CMS Own pages"
 msgstr "Pagini proprii CMS"
 
@@ -277,11 +277,11 @@ msgstr "Această pagină este selectată ca pagină de pornire!"
 msgid "Are you sure you want to remove this page?"
 msgstr "Sigur doriți să eliminați această pagină?"
 
-#: admin/include/cms_pages.php:106 admin/include/cms_pages.php:176 admin/include/editor.php:3161 admin/include/editor.php:3444 admin/include/editor.php:3649 admin/include/editor_inc.php:50 admin/include/editor_inc.php:673 admin/include/editor_inc.php:953 admin/include/editor_inc.php:1023 admin/include/editor_inc.php:1802 admin/include/editor_inc.php:2256 admin/include/editor_user_settings.php:74 admin/include/gedcom.php:185 admin/include/gedcom_export.php:329 admin/include/gedcom_export.php:337 admin/include/gedcom_export.php:348 admin/include/gedcom_export.php:378 admin/include/groups.php:170 admin/include/groups.php:557 admin/include/install.php:156 admin/include/settings_admin.php:325 admin/include/settings_admin.php:335 admin/include/settings_admin.php:345 admin/include/settings_admin.php:354 admin/include/settings_admin.php:362 admin/include/settings_admin.php:376 admin/include/settings_admin.php:385 admin/include/settings_admin.php:393 admin/include/settings_admin.php:415 admin/include/settings_admin.php:711 admin/include/settings_admin.php:1210 admin/include/thumbs.php:680 admin/include/trees.php:117 admin/include/trees_cls.php:1269 admin/include/trees_cls.php:1274 admin/include/trees_cls.php:1285 admin/include/trees_cls.php:1290 admin/include/trees_cls.php:1301 admin/include/trees_cls.php:1306 admin/include/trees_cls.php:1319 admin/include/trees_cls.php:1324 admin/include/user_notes.php:62 admin/include/users.php:50 mailform.php:123
+#: admin/include/cms_pages.php:106 admin/include/cms_pages.php:176 admin/include/editor.php:3212 admin/include/editor.php:3495 admin/include/editor.php:3700 admin/include/editor_inc.php:50 admin/include/editor_inc.php:607 admin/include/editor_inc.php:862 admin/include/editor_inc.php:932 admin/include/editor_inc.php:1624 admin/include/editor_inc.php:2077 admin/include/editor_user_settings.php:74 admin/include/gedcom.php:185 admin/include/gedcom_export.php:332 admin/include/gedcom_export.php:340 admin/include/gedcom_export.php:351 admin/include/gedcom_export.php:381 admin/include/groups.php:170 admin/include/groups.php:557 admin/include/install.php:156 admin/include/settings_admin.php:325 admin/include/settings_admin.php:335 admin/include/settings_admin.php:345 admin/include/settings_admin.php:354 admin/include/settings_admin.php:362 admin/include/settings_admin.php:376 admin/include/settings_admin.php:385 admin/include/settings_admin.php:393 admin/include/settings_admin.php:415 admin/include/settings_admin.php:711 admin/include/settings_admin.php:1210 admin/include/thumbs.php:680 admin/include/trees.php:117 admin/include/trees_cls.php:1269 admin/include/trees_cls.php:1274 admin/include/trees_cls.php:1285 admin/include/trees_cls.php:1290 admin/include/trees_cls.php:1301 admin/include/trees_cls.php:1306 admin/include/trees_cls.php:1319 admin/include/trees_cls.php:1324 admin/include/user_notes.php:67 admin/include/users.php:50 mailform.php:123
 msgid "Yes"
 msgstr "Da"
 
-#: admin/include/cms_pages.php:107 admin/include/cms_pages.php:177 admin/include/editor.php:3162 admin/include/editor.php:3445 admin/include/editor.php:3650 admin/include/editor_inc.php:51 admin/include/editor_inc.php:674 admin/include/editor_inc.php:954 admin/include/editor_inc.php:1024 admin/include/editor_inc.php:1803 admin/include/editor_inc.php:2257 admin/include/editor_user_settings.php:76 admin/include/gedcom.php:186 admin/include/gedcom_export.php:330 admin/include/gedcom_export.php:338 admin/include/gedcom_export.php:349 admin/include/gedcom_export.php:377 admin/include/groups.php:171 admin/include/groups.php:559 admin/include/install.php:157 admin/include/settings_admin.php:326 admin/include/settings_admin.php:336 admin/include/settings_admin.php:346 admin/include/settings_admin.php:355 admin/include/settings_admin.php:363 admin/include/settings_admin.php:377 admin/include/settings_admin.php:386 admin/include/settings_admin.php:394 admin/include/settings_admin.php:416 admin/include/settings_admin.php:712 admin/include/settings_admin.php:1211 admin/include/thumbs.php:681 admin/include/trees.php:118 admin/include/trees_cls.php:1270 admin/include/trees_cls.php:1273 admin/include/trees_cls.php:1286 admin/include/trees_cls.php:1289 admin/include/trees_cls.php:1302 admin/include/trees_cls.php:1305 admin/include/trees_cls.php:1320 admin/include/trees_cls.php:1323 admin/include/user_notes.php:63 admin/include/users.php:51 mailform.php:124
+#: admin/include/cms_pages.php:107 admin/include/cms_pages.php:177 admin/include/editor.php:3213 admin/include/editor.php:3496 admin/include/editor.php:3701 admin/include/editor_inc.php:51 admin/include/editor_inc.php:608 admin/include/editor_inc.php:863 admin/include/editor_inc.php:933 admin/include/editor_inc.php:1625 admin/include/editor_inc.php:2078 admin/include/editor_user_settings.php:76 admin/include/gedcom.php:186 admin/include/gedcom_export.php:333 admin/include/gedcom_export.php:341 admin/include/gedcom_export.php:352 admin/include/gedcom_export.php:380 admin/include/groups.php:171 admin/include/groups.php:559 admin/include/install.php:157 admin/include/settings_admin.php:326 admin/include/settings_admin.php:336 admin/include/settings_admin.php:346 admin/include/settings_admin.php:355 admin/include/settings_admin.php:363 admin/include/settings_admin.php:377 admin/include/settings_admin.php:386 admin/include/settings_admin.php:394 admin/include/settings_admin.php:416 admin/include/settings_admin.php:712 admin/include/settings_admin.php:1211 admin/include/thumbs.php:681 admin/include/trees.php:118 admin/include/trees_cls.php:1270 admin/include/trees_cls.php:1273 admin/include/trees_cls.php:1286 admin/include/trees_cls.php:1289 admin/include/trees_cls.php:1302 admin/include/trees_cls.php:1305 admin/include/trees_cls.php:1320 admin/include/trees_cls.php:1323 admin/include/user_notes.php:68 admin/include/users.php:51 mailform.php:124
 msgid "No"
 msgstr "Nu"
 
@@ -337,7 +337,7 @@ msgstr "Niciun meniu selectat"
 msgid "Published"
 msgstr "Publicat"
 
-#: admin/include/cms_pages.php:350 admin/include/cms_pages.php:353 admin/include/cms_pages.php:446 admin/include/editor.php:1654 admin/include/editor.php:2328 admin/include/editor.php:2556 admin/include/editor.php:2976 admin/include/editor.php:3359 admin/include/editor.php:3565 admin/include/editor.php:3819 admin/include/editor.php:4016 admin/include/editor_sources.php:304 admin/include/language_editor.php:285 admin/include/make_db_maps.php:295 admin/include/make_db_maps.php:390 admin/include/make_db_maps.php:399 admin/include/make_db_maps.php:584 admin/include/prefix_editor.php:40 admin/include/trees_cls.php:1333
+#: admin/include/cms_pages.php:350 admin/include/cms_pages.php:353 admin/include/cms_pages.php:446 admin/include/editor.php:1660 admin/include/editor.php:2367 admin/include/editor.php:2602 admin/include/editor.php:3027 admin/include/editor.php:3410 admin/include/editor.php:3616 admin/include/editor.php:3870 admin/include/editor.php:4067 admin/include/editor_sources.php:304 admin/include/language_editor.php:285 admin/include/make_db_maps.php:295 admin/include/make_db_maps.php:390 admin/include/make_db_maps.php:399 admin/include/make_db_maps.php:584 admin/include/prefix_editor.php:40 admin/include/trees_cls.php:1333
 msgid "Save"
 msgstr "Salvare"
 
@@ -361,7 +361,7 @@ msgstr "Meniu element/categorie"
 msgid "Remove menu"
 msgstr "Eliminați meniul"
 
-#: admin/include/cms_pages.php:457 admin/include/editor.php:1657 admin/include/editor.php:2331 admin/include/editor.php:3356 admin/include/editor.php:3562 admin/include/editor.php:3816 admin/include/editor.php:4337 admin/include/editor.php:4567 admin/include/editor_event_cls.php:350 admin/include/editor_event_cls.php:368 admin/include/editor_event_cls.php:386 admin/include/editor_event_cls.php:403 admin/include/editor_event_cls.php:419 admin/include/editor_event_cls.php:435 admin/include/editor_event_cls.php:448 admin/include/editor_event_cls.php:461 admin/include/editor_event_cls.php:474 admin/include/editor_event_cls.php:487 admin/include/editor_event_cls.php:528 admin/include/editor_event_cls.php:558 admin/include/editor_event_cls.php:561 admin/include/editor_event_cls.php:755 admin/include/editor_event_cls.php:768 admin/include/editor_sources.php:517 admin/include/log.php:184 admin/include/settings_admin.php:1044 admin/include/settings_admin.php:1177 admin/include/users.php:222
+#: admin/include/cms_pages.php:457 admin/include/editor.php:1663 admin/include/editor.php:2370 admin/include/editor.php:3407 admin/include/editor.php:3613 admin/include/editor.php:3867 admin/include/editor.php:4407 admin/include/editor.php:4637 admin/include/editor.php:4797 admin/include/editor_event_cls.php:383 admin/include/editor_event_cls.php:397 admin/include/editor_event_cls.php:411 admin/include/editor_event_cls.php:425 admin/include/editor_event_cls.php:439 admin/include/editor_event_cls.php:458 admin/include/editor_event_cls.php:480 admin/include/editor_event_cls.php:510 admin/include/editor_event_cls.php:513 admin/include/editor_event_cls.php:708 admin/include/editor_event_cls.php:722 admin/include/editor_sources.php:520 admin/include/log.php:184 admin/include/settings_admin.php:1044 admin/include/settings_admin.php:1177 admin/include/users.php:222
 msgid "Add"
 msgstr "Adăugare"
 
@@ -418,23 +418,23 @@ msgstr "Selectați un arbore genealogic:"
 msgid "Favourites list"
 msgstr "Lista de favorite"
 
-#: admin/include/editor.php:388 admin/include/tree_check.php:77 admin/include/tree_check.php:197 header.php:286 help.php:78 menu.php:671
+#: admin/include/editor.php:388 admin/include/tree_check.php:79 admin/include/tree_check.php:203 header.php:297 help.php:78 menu.php:671
 msgid "Latest changes"
 msgstr "Ultimele modificări"
 
-#: admin/include/editor.php:399 admin/include/editor.php:2311 admin/include/editor.php:2963
+#: admin/include/editor.php:399 admin/include/editor.php:2337 admin/include/editor.php:2349 admin/include/editor.php:3012 admin/include/editor.php:4813 admin/include/user_notes.php:125
 msgid "Added by"
 msgstr "Adăugat de"
 
-#: admin/include/editor.php:400 admin/include/editor.php:2316 admin/include/editor.php:2968
+#: admin/include/editor.php:400 admin/include/editor.php:2355 admin/include/editor.php:3018 admin/include/editor.php:4818
 msgid "Changed by"
 msgstr "Modificat de"
 
-#: admin/include/editor.php:419 admin/include/editor.php:663 admin/include/gedcom_export.php:128 admin/include/tree_check.php:122 admin/include/tree_check.php:915 admin/include/trees_cls.php:875 family.php:2227 relations.php:3112
+#: admin/include/editor.php:419 admin/include/editor.php:663 admin/include/gedcom_export.php:128 admin/include/tree_check.php:124 admin/include/tree_check.php:921 admin/include/trees_cls.php:875 family.php:2226 relations.php:3112
 msgid "Person"
 msgstr "Persoana"
 
-#: admin/include/editor.php:420 admin/include/editor.php:1664 admin/include/editor_event_cls.php:23 admin/include/editor_event_cls.php:342 admin/include/editor_media_select.php:80 admin/include/editor_person_select.php:83 admin/include/editor_place_select.php:64 admin/include/editor_relation_select.php:24 admin/include/gedcom_export.php:129 admin/include/gedcom_export.php:274 admin/include/gedcom_export.php:278 birthday_list.php:137 family.php:2163 family.php:2229 include/mainindex_cls.php:591 include/mainindex_cls.php:938 list.php:1967 list_names.php:315 list_names.php:317 mailform.php:28 mailform.php:110 menu.php:97 register.php:62 register.php:124 relations.php:3106 relations.php:3218 relations.php:3336 user_settings.php:96
+#: admin/include/editor.php:420 admin/include/editor.php:1670 admin/include/editor_event_cls.php:23 admin/include/editor_event_cls.php:373 admin/include/editor_event_cls.php:1486 admin/include/editor_media_select.php:80 admin/include/editor_person_select.php:83 admin/include/editor_place_select.php:64 admin/include/editor_relation_select.php:24 admin/include/gedcom_export.php:129 admin/include/gedcom_export.php:274 admin/include/gedcom_export.php:278 birthday_list.php:137 family.php:2162 family.php:2228 include/mainindex_cls.php:591 include/mainindex_cls.php:940 list.php:1967 list_names.php:315 list_names.php:317 mailform.php:28 mailform.php:110 menu.php:97 register.php:62 register.php:124 relations.php:3106 relations.php:3218 relations.php:3336 user_settings.php:96
 msgid "Name"
 msgstr "Nume"
 
@@ -442,7 +442,7 @@ msgstr "Nume"
 msgid "Person not found"
 msgstr "Persoana nu a fost găsită"
 
-#: admin/include/editor.php:524 admin/include/tree_check.php:226 admin/include/tree_check.php:912
+#: admin/include/editor.php:524 admin/include/tree_check.php:232 admin/include/tree_check.php:918
 msgid "Results"
 msgstr "Rezultate"
 
@@ -450,7 +450,7 @@ msgstr "Rezultate"
 msgid "or ID:"
 msgstr "sau ID:"
 
-#: admin/include/editor.php:564 admin/include/editor.php:1582 admin/include/editor.php:2448 admin/include/editor.php:3096 admin/include/editor.php:4115
+#: admin/include/editor.php:564 admin/include/editor.php:1588 admin/include/editor.php:2487 admin/include/editor.php:3147 admin/include/editor.php:4170
 msgid "GEDCOM number (ID)"
 msgstr "Număr GEDCOM (ID)"
 
@@ -458,11 +458,11 @@ msgstr "Număr GEDCOM (ID)"
 msgid "Add person"
 msgstr "Adăugare persoană"
 
-#: admin/include/editor.php:589 admin/include/editor.php:1806
+#: admin/include/editor.php:589 admin/include/editor.php:1820
 msgid "Examples of date entries:"
 msgstr "Exemple de intrări de date:"
 
-#: admin/include/editor.php:590 admin/include/editor.php:1807
+#: admin/include/editor.php:590 admin/include/editor.php:1821
 msgid "13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC."
 msgstr "13 octombrie 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, între 1986 și 1987, 13 oct 1100 BC."
 
@@ -478,7 +478,7 @@ msgstr "= faceți clic pentru a deschide ecranul pop-up de selecție."
 msgid "= click to open extended editor items."
 msgstr "= faceți clic pentru a deschide elementele de editare extinse."
 
-#: admin/include/editor.php:679 admin/include/editor.php:2391 admin/include/statistics.php:38 admin/include/statistics.php:41 admin/include/statistics.php:771 admin/include/statistics.php:774 admin/include/tree_check.php:174 list_places_families.php:561
+#: admin/include/editor.php:679 admin/include/editor.php:2430 admin/include/statistics.php:38 admin/include/statistics.php:41 admin/include/statistics.php:771 admin/include/statistics.php:774 admin/include/tree_check.php:178 list_places_families.php:561
 msgid "Family"
 msgstr "Familie"
 
@@ -486,15 +486,15 @@ msgstr "Familie"
 msgid "Browse"
 msgstr "Navigare"
 
-#: admin/include/editor.php:884 admin/include/editor.php:2564 admin/include/editor.php:2690 include/marriage_cls.php:705
+#: admin/include/editor.php:884 admin/include/editor.php:2610 admin/include/editor.php:2736 include/marriage_cls.php:708
 msgid "marriage/ relation"
 msgstr "căsătorie/relație"
 
-#: admin/include/editor.php:890 admin/include/editor.php:2738 include/marriage_cls.php:314 include/marriage_cls.php:319 include/marriage_cls.php:323 include/marriage_cls.php:332 include/marriage_cls.php:333
+#: admin/include/editor.php:890 admin/include/editor.php:2784 include/marriage_cls.php:317 include/marriage_cls.php:322 include/marriage_cls.php:326 include/marriage_cls.php:335 include/marriage_cls.php:336
 msgid "Married"
 msgstr "Căsătorit(ă)"
 
-#: admin/include/editor.php:909 include/marriage_cls.php:50 include/marriage_cls.php:130 include/marriage_cls.php:216 include/marriage_cls.php:311 include/marriage_cls.php:331 include/marriage_cls.php:384 include/marriage_cls.php:460 include/marriage_cls.php:679 include/marriage_cls.php:684 include/marriage_cls.php:692 include/marriage_cls.php:697 include/marriage_cls.php:711 include/marriage_cls.php:716 report_ancestor.php:551 report_ancestor.php:554 report_ancestor.php:559 report_descendant.php:775
+#: admin/include/editor.php:909 include/marriage_cls.php:50 include/marriage_cls.php:130 include/marriage_cls.php:216 include/marriage_cls.php:314 include/marriage_cls.php:334 include/marriage_cls.php:387 include/marriage_cls.php:463 include/marriage_cls.php:682 include/marriage_cls.php:687 include/marriage_cls.php:695 include/marriage_cls.php:700 include/marriage_cls.php:714 include/marriage_cls.php:719 report_ancestor.php:551 report_ancestor.php:554 report_ancestor.php:559 report_descendant.php:775
 msgid " to: "
 msgstr " cu: "
 
@@ -507,11 +507,11 @@ msgid "Parents"
 msgstr "Părinți"
 
 # Nomen Nescio: unknown name.
-#: admin/include/editor.php:938 admin/include/editor.php:944 admin/include/editor.php:4287 admin/include/editor_cls.php:257 admin/include/editor_event_cls.php:1116 admin/include/editor_event_cls.php:1125 admin/include/statistics.php:780 admin/include/statistics.php:792 include/person_cls.php:705 include/person_cls.php:707 include/person_cls.php:708 include/person_cls.php:709 include/person_cls.php:710 include/person_cls.php:1055 include/person_cls.php:1056 include/person_cls.php:1234 include/person_cls.php:1235 include/person_cls.php:1262 include/person_cls.php:1263 include/person_cls.php:1300 include/person_cls.php:1302 include/person_cls.php:1322 include/person_cls.php:1323 include/person_cls.php:1392 include/person_cls.php:1410 include/person_cls.php:1483 include/person_cls.php:2401 include/person_cls.php:2418 include/person_cls.php:2431 include/witness.php:137 include/witness.php:143 list.php:184 list_places_families.php:137 report_ancestor.php:1277 report_ancestor.php:1387 report_descendant.php:855
+#: admin/include/editor.php:938 admin/include/editor.php:944 admin/include/editor.php:4357 admin/include/editor_cls.php:256 admin/include/editor_event_cls.php:1072 admin/include/editor_event_cls.php:1081 admin/include/statistics.php:780 admin/include/statistics.php:792 include/person_cls.php:704 include/person_cls.php:706 include/person_cls.php:707 include/person_cls.php:708 include/person_cls.php:709 include/person_cls.php:1054 include/person_cls.php:1055 include/person_cls.php:1233 include/person_cls.php:1234 include/person_cls.php:1261 include/person_cls.php:1262 include/person_cls.php:1299 include/person_cls.php:1301 include/person_cls.php:1321 include/person_cls.php:1322 include/person_cls.php:1391 include/person_cls.php:1409 include/person_cls.php:1482 include/person_cls.php:2475 include/person_cls.php:2492 include/person_cls.php:2505 include/witness.php:137 include/witness.php:143 list.php:184 list_places_families.php:137 report_ancestor.php:1289 report_ancestor.php:1399 report_descendant.php:855
 msgid "N.N."
 msgstr "N.N."
 
-#: admin/include/editor.php:940 admin/include/editor.php:1482 admin/include/editor.php:2409 admin/include/editor.php:2554 admin/include/editor.php:2588 admin/include/editor_event_cls.php:1118 admin/include/editor_relation_select.php:88 admin/include/tree_check.php:1594 include/language_date.php:88 include/language_date.php:93 include/language_date.php:98 include/language_date.php:116 include/person_cls.php:1242 include/person_cls.php:1243 include/person_cls.php:1307 include/person_cls.php:1308 include/person_cls.php:1394 include/person_cls.php:1395 relations.php:2001
+#: admin/include/editor.php:940 admin/include/editor.php:1482 admin/include/editor.php:2448 admin/include/editor.php:2600 admin/include/editor.php:2634 admin/include/editor_event_cls.php:1074 admin/include/editor_relation_select.php:88 admin/include/tree_check.php:1600 include/language_date.php:89 include/language_date.php:94 include/language_date.php:99 include/language_date.php:117 include/person_cls.php:1241 include/person_cls.php:1242 include/person_cls.php:1306 include/person_cls.php:1307 include/person_cls.php:1393 include/person_cls.php:1394 relations.php:2001
 msgid "and"
 msgstr "și"
 
@@ -528,7 +528,7 @@ msgstr "Nu există părinți."
 msgid "Editing in %s? <b>Always backup your data!</b>"
 msgstr "Editatare în %s? <b>Fă întotdeauna rezervă pentru datele tale!</b>"
 
-#: admin/include/editor.php:998 admin/include/editor.php:3372 admin/include/editor.php:3830
+#: admin/include/editor.php:998 admin/include/editor.php:3423 admin/include/editor.php:3881
 msgid "Preview"
 msgstr "Previzualizare"
 
@@ -560,7 +560,7 @@ msgstr "Căutați folosind perioada"
 msgid "parents"
 msgstr "părinți"
 
-#: admin/include/editor.php:1493 admin/include/editor.php:1577
+#: admin/include/editor.php:1493 admin/include/editor.php:1583
 msgid "Add parents"
 msgstr "Adăugare părinți"
 
@@ -572,244 +572,244 @@ msgstr "Tatăl"
 msgid "Mother"
 msgstr "Mama"
 
-#: admin/include/editor.php:1498 admin/include/editor.php:1499 admin/include/editor.php:1500 admin/include/editor.php:1666 admin/include/editor.php:1671 admin/include/editor.php:4183 list.php:1980
+#: admin/include/editor.php:1498 admin/include/editor.php:1499 admin/include/editor.php:1500 admin/include/editor.php:1672 admin/include/editor.php:1677 admin/include/editor.php:4240 list.php:1980
 msgid "firstname"
 msgstr "prenume"
 
-#: admin/include/editor.php:1504 admin/include/editor.php:1505 admin/include/editor.php:1517 admin/include/editor.php:1666 admin/include/editor.php:1674 admin/include/editor.php:4186 list.php:1542
+#: admin/include/editor.php:1504 admin/include/editor.php:1505 admin/include/editor.php:1517 admin/include/editor.php:1672 admin/include/editor.php:1680 admin/include/editor.php:4243 list.php:1542
 msgid "prefix"
 msgstr "prefix"
 
-#: admin/include/editor.php:1514 admin/include/editor.php:1674 admin/include/editor.php:4195
+#: admin/include/editor.php:1514 admin/include/editor.php:1680 admin/include/editor.php:4252
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr "De exemplu: d' sau: van_ (utilizați _ pentru spațiu)"
 
-#: admin/include/editor.php:1532 admin/include/editor.php:1533 admin/include/editor.php:1534 admin/include/editor.php:1666 admin/include/editor.php:1677 admin/include/editor.php:4200 list.php:1986
+#: admin/include/editor.php:1532 admin/include/editor.php:1533 admin/include/editor.php:1534 admin/include/editor.php:1672 admin/include/editor.php:1683 admin/include/editor.php:4257 admin/include/editor.php:4258 list.php:1986
 msgid "lastname"
 msgstr "nume"
 
-#: admin/include/editor.php:1538 admin/include/editor.php:1748 admin/include/editor.php:4203 admin/include/groups.php:498
+#: admin/include/editor.php:1538 admin/include/editor.php:1539 admin/include/editor.php:1540 admin/include/editor.php:1684 admin/include/editor.php:4259
+msgid "patronymic"
+msgstr "patronimic"
+
+#: admin/include/editor.php:1544 admin/include/editor.php:1754 admin/include/editor.php:4263 admin/include/groups.php:498
 msgid "Privacy filter"
 msgstr "Filtru de confidențialitate"
 
-#: admin/include/editor.php:1539 admin/include/editor.php:1542 admin/include/editor.php:1752 admin/include/editor.php:4204 admin/include/trees_cls.php:1620
+#: admin/include/editor.php:1545 admin/include/editor.php:1548 admin/include/editor.php:1758 admin/include/editor.php:4264 admin/include/trees_cls.php:1620
 msgid "alive"
 msgstr "în viață"
 
-#: admin/include/editor.php:1540 admin/include/editor.php:1543 admin/include/editor.php:1755 admin/include/editor.php:4205
+#: admin/include/editor.php:1546 admin/include/editor.php:1549 admin/include/editor.php:1761 admin/include/editor.php:4265
 msgid "deceased"
 msgstr "decedat(ă)"
 
-#: admin/include/editor.php:1546 admin/include/editor.php:1773 admin/include/editor.php:4208 admin/include/editor_sources.php:60
+#: admin/include/editor.php:1552 admin/include/editor.php:1780 admin/include/editor.php:4268 admin/include/editor_sources.php:60
 msgid "Sex"
 msgstr "Sex"
 
-#: admin/include/editor.php:1549 admin/include/editor.php:1557 admin/include/editor.php:1775 admin/include/editor.php:4210 report_ancestor.php:1533
+#: admin/include/editor.php:1555 admin/include/editor.php:1563 admin/include/editor.php:1782 admin/include/editor.php:4270 report_ancestor.php:1545
 msgid "male"
 msgstr "bărbat"
 
-#: admin/include/editor.php:1551 admin/include/editor.php:1559 admin/include/editor.php:1777 admin/include/editor.php:4212 report_ancestor.php:1530
+#: admin/include/editor.php:1557 admin/include/editor.php:1565 admin/include/editor.php:1784 admin/include/editor.php:4272 report_ancestor.php:1542
 msgid "female"
 msgstr "femeie"
 
-#: admin/include/editor.php:1566 admin/include/editor.php:1569 admin/include/editor.php:1573 admin/include/editor.php:4251 admin/include/editor.php:4253 admin/include/editor_event_cls.php:17 admin/include/editor_event_cls.php:504 admin/include/editor_event_cls.php:526 admin/include/editor_event_cls.php:1197 admin/include/editor_event_cls.php:1346 admin/include/editor_event_cls.php:1349 admin/include/trees_cls.php:1767 list.php:1561 list.php:1569
+#: admin/include/editor.php:1572 admin/include/editor.php:1575 admin/include/editor.php:1579 admin/include/editor.php:4321 admin/include/editor.php:4323 admin/include/editor_event_cls.php:17 admin/include/editor_event_cls.php:450 admin/include/editor_event_cls.php:457 admin/include/editor_event_cls.php:1153 admin/include/editor_event_cls.php:1348 admin/include/editor_event_cls.php:1351 admin/include/trees_cls.php:1767 list.php:1561 list.php:1569
 msgid "Profession"
 msgstr "Profesia"
 
-#: admin/include/editor.php:1580
+#: admin/include/editor.php:1586
 msgid "Or select an existing family as parents:"
 msgstr "Sau selectați o familie existentă ca părinți:"
 
-#: admin/include/editor.php:1604 include/calculate_age_cls.php:259
+#: admin/include/editor.php:1610 include/calculate_age_cls.php:259
 msgid "age"
 msgstr "vârsta"
 
-#: admin/include/editor.php:1604 timelines.php:497
+#: admin/include/editor.php:1610 timelines.php:497
 msgid "year"
 msgstr "an"
 
 # Buried
-#: admin/include/editor.php:1617 admin/include/editor.php:1663 admin/include/editor.php:1791 admin/include/editor.php:1866 admin/include/editor.php:1913 admin/include/editor.php:1958 admin/include/editor.php:2003 admin/include/editor.php:2103 admin/include/editor.php:2259 admin/include/editor.php:2285 admin/include/editor.php:2541 admin/include/editor.php:2623 admin/include/editor.php:2661 admin/include/editor.php:2688 admin/include/editor.php:2793 admin/include/editor.php:2820 admin/include/editor.php:2856 admin/include/editor.php:2946 family.php:2223
+#: admin/include/editor.php:1623 admin/include/editor.php:1669 admin/include/editor.php:1805 admin/include/editor.php:1879 admin/include/editor.php:1926 admin/include/editor.php:1976 admin/include/editor.php:2025 admin/include/editor.php:2128 admin/include/editor.php:2290 admin/include/editor.php:2320 admin/include/editor.php:2587 admin/include/editor.php:2669 admin/include/editor.php:2707 admin/include/editor.php:2734 admin/include/editor.php:2839 admin/include/editor.php:2866 admin/include/editor.php:2902 admin/include/editor.php:2992 family.php:2222
 msgid "[+]"
 msgstr "[+]"
 
-#: admin/include/editor.php:1617 admin/include/editor.php:2541 admin/include/gedcom_export.php:209 list.php:1666 list.php:1762 list_names.php:227 statistics.php:748 statistics.php:931
+#: admin/include/editor.php:1623 admin/include/editor.php:2587 admin/include/gedcom_export.php:209 list.php:1666 list.php:1762 list_names.php:227 statistics.php:748 statistics.php:931
 msgid "All"
 msgstr "Toți"
 
-#: admin/include/editor.php:1620
+#: admin/include/editor.php:1626
 msgid "Delete person"
 msgstr "Eliminare persoană"
 
-#: admin/include/editor.php:1668 admin/include/editor.php:1693 admin/include/editor_event_cls.php:1465 include/person_cls.php:1650
+#: admin/include/editor.php:1674 admin/include/editor.php:1699 admin/include/editor_event_cls.php:1506 include/person_cls.php:1649
 msgid "Hebrew name"
 msgstr "Nume ebraic"
 
-#: admin/include/editor.php:1678
-msgid "patronymic"
-msgstr "patronimic"
-
-#: admin/include/editor.php:1694
+#: admin/include/editor.php:1700
 msgid "For example: Joseph ben Hirsch Zvi"
 msgstr "De exemplu: Joseph ben Hirsch Zvi"
 
-#: admin/include/editor.php:1718 admin/include/editor.php:1852 admin/include/editor.php:1902 admin/include/editor.php:1949 admin/include/editor.php:1991 admin/include/editor.php:2095 admin/include/editor.php:2156 admin/include/editor.php:2655 admin/include/editor.php:2683 admin/include/editor.php:2785 admin/include/editor.php:2815 admin/include/editor.php:2843 admin/include/editor.php:2896 admin/include/editor.php:3349 admin/include/editor.php:3554 admin/include/editor.php:3812 admin/include/editor.php:4430 admin/include/editor_event_cls.php:1305 admin/include/editor_event_cls.php:1355 admin/include/editor_sources.php:90 admin/include/editor_sources.php:144 admin/include/gedcom.php:1535
+#: admin/include/editor.php:1724 admin/include/editor.php:1866 admin/include/editor.php:1869 admin/include/editor.php:1915 admin/include/editor.php:1918 admin/include/editor.php:1962 admin/include/editor.php:1965 admin/include/editor.php:2009 admin/include/editor.php:2012 admin/include/editor.php:2117 admin/include/editor.php:2181 admin/include/editor.php:2184 admin/include/editor.php:2701 admin/include/editor.php:2729 admin/include/editor.php:2831 admin/include/editor.php:2861 admin/include/editor.php:2889 admin/include/editor.php:2942 admin/include/editor.php:2943 admin/include/editor.php:3400 admin/include/editor.php:3605 admin/include/editor.php:3863 admin/include/editor.php:4500 admin/include/editor_event_cls.php:1304 admin/include/editor_event_cls.php:1357 admin/include/editor_event_cls.php:1374 admin/include/editor_sources.php:90 admin/include/editor_sources.php:144 admin/include/gedcom.php:1535
 msgid "text"
 msgstr "text"
 
-#: admin/include/editor.php:1792 admin/include/editor.php:4226 admin/include/editor_sources.php:66 birthday_list.php:136 family.php:2069 googlemaps/namesearch.php:198 include/mainindex_cls.php:879 include/mainindex_cls.php:882 include/person_cls.php:1830 include/person_cls.php:1832 include/person_cls.php:1837 include/person_cls.php:1840 list.php:1599 list.php:1606 list.php:1968 maps.php:655 maps.php:764 report_ancestor.php:1205 report_ancestor.php:1526 report_descendant.php:846
+#: admin/include/editor.php:1806 admin/include/editor.php:4286 admin/include/editor_sources.php:66 birthday_list.php:136 family.php:2069 googlemaps/namesearch.php:198 include/mainindex_cls.php:881 include/mainindex_cls.php:884 include/person_cls.php:1829 include/person_cls.php:1831 include/person_cls.php:1836 include/person_cls.php:1839 list.php:1599 list.php:1606 list.php:1968 maps.php:655 maps.php:764 report_ancestor.php:1217 report_ancestor.php:1538 report_descendant.php:846
 msgid "born"
 msgstr "născut(ă)"
 
-#: admin/include/editor.php:1794 admin/include/editor.php:1884 admin/include/editor.php:1930 admin/include/editor.php:1960 admin/include/editor.php:2005 admin/include/editor.php:2105 admin/include/editor.php:2626 admin/include/editor.php:2663 admin/include/editor.php:2691 admin/include/editor.php:2795 admin/include/editor.php:2822 admin/include/editor.php:2858 admin/include/editor.php:3324 admin/include/editor.php:3548 admin/include/editor.php:4432 admin/include/editor_cls.php:52
+#: admin/include/editor.php:1808 admin/include/editor.php:1897 admin/include/editor.php:1943 admin/include/editor.php:1978 admin/include/editor.php:2027 admin/include/editor.php:2130 admin/include/editor.php:2672 admin/include/editor.php:2709 admin/include/editor.php:2737 admin/include/editor.php:2841 admin/include/editor.php:2868 admin/include/editor.php:2904 admin/include/editor.php:3375 admin/include/editor.php:3599 admin/include/editor.php:4502 admin/include/editor_cls.php:51
 msgid "date"
 msgstr "data"
 
-#: admin/include/editor.php:1812 admin/include/editor.php:1885 admin/include/editor.php:1931 admin/include/editor.php:1960 admin/include/editor.php:2006 admin/include/editor.php:2106 admin/include/editor.php:2626 admin/include/editor.php:2663 admin/include/editor.php:2691 admin/include/editor.php:2795 admin/include/editor.php:2822 admin/include/editor.php:2858 admin/include/editor.php:3324 admin/include/editor.php:3548 admin/include/editor.php:4228 admin/include/editor.php:4234 admin/include/editor.php:4240 admin/include/editor.php:4246 admin/include/editor_event_cls.php:1295 admin/include/editor_event_cls.php:1352 admin/include/editor_sources.php:361 admin/include/editor_sources.php:482
+#: admin/include/editor.php:1826 admin/include/editor.php:1898 admin/include/editor.php:1944 admin/include/editor.php:1978 admin/include/editor.php:2028 admin/include/editor.php:2131 admin/include/editor.php:2672 admin/include/editor.php:2709 admin/include/editor.php:2737 admin/include/editor.php:2841 admin/include/editor.php:2868 admin/include/editor.php:2904 admin/include/editor.php:3375 admin/include/editor.php:3599 admin/include/editor.php:4288 admin/include/editor.php:4304 admin/include/editor.php:4310 admin/include/editor.php:4316 admin/include/editor_event_cls.php:1294 admin/include/editor_event_cls.php:1354 admin/include/editor_event_cls.php:1371 admin/include/editor_sources.php:361 admin/include/editor_sources.php:485
 msgid "place"
 msgstr "loc"
 
-#: admin/include/editor.php:1840 admin/include/trees_cls.php:1610
+#: admin/include/editor.php:1854 admin/include/editor.php:4293 admin/include/trees_cls.php:1610
 msgid "birth time"
 msgstr "ora nașterii"
 
-#: admin/include/editor.php:1843 include/person_cls.php:344
+#: admin/include/editor.php:1857 admin/include/editor.php:4294 include/person_cls.php:344
 msgid "stillborn child"
 msgstr "copil născut mort"
 
-#: admin/include/editor.php:1867 include/language_event.php:16
+#: admin/include/editor.php:1880 include/language_event.php:16
 msgid "Brit Mila"
 msgstr "Brit Mila"
 
-#: admin/include/editor.php:1886 admin/include/editor.php:1932
+#: admin/include/editor.php:1899 admin/include/editor.php:1945
 msgid "To display this, the option \"Show events\" has to be checked in \"Users -> Groups\""
 msgstr "Pentru a afișa acest lucru, opțiunea „Afișare evenimente” trebuie bifată în „Utilizatori -> Grupuri\""
 
-#: admin/include/editor.php:1914 include/language_event.php:14
+#: admin/include/editor.php:1927 include/language_event.php:14
 msgid "Bat Mitzvah"
 msgstr "Bat Mitzvah"
 
-#: admin/include/editor.php:1915 include/language_event.php:13
+#: admin/include/editor.php:1928 include/language_event.php:13
 msgid "Bar Mitzvah"
 msgstr "Bar Mitzvah"
 
-#: admin/include/editor.php:1959 admin/include/editor.php:4232 admin/include/editor_sources.php:72 family.php:2072 googlemaps/namesearch.php:201 include/mainindex_cls.php:890 include/mainindex_cls.php:893 include/person_cls.php:1959 include/person_cls.php:1961 include/person_cls.php:1966 include/person_cls.php:1969 list.php:1599 list.php:1606 list.php:1968 maps.php:658 maps.php:767 timelines.php:40
+#: admin/include/editor.php:1977 admin/include/editor.php:4302 admin/include/editor_sources.php:72 family.php:2072 googlemaps/namesearch.php:201 include/mainindex_cls.php:892 include/mainindex_cls.php:895 include/person_cls.php:1958 include/person_cls.php:1960 include/person_cls.php:1965 include/person_cls.php:1968 list.php:1599 list.php:1606 list.php:1968 maps.php:658 maps.php:767 timelines.php:40
 msgid "baptised"
 msgstr "botezat(ă)"
 
-#: admin/include/editor.php:1980 admin/include/trees_cls.php:1621 include/person_cls.php:1871 include/person_cls.php:1873
+#: admin/include/editor.php:1998 admin/include/editor.php:1999 admin/include/trees_cls.php:1621 include/person_cls.php:1870 include/person_cls.php:1872 include/person_cls.php:2335
 msgid "religion"
 msgstr "religia"
 
-#: admin/include/editor.php:2004 admin/include/editor.php:4238 admin/include/editor_sources.php:78 birthday_list.php:138 googlemaps/namesearch.php:207 include/mainindex_cls.php:901 include/mainindex_cls.php:904 include/person_cls.php:2118 include/person_cls.php:2120 include/person_cls.php:2124 include/person_cls.php:2125 list.php:1631 list.php:1638 list.php:1969 maps.php:661 maps.php:770 report_ancestor.php:1205 report_ancestor.php:1526
+#: admin/include/editor.php:2026 admin/include/editor.php:4308 admin/include/editor_sources.php:78 birthday_list.php:138 googlemaps/namesearch.php:207 include/mainindex_cls.php:903 include/mainindex_cls.php:906 include/person_cls.php:2117 include/person_cls.php:2119 include/person_cls.php:2123 include/person_cls.php:2124 list.php:1631 list.php:1638 list.php:1969 maps.php:661 maps.php:770 report_ancestor.php:1217 report_ancestor.php:1538
 msgid "died"
 msgstr "decedat(ă)"
 
-#: admin/include/editor.php:2010 admin/include/editor.php:2709 admin/include/editor.php:2713
+#: admin/include/editor.php:2032 admin/include/editor.php:2755 admin/include/editor.php:2759
 msgid "Age"
 msgstr "Vârsta"
 
-#: admin/include/editor.php:2019
+#: admin/include/editor.php:2041
 msgid "If death year and age are used, then birth year is calculated automatically (when empty)."
 msgstr "Dacă se utilizează anul morții și vârsta, atunci anul nașterii este calculat automat (când este gol)."
 
-#: admin/include/editor.php:2038 admin/include/trees_cls.php:1615
+#: admin/include/editor.php:2060 admin/include/trees_cls.php:1615
 msgid "death time"
 msgstr "ora morții"
 
-#: admin/include/editor.php:2040
+#: admin/include/editor.php:2062 admin/include/editor.php:2104
 msgid "cause"
 msgstr "cauza"
 
-#: admin/include/editor.php:2046 include/person_cls.php:2035 include/person_cls.php:2063
+#: admin/include/editor.php:2068 include/person_cls.php:2034 include/person_cls.php:2062
 msgid "murdered"
 msgstr "ucis"
 
-#: admin/include/editor.php:2049 include/person_cls.php:2036
+#: admin/include/editor.php:2071 include/person_cls.php:2035
 msgid "drowned"
 msgstr "înecat"
 
-#: admin/include/editor.php:2052 include/person_cls.php:2037
+#: admin/include/editor.php:2074 include/person_cls.php:2036
 msgid "perished"
 msgstr "pierit"
 
-#: admin/include/editor.php:2055 include/person_cls.php:2038
+#: admin/include/editor.php:2077 include/person_cls.php:2037
 msgid "killed in action"
 msgstr "ucis în acțiune"
 
-#: admin/include/editor.php:2058 include/person_cls.php:2039
+#: admin/include/editor.php:2080 include/person_cls.php:2038
 msgid "being missed"
 msgstr "dispărut"
 
-#: admin/include/editor.php:2061 include/person_cls.php:2040
+#: admin/include/editor.php:2083 include/person_cls.php:2039
 msgid "committed suicide"
 msgstr "sinucidere"
 
-#: admin/include/editor.php:2064 include/person_cls.php:2041
+#: admin/include/editor.php:2086 include/person_cls.php:2040
 msgid "executed"
 msgstr "executat"
 
-#: admin/include/editor.php:2067 include/person_cls.php:2042
+#: admin/include/editor.php:2089 include/person_cls.php:2041
 msgid "died young"
 msgstr "a murit tânăr"
 
-#: admin/include/editor.php:2070 include/person_cls.php:2043
+#: admin/include/editor.php:2092 include/person_cls.php:2042
 msgid "died unmarried"
 msgstr "a murit necăsătorit(ă)"
 
-#: admin/include/editor.php:2073 include/person_cls.php:2044
+#: admin/include/editor.php:2095 include/person_cls.php:2043
 msgid "registration"
 msgstr "înregistrare"
 
-#: admin/include/editor.php:2076 include/person_cls.php:2045
+#: admin/include/editor.php:2098 include/person_cls.php:2044
 msgid "declared death"
 msgstr "declarat decesul"
 
-#: admin/include/editor.php:2080 admin/include/editor.php:3260 admin/include/editor.php:3361 admin/include/editor.php:3496 admin/include/editor.php:3567 admin/include/editor.php:3736 admin/include/editor.php:3820 admin/include/editor.php:4122 admin/include/index_inc.php:544 admin/include/thumbs.php:618 fanchart.php:765 include/calculate_age_cls.php:219 include/calculate_age_cls.php:245 include/calculate_age_cls.php:346 include/calculate_age_cls.php:372
+#: admin/include/editor.php:2102 admin/include/editor.php:3311 admin/include/editor.php:3412 admin/include/editor.php:3547 admin/include/editor.php:3618 admin/include/editor.php:3787 admin/include/editor.php:3871 admin/include/editor.php:4177 admin/include/index_inc.php:544 admin/include/thumbs.php:618 fanchart.php:765 include/calculate_age_cls.php:219 include/calculate_age_cls.php:245 include/calculate_age_cls.php:346 include/calculate_age_cls.php:372
 msgid "or"
 msgstr "sau"
 
-#: admin/include/editor.php:2104
+#: admin/include/editor.php:2129 admin/include/editor_event_cls.php:1222
 msgid "Buried"
 msgstr "Înmormântat(ă)"
 
-#: admin/include/editor.php:2125
+#: admin/include/editor.php:2150
 msgid "method of burial"
 msgstr "metoda de înmormântare"
 
-#: admin/include/editor.php:2132 admin/include/editor.php:4244 admin/include/editor_sources.php:84 googlemaps/namesearch.php:210 include/person_cls.php:2216 list.php:1631 list.php:1638 list.php:1969 maps.php:664 maps.php:773 timelines.php:64
+#: admin/include/editor.php:2157 admin/include/editor.php:4314 admin/include/editor_sources.php:84 googlemaps/namesearch.php:210 include/person_cls.php:2215 list.php:1631 list.php:1638 list.php:1969 maps.php:664 maps.php:773 timelines.php:64
 msgid "buried"
 msgstr "îngropat(ă)"
 
-#: admin/include/editor.php:2135 admin/include/trees_cls.php:1617 include/person_cls.php:2204
+#: admin/include/editor.php:2160 admin/include/trees_cls.php:1617 include/person_cls.php:2203
 msgid "cremation"
 msgstr "incinerare"
 
-#: admin/include/editor.php:2138 include/person_cls.php:2207
+#: admin/include/editor.php:2163 include/person_cls.php:2206
 msgid "resomated"
 msgstr "resomat"
 
-#: admin/include/editor.php:2141 include/person_cls.php:2210
+#: admin/include/editor.php:2166 include/person_cls.php:2209
 msgid "sailor's grave"
 msgstr "mormântul marinarului"
 
-#: admin/include/editor.php:2144 include/person_cls.php:2213
+#: admin/include/editor.php:2169 include/person_cls.php:2212
 msgid "donated to science"
 msgstr "donat științei"
 
-#: admin/include/editor.php:2167
+#: admin/include/editor.php:2195 admin/include/editor.php:2197
 msgid "Text for person"
 msgstr "Text pentru persoană"
 
-#: admin/include/editor.php:2182 include/show_sources.php:61 include/show_sources.php:148 include/show_sources.php:204
+#: admin/include/editor.php:2210 include/show_sources.php:61 include/show_sources.php:148 include/show_sources.php:204
 msgid "Source for person"
 msgstr "Sursa pentru persoană"
 
-#: admin/include/editor.php:2192 admin/include/trees_cls.php:1622 include/show_sources.php:243 include/show_sources.php:326
+#: admin/include/editor.php:2220 admin/include/editor.php:2222 admin/include/trees_cls.php:1622 include/show_sources.php:243 include/show_sources.php:326
 msgid "own code"
 msgstr "propriul cod"
 
-#: admin/include/editor.php:2203
+#: admin/include/editor.php:2231
 msgid ""
 "Use own code for your own remarks.<br>\n"
 "It's possible to use own code for special privacy options, see Admin > Users > Groups.<br>\n"
@@ -819,850 +819,934 @@ msgstr ""
 "Este posibil să utilizați propriul cod pentru opțiuni speciale de confidențialitate, consultați Administrator > Utilizatori > Grupuri.<br>\n"
 "De asemenea, este posibil să adăugați propriile pictograme referitor la o persoană! Adăugați pictograma în directorul de imagini de ex. „persoana.gif” și adăugați „persoana” în câmpul de cod propriu."
 
-#: admin/include/editor.php:2261 admin/include/editor.php:2947
+#: admin/include/editor.php:2292 admin/include/editor.php:2993
 msgid "GEDCOM tags"
 msgstr "Etichete GEDCOM"
 
-#: admin/include/editor.php:2263 admin/include/editor.php:2266 admin/include/editor.php:2949 admin/include/editor.php:2952
+#: admin/include/editor.php:2294 admin/include/editor.php:2297 admin/include/editor.php:2995 admin/include/editor.php:2998
 #, php-format
 msgid "There are %d unprocessed GEDCOM tags."
 msgstr "Există %d etichete GEDCOM neprelucrate."
 
-#: admin/include/editor.php:2286 admin/include/user_notes.php:8 admin/include/user_notes.php:12 admin/include/user_notes.php:87 admin/index.php:1169 family.php:2097
+#: admin/include/editor.php:2321 admin/include/user_notes.php:10 admin/include/user_notes.php:14 admin/include/user_notes.php:93 admin/index.php:1237 family.php:2098
 msgid "User notes"
 msgstr "Notele utilizatorului"
 
-#: admin/include/editor.php:2288 admin/include/editor.php:2290 admin/include/user_notes.php:89 admin/include/user_notes.php:91 family.php:2099 family.php:2101
+#: admin/include/editor.php:2323 admin/include/editor.php:2325 admin/include/user_notes.php:95 admin/include/user_notes.php:97 family.php:2100 family.php:2102
 #, php-format
 msgid "There are %d user added notes."
 msgstr "Există %d note adăugate de utilizator."
 
-#: admin/include/editor.php:2386
+#: admin/include/editor.php:2425
 msgid "Select family"
 msgstr "Selectați familia"
 
-#: admin/include/editor.php:2425 admin/include/editor.php:2453 admin/include/editor.php:4177 admin/include/editor.php:4258
+#: admin/include/editor.php:2464 admin/include/editor.php:2492 admin/include/editor.php:4234 admin/include/editor.php:4328
 msgid "Add relation"
 msgstr "Adăugare relație"
 
-#: admin/include/editor.php:2425
+#: admin/include/editor.php:2464
 msgid "Add new relation to this person"
 msgstr "Adăugați o nouă relație acestei persoane"
 
-#: admin/include/editor.php:2448
+#: admin/include/editor.php:2487
 msgid "Or add relation with existing person:"
 msgstr "Sau adăugați o relație cu persoana existentă:"
 
-#: admin/include/editor.php:2545
+#: admin/include/editor.php:2591
 msgid "Delete relation"
 msgstr "Eliminare relație"
 
-#: admin/include/editor.php:2568
+#: admin/include/editor.php:2614
 msgid "Select person 1"
 msgstr "Selectați persoana 1"
 
-#: admin/include/editor.php:2595
+#: admin/include/editor.php:2641
 msgid "Select person 2"
 msgstr "Selectați persoana 2"
 
-#: admin/include/editor.php:2625 admin/include/editor.php:2741 admin/include/editor_sources.php:108 include/marriage_cls.php:54 include/marriage_cls.php:135 include/marriage_cls.php:136 include/marriage_cls.php:137 include/person_cls.php:1457
+#: admin/include/editor.php:2671 admin/include/editor.php:2787 admin/include/editor_sources.php:108 include/marriage_cls.php:54 include/marriage_cls.php:135 include/marriage_cls.php:136 include/marriage_cls.php:137 include/person_cls.php:1456
 msgid "Living together"
 msgstr "Coabitare"
 
-#: admin/include/editor.php:2645
+#: admin/include/editor.php:2691
 msgid "End date"
 msgstr "Data de încheiere"
 
-#: admin/include/editor.php:2662 admin/include/editor_sources.php:114
+#: admin/include/editor.php:2708 admin/include/editor_sources.php:114
 msgid "Notice of Marriage"
 msgstr "Notificare de căsătorie"
 
-#: admin/include/editor.php:2709
+#: admin/include/editor.php:2755
 msgid "Age person 1"
 msgstr "Vârsta persoanei 1"
 
-#: admin/include/editor.php:2713
+#: admin/include/editor.php:2759
 msgid "Age person 2"
 msgstr "Vârsta persoanei 2"
 
-#: admin/include/editor.php:2723
+#: admin/include/editor.php:2769
 msgid "If birth year of man or woman is empty it will be calculated automatically using age by marriage."
 msgstr "Dacă anul nașterii bărbatului sau femeii este gol, acesta va fi calculat automat folosind vârsta la căsătorie."
 
-#: admin/include/editor.php:2732
+#: admin/include/editor.php:2778
 msgid "Relation Type"
 msgstr "Tipul de relație"
 
-#: admin/include/editor.php:2735
+#: admin/include/editor.php:2781
 msgid "Marriage/ Related"
 msgstr "Căsătorie/În relație cu"
 
-#: admin/include/editor.php:2744 include/marriage_cls.php:57 include/person_cls.php:1458
+#: admin/include/editor.php:2790 include/marriage_cls.php:57 include/person_cls.php:1457
 msgid "Living apart together"
 msgstr "Trăind separat împreună"
 
-#: admin/include/editor.php:2747 include/marriage_cls.php:60 include/person_cls.php:1459
+#: admin/include/editor.php:2793 include/marriage_cls.php:60 include/person_cls.php:1458
 msgid "Intentionally unmarried mother"
 msgstr "Mamă necăsătorită în mod intenționat"
 
-#: admin/include/editor.php:2750 include/marriage_cls.php:64 include/person_cls.php:1460
+#: admin/include/editor.php:2796 include/marriage_cls.php:64 include/person_cls.php:1459
 msgid "Homosexual"
 msgstr "Homosexual"
 
-#: admin/include/editor.php:2753
+#: admin/include/editor.php:2799
 msgid "Non_marital"
 msgstr "Non_conjugală"
 
-#: admin/include/editor.php:2756 include/marriage_cls.php:71 include/marriage_cls.php:77 include/person_cls.php:1462 include/person_cls.php:1463
+#: admin/include/editor.php:2802 include/marriage_cls.php:71 include/marriage_cls.php:77 include/person_cls.php:1461 include/person_cls.php:1462
 msgid "Extramarital"
 msgstr "Extramarital"
 
-#: admin/include/editor.php:2759 include/marriage_cls.php:83 include/person_cls.php:1464
+#: admin/include/editor.php:2805 include/marriage_cls.php:83 include/person_cls.php:1463
 msgid "Partner"
 msgstr "Partener"
 
-#: admin/include/editor.php:2762 include/marriage_cls.php:86
-#| msgid "partnership"
+#: admin/include/editor.php:2808 include/marriage_cls.php:86
 msgid "Registered partnership"
 msgstr "Parteneriat înregistrat"
 
-#: admin/include/editor.php:2765 include/marriage_cls.php:89 include/person_cls.php:1466
+#: admin/include/editor.php:2811 include/marriage_cls.php:89 include/person_cls.php:1465
 msgid "Unknown relation"
 msgstr "Relație necunoscută"
 
-#: admin/include/editor.php:2775 admin/include/editor.php:2885
+#: admin/include/editor.php:2821 admin/include/editor.php:2931
 msgid "Registrar"
 msgstr "Grefier"
 
-#: admin/include/editor.php:2794 admin/include/editor_sources.php:126
+#: admin/include/editor.php:2840 admin/include/editor_sources.php:126
 msgid "Religious Notice of Marriage"
 msgstr "Aviz religios de căsătorie"
 
-#: admin/include/editor.php:2821 admin/include/editor_sources.php:132
+#: admin/include/editor.php:2867 admin/include/editor_sources.php:132
 msgid "Religious Marriage"
 msgstr "Căsătoria religioasă"
 
-#: admin/include/editor.php:2852
+#: admin/include/editor.php:2898 admin/include/editor_event_cls.php:472 admin/include/editor_event_cls.php:479 admin/include/editor_event_cls.php:1158 admin/include/editor_event_cls.php:1365 admin/include/editor_event_cls.php:1368
 msgid "Religion"
 msgstr "Religia"
 
-#: admin/include/editor.php:2857 admin/include/editor_sources.php:138
+#: admin/include/editor.php:2903 admin/include/editor_sources.php:138
 msgid "Divorce"
 msgstr "Divorț"
 
-#: admin/include/editor.php:2876
+#: admin/include/editor.php:2922
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr "Divorț (utilizați această casetă de selectare pentru un divorț fără date suplimentare)."
 
-#: admin/include/editor.php:2901
+#: admin/include/editor.php:2947 admin/include/editor.php:2950
 msgid "Text by marriage"
 msgstr "Text pentru căsătorie"
 
-#: admin/include/editor.php:2917
+#: admin/include/editor.php:2963
 msgid "Source by marriage"
 msgstr "Sursa pentru căsătorie"
 
-#: admin/include/editor.php:3057
+#: admin/include/editor.php:3108
 msgid "Use this icon to order children (drag and drop)"
 msgstr "Utilizați această pictogramă pentru a ordona copiii (glisați și plasați)"
 
-#: admin/include/editor.php:3059
+#: admin/include/editor.php:3110
 msgid "Or automatically order children:"
 msgstr "Sau ordonați automat copiii:"
 
-#: admin/include/editor.php:3059
+#: admin/include/editor.php:3110
 msgid "Automatic order children"
 msgstr "Ordonare automată pentru copii"
 
-#: admin/include/editor.php:3061
+#: admin/include/editor.php:3112
 msgid "Children are re-ordered."
 msgstr "Copiii sunt re-ordonați."
 
-#: admin/include/editor.php:3074
+#: admin/include/editor.php:3125
 msgid "Drag to change order (saves automatically)"
 msgstr "Trageți pentru a schimba ordinea (se salvează automat)"
 
-#: admin/include/editor.php:3074
+#: admin/include/editor.php:3125
 msgid "Drag to change order"
 msgstr "Trageți pentru a schimba ordinea"
 
-#: admin/include/editor.php:3078
+#: admin/include/editor.php:3129
 msgid "Disconnect child"
 msgstr "Deconectare copil"
 
-#: admin/include/editor.php:3096
+#: admin/include/editor.php:3147
 msgid "Or add existing person as a child:"
 msgstr "Sau adăugați o persoană existentă ca și copil:"
 
-#: admin/include/editor.php:3101
+#: admin/include/editor.php:3152
 msgid "Select child"
 msgstr "Selectați copilul"
 
-#: admin/include/editor.php:3156
+#: admin/include/editor.php:3207
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr "Sigur doriți să eliminați această sursă și TOATE referințele sursei?"
 
-#: admin/include/editor.php:3199
+#: admin/include/editor.php:3250
 msgid "Source is removed!"
 msgstr "Sursa este eliminată!"
 
-#: admin/include/editor.php:3204 admin/include/groups.php:431 admin/include/trees_cls.php:1867 admin/index.php:1216 family.php:137 family.php:2254 header.php:279 help.php:60 include/show_sources.php:281 menu.php:535 report_ancestor.php:1545 source.php:37
+#: admin/include/editor.php:3255 admin/include/groups.php:431 admin/include/trees_cls.php:1867 admin/index.php:1284 family.php:137 family.php:2253 header.php:290 help.php:60 include/show_sources.php:281 menu.php:535 report_ancestor.php:1557 source.php:37
 msgid "Sources"
 msgstr "Surse"
 
-#: admin/include/editor.php:3205
+#: admin/include/editor.php:3256
 msgid "These sources can be connected to multiple persons, families, events and other items."
 msgstr "Aceste surse pot fi conectate la mai multe persoane, familii, evenimente și alte elemente."
 
-#: admin/include/editor.php:3225 admin/include/editor.php:3227
+#: admin/include/editor.php:3276 admin/include/editor.php:3278
 msgid "Select source"
 msgstr "Selectați sursa"
 
-#: admin/include/editor.php:3254 admin/include/editor.php:3317
+#: admin/include/editor.php:3305 admin/include/editor.php:3368
 msgid "restricted"
 msgstr "restricționat"
 
-#: admin/include/editor.php:3262 admin/include/editor_sources.php:542
+#: admin/include/editor.php:3313 admin/include/editor_sources.php:545
 msgid "Add source"
 msgstr "Adăugați sursa"
 
-#: admin/include/editor.php:3285 source.php:43 source.php:46
+#: admin/include/editor.php:3336 source.php:43 source.php:46
 msgid "No valid source number."
 msgstr "Nu există un număr de sursă valid."
 
-#: admin/include/editor.php:3309 admin/include/editor.php:3540 admin/include/editor.php:3785
+#: admin/include/editor.php:3360 admin/include/editor.php:3591 admin/include/editor.php:3836
 msgid "Option"
 msgstr "Opțiune"
 
-#: admin/include/editor.php:3309 admin/include/editor.php:3540 admin/include/editor.php:3785
+#: admin/include/editor.php:3360 admin/include/editor.php:3591 admin/include/editor.php:3836
 msgid "Value"
 msgstr "Valoare"
 
-#: admin/include/editor.php:3311
+#: admin/include/editor.php:3362
 msgid "Status:"
 msgstr "Stare:"
 
-#: admin/include/editor.php:3314
+#: admin/include/editor.php:3365
 msgid "publish"
 msgstr "publicare"
 
-#: admin/include/editor.php:3318
+#: admin/include/editor.php:3369
 msgid "restricted = only visible for selected user groups"
 msgstr "restricționat = vizibil numai pentru grupurile de utilizatori selectate"
 
-#: admin/include/editor.php:3321 admin/include/editor.php:3542 admin/include/editor_event_cls.php:27 admin/include/editor_event_cls.php:414 admin/include/editor_event_cls.php:418 admin/include/editor_sources.php:312 admin/include/editor_sources.php:356 admin/include/trees_cls.php:1775 source.php:51 source.php:56 source.php:229 sources.php:156
+#: admin/include/editor.php:3372 admin/include/editor.php:3593 admin/include/editor_event_cls.php:27 admin/include/editor_event_cls.php:378 admin/include/editor_event_cls.php:1471 admin/include/editor_event_cls.php:1481 admin/include/editor_sources.php:312 admin/include/editor_sources.php:356 admin/include/trees_cls.php:1775 source.php:51 source.php:56 source.php:229 sources.php:156
 msgid "Title"
 msgstr "Titlu"
 
-#: admin/include/editor.php:3323 source.php:144 source.php:149
+#: admin/include/editor.php:3374 source.php:144 source.php:149
 msgid "Subject"
 msgstr "Subiect"
 
-#: admin/include/editor.php:3326 source.php:227
+#: admin/include/editor.php:3377 source.php:227
 msgid "Repository"
 msgstr "Depozit"
 
-#: admin/include/editor.php:3339
+#: admin/include/editor.php:3390
 msgid "Add repositories"
 msgstr "Adăugați depozite"
 
-#: admin/include/editor.php:3342 source.php:87 source.php:105
+#: admin/include/editor.php:3393 source.php:87 source.php:105
 msgid "Publication"
 msgstr "Publicație"
 
-#: admin/include/editor.php:3342
+#: admin/include/editor.php:3393
 msgid "will be shown as a link."
 msgstr "va fi afișat ca link."
 
-#: admin/include/editor.php:3343 admin/include/editor_sources.php:333 admin/include/settings_admin.php:1139 include/person_cls.php:1718 include/person_cls.php:1720 include/person_cls.php:1723 include/person_cls.php:1726 list.php:1617 list.php:1625 source.php:122 source.php:127
+#: admin/include/editor.php:3394 admin/include/editor_sources.php:333 admin/include/settings_admin.php:1139 include/person_cls.php:1717 include/person_cls.php:1719 include/person_cls.php:1722 include/person_cls.php:1725 list.php:1617 list.php:1625 source.php:122 source.php:127
 msgid "Own code"
 msgstr "Cod propriu"
 
-#: admin/include/editor.php:3344 source.php:133 source.php:138
+#: admin/include/editor.php:3395 source.php:133 source.php:138
 msgid "Author"
 msgstr "Autor"
 
-#: admin/include/editor.php:3345 source.php:155 source.php:160
+#: admin/include/editor.php:3396 source.php:155 source.php:160
 msgid "Nr."
 msgstr "Nr."
 
-#: admin/include/editor.php:3346 source.php:166 source.php:171
+#: admin/include/editor.php:3397 source.php:166 source.php:171
 msgid "Kind"
 msgstr "Fel"
 
-#: admin/include/editor.php:3347 source.php:177 source.php:182
+#: admin/include/editor.php:3398 source.php:177 source.php:182
 msgid "Archive"
 msgstr "Arhivă"
 
-#: admin/include/editor.php:3348 admin/include/editor_sources.php:451 include/tfpdf/tfpdfextend.php:886 list.php:1839 list_names.php:248 list_places_families.php:446 photoalbum.php:273 source.php:187 source.php:192 sources.php:97
+#: admin/include/editor.php:3399 admin/include/editor_sources.php:452 include/tfpdf/tfpdfextend.php:894 list.php:1839 list_names.php:248 list_places_families.php:446 photoalbum.php:273 source.php:187 source.php:192 sources.php:97
 msgid "Page"
 msgstr "Pagina"
 
-#: admin/include/editor.php:3362 admin/include/editor.php:3568 admin/include/editor.php:3821 admin/include/make_db_maps.php:393 admin/include/make_db_maps.php:402 admin/include/make_db_maps.php:587
+#: admin/include/editor.php:3413 admin/include/editor.php:3619 admin/include/editor.php:3872 admin/include/make_db_maps.php:393 admin/include/make_db_maps.php:402 admin/include/make_db_maps.php:587
 msgid "Delete"
 msgstr "Șterge"
 
-#: admin/include/editor.php:3440
+#: admin/include/editor.php:3491
 msgid "Really remove repository with all repository links?"
 msgstr "Eliminați cu adevărat depozitul cu toate linkurile de depozit?"
 
-#: admin/include/editor.php:3466
+#: admin/include/editor.php:3517
 msgid "Repository is removed!"
 msgstr "Depozitul este eliminat!"
 
-#: admin/include/editor.php:3473 admin/index.php:1220
+#: admin/include/editor.php:3524 admin/index.php:1288
 msgid "Repositories"
 msgstr "Depozite"
 
-#: admin/include/editor.php:3474
+#: admin/include/editor.php:3525
 msgid "A repository can be connected to a source. Edit a source to connect a repository."
 msgstr "Un depozit poate fi conectat la o sursă. Editați o sursă pentru a conecta un depozit."
 
-#: admin/include/editor.php:3483 admin/include/editor.php:3485
+#: admin/include/editor.php:3534 admin/include/editor.php:3536
 msgid "Select repository"
 msgstr "Selectați depozitul"
 
-#: admin/include/editor.php:3497
+#: admin/include/editor.php:3548
 msgid "Add repository"
 msgstr "Adăugați depozit"
 
-#: admin/include/editor.php:3513
+#: admin/include/editor.php:3564
 msgid "No valid repository number."
 msgstr "Nu există un număr de depozit valid."
 
-#: admin/include/editor.php:3557 admin/include/gedcom_export.php:288 admin/include/gedcom_export.php:291 mailform.php:29 register.php:63 user_settings.php:97
+#: admin/include/editor.php:3608 admin/include/gedcom_export.php:288 admin/include/gedcom_export.php:291 mailform.php:29 register.php:63 user_settings.php:97
 msgid "E-mail"
 msgstr "E-mail"
 
-#: admin/include/editor.php:3559 admin/include/editor_event_cls.php:30 admin/include/editor_event_cls.php:258
+#: admin/include/editor.php:3610 admin/include/editor_event_cls.php:30 admin/include/editor_event_cls.php:289
 msgid "URL/ Internet link"
 msgstr "URL/link internet"
 
-#: admin/include/editor.php:3644
+#: admin/include/editor.php:3695
 msgid "Are you sure you want to remove this address and ALL address references?"
 msgstr "Sigur doriți să eliminați această adresă și TOATE referințele la adresă?"
 
-#: admin/include/editor.php:3697
+#: admin/include/editor.php:3748
 msgid "Address has been removed!"
 msgstr "Adresa a fost eliminată!"
 
-#: admin/include/editor.php:3705 admin/include/gedcom_export.php:357 admin/index.php:1224
+#: admin/include/editor.php:3756 admin/include/gedcom_export.php:360 admin/index.php:1292
 msgid "Shared addresses"
 msgstr "Adrese partajate"
 
-#: admin/include/editor.php:3706
+#: admin/include/editor.php:3757
 msgid "These addresses can be connected to multiple persons, families and other items."
 msgstr "Aceste adrese pot fi conectate la mai multe persoane, familii, evenimente și alte elemente."
 
-#: admin/include/editor.php:3718 admin/include/editor.php:3720 admin/include/editor.php:4532
+#: admin/include/editor.php:3769 admin/include/editor.php:3771 admin/include/editor.php:4602
 msgid "Select address"
 msgstr "Selectați adresa"
 
-#: admin/include/editor.php:3737
+#: admin/include/editor.php:3788
 msgid "Add address"
 msgstr "Adăugați adresa"
 
-#: admin/include/editor.php:3759
+#: admin/include/editor.php:3810
 msgid "No valid address number."
 msgstr "Nu există un număr de adresă valid."
 
-#: admin/include/editor.php:3801 admin/include/editor.php:4079 admin/include/editor_sources.php:90 admin/include/editor_sources.php:182 admin/include/editor_sources.php:190 include/show_sources.php:91 include/show_sources.php:189 include/show_sources.php:306
+#: admin/include/editor.php:3852 admin/include/editor.php:4130 admin/include/editor_sources.php:90 admin/include/editor_sources.php:182 admin/include/editor_sources.php:190 include/show_sources.php:91 include/show_sources.php:189 include/show_sources.php:306
 msgid "source"
 msgstr "sursa"
 
-#: admin/include/editor.php:3846 admin/index.php:1228
+#: admin/include/editor.php:3897 admin/index.php:1296
 msgid "Rename places"
 msgstr "Redenumiți locurile"
 
-#: admin/include/editor.php:3975 header.php:277 help.php:54 list.php:1966 list_places_families.php:560
+#: admin/include/editor.php:4026 header.php:288 help.php:54 list.php:1966 list_places_families.php:560
 msgid "Places"
 msgstr "Locuri"
 
-#: admin/include/editor.php:3976
+#: admin/include/editor.php:4027
 msgid "Select location"
 msgstr "Selectați locația"
 
-#: admin/include/editor.php:3991
+#: admin/include/editor.php:4042
 msgid "Person places"
 msgstr "Locuri de persoane"
 
-#: admin/include/editor.php:3993
+#: admin/include/editor.php:4044
 msgid "Family places"
 msgstr "Locuri de familii"
 
-#: admin/include/editor.php:3995
+#: admin/include/editor.php:4046
 msgid "Other places (sources, events, addresses, etc.)"
 msgstr "Alte locuri (surse, evenimente, adrese etc.)"
 
-#: admin/include/editor.php:4005 admin/include/editor.php:4014
+#: admin/include/editor.php:4056 admin/include/editor.php:4065
 msgid "Change location"
 msgstr "Modificați locația"
 
-#: admin/include/editor.php:4015
+#: admin/include/editor.php:4066
 msgid "Also change Google Maps table."
 msgstr "Modificați și tabelul Google Maps."
 
-#: admin/include/editor.php:4180 admin/include/editor.php:4261
+#: admin/include/editor.php:4237 admin/include/editor.php:4331
 msgid "Add child"
 msgstr "Adăugați copil"
 
-#: admin/include/editor.php:4277 admin/include/trees.php:301 include/show_tree_text.php:6 photoalbum.php:219
+#: admin/include/editor.php:4347 admin/include/trees.php:301 include/show_tree_text.php:6 photoalbum.php:219
 msgid "NO NAME"
 msgstr "FĂRĂ NUME"
 
-#: admin/include/editor.php:4433 admin/include/editor_sources.php:318
+#: admin/include/editor.php:4503 admin/include/editor_sources.php:318
 msgid "Extra text"
 msgstr "Text suplimentar"
 
-#: admin/include/editor.php:4454
+#: admin/include/editor.php:4524
 msgid "Address GEDCOM number:"
 msgstr "Numărul adresei GEDCOM:"
 
-#: admin/include/editor.php:4458
+#: admin/include/editor.php:4528
 msgid "Shared address"
 msgstr "Adresă partajată"
 
-#: admin/include/editor.php:4469
+#: admin/include/editor.php:4539
 msgid "A shared address can be connected to multiple persons or relations."
 msgstr "O adresă partajată poate fi conectată la mai multe persoane sau relații."
 
-#: admin/include/editor.php:4470
+#: admin/include/editor.php:4540
 msgid "A shared address is only supported by the Haza-data and HuMo-genealogy programs."
 msgstr "O adresă partajată este acceptată doar de programele Haza-data și HuMo-genealogy."
 
-#: admin/include/editor.php:4546
+#: admin/include/editor.php:4616
 msgid "Or: add new address"
 msgstr "Sau: adăugați o adresă nouă"
 
-#: admin/include/editor.php:4573
+#: admin/include/editor.php:4644
 msgid "Addressrole"
 msgstr "Addressrole"
 
-#: admin/include/editor.php:4576
+#: admin/include/editor.php:4647
 msgid "Extra text by address"
 msgstr "Text suplimentar referitor la adresă"
 
-#: admin/include/editor_cls.php:24 admin/include/tree_check.php:1552 include/language_date.php:55 include/language_date.php:69 include/language_date.php:110
+#: admin/include/editor.php:4794
+msgid "Editor notes"
+msgstr "Note ale editorului"
+
+#: admin/include/editor.php:4800 admin/include/editor.php:4802
+#, php-format
+msgid "There are %d editor notes."
+msgstr "Există %d note ale editorului."
+
+#: admin/include/editor.php:4825
+msgid "Priority"
+msgstr "Prioritate"
+
+#: admin/include/editor.php:4826
+msgid "Low"
+msgstr "Redusă"
+
+#: admin/include/editor.php:4829
+msgid "Normal"
+msgstr "Normală"
+
+#: admin/include/editor.php:4832
+msgid "High"
+msgstr "Ridicată"
+
+#: admin/include/editor.php:4835 admin/include/log.php:61 admin/include/settings_admin.php:825
+msgid "Status"
+msgstr "Stare"
+
+#: admin/include/editor.php:4836
+msgid "Not started"
+msgstr "Nu a început"
+
+#: admin/include/editor.php:4839
+msgid "In progress"
+msgstr "În curs"
+
+#: admin/include/editor.php:4842
+msgid "Completed"
+msgstr "Efectuat"
+
+#: admin/include/editor.php:4845
+msgid "Postponed"
+msgstr "Amânat"
+
+#: admin/include/editor.php:4848
+msgid "Cancelled"
+msgstr "Anulat"
+
+#: admin/include/editor_cls.php:24 admin/include/tree_check.php:1558 include/language_date.php:56 include/language_date.php:70 include/language_date.php:111
 msgid "before"
 msgstr "înainte"
 
 # plus-minus character
-#: admin/include/editor_cls.php:27 include/language_date.php:54 include/language_date.php:109
+#: admin/include/editor_cls.php:27 include/language_date.php:55 include/language_date.php:110
 msgid "&#177;"
 msgstr "&#177;"
 
-#: admin/include/editor_cls.php:30 admin/include/tree_check.php:1546 include/language_date.php:53 include/language_date.php:69 include/language_date.php:108
+#: admin/include/editor_cls.php:30 admin/include/tree_check.php:1552 include/language_date.php:54 include/language_date.php:70 include/language_date.php:109
 msgid "after"
 msgstr "după"
 
-#: admin/include/editor_cls.php:33 include/language_date.php:88 include/language_date.php:93 include/language_date.php:98 include/language_date.php:112
+#: admin/include/editor_cls.php:33 include/language_date.php:89 include/language_date.php:94 include/language_date.php:99 include/language_date.php:113
 msgid "between"
 msgstr "între"
 
-#: admin/include/editor_cls.php:37 include/language_date.php:115
+#: admin/include/editor_cls.php:37 include/language_date.php:116
 msgid "interpreted"
 msgstr "interpretat"
 
-#: admin/include/editor_cls.php:40 include/language_date.php:56 include/language_date.php:73 include/language_date.php:113
+#: admin/include/editor_cls.php:40 include/language_date.php:57 include/language_date.php:74 include/language_date.php:114
 msgid "estimated"
 msgstr "estimat"
 
-#: admin/include/editor_cls.php:43 include/language_date.php:57 include/language_date.php:114
+#: admin/include/editor_cls.php:43 include/language_date.php:58 include/language_date.php:115
 msgid "calculated"
 msgstr "calculat"
 
-#: admin/include/editor_cls.php:58 admin/include/editor_cls.php:174 admin/include/statistics.php:202 admin/include/trees_cls.php:116 birthday_list.php:79 include/language_date.php:21 include/mainindex_cls.php:289 statistics.php:24
+#: admin/include/editor_cls.php:57 admin/include/editor_cls.php:173 admin/include/statistics.php:202 admin/include/trees_cls.php:116 birthday_list.php:79 include/language_date.php:22 include/mainindex_cls.php:289 statistics.php:24
 msgid "jan"
 msgstr "ian"
 
-#: admin/include/editor_cls.php:59 admin/include/editor_cls.php:175 admin/include/statistics.php:203 admin/include/trees_cls.php:117 birthday_list.php:80 include/language_date.php:22 include/mainindex_cls.php:290 statistics.php:25
+#: admin/include/editor_cls.php:58 admin/include/editor_cls.php:174 admin/include/statistics.php:203 admin/include/trees_cls.php:117 birthday_list.php:80 include/language_date.php:23 include/mainindex_cls.php:290 statistics.php:25
 msgid "feb"
 msgstr "feb"
 
-#: admin/include/editor_cls.php:60 admin/include/editor_cls.php:176 admin/include/statistics.php:204 admin/include/trees_cls.php:118 birthday_list.php:81 include/language_date.php:23 include/mainindex_cls.php:291 statistics.php:26
+#: admin/include/editor_cls.php:59 admin/include/editor_cls.php:175 admin/include/statistics.php:204 admin/include/trees_cls.php:118 birthday_list.php:81 include/language_date.php:24 include/mainindex_cls.php:291 statistics.php:26
 msgid "mar"
 msgstr "mar"
 
-#: admin/include/editor_cls.php:61 admin/include/editor_cls.php:177 admin/include/statistics.php:205 admin/include/trees_cls.php:119 birthday_list.php:82 include/language_date.php:24 include/mainindex_cls.php:292 statistics.php:27
+#: admin/include/editor_cls.php:60 admin/include/editor_cls.php:176 admin/include/statistics.php:205 admin/include/trees_cls.php:119 birthday_list.php:82 include/language_date.php:25 include/mainindex_cls.php:292 statistics.php:27
 msgid "apr"
 msgstr "apr"
 
-#: admin/include/editor_cls.php:62 admin/include/editor_cls.php:178 admin/include/statistics.php:206 admin/include/trees_cls.php:120 birthday_list.php:83 include/language_date.php:25 include/mainindex_cls.php:293 statistics.php:28
+#: admin/include/editor_cls.php:61 admin/include/editor_cls.php:177 admin/include/statistics.php:206 admin/include/trees_cls.php:120 birthday_list.php:83 include/language_date.php:26 include/mainindex_cls.php:293 statistics.php:28
 msgid "may"
 msgstr "mai"
 
-#: admin/include/editor_cls.php:63 admin/include/editor_cls.php:179 admin/include/statistics.php:207 admin/include/trees_cls.php:121 birthday_list.php:84 include/language_date.php:26 include/mainindex_cls.php:294 statistics.php:29
+#: admin/include/editor_cls.php:62 admin/include/editor_cls.php:178 admin/include/statistics.php:207 admin/include/trees_cls.php:121 birthday_list.php:84 include/language_date.php:27 include/mainindex_cls.php:294 statistics.php:29
 msgid "jun"
 msgstr "iun"
 
-#: admin/include/editor_cls.php:64 admin/include/editor_cls.php:180 admin/include/statistics.php:208 admin/include/trees_cls.php:122 birthday_list.php:85 include/language_date.php:27 include/mainindex_cls.php:295 statistics.php:30
+#: admin/include/editor_cls.php:63 admin/include/editor_cls.php:179 admin/include/statistics.php:208 admin/include/trees_cls.php:122 birthday_list.php:85 include/language_date.php:28 include/mainindex_cls.php:295 statistics.php:30
 msgid "jul"
 msgstr "iul"
 
-#: admin/include/editor_cls.php:65 admin/include/editor_cls.php:181 admin/include/statistics.php:209 admin/include/trees_cls.php:123 birthday_list.php:86 include/language_date.php:28 include/mainindex_cls.php:296 statistics.php:31
+#: admin/include/editor_cls.php:64 admin/include/editor_cls.php:180 admin/include/statistics.php:209 admin/include/trees_cls.php:123 birthday_list.php:86 include/language_date.php:29 include/mainindex_cls.php:296 statistics.php:31
 msgid "aug"
 msgstr "aug"
 
-#: admin/include/editor_cls.php:66 admin/include/editor_cls.php:182 admin/include/statistics.php:210 admin/include/trees_cls.php:124 birthday_list.php:87 include/language_date.php:29 include/mainindex_cls.php:297 statistics.php:32
+#: admin/include/editor_cls.php:65 admin/include/editor_cls.php:181 admin/include/statistics.php:210 admin/include/trees_cls.php:124 birthday_list.php:87 include/language_date.php:30 include/mainindex_cls.php:297 statistics.php:32
 msgid "sep"
 msgstr "sep"
 
-#: admin/include/editor_cls.php:67 admin/include/editor_cls.php:183 admin/include/statistics.php:211 admin/include/trees_cls.php:125 birthday_list.php:88 include/language_date.php:30 include/mainindex_cls.php:298 statistics.php:33
+#: admin/include/editor_cls.php:66 admin/include/editor_cls.php:182 admin/include/statistics.php:211 admin/include/trees_cls.php:125 birthday_list.php:88 include/language_date.php:31 include/mainindex_cls.php:298 statistics.php:33
 msgid "oct"
 msgstr "oct"
 
-#: admin/include/editor_cls.php:68 admin/include/editor_cls.php:184 admin/include/statistics.php:212 admin/include/trees_cls.php:126 birthday_list.php:89 include/language_date.php:31 include/mainindex_cls.php:299 statistics.php:34
+#: admin/include/editor_cls.php:67 admin/include/editor_cls.php:183 admin/include/statistics.php:212 admin/include/trees_cls.php:126 birthday_list.php:89 include/language_date.php:32 include/mainindex_cls.php:299 statistics.php:34
 msgid "nov"
 msgstr "noi"
 
-#: admin/include/editor_cls.php:69 admin/include/editor_cls.php:185 admin/include/statistics.php:213 admin/include/trees_cls.php:127 birthday_list.php:90 include/language_date.php:32 include/mainindex_cls.php:300 statistics.php:35
+#: admin/include/editor_cls.php:68 admin/include/editor_cls.php:184 admin/include/statistics.php:213 admin/include/trees_cls.php:127 birthday_list.php:90 include/language_date.php:33 include/mainindex_cls.php:300 statistics.php:35
 msgid "dec"
 msgstr "dec"
 
-#: admin/include/editor_cls.php:70 admin/include/editor_cls.php:113 statistics.php:131 statistics.php:138
+#: admin/include/editor_cls.php:69 admin/include/editor_cls.php:112 statistics.php:131 statistics.php:138
 msgid " and "
 msgstr " și "
 
-#: admin/include/editor_cls.php:93
+#: admin/include/editor_cls.php:92
 msgid "After nightfall"
 msgstr "După căderea nopții"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:76 admin/include/statistics.php:544 admin/include/statistics.php:623 include/language_date.php:35
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:76 admin/include/statistics.php:544 admin/include/statistics.php:623 include/language_date.php:36
 msgid "January"
 msgstr "Ianuarie"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:77 admin/include/statistics.php:546 admin/include/statistics.php:625 include/language_date.php:36
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:77 admin/include/statistics.php:546 admin/include/statistics.php:625 include/language_date.php:37
 msgid "February"
 msgstr "Februarie"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:78 admin/include/statistics.php:548 admin/include/statistics.php:627 include/language_date.php:37
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:78 admin/include/statistics.php:548 admin/include/statistics.php:627 include/language_date.php:38
 msgid "March"
 msgstr "Martie"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:79 admin/include/statistics.php:550 admin/include/statistics.php:629 include/language_date.php:38
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:79 admin/include/statistics.php:550 admin/include/statistics.php:629 include/language_date.php:39
 msgid "April"
 msgstr "Aprilie"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:80 admin/include/statistics.php:552 admin/include/statistics.php:631 include/language_date.php:39
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:80 admin/include/statistics.php:552 admin/include/statistics.php:631 include/language_date.php:40
 msgid "May"
 msgstr "Mai"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:81 admin/include/statistics.php:554 admin/include/statistics.php:633 include/language_date.php:40
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:81 admin/include/statistics.php:554 admin/include/statistics.php:633 include/language_date.php:41
 msgid "June"
 msgstr "Iunie"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:82 admin/include/statistics.php:556 admin/include/statistics.php:635 include/language_date.php:41
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:82 admin/include/statistics.php:556 admin/include/statistics.php:635 include/language_date.php:42
 msgid "July"
 msgstr "Iulie"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:83 admin/include/statistics.php:558 admin/include/statistics.php:637 include/language_date.php:42
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:83 admin/include/statistics.php:558 admin/include/statistics.php:637 include/language_date.php:43
 msgid "August"
 msgstr "August"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:84 admin/include/statistics.php:560 admin/include/statistics.php:639 include/language_date.php:43
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:84 admin/include/statistics.php:560 admin/include/statistics.php:639 include/language_date.php:44
 msgid "September"
 msgstr "Septembrie"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:85 admin/include/statistics.php:562 admin/include/statistics.php:641 include/language_date.php:44
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:85 admin/include/statistics.php:562 admin/include/statistics.php:641 include/language_date.php:45
 msgid "October"
 msgstr "Octombrie"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:86 admin/include/statistics.php:564 admin/include/statistics.php:643 include/language_date.php:45
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:86 admin/include/statistics.php:564 admin/include/statistics.php:643 include/language_date.php:46
 msgid "November"
 msgstr "Noiembrie"
 
-#: admin/include/editor_cls.php:167 admin/include/statistics.php:87 admin/include/statistics.php:566 admin/include/statistics.php:645 include/language_date.php:46
+#: admin/include/editor_cls.php:166 admin/include/statistics.php:87 admin/include/statistics.php:566 admin/include/statistics.php:645 include/language_date.php:47
 msgid "December"
 msgstr "Decembrie"
 
 # Birth
-#: admin/include/editor_cls.php:270 include/person_cls.php:999 list.php:52 list.php:207 list.php:216 list.php:1477 relations.php:3300 relations.php:3411 report_ancestor.php:817 report_ancestor.php:1205 report_ancestor.php:1290 report_ancestor.php:1526 report_descendant.php:748
+#: admin/include/editor_cls.php:269 include/person_cls.php:998 list.php:52 list.php:207 list.php:216 list.php:1477 relations.php:3300 relations.php:3411 report_ancestor.php:817 report_ancestor.php:1217 report_ancestor.php:1302 report_ancestor.php:1538 report_descendant.php:748
 msgid "*"
 msgstr "*"
 
 # Baptise
-#: admin/include/editor_cls.php:272 include/person_cls.php:1003 list.php:59 list.php:205 list.php:214 list.php:1482 relations.php:3297 relations.php:3408 report_ancestor.php:821 report_descendant.php:753
+#: admin/include/editor_cls.php:271 include/person_cls.php:1002 list.php:59 list.php:205 list.php:214 list.php:1482 relations.php:3297 relations.php:3408 report_ancestor.php:821 report_descendant.php:753
 msgid "~"
 msgstr "~"
 
 # Death sign
-#: admin/include/editor_cls.php:275 include/person_cls.php:1008 list.php:83 list.php:225 list.php:234 list.php:1492 report_ancestor.php:826 report_ancestor.php:1205 report_ancestor.php:1256 report_descendant.php:759
+#: admin/include/editor_cls.php:274 include/person_cls.php:1007 list.php:83 list.php:225 list.php:234 list.php:1492 report_ancestor.php:826 report_ancestor.php:1217 report_ancestor.php:1268 report_descendant.php:759
 msgid "&#134;"
 msgstr "&#134;"
 
 # Buried
-#: admin/include/editor_cls.php:279 include/person_cls.php:1012 list.php:90 list.php:223 list.php:232 list.php:1498 report_ancestor.php:830 report_descendant.php:764
+#: admin/include/editor_cls.php:278 include/person_cls.php:1011 list.php:90 list.php:223 list.php:232 list.php:1498 report_ancestor.php:830 report_descendant.php:764
 msgid "[]"
 msgstr "[]"
 
-#: admin/include/editor_event_cls.php:16 admin/include/editor_event_cls.php:34 admin/include/editor_event_cls.php:550 admin/include/editor_event_cls.php:1071
+#: admin/include/editor_event_cls.php:16 admin/include/editor_event_cls.php:34 admin/include/editor_event_cls.php:502 admin/include/editor_event_cls.php:1027
 msgid "Picture/ Media"
 msgstr "Imagine/Media"
 
 # Language indicator, used for birthday RSS
-#: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:248 admin/include/editor_event_cls.php:274 admin/include/editor_event_cls.php:302 admin/include/editor_event_cls.php:326 admin/include/editor_event_cls.php:1203 admin/include/editor_sources.php:182 admin/include/editor_sources.php:190 admin/include/trees_cls.php:1768 include/mainindex_cls.php:938
+#: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:279 admin/include/editor_event_cls.php:305 admin/include/editor_event_cls.php:333 admin/include/editor_event_cls.php:357 admin/include/editor_event_cls.php:1167 admin/include/editor_sources.php:182 admin/include/editor_sources.php:190 admin/include/trees_cls.php:1768 include/mainindex_cls.php:940
 msgid "Event"
 msgstr "Eveniment"
 
-#: admin/include/editor_event_cls.php:19 admin/include/editor_event_cls.php:446 admin/include/editor_inc.php:1383 admin/include/trees_cls.php:1769 include/person_cls.php:1808 include/witness.php:124
+#: admin/include/editor_event_cls.php:19 admin/include/editor_event_cls.php:395 admin/include/trees_cls.php:1769 include/person_cls.php:1807 include/witness.php:124
 msgid "birth declaration"
 msgstr "declarația de naștere"
 
-#: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:459 admin/include/editor_inc.php:1385 admin/include/trees_cls.php:1770 include/person_cls.php:1904 include/witness.php:125
+#: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:409 admin/include/trees_cls.php:1770 include/person_cls.php:1903 include/witness.php:125
 msgid "baptism witness"
 msgstr "martor la botez"
 
-#: admin/include/editor_event_cls.php:21 admin/include/editor_event_cls.php:472 admin/include/editor_inc.php:1387 admin/include/trees_cls.php:1771 include/person_cls.php:2096 include/witness.php:126
+#: admin/include/editor_event_cls.php:21 admin/include/editor_event_cls.php:423 admin/include/trees_cls.php:1771 include/person_cls.php:2095 include/witness.php:126
 msgid "death declaration"
 msgstr "certificat de deces"
 
-#: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:485 admin/include/editor_inc.php:1389 admin/include/trees_cls.php:1772 include/person_cls.php:2181 include/witness.php:127
+#: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:437 admin/include/trees_cls.php:1772 include/person_cls.php:2180 include/witness.php:127
 msgid "burial witness"
 msgstr "martor la înmormântare"
 
-#: admin/include/editor_event_cls.php:24 admin/include/editor_event_cls.php:363 admin/include/editor_event_cls.php:367
+#: admin/include/editor_event_cls.php:24 admin/include/editor_event_cls.php:378 admin/include/editor_event_cls.php:1471 admin/include/editor_event_cls.php:1472
 msgid "Prefix"
 msgstr "Prefix"
 
-#: admin/include/editor_event_cls.php:25 admin/include/editor_event_cls.php:381 admin/include/editor_event_cls.php:385
+#: admin/include/editor_event_cls.php:25 admin/include/editor_event_cls.php:378 admin/include/editor_event_cls.php:1471 admin/include/editor_event_cls.php:1475
 msgid "Suffix"
 msgstr "Sufix"
 
-#: admin/include/editor_event_cls.php:26 admin/include/editor_event_cls.php:398 admin/include/editor_event_cls.php:402 admin/include/trees_cls.php:1774
+#: admin/include/editor_event_cls.php:26 admin/include/editor_event_cls.php:1478 admin/include/trees_cls.php:1774
 msgid "Title of Nobility"
 msgstr "Titlul de Nobilime"
 
-#: admin/include/editor_event_cls.php:28 admin/include/editor_event_cls.php:256
+#: admin/include/editor_event_cls.php:28 admin/include/editor_event_cls.php:287 admin/include/editor_event_cls.php:1198
 msgid "Adoption"
 msgstr "Adopție"
 
-#: admin/include/editor_event_cls.php:29 admin/include/editor_event_cls.php:430 admin/include/editor_event_cls.php:434 admin/include/trees_cls.php:1776
+#: admin/include/editor_event_cls.php:29 admin/include/editor_event_cls.php:1484 admin/include/trees_cls.php:1776
 msgid "Title of Lordship"
 msgstr "Titlul de Domnie"
 
-#: admin/include/editor_event_cls.php:31 admin/include/editor_event_cls.php:259
+#: admin/include/editor_event_cls.php:31 admin/include/editor_event_cls.php:290
 msgid "Colour mark by person"
 msgstr "Semn de culoare referitor la persoană"
 
-#: admin/include/editor_event_cls.php:32 admin/include/editor_event_cls.php:753 admin/include/editor_inc.php:1400 include/marriage_cls.php:274 include/witness.php:128
+#: admin/include/editor_event_cls.php:32 admin/include/editor_event_cls.php:706 include/marriage_cls.php:277 include/witness.php:128
 msgid "marriage witness"
 msgstr "martor la căsătorie"
 
-#: admin/include/editor_event_cls.php:33 admin/include/editor_event_cls.php:766 admin/include/editor_inc.php:1402 include/marriage_cls.php:424 include/witness.php:129
+#: admin/include/editor_event_cls.php:33 admin/include/editor_event_cls.php:720 include/marriage_cls.php:427 include/witness.php:129
 msgid "marriage witness (religious)"
 msgstr "martor la căsătorie (religioasă)"
 
 # Language indicator, used for birthday RSS
-#: admin/include/editor_event_cls.php:217 admin/include/editor_event_cls.php:287 list.php:105 list.php:1504 list.php:1505
+#: admin/include/editor_event_cls.php:247 admin/include/editor_event_cls.php:318 admin/include/editor_event_cls.php:1181 list.php:105 list.php:1504 list.php:1505
 msgid "Events"
 msgstr "Evenimente"
 
-#: admin/include/editor_event_cls.php:261 admin/include/editor_event_cls.php:306
+#: admin/include/editor_event_cls.php:292 admin/include/editor_event_cls.php:337
 msgid "Add event"
 msgstr "Adăugați eveniment"
 
-#: admin/include/editor_event_cls.php:274 admin/include/editor_event_cls.php:326
+#: admin/include/editor_event_cls.php:305 admin/include/editor_event_cls.php:357
 msgid "For items like:"
 msgstr "Pentru elemente ca:"
 
-#: admin/include/editor_event_cls.php:274 include/language_event.php:12
+#: admin/include/editor_event_cls.php:305 include/language_event.php:12
 msgid "baptized as child"
 msgstr "botezat(ă) în copilărie"
 
-#: admin/include/editor_event_cls.php:274 include/language_event.php:25
+#: admin/include/editor_event_cls.php:305 include/language_event.php:25
 msgid "depart"
 msgstr "plecare"
 
-#: admin/include/editor_event_cls.php:274 admin/include/editor_event_cls.php:326
+#: admin/include/editor_event_cls.php:305 admin/include/editor_event_cls.php:357
 msgid "etc."
 msgstr "etc."
 
-#: admin/include/editor_event_cls.php:326 include/language_event.php:42
+#: admin/include/editor_event_cls.php:357 include/language_event.php:42
 msgid "Marriage contract"
 msgstr "Certificat de căsătorie"
 
-#: admin/include/editor_event_cls.php:326 include/language_event.php:43
+#: admin/include/editor_event_cls.php:357 include/language_event.php:43
 msgid "Marriage license"
 msgstr "Certificat de căsătorie"
 
-#: admin/include/editor_event_cls.php:346 admin/include/editor_event_cls.php:1449 include/person_cls.php:1638
+#: admin/include/editor_event_cls.php:378 admin/include/editor_event_cls.php:1490 include/person_cls.php:1637
 msgid "Nickname"
 msgstr "Poreclă"
 
-#: admin/include/editor_event_cls.php:368 admin/include/editor_event_cls.php:1206
-msgid "e.g. Lt. Cmndr."
-msgstr "de exemplu Lt. Cmndr."
-
-#: admin/include/editor_event_cls.php:386 admin/include/editor_event_cls.php:1207
-msgid "e.g. Jr."
-msgstr "de exemplu Jr."
-
-#: admin/include/editor_event_cls.php:403 admin/include/editor_event_cls.php:1208
-msgid "e.g. Jhr., Jkvr."
-msgstr "de exemplu Jhr., Jkvr."
-
-#: admin/include/editor_event_cls.php:419 admin/include/editor_event_cls.php:1209
-msgid "e.g. Prof., Dr."
-msgstr "de exemplu Prof., Dr."
-
-#: admin/include/editor_event_cls.php:435 admin/include/editor_event_cls.php:1210
-msgid "e.g. Lord of Amsterdam"
-msgstr "de exemplu Lord de Alba-Iulia"
-
-#: admin/include/editor_event_cls.php:1106
+#: admin/include/editor_event_cls.php:1062
 msgid "* Select adoption parents *"
 msgstr "* Selectați părinții de adopție *"
 
-#: admin/include/editor_event_cls.php:1141
+#: admin/include/editor_event_cls.php:1097
 msgid "Change colour mark by person"
 msgstr "Modificați semnul de culoare referitor la persoană"
 
-#: admin/include/editor_event_cls.php:1143
+#: admin/include/editor_event_cls.php:1099
 msgid "Colour 1"
 msgstr "Culoarea 1"
 
-#: admin/include/editor_event_cls.php:1145
+#: admin/include/editor_event_cls.php:1101
 msgid "Colour 2"
 msgstr "Culoarea 2"
 
-#: admin/include/editor_event_cls.php:1147
+#: admin/include/editor_event_cls.php:1103
 msgid "Colour 3"
 msgstr "Culoarea 3"
 
-#: admin/include/editor_event_cls.php:1149
+#: admin/include/editor_event_cls.php:1105
 msgid "Colour 4"
 msgstr "Culoarea 4"
 
-#: admin/include/editor_event_cls.php:1151
+#: admin/include/editor_event_cls.php:1107
 msgid "Colour 5"
 msgstr "Culoarea 5"
 
-#: admin/include/editor_event_cls.php:1153
+#: admin/include/editor_event_cls.php:1109
 msgid "Colour 6"
 msgstr "Culoarea 6"
 
-#: admin/include/editor_event_cls.php:1155
+#: admin/include/editor_event_cls.php:1111
 msgid "Colour 7"
 msgstr "Culoarea 7"
 
-#: admin/include/editor_event_cls.php:1157
+#: admin/include/editor_event_cls.php:1113
 msgid "Colour 8"
 msgstr "Culoarea 8"
 
-#: admin/include/editor_event_cls.php:1159
+#: admin/include/editor_event_cls.php:1115
 msgid "Colour 9"
 msgstr "Culoarea 9"
 
-#: admin/include/editor_event_cls.php:1161
+#: admin/include/editor_event_cls.php:1117
 msgid "Colour 10"
 msgstr "Culoarea 10"
 
-#: admin/include/editor_event_cls.php:1163
+#: admin/include/editor_event_cls.php:1119
 msgid "Colour 11"
 msgstr "Culoarea 11"
 
-#: admin/include/editor_event_cls.php:1165
+#: admin/include/editor_event_cls.php:1121
 msgid "Colour 12"
 msgstr "Culoarea 12"
 
-#: admin/include/editor_event_cls.php:1167
+#: admin/include/editor_event_cls.php:1123
 msgid "Colour 13"
 msgstr "Culoarea 13"
 
-#: admin/include/editor_event_cls.php:1169
+#: admin/include/editor_event_cls.php:1125
 msgid "Colour 14"
 msgstr "Culoarea 14"
 
-#: admin/include/editor_event_cls.php:1187
+#: admin/include/editor_event_cls.php:1143
 msgid "Selected colour"
 msgstr "Culoarea selectată"
 
-#: admin/include/editor_event_cls.php:1191
+#: admin/include/editor_event_cls.php:1147
 msgid "Also change"
 msgstr "Modificați și"
 
-#: admin/include/editor_event_cls.php:1191 admin/include/editor_inc.php:1798 admin/include/gedcom_export.php:218 hourglass.php:81
+#: admin/include/editor_event_cls.php:1147 admin/include/editor_inc.php:1620 admin/include/gedcom_export.php:218 hourglass.php:81
 msgid "Descendants"
 msgstr "Urmași"
 
-#: admin/include/editor_event_cls.php:1192 admin/include/editor_inc.php:1799 admin/include/gedcom_export.php:224 hourglass.php:79
+#: admin/include/editor_event_cls.php:1148 admin/include/editor_inc.php:1621 admin/include/gedcom_export.php:224 hourglass.php:79
 msgid "Ancestors"
 msgstr "Strămoși"
 
-#: admin/include/editor_event_cls.php:1316 admin/include/tree_check.php:711 admin/include/tree_check.php:916
+#: admin/include/editor_event_cls.php:1170 admin/include/editor_event_cls.php:1472
+msgid "e.g. Lt. Cmndr."
+msgstr "de exemplu Lt. Cmndr."
+
+#: admin/include/editor_event_cls.php:1171 admin/include/editor_event_cls.php:1475
+msgid "e.g. Jr."
+msgstr "de exemplu Jr."
+
+#: admin/include/editor_event_cls.php:1172 admin/include/editor_event_cls.php:1478
+msgid "e.g. Jhr., Jkvr."
+msgstr "de exemplu Jhr., Jkvr."
+
+#: admin/include/editor_event_cls.php:1173 admin/include/editor_event_cls.php:1481
+msgid "e.g. Prof., Dr."
+msgstr "de exemplu Prof., Dr."
+
+#: admin/include/editor_event_cls.php:1174 admin/include/editor_event_cls.php:1484
+msgid "e.g. Lord of Amsterdam"
+msgstr "de exemplu Lord de Alba-Iulia"
+
+#: admin/include/editor_event_cls.php:1192
+msgid "Baptise"
+msgstr "Botezare"
+
+#: admin/include/editor_event_cls.php:1204
+msgid "Settling"
+msgstr "Stabilire"
+
+#: admin/include/editor_event_cls.php:1214
+msgid "Characteristics"
+msgstr "Caracteristici"
+
+#: admin/include/editor_event_cls.php:1227
+msgid "Will"
+msgstr "Testament"
+
+#: admin/include/editor_event_cls.php:1232 birthday_list.php:111 birthday_list.php:298
+msgid "Religious"
+msgstr "Religios"
+
+#: admin/include/editor_event_cls.php:1239 include/language_event.php:27
+msgid "Education"
+msgstr "Studii"
+
+#: admin/include/editor_event_cls.php:1244
+msgid "Social"
+msgstr "Social"
+
+#: admin/include/editor_event_cls.php:1250
+msgid "LDS"
+msgstr "Mormoni"
+
+#: admin/include/editor_event_cls.php:1258
+msgid "Jewish"
+msgstr "Evreiesc"
+
+#: admin/include/editor_event_cls.php:1315 admin/include/tree_check.php:717 admin/include/tree_check.php:922
 msgid "ID"
 msgstr "ID"
 
-#: admin/include/editor_event_cls.php:1366
+#: admin/include/editor_event_cls.php:1386
 #, php-format
 msgid "Upload new image. Picture max: %1$d MB or media max: %2$d MB."
 msgstr "Încărcați o nouă imagine. Imagine - maxim: %1$d MB sau media - maxim: %2$d MB."
 
-#: admin/include/editor_event_cls.php:1452 include/person_cls.php:1627 include/person_cls.php:1630
+#: admin/include/editor_event_cls.php:1493 include/person_cls.php:1626 include/person_cls.php:1629
 msgid "Also known as"
 msgstr "De asemenea cunoscut ca și"
 
-#: admin/include/editor_event_cls.php:1455 include/person_cls.php:1647
+#: admin/include/editor_event_cls.php:1496 include/person_cls.php:1646
 msgid "alias name"
 msgstr "alias"
 
-#: admin/include/editor_event_cls.php:1458 include/person_cls.php:1648
+#: admin/include/editor_event_cls.php:1499 include/person_cls.php:1647
 msgid "Short name (for reports)"
 msgstr "Nume scurt (pentru rapoarte)"
 
-#: admin/include/editor_event_cls.php:1461 include/person_cls.php:1649
+#: admin/include/editor_event_cls.php:1502 include/person_cls.php:1648
 msgid "Adopted name"
 msgstr "Nume adoptat"
 
-#: admin/include/editor_event_cls.php:1469 include/person_cls.php:1651
+#: admin/include/editor_event_cls.php:1510 include/person_cls.php:1650
 msgid "Census name"
 msgstr "Numele la recensământ"
 
-#: admin/include/editor_event_cls.php:1472 include/person_cls.php:1652
+#: admin/include/editor_event_cls.php:1513 include/person_cls.php:1651
 msgid "Married name"
 msgstr "Nume după căsătorie"
 
-#: admin/include/editor_event_cls.php:1475 include/person_cls.php:1653
+#: admin/include/editor_event_cls.php:1516 include/person_cls.php:1652
 msgid "Given name"
 msgstr "Nume dat"
 
-#: admin/include/editor_event_cls.php:1478 include/person_cls.php:1654
+#: admin/include/editor_event_cls.php:1519 include/person_cls.php:1653
 msgid "Farm name"
 msgstr "Numele fermei"
 
-#: admin/include/editor_event_cls.php:1481 include/person_cls.php:1655
+#: admin/include/editor_event_cls.php:1522 include/person_cls.php:1654
 msgid "Birth name"
 msgstr "Numele de naștere"
 
-#: admin/include/editor_event_cls.php:1484 include/person_cls.php:1656
+#: admin/include/editor_event_cls.php:1525 include/person_cls.php:1655
 msgid "Indian name"
 msgstr "Nume indian"
 
-#: admin/include/editor_event_cls.php:1487 include/person_cls.php:1657
+#: admin/include/editor_event_cls.php:1528 include/person_cls.php:1656
 msgid "Formal name"
 msgstr "Nume formal"
 
-#: admin/include/editor_event_cls.php:1490 include/person_cls.php:1658
+#: admin/include/editor_event_cls.php:1531 include/person_cls.php:1657
 msgid "Current name"
 msgstr "Numele actual"
 
-#: admin/include/editor_event_cls.php:1493 include/person_cls.php:1659
+#: admin/include/editor_event_cls.php:1534 include/person_cls.php:1658
 msgid "Soldier name"
 msgstr "Numele de soldat"
 
-#: admin/include/editor_event_cls.php:1496 include/person_cls.php:1661
+#: admin/include/editor_event_cls.php:1537 include/person_cls.php:1660
 msgid "Religious name"
 msgstr "Numele religios"
 
-#: admin/include/editor_event_cls.php:1499 include/person_cls.php:1662
+#: admin/include/editor_event_cls.php:1540 include/person_cls.php:1661
 msgid "Other name"
 msgstr "Alt nume"
 
-#: admin/include/editor_event_cls.php:1502 include/person_cls.php:1660
+#: admin/include/editor_event_cls.php:1543 include/person_cls.php:1659
 msgid "Formerly known as"
 msgstr "Cunoscut anterior ca"
 
-#: admin/include/editor_event_cls.php:1505
+#: admin/include/editor_event_cls.php:1546
 msgid "German Rufname"
 msgstr "Rufname german"
 
@@ -1686,55 +1770,55 @@ msgstr "Persoană deconectată de părinți."
 msgid "Person is removed"
 msgstr "Persoana este ștearsă"
 
-#: admin/include/editor_inc.php:668
+#: admin/include/editor_inc.php:602
 msgid "If you continue, ALL children will be disconnected automatically!"
 msgstr "Dacă continuați, TOȚI copiii vor fi deconectați automat!"
 
-#: admin/include/editor_inc.php:669
+#: admin/include/editor_inc.php:603
 msgid "Are you sure to remove this mariage?"
 msgstr "Ești sigur că vei elimina această căsătorie?"
 
-#: admin/include/editor_inc.php:725
+#: admin/include/editor_inc.php:659
 msgid "Marriage is removed!"
 msgstr "Căsătoria este eliminată!"
 
-#: admin/include/editor_inc.php:932
+#: admin/include/editor_inc.php:841
 msgid "Parents are selected!"
 msgstr "Sunt selectați părinții!"
 
-#: admin/include/editor_inc.php:947
+#: admin/include/editor_inc.php:856
 msgid "Child already has parents connected! Are you sure you want to connect this child?"
 msgstr "Copilul are deja părinții conectați! Sigur doriți să conectați acest copil?"
 
-#: admin/include/editor_inc.php:1017
+#: admin/include/editor_inc.php:926
 msgid "Are you sure you want to disconnect this child?"
 msgstr "Sunteți sigur că doriți să deconectați acest copil?"
 
-#: admin/include/editor_inc.php:1512 admin/include/settings_admin.php:104 admin/include/settings_admin.php:122
+#: admin/include/editor_inc.php:1368 admin/include/settings_admin.php:104 admin/include/settings_admin.php:122
 msgid "Photo too large"
 msgstr "Fotografia prea mare"
 
-#: admin/include/editor_inc.php:1517 admin/include/settings_admin.php:111 admin/include/settings_admin.php:129
+#: admin/include/editor_inc.php:1373 admin/include/settings_admin.php:111 admin/include/settings_admin.php:129
 msgid "Photo upload failed, check folder rights"
 msgstr "Încărcarea fotografiilor nu a reușit, verificați drepturile la dosar"
 
-#: admin/include/editor_inc.php:1568
+#: admin/include/editor_inc.php:1424
 msgid "Media too large"
 msgstr "Media prea mare"
 
-#: admin/include/editor_inc.php:1572
+#: admin/include/editor_inc.php:1428
 msgid "Media upload failed, check folder rights"
 msgstr "Încărcarea media nu a reușit, verificați drepturile la dosar"
 
-#: admin/include/editor_inc.php:1590
+#: admin/include/editor_inc.php:1446
 msgid "No valid picture, media or document file"
 msgstr "Nicio imagine, fișier media sau document valid"
 
-#: admin/include/editor_inc.php:1784 admin/include/editor_inc.php:2234
+#: admin/include/editor_inc.php:1606 admin/include/editor_inc.php:2055
 msgid "Are you sure you want to remove this event?"
 msgstr "Sunteți sigur că doriți să eliminați acest eveniment?"
 
-#: admin/include/editor_inc.php:1797
+#: admin/include/editor_inc.php:1619
 msgid "Also remove colour marks of"
 msgstr "Îndepărtați, de asemenea, semnele de culoare ale"
 
@@ -1774,11 +1858,11 @@ msgstr "Căsătorie"
 msgid "family"
 msgstr "familie"
 
-#: admin/include/editor_sources.php:313 admin/include/editor_sources.php:317 include/mainindex_cls.php:938 list.php:1600 list.php:1602 list.php:1632 list.php:1634 list.php:1992 list.php:2004 source.php:62 source.php:67 source.php:237 sources.php:163
+#: admin/include/editor_sources.php:313 admin/include/editor_sources.php:317 include/mainindex_cls.php:940 list.php:1600 list.php:1602 list.php:1632 list.php:1634 list.php:1992 list.php:2004 source.php:62 source.php:67 source.php:237 sources.php:163
 msgid "Date"
 msgstr "Data"
 
-#: admin/include/editor_sources.php:316 admin/include/editor_sources.php:435
+#: admin/include/editor_sources.php:316 admin/include/editor_sources.php:436
 msgid "Sourcerole"
 msgstr "Sourcerole"
 
@@ -1802,39 +1886,39 @@ msgstr "Sau:"
 msgid "add new source"
 msgstr "adăugați o sursă nouă"
 
-#: admin/include/editor_sources.php:447
+#: admin/include/editor_sources.php:448
 msgid "e.g. Writer, Brother, Sister, Father."
 msgstr "de exemplu scriitor, frate, soră, tată."
 
-#: admin/include/editor_sources.php:463
+#: admin/include/editor_sources.php:464
 msgid "Page in source."
 msgstr "Pagina în sursă."
 
-#: admin/include/editor_sources.php:469
+#: admin/include/editor_sources.php:470
 msgid "quality: default"
 msgstr "calitate: implicit"
 
-#: admin/include/editor_sources.php:471 include/show_quality.php:5
+#: admin/include/editor_sources.php:472 include/show_quality.php:5
 msgid "quality: unreliable evidence or estimated data"
 msgstr "calitate: dovezi nesigure sau date estimate"
 
-#: admin/include/editor_sources.php:473 include/show_quality.php:6
+#: admin/include/editor_sources.php:474 include/show_quality.php:6
 msgid "quality: questionable reliability of evidence"
 msgstr "calitate: încrederea îndoielnică a dovezilor"
 
-#: admin/include/editor_sources.php:475 include/show_quality.php:7
+#: admin/include/editor_sources.php:476 include/show_quality.php:7
 msgid "quality: data from secondary evidence"
 msgstr "calitate: date din dovezi secundare"
 
-#: admin/include/editor_sources.php:477 include/show_quality.php:8
+#: admin/include/editor_sources.php:478 include/show_quality.php:8
 msgid "quality: data from direct source"
 msgstr "calitate: date din sursă directă"
 
-#: admin/include/editor_sources.php:486
+#: admin/include/editor_sources.php:489
 msgid "Extra text by source"
 msgstr "Text suplimentar referitor la sursă"
 
-#: admin/include/editor_sources.php:539
+#: admin/include/editor_sources.php:542
 msgid "Add another source"
 msgstr "Adăugați altă sursă"
 
@@ -1862,7 +1946,7 @@ msgstr "Editați arborele?"
 msgid "Use user-group setting"
 msgstr "Utilizați setarea grupului de utilizatori"
 
-#: admin/include/extensions.php:5 admin/include/extensions.php:60 admin/index.php:1110
+#: admin/include/extensions.php:5 admin/include/extensions.php:60 admin/index.php:1178
 msgid "Extensions"
 msgstr "Extensii"
 
@@ -1960,7 +2044,7 @@ msgstr "Eliminați fișierele GEDCOM mai vechi de %d luni(ă)"
 msgid "Remove GEDCOM files older than %d year(s)"
 msgstr "Eliminați fișierele GEDCOM mai vechi de %d an(i)"
 
-#: admin/include/gedcom.php:237 admin/include/log.php:150 admin/include/log.php:173 admin/include/trees_cls.php:26 admin/include/user_notes.php:112
+#: admin/include/gedcom.php:237 admin/include/log.php:150 admin/include/log.php:173 admin/include/trees_cls.php:26 admin/include/user_notes.php:118
 msgid "Remove"
 msgstr "Ștergeți"
 
@@ -2286,59 +2370,55 @@ msgstr "Emitent GEDCOM"
 msgid "Country"
 msgstr "Țara"
 
-#: admin/include/gedcom_export.php:295 admin/include/make_db_maps.php:1159 admin/include/settings_admin.php:5 admin/include/settings_admin.php:225 admin/include/trees_cls.php:1252 admin/include/trees_cls.php:1418 admin/index.php:1113 family.php:114 family.php:2232 header.php:293 menu.php:900
+#: admin/include/gedcom_export.php:295 admin/include/make_db_maps.php:1159 admin/include/settings_admin.php:5 admin/include/settings_admin.php:225 admin/include/trees_cls.php:1252 admin/include/trees_cls.php:1418 admin/index.php:1181 family.php:114 family.php:2231 header.php:304 menu.php:900
 msgid "Settings"
 msgstr "Setări"
 
 #: admin/include/gedcom_export.php:297
-#| msgid "GEDCOM settings"
 msgid "GEDCOM version"
 msgstr "versiune GEDCOM"
 
 #: admin/include/gedcom_export.php:305
-#| msgid "GEDCOM tags"
 msgid "GEDCOM 5.5.1"
 msgstr "GEDCOM 5.5.1"
 
 #: admin/include/gedcom_export.php:306
-#| msgid "GEDCOM tags"
 msgid "GEDCOM 7.0"
 msgstr "GEDCOM 7.0"
 
-#: admin/include/gedcom_export.php:312
+#: admin/include/gedcom_export.php:315
 msgid "Character set"
 msgstr "Set de caractere"
 
-#: admin/include/gedcom_export.php:315
+#: admin/include/gedcom_export.php:318
 msgid "UTF-8 (recommended character set)"
 msgstr "UTF-8 (set de caractere recomandat)"
 
-#: admin/include/gedcom_export.php:323
+#: admin/include/gedcom_export.php:326
 msgid "GEDCOM 7.0 always uses the UTF-8 character set."
 msgstr "GEDCOM 7.0 folosește întotdeauna setul de caractere UTF-8."
 
-#: admin/include/gedcom_export.php:326
+#: admin/include/gedcom_export.php:329
 msgid "Export texts"
 msgstr "Exportați texte"
 
-#: admin/include/gedcom_export.php:334
+#: admin/include/gedcom_export.php:337
 msgid "Export sources"
 msgstr "Exportați surse"
 
-#: admin/include/gedcom_export.php:345
+#: admin/include/gedcom_export.php:348
 msgid "Export longitude & latitude by places"
 msgstr "Exportați latitudinea și longitudinea locațiilor"
 
-#: admin/include/gedcom_export.php:363
-#| msgid "Shared addresses"
+#: admin/include/gedcom_export.php:366
 msgid "Export shared addresses"
 msgstr "Exportați adresele partajate"
 
-#: admin/include/gedcom_export.php:364
+#: admin/include/gedcom_export.php:367
 msgid "Convert all shared addresses as single addresses"
 msgstr "Convertiți toate adresele partajate ca adrese unice"
 
-#: admin/include/gedcom_export.php:366
+#: admin/include/gedcom_export.php:369
 msgid ""
 "\"Shared addresses\" is <b>only compatible</b> with HuMo-genealogy and Haza-21 programs.<br>\n"
 "Other programs: convert shared addresses. The \"shared address\" option will be lost."
@@ -2347,39 +2427,39 @@ msgstr ""
 "<br>\n"
 "Alte programe: convertiți adresele partajate. Opțiunea „adresă partajată” va fi pierdută."
 
-#: admin/include/gedcom_export.php:370
+#: admin/include/gedcom_export.php:373
 msgid "There are no shared addresses, standard GEDCOM export is used."
 msgstr "Nu există adrese partajate, se utilizează exportul GEDCOM standard."
 
-#: admin/include/gedcom_export.php:374
+#: admin/include/gedcom_export.php:377
 msgid "Show export status"
 msgstr "Afișează starea exportului"
 
-#: admin/include/gedcom_export.php:382
+#: admin/include/gedcom_export.php:385
 msgid "GEDCOM export"
 msgstr "Export GEDCOM"
 
-#: admin/include/gedcom_export.php:384
+#: admin/include/gedcom_export.php:387
 msgid "Start export"
 msgstr "Pornire export"
 
-#: admin/include/gedcom_export.php:424
+#: admin/include/gedcom_export.php:427
 msgid "GEDCOM file will be exported to backup_tmp/ folder"
 msgstr "Fișierul GEDCOM va fi exportat în directorul backup_tmp/"
 
-#: admin/include/gedcom_export.php:1507
+#: admin/include/gedcom_export.php:1530
 msgid "GEDCOM file is generated"
 msgstr "Fișierul GEDCOM este generat"
 
-#: admin/include/gedcom_export.php:1510
+#: admin/include/gedcom_export.php:1533
 msgid "Download GEDCOM file"
 msgstr "Descărcați fișierul GEDCOM"
 
-#: admin/include/gedcom_export.php:1521
+#: admin/include/gedcom_export.php:1544
 msgid "Remove GEDCOM file"
 msgstr "Ștergeți fișierul GEDCOM"
 
-#: admin/include/gedcom_export.php:1805
+#: admin/include/gedcom_export.php:1828
 msgid "No valid family number."
 msgstr "Nu există un număr de familie valid."
 
@@ -2514,7 +2594,7 @@ msgstr "Arată fotografiile"
 msgid "(option can only be disabled if option \"Show photobook in submenu\" is disabled)"
 msgstr "(opțiunea poate fi dezactivată numai dacă opțiunea „Afișează albumul foto în submeniu” este dezactivată)"
 
-#: admin/include/groups.php:349 admin/include/trees_cls.php:259 admin/index.php:1166
+#: admin/include/groups.php:349 admin/include/trees_cls.php:259 admin/index.php:1234
 msgid "Pictures/ create thumbnails"
 msgstr "Imagini/creare miniaturi"
 
@@ -2528,7 +2608,7 @@ msgstr "Afișați domiciliul și adresa"
 
 #: admin/include/groups.php:362
 msgid "Show places with bapt., birth, death and cemetery."
-msgstr "Afișați locurile de botez, naștere, moarte și înmormântare."
+msgstr "Afișați locurile de botez, naștere, deces și înmormântare."
 
 #: admin/include/groups.php:366
 msgid "Show religion (with bapt. and wedding)"
@@ -2660,7 +2740,7 @@ msgstr "Afișați textul cu persoana"
 
 #: admin/include/groups.php:489
 msgid "Show text with bapt., birth, death, cemetery"
-msgstr "Afișați textul cu botez, naștere, moarte, cimitir"
+msgstr "Afișați textul cu botez, naștere, deces, cimitir"
 
 #: admin/include/groups.php:493
 msgid "Show text with pre-nuptial etc."
@@ -2755,7 +2835,7 @@ msgstr "Salvați toate modificările"
 msgid "Hide or show family trees per user group."
 msgstr "Ascundeți sau afișați arborele genealogic pentru fiecare grup de utilizatori."
 
-#: admin/include/groups.php:624 admin/include/index_inc.php:546 admin/index.php:1206 include/person_cls.php:972
+#: admin/include/groups.php:624 admin/include/index_inc.php:546 admin/index.php:1274 include/person_cls.php:971
 msgid "Editor"
 msgstr "Editor"
 
@@ -2783,7 +2863,7 @@ msgstr "Afișați categoria?"
 msgid "No photo categories available."
 msgstr "Nu sunt disponibile categorii de fotografii."
 
-#: admin/include/index_inc.php:5 admin/index.php:555 admin/index.php:1029
+#: admin/include/index_inc.php:5 admin/index.php:623 admin/index.php:1097
 msgid "Administration"
 msgstr "Administrare"
 
@@ -3086,7 +3166,7 @@ msgstr "Depanați pagini %s"
 msgid "UNSAFE (option is ON)."
 msgstr "NESIGUR (opțiunea este ON)"
 
-#: admin/include/index_inc.php:512 admin/index.php:1156 admin/index.php:1162
+#: admin/include/index_inc.php:512 admin/index.php:1224 admin/index.php:1230
 msgid "Family trees"
 msgstr "Arbori genealogici"
 
@@ -3106,7 +3186,7 @@ msgstr "Importați fișier Gedcom"
 msgid "Trees table"
 msgstr "Tabelul arborilor"
 
-#: admin/include/install.php:5 admin/include/install.php:155 admin/include/install.php:161 admin/index.php:1107
+#: admin/include/install.php:5 admin/include/install.php:155 admin/include/install.php:161 admin/index.php:1175
 msgid "Install"
 msgstr "Instalare"
 
@@ -3190,36 +3270,29 @@ msgstr "Ești sigur? Setările vechi vor fi șterse!"
 msgid "Creating tables:"
 msgstr "Crearea tabelelor:"
 
-#: admin/include/install.php:214 admin/include/install.php:244 admin/include/install.php:268 admin/include/install.php:402 admin/include/install.php:438 admin/include/install.php:456 admin/include/install.php:479 admin/include/install.php:499 admin/include/install.php:528 admin/include/install.php:567 admin/include/install.php:596 admin/include/install.php:657 admin/include/install.php:716 admin/include/install.php:751 admin/include/install.php:784 admin/include/install.php:825 admin/include/install.php:849 admin/include/install.php:885 admin/include/install.php:920
+#: admin/include/install.php:214 admin/include/install.php:248 admin/include/install.php:272 admin/include/install.php:408 admin/include/install.php:453 admin/include/install.php:471 admin/include/install.php:494 admin/include/install.php:513 admin/include/install.php:546 admin/include/install.php:584 admin/include/install.php:613 admin/include/install.php:674 admin/include/install.php:733 admin/include/install.php:767 admin/include/install.php:799 admin/include/install.php:840 admin/include/install.php:864 admin/include/install.php:900 admin/include/install.php:935
 #, php-format
 msgid "create table: %s."
 msgstr "crearea tabelului: %s."
 
-#: admin/include/install.php:224
-msgid "fill humo_settings... <font color=red>Standard settings are saved in database!</font>"
-msgstr "completarea humo_settings... <font color=red>Setările standard sunt salvate în baza de date!</font>"
+#: admin/include/install.php:226 admin/include/install.php:343 admin/include/install.php:431
+#, php-format
+msgid "filling table: %s."
+msgstr "completarea tabelului: %s."
 
-#: admin/include/install.php:338
-msgid "filling humo_groups..."
-msgstr "completarea humo_groups..."
-
-#: admin/include/install.php:423
-msgid "filling humo_users..."
-msgstr "completarea humo_users..."
-
-#: admin/include/install.php:952
+#: admin/include/install.php:967
 msgid "No errors above? This means that the database has been processed!"
 msgstr "Nu există erori mai sus? Aceasta înseamnă că baza de date a fost procesată!"
 
-#: admin/include/install.php:953 admin/include/update.php:248
+#: admin/include/install.php:968 admin/include/update.php:248
 msgid "All updates completed, click at \"Mainmenu\""
 msgstr "Toate actualizările finalizate, faceți clic pe „Meniul principal”"
 
-#: admin/include/install.php:954 admin/include/update.php:249 admin/index.php:1029
+#: admin/include/install.php:969 admin/include/update.php:249 admin/index.php:1097
 msgid "Main menu"
 msgstr "Meniul principal"
 
-#: admin/include/language_editor.php:13 admin/index.php:1126
+#: admin/include/language_editor.php:13 admin/index.php:1194
 msgid "Language editor"
 msgstr "Editor de limbă"
 
@@ -3292,10 +3365,6 @@ msgstr "Utilizator/Admin"
 msgid "IP address"
 msgstr "Adresa IP"
 
-#: admin/include/log.php:61 admin/include/settings_admin.php:825
-msgid "Status"
-msgstr "Stare"
-
 #: admin/include/log.php:137
 #, php-format
 msgid "IP Blacklist: access to %s will be totally blocked for these IP addresses."
@@ -3333,7 +3402,7 @@ msgstr "Nume utilizator sau adresa de e-mail"
 msgid "Two factor authentication (2FA) code if needed"
 msgstr "Cod de autentificare în doi pași (2FA), dacă este necesar"
 
-#: admin/include/login.php:17 header.php:291 help.php:82 login.php:332 login.php:336 menu.php:275 menu.php:775
+#: admin/include/login.php:17 header.php:302 help.php:82 login.php:332 login.php:336 menu.php:275 menu.php:775
 msgid "Login"
 msgstr "Autentificare"
 
@@ -3401,7 +3470,7 @@ msgstr "Mâine puteți rula din nou acest proces pentru a adăuga locațiile car
 msgid "locations were recognized by geocoding and have been saved in the database."
 msgstr "locațiile au fost recunoscute prin geocodare și au fost salvate în baza de date."
 
-#: admin/include/make_db_maps.php:222 family.php:2314 report_ancestor.php:1605
+#: admin/include/make_db_maps.php:222 family.php:2313 report_ancestor.php:1617
 msgid "Back"
 msgstr "Înapoi"
 
@@ -3532,7 +3601,7 @@ msgstr "Verificați câte locații noi trebuie indexate și cât poate dura inde
 msgid "All family trees"
 msgstr "Toți arborii genealogici"
 
-#: admin/include/make_db_maps.php:814 admin/include/tree_check.php:840
+#: admin/include/make_db_maps.php:814 admin/include/tree_check.php:846
 msgid "Check"
 msgstr "Verifică"
 
@@ -3547,7 +3616,7 @@ msgstr "Starea de naștere/deces și afilierea arborelui a fost actualizată."
 #: admin/include/make_db_maps.php:832
 #, php-format
 msgid "The \"Find a location on the map\" pull-down displays a list according to the chosen tree and the birth/ death mapping choice. For this to work properly, the birth/death status and tree affiliation of all locations has to be up to date.<br><br><b>TIP:</b> When you import a gedcom, you can mark the option \"Add new locations to geo-location database\" and the location status of existing locations will also be updated automatically! (If you didn't mark this option on import, use the \"Update geolocation database\" above. This will also refresh the existing location status).<p><b>When to use this button:</b><ul><li> if you edited location data directly with the %s editor</li><li>if you wish to delete all locations that have become obsolete (mark the box below)</li></ul></p>"
-msgstr "Meniul derulant „Găsiți o locație pe hartă” afișează o listă conform arborelui selectat și alegerea cartografierii naștere/moarte. Pentru ca asta să funcționeze în mod corespunzător, statutul de naștere/deces și afilierea de arbori a tuturor locațiilor trebuie să fie actualizat.<br><br><b>SFAT:</b> când importați un gedcom, puteți marca opțiunea „Adăugați noi locații la baza de date de locație geografică” și starea locațiilor va fi, de asemenea, actualizată automat! (Dacă nu ați marcat această opțiune la import, utilizați „Actualizați baza de date de localizare geografică” de mai sus. Acest lucru va reîmprospăta, de asemenea, starea locației existente).<p><b>Când să utilizați acest buton:</b><ul><li> dacă ați editat datele de locație direct cu editorul %s</li><li>dacă doriți să ștergeți toate locațiile care au devenit învechite (marcați caseta de mai jos)</li></ul></p>"
+msgstr "Meniul derulant „Găsiți o locație pe hartă” afișează o listă conform arborelui selectat și alegerea cartografierii naștere/deces. Pentru ca asta să funcționeze în mod corespunzător, statutul de naștere/deces și afilierea de arbori a tuturor locațiilor trebuie să fie actualizat.<br><br><b>SFAT:</b> când importați un gedcom, puteți marca opțiunea „Adăugați noi locații la baza de date de locație geografică” și starea locațiilor va fi, de asemenea, actualizată automat! (Dacă nu ați marcat această opțiune la import, utilizați „Actualizați baza de date de localizare geografică” de mai sus. Acest lucru va reîmprospăta, de asemenea, starea locației existente).<p><b>Când să utilizați acest buton:</b><ul><li> dacă ați editat datele de locație direct cu editorul %s</li><li>dacă doriți să ștergeți toate locațiile care au devenit învechite (marcați caseta de mai jos)</li></ul></p>"
 
 #: admin/include/make_db_maps.php:834
 msgid "Also delete all locations that have become obsolete (not connected to any persons anymore)"
@@ -3683,7 +3752,7 @@ msgstr "Hartă prin satelit cu drumuri și locuri (HIBRID)"
 msgid "Default zoom"
 msgstr "Zoom implicit"
 
-#: admin/include/prefix_editor.php:29 admin/index.php:1130
+#: admin/include/prefix_editor.php:29 admin/index.php:1198
 msgid "Prefix editor"
 msgstr "Editor de prefixe"
 
@@ -3703,11 +3772,11 @@ msgstr "Pictograma favicon modificată."
 msgid "Changed logo."
 msgstr "Logo modificat."
 
-#: admin/include/settings_admin.php:229 admin/index.php:1116
+#: admin/include/settings_admin.php:229 admin/index.php:1184
 msgid "Homepage"
 msgstr "Pagina principală"
 
-#: admin/include/settings_admin.php:233 admin/include/settings_admin.php:1251 admin/index.php:1119
+#: admin/include/settings_admin.php:233 admin/include/settings_admin.php:1251 admin/index.php:1187
 msgid "Special settings"
 msgstr "Setări speciale"
 
@@ -4097,7 +4166,7 @@ msgstr "Setări implicite"
 msgid "Position"
 msgstr "Poziție"
 
-#: admin/include/settings_admin.php:825 admin/include/statistics.php:461 admin/include/tree_check.php:255 admin/include/tree_check.php:301 statistics.php:86 statistics.php:264
+#: admin/include/settings_admin.php:825 admin/include/statistics.php:461 admin/include/tree_check.php:261 admin/include/tree_check.php:307 statistics.php:86 statistics.php:264
 msgid "Item"
 msgstr "Element"
 
@@ -4129,11 +4198,11 @@ msgstr "Selectați arborele genealogic"
 msgid "Selected family tree"
 msgstr "Arbore genealogic selectat"
 
-#: admin/include/settings_admin.php:882 admin/include/settings_admin.php:1030 header.php:276 help.php:51 include/mainindex_cls.php:488 menu.php:483
+#: admin/include/settings_admin.php:882 admin/include/settings_admin.php:1030 header.php:287 help.php:51 include/mainindex_cls.php:488 menu.php:483
 msgid "Names"
 msgstr "Nume"
 
-#: admin/include/settings_admin.php:885 admin/include/settings_admin.php:1031 include/mainindex_cls.php:918
+#: admin/include/settings_admin.php:885 admin/include/settings_admin.php:1031 include/mainindex_cls.php:920
 msgid "Today in history"
 msgstr "Astăzi în istorie"
 
@@ -4311,7 +4380,7 @@ msgstr ""
 "O hartă a site-ului poate fi utilizată pentru indexarea rapidă a ecranelor de familie de motoarele de căutare. Adăugați linkul sitemap la un motor de căutare (cum ar fi Google) sau adăugați link într-un fișier robots.txt (în folderul rădăcină al site-ului dvs.). Exemplu de fișier robots.txt, adresa hărții site-ului:<br>\n"
 "\t\tHarta site-ului: http://www.yourwebsite.com/humo-gen/sitemap.php"
 
-#: admin/include/statistics.php:10 admin/include/users.php:114 admin/index.php:1187 header.php:282 help.php:66 menu.php:620
+#: admin/include/statistics.php:10 admin/include/users.php:114 admin/index.php:1255 header.php:293 help.php:66 menu.php:620
 msgid "Statistics"
 msgstr "Statistici"
 
@@ -4594,459 +4663,459 @@ msgstr "Chiar doriți să ștergeți categoria:"
 msgid "Save changes"
 msgstr "Salvare modificări"
 
-#: admin/include/tree_check.php:7 admin/index.php:1172
+#: admin/include/tree_check.php:9 admin/index.php:1240
 msgid "Family tree data check"
 msgstr "Verificarea datelor arborelui genealogic"
 
-#: admin/include/tree_check.php:24
+#: admin/include/tree_check.php:26
 msgid "Choose tree:"
 msgstr "Alegeți arborele:"
 
-#: admin/include/tree_check.php:45 admin/include/tree_check.php:62 admin/include/tree_check.php:838
+#: admin/include/tree_check.php:47 admin/include/tree_check.php:64 admin/include/tree_check.php:844
 msgid "Check consistency of dates"
 msgstr "Verificarea consistenței datelor"
 
-#: admin/include/tree_check.php:46
+#: admin/include/tree_check.php:48
 msgid "Find invalid dates"
 msgstr "Găsirea datelor nevalide"
 
-#: admin/include/tree_check.php:47 admin/include/tree_check.php:74
+#: admin/include/tree_check.php:49 admin/include/tree_check.php:76
 msgid "Check database integrity"
 msgstr "Verificarea integrității bazei de date"
 
-#: admin/include/tree_check.php:48 admin/index.php:1175
+#: admin/include/tree_check.php:50 admin/index.php:1243
 msgid "View latest changes"
 msgstr "Vedeți ultimele modificări"
 
-#: admin/include/tree_check.php:63
+#: admin/include/tree_check.php:65
 msgid "With this option you can check the consistency of the dates in your database. For example: birth date after death date, marriage date at age 7, birth date 80 years after mother's birth date etc."
 msgstr "Cu această opțiune puteți verifica consistența datelor din baza dvs. de date. De exemplu: data nașterii după data morții, data căsătoriei la vârsta de 7 ani, data nașterii la 80 de ani după data nașterii mamei etc."
 
-#: admin/include/tree_check.php:64
+#: admin/include/tree_check.php:66
 msgid "You can perform the check with all options, or choose only certain options."
 msgstr "Puteți efectua verificarea cu toate opțiunile sau alegeți numai anumite opțiuni."
 
-#: admin/include/tree_check.php:65
+#: admin/include/tree_check.php:67
 msgid "You can also change default settings for the checks to be performed."
 msgstr "De asemenea, puteți modifica setările implicite pentru verificările care trebuie efectuate."
 
-#: admin/include/tree_check.php:66
+#: admin/include/tree_check.php:68
 msgid "Check invalid dates"
 msgstr "Verificarea datelor nevalide"
 
-#: admin/include/tree_check.php:67
+#: admin/include/tree_check.php:69
 msgid "With this option you can check the database for invalid dates. You will be given a link to edit the errors."
 msgstr "Cu această opțiune puteți verifica baza de date pentru datele nevalide. Vi se va da un link pentru a edita erorile."
 
-#: admin/include/tree_check.php:68
+#: admin/include/tree_check.php:70
 msgid "This item checks for impossible dates (such as \"31 apr 1920\"), future dates, incomplete dates (\"3 apr\") and invalid GEDCOM date entries."
 msgstr "Acest articol verifică date imposibile (cum ar fi „31 apr 1920”), date viitoare, date incomplete (\"3 apr\") și date GEDCOM nevalide."
 
-#: admin/include/tree_check.php:69
+#: admin/include/tree_check.php:71
 msgid "Tip for GEDCOM validation (case is irrelevant):"
 msgstr "Sfat pentru validarea GEDCOM (cazul este irelevant):"
 
-#: admin/include/tree_check.php:70
+#: admin/include/tree_check.php:72
 msgid "Only valid month notation: \"jan\", \"feb\", \"mar\", \"apr\", \"may\", \"jun\", \"jul\", \"aug\", \"sep\", \"oct\", \"nov\", \"dec\""
 msgstr "Doar notație valabilă pentru lună: „ian”, „feb”, „mar”, „apr”, „mai”, „iun\", \"iul\", \"aug\", \"sept\", \"oct\", \"noi\", \"dec\""
 
-#: admin/include/tree_check.php:71
+#: admin/include/tree_check.php:73
 msgid "Only valid single prefixes: \"bef\", \"aft\", \"abt\", \"est\", \"int\", \"cal\""
 msgstr "Doar prefixe simple valide: „bef”, „aft”, „abt”, „est”, „int”, \"cal\""
 
-#: admin/include/tree_check.php:72
+#: admin/include/tree_check.php:74
 msgid "Only valid double prefixes: \"from 1898 to 1899\", \"bet 1850 and 1860\""
 msgstr "Doar prefixe duble valide: „din 1898 până în 1899”, „între 1850 și 1860”"
 
-#: admin/include/tree_check.php:73
+#: admin/include/tree_check.php:75
 msgid "Invalid GEDCOM entries: \"1877-1879\" (-> bet 1877 and 1879), \"12 april 2003\" (-> 12 apr 2003), \"cir 1884\" (-> abt 1884), \"1845 ?\" (abt 1845)"
 msgstr "Intrări GEDCOM nevalide: „1877-1879” (-> între 1877 și 1879), „12 aprilie 2003\" (-> 12 apr 2003), \"circa 1884\" (-> aprox 1884), \"1845 ?\" (aprox 1845)"
 
-#: admin/include/tree_check.php:75
+#: admin/include/tree_check.php:77
 msgid "With this option you can check the integrity of the tables in the MySQL database."
 msgstr "Cu această opțiune puteți verifica integritatea tabelelor din baza de date MySQL."
 
-#: admin/include/tree_check.php:76
+#: admin/include/tree_check.php:78
 msgid "If inconsistencies exist they may lead to people being disconnected from relatives or misplaced."
 msgstr "Dacă există inconsecvențe, acestea pot duce la deconectarea persoanelor de rude sau pot fi puse greșit."
 
-#: admin/include/tree_check.php:78
+#: admin/include/tree_check.php:80
 msgid "Here you can view the latest changes that were made to data in your database."
 msgstr "Aici puteți vedea cele mai recente modificări care au fost aduse datelor din baza de date."
 
-#: admin/include/tree_check.php:203
+#: admin/include/tree_check.php:209
 msgid "Select editor:"
 msgstr "Selectarea editorului:"
 
-#: admin/include/tree_check.php:216
+#: admin/include/tree_check.php:222
 msgid "All editors"
 msgstr "Toate editoarele"
 
-#: admin/include/tree_check.php:238 header.php:275 help.php:48 menu.php:469 statistics.php:56
+#: admin/include/tree_check.php:244 header.php:286 help.php:48 menu.php:469 statistics.php:56
 msgid "Persons"
 msgstr "Persoane"
 
-#: admin/include/tree_check.php:240
+#: admin/include/tree_check.php:246
 msgid "Families"
 msgstr "Familii"
 
-#: admin/include/tree_check.php:256 latest_changes.php:86
+#: admin/include/tree_check.php:262 latest_changes.php:86
 msgid "Changed/ Added"
 msgstr "Modificat/Adăugat"
 
-#: admin/include/tree_check.php:257 latest_changes.php:87
+#: admin/include/tree_check.php:263 latest_changes.php:87
 msgid "When changed"
 msgstr "Când este modificat"
 
-#: admin/include/tree_check.php:258 latest_changes.php:88
+#: admin/include/tree_check.php:264 latest_changes.php:88
 msgid "When added"
 msgstr "Când este adăugat"
 
-#: admin/include/tree_check.php:283
+#: admin/include/tree_check.php:289
 msgid "Checking database tables..."
 msgstr "Verificarea tabelelor bazei de date..."
 
-#: admin/include/tree_check.php:295
+#: admin/include/tree_check.php:301
 msgid "Remove links to missing items from database (first make a database backup!)"
 msgstr "Eliminați linkurile către elementele lipsă din baza de date (mai întâi faceți o copie de rezervă a bazei de date!)"
 
-#: admin/include/tree_check.php:296
+#: admin/include/tree_check.php:302
 msgid "REMOVE"
 msgstr "ELIMINARE"
 
-#: admin/include/tree_check.php:301
+#: admin/include/tree_check.php:307
 msgid "Check item"
 msgstr "Verificarea elementului"
 
-#: admin/include/tree_check.php:301
+#: admin/include/tree_check.php:307
 msgid "Result"
 msgstr "Rezultat"
 
-#: admin/include/tree_check.php:697
+#: admin/include/tree_check.php:703
 msgid "Checked all person index numbers"
 msgstr "S-au verificat toate numerele de index ale persoanelor"
 
-#: admin/include/tree_check.php:698
+#: admin/include/tree_check.php:704
 msgid "Checked all person - relation connections"
 msgstr "S-au verificat toate conexiunile persoană - relație"
 
-#: admin/include/tree_check.php:699
+#: admin/include/tree_check.php:705
 msgid "Checked all child - parent connections"
 msgstr "S-au verificat toate conexiunile copil - părinte"
 
-#: admin/include/tree_check.php:700
+#: admin/include/tree_check.php:706
 msgid "Checked all parent - child connections"
 msgstr "S-au verificat toate conexiunile părinte - copil"
 
-#: admin/include/tree_check.php:712
+#: admin/include/tree_check.php:718
 msgid "Edit invalid date"
 msgstr "Editați data nevalidă"
 
-#: admin/include/tree_check.php:713 admin/include/tree_check.php:918
+#: admin/include/tree_check.php:719 admin/include/tree_check.php:924
 msgid "Details"
 msgstr "Detalii"
 
-#: admin/include/tree_check.php:714
+#: admin/include/tree_check.php:720
 msgid "Invalid date"
 msgstr "Data nevalidă"
 
-#: admin/include/tree_check.php:715
+#: admin/include/tree_check.php:721
 msgid "Invalid person dates:"
 msgstr "Date nevalide persoane:"
 
-#: admin/include/tree_check.php:735
+#: admin/include/tree_check.php:741
 msgid "Invalid family dates:"
 msgstr "Date nevalide familie:"
 
-#: admin/include/tree_check.php:760
+#: admin/include/tree_check.php:766
 msgid "Invalid event dates:"
 msgstr "Date nevalide eveniment:"
 
-#: admin/include/tree_check.php:769
+#: admin/include/tree_check.php:775
 msgid "Invalid connection dates:"
 msgstr "Date nevalide conexiune:"
 
-#: admin/include/tree_check.php:778
+#: admin/include/tree_check.php:784
 msgid "Invalid address dates:"
 msgstr "Date nevalide adrese:"
 
-#: admin/include/tree_check.php:787
+#: admin/include/tree_check.php:793
 msgid "Invalid repository dates:"
 msgstr "Date nevalide depozite:"
 
-#: admin/include/tree_check.php:796
+#: admin/include/tree_check.php:802
 msgid "Invalid source dates:"
 msgstr "Date nevalide surse:"
 
-#: admin/include/tree_check.php:839
+#: admin/include/tree_check.php:845
 msgid "You can mark or unmark any of the check options and change defaults. Then press "
 msgstr "Puteți marca sau demarca oricare dintre opțiunile de verificare și puteți modifica valorile implicite. Apoi apăsați "
 
-#: admin/include/tree_check.php:841
+#: admin/include/tree_check.php:847
 msgid "(with default settings a full check may take between 12-15 seconds per 10,000 persons)"
 msgstr "(cu setările implicite, o verificare completă poate dura între 12 și 15 secunde pentru 10.000 de persoane)"
 
-#: admin/include/tree_check.php:844
+#: admin/include/tree_check.php:850
 msgid "Unmark all options"
 msgstr "Debifați toate opțiunile"
 
-#: admin/include/tree_check.php:845
+#: admin/include/tree_check.php:851
 msgid "Mark all options"
 msgstr "Marcați toate opțiunile"
 
-#: admin/include/tree_check.php:846
+#: admin/include/tree_check.php:852
 msgid "Birth date - after bapt/marr/death/burial date"
 msgstr "Data nașterii - după data botezului/căsătoriei/decesului/înmormântării"
 
-#: admin/include/tree_check.php:848 admin/include/tree_check.php:851
+#: admin/include/tree_check.php:854 admin/include/tree_check.php:857
 msgid "Birth date - more than "
 msgstr "Data nașterii - mai mult decât "
 
-#: admin/include/tree_check.php:850 admin/include/tree_check.php:856 admin/include/tree_check.php:873 admin/include/tree_check.php:879
+#: admin/include/tree_check.php:856 admin/include/tree_check.php:862 admin/include/tree_check.php:879 admin/include/tree_check.php:885
 msgid " years after mother's birth"
 msgstr " ani după nașterea mamei"
 
-#: admin/include/tree_check.php:853 admin/include/tree_check.php:859 admin/include/tree_check.php:876 admin/include/tree_check.php:882
+#: admin/include/tree_check.php:859 admin/include/tree_check.php:865 admin/include/tree_check.php:882 admin/include/tree_check.php:888
 msgid " years after father's birth"
 msgstr " ani după nașterea tatălui"
 
-#: admin/include/tree_check.php:854 admin/include/tree_check.php:857 admin/include/tree_check.php:861 admin/include/tree_check.php:865
+#: admin/include/tree_check.php:860 admin/include/tree_check.php:863 admin/include/tree_check.php:867 admin/include/tree_check.php:871
 msgid "Birth date - less than "
 msgstr "Data nașterii - mai puțin de "
 
-#: admin/include/tree_check.php:863
+#: admin/include/tree_check.php:869
 msgid " months after wedding parents"
 msgstr " luni după căsătoria părinților"
 
-#: admin/include/tree_check.php:864
+#: admin/include/tree_check.php:870
 msgid "Birth date - before wedding parents"
 msgstr "Data nașterii - înainte de căsătoria părinților"
 
-#: admin/include/tree_check.php:867
+#: admin/include/tree_check.php:873
 msgid " months after previous child of mother"
 msgstr " luni după copilul precedent al mamei"
 
-#: admin/include/tree_check.php:869
+#: admin/include/tree_check.php:875
 msgid "Baptism date - after death/burial date"
 msgstr "Data botezului - după data morții/înmormântării"
 
-#: admin/include/tree_check.php:871 admin/include/tree_check.php:874
+#: admin/include/tree_check.php:877 admin/include/tree_check.php:880
 msgid "Baptism date - more than "
 msgstr "Data botezului - mai mult de "
 
-#: admin/include/tree_check.php:877 admin/include/tree_check.php:880
+#: admin/include/tree_check.php:883 admin/include/tree_check.php:886
 msgid "Baptism date - less than "
 msgstr "Data botezului - mai puțin de "
 
-#: admin/include/tree_check.php:884
+#: admin/include/tree_check.php:890
 msgid "Marriage date(s) - after death/burial date"
 msgstr "Data(le) căsătoriei - după data decesului/înmormântării"
 
-#: admin/include/tree_check.php:885
+#: admin/include/tree_check.php:891
 msgid "Marriage date(s) - less than "
 msgstr "Data(le) căsătoriei - mai mică decât "
 
-#: admin/include/tree_check.php:887
+#: admin/include/tree_check.php:893
 msgid " years after birth date"
 msgstr " ani după data nașterii"
 
-#: admin/include/tree_check.php:888
+#: admin/include/tree_check.php:894
 msgid "Marriage age - age difference of more than "
 msgstr "Vârsta căsătoriei - diferența de vârstă mai mult de "
 
-#: admin/include/tree_check.php:890
+#: admin/include/tree_check.php:896
 msgid " years between partners"
 msgstr " ani între parteneri"
 
-#: admin/include/tree_check.php:891
+#: admin/include/tree_check.php:897
 msgid "Death date - after burial date"
 msgstr "Data morții - după data înmormântării"
 
-#: admin/include/tree_check.php:892
+#: admin/include/tree_check.php:898
 msgid "Death date - bef birth of mother"
 msgstr "Data morții - înainte de data nașterii mamei"
 
-#: admin/include/tree_check.php:893
+#: admin/include/tree_check.php:899
 msgid "Death date - bef birth of father"
 msgstr "Data morții - înainte de data nașterii tatălui"
 
-#: admin/include/tree_check.php:894
+#: admin/include/tree_check.php:900
 msgid "Burial date - bef birth of mother"
 msgstr "Data înmormântării - înainte de data nașterii mamei"
 
-#: admin/include/tree_check.php:895
+#: admin/include/tree_check.php:901
 msgid "Burial date - bef birth of father"
 msgstr "Data înmormântării - înainte de data nașterii tatălui"
 
-#: admin/include/tree_check.php:896
+#: admin/include/tree_check.php:902
 msgid "Age (by death date) - more than "
 msgstr "Vârsta (după data morții) - mai mult de "
 
-#: admin/include/tree_check.php:898 admin/include/tree_check.php:901
+#: admin/include/tree_check.php:904 admin/include/tree_check.php:907
 msgid " years"
 msgstr " ani"
 
-#: admin/include/tree_check.php:899
+#: admin/include/tree_check.php:905
 msgid "Age (by burial date) - more than "
 msgstr "Vârsta (după data înmormântării) - mai mult de "
 
-#: admin/include/tree_check.php:903
+#: admin/include/tree_check.php:909
 msgid "Age (up till today) - more than "
 msgstr "Vârsta (până astăzi) - mai mult de "
 
-#: admin/include/tree_check.php:905
+#: admin/include/tree_check.php:911
 msgid " years <b>(may give long list!)"
 msgstr " ani <b>(poate da o listă lungă!)"
 
-#: admin/include/tree_check.php:917
+#: admin/include/tree_check.php:923
 msgid "Possible consistency problems"
 msgstr "Posibile probleme de consistență"
 
-#: admin/include/tree_check.php:1077 admin/include/tree_check.php:1081 admin/include/tree_check.php:1085 admin/include/tree_check.php:1090 admin/include/tree_check.php:1101 admin/include/tree_check.php:1112 admin/include/tree_check.php:1123 admin/include/tree_check.php:1134 admin/include/tree_check.php:1145 admin/include/tree_check.php:1154 admin/include/tree_check.php:1164 admin/include/tree_check.php:1290 admin/include/tree_check.php:1297 admin/include/tree_check.php:1304 admin/include/tree_check.php:1311 admin/include/tree_check.php:1325 admin/include/tree_check.php:1385 admin/include/tree_check.php:1398 admin/include/tree_check.php:1414 admin/include/tree_check.php:1532 admin/include/tree_check.php:1536 admin/include/tree_check.php:1547 admin/include/tree_check.php:1549 admin/include/tree_check.php:1552 admin/include/trees_cls.php:1608
+#: admin/include/tree_check.php:1083 admin/include/tree_check.php:1087 admin/include/tree_check.php:1091 admin/include/tree_check.php:1096 admin/include/tree_check.php:1107 admin/include/tree_check.php:1118 admin/include/tree_check.php:1129 admin/include/tree_check.php:1140 admin/include/tree_check.php:1151 admin/include/tree_check.php:1160 admin/include/tree_check.php:1170 admin/include/tree_check.php:1296 admin/include/tree_check.php:1303 admin/include/tree_check.php:1310 admin/include/tree_check.php:1317 admin/include/tree_check.php:1331 admin/include/tree_check.php:1391 admin/include/tree_check.php:1404 admin/include/tree_check.php:1420 admin/include/tree_check.php:1538 admin/include/tree_check.php:1542 admin/include/tree_check.php:1553 admin/include/tree_check.php:1555 admin/include/tree_check.php:1558 admin/include/trees_cls.php:1608
 msgid "birth date"
 msgstr "data nașterii"
 
-#: admin/include/tree_check.php:1077 admin/include/tree_check.php:1179 admin/include/tree_check.php:1183 admin/include/tree_check.php:1195 admin/include/tree_check.php:1206 admin/include/tree_check.php:1217 admin/include/tree_check.php:1228 admin/include/tree_check.php:1386 admin/include/tree_check.php:1399 admin/include/tree_check.php:1415 admin/include/tree_check.php:1533 admin/include/tree_check.php:1537 admin/include/trees_cls.php:1611
+#: admin/include/tree_check.php:1083 admin/include/tree_check.php:1185 admin/include/tree_check.php:1189 admin/include/tree_check.php:1201 admin/include/tree_check.php:1212 admin/include/tree_check.php:1223 admin/include/tree_check.php:1234 admin/include/tree_check.php:1392 admin/include/tree_check.php:1405 admin/include/tree_check.php:1421 admin/include/tree_check.php:1539 admin/include/tree_check.php:1543 admin/include/trees_cls.php:1611
 msgid "baptism date"
 msgstr "data botezului"
 
-#: admin/include/tree_check.php:1081 admin/include/tree_check.php:1179 admin/include/tree_check.php:1242 admin/include/tree_check.php:1253 admin/include/tree_check.php:1263 admin/include/tree_check.php:1273 admin/include/tree_check.php:1338 admin/include/tree_check.php:1346 admin/include/tree_check.php:1354 admin/include/tree_check.php:1389 admin/include/tree_check.php:1534 admin/include/tree_check.php:1538 admin/include/trees_cls.php:1613
+#: admin/include/tree_check.php:1087 admin/include/tree_check.php:1185 admin/include/tree_check.php:1248 admin/include/tree_check.php:1259 admin/include/tree_check.php:1269 admin/include/tree_check.php:1279 admin/include/tree_check.php:1344 admin/include/tree_check.php:1352 admin/include/tree_check.php:1360 admin/include/tree_check.php:1395 admin/include/tree_check.php:1540 admin/include/tree_check.php:1544 admin/include/trees_cls.php:1613
 msgid "death date"
 msgstr "data decesului"
 
-#: admin/include/tree_check.php:1085 admin/include/tree_check.php:1183 admin/include/tree_check.php:1246 admin/include/tree_check.php:1257 admin/include/tree_check.php:1267 admin/include/tree_check.php:1277 admin/include/tree_check.php:1338 admin/include/tree_check.php:1365 admin/include/tree_check.php:1373 admin/include/tree_check.php:1402 admin/include/tree_check.php:1535 admin/include/tree_check.php:1539 admin/include/trees_cls.php:1618
+#: admin/include/tree_check.php:1091 admin/include/tree_check.php:1189 admin/include/tree_check.php:1252 admin/include/tree_check.php:1263 admin/include/tree_check.php:1273 admin/include/tree_check.php:1283 admin/include/tree_check.php:1344 admin/include/tree_check.php:1371 admin/include/tree_check.php:1379 admin/include/tree_check.php:1408 admin/include/tree_check.php:1541 admin/include/tree_check.php:1545 admin/include/trees_cls.php:1618
 msgid "burial date"
 msgstr "data înmormântării"
 
-#: admin/include/tree_check.php:1090 admin/include/tree_check.php:1242 admin/include/tree_check.php:1246 admin/include/tree_check.php:1290 include/marriage_cls.php:677 report_ancestor.php:1526 timelines.php:109 timelines.php:224
+#: admin/include/tree_check.php:1096 admin/include/tree_check.php:1248 admin/include/tree_check.php:1252 admin/include/tree_check.php:1296 include/marriage_cls.php:680 report_ancestor.php:1538 timelines.php:109 timelines.php:224
 msgid "marriage"
 msgstr "căsătorie"
 
-#: admin/include/tree_check.php:1101 admin/include/tree_check.php:1123 admin/include/tree_check.php:1195 admin/include/tree_check.php:1217 admin/include/tree_check.php:1346 admin/include/tree_check.php:1365 relations.php:337
+#: admin/include/tree_check.php:1107 admin/include/tree_check.php:1129 admin/include/tree_check.php:1201 admin/include/tree_check.php:1223 admin/include/tree_check.php:1352 admin/include/tree_check.php:1371 relations.php:337
 msgid "mother"
 msgstr "mama"
 
-#: admin/include/tree_check.php:1112 admin/include/tree_check.php:1134 admin/include/tree_check.php:1206 admin/include/tree_check.php:1228 admin/include/tree_check.php:1354 admin/include/tree_check.php:1373 relations.php:334 relations.php:353 relations.php:379 relations.php:391
+#: admin/include/tree_check.php:1118 admin/include/tree_check.php:1140 admin/include/tree_check.php:1212 admin/include/tree_check.php:1234 admin/include/tree_check.php:1360 admin/include/tree_check.php:1379 relations.php:334 relations.php:353 relations.php:379 relations.php:391
 msgid "father"
 msgstr "tata"
 
-#: admin/include/tree_check.php:1145 admin/include/tree_check.php:1154
+#: admin/include/tree_check.php:1151 admin/include/tree_check.php:1160
 msgid "parents wedding date"
 msgstr "data căsătoriei părinților"
 
-#: admin/include/tree_check.php:1164
+#: admin/include/tree_check.php:1170
 msgid "previous child of mother"
 msgstr "copilul precedent al mamei"
 
-#: admin/include/tree_check.php:1253 admin/include/tree_check.php:1257 admin/include/tree_check.php:1297 timelines.php:117 timelines.php:232
+#: admin/include/tree_check.php:1259 admin/include/tree_check.php:1263 admin/include/tree_check.php:1303 timelines.php:117 timelines.php:232
 msgid "marriage notice"
 msgstr "aviz de căsătorie"
 
-#: admin/include/tree_check.php:1263 admin/include/tree_check.php:1267 admin/include/tree_check.php:1304 timelines.php:113 timelines.php:228
+#: admin/include/tree_check.php:1269 admin/include/tree_check.php:1273 admin/include/tree_check.php:1310 timelines.php:113 timelines.php:228
 msgid "church marriage"
 msgstr "căsătoria la biserică"
 
-#: admin/include/tree_check.php:1273 admin/include/tree_check.php:1277 admin/include/tree_check.php:1311 timelines.php:121 timelines.php:236
+#: admin/include/tree_check.php:1279 admin/include/tree_check.php:1283 admin/include/tree_check.php:1317 timelines.php:121 timelines.php:236
 msgid "church marriage notice"
 msgstr "aviz de căsătorie la biserică"
 
-#: admin/include/tree_check.php:1325 admin/include/trees_cls.php:1637
+#: admin/include/tree_check.php:1331 admin/include/trees_cls.php:1637
 msgid "Spouse"
 msgstr "Soțul/Soția"
 
 # Enter a short text for born (there is no short text for born in english).
-#: admin/include/tree_check.php:1532 admin/include/tree_check.php:1536 admin/include/tree_check.php:1547 admin/include/tree_check.php:1549 admin/include/tree_check.php:1552 admin/include/tree_check.php:1555 family.php:1671 family.php:1695 family.php:1834 family.php:1840
+#: admin/include/tree_check.php:1538 admin/include/tree_check.php:1542 admin/include/tree_check.php:1553 admin/include/tree_check.php:1555 admin/include/tree_check.php:1558 admin/include/tree_check.php:1561 family.php:1671 family.php:1695 family.php:1834 family.php:1840
 msgid "BORN_SHORT"
 msgstr "născ."
 
 # Enter a short text for baptise, like: bapt.
-#: admin/include/tree_check.php:1533 admin/include/tree_check.php:1537 family.php:1674 family.php:1698
+#: admin/include/tree_check.php:1539 admin/include/tree_check.php:1543 family.php:1674 family.php:1698
 msgid "BAPTISED_SHORT"
 msgstr "bot."
 
 # Enter a short text for died here. There is no short text for died in
 # english.
-#: admin/include/tree_check.php:1534 admin/include/tree_check.php:1538 family.php:1723 family.php:1754 family.php:1857 family.php:1863
+#: admin/include/tree_check.php:1540 admin/include/tree_check.php:1544 family.php:1723 family.php:1754 family.php:1857 family.php:1863
 msgid "DIED_SHORT"
 msgstr "dec."
 
-#: admin/include/tree_check.php:1535 admin/include/tree_check.php:1539 family.php:1726 family.php:1757
+#: admin/include/tree_check.php:1541 admin/include/tree_check.php:1545 family.php:1726 family.php:1757
 msgid "BURIED_SHORT"
 msgstr "îngrop."
 
-#: admin/include/tree_check.php:1547
+#: admin/include/tree_check.php:1553
 #, php-format
 msgid "%s more than %d years after %s"
 msgstr "%s mai mult de %d ani după %s"
 
-#: admin/include/tree_check.php:1549
+#: admin/include/tree_check.php:1555
 #, php-format
 msgid "%s before or less than %d years after %s"
 msgstr "%s înainte sau mai puțin de %d ani după %s"
 
-#: admin/include/tree_check.php:1551
+#: admin/include/tree_check.php:1557
 #, php-format
 msgid "%s less than %d years after %s"
 msgstr "%s mai puțin de %d ani după %s"
 
-#: admin/include/tree_check.php:1553
+#: admin/include/tree_check.php:1559
 #, php-format
 msgid "age (up till today) more than %d years (age: %d)"
 msgstr "vârsta (până astăzi) mai mult de %d ani (vârsta: %d)"
 
-#: admin/include/tree_check.php:1554
+#: admin/include/tree_check.php:1560
 #, php-format
 msgid "age (by %s) more than %d years (age: %d)"
 msgstr "vârsta (cu %s) mai mult de %d ani (vârsta: %d)"
 
-#: admin/include/tree_check.php:1555
+#: admin/include/tree_check.php:1561
 #, php-format
 msgid "age difference of more than %d years with spouse (%d)"
 msgstr "diferența de vârstă mai mare de %d ani cu soțul/soția (%d)"
 
-#: admin/include/tree_check.php:1556
+#: admin/include/tree_check.php:1562
 #, php-format
 msgid "%s less than %d months after %s"
 msgstr "%s mai puțin de %d luni după %s"
 
-#: admin/include/tree_check.php:1557
+#: admin/include/tree_check.php:1563
 #, php-format
 msgid "%s before %s"
 msgstr "%s înainte %s"
 
-#: admin/include/tree_check.php:1606
+#: admin/include/tree_check.php:1612
 msgid "Click events by person"
 msgstr "Faceți clic pe evenimente în funcție de persoană"
 
-#: admin/include/tree_check.php:1624
+#: admin/include/tree_check.php:1630
 msgid "Click events by marriage"
 msgstr "Faceți clic pe evenimente pentru căsătorie"
 
-#: admin/include/tree_check.php:1635
+#: admin/include/tree_check.php:1641
 msgid "Click relevant person source"
 msgstr "Faceți clic pe sursa relevantă a persoanei"
 
-#: admin/include/tree_check.php:1638 admin/include/tree_check.php:1696
+#: admin/include/tree_check.php:1644 admin/include/tree_check.php:1702
 msgid "Click addresses"
 msgstr "Faceți clic pe adrese"
 
-#: admin/include/tree_check.php:1656
+#: admin/include/tree_check.php:1662
 msgid "Click relevant family source"
 msgstr "Faceți clic pe sursa relevantă a familiei"
 
-#: admin/include/tree_check.php:1685
+#: admin/include/tree_check.php:1691
 msgid "Click relevant event source"
 msgstr "Faceți clic pe sursa relevantă a evenimentului"
 
-#: admin/include/tree_check.php:1698
+#: admin/include/tree_check.php:1704
 msgid "Address editor"
 msgstr "Editor de adrese"
 
-#: admin/include/tree_check.php:1704
+#: admin/include/tree_check.php:1710
 msgid "Source editor"
 msgstr "Editor sursă"
 
-#: admin/include/tree_check.php:1708
+#: admin/include/tree_check.php:1714
 msgid "Repository editor"
 msgstr "Editor depozit"
 
@@ -5102,7 +5171,7 @@ msgstr "Adăugați o linie goală în lista arborilor genealogici"
 msgid "Collation"
 msgstr "Colaţionare"
 
-#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2232 register.php:127 user_settings.php:151
+#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2231 register.php:127 user_settings.php:151
 msgid "E-mail address"
 msgstr "Adresa de e-mail"
 
@@ -5505,7 +5574,7 @@ msgid "Nr. "
 msgstr "Nr. "
 
 #: admin/include/trees_cls.php:1587 family.php:454 family.php:457 family.php:521 family.php:524 family.php:671 family.php:674 family.php:1058 hourglass.php:73 relations.php:360 relations.php:371 relations.php:383 relations.php:386 relations.php:388 relations.php:394 relations.php:401 relations.php:405 relations.php:407 relations.php:410 relations.php:411 relations.php:412 relations.php:413 relations.php:415 relations.php:517 relations.php:518 relations.php:519 relations.php:521 relations.php:541 relations.php:542 relations.php:543 relations.php:544 relations.php:546 relations.php:642 relations.php:652 relations.php:655 relations.php:657 relations.php:663 relations.php:667 relations.php:671 relations.php:673 relations.php:677 relations.php:678 relations.php:679 relations.php:680 relations.php:682 relations.php:705 relations.php:706 relations.php:709 relations.php:710 relations.php:711 relations.php:712 relations.php:714 relations.php:784 relations.php:785 relations.php:786 relations.php:788 relations.php:807 relations.php:808 relations.php:809 relations.php:810 relations.php:812 relations.php:829 relations.php:832 relations.php:841 relations.php:844 relations.php:854 relations.php:855 relations.php:857 relations.php:867 relations.php:869 relations.php:870 relations.php:871 relations.php:872 relations.php:873 relations.php:875 relations.php:885 relations.php:887 relations.php:888 relations.php:889 relations.php:890 relations.php:891 relations.php:892 relations.php:894 relations.php:904 relations.php:905 relations.php:906 relations.php:907 relations.php:908 relations.php:910 relations.php:955 relations.php:956 relations.php:963 relations.php:1018 relations.php:1019 relations.php:1020 relations.php:1021 relations.php:1022 relations.php:1024 relations.php:1233 relations.php:1247 relations.php:1250 relations.php:1257 relations.php:1260 relations.php:1264 relations.php:1265 relations.php:1267 relations.php:1270 relations.php:1271 relations.php:1272 relations.php:1274 relations.php:1278 relations.php:1279 relations.php:1295 relations.php:1326 relations.php:1327 relations.php:1328 relations.php:1329 relations.php:1330 relations.php:1332 relations.php:1350 relations.php:1351 relations.php:1363 relations.php:1374 relations.php:1391 relations.php:1416 relations.php:1421 relations.php:1423 relations.php:1424 relations.php:1425 relations.php:1426 relations.php:1428 relations.php:1430 relations.php:1440 relations.php:1442
-#: relations.php:1513 relations.php:1517 relations.php:1518 relations.php:1519 relations.php:1521 relations.php:1553 relations.php:1554 relations.php:1556 relations.php:1648 relations.php:1650 relations.php:1651 relations.php:1654 relations.php:1655 relations.php:1657 relations.php:1662 relations.php:1663 relations.php:1664 relations.php:1665 relations.php:1666 relations.php:1667 relations.php:1669 relations.php:1671 relations.php:1721 relations.php:1724 relations.php:2015 relations.php:2033 report_ancestor.php:151 report_ancestor.php:166 report_ancestor.php:217 report_ancestor.php:1170 report_ancestor.php:1472 report_ancestor.php:1493 report_descendant.php:457 report_outline.php:97 report_outline.php:112
+#: relations.php:1513 relations.php:1517 relations.php:1518 relations.php:1519 relations.php:1521 relations.php:1553 relations.php:1554 relations.php:1556 relations.php:1648 relations.php:1650 relations.php:1651 relations.php:1654 relations.php:1655 relations.php:1657 relations.php:1662 relations.php:1663 relations.php:1664 relations.php:1665 relations.php:1666 relations.php:1667 relations.php:1669 relations.php:1671 relations.php:1721 relations.php:1724 relations.php:2015 relations.php:2033 report_ancestor.php:151 report_ancestor.php:166 report_ancestor.php:217 report_ancestor.php:1182 report_ancestor.php:1484 report_ancestor.php:1505 report_descendant.php:457 report_outline.php:97 report_outline.php:112
 msgid " of "
 msgstr " lui "
 
@@ -5549,7 +5618,7 @@ msgstr "locul botezului"
 msgid "death place"
 msgstr "locul decesului"
 
-#: admin/include/trees_cls.php:1616 include/person_cls.php:2035 include/person_cls.php:2036 include/person_cls.php:2037 include/person_cls.php:2040 include/person_cls.php:2041 include/person_cls.php:2054 include/person_cls.php:2056 include/person_cls.php:2063
+#: admin/include/trees_cls.php:1616 include/person_cls.php:2034 include/person_cls.php:2035 include/person_cls.php:2036 include/person_cls.php:2039 include/person_cls.php:2040 include/person_cls.php:2053 include/person_cls.php:2055 include/person_cls.php:2062
 msgid "cause of death"
 msgstr "cauza morții"
 
@@ -5692,23 +5761,23 @@ msgstr "Actualizarea arborelui:"
 msgid "Update table unprocessed_tags..."
 msgstr "Actualizarea tabelului unprocessed_tags..."
 
-#: admin/include/user_notes.php:57
+#: admin/include/user_notes.php:62
 msgid "Are you sure you want to remove this user note?"
 msgstr "Sigur doriți să eliminați această notă de utilizator?"
 
-#: admin/include/user_notes.php:74
+#: admin/include/user_notes.php:79
 msgid "User note is removed."
 msgstr "Nota de utilizator este ștearsă."
 
-#: admin/include/user_notes.php:108
+#: admin/include/user_notes.php:114
 msgid "New"
 msgstr "Nou"
 
-#: admin/include/user_notes.php:110
+#: admin/include/user_notes.php:116
 msgid "Approved"
 msgstr "Aprobat"
 
-#: admin/include/users.php:5 admin/index.php:1245 admin/index.php:1250
+#: admin/include/users.php:5 admin/index.php:1313 admin/index.php:1318
 msgid "Users"
 msgstr "Utilizatori"
 
@@ -5732,67 +5801,67 @@ msgstr "nu este nevoie să vă autentificați"
 msgid "Unblock IP address"
 msgstr "Deblochează adresa IP"
 
-#: admin/index.php:401
+#: admin/index.php:469
 msgid "Access to admin pages is not allowed."
 msgstr "Accesul la paginile de administrare nu este permis."
 
-#: admin/index.php:674 admin/index.php:679 admin/index.php:878
+#: admin/index.php:742 admin/index.php:747 admin/index.php:946
 msgid "Update options"
 msgstr "Opțiuni de actualizare"
 
-#: admin/index.php:678
+#: admin/index.php:746
 msgid "update check is disabled."
 msgstr "verificarea actualizării este dezactivată."
 
-#: admin/index.php:877
+#: admin/index.php:945
 msgid "is up-to-date!"
 msgstr "este la zi!"
 
-#: admin/index.php:883
+#: admin/index.php:951
 msgid "Update available"
 msgstr "Actualizare disponibilă"
 
-#: admin/index.php:888
+#: admin/index.php:956
 msgid "Beta version available"
 msgstr "Versiune beta disponibilă"
 
-#: admin/index.php:901 admin/update/install_update.php:476
+#: admin/index.php:969 admin/update/install_update.php:476
 msgid "Online version check unavailable."
 msgstr "Verificarea versiunii online indisponibilă."
 
-#: admin/index.php:1039
+#: admin/index.php:1107
 msgid "Website"
 msgstr "Site web"
 
-#: admin/index.php:1049 menu.php:284 menu.php:804
+#: admin/index.php:1117 menu.php:284 menu.php:804
 msgid "Logoff"
 msgstr "Deconectare"
 
-#: admin/index.php:1102
+#: admin/index.php:1170
 msgid "Control"
 msgstr "Control"
 
-#: admin/index.php:1134 help.php:72 menu.php:644
+#: admin/index.php:1202 help.php:72 menu.php:644
 msgid "World map"
 msgstr "Harta lumii"
 
-#: admin/index.php:1181
+#: admin/index.php:1249
 msgid "Gedcom export"
 msgstr "Export Gedcom"
 
-#: admin/index.php:1184
+#: admin/index.php:1252
 msgid "Database backup"
 msgstr "Copie a bazei de date"
 
-#: admin/index.php:1212
+#: admin/index.php:1280
 msgid "Persons and families"
 msgstr "Persoane și familii"
 
-#: admin/index.php:1253
+#: admin/index.php:1321
 msgid "Groups"
 msgstr "Grupuri"
 
-#: admin/index.php:1256
+#: admin/index.php:1324
 msgid "Log"
 msgstr "Log"
 
@@ -6044,10 +6113,6 @@ msgstr "Aniversări de căsătorie"
 msgid "Civil"
 msgstr "Civil"
 
-#: birthday_list.php:111 birthday_list.php:298
-msgid "Religious"
-msgstr "Religios"
-
 #: birthday_list.php:135 birthday_list.php:229
 msgid "Day"
 msgstr "Zi"
@@ -6056,7 +6121,7 @@ msgstr "Zi"
 msgid " PRIVACY FILTER"
 msgstr " FILTRU DE CONFIDENȚIALITATE"
 
-#: birthday_list.php:219 birthday_list.php:386 include/mainindex_cls.php:953 include/mainindex_cls.php:977 list.php:2145 list_places_families.php:593
+#: birthday_list.php:219 birthday_list.php:386 include/mainindex_cls.php:955 include/mainindex_cls.php:979 list.php:2145 list_places_families.php:593
 msgid " persons are not shown due to privacy settings"
 msgstr " persoane nu sunt  afișate din cauza setărilor de confidențialitate"
 
@@ -6076,7 +6141,7 @@ msgstr "Soți și Soții"
 msgid "No results found for this month"
 msgstr "Nu s-au găsit rezultate pentru această lună"
 
-#: birthday_rss.php:63 header.php:281
+#: birthday_rss.php:63 header.php:292
 msgid "Birthday calendar"
 msgstr "Calendarul zilelor de naștere"
 
@@ -6148,11 +6213,11 @@ msgstr "RTF"
 msgid "Add to favourite list"
 msgstr "Adăugare la lista de favorite"
 
-#: family.php:454 family.php:521 family.php:671 help.php:22 include/person_cls.php:836
+#: family.php:454 family.php:521 family.php:671 help.php:22 include/person_cls.php:835
 msgid "Descendant report"
 msgstr "Raportul urmașilor"
 
-#: family.php:457 family.php:524 family.php:606 family.php:674 family.php:914 family.php:926 include/person_cls.php:817
+#: family.php:457 family.php:524 family.php:606 family.php:674 family.php:914 family.php:926 include/person_cls.php:816
 msgid "Family group sheet"
 msgstr "Pagina familiei"
 
@@ -6165,7 +6230,7 @@ msgstr "SFAT: plasați cursorul peste %s pentru rapoarte și diagrame despre str
 msgid "generation "
 msgstr "generație "
 
-#: family.php:1173 family.php:1410 photoalbum.php:246 report_outline.php:521 report_outline.php:539 timelines.php:567
+#: family.php:1173 family.php:1410 photoalbum.php:246 report_outline.php:524 report_outline.php:542 timelines.php:567
 msgid "*** Privacy filter is active, one or more items are filtered. Please login to see all items ***"
 msgstr "*** Filtrul de confidențialitate este activ, unul sau mai multe elemente sunt filtrate. Va rugam sa vă autentificați pentru a vedea toate elementele ***"
 
@@ -6193,7 +6258,7 @@ msgstr "Copil legal"
 msgid "Foster child"
 msgstr "Copil adoptiv"
 
-#: family.php:1799 family.php:1805 report_ancestor.php:1205
+#: family.php:1799 family.php:1805 report_ancestor.php:1217
 msgid "married"
 msgstr "căsătorit(ă)"
 
@@ -6209,40 +6274,40 @@ msgstr "Citare pentru:"
 msgid "accessed"
 msgstr "accesat"
 
-#: family.php:2155 family.php:2162
+#: family.php:2154 family.php:2161
 msgid "New user note"
 msgstr "Notă nouă de utilizator"
 
-#: family.php:2160 mailform.php:24 register.php:59 user_settings.php:93
+#: family.php:2159 mailform.php:24 register.php:59 user_settings.php:93
 #, php-format
 msgid "Message sent through %s from the website."
 msgstr "Mesaj trimis prin %s de pe site-ul web."
 
-#: family.php:2167
+#: family.php:2166
 msgid "User note by family"
 msgstr "Notă utilizator referitoare la familie"
 
-#: family.php:2188
+#: family.php:2187
 msgid "Your information is saved and will be reviewed by the webmaster."
 msgstr "Informațiile dvs. sunt salvate și vor fi examinate de webmaster."
 
-#: family.php:2225
+#: family.php:2224
 msgid "Add information or remarks"
 msgstr "Adăugare informații sau remarci"
 
-#: family.php:2232
+#: family.php:2231
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "Adresa dvs. de e-mail address lipsește. Vă rog adăugați adresa de e-mail aici: "
 
-#: family.php:2238 login.php:44 mailform.php:134 register.php:148
+#: family.php:2237 login.php:44 mailform.php:134 register.php:148
 msgid "Send"
 msgstr "Trimis"
 
-#: family.php:2303 report_ancestor.php:1598
+#: family.php:2302 report_ancestor.php:1610
 msgid "Download RTF report."
 msgstr "Descărcare raport RTF."
 
-#: family.php:2304 report_ancestor.php:1599
+#: family.php:2303 report_ancestor.php:1611
 msgid "TIP: Don't use Wordpad to open this file (the lay-out will be wrong!). It's better to use a text processor like Word or OpenOffice Writer."
 msgstr "SFAT: Nu utilizați Wordpad pentru a deschide acest fișier (dispunerea va fi greșită!). este mai bine să folosiți un procesor de text precum Word sau OpenOffice Writer."
 
@@ -6250,7 +6315,7 @@ msgstr "SFAT: Nu utilizați Wordpad pentru a deschide acest fișier (dispunerea 
 msgid "RELOAD FANCHART WITH 'VIEW' BUTTON ON THE LEFT"
 msgstr "REÎNCARCĂ PLĂCINTA CU BUTONUL „VIZUALIZARE” ÎN STÂNGA"
 
-#: fanchart.php:565 help.php:25 include/person_cls.php:878
+#: fanchart.php:565 help.php:25 include/person_cls.php:877
 msgid "Fanchart"
 msgstr "Diagramă tip plăcintă"
 
@@ -6394,43 +6459,43 @@ msgstr "Toate persoanele care au decedat aici: "
 msgid "Persons that died here until "
 msgstr "Persoanele care au decedat aici până la "
 
-#: header.php:274
+#: header.php:285
 msgid "Main index"
 msgstr "Indexul principal"
 
-#: header.php:278 help.php:57 menu.php:515
+#: header.php:289 help.php:57 menu.php:515
 msgid "Photobook"
 msgstr "Album foto"
 
-#: header.php:283 help.php:69 include/person_cls.php:864 menu.php:630
+#: header.php:294 help.php:69 include/person_cls.php:863 menu.php:630
 msgid "Relationship calculator"
 msgstr "Calculatorul relațiilor"
 
-#: header.php:284 mailform.php:107
+#: header.php:295 mailform.php:107
 msgid "Mail form"
 msgstr "Formular pentru e-mail"
 
-#: header.php:285
+#: header.php:296
 msgid "Google maps"
 msgstr "Hărți Google"
 
-#: header.php:287 hourglass.php:92 list.php:1805 maps.php:248 menu.php:326 menu.php:701 menu.php:706 report_descendant.php:423 timelines.php:472
+#: header.php:298 hourglass.php:92 list.php:1805 maps.php:248 menu.php:326 menu.php:701 menu.php:706 report_descendant.php:423 timelines.php:472
 msgid "Help"
 msgstr "Ajutor"
 
-#: header.php:288 info.php:5 menu.php:399 menu.php:418
+#: header.php:299 info.php:5 menu.php:399 menu.php:418
 msgid "Information"
 msgstr "Informare"
 
-#: header.php:289
+#: header.php:300
 msgid "Credits"
 msgstr "Credite"
 
-#: header.php:290
+#: header.php:301
 msgid "Cookie information"
 msgstr "Informații Cookie"
 
-#: header.php:292 menu.php:310 menu.php:835
+#: header.php:303 menu.php:310 menu.php:835
 msgid "Register"
 msgstr "Condică"
 
@@ -6446,7 +6511,7 @@ msgstr "Rapoarte"
 msgid "This icon is shown to the left of names of persons in lists or reports. When you hover over this icon with your mouse, a pop-up will be displayed. In the pop-up list you will find several icons with names of reports and charts that you can create from this person (the exact number of icons on the list varies according to the presence of ancestors and/or descendants). Following is a list of those icons and their meaning."
 msgstr "Această pictogramă este afișată în stânga numelor persoanelor din liste sau rapoarte. Când treceți cu mouse-ul peste această pictogramă, va fi afișat un pop-up. În lista pop-up veți găsi mai multe pictograme cu nume de rapoarte și diagrame pe care le puteți crea de la această persoană (numărul exact de pictograme din listă variază în funcţie de prezenţa strămoşilor şi/sau urmașilor). Urmează o listă a acelor icoane și semnificația lor."
 
-#: help.php:20 include/person_cls.php:858 report_ancestor.php:103 report_ancestor.php:151 report_ancestor.php:166 report_ancestor.php:217
+#: help.php:20 include/person_cls.php:857 report_ancestor.php:103 report_ancestor.php:151 report_ancestor.php:166 report_ancestor.php:217
 msgid "Ancestor report"
 msgstr "Raportul strămoșilor"
 
@@ -6458,15 +6523,15 @@ msgstr "Un pedigree este un raport genealogic al strămoșilor unei persoane. Un
 msgid "A descendant report is a genealogical report of a patriarchal couple or of one patriarch (generation I) with their children (generation II) and all further descendants, both along male and female lines. <br>From amongst the icons in the pop-up menu you can also choose a graphical display of the descendant report."
 msgstr "Un raport al urmașilor este un raport genealogic al unui cuplu patriarhal sau al un patriarh (generația I) cu copiii lor (generația a II-a) și toți alți urmași, atât de-a lungul liniilor masculine, cât și feminine. <br>Din rândul pictogramelor din meniul pop-up puteți alege și o afișare grafică a raportului urmașilor."
 
-#: help.php:23 include/person_cls.php:846 report_outline.php:97 report_outline.php:112 report_outline.php:118
+#: help.php:23 include/person_cls.php:845 report_outline.php:97 report_outline.php:112 report_outline.php:118
 msgid "Outline report"
-msgstr "Rezumatul"
+msgstr "Raportul general"
 
 #: help.php:23
 msgid "An outline report is a clear summary of all descendants of one person (and his/her partners), where each generation gets its own (ascending) number."
 msgstr "Un raport general este un rezumat clar al tuturor urmașilor unei persoane (și partenerii săi), unde fiecare generație primește propriul său număr (crescător)."
 
-#: help.php:24 include/person_cls.php:860 report_ancestor.php:1170 report_ancestor.php:1472 report_ancestor.php:1493
+#: help.php:24 include/person_cls.php:859 report_ancestor.php:1182 report_ancestor.php:1484 report_ancestor.php:1505
 msgid "Ancestor sheet"
 msgstr "Pagina strămoșilor"
 
@@ -6478,7 +6543,7 @@ msgstr "O fișă a strămoșilor enumeră 5 generații în aspectul tabelului, c
 msgid "A fanchart is a circular chart that shows the ancestors in circles around the base person. This allows for a very clear view of the ancestry of any specific person. The box for each person on the chart is clickable to enable fast access to that person's family sheet. <br> The size of the fanchart and some other settings may be adjusted from the menu to the left of the chart."
 msgstr "O diagramă tip plăcintă este o diagramă circulară care arată strămoșii în cercuri în jurul persoanei de bază. Acest lucru permite o vedere foarte clară a strămoșilor oricărei persoane anume. Caseta pentru fiecare persoană din diagramă poate fi activată pentru acces rapid la foaia de familie a acelei persoane. <br> Dimensiunea plăcintei și alte setări pot fi ajustate din meniul din stânga diagramei."
 
-#: help.php:26 include/person_cls.php:958 include/person_cls.php:972
+#: help.php:26 include/person_cls.php:957 include/person_cls.php:971
 msgid "Timeline"
 msgstr "Cronologie"
 
@@ -6569,7 +6634,7 @@ msgstr "Informațiile date în tabelul cu statistici nu garantează mai multe ex
 
 #: help.php:70
 msgid "With the relationship calculator you can establish blood and/or marital relations between two people. In the search field \"Name\" you can enter a name. For example first name, last name, call name, part of name or leave a field empty. Then you can click \"search\" and consequently pick a name from the result list. Once two names have been selected, you can click \"Calculate relationship\" and if a relationship is found it will be listed together with a graphical representation. You can press the change symbol to switch between the persons."
-msgstr "Cu calculatorul de relații poți stabili relații de sânge și/sau conjugale între două persoane. În câmpul de căutare „Nume” puteți introduce un nume. De exemplu, prenume, nume de familie, nume de apel, o parte din nume sau lăsați un câmp gol. Apoi puteți face clic pe „căutare” și, în consecință, puteți alege un nume din lista de rezultate. După ce au fost selectate două nume, puteți face clic pe „Calculați relația” și dacă se găsește o relație, aceasta va fi listată împreună cu o reprezentare grafică. Puteți apăsa simbolul de schimbare pentru a comuta între persoane."
+msgstr "Cu ajutorul calculatorului de relații puteți stabili relații de sânge și/sau conjugale între două persoane. În câmpul de căutare „Nume” puteți introduce un nume. De exemplu, prenume, nume de familie, porecla, o parte din nume sau lăsați un câmp gol. Apoi puteți face clic pe „căutare” și, în consecință, puteți alege un nume din lista de rezultate. După ce au fost selectate două nume, puteți face clic pe „Calculați relația” și dacă se găsește o relație, aceasta va fi listată împreună cu o reprezentare grafică. Puteți apăsa simbolul de schimbare pentru a comuta între persoane."
 
 #: help.php:73
 msgid "This will display a world map relating to the people present in the database, with ability to map by births or deaths."
@@ -6632,7 +6697,7 @@ msgstr "Câmpuri de căutare"
 msgid "In the search fields you can search by first and/or last name. You can also choose from three options: \"contains\", \"equals\" and \"starts with\". Note: next to the search button there is an option for  &quot;Advanced Search!&quot;"
 msgstr "În câmpurile de căutare puteți căuta după nume și/sau prenume. Puteți de asemenea alege dintre trei opțiuni: „conține”, „egal cu” și „începe cu”. Notă: lângă butonul de căutare există o opțiune pentru &quot;Căutare avansată!&quot;"
 
-#: hourglass.php:73 include/person_cls.php:927
+#: hourglass.php:73 include/person_cls.php:926
 msgid "Hourglass chart"
 msgstr "Diagrama tip clepsidră"
 
@@ -6735,7 +6800,6 @@ msgid "1 years"
 msgstr "1 an"
 
 #: include/calculate_age_cls.php:265
-#| msgid "marriage/ relation"
 msgid "age by relation"
 msgstr "vârsta în relație"
 
@@ -6745,9 +6809,8 @@ msgstr "vârsta la căsătorie"
 
 #: include/calculate_age_cls.php:392
 #, php-format
-#| msgid "married"
 msgid "married %s"
-msgstr "căsătorit(ă) cu %s"
+msgstr "căsătorit(ă) %s"
 
 #: include/date_place.php:19 include/date_place.php:29
 msgid "PLACE_AT "
@@ -6761,19 +6824,19 @@ msgstr "Ceva a mers prost, nu există un ID de persoană valid."
 msgid "Something went wrong, there is no valid family id."
 msgstr "Ceva a mers prost, nu există un ID de familie valid."
 
-#: include/language_date.php:51 include/language_date.php:73 include/language_date.php:105
+#: include/language_date.php:52 include/language_date.php:74 include/language_date.php:106
 msgid "estimated &#177;"
 msgstr "estimat &#177;"
 
-#: include/language_date.php:52 include/language_date.php:106
+#: include/language_date.php:53 include/language_date.php:107
 msgid "calculated &#177;"
 msgstr "calculat &#177;"
 
-#: include/language_date.php:119
+#: include/language_date.php:120
 msgid "from"
 msgstr "de la"
 
-#: include/language_date.php:120
+#: include/language_date.php:121
 msgid "to"
 msgstr "la"
 
@@ -6807,7 +6870,7 @@ msgstr "a ajunge"
 
 #: include/language_event.php:11
 msgid "Baptized LDS"
-msgstr "Botezat(ă) LDS"
+msgstr "Botezat LDS"
 
 #: include/language_event.php:15
 msgid "Blessing"
@@ -6822,8 +6885,8 @@ msgid "Census"
 msgstr "Recensământ"
 
 #: include/language_event.php:19
-msgid "Christened (adult)"
-msgstr "Botezat(ă) (adult)"
+msgid "Christened as adult"
+msgstr "Botezat ca adult"
 
 #: include/language_event.php:20
 msgid "Confirmation"
@@ -6844,10 +6907,6 @@ msgstr "Interesul urmașilor"
 #: include/language_event.php:24
 msgid "Divorce filed"
 msgstr "Divorțul depus"
-
-#: include/language_event.php:27
-msgid "Education"
-msgstr "Studii"
 
 #: include/language_event.php:28
 msgid "Emigrated"
@@ -6982,8 +7041,8 @@ msgid "Sealed child LDS"
 msgstr "Copil sigilat LDS"
 
 #: include/language_event.php:64
-msgid "sealing to parents (LDS)"
-msgstr "sealing to parents (LDS)"
+msgid "sealing to parents LDS"
+msgstr "sealing to parents LDS"
 
 #: include/language_event.php:65
 msgid "Sealed to spouse LDS"
@@ -7065,21 +7124,21 @@ msgstr "Căutare avansată"
 msgid "Surnames Index:"
 msgstr "Indexul numelor de familie:"
 
-#: include/mainindex_cls.php:824
+#: include/mainindex_cls.php:826
 msgid "Patronyms"
 msgstr "Patronime"
 
-#: include/mainindex_cls.php:991
+#: include/mainindex_cls.php:993
 #, php-format
 msgid "This database is made by %s, a freeware genealogical  program"
 msgstr "Această bază de date este realizată cu %s, un program genealogic gratuit"
 
-#: include/mainindex_cls.php:1003
+#: include/mainindex_cls.php:1005
 #, php-format
 msgid "European law: %s cookie information"
 msgstr "Legea europeană: informații despre cookie-uri %s"
 
-#: include/marriage_cls.php:67 include/person_cls.php:1461
+#: include/marriage_cls.php:67 include/person_cls.php:1460
 msgid "Non marital"
 msgstr "Neconjugală"
 
@@ -7091,55 +7150,55 @@ msgstr "Sfârșitul coabitării"
 msgid "Marriage notice"
 msgstr "Aviz de căsătorie"
 
-#: include/marriage_cls.php:386 include/marriage_cls.php:387 include/marriage_cls.php:388 list_places_families.php:425 list_places_families.php:562
+#: include/marriage_cls.php:389 include/marriage_cls.php:390 include/marriage_cls.php:391 list_places_families.php:425 list_places_families.php:562
 msgid "Married notice (religious)"
 msgstr "Anunț de căsătorie (religios)"
 
-#: include/marriage_cls.php:462 include/marriage_cls.php:463 include/marriage_cls.php:464 list_places_families.php:430 list_places_families.php:563
+#: include/marriage_cls.php:465 include/marriage_cls.php:466 include/marriage_cls.php:467 list_places_families.php:430 list_places_families.php:563
 msgid "Married (religious)"
 msgstr "Căsătorit(ă) (religios)"
 
-#: include/marriage_cls.php:469 include/marriage_cls.php:470
+#: include/marriage_cls.php:472 include/marriage_cls.php:473
 msgid "religion: "
 msgstr "religia: "
 
-#: include/marriage_cls.php:518
+#: include/marriage_cls.php:521
 msgid "from:"
 msgstr "de:"
 
-#: include/marriage_cls.php:520 include/marriage_cls.php:521 include/marriage_cls.php:522 include/marriage_cls.php:728 include/marriage_cls.php:729
+#: include/marriage_cls.php:523 include/marriage_cls.php:524 include/marriage_cls.php:525 include/marriage_cls.php:731 include/marriage_cls.php:732
 msgid "divorced"
 msgstr "divorțat(ă)"
 
-#: include/marriage_cls.php:531 include/marriage_cls.php:532 include/marriage_cls.php:714
+#: include/marriage_cls.php:534 include/marriage_cls.php:535 include/marriage_cls.php:717
 msgid "Married/ Related"
 msgstr "Căsătorit(ă)/În relație"
 
-#: include/marriage_cls.php:670 include/person_cls.php:1493 list.php:191 list_places_families.php:147
+#: include/marriage_cls.php:673 include/person_cls.php:1492 list.php:191 list_places_families.php:147
 msgid "1st"
 msgstr "prima"
 
-#: include/marriage_cls.php:671 include/person_cls.php:1494 list.php:192 list_places_families.php:148 relations.php:543 relations.php:809 relations.php:907 relations.php:1021 relations.php:1329
+#: include/marriage_cls.php:674 include/person_cls.php:1493 list.php:192 list_places_families.php:148 relations.php:543 relations.php:809 relations.php:907 relations.php:1021 relations.php:1329
 msgid "2nd"
 msgstr "a doua"
 
-#: include/marriage_cls.php:672 include/person_cls.php:1495 list.php:193 list_places_families.php:149 relations.php:544 relations.php:810 relations.php:908 relations.php:1022 relations.php:1330
+#: include/marriage_cls.php:675 include/person_cls.php:1494 list.php:193 list_places_families.php:149 relations.php:544 relations.php:810 relations.php:908 relations.php:1022 relations.php:1330
 msgid "3rd"
 msgstr "a treia"
 
-#: include/marriage_cls.php:673 include/person_cls.php:1496 list.php:194 list_places_families.php:150 relations.php:374 relations.php:546 relations.php:812 relations.php:1236 relations.php:1267 relations.php:1332 relations.php:1712 relations.php:1715
+#: include/marriage_cls.php:676 include/person_cls.php:1495 list.php:194 list_places_families.php:150 relations.php:374 relations.php:546 relations.php:812 relations.php:1236 relations.php:1267 relations.php:1332 relations.php:1712 relations.php:1715
 msgid "th"
 msgstr "-a"
 
-#: include/marriage_cls.php:682
+#: include/marriage_cls.php:685
 msgid "Married "
 msgstr "Căsătorit(ă) "
 
-#: include/marriage_cls.php:690 include/marriage_cls.php:695
+#: include/marriage_cls.php:693 include/marriage_cls.php:698
 msgid "related"
 msgstr "în relație"
 
-#: include/marriage_cls.php:708
+#: include/marriage_cls.php:711
 msgid "married/ related"
 msgstr "căsătorit(ă)/în relație cu"
 
@@ -7155,117 +7214,121 @@ msgstr "fată născută moartă"
 msgid "Name filtered"
 msgstr "Nume filtrat"
 
-#: include/person_cls.php:816
+#: include/person_cls.php:815
 msgid "Text reports"
 msgstr "Rapoarte text"
 
-#: include/person_cls.php:868
+#: include/person_cls.php:867
 msgid "Charts"
 msgstr "Diagrame"
 
-#: include/person_cls.php:886 report_ancestor.php:100
+#: include/person_cls.php:885 report_ancestor.php:100
 msgid "Ancestor chart"
 msgstr "Diagrama strămoșilor"
 
-#: include/person_cls.php:897 report_descendant.php:457
+#: include/person_cls.php:896 report_descendant.php:457
 msgid "Descendant chart"
 msgstr "Diagrama urmașilor"
 
-#: include/person_cls.php:913
+#: include/person_cls.php:912
 msgid "DNA Charts"
 msgstr "Diagramele ADN"
 
-#: include/person_cls.php:968 menu.php:296 menu.php:823
+#: include/person_cls.php:967 menu.php:296 menu.php:823
 msgid "Admin"
 msgstr "Administrare"
 
-#: include/person_cls.php:1021 include/person_cls.php:1604 include/person_cls.php:1606 list.php:208 list.php:217 list.php:226 list.php:235 list_places_families.php:167 list_places_families.php:176 list_places_families.php:185 list_places_families.php:194 report_ancestor.php:1285 report_ancestor.php:1302 report_ancestor.php:1303 report_ancestor.php:1435 statistics.php:249 statistics.php:250 timelines.php:329
+#: include/person_cls.php:1020 include/person_cls.php:1603 include/person_cls.php:1605 list.php:208 list.php:217 list.php:226 list.php:235 list_places_families.php:167 list_places_families.php:176 list_places_families.php:185 list_places_families.php:194 report_ancestor.php:1297 report_ancestor.php:1314 report_ancestor.php:1315 report_ancestor.php:1447 statistics.php:249 statistics.php:250 timelines.php:329
 msgid "PRIVACY FILTER"
 msgstr "FILTRU DE CONFIDENȚIALITATE"
 
-#: include/person_cls.php:1197
+#: include/person_cls.php:1196
 msgid "son of"
 msgstr "fiul lui"
 
-#: include/person_cls.php:1198
+#: include/person_cls.php:1197
 msgid "daughter of"
 msgstr "fiica lui"
 
-#: include/person_cls.php:1199
+#: include/person_cls.php:1198
 msgid "child of"
 msgstr "copilul lui"
 
-#: include/person_cls.php:1281 include/person_cls.php:1282
+#: include/person_cls.php:1280 include/person_cls.php:1281
 msgid "adoption parents"
 msgstr "părinţi adoptivi"
 
-#: include/person_cls.php:1353 include/person_cls.php:1354
+#: include/person_cls.php:1352 include/person_cls.php:1353
 msgid "stepparent"
 msgstr "părinte vitreg"
 
-#: include/person_cls.php:1357 include/person_cls.php:1358
+#: include/person_cls.php:1356 include/person_cls.php:1357
 msgid "legal parent"
 msgstr "părinte legal"
 
-#: include/person_cls.php:1361 include/person_cls.php:1362
+#: include/person_cls.php:1360 include/person_cls.php:1361
 msgid "foster parent"
 msgstr "părinte vitreg"
 
-#: include/person_cls.php:1366 include/person_cls.php:1367
+#: include/person_cls.php:1365 include/person_cls.php:1366
 msgid "adoptive parents"
 msgstr "părinți adoptivi"
 
-#: include/person_cls.php:1370 include/person_cls.php:1371
+#: include/person_cls.php:1369 include/person_cls.php:1370
 msgid "adoptive parent"
 msgstr "părinte adoptiv"
 
-#: include/person_cls.php:1449
+#: include/person_cls.php:1448
 msgid "relationship with"
 msgstr "în relație cu"
 
-#: include/person_cls.php:1452
+#: include/person_cls.php:1451
 msgid "married to"
 msgstr "căsătorit(ă) cu"
 
-#: include/person_cls.php:1453
+#: include/person_cls.php:1452
 msgid "marriage with"
 msgstr "căsătorie cu"
 
-#: include/person_cls.php:1465
+#: include/person_cls.php:1464
 msgid "Registered"
 msgstr "Înregistrat"
 
-#: include/person_cls.php:1470
+#: include/person_cls.php:1469
 msgid "divorced from"
 msgstr "divorțat(ă) de"
 
-#: include/person_cls.php:1471
+#: include/person_cls.php:1470
 msgid "marriage (divorced) with"
 msgstr "căsătorie (divorţat) cu"
 
-#: include/person_cls.php:1752 include/person_cls.php:1754 include/person_cls.php:1757 include/person_cls.php:2008
+#: include/person_cls.php:1751 include/person_cls.php:1753 include/person_cls.php:1756 include/person_cls.php:2007
 msgid "at"
 msgstr "la"
 
-#: include/person_cls.php:1752 include/person_cls.php:1754 include/person_cls.php:1757 include/person_cls.php:2008
+#: include/person_cls.php:1751 include/person_cls.php:1753 include/person_cls.php:1756 include/person_cls.php:2007
 msgid "hour"
 msgstr "ora"
 
-#: include/person_cls.php:1936
+#: include/person_cls.php:1935
 msgid "godfather"
 msgstr "naș"
 
-#: include/person_cls.php:2239
+#: include/person_cls.php:2238
 msgid "ash dispersion"
 msgstr "dispersia cenușii"
 
-#: include/person_cls.php:2259
+#: include/person_cls.php:2258
 msgid "occupation"
 msgstr "ocupaţie"
 
-#: include/person_cls.php:2262
+#: include/person_cls.php:2261
 msgid "occupations"
 msgstr "ocupații"
+
+#: include/person_cls.php:2338
+msgid "religions"
+msgstr "religii"
 
 #: include/show_addresses.php:22 include/show_addresses.php:23 list.php:1488
 msgid "residence"
@@ -7287,7 +7350,7 @@ msgstr "Domicilii (familie)"
 msgid "phone"
 msgstr "telefon"
 
-#: include/show_picture.php:227
+#: include/show_picture.php:230
 msgid "Missing image"
 msgstr "Imagine lipsă"
 
@@ -7323,7 +7386,7 @@ msgstr "rol"
 msgid "page"
 msgstr "pagina"
 
-#: include/tfpdf/tfpdfextend.php:884
+#: include/tfpdf/tfpdfextend.php:892
 #, php-format
 msgid "PDF Created with %s on"
 msgstr "PDF creat cu %s la"
@@ -7356,7 +7419,7 @@ msgid "&amp;"
 msgstr "&amp;"
 
 # Married
-#: list.php:174 list_places_families.php:75 list_places_families.php:125 list_places_families.php:184 list_places_families.php:193 list_places_families.php:419 report_ancestor.php:840 report_ancestor.php:851 report_ancestor.php:852 report_ancestor.php:876 report_ancestor.php:1205 report_ancestor.php:1438 report_ancestor.php:1526 report_descendant.php:772
+#: list.php:174 list_places_families.php:75 list_places_families.php:125 list_places_families.php:184 list_places_families.php:193 list_places_families.php:419 report_ancestor.php:840 report_ancestor.php:851 report_ancestor.php:852 report_ancestor.php:876 report_ancestor.php:1217 report_ancestor.php:1450 report_ancestor.php:1538 report_descendant.php:772
 msgid "X"
 msgstr "X"
 
@@ -7761,7 +7824,7 @@ msgid ""
 "<li>The names in this list are clickable and will open a new browser tab with the family page of this person.</li>"
 msgstr ""
 "<b>Linia de sus a meniului:</b>\n"
-"<ul><li>Alege arborele genealogic. Pe site-urile cu mai mulți arbori genealogic aici puteți alege ce arbore să mapați.</li>\n"
+"<ul><li>Alege arborele genealogic. Pe site-urile cu mai mulți arbori genealogici aici puteți alege ce arbore să mapați.</li>\n"
 "<li>Alegeți dacă doriți să afișați locația nașterii sau locația decesului.</li></ul>\n"
 "<b>Al doilea rând de meniu:</b>\n"
 "<ul><li>Sliderul „nașteri până la”. Cu acest glisor puteți marca locurile de naștere ale persoanelor care s-au născut până la o anumită dată. Glisorul are zece poziții.</li>\n"
@@ -8394,16 +8457,16 @@ msgstr "Faceți clic dreapta pe imaginea de mai jos și salvați-o ca fișier .p
 msgid "If you have a plotter you can use its software to print the image on one large sheet."
 msgstr "Dacă aveți un plotter, puteți utiliza software-ul acestuia pentru a imprima imaginea pe o foaie mare."
 
-#: report_ancestor.php:1204 report_ancestor.php:1526
+#: report_ancestor.php:1216 report_ancestor.php:1538
 msgid "Legend"
 msgstr "Legendă"
 
-#: report_ancestor.php:1208
+#: report_ancestor.php:1220
 #, php-format
 msgid "Generated with %s on %s"
 msgstr "Generat cu %s pe %s"
 
-#: report_ancestor.php:1563
+#: report_ancestor.php:1575
 msgid "Title:"
 msgstr "Titlu:"
 
@@ -8740,10 +8803,10 @@ msgid ""
 "<li><strong>After choosing the desired step and/or timeline, click the \"Change Display\" button on the bottom of the menu.</strong></li></ul>"
 msgstr ""
 "Explicația diagramei cronologice:<br>\n"
-"<ul><li>Coloana din mijloc afișează anii cronologiei. Începutul va fi chiar înainte de naștere, iar anul de sfârșit va fi imediat după moarte.</li>\n"
+"<ul><li>Coloana din mijloc afișează anii cronologiei. Începutul va fi chiar înainte de naștere, iar anul de sfârșit va fi imediat după deces.</li>\n"
 "<li>Coloana din stânga afișează evenimentele din viața persoanei respective.<br>\n"
 "Evenimentele enumerate sunt: ​​nașterea, decesul și căsătoria(ele) persoanei principale, decesul soțului/soției, nașterea, căsătoria și decesul copiilor și nașterea și decesul nepoților.<br>\n"
-"Nașterea, decesul, căsătoriile și decesul soțului/soției sunt enumerate cu roșu aldine. Nașterea, căsătoria și moartea copiilor în verde. Nașterea și moartea nepoților în albastru</li>\n"
+"Nașterea, decesul, căsătoriile și decesul soțului/soției sunt enumerate cu roșu aldine. Nașterea, căsătoria și decesul copiilor în verde. Nașterea și decesul nepoților în albastru</li>\n"
 "<li>Coloana din dreapta afișează evenimentele istorice care au avut loc în acești ani.</li></ul>\n"
 "Meniul cronologie:<br>\n"
 "<ul><li>În partea de sus a meniului puteți alege cum va fi diagramaafișată. Există trei opțiuni:<br>\n"
@@ -8845,3 +8908,15 @@ msgstr "Selectați o temă de culoare (va fi folosit un cookie pentru a reține 
 #: user_settings.php:268 user_settings.php:272
 msgid "Standard-colours"
 msgstr "Culori standard"
+
+#~ msgid "Religieus"
+#~ msgstr "Religieus"
+
+#~ msgid "fill humo_settings... <font color=red>Standard settings are saved in database!</font>"
+#~ msgstr "fill humo_settings... <font color=red>Standard settings are saved in database!</font>"
+
+#~ msgid "filling humo_groups..."
+#~ msgstr "filling humo_groups..."
+
+#~ msgid "filling humo_users..."
+#~ msgstr "filling humo_users..."

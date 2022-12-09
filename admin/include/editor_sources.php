@@ -432,7 +432,8 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 
 			if ($connectDb->connect_source_id!=''){
 
-				$text.=' <input type="text" name="connect_role['.$connectDb->connect_id.']" placeholder="'.__('Sourcerole').'" value="'.htmlspecialchars($connectDb->connect_role).'" size="6">';
+				$connect_role=''; if ($connectDb->connect_role) $connect_role=$connectDb->connect_role;
+				$text.=' <input type="text" name="connect_role['.$connectDb->connect_id.']" placeholder="'.__('Sourcerole').'" value="'.htmlspecialchars($connect_role).'" size="6">';
 				// *** HELP POPUP ***
 				$rtlmarker="ltr";
 				$text.='<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
@@ -479,7 +480,9 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 
 				$field_date=12; // Size of date field.
 				$text.= $editor_cls->date_show($connectDb->connect_date,'connect_date',"[$connectDb->connect_id]");
-				$text.=' '.ucfirst(__('place')).' <input type="text" name="connect_place['.$connectDb->connect_id.']" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($connectDb->connect_place).'" size="15">';
+
+				$connect_place=''; if ($connectDb->connect_place) $connect_place=$connectDb->connect_place;
+				$text.=' '.ucfirst(__('place')).' <input type="text" name="connect_place['.$connectDb->connect_id.']" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($connect_place).'" size="15">';
 
 				// *** Extra text by shared source ***
 				$field_text='style="height: 20px; width:550px"';

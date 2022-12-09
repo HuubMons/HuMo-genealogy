@@ -16,7 +16,7 @@ function language_event($text_event){
 	$text_event=str_replace("_BRTM", __('Brit Mila'), $text_event);
 	$text_event=str_replace("CAST", __('Caste'), $text_event);
 	$text_event=str_replace("CENS", __('Census'), $text_event);
-	$text_event=str_replace("CHRA", __('Christened (adult)'), $text_event);
+	$text_event=str_replace("CHRA", __('Christened as adult'), $text_event);
 	$text_event=str_replace("CONF", __('Confirmation'), $text_event);
 	$text_event=str_replace("CONL", __('Confirmation LDS'), $text_event);
 	$text_event=str_replace("_COML", __('Common law'), $text_event);
@@ -61,7 +61,7 @@ function language_event($text_event){
 	//$text_event=str_replace("RELI", __('Religious'), $text_event);
 	$text_event=str_replace("RETI", __('Retirement'), $text_event);
 	$text_event=str_replace("SLGC", __('Sealed child LDS'), $text_event);
-	$text_event=str_replace("SLGL", __('sealing to parents (LDS)'), $text_event);
+	$text_event=str_replace("SLGL", __('sealing to parents LDS'), $text_event);
 	$text_event=str_replace("SLGS", __('Sealed to spouse LDS'), $text_event);
 	$text_event=str_replace("SSN", __('Social Security Number'), $text_event);
 	$text_event=str_replace("TXPY", __('taxpayer'), $text_event);
