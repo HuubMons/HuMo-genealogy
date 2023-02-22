@@ -1446,12 +1446,6 @@ function show_pair($left_id,$right_id,$mode) {
 			else {
 				$spouse_ged = $famDb->fam_man;
 			}
-			//$spouse_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$spouse_ged."'";
-			//$spouse = $dbh->query($spouse_qry);
-			//$spouseDb = $spouse->fetch(PDO::FETCH_OBJ);
-			//if($spouseDb) {
-			//	$spouses1 .= $spouseDb->pers_lastname.' '.$spouseDb->pers_firstname.'<br>';
-			//}
 			$spouseDb=$db_functions->get_person($spouse_ged);
 			$name_cls = New person_cls;
 			$name=$name_cls->person_name($spouseDb);
@@ -1478,27 +1472,15 @@ function show_pair($left_id,$right_id,$mode) {
 		$parents = $dbh->query($qry2);
 		$parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
-		//$fath_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_man."'";
-		//$fath = $dbh->query($fath_sql);
-		//$fathDb = $fath->fetch(PDO::FETCH_OBJ);
-		//if($fathDb) {
-		//	$father1 = $fathDb->pers_lastname.', '.$fathDb->pers_firstname;
-		//}
 		$fatherDb=$db_functions->get_person($parentsDb->fam_man);
 		$name_cls = New person_cls;
 		$name=$name_cls->person_name($fatherDb);
 		$father1.=$name["standard_name"].'<br>';
 
-		$moth_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_woman."'";
-		$moth = $dbh->query($moth_sql);
-		$mothDb = $moth->fetch(PDO::FETCH_OBJ);
-		if($mothDb) {
-			//$mother1 = $mothDb->pers_lastname.', '.$mothDb->pers_firstname;
-			$motherDb=$db_functions->get_person($parentsDb->fam_woman);
-			$name_cls = New person_cls;
-			$name=$name_cls->person_name($motherDb);
-			$mother1.=$name["standard_name"].'<br>';
-		}
+		$motherDb=$db_functions->get_person($parentsDb->fam_woman);
+		$name_cls = New person_cls;
+		$name=$name_cls->person_name($motherDb);
+		$mother1.=$name["standard_name"].'<br>';
 	}
 
 	// get data for right person
@@ -1515,12 +1497,6 @@ function show_pair($left_id,$right_id,$mode) {
 			else {
 				$spouse_ged = $famDb->fam_man;
 			}
-			//$spouse_qry = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$spouse_ged."'";
-			//$spouse = $dbh->query($spouse_qry);
-			//$spouseDb = $spouse->fetch(PDO::FETCH_OBJ);
-			//if($spouseDb) {
-			//	$spouses2 .= $spouseDb->pers_lastname.' '.$spouseDb->pers_firstname.'<br>';
-			//}
 			$spouseDb=$db_functions->get_person($spouse_ged);
 			$name_cls = New person_cls;
 			$name=$name_cls->person_name($spouseDb);
@@ -1547,23 +1523,11 @@ function show_pair($left_id,$right_id,$mode) {
 		$parents = $dbh->query($qry2);
 		$parentsDb = $parents->fetch(PDO::FETCH_OBJ);
 
-		//$fath_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_man."'";
-		//$fath = $dbh->query($fath_sql);
-		//$fathDb = $fath->fetch(PDO::FETCH_OBJ);
-		//if($fathDb) {
-		//	$father2 = $fathDb->pers_lastname.', '.$fathDb->pers_firstname;
-		//}
 		$fatherDb=$db_functions->get_person($parentsDb->fam_man);
 		$name_cls = New person_cls;
 		$name=$name_cls->person_name($fatherDb);
 		$father2.=$name["standard_name"].'<br>';
 
-		//$moth_sql = "SELECT * FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$parentsDb->fam_woman."'";
-		//$moth = $dbh->query($moth_sql);
-		//$mothDb = $moth->fetch(PDO::FETCH_OBJ);
-		//if($mothDb) {
-		//	$mother2 = $mothDb->pers_lastname.', '.$mothDb->pers_firstname;
-		//}
 		$motherDb=$db_functions->get_person($parentsDb->fam_woman);
 		$name_cls = New person_cls;
 		$name=$name_cls->person_name($motherDb);
@@ -1843,7 +1807,8 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 //**********************************************************************************************************************
 function show_sources ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
-	/*
+
+	// This was disabled!
 	$left_sources = $dbh->query("SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
 		AND LOCATE('source',connect_sub_kind)!=0
@@ -1852,15 +1817,17 @@ function show_sources ($left_ged,$right_ged) {
 		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
 		AND LOCATE('source',connect_sub_kind)!=0
 		ORDER BY connect_sub_kind ");
+
+	/* Only processes person_source... Disabled in december 2022.
+	$left_sources = $dbh->query("SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
+		AND connect_sub_kind='person_source'
+		ORDER BY connect_order");
+	$right_sources = $dbh->query("SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
+		AND connect_sub_kind='person_source'
+		ORDER BY connect_order");
 	*/
-	$left_sources = $dbh->query("SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
-		AND connect_sub_kind='person_source'
-		ORDER BY connect_order");
-	$right_sources = $dbh->query("SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
-		AND connect_sub_kind='person_source'
-		ORDER BY connect_order");
 
 	if($right_sources->rowCount() > 0) { // no use doing this if right has no sources
 		if($color=='#e6e6e6') { $color='#f2f2f2'; } else { $color='#e6e6e6'; }
@@ -1910,7 +1877,8 @@ function show_sources ($left_ged,$right_ged) {
 //**********************************************************************************************************************
 function show_addresses ($left_ged,$right_ged) {
 	global $dbh, $tree_id, $language, $data2Db, $color;
-	/*
+
+	// This part was disabled!
 	$left_addresses = $dbh->query("SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
 		AND LOCATE('address',connect_sub_kind)!=0
@@ -1918,16 +1886,18 @@ function show_addresses ($left_ged,$right_ged) {
 	$right_addresses = $dbh->query("SELECT * FROM humo_connections
 		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
 		AND LOCATE('address',connect_sub_kind)!=0
+		ORDER BY connect_sub_kind ");
+
+	/* DISABLED in december 2022. Only processes person_address.
+	$left_addresses = $dbh->query("SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
+		AND connect_sub_kind='person_address'
+		ORDER BY connect_sub_kind ");
+	$right_addresses = $dbh->query("SELECT * FROM humo_connections
+		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
+		AND connect_sub_kind='person_address'
 		ORDER BY connect_sub_kind ");
 	*/
-	$left_addresses = $dbh->query("SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$left_ged."'
-		AND connect_sub_kind='person_address'
-		ORDER BY connect_sub_kind ");
-	$right_addresses = $dbh->query("SELECT * FROM humo_connections
-		WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$right_ged."'
-		AND connect_sub_kind='person_address'
-		ORDER BY connect_sub_kind ");
 
 	if($right_addresses->rowCount() > 0) {  // no use doing this if right has no sources
 		if($color=='#e6e6e6') { $color='#f2f2f2'; } else { $color='#e6e6e6'; }
@@ -2069,13 +2039,13 @@ function merge_them($left,$right,$mode) {
 								$allch1 = explode(';',$f1[$i]->fam_children);
 								$allch2 = explode(';',$rightchld);
 								for($z=0; $z < count($allch1); $z++) {
-//only need pers_firstname, pers_lastname?
+//TODO only need pers_firstname, pers_lastname?
 									$qry = "SELECT * FROM humo_persons
 										WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$allch1[$z]."'";
 									$chl1 = $dbh->query($qry);
 									$chl1Db = $chl1->fetch(PDO::FETCH_OBJ);
 									for($y=0; $y < count($allch2); $y++) {
-//only need pers_firstname, pers_lastname?
+//TODO only need pers_firstname, pers_lastname?
 										$qry = "SELECT * FROM humo_persons
 											WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber ='".$allch2[$y]."'";
 										$chl2 = $dbh->query($qry);
@@ -2257,8 +2227,7 @@ function merge_them($left,$right,$mode) {
 							$qry3 = "UPDATE humo_connections SET connect_connect_id = '".$f1[$i]->fam_gedcomnumber."' WHERE connect_tree_id ='".$tree_id."'  AND connect_connect_id = '".$f2[$i]->fam_gedcomnumber."' AND connect_kind = 'family' AND connect_sub_kind = 'fam_text_source'";
 							$dbh->query($qry3);
 						}
-						
-					}	
+					}
 				}
 				// - end new piece for fam sources 
 

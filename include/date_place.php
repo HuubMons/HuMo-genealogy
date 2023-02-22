@@ -1,6 +1,6 @@
 <?php
 // *** Function to display date - place or place - date. ***
-function date_place($process_date, $process_place,$hebnight=""){
+function date_place($process_date,$process_place,$hebnight=""){
 	global $language, $user, $screen_mode, $dirmark1, $humo_option;
 	$self = $_SERVER['QUERY_STRING']; $hebdate='';
 	if($humo_option['admin_hebdate']=="y") {
@@ -10,21 +10,26 @@ function date_place($process_date, $process_place,$hebnight=""){
 			AND stripos($self,"ancestor_sheet")===FALSE)
 			$hebdate=hebdate($process_date,$hebnight);
 	}
-	if ($process_place==" "){$process_place="";} // *** If there is no place ***
+	if ($process_place==' '){$process_place='';} // *** If there is no place ***
 
 	if ($user['group_place_date']=='j'){
-		$text="";
+		$text='';
 		if ($user['group_places']=='j' AND $process_place){
 			//$text=__('PLACE_AT ').$process_place." ";
 			if (__('PLACE_AT ')!='PLACE_AT '){ $text=__('PLACE_AT '); }
 			$text.=$process_place." ";
 		}
-		$text.=$dirmark1.language_date($process_date).$hebdate;
+		//$text.=$dirmark1.language_date($process_date).$hebdate;
+		$text.=language_date($process_date).$hebdate;
+		if ($text) $text=$dirmark1.$text; // *** Only add $dirmark if there is data ***
 	}
 	else{
-		$text=$dirmark1.language_date($process_date).$hebdate;
+		//$text=$dirmark1.language_date($process_date).$hebdate;
+		$text=language_date($process_date).$hebdate;
+		if ($text) $text=$dirmark1.$text; // *** Only add $dirmark if there is data ***
+
 		if ($user['group_places']=='j' AND $process_place){
-			//$text.=" ".__('PLACE_AT ').$process_place;
+			//$text.=' '.__('PLACE_AT ').$process_place;
 			if ($process_date) $text.=' '; // *** Only add space if there is a date ***
 			if (__('PLACE_AT ')!='PLACE_AT '){ $text.=__('PLACE_AT '); }
 			$text.=$process_place;
@@ -33,7 +38,7 @@ function date_place($process_date, $process_place,$hebnight=""){
 	return $text;
 }
 
-function hebdate($datestr,$hebnight="") {  
+function hebdate($datestr,$hebnight="") {
 	global $language;
 	$hebdate='';
 	$year=NULL; $month=NULL; $day=NULL;
@@ -147,7 +152,7 @@ function hebdate($datestr,$hebnight="") {
 			if($string[0]==12) $month = "Av";
 			if($string[0]==13) $month = "Ellul";
 		}
-		$hebdate = " (".$string[1]." ".$month." ".$string[2].")"; 
+		$hebdate = ' ('.$string[1].' '.$month.' '.$string[2].')'; 
 	}
 	return $hebdate;
 }
@@ -176,7 +181,7 @@ function search_month($search_date) {
 	return($text);
 }
 function search_day($search_date) {
-	$day="";
+	$day='';
 	if (strlen($search_date)==11) {    // 12 sep 2002 or 08 sep 2002
 		$day=substr($search_date, -11, 2);
 		if(substr($day,0,1)=="0") {   // 08 aug 2002

@@ -2,7 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('Extensions').'</h1>';
+echo '<h1 class="center">'.__('Extensions').'</h1>';
 
 // *** Read theme's ***
 $folder=opendir(CMS_ROOTPATH.'styles/');

@@ -1,6 +1,7 @@
 <?php
 // *** Support for GEDCOM files for MAC computers ***
-@ini_set('auto_detect_line_endings', TRUE);
+// *** Disabled 18-01-2023 ***
+//@ini_set('auto_detect_line_endings', TRUE);
 
 /**
 * This is the GEDCOM processing file for HuMo-genealogy.

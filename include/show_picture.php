@@ -1,6 +1,6 @@
 <?php
 // *** Function to show media by person or by marriage ***
-// *** Updated feb 2013, aug 2015. ***
+// *** Updated feb 2013, aug 2015, feb 2023. ***
 function show_media($event_connect_kind,$event_connect_id){
 	global $dbh, $db_functions, $tree_id, $user, $dataDb, $uri_path;
 	global $sect, $screen_mode; // *** RTF Export ***
@@ -27,6 +27,7 @@ function show_media($event_connect_kind,$event_connect_id){
 			$media_event_id[$media_nr]=$pictureDb->event_id;
 			$media_event_event[$media_nr]=$pictureDb->event_event;
 			$media_event_date[$media_nr]=$pictureDb->event_date;
+			$media_event_place[$media_nr]=$pictureDb->event_place;
 			$media_event_text[$media_nr]=$pictureDb->event_text;
 			// *** Remove last seperator ***
 			if($media_event_text[$media_nr] AND substr(rtrim($media_event_text[$media_nr]),-1)=="|")
@@ -44,7 +45,8 @@ function show_media($event_connect_kind,$event_connect_id){
 		elseif ($event_connect_kind=='source'){
 			$connect_sql = $db_functions->get_connections_connect_id('source','source_object',$event_connect_id);
 		}
-		if ($event_connect_kind=='person' OR $event_connect_kind=='family'  OR $event_connect_kind=='source'){
+
+		if ($event_connect_kind=='person' OR $event_connect_kind=='family' OR $event_connect_kind=='source'){
 			foreach ($connect_sql as $connectDb){
 				$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 					AND event_gedcomnr='".safe_text_db($connectDb->connect_source_id)."' AND event_kind='object'
@@ -54,6 +56,7 @@ function show_media($event_connect_kind,$event_connect_id){
 					$media_event_id[$media_nr]=$pictureDb->event_id;
 					$media_event_event[$media_nr]=$pictureDb->event_event;
 					$media_event_date[$media_nr]=$pictureDb->event_date;
+					$media_event_place[$media_nr]=$pictureDb->event_place;
 					$media_event_text[$media_nr]=$pictureDb->event_text;
 					// *** Remove last seperator ***
 					if(substr(rtrim($media_event_text[$media_nr]),-1)=="|") $media_event_text[$media_nr] = substr($media_event_text[$media_nr],0,-1);
@@ -77,12 +80,13 @@ function show_media($event_connect_kind,$event_connect_id){
 		}
 
 		for ($i=1; $i<($media_nr+1); $i++) {
+			$date_place=date_place($media_event_date[$i],$media_event_place[$i]);
 			// *** If possible show a thumb ***
 
 			// *** Don't use entities in a picture ***
 			//$event_event = html_entity_decode($pictureDb->event_event, ENT_NOQUOTES, 'ISO-8859-15');
 			$event_event=$media_event_event[$i];
-			
+
 			// in case subfolders are made for photobook categories and this was not already set in $picture_path, look there
 			// (if the $picture_path is already set with subfolder this anyway gives false and so the $picture_path given will work)
 			$temp_path = $tree_pict_path; // store original so we can reset after using for subfolder path for this picture.
@@ -171,15 +175,18 @@ function show_media($event_connect_kind,$event_connect_id){
 			else{
 				// *** Show photo using the lightbox effect ***
 				$picture_array=show_picture($tree_pict_path,$event_event,'',120);
+				//$picture_array=show_picture($tree_pict_path,$event_event,120,'');
 				// *** lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
 				// *** But: reverse change of / character (if sub folders are used) ***
 				//$picture_array['picture'] = rawurlencode($picture_array['picture']);
 				$picture_array['picture'] = str_ireplace("%2F","/",rawurlencode($picture_array['picture']));
-				if ($media_event_text[$i]) $line_pos = strpos($media_event_text[$i],"|");
+
+				$line_pos=0; if ($media_event_text[$i]) $line_pos = strpos($media_event_text[$i],"|");
 				//$title_txt=''; if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
 				$title_txt=$media_event_text[$i];
 				//if($line_pos !== false) $title_txt = substr($media_event_text[$i],0,$line_pos);
-				if(isset($line_pos)) $title_txt = substr($media_event_text[$i],0,$line_pos);
+				//if(isset($line_pos)) $title_txt = substr($media_event_text[$i],0,$line_pos);
+				if($line_pos>0) $title_txt = substr($media_event_text[$i],0,$line_pos);
 
 				// *** Old Slimbox lightbox ***
 				//$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" rel="lightbox" title="'.str_replace("&", "&amp;", $title_txt).'">';
@@ -190,28 +197,36 @@ function show_media($event_connect_kind,$event_connect_id){
 
 				$picture='<a href="'.$picture_array['path'].$picture_array['picture'].'" class="glightbox3" data-gallery="gallery'.$event_connect_id.'" data-glightbox="description: .custom-desc'.$media_event_id[$i].'">';
 				// *** Need a class for multiple lines and HTML code in a text ***
-				$picture.='<div class="glightbox-desc custom-desc'.$media_event_id[$i].'">'.$title_txt.'</div>';
+				//$picture.='<div class="glightbox-desc custom-desc'.$media_event_id[$i].'">'.$title_txt.'</div>';
+				$picture.='<div class="glightbox-desc custom-desc'.$media_event_id[$i].'">'.$date_place.' '.$title_txt.'</div>';
 
 				$picture.='<img src="'.$picture_array['path'].$picture_array['thumb'].$picture_array['picture'].'" height="'.$picture_array['height'].'" alt="'.$event_event.'"></a>';
+				//$picture.='<img src="'.$picture_array['path'].$picture_array['thumb'].$picture_array['picture'].'" width="'.$picture_array['width'].'" alt="'.$event_event.'"></a>';
 
 				$templ_person["pic_path".$i]=$picture_array['path']."thumb_".$picture_array['picture']; //for the time being pdf only with thumbs
 				// *** Remove spaces ***
 				$templ_person["pic_path".$i]=trim($templ_person["pic_path".$i]);
 			}
 
-			// *** Show picture date ***
-			$picture_date='';
-			if ($media_event_date[$i]){
-				if ($screen_mode!='RTF'){ $picture_date=' '.date_place($media_event_date[$i],'').' '; } // default, there is no place
-				$templ_person["pic_text".$i]=date_place($media_event_date[$i],'');
+			// *** Show picture date and place ***
+			$picture_text='';
+			if ($media_event_date[$i] OR $media_event_place[$i]){
+				if ($screen_mode!='RTF'){ $picture_text=$date_place.' '; }
+				$templ_person["pic_text".$i]=$date_place;
 			}
 
 			// *** Show text by picture of little space ***
-			$picture_text='';
 			if (isset($media_event_text[$i]) AND $media_event_text[$i]){
-				if ($screen_mode!='RTF'){$picture_text=$picture_date.' '.str_replace("&", "&amp;", $media_event_text[$i]);}
-				if(isset($templ_person["pic_text".$i])){ $templ_person["pic_text".$i].=' '.$media_event_text[$i];}
-					else {$templ_person["pic_text".$i]=' '.$media_event_text[$i];}
+				if ($screen_mode!='RTF'){
+					//$picture_text.=' '.str_replace("&", "&amp;", $media_event_text[$i]);
+					$picture_text.=' '.str_replace("&", "&amp;", process_text($media_event_text[$i]));
+				}
+				if(isset($templ_person["pic_text".$i])){
+					$templ_person["pic_text".$i].=' '.$media_event_text[$i];
+				}
+				else {
+					$templ_person["pic_text".$i]=$media_event_text[$i];
+				}
 			}
 
 			if ($screen_mode!='RTF'){
@@ -228,9 +243,11 @@ function show_media($event_connect_kind,$event_connect_id){
 				$process_text.='<div class="photo">';
 					$process_text.=$picture;
 					if (isset($picture_array['picture']) AND $picture_array['picture']=='missing-image.jpg') $picture_text.='<br><b>'.__('Missing image').':<br>'.$tree_pict_path.$event_event.'</b>';
-					if(isset($picture_text)) {$process_text.='<div class="phototext">'.$picture_text.'</div>';}
+					// *** Show text by picture ***
+					if(isset($picture_text)) { $process_text.='<div class="phototext">'.$picture_text.'</div>'; }
 				$process_text.= '</div>'."\n";
 			}
+
 			// reset path back to original in case was used for subfolder
 			$tree_pict_path = $temp_path;
 		}
@@ -254,7 +271,7 @@ function show_media($event_connect_kind,$event_connect_id){
 
 function show_picture($picture_path,$picture_org,$pict_width='',$pict_height=''){
 	global $dbh;
-	// in case subfolders are made for photobook categories and this was not already set in $picture_path,  look there
+	// in case subfolders are made for photobook categories and this was not already set in $picture_path, look there
 	// in cases where the $picture_path is already set with subfolder this anyway gives false and so the $picture_path gives will work
 	$temp = $dbh->query("SHOW TABLES LIKE 'humo_photocat'");
 	if($temp->rowCount()) {  // there is a category table 
@@ -339,21 +356,25 @@ function show_picture($picture_path,$picture_org,$pict_width='',$pict_height='')
 			// *** Width picture: change width and height ***
 			$factor=$width/$pict_width;
 			$picture['width']=floor($width/$factor);
+			//$picture['height']=floor($height/$factor);
 		}
 		else{
 			// *** High picture ***
 			$factor=$height/$pict_height;
 			$picture['width']=floor($width/$factor);
+			//$picture['height']=floor($height/$factor);
 		}
 	}
 	elseif ($pict_width>0){
 		// *** Change width ***
 		if ($width>$pict_width){ $width=190; }
+		//if ($width>$pict_width){ $width=$pict_width; }
 		$picture['width']=floor($width);
 	}
 	elseif ($pict_height>0){
 		// *** Change height ***
 		if ($height>$pict_height){ $height=120; }
+		//if ($height>$pict_height){ $height=$pict_height; }
 		$picture['height']=floor($height);
 	}
 

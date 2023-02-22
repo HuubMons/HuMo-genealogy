@@ -11,7 +11,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2022 Huub Mons,
+* Copyright (C) 2008-2023 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -180,6 +180,59 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 			$sql="ALTER TABLE humo_user_notes DROP note_tree_prefix;";
 			$result=$dbh->query($sql);
 		}
+
+		// *** Remove "NOT NULL" from hebnight variables ***
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_persons');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (isset($field['pers_birth_date_hebnight'])){
+			$sql="ALTER TABLE humo_persons CHANGE pers_birth_date_hebnight pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+		//echo $sql;
+			$result=$dbh->query($sql);
+		}
+		if (isset($field['pers_death_date_hebnight'])){
+			$sql="ALTER TABLE humo_persons CHANGE pers_death_date_hebnight pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+		}
+		if (isset($field['pers_buried_date_hebnight'])){
+			$sql="ALTER TABLE humo_persons CHANGE pers_buried_date_hebnight pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+		}
+
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_families');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (isset($field['fam_marr_notice_date_hebnight'])){
+			$sql="ALTER TABLE humo_families CHANGE fam_marr_notice_date_hebnight fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+		}
+		if (isset($field['fam_marr_date_hebnight'])){
+			$sql="ALTER TABLE humo_families CHANGE fam_marr_date_hebnight fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+		}
+		if (isset($field['fam_marr_church_notice_date_hebnight'])){
+			$sql="ALTER TABLE humo_families CHANGE fam_marr_church_notice_date_hebnight fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+		}
+		if (isset($field['fam_marr_church_date_hebnight'])){
+			$sql="ALTER TABLE humo_families CHANGE fam_marr_church_date_hebnight fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+		}
+
+		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_events');
+		while ($columnDb = $column_qry->fetch()) {
+			$field_value=$columnDb['Field'];
+			$field[$field_value]=$field_value;
+		}
+		if (isset($field['event_date_hebnight'])){
+			$sql="ALTER TABLE humo_events CHANGE event_date_hebnight event_date_hebnight VARCHAR(10) CHARACTER SET utf8;";
+			$result=$dbh->query($sql);
+		}
+
 
 
 		// *** Aug. 2022: Cleanup old HuMo-genealogy files ***
@@ -1167,7 +1220,8 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					echo '<div class="'.$rtlmarker.'sddm">';
 					echo '<a href="'.$path_tmp.'page=admin"';
 					echo ' onmouseover="mopen(event,\'m2x\',\'?\',\'?\')"';
-					echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Control').'</a>';
+					//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Control').'</a>';
+					echo ' onmouseout="mclosetime()"'.$select_top.'><img src="../images/settings.png" class="mobile_hidden"><span class="mobile_hidden"> </span>'.__('Control').'</a>';
 					echo '<div id="m2x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<ul class="humo_menu_item2">';
 
@@ -1221,7 +1275,8 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 			echo '<div class="'.$rtlmarker.'sddm">';
 				echo '<a href="'.$path_tmp.'page=tree"';
 				echo ' onmouseover="mopen(event,\'m3x\',\'?\',\'?\')"';
-				echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Family trees').'</a>';
+				//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Family trees').'</a>';
+				echo ' onmouseout="mclosetime()"'.$select_top.'><img src="images/family_connect.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>'.__('Family trees').'</a>';
 
 				echo '<div id="m3x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<ul class="humo_menu_item2">';
@@ -1234,7 +1289,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=thumbs">'.__('Pictures/ create thumbnails').'</a>';
 
 							$menu_item=''; if ($page=='user_notes'){ $menu_item=' id="current"'; }
-							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=user_notes">'.__('User notes').'</a>';
+							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=user_notes">'.__('Notes').'</a>';
 
 							$menu_item=''; if ($page=='check'){ $menu_item=' id="current"'; }
 							echo '<li'.$menu_item.'><a href="'.$path_tmp.'page=check">'.__('Family tree data check').'</a>';
@@ -1271,7 +1326,9 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 			echo '<div class="'.$rtlmarker.'sddm">';
 				echo '<a href="'.$path_tmp.'page=editor"';
 				echo ' onmouseover="mopen(event,\'m3xa\',\'?\',\'?\')"';
-				echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Editor').'</a>';
+				//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Editor').'</a>';
+				echo ' onmouseout="mclosetime()"'.$select_top.'><img src="images/edit.jpg" class="mobile_hidden"><span class="mobile_hidden"> </span>'.__('Editor').'</a>';
+
 
 				echo '<div id="m3xa" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<ul class="humo_menu_item2">';
@@ -1310,7 +1367,9 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 				echo '<div class="'.$rtlmarker.'sddm">';
 					echo '<a href="'.$path_tmp.'page=users"';
 					echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
-					echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Users').'</a>';
+					//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Users').'</a>';
+					echo ' onmouseout="mclosetime()"'.$select_top.'><img src="images/person_edit.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>'.__('Users').'</a>';
+
 					echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 						echo '<ul class="humo_menu_item2">';
 
@@ -1373,7 +1432,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 				echo '<a href="index.php?option=com_humo-gen"';
 				echo ' onmouseover="mopen(event,\'m40x\',\'?\',\'?\')"';
 				//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'</a>';
-				echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> </a>';
+				echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:18px"> </a>';
 				//echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo '<div id="m40x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 					echo '<ul class="humo_menu_item2">';

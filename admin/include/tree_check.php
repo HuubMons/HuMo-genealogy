@@ -6,7 +6,7 @@ global $selected_language;
 
 include_once (CMS_ROOTPATH."include/language_date.php");
 
-echo '<h1 align=center>'.__('Family tree data check').'</h1>';
+echo '<h1 class="center">'.__('Family tree data check').'</h1>';
 
 @set_time_limit(3000);
 

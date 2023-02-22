@@ -2,8 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-//echo '<html><head><title>'.__('Select parents').'</title></head><body>';
-echo '<h1 align=center>'.__('Select parents').'</h1>';
+echo '<h1 class="center">'.__('Select parents').'</h1>';
 
 include ('include/editor_cls.php');
 $editor_cls = New editor_cls;
@@ -24,7 +23,7 @@ echo '<form method="POST" action="index.php?page=editor_relation_select" style="
 	echo '<input class="fonts" type="text" name="search_quicksearch_parent" placeholder="'.__('Name').'" value="'.$search_quicksearch_parent.'" size="15">';
 
 	$search_person_id=''; if (isset($_POST['search_person_id'])) $search_person_id=safe_text_db($_POST['search_person_id']);
-	echo __('or ID:').' <input class="fonts" type="text" name="search_person_id" value="'.$search_person_id.'" size="5">';
+	echo ' '.__('or ID:').' <input class="fonts" type="text" name="search_person_id" value="'.$search_person_id.'" size="5">';
 
 	echo ' <input class="fonts" type="submit" value="'.__('Search').'">';
 echo '</form><br>';

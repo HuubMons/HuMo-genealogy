@@ -2,8 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-//echo '<html><head><title>'.__('Select person').'</title></head><body>';
-echo '<h1 align=center>'.__('Select person').'</h1>';
+echo '<h1 class="center">'.__('Select person').'</h1>';
 
 $place_item='connect_man'; $form='form2';
 if ($_GET['person_item']=='woman'){ $place_item='connect_woman'; $form='form2'; }

@@ -69,6 +69,7 @@ This credits screen is english only...
 HuMo-genealogy uses <a href="https://www.transifex.com/organization/humo-gen" target="_blank">Transifex</a> for translations.
 <ul>
 <li>Chinese by: Dongshan.</li>
+<li>Chech: Jerry Verner, David Krchov.</li>
 <li>Danish by: Erik Jensen.</li>
 <li>Dutch by: Huub, Yossi.</li>
 <li>English by: Huub, Yossi.</li>

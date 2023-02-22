@@ -767,15 +767,35 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 						if($genarray[$w]["non"]==0) { // otherwise for an unmarried child it would give the parents' marriage!
 							$ownfam = $db_functions->get_family($genarray[$w]["fams"]);
 							//if ($ownfam->fam_marr_date OR $ownfam->fam_marr_place){
-							if ($ownfam->fam_marr_date){
+							// *** Don't check for date. Otherwise living together persons are missing ***
+							//if ($ownfam->fam_marr_date){
 								//$replacement_text.= '<br>'.__('X').$dirmark1.' '.date_place($ownfam->fam_marr_date,$ownfam->fam_marr_place);
-								$replacement_text.= '<br>'.__('X').$dirmark1.' '.date_place($ownfam->fam_marr_date,'');
+
+								if ($ownfam->fam_marr_date OR $ownfam->fam_marr_place){
+									$replacement_text.= '<br>'.__('X');
+								}
+								else{
+									// *** Relation ***
+									$replacement_text.= '<br>'.__('&amp;');
+								}
+
+								if ($ownfam->fam_marr_date){
+									$replacement_text.= $dirmark1.' '.date_place($ownfam->fam_marr_date,'').' ';
+								}
+
 								// *** Jan. 2022: Show spouse ***
 								if(isset($genarray[$w]["sps"]) AND $genarray[$w]["sps"] != '') {
-									$replacement_text.= "&nbsp;".__(' to: ')."<br>";
-									$replacement_text.= "<i>".$genarray[$w]["sps"]."</i>";
+									if ($ownfam->fam_marr_date OR $ownfam->fam_marr_place){
+									//$replacement_text.= "&nbsp;".__(' to: ')."<br>";
+										$replacement_text.= __(' to: ').'<br>';
+									}
+									else{
+										// *** Don't show 'to: ' for relations.
+										$replacement_text.=' ';
+									}
+									$replacement_text.= '<i>'.$genarray[$w]["sps"].'</i>';
 								}
-							}
+							//}
 						}
 					}
 				}

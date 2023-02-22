@@ -53,7 +53,7 @@
 // $sexe, $sexe2 - the sexe of persons X and Y
 // person, $person2 - GEDCOM nr of the searched persons X and Y
 //============================================================================================
-ini_set('max_execution_time', 600);
+//ini_set('max_execution_time', 600);
 
 //global declarations for Joomla
 global $foundX_nr, $foundY_nr, $foundX_gen, $foundY_gen, $foundX_match, $foundY_match, $spouse;

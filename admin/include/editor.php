@@ -12,7 +12,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2021 Huub Mons,
+* Copyright (C) 2008-2023 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -161,18 +161,15 @@ if($humo_option['admin_hebnight'] == "y") {
 		$field[$field_value]=$field_value;
 	}
 	if (!isset($field['pers_birth_date_hebnight'])){
-		$sql="ALTER TABLE humo_persons
-			ADD pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_birth_date;";
+		$sql="ALTER TABLE humo_persons ADD pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_birth_date;";
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['pers_death_date_hebnight'])){
-		$sql="ALTER TABLE humo_persons
-			ADD pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_death_date;";
+		$sql="ALTER TABLE humo_persons ADD pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_death_date;";
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['pers_buried_date_hebnight'])){
-		$sql="ALTER TABLE humo_persons
-			ADD pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_buried_date;";
+		$sql="ALTER TABLE humo_persons ADD pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_buried_date;";
 		$result=$dbh->query($sql);
 	}
 
@@ -182,23 +179,19 @@ if($humo_option['admin_hebnight'] == "y") {
 		$field[$field_value]=$field_value;
 	}
 	if (!isset($field['fam_marr_notice_date_hebnight'])){
-		$sql="ALTER TABLE humo_families
-			ADD fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_notice_date;";
+		$sql="ALTER TABLE humo_families ADD fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_notice_date;";
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['fam_marr_date_hebnight'])){
-		$sql="ALTER TABLE humo_families
-			ADD fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_date;";
+		$sql="ALTER TABLE humo_families ADD fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_date;";
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['fam_marr_church_notice_date_hebnight'])){
-		$sql="ALTER TABLE humo_families
-			ADD fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_church_notice_date;";
+		$sql="ALTER TABLE humo_families ADD fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_church_notice_date;";
 		$result=$dbh->query($sql);
 	}
 	if (!isset($field['fam_marr_church_date_hebnight'])){
-		$sql="ALTER TABLE humo_families
-			ADD fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_church_date;";
+		$sql="ALTER TABLE humo_families ADD fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_church_date;";
 		$result=$dbh->query($sql);
 	}
 
@@ -208,7 +201,7 @@ if($humo_option['admin_hebnight'] == "y") {
 		$field[$field_value]=$field_value;
 	}
 	if (!isset($field['event_date_hebnight'])){
-		$sql="ALTER TABLE humo_events ADD event_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER event_date;";
+		$sql="ALTER TABLE humo_events ADD event_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER event_date;";
 		$result=$dbh->query($sql);
 	}
 }
@@ -246,28 +239,6 @@ if (isset($person->pers_fams) AND $person->pers_fams){
 
 // *** Check for new person ***
 $add_person=false; if (isset($_GET['add_person'])){ $add_person=true; }
-
-// *** Select family tree ***
-echo __('Family tree').': ';
-echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
-	echo '<input type="hidden" name="page" value="'.$page.'">';
-	echo '<select size="1" name="tree_id" onChange="this.form.submit();">';
-		echo '<option value="">'.__('Select a family tree:').'</option>';
-		$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
-		$tree_search_result = $dbh->query($tree_search_sql);
-		while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){
-			$edit_tree_array=explode(";",$group_edit_trees);
-			//$team_tree_array=explode(";",$group_team_trees);
-			// *** Administrator can always edit in all family trees ***
-			//if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array) OR in_array($tree_searchDb->tree_id, $team_tree_array)) {
-			if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array)) {
-				$selected=''; if (isset($tree_id) AND $tree_searchDb->tree_id==$tree_id){ $selected=' SELECTED'; }
-				$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
-				echo '<option value="'.$tree_searchDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
-			}
-		}
-	echo '</select>';
-echo '</form>';
 
 if (isset($tree_id)){
 	// *** Process queries ***
@@ -344,9 +315,13 @@ if (isset($tree_id)){
 
 	if ($menu_admin=='person'){
 		if ($new_tree==false){
+
+			// *** Select family tree ***
+			echo __('Family tree').': ';
+			$editor_cls->select_tree($page);
+
 			// *** Favourites ***
 			echo '&nbsp;&nbsp;&nbsp; <img src="'.CMS_ROOTPATH.'images/favorite_blue.png"> ';
-			//echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 			echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
@@ -380,7 +355,6 @@ if (isset($tree_id)){
 			cache_latest_changes();
 
 			echo '&nbsp;&nbsp;&nbsp; ';
-			//echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 			echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
@@ -394,11 +368,13 @@ if (isset($tree_id)){
 							$person2_qry= "SELECT * FROM humo_persons WHERE pers_id='".$pers_id[$i]."'";
 							$person2_result = $dbh->query($person2_qry);
 							$person2=$person2_result->fetch(PDO::FETCH_OBJ);
-							//echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).'</option>';
-							$pers_user='';
-							if ($person2->pers_new_user) $pers_user=' ['.__('Added by').': '.$person2->pers_new_user.']';
-							elseif ($person2->pers_changed_user) $pers_user=' ['.__('Changed by').': '.$person2->pers_changed_user.']';
-							echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).$pers_user.'</option>';
+							if ($person2){
+								//echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).'</option>';
+								$pers_user='';
+								if ($person2->pers_new_user) $pers_user=' ['.__('Added by').': '.$person2->pers_new_user.']';
+								elseif ($person2->pers_changed_user) $pers_user=' ['.__('Changed by').': '.$person2->pers_changed_user.']';
+								echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).$pers_user.'</option>';
+							}
 						}
 					}
 				echo '</select>';
@@ -412,7 +388,6 @@ if (isset($tree_id)){
 		echo '<br><table class="humo" style="text-align:left; width:98%; margin-left: initial; margin-right: initial;">';
 		echo '<tr class="table_header_large"><td>';
 			// *** Search persons firstname/ lastname ***
-			//echo '&nbsp;<form method="POST" action="'.$phpself.'" style="display : inline;">';
 			echo '&nbsp;<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
@@ -516,7 +491,6 @@ if (isset($tree_id)){
 				// *** Found multiple persons ***
 				elseif($nr_persons>0) {
 					//echo '<b>'.__('Found:').'</b> ';
-					//echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
 					echo '<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
 					echo '<input type="hidden" name="page" value="'.$page.'">';
 					echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
@@ -556,7 +530,6 @@ if (isset($tree_id)){
 			}
 
 			// *** Search person GEDCOM number ***
-			//echo '&nbsp;<form method="POST" action="'.$phpself.'" style="display : inline;">';
 			echo '&nbsp;<form method="POST" action="'.$phpself.'?menu_tab=person" style="display : inline;">';
 				echo '<input type="hidden" name="page" value="'.$page.'">';
 				echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
@@ -2461,7 +2434,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			if ($menu_tab!='children'){
 				$hideshow='700';
 				//echo '<tr><td><b>'.__('Add relation').'</b></td><td></td><td><a href="#" onclick="hideShow('.$hideshow.');">'.__('Add relation').'</a>'; 
-				echo '<tr><td><b>'.__('Add relation').'</b></td><td></td><td><a href="#" onclick="hideShow('.$hideshow.');">'.__('Add new relation to this person').'</a>'; 
+				echo '<tr><td><b>'.__('Add relation').'</b></td><td></td><td><a href="#" onclick="hideShow('.$hideshow.');"><img src="images/family_connect.gif"> '.__('Add new relation to this person').'</a>';
 				echo ' ('.trim(show_person($person->pers_gedcomnumber,false,false)).')';
 				echo '</td></tr>';
 
@@ -2555,7 +2528,6 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			});
 			</script>";
 
-			//echo '<form method="POST" action="'.$phpself.'#marriage"  name="form2" id="form2">';
 			echo '<form method="POST" action="'.$phpself.'" style="display : inline;" enctype="multipart/form-data"  name="form2" id="form2">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 
@@ -3033,8 +3005,6 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 			echo '</form>';
 
-
-
 		//if ($menu_tab=='children' and $person->pers_fams){
 		//if ($person->pers_fams){
 		if ($marriage){
@@ -3042,6 +3012,28 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Automatic order of children ***
 			if (isset($_GET['order_children'])) {
 				function date_string($text) {
+					// *** Remove special date items ***
+					$text=str_replace('BEF ','', $text);
+					$text=str_replace('ABT ','', $text);
+					$text=str_replace('AFT ','', $text);
+					$text=str_replace('BET ','', $text);
+					$text=str_replace('INT ','', $text);
+					$text=str_replace('EST ','', $text);
+					$text=str_replace('CAL ','', $text);
+
+					$day='';
+					// *** Skip $day if there is only year ***
+					if (strlen($text)>4){
+						// Add 0 if day is single digit: 9 JUN 1954
+						if (substr($text,1,1)==' ') $day='0'.substr($text,0,1);
+						elseif (is_numeric(substr($text,0,2))) $day=substr($text,0,2);
+						else $day='00';
+					}
+					else{
+						$text='00 '.$text; // No month, use 00.
+						$day='00'; // No day, use 00.
+					}
+
 					$text=str_replace("JAN", "01", $text);
 					$text=str_replace("FEB", "02", $text);
 					$text=str_replace("MAR", "03", $text);
@@ -3054,13 +3046,16 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					$text=str_replace("OCT", "10", $text);
 					$text=str_replace("NOV", "11", $text);
 					$text=str_replace("DEC", "12", $text);
-					$returnstring = substr($text,-4).substr(substr($text,-7),0,2).substr($text,0,2);
+					//$returnstring = substr($text,-4).substr(substr($text,-7),0,2).substr($text,0,2);
+					$returnstring = substr($text,-4).substr(substr($text,-7),0,2).$day;
+
 					return $returnstring;
 					// Solve maybe later: date_string 2 mei is smaller then 10 may (2 birth in 1 month is rare...).
 				}
 
 				//echo '<br>&gt;&gt;&gt; '.__('Order children...');
 
+//only get children...
 				$fam_qry=$dbh->query("SELECT * FROM humo_families
 					WHERE fam_tree_id='".$tree_id."' AND fam_gedcomnumber='".$marriage."'");
 				$famDb=$fam_qry->fetch(PDO::FETCH_OBJ); 
@@ -3252,7 +3247,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		}
 
 
-		echo '<h2>'.__('Sources').'</h2>';
+		echo '<h1 class="center">'.__('Sources').'</h1>';
 		echo __('These sources can be connected to multiple persons, families, events and other items.');
 
 		// *** Show delete message ***
@@ -3264,7 +3259,12 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		$check_source_gedcomnr=''; if (isset($_GET['source_id'])) $check_source_gedcomnr=$_GET['source_id'];
 
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
-			echo '<form method="POST" action="'.$phpself.'">';
+
+			// *** Select family tree ***
+			echo __('Family tree').': ';
+			$editor_cls->select_tree($page);
+
+			echo ' <form method="POST" action="'.$phpself.'" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="'.$page.'">';
 
 			//$source_qry=$dbh->query("SELECT * FROM humo_sources
@@ -3273,7 +3273,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			//	WHERE source_tree_id='".$tree_id."' ORDER BY source_title");
 			$source_qry=$dbh->query("SELECT * FROM humo_sources
 				WHERE source_tree_id='".$tree_id."' ORDER BY IF (source_title!='',source_title,source_text)");
-		echo __('Select source').': ';
+			echo __('Select source').': ';
 			echo '<select size="1" name="source_id" style="width: 300px" onChange="this.form.submit();">';
 			echo '<option value="">'.__('Select source').'</option>'; // *** For new source in new database... ***
 			while ($sourceDb=$source_qry->fetch(PDO::FETCH_OBJ)){
@@ -3521,33 +3521,40 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			unset($_POST['repo_id']);
 		}
 
-		echo '<h2>'.__('Repositories').'</h2>';
+		echo '<h1 class="center">'.__('Repositories').'</h1>';
 		echo __('A repository can be connected to a source. Edit a source to connect a repository.');
 
-		echo '<form method="POST" action="'.$phpself.'">';
-		echo '<input type="hidden" name="page" value="'.$page.'">';
-		$repo_qry=$dbh->query("SELECT * FROM humo_repositories
-			WHERE repo_tree_id='".$tree_id."'
-			ORDER BY repo_name, repo_place");
 
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
-			echo __('Select repository').' ';
-			echo '<select size="1" name="repo_id" onChange="this.form.submit();">';
-			echo '<option value="">'.__('Select repository').'</option>'; // *** For new repository in new database... ***
-			while ($repoDb=$repo_qry->fetch(PDO::FETCH_OBJ)){
-				$selected='';
-				if (isset($_POST['repo_id'])){
-					if ($_POST['repo_id']==$repoDb->repo_id){$selected=' SELECTED';}
-				}
-				echo '<option value="'.$repoDb->repo_id.'"'.$selected.'>'.
-				@$repoDb->repo_gedcomnr.', '.$repoDb->repo_name.' '.$repoDb->repo_place.'</option>'."\n";
-			}
-			echo '</select>';
 
-			echo ' '.__('or').': ';
-			echo '<input type="Submit" name="add_repo" value="'.__('Add repository').'">';
+			// *** Select family tree ***
+			echo __('Family tree').': ';
+			$editor_cls->select_tree($page);
+
+			echo ' <form method="POST" action="'.$phpself.'" style="display : inline;">';
+			echo '<input type="hidden" name="page" value="'.$page.'">';
+			$repo_qry=$dbh->query("SELECT * FROM humo_repositories
+				WHERE repo_tree_id='".$tree_id."'
+				ORDER BY repo_name, repo_place");
+
+				echo __('Select repository').' ';
+				echo '<select size="1" name="repo_id" onChange="this.form.submit();">';
+				echo '<option value="">'.__('Select repository').'</option>'; // *** For new repository in new database... ***
+				while ($repoDb=$repo_qry->fetch(PDO::FETCH_OBJ)){
+					$selected='';
+					if (isset($_POST['repo_id'])){
+						if ($_POST['repo_id']==$repoDb->repo_id){$selected=' SELECTED';}
+					}
+					echo '<option value="'.$repoDb->repo_id.'"'.$selected.'>'.
+					@$repoDb->repo_gedcomnr.', '.$repoDb->repo_name.' '.$repoDb->repo_place.'</option>'."\n";
+				}
+				echo '</select>';
+
+				echo ' '.__('or').': ';
+				echo '<input type="Submit" name="add_repo" value="'.__('Add repository').'">';
+			echo '</form>';
+
 		echo '</td></tr></table><br>';
-		echo '</form>';
 
 		// *** Show selected repository ***
 		if (isset($_POST['repo_id'])){
@@ -3753,41 +3760,46 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		// *****************
 		// *** Addresses ***
 		// *****************
-		echo '<h2>'.__('Shared addresses').'</h2>';
+		echo '<h1 class="center">'.__('Shared addresses').'</h1>';
 		echo __('These addresses can be connected to multiple persons, families and other items.');
-
-		$address_id='';
-		echo '<form method="POST" action="'.$phpself.'">';
-		echo '<input type="hidden" name="page" value="'.$page.'">';
-
-		$address_qry=$dbh->query("SELECT * FROM humo_addresses
-			WHERE address_tree_id='".$tree_id."' AND address_shared='1'
-			ORDER BY address_place, address_address");
 
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
 
-			echo __('Select address').': ';
-			echo '<select size="1" name="address_id" onChange="this.form.submit();" style="width: 200px">';
-			echo '<option value="">'.__('Select address').'</option>';
-			while ($addressDb=$address_qry->fetch(PDO::FETCH_OBJ)){
-				$selected='';
-				if (isset($_POST['address_id'])){
-					if ($_POST['address_id']==$addressDb->address_id){ $selected=' SELECTED'; $address_id=$addressDb->address_id; }
-				}
-				echo '<option value="'.$addressDb->address_id.'"'.$selected.'>'.
-				@$addressDb->address_place.', '.$addressDb->address_address;
-				if ($addressDb->address_text){
-					echo ' '.substr($addressDb->address_text,0,40);
-					if (strlen($addressDb->address_text)>40) echo '...';
-				}
-				echo ' ['.@$addressDb->address_gedcomnr.']</option>'."\n";
-			}
-			echo '</select>';
+			// *** Select family tree ***
+			echo __('Family tree').': ';
+			$editor_cls->select_tree($page);
 
-			echo ' '.__('or').': ';
-			echo '<input type="Submit" name="add_address" value="'.__('Add address').'">';
+			$address_id='';
+			echo ' <form method="POST" action="'.$phpself.'" style="display : inline;">';
+				echo '<input type="hidden" name="page" value="'.$page.'">';
+
+				$address_qry=$dbh->query("SELECT * FROM humo_addresses
+					WHERE address_tree_id='".$tree_id."' AND address_shared='1'
+					ORDER BY address_place, address_address");
+
+				echo __('Select address').': ';
+				echo '<select size="1" name="address_id" onChange="this.form.submit();" style="width: 200px">';
+				echo '<option value="">'.__('Select address').'</option>';
+				while ($addressDb=$address_qry->fetch(PDO::FETCH_OBJ)){
+					$selected='';
+					if (isset($_POST['address_id'])){
+						if ($_POST['address_id']==$addressDb->address_id){ $selected=' SELECTED'; $address_id=$addressDb->address_id; }
+					}
+					echo '<option value="'.$addressDb->address_id.'"'.$selected.'>'.
+					@$addressDb->address_place.', '.$addressDb->address_address;
+					if ($addressDb->address_text){
+						echo ' '.substr($addressDb->address_text,0,40);
+						if (strlen($addressDb->address_text)>40) echo '...';
+					}
+					echo ' ['.@$addressDb->address_gedcomnr.']</option>'."\n";
+				}
+				echo '</select>';
+
+				echo ' '.__('or').': ';
+				echo '<input type="Submit" name="add_address" value="'.__('Add address').'">';
+			echo '</form>';
+
 		echo '</td></tr></table><br>';
-		echo '</form>';
 
 		// *** Show selected address ***
 		//if ($address_id AND isset($_POST['address_id'])){
@@ -3894,7 +3906,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 	// *******************
 
 	if ($menu_admin=='places'){
-		echo '<h2>'.__('Rename places').'</h2>';
+		echo '<h1 class="center">'.__('Rename places').'</h1>';
 
 		//echo __('Update all places here. At this moment these places are updated: birth, baptise, death and burial places.').'<br>';
 
@@ -4021,33 +4033,38 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 		}
 
 		$person_result = $dbh->query($person_qry);
-		echo '<form method="POST" action="'.$phpself.'">';
 		echo '<table class="humo standard" style="text-align:center;"><tr class="table_header_large"><td>';
-			echo $person_result->rowCount().' '.__('Places').'. ';
-			echo __('Select location');
-			echo ' <input type="hidden" name="page" value="'.$page.'">';
-			echo '<select size="1" name="place_select">';
-				while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
-					if ($person->place_edit != ''){
-						$selected='';
-						if (isset($_POST["place_select"]) AND $_POST["place_select"]==$person->place_edit){
-							$selected=" SELECTED";
+
+			// *** Select family tree ***
+			echo __('Family tree').': ';
+			$editor_cls->select_tree($page);
+
+			echo ' <form method="POST" action="'.$phpself.'" style="display : inline;">';
+				echo $person_result->rowCount().' '.__('Places').'. ';
+				echo __('Select location');
+				echo ' <input type="hidden" name="page" value="'.$page.'">';
+				echo '<select size="1" name="place_select">';
+					while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+						if ($person->place_edit != ''){
+							$selected='';
+							if (isset($_POST["place_select"]) AND $_POST["place_select"]==$person->place_edit){
+								$selected=" SELECTED";
+							}
+							echo '<option value="'.$person->place_edit.'"'.$selected.'>'.$person->place_edit.'</option>';
 						}
-						echo '<option value="'.$person->place_edit.'"'.$selected.'>'.$person->place_edit.'</option>';
 					}
-				}
-			echo '</select><br>';
+				echo '</select><br>';
 
-			$check=''; if (isset($_POST['person_places'])) $check=' checked';
-			echo '<input type="checkbox" name="person_places"'.$check.'>'.__('Person places');
-			$check=''; if (isset($_POST['family_places'])) $check=' checked';
-			echo ' <input type="checkbox" name="family_places"'.$check.'>'.__('Family places');
-			$check=''; if (isset($_POST['other_places'])) $check=' checked';
-			echo ' <input type="checkbox" name="other_places"'.$check.'>'.__('Other places (sources, events, addresses, etc.)');
+				$check=''; if (isset($_POST['person_places'])) $check=' checked';
+				echo '<input type="checkbox" name="person_places"'.$check.'>'.__('Person places');
+				$check=''; if (isset($_POST['family_places'])) $check=' checked';
+				echo ' <input type="checkbox" name="family_places"'.$check.'>'.__('Family places');
+				$check=''; if (isset($_POST['other_places'])) $check=' checked';
+				echo ' <input type="checkbox" name="other_places"'.$check.'>'.__('Other places (sources, events, addresses, etc.)');
 
-			echo ' <input type="Submit" name="dummy8" value="'.__('Select').'">';
+				echo ' <input type="Submit" name="dummy8" value="'.__('Select').'">';
+			echo '</form>';
 		echo '</td></tr></table><br>';
-		echo '</form>';
 
 		// *** Change selected place ***
 		if (isset($_POST["place_select"]) AND $_POST["place_select"]!=''){
@@ -4384,43 +4401,22 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 	// ****************************************************
 	//echo '<tr class="humo_color">';
 	echo '<tr class="table_header_large">';
-
-	echo '<td style="border-right:0px;">';
-		echo '<a name="addresses"></a>';
-
-		//$connect_sql="SELECT * FROM humo_connections
-		//	WHERE connect_tree_id='".$tree_id."' AND connect_sub_kind='".$connect_sub_kind."'
-		//	AND connect_connect_id='".safe_text_db($connect_connect_id)."'";
-		//$connect_qry=$dbh->query($connect_sql);
-		//$count=$connect_qry->rowCount();
-		//if ($count>0)
-		//echo '<a href="#addresses" onclick="hideShow(55);"><span id="hideshowlink55">'.__('[+]').'</span></a> ';
-
-		echo __('Addresses').'</td>';
-	echo '<td style="border-right:0px;"></td>';
-	echo '<td style="border-left:0px;">';
-		echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin='.$connect_kind.'&amp;';
-			if ($connect_kind=='person')
-				echo 'person_place_address=1&amp;';
-			else
-				echo 'family_place_address=1&amp;';
-			echo 'address_add=1#addresses">['.__('Add').']</a> ';
-		//$text='';
-		//$connect_qry="SELECT * FROM humo_connections LEFT JOIN humo_addresses
-		//	ON (address_gedcomnr=connect_item_id AND address_tree_id=connect_tree_id)
-		//	WHERE connect_tree_id='".$tree_id."'
-		//	AND connect_sub_kind='".$connect_sub_kind."'
-		//	AND connect_connect_id='".safe_text_db($connect_connect_id)."'
-		//	ORDER BY connect_order";
-		//$connect_sql=$dbh->query($connect_qry);
-		//while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
-		//	if ($text) $text.=', ';
-		//	$text.=@$connectDb->address_place;
-		//}
-		//echo $text;
-		//echo ' '.__('(shared address by a person)');
-	echo '</td>';
-	echo '<td></td>';
+		echo '<td style="border-right:0px;"><a name="addresses"></a>'.__('Addresses').'</td>';
+		echo '<td style="border-right:0px;"></td>';
+		echo '<td style="border-left:0px;">';
+			// *** Otherwise link won't work second time because of added anchor ***
+			$anchor='#addresses';
+			if (isset($_GET['address_add'])){
+				$anchor='';
+			}
+			echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin='.$connect_kind.'&amp;';
+				if ($connect_kind=='person')
+					echo 'person_place_address=1&amp;';
+				else
+					echo 'family_place_address=1&amp;';
+				echo 'address_add=1'.$anchor.'">['.__('Add').']</a> ';
+		echo '</td>';
+		echo '<td></td>';
 	echo '</tr>';
 
 	$connect_qry=$dbh->query("SELECT * FROM humo_connections
@@ -4793,14 +4789,17 @@ function show_editor_notes($note_connect_kind){
 	echo '<tr class="table_header_large">';
 		echo '<td><a name="editor_notes"></a>'.__('Editor notes').'</td>';
 		echo '<td style="border-right:0px;"></td><td style="border-left:0px;">';
+			// *** Otherwise link won't work second time because of added anchor ***
+			$anchor='#editor_notes';
+			if (isset($_GET['note_add'])){
+				$anchor='';
+			}
+			echo '<a href="index.php?page=editor&amp;menu_admin=person&amp;note_add='.$note_connect_kind.$anchor.'">['.__('Add').']</a> ';
 
-		echo '<a href="index.php?page=editor&amp;menu_admin=person&amp;note_add='.$note_connect_kind.'#editor_notes">['.__('Add').']</a> ';
-
-		if ($num_rows)
-			printf(__('There are %d editor notes.'), $num_rows);
-		else
-			printf(__('There are %d editor notes.'), 0);
-
+			if ($num_rows)
+				printf(__('There are %d editor notes.'), $num_rows);
+			else
+				printf(__('There are %d editor notes.'), 0);
 	echo '</td><td></td></tr>';
 	while($noteDb=$note_result->fetch(PDO::FETCH_OBJ)){
 		echo '<tr>';

@@ -2,7 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('Install').'</h1>';
+echo '<h1 class="center">'.__('Install').'</h1>';
 
 echo '<p>'.__('Installation of the standard tables. Or create tables from a scratch, they will be filled in with standard data.');
 

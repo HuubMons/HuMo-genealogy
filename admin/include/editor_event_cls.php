@@ -32,6 +32,7 @@ function event_text($event_kind){
 	elseif ($event_kind=='marriage_witness') $event_text= __('marriage witness');
 	elseif ($event_kind=='marriage_witness_rel') $event_text= __('marriage witness (religious)');
 	elseif ($event_kind=='source_picture') $event_text=__('Picture/ Media');
+	elseif ($event_kind=='religion') $event_text= __('Religion');
 	else $event_text=ucfirst($event_kind);
 	return $event_text;
 }
@@ -503,14 +504,18 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='<td style="border-right:0px;"></td>';
 		$text.='<td style="border-left:0px;">';
 			$event_add='add_picture';
-			//if ($event_kind=='marriage_picture') $event_add='add_marriage_picture';
 			if ($event_kind=='marriage_picture') $event_add='add_marriage_picture&marriage_nr='.$event_connect_id;
+			// *** Otherwise link won't work second time because of added anchor ***
+			$anchor='#picture';
+			if (isset($_GET['event_add'])){
+				$anchor='';
+			}
 			if ($event_kind=='source_picture'){
 				$event_add='add_source_picture&source_id='.$event_connect_id;
-				$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;event_add='.$event_add.'#picture">['.__('Add').']</a> ';
+				$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;event_add='.$event_add.$anchor.'">['.__('Add').']</a> ';
 			}
 			else
-				$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add='.$event_add.'#picture">['.__('Add').']</a> ';
+				$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add='.$event_add.$anchor.'">['.__('Add').']</a> ';
 
 			/*
 			// *** JUNE 2021: disabled drag and drop to get a clearer editor page ***

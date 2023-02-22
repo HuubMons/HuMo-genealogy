@@ -9,7 +9,7 @@ if(CMS_SPECIFIC=="Joomla")
 else
 	$phpself = 'index.php';
 
-echo '<h1 align="center">'.__('User groups').'</h1>';
+echo '<h1 class="center">'.__('User groups').'</h1>';
 
 if (isset($_POST['group_add'])){
 	$sql="INSERT INTO humo_groups SET group_name='new groep', group_privacy='n', group_menu_places='n', group_admin='n',

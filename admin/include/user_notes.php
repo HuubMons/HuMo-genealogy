@@ -1,19 +1,19 @@
 <?php
 @set_time_limit(3000);
-@ini_set('memory_limit','-1');
+//@ini_set('memory_limit','-1');
 
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
 include_once (CMS_ROOTPATH."include/language_date.php");
 
-echo '<h1 align=center>'.__('User notes').'</h1>';
+echo '<h1 class="center">'.__('Notes').'</h1>';
 
 echo '<table class="humo standard"  border="1">';
 
-echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
+echo '<tr class="table_header"><th colspan="2">'.__('Notes').'</th></tr>';
 
-	echo '<tr><td>'.__('Choose family tree').'</td>';
+	echo '<tr><td>'.__('Family tree').'</td>';
 	echo '<td>';
 		$tree_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
 		$tree_result = $dbh->query($tree_sql);
@@ -32,7 +32,6 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 				$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$treeDb->tree_id."' AND note_status!='editor'";
 				//$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$treeDb->tree_id."' AND (note_status IN ('new','approved') OR note_status IS NULL)";
 				$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$treeDb->tree_id."' AND note_kind='user'";
-
 				$note_result = $dbh->query($note_qry);
 				$num_rows = $note_result->rowCount();
 
@@ -43,6 +42,39 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 		//echo ' <input type="Submit" name="submit_notes" value="'.__('Select').'">';
 		echo '</form>';
 
+	echo '</td></tr>';
+
+	$limit=50; if (isset($_POST['limit']) AND is_numeric($_POST['limit'])) $limit=safe_text_db($_POST['limit']);
+	$user_notes=true; $editor_notes=false;
+	if (isset($_POST['note_settings'])){
+		$user_notes=false; if (isset($_POST['user_notes'])) $user_notes=true;
+		$editor_notes=false; if (isset($_POST['editor_notes'])) $editor_notes=true;
+	}
+	echo '<tr><td>'.__('Show notes').'</td>';
+	echo '<td>';
+		echo '<form method="POST" action="index.php" style="display : inline;">';
+			echo '<input type="hidden" name="page" value="'.$page.'">';
+
+			// *** Number of results in list ***
+			echo ' '.__('Results').': <select size="1" name="limit">';
+				echo '<option value="50">50</option>';
+				$selected=''; if ($limit==100){ $selected=' SELECTED'; }
+				echo '<option value="100"'.$selected.'>100</option>';
+				$selected=''; if ($limit==200){ $selected=' SELECTED'; }
+				echo '<option value="200"'.$selected.'>200</option>';
+				$selected=''; if ($limit==500){ $selected=' SELECTED'; }
+				echo '<option value="500"'.$selected.'>500</option>';
+			echo '</select>';
+
+			$check=''; if ($user_notes) $check=' checked';
+			echo ' <input type="checkbox" name="user_notes"'.$check.'>'.__('User notes');
+
+			$check=''; if ($editor_notes) $check=' checked';
+			echo ' <input type="checkbox" name="editor_notes"'.$check.'>'.__('Editor notes');
+
+			echo ' <input type="Submit" name="note_settings" value="'.__('Select').'">';
+
+		echo '</form>';
 	echo '</td></tr>';
 
 	if (isset($_POST['note_status']) AND is_numeric($_POST['note_id'])){
@@ -83,19 +115,27 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 	// *** Show user added notes ***
 	if (isset($note_tree_id)){
 		//$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$note_tree_id."'";
-		$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$note_tree_id."' AND note_kind='user'";
+		//$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$note_tree_id."' AND note_kind='user'";
+
+		if ($user_notes) $note_kind="AND note_kind='user'";
+		if ($editor_notes) $note_kind="AND note_kind='editor'";
+		if ($user_notes AND $editor_notes) $note_kind='';
+		$note_qry= "SELECT * FROM humo_user_notes WHERE note_tree_id='".$note_tree_id."' ".$note_kind." LIMIT 0,".$limit;
+
 		$note_result = $dbh->query($note_qry);
 		$num_rows = $note_result->rowCount();
 
+		/*
 		echo '<tr class="humo_user_notes"><td>';
 			if ($num_rows)
 				echo '<a href="#humo_user_notes"></a> ';
-			echo __('User notes').'</td><td colspan="2">';
+			echo __('Notes').'</td><td colspan="2">';
 			if ($num_rows)
 				printf(__('There are %d user added notes.'), $num_rows);
 			else
 				printf(__('There are %d user added notes.'), 0);
 		echo '</td></tr>';
+		*/
 
 		while($noteDb=$note_result->fetch(PDO::FETCH_OBJ)){
 			$user_qry = "SELECT * FROM humo_users WHERE user_id='".$noteDb->note_new_user_id."'";
@@ -103,23 +143,28 @@ echo '<tr class="table_header"><th colspan="2">'.__('User notes').'</th></tr>';
 			$userDb=$user_result->fetch(PDO::FETCH_OBJ);
 
 			echo '<tr class="humo_color"><td>';
-				// *** Select status of message ***
-				echo '<form method="POST" action="index.php">';
-				echo '<input type="hidden" name="page" value="user_notes">';
-				echo '<input type="hidden" name="tree" value="'.$tree_id.'">';
-				echo '<input type="hidden" name="note_id" value="'.$noteDb->note_id.'">';
-				$note_status=''; if ($noteDb->note_status) $note_status=$noteDb->note_status;
-				echo '<select size="1" name="note_status">';
-					$selected='';
-					echo '<option value="new"'.$selected.'>'.__('New').'</option>';
-					$selected=''; if ($note_status=='approved') $selected=' SELECTED';
-					echo '<option value="approved"'.$selected.'>'.__('Approved').'</option>';
-					$selected=''; if ($note_status=='remove') $selected=' SELECTED';
-					echo '<option value="remove"'.$selected.'>'.__('Remove').'</option>';
-				echo '</select>';
-
-				echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';
-				echo '</form>';
+				if ($noteDb->note_kind=='user'){
+					// *** Select status of message ***
+					echo '<form method="POST" action="index.php">';
+						echo '<input type="hidden" name="page" value="user_notes">';
+						echo '<input type="hidden" name="tree" value="'.$tree_id.'">';
+						echo '<input type="hidden" name="note_id" value="'.$noteDb->note_id.'">';
+						$note_status=''; if ($noteDb->note_status) $note_status=$noteDb->note_status;
+						echo '<select size="1" name="note_status">';
+							$selected='';
+							echo '<option value="new"'.$selected.'>'.__('New').'</option>';
+							$selected=''; if ($note_status=='approved') $selected=' SELECTED';
+							echo '<option value="approved"'.$selected.'>'.__('Approved').'</option>';
+							$selected=''; if ($note_status=='remove') $selected=' SELECTED';
+							echo '<option value="remove"'.$selected.'>'.__('Remove').'</option>';
+						echo '</select>';
+						echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';
+					echo '</form>';
+				}
+				else{
+					echo __('Priority').': '.__($noteDb->note_priority).'<br>';
+					echo __('Status').': '.__($noteDb->note_status).'<br>';
+				}
 			echo '</td><td>';
 				//echo '<b>'.language_date($noteDb->note_date).' '.$noteDb->note_time.' '.$userDb->user_name.'</b><br>';
 				echo __('Added by').' <b>'.$userDb->user_name.'</b> ('.language_date($noteDb->note_new_date).' '.$noteDb->note_new_time.')<br>';

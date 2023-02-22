@@ -1,7 +1,7 @@
 <?php
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
-ini_set('memory_limit', '-1');
+//ini_set('memory_limit', '-1');
 
 // *** Style copied from gedcom.css ***
 echo '<style>
@@ -228,7 +228,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'),'HuMo-genealog
 			if (isset($menu_admin) AND $menu_admin=='picture_thumbnails'){
 				// *** Thumb height ***
 				$thumb_height=120; // *** Standard thumb height ***
-				if (isset($_POST['pict_height']) AND is_numeric($_POST['pict_height'])){ $thumb_height=$_POST['pict_height']; }
+				// *** Feb. 2023: no user changable picture size ***
+				//if (isset($_POST['pict_height']) AND is_numeric($_POST['pict_height'])){ $thumb_height=$_POST['pict_height']; }
 				echo '<tr><td class="line_item">';
 					echo __('Create thumbnails');
 				echo '</td><td>';
@@ -236,7 +237,8 @@ Use a relative path, exactly as shown here: <b>../pictures/</b>'),'HuMo-genealog
 					echo '<input type="hidden" name="page" value="thumbs">';
 					echo '<input type="hidden" name="menu_admin" value="picture_thumbnails">';
 					echo '<input type="hidden" name="tree_id" value="'.$tree_id.'">';
-					echo __('Thumbnail height: ').' <input type="text" name="pict_height" value="'.$thumb_height.'" size="4"> pixels';
+					// *** Feb. 2023: no user changable picture size ***
+					//echo __('Thumbnail height: ').' <input type="text" name="pict_height" value="'.$thumb_height.'" size="4"> pixels';
 					echo ' <input type="Submit" name="thumbnail" value="'.__('Create thumbnails').'">';
 					echo '</form>';
 				echo '</td></tr>';
@@ -477,9 +479,9 @@ if (isset($_POST["thumbnail"]) OR isset($_POST['change_filename'])){
 						list($width, $height) = getimagesize($pict_path_original);
 
 						// *** Calculate format ***
-						$newheight=$thumb_height;
-						$factor=$height/$newheight;
-						$newwidth=$width/$factor;
+						$factor=$height/$thumb_height;
+						$newheight=round($thumb_height);
+						$newwidth=round($width/$factor);
 
 						// *** Picture folder must be writable!!!
 						// Sometimes it's necessary to remove ; in php.ini before this line:

@@ -1328,7 +1328,7 @@ else{
 				} //end "if not STAR"
 
 				if($screen_mode=='STAR') {
-						if($descendant_loop==0) {
+					if($descendant_loop==0) {
 						$lst_in_array=$count_marr;
 						$genarray[$arraynr]["gen"]=0;
 						$genarray[$arraynr]["par"]=-1;

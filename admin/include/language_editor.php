@@ -10,7 +10,8 @@ echo '<script type="text/javascript" src="include/popup_merge.js"></script>';
 
 echo '<form method="POST" action="" name="saveform" style="display : inline;">';
 echo '<div style="position:fixed;top:68px;left:0px;">';
-echo '<h1 align=center>'.__('Language editor').'</h1>';
+
+echo '<h1 class="center">'.__('Language editor').'</h1>';
 
 echo '<div style="margin:10px;padding:3px">';
 printf(__('This is the language editor of %s. It\'s possible to change or edit language items in this editor. If you find language errors in a language, please contact the programmers. They will change this in a next version!'),'HuMo-genealogy');

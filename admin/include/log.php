@@ -2,7 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-//echo '<h1 align=center>'.__('Logfile users').'</h1>';
+echo '<h1 class="center">'.__('Log').'</h1>';
 
 // *** Tab menu ***
 if(CMS_SPECIFIC=="Joomla") {

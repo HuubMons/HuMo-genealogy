@@ -1,11 +1,11 @@
 <?php
 @set_time_limit(3000);
-@ini_set('memory_limit','-1');
+//@ini_set('memory_limit','-1');
 
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('Calculated birth date').'</h1>';
+echo '<h1 class="center">'.__('Calculated birth date').'</h1>';
 
 echo __('Calculated birth date is an estimated/ calculated date that is used for the privacy filter.<br>
 These calculated dates will be used for persons where all dates are missing (no birth, baptise, death or burial dates).<br>

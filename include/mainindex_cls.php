@@ -487,17 +487,9 @@ function last_names($columns,$rows){
 	//	$text.=__('Most frequent surnames:')."<br>";
 	$text.='<div class="mainmenu_bar fonts">'.__('Names').'</div>';
 
+	// *** nametbl = used for javascript to show graphical lightgray bar to show number of persons ***
 	//$text.='<table width=500 class="humo nametbl" align="center">';
 	$text.='<table width="90%" class="humo nametbl" align="center">';
-
-	// *** Override td style ***
-	$text.='
-	<style>
-	table.humo td, table.relmenu td {
-		padding-top: 0px;
-		padding-bottom: 0px;
-	}
-	</style>';
 
 	$text.='<tr class="table_headline">';
 	$col_width = ((round(100/$maxcols))-6)."%";
@@ -518,6 +510,7 @@ function last_names($columns,$rows){
 
 	$text.='</table>';
 
+	// *** Show light gray background bar, that graphical shows number of persons ***
 	$text.='
 	<script>
 	var tbl = document.getElementsByClassName("nametbl")[0];
@@ -639,19 +632,27 @@ function random_photo(){
 			$man_cls->construct($personmnDb);
 			$man_privacy=$man_cls->privacy;
 			if ($man_cls->privacy==''){
+				$date_place='';
+				if ($picqryDb->event_date OR $picqryDb->event_place){
+					$date_place=date_place($picqryDb->event_date,$picqryDb->event_place).' ';
+				}
+
 				$text.='<div style="text-align: center;">';
 
 				//$text.='<img src="'.$tree_pict_path.$picname.'" width="200 px"
 				//	style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"><br>';
 
 				// *** Show picture using GLightbox ***
-				$text.='<a href="'.$tree_pict_path.$picname.'" class="glightbox" data-glightbox="description: '.str_replace("&", "&amp;", $picqryDb->event_text).'"><img src="'.$tree_pict_path.$picname.'" width="200 px"
-					style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
+				//$text.='<a href="'.$tree_pict_path.$picname.'" class="glightbox" data-glightbox="description: '.str_replace("&", "&amp;", $picqryDb->event_text).'"><img src="'.$tree_pict_path.$picname.'" width="200 px"
+					//style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
+					$text.='<a href="'.$tree_pict_path.$picname.'" class="glightbox" data-glightbox="description: '.$date_place.str_replace("&", "&amp;", $picqryDb->event_text).'"><img src="'.$tree_pict_path.$picname.
+						'" width="200 px" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
 
 				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
 				$url=$man_cls->person_url2($personmnDb->pers_tree_id,$personmnDb->pers_famc,$personmnDb->pers_fams,$personmnDb->pers_gedcomnumber);
 
-				$text.='<a href="'.$url.'">'.$picqryDb->event_text.'</a></div><br>';
+				//$text.='<a href="'.$url.'">'.$picqryDb->event_text.'</a></div><br>';
+				$text.='<a href="'.$url.'">'.$date_place.$picqryDb->event_text.'</a></div><br>';
 
 				// *** Show first available picture without privacy restrictions ***
 				break;
@@ -923,15 +924,6 @@ function today_in_history($view='with_table'){
 	$text.='<div style="max-height:200px; overflow-x: auto;">';
 		if ($view=='with_table'){
 			$text.='<table width="90%" class="humo nametbl" align="center">';
-				// *** Override td style ***
-				$text.='
-				<style>
-				table.humo td, table.relmenu td {
-					padding-top: 0px;
-					padding-bottom: 0px;
-				}
-				</style>';
-
 				//$text.='<tr class="table_headline">';
 				//	$text.='<td colspan="3"><b>'.__('Today in history').'</b></td>';
 				//$text.='</tr>';

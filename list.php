@@ -250,6 +250,14 @@ function show_person($personDb){
 // *** index ***
 $index_list='quicksearch';
 
+// *** Only used in Advanced search. A standard reset HTML button doesn't work if search is allready done! ***
+if (isset($_POST['reset_all'])){
+	$_POST = array();
+
+	// *** Show advanced search ***
+	$_GET['adv_search']='1';
+}
+
 // *** Reset search fields if necessary ***
 //if (isset($_POST['pers_firstname']) OR isset($_GET['pers_lastname']) OR isset($_GET['reset']) OR isset($_POST['quicksearch'])){
 if (isset($_POST['pers_firstname']) OR isset($_GET['pers_lastname']) OR isset($_GET['pers_firstname']) OR isset($_GET['reset']) OR isset($_POST['quicksearch'])) {
@@ -1408,8 +1416,8 @@ if ($index_list=='patronym'){
 //echo $query.'<br>';
 
 	//*** Show number of persons and pages *****************************************
-	$item=0; if (isset($_GET['item'])){ $item=$_GET['item']; }
-	$start=0; if (isset($_GET["start"])){ $start=$_GET["start"]; }
+	$item=0; if (isset($_GET['item']) AND is_numeric($_GET['item'])){ $item=$_GET['item']; }
+	$start=0; if (isset($_GET["start"]) AND is_numeric($_GET["start"])){ $start=$_GET["start"]; }
 	$nr_persons=$humo_option['show_persons'];
 
 	if(!$selection['spouse_firstname'] AND !$selection['spouse_lastname'] AND $selection['parent_status']!="motheronly" AND $selection['parent_status']!="fatheronly") {
@@ -1771,7 +1779,13 @@ if ($index_list=='patronym'){
 		echo '<tr><td colspan="3" class="no_border center">';
 
 		// *** Reset form ***
-		echo '<input type="reset" value="'.__('Clear fields').'">&nbsp;&nbsp;';
+		if ($adv_search==true){
+			// *** Don't use standard reset. If a search is allready done, this doesn't work! ***
+			//echo '<input type="reset" value="'.__('Clear fields').'">&nbsp;&nbsp;';
+
+			// *** Only used in Advanced search. A standard reset HTML button doesn't work if search is allready done! ***
+			echo '<input type="Submit" name="reset_all" value="'.__('Clear fields').'">';
+		}
 
 		$datasql2 = $dbh->query("SELECT * FROM humo_trees");
 		$num_rows2 = $datasql2->rowCount();
@@ -1787,8 +1801,6 @@ if ($index_list=='patronym'){
 			echo '<input type="hidden" name="search_database" value="all_trees">';
 		}
 		echo '&nbsp;&nbsp; <input type="submit" value="'.__('Search').'" name="B1">';
-		// *** Reset button doesn't work if values are allready added in Search form ***
-		//echo ' <input type="reset" value="'.__('Reset').'">';
 
 		if ($adv_search==true){
 

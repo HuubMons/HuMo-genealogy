@@ -328,13 +328,16 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 						}
 				}
 
-				ImageFilledArc($image, $cx, $cy, $rx, $rx, $deg1, $deg2, $bg, IMG_ARC_PIE);
+				//ImageFilledArc($image, $cx, $cy, $rx, $rx, $deg1, $deg2, $bg, IMG_ARC_PIE);
+				ImageFilledArc($image, round($cx), round($cy), round($rx), round($rx), round($deg1), round($deg2), round($bg), IMG_ARC_PIE);
 				if($gen!=0) {
-					ImageFilledArc($image, $cx, $cy, $rx, $rx, $deg1, $deg2, $grey, IMG_ARC_EDGED | IMG_ARC_NOFILL);
+					//ImageFilledArc($image, $cx, $cy, $rx, $rx, $deg1, $deg2, $grey, IMG_ARC_EDGED | IMG_ARC_NOFILL);
+					ImageFilledArc($image, round($cx), round($cy), round($rx), round($rx), round($deg1), round($deg2), round($grey), IMG_ARC_EDGED | IMG_ARC_NOFILL);
 				}
 				else {
-					ImageFilledArc($image, $cx, $cy, $rx, $rx, $deg1, $deg2, $grey, IMG_ARC_NOFILL);
-					}
+					//ImageFilledArc($image, $cx, $cy, $rx, $rx, $deg1, $deg2, $grey, IMG_ARC_NOFILL);
+					ImageFilledArc($image, round($cx), round($cy), round($rx), round($rx), round($deg1), round($deg2), round($grey), IMG_ARC_NOFILL);
+				}
 
 				$name=$pid;
 
@@ -423,8 +426,8 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 				$ty=$cy - $mr * -sin($rad);
 				if ($sosa==1) $ty-=$mr/2;
 
-				// echo text
-				ImageTtfText($image, (double)$fontpx, $tangle, $tx, $ty, $color, $fontfile, $text);
+				//ImageTtfText($image, (double)$fontpx, $tangle, $tx, $ty, $color, $fontfile, $text);
+				ImageTtfText($image, (double)$fontpx, $tangle, round($tx), round($ty), round($color), $fontfile, $text);
 
 				$imagemap .= "<area shape=\"poly\" coords=\"";
 				// plot upper points

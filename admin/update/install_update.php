@@ -11,7 +11,7 @@ if(CMS_SPECIFIC=="Joomla") {
 else {
 	$phpself = 'index.php';
 }
-echo '<h1 align=center>';
+echo '<h1 class="center">';
 printf(__('%s Update'),'HuMo-genealogy');
 echo '</h1>';
 
@@ -217,9 +217,14 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 				foreach($ffs as $ff){
 					if(is_array($exclude) and !in_array($ff,$exclude)){
 						if($ff != '.' && $ff != '..'){
-							// *** Skip media files in ../media/, ../media/cms/ etc.
+							// *** Skip all media files in folders ../media/, ../media/cms/ etc.
 							if (substr($dir,0,8)=='../media' AND !is_dir($dir.'/'.$ff) AND $ff != 'readme.txt'){
 								// skip media files
+							}
+							// *** Skip all backup files in folder backup_files/
+							// ../admin/backup_files/2023_02_11_09_56_humo-genealogy_backup.sql.zip
+							if (substr($dir,0,21)=='../admin/backup_files' AND !is_dir($dir.'/'.$ff) AND $ff != 'readme.txt'){
+								// skip backup files
 							}
 							else{
 								if ($file_array=='existing_files'){
