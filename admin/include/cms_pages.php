@@ -9,7 +9,7 @@ if(CMS_SPECIFIC=="Joomla")
 else
 	$phpself = 'index.php';
 
-echo '<h1 align=center>'.__('CMS Own pages').'</h1>';
+echo '<h1 class="center">'.__('CMS Own pages').'</h1>';
 
 printf(__('Here you can add your own pages to %s! It\'s possible to use categories in the menu (like "Family history", "Family stories").'),'HuMo-genealogy');
 

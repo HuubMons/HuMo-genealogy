@@ -2,7 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('Select media').'</h1>';
+echo '<h1 class="center">'.__('Select media').'</h1>';
 
 $place_item='';
 $form='';
@@ -55,7 +55,6 @@ $array_picture_folder[]=$prefx.$pict_path;
 if (file_exists($array_picture_folder[0])){
 	// *** Get all subdirectories ***
 	function get_dirs($prefx,$path){
-		//global $array_picture_folder,$array_picture_sub_dir;
 		global $array_picture_folder;
 		$ignore = array( 'cms','slideshow','thumbs','.','..');
 		$dh = opendir($prefx.$path);
@@ -85,8 +84,6 @@ if (file_exists($array_picture_folder[0])){
 	$ignore = array('.','..','cms','readme.txt','slideshow','thumbs');
 	$dirname_start=strlen($prefx.$pict_path);
 
-	//$count_media=(count($array_picture_folder)-1);
-	//for($i=0; $i<=$count_media; $i++){
 	foreach($array_picture_folder as $selected_picture_folder){
 		echo '<br style="clear: both">';
 		echo '<h3>'.$selected_picture_folder.'</h3>';
@@ -99,15 +96,27 @@ if (file_exists($array_picture_folder[0])){
 			}
 			else{
 				if (!in_array($filename,$ignore) AND substr($filename,0,6)!='thumb_'){
-					//if ($search_quicksearch=='' OR ($search_quicksearch!='' AND strpos($filename,$search_quicksearch)!==false)){
 					// *** stripos = case-insensitive search ***
 					if ($search_quicksearch=='' OR ($search_quicksearch!='' AND stripos($filename,$search_quicksearch)!==false)){
-						// *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
 						$sub_dir=substr($selected_picture_folder,$dirname_start);
-						echo '<a href="" onClick=\'return select_item("'.$sub_dir.str_replace("'","&prime;",$filename).'")\'>'.$sub_dir.$filename.'</a><br>';
+						$list_filename[]=$filename;
+						$list_filename_order[]=strtolower($filename); // *** So ordering is case-insensitive ***
+						// *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
+						//echo '<a href="" onClick=\'return select_item("'.$sub_dir.str_replace("'","&prime;",$filename).'")\'>'.$sub_dir.$filename.'</a><br>';
 					}
 				}
 			}
+		}
+
+		// *** Order language array by name of language (case insensitive!) ***
+		if (isset($list_filename)){
+			array_multisort($list_filename_order, $list_filename);
+			foreach($list_filename as $selected_filename){
+				// *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
+				echo '<a href="" onClick=\'return select_item("'.$sub_dir.str_replace("'","&prime;",$selected_filename).'")\'>'.$sub_dir.$selected_filename.'</a><br>';
+			}
+			unset($list_filename);
+			unset($list_filename_order);
 		}
 	}
 

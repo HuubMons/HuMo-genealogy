@@ -72,7 +72,7 @@ $max_age = '110';
 $last_cal_day=0;
 
 // *** Center page ***
-echo "<div class='fonts center'>";
+echo '<div class="fonts center">';
 
 // *** Show navigation ***
 echo '[ ';
@@ -93,7 +93,7 @@ echo " ]\n";
 // *** Show month and year ***
 echo "<div class='standard_header'>".ucfirst(language_date($month))." ".$year."</div>";
 
-echo "<div>";
+echo '<div>';
 echo "<form name='anniv' id='anniv' action='".CMS_ROOTPATH."birthday_list.php?month=".$month."' method='post'>";
 	echo "<table class='humo' style='text-align:center;width:40%;margin-left:auto;margin-right:auto;border:1px solid black;'><tr>";
 	$check = " checked"; 
@@ -122,9 +122,9 @@ echo "<form name='anniv' id='anniv' action='".CMS_ROOTPATH."birthday_list.php?mo
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"anniv\").submit();' name='relig' id='relig' value='relig'".$check.">".__('Religious')."</td>";
 	echo "</td>";
 	*/
-	echo "</tr></table>";
-echo "</form>";
-echo "</div>";
+	echo '</tr></table>';
+echo '</form>';
+echo '</div><br>';
 
 // *** Build page ***
 if(!isset($_POST['ann_choice']) OR $_POST['ann_choice']=="birthdays") {

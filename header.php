@@ -18,7 +18,8 @@ if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "");
 
 if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "admin/");
 
-ini_set('url_rewriter.tags','');
+// *** Disabled 18-01-2023 ***
+//ini_set('url_rewriter.tags','');
 
 if (!CMS_SPECIFIC){
 	session_cache_limiter ('private, must-revalidate'); //tb edit

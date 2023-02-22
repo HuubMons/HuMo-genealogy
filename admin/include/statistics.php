@@ -7,7 +7,7 @@ if (!defined('ADMIN_PAGE')){ exit; }
 require_once(CMS_ROOTPATH_ADMIN."statistics/maxChart.class.php"); // REQUIRED FOR STATISTICS
 include_once (CMS_ROOTPATH."include/person_cls.php");
 
-echo '<h1 align=center>'.__('Statistics').'</h1>';
+echo '<h1 class="center">'.__('Statistics').'</h1>';
 
 // *** Use a class to process person data ***
 global $person_cls, $statistics_screen;

@@ -12,7 +12,7 @@
 *
 * ----------
 *
-* Copyright (C) 2008-2022 Huub Mons,
+* Copyright (C) 2008-2023 Huub Mons,
 * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
 * René Janssen, Yossi Beck
 * and others.
@@ -39,7 +39,7 @@ global $persids, $famsids; $noteids;
 $persids = array(); $famsids = array(); $noteids = array();
 @set_time_limit(3000);
 
-echo '<H1 align=center>'.__('GEDCOM file export').'</H1>';
+echo '<h1 class="center">'.__('GEDCOM file export').'</h1>';
 
 $myFile = CMS_ROOTPATH_ADMIN."backup_tmp/gedcom.ged";
 // *** FOR TESTING PURPOSES ONLY ***

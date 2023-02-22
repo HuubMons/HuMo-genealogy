@@ -2,7 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('Select place').'</h1>';
+echo '<h1 class="center">'.__('Select place').'</h1>';
 
 $place_item=''; $form='';
 if (isset($_GET['form'])){

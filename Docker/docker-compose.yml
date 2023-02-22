@@ -1,4 +1,13 @@
 version: '3'
+
+#volumes:
+#  gedcom_files:
+#    driver: local
+#    driver_opts:
+#      type: 'none'
+#      o: 'bind'
+#      device: '/var/www/html/admin/gedcom_files'
+
 services:
   #db:
   #  image: mysql:latest
@@ -40,10 +49,15 @@ services:
       nginx_humo
     restart: always
     #user: root
-    #NOT TESTED, probably not good: user: 1000:1000
-    #volumes:
-    #  - .gedcom_files:/var/www/html/admin/gedcom_files
-    #  - .media:/var/www/html/media
+    volumes:
+      #- ./media:/var/www/html/media
+      #- ./gedcom_files:/var/www/html/admin/gedcom_files
+      #- ./humo:/var/www/html
+      #- .gedcom_files:/var/www/html/admin/gedcom_files
+      #- .media:/var/www/html/media
+    #environment:
+    #  PUID: 1000
+    #  PGID: 1000
     ports:
       - 0.0.0.0:1980:80
 

@@ -1745,18 +1745,15 @@ function process_person($person_array){
 			$field[$field_value]=$field_value;
 		}
 		if (!isset($field['pers_birth_date_hebnight'])){
-			$sql="ALTER TABLE humo_persons
-				ADD pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_birth_date;";
+			$sql="ALTER TABLE humo_persons ADD pers_birth_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_birth_date;";
 			$result=$dbh->query($sql);
 		}
 		if (!isset($field['pers_death_date_hebnight'])){
-			$sql="ALTER TABLE humo_persons
-				ADD pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_death_date;";
+			$sql="ALTER TABLE humo_persons ADD pers_death_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_death_date;";
 			$result=$dbh->query($sql);
 		}
 		if (!isset($field['pers_buried_date_hebnight'])){
-			$sql="ALTER TABLE humo_persons
-				ADD pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER pers_buried_date;";
+			$sql="ALTER TABLE humo_persons ADD pers_buried_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER pers_buried_date;";
 			$result=$dbh->query($sql);
 		}
 		// we have to add these values to the query below
@@ -2368,12 +2365,14 @@ function process_family($family_array,$first_marr, $second_marr){
 			// 2 HUSB
 			// 3 AGE 42y
 			if ($level[2]=='HUSB'){
+				if ($buffer6=='2 HUSB'){ $processed=1; }
 				if ($buffer5=='3 AGE'){ $processed=1; $family["fam_man_age"]=substr($buffer,6); }
 			}
 			// *** Woman age ***
 			// 2 WIFE
 			// 3 AGE 42y 6m
 			if ($level[2]=='WIFE'){
+				if ($buffer6=='2 WIFE'){ $processed=1; }
 				if ($buffer5=='3 AGE'){ $processed=1; $family["fam_woman_age"]=substr($buffer,6); }
 			}
 
@@ -2535,12 +2534,14 @@ function process_family($family_array,$first_marr, $second_marr){
 			// 2 HUSB
 			// 3 AGE 42y
 			if ($level[2]=='HUSB'){
+				if ($buffer6=='2 HUSB'){ $processed=1; }
 				if ($buffer5=='3 AGE'){ $processed=1; $family["fam_man_age"]=substr($buffer,6); }
 			}
 			// *** Woman age ***
 			// 2 WIFE
 			// 3 AGE 42y 6m
 			if ($level[2]=='WIFE'){
+				if ($buffer6=='2 WIFE'){ $processed=1; }
 				if ($buffer5=='3 AGE'){ $processed=1; $family["fam_woman_age"]=substr($buffer,6); }
 			}
 		}
@@ -2960,7 +2961,7 @@ function process_family($family_array,$first_marr, $second_marr){
 	// *** Process estimates/ calculated date for privacy filter ***
 	if ($family["fam_marr_date"]) $family["fam_cal_date"]=$family["fam_marr_date"];
 	elseif ($family["fam_marr_church_date"]) $family["fam_cal_date"]=$family["fam_marr_church_date"];
-	
+
 	// for Jewish dates after nightfall
 	$heb_qry = '';
 	if($heb_flag==1) {  // At least one nightfall date is imported. We have to make sure the required tables exist and if not create them
@@ -2968,25 +2969,21 @@ function process_family($family_array,$first_marr, $second_marr){
 		while ($columnDb = $column_qry->fetch()) {
 			$field_value=$columnDb['Field'];
 			$field[$field_value]=$field_value;
-		}		
+		}
 		if (!isset($field['fam_marr_notice_date_hebnight'])){
-			$sql="ALTER TABLE humo_families
-				ADD fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_notice_date;";
+			$sql="ALTER TABLE humo_families ADD fam_marr_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_notice_date;";
 			$result=$dbh->query($sql);
 		}
 		if (!isset($field['fam_marr_date_hebnight'])){
-			$sql="ALTER TABLE humo_families
-				ADD fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_date;";
+			$sql="ALTER TABLE humo_families ADD fam_marr_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_date;";
 			$result=$dbh->query($sql);
 		}
 		if (!isset($field['fam_marr_church_notice_date_hebnight'])){
-			$sql="ALTER TABLE humo_families
-				ADD fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_church_notice_date;";
+			$sql="ALTER TABLE humo_families ADD fam_marr_church_notice_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_church_notice_date;";
 			$result=$dbh->query($sql);
 		}
 		if (!isset($field['fam_marr_church_date_hebnight'])){
-			$sql="ALTER TABLE humo_families
-				ADD fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8 NOT NULL  AFTER fam_marr_church_date;";
+			$sql="ALTER TABLE humo_families ADD fam_marr_church_date_hebnight VARCHAR(10) CHARACTER SET utf8 AFTER fam_marr_church_date;";
 			$result=$dbh->query($sql);
 		}
 		// we have to add these values to the query below

@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')){ exit; }
 
 @set_time_limit(4000);
 
-echo '<h1 align=center>'.__('Family tree administration').'</h1>';
+echo '<h1 class="center">'.__('Family tree administration').'</h1>';
 
 // THIS FILE IS MADE BY Huub Mons
 // IT IS PART OF THE HuMo-genealogy program.

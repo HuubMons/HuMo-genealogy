@@ -2,7 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('Users').'</h1>';
+echo '<h1 class="center">'.__('Users').'</h1>';
 
 if (isset($_POST['change_user'])){
 	$usersql="SELECT * FROM humo_users ORDER BY user_name";

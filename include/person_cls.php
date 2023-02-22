@@ -1545,8 +1545,9 @@ function html_display($templ_person){
 	global $pdf;
 	$text='';
 	if (isset($templ_person)){
+$own_code=0;
 		foreach ($templ_person as $key => $value) {
-			$own_code=0;
+//			$own_code=0;
 
 			if(strpos($key,"own_code_start")!==false) continue;
 			if(!$own_code AND strpos($key,"own_code")!==false) {
@@ -2264,6 +2265,7 @@ function person_data($person_kind, $id){
 						$process_text.='<br><span class="profession"><b>'.ucfirst($occupation).':</b> ';
 					}
 					else{
+// punt hoort bij vorige item.
 						if ($process_text){ $process_text.='. <span class="profession">'; }
 						$process_text.='<b>'.ucfirst($occupation).':</b> ';
 					}
@@ -2525,11 +2527,15 @@ function person_data($person_kind, $id){
 
 		// *** Internet links (URL) ***
 		$url_qry = $db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'URL');
-		if (count($url_qry)>0){ $process_text.='<br>'; }
+		if (count($url_qry)>0){ $process_text.="<br>\n"; }
 		foreach($url_qry as $urlDb){
-			if ($urlDb->event_text){ $process_text.=$urlDb->event_text.': '; }
-			$process_text.='<a href="'.$urlDb->event_event.'" target="_blank">'.$urlDb->event_event.'</a>';
-			$process_text.='<br>';
+			//if ($urlDb->event_text){ $process_text.=$urlDb->event_text.': '; }
+			//$process_text.='<a href="'.$urlDb->event_event.'" target="_blank">'.$urlDb->event_event.'</a><br>';
+
+			//URL/ Internet link
+			$process_text.='<b>'.__('URL/ Internet link').'</b> <a href="'.$urlDb->event_event.'" target="_blank">'.$urlDb->event_event.'</a>';
+			if ($urlDb->event_text){ $process_text.=' '.process_text($urlDb->event_text); }
+			$process_text.="<br>\n";
 		}
 
 		//******** Text by person **************

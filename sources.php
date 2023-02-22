@@ -33,8 +33,6 @@ if(isset($_GET['order_sources'])) {
 }
 if($order_sources=="title") {
 	// *** Default querie: order by title ***
-	//$querie="SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."' AND source_title LIKE '_%'";
-	//$querie="SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."' AND source_shared='1'";
 	$querie="SELECT * FROM humo_sources WHERE source_tree_id='".$tree_id."'";
 	// *** Check user group is restricted sources can be shown ***
 	if ($user['group_show_restricted_source']=='n'){ $querie.=" AND (source_status!='restricted' OR source_status IS NULL)"; }

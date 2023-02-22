@@ -1474,7 +1474,7 @@ if (isset($_POST['event_id'])){
 			if ($event_event!=$eventDb->event_event) $event_changed=true;
 			// *** Compare date case-insensitive (for PHP 8.1 check if variabele is used) ***
 			//if (isset($_POST["event_date_prefix"][$key]) OR isset($_POST["event_date"][$key])){
-			if ($_POST["event_date_prefix"][$key] OR $_POST["event_date"][$key]){
+			if ($eventDb->event_date AND ($_POST["event_date_prefix"][$key] OR $_POST["event_date"][$key])){
 				if (strcasecmp($_POST["event_date_prefix"][$key].$_POST["event_date"][$key], $eventDb->event_date) != 0) $event_changed=true;
 			}
 			if ($_POST["event_place".$key]!=$eventDb->event_place) $event_changed=true;

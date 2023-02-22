@@ -57,7 +57,7 @@ if($temp->rowCount()) {   // a humo_photocat table exists
 		}
 	}
 	// *** Get selected category ***
-	if(isset($_GET['select_category']) AND in_array($_GET['select_category'],$category_array)) {
+	if(isset($_GET['select_category']) AND $_GET['select_category']!='none' AND in_array($_GET['select_category'],$category_array)) {
 		$chosen_tab = $_GET['select_category'];
 	}
 }
@@ -382,10 +382,16 @@ function show_media_files($pref) {
 					$picture_text.='<a href="'.$url.'">'.$name["standard_name"].'</a><br>';
 					$picture_text2.=$name["standard_name"];
 				}
-				if($afbDb->event_text!='') {
+
+				$date_place=date_place($afbDb->event_date,$afbDb->event_place);
+				if($afbDb->event_text OR $date_place) {
+					if ($date_place) $picture_text.=$date_place.' ';
 					$picture_text.=$afbDb->event_text.'<br>';
+
 					//$picture_text2.=$afbDb->event_text; // Only use event text in lightbox.
-					$picture_text2.='<br>'.$afbDb->event_text;
+					$picture_text2.='<br>';
+					if ($date_place) $picture_text2.=$date_place.' ';
+					$picture_text2.=$afbDb->event_text;
 				}
 			}
 
@@ -410,20 +416,34 @@ function show_media_files($pref) {
 						$picture_text2.=$name["standard_name"];
 					}
 
-					if($pictureDb->event_text!='') {
+					//if($pictureDb->event_text!='') {
+					//	$picture_text.=$pictureDb->event_text.'<br>';
+					//	//$picture_text2=$pictureDb->event_text; // Only use event text in lightbox.
+					//	$picture_text2.='<br>'.$pictureDb->event_text;
+					//}
+					$date_place=date_place($pictureDb->event_date,$pictureDb->event_place);
+					if($pictureDb->event_text OR $date_place) {
+						if ($date_place) $picture_text.=$date_place.' ';
 						$picture_text.=$pictureDb->event_text.'<br>';
-						//$picture_text2=$pictureDb->event_text; // Only use event text in lightbox.
-						$picture_text2.='<br>'.$pictureDb->event_text;
+
+						//$picture_text2.=$afbDb->event_text; // Only use event text in lightbox.
+						$picture_text2.='<br>';
+						if ($date_place) $picture_text2.=$date_place.' ';
+						$picture_text2.=$pictureDb->event_text;
 					}
+
 				}
 			}
 
 			$picture2=show_picture($dir,$filename,175,120);
+			//$picture2=show_picture($dir,$filename,175,0);
+			//$picture2=show_picture($dir,$filename,0,120);
 			// *** Check if media exists ***
 			//if (file_exists($dir.$picture2['thumb'].$picture2['picture'])){
 			if (file_exists($picture2['path'].$picture2['thumb'].$picture2['picture'])){
 				//$picture='<img src="'.$dir.$picture2['thumb'].$picture2['picture'].'" width="'.$picture2['width'].'" alt="'.$filename.'"></a>';
 				$picture='<img src="'.$picture2['path'].$picture2['thumb'].$picture2['picture'].'" width="'.$picture2['width'].'" alt="'.$filename.'"></a>';
+				//$picture='<img src="'.$picture2['path'].$picture2['thumb'].$picture2['picture'].'" height="'.$picture2['height'].'" alt="'.$filename.'"></a>';
 			}
 			else{
 				$picture='<img src="images/missing-image.jpg" width="'.$picture2['width'].'" alt="'.$filename.'"></a>';
@@ -440,8 +460,7 @@ function show_media_files($pref) {
 					echo '<a href="'.$dir.$filename.'" class="glightbox3" data-gallery="gallery1" data-glightbox="description: .custom-desc'.$picture_nr.'">';
 					// *** Need a class for multiple lines and HTML code in a text ***
 					echo '<div class="glightbox-desc custom-desc'.$picture_nr.'">'.$picture_text2.'</div>';
-
-					echo $picture;
+						echo $picture;
 					echo '<div class="photobooktext">'.$picture_text.'</div>';
 				//}
 				//else{

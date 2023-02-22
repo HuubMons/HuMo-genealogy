@@ -46,8 +46,12 @@ table.standard {
 }
 table.humo th {
 	/* font-size: 15px; */
+	padding:4px;
 }
-table.humo td { border: solid 1px #999999; }
+table.humo td {
+	border: solid 1px #999999;
+	padding: 4px;
+}
 .table_header {
 	background: linear-gradient(rgb(251, 251, 251) 0%, rgb(212, 212, 212) 100%);
 }
@@ -386,29 +390,29 @@ div.confirm{
 	background: #F6F6F6;
 	color: #1C94C4;
 	margin: 5px;
-	padding: 5px; 
+	padding: 5px;
 	height: 80px;
 	margin-left:0px; padding-left:0px;
 }
-.sortable_pic.grid li  { 
+.sortable_pic.grid li  {
 	line-height: 80px;
 	float: left;
 	width: 150px;
 	height: 80px;
-	text-align: center;	
+	text-align: center;
 }
-#sortable_pic {  
-	list-style-type: none; 
-	margin: 0; 
-	padding: 0; 
-	width: auto; 
+#sortable_pic {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	width: auto;
 }
-#sortable_pic li { 
-	margin: 0px 0px 0px 0px; 
-	padding: 1px; 
-	float: left; 
-	width: 150px; 
-	height: 80px; 
-	font-size: 1em; 
-	text-align: center; 
+#sortable_pic li {
+	margin: 0px 0px 0px 0px;
+	padding: 1px;
+	float: left;
+	width: 150px;
+	height: 80px;
+	font-size: 1em;
+	text-align: center;
 }

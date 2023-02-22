@@ -281,5 +281,30 @@ function show_selected_person($person){
 	return($text);
 }
 
+function select_tree($page){
+	global $dbh,$phpself,$group_edit_trees,$group_administrator,$tree_id,$selected_language;
+
+	// *** Select family tree ***
+	echo '<form method="POST" action="'.$phpself.'" style="display : inline;">';
+		echo '<input type="hidden" name="page" value="'.$page.'">';
+		echo '<select size="1" name="tree_id" onChange="this.form.submit();">';
+			echo '<option value="">'.__('Select a family tree:').'</option>';
+			$tree_search_sql = "SELECT * FROM humo_trees WHERE tree_prefix!='EMPTY' ORDER BY tree_order";
+			$tree_search_result = $dbh->query($tree_search_sql);
+			while ($tree_searchDb=$tree_search_result->fetch(PDO::FETCH_OBJ)){
+				$edit_tree_array=explode(";",$group_edit_trees);
+				//$team_tree_array=explode(";",$group_team_trees);
+				// *** Administrator can always edit in all family trees ***
+				//if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array) OR in_array($tree_searchDb->tree_id, $team_tree_array)) {
+				if ($group_administrator=='j' OR in_array($tree_searchDb->tree_id, $edit_tree_array)) {
+					$selected=''; if (isset($tree_id) AND $tree_searchDb->tree_id==$tree_id){ $selected=' SELECTED'; }
+					$treetext=show_tree_text($tree_searchDb->tree_id, $selected_language);
+					echo '<option value="'.$tree_searchDb->tree_id.'"'.$selected.'>'.@$treetext['name'].'</option>';
+				}
+			}
+		echo '</select>';
+	echo '</form>';
+}
+
 } // *** End of editor class ***
 ?>

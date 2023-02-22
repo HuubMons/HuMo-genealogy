@@ -1275,7 +1275,7 @@ echo '<div>';
 				@$personDb = $db_functions->get_person($gedcomnumber[$id]);
 				$person_cls = New person_cls;
 				$person_cls->construct($personDb);
-				$pers_privacy=$person_cls->privacy;	
+				$pers_privacy=$person_cls->privacy;
 				// get length of original name, birth, death strings
 				$names = $person_cls->person_name($personDb);
 				$name = $names["name"];
@@ -1299,7 +1299,8 @@ echo '<div>';
 					}
 					else{
 						if($personDb->pers_birth_date != '') { $space=' '; }
-						$birth = __('*').' '.$personDb->pers_birth_date.$space.$personDb->pers_birth_place;
+						//$birth = __('*').' '.$personDb->pers_birth_date.$space.$personDb->pers_birth_place;
+						$birth = __('*').' '.language_date($personDb->pers_birth_date).$space.$personDb->pers_birth_place;
 						$result = parse_line($birth,$width,0);
 						$birth_len = $result[0];
 						$birth = $result[1];
@@ -1321,7 +1322,7 @@ echo '<div>';
 					}
 					else{
 						if($personDb->pers_death_date != '') { $space=' '; }
-						$death = $dsign.' '.$personDb->pers_death_date.$space.$personDb->pers_death_place;
+						$death = $dsign.' '.language_date($personDb->pers_death_date).$space.$personDb->pers_death_place;
 						$result = parse_line($death,$width,0);
 						$death_len = $result[0];
 						$death = $result[1];
@@ -1597,7 +1598,7 @@ if($screen_mode=='') {
 	}
 }
 
-if($hourglass===false) { 
+if($hourglass===false) {
 	// Finishing code for ancestor chart and ancestor report
 	if($screen_mode != 'PDF' AND $screen_mode != "ASPDF" AND $screen_mode != 'RTF') {
 		include_once(CMS_ROOTPATH."footer.php");

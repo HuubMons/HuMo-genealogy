@@ -2,7 +2,7 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>'.__('Settings').'</h1>';
+echo '<h1 class="center">'.__('Settings').'</h1>';
 
 if(isset($_POST['timeline_language']) ) { $time_lang = $_POST['timeline_language']; }
 elseif(isset($_GET['timeline_language']) ) { $time_lang = $_GET['timeline_language']; }
@@ -490,14 +490,14 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo '</td></tr>';
 
 		echo '<tr><td style="white-space:nowrap;">'.__('SMTP: debugging').'</td>';
-		echo '<td><select size="1" name="smtp_debug">';
-		$selected=''; if ($humo_option["smtp_debug"]== '0') $selected=' SELECTED';
-		echo '<option value="0"'.$selected.'>'.__('Off').'</option>';
-		$selected=''; if ($humo_option["smtp_debug"]== '1') $selected=' SELECTED';
-		echo '<option value="1"'.$selected.'>'.__('Client').'</option>';
-		$selected=''; if ($humo_option["smtp_debug"]== '2') $selected=' SELECTED';
-		echo '<option value="2"'.$selected.'>'.__('Client and Server').'</option>';
-		echo '</select>';
+			echo '<td><select size="1" name="smtp_debug">';
+			$selected=''; if ($humo_option["smtp_debug"]== '0') $selected=' SELECTED';
+			echo '<option value="0"'.$selected.'>'.__('Off').'</option>';
+			$selected=''; if ($humo_option["smtp_debug"]== '1') $selected=' SELECTED';
+			echo '<option value="1"'.$selected.'>'.__('Client').'</option>';
+			$selected=''; if ($humo_option["smtp_debug"]== '2') $selected=' SELECTED';
+			echo '<option value="2"'.$selected.'>'.__('Client and Server').'</option>';
+			echo '</select>';
 		echo '</td></tr>';
 		/*
 		***************************
@@ -507,78 +507,24 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 
 		echo '<tr class="table_header"><th colspan="2">'.__('International settings').' <input type="Submit" name="save_option" value="'.__('Change').'"></th></tr>';
 
-		echo '<tr><td valign="top">'.__('Timezone').'</td><td><select size="1" name="timezone">';
+		echo '<tr><td valign="top">'.__('Timezone').'</td>';
+			echo '<td><select size="1" name="timezone">';
+				// *** List of timezones ***
+				// Example from website: https://stackoverflow.com/questions/4755704/php-timezone-list
+				$zones_array = array();
+				$timestamp = time();
+				foreach(timezone_identifiers_list() as $key => $zone) {
+					date_default_timezone_set($zone);
+					$zones_array[$key]['zone'] = $zone;
+					//$zones_array[$key]['offset'] = (int) ((int) date('O', $timestamp))/100;
+					$zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+				}
 
-		$selected=''; if ($humo_option["timezone"]=='Kwajalein'){ $selected=' SELECTED'; }
-		echo '<option value="Kwajalein"'.$selected.'>-12:00 (Kwajalein)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Pacific/Midway'){ $selected=' SELECTED'; }
-		echo '<option value="Pacific/Midway"'.$selected.'>-11:00 (Pacific/Midway)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Pacific/Honolulu'){ $selected=' SELECTED'; }
-		echo '<option value="Pacific/Honolulu"'.$selected.'>-10:00 (Pacific/Honolulu)</option>';
-		$selected=''; if ($humo_option["timezone"]=='America/Anchorage'){ $selected=' SELECTED'; }
-		echo '<option value="America/Anchorage"'.$selected.'>-09:00 (America/Anchorage)</option>';
-		$selected=''; if ($humo_option["timezone"]=='America/Los_Angeles'){ $selected=' SELECTED'; }
-		echo '<option value="America/Los_Angeles"'.$selected.'>-08:00 (America/Los_Angeles)</option>';
-		$selected=''; if ($humo_option["timezone"]=='America/Denver'){ $selected=' SELECTED'; }
-		echo '<option value="America/Denver"'.$selected.'>-07:00 (America/Denver)</option>';
-		$selected=''; if ($humo_option["timezone"]=='America/Tegucigalpa'){ $selected=' SELECTED'; }
-		echo '<option value="America/Tegucigalpa"'.$selected.'>-06:00 (America/Tegucigalpa)</option>';
-		$selected=''; if ($humo_option["timezone"]=='America/New_York'){ $selected=' SELECTED'; }
-		echo '<option value="America/New_York"'.$selected.'>-05:00 (America/New_York)</option>';
-		$selected=''; if ($humo_option["timezone"]=='America/Caracas'){ $selected=' SELECTED'; }
-		echo '<option value="America/Caracas"'.$selected.'>-04:30 (America/Caracas)</option>';
-		$selected=''; if ($humo_option["timezone"]=='America/Halifax'){ $selected=' SELECTED'; }
-		echo '<option value="America/Halifax"'.$selected.'>-04:00 (America/Halifax)</option>';
-		$selected=''; if ($humo_option["timezone"]=='America/St_Johns'){ $selected=' SELECTED'; }
-		echo '<option value="America/St_Johns"'.$selected.'>-03:30 (America/St_Johns)</option>';
-		$selected=''; if ($humo_option["timezone"]=='America/Argentina/Buenos_Aires'){ $selected=' SELECTED'; }
-		echo '<option value="America/Argentina/Buenos_Aires"'.$selected.'>-03:00 (America/Argentina/Buenos_Aires)</option>';
-		$selected=''; if ($humo_option["timezone"]=='America/Sao_Paulo'){ $selected=' SELECTED'; }
-		echo '<option value="America/Sao_Paulo"'.$selected.'>-03:00 (America/Argentina/Buenos_Aires)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Atlantic/South_Georgia'){ $selected=' SELECTED'; }
-		echo '<option value="Atlantic/South_Georgia"'.$selected.'>-02:00 (Atlantic/South_Georgia)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Atlantic/Azores'){ $selected=' SELECTED'; }
-		echo '<option value="Atlantic/Azores"'.$selected.'>-01:00 (Atlantic/Azores)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Europe/Dublin'){ $selected=' SELECTED'; }
-		echo '<option value="Europe/Dublin"'.$selected.'>00:00 (Europe/Dublin)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Europe/Amsterdam'){ $selected=' SELECTED'; }
-		echo '<option value="Europe/Amsterdam"'.$selected.'>01:00 (Europe/Amsterdam)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Europe/Minsk'){ $selected=' SELECTED'; }
-		echo '<option value="Europe/Minsk"'.$selected.'>02:00 (Europe/Minsk)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Kuwait'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Kuwait"'.$selected.'>03:00 (Asia/Kuwait)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Tehran'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Tehran"'.$selected.'>03:30 (Asia/Tehran)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Muscat'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Muscat"'.$selected.'>04:00 (Asia/Muscat)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Yekaterinburg'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Yekaterinburg"'.$selected.'>05:00 (Asia/Yekaterinburg)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Kolkata'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Kolkata"'.$selected.'>05:30 (Asia/Kolkata)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Katmandu'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Katmandu"'.$selected.'>05:45 (Asia/Katmandu)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Dhaka'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Dhaka"'.$selected.'>06:00 (Asia/Dhaka)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Rangoon'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Rangoon"'.$selected.'>06:30 (Asia/Rangoon)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Krasnoyarsk'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Krasnoyarsk"'.$selected.'>07:00 (Asia/Krasnoyarsk)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Brunei'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Brunei"'.$selected.'>08:00 (Asia/Brunei)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Seoul'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Seoul"'.$selected.'>09:00 (Asia/Seoul)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Australia/Darwin'){ $selected=' SELECTED'; }
-		echo '<option value="Australia/Darwin"'.$selected.'>09:30 (Australia/Darwin)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Australia/Canberra'){ $selected=' SELECTED'; }
-		echo '<option value="Australia/Canberra"'.$selected.'>10:00 (Australia/Canberra)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Asia/Magadan'){ $selected=' SELECTED'; }
-		echo '<option value="Asia/Magadan"'.$selected.'>11:00 (Asia/Magadan)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Pacific/Fiji'){ $selected=' SELECTED'; }
-		echo '<option value="Pacific/Fiji"'.$selected.'>12:00 (Pacific/Fiji)</option>';
-		$selected=''; if ($humo_option["timezone"]=='Pacific/Tongatapu'){ $selected=' SELECTED'; }
-		echo '<option value="Pacific/Tongatapu"'.$selected.'>13:00 (Pacific/Tongatapu)</option>';
-
-		echo '</select>';
+				foreach($zones_array as $t) {
+					$selected=''; if ($humo_option["timezone"]==$t['zone']){ $selected=' SELECTED'; }
+					echo '<option value="'.$t['zone'].'"'.$selected.'>'.$t['diff_from_GMT'].' - '.$t['zone'].'</option>';
+				}
+			echo '</select>';
 		echo '</td></tr>';
 
 		echo '<tr><td style="white-space:nowrap;">'.__('Minimum characters in search box').'</td>';

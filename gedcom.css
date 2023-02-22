@@ -393,9 +393,13 @@ table.standard {
 
 table.humo td, table.relmenu td {
 	border-top:none;
+	/*
 	padding-left: 5px;
 	padding-top: 3px;
 	padding-bottom: 3px;
+	*/
+	padding: 4px;
+	line-height:120%;
 }
 table.humo th, table.relmenu th {
 	padding-left:5px;
@@ -486,12 +490,16 @@ table.humo tr:only-of-type td:only-of-type {
 }
 /* Smaller headline in family screen etc. */
 table.humo td.table_header {
+	/*
 	padding-left:1px;
-	padding-top:0px; padding-bottom:0px;
-} 
+	padding-top:0px;
+	padding-bottom:0px;
+	*/
+}
 
 table.humo th {
 	font-size: 15px;
+	padding:5px;
 }
 
 /* img { width:100px; } */
@@ -517,10 +525,14 @@ a:visited { color:brown; }
 /* .margin_child2 { margin-left: 65px; } */
 
 /* parent 1 (normally the father) */
-.parent1 { }
+.parent1 {
+	line-height: 140%;
+}
 
 /* parent 2 (normally the mother) */
-.parent2 { }
+.parent2 {
+	line-height: 140%;
+}
 
 /* link to parents */
 .parents { font-weight:bold; }
@@ -541,6 +553,7 @@ a:visited { color:brown; }
 /* children - overzicht kinderen */
 .children {
 	margin:2px;
+	line-height: 140%;
 }
 
 /* name - naam */
@@ -549,7 +562,10 @@ a:visited { color:brown; }
 }
 
 /* text - tekst */
-.text { font-style:italic; }
+.text {
+	font-style:italic;
+	line-height: 140%;
+}
 
 /* city - woonplaats */
 .pers_living_place { }
@@ -684,7 +700,7 @@ div.ancestorName{
 	position: absolute;
 	border: 1px solid #AAA;
 	padding-left: 2px;
-	line-height: 10px;
+	line-height: 12px;
 	border-radius: 4px;
 	/*
 	Disabled, doesn't work properly for html2canvas script.
@@ -756,7 +772,10 @@ div.photo{
 	width : 200px;
 	float: left;
 	text-align: center;
-	overflow:auto;
+
+	/* overflow:auto; */
+	overflow-x: hidden; /* Hide horizontal scrollbar */
+	overflow-y: auto; /* Add vertical scrollbar */ 
 }
 div.photo img{
 	display: inline;

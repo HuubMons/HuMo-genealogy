@@ -5,6 +5,7 @@ RUN echo 'server {' > /etc/nginx/conf.d/default.conf ; \
     echo '  error_log /proc/self/fd/2;' >> /etc/nginx/conf.d/default.conf ; \
     echo '  access_log /proc/self/fd/1;' >> /etc/nginx/conf.d/default.conf ; \
     echo '  root /var/www/html;' >> /etc/nginx/conf.d/default.conf ; \
+    echo '  client_max_body_size 100M;' >> /etc/nginx/conf.d/default.conf ; \
     echo '  location ~ \.php$ {' >> /etc/nginx/conf.d/default.conf ; \
     echo '    try_files $uri =404;' >> /etc/nginx/conf.d/default.conf ; \
     echo '    fastcgi_split_path_info ^(.+\.php)(/.+)$;' >> /etc/nginx/conf.d/default.conf ; \

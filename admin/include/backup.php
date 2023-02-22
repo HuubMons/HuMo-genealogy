@@ -1,12 +1,29 @@
 <?php
+// *** Original script made by Yossi ***
+// *** feb. 2023: Rebuild this script by Huub. Multiple backups will be stored on server. ***
+
 @set_time_limit(3000);
 @ini_set('memory_limit','-1');
 error_reporting(E_ALL);
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 align=center>';
-printf(__('%s backup'),'HuMo-genealogy');
+// *** Move and remove files from previous backup procedure ***
+if (file_exists('humo_backup.sql.zip')){
+	$new_file_name='backup_files/'.date("Y_m_d_H_i",filemtime('humo_backup.sql.zip')).'_humo-genealogy_backup.sql';
+	rename('humo_backup.sql.zip',$new_file_name);
+
+	if (file_exists('downloadbk.php')){
+		unlink('downloadbk.php');
+	}
+}
+if (file_exists('backup_tmp/readme.txt')){
+	unlink('backup_tmp/readme.txt');
+	rmdir('backup_tmp');
+}
+
+echo '<h1 class="center">';
+	printf(__('%s backup'),'HuMo-genealogy');
 echo '</h1>';
 
 // *** CREATE BACKUP FILE *** 
@@ -19,126 +36,103 @@ if(isset($_POST['create_backup'])) {
 	backup_tables();
 }
 else {
-
 	printf(__('If you use %s to edit in the family tree, then create multiple backups. Recommended backups:<br>
 <b>1) Best option: use PhpMyAdmin. Export all tables from the %s database (TIP: use the zip option for a compressed file).</b><br>
 2) Just for sure: export a GEDCOM file. This is not a full family tree backup! But it will contain all basic genealogical data.<br>
 3) Use the %s backup page.'),'HuMo-genealogy','HuMo-genealogy','HuMo-genealogy');
-	echo '<br><br>';
+	echo '<br>';
 
-	echo __('The last backup file will be saved to the admin folder. You can restore from this file with "Option 1" below.<br>
-You will also be offered a download button and we suggest downloading backup files frequently in case the data on your server (including the backup file) might get deleted or corrupted. You can restore from downloaded files with "Option 2" below.').'<br>';
+	echo '<h3>'.__('Create backup file').'</h3>';
+
 	echo '<form action="index.php?page=backup" method="post">';
 	echo '&nbsp;&nbsp;<input type="submit" style="font-size:14px" value="'.__('Create backup file').'" name="create_backup">';
 	echo '</form>';
 }
+
+// *** Get list of backup files ***
+$dh  = opendir('./backup_files');
+while (false !== ($filename = readdir($dh))) {
+	if (substr($filename, -4) == ".sql" OR substr($filename, -8) == ".sql.zip"){
+		$backup_files[]=$filename;
+	}
+}
+$backup_count=0;
+if (isset($backup_files)){
+	$backup_count=count($backup_files);
+	rsort($backup_files); // *** Most recent backup file will be shown first ***
+}
+
+// *** Download most recent backup file ***
+echo '<h3>'.__('Download backup file').'</h3>';
+echo __('We recommend downloading the most recent backup file in case the data on your server (including the backup file) might get deleted or corrupted.').'<br>';
+if (isset($backup_files[0])){
+	echo '<a href="backup_files/'.$backup_files[0].'">'.$backup_files[0].'</a><br>';
+}
+
 echo '</td></tr>';
+
+// *** Empty line in table ***
+echo '<tr><td class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
 
 echo '<tr class="table_header"><th>'.__('Restore database from backup file').'</th></tr>';
 echo '<tr><td>';
 
-printf(__('Here you can restore your entire database from the last backup made with %s (if available) or from an .sql or .sql.zip backup file on your computer.'),'HuMo-genealogy');
-echo '<br><br>';
+printf(__('Here you can restore your entire database from a backup made with %s (if available) or from a .sql or .sql.zip backup file on your computer.'),'HuMo-genealogy');
+echo '<br>';
 
-echo '<table style="width:750px;margin-left:auto;margin-right:auto"><tr><th style="text-align:left">';
-printf(__('Option 1: Restore from last backup created with %s Backup'),'HuMo-genealogy');
+echo '<h3>'.__('Optional: upload a database backup file').'</h3>';
 
-echo '</th></tr><tr><td style="height:40px">';
+	if ($backup_count>0){
 
-echo '<form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
-
-// *** RESTORE FROM HUMO-GENEALOGY BACKUP ***
-if(isset($_POST['restore_server'])) {
-	// *** restore from backup on server made by HuMo-genealogy backup ***
-	echo '<span style="color:red">'.__('Starting to restore database. This may take some time. Please wait...').'</span><br>';
-	if(is_file('humo_backup.sql.zip')) {
-		restore_tables('humo_backup.sql.zip');
-	}
-	else {
-		echo __('No humo_backup file found on server.').'<br>';
-	}
-}
-
-elseif(is_file('humo_backup.sql.zip')) {
-	echo '<input type="submit" style="font-size:14px" name="restore_server" value="'.__('Restore database').'"> ';
-	echo __(' from backup created on ').date("d-M-Y, H:i:s",filemtime('humo_backup.sql.zip'));
-}
-else { echo "<b>&nbsp;&nbsp;&nbsp;".__('No backup file found!').'</b>'; }
-echo '</form>';
-echo '</td></tr></table><br>';
-
-// *** RESTORE FROM FILE ON COMPUTER ***
-echo '<table style="width:750px;margin-left:auto;margin-right:auto"><tr><th style="text-align:left">'.__('Option 2: Restore from backup file on your computer').'</th></tr><tr><td>';
-echo '<form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
-
-if(isset($_POST['restore']) AND isset($_POST['select_bkfile']) AND $_POST['select_bkfile'] != "none") {
-	// restore from uploaded .sql.zip or .sql file
-	echo '<span style="color:red">'.__('Starting to restore database from backup file:').' '.$_POST['select_bkfile'].'<br>';
-	echo __('This may take some time. Please wait...').'</span><br>';
-	if(is_file("./backup_tmp/".$_POST['select_bkfile'])) {
-		restore_tables('./backup_tmp/'.$_POST['select_bkfile']);
-		if(is_file("./backup_tmp/".$_POST['select_bkfile'])) {
-			// restore_tables should have deleted the file by now, but we want to make sure we clean up...
-			unlink('./backup_tmp/'.$_POST['select_bkfile']);
+		if(isset($_POST['restore_server'])) {
+			$restore_file='backup_files/'.$_POST['select_file'];
+			if (is_file($restore_file)){
+				// *** restore from backup on server made by HuMo-genealogy backup ***
+				echo '<span style="color:red">'.__('Starting to restore database. This may take some time. Please wait...').'</span><br>';
+				if(is_file($restore_file)) {
+					restore_tables($restore_file);
+				}
+			}
 		}
-	}
-}
 
-else {
-	if(isset($_POST['upload_the_file'])) {
-		if(substr($_FILES['upload_file']['name'],-4)==".sql" OR substr($_FILES['upload_file']['name'],-8)==".sql.zip") {
-			if (move_uploaded_file($_FILES['upload_file']['tmp_name'], './backup_tmp/'.$_FILES['upload_file']['name'])) {
-				// file was successfully uploaded...
+		// *** Upload backup file ***
+		if(isset($_POST['upload_the_file'])) {
+			if(substr($_FILES['upload_file']['name'],-4)==".sql" OR substr($_FILES['upload_file']['name'],-8)==".sql.zip") {
+				if (move_uploaded_file($_FILES['upload_file']['tmp_name'], './backup_files/'.$_FILES['upload_file']['name'])) {
+					// file was successfully uploaded...
+				}
+				else {
+					echo '<span style="color:red;font-weight:bold">'.__('Upload has failed</span> (you may wish to try again or choose to place the file in the admin/backup_files folder yourself with an ftp program or the control panel of your webhost)').'<br>';
+				}
 			}
 			else {
-				echo '<span style="color:red;font-weight:bold">'.__('Upload has failed</span> (you may wish to try again or choose to place the file in the admin/backup_tmp folder yourself with an ftp program or the control panel of your webhost)').'<br>';
+				echo '<span style="color:red;font-weight:bold">'.__('Invalid backup file: has to be file with extension ".sql" or ".sql.zip"').'</span><br>';
 			}
 		}
-		else {
-			echo '<span style="color:red;font-weight:bold">'.__('Invalid backup file: has to be file with extension ".sql" or ".sql.zip"').'</span><br>';
+		echo ' <form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
+			echo '<input type="file" id="upload_file" name="upload_file">';
+			echo " <input type='submit' style='margin-top:4px' name='upload_the_file' value='".__('Upload')."'><br>";
+		echo '</form>';
+
+		echo '<h3>'.__('Restore database from backup file').'</h3>';
+
+		// *** List of backup files ***
+		echo '<form name="uploadform" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
+		echo '<select size="1" style="margin-top:4px;"  name="select_file">';
+		for ($i = 0; $i < $backup_count; $i++){
+			echo '<option value="'.$backup_files[$i].'">'.$backup_files[$i];
+			if ($i==0) echo ' * '.__('Most recent backup!').' *';
+			echo '</option>';
 		}
-	} 
-	echo '1.&nbsp;a.&nbsp;<label for="files"  class="btn" style="padding-top:3px;padding-bottom:3px;padding-left:8px;padding-right:8px;border:0.5px solid #939393;background-image: url('.CMS_ROOTPATH.'images/lightgray.png)">'.__('Select a file').'</label>';
-	echo '<span id="fake_field" style="font-size:95%;padding-left:3px;padding-right:3px;display:inline-block">'.__('no file chosen').'</span>';
-	echo "<input style='margin-top:8px;visibility:hidden' type='file' id='files' name='upload_file'>";
+		echo '</select>';
+		echo ' <input type="submit" style="font-size:14px" name="restore_server" value="'.__('Restore database').'"> ';
+		echo '<form>';
+	}
+	else{
+		echo "<b>&nbsp;&nbsp;&nbsp;".__('No backup file found!').'</b>';
+	}
 
-	// *** jQuery function. This script changes text "no file chosen" into the name of the uploaded file ***
-	// jQueryui is allready included in admin/index.php.
-	echo '<script>
-		$("#files").change(function() {
-			filename = this.files[0].name;
-			$("#fake_field").text(filename);
-		});
-		</script>';
-
-	echo "<br>&nbsp;&nbsp;&nbsp;&nbsp;b.&nbsp;<input type='submit' style='margin-top:4px' name='upload_the_file' value='".__('Upload')."'>&nbsp;&nbsp;(".__('File will be deleted after successful restore').")<br>";
-	echo '2.&nbsp;<select size="1" style="margin-top:4px;"  name="select_bkfile">';
-	$dh  = opendir('./backup_tmp');
-	$foundbk = 0;
-	while (false !== ($filename = readdir($dh))) {
-		if (substr($filename, -4) == ".sql" OR substr($filename, -8) == ".sql.zip"){
-			echo '<option style="font-weight:bold;" value="'.$filename.'">'.$filename.'</option>';
-			$foundbk = 1;
-		}
-	}
-	if($foundbk==0) {
-		echo '<option value="none">'.__('No backup files found in admin/backup_tmp...').'</option>';
-	}
-	echo '</select><br>';
-	if($foundbk==0) {
-		echo "3.&nbsp;<input type='button' style='margin-top:4px;'  value='".__('Restore database')."'><br><br>"; // Dummy (to show the process) the real button will if a backup file is found in admin/backup_tmp!
-	}
-	else {
-		echo "3.&nbsp;<input type='submit' style='margin-top:4px;font-size:14px' name='restore' value='".__('Restore database')."' ><br><br>";
-	}
-	echo '<b><u>'.__('IMPORTANT').':</u></b><ul>';
-	printf(__('<li>Only use files with .sql.zip or .sql extension. (Files you downloaded with %s Backup automatically have a .sql.zip extension).</li>
-<li>If you want to restore from a .sql file you created with any other program, we suggest you zip it first and rename it with a .sql.zip extension since zipping reduces the file size drastically!</li>
-<li>If upload fails, you can place the backup file yourself in the admin/backup_tmp folder by other means, such as an ftp program or your web host\'s control panel.</li></ul>'),'HuMo-genealogy');
-}
-
-echo '</form>';
-echo '</td></tr></table><br>';
+	echo '<br><br>';
 
 echo '</td></tr>';
 echo '</table>';
@@ -146,7 +140,7 @@ echo '</table>';
 
 // *** BACKUP FUNCTION ***
 function backup_tables(){
-	global $dbh;
+	global $dbh, $backup_files;
 	echo '<div id="red_text" style="color:red">'.__('Creating backup file. This may take some time. Please wait...').'</div>';
 //ob_start();
 	$tables = array();
@@ -156,8 +150,8 @@ function backup_tables(){
 	}
 
 	// *** Cycle through ***
-	//$return = "";
-	$name = 'humo_backup.sql';
+	// *** Name of backup file: 2023_02_10_12_55_humo-genealogy_backup.sql.zip ***
+	$name = 'backup_files/'.date('Y_m_d_H_i').'_humo-genealogy_backup.sql';
 	$handle = fopen($name,'w+');
 
 	// *** 22-10-2022: Needed for PHP 8.0 ***
@@ -193,26 +187,22 @@ function backup_tables(){
 			$row2 = $row_result->fetch(PDO::FETCH_NUM);
 			$return= "\n\n".$row2[1].";\n\n";
 			fwrite($handle,$return);
-			//unset($return); 
-			//for ($i = 0; $i < $num_fields; $i++){
-				while($row = $result->fetch(PDO::FETCH_NUM)){
-					$return = 'INSERT INTO '.$table.' VALUES(';
-					$num_fields=count($row);
-					for($j=0; $j<$num_fields; $j++) {
+			//unset($return);
+			while($row = $result->fetch(PDO::FETCH_NUM)){
+				$return = 'INSERT INTO '.$table.' VALUES(';
+				$num_fields=count($row);
+				for($j=0; $j<$num_fields; $j++) {
+					if ($row[$j]){
 						$row[$j] = addslashes($row[$j]);
 						$row[$j] = str_replace("\n","\\n",$row[$j]);
-						if (isset($row[$j])) { $return.= '"'.$row[$j].'"' ; } else { $return.= '""'; }
-						if ($j<($num_fields-1)) { $return.= ','; }
 					}
-					$return.= ");\n";
-// *** Show all lines in table ***
-//if ($table=='humo_persons 2021'){
-//	echo $return.'<br>';
-//}
-					fwrite($handle,$return);
-					//unset($return); 
+					if (isset($row[$j])) { $return.= '"'.$row[$j].'"' ; } else { $return.= '""'; }
+					if ($j<($num_fields-1)) { $return.= ','; }
 				}
-			//}
+				$return.= ");\n";
+				fwrite($handle,$return);
+				//unset($return); 
+			}
 			$return="\n\n\n";
 			fwrite($handle,$return);
 			//unset($return);
@@ -221,6 +211,8 @@ function backup_tables(){
 
 	//fwrite($handle,$return);
 	fclose($handle);
+
+	// *** Zip backup file ***
 	$zip = new ZipArchive;
 	if ($zip->open($name.'.zip',ZIPARCHIVE::CREATE) === TRUE) {
 		$zip->addFile($name);
@@ -229,22 +221,6 @@ function backup_tables(){
 		$name = $name.'.zip'; // last backup file is always stored in /admin as: humo_backup.sql.zip
 	}
 	echo '<div>'.__('A backup file was saved to the server. We strongly suggest you download a copy to your computer in case you might need it later.').'</div>';
-
-	//create download button(forced download) 
-	//the downloadable file will be given an extended name including date and time of creation 
-	//so the user can afterwards easily chose the right file
-	$bk_file = fopen("downloadbk.php","w+");
-	$downloadname = "humo_backup-".date('Ymd-His').".sql.zip";
-	fwrite($bk_file,"<?php\nheader('Content-type: application/octet-stream');\nheader('Content-Disposition: attachment; filename=\"".$downloadname."\"');\nreadfile('".$name."');\n?>");
-	fclose($bk_file);
-	echo '<div><form style="display:inline">';
-
-echo '<script type="text/javascript">';
-echo ' document.getElementById("red_text").innerHTML = ""; ';
-echo '</script>';
-
-	echo '<input type="button" value="'.__('Download backup file').'" onClick="window.location.href=\'downloadbk.php\'">&nbsp;&nbsp;('.$downloadname.')';
-	echo '</form><div>';
 
 //ob_flush();
 }
@@ -257,7 +233,8 @@ function restore_tables($filename) {
 	$templine = '';
 	$zip_success=1;
 	// unzip (if zipped)
-	$tmp_path = "backup_tmp/";
+	//$tmp_path = 'backup_files/';
+	$tmp_path = '';
 	if(substr($filename,-8)== ".sql.zip") {
 		$zip = new ZipArchive;
 		if ($zip->open($filename) === TRUE) {
@@ -335,13 +312,14 @@ function restore_tables($filename) {
 		if ($dbh->inTransaction() AND $commit_data>1) $dbh->commit();
 		fclose($handle);
 
-		if($original_name != 'humo_backup.sql.zip') {
-			// if a file was uploaded to backup_tmp in order to restore, delete it now.
-			// if however the restore was made from the last humogen backup (humo_backup.sql.zip) it should always stay in /admin, until replaced by next backup
-			unlink($original_name);
-		}
+		//if($original_name != 'humo_backup.sql.zip') {
+		//	// if a file was uploaded to backup_tmp in order to restore, delete it now.
+		//	// if however the restore was made from the last humogen backup (humo_backup.sql.zip) it should always stay in /admin, until replaced by next backup
+		//	unlink($original_name);
+		//}
+
+		// *** The original was a zip file, so we delete the unzipped file ***
 		if($original_name != $filename) {
-			// the original was a zip file, so we also have to delete the unzipped file
 			unlink($filename);
 		}
 		echo '<span style="color:red;font-weight:bold">'.__('Database has been restored successfully!').'</span><br>';

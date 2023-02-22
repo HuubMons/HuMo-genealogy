@@ -5,6 +5,7 @@
 //error_reporting(E_ALL);
 
 // 24-04-2020 Huub: Added EST and removed some old code.
+// 20-12-2022 Huub: Improved showing of dates for child. Including showing of months, weeks and days.
 
 class calculate_year_cls{
 
@@ -174,13 +175,20 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 	$calculated_age='';
 	$age="";
 
-	if (($birth_year=$this->search_year($birth_date)) AND ($death_year=$this->search_year($death_date))) { // There must be 2 years....
+	//if (($birth_year=$this->search_year($birth_date)) AND ($death_year=$this->search_year($death_date))) { // There must be 2 years....
+	$birth_year=$this->search_year($birth_date);
+	$death_year=$this->search_year($death_date);
+	if ($birth_year AND $death_year) { // There must be 2 years....
 
 		// Check for EST AFT ABT etc. If calculation is not possible: $special_text -1
 		$special_text=$this->process_special_text($birth_date,$death_date,$baptism);
 
-		if($birth_year==$death_year) { // born 1850 - death 1850
+		// *** Calculate age in year/ month/ week/ days for children age of < 3 years ***
+		//if($birth_year==$death_year) { // born 1850 - death 1850
+		if($death_year-$birth_year<3) { // born 1850 - death 1850 or born 1849 - death 1850.
 			if(!$special_text) {
+
+				// *** December 2022: now more exact calculation is used ***
 				$age=__('under 1 year old');
 
 				if (($birth_month=$this->search_month($birth_date)) AND ($death_month=$this->search_month($death_date))) { // There must be 2 months
@@ -190,11 +198,75 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 					}
 				}
 
+				// *** December 2022: Show exact months, weeks and days ***
+				$special_text='';
+
+				$birth_month=$this->search_month($birth_date);
+				$birth_day=$this->search_day($birth_date);
+				if (!$birth_day){
+					$birth_day='01';
+					$special_text=__('approximately')." ";
+				}
+
+				$death_month=$this->search_month($death_date);
+				$death_day=$this->search_day($death_date);
+				if (!$death_day){
+					$death_day='01';
+					$special_text=__('approximately')." ";
+				}
+
+				if ($birth_month AND $birth_day AND $death_month AND $death_day){
+					$date1 = date_create($birth_year.'-'.$birth_month.'-'.$birth_day);
+					$date2 = date_create($death_year.'-'.$death_month.'-'.$death_day);
+					$interval = date_diff($date1, $date2);
+
+					$age=$special_text;
+
+					$years=$interval->format("%y");
+					if ($years>0){
+						$age=$years.' ';
+						if ($years>1)$age.=__('years'); else $age.=__('year');
+					}
+
+					$months=$interval->format("%m");
+					if ($months){
+						//if ($years) $age.=';';
+						if ($years) $age.=' '.__('and').' ';
+						$age.=$months.' ';
+						if ($months>1)$age.=__('months'); else $age.=__('month');
+					}
+
+					if (!$special_text){
+						$days=$interval->format("%d"); // *** Count total days ***
+						$weeks = floor($days / 7); // *** Count weeks ***
+						$days_remainder   = floor($days % 7); // *** Count resuming of days ***
+
+						if ($weeks>0){
+							//if ($years OR $months) $age.=';';
+							if ($years OR $months) $age.=' '.__('and').' ';
+							$age.=$weeks.' ';
+							if ($weeks>1)$age.=__('weeks'); else $age.=__('week');
+						}
+
+						if ($days_remainder>0){
+							//if ($years OR $weeks) $age.=';';
+							if ($years OR $months OR $weeks) $age.=' '.__('and').' ';
+							$age.=$days_remainder.' ';
+							if ($days_remainder>1)$age.=__('days'); else $age.=__('day');
+						}
+					}
+
+				}
+
+				// *** Don't show age if birthdate = deathdate ***
+				if ($birth_date==$death_date) $age='';
+
 			}
 			else {
 				if($special_text!=-1) {
 					// *** Used for text like: approximately 1 years married ***
-					$age=$special_text.__('1 years');
+					// DISABLED because born +/- 22 jul 1990 and died +/- 22 jul 1990 = 1 years...
+					//$age=$special_text.__('1 years');
 				}
 			}
 		}
@@ -271,6 +343,7 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 		if ($calculated_age>120){ $age=''; }
 
 		if ($age_check==true){ $age=$calculated_age; }
+
 		return($age);
 	}
 }
