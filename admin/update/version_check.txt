@@ -1,5 +1,5 @@
 // HuMo-genealogy version check.
-version=6.1.1
+version=6.1.1.1
 // Version date yyyy-mm-dd
 version_date=2023-03-31
 version_download=http://sourceforge.net/projects/humo-gen

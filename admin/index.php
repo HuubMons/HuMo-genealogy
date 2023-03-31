@@ -1055,6 +1055,13 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					$update_text= ' '.__('Update check failed.');
 					$update_text.= ' <a href="'.$path_tmp.'page=install_update&amp;update_check=1">'.__('Update options').'</a>';
 
+					//NEW
+					if ($humo_option["version"]==$update['version']){
+						$update['up_to_date']='yes';
+						$update_text= ' '.__('is up-to-date!');
+						$update_text.= ' <a href="'.$path_tmp.'page=install_update&amp;update_check=1">'.__('Update options').'</a>';
+					}
+
 					// *** 2) HuMo-genealogy up-to-date (checking version numbers) ***
 					//if ($humo_option["version"]==$update['version']){
 					// *** If GitHub numbering isn't up-to-date yet, just ignore version check. Could happen while updating sites! ***
@@ -1064,7 +1071,6 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 						$update_text.= ' <a href="'.$path_tmp.'page=install_update&amp;update_check=1">'.__('Update options').'</a>';
 					}
 
-// Maybe better to check version number?
 					// *** 3) First priority: check for normal HuMo-genealogy update ***
 					if (strtotime ($update['version_date'])-strtotime($humo_option["version_date"])>0){
 						$update['up_to_date']='no';
