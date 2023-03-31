@@ -112,8 +112,14 @@ if (file_exists($array_picture_folder[0])){
 		if (isset($list_filename)){
 			array_multisort($list_filename_order, $list_filename);
 			foreach($list_filename as $selected_filename){
-				// *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
-				echo '<a href="" onClick=\'return select_item("'.$sub_dir.str_replace("'","&prime;",$selected_filename).'")\'>'.$sub_dir.$selected_filename.'</a><br>';
+
+				echo '<div class="photobook">';
+					$thumb=''; if (is_file($selected_picture_folder.'thumb_'.$selected_filename)) $thumb='thumb_';
+					echo '<img src="'.$selected_picture_folder.$thumb.$selected_filename.'">';
+					// *** Replace ' by &prime; otherwise a place including a ' character can't be selected ***
+					echo '<br><a href="" onClick=\'return select_item("'.$sub_dir.str_replace("'","&prime;",$selected_filename).'")\'>'.$sub_dir.$selected_filename.'</a><br>';
+				echo '</div>';
+
 			}
 			unset($list_filename);
 			unset($list_filename_order);

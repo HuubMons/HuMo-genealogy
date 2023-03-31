@@ -6,9 +6,10 @@ function show_tree_index(){
 
 	include_once(CMS_ROOTPATH."include/person_cls.php");
 
-	echo '<script type="text/javascript">';
-	echo 'checkCookie();';
-	echo '</script>';
+	// *** Was needed to change fontsize ***
+	//echo '<script type="text/javascript">';
+	//echo 'checkCookie();';
+	//echo '</script>';
 
 	// *** Option to only index CMS page for bots ***
 	if ($bot_visit AND $humo_option["searchengine_cms_only"]=='y'){

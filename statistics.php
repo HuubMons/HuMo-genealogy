@@ -67,8 +67,7 @@ echo '</div>';
 
 
 // *** Align content to the left ***
-//echo '<div style="float: left; background-color:white; height:500px; padding:10px;">';
-echo '<div style="background-color:white; height:500px; padding:10px;">';
+echo '<div id="statistics_screen">';
 
 	// *** Show tree statistics ***
 	if ($menu_tab=='stats_tree'){

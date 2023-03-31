@@ -3,7 +3,7 @@
 
 // *** Version line, DO NOT CHANGE THIS LINE ***
 // Version nummering: 1.1.1.1 (main number, sub number, update, etc.)
-$humo_option["version"]='6.1';  // Version line, DO NOT CHANGE THIS LINE
+$humo_option["version"]='6.1.1';  // Version line, DO NOT CHANGE THIS LINE
 // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
 // *** Beta (not stable enough for production, but it's functional ***
@@ -12,7 +12,7 @@ $humo_option["version"]='6.1';  // Version line, DO NOT CHANGE THIS LINE
 
 // *** Version date, needed for update check ***
 //$humo_option["version_date"]='2019-09-01';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
-$humo_option["version_date"]='2023-02-22';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
+$humo_option["version_date"]='2023-03-31';  // Version date yyyy-mm-dd, DO NOT CHANGE THIS LINE
 // >>>> July 2022: also change admin\update\version_check.txt. In use for update through GitHub.
 
 // *** Test lines for update procedure ***
@@ -154,6 +154,11 @@ if (!isset($humo_option["default_language_admin"])){
 	@$result=$dbh->query($sql);
 }
 
+if (!isset($humo_option["text_header"])){
+	$humo_option["text_header"]='';
+	$sql="INSERT INTO humo_settings SET setting_variable='text_header', setting_value=''";
+	@$result=$dbh->query($sql);
+}
 if (!isset($humo_option["text_footer"])){
 	$humo_option["text_footer"]='';
 	$sql="INSERT INTO humo_settings SET setting_variable='text_footer', setting_value=''";

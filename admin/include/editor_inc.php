@@ -31,7 +31,6 @@ if (isset($_GET['pers_favorite'])){
 // *** PROCESS DATA PERSON ***
 // ***************************
 
-
 if (isset($_POST['person_remove'])){
 	$confirm.='<div class="confirm">';
 	$confirm.=__('This will disconnect this person from parents, spouses and children <b>and delete it completely from the database.</b> Do you wish to continue?');
@@ -146,6 +145,10 @@ if (isset($_POST['person_remove2'])){
 	$sql="DELETE FROM humo_connections WHERE connect_tree_id='".$tree_id."' AND connect_connect_id='".$pers_gedcomnumber."'";
 	$result=$dbh->query($sql);
 
+	// *** Added in march 2023 ***
+	$sql="DELETE FROM humo_user_notes WHERE note_tree_id='".$tree_id."' AND note_connect_id='".$pers_gedcomnumber."'";
+	$result=$dbh->query($sql);
+
 	// *** Update cache for list of latest changes ***
 	cache_latest_changes(true);
 
@@ -156,7 +159,6 @@ if (isset($_POST['person_remove2'])){
 		WHERE setting_variable='admin_favourite'
 		AND setting_tree_id='".$tree_id."' LIMIT 0,1";
 	$new_nr_result = $dbh->query($new_nr_qry);
-
 	if ($new_nr_result AND $new_nr_result->rowCount()){
 		@$new_nr=$new_nr_result->fetch(PDO::FETCH_OBJ);
 		$pers_gedcomnumber=$new_nr->setting_value;
@@ -1364,19 +1366,48 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 
 	if ( $_FILES['photo_upload']['type']=="image/pjpeg" || $_FILES['photo_upload']['type']=="image/jpeg"){
 		$fault="";
+
+		// *** feb. 2023: removed limits ***
 		// 100000=100kb.
-		if($_FILES['photo_upload']['size']>2000000){ $fault=__('Photo too large'); }
+		//if($_FILES['photo_upload']['size']>2000000){ $fault=__('Photo too large'); }
+
 		if (!$fault){
 			$picture_original=$dir.$_FILES['photo_upload']['name']; 
+			$picture_original_tmp=$dir.'0_temp.jpg';
 			$picture_thumb=$dir.'thumb_'.$_FILES['photo_upload']['name'];
 			if (!move_uploaded_file($_FILES['photo_upload']['tmp_name'],$picture_original)){
 				echo __('Photo upload failed, check folder rights');
 			}
 			else{
-				// *** Resize uploaded picture ***
+				// *** Resize uploaded picture and create thumbnail ***
 				if (strtolower(substr($picture_original, -3)) == "jpg"){
-					//Breedte en hoogte origineel bepalen
+					// *** Get width and height of original file ***
 					list($width, $height) = getimagesize($picture_original);
+
+					// *** If filesize > 2MB: resize image to: height 720px/ width 1280px or: width 1920px/ height 1080px ***
+					if($_FILES['photo_upload']['size']>2000000){
+						if ($height>1080){
+							// *** First rename original file to temp. file name ***
+							rename($picture_original,$picture_original_tmp);
+
+							$newheight=1080;
+							$factor=$height/$newheight;
+							$newwidth=$width/$factor;
+
+							$resize_media = imagecreatetruecolor($newwidth, $newheight);
+							$source = imagecreatefromjpeg($picture_original_tmp);
+
+							// *** Resize ***
+							imagecopyresized($resize_media, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+							@imagejpeg($resize_media, $picture_original);
+
+							// *** Remove temp. file ***
+							unlink($picture_original_tmp);
+
+							// *** Recalculate width and height of file, needed for thumbnail ***
+							list($width, $height) = getimagesize($picture_original);
+						}
+					}
 
 					$create_thumb_height=120;
 					$newheight=$create_thumb_height;
@@ -1391,14 +1422,26 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 					@imagejpeg($create_thumb, $picture_thumb);
 				}
 
-//					$_POST['text_event'][$key]=$_FILES['photo_upload']['name'];
-
 				// *** Add picture to array ***
 				$picture_array[]=$_FILES['photo_upload']['name'];
 
 				// *** Re-order pictures by alphabet ***
 				@sort($picture_array);
 				$nr_pictures=count($picture_array);
+
+				// *** Directly connect new media to person or relation ***
+				if (isset($_POST['person_add_media'])){
+					$event_connect_kind='person'; $event_connect_id=$pers_gedcomnumber; $event_kind='picture';
+					$event_event=$_FILES['photo_upload']['name']; $event_gedcom='';
+				}
+				if (isset($_POST['relation_add_media'])){
+					$event_connect_kind='family'; $event_connect_id=$marriage; $event_kind='picture';
+					$event_event=$_FILES['photo_upload']['name']; $event_gedcom='';
+				}
+				// *** Add event. If event is new, use: $new_event=true. ***
+				// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
+				add_event(false,$event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,'','','');
+
 			}
 		}
 		else{
@@ -1420,16 +1463,17 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 		$_FILES['photo_upload']['type']=="video/msvideo" || $_FILES['photo_upload']['type']=="video/mp4"
 		){
 		$fault="";
-		// 49MB
-		if($_FILES['photo_upload']['size']>49000000){ $fault=__('Media too large'); }
+
+		// *** feb. 2023: removed limits ***
+		// *** Limit to 49MB ***
+		//if($_FILES['photo_upload']['size']>49000000){ $fault=__('Media too large'); }
+
 		if (!$fault){
 			$picture_original=$dir.$_FILES['photo_upload']['name'];
 			if (!move_uploaded_file($_FILES['photo_upload']['tmp_name'],$picture_original)){
 				echo __('Media upload failed, check folder rights');
 			}
 			else{
-//					$_POST['text_event'][$key]=$_FILES['photo_upload']['name'];
-
 				// *** Add picture to array ***
 				$picture_array[]=$_FILES['photo_upload']['name'];
 
@@ -1439,12 +1483,13 @@ if (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name']){
 			}
 		}
 		else{
-			print "<FONT COLOR=red>$fault</FONT>";
+			echo '<font color="red">'.$fault.'</font>';
 		}
 	}
 	else{
-		echo '<FONT COLOR=red>'.__('No valid picture, media or document file').'</font>';
+		echo '<font color="red">'.__('No valid picture, media or document file').'</font>';
 	}
+
 }
 
 
@@ -1474,9 +1519,13 @@ if (isset($_POST['event_id'])){
 			if ($event_event!=$eventDb->event_event) $event_changed=true;
 			// *** Compare date case-insensitive (for PHP 8.1 check if variabele is used) ***
 			//if (isset($_POST["event_date_prefix"][$key]) OR isset($_POST["event_date"][$key])){
-			if ($eventDb->event_date AND ($_POST["event_date_prefix"][$key] OR $_POST["event_date"][$key])){
+			// Doesn't work properly, date isn't always saved:
+			//if ($eventDb->event_date AND ($_POST["event_date_prefix"][$key] OR $_POST["event_date"][$key])){
+			// Doesn't work if date is removed:
+			//if ($_POST["event_date_prefix"][$key] OR $_POST["event_date"][$key]){
+			if (isset($eventDb->event_date))
 				if (strcasecmp($_POST["event_date_prefix"][$key].$_POST["event_date"][$key], $eventDb->event_date) != 0) $event_changed=true;
-			}
+			//}
 			if ($_POST["event_place".$key]!=$eventDb->event_place) $event_changed=true;
 			if (isset($_POST["event_gedcom"][$key])){
 				if ($_POST["event_gedcom"][$key]!=$eventDb->event_gedcom) $event_changed=true;

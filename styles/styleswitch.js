@@ -5,7 +5,7 @@
 // Yossi Beck:
 // In short: free for personal and commercial use inside programs, while mentioning the above credits
 // Updated to fix Safari 5.1 problem/bug with alternate stylesheets or the disabled property in regards to them
-// ****** HUMOGEN USERS: DO NOT CHANGE ANY OF THE FOLLOWING *****
+// ****** HuMo-genealogy users: DO NOT CHANGE ANY OF THE FOLLOWING *****
 var manual_or_random="manual" //"manual" or "random"
 var randomsetting="3 days" //"eachtime", "sessiononly", or "x days (replace x with desired integer)". Only applicable if mode is random.
 

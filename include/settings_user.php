@@ -106,6 +106,9 @@ $user['group_event']=$groupDb->group_event; // Show events
 $user['group_addresses']=$groupDb->group_addresses; // Show addresses IN MENU
 $user['group_own_code']=$groupDb->group_own_code; // Show Own code
 
+if (!isset($groupDb->group_show_age_living_person)){ $user['group_show_age_living_person']='y'; }
+	else{ $user['group_show_age_living_person']=$groupDb->group_show_age_living_person; }
+
 if (!isset($groupDb->group_pdf_button)){ $user['group_pdf_button']='y'; }
 	else{ $user['group_pdf_button']=$groupDb->group_pdf_button; }
 

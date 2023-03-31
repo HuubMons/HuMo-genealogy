@@ -369,7 +369,7 @@ else{
 		}
 		echo $html_text;
 
-		print "<head>\n";
+		echo "<head>\n";
 		echo '<meta http-equiv="content-type" content="text/html; charset=utf-8">'; //to support all of the unicode scripts.
 		// --------------------------------------------------- end
 
@@ -635,9 +635,9 @@ else{
 			echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/jqueryui/jquery-ui.min.css"> ';
 			echo '<script src="'.CMS_ROOTPATH.'include/jqueryui/jquery-ui.min.js"></script>';
 	}
- 
- // Not in use anymore?
-	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'fontsize.js"></script>';
+
+	// *** Was needed to change fontsize ***
+	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'fontsize.js"></script>';
 
 	// *** Style sheet select ***
 	include_once(CMS_ROOTPATH."styles/sss1.php");
@@ -669,9 +669,13 @@ else{
 	// *** CSS changes for mobile devices ***
 	echo '<link rel="stylesheet" media="(max-width: 640px)" href="gedcom_mobile.css">';
 
+	// *** Extra items in header added by admin ***
+	if ($humo_option["text_header"]) echo "\n".$humo_option["text_header"];
+
 	if (!CMS_SPECIFIC){
-		print "</head>\n";
-		print "<body onload='checkCookie()'>\n";
+		echo "</head>\n";
+		//echo "<body onload='checkCookie()'>\n";  // *** Was needed to change fontsize ***
+		echo "<body>\n";
 	}
 
 	$db_functions->set_tree_id($_SESSION['tree_id']);
@@ -685,7 +689,6 @@ else{
 	}
 
 	// *** Added in mar. 2022: disable NO_ZERO_DATE and NO_ZERO_IN_DATE. To solve sorting problems in dates. ***
-	// *** Maybe also add ONLY_FULL_GROUP_BY variable? ***
 	//$result= $dbh->query("SET GLOBAL sql_mode=(SELECT
 	//	REPLACE(
 	//		REPLACE(@@sql_mode,'NO_ZERO_DATE','')
@@ -694,6 +697,14 @@ else{
 	$result= $dbh->query("SET SESSION sql_mode=(SELECT
 		REPLACE(
 			REPLACE(@@SESSION.sql_mode,'NO_ZERO_DATE','')
+		,'NO_ZERO_IN_DATE',''));");
+
+	// *** Added in mar. 2023. To prevent double results in search results ***
+	// *** Also added in admin/index.php ***
+	//SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+	$result= $dbh->query("SET SESSION sql_mode=(SELECT
+		REPLACE(
+			REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY','')
 		,'NO_ZERO_IN_DATE',''));");
 
 	echo '<div class="silverbody">';

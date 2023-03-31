@@ -15,6 +15,7 @@ if (isset($_POST['save_option'])){
 	$result = $db_functions->update_settings('default_language',$_POST["default_language"]);
 	$result = $db_functions->update_settings('default_language_admin',$_POST["default_language_admin"]);
 
+	$result = $db_functions->update_settings('text_header',$_POST["text_header"]);
 	$result = $db_functions->update_settings('text_footer',$_POST["text_footer"]);
 
 	$result = $db_functions->update_settings('debug_front_pages',$_POST["debug_front_pages"]);
@@ -309,6 +310,12 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 			echo sprintf(__('Upload favicon.ico file. File size max: %1$d kB.'), '100');
 			echo ' <input type="file" name="upload_favicon">';
 			echo '<input type="submit" name="save_option" title="submit" value="'.__('Upload').'">';
+		echo '</td></tr>';
+
+		echo '<tr><td>'.__('Scripts in &lt;head&gt; section for all pages').'</td><td>';
+			if(CMS_SPECIFIC == "Joomla") {  $cols="48"; } else { $cols="80"; }   // in joomla make sure it won't run off the screen
+			echo "<textarea cols=".$cols." rows=1 name=\"text_header\" style='height: 20px;'>".htmlentities($humo_option["text_header"],ENT_NOQUOTES)."</textarea><br>";
+			echo __('Can be used for statistics, counter, etc.');
 		echo '</td></tr>';
 
 		echo '<tr><td>'.__('Text in footer for all pages').'</td><td>';
@@ -657,6 +664,7 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 		echo '<option value="y">'.__('Yes').'</option>';
 		echo '<option value="n"'.$selected.'>'.__('No').'</option>';
 		echo '</select>';
+		echo ' '.__('Only use this option if you\'re doing a "One Name Study" project.');
 		echo '</td></tr>';
 		echo '<tr><td style="white-space:nowrap;">'.__('Enter the One Name of this site').'</td>';
 		echo '<td>';

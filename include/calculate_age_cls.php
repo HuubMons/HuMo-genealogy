@@ -128,7 +128,7 @@ function process_special_text($date1, $date2, $baptism) {
 
 // *** $age_check=false/true. true=show short age text. ***
 function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false, $age_event='') {
-	global $language;
+	global $language, $user;
 
 	// *** handle person born and died BC ***
 	if(substr($birth_date,-2,2)=="BC" AND substr($death_date,-2,2)=="BC") { 
@@ -170,7 +170,14 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 	}
 
 	// *** Calculate age by living person ***
-	if ($death_date==''){ $death_date=date("j M Y"); }
+	if ($death_date==''){
+		$death_date=date("j M Y");
+
+		// *** Show or hide age calculation for living persons ***
+		if ($user['group_show_age_living_person']!='y'){
+			$birth_date='';$death_date='';
+		}
+	}
 	$death_date=strtoupper($death_date);
 	$calculated_age='';
 	$age="";

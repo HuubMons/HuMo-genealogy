@@ -4415,7 +4415,10 @@ function text_process($text,$long_text=false){
 	//$text=safe_text_db($text);
 	//return $text;
 
-	$return_text = $dbh->quote($text); 
+	$return_text='';
+	if ($text){
+		$return_text = $dbh->quote($text);
+	}
 	// PDO "quote" escapes, BUT also encloses in single quotes. 
 	// In all HuMo-genealogy scripts the single quotes are already coded ( "...some-parameter = '".$var."'")  so we take them off:
 	$return_text = substr($return_text,1,-1); // remove quotes from beginning and end

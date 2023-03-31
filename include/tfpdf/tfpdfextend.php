@@ -734,24 +734,22 @@ function PDFShowSources($value){
 	$pdf->SetTextColor(28,28,255);
 
 	if($source_presentation=='footnote') {  // "1)" as link to list at end of doc
-		$multitext = explode('~',$value);
+		$footnote_nr_array = explode('~',$value);
 		//TEST
 		//$pdf->Write(6,$value);
 		//$pdf->Write(6,'SOURCE_1_TEST');
-		foreach ($multitext as $i => $value){
-			$num = $multitext[$i];
-			$ofs=0; if (is_numeric($num)) $ofs = $num - 1; // offset starts with 0
-			//if($ofs >= 0) {  // is footnote to source from global source list
+		foreach ($footnote_nr_array as $footnote_nr){
+			$ofs=0; if (is_numeric($footnote_nr)) $ofs = $footnote_nr - 1; // offset starts with 0
 			if($ofs >= 0 AND isset($pdf_footnotes[$ofs])) {  // is footnote to source from global source list
 				$pdf->SetTextColor(28,28,255);
-				//$pdf->subWrite(6,$multitext[$i],$pdf_footnotes[$ofs],9,4);
-				$pdf->subWrite(6,' '.$multitext[$i].')',$pdf_footnotes[$ofs],9,4);
+				$pdf->subWrite(6,' '.$footnote_nr.')',$pdf_footnotes[$ofs],9,4);
 			}
 			else { // "manual" source list as regular non-clickable text
 				$pdf->SetTextColor(0);
-				$pdf->Write(6,$multitext[$i]);
+				$pdf->Write(6,$footnote_nr);
 			}
 		}
+
 	}
 	elseif($user['group_sources']!='n')  {  // source title as link to list at end of doc
 		//TEST

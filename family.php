@@ -1416,7 +1416,8 @@ else{
 
 						if($screen_mode=='') {
 							echo '<div class="children">';
-							echo '<div class="child_nr">'.$childnr.'.</div> ';
+							//echo '<div class="child_nr">'.$childnr.'.</div> ';
+							echo '<div class="child_nr" id="person_'.$childDb->pers_gedcomnumber.'">'.$childnr.'.</div> ';
 							echo $child_cls->name_extended("child");
 						}
 						if($screen_mode=='PDF') {
@@ -1689,7 +1690,8 @@ else{
 						}
 
 						// BIRTH woman
-						if (!$parent2_cls->privacy){
+						//if (!$parent2_cls->privacy){
+						if ($parent2Db AND !$parent2_cls->privacy){
 							$location_var = $parent2Db->pers_birth_place;
 							if($location_var !='') {
 								$short=__('BORN_SHORT');
@@ -1718,7 +1720,7 @@ else{
 						}
 
 						// DEATH man
-						if (!$parent1_cls->privacy){
+						if ($parent1Db AND !$parent1_cls->privacy){
 							$location_var = $parent1Db->pers_death_place;
 							$short = __('DIED_SHORT');
 							if($location_var=='') {
@@ -1749,7 +1751,7 @@ else{
 						}
 
 						// DEATH woman
-						if (!$parent2_cls->privacy){
+						if ($parent2Db AND !$parent2_cls->privacy){
 							$location_var = $parent2Db->pers_death_place;
 							$short = __('DIED_SHORT');
 							if($location_var=='') {
@@ -1916,10 +1918,12 @@ else{
 								}
 
 								if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-									echo '<script src="https://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
+									//echo '<script src="https://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
+									echo '<script src="https://maps.google.com/maps/api/js?v=3'.$api_key.'&callback=Function.prototype" type="text/javascript"></script>';
 								}
 								else {
-									echo '<script src="http://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
+									//echo '<script src="http://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
+									echo '<script src="http://maps.google.com/maps/api/js?v=3'.$api_key.'&callback=Function.prototype" type="text/javascript"></script>';
 								}
 
 								echo '<script type="text/javascript">
@@ -2245,14 +2249,14 @@ if($screen_mode=='') {
 }
 
 
-// list appendix of sources
+// *** List appendix of sources ***
 if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footnote' OR $user['group_sources']=='j') ) {
 	include_once(CMS_ROOTPATH."source.php");
 	$pdf->AddPage(); // appendix on new page
 	$pdf->SetFont($pdf_font,"B",14);
 	$pdf->Write(8,__('Sources')."\n\n");
 	$pdf->SetFont($pdf_font,'',10);
-	// the $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given
+	// *** The $pdf_source array is set in show_sources.php with sourcenr as key and value if a linked source is given ***
 	$count=0;
 
 	foreach($pdf_source as $key => $value) {

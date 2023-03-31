@@ -6,15 +6,13 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 	echo '<div style="direction:ltr;">';
 
 	echo '<span id="top_website_name">';
-
-	// *** Show logo or name of website ***
-	if (is_file('media/logo.png'))
-		echo '&nbsp;<a href="'.$humo_option["homepage"].'"><img src="media/logo.png"></a>';
-	elseif (is_file('media/logo.jpg'))
-		echo '&nbsp;<a href="'.$humo_option["homepage"].'"><img src="media/logo.jpg"></a>';
-	else
-		echo '&nbsp;<a href="'.$humo_option["homepage"].'">'.$humo_option["database_name"].'</a>';
-
+		// *** Show logo or name of website ***
+		if (is_file('media/logo.png'))
+			echo '&nbsp;<a href="'.$humo_option["homepage"].'"><img src="media/logo.png"></a>';
+		elseif (is_file('media/logo.jpg'))
+			echo '&nbsp;<a href="'.$humo_option["homepage"].'"><img src="media/logo.jpg"></a>';
+		else
+			echo '&nbsp;<a href="'.$humo_option["homepage"].'">'.$humo_option["database_name"].'</a>';
 	echo '</span>';
 
 	echo '&nbsp;&nbsp;';
@@ -25,7 +23,6 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		$tree_search_result2 = $dbh->query($sql);
 		$num_rows = $tree_search_result2->rowCount();
 		if ($num_rows>1){
-
 
 			if ($humo_option["url_rewrite"]=="j"){
 				// *** $uri_path made in header.php ***
@@ -236,7 +233,16 @@ echo '<ul class="humo_menu_item">';
 		//$path_tmp=CMS_ROOTPATH.'index.php';
 	}
 	//echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'">'.__('Home')."</a></li>\n";
-	echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'"><img src="images/menu_mobile.png" width="15"> '.__('Home')."</a></li>\n";
+	//echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'"><img src="images/menu_mobile.png" width="18"> '.__('Home')."</a></li>\n";
+	echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'"><img src="images/menu_mobile.png" width="18" class="mobile_icon"> '.__('Home')."</a></li>\n";
+
+	// Doesn't work properly. Icon too large and orange...
+	//echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'">';
+	//	echo '<svg width="35" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff9900" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter">';
+	//	echo '<line x1="0" y1="4" x2="18" y2="4"></line><line x1="0" y1="10" x2="18" y2="10"></line>';
+	//	echo '<line x1="0" y1="16" x2="18" y2="16"></line>';
+	//	echo '</svg>';
+	//echo __('Home')."</a></li>\n";
 
 	// *** Mobile menu ***
 	$select_top='';
@@ -909,7 +915,7 @@ echo '<ul class="humo_menu_item">';
 			//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> <img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
 			echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:18px"></a>';
 
-			// In gedcom.css special adjustment (width) for m4x! ***
+			// *** In gedcom.css special adjustment (width) for m4x! ***
 			echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo '<ul class="humo_menu_item2">';
 					$hide_languages_array=explode(";",$humo_option["hide_languages"]);
@@ -919,7 +925,6 @@ echo '<ul class="humo_menu_item">';
 							include(CMS_ROOTPATH.'languages/'.$language_file[$i].'/language_data.php');
 							//echo '<li><a href="'.CMS_ROOTPATH.'index.php?language='.$language_file[$i].'">';
 							echo '<li>';
-
 								if ($humo_option["url_rewrite"]=="j"){
 									// *** $uri_path made in header.php ***
 									//echo '<a href="'.CMS_ROOTPATH.'index?language='.$language_file[$i].'">';
@@ -930,7 +935,9 @@ echo '<ul class="humo_menu_item">';
 								}
 
 								echo '<img src="'.CMS_ROOTPATH.'languages/'.$language_file[$i].'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none;"> ';
-								echo $language["name"];
+								// *** Don't show names of languages in mobile version ***
+								echo '<span class="mobile_hidden">'.$language["name"].'</span>';
+
 								echo '</a>';
 							echo '</li>';
 						}

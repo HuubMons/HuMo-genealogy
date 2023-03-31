@@ -88,7 +88,7 @@ if (isset($_POST['save_settings_database'])){
 				$buffer[$i]='define("DATABASE_NAME",     '."'".$_POST['db_name']."');\n";
 				$check_config=true;
 			}
-	
+
 			fwrite($bestand_config,$buffer[$i]);
 		}
 		fclose($bestand_config);
@@ -103,7 +103,8 @@ if (isset($_POST['save_settings_database'])){
 // *** Show HuMo-genealogy status, use scroll bar to show lots of family trees ***
 // *******************************************************************************
 
-echo '<div style="height:450px; width:850px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
+//echo '<div style="height:450px; width:850px; overflow-y: auto; margin-left:auto; margin-right:auto;">';
+echo '<div style="width:850px; margin-left:auto; margin-right:auto;">';
 echo '<table class="humo" width="100%">';
 	echo '<tr class="table_header"><th colspan="2">';
 	printf(__('%s status'),'HuMo-genealogy');
@@ -350,8 +351,36 @@ if ($install_status==true){
 			@$result=$dbh->query($sql);
 		}
 
-		echo $mbytes.' Mb <a href="index.php?optimize=1">'.__('Optimize database.').'</a>';
+		echo $mbytes.' MB <a href="index.php?optimize=1">'.__('Optimize database.').'</a>';
 	echo '</td></tr>';
+
+
+	// *** Check last database backup ***
+	// *** Get list of backup files ***
+	if (is_dir('./backup_files')){
+		$dh  = opendir('./backup_files');
+		while (false !== ($filename = readdir($dh))) {
+			if (substr($filename, -4) == ".sql" OR substr($filename, -8) == ".sql.zip"){
+				$backup_files[]=$filename;
+			}
+		}
+		$backup_count=0;
+		if (isset($backup_files)){
+			$backup_count=count($backup_files);
+			rsort($backup_files); // *** Most recent backup file will be shown first ***
+		}
+	}
+	if (isset($backup_files[0])){
+		// 2023_02_23_09_56_humo-genealogy_backup.sql.zip
+		$backup_status=__('Last database backup').': '.substr($backup_files[0],8,2).'-'.substr($backup_files[0],5,2).'-'.substr($backup_files[0],0,4).'.';
+		echo '<tr><td class="line_item">'.__('Status of database backup').'</td><td class="line_ok">'.$backup_status;
+	}
+	else{
+		echo '<tr><td class="line_item">'.__('Status of database backup').'</td><td class="line_nok">'.__('No backup file found!');
+	}
+	echo ' <a href="index.php?page=backup">'.__('Database backup').'</a>';
+	echo '</td></tr>';
+
 
 	echo '<tr class="table_header"><th colspan="2">';
 	printf(__('%s security items'),'HuMo-genealogy');

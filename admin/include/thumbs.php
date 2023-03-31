@@ -3,32 +3,6 @@
 if (!defined('ADMIN_PAGE')){ exit; }
 //ini_set('memory_limit', '-1');
 
-// *** Style copied from gedcom.css ***
-echo '<style>
-/* Photobook */
-div.photobook{
-	background-color:#FAF1EB;
-	margin: 2px;
-	border: 1px solid #0000ff;
-	height : 190px;
-	width : 200px;
-	float: left;
-	text-align: center;
-	overflow:auto;
-}
-div.photobook img{
-	display: inline;
-	margin: 3px;
-	border: 1px solid #ffffff;
-}
-div.photobook a:hover img {
-	border: 1px solid #0000ff;
-}
-div.photobooktext{
-	font-style:italic;
-	margin: 2px;
-}</style>';
-
 if(CMS_SPECIFIC=="Joomla") {
 	$prefx = ''; // in joomla the base folder is the main joomla map - not the HuMo-genealogy admin map
 	$joomlastring="option=com_humo-gen&amp;task=admin&amp;";

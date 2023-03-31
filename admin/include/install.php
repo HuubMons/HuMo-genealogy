@@ -308,6 +308,7 @@ if (isset($_POST['install_tables2'])){
 			group_user_notes_show VARCHAR(1) NOT NULL DEFAULT 'n',
 			group_family_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'compact',
 			group_maps_presentation VARCHAR(10) CHARACTER SET utf8 NOT NULL DEFAULT 'hide',
+			group_show_age_living_person varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y',
 			group_pdf_button varchar(1) CHARACTER SET utf8,
 			group_rtf_button varchar(1) CHARACTER SET utf8 NOT NULL DEFAULT 'n',
 			group_work_text varchar(1) CHARACTER SET utf8,

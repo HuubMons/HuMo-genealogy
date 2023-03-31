@@ -54,7 +54,7 @@ if (isset($update['up_to_date']) AND $update['up_to_date']=='yes'){
 		echo ' ('.$update['beta_version'].')!</a>';
 	}
 	else{
-		echo '  '.__('No beta version available.');
+		echo ' '.__('No beta version available.');
 	}
 	echo '<br><br>';
 
@@ -64,11 +64,20 @@ if (isset($update['up_to_date']) AND $update['up_to_date']=='yes'){
 		printf(__('Enable/ disable %s update check.'),'HuMo-genealogy');
 	echo '</h2>';
 	echo '<form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">';
-	echo '<input type="checkbox" name="enable_update_check"'.$check.' onChange="this.form.submit();"> ';
-	printf(__('Check regularly for %s updates.'),'HuMo-genealogy');
-	echo '<br>';
+		echo '<input type="checkbox" name="enable_update_check"'.$check.' onChange="this.form.submit();"> ';
+		printf(__('Check regularly for %s updates.'),'HuMo-genealogy');
+		echo '<br>';
 
-	echo '<input type="hidden" name="enable_update_check_change" value="1">';
+		echo '<input type="hidden" name="enable_update_check_change" value="1">';
+	echo '</form>';
+
+	// *** Debug update check ***
+	$check=' checked'; if ($humo_option['update_last_check']=='DISABLED') $check='';
+	echo '<h2>';
+		printf(__('Debug %s update'),'HuMo-genealogy');
+	echo '</h2>';
+	echo '<form method="post" action="index.php?page=install_update&update_check=1" style="display : inline">';
+		echo '<input type="Submit" name="debug_update" value="'.__('Debug').'">';
 	echo '</form>';
 
 	echo '<br><br>';
@@ -116,13 +125,21 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 			else{
 				// *** Copy HuMo-genealogy update to server using curl ***
 				if(function_exists('curl_exec')){
-					$source=$update['version_auto_download'];
+
+					// *** First try to download from GitHub ***
+					//$source=$update['version_auto_download'];
+					$source='https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip';
 					$destination='update/humo-gen_update.zip';
 					$resource = curl_init();
 					curl_setopt($resource, CURLOPT_URL, $source);
 					curl_setopt($resource, CURLOPT_HEADER, false);
 					curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
 					curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
+
+					// *** Added for GitHub ***
+					curl_setopt($resource, CURLOPT_FOLLOWLOCATION, true);
+					curl_setopt($resource, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+
 					$content = curl_exec($resource);
 					curl_close($resource);
 					if($content != ''){
@@ -134,21 +151,15 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 						}
 					}
 
-					// *** Download failed from humo-gen.com, now try GitHub ***
+					// *** Download failed from Github, now try humo-gen.com ***
 					if ($download==false){
-						//$source=$update['version_auto_download'];
-						$source='https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip';
+						$source=$update['version_auto_download'];
 						$destination='update/humo-gen_update.zip';
 						$resource = curl_init();
 						curl_setopt($resource, CURLOPT_URL, $source);
 						curl_setopt($resource, CURLOPT_HEADER, false);
 						curl_setopt($resource, CURLOPT_RETURNTRANSFER, true);
 						curl_setopt($resource, CURLOPT_CONNECTTIMEOUT, 30);
-
-						// *** Added for GitHub ***
-						curl_setopt($resource, CURLOPT_FOLLOWLOCATION, true);
-						curl_setopt($resource, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-
 						$content = curl_exec($resource);
 						curl_close($resource);
 						if($content != ''){

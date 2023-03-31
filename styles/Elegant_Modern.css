@@ -53,3 +53,5 @@ ul.humo_menu_item2 li a {
 	background: #9a3f3a;
 	color: #fff;
 }
+
+.mobile_icon { filter: invert(100%); }
