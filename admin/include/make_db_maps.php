@@ -872,7 +872,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 
 		$api_key = '';
 		if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
-			$api_key = "?key=".$humo_option['google_api_key']; 
+			$api_key = '?key='.$humo_option['google_api_key'].'&callback=Function.prototype';
 		}
 		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
 			echo '<script type="text/javascript" src="https://maps.google.com/maps/api/js'.$api_key.'"></script>';

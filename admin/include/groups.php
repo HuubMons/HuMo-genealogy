@@ -63,6 +63,7 @@ if (isset($_POST['group_change'])){
 	$group_pdf_button='n'; if (isset($_POST["group_pdf_button"])){ $group_pdf_button='y'; }
 	$group_rtf_button='n'; if (isset($_POST["group_rtf_button"])){ $group_rtf_button='y'; }
 	$group_citation_generation='n'; if (isset($_POST["group_citation_generation"])){ $group_citation_generation='y'; }
+	$group_show_age_living_person='n'; if (isset($_POST["group_show_age_living_person"])){ $group_show_age_living_person='y'; }
 
 	//if (!isset($_POST["group_user_notes"])){ $_POST["group_user_notes"]='n'; }
 	$group_user_notes='n'; if (isset($_POST["group_user_notes"])){ $group_user_notes='y'; }
@@ -126,6 +127,7 @@ if (isset($_POST['group_change'])){
 	group_rtf_button='".$group_rtf_button."',
 	group_family_presentation='".$_POST["group_family_presentation"]."',
 	group_maps_presentation='".$_POST["group_maps_presentation"]."',
+	group_show_age_living_person='".$group_show_age_living_person."',
 	group_work_text='".$group_work_text."',
 	group_texts='".$_POST["group_texts"]."',
 	group_text_pers='".$group_text_pers."',
@@ -231,6 +233,11 @@ if (!isset($field['group_menu_change_password'])){
 if (!isset($field['group_menu_cms'])){
 	$sql="ALTER TABLE humo_groups
 		ADD group_menu_cms VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_menu_login;";
+	$result=$dbh->query($sql);
+}
+if (!isset($field['group_show_age_living_person'])){
+	$sql="ALTER TABLE humo_groups
+		ADD group_show_age_living_person VARCHAR(1) CHARACTER SET utf8 NOT NULL DEFAULT 'y' AFTER group_maps_presentation;";
 	$result=$dbh->query($sql);
 }
 
@@ -400,6 +407,11 @@ $selected=''; if ($groupDb->group_maps_presentation=='show'){ $selected=' SELECT
 echo '<option value="show"'.$selected.'>'.__('Show Google maps').'</option>';
 $selected=''; if ($groupDb->group_maps_presentation=='hide'){ $selected=' SELECTED'; }
 echo '<option value="hide"'.$selected.'>'.__('Hide Google maps').'</option></select></td></tr>';
+
+// *** Show age of living person ***
+echo '<tr><td>'.__('Show age of living person').'</td>';
+$check=''; if ($groupDb->group_show_age_living_person!='n') $check=' checked';
+echo '<td><input type="checkbox" name="group_show_age_living_person"'.$check.'></td></tr>';
 
 // *** Show PDF report button ***
 echo '<tr><td>'.__('Show "PDF Report" button in family screen and reports').'</td>';

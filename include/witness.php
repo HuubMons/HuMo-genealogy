@@ -101,6 +101,7 @@ function witness_by_events($gedcomnr){
 			AND (event_kind='birth_declaration' OR event_kind='baptism_witness'
 				OR event_kind='death_declaration' OR event_kind='burial_witness'
 				OR event_kind='marriage_witness' OR event_kind='marriage_witness_rel')
+			ORDER BY event_kind
 			");
 		$source_prep->bindParam(':event_tree_id',$tree_id);
 
@@ -108,27 +109,54 @@ function witness_by_events($gedcomnr){
 		$source_prep->bindParam(':event_event',$event_event);
 
 		$source_prep->execute();
+		$witness_line='';
 		while($witnessDb = $source_prep->fetch(PDO::FETCH_OBJ)){
 			if ($counter==0) {
 				//$text='<br>'.__('This person was witness at:').'<br>';
 				if($screen_mode=="PDF") {
-					$text= __('This person was witness at:')."\n";
+					$text= "\n".__('This person was witness at:')."\n";
 				}
 				else {
-					$text='<br>'.__('This person was witness at:').'<br>';
+					// *** March 2023: added extra empty line before witnes lines ***
+					$text="<br>\n<br>\n".__('This person was witness at:')."<br>\n";
 				}
 			}
-			$counter++; if ($counter>1){ $text.=', '; }
+			$counter++;
 			if ($witnessDb->event_event){
 
-				if ($witnessDb->event_kind=='birth_declaration') $text.=__('birth declaration');
-				if ($witnessDb->event_kind=='baptism_witness') $text.=__('baptism witness');
-				if ($witnessDb->event_kind=='death_declaration') $text.=__('death declaration');
-				if ($witnessDb->event_kind=='burial_witness') $text.=__('burial witness');
-				if ($witnessDb->event_kind=='marriage_witness') $text.=__('marriage witness');
-				if ($witnessDb->event_kind=='marriage_witness_rel') $text.=__('marriage witness (religious)');
-
-				$text.=': ';
+				if ($witnessDb->event_kind=='birth_declaration' AND $witness_line!='birth declaration'){
+					if ($witness_line!='') $text.=".<br>\n";
+					$text.=__('birth declaration').': ';
+					$witness_line='birth declaration';
+				}
+				elseif ($witnessDb->event_kind=='baptism_witness' AND $witness_line!='baptism witness'){
+					if ($witness_line!='') $text.=".<br>\n";
+					$text.=__('baptism witness').': ';
+					$witness_line='baptism witness';
+				}
+				elseif ($witnessDb->event_kind=='death_declaration' AND $witness_line!='death declaration'){
+					if ($witness_line!='') $text.=".<br>\n";
+					$text.=__('death declaration').': ';
+					$witness_line='death declaration';
+				}
+				elseif ($witnessDb->event_kind=='burial_witness' AND $witness_line!='burial_witness'){
+					if ($witness_line!='') $text.=".<br>\n";
+					$text.=__('burial witness').': ';
+					$witness_line='burial_witness';
+				}
+				elseif ($witnessDb->event_kind=='marriage_witness' AND $witness_line!='marriage_witness'){
+					if ($witness_line!='') $text.=".<br>\n";
+					$text.=__('marriage witness').': ';
+					$witness_line='marriage_witness';
+				}
+				elseif ($witnessDb->event_kind=='marriage_witness_rel' AND $witness_line!='marriage_witness_rel'){
+					if ($witness_line!='') $text.=".<br>\n";
+					$text.=__('marriage witness (religious)').': ';
+					$witness_line='marriage_witness_rel';
+				}
+				else{
+					if ($counter>1){ $text.=', '; }
+				}
 
 				if ($witnessDb->event_kind=='marriage_witness' OR $witnessDb->event_kind=='marriage_witness_rel'){
 					// *** Connected witness by a family ***

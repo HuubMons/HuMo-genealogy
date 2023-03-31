@@ -2,6 +2,8 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
+include_once (CMS_ROOTPATH."include/language_date.php");
+
 echo '<h1 class="center">'.__('Select person').'</h1>';
 
 $place_item='connect_man'; $form='form2';
@@ -66,7 +68,7 @@ else {
 			if(psx=="M") window.opener.document.getElementById("prad1'.$childnr.'").checked=true;
 			else if(psx=="F") window.opener.document.getElementById("prad2'.$childnr.'").checked=true;
 			else window.opener.document.getElementById("prad3'.$childnr.'").checked=true;
-			
+
 			window.opener.document.getElementById("'.$trname.'").setAttribute("style", "background-color:#EBEBE4;text-align:left;");
 			window.opener.document.getElementById("'.$searnr.'").style.textAlign="center";
 			top.close();
@@ -136,14 +138,14 @@ else {
 			$dateself=$person->pers_birth_date;
 			$dateprefix="";
 		}
-		
+
 		$ddate_arr = explode(" ",$person->pers_death_date);
 		if(substr($ddate_arr[0],0,3)=="BEF" OR substr($ddate_arr[0],0,3)=="AFT" OR substr($ddate_arr[0],0,3)=="ABT" OR substr($ddate_arr[0],0,3)=="BET"){ $dateprefix2 = $ddate_arr[0]." "; $dateself2 = substr($person->pers_death_date,strpos($person->pers_death_date," ")+1);}
 		else {
 			$dateself2=$person->pers_death_date;
 			$dateprefix2="";
 		}
-		
+
 		$pgn = $person->pers_gedcomnumber;
 		$ppf = str_replace($search,$replace,$person->pers_prefix);
 		$pln = str_replace($search,$replace,$person->pers_lastname);

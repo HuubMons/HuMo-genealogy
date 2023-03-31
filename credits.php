@@ -69,7 +69,7 @@ This credits screen is english only...
 HuMo-genealogy uses <a href="https://www.transifex.com/organization/humo-gen" target="_blank">Transifex</a> for translations.
 <ul>
 <li>Chinese by: Dongshan.</li>
-<li>Chech: Jerry Verner, David Krchov.</li>
+<li>Czech: Jerry Verner, David Krchov.</li>
 <li>Danish by: Erik Jensen.</li>
 <li>Dutch by: Huub, Yossi.</li>
 <li>English by: Huub, Yossi.</li>
@@ -78,8 +78,8 @@ HuMo-genealogy uses <a href="https://www.transifex.com/organization/humo-gen" ta
 <li>Finnish by: Rauno Salomäki.</li>
 <li>French by: Raymond Larche, Carlos, Alphonse Philippe, Bob Cornet.</li>
 <li>German by: Johannes Prost, Marco Steinhaeuser.</li>
-<li>Hungarian by: Nagy-Vajda Domokos.</li>
 <li>Italian by: Ambrogio Chiotti.</li>
+<li>Magyar by: Nagy-Vajda Domokos.</li>
 <li>Persian by: Dr. Maleki</li>
 <li>Polish by: Jaroslaw Bochenek</li>
 <li>Portugese: António Duarte</li>

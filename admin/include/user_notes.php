@@ -44,12 +44,22 @@ echo '<tr class="table_header"><th colspan="2">'.__('Notes').'</th></tr>';
 
 	echo '</td></tr>';
 
-	$limit=50; if (isset($_POST['limit']) AND is_numeric($_POST['limit'])) $limit=safe_text_db($_POST['limit']);
-	$user_notes=true; $editor_notes=false;
+	$limit=50; if (isset($_POST['limit']) AND is_numeric($_POST['limit'])){
+		$limit=safe_text_db($_POST['limit']);
+		$_SESSION['save_limit']=$limit;
+	}
+	$user_notes=true; $editor_notes=true;
 	if (isset($_POST['note_settings'])){
 		$user_notes=false; if (isset($_POST['user_notes'])) $user_notes=true;
+		$_SESSION['save_user_notes']=$user_notes;
+
 		$editor_notes=false; if (isset($_POST['editor_notes'])) $editor_notes=true;
+		$_SESSION['save_editor_notes']=$editor_notes;
 	}
+	if (isset($_SESSION['save_user_notes'])) $user_notes=$_SESSION['save_user_notes'];
+	if (isset($_SESSION['save_editor_notes'])) $editor_notes=$_SESSION['save_editor_notes'];
+	if (isset($_SESSION['save_limit']) AND is_numeric($_SESSION['save_limit'])) $limit=$_SESSION['save_limit'];
+
 	echo '<tr><td>'.__('Show notes').'</td>';
 	echo '<td>';
 		echo '<form method="POST" action="index.php" style="display : inline;">';
@@ -91,7 +101,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('Notes').'</th></tr>';
 
 		if ($_POST['note_status']=='remove'){
 			echo '<div class="confirm">';
-				echo __('Are you sure you want to remove this user note?');
+				echo __('Are you sure you want to remove this note?');
 			echo ' <form method="post" action="index.php" style="display : inline;">';
 			echo '<input type="hidden" name="page" value="user_notes">';
 			echo '<input type="hidden" name="tree" value="'.$tree_id.'">';
@@ -108,7 +118,7 @@ echo '<tr class="table_header"><th colspan="2">'.__('Notes').'</th></tr>';
 			// *** Delete source ***
 			$sql="DELETE FROM humo_user_notes WHERE note_id='".safe_text_db($_POST["note_id"])."'";
 			$result=$dbh->query($sql);
-			echo __('User note is removed.');
+			echo __('Note is removed.');
 		echo '</div>';
 	}
 
@@ -142,26 +152,34 @@ echo '<tr class="table_header"><th colspan="2">'.__('Notes').'</th></tr>';
 			$user_result = $dbh->query($user_qry);
 			$userDb=$user_result->fetch(PDO::FETCH_OBJ);
 
-			echo '<tr class="humo_color"><td>';
+			echo '<tr class="humo_color"><td style="min-width:200px">';
+
 				if ($noteDb->note_kind=='user'){
-					// *** Select status of message ***
-					echo '<form method="POST" action="index.php">';
-						echo '<input type="hidden" name="page" value="user_notes">';
-						echo '<input type="hidden" name="tree" value="'.$tree_id.'">';
-						echo '<input type="hidden" name="note_id" value="'.$noteDb->note_id.'">';
-						$note_status=''; if ($noteDb->note_status) $note_status=$noteDb->note_status;
-						echo '<select size="1" name="note_status">';
+					echo __('User note');
+				} else{
+					echo __('Editor note');
+				}
+
+				// *** Select status of message ***
+				echo '<form method="POST" action="index.php">';
+					echo '<input type="hidden" name="page" value="user_notes">';
+					echo '<input type="hidden" name="tree" value="'.$tree_id.'">';
+					echo '<input type="hidden" name="note_id" value="'.$noteDb->note_id.'">';
+					$note_status=''; if ($noteDb->note_status) $note_status=$noteDb->note_status;
+					echo '<select size="1" name="note_status">';
+						if ($noteDb->note_kind=='user'){
 							$selected='';
 							echo '<option value="new"'.$selected.'>'.__('New').'</option>';
 							$selected=''; if ($note_status=='approved') $selected=' SELECTED';
 							echo '<option value="approved"'.$selected.'>'.__('Approved').'</option>';
-							$selected=''; if ($note_status=='remove') $selected=' SELECTED';
-							echo '<option value="remove"'.$selected.'>'.__('Remove').'</option>';
-						echo '</select>';
-						echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';
-					echo '</form>';
-				}
-				else{
+						}
+						$selected=''; if ($note_status=='remove') $selected=' SELECTED';
+						echo '<option value="remove"'.$selected.'>'.__('Remove').'</option>';
+					echo '</select>';
+					echo ' <input type="Submit" name="submit_button" value="'.__('Select').'">';
+				echo '</form>';
+
+				if ($noteDb->note_kind!='user'){
 					echo __('Priority').': '.__($noteDb->note_priority).'<br>';
 					echo __('Status').': '.__($noteDb->note_status).'<br>';
 				}
@@ -172,8 +190,16 @@ echo '<tr class="table_header"><th colspan="2">'.__('Notes').'</th></tr>';
 				//echo '<b>'.$noteDb->note_names.'</b><br>';
 
 				// *** Link: index.php?page=editor&amp;tree_id=2_&amp;person=I313 ***
-				//echo '<b><a href="index.php?page=editor&amp;tree_id='.$tree_id.'&amp;person='.$noteDb->note_pers_gedcomnumber.'">'.$noteDb->note_pers_gedcomnumber.' '.$noteDb->note_names.'</a></b><br>';
-				echo '<b><a href="index.php?page=editor&amp;tree_id='.$tree_id.'&amp;person='.$noteDb->note_connect_id.'">'.$noteDb->note_connect_id.' '.$noteDb->note_names.'</a></b><br>';
+				if (substr($noteDb->note_connect_id,0,1)=='F'){
+					// *** Editor note by family ***
+					@$find_parent1Db = $db_functions->get_family($noteDb->note_connect_id);
+					if($find_parent1Db->fam_man!=""){
+						echo '<b><a href="index.php?page=editor&amp;tree_id='.$tree_id.'&amp;menu_tab=marriage&amp;person='.$find_parent1Db->fam_man.'&amp;marriage_nr='.$noteDb->note_connect_id.'">'.$noteDb->note_connect_id.' '.$noteDb->note_names.'</a></b><br>';
+					}
+				}else{
+					// *** Editor note by person ***
+					echo '<b><a href="index.php?page=editor&amp;tree_id='.$tree_id.'&amp;menu_tab=person&amp;person='.$noteDb->note_connect_id.'">'.$noteDb->note_connect_id.' '.$noteDb->note_names.'</a></b><br>';
+				}
 
 				echo nl2br($noteDb->note_note);
 			echo '</td></tr>';

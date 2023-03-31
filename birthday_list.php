@@ -40,6 +40,7 @@ else{
 	$month = date ("M");
 	$month=strtolower($month);
 }
+$show_month=language_date($month);
 
 // *** Calculate present date, month and year ***
 $today = date('j').' '.date('M');
@@ -91,37 +92,23 @@ echo ($url_start.'dec'.$url_end.'">'.__('dec')."</a>");
 echo " ]\n";
 
 // *** Show month and year ***
-echo "<div class='standard_header'>".ucfirst(language_date($month))." ".$year."</div>";
+echo '<div class="standard_header">'.ucfirst($show_month).' '.$year.'</div>';
 
 echo '<div>';
 echo "<form name='anniv' id='anniv' action='".CMS_ROOTPATH."birthday_list.php?month=".$month."' method='post'>";
 	echo "<table class='humo' style='text-align:center;width:40%;margin-left:auto;margin-right:auto;border:1px solid black;'><tr>";
-	$check = " checked"; 
-	if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] != 'birthdays') $check = "";
+	$check = ' checked'; 
+	if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] != 'birthdays') $check = '';
 	echo "<td style='border:none'><input id='birthd' onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='birthdays'".$check.">".__('Birthdays')."</td>";
-	//echo "&nbsp;&nbsp;&nbsp;";
-	$check = ""; 
+	$check = ''; 
 	if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] == 'wedding') $check = " checked";
 	echo "<td style='border:none'><input id='wedd' onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='wedding'".$check.">".__('Wedding anniversaries')."&nbsp;&nbsp;";
-	$check= " checked";
-	if(isset($_POST['ann_choice']) AND !isset($_POST['civil'])) $check = "";
+	$check= ' checked';
+	if(isset($_POST['ann_choice']) AND !isset($_POST['civil'])) $check = '';
 	echo "<span style='font-size:90%'>(<input type='checkbox' onClick='document.getElementById(\"wedd\").checked = true;document.getElementById(\"anniv\").submit();' name='civil' id='civil' value='civil'".$check.">".__('Civil');
-	$check= "";
+	$check= '';
 	if(isset($_POST['ann_choice']) AND isset($_POST['relig'])) $check = " checked";
 	echo "&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"wedd\").checked = true;document.getElementById(\"anniv\").submit();' name='relig' id='relig' value='relig'".$check.">".__('Religious').")</span></td>";
-	//echo "</td>";
-	/*
-	$check = ""; 
-	if(isset($_POST['ann_choice']) AND $_POST['ann_choice'] == 'wedding') $check = " checked";
-	echo "<td style='border:none'><input onClick='document.getElementById(\"anniv\").submit();' type='radio' name='ann_choice' value='wedding'".$check.">".__('Wedding anniversaries')."</td></tr>";
-	$check= " checked";
-	if(isset($_POST['ann_choice']) AND !isset($_POST['civil'])) $check = "";
-	echo "<tr><td style='border:none'></td>,<td style='border:none'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"anniv\").submit();' name='civil' id='civil' value='civil'".$check.">".__('Civil');
-	$check= "";
-	if(isset($_POST['ann_choice']) AND isset($_POST['relig'])) $check = " checked";
-	echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' onClick='document.getElementById(\"anniv\").submit();' name='relig' id='relig' value='relig'".$check.">".__('Religious')."</td>";
-	echo "</td>";
-	*/
 	echo '</tr></table>';
 echo '</form>';
 echo '</div><br>';
@@ -153,7 +140,7 @@ if(!isset($_POST['ann_choice']) OR $_POST['ann_choice']=="birthdays") {
 		$qry->bindValue(':month', $month, PDO::PARAM_STR);
 		$qry->execute();
 	}catch (PDOException $e) {
-		echo $e->getMessage() . "<br/>";
+		echo $e->getMessage() . '<br>';
 	}
 
 	while ($record=$qry->fetch(PDO::FETCH_OBJ)){
@@ -191,13 +178,13 @@ if(!isset($_POST['ann_choice']) OR $_POST['ann_choice']=="birthdays") {
 			}
 
 			if ($calendar_day==$last_cal_day)
-				echo "<td><br></td>";
+				echo '<td><br></td>';
 			else
-				echo "<td>$calendar_day $month</td>";
+				echo '<td>'.$calendar_day.' '.$show_month.'</td>';
 			$last_cal_day=$calendar_day;
 
 			if (!$person_cls->privacy)
-				echo "<td>".$record->birth_year."</td>";
+				echo '<td>'.$record->birth_year.'</td>';
 			else
 				echo '<td>'.__(' PRIVACY FILTER').'</td>';
 
@@ -225,14 +212,13 @@ else {
 
 	echo '<table class="humo" align="center">';
 	echo '<tr class=table_headline>'.$newline;
-	// *** Show headers ***
-	echo '<th>'.__('Day')."</h></td>\n";
-	echo '<th>'.ucfirst(__('Wedding year'))."</th>\n";
-	echo '<th>'.__('Civil/ Religious')."</h></td>\n";
-	echo '<th>'.__('Spouses')."</th>\n";
-
+		// *** Show headers ***
+		echo '<th>'.__('Day')."</h></td>\n";
+		echo '<th>'.ucfirst(__('Wedding year'))."</th>\n";
+		echo '<th>'.__('Civil/ Religious')."</h></td>\n";
+		echo '<th>'.__('Spouses')."</th>\n";
 	echo "</tr>\n";	
-	
+
 	$wed = Array();
 	$cnt=0;
 
@@ -245,7 +231,7 @@ else {
 		WHERE fam_tree_id = :tree_id AND (substring( fam_marr_date, 4,3) = :month
 		OR substring( fam_marr_date, 3,3) = :month)
 		order by marr_day, marr_year ";
-		
+
 		try {
 			$qry = $dbh->prepare( $sql );
 			$qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
@@ -277,7 +263,6 @@ else {
 		WHERE fam_tree_id = :tree_id AND (substring( fam_marr_church_date, 4,3) = :month
 		OR substring( fam_marr_church_date, 3,3) = :month)
 		order by marr_day, marr_year ";
-		
 		try {
 			$qry = $dbh->prepare( $sql );
 			$qry->bindValue(':tree_id', $tree_id, PDO::PARAM_STR);
@@ -285,7 +270,7 @@ else {
 			$ccc = $qry->execute();
 		}
 		catch (PDOException $e) {
-			echo $e->getMessage() . "<br/>";
+			echo $e->getMessage() . '<br>';
 		}
 		while ($record=$qry->fetch(PDO::FETCH_OBJ)) {
 			$wed[$cnt]['calday'] = $record->marr_day;
@@ -358,7 +343,7 @@ else {
 				if ($calendar_day==$last_cal_day)
 					echo '<td><br></td>';
 				else
-					echo "<td>$calendar_day $month</td>";
+					echo '<td>'.$calendar_day.' '.$show_month.'</td>';
 
 				$last_cal_day=$calendar_day;
 				if (!$man_cls->privacy AND !$woman_cls->privacy)
@@ -379,13 +364,13 @@ else {
 
 	}
 	else {
-		echo "<tr><td colspan='4'>".__('No results found for this month')."</td></tr>";
+		echo '<tr><td colspan="4">'.__('No results found for this month').'</td></tr>';
 	}
 	echo "</table>\n";
 
 	if($privcount) { echo "<br>".$privcount.__(' persons are not shown due to privacy settings').".<br>";}
 }
-echo "</div>";
+echo '</div>';
 
 include_once(CMS_ROOTPATH."footer.php");
 ?>

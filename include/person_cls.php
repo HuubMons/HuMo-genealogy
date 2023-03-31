@@ -813,7 +813,10 @@ function person_popup_menu($personDb, $extended=false, $replacement_text='',$ext
 					$text.='<table><tr><td style="width:auto; border: solid 0px; border-right:solid 1px #999999;">';
 
 				$text.= '<b>'.__('Text reports').':</b>';
-				$text.= $dirmark1.'<a href="'.$family_url.'"><img src="'.CMS_ROOTPATH.'images/family.gif" border="0" alt="'.__('Family group sheet').'"> '.__('Family group sheet').'</a>';
+				//$text.= $dirmark1.'<a href="'.$family_url.'"><img src="'.CMS_ROOTPATH.'images/family.gif" border="0" alt="'.__('Family group sheet').'"> '.__('Family group sheet').'</a>';
+				// *** If child doesn't have own family, directly jump to child in familyscreen using #child_I1234 ***
+				$direct_link=''; if ($personDb->pers_fams=='') $direct_link='#person_'.$personDb->pers_gedcomnumber;
+				$text.= $dirmark1.'<a href="'.$family_url.$direct_link.'"><img src="'.CMS_ROOTPATH.'images/family.gif" border="0" alt="'.__('Family group sheet').'"> '.__('Family group sheet').'</a>';
 
 				if  ($user['group_gen_protection']=='n' AND $personDb->pers_fams!='') {
 					// *** Only show a descendant_report icon if there are children ***
@@ -2434,7 +2437,6 @@ function person_data($person_kind, $id){
 		else {
 			$process_text.=witness_by_events($personDb->pers_gedcomnumber);
 		}
-
 
 	} //*** END PRIVACY PART ***
 

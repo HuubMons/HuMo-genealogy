@@ -145,9 +145,9 @@ if ($connect_sub_kind=='fam_text_source'){
 	echo source_edit("family","fam_text_source",$marriage);
 }
 
-// *** Edit source by family ***
+// *** Edit source by relation ***
 if ($connect_sub_kind=='family_source'){
-	show_source_header(__('Source').' - '.__('family'));
+	show_source_header(__('Source').' - '.__('relation'));
 	echo source_edit("family","family_source",$marriage);
 }
 
@@ -204,7 +204,8 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 	$text='';
 
 	//$text.= '<table class="humo standard" border="1">';
-	$text.= '<table class="humo" border="1">';
+	//$text.= '<table class="humo" border="1">';
+	$text.= '<table class="humo" border="1" style="width:750px">';
 
 	$text.='<form method="POST" action="'.$phpself2.'">';
 	$text.='<input type="hidden" name="page" value="'.$page.'">';
@@ -370,25 +371,35 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 				}
 				else{
 
+					$text.='<h3>'.__('Search existing source').'</h3>';
+
+					$source_search_gedcomnr=''; if (isset($_POST['source_search_gedcomnr'])){ $source_search_gedcomnr=safe_text_db($_POST['source_search_gedcomnr']); }
+					$text.='<input type="text" class="fonts" name="source_search_gedcomnr" value="'.$source_search_gedcomnr.'" size="20" placeholder="'.__('gedcomnumber (ID)').'">';
+
 					$source_search=''; if (isset($_POST['source_search'])){ $source_search=safe_text_db($_POST['source_search']); }
-					$text.='<input type="text" class="fonts" name="source_search" value="'.$source_search.'" size="20" placeholder="'.__('Search existing source').'">';
-					$text.=' <input class="fonts" type="submit" value="'.__('Search').'">';
+					$text.=' <input type="text" class="fonts" name="source_search" value="'.$source_search.'" size="20" placeholder="'.__('text').'">';
+
+					$text.=' <input class="fonts" type="submit" value="'.__('Search').'"><br>';
 
 					// *** Source: pull-down menu ***
 					//$source_qry=$dbh->query("SELECT * FROM humo_sources
 					//	WHERE source_tree_id='".safe_text_db($tree_id)."' AND source_shared='1' ORDER BY source_title");
 					$qry="SELECT * FROM humo_sources
 						WHERE source_tree_id='".safe_text_db($tree_id)."'";
+
+					if (isset($_POST['source_search_gedcomnr'])){
+						$qry.=" AND source_gedcomnr LIKE '%".safe_text_db($_POST['source_search_gedcomnr'])."%'";
+					}
+
 					if (isset($_POST['source_search'])){
 						$qry.=" AND ( source_title LIKE '%".safe_text_db($_POST['source_search'])."%' OR (source_title='' AND source_text LIKE '%".safe_text_db($source_search)."%') )";
 					}
-					//$qry.=" ORDER BY source_title";
 					$qry.=" ORDER BY IF (source_title!='',source_title,source_text)";
+					//$qry.=" ORDER BY IF (source_title!='',source_title,source_text) LIMIT 0,500";
 
 					$source_qry=$dbh->query($qry);
 
 					$text.='<select size="1" name="connect_source_id['.$connectDb->connect_id.']" style="width: 300px">';
-					//$text.='<option value="">'.__('Select shared source').':</option>';
 					$text.='<option value="">'.__('Select existing source').':</option>';
 					while ($sourceDb=$source_qry->fetch(PDO::FETCH_OBJ)){
 						$selected='';
@@ -396,7 +407,6 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 							if ($sourceDb->source_gedcomnr==$connectDb->connect_source_id){ $selected=' SELECTED'; }
 						}
 						$text.='<option value="'.@$sourceDb->source_gedcomnr.'"'.$selected.'>';
-							//@$sourceDb->source_title.' ['.@$sourceDb->source_gedcomnr.']</option>'."\n";
 							if ($sourceDb->source_title){
 								$text.=$sourceDb->source_title;
 							} else {
@@ -405,12 +415,15 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id){
 							}
 							$text.=' ['.@$sourceDb->source_gedcomnr.']</option>'."\n";
 					}
+
+					//$text.='<option value="">*** '.__('Results are limited, use search to find more sources.').' ***</option>';
+
 					$text.='</select>';
 
 					$text.= '&nbsp;&nbsp;<input type="submit" name="submit" title="submit" value="'.__('Select').'">';
 
 					// *** Add new source ***
-					$text.='<br>'.__('Or:').' ';
+					$text.='<br><br>'.__('Or:').' ';
 					$text.= '<a href="index.php?'.$joomlastring.'page='.$page.'
 					&amp;source_add2=1
 					&amp;connect_id='.$connectDb->connect_id.'

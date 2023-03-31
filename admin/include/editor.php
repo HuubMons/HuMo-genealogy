@@ -373,7 +373,8 @@ if (isset($tree_id)){
 								$pers_user='';
 								if ($person2->pers_new_user) $pers_user=' ['.__('Added by').': '.$person2->pers_new_user.']';
 								elseif ($person2->pers_changed_user) $pers_user=' ['.__('Changed by').': '.$person2->pers_changed_user.']';
-								echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).$pers_user.'</option>';
+								//echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.$editor_cls->show_selected_person($person2).$pers_user.'</option>';
+								echo '<option value="'.$person2->pers_gedcomnumber.'">'.$editor_cls->show_selected_person($person2).$pers_user.'</option>';
 							}
 						}
 					}
@@ -425,6 +426,7 @@ if (isset($tree_id)){
 						ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
 				";
 				*/
+
 				// *** December 2021: removed pers_callname from query ***
 				// *** January added by Chris: GROUP BY event_id. Otherwise no results in some cases? ***
 				$person_qry="
@@ -442,16 +444,45 @@ if (isset($tree_id)){
 						OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
 						OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($search_name)."%'
 						)
-						GROUP BY pers_id, event_event, event_kind, event_id
+						GROUP BY pers_id
 						ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
 				";
 
+				// Next line was before ORDER BY line. Doesn't work if only_full_group is disabled
+				//		GROUP BY pers_id, event_event, event_kind, event_id
+
+				// *** 27-03-2023: Improved for GROUP BY, there were double results ***
+				// *** Only get pers_id, otherwise GROUP BY doesn't work properly (double results) ***
+				//SELECT pers_gedcomnumber FROM humo_persons
+				//	GROUP BY pers_gedcomnumber
+				/*
+				$person_qry="
+					SELECT pers_id FROM humo_persons
+					LEFT JOIN humo_events
+					ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id 
+					WHERE pers_tree_id='".$tree_id."' AND
+						(
+						CONCAT(pers_firstname,REPLACE(pers_prefix,'_',' '),pers_patronym,pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+						OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".safe_text_db($search_name)."%' 
+						OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
+						OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".safe_text_db($search_name)."%'
+
+						OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($search_name)."%'
+						OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($search_name)."%' 
+						OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($search_name)."%' 
+						OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($search_name)."%'
+						)
+						GROUP BY pers_id
+						ORDER BY pers_lastname, pers_firstname, CAST(substring(pers_gedcomnumber, 2) AS UNSIGNED)
+				";
 				//echo $person_qry;
+				*/
 
 				$person_result = $dbh->query($person_qry);
+
 			}
 			elseif($search_id!='') {
-				// *** Heredis GEDCOM don't uses I, so don't add a I anymore! ***
+				// *** Heredis GEDCOM don't uses I, so don't add an I anymore! ***
 				// *** Make entry "48" into "I48" ***
 				//if(substr($search_id,0,1)!="i" AND substr($search_id,0,1)!="I") {
 				//	$search_id = "I".$search_id;
@@ -478,7 +509,6 @@ if (isset($tree_id)){
 				elseif($nr_persons==1) {
 					// *** Don't show pull-down menu if there is only 1 result ***
 					$person=$person_result->fetch(PDO::FETCH_OBJ);
-
 					$pers_gedcomnumber=$person->pers_gedcomnumber;
 					$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 					$selected=' SELECTED';
@@ -500,17 +530,23 @@ if (isset($tree_id)){
 						$counter=0;
 						$nr_persons=$person_result->rowCount();
 						while ($person=$person_result->fetch(PDO::FETCH_OBJ)){
+							// *** Get all person data ***
+// Probably not needed at this moment. Query contains all data.
+							//$person2 = $db_functions->get_person($person->pers_gedcomnumber);
+							$person2 = $db_functions->get_person_with_id($person->pers_id);
 							$selected='';
 							//if (isset($pers_gedcomnumber)){
 							if (!isset($_POST["search_quicksearch"]) AND isset($pers_gedcomnumber)){
-								if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
+								//if ($person->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
+								if ($person2->pers_gedcomnumber==$pers_gedcomnumber){ $selected=' SELECTED'; }
 							}
 
 							// *** Directly select first founded person! ***
 							$counter++;
 							//if ($counter==1 AND isset($_POST["search_quicksearch"])){
 							if ($nr_persons==1){
-								$pers_gedcomnumber=$person->pers_gedcomnumber;
+								//$pers_gedcomnumber=$person->pers_gedcomnumber;
+								$pers_gedcomnumber=$person2->pers_gedcomnumber;
 								$_SESSION['admin_pers_gedcomnumber']=$pers_gedcomnumber;
 								$selected=' SELECTED';
 
@@ -519,8 +555,10 @@ if (isset($tree_id)){
 								$marriage=$fams1[0];
 								$_SESSION['admin_fam_gedcomnumber']=$marriage;
 							}
-							echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
-								$editor_cls->show_selected_person($person).'</option>';
+							//echo '<option value="'.$person->pers_gedcomnumber.'"'.$selected.'>'.
+							//	$editor_cls->show_selected_person($person).'</option>';
+							echo '<option value="'.$person2->pers_gedcomnumber.'"'.$selected.'>'.
+								$editor_cls->show_selected_person($person2).'</option>';
 						}
 					echo '</select>';
 					echo '</form>';
@@ -993,7 +1031,7 @@ if ($check_person){
 	<style>
 	.source_iframe {
 		width:800px;
-		height:300px;
+		height:400px;
 	}
 	</style>';
 
@@ -1001,9 +1039,9 @@ if ($check_person){
 	$field_date=10;
 	$field_place=25;
 	$field_popup="width=800,height=500,top=100,left=50,scrollbars=yes";
-	$field_text='style="height: 18px; width:500px;"';
-	$field_text_medium='style="height: 45px; width:500px;"';
-	$field_text_large='style="height: 100px; width:500px"';
+	$field_text='style="height: 18px; width:550px;"';
+	$field_text_medium='style="height: 45px; width:550px;"';
+	$field_text_large='style="height: 100px; width:550px"';
 
 	// *** Script voor expand and collapse of items ***
 	// Script is used for person, family AND source editor.
@@ -2915,11 +2953,11 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				<textarea rows="1" placeholder="'.__('text').'" name="fam_div_text" '.$field_text_selected.'>'.$fam_div_text.'</textarea></td>';
 			echo '<td></td></tr>';
 
-			// *** General text by marriage ***
-			echo '<tr class="humo_color"><td><a name="fam_text"></a>'.__('Text by marriage').'</td>';
+			// *** General text by relation ***
+			echo '<tr class="humo_color"><td><a name="fam_text"></a>'.__('Text by relation').'</td>';
 			echo '<td style="border-right:0px;"></td>';
 			echo '<td style="border-left:0px;">';
-			echo '<textarea rows="1" placeholder="'.__('Text by marriage').'" name="fam_text"'.$field_text_large.'>'.$fam_text.'</textarea>';
+			echo '<textarea rows="1" placeholder="'.__('Text by relation').'" name="fam_text"'.$field_text_large.'>'.$fam_text.'</textarea>';
 				echo '</td><td>';
 				// *** Source by text ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
@@ -2930,9 +2968,9 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Show source by relation in iframe ***
 			echo iframe_source('606','','fam_text_source','');
 
-			// *** Family sources in new person editor screen ***
+			// *** Relation sources in new person editor screen ***
 			if (isset($marriage) AND !isset($_GET['add_marriage'])){
-				echo '<tr><td><a name="fam_source"></a>'.__('Source by marriage').'</td><td colspan="2">';
+				echo '<tr><td><a name="fam_source"></a>'.__('Source by relation').'</td><td colspan="2">';
 				echo '</td><td>';
 					//source_link('relation',$marriage,'family_source');
 					echo source_link2('607',$marriage,'family_source','fam_source');
@@ -4191,7 +4229,7 @@ function witness_edit($event_text, $witness, $multiple_rows=''){
 	// *** Witness: text field ***
 	$witness_value=$witness;
 	if (substr($witness,0,1)=='@'){ $witness_value=''; }
-	$text.=' <b>'.__('or').':</b> <input type="text" '.$style.' name="text_event'.$multiple_rows.'" value="'.htmlspecialchars($witness_value).'" placeholder="'.$event_text.'" size="40">';
+	$text.=' <b>'.__('or').':</b> <input type="text" '.$style.' name="text_event'.$multiple_rows.'" value="'.htmlspecialchars($witness_value).'" placeholder="'.$event_text.'" size="44">';
 
 	return $text;
 }
@@ -4737,9 +4775,11 @@ function cache_latest_changes($force_update=false){
 		$person_qry= "(SELECT pers_id, STR_TO_DATE(pers_changed_date,'%d %b %Y') AS changed_date, pers_changed_time as changed_time
 			FROM humo_persons
 			WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NOT NULL AND pers_changed_date!='')";
+
 		$person_qry.= " UNION (SELECT pers_id, STR_TO_DATE(pers_new_date,'%d %b %Y') AS changed_date, pers_new_time as changed_time
 			FROM humo_persons
 			WHERE pers_tree_id='".$tree_id."' AND pers_changed_date IS NULL) ";
+
 		$person_qry.= " ORDER BY changed_date DESC, changed_time DESC LIMIT 0,15";
 		$person_result = $dbh->query($person_qry);
 		$count_latest_changes=$person_result->rowCount();

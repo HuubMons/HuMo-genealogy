@@ -1726,6 +1726,7 @@ protected function _putpage($n)
 					$h = $this->PageInfo[$l[0]]['size'][1];
 				else
 					$h = ($this->DefOrientation=='P') ? $this->DefPageSize[1]*$this->k : $this->DefPageSize[0]*$this->k;
+
 				$annots .= sprintf('/Dest [%d 0 R /XYZ 0 %.2F null]>>',$this->PageInfo[$l[0]]['n'],$h-$l[1]*$this->k);
 			}
 		}

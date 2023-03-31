@@ -1387,16 +1387,17 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		// *** Upload image ***
 		//$text.='<tr style="display:none;" class="row53" name="row53"><td class="table_header_large" colspan="4">';
 		$text.='<tr><td class="table_header_large" colspan="4">';
-			//$text.=__('Upload new image (max: pic 2MB) or media (max: 49 MB):').' <input type="file" name="photo_upload">';
-			$text.=sprintf(__('Upload new image. Picture max: %1$d MB or media max: %2$d MB.'), '2', '49');
+			//$text.=sprintf(__('Upload new image. Picture max: %1$d MB or media max: %2$d MB.'), '2', '49');
+			$text.=__('Upload new image');
 			$text.=' <input type="file" name="photo_upload">';
 			if ($event_kind=='picture')
-				$text.='<input type="submit" name="person_event_change" title="submit" value="'.__('Upload').'">';
+				//$text.='<input type="submit" name="person_event_change" title="submit" value="'.__('Upload').'">';
+				$text.='<input type="submit" name="person_add_media" title="submit" value="'.__('Upload').'">';
 			else
-				$text.='<input type="submit" name="marriage_event_change" title="submit" value="'.__('Upload').'">';
+				//$text.='<input type="submit" name="marriage_event_change" title="submit" value="'.__('Upload').'">';
+				$text.='<input type="submit" name="relation_add_media" title="submit" value="'.__('Upload').'">';
 		$text.='</td></tr>';
 	}
-
 
 	// *** Show events if save or arrow links are used ***
 	if (isset($_GET['event_person']) OR isset($_GET['event_family']) OR isset($_GET['event_add'])){

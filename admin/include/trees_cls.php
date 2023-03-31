@@ -1612,9 +1612,9 @@ function show_pair($left_id,$right_id,$mode) {
 	echo '<td>'.$children2.'</td></tr>';
 	echo '</table>';
 }
-//*************************************************************************************************************
-//****** show_regular is a function that places the regular items from humoX_person in the comparison table **
-//*************************************************************************************************************
+//************************************************************************************************************
+//****** show_regular is a function that places the regular items from humo_persons in the comparison table **
+//************************************************************************************************************
 function show_regular ($left_item,$right_item,$title,$name) {
 	global $dbh, $language, $color;
 	if($left_item OR $right_item) {
@@ -1757,7 +1757,7 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 				if(substr($value,0,2)=='@I') {  // this is a person GEDCOM number, not plain text -> show the name
 					$value = str_replace('@','',$value);
 					$result = $dbh->query("SELECT pers_lastname, pers_firstname
-						FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber = '".$value."'");
+						FROM humo_persons WHERE pers_tree_id='".$data2Db->tree_id."' AND pers_gedcomnumber = '".$value."'");
 					$resultDb = $result->fetch(PDO::FETCH_OBJ);
 					$value = $resultDb->pers_firstname.' '.$resultDb->pers_lastname;
 				}
@@ -1781,7 +1781,7 @@ function put_event($this_event,$name_event,$l_ev,$r_ev) {
 				if(substr($value,0,2)=='@I') {  // this is a person gedcom number, not plain text
 					$value = str_replace('@','',$value);
 					$result = $dbh->query("SELECT pers_lastname, pers_firstname
-						FROM humo_persons WHERE pers_tree_id='".$tree_id."' AND pers_gedcomnumber = '".$value."'");
+						FROM humo_persons WHERE pers_tree_id='".$data2Db->tree_id."' AND pers_gedcomnumber = '".$value."'");
 					$resultDb = $result->fetch(PDO::FETCH_OBJ);
 					$value = $resultDb->pers_firstname.' '.$resultDb->pers_lastname;
 				}

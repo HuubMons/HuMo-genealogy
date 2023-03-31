@@ -154,7 +154,11 @@ function show_person($personDb){
 	// *** Show name of person ***
 	// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
 	$start_url=$person_cls->person_url2($personDb->pers_tree_id,$personDb->pers_famc,$personDb->pers_fams,$personDb->pers_gedcomnumber);
-	echo ' <a href="'.$start_url.'">'.trim($index_name).'</a>';
+
+	//echo ' <a href="'.$start_url.'">'.trim($index_name).'</a>';
+	// *** If child doesn't have own family, directly jump to child in familyscreen using #child_I1234 ***
+	$direct_link=''; if ($personDb->pers_fams=='') $direct_link='#person_'.$personDb->pers_gedcomnumber;
+	echo ' <a href="'.$start_url.$direct_link.'">'.trim($index_name).'</a>';
 
 	//*** Show spouse/ partner ***
 	if ($list_expanded==true AND $personDb->pers_fams){
@@ -185,7 +189,6 @@ function show_person($personDb){
 			}
 
 			if ($nr_marriages>1 and $x>0) echo ',';
-			//echo ' <span class="index_partner" style="font-size:10px;">';
 			echo ' <span class="index_partner">';
 			if ($nr_marriages>1){
 				if ($x==0) echo __('1st');
@@ -325,7 +328,7 @@ if ($selectsort){
 	}
 
 	if($selectsort=="sort_birthdate") {
-		
+
 		// *** Replace ABT, AFT, BEF, EST, CAL and BET...AND items and sort by birth or baptise date ***
 		$make_date= ", CASE
 			WHEN pers_birth_date = '' AND SUBSTR(CONCAT(' ',pers_bapt_date),-4,1)= ' ' THEN 
@@ -785,6 +788,7 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 
 	$add_address_qry=false;
 	$add_event_qry=false;
+	$add_text_qry=false;
 
 	if ($selection['pers_lastname']) {
 		if ($selection['pers_lastname']==__('...')){
@@ -898,7 +902,12 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	}
 
 	if ($selection['text']){
-		$query.=$and."pers_text ".name_qry($selection['text'], $selection['part_text']); $and=" AND ";
+		//$query.=$and."pers_text ".name_qry($selection['text'], $selection['part_text']); $and=" AND ";
+
+		// *** Search in person and family text ***
+		$query.=$and."(pers_text ".name_qry($selection['text'], $selection['part_text'])."
+		OR fam_text ".name_qry($selection['text'], $selection['part_text']).")"; $and=" AND ";
+		$add_text_qry=true;
 	}
 
 	if ($selection['pers_place']){
@@ -992,15 +1001,13 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	$query_select.=" ORDER BY ".$orderby;
 	$query=$query_select;
 	*/
-
 	// *** Build query, only add events and addresses tables if necessary ***
 	// *** Aug. 2017: renewed querie because of > MySQL 5.7 ***
 	$query_select="SELECT SQL_CALC_FOUND_ROWS humo_persons2.*, humo_persons1.pers_id";
 
-	if ($add_event_qry)
-		$query_select .= ", event_event, event_kind";
-	if ($add_address_qry)
-		$query_select .= ", address_place, address_zip";
+	if ($add_event_qry) $query_select .= ", event_event, event_kind";
+	if ($add_address_qry) $query_select .= ", address_place, address_zip";
+	if ($add_text_qry) $query_select .= ", fam_text";
 
 	if ($user['group_kindindex']=="j"){
 		// *** Change ordering of index, using concat name ***
@@ -1014,6 +1021,8 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		SELECT pers_id";
 		if ($add_event_qry) $query_select .= ", event_event, event_kind";
 		if ($add_address_qry) $query_select .= ", address_place, address_zip";
+		if ($add_text_qry) $query_select .= ", fam_text";
+
 		$query_select .= " FROM humo_persons";
 
 		if ($add_event_qry){
@@ -1039,6 +1048,13 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 			OR address_gedcomnr=connect_item_id
 			AND address_tree_id=connect_tree_id
 			AND connect_connect_id=pers_gedcomnumber";
+		}
+
+		if ($add_text_qry){
+//AND fam_text LIKE '_%'
+			$query_select .= " LEFT JOIN humo_families
+			ON fam_tree_id=pers_tree_id
+			AND (fam_man=pers_gedcomnumber OR fam_woman=pers_gedcomnumber)";
 		}
 
 		$query_select.=" WHERE (".$multi_tree.") ".$query." GROUP BY pers_id";
@@ -1153,34 +1169,36 @@ if ($index_list=='quicksearch'){
 	*/
 
 	// *** Nov. 2022: changed first patronymic line ***
-	$query.="
-	SELECT SQL_CALC_FOUND_ROWS CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name, humo_persons2.*, humo_persons1.pers_id, event_event, event_kind
-	".$make_date."
-	FROM humo_persons as humo_persons2
-	RIGHT JOIN 
-	(
-		SELECT pers_id, event_event, event_kind
-		FROM humo_persons
-		LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
-		WHERE (".$multi_tree.")
-			AND 
-			( CONCAT(pers_firstname,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
-			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".safe_text_db($quicksearch)."%' 
-			OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
-			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".safe_text_db($quicksearch)."%'
-			OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
-			OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($quicksearch)."%' 
-			OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
-			OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($quicksearch)."%'
-			)
-		GROUP BY pers_id, event_event, event_kind
-	) as humo_persons1
-	ON humo_persons1.pers_id = humo_persons2.pers_id
+	$query.="SELECT SQL_CALC_FOUND_ROWS CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,
+		humo_persons2.*, humo_persons1.pers_id, event_event, event_kind
+		".$make_date."
+		FROM humo_persons as humo_persons2
+		RIGHT JOIN 
+		(
+			SELECT pers_id, event_event, event_kind
+			FROM humo_persons
+			LEFT JOIN humo_events ON event_connect_id=pers_gedcomnumber AND event_kind='name' AND event_tree_id=pers_tree_id
+			WHERE (".$multi_tree.")
+				AND 
+				( CONCAT(pers_firstname,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
+				OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),pers_firstname) LIKE '%".safe_text_db($quicksearch)."%' 
+				OR CONCAT(pers_patronym,pers_lastname,pers_firstname,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
+				OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,pers_firstname) LIKE '%".safe_text_db($quicksearch)."%'
+				OR CONCAT(event_event,pers_patronym,REPLACE(pers_prefix,'_',' '),pers_lastname) LIKE '%".safe_text_db($quicksearch)."%'
+				OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($quicksearch)."%' 
+				OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
+				OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($quicksearch)."%'
+				)
+			GROUP BY pers_id, event_event, event_kind
+		) as humo_persons1
+		ON humo_persons1.pers_id = humo_persons2.pers_id
 	";
-
 	// *** Prevent double results (if there are multiple nick names) ***
+	// *** 31-03-2023 BE AWARE: disabled option ONLY_GROUP_BY in header.php ***
 	$query.=" GROUP BY humo_persons1.pers_id";
-
+	// *** Added event_event and event_kind for some PHP/MySQL providers... ***
+	// IF USED THERE ARE DOUBLE RESULTS IN SEARCH LIST:
+	//$query.=" GROUP BY humo_persons1.pers_id, event_event, event_kind";
 	$query.=" ORDER BY ".$orderby;
 }
 
@@ -1387,7 +1405,7 @@ if ($index_list=='places'){
 
 //*** Patronym list ***
 if ($index_list=='patronym'){
-	//Only in pers_patronym index if there is no pers_lastname!
+	// *** Only in pers_patronym index if there is no pers_lastname! ***
 	$query = "SELECT SQL_CALC_FOUND_ROWS * ".$make_date." FROM humo_persons
 		WHERE pers_tree_id='".$tree_id."' AND pers_patronym LIKE '_%' AND pers_lastname='' ORDER BY ".$orderby;
 }
@@ -1399,15 +1417,16 @@ if ($index_list=='patronym'){
 	// *** Standard index ***
 	if ($query=='' OR $index_list=='standard'){
 		$query = "SELECT * ".$make_date." FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY ".$orderby;
-		$count_qry = "SELECT COUNT(*) as teller ".$make_date." FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 
 		// Mons, van or: van Mons
 		if ($user['group_kindindex']=="j"){
 			$query= "SELECT *, CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ".$make_date."
 				FROM humo_persons WHERE pers_tree_id='".$tree_id."' ORDER BY ".$orderby;
-			$count_qry = "SELECT COUNT(*) as teller ".$make_date."
-				FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
 		}
+
+		//$count_qry = "SELECT COUNT(*) as teller ".$make_date." FROM humo_persons WHERE pers_tree_id='".$tree_id."'";
+		// *** 31-03-2023 GROUP BY option is needed for COUNT: added GROUP BY and removed $make_date (not necessary) ***
+		$count_qry = "SELECT COUNT(pers_tree_id) as teller, pers_tree_id FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_tree_id";
 	}
 
 	include_once(CMS_ROOTPATH."menu.php");
@@ -1421,7 +1440,6 @@ if ($index_list=='patronym'){
 	$nr_persons=$humo_option['show_persons'];
 
 	if(!$selection['spouse_firstname'] AND !$selection['spouse_lastname'] AND $selection['parent_status']!="motheronly" AND $selection['parent_status']!="fatheronly") {
-
 		$person_result = $dbh->query($query." LIMIT ".$item.",".$nr_persons);
  
 		if ($count_qry){
@@ -1434,7 +1452,7 @@ if ($index_list=='patronym'){
 			// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
 			$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
 			$rows = $result->fetch();
-			$count_persons = $rows['found_rows'];   
+			$count_persons = $rows['found_rows'];
 		}
 	}
 	else{
@@ -1663,7 +1681,8 @@ if ($index_list=='patronym'){
 			$select_item=''; if ($selection['part_text']=='starts_with'){ $select_item=' selected'; }
 			echo '<option value="starts_with"'.$select_item.'>'.__('Starts with').'</option>';
 			echo '</select>';
-			echo ' <input type="text" name="text" value="'.safe_text_show($selection['text']).'" size="15" placeholder="'.__('Text by person').'">';
+			//echo ' <input type="text" name="text" value="'.safe_text_show($selection['text']).'" size="15" placeholder="'.__('Text by person').'">';
+			echo ' <input type="text" name="text" value="'.safe_text_show($selection['text']).'" size="15" placeholder="'.__('Text').'">';
 			echo '</td>';
 
 			echo '</tr>';
@@ -1778,15 +1797,6 @@ if ($index_list=='patronym'){
 		// *** Check for multiple family trees ***
 		echo '<tr><td colspan="3" class="no_border center">';
 
-		// *** Reset form ***
-		if ($adv_search==true){
-			// *** Don't use standard reset. If a search is allready done, this doesn't work! ***
-			//echo '<input type="reset" value="'.__('Clear fields').'">&nbsp;&nbsp;';
-
-			// *** Only used in Advanced search. A standard reset HTML button doesn't work if search is allready done! ***
-			echo '<input type="Submit" name="reset_all" value="'.__('Clear fields').'">';
-		}
-
 		$datasql2 = $dbh->query("SELECT * FROM humo_trees");
 		$num_rows2 = $datasql2->rowCount();
 		if ($num_rows2>1 AND $humo_option['one_name_study']=='n'){
@@ -1801,6 +1811,15 @@ if ($index_list=='patronym'){
 			echo '<input type="hidden" name="search_database" value="all_trees">';
 		}
 		echo '&nbsp;&nbsp; <input type="submit" value="'.__('Search').'" name="B1">';
+
+		// *** Reset form ***
+		if ($adv_search==true){
+			// *** Don't use standard reset. If a search is allready done, this doesn't work! ***
+			//echo '<input type="reset" value="'.__('Clear fields').'">&nbsp;&nbsp;';
+
+			// *** Only used in Advanced search. A standard reset HTML button doesn't work if search is allready done! ***
+			echo ' <input type="Submit" name="reset_all" value="'.__('Clear fields').'">';
+		}
 
 		if ($adv_search==true){
 
@@ -2034,13 +2053,10 @@ if ($index_list=='patronym'){
 	}
 
 	while (@$personDb = $person_result->fetch(PDO::FETCH_OBJ)) {
+//while (@$person1Db = $person_result->fetch(PDO::FETCH_OBJ)) {
 
-		//TEST MYSQL 5.7
-		//$query="SELECT * FROM humo_persons WHERE pers_tree_id='".$personDb->pers_tree_id."' AND pers_gedcomnumber='".$personDb->pers_gedcomnumber."'";
-//		$query="SELECT * FROM humo_persons WHERE pers_id='".$personDb->pers_id."'";
-//		$person2_result = $dbh->query($query);
-//		$person2Db = $person2_result->fetch(PDO::FETCH_OBJ);
-
+// *** Preparation for second query. Needed to solve GROUP BY problems ***
+//$personDb = $db_functions->get_person_with_id($person1Db->pers_id);
 
 		$spouse_found='1';
 
@@ -2088,8 +2104,6 @@ if ($index_list=='patronym'){
 				$spouseDb= $spouse_result->fetch(PDO::FETCH_OBJ);
 				if (isset($spouseDb->pers_id)){ $spouse_found='1'; break; }
 			}
-
-
 		}  // End of spouse search
 
 		// *** Search parent status (no parents, only mother, only father) ***

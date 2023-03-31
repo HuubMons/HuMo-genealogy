@@ -1003,7 +1003,7 @@ else{
 
 	$api_key = '';
 	if(isset($humo_option['google_api_key']) AND $humo_option['google_api_key']!='') {
-		$api_key = "?key=".$humo_option['google_api_key']; //echo "http://maps.googleapis.com/maps/api/js".$api_key;
+		$api_key = '?key='.$humo_option['google_api_key'].'&callback=Function.prototype'; //echo "http://maps.googleapis.com/maps/api/js".$api_key;
 	}
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 		echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';

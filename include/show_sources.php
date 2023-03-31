@@ -50,6 +50,7 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 					$source_footnotes[]=$sourceDb->source_id;
 					$pdf_footnotes[] = $pdf->AddLink();
 					$pdf_source[safe_text_db($connectDb->connect_source_id)]=safe_text_db($connectDb->connect_source_id);
+//echo 'TEST'.$connectDb->connect_source_id;
 				}
 
 				// *** Show text "Source by person/Sources by person" ***
@@ -63,17 +64,19 @@ function show_sources2($connect_kind,$connect_sub_kind,$connect_connect_id){
 				}
 
 				// *** Check if source is allready listed in the sourcelist ***
-				$j=array_search($sourceDb->source_id, $source_footnotes);
-				if (!$j){
+				if (!in_array($sourceDb->source_id, $source_footnotes)){
 					// *** Add source in sourcelist ***
 					$pdf_source[safe_text_db($connectDb->connect_source_id)]=safe_text_db($connectDb->connect_source_id);
 					$pdf_footnotes[] = $pdf->AddLink();
 					$source_footnotes[]=$sourceDb->source_id;
 
 					$j=array_key_last($source_footnotes);
+					$j++;
 				}
 				else{
-					$j=$j++;
+					// *** Link to existing source ***
+					$j=array_search($sourceDb->source_id, $source_footnotes);
+					$j++;
 				}
 
 				// *** New source (in footnotes) ***

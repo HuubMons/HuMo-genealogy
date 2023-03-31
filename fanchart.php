@@ -382,8 +382,8 @@ function print_fan_chart($treeid, $fanw=840, $fandeg=270) {
 						$text2 .= substr($birthyr,-4)." - ".substr($deathyr,-4);
 					}
 					else {  // full dates
-						if($birthyr) { $text2 .= "b.".$birthyr."\n"; }
-						if($deathyr) { $text2 .= "d.".$deathyr; }
+						if($birthyr) { $text2 .= "b.".language_date($birthyr)."\n"; }
+						if($deathyr) { $text2 .= "d.".language_date($deathyr); }
 					}
 				}
 

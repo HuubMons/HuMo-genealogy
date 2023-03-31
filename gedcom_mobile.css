@@ -100,14 +100,27 @@ ul.humo_menu_item2 li a{
 	width:90%;
 }
 
-/* Double column for country flags in full version */
+/* Single column for country flags in mobile version */
 #m4x{
 	width:100px;
+	width:20px;
 }
 #m4x ul li {
 	width:100px;
+	width:30px;
 }
 
+/* Main menu */
+ul.humo_menu_item li a{
+	/* up, right, bottom */
+	/* padding:8px 8px 7px 8px; */
+	padding:8px 2px 7px 2px;
+}
+/* Pop-up menu */
+ul.humo_menu_item2 li a{
+	/* padding:8px 5px 6px 5px; */
+	padding:4px 5px 4px 5px;
+}
 
 table.index_table{
 	width:100%;

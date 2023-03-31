@@ -41,16 +41,20 @@ $persids = array(); $famsids = array(); $noteids = array();
 
 echo '<h1 class="center">'.__('GEDCOM file export').'</h1>';
 
-$myFile = CMS_ROOTPATH_ADMIN."backup_tmp/gedcom.ged";
+// *** Name of GEDCOM file: 2023_02_10_12_55_tree_x.ged ***
+//$gedcom_file_name=date('Y_m_d_H_i').'_gedcom.ged';
+$gedcom_file_name=date('Y_m_d_H_i').'_tree_'.$tree_id.'.ged';
+$myFile = CMS_ROOTPATH_ADMIN.'gedcom_files/'.$gedcom_file_name;
+
 // *** FOR TESTING PURPOSES ONLY ***
-if (@file_exists("../../gedcom-bestanden")) $myFile="../../gedcom-bestanden/gedcom.ged";
-if (@file_exists("../../../gedcom-bestanden")) $myFile="../../../gedcom-bestanden/gedcom.ged";
+if (@file_exists("../../gedcom-bestanden")) $myFile='../../gedcom-bestanden/'.$gedcom_file_name;
+if (@file_exists("../../../gedcom-bestanden")) $myFile='../../../gedcom-bestanden/'.$gedcom_file_name;
 
 // *** Remove GEDCOM file ***
-if (isset($_POST['remove_gedcom'])){
-	unlink($myFile);
-	echo '<h2>'.__('GEDCOM file is REMOVED.').'</h2>';
-}
+//if (isset($_POST['remove_gedcom'])){
+//	unlink($myFile);
+//	echo '<h2>'.__('GEDCOM file is REMOVED.').'</h2>';
+//}
 
 echo '<b>'.__('Don\'t use a GEDCOM file as a backup for your genealogical data!').'</b><br>';
 echo __('A GEDCOM file is only usefull to exchange genealogical data with other genealogical programs.').'<br>';
@@ -424,12 +428,12 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		ancestors($anc_pers,$max_gens);
 	}
 
-	echo '<p>'.__('GEDCOM file will be exported to backup_tmp/ folder').'<br>';
+	echo '<p>'.__('GEDCOM file will be exported to gedcom_files/ folder').'<br>';
 	$gedcom_version='551'; if (isset($_POST['gedcom_version'])) $gedcom_version=$_POST['gedcom_version'];
 	$gedcom_char_set=''; if (isset($_POST['gedcom_char_set'])) $gedcom_char_set=$_POST['gedcom_char_set'];
 	$gedcom_texts=''; if (isset($_POST['gedcom_texts'])) $gedcom_texts=$_POST['gedcom_texts'];
 	$gedcom_sources=''; if (isset($_POST['gedcom_sources'])) $gedcom_sources=$_POST['gedcom_sources'];
-	$fh = fopen($myFile, 'w') or die("<b>ERROR: no permission to open a new file! Please check permissions of admin/backup_tmp folder!</b>");
+	$fh = fopen($myFile, 'w') or die("<b>ERROR: no permission to open a new file! Please check permissions of admin/gedcom_files folder!</b>");
 
 	// *** GEDCOM header ***
 	$buffer='';
@@ -1530,8 +1534,10 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 	echo '<p>'.__('GEDCOM file is generated').'<br>';
 
 	echo '<form method="POST" action="include/gedcom_download.php" target="_blank">';
-	echo ' <input type="Submit" name="something" value="'.__('Download GEDCOM file').'">';
-	echo '<input type="hidden" name="page" value="'.$page.'">';
+		echo ' <input type="Submit" name="something" value="'.__('Download GEDCOM file').'">';
+		echo '<input type="hidden" name="page" value="'.$page.'">';
+		echo '<input type="hidden" name="file_name" value="'.$myFile.'">';
+		echo '<input type="hidden" name="file_name_short" value="'.$gedcom_file_name.'">';
 	echo '</form><br>';
 
 	if (CMS_SPECIFIC=='Joomla'){
@@ -1541,12 +1547,10 @@ if (isset($tree_id) AND isset($_POST['submit_button'])){
 		echo '<form method="POST" action="index.php">';
 	}
 
-	echo ' <input type="Submit" name="remove_gedcom" value="'.__('Remove GEDCOM file').'">';
-	echo '<input type="hidden" name="page" value="'.$page.'">';
-	echo '</form>';
-
+	//echo ' <input type="Submit" name="remove_gedcom" value="'.__('Remove GEDCOM file').'">';
+	//echo '<input type="hidden" name="page" value="'.$page.'">';
+	//echo '</form>';
 } // end of tree
-
 
 
 function decode($buffer){

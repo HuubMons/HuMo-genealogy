@@ -26,6 +26,21 @@ echo '<h1 class="center">';
 	printf(__('%s backup'),'HuMo-genealogy');
 echo '</h1>';
 
+// *** Upload backup file ***
+if(isset($_POST['upload_the_file'])) {
+	if(substr($_FILES['upload_file']['name'],-4)==".sql" OR substr($_FILES['upload_file']['name'],-8)==".sql.zip") {
+		if (move_uploaded_file($_FILES['upload_file']['tmp_name'], './backup_files/'.$_FILES['upload_file']['name'])) {
+			// file was successfully uploaded...
+		}
+		else {
+			echo '<span style="color:red;font-weight:bold">'.__('Upload has failed</span> (you may wish to try again or choose to place the file in the admin/backup_files folder yourself with an ftp program or the control panel of your webhost)').'<br>';
+		}
+	}
+	else {
+		echo '<span style="color:red;font-weight:bold">'.__('Invalid backup file: has to be file with extension ".sql" or ".sql.zip"').'</span><br>';
+	}
+}
+
 // *** CREATE BACKUP FILE *** 
 echo '<table class="humo standard" style="width:800px;" border="1">';
 
@@ -80,39 +95,27 @@ echo '<tr><td>';
 printf(__('Here you can restore your entire database from a backup made with %s (if available) or from a .sql or .sql.zip backup file on your computer.'),'HuMo-genealogy');
 echo '<br>';
 
-echo '<h3>'.__('Optional: upload a database backup file').'</h3>';
+	// *** Upload backup file ***
+	if (!isset($_POST['restore_server'])){
+		echo '<h3>'.__('Optional: upload a database backup file').'</h3>';
+
+		echo ' <form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
+			echo '<input type="file" id="upload_file" name="upload_file">';
+			echo " <input type='submit' style='margin-top:4px' name='upload_the_file' value='".__('Upload')."'><br>";
+		echo '</form>';
+	}
 
 	if ($backup_count>0){
-
 		if(isset($_POST['restore_server'])) {
 			$restore_file='backup_files/'.$_POST['select_file'];
 			if (is_file($restore_file)){
 				// *** restore from backup on server made by HuMo-genealogy backup ***
-				echo '<span style="color:red">'.__('Starting to restore database. This may take some time. Please wait...').'</span><br>';
+				echo '<br><span style="color:red">'.__('Starting to restore database. This may take some time. Please wait...').'</span><br>';
 				if(is_file($restore_file)) {
 					restore_tables($restore_file);
 				}
 			}
 		}
-
-		// *** Upload backup file ***
-		if(isset($_POST['upload_the_file'])) {
-			if(substr($_FILES['upload_file']['name'],-4)==".sql" OR substr($_FILES['upload_file']['name'],-8)==".sql.zip") {
-				if (move_uploaded_file($_FILES['upload_file']['tmp_name'], './backup_files/'.$_FILES['upload_file']['name'])) {
-					// file was successfully uploaded...
-				}
-				else {
-					echo '<span style="color:red;font-weight:bold">'.__('Upload has failed</span> (you may wish to try again or choose to place the file in the admin/backup_files folder yourself with an ftp program or the control panel of your webhost)').'<br>';
-				}
-			}
-			else {
-				echo '<span style="color:red;font-weight:bold">'.__('Invalid backup file: has to be file with extension ".sql" or ".sql.zip"').'</span><br>';
-			}
-		}
-		echo ' <form name="uploadform2" enctype="multipart/form-data" action="index.php?page=backup" method="post">';
-			echo '<input type="file" id="upload_file" name="upload_file">';
-			echo " <input type='submit' style='margin-top:4px' name='upload_the_file' value='".__('Upload')."'><br>";
-		echo '</form>';
 
 		echo '<h3>'.__('Restore database from backup file').'</h3>';
 
