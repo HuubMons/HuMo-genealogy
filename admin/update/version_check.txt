@@ -4,7 +4,7 @@ version=6.1.1.1
 version_date=2023-03-31
 version_download=http://sourceforge.net/projects/humo-gen
 version_auto_download=http://humo-gen.com/update/humo-gen_update.zip
-//version_auto_download_github=https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip
+new_version_auto_download_github=https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip
 
 // Beta version
 beta_version=2019-11-28
