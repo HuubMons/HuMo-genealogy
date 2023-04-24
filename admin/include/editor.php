@@ -1058,11 +1058,12 @@ if ($check_person){
 			}
 		}
 
+		// *** April 2023: disabled [+] and [-] links ***
 		// *** Change [+] into [-] or reverse ***
-		if (document.getElementById(\'hideshowlink\'+el_id).innerHTML == "[+]")
-			document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[-]";
-		else
-			document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[+]";
+		//if (document.getElementById(\'hideshowlink\'+el_id).innerHTML == "[+]")
+		//	document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[-]";
+		//else
+		//	document.getElementById(\'hideshowlink\'+el_id).innerHTML = "[+]";
 	}
 	</script>
 	';
@@ -1116,54 +1117,6 @@ if ($check_person){
 			}
 		}
 
-		// *** MARRIAGE sources ***
-		//if (isset($person->pers_fams) AND $person->pers_fams){
-		//	$fams1=explode(";",$person->pers_fams);
-		//	$marriage=$fams1[0];
-		//	if (isset($_POST['marriage_nr'])){ $marriage=$_POST['marriage_nr']; }
-		//	if (isset($_GET['marriage_nr'])){ $marriage=$_GET['marriage_nr']; }
-		//}
-
-		// *** Add child to family, 1st option: select an existing person as a child ***
-		/*
-		if (isset($_GET['child_connect'])){
-
-			if (isset($_GET['family_id'])){
-				// *** Search for parents ***
-				$family_parentsDb = $db_functions->get_family($_GET['family_id'],'man-woman');
-
-				echo '<br><br><b>'.__('Add child to family:').' ';
-				//*** Father ***
-				if ($family_parentsDb->fam_man) echo show_person($family_parentsDb->fam_man);
-					else echo __('N.N.');
-
-				echo ' '.__('and').' ';
-
-				//*** Mother ***
-				if ($family_parentsDb->fam_woman) echo show_person($family_parentsDb->fam_woman);
-					else echo __('N.N.');
-				echo '</b>';
-			}
-
-			// *** Search existing person as child ***
-			echo '<div class="confirm">';
-				echo '<form method="POST" action="'.$phpself.'" style="display : inline;" name="form4" id="form4">';
-					echo '<input type="hidden" name="page" value="'.$page.'">';
-					if (isset($_GET['children'])){
-						echo '<input type="hidden" name="children" value="'.$_GET['children'].'">';
-					}
-					echo '<input type="hidden" name="family_id" value="'.$_GET['family_id'].'">';
-
-					echo __('Child').': <input class="fonts" type="text" name="child_connect2" value="" size="17" placeholder="'.__('GEDCOM number (ID)').'" required>';
-
-					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_person_select&person=0&person_item=child_connect2&tree_id='.$tree_id.'","","width=500,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
-					echo ' <input type="Submit" name="dummy4" value="'.__('Select child').'">';
-				echo '</form><br>';
-			echo '</div>';
-			echo '<p>'.__('Or add a new child:').'<br>';
-		}
-		*/
-
 		// *** Script voor expand and collapse of items ***
 		echo '
 		<script type="text/javascript">
@@ -1174,7 +1127,7 @@ if ($check_person){
 			else
 				document.getElementById(\'hideshowlinkall\').innerHTML = "[+]";
 
-			var items = [1,2,3,4,5,13,51,53,54,55,61,62];
+			var items = [1,2,3,4,5,13,20,21,51,53,54,55,61,62];
 			for(j=0; j<items.length; j++){
 				// *** Hide or show item ***
 				var arr = document.getElementsByClassName(\'row\'+items[j]);
@@ -1186,7 +1139,8 @@ if ($check_person){
 					}
 				}
 
-				// *** Check if items exists (profession and addresses are not always avaiable) ***
+				// *** April 2023: removed several [+] and [-] links ***
+				// *** Check if items exists (profession and addresses are not always available) ***
 				if (document.getElementById(\'hideshowlink\'+items[j]) !== null){
 					// *** Change [+] into [-] or reverse ***
 					// *** Change [+] into [-] or reverse ***
@@ -1472,7 +1426,12 @@ if ($check_person){
 			}
 
 			// *** Empty line in table ***
-			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
+			//echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">&nbsp;</td></tr>';
+
+// *** April 2023, temporary text ***
+			echo '<tr><td colspan="4" class="table_empty_line" style="border-left: solid 1px white; border-right: solid 1px white;">';
+				echo __('If links in this page are not good visible, refresh the page once using: [CTRL] - Refresh.');
+			echo '&nbsp;</td></tr>';
 
 			//ob_flush(); flush(); // IE
 
@@ -1677,39 +1636,115 @@ if ($check_person){
 		echo '</td></tr>';
 
 		// *** Name ***
-		echo '<tr><td><a name="name"></a><a href="#" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a> ';
-			echo __('Name').'</td>';
+		//echo '<tr><td><a name="name"></a><a href="#" onclick="hideShow(1);"><span id="hideshowlink1">'.__('[+]').'</span></a> ';
+		echo '<tr><td><a name="name"></a>'.__('Name').'</td>';
 
-			echo '<td style="border-right:0px;"><b><span style="white-space: nowrap">'.__('firstname').'</span></b><br><span style="white-space: nowrap">'.__('prefix').'</span><br><b><span style="white-space: nowrap">'.__('lastname').'</span></b>';
-			if($humo_option['admin_hebname']=="y" ) {
-				echo '<br><span style="white-space: nowrap">'.__('Hebrew name').'</span><br>';
-			}
-			//echo '</td><td style="border-left:0px;"><input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="35" placeholder="'.ucfirst(__('firstname')).'"> '.__('Nickname').' <input type="text" name="pers_callname" value="'.$pers_callname.'" size="20" placeholder="'.__('Nickname').'"><br>';
-			echo '</td><td style="border-left:0px;"><input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="35" placeholder="'.ucfirst(__('firstname')).'"><br>';
+			$hideshow='1';
+			$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+			// *** New person: show all name fields ***
+			if (!$pers_gedcomnumber) $display='';
 
-			// *** Prefix ***
-			echo '<input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10" placeholder="'.ucfirst(__('prefix')).'"> '.__("For example: d\' or:  van_ (use _ for a space)").'<br>';
+			// *** Set minimum width of second column here ***
+			//echo '<td style="border-right:0px; vertical-align:top; min-width:150px;">';
+			echo '<td style="border-right:0px; min-width:150px;">';
 
-			// *** Lastname/ patronym ***
-			echo '<input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'"> ';
-			echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20" placeholder="'.ucfirst(__('patronymic')).'">';
+				if ($pers_gedcomnumber) echo __('Name').'<br>';
 
-			if($humo_option['admin_hebname']=="y" ) {  // user requested hebrew name field to be displayed here, not under "events"
-				echo '<br>';
-				$sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '".$pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
-				$result = $dbh->query($sql);
+				/*
+				echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+					echo '<b><span style="white-space: nowrap">'.__('firstname').'</span></b><br>';
+					echo '<span style="white-space: nowrap">'.__('prefix').'</span><br>';
+					echo '<b><span style="white-space: nowrap">'.__('lastname').'</span></b><br>';
+					if($humo_option['admin_hebname']=="y" ) {
+						echo '<br><span style="white-space: nowrap">'.__('Hebrew name').'</span><br>';
+					}
+					echo '<span style="white-space: nowrap">'.__('text').'</span>';
+				echo '</span>';
+				*/
+			echo '</td><td style="border-left:0px;">';
 
-				if($result->rowCount() > 0) {
-					$hebnameDb=$result->fetch(PDO::FETCH_OBJ);
-					$he_name =  $hebnameDb->event_event;
+				// *** Use hideshow to show and hide the editor lines ***
+				if ($pers_gedcomnumber){
+					echo '<span class="hideshowlink" onclick="hideShow('.$hideshow.');"><b>';
+						echo '['.$pers_gedcomnumber.'] '.show_person($person->pers_gedcomnumber,false,false);
+						if ($pers_name_text) echo ' <img src="images/text.png" height="16px">';
+					echo '</b></span><br>';
 				}
-				else {
-					$he_name = "";
-				}
+				echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
 
-				echo '<input type="text" name="even_hebname" value="'.htmlspecialchars($he_name).'" size="35" placeholder="'.ucfirst(__('Hebrew name')).'"> ';
-				echo __('For example: Joseph ben Hirsch Zvi');
-			}
+					// *** Firstname ***
+					//echo '<input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="35" placeholder="'.ucfirst(__('firstname')).'"><br>';
+					echo editor_label(__('firstname'),'bold');
+					echo '<input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="35"><br>';
+
+					// *** Prefix ***
+					//echo '<input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10" placeholder="'.ucfirst(__('prefix')).'"> '.__("For example: d\' or:  van_ (use _ for a space)").'<br>';
+					echo editor_label(__('prefix').'. '.__("For example: d\' or:  van_ (use _ for a space)"));
+					echo '<input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10"><br>';
+
+					// *** Lastname ***
+					//echo '<input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'"> ';
+					//echo __('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20" placeholder="'.ucfirst(__('patronymic')).'">';
+					echo editor_label(__('lastname'),'bold');
+					echo '<input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35"><br>';
+
+					// *** Patronym *** 
+					echo editor_label(__('patronymic'));
+					echo '<input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20">';
+
+					/*
+					if($humo_option['admin_hebname']=="y" ) {  // user requested hebrew name field to be displayed here, not under "events"
+						echo '<br>';
+						$sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '".$pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
+						$result = $dbh->query($sql);
+
+						if($result->rowCount() > 0) {
+							$hebnameDb=$result->fetch(PDO::FETCH_OBJ);
+							$he_name =  $hebnameDb->event_event;
+						}
+						else {
+							$he_name = "";
+						}
+
+						echo '<input type="text" name="even_hebname" value="'.htmlspecialchars($he_name).'" size="35" placeholder="'.ucfirst(__('Hebrew name')).'"> ';
+						echo __('For example: Joseph ben Hirsch Zvi');
+					}
+					*/
+					if($humo_option['admin_hebname']=="y" ) {  // user requested hebrew name field to be displayed here, not under "events"
+						echo editor_label(__('Hebrew name').'. '.__('For example: Joseph ben Hirsch Zvi'));
+						//echo '<br>';
+						$sql = "SELECT * FROM humo_events WHERE event_gedcom = '_HEBN' AND event_connect_id = '".$pers_gedcomnumber."' AND event_kind='name' AND event_connect_kind='person'";
+						$result = $dbh->query($sql);
+
+						if($result->rowCount() > 0) {
+							$hebnameDb=$result->fetch(PDO::FETCH_OBJ);
+							$he_name =  $hebnameDb->event_event;
+						}
+						else {
+							$he_name = "";
+						}
+
+						echo '<input type="text" name="even_hebname" value="'.htmlspecialchars($he_name).'" size="35"> ';
+						//echo __('For example: Joseph ben Hirsch Zvi');
+					}
+
+					/*
+					// *** Person text by name ***
+					$text=$editor_cls->text_show($pers_name_text);
+					//$field_text_selected=$field_text; if ($text) $field_text_selected=$field_text_medium;
+					// *** Check if there are multiple lines in text ***
+					$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+					echo '<br><textarea rows="1" placeholder="'.__('text').'" name="pers_name_text" '.$field_text_selected.'>'.$text.'</textarea>';
+					*/
+					// *** Person text by name ***
+					echo editor_label(__('text'));
+					$text=$editor_cls->text_show($pers_name_text);
+					//$field_text_selected=$field_text; if ($text) $field_text_selected=$field_text_medium;
+					// *** Check if there are multiple lines in text ***
+					$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+					echo '<textarea rows="1" name="pers_name_text" '.$field_text_selected.'>'.$text.'</textarea>';
+
+				echo '</span>';
 
 			echo '</td>';
 
@@ -1723,17 +1758,6 @@ if ($check_person){
 
 		// *** Show source by name in iframe ***
 		echo iframe_source('500','','pers_name_source','');
-
-		// *** Person text by name ***
-		$text=$editor_cls->text_show($pers_name_text);
-		$style=''; if (!$text) $style=' style="display:none;" class="row1"';
-		echo '<tr'.$style.'><td></td>';
-
-		//$field_text_selected=$field_text; if ($text) $field_text_selected=$field_text_medium;
-		// *** Check if there are multiple lines in text ***
-		$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
-		echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="pers_name_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
-		echo '<td></td></tr>';
 
 		if ($add_person==false){
 			// *** Event name (also show ADD line for prefix, suffix, title etc. ***
@@ -1754,7 +1778,6 @@ if ($check_person){
 			// *** Lordship ***
 			echo $event_cls->show_event('person',$pers_gedcomnumber,'lordship');
 		}
-
 
 		// *** Alive ***
 
@@ -1813,36 +1836,74 @@ if ($check_person){
 
 
 		// *** Born ***
-		echo '<tr class="humo_color"><td><a name="born"></a><a href="#" onclick="hideShow(2);"><span id="hideshowlink2">'.__('[+]').'</span></a> ';
+		// *** Use hideshow to show and hide the editor lines ***
+		$hideshow='2';
+		// *** If items are missing show all editor fields ***
+		$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+
+		//echo '<tr class="humo_color"><td><a name="born"></a><a href="#" onclick="hideShow(2);"><span id="hideshowlink2">'.__('[+]').'</span></a> ';
+		echo '<tr class="humo_color"><td><a name="born"></a>';
 		echo ucfirst(__('born')).'</td>';
 
-		echo '<td style="border-right:0px;">'.__('date');
-			// HELP POPUP
-			//echo '<div class="fonts '.$rtlmarker.'sddm" style="border:1px solid #d8d8d8; margin-top:2px; display:inline;">';
-			echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
-				echo '<a href="#" style="display:inline" ';
-				//echo 'onmouseover="mopen(event,\'help_date\',10,400)"';
-				echo 'onmouseover="mopen(event,\'help_date\')"';
-				echo 'onmouseout="mclosetime()">';
-				echo '<img src="../images/help.png" height="16" width="16">';
-				echo '</a>';
-				//echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-				echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_date" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-					echo __('Examples of date entries:').'<br>';
-					echo '<b>'.__('13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.').'</b><br>';
-				echo '</div>';
-			echo '</div>';
+		echo '<td style="border-right:0px; vertical-align: top;">';
+			echo ucfirst(__('born'));
+			echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+				echo '<br>'.__('date');
+
+				// HELP POPUP
+				//echo '<div class="fonts '.$rtlmarker.'sddm" style="border:1px solid #d8d8d8; margin-top:2px; display:inline;">';
+				echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+					echo '<a href="#" style="display:inline" ';
+					//echo 'onmouseover="mopen(event,\'help_date\',10,400)"';
+					echo 'onmouseover="mopen(event,\'help_date\')"';
+					echo 'onmouseout="mclosetime()">';
+					echo '<img src="../images/help.png" height="16" width="16">';
+					echo '</a>';
+					//echo '<div class="sddm_fixed" style="'.$popwidth.' z-index:400; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+					echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_date" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+						echo __('Examples of date entries:').'<br>';
+						echo '<b>'.__('13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, 13,10,1813, between 1986 and 1987, 13 oct 1100 BC.').'</b><br>';
+					echo '</div>';
+				echo '</div><br>';
+
+				echo __('birth time').'<br>';
+				echo ucfirst(__('text'));
+			echo '</span>';
 		echo '</td>';
-		echo '<td style="border-left:0px;">'.$editor_cls->date_show($pers_birth_date,'pers_birth_date','','',$pers_birth_date_hebnight,'pers_birth_date_hebnight').' ';
-		echo __('place').' <input type="text" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
 
-		// *** Auto complete doesn't work properly yet... ***
-		//echo __('place').' <input list="place_auto_complete" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
+		echo '<td style="border-left:0px;">';
+			$hideshow_text=hideshow_date_place($pers_birth_date,$pers_birth_place);
+			if ($pers_birth_time){ $hideshow_text.=' '.__('at').' '.$pers_birth_time.' '.__('hour'); }
+			echo hideshow_editor($hideshow,$hideshow_text,$pers_birth_text);
 
-		//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
-		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+//echo editor_label(__('date'));
+				echo $editor_cls->date_show($pers_birth_date,'pers_birth_date','','',$pers_birth_date_hebnight,'pers_birth_date_hebnight').' ';
 
+//echo editor_label(__('place'));
+				echo __('place').' <input type="text" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
+//echo '<input type="text" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
 
+				// *** Auto complete doesn't work properly yet... ***
+				//echo __('place').' <input list="place_auto_complete" name="pers_birth_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_birth_place).'" size="'.$field_place.'">';
+
+				//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
+				echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_birth_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a><br>';
+
+//echo editor_label(__('birth time'));
+				echo '<input type="text" placeholder="'.__('birth time').'" name="pers_birth_time" value="'.$pers_birth_time.'" size="'.$field_date.'">';
+//echo '<input type="text" name="pers_birth_time" value="'.$pers_birth_time.'" size="'.$field_date.'">';
+				// *** Stillborn child ***
+				$check=''; if (isset($pers_stillborn) AND $pers_stillborn=='y'){ $check=' checked'; }
+				echo '<input type="checkbox" name="pers_stillborn" '.$check.'> '.__('stillborn child').'<br>';
+
+//echo editor_label(__('text'));
+				// *** Check if there are multiple lines in text ***
+				$field_text_selected=$field_text; if ($pers_birth_text AND preg_match('/\R/',$pers_birth_text)) $field_text_selected=$field_text_medium;
+				echo '<textarea rows="1" placeholder="'.__('text').'" name="pers_birth_text" '.$field_text_selected.'>'.
+					$editor_cls->text_show($pers_birth_text).'</textarea>';
+
+			// *** End of hideshow_editor span ***
+			echo '</span>';
 		echo '</td>';
 
 		// *** Source by birth ***
@@ -1856,42 +1917,19 @@ if ($check_person){
 		// *** Show source by birth in iframe ***
 		echo iframe_source('502','','pers_birth_source','');
 
-		$style=' class="humo_color"';
-		if (!$pers_birth_time AND (!$pers_stillborn)) $style=' class="humo_color row2" style="display:none;"';
-		//echo '<tr class="humo_color row2" style="display:none;" name="row2">';
-		//echo '<tr class="humo_color row2" style="display:none;">';
-		echo '<tr'.$style.'>';
-			echo '<td></td>';
-			echo '<td style="border-right:0px;">'.__('birth time').'</td><td style="border-left:0px;"><input type="text" placeholder="'.__('birth time').'" name="pers_birth_time" value="'.$pers_birth_time.'" size="'.$field_date.'">';
-				// *** Stillborn child ***
-				$check=''; if (isset($pers_stillborn) AND $pers_stillborn=='y'){ $check=' checked'; }
-				print '<input type="checkbox" name="pers_stillborn" '.$check.'> '.__('stillborn child');
-			echo '</td>';
-		echo '<td></td></tr>';
-
-		$style=' class="humo_color"';
-		if (!$pers_birth_text) $style=' class="humo_color row2" style="display:none;"';
-		//echo '<tr class="humo_color row2" style="display:none;" name="row2">';
-		echo '<tr'.$style.'>';
-		echo '<td></td>';
-		echo '<td style="border-right:0px;">'.__('text').'</td>';
-		// *** Check if there are multiple lines in text ***
-		$field_text_selected=$field_text; if ($pers_birth_text AND preg_match('/\R/',$pers_birth_text)) $field_text_selected=$field_text_medium;
-		echo '<td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="pers_birth_text" '.$field_text_selected.'>'.
-			$editor_cls->text_show($pers_birth_text).'</textarea></td>';
-		echo '<td></td></tr>';
-
 		// *** Birth declaration ***
 		if ($add_person==false) echo $event_cls->show_event('person',$pers_gedcomnumber,'birth_declaration');
 
 		// **** BRIT MILA ***
 		if($humo_option['admin_brit']=="y" AND $pers_sexe!="F") {
-			echo '<tr>';
-			echo '<td><a href="#" onclick="hideShow(20);"><span id="hideshowlink20">'.__('[+]').'</span></a> ';
-			echo ucfirst(__('Brit Mila')).'</td>';
+
+			// *** Use hideshow to show and hide the editor lines ***
+			$hideshow='20';
+			// *** If items are missing show all editor fields ***
+			$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+
 			$sql = "SELECT * FROM humo_events WHERE event_gedcom = '_BRTM' AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
 			$result = $dbh->query($sql);
-
 			if($result->rowCount() > 0) {
 				$britDb=$result->fetch(PDO::FETCH_OBJ);
 				$britdate = $britDb->event_date;
@@ -1903,43 +1941,49 @@ if ($check_person){
 				$britplace = "";
 				$brittext = "";
 			}
-
 			$britDb=$result->fetch(PDO::FETCH_OBJ);
-			echo '<td style="border-right:0px;">'.__('date').'<br>&nbsp;</td><td style="border-left:0px;">'.$editor_cls->date_show($britdate,'even_brit_date');
-			echo ' '.__('place').'  <input type="text" name="even_brit_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($britplace).'" size="'.$field_place.'">';
-			echo "<br>".__('To display this, the option "Show events" has to be checked in "Users -> Groups"');
-			// echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_brit_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+
+			echo '<tr>';
+			//echo '<td><a href="#" onclick="hideShow(20);"><span id="hideshowlink20">'.__('[+]').'</span></a> ';
+			echo '<td>'.ucfirst(__('Brit Mila')).'</td>';
+
+			echo '<td style="border-right:0px;">';
+				//echo __('date');
+				echo __('Brit Mila');
+			echo '</td>';
+
+			echo '<td style="border-left:0px;">';
+				$hideshow_text=hideshow_date_place($britdate,$britplace);
+				echo hideshow_editor($hideshow,$hideshow_text,$brittext);
+					echo $editor_cls->date_show($britdate,'even_brit_date');
+					echo ' '.__('place').'  <input type="text" name="even_brit_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($britplace).'" size="'.$field_place.'"><br>';
+
+					// *** Check if there are multiple lines in text ***
+					$text=$editor_cls->text_show($brittext);
+					$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+					echo '<textarea rows="1" placeholder="'.__('text').'" name="even_brit_text" '.$field_text_selected.'>'.$text.'</textarea>';
+
+					echo '<br>'.__('To display this, the option "Show events" has to be checked in "Users -> Groups"');
+					// echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_brit_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+				// *** End of hideshow_editor span ***
+				echo '</span>';
 			echo '</td>';
 
 			// *** Source by Brit Mila ***
 			echo '<td>';
 				// No source yet.
 			echo '</td></tr>';
-			
-			// *** Text by event ***
-			$text=$editor_cls->text_show($brittext);
-			$style=''; if (!$text) $style=' style="display:none;" class="row20"';
-			//echo '<tr style="display:none;" class="row3" name="row3">';
-			//echo '<tr style="display:none;" class="row20">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			echo '<td style="border-right:0px;">'.__('text').'</td>';
-			// *** Check if there are multiple lines in text ***
-			$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
-			echo '<td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="even_brit_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
-			echo '<td></td>';
-			echo '</td></tr>';
 		}
 
 		//*** BAR/BAT MITSVA ***
 		if($humo_option['admin_barm']=="y") {
-			echo '<tr>';
-			echo '<td><a href="#" onclick="hideShow(21);"><span id="hideshowlink21">'.__('[+]').'</span></a> ';
-			if($pers_sexe=="F") { echo __('Bat Mitzvah').'</td>'; }
-			else { echo __('Bar Mitzvah').'</td>'; }
+			// *** Use hideshow to show and hide the editor lines ***
+			$hideshow='21';
+			// *** If items are missing show all editor fields ***
+			$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+
 			$sql = "SELECT * FROM humo_events WHERE (event_gedcom = 'BARM' OR event_gedcom = 'BASM') AND event_connect_id = '".$pers_gedcomnumber."' AND event_connect_kind='person'";
 			$result = $dbh->query($sql);
-			
 			if($result->rowCount() > 0)	{
 				$barmDb=$result->fetch(PDO::FETCH_OBJ);
 				$bardate =  $barmDb->event_date;
@@ -1951,30 +1995,40 @@ if ($check_person){
 				$barplace = "";
 				$bartext = "";
 			}
-			echo '<td style="border-right:0px;">'.__('date').'<br>&nbsp;</td><td style="border-left:0px;">'.$editor_cls->date_show($bardate,'even_barm_date');
-			echo ' '.__('place').'  <input type="text" name="even_barm_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($barplace).'" size="'.$field_place.'">';
-			echo "<br>".__('To display this, the option "Show events" has to be checked in "Users -> Groups"');
-			//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_barm_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
-			echo '</td>';
 
-			// *** Source by Bar Mitsva ***
-			/*		echo '<td>';
-			if (!isset($_GET['add_person'])){
-				// no source yet
-			} */
-			echo '</td></tr>';
+			echo '<tr>';
+				//echo '<td><a href="#" onclick="hideShow(21);"><span id="hideshowlink21">'.__('[+]').'</span></a> ';
+				echo '<td>';
+					if($pers_sexe=="F") { echo __('Bat Mitzvah'); } else { echo __('Bar Mitzvah'); }
+				echo '</td>';
 
-			$text=$editor_cls->text_show($bartext);
-			$style=''; if (!$text) $style=' style="display:none;" class="row21"';
-			//echo '<tr style="display:none;" class="row3" name="row3">';
-			//echo '<tr style="display:none;" class="row21">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			echo '<td style="border-right:0px;">'.__('text').'</td>';
-			// *** Check if there are multiple lines in text ***
-			$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
-			echo '<td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="even_barm_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
-			echo '<td></td>';
+				//echo '<td style="border-right:0px;">'.__('date').'<br>&nbsp;</td>';
+				echo '<td style="border-right:0px;">';
+					if($pers_sexe=="F") { echo __('Bat Mitzvah'); } else { echo __('Bar Mitzvah'); }
+				echo '</td>';
+
+				echo '<td style="border-left:0px;">';
+					$hideshow_text=hideshow_date_place($bardate,$barplace);
+					echo hideshow_editor($hideshow,$hideshow_text,$bartext);
+
+						echo $editor_cls->date_show($bardate,'even_barm_date');
+						echo ' '.__('place').'  <input type="text" name="even_barm_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($barplace).'" size="'.$field_place.'"><br>';
+						//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=even_barm_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+
+						// *** Check if there are multiple lines in text ***
+						$text=$editor_cls->text_show($bartext);
+						$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+						echo '<textarea rows="1" placeholder="'.__('text').'" name="even_barm_text" '.$field_text_selected.'>'.$text.'</textarea>';
+
+						echo '<br>'.__('To display this, the option "Show events" has to be checked in "Users -> Groups"');
+					echo '</span>';
+				echo '</td>';
+
+				// *** Source by Bar Mitsva ***
+				echo '<td>';
+					//if (!isset($_GET['add_person'])){
+					//	// no source yet
+					//}
 			echo '</td></tr>';
 		}
 
@@ -1984,10 +2038,42 @@ if ($check_person){
 
 
 		// *** Baptise ***
-		echo '<tr><td><a name="baptised"></a><a href="#" onclick="hideShow(3);"><span id="hideshowlink3">'.__('[+]').'</span></a> ';
-		echo ucfirst(__('baptised')).'</td>';
-		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_bapt_date,'pers_bapt_date').' '.__('place').'  <input type="text" name="pers_bapt_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_bapt_place).'" size="'.$field_place.'">';
-		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_bapt_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+		// *** Use hideshow to show and hide the editor lines ***
+		$hideshow='3';
+		// *** If items are missing show all editor fields ***
+		$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+
+		//echo '<tr><td><a name="baptised"></a><a href="#" onclick="hideShow(3);"><span id="hideshowlink3">'.__('[+]').'</span></a> ';
+		echo '<tr><td><a name="baptised"></a>'.ucfirst(__('baptised')).'</td>';
+
+		echo '<td style="border-right:0px;">';
+			echo ucfirst(__('baptised'));
+
+			echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+				echo '<br>'.ucfirst(__('date')).'<br>';
+				echo __('religion').'<br>';
+				echo ucfirst(__('text'));
+			echo '</span>';
+		echo '</td>';
+
+		echo '<td style="border-left:0px;">';
+			$hideshow_text=hideshow_date_place($pers_bapt_date,$pers_bapt_place);
+
+			if ($pers_religion) $hideshow_text.=' ('.__('religion').': '.$pers_religion.')';
+
+			echo hideshow_editor($hideshow,$hideshow_text,$pers_bapt_text);
+
+				echo $editor_cls->date_show($pers_bapt_date,'pers_bapt_date').' '.__('place').'  <input type="text" name="pers_bapt_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_bapt_place).'" size="'.$field_place.'">';
+				echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_bapt_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a><br>';
+
+				$text=htmlspecialchars($pers_religion);
+				echo '<input type="text" name="pers_religion" placeholder="'.__('religion').'" value="'.$text.'" size="20"><br>';
+
+				$text=$editor_cls->text_show($pers_bapt_text);
+				// *** Check if there are multiple lines in text ***
+				$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+				echo '<textarea rows="1" placeholder="'.__('text').'" name="pers_bapt_text" '.$field_text_selected.'>'.$text.'</textarea>';
+			echo '</span>';
 		echo '</td>';
 
 		// *** Source by baptise ***
@@ -2000,30 +2086,6 @@ if ($check_person){
 		// *** Show source by baptise in iframe ***
 		echo iframe_source('503','','pers_bapt_source','');
 
-		$text=htmlspecialchars($pers_religion);
-		$style=''; if (!$text) $style=' style="display:none;" class="row3"';
-		//echo '<tr style="display:none;" class="row3" name="row3">';
-		//echo '<tr style="display:none;" class="row3">';
-		echo '<tr'.$style.'>';
-		echo '<td></td>';
-		echo '<td style="border-right:0px;">'.__('religion').'</td><td style="border-left:0px;"><input type="text" 
-		name="pers_religion" placeholder="'.__('religion').'" value="'.$text.'" size="20"></td>';
-		echo '<td></td>';
-		echo '</tr>';
-
-		$text=$editor_cls->text_show($pers_bapt_text);
-		$style=''; if (!$text) $style=' style="display:none;" class="row3"';
-		//echo '<tr style="display:none;" class="row3" name="row3">';
-		//echo '<tr style="display:none;" class="row3">';
-		echo '<tr'.$style.'>';
-		echo '<td></td>';
-		echo '<td style="border-right:0px;">'.__('text').'</td>';
-		// *** Check if there are multiple lines in text ***
-		$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
-		echo '<td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="pers_bapt_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
-		echo '<td></td>';
-		echo '</tr>';
-
 		// *** Baptism Witness ***
 		if ($add_person==false) echo $event_cls->show_event('person',$pers_gedcomnumber,'baptism_witness');
 
@@ -2032,26 +2094,123 @@ if ($check_person){
 //echo $divider;
 
 		// *** Died ***
-		echo '<tr class="humo_color"><td><a name="died"></a>';
-		echo '<a href="#" onclick="hideShow(4);"><span id="hideshowlink4">'.__('[+]').'</span></a> ';
-		echo ucfirst(__('died')).'</td>';
-		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_death_date,'pers_death_date','','',$pers_death_date_hebnight,'pers_death_date_hebnight');
-		echo ' '.__('place').'  <input type="text" name="pers_death_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_death_place).'" size="'.$field_place.'">';
-		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_death_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+		// *** Use hideshow to show and hide the editor lines ***
+		$hideshow='4';
+		// *** If items are missing show all editor fields ***
+		$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
 
-		// *** Age by death ***
-		echo ' <input type="text" name="pers_death_age" placeholder="'.__('Age').'" value="'.$pers_death_age.'" size="3">';
-		// *** HELP POPUP for age by death ***
-		echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
-			echo '<a href="#" style="display:inline" ';
-			echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
-			echo 'onmouseout="mclosetime()">';
-				echo '<img src="../images/help.png" height="16" width="16">';
-			echo '</a>';
-			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-				echo '<b>'.__('If death year and age are used, then birth year is calculated automatically (when empty).').'</b><br>';
-			echo '</div>';
-		echo '</div>';
+		echo '<tr class="humo_color"><td><a name="died"></a>';
+		//echo '<a href="#" onclick="hideShow(4);"><span id="hideshowlink4">'.__('[+]').'</span></a> ';
+		echo ucfirst(__('died')).'</td>';
+
+		echo '<td style="border-right:0px;">';
+			echo ucfirst(__('died'));
+			echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+				echo '<br>'.ucfirst(__('date')).'<br>';
+				echo __('death time').'<br>';
+				echo ucfirst(__('text'));
+			echo '</span>';
+		echo '</td>';
+
+		echo '<td style="border-left:0px;">';
+			$hideshow_text=hideshow_date_place($pers_death_date,$pers_death_place);
+
+			if ($pers_death_time)
+				$hideshow_text.=' '.__('at').' '.$pers_death_time.' '.__('hour');
+
+			if ($pers_death_cause){
+				if ($hideshow_text) $hideshow_text.=', ';
+				$pers_death_cause2='';
+				if ($pers_death_cause=='murdered'){ $pers_death_cause2=__('cause of death').': '.__('murdered'); }
+				if ($pers_death_cause=='drowned'){ $pers_death_cause2=__('cause of death').': '.__('drowned'); }
+				if ($pers_death_cause=='perished'){ $pers_death_cause2=__('cause of death').': '.__('perished'); }
+				if ($pers_death_cause=='killed in action'){ $pers_death_cause2=__('killed in action'); }
+				if ($pers_death_cause=='being missed'){ $pers_death_cause2=__('being missed'); }
+				if ($pers_death_cause=='committed suicide'){ $pers_death_cause2=__('cause of death').': '.__('committed suicide'); }
+				if ($pers_death_cause=='executed'){ $pers_death_cause2=__('cause of death').': '.__('executed'); }
+				if ($pers_death_cause=='died young'){ $pers_death_cause2=__('died young'); }
+				if ($pers_death_cause=='died unmarried'){ $pers_death_cause2=__('died unmarried'); }
+				if ($pers_death_cause=='registration'){ $pers_death_cause2=__('registration'); } //2 TYPE registration?
+				if ($pers_death_cause=='declared death'){ $pers_death_cause2=__('declared death'); }
+				if ($pers_death_cause2){
+					$hideshow_text.=$pers_death_cause2;
+				}
+				else{
+					$hideshow_text.=__('cause of death').' '.$pers_death_cause;
+				}
+			}
+
+			echo hideshow_editor($hideshow,$hideshow_text,$pers_death_text);
+
+				echo $editor_cls->date_show($pers_death_date,'pers_death_date','','',$pers_death_date_hebnight,'pers_death_date_hebnight');
+				echo ' '.__('place').'  <input type="text" name="pers_death_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_death_place).'" size="'.$field_place.'">';
+				echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_death_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a><br>';
+
+				// *** Age by death ***
+				echo ' <input type="text" name="pers_death_age" placeholder="'.__('Age').'" value="'.$pers_death_age.'" size="3">';
+				// *** HELP POPUP for age by death ***
+				echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+					echo '<a href="#" style="display:inline" ';
+					echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
+					echo 'onmouseout="mclosetime()">';
+						echo '<img src="../images/help.png" height="16" width="16">';
+					echo '</a>';
+					echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+						echo '<b>'.__('If death year and age are used, then birth year is calculated automatically (when empty).').'</b><br>';
+					echo '</div>';
+				echo '</div><br>';
+
+				echo '<input type="text" name="pers_death_time" placeholder="'.__('death time').'" value="'.$pers_death_time.'" size="'.$field_date.'">';
+
+				echo ' '.__('cause').' ';
+				$cause=false;
+				echo '<select size="1" name="pers_death_cause">';
+					echo '<option value=""></option>';
+
+					$selected=''; if ($pers_death_cause=='murdered'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="murdered"'.$selected.'>'.__('murdered').'</option>';
+
+					$selected=''; if ($pers_death_cause=='drowned'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="drowned"'.$selected.'>'.__('drowned').'</option>';
+
+					$selected=''; if ($pers_death_cause=='perished'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="perished"'.$selected.'>'.__('perished').'</option>';
+
+					$selected=''; if ($pers_death_cause=='killed in action'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="killed in action"'.$selected.'>'.__('killed in action').'</option>';
+
+					$selected=''; if ($pers_death_cause=='being missed'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="being missed"'.$selected.'>'.__('being missed').'</option>';
+
+					$selected=''; if ($pers_death_cause=='committed suicide'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="committed suicide"'.$selected.'>'.__('committed suicide').'</option>';
+
+					$selected=''; if ($pers_death_cause=='executed'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="executed"'.$selected.'>'.__('executed').'</option>';
+
+					$selected=''; if ($pers_death_cause=='died young'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="died young"'.$selected.'>'.__('died young').'</option>';
+
+					$selected=''; if ($pers_death_cause=='died unmarried'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="died unmarried"'.$selected.'>'.__('died unmarried').'</option>';
+
+					$selected=''; if ($pers_death_cause=='registration'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="registration"'.$selected.'>'.__('registration').'</option>';
+
+					$selected=''; if ($pers_death_cause=='declared death'){ $cause=true; $selected=' SELECTED'; }
+					echo '<option value="declared death"'.$selected.'>'.__('declared death').'</option>';
+
+				echo '</select>';
+
+				echo ' <b>'.__('or').':</b> ';
+				$pers_death_cause2=''; if ($pers_death_cause AND $cause==false) $pers_death_cause2=$pers_death_cause;
+				echo '<input type="text" name="pers_death_cause2" placeholder="'.__('cause').'" value="'.$pers_death_cause2.'" size="'.$field_date.'"><br>';
+
+				$text=$editor_cls->text_show($pers_death_text);
+				// *** Check if there are multiple lines in text ***
+				$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+				echo '<textarea rows="1" placeholder="'.__('text').'" name="pers_death_text" '.$field_text_selected.'>'.$text.'</textarea>';
+			echo '</span>';
 
 		// *** Source by death ***
 		echo '</td><td>';
@@ -2063,72 +2222,6 @@ if ($check_person){
 		// *** Show source by death in iframe ***
 		echo iframe_source('504','','pers_death_source','');
 
-		$style=' class="humo_color"'; if (!$pers_death_time AND !$pers_death_cause) $style=' style="display:none;" class="row4 humo_color"';
-		//echo '<tr class="humo_color row4" style="display:none;" name="row4">';
-		//echo '<tr class="humo_color row4" style="display:none;">';
-		echo '<tr'.$style.'>';
-		echo '<td></td>';
-		echo '<td style="border-right:0px;">'.__('death time').'</td><td style="border-left:0px;"><input type="text" name="pers_death_time" placeholder="'.__('death time').'" value="'.$pers_death_time.'" size="'.$field_date.'"> ';
-
-		echo __('cause').' ';
-		$cause=false;
-		echo '<select size="1" name="pers_death_cause">';
-			echo '<option value=""></option>';
-
-			$selected=''; if ($pers_death_cause=='murdered'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="murdered"'.$selected.'>'.__('murdered').'</option>';
-
-			$selected=''; if ($pers_death_cause=='drowned'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="drowned"'.$selected.'>'.__('drowned').'</option>';
-
-			$selected=''; if ($pers_death_cause=='perished'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="perished"'.$selected.'>'.__('perished').'</option>';
-
-			$selected=''; if ($pers_death_cause=='killed in action'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="killed in action"'.$selected.'>'.__('killed in action').'</option>';
-
-			$selected=''; if ($pers_death_cause=='being missed'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="being missed"'.$selected.'>'.__('being missed').'</option>';
-
-			$selected=''; if ($pers_death_cause=='committed suicide'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="committed suicide"'.$selected.'>'.__('committed suicide').'</option>';
-
-			$selected=''; if ($pers_death_cause=='executed'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="executed"'.$selected.'>'.__('executed').'</option>';
-
-			$selected=''; if ($pers_death_cause=='died young'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="died young"'.$selected.'>'.__('died young').'</option>';
-
-			$selected=''; if ($pers_death_cause=='died unmarried'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="died unmarried"'.$selected.'>'.__('died unmarried').'</option>';
-
-			$selected=''; if ($pers_death_cause=='registration'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="registration"'.$selected.'>'.__('registration').'</option>';
-
-			$selected=''; if ($pers_death_cause=='declared death'){ $cause=true; $selected=' SELECTED'; }
-			echo '<option value="declared death"'.$selected.'>'.__('declared death').'</option>';
-
-		echo '</select>';
-
-			echo ' <b>'.__('or').':</b> ';
-			$pers_death_cause2=''; if ($pers_death_cause AND $cause==false) $pers_death_cause2=$pers_death_cause;
-			echo '<input type="text" name="pers_death_cause2" placeholder="'.__('cause').'" value="'.$pers_death_cause2.'" size="'.$field_date.'">';
-
-		echo '</td><td></td>';
-		echo '</tr>';
-
-		$text=$editor_cls->text_show($pers_death_text);
-		$style=' class="humo_color"'; if (!$text) $style=' class="humo_color row4" style="display:none;"';
-		//echo '<tr class="humo_color row4" style="display:none;" name="row4">';
-		//echo '<tr class="humo_color row4" style="display:none;">';
-		echo '<tr'.$style.'>';
-		echo '<td></td>';
-		// *** Check if there are multiple lines in text ***
-		$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
-		echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="pers_death_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
-		echo '<td></td>';
-		echo '</tr>';
-
 		// *** Death Declaration ***
 		if ($add_person==false) echo $event_cls->show_event('person',$pers_gedcomnumber,'death_declaration');
 
@@ -2136,14 +2229,56 @@ if ($check_person){
 //echo $divider;
 
 		// *** Buried ***
-		echo '<tr><td><a name="buried"></a><a href="#" onclick="hideShow(5);"><span id="hideshowlink5">'.__('[+]').'</span></a> ';
+		// *** Use hideshow to show and hide the editor lines ***
+		$hideshow='5';
+		// *** If items are missing show all editor fields ***
+		$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+
+		echo '<tr><td><a name="buried"></a>';
+			//echo '<a href="#" onclick="hideShow(5);"><span id="hideshowlink5">'.__('[+]').'</span></a> ';
 		echo __('Buried').'</td>';
-		echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($pers_buried_date,'pers_buried_date','','',$pers_buried_date_hebnight,'pers_buried_date_hebnight');
-		echo ' '.__('place').' <input type="text" name="pers_buried_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_buried_place).'" size="'.$field_place.'">';
-		echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_buried_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+
+		echo '<td style="border-right:0px;">';
+			echo __('Buried');
+			echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+				echo '<br>'.ucfirst(__('date')).'<br>';
+				echo __('method of burial').'<br>';
+				echo ucfirst(__('text'));
+			echo '</span>';
+		echo '</td>';
+
+		echo '<td style="border-left:0px;">';
+			$hideshow_text=hideshow_date_place($pers_buried_date,$pers_buried_place);
+			echo hideshow_editor($hideshow,$hideshow_text,$pers_buried_text);
+				echo $editor_cls->date_show($pers_buried_date,'pers_buried_date','','',$pers_buried_date_hebnight,'pers_buried_date_hebnight');
+				echo ' '.__('place').' <input type="text" name="pers_buried_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($pers_buried_place).'" size="'.$field_place.'">';
+				echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=1&amp;place_item=pers_buried_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a><br>';
+
+				echo '<select size="1" name="pers_cremation">';
+					echo '<option value="">'.__('buried').'</option>';
+
+					$selected=''; if ($pers_cremation=='1'){ $selected=' SELECTED'; }
+					echo '<option value="1"'.$selected.'>'.__('cremation').'</option>';
+
+					$selected=''; if ($pers_cremation=='R'){ $selected=' SELECTED'; }
+					echo '<option value="R"'.$selected.'>'.__('resomated').'</option>';
+
+					$selected=''; if ($pers_cremation=='S'){ $selected=' SELECTED'; }
+					echo '<option value="S"'.$selected.'>'.__('sailor\'s grave').'</option>';
+
+					$selected=''; if ($pers_cremation=='D'){ $selected=' SELECTED'; }
+					echo '<option value="D"'.$selected.'>'.__('donated to science').'</option>';
+				echo '</select><br>';
+
+				$text=$editor_cls->text_show($pers_buried_text);
+				// *** Check if there are multiple lines in text ***
+				$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+				echo '<textarea rows="1" placeholder="'.__('text').'" name="pers_buried_text" '.$field_text_selected.'>'.$text.'</textarea>';
+			echo '</span>';
+		echo '</td>';
 
 		// *** Source by burial ***
-		echo '</td><td>';
+		echo '<td>';
 		if (!isset($_GET['add_person'])){
 			//source_link('individual',$pers_gedcomnumber,'pers_buried_source');
 			echo source_link2('505',$pers_gedcomnumber,'pers_buried_source','buried');
@@ -2151,50 +2286,6 @@ if ($check_person){
 		echo '</td></tr>';
 		// *** Show source by burial in iframe ***
 		echo iframe_source('505','','pers_buried_source','');
-
-		$style=''; if (!$pers_cremation) $style=' style="display:none;" class="row5"';
-		//echo '<tr style="display:none;" class="row5" name="row5">';
-		//echo '<tr style="display:none;" class="row5">';
-		echo '<tr'.$style.'>';
-		echo '<td></td>';
-		//echo '<td style="border-right:0px;">'.__('Buried').'/ '.__('cremation').'</td><td style="border-left:0px;">';
-		echo '<td style="border-right:0px;">'.__('method of burial').'</td><td style="border-left:0px;">';
-			//$selected=''; if ($pers_cremation==''){ $selected=' CHECKED'; }
-			//echo '<input type="radio" name="pers_cremation" value=""'.$selected.'> '.__('buried');
-			//$selected=''; if ($pers_cremation=='1'){ $selected=' CHECKED'; }
-			//echo ' <input type="radio" name="pers_cremation" value="1"'.$selected.'> '.__('cremation');
-
-			echo '<select size="1" name="pers_cremation">';
-				echo '<option value="">'.__('buried').'</option>';
-
-				$selected=''; if ($pers_cremation=='1'){ $selected=' SELECTED'; }
-				echo '<option value="1"'.$selected.'>'.__('cremation').'</option>';
-
-				$selected=''; if ($pers_cremation=='R'){ $selected=' SELECTED'; }
-				echo '<option value="R"'.$selected.'>'.__('resomated').'</option>';
-
-				$selected=''; if ($pers_cremation=='S'){ $selected=' SELECTED'; }
-				echo '<option value="S"'.$selected.'>'.__('sailor\'s grave').'</option>';
-
-				$selected=''; if ($pers_cremation=='D'){ $selected=' SELECTED'; }
-				echo '<option value="D"'.$selected.'>'.__('donated to science').'</option>';
-			echo '</select>';
-		echo '</td>';
-		echo '<td></td>';
-		echo '</tr>';
-
-		$text=$editor_cls->text_show($pers_buried_text);
-		$style=''; if (!$text) $style=' style="display:none;" class="row5"';
-		//echo '<tr style="display:none;" class="row5" name="row5">';
-		//echo '<tr style="display:none;" class="row5">';
-		echo '<tr'.$style.'>';
-		echo '<td></td>';
-		echo '<td style="border-right:0px;">'.__('text').'</td>';
-		// *** Check if there are multiple lines in text ***
-		$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
-		echo '<td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="pers_buried_text" '.$field_text_selected.'>'.$text.'</textarea></td>';
-		echo '<td></td>';
-		echo '</tr>';
 
 		// *** Burial Witness ***
 		if ($add_person==false) echo $event_cls->show_event('person',$pers_gedcomnumber,'burial_witness');
@@ -2676,12 +2767,42 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			}
 
 			// *** Living together ***
-			echo '<tr class="humo_color"><td><a name="relation"></a><a href="#marriage" onclick="hideShow(6);"><span id="hideshowlink6">'.__('[+]').'</span></a> ';
+			// *** Use hideshow to show and hide the editor lines ***
+			$hideshow='6';
+			// *** If items are missing show all editor fields ***
+			$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
 
+			echo '<tr class="humo_color"><td><a name="relation"></a>';
+			//echo '<a href="#marriage" onclick="hideShow(6);"><span id="hideshowlink6">'.__('[+]').'</span></a> ';
 			echo __('Living together').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_relation_date,'fam_relation_date').' '.__('place').' <input type="text" name="fam_relation_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_relation_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_relation_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
 
+			echo '<td style="border-right:0px; vertical-align:top">';
+				echo __('Living together');
+				echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+				echo '<br>'.ucfirst(__('date')).'<br>';
+				echo __('End date').'<br>';
+				echo ucfirst(__('text'));
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td style="border-left:0px;">';
+				$hideshow_text=hideshow_date_place($fam_relation_date,$fam_relation_place);
+				if ($fam_relation_end_date){
+					if ($hideshow_text) $hideshow_text.='.';
+					$hideshow_text.=' '.__('End living together').' '.$fam_relation_end_date;
+				}
+				echo hideshow_editor($hideshow,$hideshow_text,$fam_relation_text);
+
+					echo $editor_cls->date_show($fam_relation_date,'fam_relation_date').' '.__('place').' <input type="text" name="fam_relation_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_relation_place).'" size="'.$field_place.'">';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_relation_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a><br>';
+
+					// *** End of living together ***
+					echo $editor_cls->date_show($fam_relation_end_date,"fam_relation_end_date").'<br>';
+
+					// *** Check if there are multiple lines in text ***
+					$field_text_selected=$field_text; if ($fam_relation_text AND preg_match('/\R/',$fam_relation_text)) $field_text_selected=$field_text_medium;
+					echo '<textarea rows="1" placeholder="'.__('text').'" name="fam_relation_text" '.$field_text_selected.'>'.$fam_relation_text.'</textarea>';
+				echo '<span>';
 			echo '</td><td>';
 				// *** Source by relation ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
@@ -2692,34 +2813,37 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Show source by relation in iframe ***
 			echo iframe_source('600','','fam_relation_source','');
 
-			// *** End of living together ***
-			$style=' class="humo_color"'; if (!$fam_relation_end_date) $style=' style="display:none;" class="row6 humo_color"';
-			//echo '<tr style="display:none;" class="row6" name="row6">';
-			//echo '<tr style="display:none;" class="row6 humo_color">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			echo '<td style="border-right:0px;">'.__('End date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_relation_end_date,"fam_relation_end_date").'</td>';
-			echo '<td></td></tr>';
-
-			$style=' class="humo_color"'; if (!$fam_relation_text) $style=' style="display:none;" class="row6 humo_color"';
-			//echo '<tr style="display:none;" class="row6" name="row6">';
-			//echo '<tr style="display:none;" class="row6 humo_color">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			// *** Check if there are multiple lines in text ***
-			$field_text_selected=$field_text; if ($fam_relation_text AND preg_match('/\R/',$fam_relation_text)) $field_text_selected=$field_text_medium;
-			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="fam_relation_text" '.$field_text_selected.'>'.$fam_relation_text.'</textarea></td>';
-			echo '<td></td>';
-			echo '</td></tr>';
-
 			// *** Marriage notice ***
-			echo '<tr><td><a name="marr_notice"></a>';
-			echo '<a href="#marriage" onclick="hideShow(7);"><span id="hideshowlink7">'.__('[+]').'</span></a> ';
-			echo __('Notice of Marriage').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_notice_date,"fam_marr_notice_date","","",$fam_marr_notice_date_hebnight,"fam_marr_notice_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_notice_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_notice_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_notice_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+			// *** Use hideshow to show and hide the editor lines ***
+			$hideshow='7';
+			// *** If items are missing show all editor fields ***
+			$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
 
-			echo '</td><td>';
+			echo '<tr><td><a name="marr_notice"></a>';
+			//echo '<a href="#marriage" onclick="hideShow(7);"><span id="hideshowlink7">'.__('[+]').'</span></a> ';
+			echo __('Notice of Marriage').'</td>';
+
+			echo '<td style="border-right:0px; vertical-align: top;">';
+				echo __('Notice of Marriage');
+				echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+				echo '<br>'.ucfirst(__('date')).'<br>';
+				echo ucfirst(__('text'));
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td style="border-left:0px;">';
+				$hideshow_text=hideshow_date_place($fam_marr_notice_date,$fam_marr_notice_place);
+				echo hideshow_editor($hideshow,$hideshow_text,$fam_marr_notice_text);
+					echo $editor_cls->date_show($fam_marr_notice_date,"fam_marr_notice_date","","",$fam_marr_notice_date_hebnight,"fam_marr_notice_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_notice_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_notice_place).'" size="'.$field_place.'">';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_notice_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a><br>';
+
+					// *** Check if there are multiple lines in text ***
+					$field_text_selected=$field_text; if ($fam_marr_notice_text AND preg_match('/\R/',$fam_marr_notice_text)) $field_text_selected=$field_text_medium;
+					echo '<textarea rows="1" placeholder="'.__('text').'" name="fam_marr_notice_text" '.$field_text_selected.'>'.$fam_marr_notice_text.'</textarea>';
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td>';
 				// *** Source by fam_marr_notice ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					//source_link('relation',$marriage,'fam_marr_notice_source');
@@ -2729,129 +2853,164 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Show source by relation in iframe ***
 			echo iframe_source('601','','fam_marr_notice_source','');
 
-			$style=''; if (!$fam_marr_notice_text) $style=' style="display:none;" class="row7"';
-			//echo '<tr class="humo_color row7" style="display:none;" name="row7">';
-			//echo '<tr class="row7" style="display:none;">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			// *** Check if there are multiple lines in text ***
-			$field_text_selected=$field_text; if ($fam_marr_notice_text AND preg_match('/\R/',$fam_marr_notice_text)) $field_text_selected=$field_text_medium;
-			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="fam_marr_notice_text" '.$field_text_selected.'>'.$fam_marr_notice_text.'</textarea></td>';
-			echo '<td></td></tr>';
-
 			// *** Marriage ***
+			// *** Use hideshow to show and hide the editor lines ***
+			$hideshow='8';
+			// *** If items are missing show all editor fields ***
+			$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+
 			echo '<tr class="humo_color"><td><a name="marriage_relation"></a>';
-			echo '<a href="#marriage" onclick="hideShow(8);"><span id="hideshowlink8">'.__('[+]').'</span></a> ';
+			//echo '<a href="#marriage" onclick="hideShow(8);"><span id="hideshowlink8">'.__('[+]').'</span></a> ';
 			//echo __('Marriage').'</td>';
 			echo ucfirst(__('marriage/ relation')).'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_date,"fam_marr_date","","",$fam_marr_date_hebnight,"fam_marr_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
 
-			echo '</td><td>';
+			echo '<td style="border-right:0px; vertical-align: top;">';
+				echo ucfirst(__('marriage/ relation'));
+				echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+					echo '<br>'.ucfirst(__('date')).'<br>';
+					echo ucfirst(__('age')).'<br>';
 
+					if (!$fam_kind)
+						echo '<span style="background-color:#FFAA80">'.__('Marriage/ Related').'</span><br>';
+					else
+						echo __('Relation Type').'<br>';
+
+					echo __('Registrar').'<br>';
+					echo ucfirst(__('text'));
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td style="border-left:0px;">';
+				$hideshow_text='';
+
+				if (!$fam_kind) $hideshow_text.='<span style="background-color:#FFAA80">'.__('Marriage/ Related').'</span>';
+
+				$date_place=date_place($fam_marr_date,$fam_marr_place);
+				if ($date_place){
+					if ($hideshow_text) $hideshow_text.=', ';
+					$hideshow_text.=$date_place;
+				}
+
+				if ($fam_marr_authority){
+					//if ($hideshow_text) $hideshow_text.='.';
+					$hideshow_text.=' ['.$fam_marr_authority.']';
+				}
+
+				echo hideshow_editor($hideshow,$hideshow_text,$fam_marr_text);
+
+					echo $editor_cls->date_show($fam_marr_date,"fam_marr_date","","",$fam_marr_date_hebnight,"fam_marr_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_place).'" size="'.$field_place.'">';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a><br>';
+
+					// *** Age of man by marriage ***
+					echo __('Age person 1').' <input type="text" name="fam_man_age" placeholder="'.__('Age').'" value="'.$fam_man_age.'" size="3">';
+					echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp';
+
+					// *** Age of woman by marriage ***
+					echo __('Age person 2').' <input type="text" name="fam_woman_age" placeholder="'.__('Age').'" value="'.$fam_woman_age.'" size="3">';
+
+					// *** HELP POPUP for age by marriage ***
+					echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+						echo '<a href="#" style="display:inline" ';
+						echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
+						echo 'onmouseout="mclosetime()">';
+							echo '<img src="../images/help.png" height="16" width="16">';
+						echo '</a>';
+						echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+							echo '<b>'.__('If birth year of man or woman is empty it will be calculated automatically using age by marriage.').'</b><br>';
+						echo '</div>';
+					echo '</div><br>';
+
+
+					//$colour=''; if ($fam_kind==''){ $colour=' bgcolor="#ffaa80"'; }
+					//$colour=''; if ($fam_kind==''){ $colour=' style="background-color:#FFAA80"'; }
+					echo '<select size="1" name="fam_kind">';
+						//echo '<option value="civil">'.__('Married').' </option>';
+						echo '<option value="">'.__('Marriage/ Related').' </option>';
+
+						$selected=''; if ($fam_kind=='civil'){ $selected=' SELECTED'; }
+						echo '<option value="civil"'.$selected.'>'.__('Married').'</option>';
+
+						$selected=''; if ($fam_kind=='living together'){ $selected=' SELECTED'; }
+						echo '<option value="living together"'.$selected.'>'.__('Living together').'</option>';
+
+						$selected=''; if ($fam_kind=='living apart together'){ $selected=' SELECTED'; }
+						echo '<option value="living apart together"'.$selected.'>'.__('Living apart together').'</option>';
+
+						$selected=''; if ($fam_kind=='intentionally unmarried mother'){ $selected=' SELECTED'; }
+						echo '<option value="intentionally unmarried mother"'.$selected.'>'.__('Intentionally unmarried mother').'</option>';
+
+						$selected=''; if ($fam_kind=='homosexual'){ $selected=' SELECTED'; }
+						echo '<option value="homosexual"'.$selected.'>'.__('Homosexual').'</option>';
+
+						$selected=''; if ($fam_kind=='non-marital'){ $selected=' SELECTED'; }
+						echo '<option value="non-marital"'.$selected.'>'.__('Non_marital').'</option>';
+
+						$selected=''; if ($fam_kind=='extramarital'){ $selected=' SELECTED'; }
+						echo '<option value="extramarital"'.$selected.'>'.__('Extramarital').'</option>';
+
+						$selected=''; if ($fam_kind=='partners'){ $selected=' SELECTED'; }
+						echo '<option value="partners"'.$selected.'>'.__('Partner').'</option>';
+
+						$selected=''; if ($fam_kind=='registered'){ $selected=' SELECTED'; }
+						echo '<option value="registered"'.$selected.'>'.__('Registered partnership').'</option>';
+
+						$selected=''; if ($fam_kind=='unknown'){ $selected=' SELECTED'; }
+						echo '<option value="unknown"'.$selected.'>'.__('Unknown relation').'</option>';
+					echo '</select><br>';
+
+					echo '<input type="text" placeholder="'.__('Registrar').'" name="fam_marr_authority" value="'.$fam_marr_authority.'" size="60"><br>';
+
+					// *** Check if there are multiple lines in text ***
+					$field_text_selected=$field_text; if ($fam_marr_text AND preg_match('/\R/',$fam_marr_text)) $field_text_selected=$field_text_medium;
+					echo '<textarea rows="1" placeholder="'.__('text').'" name="fam_marr_text" '.$field_text_selected.'>'.$fam_marr_text.'</textarea>';
+
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td>';
 			// *** Source by fam_marr ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					//source_link('relation',$marriage,'fam_marr_source');
 					echo source_link2('602',$marriage,'fam_marr_source','marriage_relation');
 				}
-
 			echo '</td></tr>';
 			// *** Show source by relation in iframe ***
 			echo iframe_source('602','','fam_marr_source','');
-
-			echo '<tr class="humo_color"><td>';
-			echo '<td style="border-right:0px;"><br></td><td style="border-left:0px;">';
-				// *** Age of man by marriage ***
-				echo __('Age person 1').' <input type="text" name="fam_man_age" placeholder="'.__('Age').'" value="'.$fam_man_age.'" size="3">';
-				echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp';
-
-				// *** Age of woman by marriage ***
-				echo __('Age person 2').' <input type="text" name="fam_woman_age" placeholder="'.__('Age').'" value="'.$fam_woman_age.'" size="3">';
-
-				// *** HELP POPUP for age by marriage ***
-				echo '&nbsp;&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
-					echo '<a href="#" style="display:inline" ';
-					echo 'onmouseover="mopen(event,\'help_menu2\',100,400)"';
-					echo 'onmouseout="mclosetime()">';
-						echo '<img src="../images/help.png" height="16" width="16">';
-					echo '</a>';
-					echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_menu2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-						echo '<b>'.__('If birth year of man or woman is empty it will be calculated automatically using age by marriage.').'</b><br>';
-					echo '</div>';
-				echo '</div>';
-
-			echo '</td><td>';
-			echo '</td></tr>';
-
-			$colour=''; if ($fam_kind==''){ $colour=' bgcolor="#ffaa80"'; }
-			//echo '<tr class="humo_color"><td>'.__('Relation Type').'</td><td style="border-right:0px;"></td><td'.$colour.' style="border-left:0px;">';
-			echo '<tr class="humo_color"><td></td><td style="border-right:0px;">'.__('Relation Type').'</td><td'.$colour.' style="border-left:0px;">';
-			echo '<select size="1" name="fam_kind">';
-				//echo '<option value="civil">'.__('Married').' </option>';
-				echo '<option value="">'.__('Marriage/ Related').' </option>';
-
-				$selected=''; if ($fam_kind=='civil'){ $selected=' SELECTED'; }
-				echo '<option value="civil"'.$selected.'>'.__('Married').'</option>';
-
-				$selected=''; if ($fam_kind=='living together'){ $selected=' SELECTED'; }
-				echo '<option value="living together"'.$selected.'>'.__('Living together').'</option>';
-
-				$selected=''; if ($fam_kind=='living apart together'){ $selected=' SELECTED'; }
-				echo '<option value="living apart together"'.$selected.'>'.__('Living apart together').'</option>';
-
-				$selected=''; if ($fam_kind=='intentionally unmarried mother'){ $selected=' SELECTED'; }
-				echo '<option value="intentionally unmarried mother"'.$selected.'>'.__('Intentionally unmarried mother').'</option>';
-
-				$selected=''; if ($fam_kind=='homosexual'){ $selected=' SELECTED'; }
-				echo '<option value="homosexual"'.$selected.'>'.__('Homosexual').'</option>';
-
-				$selected=''; if ($fam_kind=='non-marital'){ $selected=' SELECTED'; }
-				echo '<option value="non-marital"'.$selected.'>'.__('Non_marital').'</option>';
-
-				$selected=''; if ($fam_kind=='extramarital'){ $selected=' SELECTED'; }
-				echo '<option value="extramarital"'.$selected.'>'.__('Extramarital').'</option>';
-
-				$selected=''; if ($fam_kind=='partners'){ $selected=' SELECTED'; }
-				echo '<option value="partners"'.$selected.'>'.__('Partner').'</option>';
-
-				$selected=''; if ($fam_kind=='registered'){ $selected=' SELECTED'; }
-				echo '<option value="registered"'.$selected.'>'.__('Registered partnership').'</option>';
-
-				$selected=''; if ($fam_kind=='unknown'){ $selected=' SELECTED'; }
-				echo '<option value="unknown"'.$selected.'>'.__('Unknown relation').'</option>';
-
-			echo '</select>';
-			echo '</td><td></td></tr>';
-
-			$style=' class="humo_color"'; if (!$fam_marr_authority) $style=' style="display:none;" class="row8 humo_color"';
-			//echo '<tr style="display:none;" class="row8" name="row8">';
-			//echo '<tr style="display:none;" class="row8 humo_color">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			echo '<td style="border-right:0px;">'.__('Registrar').'</td><td style="border-left:0px;"><input type="text" placeholder="'.__('Registrar').'" name="fam_marr_authority" value="'.$fam_marr_authority.'" size="60"></td>';
-			echo '<td></td></tr>';
-
-			$style=' class="humo_color"'; if (!$fam_marr_text) $style=' style="display:none;" class="row8 humo_color"';
-			//echo '<tr style="display:none;" class="row8" name="row8">';
-			//echo '<tr style="display:none;" class="row8 humo_color">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			// *** Check if there are multiple lines in text ***
-			$field_text_selected=$field_text; if ($fam_marr_text AND preg_match('/\R/',$fam_marr_text)) $field_text_selected=$field_text_medium;
-			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="fam_marr_text" '.$field_text_selected.'>'.$fam_marr_text.'</textarea></td>';
-			echo '<td></td></tr>';
 
 			// *** Marriage Witness ***
 			echo $event_cls->show_event('family',$marriage,'marriage_witness');
 
 			// *** Religious marriage notice ***
-			echo '<tr><td><a name="marr_church_notice"></a>';
-			echo '<a href="#marriage" onclick="hideShow(9);"><span id="hideshowlink9">'.__('[+]').'</span></a> ';
-			echo __('Religious Notice of Marriage').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_notice_date,"fam_marr_church_notice_date","","",$fam_marr_church_notice_date_hebnight,"fam_marr_church_notice_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_church_notice_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_church_notice_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_notice_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+			// *** Use hideshow to show and hide the editor lines ***
+			$hideshow='9';
+			// *** If items are missing show all editor fields ***
+			$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
 
-				echo '</td><td>';
+			echo '<tr><td><a name="marr_church_notice"></a>';
+			//echo '<a href="#marriage" onclick="hideShow(9);"><span id="hideshowlink9">'.__('[+]').'</span></a> ';
+			echo __('Religious Notice of Marriage').'</td>';
+
+			echo '<td style="border-right:0px; vertical-align: top;">';
+				echo __('Religious Notice of Marriage');
+				echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+					echo '<br>'.ucfirst(__('date')).'<br>';
+					echo ucfirst(__('text'));
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td style="border-left:0px;">';
+				$hideshow_text=hideshow_date_place($fam_marr_church_notice_date,$fam_marr_church_notice_place);
+				echo hideshow_editor($hideshow,$hideshow_text,$fam_marr_church_notice_text);
+					echo $editor_cls->date_show($fam_marr_church_notice_date,"fam_marr_church_notice_date","","",$fam_marr_church_notice_date_hebnight,"fam_marr_church_notice_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_church_notice_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_church_notice_place).'" size="'.$field_place.'">';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_notice_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a><br>';
+
+					// *** Check if there are multiple lines in text ***
+					$field_text_selected=$field_text; if ($fam_marr_church_notice_text AND preg_match('/\R/',$fam_marr_church_notice_text)) $field_text_selected=$field_text_medium;
+					echo '<textarea rows="1" placeholder="'.__('text').'" name="fam_marr_church_notice_text" '.$field_text_selected.'>'.$fam_marr_church_notice_text.'</textarea>';
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td>';
 				// *** Source by fam_marr_church_notice ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					//source_link('relation',$marriage,'fam_marr_church_notice_source');
@@ -2861,24 +3020,37 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			// *** Show source by relation in iframe ***
 			echo iframe_source('603','','fam_marr_church_notice_source','');
 
-			$style=''; if (!$fam_marr_church_notice_text) $style=' style="display:none;" class="row9"';
-			//echo '<tr class="humo_color row9" style="display:none;" name="row9">';
-			//echo '<tr class="row9" style="display:none;">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			// *** Check if there are multiple lines in text ***
-			$field_text_selected=$field_text; if ($fam_marr_church_notice_text AND preg_match('/\R/',$fam_marr_church_notice_text)) $field_text_selected=$field_text_medium;
-			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="fam_marr_church_notice_text" '.$field_text_selected.'>'.$fam_marr_church_notice_text.'</textarea></td>';
-			echo '<td></td></tr>';
-
 			// *** Church marriage ***
-			echo '<tr class="humo_color"><td><a name="marr_church"></a>';
-			echo '<a href="#marriage" onclick="hideShow(10);"><span id="hideshowlink10">'.__('[+]').'</span></a> ';
-			echo __('Religious Marriage').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_marr_church_date,"fam_marr_church_date","","",$fam_marr_church_date_hebnight,"fam_marr_church_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_church_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_church_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+			// *** Use hideshow to show and hide the editor lines ***
+			$hideshow='10';
+			// *** If items are missing show all editor fields ***
+			$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
 
-			echo '</td><td>';
+			echo '<tr class="humo_color"><td><a name="marr_church"></a>';
+			//echo '<a href="#marriage" onclick="hideShow(10);"><span id="hideshowlink10">'.__('[+]').'</span></a> ';
+			echo __('Religious Marriage').'</td>';
+
+			echo '<td style="border-right:0px; vertical-align: top;">';
+				echo __('Religious Marriage');
+				echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+					echo '<br>'.ucfirst(__('date')).'<br>';
+					echo ucfirst(__('text'));
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td style="border-left:0px;">';
+				$hideshow_text=hideshow_date_place($fam_marr_church_date,$fam_marr_church_place);
+				echo hideshow_editor($hideshow,$hideshow_text,$fam_marr_church_text);
+					echo $editor_cls->date_show($fam_marr_church_date,"fam_marr_church_date","","",$fam_marr_church_date_hebnight,"fam_marr_church_date_hebnight").' '.__('place').' <input type="text" name="fam_marr_church_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_marr_church_place).'" size="'.$field_place.'">';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_marr_church_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a><br>';
+
+					// *** Check if there are multiple lines in text ***
+					$field_text_selected=$field_text; if ($fam_marr_church_text AND preg_match('/\R/',$fam_marr_church_text)) $field_text_selected=$field_text_medium;
+					echo '<textarea rows="1" placeholder="'.__('text').'" name="fam_marr_church_text" '.$field_text_selected.'>'.$fam_marr_church_text.'</textarea>';
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td>';
 			// *** Source by fam_marr_church ***
 			if (isset($marriage) AND !isset($_GET['add_marriage'])){
 				//source_link('relation',$marriage,'fam_marr_church_source');
@@ -2886,18 +3058,8 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			}
 
 			echo '</td></tr>';
-			// *** Show source by relation in iframe ***
+			// *** Show source in iframe ***
 			echo iframe_source('604','','fam_marr_church_source','');
-
-			$style=' class="humo_color"'; if (!$fam_marr_church_text) $style=' style="display:none;" class="row10 humo_color"';
-			//echo '<tr style="display:none;" class="row10" name="row10">';
-			//echo '<tr style="display:none;" class="row10 humo_color">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			// *** Check if there are multiple lines in text ***
-			$field_text_selected=$field_text; if ($fam_marr_church_text AND preg_match('/\R/',$fam_marr_church_text)) $field_text_selected=$field_text_medium;
-			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;"><textarea rows="1" placeholder="'.__('text').'" name="fam_marr_church_text" '.$field_text_selected.'>'.$fam_marr_church_text.'</textarea></td>';
-			echo '<td></td></tr>';
 
 			// *** Marriage Witness (church) ***
 			echo $event_cls->show_event('family',$marriage,'marriage_witness_rel');
@@ -2908,13 +3070,47 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 			echo '<td style="border-right:0px;">'.__('Religion').'</td><td style="border-left:0px;"><input type="text" placeholder="'.__('Religion').'" name="fam_religion" value="'.htmlspecialchars($fam_religion).'" size="60"></td><td></td></tr>';
 
 			// *** Divorce ***
-			echo '<tr><td><a name="divorce"></a>';
-			echo '<a href="#marriage" onclick="hideShow(11);"><span id="hideshowlink11">'.__('[+]').'</span></a> ';
-			echo __('Divorce').'</td>';
-			echo '<td style="border-right:0px;">'.__('date').'</td><td style="border-left:0px;">'.$editor_cls->date_show($fam_div_date,"fam_div_date").' '.__('place').' <input type="text" name="fam_div_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_div_place).'" size="'.$field_place.'">';
-			echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_div_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
+			// *** Use hideshow to show and hide the editor lines ***
+			$hideshow='11';
+			// *** If items are missing show all editor fields ***
+			$display=' display:none;'; //if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
 
-			echo '</td><td>';
+			echo '<tr><td><a name="divorce"></a>';
+			//echo '<a href="#marriage" onclick="hideShow(11);"><span id="hideshowlink11">'.__('[+]').'</span></a> ';
+			echo __('Divorce').'</td>';
+
+			echo '<td style="border-right:0px; vertical-align: top;">';
+				echo __('Divorce');
+				echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+					echo '<br>'.ucfirst(__('date')).'<br>';
+					echo __('Registrar').'<br>';
+					echo ucfirst(__('text'));
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td style="border-left:0px;">';
+				$hideshow_text=hideshow_date_place($fam_div_date,$fam_div_place);
+
+				if ($fam_div_authority){
+					//if ($hideshow_text) $hideshow_text.='.';
+					$hideshow_text.=' ['.$fam_div_authority.']';
+				}
+
+				echo hideshow_editor($hideshow,$hideshow_text,$fam_div_text);
+					echo $editor_cls->date_show($fam_div_date,"fam_div_date").' '.__('place').' <input type="text" name="fam_div_place" placeholder="'.ucfirst(__('place')).'" value="'.htmlspecialchars($fam_div_place).'" size="'.$field_place.'">';
+					echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=2&amp;place_item=fam_div_place","","'.$field_popup.'");><img src="../images/search.png" border="0"></a><br>';
+
+					$text=''; if ($fam_div_authority) $text=htmlspecialchars($fam_div_authority);
+					echo '<input type="text" placeholder="'.__('Registrar').'" name="fam_div_authority" value="'.$text.'" size="60"><br>';
+
+					if ($fam_div_text=='DIVORCE') $fam_div_text=''; // *** Hide this text, it's a hidden value for a divorce without data ***
+					// *** Check if there are multiple lines in text ***
+					$field_text_selected=$field_text; if ($fam_div_text AND preg_match('/\R/',$fam_div_text)) $field_text_selected=$field_text_medium;
+					echo '<textarea rows="1" placeholder="'.__('text').'" name="fam_div_text" '.$field_text_selected.'>'.$fam_div_text.'</textarea>';
+				echo '</span>';
+			echo '</td>';
+
+			echo '<td>';
 				// *** Source by fam_div ***
 				if (isset($marriage) AND !isset($_GET['add_marriage'])){
 					//source_link('relation',$marriage,'fam_div_source');
@@ -2931,27 +3127,6 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 				$checked=''; if ($fam_div_no_data) $checked=' checked';
 				echo '<input type="checkbox" name="fam_div_no_data" value="no_data"'.$checked.'> '.__('Divorce (use this checkbox for a divorce without further data).');
 			echo '</td><td></td></tr>';
-
-			$text=''; if ($fam_div_authority) $text=htmlspecialchars($fam_div_authority);
-			$style=''; if (!$text) $style=' style="display:none;" class="row11"';
-			//echo '<tr style="display:none;" class="row11" name="row11">';
-			//echo '<tr style="display:none;" class="row11">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			echo '<td style="border-right:0px;">'.__('Registrar').'</td><td style="border-left:0px;"><input type="text" placeholder="'.__('Registrar').'" name="fam_div_authority" value="'.$text.'" size="60"></td>';
-			echo '<td></td></tr>';
-
-			$style=''; if (!$fam_div_text) $style=' style="display:none;" class="row11"';
-			//echo '<tr style="display:none;" class="row11" name="row11">';
-			//echo '<tr style="display:none;" class="row11">';
-			echo '<tr'.$style.'>';
-			echo '<td></td>';
-			if ($fam_div_text=='DIVORCE') $fam_div_text=''; // *** Hide this text, it's a hidden value for a divorce without data ***
-			// *** Check if there are multiple lines in text ***
-			$field_text_selected=$field_text; if ($fam_div_text AND preg_match('/\R/',$fam_div_text)) $field_text_selected=$field_text_medium;
-			echo '<td style="border-right:0px;">'.__('text').'</td><td style="border-left:0px;">
-				<textarea rows="1" placeholder="'.__('text').'" name="fam_div_text" '.$field_text_selected.'>'.$fam_div_text.'</textarea></td>';
-			echo '<td></td></tr>';
 
 			// *** General text by relation ***
 			echo '<tr class="humo_color"><td><a name="fam_text"></a>'.__('Text by relation').'</td>';
@@ -4179,11 +4354,18 @@ function source_link2($hideshow,$connect_connect_id,$connect_sub_kind,$link=''){
 	}
 
 	$text='&nbsp;';
-	if ($source_error=='1') $text.='<span style="background-color:#FFAA80">'; // *** No source connected, colour = orange ***
-	if ($source_error=='2') $text.='<span style="background-color:#FFFF00">'; // *** Source is empty, colour = yellow ***
-		//$text.='<a href="#" onclick="hideShow('.$hideshow.');">'.__('source').' <span id="hideshowlink30">'.__('[+]').'</span></a> ';
-		$text.='<a href="#'.$link.'" onclick="hideShow('.$hideshow.');">'.__('source').' ['.$source_count.']</a> ';
-	if ($source_error) $text.='</span>';
+
+	//if ($source_error=='1') $text.='<span style="background-color:#FFAA80">'; // *** No source connected, colour = orange ***
+	//if ($source_error=='2') $text.='<span style="background-color:#FFFF00">'; // *** Source is empty, colour = yellow ***
+	//	//$text.='<a href="#" onclick="hideShow('.$hideshow.');">'.__('source').' <span id="hideshowlink30">'.__('[+]').'</span></a> ';
+	//	$text.='<a href="#'.$link.'" onclick="hideShow('.$hideshow.');">'.__('source').' ['.$source_count.']</a> ';
+	//if ($source_error) $text.='</span>';
+
+	$style='';
+	if ($source_error=='1') $style=' style="background-color:#FFAA80"'; // *** No source connected, colour = orange ***
+	if ($source_error=='2') $style=' style="background-color:#FFFF00"'; // *** Source is empty, colour = yellow ***
+	$text.='<span class="hideshowlink"'.$style.' onclick="hideShow('.$hideshow.');">'.__('source').' ['.$source_count.']</span>';
+
 	return $text;
 }
 
@@ -4214,7 +4396,7 @@ function witness_edit($event_text, $witness, $multiple_rows=''){
 	$value='';
 	if (substr($witness,0,1)=='@'){
 		$value=substr($witness,1,-1);
-		$text.=show_person(substr($witness,1,-1),$gedcom_date=false, $show_link=false).'<br>';
+		//$text.=show_person(substr($witness,1,-1),$gedcom_date=false, $show_link=false).'<br>';
 	}
 
 	$person_item='person_witness'; if ($menu_tab=='marriage') $person_item='marriage_witness';
@@ -4242,7 +4424,6 @@ function add_person($person_kind,$pers_sexe){
 
 	$pers_prefix='';
 	$pers_lastname='';
-	$pers_patronym='';
 
 	if ($person_kind=='partner'){
 		echo ' <form method="POST" style="display: inline;" action="'.$phpself.'#marriage" name="form5" id="form5">';
@@ -4262,7 +4443,6 @@ function add_person($person_kind,$pers_sexe){
 			$personDb = $db_functions->get_person($familyDb->fam_man);
 			$pers_prefix=$personDb->pers_prefix;
 			$pers_lastname=$personDb->pers_lastname;
-			$pers_patronym=$personDb->pers_patronym;
 		}
 	}
 
@@ -4311,7 +4491,7 @@ function add_person($person_kind,$pers_sexe){
 		// *** Lastname/ patronym ***
 		echo '<tr><td><b>'.__('lastname').'</b></td><td>';
 			echo '<input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35" placeholder="'.ucfirst(__('lastname')).'">';
-			echo ' '.__('patronymic').' <input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20" placeholder="'.ucfirst(__('patronymic')).'">';
+			echo ' '.__('patronymic').' <input type="text" name="pers_patronym" value="" size="20" placeholder="'.ucfirst(__('patronymic')).'">';
 		echo '</td></tr>';
 
 		// *** Privacy filter ***
@@ -4453,6 +4633,21 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 				else
 					echo 'family_place_address=1&amp;';
 				echo 'address_add=1'.$anchor.'">['.__('Add').']</a> ';
+
+				// *** HELP POPUP for address ***
+				$rtlmarker="ltr";
+				echo '&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+					echo '<a href="#" style="display:inline" ';
+					echo 'onmouseover="mopen(event,\'help_address_shared\',0,0)"';
+					echo 'onmouseout="mclosetime()">';
+						echo '<img src="../images/help.png" height="16" width="16">';
+					echo '</a>';
+					echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_address_shared" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+						echo '<b>'.__('A shared address can be connected to multiple persons or relations.').'</b><br>';
+						echo '<b>'.__('A shared address is only supported by the Haza-data and HuMo-genealogy programs.').'</b><br>';
+					echo '</div>';
+				echo '</div><br>';
+
 		echo '</td>';
 		echo '<td></td>';
 	echo '</tr>';
@@ -4525,24 +4720,50 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 			WHERE address_tree_id='".$tree_id."'
 			AND address_gedcomnr='".$addressDb->connect_item_id."'");
 		$address3Db=$address3_qry->fetch(PDO::FETCH_OBJ);
-		echo '<td style="border-right:0px; vertical-align:top"><div style="margin-top:5px;"></div>'.__('Address').'<br>';
+		//echo '<td style="border-right:0px; vertical-align:top"><div style="margin-top:5px;"></div>'.__('Address');
+		echo '<td style="border-right:0px; vertical-align:top">'.__('Address');
 			if ($address3Db){
-				echo
-				__('Place').'<br>'.
-				__('Street').'<br>'.
-				__('Zip code').'<br>'.
-				__('text').'<br>';
+				// *** Use hideshow to show and hide the editor lines ***
+				$hideshow='8000'.$address3Db->address_id;
+				// *** If address AND place are missing show all editor fields ***
+				$display=' display:none;'; if ($address3Db->address_address=='' AND $address3Db->address_place=='') $display='';
+				echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+					echo '<br>';
+					echo __('Address').'<br>';
+					echo __('Place').'<br>';
+					echo __('Street').'<br>';
+					echo __('Zip code').'<br>';
+					echo ucfirst(__('text')).'<br>';
+					echo ucfirst(__('date')).'<br>';
+					echo __('Extra text');
+				echo '</span>';
 			}
-			echo __('date').'<br>'.
-			__('Extra text').'</td>';
+			//echo __('date').'<br>';
+			//echo __('Extra text');
+		echo '</td>';
+
 		echo '<td style="border-left:0px; vertical-align:top">';
 			// *** Source ***
 			// There is no source used in the CONNECTION. Only at the address.
 			echo '<input type="hidden" name="connect_source_id['.$key.']" value="">';
 			echo '<input type="hidden" name="connect_text['.$key.']" value="">';
 
-			echo '<div style="border: 2px solid red">';
+			//echo '<div style="border: 2px solid red">';
 				if ($address3Db){
+					$address=$address3Db->address_address.' '.$address3Db->address_place;
+					if ($address3Db->address_address=='' AND $address3Db->address_place=='') $address=__('EMPTY LINE');
+
+					// *** Also show date and place ***
+					//if ($addressDb->connect_date) $address.=', '.date_place($addressDb->connect_date,'');
+					if ($addressDb->connect_date) $address.=', '.hideshow_date_place($addressDb->connect_date,'');
+
+					echo '<span class="hideshowlink" onclick="hideShow('.$hideshow.');">'.$address;
+						if ($address3Db->address_text OR $addressDb->connect_text) echo ' <img src="images/text.png" height="16px">';
+					echo '</span>';
+
+					echo '<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+					echo '<br>';
+
 					echo '<input type="hidden" name="change_address_id['.$address3Db->address_id.']" value="'.$address3Db->address_id.'">';
 
 					// *** Send old values, so changes of values can be detected ***
@@ -4559,12 +4780,13 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 					// *** Shared address, to connect address to multiple persons or relations ***
 					$checked=''; if ($address3Db->address_shared) $checked=' checked';
-					echo '<input type="checkbox" name="address_shared_'.$address3Db->address_id.'" value="no_data"'.$checked.'> '.__('Shared address');
-					// *** HELP POPUP for source ***
+					echo '<input type="checkbox" name="address_shared_'.$address3Db->address_id.'" value="no_data"'.$checked.'> '.__('Shared address').'<br>';
+
+					/*
+					// *** HELP POPUP for address ***
 					$rtlmarker="ltr";
 					echo '&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
 						echo '<a href="#" style="display:inline" ';
-						//echo='onmouseover="mopen(event,\'help_source_shared\',100,250)"';
 						echo 'onmouseover="mopen(event,\'help_address_shared\',0,0)"';
 						echo 'onmouseout="mclosetime()">';
 							echo '<img src="../images/help.png" height="16" width="16">';
@@ -4574,6 +4796,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 							echo '<b>'.__('A shared address is only supported by the Haza-data and HuMo-genealogy programs.').'</b><br>';
 						echo '</div>';
 					echo '</div><br>';
+					*/
 
 					// *** Don't use date here. Date of connection table will be used ***
 					//echo $editor_cls->date_show($address3Db->address_date,'address_date',"[$address3Db->address_id]").' ';
@@ -4624,10 +4847,24 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 					// *** Edit text ***
 					echo '<textarea rows="1" name="address_text_'.$address3Db->address_id.'" placeholder="'.__('Text').'"'.$field_text.'>'.
-					$editor_cls->text_show($address3Db->address_text).'</textarea>';
+					$editor_cls->text_show($address3Db->address_text).'</textarea><br>';
+
+					// *** Edit address date and address role ***
+					echo $editor_cls->date_show($addressDb->connect_date,'connect_date',"[$addressDb->connect_id]");
+					$connect_role=''; if (isset($addressDb->connect_role)) $connect_role=htmlspecialchars($addressDb->connect_role);
+					echo ' '.__('Addressrole').' <input type="text" name="connect_role['.$key.']" value="'.$connect_role.'" size="6"><br>';
+
+					//echo '<div style="border: 2px solid red">';
+						// *** Extra text by address ***
+						echo '<textarea name="connect_text['.$addressDb->connect_id.']" placeholder="'.__('Extra text by address').'" '.$field_text.'>'.$editor_cls->text_show($addressDb->connect_text).'</textarea>';
+					//echo '</div>';
+
+					// *** Use hideshow to show and hide the editor lines ***
+					if (isset($hideshow) AND substr($hideshow,0,4)=='8000') echo '</span>';
+
 				}
 				else{
-					// *** Only show addresses if address is shared ***
+					// *** Add new address ***
 					$addressqry=$dbh->query("SELECT * FROM humo_addresses
 						WHERE address_tree_id='".$tree_id."' AND address_shared='1'
 						ORDER BY address_place, address_address");
@@ -4671,7 +4908,9 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 					#addresses">['.__('Add').']</a> ';
 				}
 
-			echo '</div>';
+			//echo '</div>';
+
+			/*
 			// *** Edit address date and address role ***
 			echo $editor_cls->date_show($addressDb->connect_date,'connect_date',"[$addressDb->connect_id]");
 			$connect_role=''; if (isset($addressDb->connect_role)) $connect_role=htmlspecialchars($addressDb->connect_role);
@@ -4679,6 +4918,7 @@ function edit_addresses($connect_kind,$connect_sub_kind,$connect_connect_id){
 
 			// *** Extra text by address ***
 			echo '<br><textarea name="connect_text['.$addressDb->connect_id.']" placeholder="'.__('Extra text by address').'" '.$field_text.'>'.$editor_cls->text_show($addressDb->connect_text).'</textarea>';
+			*/
 
 		echo '</td>';
 		echo '<td style="vertical-align:bottom;">';
@@ -4897,6 +5137,40 @@ function show_editor_notes($note_connect_kind){
 			echo '</td>';
 		echo '<td></td></tr>';
 	}
+}
+
+function editor_label ($label,$style=''){
+	$text='<div class="editor_item">';
+		if ($style=='bold') $text.='<b>';
+		$text.=ucfirst($label);
+		if ($style=='bold') $text.='</b>';
+	$text.='</div>';
+	return $text;
+}
+
+function hideshow_date_place($hideshow_date,$hideshow_place){
+	// *** If date ends with ! then date isn't valid. Show red line ***
+	$check_date=false; if (substr($hideshow_date,-1)=='!'){
+		$check_date=true;
+		$hideshow_date=substr($hideshow_date,0,-1);
+	}
+	$text=date_place($hideshow_date,$hideshow_place);
+	if ($check_date){ $text='<span style="background-color:#FFAA80">'.$text.'</span>'; }
+	return $text;
+}
+
+function hideshow_editor($hideshow,$text,$check_text){
+	$display=' display:none;';
+	if (!$text) $text='['.__('Add').']';
+
+	$return_text='<span class="hideshowlink" onclick="hideShow('.$hideshow.');">'.$text;
+		if ($check_text) $return_text.=' <img src="images/text.png" height="16px">';
+	$return_text.='</span>';
+
+	$return_text.='<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+	$return_text.='<br>';
+
+	return $return_text;
 }
 
 // *** Set same width of columns (in 2 different tables) in tab family ***

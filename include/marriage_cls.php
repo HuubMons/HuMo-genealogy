@@ -583,7 +583,6 @@ function marriage_data($marriageDb='', $number='0', $presentation='standard'){
 				$templ_relation["marr_years"]=$age;
 			}
 		}
-
 	}
 
 	// *** Show media/ pictures ***

@@ -233,31 +233,60 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 			$result=$dbh->query($sql);
 		}
 
-
+		// ***************************************************
 		// *** Aug. 2022: Cleanup old HuMo-genealogy files ***
-		if (!isset($humo_option['cleanup_status'])){
-			global $update_dir, $update_files;
+		// ***************************************************
+		global $update_dir, $update_files;
 
-			function listFolderFiles2($dir,$exclude,$file_array){
-				global $update_dir, $update_files;
-				$ffs = scandir($dir);
-				foreach($ffs as $ff){
-					if(is_array($exclude) and !in_array($ff,$exclude)){
-						if($ff != '.' && $ff != '..'){
-							// *** Skip media files in ../media/, ../media/cms/ etc.
-							//if (substr($dir,0,8)=='../media' AND !is_dir($dir.'/'.$ff) AND $ff != 'readme.txt'){
-							//	// skip media files
-							//}
-							//else{
-								$update_dir[]=$dir;
-								$update_files[]=$ff;
-								if(is_dir($dir.'/'.$ff)) listFolderFiles2($dir.'/'.$ff,$exclude,$file_array); 
-							//}
+		function remove_the_folders($remove_folders){
+			global $update_dir, $update_files;
+//echo '<br><br><br><br><br><br><br>';
+			foreach($remove_folders as $rf){
+				//unset ($update_dir,$update_files);
+//echo $rf.' folder<br>';
+				if (is_dir($rf)){
+					// *** Remove these old HuMo-genealogy files, a__ is just some random text (skip items)... ***
+					listFolderFiles2($rf,array('a__','a__'),'update_files');
+//echo $update_dir[0].' '.$update_files[0];
+					// *** Count down, because files must be removed first before removing directories ***
+					if (is_array($update_files)){
+						for ($i=count($update_files)-1; $i>=0; $i--){
+							if (!is_dir($update_dir[$i].'/'.$update_files[$i])){
+								unlink ($update_dir[$i].'/'.$update_files[$i]);
+							}
+							else{
+								rmdir ($update_dir[$i].'/'.$update_files[$i]);
+							}
+//echo $update_dir[$i].'/'.$update_files[$i].'<br>';
 						}
+					}
+					rmdir ($rf);
+					unset ($update_dir,$update_files);
+				}
+			}
+		}
+
+		function listFolderFiles2($dir,$exclude,$file_array){
+			global $update_dir, $update_files;
+			$ffs = scandir($dir);
+			foreach($ffs as $ff){
+				if(is_array($exclude) and !in_array($ff,$exclude)){
+					if($ff != '.' && $ff != '..'){
+						// *** Skip media files in ../media/, ../media/cms/ etc.
+						//if (substr($dir,0,8)=='../media' AND !is_dir($dir.'/'.$ff) AND $ff != 'readme.txt'){
+						//	// skip media files
+						//}
+						//else{
+							$update_dir[]=$dir;
+							$update_files[]=$ff;
+							if(is_dir($dir.'/'.$ff)) listFolderFiles2($dir.'/'.$ff,$exclude,$file_array); 
+						//}
 					}
 				}
 			}
+		}
 
+		if (!isset($humo_option['cleanup_status'])){
 			// *** Remove old files ***
 			$remove_file[]='../admin/include/ckeditor/.htaccess';
 			$remove_file[]='../admin/include/kcfinder/.htaccess';
@@ -328,29 +357,7 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 			$remove_folders[]='menu';			// admin/languages
 			$remove_folders[]='statistieken';	// admin/statistieken
 
-//echo '<br><br><br><br><br><br><br>';
-			foreach($remove_folders as $rf){
-				unset ($update_dir,$update_files);
-//echo $rf.' folder<br>';
-				if (is_dir($rf)){
-					// *** Remove these old HuMo-genealogy files, a__ is just some random text (skip items)... ***
-					listFolderFiles2($rf,array('a__','a__'),'update_files');
-
-					// *** Count down, because files must be removed first before removing directories ***
-					if (is_array($update_files)){
-						for ($i=count($update_files)-1; $i>=0; $i--){
-							if (!is_dir($update_dir[$i].'/'.$update_files[$i])){
-								unlink ($update_dir[$i].'/'.$update_files[$i]);
-							}
-							else{
-								rmdir ($update_dir[$i].'/'.$update_files[$i]);
-							}
-//echo $update_dir[$i].'/'.$update_files[$i].'<br>';
-						}
-					}
-					rmdir ($rf);
-				}
-			}
+			remove_the_folders($remove_folders);
 
 			// *** First cleanup, insert cleanup status into settings ***
 			$sql="INSERT INTO humo_settings SET
@@ -358,10 +365,17 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 				setting_value='1'";
 			@$dbh->query($sql);
 		}
-		// *** For next cleanup: update cleanup status ***
-		// *** Update "update_status" to number 2 ***
-		//$result = $dbh->query("UPDATE humo_settings SET setting_value='2' WHERE setting_variable='cleanup_status'");
 
+		// *** Second cleanup of files ***
+		if (isset($humo_option['cleanup_status']) AND $humo_option['cleanup_status']=='1'){
+			unset ($remove_folders,$update_dir,$update_files);
+
+			$remove_folders[]='../include/securimage';
+			remove_the_folders($remove_folders);
+
+			// *** Update "update_status" to number 2 ***
+			$result = $dbh->query("UPDATE humo_settings SET setting_value='2' WHERE setting_variable='cleanup_status'");
+		}
 
 		$show_menu_left=true;
 
@@ -867,26 +881,23 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					if (isset($content_array[0])){
 						$debug_update.=' Github:'.$content_array[1].'. ';
 
-						//$debug_update.=count($content_array);
-
-						// *** Quick check if there is valid information, there should be 4 version lines ***
+						// *** Check if there is valid information, there should be at least 4 version lines ***
 						$valid=0;
 						foreach ($content_array as $content_line) {
 							if (substr($content_line,0,7)=='version') $valid++;
 						}
-//$valid=5; // *** Test line ***
-						if ($valid!=4){
-							unset($content_array);
-							$debug_update.=' Invalid.';
+
+						if ($valid>3){
+							$debug_update.=' Valid.';
 						}
 						else{
-							$debug_update.=' Valid.';
+							unset($content_array);
+							$debug_update.=' Invalid.';
 						}
 					}
 
 					// *** Use humo-gen.com if GitHub isn't working ***
 					if (!isset($content_array)){
-
 						// *** Read update data from HuMo-genealogy website ***
 						// *** Oct. 2021: Added random number to prevent CURL cache problems ***
 						$source='https://humo-gen.com/update/index.php?status=check_update&website='.$link_name.'&version='.$link_version.'&random='.rand();
@@ -912,20 +923,18 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 						if (isset($content_array[0])){
 							$debug_update.=' HG:'.$content_array[0].' ';
 
-							//$debug_update.=count($content_array);
-
-							// *** Quick check if there is valid information, there should be 4 version lines ***
+							// *** Check if there is valid information, there should be 4 version lines ***
 							$valid=0;
 							foreach ($content_array as $content_line) {
 								if (substr($content_line,0,7)=='version') $valid++;
 							}
-//$valid=5; // *** Test line ***
-							if ($valid!=4){
-								unset($content_array);
-								$debug_update.=' Invalid.';
+
+							if ($valid>3){
+								$debug_update.=' Valid.';
 							}
 							else{
-								$debug_update.=' Valid.';
+								unset($content_array);
+								$debug_update.=' Invalid.';
 							}
 						}
 
@@ -1024,6 +1033,8 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 					$update['version']='';
 					$update['version_date']='';
 					$update['version_auto_download']='';
+					// At this moment only 4 lines permitted that starts with version...
+					$update['new_version_auto_download_github']='';
 
 					// *** HuMo-genealogy beta version ***
 					$update['beta_version']='';
@@ -1040,6 +1051,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 						if ($update_array[0]=='version_date'){ $update['version_date']=trim($update_array[1]); }
 						if ($update_array[0]=='version_download'){ $update['version_download']=trim($update_array[1]); }
 						if ($update_array[0]=='version_auto_download'){ $update['version_auto_download']=trim($update_array[1]); }
+						if ($update_array[0]=='version_auto_download_github'){ $update['version_auto_download_github']=trim($update_array[1]); }
 
 						// *** HuMo-genealogy beta version ***
 						if ($update_array[0]=='beta_version'){ $update['beta_version']=trim($update_array[1]); }

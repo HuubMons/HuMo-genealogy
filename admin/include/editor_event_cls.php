@@ -37,11 +37,39 @@ function event_text($event_kind){
 	return $event_text;
 }
 
+// *** Hide or show lines for editing, using <span> ***
+function hide_show_start($data_listDb, $alternative_text=''){
+	// *** Use hideshow to show and hide the editor lines ***
+	$text='';
+	$hideshow='9000'.$data_listDb->event_id;
+	$display=' display:none;';
+	$event_event=$data_listDb->event_event;
+	if ($data_listDb->event_event==''){
+		//$event_event=__('EMPTY LINE');
+		$display='';
+	}
+	if ($alternative_text) $event_event=$alternative_text;
+
+	// *** Also show date and place ***
+	//if ($data_listDb->event_date) $event_event.=', '.date_place($data_listDb->event_date,$data_listDb->event_place);
+	if ($data_listDb->event_date) $event_event.=', '.hideshow_date_place($data_listDb->event_date,$data_listDb->event_place);
+
+	if ($event_event OR $data_listDb->event_text){
+		$text.='<span class="hideshowlink" onclick="hideShow('.$hideshow.');">'.$event_event;
+			if ($data_listDb->event_text) $text.=' <img src="images/text.png" height="16px">';
+		$text.='</span><br>';
+	}
+
+	$text.='<span class="humo row'.$hideshow.'" style="margin-left:0px;'.$display.'">';
+	return $text;
+}
+
 // *** Show events ***
 // *** REMARK: queries can be found in editor_inc.php! ***
 function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	global $dbh, $tree_id, $page, $field_date, $field_place, $field_text, $field_text_medium, $joomlastring;
 	global $editor_cls, $path_prefix, $tree_pict_path, $humo_option,$field_popup;
+	global $db_functions;
 
 	$text='';
 
@@ -390,7 +418,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	// *** Show birth declaration by person ***
 	if ($event_kind=='birth_declaration'){
 		$link='born';
-		$text.='<tr class="humo_color row2" style="display:none;" name="row2">';
+		//$text.='<tr class="humo_color row2" style="display:none;" name="row2">';
+		$text.='<tr class="table_header_large row2" style="display:none;" name="row2">';
 		//$text.='<tr'.$show_event_add.' class="humo_color row2" name="row2">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('birth declaration').'</td>';
@@ -404,7 +433,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_kind=='baptism_witness'){
 		$link='baptised';
 		//$text.='<tr class="table_header" style="display:none;" id="row3" name="row3">';
-		$text.='<tr style="display:none;" class="row3" name="row3">';
+		//$text.='<tr style="display:none;" class="row3" name="row3">';
+		$text.='<tr style="display:none;" class="table_header_large row3" name="row3">';
 		//$text.='<tr'.$show_event_add.' class="row3" name="row3">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('baptism witness').'</td>';
@@ -418,7 +448,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_kind=='death_declaration'){
 		$link='died';
 		//$text.='<tr class="table_header" style="display:none;" id="row4" name="row4">';
-		$text.='<tr style="display:none;" class="humo_color row4" name="row4">';
+		//$text.='<tr style="display:none;" class="humo_color row4" name="row4">';
+		$text.='<tr style="display:none;" class="table_header_large row4" name="row4">';
 		//$text.='<tr'.$show_event_add.' class="humo_color row4" name="row4">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('death declaration').'</td>';
@@ -432,7 +463,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_kind=='burial_witness'){
 		$link='buried';
 		//$text.='<tr class="table_header" style="display:none;" id="row5" name="row5">';
-		$text.='<tr style="display:none;" class="row5" name="row5">';
+		//$text.='<tr style="display:none;" class="row5" name="row5">';
+		$text.='<tr style="display:none;" class="table_header_large row5" name="row5">';
 		//$text.='<tr'.$show_event_add.' class="row5" name="row5">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('burial witness').'</td>';
@@ -705,7 +737,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_kind=='marriage_witness'){
 		$link='marriage_relation';
 		//$text.='<tr class="table_header" style="display:none;" id="row8" name="row8">';
-		$text.='<tr style="display:none;" class="row8 humo_color" name="row8">';
+		//$text.='<tr style="display:none;" class="row8 humo_color" name="row8">';
+		$text.='<tr style="display:none;" class="row8 table_header_large" name="row8">';
 		//$text.='<tr'.$show_event_add.' class="row8 humo_color" name="row8">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('marriage witness').'</td>';
@@ -719,7 +752,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_kind=='marriage_witness_rel'){
 		$link='marr_church';
 		//$text.='<tr class="table_header" style="display:none;" id="row10" name="row10">';
-		$text.='<tr style="display:none;" class="row10 humo_color" name="row10">';
+		//$text.='<tr style="display:none;" class="row10 humo_color" name="row10">';
+		$text.='<tr style="display:none;" class="row10 table_header_large" name="row10">';
 		//$text.='<tr '.$show_event_add.' class="row10 humo_color" name="row10">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('marriage witness (religious)').'</td>';
@@ -1021,12 +1055,27 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		OR $data_listDb->event_kind=='death_declaration' OR $data_listDb->event_kind=='burial_witness'
 		OR $data_listDb->event_kind=='marriage_witness' OR $data_listDb->event_kind=='marriage_witness_rel')
 		{
+
+			// *** Hide or show editor fields ***
+			if (substr($data_listDb->event_event,0,1)=='@'){
+				$witness_name=show_person(substr($data_listDb->event_event,1,-1),$gedcom_date=false, $show_link=false);
+			}
+			else{
+				$witness_name=$data_listDb->event_event;
+			}
+			// *** Hide/show line (start <span> to hide edit line) ***
+			$text.=$this->hide_show_start($data_listDb,$witness_name);
+
+
 			//$text.='<td style="border-left:0px;">';
 			$event_text=$this->event_text($data_listDb->event_kind);
 			$text.=witness_edit($event_text,$data_listDb->event_event,'['.$data_listDb->event_id.']');
 		}
 
 		elseif ($data_listDb->event_kind=='picture'){
+			// *** Hide/show line (start <span> to hide edit line) ***
+			$text.=$this->hide_show_start($data_listDb);
+
 			// *** Use text box for pictures and pop-up window ***
 			// *** To use place selection pop-up, replaced event_place[x] array by: 'event_place_'.$data_listDb->event_id ***
 			$text.='<input type="text" name="text_event'.$data_listDb->event_id.'" placeholder="'.__('Picture/ Media').'" value="'.$data_listDb->event_event.'" style="width: 500px">';
@@ -1035,60 +1084,40 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			if ($event_connect_kind=='source') $form=3;
 			//$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form='.$form.'&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
 			$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form='.$form.'&amp;event_id='.$data_listDb->event_id.'","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
-
-			/*
-			// *** Show pull-down list pictures ***
-			//$text.='<td style="border-left:0px;">';
-			$text.='<select size="1" name="text_event['.$data_listDb->event_id.']" id="text_event'.$data_listDb->event_id.'">';
-				$text.='<option value=""></option>';
-
-				// *** If there is no file selected, select the new uploaded file (only shown if new file is a valid file) ***
-				if (!$data_listDb->event_event AND (isset($_FILES['photo_upload']) AND $_FILES['photo_upload']['name'])){
-					$data_listDb->event_event=$_FILES['photo_upload']['name'];
-				}
-
-				for ($picture_nr=0; $picture_nr<$nr_pictures; $picture_nr++){
-					$selected=''; if ($picture_array[$picture_nr]==$data_listDb->event_event){ $selected=' SELECTED'; }
-					$text.='<option value="'.$picture_array[$picture_nr].'"'.$selected.'>'.$picture_array[$picture_nr].'</option>';
-				}
-			$text.='</select>';
-
-			$text.= '&nbsp&nbsp&nbsp'.__('Search filename').'&nbsp'.'<input type="text" name="searchpic" id="inp_text_event'.$data_listDb->event_id.'" size="15">';
-			$jsonarr = json_encode($this->utf8ize($picture_array)); 
-			$text.= '<input type=\'button\' onclick=\'Search_pic('.$data_listDb->event_id.','.$nr_pictures.','.$jsonarr.')\' value=\''.__('Search').'\'>';
- 
-			if($is_cat==true) { $text.='<br>'.__('Category files are displayed at bottom of list'); }
-			*/
 		}
 
 		elseif ($data_listDb->event_kind=='adoption'){
-			//$text.='<td style="border-left:0px;">';
-			$text.='<select size="1" name="text_event['.$data_listDb->event_id.']">';
-			$text.='<option value="">'.__('* Select adoption parents *').'</option>';
-			// *** Search for adoption parents ***
-			$family_parents=$dbh->query("SELECT * FROM humo_families WHERE fam_tree_id='".$tree_id."' ORDER BY fam_gedcomnumber");
-			while($family_parentsDb=$family_parents->fetch(PDO::FETCH_OBJ)){
-				$parent_text='['.$family_parentsDb->fam_gedcomnumber.'] ';
+			// *** Show names of adoption parents ***
+			$parent_text='';
+			if ($data_listDb->event_event){
+				$adoptionDb = $db_functions->get_family($data_listDb->event_event,'man-woman');
+				$parent_text='['.$data_listDb->event_event.'] ';
+
 				//*** Father ***
-				if ($family_parentsDb->fam_man){
-					$parent_text.=show_person($family_parentsDb->fam_man,false,false);
+				if (isset($adoptionDb->fam_man) AND $adoptionDb->fam_man){
+					$parent_text.=show_person($adoptionDb->fam_man,false,false);
 				}
 				else{
 					$parent_text=__('N.N.');
 				}
+
 				$parent_text.=' '.__('and').' ';
 
 				//*** Mother ***
-				if ($family_parentsDb->fam_woman){
-					$parent_text.=show_person($family_parentsDb->fam_woman,false,false);
+				if (isset($adoptionDb->fam_woman) AND $adoptionDb->fam_woman){
+					$parent_text.=show_person($adoptionDb->fam_woman,false,false);
 				}
 				else{
 					$parent_text.=__('N.N.');
 				}
-				$selected=''; if ($family_parentsDb->fam_gedcomnumber==$data_listDb->event_event) $selected=' SELECTED';
-				$text.='<option value="'.$family_parentsDb->fam_gedcomnumber.'"'.$selected.'>'.$parent_text.'</option>';
 			}
-			$text.='</select>';
+
+			// *** Hide/show line (start <span> to hide edit line) ***
+			$text.=$this->hide_show_start($data_listDb,$parent_text);
+
+			// *** Use pop-up to select adoption parents ***
+			$text.='<input type="text" name="text_event'.$data_listDb->event_id.'" placeholder="'.__('GEDCOM number (ID)').'" value="'.$data_listDb->event_event.'" style="width: 250px">';
+			$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select&amp;adoption_id='.$data_listDb->event_id.'","","'.$field_popup.'");><img src="../images/search.png" border="0"></a>';
 		}
 
 		// *** person_colour_mark ***
@@ -1096,9 +1125,30 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			// *** Needed for descendants/ ascendants color ***
 			$text.='<input type="hidden" name="event_event_old['.$data_listDb->event_id.']" value="'.$data_listDb->event_event.'">';
 
+			$pers_colour='';
 			$person_colour_mark=$data_listDb->event_event;
+			if ($person_colour_mark=='1') $pers_colour='style="color:#FF0000;"';
+			if ($person_colour_mark=='2') $pers_colour='style="color:#00FF00;"';
+			if ($person_colour_mark=='3') $pers_colour='style="color:#0000FF;"';
+			if ($person_colour_mark=='4') $pers_colour='style="color:#FF00FF;"';
+			if ($person_colour_mark=='5') $pers_colour='style="color:#FFFF00;"';
+			if ($person_colour_mark=='6') $pers_colour='style="color:#00FFFF;"';
+			if ($person_colour_mark=='7') $pers_colour='style="color:#C0C0C0;"';
+			if ($person_colour_mark=='8') $pers_colour='style="color:#800000;"';
+			if ($person_colour_mark=='9') $pers_colour='style="color:#008000;"';
+			if ($person_colour_mark=='10') $pers_colour='style="color:#000080;"';
+			if ($person_colour_mark=='11') $pers_colour='style="color:#800080;"';
+			if ($person_colour_mark=='12') $pers_colour='style="color:#A52A2A;"';
+			if ($person_colour_mark=='13') $pers_colour='style="color:#008080;"';
+			if ($person_colour_mark=='14') $pers_colour='style="color:#808080;"';
+			//$text.=' <span '.$pers_colour.'>'.__('Selected colour').'</span>';
+			$person_colour=' <span '.$pers_colour.'>'.__('Selected colour').'</span>';
+
+			// *** Hide/show line (start <span> to hide edit line) ***
+			$text.=$this->hide_show_start($data_listDb,$person_colour);
+
 			//$text.='<td style="border-left:0px;">';
-			$text.='<select class="fonts" size="1" name="text_event['.$data_listDb->event_id.']">';
+			$text.=' <select class="fonts" size="1" name="text_event['.$data_listDb->event_id.']">';
 				$text.='<option value="0">'.__('Change colour mark by person').'</option>';
 				$selected=''; if ($person_colour_mark=='1'){ $selected=' selected'; }
 				$text.='<option value="1" style="color:#FF0000;"'.$selected.'>'.__('Colour 1').'</option>';
@@ -1130,23 +1180,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				$text.='<option value="14" style="color:#808080;"'.$selected.'>'.__('Colour 14').'</option>';
 			$text.='</select>';
 
-			$pers_colour='';
-			if ($person_colour_mark=='1') $pers_colour='style="color:#FF0000;"';
-			if ($person_colour_mark=='2') $pers_colour='style="color:#00FF00;"';
-			if ($person_colour_mark=='3') $pers_colour='style="color:#0000FF;"';
-			if ($person_colour_mark=='4') $pers_colour='style="color:#FF00FF;"';
-			if ($person_colour_mark=='5') $pers_colour='style="color:#FFFF00;"';
-			if ($person_colour_mark=='6') $pers_colour='style="color:#00FFFF;"';
-			if ($person_colour_mark=='7') $pers_colour='style="color:#C0C0C0;"';
-			if ($person_colour_mark=='8') $pers_colour='style="color:#800000;"';
-			if ($person_colour_mark=='9') $pers_colour='style="color:#008000;"';
-			if ($person_colour_mark=='10') $pers_colour='style="color:#000080;"';
-			if ($person_colour_mark=='11') $pers_colour='style="color:#800080;"';
-			if ($person_colour_mark=='12') $pers_colour='style="color:#A52A2A;"';
-			if ($person_colour_mark=='13') $pers_colour='style="color:#008080;"';
-			if ($person_colour_mark=='14') $pers_colour='style="color:#808080;"';
-			$text.=' <span '.$pers_colour.'>'.__('Selected colour').'</span>';
-
 			// *** Also change color of ascendants and/ or descendants ***
 			$check=''; //if (isset($xx) AND $xx=='y'){ $check=' checked'; }
 			$text.='<br>'.__('Also change').' <input type="checkbox" name="pers_colour_desc['.$data_listDb->event_id.']" '.$check.'> '.__('Descendants');
@@ -1155,17 +1188,24 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 		// *** profession ***
 		elseif ($data_listDb->event_kind=='profession'){
+			// *** Hide/show line (start <span> to hide edit line) ***
+			$text.=$this->hide_show_start($data_listDb);
+
 			$text.='<textarea rows="1" name="text_event['.$data_listDb->event_id.']" '.$field_text.' placeholder="'.__('Profession').'">'.$editor_cls->text_show($data_listDb->event_event).'</textarea>';
 		}
 
 		// *** religion ***
 		elseif ($data_listDb->event_kind=='religion'){
+			// *** Hide/show line (start <span> to hide edit line) ***
+			$text.=$this->hide_show_start($data_listDb);
+
 			$text.='<textarea rows="1" name="text_event['.$data_listDb->event_id.']" '.$field_text.' placeholder="'.__('Religion').'">'.$editor_cls->text_show($data_listDb->event_event).'</textarea>';
 		}
 
 		// *** General name of event ***
 		else{
-			//$text.='<td style="border-left:0px;">';
+			// *** Hide/show line (start <span> to hide edit line) ***
+			$text.=$this->hide_show_start($data_listDb);
 
 			// *** Check if event has text ***
 			$style=''; if (!$data_listDb->event_event) $style='style="background-color:#FFAA80"';
@@ -1307,6 +1347,10 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$field_text_selected=$field_text;
 		if ($data_listDb->event_text AND preg_match('/\R/',$data_listDb->event_text)) $field_text_selected=$field_text_medium;
 		$text.='<br><textarea rows="1" name="event_text['.$data_listDb->event_id.']" '.$field_text_selected.' placeholder="'.__('text').'">'.$editor_cls->text_show($data_listDb->event_text).'</textarea>';
+
+		// *** Use hideshow to show and hide the editor lines ***
+		if (isset($hideshow) AND substr($hideshow,0,4)=='9000') $text.='</span>';
+
 		$text.='</td>';
 
 		$text.='<td>';

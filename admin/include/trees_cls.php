@@ -1597,6 +1597,16 @@ function show_pair($left_id,$right_id,$mode) {
 	$this->show_sources($leftDb->pers_gedcomnumber,$rightDb->pers_gedcomnumber);
 	$this->show_addresses($leftDb->pers_gedcomnumber,$rightDb->pers_gedcomnumber);
 
+
+//TEST *** Address by relation ***
+// A person can be married multiple times (left and right side). Probably needed to rebuild show_addresses scripts to show them seperately?
+//$r_fams = explode(';',$rightDb->pers_fams);
+//for($i=0;$i<count($r_fams);$i++) {
+//	echo $r_fams[$i].'! ';
+//	$this->show_addresses('',$r_fams[$i]);
+//}
+
+
 	echo '<tr><td colspan=3 style="border-top:2px solid #a4a4a4;border-bottom:2px solid #a4a4a4;font-weight:bold">'.__('Relatives').':</td></tr>';
 	echo '<tr style="background-color:#f2f2f2"><td style="font-weight:bold">'.__('Spouse').':</td>';
 	echo '<td>'.$spouses1.'</td>';
@@ -1716,9 +1726,9 @@ function show_events ($left_ged,$right_ged) {
 			elseif($r_eventsDb->event_kind=="event") { $r_event[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
 			elseif($r_eventsDb->event_kind=="birth_declaration") { $r_birth_declaration[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
 			elseif($r_eventsDb->event_kind=="baptism_witness") { $r_baptism_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
-			elseif($r_eventsDb->event_kind=="death_declaration") { $r_death_declaration[$r_eventsDb->event_id] = $r_eventsDb->event_event;	}
+			elseif($r_eventsDb->event_kind=="death_declaration") { $r_death_declaration[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
 			elseif($r_eventsDb->event_kind=="burial_witness") { $r_burial_witness[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
-			elseif($r_eventsDb->event_kind=="name") { $r_name[$r_eventsDb->event_id] = '('.$r_eventsDb->event_gedcom.') '.$r_eventsDb->event_event;	}
+			elseif($r_eventsDb->event_kind=="name") { $r_name[$r_eventsDb->event_id] = '('.$r_eventsDb->event_gedcom.') '.$r_eventsDb->event_event; }
 			elseif($r_eventsDb->event_kind=="nobility") { $r_nobility[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
 			elseif($r_eventsDb->event_kind=="title") { $r_title[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
 			elseif($r_eventsDb->event_kind=="lordship") { $r_lordship[$r_eventsDb->event_id] = $r_eventsDb->event_event; }
@@ -1728,7 +1738,7 @@ function show_events ($left_ged,$right_ged) {
 		// before calling put_event function check if right has a value otherwise there is no need to show
 		if(!empty($r_address)) { $this->put_event('address',__('Address'),$l_address,$r_address); }
 		if(!empty($r_picture)) { $this->put_event('picture',__('Picture'),$l_picture,$r_picture); }
-		if(!empty($r_profession)) { $this->put_event('profession',__('Profession'),$l_profession,$r_profession); }   
+		if(!empty($r_profession)) { $this->put_event('profession',__('Profession'),$l_profession,$r_profession); }
 		if(!empty($r_event)) { $this->put_event('event',__('Event'),$l_event,$r_event); }
 		if(!empty($r_birth_declaration)) { $this->put_event('birth_declaration',__('birth declaration'),$l_birth_declaration,$r_birth_declaration); }
 		if(!empty($r_baptism_witness)) { $this->put_event('baptism_witness',__('baptism witness'),$l_baptism_witness,$r_baptism_witness); }
@@ -1967,7 +1977,6 @@ function merge_them($left,$right,$mode) {
 		$same_spouse = false; // will be made true if identical spouses found in next "if"
 
 		if($result1Db->pers_fams) {
-			//$same_spouse=false;
 			$fam1_arr = explode(";",$result1Db->pers_fams);
 			$fam2_arr = explode(";",$result2Db->pers_fams);
 			// start searching for spouses with same ged nr (were merged earlier) of both persons
@@ -2352,8 +2361,8 @@ function merge_them($left,$right,$mode) {
 							$spo2Db = $spo2->fetch(PDO::FETCH_OBJ);
 							if($spo2->rowCount() > 0) {
 								if($spo1Db->pers_lastname == $spo2Db->pers_lastname AND substr($spo1Db->pers_firstname,0,$merge_chars) == substr($spo2Db->pers_firstname,0,$merge_chars)) {
-									$string1 = 	$spo1Db->pers_gedcomnumber.'@'.$spo2Db->pers_gedcomnumber.';';
-									$string2 = 	$spo2Db->pers_gedcomnumber.'@'.$spo1Db->pers_gedcomnumber.';';
+									$string1 = $spo1Db->pers_gedcomnumber.'@'.$spo2Db->pers_gedcomnumber.';';
+									$string2 = $spo2Db->pers_gedcomnumber.'@'.$spo1Db->pers_gedcomnumber.';';
 									// make sure this pair doesn't already exist in the string
 									if(strstr($relatives_merge,$string1) === false AND strstr($relatives_merge,$string2) === false)	{
 										$relatives_merge .= $string1;
@@ -2547,7 +2556,7 @@ function merge_them($left,$right,$mode) {
 			}
 		}
 
-		// do same for sources and address (from connections table). no need here to differentiate between sources and addresses, all will be handled
+		// Do same for sources and address (from connections table). no need here to differentiate between sources and addresses, all will be handled
 		$right_result=$dbh->query("SELECT * FROM humo_connections
 			WHERE connect_tree_id='".$tree_id."' AND connect_connect_id ='".$result2Db->pers_gedcomnumber."'");
 		while($right_resultDb=$right_result->fetch(PDO::FETCH_OBJ)) {

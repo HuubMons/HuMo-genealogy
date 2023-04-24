@@ -91,42 +91,45 @@ while ($dataDb = $datasql->fetch(PDO::FETCH_OBJ)) {
 			if(!$privacy) {
 				$death_date = $record->pers_death_date;
 				$calculated_age='';
-				if ($death_date !=''){
+				//if ($death_date !=''){
+				if ($death_date !='' AND is_numeric($record->death_year) AND is_numeric($record->birth_year)){
 					$death_date =' (&#8224; '.$death_date.')';
 					if ($record->death_year-$record->birth_year < 120){
 						$calculated_age = ' ('.($record->death_year-$record->birth_year).')';
 					}
 				}
-				else{
+				elseif (is_numeric($record->birth_year)){
 					$death_date = '';
 					if ($year - $record->birth_year<120){
 						$calculated_age = ' ('.($year - $record->birth_year).')';
 					}
 				}
 
-				$person_cls = New person_cls;
-				$name=$person_cls->person_name($record);
-				$title = $name["standard_name"];
+				if ($calculated_age){
+					$person_cls = New person_cls;
+					$name=$person_cls->person_name($record);
+					$title = $name["standard_name"];
 
-				$title = str_replace('&', '&amp;', $title);  // Los & teken niet toegestaan in RSS
-				$title.=$calculated_age.$death_date;
+					$title = str_replace('&', '&amp;', $title);  // Los & teken niet toegestaan in RSS
+					$title.=$calculated_age.$death_date;
 
-				$pers_family='';
-				if ($record->pers_famc){ $pers_family=$record->pers_famc; }
-				if ($record->pers_fams){
-					$pers_fams=explode(';',$record->pers_fams);
-					$pers_family=$pers_fams[0];
+					$pers_family='';
+					if ($record->pers_famc){ $pers_family=$record->pers_famc; }
+					if ($record->pers_fams){
+						$pers_fams=explode(';',$record->pers_fams);
+						$pers_family=$pers_fams[0];
+					}
+					$url = CMS_ROOTPATH.'family.php?tree_id='.$record->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$record->pers_gedcomnumber;
+					// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
+					//$url=$person_cls->person_url2($record->pers_tree_id,$record->pers_famc,$record->pers_fams,$record->pers_gedcomnumber);
+
+					// show content
+					echo "<item>".$newline;
+					echo "<title>".$title."</title>".$newline;
+					echo "<link>".$humo_option["rss_link"]."/".$url."</link>".$newline;
+					echo "</item>".$newline;
+					$counter++;
 				}
-				$url = CMS_ROOTPATH.'family.php?tree_id='.$record->pers_tree_id.'&amp;id='.$pers_family.'&amp;main_person='.$record->pers_gedcomnumber;
-				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
-				//$url=$person_cls->person_url2($record->pers_tree_id,$record->pers_famc,$record->pers_fams,$record->pers_gedcomnumber);
-
-				// show content
-				echo "<item>".$newline;
-				echo "<title>".$title."</title>".$newline;
-				echo "<link>".$humo_option["rss_link"]."/".$url."</link>".$newline;
-				echo "</item>".$newline;
-				$counter++;
 			}
 		}  // close channel and rss
 

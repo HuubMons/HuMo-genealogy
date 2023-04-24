@@ -248,44 +248,44 @@ function process_person($person_array){
 		// 1 NAME Alias//
 		// 1 NAME Alias3//
 
-		//Aldfaer
-		//0 @I2@ INDI
-		//1 RIN 1046615289
-		//1 REFN Hu*ub
-		//1 NAME Firstname/Lastname/
-		//2 NICK Alias3
+		// Aldfaer
+		// 0 @I2@ INDI
+		// 1 RIN 1046615289
+		// 1 REFN Hu*ub
+		// 1 NAME Firstname/Lastname/
+		// 2 NICK Alias3
 
 		// Some programs uses an extra space after firstname:
 		// 1 NAME Firstname /Lastname/
 
 		// *** ALL BK names. It's possible to have text, source or date by these names ***
-		//1 NAME Hubertus  /Huub/ Andriessen Mons
-		//2 SOUR @S3@
-		//2 _AKAN also known as
-		//2 NICK bijnaam
-		//2 _SHON verkort voor rapporten
-		//2 _ADPN adoptienaam
-		//2 _HEBN hebreeuwse naam
-		//2 _CENN censusnaam
+		// 1 NAME Hubertus  /Huub/ Andriessen Mons
+		// 2 SOUR @S3@
+		// 2 _AKAN also known as
+		// 2 NICK bijnaam
+		// 2 _SHON verkort voor rapporten
+		// 2 _ADPN adoptienaam
+		// 2 _HEBN hebreeuwse naam
+		// 2 _CENN censusnaam
 		//  3 DATE 21 FEB 2007
 		//  3 SOUR @S3@
 		//  3 NOTE text by Name censusnaam
 		//  4 CONT 2nd line
 		//  4 CONT 3rd line
-		//2 _MARN huwelijksnaam
+		// 2 _MARN huwelijksnaam
 		//  3 DATE 21 FEB 2007
-		//2 _GERN roepnaam
-		//2 _FARN boerderijnaam
-		//2 _BIRN geboortenaam
-		//2 _INDN indiaanse naam
-		//2 _FKAN officiele naam
-		//2 _CURN huidige naam
-		//2 _SLDN soldatennaam
-		//2 _FRKA voorheen bekend als
-		//2 _RELN kloosternaam
-		//2 _OTHN andere naam
-		//1 TITL Sr.
-		//*************************************
+		// 2 _GERN roepnaam
+		// 2 _FARN boerderijnaam
+		// 2 _BIRN geboortenaam
+		// 2 _INDN indiaanse naam
+		// 2 _FKAN officiele naam
+		// 2 _CURN huidige naam
+		// 2 _SLDN soldatennaam
+		// 2 _FRKA voorheen bekend als
+		// 2 _RELN kloosternaam
+		// 2 _OTHN andere naam
+		// 1 TITL Sr.
+		// *************************************
 
 		// *** Pro-gen titles by name ***
 		// 1 _TITL2 = title between first and last name.
@@ -327,6 +327,8 @@ function process_person($person_array){
 
 					$processed=1;
 					$pers_aka=substr($name,7);
+					// *** Remove / if nickname starts with / ***
+					if (substr($pers_aka,0,1)=='/') $pers_aka=substr($pers_aka,1);
 					$pers_aka=str_replace("/", " ", $pers_aka);
 					$pers_aka=str_replace("  ", " ", $pers_aka);
 					$pers_aka=rtrim($pers_aka);
@@ -345,7 +347,6 @@ function process_person($person_array){
 				else{
 					$position = strpos($name,"/");
 					if($position!==false) { // there are slashes
-						//$pers_firstname=substr($name,7,$position-7);
 						$pers_firstname=rtrim(substr($name,7,$position-7));
 
 						$pers_lastname=substr($name,$position+1);
@@ -359,25 +360,26 @@ function process_person($person_array){
 					else {
 						// *** No slashes in name (probably a bug or just a bad GEDCOM file) ***
 						// 1 NAME Hubertus [Huub] Mons
-						//$pers_firstname=substr($name,7);
 						$pers_firstname=rtrim(substr($name,7));
 					}
 
-					// Lastname prefixes, THIS PART SLOWS DOWN READING A BIT!!!
-					// Check for accent or space in pers_lastname...
-					if (strpos ($pers_lastname, "'" ) OR strpos ($pers_lastname, " " ) ){
-						$loop2=count($prefix);
-						for ($i=0; $i<$loop2; $i++) {
-							$check_prefix=substr($pers_lastname,0,$prefix_length[$i]);
-							if (strtolower($check_prefix)==$prefix[$i]){
-								// *** Show prefixes with a capital letter ***
-								//$person["pers_prefix"]=$check_prefix;
-								$person["pers_prefix"]=str_replace(" ", "_", $check_prefix);
-								$pers_lastname=substr($pers_lastname,$prefix_length[$i]);
-							}
-						}
-					}
+					// *** REMARK: processing of prefixes is done later in script (around line 1800) ***
 				}
+			}
+
+			// *** ADDED GIVN and SURN in april 2023. GensDataPro: use GIVN and SURN so / characters in name will be processed ***
+			// 1 NAME Willem I/III/van Holland/
+			// 2 GIVN Willem I/III
+			// 2 SURN van Holland
+			if ($buffer6=='2 GIVN'){
+				$processed=1;
+				$pers_firstname=substr($buffer,7);
+			}
+			if ($buffer6=='2 SURN'){
+				$processed=1;
+				$pers_lastname=substr($buffer,7);
+
+				// *** REMARK: processing of prefixes is done later in script (around line 1800) ***
 			}
 
 			// *** 2 TYPE aka: also know as. ***
@@ -391,7 +393,7 @@ function process_person($person_array){
 			// 2 TYPE aka
 			// *** Change "NICK" into "_AKA" ***
 			if (strtoupper($buffer)=='2 TYPE AKA'){
-				//$processed=1;
+				$processed=1;
 				//$pers_aka=str_replace("/", " ", $pers_aka);
 				//$pers_aka=str_replace("  ", " ", $pers_aka);
 				//$pers_aka=rtrim($pers_aka);
@@ -1759,6 +1761,20 @@ function process_person($person_array){
 		// we have to add these values to the query below
 		$heb_qry .= "pers_birth_date_hebnight='".$pers_birth_date_hebnight."',
 		pers_death_date_hebnight='".$pers_death_date_hebnight."', pers_buried_date_hebnight='".$pers_buried_date_hebnight."',";
+	}
+
+	// Lastname prefixes, THIS PART SLOWS DOWN READING A BIT!!!
+	// Check for accent or space in pers_lastname...
+	if (strpos ($pers_lastname, "'" ) OR strpos ($pers_lastname, " " ) ){
+		$loop2=count($prefix);
+		for ($i=0; $i<$loop2; $i++) {
+			$check_prefix=substr($pers_lastname,0,$prefix_length[$i]);
+			if (strtolower($check_prefix)==$prefix[$i]){
+				// *** Show prefixes with a capital letter ***
+				$person["pers_prefix"]=str_replace(" ", "_", $check_prefix);
+				$pers_lastname=substr($pers_lastname,$prefix_length[$i]);
+			}
+		}
 	}
 
 	// *** Save data ***

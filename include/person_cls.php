@@ -2035,17 +2035,17 @@ function person_data($person_kind, $id){
 		}
 
 		$pers_death_cause='';
-		If ($personDb->pers_death_cause=='murdered'){ $pers_death_cause=', '.__('cause of death').': '.__('murdered'); }
-		If ($personDb->pers_death_cause=='drowned'){ $pers_death_cause=', '.__('cause of death').': '.__('drowned'); }
-		If ($personDb->pers_death_cause=='perished'){ $pers_death_cause=', '.__('cause of death').': '.__('perished'); }
-		If ($personDb->pers_death_cause=='killed in action'){ $pers_death_cause=', '.__('killed in action'); }
-		If ($personDb->pers_death_cause=='being missed'){ $pers_death_cause=', '.__('being missed'); }
-		If ($personDb->pers_death_cause=='committed suicide'){ $pers_death_cause=', '.__('cause of death').': '.__('committed suicide'); }
-		If ($personDb->pers_death_cause=='executed'){ $pers_death_cause=', '.__('cause of death').': '.__('executed'); }
-		If ($personDb->pers_death_cause=='died young'){ $pers_death_cause=', '.__('died young'); }
-		If ($personDb->pers_death_cause=='died unmarried'){ $pers_death_cause=', '.__('died unmarried'); }
-		If ($personDb->pers_death_cause=='registration'){ $pers_death_cause=', '.__('registration'); } //2 TYPE registration?
-		If ($personDb->pers_death_cause=='declared death'){ $pers_death_cause=', '.__('declared death'); }
+		if ($personDb->pers_death_cause=='murdered'){ $pers_death_cause=', '.__('cause of death').': '.__('murdered'); }
+		if ($personDb->pers_death_cause=='drowned'){ $pers_death_cause=', '.__('cause of death').': '.__('drowned'); }
+		if ($personDb->pers_death_cause=='perished'){ $pers_death_cause=', '.__('cause of death').': '.__('perished'); }
+		if ($personDb->pers_death_cause=='killed in action'){ $pers_death_cause=', '.__('killed in action'); }
+		if ($personDb->pers_death_cause=='being missed'){ $pers_death_cause=', '.__('being missed'); }
+		if ($personDb->pers_death_cause=='committed suicide'){ $pers_death_cause=', '.__('cause of death').': '.__('committed suicide'); }
+		if ($personDb->pers_death_cause=='executed'){ $pers_death_cause=', '.__('cause of death').': '.__('executed'); }
+		if ($personDb->pers_death_cause=='died young'){ $pers_death_cause=', '.__('died young'); }
+		if ($personDb->pers_death_cause=='died unmarried'){ $pers_death_cause=', '.__('died unmarried'); }
+		if ($personDb->pers_death_cause=='registration'){ $pers_death_cause=', '.__('registration'); } //2 TYPE registration?
+		if ($personDb->pers_death_cause=='declared death'){ $pers_death_cause=', '.__('declared death'); }
 		if ($pers_death_cause){
 			$templ_person["dead_cause"]=$pers_death_cause;
 			$temp="dead_cause";
