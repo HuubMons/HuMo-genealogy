@@ -228,7 +228,6 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 					$interval = date_diff($date1, $date2);
 
 					$age=$special_text;
-
 					$years=$interval->format("%y");
 					if ($years>0){
 						$age=$years.' ';
@@ -262,6 +261,11 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 							if ($days_remainder>1)$age.=__('days'); else $age.=__('day');
 						}
 					}
+					else{
+						// *** Dates not complete, so skip calculation of date. ***
+						// Example: born SEP 1944, died 21 SEP 1944
+						$age='';
+					}
 
 				}
 
@@ -276,6 +280,7 @@ function calculate_age($baptism_date, $birth_date, $death_date, $age_check=false
 					//$age=$special_text.__('1 years');
 				}
 			}
+
 		}
 		else { // Month is needed for better calculation
 			if (($birth_month=$this->search_month($birth_date)) AND ($death_month=$this->search_month($death_date))) { // 2 months

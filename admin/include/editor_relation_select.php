@@ -2,12 +2,20 @@
 // *** Safety line ***
 if (!defined('ADMIN_PAGE')){ exit; }
 
-echo '<h1 class="center">'.__('Select parents').'</h1>';
+// *** Used to select adoption parents ***
+$adoption_id=''; if (isset($_GET['adoption_id']) AND is_numeric($_GET['adoption_id'])) $adoption_id=$_GET['adoption_id'];
+
+if ($adoption_id){
+	echo '<h1 class="center">'.__('Select adoption parents').'</h1>';
+	$place_item='text_event'.$adoption_id; $form='form1';
+} else{
+	echo '<h1 class="center">'.__('Select parents').'</h1>';
+	$place_item='add_parents'; $form='form1';
+}
 
 include ('include/editor_cls.php');
 $editor_cls = New editor_cls;
 
-$place_item='add_parents'; $form='form1';
 echo'
 	<script type="text/javascript">
 	function select_item(item){
@@ -18,7 +26,9 @@ echo'
 	</script>
 ';
 
-echo '<form method="POST" action="index.php?page=editor_relation_select" style="display : inline;">';
+//echo '<form method="POST" action="index.php?page=editor_relation_select" style="display : inline;">';
+$link='index.php?page=editor_relation_select'; if ($adoption_id) $link.='&amp;adoption_id='.$adoption_id;
+echo '<form method="POST" action="'.$link.'" style="display : inline;">';
 	$search_quicksearch_parent=''; if (isset($_POST['search_quicksearch_parent'])){ $search_quicksearch_parent=safe_text_db($_POST['search_quicksearch_parent']); }
 	echo '<input class="fonts" type="text" name="search_quicksearch_parent" placeholder="'.__('Name').'" value="'.$search_quicksearch_parent.'" size="15">';
 

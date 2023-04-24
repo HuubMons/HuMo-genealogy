@@ -905,8 +905,8 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		//$query.=$and."pers_text ".name_qry($selection['text'], $selection['part_text']); $and=" AND ";
 
 		// *** Search in person and family text ***
-		$query.=$and."(pers_text ".name_qry($selection['text'], $selection['part_text'])."
-		OR fam_text ".name_qry($selection['text'], $selection['part_text']).")"; $and=" AND ";
+		$query.=$and."(concat(pers_text,fam_text) ".name_qry($selection['text'], $selection['part_text']).")"; $and=" AND ";
+
 		$add_text_qry=true;
 	}
 
@@ -972,7 +972,6 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$multi_tree=" pers_tree_id='".$tree_id."'";
 	}
 
-
 	// *** Build query, only add events and addresses tables if necessary ***
 	/*
 	$query_select = "SELECT SQL_CALC_FOUND_ROWS humo_persons.*";
@@ -1001,6 +1000,8 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 	$query_select.=" ORDER BY ".$orderby;
 	$query=$query_select;
 	*/
+
+	/*
 	// *** Build query, only add events and addresses tables if necessary ***
 	// *** Aug. 2017: renewed querie because of > MySQL 5.7 ***
 	$query_select="SELECT SQL_CALC_FOUND_ROWS humo_persons2.*, humo_persons1.pers_id";
@@ -1021,22 +1022,21 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		SELECT pers_id";
 		if ($add_event_qry) $query_select .= ", event_event, event_kind";
 		if ($add_address_qry) $query_select .= ", address_place, address_zip";
+		// Text isn't needed in results
 		if ($add_text_qry) $query_select .= ", fam_text";
 
 		$query_select .= " FROM humo_persons";
 
 		if ($add_event_qry){
-			//$query_select .= " LEFT JOIN humo_events
-			//ON event_tree_id=pers_tree_id
-			//AND event_connect_id=pers_gedcomnumber
-			// *** If event_kind='name' is used, search for name will work, but other events are hidden! ***
-			//AND event_kind='name'";
 			$query_select .= " LEFT JOIN humo_events
 			ON event_tree_id=pers_tree_id
 			AND event_connect_id=pers_gedcomnumber";
+			// *** If event_kind='name' is used, search for name will work, but other events are hidden! ***
+			//AND event_kind='name'";
 		}
 
 		if ($add_address_qry){
+			// Check query. There is AND and OR. Maybe () needed...
 			$query_select .= " LEFT JOIN humo_connections
 			ON connect_tree_id=pers_tree_id
 			AND connect_connect_id=pers_gedcomnumber
@@ -1045,29 +1045,96 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 			ON address_connect_id=pers_gedcomnumber
 			AND address_connect_sub_kind='person'
 			AND address_tree_id=pers_tree_id
+
 			OR address_gedcomnr=connect_item_id
 			AND address_tree_id=connect_tree_id
+
 			AND connect_connect_id=pers_gedcomnumber";
 		}
 
 		if ($add_text_qry){
-//AND fam_text LIKE '_%'
+			//AND fam_text LIKE '_%'
 			$query_select .= " LEFT JOIN humo_families
 			ON fam_tree_id=pers_tree_id
 			AND (fam_man=pers_gedcomnumber OR fam_woman=pers_gedcomnumber)";
 		}
 
+		// *** GROUP BY is needed to prevent double results if searched for events ***
 		$query_select.=" WHERE (".$multi_tree.") ".$query." GROUP BY pers_id";
-		// *** This line IS DISABLED because it will give multiple lines for one person if there are multiple events. ***
-		//if ($add_event_qry) $query_select .= ", event_event, event_kind";
-		// *** This line IS DISABLED because it will give multiple lines for one person if there are multiple events. ***
-		//if ($add_address_qry) $query_select .= ", address_place, address_zip";
 
 	$query_select .= "
 	) as humo_persons1
 	ON humo_persons1.pers_id = humo_persons2.pers_id
 
 	ORDER BY ".$orderby;
+	$query=$query_select;
+	*/
+
+
+	// *** Build query, only add events and addresses tables if necessary ***
+	// *** April 2023: simplified query, and added search in fam_text ***
+	// *** Aug. 2017: renewed querie because of > MySQL 5.7 ***
+	$query_select="SELECT SQL_CALC_FOUND_ROWS humo_persons.*";
+
+	if ($add_event_qry) $query_select .= ", event_event, event_kind";
+	if ($add_address_qry) $query_select .= ", address_place, address_zip";
+	// Text isn't needed in results
+	//	if ($add_text_qry) $query_select .= ", fam_text";
+
+	if ($user['group_kindindex']=="j"){
+		// *** Change ordering of index, using concat name ***
+		$query_select .= ", CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ";
+	}
+
+	$query_select .= $make_date."
+	FROM humo_persons";
+
+		if ($add_event_qry){
+			$query_select .= " LEFT JOIN humo_events
+			ON event_tree_id=pers_tree_id
+			AND event_connect_id=pers_gedcomnumber";
+			// *** If event_kind='name' is used, search for name will work, but other events are hidden! ***
+			//AND event_kind='name'";
+		}
+
+		if ($add_address_qry){
+// Check query. There is AND and OR. Maybe () needed...
+			$query_select .= " LEFT JOIN humo_connections
+			ON connect_tree_id=pers_tree_id
+			AND connect_connect_id=pers_gedcomnumber
+			AND connect_sub_kind='person_address'
+			LEFT JOIN humo_addresses
+			ON address_connect_id=pers_gedcomnumber
+			AND address_connect_sub_kind='person'
+			AND address_tree_id=pers_tree_id
+
+			OR address_gedcomnr=connect_item_id
+			AND address_tree_id=connect_tree_id
+
+			AND connect_connect_id=pers_gedcomnumber";
+		}
+
+		if ($add_text_qry){
+			// *** This query is extremely SLOW. Because of combination fam_man/ fam_woman=pers_gedcomnumber! ***
+			//AND fam_text LIKE '_%'
+			//$query_select .= " LEFT JOIN humo_families
+			//ON fam_tree_id=pers_tree_id
+			//AND (fam_man=pers_gedcomnumber OR fam_woman=pers_gedcomnumber)";
+
+			$query_select .= " LEFT JOIN(
+				SELECT fam_tree_id,fam_text,fam_man as find_person FROM humo_families WHERE fam_text LIKE '_%'
+				UNION
+				SELECT fam_tree_id,fam_text,fam_woman as find_person FROM humo_families WHERE fam_text LIKE '_%'
+				) as humo_families
+				ON fam_tree_id=pers_tree_id
+				AND find_person=pers_gedcomnumber
+			";
+		}
+
+		// *** GROUP BY is needed to prevent double results if searched for events ***
+		$query_select.=" WHERE (".$multi_tree.") ".$query." GROUP BY pers_id";
+
+	$query_select .= " ORDER BY ".$orderby;
 	$query=$query_select;
 }
 
@@ -1168,6 +1235,7 @@ if ($index_list=='quicksearch'){
 	";
 	*/
 
+	// *** April 2023: added pers_firstname, event_event. To find "firstname eventname" (event could be a kind of lastname too). ***
 	// *** Nov. 2022: changed first patronymic line ***
 	$query.="SELECT SQL_CALC_FOUND_ROWS CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name,
 		humo_persons2.*, humo_persons1.pers_id, event_event, event_kind
@@ -1188,6 +1256,8 @@ if ($index_list=='quicksearch'){
 				OR CONCAT(pers_patronym,pers_lastname,REPLACE(pers_prefix,'_',' '),event_event) LIKE '%".safe_text_db($quicksearch)."%' 
 				OR CONCAT(pers_patronym,pers_lastname,event_event,REPLACE(pers_prefix,'_',' ')) LIKE '%".safe_text_db($quicksearch)."%' 
 				OR CONCAT(pers_patronym,REPLACE(pers_prefix,'_',' '), pers_lastname,event_event) LIKE '%".safe_text_db($quicksearch)."%'
+
+				OR CONCAT(pers_firstname,event_event) LIKE '%".safe_text_db($quicksearch)."%'
 				)
 			GROUP BY pers_id, event_event, event_kind
 		) as humo_persons1
@@ -2200,7 +2270,7 @@ echo '<script type="text/javascript">
 </script>';
 
 //for testing only:
-//echo 'Query: '.$query." LIMIT ".safe_text_db($item).",".$nr_persons.'<br>';
+//echo 'Query: <pre>'.$query."</pre> LIMIT ".safe_text_db($item).",".$nr_persons.'<br>';
 //echo 'Count qry: '.$count_qry.'<br>';
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;

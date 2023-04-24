@@ -267,6 +267,13 @@ div.confirm{
 	font-size: 0.95em;
 }
 
+/* Editor */
+.hideshowlink {
+	color: #0058af;
+}
+.hideshowlink:hover {
+	text-decoration: underline;
+}
 
 /* Tab Menu (in use in family tree administration and person/ marriages editor) */
 .pageHeadingContainer-lineVisible {
@@ -338,6 +345,13 @@ div.confirm{
 }
 .pageTab-active a {
 	font-weight: bold;
+}
+
+.editor_item{
+	/* up, right, bottom */
+	margin:6px 0px 0px 0px;
+	border:none;
+	font-size:13px;
 }
 
 /* Order boxes (children) */

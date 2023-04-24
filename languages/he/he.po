@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: HuMo-genealogy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-18 10:09+0100\n"
-"PO-Revision-Date: 2023-03-18 10:09+0100\n"
+"POT-Creation-Date: 2023-04-24 19:00+0200\n"
+"PO-Revision-Date: 2023-04-24 19:00+0200\n"
 "Last-Translator: Yossi Beck <yosbeck@gmail.com>, 2016-2023\n"
-"Language-Team: Hebrew (http://www.transifex.com/humo-gen/humo-gen/language/"
+"Language-Team: Hebrew (http://app.transifex.com/humo-gen/humo-gen/language/"
 "he/)\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
@@ -31,39 +31,40 @@ msgstr ""
 msgid "You are not authorised to see this page."
 msgstr "אין לך הרשאה לעיין בדף זה."
 
-#: address.php:18 admin/include/editor.php:3603 admin/include/editor.php:4491
-#: admin/include/editor.php:4597 admin/include/editor_sources.php:102
-#: admin/include/editor_sources.php:156 admin/include/editor_sources.php:162
-#: admin/include/gedcom_export.php:284 admin/include/gedcom_export.php:286
-#: admin/include/trees_cls.php:1729 header.php:292 source.php:234
+#: address.php:18 admin/include/editor.php:3815 admin/include/editor.php:4724
+#: admin/include/editor.php:4732 admin/include/editor.php:4871
+#: admin/include/editor_sources.php:102 admin/include/editor_sources.php:156
+#: admin/include/editor_sources.php:162 admin/include/gedcom_export.php:284
+#: admin/include/gedcom_export.php:286 admin/include/trees_cls.php:1739
+#: header.php:292 source.php:234
 msgid "Address"
 msgstr "כתובת"
 
 #: address.php:22 addresses.php:78 addresses.php:117
-#: admin/include/editor.php:3856 admin/include/editor.php:4495
-#: admin/include/editor.php:4580
+#: admin/include/editor.php:4068 admin/include/editor.php:4734
+#: admin/include/editor.php:4840
 msgid "Street"
 msgstr "רחוב"
 
-#: address.php:23 admin/include/editor.php:3605 admin/include/editor.php:3858
-#: admin/include/editor.php:4496 admin/include/editor.php:4583 list.php:1701
-#: list.php:1709 source.php:233
+#: address.php:23 admin/include/editor.php:3817 admin/include/editor.php:4070
+#: admin/include/editor.php:4735 admin/include/editor.php:4843 list.php:1786
+#: list.php:1794 source.php:233
 msgid "Zip code"
 msgstr "מיקוד: ‏"
 
-#: address.php:24 admin/include/editor.php:3853 admin/include/editor.php:4494
-#: admin/include/editor.php:4543 list.php:1626 list.php:1658 list.php:1689
-#: list.php:1697 list.php:2014 list.php:2026 source.php:111 source.php:116
+#: address.php:24 admin/include/editor.php:4065 admin/include/editor.php:4733
+#: admin/include/editor.php:4803 list.php:1710 list.php:1742 list.php:1774
+#: list.php:1782 list.php:2099 list.php:2111 source.php:111 source.php:116
 #: source.php:238 sources.php:168
 msgid "Place"
 msgstr "מקום:‏"
 
-#: address.php:25 admin/include/editor.php:3609 admin/include/editor.php:3860
-#: admin/include/editor.php:4586
+#: address.php:25 admin/include/editor.php:3821 admin/include/editor.php:4072
+#: admin/include/editor.php:4846
 msgid "Phone"
 msgstr "טלפון: ‏"
 
-#: address.php:34 admin/include/editor.php:4568
+#: address.php:34 admin/include/editor.php:4828
 #: admin/include/editor_sources.php:60 admin/include/editor_sources.php:66
 #: admin/include/editor_sources.php:72 admin/include/editor_sources.php:78
 #: admin/include/editor_sources.php:84 admin/include/editor_sources.php:96
@@ -81,8 +82,8 @@ msgstr "מקור"
 msgid "Address by person"
 msgstr "כתובת של אדם"
 
-#: addresses.php:68 admin/include/editor.php:4405
-#: admin/include/trees_cls.php:1904 menu.php:569
+#: addresses.php:68 admin/include/editor.php:4622
+#: admin/include/trees_cls.php:1914 menu.php:569
 msgid "Addresses"
 msgstr "כתובות"
 
@@ -90,33 +91,33 @@ msgstr "כתובות"
 msgid "City"
 msgstr "עיר"
 
-#: addresses.php:80 admin/include/editor.php:397 admin/include/editor.php:540
-#: admin/include/editor.php:1371 admin/include/editor.php:1429
+#: addresses.php:80 admin/include/editor.php:397 admin/include/editor.php:577
+#: admin/include/editor.php:1362 admin/include/editor.php:1420
 #: admin/include/editor_media_select.php:80
-#: admin/include/editor_person_select.php:87
+#: admin/include/editor_person_select.php:89
 #: admin/include/editor_place_select.php:65
-#: admin/include/editor_relation_select.php:28
+#: admin/include/editor_relation_select.php:38
 #: admin/include/editor_sources.php:382 admin/include/gedcom_export.php:136
 #: admin/include/language_editor.php:275 admin/include/make_db_maps.php:1112
 #: admin/include/settings_admin.php:833 admin/include/settings_admin.php:983
 #: admin/include/trees_cls.php:870 admin/include/trees_cls.php:908
 #: admin/include/trees_cls.php:984 include/mainindex_cls.php:42
 #: include/mainindex_cls.php:130 include/mainindex_cls.php:602
-#: latest_changes.php:77 list.php:1483 list.php:1798
+#: latest_changes.php:77 list.php:1567 list.php:1883
 #: list_places_families.php:408 menu.php:95 photoalbum.php:356
 #: relations.php:3219 relations.php:3223 relations.php:3337 relations.php:3341
 #: sources.php:136
 msgid "Search"
 msgstr "חיפוש"
 
-#: addresses.php:119 admin/include/editor.php:2315
-#: admin/include/editor.php:4589 admin/include/editor.php:4830
+#: addresses.php:119 admin/include/editor.php:2443
+#: admin/include/editor.php:4849 admin/include/editor.php:5109
 #: admin/include/editor_sources.php:315 admin/include/editor_sources.php:366
 #: admin/include/groups.php:549 admin/include/groups.php:554
 #: admin/include/groups.php:559 admin/include/settings_admin.php:851
 #: admin/include/settings_admin.php:918 admin/include/settings_admin.php:989
 #: family.php:2239 include/process_text.php:90 include/process_text.php:92
-#: list.php:1662
+#: list.php:1746 list.php:1755
 msgid "Text"
 msgstr "טקסט"
 
@@ -126,19 +127,13 @@ msgid "%s backup"
 msgstr "גיבוי של %s"
 
 #: admin/include/backup.php:36
-#, fuzzy
-#| msgid ""
-#| "Upload has failed</span> (you may wish to try again or choose to place "
-#| "the file in the admin/backup_tmp folder yourself with an ftp program or "
-#| "the control panel of your webhost)"
 msgid ""
 "Upload has failed</span> (you may wish to try again or choose to place the "
 "file in the admin/backup_files folder yourself with an ftp program or the "
 "control panel of your webhost)"
 msgstr ""
-"העלאת הקובץ נכשל. אולי תרצה לנסות שוב או לחלופין ניתן למקם את הקובץ באופן "
-"עצמאי בתיקיית: admin/backup_tmp בעזרת תוכנת FTP או באמצעות תוכנת הניהול של "
-"האתר שלך."
+"ההעלאה נכשלה</span> (אולי תרצה לנסות שוב או תרצה לשים את הקובץ בעצמך בתיקיית "
+"admin/backup_files באמצעות תוכנת FTP או באמצעות לוח הבקרה של מינהל האתר שלך)"
 
 #: admin/include/backup.php:40
 msgid ""
@@ -195,14 +190,12 @@ msgstr ""
 "גיבוי .sql או קובץ .sql.zip הנמצא על המחשב שלכם."
 
 #: admin/include/backup.php:100
-#, fuzzy
-#| msgid "Optional: upload a database backup file:"
 msgid "Optional: upload a database backup file"
-msgstr "אופציונלי: העלה קובץ גיבוי של בסיס הנתונים:"
+msgstr "אופציונליL העלה קובץ גיבוי של בסיס הנתונים"
 
-#: admin/include/backup.php:104 admin/include/editor_event_cls.php:1395
-#: admin/include/editor_event_cls.php:1398 admin/include/settings_admin.php:312
-#: admin/include/settings_admin.php:619 admin/update/install_update.php:516
+#: admin/include/backup.php:104 admin/include/editor_event_cls.php:1439
+#: admin/include/editor_event_cls.php:1442 admin/include/settings_admin.php:312
+#: admin/include/settings_admin.php:619 admin/update/install_update.php:522
 msgid "Upload"
 msgstr "האלעת קובץ"
 
@@ -247,7 +240,7 @@ msgid "Database has been restored successfully!"
 msgstr "בסיס הנתונים שוחזר בהצלחה!"
 
 #: admin/include/cal_date.php:8 admin/include/cal_date.php:16
-#: admin/include/editor.php:1741 admin/index.php:1364
+#: admin/include/editor.php:1801 admin/index.php:1392
 msgid "Calculated birth date"
 msgstr "תאריך לידה מחושב"
 
@@ -270,8 +263,8 @@ msgstr ""
 msgid "Choose family tree"
 msgstr "בחר עץ משפחה"
 
-#: admin/include/cal_date.php:31 admin/include/editor.php:1568
-#: admin/include/editor.php:4066 admin/include/editor_sources.php:423
+#: admin/include/cal_date.php:31 admin/include/editor.php:1564
+#: admin/include/editor.php:4278 admin/include/editor_sources.php:423
 #: admin/include/statistics.php:588 admin/include/statistics.php:667
 #: admin/include/tree_check.php:254 admin/include/user_notes.php:85
 #: admin/include/user_notes.php:179
@@ -291,7 +284,7 @@ msgstr ""
 "שנית."
 
 #: admin/include/cms_pages.php:12 admin/include/settings_admin.php:857
-#: admin/include/settings_admin.php:991 admin/index.php:1307
+#: admin/include/settings_admin.php:991 admin/index.php:1335
 msgid "CMS Own pages"
 msgstr "עמודים שנוצרו ע\"י בעל האתר (CMS)"
 
@@ -329,11 +322,11 @@ msgid "Are you sure you want to remove this page?"
 msgstr "האם אתה בטוח שאתה רוצה להסיר דף זה?"
 
 #: admin/include/cms_pages.php:106 admin/include/cms_pages.php:176
-#: admin/include/editor.php:3208 admin/include/editor.php:3496
-#: admin/include/editor.php:3708 admin/include/editor_inc.php:50
-#: admin/include/editor_inc.php:607 admin/include/editor_inc.php:862
-#: admin/include/editor_inc.php:932 admin/include/editor_inc.php:1670
-#: admin/include/editor_inc.php:2123 admin/include/editor_inc.php:2555
+#: admin/include/editor.php:3420 admin/include/editor.php:3708
+#: admin/include/editor.php:3920 admin/include/editor_inc.php:49
+#: admin/include/editor_inc.php:609 admin/include/editor_inc.php:864
+#: admin/include/editor_inc.php:934 admin/include/editor_inc.php:1673
+#: admin/include/editor_inc.php:2126 admin/include/editor_inc.php:2558
 #: admin/include/editor_user_settings.php:74 admin/include/gedcom.php:186
 #: admin/include/gedcom_export.php:336 admin/include/gedcom_export.php:344
 #: admin/include/gedcom_export.php:355 admin/include/gedcom_export.php:385
@@ -349,16 +342,16 @@ msgstr "האם אתה בטוח שאתה רוצה להסיר דף זה?"
 #: admin/include/trees_cls.php:1285 admin/include/trees_cls.php:1290
 #: admin/include/trees_cls.php:1301 admin/include/trees_cls.php:1306
 #: admin/include/trees_cls.php:1319 admin/include/trees_cls.php:1324
-#: admin/include/user_notes.php:109 admin/include/users.php:50 mailform.php:123
+#: admin/include/user_notes.php:109 admin/include/users.php:61 mailform.php:123
 msgid "Yes"
 msgstr "כן"
 
 #: admin/include/cms_pages.php:107 admin/include/cms_pages.php:177
-#: admin/include/editor.php:3209 admin/include/editor.php:3497
-#: admin/include/editor.php:3709 admin/include/editor_inc.php:51
-#: admin/include/editor_inc.php:608 admin/include/editor_inc.php:863
-#: admin/include/editor_inc.php:933 admin/include/editor_inc.php:1671
-#: admin/include/editor_inc.php:2124 admin/include/editor_inc.php:2556
+#: admin/include/editor.php:3421 admin/include/editor.php:3709
+#: admin/include/editor.php:3921 admin/include/editor_inc.php:50
+#: admin/include/editor_inc.php:610 admin/include/editor_inc.php:865
+#: admin/include/editor_inc.php:935 admin/include/editor_inc.php:1674
+#: admin/include/editor_inc.php:2127 admin/include/editor_inc.php:2559
 #: admin/include/editor_user_settings.php:76 admin/include/gedcom.php:187
 #: admin/include/gedcom_export.php:337 admin/include/gedcom_export.php:345
 #: admin/include/gedcom_export.php:356 admin/include/gedcom_export.php:384
@@ -374,7 +367,7 @@ msgstr "כן"
 #: admin/include/trees_cls.php:1286 admin/include/trees_cls.php:1289
 #: admin/include/trees_cls.php:1302 admin/include/trees_cls.php:1305
 #: admin/include/trees_cls.php:1320 admin/include/trees_cls.php:1323
-#: admin/include/user_notes.php:110 admin/include/users.php:51 mailform.php:124
+#: admin/include/user_notes.php:110 admin/include/users.php:62 mailform.php:124
 msgid "No"
 msgstr "לא"
 
@@ -440,11 +433,11 @@ msgid "Published"
 msgstr "פורסם"
 
 #: admin/include/cms_pages.php:350 admin/include/cms_pages.php:353
-#: admin/include/cms_pages.php:446 admin/include/editor.php:1634
-#: admin/include/editor.php:2341 admin/include/editor.php:2575
-#: admin/include/editor.php:3000 admin/include/editor.php:3411
-#: admin/include/editor.php:3624 admin/include/editor.php:3883
-#: admin/include/editor.php:4085 admin/include/editor_sources.php:305
+#: admin/include/cms_pages.php:446 admin/include/editor.php:1630
+#: admin/include/editor.php:2469 admin/include/editor.php:2703
+#: admin/include/editor.php:3212 admin/include/editor.php:3623
+#: admin/include/editor.php:3836 admin/include/editor.php:4095
+#: admin/include/editor.php:4297 admin/include/editor_sources.php:305
 #: admin/include/language_editor.php:286 admin/include/make_db_maps.php:295
 #: admin/include/make_db_maps.php:390 admin/include/make_db_maps.php:399
 #: admin/include/make_db_maps.php:584 admin/include/prefix_editor.php:40
@@ -472,23 +465,24 @@ msgstr "נושא בתפריט / קטגוריה"
 msgid "Remove menu"
 msgstr "הסר תפריט"
 
-#: admin/include/cms_pages.php:457 admin/include/editor.php:1637
-#: admin/include/editor.php:2344 admin/include/editor.php:3408
-#: admin/include/editor.php:3621 admin/include/editor.php:3880
-#: admin/include/editor.php:4418 admin/include/editor.php:4634
-#: admin/include/editor.php:4798 admin/include/editor_event_cls.php:384
-#: admin/include/editor_event_cls.php:398
+#: admin/include/cms_pages.php:457 admin/include/editor.php:1633
+#: admin/include/editor.php:2472 admin/include/editor.php:3620
+#: admin/include/editor.php:3833 admin/include/editor.php:4092
+#: admin/include/editor.php:4635 admin/include/editor.php:4908
+#: admin/include/editor.php:5077 admin/include/editor.php:5164
 #: admin/include/editor_event_cls.php:412
-#: admin/include/editor_event_cls.php:426
-#: admin/include/editor_event_cls.php:440
-#: admin/include/editor_event_cls.php:459
-#: admin/include/editor_event_cls.php:481
-#: admin/include/editor_event_cls.php:515
-#: admin/include/editor_event_cls.php:518
-#: admin/include/editor_event_cls.php:713
-#: admin/include/editor_event_cls.php:727 admin/include/editor_sources.php:533
+#: admin/include/editor_event_cls.php:427
+#: admin/include/editor_event_cls.php:442
+#: admin/include/editor_event_cls.php:457
+#: admin/include/editor_event_cls.php:472
+#: admin/include/editor_event_cls.php:491
+#: admin/include/editor_event_cls.php:513
+#: admin/include/editor_event_cls.php:547
+#: admin/include/editor_event_cls.php:550
+#: admin/include/editor_event_cls.php:746
+#: admin/include/editor_event_cls.php:761 admin/include/editor_sources.php:533
 #: admin/include/log.php:184 admin/include/settings_admin.php:998
-#: admin/include/settings_admin.php:1131 admin/include/users.php:222
+#: admin/include/settings_admin.php:1131 admin/include/users.php:233
 msgid "Add"
 msgstr "הוסף"
 
@@ -508,7 +502,7 @@ msgstr "הוסף"
 #: admin/include/settings_admin.php:1094 admin/include/settings_admin.php:1157
 #: admin/include/settings_admin.php:1230 admin/include/thumbs.php:156
 #: admin/include/trees_cls.php:273 admin/include/trees_cls.php:358
-#: admin/include/trees_cls.php:361 admin/include/users.php:116
+#: admin/include/trees_cls.php:361 admin/include/users.php:127
 #: user_settings.php:236
 msgid "Change"
 msgstr "שנה"
@@ -554,12 +548,12 @@ msgstr "האינדקס הראשי של ברירת המחדל"
 msgid "Set per language"
 msgstr "קבע לפי שפה"
 
-#: admin/include/editor.php:320 admin/include/editor.php:3265
-#: admin/include/editor.php:3532 admin/include/editor.php:3770
-#: admin/include/editor.php:4040 admin/include/editor_user_settings.php:61
+#: admin/include/editor.php:320 admin/include/editor.php:3477
+#: admin/include/editor.php:3744 admin/include/editor.php:3982
+#: admin/include/editor.php:4252 admin/include/editor_user_settings.php:61
 #: admin/include/groups.php:640 admin/include/make_db_maps.php:738
 #: admin/include/trees.php:316 admin/include/user_notes.php:16 help.php:48
-#: help.php:51 help.php:54 help.php:57 list.php:1986 menu.php:36 menu.php:469
+#: help.php:51 help.php:54 help.php:57 list.php:2071 menu.php:36 menu.php:469
 #: statistics.php:53
 msgid "Family tree"
 msgstr "עץ משפחה"
@@ -573,73 +567,74 @@ msgstr "רשימת מועדפים"
 msgid "Latest changes"
 msgstr "שינויים אחרונים"
 
-#: admin/include/editor.php:374 admin/include/editor.php:2311
-#: admin/include/editor.php:2323 admin/include/editor.php:2985
-#: admin/include/editor.php:4820 admin/include/user_notes.php:188
+#: admin/include/editor.php:374 admin/include/editor.php:2439
+#: admin/include/editor.php:2451 admin/include/editor.php:3197
+#: admin/include/editor.php:5099 admin/include/user_notes.php:188
 msgid "Added by"
 msgstr "הוסף על ידי"
 
-#: admin/include/editor.php:375 admin/include/editor.php:2329
-#: admin/include/editor.php:2991 admin/include/editor.php:4825
+#: admin/include/editor.php:375 admin/include/editor.php:2457
+#: admin/include/editor.php:3203 admin/include/editor.php:5104
 msgid "Changed by"
 msgstr "שונה על ידי"
 
-#: admin/include/editor.php:395 admin/include/editor.php:637
+#: admin/include/editor.php:395 admin/include/editor.php:674
 #: admin/include/gedcom_export.php:132 admin/include/tree_check.php:124
 #: admin/include/tree_check.php:921 admin/include/trees_cls.php:875
 #: family.php:2230 relations.php:3112
 msgid "Person"
 msgstr "אדם"
 
-#: admin/include/editor.php:396 admin/include/editor.php:1644
-#: admin/include/editor_event_cls.php:23 admin/include/editor_event_cls.php:374
-#: admin/include/editor_event_cls.php:1492
+#: admin/include/editor.php:396 admin/include/editor.php:1640
+#: admin/include/editor.php:1651 admin/include/editor_event_cls.php:23
+#: admin/include/editor_event_cls.php:402
+#: admin/include/editor_event_cls.php:1536
 #: admin/include/editor_media_select.php:79
-#: admin/include/editor_person_select.php:82
+#: admin/include/editor_person_select.php:84
 #: admin/include/editor_place_select.php:64
-#: admin/include/editor_relation_select.php:23
+#: admin/include/editor_relation_select.php:33
 #: admin/include/gedcom_export.php:133 admin/include/gedcom_export.php:278
 #: admin/include/gedcom_export.php:282 birthday_list.php:124 family.php:2166
 #: family.php:2232 include/mainindex_cls.php:585 include/mainindex_cls.php:933
-#: list.php:1983 list_names.php:315 list_names.php:317 mailform.php:28
+#: list.php:2068 list_names.php:315 list_names.php:317 mailform.php:28
 #: mailform.php:110 menu.php:94 register.php:62 register.php:124
 #: relations.php:3106 relations.php:3218 relations.php:3336
 #: user_settings.php:96
 msgid "Name"
 msgstr "שם"
 
-#: admin/include/editor.php:475 admin/include/editor.php:544
+#: admin/include/editor.php:505 admin/include/editor.php:581
 #: admin/include/trees_cls.php:943 admin/include/trees_cls.php:1016
 #: relations.php:3315 relations.php:3426
 msgid "Person not found"
 msgstr "אדם לא נמצא"
 
-#: admin/include/editor.php:499 admin/include/tree_check.php:232
+#: admin/include/editor.php:528 admin/include/tree_check.php:232
 #: admin/include/tree_check.php:918 admin/include/user_notes.php:69
 msgid "Results"
 msgstr "תוצאות"
 
-#: admin/include/editor.php:537 admin/include/editor_person_select.php:85
-#: admin/include/editor_relation_select.php:26
+#: admin/include/editor.php:574 admin/include/editor_person_select.php:87
+#: admin/include/editor_relation_select.php:36
 #: admin/include/gedcom_export.php:134
 msgid "or ID:"
 msgstr "או מספר זיהוי"
 
-#: admin/include/editor.php:538 admin/include/editor.php:1562
-#: admin/include/editor.php:2461 admin/include/editor.php:3143
-#: admin/include/editor.php:4188
+#: admin/include/editor.php:575 admin/include/editor.php:1558
+#: admin/include/editor.php:2589 admin/include/editor.php:3355
+#: admin/include/editor.php:4407 admin/include/editor_event_cls.php:1119
 msgid "GEDCOM number (ID)"
 msgstr "מספר ג'דקום (ID)"
 
-#: admin/include/editor.php:550 admin/include/editor.php:551
+#: admin/include/editor.php:587 admin/include/editor.php:588
 msgid "Add person"
 msgstr "הוסף אדם"
 
-#: admin/include/editor.php:563 admin/include/editor.php:1794
+#: admin/include/editor.php:600 admin/include/editor.php:1864
 msgid "Examples of date entries:"
 msgstr "דוגמאות לפורמט של תאריכים:"
 
-#: admin/include/editor.php:564 admin/include/editor.php:1795
+#: admin/include/editor.php:601 admin/include/editor.php:1865
 msgid ""
 "13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, "
 "13,10,1813, between 1986 and 1987, 13 oct 1100 BC."
@@ -647,7 +642,7 @@ msgstr ""
 "13 october 1813, 13 oct 1813, 13-10-1813, 13/10/1813, 13.10.1813, "
 "13,10,1813, between 1986 and 1987, 13 oct 1100 BC."
 
-#: admin/include/editor.php:565
+#: admin/include/editor.php:602
 msgid ""
 "In all text fields it's possible to add a hidden text/ own remarks by using "
 "# characters. Example: #Check birthday.#"
@@ -655,64 +650,65 @@ msgstr ""
 "בכל שדות הטקסט ניתן להוסיף טקסט מוסתר על ידי שימוש בסימן #.\n"
 "דוגמא: #בדוק תאריך לידה#"
 
-#: admin/include/editor.php:567
+#: admin/include/editor.php:604
 msgid "= click to open selection popup screen."
 msgstr " = הקלק לפתיחת חלון קופץ."
 
-#: admin/include/editor.php:568
+#: admin/include/editor.php:605
 msgid "= click to open extended editor items."
 msgstr "= הקלק לפתוח נושאי עריכה מתקדמים"
 
-#: admin/include/editor.php:653 admin/include/editor.php:2404
+#: admin/include/editor.php:690 admin/include/editor.php:2532
 #: admin/include/statistics.php:38 admin/include/statistics.php:41
 #: admin/include/statistics.php:771 admin/include/statistics.php:774
 #: admin/include/tree_check.php:178 list_places_families.php:561
 msgid "Family"
 msgstr "משפחה"
 
-#: admin/include/editor.php:813
+#: admin/include/editor.php:850
 msgid "Browse"
 msgstr "או בחרו במשפחה קיימת בתור הורים"
 
-#: admin/include/editor.php:858 admin/include/editor.php:2583
-#: admin/include/editor.php:2709 include/marriage_cls.php:708
+#: admin/include/editor.php:895 admin/include/editor.php:2711
+#: admin/include/editor.php:2865 admin/include/editor.php:2868
+#: include/marriage_cls.php:707
 msgid "marriage/ relation"
 msgstr "קשר זוגי / נשואין"
 
-#: admin/include/editor.php:864 admin/include/editor.php:2757
+#: admin/include/editor.php:901 admin/include/editor.php:2931
 #: include/marriage_cls.php:317 include/marriage_cls.php:322
 #: include/marriage_cls.php:326 include/marriage_cls.php:335
 #: include/marriage_cls.php:336
 msgid "Married"
 msgstr "נישואין"
 
-#: admin/include/editor.php:883 include/marriage_cls.php:50
+#: admin/include/editor.php:920 include/marriage_cls.php:50
 #: include/marriage_cls.php:130 include/marriage_cls.php:216
 #: include/marriage_cls.php:314 include/marriage_cls.php:334
 #: include/marriage_cls.php:387 include/marriage_cls.php:463
-#: include/marriage_cls.php:682 include/marriage_cls.php:687
-#: include/marriage_cls.php:695 include/marriage_cls.php:700
-#: include/marriage_cls.php:714 include/marriage_cls.php:719
+#: include/marriage_cls.php:681 include/marriage_cls.php:686
+#: include/marriage_cls.php:694 include/marriage_cls.php:699
+#: include/marriage_cls.php:713 include/marriage_cls.php:718
 #: report_ancestor.php:551 report_ancestor.php:554 report_ancestor.php:559
 #: report_descendant.php:790
 msgid " to: "
 msgstr " עם: ‏ "
 
-#: admin/include/editor.php:891 admin/include/trees_cls.php:1610
+#: admin/include/editor.php:928 admin/include/trees_cls.php:1620
 #: family.php:1360 family.php:1379
 msgid "Children"
 msgstr "ילדים"
 
-#: admin/include/editor.php:905 admin/include/editor_person_select.php:124
+#: admin/include/editor.php:942 admin/include/editor_person_select.php:126
 #: report_ancestor.php:249
 msgid "Parents"
 msgstr "הורים"
 
 # Nomen Nescio: unknown name.
-#: admin/include/editor.php:912 admin/include/editor.php:918
-#: admin/include/editor.php:4375 admin/include/editor_cls.php:256
-#: admin/include/editor_event_cls.php:1077
-#: admin/include/editor_event_cls.php:1086 admin/include/statistics.php:780
+#: admin/include/editor.php:949 admin/include/editor.php:955
+#: admin/include/editor.php:4592 admin/include/editor_cls.php:256
+#: admin/include/editor_event_cls.php:1101
+#: admin/include/editor_event_cls.php:1111 admin/include/statistics.php:780
 #: admin/include/statistics.php:792 include/person_cls.php:704
 #: include/person_cls.php:706 include/person_cls.php:707
 #: include/person_cls.php:708 include/person_cls.php:709
@@ -722,20 +718,20 @@ msgstr "הורים"
 #: include/person_cls.php:1302 include/person_cls.php:1304
 #: include/person_cls.php:1324 include/person_cls.php:1325
 #: include/person_cls.php:1394 include/person_cls.php:1412
-#: include/person_cls.php:1485 include/person_cls.php:2480
-#: include/person_cls.php:2497 include/person_cls.php:2510
-#: include/witness.php:137 include/witness.php:143 list.php:188
+#: include/person_cls.php:1485 include/person_cls.php:2479
+#: include/person_cls.php:2496 include/person_cls.php:2509
+#: include/witness.php:165 include/witness.php:171 list.php:188
 #: list_places_families.php:137 report_ancestor.php:1289
 #: report_ancestor.php:1400 report_descendant.php:875
 msgid "N.N."
 msgstr "לא ידוע"
 
-#: admin/include/editor.php:914 admin/include/editor.php:1456
-#: admin/include/editor.php:2422 admin/include/editor.php:2573
-#: admin/include/editor.php:2607 admin/include/editor_event_cls.php:1079
-#: admin/include/editor_relation_select.php:87
-#: admin/include/tree_check.php:1600 include/calculate_age_cls.php:241
-#: include/calculate_age_cls.php:253 include/calculate_age_cls.php:260
+#: admin/include/editor.php:951 admin/include/editor.php:1452
+#: admin/include/editor.php:2550 admin/include/editor.php:2701
+#: admin/include/editor.php:2735 admin/include/editor_event_cls.php:1104
+#: admin/include/editor_relation_select.php:97
+#: admin/include/tree_check.php:1600 include/calculate_age_cls.php:240
+#: include/calculate_age_cls.php:252 include/calculate_age_cls.php:259
 #: include/language_date.php:89 include/language_date.php:94
 #: include/language_date.php:99 include/language_date.php:117
 #: include/person_cls.php:1244 include/person_cls.php:1245
@@ -744,256 +740,270 @@ msgstr "לא ידוע"
 msgid "and"
 msgstr "ו"
 
-#: admin/include/editor.php:927
+#: admin/include/editor.php:964
 msgid "Siblings"
 msgstr "אחים/אחיות"
 
-#: admin/include/editor.php:943 admin/include/editor.php:1464
+#: admin/include/editor.php:980 admin/include/editor.php:1460
 msgid "There are no parents."
 msgstr "אין הורים."
 
-#: admin/include/editor.php:951
+#: admin/include/editor.php:988
 #, php-format
 msgid "Editing in %s? <b>Always backup your data!</b>"
 msgstr "האם אתה משתמש בעורך של %s? <b>תמיד עשה גיבוי של הנתונים שלך!</b>"
 
-#: admin/include/editor.php:972 admin/include/editor.php:3424
-#: admin/include/editor.php:3894
+#: admin/include/editor.php:1009 admin/include/editor.php:3636
+#: admin/include/editor.php:4106
 msgid "Preview"
 msgstr "תצוגה מקדימה"
 
-#: admin/include/editor.php:1242
+#: admin/include/editor.php:1233
 msgid "Open Archives"
 msgstr "פתח ארכיונים"
 
-#: admin/include/editor.php:1244
+#: admin/include/editor.php:1235
 msgid "Online search enabled"
 msgstr "חיפוש מקוון מופעל"
 
-#: admin/include/editor.php:1246
+#: admin/include/editor.php:1237
 msgid "Online search disabled"
 msgstr "חיפוש מקוון מושבת"
 
-#: admin/include/editor.php:1265
+#: admin/include/editor.php:1256
 msgid "Archives"
 msgstr "ארכיונים"
 
-#: admin/include/editor.php:1391 admin/include/language_editor.php:386
+#: admin/include/editor.php:1382 admin/include/language_editor.php:386
 msgid "No results found"
 msgstr "לא נמצאו ערכים מתאימים"
 
-#: admin/include/editor.php:1428
+#: admin/include/editor.php:1419
 msgid "Search using period"
 msgstr "חיפוש באמצעות נקודה"
 
-#: admin/include/editor.php:1445
+#: admin/include/editor.php:1433
+msgid ""
+"If links in this page are not good visible, refresh the page once using: "
+"[CTRL] - Refresh."
+msgstr ""
+
+#: admin/include/editor.php:1441
 msgid "parents"
 msgstr "הורים"
 
-#: admin/include/editor.php:1467 admin/include/editor.php:1557
+#: admin/include/editor.php:1463 admin/include/editor.php:1553
 msgid "Add parents"
 msgstr "הוסף הורים"
 
-#: admin/include/editor.php:1470 admin/include/trees_cls.php:1604
+#: admin/include/editor.php:1466 admin/include/trees_cls.php:1614
 msgid "Father"
 msgstr "אב"
 
-#: admin/include/editor.php:1470 admin/include/trees_cls.php:1607
+#: admin/include/editor.php:1466 admin/include/trees_cls.php:1617
 msgid "Mother"
 msgstr "אם"
 
-#: admin/include/editor.php:1472 admin/include/editor.php:1473
-#: admin/include/editor.php:1474 admin/include/editor.php:1646
-#: admin/include/editor.php:1651 admin/include/editor.php:4258 list.php:1996
+#: admin/include/editor.php:1468 admin/include/editor.php:1469
+#: admin/include/editor.php:1470 admin/include/editor.php:1677
+#: admin/include/editor.php:4475 list.php:2081
 msgid "firstname"
 msgstr "שם פרטי"
 
-#: admin/include/editor.php:1478 admin/include/editor.php:1479
-#: admin/include/editor.php:1491 admin/include/editor.php:1646
-#: admin/include/editor.php:1654 admin/include/editor.php:4261 list.php:1554
+#: admin/include/editor.php:1474 admin/include/editor.php:1475
+#: admin/include/editor.php:1487 admin/include/editor.php:1682
+#: admin/include/editor.php:4478 list.php:1638
 msgid "prefix"
 msgstr "קידומת לשם"
 
-#: admin/include/editor.php:1488 admin/include/editor.php:1654
-#: admin/include/editor.php:4270
+#: admin/include/editor.php:1484 admin/include/editor.php:1682
+#: admin/include/editor.php:4487
 msgid "For example: d\\' or:  van_ (use _ for a space)"
 msgstr "למשל: van_ (ישי להשתמש ב_ במקום רווח)"
 
-#: admin/include/editor.php:1506 admin/include/editor.php:1507
-#: admin/include/editor.php:1508 admin/include/editor.php:1646
-#: admin/include/editor.php:1657 admin/include/editor.php:4275
-#: admin/include/editor.php:4276 list.php:2002
+#: admin/include/editor.php:1502 admin/include/editor.php:1503
+#: admin/include/editor.php:1504 admin/include/editor.php:1688
+#: admin/include/editor.php:4492 admin/include/editor.php:4493 list.php:2087
 msgid "lastname"
 msgstr "שם משפחה"
 
-#: admin/include/editor.php:1512 admin/include/editor.php:1513
-#: admin/include/editor.php:1514 admin/include/editor.php:1658
-#: admin/include/editor.php:4277
+#: admin/include/editor.php:1508 admin/include/editor.php:1509
+#: admin/include/editor.php:1510 admin/include/editor.php:1692
+#: admin/include/editor.php:4494
 msgid "patronymic"
 msgstr "שם אב"
 
-#: admin/include/editor.php:1518 admin/include/editor.php:1728
-#: admin/include/editor.php:4281 admin/include/groups.php:510
+#: admin/include/editor.php:1514 admin/include/editor.php:1788
+#: admin/include/editor.php:4498 admin/include/groups.php:510
 msgid "Privacy filter"
 msgstr "מסנן פרטיות"
 
-#: admin/include/editor.php:1519 admin/include/editor.php:1522
-#: admin/include/editor.php:1732 admin/include/editor.php:4282
+#: admin/include/editor.php:1515 admin/include/editor.php:1518
+#: admin/include/editor.php:1792 admin/include/editor.php:4499
 #: admin/include/trees_cls.php:1584
 msgid "alive"
 msgstr "בחיים"
 
-#: admin/include/editor.php:1520 admin/include/editor.php:1523
-#: admin/include/editor.php:1735 admin/include/editor.php:4283
+#: admin/include/editor.php:1516 admin/include/editor.php:1519
+#: admin/include/editor.php:1795 admin/include/editor.php:4500
 msgid "deceased"
 msgstr "נפטר/ה"
 
-#: admin/include/editor.php:1526 admin/include/editor.php:1754
-#: admin/include/editor.php:4286 admin/include/editor_sources.php:60
+#: admin/include/editor.php:1522 admin/include/editor.php:1814
+#: admin/include/editor.php:4503 admin/include/editor_sources.php:60
 msgid "Sex"
 msgstr "מין"
 
-#: admin/include/editor.php:1529 admin/include/editor.php:1537
-#: admin/include/editor.php:1756 admin/include/editor.php:4288
+#: admin/include/editor.php:1525 admin/include/editor.php:1533
+#: admin/include/editor.php:1816 admin/include/editor.php:4505
 #: report_ancestor.php:1546
 msgid "male"
 msgstr "זכר"
 
-#: admin/include/editor.php:1531 admin/include/editor.php:1539
-#: admin/include/editor.php:1758 admin/include/editor.php:4290
+#: admin/include/editor.php:1527 admin/include/editor.php:1535
+#: admin/include/editor.php:1818 admin/include/editor.php:4507
 #: report_ancestor.php:1543
 msgid "female"
 msgstr "נקבה"
 
-#: admin/include/editor.php:1546 admin/include/editor.php:1549
-#: admin/include/editor.php:1553 admin/include/editor.php:4339
-#: admin/include/editor.php:4341 admin/include/editor_event_cls.php:17
-#: admin/include/editor_event_cls.php:451
-#: admin/include/editor_event_cls.php:458
-#: admin/include/editor_event_cls.php:1158
-#: admin/include/editor_event_cls.php:1353
-#: admin/include/editor_event_cls.php:1356 admin/include/trees_cls.php:1731
-#: list.php:1573 list.php:1581
+#: admin/include/editor.php:1542 admin/include/editor.php:1545
+#: admin/include/editor.php:1549 admin/include/editor.php:4556
+#: admin/include/editor.php:4558 admin/include/editor_event_cls.php:17
+#: admin/include/editor_event_cls.php:483
+#: admin/include/editor_event_cls.php:490
+#: admin/include/editor_event_cls.php:1194
+#: admin/include/editor_event_cls.php:1397
+#: admin/include/editor_event_cls.php:1400 admin/include/trees_cls.php:1741
+#: list.php:1657 list.php:1665
 msgid "Profession"
 msgstr "מקצוע"
 
-#: admin/include/editor.php:1560
+#: admin/include/editor.php:1556
 msgid "Or select an existing family as parents:"
 msgstr "או בחרו במשפחה קיימת בתור הורים:"
 
-#: admin/include/editor.php:1584 include/calculate_age_cls.php:338
+#: admin/include/editor.php:1580 admin/include/editor.php:2871
+#: include/calculate_age_cls.php:343
 msgid "age"
 msgstr "גיל"
 
-#: admin/include/editor.php:1584 include/calculate_age_cls.php:235
+#: admin/include/editor.php:1580 include/calculate_age_cls.php:234
 #: timelines.php:497
 msgid "year"
 msgstr "שנה"
 
 # Buried
-#: admin/include/editor.php:1597 admin/include/editor.php:1643
-#: admin/include/editor.php:1779 admin/include/editor.php:1853
-#: admin/include/editor.php:1900 admin/include/editor.php:1950
-#: admin/include/editor.php:1999 admin/include/editor.php:2102
-#: admin/include/editor.php:2264 admin/include/editor.php:2294
-#: admin/include/editor.php:2560 admin/include/editor.php:2642
-#: admin/include/editor.php:2680 admin/include/editor.php:2707
-#: admin/include/editor.php:2812 admin/include/editor.php:2839
-#: admin/include/editor.php:2875 admin/include/editor.php:2965 family.php:2226
+#: admin/include/editor.php:1593 admin/include/editor.php:2392
+#: admin/include/editor.php:2422 admin/include/editor.php:2688
+#: admin/include/editor.php:3177 family.php:2226
 msgid "[+]"
 msgstr "[+]"
 
-#: admin/include/editor.php:1597 admin/include/editor.php:2560
-#: admin/include/gedcom_export.php:213 list.php:1678 list.php:1774
+#: admin/include/editor.php:1593 admin/include/editor.php:2688
+#: admin/include/gedcom_export.php:213 list.php:1763 list.php:1859
 #: list_names.php:227 statistics.php:747 statistics.php:930
 msgid "All"
 msgstr "שניהם"
 
-#: admin/include/editor.php:1600
+#: admin/include/editor.php:1596
 msgid "Delete person"
 msgstr "מחק אדם"
 
-#: admin/include/editor.php:1648 admin/include/editor.php:1673
-#: admin/include/editor_event_cls.php:1512 include/person_cls.php:1653
+#: admin/include/editor.php:1714 admin/include/editor_event_cls.php:1556
+#: include/person_cls.php:1653
 msgid "Hebrew name"
 msgstr "שם עברי"
 
-#: admin/include/editor.php:1674
+#: admin/include/editor.php:1714
 msgid "For example: Joseph ben Hirsch Zvi"
 msgstr "למשל: יוסף בן צבי הירש"
 
-#: admin/include/editor.php:1698 admin/include/editor.php:1840
-#: admin/include/editor.php:1843 admin/include/editor.php:1889
-#: admin/include/editor.php:1892 admin/include/editor.php:1936
-#: admin/include/editor.php:1939 admin/include/editor.php:1983
-#: admin/include/editor.php:1986 admin/include/editor.php:2091
-#: admin/include/editor.php:2155 admin/include/editor.php:2158
-#: admin/include/editor.php:2674 admin/include/editor.php:2702
-#: admin/include/editor.php:2804 admin/include/editor.php:2834
-#: admin/include/editor.php:2862 admin/include/editor.php:2915
-#: admin/include/editor.php:2916 admin/include/editor.php:3401
-#: admin/include/editor.php:3613 admin/include/editor.php:3876
-#: admin/include/editor.php:4497 admin/include/editor_event_cls.php:1309
-#: admin/include/editor_event_cls.php:1362
-#: admin/include/editor_event_cls.php:1379 admin/include/editor_sources.php:90
+#: admin/include/editor.php:1740 admin/include/editor.php:1870
+#: admin/include/editor.php:1902 admin/include/editor.php:1964
+#: admin/include/editor.php:2021 admin/include/editor.php:2055
+#: admin/include/editor.php:2075 admin/include/editor.php:2111
+#: admin/include/editor.php:2212 admin/include/editor.php:2246
+#: admin/include/editor.php:2276 admin/include/editor.php:2784
+#: admin/include/editor.php:2804 admin/include/editor.php:2830
+#: admin/include/editor.php:2842 admin/include/editor.php:2879
+#: admin/include/editor.php:2965 admin/include/editor.php:2997
+#: admin/include/editor.php:3009 admin/include/editor.php:3037
+#: admin/include/editor.php:3049 admin/include/editor.php:3087
+#: admin/include/editor.php:3109 admin/include/editor.php:3613
+#: admin/include/editor.php:3825 admin/include/editor.php:4088
+#: admin/include/editor.php:4736 admin/include/editor_event_cls.php:1349
+#: admin/include/editor_event_cls.php:1406
+#: admin/include/editor_event_cls.php:1423 admin/include/editor_sources.php:90
 #: admin/include/editor_sources.php:144 admin/include/editor_sources.php:380
 #: admin/include/gedcom.php:1536
 msgid "text"
 msgstr "טקסט"
 
-#: admin/include/editor.php:1780 admin/include/editor.php:4304
-#: admin/include/editor_sources.php:66 birthday_list.php:123 family.php:2073
-#: googlemaps/namesearch.php:198 include/mainindex_cls.php:883
-#: include/mainindex_cls.php:886 include/person_cls.php:1833
-#: include/person_cls.php:1835 include/person_cls.php:1840
-#: include/person_cls.php:1843 list.php:1611 list.php:1618 list.php:1984
-#: maps.php:655 maps.php:764 report_ancestor.php:1217 report_ancestor.php:1539
-#: report_descendant.php:866
+#: admin/include/editor.php:1846 admin/include/editor.php:1849
+#: admin/include/editor.php:4521 admin/include/editor_sources.php:66
+#: birthday_list.php:123 family.php:2073 googlemaps/namesearch.php:198
+#: include/mainindex_cls.php:883 include/mainindex_cls.php:886
+#: include/person_cls.php:1833 include/person_cls.php:1835
+#: include/person_cls.php:1840 include/person_cls.php:1843 list.php:1695
+#: list.php:1702 list.php:2069 maps.php:655 maps.php:764
+#: report_ancestor.php:1217 report_ancestor.php:1539 report_descendant.php:866
 msgid "born"
 msgstr "נולד/ה"
 
-#: admin/include/editor.php:1782 admin/include/editor.php:1871
-#: admin/include/editor.php:1917 admin/include/editor.php:1952
-#: admin/include/editor.php:2001 admin/include/editor.php:2104
-#: admin/include/editor.php:2645 admin/include/editor.php:2682
-#: admin/include/editor.php:2710 admin/include/editor.php:2814
-#: admin/include/editor.php:2841 admin/include/editor.php:2877
-#: admin/include/editor.php:3376 admin/include/editor.php:3607
-#: admin/include/editor.php:4499 admin/include/editor_cls.php:51
+#: admin/include/editor.php:1851 admin/include/editor.php:2053
+#: admin/include/editor.php:2109 admin/include/editor.php:2244
+#: admin/include/editor.php:2782 admin/include/editor.php:2829
+#: admin/include/editor.php:2870 admin/include/editor.php:2996
+#: admin/include/editor.php:3036 admin/include/editor.php:3085
+#: admin/include/editor.php:3588 admin/include/editor.php:3819
+#: admin/include/editor.php:4737 admin/include/editor_cls.php:51
 msgid "date"
 msgstr "תאריך"
 
-#: admin/include/editor.php:1800 admin/include/editor.php:1872
-#: admin/include/editor.php:1918 admin/include/editor.php:1952
-#: admin/include/editor.php:2002 admin/include/editor.php:2105
-#: admin/include/editor.php:2645 admin/include/editor.php:2682
-#: admin/include/editor.php:2710 admin/include/editor.php:2814
-#: admin/include/editor.php:2841 admin/include/editor.php:2877
-#: admin/include/editor.php:3376 admin/include/editor.php:3607
-#: admin/include/editor.php:4306 admin/include/editor.php:4322
-#: admin/include/editor.php:4328 admin/include/editor.php:4334
-#: admin/include/editor_event_cls.php:1299
-#: admin/include/editor_event_cls.php:1359
-#: admin/include/editor_event_cls.php:1376 admin/include/editor_sources.php:362
+#: admin/include/editor.php:1869 admin/include/editor.php:1893
+#: admin/include/editor.php:4528 admin/include/trees_cls.php:1574
+msgid "birth time"
+msgstr "שעת לידה"
+
+#: admin/include/editor.php:1876 admin/include/editor.php:2119
+#: include/person_cls.php:1755 include/person_cls.php:1757
+#: include/person_cls.php:1760 include/person_cls.php:2011
+msgid "at"
+msgstr "בשעה"
+
+#: admin/include/editor.php:1876 admin/include/editor.php:2119
+#: include/person_cls.php:1755 include/person_cls.php:1757
+#: include/person_cls.php:1760 include/person_cls.php:2011
+msgid "hour"
+msgstr "שעה"
+
+#: admin/include/editor.php:1883 admin/include/editor.php:1959
+#: admin/include/editor.php:2015 admin/include/editor.php:2066
+#: admin/include/editor.php:2146 admin/include/editor.php:2254
+#: admin/include/editor.php:2796 admin/include/editor.php:2837
+#: admin/include/editor.php:2901 admin/include/editor.php:3004
+#: admin/include/editor.php:3044 admin/include/editor.php:3100
+#: admin/include/editor.php:3588 admin/include/editor.php:3819
+#: admin/include/editor.php:4523 admin/include/editor.php:4539
+#: admin/include/editor.php:4545 admin/include/editor.php:4551
+#: admin/include/editor_event_cls.php:1339
+#: admin/include/editor_event_cls.php:1403
+#: admin/include/editor_event_cls.php:1420 admin/include/editor_sources.php:362
 #: admin/include/editor_sources.php:498
 msgid "place"
 msgstr "מקום"
 
-#: admin/include/editor.php:1828 admin/include/editor.php:4311
-#: admin/include/trees_cls.php:1574
-msgid "birth time"
-msgstr "שעת לידה"
-
-#: admin/include/editor.php:1831 admin/include/editor.php:4312
+#: admin/include/editor.php:1897 admin/include/editor.php:4529
 #: include/person_cls.php:344
 msgid "stillborn child"
 msgstr "ולד מת"
 
-#: admin/include/editor.php:1854 include/language_event.php:16
+#: admin/include/editor.php:1948 admin/include/editor.php:1952
+#: include/language_event.php:16
 msgid "Brit Mila"
 msgstr "ברית מילה"
 
-#: admin/include/editor.php:1873 admin/include/editor.php:1919
+#: admin/include/editor.php:1966 admin/include/editor.php:2023
 msgid ""
 "To display this, the option \"Show events\" has to be checked in \"Users -> "
 "Groups\""
@@ -1001,163 +1011,190 @@ msgstr ""
 "על מנת להציג זאת באתר, האופציה \"הצג ארועים\" צריכה להיות מופעלת בהגדרות "
 "\"משתמשים - > קבוצות\" "
 
-#: admin/include/editor.php:1901 include/language_event.php:14
+#: admin/include/editor.php:2002 admin/include/editor.php:2007
+#: include/language_event.php:14
 msgid "Bat Mitzvah"
 msgstr "בת מצוה"
 
-#: admin/include/editor.php:1902 include/language_event.php:13
+#: admin/include/editor.php:2002 admin/include/editor.php:2007
+#: include/language_event.php:13
 msgid "Bar Mitzvah"
 msgstr "בר מצוה"
 
-#: admin/include/editor.php:1951 admin/include/editor.php:4320
-#: admin/include/editor_sources.php:72 family.php:2076
-#: googlemaps/namesearch.php:201 include/mainindex_cls.php:894
+#: admin/include/editor.php:2047 admin/include/editor.php:2050
+#: admin/include/editor.php:4537 admin/include/editor_sources.php:72
+#: family.php:2076 googlemaps/namesearch.php:201 include/mainindex_cls.php:894
 #: include/mainindex_cls.php:897 include/person_cls.php:1962
 #: include/person_cls.php:1964 include/person_cls.php:1969
-#: include/person_cls.php:1972 list.php:1611 list.php:1618 list.php:1984
+#: include/person_cls.php:1972 list.php:1695 list.php:1702 list.php:2069
 #: maps.php:658 maps.php:767 timelines.php:40
 msgid "baptised"
 msgstr "הוטבל/ה ‏"
 
-#: admin/include/editor.php:1972 admin/include/editor.php:1973
-#: admin/include/trees_cls.php:1585 include/person_cls.php:1874
-#: include/person_cls.php:1876 include/person_cls.php:2340
+#: admin/include/editor.php:2054 admin/include/editor.php:2062
+#: admin/include/editor.php:2070 admin/include/trees_cls.php:1585
+#: include/person_cls.php:1874 include/person_cls.php:1876
+#: include/person_cls.php:2340
 msgid "religion"
 msgstr "דת: ‏"
 
-#: admin/include/editor.php:2000 admin/include/editor.php:4326
-#: admin/include/editor_sources.php:78 birthday_list.php:125
-#: googlemaps/namesearch.php:207 include/mainindex_cls.php:905
-#: include/mainindex_cls.php:908 include/person_cls.php:2121
-#: include/person_cls.php:2123 include/person_cls.php:2127
-#: include/person_cls.php:2128 list.php:1643 list.php:1650 list.php:1985
-#: maps.php:661 maps.php:770 report_ancestor.php:1217 report_ancestor.php:1539
+#: admin/include/editor.php:2104 admin/include/editor.php:2107
+#: admin/include/editor.php:4543 admin/include/editor_sources.php:78
+#: birthday_list.php:125 googlemaps/namesearch.php:207
+#: include/mainindex_cls.php:905 include/mainindex_cls.php:908
+#: include/person_cls.php:2121 include/person_cls.php:2123
+#: include/person_cls.php:2127 include/person_cls.php:2128 list.php:1727
+#: list.php:1734 list.php:2070 maps.php:661 maps.php:770
+#: report_ancestor.php:1217 report_ancestor.php:1539
 msgid "died"
 msgstr "נפטר/ה"
 
-#: admin/include/editor.php:2006 admin/include/editor.php:2728
-#: admin/include/editor.php:2732
+#: admin/include/editor.php:2110 admin/include/editor.php:2163
+#: admin/include/trees_cls.php:1579
+msgid "death time"
+msgstr "שעת המוות"
+
+#: admin/include/editor.php:2124 admin/include/editor.php:2125
+#: admin/include/editor.php:2126 admin/include/editor.php:2129
+#: admin/include/editor.php:2130 admin/include/editor.php:2139
+#: admin/include/trees_cls.php:1580 include/person_cls.php:2038
+#: include/person_cls.php:2039 include/person_cls.php:2040
+#: include/person_cls.php:2043 include/person_cls.php:2044
+#: include/person_cls.php:2057 include/person_cls.php:2059
+#: include/person_cls.php:2066
+msgid "cause of death"
+msgstr "סיבת המוות"
+
+#: admin/include/editor.php:2124 admin/include/editor.php:2171
+#: include/person_cls.php:2038 include/person_cls.php:2066
+msgid "murdered"
+msgstr "נרצח/ה ‏"
+
+#: admin/include/editor.php:2125 admin/include/editor.php:2174
+#: include/person_cls.php:2039
+msgid "drowned"
+msgstr "טבע/ה ‏"
+
+#: admin/include/editor.php:2126 admin/include/editor.php:2177
+#: include/person_cls.php:2040
+msgid "perished"
+msgstr "נהרג/ה ‏"
+
+#: admin/include/editor.php:2127 admin/include/editor.php:2180
+#: include/person_cls.php:2041
+msgid "killed in action"
+msgstr "נפל/ה בקרב ‏"
+
+#: admin/include/editor.php:2128 admin/include/editor.php:2183
+#: include/person_cls.php:2042
+msgid "being missed"
+msgstr "נעדר/ת ‏"
+
+#: admin/include/editor.php:2129 admin/include/editor.php:2186
+#: include/person_cls.php:2043
+msgid "committed suicide"
+msgstr "התאבד/ה ‏"
+
+#: admin/include/editor.php:2130 admin/include/editor.php:2189
+#: include/person_cls.php:2044
+msgid "executed"
+msgstr "הוצא/ה להורג ‏"
+
+#: admin/include/editor.php:2131 admin/include/editor.php:2192
+#: include/person_cls.php:2045
+msgid "died young"
+msgstr "נפטר/ה בגיל צעיר ‏"
+
+#: admin/include/editor.php:2132 admin/include/editor.php:2195
+#: include/person_cls.php:2046
+msgid "died unmarried"
+msgstr "נפטר/ה רווק/ה ‏"
+
+#: admin/include/editor.php:2133 admin/include/editor.php:2198
+#: include/person_cls.php:2047
+msgid "registration"
+msgstr "רישום ‏"
+
+#: admin/include/editor.php:2134 admin/include/editor.php:2201
+#: include/person_cls.php:2048
+msgid "declared death"
+msgstr "הוכרז/ה כמת/ה ‏"
+
+#: admin/include/editor.php:2150 admin/include/editor.php:2905
+#: admin/include/editor.php:2909
 msgid "Age"
 msgstr "גיל"
 
-#: admin/include/editor.php:2015
+#: admin/include/editor.php:2159
 msgid ""
 "If death year and age are used, then birth year is calculated automatically "
 "(when empty)."
 msgstr "אם שנת הלידה והגיל מולאו, אז שנת הלידה מחושבת אוטומטית (אם היה ריק)."
 
-#: admin/include/editor.php:2034 admin/include/trees_cls.php:1579
-msgid "death time"
-msgstr "שעת המוות"
-
-#: admin/include/editor.php:2036 admin/include/editor.php:2078
+#: admin/include/editor.php:2165 admin/include/editor.php:2207
 msgid "cause"
 msgstr "סיבה"
 
-#: admin/include/editor.php:2042 include/person_cls.php:2038
-#: include/person_cls.php:2066
-msgid "murdered"
-msgstr "נרצח/ה ‏"
-
-#: admin/include/editor.php:2045 include/person_cls.php:2039
-msgid "drowned"
-msgstr "טבע/ה ‏"
-
-#: admin/include/editor.php:2048 include/person_cls.php:2040
-msgid "perished"
-msgstr "נהרג/ה ‏"
-
-#: admin/include/editor.php:2051 include/person_cls.php:2041
-msgid "killed in action"
-msgstr "נפל/ה בקרב ‏"
-
-#: admin/include/editor.php:2054 include/person_cls.php:2042
-msgid "being missed"
-msgstr "נעדר/ת ‏"
-
-#: admin/include/editor.php:2057 include/person_cls.php:2043
-msgid "committed suicide"
-msgstr "התאבד/ה ‏"
-
-#: admin/include/editor.php:2060 include/person_cls.php:2044
-msgid "executed"
-msgstr "הוצא/ה להורג ‏"
-
-#: admin/include/editor.php:2063 include/person_cls.php:2045
-msgid "died young"
-msgstr "נפטר/ה בגיל צעיר ‏"
-
-#: admin/include/editor.php:2066 include/person_cls.php:2046
-msgid "died unmarried"
-msgstr "נפטר/ה רווק/ה ‏"
-
-#: admin/include/editor.php:2069 include/person_cls.php:2047
-msgid "registration"
-msgstr "רישום ‏"
-
-#: admin/include/editor.php:2072 include/person_cls.php:2048
-msgid "declared death"
-msgstr "הוכרז/ה כמת/ה ‏"
-
-#: admin/include/editor.php:2076 admin/include/editor.php:3312
-#: admin/include/editor.php:3413 admin/include/editor.php:3554
-#: admin/include/editor.php:3626 admin/include/editor.php:3799
-#: admin/include/editor.php:3884 admin/include/editor.php:4195
+#: admin/include/editor.php:2205 admin/include/editor.php:3524
+#: admin/include/editor.php:3625 admin/include/editor.php:3766
+#: admin/include/editor.php:3838 admin/include/editor.php:4011
+#: admin/include/editor.php:4096 admin/include/editor.php:4414
 #: admin/include/index_inc.php:573 admin/include/thumbs.php:594
-#: fanchart.php:768 include/calculate_age_cls.php:298
-#: include/calculate_age_cls.php:324 include/calculate_age_cls.php:426
-#: include/calculate_age_cls.php:452
+#: fanchart.php:768 include/calculate_age_cls.php:303
+#: include/calculate_age_cls.php:329 include/calculate_age_cls.php:431
+#: include/calculate_age_cls.php:457
 msgid "or"
 msgstr "או"
 
-#: admin/include/editor.php:2103 admin/include/editor_event_cls.php:1227
+#: admin/include/editor.php:2239 admin/include/editor.php:2242
+#: admin/include/editor_event_cls.php:1267
 msgid "Buried"
 msgstr "קבורה"
 
-#: admin/include/editor.php:2124
+#: admin/include/editor.php:2245
 msgid "method of burial"
 msgstr "אופן הקבורה"
 
-#: admin/include/editor.php:2131 admin/include/editor.php:4332
+#: admin/include/editor.php:2258 admin/include/editor.php:4549
 #: admin/include/editor_sources.php:84 googlemaps/namesearch.php:210
-#: include/person_cls.php:2219 list.php:1643 list.php:1650 list.php:1985
+#: include/person_cls.php:2219 list.php:1727 list.php:1734 list.php:2070
 #: maps.php:664 maps.php:773 timelines.php:64
 msgid "buried"
 msgstr "נקבר/ה ‏"
 
-#: admin/include/editor.php:2134 admin/include/trees_cls.php:1581
+#: admin/include/editor.php:2261 admin/include/trees_cls.php:1581
 #: include/person_cls.php:2207
 msgid "cremation"
 msgstr "שריפת הגופה"
 
-#: admin/include/editor.php:2137 include/person_cls.php:2210
+#: admin/include/editor.php:2264 include/person_cls.php:2210
 msgid "resomated"
 msgstr "resomated (הגופה הומסה)"
 
-#: admin/include/editor.php:2140 include/person_cls.php:2213
+#: admin/include/editor.php:2267 include/person_cls.php:2213
 msgid "sailor's grave"
 msgstr "קבר ים"
 
-#: admin/include/editor.php:2143 include/person_cls.php:2216
+#: admin/include/editor.php:2270 include/person_cls.php:2216
 msgid "donated to science"
 msgstr "הגופה  נתרמה למדע"
 
-#: admin/include/editor.php:2169 admin/include/editor.php:2171
+#: admin/include/editor.php:2297 admin/include/editor.php:2299
 msgid "Text for person"
 msgstr "טקסט השייך לאדם"
 
-#: admin/include/editor.php:2184 include/show_sources.php:61
-#: include/show_sources.php:148 include/show_sources.php:204
+#: admin/include/editor.php:2312 include/show_sources.php:62
+#: include/show_sources.php:151 include/show_sources.php:207
 msgid "Source for person"
 msgstr "מקור השייך לאדם"
 
-#: admin/include/editor.php:2194 admin/include/editor.php:2196
-#: admin/include/trees_cls.php:1586 include/show_sources.php:243
-#: include/show_sources.php:326
+#: admin/include/editor.php:2322 admin/include/editor.php:2324
+#: admin/include/trees_cls.php:1586 include/show_sources.php:246
+#: include/show_sources.php:329
 msgid "own code"
 msgstr "קוד עצמי"
 
-#: admin/include/editor.php:2205
+#: admin/include/editor.php:2333
 msgid ""
 "Use own code for your own remarks.<br>\n"
 "It's possible to use own code for special privacy options, see Admin > Users "
@@ -1171,80 +1208,101 @@ msgstr ""
 "אפשר גם להוסיף סמלים ליד אדם! הצב את הסמל בתיקייה images, למשל בשם person."
 "gif ואז הכנס \"person\" בשדה הקוד האישי."
 
-#: admin/include/editor.php:2266 admin/include/editor.php:2966
+#: admin/include/editor.php:2394 admin/include/editor.php:3178
 msgid "GEDCOM tags"
 msgstr "תוייות ג'דקום"
 
-#: admin/include/editor.php:2268 admin/include/editor.php:2271
-#: admin/include/editor.php:2968 admin/include/editor.php:2971
+#: admin/include/editor.php:2396 admin/include/editor.php:2399
+#: admin/include/editor.php:3180 admin/include/editor.php:3183
 #, php-format
 msgid "There are %d unprocessed GEDCOM tags."
 msgstr "יש %d תגי ג'דקום שלא הובאו."
 
-#: admin/include/editor.php:2295 admin/include/user_notes.php:80
+#: admin/include/editor.php:2423 admin/include/user_notes.php:80
 #: family.php:2102
 msgid "User notes"
 msgstr "הערות משתמשים"
 
-#: admin/include/editor.php:2297 admin/include/editor.php:2299 family.php:2104
+#: admin/include/editor.php:2425 admin/include/editor.php:2427 family.php:2104
 #: family.php:2106
 #, php-format
 msgid "There are %d user added notes."
 msgstr "יש %d הערות שנוספו על ידי משתמשים"
 
-#: admin/include/editor.php:2399
+#: admin/include/editor.php:2527
 msgid "Select family"
 msgstr "בחר משפחה"
 
-#: admin/include/editor.php:2438 admin/include/editor.php:2466
-#: admin/include/editor.php:4252 admin/include/editor.php:4346
+#: admin/include/editor.php:2566 admin/include/editor.php:2594
+#: admin/include/editor.php:4469 admin/include/editor.php:4563
 msgid "Add relation"
 msgstr "הוסף קשר זוגי"
 
-#: admin/include/editor.php:2438
+#: admin/include/editor.php:2566
 msgid "Add new relation to this person"
 msgstr "הוסף קשר משפחתי חדש לאדם זה"
 
-#: admin/include/editor.php:2461
+#: admin/include/editor.php:2589
 msgid "Or add relation with existing person:"
 msgstr "או הוסף קשר עם אדם קיים:"
 
-#: admin/include/editor.php:2564
+#: admin/include/editor.php:2692
 msgid "Delete relation"
 msgstr "מחק קשר זוגי"
 
-#: admin/include/editor.php:2587
+#: admin/include/editor.php:2715
 msgid "Select person 1"
 msgstr "בחר אדם 1"
 
-#: admin/include/editor.php:2614
+#: admin/include/editor.php:2742
 msgid "Select person 2"
 msgstr "בחר אדם 2"
 
-#: admin/include/editor.php:2644 admin/include/editor.php:2760
-#: admin/include/editor_sources.php:108 include/marriage_cls.php:54
-#: include/marriage_cls.php:135 include/marriage_cls.php:136
-#: include/marriage_cls.php:137 include/person_cls.php:1459
+#: admin/include/editor.php:2777 admin/include/editor.php:2780
+#: admin/include/editor.php:2934 admin/include/editor_sources.php:108
+#: include/marriage_cls.php:54 include/marriage_cls.php:135
+#: include/marriage_cls.php:136 include/marriage_cls.php:137
+#: include/person_cls.php:1459
 msgid "Living together"
 msgstr "גרים יחד"
 
-#: admin/include/editor.php:2664
+#: admin/include/editor.php:2783
 msgid "End date"
 msgstr "תאריך סיום"
 
-#: admin/include/editor.php:2681 admin/include/editor_sources.php:114
+#: admin/include/editor.php:2792 include/marriage_cls.php:151
+#: include/marriage_cls.php:170
+msgid "End living together"
+msgstr "סיום מגורים משותפים"
+
+#: admin/include/editor.php:2824 admin/include/editor.php:2827
+#: admin/include/editor_sources.php:114
 msgid "Notice of Marriage"
 msgstr "הודעה על נישואין"
 
-#: admin/include/editor.php:2728
+#: admin/include/editor.php:2874 admin/include/editor.php:2886
+#: admin/include/editor.php:2928
+msgid "Marriage/ Related"
+msgstr "נשואין / קשר זוגי"
+
+#: admin/include/editor.php:2876
+msgid "Relation Type"
+msgstr "סוג הקשר"
+
+#: admin/include/editor.php:2878 admin/include/editor.php:2961
+#: admin/include/editor.php:3086 admin/include/editor.php:3104
+msgid "Registrar"
+msgstr "הרשם"
+
+#: admin/include/editor.php:2905
 msgid "Age person 1"
 msgstr "גיל אדם 1"
 
-#: admin/include/editor.php:2732
+#: admin/include/editor.php:2909
 msgid "Age person 2"
 msgstr "גיל אדם 2"
 
-#: admin/include/editor.php:2742
+#: admin/include/editor.php:2919
 msgid ""
 "If birth year of man or woman is empty it will be calculated automatically "
 "using age by marriage."
@@ -1252,460 +1310,452 @@ msgstr ""
 "אם שנת הלידה של גבר או אשה לא ידועה, היא תחושב אוטומטית עפ\"י הגיל בעת "
 "הנישואין."
 
-#: admin/include/editor.php:2751
-msgid "Relation Type"
-msgstr "סוג הקשר"
-
-#: admin/include/editor.php:2754
-msgid "Marriage/ Related"
-msgstr "נשואין / קשר זוגי"
-
-#: admin/include/editor.php:2763 include/marriage_cls.php:57
+#: admin/include/editor.php:2937 include/marriage_cls.php:57
 #: include/person_cls.php:1460
 msgid "Living apart together"
 msgstr "גרים בנפרד"
 
-#: admin/include/editor.php:2766 include/marriage_cls.php:60
+#: admin/include/editor.php:2940 include/marriage_cls.php:60
 #: include/person_cls.php:1461
 msgid "Intentionally unmarried mother"
 msgstr "אם חד-הורית"
 
-#: admin/include/editor.php:2769 include/marriage_cls.php:64
+#: admin/include/editor.php:2943 include/marriage_cls.php:64
 #: include/person_cls.php:1462
 msgid "Homosexual"
 msgstr "הומוסקסואל"
 
-#: admin/include/editor.php:2772
+#: admin/include/editor.php:2946
 msgid "Non_marital"
 msgstr "לא ברית נישואין"
 
-#: admin/include/editor.php:2775 include/marriage_cls.php:71
+#: admin/include/editor.php:2949 include/marriage_cls.php:71
 #: include/marriage_cls.php:77 include/person_cls.php:1464
 #: include/person_cls.php:1465
 msgid "Extramarital"
 msgstr "מחוץ לנישואין"
 
-#: admin/include/editor.php:2778 include/marriage_cls.php:83
+#: admin/include/editor.php:2952 include/marriage_cls.php:83
 #: include/person_cls.php:1466
 msgid "Partner"
 msgstr "שותף"
 
-#: admin/include/editor.php:2781 include/marriage_cls.php:86
+#: admin/include/editor.php:2955 include/marriage_cls.php:86
 msgid "Registered partnership"
 msgstr "זוגיות רשומה"
 
-#: admin/include/editor.php:2784 include/marriage_cls.php:89
+#: admin/include/editor.php:2958 include/marriage_cls.php:89
 #: include/person_cls.php:1468
 msgid "Unknown relation"
 msgstr "יחס לא נודע"
 
-#: admin/include/editor.php:2794 admin/include/editor.php:2904
-msgid "Registrar"
-msgstr "הרשם"
-
-#: admin/include/editor.php:2813 admin/include/editor_sources.php:126
+#: admin/include/editor.php:2991 admin/include/editor.php:2994
+#: admin/include/editor_sources.php:126
 msgid "Religious Notice of Marriage"
 msgstr "הודעה דתית על נישויאן"
 
-#: admin/include/editor.php:2840 admin/include/editor_sources.php:132
+#: admin/include/editor.php:3031 admin/include/editor.php:3034
+#: admin/include/editor_sources.php:132
 msgid "Religious Marriage"
 msgstr "נישואין דתיים"
 
-#: admin/include/editor.php:2871 admin/include/editor_event_cls.php:35
-#: admin/include/editor_event_cls.php:473
-#: admin/include/editor_event_cls.php:480
-#: admin/include/editor_event_cls.php:1163
-#: admin/include/editor_event_cls.php:1370
-#: admin/include/editor_event_cls.php:1373
+#: admin/include/editor.php:3070 admin/include/editor_event_cls.php:35
+#: admin/include/editor_event_cls.php:505
+#: admin/include/editor_event_cls.php:512
+#: admin/include/editor_event_cls.php:1202
+#: admin/include/editor_event_cls.php:1414
+#: admin/include/editor_event_cls.php:1417
 msgid "Religion"
 msgstr "דת"
 
-#: admin/include/editor.php:2876 admin/include/editor_sources.php:138
+#: admin/include/editor.php:3080 admin/include/editor.php:3083
+#: admin/include/editor_sources.php:138
 msgid "Divorce"
 msgstr "גירושין"
 
-#: admin/include/editor.php:2895
+#: admin/include/editor.php:3128
 msgid "Divorce (use this checkbox for a divorce without further data)."
 msgstr "גירושין (השתמש בתיבת סימון זו לגירושין ללא מידע נוסף)."
 
-#: admin/include/editor.php:2920 admin/include/editor.php:2923
-#, fuzzy
-#| msgid "age by relation"
+#: admin/include/editor.php:3132 admin/include/editor.php:3135
 msgid "Text by relation"
-msgstr "גיל בעת יצירת הזוגיות"
+msgstr "טקסט ליד קשר משפחתי"
 
-#: admin/include/editor.php:2936
-#, fuzzy
-#| msgid "age by relation"
+#: admin/include/editor.php:3148
 msgid "Source by relation"
-msgstr "גיל בעת יצירת הזוגיות"
+msgstr "מקור ליד קשר משפחתי"
 
-#: admin/include/editor.php:3104
+#: admin/include/editor.php:3316
 msgid "Use this icon to order children (drag and drop)"
 msgstr "השתמשו בצלמית זו לקביעת סדר הילדים (גרור ושחרר)"
 
-#: admin/include/editor.php:3106
+#: admin/include/editor.php:3318
 msgid "Or automatically order children:"
 msgstr "או סדר את הילדים באופן אוטומטי"
 
-#: admin/include/editor.php:3106
+#: admin/include/editor.php:3318
 msgid "Automatic order children"
 msgstr "סדר אוטומטי של הילדים"
 
-#: admin/include/editor.php:3108
+#: admin/include/editor.php:3320
 msgid "Children are re-ordered."
 msgstr "בוצע סידור הילידים"
 
-#: admin/include/editor.php:3121
+#: admin/include/editor.php:3333
 msgid "Drag to change order (saves automatically)"
 msgstr "גרור על מנת לערוך את הסדר (נשמר אוטומטית)"
 
-#: admin/include/editor.php:3121
+#: admin/include/editor.php:3333
 msgid "Drag to change order"
 msgstr "גרור על מנת לשנות את הסדר"
 
-#: admin/include/editor.php:3125
+#: admin/include/editor.php:3337
 msgid "Disconnect child"
 msgstr "נתק ילד"
 
-#: admin/include/editor.php:3143
+#: admin/include/editor.php:3355
 msgid "Or add existing person as a child:"
 msgstr "או הוסף אדם קיים כילד/ה"
 
-#: admin/include/editor.php:3148
+#: admin/include/editor.php:3360
 msgid "Select child"
 msgstr "בחר ילד"
 
-#: admin/include/editor.php:3203
+#: admin/include/editor.php:3415
 msgid "Are you sure you want to remove this source and ALL source references?"
 msgstr "האם אתה בטוח שאתה רוצה למחוק מקור זה וכל ההפניות אליו?"
 
-#: admin/include/editor.php:3246
+#: admin/include/editor.php:3458
 msgid "Source is removed!"
 msgstr "המקור נמחק"
 
-#: admin/include/editor.php:3251 admin/include/groups.php:443
-#: admin/include/trees_cls.php:1834 admin/index.php:1404 family.php:137
-#: family.php:2257 header.php:291 help.php:60 include/show_sources.php:281
+#: admin/include/editor.php:3463 admin/include/groups.php:443
+#: admin/include/trees_cls.php:1844 admin/index.php:1432 family.php:137
+#: family.php:2257 header.php:291 help.php:60 include/show_sources.php:284
 #: menu.php:552 report_ancestor.php:1558 source.php:37
 msgid "Sources"
 msgstr "מקורות"
 
-#: admin/include/editor.php:3252
+#: admin/include/editor.php:3464
 msgid ""
 "These sources can be connected to multiple persons, families, events and "
 "other items."
 msgstr ""
 "את המקורות האלה ניתן לצרף ליותר מאדם אחד, למשפחות, לארועים ומרכיבים נוספים."
 
-#: admin/include/editor.php:3277 admin/include/editor.php:3279
+#: admin/include/editor.php:3489 admin/include/editor.php:3491
 msgid "Select source"
 msgstr "בחר מקור"
 
-#: admin/include/editor.php:3306 admin/include/editor.php:3369
+#: admin/include/editor.php:3518 admin/include/editor.php:3581
 msgid "restricted"
 msgstr "מוגבל"
 
-#: admin/include/editor.php:3314 admin/include/editor_sources.php:558
+#: admin/include/editor.php:3526 admin/include/editor_sources.php:558
 msgid "Add source"
 msgstr "הוסף מקור"
 
-#: admin/include/editor.php:3337 source.php:43 source.php:46
+#: admin/include/editor.php:3549 source.php:43 source.php:46
 msgid "No valid source number."
 msgstr "מספר מקון לא תקין"
 
-#: admin/include/editor.php:3361 admin/include/editor.php:3599
-#: admin/include/editor.php:3849
+#: admin/include/editor.php:3573 admin/include/editor.php:3811
+#: admin/include/editor.php:4061
 msgid "Option"
 msgstr "אפשרות"
 
-#: admin/include/editor.php:3361 admin/include/editor.php:3599
-#: admin/include/editor.php:3849
+#: admin/include/editor.php:3573 admin/include/editor.php:3811
+#: admin/include/editor.php:4061
 msgid "Value"
 msgstr "ערך"
 
-#: admin/include/editor.php:3363
+#: admin/include/editor.php:3575
 msgid "Status:"
 msgstr "סטטוס"
 
-#: admin/include/editor.php:3366
+#: admin/include/editor.php:3578
 msgid "publish"
 msgstr "פרסם"
 
-#: admin/include/editor.php:3370
+#: admin/include/editor.php:3582
 msgid "restricted = only visible for selected user groups"
 msgstr "מוגבל = רק קבוצות משתמשים הנבחרו יכול לראות את זה"
 
-#: admin/include/editor.php:3373 admin/include/editor.php:3601
-#: admin/include/editor_event_cls.php:27 admin/include/editor_event_cls.php:379
-#: admin/include/editor_event_cls.php:1477
-#: admin/include/editor_event_cls.php:1487 admin/include/editor_sources.php:313
-#: admin/include/editor_sources.php:357 admin/include/trees_cls.php:1739
+#: admin/include/editor.php:3585 admin/include/editor.php:3813
+#: admin/include/editor_event_cls.php:27 admin/include/editor_event_cls.php:407
+#: admin/include/editor_event_cls.php:1521
+#: admin/include/editor_event_cls.php:1531 admin/include/editor_sources.php:313
+#: admin/include/editor_sources.php:357 admin/include/trees_cls.php:1749
 #: source.php:51 source.php:56 source.php:229 sources.php:154
 msgid "Title"
 msgstr "תואר"
 
-#: admin/include/editor.php:3375 source.php:144 source.php:149
+#: admin/include/editor.php:3587 source.php:144 source.php:149
 msgid "Subject"
 msgstr "נושא:‏"
 
-#: admin/include/editor.php:3378 source.php:227
+#: admin/include/editor.php:3590 source.php:227
 msgid "Repository"
 msgstr "מאגר"
 
-#: admin/include/editor.php:3391
+#: admin/include/editor.php:3603
 msgid "Add repositories"
 msgstr "הוסף מאגרים"
 
-#: admin/include/editor.php:3394 source.php:87 source.php:105
+#: admin/include/editor.php:3606 source.php:87 source.php:105
 msgid "Publication"
 msgstr "פרסום:‏"
 
-#: admin/include/editor.php:3394
+#: admin/include/editor.php:3606
 msgid "will be shown as a link."
 msgstr "יוצג כקישור"
 
-#: admin/include/editor.php:3395 admin/include/editor_sources.php:334
+#: admin/include/editor.php:3607 admin/include/editor_sources.php:334
 #: admin/include/settings_admin.php:1093 include/person_cls.php:1721
 #: include/person_cls.php:1723 include/person_cls.php:1726
-#: include/person_cls.php:1729 list.php:1629 list.php:1637 source.php:122
+#: include/person_cls.php:1729 list.php:1713 list.php:1721 source.php:122
 #: source.php:127
 msgid "Own code"
 msgstr "קוד עצמי"
 
-#: admin/include/editor.php:3396 source.php:133 source.php:138
+#: admin/include/editor.php:3608 source.php:133 source.php:138
 msgid "Author"
 msgstr "מחבר:‏"
 
-#: admin/include/editor.php:3397 source.php:155 source.php:160
+#: admin/include/editor.php:3609 source.php:155 source.php:160
 msgid "Nr."
 msgstr "מספר"
 
-#: admin/include/editor.php:3398 source.php:166 source.php:171
+#: admin/include/editor.php:3610 source.php:166 source.php:171
 msgid "Kind"
 msgstr "ילד:‏"
 
-#: admin/include/editor.php:3399 source.php:177 source.php:182
+#: admin/include/editor.php:3611 source.php:177 source.php:182
 msgid "Archive"
 msgstr "ארכיב ‏"
 
-#: admin/include/editor.php:3400 admin/include/editor_sources.php:465
-#: include/tfpdf/tfpdfextend.php:894 list.php:1855 list_names.php:248
+#: admin/include/editor.php:3612 admin/include/editor_sources.php:465
+#: include/tfpdf/tfpdfextend.php:892 list.php:1940 list_names.php:248
 #: list_places_families.php:446 photoalbum.php:273 source.php:187
 #: source.php:192 sources.php:95
 msgid "Page"
 msgstr "עמוד"
 
-#: admin/include/editor.php:3414 admin/include/editor.php:3627
-#: admin/include/editor.php:3885 admin/include/make_db_maps.php:393
+#: admin/include/editor.php:3626 admin/include/editor.php:3839
+#: admin/include/editor.php:4097 admin/include/make_db_maps.php:393
 #: admin/include/make_db_maps.php:402 admin/include/make_db_maps.php:587
 msgid "Delete"
 msgstr "מחק"
 
-#: admin/include/editor.php:3492
+#: admin/include/editor.php:3704
 msgid "Really remove repository with all repository links?"
 msgstr "האם אתה באמת רוצה למחוק מאגר זה עם כל הקישורים אליה"
 
-#: admin/include/editor.php:3518
+#: admin/include/editor.php:3730
 msgid "Repository is removed!"
 msgstr "המאגר נמחק"
 
-#: admin/include/editor.php:3525 admin/index.php:1408
+#: admin/include/editor.php:3737 admin/index.php:1436
 msgid "Repositories"
 msgstr "קבוצות נתונים"
 
-#: admin/include/editor.php:3526
+#: admin/include/editor.php:3738
 msgid ""
 "A repository can be connected to a source. Edit a source to connect a "
 "repository."
 msgstr "אפשר לקשר מאגר למקור. ערוך מקור כדי לקשר אותו למאגר."
 
-#: admin/include/editor.php:3541 admin/include/editor.php:3543
+#: admin/include/editor.php:3753 admin/include/editor.php:3755
 msgid "Select repository"
 msgstr "בחר מקום אחסון"
 
-#: admin/include/editor.php:3555
+#: admin/include/editor.php:3767
 msgid "Add repository"
 msgstr "הוסף מאגר"
 
-#: admin/include/editor.php:3572
+#: admin/include/editor.php:3784
 msgid "No valid repository number."
 msgstr "מספר מאגר בלתי תקין"
 
-#: admin/include/editor.php:3616 admin/include/gedcom_export.php:292
+#: admin/include/editor.php:3828 admin/include/gedcom_export.php:292
 #: admin/include/gedcom_export.php:295 mailform.php:29 register.php:63
 #: user_settings.php:97
 msgid "E-mail"
 msgstr "כתובת דואר אלקטרוני"
 
-#: admin/include/editor.php:3618 admin/include/editor_event_cls.php:30
-#: admin/include/editor_event_cls.php:290 include/person_cls.php:2539
+#: admin/include/editor.php:3830 admin/include/editor_event_cls.php:30
+#: admin/include/editor_event_cls.php:318 include/person_cls.php:2538
 msgid "URL/ Internet link"
 msgstr "URL / קישור אינטרנט"
 
-#: admin/include/editor.php:3703
+#: admin/include/editor.php:3915
 msgid ""
 "Are you sure you want to remove this address and ALL address references?"
 msgstr "האם אתה בטוח שאתה רוצה למחוק כתובת זו וכל ההפניות אליה?"
 
-#: admin/include/editor.php:3756
+#: admin/include/editor.php:3968
 msgid "Address has been removed!"
 msgstr "הכתובת נמחקה!"
 
-#: admin/include/editor.php:3764 admin/include/gedcom_export.php:364
-#: admin/index.php:1412
+#: admin/include/editor.php:3976 admin/include/gedcom_export.php:364
+#: admin/index.php:1440
 msgid "Shared addresses"
 msgstr "כתובות משותפים"
 
-#: admin/include/editor.php:3765
+#: admin/include/editor.php:3977
 msgid ""
 "These addresses can be connected to multiple persons, families and other "
 "items."
 msgstr "את הכתובות האלה ניתן לצרף ליותר מאדם אחד, למשפחות ולנושאים אחרים."
 
-#: admin/include/editor.php:3781 admin/include/editor.php:3783
-#: admin/include/editor.php:4599
+#: admin/include/editor.php:3993 admin/include/editor.php:3995
+#: admin/include/editor.php:4873
 msgid "Select address"
 msgstr "בחר כתובת"
 
-#: admin/include/editor.php:3800
+#: admin/include/editor.php:4012
 msgid "Add address"
 msgstr "הוסף כתובת"
 
-#: admin/include/editor.php:3823
+#: admin/include/editor.php:4035
 msgid "No valid address number."
 msgstr "מספר זיהוי כתובות לא תקין"
 
-#: admin/include/editor.php:3865 admin/include/editor.php:4148
+#: admin/include/editor.php:4077 admin/include/editor.php:4367
 #: admin/include/editor_sources.php:90 admin/include/editor_sources.php:182
-#: admin/include/editor_sources.php:190 include/show_sources.php:91
-#: include/show_sources.php:189 include/show_sources.php:306
+#: admin/include/editor_sources.php:190 include/show_sources.php:94
+#: include/show_sources.php:192 include/show_sources.php:309
 msgid "source"
 msgstr "מקור"
 
-#: admin/include/editor.php:3910 admin/index.php:1416
+#: admin/include/editor.php:4122 admin/index.php:1444
 msgid "Rename places"
 msgstr "שינוי שמות מקומות"
 
-#: admin/include/editor.php:4044 header.php:289 help.php:54 list.php:1982
+#: admin/include/editor.php:4256 header.php:289 help.php:54 list.php:2067
 #: list_places_families.php:560
 msgid "Places"
 msgstr "מקומות"
 
-#: admin/include/editor.php:4045
+#: admin/include/editor.php:4257
 msgid "Select location"
 msgstr "בחר מקום"
 
-#: admin/include/editor.php:4060
+#: admin/include/editor.php:4272
 msgid "Person places"
 msgstr "מקומות השייכים אצל אנשים"
 
-#: admin/include/editor.php:4062
+#: admin/include/editor.php:4274
 msgid "Family places"
 msgstr "מקומות השייכים אצל משפחות"
 
-#: admin/include/editor.php:4064
+#: admin/include/editor.php:4276
 msgid "Other places (sources, events, addresses, etc.)"
 msgstr "מקומות אחרים (מקורות, ארועים, כתובות וכו')"
 
-#: admin/include/editor.php:4074 admin/include/editor.php:4083
+#: admin/include/editor.php:4286 admin/include/editor.php:4295
 msgid "Change location"
 msgstr "שנה מקום"
 
-#: admin/include/editor.php:4084
+#: admin/include/editor.php:4296
 msgid "Also change Google Maps table."
 msgstr "שנה גם את טבלת המקומות של Google Maps."
 
-#: admin/include/editor.php:4255 admin/include/editor.php:4349
+#: admin/include/editor.php:4472 admin/include/editor.php:4566
 msgid "Add child"
 msgstr "הוסף ילד/ה"
 
-#: admin/include/editor.php:4365 admin/include/trees.php:301
+#: admin/include/editor.php:4582 admin/include/trees.php:301
 #: include/show_tree_text.php:6 photoalbum.php:219
 msgid "NO NAME"
 msgstr "טרם ניתן שם"
 
-#: admin/include/editor.php:4500 admin/include/editor_sources.php:319
-msgid "Extra text"
-msgstr "טקסט נוסף"
-
-#: admin/include/editor.php:4521
-msgid "Address GEDCOM number:"
-msgstr "מספר ג'דקום של כתובת"
-
-#: admin/include/editor.php:4525
-msgid "Shared address"
-msgstr "כתובת משותפת"
-
-#: admin/include/editor.php:4536
+#: admin/include/editor.php:4646
 msgid "A shared address can be connected to multiple persons or relations."
 msgstr "כתובת משותפת יכולה להיות קשורה לאנשים שונים או ליחסי זוגיות שונים."
 
-#: admin/include/editor.php:4537
+#: admin/include/editor.php:4647
 msgid ""
 "A shared address is only supported by the Haza-data and HuMo-genealogy "
 "programs."
 msgstr "כתובת משותפת נתמכת רק על ידי תוכנת Haza-data ותוכנת HuMo-genealogy"
 
-#: admin/include/editor.php:4613
-msgid "Or: add new address"
-msgstr "או הוסף כתובת חדשה"
+#: admin/include/editor.php:4738 admin/include/editor_sources.php:319
+msgid "Extra text"
+msgstr "טקסט נוסף"
 
-#: admin/include/editor.php:4641
+#: admin/include/editor.php:4754 admin/include/settings_admin.php:860
+#: admin/include/settings_admin.php:992 admin/include/trees_cls.php:96
+msgid "EMPTY LINE"
+msgstr "שורה ריקה"
+
+#: admin/include/editor.php:4779
+msgid "Address GEDCOM number:"
+msgstr "מספר ג'דקום של כתובת"
+
+#: admin/include/editor.php:4783
+msgid "Shared address"
+msgstr "כתובת משותפת"
+
+#: admin/include/editor.php:4855
 msgid "Addressrole"
 msgstr "תפקיד הכתובת"
 
-#: admin/include/editor.php:4644
+#: admin/include/editor.php:4859
 msgid "Extra text by address"
 msgstr "טקסט נוסף ליד כתובת"
 
-#: admin/include/editor.php:4791 admin/include/user_notes.php:83
+#: admin/include/editor.php:4887
+msgid "Or: add new address"
+msgstr "או הוסף כתובת חדשה"
+
+#: admin/include/editor.php:5070 admin/include/user_notes.php:83
 msgid "Editor notes"
 msgstr "הערות העורך"
 
-#: admin/include/editor.php:4801 admin/include/editor.php:4803
+#: admin/include/editor.php:5080 admin/include/editor.php:5082
 #, php-format
 msgid "There are %d editor notes."
 msgstr "יש %d הערות עורך."
 
-#: admin/include/editor.php:4832 admin/include/user_notes.php:183
+#: admin/include/editor.php:5111 admin/include/user_notes.php:183
 msgid "Priority"
 msgstr "סדר עדיפות"
 
-#: admin/include/editor.php:4833
+#: admin/include/editor.php:5112
 msgid "Low"
 msgstr "נמוך"
 
-#: admin/include/editor.php:4836
+#: admin/include/editor.php:5115
 msgid "Normal"
 msgstr "רגיל"
 
-#: admin/include/editor.php:4839
+#: admin/include/editor.php:5118
 msgid "High"
 msgstr "גבוה"
 
-#: admin/include/editor.php:4842 admin/include/log.php:61
+#: admin/include/editor.php:5121 admin/include/log.php:61
 #: admin/include/settings_admin.php:779 admin/include/user_notes.php:184
 msgid "Status"
 msgstr "סטטוס"
 
-#: admin/include/editor.php:4843
+#: admin/include/editor.php:5122
 msgid "Not started"
 msgstr "לא התחיל"
 
-#: admin/include/editor.php:4846
+#: admin/include/editor.php:5125
 msgid "In progress"
 msgstr "בהליך"
 
-#: admin/include/editor.php:4849
+#: admin/include/editor.php:5128
 msgid "Completed"
 msgstr "הסתיים"
 
-#: admin/include/editor.php:4852
+#: admin/include/editor.php:5131
 msgid "Postponed"
 msgstr "נדחה"
 
-#: admin/include/editor.php:4855
+#: admin/include/editor.php:5134
 msgid "Cancelled"
 msgstr "בוטל"
 
@@ -1914,7 +1964,7 @@ msgstr "דצמבר"
 
 # Birth
 #: admin/include/editor_cls.php:268 include/person_cls.php:1001 list.php:52
-#: list.php:211 list.php:220 list.php:1489 relations.php:3300
+#: list.php:210 list.php:219 list.php:1573 relations.php:3300
 #: relations.php:3411 report_ancestor.php:817 report_ancestor.php:1217
 #: report_ancestor.php:1303 report_ancestor.php:1539 report_descendant.php:748
 msgid "*"
@@ -1922,21 +1972,21 @@ msgstr "*"
 
 # Baptise
 #: admin/include/editor_cls.php:270 include/person_cls.php:1005 list.php:59
-#: list.php:209 list.php:218 list.php:1494 relations.php:3297
+#: list.php:208 list.php:217 list.php:1578 relations.php:3297
 #: relations.php:3408 report_ancestor.php:821 report_descendant.php:753
 msgid "~"
 msgstr "~"
 
 # Death sign
 #: admin/include/editor_cls.php:274 include/person_cls.php:1010 list.php:83
-#: list.php:229 list.php:238 list.php:1504 report_ancestor.php:826
+#: list.php:228 list.php:237 list.php:1588 report_ancestor.php:826
 #: report_ancestor.php:1217 report_ancestor.php:1268 report_descendant.php:759
 msgid "&#134;"
 msgstr "&#134;"
 
 # Buried
 #: admin/include/editor_cls.php:278 include/person_cls.php:1014 list.php:90
-#: list.php:227 list.php:236 list.php:1510 report_ancestor.php:830
+#: list.php:226 list.php:235 list.php:1594 report_ancestor.php:830
 #: report_descendant.php:764
 msgid "[]"
 msgstr "[]"
@@ -1946,354 +1996,350 @@ msgid "Select a family tree:"
 msgstr "בחר עץ משפחה:"
 
 #: admin/include/editor_event_cls.php:16 admin/include/editor_event_cls.php:34
-#: admin/include/editor_event_cls.php:503
-#: admin/include/editor_event_cls.php:1032
+#: admin/include/editor_event_cls.php:535
+#: admin/include/editor_event_cls.php:1081
 msgid "Picture/ Media"
 msgstr "תמונה/מסמך/סרטון"
 
 # Language indicator, used for birthday RSS
-#: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:280
-#: admin/include/editor_event_cls.php:306
+#: admin/include/editor_event_cls.php:18 admin/include/editor_event_cls.php:308
 #: admin/include/editor_event_cls.php:334
-#: admin/include/editor_event_cls.php:358
-#: admin/include/editor_event_cls.php:1172 admin/include/editor_sources.php:182
-#: admin/include/editor_sources.php:190 admin/include/trees_cls.php:1732
+#: admin/include/editor_event_cls.php:362
+#: admin/include/editor_event_cls.php:386
+#: admin/include/editor_event_cls.php:1212 admin/include/editor_sources.php:182
+#: admin/include/editor_sources.php:190 admin/include/trees_cls.php:1742
 #: include/mainindex_cls.php:933
 msgid "Event"
 msgstr "ארוע"
 
-#: admin/include/editor_event_cls.php:19 admin/include/editor_event_cls.php:396
-#: admin/include/trees_cls.php:1733 include/person_cls.php:1811
-#: include/witness.php:124
+#: admin/include/editor_event_cls.php:19 admin/include/editor_event_cls.php:425
+#: admin/include/trees_cls.php:1743 include/person_cls.php:1811
+#: include/witness.php:129
 msgid "birth declaration"
 msgstr "הצהרת לידה"
 
-#: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:410
-#: admin/include/trees_cls.php:1734 include/person_cls.php:1907
-#: include/witness.php:125
+#: admin/include/editor_event_cls.php:20 admin/include/editor_event_cls.php:440
+#: admin/include/trees_cls.php:1744 include/person_cls.php:1907
+#: include/witness.php:134
 msgid "baptism witness"
 msgstr "עד/ה בהטבלה"
 
-#: admin/include/editor_event_cls.php:21 admin/include/editor_event_cls.php:424
-#: admin/include/trees_cls.php:1735 include/person_cls.php:2099
-#: include/witness.php:126
+#: admin/include/editor_event_cls.php:21 admin/include/editor_event_cls.php:455
+#: admin/include/trees_cls.php:1745 include/person_cls.php:2099
+#: include/witness.php:139
 msgid "death declaration"
 msgstr "הודעת פטירה ‏"
 
-#: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:438
-#: admin/include/trees_cls.php:1736 include/person_cls.php:2184
-#: include/witness.php:127
+#: admin/include/editor_event_cls.php:22 admin/include/editor_event_cls.php:470
+#: admin/include/trees_cls.php:1746 include/person_cls.php:2184
+#: include/witness.php:144
 msgid "burial witness"
 msgstr "עד קבורה ‏"
 
-#: admin/include/editor_event_cls.php:24 admin/include/editor_event_cls.php:379
-#: admin/include/editor_event_cls.php:1477
-#: admin/include/editor_event_cls.php:1478
+#: admin/include/editor_event_cls.php:24 admin/include/editor_event_cls.php:407
+#: admin/include/editor_event_cls.php:1521
+#: admin/include/editor_event_cls.php:1522
 msgid "Prefix"
 msgstr "קידומת"
 
-#: admin/include/editor_event_cls.php:25 admin/include/editor_event_cls.php:379
-#: admin/include/editor_event_cls.php:1477
-#: admin/include/editor_event_cls.php:1481
+#: admin/include/editor_event_cls.php:25 admin/include/editor_event_cls.php:407
+#: admin/include/editor_event_cls.php:1521
+#: admin/include/editor_event_cls.php:1525
 msgid "Suffix"
 msgstr "תוספת"
 
 #: admin/include/editor_event_cls.php:26
-#: admin/include/editor_event_cls.php:1484 admin/include/trees_cls.php:1738
+#: admin/include/editor_event_cls.php:1528 admin/include/trees_cls.php:1748
 msgid "Title of Nobility"
 msgstr "תואר אצולה"
 
-#: admin/include/editor_event_cls.php:28 admin/include/editor_event_cls.php:288
-#: admin/include/editor_event_cls.php:1203
+#: admin/include/editor_event_cls.php:28 admin/include/editor_event_cls.php:316
+#: admin/include/editor_event_cls.php:1243
 msgid "Adoption"
 msgstr "אימוץ"
 
 #: admin/include/editor_event_cls.php:29
-#: admin/include/editor_event_cls.php:1490 admin/include/trees_cls.php:1740
+#: admin/include/editor_event_cls.php:1534 admin/include/trees_cls.php:1750
 msgid "Title of Lordship"
 msgstr "תואר אצולה"
 
-#: admin/include/editor_event_cls.php:31 admin/include/editor_event_cls.php:291
+#: admin/include/editor_event_cls.php:31 admin/include/editor_event_cls.php:319
 msgid "Colour mark by person"
 msgstr "סימון צבעוני ליד אדם"
 
-#: admin/include/editor_event_cls.php:32 admin/include/editor_event_cls.php:711
-#: include/marriage_cls.php:277 include/witness.php:128
+#: admin/include/editor_event_cls.php:32 admin/include/editor_event_cls.php:744
+#: include/marriage_cls.php:277 include/witness.php:149
 msgid "marriage witness"
 msgstr "עד/ה בנישואין"
 
-#: admin/include/editor_event_cls.php:33 admin/include/editor_event_cls.php:725
-#: include/marriage_cls.php:427 include/witness.php:129
+#: admin/include/editor_event_cls.php:33 admin/include/editor_event_cls.php:759
+#: include/marriage_cls.php:427 include/witness.php:154
 msgid "marriage witness (religious)"
 msgstr "עד/ה בנישואין דתיים"
 
 # Language indicator, used for birthday RSS
-#: admin/include/editor_event_cls.php:248
-#: admin/include/editor_event_cls.php:319
-#: admin/include/editor_event_cls.php:1186 list.php:105 list.php:1516
-#: list.php:1517
+#: admin/include/editor_event_cls.php:276
+#: admin/include/editor_event_cls.php:347
+#: admin/include/editor_event_cls.php:1226 list.php:105 list.php:1600
+#: list.php:1601
 msgid "Events"
 msgstr "ארועים"
 
-#: admin/include/editor_event_cls.php:293
-#: admin/include/editor_event_cls.php:338
+#: admin/include/editor_event_cls.php:321
+#: admin/include/editor_event_cls.php:366
 msgid "Add event"
 msgstr "הוסף ארוע"
 
-#: admin/include/editor_event_cls.php:306
-#: admin/include/editor_event_cls.php:358
+#: admin/include/editor_event_cls.php:334
+#: admin/include/editor_event_cls.php:386
 msgid "For items like:"
 msgstr "לצורך כגון:"
 
-#: admin/include/editor_event_cls.php:306 include/language_event.php:12
+#: admin/include/editor_event_cls.php:334 include/language_event.php:12
 msgid "baptized as child"
 msgstr "הוטבל כילד"
 
-#: admin/include/editor_event_cls.php:306 include/language_event.php:25
+#: admin/include/editor_event_cls.php:334 include/language_event.php:25
 msgid "depart"
 msgstr "עזיבה"
 
-#: admin/include/editor_event_cls.php:306
-#: admin/include/editor_event_cls.php:358
+#: admin/include/editor_event_cls.php:334
+#: admin/include/editor_event_cls.php:386
 msgid "etc."
 msgstr "וכו'"
 
-#: admin/include/editor_event_cls.php:358 include/language_event.php:42
+#: admin/include/editor_event_cls.php:386 include/language_event.php:42
 msgid "Marriage contract"
 msgstr "חוזה נישואין"
 
-#: admin/include/editor_event_cls.php:358 include/language_event.php:43
+#: admin/include/editor_event_cls.php:386 include/language_event.php:43
 msgid "Marriage license"
 msgstr "רשיון נישואין"
 
-#: admin/include/editor_event_cls.php:379
-#: admin/include/editor_event_cls.php:1496 include/person_cls.php:1641
+#: admin/include/editor_event_cls.php:407
+#: admin/include/editor_event_cls.php:1540 include/person_cls.php:1641
 msgid "Nickname"
 msgstr "שם חילופי"
 
-#: admin/include/editor_event_cls.php:1067
-msgid "* Select adoption parents *"
-msgstr "בחר הורים מאמצים"
-
-#: admin/include/editor_event_cls.php:1102
-msgid "Change colour mark by person"
-msgstr "שנה את הסימון הצבעוני ליד אדם"
-
-#: admin/include/editor_event_cls.php:1104
-msgid "Colour 1"
-msgstr "צבע 1"
-
-#: admin/include/editor_event_cls.php:1106
-msgid "Colour 2"
-msgstr "צבע 2"
-
-#: admin/include/editor_event_cls.php:1108
-msgid "Colour 3"
-msgstr "צבע 3"
-
-#: admin/include/editor_event_cls.php:1110
-msgid "Colour 4"
-msgstr "צבע 4"
-
-#: admin/include/editor_event_cls.php:1112
-msgid "Colour 5"
-msgstr "צבע 5"
-
-#: admin/include/editor_event_cls.php:1114
-msgid "Colour 6"
-msgstr "צבע 6"
-
-#: admin/include/editor_event_cls.php:1116
-msgid "Colour 7"
-msgstr "צבע 7"
-
-#: admin/include/editor_event_cls.php:1118
-msgid "Colour 8"
-msgstr "צבע 8"
-
-#: admin/include/editor_event_cls.php:1120
-msgid "Colour 9"
-msgstr "צבע 9"
-
-#: admin/include/editor_event_cls.php:1122
-msgid "Colour 10"
-msgstr "צבע 10"
-
-#: admin/include/editor_event_cls.php:1124
-msgid "Colour 11"
-msgstr "צבע 11"
-
-#: admin/include/editor_event_cls.php:1126
-msgid "Colour 12"
-msgstr "צבע 12"
-
-#: admin/include/editor_event_cls.php:1128
-msgid "Colour 13"
-msgstr "צבע 13"
-
-#: admin/include/editor_event_cls.php:1130
-msgid "Colour 14"
-msgstr "צבע 14"
-
-#: admin/include/editor_event_cls.php:1148
+#: admin/include/editor_event_cls.php:1145
 msgid "Selected colour"
 msgstr "הצבע שנבחר"
 
 #: admin/include/editor_event_cls.php:1152
+msgid "Change colour mark by person"
+msgstr "שנה את הסימון הצבעוני ליד אדם"
+
+#: admin/include/editor_event_cls.php:1154
+msgid "Colour 1"
+msgstr "צבע 1"
+
+#: admin/include/editor_event_cls.php:1156
+msgid "Colour 2"
+msgstr "צבע 2"
+
+#: admin/include/editor_event_cls.php:1158
+msgid "Colour 3"
+msgstr "צבע 3"
+
+#: admin/include/editor_event_cls.php:1160
+msgid "Colour 4"
+msgstr "צבע 4"
+
+#: admin/include/editor_event_cls.php:1162
+msgid "Colour 5"
+msgstr "צבע 5"
+
+#: admin/include/editor_event_cls.php:1164
+msgid "Colour 6"
+msgstr "צבע 6"
+
+#: admin/include/editor_event_cls.php:1166
+msgid "Colour 7"
+msgstr "צבע 7"
+
+#: admin/include/editor_event_cls.php:1168
+msgid "Colour 8"
+msgstr "צבע 8"
+
+#: admin/include/editor_event_cls.php:1170
+msgid "Colour 9"
+msgstr "צבע 9"
+
+#: admin/include/editor_event_cls.php:1172
+msgid "Colour 10"
+msgstr "צבע 10"
+
+#: admin/include/editor_event_cls.php:1174
+msgid "Colour 11"
+msgstr "צבע 11"
+
+#: admin/include/editor_event_cls.php:1176
+msgid "Colour 12"
+msgstr "צבע 12"
+
+#: admin/include/editor_event_cls.php:1178
+msgid "Colour 13"
+msgstr "צבע 13"
+
+#: admin/include/editor_event_cls.php:1180
+msgid "Colour 14"
+msgstr "צבע 14"
+
+#: admin/include/editor_event_cls.php:1185
 msgid "Also change"
 msgstr "שנה גם"
 
-#: admin/include/editor_event_cls.php:1152 admin/include/editor_inc.php:1666
+#: admin/include/editor_event_cls.php:1185 admin/include/editor_inc.php:1669
 #: admin/include/gedcom_export.php:222 hourglass.php:81
 msgid "Descendants"
 msgstr "צאצאים"
 
-#: admin/include/editor_event_cls.php:1153 admin/include/editor_inc.php:1667
+#: admin/include/editor_event_cls.php:1186 admin/include/editor_inc.php:1670
 #: admin/include/gedcom_export.php:228 hourglass.php:79
 msgid "Ancestors"
 msgstr "אבות"
 
-#: admin/include/editor_event_cls.php:1175
-#: admin/include/editor_event_cls.php:1478
+#: admin/include/editor_event_cls.php:1215
+#: admin/include/editor_event_cls.php:1522
 msgid "e.g. Lt. Cmndr."
 msgstr "e.g. Lt. Cmndr."
 
-#: admin/include/editor_event_cls.php:1176
-#: admin/include/editor_event_cls.php:1481
+#: admin/include/editor_event_cls.php:1216
+#: admin/include/editor_event_cls.php:1525
 msgid "e.g. Jr."
 msgstr "e.g. Jr."
 
-#: admin/include/editor_event_cls.php:1177
-#: admin/include/editor_event_cls.php:1484
+#: admin/include/editor_event_cls.php:1217
+#: admin/include/editor_event_cls.php:1528
 msgid "e.g. Jhr., Jkvr."
 msgstr "למשל: דוכס, נסיך"
 
-#: admin/include/editor_event_cls.php:1178
-#: admin/include/editor_event_cls.php:1487
+#: admin/include/editor_event_cls.php:1218
+#: admin/include/editor_event_cls.php:1531
 msgid "e.g. Prof., Dr."
 msgstr "למשל: פרופ', ד\"ר"
 
-#: admin/include/editor_event_cls.php:1179
-#: admin/include/editor_event_cls.php:1490
+#: admin/include/editor_event_cls.php:1219
+#: admin/include/editor_event_cls.php:1534
 msgid "e.g. Lord of Amsterdam"
 msgstr "למשל: Lord of Winchester"
 
-#: admin/include/editor_event_cls.php:1197
+#: admin/include/editor_event_cls.php:1237
 msgid "Baptise"
 msgstr "טבילה"
 
-#: admin/include/editor_event_cls.php:1209
+#: admin/include/editor_event_cls.php:1249
 msgid "Settling"
 msgstr "הגדרה"
 
-#: admin/include/editor_event_cls.php:1219
+#: admin/include/editor_event_cls.php:1259
 msgid "Characteristics"
 msgstr "מאפיינים"
 
-#: admin/include/editor_event_cls.php:1232
+#: admin/include/editor_event_cls.php:1272
 msgid "Will"
 msgstr "צוואה"
 
-#: admin/include/editor_event_cls.php:1237 birthday_list.php:111
+#: admin/include/editor_event_cls.php:1277 birthday_list.php:111
 #: birthday_list.php:283
 msgid "Religious"
 msgstr "דתי"
 
-#: admin/include/editor_event_cls.php:1244 include/language_event.php:27
+#: admin/include/editor_event_cls.php:1284 include/language_event.php:27
 msgid "Education"
 msgstr "השכלה"
 
-#: admin/include/editor_event_cls.php:1249
+#: admin/include/editor_event_cls.php:1289
 msgid "Social"
 msgstr "חברתי"
 
-#: admin/include/editor_event_cls.php:1255
+#: admin/include/editor_event_cls.php:1295
 msgid "LDS"
 msgstr "הכנסייה המורמונית"
 
-#: admin/include/editor_event_cls.php:1263
+#: admin/include/editor_event_cls.php:1303
 msgid "Jewish"
 msgstr "יהודי"
 
-#: admin/include/editor_event_cls.php:1320 admin/include/tree_check.php:717
+#: admin/include/editor_event_cls.php:1364 admin/include/tree_check.php:717
 #: admin/include/tree_check.php:922
 msgid "ID"
 msgstr "ID"
 
-#: admin/include/editor_event_cls.php:1391
+#: admin/include/editor_event_cls.php:1435
 msgid "Upload new image"
-msgstr ""
+msgstr "העלה תמונה חדשה"
 
-#: admin/include/editor_event_cls.php:1499 include/person_cls.php:1630
+#: admin/include/editor_event_cls.php:1543 include/person_cls.php:1630
 #: include/person_cls.php:1633
 msgid "Also known as"
 msgstr "ידוע גם בשם"
 
-#: admin/include/editor_event_cls.php:1502 include/person_cls.php:1650
+#: admin/include/editor_event_cls.php:1546 include/person_cls.php:1650
 msgid "alias name"
 msgstr "שם חלופי"
 
-#: admin/include/editor_event_cls.php:1505 include/person_cls.php:1651
+#: admin/include/editor_event_cls.php:1549 include/person_cls.php:1651
 msgid "Short name (for reports)"
 msgstr "שם קצר לדוחות"
 
-#: admin/include/editor_event_cls.php:1508 include/person_cls.php:1652
+#: admin/include/editor_event_cls.php:1552 include/person_cls.php:1652
 msgid "Adopted name"
 msgstr "שם מאומץ"
 
-#: admin/include/editor_event_cls.php:1516 include/person_cls.php:1654
+#: admin/include/editor_event_cls.php:1560 include/person_cls.php:1654
 msgid "Census name"
 msgstr "שם במפקד אוכלוסין"
 
-#: admin/include/editor_event_cls.php:1519 include/person_cls.php:1655
+#: admin/include/editor_event_cls.php:1563 include/person_cls.php:1655
 msgid "Married name"
 msgstr "שם אחרי נישואין"
 
-#: admin/include/editor_event_cls.php:1522 include/person_cls.php:1656
+#: admin/include/editor_event_cls.php:1566 include/person_cls.php:1656
 msgid "Given name"
 msgstr "שם פרטי"
 
-#: admin/include/editor_event_cls.php:1525 include/person_cls.php:1657
+#: admin/include/editor_event_cls.php:1569 include/person_cls.php:1657
 msgid "Farm name"
 msgstr "שם איכרים"
 
-#: admin/include/editor_event_cls.php:1528 include/person_cls.php:1658
+#: admin/include/editor_event_cls.php:1572 include/person_cls.php:1658
 msgid "Birth name"
 msgstr "שם בלידה"
 
-#: admin/include/editor_event_cls.php:1531 include/person_cls.php:1659
+#: admin/include/editor_event_cls.php:1575 include/person_cls.php:1659
 msgid "Indian name"
 msgstr "שם אינדיאני"
 
-#: admin/include/editor_event_cls.php:1534 include/person_cls.php:1660
+#: admin/include/editor_event_cls.php:1578 include/person_cls.php:1660
 msgid "Formal name"
 msgstr "שם רשמי"
 
-#: admin/include/editor_event_cls.php:1537 include/person_cls.php:1661
+#: admin/include/editor_event_cls.php:1581 include/person_cls.php:1661
 msgid "Current name"
 msgstr "שם נוכחי"
 
-#: admin/include/editor_event_cls.php:1540 include/person_cls.php:1662
+#: admin/include/editor_event_cls.php:1584 include/person_cls.php:1662
 msgid "Soldier name"
 msgstr "שם צבאי"
 
-#: admin/include/editor_event_cls.php:1543 include/person_cls.php:1664
+#: admin/include/editor_event_cls.php:1587 include/person_cls.php:1664
 msgid "Religious name"
 msgstr "שם דתי"
 
-#: admin/include/editor_event_cls.php:1546 include/person_cls.php:1665
+#: admin/include/editor_event_cls.php:1590 include/person_cls.php:1665
 msgid "Other name"
 msgstr "שם אחר"
 
-#: admin/include/editor_event_cls.php:1549 include/person_cls.php:1663
+#: admin/include/editor_event_cls.php:1593 include/person_cls.php:1663
 msgid "Formerly known as"
 msgstr "שם קודם"
 
-#: admin/include/editor_event_cls.php:1552
+#: admin/include/editor_event_cls.php:1596
 msgid "German Rufname"
 msgstr "שם \"Rufname\" בגרמנית"
 
-#: admin/include/editor_inc.php:37
+#: admin/include/editor_inc.php:36
 msgid ""
 "This will disconnect this person from parents, spouses and children <b>and "
 "delete it completely from the database.</b> Do you wish to continue?"
@@ -2301,67 +2347,67 @@ msgstr ""
 "פעולה זו תנתק את האדם הזה מהורים, בני/בנות זוג וילדים <b> וימחוק אותו "
 "לחלוטין מבסיס הנתונים. </b> האם ברצונך להמשיך?"
 
-#: admin/include/editor_inc.php:45
+#: admin/include/editor_inc.php:44
 msgid "Also remove ALL RELATED PERSONS (including all items)"
 msgstr "מחק גם את כל האנשים הקשורים קשר משפחתי (עם כל פרטיהם)"
 
-#: admin/include/editor_inc.php:86 admin/include/editor_inc.php:110
+#: admin/include/editor_inc.php:85 admin/include/editor_inc.php:109
 msgid "Person disconnected from marriage(s)."
 msgstr "האדם נותק מהנישואין"
 
-#: admin/include/editor_inc.php:132
+#: admin/include/editor_inc.php:131
 msgid "Person disconnected from parents."
 msgstr "האדם נותק מההורים"
 
-#: admin/include/editor_inc.php:152
+#: admin/include/editor_inc.php:155
 msgid "Person is removed"
 msgstr "אדם זה נמחק"
 
-#: admin/include/editor_inc.php:602
+#: admin/include/editor_inc.php:604
 msgid "If you continue, ALL children will be disconnected automatically!"
 msgstr "אם תמשיכו כל הילדים ינותקו אוטומטית!"
 
-#: admin/include/editor_inc.php:603
+#: admin/include/editor_inc.php:605
 msgid "Are you sure to remove this mariage?"
 msgstr "האם אתה בטוח שאתה רוצה למחוק נישואין אלה"
 
-#: admin/include/editor_inc.php:659
+#: admin/include/editor_inc.php:661
 msgid "Marriage is removed!"
 msgstr "נישואין נמחקו"
 
-#: admin/include/editor_inc.php:841
+#: admin/include/editor_inc.php:843
 msgid "Parents are selected!"
 msgstr "הורים נבחרו"
 
-#: admin/include/editor_inc.php:856
+#: admin/include/editor_inc.php:858
 msgid ""
 "Child already has parents connected! Are you sure you want to connect this "
 "child?"
 msgstr "לילד הזה כבר יש הורים! האם אתה בטוח שאתה רוצה לשייך לילד זה?"
 
-#: admin/include/editor_inc.php:926
+#: admin/include/editor_inc.php:928
 msgid "Are you sure you want to disconnect this child?"
 msgstr "האם אתה בטוח שאתה רוצה לנתק ילד זה"
 
-#: admin/include/editor_inc.php:1377 admin/include/settings_admin.php:112
+#: admin/include/editor_inc.php:1379 admin/include/settings_admin.php:112
 #: admin/include/settings_admin.php:130
 msgid "Photo upload failed, check folder rights"
 msgstr "ייבוא התמונה נכשל, נא בדקו הרשאות בתיקייה"
 
-#: admin/include/editor_inc.php:1472
+#: admin/include/editor_inc.php:1474
 msgid "Media upload failed, check folder rights"
 msgstr "העלאת התמונה/מסמך/סרטון נכשלה"
 
-#: admin/include/editor_inc.php:1488
+#: admin/include/editor_inc.php:1490
 msgid "No valid picture, media or document file"
 msgstr "תמונה/מסמך/סרטון לא מתאים"
 
-#: admin/include/editor_inc.php:1652 admin/include/editor_inc.php:2101
-#: admin/include/editor_inc.php:2551
+#: admin/include/editor_inc.php:1655 admin/include/editor_inc.php:2104
+#: admin/include/editor_inc.php:2554
 msgid "Are you sure you want to remove this event?"
 msgstr "האם אתה בטוח שאתה רוצה למחוק ארוע זה?"
 
-#: admin/include/editor_inc.php:1665
+#: admin/include/editor_inc.php:1668
 msgid "Also remove colour marks of"
 msgstr "הסר גם את סימוני הצבע של"
 
@@ -2369,7 +2415,7 @@ msgstr "הסר גם את סימוני הצבע של"
 msgid "Select media"
 msgstr "בחרו מדיה"
 
-#: admin/include/editor_person_select.php:5
+#: admin/include/editor_person_select.php:7
 msgid "Select person"
 msgstr "בחר אדם"
 
@@ -2377,11 +2423,17 @@ msgstr "בחר אדם"
 msgid "Select place"
 msgstr "בחר מיקום"
 
-#: admin/include/editor_relation_select.php:5
+#: admin/include/editor_relation_select.php:9
+#, fuzzy
+#| msgid "* Select adoption parents *"
+msgid "Select adoption parents"
+msgstr "בחר הורים מאמצים"
+
+#: admin/include/editor_relation_select.php:12
 msgid "Select parents"
 msgstr "בחר הורים"
 
-#: admin/include/editor_relation_select.php:103
+#: admin/include/editor_relation_select.php:113
 msgid "Results are limited, use search to find more parents."
 msgstr "התוצאות מוגבלות, השתמש בחיפוש למצוא יותר הורים."
 
@@ -2398,14 +2450,12 @@ msgid "Marriage"
 msgstr "נישואין"
 
 #: admin/include/editor_sources.php:150
-#, fuzzy
-#| msgid "cremation"
 msgid "relation"
-msgstr "שריפת הגופה"
+msgstr "קשר משפחתי"
 
 #: admin/include/editor_sources.php:314 admin/include/editor_sources.php:318
-#: include/mainindex_cls.php:933 list.php:1612 list.php:1614 list.php:1644
-#: list.php:1646 list.php:2008 list.php:2020 source.php:62 source.php:67
+#: include/mainindex_cls.php:933 list.php:1696 list.php:1698 list.php:1728
+#: list.php:1730 list.php:2093 list.php:2105 source.php:62 source.php:67
 #: source.php:237 sources.php:161
 msgid "Date"
 msgstr "תאריך"
@@ -2422,7 +2472,7 @@ msgstr "מספר ג'דקום של מקור"
 msgid "Search existing source"
 msgstr "חפש מקור קיים"
 
-#: admin/include/editor_sources.php:377 list.php:1752 list.php:1760
+#: admin/include/editor_sources.php:377 list.php:1837 list.php:1845
 msgid "gedcomnumber (ID)"
 msgstr "מספר גדקום (ID)"
 
@@ -2475,7 +2525,7 @@ msgid "Add another source"
 msgstr "הוסף מקור נוסף"
 
 #: admin/include/editor_user_settings.php:5
-#: admin/include/editor_user_settings.php:7 admin/include/users.php:113
+#: admin/include/editor_user_settings.php:7 admin/include/users.php:124
 msgid "Extra settings"
 msgstr "הגדרות נוספות"
 
@@ -2502,7 +2552,7 @@ msgid "Use user-group setting"
 msgstr "השתמש בהגרדות משתמש/קבוצה"
 
 #: admin/include/extensions.php:5 admin/include/extensions.php:60
-#: admin/index.php:1295
+#: admin/index.php:1323
 msgid "Extensions"
 msgstr "הרחבות"
 
@@ -3002,7 +3052,7 @@ msgstr "מדינה"
 #: admin/include/gedcom_export.php:299 admin/include/make_db_maps.php:1159
 #: admin/include/settings_admin.php:5 admin/include/settings_admin.php:226
 #: admin/include/trees_cls.php:1252 admin/include/trees_cls.php:1418
-#: admin/index.php:1298 family.php:114 family.php:2235 header.php:305
+#: admin/index.php:1326 family.php:114 family.php:2235 header.php:305
 msgid "Settings"
 msgstr "הגדרות"
 
@@ -3078,10 +3128,8 @@ msgid "Start export"
 msgstr "התחל ייצוא"
 
 #: admin/include/gedcom_export.php:431
-#, fuzzy
-#| msgid "GEDCOM file will be exported to backup_tmp/ folder"
 msgid "GEDCOM file will be exported to gedcom_files/ folder"
-msgstr "קובץ ג'דקום ייוצא לתיקיית backup_tmp/"
+msgstr "קובץ הג'דקום לאוחסן בתיקייה gedcom_files"
 
 #: admin/include/gedcom_export.php:1534
 msgid "GEDCOM file is generated"
@@ -3242,7 +3290,7 @@ msgstr ""
 "(ניתן לבטל אופציה זו רק אם האופציה \"הצג ספר תמונות בתת-התפריט\" לא מופעלת)."
 
 #: admin/include/groups.php:356 admin/include/trees_cls.php:259
-#: admin/index.php:1352
+#: admin/index.php:1380
 msgid "Pictures/ create thumbnails"
 msgstr "תמונות / יצירת תמונות מוקטנות"
 
@@ -3286,7 +3334,7 @@ msgstr "תצוגת ברירת מחדל של עמוד המשפחה"
 msgid "Compact view"
 msgstr "תצוגה קומפקטית"
 
-#: admin/include/groups.php:401 family.php:132 list.php:1941
+#: admin/include/groups.php:401 family.php:132 list.php:2026
 #: list_places_families.php:526
 msgid "Expanded view"
 msgstr "תצוגה מורחבת"
@@ -3304,10 +3352,8 @@ msgid "Hide Google maps"
 msgstr "הסתר מפות גוגל"
 
 #: admin/include/groups.php:412
-#, fuzzy
-#| msgid "Longest living person"
 msgid "Show age of living person"
-msgstr "אדם שחי הכי הרבה שנים"
+msgstr "הצג גיל של אדם שבחיים"
 
 #: admin/include/groups.php:417
 msgid "Show \"PDF Report\" button in family screen and reports"
@@ -3498,7 +3544,7 @@ msgid "Hide or show family trees per user group."
 msgstr "הצג או הסתר עצי משפחה לפי קבוצת משתמשים"
 
 #: admin/include/groups.php:636 admin/include/index_inc.php:575
-#: admin/index.php:1393 include/person_cls.php:974
+#: admin/index.php:1421 include/person_cls.php:974
 msgid "Editor"
 msgstr "עריכת נתונים"
 
@@ -3526,7 +3572,7 @@ msgstr "האם להציג את הקטגוריה?"
 msgid "No photo categories available."
 msgstr "אין קטגוריות של תמונות"
 
-#: admin/include/index_inc.php:5 admin/index.php:675 admin/index.php:1213
+#: admin/include/index_inc.php:5 admin/index.php:697 admin/index.php:1241
 msgid "Administration"
 msgstr "ניהול"
 
@@ -3550,14 +3596,14 @@ msgstr "הקישור לבסיס הנתונים הוא תקין!"
 msgid "No database found! Check MySQL connection and database name"
 msgstr "לא נמצא בסיס נתונים! בדוק את הקישור ל-MySQL ואת שם בסיס הנתונים"
 
-#: admin/include/index_inc.php:52 admin/update/install_update.php:362
+#: admin/include/index_inc.php:52 admin/update/install_update.php:368
 msgid ""
 "The configuration file is not writable! Please change the include/db_login."
 "php file manually."
 msgstr ""
 "לא ניתן לכתוב לקובץ ההגדרות! אנא שנו את קובץ include/db_login.php באופן ידני."
 
-#: admin/include/index_inc.php:96 admin/update/install_update.php:413
+#: admin/include/index_inc.php:96 admin/update/install_update.php:419
 msgid ""
 "There is a problem in the db_login file, maybe an old db_login file is used."
 msgstr "יש בעיה בקובץ db_login.php, אולי נעשה שימוש בקובץ ישן."
@@ -3567,7 +3613,7 @@ msgstr "יש בעיה בקובץ db_login.php, אולי נעשה שימוש בק
 msgid "%s status"
 msgstr "סטטוס %s"
 
-#: admin/include/index_inc.php:116 admin/update/install_update.php:537
+#: admin/include/index_inc.php:116 admin/update/install_update.php:543
 #, php-format
 msgid "%s version"
 msgstr "גרסת %s"
@@ -3719,18 +3765,14 @@ msgid "Optimize database."
 msgstr "מיטוב בסיס הנתונים"
 
 #: admin/include/index_inc.php:375
-#, fuzzy
-#| msgid "Database backup"
 msgid "Last database backup"
-msgstr "גיבוי לבסיס הנתונים"
+msgstr "גיבוי אחרון של בסיס הנתונים"
 
 #: admin/include/index_inc.php:376 admin/include/index_inc.php:379
-#, fuzzy
-#| msgid "Database backup"
 msgid "Status of database backup"
-msgstr "גיבוי לבסיס הנתונים"
+msgstr "סטטוס של גיבוי בסיס הנתונים"
 
-#: admin/include/index_inc.php:381 admin/index.php:1370
+#: admin/include/index_inc.php:381 admin/index.php:1398
 msgid "Database backup"
 msgstr "גיבוי לבסיס הנתונים"
 
@@ -3739,7 +3781,7 @@ msgstr "גיבוי לבסיס הנתונים"
 msgid "%s security items"
 msgstr "נושאי הגנה של %s"
 
-#: admin/include/index_inc.php:400 admin/include/users.php:90
+#: admin/include/index_inc.php:400 admin/include/users.php:101
 msgid "Standard admin username and admin password is used."
 msgstr "נעשה שימוש בשם משתמש וסיסמה ברירת המחדל של מנהל האתר."
 
@@ -3747,7 +3789,7 @@ msgstr "נעשה שימוש בשם משתמש וסיסמה ברירת המחדל
 msgid "Change admin username and password."
 msgstr "שנה את שם המשתמש וסיסמה של מנהל האתר."
 
-#: admin/include/index_inc.php:404 admin/include/users.php:93
+#: admin/include/index_inc.php:404 admin/include/users.php:104
 msgid "Standard admin username is used."
 msgstr "נעשה שימוש בשם משתמש ברירת המחדל של מנהל האתר."
 
@@ -3755,7 +3797,7 @@ msgstr "נעשה שימוש בשם משתמש ברירת המחדל של מנה�
 msgid "Change admin username."
 msgstr "שינוי שם משתמש של מנהל האתר."
 
-#: admin/include/index_inc.php:408 admin/include/users.php:96
+#: admin/include/index_inc.php:408 admin/include/users.php:107
 msgid "Standard admin password is used."
 msgstr "נעשה שימוש בסיסמת  ברירת המחדל של מנהל האתר "
 
@@ -3874,7 +3916,7 @@ msgstr "ערוך בדיקת באגים בעמודי %s"
 msgid "UNSAFE (option is ON)."
 msgstr "לא בטוח (ההגדרה היא ON)"
 
-#: admin/include/index_inc.php:541 admin/index.php:1342 admin/index.php:1348
+#: admin/include/index_inc.php:541 admin/index.php:1370 admin/index.php:1376
 msgid "Family trees"
 msgstr "עצי משפחה"
 
@@ -3896,7 +3938,7 @@ msgid "Trees table"
 msgstr "טבלת עצי המשפחה"
 
 #: admin/include/install.php:5 admin/include/install.php:155
-#: admin/include/install.php:161 admin/index.php:1292
+#: admin/include/install.php:161 admin/index.php:1320
 msgid "Install"
 msgstr "התקנה"
 
@@ -3927,15 +3969,15 @@ msgstr ""
 "אנו הוסף סיסמאות:</b>"
 
 #: admin/include/install.php:123 admin/include/log.php:58
-#: admin/include/users.php:109
+#: admin/include/users.php:120
 msgid "User"
 msgstr "משתמש"
 
-#: admin/include/install.php:123 login.php:164 user_settings.php:139
+#: admin/include/install.php:123 login.php:176 user_settings.php:139
 msgid "Username"
 msgstr "שם משתמש"
 
-#: admin/include/install.php:123 admin/include/login.php:15 login.php:334
+#: admin/include/install.php:123 admin/include/login.php:15 login.php:351
 #: register.php:130 user_settings.php:144
 msgid "Password"
 msgstr "ססמה"
@@ -4030,11 +4072,11 @@ msgid "All updates completed, click at \"Mainmenu\""
 msgstr "כל העדכונים בוצעו בהצלחה, הקלק \"תפריט ראשי\""
 
 #: admin/include/install.php:970 admin/include/update.php:249
-#: admin/index.php:1213
+#: admin/index.php:1241
 msgid "Main menu"
 msgstr "תפריט ראשי"
 
-#: admin/include/language_editor.php:14 admin/index.php:1311
+#: admin/include/language_editor.php:14 admin/index.php:1339
 msgid "Language editor"
 msgstr "עריכת שפה"
 
@@ -4098,7 +4140,7 @@ msgstr "תרגום ל-"
 msgid "Saving"
 msgstr "שומר"
 
-#: admin/include/log.php:5 admin/index.php:1446
+#: admin/include/log.php:5 admin/index.php:1474
 msgid "Log"
 msgstr "יומן"
 
@@ -4150,16 +4192,16 @@ msgstr "כניסה לתפריט הניהול"
 msgid "Please enter a valid username or password. "
 msgstr "הכניסו שם משתמש וסיסמה תקינים "
 
-#: admin/include/login.php:14 login.php:333
+#: admin/include/login.php:14 login.php:350
 msgid "Username or e-mail address"
 msgstr "שם משתמש או כתובת מייל"
 
-#: admin/include/login.php:16 login.php:335
+#: admin/include/login.php:16 login.php:352
 msgid "Two factor authentication (2FA) code if needed"
 msgstr "נדרש שימוש באימות דו-שלבי (2FA)"
 
-#: admin/include/login.php:17 header.php:303 help.php:82 login.php:332
-#: login.php:336 menu.php:285 menu.php:801 menu.php:814
+#: admin/include/login.php:17 header.php:303 help.php:82 login.php:349
+#: login.php:353 menu.php:285 menu.php:801 menu.php:814
 msgid "Login"
 msgstr "רישום"
 
@@ -4403,7 +4445,7 @@ msgstr ""
 "בדוק כמה מיקומים חדשים טרם הוכנסו לאינדקס וכמה זמן בערך יימשך תהליך האינדוקס."
 
 #: admin/include/make_db_maps.php:791 include/mainindex_cls.php:595
-#: list.php:1791
+#: list.php:1876
 msgid "All family trees"
 msgstr "כל עצי המשפחה"
 
@@ -4604,7 +4646,7 @@ msgstr "מפת לווין עם כבישים וערים (HYBRID)"
 msgid "Default zoom"
 msgstr "מידת הזום כברירת מחדל"
 
-#: admin/include/prefix_editor.php:29 admin/index.php:1315
+#: admin/include/prefix_editor.php:29 admin/index.php:1343
 msgid "Prefix editor"
 msgstr "עורך לקדומת לשמות משפחה"
 
@@ -4628,12 +4670,12 @@ msgstr "סמל ה-favicon השתנה."
 msgid "Changed logo."
 msgstr "הלוגו השתנה."
 
-#: admin/include/settings_admin.php:230 admin/index.php:1301
+#: admin/include/settings_admin.php:230 admin/index.php:1329
 msgid "Homepage"
 msgstr "עמוד הבית"
 
 #: admin/include/settings_admin.php:234 admin/include/settings_admin.php:1205
-#: admin/index.php:1304
+#: admin/index.php:1332
 msgid "Special settings"
 msgstr "הגדרות מיוחדות"
 
@@ -4665,15 +4707,11 @@ msgstr "העלה קובץ favicon.ico. הגודל המקסימלי הוא %1$d k
 
 #: admin/include/settings_admin.php:315
 msgid "Scripts in &lt;head&gt; section for all pages"
-msgstr ""
+msgstr "סקריפטים בפסקת &lt;head&gt; לכל העמודים"
 
 #: admin/include/settings_admin.php:318
-#, fuzzy
-#| msgid ""
-#| "Can be used for statistics, counter, etc. It's possible to use HTML codes!"
 msgid "Can be used for statistics, counter, etc."
-msgstr ""
-"אפשר להשתמש בזה לצורך סטטיסטיקה, מונה מבקרים וכו'. אפשר להשתמש בקוד HTML!"
+msgstr "אפשר להשתמש בזה לצורך סטטיסטיקה, מונה וכו'."
 
 #: admin/include/settings_admin.php:321
 msgid "Text in footer for all pages"
@@ -5043,6 +5081,7 @@ msgstr "תצוגת אתר המתמקד בשם אחד בלבד"
 #: admin/include/settings_admin.php:667
 msgid "Only use this option if you're doing a \"One Name Study\" project."
 msgstr ""
+"השתמש באופציה זו רק אם אתה עובד על פרויקט \"One Name Study\" (חקר משפחה אחת)"
 
 #: admin/include/settings_admin.php:669
 msgid "Enter the One Name of this site"
@@ -5096,7 +5135,7 @@ msgid "Select family tree"
 msgstr "בחר עץ משפחה"
 
 #: admin/include/settings_admin.php:830 admin/include/settings_admin.php:982
-#: include/mainindex_cls.php:226 include/mainindex_cls.php:592 list.php:1789
+#: include/mainindex_cls.php:226 include/mainindex_cls.php:592 list.php:1874
 msgid "Selected family tree"
 msgstr "עץ משפחה נבחר"
 
@@ -5127,11 +5166,6 @@ msgstr "תמונה אקראית"
 #: admin/include/settings_admin.php:854 admin/include/settings_admin.php:990
 msgid "Own script"
 msgstr "קוד אישי"
-
-#: admin/include/settings_admin.php:860 admin/include/settings_admin.php:992
-#: admin/include/trees_cls.php:96
-msgid "EMPTY LINE"
-msgstr "שורה ריקה"
 
 #: admin/include/settings_admin.php:873
 msgid "Columns"
@@ -5315,8 +5349,8 @@ msgstr ""
 "robot.txt (בתיקייה הראשית של האתר שלך). דוגמא לשורה מתאימה בקובץ ה-robots."
 "txt היא:\t\tSitemap: http://www.yourwebsite.com/humo-gen/sitemap.php"
 
-#: admin/include/statistics.php:10 admin/include/users.php:114
-#: admin/index.php:1373 header.php:294 help.php:66 menu.php:638
+#: admin/include/statistics.php:10 admin/include/users.php:125
+#: admin/index.php:1401 header.php:294 help.php:66 menu.php:638
 msgid "Statistics"
 msgstr "סטטיסטיקה"
 
@@ -5362,7 +5396,7 @@ msgid "Visited families in the past 12 months"
 msgstr "משפחות שנצפו ב-12 החודשים האחרונים"
 
 #: admin/include/statistics.php:258 admin/include/statistics.php:299
-#: family.php:1230 list.php:1684
+#: family.php:1230 list.php:1769
 msgid "Unknown"
 msgstr "לא ידוע"
 
@@ -5640,7 +5674,7 @@ msgstr "האם אתה באמת רוצה למחוק את הקטגוריה: "
 msgid "Save changes"
 msgstr "שמור את השינויים"
 
-#: admin/include/tree_check.php:9 admin/index.php:1358
+#: admin/include/tree_check.php:9 admin/index.php:1386
 msgid "Family tree data check"
 msgstr "בדיקת נתונים של עץ משפחה"
 
@@ -5661,7 +5695,7 @@ msgstr "מצא תאריכים לא תקינים"
 msgid "Check database integrity"
 msgstr "בדוק תקינות בסיס הנתונים"
 
-#: admin/include/tree_check.php:50 admin/index.php:1361
+#: admin/include/tree_check.php:50 admin/index.php:1389
 msgid "View latest changes"
 msgstr "הצג שינויים אחרונים"
 
@@ -6047,7 +6081,7 @@ msgstr "תאריך קבורה"
 
 #: admin/include/tree_check.php:1096 admin/include/tree_check.php:1248
 #: admin/include/tree_check.php:1252 admin/include/tree_check.php:1296
-#: include/marriage_cls.php:680 report_ancestor.php:1539 timelines.php:109
+#: include/marriage_cls.php:679 report_ancestor.php:1539 timelines.php:109
 #: timelines.php:224
 msgid "marriage"
 msgstr "נישואין ‏"
@@ -6089,7 +6123,7 @@ msgstr "נישואין דתיים ‏"
 msgid "church marriage notice"
 msgstr "הודעת נישואין דתיים"
 
-#: admin/include/tree_check.php:1331 admin/include/trees_cls.php:1601
+#: admin/include/tree_check.php:1331 admin/include/trees_cls.php:1611
 msgid "Spouse"
 msgstr "בן/בת זוג"
 
@@ -6252,7 +6286,7 @@ msgstr "שורה ריקה ברשימת עצי המשפחה"
 msgid "Collation"
 msgstr "קוד השפה"
 
-#: admin/include/trees_cls.php:230 admin/include/users.php:110 family.php:2235
+#: admin/include/trees_cls.php:230 admin/include/users.php:121 family.php:2235
 #: register.php:127 user_settings.php:151
 msgid "E-mail address"
 msgstr "כתובת דוא\"ל"
@@ -6383,7 +6417,7 @@ msgid "You cannot merge persons of opposite sex. Please try again"
 msgstr "אי אפשר למזג אנשים ממין שונה"
 
 #: admin/include/trees_cls.php:528 admin/include/trees_cls.php:538
-#: admin/include/trees_cls.php:568 admin/include/trees_cls.php:2675
+#: admin/include/trees_cls.php:568 admin/include/trees_cls.php:2684
 msgid "Choose another pair"
 msgstr "בחר זוג אחר"
 
@@ -6458,7 +6492,7 @@ msgstr ""
 "<b>נא שימו לב שיצירת רשימת הכפולים עשוי להימשך זמן-מה, בהתאם לגודל עץ המשפחה."
 "</b>"
 
-#: admin/include/trees_cls.php:729 admin/include/trees_cls.php:2665
+#: admin/include/trees_cls.php:729 admin/include/trees_cls.php:2674
 msgid "Continue duplicate merge"
 msgstr "המשך עם מיזוג כפולים"
 
@@ -6512,13 +6546,13 @@ msgstr ""
 "<b> עצה: כאשר מקליקים על \"חיפוש\" כאשר כל השדות ריקים, תקבלו רישמה עם כל "
 "האנשים בבסיס הנתונים (זה עשוי לקחת מספר שניות) </b>"
 
-#: admin/include/trees_cls.php:864 list.php:1540 list.php:1548 list.php:1723
+#: admin/include/trees_cls.php:864 list.php:1624 list.php:1632 list.php:1808
 #: statistics.php:949 statistics.php:950 statistics.php:951 statistics.php:952
 msgid "First name"
 msgstr "שם פרטי"
 
-#: admin/include/trees_cls.php:866 list.php:1551 list.php:1563 list.php:1566
-#: list.php:1734
+#: admin/include/trees_cls.php:866 list.php:1635 list.php:1647 list.php:1650
+#: list.php:1819
 msgid "Last name"
 msgstr "שם משפחה"
 
@@ -6594,7 +6628,7 @@ msgstr ""
 "המיזוגים שבוצעו כעת."
 
 #: admin/include/trees_cls.php:1154 admin/include/trees_cls.php:1374
-#: admin/include/trees_cls.php:1378 admin/include/trees_cls.php:2655
+#: admin/include/trees_cls.php:1378 admin/include/trees_cls.php:2664
 msgid "Relatives merge"
 msgstr "מיזוג קרובים"
 
@@ -6889,14 +6923,6 @@ msgstr "מקום טבילה"
 msgid "death place"
 msgstr "מקום פטירה"
 
-#: admin/include/trees_cls.php:1580 include/person_cls.php:2038
-#: include/person_cls.php:2039 include/person_cls.php:2040
-#: include/person_cls.php:2043 include/person_cls.php:2044
-#: include/person_cls.php:2057 include/person_cls.php:2059
-#: include/person_cls.php:2066
-msgid "cause of death"
-msgstr "סיבת המוות"
-
 #: admin/include/trees_cls.php:1583
 msgid "burial place"
 msgstr "מקום קבורה"
@@ -6929,50 +6955,50 @@ msgstr "טקסט לצד פטירה"
 msgid "burial text"
 msgstr "טקסט לצד קבורה"
 
-#: admin/include/trees_cls.php:1600
+#: admin/include/trees_cls.php:1610
 msgid "Relatives"
 msgstr "קרובים"
 
-#: admin/include/trees_cls.php:1649 admin/include/trees_cls.php:1662
+#: admin/include/trees_cls.php:1659 admin/include/trees_cls.php:1672
 msgid "Read text"
 msgstr "קראו את הטקסט"
 
-#: admin/include/trees_cls.php:1660 admin/include/trees_cls.php:1775
-#: admin/include/trees_cls.php:1799 admin/include/trees_cls.php:1853
-#: admin/include/trees_cls.php:1920
+#: admin/include/trees_cls.php:1670 admin/include/trees_cls.php:1785
+#: admin/include/trees_cls.php:1809 admin/include/trees_cls.php:1863
+#: admin/include/trees_cls.php:1930
 msgid "(no data)"
 msgstr "(אין נתונים)"
 
-#: admin/include/trees_cls.php:1730
+#: admin/include/trees_cls.php:1740
 msgid "Picture"
 msgstr "תמונה"
 
-#: admin/include/trees_cls.php:1737
+#: admin/include/trees_cls.php:1747
 msgid "Other names"
 msgstr "שמות אחרים"
 
-#: admin/include/trees_cls.php:1741
+#: admin/include/trees_cls.php:1751
 msgid "Internet link / URL"
 msgstr "קישור אינטרנט / URL"
 
-#: admin/include/trees_cls.php:1769 admin/include/trees_cls.php:1793
-#: admin/include/trees_cls.php:1842 admin/include/trees_cls.php:1862
-#: admin/include/trees_cls.php:1912 admin/include/trees_cls.php:1930
+#: admin/include/trees_cls.php:1779 admin/include/trees_cls.php:1803
+#: admin/include/trees_cls.php:1852 admin/include/trees_cls.php:1872
+#: admin/include/trees_cls.php:1922 admin/include/trees_cls.php:1940
 msgid "Show"
 msgstr "הצג"
 
-#: admin/include/trees_cls.php:2638
+#: admin/include/trees_cls.php:2647
 msgid " was successfully merged into "
 msgstr " מוזג בהצלחה לתוך "
 
-#: admin/include/trees_cls.php:2642
+#: admin/include/trees_cls.php:2651
 #, php-format
 msgid ""
 "After this merge there are %d surrounding relatives to be checked for "
 "merging!"
 msgstr "אחרי מיזוג זה יש %d קרובים שיש לבדוק את הצורך במיזוגם!"
 
-#: admin/include/trees_cls.php:2646
+#: admin/include/trees_cls.php:2655
 msgid ""
 "<b>You are strongly advised to move to \"Relatives merge\" mode to check all "
 "surrounding persons who may have to be checked for merging.</b><br>\n"
@@ -6986,11 +7012,11 @@ msgstr ""
 "קודמים מתווספים אוטומטית לרשימה.<br>\n"
 "זאת הדרך הקלה ביותר לוודא שלא שכחת אף אחד."
 
-#: admin/include/trees_cls.php:2662
+#: admin/include/trees_cls.php:2671
 msgid "Continue manual merge"
 msgstr "המשך במיזוג ידני"
 
-#: admin/include/trees_cls.php:2678
+#: admin/include/trees_cls.php:2687
 msgid "Continue with next pair"
 msgstr "המשך עם הזוג הבא"
 
@@ -7068,7 +7094,7 @@ msgid "Update table unprocessed_tags..."
 msgstr "עדכן את טבלת המונחים שלא עובדו"
 
 #: admin/include/user_notes.php:10 admin/include/user_notes.php:14
-#: admin/index.php:1355
+#: admin/index.php:1383
 msgid "Notes"
 msgstr "הערות"
 
@@ -7077,28 +7103,20 @@ msgid "Show notes"
 msgstr "הצג הערות"
 
 #: admin/include/user_notes.php:104
-#, fuzzy
-#| msgid "Are you sure you want to remove this user note?"
 msgid "Are you sure you want to remove this note?"
-msgstr "האם אתה בטוח שאתה רוצה למחוק הערת משתמש זו?"
+msgstr "האם את/ה בטוח/ה שאת/ה רוצה להסיר הערה זו?"
 
 #: admin/include/user_notes.php:121
-#, fuzzy
-#| msgid "User note is removed."
 msgid "Note is removed."
-msgstr "הערת המשתמש נמחק."
+msgstr "ההערה הוסרה"
 
 #: admin/include/user_notes.php:158
-#, fuzzy
-#| msgid "User notes"
 msgid "User note"
-msgstr "הערות משתמשים"
+msgstr "הערת משתמש"
 
 #: admin/include/user_notes.php:160
-#, fuzzy
-#| msgid "Editor notes"
 msgid "Editor note"
-msgstr "הערות העורך"
+msgstr "הערת עורך"
 
 #: admin/include/user_notes.php:172
 msgid "New"
@@ -7108,96 +7126,98 @@ msgstr "חדש"
 msgid "Approved"
 msgstr "אושר"
 
-#: admin/include/users.php:5 admin/index.php:1434 admin/index.php:1440
+#: admin/include/users.php:5 admin/index.php:1462 admin/index.php:1468
 msgid "Users"
 msgstr "משתמשים"
 
-#: admin/include/users.php:46
+#: admin/include/users.php:31 admin/include/users.php:50
+#, fuzzy
+#| msgid "ERROR: username already exists"
+msgid "Error: user name probably allready exist."
+msgstr "טעות: שם המשתמש כבר קיים"
+
+#: admin/include/users.php:57
 msgid "Are you sure you want to delete this user?"
 msgstr "האם אתה בטוח שאתה רוצה למחוק משתמש זה?"
 
-#: admin/include/users.php:111
+#: admin/include/users.php:122
 msgid "Change password"
 msgstr "שנה סיסמה"
 
-#: admin/include/users.php:112
+#: admin/include/users.php:123
 msgid "User group"
 msgstr "קבוצת משתמשים"
 
-#: admin/include/users.php:139
+#: admin/include/users.php:150
 msgid "no need to log in"
 msgstr "אין צורך להירשם"
 
-#: admin/include/users.php:198
+#: admin/include/users.php:209
 msgid "Unblock IP address"
 msgstr "הסר את חסימת כתובת ה-IP"
 
-#: admin/index.php:521
+#: admin/index.php:543
 msgid "Access to admin pages is not allowed."
 msgstr "אין כניסה לעמודי ה-admin."
 
-#: admin/index.php:794 admin/index.php:799 admin/index.php:1048
-#: admin/index.php:1054
+#: admin/index.php:816 admin/index.php:821 admin/index.php:1068
+#: admin/index.php:1074 admin/index.php:1083
 msgid "Update options"
 msgstr "אפשרויות עדכון"
 
-#: admin/index.php:798
+#: admin/index.php:820
 msgid "update check is disabled."
 msgstr "אופציית הבדיקה לגרסאות חדשות בוטלה."
 
-#: admin/index.php:1047
-#, fuzzy
-#| msgid "update check is disabled."
+#: admin/index.php:1067
 msgid "Update check failed."
-msgstr "אופציית הבדיקה לגרסאות חדשות בוטלה."
+msgstr "בדיקת העדכון נכשלה."
 
-#: admin/index.php:1053
+#: admin/index.php:1073 admin/index.php:1082
 msgid "is up-to-date!"
 msgstr "הינו מעודכן!"
 
-#: admin/index.php:1061
+#: admin/index.php:1089
 msgid "Update available"
 msgstr "קיים עדכון"
 
-#: admin/index.php:1066
+#: admin/index.php:1094
 msgid "Beta version available"
 msgstr "קיימת גירסת בטא"
 
-#: admin/index.php:1079 admin/update/install_update.php:491
+#: admin/index.php:1107 admin/update/install_update.php:497
 msgid "Online version check unavailable."
 msgstr "לא ניתן לבצע בדיקת גרסה מקוונת"
 
-#: admin/index.php:1097
-#, fuzzy
-#| msgid "Cookie information"
+#: admin/index.php:1125
 msgid "Debug information:"
-msgstr "מידע על שימוש ב-cookies"
+msgstr "מידע למציאת באגים:"
 
-#: admin/index.php:1223
+#: admin/index.php:1251
 msgid "Website"
 msgstr "אתר"
 
-#: admin/index.php:1233 menu.php:308 menu.php:893
+#: admin/index.php:1261 menu.php:308 menu.php:893
 msgid "Logoff"
 msgstr "צא"
 
-#: admin/index.php:1287 menu.php:855
+#: admin/index.php:1315 menu.php:855
 msgid "Control"
 msgstr "שליטה"
 
-#: admin/index.php:1319 help.php:72 menu.php:662
+#: admin/index.php:1347 help.php:72 menu.php:662
 msgid "World map"
 msgstr "מפת העולם"
 
-#: admin/index.php:1367
+#: admin/index.php:1395
 msgid "Gedcom export"
 msgstr "ייצוא של קובץ gedcom"
 
-#: admin/index.php:1400
+#: admin/index.php:1428
 msgid "Persons and families"
 msgstr "אנשים ומשפחות"
 
-#: admin/index.php:1443
+#: admin/index.php:1471
 msgid "Groups"
 msgstr "קבוצות"
 
@@ -7242,27 +7262,24 @@ msgstr "קיים גרסת בטא של %s"
 msgid "No beta version available."
 msgstr "לא קיימת גירסת בטא."
 
-#: admin/update/install_update.php:64 admin/update/install_update.php:545
+#: admin/update/install_update.php:64 admin/update/install_update.php:551
 #, php-format
 msgid "Enable/ disable %s update check."
 msgstr "אפשר / בטל בדיקה אם יש גירסאות %s חדשות"
 
-#: admin/update/install_update.php:68 admin/update/install_update.php:550
+#: admin/update/install_update.php:68 admin/update/install_update.php:556
 #, php-format
 msgid "Check regularly for %s updates."
 msgstr "בדוק באופן תדיר אם יש גרסאות %s חדשות."
 
 #: admin/update/install_update.php:77
-#, fuzzy, php-format
-#| msgid "Debug %s pages"
+#, php-format
 msgid "Debug %s update"
-msgstr "ערוך בדיקת באגים בעמודי %s"
+msgstr "Debug %s update"
 
 #: admin/update/install_update.php:80
-#, fuzzy
-#| msgid "Debug mode"
 msgid "Debug"
-msgstr "תצורת איתור בעיות"
+msgstr "Debug"
 
 #: admin/update/install_update.php:89
 msgid "Automatic update"
@@ -7284,7 +7301,7 @@ msgstr "שלב 1) הורד ופתח גרסת %s חדשה"
 msgid "Download and unzip new %s version"
 msgstr "הורד ופתח את גרסת %s החדשה"
 
-#: admin/update/install_update.php:105 admin/update/install_update.php:535
+#: admin/update/install_update.php:105 admin/update/install_update.php:541
 #, php-format
 msgid "%s version history"
 msgstr " היסטוריה של גרסאות %s"
@@ -7293,43 +7310,49 @@ msgstr " היסטוריה של גרסאות %s"
 msgid "Found update file, skipped download of update!"
 msgstr "נמצא קובץ מעודכן, דילגנו על הורדת עדכון!"
 
-#: admin/update/install_update.php:188
+#: admin/update/install_update.php:189
 msgid "Automatic download successfull!"
 msgstr "ההורדה האוטומטית הושלמה בהצלחה"
 
-#: admin/update/install_update.php:194
+#: admin/update/install_update.php:191
+#, fuzzy
+#| msgid "Installation of file failed"
+msgid "Automatic download of file failed."
+msgstr "התקנת קובץ נכשלה"
+
+#: admin/update/install_update.php:200
 msgid "File successfully unzipped!"
 msgstr "הקובץ המקווץ נפתח בהצלחה!"
 
-#: admin/update/install_update.php:205
+#: admin/update/install_update.php:211
 msgid "Step 2)"
 msgstr "שלב 2)"
 
-#: admin/update/install_update.php:208
+#: admin/update/install_update.php:214
 msgid "Check files"
 msgstr "בדוק קבצים"
 
-#: admin/update/install_update.php:218
+#: admin/update/install_update.php:224
 msgid "Step 2) Compare existing and update files (no installation yet)..."
 msgstr "שלב 2) השווה בין הקבצים הקיימים וקבצי העדכון (עוד לא תבוצע התקנה)"
 
-#: admin/update/install_update.php:221
+#: admin/update/install_update.php:227
 msgid "Step 3) Installation of new files..."
 msgstr "שלב 3) התקנה של הקבצים החדשים..."
 
-#: admin/update/install_update.php:294
+#: admin/update/install_update.php:300
 msgid "Installation of file failed"
 msgstr "התקנת קובץ נכשלה"
 
-#: admin/update/install_update.php:297
+#: admin/update/install_update.php:303
 msgid "File installed!"
 msgstr "הקובץ הותקן!"
 
-#: admin/update/install_update.php:316
+#: admin/update/install_update.php:322
 msgid "Directory created."
 msgstr "נוצרה תיקיה חדשה"
 
-#: admin/update/install_update.php:327
+#: admin/update/install_update.php:333
 #, php-format
 msgid ""
 "The following files are not part of the %s system files (anymore). If you "
@@ -7337,90 +7360,90 @@ msgid ""
 msgstr ""
 "הקבצים הבאים (כבר) אינם חלק בקבצי המערכת של %s. אם תרצה, אפשר למחוק אותם."
 
-#: admin/update/install_update.php:358
+#: admin/update/install_update.php:364
 msgid "Update new db_login.php file..."
 msgstr "מעדכן את קובץ db_login.php..."
 
-#: admin/update/install_update.php:416
+#: admin/update/install_update.php:422
 msgid "File is updated."
 msgstr "הקובץ עודכן."
 
-#: admin/update/install_update.php:427
+#: admin/update/install_update.php:433
 msgid "Install files!"
 msgstr "התקן את הקבצים!"
 
-#: admin/update/install_update.php:449
+#: admin/update/install_update.php:455
 msgid "Update completed and installation files removed!"
 msgstr "העדכון הושלם וקבצי ההתקנה הזמניים הוסרו!"
 
-#: admin/update/install_update.php:457
+#: admin/update/install_update.php:463
 #, php-format
 msgid "Current %s version:"
 msgstr "גרסת %s נוכחית:"
 
-#: admin/update/install_update.php:460
+#: admin/update/install_update.php:466
 #, php-format
 msgid "Available %s version:"
 msgstr "גרסת %s חדש:"
 
-#: admin/update/install_update.php:464
+#: admin/update/install_update.php:470
 msgid "There are 2 update methods: automatic and manually."
 msgstr "ישנן שתי שיטות עדכון: אוטומטית וידנית"
 
-#: admin/update/install_update.php:467
+#: admin/update/install_update.php:473
 #, php-format
 msgid "1) Automatic update of %s"
 msgstr "1) שדרוג אוטומטי של %s"
 
-#: admin/update/install_update.php:469 admin/update/install_update.php:475
+#: admin/update/install_update.php:475 admin/update/install_update.php:481
 msgid "a) [Optional, but highly recommended] Do a database backup first"
 msgstr "א) אופציונלי, אבל מומלץ מאד: בצע קודם גיבוי של בסיס הנתונים"
 
-#: admin/update/install_update.php:469 admin/update/install_update.php:475
+#: admin/update/install_update.php:475 admin/update/install_update.php:481
 msgid "backup page"
 msgstr "עמוד גיבוי"
 
-#: admin/update/install_update.php:470
+#: admin/update/install_update.php:476
 msgid "b)"
 msgstr "ב)"
 
-#: admin/update/install_update.php:470
+#: admin/update/install_update.php:476
 msgid "Start automatic update"
 msgstr "התחל את העדכון האוטומטי"
 
-#: admin/update/install_update.php:473
+#: admin/update/install_update.php:479
 #, php-format
 msgid "1) Manual update of %s"
 msgstr "1) עדכון ידני של %s"
 
-#: admin/update/install_update.php:477
+#: admin/update/install_update.php:483
 msgid "b) Download the new version: "
 msgstr "ב) הורד את הגירסה החדשה: "
 
-#: admin/update/install_update.php:478
+#: admin/update/install_update.php:484
 #, php-format
 msgid "%s version:"
 msgstr "גרסת %s"
 
-#: admin/update/install_update.php:481
+#: admin/update/install_update.php:487
 #, php-format
 msgid "c) Unzip the file and replace the old %s files by the new %s files."
 msgstr "ג) פתח את הקובץ המכווץ והחלף את קבצי %s הישנים בקבצי %s החדשים."
 
-#: admin/update/install_update.php:483
+#: admin/update/install_update.php:489
 msgid "Full installation and update instructions can be found at:"
 msgstr "הנחיות מלאות להתקנה ולעדכון ניתן למצוא ב:"
 
-#: admin/update/install_update.php:484
+#: admin/update/install_update.php:490
 #, php-format
 msgid "%s manual"
 msgstr "מדריך %s"
 
-#: admin/update/install_update.php:495
+#: admin/update/install_update.php:501
 msgid "Semi-automatic update"
 msgstr "שדרוג חצי-אוטומטי"
 
-#: admin/update/install_update.php:496
+#: admin/update/install_update.php:502
 msgid ""
 "In some cases the automatic update doesn't work. Then use this semi-"
 "automatic update method."
@@ -7428,32 +7451,32 @@ msgstr ""
 "במקרים מסוימים השדרוג האוטומטי אינו עובד. אם זה קורה, השתמשו בשדרוג "
 "החצי-אוטומטי."
 
-#: admin/update/install_update.php:497
+#: admin/update/install_update.php:503
 #, php-format
 msgid "1. Download a new version of %s."
 msgstr "1. הורידו גרסה חדשה של %s"
 
-#: admin/update/install_update.php:498
+#: admin/update/install_update.php:504
 msgid "2. Rename the zip file into: humo-gen_update.zip"
 msgstr "2. שנו את שם קובץ ה-zip ל: humo-gen_update.zip "
 
-#: admin/update/install_update.php:510
+#: admin/update/install_update.php:516
 msgid "Upload failed, check folder rights"
 msgstr "ההעלאה נכשלה, בדקו את ההרשאות לתיקיה"
 
-#: admin/update/install_update.php:515
+#: admin/update/install_update.php:521
 msgid "3. Upload humo-gen_update.zip:"
 msgstr "3. העלה את הקובץ humo-gen_update.zip."
 
-#: admin/update/install_update.php:518
+#: admin/update/install_update.php:524
 msgid "OR: manually upload the file to folder: admin/update/"
 msgstr "או: העלה את הקובץ ידנית לתיקיה: admin/update/"
 
-#: admin/update/install_update.php:521
+#: admin/update/install_update.php:527
 msgid "4. Then click:"
 msgstr "4. אחר כך הקלק: "
 
-#: admin/update/install_update.php:528
+#: admin/update/install_update.php:534
 #, php-format
 msgid "start update of %s."
 msgstr "התחל את השדרוג של %s."
@@ -7481,7 +7504,7 @@ msgid " PRIVACY FILTER"
 msgstr " מסנן פרטיות ‏"
 
 #: birthday_list.php:206 birthday_list.php:371 include/mainindex_cls.php:948
-#: include/mainindex_cls.php:972 list.php:2161 list_places_families.php:593
+#: include/mainindex_cls.php:972 list.php:2241 list_places_families.php:593
 msgid " persons are not shown due to privacy settings"
 msgstr " אנשים לא נמצאו בגלל הגדרות פרטיות‏"
 
@@ -7514,7 +7537,7 @@ msgstr "למי יש יום הולדת היום?"
 msgid "En-en"
 msgstr "En-en"
 
-#: birthday_rss.php:140
+#: birthday_rss.php:143
 msgid "No results found."
 msgstr "לא נמצאו תוצאות"
 
@@ -7690,7 +7713,7 @@ msgstr "הוספת מידע או הערות"
 msgid "Your e-mail address is missing. Please add you're mail address here: "
 msgstr "כתובת האמייל שלך חסרה. נא הוסף את האימייל כאן:"
 
-#: family.php:2241 login.php:44 mailform.php:134 register.php:148
+#: family.php:2241 login.php:43 mailform.php:134 register.php:148
 msgid "Send"
 msgstr "שלח"
 
@@ -7875,7 +7898,7 @@ msgstr "טופס דואר אלקטרוני"
 msgid "Google maps"
 msgstr "מפות Google"
 
-#: header.php:299 hourglass.php:92 list.php:1821 maps.php:248 menu.php:337
+#: header.php:299 hourglass.php:92 list.php:1906 maps.php:248 menu.php:337
 #: menu.php:720 menu.php:725 report_descendant.php:423 timelines.php:472
 msgid "Help"
 msgstr "עזרה"
@@ -8303,12 +8326,12 @@ msgstr ""
 "<b>הקלקה על שם בתפריט הקופץ:</b> מעביר לדף המשפחה של אותו אדם<br><br>\n"
 "<b>מקרא:</b>"
 
-#: hourglass.php:105 list.php:1680 report_descendant.php:435 statistics.php:263
+#: hourglass.php:105 list.php:1765 report_descendant.php:435 statistics.php:263
 #: statistics.php:948
 msgid "Male"
 msgstr "גבר"
 
-#: hourglass.php:106 list.php:1682 report_descendant.php:436 statistics.php:263
+#: hourglass.php:106 list.php:1767 report_descendant.php:436 statistics.php:263
 #: statistics.php:948
 msgid "Female"
 msgstr "אישה"
@@ -8375,15 +8398,15 @@ msgstr "לכל היותר"
 msgid "approximately"
 msgstr "בערך"
 
-#: include/calculate_age_cls.php:145 include/calculate_age_cls.php:235
-#: include/calculate_age_cls.php:288 include/calculate_age_cls.php:292
-#: include/calculate_age_cls.php:298 include/calculate_age_cls.php:303
-#: include/calculate_age_cls.php:311 include/calculate_age_cls.php:317
-#: include/calculate_age_cls.php:324 include/calculate_age_cls.php:329
-#: include/calculate_age_cls.php:416 include/calculate_age_cls.php:420
-#: include/calculate_age_cls.php:426 include/calculate_age_cls.php:431
-#: include/calculate_age_cls.php:439 include/calculate_age_cls.php:445
-#: include/calculate_age_cls.php:452 include/calculate_age_cls.php:457
+#: include/calculate_age_cls.php:145 include/calculate_age_cls.php:234
+#: include/calculate_age_cls.php:293 include/calculate_age_cls.php:297
+#: include/calculate_age_cls.php:303 include/calculate_age_cls.php:308
+#: include/calculate_age_cls.php:316 include/calculate_age_cls.php:322
+#: include/calculate_age_cls.php:329 include/calculate_age_cls.php:334
+#: include/calculate_age_cls.php:421 include/calculate_age_cls.php:425
+#: include/calculate_age_cls.php:431 include/calculate_age_cls.php:436
+#: include/calculate_age_cls.php:444 include/calculate_age_cls.php:450
+#: include/calculate_age_cls.php:457 include/calculate_age_cls.php:462
 #: statistics.php:604 statistics.php:613 statistics.php:624 statistics.php:628
 #: statistics.php:637 statistics.php:641 statistics.php:644 statistics.php:646
 #: timelines.php:499 timelines.php:501
@@ -8394,39 +8417,39 @@ msgstr "שנים"
 msgid "under 1 year old"
 msgstr "פחות מגיל שנה"
 
-#: include/calculate_age_cls.php:243
+#: include/calculate_age_cls.php:242
 msgid "months"
 msgstr "חודשים"
 
-#: include/calculate_age_cls.php:243
+#: include/calculate_age_cls.php:242
 msgid "month"
 msgstr "חודש"
 
-#: include/calculate_age_cls.php:255
+#: include/calculate_age_cls.php:254
 msgid "weeks"
 msgstr "שבועות"
 
-#: include/calculate_age_cls.php:255
+#: include/calculate_age_cls.php:254
 msgid "week"
 msgstr "שבוע"
 
-#: include/calculate_age_cls.php:262
+#: include/calculate_age_cls.php:261
 msgid "days"
 msgstr "ימים"
 
-#: include/calculate_age_cls.php:262
+#: include/calculate_age_cls.php:261
 msgid "day"
 msgstr "יום"
 
-#: include/calculate_age_cls.php:344
+#: include/calculate_age_cls.php:349
 msgid "age by relation"
 msgstr "גיל בעת יצירת הזוגיות"
 
-#: include/calculate_age_cls.php:347
+#: include/calculate_age_cls.php:352
 msgid "age by marriage"
 msgstr "גיל בעת הנישואין"
 
-#: include/calculate_age_cls.php:472
+#: include/calculate_age_cls.php:477
 #, php-format
 msgid "married %s"
 msgstr "נשוי/ה %s"
@@ -8723,11 +8746,11 @@ msgstr "סה\"כ"
 msgid "More statistics"
 msgstr "יותר סטטיסטיקה"
 
-#: include/mainindex_cls.php:573 list.php:1588
+#: include/mainindex_cls.php:573 list.php:1672
 msgid "Enter name or part of name"
 msgstr "הכנס שם או חלק משם"
 
-#: include/mainindex_cls.php:574 list.php:1592
+#: include/mainindex_cls.php:574 list.php:1676
 msgid "Enter private name"
 msgstr "הכנס שם פרטי"
 
@@ -8735,11 +8758,11 @@ msgstr "הכנס שם פרטי"
 msgid "Minimum: 3 characters."
 msgstr "לפחות 3 תווים"
 
-#: include/mainindex_cls.php:597 list.php:1793
+#: include/mainindex_cls.php:597 list.php:1878
 msgid "All but selected tree"
 msgstr "כל העצים מלבד הנוכחי"
 
-#: include/mainindex_cls.php:609 list.php:1840
+#: include/mainindex_cls.php:609 list.php:1925
 msgid "Advanced search"
 msgstr "חיפוש מתקדם"
 
@@ -8764,10 +8787,6 @@ msgstr "חוק אירופאי: %s מידע על קוקיס"
 #: include/marriage_cls.php:67 include/person_cls.php:1463
 msgid "Non marital"
 msgstr "קשר שאינו נישואין"
-
-#: include/marriage_cls.php:151 include/marriage_cls.php:170
-msgid "End living together"
-msgstr "סיום מגורים משותפים"
 
 #: include/marriage_cls.php:218 include/marriage_cls.php:219
 #: include/marriage_cls.php:220 list_places_families.php:415
@@ -8795,49 +8814,49 @@ msgid "from:"
 msgstr "מ-:"
 
 #: include/marriage_cls.php:523 include/marriage_cls.php:524
-#: include/marriage_cls.php:525 include/marriage_cls.php:731
-#: include/marriage_cls.php:732
+#: include/marriage_cls.php:525 include/marriage_cls.php:730
+#: include/marriage_cls.php:731
 msgid "divorced"
 msgstr "גירושין"
 
 #: include/marriage_cls.php:534 include/marriage_cls.php:535
-#: include/marriage_cls.php:717
+#: include/marriage_cls.php:716
 msgid "Married/ Related"
 msgstr "נשוי/נשואה או בקשר זוגי"
 
-#: include/marriage_cls.php:673 include/person_cls.php:1495 list.php:195
+#: include/marriage_cls.php:672 include/person_cls.php:1495 list.php:194
 #: list_places_families.php:147
 msgid "1st"
 msgstr "דרגה ראשונה"
 
-#: include/marriage_cls.php:674 include/person_cls.php:1496 list.php:196
+#: include/marriage_cls.php:673 include/person_cls.php:1496 list.php:195
 #: list_places_families.php:148 relations.php:543 relations.php:809
 #: relations.php:907 relations.php:1021 relations.php:1329
 msgid "2nd"
 msgstr "דרגה שניה"
 
-#: include/marriage_cls.php:675 include/person_cls.php:1497 list.php:197
+#: include/marriage_cls.php:674 include/person_cls.php:1497 list.php:196
 #: list_places_families.php:149 relations.php:544 relations.php:810
 #: relations.php:908 relations.php:1022 relations.php:1330
 msgid "3rd"
 msgstr "דרגה שלישית"
 
-#: include/marriage_cls.php:676 include/person_cls.php:1498 list.php:198
+#: include/marriage_cls.php:675 include/person_cls.php:1498 list.php:197
 #: list_places_families.php:150 relations.php:374 relations.php:546
 #: relations.php:812 relations.php:1236 relations.php:1267 relations.php:1332
 #: relations.php:1712 relations.php:1715
 msgid "th"
 msgstr "."
 
-#: include/marriage_cls.php:685
+#: include/marriage_cls.php:684
 msgid "Married "
 msgstr "נישואין ‏ "
 
-#: include/marriage_cls.php:693 include/marriage_cls.php:698
+#: include/marriage_cls.php:692 include/marriage_cls.php:697
 msgid "related"
 msgstr "קשר זוגי ‏"
 
-#: include/marriage_cls.php:711
+#: include/marriage_cls.php:710
 msgid "married/ related"
 msgstr "נשוי/נשואה או בקשר זוגי"
 
@@ -8879,8 +8898,8 @@ msgid "Admin"
 msgstr "מערכת ניהול"
 
 #: include/person_cls.php:1023 include/person_cls.php:1607
-#: include/person_cls.php:1609 list.php:212 list.php:221 list.php:230
-#: list.php:239 list_places_families.php:167 list_places_families.php:176
+#: include/person_cls.php:1609 list.php:211 list.php:220 list.php:229
+#: list.php:238 list_places_families.php:167 list_places_families.php:176
 #: list_places_families.php:185 list_places_families.php:194
 #: report_ancestor.php:1297 report_ancestor.php:1315 report_ancestor.php:1316
 #: report_ancestor.php:1448 statistics.php:248 statistics.php:249
@@ -8948,16 +8967,6 @@ msgstr "התגרש/ה מ-"
 msgid "marriage (divorced) with"
 msgstr "נישואין (וגירושין) עם"
 
-#: include/person_cls.php:1755 include/person_cls.php:1757
-#: include/person_cls.php:1760 include/person_cls.php:2011
-msgid "at"
-msgstr "בשעה"
-
-#: include/person_cls.php:1755 include/person_cls.php:1757
-#: include/person_cls.php:1760 include/person_cls.php:2011
-msgid "hour"
-msgstr "שעה"
-
 #: include/person_cls.php:1939
 msgid "godfather"
 msgstr "godfather"
@@ -8978,7 +8987,7 @@ msgstr "מקצועות"
 msgid "religions"
 msgstr "דתות"
 
-#: include/show_addresses.php:22 include/show_addresses.php:23 list.php:1500
+#: include/show_addresses.php:22 include/show_addresses.php:23 list.php:1584
 msgid "residence"
 msgstr "מגורים"
 
@@ -9004,48 +9013,48 @@ msgstr "טלפון"
 msgid "Missing image"
 msgstr "חסרה תמונה"
 
-#: include/show_sources.php:57 include/show_sources.php:145
-#: include/show_sources.php:201
+#: include/show_sources.php:58 include/show_sources.php:148
+#: include/show_sources.php:204
 msgid "Sources for person"
 msgstr "מקורות לאנשים"
 
-#: include/show_sources.php:58 include/show_sources.php:152
-#: include/show_sources.php:217
+#: include/show_sources.php:59 include/show_sources.php:155
+#: include/show_sources.php:220
 msgid "Sources for family"
 msgstr "מקורות למשפחה"
 
-#: include/show_sources.php:62 include/show_sources.php:155
-#: include/show_sources.php:220
+#: include/show_sources.php:63 include/show_sources.php:158
+#: include/show_sources.php:223
 msgid "Source for family"
 msgstr "מקור למשפחה"
 
-#: include/show_sources.php:88 include/show_sources.php:157
-#: include/show_sources.php:186
+#: include/show_sources.php:91 include/show_sources.php:160
+#: include/show_sources.php:189
 msgid "sources"
 msgstr "מקורות"
 
-#: include/show_sources.php:255
+#: include/show_sources.php:258
 msgid "source text"
 msgstr "טקסט המקור"
 
-#: include/show_sources.php:339
+#: include/show_sources.php:342
 msgid "extra text"
 msgstr "טקסט נוסף"
 
-#: include/show_sources.php:356 source.php:426
+#: include/show_sources.php:359 source.php:426
 msgid "role"
 msgstr "תפקיד"
 
-#: include/show_sources.php:361 include/show_sources.php:365 source.php:430
+#: include/show_sources.php:364 include/show_sources.php:368 source.php:430
 msgid "page"
 msgstr "עמוד"
 
-#: include/tfpdf/tfpdfextend.php:892
+#: include/tfpdf/tfpdfextend.php:890
 #, php-format
 msgid "PDF Created with %s on"
 msgstr "PDF נוצר עם %s בתאריך"
 
-#: include/witness.php:115 include/witness.php:118
+#: include/witness.php:117 include/witness.php:121
 msgid "This person was witness at:"
 msgstr "אדם זה היה עד ב: "
 
@@ -9070,7 +9079,7 @@ msgid "Recently changed persons and new persons"
 msgstr "אנשים שנערכו להם שינויים לאחרונה ואנשים חדשים"
 
 # Residence
-#: list.php:76 list.php:1499
+#: list.php:76 list.php:1583
 msgid "^"
 msgstr "^"
 
@@ -9092,52 +9101,52 @@ msgstr "X"
 msgid ") ("
 msgstr ") ("
 
-#: list.php:794 list.php:2075
+#: list.php:794 list.php:2157
 msgid "..."
 msgstr "..."
 
-#: list.php:1469 list_places_families.php:396
+#: list.php:1553 list_places_families.php:396
 msgid "Find place"
 msgstr "מצא מקום"
 
-#: list.php:1472 list.php:1542 list.php:1557 list.php:1575 list.php:1620
-#: list.php:1631 list.php:1652 list.php:1664 list.php:1691 list.php:1703
-#: list.php:1717 list.php:1728 list.php:1740 list.php:1756
+#: list.php:1556 list.php:1626 list.php:1641 list.php:1659 list.php:1704
+#: list.php:1715 list.php:1736 list.php:1748 list.php:1776 list.php:1788
+#: list.php:1802 list.php:1813 list.php:1825 list.php:1841
 #: list_places_families.php:398
 msgid "Contains"
 msgstr "מכיל"
 
-#: list.php:1475 list.php:1544 list.php:1559 list.php:1577 list.php:1622
-#: list.php:1633 list.php:1654 list.php:1666 list.php:1693 list.php:1705
-#: list.php:1719 list.php:1730 list.php:1742 list.php:1754
+#: list.php:1559 list.php:1628 list.php:1643 list.php:1661 list.php:1706
+#: list.php:1717 list.php:1738 list.php:1750 list.php:1778 list.php:1790
+#: list.php:1804 list.php:1815 list.php:1827 list.php:1839
 #: list_places_families.php:401
 msgid "Equals"
 msgstr "שווה ל-‏"
 
-#: list.php:1478 list.php:1546 list.php:1561 list.php:1579 list.php:1624
-#: list.php:1635 list.php:1656 list.php:1668 list.php:1695 list.php:1707
-#: list.php:1721 list.php:1732 list.php:1744 list.php:1758
+#: list.php:1562 list.php:1630 list.php:1645 list.php:1663 list.php:1708
+#: list.php:1719 list.php:1740 list.php:1752 list.php:1780 list.php:1792
+#: list.php:1806 list.php:1817 list.php:1829 list.php:1843
 #: list_places_families.php:404
 msgid "Starts with"
 msgstr "מתחיל עם"
 
-#: list.php:1490
+#: list.php:1574
 msgid "birth pl."
 msgstr "מקום לידה"
 
-#: list.php:1495
+#: list.php:1579
 msgid "bapt pl."
 msgstr "מקום הטבלה"
 
-#: list.php:1505
+#: list.php:1589
 msgid "death pl."
 msgstr "מקום פטירה"
 
-#: list.php:1511
+#: list.php:1595
 msgid "bur pl."
 msgstr "מקום קבורה"
 
-#: list.php:1589
+#: list.php:1673
 msgid ""
 "\"John Jones\", \"Jones John\", \"John of Jones\", \"of Jones, John\", "
 "\"Jones, John of\", \"Jones of, John\""
@@ -9145,67 +9154,63 @@ msgstr ""
 "\"John Jones\", \"Jones John\", \"John of Jones\", \"of Jones, John\", "
 "\"Jones, John of\", \"Jones of, John\""
 
-#: list.php:1604 menu.php:94
+#: list.php:1688 menu.php:94
 msgid "Minimum:"
 msgstr "מינימום:"
 
-#: list.php:1604 menu.php:94
+#: list.php:1688 menu.php:94
 msgid "characters"
 msgstr "אותיות"
 
-#: list.php:1613 list.php:1645
+#: list.php:1697 list.php:1729
 msgid "till:"
 msgstr "עד:"
 
-#: list.php:1670
-msgid "Text by person"
-msgstr "טקסט לצד אדם"
-
-#: list.php:1676
+#: list.php:1761
 msgid "Choose sex:"
 msgstr "בחר מין:‏"
 
-#: list.php:1715
+#: list.php:1800
 msgid "Partner firstname"
 msgstr "שם פרטי של בן/בת זוג:‏"
 
-#: list.php:1726
+#: list.php:1811
 msgid "Partner lastname"
 msgstr "שם משפחה של בן/בת זוג:‏"
 
-#: list.php:1738 list.php:1746
+#: list.php:1823 list.php:1831
 msgid "witness"
 msgstr "עד/ה"
 
-#: list.php:1764
+#: list.php:1849
 msgid "Research status:"
 msgstr "סטטוס מחקר"
 
-#: list.php:1766
+#: list.php:1851
 msgid "parents unknown"
 msgstr "שני הורים לא ידועים"
 
-#: list.php:1768
+#: list.php:1853
 msgid "father unknown"
 msgstr "אב לא ידוע"
 
-#: list.php:1770
+#: list.php:1855
 msgid "mother unknown"
 msgstr "אם לא ידועה"
 
-#: list.php:1806 login.php:234
+#: list.php:1891
 msgid "Clear fields"
 msgstr "נקה את השדות"
 
-#: list.php:1812
+#: list.php:1897
 msgid "Standard search"
 msgstr "חיפוש רגיל"
 
-#: list.php:1824
+#: list.php:1909
 msgid "Tip"
 msgstr "הצעה:‏"
 
-#: list.php:1827
+#: list.php:1912
 msgid ""
 "With Advanced Search you can easily create lists like: all persons with "
 "surname <b>Schaap</b> who were born <b>between 1820 and 1840</b> in "
@@ -9217,7 +9222,7 @@ msgstr ""
 "<br>אפשר גם לערוך חיפוש ללא ציון שם. למשל: הצג כל האנשים אשר <b>נפטרו בשנת "
 "1901</b> בעיר <b>חיפה</b>."
 
-#: list.php:1831
+#: list.php:1916
 msgid ""
 "Note:</td><td>When you use the birth and/ or death search boxes please note "
 "this:<br>1. Persons for whom no birth/ death data exist in the database, "
@@ -9231,23 +9236,23 @@ msgstr ""
 "כן נכנסת למערכת עם ההרשאות המתאימות.<br> אפשר למצוא אנשים אלה אך ורק באמצעות "
 "חיפוש לפי שם פרטי ו/או משפחה."
 
-#: list.php:1901 list.php:2189
+#: list.php:1986 list.php:2269
 msgid " persons found."
 msgstr " אנשים נמצאו‏"
 
-#: list.php:1937 list_places_families.php:522
+#: list.php:2022 list_places_families.php:522
 msgid "Concise view"
 msgstr "תצוגה מצומצמת"
 
-#: list.php:1953 list_places_families.php:534
+#: list.php:2038 list_places_families.php:534
 msgid "No names found."
 msgstr "לא נמצאו שמות"
 
-#: list.php:1996
+#: list.php:2081
 msgid "Sort by:"
 msgstr "מיין לפי:"
 
-#: list.php:2036
+#: list.php:2121
 msgid "Loading..."
 msgstr "טוען... "
 
@@ -9282,48 +9287,52 @@ msgstr "x"
 msgid "families found."
 msgstr "משפחות נמצאו."
 
-#: login.php:39
+#: login.php:32
 msgid "Password retrieval"
 msgstr "שחזור סיסמה"
 
-#: login.php:42
+#: login.php:35
 msgid "Email"
 msgstr "דוא\"ל"
 
-#: login.php:43 login.php:233
-msgid "Captcha"
-msgstr "Captcha"
+#: login.php:38 login.php:246 mailform.php:128 register.php:142
+msgid "Please answer the block-spam-question:"
+msgstr "נא השב על השאלה למניעת דואר זבל"
 
-#: login.php:74
+#: login.php:73
 msgid "Your email address is not correct"
 msgstr "כתובת המייל שלך לא תקינה"
 
-#: login.php:84 login.php:282
-msgid "Sorry, wrong captcha code"
-msgstr "סליחה, קוד ה-Captcha לא נכון"
+#: login.php:85 login.php:300 mailform.php:139 register.php:153
+msgid "Wrong answer to the block-spam question! Try again..."
+msgstr "תשובה לא נכונה על השאלה למניעת דואר זבל! אנא נסו שוב..."
 
-#: login.php:108 login.php:187 login.php:199 login.php:256 login.php:309
-#: login.php:324
+#: login.php:110 login.php:132 login.php:198 login.php:210 login.php:273
+#: login.php:326 login.php:341
 msgid "Error"
 msgstr "שגיאה"
 
-#: login.php:112
+#: login.php:114
 msgid "This email address was not found in our database."
 msgstr "כתובת מייל זו לא נמצאה בבסיס הנתונים שלנו."
 
-#: login.php:112 login.php:189 login.php:258 login.php:311
+#: login.php:114 login.php:134 login.php:200 login.php:275 login.php:328
 msgid "Please contact the site owner."
 msgstr "נא צור קשר עם מנהל האתר."
 
-#: login.php:123 login.php:201 login.php:289
+#: login.php:125 login.php:135 login.php:212 login.php:306
 msgid "Retry"
 msgstr "נסה שוב"
 
-#: login.php:135
+#: login.php:134
+msgid "Password activation failed because mail address is used multiple times."
+msgstr ""
+
+#: login.php:147
 msgid "Notice"
 msgstr "הודעה"
 
-#: login.php:137
+#: login.php:149
 msgid ""
 "Your password activation key was already sent to your email address, please "
 "check your inbox and spam folder"
@@ -9331,77 +9340,77 @@ msgstr ""
 "המפתח להפעלת הסיסמה כבר נשלח לכתובת המייל שלך. נא בדוק את תיבת הדואר הנכנס "
 "ותיבת דואר הזבל"
 
-#: login.php:160
+#: login.php:172
 msgid "This is in response to your request for password reset at "
 msgstr "במענה לבקשתך לשינוי סיסמה באתר "
 
-#: login.php:165
+#: login.php:177
 msgid ""
 "To reset your password, please visit this link or copy and paste this link "
 "in your browser window "
 msgstr "על מנת לבחור בסיסמה חדשה, לחצו על קישור זה או העתיקו אותו לדפדפן שלכם."
 
-#: login.php:179
+#: login.php:190
 msgid "Your request for password retrieval"
 msgstr "בקשתך לשחזור סיסמה"
 
-#: login.php:189
+#: login.php:200
 msgid ""
 "We encountered a system problem in sending reset link to your email address."
 msgstr "נתקלנו בבעיה בשיגור הקישור לשינוי סיסמה למייל שלך."
 
-#: login.php:192 login.php:304
+#: login.php:203 login.php:321
 msgid "Success"
 msgstr "בהצלחה"
 
-#: login.php:194
+#: login.php:205
 msgid ""
 "Your reset link was sent to your email address. Please check your mail in a "
 "few minutes."
 msgstr ""
 "הקישור לשינוי הסיסמה נשלח לכתובת המייל שלך. נא בדקו את המייל בעוד מספר דקות."
 
-#: login.php:219
+#: login.php:230
 msgid "Activation failed"
 msgstr "ההפעלה נכשלה"
 
-#: login.php:228 login.php:229
+#: login.php:239 login.php:240
 msgid "New Password"
 msgstr "סיסמה חדשה"
 
-#: login.php:231
+#: login.php:242
 msgid "Re-enter new Password"
 msgstr "הכנס שוב את הסיסמה החדשה"
 
-#: login.php:234
+#: login.php:251
 msgid "Submit new Password"
 msgstr "הכנס סיסמה חדשה"
 
-#: login.php:258
+#: login.php:275
 msgid "Password activation failed."
 msgstr "הפעלת הסיסמה נכשלה."
 
-#: login.php:270
+#: login.php:287
 msgid "Password must be at least 4 char and maximum 15 char long"
 msgstr "על הסיסמה להיות בין 4 - 15 סימנים"
 
-#: login.php:275
+#: login.php:292
 msgid "The passwords don't match!"
 msgstr "הסיסמות אינן זהות!"
 
-#: login.php:306
+#: login.php:323
 msgid "Your new password has been stored successfully"
 msgstr "הסיסמה החדשה שלך נשמר בהצלחה"
 
-#: login.php:311
+#: login.php:328
 msgid "Failed to store new password."
 msgstr "שמירת הסיסמה החדשה נכשלה."
 
-#: login.php:326
+#: login.php:343
 msgid "No valid username or password."
 msgstr "שם משתמש או סיסמה לא נכונים"
 
-#: login.php:347
+#: login.php:364
 msgid "Forgot password"
 msgstr "שכחתי סיסמה"
 
@@ -9447,19 +9456,11 @@ msgstr "נושא:‏"
 msgid "Message: "
 msgstr "הודעה: ‏ "
 
-#: mailform.php:128 register.php:142
-msgid "Please answer the block-spam-question:"
-msgstr "נא השב על השאלה למניעת דואר זבל"
-
 #: mailform.php:133
 msgid ""
 "Please enter a full and valid email address,<br>otherwise I cannot respond "
 "to your e-mail!"
 msgstr "נא הכניסו כתובת דוא\"ל אמיתית, אחרת לא אוכל להשיב לכם!"
-
-#: mailform.php:139 register.php:153
-msgid "Wrong answer to the block-spam question! Try again..."
-msgstr "תשובה לא נכונה על השאלה למניעת דואר זבל! אנא נסו שוב..."
 
 #: mailform.php:143
 msgid "The e-mail function has been switched off!"
@@ -10733,5 +10734,11 @@ msgstr "בחר סגנון"
 msgid "Standard-colours"
 msgstr "צבעים של ברירת המחדל"
 
-#~ msgid "Remove GEDCOM file"
-#~ msgstr "הסר את קובץ הג'דקום"
+#~ msgid "Text by person"
+#~ msgstr "טקסט לצד אדם"
+
+#~ msgid "Captcha"
+#~ msgstr "Captcha"
+
+#~ msgid "Sorry, wrong captcha code"
+#~ msgstr "סליחה, קוד ה-Captcha לא נכון"

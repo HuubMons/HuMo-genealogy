@@ -127,8 +127,8 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 				if(function_exists('curl_exec')){
 
 					// *** First try to download from GitHub ***
-					//$source=$update['version_auto_download'];
-					$source='https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip';
+					//$source='https://github.com/HuubMons/HuMo-genealogy/archive/refs/heads/master.zip';
+					$source=$update['new_version_auto_download_github'];
 					$destination='update/humo-gen_update.zip';
 					$resource = curl_init();
 					curl_setopt($resource, CURLOPT_URL, $source);
@@ -185,7 +185,13 @@ elseif (isset($update['up_to_date']) AND $update['up_to_date']=='no'){
 				echo 'ERROR: automatic download failed...<br>';
 			}
 			else{
-				echo __('Automatic download successfull!').'<br>';
+				if (is_file('update/humo-gen_update.zip')){
+					echo __('Automatic download successfull!').'<br>';
+				} else{
+					echo __('Automatic download of file failed.').'<br>';
+					exit;
+				}
+
 				// *** Unzip downloaded file ***
 				$zip = new ZipArchive;
 				if ($zip->open("update/humo-gen_update.zip") === TRUE) {

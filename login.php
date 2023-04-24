@@ -5,12 +5,6 @@ $fault=false;
 include_once("header.php"); // returns CMS_ROOTPATH constant
 include_once(CMS_ROOTPATH."menu.php");
 
-$captcha=false;
-if(file_exists("include/securimage")) {
-	require_once("include/securimage/securimage.php");
-	$captcha=true;
-}
-
 //echo '<div class="standard_header fonts">'.__('Login').'</div>';
 
 // *** Check if visitor is allowed ***
@@ -23,7 +17,6 @@ if ($user['group_menu_login']!='j'){
 	echo 'Access to this page is blocked.';
 	exit;
 }
-
 
 if (CMS_SPECIFIC=='Joomla'){
 	$path_tmp='index.php?option=com_humo-gen&amp;task=login';
@@ -39,8 +32,14 @@ if(isset($_POST['forgotpw'])) {
 		echo '<tr class="table_headline"><th class="fonts" colspan="2">'.__('Password retrieval').'</th></tr>';
 		// *** An e-mail adres is necessary for password retreival, option Username is disabled ***
 		//echo '<tr><td>'.__('Username').':</td><td><input class="fonts" name="pw_username" type="text" size="20" maxlength="25"></td></tr>';
-		echo '<tr><td>'.__('Email').':</td><td><input class="fonts" name="got_email" type="text" size="20" maxlength="50"></td></tr>';
-		if($captcha===true) { echo '<tr><td>'.__('Captcha').':</td><td>'; echo Securimage::getCaptchaHtml(); echo '</td></tr>';}
+		echo '<tr><td>'.__('Email').':</td><td><input class="fonts" name="got_email" type="email" size="20" maxlength="50"></td></tr>';
+
+		//if ($humo_option["registration_use_spam_question"]=='y'){
+			echo '<tr><td>'.__('Please answer the block-spam-question:').'</td>';
+			echo '<td>'.$humo_option["block_spam_question"].'<br>';
+			echo '<input type="text" class="fonts" name="register_block_spam" size="80" style="background-color:#FFFFFF"></td></tr>';
+		//}
+
 		echo '<tr><td><br></td><td><input class="fonts" type="submit" name="Submit" value="'.__('Send').'"></td></tr>';
 		echo '</table>';
 	echo '</form>';
@@ -56,8 +55,6 @@ elseif(isset($_POST['got_email'])) {
 	`retrieval_status` varchar(7) NOT NULL
 	) DEFAULT CHARSET=utf8");
 	$pw_table->execute();
-	
-	$email=safe_text_db($_POST['got_email']);
 
 	function getUrl() {
 		$url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
@@ -65,11 +62,13 @@ elseif(isset($_POST['got_email'])) {
 		//$url .= ( $_SERVER["SERVER_PORT"] !== 80 ) ? ":".$_SERVER["SERVER_PORT"] : "";
 		$url .= $_SERVER["REQUEST_URI"];
 		return $url;
-	} 
+	}
 	$site_url=getUrl();
 
 	$status = "OK";
 	$msg="";
+
+	$email=safe_text_db($_POST['got_email']);
 	if(!filter_var($email,FILTER_VALIDATE_EMAIL)){ 
 		$msg=__('Your email address is not correct')."<br>"; 
 		$status= "NOTOK";
@@ -78,18 +77,20 @@ elseif(isset($_POST['got_email'])) {
 	//	$msg .=__('You have to enter your username')."<br>"; 
 	//	$status= "NOTOK";
 	//}
-	if($captcha===true) {
-		$image = new Securimage();
-		if ($image->check($_POST['captcha_code']) !== true) {
-			$msg .= __('Sorry, wrong captcha code')."<br>";
-			$status= "NOTOK";
-		}
+
+	if (isset($_POST['register_block_spam']) AND strtolower($_POST['register_block_spam'])==strtolower($humo_option["block_spam_answer"])){
+		//$register_allowed=true;
 	}
+	else{
+		$msg .= __('Wrong answer to the block-spam question! Try again...')."<br>";
+		$status= "NOTOK";
+	}
+
 	echo '<br><table class="humo" cellspacing="0" align="center">';
 
 	if($status=="OK"){
-
-		$countmail=$dbh->prepare("SELECT user_id, user_mail, user_name FROM humo_users WHERE user_mail = '".$email."'");
+		$countmail=$dbh->prepare("SELECT user_id, user_mail, user_name FROM humo_users WHERE user_mail=:email");
+		$countmail->bindValue(':email',$email, PDO::PARAM_STR);
 		$countmail->execute();
 		$row = $countmail->fetch(PDO::FETCH_OBJ);
 		$no_mail=$countmail->rowCount();
@@ -103,6 +104,7 @@ elseif(isset($_POST['got_email'])) {
 		//$row = $count->fetch(PDO::FETCH_OBJ);
 		//$no=$count->rowCount();
 
+		// *** Email address not found in database ***
 		if ($no_mail == 0) {
 			echo '<br><table class="humo" cellspacing="0" align="center">';
 			echo '<tr class="table_headline"><th class="fonts">'.__('Error').'</th></tr>';
@@ -118,12 +120,22 @@ elseif(isset($_POST['got_email'])) {
 			//	echo __('This username and mail were not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
 			//}
 			//else  { // username and mail both exist, but not together
-			//	echo __('This combination of username and email was not found in our database.')."&nbsp;".__('Please contact the site owner.'); 
+			//	echo __('This combination of username and email was not found in our database.')."&nbsp;".__('Please contact the site owner.');
 			//}
-			echo "</td></tr><tr><td style='text-align:center'><input type='button' value='".__('Retry')."' onClick='history.go(-1)'></td>"; 
+			echo "</td></tr><tr><td style='text-align:center'><input type='button' value='".__('Retry')."' onClick='history.go(-1)'></td>";
 			echo "</tr></table>";
 			exit;
-		} 
+		}
+		// *** Check if mail adress is used multiple times ***
+		elseif ($no_mail > 1) {
+			echo '<br><table class="humo" cellspacing="0" align="center">';
+			echo '<tr class="table_headline"><th class="fonts">'.__('Error').'</th></tr>';
+			echo '<tr><td style="font-weight:bold;color:red">';
+				echo __('Password activation failed because mail address is used multiple times.').'&nbsp;'.__('Please contact the site owner.');
+			echo "</td></tr><tr><td style='text-align:center'><input type='button' value='".__('Retry')."' onClick='history.go(-1)'></td>";
+			echo "</tr></table>";
+			exit;
+		}
 
 		// *** Check if activation is pending ***
 		$tm=time() - 86400; // Time in last 24 hours
@@ -152,28 +164,27 @@ elseif(isset($_POST['got_email'])) {
 		$sql=$dbh->prepare("insert into humo_pw_retrieval(retrieval_userid, retrieval_pkey,retrieval_time,retrieval_status) values('$row->user_id','$key','$tm','pending')");
 		$sql->execute();
 
-		include_once ('include/mail.php'); 
+		include_once ('include/mail.php');
 
 		// *** Get mail for password retreival ***
 		$mail_address=$humo_option["password_retreival"];
 
-		$mail_message = __('This is in response to your request for password reset at ').$site_url; 
+		$mail_message = __('This is in response to your request for password reset at ').$site_url;
 
 		$site_url=$site_url."?ak=$key&userid=$row->user_id";
 
 		$mail_message .= '<br>'.__('Username').":".$row->user_name.'<br>';
 		$mail_message .= __('To reset your password, please visit this link or copy and paste this link in your browser window ').":";
-		//$mail_message .= '<br><br><a href="'.$site_url.'">'.$site_url.'</a><br>'.__('Thank You');
 		$mail_message .= '<br><br><a href="'.$site_url.'">'.$site_url.'</a><br>';
 
 		// *** Set the reply address ***
-		$mail->AddReplyTo($mail_address, $mail_address); 
+		$mail->AddReplyTo($mail_address, $mail_address);
 
 		// *** Set who the message is sent from (this will automatically be set to your server's mail to prevent false "phishing" alarms)***
 		$mail->setFrom($mail_address, $mail_address);
 
-		// *** Set who the message is to be sent to ***
-		$mail->addAddress($email, $email);
+		// *** Set who the message is to be sent to. Use mail address from database ***
+		$mail->addAddress($row->user_mail, $row->user_mail);
 
 		// *** Set the subject line ***
 		$mail->Subject = __('Your request for password retrieval');
@@ -187,13 +198,13 @@ elseif(isset($_POST['got_email'])) {
 			echo '<tr class="table_headline"><th class="fonts">'.__('Error').'</th></tr>';
 			echo '<tr><td style="font-weight:bold;color:red">';
 			echo $mail->ErrorInfo.'<br>'.__('We encountered a system problem in sending reset link to your email address.').'&nbsp;'.__('Please contact the site owner.');
-		} 
+		}
 		else {
 			echo '<tr class="table_headline"><th class="fonts">'.__('Success').'</th></tr>';
 			echo '<tr><td style="font-weight:bold">';
 			echo __('Your reset link was sent to your email address. Please check your mail in a few minutes.');
 		}
-	} 
+	}
 
 	else {
 		echo '<tr class="table_headline"><th class="fonts">'.__('Error').'</th></tr>';
@@ -226,13 +237,19 @@ elseif(isset($_GET['ak']) AND $_GET['ak']!='') {
 	<input type=hidden name=userid value=$userid>
 
 	<table class='humo' cellspacing='0' align='center'><tr class='table_headline'><th class='fonts' colspan='2'>".__('New Password')."</th></tr>
-	<tr><td>".__('New Password')."  
-	</td><td><input type ='password' class='bginput' name='password'></td></tr>
-	<tr><td>".__('Re-enter new Password')."  
-	</td><td><input type ='password' class='bginput' name='password2' ></td></tr>";
-	if($captcha===true) { echo "<tr><td>".__('Captcha').":</td><td>"; echo Securimage::getCaptchaHtml(); echo "</td></tr>"; }
-	echo "<tr><td><input type=submit value='".__('Submit new Password')."'></td><td><input type=reset value='".__('Clear fields')."'></form></td></tr>
-	</table>";
+		<tr><td>".__('New Password')."  
+		</td><td><input type ='password' class='bginput' name='password'></td></tr>
+		<tr><td>".__('Re-enter new Password')."  
+		</td><td><input type ='password' class='bginput' name='password2' ></td></tr>";
+
+		//if ($humo_option["registration_use_spam_question"]=='y'){
+			echo '<tr><td>'.__('Please answer the block-spam-question:').'</td>';
+			echo '<td>'.$humo_option["block_spam_question"].'<br>';
+			echo '<input type="text" class="fonts" name="register_block_spam" size="80" style="background-color:#FFFFFF"></td></tr>';
+		//}
+
+		echo "<tr><td></td><td><input type=submit value='".__('Submit new Password')."'></td></tr>
+	</table></form>";
 }
 
 // store new password and display success or error message 
@@ -276,15 +293,15 @@ elseif(isset($_POST['ak']) AND $_POST['ak']!='') {
 			$status= "NOTOK";
 		}
 
-		if($captcha===true) {
-			$image = new Securimage();
-			if ($image->check($_POST['captcha_code']) !== true) {
-				$msg .= __('Sorry, wrong captcha code')."<br>";
-				$status= "NOTOK";
-			}
+		if (isset($_POST['register_block_spam']) AND strtolower($_POST['register_block_spam'])==strtolower($humo_option["block_spam_answer"])){
+			//$register_allowed=true;
+		}
+		else{
+			$msg .= __('Wrong answer to the block-spam question! Try again...')."<br>";
+			$status= "NOTOK";
 		}
 
-		if($status<>"OK"){ 
+		if($status<>"OK"){
 			echo '<div style="color:red;font-family:Verdana;font-size:14px;text-align:center">'.$msg.'</div>';
 			echo '<div style="font-family:Verdana;font-size:14px;text-align:center"><input type="button" value="'.__('Retry').'" onClick="history.go(-1)"></div>';
 		}
@@ -309,7 +326,7 @@ elseif(isset($_POST['ak']) AND $_POST['ak']!='') {
 				echo '<tr class="table_headline"><th class="fonts">'.__('Error').'</th></tr>';
 				echo '<tr><td style="font-weight:bold;color:red">';
 				echo __('Failed to store new password.').'&nbsp;'.__('Please contact the site owner.');
-			}  
+			}
 			echo '</td></tr></table>';
 		} // end of if status <> 'OK'
 	}

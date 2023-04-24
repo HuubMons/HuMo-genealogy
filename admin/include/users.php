@@ -21,9 +21,15 @@ if (isset($_POST['change_user'])){
 				$hashToStoreInDb = password_hash($_POST[$userDb->user_id."password"], PASSWORD_DEFAULT);
 				$sql=$sql."user_password_salted='".$hashToStoreInDb."', user_password='', ";
 			}
-			$sql=$sql."user_group_id='".safe_text_db($_POST[$userDb->user_id."group_id"]);
-			$sql=$sql."' WHERE user_id=".safe_text_db($_POST[$userDb->user_id."user_id"]);
-			$result=$dbh->query($sql);
+			$sql.="user_group_id='".safe_text_db($_POST[$userDb->user_id."group_id"]);
+			$sql.="' WHERE user_id=".safe_text_db($_POST[$userDb->user_id."user_id"]);
+			//$result=$dbh->query($sql);
+			try{
+				$result=$dbh->query($sql);
+			}
+			catch (PDOException $e) {
+				echo __('Error: user name probably allready exist.').'<br>';
+			}
 		}
 	}
 }
@@ -37,7 +43,12 @@ if (isset($_POST['add_user']) AND is_numeric($_POST["add_group_id"])){
 	$hashToStoreInDb = password_hash($_POST["add_password"], PASSWORD_DEFAULT);
 	$user_prep->bindValue(':add_password_salted',$hashToStoreInDb);
 	$user_prep->bindValue(':add_group_id',$_POST["add_group_id"], PDO::PARAM_INT);
-	$user_prep->execute();
+	try{
+		$user_prep->execute();
+	}
+	catch (PDOException $e) {
+		echo __('Error: user name probably allready exist.').'<br>';
+	}
 }
 
 // *** Remove user ***
@@ -98,10 +109,10 @@ elseif ($check_admin_pw){
 
 
 if(CMS_SPECIFIC=="Joomla") {
-	echo "<form method=\"POST\" action=\"index.php?option=com_humo-gen&amp;task=admin&amp;page=users\">\n";
+	echo '<form method="POST" action="index.php?option=com_humo-gen&amp;task=admin&amp;page=users">'."\n";
 }
 else {
-	echo "<form method=\"POST\" action=\"index.php\">\n";
+	echo '<form method="POST" action="index.php">'."\n";
 }
 echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<br><table class="humo standard" border="1" style="width:95%;">';
