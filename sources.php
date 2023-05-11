@@ -207,4 +207,3 @@ echo '<br><div class=index_list1>'.$line_pages.'</div>';
 //echo '</div>';
 
 include_once(CMS_ROOTPATH."footer.php");
-?>

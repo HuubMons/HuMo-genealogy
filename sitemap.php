@@ -151,4 +151,3 @@ foreach($datasql as $dataDb){
 unset ($datasql);
 
 echo '</urlset>';
-?>

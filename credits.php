@@ -95,4 +95,3 @@ Max, Jef, Rob, Dirk...
 </div>
 <?php
 include_once(CMS_ROOTPATH."footer.php");
-?>

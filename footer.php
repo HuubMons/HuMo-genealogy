@@ -73,4 +73,3 @@ if (!CMS_SPECIFIC){
 	echo "</body>\n";
 	echo "</html>";
 }
-?>

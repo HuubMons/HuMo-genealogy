@@ -99,7 +99,6 @@ printf(__('By default, %s is provided with several color schemes, and so long as
 echo '</span><br><br>';
 echo '</div></p>';
 
-
 // *** Family tree index ***
 echo '<p><div class="help_box">';
 echo '<p class="help_header">'.__('Family tree index').'</p><br>';
@@ -113,9 +112,6 @@ echo '<p class="help_text">'.__('Search fields').'<br>';
 echo '<span class="help_explanation">'.__('In the search fields you can search by first and/or last name. You can also choose from three options: "contains", "equals" and "starts with". Note: next to the search button there is an option for  &quot;Advanced Search!&quot;').'</span></p>';
 echo '</div>';
 
-
 echo '</div>';
 
-
 include_once("footer.php");
-?>

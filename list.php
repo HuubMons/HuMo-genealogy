@@ -1086,13 +1086,12 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		$query_select .= ", CONCAT(pers_prefix,pers_lastname,pers_firstname) as concat_name ";
 	}
 
-	$query_select .= $make_date."
-	FROM humo_persons";
+	$query_select .= $make_date . " FROM humo_persons";
 
 		if ($add_event_qry){
 			$query_select .= " LEFT JOIN humo_events
-			ON event_tree_id=pers_tree_id
-			AND event_connect_id=pers_gedcomnumber";
+				ON event_tree_id=pers_tree_id
+				AND event_connect_id=pers_gedcomnumber";
 			// *** If event_kind='name' is used, search for name will work, but other events are hidden! ***
 			//AND event_kind='name'";
 		}
@@ -1100,18 +1099,17 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		if ($add_address_qry){
 // Check query. There is AND and OR. Maybe () needed...
 			$query_select .= " LEFT JOIN humo_connections
-			ON connect_tree_id=pers_tree_id
-			AND connect_connect_id=pers_gedcomnumber
-			AND connect_sub_kind='person_address'
-			LEFT JOIN humo_addresses
-			ON address_connect_id=pers_gedcomnumber
-			AND address_connect_sub_kind='person'
-			AND address_tree_id=pers_tree_id
-
-			OR address_gedcomnr=connect_item_id
-			AND address_tree_id=connect_tree_id
-
-			AND connect_connect_id=pers_gedcomnumber";
+				ON connect_tree_id=pers_tree_id
+				AND connect_connect_id=pers_gedcomnumber
+				AND connect_sub_kind='person_address'
+				LEFT JOIN humo_addresses
+				ON address_connect_id=pers_gedcomnumber
+				AND address_connect_sub_kind='person'
+				AND address_tree_id=pers_tree_id
+				OR address_gedcomnr=connect_item_id
+				AND address_tree_id=connect_tree_id
+				AND connect_connect_id=pers_gedcomnumber"
+			;
 		}
 
 		if ($add_text_qry){
@@ -1127,8 +1125,8 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 				SELECT fam_tree_id,fam_text,fam_woman as find_person FROM humo_families WHERE fam_text LIKE '_%'
 				) as humo_families
 				ON fam_tree_id=pers_tree_id
-				AND find_person=pers_gedcomnumber
-			";
+				AND find_person=pers_gedcomnumber"
+			;
 		}
 
 		// *** GROUP BY is needed to prevent double results if searched for events ***
@@ -1520,7 +1518,7 @@ if ($index_list=='patronym'){
 		}
 		else{
 			// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
-			$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
+			$result = $dbh->query("SELECT FOUND_ROWS() AS found_rows" );
 			$rows = $result->fetch();
 			$count_persons = $rows['found_rows'];
 		}
@@ -1543,7 +1541,7 @@ if ($index_list=='patronym'){
 		$list_var2 = CMS_ROOTPATH.'list.php?';
 	}
 
-	if ($index_list=='places'){
+	if ($index_list == 'places'){
 		echo '<table align="center" class="humo index_table">';
 		echo '<tr><td>';
 

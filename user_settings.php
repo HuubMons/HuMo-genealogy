@@ -305,4 +305,3 @@ if ($show_theme_select==true){
 }
 
 include_once(CMS_ROOTPATH."footer.php");
-?>

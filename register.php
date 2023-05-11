@@ -159,4 +159,3 @@ if ($show_form){
 }
 echo '<br>';
 include_once(CMS_ROOTPATH."footer.php");
-?>

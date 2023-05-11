@@ -23,4 +23,3 @@ echo '<div style="direction:ltr;margin-left:10px">';
 </div>
 <?php
 include_once(CMS_ROOTPATH."footer.php");
-?>

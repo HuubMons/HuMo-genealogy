@@ -1625,4 +1625,3 @@ if($hourglass===false) {
 		$pdf->Output($title.".pdf","I");
 	}
 }
-?>

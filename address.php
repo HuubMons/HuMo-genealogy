@@ -64,4 +64,3 @@ if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_pres
 
 echo '<br>';
 include_once(CMS_ROOTPATH."footer.php");
-?>

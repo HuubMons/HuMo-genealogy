@@ -353,4 +353,3 @@ for(var i = 0; i < rws.length; i ++) {
 </script><br>';
 
 include_once(CMS_ROOTPATH."footer.php");
-?>

@@ -98,4 +98,3 @@ foreach($datasql as $dataDb){
 	} // *** End of hidden family tree ***
 
 } // *** End of multiple family trees ***
-?>

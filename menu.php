@@ -985,5 +985,3 @@ if($language["dir"]=="rtl") {
 else {
 	echo '<div id="content">';
 }
-
-?>

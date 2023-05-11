@@ -475,4 +475,3 @@ function show_media_files($pref) {
 } //  *** End of function showthem() ***
 
 include_once(CMS_ROOTPATH."footer.php");
-?>
