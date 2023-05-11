@@ -810,4 +810,3 @@ if(CMS_SPECIFIC == "Joomla") {
 
 echo '<div style="left:135px; height:520px; width:10px"></div>';
 include_once(CMS_ROOTPATH."footer.php");
-?>

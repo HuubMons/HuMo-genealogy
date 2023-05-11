@@ -146,4 +146,3 @@ if ($counter==0){
 
 echo "</channel>".$newline;
 echo "</rss>";
-?>

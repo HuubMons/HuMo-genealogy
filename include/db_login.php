@@ -7,11 +7,11 @@ define("DATABASE_PASSWORD", '');
 define("DATABASE_NAME",     'humo-gen');
 
 // *** Needed for Docker ***
-$DATABASE_HOST= '';
-$DATABASE_USERNAME='';
-$DATABASE_PASSWORD='';
-$DATABASE_NAME= '';
-$USE_ENV_FOR_DB= true;
+$DATABASE_HOST = '';
+$DATABASE_USERNAME = '';
+$DATABASE_PASSWORD = '';
+$DATABASE_NAME = '';
+$USE_ENV_FOR_DB = true;
 
 // *** DON'T CHANGE ANYTHING BELOW THIS LINE! ***
 // *** HIERONDER NIETS WIJZIGEN! ***
@@ -40,31 +40,31 @@ if (!defined('PDO::ATTR_DRIVER_NAME')) {
 // *** Override the database connection values with environment variables ***
 $temp_db_value = getenv("MYSQL_DATABASE", true);
 if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
-	$DATABASE_NAME=$temp_db_value;
+	$DATABASE_NAME = $temp_db_value;
 
 	//$temp_db_value = getenv("MYSQL_HOST", true);
 	//if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
 	//	$DATABASE_HOST=$temp_db_value;
-	$DATABASE_HOST='mariadb';
+	$DATABASE_HOST = 'mariadb';
 
 	$temp_db_value = getenv("MYSQL_USER", true);
 	if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
-		$DATABASE_USERNAME=$temp_db_value;
+		$DATABASE_USERNAME = $temp_db_value;
 	}
 
 	$temp_db_value = getenv("MYSQL_PASSWORD", true);
 	if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
-		$DATABASE_PASSWORD=$temp_db_value;
+		$DATABASE_PASSWORD = $temp_db_value;
 	}
 
 	// *** Open database using PDO **
-	$conn = 'mysql:host='.$DATABASE_HOST.';dbname='.$DATABASE_NAME.';charset=utf8';
+	$conn = 'mysql:host=' . $DATABASE_HOST . ';dbname=' . $DATABASE_NAME . ';charset=utf8';
 	try {
-		$dbh = new PDO($conn,$DATABASE_USERNAME,$DATABASE_PASSWORD);
-		@$database_check=1; 
+		$dbh = new PDO($conn, $DATABASE_USERNAME, $DATABASE_PASSWORD);
+		@$database_check = 1;
 	} catch (PDOException $e) {
 		unset($database_check);
-		if(!isset($ADMIN)) {
+		if (!isset($ADMIN)) {
 			echo '<br><font color=red><b>
 			Database is not yet installed! Possible problems:<br>
 			- Login file not yet configured.<br>
@@ -78,21 +78,19 @@ if ($USE_ENV_FOR_DB && $temp_db_value != false && $temp_db_value != '') {
 			exit();
 		}
 	}
-
-}
-else{
+} else {
 
 	// *** Open database using PDO **
 	//$conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME;
-	$conn = 'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME.';charset=utf8';
+	$conn = 'mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_NAME . ';charset=utf8';
 	try {
 		//$dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-		$dbh = new PDO($conn,DATABASE_USERNAME,DATABASE_PASSWORD);
-		@$database_check=1; 
+		$dbh = new PDO($conn, DATABASE_USERNAME, DATABASE_PASSWORD);
+		@$database_check = 1;
 	} catch (PDOException $e) {
 		unset($database_check);
 		//echo $e->getMessage() . "<br/>";
-		if(!isset($ADMIN)) {
+		if (!isset($ADMIN)) {
 			echo '<br><font color=red><b>
 			Database is not yet installed! Possible problems:<br>
 			- Login file not yet configured.<br>
@@ -106,6 +104,4 @@ else{
 			exit();
 		}
 	}
-
 }
-?>

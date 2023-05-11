@@ -149,4 +149,3 @@ echo '<div>';
 	echo '</table>';
 echo '</div>';
 include_once(CMS_ROOTPATH."footer.php");
-?>

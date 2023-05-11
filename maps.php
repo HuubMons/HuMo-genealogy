@@ -1048,4 +1048,3 @@ else{
 }
 
 include_once(CMS_ROOTPATH."footer.php");
-?>

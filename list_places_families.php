@@ -369,10 +369,9 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 		$result= $dbh->query($count_qry);
 		@$resultDb = $result->fetch(PDO::FETCH_OBJ);
 		$count_persons=@$resultDb->teller; 
-	}
-	else{  
+	} else {  
 		// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
-		$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
+		$result = $dbh->query("SELECT FOUND_ROWS() AS found_rows ");
 		$rows = $result->fetch();
 		$count_persons = $rows['found_rows'];   
 	}
@@ -616,4 +615,3 @@ echo '<script type="text/javascript">
 //echo '<br>nr. of persons: '.$count_persons;
 
 include_once(CMS_ROOTPATH."footer.php");
-?>

@@ -370,4 +370,3 @@ else {
 }  // end of else (else show login screen)
 
 include_once(CMS_ROOTPATH."footer.php");
-?>
