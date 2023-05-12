@@ -2,8 +2,8 @@
 //adapted from code found on: http://www.plus2net.com/
 //error_reporting(E_ALL);
 $fault=false;
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
+include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/menu.php';
 
 //echo '<div class="standard_header fonts">'.__('Login').'</div>';
 
@@ -164,7 +164,7 @@ elseif(isset($_POST['got_email'])) {
 		$sql=$dbh->prepare("insert into humo_pw_retrieval(retrieval_userid, retrieval_pkey,retrieval_time,retrieval_status) values('$row->user_id','$key','$tm','pending')");
 		$sql->execute();
 
-		include_once ('include/mail.php');
+		include_once __DIR__ . '/include/mail.php';
 
 		// *** Get mail for password retreival ***
 		$mail_address=$humo_option["password_retreival"];
@@ -369,4 +369,4 @@ else {
 	}
 }  // end of else (else show login screen)
 
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ . '/footer.php';

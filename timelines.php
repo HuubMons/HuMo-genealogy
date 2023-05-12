@@ -1,9 +1,9 @@
 <?php
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
-require_once(CMS_ROOTPATH."include/person_cls.php");
-require_once(CMS_ROOTPATH."include/language_date.php");
-include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
+include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/menu.php';
+require_once __DIR__ . '/include/person_cls.php';
+require_once __DIR__ . '/include/language_date.php';
+include_once __DIR__ . '/include/calculate_age_cls.php';
 $process_age = New calculate_year_cls;
 
 if(isset($_GET['id'])) $id=$_GET['id'];
@@ -380,23 +380,23 @@ if($isborn==0 AND $isdeath==0 AND $ismarr==0 and $ischild==1) {
 }
 
 // *** OPEN TIMELINE DIRECTORY FOR READING AVAILABLE FILES ***
-if (is_dir(CMS_ROOTPATH."languages/".$selected_language."/timelines")){
+if (is_dir( __DIR__ . "/languages/".$selected_language."/timelines")){
 	// *** Open languages/xx/timelines folder ***
-	$dh  = opendir(CMS_ROOTPATH."languages/".$selected_language."/timelines");
+	$dh  = opendir(__DIR__ . "/languages/".$selected_language."/timelines");
 }
 else{
 	// *** No timelines folder found inside selected language: use default timeline folder ***
-	$dh  = opendir(CMS_ROOTPATH."languages/default_timelines");
+	$dh  = opendir( __DIR__ . "/languages/default_timelines");
 }
 
 $counter=0;
 while (false !== ($filename = readdir($dh))) {
 	if (strtolower(substr($filename, -3)) == "txt"){
 		$counter++;
-		if (is_file(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$filename)) {
+		if (is_file( __DIR__ . "/languages/".$selected_language."/timelines/".$filename)) {
 			$filenames[$counter-1][0]=CMS_ROOTPATH."languages/".$selected_language."/timelines/".$filename;
 		}
-		elseif (is_file(CMS_ROOTPATH."languages/default_timelines/".$filename)){
+		elseif (is_file ( __DIR__ . "/languages/default_timelines/".$filename)){
 			$filenames[$counter-1][0]=CMS_ROOTPATH."languages/default_timelines/".$filename;
 		}
 		else{
@@ -426,16 +426,16 @@ elseif(isset($humo_option['default_timeline']) AND $humo_option['default_timelin
 	$selected_language2='default_timelines'; // *** Timelines default folder ***
 
 	// *** 1st Use timeline from language folder ***
-	if(isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$val_arr[$selected_language].".txt")) {
+	if(isset($val_arr[$selected_language]) AND is_file(__DIR__ . "/languages/".$selected_language."/timelines/".$val_arr[$selected_language].".txt")) {
 		$tml= $val_arr[$selected_language];
 	}
 	// *** 2nd Use timeline file from default folder ***
-	elseif(isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language].".txt")) {
+	elseif(isset($val_arr[$selected_language]) AND is_file(__DIR__ . "/languages/default_timelines/".$val_arr[$selected_language].".txt")) {
 		$tml= $val_arr[$selected_language];
 	}
 	// *** Use timeline file from default folder ***
-	//if(!isset($val_arr[$selected_language]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language2].".txt")) {
-	elseif(isset($val_arr[$selected_language2]) AND is_file(CMS_ROOTPATH."languages/default_timelines/".$val_arr[$selected_language2].".txt")) {
+	//if(!isset($val_arr[$selected_language]) AND is_file(__DIR__ . "/languages/default_timelines/".$val_arr[$selected_language2].".txt")) {
+	elseif(isset($val_arr[$selected_language2]) AND is_file(__DIR__ . "/languages/default_timelines/".$val_arr[$selected_language2].".txt")) {
 		$tml= $val_arr[$selected_language2];
 	}
 }
@@ -544,11 +544,11 @@ echo '</td></tr></table><br>';
 
 // **** END MENU ****
 if(file_exists($filenames[0][0])) {
-	if (file_exists(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$tml.'.txt')){
-		$handle = fopen(CMS_ROOTPATH."languages/".$selected_language."/timelines/".$tml.'.txt',"r");
+	if (file_exists(__DIR__ . "/languages/".$selected_language."/timelines/".$tml.'.txt')){
+		$handle = fopen(__DIR__ . "/languages/".$selected_language."/timelines/".$tml.'.txt',"r");
 	}
-	elseif (file_exists(CMS_ROOTPATH."languages/default_timelines/".$tml.'.txt')){
-		$handle = fopen(CMS_ROOTPATH."languages/default_timelines/".$tml.'.txt',"r");
+	elseif (file_exists(__DIR__ . "/languages/default_timelines/".$tml.'.txt')){
+		$handle = fopen(__DIR__ . "/languages/default_timelines/".$tml.'.txt',"r");
 	}
 }
 ($isborn==1 AND $bornyear == '') ? $byear = $baptyear : $byear = $bornyear; // if only bapt date available use that
@@ -812,4 +812,4 @@ if(CMS_SPECIFIC=="Joomla") {
 if(file_exists($filenames[0][0])) {
 	fclose($handle);
 }
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ . '/footer.php';

@@ -1,6 +1,6 @@
 <?php
-include_once("header.php");
-include_once (CMS_ROOTPATH."menu.php");
+include_once __DIR__ .'/header.php';
+include_once __DIR__ .'/menu.php';
 
 // *** Check user ***
 if ($user['group_addresses']!='j'){
@@ -8,10 +8,10 @@ if ($user['group_addresses']!='j'){
 	exit();
 }
 
-include_once(CMS_ROOTPATH."include/language_date.php");
-include_once(CMS_ROOTPATH."include/person_cls.php");
-include_once(CMS_ROOTPATH."include/show_sources.php");
-include_once(CMS_ROOTPATH."include/show_picture.php");
+include_once __DIR__ .'/include/language_date.php';
+include_once __DIR__ .'/include/person_cls.php';
+include_once __DIR__ .'/include/show_sources.php';
+include_once __DIR__ .'/include/show_picture.php';
 
 echo '<table class="humo standard">';
 
@@ -63,4 +63,4 @@ if (isset($_SESSION['save_source_presentation']) AND $_SESSION['save_source_pres
 }
 
 echo '<br>';
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ .'/footer.php';

@@ -34,11 +34,11 @@ $menu=0;
 if(isset($_GET['menu']) AND $_GET['menu']=="1") { $menu = 1; }  // called from fanchart iframe with &menu=1-> no menu!
 
 if($screen_mode!='PDF' AND $menu!=1) {  //we can't have a menu in pdf... and don't want it when called in an iframe
-	include_once(CMS_ROOTPATH."menu.php");
+	include_once __DIR__ .'/menu.php';
 }
 
 if($screen_mode=='PDF') {  // if PDF: necessary parts from menu.php
-	include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+	include_once __DIR__ .'/include/db_functions_cls.php';
 	$db_functions = New db_functions;
 
 	if (isset($_SESSION['tree_prefix'])){
@@ -54,18 +54,18 @@ if($screen_mode=='PDF') {  // if PDF: necessary parts from menu.php
 	$db_functions->set_tree_id($tree_id);
 }
 
-include_once(CMS_ROOTPATH."include/language_date.php");
-include_once(CMS_ROOTPATH."include/language_event.php");
-include_once(CMS_ROOTPATH."include/date_place.php");
-include_once(CMS_ROOTPATH."include/process_text.php");
-include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
-include_once(CMS_ROOTPATH."include/person_cls.php");
-include_once(CMS_ROOTPATH."include/marriage_cls.php");
-include_once(CMS_ROOTPATH."include/show_sources.php");
-include_once(CMS_ROOTPATH."include/witness.php");
-include_once(CMS_ROOTPATH."include/show_addresses.php");
-include_once(CMS_ROOTPATH."include/show_picture.php");
-include_once(CMS_ROOTPATH."include/show_quality.php");
+include_once __DIR__ .'/include/language_date.php';
+include_once __DIR__ .'/include/language_event.php';
+include_once __DIR__ .'/include/date_place.php';
+include_once __DIR__ .'/include/process_text.php';
+include_once __DIR__ .'/include/calculate_age_cls.php';
+include_once __DIR__ .'/include/person_cls.php';
+include_once __DIR__ .'/include/marriage_cls.php';
+include_once __DIR__ .'/include/show_sources.php';
+include_once __DIR__ .'/include/witness.php';
+include_once __DIR__ .'/include/show_addresses.php';
+include_once __DIR__ .'/include/show_picture.php';
+include_once __DIR__ .'/include/show_quality.php';
 
 // *** Show person/ family topline: family top text, pop-up settings, PDF export, favourite ***
 function topline(){
@@ -2170,7 +2170,7 @@ if($screen_mode=='') {
 				$register_message.=__('User note by family').': <a href="'.$_SERVER['SERVER_NAME'].'/family.php?database='.$tree_prefix_quoted.
 				'&amp;id='.$family_id.'&amp;main_person='.$main_person.'">'.safe_text_db($name["standard_name"]).'</a>';
 
-				include_once ('include/mail.php');
+				include_once __DIR__ .'/include/mail.php';
 
 				// *** Set who the message is to be sent from ***
 				$mail->setFrom($userDb->user_mail, $userDb->user_name);
@@ -2251,7 +2251,7 @@ if($screen_mode=='') {
 
 // *** List appendix of sources ***
 if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footnote' OR $user['group_sources']=='j') ) {
-	include_once(CMS_ROOTPATH."source.php");
+	include_once __DIR__ .'/source.php';
 	$pdf->AddPage(); // appendix on new page
 	$pdf->SetFont($pdf_font,"B",14);
 	$pdf->Write(8,__('Sources')."\n\n");
@@ -2294,7 +2294,7 @@ if($screen_mode=="PDF" AND !empty($pdf_source) AND ($source_presentation=='footn
 
 if($hourglass===false) { // in hourglass there's more code after family.php is included
 	if($screen_mode=='STAR' OR $screen_mode=='STARSIZE') {
-		include_once(CMS_ROOTPATH."report_descendant.php");
+		include_once __DIR__ .'/report_descendant.php';
 		generate();
 		printchart();
 	}
@@ -2319,7 +2319,7 @@ if($hourglass===false) { // in hourglass there's more code after family.php is i
 		echo $text;
 	}
 	elseif($screen_mode!='PDF') {
-		include_once(CMS_ROOTPATH."footer.php");
+		include_once __DIR__ .'/footer.php';
 	}
 	else {
 		$pdf->Output($title.".pdf","I");

@@ -16,7 +16,7 @@ if (!isset($_GET['proceed'])) {
 	echo '<p><a href="index.php?page=update&proceed=1">START UPDATE PROCEDURE</a>';
 } else {
 	// *** Use class for multiple update scripts ***
-	include_once(CMS_ROOTPATH_ADMIN . 'update_cls.php');
+	include_once __DIR__ . '/update_cls.php';
 	$update_cls = new update_cls;
 
 	// *** UPDATE PROCEDURES ****************************************************************

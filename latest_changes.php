@@ -1,7 +1,7 @@
 <?php
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
-include_once(CMS_ROOTPATH."include/person_cls.php");
+include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/menu.php';
+include_once __DIR__ . '/include/person_cls.php';
 
 // *** Extra safety line ***
 if (!is_numeric($tree_id)) exit;
@@ -126,4 +126,4 @@ echo '</table>';
 
 //echo '</div>';
 
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ . '/footer.php';

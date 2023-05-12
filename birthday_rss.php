@@ -14,17 +14,17 @@ session_start();
 
 define("CMS_ROOTPATH", "");
 
-include_once(CMS_ROOTPATH."include/db_login.php");
-include_once(CMS_ROOTPATH."include/settings_global.php");
-include_once(CMS_ROOTPATH."include/person_cls.php");
-include_once(CMS_ROOTPATH."include/safe.php");
-include_once(CMS_ROOTPATH."include/settings_user.php");
+include_once __DIR__ .'/include/db_login.php';
+include_once __DIR__ .'/include/settings_global.php';
+include_once __DIR__ .'/include/person_cls.php';
+include_once __DIR__ .'/include/safe.php';
+include_once __DIR__ .'/include/settings_user.php';
 
-include_once(CMS_ROOTPATH."include/db_functions_cls.php");
+include_once __DIR__ .'/include/db_functions_cls.php';
 $db_functions = New db_functions;
 
 // *** Set timezone ***
-include_once(CMS_ROOTPATH."include/timezone.php");
+include_once __DIR__ .'/include/timezone.php';
 timezone();
 
 $today = date("d M Y");
@@ -44,11 +44,11 @@ echo "<rss version=\"2.0\"
 */
 
 $language_rss="en";
-if (isset($_GET['lang']) AND file_exists(CMS_ROOTPATH.'languages/'.$_GET['lang'].'/'.$_GET['lang'].'.mo')){ $language_rss=$_GET['lang']; }
+if (isset($_GET['lang']) AND file_exists(CMS_ROOTPATH . 'languages/' . $_GET['lang'] . '/' . $_GET['lang'] . '.mo')){ $language_rss=$_GET['lang']; }
 // *** Extra check if file exists ***
 if (file_exists(CMS_ROOTPATH.'languages/'.$language_rss.'/'.$language_rss.'.mo')){
 	// *** .mo language text files ***
-	include_once(CMS_ROOTPATH."languages/gettext.php");
+	include_once __DIR__ .'/languages/gettext.php';
 	// *** Load ***
 	$_SESSION["language_selected"]=$language_rss;
 	Load_default_textdomain();

@@ -41,9 +41,9 @@ if (!defined('ADMIN_PAGE')) {
 
 //echo '<h1 align=center>'.__('Import GEDCOM file').'</h1>';
 
-include_once(CMS_ROOTPATH_ADMIN . "include/gedcom_asciihtml.php");
-include_once(CMS_ROOTPATH_ADMIN . "include/gedcom_anselhtml.php");
-include_once(CMS_ROOTPATH_ADMIN . "include/gedcom_ansihtml.php");
+include_once __DIR__ . '/gedcom_asciihtml.php';
+include_once __DIR__ . '/gedcom_anselhtml.php';
+include_once __DIR__ . '/gedcom_ansihtml.php';
 
 @set_time_limit(4000);
 
@@ -1054,10 +1054,10 @@ if (isset($_POST['step3'])) {
 		$new_gednum["N"] = $largest_text_ged;
 	}
 
-	include_once(CMS_ROOTPATH_ADMIN . 'include/gedcom_cls.php');
+	include_once __DIR__ . '/gedcom_cls.php';
 	$gedcom_cls = new gedcom_cls;
 
-	require(CMS_ROOTPATH_ADMIN . "prefixes.php");
+	require __DIR__ . '/../prefixes.php';
 	$loop2 = count($pers_prefix);
 	for ($i = 0; $i < $loop2; $i++) {
 		//$prefix[$i]=addslashes($pers_prefix[$i]);
@@ -1198,7 +1198,7 @@ if (isset($_POST['step3'])) {
 	// *** END preparation of progress bar ***
 
 
-	require_once(CMS_ROOTPATH_ADMIN . "include/ansel2unicode/ansel2unicode.php");
+	require_once __DIR__ . '/ansel2unicode/ansel2unicode.php';
 	global $a2u;
 	$a2u = new Ansel2Unicode();
 

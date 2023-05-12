@@ -72,14 +72,14 @@ $joomlapath = CMS_ROOTPATH_ADMIN . 'include/';
 include_once($joomlapath . "editor_cls.php");
 $editor_cls = new editor_cls;
 
-include_once(CMS_ROOTPATH . "include/language_date.php");
-include_once(CMS_ROOTPATH . "include/date_place.php");
-include_once(CMS_ROOTPATH . "include/language_event.php");
+include_once __DIR__ . '/../../include/language_date.php';
+include_once __DIR__ . '/../../include/date_place.php';
+include_once __DIR__ . '/../../include/language_event.php';
 
 // *** Used for person color selection for descendants and ancestors, etc. ***
-include_once(CMS_ROOTPATH . "include/ancestors_descendants.php");
+include_once __DIR__ . '/../../include/ancestors_descendants.php';
 
-include('editor_event_cls.php');
+include __DIR__ . '/editor_event_cls.php';
 $event_cls = new editor_event_cls;
 
 
@@ -5490,4 +5490,3 @@ $("#chtd1").width($("#target1").width());
 $("#chtd2").width($("#target3").width());
 $("#chtd3").width($("#target2").width());
 </script> ';
-?>

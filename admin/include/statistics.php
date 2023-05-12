@@ -6,8 +6,8 @@ if (!defined('ADMIN_PAGE')) {
 
 @set_time_limit(3000);
 
-require_once(CMS_ROOTPATH_ADMIN . "statistics/maxChart.class.php"); // REQUIRED FOR STATISTICS
-include_once(CMS_ROOTPATH . "include/person_cls.php");
+require_once __DIR__ . '/../statistics/maxChart.class.php'; // REQUIRED FOR STATISTICS
+include_once __DIR__ . '/../../include/person_cls.php';
 
 echo '<h1 class="center">' . __('Statistics') . '</h1>';
 

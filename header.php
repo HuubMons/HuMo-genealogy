@@ -55,9 +55,9 @@ if (isset($_GET['log_off'])) {
 	session_destroy();
 }
 
-include_once(CMS_ROOTPATH . "include/db_login.php"); //Inloggen database.
-include_once(CMS_ROOTPATH . 'include/show_tree_text.php');
-include_once(CMS_ROOTPATH . "include/db_functions_cls.php");
+include_once __DIR__ . '/include/db_login.php'; //Inloggen database.
+include_once __DIR__ . '/include/show_tree_text.php';
+include_once __DIR__ . '/include/db_functions_cls.php';
 $db_functions = new db_functions;
 
 // *** Use UTF-8 database connection ***
@@ -80,9 +80,9 @@ try {
 	exit();
 }
 
-include_once(CMS_ROOTPATH . "include/safe.php");
-include_once(CMS_ROOTPATH . "include/settings_global.php"); //Variables
-include_once(CMS_ROOTPATH . "include/settings_user.php"); // USER variables
+include_once __DIR__ . '/include/safe.php';
+include_once __DIR__ . '/include/settings_global.php'; //Variables
+include_once __DIR__ . '/include/settings_user.php'; // USER variables
 
 // *** Debug HuMo-genealogy`front pages ***
 if ($humo_option["debug_front_pages"] == 'y') {
@@ -97,7 +97,7 @@ if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'], 'partial')) {
 }
 
 // *** Set timezone ***
-include_once(CMS_ROOTPATH . "include/timezone.php"); // set timezone 
+include_once __DIR__ . '/include/timezone.php'; // set timezone 
 timezone();
 // *** TIMEZONE TEST ***
 //echo date("Y-m-d H:i");
@@ -107,7 +107,7 @@ $bot_visit = preg_match('/bot|spider|crawler|curl|Yahoo|Google|^$/i', $_SERVER['
 // *** Line for bot test! ***
 //$bot_visit=true;
 
-$language_folder = opendir(CMS_ROOTPATH . 'languages/');
+$language_folder = opendir( __DIR__ . '/languages/');
 while (false !== ($file = readdir($language_folder))) {
 	if (strlen($file) < 6 and $file != '.' and $file != '..') {
 		$language_file[] = $file;
@@ -173,7 +173,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 		if (isset($resultDb->user_2fa_enabled) and $resultDb->user_2fa_enabled) {
 			$valid_user = false;
 			$fault = true;
-			include_once(CMS_ROOTPATH . "include/2fa_authentication/authenticator.php");
+			include_once __DIR__ . '/include/2fa_authentication/authenticator.php';
 
 			if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
 				$Authenticator = new Authenticator();
@@ -223,7 +223,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 }
 
 // *** Language processing after header("..") lines. *** 
-include_once(CMS_ROOTPATH . "languages/language.php"); //Taal
+include_once __DIR__ . '/languages/language.php'; //Taal
 
 // *** Process LTR and RTL variables ***
 $dirmark1 = "&#x200E;";  //ltr marker
@@ -419,8 +419,8 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 
 	// *** june 2022: FPDF supports romanian and greek characters ***
 	//define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
-	require(CMS_ROOTPATH . 'include/tfpdf/tfpdf.php');
-	require(CMS_ROOTPATH . 'include/tfpdf/tfpdfextend.php');
+	require __DIR__ . '/include/tfpdf/tfpdf.php';
+	require __DIR__ . '/include/tfpdf/tfpdfextend.php';
 
 	// *** Set variabele for queries ***
 	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
@@ -726,7 +726,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'fontsize.js"></script>';
 
 	// *** Style sheet select ***
-	include_once(CMS_ROOTPATH . "styles/sss1.php");
+	include_once __DIR__ . '/styles/sss1.php';
 
 	// *** Pop-up menu ***
 	echo '<script type="text/javascript" src="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.js"></script>';
@@ -762,7 +762,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 		$str = file_get_contents(CMS_ROOTPATH . "languages/en/en.po");
 		if (strpos($str, 'msgstr "&#134;"') or strpos($str, 'msgstr "&dagger;"')) {    // the cross is used (probably new upgrade) so this has to be changed to infinity
 			$humo_option['death_char'] = "n"; // fool "change_all.php" into thinking a change was requested from cross to infinity
-			include(CMS_ROOTPATH . "languages/change_all.php");
+			include __DIR__ . '/languages/change_all.php';
 		}
 	}
 

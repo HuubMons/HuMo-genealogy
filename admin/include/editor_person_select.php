@@ -4,7 +4,7 @@ if (!defined('ADMIN_PAGE')) {
 	exit;
 }
 
-include_once(CMS_ROOTPATH . "include/language_date.php");
+include_once __DIR__ . '/../../include/language_date.php';
 
 echo '<h1 class="center">' . __('Select person') . '</h1>';
 

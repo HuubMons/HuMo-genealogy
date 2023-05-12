@@ -508,7 +508,7 @@ if (isset($_POST["thumbnail"]) or isset($_POST['change_filename'])) {
 						echo '<img src="' . $pict_path_thumb . '" title="' . $pict_path_thumb . '">';
 
 						// *** Show name of connected persons ***
-						include_once('../include/person_cls.php');
+						include_once __DIR__ . '/../../include/person_cls.php';
 						$picture_text = '';
 						$sql = "SELECT * FROM humo_events WHERE event_tree_id='" . safe_text_db($tree_id) . "'
 								AND event_connect_kind='person' AND event_kind='picture'
@@ -594,7 +594,7 @@ function categories()
 	echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_tree2 . '"';
 	//echo '<a href="index.php?'.$joomlastring.'page=photoalbum&amp;language_tree='.$language_tree2.'"';
 	echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;language_tree=' . $language_tree2 . '"';
-	include(CMS_ROOTPATH . 'languages/' . $language_tree2 . '/language_data.php');
+	include __DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php';
 	echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
 	$select_top = '';
 	echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
@@ -604,7 +604,7 @@ function categories()
 	for ($i = 0; $i < count($language_file); $i++) {
 		// *** Get language name ***
 		if ($language_file[$i] != $language_tree2) {
-			include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
+			include __DIR__ . '/../../languages/' . $language_file[$i] . '/language_data.php';
 
 			echo '<li style="float:left; width:124px;">';
 			//echo '<a href="index.php?'.$joomlastring.'page=photoalbum&amp;language_tree='.$language_file[$i].$add.'">';

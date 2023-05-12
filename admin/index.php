@@ -77,22 +77,22 @@ if (isset($_GET['log_off'])) {
 }
 
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
-include_once(CMS_ROOTPATH . "include/db_login.php"); // *** Database login ***
+include_once __DIR__ . '/../include/db_login.php'; // *** Database login ***
 
 // *** Use UTF-8 database connection ***
 //@mysql_query("SET NAMES 'utf8'", $db);
 //@$dbh->query("SET NAMES 'utf8'");
 
-include_once(CMS_ROOTPATH . "include/safe.php"); // Variables
+include_once __DIR__ . '/../include/safe.php'; // Variables
 
 // *** Function to show family tree texts ***
-include_once(CMS_ROOTPATH . 'include/show_tree_text.php');
+include_once __DIR__ . '/../include/show_tree_text.php';
 
-include_once(CMS_ROOTPATH . "include/db_functions_cls.php");
+include_once __DIR__ . '/../include/db_functions_cls.php';
 $db_functions = new db_functions();
 
 // *** Added juli 2019: Person functions ***
-include_once(CMS_ROOTPATH . "include/person_cls.php");
+include_once __DIR__ . '/../include/person_cls.php';
 
 // *** Only load settings if database and table exists ***
 $show_menu_left = false;
@@ -109,11 +109,11 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 	}
 
 	if ($check_tables) {
-		include_once(CMS_ROOTPATH . "include/settings_global.php");
+		include_once __DIR__ . '/../include/settings_global.php';
 
 		// *** Added may 2020, needed for some user settings in admin section ***
 		// *** At this moment there is no separation for front user and admin user... ***
-		include_once(CMS_ROOTPATH . "include/settings_user.php"); // USER variables
+		include_once __DIR__ . '/../include/settings_user.php'; // USER variables
 
 		// **** Temporary update scripts ***
 
@@ -443,7 +443,7 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 }
 
 // *** Set timezone ***
-include_once(CMS_ROOTPATH . "include/timezone.php"); // set timezone
+include_once __DIR__ . '/../include/timezone.php'; // set timezone 
 timezone();
 // *** TIMEZONE TEST ***
 //echo date("Y-m-d H:i");
@@ -516,10 +516,10 @@ if (
 }
 
 $language = array();
-include(CMS_ROOTPATH . 'languages/' . $selected_language . '/language_data.php');
+include __DIR__ . '/../languages/' . $selected_language . '/language_data.php';
 
 // *** .mo language text files ***
-include_once(CMS_ROOTPATH . "languages/gettext.php");
+include_once __DIR__ . '/../languages/gettext.php';
 // *** Load ***
 $_SESSION["language_selected"] = $selected_language;
 Load_default_textdomain();
@@ -696,8 +696,7 @@ if (isset($_SESSION['current_ip_address']) == FALSE) {
 
 if (!CMS_SPECIFIC) {
 	// *** Generate header of HTML pages ***
-	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-	"http://www.w3.org/TR/html4/loose.dtd">' . "\n";
+	echo '<!DOCTYPE html>' . "\n";
 
 	$html_text = "\n<html>\n";
 	if ($language["dir"] == "rtl") {   // right to left language
@@ -1681,7 +1680,7 @@ if ($popup == false) {
 	$select_top = '';
 	echo '<li>';
 	echo '<div class="' . $rtlmarker . 'sddm">';
-	include(CMS_ROOTPATH . 'languages/' . $selected_language . '/language_data.php');
+	include __DIR__ . '/../languages/' . $selected_language . '/language_data.php';
 	echo '<a href="index.php?option=com_humo-gen"';
 	echo ' onmouseover="mopen(event,\'m40x\',\'?\',\'?\')"';
 	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].'</a>';
@@ -1693,7 +1692,7 @@ if ($popup == false) {
 		// *** Get language name ***
 		//if ($language_file[$i] != $selected_language) {
 		if ($language_file[$i] != $selected_language and !in_array($language_file[$i], $hide_languages_array)) {
-			include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
+			include __DIR__ . '/../languages/' . $language_file[$i] . '/language_data.php';
 			//echo '<li><a href="'.$path_tmp.'language_choice='.$language_file[$i].'">';
 			echo '<li><a href="' . $path_tmp . 'language_choice=' . $language_file[$i] . '">';
 
@@ -1709,10 +1708,10 @@ if ($popup == false) {
 	echo '</li>';
 } else {
 	// *** Set language if pop-up window is used ***
-	include(CMS_ROOTPATH . 'languages/' . $selected_language . '/language_data.php');
+	include __DIR__ . '/../languages/' . $selected_language . '/language_data.php';
 	for ($i = 0; $i < count($language_file); $i++) {
 		if ($language_file[$i] != $selected_language) {
-			include(CMS_ROOTPATH . 'languages/' . $language_file[$i] . '/language_data.php');
+			include __DIR__ . '/../languages/' . $language_file[$i] . '/language_data.php';
 		}
 	}
 }
@@ -1733,104 +1732,104 @@ if ($popup == false) {
 define('ADMIN_PAGE', true); // *** Safety line ***
 
 if ($page == 'install') {
-	include_once("include/install.php");
+	include_once __DIR__ . '/include/install.php';
 } elseif ($page == 'extensions') {
-	include_once("include/extensions.php");
+	include_once __DIR__ . '/include/extensions.php';
 } elseif ($page == 'login') {
-	include_once("include/login.php");
+	include_once __DIR__ . '/include/login.php';
 } elseif ($group_administrator == 'j' and $page == 'tree') {
-	include_once("include/trees.php");
+	include_once __DIR__ . '/include/trees.php';
 } elseif ($page == 'editor') {
 	$_GET['menu_admin'] = 'person';
-	include_once("include/editor.php");
+	include_once __DIR__ . '/include/editor.php';
 } elseif ($page == 'editor_sources') {
 	$_GET['menu_admin'] = 'person';
-	include_once("include/editor_sources.php");
+	include_once __DIR__ . '/include/editor_sources.php';
 }
 // NEW edit_sources for all source links...
 elseif ($page == 'edit_sources') {
 	$_GET['menu_admin'] = 'sources';
-	include_once("include/editor.php");
+	include_once __DIR__ . '/include/editor.php';
 } elseif ($page == 'edit_repositories') {
 	$_GET['menu_admin'] = 'repositories';
-	include_once("include/editor.php");
+	include_once __DIR__ . '/include/editor.php';
 } elseif ($page == 'edit_addresses') {
 	$_GET['menu_admin'] = 'addresses';
-	include_once("include/editor.php");
+	include_once __DIR__ . '/include/editor.php';
 } elseif ($page == 'edit_places') {
 	$_GET['menu_admin'] = 'places';
-	include_once("include/editor.php");
+	include_once __DIR__ . '/include/editor.php';
 } elseif ($page == 'editor_place_select') {
 	$_GET['menu_admin'] = 'places';
-	include_once("include/editor_place_select.php");
+	include_once __DIR__ . '/include/editor_place_select.php';
 } elseif ($page == 'editor_person_select') {
 	$_GET['menu_admin'] = 'marriage';
-	include_once("include/editor_person_select.php");
+	include_once __DIR__ . '/include/editor_person_select.php';
 } elseif ($page == 'editor_relation_select') {
 	$_GET['menu_admin'] = 'relation';
-	include_once("include/editor_relation_select.php");
+	include_once __DIR__ . '/include/editor_relation_select.php';
 } elseif ($page == 'editor_media_select') {
 	$_GET['menu_admin'] = 'menu';
-	include_once("include/editor_media_select.php");
+	include_once __DIR__ . '/include/editor_media_select.php';
 } elseif ($page == 'check') {
-	include_once("include/tree_check.php");
+	include_once __DIR__ . '/include/tree_check.php';
 } elseif ($page == 'view_latest_changes') {
 	$_POST['last_changes'] = 'View latest changes';
-	include_once("include/tree_check.php");
+	include_once __DIR__ . '/include/tree_check.php';
 } elseif ($page == 'gedcom') {
-	include_once("include/gedcom.php");
+	include_once __DIR__ . '/include/gedcom.php';
 } elseif ($page == 'settings') {
-	include_once("include/settings_admin.php");
+	include_once __DIR__ . '/include/settings_admin.php';
 } elseif ($page == 'thumbs') {
-	include_once("include/thumbs.php");
+	include_once __DIR__ . '/include/thumbs.php';
 } elseif ($page == 'favorites') {
-	include_once("include/favorites.php");
+	include_once __DIR__ . '/include/favorites.php';
 } elseif ($page == 'users') {
-	include_once("include/users.php");
+	include_once __DIR__ . '/include/users.php';
 } elseif ($page == 'editor_user_settings') {
 	$_GET['menu_admin'] = 'users';
-	include_once("include/editor_user_settings.php");
+	include_once __DIR__ . '/include/editor_user_settings.php';
 } elseif ($page == 'groups') {
-	include_once("include/groups.php");
+	include_once __DIR__ . '/include/groups.php';
 } elseif ($page == 'cms_pages') {
-	include_once("include/cms_pages.php");
+	include_once __DIR__ . '/include/cms_pages.php';
 } elseif ($page == 'backup') {
-	include_once("include/backup.php");
+	include_once __DIR__ . '/include/backup.php';
 } elseif ($page == 'user_notes') {
-	include_once("include/user_notes.php");
+	include_once __DIR__ . '/include/user_notes.php';
 } elseif ($page == 'cal_date') {
-	include_once("include/cal_date.php");
+	include_once __DIR__ . '/include/cal_date.php';
 } elseif ($page == 'export') {
-	include_once("include/gedcom_export.php");
+	include_once __DIR__ . '/include/gedcom_export.php';
 } elseif ($page == 'log') {
-	include_once("include/log.php");
+	include_once __DIR__ . '/include/log.php';
 } elseif ($page == 'language_editor') {
-	include_once("include/language_editor.php");
+	include_once __DIR__ . '/include/language_editor.php';
 } elseif ($page == 'prefix_editor') {
-	include_once("include/prefix_editor.php");
+	include_once __DIR__ . '/include/prefix_editor.php';
 } elseif ($page == 'google_maps') {
-	include_once("include/make_db_maps.php");
+	include_once __DIR__ . '/include/make_db_maps.php';
 } elseif ($page == 'statistics') {
-	include_once("include/statistics.php");
+	include_once __DIR__ . '/include/statistics.php';
 } elseif ($page == 'install_update') {
-	include_once("update/install_update.php");
+	include_once __DIR__ . '/update/install_update.php';
 } elseif ($page == 'update') {
-	include_once("include/update.php");
+	include_once __DIR__ . '/include/update.php';
 }
-//elseif ($page=='photoalbum'){ include_once ("include/photoalbum_categories.php"); }
+//elseif ($page=='photoalbum'){ include_once ( __DIR__ . '/include/photoalbum_categories.php'; }
 
 // *** Edit event by person ***
-//elseif ($page=='editor_person_event'){ include_once ("include/editor_person_event.php"); }
+//elseif ($page=='editor_person_event'){ include_once ( __DIR__ . '/include/editor_person_event.php'; }
 
 // *** Default page for editor ***
 elseif ($group_administrator != 'j' and $group_edit_trees) {
 	$_GET['menu_admin'] = 'person';
-	include_once("include/editor.php");
+	include_once __DIR__ . '/include/editor.php';
 }
 
 // *** Default page for administrator ***
 else {
-	include_once("include/index_inc.php");
+	include_once __DIR__ . '/include/index_inc.php';
 }
 
 echo '</div>';

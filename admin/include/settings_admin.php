@@ -187,17 +187,17 @@ if (isset($_POST['save_option3'])) {
 	$result = $db_functions->update_settings('admin_barm', $setting_value);
 
 	if (isset($_POST["death_char"]) and safe_text_db($_POST["death_char"]) == "y"  and $humo_option['death_char'] == "n") {
-		include(CMS_ROOTPATH . "languages/change_all.php");  // change cross to infinity
+		include __DIR__ . '/../../languages/change_all.php';  // change cross to infinity
 		$result = $db_functions->update_settings('death_char', 'y');
 	} elseif ((!isset($_POST["death_char"]) or safe_text_db($_POST["death_char"]) == "n") and $humo_option['death_char'] == "y") {
-		include(CMS_ROOTPATH . "languages/change_all.php");  // change infinity to cross
+		include __DIR__ . '/../../languages/change_all.php';  // change infinity to cross
 		$result = $db_functions->update_settings('death_char', 'n');
 	}
 }
 
 // *** Re-read variables after changing them ***
 // *** Don't use include_once! Otherwise the old value will be shown ***
-include(CMS_ROOTPATH . "include/settings_global.php"); //variables
+include __DIR__ . '/../../include/settings_global.php'; //variables
 
 // *** Read languages in language array ***
 $arr_count = 0;
@@ -206,7 +206,7 @@ $folder = opendir(CMS_ROOTPATH . 'languages/');
 while (false !== ($file = readdir($folder))) {
 	if (strlen($file) < 6 and $file != '.' and $file != '..') {
 		// *** Get language name ***
-		include(CMS_ROOTPATH . "languages/" . $file . "/language_data.php");
+		include __DIR__ . '/../../languages/" . $file . "/language_data.php';
 		$langs[$arr_count][0] = $language["name"];
 		$langs[$arr_count][1] = $file;
 		$arr_count++;

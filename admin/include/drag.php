@@ -8,8 +8,8 @@ if (isset($_SESSION['admin_tree_id'])) {
 	if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "../../");
 
 	$ADMIN = TRUE; // *** Override "no database" message for admin ***
-	include_once(CMS_ROOTPATH . "include/db_login.php"); // *** Database login ***
-	include_once(CMS_ROOTPATH . "include/safe.php");
+	include_once __DIR__ . '/../../include/db_login.php'; // *** Database login ***
+	include_once __DIR__ . '/../../include/safe.php';
 
 	$gedcom_date = strtoupper(date("d M Y"));
 	$gedcom_time = date("H:i:s");

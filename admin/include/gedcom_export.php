@@ -292,7 +292,7 @@ if (isset($_POST['gedcom_submit_name'])) {
 
 	// *** Re-read variables after changing them ***
 	// *** Don't use include_once! Otherwise the old value will be shown ***
-	include(CMS_ROOTPATH . "include/settings_global.php"); //variables
+	include __DIR__ . '/../../include/settings_global.php'; //variables
 }
 echo '<tr class="table_header"><th colspan="2">' . __('GEDCOM submitter') . '</th>';
 echo '<tr><td>' . __('Name') . '</td><td>';
