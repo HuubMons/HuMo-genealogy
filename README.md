@@ -1,6 +1,12 @@
 # HuMo-genealogy
 
+>
+> Official developement repository.
+>
 > HuMo-genealogy is free and open-source genealogy software.
+>
+> You can download the current production version [here](https://humo-gen.com/wp/humo-genealogy-download/).
+>
 
 ## Links
 
@@ -14,8 +20,10 @@
 
 |  Version  |  Latest  |   Php   |  Mysql  |      Stage      |
 |:---------:|:--------:|:-------:|:-------:|:---------------:|
-|    5.x    |   5.x    |   > 4   |   ??    |   unmaintened   |
-|    6.x    |  6.1.1.1 |   > 5?  |   ??    |     current     |
+|    5.x    |   5.13   |   > 4   |   ??    |   unmaintened   |
+|    6.x    |  6.1.1.1 |   > 5   |  > 4 ** |     current     |
+
+**recommanded 5.5
 
 ## Non officials ADD-ON
 
