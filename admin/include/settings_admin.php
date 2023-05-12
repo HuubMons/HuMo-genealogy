@@ -4,8 +4,6 @@ if (!defined('ADMIN_PAGE')) {
 	exit;
 }
 
-echo '<h1 class="center">' . __('Settings') . '</h1>';
-
 if (isset($_POST['timeline_language'])) {
 	$time_lang = $_POST['timeline_language'];
 } elseif (isset($_GET['timeline_language'])) {
@@ -77,7 +75,8 @@ if (isset($_POST['save_option'])) {
 	$result = $db_functions->update_settings('url_rewrite', $_POST["url_rewrite"]);
 
 	$result = $db_functions->update_settings('timezone', $_POST["timezone"]);
-
+	$result = $db_functions->update_settings('default_timeline', $_POST["default_timeline"]);
+	
 	$result = $db_functions->update_settings('watermark_text', $_POST["watermark_text"]);
 	$result = $db_functions->update_settings('watermark_color_r', $_POST["watermark_color_r"]);
 	$result = $db_functions->update_settings('watermark_color_g', $_POST["watermark_color_g"]);
