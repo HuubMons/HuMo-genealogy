@@ -330,13 +330,15 @@ echo '<br><table width='.$table2_width.' class="humo nametbl" align="center">';
 		echo '</tr>';
 	}
 echo '</table>';
+?>
 
+<script>
 // *** Show number of names with gray background bar ***
 // TODO: Devs: innerHTML is not safe!
-echo '
-<script>
+// TODO: Devs: $number_high can be null and cause warning in console js!
 var tbl = document.getElementsByClassName("nametbl")[0];
-var rws = tbl.rows; var baseperc = '.$number_high.';
+var rws = tbl.rows; 
+var baseperc = '<?= $number_high; ?>';
 for(var i = 0; i < rws.length; i ++) {
 	var tbs =  rws[i].getElementsByClassName("namenr");
 	var nms = rws[i].getElementsByClassName("namelst");
@@ -351,6 +353,7 @@ for(var i = 0; i < rws.length; i ++) {
 		}
 	}
 }
-</script><br>';
+</script>
+<br>
 
-include_once __DIR__ . '/footer.php';
+<?php include_once __DIR__ . '/footer.php';

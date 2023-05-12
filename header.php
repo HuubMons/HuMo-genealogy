@@ -22,10 +22,12 @@ if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "admin/");
 //ini_set('url_rewriter.tags','');
 
 if (!CMS_SPECIFIC) {
-	session_cache_limiter('private, must-revalidate'); //tb edit
+	// session_cache_limiter('private, must-revalidate'); //TODO: @DEVS: Nonsense here, "must-revalidate" is for "nocache", "private" need a "max-age" to be unvalid, see https://www.php.net/manual/en/function.session-cache-limiter.php
+	session_cache_limiter('nocache, must-revalidate'); 
 	session_start();
-	// *** Regenerate session id regularly to prevent session hacking ***
-	session_regenerate_id();
+	// *** Regenerate session id regularly to prevent session hacking *** 
+	//TODO: @DEVS: will be revalidate only in authentification, see https://www.php.net/session_regenerate_id and confirmed here: https://stackoverflow.com/questions/22965067/when-and-why-i-should-use-session-regenerate-id
+	// session_regenerate_id();  
 }
 
 if (isset($_GET['log_off'])) {
