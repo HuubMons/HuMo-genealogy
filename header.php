@@ -452,7 +452,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 		$robots_option = $humo_option["searchengine"] == "j" ? $humo_option["robots_option"] : ""
 		?>
 		<!DOCTYPE html>
-		<html lang="<?= $language['code']; ?>">
+		<html lang="<?= $selected_language; ?>">
 			<head>
 				<meta http-equiv="content-type" content="text/html; charset=utf-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
