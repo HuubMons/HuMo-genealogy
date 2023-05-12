@@ -206,7 +206,7 @@ $folder = opendir(CMS_ROOTPATH . 'languages/');
 while (false !== ($file = readdir($folder))) {
 	if (strlen($file) < 6 and $file != '.' and $file != '..') {
 		// *** Get language name ***
-		include __DIR__ . '/../../languages/" . $file . "/language_data.php';
+		include __DIR__ . '/../../languages/' . $file . '/language_data.php';
 		$langs[$arr_count][0] = $language["name"];
 		$langs[$arr_count][1] = $file;
 		$arr_count++;
