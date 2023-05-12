@@ -7,11 +7,11 @@
  * sep. 2014 Huub: added this script to HuMo-genealogy.
  */
 
-include_once("header.php"); //returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."include/language_date.php");
-include_once(CMS_ROOTPATH."include/date_place.php");
-include_once(CMS_ROOTPATH."include/person_cls.php");
-include_once(CMS_ROOTPATH."include/marriage_cls.php");
+include_once __DIR__ . '/header.php'; //returns CMS_ROOTPATH constant
+include_once __DIR__ . '/include/language_date.php';
+include_once __DIR__ . '/include/date_place.php';
+include_once __DIR__ . '/include/person_cls.php';
+include_once __DIR__ . '/include/marriage_cls.php';
 
 //error_reporting(E_ALL);
 @set_time_limit(300);
@@ -355,7 +355,7 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 // *** Generate indexlist ***
 // **************************
 
-	include_once(CMS_ROOTPATH."menu.php");
+	include_once __DIR__ . '/menu.php';
 
 	//*** Show number of persons and pages *****************************************
 	$item=0; if (isset($_GET['item'])){ $item=$_GET['item']; }
@@ -614,4 +614,4 @@ echo '<script type="text/javascript">
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;
 
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ . '/footer.php';

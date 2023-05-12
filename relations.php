@@ -67,12 +67,12 @@ global $fampath;
 // *** Only needed for dutch relation names ***
 global $hoog, $opper, $aarts, $voor, $edel, $stam, $oud, $rest;
 
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
-require_once(CMS_ROOTPATH."include/person_cls.php");
-include_once(CMS_ROOTPATH."include/marriage_cls.php");
-include_once(CMS_ROOTPATH."include/language_date.php");
-include_once(CMS_ROOTPATH."include/date_place.php");
+include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/menu.php';
+require_once __DIR__ . '/include/person_cls.php';
+include_once __DIR__ . '/include/marriage_cls.php';
+include_once __DIR__ . '/include/language_date.php';
+include_once __DIR__ . '/include/date_place.php';
 
 if(CMS_SPECIFIC == "Joomla") {
 	$fampath = "index.php?option=com_humo-gen&amp;task=family&amp"; // path to family.php for joomla (used some 20 times in this code
@@ -823,7 +823,7 @@ global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 		if($sexe=="m") { $neph=__('nephew'); $span_postfix="o "; $grson='nieto'; }
 		else { $neph=__('niece'); $span_postfix="a "; $grson='nieta'; }
 		//$gendiff = abs($generX - $generY); // FOUT
-		$gendiff = abs($generX - $generY) - 1;
+		$gendiff = abs($generX - $generY) - 1; // TODO: @DEVS: $generY is undefined here!
 		$gennr=$gendiff-1;
 		$degree=$grson." ".$gennr.$span_postfix;
 		if($gendiff ==1) { $reltext=$neph.__(' of ');}
@@ -3529,4 +3529,4 @@ if(isset($_POST["calculator"]) OR isset($_POST["switch"])) { // calculate or swi
 }
 echo '</form>';
 echo '<br><br><br><br><br><br><br><br>';
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ .'/footer.php';

@@ -8,13 +8,13 @@
  */
 //error_reporting(E_ALL);
 
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
+include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/menu.php';
 // *** Standard function for names ***
-include_once(CMS_ROOTPATH."include/person_cls.php");
-include_once(CMS_ROOTPATH."include/language_date.php");
-include_once(CMS_ROOTPATH."include/date_place.php");
-include_once(CMS_ROOTPATH."include/calculate_age_cls.php");
+include_once __DIR__ . '/include/person_cls.php';
+include_once __DIR__ . '/include/language_date.php';
+include_once __DIR__ . '/include/date_place.php';
+include_once __DIR__ . '/include/calculate_age_cls.php';
 
 // *** Get general data from family tree ***
 $dataDb=$db_functions->get_tree($tree_prefix_quoted);
@@ -992,4 +992,4 @@ echo '<div id="statistics_screen">';
 	}
 	
 echo '</div>'; // *** End of tab menu div ***
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ . '/footer.php';

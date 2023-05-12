@@ -269,7 +269,7 @@ if (isset($_POST['language_tree'])) {
 	$language_tree = $_POST['language_tree'];
 }
 
-include_once("trees_cls.php");
+include_once __DIR__ . '/trees_cls.php';
 $tree_cls = new tree_cls;
 
 // *** Selected family tree ***
@@ -398,11 +398,7 @@ if (isset($menu_admin) and $menu_admin == 'tree_main') {
 // *** Show main tree screen ***
 if (isset($menu_admin) and $menu_admin == 'tree_gedcom') {
 	//$tree_cls->tree_main();
-	if (CMS_SPECIFIC == "Joomla") {
-		include_once(CMS_ROOTPATH_ADMIN . "include/gedcom.php");
-	} else {
-		include_once("gedcom.php");
-	}
+	include_once __DIR__ . '/gedcom.php';
 }
 // ********************************************************************************
 // *** Show selected family tree                                                ***

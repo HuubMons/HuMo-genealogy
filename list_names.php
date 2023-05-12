@@ -1,6 +1,6 @@
 <?php
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
+include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/menu.php';
 
 echo '<p class="fonts">';
 
@@ -332,6 +332,7 @@ echo '<br><table width='.$table2_width.' class="humo nametbl" align="center">';
 echo '</table>';
 
 // *** Show number of names with gray background bar ***
+// TODO: Devs: innerHTML is not safe!
 echo '
 <script>
 var tbl = document.getElementsByClassName("nametbl")[0];
@@ -352,4 +353,4 @@ for(var i = 0; i < rws.length; i ++) {
 }
 </script><br>';
 
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ . '/footer.php';

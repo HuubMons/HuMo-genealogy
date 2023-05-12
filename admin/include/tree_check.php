@@ -6,7 +6,7 @@ if (!defined('ADMIN_PAGE')) {
 
 global $selected_language;
 
-include_once(CMS_ROOTPATH . "include/language_date.php");
+include_once __DIR__ . '/../../include/language_date.php';
 
 echo '<h1 class="center">' . __('Family tree data check') . '</h1>';
 
@@ -1515,7 +1515,7 @@ echo "</form>\n";
 function compare_seq($first_date, $second_date)
 {
 	// checks sequence of 2 dates (which is the earlier date)
-	include_once(CMS_ROOTPATH . 'include/calculate_age_cls.php');
+	include_once __DIR__ . '/../../include/calculate_age_cls.php';
 	$process_date = new calculate_year_cls;
 
 	// take care of combined julian/gregorian dates (1678/9)
@@ -1560,7 +1560,7 @@ function compare_seq($first_date, $second_date)
 function compare_month_gap($first_date, $second_date, $monthgap)
 {
 	// checks gap in months between two dates (to check for birth less than X months after wedding)
-	include_once(CMS_ROOTPATH . 'include/calculate_age_cls.php');
+	include_once __DIR__ . '/../../include/calculate_age_cls.php';
 	$process_date = new calculate_year_cls;
 
 	// take care of combined julian/gregorian dates (1678/9)
@@ -1595,7 +1595,7 @@ function compare_month_gap($first_date, $second_date, $monthgap)
 function compare_gap($first_date, $second_date)
 {
 	// finds gap between 2 years. No need for months or days, since we look for gaps of several years
-	include_once(CMS_ROOTPATH . 'include/calculate_age_cls.php');
+	include_once __DIR__ . '/../../include/calculate_age_cls.php';
 	$process_date = new calculate_year_cls;
 
 	// take care of combined julian/gregorian dates (1678/9)
@@ -1677,7 +1677,7 @@ function write_pers($name, $id, $first_date, $second_date, $first_text, $second_
 function invalid($date, $gednr, $table)
 {  // checks validity with validate_cls.php and displays invalid dates and their details
 	global $dbh, $db_functions, $tree_id, $direction, $dirmark1, $dirmark2;
-	include_once(CMS_ROOTPATH . 'include/validate_date_cls.php');
+	include_once __DIR__ . '/../../include/validate_date_cls.php';
 	$process_date = new validate_date_cls;
 	$compare_date = $date;
 	if (strpos($date, '/') > 0) { // check for combined julian/gregorian date entries like 1654/5 and check the first part

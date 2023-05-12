@@ -5,7 +5,7 @@ if (!defined('ADMIN_PAGE')) {
 }
 
 //$joomlapath=CMS_ROOTPATH_ADMIN.'include/';
-include_once("editor_cls.php");
+include_once __DIR__ . '/editor_cls.php';
 $editor_cls = new editor_cls;
 
 if (isset($_SESSION['admin_pers_gedcomnumber'])) {
@@ -46,7 +46,7 @@ $phpself2 = 'index.php?page=editor_sources&connect_kind=' . $connect_kind . '&co
 $phpself2 .= $event_link;
 
 // *** Process queries ***
-include_once("editor_inc.php");
+include_once __DIR__ . '/editor_inc.php';
 
 // **************************
 // *** Show source editor ***

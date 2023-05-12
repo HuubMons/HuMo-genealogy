@@ -18,13 +18,13 @@ TODO:
 - think about names in size 8
 ==================== */
 
-include_once("family.php");
-include_once("report_descendant.php");
+include_once __DIR__ . '/family.php';
+include_once __DIR__ . '/report_descendant.php';
 
 // in the ancestor code below $family_id is used for pers_gedcomnumber
 // until here it was used by the descendant code for the fam_gedcomnumber
 $family_id = $_GET['main_person']; 
-include_once("report_ancestor.php");
+include_once __DIR__ . '/report_ancestor.php';
 
 // GENERATE DATA FOR DESCENDANTS ^^^^^
 
@@ -332,4 +332,4 @@ $divlen = 10 + $anc_len + $desc_len;
 // PRINT THE DESCENDANT CHART ^^^^^^^^^^^^^
 printchart();
  
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ . '/footer.php';

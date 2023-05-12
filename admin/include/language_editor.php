@@ -40,7 +40,7 @@ echo __('Language') . ': ';
 // *** Language choice ***
 for ($i = 0; $i < count($language_select); $i++) {
 	// *** Get language name ***
-	include(CMS_ROOTPATH . 'languages/' . $language_select[$i] . '/language_data.php');
+	include __DIR__ . '/../../languages/' . $language_select[$i] . '/language_data.php';
 	echo '<a href="' . CMS_ROOTPATH . 'admin/index.php?page=language_editor&amp;language_editor=' . $language_select[$i] . '" style="border-right:none; background:none;">';
 	echo '<img src="' . CMS_ROOTPATH . 'languages/' . $language_select[$i] . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '"';
 
@@ -122,7 +122,7 @@ if (isset($_POST['save_button']) and $_POST['save_button'] == "pressed") {
 	fclose($handle_write);
 
 	// *** Convert .po file into .mo file! ***
-	require(CMS_ROOTPATH . 'admin/include/po-mo_converter/php-mo.php');
+	require __DIR__ . '/po-mo_converter/php-mo.php';
 	if (phpmo_convert($file)) {
 		//echo 'The .mo file is succesfully saved!';
 	} else {
@@ -332,7 +332,7 @@ echo '<tr class="table_header_large"><th style="border-right:none;width:48.5%">'
 echo '<th style="font-size:85%;width:4%">' . __('Fuzzy') . '</th>';
 echo '<th style="border-left:none;width:47.5%">';
 
-include(CMS_ROOTPATH . 'languages/' . $language_editor . '/language_data.php');
+include __DIR__ . '/../../languages/' . $language_editor . '/language_data.php';
 echo '&nbsp;&nbsp;&nbsp;' . __('Translation into') . ' ' . $language["name"];
 echo '</th></tr>';
 echo '</table>';

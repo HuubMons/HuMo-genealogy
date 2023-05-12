@@ -1,6 +1,6 @@
 <?php
-include_once("header.php"); // *** returns CMS_ROOTPATH constant ***
-include_once(CMS_ROOTPATH."menu.php");
+include_once __DIR__ .'/header.php'; // *** returns CMS_ROOTPATH constant ***
+include_once __DIR__ .'/menu.php';
 
 // *** Check user authority ***
 if ($user['group_addresses']!='j'){
@@ -8,7 +8,7 @@ if ($user['group_addresses']!='j'){
 	exit();
 }
 
-include_once(CMS_ROOTPATH."include/language_date.php");
+include_once __DIR__ .'/include/language_date.php';
 
 $desc_asc=" ASC "; $sort_desc=0;
 if(isset($_SESSION['sort_desc'])) {
@@ -148,4 +148,4 @@ echo '<div>';
 	}
 	echo '</table>';
 echo '</div>';
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ .'/footer.php';

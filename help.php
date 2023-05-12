@@ -1,6 +1,6 @@
 <?php
-include_once("header.php");
-include_once("menu.php");
+include_once __DIR__ . '/header.php';
+include_once __DIR__ . '/menu.php';
 
 if($language["dir"]=="ltr") {
 	echo '<div class="help_div">';
@@ -114,4 +114,4 @@ echo '</div>';
 
 echo '</div>';
 
-include_once("footer.php");
+include_once __DIR__ . '/footer.php';

@@ -1,8 +1,8 @@
 <?php
-include_once("header.php"); //returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."include/language_date.php");
-include_once(CMS_ROOTPATH."include/date_place.php");
-include_once(CMS_ROOTPATH."include/person_cls.php");
+include_once __DIR__ . '/header.php'; //returns CMS_ROOTPATH constant
+include_once __DIR__ . '/include/language_date.php';
+include_once __DIR__ . '/include/date_place.php';
+include_once __DIR__ . '/include/person_cls.php';
 //error_reporting(E_ALL);
 @set_time_limit(300);
 
@@ -1497,7 +1497,7 @@ if ($index_list=='patronym'){
 		$count_qry = "SELECT COUNT(pers_tree_id) as teller, pers_tree_id FROM humo_persons WHERE pers_tree_id='".$tree_id."' GROUP BY pers_tree_id";
 	}
 
-	include_once(CMS_ROOTPATH."menu.php");
+	include_once __DIR__ . '/menu.php';
 
 // *** DEBUG/ TEST: SHOW QUERY ***
 //echo $query.'<br>';
@@ -1518,19 +1518,19 @@ if ($index_list=='patronym'){
 		}
 		else{
 			// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
-			$result = $dbh->query("SELECT FOUND_ROWS() AS found_rows" );
+			$result = $dbh->query("SELECT FOUND_ROWS() AS found_rows;");
 			$rows = $result->fetch();
 			$count_persons = $rows['found_rows'];
 		}
 	}
 	else{
-		$person_result= $dbh->query($query);
-		$count_persons=0; // Isn't used if search is done for spouse or for people with only known mother or only known father...
+		$person_result = $dbh->query($query);
+		$count_persons = 0 ; // Isn't used if search is done for spouse or for people with only known mother or only known father...
 	}
 
 	// *** Show error message if search in multiple trees is going wrong (nr of fields is different in some tables) ***
-	// $person_result2=mysql_query($query,$db) or die("FAULT : " . mysql_error());
-	// $person_result=mysql_query($query." LIMIT ".safe_text_db($item).",".$nr_persons,$db) or die("FAULT : " . mysql_error());
+	// $person_result2 = mysql_query($query,$db) or die('FAULT : ' . mysql_error() );
+	// $person_result = mysql_query($query." LIMIT ".safe_text_db($item).",".$nr_persons,$db) or die("FAULT : " . mysql_error());
 
 	if (CMS_SPECIFIC=='Joomla'){
 		$list_var  = 'index.php?option=com_humo-gen&amp;task=list';  // for use without query string
@@ -2273,5 +2273,4 @@ echo '<script type="text/javascript">
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;
 
-include_once(CMS_ROOTPATH."footer.php");
-?>
+include_once __DIR__ . '/footer.php';

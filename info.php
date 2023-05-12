@@ -1,6 +1,6 @@
 <?php
-include_once("header.php"); //returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
+include_once __DIR__ . '/header.php'; //returns CMS_ROOTPATH constant
+include_once __DIR__ . '/menu.php';
 echo '<div style="direction:ltr;margin-left:10px">';
 	echo '<h2>'.__('Information').'</h2>';
 
@@ -22,4 +22,4 @@ echo '<div style="direction:ltr;margin-left:10px">';
 	<p><a href="https://humo-gen.com/genforum" target="_blank">HuMo-genealogy forum</a></p>
 </div>
 <?php
-include_once(CMS_ROOTPATH."footer.php");
+include_once __DIR__ . '/footer.php';
