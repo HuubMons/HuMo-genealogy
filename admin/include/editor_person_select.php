@@ -23,7 +23,7 @@ $man_gedcomnumber=safe_text_db($_GET['person']);
 
 if($_GET['person_item']!= 'add_partner' AND substr($_GET['person_item'],0,10)!= 'add_child_') {
 	echo'
-		<script type="text/javascript">
+		<script>
 		function select_item(item){
 			window.opener.document.'.$form.'.'.$place_item.'.value=item;
 			top.close();
@@ -51,7 +51,7 @@ else {
 		$childnr = "_".$chnr;
 	}
  	echo'
-		<script type="text/javascript">
+		<script>
 		function select_item2(pgn,ppf,pln,pfn,pbdp,pbd,pbp,pddp,pdd,pdp,psx){
 
 			window.opener.document.'.$form.'.add_fam_'.$pers_status.'_exist'.$childnr.'.value=pgn;

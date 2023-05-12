@@ -308,7 +308,7 @@ else {
 	$table2_width="90%";
 }
 
-echo '<br><table width='.$table2_width.' class="humo nametbl" align="center">';
+echo '<br><table style="width:'.$table2_width.';" class="humo nametbl" align="center">';
 	echo '<tr class=table_headline>';
 		$col_width = ((round(100/$maxcols))-6)."%";
 		for($x=1; $x<$maxcols;$x++) {

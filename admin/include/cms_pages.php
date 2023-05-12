@@ -265,7 +265,7 @@ if ($cms_item=='pages'){
 				}
 
 				$page_nr++;
-				echo '<tr><td width="60px">';
+				echo '<tr><td style="width:60px;">';
 					echo '<a href="index.php?page='.$page.'&amp;select_page='.$cms_pagesDb->page_id.'&amp;page_remove='.$cms_pagesDb->page_id.'"><img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" alt="'.__('Remove page').'" border="0"></a>';
 
 					// *** Show ID numbers for test ***

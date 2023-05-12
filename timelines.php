@@ -800,7 +800,7 @@ echo "<br><br><br><br>";
 // the following javascript reads height of table and adds a fake div with this height
 // so that the joomla page will stretch down to allow for the whole table
 if(CMS_SPECIFIC=="Joomla") {
-	echo '<script type="text/javascript">';
+	echo '<script>';
 	echo 'var tabheight = document.getElementById("timetable").offsetHeight;';
 	echo 'tabheight += 80;';
 	echo 'document.write(\'<div style="height:\' + tabheight + \'px">&nbsp;</div>\');';

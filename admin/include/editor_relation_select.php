@@ -17,7 +17,7 @@ include ('include/editor_cls.php');
 $editor_cls = New editor_cls;
 
 echo'
-	<script type="text/javascript">
+	<script>
 	function select_item(item){
 		window.opener.document.'.$form.'.'.$place_item.'.value=item;
 		top.close();

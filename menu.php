@@ -101,7 +101,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 			else{
 				$path_tmp=CMS_ROOTPATH.'list.php?adv_search=1&index_list=search';
 			}
-			echo ' <a href="'.$path_tmp.'"><img src="images/advanced-search.jpg" width="17px"></a>';
+			echo ' <a href="'.$path_tmp.'"><img src="images/advanced-search.jpg" width="17" alt="'.__('Advanced search').'"></a>';
 
 		echo "</form>";
 	}
@@ -167,7 +167,7 @@ echo '<div id="top" style="direction:'.$rtlmark.';">';
 		// *** Show favorites in selection list ***
 		echo ' <form method="POST" action="'.$uri_path.'family.php'.'" style="display : inline;" id="top_favorites_select">';
 			echo '<img src="images/favorite_blue.png"> ';
-			echo '<select size=1 name="humo_favorite_id" onChange="this.form.submit();" style="width: 115px; height:20px;">';
+			echo '<select size=1 name="humo_favorite_id" onChange="this.form.submit();" style="width:115px; height:20px;">';
 			echo '<option value="">'.__('Favourites list:').'</option>';
 
 			if (isset($_SESSION["save_favorites"])){
@@ -912,8 +912,8 @@ echo '<ul class="humo_menu_item">';
 			echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
 			$select_top='';
 
-			//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> <img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
-			echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:18px"></a>';
+			//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> <img src="'.CMS_ROOTPATH.'images/button3.png" height="13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
+			echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:18px;"></a>';
 
 			// *** In gedcom.css special adjustment (width) for m4x! ***
 			echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';

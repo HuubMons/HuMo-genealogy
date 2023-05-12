@@ -29,7 +29,7 @@
 //error_reporting(E_ALL);
 
 // for png image generating
-echo '<script type="text/javascript" src="include/html2canvas/html2canvas.min.js"></script>';
+echo '<script src="include/html2canvas/html2canvas.min.js"></script>';
 
 global $hsize;  // horizontal length of box
 global $vsize;  // vertical height of box
@@ -655,7 +655,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 
 		//echo '<label for="amount">Zoom in/out:</label>';
 		echo '<label for="amount">'.__('Zoom level:').'</label> ';
-		echo '<input type="text" id="amount" disabled="disabled" style="width:20px;border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
+		echo '<input type="text" id="amount" disabled="disabled" style="width:20px;border:0; color:#0000CC; font-weight:normal;font-size:115%;">';
 		echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
 		echo '</div>';
 
@@ -969,7 +969,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 	// we also have to set the width and height of the "png" div (this can't be set before because then the double scrollbars won't work
 	// after generating the image, all those items are returned to their previous state....
 	// *** 19-08-2022: script updated by Huub ***
-	echo '<script type="text/javascript">';
+	echo '<script>';
 	if($hourglass===false) {
 
 		echo "
@@ -1047,7 +1047,7 @@ step 9:   large rectangles with name, birth and death details + popup with furth
 	}
 	echo "</script>"; 
 ?>
-	<script type='text/javascript'>
+	<script>
 		function DoubleScroll(element) {
 			var scrollbar= document.createElement('div');
 			scrollbar.appendChild(document.createElement('div'));

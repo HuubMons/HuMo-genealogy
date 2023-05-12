@@ -94,9 +94,6 @@ function CheckAuthentication($drupal_path) {
                 $_SESSION['KCFINDER']['uploadDir'] = strtr(variable_get('kcfinder_upload_dir', ''), array('%u' => $user->uid, '%n' => $user->name));
                 $_SESSION['KCFINDER']['theme'] = variable_get('kcfinder_theme', 'oxygen');
 
-                //echo '<br />uploadURL: ' . $_SESSION['KCFINDER']['uploadURL']<br />;
-                //echo '<br />uploadDir: ' . $_SESSION['KCFINDER']['uploadDir']<br />;
-
                 chdir($current_cwd);
 
                 return true;

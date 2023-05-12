@@ -82,8 +82,8 @@ function topline(){
 	$treetext=show_tree_text($dataDb->tree_id, $selected_language);
 	$text.='<div class="family_page_toptext fonts">'.$treetext['family_top'].'<br></div>';
 
-	//$text.='</td><td class="table_header fonts" width="12%" style="text-align:center";>';
-	$text.='</td><td class="table_header fonts" width="130" style="text-align:right";>';
+	//$text.='</td><td class="table_header fonts" width="12%" style="text-align:center;">';
+	$text.='</td><td class="table_header fonts" width="130" style="text-align:right;">';
 
 	// *** Hide selections for bots, and second family screen (descendant report etc.) ***
 	if (!$bot_visit AND $descendant_loop==0 AND $parent1_marr==0){
@@ -190,7 +190,7 @@ function topline(){
 			$text.='</div>';
 		$text.='</div>';
 
-	//$text.='</td><td class="table_header fonts" width="20%" style="text-align:center";>';
+	//$text.='</td><td class="table_header fonts" width="20%" style="text-align:center;">';
 
 		// *** PDF button ***
 		if($user["group_pdf_button"]=='y' AND $language["dir"]!="rtl" AND $language["name"]!="简体中文") {
@@ -223,7 +223,7 @@ function topline(){
 			$text.='</form> ';
 		}
 
-	//$text.='</td><td class="table_header fonts" width="5%" style="text-align:center";>';
+	//$text.='</td><td class="table_header fonts" width="5%" style="text-align:center;">';
 
 		// *** Add family to favourite list ***
 		// If there is a N.N. father, then use mother in favourite icon.
@@ -252,11 +252,11 @@ function topline(){
 			if ($descendant_report==true){ echo '<input type="hidden" name="descendant_report" value="1">'; }
 			if ($check==false){
 				$text.='<input type="hidden" name="favorite" value="'.$favorite_values.'">';
-				$text.=' <input type="image" src="images/favorite.png" name="favorite_button" alt="'.__('Add to favourite list').'" />';
+				$text.=' <input type="image" src="images/favorite.png" name="favorite_button" alt="'.__('Add to favourite list').'">';
 			}
 			else{
 				$text.='<input type="hidden" name="favorite_remove" value="'.$favorite_values.'">';
-				$text.=' <input type="image" src="images/favorite_blue.png" name="favorite_button" alt="'.__('Add to favourite list').'" />';
+				$text.=' <input type="image" src="images/favorite_blue.png" name="favorite_button" alt="'.__('Add to favourite list').'">';
 			}
 			$text.='</form>';
 		}
@@ -962,7 +962,7 @@ else{
 
 								// *** Change page title ***
 								if ($descendant_loop==0 AND $descendant_loop2==0){
-									echo '<script type="text/javascript">';
+									echo '<script>';
 										$name = $parent1_cls->person_name($parent1Db);
 										echo 'document.title = "'.__('Family Page').': '.$name["index_name"].'";';
 									echo '</script>';
@@ -1874,7 +1874,7 @@ else{
 						// *** OpenStreetMap ***
 						if(isset($humo_option["use_world_map"]) AND $humo_option["use_world_map"]=='OpenStreetMap') {
 							if ($family_nr==2){ // *** Only include once ***
-								echo '<link rel="stylesheet" href="include/leaflet/leaflet.css" />';
+								echo '<link rel="stylesheet" href="include/leaflet/leaflet.css">';
 								echo '<script src="include/leaflet/leaflet.js"></script>';
 							}
 							// *** Show openstreetmap by every family ***
@@ -1884,7 +1884,7 @@ else{
 							echo '<div id="'.$map.'" style="width: 600px; height: 300px;"></div>';
 
 							// *** Map using fitbound (all markers visible) ***
-							echo '<script type="text/javascript">
+							echo '<script>
 								var '.$map.' = L.map("'.$map.'").setView([48.85, 2.35], 10);
 								var '.$markers.' = [';
 
@@ -1918,22 +1918,22 @@ else{
 								}
 
 								if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-									//echo '<script src="https://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
-									echo '<script src="https://maps.google.com/maps/api/js?v=3'.$api_key.'&callback=Function.prototype" type="text/javascript"></script>';
+									//echo '<script src="https://maps.google.com/maps/api/js?v=3'.$api_key.'"></script>';
+									echo '<script src="https://maps.google.com/maps/api/js?v=3'.$api_key.'&callback=Function.prototype"></script>';
 								}
 								else {
-									//echo '<script src="http://maps.google.com/maps/api/js?v=3'.$api_key.'" type="text/javascript"></script>';
-									echo '<script src="http://maps.google.com/maps/api/js?v=3'.$api_key.'&callback=Function.prototype" type="text/javascript"></script>';
+									//echo '<script src="http://maps.google.com/maps/api/js?v=3'.$api_key.'"></script>';
+									echo '<script src="http://maps.google.com/maps/api/js?v=3'.$api_key.'&callback=Function.prototype"></script>';
 								}
 
-								echo '<script type="text/javascript">
+								echo '<script>
 									var center = null;
 									var map=new Array();
 									var currentPopup;
 									var bounds = new google.maps.LatLngBounds();
 								</script>';
 
-								echo '<script type="text/javascript">
+								echo '<script>
 									function addMarker(family_nr, lat, lng, info, icon) {
 										var pt = new google.maps.LatLng(lat, lng);
 										var fam_nr=family_nr;
@@ -1953,7 +1953,7 @@ else{
 							if(isset($humo_option['google_map_type'])) {
 								$maptype = $humo_option['google_map_type']; 
 							}
-							echo '<script type="text/javascript">
+							echo '<script>
 
 								function initMap'.$family_nr.'(family_nr) {
 									var fam_nr=family_nr;
@@ -1995,7 +1995,7 @@ else{
 
 								echo '<div style="width: 600px; height: 300px; border: 0px; padding: 0px;" id="'.$family_nr.'"></div>';
 						
-								echo '<script type="text/javascript">
+								echo '<script>
 									initMap'.$family_nr.'('.$family_nr.');
 								</script>
 								';
@@ -2195,7 +2195,7 @@ if($screen_mode=='') {
 
 				// *** Script voor expand and collapse of items ***
 				echo '
-				<script type="text/javascript">
+				<script>
 				function hideShow(el_id){
 					// *** Hide or show item ***
 					var arr = document.getElementsByName(\'row\'+el_id);

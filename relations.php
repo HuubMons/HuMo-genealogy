@@ -3443,7 +3443,7 @@ if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
 
 	ob_start();
 
-	echo '<script type="text/javascript"> var element = document.getElementById("geargif");  element.parentNode.removeChild(element);   </script>';
+	echo '<script> var element = document.getElementById("geargif");  element.parentNode.removeChild(element);   </script>';
 
 	$count=0; $countfunc = 0;
 

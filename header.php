@@ -349,12 +349,7 @@ else{
 
 	if (!CMS_SPECIFIC){
 		// *** Generate header of HTML pages ***
-		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-		"http://www.w3.org/TR/html4/loose.dtd">';
-
-		//echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-		//      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-		//  <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">';
+		echo '<!DOCTYPE html>';
 
 		// Prevent validator faults. It's not working good... Replace all & characters in the links by &amp;
 		//ini_set('arg_separator.output','&amp;');
@@ -637,13 +632,13 @@ else{
 	}
 
 	// *** Was needed to change fontsize ***
-	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'fontsize.js"></script>';
+	//echo '<script src="'.CMS_ROOTPATH.'fontsize.js"></script>';
 
 	// *** Style sheet select ***
 	include_once(CMS_ROOTPATH."styles/sss1.php");
 
 	// *** Pop-up menu ***
-	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/popup_menu/popup_menu.js"></script>';
+	echo '<script src="'.CMS_ROOTPATH.'include/popup_menu/popup_menu.js"></script>';
 	if (CMS_SPECIFIC=='Joomla'){
 		JHTML::stylesheet('popup_menu.css', CMS_ROOTPATH.'include/popup_menu/');
 	} elseif (CMS_SPECIFIC=='CMSMS'){
@@ -655,14 +650,14 @@ else{
 	// OLD LIGHTBOX
 	// *** Photo lightbox effect ***
 	//if ($user['group_pictures']=='j'){
-	//	//echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/jquery.min.js"></script>';
-	//	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/lightbox/js/slimbox2.js"></script>';
+	//	//echo '<script src="'.CMS_ROOTPATH.'include/lightbox/js/jquery.min.js"></script>';
+	//	echo '<script src="'.CMS_ROOTPATH.'include/lightbox/js/slimbox2.js"></script>';
 	//	echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/lightbox/css/slimbox2.css" type="text/css" media="screen">';
 	//}
 
 	// *** Always load script, because of "Random photo" at homepage ***
 	// *** Photo lightbox effect using GLightbox ***
-	echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/glightbox/css/glightbox.css" />';
+	echo '<link rel="stylesheet" href="'.CMS_ROOTPATH.'include/glightbox/css/glightbox.css">';
 	echo '<script src="'.CMS_ROOTPATH.'include/glightbox/js/glightbox.min.js"></script>';
 	// *** There is also a script in footer.php, otherwise GLightbox doesn't work ***
 

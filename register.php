@@ -101,7 +101,7 @@ if ($show_form){
 	if (isset($dataDb->tree_email)) $email=$dataDb->tree_email; // Used in older HuMo-genealogy versions. Backwards compatible...
 	if ($humo_option["general_email"]) $email=$humo_option["general_email"];
 	if ($email!=''){
-		echo '<script type="text/javascript">';
+		echo '<script>';
 		echo '
 		function validate(form_id,register_mail) {
 			var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
@@ -148,9 +148,9 @@ if ($show_form){
 		echo '<tr><td></td><td><input class="fonts" type="submit" name="send_mail" value="'.__('Send').'"></td></tr>';
 		echo '</table>';
 		echo '</form>';
-		
+
 		if (isset($_POST['send_mail']) AND $error==false){
-			echo '<h3 style="text-align:center";>'.__('Wrong answer to the block-spam question! Try again...').'</h3>';
+			echo '<h3 style="text-align:center;">'.__('Wrong answer to the block-spam question! Try again...').'</h3>';
 		}
 	}
 	else{

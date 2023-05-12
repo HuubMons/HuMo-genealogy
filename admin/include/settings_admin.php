@@ -688,7 +688,7 @@ echo '<div style="float: left; background-color:white; height:500px; padding:10p
 			$result=$dbh->query($sql);
 
 			// *** Reload page to get new values ***
-			echo '<script type="text/javascript"> window.location="index.php?page=settings&menu_admin=settings_homepage";</script>';
+			echo '<script> window.location="index.php?page=settings&menu_admin=settings_homepage";</script>';
 		}
 
 		// *** Change Module ***

@@ -293,7 +293,7 @@ function country(){
 				print '<img src="'.$file_to_check.'" width="30" height="15">';
 			}
 			else{
-				print '<img src="'.$path.'flags/noflag.gif" width=30 height=15>';
+				print '<img src="'.$path.'flags/noflag.gif" width="30" height="15">';
 			}
 			echo "&nbsp;";
 			if($key != __('Unknown')) {

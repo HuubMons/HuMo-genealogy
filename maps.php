@@ -7,7 +7,7 @@ include_once(CMS_ROOTPATH.'include/person_cls.php');
 include_once(CMS_ROOTPATH."include/language_date.php");
 include_once(CMS_ROOTPATH."include/date_place.php");
 
-echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'googlemaps/namesearch.js"></script>';
+echo '<script src="'.CMS_ROOTPATH.'googlemaps/namesearch.js"></script>';
 
 // *** OpenStreetMap ***
 if(isset($humo_option["use_world_map"]) AND $humo_option["use_world_map"]=='OpenStreetMap') {
@@ -182,7 +182,7 @@ elseif($_SESSION['type_death']==1) {
 	echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.__('Display deaths until: ').'&nbsp;';
 }
 
-echo '<input type="text" id="amount" disabled="disabled" size="4" style="border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
+echo '<input type="text" id="amount" disabled="disabled" size="4" style="border:0; color:#0000CC; font-weight:normal;font-size:115%;">';
 echo '&nbsp;&nbsp;&nbsp;&nbsp;</div>';
 if($language['dir']!="rtl"){ echo '<div id="slider" style="float:left;width:170px;margin-top:7px;margin-right:15px;">'; }
 	else { echo '<div id="slider" style="float:right;direction:ltr;width:150px;margin-top:7px;margin-right:15px;">'; }
@@ -695,7 +695,7 @@ if(isset($_POST['descmap'])) {
 	echo '</form>';
 
 	?>
-	<script type="text/javascript">
+	<script>
 	function findGednr (pers_id) {
 		for(var i=1;i<desc_map.length-1;i++) {
 			if(desc_map.options[i].text.indexOf("[#" + pers_id + "]") != -1 || desc_map.options[i].text.indexOf("[#I" + pers_id + "]") != -1 ) { 
@@ -807,7 +807,7 @@ if(isset($_POST['ancmap'])) {
 	echo '</form>';
 
 	?>
-	<script type="text/javascript">
+	<script>
 	function findGednr (pers_id) {
 		for(var i=1;i<anc_map.length-1;i++) {
 			if(anc_map.options[i].text.indexOf("[#" + pers_id + "]") != -1 || anc_map.options[i].text.indexOf("[#I" + pers_id + "]") != -1 ) {
@@ -940,20 +940,20 @@ if(isset($humo_option["use_world_map"]) AND $humo_option["use_world_map"]=='Open
 		}
 	}
 
-	//echo '<script type="text/javascript">
+	//echo '<script>
 	//	function hide() {
 	//		document.getElementById(\'wait\').style.display = "none";
 	//	}
 	//</script>';
 
-	echo '<link rel="stylesheet" href="include/leaflet/leaflet.css" />';
+	echo '<link rel="stylesheet" href="include/leaflet/leaflet.css">';
 	echo '<script src="include/leaflet/leaflet.js"></script>';
 
 	// *** Show map ***
 	echo '<div id="map" style="width:1000px; height:520px"></div>';
 
 	// *** Map using fitbound (all markers visible) ***
-	echo '<script type="text/javascript">
+	echo '<script>
 		var map = L.map("map").setView([48.85, 2.35], 10);
 		var markers = [';
 
@@ -985,7 +985,7 @@ else{
 
 	// function to read multiple values from location search bar and zoom to map location:
 	echo '
-	<script type="text/javascript">
+	<script>
 	function findPlace () {
 		infoWindow.close();
 		var e = document.getElementById("loc_search");
@@ -1006,10 +1006,10 @@ else{
 		$api_key = '?key='.$humo_option['google_api_key'].'&callback=Function.prototype'; //echo "http://maps.googleapis.com/maps/api/js".$api_key;
 	}
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-		echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
+		echo '<script src="https://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
 	}
 	else {
-		echo '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
+		echo '<script src="http://maps.googleapis.com/maps/api/js'.$api_key.'"></script>';
 	}
 	$maptype = "ROADMAP";
 	if(isset($humo_option['google_map_type'])) {
@@ -1017,7 +1017,7 @@ else{
 	}
 
 	echo '
-	<script type="text/javascript">
+	<script>
 		var map;
 		function initialize() {
 			var latlng = new google.maps.LatLng(22, -350);
@@ -1030,11 +1030,11 @@ else{
 		}
 	</script>';
 
-	echo '<script type="text/javascript">
+	echo '<script>
 		initialize();
 	</script>';
 
-	echo '<script type="text/javascript">
+	echo '<script>
 		function hide() {
 			document.getElementById(\'wait\').style.display = "none";
 		}
@@ -1042,7 +1042,7 @@ else{
 
 	include_once(CMS_ROOTPATH."googlemaps/google_initiate.php");
 
-	echo '<script type="text/javascript">
+	echo '<script>
 		window.onload = hide;
 	</script>';
 }

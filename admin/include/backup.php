@@ -284,7 +284,7 @@ function restore_tables($filename) {
 				try {
 					$dbh->query($templine);
 				} catch (PDOException $e){
-					print('Error performing query \'<strong>' . $templine .'\': ' . $e->getMessage() .'<br /><br />');
+					print('Error performing query \'<strong>' . $templine .'\': ' . $e->getMessage() .'<br><br>');
 				}
 				// Reset temp variable to empty
 				$templine = '';

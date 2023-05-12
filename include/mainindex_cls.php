@@ -7,7 +7,7 @@ function show_tree_index(){
 	include_once(CMS_ROOTPATH."include/person_cls.php");
 
 	// *** Was needed to change fontsize ***
-	//echo '<script type="text/javascript">';
+	//echo '<script>';
 	//echo 'checkCookie();';
 	//echo '</script>';
 
@@ -376,12 +376,12 @@ function last_names($columns,$rows){
 				}
 				else $text.='~';
 			$text.='</td>';
-			
+
 			if($lastcol==false)  $text.='<td class="namenr" style="text-align:center;border-right-width:3px">'; // not last column numbers
-			else $text.='</td><td class="namenr" style="text-align:center">'; // no thick border
-			
-			if(isset($freq_last_names[$nr])) $text.=$freq_count_last_names[$nr];
-			else $text.='~';
+				else $text.='<td class="namenr" style="text-align:center">'; // no thick border
+
+				if(isset($freq_last_names[$nr])) $text.=$freq_count_last_names[$nr];
+					else $text.='~';
 			$text.='</td>';
 		}
 	}
@@ -490,14 +490,14 @@ function last_names($columns,$rows){
 
 	// *** nametbl = used for javascript to show graphical lightgray bar to show number of persons ***
 	//$text.='<table width=500 class="humo nametbl" align="center">';
-	$text.='<table width="90%" class="humo nametbl" align="center">';
+	$text.='<table style="width:90%;" class="humo nametbl" align="center">';
 
 	$text.='<tr class="table_headline">';
 	$col_width = ((round(100/$maxcols))-6)."%";
 	for($x=1; $x<$maxcols;$x++) {
-		$text.='<td width="'.$col_width.'"><b>'.__('Surname').'</b></td><td style="border-right-width:3px;width:6%"><b>'.__('Total').'</b></td>';  
+		$text.='<td style="width:'.$col_width.';"><b>'.__('Surname').'</b></td><td style="border-right-width:3px;width:6%;"><b>'.__('Total').'</b></td>';  
 	}
-	$text.='<td width="'.$col_width.'"><b>'.__('Surname').'</b></td><td width:6%"><b>'.__('Total').'</b></td>';
+	$text.='<td style="width:'.$col_width.';"><b>'.__('Surname').'</b></td><td style="width:6%"><b>'.__('Total').'</b></td>';
 	$text.='</tr>';
 
 	$baseperc = last_names($maxnames);   // displays the table and sets the $baseperc (= the name with highest frequency that will be 100%)
@@ -606,7 +606,7 @@ function search_box(){
 	else{
 		$path_tmp=CMS_ROOTPATH.'list.php?adv_search=1&index_list=search';
 	}
-	$text.='<p><a href="'.$path_tmp.'"><img src="images/advanced-search.jpg" width="25px"> '.__('Advanced search').'</a></p>';
+	$text.='<p><a href="'.$path_tmp.'"><img src="images/advanced-search.jpg" width="25"> '.__('Advanced search').'</a></p>';
 
 	$text.="</form>\n";
 	return $text;
@@ -640,14 +640,14 @@ function random_photo(){
 
 				$text.='<div style="text-align: center;">';
 
-				//$text.='<img src="'.$tree_pict_path.$picname.'" width="200 px"
+				//$text.='<img src="'.$tree_pict_path.$picname.'" width="200"
 				//	style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"><br>';
 
 				// *** Show picture using GLightbox ***
-				//$text.='<a href="'.$tree_pict_path.$picname.'" class="glightbox" data-glightbox="description: '.str_replace("&", "&amp;", $picqryDb->event_text).'"><img src="'.$tree_pict_path.$picname.'" width="200 px"
+				//$text.='<a href="'.$tree_pict_path.$picname.'" class="glightbox" data-glightbox="description: '.str_replace("&", "&amp;", $picqryDb->event_text).'"><img src="'.$tree_pict_path.$picname.'" width="200"
 					//style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
 					$text.='<a href="'.$tree_pict_path.$picname.'" class="glightbox" data-glightbox="description: '.$date_place.str_replace("&", "&amp;", $picqryDb->event_text).'"><img src="'.$tree_pict_path.$picname.
-						'" width="200 px" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
+						'" width="200" style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a><br>';
 
 				// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
 				$url=$man_cls->person_url2($personmnDb->pers_tree_id,$personmnDb->pers_famc,$personmnDb->pers_fams,$personmnDb->pers_gedcomnumber);
@@ -662,7 +662,7 @@ function random_photo(){
 			// *** TEST privacy filter ***
 			//else{
 			//	$picname = str_replace(" ","_",$picqryDb->event_event);
-			//	$text.='<img src="'.$tree_pict_path.$picname.'" width="200 px"
+			//	$text.='<img src="'.$tree_pict_path.$picname.'" width="200"
 			//		style="border-radius: 15px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">';
 			//	$text.=$picqryDb->event_id.' tree_id:'.$picqryDb->event_tree_id.' ';
 			//	$text.=$man_cls->privacy.'PRIVACY<br>';
@@ -924,7 +924,7 @@ function today_in_history($view='with_table'){
 	// *** Use scrollbar for long list ***
 	$text.='<div style="max-height:200px; overflow-x: auto;">';
 		if ($view=='with_table'){
-			$text.='<table width="90%" class="humo nametbl" align="center">';
+			$text.='<table style="width:90%;" class="humo nametbl" align="center">';
 				//$text.='<tr class="table_headline">';
 				//	$text.='<td colspan="3"><b>'.__('Today in history').'</b></td>';
 				//$text.='</tr>';

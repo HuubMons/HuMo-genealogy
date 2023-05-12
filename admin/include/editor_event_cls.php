@@ -44,7 +44,7 @@ function hide_show_start($data_listDb, $alternative_text=''){
 	$hideshow='9000'.$data_listDb->event_id;
 	$display=' display:none;';
 	$event_event=$data_listDb->event_event;
-	if ($data_listDb->event_event==''){
+	if (!$data_listDb->event_event AND !$data_listDb->event_date AND !$data_listDb->event_place AND !$data_listDb->event_text){
 		//$event_event=__('EMPTY LINE');
 		$display='';
 	}
@@ -56,7 +56,7 @@ function hide_show_start($data_listDb, $alternative_text=''){
 
 	if ($event_event OR $data_listDb->event_text){
 		$text.='<span class="hideshowlink" onclick="hideShow('.$hideshow.');">'.$event_event;
-			if ($data_listDb->event_text) $text.=' <img src="images/text.png" height="16px">';
+			if ($data_listDb->event_text) $text.=' <img src="images/text.png" height="16" alt="'.__('text').'">';
 		$text.='</span><br>';
 	}
 
@@ -273,7 +273,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_kind=='person'){
 		//$text.='<tr><td style="border-right:0px;"><a name="event_person_link"></a><a href="#event_person_link" onclick="hideShow(51);"><span id="hideshowlink51">'.__('[+]').'</span></a> '.__('Events').'</td>';
 		$link='event_person_link';
-		$text.='<tr class="table_header_large"><td style="border-right:0px;"><a name="event_person_link"></a>'.__('Events').'</td>';
+		//$text.='<tr class="table_header_large"><td style="border-right:0px;"><a name="event_person_link"></a>'.__('Events').'</td>';
+		$text.='<tr class="table_header_large" id="event_person_link"><td style="border-right:0px;">'.__('Events').'</td>';
 		$text.='<td style="border-right:0px;">';
 			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
 		$text.='</td><td style="border-left:0px;">';
@@ -301,39 +302,39 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			//$count=$count_event->rowCount();
 			//$text.=$count.' x '.__('Events').'. ';
 
-		// *** Add person event ***
-		$text.='<select size="1" name="event_kind" style="width: 150px">';
-			//$text.='<option value="profession">'.__('Profession').'</option>';
-			//$text.='<option value="picture">'.__('Picture/ Media').'</option>';
-			$text.='<option value="event">'.__('Event').'</option>';
-			//$text.='<option value="birth_declaration">'.__('Birth Declaration').'</option>';
-			//$text.='<option value="baptism_witness">'.__('Baptism Witness').'</option>';
-			//$text.='<option value="death_declaration">'.__('Death Declaration').'</option>';
-			//$text.='<option value="burial_witness">'.__('Burial Witness').'</option>';
-			//$text.='<option value="name">'.__('Name').'</option>';
-			//$text.='<option value="nobility">'.__('Title of Nobility').'</option>';
-			//$text.='<option value="title">'.__('Title').'</option>';
-			$text.='<option value="adoption">'.__('Adoption').'</option>';
-			//$text.='<option value="lordship">'.__('Title of Lordship').'</option>';
-			$text.='<option value="URL">'.__('URL/ Internet link').'</option>';
-			$text.='<option value="person_colour_mark">'.__('Colour mark by person').'</option>';
-		$text.='</select>';
-		$text.=' <input type="Submit" name="person_event_add" value="'.__('Add event').'">';
+			// *** Add person event ***
+			$text.='<select size="1" name="event_kind" style="width: 150px">';
+				//$text.='<option value="profession">'.__('Profession').'</option>';
+				//$text.='<option value="picture">'.__('Picture/ Media').'</option>';
+				$text.='<option value="event">'.__('Event').'</option>';
+				//$text.='<option value="birth_declaration">'.__('Birth Declaration').'</option>';
+				//$text.='<option value="baptism_witness">'.__('Baptism Witness').'</option>';
+				//$text.='<option value="death_declaration">'.__('Death Declaration').'</option>';
+				//$text.='<option value="burial_witness">'.__('Burial Witness').'</option>';
+				//$text.='<option value="name">'.__('Name').'</option>';
+				//$text.='<option value="nobility">'.__('Title of Nobility').'</option>';
+				//$text.='<option value="title">'.__('Title').'</option>';
+				$text.='<option value="adoption">'.__('Adoption').'</option>';
+				//$text.='<option value="lordship">'.__('Title of Lordship').'</option>';
+				$text.='<option value="URL">'.__('URL/ Internet link').'</option>';
+				$text.='<option value="person_colour_mark">'.__('Colour mark by person').'</option>';
+			$text.='</select>';
+			$text.=' <input type="Submit" name="person_event_add" value="'.__('Add event').'">';
 
-		//$text.=__('For items like:').' '.__('Event').', '.__('baptized as child').', '.__('depart').' '.__('etc.');
-		// *** HELP POPUP for source ***
-		$rtlmarker="ltr";
-		$text.= '&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
-			$text.= '<a href="#" style="display:inline" ';
-			//echo='onmouseover="mopen(event,\'help_source_shared\',100,250)"';
-			$text.= 'onmouseover="mopen(event,\'help_event_person\',0,0)"';
-			$text.= 'onmouseout="mclosetime()">';
-				$text.= '<img src="../images/help.png" height="16" width="16">';
-			$text.= '</a>';
-			$text.= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_event_person" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-				$text.= __('For items like:').' '.__('Event').', '.__('baptized as child').', '.__('depart').' '.__('etc.');
-			$text.= '</div>';
-		$text.= '</div><br>';
+			//$text.=__('For items like:').' '.__('Event').', '.__('baptized as child').', '.__('depart').' '.__('etc.');
+			// *** HELP POPUP for source ***
+			$rtlmarker="ltr";
+			$text.= '&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
+				$text.= '<a href="#" style="display:inline" ';
+				//echo='onmouseover="mopen(event,\'help_source_shared\',100,250)"';
+				$text.= 'onmouseover="mopen(event,\'help_event_person\',0,0)"';
+				$text.= 'onmouseout="mclosetime()">';
+					$text.= '<img src="../images/help.png" height="16" width="16">';
+				$text.= '</a>';
+				$text.= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_event_person" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+					$text.= __('For items like:').' '.__('Event').', '.__('baptized as child').', '.__('depart').' '.__('etc.');
+				$text.= '</div>';
+			$text.= '</div><br>';
 
 		$text.='</td>';
 		$text.='<td></td>';
@@ -344,7 +345,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_kind=='family'){
 		$link='event_family_link';
 		//$text.='<tr><td style="border-right:0px;"><a name="event_family_link"></a><a href="#event_family_link" onclick="hideShow(52);"><span id="hideshowlink52">'.__('[+]').'</span></a> '.__('Events').'</td>';
-		$text.='<tr class="table_header_large"><td style="border-right:0px;"><a name="event_family_link"></a>'.__('Events').'</td>';
+		//$text.='<tr class="table_header_large"><td style="border-right:0px;"><a name="event_family_link"></a>'.__('Events').'</td>';
+		$text.='<tr class="table_header_large" id="event_family_link"><td style="border-right:0px;">'.__('Events').'</td>';
 		$text.='<td style="border-right:0px;">';
 			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_event">'.__('Add').'</a>';
 		$text.='</td><td style="border-left:0px;">';
@@ -373,7 +375,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			//	__('Engaged')
 			//	__('Sealed to spouse LDS')
 
-			// *** HELP POPUP for source ***
+			// *** HELP POPUP ***
 			$rtlmarker="ltr";
 			$text.= '&nbsp;<div class="fonts '.$rtlmarker.'sddm" style="display:inline;">';
 				$text.= '<a href="#" style="display:inline" ';
@@ -386,7 +388,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 					$text.= __('For items like:').' '.__('Event').', '.__('Marriage contract').', '.__('Marriage license').', '.__('etc.');
 				$text.= '</div>';
 			$text.= '</div><br>';
-
 		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
@@ -410,7 +411,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				$text.=event_selection('');
 			$text.='</select>';
 			$text.=' <input type="Submit" name="event_add_name" value="'.__('Add').'">';
-			$text.='</td>';
+		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
 	}
@@ -420,11 +421,14 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$link='born';
 		//$text.='<tr class="humo_color row2" style="display:none;" name="row2">';
 		$text.='<tr class="table_header_large row2" style="display:none;" name="row2">';
+		//$text.='<tr class="table_header_large">';
 		//$text.='<tr'.$show_event_add.' class="humo_color row2" name="row2">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('birth declaration').'</td>';
 		$text.='<td style="border-left:0px;">';
-			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_birth_declaration">['.__('Add').']</a></td>';
+			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_birth_declaration">['.__('Add').']</a>';
+			$text.=' <input type="Submit" name="add_birth_declaration" value="'.__('Add').'">';
+		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
 	}
@@ -435,11 +439,14 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		//$text.='<tr class="table_header" style="display:none;" id="row3" name="row3">';
 		//$text.='<tr style="display:none;" class="row3" name="row3">';
 		$text.='<tr style="display:none;" class="table_header_large row3" name="row3">';
+		//$text.='<tr class="table_header_large">';
 		//$text.='<tr'.$show_event_add.' class="row3" name="row3">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('baptism witness').'</td>';
 		$text.='<td style="border-left:0px;">';
-			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_baptism_witness">['.__('Add').']</a></td>';
+			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_baptism_witness">['.__('Add').']</a>';
+			$text.=' <input type="Submit" name="add_baptism_witness" value="'.__('Add').'">';
+		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
 	}
@@ -450,11 +457,14 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		//$text.='<tr class="table_header" style="display:none;" id="row4" name="row4">';
 		//$text.='<tr style="display:none;" class="humo_color row4" name="row4">';
 		$text.='<tr style="display:none;" class="table_header_large row4" name="row4">';
+		//$text.='<tr class="table_header_large">';
 		//$text.='<tr'.$show_event_add.' class="humo_color row4" name="row4">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('death declaration').'</td>';
 		$text.='<td style="border-left:0px;">';
-			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_death_declaration">['.__('Add').']</a></td>';
+			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_death_declaration">['.__('Add').']</a>';
+			$text.=' <input type="Submit" name="add_death_declaration" value="'.__('Add').'">';
+		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
 	}
@@ -465,32 +475,32 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		//$text.='<tr class="table_header" style="display:none;" id="row5" name="row5">';
 		//$text.='<tr style="display:none;" class="row5" name="row5">';
 		$text.='<tr style="display:none;" class="table_header_large row5" name="row5">';
+		//$text.='<tr class="table_header_large">';
 		//$text.='<tr'.$show_event_add.' class="row5" name="row5">';
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('burial witness').'</td>';
 		$text.='<td style="border-left:0px;">';
-			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_burial_witness">['.__('Add').']</a></td>';
+			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_burial_witness">['.__('Add').']</a>';
+			$text.=' <input type="Submit" name="add_burial_witness" value="'.__('Add').'">';
+		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
 	}
 
 	// *** Show profession by person ***
 	if ($event_kind=='profession'){
-		$text.='<tr class="table_header_large">';
+		$text.='<tr class="table_header_large" id="profession">';
 		$text.='<td style="border-right:0px;">';
-			$text.='<a name="profession"></a>';
 			$link='profession';
 			$text.=__('Profession').'</td>';
 		$text.='<td style="border-right:0px;"></td>';
 		$text.='<td style="border-left:0px;">';
-
-		// *** Skip for newly added person ***
-		if (!isset($_GET['add_person'])){
-			// *** Remark: in editor_inc.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
-			$text.='<input type="text" name="event_event_profession" placeholder="'.__('Profession').'" value="" size="35">';
-			$text.=' <input type="Submit" name="event_add_profession" value="'.__('Add').'">';
-		}
-
+			// *** Skip for newly added person ***
+			if (!isset($_GET['add_person'])){
+				// *** Remark: in editor_inc.php a check is done for event_event_profession, so this will also be saved if "Save" is clicked ***
+				$text.='<input type="text" name="event_event_profession" placeholder="'.__('Profession').'" value="" size="35">';
+				$text.=' <input type="Submit" name="event_add_profession" value="'.__('Add').'">';
+			}
 		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
@@ -498,21 +508,18 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 
 	// *** Show religion by person ***
 	if ($event_kind=='religion'){
-		$text.='<tr class="table_header_large">';
+		$text.='<tr class="table_header_large" id="religion">';
 		$text.='<td style="border-right:0px;">';
-			$text.='<a name="religion"></a>';
 			$link='religion';
 			$text.=__('Religion').'</td>';
 		$text.='<td style="border-right:0px;"></td>';
 		$text.='<td style="border-left:0px;">';
-
-		// *** Skip for newly added person ***
-		if (!isset($_GET['add_person'])){
-			// *** Remark: in editor_inc.php a check is done for event_event_religion, so this will also be saved if "Save" is clicked ***
-			$text.='<input type="text" name="event_event_religion" placeholder="'.__('Religion').'" value="" size="35">';
-			$text.=' <input type="Submit" name="event_add_religion" value="'.__('Add').'">';
-		}
-
+			// *** Skip for newly added person ***
+			if (!isset($_GET['add_person'])){
+				// *** Remark: in editor_inc.php a check is done for event_event_religion, so this will also be saved if "Save" is clicked ***
+				$text.='<input type="text" name="event_event_religion" placeholder="'.__('Religion').'" value="" size="35">';
+				$text.=' <input type="Submit" name="event_add_religion" value="'.__('Add').'">';
+			}
 		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
@@ -522,9 +529,10 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_kind=='picture' OR $event_kind=='marriage_picture' OR $event_kind=='source_picture'){
 		//$text.='<tr class="humo_color">';
 		$text.='<tr class="table_header_large">';
+		$text.='<tr class="table_header_large" id="picture">';
 
 		$text.='<td style="border-right:0px;">';
-		$text.='<a name="picture"></a>';
+		//$text.='<a name="picture"></a>';
 		$link='picture';
 
 		//$count_qry=$dbh->query($qry);
@@ -535,6 +543,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.=__('Picture/ Media').'</td>';
 		$text.='<td style="border-right:0px;"></td>';
 		$text.='<td style="border-left:0px;">';
+			/*
 			$event_add='add_picture';
 			if ($event_kind=='marriage_picture') $event_add='add_marriage_picture&marriage_nr='.$event_connect_id;
 			// *** Otherwise link won't work second time because of added anchor ***
@@ -546,8 +555,19 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				$event_add='add_source_picture&source_id='.$event_connect_id;
 				$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;event_add='.$event_add.$anchor.'">['.__('Add').']</a> ';
 			}
-			else
+			else{
 				$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add='.$event_add.$anchor.'">['.__('Add').']</a> ';
+			}
+			*/
+			if ($event_kind=='picture'){
+				$text.=' <input type="Submit" name="add_picture" value="'.__('Add').'">';
+			}
+			elseif ($event_kind=='marriage_picture'){
+				$text.=' <input type="Submit" name="add_marriage_picture" value="'.__('Add').'">';
+			}
+			elseif ($event_kind=='source_picture'){
+				$text.=' <input type="Submit" name="add_source_picture" value="'.__('Add').'">';
+			}
 
 			/*
 			// *** JUNE 2021: disabled drag and drop to get a clearer editor page ***
@@ -584,8 +604,8 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 					if (file_exists($path_prefix.$tree_pict_path2.$thumb_prefix.$data_listDb->event_event))
 						$show_image= '<img src="'.$path_prefix.$tree_pict_path2.$thumb_prefix.$data_listDb->event_event.'" style="height:80px;">';
 					else
-						$show_image= '<img src="../images/thumb_missing-image.jpg" height="60px">';
-					if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../images/thumb_missing-image.jpg" height="60px">';
+						$show_image= '<img src="../images/thumb_missing-image.jpg" height="60">';
+					if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../images/thumb_missing-image.jpg" height="60">';
 					$text.=$show_image;
 				}
 				else {
@@ -597,10 +617,9 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 					elseif($ext=="wma" OR $ext=="wav" OR $ext=="mp3" OR $ext=="mid" OR $ext=="ram" OR $ext==".ra" ) { $text.='<img src="../images/audio.gif" style="width:30px;height:30px;">';}
 
 					$text.='<br><span style="font-size:85%">'.$data_listDb->event_event.'</span>';
-				
 				}
 				// *** No picture selected yet, show dummy picture ***
-				if (!$data_listDb->event_event) $text.='<img src="../images/thumb_missing-image.jpg" height="60px">';
+				if (!$data_listDb->event_event) $text.='<img src="../images/thumb_missing-image.jpg" height="60">';
 				$text.='</div>';
 				$text.='</div>';
 				$text.='</li>';
@@ -609,6 +628,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			*/
 
 			// DEC 2015: FOR NOW, ONLY SHOW NUMBER OF PICTURE-OBJECTS.
+			// MAY 2023: convert OBJECTS to standard images.
 			// *** Search for all external connected objects by a person or a family ***
 			if ($event_connect_kind=='person'){
 				$connect_qry="SELECT * FROM humo_connections
@@ -625,68 +645,52 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 					ORDER BY connect_order";
 			}
 			if ($event_connect_kind=='person' OR $event_connect_kind=='family'){
-				$media_nr=0;
+				//$media_nr=0;
+				$event_order=1;
+
 				$connect_sql=$dbh->query($connect_qry);
 				while($connectDb=$connect_sql->fetch(PDO::FETCH_OBJ)){
 					$picture_qry=$dbh->query("SELECT * FROM humo_events WHERE event_tree_id='".$tree_id."'
 						AND event_gedcomnr='".$connectDb->connect_source_id."' AND event_kind='object'
 						ORDER BY event_order");
 					while($pictureDb=$picture_qry->fetch(PDO::FETCH_OBJ)){
-						$media_nr++;
+						//$media_nr++;
 						//$media_event_id[$media_nr]=$pictureDb->event_id;
 						//$media_event_event[$media_nr]=$pictureDb->event_event;
 						//$media_event_date[$media_nr]=$pictureDb->event_date;
 						//$media_event_text[$media_nr]=$pictureDb->event_text;
 						//$media_event_source[$media_nr]=$pictureDb->event_source;
+
+//Check if humo_events was allready updated... => THEN OBJECT IS USED MULTIPLE TIMES.
+//event_connect_kind and event_connect_id
+//echo $pictureDb->event_connect_kind.'TEST';
+//if ($pictureDb->event_connect_kind OR $pictureDb->event_connect_id){
+//	echo 'Object is used multiple times';
+//	Don't use UPDATE but create a new EVENT!!!!!
+//}
+//echo '<br>';
+
+						// *** Convert OBJECTS to standard images ***
+						$sql="UPDATE humo_events SET
+							event_connect_kind='".$event_connect_kind."',
+							event_connect_id='".safe_text_db($event_connect_id)."',
+							event_kind='picture',
+							event_gedcom='',
+							event_order='".$event_order."'
+							WHERE event_id='".$pictureDb->event_id."'";
+						$result=$dbh->query($sql);
+						$event_order++;
+						// *** Remove connection ***
+						$sql = "DELETE FROM humo_connections WHERE connect_id='".$connectDb->connect_id."'";
+						$result = $dbh->query($sql);
 					}
 				}
-				if ($media_nr>0)
-					$text.='<div style="white-space: nowrap;"><b>'.$media_nr.' Picture-objects found. Editing not supported yet...</b></div>';
+				//if ($media_nr>0){
+				//	$text.='<div style="white-space: nowrap;"><b>'.$media_nr.' Picture-objects found. Editing not supported yet...</b></div>';
+				//}
 			}
 
-			//$data_list_qry=$dbh->query($qry);
-			//$data_listDb=$data_list_qry->fetch(PDO::FETCH_OBJ);
-
 			/*
-			$text.= '
-			<script>
-			$(\'#sortable_pic\').sortable().bind(\'sortupdate\', function() {
-				var mediastring = ""; 
-				var media_arr = document.getElementsByClassName("mediamove"); 
-				for (var z = 0; z < media_arr.length; z++) { 
-					// create the new order after dragging to store in database with ajax
-					mediastring = mediastring + media_arr[z].id + ";"; 
-					// change the order numbers of the pics in the pulldown (that was generated before the drag
-					// so that if one presses on delete before refresh the right pic will be deleted !!
-				}
-				mediastring = mediastring.substring(0, mediastring.length-1); // take off last ;
-				
-				var parnode = document.getElementById(\'pic_main_\' + media_arr[0].id).parentNode; 
-				var picdomclass = document.getElementsByClassName("pic_row2");
-				var nextnode = picdomclass[(picdomclass.length)-1].nextSibling;
-
-				for(var d=media_arr.length-1; d >=0 ; d--) {
-					parnode.insertBefore(document.getElementById(\'pic_row2_\' + media_arr[d].id),nextnode);
-					nextnode = document.getElementById(\'pic_row2_\' + media_arr[d].id);
-					parnode.insertBefore(document.getElementById(\'pic_row1_\' + media_arr[d].id),nextnode);
-					nextnode = document.getElementById(\'pic_row1_\' + media_arr[d].id);
-					parnode.insertBefore(document.getElementById(\'pic_main_\' + media_arr[d].id),nextnode);
-					nextnode = document.getElementById(\'pic_main_\' + media_arr[d].id);  
-				}
-
-				$.ajax({ 
-					url: "include/drag.php?drag_kind=media&mediastring=" + mediastring ,
-					success: function(data){
-					} ,
-					error: function (xhr, ajaxOptions, thrownError) {
-						alert(xhr.status);
-						alert(thrownError);
-					}
-				});
-			});
-			</script>';
-			*/
-
 			$text.= '
 			<script>
 			$(\'#sortable_pic\').sortable().bind(\'sortupdate\', function() {
@@ -727,6 +731,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 				});
 			});
 			</script>';
+			*/
 
 		$text.='</td>';
 		$text.='<td></td>';
@@ -743,7 +748,9 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('marriage witness').'</td>';
 		$text.='<td style="border-left:0px;">';
-			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_marriage_witness&marriage_nr='.$event_connect_id.'#event_family_link">['.__('Add').']</a></td>';
+			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_marriage_witness&marriage_nr='.$event_connect_id.'#event_family_link">['.__('Add').']</a>';
+			$text.=' <input type="Submit" name="add_marriage_witness" value="'.__('Add').'">';
+		$text.='</td>';
 		$text.='<td></td>';
 		$text.='</tr>';
 	}
@@ -758,7 +765,9 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='<td></td>';
 		$text.='<td style="border-right:0px;">'.__('marriage witness (religious)').'</td>';
 		$text.='<td style="border-left:0px;">';
-			$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_marriage_witness_rel&marriage_nr='.$event_connect_id.'#event_family_link">['.__('Add').']</a></td>';
+			//$text.='<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin=person&amp;event_add=add_marriage_witness_rel&marriage_nr='.$event_connect_id.'#event_family_link">['.__('Add').']</a>';
+			$text.=' <input type="Submit" name="add_marriage_witness_rel" value="'.__('Add').'">';
+		$text.='</td>';
 		$text.='<td style="border-left:0px;"></td>';
 		$text.='</tr>';
 	}
@@ -823,24 +832,28 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		if ($event_kind=='birth_declaration'){
 			//$expand_link=' style="display:none;" class="row2 humo_color" name="row2"';
 			$expand_link='';
+			if ($data_listDb->event_order=='1') $expand_link=' id="birth_declaration"';
 			//$change_bg_colour='';
 			$change_bg_colour=' class="humo_color"';
 		}
 		if ($event_kind=='baptism_witness'){
 			//$expand_link=' style="display:none;" class="row3" name="row3"';
 			$expand_link='';
+			if ($data_listDb->event_order=='1') $expand_link=' id="baptism_witness"';
 			//$change_bg_colour=' class="humo_color"';
 			$change_bg_colour='';
 		}
 		if ($event_kind=='death_declaration'){
 			//$expand_link=' style="display:none;" class="row4 humo_color" name="row4"';
 			$expand_link='';
+			if ($data_listDb->event_order=='1') $expand_link=' id="death_declaration"';
 			//$change_bg_colour='';
 			$change_bg_colour=' class="humo_color"';
 		}
 		if ($event_kind=='burial_witness'){
 			//$expand_link=' style="display:none;" class="row5" name="row5"';
 			$expand_link='';
+			if ($data_listDb->event_order=='1') $expand_link=' id="burial_witness"';
 			//$change_bg_colour=' class="humo_color"';
 			$change_bg_colour='';
 		}
@@ -868,6 +881,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		if ($event_kind=='marriage_witness'){
 			//$expand_link=' style="display:none;" class="row8 humo_color" name="row8"';
 			$expand_link='';
+			if ($data_listDb->event_order=='1') $expand_link=' id="marriage_witness"';
 			//$change_bg_colour='';
 			$change_bg_colour=' class="humo_color"';
 			$internal_link='#event_family_link';
@@ -875,6 +889,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		if ($event_kind=='marriage_witness_rel'){
 			//$expand_link=' style="display:none;" class="row10 humo_color" name="row10"';
 			$expand_link='';
+			if ($data_listDb->event_order=='1') $expand_link=' id="marriage_witness_rel"';
 			//$change_bg_colour='';
 			$change_bg_colour=' class="humo_color"';
 			$internal_link='#event_family_link';
@@ -1055,7 +1070,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		OR $data_listDb->event_kind=='death_declaration' OR $data_listDb->event_kind=='burial_witness'
 		OR $data_listDb->event_kind=='marriage_witness' OR $data_listDb->event_kind=='marriage_witness_rel')
 		{
-
 			// *** Hide or show editor fields ***
 			if (substr($data_listDb->event_event,0,1)=='@'){
 				$witness_name=show_person(substr($data_listDb->event_event,1,-1),$gedcom_date=false, $show_link=false);
@@ -1065,7 +1079,6 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			}
 			// *** Hide/show line (start <span> to hide edit line) ***
 			$text.=$this->hide_show_start($data_listDb,$witness_name);
-
 
 			//$text.='<td style="border-left:0px;">';
 			$event_text=$this->event_text($data_listDb->event_kind);
@@ -1205,10 +1218,13 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		// *** General name of event ***
 		else{
 			// *** Hide/show line (start <span> to hide edit line) ***
-			$text.=$this->hide_show_start($data_listDb);
+			//$text.=$this->hide_show_start($data_listDb);
+			$event_text=$data_listDb->event_event;
+			if (!$event_text) $event_text=language_event($data_listDb->event_gedcom);
+			$text.=$this->hide_show_start($data_listDb,$event_text);
 
 			// *** Check if event has text ***
-			$style=''; if (!$data_listDb->event_event) $style='style="background-color:#FFAA80"';
+			$style=''; //if (!$data_listDb->event_event) $style='style="background-color:#FFAA80"';
 			$text.='<input type="text" '.$style.' name="text_event['.$data_listDb->event_id.']" placeholder="'.__('Event').'" value="'.$data_listDb->event_event.'" size="60">';
 		}
 
@@ -1378,12 +1394,12 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		$text.='</tr>';
 
 		if ($event_connect_kind=='person'){
-			// *** Show iframe source ***
-			$text.=iframe_source('10'.$data_listDb->event_id,'person','pers_event_source',$data_listDb->event_id);
+			// *** Show source ***
+			$text.=edit_sources('10'.$data_listDb->event_id,'person','pers_event_source',$data_listDb->event_id);
 		}
 		elseif ($event_connect_kind=='family'){
-			// *** Show iframe source ***
-			$text.=iframe_source('20'.$data_listDb->event_id,'family','fam_event_source',$data_listDb->event_id);
+			// *** Show source ***
+			$text.=edit_sources('20'.$data_listDb->event_id,'family','fam_event_source',$data_listDb->event_id);
 		}
 	}
 	} // *** Don't use this block for newly added person ***
@@ -1430,20 +1446,28 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 	if ($event_kind=='picture' OR $event_kind=='marriage_picture'){
 		// *** Upload image ***
 		//$text.='<tr style="display:none;" class="row53" name="row53"><td class="table_header_large" colspan="4">';
-		$text.='<tr><td class="table_header_large" colspan="4">';
-			//$text.=sprintf(__('Upload new image. Picture max: %1$d MB or media max: %2$d MB.'), '2', '49');
-			$text.=__('Upload new image');
-			$text.=' <input type="file" name="photo_upload">';
-			if ($event_kind=='picture')
-				//$text.='<input type="submit" name="person_event_change" title="submit" value="'.__('Upload').'">';
-				$text.='<input type="submit" name="person_add_media" title="submit" value="'.__('Upload').'">';
-			else
-				//$text.='<input type="submit" name="marriage_event_change" title="submit" value="'.__('Upload').'">';
-				$text.='<input type="submit" name="relation_add_media" title="submit" value="'.__('Upload').'">';
-		$text.='</td></tr>';
+		$text.='<tr class="table_header_large"><td></td>';
+			$text.='<td style="border-right:0px;"></td>';
+			$text.='<td style="border-left:0px;" colspan="2">';
+				//$text.=sprintf(__('Upload new image. Picture max: %1$d MB or media max: %2$d MB.'), '2', '49');
+				$text.=__('Upload new image');
+				$text.=' <input type="file" name="photo_upload">';
+				if ($event_kind=='picture'){
+					//$text.='<input type="submit" name="person_event_change" title="submit" value="'.__('Upload').'">';
+					$text.='<input type="submit" name="person_add_media" title="submit" value="'.__('Upload').'">';
+				}
+				else{
+					//$text.='<input type="submit" name="marriage_event_change" title="submit" value="'.__('Upload').'">';
+					$text.='<input type="submit" name="relation_add_media" title="submit" value="'.__('Upload').'">';
+				}
+			$text.='</td>';
+			$text.='<td></td>';
+		$text.='</tr>';
 	}
 
 	// *** Show events if save or arrow links are used ***
+// Deels al vervangen door $_POST...
+/*
 	if (isset($_GET['event_person']) OR isset($_GET['event_family']) OR isset($_GET['event_add'])){
 		// *** Script voor expand and collapse of items ***
 
@@ -1469,27 +1493,27 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		}
 
 		if (isset($_GET['event_add'])){
-			if ($_GET['event_add']=='add_name') $link_id='1';
-			if ($_GET['event_add']=='add_npfx') $link_id='1';
-			if ($_GET['event_add']=='add_nsfx') $link_id='1';
-			if ($_GET['event_add']=='add_nobility') $link_id='1';
-			if ($_GET['event_add']=='add_title') $link_id='1';
-			if ($_GET['event_add']=='add_lordship') $link_id='1';
-			if ($_GET['event_add']=='add_birth_declaration') $link_id='2';
-			if ($_GET['event_add']=='add_baptism_witness') $link_id='3';
-			if ($_GET['event_add']=='add_death_declaration') $link_id='4';
-			if ($_GET['event_add']=='add_burial_witness') $link_id='5';
-			if ($_GET['event_add']=='add_profession') $link_id='13';
-			if ($_GET['event_add']=='add_religion') $link_id='14';
+//			if ($_GET['event_add']=='add_name') $link_id='1';
+//			if ($_GET['event_add']=='add_npfx') $link_id='1';
+//			if ($_GET['event_add']=='add_nsfx') $link_id='1';
+//			if ($_GET['event_add']=='add_nobility') $link_id='1';
+//			if ($_GET['event_add']=='add_title') $link_id='1';
+//			if ($_GET['event_add']=='add_lordship') $link_id='1';
+//			if ($_GET['event_add']=='add_birth_declaration') $link_id='2';
+//			if ($_GET['event_add']=='add_baptism_witness') $link_id='3';
+//			if ($_GET['event_add']=='add_death_declaration') $link_id='4';
+//			if ($_GET['event_add']=='add_burial_witness') $link_id='5';
+//			if ($_GET['event_add']=='add_profession') $link_id='13';
+//			if ($_GET['event_add']=='add_religion') $link_id='14';
 			if ($_GET['event_add']=='add_picture') $link_id='53';
 			if ($_GET['event_add']=='add_source_picture') $link_id='53';
 			if ($_GET['event_add']=='add_marriage_picture') $link_id='53';
-			if ($_GET['event_add']=='add_marriage_witness') $link_id='8';
-			if ($_GET['event_add']=='add_marriage_witness_rel') $link_id='10';
+//			if ($_GET['event_add']=='add_marriage_witness') $link_id='8';
+//			if ($_GET['event_add']=='add_marriage_witness_rel') $link_id='10';
 		}
 
 		$text.='
-		<script type="text/javascript">
+		<script>
 		function Show(el_id){
 			// *** Hide or show item ***
 			var arr = document.getElementsByClassName(\'row\'+el_id);
@@ -1505,6 +1529,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 			Show("'.$link_id.'");
 		</script>';
 	}
+*/
 
 	return $text;
 
@@ -1605,7 +1630,7 @@ function event_selection($event_gedcom){
 // *** Javascript for "search by file name of picture" feature ***
 // March 2022: no longer in use
 /*
-echo '<script type="text/javascript">
+echo '<script>
 	function Search_pic(idnum, picnr, picarr){
 		var searchval = document.getElementById("inp_text_event" + idnum).value;
 		searchval = searchval.toLowerCase();
@@ -1625,16 +1650,52 @@ echo '<script type="text/javascript">
 
 // *** If profession is added, jump to profession part of screen ***
 if (isset($_POST['event_event_profession']) AND $_POST['event_event_profession']!=''){
-	echo '<script type="text/javascript">
-		window.location = window.location.origin + window.location.pathname + "#profession";
-	</script>';
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#profession";</script>';
 }
 
 // *** If religion is added, jump to religion part of screen ***
 if (isset($_POST['event_event_religion']) AND $_POST['event_event_religion']!=''){
-	echo '<script type="text/javascript">
-		window.location = window.location.origin + window.location.pathname + "#religion";
-	</script>';
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#religion";</script>';
 }
 
-?>
+// *** If witness is added, jump to witness part of screen ***
+if (isset($_POST['add_birth_declaration'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#birth_declaration";</script>';
+}
+if (isset($_POST['add_baptism_witness'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#baptism_witness";</script>';
+}
+if (isset($_POST['add_death_declaration'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#death_declaration";</script>';
+}
+if (isset($_POST['add_burial_witness'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#burial_witness";</script>';
+}
+if (isset($_POST['add_marriage_witness'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#marriage_witness";</script>';
+}
+if (isset($_POST['add_marriage_witness_rel'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#marriage_witness_rel";</script>';
+}
+
+// *** If address is added, jump to witness part of screen ***
+if (isset($_POST['person_add_address'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#addresses";</script>';
+}
+if (isset($_POST['relation_add_address'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#addresses";</script>';
+}
+
+// *** If media is added, jump to media part of screen ***
+if (isset($_POST['add_picture']) OR isset($_POST['add_marriage_picture']) OR isset($_POST['add_source_picture'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#picture";</script>';
+}
+
+// *** If event is added, jump to event part of screen ***
+if (isset($_POST['person_event_add'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#event_person_link";</script>';
+}
+// *** If event is added, jump to event part of screen ***
+if (isset($_POST['marriage_event_add'])){
+	echo '<script>window.location = window.location.origin + window.location.pathname + "#event_family_link";</script>';
+}

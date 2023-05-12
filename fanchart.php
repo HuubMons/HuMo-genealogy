@@ -784,7 +784,7 @@ if($showdesc=="1" ) {
 echo '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>';
 if(CMS_SPECIFIC == "Joomla") {
 	?>
-	<script type="text/javascript">
+	<script>
 		function DoubleScroll(element) {
 			var scrollbar= document.createElement('div');
 			scrollbar.appendChild(document.createElement('div'));

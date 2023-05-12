@@ -910,7 +910,7 @@ else{  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 	// Specific code for ancestor chart:
 
 	if($screen_mode!="ancestor_sheet" AND $screen_mode!= "ASPDF" AND $hourglass===false) {
-		echo '<script type="text/javascript" src="include/html2canvas/html2canvas.min.js"></script>';
+		echo '<script src="include/html2canvas/html2canvas.min.js"></script>';
 
 		echo '<div style="text-align:center;">';
 		echo '<br><input type="button" id="imgbutton" value="'.__('Get image of chart for printing (allow popup!)').'" onClick="showimg();">';
@@ -1061,7 +1061,7 @@ echo '<div>';
 	// we also have to set the width and height of the "png" div (this can't be set before because then the double scrollbars won't work
 	// after generating the image, all those items are returned to their  previous state....
 	// *** 19-08-2022: script updated by Huub ***
-	echo '<script type="text/javascript">';
+	echo '<script>';
 	echo "
 	function showimg() {
 		/*   document.getElementById('helppopup').style.visibility = 'hidden';
@@ -1100,7 +1100,7 @@ echo '<div>';
 	echo '</script>';
 
 ?>
-	<script type="text/javascript">
+	<script>
 		function DoubleScroll(element) {
 			var scrollbar= document.createElement('div');
 			scrollbar.appendChild(document.createElement('div'));

@@ -570,7 +570,7 @@ function categories(){
 				include(CMS_ROOTPATH.'languages/'.$language_tree2.'/language_data.php');
 				echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
 				$select_top='';
-				echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$language_tree2.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].' <img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+				echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$language_tree2.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> '.$language["name"].' <img src="'.CMS_ROOTPATH.'images/button3.png" height="13" style="border:none;" alt="pull_down"></a>';
 			
 			echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
 				echo '<ul class="humo_menu_item2">';

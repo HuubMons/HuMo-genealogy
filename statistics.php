@@ -79,7 +79,7 @@ echo '<div id="statistics_screen">';
 			// $table1_width="800";
 			$table1_width="80%";
 		}
-		//echo '<br><table width='.$table1_width.' class="humo" align="center">';
+		//echo '<br><table style="width:'.$table1_width.';" class="humo" align="center">';
 		echo '<br><table class="humo small" align="center">';
 
 		echo '<tr class=table_headline><th>'.__('Item').'</th><th><br></th><th><br></th></tr>';
@@ -258,7 +258,7 @@ echo '<div id="statistics_screen">';
 			// $table2_width="900";
 			$table2_width="80%";
 		}
-		echo '<br><table width='.$table2_width.' class="humo" align="center">';
+		echo '<br><table style="width:'.$table2_width.';" class="humo" align="center">';
 
 		echo '<tr class=table_headline><th width="20%">'.__('Item').'</th><th colspan="2" width="40%">'.__('Male').'</th><th colspan="2" width="40%">'.__('Female').'</th></tr>';
 
@@ -764,7 +764,7 @@ echo '<div id="statistics_screen">';
 			$table2_width="90%";
 		}
 
-		echo '<br><table width='.$table2_width.' class="humo nametbl" align="center">';
+		echo '<br><table style="width:'.$table2_width.';" class="humo nametbl" align="center">';
 
 		echo '<tr class=table_headline>';
 		$col_width = ((round(100/$maxcols))-6)."%";
@@ -941,7 +941,7 @@ echo '<div id="statistics_screen">';
 			$table2_width="90%";
 		}
 
-		echo '<br><table width='.$table2_width.' class="humo nametbl" align="center">';
+		echo '<br><table style="width:'.$table2_width.';" class="humo nametbl" align="center">';
 
 		//echo '<tr class=table_headline style="height:40px">';
 		echo '<tr class=table_headline style="height:25px">';

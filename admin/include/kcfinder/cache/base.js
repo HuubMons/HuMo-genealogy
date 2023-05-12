@@ -1929,7 +1929,7 @@ _.alert = function(text, field, options) {
 
     $.extend(o, options);
 
-    return _.dialog(_.label("Warning"), text.replace("\n", "<br />\n"), o);
+    return _.dialog(_.label("Warning"), text.replace("\n", "<br>\n"), o);
 };
 
 _.confirm = function(text, callback, options) {

@@ -92,7 +92,7 @@ function process_text($text_process, $text_sort='standard'){
 					$text.= '<b>['.(__('Text')).']</b>';
 				$text.= '</a>';
 
-				if (substr_count($text_process,'<br>')>10 OR substr_count($text_process,'<br />')>10){
+				if (substr_count($text_process,'<br>')>10 OR substr_count($text_process,'<br>')>10){
 					// *** Don't use too large pop-up, because the pop-up will be off the screen ***
 					$text.='<div class="sddm_fixed" style="z-index:10; padding:4px; text-align:'.$alignmarker.'; direction:'.$rtlmarker.'; height:300px; width:50%; overflow-y: scroll;" id="show_text'.$text_nr.'" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				}

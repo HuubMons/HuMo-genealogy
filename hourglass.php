@@ -73,7 +73,7 @@ echo '<div class="standard_header fonts" style="align:center; text-align: center
 echo '<b>'.__('Hourglass chart').__(' of ').$genarray[0]["nam"].'</b>';
 echo '</div>';
 
-echo '<script type="text/javascript" src="include/html2canvas/html2canvas.min.js"></script>';
+echo '<script src="include/html2canvas/html2canvas.min.js"></script>';
 
 echo '<div style="text-align:center;">';
 	echo '<span style="font-size:130%">'.__('Ancestors')."&#8678;&#8678;&#8678;"; for($q=0;$q<25;$q++) { echo "&nbsp;"; } echo '</span>';
@@ -212,7 +212,7 @@ echo '</div>';
 	';
 
 	echo '<label for="amount">'.__('Zoom level:').'</label> ';
-	echo '<input type="text" id="amount" disabled="disabled" style="width:18px;border:0; color:#0000CC; font-weight:normal;font-size:115%;" />';
+	echo '<input type="text" id="amount" disabled="disabled" style="width:18px;border:0; color:#0000CC; font-weight:normal;font-size:115%;">';
 	echo '<div id="slider" style="float:right;width:135px;margin-top:7px;margin-right:15px;"></div>';
 	echo '</div>';
 

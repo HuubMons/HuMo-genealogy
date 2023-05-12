@@ -1,7 +1,8 @@
 <?php
 // *** Support for GEDCOM files for MAC computers ***
-// *** Disabled 18-01-2023 ***
-//@ini_set('auto_detect_line_endings', TRUE);
+// *** Still needed in april 2023 ***
+// *** Will be deprecated in PHP 9.0! ***
+@ini_set('auto_detect_line_endings', TRUE);
 
 /**
 * This is the GEDCOM processing file for HuMo-genealogy.
@@ -1473,7 +1474,7 @@ if (isset($_POST['step3'])){
 				echo '</form><br><br>';
 
 				// *** Automatic reload after 5 seconds ***
-				echo '<script type="text/javascript">setTimeout(function () { location.reload(true); }, 5000);</script>';
+				echo '<script>setTimeout(function () { location.reload(true); }, 5000);</script>';
 				exit();
 			}
 		}

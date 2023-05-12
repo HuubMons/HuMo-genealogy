@@ -223,7 +223,7 @@ function update_v3_2(){
 		$field_value=$columnDb['Field'];
 		$field[$field_value]=$field_value;
 		// *** test line ***
-		//print '<span>'.$field[$field_value].'</span><br />';
+		//print '<span>'.$field[$field_value].'</span><br>';
 	}
 	if (isset($field['stat_user_agent'])){
 		$sql="ALTER TABLE humo_stat_date CHANGE stat_user_agent stat_user_agent varchar(255) CHARACTER SET utf8";
@@ -338,7 +338,7 @@ function update_v4_6_update_2(){
 		$field_value=$columnDb['Field'];
 		$field[$field_value]=$field_value;
 		// *** test line ***
-		//print '<span>'.$field[$field_value].'</span><br />';
+		//print '<span>'.$field[$field_value].'</span><br>';
 	}
 
 	// *** Automatic installation or update ***
@@ -521,7 +521,7 @@ function update_v4_6_update_2(){
 		$field_value=$columnDb['Field'];
 		$field[$field_value]=$field_value;
 		// *** test line ***
-		//print '<span>'.$field[$field_value].'</span><br />';
+		//print '<span>'.$field[$field_value].'</span><br>';
 	}
 
 	// *** Automatic installation or update ***
@@ -824,7 +824,7 @@ function update_v4_6_update_3(){
 			$field_value=$columnDb['Field'];
 			$field[$field_value]=$field_value;
 			// *** test line ***
-			//echo '<span>'.$field[$field_value].'</span><br />';
+			//echo '<span>'.$field[$field_value].'</span><br>';
 		}
 
 		// *** Automatic installation or update ***
@@ -952,7 +952,7 @@ function update_v4_6_update_3(){
 			$field_value=$columnDb['Field'];
 			$field[$field_value]=$field_value;
 			// *** test line ***
-			//print '<span>'.$field[$field_value].'</span><br />';
+			//print '<span>'.$field[$field_value].'</span><br>';
 		}
 
 		if (isset($field['family_text_source'])){
@@ -1222,7 +1222,7 @@ function update_v4_7(){
 			$field_value=$columnDb['Field'];
 			$field[$field_value]=$field_value;
 			// *** test line ***
-			//print '<span>'.$field[$field_value].'</span><br />';
+			//print '<span>'.$field[$field_value].'</span><br>';
 		}
 		if (!isset($field['log_ip_address'])){
 			$sql="ALTER TABLE humo_user_log ADD log_ip_address varchar(20) CHARACTER SET utf8 DEFAULT ''";
@@ -1747,7 +1747,7 @@ function update_v4_8_9(){
 			$field_value=$columnDb['Field'];
 			$field[$field_value]=$field_value;
 			// *** test line ***
-			//print '<span>'.$field[$field_value].'</span><br />';
+			//print '<span>'.$field[$field_value].'</span><br>';
 		}
 
 		// *** Batch processing ***
@@ -2342,7 +2342,7 @@ function update_v5_1(){
 	while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
 
 		// *** Show status of database update ***
-		//echo '<script type="text/javascript">';
+		//echo '<script>';
 		//	echo 'document.getElementById("information").innerHTML="'.__('Update tree:').' '.$updateDb->tree_id.'";';
 		//echo '</script>';
 		echo __('Update tree:').' '.$updateDb->tree_id.'<br>';
@@ -2750,7 +2750,7 @@ function update_v5_1(){
 	}
 
 	// *** Show status of database update ***
-	//echo '<script type="text/javascript">';
+	//echo '<script>';
 	//echo 'document.getElementById("information").innerHTML="'.__('Update table unprocessed_tags...').'";';
 	//echo '</script>';
 	echo __('Update table unprocessed_tags...').'<br>';
@@ -3125,7 +3125,7 @@ function update_v5_2_5(){
 			CHANGE event_id event_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
 		$result=$dbh->query($sql);
 		// *** Show status of database update ***
-		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update events table";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information v5_2_5").innerHTML="Update events table";</script>'; ob_flush(); flush(); // IE
 
 		// *** Automatic installation or update ***
 		$column_qry = $dbh->query('SHOW COLUMNS FROM humo_users');
@@ -3149,7 +3149,7 @@ function update_v5_2_5(){
 			CHANGE pers_indexnr pers_indexnr VARCHAR(25) CHARACTER SET utf8";
 		$result=$dbh->query($sql);
 		// *** Show status of database update ***
-		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update pers table";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information v5_2_5").innerHTML="Update pers table";</script>'; ob_flush(); flush(); // IE
 
 		$sql="ALTER TABLE humo_families CHANGE fam_id fam_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 			CHANGE fam_gedcomnumber fam_gedcomnumber VARCHAR(25) CHARACTER SET utf8,
@@ -3157,14 +3157,14 @@ function update_v5_2_5(){
 			CHANGE fam_woman fam_woman VARCHAR(25) CHARACTER SET utf8";
 		$result=$dbh->query($sql);
 		// *** Show status of database update ***
-		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update fam table";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information v5_2_5").innerHTML="Update fam table";</script>'; ob_flush(); flush(); // IE
 
 		$sql="ALTER TABLE humo_addresses CHANGE address_id address_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 			CHANGE address_gedcomnr address_gedcomnr VARCHAR(25) CHARACTER SET utf8,
 			CHANGE address_connect_id address_connect_id VARCHAR(25) CHARACTER SET utf8";
 		$result=$dbh->query($sql);
 		// *** Show status of database update ***
-		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update address table";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information v5_2_5").innerHTML="Update address table";</script>'; ob_flush(); flush(); // IE
 
 		$sql="ALTER TABLE humo_connections CHANGE connect_id connect_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 			CHANGE connect_connect_id connect_connect_id VARCHAR(25) CHARACTER SET utf8,
@@ -3172,7 +3172,7 @@ function update_v5_2_5(){
 			CHANGE connect_item_id connect_item_id VARCHAR(25) CHARACTER SET utf8";
 		$result=$dbh->query($sql);
 		// *** Show status of database update ***
-		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update connect table";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information v5_2_5").innerHTML="Update connect table";</script>'; ob_flush(); flush(); // IE
 
 		try{
 			$sql="ALTER TABLE humo_location CHANGE location_id location_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
@@ -3182,26 +3182,26 @@ function update_v5_2_5(){
 		}
 
 		// *** Show status of database update ***
-		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update location table";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information v5_2_5").innerHTML="Update location table";</script>'; ob_flush(); flush(); // IE
 
 		$sql="ALTER TABLE humo_sources CHANGE source_id source_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 			CHANGE source_gedcomnr source_gedcomnr VARCHAR(25) CHARACTER SET utf8,
 			CHANGE source_repo_gedcomnr source_repo_gedcomnr VARCHAR(25) CHARACTER SET utf8";
 		$result=$dbh->query($sql);
 		// *** Show status of database update ***
-		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update source table";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information v5_2_5").innerHTML="Update source table";</script>'; ob_flush(); flush(); // IE
 
 		$sql="ALTER TABLE humo_texts CHANGE text_id text_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 			CHANGE text_gedcomnr text_gedcomnr VARCHAR(25) CHARACTER SET utf8";
 		$result=$dbh->query($sql);
 		// *** Show status of database update ***
-		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update texts table";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information v5_2_5").innerHTML="Update texts table";</script>'; ob_flush(); flush(); // IE
 
 		$sql="ALTER TABLE humo_repositories CHANGE repo_id repo_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 			CHANGE repo_gedcomnr repo_gedcomnr varchar(25) CHARACTER SET utf8";
 		$result=$dbh->query($sql);
 		// *** Show status of database update ***
-		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update repo table";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information v5_2_5").innerHTML="Update repo table";</script>'; ob_flush(); flush(); // IE
 
 		$sql="ALTER TABLE humo_user_notes ADD note_tree_id mediumint(7) AFTER note_status,
 			CHANGE note_pers_gedcomnumber note_pers_gedcomnumber varchar(25) CHARACTER SET utf8,
@@ -3220,7 +3220,7 @@ function update_v5_2_5(){
 			CHANGE tag_repo_id tag_repo_id INT(10) UNSIGNED NULL DEFAULT NULL,
 			CHANGE tag_id tag_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT";
 		$result=$dbh->query($sql);
-		echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Update unprocessed table";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information v5_2_5").innerHTML="Update unprocessed table";</script>'; ob_flush(); flush(); // IE
 
 		$sql="ALTER TABLE humo_stat_date
 			CHANGE stat_gedcom_fam stat_gedcom_fam varchar(25) CHARACTER SET utf8,
@@ -3246,7 +3246,7 @@ function update_v5_2_5(){
 	//$dbh->commit();
 
 	// *** Show status of database update ***
-	echo '<script type="text/javascript">document.getElementById("information v5_2_5").innerHTML="Database updated!";</script>'; ob_flush(); flush(); // IE
+	echo '<script>document.getElementById("information v5_2_5").innerHTML="Database updated!";</script>'; ob_flush(); flush(); // IE
 }
 
 
@@ -3379,7 +3379,7 @@ function update_v5_6_1(){
 	//$dbh->commit();
 
 	// *** Show status of database update ***
-	echo '<script type="text/javascript">document.getElementById("information v5_6_1").innerHTML="Database updated!";</script>'; ob_flush(); flush(); // IE
+	echo '<script>document.getElementById("information v5_6_1").innerHTML="Database updated!";</script>'; ob_flush(); flush(); // IE
 }
 
 
@@ -3422,7 +3422,7 @@ function update_v5_7(){
 	while ($updateDb=$update_sql->fetch(PDO::FETCH_OBJ)){
 
 		// *** Show status of database update ***
-		//echo '<script type="text/javascript">';
+		//echo '<script>';
 		//	echo 'document.getElementById("information").innerHTML="'.__('Update tree:').' '.$updateDb->tree_id.'";';
 		//echo '</script>';
 
@@ -3538,7 +3538,7 @@ function update_v5_7(){
 	//$dbh->commit();
 
 	// *** Show status of database update ***
-	echo '<script type="text/javascript">document.getElementById("information v5_7").innerHTML="Database updated!";</script>';
+	echo '<script>document.getElementById("information v5_7").innerHTML="Database updated!";</script>';
 	ob_flush(); flush(); // IE
 }
 
@@ -3618,7 +3618,7 @@ function update_v5_9(){
 	//$dbh->commit();
 
 	// *** Show status of database update ***
-	echo '<script type="text/javascript">document.getElementById("information v5_9").innerHTML="Database updated!";</script>';
+	echo '<script>document.getElementById("information v5_9").innerHTML="Database updated!";</script>';
 	ob_flush(); flush(); // IE
 }
 
@@ -3704,7 +3704,7 @@ function update_v6_0_1(){
 	//$dbh->commit();
 
 	// *** Show status of database update ***
-	echo '<script type="text/javascript">document.getElementById("information v6_0_1").innerHTML="Database updated!";</script>';
+	echo '<script>document.getElementById("information v6_0_1").innerHTML="Database updated!";</script>';
 	ob_flush(); flush(); // IE
 }
 
@@ -3749,7 +3749,7 @@ function update_v6_0_1(){
 		echo __('Update in progress...').' <div id="information" style="display: inline; font-weight:bold;"></div><br>';
 
 		// *** Show status of database update ***
-		echo '<script type="text/javascript">document.getElementById("information").innerHTML="'.__('Update tree:').' '.$updateDb->tree_id.'";</script>'; ob_flush(); flush(); // IE
+		echo '<script>document.getElementById("information").innerHTML="'.__('Update tree:').' '.$updateDb->tree_id.'";</script>'; ob_flush(); flush(); // IE
 */
 
 } // *** End of update_cls ***

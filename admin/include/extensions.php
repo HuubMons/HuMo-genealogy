@@ -58,7 +58,7 @@ echo '<input type="hidden" name="page" value="'.$page.'">';
 echo '<table class="humo standard" border="1">';
 
 echo '<tr class="table_header"><th colspan="2">'.__('Extensions').'</th></tr>';
-echo '<tr><td width="50%">'.__('Show statistics per country').'</td><td>';
+echo '<tr><td style="width:50%;">'.__('Show statistics per country').'</td><td>';
 	$file_pointer = 'ip_files'; 
 	if (file_exists($file_pointer))
 		echo __('Extension is installed.');

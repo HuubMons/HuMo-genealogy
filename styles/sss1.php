@@ -17,10 +17,10 @@ for ($i=0; $i<count($theme_folder); $i++){
 
 // *** Added by Huub for default skin! Edit: tb var default_skin separates logic and output ***
 $default_skin = (!empty($humo_option['default_skin'])) ? $humo_option['default_skin'] : "" ;
-echo '<script type="text/javascript">';
+echo '<script>';
 echo '  var defaultskin="'.$default_skin.'";';
 echo '</script>';
 
 // *** Stylesheetswitcher 2 ***
-echo '<script src="'.CMS_ROOTPATH.'styles/styleswitch.js" type="text/javascript"></script>';
+echo '<script src="'.CMS_ROOTPATH.'styles/styleswitch.js"></script>';
 ?>

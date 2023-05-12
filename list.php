@@ -905,7 +905,9 @@ if ($selection['pers_firstname'] OR $selection['pers_prefix'] OR $selection['per
 		//$query.=$and."pers_text ".name_qry($selection['text'], $selection['part_text']); $and=" AND ";
 
 		// *** Search in person and family text ***
-		$query.=$and."(concat(pers_text,fam_text) ".name_qry($selection['text'], $selection['part_text']).")"; $and=" AND ";
+		//$query.=$and."(concat(pers_text,fam_text) ".name_qry($selection['text'], $selection['part_text']).")"; $and=" AND ";
+		$query.=$and." (pers_text ".name_qry($selection['text'], $selection['part_text'])."
+			OR fam_text ".name_qry($selection['text'], $selection['part_text']).")"; $and=" AND ";
 
 		$add_text_qry=true;
 	}
@@ -1905,8 +1907,8 @@ if ($index_list=='patronym'){
 			echo 'onmouseover="mopen(event,\'help_menu\',10,150)"';
 			echo 'onmouseout="mclosetime()"><strong>'.__('Help').'</strong></a>';
 			echo '<div class="sddm_fixed" style="z-index:40; text-align:'.$alignmarker.'; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
-				echo '<table width="98%" class="humo"><tr>';
-				echo '<td width="50">'.__('Tip').':</td>';
+				echo '<table style="width:98%;" class="humo"><tr>';
+				echo '<td style="width:50;">'.__('Tip').':</td>';
 
 				echo '<td>';
 				echo __('With Advanced Search you can easily create lists like: all persons with surname <b>Schaap</b> who were born <b>between 1820 and 1840</b> in <b>Amsterdam</b><br>You can also search without a name: all persons who <b>died in 1901</b> in <b>Amstelveen.</b>');
@@ -2117,7 +2119,7 @@ if ($index_list=='patronym'){
 	$pers_counter = 0;
 
 	if($adv_search==true AND $selection['parent_status']!="allpersons" AND $selection['parent_status']!="noparents") {
-		echo '<script type="text/javascript"> 
+		echo '<script> 
 			document.getElementById("found_div").innerHTML = "'.__('Loading...').'";
 			</script>';
 	}
@@ -2250,7 +2252,7 @@ if ($index_list=='patronym'){
 	//echo '</div>';
 
 // For use with inline site?
-echo '<script type="text/javascript"> 
+echo '<script> 
 	if(window.self != window.top) {
 		var framew = window.frameElement.offsetWidth; 
 		document.getElementById("content").style.width = framew-40+"px";
@@ -2265,7 +2267,7 @@ echo '<script type="text/javascript">
 	}
 </script>';
 
-echo '<script type="text/javascript"> 
+echo '<script> 
 	document.getElementById("found_div").innerHTML = \''.$pers_counter.__(' persons found.').'\';
 </script>';
 

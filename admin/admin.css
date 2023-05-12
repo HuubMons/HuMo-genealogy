@@ -273,6 +273,7 @@ div.confirm{
 }
 .hideshowlink:hover {
 	text-decoration: underline;
+	cursor: pointer;
 }
 
 /* Tab Menu (in use in family tree administration and person/ marriages editor) */

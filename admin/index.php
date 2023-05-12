@@ -419,9 +419,20 @@ if (isset($database_check) AND @$database_check){  // otherwise we can't make $d
 		if ($humo_option["update_status"]<15){ $page='update'; $show_menu_left=false; }
 	}
 
+	/*
 	if (isset($_GET['page'])
 		AND ($_GET['page']=='editor_sources'
 			OR $_GET['page']=='editor_place_select'
+			OR $_GET['page']=='editor_person_select'
+			OR $_GET['page']=='editor_relation_select'
+			OR $_GET['page']=='editor_media_select'
+			OR $_GET['page']=='editor_user_settings')){
+		$show_menu_left=false;
+		$popup=true;
+	}
+	*/
+	if (isset($_GET['page'])
+		AND ($_GET['page']=='editor_place_select'
 			OR $_GET['page']=='editor_person_select'
 			OR $_GET['page']=='editor_relation_select'
 			OR $_GET['page']=='editor_media_select'
@@ -677,8 +688,7 @@ if( isset( $_SESSION['current_ip_address'] ) == FALSE ){
 
 if (!CMS_SPECIFIC){
 	// *** Generate header of HTML pages ***
-	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-	"http://www.w3.org/TR/html4/loose.dtd">'."\n";
+	echo '<!DOCTYPE html>';
 
 	$html_text="\n<html>\n";
 	if($language["dir"]=="rtl") {   // right to left language
@@ -712,19 +722,19 @@ if (!CMS_SPECIFIC){
 	echo '<script src="'.CMS_ROOTPATH.'include/jquery/jquery.min.js"></script> ';
 	echo '<script src="'.CMS_ROOTPATH.'include/jqueryui/jquery-ui.min.js"></script>';
 
-	echo '<script type="text/javascript" src="include/popup_merge.js"></script>';
+	echo '<script src="include/popup_merge.js"></script>';
 
 	// *** Main menu pull-down ***
 	echo '<link rel="stylesheet" type="text/css" href="'.CMS_ROOTPATH.'include/popup_menu/popup_menu.css">';
 
 	// *** Pop-up menu ***
-	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/popup_menu/popup_menu.js"></script>';
+	echo '<script src="'.CMS_ROOTPATH.'include/popup_menu/popup_menu.js"></script>';
 
 	echo '</head>';
 
 	// *** Close pop-up screen and update main screen ***
 	if (isset($_GET['page']) AND $_GET['page']=='close_popup'){
-		echo '<script type="text/javascript">';
+		echo '<script>';
 			$page_link='editor';
 			// *** Also add these links in "Close source screen" link ***
 			if (isset($_GET['connect_sub_kind'])){
@@ -775,7 +785,7 @@ else{
 	}
 
 	// *** Pop-up menu ***
-	echo '<script type="text/javascript" src="'.CMS_ROOTPATH.'include/popup_menu/popup_menu.js"></script>';
+	echo '<script src="'.CMS_ROOTPATH.'include/popup_menu/popup_menu.js"></script>';
 }
 
 // *** Show top menu ***
@@ -797,7 +807,7 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 	}
  
 	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-small.gif" align="left" alt="logo">';
-	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
+	//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45">';
 
 	if ($popup==false){
 		echo '<span id="top_website_name">';
@@ -1266,33 +1276,6 @@ $top_dir = ''; if($language["dir"]=="rtl") { $top_dir = 'style = "text-align:rig
 			echo '</div>';
 			echo '</li>';
 		}
-		/*
-		elseif ($page=='editor_sources'){
-			// *** Pop-up screen is shown, show button to close pop-up screen ***
-			$select_top='';
-			if ($page=='backup'){ $select_top=' id="current_top"'; }
-			echo '<li>';
-			echo '<div class="'.$rtlmarker.'sddm">';
-				echo '<a href="'.$path_tmp.'page=close_popup';
-
-				// *** Return link to addresses ***
-				if (isset($_GET['connect_sub_kind']) AND $_GET['connect_sub_kind']=='address_source')
-					echo '&connect_sub_kind=address_source';
-
-				// *** Added may 2021 ***
-				if (isset($_GET['connect_sub_kind']))
-					echo '&connect_sub_kind='.$_GET['connect_sub_kind'];
-
-				// *** Return link to person events ***
-				if (isset($_GET['event_person']) AND $_GET['event_person']=='1') echo '&amp;event_person=1';
-				// *** Return link to family events ***
-				if (isset($_GET['event_family']) AND $_GET['event_family']=='1') echo '&amp;event_family=1';
-
-				echo '">'.__('Close source editor').'</a>';
-			echo '</div>';
-			echo '</li>';
-		}
-		*/
 
 		if ($show_menu_left==true and $page!='login'){
 
@@ -1577,7 +1560,7 @@ else{
 	elseif ($page=='login'){ include_once ("include/login.php"); }
 	elseif ($group_administrator=='j' AND $page=='tree'){ include_once ("include/trees.php"); }
 	elseif ($page=='editor'){ $_GET['menu_admin']='person'; include_once ("include/editor.php"); }
-	elseif ($page=='editor_sources'){ $_GET['menu_admin']='person'; include_once ("include/editor_sources.php"); }
+	//elseif ($page=='editor_sources'){ $_GET['menu_admin']='person'; include_once ("include/editor_sources.php"); }
 	// NEW edit_sources for all source links...
 	elseif ($page=='edit_sources'){ $_GET['menu_admin']='sources'; include_once ("include/editor.php"); }
 	elseif ($page=='edit_repositories'){ $_GET['menu_admin']='repositories'; include_once ("include/editor.php"); }

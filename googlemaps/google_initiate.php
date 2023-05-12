@@ -1,8 +1,8 @@
-<script type="text/javascript"
+<script
 	src="googlemaps/StyledMarker.js">
 </script>
 
-<script type="text/javascript">
+<script>
 
 var markersArray = [];
 var markerContent = "This is a test window";

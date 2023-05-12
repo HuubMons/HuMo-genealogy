@@ -206,7 +206,7 @@ if (isset($userDb->user_name)){
 			// *** Script voor expand and collapse of items ***
 			/*
 			echo '
-			<script type="text/javascript">
+			<script>
 			function hideShow(el_id){
 				// *** Hide or show item ***
 				var arr = document.getElementsByClassName(\'row\'+el_id);

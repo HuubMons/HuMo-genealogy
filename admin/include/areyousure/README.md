@@ -53,9 +53,9 @@ To ignore selected fields from the dirtyness check:
 ```html
   <form id="myForm" name="myform" action="/post" method="post">
 
-    Field 1: (checked)  <input type="text" name="field1"> <br />
-    Field 2: (ignored): <input type="text" name="field2" data-ays-ignore="true"> <br />
-    Field 3: (ignored): <input type="text" name="field3" class="ays-ignore"> <br />
+    Field 1: (checked)  <input type="text" name="field1"> <br>
+    Field 2: (ignored): <input type="text" name="field2" data-ays-ignore="true"> <br>
+    Field 3: (ignored): <input type="text" name="field3" class="ays-ignore"> <br>
 
     <input type="submit" value="Submit">
 

@@ -41,7 +41,7 @@ if (isset($_GET['form'])){
 //}
 
 echo'
-	<script type="text/javascript">
+	<script>
 	function select_item(item){
 		/* EXAMPLE: window.opener.document.form1.pers_birth_place.value=item; */
 		window.opener.document.'.$form.'.'.$place_item.'.value=item;

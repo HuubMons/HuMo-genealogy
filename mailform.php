@@ -88,7 +88,7 @@ else{
 
 	if ($dataDb->tree_email){
 
-		echo '<script type="text/javascript">';
+		echo '<script>';
 		echo '
 		function validate(form_id,mail_sender) {
 			var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
@@ -136,7 +136,7 @@ else{
 		echo '</form>';
 		
 		if (isset($_POST['send_mail'])){
-			echo '<h3 style="text-align:center";>'.__('Wrong answer to the block-spam question! Try again...').'</h3>';
+			echo '<h3 style="text-align:center;">'.__('Wrong answer to the block-spam question! Try again...').'</h3>';
 		}
 	}
 	else{

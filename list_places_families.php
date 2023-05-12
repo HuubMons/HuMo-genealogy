@@ -595,7 +595,7 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 	echo '<br><div class="index_list1">'.$line_pages.'</div>';
 
 // For inline use?
-echo '<script type="text/javascript">
+echo '<script>
 	if(window.self != window.top) {
 		var framew = window.frameElement.offsetWidth; 
 		document.getElementById("content").style.width = framew-40+"px";

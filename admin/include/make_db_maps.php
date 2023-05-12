@@ -329,13 +329,15 @@ else {  // main screen
 	// get IPv6 address
 	$ipv6 = dns_get_record(get_host(),DNS_AAAA);
 
-	echo "<li>".__('For the second key, set restriction to <strong>"IP addresses"</strong> and enter your server IP.')." ".__('Not your computer\'s IP!')."<br>";
+	echo '<li>'.__('For the second key, set restriction to <strong>"IP addresses"</strong> and enter your server IP.')." ".__('Not your computer\'s IP!')."<br>";
 	echo __('Your server IP would seem to be:')." <strong>".$ip."</strong><br>";
 	if(isset($ipv6[0]['ipv6'])) {  // cpntains the IPv6 address is present
 		echo __('Your server also has an IPv6 address. If the above IP doesn\'t work, try the IPv6 which would seem to be:')." <strong>".$ipv6[0]['ipv6']."</strong><br>";
 	}
-	echo __('If this doesn\'t work, contact your provider and try to obtain the proper IP address from them.')."<br>";
-	echo __('Once you receive the keys enter them in the two fields below and save.')."<br></li></ul>";
+	echo __('If this doesn\'t work, contact your provider and try to obtain the proper IP address from them.').'<br><br>';
+
+	echo '<li>'.__('Once you receive the keys enter them in the two fields below and save.')."<br></li></ul>";
+
 
 
 	$api_1='';
@@ -875,14 +877,14 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			$api_key = '?key='.$humo_option['google_api_key'].'&callback=Function.prototype';
 		}
 		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') { 
-			echo '<script type="text/javascript" src="https://maps.google.com/maps/api/js'.$api_key.'"></script>';
+			echo '<script src="https://maps.google.com/maps/api/js'.$api_key.'"></script>';
 		}
 		else {
-			echo '<script type="text/javascript" src="https://maps.google.com/maps/api/js'.$api_key.'"></script>';
+			echo '<script src="https://maps.google.com/maps/api/js'.$api_key.'"></script>';
 		}
 		?>
 
-		<script type="text/javascript">
+		<script>
 		function disableEnterKey(e){
 		// works for FF and Chrome
 		var key;
@@ -911,7 +913,7 @@ echo '<input type="checkbox" name="purge"> '.__('Also delete all locations that 
 			}
 		} 
 		</script>
-		<script type="text/javascript">
+		<script>
 		var geocoder;
 		var map;
 		var markers=[];
