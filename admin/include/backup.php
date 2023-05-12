@@ -25,7 +25,7 @@ if (file_exists('backup_tmp/readme.txt')) {
 }
 
 echo '<h1 class="center">';
-	printf(__('%s backup'), 'HuMo-genealogy');
+printf(__('%s backup'), 'HuMo-genealogy');
 echo '</h1>';
 
 // *** Upload backup file ***
