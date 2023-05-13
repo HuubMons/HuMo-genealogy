@@ -1,6 +1,6 @@
 body.humo {
 	background-color:white;
-	background-image: url('/admin/theme/images/background.gif');
+	background-image: url('../images/background.gif');
 	background-repeat: no-repeat;
 
 	/* font: 12px Verdana, tahoma, arial, sans-serif; */
