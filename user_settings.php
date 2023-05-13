@@ -265,7 +265,10 @@ if ($bot_visit) {
 
 if ($show_theme_select == true) {
 	$hide_themes_array = explode(";", $humo_option["hide_themes"]);
-
+	$hide_themes_array[] = 'gedcom';
+	$hide_themes_array[] = 'gedcom_mobile';
+	$hide_themes_array[] = 'print';
+	
 	//echo '<br><table class="humo small">';
 	echo '<br><table class="humo">';
 	echo '<tr class=table_headline><th class="fonts">' . __('Select a theme') . '</th></tr>';
