@@ -541,16 +541,8 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 		}
 	}
 
-	if (CMS_SPECIFIC == 'Joomla') {
-		// *** Special CSS file for Joomla ***
-		JHTML::stylesheet('gedcom_joomla.css', CMS_ROOTPATH);
-	} elseif (CMS_SPECIFIC == 'CMSMS') {
-		// *** Stylesheet links outside header won't validate. styling will be managed in CMS ***
-	} else {
+	if (CMS_SPECIFIC !== 'CMSMS') {
 		echo '<link href="' . CMS_ROOTPATH . 'styles/gedcom.css" rel="stylesheet" type="text/css">';
-	}
-
-	if (CMS_SPECIFIC != 'CMSMS') {
 		echo '<link href="' . CMS_ROOTPATH . 'styles/print.css" rel="stylesheet" type="text/css" media="print">';
 
 		// *** Use your own favicon.ico in media folder ***
@@ -732,11 +724,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 
 	// *** Pop-up menu ***
 	echo '<script type="text/javascript" src="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.js"></script>';
-	if (CMS_SPECIFIC == 'Joomla') {
-		JHTML::stylesheet('popup_menu.css', CMS_ROOTPATH . 'include/popup_menu/');
-	} elseif (CMS_SPECIFIC == 'CMSMS') {
-		// Do nothing. stylesheet links outside header won't validate. styling will be managed in CMS
-	} else {
+	if (CMS_SPECIFIC !== 'CMSMS') {
 		echo '<link rel="stylesheet" type="text/css" href="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.css">';
 	}
 
