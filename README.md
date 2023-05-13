@@ -21,10 +21,11 @@
 |  Version  |  Latest  |   Php   |  Mysql  | Maridbd |      Stage      |
 |:---------:|:--------:|:-------:|:-------:|:-------:|:---------------:|
 |    5.x    |   5.13   |   > 4   |   ??    |   ??    |   unmaintened   |
-|    6.x    |  6.1.1.1 |   > 5   |  > 4 ** |   ??    |     current     |
+|    6.x    |  6.1.1.1 |   > 5   |  > 4 ** |   ??    |    current***   |
 |    7.x    |     -    |  > 8.1  |  > 5.7  | > 10.6  |     develop     |
 
-**recommanded 5.5
+**recommanded 5.5.
+***no feature, maintenance only.
 
 ## Non officials ADD-ON
 
