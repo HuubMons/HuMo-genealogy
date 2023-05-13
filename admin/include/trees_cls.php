@@ -111,7 +111,7 @@ class tree_cls
 
 				echo '<td>';
 				if ($dataDb->tree_prefix != 'EMPTY') {
-					echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_gedcom&amp;tree_id=' . $dataDb->tree_id . '&tree_prefix=' . $dataDb->tree_prefix . '&step1=read_gedcom"><img src="images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
+					echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=tree_gedcom&amp;tree_id=' . $dataDb->tree_id . '&tree_prefix=' . $dataDb->tree_prefix . '&step1=read_gedcom"><img src="theme/images/import.jpg" title="gedcom import" alt="gedcom import"></a>';
 				}
 
 				if ($dataDb->tree_prefix == 'EMPTY') {

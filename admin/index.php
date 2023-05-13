@@ -330,9 +330,9 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 			$remove_folders[] = '../fpdf16';
 			$remove_folders[] = '../humo_mobile';
 			$remove_folders[] = '../include/fpdf16';
-			$remove_folders[] = '../include/jqueryui/css';
-			$remove_folders[] = '../include/jqueryui/development-bundle';
-			$remove_folders[] = '../include/jqueryui/js';
+			$remove_folders[] = '../externals/jqueryui/css';
+			$remove_folders[] = '../externals/jqueryui/development-bundle';
+			$remove_folders[] = '../externals/jqueryui/js';
 			$remove_folders[] = '../include/lightbox';
 			$remove_folders[] = '../include/sliderbar';
 			$remove_folders[] = '../languages/fa DISABLED';
@@ -718,7 +718,7 @@ if (!CMS_SPECIFIC) {
 	if (file_exists('../media/favicon.ico'))
 		echo '<link rel="shortcut icon" href="../media/favicon.ico" type="image/x-icon">';
 	else
-		echo '<link href="' . CMS_ROOTPATH . 'favicon.ico" rel="shortcut icon" type="image/x-icon">';
+		echo '<link href="' . CMS_ROOTPATH . 'styles/favicon.ico" rel="shortcut icon" type="image/x-icon">';
 
 	echo '<link href="theme/css/admin.css" rel="stylesheet" type="text/css">';
 	echo '<link href="statistics/style.css" rel="stylesheet" type="text/css">'; // STYLE SHEET VOOR GRAFIEK
@@ -727,8 +727,8 @@ if (!CMS_SPECIFIC) {
 	// *** CSS changes for mobile devices ***
 	echo '<link rel="stylesheet" media="(max-width: 640px)" href="theme/css/admin_mobile.css">';
 
-	echo '<script src="' . CMS_ROOTPATH . 'include/jquery/jquery.min.js"></script> ';
-	echo '<script src="' . CMS_ROOTPATH . 'include/jqueryui/jquery-ui.min.js"></script>';
+	echo '<script src="' . CMS_ROOTPATH . 'externals/jquery/jquery.min.js"></script> ';
+	echo '<script src="' . CMS_ROOTPATH . 'externals/jqueryui/jquery-ui.min.js"></script>';
 
 	echo '<script type="text/javascript" src="include/popup_merge.js"></script>';
 

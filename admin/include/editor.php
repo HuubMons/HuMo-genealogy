@@ -32,8 +32,8 @@
  */
 
 // *** Don't leave page if there are unsaved items ***
-echo '<script src="include/areyousure/jquery.are-you-sure.js"></script>';
-echo '<script src="include/areyousure/ays-beforeunload-shim.js"></script>';
+echo '<script src="../externals/areyousure/jquery.are-you-sure.js"></script>';
+echo '<script src="../externals/areyousure/ays-beforeunload-shim.js"></script>';
 
 // *** Only use Save button, don't use [Enter] ***
 echo '
