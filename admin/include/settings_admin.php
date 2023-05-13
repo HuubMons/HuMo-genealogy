@@ -874,7 +874,7 @@ if (isset($menu_admin) and $menu_admin == 'settings_homepage') {
 			//	echo '<input type="hidden" name="'.$dataDb->setting_id.'id" value="'.$dataDb->setting_id.'">';
 
 			//	echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_module='.$dataDb->setting_id.'">
-			//		<img src="'.CMS_ROOTPATH_ADMIN.'images/button_drop.png" border="0" alt="remove"></a>&nbsp;&nbsp;&nbsp;';
+			//		<img src="'.CMS_ROOTPATH_ADMIN.'theme/images/button_drop.png" border="0" alt="remove"></a>&nbsp;&nbsp;&nbsp;';
 			//echo '</td>';
 
 			// *** Active/ inactive with background colour ***
@@ -901,11 +901,11 @@ if (isset($menu_admin) and $menu_admin == 'settings_homepage') {
 
 			if ($dataDb->setting_order != '1') {
 				echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;mod_up=1&amp;module_order=' . $dataDb->setting_order .
-					'&amp;id=' . $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="up"></a>';
+					'&amp;id=' . $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
 			}
 			if ($dataDb->setting_order != $count_links) {
 				echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;mod_down=1&amp;module_order=' . $dataDb->setting_order . '&amp;id=' .
-					$dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+					$dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
 			}
 			echo '</td>';
 
@@ -1075,7 +1075,7 @@ if (isset($menu_admin) and $menu_admin == 'settings_homepage') {
 
 			//echo '<td><br></td>';
 			echo '<td><a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_module=' . $dataDb->setting_id . '">
-							<img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="remove"></a></td>';
+							<img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" border="0" alt="remove"></a></td>';
 			echo '</tr>';
 			$teller++;
 		}
@@ -1225,17 +1225,17 @@ if (isset($menu_admin) and $menu_admin == 'settings_homepage') {
 			echo '<td>';
 
 			echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;remove_link=' . $dataDb->setting_id . '">
-						<img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="remove"></a> ';
+						<img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" border="0" alt="remove"></a> ';
 
 			echo '<input type="hidden" name="' . $dataDb->setting_id . 'id" value="' . $dataDb->setting_id . '">' . __('Link') . ' ' . $teller;
 
 			if ($dataDb->setting_order != '1') {
 				echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;up=1&amp;link_order=' . $dataDb->setting_order .
-					'&amp;id=' . $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="up"></a>';
+					'&amp;id=' . $dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
 			}
 			if ($dataDb->setting_order != $count_links) {
 				echo ' <a href="index.php?page=settings&amp;menu_admin=settings_homepage&amp;down=1&amp;link_order=' . $dataDb->setting_order . '&amp;id=' .
-					$dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+					$dataDb->setting_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
 			}
 			echo '</td>';
 			echo '<td><input type="text" name="' . $dataDb->setting_id . 'own_code" value="' . $lijst[0] . '" size="5"></td>';

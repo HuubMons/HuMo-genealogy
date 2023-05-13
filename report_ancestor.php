@@ -432,11 +432,11 @@ if ($screen_mode != 'ancestor_chart' and $screen_mode != 'ancestor_sheet' and $s
 					$cell = $table->getCell(1, 2);
 
 					if ($person_manDb->pers_sexe == "M")
-						$cell->addImage('images/man.jpg', null);
+						$cell->addImage('styles/images/man.jpg', null);
 					elseif ($person_manDb->pers_sexe == "F")
-						$cell->addImage(CMS_ROOTPATH . 'images/woman.jpg', null);
+						$cell->addImage(CMS_ROOTPATH . 'styles/images/woman.jpg', null);
 					else
-						$cell->addImage(CMS_ROOTPATH . 'images/unknown.jpg', null);
+						$cell->addImage(CMS_ROOTPATH . 'styles/images/unknown.jpg', null);
 
 					$cell = $table->getCell(1, 3);
 					$cell->writeText($rtf_text, $arial12, $parNames);
@@ -661,11 +661,11 @@ if ($screen_mode != 'ancestor_chart' and $screen_mode != 'ancestor_sheet' and $s
 					$cell = $table->getCell(1, 2);
 
 					if ($person_manDb and $person_manDb->pers_sexe == "M")
-						$cell->addImage('images/man.jpg', null);
+						$cell->addImage('styles/images/man.jpg', null);
 					elseif ($person_manDb and $person_manDb->pers_sexe == "F")
-						$cell->addImage(CMS_ROOTPATH . 'images/woman.jpg', null);
+						$cell->addImage(CMS_ROOTPATH . 'styles/images/woman.jpg', null);
 					else
-						$cell->addImage(CMS_ROOTPATH . 'images/unknown.jpg', null);
+						$cell->addImage(CMS_ROOTPATH . 'styles/images/unknown.jpg', null);
 
 					$rtf_text = strip_tags($man_cls->name_extended("child"), "<b><i>");
 					$cell = $table->getCell(1, 3);
@@ -1614,7 +1614,7 @@ else {  // = ancestor chart, OR ancestor sheet OR PDF of ancestor sheet
 			$pdf->SetY($posy);
 			$place = 33;
 			for ($x = 1; $x < 9; $x++) {
-				$pdf->Image("images/arrowdown.jpg", $place, 94.5, 2);
+				$pdf->Image("styles/images/arrowdown.jpg", $place, 94.5, 2);
 				$place += 33;
 			}
 		}

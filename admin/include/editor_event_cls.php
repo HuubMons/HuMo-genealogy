@@ -60,7 +60,7 @@ class editor_event_cls
 
 		if ($event_event or $data_listDb->event_text) {
 			$text .= '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $event_event;
-			if ($data_listDb->event_text) $text .= ' <img src="images/text.png" height="16px">';
+			if ($data_listDb->event_text) $text .= ' <img src="theme/images/text.png" height="16px">';
 			$text .= '</span><br>';
 		}
 
@@ -327,7 +327,7 @@ class editor_event_cls
 			//echo='onmouseover="mopen(event,\'help_source_shared\',100,250)"';
 			$text .= 'onmouseover="mopen(event,\'help_event_person\',0,0)"';
 			$text .= 'onmouseout="mclosetime()">';
-			$text .= '<img src="../images/help.png" height="16" width="16">';
+			$text .= '<img src="../styles/images/help.png" height="16" width="16">';
 			$text .= '</a>';
 			$text .= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_event_person" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			$text .= __('For items like:') . ' ' . __('Event') . ', ' . __('baptized as child') . ', ' . __('depart') . ' ' . __('etc.');
@@ -379,7 +379,7 @@ class editor_event_cls
 			//echo='onmouseover="mopen(event,\'help_source_shared\',100,250)"';
 			$text .= 'onmouseover="mopen(event,\'help_event_family\',0,0)"';
 			$text .= 'onmouseout="mclosetime()">';
-			$text .= '<img src="../images/help.png" height="16" width="16">';
+			$text .= '<img src="../styles/images/help.png" height="16" width="16">';
 			$text .= '</a>';
 			$text .= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="help_event_family" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			$text .= __('For items like:') . ' ' . __('Event') . ', ' . __('Marriage contract') . ', ' . __('Marriage license') . ', ' . __('etc.');
@@ -558,7 +558,7 @@ class editor_event_cls
 				$text.='<div style="position:relative">';
 				if ($count>1) {
 					$text.='<div style="position:absolute;top:0;left:0">';
-					$show_image= '<img src="'.CMS_ROOTPATH_ADMIN.'images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">'; $text.=$show_image;
+					$show_image= '<img src="'.CMS_ROOTPATH_ADMIN.'theme/images/drag-icon.gif" style="float:left;vertical-align:top;height:16px;">'; $text.=$show_image;
 					$text.='</div>';
 				}
 				$text.='<div style="overflow:hidden">';
@@ -582,23 +582,23 @@ class editor_event_cls
 					if (file_exists($path_prefix.$tree_pict_path2.$thumb_prefix.$data_listDb->event_event))
 						$show_image= '<img src="'.$path_prefix.$tree_pict_path2.$thumb_prefix.$data_listDb->event_event.'" style="height:80px;">';
 					else
-						$show_image= '<img src="../images/thumb_missing-image.jpg" height="60px">';
-					if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../images/thumb_missing-image.jpg" height="60px">';
+						$show_image= '<img src="../styles/images/thumb_missing-image.jpg" height="60px">';
+					if (!$data_listDb->event_event) $show_image= '&nbsp;<img src="../styles/images/thumb_missing-image.jpg" height="60px">';
 					$text.=$show_image;
 				}
 				else {
 					$ext = substr($data_listDb->event_event,-3,3);
 					if($ext=="tif" OR $ext=="iff") { $text.='<span style="font-size:80%">['.__('Format not supported')."]</span>"; }
-					elseif($ext=="pdf") { $text.='<img src="../images/pdf.jpeg" style="width:30px;height:30px;">';}
-					elseif($ext=="doc" OR $ext=="ocx") { $text.='<img src="../images/msdoc.gif" style="width:30px;height:30px;">';}
-					elseif($ext=="avi" OR $ext=="wmv" OR $ext=="mpg" OR $ext=="mp4" OR $ext=="mov") { $text.='<img src="../images/video-file.png" style="width:30px;height:30px;">'; }
-					elseif($ext=="wma" OR $ext=="wav" OR $ext=="mp3" OR $ext=="mid" OR $ext=="ram" OR $ext==".ra" ) { $text.='<img src="../images/audio.gif" style="width:30px;height:30px;">';}
+					elseif($ext=="pdf") { $text.='<img src="../styles/images/pdf.jpeg" style="width:30px;height:30px;">';}
+					elseif($ext=="doc" OR $ext=="ocx") { $text.='<img src="../styles/images/msdoc.gif" style="width:30px;height:30px;">';}
+					elseif($ext=="avi" OR $ext=="wmv" OR $ext=="mpg" OR $ext=="mp4" OR $ext=="mov") { $text.='<img src="../styles/images/video-file.png" style="width:30px;height:30px;">'; }
+					elseif($ext=="wma" OR $ext=="wav" OR $ext=="mp3" OR $ext=="mid" OR $ext=="ram" OR $ext==".ra" ) { $text.='<img src="../styles/images/audio.gif" style="width:30px;height:30px;">';}
 
 					$text.='<br><span style="font-size:85%">'.$data_listDb->event_event.'</span>';
 				
 				}
 				// *** No picture selected yet, show dummy picture ***
-				if (!$data_listDb->event_event) $text.='<img src="../images/thumb_missing-image.jpg" height="60px">';
+				if (!$data_listDb->event_event) $text.='<img src="../styles/images/thumb_missing-image.jpg" height="60px">';
 				$text.='</div>';
 				$text.='</div>';
 				$text.='</li>';
@@ -893,7 +893,7 @@ class editor_event_cls
 					'&amp;event_kind=' . $data_listDb->event_kind . '&amp;event_drop=' . $data_listDb->event_order;
 				// *** Remove picture by source ***
 				if ($event_kind == 'source_picture') $text .= '&amp;source_id=' . $data_listDb->event_connect_id;
-				$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="down"></a>';
+				$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" border="0" alt="down"></a>';
 
 				//if ($data_listDb->event_kind !='picture'){
 				// *** Count number of events ***
@@ -916,7 +916,7 @@ class editor_event_cls
 					$text .= ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;' . $event_group . '&amp;event_down=' . $data_listDb->event_order . '&amp;event_kind=' . $data_listDb->event_kind;
 					// *** Edit picture by source in seperate source page ***
 					if ($event_kind == 'source_picture') $text .= '&amp;source_id=' . $data_listDb->event_connect_id;
-					$text .= '&amp;dummy=' . $data_listDb->event_id . $internal_link . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+					$text .= '&amp;dummy=' . $data_listDb->event_id . $internal_link . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
 				} else {
 					$text .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 				}
@@ -927,7 +927,7 @@ class editor_event_cls
 					// *** Edit picture by source in seperate source page ***
 					if ($event_kind == 'source_picture') $text .= '&amp;source_id=' . $data_listDb->event_connect_id;
 					$text .= '&amp;dummy=' . $data_listDb->event_id . $internal_link;
-					$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="down"></a>';
+					$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="down"></a>';
 				} else {
 					$text .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 				}
@@ -960,53 +960,53 @@ class editor_event_cls
 
 					$extensions_check = substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -3, 3);
 					if (strtolower($extensions_check) == "pdf") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="' . CMS_ROOTPATH . 'images/pdf.jpeg"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="' . CMS_ROOTPATH . 'styles//images/pdf.jpeg"></a>';
 					} elseif (strtolower($extensions_check) == "doc" or strtolower(substr($path_prefix . $tree_pict_path3 . $data_listDb->event_event, -4, 4)) == "docx") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="' . CMS_ROOTPATH . 'images/msdoc.gif"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '"><img src="' . CMS_ROOTPATH . 'styles/images/msdoc.gif"></a>';
 					}
 					// *** Show AVI Video file ***
 					elseif ($extensions_check == "avi") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/video-file.png"></a>';
 					}
 					// *** Show WMV Video file ***
 					elseif ($extensions_check == "wmv") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/video-file.png"></a>';
 					}
 					// *** Show MPG Video file ***
 					elseif (strtolower($extensions_check) == "mpg") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/video-file.png"></a>';
 					}
 					// *** Show MP4 Video file ***
 					elseif (strtolower($extensions_check) == "mp4") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/video-file.png"></a>';
 					}
 					// *** Show MOV Video file ***
 					elseif (strtolower($extensions_check) == "mov") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/video-file.png"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/video-file.png"></a>';
 					}
 					// *** Show WMA Audio file ***
 					elseif (strtolower($extensions_check) == "wma") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/audio.gif"></a>';
 					}
 					// *** Show WAV Audio file ***
 					elseif (strtolower($extensions_check) == "wav") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/audio.gif"></a>';
 					}
 					// *** Show MP3 Audio file ***
 					elseif (strtolower($extensions_check) == "mp3") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/audio.gif"></a>';
 					}
 					// *** Show MID Audio file ***
 					elseif (strtolower($extensions_check) == "mid") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/audio.gif"></a>';
 					}
 					// *** Show RAM Audio file ***
 					elseif (strtolower($extensions_check) == "ram") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/audio.gif"></a>';
 					}
 					// *** Show RA Audio file ***
 					elseif (strtolower($extensions_check) == ".ra") {
-						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'images/audio.gif"></a>';
+						$text .= '<a href="' . $path_prefix . $tree_pict_path3 . $data_listDb->event_event . '" target="_blank"><img src="' . CMS_ROOTPATH . 'styles/images/audio.gif"></a>';
 					} else {
 						$show_image = '';
 
@@ -1036,10 +1036,10 @@ class editor_event_cls
 							//$show_image= '<img src="'.$path_prefix.$tree_pict_path3.$thumb_prefix.$data_listDb->event_event.'"'.$size.'>';
 							$show_image = '<img src="' . $picture . '"' . $size . '>';
 						} else
-							$show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
+							$show_image = '<img src="../styles/images/thumb_missing-image.jpg" style="width:100px">';
 						//Check line above. If thumb if missing, missing picture is shown...
 
-						if (!$data_listDb->event_event) $show_image = '<img src="../images/thumb_missing-image.jpg" style="width:100px">';
+						if (!$data_listDb->event_event) $show_image = '<img src="../styles/images/thumb_missing-image.jpg" style="width:100px">';
 						$text .= $show_image;
 					}
 				}
@@ -1079,8 +1079,8 @@ class editor_event_cls
 					$form = 1;
 					if ($event_connect_kind == 'family') $form = 2;
 					if ($event_connect_kind == 'source') $form = 3;
-					//$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form='.$form.'&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
-					$text .= '<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form=' . $form . '&amp;event_id=' . $data_listDb->event_id . '","","' . $field_popup . '");><img src="../images/search.png" border="0"></a>';
+					//$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form='.$form.'&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../styles/images/search.png" border="0"></a>';
+					$text .= '<a href="javascript:;" onClick=window.open("index.php?page=editor_media_select&amp;form=' . $form . '&amp;event_id=' . $data_listDb->event_id . '","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a>';
 				} elseif ($data_listDb->event_kind == 'adoption') {
 					// *** Show names of adoption parents ***
 					$parent_text = '';
@@ -1110,7 +1110,7 @@ class editor_event_cls
 
 					// *** Use pop-up to select adoption parents ***
 					$text .= '<input type="text" name="text_event' . $data_listDb->event_id . '" placeholder="' . __('GEDCOM number (ID)') . '" value="' . $data_listDb->event_event . '" style="width: 250px">';
-					$text .= '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select&amp;adoption_id=' . $data_listDb->event_id . '","","' . $field_popup . '");><img src="../images/search.png" border="0"></a>';
+					$text .= '<a href="javascript:;" onClick=window.open("index.php?page=editor_relation_select&amp;adoption_id=' . $data_listDb->event_id . '","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a>';
 				}
 
 				// *** person_colour_mark ***
@@ -1382,8 +1382,8 @@ class editor_event_cls
 				$form = 1;
 				if ($event_connect_kind == 'family') $form = 2;
 				if ($event_connect_kind == 'source') $form = 3;
-				//$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form='.$form.'&amp;place_item=event_place&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../images/search.png" border="0"></a>';
-				$text .= '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=event_place&amp;event_id=' . $data_listDb->event_id . '","","' . $field_popup . '");><img src="../images/search.png" border="0"></a>';
+				//$text.='<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form='.$form.'&amp;place_item=event_place&amp;event_id='.$data_listDb->event_id.'","","width=400,height=500,top=100,left=100,scrollbars=yes");><img src="../styles/images/search.png" border="0"></a>';
+				$text .= '<a href="javascript:;" onClick=window.open("index.php?page=editor_place_select&amp;form=' . $form . '&amp;place_item=event_place&amp;event_id=' . $data_listDb->event_id . '","","' . $field_popup . '");><img src="../styles/images/search.png" border="0"></a>';
 
 				// *** Text by event ***
 				$field_text_selected = $field_text;

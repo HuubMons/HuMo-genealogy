@@ -116,25 +116,25 @@ function show_person($personDb){
 
 	// *** Show picture man or wife ***
 	if ($personDb->pers_sexe=="M")
-		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'images/man.gif" alt="man" style="vertical-align:top">';
+		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'styles/images/man.gif" alt="man" style="vertical-align:top">';
 	elseif ($personDb->pers_sexe=="F")
-		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman" style="vertical-align:top">';
+		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'styles/images/woman.gif" alt="woman" style="vertical-align:top">';
 	else
-		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown" style="vertical-align:top">';
+		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'styles/images/unknown.gif" alt="unknown" style="vertical-align:top">';
 
 	if($humo_option['david_stars'] == "y") {
 		$camps="Auschwitz|Oświęcim|Sobibor|Bergen-Belsen|Bergen Belsen|Treblinka|Holocaust|Shoah|Midden-Europa|Majdanek|Belzec|Chelmno|Dachau|Buchenwald|Sachsenhausen|Mauthausen|Theresienstadt|Birkenau|Kdo |Kamp Amersfoort|Gross-Rosen|Gross Rosen|Neuengamme|Ravensbrück|Kamp Westerbork|Kamp Vught|Kommando Sosnowice|Ellrich|Schöppenitz|Midden Europa|Lublin|Tröbitz|Kdo Bobrek|Golleschau|Blechhammer|Kdo Gleiwitz|Warschau|Szezdrzyk|Polen|Kamp Bobrek|Monowitz|Dorohucza|Seibersdorf|Babice|Fürstengrube|Janina|Jawischowitz|Katowice|Kaufering|Krenau|Langenstein|Lodz|Ludwigsdorf|Melk|Mühlenberg|Oranienburg|Sakrau|Schwarzheide|Spytkowice|Stutthof|Tschechowitz|Weimar|Wüstegiersdorf|Oberhausen|Minsk|Ghetto Riga|Ghetto Lodz|Flossenbürg|Malapane";
 
 		if(preg_match("/($camps)/i",$personDb->pers_death_place)!==0 OR 
 			preg_match("/($camps)/i",$personDb->pers_buried_place)!==0  OR strpos(strtolower($personDb->pers_death_place), "oorlogsslachtoffer") !==FALSE) {
-			echo '<img src="'.CMS_ROOTPATH.'images/star.gif" alt="star">&nbsp;';
+			echo '<img src="'.CMS_ROOTPATH.'styles/images/star.gif" alt="star">&nbsp;';
 		}
 	}
 
 	// *** Add own icon by person, using a file name in own code ***
-	if($personDb->pers_own_code !='' AND is_file("images/".$personDb->pers_own_code.".gif")){
+	if($personDb->pers_own_code !='' AND is_file("styles/images/".$personDb->pers_own_code.".gif")){
 		if ($personDb->pers_own_code!='foto'){ // *** Remove photo.gif icon, new method is used to show photo icon ***
-			echo  $dirmark1.'<img src="'.CMS_ROOTPATH.'images/'.$personDb->pers_own_code.'.gif" alt="'.$personDb->pers_own_code.'">&nbsp;';
+			echo  $dirmark1.'<img src="'.CMS_ROOTPATH.'styles/images/'.$personDb->pers_own_code.'.gif" alt="'.$personDb->pers_own_code.'">&nbsp;';
 		}
 	}
 
@@ -145,7 +145,7 @@ function show_person($personDb){
 		$picture_qry=$db_functions->get_events_connect('person',$personDb->pers_gedcomnumber,'picture');
 		// *** Only check 1st picture ***
 		if (isset($picture_qry[0])){
-			echo  $dirmark1.'<img src="'.CMS_ROOTPATH.'images/photo.gif" alt="photo">&nbsp;';
+			echo  $dirmark1.'<img src="'.CMS_ROOTPATH.'styles/images/photo.gif" alt="photo">&nbsp;';
 		}
 	}
 
@@ -2076,37 +2076,37 @@ if ($index_list=='patronym'){
 			$style=' style="background-color:#ffffa0"';
 			$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 		}
-		echo '<th colspan="2">'.__('Sort by:').' <a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_firstname&sort_desc='.$sort_reverse.'"'.$style.'>'.ucfirst(__('firstname')).' <img src="images/button3'.$img.'.png"></a>';
+		echo '<th colspan="2">'.__('Sort by:').' <a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_firstname&sort_desc='.$sort_reverse.'"'.$style.'>'.ucfirst(__('firstname')).' <img src="styles/images/button3'.$img.'.png"></a>';
 			$style=''; $sort_reverse=$sort_desc; $img='';
 			if ($selectsort=="sort_lastname"){
 				$style=' style="background-color:#ffffa0"';
 				$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 			}
-			echo ' <a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_lastname&sort_desc='.$sort_reverse.'"'.$style.'>'.ucfirst(__('lastname')).' <img src="images/button3'.$img.'.png"></a></th>';
+			echo ' <a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_lastname&sort_desc='.$sort_reverse.'"'.$style.'>'.ucfirst(__('lastname')).' <img src="styles/images/button3'.$img.'.png"></a></th>';
 		$style=''; $sort_reverse=$sort_desc; $img='';
 		if ($selectsort=="sort_birthdate"){
 			$style=' style="background-color:#ffffa0"';
 			$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 		}
-		echo '<th><a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_birthdate&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Date').' <img src="images/button3'.$img.'.png"></a></th>';
+		echo '<th><a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_birthdate&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Date').' <img src="styles/images/button3'.$img.'.png"></a></th>';
 		$style=''; $sort_reverse=$sort_desc; $img='';
 		if ($selectsort=="sort_birthplace"){
 			$style=' style="background-color:#ffffa0"';
 			$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 		}
-		echo '<th><a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_birthplace&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Place').' <img src="images/button3'.$img.'.png"></a></th>';
+		echo '<th><a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_birthplace&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Place').' <img src="styles/images/button3'.$img.'.png"></a></th>';
 		$style=''; $sort_reverse=$sort_desc; $img='';
 		if ($selectsort=="sort_deathdate"){
 			$style=' style="background-color:#ffffa0"';
 			$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 		}
-		echo '<th><a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_deathdate&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Date').' <img src="images/button3'.$img.'.png"></a></th>';
+		echo '<th><a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_deathdate&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Date').' <img src="styles/images/button3'.$img.'.png"></a></th>';
 		$style=''; $sort_reverse=$sort_desc; $img='';
 		if ($selectsort=="sort_deathplace"){
 			$style=' style="background-color:#ffffa0"';
 			$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 		}
-		echo '<th><a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_deathplace&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Place').' <img src="images/button3'.$img.'.png"></a></th>';
+		echo '<th><a href="list.php?index_list='.$index_list.'&start=1&item=0&sort=sort_deathplace&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Place').' <img src="styles/images/button3'.$img.'.png"></a></th>';
 
 		if ($search_database=='all_trees' OR $search_database=='all_but_this') echo '<th><br></th>';
 

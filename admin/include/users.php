@@ -131,7 +131,7 @@ while ($userDb = $user->fetch(PDO::FETCH_OBJ)) {
 
 	if ($userDb->user_name != 'gast' and $userDb->user_name != 'guest' and $userDb->user_id != '1') {
 		echo '<a href="index.php?page=users&remove_user=' . $userDb->user_id . '">';
-		echo '<img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="remove person"></a> ';
+		echo '<img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" border="0" alt="remove person"></a> ';
 	} else
 		echo '&nbsp;&nbsp;';
 
@@ -170,10 +170,10 @@ while ($userDb = $user->fetch(PDO::FETCH_OBJ)) {
 	}
 
 	//echo '<td>';
-	//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_user_settings&user='.$userDb->user_id.'","","scrollbars=1,width=900,height=500,top=100,left=100");><img src="../images/search.png" border="0"></a>';
-	$extra_icon = "../images/search.png";
+	//echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_user_settings&user='.$userDb->user_id.'","","scrollbars=1,width=900,height=500,top=100,left=100");><img src="../styles/images/search.png" border="0"></a>';
+	$extra_icon = "../styles/images/search.png";
 	if ($userDb->user_hide_trees != '' or $userDb->user_edit_trees != '') {
-		$extra_icon = "../images/searchicon_red.png";
+		$extra_icon = "../styles/images/searchicon_red.png";
 	}
 	echo '<td>';
 	echo '<a href="javascript:;" onClick=window.open("index.php?page=editor_user_settings&user=' . $userDb->user_id . '","","scrollbars=1,width=900,height=500,top=100,left=100");><img src=' . $extra_icon . ' border="0"></a>';

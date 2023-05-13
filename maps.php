@@ -15,7 +15,7 @@ if (isset($humo_option["use_world_map"]) and $humo_option["use_world_map"] == 'O
 } else {
 	//cover map with loading animation + half opaque background till page is fully loaded
 	//using the slider/button before complete page load goes wrong
-	echo '<div id="wait" style="background:url(images/loader.gif) no-repeat center center; opacity:0.6; filter:alpha(opacity=60); position:fixed; top:70px; margin-left:auto; margin-right:auto; height:610px; width:1000px; background-color:#000000; z-index:100"></div>';
+	echo '<div id="wait" style="background:url(styles/images/loader.gif) no-repeat center center; opacity:0.6; filter:alpha(opacity=60); position:fixed; top:70px; margin-left:auto; margin-right:auto; height:610px; width:1000px; background-color:#000000; z-index:100"></div>';
 }
 
 echo '<div style="position:relative"> ';  // div with table for all menu bars (2 + optional third)

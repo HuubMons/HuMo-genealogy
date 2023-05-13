@@ -375,7 +375,7 @@ function display_po_table()
 				$mytext = notes($value["note"]);
 			} else $mytext = "";
 			echo '<tr><td style="width:2%"><a onmouseover="popup(\'' . popclean($mytext) . '\',300);" href="#" style="border-right:none;background:none">';
-			echo '<img style="border:0px;background:none" src="' . CMS_ROOTPATH . 'images/reports.gif" alt="references"></a></td>';
+			echo '<img style="border:0px;background:none" src="' . CMS_ROOTPATH . 'styles/images/reports.gif" alt="references"></a></td>';
 			echo '<td style="vertical-align:top;padding:2px;width:47%">' . msgid_display($value["msgid"]) . '</td>';
 			echo '<td style="width:4%"></td>';
 			echo '<td style="width:47%;">';
@@ -406,7 +406,7 @@ function display_po_table()
 
 			$mytext = notes($value["note"]);
 			echo '<tr><td style="width:2%"><a onmouseover="popup(\'' . popclean($mytext) . '\',300);" href="#">';
-			echo '<img style="border:0px;background:none" src="' . CMS_ROOTPATH . 'images/reports.gif" alt="references"></a></td>';
+			echo '<img style="border:0px;background:none" src="' . CMS_ROOTPATH . 'styles/images/reports.gif" alt="references"></a></td>';
 			echo '<td style="padding:2px;width:47%">' . msgid_display($value["msgid"]) . '</td>';
 			echo '<td style="text-align:center;width:4%"><input type="checkbox" value="fuzzie" name="fuz' . $value["nr"] . '" checked></td>';
 			echo '<td style="background-color:white;width:47%;">';
@@ -445,7 +445,7 @@ function display_po_table()
 				$mytext = notes($value["note"]);
 			} else $mytext = "";
 			echo '<tr><td style="width:2%"><a onmouseover="popup(\'' . popclean($mytext) . '\',300);" href="#">';
-			echo '<img style="border:0px;background:none" src="' . CMS_ROOTPATH . 'images/reports.gif" alt="references"></a></td>';
+			echo '<img style="border:0px;background:none" src="' . CMS_ROOTPATH . 'styles/images/reports.gif" alt="references"></a></td>';
 			echo '<td style="padding:2px;width:47%">' . msgid_display($value["msgid"]) . '</td>';
 			echo '<td style="text-align:center;width:4%"><input type="checkbox" value="fuzzie" name="fuz' . $value["nr"] . '"></td>';
 			echo '<td style="background-color:white;width:47%;">';

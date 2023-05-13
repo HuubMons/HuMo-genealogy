@@ -597,7 +597,7 @@ function categories()
 	include __DIR__ . '/../../languages/' . $language_tree2 . '/language_data.php';
 	echo ' onmouseover="mopen(event,\'adminx\',\'?\',\'?\')"';
 	$select_top = '';
-	echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $language_tree2 . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:14px"> ' . $language["name"] . ' <img src="' . CMS_ROOTPATH . 'styles/images/button3.png" height= "13" style="border:none;" alt="pull_down"></a>';
 
 	echo '<div id="adminx" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()" style="width:250px;">';
 	echo '<ul class="humo_menu_item2">';
@@ -657,14 +657,14 @@ function categories()
 			echo '<td>';
 		}
 		if ($catDb->photocat_order != $minorder) {
-			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_up=' . $catDb->photocat_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif"></a>&nbsp;&nbsp;';
+			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_up=' . $catDb->photocat_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif"></a>&nbsp;&nbsp;';
 		}
 		if ($catDb->photocat_order != $maxorder) {
-			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_down=' . $catDb->photocat_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif"></a>';
+			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_down=' . $catDb->photocat_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif"></a>';
 		}
 		echo '</td><td>';
 		if ($catDb->photocat_prefix != 'none') {
-			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_order=' . $catDb->photocat_order . '&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_drop=1"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png"></a>';
+			echo '<a href="index.php?' . $joomlastring . 'page=thumbs&amp;menu_admin=picture_categories&amp;cat_order=' . $catDb->photocat_order . '&amp;cat_prefix=' . $catDb->photocat_prefix . '&amp;cat_drop=1"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png"></a>';
 		}
 		$prefname = $catDb->photocat_prefix;
 		if ($catDb->photocat_prefix == 'none') $prefname = __('default - without prefix');  // display default in the display language, so it is clear to everyone

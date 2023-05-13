@@ -463,7 +463,7 @@ function show_media_files($pref)
 				$picture = '<img src="' . $picture2['path'] . $picture2['thumb'] . $picture2['picture'] . '" width="' . $picture2['width'] . '" alt="' . $filename . '"></a>';
 				//$picture='<img src="'.$picture2['path'].$picture2['thumb'].$picture2['picture'].'" height="'.$picture2['height'].'" alt="'.$filename.'"></a>';
 			} else {
-				$picture = '<img src="images/missing-image.jpg" width="' . $picture2['width'] . '" alt="' . $filename . '"></a>';
+				$picture = '<img src="styles/images/missing-image.jpg" width="' . $picture2['width'] . '" alt="' . $filename . '"></a>';
 			}
 			// lightbox can't handle brackets etc so encode it. ("urlencode" doesn't work since it changes spaces to +, so we use rawurlencode)
 			//$filename = rawurlencode($filename);

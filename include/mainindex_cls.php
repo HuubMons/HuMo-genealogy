@@ -690,7 +690,7 @@ class mainindex_cls
 		} else {
 			$path_tmp = CMS_ROOTPATH . 'list.php?adv_search=1&index_list=search';
 		}
-		$text .= '<p><a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="25px"> ' . __('Advanced search') . '</a></p>';
+		$text .= '<p><a href="' . $path_tmp . '"><img src="styles/images/advanced-search.jpg" width="25px"> ' . __('Advanced search') . '</a></p>';
 
 		$text .= "</form>\n";
 		return $text;

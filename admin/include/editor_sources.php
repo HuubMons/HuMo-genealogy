@@ -263,7 +263,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 		if (isset($marriage)) {
 			$text .= '&amp;marriage_nr=' . $marriage;
 		}
-		$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="remove"></a>';
+		$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" border="0" alt="remove"></a>';
 
 		if ($connectDb->connect_order < $nr_sources) {
 			$text .= ' <a href="index.php?' . $joomlastring . 'page=' . $page .
@@ -281,7 +281,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 			if (isset($marriage)) {
 				$text .= '&amp;marriage_nr=' . $marriage;
 			}
-			$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+			$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
 		} else {
 			//$text.= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 			$text .= '&nbsp;&nbsp;&nbsp;';
@@ -303,7 +303,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 			if (isset($marriage)) {
 				$text .= '&amp;marriage_nr=' . $marriage;
 			}
-			$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="down"></a>';
+			$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="down"></a>';
 		} else {
 			//$text.= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		}
@@ -357,7 +357,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 						//$text.='onmouseover="mopen(event,\'help_source_shared\',100,250)"';
 						$text.='onmouseover="mopen(event,\'help_source_shared\',0,0)"';
 						$text.='onmouseout="mclosetime()">';
-							$text.='<img src="../images/help.png" height="16" width="16">';
+							$text.='<img src="../styles/images/help.png" height="16" width="16">';
 						$text.='</a>';
 						$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_source_shared" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 							$text.='<b>'.__('A shared source can be connected to multiple persons, relations or other items.').'</b><br>';
@@ -472,7 +472,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 			//$text.='onmouseover="mopen(event,\''.$connectDb->connect_id.'help_sourcerole\',100,400)"';
 			$text .= 'onmouseover="mopen(event,\'' . $connectDb->connect_id . 'help_sourcerole\',1,150)"';
 			$text .= 'onmouseout="mclosetime()">';
-			$text .= '<img src="../images/help.png" height="16" width="16">';
+			$text .= '<img src="../styles/images/help.png" height="16" width="16">';
 			$text .= '</a>';
 			//$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			$text .= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="' . $connectDb->connect_id . 'help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -488,7 +488,7 @@ function source_edit($connect_kind, $connect_sub_kind, $connect_connect_id)
 			//$text.='onmouseover="mopen(event,\''.$connectDb->connect_id.'help_sourcerole\',100,400)"';
 			$text .= 'onmouseover="mopen(event,\'' . $connectDb->connect_id . 'help_sourcepage\',1,150)"';
 			$text .= 'onmouseout="mclosetime()">';
-			$text .= '<img src="../images/help.png" height="16" width="16">';
+			$text .= '<img src="../styles/images/help.png" height="16" width="16">';
 			$text .= '</a>';
 			//$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 			$text .= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="' . $connectDb->connect_id . 'help_sourcepage" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';

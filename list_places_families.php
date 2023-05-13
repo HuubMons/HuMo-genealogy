@@ -92,11 +92,11 @@ function show_person($familyDb){
 
 	// *** Show picture man or wife ***
 	if ($personDb->pers_sexe=="M")
-		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'images/man.gif" alt="man" style="vertical-align:top">';
+		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'styles/images/man.gif" alt="man" style="vertical-align:top">';
 	elseif ($personDb->pers_sexe=="F")
-		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman" style="vertical-align:top">';
+		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'styles/images/woman.gif" alt="woman" style="vertical-align:top">';
 	else
-		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown" style="vertical-align:top">';
+		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'styles/images/unknown.gif" alt="unknown" style="vertical-align:top">';
 
 	echo '</td><td style="border-left:0px;">';
 

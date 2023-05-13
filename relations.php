@@ -3067,7 +3067,7 @@ ob_implicit_flush(true);
 
 
 if(isset($_POST["extended"]) or isset($_POST["next_path"])) {
-	echo '<br><div id="geargif"><img src="images/gear.gif">&nbsp;&nbsp;&nbsp;'.__('Calculating relations').'</div>';
+	echo '<br><div id="geargif"><img src="styles/images/gear.gif">&nbsp;&nbsp;&nbsp;'.__('Calculating relations').'</div>';
 }
 
 if(CMS_SPECIFIC == "Joomla") {
@@ -3086,7 +3086,7 @@ echo '<br><table class="humo relmenu">';
 			echo '<a href="#" style="display:inline" ';
 			echo 'onmouseover="mopen(event,\'help_address_address\',100,200)"';
 			echo 'onmouseout="mclosetime()">';
-				echo '<img src="images/help.png" height="16" width="16">';
+				echo '<img src="styles/images/help.png" height="16" width="16">';
 			echo '</a>';
 			echo '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_address_address" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 				echo __('This calculator will find the following relationships:<br>
@@ -3320,8 +3320,8 @@ Directions for use:<br>
 		echo '<select size="1" name="person" style="width:'.$len.'px"><option></option></select>';
 	}
 	echo '</td>';
-	//echo '<td rowspan=2><input type="image" src="'.ROOTPATH.'images/turn_around.gif" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value="Submit" name="switch" >';
-	echo '<td rowspan=2><input type="submit" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value=" " name="switch" style="background: #fff url(\''.CMS_ROOTPATH.'images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
+	//echo '<td rowspan=2><input type="image" src="'.ROOTPATH.'styles/images/turn_around.gif" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value="Submit" name="switch" >';
+	echo '<td rowspan=2><input type="submit" alt="'.__('Switch persons').'" title="'.__('Switch persons').'" value=" " name="switch" style="background: #fff url(\''.CMS_ROOTPATH.'styles/images/turn_around.gif\') top no-repeat;width:25px;height:25px">';
 	echo '</td><td rowspan=2>';
 	echo '<input type="submit" name="calculator" value="'.__('Calculate relationships').'" style="font-size:115%;">';
 	echo '</td></tr><tr><td>';
