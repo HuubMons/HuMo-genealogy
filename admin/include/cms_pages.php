@@ -266,14 +266,14 @@ if ($cms_item == 'pages') {
 
 		$page_nr++;
 		echo '<tr><td width="60px">';
-		echo '<a href="index.php?page=' . $page . '&amp;select_page=' . $cms_pagesDb->page_id . '&amp;page_remove=' . $cms_pagesDb->page_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" alt="' . __('Remove page') . '" border="0"></a>';
+		echo '<a href="index.php?page=' . $page . '&amp;select_page=' . $cms_pagesDb->page_id . '&amp;page_remove=' . $cms_pagesDb->page_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" alt="' . __('Remove page') . '" border="0"></a>';
 
 		// *** Show ID numbers for test ***
 		if ($page_nr != '1') {
-			echo ' <a href="index.php?page=' . $page . '&amp;page_up=' . $previous_page . '&amp;select_page=' . $cms_pagesDb->page_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="up"></a>';
+			echo ' <a href="index.php?page=' . $page . '&amp;page_up=' . $previous_page . '&amp;select_page=' . $cms_pagesDb->page_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
 		}
 		if ($page_nr != $pages_in_category[$cms_pagesDb->page_menu_id]) {
-			echo ' <a href="index.php?page=' . $page . '&amp;page_down=' . $cms_pagesDb->page_order . '&amp;select_page=' . $cms_pagesDb->page_id . '&amp;menu_id=' . $cms_pagesDb->page_menu_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+			echo ' <a href="index.php?page=' . $page . '&amp;page_down=' . $cms_pagesDb->page_order . '&amp;select_page=' . $cms_pagesDb->page_id . '&amp;menu_id=' . $cms_pagesDb->page_menu_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
 		}
 		echo '</td><td>';
 		$page_title = '[' . __('No page title') . ']';
@@ -440,13 +440,13 @@ if ($cms_item == 'menu') {
 		//if ($cms_pagesDb->menu_order<10){ echo '0'; }
 		//echo $cms_pagesDb->menu_order;
 
-		echo '<a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_remove=' . $cms_pagesDb->menu_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" alt="' . __('Remove menu') . '" border="0"></a>';
+		echo '<a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_remove=' . $cms_pagesDb->menu_id . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/button_drop.png" alt="' . __('Remove menu') . '" border="0"></a>';
 
 		if ($cms_pagesDb->menu_order != '1') {
-			echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_up=' . $cms_pagesDb->menu_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="up"></a>';
+			echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_up=' . $cms_pagesDb->menu_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_up.gif" border="0" alt="up"></a>';
 		}
 		if ($cms_pagesDb->menu_order != $count_menu) {
-			echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_down=' . $cms_pagesDb->menu_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+			echo ' <a href="index.php?page=' . $page . '&amp;select_menu=' . $cms_pagesDb->menu_id . '&amp;menu_down=' . $cms_pagesDb->menu_order . '"><img src="' . CMS_ROOTPATH_ADMIN . 'theme/images/arrow_down.gif" border="0" alt="down"></a>';
 		}
 		echo '</td>';
 

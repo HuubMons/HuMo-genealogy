@@ -109,7 +109,7 @@ if (!$bot_visit) {
 	} else {
 		$path_tmp = CMS_ROOTPATH . 'list.php?adv_search=1&index_list=search';
 	}
-	echo ' <a href="' . $path_tmp . '"><img src="images/advanced-search.jpg" width="17px"></a>';
+	echo ' <a href="' . $path_tmp . '"><img src="styles/images/advanced-search.jpg" width="17px"></a>';
 
 	echo "</form>";
 }
@@ -173,7 +173,7 @@ if (!$bot_visit) {
 
 	// *** Show favorites in selection list ***
 	echo ' <form method="POST" action="' . $uri_path . 'family.php' . '" style="display : inline;" id="top_favorites_select">';
-	echo '<img src="images/favorite_blue.png"> ';
+	echo '<img src="styles/images/favorite_blue.png"> ';
 	echo '<select size=1 name="humo_favorite_id" onChange="this.form.submit();" style="width: 115px; height:20px;">';
 	echo '<option value="">' . __('Favourites list:') . '</option>';
 
@@ -243,8 +243,8 @@ if (CMS_SPECIFIC == 'Joomla') {
 	//$path_tmp=CMS_ROOTPATH.'index.php';
 }
 //echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'">'.__('Home')."</a></li>\n";
-//echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'"><img src="images/menu_mobile.png" width="18"> '.__('Home')."</a></li>\n";
-echo '<li' . $select_menu . ' class="mobile_hidden"><a href="' . $path_tmp . '"><img src="images/menu_mobile.png" width="18" class="mobile_icon"> ' . __('Home') . "</a></li>\n";
+//echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'"><img src="styles/images/menu_mobile.png" width="18"> '.__('Home')."</a></li>\n";
+echo '<li' . $select_menu . ' class="mobile_hidden"><a href="' . $path_tmp . '"><img src="styles/images/menu_mobile.png" width="18" class="mobile_icon"> ' . __('Home') . "</a></li>\n";
 
 // Doesn't work properly. Icon too large and orange...
 //echo '<li'.$select_menu.' class="mobile_hidden"><a href="'.$path_tmp.'">';
@@ -284,8 +284,8 @@ echo '<div class="' . $rtlmarker . 'sddm">';
 //}
 echo '<a href="' . $path_tmp . '"';
 echo ' onmouseover="mopen(event,\'m0x\',\'?\',\'?\')"';
-echo ' onmouseout="mclosetime()"' . $select_top . '><img src="images/menu_mobile.png" width="18"></a>';
-//echo ' onmouseout="mclosetime()"'.$select_top.'><img src="images/menu_mobile.png" width="15">';
+echo ' onmouseout="mclosetime()"' . $select_top . '><img src="styles/images/menu_mobile.png" width="18"></a>';
+//echo ' onmouseout="mclosetime()"'.$select_top.'><img src="styles/images/menu_mobile.png" width="15">';
 //echo '<span class="mobile_hidden"> '.__('Home').'</span>';
 //echo '</a>';
 
@@ -442,7 +442,7 @@ if ($user['group_menu_cms'] == 'y') {
 			$path_tmp = CMS_ROOTPATH . 'cms_pages.php';
 		}
 		//echo '<li'.$select_menu.'><a href="'.$path_tmp.'">'.__('Information')."</a></li>\n";
-		echo '<li' . $select_menu . '><a href="' . $path_tmp . '"><img src="images/reports.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Information') . "</a></li>\n";
+		echo '<li' . $select_menu . '><a href="' . $path_tmp . '"><img src="styles/images/reports.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Information') . "</a></li>\n";
 	}
 }
 
@@ -509,8 +509,8 @@ if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
 
 	echo '<a href="' . $path_tmp . '"';
 	echo ' onmouseover="mopen(event,\'mft\',\'?\',\'?\')"';
-	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Family tree').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
-	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="images/family_tree.png" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Family tree') . '</a>';
+	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Family tree').'&nbsp;<img src="'.CMS_ROOTPATH.'styles/images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="styles/images/family_tree.png" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Family tree') . '</a>';
 
 	echo '<div id="mft" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
@@ -685,8 +685,8 @@ if ($bot_visit and $humo_option["searchengine_cms_only"] == 'y') {
 
 		echo '<a href="' . $path_tmp . '"';
 		echo ' onmouseover="mopen(event,\'m1x\',\'?\',\'?\')"';
-		//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Tools').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
-		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="images/outline.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Tools') . '</a>';
+		//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Tools').'&nbsp;<img src="'.CMS_ROOTPATH.'styles/images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
+		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="styles/images/outline.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Tools') . '</a>';
 
 		echo '<div id="m1x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 		echo '<ul class="humo_menu_item2">';
@@ -811,8 +811,8 @@ if (CMS_SPECIFIC == 'Joomla') {
 }
 echo '<a href="' . $path_tmp . '"';
 echo ' onmouseover="mopen(event,\'m2x\',\'?\',\'?\')"';
-//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Help').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="pull_down_icon" alt="pull_down"></a>';
-echo ' onmouseout="mclosetime()"' . $select_top . '><img src="images/help.png" width="15"> ' . __('Help') . '</a>';
+//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Help').'&nbsp;<img src="'.CMS_ROOTPATH.'styles/images/button3.png" height= "13" style="border:none;" class="pull_down_icon" alt="pull_down"></a>';
+echo ' onmouseout="mclosetime()"' . $select_top . '><img src="styles/images/help.png" width="15"> ' . __('Help') . '</a>';
 
 echo '<div id="m2x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 echo '<ul class="humo_menu_item2">';
@@ -902,8 +902,8 @@ if ($user['group_menu_login'] == 'j' and !$user["user_name"]) {
 
 	echo '<a href="' . $path_tmp . '"';
 	echo ' onmouseover="mopen(event,\'m6x\',\'?\',\'?\')"';
-	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Tools').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
-	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="images/man.gif" width="15"> ' . __('Login') . '</a>';
+	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Tools').'&nbsp;<img src="'.CMS_ROOTPATH.'styles/images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="styles/images/man.gif" width="15"> ' . __('Login') . '</a>';
 
 	echo '<div id="m6x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
@@ -961,8 +961,8 @@ if (!$bot_visit) {
 
 	echo '<a href="' . $path_tmp . '"';
 	echo ' onmouseover="mopen(event,\'m5x\',\'?\',\'?\')"';
-	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Tools').'&nbsp;<img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
-	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="images/settings.png" width="15" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Control') . '</a>';
+	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Tools').'&nbsp;<img src="'.CMS_ROOTPATH.'styles/images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="styles/images/settings.png" width="15" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Control') . '</a>';
 
 	echo '<div id="m5x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
@@ -1023,7 +1023,7 @@ if (!$bot_visit) {
 	echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
 	$select_top = '';
 
-	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> <img src="'.CMS_ROOTPATH.'images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
+	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.'<img src="'.CMS_ROOTPATH.'languages/'.$selected_language.'/flag.gif" title="'.$language["name"].'" alt="'.$language["name"].'" style="border:none; height:14px"> <img src="'.CMS_ROOTPATH.'styles/images/button3.png" height= "13" style="border:none;" class="mobile_hidden pull_down_icon" alt="pull_down"></a>';
 	echo ' onmouseout="mclosetime()"' . $select_top . '>' . '<img src="' . CMS_ROOTPATH . 'languages/' . $selected_language . '/flag.gif" title="' . $language["name"] . '" alt="' . $language["name"] . '" style="border:none; height:18px"></a>';
 
 	// *** In gedcom.css special adjustment (width) for m4x! ***

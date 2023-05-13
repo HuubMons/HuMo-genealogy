@@ -8,7 +8,7 @@
 //** - family.php (included with minor changes in the file)             ***
 //** Other additions and alterations:                                   ***
 //** - hourglass item added to popup menu in /include/person_cls.php    ***
-//** - icon added: /images/hourglass.gif                                ***
+//** - icon added: /styles/images/hourglass.gif                                ***
 //** - class added to gedcom.css and silverline.css for graph lines     ***
 //*************************************************************************
 

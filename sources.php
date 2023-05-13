@@ -193,7 +193,7 @@ if ($order_sources == "title") {
 		$img = 'up';
 	}
 }
-echo '<th><a href="' . $url . '&amp;order_sources=title&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Title') . ' <img src="images/button3' . $img . '.png"></a></th>';
+echo '<th><a href="' . $url . '&amp;order_sources=title&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Title') . ' <img src="styles/images/button3' . $img . '.png"></a></th>';
 
 $style = '';
 $sort_reverse = $sort_desc;
@@ -206,7 +206,7 @@ if ($order_sources == "date") {
 		$img = 'up';
 	}
 }
-echo '<th><a href="' . $url . '&amp;order_sources=date&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="images/button3' . $img . '.png"></a></th>';
+echo '<th><a href="' . $url . '&amp;order_sources=date&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Date') . ' <img src="styles/images/button3' . $img . '.png"></a></th>';
 
 $style = '';
 $sort_reverse = $sort_desc;
@@ -219,7 +219,7 @@ if ($order_sources == "place") {
 		$img = 'up';
 	}
 }
-echo '<th><a href="' . $url . '&amp;order_sources=place&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="images/button3' . $img . '.png"></a></th>';
+echo '<th><a href="' . $url . '&amp;order_sources=place&amp;sort_desc=' . $sort_reverse . '"' . $style . '>' . __('Place') . ' <img src="styles/images/button3' . $img . '.png"></a></th>';
 echo '</tr>';
 
 while (@$sourceDb = $source->fetch(PDO::FETCH_OBJ)) {

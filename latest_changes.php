@@ -98,13 +98,13 @@ while (@$person=$person_result->fetch(PDO::FETCH_OBJ)){
 	echo $person_cls->person_popup_menu($person);
 
 	if ($person->pers_sexe=="M"){
-		echo '<img src="'.CMS_ROOTPATH.'images/man.gif" alt="man">';
+		echo '<img src="'.CMS_ROOTPATH.'styles/images/man.gif" alt="man">';
 	}
 	elseif ($person->pers_sexe=="F"){
-		echo '<img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman">';
+		echo '<img src="'.CMS_ROOTPATH.'styles/images/woman.gif" alt="woman">';
 	}
 	else{
-		echo '<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
+		echo '<img src="'.CMS_ROOTPATH.'styles/images/unknown.gif" alt="unknown">';
 	}
 
 	// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***

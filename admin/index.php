@@ -720,12 +720,12 @@ if (!CMS_SPECIFIC) {
 	else
 		echo '<link href="' . CMS_ROOTPATH . 'favicon.ico" rel="shortcut icon" type="image/x-icon">';
 
-	echo '<link href="admin.css" rel="stylesheet" type="text/css">';
+	echo '<link href="theme/css/admin.css" rel="stylesheet" type="text/css">';
 	echo '<link href="statistics/style.css" rel="stylesheet" type="text/css">'; // STYLE SHEET VOOR GRAFIEK
-	echo '<link href="admin_print.css" rel="stylesheet" type="text/css" media="print">';
+	echo '<link href="theme/css/admin_print.css" rel="stylesheet" type="text/css" media="print">';
 
 	// *** CSS changes for mobile devices ***
-	echo '<link rel="stylesheet" media="(max-width: 640px)" href="admin_mobile.css">';
+	echo '<link rel="stylesheet" media="(max-width: 640px)" href="theme/css/admin_mobile.css">';
 
 	echo '<script src="' . CMS_ROOTPATH . 'include/jquery/jquery.min.js"></script> ';
 	echo '<script src="' . CMS_ROOTPATH . 'include/jqueryui/jquery-ui.min.js"></script>';
@@ -812,8 +812,8 @@ if ($popup == false) {
 	echo '<div id="humo_top" style="height:auto;">';
 }
 
-//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-small.gif" align="left" alt="logo">';
-//echo '<img src="'.CMS_ROOTPATH_ADMIN.'images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
+//echo '<img src="'.CMS_ROOTPATH_ADMIN.'theme/images/humo-gen-small.gif" align="left" alt="logo">';
+//echo '<img src="'.CMS_ROOTPATH_ADMIN.'theme/images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
 
 if ($popup == false) {
 	echo '<span id="top_website_name">';
@@ -1263,7 +1263,7 @@ if ($popup == false) {
 
 	echo '<a href="' . $path_tmp . 'page=admin"';
 	echo ' onmouseover="mopen(event,\'m1x\',\'?\',\'?\')"';
-	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="../images/menu_mobile.png" width="18"></a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="../styles/images/menu_mobile.png" width="18"></a>';
 
 	echo '<div id="m1x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
@@ -1364,7 +1364,7 @@ if ($show_menu_left == true and $page != 'login') {
 		echo '<a href="' . $path_tmp . 'page=admin"';
 		echo ' onmouseover="mopen(event,\'m2x\',\'?\',\'?\')"';
 		//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Control').'</a>';
-		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="../images/settings.png" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Control') . '</a>';
+		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="../styles/images/settings.png" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Control') . '</a>';
 		echo '<div id="m2x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 		echo '<ul class="humo_menu_item2">';
 
@@ -1462,7 +1462,7 @@ if ($show_menu_left == true and $page != 'login') {
 	echo '<a href="' . $path_tmp . 'page=tree"';
 	echo ' onmouseover="mopen(event,\'m3x\',\'?\',\'?\')"';
 	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Family trees').'</a>';
-	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="images/family_connect.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Family trees') . '</a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="theme/images/family_connect.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Family trees') . '</a>';
 
 	echo '<div id="m3x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 	echo '<ul class="humo_menu_item2">';
@@ -1550,7 +1550,7 @@ if ($show_menu_left == true and $page != 'login') {
 	echo '<a href="' . $path_tmp . 'page=editor"';
 	echo ' onmouseover="mopen(event,\'m3xa\',\'?\',\'?\')"';
 	//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Editor').'</a>';
-	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="images/edit.jpg" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Editor') . '</a>';
+	echo ' onmouseout="mclosetime()"' . $select_top . '><img src="theme/images/edit.jpg" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Editor') . '</a>';
 
 
 	echo '<div id="m3xa" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -1612,7 +1612,7 @@ if ($show_menu_left == true and $page != 'login') {
 		echo '<a href="' . $path_tmp . 'page=users"';
 		echo ' onmouseover="mopen(event,\'m4x\',\'?\',\'?\')"';
 		//echo ' onmouseout="mclosetime()"'.$select_top.'>'.__('Users').'</a>';
-		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="images/person_edit.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Users') . '</a>';
+		echo ' onmouseout="mclosetime()"' . $select_top . '><img src="theme/images/person_edit.gif" class="mobile_hidden"><span class="mobile_hidden"> </span>' . __('Users') . '</a>';
 
 		echo '<div id="m4x" class="sddm_abs" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
 		echo '<ul class="humo_menu_item2">';

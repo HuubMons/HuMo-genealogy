@@ -111,7 +111,7 @@ function topline(){
 			$text.= '<a href="'.$settings_url.'" style="display:inline" ';
 			$text.= 'onmouseover="mopen(event,\'help_menu\',0,0)"';
 			$text.= 'onmouseout="mclosetime()">';
-			$text.= '<img src="images/settings.png" alt="'.__('Settings').'">';
+			$text.= '<img src="styles/images/settings.png" alt="'.__('Settings').'">';
 			$text.= '</a> ';
 
 			//$text='<div style="z-index:40; padding:4px; direction:'.$rtlmarker.'" id="help_menu" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
@@ -203,7 +203,7 @@ function topline(){
 					$text.='<input type="hidden" name="descendant_report" value="'.$descendant_report.'">';
 				}
 				//$text.='<input class="fonts" type="Submit" name="submit" value="'.__('PDF Report').'">';
-				//$text.='<input type="image" src="images/pdf.jpeg" width="20" border="0" alt="PDF Report">';
+				//$text.='<input type="image" src="styles/images/pdf.jpeg" width="20" border="0" alt="PDF Report">';
 				$text.='<input class="fonts" style="background-color:#FF0000; color:white; font-weight:bold;" type="Submit" name="submit" value="'.__('PDF').'">';
 			$text.='</form> ';
 		}
@@ -252,11 +252,11 @@ function topline(){
 			if ($descendant_report==true){ echo '<input type="hidden" name="descendant_report" value="1">'; }
 			if ($check==false){
 				$text.='<input type="hidden" name="favorite" value="'.$favorite_values.'">';
-				$text.=' <input type="image" src="images/favorite.png" name="favorite_button" alt="'.__('Add to favourite list').'" />';
+				$text.=' <input type="image" src="styles/images/favorite.png" name="favorite_button" alt="'.__('Add to favourite list').'" />';
 			}
 			else{
 				$text.='<input type="hidden" name="favorite_remove" value="'.$favorite_values.'">';
-				$text.=' <input type="image" src="images/favorite_blue.png" name="favorite_button" alt="'.__('Add to favourite list').'" />';
+				$text.=' <input type="image" src="styles/images/favorite_blue.png" name="favorite_button" alt="'.__('Add to favourite list').'" />';
 			}
 			$text.='</form>';
 		}
@@ -640,7 +640,7 @@ if (!$family_id){
 		// *** Add tip in person screen ***
 		if (!$bot_visit){
 			echo '<div class="print_version"><b>';
-			printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">');
+			printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="styles/images/reports.gif">');
 			echo '</b><br><br></div>';
 		}
 
@@ -929,7 +929,7 @@ else{
 						// *** Add tip in family screen ***
 						if (!$bot_visit AND $descendant_loop==0 AND $parent1_marr==0){
 							echo '<div class="print_version"><b>';
-							printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="images/reports.gif">');
+							printf(__('TIP: use %s for other (ancestor and descendant) reports.'), '<img src="styles/images/reports.gif">');
 							echo '</b><br><br></div>';
 						}
 
