@@ -547,17 +547,17 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	} elseif (CMS_SPECIFIC == 'CMSMS') {
 		// *** Stylesheet links outside header won't validate. styling will be managed in CMS ***
 	} else {
-		echo '<link href="' . CMS_ROOTPATH . 'gedcom.css" rel="stylesheet" type="text/css">';
+		echo '<link href="' . CMS_ROOTPATH . 'styles/gedcom.css" rel="stylesheet" type="text/css">';
 	}
 
 	if (CMS_SPECIFIC != 'CMSMS') {
-		echo '<link href="' . CMS_ROOTPATH . 'print.css" rel="stylesheet" type="text/css" media="print">';
+		echo '<link href="' . CMS_ROOTPATH . 'styles/print.css" rel="stylesheet" type="text/css" media="print">';
 
 		// *** Use your own favicon.ico in media folder ***
 		if (file_exists('media/favicon.ico'))
 			echo '<link rel="shortcut icon" href="' . CMS_ROOTPATH . 'media/favicon.ico" type="image/x-icon">';
 		else
-			echo '<link rel="shortcut icon" href="' . CMS_ROOTPATH . 'favicon.ico" type="image/x-icon">';
+			echo '<link rel="shortcut icon" href="' . CMS_ROOTPATH . 'styles/favicon.ico" type="image/x-icon">';
 	}
 
 	if (isset($user["group_birthday_rss"]) and $user["group_birthday_rss"] == "j") {
@@ -747,7 +747,7 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 	// *** There is also a script in footer.php, otherwise GLightbox doesn't work ***
 
 	// *** CSS changes for mobile devices ***
-	echo '<link rel="stylesheet" media="(max-width: 640px)" href="gedcom_mobile.css">';
+	echo '<link rel="stylesheet" media="(max-width: 640px)" href="styles/gedcom_mobile.css">';
 
 	// *** Extra items in header added by admin ***
 	if ($humo_option["text_header"]) echo "\n" . $humo_option["text_header"];
