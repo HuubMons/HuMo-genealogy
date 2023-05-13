@@ -17,6 +17,5 @@ return [
         'smtp_encryption' => '',
         'email_user' => '',
         'email_password' => ''
-    ],
-    ''
+    ]
 ];
