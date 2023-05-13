@@ -286,7 +286,7 @@ function calculate_rel ($arr_x, $arr_y, $genX, $genY) {
 	}
 	elseif ( $genX > 1 AND $genY == 1 ) {  // x is nephew, great-nephew etc of y
 		$table=4;
-		calculate_nephews ($genX);
+		calculate_nephews ($genX, $genY);
 	}
 	else {  // x and y are cousins of any number (2nd, 3rd etc) and any distance removed (once removed, twice removed etc)
 		$table=5;
@@ -815,7 +815,7 @@ global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseX, $langu
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function calculate_nephews($generX) { // handed generations x is removed from common ancestor
+function calculate_nephews($generX, $generY) { // handed generations x is removed from common ancestor
 global $db_functions, $reltext, $sexe, $sexe2, $spantext, $selected_language, $foundX_nr, $rel_arrayX, $rel_arrayspouseX, $spouse;
 global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 
