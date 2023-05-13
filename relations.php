@@ -816,7 +816,7 @@ global $db_functions, $reltext, $sexe, $sexe2, $spouse, $special_spouseX, $langu
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function calculate_nephews($generX) { // handed generations x is removed from common ancestor
-global $db_functions, $reltext, $sexe, $sexe2, $language, $spantext, $selected_language, $foundX_nr, $rel_arrayX, $rel_arrayspouseX, $spouse;
+global $db_functions, $reltext, $sexe, $sexe2, $spantext, $selected_language, $foundX_nr, $rel_arrayX, $rel_arrayspouseX, $spouse;
 global $reltext_nor, $reltext_nor2; // for Norwegian and Danish
 
 	if($selected_language=="es"){
