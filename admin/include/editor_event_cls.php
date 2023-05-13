@@ -1448,7 +1448,7 @@ function show_event($event_connect_kind,$event_connect_id,$event_kind){
 		//$text.='<tr style="display:none;" class="row53" name="row53"><td class="table_header_large" colspan="4">';
 		$text.='<tr class="table_header_large"><td></td>';
 			$text.='<td style="border-right:0px;"></td>';
-			$text.='<td style="border-left:0px;" colspan="2">';
+			$text.='<td style="border-left:0px;">';
 				//$text.=sprintf(__('Upload new image. Picture max: %1$d MB or media max: %2$d MB.'), '2', '49');
 				$text.=__('Upload new image');
 				$text.=' <input type="file" name="photo_upload">';
