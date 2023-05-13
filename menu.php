@@ -262,9 +262,12 @@ if ($menu_choice == 'help') {
 if ($menu_choice == 'info') {
 	$select_top = ' id="current_top"';
 }
-if ($menu_choice == 'credits') {
+
+// @removed by @Barcha17 see CONTRIBUTORS.md file, this is uselless in application
+/* if ($menu_choice == 'credits') {
 	$select_top = ' id="current_top"';
-}
+} */
+
 if ($menu_choice == 'info_cookies') {
 	$select_top = ' id="current_top"';
 }
@@ -377,7 +380,8 @@ echo '<li' . $select_menu . '><a href="' . $path_tmp . '">';
 printf(__('%s info'), 'HuMo-genealogy');
 echo '</a></li>';
 
-$select_menu = '';
+// @removed by @Barcha17 see CONTRIBUTORS.md file, this is uselless in application
+/* $select_menu = '';
 if ($menu_choice == 'credits') {
 	$select_menu = ' id="current"';
 }
@@ -392,7 +396,7 @@ if (CMS_SPECIFIC == 'Joomla') {
 echo '<li' . $select_menu . '><a href="' . $path_tmp . '">';
 //echo '<li'.$select_menu.' class="mobile_visible"><a href="'.$path_tmp.'">';
 printf(__('%s credits'), 'HuMo-genealogy');
-echo '</a></li>';
+echo '</a></li>'; */
 
 if (!$bot_visit) {
 	$select_menu = '';
@@ -785,9 +789,12 @@ if ($menu_choice == 'help') {
 if ($menu_choice == 'info') {
 	$select_top = ' id="current_top"';
 }
-if ($menu_choice == 'credits') {
+
+// @removed by @Barcha17 see CONTRIBUTORS.md file, this is uselless in application
+/* if ($menu_choice == 'credits') {
 	$select_top = ' id="current_top"';
-}
+} */
+
 if ($menu_choice == 'info_cookies') {
 	$select_top = ' id="current_top"';
 }
@@ -831,7 +838,8 @@ echo '<li' . $select_menu . '><a href="' . $path_tmp . '">';
 printf(__('%s info'), 'HuMo-genealogy');
 echo '</a></li>';
 
-$select_menu = '';
+// @removed by @Barcha17 see CONTRIBUTORS.md file, this is uselless in application
+/* $select_menu = '';
 if ($menu_choice == 'credits') {
 	$select_menu = ' id="current"';
 }
@@ -845,7 +853,7 @@ if (CMS_SPECIFIC == 'Joomla') {
 }
 echo '<li' . $select_menu . '><a href="' . $path_tmp . '">';
 printf(__('%s credits'), 'HuMo-genealogy');
-echo '</a></li>';
+echo '</a></li>'; */
 
 if (!$bot_visit) {
 	$select_menu = '';

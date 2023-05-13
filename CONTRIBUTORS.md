@@ -1,11 +1,6 @@
-<?php
-include_once __DIR__ .'/header.php'; // returns CMS_ROOTPATH constant
-include_once __DIR__ .'/menu.php';
-?>
-<div style="direction:ltr;margin-left:10px">
-<h2>Credits</h2>
+# Contributors
 
-This credits screen is english only...
+## Credits
 
 <ul>
 <li>Huub Mons (project leader, programmer):
@@ -64,9 +59,10 @@ This credits screen is english only...
 	<ul><li>Changes to use HuMo-genealogy into CMS Made Simple.</ul>
 </ul>
 
-<h2>Languages</h2>
+## Languages
 
-HuMo-genealogy uses <a href="https://www.transifex.com/organization/humo-gen" target="_blank">Transifex</a> for translations.
+> HuMo-genealogy uses <a href="https://www.transifex.com/organization/humo-gen" target="_blank">Transifex</a> for translations.
+
 <ul>
 <li>Chinese by: Dongshan.</li>
 <li>Czech: Jerry Verner, David Krchov.</li>
@@ -89,9 +85,6 @@ HuMo-genealogy uses <a href="https://www.transifex.com/organization/humo-gen" ta
 <li>Spanish: jmmayoral, Andres Maurer</li>
 </ul>
 
-<h2>Testers</h2>
+## Testers
 
-Max, Jef, Rob, Dirk...
-</div>
-<?php
-include_once __DIR__ .'/footer.php';
+Max, Jef, Rob, Dirk... and others
