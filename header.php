@@ -742,8 +742,8 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 
 	// *** Always load script, because of "Random photo" at homepage ***
 	// *** Photo lightbox effect using GLightbox ***
-	echo '<link rel="stylesheet" href="' . CMS_ROOTPATH . 'include/glightbox/css/glightbox.css" />';
-	echo '<script src="' . CMS_ROOTPATH . 'include/glightbox/js/glightbox.min.js"></script>';
+	echo '<link rel="stylesheet" href="' . CMS_ROOTPATH . 'externals/glightbox/css/glightbox.css" />';
+	echo '<script src="' . CMS_ROOTPATH . 'externals/glightbox/js/glightbox.min.js"></script>';
 	// *** There is also a script in footer.php, otherwise GLightbox doesn't work ***
 
 	// *** CSS changes for mobile devices ***

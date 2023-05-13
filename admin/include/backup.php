@@ -9,19 +9,15 @@ error_reporting(E_ALL);
 if (!defined('ADMIN_PAGE')) {
 	exit;
 }
-
+const BACKUP_DIR = __DIR__ . '/../../__storage/backup_files/';
 // *** Move and remove files from previous backup procedure ***
-if (file_exists('humo_backup.sql.zip')) {
-	$new_file_name = 'backup_files/' . date("Y_m_d_H_i", filemtime('humo_backup.sql.zip')) . '_humo-genealogy_backup.sql';
+if (file_exists(BACKUP_DIR . 'humo_backup.sql.zip')) {
+	$new_file_name = BACKUP_DIR . date("Y_m_d_H_i", filemtime('humo_backup.sql.zip')) . '_humo-genealogy_backup.sql';
 	rename('humo_backup.sql.zip', $new_file_name);
 
 	if (file_exists('downloadbk.php')) {
 		unlink('downloadbk.php');
 	}
-}
-if (file_exists('backup_tmp/readme.txt')) {
-	unlink('backup_tmp/readme.txt');
-	rmdir('backup_tmp');
 }
 
 echo '<h1 class="center">';
@@ -31,7 +27,7 @@ echo '</h1>';
 // *** Upload backup file ***
 if (isset($_POST['upload_the_file'])) {
 	if (substr($_FILES['upload_file']['name'], -4) == ".sql" or substr($_FILES['upload_file']['name'], -8) == ".sql.zip") {
-		if (move_uploaded_file($_FILES['upload_file']['tmp_name'], './backup_files/' . $_FILES['upload_file']['name'])) {
+		if (move_uploaded_file($_FILES['upload_file']['tmp_name'], BACKUP_DIR . $_FILES['upload_file']['name'])) {
 			// file was successfully uploaded...
 		} else {
 			echo '<span style="color:red;font-weight:bold">' . __('Upload has failed</span> (you may wish to try again or choose to place the file in the admin/backup_files folder yourself with an ftp program or the control panel of your webhost)') . '<br>';
@@ -64,7 +60,7 @@ if (isset($_POST['create_backup'])) {
 }
 
 // *** Get list of backup files ***
-$dh  = opendir('./backup_files');
+$dh  = opendir(BACKUP_DIR);
 while (false !== ($filename = readdir($dh))) {
 	if (substr($filename, -4) == ".sql" or substr($filename, -8) == ".sql.zip") {
 		$backup_files[] = $filename;
@@ -80,7 +76,7 @@ if (isset($backup_files)) {
 echo '<h3>' . __('Download backup file') . '</h3>';
 echo __('We recommend downloading the most recent backup file in case the data on your server (including the backup file) might get deleted or corrupted.') . '<br>';
 if (isset($backup_files[0])) {
-	echo '<a href="backup_files/' . $backup_files[0] . '">' . $backup_files[0] . '</a><br>';
+	echo '<a href="'. $backup_dir . $backup_files[0] . '">' . $backup_files[0] . '</a><br>';
 }
 
 echo '</td></tr>';
@@ -106,7 +102,7 @@ if (!isset($_POST['restore_server'])) {
 
 if ($backup_count > 0) {
 	if (isset($_POST['restore_server'])) {
-		$restore_file = 'backup_files/' . $_POST['select_file'];
+		$restore_file = BACKUP_DIR . $_POST['select_file'];
 		if (is_file($restore_file)) {
 			// *** restore from backup on server made by HuMo-genealogy backup ***
 			echo '<br><span style="color:red">' . __('Starting to restore database. This may take some time. Please wait...') . '</span><br>';
@@ -153,7 +149,7 @@ function backup_tables()
 
 	// *** Cycle through ***
 	// *** Name of backup file: 2023_02_10_12_55_humo-genealogy_backup.sql.zip ***
-	$name = 'backup_files/' . date('Y_m_d_H_i') . '_humo-genealogy_backup.sql';
+	$name = BACKUP_DIR . date('Y_m_d_H_i') . '_humo-genealogy_backup.sql';
 	$handle = fopen($name, 'w+');
 
 	// *** 22-10-2022: Needed for PHP 8.0 ***
