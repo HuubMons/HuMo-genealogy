@@ -18,10 +18,11 @@
 
 ## Versions
 
-|  Version  |  Latest  |   Php   |  Mysql  |      Stage      |
-|:---------:|:--------:|:-------:|:-------:|:---------------:|
-|    5.x    |   5.13   |   > 4   |   ??    |   unmaintened   |
-|    6.x    |  6.1.1.1 |   > 5   |  > 4 ** |     current     |
+|  Version  |  Latest  |   Php   |  Mysql  | Maridbd |      Stage      |
+|:---------:|:--------:|:-------:|:-------:|:-------:|:---------------:|
+|    5.x    |   5.13   |   > 4   |   ??    |   ??    |   unmaintened   |
+|    6.x    |  6.1.1.1 |   > 5   |  > 4 ** |   ??    |     current     |
+|    7.x    |     -    |  > 8.1  |  > 5.7  | > 10.6  |     develop     |
 
 **recommanded 5.5
 
