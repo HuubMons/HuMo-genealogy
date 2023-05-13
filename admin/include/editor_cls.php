@@ -307,4 +307,3 @@ function select_tree($page){
 }
 
 } // *** End of editor class ***
-?>

@@ -2,12 +2,13 @@
 class editor_event_cls{
 
 // *** Encode entire array (for picture array searches) ***
-function utf8ize($d) {
-	foreach($d as $key => $value) {
-		$d[$key] = utf8_encode($value);
-	}
-	return $d;
-}
+//function utf8ize($d) {
+//	foreach($d as $key => $value) {
+//		//deprecated!
+//		$d[$key] = utf8_encode($value);
+//	}
+//	return $d;
+//}
 
 // *** Show event_kind text ***
 function event_text($event_kind){

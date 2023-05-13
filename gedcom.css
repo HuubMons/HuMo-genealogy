@@ -1173,7 +1173,7 @@ td.extended_man a, td.extended_woman a {
 }
 td.extended_man {
 	border-radius: 8px;
-	-moz-border-radius: 8 px;
+	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	
 	box-shadow: inset -1px -1px 1px 1px #bbbbbb;
@@ -1185,7 +1185,7 @@ td.extended_man {
 }
 td.extended_woman {
 	border-radius: 8px;
-	-moz-border-radius: 8 px;
+	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 
 	box-shadow: inset -1px -1px 1px 1px #bbbbbb;
