@@ -8,10 +8,10 @@
 // 18-06-2011 Huub: translated all remarks and variables into English. And did some minor updates.
 // 10-11-2019 Yossi Beck - Added wedding anniversaries and menu
 
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
-include_once(CMS_ROOTPATH."include/language_date.php");
-include_once(CMS_ROOTPATH."include/person_cls.php");
+include_once __DIR__ .'/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ .'/menu.php';
+include_once __DIR__ .'/include/language_date.php';
+include_once __DIR__ .'/include/person_cls.php';
 
 // *** Check user authority ***
 if ($user["group_birthday_list"]!='j'){
@@ -372,5 +372,4 @@ else {
 }
 echo '</div>';
 
-include_once(CMS_ROOTPATH."footer.php");
-?>
+include_once __DIR__ .'/footer.php';

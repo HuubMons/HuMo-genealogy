@@ -133,4 +133,3 @@ function ancestors($main_person){
 		}
 	}
 }
-?>

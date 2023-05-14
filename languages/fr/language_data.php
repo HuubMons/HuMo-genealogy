@@ -1,4 +1,4 @@
 <?php
-$language["name"]="Fran&ccedil;ais";
+$language["name"]="Français";
 $language["dir"]="ltr"; // "ltr" for left-to-right languages, "rtl" for right-to-left languages
-?>
+

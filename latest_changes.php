@@ -1,7 +1,7 @@
 <?php
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
-include_once(CMS_ROOTPATH."include/person_cls.php");
+include_once __DIR__ . '/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ . '/menu.php';
+include_once __DIR__ . '/include/person_cls.php';
 
 // *** Extra safety line ***
 if (!is_numeric($tree_id)) exit;
@@ -98,13 +98,13 @@ while (@$person=$person_result->fetch(PDO::FETCH_OBJ)){
 	echo $person_cls->person_popup_menu($person);
 
 	if ($person->pers_sexe=="M"){
-		echo '<img src="'.CMS_ROOTPATH.'images/man.gif" alt="man">';
+		echo '<img src="'.CMS_ROOTPATH.'styles/images/man.gif" alt="man">';
 	}
 	elseif ($person->pers_sexe=="F"){
-		echo '<img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman">';
+		echo '<img src="'.CMS_ROOTPATH.'styles/images/woman.gif" alt="woman">';
 	}
 	else{
-		echo '<img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown">';
+		echo '<img src="'.CMS_ROOTPATH.'styles/images/unknown.gif" alt="unknown">';
 	}
 
 	// *** Person url example (optional: "main_person=I23"): http://localhost/humo-genealogy/family/2/F10?main_person=I23/ ***
@@ -126,5 +126,4 @@ echo '</table>';
 
 //echo '</div>';
 
-include_once(CMS_ROOTPATH."footer.php");
-?>
+include_once __DIR__ . '/footer.php';

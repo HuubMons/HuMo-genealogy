@@ -1,6 +1,6 @@
 <?php
-include_once("header.php"); // *** returns CMS_ROOTPATH constant ***
-include_once(CMS_ROOTPATH."menu.php");
+include_once __DIR__ .'/header.php'; // *** returns CMS_ROOTPATH constant ***
+include_once __DIR__ .'/menu.php';
 
 // *** Check user authority ***
 if ($user['group_addresses']!='j'){
@@ -8,7 +8,7 @@ if ($user['group_addresses']!='j'){
 	exit();
 }
 
-include_once(CMS_ROOTPATH."include/language_date.php");
+include_once __DIR__ .'/include/language_date.php';
 
 $desc_asc=" ASC "; $sort_desc=0;
 if(isset($_SESSION['sort_desc'])) {
@@ -91,30 +91,30 @@ echo '<div>';
 		//	$style=' style="background-color:#ffffa0"';
 		//	$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 		//}
-		//echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_country&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Country').' <img src="images/button3'.$img.'.png"></a>';
+		//echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_country&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Country').' <img src="styles/images/button3'.$img.'.png"></a>';
 
 		//$style=''; $sort_reverse=$sort_desc; $img='';
 		//if ($selectsort=="sort_state"){
 		//	$style=' style="background-color:#ffffa0"';
 		//	$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 		//}
-		//echo '<th><a href="addresses.php?database='.$database.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_state&sort_desc='.$sort_reverse.'"'.$style.'>'.__('State').' <img src="images/button3'.$img.'.png"></a>';
+		//echo '<th><a href="addresses.php?database='.$database.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_state&sort_desc='.$sort_reverse.'"'.$style.'>'.__('State').' <img src="styles/images/button3'.$img.'.png"></a>';
 
 		$style=''; $sort_reverse=$sort_desc; $img='';
 		if ($selectsort=="sort_place"){
 			$style=' style="background-color:#ffffa0"';
 			$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 		}
-		//echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('City').' <img src="images/button3'.$img.'.png"></a>';
-		echo '<th><a href="addresses.php?database='.$database.'&adr_place='.safe_text_show($adr_place).'&adr_address='.safe_text_show($adr_address).'&sort=sort_place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('City').' <img src="images/button3'.$img.'.png"></a>';
+		//echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('City').' <img src="styles/images/button3'.$img.'.png"></a>';
+		echo '<th><a href="addresses.php?database='.$database.'&adr_place='.safe_text_show($adr_place).'&adr_address='.safe_text_show($adr_address).'&sort=sort_place&sort_desc='.$sort_reverse.'"'.$style.'>'.__('City').' <img src="styles/images/button3'.$img.'.png"></a>';
 
 		$style=''; $sort_reverse=$sort_desc; $img='';
 		if ($selectsort=="sort_address"){
 			$style=' style="background-color:#ffffa0"';
 			$sort_reverse='1'; if ($sort_desc=='1'){ $sort_reverse='0'; $img='up'; }
 		}
-		//echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_address&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Street').' <img src="images/button3'.$img.'.png"></a>';
-		echo '<th><a href="addresses.php?database='.$database.'&adr_place='.safe_text_show($adr_place).'&adr_address='.safe_text_show($adr_address).'&sort=sort_address&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Street').' <img src="images/button3'.$img.'.png"></a>';
+		//echo '<th><a href="addresses.php?database='.$database.'&adr_country='.$adr_country.'&adr_state='.$adr_state.'&adr_place='.$adr_place.'&adr_address='.$adr_address.'&sort=sort_address&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Street').' <img src="styles/images/button3'.$img.'.png"></a>';
+		echo '<th><a href="addresses.php?database='.$database.'&adr_place='.safe_text_show($adr_place).'&adr_address='.safe_text_show($adr_address).'&sort=sort_address&sort_desc='.$sort_reverse.'"'.$style.'>'.__('Street').' <img src="styles/images/button3'.$img.'.png"></a>';
 
 		echo '<th>'.__('Text').'</th>';
 	echo '</tr>';
@@ -148,5 +148,4 @@ echo '<div>';
 	}
 	echo '</table>';
 echo '</div>';
-include_once(CMS_ROOTPATH."footer.php");
-?>
+include_once __DIR__ .'/footer.php';

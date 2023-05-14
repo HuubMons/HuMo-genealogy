@@ -1,6 +1,6 @@
 <?php
-include_once("header.php"); // returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."menu.php");
+include_once __DIR__ .'/header.php'; // returns CMS_ROOTPATH constant
+include_once __DIR__ .'/menu.php';
 
 if ($user['group_menu_cms']!='y'){
 	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
@@ -85,5 +85,4 @@ echo '<div id="mainmenu_centerbox">';
 
 echo '</div>';
 
-include_once(CMS_ROOTPATH."footer.php");
-?>
+include_once __DIR__ .'/footer.php';
