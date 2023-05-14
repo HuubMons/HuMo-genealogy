@@ -14,13 +14,10 @@ global $treetext_name, $treetext_mainmenu_text, $treetext_mainmenu_source, $tree
 
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
 include_once __DIR__ . '/../include/db_login.php'; // *** Database login ***
-
 include_once __DIR__ . '/../include/safe.php'; // Variables
-
-// *** Function to show family tree texts ***
-include_once __DIR__ . '/../include/show_tree_text.php';
-
+include_once __DIR__ . '/../include/show_tree_text.php'; // to show family tree texts
 include_once __DIR__ . '/../include/db_functions_cls.php';
+
 $db_functions = new db_functions();
 
 // *** Added juli 2019: Person functions ***
@@ -437,16 +434,16 @@ Load_default_textdomain();
 //Load_textdomain('customer_domain', 'languages/'.$selected_language.'/'.$selected_language.'.mo');
 
 // *** Process LTR and RTL variables ***
-/* $dirmark1 = "&#x200E;";  //ltr marker
+$dirmark1 = "&#x200E;";  //ltr marker
 $dirmark2 = "&#x200F;";  //rtl marker
-$rtlmarker = "ltr"; */
+$rtlmarker = "ltr"; 
 
 // *** Switch direction markers if language is RTL ***
-/* if ($language["dir"] == "rtl") {
+if ($language["dir"] == "rtl") {
 	$dirmark1 = "&#x200F;";  //rtl marker
 	$dirmark2 = "&#x200E;";  //ltr marker
 	$rtlmarker = "rtl";
-} */
+} 
 
 // *** Process login form ***
 $fault = false;
@@ -478,10 +475,9 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 		if (isset($resultDb->user_2fa_enabled) and $resultDb->user_2fa_enabled) {
 			$valid_user = false;
 			$fault = true;
-			include_once(CMS_ROOTPATH . "include/2fa_authentication/authenticator.php");
-
+			require_once __DIR__ . "/nextlib/Authenticator2fa";
 			if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
-				$Authenticator = new Authenticator();
+				$Authenticator = new Authenticator2fa();
 				$checkResult = $Authenticator->verifyCode($resultDb->user_2fa_auth_secret, $_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
 				if ($checkResult) {
 					$valid_user = true;

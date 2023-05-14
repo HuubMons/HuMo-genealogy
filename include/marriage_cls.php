@@ -39,7 +39,7 @@ class marriage_cls
 	// ***************************************************
 	// *** Show marriage                               ***
 	// ***************************************************
-	function marriage_data($marriageDb = '', $number = '0', $presentation = 'standard')
+	function marriage_data($marriageDb, $number = '0', $presentation = 'standard')
 	{
 		global $dbh, $db_functions, $tree_prefix_quoted, $url_path, $dataDb, $uri_path, $humo_option;
 		global $language, $user, $screen_mode;

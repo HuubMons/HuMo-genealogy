@@ -8,7 +8,7 @@ if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "admin/");
 include_once __DIR__ . '/include/db_login.php'; //Inloggen database.
 include_once __DIR__ . '/include/show_tree_text.php';
 include_once __DIR__ . '/include/db_functions_cls.php';
-$db_functions = new db_functions;
+$db_functions = new db_functions();
 
 // *** Show a message at NEW installation. Use "try" for PHP 8.1. ***
 try {
@@ -89,10 +89,10 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 		if (isset($user->user_2fa_enabled) and $user->user_2fa_enabled) {
 			$valid_user = false;
 			$fault = true;
-			include_once __DIR__ . '/include/2fa_authentication/authenticator.php';
+			require __DIR__ . '/nextlib/Authenticator2fa.php';
 
 			if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
-				$Authenticator = new Authenticator();
+				$Authenticator = new Authenticator2fa();
 				$checkResult = $Authenticator->verifyCode($user->user_2fa_auth_secret, $_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
 				if ($checkResult) {
 					$valid_user = true;
@@ -335,8 +335,8 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 
 	// *** june 2022: FPDF supports romanian and greek characters ***
 	//define('FPDF_FONTPATH',"include/fpdf16//font/unifont");
-	require __DIR__ . '/include/tfpdf/tfpdf.php';
-	require __DIR__ . '/include/tfpdf/tfpdfextend.php';
+	require __DIR__ . '/externals/tfpdf/tfpdf.php';
+	require __DIR__ . '/externals/tfpdf/tfpdfextend.php';
 
 	// *** Set variabele for queries ***
 	$tree_prefix_quoted = safe_text_db($_SESSION['tree_prefix']);
@@ -691,4 +691,4 @@ if (isset($screen_mode) and ($screen_mode == 'PDF' or $screen_mode == "ASPDF")) 
 
 	echo '<div class="silverbody">';
 	// *** End of PDF export check ***
-} 
+}

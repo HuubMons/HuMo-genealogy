@@ -15,8 +15,6 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
 * GNU General Public License for more details.                              *
 ****************************************************************************/
-//error_reporting(E_ALL);
-@set_time_limit(3000);
 
 global $maxperson, $treeid, $chosengen, $fontsize, $date_display, $person_id, $printing, $fan_style, $fanw, $fanh, $indexnr;
 

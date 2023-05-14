@@ -11,8 +11,6 @@ if ($user['group_sources'] != 'j') {
 include_once __DIR__ . '/include/language_date.php';
 include_once __DIR__ . '/include/date_place.php';
 
-@set_time_limit(300);
-
 // *** Search ***
 $source_search = '';
 if (isset($_POST['source_search'])) {
