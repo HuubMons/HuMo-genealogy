@@ -14,11 +14,11 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/Exception.php';
+require __DIR__ . '/../externals/phpmailer/src/PHPMailer.php';
+require __DIR__ . '/../externals/phpmailer/src/Exception.php';
 
 if ($humo_option["mail_auto"] == 'auto') {
-	require 'phpmailer/src/SMTP.php';
+	require __DIR__ . '/../externals/phpmailer/src/SMTP.php';
 }
 
 // *** Create a new PHPMailer instance ***
