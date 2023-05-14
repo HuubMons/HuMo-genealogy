@@ -7,11 +7,11 @@
  * sep. 2014 Huub: added this script to HuMo-genealogy.
  */
 
-include_once("header.php"); //returns CMS_ROOTPATH constant
-include_once(CMS_ROOTPATH."include/language_date.php");
-include_once(CMS_ROOTPATH."include/date_place.php");
-include_once(CMS_ROOTPATH."include/person_cls.php");
-include_once(CMS_ROOTPATH."include/marriage_cls.php");
+include_once __DIR__ . '/header.php'; //returns CMS_ROOTPATH constant
+include_once __DIR__ . '/include/language_date.php';
+include_once __DIR__ . '/include/date_place.php';
+include_once __DIR__ . '/include/person_cls.php';
+include_once __DIR__ . '/include/marriage_cls.php';
 
 //error_reporting(E_ALL);
 @set_time_limit(300);
@@ -92,11 +92,11 @@ function show_person($familyDb){
 
 	// *** Show picture man or wife ***
 	if ($personDb->pers_sexe=="M")
-		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'images/man.gif" alt="man" style="vertical-align:top">';
+		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'styles/images/man.gif" alt="man" style="vertical-align:top">';
 	elseif ($personDb->pers_sexe=="F")
-		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'images/woman.gif" alt="woman" style="vertical-align:top">';
+		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'styles/images/woman.gif" alt="woman" style="vertical-align:top">';
 	else
-		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'images/unknown.gif" alt="unknown" style="vertical-align:top">';
+		echo $dirmark1.' <img src="'.CMS_ROOTPATH.'styles/images/unknown.gif" alt="unknown" style="vertical-align:top">';
 
 	echo '</td><td style="border-left:0px;">';
 
@@ -355,7 +355,7 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 // *** Generate indexlist ***
 // **************************
 
-	include_once(CMS_ROOTPATH."menu.php");
+	include_once __DIR__ . '/menu.php';
 
 	//*** Show number of persons and pages *****************************************
 	$item=0; if (isset($_GET['item'])){ $item=$_GET['item']; }
@@ -369,10 +369,9 @@ $query.=' ORDER BY place_order, substring(fam_marr_date,-4)';
 		$result= $dbh->query($count_qry);
 		@$resultDb = $result->fetch(PDO::FETCH_OBJ);
 		$count_persons=@$resultDb->teller; 
-	}
-	else{  
+	} else {  
 		// *** USE SQL_CALC_FOUND_ROWS for complex queries (faster than mysql count) ***
-		$result = $dbh->query("SELECT FOUND_ROWS() AS 'found_rows'");
+		$result = $dbh->query("SELECT FOUND_ROWS() AS found_rows ");
 		$rows = $result->fetch();
 		$count_persons = $rows['found_rows'];   
 	}
@@ -615,5 +614,4 @@ echo '<script type="text/javascript">
 //echo '<p>index_list: '.$index_list;
 //echo '<br>nr. of persons: '.$count_persons;
 
-include_once(CMS_ROOTPATH."footer.php");
-?>
+include_once __DIR__ . '/footer.php';

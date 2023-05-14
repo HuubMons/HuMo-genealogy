@@ -1,0 +1,75 @@
+.ltrsddm{
+	margin: 0;
+	padding: 0;
+	z-index: 30;
+}
+
+.ltrsddm div{
+	visibility: hidden;
+	margin: 0;
+	padding: 0;
+	background: #EAEBD8;
+	border: 1px solid #5970B2;
+	display : inline;
+}
+
+.ltrsddm div a{
+	position: relative;
+	display: block;
+	margin: 0;
+	padding: 5px 10px;
+	width:auto;
+	white-space: nowrap;
+	text-align: left;
+	text-decoration: none;
+	background: #EAEBD8;
+	color: #2875DE;
+	/* font: 11px arial; */
+	font: 14px arial;
+}
+
+.ltrsddm div a:hover{
+	background: #49A3FF;
+	color: #FFF;
+}
+
+/* SAME CSS BUT FOR RTL DISPLAY (text-align:right) */
+
+.rtlsddm{
+	margin: 0;
+	padding: 0;
+	z-index: 30;
+}
+
+.rtlsddm div{
+	visibility: hidden;
+	margin: 0;
+	padding: 0;
+	background: #EAEBD8;
+	border: 1px solid #5970B2;
+	display : inline;
+}
+
+.rtlsddm div a{
+	position: relative;
+	display: block;
+	margin: 0;
+	padding: 5px 10px;
+	width: 120px;  /* "auto" creates problem with mixed rtl-ltr menu items and anyway streches according to name! */
+	white-space: nowrap;
+	text-align: right;
+	text-decoration: none;
+	background: #EAEBD8;
+	color: #2875DE;
+	/* font: 11px arial; */
+	font: 14px arial;
+}
+
+.rtlsddm div a:hover{
+	background: #49A3FF;
+	color: #FFF;
+}
+
+/* For absolute positioning, in main menu */
+.sddm_abs { position: absolute; }
+.sddm_fixed { position: fixed; }
