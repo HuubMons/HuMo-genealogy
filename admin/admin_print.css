@@ -1,0 +1,28 @@
+html {
+	padding:0;
+	margin:0;
+	border:0;
+	overflow: visible; 
+}
+
+body {
+	background-color:white;
+	background-image:none;
+	font-family: Trebuchet MS, Arial, sans-serif;
+	font-size: 14px;
+	height:auto; max-height:auto;
+	overflow:visible;  
+	padding:0; margin:0; border:0;
+	float:none;
+}
+ 
+.button {display:none; }
+.table_header {display:none; }
+div#humo_top { display:none; }
+img { display:none; }
+span.noprint { display:none; }
+
+A:link {text-decoration: none; color:black;}
+A:visited {text-decoration: none; color:black;}
+A:active {text-decoration: none; color:black;}
+A:hover {text-decoration: none; color:black;}
