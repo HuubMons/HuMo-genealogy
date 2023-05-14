@@ -102,14 +102,14 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 		}
 
 		if ($valid_user) {
-			$_SESSION['user_name'] = $resultDb->user_name;
-			$_SESSION['user_id'] = $resultDb->user_id;
-			$_SESSION['user_group_id'] = $resultDb->user_group_id;
+			$_SESSION['user_name'] = $user->user_name;
+			$_SESSION['user_id'] = $user->user_id;
+			$_SESSION['user_group_id'] = $user->user_group_id;
 
 			// *** Save succesful login into log! ***
 			$sql = "INSERT INTO humo_user_log SET
 				log_date='" . date("Y-m-d H:i") . "',
-				log_username='" . $resultDb->user_name . "',
+				log_username='" . $user->user_name . "',
 				log_ip_address='" . $_SERVER['REMOTE_ADDR'] . "',
 				log_user_admin='user',
 				log_status='success'";
