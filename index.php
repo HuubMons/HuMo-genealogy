@@ -64,15 +64,12 @@ if (isset($humo_option["slideshow_show"]) AND $humo_option["slideshow_show"]=='y
 	$mainindex->show_slideshow();
 }
 
-if ($text){
-	// *** Can be used for extra box in lay-out ***
-	echo '<div id="mainmenu_centerbox">';
-		// *** Show CMS page ***
-		echo $text;
-	echo '</div>';
-}
-else{
-	// *** Show default HuMo-genealogy homepage ***
+if ($text) { // *** Show cms page *** ?>
+	<div id="mainmenu_centerbox">
+		<?= $text; ; ?>
+	</div>
+<?php } else { // *** Show default HuMo-genealogy homepage ***
+	
 	$mainindex->show_tree_index();
 }
 

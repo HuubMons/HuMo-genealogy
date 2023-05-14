@@ -81,19 +81,19 @@ array_multisort($language_order, $language_file);
 // *** Log in ***
 $valid_user = false;
 if (isset($_POST["username"]) && isset($_POST["password"])) {
-	$resultDb = $db_functions->get_user($_POST["username"], $_POST["password"]);
-	if ($resultDb) {
+	$user = $db_functions->get_user($_POST["username"], $_POST["password"]);
+	if ($user) {
 		$valid_user = true;
 
 		// *** 2FA is enabled, so check 2FA code ***
-		if (isset($resultDb->user_2fa_enabled) and $resultDb->user_2fa_enabled) {
+		if (isset($user->user_2fa_enabled) and $user->user_2fa_enabled) {
 			$valid_user = false;
 			$fault = true;
 			include_once __DIR__ . '/include/2fa_authentication/authenticator.php';
 
 			if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
 				$Authenticator = new Authenticator();
-				$checkResult = $Authenticator->verifyCode($resultDb->user_2fa_auth_secret, $_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
+				$checkResult = $Authenticator->verifyCode($user->user_2fa_auth_secret, $_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
 				if ($checkResult) {
 					$valid_user = true;
 					$fault = false;

@@ -2,7 +2,6 @@
 // ********************************************************
 // *** Show sources at birth, baptise, marriage, etc.   ***
 // ********************************************************
-//error_reporting(E_ALL);
 
 /* *** Source function ***
 	function show_sources2
@@ -336,14 +335,6 @@ function show_sources_footnotes()
 					}
 				}
 			}
-
-			//OLD CODE
-			//else{
-			//	// *** No shared source connected ***
-			//	$text.='<a name="source_ref'.($j+1).'">'.($j+1).')</a>';
-			//	// *** Source extra text ***
-			//	$text.=' '.nl2br($connectDb->connect_text);
-			//}
 
 			// *** Show rest of source items ***
 

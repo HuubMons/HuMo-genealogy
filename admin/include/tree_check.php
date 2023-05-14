@@ -4,6 +4,8 @@ if (!defined('ADMIN_PAGE')) {
 	exit;
 }
 
+require __DIR__ . '/../../nextlib/DateValidator.php';
+
 global $selected_language;
 
 include_once __DIR__ . '/../../include/language_date.php';
@@ -288,6 +290,7 @@ if (isset($_POST['last_changes'])) {
 		//return strcmp($a[4], $b[4]);	// ascending
 		return strcmp($b[4], $a[4]);	// descending
 	}
+
 	usort($result_array, "cmp");
 
 	// *** Show results ***
@@ -1677,8 +1680,9 @@ function write_pers($name, $id, $first_date, $second_date, $first_text, $second_
 function invalid($date, $gednr, $table)
 {  // checks validity with validate_cls.php and displays invalid dates and their details
 	global $dbh, $db_functions, $tree_id, $direction, $dirmark1, $dirmark2;
-	include_once __DIR__ . '/../../include/validate_date_cls.php';
-	$process_date = new validate_date_cls;
+	
+	$dateValidator = new DateValidator();
+
 	$compare_date = $date;
 	if (strpos($date, '/') > 0) { // check for combined julian/gregorian date entries like 1654/5 and check the first part
 		$temp = explode('/', $date);
@@ -1690,7 +1694,7 @@ function invalid($date, $gednr, $table)
 		// in the first part and will be listed, while the list will display the original invalid full jul/greg date as we want.
 	}
 
-	if ($process_date->check_date(strtoupper($compare_date)) === null) { // invalid date
+	if ($dateValidator->check_date(strtoupper($compare_date)) === null) { // invalid date
 		if (substr($table, 0, 3) == "per") {
 			$personDb = $db_functions->get_person($gednr);
 			$name = $personDb->pers_firstname . ' ' . str_replace("_", " ", $personDb->pers_prefix . ' ' . $personDb->pers_lastname);
