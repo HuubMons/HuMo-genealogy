@@ -1,37 +1,33 @@
 <?php
-@set_time_limit(300);
 
-if (isset($_GET["id"])) { // source.php is called from show_sources.php, sources.php
-	$sourcenumber = $_GET["id"];
-	source_display($sourcenumber);
+/**
+ * source.php is called from show_sources.php, sources.php
+ */
+if (isset($_GET["id"])) {
+	source_display($_GET["id"]);
 }
 
-/*--------------------[source_display]----------------------------
+/**
  * Show a single source.
  * RETURNS: shows a single source.
- *    NOTE: function can be called from sources.php and show_sources.php.
- *----------------------------------------------------------------
  */
-function source_display($sourcenum)
+function source_display(int $sourcenum)
 {
 	global $dbh, $db_functions, $tree_id, $dataDb, $user, $pdf, $screen_mode, $language, $humo_option;
-
-	if ($screen_mode != "PDF") {
-		include_once __DIR__ . '/header.php'; //returns CMS_ROOTPATH constant
-		include_once __DIR__ . '/menu.php';
-		include_once __DIR__ . '/include/date_place.php';
-		include_once __DIR__ . '/include/process_text.php';
-		// *** Needed for pictures by a source ***
-		include_once __DIR__ . '/include/show_picture.php';
-		include_once __DIR__ . '/include/show_sources.php';
-	}
-
+	
 	// *** Check user authority ***
 	if ($user['group_sources'] != 'j') {
 		echo __('You are not authorised to see this page.');
 		exit();
 	}
+
 	if ($screen_mode != "PDF") {
+		include_once __DIR__ . '/header.php';
+		include_once __DIR__ . '/menu.php';
+		include_once __DIR__ . '/include/date_place.php';
+		include_once __DIR__ . '/include/process_text.php';
+		include_once __DIR__ . '/include/show_picture.php';// Needed for pictures by a source
+		include_once __DIR__ . '/include/show_sources.php';
 		include_once __DIR__ . '/include/language_date.php';
 		include_once __DIR__ . '/include/person_cls.php';
 		echo '<table class="humo standard">';
@@ -41,7 +37,7 @@ function source_display($sourcenum)
 	$sourceDb = $db_functions->get_source($sourcenum);
 
 	// *** Check if visitor tries to see restricted sources ***
-	if ($user['group_show_restricted_source'] == 'n' and $sourceDb->source_status == 'restricted') exit(__('No valid source number.'));
+	if ($user['group_show_restricted_source'] == 'n' && $sourceDb->source_status == 'restricted') exit(__('No valid source number.'));
 
 	// *** If an unknown source ID is choosen, exit function ***
 	if (!isset($sourceDb->source_id)) exit(__('No valid source number.'));

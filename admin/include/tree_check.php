@@ -102,7 +102,7 @@ if (isset($_POST['last_changes'])) {
 
 	$person_cls = new person_cls;
 	$row = 0;
-
+	$result_array = [];
 	if ($show_persons) {
 		if ($editor) {
 			// *** Show latest changes and additions: editor is selected ***
@@ -291,7 +291,9 @@ if (isset($_POST['last_changes'])) {
 		return strcmp($b[4], $a[4]);	// descending
 	}
 
-	usort($result_array, "cmp");
+	if (!empty($result_array)) {
+		usort($result_array, "cmp");
+	}
 
 	// *** Show results ***
 	for ($row = 0; $row < count($result_array); $row++) {

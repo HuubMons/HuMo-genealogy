@@ -13,9 +13,6 @@ include_once __DIR__ . '/include/date_place.php';
 include_once __DIR__ . '/include/person_cls.php';
 include_once __DIR__ . '/include/marriage_cls.php';
 
-//error_reporting(E_ALL);
-@set_time_limit(300);
-
 // *** show person ***
 function show_person($familyDb){
 	global $dbh, $db_functions, $tree_id, $selected_place, $language, $user;

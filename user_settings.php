@@ -1,7 +1,8 @@
 <?php
 include_once __DIR__ . '/header.php';
 include_once  __DIR__ . '/menu.php';
-include_once  __DIR__ . '/include/2fa_authentication/authenticator.php';
+include_once  __DIR__ . '/nextlib/Authenticator2fa.php';
+
 $two_fa_change = false;
 
 if (isset($_SESSION['user_id']) and is_numeric($_SESSION['user_id'])) {
@@ -47,7 +48,7 @@ if (isset($_POST['update_settings'])) {
 			if (isset($_POST['user_2fa_enabled']) and !$userDb->user_2fa_enabled) {
 				$two_fa_change = true;
 				if ($_POST['2fa_code'] and is_numeric($_POST['2fa_code'])) {
-					$Authenticator = new Authenticator();
+					$Authenticator = new Authenticator2fa();
 					$checkResult = $Authenticator->verifyCode($userDb->user_2fa_auth_secret, $_POST['2fa_code'], 2);		// 2 = 2*30sec clock tolerance
 					if (!$checkResult) {
 						$result_message = __('Wrong 2FA code. Please enter valid 2FA code to enable 2FA authentication.') . '<br>';
@@ -162,7 +163,7 @@ if (isset($userDb->user_name)) {
 		// *** Only check 2FA is database is updated ***
 		if (isset($userDb->user_2fa_auth_secret)) {
 			// *** 2FA Two factor authentification ***
-			$Authenticator = new Authenticator();
+			$Authenticator = new Authenticator2fa();
 			if ($userDb->user_2fa_auth_secret) {
 				$user_2fa_auth_secret = $userDb->user_2fa_auth_secret;
 			} else {
