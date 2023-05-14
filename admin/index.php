@@ -1,54 +1,9 @@
 <?php
 
-/**
- * This is the admin web entry point for HuMo-genealogy.
- *
- * If you are reading this in your web browser, your server is probably
- * not configured correctly to run PHP applications!
- *
- * See the manual for basic setup instructions
- *
- * https://humo-gen.com
- *
- * ----------
- *
- * Copyright (C) 2008-2023 Huub Mons,
- * Klaas de Winkel, Jan Maat, Jeroen Beemster, Louis Ywema, Theo Huitema,
- * René Janssen, Yossi Beck
- * and others.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/* *** CMS_SPECIFIC: when run from CMS, this will contain it's name. ***
-	Names:
-		- CMS names used for now are 'Joomla' and 'CMSMS'.
-	Usage:
-		- Code for all CMS: if (CMS_SPECIFIC) {}
-		- Code for one CMS: if (CMS_SPECIFIC == 'Joomla') {}
-		- Code NOT for CMS: if (!CMS_SPECIFIC) {}
-*/
-
-if (!defined("CMS_SPECIFIC")) define("CMS_SPECIFIC", false);
 if (!defined("CMS_ROOTPATH")) define("CMS_ROOTPATH", "../");
-// *** When run from CMS, the path to the parent-map that contains this file should be given ***
 if (!defined("CMS_ROOTPATH_ADMIN")) define("CMS_ROOTPATH_ADMIN", "");
-if (!CMS_SPECIFIC) {
-	session_start();
-	// *** Regenerate session id regularly to prevent session hacking ***
-	session_regenerate_id();
-}
+
+require __DIR__ . '/../config/bootstrap.php';
 
 $page = 'index';
 
@@ -56,32 +11,9 @@ $page = 'index';
 global $menu_admin, $tree_id, $language_file, $page, $language_tree, $data2Db;
 global $treetext_name, $treetext_mainmenu_text, $treetext_mainmenu_source, $treetext_family_top, $treetext_family_footer, $treetext_id;
 
-// DISABLED because the SECURED PAGE message was shown regularly.
-// *** Prevent Session hijacking ***
-//if (isset( $_SESSION['current_ip_address']) AND $_SESSION['current_ip_address'] != $_SERVER['REMOTE_ADDR']){
-//	// *** Remove login session if IP address is changed ***
-//	echo 'BEVEILIGDE BLADZIJDE/ SECURED PAGE';
-//		// *** Test ***
-//		//echo '<br>'.$_SESSION['current_ip_address'].'<br>';
-//		//echo $_SERVER['REMOTE_ADDR'];
-//	session_unset();
-//	session_destroy();
-//	die();
-//}
-
-// *** Only logoff admin ***
-if (isset($_GET['log_off'])) {
-	unset($_SESSION['user_name_admin']);
-	unset($_SESSION['user_id_admin']);
-	unset($_SESSION['group_id_admin']);
-}
 
 $ADMIN = TRUE; // *** Override "no database" message for admin ***
 include_once __DIR__ . '/../include/db_login.php'; // *** Database login ***
-
-// *** Use UTF-8 database connection ***
-//@mysql_query("SET NAMES 'utf8'", $db);
-//@$dbh->query("SET NAMES 'utf8'");
 
 include_once __DIR__ . '/../include/safe.php'; // Variables
 
@@ -242,10 +174,7 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 		function remove_the_folders($remove_folders)
 		{
 			global $update_dir, $update_files;
-			//echo '<br><br><br><br><br><br><br>';
 			foreach ($remove_folders as $rf) {
-				//unset ($update_dir,$update_files);
-				//echo $rf.' folder<br>';
 				if (is_dir($rf)) {
 					// *** Remove these old HuMo-genealogy files, a__ is just some random text (skip items)... ***
 					listFolderFiles2($rf, array('a__', 'a__'), 'update_files');
@@ -381,18 +310,6 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 
 		$show_menu_left = true;
 
-		// *** Debug HuMo-genealogy`admin pages ***
-		if ($humo_option["debug_admin_pages"] == 'y') {
-			error_reporting(E_ALL);
-			ini_set('display_errors', 1);
-		}
-
-		// *** Check if visitor is allowed ***
-		if (!$db_functions->check_visitor($_SERVER['REMOTE_ADDR'])) {
-			echo 'Access to website is blocked.';
-			exit;
-		}
-
 		// *** Added in mar. 2023. To prevent double results in search results ***
 		//SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 		$result = $dbh->query("SET SESSION sql_mode=(SELECT
@@ -441,12 +358,6 @@ if (isset($database_check) and @$database_check) {  // otherwise we can't make $
 		$popup = true;
 	}
 }
-
-// *** Set timezone ***
-include_once __DIR__ . '/../include/timezone.php'; // set timezone 
-timezone();
-// *** TIMEZONE TEST ***
-//echo date("Y-m-d H:i");
 
 // *** Language selection for admin ***
 $map = opendir(CMS_ROOTPATH . 'languages/');
@@ -526,16 +437,16 @@ Load_default_textdomain();
 //Load_textdomain('customer_domain', 'languages/'.$selected_language.'/'.$selected_language.'.mo');
 
 // *** Process LTR and RTL variables ***
-$dirmark1 = "&#x200E;";  //ltr marker
+/* $dirmark1 = "&#x200E;";  //ltr marker
 $dirmark2 = "&#x200F;";  //rtl marker
-$rtlmarker = "ltr";
+$rtlmarker = "ltr"; */
 
 // *** Switch direction markers if language is RTL ***
-if ($language["dir"] == "rtl") {
+/* if ($language["dir"] == "rtl") {
 	$dirmark1 = "&#x200F;";  //rtl marker
 	$dirmark2 = "&#x200E;";  //ltr marker
 	$rtlmarker = "rtl";
-}
+} */
 
 // *** Process login form ***
 $fault = false;
@@ -694,55 +605,30 @@ if (isset($_SESSION['current_ip_address']) == FALSE) {
 	$_SESSION['current_ip_address'] = $_SERVER['REMOTE_ADDR'];
 }
 
-if (!CMS_SPECIFIC) {
-	// *** Generate header of HTML pages ***
-	echo '<!DOCTYPE html>' . "\n";
+if (!CMS_SPECIFIC) { ?>
 
-	$html_text = "\n<html>\n";
-	if ($language["dir"] == "rtl") {   // right to left language
-		$html_text = "\n<html dir='rtl'>\n";
-	}
-	if (isset($screen_mode) and ($screen_mode == "STAR" or $screen_mode == "STARSIZE")) {
-		$html_text = "\n<html>\n";
-	}
-	echo $html_text;
-	echo "<head>\n";
-	echo '<meta http-equiv="content-type" content="text/html; charset=utf-8">' . "\n";
+<!DOCTYPE html>
+<html lang="<?= $selected_language; ?>">
 
-	// *** Rescale standard HuMo-genealogy pages for mobile devices ***
-	echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
-
-	echo '<title>' . __('Administration') . '</title>' . "\n";
-
-	// *** Use your own favicon.ico in media folder ***
-	if (file_exists('../media/favicon.ico'))
-		echo '<link rel="shortcut icon" href="../media/favicon.ico" type="image/x-icon">';
-	else
-		echo '<link href="' . CMS_ROOTPATH . 'styles/favicon.ico" rel="shortcut icon" type="image/x-icon">';
-
-	echo '<link href="theme/css/admin.css" rel="stylesheet" type="text/css">';
-	echo '<link href="statistics/style.css" rel="stylesheet" type="text/css">'; // STYLE SHEET VOOR GRAFIEK
-	echo '<link href="theme/css/admin_print.css" rel="stylesheet" type="text/css" media="print">';
-
-	// *** CSS changes for mobile devices ***
-	echo '<link rel="stylesheet" media="(max-width: 640px)" href="theme/css/admin_mobile.css">';
-
-	echo '<script src="' . CMS_ROOTPATH . 'externals/jquery/jquery.min.js"></script> ';
-	echo '<script src="' . CMS_ROOTPATH . 'externals/jqueryui/jquery-ui.min.js"></script>';
-
-	echo '<script type="text/javascript" src="include/popup_merge.js"></script>';
-
-	// *** Main menu pull-down ***
-	echo '<link rel="stylesheet" type="text/css" href="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.css">';
-
-	// *** Pop-up menu ***
-	echo '<script type="text/javascript" src="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.js"></script>';
-
-	echo '</head>';
-
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title><?= __('Administration'); ?></title>
+	<link href="<?= CMS_ROOTPATH; ?>styles/favicon.ico" rel="shortcut icon" type="image/x-icon">
+	<link href="theme/css/admin.css" rel="stylesheet" type="text/css">
+	<link href="statistics/style.css" rel="stylesheet" type="text/css">
+	<link href="theme/css/admin_print.css" rel="stylesheet" type="text/css" media="print">
+	<link rel="stylesheet" media="(max-width: 640px)" href="theme/css/admin_mobile.css">
+	<script src="<?= CMS_ROOTPATH; ?>externals/jquery/jquery.min.js"></script>
+	<script src="<?= CMS_ROOTPATH; ?>externals/jqueryui/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="include/popup_merge.js"></script>
+	<link rel="stylesheet" type="text/css" href="<?= CMS_ROOTPATH; ?>include/popup_menu/popup_menu.css">
+	<script type="text/javascript" src="<?= CMS_ROOTPATH; ?>include/popup_menu/popup_menu.js"></script>
+</head>
+<?php
 	// *** Close pop-up screen and update main screen ***
 	if (isset($_GET['page']) and $_GET['page'] == 'close_popup') {
-		echo '<script type="text/javascript">';
+		
 		$page_link = 'editor';
 		// *** Also add these links in "Close source screen" link ***
 		if (isset($_GET['connect_sub_kind'])) {
@@ -759,13 +645,12 @@ if (!CMS_SPECIFIC) {
 
 		if (isset($_GET['event_person']) and $_GET['event_person'] == '1')
 			$page_link = 'editor&event_person=1#event_person_link'; // Don't use &amp;
-		//if (isset($_GET['event_family']) AND $_GET['event_family']=='1')
-		//	$page_link='editor&event_family=1#event_family_link'; // Don't use &amp;
-		// *** Added May 2021: For multiple marriages ***
+
 		if (isset($_GET['event_family']) and $_GET['event_family'] == '1')
 			$page_link = 'editor&event_family=1&marriage_nr=' . $_SESSION['admin_fam_gedcomnumber'] . '#event_family_link'; // Don't use &amp;
 
-
+			
+		echo '<script type="text/javascript">';
 		echo 'function redirect_to(where, closewin){
 				opener.location= \'index.php?page=' . $page_link . '\' + where;
 				if (closewin == 1){ self.close(); }
@@ -779,50 +664,29 @@ if (!CMS_SPECIFIC) {
 	} else {
 		echo '<body class="humo">';
 	}
-} else {
-	JHTML::stylesheet('admin_joomla.css', CMS_ROOTPATH . 'admin/');
-	JHTML::stylesheet('v1.css', CMS_ROOTPATH . 'admin/menu/');
-	JHTML::stylesheet('style.css', CMS_ROOTPATH . 'admin/statistics/');
-
-	// *** Main menu pull-down ***
-	if (CMS_SPECIFIC != 'CMSMS') {
-		JHTML::stylesheet('popup_menu.css', CMS_ROOTPATH . 'include/popup_menu/');
-	}
-
-	// *** Pop-up menu ***
-	echo '<script type="text/javascript" src="' . CMS_ROOTPATH . 'include/popup_menu/popup_menu.js"></script>';
 }
 
 // *** Show top menu ***
-
 if (CMS_SPECIFIC == 'Joomla') {
 	$path_tmp = 'index.php?option=com_humo-gen&amp;task=admin&amp;';
 } else {
 	$path_tmp = 'index.php?';
 }
 
-$top_dir = '';
-if ($language["dir"] == "rtl") {
-	$top_dir = 'style = "text-align:right" ';
-}
+$top_dir = $language["dir"] == "rtl" ? 'style="text-align:right"' : '';
 
-if ($popup == false) {
-	echo '<div id="humo_top" ' . $top_dir . '>';
-} else {
-	echo '<div id="humo_top" style="height:auto;">';
-}
+if ($popup == false) { ?>
+	<div id="humo_top" ' . $top_dir . '>
+<?php } else { ?>
+	<div id="humo_top" style="height:auto;">
+<?php }
 
-//echo '<img src="'.CMS_ROOTPATH_ADMIN.'theme/images/humo-gen-small.gif" align="left" alt="logo">';
-//echo '<img src="'.CMS_ROOTPATH_ADMIN.'theme/images/humo-gen-25a.png" align="left" alt="logo" height="45px">';
+if ($popup == false) { ?>
+	<span id="top_website_name">
+		<a href="index.php" style="color:brown;">HuMo-genealogy</a>
+	</span>
+<?php }
 
-if ($popup == false) {
-	echo '<span id="top_website_name">';
-	//echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy<span style="font-size:18px; color:#7F7F7F;">ealogy</span></a>';
-	echo '&nbsp;<a href="index.php" style="color:brown;">HuMo-genealogy</a>';
-	echo '</span>';
-}
-
-//if (isset($database_check) AND $database_check) { // Otherwise we can't make $dbh statements
 if (isset($database_check) and $database_check and $group_administrator == 'j') { // Otherwise we can't make $dbh statements
 	// *** Enable/ disable HuMo-genealogy update check ***
 	if (isset($_POST['enable_update_check_change'])) {
@@ -1834,7 +1698,7 @@ else {
 
 echo '</div>';
 
-if (!CMS_SPECIFIC) {
-	print "</body>\n";
-	print "</html>";
-}
+if (!CMS_SPECIFIC) { ?>
+		</body>
+	</html>
+<?php }

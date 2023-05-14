@@ -497,33 +497,13 @@ The file .htpasswd will look something like this:<br>');
 		echo '</form>';
 
 		if (isset($_POST['username'])) {
-			//$htpassword=crypt(trim($_POST['password']),base64_encode(CRYPT_STD_DES));
-			$htpassword2 = crypt($_POST['password'], base64_encode($_POST['password']));
-			//echo $_POST['username'].":".$htpassword.'<br>';
+			$htpassword2 = crypt($_POST['password'], base64_encode($_POST['password'])); // TODO: @Devs: What this old crypt??? use password_hash.
 			echo $_POST['username'] . ":" . $htpassword2;
 		}
 
 		echo '</div>';
 	}
 	echo '</td></tr>';
-
-	// *** Register global. Not nessecary in PHP 6.0! ***
-	//if (!ini_get('register_globals')){
-	//	echo '<tr><td class="line_item">register_globals</td><td class="line_ok">'.__('OK (option is OFF)').'</td></tr>';
-	//}
-	//else{
-	//	echo '<tr><td class="line_item">register_globals</td><td class="line_nok">'.__('UNSAFE (option is ON)<br>change this option in .htaccess file or put: "register_globals = Off" in the php.ini file.').'</td></tr>';
-	//}
-
-	// *** Magic_quotes_gpc. Deprecated in PHP 5.3.0! ***
-	$version = explode('.', phpversion());
-	if ($version[0] < 6 and $version[1] < 3) {
-		if (ini_get('magic_quotes_gpc')) {
-			echo '<tr><td class="line_item">magic_quotes_gpc</td><td class="line_ok">' . __('OK (option is ON)') . '</td></tr>';
-		} else {
-			echo '<tr><td class="line_item">magic_quotes_gpc</td><td class="line_nok">' . __('UNSAFE (option is OFF)<br>change this option in .htaccess file or put: "magic_quotes_gpc = On" in the php.ini file.') . '</td></tr>';
-		}
-	}
 
 	// *** display_errors ***
 	if (!ini_get('display_errors')) {
@@ -594,7 +574,7 @@ The file .htpasswd will look something like this:<br>');
 	} else {
 		echo '<tr><td>' . __('Trees table') . '</td><td class="line_nok">ERROR</td></tr>';
 	}
-}
+} ?>
 
-echo '</table>';
-echo '</div>';
+</table>
+</div>
