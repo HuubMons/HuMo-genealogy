@@ -37,7 +37,7 @@ echo '<script src="../externals/areyousure/ays-beforeunload-shim.js"></script>';
 
 // *** Only use Save button, don't use [Enter] ***
 echo '
-<script type="text/javascript">
+<script>
 $(document).on("keypress", ":input:not(textarea)", function(event) {
 	return event.keyCode != 13;
 });
@@ -1061,7 +1061,7 @@ if ($check_person) {
 	// *** Script voor expand and collapse of items ***
 	// Script is used for person, family AND source editor.
 	echo '
-	<script type="text/javascript">
+	<script>
 	function hideShow(el_id){
 		// *** Hide or show item ***
 		var arr = document.getElementsByClassName(\'row\'+el_id);
@@ -1178,7 +1178,7 @@ if ($check_person) {
 
 		// *** Script voor expand and collapse of items ***
 		echo '
-		<script type="text/javascript">
+		<script>
 		function hideShowAll(){
 			// *** PERSON: Change [+] into [-] or reverse ***
 			if (document.getElementById(\'hideshowlinkall\').innerHTML == "[+]")
@@ -1743,6 +1743,9 @@ if ($check_person) {
 			}
 			echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
 
+			//$hideshow_text='<b>['.$pers_gedcomnumber.'] '.show_person($person->pers_gedcomnumber,false,false).'</b>';
+			//echo hideshow_editor($hideshow,$hideshow_text,$pers_name_text);
+
 			// *** Firstname ***
 			//echo '<input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="35" placeholder="'.ucfirst(__('firstname')).'"><br>';
 			echo editor_label(__('firstname'), 'bold');
@@ -1827,8 +1830,46 @@ if ($check_person) {
 			}
 			echo '</td></tr>';
 
+			//TEST labels en vakken naast elkaar.
+			/*
+function editor_label2 ($label,$style=''){
+	$text='<span style="display: inline-block; width:220px; vertical-align: top;">';
+		if ($style=='bold') $text.='<b>';
+		$text.=ucfirst($label);
+		if ($style=='bold') $text.='</b>';
+	$text.='</span>';
+	return $text;
+}
+echo '</tr>';
+	echo '<td>'.__('Name').'</td>';
+	echo '<td colspan="2">';
+		echo editor_label2(__('firstname'),'bold');
+		echo '<input type="text" name="pers_firstname" value="'.$pers_firstname.'"  size="35"><br>';
+
+		echo editor_label2(__('prefix'));
+		echo '<input type="text" name="pers_prefix" value="'.$pers_prefix.'" size="10"> ';
+		echo __("For example: d\' or:  van_ (use _ for a space)").'<br>';
+
+		echo editor_label2(__('lastname'),'bold');
+		echo '<input type="text" name="pers_lastname" value="'.$pers_lastname.'" size="35"><br>';
+
+		echo editor_label2(__('patronymic'));
+		echo '<input type="text" name="pers_patronym" value="'.$pers_patronym.'" size="20"><br>';
+
+		// *** Person text by name ***
+		echo editor_label2(__('text'));
+		$text=$editor_cls->text_show($pers_name_text);
+		//$field_text_selected=$field_text; if ($text) $field_text_selected=$field_text_medium;
+		// *** Check if there are multiple lines in text ***
+		$field_text_selected=$field_text; if ($text AND preg_match('/\R/',$text)) $field_text_selected=$field_text_medium;
+		echo '<textarea rows="1" name="pers_name_text" '.$field_text_selected.'>'.$text.'</textarea>';
+	echo '</td>';
+	echo '<td></td>';
+echo '</tr>';
+*/
+
 			// *** Show source by name in iframe ***
-			echo iframe_source('500', '', 'pers_name_source', '');
+			echo edit_sources('500', 'person', 'pers_name_source', $pers_gedcomnumber);
 
 			if ($add_person == false) {
 				// *** Event name (also show ADD line for prefix, suffix, title etc. ***
@@ -1913,7 +1954,7 @@ if ($check_person) {
 			}
 			echo '</td></tr>';
 			// *** Show source by sexe in iframe ***
-			echo iframe_source('501', '', 'pers_sexe_source', '');
+			echo edit_sources('501', 'person', 'pers_sexe_source', $pers_gedcomnumber);
 
 
 			//TEST (also after other items in this script)
@@ -2008,7 +2049,7 @@ if ($check_person) {
 
 			echo '</td></tr>';
 			// *** Show source by birth in iframe ***
-			echo iframe_source('502', '', 'pers_birth_source', '');
+			echo edit_sources('502', 'person', 'pers_birth_source', $pers_gedcomnumber);
 
 			// *** Birth declaration ***
 			if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'birth_declaration');
@@ -2186,7 +2227,7 @@ if ($check_person) {
 			}
 			echo '</td></tr>';
 			// *** Show source by baptise in iframe ***
-			echo iframe_source('503', '', 'pers_bapt_source', '');
+			echo edit_sources('503', 'person', 'pers_bapt_source', $pers_gedcomnumber);
 
 			// *** Baptism Witness ***
 			if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'baptism_witness');
@@ -2389,7 +2430,7 @@ if ($check_person) {
 			}
 			echo '</td></tr>';
 			// *** Show source by death in iframe ***
-			echo iframe_source('504', '', 'pers_death_source', '');
+			echo edit_sources('504', 'person', 'pers_death_source', $pers_gedcomnumber);
 
 			// *** Death Declaration ***
 			if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'death_declaration');
@@ -2467,7 +2508,7 @@ if ($check_person) {
 			}
 			echo '</td></tr>';
 			// *** Show source by burial in iframe ***
-			echo iframe_source('505', '', 'pers_buried_source', '');
+			echo edit_sources('505', 'person', 'pers_buried_source', $pers_gedcomnumber);
 
 			// *** Burial Witness ***
 			if ($add_person == false) echo $event_cls->show_event('person', $pers_gedcomnumber, 'burial_witness');
@@ -2487,7 +2528,7 @@ if ($check_person) {
 			}
 			echo '</td></tr>';
 			// *** Show source by person tekst in iframe ***
-			echo iframe_source('506', '', 'pers_text_source', '');
+			echo edit_sources('506', 'person', 'pers_text_source', $pers_gedcomnumber);
 
 			if (!isset($_GET['add_person'])) {
 				// *** Person sources in new person editor screen ***
@@ -2497,7 +2538,7 @@ if ($check_person) {
 				echo source_link2('507', $pers_gedcomnumber, 'person_source', 'source_person');
 				echo '</td></tr>';
 				// *** Show source by person in iframe ***
-				echo iframe_source('507', '', 'person_source', '');
+				echo edit_sources('507', 'person', 'person_source', $pers_gedcomnumber);
 			}
 
 			// *** Own code ***
@@ -3015,7 +3056,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					}
 					echo '</td></tr>';
 					// *** Show source by relation in iframe ***
-					echo iframe_source('600', '', 'fam_relation_source', '');
+					echo edit_sources('600', 'family', 'fam_relation_source', $marriage);
 
 					// *** Marriage notice ***
 					// *** Use hideshow to show and hide the editor lines ***
@@ -3056,7 +3097,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					}
 					echo '</td></tr>';
 					// *** Show source by relation in iframe ***
-					echo iframe_source('601', '', 'fam_marr_notice_source', '');
+					echo edit_sources('601', 'family', 'fam_marr_notice_source', $marriage);
 
 					// *** Marriage ***
 					// *** Use hideshow to show and hide the editor lines ***
@@ -3211,7 +3252,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					}
 					echo '</td></tr>';
 					// *** Show source by relation in iframe ***
-					echo iframe_source('602', '', 'fam_marr_source', '');
+					echo edit_sources('602', 'family', 'fam_marr_source', $marriage);
 
 					// *** Marriage Witness ***
 					echo $event_cls->show_event('family', $marriage, 'marriage_witness');
@@ -3255,7 +3296,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					}
 					echo '</td></tr>';
 					// *** Show source by relation in iframe ***
-					echo iframe_source('603', '', 'fam_marr_church_notice_source', '');
+					echo edit_sources('603', 'family', 'fam_marr_church_notice_source', $marriage);
 
 					// *** Church marriage ***
 					// *** Use hideshow to show and hide the editor lines ***
@@ -3297,7 +3338,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 
 					echo '</td></tr>';
 					// *** Show source in iframe ***
-					echo iframe_source('604', '', 'fam_marr_church_source', '');
+					echo edit_sources('604', 'family', 'fam_marr_church_source', $marriage);
 
 					// *** Marriage Witness (church) ***
 					echo $event_cls->show_event('family', $marriage, 'marriage_witness_rel');
@@ -3358,7 +3399,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					}
 					echo '</td></tr>';
 					// *** Show source by relation in iframe ***
-					echo iframe_source('605', '', 'fam_div_source', '');
+					echo edit_sources('605', 'family', 'fam_div_source', $marriage);
 
 					// *** Use checkbox for divorse without further data ***
 					echo '<tr><td></td>';
@@ -3382,7 +3423,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 					}
 					echo '</td></tr>';
 					// *** Show source by relation in iframe ***
-					echo iframe_source('606', '', 'fam_text_source', '');
+					echo edit_sources('606', 'family', 'fam_text_source', $marriage);
 
 					// *** Relation sources in new person editor screen ***
 					if (isset($marriage) and !isset($_GET['add_marriage'])) {
@@ -3393,7 +3434,7 @@ It\'s also possible to add your own icons by a person! Add the icon in the image
 						echo '</td></tr>';
 					}
 					// *** Show source by relation in iframe ***
-					echo iframe_source('607', '', 'family_source', '');
+					echo edit_sources('607', 'family', 'family_source', $marriage);
 
 					// *** Picture ***
 					echo $event_cls->show_event('family', $marriage, 'marriage_picture');
@@ -4349,13 +4390,13 @@ if ($menu_admin == 'addresses') {
 		// *** Source by address ***
 		echo '<tr><td>' . ucfirst(__('source')) . '</td><td>';
 		if (isset($addressDb->address_id)) {
-			echo source_link2('20' . '', $addressDb->address_gedcomnr, 'address_source', 'addresses');
+			echo source_link2('20', $addressDb->address_gedcomnr, 'address_source', 'addresses');
 		}
 		echo '</td></tr>';
 		// *** Show source by address ***
 		if (isset($addressDb->address_gedcomnr)) {
-			//iframe_source($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)
-			echo iframe_source('20' . '', 'address', 'address_source', $addressDb->address_gedcomnr);
+			//edit_sources($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)
+			echo edit_sources('20', 'address', 'address_source', $addressDb->address_gedcomnr);
 		}
 
 		echo '<tr><td>' . ucfirst(__('text')) . '</td><td><textarea rows="1" name="address_text" ' . $field_text_large . '>' .
@@ -4612,7 +4653,10 @@ function event_option($event_gedcom, $event)
 // *** Show link to sources (version 2 )***
 function source_link2($hideshow, $connect_connect_id, $connect_sub_kind, $link = '')
 {
-	global $tree_id, $dbh, $db_functions;
+	global $tree_id, $dbh, $db_functions, $style_source;
+
+	// *** Standard: hide source. If there is an error: show source ***
+	$style_source = ' style="display:none;"';
 
 	$connect_qry = "SELECT connect_connect_id, connect_source_id FROM humo_connections
 		WHERE connect_tree_id='" . $tree_id . "'
@@ -4623,23 +4667,18 @@ function source_link2($hideshow, $connect_connect_id, $connect_sub_kind, $link =
 	while ($connectDb = $connect_sql->fetch(PDO::FETCH_OBJ)) {
 		if (!$connectDb->connect_source_id) {
 			$source_error = 1;
+			$style_source = '';
 		} else {
 			// *** Check if source is empty ***
 			$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
-			if (
-				!$sourceDb->source_title and !$sourceDb->source_text
-				and !$sourceDb->source_date and !$sourceDb->source_place and !$sourceDb->source_refn
-			) $source_error = 2;
+			if (!$sourceDb->source_title and !$sourceDb->source_text and !$sourceDb->source_date and !$sourceDb->source_place and !$sourceDb->source_refn) {
+				$source_error = 2;
+				$style_source = '';
+			}
 		}
 	}
 
 	$text = '&nbsp;';
-
-	//if ($source_error=='1') $text.='<span style="background-color:#FFAA80">'; // *** No source connected, colour = orange ***
-	//if ($source_error=='2') $text.='<span style="background-color:#FFFF00">'; // *** Source is empty, colour = yellow ***
-	//	//$text.='<a href="#" onclick="hideShow('.$hideshow.');">'.__('source').' <span id="hideshowlink30">'.__('[+]').'</span></a> ';
-	//	$text.='<a href="#'.$link.'" onclick="hideShow('.$hideshow.');">'.__('source').' ['.$source_count.']</a> ';
-	//if ($source_error) $text.='</span>';
 
 	$style = '';
 	if ($source_error == '1') $style = ' style="background-color:#FFAA80"'; // *** No source connected, colour = orange ***
@@ -4649,24 +4688,461 @@ function source_link2($hideshow, $connect_connect_id, $connect_sub_kind, $link =
 	return $text;
 }
 
-// *** Source in iframe ***
-function iframe_source($hideshow, $connect_kind, $connect_sub_kind, $connect_connect_id)
+// *** April 2023: new in this script (original script was in removed editor_sources.php script ) ***
+function edit_sources($hideshow, $connect_kind, $connect_sub_kind, $connect_connect_id)
 {
-	// *** Example ***
-	//src="index.php?page=editor_sources&'.
-	//$event_group.'&connect_kind='.$connect_kind.'&connect_sub_kind='.$connect_sub_kind.'&connect_connect_id='.$connect_connect_id.'">
+	global $dbh, $tree_id, $language, $page, $phpself2, $joomlastring, $marriage;
+	global $editor_cls, $field_date;
+	global $db_functions, $style_source;
+	//$db_functions->set_tree_id($tree_id);
 
-	$text = '<tr style="display:none;" class="row' . $hideshow . '"><td></td><td colspan="3">
-	<iframe id="source_iframe" class="source_iframe" title="source_iframe"
-		src="index.php?page=editor_sources';
-	if ($connect_kind) $text .= '&connect_kind=' . $connect_kind;
-	$text .= '&connect_sub_kind=' . $connect_sub_kind;
-	if ($connect_connect_id) $text .= '&connect_connect_id=' . $connect_connect_id;
-	$text .= '">
-	</iframe>
-	</td></tr>';
+	//$text='<p>'.__('<b>Sourcerole</b>: e.g. Writer, Brother, Sister, Father. <b>Page</b>: page in source.');
+	$text = '';
+
+	//$text='<tr'.$style_source.' class="row'.$hideshow.'"><td>'.__('Source').'</td>';
+	$text = '<tr' . $style_source . ' class="row' . $hideshow . '" id="' . $connect_sub_kind . $connect_connect_id . '"><td></td>';
+	$text .= '<td colspan="2">';
+
+	//$text.= '<table class="humo standard" border="1">';
+	//$text.= '<table class="humo" border="1">';
+	$text .= '<table class="humo" border="1" style="width:750px">';
+
+	//$text.= '<tr class="table_header_large">';
+	//	$text.= '<th>'.__('Source').'</th>';
+	//	$text.= '<th style="border-right:0px;"><br></th>';
+	//	$text.= '<th><input type="submit" name="submit" title="submit" value="'.__('Save').'"></th>';
+	//$text.= '</tr>';
+
+	// *** Search for all connected sources ***
+	$connect_sql = $db_functions->get_connections_connect_id($connect_kind, $connect_sub_kind, $connect_connect_id);
+	$nr_sources = count($connect_sql);
+	$change_bg_colour = false;
+	foreach ($connect_sql as $connectDb) {
+		//$source_name=$connectDb->connect_id;
+
+		$text .= '<input type="hidden" name="connect_change[' . $connectDb->connect_id . ']" value="' . $connectDb->connect_id . '">';
+		$text .= '<input type="hidden" name="connect_connect_id[' . $connectDb->connect_id . ']" value="' . $connectDb->connect_connect_id . '">';
+		if (isset($marriage)) {
+			$text .= '<input type="hidden" name="marriage_nr[' . $connectDb->connect_id . ']" value="' . $marriage . '">';
+		}
+		$text .= '<input type="hidden" name="connect_kind[' . $connectDb->connect_id . ']" value="' . $connect_kind . '">';
+		$text .= '<input type="hidden" name="connect_sub_kind[' . $connectDb->connect_id . ']" value="' . $connect_sub_kind . '">';
+		$text .= '<input type="hidden" name="connect_item_id[' . $connectDb->connect_id . ']" value="">';
+
+		$text .= '<tr class="table_header_large">';
+		//$text.= '<th>'.__('Source').'</th>';
+		//$text.= '<th style="border-right:0px;"><br></th>';
+
+		$text .= '<td style="border-right:0px;"><b>' . __('Source') . '</b>';
+		$text .= ' <a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;connect_drop=' . $connectDb->connect_id;
+		// *** Needed for events **
+		$text .= '&amp;connect_kind=' . $connect_kind;
+		$text .= '&amp;connect_sub_kind=' . $connect_sub_kind;
+		$text .= '&amp;connect_connect_id=' . $connect_connect_id;
+		if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+			$text .= '&amp;event_person=1';
+		}
+		if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+			$text .= '&amp;event_family=1';
+		}
+		if (isset($marriage)) {
+			$text .= '&amp;marriage_nr=' . $marriage;
+		}
+		$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/button_drop.png" border="0" alt="remove"></a>';
+
+		if ($connectDb->connect_order < $nr_sources) {
+			$text .= ' <a href="index.php?' . $joomlastring . 'page=' . $page .
+				'&amp;connect_down=' . $connectDb->connect_id .
+				'&amp;connect_kind=' . $connectDb->connect_kind .
+				'&amp;connect_sub_kind=' . $connectDb->connect_sub_kind .
+				'&amp;connect_connect_id=' . $connectDb->connect_connect_id .
+				'&amp;connect_order=' . $connectDb->connect_order;
+			if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+				$text .= '&amp;event_person=1';
+			}
+			if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+				$text .= '&amp;event_family=1';
+			}
+			if (isset($marriage)) {
+				$text .= '&amp;marriage_nr=' . $marriage;
+			}
+			$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_down.gif" border="0" alt="down"></a>';
+		} else {
+			//$text.= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+			$text .= '&nbsp;&nbsp;&nbsp;';
+		}
+
+		if ($connectDb->connect_order > 1) {
+			$text .= ' <a href="index.php?' . $joomlastring . 'page=' . $page .
+				'&amp;connect_up=' . $connectDb->connect_id .
+				'&amp;connect_kind=' . $connectDb->connect_kind .
+				'&amp;connect_sub_kind=' . $connectDb->connect_sub_kind .
+				'&amp;connect_connect_id=' . $connectDb->connect_connect_id .
+				'&amp;connect_order=' . $connectDb->connect_order;
+			if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+				$text .= '&amp;event_person=1';
+			}
+			if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+				$text .= '&amp;event_family=1';
+			}
+			if (isset($marriage)) {
+				$text .= '&amp;marriage_nr=' . $marriage;
+			}
+			$text .= '"><img src="' . CMS_ROOTPATH_ADMIN . 'images/arrow_up.gif" border="0" alt="down"></a>';
+		} else {
+			//$text.= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+		$text .= '</td>';
+
+		//$text.= '<th><input type="submit" name="submit" title="submit" value="'.__('Save').'"></th>';
+		$text .= '<th>';
+		if ($connect_sub_kind == 'pers_name_source') $text .= __('Name source');
+
+		// *** Edit source by sex ***
+		elseif ($connect_sub_kind == 'pers_sexe_source') $text .= __('Source') . ' - ' . __('Sex');
+
+		// *** Edit source by birth ***
+		elseif ($connect_sub_kind == 'pers_birth_source') $text .= __('Source') . ' - ' . ucfirst(__('born'));
+
+		// *** Edit source by baptise ***
+		elseif ($connect_sub_kind == 'pers_bapt_source') $text .= __('Source') . ' - ' . ucfirst(__('baptised'));
+
+		// *** Edit source by death ***
+		elseif ($connect_sub_kind == 'pers_death_source') $text .= __('Source') . ' - ' . ucfirst(__('died'));
+
+		// *** Edit source by buried ***
+		elseif ($connect_sub_kind == 'pers_buried_source') $text .= __('Source') . ' - ' . ucfirst(__('buried'));
+
+		// *** Edit source by text ***
+		elseif ($connect_sub_kind == 'pers_text_source') $text .= __('text') . ' - ' . __('source');
+
+		// *** Edit source by person ***
+		elseif ($connect_sub_kind == 'person_source') $text .= __('Source') . ' - ' . __('person');
+
+		// *** Edit source by person-address connection by person ***
+		elseif ($connect_sub_kind == 'pers_address_connect_source') $text .= __('Source') . ' - ' . __('Address');
+
+		// *** Edit source by living together ***
+		elseif ($connect_sub_kind == 'fam_relation_source') $text .= __('Source') . ' - ' . __('Living together');
+
+		// *** Edit source by fam_marr_notice ***
+		elseif ($connect_sub_kind == 'fam_marr_notice_source') $text .= __('Source') . ' - ' . __('Notice of Marriage');
+
+		// *** Edit source by fam_marr ***
+		elseif ($connect_sub_kind == 'fam_marr_source') $text .= __('Source') . ' - ' . __('Marriage');
+
+		// *** Edit source by fam_church_notice ***
+		elseif ($connect_sub_kind == 'fam_marr_church_notice_source') $text .= __('Source') . ' - ' . __('Religious Notice of Marriage');
+
+		// *** Edit source by fam_marr_church ***
+		elseif ($connect_sub_kind == 'fam_marr_church_source') $text .= __('Source') . ' - ' . __('Religious Marriage');
+
+		// *** Edit source by fam_div ***
+		elseif ($connect_sub_kind == 'fam_div_source') $text .= __('Source') . ' - ' . __('Divorce');
+
+		// *** Edit source by fam_text ***
+		elseif ($connect_sub_kind == 'fam_text_source') $text .= __('Source') . ' - ' . __('text');
+
+		// *** Edit source by relation ***
+		elseif ($connect_sub_kind == 'family_source') $text .= __('Source') . ' - ' . __('relation');
+
+		// *** Edit source by family-address connection by family ***
+		elseif ($connect_sub_kind == 'fam_address_connect_source') $text .= __('Source') . ' - ' . __('Address');
+
+		// *** Edit source by address (in address editor) AND ADD ADDRES-SOURCE IN PERSON/ FAMILY SCREEN ***
+		elseif ($connect_sub_kind == 'address_source') $text .= __('Source') . ' - ' . __('Address');
+
+		// *** Edit source by person event ***
+		elseif ($connect_sub_kind == 'pers_event_source') $text .= __('source') . ' - ' . __('Event');
+
+		// *** Edit source by family event ***
+		elseif ($connect_sub_kind == 'fam_event_source') $text .= __('source') . ' - ' . __('Event');
+		$text .= '</th>';
+		$text .= '</tr>';
+
+		$color = '';
+		if ($change_bg_colour == true) {
+			$color = ' class="humo_color"';
+		}
+		$text .= '<tr' . $color . '>';
+
+		$text .= '<td style="vertical-align:top; min-width:100px">' . __('Source') . '<br>';
+		$text .= '<div style="margin-top:3px;">' . __('Title') . '</div>';
+		$text .= '<div style="margin-top:3px;">' . __('Date') . '</div>';
+		$text .= '<div style="margin-top:3px;">' . __('Text') . '</div>';
+		//$text.='<div style="margin-top:50px;">'.__('Own code').'</div>';
+		$text .= '<div style="margin-top:50px;">' . __('Sourcerole') . '</div>';
+		$text .= '<div style="margin-top:3px;">' . __('Date') . '</div>';
+		$text .= '<div style="margin-top:3px;">' . __('Extra text') . '</div>';
+		$text .= '</td>';
+
+		//$text.='<td colspan="2" style="border-left:0px; border-right:0px;">';
+		$text .= '<td style="vertical-align:top;">';
+		//$text.='<br>';
+
+		$text .= '<div style="border: 2px solid red">';
+
+		if ($connectDb->connect_source_id != '') {
+			$text .= '<input type="hidden" name="connect_source_id[' . $connectDb->connect_id . ']" value="' . $connectDb->connect_source_id . '">';
+			$text .= __('Source GEDCOM number:') . ' ' . $connectDb->connect_source_id . '.&nbsp;&nbsp;&nbsp;&nbsp;';
+
+			$sourceDb = $db_functions->get_source($connectDb->connect_source_id);
+
+			$text .= __('Own code') . ' <input type="text" name="source_refn[' . $connectDb->connect_id . ']" placeholder="' . __('Own code') . '" value="' . htmlspecialchars($sourceDb->source_refn) . '" size="15">';
+
+			$text .= '<input type="hidden" name="source_id[' . $connectDb->connect_id . ']" value="' . $sourceDb->source_id . '"><br>';
+
+			$text .= '<input type="text" name="source_title[' . $connectDb->connect_id . ']" value="' . htmlspecialchars($sourceDb->source_title) . '" size="60" placeholder="' . __('Title') . '"><br>';
+
+			$field_date = 12; // Size of date field.
+			$text .= $editor_cls->date_show($sourceDb->source_date, 'source_date', "[$connectDb->connect_id]");
+
+			$text .= ' ' . ucfirst(__('place')) . ' <input type="text" name="source_place[' . $connectDb->connect_id . ']" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($sourceDb->source_place) . '" size="15"><br>';
+
+			//$field_text='style="height: 60px; width:550px"';
+			$field_text = 'style="height: 60px; width:600px"';
+			$text .= '<textarea rows="2" name="source_text[' . $connectDb->connect_id . ']" ' . $field_text . ' placeholder="' . __('Text') . '">' .
+				$editor_cls->text_show($sourceDb->source_text) . '</textarea><br>';
+
+			//$text.='<input type="text" name="source_refn['.$connectDb->connect_id.']" placeholder="'.__('Own code').'" value="'.htmlspecialchars($sourceDb->source_refn).'" size="15">';
+
+		} else {
+
+			$text .= '<h3>' . __('Search existing source') . '</h3>';
+
+			$source_search_gedcomnr = '';
+			if (isset($_POST['source_search_gedcomnr'])) {
+				$source_search_gedcomnr = safe_text_db($_POST['source_search_gedcomnr']);
+			}
+			$text .= '<input type="text" class="fonts" name="source_search_gedcomnr" value="' . $source_search_gedcomnr . '" size="20" placeholder="' . __('gedcomnumber (ID)') . '">';
+
+			$source_search = '';
+			if (isset($_POST['source_search'])) {
+				$source_search = safe_text_db($_POST['source_search']);
+			}
+			$text .= ' <input type="text" class="fonts" name="source_search" value="' . $source_search . '" size="20" placeholder="' . __('text') . '">';
+
+			$text .= ' <input class="fonts" type="submit" value="' . __('Search') . '"><br>';
+
+			// *** Source: pull-down menu ***
+			//$source_qry=$dbh->query("SELECT * FROM humo_sources
+			//	WHERE source_tree_id='".safe_text_db($tree_id)."' AND source_shared='1' ORDER BY source_title");
+			$qry = "SELECT * FROM humo_sources
+							WHERE source_tree_id='" . safe_text_db($tree_id) . "'";
+
+			if (isset($_POST['source_search_gedcomnr'])) {
+				$qry .= " AND source_gedcomnr LIKE '%" . safe_text_db($_POST['source_search_gedcomnr']) . "%'";
+			}
+
+			if (isset($_POST['source_search'])) {
+				$qry .= " AND ( source_title LIKE '%" . safe_text_db($_POST['source_search']) . "%' OR (source_title='' AND source_text LIKE '%" . safe_text_db($source_search) . "%') )";
+			}
+			$qry .= " ORDER BY IF (source_title!='',source_title,source_text)";
+			//$qry.=" ORDER BY IF (source_title!='',source_title,source_text) LIMIT 0,500";
+
+			$source_qry = $dbh->query($qry);
+
+			$text .= '<select size="1" name="connect_source_id[' . $connectDb->connect_id . ']" style="width: 300px">';
+			$text .= '<option value="">' . __('Select existing source') . ':</option>';
+			while ($sourceDb = $source_qry->fetch(PDO::FETCH_OBJ)) {
+				$selected = '';
+				if ($connectDb->connect_source_id != '') {
+					if ($sourceDb->source_gedcomnr == $connectDb->connect_source_id) {
+						$selected = ' SELECTED';
+					}
+				}
+				$text .= '<option value="' . @$sourceDb->source_gedcomnr . '"' . $selected . '>';
+				if ($sourceDb->source_title) {
+					$text .= $sourceDb->source_title;
+				} else {
+					$text .= substr($sourceDb->source_text, 0, 40);
+					if (strlen($sourceDb->source_text) > 40) $text .= '...';
+				}
+				$text .= ' [' . @$sourceDb->source_gedcomnr . ']</option>' . "\n";
+			}
+
+			//$text.='<option value="">*** '.__('Results are limited, use search to find more sources.').' ***</option>';
+
+			$text .= '</select>';
+
+			$text .= '&nbsp;&nbsp;<input type="submit" name="submit" title="submit" value="' . __('Select') . '">';
+
+			// *** Add new source ***
+			$text .= '<br><br>' . __('Or:') . ' ';
+			$text .= '<a href="index.php?' . $joomlastring . 'page=' . $page . '
+						&amp;source_add2=1
+						&amp;connect_id=' . $connectDb->connect_id . '
+						&amp;connect_order=' . $connectDb->connect_order . '
+						&amp;connect_kind=' . $connectDb->connect_kind . '
+						&amp;connect_sub_kind=' . $connectDb->connect_sub_kind . '
+						&amp;connect_connect_id=' . $connectDb->connect_connect_id;
+			if (isset($_POST['event_person']) or isset($_GET['event_person'])) {
+				$text .= '&amp;event_person=1';
+			}
+			if (isset($_POST['event_family']) or isset($_GET['event_family'])) {
+				$text .= '&amp;event_family=1';
+			}
+			//$text.='#addresses">'.__('add new source').'</a> ';
+			$text .= '#' . $connect_sub_kind . $connect_connect_id . '">' . __('add new source') . '</a> ';
+		}
+
+		$text .= '</div>';
+
+		if ($connectDb->connect_source_id != '') {
+			$connect_role = '';
+			if ($connectDb->connect_role) $connect_role = $connectDb->connect_role;
+			$text .= ' <input type="text" name="connect_role[' . $connectDb->connect_id . ']" placeholder="' . __('Sourcerole') . '" value="' . htmlspecialchars($connect_role) . '" size="6">';
+			// *** HELP POPUP ***
+			$rtlmarker = "ltr";
+			$text .= '<div class="fonts ' . $rtlmarker . 'sddm" style="display:inline;">';
+			$text .= '<a href="#" style="display:inline" ';
+			//$text.='onmouseover="mopen(event,\''.$connectDb->connect_id.'help_sourcerole\',100,400)"';
+			$text .= 'onmouseover="mopen(event,\'' . $connectDb->connect_id . 'help_sourcerole\',1,150)"';
+			$text .= 'onmouseout="mclosetime()">';
+			$text .= '<img src="../images/help.png" height="16" width="16">';
+			$text .= '</a>';
+			//$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+			$text .= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="' . $connectDb->connect_id . 'help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+			$text .= __('e.g. Writer, Brother, Sister, Father.') . '<br>';
+			$text .= '</div>';
+			$text .= '</div>';
+
+			$text .= ' ' . __('Page') . ' <input type="text" name="connect_page[' . $connectDb->connect_id . ']" placeholder="' . __('Page') . '" value="' . $connectDb->connect_page . '" size="6">';
+			// *** HELP POPUP ***
+			$rtlmarker = "ltr";
+			$text .= '<div class="fonts ' . $rtlmarker . 'sddm" style="display:inline;">';
+			$text .= '<a href="#" style="display:inline" ';
+			//$text.='onmouseover="mopen(event,\''.$connectDb->connect_id.'help_sourcerole\',100,400)"';
+			$text .= 'onmouseover="mopen(event,\'' . $connectDb->connect_id . 'help_sourcepage\',1,150)"';
+			$text .= 'onmouseout="mclosetime()">';
+			$text .= '<img src="../images/help.png" height="16" width="16">';
+			$text .= '</a>';
+			//$text.='<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:'.$rtlmarker.'" id="help_sourcerole" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+			$text .= '<div class="sddm_fixed" style="text-align:left; z-index:400; padding:4px; direction:' . $rtlmarker . '" id="' . $connectDb->connect_id . 'help_sourcepage" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">';
+			$text .= __('Page in source.') . '<br>';
+			$text .= '</div>';
+			$text .= '</div>';
+
+			// *** Quality ***
+			$text .= ' <select size="1" name="connect_quality[' . $connectDb->connect_id . ']" style="width: 300px">';
+			$text .= '<option value="">' . ucfirst(__('quality: default')) . '</option>';
+			$selected = '';
+			if ($connectDb->connect_quality == '0') {
+				$selected = ' SELECTED';
+			}
+			$text .= '<option value="0"' . $selected . '>' . ucfirst(__('quality: unreliable evidence or estimated data')) . '</option>';
+			$selected = '';
+			if ($connectDb->connect_quality == '1') {
+				$selected = ' SELECTED';
+			}
+			$text .= '<option value="1"' . $selected . '>' . ucfirst(__('quality: questionable reliability of evidence')) . '</option>';
+			$selected = '';
+			if ($connectDb->connect_quality == '2') {
+				$selected = ' SELECTED';
+			}
+			$text .= '<option value="2"' . $selected . '>' . ucfirst(__('quality: data from secondary evidence')) . '</option>';
+			$selected = '';
+			if ($connectDb->connect_quality == '3') {
+				$selected = ' SELECTED';
+			}
+			$text .= '<option value="3"' . $selected . '>' . ucfirst(__('quality: data from direct source')) . '</option>';
+			$text .= '</select><br>';
+
+			$field_date = 12; // Size of date field.
+			$text .= $editor_cls->date_show($connectDb->connect_date, 'connect_date', "[$connectDb->connect_id]");
+
+			$connect_place = '';
+			if ($connectDb->connect_place) $connect_place = $connectDb->connect_place;
+			$text .= ' ' . ucfirst(__('place')) . ' <input type="text" name="connect_place[' . $connectDb->connect_id . ']" placeholder="' . ucfirst(__('place')) . '" value="' . htmlspecialchars($connect_place) . '" size="15">';
+
+			// *** Extra text by shared source ***
+			$field_text = 'style="height: 20px; width:550px"';
+			$text .= '<br><textarea rows="2" name="connect_text[' . $connectDb->connect_id . ']" placeholder="' . __('Extra text by source') . '" ' . $field_text . '>' . $editor_cls->text_show($connectDb->connect_text) . '</textarea>';
+		} else {
+			$text .= '<input type="hidden" name="connect_role[' . $connectDb->connect_id . ']" value="">';
+			$text .= '<input type="hidden" name="connect_page[' . $connectDb->connect_id . ']" value="">';
+			$text .= '<input type="hidden" name="connect_quality[' . $connectDb->connect_id . ']" value="">';
+			$text .= '<input type="hidden" name="connect_text[' . $connectDb->connect_id . ']" value="">';
+		}
+
+		$text .= '</td></tr>';
+
+
+		// *** Picture by source ***
+
+
+		//$text.='<tr class="table_header_large" style="border-top:solid 2px #000000;"><td colspan="4"><br></td></tr>';
+
+		if ($change_bg_colour == true) {
+			$change_bg_colour = false;
+		} else {
+			$change_bg_colour = true;
+		}
+	}
+
+	//$text.='<tr><td colspan="4"><br></td></tr>';
+
+	//$text.='<tr class="table_header_large" style="border-top:solid 2px #000000;"><td colspan="4"><br></td></tr>';
+	//$text.='<tr class="table_header_large" style="border-top:solid 2px #000000;"><td colspan="3"><br></td></tr>';
+
+	// *** Add new source connection ***
+	if (!isset($_POST['connect_add'])) {
+		//$text.='<tr bgcolor="#CCFFFF" style="border-top:solid 2px #000000;">';
+		$text .= '<tr class="table_header_large">';
+
+		//$text.='<td>'.__('Add').'</td>';
+		$text .= '<td></td>';
+
+		//$text.='<td style="border-right:0px;"></td>';
+		//$text.='<td style="border-left:0px;"></td>';
+		$text .= '<td>';
+		if ($nr_sources > 0) {
+			//$text.=' <input type="Submit" name="connect_add" value="'.__('Add another source').'">';
+			$link_text = __('Add another source');
+		} else {
+			//$text.=' <input type="Submit" name="connect_add" value="'.__('Add source').'">';
+			$link_text = __('Add source');
+		}
+
+		// *** Add new source ***
+		$text .= ' <a href="index.php?' . $joomlastring . 'page=' . $page . '
+					&amp;source_add3=1
+					&amp;connect_kind=' . $connect_kind . '
+					&amp;connect_sub_kind=' . $connect_sub_kind . '
+					&amp;connect_connect_id=' . $connect_connect_id;
+		//if (isset($_POST['event_person']) OR isset($_GET['event_person'])){
+		//	$text.='&amp;event_person=1';
+		//}
+		//if (isset($_POST['event_family']) OR isset($_GET['event_family'])){
+		//	$text.='&amp;event_family=1';
+		//}
+		$text .= '#' . $connect_sub_kind . $connect_connect_id;
+		$text .= '">' . $link_text . '</a> ';
+
+		//USE BUTTON
+		//$text.='<input type="hidden" name="sources_list" value="'.$connect_connect_id.'">';
+		//$text.='<input type="Submit" name="add_'.$connect_sub_kind.'" value="'.$link_text.'">';
+
+		$text .= '</td>';
+		$text .= '</tr>';
+	}
+
+	$text .= '</table>';
+	$text .= '<p>'; // some extra space below table.
+
+	$text .= '</td>';
+	$text .= '<td></td></tr>';
+
+
+	// it's better to escape this function before adding all text.
+	if (isset($_GET['add_person'])) {
+		$text = '';
+	}
+
+
 	return $text;
 }
+
 
 //function witness_edit($witness, $multiple_rows=''){
 function witness_edit($event_text, $witness, $multiple_rows = '')
@@ -4902,21 +5378,29 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 	// *** Show and edit addresses/residences by person ***
 	// ****************************************************
 	//echo '<tr class="humo_color">';
-	echo '<tr class="table_header_large">';
-	echo '<td style="border-right:0px;"><a name="addresses"></a>' . __('Addresses') . '</td>';
+	//	echo '<tr class="table_header_large">';
+	echo '<tr class="table_header_large" id="addresses">';
+	//		echo '<td style="border-right:0px;"><a name="addresses"></a>'.__('Addresses').'</td>';
+	echo '<td style="border-right:0px;">' . __('Addresses') . '</td>';
 	echo '<td style="border-right:0px;"></td>';
 	echo '<td style="border-left:0px;">';
 	// *** Otherwise link won't work second time because of added anchor ***
-	$anchor = '#addresses';
-	if (isset($_GET['address_add'])) {
-		$anchor = '';
+	//$anchor = '#addresses';
+	//if (isset($_GET['address_add'])) {
+	//	$anchor = '';
+	//}
+	//echo '<a href="index.php?'.$joomlastring.'page='.$page.'&amp;menu_admin='.$connect_kind.'&amp;';
+	//if ($connect_kind=='person')
+	//	echo 'person_place_address=1&amp;';
+	//else
+	//	echo 'family_place_address=1&amp;';
+	//echo 'address_add=1'.$anchor.'">['.__('Add').']</a> ';
+
+	if ($connect_kind == 'person') {
+		echo ' <input type="Submit" name="person_add_address" value="' . __('Add') . '">';
+	} else {
+		echo ' <input type="Submit" name="relation_add_address" value="' . __('Add') . '">';
 	}
-	echo '<a href="index.php?' . $joomlastring . 'page=' . $page . '&amp;menu_admin=' . $connect_kind . '&amp;';
-	if ($connect_kind == 'person')
-		echo 'person_place_address=1&amp;';
-	else
-		echo 'family_place_address=1&amp;';
-	echo 'address_add=1' . $anchor . '">[' . __('Add') . ']</a> ';
 
 	// *** HELP POPUP for address ***
 	$rtlmarker = "ltr";
@@ -5041,7 +5525,7 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 			if ($addressDb->connect_date) $address .= ', ' . hideshow_date_place($addressDb->connect_date, '');
 
 			echo '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $address;
-			if ($address3Db->address_text or $addressDb->connect_text) echo ' <img src="theme/images/text.png" height="16px">';
+			if ($address3Db->address_text or $addressDb->connect_text) echo ' <img src="theme/images/text.png" height="16" alt="' . __('text') . '">';
 			echo '</span>';
 
 			echo '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';
@@ -5223,24 +5707,23 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 
 		// *** Show source by address ***
 		if (isset($address3Db->address_gedcomnr)) {
-			//iframe_source($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)
-			//echo iframe_source('20'.$addressDb->connect_id,'address','address_source2',$address3Db->address_gedcomnr);
-			echo iframe_source('20' . $addressDb->connect_id, 'address', 'address_source', $address3Db->address_gedcomnr);
+			//edit_sources($hideshow,$connect_kind,$connect_sub_kind,$connect_connect_id)
+			echo edit_sources('20' . $addressDb->connect_id, 'address', 'address_source', $address3Db->address_gedcomnr);
 		}
 
 		// *** Show source by address-connection ***
 		if (isset($address3Db->address_gedcomnr) and $connect_kind == 'person') {
 			// *** Show iframe source ***
-			//echo iframe_source('20'.$addressDb->connect_id,'person','pers_address_source',$address3Db->address_gedcomnr);
+			//echo edit_sources('20'.$addressDb->connect_id,'person','pers_address_source',$address3Db->address_gedcomnr);
 
 			// *** Source connect to link person-address ***
-			echo iframe_source('21' . $addressDb->connect_id, 'person', 'pers_address_connect_source', $addressDb->connect_id);
+			echo edit_sources('21' . $addressDb->connect_id, 'person', 'pers_address_connect_source', $addressDb->connect_id);
 		} elseif (isset($address3Db->address_gedcomnr)) {
 			// *** Show iframe source ***
-			//echo iframe_source('20'.$addressDb->connect_id,'family','fam_address_source',$address3Db->address_gedcomnr);
+			//echo edit_sources('20'.$addressDb->connect_id,'family','fam_address_source',$address3Db->address_gedcomnr);
 
 			// *** Source connect to link family-address ***
-			echo iframe_source('21' . $addressDb->connect_id, 'family', 'fam_address_connect_source', $addressDb->connect_id);
+			echo edit_sources('21' . $addressDb->connect_id, 'family', 'fam_address_connect_source', $addressDb->connect_id);
 		}
 	}
 
@@ -5250,7 +5733,7 @@ function edit_addresses($connect_kind, $connect_sub_kind, $connect_connect_id)
 		//if (isset($_GET['pers_place'])) $link_id='54';
 		if (isset($_GET['person_place_address']) or isset($_GET['family_place_address'])) $link_id = '55';
 		echo '
-		<script type="text/javascript">
+		<script>
 		function Show(el_id){
 			// *** Hide or show item ***
 			var arr = document.getElementsByClassName(\'row\'+el_id);
@@ -5474,7 +5957,7 @@ function hideshow_editor($hideshow, $text, $check_text)
 	if (!$text) $text = '[' . __('Add') . ']';
 
 	$return_text = '<span class="hideshowlink" onclick="hideShow(' . $hideshow . ');">' . $text;
-	if ($check_text) $return_text .= ' <img src="theme/images/text.png" height="16px">';
+	if ($check_text) $return_text .= ' <img src="theme/images/text.png" height="16" alt="' . __('text') . '">';
 	$return_text .= '</span>';
 
 	$return_text .= '<span class="humo row' . $hideshow . '" style="margin-left:0px;' . $display . '">';

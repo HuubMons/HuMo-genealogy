@@ -181,8 +181,49 @@ if (isset($_POST['person_remove2'])) {
 	$confirm .= '</div>';
 }
 
-if (isset($_POST['person_change'])) {
+//if (isset($_POST['person_change'])){
+$save_person_data = false;
+if (isset($_POST['person_change'])) $save_person_data = true;
+// *** Also save person data if name is added ***
+if (isset($_POST['event_add_name'])) $save_person_data = true;
+// *** Also save person data if profession is added ***
+if (isset($_POST['event_add_profession'])) $save_person_data = true;
+// *** Also save person data if religion is added ***
+if (isset($_POST['event_add_religion'])) $save_person_data = true;
+// *** Also save person data if person event is added ***
+if (isset($_POST['person_event_add'])) $save_person_data = true;
 
+// *** Also save person data if witnesses are added ***
+if (isset($_POST['add_birth_declaration'])) $save_person_data = true;
+if (isset($_POST['add_baptism_witness'])) $save_person_data = true;
+if (isset($_POST['add_death_declaration'])) $save_person_data = true;
+if (isset($_POST['add_burial_witness'])) $save_person_data = true;
+
+// *** Also save person data if addresses are added ***
+if (isset($_POST['person_add_address'])) $save_person_data = true;
+
+// *** Also save person data if media is added ***
+if (isset($_POST['add_picture'])) $save_person_data = true;
+if (isset($_POST['person_add_media'])) $save_person_data = true;
+
+//DIT MOETEN KNOPPEN WORDEN. $_POST dus.
+//TO DO sources, editor notes, wisselen van vrouw en man in relatie, toevoegen kind.
+// Bij bronnen een array meesturen met alle namen van de bron knoppen?
+/* Voorbeeld:
+<input type="text" name="add_source_button[]" value="'.$page_source.'"/>
+<input type="text" name="add_source_button[]" value="'.$page_source.'"/>
+<input type="text" name="add_source_button[]" value="'.$page_source.'"/>
+
+http://localhost/humo-genealogy/admin/index.php?
+page=editor&
+source_add3=1&
+connect_kind=person&
+>> connect_sub_kind=pers_birth_source&
+>> connect_connect_id=I1180
+#pers_birth_sourceI1180
+*/
+
+if ($save_person_data) {
 	// *** Manual alive setting ***
 	@$pers_alive = safe_text_db($_POST["pers_alive"]);
 	// *** Only change alive setting if birth or bapise date is changed ***
@@ -844,36 +885,43 @@ if (isset($_POST['add_parents2'])) {
 
 // *** Add EXISTING parents to a child ***
 if (isset($_POST['add_parents']) and $_POST['add_parents'] != '') {
-	$parentsDb = $db_functions->get_family($_POST['add_parents']);
+	$parentsDb = $db_functions->get_family(strtoupper($_POST['add_parents']));
 
-	if ($parentsDb->fam_children) {
-		$fam_children = $parentsDb->fam_children . ';' . $pers_gedcomnumber;
+	// *** Check if manual selected family is existing family in family tree ***
+	if (isset($parentsDb->fam_gedcomnumber) and strtoupper($_POST['add_parents']) == $parentsDb->fam_gedcomnumber) {
+		if ($parentsDb->fam_children) {
+			$fam_children = $parentsDb->fam_children . ';' . $pers_gedcomnumber;
+		} else {
+			$fam_children = $pers_gedcomnumber;
+		}
+
+		$sql = "UPDATE humo_families SET
+		fam_children='" . $fam_children . "',
+		fam_changed_user='" . $username . "',
+		fam_changed_date='" . $gedcom_date . "',
+		fam_changed_time='" . $gedcom_time . "'
+		WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . $parentsDb->fam_gedcomnumber . "'";
+		$result = $dbh->query($sql);
+
+		// *** Add parents to child record ***
+		$sql = "UPDATE humo_persons SET
+		pers_famc='" . $parentsDb->fam_gedcomnumber . "',
+		pers_changed_user='" . $username . "',
+		pers_changed_date='" . $gedcom_date . "',
+		pers_changed_time='" . $gedcom_time . "'
+		WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $pers_gedcomnumber . "'";
+		$result = $dbh->query($sql);
+
+		family_tree_update($tree_id);
+
+		$confirm .= '<div class="confirm">';
+		$confirm .= __('Parents are selected!');
+		$confirm .= '</div>';
 	} else {
-		$fam_children = $pers_gedcomnumber;
+		$confirm .= '<div class="confirm">';
+		$confirm .= __('Manual selected family isn\'t an existing family in the family tree!');
+		$confirm .= '</div>';
 	}
-
-	$sql = "UPDATE humo_families SET
-	fam_children='" . $fam_children . "',
-	fam_changed_user='" . $username . "',
-	fam_changed_date='" . $gedcom_date . "',
-	fam_changed_time='" . $gedcom_time . "'
-	WHERE fam_tree_id='" . $tree_id . "' AND fam_gedcomnumber='" . safe_text_db($_POST['add_parents']) . "'";
-	$result = $dbh->query($sql);
-
-	// *** Add parents to child record ***
-	$sql = "UPDATE humo_persons SET
-	pers_famc='" . safe_text_db($_POST['add_parents']) . "',
-	pers_changed_user='" . $username . "',
-	pers_changed_date='" . $gedcom_date . "',
-	pers_changed_time='" . $gedcom_time . "'
-	WHERE pers_tree_id='" . $tree_id . "' AND pers_gedcomnumber='" . $pers_gedcomnumber . "'";
-	$result = $dbh->query($sql);
-
-	family_tree_update($tree_id);
-
-	$confirm .= '<div class="confirm">';
-	$confirm .= __('Parents are selected!');
-	$confirm .= '</div>';
 }
 
 // *** Add child to family ***
@@ -1213,8 +1261,23 @@ if (isset($_POST['parents_switch'])) {
 	$_POST['search_quicksearch_man'] = '';
 }
 
-// ** Change marriage ***
-if (isset($_POST['marriage_change'])) {
+
+// *** Also save relation data if witnesses are added ***
+$save_relation_data = false;
+if (isset($_POST['marriage_change'])) $save_relation_data = true;
+if (isset($_POST['add_marriage_witness'])) $save_relation_data = true;
+if (isset($_POST['add_marriage_witness_rel'])) $save_relation_data = true;
+
+// *** Also save relation data if addresses are added ***
+if (isset($_POST['relation_add_address'])) $save_relation_data = true;
+
+// *** Also save relation data if addresses are added ***
+if (isset($_POST['add_marriage_picture'])) $save_relation_data = true;
+if (isset($_POST['relation_add_media'])) $save_relation_data = true;
+
+// ** Change relation ***
+//if (isset($_POST['marriage_change'])) {
+if ($save_relation_data == true) {
 	// *** Change i10 into I10 ***
 	$_POST["connect_man"] = ucfirst($_POST["connect_man"]);
 	$_POST["connect_woman"] = ucfirst($_POST["connect_woman"]);
@@ -1290,7 +1353,7 @@ if (isset($_POST['marriage_change'])) {
 
 	family_tree_update($tree_id);
 }
-//}
+
 
 
 // **************************
@@ -1318,6 +1381,32 @@ if (!isset($_GET['add_person'])) {
 		$event_add = 'add_name';
 	}
 
+	// *** April 2023: using POST so it's possible to save person data if event is added ***
+	if (isset($_POST['add_birth_declaration'])) {
+		$new_event = true;
+		$event_add = 'add_birth_declaration';
+	}
+	if (isset($_POST['add_baptism_witness'])) {
+		$new_event = true;
+		$event_add = 'add_baptism_witness';
+	}
+	if (isset($_POST['add_death_declaration'])) {
+		$new_event = true;
+		$event_add = 'add_death_declaration';
+	}
+	if (isset($_POST['add_burial_witness'])) {
+		$new_event = true;
+		$event_add = 'add_burial_witness';
+	}
+	if (isset($_POST['add_marriage_witness'])) {
+		$new_event = true;
+		$event_add = 'add_marriage_witness';
+	}
+	if (isset($_POST['add_marriage_witness_rel'])) {
+		$new_event = true;
+		$event_add = 'add_marriage_witness_rel';
+	}
+
 	// *** Add profession ***
 	if (isset($_POST['event_add_profession'])) {
 		$new_event = true;
@@ -1339,8 +1428,24 @@ if (!isset($_GET['add_person'])) {
 		$new_event = true;
 		$event_add = 'add_religion';
 	}
+
+	// *** Add picture ***
+	if (isset($_POST['add_picture'])) {
+		$new_event = true;
+		$event_add = 'add_picture';
+	}
+	if (isset($_POST['add_marriage_picture'])) {
+		$new_event = true;
+		$event_add = 'add_marriage_picture';
+	}
+	if (isset($_POST['add_source_picture'])) {
+		$new_event = true;
+		$event_add = 'add_source_picture';
+	}
 }
 if ($new_event) {
+	if (isset($_POST['marriage'])) $marriage = $_POST['marriage']; // *** Needed to check $_POST for multiple relations ***
+
 	if ($event_add == 'add_name') {
 		$event_connect_kind = 'person';
 		$event_connect_id = $pers_gedcomnumber;
@@ -1384,6 +1489,20 @@ if ($new_event) {
 		$event_event = '';
 		$event_gedcom = '';
 	}
+	if ($event_add == 'add_marriage_witness') {
+		$event_connect_kind = 'family';
+		$event_connect_id = $marriage;
+		$event_kind = 'marriage_witness';
+		$event_event = '';
+		$event_gedcom = '';
+	}
+	if ($event_add == 'add_marriage_witness_rel') {
+		$event_connect_kind = 'family';
+		$event_connect_id = $marriage;
+		$event_kind = 'marriage_witness_rel';
+		$event_event = '';
+		$event_gedcom = '';
+	}
 
 	if ($event_add == 'add_profession') {
 		$event_connect_kind = 'person';
@@ -1401,6 +1520,7 @@ if ($new_event) {
 		$event_event = $_POST['event_event_religion'];
 	}
 
+	// *** Picture by person ***
 	if ($event_add == 'add_picture') {
 		$event_connect_kind = 'person';
 		$event_connect_id = $pers_gedcomnumber;
@@ -1408,20 +1528,7 @@ if ($new_event) {
 		$event_event = '';
 		$event_gedcom = '';
 	}
-	if ($event_add == 'add_marriage_witness') {
-		$event_connect_kind = 'family';
-		$event_connect_id = $marriage;
-		$event_kind = 'marriage_witness';
-		$event_event = '';
-		$event_gedcom = '';
-	}
-	if ($event_add == 'add_marriage_witness_rel') {
-		$event_connect_kind = 'family';
-		$event_connect_id = $marriage;
-		$event_kind = 'marriage_witness_rel';
-		$event_event = '';
-		$event_gedcom = '';
-	}
+	// *** Picture by relation ***
 	if ($event_add == 'add_marriage_picture') {
 		$event_connect_kind = 'family';
 		$event_connect_id = $marriage;
@@ -1429,9 +1536,11 @@ if ($new_event) {
 		$event_event = '';
 		$event_gedcom = '';
 	}
+	// *** Picture by source ***
 	if ($event_add == 'add_source_picture') {
+		//$event_connect_kind='source'; $event_connect_id=$_GET['source_id']; $event_kind='picture'; $event_event=''; $event_gedcom='';
 		$event_connect_kind = 'source';
-		$event_connect_id = $_GET['source_id'];
+		$event_connect_id = $_POST['source_gedcomnr'];
 		$event_kind = 'picture';
 		$event_event = '';
 		$event_gedcom = '';
@@ -1453,7 +1562,8 @@ if (isset($_POST['person_event_add'])) {
 if (isset($_POST['marriage_event_add'])) {
 	// *** Add event. If event is new, use: $new_event=true. ***
 	// *** true/false, $event_connect_kind,$event_connect_id,$event_kind,$event_event,$event_gedcom,$event_date,$event_place,$event_text ***
-	add_event(false, 'family', $marriage, $_POST["event_kind"], '', '', '', '', '');
+	//add_event(false,'family',$marriage,$_POST["event_kind"],'','','','','');
+	add_event(false, 'family', safe_text_db($_POST['marriage']), $_POST["event_kind"], '', '', '', '', '');
 }
 
 
@@ -1645,9 +1755,12 @@ if (isset($_POST['event_id'])) {
 			//if ($eventDb->event_date AND ($_POST["event_date_prefix"][$key] OR $_POST["event_date"][$key])){
 			// Doesn't work if date is removed:
 			//if ($_POST["event_date_prefix"][$key] OR $_POST["event_date"][$key]){
-			if (isset($eventDb->event_date))
-				if (strcasecmp($_POST["event_date_prefix"][$key] . $_POST["event_date"][$key], $eventDb->event_date) != 0) $event_changed = true;
-			//}
+			//if (isset($eventDb->event_date)){
+			if (isset($_POST["event_date"][$key])) {
+				$event_date = '';
+				if (isset($eventDb->event_date)) $event_date = $eventDb->event_date;
+				if (strcasecmp($_POST["event_date_prefix"][$key] . $_POST["event_date"][$key], $event_date) != 0) $event_changed = true;
+			}
 			if ($_POST["event_place" . $key] != $eventDb->event_place) $event_changed = true;
 			if (isset($_POST["event_gedcom"][$key])) {
 				if ($_POST["event_gedcom"][$key] != $eventDb->event_gedcom) $event_changed = true;
@@ -2064,20 +2177,51 @@ if (isset($_GET['event_up'])) {
 // ************************
 // *** Save connections ***
 // ************************
+
 // *** Add new person-address connection ***
-if (isset($_GET['person_place_address']) and isset($_GET['address_add'])) {
+//if (isset($_GET['person_place_address']) and isset($_GET['address_add'])){
+if (isset($_POST['person_add_address'])) {
 	$_POST['connect_add'] = 'add_address';
 	$_POST['connect_kind'] = 'person';
 	$_POST["connect_sub_kind"] = 'person_address';
 	$_POST["connect_connect_id"] = $pers_gedcomnumber;
 }
 // *** Add new family-address connection ***
-if (isset($_GET['family_place_address']) and isset($_GET['address_add'])) {
+//if (isset($_GET['family_place_address']) and isset($_GET['address_add'])){
+if (isset($_POST['relation_add_address'])) {
 	$_POST['connect_add'] = 'add_address';
 	$_POST['connect_kind'] = 'family';
 	$_POST["connect_sub_kind"] = 'family_address';
+	$marriage = $_POST['marriage']; // *** Needed to check $_POST for multiple relations ***
 	$_POST["connect_connect_id"] = $marriage;
 }
+
+// *** Added april 2023: Add new source ***
+if (isset($_GET['source_add3'])) {
+	$_POST['connect_add'] = 'add_source';
+	$_POST['connect_kind'] = $_GET['connect_kind'];
+	$_POST["connect_sub_kind"] = $_GET["connect_sub_kind"];
+	$_POST["connect_connect_id"] = $_GET["connect_connect_id"];
+}
+
+
+/*
+// *** Added may 2023: Add new source ***
+//http://localhost/humo-genealogy/admin/index.php?page=editor&
+//source_add3=1&
+//connect_kind=person&
+//connect_sub_kind=pers_name_source&
+//connect_connect_id=I9892#pers_name_sourceI9892
+if (isset($_POST['add_pers_name_source'])){
+	$_POST['connect_add']='add_source';
+	$_POST['connect_kind']='person';
+	$_POST["connect_sub_kind"]='pers_name_source';
+	$_POST["connect_connect_id"]=$pers_gedcomnumber;
+
+unset ($_POST['connect_change']);
+}
+*/
+
 
 // *** Add new source/ address connection ***
 if (isset($_POST['connect_add'])) {
@@ -2448,7 +2592,12 @@ if (isset($_GET['source_add2'])) {
 }
 
 //source_shared='".$editor_cls->text_process($_POST['source_shared'])."',
-if (isset($_POST['source_change'])) {
+//if (isset($_POST['source_change'])){
+$save_source_data = false;
+if (isset($_POST['source_change'])) $save_source_data = true;
+// *** Also save source data if media is added ***
+if (isset($_POST['add_source_picture'])) $save_source_data = true;
+if ($save_source_data) {
 	$sql = "UPDATE humo_sources SET
 	source_status='" . $editor_cls->text_process($_POST['source_status']) . "',
 	source_title='" . $editor_cls->text_process($_POST['source_title']) . "',
